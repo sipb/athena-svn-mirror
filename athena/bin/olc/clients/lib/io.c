@@ -13,18 +13,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.9 1990-07-16 08:15:34 lwvanels Exp $
+ *	$Id: io.c,v 1.10 1990-11-13 18:35:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.9 1990-07-16 08:15:34 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.10 1990-11-13 18:35:20 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -78,11 +81,11 @@ send_request(fd, request)
 
 #ifdef KERBEROS
   int klength;
-#endif KERBEROS
+#endif /* KERBEROS */
 
 #ifdef TEST
   printf("%d %d\n",request->requester.uid,CURRENT_VERSION);
-#endif TEST
+#endif /* TEST */
 
   net_rq.version            = (int) htonl((u_long) CURRENT_VERSION);
   net_rq.requester          = request->requester;
@@ -101,7 +104,7 @@ send_request(fd, request)
 
 #ifdef TEST
   printf("klength: %d\n",request->kticket.length);
-#endif TEST
+#endif /* TEST */
 
   klength     = htonl((u_long) request->kticket.length);
   if (write(fd, &klength, sizeof(int)) != sizeof(int)) 
@@ -117,7 +120,7 @@ send_request(fd, request)
       fprintf(stderr, "Error in sending ticket. \n");
           return(ERROR);
     }
-#endif KERBEROS
+#endif /* KERBEROS */
 
   return(SUCCESS);
 }
@@ -167,7 +170,7 @@ read_list(fd, list)
   printf("%s %s %s\n",list->user.username,list->user.realname,list->user.machine);
   printf("%s %s %s\n",list->connected.username,list->connected.realname,list->connected.machine);
   printf("%d %d %d %d",list->nseen,list->ukstatus,list->user.instance,list->user.uid);
-#endif TEST
+#endif /* TEST */
   return(SUCCESS);
 }
 
@@ -213,7 +216,7 @@ open_connection_to_daemon(request, fd)
   status =  krb_mk_req(&(request->kticket), K_SERVICE, INSTANCE, REALM, 0);  
   if(status)
     return(status);
-#endif KERBEROS
+#endif /* KERBEROS */
 
   *fd = socket(AF_INET, SOCK_STREAM, 0);
   
@@ -240,12 +243,12 @@ open_connection_to_daemon(request, fd)
       sin.sin_family = AF_INET;
       sin.sin_port = service->s_port;
       port_env = getenv ("OLCD_PORT");
-      if (port_env)
+      if (port_env != NULL)
 	  sin.sin_port = htons (atoi (port_env));
       sptr = &sin;
     }
 
-  if (connect(*fd, &sin, sizeof(sin)) < 0) 
+  if (connect(*fd, (struct sockaddr *)(&sin), sizeof(sin)) < 0) 
     {
       close(*fd);
       return(ERROR_CONNECT);
