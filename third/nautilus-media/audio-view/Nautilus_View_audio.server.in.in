@@ -1,0 +1,46 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:Nautilus_Audio_View_Factory"
+	type="exe" location="@LIBEXECDIR@/nautilus-audio-view">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" _value="Audio view factory"/>
+	<oaf_attribute name="description" type="string" _value="Audio view component's factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:Nautilus_Audio_View" type="factory" location="OAFIID:Nautilus_Audio_View_Factory">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+		<item value="IDL:Bonobo/Control:1.0"/>
+		<item value="IDL:Nautilus/View:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" _value="Nautilus Audio view"/>
+	<oaf_attribute name="description" type="string" _value="Audio view component"/>
+<!--
+	<oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
+		<item value="*"/>
+	</oaf_attribute>
+-->
+       <oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+                <item value="file"/>
+        </oaf_attribute>
+	<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+		<item value="x-directory/*"/>
+	</oaf_attribute>
+	<oaf_attribute name="nautilus:required_directory_content_mime_types" type="stringv">
+		<item value="audio/x-mpeg"/>
+		<item value="audio/x-mp3"/>
+		<item value="audio/x-wav"/>
+		<item value="audio/x-mod"/>
+		<item value="audio/x-s3m"/>
+		<item value="audio/x-xm"/>
+		<item value="audio/x-it"/>
+		<item value="application/x-ogg"/>
+	</oaf_attribute>
+	<oaf_attribute name="nautilus:view_as_name" type="string" _value="Audio"/>
+	<oaf_attribute name="nautilus:view_as_label" type="string" _value="View as Audio"/>
+	<oaf_attribute name="nautilus:viewer_label" type="string" _value="Audio Viewer"/>
+</oaf_server>
+
+</oaf_info>

@@ -1,0 +1,80 @@
+<gconfschemafile>
+    <schemalist>
+
+        <schema>
+            <key>/schemas/desktop/gnome/thumbnailers/video@mpeg/enable</key>
+            <applyto>/desktop/gnome/thumbnailers/video@mpeg/enable</applyto>
+            <owner>nautilus-media</owner>
+            <type>bool</type>
+            <default>true</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+
+
+        <schema>
+            <key>/schemas/desktop/gnome/thumbnailers/video@mpeg/command</key>
+            <applyto>/desktop/gnome/thumbnailers/video@mpeg/command</applyto>
+            <owner>nautilus-media</owner>
+            <type>string</type>
+            <default>gst-thumbnail %u %o</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/desktop/gnome/thumbnailers/video@x-avi/enable</key>
+            <applyto>/desktop/gnome/thumbnailers/video@x-avi/enable</applyto>
+            <owner>nautilus-media</owner>
+            <type>bool</type>
+            <default>true</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+
+
+        <schema>
+            <key>/schemas/desktop/gnome/thumbnailers/video@x-avi/command</key>
+            <applyto>/desktop/gnome/thumbnailers/video@x-avi/command</applyto>
+            <owner>nautilus-media</owner>
+            <type>string</type>
+            <default>gst-thumbnail %u %o</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/desktop/gnome/thumbnailers/video@x-fli/enable</key>
+            <applyto>/desktop/gnome/thumbnailers/video@x-fli/enable</applyto>
+            <owner>nautilus-media</owner>
+            <type>bool</type>
+            <default>true</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+
+
+        <schema>
+            <key>/schemas/desktop/gnome/thumbnailers/video@x-fli/command</key>
+            <applyto>/desktop/gnome/thumbnailers/video@x-fli/command</applyto>
+            <owner>nautilus-media</owner>
+            <type>string</type>
+            <default>gst-thumbnail %u %o</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+
+    </schemalist>
+</gconfschemafile>

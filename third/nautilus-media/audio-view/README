@@ -1,0 +1,71 @@
+This is an audio view for nautilus based on GStreamer to play any type
+of audio GStreamer can handle.
+It is based on the sample component.
+
+
+Some rationale on why I'm doing this
+
+A lot of times I'm organizing audio but the filename is wrong or
+the tags are wrong or I'm looking for this one track but I don't know where
+it is and so on.
+
+This view should enable you to
+- browse directories with audio and see some basic info on them
+- listen to the tracks in them and scan from one to another quickly
+
+Basically, we want to find audio by
+  - association with others
+  - listening to parts
+and organize it on the system by
+  - moving it with standard file browsing options
+  - editing properties ?
+and start relevant apps with them.
+
+We don't want this to be a full-featured player.
+
+Some ideas on where to take this from here :
+- a sample button
+  - would play the five middle seconds of each track and then skip on to
+    the next
+  - if you move the slider, it drops out of sample mode
+
+- fade between tracks ?
+  not only is this nice to have, but it definately is not overkill because
+  lots of soundcards make nasty sounds when closing and opening the device
+
+- shuffle button ?
+  maybe too much of a player feature
+
+- extract actual code as standalone gtk or gnome app for easier testing
+
+All of these ideas are, by the way, applicable to the upcoming video view.
+Scheduled release date : 5UADEC
+
+
+*** AudioPlay external interface:
+
+- create one with audio_play_new; starts out in NULL
+- set an audio sink on it
+- load a location and autoplug it
+- set state to playing
+- run gst_main ()
+- will exit when eos'd
+
+
+- internally:
+  - gets created
+  - can only autoplug in READY state
+  - can only load location in PAUSED state
+
+  - moving from READY to PAUSED does: 
+    - autoplugging (which replaces itself in the autobin with decoder)
+
+  - moving from PAUSED to READY does:
+    - free decoder
+
+bin setup :
+  - in NULL: doesn't matter
+   - in READY: pipeline = filesrc ! autobin
+               autobin = cache ! typefind
+   - in PAUSED: pipeline = filesrc ! autobin
+	       autobin = decoder ! sink
