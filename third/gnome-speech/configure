@@ -19873,7 +19873,7 @@ fi;
 if test "x$with_java_home" != "x" ; then
    JAVA_HOME=$with_java_home
 else
-    JAVA_HOME=`which javah | sed -e "s/\/bin\/javah//"`
+    JAVA_HOME=`type javah | sed -e "s/^javah is //" -e "s/\/bin\/javah//"`
 fi
 
 # Find the java executeable
