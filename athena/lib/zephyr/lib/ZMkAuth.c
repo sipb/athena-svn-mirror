@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Id: ZMkAuth.c,v 1.15 1994-11-01 20:52:51 ghudson Exp $ */
+/* $Id: ZMkAuth.c,v 1.16 1994-12-12 23:05:37 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.15 1994-11-01 20:52:51 ghudson Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.16 1994-12-12 23:05:37 ghudson Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -98,6 +98,6 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
     notice->z_auth = 1;
     notice->z_authent_len = 0;
     notice->z_ascii_authent = "";
-    return (Z_FormatRawHeader(notice, buffer, buffer_len, len, (char **) 0));
+    return (Z_FormatRawHeader(notice, buffer, buffer_len, len, NULL, NULL));
 #endif
 }
