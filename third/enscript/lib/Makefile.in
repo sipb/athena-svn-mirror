@@ -240,15 +240,16 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 all-local: enscript.cfg
 
 install-data-local: enscript.cfg
-	$(top_srcdir)/mkinstalldirs $(sysconfdir)
-	if test -r $(sysconfdir)/enscript.cfg; then \
-	  cp $(sysconfdir)/enscript.cfg $(sysconfdir)/enscript.cfg.old; \
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(sysconfdir)
+	if test -r $(DESTDIR)$(sysconfdir)/enscript.cfg; then \
+	  cp $(DESTDIR)$(sysconfdir)/enscript.cfg \
+		$(DESTDIR)$(sysconfdir)/enscript.cfg.old; \
 	else :; \
 	fi
-	$(INSTALL_DATA) enscript.cfg $(sysconfdir)/enscript.cfg
+	$(INSTALL_DATA) enscript.cfg $(DESTDIR)$(sysconfdir)/enscript.cfg
 
 uninstall-local:
-	rm -f $(sysconfdir)/enscript.cfg
+	rm -f $(DESTDIR)$(sysconfdir)/enscript.cfg
 
 enscript.cfg: $(srcdir)/enscript.cfg.in Makefile
 	sed 's%@DATADIR@%$(datadir)%g; s%@media@%@MEDIA@%g; s%@BINDIR@%$(bindir)%g; s%@spooler@%@SPOOLER@%g; s%@pslevel@%@PSLEVEL@%g' \
