@@ -1,6 +1,6 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4
+dnl aclocal.m4 generated automatically by aclocal 1.4-p5
 
-dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+dnl Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -444,7 +444,7 @@ AC_DEFUN([AM_LC_MESSAGES],
 dnl Usage:
 dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
-AC_DEFUN(AM_INIT_AUTOMAKE,
+AC_DEFUN([AM_INIT_AUTOMAKE],
 [AC_REQUIRE([AC_PROG_INSTALL])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
@@ -472,7 +472,7 @@ AC_REQUIRE([AC_PROG_MAKE_SET])])
 # Check to make sure that the build environment is sane.
 #
 
-AC_DEFUN(AM_SANITY_CHECK,
+AC_DEFUN([AM_SANITY_CHECK],
 [AC_MSG_CHECKING([whether build environment is sane])
 # Just in case
 sleep 1
@@ -513,7 +513,7 @@ AC_MSG_RESULT(yes)])
 
 dnl AM_MISSING_PROG(NAME, PROGRAM, DIRECTORY)
 dnl The program must properly implement --version.
-AC_DEFUN(AM_MISSING_PROG,
+AC_DEFUN([AM_MISSING_PROG],
 [AC_MSG_CHECKING(for working $2)
 # Run test in a subshell; some versions of sh will print an error if
 # an executable is not found, even if stderr is redirected.
@@ -529,7 +529,7 @@ AC_SUBST($1)])
 
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
-AC_DEFUN(AM_CONFIG_HEADER,
+AC_DEFUN([AM_CONFIG_HEADER],
 [AC_PREREQ([2.12])
 AC_CONFIG_HEADER([$1])
 dnl When config.status generates a header, we must update the stamp-h file.
@@ -555,7 +555,7 @@ changequote([,]))])
 
 # serial 1
 
-AC_DEFUN(AM_MAINTAINER_MODE,
+AC_DEFUN([AM_MAINTAINER_MODE],
 [AC_MSG_CHECKING([whether to enable maintainer-specific portions of Makefiles])
   dnl maintainer-mode is disabled by default
   AC_ARG_ENABLE(maintainer-mode,
@@ -572,7 +572,7 @@ AC_DEFUN(AM_MAINTAINER_MODE,
 
 # Define a conditional.
 
-AC_DEFUN(AM_CONDITIONAL,
+AC_DEFUN([AM_CONDITIONAL],
 [AC_SUBST($1_TRUE)
 AC_SUBST($1_FALSE)
 if $2; then
@@ -3908,8 +3908,6 @@ AC_DEFUN([AM_PROG_NM],        [AC_PROG_NM])
 ifelse([AC_DISABLE_FAST_INSTALL])
 
 
-define([HACK_SUBST], defn([AC_SUBST]))
-
 AC_DEFUN(XML_I18N_TOOLS_NEWER_THAN_0_9,[ true ])
 
 dnl AC_PROG_XML_I18N_TOOLS([MINIMUM-VERSION [,"G2" if always using --utf8] ])
@@ -3923,54 +3921,28 @@ AC_DEFUN(AC_PROG_XML_I18N_TOOLS,
   AC_DEFUN(X18T_KEYS_KIND, 
         ifelse([$2],[G2],[ -u ],[ $(XML_I18N_KEYS_KIND) ]))
 
-dnl This is a hack - we use the expansion of AC_SUBST instead of
-dnl AC_SUBST itself to avoid automake putting 
-dnl XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-dnl in all the Makefile.in's, because that will blow up when substituted.
-XML_I18N_MERGE_OAF_RULE='\%.oaf : \%.oaf.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -o -p $(top_srcdir)/po $< [$]*.oaf'
-HACK_SUBST(XML_I18N_MERGE_OAF_RULE)
+  XML_I18N_MERGE_DESKTOP_RULE='%.desktop:   %.desktop.in   $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
+XML_I18N_MERGE_DIRECTORY_RULE='%.directory: %.directory.in $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
+     XML_I18N_MERGE_KEYS_RULE='%.keys:      %.keys.in      $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -k X18T_KEYS_KIND'
+      XML_I18N_MERGE_OAF_RULE='%.oaf:       %.oaf.in       $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -o -p'
+     XML_I18N_MERGE_PONG_RULE='%.pong:      %.pong.in      $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x X18T_PFORG1'
+   XML_I18N_MERGE_SERVER_RULE='%.server:    %.server.in    $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -o -u'
+    XML_I18N_MERGE_SHEET_RULE='%.sheet:     %.sheet.in     $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x -u'
+XML_I18N_MERGE_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
+      XML_I18N_MERGE_XML_RULE='%.xml:       %.xml.in       $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x X18T_XML_KIND'
 
-XML_I18N_MERGE_SERVER_RULE='\%.server : \%.server.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -o -u $(top_srcdir)/po $< [$]*.server'
-HACK_SUBST(XML_I18N_MERGE_SERVER_RULE)
+AC_SUBST(XML_I18N_MERGE_DESKTOP_RULE)
+AC_SUBST(XML_I18N_MERGE_DIRECTORY_RULE)
+AC_SUBST(XML_I18N_MERGE_KEYS_RULE)
+AC_SUBST(XML_I18N_MERGE_OAF_RULE)
+AC_SUBST(XML_I18N_MERGE_PONG_RULE)
+AC_SUBST(XML_I18N_MERGE_SERVER_RULE)
+AC_SUBST(XML_I18N_MERGE_SHEET_RULE)
+AC_SUBST(XML_I18N_MERGE_SOUNDLIST_RULE)
+AC_SUBST(XML_I18N_MERGE_XML_RULE)
 
-dnl same deal
-XML_I18N_MERGE_KEYS_RULE='\%.keys : \%.keys.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -k X18T_KEYS_KIND $(top_srcdir)/po $< [$]*.keys'
-HACK_SUBST(XML_I18N_MERGE_KEYS_RULE)
-dnl same deal
-XML_I18N_MERGE_DESKTOP_RULE='\%.desktop : \%.desktop.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -d X18T_PFORG1 $(top_srcdir)/po $< [$]*.desktop'
-HACK_SUBST(XML_I18N_MERGE_DESKTOP_RULE)
+# Use the tools built into the package, not the ones that are installed.
 
-dnl same deal
-XML_I18N_MERGE_DIRECTORY_RULE='\%.directory : \%.directory.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -d X18T_PFORG1 $(top_srcdir)/po $< [$]*.directory'
-HACK_SUBST(XML_I18N_MERGE_DIRECTORY_RULE)
-
-dnl same deal
-XML_I18N_MERGE_SOUNDLIST_RULE='\%.soundlist : \%.soundlist.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -d X18T_PFORG1 $(top_srcdir)/po $< [$]*.soundlist'
-HACK_SUBST(XML_I18N_MERGE_SOUNDLIST_RULE)
-
-dnl same deal
-XML_I18N_MERGE_PONG_RULE='\%.pong : \%.pong.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -x X18T_PFORG1 $(top_srcdir)/po $< [$]*.pong'
-HACK_SUBST(XML_I18N_MERGE_PONG_RULE)
-
-dnl same deal
-XML_I18N_MERGE_XML_RULE='\%.xml : \%.xml.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -x X18T_XML_KIND $(top_srcdir)/po $< [$]*.xml'
-HACK_SUBST(XML_I18N_MERGE_XML_RULE)
-
-dnl same deal
-XML_I18N_MERGE_SHEET_RULE='\%.sheet : \%.sheet.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_builddir)/xml-i18n-merge -x -u $(top_srcdir)/po $< [$]*.sheet'
-HACK_SUBST(XML_I18N_MERGE_SHEET_RULE)
-
-
-# Always use our own xml-i18n-tools.
 XML_I18N_EXTRACT='$(top_builddir)/xml-i18n-extract'
 AC_SUBST(XML_I18N_EXTRACT)dnl
 
@@ -3980,29 +3952,66 @@ AC_SUBST(XML_I18N_MERGE)dnl
 XML_I18N_UPDATE='$(top_builddir)/xml-i18n-update'
 AC_SUBST(XML_I18N_UPDATE)dnl
 
-AC_PATH_PROG(XML_I18N_TOOLS_PERL, perl)
-if test -z "$XML_I18N_TOOLS_PERL"; then
+AC_PATH_PROG(INTLTOOL_PERL, perl)
+if test -z "$INTLTOOL_PERL"; then
    AC_MSG_ERROR([perl not found; required for xml-i18n-tools])
 fi
-if test -z "`$XML_I18N_TOOLS_PERL -v | fgrep '5.' 2> /dev/null`"; then
+if test -z "`$INTLTOOL_PERL -v | fgrep '5.' 2> /dev/null`"; then
    AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
 fi
+
+dnl Remove Intltool [] tags from po/POTFILES
+dnl
+ifdef([AC_DIVERSION_ICMDS],[
+  AC_DIVERT_PUSH(AC_DIVERSION_ICMDS)
+      changequote(,)
+      mv -f po/POTFILES po/POTFILES.tmp
+      sed -e 's/\[.*\] *//' < po/POTFILES.tmp > po/POTFILES
+      rm -f po/POTFILES.tmp
+      changequote([,])
+  AC_DIVERT_POP()
+],[
+  ifdef([AC_CONFIG_COMMANDS_PRE],[
+    AC_CONFIG_COMMANDS_PRE([
+        changequote(,)
+        mv -f po/POTFILES po/POTFILES.tmp
+        sed -e 's/\[.*\] *//' < po/POTFILES.tmp > po/POTFILES
+        rm -f po/POTFILES.tmp
+        changequote([,])
+    ])
+  ])
+])
 
 dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
 dnl  AC_OUTPUT
 AC_OUTPUT_COMMANDS([
-sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${srcdir}/xml-i18n-extract.in > xml-i18n-extract;
-chmod ugo+x xml-i18n-extract;
-chmod u+w xml-i18n-extract;
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-extract.in > xml-i18n-extract.out
+if cmp -s xml-i18n-extract xml-i18n-extract.out 2>/dev/null; then
+  rm -f xml-i18n-extract.out
+else
+  mv -f xml-i18n-extract.out xml-i18n-extract
+fi
+chmod ugo+x xml-i18n-extract
+chmod u+w xml-i18n-extract
 
-sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${srcdir}/xml-i18n-merge.in > xml-i18n-merge;
-chmod ugo+x xml-i18n-merge;
-chmod u+w xml-i18n-merge;
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-merge.in > xml-i18n-merge.out
+if cmp -s xml-i18n-merge xml-i18n-merge.out 2>/dev/null; then
+  rm -f xml-i18n-merge.out
+else
+  mv -f xml-i18n-merge.out xml-i18n-merge
+fi
+chmod ugo+x xml-i18n-merge
+chmod u+w xml-i18n-merge
 
-sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${srcdir}/xml-i18n-update.in > xml-i18n-update;
-chmod ugo+x xml-i18n-update;
-chmod u+w xml-i18n-update;
-], XML_I18N_TOOLS_PERL=${XML_I18N_TOOLS_PERL})
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-update.in > xml-i18n-update.out
+if cmp -s xml-i18n-update xml-i18n-update.out 2>/dev/null; then
+  rm -f xml-i18n-update.out
+else
+  mv -f xml-i18n-update.out xml-i18n-update
+fi
+chmod ugo+x xml-i18n-update
+chmod u+w xml-i18n-update
+], INTLTOOL_PERL=${INTLTOOL_PERL})
 
 # Redirect the config.log output again, so that the ltconfig log is not
 # clobbered by the next message.
@@ -4015,7 +4024,7 @@ AC_DEFUN(AM_PROG_XML_I18N_TOOLS, [indir([AC_PROG_XML_I18N_TOOLS])])dnl
 
 dnl AM_PROG_LEX
 dnl Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
-AC_DEFUN(AM_PROG_LEX,
+AC_DEFUN([AM_PROG_LEX],
 [missing_dir=ifelse([$1],,`cd $ac_aux_dir && pwd`,$1)
 AC_CHECK_PROGS(LEX, flex lex, "$missing_dir/missing flex")
 AC_PROG_LEX

@@ -171,7 +171,7 @@ oaf_domain_get (void)
 
 CORBA_Object
 oaf_internal_activation_context_get_extended (gboolean           existing_only,
-                                               CORBA_Environment *ev)
+                                              CORBA_Environment *ev)
 {
 	OAFBaseService base_service = {};
 
@@ -259,6 +259,7 @@ cmdline_check (const OAFBaseServiceRegistry *registry,
 {
 	if (!strcmp (base_service->name, "IDL:OAF/ObjectDirectory:1.0")) {
 		*distance = 0;
+                g_error ("Bomb - this feature is not for use");
 		return g_strdup (oaf_od_ior?oaf_od_ior:getenv("OAF_OD_IOR"));
 	}
 
@@ -336,6 +337,16 @@ static OAFBaseServiceRegistry ac_registry = {
 #define STRMATCH(x, y) ((!x && !y) || (x && y && !strcmp(x, y)))
 
 static CORBA_Object
+local_re_check_fn (const char        *display,
+                   const char        *act_iid,
+                   gpointer           user_data,
+                   CORBA_Environment *ev)
+{
+        return oaf_internal_service_get_extended (
+                user_data, TRUE, ev);
+}
+
+static CORBA_Object
 local_activator (const OAFBaseService *base_service,
                  const char **cmd,
 		 int fd_arg, 
@@ -348,7 +359,9 @@ local_activator (const OAFBaseService *base_service,
 		|| STRMATCH (base_service->hostname, oaf_hostname_get ()))
 	    && (!base_service->domain
 		|| STRMATCH (base_service->domain, oaf_domain_get ()))) {
-		return oaf_server_by_forking (cmd, fd_arg, NULL, NULL, ev);
+		return oaf_server_by_forking (
+                        cmd, FALSE, fd_arg, NULL, NULL, base_service->name,
+                        local_re_check_fn, (gpointer) base_service, ev);
 	}
 
 	return CORBA_OBJECT_NIL;

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf 0.7\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
 "PO-Revision-Date: 2001-06-29 23:28-0500\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil <www.tamillinux.org>\n"
@@ -17,35 +17,35 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr ""
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr ""
 
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "Ò¾¢Â ¦ºÂø ´ý¨Èò ¦¾¡¼í¸ ÓÊÂÅ¢ø¨Ä"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "%u ÌÈ¢ôÒ §ºöìÌì ¸¢¨¼ò¾Ð (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "¦¾Ã¢Â¡¾, ¦ÅÇ¢§ÂÃ§Åñ¼¡¾, À¢¨Æ (¿¢Ä¨Á: %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr ""
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr ""
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr ""
@@ -70,7 +70,7 @@ msgstr "àñÎ ¦ºöÂ§ÅñÊÂ IID"
 msgid "Prevent registering of server with OAF"
 msgstr "OAF­¼õ §º¨ÅÂ¸ò¨¾ À¾¢×¦ºöÅ¨¾ ¾Îì¸×õ"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr ""
 
@@ -159,7 +159,19 @@ msgstr "§¸¡¨Å"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

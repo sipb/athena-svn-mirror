@@ -1,3 +1,19 @@
+2002-03-09  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean tranlation.
+
+2002-02-17  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Update Simplified Chinese translation.
+
+2002-02-11  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Updated Basque file
+
+2002-01-27  Pauli Virtanen  <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish translation.
+
 2002-01-18  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	reviewed by: <delete if not using a buddy>

@@ -3,7 +3,7 @@ AC_INIT(idl/oaf.idl)
 
 OAF_MAJOR_VERSION=0
 OAF_MINOR_VERSION=6
-OAF_MICRO_VERSION=8
+OAF_MICRO_VERSION=10
 OAF_VERSION="$OAF_MAJOR_VERSION.$OAF_MINOR_VERSION.$OAF_MICRO_VERSION"
 AM_INIT_AUTOMAKE(oaf, $OAF_VERSION)
 AC_SUBST(OAF_MAJOR_VERSION)
@@ -220,5 +220,6 @@ intl/Makefile
 po/Makefile.in
 oaf-config
 oafConf.sh
+oafd/OAF_naming-service.oaf
 ],
 [sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])

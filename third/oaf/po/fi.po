@@ -1,14 +1,14 @@
 # OAF Finnish translation.
 # Suomennos: http://gnome-fi.sourceforge.net/
-#  
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000-2001.
+#
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000-2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: oaf 0.6.6\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
-"PO-Revision-Date: 2001-10-06 21:29+0300\n"
+"Project-Id-Version: oaf 0.6.8\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
+"PO-Revision-Date: 2002-01-26 14:08+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,35 +19,35 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr "Yksikään palvelin ei vastannut kyselyysi"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Luku lapsiprosessista epäonnistui: %s\n"
 
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Lapsiprosessi ei antanut virheviestiä: tapahtui tuntematon virhe"
+
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "Uutta prosessia ei voitu luoda"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Lapsi vastaanotti signaalin %u (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Tuntematon ei-lopetusvirhe (tila on %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "Lapsiprosessi ei antanut virheviestiä: tapahtui tuntematon virhe"
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr "OAF ei onnistunut asettamaan komennon %s prosessiryhmää: %s\n"
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Ohjelman %s käynnistys epäonnistui: %d (%s)\n"
@@ -72,7 +72,7 @@ msgstr "Aktivoitava IID"
 msgid "Prevent registering of server with OAF"
 msgstr "Estä palvelimen rekisteröityminen OAF:lla"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "OAF-asetukset"
 
@@ -125,9 +125,8 @@ msgid "Could not activate server: "
 msgstr "Palvelinta ei voitu aktivoida: "
 
 #: oafd/main.c:62
-#, fuzzy
 msgid "Directory to read .oaf files from"
-msgstr "Hakemisto, josta .oafinfo-tiedostot luetaan"
+msgstr "Hakemisto, josta .oaf-tiedostot luetaan"
 
 #: oafd/main.c:62
 msgid "DIRECTORY"
@@ -161,7 +160,19 @@ msgstr "LAUSEKE"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "shlib-olioiden aktivointia etäprosessissa ei vielä käsitellä.  "
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

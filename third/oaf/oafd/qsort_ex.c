@@ -26,7 +26,7 @@
 #include <string.h>
 #include "qsort_ex.h"
 
-#if HAVE_ALLOCA
+#if HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
 

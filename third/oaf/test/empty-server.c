@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <orb/orbit.h>
 #include <popt.h>
+#include <unistd.h>
 #include "empty.h"
 #include "liboaf/liboaf.h"
 
@@ -64,6 +65,12 @@ main (int argc, char *argv[])
 		return 1;
 	}
 
+        /*
+         * NB. It is imperative to register the server that is being
+         * requested last - or we can still race in the activation daemon.
+         */
+	oaf_active_server_register ("OAFIID:Empty2:19991025", empty_client);
+        sleep (1);
 	oaf_active_server_register ("OAFIID:Empty:19991025", empty_client);
 
 	PortableServer_POAManager_activate
