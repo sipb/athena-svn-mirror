@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.48 $
+# $Revision: 1.49 $
 
 umask 2
 
@@ -542,6 +542,7 @@ if ( $installonly == "0" ) then
 	(cd $BUILD/$package ; xmkmf . >>& $outfile)
 	(cd $BUILD/$package ; make >>& $outfile)
 endif # installonly
+	mkdir $BUILD/transarc
 	cp -rp $BUILD/$package/$AFS/dest/lib $BUILD/transarc >>& $outfile
 	cp -rp $BUILD/$package/$AFS/dest/include $BUILD/transarc  >>& $outfile
 	(cd $BUILD/$package; make install DESTDIR=$SRVD >>& $outfile)
