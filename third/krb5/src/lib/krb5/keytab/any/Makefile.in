@@ -11,17 +11,14 @@ CFLAGS = $(CCOPTS) $(DEFS)
 ##WIN16##LIBNAME=..\..\krb5.lib
 
 STLIBOBJS= \
-	kta_ops.o	\
-	kta_resolv.o
+	kta_ops.o
 
 OBJS=	\
-	$(OUTPRE)kta_ops.$(OBJEXT)	\
-	$(OUTPRE)kta_resolv.$(OBJEXT)
+	$(OUTPRE)kta_ops.$(OBJEXT)
 
 
 SRCS=	\
-	$(srcdir)/kta_ops.c	\
-	$(srcdir)/kta_resolv.c
+	$(srcdir)/kta_ops.c
 
 ##DOS##LIBOBJS = $(OBJS)
 
