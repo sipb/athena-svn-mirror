@@ -17,7 +17,8 @@
  *   buildhash <infile> <outfile>
 */
 
-LIBDIR = /usr/athena/lib/ispell
+LIBDIR = $(ATHLIBDIR)/ispell
+LISPDIR = $(ATHSHAREDIR)/emacs/site-lisp
 DEFHASH = ispell.hash
 DEFDICT = dict.191
 SHELL = /bin/sh
@@ -43,10 +44,12 @@ ispell.hash: buildhash $(DEFDICT)
 /* install */
 create_dir($(ATHBINDIR))
 create_dir($(LIBDIR))
+create_dir($(LISPDIR))
 
 install_file(ispell.hash,$(LIBDIR)/$(DEFHASH))
 install_file(expand1.sed,$(LIBDIR))
 install_file(expand2.sed,$(LIBDIR))
+install_file(ispell.el,$(LISPDIR))
 install_man(ispell.1,ispell.1)
 
 install::
@@ -75,4 +78,3 @@ clean::
 depend:
 	makedepend ${CFLAGS} ${SRCS}
 #endif
-	
