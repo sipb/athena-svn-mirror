@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.57 1998-02-17 01:28:31 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.58 1998-02-17 23:56:57 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -36,7 +36,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.57 1998-02-17 01:28:31 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.58 1998-02-17 23:56:57 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -74,13 +74,6 @@ volatile int console_tty = 0, console_failed = FALSE;
 volatile int loginpid, login_running = NONEXISTENT;
 char *logintty;
 
-/* Programs */
-#ifdef SOLARIS
-char *login_prog = "/etc/athena/console-ttymon";
-#else
-char *login_prog = "/bin/login";
-#endif
-
 #if defined(UTMP_FILE)
 char *utmpf = UTMP_FILE;
 char *wtmpf = WTMP_FILE;
@@ -99,10 +92,11 @@ char *xpids = "/var/athena/X%d.pid";
 char *xhosts = "/etc/X%d.hosts";
 char *consolepidf = "/var/athena/console.pid";
 char *dmpidf = "/var/athena/dm.pid";
-char *consolef = "/dev/console";
 char *consolelog = "/var/athena/console.log";
-char *mousedev = "/dev/mouse";
-char *displaydev = "/dev/cons";
+
+void die(), child(), catchalarm(), xready(), shutdown();
+void loginready(), clean_groups();
+char *number(), *getconf(), **parseargs();
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -149,10 +143,8 @@ main(argc, argv)
 int argc;
 char **argv;
 {
-    void die(), child(), catchalarm(), xready(), shutdown();
-    void loginready(), clean_groups();
-    char *consoletty, *conf, *p, *number(), *getconf();
-    char **dmargv, **xargv, **consoleargv = NULL, **loginargv, **parseargs();
+    char *consoletty, *conf, *p;
+    char **dmargv, **xargv, **consoleargv = NULL, **loginargv;
     char xpidf[256], line[16], buf[256];
     fd_set readfds;
     int pgrp, file, tries, console = TRUE, on = 1;
@@ -232,7 +224,7 @@ char **argv;
 	fprintf(stderr,
 		"usage: %s configfile logintty [-noconsole] consoletty\n",
 		argv[0]);
-	console_login(NULL);
+	console_login(conf, NULL);
     }
     if (argc == 5) console = FALSE;
 
@@ -270,13 +262,13 @@ char **argv;
 
     p = getconf(conf, "X");
     if (p == NULL)
-      console_login("\ndm: Can't find X command line\n");
+      console_login(conf, "\ndm: Can't find X command line\n");
     xargv = parseargs(p, NULL, NULL, NULL);
 
     if (console) {
 	p = getconf(conf, "console");
 	if (p == NULL)
-	  console_login("\ndm: Can't find console command line\n");
+	  console_login(conf, "\ndm: Can't find console command line\n");
 #ifdef SOLARIS
           consoleargv = parseargs(p, "-inputfd", "0", NULL);
 #else
@@ -286,7 +278,7 @@ char **argv;
 
     p = getconf(conf, "login");
     if (p == NULL)
-      console_login("\ndm: Can't find login command line\n");
+      console_login(conf, "\ndm: Can't find login command line\n");
     loginargv = parseargs(p, logintty, "-tty", logintty);
 
     /* Signal Setup */
@@ -382,7 +374,8 @@ char **argv;
     }
     alarm(0);
     if (x_running != RUNNING) {
-	console_login("\nUnable to start X, doing console login instead.\n");
+	console_login(conf, "\nUnable to start X, doing console login "
+		      "instead.\n");
     }
 
     /* Tighten up security a little bit. Remove all hosts from X's
@@ -501,7 +494,8 @@ char **argv;
     sigaction(SIGUSR1, &sigact, NULL);
     alarm(0);
     if (login_running != RUNNING)
-      console_login("\nUnable to start xlogin, doing console login instead.\n");
+      console_login(conf, "\nUnable to start xlogin, doing console login "
+		    "instead.\n");
 
     /* main loop.  Wait for SIGCHLD, waking up every minute anyway. */
     (void) sigemptyset(&sig_cur);
@@ -533,7 +527,7 @@ char **argv;
 
 	if (login_running == STARTUP) {
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-	    console_login("\nConsole login requested.\n");
+	    console_login(conf, "\nConsole login requested.\n");
 	}
 	if (console && console_running == NONEXISTENT)
 	  start_console(line, consoleargv);
@@ -548,12 +542,13 @@ char **argv;
 
 /* Start a login on the raw console */
 
-console_login(msg)
-char *msg;
+console_login(conf, msg)
+char *conf, msg;
 {
     int i, graceful = FALSE, cfirst = TRUE, pgrp;
     char *nl = "\r\n";
     struct termios ttybuf;
+    char *p, **cargv;
 
 #ifdef DEBUG
     fprintf(stderr,"starting console login\n%s",msg);
@@ -587,6 +582,13 @@ char *msg;
 	}
     }
 
+    p = getconf(conf, "ttylogin");
+    if (p == NULL) {
+	fprintf(stderr, "dm: Can't find login command line\n");
+	exit(1);
+    }
+    cargv = parseargs(p, NULL, NULL, NULL);
+
     setpgid(0, pgrp=0);		/* We have to reset the tty pgrp */
     tcsetpgrp(0, pgrp);
     tcflush(0, TCIOFLUSH);
@@ -610,9 +612,9 @@ char *msg;
     open("/dev/console", O_RDWR, 0);
     dup2(0, 1);
     dup2(0, 2);
-    execl(login_prog, login_prog, 0);
+    execv(p, cargv);
 #else
-    execl(login_prog, login_prog, 0);
+    execv(p, cargv);
 #endif
     fprintf(stderr,"dm: Unable to start console login: %s\n", strerror(errno));
     _exit(1);
