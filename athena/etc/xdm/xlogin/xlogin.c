@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.33 1993-04-23 16:14:07 miki Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.34 1993-05-14 17:21:35 miki Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -230,7 +230,7 @@ int attach_state, attach_pid;
 int attachhelp_state, attachhelp_pid, quota_pid;
 int exiting = FALSE;
 extern char *defaultpath;
-
+char login[128], passwd[128];
 /*
  * Local Globals
  */
@@ -337,6 +337,11 @@ main(argc, argv)
   XtSetValues(namew, args, 1);
   namew = WcFullNameToWidget(appShell, "*instructions*host");
   XtSetValues(namew, args, 1);
+  XtSetArg(args[0], XtNstring, login);
+  XtSetValues(WcFullNameToWidget(appShell, "*name_input"), args, 1);
+  XtSetArg(args[0], XtNstring, passwd);
+  XtSetValues(WcFullNameToWidget(appShell, "*pword_input"), args, 1);
+
   /* Also seed random number generator with hostname */
   c = hname;
   while (*c)
@@ -763,7 +768,7 @@ String *p;
 Cardinal *n;
 {
     Arg args[2];
-    char *login, *passwd, *script;
+    char *script;
     int mode = 1;
     Pixmap bm1, bm2, bm3, bm4, bm5;
     XawTextBlock tb;
@@ -772,11 +777,6 @@ Cardinal *n;
 
     if (curr_timerid)
       XtRemoveTimeOut(curr_timerid);
-
-    XtSetArg(args[0], XtNstring, &login);
-    XtGetValues(WcFullNameToWidget(appShell, "*name_input"), args, 1);
-    XtSetArg(args[0], XtNstring, &passwd);
-    XtGetValues(WcFullNameToWidget(appShell, "*pword_input"), args, 1);
 
 
     XtSetArg(args[0], XtNleftBitmap, &bm1);
