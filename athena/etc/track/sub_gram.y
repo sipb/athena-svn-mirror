@@ -162,7 +162,7 @@ opt_space:
 	;
 opt_ele : NEWLINE | WHITESPACE
 	;
-opt_newline: NEWLINE | ENDOFFILE
+opt_newline: NEWLINE | NEWLINE ENDOFFILE | ENDOFFILE
 	;
 %%
 
