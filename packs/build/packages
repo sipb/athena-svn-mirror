@@ -1,4 +1,4 @@
-# $Id: packages,v 1.149 2002-02-03 19:39:03 ghudson Exp $
+# $Id: packages,v 1.150 2002-02-04 20:17:26 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -144,7 +144,7 @@ third/GConf			requires gtk,oaf,ORBit
 third/gal			requires gnome-vfs,libglade
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
-third/gettext			except linux
+third/gettext			except linux requires libiconv
 third/glib
 third/gmp			except linux
 third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf,scrollkeeper
@@ -167,6 +167,7 @@ third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
 third/libglade			requires gtk,gnome-libs,libxml
+third/libiconv			except linux
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
 third/libungif			except linux
