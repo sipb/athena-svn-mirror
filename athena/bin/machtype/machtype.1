@@ -1,13 +1,13 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
 .\"     $Author: lwvanels $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.8 1992-03-20 21:19:55 lwvanels Exp $
-.TH MACHTYPE 1 "Setpember 6 1989"
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.9 1992-04-01 19:20:16 lwvanels Exp $
+.TH MACHTYPE 1 "April 1 1991"
 .SH NAME
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
 .B machtype
-[-c] [-d] [-r] [-M] [-v] [-k kernel] [-m memory]
+[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-V] [-k kernel] [-m memory] 
 .SH DESCRIPTION
 .I Machtype
 prints the CPU type to standard output.  It prints "vax" when run on a
@@ -50,6 +50,21 @@ information from the ODM, not kmem.
 .TP
 .B -v
 Verbose output (suitable for humans to read, instead of computers).
+.TP
+.B -V
+(RISC/6000 only) Print out complete hardware configuration as known by the
+ODM.
+.TP
+.B -A
+Print out the release that machtype was compiled under.
+.TP
+.B -P
+Print out the version of the Athena system packs attached, from 
+.I /srvd/.rvdinfo
+.TP
+.B -L
+Print out the version of Athena installed on the local system from
+.I /etc/athena/version.
 .PP
 .I Machtype
 is useful for conditionalizing shell scripts, .login files, etc. in an
@@ -60,7 +75,7 @@ architectures.
 To set your search path for commands in your .login file to include a
 machine-specific directory in your home directory.
 .PP
-set path=(~/`machtype`Bin $path)
+set path=(~/`machtype`bin $path)
 .SH SEE ALSO
 csh(1)
 .SH BUGS
