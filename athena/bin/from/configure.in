@@ -9,4 +9,15 @@ AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 ATHENA_KRB4
 ATHENA_HESIOD
 
+AC_MSG_CHECKING(for mail directory)
+if test -d /var/spool/mail; then
+	AC_DEFINE(MAILDIR, "/var/spool/mail")
+	AC_MSG_RESULT(/var/spool/mail)
+elif test -d /var/mail; then
+	AC_DEFINE(MAILDIR, "/var/mail")
+	AC_MSG_RESULT(/var/mail)
+else
+	AC_MSG_ERROR(can't locate mail spool directory)
+fi
+
 AC_OUTPUT(Makefile)

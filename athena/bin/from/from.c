@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.20 1998-04-28 18:31:20 ghudson Exp $
+ * $Id: from.c,v 1.21 1998-05-13 00:20:46 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: ghudson $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.20 1998-04-28 18:31:20 ghudson Exp $";
+static char *rcsid = "$Id: from.c,v 1.21 1998-05-13 00:20:46 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -469,7 +469,7 @@ getmail_unix(user)
 		return -1;
 	    }
 	} else {
-	    if (chdir("/var/spool/mail") < 0) {
+	    if (chdir(MAILDIR) < 0) {
 		unixmail = 0;
 		return -1;
 	    }

@@ -1462,6 +1462,24 @@ EOF
 fi
 
 
+echo $ac_n "checking for mail directory""... $ac_c" 1>&6
+echo "configure:1467: checking for mail directory" >&5
+if test -d /var/spool/mail; then
+	cat >> confdefs.h <<\EOF
+#define MAILDIR "/var/spool/mail"
+EOF
+
+	echo "$ac_t""/var/spool/mail" 1>&6
+elif test -d /var/mail; then
+	cat >> confdefs.h <<\EOF
+#define MAILDIR "/var/mail"
+EOF
+
+	echo "$ac_t""/var/mail" 1>&6
+else
+	{ echo "configure: error: can't locate mail spool directory" 1>&2; exit 1; }
+fi
+
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure
