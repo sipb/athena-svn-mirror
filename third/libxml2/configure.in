@@ -6,7 +6,7 @@ AC_CANONICAL_HOST
 
 LIBXML_MAJOR_VERSION=2
 LIBXML_MINOR_VERSION=5
-LIBXML_MICRO_VERSION=1
+LIBXML_MICRO_VERSION=4
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
 
@@ -333,15 +333,13 @@ if test "${LOGNAME}" = "veillard" -a "`pwd`" = "/u/veillard/XML" ; then
     if test "${with_docbook}" = "" ; then
         with_docbook="yes"
     fi
-    if test "${with_xptr}" = "" ; then
-        with_xptr="yes"
-    fi
-    if test "${with_schemas}" = "" ; then
-        with_schemas="yes"
-    fi
     CFLAGS="-g -O -pedantic -W -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls "
+    STATIC_BINARIES="-static"
 dnl -Wcast-qual -ansi
+else
+    STATIC_BINARIES=
 fi
+AC_SUBST(STATIC_BINARIES)
 
 dnl
 dnl Check for trio string functions
@@ -579,15 +577,16 @@ M_LIBS="-lm"
 XML_LIBS="-lxml2 $Z_LIBS $THREAD_LIBS $ICONV_LIBS $M_LIBS $LIBS"
 AC_SUBST(WITH_ICONV)
 
-AC_ARG_WITH(schemas, [  --with-schemas              Add experimental Schemas support (off)])
-if test "$with_schemas" = "yes" ; then
-    echo Enabling Schemas support
-    WITH_SCHEMAS=1
-    TEST_SCHEMAS="Schemastests"
-    with_regexps=yes
-else    
+AC_ARG_WITH(schemas, [  --with-schemas              Add experimental Schemas/RelaxNG support (on)])
+if test "$with_schemas" = "no" ; then
+    echo "Disabled Schemas/Relax-NG support"
     WITH_SCHEMAS=0
     TEST_SCHEMAS=
+else    
+    echo "Enabled Schemas/Relax-NG support"
+    WITH_SCHEMAS=1
+    TEST_SCHEMAS="Schemastests Relaxtests"
+    with_regexps=yes
 fi
 AC_SUBST(WITH_SCHEMAS)
 AC_SUBST(TEST_SCHEMAS)
@@ -647,7 +646,7 @@ dnl for the spec file
 RELDATE=`date +'%a %b %e %Y'`
 AC_SUBST(RELDATE)
 
-rm -f rm COPYING.LIB COPYING
+rm -f COPYING.LIB COPYING
 ln -s Copyright COPYING
 
 AC_OUTPUT(libxml.spec Makefile include/Makefile include/libxml/Makefile doc/Makefile example/Makefile python/Makefile python/tests/Makefile include/libxml/xmlversion.h xml2-config libxml-2.0.pc xml2Conf.sh python/setup.py)

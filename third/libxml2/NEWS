@@ -12,9 +12,50 @@ http://cvs.gnome.org/lxr/source/gnome-xml/ChangeLog
 for a really accurate description:
 Items not finished and worked on, get in touch with the list if you want
 to test those
+   - More testing on RelaxNG
    - Finishing up XML
-    Schemas and XInclude
+  Schemas
 
+
+
+2.5.4: Feb 20 2003:
+   - Conformance testing and lot of fixes on Relax NG and XInclude
+    implementation
+   - Implementation of XPointer element() scheme
+   - Bug fixes: XML parser, XInclude entities merge, validity checking on
+    namespaces,
+    2 serialization bugs, node info generation problems, a DTD regexp
+    generation problem.
+  
+   - Portability: windows updates and path canonicalization (Igor)
+   - A few typo fixes (Kjartan Maraas)
+   - Python bindings generator fixes (Stephane Bidoul)
+
+
+2.5.3: Feb 10 2003:
+   - RelaxNG and XML Schemas datatypes improvements, and added a first
+    version of RelaxNG Python bindings
+   - Fixes: XLink (Sean Chittenden), XInclude (Sean Chittenden), API fix for
+    serializing namespace nodes, encoding conversion bug, XHTML1
+  serialization
+   - Portability fixes: Windows (Igor), AMD 64bits RPM spec file
+
+
+2.5.2: Feb 5 2003:
+   - First implementation of RelaxNG, added --relaxng flag to xmllint
+   - Schemas support now compiled in by default.
+   - Bug fixes: DTD validation, namespace checking, XInclude and entities,
+    delegateURI in XML Catalogs, HTML parser, XML reader (Stéphane Bidoul),
+    XPath parser and evaluation,  UTF8ToUTF8 serialization, XML reader memory
+    consumption, HTML parser, HTML serialization in the presence of
+  namespaces
+   - added an HTML API to check elements and attributes.
+   - Documentation improvement, PDF for the tutorial (John Fleck), doc
+    patches (Stefan Kost)
+   - Portability fixes: NetBSD (Julio Merino), Windows (Igor Zlatkovic)
+   - Added python bindings for XPointer, contextual error reporting
+    (Stéphane Bidoul)
+   - URI/file escaping problems (Stefano Zacchiroli)
 
 
 2.5.1: Jan 8 2003:

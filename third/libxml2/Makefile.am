@@ -7,8 +7,9 @@ DIST_SUBDIRS = include . doc example python
 
 INCLUDES = -I$(top_builddir)/include -I@srcdir@/include @THREAD_CFLAGS@ @Z_CFLAGS@ 
 
-noinst_PROGRAMS=testSchemas testSAX testHTML testXPath testURI testDocbook \
-                testThreads testC14N testAutomata testRegexp testReader
+noinst_PROGRAMS=testSchemas testRelax testSAX testHTML testXPath testURI \
+                testDocbook testThreads testC14N testAutomata testRegexp \
+		testReader
 
 bin_PROGRAMS = xmllint xmlcatalog
 
@@ -26,7 +27,7 @@ libxml2_la_SOURCES = SAX.c entities.c encoding.c error.c parserInternals.c  \
 		xpointer.c xinclude.c nanohttp.c nanoftp.c DOCBparser.c \
 		catalog.c globals.c threads.c c14n.c \
 		xmlregexp.c xmlschemas.c xmlschemastypes.c xmlunicode.c \
-		triostr.c trio.c xmlreader.c
+		triostr.c trio.c xmlreader.c relaxng.c
 else
 libxml2_la_SOURCES = SAX.c entities.c encoding.c error.c parserInternals.c  \
 		parser.c tree.c hash.c list.c xmlIO.c xmlmemory.c uri.c  \
@@ -34,11 +35,11 @@ libxml2_la_SOURCES = SAX.c entities.c encoding.c error.c parserInternals.c  \
 		xpointer.c xinclude.c nanohttp.c nanoftp.c DOCBparser.c \
 		catalog.c globals.c threads.c c14n.c \
 		xmlregexp.c xmlschemas.c xmlschemastypes.c xmlunicode.c \
-		xmlreader.c
+		xmlreader.c relaxng.c
 endif
 
 DEPS = $(top_builddir)/libxml2.la
-LDADDS = $(top_builddir)/libxml2.la @THREAD_LIBS@ @Z_LIBS@ $(ICONV_LIBS) -lm
+LDADDS = @STATIC_BINARIES@ $(top_builddir)/libxml2.la @THREAD_LIBS@ @Z_LIBS@ $(ICONV_LIBS) -lm
 
 man_MANS = xml2-config.1 libxml.3
 
@@ -104,6 +105,11 @@ testSchemas_SOURCES=testSchemas.c
 testSchemas_LDFLAGS = 
 testSchemas_DEPENDENCIES = $(DEPS)
 testSchemas_LDADD= $(LDADDS)
+
+testRelax_SOURCES=testRelax.c
+testRelax_LDFLAGS = 
+testRelax_DEPENDENCIES = $(DEPS)
+testRelax_LDADD= $(LDADDS)
 
 testReader_SOURCES=testReader.c
 testReader_LDFLAGS = 
@@ -680,6 +686,53 @@ Schemastests: testSchemas$(EXEEXT)
 	       fi ; \
 	  done; done)
 
+Relaxtests: xmllint$(EXEEXT)
+	@(echo > .memdump)
+	@echo "##"
+	@echo "## Relax-NG regression tests"
+	@echo "##"
+	-@(for i in $(srcdir)/test/relaxng/*.rng ; do \
+	  name=`basename $$i | sed 's+\.rng++'`; \
+	  if [ ! -f $(srcdir)/result/relaxng/"$$name"_valid ] ; then \
+	      echo New schemas $$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint$(EXEEXT) --noout --relaxng $(srcdir)/test/relaxng/tutorA.rng $$i \
+		      > $(srcdir)/result/relaxng/"$$name"_valid \
+		      2> $(srcdir)/result/relaxng/"$$name"_err; \
+	  else \
+	      echo Checking schemas $$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint$(EXEEXT) --noout --relaxng $(srcdir)/test/relaxng/tutorA.rng $$i \
+	      > res.$$name 2> err.$$name;\
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/relaxng/"$$name"_valid \
+		   res.$$name;\
+	      diff $(srcdir)/result/relaxng/"$$name"_err \
+		   err.$$name | grep -v "error detected at";\
+	      grep Unimplemented err.$$name; \
+	      rm res.$$name err.$$name ; \
+	  fi; \
+	  for j in $(srcdir)/test/relaxng/"$$name"_*.xml ; do \
+	      if [ -f $$j ] ; then \
+	      xno=`basename $$j | sed 's+.*_\(.*\).xml+\1+'`; \
+	      if [ ! -f $(srcdir)/result/relaxng/"$$name"_"$$xno" ]; \
+	      then \
+		  echo New test file "$$name"_"$$xno" ; \
+		  $(CHECKER) $(top_builddir)/xmllint$(EXEEXT) --noout --relaxng $$i $$j \
+		    > $(srcdir)/result/relaxng/"$$name"_"$$xno" \
+		    2> $(srcdir)/result/relaxng/"$$name"_"$$xno".err; \
+	      else \
+		  echo Testing "$$name"_"$$xno" ; \
+	          $(CHECKER) $(top_builddir)/xmllint$(EXEEXT) --noout --relaxng $$i $$j \
+		    > res.$$name 2> err.$$name;\
+	          grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	          diff $(srcdir)/result/relaxng/"$$name"_"$$xno" \
+		       res.$$name;\
+	          diff $(srcdir)/result/relaxng/"$$name"_"$$xno".err \
+		       err.$$name | grep -v "error detected at";\
+		  grep Unimplemented err.$$name; \
+	          rm res.$$name err.$$name ; \
+	       fi ; fi ; \
+	  done; done)
+
 dist-hook: libxml.spec
 	-cp libxml.spec $(distdir)
 	(cd $(srcdir) ; tar -cf - --exclude CVS win32 macos vms test result SAXresult ) | (cd $(distdir); tar xf -)
@@ -701,6 +754,7 @@ confexecdir=$(libdir)
 confexec_DATA = xml2Conf.sh
 EXTRA_DIST = xml2-config.in xml2Conf.sh.in libxml.spec.in libxml.spec \
              libxml.m4 Copyright check-xml-test-suite.py \
+	     check-relaxng-test-suite.py check-xinclude-test-suite.py \
              example/Makefile.am example/gjobread.c example/gjobs.xml \
 	     $(man_MANS) libxml-2.0.pc.in \
 	     trionan.c trionan.h triostr.c triostr.h trio.c trio.h \

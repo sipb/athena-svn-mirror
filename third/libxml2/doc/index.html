@@ -27,7 +27,11 @@ A:link, A:visited, A:active { text-decoration: underline }
 <td valign="top" width="200" bgcolor="#8b7765"><table border="0" cellspacing="0" cellpadding="1" width="100%" bgcolor="#000000"><tr><td>
 <table width="100%" border="0" cellspacing="1" cellpadding="3">
 <tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>Main Menu</b></center></td></tr>
-<tr><td bgcolor="#fffacd"><ul>
+<tr><td bgcolor="#fffacd">
+<form action="search.php" enctype="application/x-www-form-urlencoded" method="GET">
+<input name="query" type="TEXT" size="20" value=""><input name="submit" type="submit" value="Search ...">
+</form>
+<ul>
 <li><a href="index.html">Home</a></li>
 <li><a href="intro.html">Introduction</a></li>
 <li><a href="FAQ.html">FAQ</a></li>
@@ -61,20 +65,6 @@ A:link, A:visited, A:active { text-decoration: underline }
 <li>
 <a href="xml.html">flat page</a>, <a href="site.xsl">stylesheet</a>
 </li>
-</ul></td></tr>
-</table>
-<table width="100%" border="0" cellspacing="1" cellpadding="3">
-<tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>API Indexes</b></center></td></tr>
-<tr><td bgcolor="#fffacd">
-<form action="search.php" enctype="application/x-www-form-urlencoded" method="GET">
-<input name="query" type="TEXT" size="20" value=""><input name="submit" type="submit" value="Search ...">
-</form>
-<ul>
-<li><a href="APIchunk0.html">Alphabetic</a></li>
-<li><a href="APIconstructors.html">Constructors</a></li>
-<li><a href="APIfunctions.html">Functions/Types</a></li>
-<li><a href="APIfiles.html">Modules</a></li>
-<li><a href="APIsymbols.html">Symbols</a></li>
 </ul>
 </td></tr>
 </table>
@@ -91,6 +81,16 @@ A:link, A:visited, A:active { text-decoration: underline }
 <li><a href="http://www.zveno.com/open_source/libxml2xslt.html">MacOsX binaries</a></li>
 <li><a href="http://sourceforge.net/projects/libxml2-pas/">Pascal bindings</a></li>
 <li><a href="http://bugzilla.gnome.org/buglist.cgi?product=libxml&amp;product=libxml2">Bug Tracker</a></li>
+</ul></td></tr>
+</table>
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+<tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>API Indexes</b></center></td></tr>
+<tr><td bgcolor="#fffacd"><ul>
+<li><a href="APIchunk0.html">Alphabetic</a></li>
+<li><a href="APIconstructors.html">Constructors</a></li>
+<li><a href="APIfunctions.html">Functions/Types</a></li>
+<li><a href="APIfiles.html">Modules</a></li>
+<li><a href="APIsymbols.html">Symbols</a></li>
 </ul></td></tr>
 </table>
 </td></tr></table></td>
@@ -132,6 +132,8 @@ languages:</p>
   <li>Canonical XML Version 1.0: <a href="http://www.w3.org/TR/xml-c14n">http://www.w3.org/TR/xml-c14n</a>
     and the Exclusive XML Canonicalization CR draft <a href="http://www.w3.org/TR/xml-exc-c14n">http://www.w3.org/TR/xml-exc-c14n</a>
 </li>
+  <li>Relax NG Committee Specification 3 December 2001 <a href="http://www.oasis-open.org/committees/relax-ng/spec-20011203.html">http://www.oasis-open.org/committees/relax-ng/spec-20011203.html</a>
+</li>
 </ul>
 <p>In most cases libxml tries to implement the specifications in a relatively
 strictly compliant way. As of release 2.4.16, libxml2 passes all 1800+ tests
@@ -154,8 +156,8 @@ specifications but doesn't claim to implement them completely:</p>
   <li>DocBook SGML v4: libxml2 includes a hackish parser to transition to
   XML</li>
 </ul>
-<p>XML Schemas is being worked on but it would be far too early to make any
-conformance statement about it at the moment.</p>
+<p>A partial implementation of XML Schemas is being worked on but it would be
+far too early to make any conformance statement about it at the moment.</p>
 <p>Libxml2 is known to be very portable, the library should build and work
 without serious troubles on a variety of systems (Linux, Unix, Windows,
 CygWin, MacOS, MacOS X, RISC Os, OS/2, VMS, QNX, MVS, ...)</p>

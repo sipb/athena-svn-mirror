@@ -185,7 +185,7 @@ skipped_modules = {
     'hash': None,
     'list': None,
     'threads': None,
-    'xpointer': None,
+#    'xpointer': None,
 }
 skipped_types = {
     'int *': "usually a return type",
@@ -271,7 +271,11 @@ py_types = {
     'xmlOutputBufferPtr': ('O', "outputBuffer", "xmlOutputBufferPtr", "xmlOutputBufferPtr"),
     'xmlParserInputBufferPtr': ('O', "inputBuffer", "xmlParserInputBufferPtr", "xmlParserInputBufferPtr"),
     'xmlRegexpPtr': ('O', "xmlReg", "xmlRegexpPtr", "xmlRegexpPtr"),
+    'xmlTextReaderLocatorPtr': ('O', "xmlTextReaderLocator", "xmlTextReaderLocatorPtr", "xmlTextReaderLocatorPtr"),
     'xmlTextReaderPtr': ('O', "xmlTextReader", "xmlTextReaderPtr", "xmlTextReaderPtr"),
+    'xmlRelaxNGPtr': ('O', "relaxNgSchema", "xmlRelaxNGPtr", "xmlRelaxNGPtr"),
+    'xmlRelaxNGParserCtxtPtr': ('O', "relaxNgParserCtxt", "xmlRelaxNGParserCtxtPtr", "xmlRelaxNGParserCtxtPtr"),
+    'xmlRelaxNGValidCtxtPtr': ('O', "relaxNgValidCtxt", "xmlRelaxNGValidCtxtPtr", "xmlRelaxNGValidCtxtPtr"),
 }
 
 py_return_types = {
@@ -289,6 +293,10 @@ unknown_types = {}
 
 def skip_function(name):
     if name[0:12] == "xmlXPathWrap":
+        return 1
+    if name == "xmlFreeParserCtxt":
+        return 1
+    if name == "xmlFreeTextReader":
         return 1
 #    if name[0:11] == "xmlXPathNew":
 #        return 1
@@ -415,6 +423,11 @@ def print_function_wrapper(name, output, export, include):
         include.write("#ifdef LIBXML_REGEXP_ENABLED\n");
         export.write("#ifdef LIBXML_REGEXP_ENABLED\n");
         output.write("#ifdef LIBXML_REGEXP_ENABLED\n");
+    elif file == "xmlschemas" or file == "xmlschemastypes" or \
+         file == "relaxng":
+        include.write("#ifdef LIBXML_SCHEMAS_ENABLED\n");
+        export.write("#ifdef LIBXML_SCHEMAS_ENABLED\n");
+        output.write("#ifdef LIBXML_SCHEMAS_ENABLED\n");
 
     include.write("PyObject * ")
     include.write("libxml_%s(PyObject *self, PyObject *args);\n" % (name));
@@ -478,6 +491,11 @@ def print_function_wrapper(name, output, export, include):
         include.write("#endif /* LIBXML_REGEXP_ENABLED */\n");
         export.write("#endif /* LIBXML_REGEXP_ENABLED */\n");
         output.write("#endif /* LIBXML_REGEXP_ENABLED */\n");
+    elif file == "xmlschemas" or file == "xmlschemastypes" or \
+         file == "relaxng":
+        include.write("#endif /* LIBXML_SCHEMAS_ENABLED */\n");
+        export.write("#endif /* LIBXML_SCHEMAS_ENABLED */\n");
+        output.write("#endif /* LIBXML_SCHEMAS_ENABLED */\n");
     return 1
 
 def buildStubs():
@@ -598,7 +616,11 @@ classes_type = {
     "xmlOutputBufferPtr": ("._o", "outputBuffer(_obj=%s)", "outputBuffer"),
     "xmlParserInputBufferPtr": ("._o", "inputBuffer(_obj=%s)", "inputBuffer"),
     "xmlRegexpPtr": ("._o", "xmlReg(_obj=%s)", "xmlReg"),
+    "xmlTextReaderLocatorPtr": ("._o", "xmlTextReaderLocator(_obj=%s)", "xmlTextReaderLocator"),
     "xmlTextReaderPtr": ("._o", "xmlTextReader(_obj=%s)", "xmlTextReader"),
+    'xmlRelaxNGPtr': ('._o', "relaxNgSchema(_obj=%s)", "relaxNgSchema"),
+    'xmlRelaxNGParserCtxtPtr': ('._o', "relaxNgParserCtxt(_obj=%s)", "relaxNgParserCtxt"),
+    'xmlRelaxNGValidCtxtPtr': ('._o', "relaxNgValidCtxt(_obj=%s)", "relaxNgValidCtxt"),
 }
 
 converter_type = {
@@ -618,6 +640,8 @@ classes_ancestor = {
     "xmlAttribute" : "xmlNode",
     "outputBuffer": "ioWriteWrapper",
     "inputBuffer": "ioReadWrapper",
+    "parserCtxt": "parserCtxtCore",
+    "xmlTextReader": "xmlTextReaderCore",
 }
 classes_destructors = {
     "parserCtxt": "xmlFreeParserCtxt",
@@ -627,15 +651,20 @@ classes_destructors = {
     "inputBuffer": "xmlFreeParserInputBuffer",
     "xmlReg": "xmlRegFreeRegexp",
     "xmlTextReader": "xmlFreeTextReader",
+    "relaxNgSchema": "xmlRelaxNGFree",
+    "relaxNgParserCtxt": "xmlRelaxNGFreeParserCtxt",
+    "relaxNgValidCtxt": "xmlRelaxNGFreeValidCtxt",
 }
 
 functions_noexcept = {
     "xmlHasProp": 1,
     "xmlHasNsProp": 1,
+    "xmlDocSetRootElement": 1,
 }
 
 reference_keepers = {
     "xmlTextReader": [('inputBuffer', 'input')],
+    "relaxNgValidCtxt": [('relaxNgSchema', 'schema')],
 }
 
 function_classes = {}
@@ -683,6 +712,8 @@ def nameFixup(name, classe, type, file):
         func = "regexp" + name[9:]
     elif name[0:6] == "xmlReg" and file == "xmlregexp":
         func = "regexp" + name[6:]
+    elif name[0:20] == "xmlTextReaderLocator" and file == "xmlreader":
+        func = name[20:]
     elif name[0:13] == "xmlTextReader" and file == "xmlreader":
         func = name[13:]
     elif name[0:11] == "xmlACatalog":
@@ -1058,7 +1089,7 @@ def buildWrappers():
 			if reference_keepers.has_key(tclass):
 			    list = reference_keepers[tclass]
 			    for pref in list:
-				if pref[0] == ref[0]:
+				if pref[0] == classname:
 				    classes.write("        __tmp.%s = self\n" %
 						  pref[1])
 			#

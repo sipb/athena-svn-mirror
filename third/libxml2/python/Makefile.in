@@ -103,6 +103,7 @@ RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
 RELDATE = @RELDATE@
 RM = @RM@
+STATIC_BINARIES = @STATIC_BINARIES@
 STRIP = @STRIP@
 TAR = @TAR@
 TEST_REGEXPS = @TEST_REGEXPS@
@@ -423,7 +424,8 @@ libxml.lo libxml.o : libxml.c ../include/libxml/xmlmemory.h \
 	../include/libxml/uri.h ../include/libxml/debugXML.h \
 	../include/libxml/HTMLtree.h ../include/libxml/xinclude.h \
 	../include/libxml/xpointer.h ../include/libxml/xmlunicode.h \
-	../include/libxml/xmlreader.h libxml2-py.h libxml2-export.c
+	../include/libxml/xmlreader.h ../include/libxml/relaxng.h \
+	libxml2-py.h libxml2-export.c
 libxml2-py.lo libxml2-py.o : libxml2-py.c ../include/libxml/xmlversion.h \
 	../include/libxml/tree.h ../include/libxml/xmlregexp.h \
 	../include/libxml/xmlmemory.h ../include/libxml/threads.h \
@@ -441,7 +443,7 @@ libxml2-py.lo libxml2-py.o : libxml2-py.c ../include/libxml/xmlversion.h \
 	../include/libxml/debugXML.h ../include/libxml/HTMLtree.h \
 	../include/libxml/xinclude.h ../include/libxml/xpointer.h \
 	../include/libxml/xmlunicode.h ../include/libxml/xmlreader.h \
-	libxml2-py.h
+	../include/libxml/relaxng.h libxml2-py.h
 types.lo types.o : types.c libxml_wrap.h ../include/libxml/tree.h \
 	../include/libxml/xmlversion.h ../include/libxml/xmlregexp.h \
 	../include/libxml/xmlmemory.h ../include/libxml/threads.h \
@@ -457,7 +459,8 @@ types.lo types.o : types.c libxml_wrap.h ../include/libxml/tree.h \
 	../include/libxml/hash.h ../include/libxml/xpathInternals.h \
 	../include/libxml/debugXML.h ../include/libxml/HTMLtree.h \
 	../include/libxml/xinclude.h ../include/libxml/xpointer.h \
-	../include/libxml/xmlunicode.h ../include/libxml/xmlreader.h
+	../include/libxml/xmlunicode.h ../include/libxml/xmlreader.h \
+	../include/libxml/relaxng.h
 
 info-am:
 info: info-recursive

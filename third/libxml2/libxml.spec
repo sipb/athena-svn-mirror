@@ -1,6 +1,6 @@
 Summary: Library providing XML and HTML support
 Name: libxml2
-Version: 2.5.1
+Version: 2.5.4
 Release: 1
 License: MIT
 Group: Development/Libraries
@@ -61,7 +61,7 @@ at parse time or later once the document has been modified.
 
 %build
 %configure
-make
+make LIBTOOL=/usr/bin/libtool
 
 %install
 rm -fr %{buildroot}
@@ -138,8 +138,8 @@ rm -fr %{buildroot}
 %doc doc/python.html
 
 %changelog
-* Wed Jan  8 2003 Daniel Veillard <veillard@redhat.com>
-- upstream release 2.5.1 see http://xmlsoft.org/news.html
+* Mon Feb 24 2003 Daniel Veillard <veillard@redhat.com>
+- upstream release 2.5.4 see http://xmlsoft.org/news.html
 
 * Thu Jan  2 2003 Daniel Veillard <veillard@redhat.com>
 - integrated drv_libxml2 xml.sax driver from Stéphane Bidoul

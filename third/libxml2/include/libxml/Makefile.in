@@ -101,6 +101,7 @@ RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
 RELDATE = @RELDATE@
 RM = @RM@
+STATIC_BINARIES = @STATIC_BINARIES@
 STRIP = @STRIP@
 TAR = @TAR@
 TEST_REGEXPS = @TEST_REGEXPS@
@@ -174,7 +175,8 @@ xmlinc_HEADERS = \
 		schemasInternals.h \
 		xmlschemastypes.h \
 		xmlunicode.h \
-		xmlreader.h
+		xmlreader.h \
+		relaxng.h
 
 
 EXTRA_DIST = xmlversion.h.in

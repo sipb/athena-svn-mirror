@@ -24,6 +24,7 @@
 #include "libxml.h"
 
 #include <string.h> /* for memset() only ! */
+#include <stdarg.h>
 
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
@@ -107,6 +108,10 @@ struct _xmlTextReader {
     int                entNr;        /* Depth of the entities stack */
     int                entMax;       /* Max depth of the entities stack */
     xmlNodePtr        *entTab;       /* array of entities */
+
+    /* error handling */
+    xmlTextReaderErrorFunc errorFunc;    /* callback function */
+    void                  *errorFuncArg; /* callback function user argument */
 };
 
 static const char *xmlTextReaderIsEmpty = "This element is empty";
@@ -417,6 +422,7 @@ xmlTextReaderPushData(xmlTextReaderPtr reader) {
  */
 static void
 xmlTextReaderValidatePush(xmlTextReaderPtr reader) {
+#ifdef LIBXML_REGEXP_ENABLED
     xmlNodePtr node = reader->node;
 
     if ((node->ns == NULL) || (node->ns->prefix == NULL)) {
@@ -433,6 +439,7 @@ xmlTextReaderValidatePush(xmlTextReaderPtr reader) {
 	if (qname != NULL)
 	    xmlFree(qname);
     }
+#endif /* LIBXML_REGEXP_ENABLED */
 }
 /**
  * xmlTextReaderValidatePop:
@@ -442,6 +449,7 @@ xmlTextReaderValidatePush(xmlTextReaderPtr reader) {
  */
 static void
 xmlTextReaderValidatePop(xmlTextReaderPtr reader) {
+#ifdef LIBXML_REGEXP_ENABLED
     xmlNodePtr node = reader->node;
 
     if ((node->ns == NULL) || (node->ns->prefix == NULL)) {
@@ -458,6 +466,7 @@ xmlTextReaderValidatePop(xmlTextReaderPtr reader) {
 	if (qname != NULL)
 	    xmlFree(qname);
     }
+#endif /* LIBXML_REGEXP_ENABLED */
 }
 /**
  * xmlTextReaderValidateEntity:
@@ -469,6 +478,7 @@ xmlTextReaderValidatePop(xmlTextReaderPtr reader) {
  */
 static void
 xmlTextReaderValidateEntity(xmlTextReaderPtr reader) {
+#ifdef LIBXML_REGEXP_ENABLED
     xmlNodePtr oldnode = reader->node;
     xmlNodePtr node = reader->node;
     xmlParserCtxtPtr ctxt = reader->ctxt;
@@ -538,6 +548,7 @@ xmlTextReaderValidateEntity(xmlTextReaderPtr reader) {
 	} while ((node != NULL) && (node != oldnode));
     } while ((node != NULL) && (node != oldnode));
     reader->node = oldnode;
+#endif /* LIBXML_REGEXP_ENABLED */
 }
 
 
@@ -606,8 +617,13 @@ get_next_node:
     while (((oldstate == XML_TEXTREADER_BACKTRACK) ||
             (reader->node->children == NULL) ||
 	    (reader->node->type == XML_ENTITY_REF_NODE) ||
-	    (reader->node->type == XML_DTD_NODE)) &&
+	    (reader->node->type == XML_DTD_NODE) ||
+	    (reader->node->type == XML_DOCUMENT_NODE) ||
+	    (reader->node->type == XML_HTML_DOCUMENT_NODE)) &&
 	   (reader->node->next == NULL) &&
+	   ((reader->ctxt->node == NULL) ||
+	    (reader->ctxt->node == reader->node) ||
+	    (reader->ctxt->node == reader->node->parent)) &&
 	   (reader->ctxt->nodeNr == olddepth) &&
 	   (reader->ctxt->instate != XML_PARSER_EOF)) {
 	val = xmlTextReaderPushData(reader);
@@ -643,9 +659,11 @@ get_next_node:
 	/*
 	 * Cleanup of the old node
 	 */
-	if (oldnode->type != XML_DTD_NODE) {
-	    xmlUnlinkNode(oldnode);
-	    xmlFreeNode(oldnode);
+	if ((reader->node->prev != NULL) &&
+            (reader->node->prev->type != XML_DTD_NODE)) {
+	    xmlNodePtr tmp = reader->node->prev;
+	    xmlUnlinkNode(tmp);
+	    xmlFreeNode(tmp);
 	}
 
 	goto node_found;
@@ -723,6 +741,7 @@ node_found:
 	reader->depth++;
         goto get_next_node;
     }
+#ifdef LIBXML_REGEXP_ENABLED
     if ((reader->ctxt->validate) && (reader->node != NULL)) {
 	xmlNodePtr node = reader->node;
 	xmlParserCtxtPtr ctxt = reader->ctxt;
@@ -737,6 +756,7 @@ node_found:
 			      node->content, xmlStrlen(node->content));
 	}
     }
+#endif /* LIBXML_REGEXP_ENABLED */
     return(1);
 node_end:
     return(0);
@@ -2230,6 +2250,237 @@ xmlTextReaderCurrentDoc(xmlTextReaderPtr reader) {
 
 /************************************************************************
  *									*
+ *			Error Handling Extensions                       *
+ *									*
+ ************************************************************************/
+
+/* helper to build a xmlMalloc'ed string from a format and va_list */
+static char *
+xmlTextReaderBuildMessage(const char *msg, va_list ap) {
+    int size;
+    int chars;
+    char *larger;
+    char *str;
+
+    str = (char *) xmlMalloc(150);
+    if (str == NULL) {
+	xmlGenericError(xmlGenericErrorContext, "xmlMalloc failed !\n");
+        return NULL;
+    }
+
+    size = 150;
+
+    while (1) {
+        chars = vsnprintf(str, size, msg, ap);
+        if ((chars > -1) && (chars < size))
+            break;
+        if (chars > -1)
+            size += chars + 1;
+        else
+            size += 100;
+        if ((larger = (char *) xmlRealloc(str, size)) == NULL) {
+	    xmlGenericError(xmlGenericErrorContext, "xmlRealloc failed !\n");
+            xmlFree(str);
+            return NULL;
+        }
+        str = larger;
+    }
+
+    return str;
+}
+
+/**
+ * xmlTextReaderLocatorLineNumber:
+ * @locator: the xmlTextReaderLocatorPtr used
+ *
+ * Obtain the line number for the given locator.
+ *
+ * Returns the line number or -1 in case of error.
+ */
+int
+xmlTextReaderLocatorLineNumber(xmlTextReaderLocatorPtr locator) {
+    /* we know that locator is a xmlParserCtxtPtr */
+    xmlParserCtxtPtr ctx = (xmlParserCtxtPtr)locator;
+    int ret = -1;
+
+    if (ctx->node != NULL) {
+	ret = xmlGetLineNo(ctx->node);
+    }
+    else {
+	/* inspired from error.c */
+	xmlParserInputPtr input;
+	input = ctx->input;
+	if ((input->filename == NULL) && (ctx->inputNr > 1))
+	    input = ctx->inputTab[ctx->inputNr - 2];
+	if (input != NULL) {
+	    ret = input->line;
+	} 
+	else {
+	    ret = -1;
+	}
+    }
+
+    return ret;
+}
+
+/**
+ * xmlTextReaderLocatorBaseURI:
+ * @locator: the xmlTextReaderLocatorPtr used
+ *
+ * Obtain the base URI for the given locator.
+ *
+ * Returns the base URI or NULL in case of error.
+ */
+xmlChar *
+xmlTextReaderLocatorBaseURI(xmlTextReaderLocatorPtr locator) {
+    /* we know that locator is a xmlParserCtxtPtr */
+    xmlParserCtxtPtr ctx = (xmlParserCtxtPtr)locator;
+    xmlChar *ret = NULL;
+
+    if (ctx->node != NULL) {
+	ret = xmlNodeGetBase(NULL,ctx->node);
+    }
+    else {
+	/* inspired from error.c */
+	xmlParserInputPtr input;
+	input = ctx->input;
+	if ((input->filename == NULL) && (ctx->inputNr > 1))
+	    input = ctx->inputTab[ctx->inputNr - 2];
+	if (input != NULL) {
+	    ret = xmlStrdup(input->filename);
+	} 
+	else {
+	    ret = NULL;
+	}
+    }
+
+    return ret;
+}
+
+static void
+xmlTextReaderGenericError(void *ctxt, int severity, char *str) {
+    xmlParserCtxtPtr ctx = (xmlParserCtxtPtr)ctxt;
+    xmlTextReaderPtr reader = (xmlTextReaderPtr)ctx->_private;
+
+    if (str != NULL) {
+	reader->errorFunc(reader->errorFuncArg,
+			  str,
+			  severity,
+			  (xmlTextReaderLocatorPtr)ctx);
+	xmlFree(str);
+    }
+}
+
+static void 
+xmlTextReaderError(void *ctxt, const char *msg, ...) {
+    va_list ap;
+
+    va_start(ap,msg);
+    xmlTextReaderGenericError(ctxt,
+                              XML_PARSER_SEVERITY_ERROR,
+	                      xmlTextReaderBuildMessage(msg,ap));
+    va_end(ap);
+
+}
+
+static void 
+xmlTextReaderWarning(void *ctxt, const char *msg, ...) {
+    va_list ap;
+
+    va_start(ap,msg);
+    xmlTextReaderGenericError(ctxt,
+                              XML_PARSER_SEVERITY_WARNING,
+	                      xmlTextReaderBuildMessage(msg,ap));
+    va_end(ap);
+}
+
+static void 
+xmlTextReaderValidityError(void *ctxt, const char *msg, ...) {
+    va_list ap;
+    int len = xmlStrlen((const xmlChar *) msg);
+
+    if ((len > 1) && (msg[len - 2] != ':')) {
+	/* 
+	 * some callbacks only report locator information: 
+	 * skip them (mimicking behaviour in error.c) 
+	 */
+	va_start(ap,msg);
+	xmlTextReaderGenericError(ctxt,
+				  XML_PARSER_SEVERITY_VALIDITY_ERROR,
+				  xmlTextReaderBuildMessage(msg,ap));
+	va_end(ap);
+    }
+}
+
+static void 
+xmlTextReaderValidityWarning(void *ctxt, const char *msg, ...) {
+    va_list ap;
+    int len = xmlStrlen((const xmlChar *) msg);
+
+    if ((len != 0) && (msg[len - 1] != ':')) {
+	/* 
+	 * some callbacks only report locator information: 
+	 * skip them (mimicking behaviour in error.c) 
+	 */
+	va_start(ap,msg);
+	xmlTextReaderGenericError(ctxt,
+				  XML_PARSER_SEVERITY_VALIDITY_WARNING,
+				  xmlTextReaderBuildMessage(msg,ap));
+	va_end(ap);
+    }
+}
+
+/**
+ * xmlTextReaderSetErrorHandler:
+ * @reader:  the xmlTextReaderPtr used
+ * @f:	the callback function to call on error and warnings
+ * @arg:    a user argument to pass to the callback function
+ *
+ * Register a callback function that will be called on error and warnings.
+ *
+ * If @f is NULL, the default error and warning handlers are restored.
+ */
+void
+xmlTextReaderSetErrorHandler(xmlTextReaderPtr reader, 
+			     xmlTextReaderErrorFunc f, 
+			     void *arg) {
+    if (f != NULL) {
+	reader->ctxt->sax->error = xmlTextReaderError;
+	reader->ctxt->vctxt.error = xmlTextReaderValidityError;
+	reader->ctxt->sax->warning = xmlTextReaderWarning;
+	reader->ctxt->vctxt.warning = xmlTextReaderValidityWarning;
+	reader->errorFunc = f;
+	reader->errorFuncArg = arg;
+    }
+    else {
+	/* restore defaults */
+	reader->ctxt->sax->error = xmlParserError;
+	reader->ctxt->vctxt.error = xmlParserValidityError;
+	reader->ctxt->sax->warning = xmlParserWarning;
+	reader->ctxt->vctxt.warning = xmlParserValidityWarning;
+	reader->errorFunc = NULL;
+	reader->errorFuncArg = NULL;
+    }
+}
+
+/**
+ * xmlTextReaderGetErrorHandler:
+ * @reader:  the xmlTextReaderPtr used
+ * @f:	the callback function or NULL is no callback has been registered
+ * @arg:    a user argument
+ *
+ * Retrieve the error callback function and user argument.
+ */
+void
+xmlTextReaderGetErrorHandler(xmlTextReaderPtr reader, 
+			     xmlTextReaderErrorFunc *f, 
+			     void **arg) {
+    *f = reader->errorFunc;
+    *arg = reader->errorFuncArg;
+}
+
+/************************************************************************
+ *									*
  *			Utilities					*
  *									*
  ************************************************************************/
@@ -2241,6 +2492,7 @@ xmlTextReaderCurrentDoc(xmlTextReaderPtr reader) {
  * @tolen:  the size of the output (in), the size written to (out)
  *
  * Base64 decoder, reads from @in and save in @to
+ * TODO: tell jody when this is actually exported
  *
  * Returns 0 if all the input was consumer, 1 if the Base64 end was reached,
  *         2 if there wasn't enough space on the output or -1 in case of error.

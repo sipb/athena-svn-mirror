@@ -76,6 +76,14 @@
 #include <zlib.h>
 #endif
 
+/**
+ * MAX_DEPTH:
+ *
+ * arbitrary depth limit for the XML documents that we allow to 
+ * process. This is not a limitation of the parser but a safety 
+ * boundary feature.
+ */
+#define MAX_DEPTH 1024
 
 #define XML_PARSER_BIG_BUFFER_SIZE 300
 #define XML_PARSER_BUFFER_SIZE 100
@@ -191,6 +199,18 @@ nodePush(xmlParserCtxtPtr ctxt, xmlNodePtr value)
             return (0);
         }
     }
+#ifdef MAX_DEPTH
+    if (ctxt->nodeNr > MAX_DEPTH) {
+	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+	    ctxt->sax->error(ctxt->userData, 
+		 "Excessive depth in document: change MAX_DEPTH = %d\n",
+		             MAX_DEPTH);
+	ctxt->wellFormed = 0;
+	ctxt->instate = XML_PARSER_EOF;
+	if (ctxt->recovery == 0) ctxt->disableSAX = 1;
+	return(0);
+    }
+#endif
     ctxt->nodeTab[ctxt->nodeNr] = value;
     ctxt->node = value;
     return (ctxt->nodeNr++);
@@ -5599,10 +5619,13 @@ xmlParseReference(xmlParserCtxtPtr ctxt) {
 			cur = ent->children;
 			while (cur != NULL) {
 			    new = xmlCopyNode(cur, 1);
-			    if (firstChild == NULL){
-			      firstChild = new;
+			    if (new != NULL) {
+				new->_private = cur->_private;
+				if (firstChild == NULL){
+				    firstChild = new;
+				}
+				xmlAddChild(ctxt->node, new);
 			    }
-			    xmlAddChild(ctxt->node, new);
 			    if (cur == ent->last)
 				break;
 			    cur = cur->next;
@@ -6704,7 +6727,8 @@ failed:
 	    if (ctxt->recovery == 0) ctxt->disableSAX = 1;
 	}
 	SKIP_BLANKS;
-        if ((cons == ctxt->input->consumed) && (q == CUR_PTR)) {
+        if ((cons == ctxt->input->consumed) && (q == CUR_PTR) &&
+            (attname == NULL) && (attvalue == NULL)) {
 	    ctxt->errNo = XML_ERR_INTERNAL_ERROR;
 	    if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
 	        ctxt->sax->error(ctxt->userData, 
@@ -9131,7 +9155,7 @@ xmlCreatePushParserCtxt(xmlSAXHandlerPtr sax, void *user_data,
 	inputStream->filename = NULL;
     else
 	inputStream->filename = (char *)
-	    xmlNormalizeWindowsPath((const xmlChar *) filename);
+	    xmlCanonicPath((const xmlChar *) filename);
     inputStream->buf = buf;
     inputStream->base = inputStream->buf->buffer->content;
     inputStream->cur = inputStream->buf->buffer->content;
@@ -9662,6 +9686,10 @@ xmlParseExternalEntityPrivate(xmlDocPtr doc, xmlParserCtxtPtr oldctxt,
 	ctxt->loadsubset = oldctxt->loadsubset;
 	ctxt->validate = oldctxt->validate;
 	ctxt->external = oldctxt->external;
+	ctxt->record_info = oldctxt->record_info;
+	ctxt->node_seq.maximum = oldctxt->node_seq.maximum;
+	ctxt->node_seq.length = oldctxt->node_seq.length;
+	ctxt->node_seq.buffer = oldctxt->node_seq.buffer;
     } else {
 	/*
 	 * Doing validity checking on chunk without context
@@ -9680,6 +9708,9 @@ xmlParseExternalEntityPrivate(xmlDocPtr doc, xmlParserCtxtPtr oldctxt,
     }
     newDoc = xmlNewDoc(BAD_CAST "1.0");
     if (newDoc == NULL) {
+	ctxt->node_seq.maximum = 0;
+	ctxt->node_seq.length = 0;
+	ctxt->node_seq.buffer = NULL;
 	xmlFreeParserCtxt(ctxt);
 	return(-1);
     }
@@ -9694,6 +9725,9 @@ xmlParseExternalEntityPrivate(xmlDocPtr doc, xmlParserCtxtPtr oldctxt,
     if (newDoc->children == NULL) {
 	if (sax != NULL)
 	    ctxt->sax = oldsax;
+	ctxt->node_seq.maximum = 0;
+	ctxt->node_seq.length = 0;
+	ctxt->node_seq.buffer = NULL;
 	xmlFreeParserCtxt(ctxt);
 	newDoc->intSubset = NULL;
 	newDoc->extSubset = NULL;
@@ -9786,6 +9820,12 @@ xmlParseExternalEntityPrivate(xmlDocPtr doc, xmlParserCtxtPtr oldctxt,
     }
     if (sax != NULL) 
 	ctxt->sax = oldsax;
+    oldctxt->node_seq.maximum = ctxt->node_seq.maximum;
+    oldctxt->node_seq.length = ctxt->node_seq.length;
+    oldctxt->node_seq.buffer = ctxt->node_seq.buffer;
+    ctxt->node_seq.maximum = 0;
+    ctxt->node_seq.length = 0;
+    ctxt->node_seq.buffer = NULL;
     xmlFreeParserCtxt(ctxt);
     newDoc->intSubset = NULL;
     newDoc->extSubset = NULL;
@@ -9926,9 +9966,6 @@ xmlParseBalancedChunkMemoryInternal(xmlParserCtxtPtr oldctxt,
     ctxt->instate = XML_PARSER_CONTENT;
     ctxt->depth = oldctxt->depth + 1;
 
-    /*
-     * Doing validity checking on chunk doesn't make sense
-     */
     ctxt->validate = 0;
     ctxt->loadsubset = oldctxt->loadsubset;
 
@@ -9976,6 +10013,11 @@ xmlParseBalancedChunkMemoryInternal(xmlParserCtxtPtr oldctxt,
 	cur = ctxt->myDoc->children->children;
 	*lst = cur;
 	while (cur != NULL) {
+	    if (oldctxt->validate && oldctxt->wellFormed &&
+		oldctxt->myDoc && oldctxt->myDoc->intSubset) {
+		oldctxt->valid &= xmlValidateElement(&oldctxt->vctxt,
+			oldctxt->myDoc, cur);
+	    }
 	    cur->parent = NULL;
 	    cur = cur->next;
 	}
@@ -10304,8 +10346,8 @@ xmlCreateFileParserCtxt(const char *filename)
 {
     xmlParserCtxtPtr ctxt;
     xmlParserInputPtr inputStream;
+    char *canonicFilename;
     char *directory = NULL;
-    xmlChar *normalized;
 
     ctxt = xmlNewParserCtxt();
     if (ctxt == NULL) {
@@ -10315,25 +10357,26 @@ xmlCreateFileParserCtxt(const char *filename)
 	return(NULL);
     }
 
-    normalized = xmlNormalizeWindowsPath((const xmlChar *) filename);
-    if (normalized == NULL) {
-	xmlFreeParserCtxt(ctxt);
+    canonicFilename = (char *) xmlCanonicPath((const xmlChar *) filename);
+    if (canonicFilename == NULL) {
+	if (xmlDefaultSAXHandler.error != NULL) {
+	    xmlDefaultSAXHandler.error(NULL, "out of memory\n");
+	}
 	return(NULL);
     }
-    inputStream = xmlLoadExternalEntity((char *) normalized, NULL, ctxt);
+    
+    inputStream = xmlLoadExternalEntity(canonicFilename, NULL, ctxt);
+    xmlFree(canonicFilename);
     if (inputStream == NULL) {
 	xmlFreeParserCtxt(ctxt);
-	xmlFree(normalized);
 	return(NULL);
     }
 
     inputPush(ctxt, inputStream);
     if ((ctxt->directory == NULL) && (directory == NULL))
-        directory = xmlParserGetDirectory((char *) normalized);
+        directory = xmlParserGetDirectory(filename);
     if ((ctxt->directory == NULL) && (directory != NULL))
         ctxt->directory = directory;
-
-    xmlFree(normalized);
 
     return(ctxt);
 }
@@ -10907,6 +10950,8 @@ xmlInitParser(void) {
  * parsing related global memory allocated for the parser processing.
  * It doesn't deallocate any document related memory. Calling this
  * function should not prevent reusing the parser.
+ * One should call xmlCleanupParser() only when the process has
+ * finished using the library or XML document built with it.
  */
 
 void

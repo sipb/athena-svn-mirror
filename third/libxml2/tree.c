@@ -125,6 +125,316 @@ xmlGetParameterEntityFromDtd(xmlDtdPtr dtd, const xmlChar *name) {
 
 /************************************************************************
  *									*
+ *		Check Name, NCName and QName strings			*
+ *									*
+ ************************************************************************/
+ 
+#define CUR_SCHAR(s, l) xmlStringCurrentChar(NULL, s, &l)
+
+/**
+ * xmlValidateNCName:
+ * @value: the value to check
+ * @space: allow spaces in front and end of the string
+ *
+ * Check that a value conforms to the lexical space of NCName
+ *
+ * Returns 0 if this validates, a positive error code number otherwise
+ *         and -1 in case of internal or API error.
+ */
+int
+xmlValidateNCName(const xmlChar *value, int space) {
+    const xmlChar *cur = value;
+    int c,l;
+
+    /*
+     * First quick algorithm for ASCII range
+     */
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (((*cur >= 'a') && (*cur <= 'z')) || ((*cur >= 'A') && (*cur <= 'Z')) ||
+	(*cur == '_'))
+	cur++;
+    else
+	goto try_complex;
+    while (((*cur >= 'a') && (*cur <= 'z')) ||
+	   ((*cur >= 'A') && (*cur <= 'Z')) ||
+	   ((*cur >= '0') && (*cur <= '9')) ||
+	   (*cur == '_') || (*cur == '-') || (*cur == '.'))
+	cur++;
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (*cur == 0)
+	return(0);
+
+try_complex:
+    /*
+     * Second check for chars outside the ASCII range
+     */
+    cur = value;
+    c = CUR_SCHAR(cur, l);
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if ((!xmlIsLetter(c)) && (c != '_'))
+	return(1);
+    cur += l;
+    c = CUR_SCHAR(cur, l);
+    while (xmlIsLetter(c) || xmlIsDigit(c) || (c == '.') ||
+	   (c == '-') || (c == '_') || xmlIsCombining(c) ||
+	   xmlIsExtender(c)) {
+	cur += l;
+	c = CUR_SCHAR(cur, l);
+    }
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if (c != 0)
+	return(1);
+
+    return(0);
+}
+
+/**
+ * xmlValidateQName:
+ * @value: the value to check
+ * @space: allow spaces in front and end of the string
+ *
+ * Check that a value conforms to the lexical space of QName
+ *
+ * Returns 0 if this validates, a positive error code number otherwise
+ *         and -1 in case of internal or API error.
+ */
+int
+xmlValidateQName(const xmlChar *value, int space) {
+    const xmlChar *cur = value;
+    int c,l;
+
+    /*
+     * First quick algorithm for ASCII range
+     */
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (((*cur >= 'a') && (*cur <= 'z')) || ((*cur >= 'A') && (*cur <= 'Z')) ||
+	(*cur == '_'))
+	cur++;
+    else
+	goto try_complex;
+    while (((*cur >= 'a') && (*cur <= 'z')) ||
+	   ((*cur >= 'A') && (*cur <= 'Z')) ||
+	   ((*cur >= '0') && (*cur <= '9')) ||
+	   (*cur == '_') || (*cur == '-') || (*cur == '.'))
+	cur++;
+    if (*cur == ':') {
+	cur++;
+	if (((*cur >= 'a') && (*cur <= 'z')) ||
+	    ((*cur >= 'A') && (*cur <= 'Z')) ||
+	    (*cur == '_'))
+	    cur++;
+	else
+	    goto try_complex;
+	while (((*cur >= 'a') && (*cur <= 'z')) ||
+	       ((*cur >= 'A') && (*cur <= 'Z')) ||
+	       ((*cur >= '0') && (*cur <= '9')) ||
+	       (*cur == '_') || (*cur == '-') || (*cur == '.'))
+	    cur++;
+    }
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (*cur == 0)
+	return(0);
+
+try_complex:
+    /*
+     * Second check for chars outside the ASCII range
+     */
+    cur = value;
+    c = CUR_SCHAR(cur, l);
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if ((!xmlIsLetter(c)) && (c != '_'))
+	return(1);
+    cur += l;
+    c = CUR_SCHAR(cur, l);
+    while (xmlIsLetter(c) || xmlIsDigit(c) || (c == '.') ||
+	   (c == '-') || (c == '_') || xmlIsCombining(c) ||
+	   xmlIsExtender(c)) {
+	cur += l;
+	c = CUR_SCHAR(cur, l);
+    }
+    if (c == ':') {
+	cur += l;
+	c = CUR_SCHAR(cur, l);
+	if ((!xmlIsLetter(c)) && (c != '_'))
+	    return(1);
+	cur += l;
+	c = CUR_SCHAR(cur, l);
+	while (xmlIsLetter(c) || xmlIsDigit(c) || (c == '.') ||
+	       (c == '-') || (c == '_') || xmlIsCombining(c) ||
+	       xmlIsExtender(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if (c != 0)
+	return(1);
+    return(0);
+}
+
+/**
+ * xmlValidateName:
+ * @value: the value to check
+ * @space: allow spaces in front and end of the string
+ *
+ * Check that a value conforms to the lexical space of Name
+ *
+ * Returns 0 if this validates, a positive error code number otherwise
+ *         and -1 in case of internal or API error.
+ */
+int
+xmlValidateName(const xmlChar *value, int space) {
+    const xmlChar *cur = value;
+    int c,l;
+
+    /*
+     * First quick algorithm for ASCII range
+     */
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (((*cur >= 'a') && (*cur <= 'z')) || ((*cur >= 'A') && (*cur <= 'Z')) ||
+	(*cur == '_') || (*cur == ':'))
+	cur++;
+    else
+	goto try_complex;
+    while (((*cur >= 'a') && (*cur <= 'z')) ||
+	   ((*cur >= 'A') && (*cur <= 'Z')) ||
+	   ((*cur >= '0') && (*cur <= '9')) ||
+	   (*cur == '_') || (*cur == '-') || (*cur == '.') || (*cur == ':'))
+	cur++;
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (*cur == 0)
+	return(0);
+
+try_complex:
+    /*
+     * Second check for chars outside the ASCII range
+     */
+    cur = value;
+    c = CUR_SCHAR(cur, l);
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if ((!xmlIsLetter(c)) && (c != '_') && (c != ':'))
+	return(1);
+    cur += l;
+    c = CUR_SCHAR(cur, l);
+    while (xmlIsLetter(c) || xmlIsDigit(c) || (c == '.') || (c == ':') ||
+	   (c == '-') || (c == '_') || xmlIsCombining(c) || xmlIsExtender(c)) {
+	cur += l;
+	c = CUR_SCHAR(cur, l);
+    }
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if (c != 0)
+	return(1);
+    return(0);
+}
+
+/**
+ * xmlValidateNMToken:
+ * @value: the value to check
+ * @space: allow spaces in front and end of the string
+ *
+ * Check that a value conforms to the lexical space of NMToken
+ *
+ * Returns 0 if this validates, a positive error code number otherwise
+ *         and -1 in case of internal or API error.
+ */
+int
+xmlValidateNMToken(const xmlChar *value, int space) {
+    const xmlChar *cur = value;
+    int c,l;
+
+    /*
+     * First quick algorithm for ASCII range
+     */
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (((*cur >= 'a') && (*cur <= 'z')) ||
+        ((*cur >= 'A') && (*cur <= 'Z')) ||
+        ((*cur >= '0') && (*cur <= '9')) ||
+        (*cur == '_') || (*cur == '-') || (*cur == '.') || (*cur == ':'))
+	cur++;
+    else
+	goto try_complex;
+    while (((*cur >= 'a') && (*cur <= 'z')) ||
+	   ((*cur >= 'A') && (*cur <= 'Z')) ||
+	   ((*cur >= '0') && (*cur <= '9')) ||
+	   (*cur == '_') || (*cur == '-') || (*cur == '.') || (*cur == ':'))
+	cur++;
+    if (space)
+	while (IS_BLANK(*cur)) cur++;
+    if (*cur == 0)
+	return(0);
+
+try_complex:
+    /*
+     * Second check for chars outside the ASCII range
+     */
+    cur = value;
+    c = CUR_SCHAR(cur, l);
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if (!(xmlIsLetter(c) || xmlIsDigit(c) || (c == '.') || (c == ':') ||
+        (c == '-') || (c == '_') || xmlIsCombining(c) || xmlIsExtender(c)))
+	return(1);
+    cur += l;
+    c = CUR_SCHAR(cur, l);
+    while (xmlIsLetter(c) || xmlIsDigit(c) || (c == '.') || (c == ':') ||
+	   (c == '-') || (c == '_') || xmlIsCombining(c) || xmlIsExtender(c)) {
+	cur += l;
+	c = CUR_SCHAR(cur, l);
+    }
+    if (space) {
+	while (IS_BLANK(c)) {
+	    cur += l;
+	    c = CUR_SCHAR(cur, l);
+	}
+    }
+    if (c != 0)
+	return(1);
+    return(0);
+}
+
+/************************************************************************
+ *									*
  *		Allocation and deallocation of basic structures		*
  *									*
  ************************************************************************/
@@ -1092,6 +1402,8 @@ xmlNewProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
 #endif
 	return(NULL);
     }
+    if ((node != NULL) && (node->type != XML_ELEMENT_NODE))
+	return(NULL);
 
     /*
      * Allocate a new property and fill the fields.
@@ -2508,8 +2820,6 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
  *
  * Add a new node to @parent, at the end of the child (or property) list
  * merging adjacent TEXT nodes (in which case @cur is freed)
- * If the new node was already inserted in a document it is
- * first unlinked from its existing context.
  * If the new node is ATTRIBUTE, it is added into properties instead of children.
  * If there is an attribute with equal name, it is first destroyed. 
  *
@@ -4170,7 +4480,7 @@ xmlNodeGetContent(xmlNodePtr cur)
                 xmlBufferPtr buffer;
                 xmlChar *ret;
 
-                buffer = xmlBufferCreate();
+                buffer = xmlBufferCreateSize(64);
                 if (buffer == NULL)
                     return (NULL);
                 while (tmp != NULL) {
@@ -5203,6 +5513,9 @@ xmlHasNsProp(xmlNodePtr node, const xmlChar *name, const xmlChar *nameSpace) {
  * This does the entity substitution.
  * This function looks in DTD attribute declaration for #FIXED or
  * default declaration values unless DTD use has been turned off.
+ * NOTE: this function acts independently of namespaces associated
+ *       to the attribute. Use xmlGetNsProp() or xmlGetNoNsProp()
+ *       for namespace aware processing.
  *
  * Returns the attribute value or NULL if not found.
  *     It's up to the caller to free the memory with xmlFree().
@@ -5219,6 +5532,61 @@ xmlGetProp(xmlNodePtr node, const xmlChar *name) {
     prop = node->properties;
     while (prop != NULL) {
         if (xmlStrEqual(prop->name, name))  {
+	    xmlChar *ret;
+
+	    ret = xmlNodeListGetString(node->doc, prop->children, 1);
+	    if (ret == NULL) return(xmlStrdup((xmlChar *)""));
+	    return(ret);
+        }
+	prop = prop->next;
+    }
+    if (!xmlCheckDTD) return(NULL);
+
+    /*
+     * Check if there is a default declaration in the internal
+     * or external subsets
+     */
+    doc =  node->doc;
+    if (doc != NULL) {
+        xmlAttributePtr attrDecl;
+        if (doc->intSubset != NULL) {
+	    attrDecl = xmlGetDtdAttrDesc(doc->intSubset, node->name, name);
+	    if ((attrDecl == NULL) && (doc->extSubset != NULL))
+		attrDecl = xmlGetDtdAttrDesc(doc->extSubset, node->name, name);
+	    if (attrDecl != NULL)
+		return(xmlStrdup(attrDecl->defaultValue));
+	}
+    }
+    return(NULL);
+}
+
+/**
+ * xmlGetNoNsProp:
+ * @node:  the node
+ * @name:  the attribute name
+ *
+ * Search and get the value of an attribute associated to a node
+ * This does the entity substitution.
+ * This function looks in DTD attribute declaration for #FIXED or
+ * default declaration values unless DTD use has been turned off.
+ * This function is similar to xmlGetProp except it will accept only
+ * an attribute in no namespace.
+ *
+ * Returns the attribute value or NULL if not found.
+ *     It's up to the caller to free the memory with xmlFree().
+ */
+xmlChar *
+xmlGetNoNsProp(xmlNodePtr node, const xmlChar *name) {
+    xmlAttrPtr prop;
+    xmlDocPtr doc;
+
+    if ((node == NULL) || (name == NULL)) return(NULL);
+    /*
+     * Check on the properties attached to the node
+     */
+    prop = node->properties;
+    while (prop != NULL) {
+        if ((prop->ns == NULL) && (xmlStrEqual(prop->name, name)))  {
 	    xmlChar *ret;
 
 	    ret = xmlNodeListGetString(node->doc, prop->children, 1);
@@ -5273,7 +5641,7 @@ xmlGetNsProp(xmlNodePtr node, const xmlChar *name, const xmlChar *nameSpace) {
 
     prop = node->properties;
     if (nameSpace == NULL)
-	return(xmlGetProp(node, name));
+	return(xmlGetNoNsProp(node, name));
     while (prop != NULL) {
 	/*
 	 * One need to have
@@ -5333,7 +5701,7 @@ xmlSetProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
     xmlAttrPtr prop;
     xmlDocPtr doc;
 
-    if ((node == NULL) || (name == NULL))
+    if ((node == NULL) || (name == NULL) || (node->type != XML_ELEMENT_NODE))
 	return(NULL);
     doc = node->doc;
     prop = node->properties;
@@ -5382,10 +5750,11 @@ xmlSetProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
  */
 int
 xmlUnsetProp(xmlNodePtr node, const xmlChar *name) {
-    xmlAttrPtr prop = node->properties, prev = NULL;;
+    xmlAttrPtr prop, prev = NULL;;
 
     if ((node == NULL) || (name == NULL))
 	return(-1);
+    prop = node->properties;
     while (prop != NULL) {
         if ((xmlStrEqual(prop->name, name)) &&
 	    (prop->ns == NULL)) {
@@ -6087,6 +6456,18 @@ xmlAttrSerializeContent(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr attr)
                         xmlBufferAdd(buf, BAD_CAST "&#10;", 5);
                         cur++;
                         base = cur;
+                    } else if (*cur == '\r') {
+                        if (base != cur)
+                            xmlBufferAdd(buf, base, cur - base);
+                        xmlBufferAdd(buf, BAD_CAST "&#13;", 5);
+                        cur++;
+                        base = cur;
+                    } else if (*cur == '\t') {
+                        if (base != cur)
+                            xmlBufferAdd(buf, base, cur - base);
+                        xmlBufferAdd(buf, BAD_CAST "&#9;", 4);
+                        cur++;
+                        base = cur;
 #if 0
                     } else if (*cur == '\'') {
                         if (base != cur)
@@ -6216,7 +6597,7 @@ xmlAttrSerializeContent(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr attr)
  * @format: is formatting allowed
  *
  * Dump an XML node, recursive behaviour,children are printed too.
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  *
  * Returns the number of bytes written to the buffer or -1 in case of error
@@ -6322,6 +6703,8 @@ static void
 xmlNodeDumpOutputInternal(xmlOutputBufferPtr buf, xmlDocPtr doc,
 	    xmlNodePtr cur, int level, int format, const char *encoding);
 
+void xmlNsListDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur);
+
 /**
  * xmlNsDumpOutput:
  * @buf:  the XML buffer output
@@ -6362,7 +6745,7 @@ xmlNsDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur) {
  * Dump a list of local Namespace definitions.
  * Should be called in the context of attributes dumps.
  */
-static void
+void
 xmlNsListDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur) {
     while (cur != NULL) {
         xmlNsDumpOutput(buf, cur);
@@ -6475,7 +6858,7 @@ xmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
  * @encoding:  an optional encoding string
  *
  * Dump an XML node list, recursive behaviour, children are printed too.
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 static void
@@ -6513,7 +6896,7 @@ xmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
  * @encoding:  an optional encoding string
  *
  * Dump an XML node, recursive behaviour, children are printed too.
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 static void
@@ -6610,6 +6993,10 @@ xmlNodeDumpOutputInternal(xmlOutputBufferPtr buf, xmlDocPtr doc,
         xmlOutputBufferWriteString(buf, "]]>");
 	return;
     }
+    if (cur->type == XML_NAMESPACE_DECL) {
+	xmlNsDumpOutput(buf, (xmlNsPtr) cur);
+	return;
+    }
 
     if (format == 1) {
 	tmp = cur->children;
@@ -6680,7 +7067,7 @@ xmlNodeDumpOutputInternal(xmlOutputBufferPtr buf, xmlDocPtr doc,
  * @encoding:  an optional encoding string
  *
  * Dump an XML node, recursive behaviour, children are printed too.
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 void
@@ -6722,7 +7109,7 @@ xmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
  * @format:  should formatting spaces been added
  *
  * Dump an XML document.
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 static void
@@ -6917,6 +7304,7 @@ xhtmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
     xmlAttrPtr lang = NULL;
     xmlAttrPtr name = NULL;
     xmlAttrPtr id = NULL;
+    xmlNodePtr parent;
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
@@ -6925,6 +7313,7 @@ xhtmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 #endif
 	return;
     }
+    parent = cur->parent;
     while (cur != NULL) {
 	if ((cur->ns == NULL) && (xmlStrEqual(cur->name, BAD_CAST "id")))
 	    id = cur;
@@ -6956,9 +7345,20 @@ xhtmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
      * C.8
      */
     if ((name != NULL) && (id == NULL)) {
-	xmlOutputBufferWriteString(buf, " id=\"");
-	xmlAttrSerializeContent(buf->buffer, doc, name);
-	xmlOutputBufferWriteString(buf, "\"");
+	if ((parent != NULL) && (parent->name != NULL) &&
+	    ((xmlStrEqual(parent->name, BAD_CAST "a")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "p")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "div")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "img")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "map")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "applet")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "form")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "frame")) ||
+	     (xmlStrEqual(parent->name, BAD_CAST "iframe")))) {
+	    xmlOutputBufferWriteString(buf, " id=\"");
+	    xmlAttrSerializeContent(buf->buffer, doc, name);
+	    xmlOutputBufferWriteString(buf, "\"");
+	}
     }
     /*
      * C.7.
@@ -6985,7 +7385,7 @@ xhtmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
  * @encoding:  an optional encoding string
  *
  * Dump an XML node list, recursive behaviour, children are printed too.
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 static void
@@ -7023,7 +7423,7 @@ xhtmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
  * @encoding:  an optional encoding string
  *
  * Dump an XHTML node, recursive behaviour, children are printed too.
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 static void
@@ -7257,7 +7657,7 @@ xhtmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
  * Dump the current DOM tree into memory using the character encoding specified
  * by the caller.  Note it is up to the caller of this function to free the
  * allocated memory with xmlFree().
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 
@@ -7372,7 +7772,7 @@ xmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
  *
  * Dump an XML document in memory and return the #xmlChar * and it's size.
  * It's up to the caller to free the memory with xmlFree().
- * Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
  * or xmlKeepBlanksDefault(0) was called
  */
 void
@@ -7463,6 +7863,8 @@ xmlSetCompressMode(int mode) {
  * Dump an XML document to an open FILE.
  *
  * returns: the number of bytes written or -1 in case of failure.
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * or xmlKeepBlanksDefault(0) was called
  */
 int
 xmlDocFormatDump(FILE *f, xmlDocPtr cur, int format) {
@@ -7550,6 +7952,8 @@ xmlSaveFileTo(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding) {
  * Dump an XML document to an I/O buffer.
  *
  * returns: the number of bytes written or -1 in case of failure.
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * or xmlKeepBlanksDefault(0) was called
  */
 int
 xmlSaveFormatFileTo(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding, int format) {
@@ -7571,6 +7975,8 @@ xmlSaveFormatFileTo(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding,
  * Dump an XML document to a file or an URL.
  *
  * Returns the number of bytes written or -1 in case of error.
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * or xmlKeepBlanksDefault(0) was called
  */
 int
 xmlSaveFormatFileEnc( const char * filename, xmlDocPtr cur,
@@ -7579,6 +7985,9 @@ xmlSaveFormatFileEnc( const char * filename, xmlDocPtr cur,
     xmlCharEncodingHandlerPtr handler = NULL;
     xmlCharEncoding enc;
     int ret;
+
+    if (cur == NULL)
+	return(-1);
 
     if (encoding == NULL)
 	encoding = (const char *) cur->encoding;
@@ -7638,6 +8047,8 @@ xmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
  * Dump an XML document to a file. Will use compression if
  * compiled in and enabled. If @filename is "-" the stdout file is
  * used. If @format is set then the document will be indented on output.
+ * Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+ * or xmlKeepBlanksDefault(0) was called
  *
  * returns: the number of bytes written or -1 in case of failure.
  */

@@ -462,6 +462,95 @@ PARSER_VALIDATE=3
 PARSER_SUBST_ENTITIES=4
 
 #
-# Everything below this point is automatically generated
+# For the error callback severities
 #
+PARSER_SEVERITY_VALIDITY_WARNING=1
+PARSER_SEVERITY_VALIDITY_ERROR=2
+PARSER_SEVERITY_WARNING=3
+PARSER_SEVERITY_ERROR=4
+
+#
+# register the libxml2 error handler
+#
+def registerErrorHandler(f, ctx):
+    """Register a Python written function to for error reporting.
+       The function is called back as f(ctx, error). """
+    import sys
+    if not sys.modules.has_key('libxslt'):
+        # normal behaviour when libxslt is not imported
+        ret = libxml2mod.xmlRegisterErrorHandler(f,ctx)
+    else:
+        # when libxslt is already imported, one must
+        # use libxst's error handler instead
+        import libxslt
+        ret = libxslt.registerErrorHandler(f,ctx)
+    return ret
+
+class parserCtxtCore:
+
+    def __init__(self, _obj=None):
+        if _obj != None: 
+            self._o = _obj;
+            return
+        self._o = None
+
+    def __del__(self):
+        if self._o != None:
+            libxml2mod.xmlFreeParserCtxt(self._o)
+	self._o = None
+
+    def setErrorHandler(self,f,arg):
+        """Register an error handler that will be called back as
+           f(arg,msg,severity,reserved).
+           
+           @reserved is currently always None."""
+        libxml2mod.xmlParserCtxtSetErrorHandler(self._o,f,arg)
+
+    def getErrorHandler(self):
+        """Return (f,arg) as previously registered with setErrorHandler
+           or (None,None)."""
+        return libxml2mod.xmlParserCtxtGetErrorHandler(self._o)
+
+def _xmlTextReaderErrorFunc((f,arg),msg,severity,locator):
+    """Intermediate callback to wrap the locator"""
+    return f(arg,msg,severity,xmlTextReaderLocator(locator))
+
+class xmlTextReaderCore:
+
+    def __init__(self, _obj=None):
+        self.input = None
+        if _obj != None:self._o = _obj;return
+        self._o = None
+
+    def __del__(self):
+        if self._o != None:
+            libxml2mod.xmlFreeTextReader(self._o)
+        self._o = None
+
+    def SetErrorHandler(self,f,arg):
+        """Register an error handler that will be called back as
+           f(arg,msg,severity,locator)."""
+        if f is None:
+            libxml2mod.xmlTextReaderSetErrorHandler(\
+                self._o,None,None)
+        else:
+            libxml2mod.xmlTextReaderSetErrorHandler(\
+                self._o,_xmlTextReaderErrorFunc,(f,arg))
+
+    def GetErrorHandler(self):
+        """Return (f,arg) as previously registered with setErrorHandler
+           or (None,None)."""
+        f,arg = libxml2mod.xmlTextReaderGetErrorHandler(self._o)
+        if f is None:
+            return None,None
+        else:
+            # assert f is _xmlTextReaderErrorFunc
+            return arg
+
+# WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+#
+# Everything before this line comes from libxml.py 
+# Everything after this line is automatically generated
+#
+# WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 

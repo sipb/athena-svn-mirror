@@ -202,6 +202,8 @@ xmlCleanupPredefinedEntities
 /* globals.h 
    --------------------------------------------------------------------- */
 	xmlInitializeGlobalState
+	xmlRegisterNodeDefault
+	xmlDeregisterNodeDefault
 
 	/* Memory */
 #ifdef LIBXML_THREAD_ALLOC_ENABLED
@@ -250,6 +252,8 @@ xmlCleanupPredefinedEntities
 	__xmlPedanticParserDefaultValue
 	__xmlSaveNoEmptyTags
 	__xmlSubstituteEntitiesDefaultValue
+	__xmlRegisterNodeDefaultValue
+	__xmlDeregisterNodeDefaultValue
 #else /* LIBXML_THREAD_ENABLED */
 	#ifdef LIBXML_DOCB_ENABLED
 		docbDefaultSAXHandler DATA
@@ -276,6 +280,8 @@ xmlCleanupPredefinedEntities
 	xmlPedanticParserDefaultValue DATA
 	xmlSaveNoEmptyTags DATA
 	xmlSubstituteEntitiesDefaultValue DATA
+	xmlRegisterNodeDefaultValue DATA
+	xmlDeregisterNodeDefaultValue DATA
 #endif /* LIBXML_THREAD_ENABLED */
 
 
@@ -696,6 +702,31 @@ xmlCleanupPredefinedEntities
 	/* Specific function to keep track of entities references and used by the XSLT debugger. */
 	xmlSetEntityReferenceFunc
 
+
+/* relaxng.h
+   --------------------------------------------------------------------- */
+#ifdef LIBXML_SCHEMAS_ENABLED
+	/* Interfaces for parsing. */
+	xmlRelaxNGNewParserCtxt
+	xmlRelaxNGNewMemParserCtxt
+	xmlRelaxNGFreeParserCtxt
+	xmlRelaxNGSetParserErrors
+	xmlRelaxNGParse
+	xmlRelaxNGFree
+	xmlRelaxNGDump
+	xmlRelaxNGDumpTree
+	
+	/* Interfaces for validating */
+	xmlRelaxNGSetValidErrors
+	xmlRelaxNGNewValidCtxt
+	xmlRelaxNGFreeValidCtxt
+	xmlRelaxNGValidateDoc
+	/* not existent in the source */
+	/*xmlRelaxNGValidateStream*/
+	xmlRelaxNGCleanupTypes
+#endif /* LIBXML_SCHEMAS_ENABLED */
+
+
 /* SAX.h
    --------------------------------------------------------------------- */
 	getPublicId
@@ -927,6 +958,7 @@ xmlCleanupPredefinedEntities
 	xmlNormalizeURIPath
 	xmlURIEscape
 	xmlFreeURI
+	xmlCanonicPath
 
 
 /* valid.h
@@ -1170,6 +1202,10 @@ xmlCleanupPredefinedEntities
 	xmlFreeTextReader
 	/* Iterators */
 	xmlTextReaderRead
+	xmlTextReaderReadInnerXml
+	xmlTextReaderReadOuterXml
+	xmlTextReaderReadString
+	xmlTextReaderReadAttributeValue
 	/* Attributes of the node */
 	xmlTextReaderAttributeCount
 	xmlTextReaderBaseUri
@@ -1186,6 +1222,7 @@ xmlCleanupPredefinedEntities
 	xmlTextReaderQuoteChar
 	xmlTextReaderValue
 	xmlTextReaderXmlLang
+	xmlTextReaderReadState
 	/* Methods of the XmlTextReader */
 	xmlTextReaderClose
 	xmlTextReaderGetAttributeNo
@@ -1199,6 +1236,18 @@ xmlCleanupPredefinedEntities
 	xmlTextReaderMoveToFirstAttribute
 	xmlTextReaderMoveToNextAttribute
 	xmlTextReaderMoveToElement
+	xmlTextReaderNormalization
+	/* Extensions */
+	xmlTextReaderSetParserProp
+	xmlTextReaderGetParserProp
+	xmlTextReaderCurrentNode
+	xmlTextReaderCurrentDoc
+	/* Error handling extensions */
+	xmlTextReaderSetErrorHandler
+	xmlTextReaderGetErrorHandler
+	xmlTextReaderLocatorLineNumber
+	/*xmlTextReaderLocatorLinePosition*/
+	xmlTextReaderLocatorBaseURI
 
 
 

@@ -18,6 +18,8 @@
 #include <libxml/parserInternals.h>
 #include <libxml/hash.h>
 #include <libxml/valid.h>
+#include <libxml/xpath.h>
+#include <libxml/uri.h>
 
 #include <libxml/xmlschemas.h>
 #include <libxml/schemasInternals.h>
@@ -53,6 +55,8 @@ typedef enum {
     XML_SCHEMAS_DURATION,
     XML_SCHEMAS_FLOAT,
     XML_SCHEMAS_DOUBLE,
+    XML_SCHEMAS_BOOLEAN,
+    XML_SCHEMAS_INT,
     XML_SCHEMAS_,
     XML_SCHEMAS_XXX
 } xmlSchemaValType;
@@ -104,12 +108,16 @@ struct _xmlSchemaVal {
         xmlSchemaValDuration    dur;
 	float			f;
 	double			d;
+	int			b;
     } value;
 };
 
 static int xmlSchemaTypesInitialized = 0;
 static xmlHashTablePtr xmlSchemaTypesBank = NULL;
 
+/*
+ * Basic types
+ */
 static xmlSchemaTypePtr xmlSchemaTypeStringDef = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeAnyTypeDef = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeAnySimpleTypeDef = NULL;
@@ -123,11 +131,31 @@ static xmlSchemaTypePtr xmlSchemaTypeGDayDef = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeGMonthDayDef = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeGMonthDef = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeDurationDef = NULL;
-static xmlSchemaTypePtr xmlSchemaTypePositiveIntegerDef = NULL;
-static xmlSchemaTypePtr xmlSchemaTypeNonNegativeIntegerDef = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeNmtoken = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeFloatDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeBooleanDef = NULL;
 static xmlSchemaTypePtr xmlSchemaTypeDoubleDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeNameDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeQNameDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeAnyURIDef = NULL;
+
+/*
+ * Derived types
+ */
+static xmlSchemaTypePtr xmlSchemaTypePositiveIntegerDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeNonPositiveIntegerDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeNegativeIntegerDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeNonNegativeIntegerDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeIntegerDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeLongDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeIntDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeShortDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeByteDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeUnsignedLongDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeUnsignedIntDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeUnsignedShortDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeUnsignedByteDef = NULL;
+static xmlSchemaTypePtr xmlSchemaTypeNCNameDef = NULL;
 
 /*
  * xmlSchemaInitBasicType:
@@ -165,6 +193,9 @@ xmlSchemaInitTypes(void) {
 	return;
     xmlSchemaTypesBank = xmlHashCreate(40);
     
+    /*
+     * primitive datatypes
+     */
     xmlSchemaTypeStringDef = xmlSchemaInitBasicType("string");
     xmlSchemaTypeAnyTypeDef = xmlSchemaInitBasicType("anyType");
     xmlSchemaTypeAnySimpleTypeDef = xmlSchemaInitBasicType("anySimpleType");
@@ -178,12 +209,31 @@ xmlSchemaInitTypes(void) {
     xmlSchemaTypeGMonthDayDef = xmlSchemaInitBasicType("gMonthDay");
     xmlSchemaTypeGDayDef = xmlSchemaInitBasicType("gDay");
     xmlSchemaTypeDurationDef = xmlSchemaInitBasicType("duration");
-    xmlSchemaTypePositiveIntegerDef = xmlSchemaInitBasicType("positiveInteger");
-    xmlSchemaTypeNonNegativeIntegerDef =
-	xmlSchemaInitBasicType("nonNegativeInteger");
     xmlSchemaTypeNmtoken = xmlSchemaInitBasicType("NMTOKEN");
     xmlSchemaTypeFloatDef = xmlSchemaInitBasicType("float");
     xmlSchemaTypeDoubleDef = xmlSchemaInitBasicType("double");
+    xmlSchemaTypeBooleanDef = xmlSchemaInitBasicType("boolean");
+    xmlSchemaTypeNameDef = xmlSchemaInitBasicType("Name");
+    xmlSchemaTypeQNameDef = xmlSchemaInitBasicType("QName");
+    xmlSchemaTypeAnyURIDef = xmlSchemaInitBasicType("anyURI");
+
+    /*
+     * derived datatypes
+     */
+    xmlSchemaTypeIntegerDef = xmlSchemaInitBasicType("integer");;
+    xmlSchemaTypeNonPositiveIntegerDef = xmlSchemaInitBasicType("nonPositiveInteger");;
+    xmlSchemaTypeNegativeIntegerDef = xmlSchemaInitBasicType("negativeInteger");;
+    xmlSchemaTypeLongDef = xmlSchemaInitBasicType("long");;
+    xmlSchemaTypeIntDef = xmlSchemaInitBasicType("int");;
+    xmlSchemaTypeShortDef = xmlSchemaInitBasicType("short");;
+    xmlSchemaTypeByteDef = xmlSchemaInitBasicType("byte");;
+    xmlSchemaTypeNonNegativeIntegerDef = xmlSchemaInitBasicType("nonNegativeInteger");
+    xmlSchemaTypeUnsignedLongDef = xmlSchemaInitBasicType("unsignedLong");;
+    xmlSchemaTypeUnsignedIntDef = xmlSchemaInitBasicType("unsignedInt");;
+    xmlSchemaTypeUnsignedShortDef = xmlSchemaInitBasicType("insignedShort");;
+    xmlSchemaTypeUnsignedByteDef = xmlSchemaInitBasicType("unsignedByte");;
+    xmlSchemaTypePositiveIntegerDef = xmlSchemaInitBasicType("positiveInteger");
+    xmlSchemaTypeNCNameDef = xmlSchemaInitBasicType("NCName");
 
     xmlSchemaTypesInitialized = 1;
 }
@@ -924,6 +974,7 @@ error:
     return 1;
 }
 
+
 /**
  * xmlSchemaValidatePredefinedType:
  * @type: the predefined type
@@ -940,6 +991,7 @@ int
 xmlSchemaValidatePredefinedType(xmlSchemaTypePtr type, const xmlChar *value,
 	                        xmlSchemaValPtr *val) {
     xmlSchemaValPtr v;
+    int ret;
 
     if (xmlSchemaTypesInitialized == 0)
 	return(-1);
@@ -1067,42 +1119,222 @@ xmlSchemaValidatePredefinedType(xmlSchemaTypePtr type, const xmlChar *value,
 	    }
 	}
 	return(0);
-    } else if (type == xmlSchemaTypeFloatDef) {
-	const xmlChar *cur = value, *tmp;
-	int frac = 0, len, neg = 0;
+    } else if (type == xmlSchemaTypeIntDef) {
+	const xmlChar *cur = value;
 	unsigned long base = 0;
+	int total = 0;
+	int sign = 0;
 	if (cur == NULL)
 	    return(1);
+	if (*cur == '-') {
+	    sign = 1;
+	    cur++;
+	} else if (*cur == '+')
+	    cur++;
+	while (*cur == '0') {
+	    total++;
+	    cur++;
+	}
+	while ((*cur >= '0') && (*cur <= '9')) {
+	    base = base * 10 + (*cur - '0');
+	    total++;
+	    cur++;
+	}
+	if (*cur != 0)
+	    return(1);
+	if ((sign == 1) && (total == 0))
+	    return(1);
+	if (val != NULL) {
+	    v = xmlSchemaNewValue(XML_SCHEMAS_INT);
+	    if (v != NULL) {
+		v->value.decimal.base = base;
+		v->value.decimal.sign = sign;
+		v->value.decimal.frac = 0;
+		v->value.decimal.total = total;
+		*val = v;
+	    }
+	}
+	return(0);
+    } else if ((type == xmlSchemaTypeFloatDef) ||
+	       (type == xmlSchemaTypeDoubleDef)) {
+	const xmlChar *cur = value;
+	int neg = 0;
+	if (cur == NULL)
+	    return(1);
+	if ((cur[0] == 'N') && (cur[1] == 'a') && (cur[2] == 'N')) {
+	    cur += 3;
+	    if (*cur != 0)
+		return(1);
+	    if (val != NULL) {
+		if (type == xmlSchemaTypeFloatDef) {
+		    v = xmlSchemaNewValue(XML_SCHEMAS_FLOAT);
+		    if (v != NULL) {
+			v->value.f = (float) xmlXPathNAN;
+		    } else {
+			xmlSchemaFreeValue(v);
+			return(-1);
+		    }
+		} else {
+		    v = xmlSchemaNewValue(XML_SCHEMAS_DOUBLE);
+		    if (v != NULL) {
+			v->value.d = xmlXPathNAN;
+		    } else {
+			xmlSchemaFreeValue(v);
+			return(-1);
+		    }
+		}
+		*val = v;
+	    }
+	    return(0);
+	}
 	if (*cur == '+')
 	    cur++;
 	else if (*cur == '-') {
 	    neg = 1;
 	    cur++;
 	}
-	tmp = cur;
+	if (cur[0] == 0)
+	    return(1);
+	if ((cur[0] == 'I') && (cur[1] == 'N') && (cur[2] == 'F')) {
+	    cur += 3;
+	    if (*cur != 0)
+		return(1);
+	    if (val != NULL) {
+		if (type == xmlSchemaTypeFloatDef) {
+		    v = xmlSchemaNewValue(XML_SCHEMAS_FLOAT);
+		    if (v != NULL) {
+			if (neg)
+			    v->value.f = (float) xmlXPathNINF;
+			else
+			    v->value.f = (float) xmlXPathPINF;
+		    } else {
+			xmlSchemaFreeValue(v);
+			return(-1);
+		    }
+		} else {
+		    v = xmlSchemaNewValue(XML_SCHEMAS_DOUBLE);
+		    if (v != NULL) {
+			if (neg)
+			    v->value.d = xmlXPathNINF;
+			else
+			    v->value.d = xmlXPathPINF;
+		    } else {
+			xmlSchemaFreeValue(v);
+			return(-1);
+		    }
+		}
+		*val = v;
+	    }
+	    return(0);
+	}
 	while ((*cur >= '0') && (*cur <= '9')) {
-	    base = base * 10 + (*cur - '0');
 	    cur++;
 	}
-	len = cur - tmp;
 	if (*cur == '.') {
 	    cur++;
-	    tmp = cur;
-	    while ((*cur >= '0') && (*cur <= '9')) {
-		base = base * 10 + (*cur - '0');
+	    while ((*cur >= '0') && (*cur <= '9')) 
 		cur++;
-	    }
-	    frac = cur - tmp;
 	}
-	TODO
+	if ((*cur == 'e') || (*cur == 'E')) {
+	    cur++;
+	    if (*cur == '-')
+		cur++;
+	    while ((*cur >= '0') && (*cur <= '9')) 
+		cur++;
+	}
+	if (*cur != 0)
+	    return(1);
+	if (val != NULL) {
+	    if (type == xmlSchemaTypeFloatDef) {
+		v = xmlSchemaNewValue(XML_SCHEMAS_FLOAT);
+		if (v != NULL) {
+		    if (sscanf((const char *)value, "%f", &(v->value.f))==1) {
+			*val = v;
+		    } else {
+			xmlGenericError(xmlGenericErrorContext,
+				"failed to scanf float %s\n", value);
+			xmlSchemaFreeValue(v);
+			return(1);
+		    }
+		} else {
+		    return(-1);
+		}
+	    } else {
+		v = xmlSchemaNewValue(XML_SCHEMAS_DOUBLE);
+		if (v != NULL) {
+		    if (sscanf((const char *)value, "%lf", &(v->value.d))==1) {
+			*val = v;
+		    } else {
+			xmlGenericError(xmlGenericErrorContext,
+				"failed to scanf double %s\n", value);
+			xmlSchemaFreeValue(v);
+			return(1);
+		    }
+		} else {
+		    return(-1);
+		}
+	    }
+	}
 	return(0);
-    } else if (type == xmlSchemaTypeDoubleDef) {
-	TODO
+    } else if (type == xmlSchemaTypeNameDef) {
+	ret = xmlValidateName(value, 1);
+	if ((ret == 0) && (val != NULL)) {
+	    TODO;
+	}
+	return(ret);
+    } else if (type == xmlSchemaTypeQNameDef) {
+	ret = xmlValidateQName(value, 1);
+	if ((ret == 0) && (val != NULL)) {
+	    TODO;
+	}
+	return(ret);
+    } else if (type == xmlSchemaTypeNCNameDef) {
+	ret = xmlValidateNCName(value, 1);
+	if ((ret == 0) && (val != NULL)) {
+	    TODO;
+	}
+	return(ret);
+    } else if (type == xmlSchemaTypeAnyURIDef) {
+	xmlURIPtr uri;
+
+	uri = xmlParseURI((const char *) value);
+	if (uri == NULL)
+	    return(1);
+	if (val != NULL) {
+	    TODO;
+	}
+	xmlFreeURI(uri);
+	return(0);
+    } else if (type == xmlSchemaTypeBooleanDef) {
+	const xmlChar *cur = value;
+
+	if ((cur[0] == '0') && (cur[1] == 0))
+	    ret = 0;
+	else if ((cur[0] == '1') && (cur[1] == 0))
+	    ret = 1;
+	else if ((cur[0] == 't') && (cur[1] == 'r') && (cur[2] == 'u') &&
+	         (cur[3] == 'e') && (cur[4] == 0))
+	    ret = 1;
+	else if ((cur[0] == 'f') && (cur[1] == 'a') && (cur[2] == 'l') &&
+	         (cur[3] == 's') && (cur[4] == 'e') && (cur[5] == 0))
+	    ret = 0;
+	else 
+	    return(1);
+	if (val != NULL) {
+	    v = xmlSchemaNewValue(XML_SCHEMAS_BOOLEAN);
+	    if (v != NULL) {
+		v->value.b = ret;
+		*val = v;
+	    } else {
+		return(-1);
+	    }
+	}
 	return(0);
     } else {
 	TODO
 	return(0);
     }
+    return(-1);
 }
 
 /**

@@ -1,3 +1,618 @@
+Mon Feb 24 21:09:19 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing release 2.5.4
+	* doc/*: updated and rebuilt the docs
+	* relaxng.c: removed warnings
+	* result/relaxng/*: updated the results
+
+Mon Feb 24 20:53:17 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: fixes a DTD regexp generation problem.
+
+Mon Feb 24 20:12:57 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixes bug #105998 about false detection of
+	  attribute consumption loop.
+
+Mon Feb 24 19:14:57 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c: Fixes bug #106931 in XInclude entities merging.
+
+Mon Feb 24 18:50:35 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c: fixed bug #105992
+
+Mon Feb 24 18:14:16 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: fixed xmlSetProp and al. when the node passed is not an
+	  element.
+	* relaxng.c: fixed bugs 7.3 (though not complete) and memory leaks
+	  found 373 test schemas: 369 success 4 failures
+	  found 529 test instances: 525 success 4 failures
+	* check-relaxng-test-suite.py: added memory debug reporting
+	  
+Mon Feb 24 12:41:54 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* uri.c parser.c: some warning removal on Igor's patch
+	* tree.c: seems I messed up with #106788 fix
+	* python/libxml.c: fixed some base problems when Python provides
+	  the resolver.
+	* relaxng.c: fixed the interleave algorithm 
+	  found 373 test schemas: 364 success 9 failures
+	  found 529 test instances: 525 success 4 failures
+	  the resulting failures are bug in the algorithm from 7.3 and
+	  lack of support for params
+
+Sun Feb 23 14:49:39 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: another fix for nodeinfo in entities problem
+	* tree.c entities.c: fixed bug #106788 from James Clark
+	  some spaces need to be serialized as character references.
+
+Sat Feb 22 18:28:16 CET 2003 Igor Zlatkovic <igor@zlatkovic.com>
+
+	* parser.c uri.c: fixed the bug I introduced in the path
+	  handling, reported by Sebastian Bergmann
+
+Sat Feb 22 00:19:48 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixing some nodeinfo in entities problem raised
+	  by Glenn W. Bach
+	* relaxng.c: implemented the first section 7.3 check
+	* result/relaxng/*: updated the results
+
+Fri Feb 21 18:12:19 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: fixed some problems in the previous commit
+	  and finished implementing 4.16 rules checking
+	  found 373 test schemas: 353 success 20 failures
+	  found 529 test instances: 519 success 6 failures
+	* result/relaxng/*: updated the results
+
+Fri Feb 21 16:37:39 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: implemented checks from section 7.2
+
+Thu Feb 20 16:00:31 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: implemented the checks from section 7.1, fixed
+	  some of the 4.20 and 4.21 problems.
+	  found 373 test schemas: 338 success 35 failures
+	  found 529 test instances: 519 success 6 failures
+	* result/relaxng/*: updated the results
+
+Thu Feb 20 01:09:24 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: implemented the 4.20 and 4.21 simplification rules.
+	* result/relaxng/*: updated the results
+
+Wed Feb 19 18:30:30 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more bugfixes
+	* result/relaxng/*: updated the results
+
+Wed Feb 19 15:39:56 CET 2003 Igor Zlatkovic <igor@zlatkovic.com>
+
+	* DOCBparser.c: obsoleted xmlNormalizeWindowsPath
+	* HTMLparser.c: obsoleted xmlNormalizeWindowsPath
+	* SAX.c: ensured xmlDoc.URL is always canonic
+	* parser.c: obsoleted xmlNormalizeWindowsPath
+	* uri.c include/libxml/uri.h: introduced xmlCanonicPath
+	* xmlIO.c include/libxml/xmlIO.h: obsoleted xmlNormalizeWindowsPath
+	* win32/libxml2.def.src: added few exports
+	
+	
+Wed Feb 19 14:26:51 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am configure.in: patched to have shared libraries
+	  for Python regression tests and static binaries for gdb debug
+	  in my development environment
+	* relaxng.c: more bugfixes 
+	  found 373 test schemas: 296 success 77 failures
+	  found 529 test instances: 516 success 8 failures
+	* result/relaxng/*: updated the results
+
+Wed Feb 19 01:17:48 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: guess what ! Relax-NG bugfixing, what a surprize...
+
+Tue Feb 18 22:09:50 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemastypes.c: float/double check bugfix
+	* tree.c include/libxml/tree.h: exported a function for NMTOKEN
+	  validation
+	* xmlreader.c: add a TODO for Jody
+	* relaxng.c: bugfix bugfix bugfix
+	  found 373 test schemas: 300 success 73 failures
+	  found 529 test instances: 507 success 10 failures
+	* result/relaxng/*: updated the results
+
+Tue Feb 18 00:33:17 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c check-relaxng-test-suite.py: more RelaxNG bug hunting
+
+Mon Feb 17 18:23:32 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c check-relaxng-test-suite.py: more work on the
+	  RelaxNG implementation conformance testing.
+	  found 373 test schemas: 284 success 89 failures
+	  found 529 test instances: 448 success 47 failures
+	* result/relaxng/*: updated the results
+
+Sun Feb 16 16:48:38 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* ChangeLog tree.c doc/libxml-doc.el doc/libxml2-api.xml: applied
+	  a patch from Kjartan Maraas to fix some typos
+
+Sun Feb 16 16:40:52 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more bug-hunting
+	* testRelax.c include/libxml/relaxng.h: added --tree to dump the
+	  intermediate rng tree
+	* python/generator.py: patch from Stephane Bidoul to fix the generator
+	  on python < 2.2
+
+Fri Feb 14 17:49:26 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* check-relaxng-test-suite.py relaxng.c: more testing on the
+	  Relax-NG front, cleaning up the regression tests failures
+	  current state and I forgot support for "mixed":
+	  found 373 test schemas: 280 success 93 failures
+	  found 529 test instances: 401 success 68 failures
+	* tree.c include/libxml/tree.h xmlschemastypes.c: finished and
+	  moved the Name, NCName and QName validation routine in tree.c
+	* uri.c: fixed handling of URI ending up with #, i.e. having
+	  an empty fragment ID.
+	* result/relaxng/*: updated the results
+
+Thu Feb 13 16:49:24 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* check-xinclude-test-suite.py: improved the script accordingly
+	  to the XInclude regression tests updates
+	* xpointer.c: Implemented XPointer element() Scheme W3C PR of 13
+	  November 2002
+	* result/XPath/xptr/chapterschildseq result/XPath/xptr/vidchildseq
+	  test/XPath/xptr/chapterschildseq test/XPath/xptr/vidchildseq:
+	  augmented the Xpointer testsuite for the element() scheme
+
+Thu Feb 13 12:00:30 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: added TODO for the DTD compatibility spec
+	* xinclude.c: more bug fixes driven by the testsuite 
+
+Tue Feb 11 19:01:02 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* check-xinclude-test-suite.py xinclude.c: Work on the W3C/NIST
+	  regression tests for XInclude, improved the script, improving
+	  XInclude error reporting mechanism
+
+Mon Feb 10 17:19:14 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* NEWS doc/* configure.in: preparing release 2.5.3
+
+Mon Feb 10 17:11:22 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: trying to fix #104934 about some XHTML1 serialization
+	  issues.
+
+Mon Feb 10 16:41:13 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* encoding.c xmlIO.c: fixing bug #104646 about iconv based
+	  encoding conversion when the input buffer stops in the
+	  middle of a multibyte char
+
+Mon Feb 10 15:24:47 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* test/relaxng/OASIS/spectest.xml: OASIS RelaxNG testsuite
+	* check-relaxng-test-suite.py: python script to run regression
+	  against OASIS RelaxNG testsuite
+	* relaxng.c: some cleanup tweaks
+	* HTMLparser.c globals.c: cleanups in comments
+	* doc/libxml2-api.xml: updated the API
+	* result/relaxng/*: errors moved files, so large diffs but
+	  no changes at the semantic level.
+
+Mon Feb 10 01:00:31 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: fixing #105678 problem when dumping a namespace node.
+
+Mon Feb 10 00:30:01 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: fixed doc comment problems
+	* python/generator.py python/libxml_wrap.h python/types.c: adding
+	  RelaxNG wrappers
+	* python/tests/Makefile.am python/tests/relaxng.py: added a specific
+	  test of those early Python RelaxNG bindings
+
+Sun Feb  9 15:18:43 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.spec.in: fixes a libtool problem on AMD 64bits builds
+	* relaxng.c: found the validation problem I had with interleave
+	  when not covering all remaining siblings
+	* Makefile.am test.relaxng/* result/relaxng/*: augmented the
+	  testsuite and check the RNG schemas against the RNG schemas
+	  given in appendix A
+
+Sat Feb  8 18:55:43 CET 2003 Igor Zlatkovic <igor@zlatkovic.com>
+
+	* win32/Makefile.msvc: updates for RelaxNG
+	* win32/Makefile.mingw: updates for RelaxNG
+	* win32/libxml2.def.src: added RelaxNG exports
+	
+Fri Feb  7 14:00:53 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c: applied another bug fix from Sean Chittenden
+
+Fri Feb  7 13:34:08 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in xmllint.c: I f...ed up the default configuration
+	  of schemas and --relaxng option display in xmllint, pointed by
+	  Morus Walter.
+	* xlink.c: Sean Chittenden pointed a couple of errors in the XLink
+	  detection module, fixes bug #105374.
+
+Fri Feb  7 01:43:38 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemastypes.c: added the boolean base type.
+
+Thu Feb  6 10:23:52 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemastypes.c: started implementing some of the missing
+	  default simple types
+	* result/relaxng/*: updated the results
+
+Wed Feb  5 15:28:04 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* NEWS doc/*: updated the docs, ready for 2.5.2 release
+
+Wed Feb  5 14:15:59 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c tree.c xmlIO.c: comments cleanups
+	* Makefile.am: use xmllint for doing the RelaxNG tests
+	* configure.in: preparing 2.5.2 made schemas support default to
+	  on instead of off
+	* relaxng.c: removed the verbosity
+	* xmllint.c: added --relaxng option
+	* python/generator.py python/libxml_wrap.h: prepared the integration
+	  of the new RelaxNG module and schemas
+	* result/relaxng/*: less verbose output
+
+Wed Feb  5 12:00:36 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: do not run content model validation if the
+	  content is not determinist
+
+Wed Feb  5 11:43:58 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c: added the redefinition of namespaced attribute
+	  check that was missing as Fabrice Desré pointed out.
+
+Wed Feb  5 11:09:29 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c include/libxml/HTMLparser.h: applied HTML
+	  improvements from Nick Kew, allowing to do more checking
+	  to HTML elements and attributes.
+
+Tue Feb  4 23:47:06 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c: fixing bug #105137 about entities declaration
+	  needing to be copied to the including document.
+
+Tue Feb  4 20:26:22 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* catalog.c: fixed bug #104817 with delegateURI
+	* xpath.c: fixing bugs #104123 and #104125
+
+Tue Feb  4 17:12:56 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in valid.c xmlreader.c python/libxml_wrap.h 
+	  python/types.c: fixing #104096 to compile without regexps
+
+Tue Feb  4 16:31:55 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: fixing bug #103969 forgot to add an epsilon transition
+	  when building the automata for elem*
+
+Tue Feb  4 16:21:07 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: applied patch from Arne de Bruijn fixing 
+	  bug #103827
+
+Tue Feb  4 16:17:09 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: updating a comment, fixing #103776
+
+Tue Feb  4 16:05:53 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixing bug 105049 for validity checking of content
+	  within recursive entities.
+
+Tue Feb  4 15:40:54 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: try to fix # 105049
+	* relaxng.c xmlschemastypes.c: a couple of changes and extensions
+	* tree.c: updated a function comment
+
+Tue Feb  4 00:20:58 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng: more work on grammars and refs/defs
+	* test/relaxng/* result/relaxng/*: augmented/updated the
+	  regression tests
+
+Mon Feb  3 14:16:59 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng: more work on name classes, except support
+	* test/relaxng/* result/relaxng/*: augmented/updated the
+	  regression tests
+
+Mon Feb  3 11:56:05 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng: more work on name classes, the "validate all" schemas
+	  seems to work now.
+	* test/relaxng/* result/relaxng/*: augmented/updated the
+	  regression tests
+
+Mon Feb  3 09:50:26 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxml.c: removed an unprotedted debug message Aleksi Suhonen
+	* parser.c: put a guard against infinite document depth, basically
+	  trying to avoid another kind of DoS attack.
+	* relaxng.c: some code w.r.t. nameClasses
+
+Sun Feb  2 17:01:43 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* test/relaxng/* result/relaxng/*: check all the namespace support
+	  was actually correct based on tutorial section 10.
+
+Sun Feb  2 15:33:38 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng: include seems to work okay now
+	* test/relaxng/* result/relaxng/*: augmented/updated the
+	  regression tests
+
+Sat Feb  1 19:44:58 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: a bit of work done in the train back.
+	* test/relaxng/*: added one of the include tests
+
+Thu Jan 30 14:06:55 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng: more work done in the train
+	* test/relaxng/* result/relaxng/*: augmented/updated the
+	  regression tests
+
+Wed Jan 29 23:44:58 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: debugging of externalRef
+	* test/relaxng/* result/relaxng/*: augmented/updated the
+	  regression tests
+
+Wed Jan 29 22:06:04 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more work on Relax-NG, implementing externalRef
+	* test/relaxng/* result/relaxng/*: augmented/updated the 
+	  regression tests
+	* Makefile.am: cleanup to Relaxtests target
+
+Wed Jan 29 00:08:38 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more work on Relax-NG, implementing interleave
+	* test/relaxng/* result/relaxng/*: augmented/updated the 
+	  regression tests
+
+Tue Jan 28 21:56:49 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more work on Relax-NG, implementing interleave
+	* test/relaxng/* result/relaxng/*: augmented/updated the 
+	  regression tests
+
+Mon Jan 27 07:35:29 MST 2003 John Fleck <jfleck@inkstain.net>
+
+	* doc/tutorial/customfo.xsl
+	* doc/tutorial/customhtml.xsl
+	adding stylesheet customizations used to generate fo
+	for pdf and html
+
+Mon Jan 27 13:29:43 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more work on Relax-NG
+	* test/relaxng/* result/relaxng/*: augmented/updated the 
+	  regression tests
+	* xmlschemastypes.c: added a number of base type definition but not
+	  the associated checks, those are still TODOs
+
+Sun Jan 26 17:37:06 MST 2003 John Fleck <jfleck@inkstain.net>
+
+	in docs/tutorial:
+	* apa.html
+	* apb.html
+	* apc.html
+	* apd.html
+	* ape.html
+	* apf.html
+	* apg.html
+	* ar01s02.html
+	* ar01s03.html
+	* ar01s04.html
+	* ar01s05.html
+	* ar01s06.html
+	* ar01s07.html
+	* ar01s08.html
+	* index.html
+	* xmltutorial.pdf
+	* xmltutorial.xml
+	add index to tutorial
+
+Sun Jan 26 17:02:29 MST 2003 John Fleck <jfleck@inkstain.net>
+
+	* doc/xmlcatalog.1
+	* doc/xmlcatalog_man.html
+	* doc/xmlcatalog_man.xml
+	belatedly fixing bug #93622 (adds rewriteURI type to
+	"--add" option in xmlcatalog man page
+
+Sun Jan 26 20:47:26 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlcatalog.c xmllint.c: applied patch for NetBSD by
+	  Julio Merino, closing #104475
+
+Sun Jan 26 20:38:43 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more work on Relax-NG
+	* test/relaxng/* result/relaxng/*: augmented/updated the 
+	  regression tests
+
+Sun Jan 26 01:49:58 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more work on Relax-NG
+	* test/relaxng/* result/relaxng/*: augmented/updated the 
+	  regression tests
+
+Sat Jan 25 18:59:54 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* README: updated the policy on private mail answers
+	* relaxng.c: more work on Relax-NG
+	* test/relaxng/* result/relaxng/*: augmented/updated the 
+	  regression tests
+
+Fri Jan 24 15:12:44 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* error.c parser.c tree.c: applied a documentation patch from
+	  Stefan Kost
+
+Fri Jan 24 02:00:50 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* relaxng.c: more work on Relax-NG
+	* doc/*: regenerated the docs
+	* test/relaxng/* result/relaxng/*: updated and augmented the
+	  Relax-NG regression tests and results
+
+Thu Jan 23 19:26:20 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am configure.in relaxng.c include/libxml/relaxng.h:
+	  First commit of the new Relax-NG validation code, not generally
+	  useful yet.
+	* test/relaxng/* result/relaxng/*: current state of the regression
+	  tests
+
+Thu Jan 23 19:22:54 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: minimized the memory allocated for GetContent
+	  and a bit of cleanup.
+
+Thu Jan 23 17:41:37 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py: seems there is no good reasons to
+	  not generate bindings for XPointer
+
+Tue Jan 21 13:19:35 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlreader.c doc/apibuild.py: applied a new patch from
+	  Stéphane Bidoul for cleanups
+	* doc/libxml2-api.xml: rebuilt the API description with
+	  new entry points
+
+Mon Jan 20 23:25:00 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlreader.c python/drv_libxml2.py python/generator.py
+	  python/libxml.c python/libxml.py python/libxml_wrap.h
+	  python/types.c: patch from Stéphane Bidoul for better per
+	  context error message APIs
+	* python/tests/ctxterror.py python/tests/readererr.py:
+	  update of the tests
+
+Sun Jan 19 17:09:28 MST 2003 John Fleck <jfleck@inkstain.net>
+
+	* doc/guidelines.html
+	grammar and spelling cleanup
+
+Fri Jan 17 00:31:30 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlreader.c include/libxml/xmlreader.h python/generator.py
+	  python/libxml.c python/libxml.py win32/libxml2.def.src: applied
+	  a patch from Stéphane Bidoul to allow per XMLtextReader error
+	  and warning handling
+	* python/tests/Makefile.am python/tests/readererr.py: adding the
+	  specific regression test
+
+Tue Jan 14 17:00:08 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: Alexey Efimov pointed out that concat('a', 'b', )
+	  should raise a syntax error
+
+Tue Jan 14 15:39:14 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxml.c: cleanup patch from Stéphane Bidoul
+
+Tue Jan 14 14:41:18 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* encoding.c: fixing bug #103100 with a dummy UTF8ToUTF8 copy
+
+Tue Jan 14 12:40:29 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py python/libxml.c python/libxml.py
+	  python/libxml_wrap.h python/types.c: applied and fixed a patch
+	  from Stéphane Bidoul to provide per parser error handlers at the
+	  Python level.
+	* python/tests/Makefile.am python/tests/ctxterror.py: added a
+	  regression test for it.
+
+Tue Jan 14 01:15:04 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xmlreader.c: fixed the streaming property of the reader,
+	  it was generating tree faster than consuming it. Pointed out
+	  by Nate Myers
+	* tree.c: fixed a bug in xmlSaveFormatFileEnc if passed a NULL doc
+
+Sun Jan 12 22:18:02 CET 2003 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/libxml2.def.src: added more xmlreader and other exports
+	
+Fri Jan 10 18:04:32 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: fix to the XPath implementation for parent and
+	  ancestors axis when operating on a Result Value Tree.
+	  Fixes bug #100271
+
+Fri Jan 10 17:07:01 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* nanoftp.c nanohttp.c xmlIO.c: patch from Stefano Zacchiroli
+	  to fix some URI/file escaping problems
+
+Fri Jan 10 16:20:34 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py: fixed a bug raised by Raymond Wiker, 
+	  docSetRootElement() should not raise an exception if the
+	  return is None
+
+Fri Jan 10 14:13:03 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxml.py python/libxml.c python/libxml2-python-api.xml:
+	  fixed bug #102181 by applying the suggested change and fixing
+	  the generation/registration problem.
+
+Fri Jan 10 13:47:55 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: fixed bug #102960 by reusing the XML name parsing
+	  routines.
+
+Fri Jan 10 00:16:49 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: one more IsEmptyElement crazyness, that time in
+	  external parsed entities if substitution is asked.
+	* python/tests/reader3.py: added a specific test.
+
+Thu Jan  9 22:35:31 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/drv_libxml2.py: update from Stéphane Bidoul: python 2.1
+	  support and improved error handler registration
+
+Thu Jan  9 14:16:38 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c tree.c: fixes #102920 about namespace handling in
+	  HTML output and section 16.2 "HTML Output Method" of XSLT-1.0
+	* README: fixed a link
+
 Wed Jan  8 18:32:25 CET 2003 Daniel Veillard <daniel@veillard.com>
 
 	* configure.in doc/* NEWS: preparing 2.5.1 release
@@ -582,14 +1197,14 @@ Sun Nov 17 10:25:43 CET 2002 Daniel Veillard <daniel@veillard.com>
 
 Sat Nov 16 16:30:25 CET 2002 Daniel Veillard <daniel@veillard.com>
 
-	* parser.c xpath.c: fixing #96925 wich was also dependant on the
+	* parser.c xpath.c: fixing #96925 wich was also dependent on the
 	  processing of parsed entities, and XPath computation on sustitued
 	  entities.
 	* testXPath.c: make sure entities are substitued.
 
 Fri Nov 15 16:22:54 CET 2002 Daniel Veillard <daniel@veillard.com>
 
-	* parser.c: fixed #96594, which was totally dependant on the 
+	* parser.c: fixed #96594, which was totally dependent on the 
 	  processing of internal parsed entities, which had to be changed.
 
 Fri Nov 15 12:16:07 CET 2002 Daniel Veillard <daniel@veillard.com>
@@ -2455,8 +3070,8 @@ Sun Feb 10 12:02:59 CET 2002 Daniel Veillard <daniel@veillard.com>
 Sat Feb  9 23:15:04 CET 2002 Daniel Veillard <daniel@veillard.com>
 
 	* python/Makefile.am: seems some version of automake didn't
-	  generate the dependancies right as Jacob found out. Add
-	  an extra dependancy rule.
+	  generate the dependencies right as Jacob found out. Add
+	  an extra dependency rule.
 
 Sat Feb  9 18:59:23 CET 2002 Daniel Veillard <daniel@veillard.com>
 
@@ -3222,7 +3837,7 @@ Wed Oct 31 18:50:08 CET 2001 Daniel Veillard <daniel@veillard.com>
 	* xmlIO.c include/libxml/xmlIO.h: added xmlNoNetExternalEntityLoader()
 	  from xsltproc
 	* include/libxml/tree.h include/libxml/parser.h: trying to break a
-	  dependancy loop.
+	  dependency loop.
 
 Tue Oct 30 18:38:53 CET 2001 Daniel Veillard <daniel@veillard.com>
 
@@ -3985,7 +4600,7 @@ Tue Jul 24 15:39:11 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
 Tue Jul 24 15:06:58 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
 
 	* configure.in: get rid of the readline and libhistory
-	  dependancies by default, release 2.4.1 with IA64 fix
+	  dependencies by default, release 2.4.1 with IA64 fix
 	* nanohttp.c tree.c xmlIO.c include/libxml/nanohttp.h
 	  include/libxml/tree.h include/libxml/xmlIO.h: incorporated
 	  John Kroll fixes to allow saving to HTTP via PUT (or
@@ -6127,7 +6742,7 @@ Wed Oct 11 02:53:10 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 Mon Oct  9 14:28:56 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* moved xml-error.h to xmlerror.h: seems this allowed to bypass
-	  the automake bug where wrong dependancies were generated.
+	  the automake bug where wrong dependencies were generated.
 	* xpath.[ch]: worked on XPointer
 
 Fri Oct  6 12:58:04 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
@@ -6538,7 +7153,7 @@ Fri Jul 14 16:12:20 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 Mon Jul 10 16:17:18 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* nanoftp.c: fixed the way the control connection is handled
-	* libxml.spec.in: fixed the dependancies and cleanup
+	* libxml.spec.in: fixed the dependencies and cleanup
 
 Mon Jul  3 14:37:07 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
@@ -6547,7 +7162,7 @@ Mon Jul  3 14:37:07 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 Sun Jul  2 20:51:43 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
-	* libxml.spec.in: fixed bug #7419, dependancies fouled for libxml-devel
+	* libxml.spec.in: fixed bug #7419, dependencies fouled for libxml-devel
 
 Sun Jul  2 09:52:45 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
@@ -8328,14 +8943,14 @@ Sun Nov 17 10:25:43 CET 2002 Daniel Veillard <daniel@veillard.com>
 
 Sat Nov 16 16:30:25 CET 2002 Daniel Veillard <daniel@veillard.com>
 
-	* parser.c xpath.c: fixing #96925 wich was also dependant on the
+	* parser.c xpath.c: fixing #96925 wich was also dependent on the
 	  processing of parsed entities, and XPath computation on sustitued
 	  entities.
 	* testXPath.c: make sure entities are substitued.
 
 Fri Nov 15 16:22:54 CET 2002 Daniel Veillard <daniel@veillard.com>
 
-	* parser.c: fixed #96594, which was totally dependant on the 
+	* parser.c: fixed #96594, which was totally dependent on the 
 	  processing of internal parsed entities, which had to be changed.
 
 Fri Nov 15 12:16:07 CET 2002 Daniel Veillard <daniel@veillard.com>
@@ -10201,8 +10816,8 @@ Sun Feb 10 12:02:59 CET 2002 Daniel Veillard <daniel@veillard.com>
 Sat Feb  9 23:15:04 CET 2002 Daniel Veillard <daniel@veillard.com>
 
 	* python/Makefile.am: seems some version of automake didn't
-	  generate the dependancies right as Jacob found out. Add
-	  an extra dependancy rule.
+	  generate the dependencies right as Jacob found out. Add
+	  an extra dependency rule.
 
 Sat Feb  9 18:59:23 CET 2002 Daniel Veillard <daniel@veillard.com>
 
@@ -10968,7 +11583,7 @@ Wed Oct 31 18:50:08 CET 2001 Daniel Veillard <daniel@veillard.com>
 	* xmlIO.c include/libxml/xmlIO.h: added xmlNoNetExternalEntityLoader()
 	  from xsltproc
 	* include/libxml/tree.h include/libxml/parser.h: trying to break a
-	  dependancy loop.
+	  dependency loop.
 
 Tue Oct 30 18:38:53 CET 2001 Daniel Veillard <daniel@veillard.com>
 
@@ -11731,7 +12346,7 @@ Tue Jul 24 15:39:11 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
 Tue Jul 24 15:06:58 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
 
 	* configure.in: get rid of the readline and libhistory
-	  dependancies by default, release 2.4.1 with IA64 fix
+	  dependencies by default, release 2.4.1 with IA64 fix
 	* nanohttp.c tree.c xmlIO.c include/libxml/nanohttp.h
 	  include/libxml/tree.h include/libxml/xmlIO.h: incorporated
 	  John Kroll fixes to allow saving to HTTP via PUT (or
@@ -13873,7 +14488,7 @@ Wed Oct 11 02:53:10 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 Mon Oct  9 14:28:56 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* moved xml-error.h to xmlerror.h: seems this allowed to bypass
-	  the automake bug where wrong dependancies were generated.
+	  the automake bug where wrong dependencies were generated.
 	* xpath.[ch]: worked on XPointer
 
 Fri Oct  6 12:58:04 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
@@ -14284,7 +14899,7 @@ Fri Jul 14 16:12:20 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 Mon Jul 10 16:17:18 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* nanoftp.c: fixed the way the control connection is handled
-	* libxml.spec.in: fixed the dependancies and cleanup
+	* libxml.spec.in: fixed the dependencies and cleanup
 
 Mon Jul  3 14:37:07 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
@@ -14293,7 +14908,7 @@ Mon Jul  3 14:37:07 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 Sun Jul  2 20:51:43 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
-	* libxml.spec.in: fixed bug #7419, dependancies fouled for libxml-devel
+	* libxml.spec.in: fixed bug #7419, dependencies fouled for libxml-devel
 
 Sun Jul  2 09:52:45 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 

@@ -762,7 +762,9 @@ startDocument(void *ctx)
     }
     if ((ctxt->myDoc != NULL) && (ctxt->myDoc->URL == NULL) &&
 	(ctxt->input != NULL) && (ctxt->input->filename != NULL)) {
-        ctxt->myDoc->URL = xmlStrdup((const xmlChar *) ctxt->input->filename);
+	ctxt->myDoc->URL = xmlCanonicPath((const xmlChar *) ctxt->input->filename);
+	if (ctxt->myDoc->URL == NULL)
+	    ctxt->myDoc->URL = xmlStrdup((const xmlChar *) ctxt->input->filename);
     }
 }
 
@@ -932,7 +934,7 @@ my_attribute(void *ctx, const xmlChar *fullname, const xmlChar *value,
         if (nsret != NULL && ctxt->validate && ctxt->wellFormed &&
 	    ctxt->myDoc && ctxt->myDoc->intSubset)
 	    ctxt->valid &= xmlValidateOneNamespace(&ctxt->vctxt, ctxt->myDoc,
-					   ctxt->node, prefix, nsret, value);
+					   ctxt->node, name, nsret, value);
 	if (name != NULL) 
 	    xmlFree(name);
 	if (nval != NULL)
@@ -940,9 +942,29 @@ my_attribute(void *ctx, const xmlChar *fullname, const xmlChar *value,
 	return;
     }
 
-    if (ns != NULL)
+    if (ns != NULL) {
+	xmlAttrPtr prop;
 	namespace = xmlSearchNs(ctxt->myDoc, ctxt->node, ns);
-    else {
+
+	prop = ctxt->node->properties;
+	while (prop != NULL) {
+	    if (prop->ns != NULL) {
+		if ((xmlStrEqual(name, prop->name)) &&
+		    ((namespace == prop->ns) ||
+		     (xmlStrEqual(namespace->href, prop->ns->href)))) {
+		    ctxt->errNo = XML_ERR_ATTRIBUTE_REDEFINED;
+		    if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+			ctxt->sax->error(ctxt->userData,
+			        "Attribute %s in %s redefined\n",
+			                 name, namespace->href);
+		    ctxt->wellFormed = 0;
+		    if (ctxt->recovery == 0) ctxt->disableSAX = 1;
+		    goto error;
+		}
+	    }
+	    prop = prop->next;
+	}
+    } else {
 	namespace = NULL;
     }
 
@@ -1022,6 +1044,7 @@ my_attribute(void *ctx, const xmlChar *fullname, const xmlChar *value,
 	    xmlAddRef(&ctxt->vctxt, ctxt->myDoc, value, ret);
     }
 
+error:
     if (nval != NULL)
 	xmlFree(nval);
     if (ns != NULL) 
