@@ -1,5 +1,5 @@
 /* 
- * $Id: krb.c,v 1.6 1994-02-17 10:20:04 miki Exp $
+ * $Id: krb.c,v 1.7 1994-03-30 11:01:56 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: miki $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.6 1994-02-17 10:20:04 miki Exp $";
+static char *rcsid = "$Id: krb.c,v 1.7 1994-03-30 11:01:56 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -224,7 +224,11 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	longjmp(rii->env, status);
     }
 
+#ifdef POSIX
+    memmove(key, auth_dat.session,  sizeof(key));
+#else
     bcopy(auth_dat.session, key, sizeof(key));
+#endif
     if (des_key_sched(key, sched)) {
 	sprintf(errbuf, "Error in des_key_sched");
 	rkinit_errmsg(errbuf);
@@ -236,7 +240,11 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	 krb_rd_priv((u_char *)scip.app_data, scip.app_length, 
 		     sched, key, &caddr, &saddr, &msg_data)) == KSUCCESS) {
 	cip->length = msg_data.app_length;
+#ifdef POSIIX
+      memmove(cip->dat, msg_data.app_data, msg_data.app_length);
+#else
 	bcopy(msg_data.app_data, cip->dat, msg_data.app_length);
+#endif
 	cip->dat[cip->length] = 0;
     } 
     else {
