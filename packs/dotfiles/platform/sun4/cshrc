@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.15 1995-06-25 00:10:46 cfields Exp $
+# $Id: cshrc,v 1.16 1996-05-07 17:47:01 cfields Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -41,13 +41,13 @@ if (! $?ENV_SET) then
 						# because -d is wrong.
 	setenv EDITOR emacs			# Set default editor
 	setenv VISUAL emacs			# Set default screen editor
-	setenv RSUSERHOME ~/rsuserhome		# Default RS/1 directory for R3
+	setenv NOMHNPROC			# Disable mh MIME support
 
 	setenv MANPATH $athena_manpath
 
 	setenv ATHENA_SYS `machtype -S`
 	if ( $ATHENA_SYS == "" ) then
-		  unsetenv ATHENA_SYS
+		  setenv ATHENA_SYS @sys
 	endif
 
 	if ( ! $?PRINTER && -e /etc/athena/clusterinfo ) then
