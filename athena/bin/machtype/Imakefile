@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.13 1995-08-01 15:50:50 cfields Exp $
+ * $Id: Imakefile,v 1.14 1996-08-20 19:25:05 cfields Exp $
  */
 
 #ifdef ultrix
@@ -28,12 +28,15 @@ INST=-m 4755 -o root
 #endif
 
 ATHSYS=`fs sysname | awk -F\' '{ print $$2 }'`
+OSNAME=`uname -s`
+OSVERS=`uname -r`
 
 machtype_${NAME}.o:	${ATHVERS} machtype_${NAME}.c
 	$(RM) $@
 	. $(ATHVERS); \
 	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" \
-	-DATHSYS=\"${ATHSYS}\" $*.c
+	-DATHSYS=\"${ATHSYS}\" -DOSNAME=\"${OSNAME}\" \
+	-DOSVERS=\"${OSVERS}\" $*.c
 
 build_program(machtype, machtype_${NAME}.o,,${LIBS})
 install_program(machtype,${INST},${ATHRBINDIR})
