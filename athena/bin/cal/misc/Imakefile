@@ -10,7 +10,7 @@
  *	"mit-copyright.h".
  *
  *
- *	$Id: Imakefile,v 1.4 1992-07-04 12:30:02 epeisach Exp $
+ *	$Id: Imakefile,v 1.5 1992-07-06 17:03:38 epeisach Exp $
  */
 
 .SUFFIXES: .el .elc
@@ -23,7 +23,7 @@ EMACSMACROS= postit.el
 COMPILEDMACROS= postit.elc
 
 
-#ifdef _AIX
+#ifndef _AIX
 .el.elc:
 	emacs -batch -f batch-byte-compile $*.el
 #else
