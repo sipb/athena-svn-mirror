@@ -2,9 +2,9 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.rsaix,v 1.1 1992-04-30 10:34:05 lwvanels Exp $
+# $Id: Xsession.rsaix,v 1.2 1992-05-18 16:25:29 epeisach Exp $
 
-trap 'kdestroy; exit 0' 1 2 15
+trap 'kdestroy; unlog; fsid -u -f $USER; exit 0' 1 2 15
 
 initlib="/usr/athena/lib/init"
 defsession=$1
@@ -57,7 +57,7 @@ fi
 
 kdestroy				# destroy tickets.
 cd /tmp
-detach $USER > /dev/null 2>&1
 unlog
+fsid -u -f $USER > /dev/null 2>&1
 sleep 3					# let them see any messages (quickly)
 exit 0
