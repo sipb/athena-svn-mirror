@@ -48,7 +48,7 @@ bonobo_object_client_construct (BonoboObjectClient *object_client, CORBA_Object 
  * @iid: an OAFIID
  * @oaf_flags: activation flags
  *
- * This activates the object from the IID using oaf; you probably
+ * This activates the object from the IID using OAF; you probably
  * don't want to do this, you might want to use bonobo_get_object
  * which does object activation through the moniker system.
  * 
@@ -118,9 +118,9 @@ oaf_activate_async_cb (CORBA_Object activated_object,
  * @callback: a callback function
  * @user_data: user data
  *
- *   This activates the object from the IID using oaf; you probably
+ *   This activates the object from the IID using OAF; you probably
  * don't want to do this; instead do capability based activation
- * using Oaf directly.
+ * using OAF directly.
  */
 void
 bonobo_object_activate_async (const char                    *iid,
@@ -172,7 +172,7 @@ bonobo_object_client_from_corba (Bonobo_Unknown o)
  * @opt_ev: optional exception environment, or NULL
  * 
  * Queries the object to see if it implements the interface
- * described by @interface_desc. Basicaly a thin
+ * described by @interface_desc. Basically a thin
  * Bonobo_Unknown::query_interface wrapper.
  * 
  * Return value: A valid Bonobo_Unknown reference or
@@ -221,7 +221,7 @@ bonobo_object_client_query_interface (BonoboObjectClient *object,
  * @opt_ev: optional exception environment, or NULL
  * 
  * Queries the object to see if it implements the interface
- * described by @interface_desc. Basicaly a thin
+ * described by @interface_desc. Basically a thin
  * Bonobo_Unknown::query_interface wrapper.
  * 
  * Return value: TRUE if the interface is available else FALSE.
@@ -275,6 +275,13 @@ bonobo_object_client_has_interface (BonoboObjectClient *object,
 		return FALSE;
 }
 
+/**
+ * bonobo_object_client_ref:
+ * @object_client: the object client
+ * @opt_exception_obj: optional CORBA exception environment
+ * 
+ * Increments the Bonobo ref count on the remote object.
+ **/
 void
 bonobo_object_client_ref (BonoboObjectClient *object_client,
 			  BonoboObject       *opt_exception_obj)
@@ -299,6 +306,13 @@ bonobo_object_client_ref (BonoboObjectClient *object_client,
 	CORBA_exception_free (&ev);
 }
 
+/**
+ * bonobo_object_client_unref:
+ * @object_client: the object client
+ * @opt_exception_obj: optional CORBA exception environment
+ * 
+ * Decrements the Bonobo ref count on the remote object.
+ **/
 void
 bonobo_object_client_unref (BonoboObjectClient *object_client,
 			    BonoboObject       *opt_exception_obj)

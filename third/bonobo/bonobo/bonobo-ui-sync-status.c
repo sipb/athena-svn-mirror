@@ -119,6 +119,19 @@ main_status_null (GtkObject        *dummy,
 	msync->main_status = NULL;
 }
 
+/*
+ * This function is to ensure that the status bar
+ * does not ask for any space, but fills the free
+ * horizontal space in the hbox.
+ */
+static void
+clobber_request_cb (GtkWidget      *widget,
+		    GtkRequisition *requisition,
+		    gpointer        user_data)
+{
+	requisition->width = 1;
+}
+
 static GtkWidget *
 impl_bonobo_ui_sync_status_build (BonoboUISync     *sync,
 				  BonoboUINode     *node,
@@ -137,6 +150,11 @@ impl_bonobo_ui_sync_status_build (BonoboUISync     *sync,
 	if (!strcmp (name, "main")) {
 
 		widget = gtk_statusbar_new ();
+
+		gtk_signal_connect (GTK_OBJECT (widget),
+				    "size_request",
+				    clobber_request_cb, NULL);
+
 		msync->main_status = GTK_STATUSBAR (widget);
 
 		gtk_signal_connect (GTK_OBJECT (widget), "destroy",

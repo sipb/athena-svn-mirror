@@ -44,5 +44,4 @@ samples/controls/Bonobo_Sample_Controls.oaf.in
 samples/controls/bonobo-calculator-control.c
 samples/controls/sample-control-factory.c
 tests/selector_test.c
-tests/test-container.c
 tests/test-storage.c

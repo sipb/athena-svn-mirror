@@ -1,5 +1,5 @@
 /*
- * app.c: A test application to hammer the Bonobo UI api.
+ * test-ui.c: A test application to hammer the Bonobo UI api.
  *
  * NB. To run this program and test the xml IO code you
  * need to do something like ln -s /{prefix}/bonobo/doc/std-ui.xml ~/.gnome/ui
@@ -7,10 +7,11 @@
  * Author:
  *	Michael Meeks (michael@helixcode.com)
  *
- * Copyright 2000 Helix Code, Inc.
+ * Copyright 2000 Ximian, Inc.
  */
 
 #include "config.h"
+#include <sys/time.h>
 #include <gnome.h>
 #include <bonobo.h>
 #include <liboaf/liboaf.h>
@@ -20,6 +21,178 @@
 #include <bonobo/bonobo-win.h>
 
 poptContext ctx;
+
+#define NUM_WIN  1
+#define NUM_FILL 10
+
+static void
+test_nodes_same (BonoboUINode *a,
+		 BonoboUINode *b)
+{
+#if 0
+	BonoboUINode *la, *lb;
+
+	g_assert (bonobo_ui_node_same_attrs (a, b));
+
+	la = bonobo_ui_node_children (a);
+	lb = bonobo_ui_node_children (b);
+
+	if (la || lb)
+		test_nodes_same (la, lb);
+#endif
+}
+
+static void
+print_time (FILE *file, const char *msg,
+	    struct timeval *t1, struct timeval *t2)
+{
+	long usecdiff = t2->tv_usec - t1->tv_usec;
+	long usecdiv = 1000 * 1000;
+
+	fprintf (file, "%s %d:%.6d\n", msg,
+		 (int)((t2->tv_sec - t1->tv_sec) + (usecdiff / usecdiv)),
+		 (int)(usecdiff % usecdiv));
+}
+
+static void
+flush (void)
+{
+	while (gtk_events_pending ())
+		gtk_main_iteration ();
+	gdk_flush ();
+}
+
+static BonoboUIComponent *
+fill_window (BonoboWindow *win, BonoboUINode *ui)
+{
+	BonoboUIContainer *container = bonobo_ui_container_new ();
+	BonoboUIComponent *component = bonobo_ui_component_new ("Foo");
+
+	bonobo_ui_container_set_win (container, win);
+	bonobo_ui_component_set_container (
+		component, BONOBO_OBJREF (container));
+	
+	if (ui)
+		bonobo_ui_component_set_tree (
+			component, "/", ui, NULL);
+
+	return component;
+}
+
+static void
+speed_tests (void)
+{
+	GtkWidget     *wins [NUM_WIN];
+	int            i;
+	struct timeval t1, t2;
+
+#if 0
+	{ /* GtkWindow */
+		g_assert (!gettimeofday (&t1, NULL));
+		{
+			for (i = 0; i < NUM_WIN; i++) {
+				wins [i] = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+				gtk_widget_show (wins [i]);
+			}
+			flush ();
+		}
+		g_assert (!gettimeofday (&t2, NULL));
+
+		print_time (stderr, "Normal GtkWindow create ", &t1, &t2);
+
+		g_assert (!gettimeofday (&t1, NULL));
+		{
+			for (i = 0; i < NUM_WIN; i++)
+				gtk_widget_destroy (wins [i]);
+		
+			flush ();
+		}
+		g_assert (!gettimeofday (&t2, NULL));
+
+		print_time (stderr, "Normal GtkWindow destroy ", &t1, &t2);
+	}
+
+	{ /* BonoboWindow */
+		g_assert (!gettimeofday (&t1, NULL));
+		{
+			for (i = 0; i < NUM_WIN; i++) {
+				wins [i] = bonobo_window_new ("foo", "baa");
+				gtk_widget_show (wins [i]);
+			}
+			flush ();
+		}
+		g_assert (!gettimeofday (&t2, NULL));
+
+		print_time (stderr, "plain BonoboWindow create ", &t1, &t2);
+
+		g_assert (!gettimeofday (&t1, NULL));
+		{
+			for (i = 0; i < NUM_WIN; i++)
+				gtk_widget_destroy (wins [i]);
+		
+			flush ();
+		}
+		g_assert (!gettimeofday (&t2, NULL));
+
+		print_time (stderr, "plain BonoboWindow destroy ", &t1, &t2);
+	}
+#endif
+
+	{ /* BonoboWindow + XML */
+		BonoboUINode *ui;
+		BonoboUIComponent *components [NUM_WIN];
+
+		ui = bonobo_ui_util_new_ui (
+			NULL, "std-ui.xml", ".", "foobar");
+
+		if (!ui)
+			g_warning ("XML Speed tests failed");
+		else {
+
+
+			g_assert (!gettimeofday (&t1, NULL));
+			{
+				for (i = 0; i < NUM_WIN; i++) {
+					wins [i] = bonobo_window_new ("foo", "baa");
+					components [i] = fill_window (BONOBO_WINDOW (wins [i]), ui);
+					gtk_widget_show (wins [i]);
+				}
+				flush ();
+			}
+			g_assert (!gettimeofday (&t2, NULL));
+
+			print_time (stderr, "plain BonoboWindow create ", &t1, &t2);
+
+			g_assert (!gettimeofday (&t1, NULL));
+			{
+				for (i = 0; i < NUM_WIN; i++) {
+					int i2;
+					for (i2 = 0; i2 < NUM_FILL; i2++)
+						bonobo_ui_component_set_tree (
+							components [i], "/", ui, NULL);
+					
+					flush ();
+				}
+			}
+			g_assert (!gettimeofday (&t2, NULL));
+
+			print_time (stderr, "BonoboWindow XML thrash ", &t1, &t2);
+
+			g_assert (!gettimeofday (&t1, NULL));
+			{
+				for (i = 0; i < NUM_WIN; i++)
+					gtk_widget_destroy (wins [i]);
+		
+				flush ();
+			}
+			g_assert (!gettimeofday (&t2, NULL));
+
+			print_time (stderr, "plain BonoboWindow destroy ", &t1, &t2);
+
+			bonobo_ui_node_free (ui);
+		}
+	}
+}
 
 BonoboUIComponent *global_component;
 
@@ -204,7 +377,7 @@ main (int argc, char **argv)
 		"</dockitem>";
 	char toolb [] =
 		"<dockitem name=\"Toolbar\" look=\"icon\" relief=\"none\">\n"
-		"	<toolitem name=\"foo1\" _label=\"Insensitive\" hidden=\"0\" priority=\"1\"/>\n"
+		"	<toolitem name=\"foo1\" _label=\"Insensitive\" sensitive=\"0\" hidden=\"0\" priority=\"1\"/>\n"
 		"	<toolitem type=\"toggle\" name=\"foo5\" id=\"MyFoo\" pixtype=\"stock\" pixname=\"Close\""
 		"	 _label=\"TogSame\" _tip=\"My tooltip\"/>\n"
 		"</dockitem>";
@@ -221,6 +394,8 @@ main (int argc, char **argv)
 
 	gnome_init_with_popt_table ("container", VERSION,
 				    argc, argv, oaf_popt_options, 0, &ctx);
+
+	textdomain (PACKAGE);
 
 	orb = oaf_init (argc, argv);
 
@@ -257,8 +432,8 @@ main (int argc, char **argv)
 					printf ("a [%d] (=%d) != b [%d] (=%d)\n",
 						i, a [i], i, b [i]);
 			}
-		} else
-			printf ("String encode / decode worked\n");
+		} /* else
+		     printf ("String encode / decode worked\n"); */
 
 		g_free (c);
 		g_free (b);
@@ -268,11 +443,19 @@ main (int argc, char **argv)
 		c = bonobo_ui_util_decode_str (b, &err);
 		g_assert (err == FALSE);
 
-		printf ("Encode to '%s' and back to '%s'\n", b, c);
+/*		printf ("Encode to '%s' and back to '%s'\n", b, c); */
 
 		g_free (c);
 		g_free (b);
 	}
+
+	{
+		BonoboUINode *n = bonobo_ui_node_from_string (toola);
+		test_nodes_same (n, n);
+		bonobo_ui_node_free (n);
+	}
+
+	speed_tests ();
 
 	win = BONOBO_WINDOW (bonobo_window_new ("Win", "My Test Application"));
 	container = bonobo_ui_container_new ();
@@ -484,6 +667,10 @@ main (int argc, char **argv)
 		gtk_signal_connect (GTK_OBJECT (widget), "destroy",
 				    disconnect_progress, GUINT_TO_POINTER (id));
 	}
+
+	bonobo_ui_component_set_status (componenta, "This is a very long status message "
+					"that should cause the window to be resized if "
+					"there is in fact a bug in it", NULL);
 
 	bonobo_ui_component_thaw (componenta, NULL);
 	gtk_main ();

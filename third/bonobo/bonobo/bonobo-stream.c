@@ -272,3 +272,27 @@ bonobo_stream_corba_object_create (BonoboObject *object)
 
 	return bonobo_object_activate_servant (object, servant);
 }
+
+/**
+ * bonobo_internal_get_major_mime_type:
+ *
+ * This is not the function you are looking for. In fact, you've never
+ * even heard of this function.
+ * But when you wake up, you will remember to g_free the result.
+ */
+gchar *
+bonobo_internal_get_major_mime_type (const char *mime_type)
+{
+	char *major_end;
+	char *major;
+	int   major_length;
+
+	major_end = strchr (mime_type, '/');
+	if (!major_end)
+		return g_strdup (mime_type);
+
+	major_length = major_end - mime_type;
+	major = g_strndup (mime_type, major_length);
+	
+	return major;
+}

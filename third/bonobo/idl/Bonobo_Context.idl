@@ -70,7 +70,7 @@ module Bonobo {
 		 *
 		 * Adds an object to be tracked.
 		 */
-		void addObject    (in Object object);
+		void addObject    (in Object obj);
 
 		/**
 		 * removeObject:
@@ -78,7 +78,7 @@ module Bonobo {
 		 *
 		 * Removes an object from tracking.
 		 */
-		void removeObject (in Object object);
+		void removeObject (in Object obj);
 
 		/**
 		 * addKey:
@@ -96,7 +96,7 @@ module Bonobo {
 		 */
 		void removeKey   (in string key);
 
-		void atExitUnref (in Object object);
+		void atExitUnref (in Object obj);
 	};
 
 #if 0

@@ -180,7 +180,7 @@ bonobo_transient_get_servant_locator_vepv (void)
  * This function is only for wrappers and object derivation.  For normal
  * use, please see #bonobo_transient_new.
  *
- * This function will return %NULL on failiure, however it is your
+ * This function will return %NULL on failure; however it is your
  * responsibility to destroy the failed object in that case.
  *
  * Returns: a #BonoboTransient object (the @transient)

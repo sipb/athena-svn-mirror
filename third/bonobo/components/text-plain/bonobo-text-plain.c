@@ -288,6 +288,7 @@ text_deleted_cb (GtkText *text,
 	return FALSE;
 }
 
+#ifdef BONOBO_TEXT_PLAIN_TEST_UI_HANDLER
 static void
 verb_ClearText_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname)
 {
@@ -296,6 +297,7 @@ verb_ClearText_cb (BonoboUIComponent *uic, gpointer user_data, const char *cname
 	free_text (bonobo_object_data);
 	blank_control (bonobo_object_data);
 }
+#endif
 
 static void
 create_control_menus (bonobo_object_data_t *bonobo_object_data)

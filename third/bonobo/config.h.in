@@ -25,9 +25,6 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #undef off_t
 
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
-
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
@@ -120,6 +117,9 @@
 /* Define if you have the <argz.h> header file.  */
 #undef HAVE_ARGZ_H
 
+/* Define if you have the <dlfcn.h> header file.  */
+#undef HAVE_DLFCN_H
+
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
 
@@ -149,4 +149,7 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define if your <locale.h> file defines LC_MESSAGES. */
+#undef HAVE_LC_MESSAGES
 

@@ -6,80 +6,80 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.19\n"
-"POT-Creation-Date: 2001-02-15 01:52-0500\n"
-"PO-Revision-Date: 2001-02-14 21:49GMT\n"
+"POT-Creation-Date: 2001-11-01 10:51+0000\n"
+"PO-Revision-Date: 2001-07-28 17:11GMT\n"
 "Last-Translator: Juan Manuel García Molina <juanmagm@mail.com>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"Language-Team: Spanish <cooker-i18n@linux-mandrake.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.8\n"
 
-#: bonobo/bonobo-ui-config-widget.c:235
+#: bonobo/bonobo-ui-config-widget.c:280
 msgid "Visible"
 msgstr "Visible"
 
-#: bonobo/bonobo-ui-config-widget.c:243
+#: bonobo/bonobo-ui-config-widget.c:288
 msgid "_Show"
 msgstr "_Mostrar"
 
-#: bonobo/bonobo-ui-config-widget.c:253
+#: bonobo/bonobo-ui-config-widget.c:298
 msgid "_Hide"
 msgstr "_Ocultar"
 
-#: bonobo/bonobo-ui-config-widget.c:263
+#: bonobo/bonobo-ui-config-widget.c:308
 msgid "_View tooltips"
 msgstr "_Ver consejos"
 
-#: bonobo/bonobo-ui-config-widget.c:270
+#: bonobo/bonobo-ui-config-widget.c:315
 msgid "Toolbars"
 msgstr "Barras de herramientas"
 
-#: bonobo/bonobo-ui-config-widget.c:280
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "Look"
 msgstr "Apariencia"
 
-#: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "_Icon"
 msgstr "_Icono"
 
-#: bonobo/bonobo-ui-config-widget.c:300
+#: bonobo/bonobo-ui-config-widget.c:345
 msgid "_Text and Icon"
 msgstr "_Texto e Icono"
 
-#: bonobo/bonobo-ui-config-widget.c:310
+#: bonobo/bonobo-ui-config-widget.c:355
 msgid "_Priority text only"
 msgstr "_Priorizar sólo texto"
 
-#: bonobo/bonobo-ui-engine-config.c:518
-msgid "Configure UI"
-msgstr "Configurar IU"
+#: bonobo/bonobo-ui-engine-config.c:524
+msgid "Customize Toolbars"
+msgstr "Personalizar barras de herramientas"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:539
+#: bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "B_oth"
 msgstr "Amb_os"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:541
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "T_ext"
 msgstr "T_exto"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Hide t_ips"
 msgstr "Ocultar co_nsejos"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "Show t_ips"
 msgstr "Mostrar co_nsejos"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:543
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "_Hide toolbar"
 msgstr "_Ocultar barra de herramientas"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customi_ze"
 msgstr "Personali_zar"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
+#: bonobo/bonobo-ui-sync-toolbar.c:520
 msgid "Customize the toolbar"
 msgstr "Personalizar la barra de herramientas"
 
@@ -88,141 +88,141 @@ msgstr "Personalizar la barra de herramientas"
 msgid "Oaf options"
 msgstr "Opciónes de Oaf"
 
-#: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
+#: samples/compound-doc/container/container.c:277 tests/test-ui.c:403
 msgid "Could not initialize Bonobo!\n"
 msgstr "¡No se pudo inicializar Bonobo!\n"
 
-#: bonobo/bonobo-exception.c:129
+#: bonobo/bonobo-exception.c:162
 msgid "An unsupported action was attempted"
 msgstr "Se intentó una acción no soportada"
 
-#: bonobo/bonobo-exception.c:132
+#: bonobo/bonobo-exception.c:165
 msgid "IO Error"
 msgstr "Error de E/S"
 
-#: bonobo/bonobo-exception.c:135
+#: bonobo/bonobo-exception.c:168
 msgid "Invalid argument value"
 msgstr "Valor de argumento no válido"
 
-#: bonobo/bonobo-exception.c:139
+#: bonobo/bonobo-exception.c:172
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: bonobo/bonobo-exception.c:142
+#: bonobo/bonobo-exception.c:175
 msgid "Syntax error in object description"
 msgstr "Error de sintaxis en descripción de objeto"
 
-#: bonobo/bonobo-exception.c:146
+#: bonobo/bonobo-exception.c:179
 msgid "The User canceled the save"
 msgstr "El Usuario canceló al guardar"
 
-#: bonobo/bonobo-exception.c:151
+#: bonobo/bonobo-exception.c:184
 msgid "Cannot activate object from factory"
 msgstr "No se puede activar objeto de fábrica"
 
-#: bonobo/bonobo-exception.c:156
+#: bonobo/bonobo-exception.c:189
 msgid "No permission to access stream"
 msgstr "No hay permiso para acceder al stream"
 
-#: bonobo/bonobo-exception.c:159
+#: bonobo/bonobo-exception.c:192
 msgid "An unsupported stream action was attempted"
 msgstr "Se intentó una acción no soportada sobre un stream"
 
-#: bonobo/bonobo-exception.c:162
+#: bonobo/bonobo-exception.c:195
 msgid "IO Error on stream"
 msgstr "Error de E/S en stream"
 
-#: bonobo/bonobo-exception.c:166
+#: bonobo/bonobo-exception.c:199
 msgid "IO Error on storage"
 msgstr "Error de E/S en almacenamiento"
 
-#: bonobo/bonobo-exception.c:169
+#: bonobo/bonobo-exception.c:202
 msgid "Name already exists in storage"
 msgstr "El nombre ya existe en el almacenamiento"
 
-#: bonobo/bonobo-exception.c:172
+#: bonobo/bonobo-exception.c:205
 msgid "Object not found in storage"
 msgstr "Objeto no encontrado en el almacenamiento"
 
-#: bonobo/bonobo-exception.c:175
+#: bonobo/bonobo-exception.c:208
 msgid "No permission to do operation on storage"
 msgstr "No hay permiso para hacer la operación en el almacenamiento"
 
-#: bonobo/bonobo-exception.c:177
+#: bonobo/bonobo-exception.c:210
 msgid "An unsupported storage action was attempted"
 msgstr "Se intentó una acción no soportada sobre almacenamiento"
 
-#: bonobo/bonobo-exception.c:179
+#: bonobo/bonobo-exception.c:212
 msgid "Object is not a stream"
 msgstr "Objeto no es un stream"
 
-#: bonobo/bonobo-exception.c:182
+#: bonobo/bonobo-exception.c:215
 msgid "Object is not a storage"
 msgstr "Objeto no es almacenamiento"
 
-#: bonobo/bonobo-exception.c:185
+#: bonobo/bonobo-exception.c:218
 msgid "Storage is not empty"
 msgstr "Almacenamiento no está vacío"
 
-#: bonobo/bonobo-exception.c:189
+#: bonobo/bonobo-exception.c:222
 msgid "malformed user interface XML description"
 msgstr "descripción de interfaz de usuario XML mal formada"
 
-#: bonobo/bonobo-exception.c:192
+#: bonobo/bonobo-exception.c:225
 msgid "invalid path to XML user interface element"
 msgstr "camino incorrecto a elemento de interfaz de usuario XML"
 
-#: bonobo/bonobo-exception.c:196
+#: bonobo/bonobo-exception.c:229
 msgid "incorrect data type"
 msgstr "tipo de dato incorrecto"
 
-#: bonobo/bonobo-exception.c:199
+#: bonobo/bonobo-exception.c:232
 msgid "stream not found"
 msgstr "stream no encontrado"
 
-#: bonobo/bonobo-exception.c:203
+#: bonobo/bonobo-exception.c:236
 msgid "property not found"
 msgstr "propiedad no encontrada"
 
-#: bonobo/bonobo-exception.c:207
+#: bonobo/bonobo-exception.c:240
 msgid "Moniker interface cannot be found"
 msgstr "No se puede encontrar interfaz de moniker"
 
-#: bonobo/bonobo-exception.c:210
+#: bonobo/bonobo-exception.c:243
 msgid "Moniker activation timed out"
 msgstr "Tiempo de activación de moniker sobrepasado"
 
-#: bonobo/bonobo-exception.c:213
+#: bonobo/bonobo-exception.c:246
 msgid "Syntax error within moniker"
 msgstr "Error de sintaxis en moniker"
 
-#: bonobo/bonobo-exception.c:216
+#: bonobo/bonobo-exception.c:249
 msgid "Moniker has an unknown moniker prefix"
 msgstr "Moniker tiene un prefijo de moniker desconocido"
 
-#: bonobo/bonobo-exception.c:238
+#: bonobo/bonobo-exception.c:273
 msgid "Error checking error; no exception"
 msgstr "Error chequeando error; sin excepción"
 
-#: bonobo/bonobo-object-directory.c:224
+#: bonobo/bonobo-object-directory.c:225
 msgid "No filename"
 msgstr "Sin nombre de archivo"
 
-#: bonobo/bonobo-object-directory.c:230
+#: bonobo/bonobo-object-directory.c:231
 #, c-format
 msgid "unknown mime type for '%s'"
 msgstr "tipo mime desconocido para '%s'"
 
-#: bonobo/bonobo-object-directory.c:255
+#: bonobo/bonobo-object-directory.c:256
 #, c-format
 msgid "no handlers for mime type '%s'"
 msgstr "no hay manejadores para el tipo mime '%s'"
 
-#: bonobo/bonobo-selector-widget.c:212
+#: bonobo/bonobo-selector-widget.c:213
 msgid "Name"
 msgstr "Nombre"
 
-#: bonobo/bonobo-selector-widget.c:235
+#: bonobo/bonobo-selector-widget.c:236
 msgid "Description"
 msgstr "Descripción"
 
@@ -318,11 +318,11 @@ msgstr "componente text/plain"
 msgid "text/plain embeddable factory"
 msgstr "fábrica de text/plain empotrable"
 
-#: components/text-plain/bonobo-text-plain.c:338
+#: components/text-plain/bonobo-text-plain.c:340
 msgid "_Clear Text"
 msgstr "_Borrar Texto"
 
-#: components/text-plain/bonobo-text-plain.c:339
+#: components/text-plain/bonobo-text-plain.c:341
 msgid "Clears the text in the component"
 msgstr "Limpia el texto del componente"
 
@@ -662,6 +662,10 @@ msgstr "Fábrica de componentes Echo"
 msgid "I could not initialize Bonobo"
 msgstr "No se pudo inicializar Bonobo"
 
+#: samples/bonobo-class/main.c:40
+msgid "Could not initialize Bonobo"
+msgstr "No se pudo inicializar Bonobo"
+
 #: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
 msgstr "¡El componente ahora se queja de que no permite PersistStream!"
@@ -707,30 +711,6 @@ msgstr ""
 msgid "Select an object"
 msgstr "Seleccionar un objeto"
 
-#: tests/test-container.c:65 tests/test-container.c:95
-msgid "Can not activate object_server"
-msgstr "No se pudo activar el object_server"
-
-#: tests/test-container.c:70 tests/test-container.c:100
-msgid "Can not bind object server to client_site"
-msgstr "No se pudo asociar el servidor de objetos con el client_site"
-
-#: tests/test-container.c:269
-msgid "Can not activate server"
-msgstr "No se puede activar el servidor"
-
-#: tests/test-container.c:319 tests/test-container.c:364
-msgid "Could not launch bonobo object."
-msgstr "No se pudo lanzar el objeto de bonobo."
-
-#: tests/test-container.c:562
-msgid "Could not launch Embeddable."
-msgstr "No se pudo lanzar el Empotrable."
-
-#: tests/test-container.c:596
-msgid "Could not launch Control."
-msgstr "No se pudo lanzar el Control."
-
-#: tests/test-container.c:848 tests/test-storage.c:489
+#: tests/test-storage.c:489
 msgid "Can not bonobo_init"
 msgstr "No se pudo hacer bonobo_init"

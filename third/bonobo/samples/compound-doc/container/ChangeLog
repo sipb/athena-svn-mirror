@@ -1,3 +1,7 @@
+2001-10-23  Jody Goldberg <jgoldberg@home.com>
+
+	* component.c (sample_client_site_destroy) : don't leak the obj_id.
+
 2001-02-06  Michael Meeks  <michael@ximian.com>
 
 	* component.c (object_print): gtk_object_unref the

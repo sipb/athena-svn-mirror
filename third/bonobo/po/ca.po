@@ -1,555 +1,531 @@
 # bonobo translation to Catalan.
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# Softcatalà <info@softcatala.org>, 2000.
+# Softcatalà <info@softcatala.org>, 2000-2001.
 #
 # Traducció per Softcatalà <linux@softcatala.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.19\n"
-"POT-Creation-Date: 2001-02-15 01:52-0500\n"
-"PO-Revision-Date: 2000-09-20 20:05+0200\n"
-"Last-Translator: Quico Llach <tradgnome@softcatala.org>\n"
+"POT-Creation-Date: 2001-11-01 10:51+0000\n"
+"PO-Revision-Date: 2001-07-28 12:32+0200\n"
+"Last-Translator: Softcatalà <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <linux@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo/bonobo-ui-config-widget.c:235
-msgid "Visible"
-msgstr ""
-
-#: bonobo/bonobo-ui-config-widget.c:243
-msgid "_Show"
-msgstr ""
-
-#: bonobo/bonobo-ui-config-widget.c:253
-msgid "_Hide"
-msgstr ""
-
-#: bonobo/bonobo-ui-config-widget.c:263
-msgid "_View tooltips"
-msgstr ""
-
-#: bonobo/bonobo-ui-config-widget.c:270
-msgid "Toolbars"
-msgstr ""
-
 #: bonobo/bonobo-ui-config-widget.c:280
+msgid "Visible"
+msgstr "Visible"
+
+#: bonobo/bonobo-ui-config-widget.c:288
+msgid "_Show"
+msgstr "_Mostra"
+
+#: bonobo/bonobo-ui-config-widget.c:298
+msgid "_Hide"
+msgstr "_Amaga"
+
+#: bonobo/bonobo-ui-config-widget.c:308
+msgid "_View tooltips"
+msgstr "_Visualitza els rètols d'indicador de funció"
+
+#: bonobo/bonobo-ui-config-widget.c:315
+msgid "Toolbars"
+msgstr "Barra d'eines"
+
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "Look"
-msgstr ""
+msgstr "Aparença"
 
-#: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "_Icon"
-msgstr ""
+msgstr "_Icona"
 
-#: bonobo/bonobo-ui-config-widget.c:300
+#: bonobo/bonobo-ui-config-widget.c:345
 msgid "_Text and Icon"
-msgstr ""
+msgstr "_Text i icona"
 
-#: bonobo/bonobo-ui-config-widget.c:310
+#: bonobo/bonobo-ui-config-widget.c:355
 msgid "_Priority text only"
-msgstr ""
+msgstr "Només text de _prioritat"
 
-#: bonobo/bonobo-ui-engine-config.c:518
-msgid "Configure UI"
-msgstr ""
+#: bonobo/bonobo-ui-engine-config.c:524
+msgid "Customize Toolbars"
+msgstr "Personalitza les barres d'eines"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:539
+#: bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "B_oth"
-msgstr ""
+msgstr "A_mbdós"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:541
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "T_ext"
-msgstr ""
+msgstr "T_ext"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Hide t_ips"
-msgstr ""
+msgstr "Amaga els c_onsells"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:542
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "Show t_ips"
-msgstr ""
+msgstr "Mostra els c_onsells"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:543
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "_Hide toolbar"
-msgstr ""
+msgstr "_Amaga la barra d'eines"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
-#, fuzzy
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customi_ze"
-msgstr "Mida personalitzada"
+msgstr "Personalit_za"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:544
+#: bonobo/bonobo-ui-sync-toolbar.c:520
 msgid "Customize the toolbar"
-msgstr ""
+msgstr "Personalitza la barra d'eines"
 
 #. -lefence
 #: monikers/moniker-test.c:237
 msgid "Oaf options"
-msgstr ""
+msgstr "Opcions d'Oaf"
 
-#: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
+#: samples/compound-doc/container/container.c:277 tests/test-ui.c:403
 msgid "Could not initialize Bonobo!\n"
 msgstr "No s'ha pogut inicialitzar el Bonobo!\n"
 
-#: bonobo/bonobo-exception.c:129
-#, fuzzy
+#: bonobo/bonobo-exception.c:162
 msgid "An unsupported action was attempted"
-msgstr "S'ha intentat una acció de flux no suportada"
+msgstr "S'ha intentat una acció no suportada"
 
-#: bonobo/bonobo-exception.c:132
-#, fuzzy
+#: bonobo/bonobo-exception.c:165
 msgid "IO Error"
-msgstr "Error d'E/S en el flux"
+msgstr "Error d'E/S"
 
-#: bonobo/bonobo-exception.c:135
+#: bonobo/bonobo-exception.c:168
 msgid "Invalid argument value"
-msgstr ""
+msgstr "El valor de l'argument no és vàlid"
 
-#: bonobo/bonobo-exception.c:139
+#: bonobo/bonobo-exception.c:172
 msgid "Object not found"
 msgstr "No s'ha trobat l'objecte"
 
-#: bonobo/bonobo-exception.c:142
+#: bonobo/bonobo-exception.c:175
 msgid "Syntax error in object description"
 msgstr "Error de sintaxi en la descripció de l'objecte"
 
-#: bonobo/bonobo-exception.c:146
+#: bonobo/bonobo-exception.c:179
 msgid "The User canceled the save"
 msgstr "L'usuari ha cancel·lat el desament"
 
-#: bonobo/bonobo-exception.c:151
+#: bonobo/bonobo-exception.c:184
 msgid "Cannot activate object from factory"
-msgstr "No es pot activar l'objecte des de la fàbrica"
+msgstr "No es pot activar l'objecte des del generador"
 
-#: bonobo/bonobo-exception.c:156
+#: bonobo/bonobo-exception.c:189
 msgid "No permission to access stream"
 msgstr "Sense permís per accedir al flux"
 
-#: bonobo/bonobo-exception.c:159
+#: bonobo/bonobo-exception.c:192
 msgid "An unsupported stream action was attempted"
 msgstr "S'ha intentat una acció de flux no suportada"
 
-#: bonobo/bonobo-exception.c:162
+#: bonobo/bonobo-exception.c:195
 msgid "IO Error on stream"
 msgstr "Error d'E/S en el flux"
 
-#: bonobo/bonobo-exception.c:166
-#, fuzzy
+#: bonobo/bonobo-exception.c:199
 msgid "IO Error on storage"
-msgstr "Error d'E/S en el flux"
+msgstr "Error d'E/S en l'emmagatzemament"
 
-#: bonobo/bonobo-exception.c:169
+#: bonobo/bonobo-exception.c:202
 msgid "Name already exists in storage"
 msgstr "El nom ja existeix a l'emmagatzemament"
 
-#: bonobo/bonobo-exception.c:172
+#: bonobo/bonobo-exception.c:205
 msgid "Object not found in storage"
 msgstr "No s'ha trobat l'objecte a l'emmagatzemament"
 
-#: bonobo/bonobo-exception.c:175
+#: bonobo/bonobo-exception.c:208
 msgid "No permission to do operation on storage"
 msgstr "Sense permís per realitzar l'operació a l'emmagatzemament"
 
-#: bonobo/bonobo-exception.c:177
-#, fuzzy
+#: bonobo/bonobo-exception.c:210
 msgid "An unsupported storage action was attempted"
-msgstr "S'ha intentat una acció de flux no suportada"
+msgstr "S'ha intentat una acció d'emmagatzemament no suportada"
 
-#: bonobo/bonobo-exception.c:179
-#, fuzzy
+#: bonobo/bonobo-exception.c:212
 msgid "Object is not a stream"
-msgstr "No s'ha trobat l'objecte a l'emmagatzemament"
+msgstr "L'objecte no és un flux"
 
-#: bonobo/bonobo-exception.c:182
-#, fuzzy
+#: bonobo/bonobo-exception.c:215
 msgid "Object is not a storage"
-msgstr "No s'ha trobat l'objecte a l'emmagatzemament"
+msgstr "L'objecte no és un emmagatzemament"
 
-#: bonobo/bonobo-exception.c:185
+#: bonobo/bonobo-exception.c:218
 msgid "Storage is not empty"
-msgstr ""
+msgstr "L'emmagatzemament no està buit"
 
-#: bonobo/bonobo-exception.c:189
+#: bonobo/bonobo-exception.c:222
 msgid "malformed user interface XML description"
 msgstr "descripció XML de la interfície d'usuari mal formada"
 
-#: bonobo/bonobo-exception.c:192
+#: bonobo/bonobo-exception.c:225
 msgid "invalid path to XML user interface element"
 msgstr "camí incorrecte a l'element XML de l'interfície d'usuari"
 
-#: bonobo/bonobo-exception.c:196
+#: bonobo/bonobo-exception.c:229
 msgid "incorrect data type"
 msgstr "tipus de dades incorrectes"
 
-#: bonobo/bonobo-exception.c:199
+#: bonobo/bonobo-exception.c:232
 msgid "stream not found"
 msgstr "no s'ha trobat el flux"
 
-#: bonobo/bonobo-exception.c:203
-#, fuzzy
+#: bonobo/bonobo-exception.c:236
 msgid "property not found"
-msgstr "No s'ha trobat l'objecte"
+msgstr "no s'ha trobat la propietat"
 
-#: bonobo/bonobo-exception.c:207
+#: bonobo/bonobo-exception.c:240
 msgid "Moniker interface cannot be found"
 msgstr "No es pot trobar la interfície del moniker"
 
-#: bonobo/bonobo-exception.c:210
+#: bonobo/bonobo-exception.c:243
 msgid "Moniker activation timed out"
 msgstr "L'activació del moniker ha excedit el temps"
 
-#: bonobo/bonobo-exception.c:213
+#: bonobo/bonobo-exception.c:246
 msgid "Syntax error within moniker"
 msgstr "Error de sintaxi dins del moniker"
 
-#: bonobo/bonobo-exception.c:216
+#: bonobo/bonobo-exception.c:249
 msgid "Moniker has an unknown moniker prefix"
 msgstr "El moniker té un prefix moniker desconegut"
 
-#: bonobo/bonobo-exception.c:238
+#: bonobo/bonobo-exception.c:273
 msgid "Error checking error; no exception"
 msgstr "S'ha produït un error en comprovar l'error; cap excepció"
 
-#: bonobo/bonobo-object-directory.c:224
+#: bonobo/bonobo-object-directory.c:225
 msgid "No filename"
-msgstr ""
+msgstr "No hi ha nom de fitxer"
 
-#: bonobo/bonobo-object-directory.c:230
+#: bonobo/bonobo-object-directory.c:231
 #, c-format
 msgid "unknown mime type for '%s'"
-msgstr ""
+msgstr "'%s' és un tipus mime desconegut"
 
-#: bonobo/bonobo-object-directory.c:255
+#: bonobo/bonobo-object-directory.c:256
 #, c-format
 msgid "no handlers for mime type '%s'"
-msgstr ""
+msgstr "no hi ha cap associació aplicada al tipus '%s'"
 
-#: bonobo/bonobo-selector-widget.c:212
+#: bonobo/bonobo-selector-widget.c:213
 msgid "Name"
 msgstr "Nom"
 
-#: bonobo/bonobo-selector-widget.c:235
+#: bonobo/bonobo-selector-widget.c:236
 msgid "Description"
 msgstr "Descripció"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:1
 msgid "GnoMines control"
-msgstr ""
+msgstr "control de GnoMines"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:2
 msgid "GnoMines control factory"
-msgstr ""
+msgstr "generador de control de GnoMines"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:3
 msgid "bonobo GnoMines object"
-msgstr ""
+msgstr "objecte de GnoMines de bonobo"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:4
-#, fuzzy
 msgid "bonobo GnoMines object factory"
-msgstr "No es pot activar l'objecte des de la fàbrica"
+msgstr "generador d'objectes GnoMines del Bonobo"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:1
 msgid "Load a saved game"
 msgstr "Carrega un joc desat"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:2
-#, fuzzy
 msgid "New game"
-msgstr "_Nou joc"
+msgstr "Nou joc"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:3
-#, fuzzy
 msgid "Open game"
-msgstr "_Nou joc"
+msgstr "Obre el joc"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:4
 msgid "Start a new game"
 msgstr "Inicia un nou joc"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:5
-#, fuzzy
 msgid "_Game"
-msgstr "Joc"
+msgstr "_Joc"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:1
 msgid "Waveform"
-msgstr ""
+msgstr "Forma d'ona"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:2
-#, fuzzy
 msgid "Waveform component"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "Element en forma d'ona"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:3
 msgid "Waveform component factory"
-msgstr ""
+msgstr "Generador d'elements de forma d'ona"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:4
-#, fuzzy
 msgid "audio/ulaw bonobo object"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "objecte bonobo d'àudio/ulaw"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:5
-#, fuzzy
 msgid "audio/ulaw bonobo object factory"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "generador d'objectes Bonobo d'àudio/ulaw"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:1
 msgid "Component Selector"
-msgstr ""
+msgstr "Selector d'elements"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:2
 msgid "Component Selector factory"
-msgstr ""
+msgstr "Generador de selectors d'elements"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:3
 msgid "Component selector control"
-msgstr ""
+msgstr "Control de selectors d'elements"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:4
 msgid "component selector control factory"
-msgstr ""
+msgstr "Generador de control de selectors d'elements"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:1
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:2
-#, fuzzy
 msgid "Text component"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "Element de text"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:3
 msgid "Text component factory"
-msgstr ""
+msgstr "Generador d'elements de text"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:4
-#, fuzzy
 msgid "text/plain component"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "element de text/senzill"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:5
 msgid "text/plain embeddable factory"
-msgstr ""
+msgstr "generador d'incrustable de text/senzill"
 
-#: components/text-plain/bonobo-text-plain.c:338
-#, fuzzy
+#: components/text-plain/bonobo-text-plain.c:340
 msgid "_Clear Text"
-msgstr "_Buida la imatge"
+msgstr "_Buida el text"
 
-#: components/text-plain/bonobo-text-plain.c:339
-#, fuzzy
+#: components/text-plain/bonobo-text-plain.c:341
 msgid "Clears the text in the component"
-msgstr "_Afegeix un nou component text\\plain"
+msgstr "Neteja el text de l'element"
 
 #: gshell/controls.c:95 gshell/inout.c:91
 msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistFile"
 msgstr ""
+"S'ha produït una excepció quan s'intentava carregar les dades dins de "
+"l'element amb PersistFile"
 
 #: gshell/controls.c:119 gshell/inout.c:176
 #: samples/compound-doc/container/component.c:228
-#, fuzzy, c-format
+#, c-format
 msgid "Could not open file %s"
-msgstr "No s'ha pogut inicialitzat el Bonobo"
+msgstr "No s'ha pogut obrir el fitxer %s"
 
 #: gshell/controls.c:144 gshell/inout.c:201
 msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStream"
 msgstr ""
+"S'ha produït una excepció quan s'intentava carregar les dades dins de "
+"l'element amb PersistStream"
 
 #: gshell/gshell-ui.xml.h:1
 msgid "About this application"
-msgstr ""
+msgstr "Quant a aquesta aplicació"
 
 #: gshell/gshell-ui.xml.h:2
-#, fuzzy
 msgid "Close the current window"
-msgstr "Definiu el color actual del dibuix"
+msgstr "Tanca la finestra actual"
 
 #: gshell/gshell-ui.xml.h:3
 msgid "Configure the application"
-msgstr ""
+msgstr "Configura l'aplicació"
 
 #: gshell/gshell-ui.xml.h:4
 msgid "Create New _Window"
-msgstr ""
+msgstr "Crea una Nova _Finestra"
 
 #: gshell/gshell-ui.xml.h:5
 msgid "Create a new window"
-msgstr ""
+msgstr "Crea una nova finestra"
 
 #: gshell/gshell-ui.xml.h:6
 msgid "Displays only one window"
-msgstr ""
+msgstr "Visualitza una finestra només"
 
 #: gshell/gshell-ui.xml.h:7
 msgid "E_xit"
-msgstr ""
+msgstr "S_urt"
 
 #: gshell/gshell-ui.xml.h:8
 msgid "Exit the program"
-msgstr ""
+msgstr "Surt del programa"
 
 #: gshell/gshell-ui.xml.h:9
 msgid "Help on GNOME"
-msgstr ""
+msgstr "Ajuda sobre GNOME"
 
 #: gshell/gshell-ui.xml.h:10
 msgid "Kill the current buffer"
-msgstr ""
+msgstr "Elimina la memòria intermèdia actual"
 
 #: gshell/gshell-ui.xml.h:11
-#, fuzzy
 msgid "Launch Control..."
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "Executa el control..."
 
 #: gshell/gshell-ui.xml.h:12
-#, fuzzy
 msgid "Launch Embeddable..."
-msgstr "No s'ha pogut executar l'incrustable."
+msgstr "Executa l'incrustable..."
 
 #: gshell/gshell-ui.xml.h:13
 msgid "Launches a new Control component"
-msgstr ""
+msgstr "Executa un element nou de Control"
 
 #: gshell/gshell-ui.xml.h:14
 msgid "Launches a new Embeddable component"
-msgstr ""
+msgstr "Executa un element nou d'incrustable"
 
 #: gshell/gshell-ui.xml.h:15
-#, fuzzy
 msgid "Loads a file into the current component"
-msgstr "_Afegeix un nou component text\\plain"
+msgstr "Carrega un fitxer dins l'element actual"
 
 #: gshell/gshell-ui.xml.h:16
-#, fuzzy
 msgid "Open a file"
-msgstr "Obre el fitxer IDL..."
+msgstr "Obre un fitxer"
 
 #: gshell/gshell-ui.xml.h:17
 msgid "Print S_etup..."
-msgstr ""
+msgstr "Imprimeix la C_onfiguració"
 
 #: gshell/gshell-ui.xml.h:18
-#, fuzzy
 msgid "Print the current file"
-msgstr "Definiu el color actual del dibuix"
+msgstr "Imprimeix el fitxer actual"
 
 #: gshell/gshell-ui.xml.h:19
 msgid "Save _As..."
-msgstr ""
+msgstr "_Anomena i Desa..."
 
 #: gshell/gshell-ui.xml.h:20
-#, fuzzy
 msgid "Save the current file"
-msgstr "Definiu el color actual del dibuix"
+msgstr "Desa el fitxer actual"
 
 #: gshell/gshell-ui.xml.h:21
 msgid "Save the current file with a different name"
-msgstr ""
+msgstr "Desa el fitxer actual amb un nom diferent"
 
 #: gshell/gshell-ui.xml.h:22
 msgid "Setup the page settings for your current printer"
-msgstr ""
+msgstr "Configura els paràmetres de pàgina per a la impresora actual"
 
 #: gshell/gshell-ui.xml.h:23
-#, fuzzy
 msgid "Splits the current window"
-msgstr "Definiu el color actual del dibuix"
+msgstr "Divideix la finestra actual"
 
 #: gshell/gshell-ui.xml.h:24
 msgid "Zoom ..."
-msgstr ""
+msgstr "Zoom..."
 
 #: gshell/gshell-ui.xml.h:25
 msgid "Zoom _in"
-msgstr ""
+msgstr "_Amplia el zoom"
 
 #: gshell/gshell-ui.xml.h:26
 msgid "Zoom _out"
-msgstr ""
+msgstr "_Redueix el zoom"
 
 #: gshell/gshell-ui.xml.h:27
 msgid "Zoom to _default"
-msgstr ""
+msgstr "Zoom per _defecte"
 
 #: gshell/gshell-ui.xml.h:28
 msgid "Zoom to _fit"
-msgstr ""
+msgstr "Zoom per ajustar"
 
 #: gshell/gshell-ui.xml.h:29
 msgid "_About..."
-msgstr ""
+msgstr "_Quant a..."
 
 #: gshell/gshell-ui.xml.h:30
 msgid "_Buffers"
-msgstr ""
+msgstr "_Memòria intermèdia"
 
 #: gshell/gshell-ui.xml.h:31
 msgid "_Close This Window"
-msgstr ""
+msgstr "_Tanca aquesta finestra"
 
 #: gshell/gshell-ui.xml.h:32
 msgid "_File"
-msgstr ""
+msgstr "_Fitxer"
 
 #: gshell/gshell-ui.xml.h:33
 msgid "_Help"
-msgstr ""
+msgstr "_Ajuda"
 
 #: gshell/gshell-ui.xml.h:34
 msgid "_Help on GNOME"
-msgstr ""
+msgstr "_Ajuda sobre el GNOME"
 
 #: gshell/gshell-ui.xml.h:35
 msgid "_Kill"
-msgstr ""
+msgstr "_Elimina"
 
 #: gshell/gshell-ui.xml.h:36
 msgid "_Load..."
-msgstr ""
+msgstr "_Carrega..."
 
 #: gshell/gshell-ui.xml.h:37
 msgid "_One Window"
-msgstr ""
+msgstr "_Una Finestra"
 
 #: gshell/gshell-ui.xml.h:38
 msgid "_Open..."
-msgstr ""
+msgstr "_Obre..."
 
 #: gshell/gshell-ui.xml.h:39
 msgid "_Preferences..."
-msgstr ""
+msgstr "_Preferències..."
 
 #: gshell/gshell-ui.xml.h:40
 msgid "_Print"
-msgstr ""
+msgstr "_Imprimeix"
 
 #: gshell/gshell-ui.xml.h:41
-#, fuzzy
 msgid "_Save"
-msgstr "Joc"
+msgstr "_Desa"
 
 #: gshell/gshell-ui.xml.h:42
 msgid "_Settings"
-msgstr ""
+msgstr "_Paràmatres"
 
 #: gshell/gshell-ui.xml.h:43
 msgid "_Split Window"
-msgstr ""
+msgstr " Divideix la Finestra"
 
 #: gshell/gshell-ui.xml.h:44
 msgid "_Window"
-msgstr ""
+msgstr "_Finestra"
 
 #: gshell/gshell-ui.xml.h:45
 msgid "_Zoom"
-msgstr ""
+msgstr "_Zoom"
 
 #: gshell/gshell.c:46
 msgid ""
@@ -558,19 +534,23 @@ msgid ""
 "under the conditions of the GNU General Public License. Please report bugs "
 "to dietmar@maurer-it.com"
 msgstr ""
+"Aquest programa forma part del projecte GNOME. L'intèrpret d'ordres de Gnome "
+"ve ABSOLUTAMENT SENSE GARANTIA. Aquest és un programari gratuït que el pots "
+"redistribuir sota les condicions de la Llicència Pública General de GNU. Si "
+"us plau, informeu-nos d'errors a dietmar@maurer-it.com"
 
 #: gshell/gshell.c:89
 msgid "fatal CORBA exception!  Shutting down..."
-msgstr ""
+msgstr "excepció fatal de COBRA! Aturant..."
 
 #: gshell/gshell.c:162
 #, c-format
 msgid "New zoom level is %.3g."
-msgstr ""
+msgstr "El nou nivell de zoom és de %.3g."
 
 #: gshell/gshell.c:596
 msgid "Set zoom level:"
-msgstr ""
+msgstr "Defineixi el nivell de zoom:"
 
 #: gshell/gshell.c:652
 msgid "Could not initialize Bonobo!"
@@ -581,181 +561,173 @@ msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistFile"
 msgstr ""
+"S'ha produït una excepció quan s'intentava desar les dades de l'element amb "
+"PersistFile"
 
 #: gshell/inout.c:115
-#, fuzzy, c-format
+#, c-format
 msgid "Could not save file %s"
-msgstr "No s'ha pogut inicialitzat el Bonobo"
+msgstr "No s'ha pogut desar el fitxer %s"
 
 #: gshell/inout.c:151
 msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStream"
 msgstr ""
+"S'ha produït una excepció quan s'intentava desar les dades de l'element amb "
+"PersistStream"
 
 #: gshell/inout.c:364
-#, fuzzy
 msgid "Open"
-msgstr "_Nou joc"
+msgstr "Obre"
 
 #: gshell/inout.c:393 gshell/inout.c:450
-#, fuzzy
 msgid "Launch component"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "Executa l'element"
 
 #: gshell/inout.c:553
-#, fuzzy
 msgid "Load"
-msgstr "Local"
+msgstr "Carrega"
 
 #: gshell/inout.c:604
-#, fuzzy
 msgid "Save As"
-msgstr "Joc"
+msgstr "Anomena i desa"
 
 #: gshell/properties.c:152
 msgid "Component has no editable properties"
-msgstr ""
+msgstr "L'element no té cap propietat editable"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:1
 msgid "Gunzip Moniker factory"
-msgstr ""
+msgstr "Generador de Moniker Gunzip "
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:2
 msgid "gunzip Moniker"
-msgstr ""
+msgstr "Moniker Gunzip"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:1
 msgid "HTTP Moniker"
-msgstr ""
+msgstr "HTTP Moniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:2
 msgid "Standard Moniker factory"
-msgstr ""
+msgstr "Generador estàndard de Moniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:3
 msgid "file MonikerExtender"
-msgstr ""
+msgstr "fitxer MonikerExtender"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:4
 msgid "generic Oaf activation moniker"
-msgstr ""
+msgstr "Moniker d'activació d'Oaf genèric"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:5
 msgid "generic Oaf query moniker"
-msgstr ""
+msgstr "moniker de consulta d'Oaf genèric"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:6
 msgid "generic factory 'new' moniker"
-msgstr ""
+msgstr "'nou' moniker generador genèric"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:7
 msgid "generic file moniker"
-msgstr ""
+msgstr "fitxer moniker genèric"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:8
 msgid "generic item moniker"
-msgstr ""
+msgstr "element moniker genèric"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:9
 msgid "stream MonikerExtender"
-msgstr ""
+msgstr "flux MonikerExtender"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr ""
+msgstr "generador del servidor de l'Echo Bonobo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr ""
+msgstr "Programa de mostra del servidor d'Echo Bonobo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:3
-#, fuzzy
 msgid "Echo component"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "Element de l'Echo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:4
-#, fuzzy
 msgid "Echo component factory"
-msgstr "No s'ha pogut executar l'objecte del bonobo."
+msgstr "Generador d'elements de l'Echo"
 
 #: samples/bonobo-class/echo-client.c:30
 msgid "I could not initialize Bonobo"
 msgstr "No he pogut inicialitzar el Bonobo"
 
+#: samples/bonobo-class/main.c:40
+msgid "Could not initialize Bonobo"
+msgstr "No s'ha pogut inicialitzat el Bonobo"
+
 #: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
-msgstr ""
+msgstr "Ara l'element diu que no suporta PersistStream!"
 
 #: samples/compound-doc/container/container-filesel.c:18
 msgid "Select file"
-msgstr ""
+msgstr "Selecciona un fitxer"
 
 #: samples/compound-doc/container/container-menu.c:18
 msgid "Select an embeddable Bonobo component to add"
-msgstr ""
+msgstr "Selecciona un element incrustable Bonobo per afegir"
 
 #: samples/compound-doc/container/container-menu.c:100
 msgid "Bonobo sample container"
-msgstr ""
+msgstr "Contenidor de mostra de Bonobo"
 
 #: samples/compound-doc/container/container.c:45
 msgid "Sample Bonobo container"
-msgstr ""
+msgstr "Contenidor de Bonobo de mostra"
 
 #: samples/compound-doc/container/container.c:113
-#, fuzzy, c-format
+#, c-format
 msgid "Could not launch Embeddable %s!"
-msgstr "No s'ha pogut executar l'incrustable."
+msgstr "No s'ha pogut executar l'incrustable %s!."
 
 #: samples/compound-doc/container/embeddable-io.c:36
 msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStorage"
 msgstr ""
+"S'ha produït una excepció quan s'intentaven carregar les dades a l'element "
+"amb PersistStorage"
 
 #: samples/compound-doc/container/embeddable-io.c:67
 msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStorage"
 msgstr ""
+"S'ha produït una excepció quan s'intentaven desar les dades des de l'element "
+"amb PersistStorage"
 
 #: tests/selector_test.c:22 tests/selector_test.c:46
 msgid "Select an object"
 msgstr "Seleccioneu un objecte"
 
-#: tests/test-container.c:65 tests/test-container.c:95
-msgid "Can not activate object_server"
-msgstr "No es pot activar el servidor d'objectes"
-
-#: tests/test-container.c:70 tests/test-container.c:100
-msgid "Can not bind object server to client_site"
-msgstr "No es pot lligar el servidor d'objectes al lloc client"
-
-#: tests/test-container.c:269
-#, fuzzy
-msgid "Can not activate server"
-msgstr "No es pot activar el servidor d'objectes"
-
-#: tests/test-container.c:319 tests/test-container.c:364
-msgid "Could not launch bonobo object."
-msgstr "No s'ha pogut executar l'objecte del bonobo."
-
-#: tests/test-container.c:562
-msgid "Could not launch Embeddable."
-msgstr "No s'ha pogut executar l'incrustable."
-
-#: tests/test-container.c:596
-#, fuzzy
-msgid "Could not launch Control."
-msgstr "No s'ha pogut executar l'objecte del bonobo."
-
-#: tests/test-container.c:848 tests/test-storage.c:489
+#: tests/test-storage.c:489
 msgid "Can not bonobo_init"
 msgstr "No es pot executar bonobo_init"
 
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "No s'ha pogut inicialitzat el Bonobo"
+#~ msgid "Configure UI"
+#~ msgstr "Configura UI"
+
+#~ msgid "Can not activate object_server"
+#~ msgstr "No es pot activar el servidor d'objectes"
+
+#~ msgid "Can not bind object server to client_site"
+#~ msgstr "No es pot lligar el servidor d'objectes al lloc client"
+
+#~ msgid "Could not launch bonobo object."
+#~ msgstr "No s'ha pogut executar l'objecte del bonobo."
+
+#~ msgid "Could not launch Embeddable."
+#~ msgstr "No s'ha pogut executar l'incrustable."
 
 #~ msgid "Select drawing color..."
 #~ msgstr "Seleccioneu el color del dibuix..."

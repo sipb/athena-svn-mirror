@@ -113,9 +113,6 @@ void             bonobo_ui_xml_dump              (BonoboUIXml  *tree,
 						  BonoboUINode *node,
 						  const char   *msg);
 
-void             bonobo_ui_xml_strip             (BonoboUINode **node);
-
-
 void             bonobo_ui_xml_set_watch_fn      (BonoboUIXml  *tree,
 						  BonoboUIXmlWatchFn watch);
 

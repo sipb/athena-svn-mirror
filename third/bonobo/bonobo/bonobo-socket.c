@@ -22,11 +22,12 @@
  * Modified by the GTK+ Team and others 1997-1999.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
+ * GTK+ at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 #undef SOCKET_DEBUG
 
+#include <stdio.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkwindow.h>
@@ -34,6 +35,8 @@
 #include <gtk/gtkdnd.h>
 #include <bonobo/bonobo-socket.h>
 #include <bonobo/bonobo-control-frame.h>
+
+
 
 struct _BonoboSocketPrivate {
 	/* The control on the other side which we use to gdk_flush() */
@@ -43,35 +46,39 @@ struct _BonoboSocketPrivate {
 	guint16 request_height;
 	guint16 current_width;
 	guint16 current_height;
-	
+
 	GdkWindow *plug_window;
 	guint same_app : 1;
-	guint focus_in : 1;
 	guint have_size : 1;
 	guint need_map : 1;
+
+	/* Whether we gave the focus to the child through our own ::focus() */
+	guint gave_focus : 1;
 };
+
+/* Last timestamp we got from the X server, for use with XSetInputFocus() */
+static guint32 last_x_time_stamp = CurrentTime;
 
 /* Forward declararations */
 
 static void bonobo_socket_class_init               (BonoboSocketClass    *klass);
 static void bonobo_socket_init                     (BonoboSocket         *socket);
-static void bonobo_socket_destroy                  (GtkObject            *object);
+static void bonobo_socket_finalize                 (GtkObject            *object);
 static void bonobo_socket_realize                  (GtkWidget        *widget);
 static void bonobo_socket_unrealize                (GtkWidget        *widget);
 static void bonobo_socket_size_request             (GtkWidget      *widget,
 						    GtkRequisition *requisition);
 static void bonobo_socket_size_allocate            (GtkWidget     *widget,
 						    GtkAllocation *allocation);
-static gint bonobo_socket_focus_in_event           (GtkWidget *widget, 
+static gint bonobo_socket_focus_in_event           (GtkWidget *widget,
 						    GdkEventFocus *event);
-static void bonobo_socket_claim_focus              (BonoboSocket *socket);
-static gint bonobo_socket_focus_out_event          (GtkWidget *widget, 
+static gint bonobo_socket_focus_out_event          (GtkWidget *widget,
 						    GdkEventFocus *event);
-static void bonobo_socket_send_configure_event     (BonoboSocket *socket);
-static gint bonobo_socket_focus                    (GtkContainer *container, 
+static gint bonobo_socket_focus                    (GtkContainer *container,
 						    GtkDirectionType direction);
-static GdkFilterReturn bonobo_socket_filter_func   (GdkXEvent *gdk_xevent, 
-						    GdkEvent *event, 
+
+static GdkFilterReturn bonobo_socket_filter_func   (GdkXEvent *gdk_xevent,
+						    GdkEvent *event,
 						    gpointer data);
 
 /* From Tk */
@@ -79,7 +86,9 @@ static GdkFilterReturn bonobo_socket_filter_func   (GdkXEvent *gdk_xevent,
 
 /* Local data */
 
-static GtkWidgetClass *parent_class = NULL;
+static GtkContainerClass *parent_class = NULL;
+
+
 
 guint
 bonobo_socket_get_type ()
@@ -118,7 +127,7 @@ bonobo_socket_class_init (BonoboSocketClass *class)
 
 	parent_class = gtk_type_class (GTK_TYPE_CONTAINER);
 
-	object_class->destroy = bonobo_socket_destroy;
+	object_class->finalize = bonobo_socket_finalize;
 
 	widget_class->realize = bonobo_socket_realize;
 	widget_class->unrealize = bonobo_socket_unrealize;
@@ -144,17 +153,17 @@ bonobo_socket_init (BonoboSocket *socket)
 	priv->request_height = 0;
 	priv->current_width = 0;
 	priv->current_height = 0;
-  
+
 	priv->plug_window = NULL;
 	priv->same_app = FALSE;
-	priv->focus_in = FALSE;
 	priv->have_size = FALSE;
 	priv->need_map = FALSE;
+	priv->gave_focus = FALSE;
 }
 
 /* Destroy handler for the socket */
 static void
-bonobo_socket_destroy (GtkObject *object)
+bonobo_socket_finalize (GtkObject *object)
 {
 	BonoboSocket *socket;
 	BonoboSocketPrivate *priv;
@@ -168,8 +177,8 @@ bonobo_socket_destroy (GtkObject *object)
 	g_free (priv);
 	socket->priv = NULL;
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (GTK_OBJECT_CLASS (parent_class)->finalize)
+		(* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 /**
@@ -208,11 +217,11 @@ bonobo_socket_steal (BonoboSocket *socket, guint32 id)
 	priv = socket->priv;
 
 	widget = GTK_WIDGET (socket);
-  
+
 	priv->plug_window = gdk_window_lookup (id);
 
 	gdk_error_trap_push ();
-  
+
 	if (priv->plug_window && priv->plug_window->user_data) {
 		/*
 		  GtkWidget *child_widget;
@@ -221,7 +230,7 @@ bonobo_socket_steal (BonoboSocket *socket, guint32 id)
 		*/
 
 		g_warning("Stealing from same app not yet implemented");
-      
+
 		priv->same_app = TRUE;
 	} else {
 		priv->plug_window = gdk_window_foreign_new (id);
@@ -276,7 +285,7 @@ bonobo_socket_realize (GtkWidget *widget)
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
 
-	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget), 
+	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),
 					 &attributes, attributes_mask);
 	gdk_window_set_user_data (widget->window, socket);
 
@@ -288,8 +297,8 @@ bonobo_socket_realize (GtkWidget *widget)
 			      &xattrs);
 
 	XSelectInput (GDK_DISPLAY (),
-		      GDK_WINDOW_XWINDOW(widget->window), 
-		      xattrs.your_event_mask | 
+		      GDK_WINDOW_XWINDOW(widget->window),
+		      xattrs.your_event_mask |
 		      SubstructureNotifyMask | SubstructureRedirectMask);
 
 	gdk_window_add_filter (widget->window, bonobo_socket_filter_func, widget);
@@ -316,7 +325,7 @@ bonobo_socket_unrealize (GtkWidget *widget)
 
 		if (toplevel && GTK_IS_WINDOW (toplevel))
 			gtk_window_remove_embedded_xid (
-				GTK_WINDOW (toplevel), 
+				GTK_WINDOW (toplevel),
 				GDK_WINDOW_XWINDOW (priv->plug_window));
 	}
 
@@ -336,7 +345,7 @@ bonobo_socket_set_control_frame (BonoboSocket       *socket,
 		socket->priv->frame = frame;
 }
 
-static void 
+static void
 bonobo_socket_size_request (GtkWidget      *widget,
 			    GtkRequisition *requisition)
 {
@@ -346,26 +355,23 @@ bonobo_socket_size_request (GtkWidget      *widget,
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (BONOBO_IS_SOCKET (widget));
 	g_return_if_fail (requisition != NULL);
-  
+
 	socket = BONOBO_SOCKET (widget);
 	priv = socket->priv;
-
-#ifdef SOCKET_DEBUG
-	g_warning ("size_request %d; %p", priv->have_size,
-		   priv->plug_window);
-#endif
 
 	if (!priv->have_size && priv->plug_window) {
 		XSizeHints hints;
 		long supplied;
 
 		gdk_error_trap_push ();
-      
+
 		if (XGetWMNormalHints (GDK_DISPLAY (),
 				       GDK_WINDOW_XWINDOW (priv->plug_window),
 				       &hints, &supplied)) {
-			/* This is obsolete, according the X docs, but many programs
-			 * still use it */
+			/*
+			 * This is obsolete, according the X docs, but many
+			 * programs still use it.
+			 */
 			if (hints.flags & (PSize | USSize)) {
 				priv->request_width = hints.width;
 				priv->request_height = hints.height;
@@ -380,11 +386,6 @@ bonobo_socket_size_request (GtkWidget      *widget,
 
 		priv->have_size = TRUE;	/* don't check again? */
 		gdk_error_trap_pop ();
-
-#ifdef SOCKET_DEBUG
-		g_warning ("BonoboSocket size request == %d, %d\n",
-			   requisition->width, requisition->height);
-#endif
 	}
 
 	requisition->width = MAX (priv->request_width, 1);
@@ -392,212 +393,7 @@ bonobo_socket_size_request (GtkWidget      *widget,
 }
 
 static void
-bonobo_socket_size_allocate (GtkWidget     *widget,
-			     GtkAllocation *allocation)
-{
-	BonoboSocket *socket;
-	BonoboSocketPrivate *priv;
-
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (BONOBO_IS_SOCKET (widget));
-	g_return_if_fail (allocation != NULL);
-
-	socket = BONOBO_SOCKET (widget);
-	priv = socket->priv;
-
-	widget->allocation = *allocation;
-	if (GTK_WIDGET_REALIZED (widget)) {
-		gdk_window_move_resize (widget->window,
-					allocation->x, allocation->y,
-					allocation->width, allocation->height);
-
-		if (priv->plug_window) {
-			gdk_error_trap_push ();
-	  
-			if (!priv->need_map &&
-			    (allocation->width == priv->current_width) &&
-			    (allocation->height == priv->current_height)) {
-				bonobo_socket_send_configure_event (socket);
-				GTK_NOTE(PLUGSOCKET, 
-					 g_message ("BonoboSocket - allocated no change: %d %d",
-						    allocation->width, allocation->height));
-			} else {
-				gdk_window_move_resize (priv->plug_window,
-							0, 0,
-							allocation->width, allocation->height);
-				GTK_NOTE (PLUGSOCKET,
-					  g_message ("BonoboSocket - allocated: %d %d",
-						     allocation->width, allocation->height));
-				priv->current_width = allocation->width;
-				priv->current_height = allocation->height;
-			}
-
-			if (priv->need_map) {
-				gdk_window_show (priv->plug_window);
-				priv->need_map = FALSE;
-			}
-
-			gdk_flush ();
-			gdk_error_trap_pop ();
-		}
-	}
-}
-
-static gint
-bonobo_socket_focus_in_event (GtkWidget *widget, GdkEventFocus *event)
-{
-	BonoboSocket *socket;
-	BonoboSocketPrivate *priv;
-
-	g_return_val_if_fail (BONOBO_IS_SOCKET (widget), FALSE);
-
-	socket = BONOBO_SOCKET (widget);
-	priv = socket->priv;
-
-	if (priv->focus_in && priv->plug_window) {
-		XWindowAttributes attr;
-
-		gdk_error_trap_push ();
-
-		XGetWindowAttributes (GDK_DISPLAY (),
-				      GDK_WINDOW_XWINDOW (priv->plug_window),
-				      &attr);
-
-		if (attr.map_state == IsViewable)
-			XSetInputFocus (GDK_DISPLAY (),
-					GDK_WINDOW_XWINDOW (priv->plug_window),
-					RevertToParent, GDK_CURRENT_TIME);
-
-		gdk_flush();
-		gdk_error_trap_pop ();
-	}
-
-	return TRUE;
-}
-
-static gint
-bonobo_socket_focus_out_event (GtkWidget *widget, GdkEventFocus *event)
-{
-	BonoboSocket *socket;
-	BonoboSocketPrivate *priv;
-	GtkWidget *toplevel;
-	XWindowAttributes attr;
-
-	g_return_val_if_fail (BONOBO_IS_SOCKET (widget), FALSE);
-
-	socket = BONOBO_SOCKET (widget);
-	priv = socket->priv;
-
-	toplevel = gtk_widget_get_ancestor (widget, gtk_window_get_type());
-	XGetWindowAttributes (GDK_DISPLAY (), GDK_WINDOW_XWINDOW (toplevel->window), &attr);
-
-	/* FIXME: can we just check the return value of 
-	 * XGetWindowAttributes? */
-	if (toplevel && attr.map_state == IsViewable)
-		XSetInputFocus (GDK_DISPLAY (),
-				GDK_WINDOW_XWINDOW (toplevel->window),
-				RevertToParent, CurrentTime); /* FIXME? */
-
-	priv->focus_in = FALSE;
-
-	return TRUE;
-}
-
-static void
-bonobo_socket_claim_focus (BonoboSocket *socket)
-{
-	BonoboSocketPrivate *priv;
-
-	priv = socket->priv;
-
-	priv->focus_in = TRUE;
-  
-	/* Oh, the trickery... */
-  
-	GTK_WIDGET_SET_FLAGS (socket, GTK_CAN_FOCUS);
-	gtk_widget_grab_focus (GTK_WIDGET (socket));
-	GTK_WIDGET_UNSET_FLAGS (socket, GTK_CAN_FOCUS);
-  
-	/* FIXME: we might grab the focus even if we don't have
-	 * it as an app... (and see _focus_in ()) */
-	if (priv->plug_window) {
-		gdk_error_trap_push ();
-		XSetInputFocus (GDK_DISPLAY (),
-				GDK_WINDOW_XWINDOW (priv->plug_window),
-				RevertToParent, GDK_CURRENT_TIME);
-		gdk_flush ();
-		gdk_error_trap_pop ();
-	}
-}
-
-static gint 
-bonobo_socket_focus (GtkContainer *container, GtkDirectionType direction)
-{
-	BonoboSocket *socket;
-	BonoboSocketPrivate *priv;
-
-	g_return_val_if_fail (BONOBO_IS_SOCKET (container), FALSE);
-
-	socket = BONOBO_SOCKET (container);
-	priv = socket->priv;
-
-	if (!priv->focus_in && priv->plug_window) {
-		XEvent xevent;
-
-		bonobo_socket_claim_focus (socket);
-      
-		xevent.xkey.type = KeyPress;
-		xevent.xkey.display = GDK_DISPLAY ();
-		xevent.xkey.window = GDK_WINDOW_XWINDOW (priv->plug_window);
-		xevent.xkey.root = GDK_ROOT_WINDOW (); /* FIXME */
-		xevent.xkey.time = GDK_CURRENT_TIME; /* FIXME */
-		/* FIXME, the following might cause big problems for
-		 * non-GTK apps */
-		xevent.xkey.x = 0;
-		xevent.xkey.y = 0;
-		xevent.xkey.x_root = 0;
-		xevent.xkey.y_root = 0;
-		xevent.xkey.state = 0;
-		xevent.xkey.same_screen = TRUE; /* FIXME ? */
-
-		switch (direction)
-		{
-		case GTK_DIR_UP:
-			xevent.xkey.keycode =  XKeysymToKeycode(GDK_DISPLAY(), GDK_Up);
-			break;
-		case GTK_DIR_DOWN:
-			xevent.xkey.keycode =  XKeysymToKeycode(GDK_DISPLAY(), GDK_Down);
-			break;
-		case GTK_DIR_LEFT:
-			xevent.xkey.keycode =  XKeysymToKeycode(GDK_DISPLAY(), GDK_Left);
-			break;
-		case GTK_DIR_RIGHT:
-			xevent.xkey.keycode =  XKeysymToKeycode(GDK_DISPLAY(), GDK_Right);
-			break;
-		case GTK_DIR_TAB_FORWARD:
-			xevent.xkey.keycode =  XKeysymToKeycode(GDK_DISPLAY(), GDK_Tab);
-			break;
-		case GTK_DIR_TAB_BACKWARD:
-			xevent.xkey.keycode =  XKeysymToKeycode(GDK_DISPLAY(), GDK_Tab);
-			xevent.xkey.state = ShiftMask;
-			break;
-		}
-
-
-		gdk_error_trap_push ();
-		XSendEvent (gdk_display,
-			    GDK_WINDOW_XWINDOW (priv->plug_window),
-			    False, NoEventMask, &xevent);
-		gdk_flush();
-		gdk_error_trap_pop ();
-      
-		return TRUE;
-	} else
-		return FALSE;
-}
-
-static void
-bonobo_socket_send_configure_event (BonoboSocket *socket)
+send_configure_event (BonoboSocket *socket)
 {
 	BonoboSocketPrivate *priv;
 	XEvent event;
@@ -630,6 +426,162 @@ bonobo_socket_send_configure_event (BonoboSocket *socket)
 }
 
 static void
+bonobo_socket_size_allocate (GtkWidget     *widget,
+			     GtkAllocation *allocation)
+{
+	BonoboSocket *socket;
+	BonoboSocketPrivate *priv;
+
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (BONOBO_IS_SOCKET (widget));
+	g_return_if_fail (allocation != NULL);
+
+	socket = BONOBO_SOCKET (widget);
+	priv = socket->priv;
+
+	widget->allocation = *allocation;
+	if (GTK_WIDGET_REALIZED (widget)) {
+		gdk_window_move_resize (widget->window,
+					allocation->x, allocation->y,
+					allocation->width, allocation->height);
+
+		if (priv->plug_window) {
+			gdk_error_trap_push ();
+
+			if (!priv->need_map &&
+			    (allocation->width == priv->current_width) &&
+			    (allocation->height == priv->current_height)) {
+				send_configure_event (socket);
+				GTK_NOTE(PLUGSOCKET,
+					 g_message ("BonoboSocket - allocated no change: %d %d",
+						    allocation->width, allocation->height));
+			} else {
+				gdk_window_move_resize (priv->plug_window,
+							0, 0,
+							allocation->width, allocation->height);
+				GTK_NOTE (PLUGSOCKET,
+					  g_message ("BonoboSocket - allocated: %d %d",
+						     allocation->width, allocation->height));
+				priv->current_width = allocation->width;
+				priv->current_height = allocation->height;
+			}
+
+			if (priv->need_map) {
+				gdk_window_show (priv->plug_window);
+				priv->need_map = FALSE;
+			}
+
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
+	}
+}
+
+/*
+ * Focus_in_event handler for the socket widget.  If we had previously given the
+ * focus to the child window, we give it the focus again.  This is so that
+ * unfocusing the toplevel window and focusing it back again will restore the
+ * focus to our embedded window.
+ */
+static gint
+bonobo_socket_focus_in_event (GtkWidget *widget, GdkEventFocus *event)
+{
+	BonoboSocket *socket;
+	BonoboSocketPrivate *priv;
+
+	g_return_val_if_fail (BONOBO_IS_SOCKET (widget), TRUE);
+
+	socket = BONOBO_SOCKET (widget);
+	g_return_val_if_fail (socket->priv != NULL, TRUE);
+
+	priv = socket->priv;
+
+	if (priv->gave_focus && priv->plug_window) {
+		gdk_error_trap_push ();
+		XSetInputFocus (GDK_DISPLAY (),
+				GDK_WINDOW_XWINDOW (priv->plug_window),
+				RevertToParent, CurrentTime);
+		gdk_flush();
+		gdk_error_trap_pop ();
+	}
+
+	return TRUE;
+}
+
+/* Focus_out_event handler for the socket widget */
+static gint
+bonobo_socket_focus_out_event (GtkWidget *widget, GdkEventFocus *event)
+{
+	BonoboSocket *socket;
+	BonoboSocketPrivate *priv;
+	GtkWidget *toplevel;
+
+	socket = BONOBO_SOCKET (widget);
+	priv = socket->priv;
+
+	toplevel = gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW);
+
+	if (toplevel)
+		XSetInputFocus (GDK_DISPLAY (),
+				GDK_WINDOW_XWINDOW (toplevel->window),
+				RevertToParent, CurrentTime);
+
+	priv->gave_focus = FALSE;
+
+	return TRUE;
+}
+
+static void
+claim_focus (BonoboSocket *socket)
+{
+	BonoboSocketPrivate *priv;
+
+	priv = socket->priv;
+
+	priv->gave_focus = TRUE;
+
+	/* Oh, the trickery... */
+
+	GTK_WIDGET_SET_FLAGS (socket, GTK_CAN_FOCUS);
+	gtk_widget_grab_focus (GTK_WIDGET (socket));
+	GTK_WIDGET_UNSET_FLAGS (socket, GTK_CAN_FOCUS);
+
+	/*
+	 * FIXME: we might grab the focus even if we don't have it as an
+	 * app... (and see _focus_in())
+	 */
+	if (priv->plug_window) {
+		gdk_error_trap_push ();
+		XSetInputFocus (GDK_DISPLAY (),
+				GDK_WINDOW_XWINDOW (priv->plug_window),
+				RevertToParent, CurrentTime);
+		gdk_flush ();
+		gdk_error_trap_pop ();
+	}
+}
+
+/*
+ * Focus handler for the socket widget.  We proxy the focus request to the child
+ * Bonobo control and then give it the actual input focus or reclaim it as
+ * appropriate.
+ */
+static gint
+bonobo_socket_focus (GtkContainer *container, GtkDirectionType direction)
+{
+	BonoboSocket *socket;
+	BonoboSocketPrivate *priv;
+
+	socket = BONOBO_SOCKET (container);
+	priv = socket->priv;
+
+	if (!priv->gave_focus && priv->plug_window) {
+		claim_focus (socket);
+		return bonobo_control_frame_focus_child (priv->frame, direction);
+	} else
+		return FALSE;
+}
+
+static void
 bonobo_socket_add_window (BonoboSocket *socket, guint32 xid)
 {
 	BonoboSocketPrivate *priv;
@@ -642,25 +594,25 @@ bonobo_socket_add_window (BonoboSocket *socket, guint32 xid)
 	if (!priv->plug_window) {
 		GtkWidget *toplevel;
 		GdkDragProtocol protocol;
-      
+
 		priv->plug_window = gdk_window_foreign_new (xid);
 		if (!priv->plug_window) /* Already gone */
 			return;
-	
+
 		priv->same_app = FALSE;
 
 		gdk_error_trap_push ();
 		XSelectInput (GDK_DISPLAY (),
 			      GDK_WINDOW_XWINDOW (priv->plug_window),
 			      StructureNotifyMask | PropertyChangeMask);
-      
+
 		if (gdk_drag_get_protocol (xid, &protocol))
-			gtk_drag_dest_set_proxy (GTK_WIDGET (socket), priv->plug_window, 
+			gtk_drag_dest_set_proxy (GTK_WIDGET (socket), priv->plug_window,
 						 protocol, TRUE);
 		gdk_flush ();
 		gdk_error_trap_pop ();
 
-		gdk_window_add_filter (priv->plug_window, 
+		gdk_window_add_filter (priv->plug_window,
 				       bonobo_socket_filter_func, socket);
 
 		/* Add a pointer to the socket on our toplevel window */
@@ -679,14 +631,42 @@ bonobo_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data
 	GtkWidget *widget;
 	XEvent *xevent;
 	GdkFilterReturn return_val;
-  
+
 	socket = BONOBO_SOCKET (data);
 	priv = socket->priv;
 
 	widget = GTK_WIDGET (socket);
-	xevent = (XEvent *)gdk_xevent;
+	xevent = (XEvent *) gdk_xevent;
 
 	return_val = GDK_FILTER_CONTINUE;
+
+	switch (xevent->type) {
+	case KeyPress:
+	case KeyRelease:
+		last_x_time_stamp = xevent->xkey.time;
+		break;
+
+	case ButtonPress:
+	case ButtonRelease:
+		last_x_time_stamp = xevent->xbutton.time;
+		break;
+
+	case MotionNotify:
+		last_x_time_stamp = xevent->xmotion.time;
+		break;
+
+	case EnterNotify:
+	case LeaveNotify:
+		last_x_time_stamp = xevent->xcrossing.time;
+		break;
+
+	case PropertyNotify:
+		last_x_time_stamp = xevent->xproperty.time;
+		break;
+
+	default:
+		break;
+	}
 
 	switch (xevent->type) {
 	case CreateNotify: {
@@ -694,15 +674,17 @@ bonobo_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data
 
 		if (!priv->plug_window) {
 			bonobo_socket_add_window (socket, xcwe->window);
+			if (!priv->plug_window)
+				break;
 
 			gdk_error_trap_push ();
 			gdk_window_move_resize (priv->plug_window,
 						0, 0,
-						widget->allocation.width, 
+						widget->allocation.width,
 						widget->allocation.height);
 			gdk_flush ();
 			gdk_error_trap_pop ();
-	
+
 			priv->request_width = xcwe->width;
 			priv->request_height = xcwe->height;
 			priv->have_size = TRUE;
@@ -711,83 +693,80 @@ bonobo_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data
 				  g_message ("BonoboSocket - window created with size: %d %d",
 					     priv->request_width,
 					     priv->request_height));
-	    
+
 			gtk_widget_queue_resize (widget);
 		}
-	
+
 		return_val = GDK_FILTER_REMOVE;
-	
 		break;
 	}
 
- 	case ConfigureRequest: {
-  		XConfigureRequestEvent *xcre = &xevent->xconfigurerequest;
-  	
- 		if (!priv->plug_window)
-  			bonobo_socket_add_window (socket, xcre->window);
-  	
-		/* FIXME: it seems it is possible to have a NULL socket->plug_window
-		   but this crashes stuff */
- 		if (xcre->window == GDK_WINDOW_XWINDOW (priv->plug_window)) {
+	case ConfigureRequest: {
+		XConfigureRequestEvent *xcre = &xevent->xconfigurerequest;
 
- 			if (xcre->value_mask & (CWWidth | CWHeight)) {
- 				priv->request_width = xcre->width;
- 				priv->request_height = xcre->height;
- 				priv->have_size = TRUE;
-  		
- 				GTK_NOTE (PLUGSOCKET,
- 					  g_message ("BonoboSocket - configure request: %d %d",
- 						     priv->request_width,
- 						     priv->request_height));
-  		
-  				gtk_widget_queue_resize (widget);
- 			} else if (xcre->value_mask & (CWX | CWY))
-  				bonobo_socket_send_configure_event (socket);
- 
-  			/* Ignore stacking requests. */
-  	    
-  			return_val = GDK_FILTER_REMOVE;
+		if (!priv->plug_window)
+			bonobo_socket_add_window (socket, xcre->window);
+
+		if (!priv->plug_window)
+			break;
+
+		if (xcre->window == GDK_WINDOW_XWINDOW (priv->plug_window)) {
+			if (xcre->value_mask & (CWWidth | CWHeight)) {
+				priv->request_width = xcre->width;
+				priv->request_height = xcre->height;
+				priv->have_size = TRUE;
+
+				GTK_NOTE (PLUGSOCKET,
+					  g_message ("BonoboSocket - configure request: %d %d",
+						     priv->request_width,
+						     priv->request_height));
+
+				gtk_widget_queue_resize (widget);
+			} else if (xcre->value_mask & (CWX | CWY))
+				send_configure_event (socket);
+
+			/* Ignore stacking requests. */
+			return_val = GDK_FILTER_REMOVE;
 		}
+
 		break;
 	}
 
 	case DestroyNotify: {
 		XDestroyWindowEvent *xdwe = &xevent->xdestroywindow;
 
-		if (priv->plug_window &&
-		    (xdwe->window == GDK_WINDOW_XWINDOW (priv->plug_window))) {
+		if (priv->plug_window && (xdwe->window == GDK_WINDOW_XWINDOW (priv->plug_window))) {
 			GtkWidget *toplevel;
 
-			GTK_NOTE (PLUGSOCKET,
-				  g_message ("BonoboSocket - destroy notify"));
-	    
+			GTK_NOTE (PLUGSOCKET, g_message ("BonoboSocket - destroy notify"));
+
 			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (socket));
 			if (toplevel && GTK_IS_WINDOW (toplevel))
 				gtk_window_remove_embedded_xid (GTK_WINDOW (toplevel), xdwe->window);
+
 			gdk_window_destroy_notify (priv->plug_window);
 			gtk_widget_destroy (widget);
 
 			priv->plug_window = NULL;
-	    
+
 			return_val = GDK_FILTER_REMOVE;
 		}
 		break;
 	}
-      
+
 	case FocusIn:
 		if (xevent->xfocus.mode == EMBEDDED_APP_WANTS_FOCUS)
-			bonobo_socket_claim_focus (socket);
+			claim_focus (socket);
 		else if (xevent->xfocus.detail == NotifyInferior) {
 #if 0
 			GtkWidget *toplevel;
 			toplevel = gtk_widget_get_ancestor (widget, gtk_window_get_type());
-	  
-			if (toplevel) {
+
+			if (toplevel)
 				XSetInputFocus (GDK_DISPLAY (),
 						GDK_WINDOW_XWINDOW (toplevel->window),
-						RevertToParent, CurrentTime); /* FIXME? */
-			}
-#endif	  
+						RevertToParent, CurrentTime);
+#endif
 		}
 
 		return_val = GDK_FILTER_REMOVE;
@@ -800,10 +779,12 @@ bonobo_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data
 	case MapRequest:
 		if (!priv->plug_window)
 			bonobo_socket_add_window (socket, xevent->xmaprequest.window);
-	
+
+		if (!priv->plug_window)
+			break;
+
 		if (xevent->xmaprequest.window == GDK_WINDOW_XWINDOW (priv->plug_window)) {
-			GTK_NOTE (PLUGSOCKET,
-				  g_message ("BonoboSocket - Map Request"));
+			GTK_NOTE (PLUGSOCKET, g_message ("BonoboSocket - Map Request"));
 
 			gdk_error_trap_push ();
 			gdk_window_show (priv->plug_window);
@@ -815,12 +796,15 @@ bonobo_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data
 		break;
 
 	case PropertyNotify:
-		if (xevent->xproperty.window ==
-		    GDK_WINDOW_XWINDOW (priv->plug_window)) {
+		if (!priv->plug_window)
+			break;
+
+		if (xevent->xproperty.window == GDK_WINDOW_XWINDOW (priv->plug_window)) {
 			GdkDragProtocol protocol;
 
 			if ((xevent->xproperty.atom == gdk_atom_intern ("XdndAware", FALSE)) ||
-			    (xevent->xproperty.atom == gdk_atom_intern ("_MOTIF_DRAG_RECEIVER_INFO", FALSE))) {
+			    (xevent->xproperty.atom == gdk_atom_intern ("_MOTIF_DRAG_RECEIVER_INFO",
+									FALSE))) {
 				gdk_error_trap_push ();
 				if (gdk_drag_get_protocol (xevent->xproperty.window, &protocol))
 					gtk_drag_dest_set_proxy (GTK_WIDGET (socket),

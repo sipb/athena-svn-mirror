@@ -2,56 +2,21 @@
 BonoboViewFrame
 
 <!-- ##### SECTION Short_Description ##### -->
-
+the container side frame for a BonoboView
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+The BonoboViewFrame is the container side control interface
+for its attached remote #BonoboView. The view frame can be
+used to set the zoom factor on the embedded view using the
+<function>bonobo_view_freame_set_zoom_factor</function>
+function.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#BonoboControlFrame, #BonoboView
 </para>
-
-<!-- ##### MACRO BONOBO_VIEW_FRAME_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_VIEW_FRAME ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_VIEW_FRAME_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_VIEW_FRAME ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_VIEW_FRAME_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### STRUCT BonoboViewFrame ##### -->
 <para>
@@ -65,6 +30,7 @@ BonoboViewFrame
 </para>
 
 @parent_class: 
+@epv: 
 @user_activate: 
 @user_context: 
 
@@ -74,10 +40,11 @@ BonoboViewFrame
 </para>
 
 @view_frame: 
-@corba_view_frame: 
 @client_site: 
 @uih: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@corba_view_frame: 
 
 
 <!-- ##### FUNCTION bonobo_view_frame_new ##### -->
@@ -167,14 +134,6 @@ BonoboViewFrame
 
 @view_frame: 
 @zoom: 
-
-
-<!-- ##### FUNCTION bonobo_view_frame_get_epv ##### -->
-<para>
-
-</para>
-
-@Returns: 
 
 
 <!-- ##### SIGNAL BonoboViewFrame::user-activate ##### -->

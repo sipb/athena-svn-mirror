@@ -242,12 +242,9 @@ bonobo_property_control_new (BonoboPropertyControlGetControlFn get_fn,
 			     int   num_pages,
 			     void *closure)
 {
-	BonoboPropertyControl *property_control;
 	BonoboEventSource *event_source;
 
 	g_return_val_if_fail (num_pages > 0, NULL);
-
-	property_control = gtk_type_new (bonobo_property_control_get_type ());
 
 	event_source = bonobo_event_source_new ();
 

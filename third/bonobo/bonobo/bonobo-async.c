@@ -14,7 +14,7 @@ struct _BonoboAsyncReply {
 
 	GIOPConnection     *request_cnx;
 
-	guint               timeout_usec;
+	guint               timeout_msec;
 	GIOP_unsigned_long  request_id;
 
 	GIOPRecvBuffer     *recv_buffer;
@@ -24,7 +24,7 @@ static BonoboAsyncReply *
 handle_new (const BonoboAsyncMethod *method,
 	    BonoboAsyncCallback      cb,
 	    gpointer                 user_data,
-	    guint                    timeout_usec,
+	    guint                    timeout_msec,
 	    CORBA_Object             object,
 	    gpointer                *args,
 	    CORBA_Environment       *ev)
@@ -45,7 +45,7 @@ handle_new (const BonoboAsyncMethod *method,
 	giop_connection_ref (handle->request_cnx);
 	handle->request_id = GPOINTER_TO_UINT (handle);
 	handle->args = g_new0 (gpointer, num_args);
-	handle->timeout_usec = timeout_usec;
+	handle->timeout_msec = timeout_msec;
 
 	/*
 	 * We have to copy in case of an evil forwarding
@@ -285,7 +285,7 @@ bonobo_async_marshal (BonoboAsyncReply *handle)
 		g_assert (handle->request_cnx->fd > 0);
 
 		/* We add the timeout function. */
-		g_timeout_add (handle->timeout_usec,
+		g_timeout_add (handle->timeout_msec,
 			       (GSourceFunc) timeout_fn, handle);
 			
 		/*
@@ -310,6 +310,18 @@ bonobo_async_marshal (BonoboAsyncReply *handle)
 	g_free (data);
 }
 
+/**
+ * bonobo_async_demarshal:
+ * @handle: the reply handle
+ * @retval: pointer to variable to store retval in
+ * @out_args: array of pointers to vars for InOut / Out params.
+ * 
+ * When a user's async callback happens ( when a method's return data
+ * arrives back ) this function is typicaly used by the callback
+ * to de-marshal the arguments associated with the method, such as
+ * the @retval, and an array of pointers to memory in which to store
+ * the returned InOut / Out arguments in order.
+ **/
 void
 bonobo_async_demarshal (BonoboAsyncReply *handle,
 			gpointer          retval,
@@ -356,22 +368,50 @@ bonobo_async_demarshal (BonoboAsyncReply *handle,
 	}
 }
 
+/**
+ * bonobo_async_invoke:
+ * @method: method description
+ * @cb: async callback
+ * @user_data: associated callback user data
+ * @timeout_msec: timeout in milli-seconds
+ * @object: object to invoke method on
+ * @args: array of ordered In/InOut arguments in same order as in method
+ * @ev: CORBA exception environment
+ * 
+ * Given a type based description of a CORBA @method
+ * the method is invoked asynchronously. If an error occurs
+ * in invocation an exception is fired in @ev and @cb will
+ * never be invoked.
+ * Otherwise, @cb is invoked, either on the timeout - in
+ * which case an ex_CORBA_COMM_FAILURE system exception will be
+ * returned, or when the method returns with whatever data /
+ * exceptions are relevant.
+ **/
 void
 bonobo_async_invoke (const BonoboAsyncMethod *method,
 		     BonoboAsyncCallback      cb,
 		     gpointer                 user_data,
-		     guint                    timout_usec,
+		     guint                    timeout_msec,
 		     CORBA_Object             object,
 		     gpointer                *args,
 		     CORBA_Environment       *ev)
 {
 	BonoboAsyncReply *handle = handle_new (method, cb, user_data,
-					       timout_usec,
+					       timeout_msec,
 					       object, args, ev);
 
 	bonobo_async_marshal (handle);
 }
 
+/**
+ * bonobo_async_handle_get_recv:
+ * @handle: the reply handle.
+ * 
+ * This method can be used to extract the internal GIOP
+ * buffer on the reply, for advanced custom de-marshaling.
+ * 
+ * Return value: the internal reply buffer.
+ **/
 GIOPRecvBuffer *
 bonobo_async_handle_get_recv (BonoboAsyncReply *handle)
 {

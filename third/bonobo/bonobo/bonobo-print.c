@@ -132,6 +132,16 @@ bonobo_print_get_type (void)
 	return type;
 }
 
+/**
+ * bonobo_print_construct:
+ * @p: the print object
+ * @render: the render method
+ * @user_data: the render method's user data
+ * 
+ * Construct @p setting its @render and @user_data pointers
+ * 
+ * Return value: a constructed BonoboPrint object
+ **/
 BonoboPrint *
 bonobo_print_construct (BonoboPrint         *p,
 			BonoboPrintRenderFn *render,
@@ -145,13 +155,17 @@ bonobo_print_construct (BonoboPrint         *p,
 
 /**
  * bonobo_print_new:
- * @render: 
- * @user_data: 
+ * @render: the render function
+ * @user_data: the render's user data function
  * 
  * Create a new bonobo-print implementing BonoboObject
  * interface.
+ *
+ * This interface is called to ask a component to
+ * @render itself to a print context with the specified
+ * width and height, and scissoring data.
  * 
- * Return value: 
+ * Return value: a new BonoboPrint interface
  **/
 BonoboPrint *
 bonobo_print_new (BonoboPrintRenderFn *render,

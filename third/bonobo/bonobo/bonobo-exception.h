@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-exception.c: a generic exception -> user string converter.
  *
  * Authors:
@@ -7,7 +7,6 @@
  *
  * Copyright 2000 Helix Code, Inc.
  */
-
 #ifndef _BONOBO_EXCEPTION_H_
 #define _BONOBO_EXCEPTION_H_
 
@@ -55,7 +54,7 @@
 		"file %s: line %d (%s): assertion `%s' failed.",	\
 		__FILE__,						\
 		__LINE__,						\
-		__PRETTY_FUNCTION__,					\
+		G_GNUC_PRETTY_FUNCTION,					\
 		#expr);							\
          return;                                                        \
      };	}G_STMT_END
@@ -70,7 +69,7 @@
 		"file %s: line %d (%s): assertion `%s' failed.",	\
 		__FILE__,						\
 		__LINE__,						\
-		__PRETTY_FUNCTION__,					\
+		G_GNUC_PRETTY_FUNCTION,					\
 		#expr);							\
          return val;                                                    \
      };	}G_STMT_END
@@ -78,8 +77,10 @@
 
 #define BONOBO_EX(ev)         ((ev) && (ev)->_major != CORBA_NO_EXCEPTION)
 
-#define BONOBO_USER_EX(ev,id) ((ev) && (ev)->major == CORBA_USER_EXCEPTION &&	\
+#define BONOBO_USER_EX(ev,id) ((ev) && (ev)->_major == CORBA_USER_EXCEPTION &&	\
 			       (ev)->_repo_id != NULL && !strcmp ((ev)->_repo_id, id))
+
+#define BONOBO_EX_ID(ev)      ((ev)->_repo_id)
 
 #define BONOBO_RET_EX(ev)		\
 	G_STMT_START			\

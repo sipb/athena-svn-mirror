@@ -1,3 +1,27 @@
+2001-08-15  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/ib1_file.c (ib1_node_open): added patches form Dan Nguyen to
+	make it compile on native AIX compiler.
+
+2001-08-14  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/lock.c (efs_lock_create): buf is 32 bytes now
+
+	* src/Makefile.am (libefs_la_LDFLAGS): added -lz needed for AIX
+
+	* src/ib1_driver.c (ib1_read_head): convert type/protection from LE
+
+2001-06-05  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/lock.c: resolved Bugzilla bug: 55595
+	* src/efstest.c: resolved Bugzilla bug: 55595
+
+
+2001-05-25  Dietmar Maurer  <dietmar@ximian.com>
+
+	* src/ib1_file.c (ib1_node_open): set EFS_RDWR on new directories
+	as suggested by Mike Kestner.
+
 Mon Nov  6 15:18:00 2000  Dietmar Maurer  <dietmar@maurer-it.com>
 
 	* src/ib1_inode.c (ib1_inode_create): bug fix. clear the whole inode

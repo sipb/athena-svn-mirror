@@ -1,32 +1,33 @@
-#!@XML_I18N_TOOLS_PERL@ -w
+#!@INTLTOOL_PERL@ -w
 
-#  The GNOME Translation Update Tool 
+#  The Intltool Message Updater
 #
 #  Copyright (C) 2000 Free Software Foundation.
 #
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License as
+#  Intltool is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Library General Public License as
 #  published by the Free Software Foundation; either version 2 of the
 #  License, or (at your option) any later version.
 #
-#  This script is distributed in the hope that it will be useful,
+#  Intltool is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  General Public License for more details.
+#  Library General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with this library; if not, write to the Free Software
-#  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#  You should have received a copy of the GNU Library General Public
+#  License along with the Gnome Library; see the file COPYING.LIB.  If not,
+#  write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+#  Boston, MA 02111-1307, USA.
 #
 #  Author(s): Kenneth Christiansen
 
 ## Release information
-my $PROGRAM  = "xml-i18n-update";
-my $VERSION  = "0.7";
-my $_PACKAGE = "xml-i18n-tools";
+my $PROGRAM  = "intltool-update";
+my $VERSION  = "0.9.6";
+my $_PACKAGE = "intltool";
 
 ## Loaded modules
-## FIXME: use strict;
+use strict;
 use Getopt::Long;
 use Cwd;
 use File::Copy;
@@ -46,8 +47,20 @@ my $VERBOSE	   = "0";
 my @languages;
 my %po_files_by_lang = ();
 
-my $xml_extension = "xml|glade|desktop\.in|directory\.in|"
-		   ."soundlist\.in|keys\.in|oaf(\.in)+";
+my $xml_extension = 
+"xml(\.in)*|".		# .in is not required
+"ui|".
+"glade(\.in)*|".	# .in is not required
+"scm(\.in)*|".		# .in is not required
+"desktop(\.in)+|".
+"directory(\.in)+|".
+"soundlist(\.in)+|".
+"keys(\.in)+|".
+"oaf(\.in)+|".
+"server(\.in)+|".
+"etspec|".
+"sheet(\.in)+|".
+"pong(\.in)+";
 
 my $PACKAGE = &find_package_name;
 
@@ -63,7 +76,7 @@ if (! $LANG){
 
 ## Handle options
 GetOptions (
-	    "help|h|?"  	=> \$HELP_ARG,
+	    "help|h"	  	=> \$HELP_ARG,
 	    "version|v" 	=> \$VERSION_ARG,
 	    "dist|d"		=> \$DIST_ARG,
 	    "pot|p"		=> \$POT_ARG,
@@ -75,7 +88,7 @@ GetOptions (
 
 
 ## Use the supplied arguments
-## Check for options. 
+## Check for options.
 ## This section will check for the different options.
 
 sub split_on_argument {
@@ -92,7 +105,7 @@ sub split_on_argument {
 
     } elsif ($POT_ARG) {
         &gen_headers;
-        &generate_pot; 
+        &generate_pot;
 
     } elsif ($HEADERS_ARG) {
         &gen_headers;
@@ -113,48 +126,54 @@ sub split_on_argument {
 
     } else {
 	&help;
-    }  
-} 
+    }
+}
 
 &split_on_argument;
 
-sub main 
+sub main
 {
    if(-s "$LANG.po"){
 	print "Working, please wait..." unless $VERBOSE;
-        &gen_headers; 
+        &gen_headers;
 	&generate_pot;
 	&merging;
 	&status;
-   }  
+   }
 
    ## Report error if the language file supplied
    ## to the command line is non-existent
    else {
-	&not_existing;       
+	&not_existing;
    }
 }
 
 sub determine_type($) {
-
    my $type = $_;
+
+   my $gettext_type;
 
    if ($type =~ /\[type: (gettext\/[^\]].*)]/) {
         $gettext_type=$1;
    }
-   elsif ($type =~ /(?:xml|oaf(?:\.in)+)$/) {
+   elsif ($type =~ /(?:xml(\.in)*|ui|oaf(?:\.in)+|server(?:\.in)+|sheet(?:\.in)+|pong(?:\.in)+|etspec)$/) {
         $gettext_type="gettext\/xml";
    }
-   elsif ($type =~ /glade$/) {
+   elsif ($type =~ /glade(\.in)*$/) {
         $gettext_type="gettext\/glade";
    }
-   elsif ($type =~ /desktop(?:\.in)+$/) {
+   elsif ($type =~ /(?:desktop(?:\.in)+|directory(?:\.in)+|soundlist(?:\.in)+)$/) {
         $gettext_type="gettext\/ini";
    }
-   elsif ($type =~ /keys(?:\.in)+$/) {
+   elsif ($type =~ /scm(\.in)*$/) {
+        $gettext_type="gettext\/scheme";
+   }
+   elsif ($type =~ /keys(\.in)+$/) {
         $gettext_type="gettext\/keys";
-   } 
+   }
    else { $gettext_type=""; }
+
+   return $gettext_type;
 }
 
 sub version{
@@ -188,12 +207,13 @@ sub help
 }
 
 sub maintain
-{   
-    my (@buf_i18n_plain, 
-	@buf_i18n_xml, 
-	@buf_potfiles, 
+{
+    my (@buf_i18n_plain,
+	@buf_i18n_xml,
+	@buf_potfiles,
 	@buf_potfiles_ignore,
-	@buf_allfiles_sorted, 
+	@buf_allfiles,
+	@buf_allfiles_sorted,
 	@buf_potfiles_sorted
     );
 
@@ -202,11 +222,11 @@ sub maintain
     find sub { push @buf_i18n_xml, "$File::Find::name" if /\.($xml_extension)$/ }, "..";
 
     open(POTFILES, "POTFILES.in") || die "$PROGRAM:  there's no POTFILES.in!!!\n";
-    @buf_potfiles = <POTFILES>;    
+    @buf_potfiles = grep /^[^#]/, <POTFILES>;
 
     print "Searching for missing translatable files...\n";
-    
-    ## Check if we should ignore some found files, when 
+
+    ## Check if we should ignore some found files, when
     ## comparing with POTFILES.in
     if (-s "POTFILES.skip"){
         open FILE, "POTFILES.skip";
@@ -230,10 +250,10 @@ sub maintain
         }
     }
 
-    foreach my $file (@buf_i18n_xml){ 
+    foreach my $file (@buf_i18n_xml){
         open FILE, "<$file";
         while (<FILE>) {
-            if (/\s_(.*)="/){
+            if (/\s_(.*)=\"/){
                 ## Remove the first 3 chars and add newline
                 push @buf_allfiles, unpack("x3 A*", $file) . "\n";
                 last;
@@ -249,9 +269,11 @@ sub maintain
         $in2{$_} = 1;
     }
 
+    my @result;
+
     foreach (@buf_allfiles_sorted){
         if (!exists($in2{$_})){
-            push @result, $_ 
+            push @result, $_
         }
     }
 
@@ -268,7 +290,7 @@ sub maintain
     ## If there is nothing to complain about, notice the user
     else{
         print "\nWell, it's all perfect! Congratulation!\n";
-    }         
+    }
 }
 
 sub invalid_option
@@ -278,41 +300,41 @@ sub invalid_option
     print "Try `${PROGRAM} --help' for more information.\n";
     exit 1;
 }
- 
+
 sub gen_headers
 {
-    my $XML_I18N_EXTRACT = `which xml-i18n-extract 2>/dev/null`;
-    chomp $XML_I18N_EXTRACT;
- 
-    $XML_I18N_EXTRACT = $ENV{"XML_I18N_EXTRACT"} if $ENV{"XML_I18N_EXTRACT"};
- 
+    my $EXTRACT = `which intltool-extract 2>/dev/null`;
+    chomp $EXTRACT;
+
+    $EXTRACT = $ENV{"INTLTOOL_EXTRACT"} if $ENV{"INTLTOOL_EXTRACT"};
+
     ## Generate the .h header files, so we can allow glade and
     ## xml translation support
-    if (! -s $XML_I18N_EXTRACT)
+    if (! -s $EXTRACT)
     {
-	print "\n *** The xml-i18n-extract script wasn't found!"
-	     ."\n *** Without this xml-i18n-update can not generate files.\n";
+	print "\n *** The intltool-extract script wasn't found!"
+	     ."\n *** Without this intltool-update can not generate files.\n";
 	exit;
-    } 
-    else 
+    }
+    else
     {
         open FILE, "<POTFILES.in";
         while (<FILE>) {
            chomp;
 
            ## Find xml files in POTFILES.in and generate the
-           ## files with help from the xml-i18n-extract script
-           
+           ## files with help from the extract script
+
 	   my $gettext_type=&determine_type($1);
 
            if (/\.($xml_extension)$/ || /^\[/){
 	       $_ =~ s/^\[[^\[].*]\s*//;
-               $filename = "../$_";
+               my $filename = "../$_";
 
                if ($VERBOSE){
-                   system($XML_I18N_EXTRACT, "--update", "--type=$gettext_type", $filename);
+                   system($EXTRACT, "--update", "--type=$gettext_type", $filename);
                } else {
-	 	   system($XML_I18N_EXTRACT, "--update", "--type=$gettext_type", "--quiet", $filename);
+	 	   system($EXTRACT, "--update", "--type=$gettext_type", "--quiet", $filename);
                }
            }
        }
@@ -333,7 +355,7 @@ sub generate_pot
     while (<INFILE>) {
         s/\.($xml_extension)$/$&.h/;
         s/^\[.*]\s*(.*)/$1.h/;
-        print OUTFILE $_;        
+        print OUTFILE $_;
     }
     close OUTFILE;
     close INFILE;
@@ -342,7 +364,7 @@ sub generate_pot
                        ."&& mv $PACKAGE\.po \.\/$PACKAGE\.pot \)";
 
     system("xgettext", "--default-domain\=$PACKAGE", "--directory\=\.\.",
-	   "--add-comments", "--keyword\=\_", "--keyword\=N\_",
+	   "--add-comments", "--keyword\=\_", "--keyword\=N\_", "--keyword\=U\_",
 	   "--files-from\=\.\/POTFILES\.in");
 
     system($gettext_test);
@@ -354,7 +376,7 @@ sub generate_pot
     print "Removing generated header (.h) files..." if $VERBOSE;
 
     open FILE, "<POTFILES.in";
-    while (<FILE>) 
+    while (<FILE>)
     {
         chomp;
         unlink "../$_.h" if /\.($xml_extension)$/;
@@ -366,7 +388,7 @@ sub generate_pot
 sub merging
 {
     if ($ARGV[1]){
-        $LANG   = $ARGV[1]; 
+        $LANG   = $ARGV[1];
     } else {
 	$LANG   = $ARGV[0];
     }
@@ -388,7 +410,7 @@ sub perform_merge
 
     ## Preform merge
     system("msgmerge", "$LANG.po.old", "$PACKAGE.pot", "-o", "$LANG.po");
-    
+
     ## Remove the backup file
     unlink "$LANG.po.old";
 }
@@ -397,11 +419,11 @@ sub not_existing
 {
     ## Report error if supplied language file is non-existing
     print "$PROGRAM:  sorry, $LANG.po does not exist!\n";
-    print "Try `$PROGRAM --help' for more information.\n";    
+    print "Try `$PROGRAM --help' for more information.\n";
     exit;
 }
 
-sub gather_po_files 
+sub gather_po_files
 {
     my @po_files = glob("./*.po");
 
@@ -412,21 +434,21 @@ sub gather_po_files
     }
 }
 
-sub po_file2lang 
-{ 
-    my $tmp = $_; 
-    $tmp =~ s/^.*\/(.*)\.po$/$1/; 
-    return $tmp; 
+sub po_file2lang
+{
+    my $tmp = $_;
+    $tmp =~ s/^.*\/(.*)\.po$/$1/;
+    return $tmp;
 }
 
-sub status 
+sub status
 {
     ## Print statistics
     system("msgfmt", "--statistics", "$LANG.po");
-    print "\n";   
+    print "\n";
 }
 
-sub show_status 
+sub show_status
 {
     &gen_headers;
     &generate_pot;
@@ -436,17 +458,17 @@ sub show_status
 	print "$lang: ";
 	&perform_merge($lang);
     }
-  
+
     print "\n\n * Current translation support in $PACKAGE \n\n";
 
     foreach my $lang (@languages){
         print "$lang: ";
  	## Print statistics
 	system("msgfmt", "--statistics", "$lang.po");
-    }  
-}    
+    }
+}
 
-sub find_package_name 
+sub find_package_name
 {
     my $base_dirname = getcwd();
     $base_dirname =~ s@.*/@@;
@@ -457,18 +479,23 @@ sub find_package_name
         if (-f "../configure.in") {
             $conf_in = "../configure.in";
         } else {
-	    my $makefile_source; {
-		local (*IN);
-		local $/; # slurp mode
-	 	open (IN, "<Makefile") || die "can't open Makefile: $!";
-		$makefile_source = <IN>;
+	    my $makefile_source;
+	    local (*IN);
+	    open (IN, "<Makefile") || die "can't open Makefile: $!";
+
+	    while (<IN>) {
+		if (/^top_srcdir[ \t]*=/) {
+		    $src_dir = $_;
+		    # print "${src_dir}\n";
+
+		    $src_dir =~ s/^top_srcdir[ \t]*=[ \t]*([^ \t\n\r]*)/$1/;
+		    # print "${src_dir}\n";
+		    chomp $src_dir;
+		    $conf_in = "$src_dir" . "/configure.in" . "\n";
+		    last;
+		}
 	    }
-            if ($makefile_source =~ /^top_srcdir[ \t]*=/) {   
-                $src_dir = $_;
-                $srcdir =~ s/top_srcdir[ \t]*=[ \t]*([^ \t\n\r]*)/$1/;
-                chomp $srcdir;
-                $conf_in = "$srcdir" . "/configure.in" . "\n";
-	    }
+	    $conf_in || die "Cannot find top_srcdir in Makefile."
         }
 
         my $conf_source; {
@@ -479,17 +506,17 @@ sub find_package_name
         }
 
         if ($conf_source =~ /AM_INIT_AUTOMAKE\(([^,]*),(.*)/) {
-            $package_name = $1;
+            my $package_name = $1;
             if ($package_name =~ /^[\$](.*)/){
                 if ($conf_source =~ /$1=(.*)/) {
                     $package_name = $1;
                 }
             }
+	    return $package_name;
         }
-        return $package_name;
     }
-    
-    print "$PROGRAM: Unable to determine package name.\n" .  
+
+    print "$PROGRAM: Unable to determine package name.\n" .
 	  "Make sure to run this script inside the po directory.\n";
     exit;
 }

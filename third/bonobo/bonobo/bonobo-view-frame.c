@@ -33,9 +33,6 @@ static guint view_frame_signals [LAST_SIGNAL];
 /* Parent object class in GTK hierarchy */
 static GtkObjectClass *bonobo_view_frame_parent_class;
 
-/* The entry point vectors for the server we provide */
-POA_Bonobo_ViewFrame__vepv bonobo_view_frame_vepv;
-
 struct _BonoboViewFramePrivate {
 	GtkWidget	  *wrapper; 
 	BonoboClientSite  *client_site;

@@ -2,7 +2,7 @@
 BonoboUIToolbarIcon
 
 <!-- ##### SECTION Short_Description ##### -->
-
+a bonobo toolbar icon widget
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -21,53 +21,6 @@ BonoboUIToolbarIcon
 
 @BONOBO_UI_TOOLBAR_ICON_SIMPLE: 
 @BONOBO_UI_TOOLBAR_ICON_COLOR: 
-
-<!-- ##### MACRO BONOBO_TYPE_UI_TOOLBAR_ICON ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_UI_TOOLBAR_ICON ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_UI_TOOLBAR_ICON_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### MACRO BONOBO_IS_UI_TOOLBAR_ICON ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_IS_UI_TOOLBAR_ICON_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### MACRO BONOBO_UI_TOOLBAR_ICON_GET_CLASS ##### -->
-<para>
-
-</para>
-
-@obj: 
-
 
 <!-- ##### TYPEDEF BonoboUIToolbarIcon ##### -->
 <para>
@@ -279,12 +232,12 @@ BonoboUIToolbarIcon
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:pixbuf_width ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:pixbuf-width ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:pixbuf_height ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:pixbuf-height ##### -->
 <para>
 
 </para>
@@ -294,17 +247,17 @@ BonoboUIToolbarIcon
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:xpm_d ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:xpm-d ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:draw_mode ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:draw-mode ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:alpha_threshold ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:alpha-threshold ##### -->
 <para>
 
 </para>
@@ -314,12 +267,12 @@ BonoboUIToolbarIcon
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:pixbuf_width ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:pixbuf-width ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:pixbuf_height ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:pixbuf-height ##### -->
 <para>
 
 </para>
@@ -329,17 +282,17 @@ BonoboUIToolbarIcon
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:xpm_d ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:xpm-d ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:draw_mode ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:draw-mode ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG BonoboUIToolbarIcon:alpha_threshold ##### -->
+<!-- ##### ARG BonoboUIToolbarIcon:alpha-threshold ##### -->
 <para>
 
 </para>

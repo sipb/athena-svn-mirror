@@ -97,9 +97,9 @@ static void
 client_site_system_exception_cb (BonoboObject *client, CORBA_Object cobject,
 				 CORBA_Environment *ev, gpointer data)
 {
-	//Buffer *buffer = (Buffer *) data;
+	/* Buffer *buffer = (Buffer *) data; */
 	g_warning ("component shutdown not implemented");
-	//bonobo_object_unref (BONOBO_OBJECT (buffer->client_site));
+	/* bonobo_object_unref (BONOBO_OBJECT (buffer->client_site)); */
 }
 
 static void
@@ -144,7 +144,7 @@ view_activated_cb (BonoboViewFrame *view_frame, gboolean activated,
 		bonobo_view_frame_set_covered (view_frame, FALSE);
                 frame->active_view_frame = view_frame;
 		w = bonobo_view_frame_get_wrapper (view_frame);
-		//gtk_container_focus (GTK_CONTAINER(w), GTK_DIR_UP);
+		/* gtk_container_focus (GTK_CONTAINER(w), GTK_DIR_UP); */
 		gtk_widget_grab_focus(w);
 		frame_set_sensitive (frame, TRUE);
         } else {

@@ -244,6 +244,14 @@ module Canvas {
 		void requestUpdate ();
 		
 		/**
+		 * requestRedraw:
+		 *
+		 * Requests an redraw of the client side canvas.
+		 */
+		void requestRedraw (in long x1, in long y1,
+				    in long x2, in long y2);
+		
+		/**
 		 * grabFocus:
 		 * @mask: Gdk Event mask to grab.
 		 * @cursor: GdkCursorType to display during grab.

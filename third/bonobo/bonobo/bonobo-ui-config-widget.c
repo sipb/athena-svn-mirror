@@ -8,15 +8,22 @@
  * Copyright 2001 Helix Code, Inc.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
 #include <libgnome/gnome-defs.h>
+
+#define GNOME_EXPLICIT_TRANSLATION_DOMAIN PACKAGE
 #include <libgnome/gnome-i18n.h>
 
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-ui-engine-private.h>
 #include <bonobo/bonobo-ui-config-widget.h>
+#include <bonobo/bonobo-ui-sync-toolbar.h>
 
 #define PARENT_TYPE gtk_vbox_get_type ()
 
@@ -206,6 +213,44 @@ look_cb (GtkWidget            *button,
 }
 
 static void
+set_values (BonoboUIConfigWidget *config)
+{
+	BonoboUIToolbarStyle style;
+	BonoboUINode *node;
+	char *value;
+
+	g_return_if_fail (config->priv->cur_path != NULL);
+
+	node = bonobo_ui_engine_get_path (config->engine, config->priv->cur_path);
+
+	/* Set the look */
+	style = bonobo_ui_sync_toolbar_get_look (config->engine, node);
+	switch (style) {
+	case BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY:
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->icon), TRUE);
+		break;
+
+	case BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT:
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->icon_and_text), TRUE);
+		break;
+
+	case BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT:
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->priority_text), TRUE);
+		break;
+		
+	default:
+		break;
+	}
+	
+	/* Set the tooltips */
+	value = bonobo_ui_node_get_attr (node, "tips");
+	if (value != NULL) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->tooltips), atoi (value));
+		bonobo_ui_node_free_string (value);
+	}
+}
+
+static void
 widgets_init (BonoboUIConfigWidget *config,
 	      GtkAccelGroup        *accel_group)
 {
@@ -316,6 +361,7 @@ widgets_init (BonoboUIConfigWidget *config,
 	gtk_box_pack_start (GTK_BOX (vbox5), priv->priority_text, FALSE, FALSE, 0);
 
 	populate_list (toolbar_list, config);
+	set_values (config);
 
 	gtk_widget_show_all (GTK_WIDGET (config));
 	gtk_widget_hide (GTK_WIDGET (config));

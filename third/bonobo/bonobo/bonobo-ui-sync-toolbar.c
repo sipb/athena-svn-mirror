@@ -14,6 +14,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <libgnome/gnome-defs.h>
+#define GNOME_EXPLICIT_TRANSLATION_DOMAIN PACKAGE
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-preferences.h>
 
@@ -459,9 +460,9 @@ parse_look (const char *look)
 		: BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY;
 }
 
-static BonoboUIToolbarStyle
-get_look (BonoboUIEngine *engine,
-	  BonoboUINode   *node)
+BonoboUIToolbarStyle
+bonobo_ui_sync_toolbar_get_look (BonoboUIEngine *engine,
+				 BonoboUINode   *node)
 {
 	char      *txt;
 	BonoboUIToolbarStyle look;
@@ -495,7 +496,7 @@ do_config_popup (BonoboUIEngineConfig *config,
 		 BonoboUINode         *config_node,
 		 BonoboUIEngine       *popup_engine)
 {
-	char *txt;
+	char *txt, *look, *a, *b, *c, *d, *e, *f, *g;
 	gboolean tip;
 	BonoboUIToolbarStyle style;
 	
@@ -505,8 +506,18 @@ do_config_popup (BonoboUIEngineConfig *config,
 		bonobo_ui_node_free_string (txt);
 	}
 
-	style = get_look (bonobo_ui_engine_config_get_engine (config),
-			  config_node);
+	style = bonobo_ui_sync_toolbar_get_look (bonobo_ui_engine_config_get_engine (config),
+						 config_node);
+
+	look = bonobo_ui_util_encode_str (_("Look"));
+	a = bonobo_ui_util_encode_str (_("B_oth"));
+	b = bonobo_ui_util_encode_str (_("_Icon"));
+	c = bonobo_ui_util_encode_str (_("T_ext"));
+	d = tip ? bonobo_ui_util_encode_str (_("Hide t_ips")) : 
+		bonobo_ui_util_encode_str (_("Show t_ips"));
+	e = bonobo_ui_util_encode_str (_("_Hide toolbar"));
+	f = bonobo_ui_util_encode_str (_("Customi_ze"));
+	g = bonobo_ui_util_encode_str (_("Customize the toolbar"));
 
 	txt = g_strdup_printf (
 		"<Root>"
@@ -517,18 +528,18 @@ do_config_popup (BonoboUIEngineConfig *config,
 		"</commands>"
 		"<popups>"
 		"<popup>"
-		"<submenu _label=\"Look\">"
-		"<menuitem verb=\"LookBoth\" _label=\"%s\" set=\"both\""
+		"<submenu label=\"%s\">"
+		"<menuitem verb=\"LookBoth\" label=\"%s\" set=\"both\""
 		 "type=\"radio\" group=\"look\"/>"
-		"<menuitem verb=\"LookIcon\" _label=\"%s\" set=\"icon\""
+		"<menuitem verb=\"LookIcon\" label=\"%s\" set=\"icon\""
 		 "type=\"radio\" group=\"look\"/>"
-		"<menuitem verb=\"LookText\" _label=\"%s\" set=\"text\""
+		"<menuitem verb=\"LookText\" label=\"%s\" set=\"text\""
 		 "type=\"radio\" group=\"look\"/>"
 		"</submenu>"
 		"<separator/>"
-		"<menuitem verb=\"Tip\" _label=\"%s\" set=\"%d\"/>"
-		"<menuitem verb=\"Hide\" _label=\"%s\"/>"
-		"<menuitem verb=\"Customize\" _label=\"%s\" _tip=\"%s\""
+		"<menuitem verb=\"Tip\" label=\"%s\" set=\"%d\"/>"
+		"<menuitem verb=\"Hide\" label=\"%s\"/>"
+		"<menuitem verb=\"Customize\" label=\"%s\" tip=\"%s\""
 		" pixtype=\"stock\" pixname=\"Preferences\"/>"
 		"</popup>"
 		"</popups>"
@@ -536,12 +547,10 @@ do_config_popup (BonoboUIEngineConfig *config,
 		style == BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT,
 		style == BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY,
 		style == BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT,
-		N_("B_oth"),
-		N_("_Icon"),
-		N_("T_ext"),
-		tip ? N_("Hide t_ips") : N_("Show t_ips"),
-		!tip, N_("_Hide toolbar"),
-		N_("Customi_ze"), N_("Customize the toolbar"));
+		look, a, b, c, d, !tip, e, f, g);
+
+	g_free (look); g_free (a); g_free (b); g_free (c);
+	g_free (d); g_free (e); g_free (f); g_free (g);
 
 	return txt;
 }

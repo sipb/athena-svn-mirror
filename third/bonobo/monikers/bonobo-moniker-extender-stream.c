@@ -17,23 +17,25 @@
 
 #include "bonobo-moniker-std.h"
 
+extern gchar * bonobo_internal_get_major_mime_type (const char *mime_type);
+
 static gchar *
 get_stream_type (Bonobo_Stream stream, CORBA_Environment *ev)
 {
 	Bonobo_StorageInfo *info;
 	gchar              *type;
-
+	
 	g_return_val_if_fail (stream != CORBA_OBJECT_NIL, NULL);
-
+	
 	info = Bonobo_Stream_getInfo (stream, Bonobo_FIELD_CONTENT_TYPE, ev);
 	
 	if (BONOBO_EX (ev)) /* FIXME: we could try and do it ourselfs here */
 		return NULL;
-
+	
 	type = g_strdup (info->content_type);
-
+	
 	CORBA_free (info);
-
+	
 	return type;
 }
 
@@ -46,6 +48,7 @@ bonobo_stream_extender_resolve (BonoboMonikerExtender       *extender,
 				CORBA_Environment           *ev)
 {
 	const char    *mime_type;
+	char          *mime_type_major;
 	char          *oaf_requirements;
 	Bonobo_Unknown object;
 	Bonobo_Unknown stream;
@@ -66,15 +69,20 @@ bonobo_stream_extender_resolve (BonoboMonikerExtender       *extender,
 	if (!mime_type)
 		goto unref_stream_exception;
 
+	mime_type_major = bonobo_internal_get_major_mime_type (mime_type);
+	
 	oaf_requirements = g_strdup_printf (
-		"bonobo:supported_mime_types.has ('%s') AND repo_ids.has ('%s') AND "
+		"bonobo:supported_mime_types.has_one (['%s', '%s/*']) AND "
+		"repo_ids.has ('%s') AND "
 		"repo_ids.has ('IDL:Bonobo/PersistStream:1.0')",
-		mime_type, requested_interface);
+		mime_type, mime_type_major, requested_interface);
 		
 	object = oaf_activate (oaf_requirements, NULL, 0, &ret_id, ev);
 	g_warning ("Attempt activate object satisfying '%s': %p",
 		   oaf_requirements, object);
+
 	g_free (oaf_requirements);
+	g_free (mime_type_major);
 
 	if (ev->_major != CORBA_NO_EXCEPTION)
 		goto unref_stream_exception;

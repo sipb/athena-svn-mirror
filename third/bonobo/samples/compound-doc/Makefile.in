@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -74,6 +74,7 @@ BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_REVISION = @BONOBO_REVISION@
 BONOBO_TEST_CFLAGS = @BONOBO_TEST_CFLAGS@
 BONOBO_TEST_LIBS = @BONOBO_TEST_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -81,6 +82,8 @@ CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -113,6 +116,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -121,6 +125,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -132,6 +137,7 @@ PROF_CFLAGS = @PROF_CFLAGS@
 PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -139,12 +145,21 @@ VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+bonobolocaledir = @bonobolocaledir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -180,17 +195,19 @@ EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  bonobo-sample-paint$(EXEEXT) \
+bonobo-sample-canvas-item$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 LIBS = @LIBS@
-bonobo_sample_paint_OBJECTS =  paint-component-simple.o
+bonobo_sample_paint_OBJECTS =  paint-component-simple.$(OBJEXT)
 bonobo_sample_paint_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
 $(top_builddir)/bonobo/libbonobox.la \
 $(top_builddir)/bonobo/libbonobo-print.la
 bonobo_sample_paint_LDFLAGS = 
-bonobo_sample_canvas_item_OBJECTS =  sample-canvas-item.o
+bonobo_sample_canvas_item_OBJECTS =  sample-canvas-item.$(OBJEXT)
 bonobo_sample_canvas_item_DEPENDENCIES =  \
 $(top_builddir)/bonobo/libbonobo.la \
 $(top_builddir)/bonobo/libbonobox.la
@@ -213,7 +230,7 @@ OBJECTS = $(bonobo_sample_paint_OBJECTS) $(bonobo_sample_canvas_item_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps samples/compound-doc/Makefile
 
@@ -250,6 +267,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -258,6 +280,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -285,12 +308,12 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-bonobo-sample-paint: $(bonobo_sample_paint_OBJECTS) $(bonobo_sample_paint_DEPENDENCIES)
-	@rm -f bonobo-sample-paint
+bonobo-sample-paint$(EXEEXT): $(bonobo_sample_paint_OBJECTS) $(bonobo_sample_paint_DEPENDENCIES)
+	@rm -f bonobo-sample-paint$(EXEEXT)
 	$(LINK) $(bonobo_sample_paint_LDFLAGS) $(bonobo_sample_paint_OBJECTS) $(bonobo_sample_paint_LDADD) $(LIBS)
 
-bonobo-sample-canvas-item: $(bonobo_sample_canvas_item_OBJECTS) $(bonobo_sample_canvas_item_DEPENDENCIES)
-	@rm -f bonobo-sample-canvas-item
+bonobo-sample-canvas-item$(EXEEXT): $(bonobo_sample_canvas_item_OBJECTS) $(bonobo_sample_canvas_item_DEPENDENCIES)
+	@rm -f bonobo-sample-canvas-item$(EXEEXT)
 	$(LINK) $(bonobo_sample_canvas_item_LDFLAGS) $(bonobo_sample_canvas_item_OBJECTS) $(bonobo_sample_canvas_item_LDADD) $(LIBS)
 
 install-oafDATA: $(oaf_DATA)
@@ -427,7 +450,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 paint-component-simple.o: paint-component-simple.c ../../config.h \
-	../../bonobo/bonobo.h ../../bonobo/bonobo-object.h \
+	../../bonobo.h ../../bonobo/bonobo-object.h \
 	../../bonobo/Bonobo.h ../../bonobo/bonobo-moniker.h \
 	../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
@@ -468,7 +491,7 @@ paint-component-simple.o: paint-component-simple.c ../../config.h \
 	../../bonobo/bonobo-widget.h ../../bonobo/bonobo-print.h \
 	../../bonobo/bonobo-print-client.h
 sample-canvas-item.o: sample-canvas-item.c ../../config.h \
-	../../bonobo/Bonobo.h ../../bonobo/bonobo.h \
+	../../bonobo/Bonobo.h ../../bonobo.h \
 	../../bonobo/bonobo-object.h ../../bonobo/bonobo-moniker.h \
 	../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \

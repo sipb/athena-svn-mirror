@@ -562,7 +562,7 @@ bonobo_zoomable_corba_object_create (BonoboObject *object)
  * Return value: 
  **/
 void
-bonobo_zoomable_set_parameters_full (BonoboZoomable  *p,
+bonobo_zoomable_set_parameters_full (BonoboZoomable  *zoomable,
 				     float            zoom_level,
 				     float            min_zoom_level,
 				     float            max_zoom_level,
@@ -575,6 +575,7 @@ bonobo_zoomable_set_parameters_full (BonoboZoomable  *p,
 {
 	int i;
 	gchar **zoom_level_names;
+	BonoboZoomable *p = zoomable; 
 
 	g_return_if_fail (BONOBO_IS_ZOOMABLE (p));
 
@@ -616,13 +617,15 @@ bonobo_zoomable_set_parameters_full (BonoboZoomable  *p,
  * Return value: 
  **/
 void
-bonobo_zoomable_set_parameters (BonoboZoomable  *p,
+bonobo_zoomable_set_parameters (BonoboZoomable  *zoomable,
                                 float            zoom_level,
                                 float            min_zoom_level,
                                 float            max_zoom_level,
                                 gboolean         has_min_zoom_level,
                                 gboolean         has_max_zoom_level)
 {
+	BonoboZoomable *p = zoomable;
+
 	g_return_if_fail (BONOBO_IS_ZOOMABLE (p));
 
 	p->priv->zoom_level = zoom_level;
@@ -632,10 +635,19 @@ bonobo_zoomable_set_parameters (BonoboZoomable  *p,
 	p->priv->has_max_zoom_level = has_max_zoom_level;
 }
 
+/**
+ * bonobo_zoomable_add_preferred_zoom_level:
+ * @zoomable: the zoomable
+ * @zoom_level: the new level
+ * @zoom_level_name: the new level's name
+ * 
+ * This appends a new zoom level's name and value to the
+ * internal list of these.
+ **/
 void
 bonobo_zoomable_add_preferred_zoom_level (BonoboZoomable *zoomable,
-                                          float zoom_level,
-                                          const gchar *zoom_level_name)
+                                          float           zoom_level,
+                                          const gchar    *zoom_level_name)
 {
 	gchar *name;
 	CORBA_float level;
@@ -648,10 +660,22 @@ bonobo_zoomable_add_preferred_zoom_level (BonoboZoomable *zoomable,
 	g_array_append_val (zoomable->priv->preferred_zoom_level_names, name);
 }
 
+/**
+ * bonobo_zoomable_construct:
+ * @zoomable: the zoomable
+ * @corba_p: the corba object reference.
+ * 
+ * Construct a newly created BonoboZoomable pointed to
+ * by @zoomable, and associate it with @corba_p
+ * 
+ * Return value: a newly constructed zoomable or NULL on error
+ **/
 BonoboZoomable *
-bonobo_zoomable_construct (BonoboZoomable	*p,
+bonobo_zoomable_construct (BonoboZoomable	*zoomable,
 			   Bonobo_Zoomable	 corba_p)
 {
+	BonoboZoomable *p = zoomable;
+
 	g_return_val_if_fail (p != NULL, NULL);
 	g_return_val_if_fail (BONOBO_IS_ZOOMABLE (p), NULL);
 	g_return_val_if_fail (corba_p != NULL, NULL);

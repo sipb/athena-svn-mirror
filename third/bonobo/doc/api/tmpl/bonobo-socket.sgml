@@ -88,30 +88,6 @@ as between a #BonoboPlug and a #BonoboSocket.
 </variablelist>
 </para>
 
-<!-- ##### MACRO BONOBO_SOCKET ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO BONOBO_SOCKET_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### MACRO BONOBO_IS_SOCKET ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
 <!-- ##### TYPEDEF BonoboSocket ##### -->
 <para>
 The #GtkEditable structure contains the following field.
@@ -145,13 +121,13 @@ never be set by an application.)
 @Returns: 
 
 
-<!-- ##### FUNCTION bonobo_socket_set_control ##### -->
+<!-- ##### FUNCTION bonobo_socket_set_control_frame ##### -->
 <para>
 
 </para>
 
 @socket: 
-@control: 
+@frame: 
 
 
 <!-- ##### FUNCTION bonobo_socket_steal ##### -->

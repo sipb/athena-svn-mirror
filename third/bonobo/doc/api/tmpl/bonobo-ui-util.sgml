@@ -2,25 +2,23 @@
 bonobo-ui-util
 
 <!-- ##### SECTION Short_Description ##### -->
-
+A collection of utility functions to help with UI related issues
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+The UI utilities do man things, mostly concerned with smoothing
+the flow of XML data from containee to container. There are also
+several generaly useful functions used internaly for manipulating
+pixmaps. Also, code for stringifying accelerators, fixing up help
+and working around libxml bugs. Also a large chunk of code is
+included for dynamic UI tree building that is now strongly
+deprecated by the various tools to do this from dynamic files.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
-<!-- ##### FUNCTION bonobo_ui_util_build_skeleton ##### -->
-<para>
-
-</para>
-
-@xml: 
-
 
 <!-- ##### FUNCTION bonobo_ui_util_pixbuf_to_xml ##### -->
 <para>

@@ -2,56 +2,24 @@
 BonoboProgressiveDataSink
 
 <!-- ##### SECTION Short_Description ##### -->
-
+an interface implementation that allows components to sink data slowly
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+This interface is very little used, few containers support it. It
+is intended to allow asynchronous dumping of data to a sub-component
+in such a fashion as to minimize blocking. It transpires that this
+is not a good way to achieve this.
+</para>
 
+<para>
+Deprecated - please use Stream / PersistStream instead.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#PersistStream, #PersistFile
 </para>
-
-<!-- ##### MACRO BONOBO_PROGRESSIVE_DATA_SINK_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_PROGRESSIVE_DATA_SINK ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_PROGRESSIVE_DATA_SINK_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_PROGRESSIVE_DATA_SINK ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_PROGRESSIVE_DATA_SINK_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### STRUCT BonoboProgressiveDataSink ##### -->
 <para>
@@ -126,20 +94,13 @@ BonoboProgressiveDataSink
 </para>
 
 @psink: 
-@corba_psink: 
 @start_fn: 
 @end_fn: 
 @add_data_fn: 
 @set_size_fn: 
 @closure: 
 @Returns: 
-
-
-<!-- ##### FUNCTION bonobo_progressive_get_epv ##### -->
-<para>
-
-</para>
-
-@Returns: 
+<!-- # Unused Parameters # -->
+@corba_psink: 
 
 

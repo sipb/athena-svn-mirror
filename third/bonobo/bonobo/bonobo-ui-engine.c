@@ -88,6 +88,13 @@ find_sync_for_node (BonoboUIEngine *engine,
 		engine, bonobo_ui_node_parent (node));
 }
 
+/**
+ * bonobo_ui_engine_add_sync:
+ * @engine: the enginer
+ * @sync: the synchronizer
+ * 
+ * Add a #BonoboUISync synchronizer to the engine
+ **/
 void
 bonobo_ui_engine_add_sync (BonoboUIEngine *engine,
 			   BonoboUISync   *sync)
@@ -101,6 +108,13 @@ bonobo_ui_engine_add_sync (BonoboUIEngine *engine,
 			engine->priv->syncs, sync);
 }
 
+/**
+ * bonobo_ui_engine_remove_sync:
+ * @engine: the engine
+ * @sync: the sync
+ * 
+ * Remove a specified #BonoboUISync synchronizer from the engine
+ **/
 void
 bonobo_ui_engine_remove_sync (BonoboUIEngine *engine,
 			      BonoboUISync   *sync)
@@ -111,6 +125,14 @@ bonobo_ui_engine_remove_sync (BonoboUIEngine *engine,
 		engine->priv->syncs, sync);
 }
 
+/**
+ * bonobo_ui_engine_get_syncs:
+ * @engine: the engine
+ * 
+ * Retrieve a list of available synchronizers.
+ * 
+ * Return value: a GSList of #BonoboUISync s
+ **/
 GSList *
 bonobo_ui_engine_get_syncs (BonoboUIEngine *engine)
 {
@@ -489,6 +511,17 @@ prune_node (BonoboUIEngine *engine,
 	}
 }
 
+/**
+ * bonobo_ui_engine_prune_widget_info:
+ * @engine: the engine
+ * @node: the node
+ * @save_custom: whether to save custom widgets
+ * 
+ * This function destroys any widgets associated with
+ * @node and all its children, if @save_custom, any widget
+ * that is a custom widget ( such as a control ) will be
+ * preserved. All widgets flagged ROOT are preserved always.
+ **/
 void
 bonobo_ui_engine_prune_widget_info (BonoboUIEngine *engine,
 				    BonoboUINode   *node,
@@ -712,6 +745,13 @@ sub_component_destroy (BonoboUIEngine *engine, SubComponent *component)
 	}
 }
 
+/**
+ * bonobo_ui_engine_deregister_dead_components:
+ * @engine: the engine
+ * 
+ * Detect any components that have died and deregister
+ * them - unmerging their UI elements.
+ **/
 void
 bonobo_ui_engine_deregister_dead_components (BonoboUIEngine *engine)
 {
@@ -735,6 +775,14 @@ bonobo_ui_engine_deregister_dead_components (BonoboUIEngine *engine)
 	}
 }
 
+/**
+ * bonobo_ui_engine_get_component_names:
+ * @engine: the engine
+ *
+ * accesses the node's component names.
+ *
+ * Return value: the names of all registered components
+ **/
 GList *
 bonobo_ui_engine_get_component_names (BonoboUIEngine *engine)
 {
@@ -754,6 +802,15 @@ bonobo_ui_engine_get_component_names (BonoboUIEngine *engine)
 	return retval;
 }
 
+/**
+ * bonobo_ui_engine_get_component:
+ * @engine: the engine
+ * @name: the name of the component to fetch
+ * 
+ * accesses the components associated with the engine.
+ *
+ * Return value: the component with name @name
+ **/
 Bonobo_Unknown
 bonobo_ui_engine_get_component (BonoboUIEngine *engine,
 				const char     *name)
@@ -773,6 +830,14 @@ bonobo_ui_engine_get_component (BonoboUIEngine *engine,
 	return CORBA_OBJECT_NIL;
 }
 
+/**
+ * bonobo_ui_engine_register_component:
+ * @engine: the engine
+ * @name: a name to associate a component with
+ * @component: the component
+ * 
+ * Registers @component with @engine by @name.
+ **/
 void
 bonobo_ui_engine_register_component (BonoboUIEngine *engine,
 				     const char     *name,
@@ -793,6 +858,13 @@ bonobo_ui_engine_register_component (BonoboUIEngine *engine,
 		subcomp->object = CORBA_OBJECT_NIL;
 }
 
+/**
+ * bonobo_ui_engine_deregister_component:
+ * @engine: the engine
+ * @name: the component name
+ * 
+ * Deregisters component of @name from @engine.
+ **/
 void
 bonobo_ui_engine_deregister_component (BonoboUIEngine *engine,
 				       const char     *name)
@@ -809,6 +881,13 @@ bonobo_ui_engine_deregister_component (BonoboUIEngine *engine,
 			   "component '%s'", name);
 }
 
+/**
+ * bonobo_ui_engine_deregister_component_by_ref:
+ * @engine: the engine
+ * @ref: the ref.
+ * 
+ * Deregisters component with reference @ref from @engine.
+ **/
 void
 bonobo_ui_engine_deregister_component_by_ref (BonoboUIEngine *engine,
 					      Bonobo_Unknown  ref)
@@ -909,6 +988,54 @@ state_update_now (BonoboUIEngine *engine,
 	}
 }
 
+/**
+ * bonobo_ui_engine_xml_get_prop:
+ * @engine: the engine
+ * @path: the path into the tree
+ * @prop: The property
+ * 
+ * This function fetches the property @prop at node
+ * at @path in the internal structure.
+ *
+ * Return value: the XML string - use bonobo_ui_node_free_string to free
+ **/
+CORBA_char *
+bonobo_ui_engine_xml_get_prop (BonoboUIEngine *engine,
+			       const char     *path,
+			       const char     *prop)
+{
+ 	char         *str;
+ 	BonoboUINode *node;
+  	CORBA_char   *ret;
+  
+  	g_return_val_if_fail (BONOBO_IS_UI_ENGINE (engine), NULL);
+  
+  	node = bonobo_ui_xml_get_path (engine->priv->tree, path);
+  	if (!node)
+  		return NULL;
+ 	else {
+ 		str = bonobo_ui_node_get_attr (node, prop);
+		if (!str)
+			return NULL;
+ 		ret = CORBA_string_dup (str);
+ 		bonobo_ui_node_free_string (str);
+ 		return ret;
+  	}
+}
+
+/**
+ * bonobo_ui_engine_xml_get:
+ * @engine: the engine
+ * @path: the path into the tree
+ * @node_only: just the node, or children too.
+ * 
+ * This function fetches the node at @path in the
+ * internal structure, and if @node_only dumps the
+ * node to an XML string, otherwise it dumps it and
+ * its children.
+ *
+ * Return value: the XML string - use bonobo_ui_node_free_string to free
+ **/
 CORBA_char *
 bonobo_ui_engine_xml_get (BonoboUIEngine *engine,
 			  const char     *path,
@@ -931,6 +1058,13 @@ bonobo_ui_engine_xml_get (BonoboUIEngine *engine,
   	}
 }
 
+/**
+ * bonobo_ui_engine_xml_node_exists:
+ * @engine: the engine
+ * @path: the path into the tree
+ * 
+ * Return value: true if the node at @path exists
+ **/
 gboolean
 bonobo_ui_engine_xml_node_exists (BonoboUIEngine   *engine,
 				  const char       *path)
@@ -950,6 +1084,19 @@ bonobo_ui_engine_xml_node_exists (BonoboUIEngine   *engine,
 			bonobo_ui_node_children (node) != NULL);
 }
 
+/**
+ * bonobo_ui_engine_object_set:
+ * @engine: the engine
+ * @path: the path into the tree
+ * @object: an object reference
+ * @ev: CORBA exception environment
+ * 
+ * This associates a CORBA Object reference with a node
+ * in the tree, most often this is done to insert a Control's
+ * reference into a 'control' element.
+ * 
+ * Return value: flag if success
+ **/
 BonoboUIError
 bonobo_ui_engine_object_set (BonoboUIEngine   *engine,
 			     const char       *path,
@@ -993,6 +1140,19 @@ bonobo_ui_engine_object_set (BonoboUIEngine   *engine,
 	
 }
 
+/**
+ * bonobo_ui_engine_object_get:
+ * @engine: the engine
+ * @path: the path into the tree
+ * @object: an pointer to an object reference
+ * @ev: CORBA exception environment
+ * 
+ * This extracts a CORBA object reference associated with
+ * the node at @path in @engine, and returns it in the
+ * reference pointed to by @object.
+ * 
+ * Return value: flag if success
+ **/
 BonoboUIError
 bonobo_ui_engine_object_get (BonoboUIEngine    *engine,
 			     const char        *path,
@@ -1022,6 +1182,56 @@ bonobo_ui_engine_object_get (BonoboUIEngine    *engine,
 	return BONOBO_UI_ERROR_OK;
 }
 
+/**
+ * bonobo_ui_engine_xml_set_prop:
+ * @engine: the engine
+ * @path: the path into the tree
+ * @property: The property to set
+ * @value: The new value of the property
+ * @component: the component ID associated with the nodes.
+ * 
+ * This function sets the property of a node in the internal tree
+ * representation at @path in @engine.
+ * 
+ * Return value: flag on error
+ **/
+BonoboUIError
+bonobo_ui_engine_xml_set_prop (BonoboUIEngine    *engine,
+			       const char        *path,
+			       const char        *property,
+			       const char        *value,
+			       const char        *component)
+{
+	BonoboUINode *node;
+	
+	g_return_val_if_fail (BONOBO_IS_UI_ENGINE (engine), 
+			      BONOBO_UI_ERROR_BAD_PARAM);
+
+	node = bonobo_ui_engine_get_path (engine, path);
+
+	if (!node) 
+		return BONOBO_UI_ERROR_INVALID_PATH;
+
+	bonobo_ui_node_set_attr (node, property, value);
+	bonobo_ui_xml_set_dirty (engine->priv->tree, node);
+	
+	bonobo_ui_engine_update (engine);
+	
+	return BONOBO_UI_ERROR_OK;
+}
+
+/**
+ * bonobo_ui_engine_xml_merge_tree:
+ * @engine: the engine
+ * @path: the path into the tree
+ * @tree: the nodes
+ * @component: the component ID associated with these nodes.
+ * 
+ * This function merges the XML @tree into the internal tree
+ * representation as children of the node at @path in @engine.
+ * 
+ * Return value: flag on error
+ **/
 BonoboUIError
 bonobo_ui_engine_xml_merge_tree (BonoboUIEngine    *engine,
 				 const char        *path,
@@ -1036,7 +1246,7 @@ bonobo_ui_engine_xml_merge_tree (BonoboUIEngine    *engine,
 	if (!tree || !bonobo_ui_node_get_name (tree))
 		return BONOBO_UI_ERROR_OK;
 
-	bonobo_ui_xml_strip (&tree);
+	bonobo_ui_node_strip (&tree);
 
 	if (!tree) {
 		g_warning ("Stripped tree to nothing");
@@ -1068,6 +1278,20 @@ bonobo_ui_engine_xml_merge_tree (BonoboUIEngine    *engine,
 	return err;
 }
 
+/**
+ * bonobo_ui_engine_xml_rm:
+ * @engine: the engine
+ * @path: the path into the tree
+ * @by_component: whether to remove elements from only a
+ * specific component
+ * 
+ * Remove a chunk of the xml tree pointed at by @path
+ * in @engine, if @by_component then only remove items
+ * associated with that component - possibly revealing
+ * other overridden items.
+ * 
+ * Return value: flag on error
+ **/
 BonoboUIError
 bonobo_ui_engine_xml_rm (BonoboUIEngine *engine,
 			 const char     *path,
@@ -1095,6 +1319,13 @@ blank_container (BonoboUIContainer *container,
 		engine->priv->container = NULL;
 }
 
+/**
+ * bonobo_ui_engine_set_ui_container:
+ * @engine: the engine
+ * @ui_container: a UI Container bonobo object.
+ * 
+ * Associates a given UI Container with this BonoboUIEngine.
+ **/
 void
 bonobo_ui_engine_set_ui_container (BonoboUIEngine *engine,
 				   BonoboObject   *ui_container)
@@ -1567,6 +1798,14 @@ build_skeleton (BonoboUIXml *xml)
 	add_node (xml->root, "commands");
 }
 
+/**
+ * bonobo_ui_engine_construct:
+ * @engine: the engine.
+ * 
+ * Construct a new bonobo_ui_engine
+ * 
+ * Return value: the constructed engine.
+ **/
 BonoboUIEngine *
 bonobo_ui_engine_construct (BonoboUIEngine *engine)
 {
@@ -1603,6 +1842,14 @@ bonobo_ui_engine_construct (BonoboUIEngine *engine)
 }
 
 
+/**
+ * bonobo_ui_engine_new:
+ * @void: 
+ * 
+ * Create a new #BonoboUIEngine structure
+ * 
+ * Return value: the new UI Engine.
+ **/
 BonoboUIEngine *
 bonobo_ui_engine_new (void)
 {
@@ -1922,6 +2169,14 @@ seek_dirty (BonoboUIEngine *engine,
 	}
 }
 
+/**
+ * bonobo_ui_engine_update_node:
+ * @engine: the engine
+ * @node: the node to start updating.
+ * 
+ * This function is used to write recursive synchronizers
+ * and is intended only for internal / privilaged use.
+ **/
 void
 bonobo_ui_engine_update_node (BonoboUIEngine *engine,
 			      BonoboUINode   *node)
@@ -2035,6 +2290,14 @@ process_state_updates (BonoboUIEngine *engine)
 	}
 }
 
+/**
+ * bonobo_ui_engine_update:
+ * @engine: the engine.
+ * 
+ * This function is called to update the entire
+ * UI model synchronizing any changes in it with
+ * the widget tree where neccessary
+ **/
 void
 bonobo_ui_engine_update (BonoboUIEngine *engine)
 {
@@ -2069,6 +2332,18 @@ bonobo_ui_engine_update (BonoboUIEngine *engine)
 /*	bonobo_ui_engine_dump (priv->win, "after update");*/
 }
 
+/**
+ * bonobo_ui_engine_queue_update:
+ * @engine: the engine
+ * @widget: the widget to update later
+ * @node: the node
+ * @cmd_node: the associated command's node
+ * 
+ * This function is used to queue a state update on
+ * @widget, essentialy transfering any state from the 
+ * XML model into the widget view. This is queued to
+ * avoid re-enterancy problems.
+ **/
 void
 bonobo_ui_engine_queue_update (BonoboUIEngine   *engine,
 			       GtkWidget        *widget,
@@ -2092,6 +2367,17 @@ bonobo_ui_engine_queue_update (BonoboUIEngine   *engine,
 			engine->priv->state_updates, su);
 }      
 
+/**
+ * bonobo_ui_engine_build_control:
+ * @engine: the engine
+ * @node: the control node.
+ * 
+ * A helper function for synchronizers, this creates a control
+ * if possible from the node's associated object, stamps the
+ * node as containing a control and sets its widget.
+ * 
+ * Return value: a Control's GtkWidget.
+ **/
 GtkWidget *
 bonobo_ui_engine_build_control (BonoboUIEngine *engine,
 				BonoboUINode   *node)
@@ -2129,6 +2415,13 @@ bonobo_ui_engine_build_control (BonoboUIEngine *engine,
 
 /* Node info accessors */
 
+/**
+ * bonobo_ui_engine_stamp_custom:
+ * @engine: the engine
+ * @node: the node
+ * 
+ * Marks a node as containing a custom widget.
+ **/
 void
 bonobo_ui_engine_stamp_custom (BonoboUIEngine *engine,
 			       BonoboUINode   *node)
@@ -2140,6 +2433,13 @@ bonobo_ui_engine_stamp_custom (BonoboUIEngine *engine,
 	info->type |= CUSTOM_WIDGET;
 }
 
+/**
+ * bonobo_ui_engine_node_get_object:
+ * @engine: the engine
+ * @node: the node
+ * 
+ * Return value: the CORBA_Object associated with a @node
+ **/
 CORBA_Object
 bonobo_ui_engine_node_get_object (BonoboUIEngine   *engine,
 				  BonoboUINode     *node)
@@ -2151,6 +2451,15 @@ bonobo_ui_engine_node_get_object (BonoboUIEngine   *engine,
 	return info->object;
 }
 
+/**
+ * bonobo_ui_engine_node_is_dirty:
+ * @engine: the engine
+ * @node: the node
+ *
+ * accesses the node's dirty flag. 
+ *
+ * Return value: whether the @node is marked dirty
+ **/
 gboolean
 bonobo_ui_engine_node_is_dirty (BonoboUIEngine *engine,
 				BonoboUINode   *node)
@@ -2162,6 +2471,16 @@ bonobo_ui_engine_node_is_dirty (BonoboUIEngine *engine,
 	return data->dirty;
 }
 
+/**
+ * bonobo_ui_engine_node_get_id:
+ * @engine: the engine
+ * @node: the node
+ * 
+ * Each component has an associated textual id or name - see
+ * bonobo_ui_engine_register_component
+ *
+ * Return value: the component id associated with the node
+ **/
 const char *
 bonobo_ui_engine_node_get_id (BonoboUIEngine *engine,
 			      BonoboUINode   *node)
@@ -2173,6 +2492,14 @@ bonobo_ui_engine_node_get_id (BonoboUIEngine *engine,
 	return data->id;
 }
 
+/**
+ * bonobo_ui_engine_node_set_dirty:
+ * @engine: the engine
+ * @node: the node
+ * @dirty: whether the node should be dirty.
+ * 
+ * Set @node s dirty bit to @dirty.
+ **/
 void
 bonobo_ui_engine_node_set_dirty (BonoboUIEngine *engine,
 				 BonoboUINode   *node,
@@ -2185,6 +2512,15 @@ bonobo_ui_engine_node_set_dirty (BonoboUIEngine *engine,
 	data->dirty = dirty;
 }
 
+/**
+ * bonobo_ui_engine_node_get_widget:
+ * @engine: the engine
+ * @node: the node
+ * 
+ * Gets the widget associated with @node
+ * 
+ * Return value: the widget
+ **/
 GtkWidget *
 bonobo_ui_engine_node_get_widget (BonoboUIEngine   *engine,
 				  BonoboUINode     *node)
@@ -2201,6 +2537,18 @@ bonobo_ui_engine_node_get_widget (BonoboUIEngine   *engine,
 
 /* Helpers */
 
+/**
+ * bonobo_ui_engine_get_attr:
+ * @node: the node
+ * @cmd_node: the command's node
+ * @attr: the attribute name
+ * 
+ * This function is used to get node attributes in many
+ * UI synchronizers, it first attempts to get the attribute
+ * from @node, and if this fails falls back to @cmd_node.
+ * 
+ * Return value: the attr or NULL if it doesn't exist.
+ **/
 char *
 bonobo_ui_engine_get_attr (BonoboUINode *node,
 			   BonoboUINode *cmd_node,
@@ -2217,6 +2565,13 @@ bonobo_ui_engine_get_attr (BonoboUINode *node,
 	return NULL;
 }
 
+/**
+ * bonobo_ui_engine_add_hint:
+ * @engine: the engine
+ * @str: the hint string
+ * 
+ * This fires the 'add_hint' signal.
+ **/
 void
 bonobo_ui_engine_add_hint (BonoboUIEngine   *engine,
 			   const char       *str)
@@ -2225,6 +2580,12 @@ bonobo_ui_engine_add_hint (BonoboUIEngine   *engine,
 			 signals [ADD_HINT], str);
 }
 
+/**
+ * bonobo_ui_engine_remove_hint:
+ * @engine: the engine
+ * 
+ * This fires the 'remove_hint' signal
+ **/
 void
 bonobo_ui_engine_remove_hint (BonoboUIEngine *engine)
 {
@@ -2232,6 +2593,13 @@ bonobo_ui_engine_remove_hint (BonoboUIEngine *engine)
 			 signals [REMOVE_HINT]);
 }
 
+/**
+ * bonobo_ui_engine_emit_verb_on:
+ * @engine: the engine
+ * @node: the node
+ * 
+ * This fires the 'emit_verb' signal
+ **/
 void
 bonobo_ui_engine_emit_verb_on (BonoboUIEngine   *engine,
 			       BonoboUINode     *node)
@@ -2240,6 +2608,14 @@ bonobo_ui_engine_emit_verb_on (BonoboUIEngine   *engine,
 			 signals [EMIT_VERB_ON], node);
 }
 
+/**
+ * bonobo_ui_engine_emit_event_on:
+ * @engine: the engine
+ * @node: the node
+ * @state: the new state of the node
+ * 
+ * This fires the 'emit_event_on' signal
+ **/
 void
 bonobo_ui_engine_emit_event_on (BonoboUIEngine   *engine,
 				BonoboUINode     *node,
@@ -2252,6 +2628,14 @@ bonobo_ui_engine_emit_event_on (BonoboUIEngine   *engine,
 
 #define WIDGET_NODE_KEY "BonoboUIEngine:NodeKey"
 
+/**
+ * bonobo_ui_engine_widget_get_node:
+ * @widget: the widget
+ * 
+ * accesses a widget's associated node.
+ *
+ * Return value: the #BonoboUINode associated with this widget
+ **/
 BonoboUINode *
 bonobo_ui_engine_widget_get_node (GtkWidget *widget)
 {
@@ -2261,6 +2645,13 @@ bonobo_ui_engine_widget_get_node (GtkWidget *widget)
 				    WIDGET_NODE_KEY);
 }
 
+/**
+ * bonobo_ui_engine_widget_attach_node:
+ * @widget: the widget
+ * @node: the node
+ * 
+ * Associate @node with @widget
+ **/
 void
 bonobo_ui_engine_widget_attach_node (GtkWidget    *widget,
 				     BonoboUINode *node)
@@ -2270,12 +2661,25 @@ bonobo_ui_engine_widget_attach_node (GtkWidget    *widget,
 				     WIDGET_NODE_KEY, node);
 }
 
+/**
+ * bonobo_ui_engine_widget_set_node:
+ * @engine: the engine
+ * @widget: the widget
+ * @node: the node
+ * 
+ * Used internaly to associate a widget with a node,
+ * some synchronisers need to be able to execute code
+ * on widget creation.
+ **/
 void
 bonobo_ui_engine_widget_set_node (BonoboUIEngine *engine,
 				  GtkWidget      *widget,
 				  BonoboUINode   *node)
 {
 	BonoboUISync *sync;
+
+	/* FIXME: this looks broken. why is it public ?
+	 * and why is it re-looking up the sync - v. slow */
 
 	if (!widget)
 		return;
@@ -2285,6 +2689,16 @@ bonobo_ui_engine_widget_set_node (BonoboUIEngine *engine,
 	sync_widget_set_node (sync, widget, node);
 }
 
+/**
+ * bonobo_ui_engine_get_cmd_node:
+ * @engine: the engine
+ * @from_node: the node
+ * 
+ * This function seeks the command node associated
+ * with @from_node in @engine 's internal tree.
+ * 
+ * Return value: the command node or NULL
+ **/
 BonoboUINode *
 bonobo_ui_engine_get_cmd_node (BonoboUIEngine *engine,
 			       BonoboUINode   *from_node)
@@ -2331,6 +2745,14 @@ bonobo_ui_engine_get_cmd_node (BonoboUIEngine *engine,
 	return ret;
 }
 
+/**
+ * bonobo_ui_engine_emit_verb_on_w:
+ * @engine: the engine
+ * @widget: the widget
+ * 
+ * This function looks up the node from @widget and
+ * emits the 'emit_verb_on' signal on that node.
+ **/
 void
 bonobo_ui_engine_emit_verb_on_w (BonoboUIEngine *engine,
 				 GtkWidget      *widget)
@@ -2341,6 +2763,16 @@ bonobo_ui_engine_emit_verb_on_w (BonoboUIEngine *engine,
 			 signals [EMIT_VERB_ON], node);
 }
 
+/**
+ * bonobo_ui_engine_emit_event_on_w:
+ * @engine: the engine
+ * @widget: the widget
+ * @state: the new state
+ * 
+ * This function looks up the node from @widget and
+ * emits the 'emit_event_on' signal on that node
+ * passint @state as the new state.
+ **/
 void
 bonobo_ui_engine_emit_event_on_w (BonoboUIEngine *engine,
 				  GtkWidget      *widget,
@@ -2352,6 +2784,16 @@ bonobo_ui_engine_emit_event_on_w (BonoboUIEngine *engine,
 			 signals [EMIT_EVENT_ON], node, state);
 }
 
+/**
+ * bonobo_ui_engine_stamp_root:
+ * @engine: the engine
+ * @node: the node
+ * @widget: the root widget
+ * 
+ * This stamps @node with @widget which is marked as
+ * being a ROOT node, so the engine will never destroy
+ * it.
+ **/
 void
 bonobo_ui_engine_stamp_root (BonoboUIEngine *engine,
 			     BonoboUINode   *node,
@@ -2370,6 +2812,16 @@ bonobo_ui_engine_stamp_root (BonoboUIEngine *engine,
 	bonobo_ui_engine_widget_attach_node (widget, node);
 }
 
+/**
+ * bonobo_ui_engine_get_path:
+ * @engine: the engine.
+ * @path: the path into the tree
+ * 
+ * This routine gets a node from the internal XML tree
+ * pointed at by @path
+ * 
+ * Return value: the node.
+ **/
 BonoboUINode *
 bonobo_ui_engine_get_path (BonoboUIEngine *engine,
 			   const char     *path)
@@ -2379,6 +2831,16 @@ bonobo_ui_engine_get_path (BonoboUIEngine *engine,
 	return bonobo_ui_xml_get_path (engine->priv->tree, path);
 }
 
+/**
+ * bonobo_ui_engine_freeze:
+ * @engine: the engine
+ * 
+ * This increments the freeze count on the tree, while
+ * this count > 0 no syncronization between the internal
+ * XML model and the widget views occurs. This means that
+ * many simple merges can be glupped together with little
+ * performance impact and overhead.
+ **/
 void
 bonobo_ui_engine_freeze (BonoboUIEngine *engine)
 {
@@ -2387,6 +2849,14 @@ bonobo_ui_engine_freeze (BonoboUIEngine *engine)
 	engine->priv->frozen++;
 }
 
+/**
+ * bonobo_ui_engine_thaw:
+ * @engine: the engine
+ * 
+ * This decrements the freeze count and if it is 0
+ * causes the UI widgets to be re-synched with the
+ * XML model, see also bonobo_ui_engine_freeze
+ **/
 void
 bonobo_ui_engine_thaw (BonoboUIEngine *engine)
 {
@@ -2398,6 +2868,18 @@ bonobo_ui_engine_thaw (BonoboUIEngine *engine)
 	}
 }
 
+/**
+ * bonobo_ui_engine_dump:
+ * @engine: the engine
+ * @out: the FILE stream to dump to
+ * @msg: user visible message
+ * 
+ * This is a debugging function mostly for internal
+ * and testing use, it dumps the XML tree, including
+ * the assoicated, and overridden nodes in a wierd
+ * hackish format to the @out stream with the
+ * helpful @msg prepended.
+ **/
 void
 bonobo_ui_engine_dump (BonoboUIEngine *engine,
 		       FILE           *out,
@@ -2415,6 +2897,14 @@ bonobo_ui_engine_dump (BonoboUIEngine *engine,
 			    engine->priv->tree->root, msg);
 }
 
+/**
+ * bonobo_ui_engine_dirty_tree:
+ * @engine: the engine
+ * @node: the node
+ * 
+ * Mark all the node's children as being dirty and needing
+ * a re-synch with their widget views.
+ **/
 void
 bonobo_ui_engine_dirty_tree (BonoboUIEngine *engine,
 			     BonoboUINode   *node)
@@ -2432,6 +2922,14 @@ bonobo_ui_engine_dirty_tree (BonoboUIEngine *engine,
 	}
 }
 
+/**
+ * bonobo_ui_engine_clean_tree:
+ * @engine: the engine
+ * @node: the node
+ * 
+ * This cleans the tree, marking the node and its children
+ * as not needing a re-synch with their widget views.
+ **/
 void
 bonobo_ui_engine_clean_tree (BonoboUIEngine *engine,
 			     BonoboUINode   *node)
@@ -2442,6 +2940,15 @@ bonobo_ui_engine_clean_tree (BonoboUIEngine *engine,
 		bonobo_ui_xml_clean (engine->priv->tree, node);
 }
 
+/**
+ * bonobo_ui_engine_get_xml:
+ * @engine: the engine
+ * 
+ * Private - internal API
+ *
+ * Return value: the #BonoboUIXml engine used for
+ * doing the XML merge logic
+ **/
 BonoboUIXml *
 bonobo_ui_engine_get_xml (BonoboUIEngine *engine)
 {
@@ -2450,6 +2957,14 @@ bonobo_ui_engine_get_xml (BonoboUIEngine *engine)
 	return engine->priv->tree;
 }
 
+/**
+ * bonobo_ui_engine_get_config:
+ * @engine: the engine
+ * 
+ * Private - internal API
+ *
+ * Return value: the associated configuration engine
+ **/
 BonoboUIEngineConfig *
 bonobo_ui_engine_get_config (BonoboUIEngine *engine)
 {

@@ -20,8 +20,7 @@
 
 /**
  * bonobo_desktop_window_construct:
- * @desktop_win: The BonoboDesktopWindow object to be initialized.
- * @corba_desktop_win: The CORBA Bonobo_Desktop_Window CORBA objeect.
+ * @desk_win: The BonoboDesktopWindow object to be initialized.
  * @toplevel: Window we will have control over.
  *
  * Returns: the intialized BonoboDesktopWindow object.
@@ -42,6 +41,8 @@ bonobo_desktop_window_construct (BonoboDesktopWindow *desk_win,
  * bonobo_desktop_window_new:
  * @toplevel: The toplevel Gtk window to control
  * container process.
+ *
+ * Returns: a new BonoboDesktopWindow
  */
 BonoboDesktopWindow *
 bonobo_desktop_window_new (GtkWindow *toplevel)

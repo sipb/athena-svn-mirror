@@ -17,26 +17,26 @@ EXTRA_DIST=$(SGML_FILES)
 
 all:
 
-$(module).html: $(builddir)/$(module)/$(module).html
-	-cp $(builddir)/$(module)/index.html .
+$(module).html: $(module)/$(module).html
+	-cp $(module)/index.html .
 
-$(builddir)/$(module)/$(module).html: $(SGML_FILES)
+$(module)/$(module).html: $(SGML_FILES)
 	-db2html $(srcdir)/$(main_module_file)
 
 dist-hook:
 	mkdir $(distdir)/$(module)
-	-cp $(builddir)/$(module)/*.html $(builddir)/$(module)/*.css $(distdir)/$(module)
-	-cp $(builddir)/$(module).html $(distdir)
+	-cp $(module)/*.html $(module)/*.css $(distdir)/$(module)
+	-cp $(module).html $(distdir)
 	mkdir $(distdir)/images
 	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
 
 install-data-local: $(module).html
 	$(mkinstalldirs) $(DESTDIR)$(module_install_dir)/images
-	-for file in $(builddir)/$(module)/*.html $(builddir)/$(module)/*.css; do \
+	-for file in $(module)/*.html $(module)/*.css; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $(builddir)/$$file $(DESTDIR)$(module_install_dir)/$$basefile; \
+	$(INSTALL_DATA) $$file $(DESTDIR)$(module_install_dir)/$$basefile; \
 	done
-	-for file in $(builddir)/images/*.jpg $(builddir)/images/*.gif; do \
-	$(INSTALL_DATA) $(builddir)/$$file $(DESTDIR)$(module_install_dir)/images;\
+	-for file in images/*.jpg images/*.gif; do \
+	$(INSTALL_DATA) $$file $(DESTDIR)$(module_install_dir)/images;\
 	done
 

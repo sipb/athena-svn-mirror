@@ -1,5 +1,12 @@
 AC_INIT(bonobo/bonobo-object.h)
 
+dnl
+dnl Due to sed scripts being split on 90 line blocks,
+dnl this macro needs to be right at the beginning until
+dnl xml-i18n-tools is fixed to use some other approach.
+dnl
+AM_PROG_XML_I18N_TOOLS
+
 BONOBO_CURRENT=2
 BONOBO_REVISION=0
 BONOBO_AGE=0
@@ -9,7 +16,7 @@ AC_SUBST(BONOBO_REVISION)
 AC_SUBST(BONOBO_AGE)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(bonobo,0.37)
+AM_INIT_AUTOMAKE(bonobo,1.0.14)
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -20,8 +27,6 @@ AC_STDC_HEADERS
 AC_PROG_YACC
 AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
-
-AM_PROG_XML_I18N_TOOLS
 
 GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
@@ -55,16 +60,20 @@ dnl ====================================
 dnl = Profiling support
 dnl ====================================
 
-ALL_LINGUAS="az ca da de el en_GB es fi fr ga gl hu it ja ko nl no pl pt_BR ro ru sk sl sv uk wa tr zh_CN.GB2312"
+ALL_LINGUAS="az ca da de el en_GB es fi fr ga gl hu it ja ko lt nl no pl pt pt_BR ro ru sk sl sv uk wa tr zh_CN zh_TW"
 AM_GNOME_GETTEXT
+# AM_GNOME_GETTEXT above substs $DATADIRNAME
+# this is the directory where the *.{mo,gmo} files are installed
+bonobolocaledir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(bonobolocaledir)
 
 dnl ORBit
 AC_MSG_CHECKING(ORBit version)
 orbit_version=`orbit-config --version | awk '{print $2;}'`
 AC_MSG_RESULT($orbit_version)
 orbit_version=`echo $orbit_version | awk -F. '{print $1 * 10000 + $2 * 100 + $3;}'`
-if test 0$orbit_version -lt 000506; then
-	AC_MSG_ERROR(ORBit 0.5.6 or later required)
+if test 0$orbit_version -lt 000512; then
+	AC_MSG_ERROR(ORBit 0.5.12 or later required)
 fi
 
 dnl libIDL
@@ -97,11 +106,10 @@ AC_TRY_COMPILE([
 
 if $have_dladdr; then
 	AC_MSG_RESULT(found)
+	AC_DEFINE(HAVE_DLADDR)
 else
 	AC_MSG_RESULT(not found - no auto shlib factory unloads)
 fi
-
-AC_DEFINE(HAVE_DLADDR,$have_dladdr)
 
 BONOBO_IDL_CFLAGS=`gnome-config --cflags gnome libIDL`
 BONOBO_IDL_LIBS=`gnome-config --libs gnome libIDL`
@@ -221,10 +229,10 @@ fi
 
 dnl Check for oaf
 have_oaf=true
-AC_MSG_CHECKING(for Oaf >= 0.6.2)
+AC_MSG_CHECKING(for Oaf >= 0.6.7)
 vers=`gnome-config --modversion oaf | sed -e "s/oaf-//" | \
 		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 10000 + $2 * 100 + $3;}'`
-if test "$vers" -ge 602; then
+if test "$vers" -ge 607; then
 	AC_DEFINE(USING_OAF)
 	AC_MSG_RESULT(found)
 else
@@ -235,10 +243,10 @@ dnl
 dnl  We need the right version of libxml for the UI handler
 dnl prior versions have a nasty fatal bug
 dnl
-AC_MSG_CHECKING(for libXml >= 1.8.10)
+AC_MSG_CHECKING(for libXml >= 1.8.15)
 vers=`gnome-config --modversion xml | sed -e "s/xml-//" | \
 		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 10000 + $2 * 100 + $3;}'`
-if test "$vers" -ge 10810; then
+if test "$vers" -ge 10815; then
 	AC_MSG_RESULT(found)
 else
 	AC_MSG_ERROR(not found)
@@ -314,9 +322,9 @@ dnl
 dnl For the various bonoboConf.sh scripts generation.
 dnl
 BONOBO_LIBDIR='-L${libdir}'
-BONOBO_INCLUDEDIR="-I${includedir} `$GNOME_CONFIG --cflags gnomeui gdk_pixbuf print oaf xml`"
-BONOBO_LIBS="-lbonobo `$GNOME_CONFIG --libs gnomeui gdk_pixbuf oaf`"
-BONOBOX_LIBS="$BONOBO_LIBS -lbonobox `$GNOME_CONFIG --libs xml`"
+BONOBO_INCLUDEDIR="-I${includedir}/gnome-1.0 `$GNOME_CONFIG --cflags gnomeui gdk_pixbuf print oaf xml`"
+BONOBO_LIBS="-lbonobo `$GNOME_CONFIG --libs oaf gtk gnome`"
+BONOBOX_LIBS="$BONOBO_LIBS -lbonobox `$GNOME_CONFIG --libs gnomeui gdk_pixbuf xml`"
 BONOBOX_PRINT_LIBS="$BONOBOX_LIBS -lbonobo-print `$GNOME_CONFIG --libs print`"
 XML_LIBS="`$GNOME_CONFIG --libs xml`"
 
@@ -379,6 +387,7 @@ samples/bonobo-class/Makefile
 gshell/Makefile
 doc/Makefile
 doc/api/Makefile
+doc/dia/Makefile
 idl/Makefile
 macros/Makefile
 po/Makefile.in

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -74,6 +74,7 @@ BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_REVISION = @BONOBO_REVISION@
 BONOBO_TEST_CFLAGS = @BONOBO_TEST_CFLAGS@
 BONOBO_TEST_LIBS = @BONOBO_TEST_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -81,6 +82,8 @@ CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -113,6 +116,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -120,6 +124,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -131,6 +136,7 @@ PROF_CFLAGS = @PROF_CFLAGS@
 PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -138,19 +144,28 @@ VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+bonobolocaledir = @bonobolocaledir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
 PLUGIN_DIR = $(libdir)/bonobo/plugin
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DBONOBO_UIDIR=\""$(datadir)/gnome/ui/"\"		-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"			-DG_LOG_DOMAIN=\"Bonobo\"				-I. 							-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)				        -I$(includedir)                                 	$(GNOME_INCLUDEDIR)					$(OAF_CFLAGS)						$(GDK_PIXBUF_CFLAGS)					$(PROF_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DBONOBO_UIDIR=\""$(datadir)/gnome/ui/"\"		-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"			-DG_LOG_DOMAIN=\"Bonobo\"				-DBONOBO_LOCALEDIR=\""$(bonobolocaledir)"\"		-I. 							-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)				        -I$(includedir)                                 	$(BONOBO_INCLUDEDIR)					$(GDK_PIXBUF_CFLAGS)					$(ORBIT_CFLAGS)						$(PROF_CFLAGS)
 
 
 LDFLAGS = @LDFLAGS@ $(PROF_LDFLAGS)
@@ -165,18 +180,15 @@ idls =  	$(top_srcdir)/idl/Bonobo.idl				$(top_srcdir)/idl/Bonobo_Advise.idl			$
 
 idl_flags = `$(GNOME_CONFIG) --cflags idl` -D__BONOBO_COMPILATION
 
-libbonobo_la_LDFLAGS =  	-version-info $(BONOBO_CURRENT):$(BONOBO_REVISION):$(BONOBO_AGE) 	$(PROF_LDFLAGS) 	$(gnome_libs)
+libbonobo_la_LDFLAGS =  	-version-info $(BONOBO_CURRENT):$(BONOBO_REVISION):$(BONOBO_AGE) 	$(PROF_LDFLAGS) 
 
 
 libbonobo_la_SOURCES =  	$(CORBA_SOURCE)				bonobo-activation-context.c		bonobo-arg.c				bonobo-async.c				bonobo-context.c			bonobo-event-source.c			bonobo-exception.c			bonobo-object-directory.c		bonobo-generic-factory.c		bonobo-item-handler.c			bonobo-listener.c			bonobo-main.c				bonobo-xobject.c			bonobo-moniker.c			bonobo-moniker-extender.c		bonobo-moniker-simple.c			bonobo-moniker-util.c			bonobo-object.c				bonobo-object-client.c			bonobo-object-io.c			bonobo-persist-file.c			bonobo-persist-stream.c			bonobo-persist.c			bonobo-progressive.c			bonobo-shlib-factory.c			bonobo-storage-plugin.c			bonobo-storage.c			bonobo-stream.c				bonobo-stream-client.c			bonobo-stream-memory.c			bonobo-transient.c			bonobo-property.c			bonobo-property-bag.c			bonobo-property-bag-client.c		bonobo-property-control.c		bonobo-running-context.c
 
 
-libbonoboincludedir = $(includedir)/bonobo
+libbonoboincludedir = $(includedir)/gnome-1.0/bonobo
 
-libbonobodir = $(includedir)
-libbonobo_HEADERS = bonobo.h
-
-libbonoboinclude_HEADERS =  	Bonobo.h					bonobo-arg.h					bonobo-async.h					bonobo-canvas-component.h			bonobo-canvas-item.h				bonobo-client-site.h				bonobo-component-io.h				bonobo-control-frame.h				bonobo-control.h				bonobo-context.h				bonobo-desktop-window.h				bonobo-embeddable.h				bonobo-event-source.h				bonobo-exception.h				bonobo-generic-factory.h			bonobo-item-container.h				bonobo-item-handler.h				bonobo-listener.h				bonobo-main.h					bonobo-xobject.h				bonobo-moniker.h				bonobo-moniker-extender.h			bonobo-moniker-simple.h				bonobo-moniker-util.h				bonobo-object-client.h				bonobo-object-directory.h			bonobo-object-io.h				bonobo-object.h					bonobo-persist-file.h				bonobo-persist-stream.h				bonobo-persist.h				bonobo-plug.h					bonobo-progressive.h				bonobo-property-bag.h				bonobo-property-bag-client.h			bonobo-property-bag-xml.h			bonobo-property-control.h			bonobo-property.h				bonobo-selector.h				bonobo-selector-widget.h			bonobo-shlib-factory.h				bonobo-socket.h					bonobo-storage-plugin.h				bonobo-storage.h				bonobo-stream-client.h				bonobo-stream-memory.h				bonobo-stream.h					bonobo-transient.h				bonobo-ui-component.h            		bonobo-ui-container.h            		bonobo-ui-config-widget.h			bonobo-ui-engine.h	            		bonobo-ui-node.h                 		bonobo-ui-sync.h				bonobo-ui-toolbar-button-item.h  		bonobo-ui-toolbar-icon.h         		bonobo-ui-toolbar-item.h			bonobo-ui-toolbar-toggle-button-item.h		bonobo-ui-util.h				bonobo-view-frame.h				bonobo-view.h					bonobo-widget.h 				bonobo-win.h					bonobo-wrapper.h				bonobo-zoomable.h				bonobo-zoomable-frame.h			
+libbonoboinclude_HEADERS =  	Bonobo.h					bonobo-arg.h					bonobo-async.h					bonobo-canvas-component.h			bonobo-canvas-item.h				bonobo-client-site.h				bonobo-control-frame.h				bonobo-control.h				bonobo-context.h				bonobo-desktop-window.h				bonobo-embeddable.h				bonobo-event-source.h				bonobo-exception.h				bonobo-generic-factory.h			bonobo-item-container.h				bonobo-item-handler.h				bonobo-listener.h				bonobo-main.h					bonobo-xobject.h				bonobo-moniker.h				bonobo-moniker-extender.h			bonobo-moniker-simple.h				bonobo-moniker-util.h				bonobo-object-client.h				bonobo-object-directory.h			bonobo-object-io.h				bonobo-object.h					bonobo-persist-file.h				bonobo-persist-stream.h				bonobo-persist.h				bonobo-plug.h					bonobo-progressive.h				bonobo-property-bag.h				bonobo-property-bag-client.h			bonobo-property-bag-xml.h			bonobo-property-control.h			bonobo-property.h				bonobo-selector.h				bonobo-selector-widget.h			bonobo-shlib-factory.h				bonobo-socket.h					bonobo-storage-plugin.h				bonobo-storage.h				bonobo-stream-client.h				bonobo-stream-memory.h				bonobo-stream.h					bonobo-transient.h				bonobo-ui-component.h            		bonobo-ui-container.h            		bonobo-ui-config-widget.h			bonobo-ui-engine.h	            		bonobo-ui-node.h                 		bonobo-ui-sync.h				bonobo-ui-toolbar-button-item.h  		bonobo-ui-toolbar-icon.h         		bonobo-ui-toolbar-item.h			bonobo-ui-toolbar-toggle-button-item.h		bonobo-ui-util.h				bonobo-view-frame.h				bonobo-view.h					bonobo-widget.h 				bonobo-win.h					bonobo-wrapper.h				bonobo-zoomable.h				bonobo-zoomable-frame.h			
 
 
 noinst_HEADERS =  	bonobo-activation-context.h			bonobo-ui-engine-config.h			bonobo-ui-engine-private.h			bonobo-ui-sync-menu.h				bonobo-ui-sync-keys.h				bonobo-ui-sync-status.h				bonobo-ui-sync-toolbar.h			bonobo-ui-toolbar.h				bonobo-ui-toolbar-control-item.h  		bonobo-ui-toolbar-popup-item.h			bonobo-ui-toolbar-separator-item.h		bonobo-ui-xml.h					bonobo-running-context.h		
@@ -194,16 +206,15 @@ libbonobo_print_la_LDFLAGS =  	-version-info $(BONOBO_CURRENT):$(BONOBO_REVISION
 libbonobo_print_la_SOURCES =  	bonobo-print.c				bonobo-print-client.c
 
 
-libbonobo_printincludedir = $(includedir)/bonobo
+libbonobo_printincludedir = $(includedir)/gnome-1.0/bonobo
 
 libbonobo_printinclude_HEADERS =  	Bonobo.h				bonobo-print.h			bonobo-print-client.h
 
 
-BUILT_SOURCES = $(CORBA_SOURCE)
-
-CLEANFILES =  $(BUILT_SOURCES)
-
 EXTRA_DIST = bonobo-insert-component.xpm
+
+BUILT_SOURCES = $(CORBA_SOURCE)
+CLEANFILES =  $(BUILT_SOURCES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -251,8 +262,8 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(libbonobo_HEADERS) $(libbonobo_printinclude_HEADERS) \
-$(libbonoboinclude_HEADERS) $(noinst_HEADERS)
+HEADERS =  $(libbonobo_printinclude_HEADERS) $(libbonoboinclude_HEADERS) \
+$(noinst_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in TODO
 
@@ -266,7 +277,7 @@ OBJECTS = $(libbonobo_la_OBJECTS) $(libbonobox_la_OBJECTS) $(libbonobo_print_la_
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps bonobo/Makefile
 
@@ -303,6 +314,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -311,6 +327,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -346,21 +363,6 @@ libbonobox.la: $(libbonobox_la_OBJECTS) $(libbonobox_la_DEPENDENCIES)
 
 libbonobo-print.la: $(libbonobo_print_la_OBJECTS) $(libbonobo_print_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libbonobo_print_la_LDFLAGS) $(libbonobo_print_la_OBJECTS) $(libbonobo_print_la_LIBADD) $(LIBS)
-
-install-libbonoboHEADERS: $(libbonobo_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libbonobodir)
-	@list='$(libbonobo_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libbonobodir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libbonobodir)/$$p; \
-	done
-
-uninstall-libbonoboHEADERS:
-	@$(NORMAL_UNINSTALL)
-	list='$(libbonobo_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libbonobodir)/$$p; \
-	done
 
 install-libbonobo_printincludeHEADERS: $(libbonobo_printinclude_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -436,6 +438,7 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 Bonobo-common.lo Bonobo-common.o : Bonobo-common.c Bonobo.h
 Bonobo-skels.lo Bonobo-skels.o : Bonobo-skels.c Bonobo.h
 Bonobo-stubs.lo Bonobo-stubs.o : Bonobo-stubs.c Bonobo.h
@@ -542,10 +545,6 @@ bonobo-listener.lo bonobo-listener.o : bonobo-listener.c ../config.h \
 bonobo-main.lo bonobo-main.o : bonobo-main.c ../config.h \
 	bonobo-exception.h Bonobo.h bonobo-main.h bonobo-object.h \
 	bonobo-context.h
-bonobo-mobject.lo bonobo-mobject.o : bonobo-mobject.c ../config.h \
-	bonobo-mobject.h Bonobo.h bonobo-object.h bonobo-exception.h \
-	bonobo-main.h bonobo-running-context.h \
-	bonobo-object-directory.h
 bonobo-moniker-extender.lo bonobo-moniker-extender.o : \
 	bonobo-moniker-extender.c ../config.h bonobo-exception.h \
 	Bonobo.h bonobo-moniker.h bonobo-xobject.h bonobo-object.h \
@@ -556,24 +555,8 @@ bonobo-moniker-simple.lo bonobo-moniker-simple.o : \
 	bonobo-xobject.h Bonobo.h bonobo-object.h \
 	bonobo-moniker-simple.h
 bonobo-moniker-util.lo bonobo-moniker-util.o : bonobo-moniker-util.c \
-	bonobo.h bonobo-object.h Bonobo.h bonobo-moniker.h \
-	bonobo-xobject.h bonobo-moniker-simple.h bonobo-context.h \
-	bonobo-exception.h bonobo-item-container.h \
-	bonobo-object-client.h bonobo-moniker-util.h bonobo-async.h \
-	bonobo-client-site.h bonobo-view-frame.h bonobo-control-frame.h \
-	bonobo-wrapper.h bonobo-property-bag-client.h bonobo-stream.h \
-	bonobo-property-bag.h bonobo-arg.h bonobo-property.h \
-	bonobo-transient.h bonobo-event-source.h bonobo-listener.h \
-	bonobo-ui-container.h bonobo-win.h bonobo-ui-engine.h \
-	bonobo-ui-sync.h bonobo-ui-node.h bonobo-property-bag-xml.h \
-	bonobo-property-control.h bonobo-control.h \
-	bonobo-ui-component.h bonobo-zoomable.h bonobo-zoomable-frame.h \
-	bonobo-view.h bonobo-embeddable.h bonobo-canvas-component.h \
-	bonobo-generic-factory.h bonobo-main.h bonobo-stream-client.h \
-	bonobo-persist.h bonobo-persist-file.h bonobo-persist-stream.h \
-	bonobo-ui-util.h bonobo-object-io.h bonobo-progressive.h \
-	bonobo-storage.h bonobo-selector.h bonobo-selector-widget.h \
-	bonobo-widget.h bonobo-print.h bonobo-print-client.h
+	bonobo-moniker-util.h bonobo-async.h bonobo-object-client.h \
+	Bonobo.h bonobo-object.h bonobo-exception.h
 bonobo-moniker.lo bonobo-moniker.o : bonobo-moniker.c ../config.h \
 	bonobo-exception.h Bonobo.h bonobo-moniker.h bonobo-xobject.h \
 	bonobo-object.h bonobo-moniker-util.h bonobo-async.h \
@@ -600,7 +583,13 @@ bonobo-persist-stream.lo bonobo-persist-stream.o : \
 	bonobo-object.h
 bonobo-persist.lo bonobo-persist.o : bonobo-persist.c ../config.h \
 	bonobo-persist.h bonobo-xobject.h Bonobo.h bonobo-object.h
-bonobo-plug.lo bonobo-plug.o : bonobo-plug.c bonobo-plug.h
+bonobo-plug.lo bonobo-plug.o : bonobo-plug.c bonobo-plug.h \
+	bonobo-control.h bonobo-xobject.h Bonobo.h bonobo-object.h \
+	bonobo-control-frame.h bonobo-wrapper.h \
+	bonobo-property-bag-client.h bonobo-stream.h \
+	bonobo-property-bag.h bonobo-arg.h bonobo-property.h \
+	bonobo-transient.h bonobo-event-source.h bonobo-listener.h \
+	bonobo-object-client.h bonobo-ui-component.h bonobo-ui-node.h
 bonobo-print-client.lo bonobo-print-client.o : bonobo-print-client.c \
 	../config.h bonobo-exception.h Bonobo.h bonobo-print-client.h \
 	bonobo-object-client.h bonobo-object.h bonobo-print.h \
@@ -678,60 +667,31 @@ bonobo-stream-client.lo bonobo-stream-client.o : bonobo-stream-client.c \
 	bonobo-stream-client.h
 bonobo-stream-memory.lo bonobo-stream-memory.o : bonobo-stream-memory.c \
 	../config.h bonobo-stream-memory.h bonobo-stream.h \
-	bonobo-object.h Bonobo.h
+	bonobo-object.h Bonobo.h bonobo-exception.h
 bonobo-stream.lo bonobo-stream.o : bonobo-stream.c ../config.h \
 	bonobo-stream.h bonobo-object.h Bonobo.h bonobo-exception.h \
 	bonobo-storage-plugin.h bonobo-storage.h bonobo-xobject.h
 bonobo-transient.lo bonobo-transient.o : bonobo-transient.c ../config.h \
 	Bonobo.h bonobo-main.h bonobo-exception.h bonobo-transient.h
 bonobo-ui-component.lo bonobo-ui-component.o : bonobo-ui-component.c \
-	../config.h bonobo.h bonobo-object.h Bonobo.h bonobo-moniker.h \
-	bonobo-xobject.h bonobo-moniker-simple.h bonobo-context.h \
-	bonobo-exception.h bonobo-item-container.h \
-	bonobo-object-client.h bonobo-moniker-util.h bonobo-async.h \
-	bonobo-client-site.h bonobo-view-frame.h bonobo-control-frame.h \
-	bonobo-wrapper.h bonobo-property-bag-client.h bonobo-stream.h \
-	bonobo-property-bag.h bonobo-arg.h bonobo-property.h \
-	bonobo-transient.h bonobo-event-source.h bonobo-listener.h \
-	bonobo-ui-container.h bonobo-win.h bonobo-ui-engine.h \
-	bonobo-ui-sync.h bonobo-ui-node.h bonobo-property-bag-xml.h \
-	bonobo-property-control.h bonobo-control.h \
-	bonobo-ui-component.h bonobo-zoomable.h bonobo-zoomable-frame.h \
-	bonobo-view.h bonobo-embeddable.h bonobo-canvas-component.h \
-	bonobo-generic-factory.h bonobo-main.h bonobo-stream-client.h \
-	bonobo-persist.h bonobo-persist-file.h bonobo-persist-stream.h \
-	bonobo-ui-util.h bonobo-object-io.h bonobo-progressive.h \
-	bonobo-storage.h bonobo-selector.h bonobo-selector-widget.h \
-	bonobo-widget.h bonobo-print.h bonobo-print-client.h \
-	bonobo-ui-xml.h
+	../config.h bonobo-exception.h Bonobo.h bonobo-ui-xml.h \
+	bonobo-ui-node.h bonobo-ui-engine.h bonobo-object.h \
+	bonobo-ui-sync.h bonobo-ui-component.h bonobo-xobject.h \
+	bonobo-ui-util.h
 bonobo-ui-config-widget.lo bonobo-ui-config-widget.o : \
-	bonobo-ui-config-widget.c bonobo-ui-util.h \
+	bonobo-ui-config-widget.c ../config.h bonobo-ui-util.h \
 	bonobo-ui-component.h bonobo-xobject.h Bonobo.h bonobo-object.h \
 	bonobo-ui-node.h bonobo-ui-engine-private.h bonobo-ui-xml.h \
 	bonobo-ui-engine.h bonobo-ui-sync.h bonobo-ui-engine-config.h \
-	bonobo-ui-config-widget.h
+	bonobo-ui-config-widget.h bonobo-ui-sync-toolbar.h \
+	bonobo-ui-toolbar.h bonobo-ui-toolbar-item.h
 bonobo-ui-container.lo bonobo-ui-container.o : bonobo-ui-container.c \
-	../config.h bonobo.h bonobo-object.h Bonobo.h bonobo-moniker.h \
-	bonobo-xobject.h bonobo-moniker-simple.h bonobo-context.h \
-	bonobo-exception.h bonobo-item-container.h \
-	bonobo-object-client.h bonobo-moniker-util.h bonobo-async.h \
-	bonobo-client-site.h bonobo-view-frame.h bonobo-control-frame.h \
-	bonobo-wrapper.h bonobo-property-bag-client.h bonobo-stream.h \
-	bonobo-property-bag.h bonobo-arg.h bonobo-property.h \
-	bonobo-transient.h bonobo-event-source.h bonobo-listener.h \
-	bonobo-ui-container.h bonobo-win.h bonobo-ui-engine.h \
-	bonobo-ui-sync.h bonobo-ui-node.h bonobo-property-bag-xml.h \
-	bonobo-property-control.h bonobo-control.h \
-	bonobo-ui-component.h bonobo-zoomable.h bonobo-zoomable-frame.h \
-	bonobo-view.h bonobo-embeddable.h bonobo-canvas-component.h \
-	bonobo-generic-factory.h bonobo-main.h bonobo-stream-client.h \
-	bonobo-persist.h bonobo-persist-file.h bonobo-persist-stream.h \
-	bonobo-ui-util.h bonobo-object-io.h bonobo-progressive.h \
-	bonobo-storage.h bonobo-selector.h bonobo-selector-widget.h \
-	bonobo-widget.h bonobo-print.h bonobo-print-client.h \
-	bonobo-ui-xml.h
+	../config.h Bonobo.h bonobo-ui-xml.h bonobo-ui-node.h \
+	bonobo-ui-engine.h bonobo-object.h bonobo-ui-sync.h \
+	bonobo-ui-util.h bonobo-ui-component.h bonobo-xobject.h \
+	bonobo-win.h bonobo-ui-container.h
 bonobo-ui-engine-config.lo bonobo-ui-engine-config.o : \
-	bonobo-ui-engine-config.c bonobo-ui-util.h \
+	bonobo-ui-engine-config.c ../config.h bonobo-ui-util.h \
 	bonobo-ui-component.h bonobo-xobject.h Bonobo.h bonobo-object.h \
 	bonobo-ui-node.h bonobo-ui-sync-menu.h bonobo-ui-sync.h \
 	bonobo-ui-engine.h bonobo-ui-config-widget.h \
@@ -804,7 +764,8 @@ bonobo-ui-toolbar-control-item.lo bonobo-ui-toolbar-control-item.o : \
 	bonobo-ui-node.h bonobo-view-frame.h bonobo-ui-container.h \
 	bonobo-win.h bonobo-ui-engine.h bonobo-ui-sync.h \
 	bonobo-client-site.h bonobo-item-container.h bonobo-moniker.h \
-	bonobo-embeddable.h bonobo-canvas-component.h
+	bonobo-embeddable.h bonobo-canvas-component.h \
+	bonobo-exception.h
 bonobo-ui-toolbar-icon.lo bonobo-ui-toolbar-icon.o : \
 	bonobo-ui-toolbar-icon.c ../config.h bonobo-ui-toolbar-icon.h \
 	bonobo-ui-toolbar-button-item.h bonobo-ui-toolbar-item.h
@@ -870,28 +831,11 @@ bonobo-widget.lo bonobo-widget.o : bonobo-widget.c ../config.h Bonobo.h \
 	bonobo-client-site.h bonobo-item-container.h bonobo-moniker.h \
 	bonobo-embeddable.h bonobo-canvas-component.h \
 	bonobo-exception.h bonobo-moniker-util.h bonobo-async.h
-bonobo-win.lo bonobo-win.o : bonobo-win.c ../config.h bonobo.h \
-	bonobo-object.h Bonobo.h bonobo-moniker.h bonobo-xobject.h \
-	bonobo-moniker-simple.h bonobo-context.h bonobo-exception.h \
-	bonobo-item-container.h bonobo-object-client.h \
-	bonobo-moniker-util.h bonobo-async.h bonobo-client-site.h \
-	bonobo-view-frame.h bonobo-control-frame.h bonobo-wrapper.h \
-	bonobo-property-bag-client.h bonobo-stream.h \
-	bonobo-property-bag.h bonobo-arg.h bonobo-property.h \
-	bonobo-transient.h bonobo-event-source.h bonobo-listener.h \
-	bonobo-ui-container.h bonobo-win.h bonobo-ui-engine.h \
-	bonobo-ui-sync.h bonobo-ui-node.h bonobo-property-bag-xml.h \
-	bonobo-property-control.h bonobo-control.h \
-	bonobo-ui-component.h bonobo-zoomable.h bonobo-zoomable-frame.h \
-	bonobo-view.h bonobo-embeddable.h bonobo-canvas-component.h \
-	bonobo-generic-factory.h bonobo-main.h bonobo-stream-client.h \
-	bonobo-persist.h bonobo-persist-file.h bonobo-persist-stream.h \
-	bonobo-ui-util.h bonobo-object-io.h bonobo-progressive.h \
-	bonobo-storage.h bonobo-selector.h bonobo-selector-widget.h \
-	bonobo-widget.h bonobo-print.h bonobo-print-client.h \
+bonobo-win.lo bonobo-win.o : bonobo-win.c ../config.h bonobo-ui-engine.h \
+	bonobo-object.h Bonobo.h bonobo-ui-sync.h bonobo-ui-node.h \
 	bonobo-ui-sync-menu.h bonobo-ui-sync-keys.h \
 	bonobo-ui-sync-status.h bonobo-ui-sync-toolbar.h \
-	bonobo-ui-toolbar.h bonobo-ui-toolbar-item.h
+	bonobo-ui-toolbar.h bonobo-ui-toolbar-item.h bonobo-win.h
 bonobo-wrapper.lo bonobo-wrapper.o : bonobo-wrapper.c ../config.h \
 	bonobo-wrapper.h
 bonobo-xobject.lo bonobo-xobject.o : bonobo-xobject.c ../config.h \
@@ -918,15 +862,14 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
-install-data-am: install-libbonoboHEADERS \
-		install-libbonobo_printincludeHEADERS \
+install-data-am: install-libbonobo_printincludeHEADERS \
 		install-libbonoboincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-libbonoboHEADERS \
+uninstall-am: uninstall-libLTLIBRARIES \
 		uninstall-libbonobo_printincludeHEADERS \
 		uninstall-libbonoboincludeHEADERS
 uninstall: uninstall-am
@@ -935,7 +878,7 @@ all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(libbonobodir) \
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) \
 		$(DESTDIR)$(libbonobo_printincludedir) \
 		$(DESTDIR)$(libbonoboincludedir)
 
@@ -983,8 +926,7 @@ clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-libbonoboHEADERS \
-install-libbonoboHEADERS uninstall-libbonobo_printincludeHEADERS \
+maintainer-clean-libtool uninstall-libbonobo_printincludeHEADERS \
 install-libbonobo_printincludeHEADERS uninstall-libbonoboincludeHEADERS \
 install-libbonoboincludeHEADERS tags mostlyclean-tags distclean-tags \
 clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
@@ -997,6 +939,9 @@ mostlyclean distclean maintainer-clean
 
 $(CORBA_SOURCE): $(idls)
 	$(ORBIT_IDL) $(top_srcdir)/idl/Bonobo.idl -I$(top_srcdir)/idl $(idl_flags)
+
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

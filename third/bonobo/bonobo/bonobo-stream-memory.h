@@ -37,6 +37,8 @@ struct _BonoboStreamMem {
 	long         pos;
 	gboolean     read_only;
 	gboolean     resizable;
+	char        *content_type;
+	char        *name;
 
 	BonoboStreamMemPrivate *priv;
 };

@@ -136,7 +136,7 @@ to this document.
     For example, this OAFID represents the Gnumeric workbook factory
     object:
 
-AFIID:GNOME:Gnumeric:WorkbookFactory:1.0:7cf6fb4d-c5a1-4ace-aa6a-4ece790138c9
+OAFIID:GNOME_Gnumeric_WorkbookFactory
 
 @Q: What is a Factory?
 
@@ -442,7 +442,7 @@ OAFIID:GNOME_Panel_Applet_yetanotherclock:
 	and add a UUID generated from the uuidgen application at the
 end to garentee uniqueness.
 
-@Q: What should I call my oaf file ?
+@Q: What should I call my oaf / UI / IDL file ?
 
 	The name of your oaf file should be based on your portion
 of the namespace, eg.
@@ -489,6 +489,15 @@ interface MyInterface {
 	With acroyms we fully capitalize eg. getURI, with abbreviations
 and contractions we capitalize the first letter eg. setDoc setId.
 cf. http://java.sun.com/docs/books/jls/html/6.doc.html#11186
+
+@Q: How should I name attributes and structure members ?
+
+	Again, use a Java-like convention eg.
+
+	struct MyStructure {
+		string theName;
+		long   heightInInches;
+	};
 
 @Q: Why when I do a gtk_widget_show_all does my Control not show up ?
 

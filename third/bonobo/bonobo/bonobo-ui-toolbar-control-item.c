@@ -6,11 +6,14 @@
  *	Jon K Hellan (hellan@acm.org)
  *
  * Copyright 2000 Jon K Hellan.
+ * Copyright (C) 2001 Eazel, Inc.
  */
 
 #include "config.h"
 #include <gnome.h>
 #include "bonobo-ui-toolbar-control-item.h"
+
+#include "bonobo-exception.h"
 
 static BonoboUIToolbarButtonItemClass *parent_class = NULL;
 
@@ -26,6 +29,48 @@ struct _BonoboUIToolbarControlItemPrivate {
 	BonoboUIToolbarControlDisplay hdisplay;
 	BonoboUIToolbarControlDisplay vdisplay;
 };
+
+static void
+set_control_property_bag_value (BonoboUIToolbarControlItem *item,
+				const char *name,
+				BonoboArg *value)
+{
+	BonoboControlFrame *frame;
+	Bonobo_PropertyBag bag;
+	Bonobo_Property property;
+	CORBA_Environment ev;
+	
+	frame = bonobo_widget_get_control_frame (item->priv->control);
+	bag = bonobo_control_frame_get_control_property_bag (frame, NULL);
+	if (bag == CORBA_OBJECT_NIL)
+		return;
+        property = bonobo_property_bag_client_get_property (bag, name, NULL);
+	if (property != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+		Bonobo_Property_setValue (property, value, &ev);
+		CORBA_Object_release (property, &ev);
+		CORBA_exception_free (&ev);
+	}
+	bonobo_object_release_unref (bag, NULL);
+}
+
+#define MAKE_SET_CONTROL_PROPERTY_BAG_VALUE(gtype, paramtype, capstype)	\
+static void								\
+set_control_property_bag_##gtype (BonoboUIToolbarControlItem *item,	\
+				  const char *name,			\
+				  paramtype value)			\
+{									\
+	BonoboArg *arg;							\
+									\
+	arg = bonobo_arg_new (BONOBO_ARG_##capstype);			\
+	BONOBO_ARG_SET_##capstype (arg, value);				\
+	set_control_property_bag_value (item, name, arg);		\
+	bonobo_arg_release (arg);					\
+}
+
+MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (gboolean, gboolean,     BOOLEAN)
+MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (gint,     gint,         INT)
+MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (string,   const char *, STRING)
 
 /* BonoboUIToolbarButtonItem virtual methods.  */
 static void
@@ -54,6 +99,7 @@ impl_set_label (BonoboUIToolbarButtonItem *button_item,
 
 	bonobo_ui_toolbar_button_item_set_label (
 		BONOBO_UI_TOOLBAR_BUTTON_ITEM (priv->button), label);
+	set_control_property_bag_string (control_item, "bonobo:label", label);
 }
 
 /* BonoboUIToolbarItem methods.  */
@@ -100,6 +146,8 @@ impl_set_orientation (BonoboUIToolbarItem *item,
 		g_assert_not_reached ();
 	}
 
+	set_control_property_bag_gint (control_item, "bonobo:orientation", orientation);
+
 	if (BONOBO_UI_TOOLBAR_ITEM_CLASS (parent_class)->set_orientation)
 		(* BONOBO_UI_TOOLBAR_ITEM_CLASS (parent_class)
 		 ->set_orientation) (item, orientation);	
@@ -114,6 +162,7 @@ impl_set_style (BonoboUIToolbarItem     *item,
 	control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (item);
 	bonobo_ui_toolbar_item_set_style (
 		BONOBO_UI_TOOLBAR_ITEM (control_item->priv->button), style);
+	set_control_property_bag_gint (control_item, "bonobo:style", style);
 }
 
 static void
@@ -126,6 +175,7 @@ impl_set_want_label (BonoboUIToolbarItem     *item,
 	bonobo_ui_toolbar_item_set_want_label (
 		BONOBO_UI_TOOLBAR_ITEM (control_item->priv->button),
 		want_label);
+	set_control_property_bag_gboolean (control_item, "bonobo:want_label", want_label);
 }
 
 static void

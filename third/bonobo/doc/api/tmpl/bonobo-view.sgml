@@ -15,24 +15,26 @@ View object for exporting a view of a BonoboEmbeddable component
 <para>
    It is the programmer's responsibility to keep the contents of all the
    views displaying the same information (modulo per-view state, like
-   the zoom factor).
+   the zoom factor). Since GtkWidgets do not support linear zooming,
+   it is essential to understand that you cannot use GtkWidgets inside
+   your view - you must write custom rendering code.
 </para>
 
-<!-- FIXME: BonoboView API no longer matches following description -->
+<para>
+An embeddable view is not a Control - by this I mean that it does not
+control its own sizing, rendering or layout. It is entirely a slave
+to the parent with respect to this. A View should never render
+scroll bars into itself ( unless, exceptionaly if it is activated,
+and allows the user to pan around a larger area ). Essentialy a
+non-activated view should only show things that it will print, and
+should render WYSIWYG as much as possible. Embeddable's views
+scale linearly to obey the zoom level they are given.
+</para>
 
 <para>
    If your component provides menus, then you use the
-   bonobo_view_set_ui_handler() on your view to provide it with a set
-   of menus and toolbars.   You can also retrieve the container's UI
-   handler using bonobo_view_get_ui_handler().
-</para>
-
-<para>
-   You can register verbs in the View by using the
-   bonobo_view_register_verb().  When you want to stop supporting a
-   verb, you can use the bonobo_view_unregister_verb().  Alternatively,
-   you can hook up to the "do_verb" signal and catch the verb requests
-   on the signal handler.
+bonobo_view_get_remote_ui_container () to retrieve a Bonobo_UIContainer
+handle to merge your menu / toolbar items into.
 </para>
 
 <para>
@@ -43,54 +45,32 @@ View object for exporting a view of a BonoboEmbeddable component
 </para>
 
 <para>
-   If your component supports zooming, connect to the
-   "set_zoom_factor" signal.  This signal takes a floating point value
-   that indicates the desired zoom factor requested by your container.
+   Your component must support zooming to be a true embeddable. There
+are two ways to support zoom.
+  <itemizedlist>
+    <listitem>
+      <para>
+        Zoom to fit - for simple items such as images this makes sense
+      the item simply displays all of itself scaled to the available
+      size allocated to the GtkWidget.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Scaled - this obeys the zoom factor as set by the container,
+      it also crops the display of the image to the GtkWindow. Connect
+      to the "set_zoom_factor" signal.  This signal gives a floating
+      point value that indicates the desired zoom factor set by your
+      container.
+      </para>
+    </listitem>
+  </itemizedlist>
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
    #BonoboViewFrame,  #BonoboEmbeddable, #BonoboWidget, bonobo_widget_new()
 </para>
-
-<!-- ##### MACRO BONOBO_VIEW_TYPE ##### -->
-<para>
-   Returns the GtkType associated with the #BonoboView object.
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_VIEW ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_VIEW_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_VIEW ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_VIEW_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### STRUCT BonoboView ##### -->
 <para>
@@ -128,9 +108,10 @@ View object for exporting a view of a BonoboEmbeddable component
 </para>
 
 @view: 
-@corba_view: 
 @widget: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@corba_view: 
 
 
 <!-- ##### FUNCTION bonobo_view_new ##### -->
@@ -139,15 +120,6 @@ View object for exporting a view of a BonoboEmbeddable component
 </para>
 
 @widget: 
-@Returns: 
-
-
-<!-- ##### FUNCTION bonobo_view_corba_object_create ##### -->
-<para>
-
-</para>
-
-@object: 
 @Returns: 
 
 
@@ -212,14 +184,6 @@ View object for exporting a view of a BonoboEmbeddable component
 
 @view: 
 @activated: 
-
-
-<!-- ##### FUNCTION bonobo_view_get_epv ##### -->
-<para>
-
-</para>
-
-@Returns: 
 
 
 <!-- ##### SIGNAL BonoboView::set-zoom-factor ##### -->

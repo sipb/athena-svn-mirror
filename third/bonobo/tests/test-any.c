@@ -5,7 +5,7 @@
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
 #include <orb/orbit.h>
-#include <bonobo/bonobo.h>
+#include <bonobo.h>
 #include <bonobo/bonobo-property-bag-xml.h>
 
 #ifdef DynamicAny_DynArray_rewind
@@ -14,7 +14,7 @@
 
 #ifdef HAVE_DYNANY
 
-#define CHECK_OK(ev) (g_assert ((ev)->_major == CORBA_NO_EXCEPTION))
+#define CHECK_OK(ev) g_assert ((ev)->_major == CORBA_NO_EXCEPTION)
 
 static const CORBA_TypeCode
 octet_subtypes_array [] = {

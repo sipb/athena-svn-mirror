@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * Bonobo control frame object.
  *
  * Authors:
@@ -25,6 +25,8 @@
 #include <bonobo/bonobo-socket.h>
 #include <bonobo/bonobo-exception.h>
 
+#undef BONOBO_CONTROL_FRAME_DEBUG
+
 enum {
 	ACTIVATED,
 	ACTIVATE_URI,
@@ -37,9 +39,6 @@ static guint control_frame_signals [LAST_SIGNAL];
 
 /* Parent object class in GTK hierarchy */
 static GtkObjectClass *bonobo_control_frame_parent_class;
-
-/* The entry point vectors for the server we provide */
-POA_Bonobo_ControlFrame__vepv bonobo_control_frame_vepv;
 
 struct _BonoboControlFramePrivate {
 	Bonobo_Control	   control;
@@ -114,7 +113,6 @@ impl_Bonobo_ControlFrame_activateURI (PortableServer_Servant  servant,
 			 control_frame_signals [ACTIVATE_URI],
 			 (const char *) uri, (gboolean) relative);
 }
-
 static gint
 bonobo_control_frame_autoactivate_focus_in (GtkWidget     *widget,
 					    GdkEventFocus *focus,
@@ -147,7 +145,7 @@ bonobo_control_frame_autoactivate_focus_out (GtkWidget     *widget,
 
 
 static void
-bonobo_control_frame_socket_state_changed (GtkWidget    *socket,
+bonobo_control_frame_socket_state_changed (GtkWidget    *container,
 					   GtkStateType  previous_state,
 					   gpointer      user_data)
 {
@@ -158,7 +156,7 @@ bonobo_control_frame_socket_state_changed (GtkWidget    *socket,
 
 	bonobo_control_frame_control_set_state (
 		control_frame,
-		GTK_WIDGET_STATE (control_frame->priv->socket));
+		GTK_WIDGET_STATE (control_frame->priv->container));
 }
 
 
@@ -237,14 +235,6 @@ bonobo_control_frame_create_socket (BonoboControlFrame *control_frame)
 			    control_frame);
 
 	/*
-	 * Setup a handler to proxy state changes.
-	 */
-	gtk_signal_connect (GTK_OBJECT (control_frame->priv->socket),
-			    "state_changed",
-			    bonobo_control_frame_socket_state_changed,
-			    control_frame);
-
-	/*
 	 * Setup a handler for socket destroy.
 	 */
 	gtk_signal_connect (GTK_OBJECT (control_frame->priv->socket),
@@ -270,7 +260,6 @@ bonobo_control_frame_create_socket (BonoboControlFrame *control_frame)
 /**
  * bonobo_control_frame_construct:
  * @control_frame: The #BonoboControlFrame object to be initialized.
- * @corba_control_frame: A CORBA object for the Bonobo_ControlFrame interface.
  * @ui_container: A CORBA object for the UIContainer for the container application.
  *
  * Initializes @control_frame with the parameters.
@@ -308,6 +297,15 @@ bonobo_control_frame_construct (BonoboControlFrame *control_frame,
 	gtk_object_sink (GTK_OBJECT (control_frame->priv->container));
 	gtk_widget_show (control_frame->priv->container);
 
+	/*
+	 * Setup a handler to proxy state from the container.
+	 */
+	gtk_signal_connect (GTK_OBJECT (control_frame->priv->container),
+			    "state_changed",
+			    bonobo_control_frame_socket_state_changed,
+			    control_frame);
+
+
 	bonobo_control_frame_create_socket (control_frame);
 
 	return control_frame;
@@ -337,8 +335,15 @@ bonobo_control_frame_destroy (GtkObject *object)
 
 	gtk_widget_destroy (control_frame->priv->container);
 
-	if (control_frame->priv->control != CORBA_OBJECT_NIL)
+	if (control_frame->priv->control != CORBA_OBJECT_NIL) {
+		CORBA_Environment ev;
+
+		CORBA_exception_init (&ev);
+		Bonobo_Control_setFrame (control_frame->priv->control,
+					 CORBA_OBJECT_NIL, &ev);
+		CORBA_exception_free (&ev);
 		bonobo_object_release_unref (control_frame->priv->control, NULL);
+	}
 	control_frame->priv->control = CORBA_OBJECT_NIL;
 
 	if (control_frame->priv->socket) {
@@ -822,7 +827,14 @@ bonobo_control_frame_get_propbag (BonoboControlFrame  *control_frame)
 
 /**
  * bonobo_control_frame_get_control_property_bag:
- */
+ * @control_frame: the control frame
+ * @ev: CORBA exception environment
+ * 
+ * This retrives a Bonobo_PropertyBag reference from its
+ * associated Bonobo Control
+ *
+ * Return value: CORBA property bag reference or CORBA_OBJECT_NIL
+ **/
 Bonobo_PropertyBag
 bonobo_control_frame_get_control_property_bag (BonoboControlFrame *control_frame,
 					       CORBA_Environment  *ev)
@@ -919,9 +931,12 @@ bonobo_control_frame_sync_realize (BonoboControlFrame *frame)
 	CORBA_exception_init (&ev);
 
 	Bonobo_Control_realize (control, &ev);
+
+#ifdef BONOBO_CONTROL_FRAME_DEBUG
 	if (BONOBO_EX (&ev))
 		g_warning ("Exception on realize '%s'",
 			   bonobo_exception_get_text (&ev));
+#endif
 
 	CORBA_exception_free (&ev);
 
@@ -947,9 +962,11 @@ bonobo_control_frame_sync_unrealize (BonoboControlFrame *frame)
 	CORBA_exception_init (&ev);
 
 	Bonobo_Control_unrealize (control, &ev);
+#ifdef BONOBO_CONTROL_FRAME_DEBUG
 	if (BONOBO_EX (&ev))
 		g_warning ("Exception on unrealize '%s'",
 			   bonobo_exception_get_text (&ev));
+#endif
 
 	CORBA_exception_free (&ev);
 
@@ -957,7 +974,7 @@ bonobo_control_frame_sync_unrealize (BonoboControlFrame *frame)
 }
 
 /**
- * bonobo_control_frame_focus:
+ * bonobo_control_frame_focus_child:
  * @frame: A control frame.
  * @direction: Direction in which to change focus.
  * 
@@ -969,7 +986,7 @@ bonobo_control_frame_sync_unrealize (BonoboControlFrame *frame)
  * passed on to the next widget.
  **/
 gboolean
-bonobo_control_frame_focus (BonoboControlFrame *frame, GtkDirectionType direction)
+bonobo_control_frame_focus_child (BonoboControlFrame *frame, GtkDirectionType direction)
 {
 	BonoboControlFramePrivate *priv;
 	CORBA_Environment ev;
@@ -1016,9 +1033,9 @@ bonobo_control_frame_focus (BonoboControlFrame *frame, GtkDirectionType directio
 
 	CORBA_exception_init (&ev);
 
-	result = Bonobo_Control_focus (priv->control, corba_direction, &ev);
+	result = Bonobo_Control_focusChild (priv->control, corba_direction, &ev);
 	if (BONOBO_EX (&ev)) {
-		g_message ("bonobo_control_frame_focus(): Exception while issuing focus "
+		g_message ("bonobo_control_frame_focus_child(): Exception while issuing focusChild "
 			   "request: `%s'", bonobo_exception_get_text (&ev));
 		result = FALSE;
 	}

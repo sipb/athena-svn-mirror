@@ -5,13 +5,13 @@ INCLUDES =                                              \
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/bonobo                          \
         -I$(includedir)                                 \
-	$(BONOBO_TEST_CFLAGS)
+	$(BONOBOX_TEST_CFLAGS)
 
 OAF_FILES =					\
 	Bonobo_Moniker_gzip.oaf.in		\
 	Bonobo_Moniker_http.oaf.in
 
-Bonobo_Moniker_std.oaf.in : $(srcdir)/Bonobo_Moniker_std.oaf.in.in
+Bonobo_Moniker_std.oaf.in : $(srcdir)/Bonobo_Moniker_std.oaf.in.in $(top_builddir)/config.status
 	sed -e "s|\@MONIKER_LIBDIR\@|$(monikerdir)|" \
 	 $(srcdir)/Bonobo_Moniker_std.oaf.in.in > Bonobo_Moniker_std.oaf.in
 
@@ -55,6 +55,8 @@ libmoniker_std_la_SOURCES =			\
 	bonobo-moniker-query.h			\
 	bonobo-moniker-std.h            	\
 	bonobo-moniker-std.c			
+
+libmoniker_std_la_LDFLAGS = -module
 
 bonobo_moniker_gunzip_SOURCES =		\
 	bonobo-moniker-gunzip.c		\

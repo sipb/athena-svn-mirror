@@ -5,13 +5,14 @@ INCLUDES =                                              \
 	-DBONOBO_UIDIR=\""$(datadir)/gnome/ui/"\"	\
 	-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		\
 	-DG_LOG_DOMAIN=\"Bonobo\"			\
+	-DBONOBO_LOCALEDIR=\""$(bonobolocaledir)"\"	\
 	-I. 						\
 	-I$(srcdir) -I$(top_srcdir) 			\
 	-I$(top_builddir)				\
         -I$(includedir)                                 \
-	$(GNOME_INCLUDEDIR)				\
-	$(OAF_CFLAGS)					\
+	$(BONOBO_INCLUDEDIR)				\
 	$(GDK_PIXBUF_CFLAGS)				\
+	$(ORBIT_CFLAGS)					\
 	$(PROF_CFLAGS)
 
 LDFLAGS += $(PROF_LDFLAGS)
@@ -53,9 +54,7 @@ $(CORBA_SOURCE): $(idls)
 
 libbonobo_la_LDFLAGS = \
 	-version-info $(BONOBO_CURRENT):$(BONOBO_REVISION):$(BONOBO_AGE) \
-	$(PROF_LDFLAGS) \
-	$(gnome_libs)
-	
+	$(PROF_LDFLAGS) 
 
 libbonobo_la_SOURCES =			\
 	$(CORBA_SOURCE)			\
@@ -95,10 +94,7 @@ libbonobo_la_SOURCES =			\
 	bonobo-property-control.c	\
 	bonobo-running-context.c
 
-libbonoboincludedir = $(includedir)/bonobo
-
-libbonobodir = $(includedir)
-libbonobo_HEADERS = bonobo.h
+libbonoboincludedir = $(includedir)/gnome-1.0/bonobo
 
 libbonoboinclude_HEADERS =			\
 	Bonobo.h				\
@@ -107,7 +103,6 @@ libbonoboinclude_HEADERS =			\
 	bonobo-canvas-component.h		\
 	bonobo-canvas-item.h			\
 	bonobo-client-site.h			\
-	bonobo-component-io.h			\
 	bonobo-control-frame.h			\
 	bonobo-control.h			\
 	bonobo-context.h			\
@@ -236,15 +231,17 @@ libbonobo_print_la_SOURCES =		\
 	bonobo-print.c			\
 	bonobo-print-client.c
 
-libbonobo_printincludedir = $(includedir)/bonobo
+libbonobo_printincludedir = $(includedir)/gnome-1.0/bonobo
 
 libbonobo_printinclude_HEADERS =		\
 	Bonobo.h			\
 	bonobo-print.h		\
 	bonobo-print-client.h
 
-BUILT_SOURCES=$(CORBA_SOURCE)
+EXTRA_DIST = bonobo-insert-component.xpm
 
+BUILT_SOURCES=$(CORBA_SOURCE)
 CLEANFILES += $(BUILT_SOURCES)
 
-EXTRA_DIST = bonobo-insert-component.xpm
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)

@@ -2,7 +2,7 @@
 BonoboDesktopWindow
 
 <!-- ##### SECTION Short_Description ##### -->
-
+A wrapper for the bonobo-ui-window
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -13,45 +13,6 @@ BonoboDesktopWindow
 <para>
 
 </para>
-
-<!-- ##### MACRO BONOBO_DESKTOP_WINDOW_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_DESKTOP_WINDOW ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_DESKTOP_WINDOW_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_DESKTOP_WINDOW ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_DESKTOP_WINDOW_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### TYPEDEF BonoboDesktopWindow ##### -->
 <para>
@@ -70,10 +31,12 @@ BonoboDesktopWindow
 
 </para>
 
-@desktop_window: 
-@corba_desktop_window: 
+@desk_win: 
 @toplevel: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@desktop_window: 
+@corba_desktop_window: 
 
 
 <!-- ##### FUNCTION bonobo_desktop_window_new ##### -->
@@ -92,22 +55,5 @@ BonoboDesktopWindow
 
 @object: 
 @win: 
-
-
-<!-- ##### FUNCTION bonobo_desktop_window_corba_object_create ##### -->
-<para>
-
-</para>
-
-@object: 
-@Returns: 
-
-
-<!-- ##### FUNCTION bonobo_desktop_window_get_epv ##### -->
-<para>
-
-</para>
-
-@Returns: 
 
 

@@ -1,34 +1,36 @@
 GtkObject
   BonoboObject
-    BonoboCanvasComponent
-    BonoboClientSite
-    BonoboControlFrame
-      BonoboViewFrame
-    BonoboControl
-      BonoboView
-    BonoboDesktopWindow
+    BonoboXObject
+      BonoboCanvasComponent
+      BonoboClientSite
+      BonoboControlFrame
+        BonoboViewFrame
+      BonoboControl
+        BonoboView
+      BonoboDesktopWindow
+      BonoboEmbeddable
+      BonoboItemContainer
+      BonoboMoniker
+        BonoboMonikerSimple
+      BonoboMonikerExtender
+      BonoboPersist
+        BonoboPersistFile
+        BonoboPersistStream
+      BonoboProgressiveDataSink
+      BonoboStorage
+      BonoboUIComponent
+      BonoboUIContainer
+      BonoboListener
+      BonoboEventSource
+      BonoboItemHandler
+      BonoboPrint
+      BonoboPropertyControl
     BonoboGenericFactory
-    BonoboEmbeddable
-    BonoboItemContainer
-    BonoboMoniker
     Handle to remote Bonobo::Unknown
-    BonoboPersist
-      BonoboPersistFile
-      BonoboPersistStream
-    BonoboProgressiveDataSink
-    BonoboPropertyListener
-    BonoboStorage
     BonoboStream
       BonoboStreamMem
-    BonoboUIComponent
-    BonoboUIContainer
     BonoboZoomableFrame
     BonoboZoomable
-    BonoboListener
-    BonoboEventSource
-    BonoboItemHandler
-    BonoboPrint
-    BonoboPropertyControl
   GnomeCanvasItem
     BonoboCanvasItem
   GtkWidget
@@ -52,5 +54,7 @@ GtkObject
     GtkMisc
       BonoboUIToolbarIcon
   BonoboTransient
+  BonoboUIEngine
+  BonoboUISync
   BonoboUIXml
   BonoboPrintClient

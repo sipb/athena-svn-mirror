@@ -13,6 +13,10 @@ SUBDIRS = \
 confexecdir = $(libdir)
 confexec_DATA = bonoboConf.sh bonoboxConf.sh bonobox_printConf.sh
 
+bonoboincludedir=$(includedir)/gnome-1.0
+bonoboinclude_HEADERS = \
+	bonobo.h
+
 EXTRA_DIST =					\
 	bonoboConf.sh.in			\
 	bonoboxConf.sh.in			\

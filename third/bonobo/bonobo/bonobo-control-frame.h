@@ -45,7 +45,7 @@ typedef struct {
 } BonoboControlFrameClass;
 
 
-BonoboControlFrame           *bonobo_control_frame_new                       (Bonobo_UIContainer   uic);
+BonoboControlFrame           *bonobo_control_frame_new                       (Bonobo_UIContainer   ui_container);
 
 GtkWidget                    *bonobo_control_frame_get_widget                (BonoboControlFrame  *frame);
 
@@ -89,7 +89,7 @@ Bonobo_UIContainer            bonobo_control_frame_get_ui_container          (Bo
 /* Object construction stuff */
 GtkType                       bonobo_control_frame_get_type                  (void);
 BonoboControlFrame           *bonobo_control_frame_construct                 (BonoboControlFrame  *control_frame,
-									      Bonobo_UIContainer   uih);
+									      Bonobo_UIContainer   ui_container);
 
 /*
  * A BonoboControlFrame acts as a proxy for the remote BonoboControl object to
@@ -98,15 +98,15 @@ BonoboControlFrame           *bonobo_control_frame_construct                 (Bo
  * a given BonoboControlFrame.
  */
 void  bonobo_control_frame_size_request (BonoboControlFrame *control_frame,
-					int *desired_width,
-					int *desired_height);
+					 int                *desired_width,
+					 int                *desired_height);
 
 /* You almost certainly don't want these methods */
 void  bonobo_control_frame_sync_realize   (BonoboControlFrame *frame);
 void  bonobo_control_frame_sync_unrealize (BonoboControlFrame *frame);
 
 /* Or this.  It exists just so that BonoboSocket can use it. */
-gboolean bonobo_control_frame_focus (BonoboControlFrame *frame, GtkDirectionType direction);
+gboolean bonobo_control_frame_focus_child (BonoboControlFrame *frame, GtkDirectionType direction);
     
 END_GNOME_DECLS
 

@@ -80,6 +80,7 @@ void                        bonobo_control_activate_notify         (BonoboContro
 								    gboolean             activated);
 Bonobo_Control_windowId     bonobo_control_windowid_from_x11       (guint32              x11_id);
 
+
 END_GNOME_DECLS
 
 #endif /* _BONOBO_CONTROL_H_ */

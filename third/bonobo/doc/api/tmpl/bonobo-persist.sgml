@@ -2,56 +2,19 @@
 BonoboPersist
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Interface for anything that can save / load itself.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+BonoboPersist is an abstract base class that is useless by itself.
+It implements some methods to handle content type querying for
+use by the derived #BonoboPersistStream interface.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#BonoboPersistStream, #BonoboPersistFile
 </para>
-
-<!-- ##### MACRO BONOBO_PERSIST_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_PERSIST ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_PERSIST_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
-
-<!-- ##### MACRO BONOBO_IS_PERSIST ##### -->
-<para>
-
-</para>
-
-@o: 
-
-
-<!-- ##### MACRO BONOBO_IS_PERSIST_CLASS ##### -->
-<para>
-
-</para>
-
-@k: 
-
 
 <!-- ##### TYPEDEF BonoboPersist ##### -->
 <para>
@@ -65,16 +28,6 @@ BonoboPersist
 </para>
 
 
-<!-- ##### FUNCTION bonobo_persist_construct ##### -->
-<para>
-
-</para>
-
-@persist: 
-@corba_persist: 
-@Returns: 
-
-
 <!-- ##### FUNCTION bonobo_persist_generate_content_types ##### -->
 <para>
 
@@ -82,14 +35,6 @@ BonoboPersist
 
 @num: 
 @Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION bonobo_persist_get_epv ##### -->
-<para>
-
-</para>
-
 @Returns: 
 
 

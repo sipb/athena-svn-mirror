@@ -1,25 +1,23 @@
-# Note this is NOT a relocatable thing :)
-%define name		bonobo
-%define ver		@VERSION@
-%define RELEASE		pre
-%define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define prefix		/usr
-%define sysconfdir	/etc
-
-Name:		%name
-Summary:	Library for compound documents in GNOME
-Version: 	%ver
-Release: 	%rel
-Copyright: 	GPL
-Group:		System Environment/Libraries
-Source: 	%{name}-%{ver}.tar.gz
-URL: 		http://www.gnome.org/
-BuildRoot:	/var/tmp/%{name}-%{ver}-root
-Docdir: 	%{prefix}/doc
-Requires:	gnome-libs >= 1.2.5
-Requires:	ORBit >= 0.5.4
-Requires:	oaf >= 0.5.1
-Requires:	libxml >= 1.8.10
+Name:		 bonobo
+Summary:	 Library for compound documents in GNOME
+Version: 	 @VERSION@
+Release: 	 1_gpp
+License: 	 GPL
+Group:		 System Environment/Libraries
+Source: 	 ftp://ftp.gnome.org/pub/GNOME/stable/sources/%{name}/%{name}-%{version}.tar.gz
+URL: 		 http://www.gnome.org/
+BuildRoot:	 /var/tmp/%{name}-%{version}-root
+Requires:	 gnome-libs >= 1.2.7
+Requires:	 ORBit >= 0.5.7
+Requires:	 oaf >= 0.6.2
+Requires:	 libxml >= 1.8.10
+BuildRequires:   gdk-pixbuf-devel >= 0.6.0
+BuildRequires:   ORBit-devel >= 0.5.7
+BuildRequires:   gtk+-devel >= 1.2.0
+BuildRequires:   gnome-libs-devel >= 1.2.7
+BuildRequires:   oaf-devel >= 0.6.2
+BuildRequires:   libxml-devel >= 1.8.10
+BuildRequires:   gnome-print-devel >= 0.16
 
 %description
 Bonobo is a library that provides the necessary framework for GNOME
@@ -29,13 +27,92 @@ spreadsheet and graphic embedded in a word-processing document.
 %package devel
 Summary:	Libraries and include files for the Bonobo document model
 Group:		Development/Libraries
-Requires:	%name = %{PACKAGE_VERSION}
+Requires:	%name = %{version}
 
 %description devel
 This package provides the necessary development libraries and include
 files to allow you to develop programs using the Bonobo document model.
 
+%prep
+%setup -q
+
+%build
+
+LC_ALL=""
+LINGUAS=""
+LANG=""
+export LC_ALL LINGUAS LANG
+
+CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{_prefix} \
+    --sysconfdir=%{_sysconfdir} --libdir=%{_libdir} \
+    --includedir=%{_includedir} --bindir=%{_bindir} \
+    --datadir=%{_datadir}
+
+if [ "$SMP" != "" ]; then
+    (make "MAKE=make -k -j $SMP"; exit 0)
+    make
+else
+    make -k
+fi
+
+%install
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+
+make -k prefix=$RPM_BUILD_ROOT/%{_prefix} \
+    sysconfdir=$RPM_BUILD_ROOT/%{_sysconfdir} \
+    libdir=$RPM_BUILD_ROOT/%{_libdir} \
+    includedir=$RPM_BUILD_ROOT/%{_includedir} \
+    bindir=$RPM_BUILD_ROOT/%{_bindir} \
+    datadir=$RPM_BUILD_ROOT/%{_datadir} install
+
+
+%clean
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+  
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+%{_bindir}/*
+%{_libdir}/pkgconfig/*
+%dir %{_libdir}/bonobo
+%dir %{_libdir}/bonobo/monikers
+%{_libdir}/bonobo/monikers/*.so.*
+%{_libdir}/*.so.*
+%doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
+%{_datadir}/bonobo
+%{_datadir}/idl/*
+%{_datadir}/locale/*/*/*
+#{_datadir}/mime-info/*.keys
+%{_datadir}/oaf/*
+%{_datadir}/gnome/ui
+
+%files devel
+
+%defattr(-, root, root)
+%{_includedir}/*
+%{_libdir}/*a
+%{_libdir}/*.so
+%{_libdir}/*.sh
+%{_libdir}/bonobo/plugin
+%{_libdir}/bonobo/monikers/*.so
+%{_libdir}/bonobo/monikers/*a
+
+
 %changelog
+* Thu May 24 2001 Gregory Leblanc <gleblanc@localhost.localdomain>
+- removed unnecessary %defines
+- lots of work on %files
+- made %setup quiet
+- fixed %post
+- replaced copyright with license
+- reformatted BuildRequires
+
+* Wed Feb 21 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- fixed macros and hard-coded paths.  Should be very portable now.
+
 * Wed Oct 18 2000 Eskil Heyn Olsen <eskil@eazel.com>
 - Added requirements to the base package
 - Added bonobo-ui-extract to the file list of the base pacakge
@@ -59,99 +136,3 @@ files to allow you to develop programs using the Bonobo document model.
 
 * Sat May 1 1999 Erik Walthinsen <omega@cse.ogi.edu>
 - created spec file
-
-%prep
-%setup
-
-%build
-%ifarch alpha
-  MYARCH_FLAGS="--host=alpha-redhat-linux"
-%endif
-
-LC_ALL=""
-LINGUAS=""
-LANG=""
-export LC_ALL LINGUAS LANG
-
-CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
-	--sysconfdir=%{sysconfdir}
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make -k
-fi
-
-%install
-[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
-
-make -k prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
-
-for FILE in "$RPM_BUILD_ROOT/bin/*"; do
-	file "$FILE" | grep -q not\ stripped && strip $FILE
-done
-
-%clean
-[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
-
-%post
-if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
-  echo "%{prefix}/lib" >> /etc/ld.so.conf
-fi
-  
-/sbin/ldconfig
-  
-%postun -p /sbin/ldconfig
-
-%files
-%defattr(0555, bin, bin)
-%{prefix}/bin/bonobo-application-x-mines
-%{prefix}/bin/bonobo-audio-ulaw
-%{prefix}/bin/bonobo-echo
-%{prefix}/bin/bonobo-sample-canvas-item
-%{prefix}/bin/bonobo-sample-controls
-%{prefix}/bin/bonobo-sample-hello
-%{prefix}/bin/bonobo-sample-paint
-%{prefix}/bin/bonobo-text-plain
-%{prefix}/bin/echo-client
-%{prefix}/bin/efstool
-%{prefix}/bin/libefs-config
-%{prefix}/bin/sample-container
-%{prefix}/bin/sample-control-container
-%{prefix}/lib/pkgconfig/libefs.pc
-%{prefix}/lib/bonobo/plugin/*
-%{prefix}/lib/bonobo/monikers/*
-%{prefix}/lib/*.0
-%{prefix}/lib/*.1
-%{prefix}/lib/*.sh
-%{prefix}/lib/*.so
-
-
-%doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
-
-%defattr (0444, bin, bin)
-# %{prefix}/share/bonobo/html/bonobo/*.html
-# %{prefix}/share/bonobo/html/bonobo/*.sgml
-# %{prefix}/share/bonobo/html/*.html
-# %config %{sysconfdir}/CORBA/servers/*.gnorba
-%{prefix}/share/bonobo/html/*.hierarchy
-%{prefix}/share/bonobo/html/*.sgml
-%{prefix}/share/bonobo/html/*.signals
-%{prefix}/share/bonobo/html/*.txt
-%{prefix}/share/bonobo/html/*.types
-%{prefix}/share/idl/*.idl
-%{prefix}/share/locale/*/LC_MESSAGES/*.mo
-%{prefix}/share/mime-info/*.keys
-%{prefix}/share/oaf/*.oaf
-
-%files devel
-
-%defattr(0555, bin, bin)
-%dir %{prefix}/include/bonobo
-%{prefix}/lib/*.a
-%{prefix}/lib/*.la
-
-%defattr(0444, bin, bin)
-%{prefix}/include/*.h
-%{prefix}/include/bonobo/*.h

@@ -65,11 +65,11 @@ BonoboItemContainer        *bonobo_client_site_get_container       (BonoboClient
  * Proxy/Utility functions.
  */
 BonoboViewFrame            *bonobo_client_site_new_view_full    (BonoboClientSite   *client_site,
-								 Bonobo_UIContainer  uih,
+								 Bonobo_UIContainer  uic,
 								 gboolean            visible_cover,
 								 gboolean            active_view);
 BonoboViewFrame            *bonobo_client_site_new_view         (BonoboClientSite   *client_site,
-								 Bonobo_UIContainer  uih);
+								 Bonobo_UIContainer  uic);
 GnomeCanvasItem            *bonobo_client_site_new_item         (BonoboClientSite   *client_site,
 								 Bonobo_UIContainer  uic,
 								 GnomeCanvasGroup   *group);

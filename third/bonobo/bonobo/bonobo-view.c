@@ -22,11 +22,6 @@
 /* Parent object class in GTK hierarchy */
 static BonoboControlClass *bonobo_view_parent_class;
 
-/* The entry point vectors for the server we provide */
-POA_Bonobo_View__epv    bonobo_view_epv;
-POA_Bonobo_Control__epv bonobo_view_overridden_control_epv;
-POA_Bonobo_View__vepv   bonobo_view_vepv;
-
 enum {
 	VIEW_UNDO_LAST_OPERATION,
 	SET_ZOOM_FACTOR,
@@ -38,6 +33,7 @@ static guint view_signals [LAST_SIGNAL];
 typedef void (*GnomeSignal_NONE__DOUBLE) (GtkObject *object, double arg1, gpointer user_data);
 
 struct _BonoboViewPrivate {
+	int placeholder;
 };
 
 static void
@@ -179,7 +175,7 @@ bonobo_view_init (BonoboView *view)
 BONOBO_X_TYPE_FUNC_FULL (BonoboView, 
 			   Bonobo_View,
 			   PARENT_TYPE,
-			   bonobo_view);
+			   bonobo_view)
 
 /**
  * bonobo_view_set_embeddable:

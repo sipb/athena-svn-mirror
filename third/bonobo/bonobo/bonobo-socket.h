@@ -35,9 +35,12 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-#define BONOBO_SOCKET(obj)          GTK_CHECK_CAST (obj, bonobo_socket_get_type (), BonoboSocket)
-#define BONOBO_SOCKET_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, bonobo_socket_get_type (), BonoboSocketClass)
-#define BONOBO_IS_SOCKET(obj)       GTK_CHECK_TYPE (obj, bonobo_socket_get_type ())
+#define BONOBO_SOCKET_TYPE            (bonobo_socket_get_type ())
+#define BONOBO_SOCKET(obj)            (GTK_CHECK_CAST ((obj), BONOBO_SOCKET_TYPE, BonoboSocket))
+#define BONOBO_SOCKET_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), BONOBO_SOCKET_TYPE,	\
+				       BonoboSocketClass))
+#define BONOBO_IS_SOCKET(obj)         (GTK_CHECK_TYPE ((obj), BONOBO_SOCKET_TYPE))
+#define BONOBO_IS_SOCKET_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), BONOBO_SOCKET_TYPE))
 
 typedef struct _BonoboSocketPrivate BonoboSocketPrivate;
 

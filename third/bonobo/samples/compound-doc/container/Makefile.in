@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -74,6 +74,7 @@ BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_REVISION = @BONOBO_REVISION@
 BONOBO_TEST_CFLAGS = @BONOBO_TEST_CFLAGS@
 BONOBO_TEST_LIBS = @BONOBO_TEST_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -81,6 +82,8 @@ CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -113,6 +116,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -121,6 +125,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -132,6 +137,7 @@ PROF_CFLAGS = @PROF_CFLAGS@
 PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -139,12 +145,21 @@ VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+bonobolocaledir = @bonobolocaledir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -164,13 +179,16 @@ sample_container_LDADD =  	$(top_builddir)/bonobo/libbonobo.la			$(top_builddir)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  sample-container$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../../..
 LIBS = @LIBS@
-sample_container_OBJECTS =  container.o component.o container-io.o \
-container-filesel.o container-menu.o container-print.o embeddable-io.o
+sample_container_OBJECTS =  container.$(OBJEXT) component.$(OBJEXT) \
+container-io.$(OBJEXT) container-filesel.$(OBJEXT) \
+container-menu.$(OBJEXT) container-print.$(OBJEXT) \
+embeddable-io.$(OBJEXT)
 sample_container_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
 $(top_builddir)/bonobo/libbonobox.la \
 $(top_builddir)/bonobo/libbonobo-print.la
@@ -191,7 +209,7 @@ OBJECTS = $(sample_container_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps samples/compound-doc/container/Makefile
 
@@ -228,6 +246,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -236,6 +259,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -263,8 +287,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-sample-container: $(sample_container_OBJECTS) $(sample_container_DEPENDENCIES)
-	@rm -f sample-container
+sample-container$(EXEEXT): $(sample_container_OBJECTS) $(sample_container_DEPENDENCIES)
+	@rm -f sample-container$(EXEEXT)
 	$(LINK) $(sample_container_LDFLAGS) $(sample_container_OBJECTS) $(sample_container_LDADD) $(LIBS)
 
 tags: TAGS
@@ -311,7 +335,7 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-component.o: component.c component.h ../../../bonobo/bonobo.h \
+component.o: component.c component.h ../../../bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
 	../../../bonobo/bonobo-xobject.h \
@@ -362,7 +386,7 @@ component.o: component.c component.h ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-print-client.h container.h \
 	embeddable-io.h container-filesel.h
 container-filesel.o: container-filesel.c container-filesel.h container.h \
-	../../../bonobo/bonobo.h ../../../bonobo/bonobo-object.h \
+	../../../bonobo.h ../../../bonobo/bonobo-object.h \
 	../../../bonobo/Bonobo.h ../../../bonobo/bonobo-moniker.h \
 	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
@@ -410,7 +434,7 @@ container-filesel.o: container-filesel.c container-filesel.h container.h \
 	../../../bonobo/bonobo-selector-widget.h \
 	../../../bonobo/bonobo-widget.h ../../../bonobo/bonobo-print.h \
 	../../../bonobo/bonobo-print-client.h
-container-io.o: container-io.c ../../../bonobo/bonobo.h \
+container-io.o: container-io.c ../../../bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
 	../../../bonobo/bonobo-xobject.h \
@@ -461,9 +485,8 @@ container-io.o: container-io.c ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-print-client.h container-io.h \
 	container.h embeddable-io.h component.h
 container-menu.o: container-menu.c ../../../config.h container-menu.h \
-	container.h ../../../bonobo/bonobo.h \
-	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
-	../../../bonobo/bonobo-moniker.h \
+	container.h ../../../bonobo.h ../../../bonobo/bonobo-object.h \
+	../../../bonobo/Bonobo.h ../../../bonobo/bonobo-moniker.h \
 	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
 	../../../bonobo/bonobo-context.h \
@@ -512,7 +535,7 @@ container-menu.o: container-menu.c ../../../config.h container-menu.h \
 	../../../bonobo/bonobo-print-client.h container-io.h \
 	container-print.h container-filesel.h
 container-print.o: container-print.c container-print.h container.h \
-	../../../bonobo/bonobo.h ../../../bonobo/bonobo-object.h \
+	../../../bonobo.h ../../../bonobo/bonobo-object.h \
 	../../../bonobo/Bonobo.h ../../../bonobo/bonobo-moniker.h \
 	../../../bonobo/bonobo-xobject.h \
 	../../../bonobo/bonobo-moniker-simple.h \
@@ -560,7 +583,7 @@ container-print.o: container-print.c container-print.h container.h \
 	../../../bonobo/bonobo-selector-widget.h \
 	../../../bonobo/bonobo-widget.h ../../../bonobo/bonobo-print.h \
 	../../../bonobo/bonobo-print-client.h component.h
-container.o: container.c ../../../bonobo/bonobo.h \
+container.o: container.c ../../../bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
 	../../../bonobo/bonobo-xobject.h \
@@ -610,7 +633,7 @@ container.o: container.c ../../../bonobo/bonobo.h \
 	../../../bonobo/bonobo-widget.h ../../../bonobo/bonobo-print.h \
 	../../../bonobo/bonobo-print-client.h ../../../config.h \
 	container.h component.h container-io.h container-menu.h
-embeddable-io.o: embeddable-io.c component.h ../../../bonobo/bonobo.h \
+embeddable-io.o: embeddable-io.c component.h ../../../bonobo.h \
 	../../../bonobo/bonobo-object.h ../../../bonobo/Bonobo.h \
 	../../../bonobo/bonobo-moniker.h \
 	../../../bonobo/bonobo-xobject.h \

@@ -15,6 +15,7 @@
 #include "config.h"
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
+#define GNOME_EXPLICIT_TRANSLATION_DOMAIN PACKAGE
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-mime.h>
 #include "bonobo-object-directory.h"
@@ -167,17 +168,17 @@ bonobo_directory_get_server_list (const gchar **required_ids)
                 ODServerInfo *info;
 		gchar *name = NULL, *desc = NULL;
 
-
 		for (j = 0; j < oafinfo->props._length; j++) {
 			if (oafinfo->props._buffer[j].v._d != OAF_P_STRING)
 				continue;
 
-			if (strcmp (oafinfo->props._buffer[j].name, "name") == 0) {
+			if (strcmp (oafinfo->props._buffer[j].name, "name") == 0)
 				name = oafinfo->props._buffer[j].v._u.value_string;
-			}
 
 			else if (strcmp (oafinfo->props._buffer[j].name, "description") == 0)
 				desc = oafinfo->props._buffer[j].v._u.value_string;
+
+			/* FIXME: internationalize here */
 		}
 
 		/*

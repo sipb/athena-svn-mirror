@@ -214,7 +214,7 @@ impl_Bonobo_Stream_setInfo (BonoboStream                   *stream,
 {
 	BonoboStreamCache *stream_cache = BONOBO_STREAM_CACHE (stream);
 	
-	return Bonobo_Stream_setInfo (stream_cache->priv->cs, info, mask, ev);
+	Bonobo_Stream_setInfo (stream_cache->priv->cs, info, mask, ev);
 }
 
 static void
@@ -398,12 +398,13 @@ bonobo_stream_cache_create (Bonobo_Stream      cs,
 	CORBA_Environment  ev, *my_ev;
 
 	bonobo_return_val_if_fail (cs != NULL, NULL, opt_ev);
-
+	
 	if (!(stream = gtk_type_new (bonobo_stream_cache_get_type ()))) {
-		bonobo_exception_set (opt_ev, ex_Bonobo_Storage_IOError);
+		if (opt_ev)
+			bonobo_exception_set (opt_ev, ex_Bonobo_Storage_IOError);
 		return NULL;
 	}
-	
+
 	if (!opt_ev) {
 		CORBA_exception_init (&ev);
 		my_ev = &ev;

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-transient.h: a transient object implementation.
  *
  * This simplifies the creation of POA managers for transient objects.

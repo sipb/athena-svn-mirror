@@ -145,7 +145,7 @@ BONOBO_X_TYPE_FUNC_FULL (BonoboPersistStream,
 
 /**
  * bonobo_persist_stream_construct:
- * @ps: A GnomerPersistStream object
+ * @ps: A BonoboPersistStream object
  * @load_fn: Loading routine
  * @save_fn: Saving routine
  * @closure: Data passed to IO routines.
@@ -214,7 +214,7 @@ bonobo_persist_stream_new (BonoboPersistStreamIOFn    load_fn,
 
 /**
  * bonobo_persist_stream_set_dirty:
- * @ps: A GnomerPersistStream object
+ * @ps: A BonoboPersistStream object
  * @dirty: A boolean value representing whether the object is dirty or not
  *
  * This routine sets the dirty bit for the PersistStream object.

@@ -53,7 +53,7 @@ impl_set_parent (PortableServer_Servant servant,
 {
 	BonoboMoniker *moniker = bonobo_moniker_from_servant (servant);
 
-	return CLASS (moniker)->set_parent (moniker, value, ev);
+	CLASS (moniker)->set_parent (moniker, value, ev);
 }
 
 /**
@@ -147,13 +147,14 @@ bonobo_moniker_get_name_full (BonoboMoniker *moniker)
  * Get the full, escaped display name of the moniker eg.
  * file:/tmp/hash\#.gz returns file:/tmp/hash\#.gz
  * 
- * Return value: the dynamically allocated string.  
+ * Return value: the dynamically allocated string,
+ * or NULL in case of failure.
  * Must release with g_free().
  **/
 char *
 bonobo_moniker_get_name_escaped (BonoboMoniker *moniker)
 {
-	g_return_val_if_fail (BONOBO_IS_MONIKER (moniker), "");
+	g_return_val_if_fail (BONOBO_IS_MONIKER (moniker), NULL);
 
 	return bonobo_moniker_util_escape (
 		CLASS (moniker)->get_name (moniker), 0);

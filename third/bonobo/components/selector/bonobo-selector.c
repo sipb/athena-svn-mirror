@@ -16,7 +16,7 @@
 
 #include <config.h>
 
-#include <bonobo/bonobo.h>
+#include <bonobo.h>
 
 enum {
 	PROP_INTERFACE,

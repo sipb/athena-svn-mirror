@@ -76,20 +76,6 @@ BonoboUIToolbarItemStyle  bonobo_ui_toolbar_item_get_style        (BonoboUIToolb
 void			 bonobo_ui_toolbar_item_set_minimum_width(BonoboUIToolbarItem *item,
 								  int minimum_width);
 
-void                     bonobo_ui_toolbar_item_set_tooltip      (BonoboUIToolbarItem     *item,
-								  GtkTooltips             *tooltips,
-								  const char              *tooltip);
-void                     bonobo_ui_toolbar_item_set_state        (BonoboUIToolbarItem     *item,
-								  const char              *new_state);
-
-void                     bonobo_ui_toolbar_item_set_orientation  (BonoboUIToolbarItem     *item,
-								  GtkOrientation           orientation);
-GtkOrientation           bonobo_ui_toolbar_item_get_orientation  (BonoboUIToolbarItem     *item);
-
-void                     bonobo_ui_toolbar_item_set_style        (BonoboUIToolbarItem     *item,
-								  BonoboUIToolbarItemStyle style);
-BonoboUIToolbarItemStyle bonobo_ui_toolbar_item_get_style        (BonoboUIToolbarItem     *item);
-
 /* FIXME ugly names.  */
 void                      bonobo_ui_toolbar_item_set_want_label   (BonoboUIToolbarItem      *button_item,
 								   gboolean                  prefer_text);

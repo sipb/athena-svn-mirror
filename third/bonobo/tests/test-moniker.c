@@ -5,7 +5,7 @@
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
 #include <orb/orbit.h>
-#include <bonobo/bonobo.h>
+#include <bonobo.h>
 
 static void
 check_string (const char *prefix, const char *escaped, const char *unescaped)

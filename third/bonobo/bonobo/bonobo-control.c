@@ -1,5 +1,5 @@
 /* -*- mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * Bonobo control object
  *
  * Author:
@@ -34,9 +34,6 @@ static guint control_signals [LAST_SIGNAL];
 
 /* Parent object class in GTK hierarchy */
 static BonoboObjectClass *bonobo_control_parent_class;
-
-/* The entry point vectors for the server we provide */
-POA_Bonobo_Control__vepv bonobo_control_vepv;
 
 struct _BonoboControlPrivate {
 	GtkWidget                  *widget;
@@ -110,7 +107,7 @@ bonobo_control_windowid_from_x11 (guint32 x11_id)
 /*
  * This callback is invoked when the plug is unexpectedly destroyed by
  * way of its associated X window dying.  This usually indicates that
- * the contaier application has died.  This callback is _not_ invoked
+ * the container application has died.  This callback is _not_ invoked
  * if the BonoboControl is destroyed normally, i.e. the user unrefs
  * the BonoboControl away.
  */
@@ -343,10 +340,10 @@ impl_Bonobo_Control_setWindowId (PortableServer_Servant  servant,
 		control->priv->destroy_idle_id = gtk_idle_add (
 			idle_destroy_socket, control);
 
-		gtk_signal_connect (GTK_OBJECT (local_socket),
-				    "destroy",
-				    remove_destroy_idle,
-				    control);
+		gtk_signal_connect_while_alive (GTK_OBJECT (local_socket),
+						"destroy",
+						remove_destroy_idle,
+						control, GTK_OBJECT (control));
 
 
 		gtk_box_pack_end (GTK_BOX (socket_parent),
@@ -418,12 +415,19 @@ impl_Bonobo_Control_setState (PortableServer_Servant      servant,
 			       CORBA_Environment          *ev)
 {
 	BonoboControl *control = BONOBO_CONTROL (bonobo_object_from_servant (servant));
+	GtkStateType gtk_state = bonobo_control_gtk_state_from_corba (state);
 
 	g_return_if_fail (control->priv->widget != NULL);
 
-	gtk_widget_set_state (
-		control->priv->widget,
-		bonobo_control_gtk_state_from_corba (state));
+	if (gtk_state == GTK_STATE_INSENSITIVE)
+		gtk_widget_set_sensitive (control->priv->widget, FALSE);
+	else {
+		if (! GTK_WIDGET_SENSITIVE (control->priv->widget))
+			gtk_widget_set_sensitive (control->priv->widget, TRUE);
+
+		gtk_widget_set_state (control->priv->widget,
+				      gtk_state);
+	}
 }
 
 static Bonobo_PropertyBag
@@ -472,9 +476,9 @@ impl_Bonobo_Control_unrealize (PortableServer_Servant servant,
 }
 
 static CORBA_boolean
-impl_Bonobo_Control_focus (PortableServer_Servant servant,
-			   Bonobo_Control_FocusDirection corba_direction,
-			   CORBA_Environment *ev)
+impl_Bonobo_Control_focusChild (PortableServer_Servant servant,
+				Bonobo_Control_FocusDirection corba_direction,
+				CORBA_Environment *ev)
 {
 	BonoboControl *control;
 	BonoboControlPrivate *priv;
@@ -482,8 +486,6 @@ impl_Bonobo_Control_focus (PortableServer_Servant servant,
 
 	control = BONOBO_CONTROL (bonobo_object_from_servant (servant));
 	priv = control->priv;
-
-	/* FIXME: this will not work for local controls. */
 
 	if (!priv->plug)
 		return FALSE;
@@ -518,6 +520,7 @@ impl_Bonobo_Control_focus (PortableServer_Servant servant,
 		return FALSE;
 	}
 
+	bonobo_plug_clear_focus_chain (BONOBO_PLUG (priv->plug));
 	return gtk_container_focus (GTK_CONTAINER (priv->plug), direction);
 }
 
@@ -539,7 +542,7 @@ bonobo_control_construct (BonoboControl  *control,
 	gtk_object_ref (GTK_OBJECT (widget));
 	gtk_object_sink (GTK_OBJECT (widget));
 
-	control->priv->ui_component = bonobo_ui_component_new_default ();
+	control->priv->ui_component = NULL;
 	control->priv->propbag = NULL;
 
 	return control;
@@ -591,10 +594,8 @@ bonobo_control_get_widget (BonoboControl *control)
  *
  * Sets whether or not the control handles menu/toolbar merging
  * automatically.  If automerge is on, the control will automatically
- * create its menus and toolbars when it is activated and destroy them
- * when it is deactivated.  The menus and toolbars which it merges are
- * specified with bonobo_control_set_menus() and
- * bonobo_control_set_toolbars().
+ * register its BonoboUIComponent with the remote BonoboUIContainer
+ * when it is activated.
  */
 void
 bonobo_control_set_automerge (BonoboControl *control,
@@ -603,6 +604,9 @@ bonobo_control_set_automerge (BonoboControl *control,
 	g_return_if_fail (BONOBO_IS_CONTROL (control));
 
 	control->priv->automerge = automerge;
+
+	if (automerge && !control->priv->ui_component)
+		control->priv->ui_component = bonobo_ui_component_new_default ();
 }
 
 /**
@@ -637,16 +641,18 @@ bonobo_control_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (control->priv->propbag));
 	control->priv->propbag = NULL;
 
-	if (control->priv->active)
-		Bonobo_ControlFrame_activated (control->priv->control_frame,
-					       FALSE, &ev);
-
-	CORBA_Object_release (control->priv->control_frame, &ev);
+	if (control->priv->control_frame != CORBA_OBJECT_NIL) {
+		if (control->priv->active)
+			Bonobo_ControlFrame_activated (control->priv->control_frame,
+						       FALSE, &ev);
+		
+		CORBA_Object_release (control->priv->control_frame, &ev);
+	}
 
 	CORBA_exception_free (&ev);
 
 	/*
-	 * If we have a UIHandler, destroy it.
+	 * If we have a UIComponent, destroy it.
 	 */
 	if (control->priv->ui_component != NULL) {
 		bonobo_ui_component_unset_container (control->priv->ui_component);
@@ -706,7 +712,10 @@ bonobo_control_set_control_frame (BonoboControl *control, Bonobo_ControlFrame co
 	if (control->priv->control_frame != CORBA_OBJECT_NIL)
 		CORBA_Object_release (control->priv->control_frame, &ev);
 	
-	control->priv->control_frame = CORBA_Object_duplicate (control_frame, &ev);
+	if (control_frame == CORBA_OBJECT_NIL)
+		control->priv->control_frame = CORBA_OBJECT_NIL;
+	else
+		control->priv->control_frame = CORBA_Object_duplicate (control_frame, &ev);
 	
 	CORBA_exception_free (&ev);
 
@@ -719,7 +728,7 @@ bonobo_control_set_control_frame (BonoboControl *control, Bonobo_ControlFrame co
  * being retrieved.
  *
  * Returns: The Bonobo_ControlFrame CORBA object associated with @control, this is
- * a CORBA_object_duplicated object.  You need to CORBA_free it when you are
+ * a CORBA_Object_duplicated object.  You need to CORBA_Object_release it when you are
  * done with it.
  */
 Bonobo_ControlFrame
@@ -747,6 +756,9 @@ BonoboUIComponent *
 bonobo_control_get_ui_component (BonoboControl *control)
 {
 	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
+
+	if (!control->priv->ui_component)
+		control->priv->ui_component = bonobo_ui_component_new_default ();
 
 	return control->priv->ui_component;
 }
@@ -808,6 +820,7 @@ bonobo_control_get_properties (BonoboControl *control)
  * bonobo_control_get_ambient_properties:
  * @control: A #BonoboControl which is bound to a remote
  * #BonoboControlFrame.
+ * @ev: CORBA exception environment.
  *
  * Returns: A #Bonobo_PropertyBag bound to the bag of ambient
  * properties associated with this #Control's #ControlFrame.
@@ -848,7 +861,6 @@ bonobo_control_get_ambient_properties (BonoboControl     *control,
 
 /**
  * bonobo_control_get_remote_ui_container:
- *
  * @control: A BonoboControl object which is associated with a remote
  * ControlFrame.
  *
@@ -858,7 +870,7 @@ Bonobo_UIContainer
 bonobo_control_get_remote_ui_container (BonoboControl *control)
 {
 	CORBA_Environment  ev;
-	Bonobo_UIContainer ui_component;
+	Bonobo_UIContainer ui_container;
 
 	g_return_val_if_fail (BONOBO_IS_CONTROL (control), CORBA_OBJECT_NIL);
 
@@ -867,13 +879,13 @@ bonobo_control_get_remote_ui_container (BonoboControl *control)
 
 	CORBA_exception_init (&ev);
 
-	ui_component = Bonobo_ControlFrame_getUIHandler (control->priv->control_frame, &ev);
+	ui_container = Bonobo_ControlFrame_getUIHandler (control->priv->control_frame, &ev);
 
 	bonobo_object_check_env (BONOBO_OBJECT (control), control->priv->control_frame, &ev);
 
 	CORBA_exception_free (&ev);
 
-	return ui_component;
+	return ui_container;
 }
 
 /**
@@ -944,7 +956,7 @@ bonobo_control_class_init (BonoboControlClass *klass)
 	epv->getProperties  = impl_Bonobo_Control_getProperties;
 	epv->realize        = impl_Bonobo_Control_realize;
 	epv->unrealize      = impl_Bonobo_Control_unrealize;
-	epv->focus          = impl_Bonobo_Control_focus;
+	epv->focusChild     = impl_Bonobo_Control_focusChild;
 }
 
 static void
@@ -956,9 +968,9 @@ bonobo_control_init (BonoboControl *control)
 }
 
 BONOBO_X_TYPE_FUNC_FULL (BonoboControl, 
-			   Bonobo_Control,
-			   PARENT_TYPE,
-			   bonobo_control);
+			 Bonobo_Control,
+			 PARENT_TYPE,
+			 bonobo_control);
 
 void
 bonobo_control_set_property (BonoboControl       *control,

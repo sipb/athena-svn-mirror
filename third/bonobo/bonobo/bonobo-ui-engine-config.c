@@ -8,11 +8,17 @@
  * Copyright 2001 Helix Code, Inc.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-config.h>
+
+#define GNOME_EXPLICIT_TRANSLATION_DOMAIN PACKAGE
 #include <libgnome/gnome-i18n.h>
 
 #include <libgnomeui/gnome-stock.h>
@@ -515,7 +521,7 @@ dialog_new (BonoboUIEngineConfig *config)
 
 	accel_group = gtk_accel_group_new ();
 
-	window = gnome_dialog_new (_("Configure UI"), 
+	window = gnome_dialog_new (_("Customize Toolbars"),
 				   GNOME_STOCK_BUTTON_OK,
 				   NULL);
 	gnome_dialog_set_default (GNOME_DIALOG (window), 0);

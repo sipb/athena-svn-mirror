@@ -1,4 +1,4 @@
-/**
+/*
  * bonobo-exception.c: a generic exception -> user string converter.
  *
  * Authors:
@@ -6,10 +6,10 @@
  *
  * Copyright 2000 Helix Code, Inc.
  */
-
 #include <config.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
+#define GNOME_EXPLICIT_TRANSLATION_DOMAIN PACKAGE
 #include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-exception.h>
 
@@ -65,6 +65,16 @@ get_hash (void)
 	return bonobo_exceptions;
 }
 
+/**
+ * bonobo_exception_add_handler_str:
+ * @repo_id: exception repository id
+ * @str: the user readable, translated exception text.
+ * 
+ * This routine adds a simple string mapping for an exception
+ * with repository id @repo_id, such that when we call
+ * bonobo_exception_get_text on an exception of id @repo_id we
+ * get @str back.
+ **/
 void
 bonobo_exception_add_handler_str (const char *repo_id, const char *str)
 {
@@ -85,6 +95,20 @@ bonobo_exception_add_handler_str (const char *repo_id, const char *str)
 	g_hash_table_insert (hash, e->repo_id, e);
 }
 
+/**
+ * bonobo_exception_add_handler_fn:
+ * @repo_id: exception repository id
+ * @fn: function to make exception human readable
+ * @user_data: the user data
+ * @destroy_fn: user data destroy function or NULL.
+ * 
+ * This routine adds a method mapping for an exception
+ * with repository id @repo_id, such that when we call
+ * bonobo_exception_get_text on an exception of id @repo_id
+ * the @fn is called and passed @user_data.
+ * When the handler is removed the @destroy_fn is called
+ * on its @user_data.
+ **/
 void
 bonobo_exception_add_handler_fn (const char *repo_id,
 				 BonoboExceptionFn fn,
@@ -110,6 +134,15 @@ bonobo_exception_add_handler_fn (const char *repo_id,
 	g_hash_table_insert (hash, e->repo_id, e);
 }
 
+/**
+ * bonobo_exception_repoid_to_text:
+ * @repo_id: exception repository id
+ * 
+ *  This maps builtin bonobo exceptions that the system
+ * knows about to user readable strings.
+ * 
+ * Return value: a user string or NULL for an unknown repo_id
+ **/
 char *
 bonobo_exception_repoid_to_text  (const char *repo_id)
 {
@@ -223,11 +256,13 @@ bonobo_exception_repoid_to_text  (const char *repo_id)
  * bonobo_exception_get_text:
  * @ev: the corba environment.
  * 
- * Returns a user readable description of the exception, busks
- * something convincing if it is not know.
+ * Returns a user readable description of the exception.  First
+ * checks @ev against builtin Bonobo exceptions, then falls back to
+ * exception names added through bonobo_exception_add_handler_str
+ * or bonobo_exception_add_handler_fn.
  * 
- * Return value: a g_malloc'd description; needs freeing as,
- * and when. NULL is never returned.
+ * Return value: A g_malloc'd description, which the caller must free.
+ * NULL is never returned.
  **/
 char *
 bonobo_exception_get_text (CORBA_Environment *ev)

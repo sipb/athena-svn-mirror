@@ -214,14 +214,14 @@ impl_Bonobo_Canvas_Component_update (PortableServer_Servant     servant,
 
 				for (j = 0; j < i; j++) {
 					free_seg (&svp->segs [j]);
-					art_free (svp);
-					goto fail;
 				}
+				art_free (svp);
+				goto fail;
 			}
 		}
 	}
 	
-	invoke_update (item, (double *)aff, svp, flags);
+	invoke_update (item, affine, svp, flags);
 
 	if (svp){
 		for (i = 0; i < svp->n_segs; i++)
@@ -255,7 +255,7 @@ impl_Bonobo_Canvas_Component_update (PortableServer_Servant     servant,
 	return cuta;
 }
 
-static GdkGC *the_gc;
+static GdkGC *the_gc = NULL;
 
 static void
 impl_Bonobo_Canvas_Component_realize (PortableServer_Servant  servant,
@@ -271,7 +271,9 @@ impl_Bonobo_Canvas_Component_realize (PortableServer_Servant  servant,
 		return;
 	}
 
-	the_gc = gdk_gc_new (gdk_window);
+	if (!the_gc)
+		the_gc = gdk_gc_new (gdk_window);
+
 	item->canvas->layout.bin_window = gdk_window;
 	ICLASS (item)->realize (item);
 }
@@ -675,7 +677,6 @@ BONOBO_X_TYPE_FUNC_FULL (BonoboCanvasComponent,
 /**
  * bonobo_canvas_component_construct:
  * @comp: a #BonoboCanvasComponent to initialize
- * @corba_canvas_comp: A Bonobo_Canvas_Component corba object.
  * @item: A #GnomeCanvasItem that is being exported
  *
  * Creates a CORBA server for the interface Bonobo::Canvas::Item
@@ -811,12 +812,40 @@ rih_update (GnomeCanvasItem *item, double affine [6], ArtSVP *svp, int flags)
 }
 
 static void
+rih_draw (GnomeCanvasItem *item, GdkDrawable *drawable, 
+	  int x, int y, int width, int height)
+{
+	RootItemHack *rih = (RootItemHack *) item;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+	Bonobo_Canvas_ComponentProxy_requestRedraw (
+			rih->proxy, x, y, x + width, y + height, &ev);
+	CORBA_exception_free (&ev);
+}
+
+static void
+rih_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+{
+	RootItemHack *rih = (RootItemHack *) item;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+	Bonobo_Canvas_ComponentProxy_requestRedraw (
+					rih->proxy, item->x1, item->y1, 
+					item->x2, item->y2, &ev);
+	CORBA_exception_free (&ev);
+}
+
+static void
 rih_class_init (GnomeCanvasItemClass *item_class)
 {
 	rih_parent_class = gtk_type_class (gnome_canvas_group_get_type ());
 
 	GTK_OBJECT_CLASS (item_class)->destroy  = rih_destroy;
 	item_class->update = rih_update;
+	item_class->draw = rih_draw;
+	item_class->render = rih_render;
 }
       
 static GtkType

@@ -2,17 +2,81 @@
 bonobo-moniker-util
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Object activation and construction through monikers.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+The moniker utility functions provide two sets of functions:
+  <itemizedlist>
+    <listitem>
+      <para>
+      Helper functions for constructing and resolving monikers,
+      and a simple get_object method that constructs and resolves
+      against an interface in a single pass. Also, asynchronous
+      versions of these methods are provided using the #BonoboAsync
+      code. 
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      Helper functions for the implementation of new custom
+      monikers are also provided here, along with a lot of the
+      grunt code neccessary for moniker implementation, particularly
+      constructing the chained list of sub-monikers that comprises
+      a complex moniker.
+      </para>
+    </listitem>
+  </itemizedlist>
+</para>
+<para>
+The most useful function to get a feel for what monikers can do
+is the <function>bonobo_get_object</function> method. This is
+used to create a moniker and resolve it against a given interface
+like this:
+  <example>
+     <title>GetObject example</title>
+     <programlisting>
+GtkWidget *
+moniker_resolve_demo (void)
+{
+	Bonobo_Control control;
+	CORBA_Environment ev;
 
+	CORBA_exception_init (&amp;ev);
+
+	control = bonobo_get_object ("file:/demo/a.jpeg",
+                                     "Bonobo/Control", NULL);
+
+	if (control == CORBA_OBJECT_NIL)
+		g_error ("Failed to get object file:/demo/a.jpeg");
+
+	return bonobo_widget_new_control (control);
+}
+     </programlisting>
+  </example>
+  This also makes a control out of the widget.
+</para>
+
+<para>
+  It is worth noting that when resolving monikers a contracted
+version of the interface name may be used, ommitting the 'IDL:'
+prefix and / or the ':0' suffix.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
+
+<!-- ##### USER_FUNCTION BonoboMonikerAsyncFn ##### -->
+<para>
+
+</para>
+
+@object: 
+@ev: 
+@user_data: 
+
 
 <!-- ##### FUNCTION bonobo_get_object ##### -->
 <para>
@@ -109,6 +173,19 @@ bonobo-moniker-util
 @Returns: 
 
 
+<!-- ##### FUNCTION bonobo_get_object_async ##### -->
+<para>
+
+</para>
+
+@name: 
+@interface_name: 
+@ev: 
+@timeout_msec: 
+@cb: 
+@user_data: 
+
+
 <!-- ##### FUNCTION bonobo_moniker_client_new_from_name_async ##### -->
 <para>
 
@@ -116,6 +193,65 @@ bonobo-moniker-util
 
 @name: 
 @ev: 
+@timeout_msec: 
+@cb: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_util_escape ##### -->
+<para>
+
+</para>
+
+@string: 
+@offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_util_unescape ##### -->
+<para>
+
+</para>
+
+@string: 
+@num_chars: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_client_equal ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@name: 
+@opt_ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_resolve_async ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@options: 
+@interface_name: 
+@ev: 
+@timeout_msec: 
+@cb: 
+@user_data: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_resolve_async_default ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@interface_name: 
+@ev: 
+@timeout_msec: 
 @cb: 
 @user_data: 
 

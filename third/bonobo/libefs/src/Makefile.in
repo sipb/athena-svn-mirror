@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -68,6 +68,8 @@ CC = @CC@
 CPP = @CPP@
 CRYPTLIB = @CRYPTLIB@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -79,8 +81,10 @@ LT_CURRENT = @LT_CURRENT@
 LT_REVISION = @LT_REVISION@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 
 INCLUDES = $(GLIB_CFLAGS)
@@ -99,7 +103,7 @@ include_HEADERS = efs.h efs_error.h
 
 noinst_HEADERS = efs_internal.h ib1_driver.h blowfish.h
 
-libefs_la_LDFLAGS =  	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+libefs_la_LDFLAGS =  	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -lz
 
 
 libefs_la_SOURCES =  	efs.c			wrapper.c			lock.c			ib1_cache.c		ib1_alloc.c		ib1_driver.c		ib1_inode.c		ib1_file.c		blowfish.c		mime.c
@@ -117,12 +121,14 @@ LIBS = @LIBS@
 libefs_la_LIBADD = 
 libefs_la_OBJECTS =  efs.lo wrapper.lo lock.lo ib1_cache.lo ib1_alloc.lo \
 ib1_driver.lo ib1_inode.lo ib1_file.lo blowfish.lo mime.lo
+bin_PROGRAMS =  efstool$(EXEEXT)
+noinst_PROGRAMS =  efstest$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
-efstool_OBJECTS =  efstool.o
+efstool_OBJECTS =  efstool.$(OBJEXT)
 efstool_DEPENDENCIES =  libefs.la
 efstool_LDFLAGS = 
-efstest_OBJECTS =  efstest.o
+efstest_OBJECTS =  efstest.$(OBJEXT)
 efstest_DEPENDENCIES =  libefs.la
 efstest_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -144,7 +150,7 @@ OBJECTS = $(libefs_la_OBJECTS) $(efstool_OBJECTS) $(efstest_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
 
@@ -181,6 +187,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -189,6 +200,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -253,12 +265,12 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-efstool: $(efstool_OBJECTS) $(efstool_DEPENDENCIES)
-	@rm -f efstool
+efstool$(EXEEXT): $(efstool_OBJECTS) $(efstool_DEPENDENCIES)
+	@rm -f efstool$(EXEEXT)
 	$(LINK) $(efstool_LDFLAGS) $(efstool_OBJECTS) $(efstool_LDADD) $(LIBS)
 
-efstest: $(efstest_OBJECTS) $(efstest_DEPENDENCIES)
-	@rm -f efstest
+efstest$(EXEEXT): $(efstest_OBJECTS) $(efstest_DEPENDENCIES)
+	@rm -f efstest$(EXEEXT)
 	$(LINK) $(efstest_LDFLAGS) $(efstest_OBJECTS) $(efstest_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)

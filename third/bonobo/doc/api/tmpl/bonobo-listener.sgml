@@ -7,7 +7,7 @@ An Event Listener (an implementation of Bonobo::Listener)
 <!-- ##### SECTION Long_Description ##### -->
 <para>
    The BonoboListener object is a CORBA server used to receive events
-   emmited by a remote Bonobo::EventSource server.  The combination
+   emitted by a remote Bonobo::EventSource server.  The combination
    EventSource/Listener is used to notify one or more client
    applications of events that happen in a component.    Think of the
    EventSource/Listener as a notification/callback system that allows
@@ -36,7 +36,6 @@ An Event Listener (an implementation of Bonobo::Listener)
 
     <informalexample>
       <programlisting>
-
 BonoboListener *keyboard_listener;
 
 my_listener_function (BonoboListener *l, char *event_name,
@@ -69,13 +68,13 @@ connect_to_keyboard_source (Bonobo_EventSource *keyboard)
 <para>
   The CORBA::any value passed to the listener function is defined by
   the contract between the EventSource's event you are using and you.
-  To manipulate the value, you can use the CORBA DynAny interface to
-  introspect the value and extract the information you need. 
+  To manipulate the value, you can use the CORBA DynamicAny interface
+  to introspect the value and extract the information you need. 
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-   #BonoboEventSource
+   #BonoboEventSource #BonoboArg
 </para>
 
 <!-- ##### MACRO BONOBO_LISTENER_TYPE ##### -->
@@ -136,9 +135,9 @@ connect_to_keyboard_source (Bonobo_EventSource *keyboard)
 </para>
 
 @listener: a pointer to the BonoboListener.
-@event_name: the event name that was emmited.
+@event_name: the event name that was emitted.
 @any: The value (A CORBA Any) that was passed by the EventSource.
-@ev: Environment for returning CORBA errors. 
+@ev: Environment for returning CORBA errors.
 @user_data: the data pointer specified when you called bonobo_listener_new
 
 
@@ -152,35 +151,50 @@ connect_to_keyboard_source (Bonobo_EventSource *keyboard)
 @Returns: 
 
 
-<!-- ##### FUNCTION bonobo_listener_construct ##### -->
+<!-- ##### FUNCTION bonobo_event_kind ##### -->
 <para>
 
 </para>
 
-@listener: 
-@corba_listener: 
+@event_name: 
 @Returns: 
 
 
-<!-- ##### FUNCTION bonobo_listener_get_epv ##### -->
+<!-- ##### FUNCTION bonobo_event_type ##### -->
 <para>
 
 </para>
 
+@event_name: 
 @Returns: 
 
 
-<!-- ##### FUNCTION bonobo_listener_corba_object_create ##### -->
+<!-- ##### FUNCTION bonobo_event_subtype ##### -->
 <para>
 
 </para>
 
-@object: 
+@event_name: 
 @Returns: 
 
 
-<!-- ##### SIGNAL BonoboListener::event_notify ##### -->
+<!-- ##### FUNCTION bonobo_event_idl_path ##### -->
 <para>
-   This signal is emmited when an event is received from the
-   EventSource this BonoboListener is registered with. 
+
 </para>
+
+@event_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_event_make_name ##### -->
+<para>
+
+</para>
+
+@idl_path: 
+@kind: 
+@subtype: 
+@Returns: 
+
+

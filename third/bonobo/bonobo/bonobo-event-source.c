@@ -30,7 +30,7 @@ struct _BonoboEventSourcePrivate {
 typedef struct {
 	Bonobo_Listener listener;
 	Bonobo_EventSource_ListenerId id;
-	CORBA_char *event_mask; /* send all events if NULL */
+	gchar **event_masks; /* send all events if NULL */
 } ListenerDesc;
 
 /*
@@ -61,7 +61,7 @@ static void
 desc_free (ListenerDesc *desc, CORBA_Environment *ev)
 {
 	if (desc) {
-		CORBA_free (desc->event_mask);
+		g_strfreev (desc->event_masks);
 		bonobo_object_release_unref (desc->listener, ev);
 		g_free (desc);
 	}
@@ -74,15 +74,11 @@ impl_Bonobo_EventSource_addListenerWithMask (PortableServer_Servant servant,
 					     CORBA_Environment     *ev)
 {
 	BonoboEventSource *event_source;
-	CORBA_char        *mask_copy = NULL;
 	ListenerDesc      *desc;
 
 	g_return_val_if_fail (!CORBA_Object_is_nil (l, ev), 0);
 
 	event_source = bonobo_event_source_from_servant (servant);
-
-	if (event_mask)
-		mask_copy = CORBA_string_dup (event_mask);
 
 	if (event_source->priv->ignore) /* Hook for running context */
 		bonobo_running_context_ignore_object (l);
@@ -90,9 +86,12 @@ impl_Bonobo_EventSource_addListenerWithMask (PortableServer_Servant servant,
 	desc = g_new0 (ListenerDesc, 1);
 	desc->listener = bonobo_object_dup_ref (l, ev);
 	desc->id = create_listener_id (event_source);
-	desc->event_mask = mask_copy;
 
-	event_source->priv->listeners = g_slist_prepend (event_source->priv->listeners, desc);
+	if (event_mask)
+		desc->event_masks = g_strsplit (event_mask, ",", 0);
+
+	event_source->priv->listeners = g_slist_prepend (
+		event_source->priv->listeners, desc);
 
 	return desc->id;
 }
@@ -102,7 +101,8 @@ impl_Bonobo_EventSource_addListener (PortableServer_Servant servant,
 				     const Bonobo_Listener  l,
 				     CORBA_Environment     *ev)
 {
-	return impl_Bonobo_EventSource_addListenerWithMask (servant, l, NULL, ev);
+	return impl_Bonobo_EventSource_addListenerWithMask (
+		servant, l, NULL, ev);
 }
 
 static void
@@ -110,18 +110,20 @@ impl_Bonobo_EventSource_removeListener (PortableServer_Servant servant,
 					const Bonobo_EventSource_ListenerId id,
 					CORBA_Environment     *ev)
 {
-	BonoboEventSource *event_source;
-	GSList *list;
+	GSList                   *l, *next;
+	BonoboEventSourcePrivate *priv;
 
-	event_source = bonobo_event_source_from_servant (servant);
+	priv = bonobo_event_source_from_servant (servant)->priv;
 
-	for (list = event_source->priv->listeners; list; list = list->next) {
-		ListenerDesc *desc = (ListenerDesc *) list->data;
+	for (l = priv->listeners; l; l = next) {
+		ListenerDesc *desc = l->data;
+
+		next = l->next;
 
 		if (desc->id == id) {
-			event_source->priv->listeners = 
-				g_slist_remove (event_source->priv->listeners,
-						desc);
+			priv->listeners = g_slist_remove_link (
+				priv->listeners, l);
+			g_slist_free_1 (l);
 			desc_free (desc, ev);
 			return;
 		}
@@ -132,10 +134,38 @@ impl_Bonobo_EventSource_removeListener (PortableServer_Servant servant,
 			     NULL);
 }
 
+/*
+ * if the mask starts with a '=', we do exact compares - else we only check 
+ * if the mask is a prefix of name.
+ */
+static gboolean
+event_match (const char *name, gchar **event_masks)
+{
+	int i = 0, j = 0;
+
+	while (event_masks[j]) {
+		char *mask = event_masks[j];
+		
+		if (mask [0] == '=')
+			if (!strcmp (name, mask + 1))
+				return TRUE;
+
+		while (name [i] && mask [i] && name [i] == mask [i])
+			i++;
+		
+		if (mask [i] == '\0')
+			return TRUE;
+
+		j++;
+	}
+	
+	return FALSE;
+} 
+
 /**
  * bonobo_event_source_notify_listeners:
  * @event_source: the Event Source that will emit the event.
- * @event_name: Name of the event being emmited
+ * @event_name: Name of the event being emitted
  * @value: A CORBA_any value that contains the data that is passed to interested clients
  * @opt_ev: A CORBA_Environment where a failure code can be returned, can be NULL.
  *
@@ -153,7 +183,7 @@ bonobo_event_source_notify_listeners (BonoboEventSource *event_source,
 				      const CORBA_any   *value,
 				      CORBA_Environment *opt_ev)
 {
-	GSList *list;
+	GSList *l, *notify;
 	CORBA_Environment ev, *my_ev;
 
 	if (!opt_ev) {
@@ -162,17 +192,29 @@ bonobo_event_source_notify_listeners (BonoboEventSource *event_source,
 	} else
 		my_ev = opt_ev;
 
-	bonobo_object_ref (BONOBO_OBJECT (event_source));
-	for (list = event_source->priv->listeners; list; list = list->next) {
-		ListenerDesc *desc = (ListenerDesc *) list->data;
+	notify = NULL;
 
-		if (desc->event_mask == NULL || 
-		    strstr (desc->event_mask, event_name))
-			Bonobo_Listener_event (desc->listener, 
-					       event_name, value, my_ev);
+	for (l = event_source->priv->listeners; l; l = l->next) {
+		ListenerDesc *desc = (ListenerDesc *) l->data;
+
+		if (desc->event_masks == NULL ||
+		    event_match (event_name, desc->event_masks)) {
+			CORBA_Object_duplicate (desc->listener, my_ev);
+			notify = g_slist_prepend (notify, desc->listener);
+		}
 	}
+
+	bonobo_object_ref (BONOBO_OBJECT (event_source));
+
+	for (l = notify; l; l = l->next) {
+		Bonobo_Listener_event (l->data, event_name, value, my_ev);
+		CORBA_Object_release (l->data, my_ev);
+	}
+
 	bonobo_object_unref (BONOBO_OBJECT (event_source));
-	
+
+	g_slist_free (notify);
+
 	if (!opt_ev)
 		CORBA_exception_free (&ev);
 }
@@ -198,21 +240,25 @@ bonobo_event_source_notify_listeners_full (BonoboEventSource *event_source,
 static void
 bonobo_event_source_destroy (GtkObject *object)
 {
-	BonoboEventSource *event_source;
-	GSList            *l;
-	CORBA_Environment  ev;
+	CORBA_Environment         ev;
+	BonoboEventSourcePrivate *priv;
 	
-	event_source = BONOBO_EVENT_SOURCE (object);
+	priv = BONOBO_EVENT_SOURCE (object)->priv;
 
 	CORBA_exception_init (&ev);
+	
+	while (priv->listeners) {
+		ListenerDesc *d = priv->listeners->data;
 
-	for (l = event_source->priv->listeners; l; l = l->next)
-		desc_free (l->data, &ev);
+		priv->listeners = g_slist_remove (
+			priv->listeners, d);
+
+		desc_free (d, &ev);
+	}
 
 	CORBA_exception_free (&ev);
 
-	g_slist_free (event_source->priv->listeners);
-	g_free (event_source->priv);
+	g_free (priv);
 
 	bonobo_event_source_parent_class->destroy (object);
 }
@@ -238,7 +284,7 @@ bonobo_event_source_init (GtkObject *object)
 	BonoboEventSource *event_source;
 
 	event_source = BONOBO_EVENT_SOURCE (object);
-	event_source->priv = g_new (BonoboEventSourcePrivate, 1);
+	event_source->priv = g_new0 (BonoboEventSourcePrivate, 1);
 	event_source->priv->listeners = NULL;
 }
 

@@ -38,7 +38,7 @@ typedef struct {
 } BonoboDesktopWindowClass;
 
 GtkType              bonobo_desktop_window_get_type  (void);
-BonoboDesktopWindow *bonobo_desktop_window_construct (BonoboDesktopWindow *desktop_window,
+BonoboDesktopWindow *bonobo_desktop_window_construct (BonoboDesktopWindow *desk_win,
 						      GtkWindow           *toplevel);
 BonoboDesktopWindow *bonobo_desktop_window_new       (GtkWindow           *toplevel);
 void                 bonobo_desktop_window_control   (BonoboObject        *object,

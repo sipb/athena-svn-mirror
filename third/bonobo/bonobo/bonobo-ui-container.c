@@ -9,7 +9,6 @@
 
 #include "config.h"
 #include <gnome.h>
-#include <bonobo.h>
 #include <liboaf/liboaf.h>
 
 #include <bonobo/Bonobo.h>
@@ -21,8 +20,6 @@
 #define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 static GtkObjectClass *bonobo_ui_container_parent_class;
-
-POA_Bonobo_UIContainer__vepv bonobo_ui_container_vepv;
 
 struct _BonoboUIContainerPrivate {
 	BonoboUIEngine *engine;
@@ -82,20 +79,41 @@ impl_Bonobo_UIContainer_setNode (PortableServer_Servant   servant,
 	BonoboUIEngine *engine = get_engine (servant);
 	BonoboUIError   err;
 	BonoboUINode   *node;
+	const CORBA_char *property;
 
 /*	fprintf (stderr, "Merging :\n%s\n", xml);*/
 
 	if (!xml)
 		err = BONOBO_UI_ERROR_BAD_PARAM;
 	else {
-		node = bonobo_ui_node_from_string (xml);
-		
-		if (!node)
-			err = BONOBO_UI_ERROR_INVALID_XML;
-		else
-			err = bonobo_ui_engine_xml_merge_tree (
-				engine, path, node, component_name);
+		if ((property = strrchr (path, '#'))) {
+			char *real_path;
+			real_path = g_strdup (path);
+			real_path [property-path] = 0;
+			property = property + 1; /* Skip the '#' */
+
+			err = bonobo_ui_engine_xml_set_prop (engine,
+							     real_path,
+							     property,
+							     xml,
+							     component_name);
+			g_free (real_path);
+		} else {
+			if (xml [0] == '\0')
+				err = BONOBO_UI_ERROR_OK;
+
+			else {
+				node = bonobo_ui_node_from_string (xml);
+				
+				if (!node)
+					err = BONOBO_UI_ERROR_INVALID_XML;
+				else
+					err = bonobo_ui_engine_xml_merge_tree (
+						engine, path, node, component_name);
+			}
+		}
 	}
+		
 
 	if (err) {
 		if (err == BONOBO_UI_ERROR_INVALID_PATH)
@@ -117,12 +135,30 @@ impl_Bonobo_UIContainer_getNode (PortableServer_Servant servant,
 {
 	BonoboUIEngine *engine = get_engine (servant);
 	CORBA_char *xml;
-
-	xml = bonobo_ui_engine_xml_get (engine, path, nodeOnly);
-	if (!xml) {
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_Bonobo_UIContainer_InvalidPath, NULL);
-		return NULL;
+	const CORBA_char *property;
+	
+	if ((property = strrchr (path, '#'))) {
+		char *real_path;
+		real_path = g_strdup (path);
+		real_path [property-path] = 0;
+		property = property + 1; /* Skip the '#' */
+		
+		xml = bonobo_ui_engine_xml_get_prop (engine, real_path, property);
+		g_free (real_path);
+		
+		if (!xml) {
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+					     ex_Bonobo_UIContainer_InvalidPath, NULL);
+			return NULL;
+		}
+	} else {
+		xml = bonobo_ui_engine_xml_get (engine, path, nodeOnly);
+	
+		if (!xml) {
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+					     ex_Bonobo_UIContainer_InvalidPath, NULL);
+			return NULL;
+		}
 	}
 
 	return xml;
@@ -267,6 +303,12 @@ BONOBO_X_TYPE_FUNC_FULL (BonoboUIContainer,
 			   PARENT_TYPE,
 			   bonobo_ui_container);
 
+/**
+ * bonobo_ui_container_new:
+ * @void: 
+ * 
+ * Return value: a newly created BonoboUIContainer
+ **/
 BonoboUIContainer *
 bonobo_ui_container_new (void)
 {
@@ -281,6 +323,14 @@ blank_engine (GtkObject *win, BonoboUIContainer *container)
 	container->priv->flags |= WIN_DESTROYED;
 }
 
+/**
+ * bonobo_ui_container_set_engine:
+ * @container: the container
+ * @engine: the engine
+ * 
+ * Associates the BonoboUIContainer with a #BonoboUIEngine
+ * that it will use to handle all the UI merging requests.
+ **/
 void
 bonobo_ui_container_set_engine (BonoboUIContainer *container,
 				BonoboUIEngine    *engine)
@@ -297,6 +347,14 @@ bonobo_ui_container_set_engine (BonoboUIContainer *container,
 		container, GTK_OBJECT (container));
 }
 
+/**
+ * bonobo_ui_container_get_engine:
+ * @container: the UI container
+ * 
+ * Get the associated #BonoboUIEngine
+ * 
+ * Return value: the engine
+ **/
 BonoboUIEngine *
 bonobo_ui_container_get_engine (BonoboUIContainer *container)
 {
@@ -305,6 +363,16 @@ bonobo_ui_container_get_engine (BonoboUIContainer *container)
 	return container->priv->engine;
 }
 
+/**
+ * bonobo_ui_container_set_win:
+ * @container: the container
+ * @win: a #BonoboWindow widget
+ * 
+ * This function is deprecated, please use
+ * bonobo_ui_container_set_engine instead, we plan to
+ * allow UIContainers to be associated with many things
+ * apart from BonoboWindows.
+ **/
 void
 bonobo_ui_container_set_win (BonoboUIContainer *container,
 			     BonoboWindow      *win)
@@ -322,12 +390,28 @@ bonobo_ui_container_set_win (BonoboUIContainer *container,
 		container, GTK_OBJECT (container));
 }
 
+/**
+ * bonobo_ui_container_get_win:
+ * @container: the BonoboUIContainer
+ * 
+ * This is _extremely_ deprecated, there is no garentee
+ * that a BonoboUIContainer has an associated window, this
+ * function will spew warnings.
+ *
+ * If you find yourself wanting to use this function,
+ * you probably want to be passing a BonoboWindow ( or
+ * derivative ) around and then using:
+ *
+ * bonobo_window_get_ui_engine (window)
+ * 
+ * Return value: a BonoboWindow if it is associated.
+ **/
 BonoboWindow *
 bonobo_ui_container_get_win (BonoboUIContainer *container)
 {
 	g_return_val_if_fail (BONOBO_IS_UI_CONTAINER (container), NULL);
 
-	g_warning ("bonobo_ui_container_get_win is deprecated");
+/*	g_warning ("bonobo_ui_container_get_win is deprecated");*/
 
 	return container->win;
 }

@@ -2,21 +2,25 @@
 bonobo-ui-node
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Simplified XML Node manipulation API
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+  The BonoboUINode API is designed to make XML node manipulation
+simple, and to hide the underlying implementation of the XML tree.
+This is to allow the use of some more efficient internal representation
+than libxml's at some later date.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+  #BonoboUIComponent, #bonobo-ui-util
 </para>
 
 <!-- ##### STRUCT BonoboUINode ##### -->
 <para>
-
+The BonoboUINode structure is fully opaque to stop any code
+depending on libxml inadvertantly.
 </para>
 
 
@@ -274,5 +278,13 @@ bonobo-ui-node
 
 @filename: 
 @Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_node_strip ##### -->
+<para>
+
+</para>
+
+@node: 
 
 
