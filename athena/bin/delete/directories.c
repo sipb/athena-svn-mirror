@@ -425,7 +425,7 @@ filerec *leaf;
 	       leaf->previous->next = leaf->next;
 	  if (leaf->next)
 	       leaf->next->previous = leaf->previous;
-	  if (leaf->ftype = FtDirectory) {
+	  if (leaf->ftype == FtDirectory) {
 	       if (leaf->parent->dirs == leaf) {
 		    leaf->parent->dirs = leaf->next;
 		    if (leaf->parent->freed)
@@ -440,9 +440,6 @@ filerec *leaf;
 	       }
 	  }
 	  if (leaf->parent) { /* we don't want to call this on a tree root! */
-#ifdef DEBUG
-	       printf("Freeing leaf %s\n", leaf->name);
-#endif
 	       free(leaf);
 	  }
      }
