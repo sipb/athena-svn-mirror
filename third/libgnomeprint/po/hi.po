@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
 "PO-Revision-Date: 2004-07-09 18:18+0530\n"
 "Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
@@ -281,15 +281,15 @@ msgstr "ज़ेनेरिक पोस्टस्क्रिप्ट"
 msgid "Create a PDF document"
 msgstr "नया पीडीएफ़ दस्तावेज़ बनाएँ"
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "अआइईउऊएऐओऔ कगङचजञटडणतदनपबमयरलवशषसह"
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr "कार्य कॉन्फ़िगरेशन"
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr "मुद्रण कार्य हेतु कॉन्फ़िगरेशन"
 

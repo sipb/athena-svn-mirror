@@ -146,7 +146,6 @@ gp_transport_cups_finalize (GObject *object)
 		transport->temp_file = NULL;
 	}
 
-	g_assert (transport->printer);
 	g_free (transport->printer);
 	transport->printer = NULL;
 

@@ -1,8 +1,8 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-pgl</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GNOME Print Reference Manual"><link rel="up" href="libgnomeprintunsorted.html" title="Part II. API Reference"><link rel="previous" href="libgnomeprint-gnome-glyphlist.html" title="gnome-glyphlist"><link rel="next" href="libgnomeprint-gnome-print-config.html" title="gnome-print-config"><link rel="part" href="libgnomeprint.html" title="Part I. GNOME Print Overview"><link rel="refentry" href="libgnomeprint-building.html" title="Compiling the GNOME Print library"><link rel="refentry" href="libgnomeprint-compiling.html" title="Compiling GNOME Print Applications"><link rel="refentry" href="libgnomeprint-resources.html" title="Mailing lists and bug reports"><link rel="part" href="libgnomeprintunsorted.html" title="Part II. API Reference"><link rel="refentry" href="libgnomeprint-gnome-font-face.html" title="gnome-font-face"><link rel="refentry" href="libgnomeprint-gnome-font.html" title="gnome-font"><link rel="refentry" href="libgnomeprint-gnome-glyphlist.html" title="gnome-glyphlist"><link rel="refentry" href="libgnomeprint-gnome-pgl.html" title="gnome-pgl"><link rel="refentry" href="libgnomeprint-gnome-print-config.html" title="gnome-print-config"><link rel="refentry" href="libgnomeprint-gnome-print-job.html" title="gnome-print-job"><link rel="refentry" href="libgnomeprint-gnome-print-paper.html" title="gnome-print-paper"><link rel="refentry" href="libgnomeprint-gnome-print.html" title="gnome-print"><link rel="refentry" href="libgnomeprint-Pango-Integration.html" title="Pango Integration"><link rel="refentry" href="libgnomeprint-gnome-print-unit.html" title="gnome-print-unit"><link rel="refentry" href="libgnomeprint-gnome-rfont.html" title="gnome-rfont"><link rel="section" href="libgnomeprint-gnome-pgl.html#id2528519" title="Description"><link rel="section" href="libgnomeprint-gnome-pgl.html#id2528529" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeprint-gnome-glyphlist.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnomeprintunsorted.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print Reference Manual</th><td><a accesskey="n" href="libgnomeprint-gnome-print-config.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeprint-gnome-pgl"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-pgl</span></h2><p>gnome-pgl &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-pgl</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="GNOME Print Reference Manual"><link rel="up" href="libgnomeprintunsorted.html" title="Part II. API Reference"><link rel="prev" href="libgnomeprint-gnome-glyphlist.html" title="gnome-glyphlist"><link rel="next" href="libgnomeprint-gnome-print-config.html" title="gnome-print-config"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="part" href="libgnomeprint.html" title="Part I. GNOME Print Overview"><link rel="part" href="libgnomeprintunsorted.html" title="Part II. API Reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeprint-gnome-glyphlist.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnomeprintunsorted.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print Reference Manual</th><td><a accesskey="n" href="libgnomeprint-gnome-print-config.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeprint-gnome-pgl"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">gnome-pgl</span></h2><p>gnome-pgl &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
-struct      <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a>;
+            <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a>;
 <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a>* <a href="libgnomeprint-gnome-pgl.html#gnome-pgl-from-gl">gnome_pgl_from_gl</a>        (const <a href="libgnomeprint-gnome-glyphlist.html#GnomeGlyphList">GnomeGlyphList</a> *gl,
                                              const gdouble *transform,
                                              guint flags);
@@ -28,44 +28,44 @@ void        <a href="libgnomeprint-gnome-pgl.html#gnome-pgl-render-rgb8">gnome_p
                                              gint height,
                                              gint rowstride,
                                              guint flags);
-</pre></div><div class="refsect1" lang="en"><a name="id2528519"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2548381"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2528529"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2528535"></a><h3><a name="GnomePosGlyphList"></a>struct GnomePosGlyphList</h3><a class="indexterm" name="id2528546"></a><pre class="programlisting">struct GnomePosGlyphList;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2548391"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2548397"></a><h3><a name="GnomePosGlyphList"></a>GnomePosGlyphList</h3><a class="indexterm" name="id2548407"></a><pre class="programlisting">typedef struct _GnomePosGlyphList GnomePosGlyphList;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2528561"></a><h3><a name="gnome-pgl-from-gl"></a>gnome_pgl_from_gl ()</h3><a class="indexterm" name="id2528572"></a><pre class="programlisting"><a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a>* gnome_pgl_from_gl        (const <a href="libgnomeprint-gnome-glyphlist.html#GnomeGlyphList">GnomeGlyphList</a> *gl,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2548423"></a><h3><a name="gnome-pgl-from-gl"></a>gnome_pgl_from_gl ()</h3><a class="indexterm" name="id2548434"></a><pre class="programlisting"><a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a>* gnome_pgl_from_gl        (const <a href="libgnomeprint-gnome-glyphlist.html#GnomeGlyphList">GnomeGlyphList</a> *gl,
                                              const gdouble *transform,
                                              guint flags);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gl</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>transform</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2528670"></a><h3><a name="gnome-pgl-destroy"></a>gnome_pgl_destroy ()</h3><a class="indexterm" name="id2528681"></a><pre class="programlisting">void        gnome_pgl_destroy               (<a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548532"></a><h3><a name="gnome-pgl-destroy"></a>gnome_pgl_destroy ()</h3><a class="indexterm" name="id2548544"></a><pre class="programlisting">void        gnome_pgl_destroy               (<a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pgl</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2528727"></a><h3><a name="gnome-pgl-bbox"></a>gnome_pgl_bbox ()</h3><a class="indexterm" name="id2528738"></a><pre class="programlisting">ArtDRect*   gnome_pgl_bbox                  (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548590"></a><h3><a name="gnome-pgl-bbox"></a>gnome_pgl_bbox ()</h3><a class="indexterm" name="id2548601"></a><pre class="programlisting">ArtDRect*   gnome_pgl_bbox                  (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
                                              ArtDRect *bbox);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pgl</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>bbox</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2528815"></a><h3><a name="gnome-pgl-test-point"></a>gnome_pgl_test_point ()</h3><a class="indexterm" name="id2528826"></a><pre class="programlisting">gboolean    gnome_pgl_test_point            (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548678"></a><h3><a name="gnome-pgl-test-point"></a>gnome_pgl_test_point ()</h3><a class="indexterm" name="id2548689"></a><pre class="programlisting">gboolean    gnome_pgl_test_point            (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
                                              gdouble x,
                                              gdouble y);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pgl</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2528924"></a><h3><a name="gnome-pgl-render-rgba8"></a>gnome_pgl_render_rgba8 ()</h3><a class="indexterm" name="id2528935"></a><pre class="programlisting">void        gnome_pgl_render_rgba8          (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548787"></a><h3><a name="gnome-pgl-render-rgba8"></a>gnome_pgl_render_rgba8 ()</h3><a class="indexterm" name="id2548799"></a><pre class="programlisting">void        gnome_pgl_render_rgba8          (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
                                              gdouble x,
                                              gdouble y,
                                              guchar *buf,
@@ -84,7 +84,7 @@ void        <a href="libgnomeprint-gnome-pgl.html#gnome-pgl-render-rgb8">gnome_p
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529129"></a><h3><a name="gnome-pgl-render-rgb8"></a>gnome_pgl_render_rgb8 ()</h3><a class="indexterm" name="id2529140"></a><pre class="programlisting">void        gnome_pgl_render_rgb8           (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548992"></a><h3><a name="gnome-pgl-render-rgb8"></a>gnome_pgl_render_rgb8 ()</h3><a class="indexterm" name="id2549003"></a><pre class="programlisting">void        gnome_pgl_render_rgb8           (const <a href="libgnomeprint-gnome-pgl.html#GnomePosGlyphList">GnomePosGlyphList</a> *pgl,
                                              gdouble x,
                                              gdouble y,
                                              guchar *buf,

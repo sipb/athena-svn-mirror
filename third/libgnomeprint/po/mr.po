@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint.mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
 "PO-Revision-Date: 2003-07-18 14:40+0530\n"
 "Last-Translator: Jitendra Shah <jitendras@vsnl.com>\n"
 "Language-Team:  Marathi <www.indictrans.org>\n"
@@ -276,15 +276,15 @@ msgstr ""
 msgid "Create a PDF document"
 msgstr ""
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "The quick brown fox jumps over the lazy dog."
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr ""
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr ""
 

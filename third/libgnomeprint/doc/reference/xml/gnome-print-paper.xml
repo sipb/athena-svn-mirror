@@ -15,7 +15,7 @@
 
 
 
-struct      <link linkend="GnomePrintPaper">GnomePrintPaper</link>;
+            <link linkend="GnomePrintPaper">GnomePrintPaper</link>;
 const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* <link linkend="gnome-print-paper-get-default">gnome_print_paper_get_default</link>
                                             (void);
 const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* <link linkend="gnome-print-paper-get-by-name">gnome_print_paper_get_by_name</link>
@@ -50,13 +50,12 @@ const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* <link linkend="gno
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePrintPaper"/>struct GnomePrintPaper</title>
-<indexterm><primary>GnomePrintPaper</primary></indexterm><programlisting>struct GnomePrintPaper {
-
+<title><anchor id="GnomePrintPaper"/>GnomePrintPaper</title>
+<indexterm><primary>GnomePrintPaper</primary></indexterm><programlisting>typedef struct {
 	   guint version : 8; /* Has to be 0 at moment */
 	   guchar *name;      /* Name such as A4 */
 	   gdouble width, height;
-};
+} GnomePrintPaper;
 </programlisting>
 <para>
 
@@ -71,7 +70,7 @@ pointer should not be freed.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the default <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the default <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -88,7 +87,7 @@ The returned pointer should not be freed.</para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> The name of the paper to get
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -109,7 +108,7 @@ The returned pointer should not be freed.</para>
 <varlistentry><term><parameter>height</parameter>&nbsp;:</term>
 <listitem><simpara> The height of the paper
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -136,7 +135,7 @@ should not be freed.</para>
 <varlistentry><term><parameter>mustfit</parameter>&nbsp;:</term>
 <listitem><simpara> Should <parameter>width</parameter> and <parameter>height</parameter> fit within paper
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -149,7 +148,7 @@ must be freed with <link linkend="gnome-print-paper-free-list"><type>gnome_print
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the list of papers.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the list of papers.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>

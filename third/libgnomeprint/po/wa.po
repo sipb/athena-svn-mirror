@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint 1.104.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
 "PO-Revision-Date: 2002-05-01 11:04MET\n"
 "Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
 "Language-Team: Walon <linux-wa@chanae.alphanet.ch>\n"
@@ -265,15 +265,15 @@ msgstr "PostScript djenerike"
 msgid "Create a PDF document"
 msgstr "Ahiver on documint PDF"
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Mi trûte a les balzins, co mî ki l' grijhe cawe di m' pôve fayé vexhå!"
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr ""
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr ""
 

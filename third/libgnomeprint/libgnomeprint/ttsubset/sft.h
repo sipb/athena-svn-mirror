@@ -33,7 +33,7 @@
  *
  */
 
-/* $Id: sft.h,v 1.1.1.1 2004-10-04 04:22:45 ghudson Exp $ */
+/* $Id: sft.h,v 1.1.1.2 2005-03-10 22:11:35 ghudson Exp $ */
 /* @(#)sft.h 1.17 03/01/08 SMI */
 
 /*
@@ -77,7 +77,9 @@
 #define __SUBFONT_H
 
 #include <sys/types.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #ifndef NO_LIST
 #include "list.h"
@@ -150,6 +152,21 @@ extern "C" {
 /*@}*/
 
 #ifndef STSF
+#if 1
+/* glib already deals with different compilers */
+#include <glibconfig.h>
+
+typedef guchar     byte;
+typedef guchar     uint8;
+typedef gchar      int8;
+typedef guint16    uint16;
+typedef gint16     int16;
+
+typedef guint32    uint32;
+typedef gint32     int32;
+typedef guint64    uint64;
+typedef gint64     int64;
+#  else
 /*- XXX These should be dynamically configured */ /*FOLD00*/
     typedef unsigned char         byte;
     typedef unsigned char         uint8;
@@ -161,7 +178,7 @@ extern "C" {
     typedef int                   int32;
     typedef unsigned long long    uint64;
     typedef long long             int64;
-
+#  endif
 /*@{*/
     typedef int16       F2Dot14;            /**< fixed: 2.14 */
     typedef int32       F16Dot16;           /**< fixed: 16.16 */

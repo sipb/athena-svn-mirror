@@ -16,7 +16,7 @@
 
 
 enum        <link linkend="GnomePrintReturnCode">GnomePrintReturnCode</link>;
-struct      <link linkend="GnomePrintContext">GnomePrintContext</link>;
+            <link linkend="GnomePrintContext">GnomePrintContext</link>;
 <link linkend="GnomePrintContext">GnomePrintContext</link>* <link linkend="gnome-print-context-new">gnome_print_context_new</link>  (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
 <link linkend="gint">gint</link>        <link linkend="gnome-print-context-close">gnome_print_context_close</link>       (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);
 <link linkend="gint">gint</link>        <link linkend="gnome-print-newpath">gnome_print_newpath</link>             (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);
@@ -164,8 +164,8 @@ struct      <link linkend="GnomePrintContext">GnomePrintContext</link>;
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomePrintContext"/>struct GnomePrintContext</title>
-<indexterm><primary>GnomePrintContext</primary></indexterm><programlisting>struct GnomePrintContext;</programlisting>
+<title><anchor id="GnomePrintContext"/>GnomePrintContext</title>
+<indexterm><primary>GnomePrintContext</primary></indexterm><programlisting>typedef struct _GnomePrintContext GnomePrintContext;</programlisting>
 <para>
 
 </para></refsect2>
@@ -188,7 +188,7 @@ you may want to ignore gnome_print_context_new at all.</para>
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara> GnomePrintConfig object to query print settings from
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new GnomePrintContext or NULL on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The new GnomePrintContext or NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -206,7 +206,7 @@ closed.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -222,7 +222,7 @@ the last point of open path segment, is also erases currentpoint.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -246,7 +246,7 @@ Moves currentpoint to <parameter>x</parameter>,<parameter>y</parameter>.</para>
 <varlistentry><term><parameter>y</parameter>&nbsp;:</term>
 <listitem><simpara> Y position in user coordinates
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -258,7 +258,7 @@ code on failure.
 <para>
 Adds new straight line segment from currentpoint to <parameter>x</parameter>,<parameter>y</parameter> to currentpath.
 Moves currentpoint to <parameter>x</parameter>,<parameter>y</parameter>.
-If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPOINT-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPOINT</type></link>.</para>
+If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPOINT:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPOINT</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -271,7 +271,7 @@ If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRE
 <varlistentry><term><parameter>y</parameter>&nbsp;:</term>
 <listitem><simpara> Y position in user coordinates
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -288,7 +288,7 @@ code on failure.
 Adds new cubig bezier segment with control points <parameter>x1</parameter>,<parameter>y1</parameter> and
 <parameter>x2</parameter>,<parameter>y2</parameter> and endpoint <parameter>x3</parameter>,<parameter>y3</parameter> to currentpath.
 Moves currentpoint to <parameter>x3</parameter>,<parameter>y3</parameter>.
-If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPOINT-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPOINT</type></link>.</para>
+If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPOINT:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPOINT</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -313,7 +313,7 @@ If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRE
 <varlistentry><term><parameter>y3</parameter>&nbsp;:</term>
 <listitem><simpara> Y position of endpoint in user coordinates
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -324,14 +324,14 @@ code on failure.
 Closes the last segment of currentpath, optionally drawing straight
 line segment from its endpoint to starting point.
 Erases currentpoint.
-If currentpath is empty, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link>.</para>
+If currentpath is empty, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -342,7 +342,7 @@ code on failure.
 Converts currentpath to new path, that is identical to area painted
 by <link linkend="gnome-print-stroke"><type>gnome_print_stroke</type></link> function, using currentpath. I.e. strokepath
 followed by fill giver result identical to stroke.
-If currentpath is empty, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link>.
+If currentpath is empty, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link>.
 Stroked path is always closed, so currentpoint is erased.</para>
 <para>
 
@@ -350,7 +350,7 @@ Stroked path is always closed, so currentpoint is erased.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -360,7 +360,7 @@ code on failure.
                                              const <link linkend="ArtBpath">ArtBpath</link> *bpath,
                                              <link linkend="gboolean">gboolean</link> append);</programlisting>
 <para>
-Adds all <parameter>bpath</parameter> segments up to <link linkend="ART-END-CAPS"><type>ART_END</type></link> to currentpath. If <parameter>append</parameter>
+Adds all <parameter>bpath</parameter> segments up to <link linkend="ART-END:CAPS"><type>ART_END</type></link> to currentpath. If <parameter>append</parameter>
 is false, currentpath is cleared first, otherwise segments are
 appended to existing path.
 This is identical to adding all segments by hand, so the final state
@@ -377,7 +377,7 @@ of currentpoint depends on segments processed.</para>
 <varlistentry><term><parameter>append</parameter>&nbsp;:</term>
 <listitem><simpara> Whether to append to currentpath
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -387,7 +387,7 @@ code on failure.
                                              const <link linkend="ArtVpath">ArtVpath</link> *vpath,
                                              <link linkend="gboolean">gboolean</link> append);</programlisting>
 <para>
-Adds all <parameter>vpath</parameter> line segments up to <link linkend="ART-END-CAPS"><type>ART_END</type></link> to currentpath. If <parameter>append</parameter>
+Adds all <parameter>vpath</parameter> line segments up to <link linkend="ART-END:CAPS"><type>ART_END</type></link> to currentpath. If <parameter>append</parameter>
 is false, currentpath is cleared first, otherwise segments are
 appended to existing path.
 This is identical to adding all segments by hand, so the final state
@@ -404,7 +404,7 @@ of currentpoint depends on segments processed.</para>
 <varlistentry><term><parameter>append</parameter>&nbsp;:</term>
 <listitem><simpara> Whether to append to currentpath
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -444,7 +444,7 @@ Adds an arc with control points <parameter>x</parameter> and <parameter>y</param
 <varlistentry><term><parameter>direction</parameter>&nbsp;:</term>
 <listitem><simpara> direction of movement, 0 counterclockwise 1 clockwise
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_PRINT_OK or postive value on success, a negative value otherwise
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> GNOME_PRINT_OK or postive value on success, a negative value otherwise
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -472,7 +472,7 @@ Channel values are clamped to 0.0 - 1.0 region, 0.0 meaning minimum.</para>
 <varlistentry><term><parameter>b</parameter>&nbsp;:</term>
 <listitem><simpara> Blue channel value
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -493,7 +493,7 @@ Value is clamped to 0.0 - 1.0 region, 0.0 meaning full transparency and
 <varlistentry><term><parameter>opacity</parameter>&nbsp;:</term>
 <listitem><simpara> Opacity value
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -517,7 +517,7 @@ Default line width is 1.0 in user coordinates.</para>
 <varlistentry><term><parameter>width</parameter>&nbsp;:</term>
 <listitem><simpara> Line width in user coordinates
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -538,7 +538,7 @@ Default miter limit is 4 degrees.</para>
 <varlistentry><term><parameter>limit</parameter>&nbsp;:</term>
 <listitem><simpara> Miter limit in degrees
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -561,7 +561,7 @@ Default join type is miter.</para>
 <varlistentry><term><parameter>jointype</parameter>&nbsp;:</term>
 <listitem><simpara> Integer indicating join type
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -584,7 +584,7 @@ Default cap type is butt.</para>
 <varlistentry><term><parameter>captype</parameter>&nbsp;:</term>
 <listitem><simpara> Integer indicating cap type
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -619,7 +619,7 @@ Default is solid line.</para>
 <varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
 <listitem><simpara> Line starting offset in dash
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -640,7 +640,7 @@ Default font is system dependent.</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara> <link linkend="GnomeFont"><type>GnomeFont</type></link> to use for text
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -652,7 +652,7 @@ Defines drawing region as inside area of currentpath. If path is
 self-intersecting or consists of several overlapping subpaths,
 nonzero rule is used to define the inside orea of path.
 All open subpaths of currentpath are closed.
-If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
+If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
 returned.
 Currentpath is emptied by this function.</para>
 <para>
@@ -661,7 +661,7 @@ Currentpath is emptied by this function.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -673,7 +673,7 @@ Defines drawing region as inside area of currentpath. If path is
 self-intersecting or consists of several overlapping subpaths,
 even-odd rule is used to define the inside area of path.
 All open subpaths of currentpath are closed.
-If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
+If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
 returned.
 Currentpath is emptied by this function.</para>
 <para>
@@ -682,7 +682,7 @@ Currentpath is emptied by this function.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -707,7 +707,7 @@ Y' = X * m[1] + Y * m[3] + m[5]</para>
 <varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
 <listitem><simpara> 3x2 affine transformation matrix
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -730,7 +730,7 @@ Scales user coordinate system by given X and Y values.</para>
 <varlistentry><term><parameter>sy</parameter>&nbsp;:</term>
 <listitem><simpara> Y scale
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -749,7 +749,7 @@ Rotates user coordinate system theta degrees counterclockwise.</para>
 <varlistentry><term><parameter>theta</parameter>&nbsp;:</term>
 <listitem><simpara> Angle in degrees
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -772,7 +772,7 @@ Move the starting point of user coordinate system to given point.</para>
 <varlistentry><term><parameter>y</parameter>&nbsp;:</term>
 <listitem><simpara> New starting Y
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -792,7 +792,7 @@ match the number of <link linkend="gnome-print-grestore"><type>gnome_print_grest
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -808,7 +808,7 @@ at least the size of one.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -820,7 +820,7 @@ Fills the inside area of currentpath, using current graphic state.
 If path is self-intersecting or consists of several overlapping subpaths,
 nonzero rule is used to define the inside area of path.
 All open subpaths of currentpath are closed.
-If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
+If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
 returned.
 Currentpath is emptied by this function.</para>
 <para>
@@ -829,7 +829,7 @@ Currentpath is emptied by this function.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -841,7 +841,7 @@ Fills the inside area of currentpath, using current graphic state.
 If path is self-intersecting or consists of several overlapping subpaths,
 even-odd rule is used to define the inside area of path.
 All open subpaths of currentpath are closed.
-If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
+If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
 returned.
 Currentpath is emptied by this function.</para>
 <para>
@@ -850,7 +850,7 @@ Currentpath is emptied by this function.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -860,7 +860,7 @@ code on failure.
 <para>
 Strokes currentpath, i.e. draws line along it, with style, defined
 by current graphic state values.
-If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
+If currentpath is empty, <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH:CAPS"><type>GNOME_PRINT_ERROR_NOCURRENTPATH</type></link> is
 returned.
 Currentpath is emptied by this function.</para>
 <para>
@@ -869,7 +869,7 @@ Currentpath is emptied by this function.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -880,7 +880,7 @@ code on failure.
 <para>
 Draws UTF-8 text at currentpoint, using current font from graphic
 state.
-Input text is validated, and <link linkend="GNOME-PRINT-ERROR-BADVALUE-CAPS"><type>GNOME_PRINT_ERROR_BADVALUE</type></link> returned,
+Input text is validated, and <link linkend="GNOME-PRINT-ERROR-BADVALUE:CAPS"><type>GNOME_PRINT_ERROR_BADVALUE</type></link> returned,
 if it is not valid UTF-8.
 Both currentpath and currentpoint are erased.</para>
 <para>
@@ -892,7 +892,7 @@ Both currentpath and currentpoint are erased.</para>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> Null-terminated UTF-8 string
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -904,7 +904,7 @@ code on failure.
 <para>
 Draws UTF-8 text at currentpoint, using current font from graphic
 state.
-Input text is validated, and <link linkend="GNOME-PRINT-ERROR-BADVALUE-CAPS"><type>GNOME_PRINT_ERROR_BADVALUE</type></link> returned,
+Input text is validated, and <link linkend="GNOME-PRINT-ERROR-BADVALUE:CAPS"><type>GNOME_PRINT_ERROR_BADVALUE</type></link> returned,
 if it is not valid UTF-8.
 Both currentpath and currentpoint are erased.</para>
 <para>
@@ -919,7 +919,7 @@ Both currentpath and currentpoint are erased.</para>
 <varlistentry><term><parameter>bytes</parameter>&nbsp;:</term>
 <listitem><simpara> Number of bytes to use from string
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -941,7 +941,7 @@ Both currentpath and currentpoint are erased.</para>
 <varlistentry><term><parameter>glyphlist</parameter>&nbsp;:</term>
 <listitem><simpara> <link linkend="GnomeGlyphList"><type>GnomeGlyphList</type></link> text object
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -975,7 +975,7 @@ white and 0 black.</para>
 <varlistentry><term><parameter>rowstride</parameter>&nbsp;:</term>
 <listitem><simpara> Image buffer rowstride
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -1009,7 +1009,7 @@ maximum and 0 minimum value.</para>
 <varlistentry><term><parameter>rowstride</parameter>&nbsp;:</term>
 <listitem><simpara> Image buffer rowstride
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -1044,7 +1044,7 @@ transparency.</para>
 <varlistentry><term><parameter>rowstride</parameter>&nbsp;:</term>
 <listitem><simpara> Image buffer rowstride
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -1069,7 +1069,7 @@ so one has to define these again at the beginning of each page.</para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> Name of the page, NULL if you just want to use the page number of the page
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -1089,7 +1089,7 @@ any output produced.</para>
 <varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error
 code on failure.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -1121,7 +1121,7 @@ A convenience function to draw a line.  Uses
 <varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
 <listitem><simpara> Y position of end point in user coordinates
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error code
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error code
          on failure.
 
 </simpara></listitem></varlistentry>
@@ -1154,7 +1154,7 @@ A convenience function to draw a rectangle. Uses
 <varlistentry><term><parameter>height</parameter>&nbsp;:</term>
 <listitem><simpara> Height of the rectange
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error code
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error code
          on failure. 
 
 </simpara></listitem></varlistentry>
@@ -1187,7 +1187,7 @@ A convenience function to draw a filled rectangle. Uses
 <varlistentry><term><parameter>height</parameter>&nbsp;:</term>
 <listitem><simpara> Height of the rectange
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error code
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="GNOME-PRINT-OK:CAPS"><type>GNOME_PRINT_OK</type></link> or positive value on success, negative error code
          on failure. 
 
 </simpara></listitem></varlistentry>

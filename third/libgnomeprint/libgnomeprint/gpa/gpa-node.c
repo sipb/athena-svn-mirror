@@ -28,7 +28,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <errno.h>
 #include "gpa-root.h"
 #include "gpa-utils.h"
@@ -344,7 +343,7 @@ GPANode *
 gpa_node_get_child_from_path (GPANode *node, const guchar *path)
 {
 	g_return_val_if_fail (path != NULL, NULL);
-	g_return_val_if_fail (!*path || isalnum (*path), NULL);
+	g_return_val_if_fail (!*path || g_ascii_isalnum (*path), NULL);
 
 	return gpa_node_lookup (node, path);
 }
@@ -357,7 +356,7 @@ gpa_node_get_path_value (GPANode *node, const guchar *path)
 	g_return_val_if_fail (node != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
 	g_return_val_if_fail (path != NULL, NULL);
-	g_return_val_if_fail (!*path || isalnum (*path), NULL);
+	g_return_val_if_fail (!*path || g_ascii_isalnum (*path), NULL);
 
 	child = gpa_node_lookup (node, path);
 
@@ -390,7 +389,7 @@ gpa_node_set_path_value (GPANode *parent, const guchar *path, const guchar *valu
 	g_return_val_if_fail (parent != NULL, FALSE);
 	g_return_val_if_fail (GPA_IS_NODE (parent), FALSE);
 	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
+	g_return_val_if_fail (!*path || g_ascii_isalnum (*path), FALSE);
 
 	node = gpa_node_lookup (parent, path);
 	if (!node) {
@@ -412,7 +411,7 @@ gpa_node_get_int_path_value (GPANode *node, const guchar *path, gint *value)
 	g_return_val_if_fail (node != NULL, FALSE);
 	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
 	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
+	g_return_val_if_fail (!*path || g_ascii_isalnum (*path), FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
 	v = gpa_node_get_path_value (node, path);
@@ -439,7 +438,7 @@ gpa_node_get_length_path_value (GPANode *node, const guchar *path, gdouble *valu
 	g_return_val_if_fail (node != NULL, FALSE);
 	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
 	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
+	g_return_val_if_fail (!*path || g_ascii_isalnum (*path), FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
 	v = gpa_node_get_path_value (node, path);

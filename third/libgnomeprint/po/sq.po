@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
 "PO-Revision-Date: 2004-08-02 18:24+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -265,15 +265,15 @@ msgstr "Postscript e përgjithshme"
 msgid "Create a PDF document"
 msgstr "Krijo një dokument PDF"
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Ai budaalla roota mbulon përpara."
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr "Konfigurimi i punës"
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr "Konfigurimi për punën e printimit"
 

@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint 2.7.0\n"
+"Project-Id-Version: libgnomeprint 2.8.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
-"PO-Revision-Date: 2004-05-05 22:49+0200\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
+"PO-Revision-Date: 2004-10-10 19:51+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -266,16 +266,16 @@ msgstr "PostScript générique"
 msgid "Create a PDF document"
 msgstr "Créer un document PDF"
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr ""
 "Portez ce vieux whisky au juge blond qui fume. 0123456789. àâçèéêëîïôùûüæœ."
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr "Configuration du travail"
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr "La configuration du travail d'impression"
 
@@ -409,4 +409,4 @@ msgstr "immédiatement"
 #: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
 #, c-format
 msgid "%s (via lpr)"
-msgstr ""
+msgstr "%s (via lpr)"

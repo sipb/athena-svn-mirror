@@ -523,7 +523,7 @@ main (int argc, const char * argv[])
 		gnome_print_context_close (gpc);
 		data = gnome_print_meta_get_buffer (GNOME_PRINT_META (gpc));
 		len  = gnome_print_meta_get_length (GNOME_PRINT_META (gpc));
-		f = fopen (output, "w");
+		f = fopen (output, "wb");
 		if (!f) {
 			g_warning ("Could not create %s\n", output);
 			return 1;
@@ -639,7 +639,7 @@ parse_command_line (int argc, const char ** argv, BackendType *backend,
 	
 	if (replay_str && replay_str[0] != '\0') {
 		FILE *file;
-		file = fopen (replay_str, "r");
+		file = fopen (replay_str, "rb");
 		if (!file) {
 			g_print ("File \"%s\" could not be opened\n", replay_str);
 			exit (-1);

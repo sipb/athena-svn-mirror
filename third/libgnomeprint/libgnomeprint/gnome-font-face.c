@@ -29,8 +29,9 @@
 
 #include <config.h>
 #include <stdlib.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#include <ctype.h>
+#endif
 #include <string.h>
 #include <stdarg.h>
 #include <locale.h>
@@ -74,8 +75,6 @@ static void gff_load_outline (GnomeFontFace *face, gint glyph);
 static void gf_pso_print_sized (GnomeFontPsObject *pso, const guchar *text, gint size);
 static void gf_pso_sprintf (GnomeFontPsObject * pso, 
 			    const gchar * format, ...);
-static gint gf_pso_print_double (GnomeFontPsObject *pso, const gchar *format,
-				 gdouble x);
 
 static void gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject * pso, gint size);
 
@@ -601,7 +600,7 @@ gnome_font_face_find_closest_from_weight_slant (const guchar *family, GnomeFontW
 
 	for (l = map->fonts; l != NULL; l = l->next) {
 		entry = (GPFontEntry *) l->data;
-		if (!strcasecmp (family, entry->familyname)) {
+		if (!g_strcasecmp (family, entry->familyname)) {
 			if (entry->type == GP_FONT_ENTRY_ALIAS)
 				entry = ((GPFontEntryAlias *) entry)->ref;
 			dist = abs (weight - entry->Weight) +
@@ -1400,7 +1399,12 @@ gnome_font_face_ps_embed_tt (GnomeFontPsObject *pso)
 	nglyphs = pso->face->num_glyphs;
 
 	len = pso->encodedname ? strlen (pso->encodedname) : 0;
-	lower = (len > 3) ? atoi (pso->encodedname + len - 3) : 0;
+
+	if (len > 4)
+		lower = *(pso->encodedname + len - 4) == '_' ? atoi (pso->encodedname + len - 3) : 0;
+	else
+		lower = 0;
+
 	upper = lower + 1;
 
 	k = 1;
@@ -1499,22 +1503,6 @@ gf_pso_sprintf (GnomeFontPsObject *pso, const gchar * format, ...)
 	gf_pso_print_sized (pso, text, strlen (text));
 	g_free (text);
 }
-
-/* Allowed conversion specifiers are 'e', 'E', 'f', 'F', 'g' and 'G'. */
-static gint   
-gf_pso_print_double (GnomeFontPsObject *pso, const gchar *format, gdouble x)
-{
- 	gchar *text;
-
-	text = g_new (gchar, G_ASCII_DTOSTR_BUF_SIZE);
-	g_ascii_formatd (text, G_ASCII_DTOSTR_BUF_SIZE, format, x);
-
-	gf_pso_print_sized (pso, text, strlen (text));
-	g_free (text);
-
-	return GNOME_PRINT_OK;
-}
-
 
 static void
 gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject *pso, gint size)

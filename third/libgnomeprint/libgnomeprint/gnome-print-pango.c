@@ -589,20 +589,18 @@ print_pango_layout_line (GnomePrintContext *gpc, PangoLayoutLine *line)
 						    &ink_rect, &logical_rect);
 		
 		if (properties.bg_color) {
-			if (!properties.fg_color)
-				gnome_print_gsave (gpc);
-				
+			gnome_print_gsave (gpc);
+
 			gnome_print_setrgbcolor (gpc,
 						 (gdouble) properties.bg_color->red / 0xFFFF,
 						 (gdouble) properties.bg_color->green / 0xFFFF,
 						 (gdouble) properties.bg_color->blue / 0xFFFF);
-			
+
 			rect_filled (gpc,
 				     logical_rect.x,    - overall_rect.y - overall_rect.height,
 				     logical_rect.width,  overall_rect.height);
-			
-			if (!properties.fg_color)
-				gnome_print_grestore (gpc);
+
+			gnome_print_grestore (gpc);
 		}
 
 		if (properties.fg_color) {

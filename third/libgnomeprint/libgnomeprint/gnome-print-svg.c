@@ -28,7 +28,9 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <png.h>
 
 #include <libart_lgpl/art_affine.h>

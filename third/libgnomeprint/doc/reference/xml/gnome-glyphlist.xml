@@ -15,7 +15,7 @@
 
 
 
-struct      <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
+            <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
 <link linkend="GnomeGlyphList">GnomeGlyphList</link>* <link linkend="gnome-glyphlist-new">gnome_glyphlist_new</link>         (void);
 <link linkend="GnomeGlyphList">GnomeGlyphList</link>* <link linkend="gnome-glyphlist-ref">gnome_glyphlist_ref</link>         (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl);
 <link linkend="GnomeGlyphList">GnomeGlyphList</link>* <link linkend="gnome-glyphlist-unref">gnome_glyphlist_unref</link>       (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl);
@@ -87,8 +87,8 @@ struct      <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeGlyphList"/>struct GnomeGlyphList</title>
-<indexterm><primary>GnomeGlyphList</primary></indexterm><programlisting>struct GnomeGlyphList;</programlisting>
+<title><anchor id="GnomeGlyphList"/>GnomeGlyphList</title>
+<indexterm><primary>GnomeGlyphList</primary></indexterm><programlisting>typedef struct _GnomeGlyphList GnomeGlyphList;</programlisting>
 <para>
 
 </para></refsect2>
@@ -98,7 +98,7 @@ struct      <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -112,7 +112,7 @@ struct      <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
 <varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -126,7 +126,7 @@ struct      <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
 <varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -140,7 +140,7 @@ struct      <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
 <varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -158,7 +158,7 @@ struct      <link linkend="GnomeGlyphList">GnomeGlyphList</link>;
 <varlistentry><term><parameter>rules</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -191,7 +191,7 @@ See _from_text_sized_dumb</para>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -229,7 +229,7 @@ does not use trivial placement, you should better avoid this</para>
 <varlistentry><term><parameter>length</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -463,7 +463,7 @@ Flags are to specify user preferences, should be 0 for now</para>
 <varlistentry><term><parameter>bbox</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> bbox, NULL on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> bbox, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

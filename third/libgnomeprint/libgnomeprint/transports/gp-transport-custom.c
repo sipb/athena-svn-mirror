@@ -30,6 +30,7 @@
 #define __GP_TRANSPORT_CUSTOM_C__
 
 #include "config.h"
+#include <stdio.h>
 #include <libgnomeprint/gnome-print.h>
 #include "gp-transport-custom.h"
 
@@ -145,7 +146,7 @@ gp_transport_custom_open (GnomePrintTransport *transport)
 		command = g_strdup ("lpr");
 	}
 
-	tcustom->pipe = popen (command, "w");
+	tcustom->pipe = popen (command, "wb");
 
 	if (tcustom->pipe == NULL) {
 		g_warning ("Opening '%s' for output failed", command);

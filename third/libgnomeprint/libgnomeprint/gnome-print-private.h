@@ -41,6 +41,7 @@ G_BEGIN_DECLS
 #include <libgnomeprint/gp-gc.h>
 #include <libgnomeprint/gnome-print-config.h>
 #include <libgnomeprint/gnome-print.h>
+#include <libgnomeprint/gnome-print-transport.h>
 
 #define GNOME_PRINT_CONTEXT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k),   GNOME_TYPE_PRINT_CONTEXT, GnomePrintContextClass))
 #define GNOME_IS_PRINT_CONTEXT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),   GNOME_TYPE_PRINT_CONTEXT))
@@ -49,7 +50,6 @@ G_BEGIN_DECLS
 #define NEEDED_SUBSETTING(font) ((font)->face->entry->type == GP_FONT_ENTRY_TRUETYPE)
 
 typedef struct _GnomePrintContextClass GnomePrintContextClass;
-typedef struct _GnomePrintTransport      GnomePrintTransport;
 
 struct _GnomePrintContext {
 	   GObject object;

@@ -1,3 +1,187 @@
+2004-12-06  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.2
+
+2004-12-03  Hans Breuer  <hans@breuer.org>
+
+	* libgnomeprint/transports/gp-transport-file.c : add the appropriate
+	  access flags to open() for win32, too.  Also don't use gsize to keep
+	  the return value of write(). Otherwise one will get anendless loop if
+	  writing fails.
+
+2004-11-19  Hans Breuer  <hans@breuer.org>
+
+	* config.h.win32 : [new file] support building on win32 without
+	 autoconf libgnomeprint/libgnomeprint/gpa/gpa-printer.c : use
+	 g_buildfile_name and g_win32_get_package_installation_subdirectory()
+	 to determine additional module dirs at runtime
+
+	* libgnomeprint/gnome-font-face.c libgnomeprint/gnome-print-pdf-tt.c :
+	 added HAVE_UNISTD_H
+
+	* libgnomeprint/gnome-fontmap.c : use g_strcasecmp()
+
+	* libgnomeprint/gnome-print-transport.c
+	libgnomeprint/gpa/gpa-printer.c : use GLib provided <gdir.h> instead
+	 of <dirent.h>
+
+	* libgnomeprint/gnome-print-transport.c : don't hardcode so names,
+	 instead use the least common denominator GModule is capable to handle
+
+	* libgnomeprint/ttsubset/ttcr.c
+	libgnomeprint/ttsubset/gnome-print-tt-subset.c
+	libgnomeprint/gnome-print-ps2.c : open files in binary mode
+	 libgnomeprint/gnome-print.c : ...  abd also include <io.h> on win32 to
+	 get prototypes for unix like open(), close()
+
+	* libgnomeprint/transports/gp-transport-lpr.c : define popen(),
+	 pclose() to their msvcrt name.
+
+	* libgnomeprint/transports/gp-transport-lpr.c : make the prototype of
+	 G_MOUDULE_EXPORT(ed) functions match the implementation
+
+	* libgnomeprint/ttsubset/sft.h : if building with msvc use typedefs
+	 from GLib instead of the native GNUC types
+
+	* libgnomeprint/transports/gp-transport-win32.[hc]
+	libgnomeprint/modules/win32/gnome-print-win32.c : start of win32
+	 native printer access
+
+	* libgnomeprint/gnome-print.c : use native memory mapping when on
+	 G_OS_WIN32
+
+	* libgnomeprint/gnome-print.def : exported symbols **/makefile.msc :
+	 makefile for ms visualc nmake/command line compiler
+
+2004-12-03  Dom Lachowicz <cinamod@hotmail.com>
+
+	* libgnomeprint/gnome-print-ps2.c (gp_ps2_stroke): Initialize variable before using it
+	* libgnomeprint/gnome-print-config.c: Bug 156415
+	* libgnomeprint/gnome-print-job.c: ditto
+	* libgnomeprint/gnome-print-multipage.c: ditto
+	* libgnomeprint/gpa/gpa-node.c: ditto
+	* tests/tools/pdfcheck.c: ditto
+
+2004-12-03  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/modules/cups/gnome-print-cups-transport.c
+	(gp_transport_cups_finalize) : remove unncessary assert.  IF this was
+	  created without a config (and no call to construct) it can be null.
+	  Libraries should not be calling assert in production code.
+
+2004-12-01  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/gnome-print-transport.c
+	(gnome_print_transport_construct) : make private
+	(gnome_print_transport_exists_by_name) : new public.
+
+2004-11-30  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/ttsubset/sft.c (GetTTGlyphOutline) : add 'b' to fopen.
+	* libgnomeprint/ttsubset/gnome-print-tt-subset.c
+	  (gnome_print_ps_tt_create_subfont) : ditto.
+	* tests/generate.c (parse_command_line) : ditto.
+	(main) : ditto.
+	* tests/fonts.c (my_config_load_from_file) : ditto.
+
+2004-11-29  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/gnome-print-transport.h : Add an 'exists' member and
+	  some padding.
+	* libgnomeprint/gnome-print-transport.c
+	(gnome_print_transport_new_from_module_name) : Use it.
+
+	* libgnomeprint/transports/gp-transport-lpr.c (find_lpr) : split from
+	(gp_transport_lpr_open) : here.
+	(gp_transport_lpr_exists) : use in this new routine.
+	(gp_transport_lpr_class_init) : and connect the new routine here.
+
+2004-11-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-10-27  Suresh Chandrasekharan <suresh.chandrasekharan@sun.com>
+
+	Fix for bug#156641 english text not printed out with specific 
+	chinese font (songti.ttf )
+
+	* libgnomeprint/libgnomeprint/gnome-font-face.c 
+	(gnome_font_face_ps_embed_tt): Additional check to get the right
+	page info from the subfont name (for PS printing).
+
+	* libgnomeprint/libgnomeprint/gnome-print-pdf-tt.c 
+	(gnome_print_pdf_tt_subset_embed): -do- (for PDF printing).
+	
+2004-11-09  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/modules/cups/gnome-print-cups.c
+	(gnome_print_cups_adjust_settings) : default to non-duplexed and be
+	  more agressive about checking the right option from the PPD using
+	  the same fallbacks as cups-1.1.20
+
+2004-10-14  Chris Kelso  <ckelso@heliosphere.org>
+
+	* libgnomeprint/Makefile.am: Place dependency libs first for linking.
+
+2004-10-14  Morten Welinder  <terra@gnome.org>
+
+	* libgnomeprint/gnome-print-pango.c (print_pango_layout_line): Fix
+	154574.  (tony.graham@sun.com)
+
+2004-10-12  Morten Welinder  <terra@gnome.org>
+
+	* libgnomeprint/ttsubset/ttcr.c: Don't include <sys/uio.h>.
+
+	* libgnomeprint/gnome-print.c: Unconditionally include <fcntl.h>
+	for O_RDONLY.
+
+2004-10-01  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : Back to 2.8.1 after the point release
+
+2004-10-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.0.1
+
+2004-10-01  Jody Goldberg <jody@gnome.org>
+
+	(gnome_print_ps2_print_octal_byte) : doh!
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_print_bpath) : fix
+	  return type and handle errors.
+
+2004-10-01  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/gnome-print-ps2.c : Clarify the error handling and
+	  return values in all routines.
+	(gnome_print_ps2_print_double) : no need for a dynamic buffer.  put it
+	 on the stack.
+	(gnome_print_ps2_print_octal_byte) : new.
+	(gnome_print_ps2_glyphlist) : use it here and correct the return val
+	  calculation.
+
+2004-10-01  Morten Welinder  <terra@gnome.org>
+
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_puts,
+	gnome_print_ps2_putc): New functions.  Change most calls of
+	gnome_print_ps2_fprintf to one of these.
+	(gnome_print_ps2_glyphlist): Print letters as letters, not octal.
+	Fixes #153667.
+
+2004-09-30  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/modules/cups/gnome-print-cups.c
+	(attributes_changed_cb) : Store the queue length in QueueLength
+
+2004-09-23  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprint/gnome-font-face.c (gf_pso_print_double) : remove some
+	  dead code
+
+2004-09-13  Jody Goldberg <jody@gnome.org>
+
+	* configure.in :  bump to 2.8.1.  No branching for a 2-3 weeks so that
+	  we can fix things if necessary before major change starts.
+
 2004-09-13  Jody Goldberg <jody@gnome.org>
 
 	* Release 2.8.0

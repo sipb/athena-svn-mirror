@@ -30,7 +30,6 @@
 
 #include <glib.h>
 #include <libgnomeprint/gnome-print-config.h>
-#include <libgnomeprint/gnome-print-private.h>
 
 G_BEGIN_DECLS
 
@@ -41,6 +40,7 @@ G_BEGIN_DECLS
 #define GNOME_IS_PRINT_TRANSPORT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),    GNOME_TYPE_PRINT_TRANSPORT))
 #define GNOME_PRINT_TRANSPORT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o),  GNOME_TYPE_PRINT_TRANSPORT, GnomePrintTransportClass))
 
+typedef struct _GnomePrintTransport      GnomePrintTransport;
 typedef struct _GnomePrintTransportClass GnomePrintTransportClass;
 
 struct _GnomePrintTransport {
@@ -58,16 +58,25 @@ struct _GnomePrintTransportClass {
 	   gint (* close)      (GnomePrintTransport *transport);
 	   gint (* write)      (GnomePrintTransport *transport, const guchar *buf, gint len);
 	   gint (* print_file) (GnomePrintTransport *transport, const guchar *file_name);
+
+	/* Run time check to see if the transport makes sense (eg lpr on win32) */
+	gboolean (* exists) (GnomePrintTransport const *transport);
+
+	/* Padding for future expansion */
+	void (*_gp_reserved0) (void);
+	void (*_gp_reserved1) (void);
+	void (*_gp_reserved2) (void);
+	void (*_gp_reserved3) (void);
 };
 
 GType                 gnome_print_transport_get_type (void);
 GnomePrintTransport * gnome_print_transport_new (GnomePrintConfig *config);
+gboolean	      gnome_print_transport_exists_by_name (const char *name);
 
-gint gnome_print_transport_construct (GnomePrintTransport *transport, GnomePrintConfig *config);
 gint gnome_print_transport_open      (GnomePrintTransport *transport);
 gint gnome_print_transport_close     (GnomePrintTransport *transport);
 gint gnome_print_transport_write     (GnomePrintTransport *transport, const guchar *buf, gint len);
-gint gnome_print_transport_printf    (GnomePrintTransport *pc, const char *fmt, ...);
+gint gnome_print_transport_printf    (GnomePrintTransport *transport, const char *fmt, ...);
 gint gnome_print_transport_set_error (GnomePrintTransport *transport, GError *err);
 
 #ifdef GNOME_PRINT_UNSTABLE_API

@@ -170,7 +170,7 @@ gnome-print. In most cases, you probably want to use
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created <link linkend="PangoFontMap"><type>PangoFontMap</type></link> object
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly created <link linkend="PangoFontMap"><type>PangoFontMap</type></link> object
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -183,7 +183,7 @@ use with gnome-print.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the default <link linkend="PangoFontMap"><type>PangoFontMap</type></link> object for gnome-print. The
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the default <link linkend="PangoFontMap"><type>PangoFontMap</type></link> object for gnome-print. The
 returned object is owned by gnome-print and should not be modified.
 (If you need to set custom options, create a new font map with
 <link linkend="gnome-print-pango-font-map-new"><function>gnome_print_pango_font_map_new()</function></link>.)  The reference count is
@@ -203,7 +203,7 @@ Creates a new <link linkend="PangoContext"><type>PangoContext</type></link> obje
 <listitem><simpara> a <link linkend="PangoFontMap"><type>PangoFontMap</type></link> from <link linkend="gnome-print-pango-get-default-font-map"><function>gnome_print_pango_get_default_font_map()</function></link>
  or <link linkend="gnome-print-pango-create-font-map"><function>gnome_print_pango_create_font_map()</function></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created <link linkend="PangoContext"><type>PangoContext</type></link> object
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly created <link linkend="PangoContext"><type>PangoContext</type></link> object
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -252,7 +252,7 @@ deal with the <link linkend="PangoContext"><type>PangoContext</type></link> dire
 <varlistentry><term><parameter>gpc</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="GnomePrintContext"><type>GnomePrintContext</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created <link linkend="PangoLayout"><type>PangoLayout</type></link>. Free with
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the newly created <link linkend="PangoLayout"><type>PangoLayout</type></link>. Free with
  <link linkend="g-object-unref"><function>g_object_unref()</function></link> when you are done with it.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>

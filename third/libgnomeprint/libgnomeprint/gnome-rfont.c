@@ -25,7 +25,6 @@
 #include <config.h>
 #include <math.h>
 #include <string.h>
-#include <ctype.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

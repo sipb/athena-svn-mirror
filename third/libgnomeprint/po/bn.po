@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libGNOMEprint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
 "PO-Revision-Date: 2003-02-23 07:20+0530\n"
 "Last-Translator: Sayamindu Dasgupta <unmadindu@Softhome.net>\n"
 "Language-Team: Bengali <gnome-translation@bengalinux.org>\n"
@@ -268,15 +268,15 @@ msgstr "সাধারন পোস্টস্ক্রিপ্ট"
 msgid "Create a PDF document"
 msgstr "পিডিএফ ফাইল তৈরি করুন"
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "মোদের গরব মোদের আশা, আ-মরি বাংলা ভাষা"
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr ""
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr ""
 

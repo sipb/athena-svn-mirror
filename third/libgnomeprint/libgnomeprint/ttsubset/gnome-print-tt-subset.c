@@ -47,7 +47,8 @@ void gnome_print_pdf_tt_create_subfont (const unsigned char *file_name,
 
 }
 
-void gnome_print_ps_tt_create_subfont (const unsigned char *file_name, 
+void
+gnome_print_ps_tt_create_subfont (const unsigned char *file_name, 
 			const unsigned char *encoded_font_name,
 			unsigned char **subfont_file, 
 			unsigned short *glyphArray, 
@@ -63,7 +64,7 @@ void gnome_print_ps_tt_create_subfont (const unsigned char *file_name,
     }
 
     *subfont_file = tmpnam (NULL);
-    subf = fopen (*subfont_file, "w");
+    subf = fopen (*subfont_file, "wb");
     CreateT42FromTTGlyphs (fnt, subf, encoded_font_name, (uint16 *)glyphArray, (byte *)encoding, len);
     fclose (subf);
 

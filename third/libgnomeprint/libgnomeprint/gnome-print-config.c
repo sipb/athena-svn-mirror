@@ -27,7 +27,6 @@
 #define GNOME_PRINT_UNSTABLE_API
 
 #include <config.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -439,7 +438,7 @@ gnome_print_config_get_length (GnomePrintConfig *config, const guchar *key, gdou
 		g_free (v);
 		return FALSE;
 	}
-	while (*e && !isalnum (*e))
+	while (*e && !g_ascii_isalnum (*e))
 		e++;
 	if (*e != '\0') {
 		c_unit = gnome_print_unit_get_by_abbreviation (e);

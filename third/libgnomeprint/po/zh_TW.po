@@ -2,15 +2,15 @@
 # Copyright (C) 2001, 02, 03, 04 Free Software Foundation, Inc.
 #
 # Translators: 
-# Abel Cheung <maddog@linux.org.hk>, 2001-2003.
+# Abel Cheung <maddog@linuxhall.org>, 2001, 02, 03, 04.
 # Ching-Hung Lin <2billlin@yahoo.com.tw>, 2004
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint 2.5.5\n"
+"Project-Id-Version: libgnomeprint 2.8.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
-"PO-Revision-Date: 2004-03-21 21:49+0800\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
+"PO-Revision-Date: 2004-09-21 22:53+0800\n"
 "Last-Translator: Ching-Hung Lin <2billlin@yahoo.com.tw>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -276,15 +276,15 @@ msgstr "製作成一份 PDF 文件"
 # 在此不知道要如何翻譯比較好
 # 所以維持之前 Abel 的翻譯 -- Ching-Hung Lin
 # ---------------------------------------
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "The following is chinese: '中文支援'"
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr "工作設定"
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr "列印工作的設定"
 
@@ -392,20 +392,20 @@ msgstr "週末"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:336
 msgid "between midnight and 8 a.m."
-msgstr "午夜零點到早上八點間"
+msgstr "午夜零時到早上八時間"
 
 #. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
 #: libgnomeprint/modules/cups/gnome-print-cups.c:338
 msgid "between 6 p.m. and 6 a.m."
-msgstr "晚間六點到隔天早上六點間"
+msgstr "晚間六時到隔天早上六時間"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:340
 msgid "between 4 p.m. and midnight"
-msgstr "下午四點到午夜零點"
+msgstr "下午四時到午夜零時"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:341
 msgid "between 6 a.m. and 6 p.m."
-msgstr "早上六點到晚上六點"
+msgstr "早上六時到晚上六時"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:342
 msgid "when manually released"
@@ -418,7 +418,7 @@ msgstr "立即"
 #: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
 #, c-format
 msgid "%s (via lpr)"
-msgstr ""
+msgstr "%s (經 lpr)"
 
 #~ msgid "Search directories recursively for font files"
 #~ msgstr "同時在所有預設目錄的子目錄中搜尋字型檔"
