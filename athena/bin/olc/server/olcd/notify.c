@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.4 1989-08-22 16:30:10 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.5 1989-11-17 13:58:29 tjcoppet Exp $";
 #endif
 
 
@@ -31,6 +31,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <zephyr/zephyr.h>      /* Zephyr defs. */
 #endif ZEPHYR
 
+#include <sys/types.h>
 #include <sys/socket.h>	        /* IPC socket defs. */
 #include <sys/file.h>           /* File handling defs. */
 #include <sys/stat.h>           /* File status defs. */
@@ -204,7 +205,7 @@ write_message_to_user(k, message, flags)
 	      k->user->realm,k->instance);
       strcat(msgbuf,message);
       result = write_message(k->user->username, k->user->machine,
-			     "OLC-Daemon", DaemonHost, msgbuf);
+			     "OLC-Service", DaemonHost, msgbuf);
     }
   else
     result = write_message(k->user->username, k->user->machine,
@@ -214,7 +215,7 @@ write_message_to_user(k, message, flags)
     {
     case ERROR:
       set_status(k->user, UNKNOWN_STATUS);
-      (void) sprintf(msgbuf,"Unable to contact %s %s. Cause unknown", 
+      (void) sprintf(msgbuf,"Unable to contact %s %s.  Cause unknown.", 
 	      k->title, k->user->username);
       if(!(flags & NO_RESPOND))
 	(void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
@@ -332,14 +333,22 @@ zsend_message(class,instance,opcode,username,message, flags)
 
   if ((ret = ZInitialize()) != ZERR_NONE)
     {
-      (void) sprintf(error, "zwrite_message: couldn't ZInitialize");
-      log_error(error);
+      (void) fprintf(stderr, "zwrite_message: couldn't ZInitialize\n");
       return(ERROR);		/* Oops, couldn't initialize. */
     }
   
   bzero(&notice, sizeof(ZNotice_t));
 
-  notice.z_kind = ACKED;
+  if(username!= (char *) NULL)
+    {
+      if(!string_eq(username,""))
+	notice.z_kind = ACKED;
+      else
+	notice.z_kind = UNSAFE;
+    }
+  else 
+    notice.z_kind = UNSAFE;
+
   notice.z_port = 0;
   notice.z_class = class;
   notice.z_class_inst = instance;
@@ -377,30 +386,33 @@ zsend(notice)
   if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
     {
       /* Some sort of unknown communications error. */
-      fprintf(stderr, "zsend: error %d from ZSendNotice", ret);
+      fprintf(stderr, "zsend: error %d from ZSendNotice\n", ret);
       return(ERROR);
     }
+
+  if(notice->z_kind != ACKED)
+    return(SUCCESS);
 
   if ((ret = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
 		       ZCompareUIDPred, (char *) &notice->z_uid)) !=
       ZERR_NONE)
     {
       /* Server acknowledgement error here. */
-      fprintf(stderr, "zsend: error %d from ZIfNotice", ret);
+      fprintf(stderr, "zsend: error %d from ZIfNotice\n", ret);
       ZFreeNotice(&retnotice);
       return(ERROR);
     }
 
   if (retnotice.z_kind == SERVNAK)
     {
-      fprintf(stderr, "zsend: authentication failure");
+      fprintf(stderr, "zsend: authentication failure\n");
       ZFreeNotice(&retnotice);
       return(ERROR);
     }
 
   if (retnotice.z_kind != SERVACK || !retnotice.z_message_len)
     {
-      fprintf(stderr, "zsend: server failure during SERVACK");
+      fprintf(stderr, "zsend: server failure during SERVACK\n");
       ZFreeNotice(&retnotice);
       return(ERROR);
     }
@@ -413,7 +425,7 @@ zsend(notice)
   else
     {
 #ifdef TEST
-      printf("zsend: unknown error sending Zephyr message");
+      printf("zsend: unknown error sending Zephyr message\n");
 #endif
       ZFreeNotice(&retnotice);
       return(ERROR);   	/* Some error, probably not using Zephyr */

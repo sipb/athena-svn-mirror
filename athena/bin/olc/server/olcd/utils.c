@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.2 1989-08-08 14:44:26 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.3 1989-11-17 13:59:30 tjcoppet Exp $";
 #endif
 
 
@@ -133,12 +133,17 @@ get_list_info(k,data)
   data->user.instance = k->instance;
   data->ustatus = k->user->status;
   data->ukstatus = k->status;
+  data->utime = k->timestamp;
+  if(k->new_messages != (char *) NULL)
+    data->umessage = TRUE;
+  else
+    data->umessage = FALSE;
   strcpy(data->user.username,k->user->username);
   strcpy(data->user.realname,k->user->realname);
   strcpy(data->user.machine,k->user->machine);
   strcpy(data->user.username,k->user->username);
   strcpy(data->user.title,k->title);
-
+  
   if(is_connected(k))
     {
       data->connected.uid = k->connected->user->uid;
@@ -149,6 +154,11 @@ get_list_info(k,data)
       strcpy(data->connected.realname,k->connected->user->realname);
       strcpy(data->connected.machine,k->connected->user->machine);
       strcpy(data->connected.title,k->connected->title);
+      data->ctime = k->timestamp;
+      if(k->new_messages != (char *) NULL)
+	data->cmessage = TRUE;
+      else
+	data->cmessage = FALSE;
     }
   else 
     data->connected.uid = -1;

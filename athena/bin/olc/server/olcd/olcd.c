@@ -51,11 +51,14 @@ extern PROC  Proc_List[];              /* OLC Proceedure Table */
 char DaemonHost[LINE_LENGTH];	      /* Name of daemon's machine. */
 struct sockaddr_in sin = { AF_INET }; /* Socket address. */
 static int request_count = 0;
+int select_timeout = 10;
 
 #ifdef KERBEROS
 static long ticket_time = 0L;         /* Timer on kerberos ticket */
 int get_kerberos_ticket(); 
-extern char *SERVER_REALM;
+extern char SERVER_REALM[];
+extern char *DFLT_SERVER_REALM;
+extern char *TICKET_FILE;
 extern int krb_ap_req_debug;
 #endif KERBEROS
 
@@ -109,6 +112,7 @@ main(argc, argv)
 #ifdef KERBEROS
   krb_ap_req_debug = 0;
   strcpy(K_INSTANCEbuf,K_INSTANCE);
+  strcpy(SERVER_REALM,DFLT_SERVER_REALM);
 #endif KERBEROS
 
   /*
@@ -241,9 +245,6 @@ main(argc, argv)
       exit(ERROR);
     }
 
-  if (!string_eq(hostname, daemon_host_entry->h_name)) 
-      log_error("warning: hesiod information doesn't point here");
-
   if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) == 
       (struct servent *)NULL)
     {
@@ -297,6 +298,13 @@ main(argc, argv)
       perror(LOG_DIR);
       log_error("Can't change wdir.");
     }
+
+  if (!string_eq(hostname, daemon_host_entry->h_name)) 
+      log_error("warning: hesiod information doesn't point here");
+
+#ifdef KERBEROS
+  setenv("KRBTKFILE",TICKET_FILE,TRUE);
+#endif KERBEROS
 
   log_status("Daemon startup....");
 
@@ -440,8 +448,8 @@ process_request(fd, from)
   if (Proc_List[index].proc_code != UNKNOWN_REQUEST) 
     {
 
-#ifdef	TEST
       ++request_count;
+#ifdef	TEST
       printf("%d> Got %s request from %s\n",request_count,
 	     Proc_List[index].description,
 	     request.requester.username);
@@ -582,16 +590,19 @@ int
 get_kerberos_ticket()
 {
   int ret;
-  char mesg[BUFSIZ];
-  char sinstance[NAME_LENGTH];
+  char mesg[BUF_SIZE];
+  char sinstance[INST_SZ];
+  char principal[ANAME_SZ];
   char *ptr;
 
+  return;
+  strcpy(principal,K_SERVICE);
   strcpy(sinstance,DaemonHost);
   ptr = index(sinstance,'.');
   *ptr = '\0';
   uncase(sinstance);
 
-  if(ticket_time < NOW - (96L * 5L) + 15L) 
+  if(ticket_time < NOW - ((96L * 5L) - 15L) * 60)
     {
       sprintf(mesg, "get new tickets: %s %s ", K_SERVICE, sinstance);
       log_error(mesg);

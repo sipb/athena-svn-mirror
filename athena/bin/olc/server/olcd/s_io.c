@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.1 1989-07-16 17:15:20 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.2 1989-11-17 13:57:47 tjcoppet Exp $";
 #endif
 
 
@@ -93,7 +93,7 @@ read_request(fd, request)
   printf("%d %d\n",request->requester.uid,request->version);
 #endif TEST
 
-  if (request->version != CURRENT_VERSION)
+  if ((request->version != CURRENT_VERSION) && (request->version != VERSION_3))
      {
         log_error("Error in version");
         return(ERROR);
@@ -129,35 +129,63 @@ return(SUCCESS);
 
 
 
-send_list(fd, list)
+send_list(fd, request, list)
      int fd;
+     REQUEST *request;
      LIST *list;
 {
   LIST list_rq;
+  OLDLIST frep;
   int response;
 
-printf("%s %d %s %d\n",list->user.username, list->user.instance, list->user.machine, list->ukstatus);
-
-  list_rq = *list;
-  list_rq.nseen              = htonl((u_long) list->nseen);
-  list_rq.ustatus            = htonl((u_long) list->ustatus);
-  list_rq.cstatus            = htonl((u_long) list->cstatus);
-  list_rq.ukstatus           = htonl((u_long) list->ukstatus);
-  list_rq.ckstatus           = htonl((u_long) list->ckstatus);
-  list_rq.user.instance      = htonl((u_long) list->user.instance);
-  list_rq.user.uid           = htonl((u_long) list->user.uid);
-  list_rq.connected.instance = htonl((u_long) list->connected.instance);
-  list_rq.connected.uid      = htonl((u_long) list->connected.uid);
-
-  if (swrite(fd, (char *) &list_rq, sizeof(LIST)) != sizeof(LIST))
+  if(request->version == VERSION_4)
     {
-      log_error("error in size");
+      list_rq = *list;
+      list_rq.nseen              = htonl((u_long) list->nseen);
+      list_rq.umessage           = htonl((u_long) list->umessage);
+      list_rq.cmessage           = htonl((u_long) list->cmessage);
+      list_rq.utime              = htonl((u_long) list->utime);
+      list_rq.ctime              = htonl((u_long) list->ctime);
+      list_rq.ustatus            = htonl((u_long) list->ustatus);
+      list_rq.cstatus            = htonl((u_long) list->cstatus);
+      list_rq.ukstatus           = htonl((u_long) list->ukstatus);
+      list_rq.ckstatus           = htonl((u_long) list->ckstatus);
+      list_rq.user.instance      = htonl((u_long) list->user.instance);
+      list_rq.user.uid           = htonl((u_long) list->user.uid);
+      list_rq.connected.instance = htonl((u_long) list->connected.instance);
+      list_rq.connected.uid      = htonl((u_long) list->connected.uid);
+      
+      if (swrite(fd, (char *) &list_rq, sizeof(LIST)) != sizeof(LIST))
+	{
+	  perror("error in size");
+	}
+    }
+  else
+    {
+      frep.user = list->user;
+      frep.connected = list->connected;
+      strncpy(frep.topic, list->topic, TOPIC_SIZE);
+      strncpy(frep.note, list->note, TOPIC_SIZE);
+      frep.nseen              = htonl((u_long) list->nseen);
+      frep.ustatus            = htonl((u_long) list->ustatus);
+      frep.cstatus            = htonl((u_long) list->cstatus);
+      frep.ukstatus           = htonl((u_long) list->ukstatus);
+      frep.ckstatus           = htonl((u_long) list->ckstatus);
+      frep.user.instance      = htonl((u_long) list->user.instance);
+      frep.user.uid           = htonl((u_long) list->user.uid);
+      frep.connected.instance = htonl((u_long) list->connected.instance);
+      frep.connected.uid      = htonl((u_long) list->connected.uid);
+      
+      if (swrite(fd, (char *) &frep, sizeof(OLDLIST)) != sizeof(OLDLIST))
+	{
+	  perror("error in size");
+	}
     }
 
   read_response(fd,&response);
   return(response);
 }
-
+  
 
 send_person(fd, person)
      int fd;

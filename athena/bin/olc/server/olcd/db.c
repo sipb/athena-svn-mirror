@@ -25,9 +25,17 @@ static char rcsid[]="$Header";
 
 
 #include <olc/olc.h>
+#include <sys/file.h>
 #include <olcd.h>
 #include <ctype.h>		/* Standard type definitions. */
- 
+#ifdef NDBM
+#include <ndbm.h>
+#endif NDBM
+
+#ifdef NDBM
+static DBM *dbp = (DBM *) NULL;
+#endif NDBM
+
 extern ACL  Acl_List[];
 
 /*
@@ -50,21 +58,11 @@ get_specialties(user)
   sprintf(buf,"%s@%s",user->username,user->realm);
   for(t_ptr = Topic_List; *t_ptr != (TOPIC *) NULL; t_ptr++)
     {
-
-#ifdef TEST
-      printf("specialties... %s\n",(*t_ptr)->acl);
-#endif TEST
-
       if(acl_check((*t_ptr)->acl,buf))
-       {
-
-#ifdef TEST
-        printf("%s\n",(*t_ptr)->acl);
-#endif TEST
-
-	*(s+i) = (*t_ptr)->value;	
-        ++i;
-      }
+	{
+	  *(s+i) = (*t_ptr)->value;	
+	  ++i;
+	}
 
       if(i==SPEC_SIZE)
 	break;
@@ -82,23 +80,10 @@ get_acls(user)
 
   sprintf(buf,"%s@%s",user->username,user->realm);
 
-#ifdef TEST
-  printf("%s acls\n",buf);
-#endif TEST
-
   for(a_ptr = Acl_List; a_ptr->code > 0; a_ptr++)
     {
-#ifdef TEST
-      printf("%s..\n",a_ptr->file);
-#endif TEST
       if(acl_check(a_ptr->file,buf))
-	{
-
-#ifdef TEST
-	  printf("yes.\n");
-#endif TEST
-	  user->permissions |= a_ptr->code;
-	}
+	user->permissions |= a_ptr->code;
     }
 }
 
@@ -158,8 +143,123 @@ load_db()
   return(SUCCESS);
 }
 
-
 load_user(user)
+     USER *user;
+{
+  get_specialties(user);
+  get_acls(user);
+  get_user_info(user);
+}
+
+#ifdef NDBM
+get_user_info(user)
+     USER *user;
+{
+  datum key,d;
+  char canon[BUF_SIZE];
+  char buf[BUF_SIZE];
+  char *ptr;
+
+  get_specialties(user);
+  get_acls(user);
+  sprintf(canon,"%s@%s",user->username,user->realm);
+
+  if(dbp == (DBM *) NULL)
+    {
+      dbp = dbm_open(DATABASE_FILE, O_RDWR | O_CREAT, 0600);
+      if(dbp == (DBM *) NULL)
+	{
+	  perror("load_user (dbm_open)");
+	  return(ERROR);
+	}
+    }
+  
+  key.dptr = &canon[0];
+  key.dsize = strlen(canon);
+
+  d = dbm_fetch(dbp,key);
+  if(d.dptr != (char *) NULL)
+    {
+      ptr = d.dptr;
+      ptr = get_next_word(ptr, user->title1);
+      ptr = get_next_word(ptr, buf);
+      user->max_ask = atoi(buf);
+      ptr = get_next_word(ptr, user->title2);
+      ptr = get_next_word(ptr, buf);
+      user->max_answer = atoi(buf);
+    }
+  
+  (void) dbm_close(dbp);
+  dbp = (DBM *) NULL;
+  return(SUCCESS);
+}
+
+save_user_info(user)
+     USER *user;
+{
+  char buf[BUF_SIZE];
+  char canon[BUF_SIZE];
+  datum key, d;
+
+  if(dbp == (DBM *) NULL)
+    {
+      dbp = dbm_open(DATABASE_FILE, O_RDWR | O_CREAT, 0600);
+      if(dbp == (DBM *) NULL)
+	{
+	  perror("load_user (dbm_open)");
+	  return(ERROR);
+	}
+    }
+
+  sprintf(buf,"%s %d %s %d",user->title1,
+	  user->max_ask,user->title2,
+	  user->max_answer); 
+
+  sprintf(canon,"%s@%s",user->username,user->realm);
+
+  d.dptr = &buf[0];
+  d.dsize = strlen(buf)+1;
+  key.dptr = &canon[0];
+  key.dsize = strlen(canon)+1;
+  
+  if(dbm_store(dbp,key,d,DBM_REPLACE))
+    {
+      perror("save_user_info (dbm_store)");
+      (void) dbm_close(dbp);
+      dbp = (DBM *) NULL;
+      return(ERROR);
+    }
+  else
+    {
+      (void) dbm_close(dbp);
+      dbp = (DBM *) NULL;
+      return(SUCCESS);
+    }
+}
+
+delete_user_info(user)
+     USER *user;
+{
+  char buf[BUF_SIZE];
+  char canon[BUF_SIZE];
+  datum key;
+
+  sprintf(canon,"%s@%s",user->username,user->realm);
+  key.dptr = &canon[0];
+  key.dsize = strlen(canon)+1;
+
+  if(dbm_delete(dbp,key))
+    {
+      perror("save_user_info (dbm_store)");
+      return(ERROR);
+    }
+  else
+    return(SUCCESS);
+}
+
+#else NDBM
+
+get_user_info(user)
      USER *user;
 {
   FILE *fp, *fopen();
@@ -168,27 +268,25 @@ load_user(user)
   char *db, buf[BUFSIZ];            
   char canon[BUFSIZ];
 
-  get_specialties(user);
-  get_acls(user);
   sprintf(canon,"%s@%s",user->username,user->realm);
 
-  if((fp = fopen(USER_FILE,"r")) == (FILE *) NULL)
+  if((fp = fopen(DATABASE_FILE,"r")) == (FILE *) NULL)
     {
       (void) sprintf(msgbuf, "load_user: can't open OLC database %s", 
-		     USER_FILE);
+		     DATABASE_FILE);
       log_error(msgbuf);
       perror("load_user");
       return(ERROR);
     }
 
-  while (fgets(db_line, DB_LINE, fp) != (char *)NULL)
+  while (fgets(db_line, DB_LINE, fp) != (char *) NULL)
     {
       db = db_line;
       if(*db_line == '#')       /* comment */
 	continue;
-      if(*db_line == '*')       /* person */
+      else
 	{
-	  db = get_next_word(++db,buf);	  
+	  db = get_next_word(db,buf);	  
 	  if(string_eq(canon,buf))
 	    {
 	      db = get_next_word(db, user->title1);
@@ -211,6 +309,12 @@ load_user(user)
   return(ERROR);
 }
 
-      
-      
+
+save_user_info(user)
+     USER *user;
+{
+  return(ERROR);
+}
+
+#endif NDBM
 

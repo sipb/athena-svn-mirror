@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.3 1989-08-22 14:02:37 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.4 1989-11-17 13:58:12 tjcoppet Exp $";
 #endif
 
 
@@ -36,6 +36,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 
 static FILE *status_log = (FILE *)NULL;
 static FILE *error_log = (FILE *)NULL;
+static FILE *admin_log = (FILE *) NULL;
 
  /*
  * Function:	write_line_to_log() writes a single line of text into a
@@ -138,9 +139,9 @@ log_message(owner,sender,message)
   char header[DB_LINE];
   
   time_now(time);
-  (void) sprintf(header, "*** Reply from %s %s@%s\n    [%s]\n",
+  (void) sprintf(header, "*** Reply from %s %s@%s (%d)\n    [%s]\n",
 	  sender->title, sender->user->username, 
-	  sender->user->machine, time);
+	  sender->user->machine, sender->instance, time);
   (void) log_log(owner,message,header);
 }
 
@@ -313,6 +314,62 @@ log_status(message)
 #endif not TEST
 }
 
+
+
+
+log_admin(message)
+     char *message;
+{
+  char time_buf[32];
+
+#ifdef TEST
+
+  /*
+   * print to stderr, for debugging
+   */
+
+  status_log = stderr;
+  time_now(time_buf);
+  fprintf(status_log, "%s ", time_buf);
+  write_line_to_log(admin_log, message);
+  return;
+#endif TEST
+
+#ifdef SYSLOG
+
+  /*
+   * log errors via syslog
+   */
+
+  syslog(LOG_INFO,message);
+  return;
+#endif SYSLOG
+
+#ifndef TEST
+
+  /* 
+   * oh well, use homegrown logging mechanism
+   */
+
+  if (admin_log == (FILE *) NULL)
+    {
+      admin_log = fopen(ADMIN_LOG, "a");
+      if (admin_log == (FILE *)NULL) 
+	{
+	  log_error("log_status: can't append to status log");
+	  exit(1);
+	}
+    }
+
+  time_now(time_buf);
+  fprintf(admin_log, "%s ", time_buf);
+  write_line_to_log(admin_log, message);
+  (void) fflush(admin_log);
+
+  return;
+#endif not TEST
+}
+
 /*
  * Function:	init_log() initializes a log file for a user.
  * Arguments:	user:		A pointer to the user's user structure.
@@ -460,7 +517,6 @@ terminate_log_unanswered(knuckle)
 	  "\n--- Session terminated without answer at %s\n",
 	  current_time);
   (void) fclose(logfile);
-  sprintf(question->topic, "oga");
   if (dispose_of_log(knuckle, UNANSWERED) == ERROR)
     return(ERROR);
   return(SUCCESS);
@@ -529,6 +585,7 @@ dispose_of_log(knuckle, answered)
   char error[ERRSIZE];	        /* Error message. */
   char notesfile[NAME_LENGTH];  /* Name of notesfile. */
   char newfile[NAME_LENGTH];    /* New file name. */
+  char topic[NAME_LENGTH];
   int fd;			/* File descriptor of log. */
   int pid, pid2;		/* Process ID for fork. */
   char msgbuf[BUFSIZ];
@@ -538,10 +595,13 @@ dispose_of_log(knuckle, answered)
 #endif TEST
 
   question = knuckle->question;
+
+  sprintf(topic,"%8s:%s",question->owner->user->username,question->topic);
   (void) strcpy(newfile, question->logfile);
   *(rindex(newfile, '/') + 1) = '\0';
   (void) strcat(newfile, "#");
   (void) strcat(newfile, rindex(question->logfile, '/') + 1);
+
   if (rename(question->logfile, newfile) == -1) 
     {
       perror("dispose_of_log: rename");
@@ -560,6 +620,7 @@ dispose_of_log(knuckle, answered)
       (void) sprintf(msgbuf, "%s to crash",
 		     question->logfile);
       log_status(msgbuf);
+      
       if ((fd = open(newfile, O_RDONLY, 0)) == -1) 
 	{
 	  perror("dispose_of_log: open");
@@ -574,12 +635,12 @@ dispose_of_log(knuckle, answered)
 	log_error("dispose_of_log: unable to duplicate file descriptor");
 	exit(ERROR);
       }
-      execl("/usr/sipb/bin/dspipe", "dspipe", notesfile, "-t",question->title, 0);
+      execl("/usr/sipb/bin/dspipe", "dspipe", notesfile, "-t",topic, 0);
       perror("dispose_of_log: /usr/sipb/bin/dspipe");
       (void) sprintf(error,
 		     "dispose_of_log: cannot exec /usr/sipb/bin/dspipe.\n");
       log_error(error);
-      execl("/usr/local/dspipe", "dspipe", notesfile, "-t",question->title, 0);
+      execl("/usr/local/dspipe", "dspipe", notesfile, "-t", topic, 0);
       perror("dispose_of_log: /usr/local/dspipe");
       (void) sprintf(error, 
 		     "dispose_of_log: cannot exec /usr/local/dspipe, giving up.\n");

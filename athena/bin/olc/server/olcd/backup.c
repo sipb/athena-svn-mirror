@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.3 1989-08-22 14:01:04 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.4 1989-11-17 13:56:36 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -42,7 +42,8 @@ static char *TEXT_SEP      = "  new text:    \0";
 static char *BLANK_SEP     = "  a blank:     \0";
 static char *TRANS_SEP     = "  new train:   \0";
 
-
+static type_buf[BUF_SIZE];
+static int skip;
 
 static char *
 read_msgs(fd)
@@ -72,8 +73,6 @@ write_msgs(fd, msg)
   int length;
   
   length = strlen(msg);
-  if (write_int_to_fd(fd, length) != SUCCESS)
-    return(ERROR);
 
   if(write(fd,TEXT_SEP,sizeof(char) * STRING_LENGTH) != 
      sizeof(char) * STRING_LENGTH)
@@ -81,6 +80,9 @@ write_msgs(fd, msg)
       perror("write_msgs");
       return(ERROR);
     }
+
+  if (write_int_to_fd(fd, length) != SUCCESS)
+    return(ERROR);
   return(write(fd, msg, length) != length);
 }
 
@@ -160,6 +162,8 @@ read_knuckle_info(fd, knuckle)
      sizeof(char) * STRING_LENGTH)
     {
       log_error("read_kncukle_info: cannot read type");
+      perror("read_knuckle");
+      type_error(fd,type);
       return(ERROR);
     }
 
@@ -181,12 +185,14 @@ read_knuckle_info(fd, knuckle)
       knuckle->question->owner = knuckle;
     }
   else
-    knuckle->question == (QUESTION *) NULL;
+    knuckle->question = (QUESTION *) NULL;
 
   if(read(fd, (char *) type, sizeof(char) * STRING_LENGTH) != 
      sizeof(char) * STRING_LENGTH)
     {
       log_error("read_kncukle_info: cannot read second type");
+      perror("read_knuckle");
+      type_error(fd,type);
       return(ERROR);
     }
 
@@ -283,7 +289,8 @@ ensure_consistent_state()
   register KNUCKLE **k_ptr, *k;
   KNUCKLE *foo;
   char msgbuf[BUFSIZ];
-     
+  int status;
+
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
     {
       k = *k_ptr;
@@ -291,19 +298,50 @@ ensure_consistent_state()
 	{
 	  /* check if connected person exists */
 		  
-	  if (get_knuckle(k->connected->user->username, 
-			  k->connected->instance, &foo) != SUCCESS ||
-	      k != k->connected->connected)
+	  if (((status = get_knuckle(k->connected->user->username, 
+			        k->connected->instance, &foo)) != SUCCESS) ||
+				k != k->connected->connected)
 	    {
-	     (void)sprintf(msgbuf,"Inconsistency: user connected to %s (%d)\n",
-			     k->user->username, k->instance);
+	      (void)sprintf(msgbuf,
+			    "Inconsistency: user connected to %s (%d)\n",
+			    k->user->username, k->instance);
 	      log_error(msgbuf);
-	      k->question->owner->connected->connected = (KNUCKLE *) NULL;
-	      k->question->owner->connected = (KNUCKLE *) NULL;
+/* problem: the question data is probably screwed due to earlier bugs.
+ * don't try to salvage because addresses to question->owner is in
+ * space. Take the loss on the question data, delete both knuckles,
+ * and continue. This should be looked into.
+ */
+	      k->question = (QUESTION *) NULL;
+	      delete_knuckle(k);
+	      k->connected->question = (QUESTION *) NULL;
+	      k->connected->connected = (KNUCKLE *) NULL;
+/* eat this too- chances are that if the connected person is invalid, 
+ * it is total garbage.
+ */
 
-	      write_message_to_user(k->question->owner->connected,
-				    "Daemon error -- please reconnect.",
-				    NULL);
+	     /* delete_knuckle(k->connected); */
+	      continue;
+
+	     if(k->question != (QUESTION *) NULL)
+	       {
+		 if(k->status & QUESTION_STATUS)
+		   k->question->owner = k;
+		 else
+		   k->question->owner = (KNUCKLE *) NULL;
+
+		 if(k->question->owner != (KNUCKLE *) NULL)
+		   {
+		     if(k->question->owner->connected != (KNUCKLE *) NULL)
+		       {
+			 k->question->owner->connected->connected = 
+			   (KNUCKLE *) NULL;  
+			 write_message_to_user(k->question->owner->connected,
+					   "Daemon error -- please reconnect.",
+					       NO_RESPOND);
+		       }
+		     k->question->owner->connected = (KNUCKLE *) NULL;
+		   }
+	       }
 #ifdef TEST
 	      if (!fork())
 		abort();
@@ -343,11 +381,21 @@ reconnect_knuckles()
 	  {
 	    (*k_ptr)->connected = k;
 	    if((*k_ptr)->question != (QUESTION *) NULL)
-	      (*k_ptr)->connected->question = (*k_ptr)->question;
+	      {
+		(*k_ptr)->connected->question = (*k_ptr)->question;
+
+		/* not good enough- should have some physical tag */
+		if((*k_ptr)->status  & QUESTION_STATUS)
+		    (*k_ptr)->question->owner = (*k_ptr);		    
+	      }
 	  }
 	else
 	  {
 	    *((*k_ptr)->cusername) = '\0';
+	    (*k_ptr)->connected = (KNUCKLE *) NULL;
+	    if((*k_ptr)->question != (QUESTION *) NULL)
+	      if((*k_ptr)->status  & QUESTION_STATUS)
+		    (*k_ptr)->question->owner = (*k_ptr);		    
 	  }
       }
 }
@@ -380,8 +428,8 @@ backup_data()
 	
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
     {
-      if(((*k_ptr)->instance == 0) && ((*k_ptr)->user->no_knuckles > 1) ||
-	 is_active((*k_ptr)))
+      if(((*k_ptr)->instance == 0) && (((*k_ptr)->user->no_knuckles > 1) ||
+	 is_active((*k_ptr))))
 	{
 	  if (write_user_info(fd, (*k_ptr)->user) != SUCCESS) 
 	    {
@@ -431,8 +479,10 @@ load_data()
   KNUCKLE *kptr;
   USER *uptr = (USER *) NULL;
   char type[STRING_LENGTH];
-  
+  char buf[BUF_SIZE];
+
   i = j = 0;
+  skip = FALSE;
 
   log_status("Loading....(wish me luck)\n");
 
@@ -445,13 +495,24 @@ load_data()
   
   while (TRUE)
     {
-      if(read(fd,type, sizeof(char) * STRING_LENGTH) != 
-	 sizeof(char) * STRING_LENGTH)
+      if(skip == FALSE)
 	{
-	  log_error("load_data: unable to read type");
-	  goto PUNT;
+	  if((status = read(fd,type, sizeof(char) * STRING_LENGTH)) != 
+	     sizeof(char) * STRING_LENGTH)
+	    {
+	      if(status == -1)
+		break;
+	      log_error("load_data: unable to read type");
+	      perror("read_knuckle");
+	      break;
+	    }
 	}
-      
+      else
+	{
+	  bcopy(type_buf,type,STRING_LENGTH);
+	  skip = FALSE;
+	}
+
       if(string_eq(type,USER_SEP))
 	{
 #ifdef TEST
@@ -460,7 +521,11 @@ load_data()
 
 	  if(uptr != (USER *) NULL)
 	    if(nk != uptr->no_knuckles)
-	      log_error("load_data: incorrect no. knuckles");
+	      {
+		sprintf(buf,"No. knuck. mismatch: %d vs. %d",
+			nk, uptr->no_knuckles);
+		log_error(buf);
+	      }
 
 	  uptr = (USER *) malloc(sizeof(USER));
 	  if(uptr == (USER *) NULL)
@@ -471,6 +536,7 @@ load_data()
 	  status = read_user_info(fd,uptr);
 	  if(status != SUCCESS)
 	    goto PUNT;
+
 	  nk = uptr->no_knuckles;
 	  uptr->no_knuckles = 0;
 	  uptr->knuckles = (KNUCKLE **) NULL;
@@ -484,6 +550,8 @@ load_data()
 #endif TEST
 	  kptr = (KNUCKLE *) malloc(sizeof(KNUCKLE));
 	  status = read_knuckle_info(fd,kptr);
+	  if(skip)
+	    continue;
 	  if(status != SUCCESS)
 	    goto PUNT;
 	  insert_knuckle(kptr);
@@ -508,6 +576,8 @@ load_data()
 
       if(string_eq(type,DATA_SEP))
 	break;
+
+      type_error(fd,type); 
     }
   
   successful = 1;
@@ -532,7 +602,43 @@ load_data()
 }
 
 
+/* code like this can only be written the day after an all nighter */
 
+type_error(fd,string)
+  int fd;
+  char *string;
+{
+  char buf[BUF_SIZE];
+  char buf2[BUF_SIZE];
+  int cc;
+ 
+  bcopy(string,buf,STRING_LENGTH);
+  skip = TRUE;
+
+  while(TRUE)
+    {
+/*      write(1,buf,STRING_LENGTH);
+      write(1,"\n",1);*/
+      if(!strncmp(buf,USER_SEP,STRING_LENGTH))
+	{
+	  bcopy(buf,type_buf,STRING_LENGTH);
+	  log_error("type_error: recovered\n");
+	  return;
+	}
+      bcopy(buf,buf2,STRING_LENGTH);
+      bcopy(&buf2[1],buf, STRING_LENGTH-1);
+      if((cc = read(fd,buf2,sizeof(char))) != sizeof(char))
+	{
+	  bcopy(buf,type_buf,STRING_LENGTH);
+	  if(cc == 0)
+	    skip = FALSE;
+	  log_error("type_error: brain damage\n");
+	  return;
+	}
+      buf[STRING_LENGTH-1] = buf2[0];
+      bcopy(buf,type_buf,STRING_LENGTH);
+    }
+}
 
 void
 dump_data(file)

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.3 1989-08-22 14:02:02 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.4 1989-11-17 13:57:07 tjcoppet Exp $";
 #endif
 
 
@@ -43,7 +43,7 @@ extern PROC         Proc_List[];
  *           delete_user()
  *           delete_knuckle()
  *           init_user()
- *           init_question()
+ *           init_question)
  *           get_knuckle()
  *           find_knuckle()
  *           assign_instance()
@@ -146,7 +146,10 @@ create_knuckle(user)
   if(user->knuckles != (KNUCKLE **) NULL)
     for (k_ptr = user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
       if(!is_active((*k_ptr)))
-	return((*k_ptr));
+	{
+	  (*k_ptr)->instance = validate_instance((*k_ptr));
+	  return((*k_ptr));
+	}
 
   /*
    * Make room for daddy
@@ -214,6 +217,7 @@ insert_knuckle(knuckle)
   int n_knuckles=0;
   int n_inactive=0;
   static struct timeval time;
+  char mesg[BUF_SIZE];
 
   /*
    * Start off knuckle list
@@ -243,6 +247,9 @@ insert_knuckle(knuckle)
 	++n_inactive;
     }
 
+  sprintf(mesg,"no: %d   inactive: %d\n",n_knuckles, n_inactive);
+  log_status(mesg);
+
   if(n_inactive < MAX_CACHE_SIZE)
     {
       n_knuckles++;
@@ -263,6 +270,9 @@ insert_knuckle(knuckle)
 	{
 	  if(!is_active((*k_ptr)))
 	    {
+	      if(((*k_ptr)->user->no_knuckles > 1) && 
+		 ((*k_ptr)->instance == 0))
+		continue;
 	      delete_knuckle((*k_ptr),1);
 	      Knuckle_List[n_knuckles-1] = knuckle;
 	      Knuckle_List[n_knuckles]   = (KNUCKLE *) NULL;
@@ -270,7 +280,7 @@ insert_knuckle(knuckle)
 	    }
 	} 
     }
-  return(ERROR);
+  return(SUCCESS);
 }
 
 
@@ -424,9 +434,6 @@ delete_knuckle(knuckle,cont)
   KNUCKLE **k_ptr;
   int i;
 
-  /* maintain continuity in the master knuckle list */
-  /* linked lists anybody? */
-
   for (n_knuckles=0; Knuckle_List[n_knuckles] != (KNUCKLE *)NULL; n_knuckles++)
     if (Knuckle_List[n_knuckles] == knuckle)
       knuckle_idx = n_knuckles;
@@ -490,21 +497,27 @@ init_user(knuckle,person)
      KNUCKLE *knuckle;
      PERSON *person;
 {
-
   (void) strncpy(knuckle->user->realname,person->realname, NAME_LENGTH);
   (void) strncpy(knuckle->user->username,person->username, LOGIN_SIZE);
   (void) strncpy(knuckle->user->machine,person->machine,NAME_LENGTH);
   (void) strncpy(knuckle->user->realm,person->realm,REALM_SZ);
-  (void) strcpy(knuckle->user->title1, DEFAULT_TITLE);
-  (void) strcpy(knuckle->user->title2, DEFAULT_TITLE2);
-  knuckle->user->max_ask = 1;
-  knuckle->user->max_answer = 2;
   knuckle->status = 0;
-  knuckle->user->specialties[0] = UNKNOWN_TOPIC;
-  load_user(knuckle->user);
+  init_dbinfo(knuckle->user);
   (void) strcpy(knuckle->title,knuckle->user->title1);
 }
 
+
+init_dbinfo(user)
+    USER *user;
+{
+  (void) strcpy(user->title1, DEFAULT_TITLE);
+  (void) strcpy(user->title2, DEFAULT_TITLE2);
+  user->max_ask = 1;
+  user->max_answer = 2;
+  user->permissions = 0;
+  user->specialties[0] = UNKNOWN_TOPIC;
+  load_user(user);
+}
 
 
 init_question(k,topic,text)
@@ -512,6 +525,9 @@ init_question(k,topic,text)
      char *topic;
      char *text;
 {
+  struct timeval tp, tp1;
+  struct timezone tz;
+
   k->question = (QUESTION *) malloc(sizeof(QUESTION));
   if(k->question == (QUESTION *) NULL)
     {
@@ -519,6 +535,9 @@ init_question(k,topic,text)
       return(ERROR);
     }
 
+  gettimeofday( &tp1, &tz );
+
+  k->timestamp = tp1.tv_sec;
   k->question->owner = k;
   k->queue = ACTIVE_Q;
   k->question->nseen = 0;
@@ -528,9 +547,39 @@ init_question(k,topic,text)
   (void) strcpy(k->title,k->user->title1);
   (void) strcpy(k->question->topic,topic);
   init_log(k,text);
-  
+  if(k->new_messages != (char *) NULL)
+    {
+      free(k->new_messages);
+      k->new_messages = (char *) NULL;
+    }
   return(SUCCESS);
 }
+
+
+int
+get_user(person,user)
+     PERSON *person;
+     USER **user;
+{
+  KNUCKLE **k_ptr;  
+  int status = 0;
+  char mesg[BUF_SIZE];
+
+  if (Knuckle_List == (KNUCKLE **) NULL)
+    {
+      log_status("get_knuckle: empty list");
+      return(EMPTY_LIST);
+    }
+  
+  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
+    if(string_eq((*k_ptr)->user->username,person->username))
+      {
+	*user = (*k_ptr)->user;
+	return(SUCCESS);
+      }
+
+  return(USER_NOT_FOUND);
+}	
 
 
 /*
@@ -546,20 +595,25 @@ init_question(k,topic,text)
  */
 
 int
-get_knuckle(name,instance,knuckle)
+get_knuckle(name,instance,knuckle,active)
      char *name;
      int instance;
      KNUCKLE **knuckle;
+     int active;
 {
   KNUCKLE **k_ptr;  
   int status = 0;
+  char mesg[BUF_SIZE];
 
 #ifdef TEST
   printf("get_knuckle: %s %d...\n",name,instance);
 #endif TEST
 
   if (Knuckle_List == (KNUCKLE **) NULL)
-    return(EMPTY_LIST);
+    {
+      log_status("get_knuckle: empty list");
+      return(EMPTY_LIST);
+    }
   
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(string_eq((*k_ptr)->user->username,name))
@@ -571,6 +625,9 @@ get_knuckle(name,instance,knuckle)
 	       (*k_ptr)->instance);
 #endif TEST
 
+	if(active && (!is_active((*k_ptr))))
+	  continue;
+
 	if(((*k_ptr)->instance == instance) && !(!is_active((*k_ptr)) &&
 						 (*k_ptr)->instance > 0))
 	  {
@@ -581,9 +638,11 @@ get_knuckle(name,instance,knuckle)
 	status=1;
       }
 
-#ifdef TEST
-  printf("get_knuckle: matched on %s, incomplete instance %d\n",name,status);
-#endif TEST
+
+  sprintf(mesg,
+	  "get_knuckle: matched on %s, incomplete instance %d (%d)",
+	  name,instance,status);
+  log_status(mesg);
 
   if(status) 
     return(INSTANCE_NOT_FOUND);
@@ -605,7 +664,7 @@ match_knuckle(name,instance,knuckle)
   KNUCKLE **k_ptr,*store_ptr;
   int status;
 
-  status = get_knuckle(name,instance,knuckle);
+  status = get_knuckle(name,instance,knuckle,TRUE);
   if(status != USER_NOT_FOUND)
     return(status);
 
@@ -670,11 +729,14 @@ find_knuckle(person,knuckle)
      PERSON *person;
      KNUCKLE **knuckle;
 {
+  char mesg[BUF_SIZE];
   int status;
 
-  status = get_knuckle(person->username, person->instance,knuckle);
+  status = get_knuckle(person->username, person->instance,knuckle,0);
   if(status == USER_NOT_FOUND || status == EMPTY_LIST)
     {
+      sprintf(mesg,"find_knuckle: creating %s",person->username);
+      log_status(mesg);
       *knuckle = create_user(person);
       if(*knuckle != (KNUCKLE *) NULL)
 	{
@@ -688,6 +750,7 @@ find_knuckle(person,knuckle)
     if(status == SUCCESS)
       {
         strcpy((*knuckle)->user->machine,person->machine);
+	strcpy((*knuckle)->user->realname, person->realname);
         (*knuckle)->user->status = ACTIVE;
       }
 
@@ -742,6 +805,19 @@ verify_instance(knuckle,instance)
   return(FAILURE);
 }
       
+
+validate_instance(knuckle)
+     KNUCKLE *knuckle;
+{
+  int i;
+
+  i = assign_instance(knuckle->user);
+  if(i < knuckle->instance)
+    return(i);
+  else
+    return(knuckle->instance);
+}
+
 int
 assign_instance(user)
      USER *user;
@@ -824,8 +900,8 @@ connect_knuckles(a,b)
   (void) strcpy(b->cusername,a->user->username);
   b->cinstance = a->instance;
 
-  (void) sprintf(msg,"You are connected to %s %s.\n",
-	  a->title, a->user->realname);
+  (void) sprintf(msg,"You are connected to %s %s (%s).\n",
+	  a->title, a->user->realname,a->user->username);
   if(write_message_to_user(b,msg,0)!=SUCCESS)
     {
 /*      a->connected = (KNUCKLE *) NULL;
@@ -833,8 +909,8 @@ connect_knuckles(a,b)
       return(FAILURE);*/
     }
       
-  (void) sprintf(msg,"You are connected to %s %s.\n",
-	  b->title, b->user->realname);
+  (void) sprintf(msg,"You are connected to %s %s (%s).\n",
+	  b->title, b->user->realname, b->user->username);
   if((write_message_to_user(a,msg,0) != SUCCESS) &&  (!is_signed_on(b)))
     {
 /*      sprintf(msg,"Oops, he just logged out. Will try to find another...");
@@ -897,6 +973,10 @@ match_maker(knuckle)
 	    continue;
 	  if(is_connected((*k_ptr)))
 	    continue;
+/*
+	  if(was_connected((*k_ptr),knuckle))
+	    continue;
+*/
 	  if(is_logout((*k_ptr)))
 	    continue;
 	  if((*k_ptr)->status > QUESTION_STATUS)
@@ -907,7 +987,7 @@ match_maker(knuckle)
 	    if(((*k_ptr)->status & QUESTION_STATUS) > priority)
 	      continue;
 	    else
-	      if(((*k_ptr)->timestamp < t) && 
+	      if(((*k_ptr)->timestamp >= t) && 
 		 ((*k_ptr)->status == priority))
 		continue;
 		 
@@ -967,7 +1047,7 @@ match_maker(knuckle)
 	  if(priority < (*k_ptr)->status & SIGNED_ON)
 	     continue;
 	  if((priority == is_signed_on((*k_ptr))) &&
-	     t <= (*k_ptr)->timestamp)
+	     t >= (*k_ptr)->timestamp)
 	     continue;
 
 	  switch((*k_ptr)->status & SIGNED_ON)
@@ -1008,13 +1088,20 @@ match_maker(knuckle)
       status = connect_knuckles(temp,knuckle);
       if(status == SUCCESS)
 	{
-	  (void) sprintf(msgbuf,"Connected to %s %s (%d) %s@%s",
-			 temp->title,
-			 temp->user->realname,
-			 temp->instance,
-			 temp->user->username, 
-			 temp->user->machine);
-
+	  if(!owns_question(temp))
+	    (void) sprintf(msgbuf,"Connected to %s %s (%d) %s@%s",
+			   temp->title,
+			   temp->user->realname,
+			   temp->instance,
+			   temp->user->username, 
+			   temp->user->machine);
+	  else
+	    (void) sprintf(msgbuf,"Connected to %s %s (%d) %s@%s",
+			   knuckle->title,
+			   knuckle->user->realname,
+			   knuckle->instance,
+			   knuckle->user->username, 
+			   knuckle->user->machine);
 	  log_daemon(temp,msgbuf);
 	  return(SUCCESS);
 	}
@@ -1045,18 +1132,22 @@ match_maker(knuckle)
  *	to point at the right string.
  */
 
-new_message(msg_field, message)
+new_message(msg_field, sender, message)
      char **msg_field;	/* Place to store the new message. */
+     KNUCKLE *sender;
      char *message;		/* Message string. */
 {
   int curr_length;	        /* Length of current message. */
   int msg_length;		/* Length of the new message. */
-  int time_length;	        /* Length of time string. */
+  int length;	                 /* Length of header string. */
   char *new_message;	        /* Ptr. to constructed new message. */
   char timebuf[TIME_SIZE];      /* Current time. */
-  
+  char buf[BUF_SIZE];
+
   time_now(timebuf);
-  time_length = strlen(timebuf);
+  sprintf(buf,"\nMessage from %s %s (%s) on %s:\n\n",sender->title, 
+	  sender->user->realname, sender->user->username, timebuf);
+  length = strlen(buf);
   
   if (*msg_field == (char *) NULL)
     curr_length = 0;
@@ -1064,7 +1155,7 @@ new_message(msg_field, message)
     curr_length = strlen(*msg_field);
   
   msg_length = strlen(message);
-  new_message = malloc((unsigned) curr_length + msg_length + time_length + 10);
+  new_message = malloc((unsigned) curr_length + msg_length + length + 10);
   if (new_message == (char *)NULL) 
     {
       log_error("new_message: malloc failed");
@@ -1077,15 +1168,13 @@ new_message(msg_field, message)
       (void) strcpy(new_message, *msg_field);
       (void) strcat(new_message, "\n");
     }
-  (void) strcat(new_message, "time: ");
-  (void) strcat(new_message, timebuf);
-  (void) strcat(new_message, "\n");
+
+  (void) strcat(new_message, buf);
   (void) strcat(new_message, message);
 
-printf("message: %s\n",new_message);
-  
   if (*msg_field != (char *)NULL)
     free(*msg_field);
+
   *msg_field = new_message;
 }
 
@@ -1159,6 +1248,9 @@ verify_topic(topic)
 owns_question(knuckle)
      KNUCKLE *knuckle;
 {
+  if(knuckle == (KNUCKLE *) NULL)
+    return(FALSE);
+
   if(!has_question(knuckle))
     return(FALSE);
 
@@ -1184,3 +1276,16 @@ is_topic(topics,code)
   return(FALSE);
 }
 
+/*
+was_connected(a,b)
+     KNUCKLE *a, *b;
+{
+  int i = 0;
+
+  for(i=0;*a->question->seen[i] != '\0'; i++)
+    if(!strcmp(a->question->seen[i], b->user->username))
+      return(TRUE);
+
+  return(FALSE);
+}
+*/
