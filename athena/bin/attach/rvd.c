@@ -7,8 +7,8 @@
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.6 1991-07-01 09:47:27 probe Exp $";
-#endif lint
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.7 1992-07-31 19:22:22 probe Exp $";
+#endif
 
 #include "attach.h"
 
