@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Id: server.c,v 1.52 1992-08-14 12:11:48 lwvanels Exp $";
+static char rcsid_server_c[] = "$Id: server.c,v 1.53 1993-03-22 13:47:44 probe Exp $";
 #endif
 #endif
 
@@ -806,7 +806,7 @@ recover_clt(notice, server)
 	if ((status = extract_addr(notice, &who)) != ZERR_NONE)
 		return(status);
 	if (!(host = hostm_find_host(&who.sin_addr))) {
-		syslog(LOG_WARNING,
+		syslog(LOG_INFO,
 		       "recover_clt: host not found (%s, from %s)",
 		       inet_ntoa (who.sin_addr), server->addr);
 		return(ZERR_NONE);	/* XXX */
@@ -814,7 +814,7 @@ recover_clt(notice, server)
 	if (host->zh_locked)
 		return(ZSRV_REQUEUE);
 	if (!(client = client_which_client(&who, notice))) {
-		syslog(LOG_WARNING,
+		syslog(LOG_INFO,
 		       "recover_clt: client not found (%s/%d, from %s)",
 		       inet_ntoa (who.sin_addr), ntohs (who.sin_port),
 		       server->addr);
