@@ -6,4 +6,4 @@
 # $1: apm event type
 #
 
-exec /etc/athena/network-scripts/net-event "$1"
+/etc/athena/network-scripts/net-event "$1"
