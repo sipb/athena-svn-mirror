@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Dictionary/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Dictionary/Imakefile,v 1.2 1989-11-15 23:59:07 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Dictionary/Imakefile,v 1.3 1989-11-16 10:21:25 jtkohl Exp $
 /**/#
 
 LIBS= $(ZEPHYR_LIB) $(COMERR_LIB) $(KRB_LIB) $(DES_LIB)
@@ -41,12 +41,12 @@ dictionary_spec: dictionary.h
 # Generate a int dictionary instance:
 #
 int_dictionary.c int_dictionary.h: dictionary.c dictionary.h
-	./generate_dictionary_instance int
+	./generate_dictionary_instance ${SRCDIR} int
 #
 # Generate a string dictionary instance:
 #
 string_dictionary.c string_dictionary.h: dictionary.c dictionary.h
-	./generate_dictionary_instance string new_string.h
+	./generate_dictionary_instance ${SRCDIR} string new_string.h
 
 clean::
 	$(RM) $(OBJS) dictionary_spec int_dictionary.c string_dictionary.c \
