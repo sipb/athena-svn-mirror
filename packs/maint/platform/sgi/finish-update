@@ -6,7 +6,8 @@ case "$1" in
 start)
 	if [ `awk '{a=$5} END {print a}' /etc/athena/version` = Reboot ]; then
 		echo "Finishing partially completed update"
-		sh /usr/athena/lib/update/finish-update
+		sh /usr/athena/lib/update/finish-update 2>&1 \
+			| tee -a /var/athena/update.log
 		echo "Update completed, rebooting in 15 seconds."
 		sync
 		sleep 15
