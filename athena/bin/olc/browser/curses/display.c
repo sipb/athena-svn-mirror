@@ -23,18 +23,20 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
  *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.9 1997-04-30 17:28:02 ghudson Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.10 1997-11-22 19:25:58 ghudson Exp $
  */
 
 
 #ifndef lint
-static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.9 1997-04-30 17:28:02 ghudson Exp $";
+static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.10 1997-11-22 19:25:58 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
+#include <termios.h>
+#include <unistd.h>
 
 #include <browser/cref.h>		/* Finder defs. */
 #include <browser/cur_globals.h>	/* Global variables. */
@@ -204,6 +206,7 @@ display_entry(ind)
      int ind;
 {
   ENTRY *entry;				/* Entry to be displayed. */
+  int nl;
   
   entry = get_entry(ind);
   if (entry == NULL)
@@ -219,9 +222,9 @@ display_entry(ind)
 #endif
       clear();
       refresh();
-      reset_shell_mode();
+      nl = set_nl(1);
       call_program("more", entry->filename);
-      reset_prog_mode();
+      set_nl(nl);
       refresh();
       wait_for_key();
       clear();
@@ -237,4 +240,24 @@ display_entry(ind)
     }
   else
     message(1, "Invalid CREF contents.");
+}
+
+/* Before executing a pager program, we set the ONLCR flag in the termios
+ * output flags to avoid confusing some versions of "more".  It would be
+ * nice if we could use curses functionality for this purpose, but there
+ * are snags: reset_shell_mode() is not portable to BSD systems, nl() is
+ * emulated in software on Solaris and doesn't actually set the tty mode,
+ * and endwin() causes the screen to be cleared when the key prompt is
+ * displayed on Solaris.  So we have to go into termios ourselves. */
+int set_nl(int which)
+{
+  struct termios attr;
+  int old;
+
+  if (tcgetattr(STDOUT_FILENO, &attr) == 0)
+    {
+      old = (attr.c_oflag & ONLCR) ? 1 : 0;
+      attr.c_oflag = (which) ? attr.c_oflag | ONLCR : attr.c_oflag & ~ONLCR;
+      tcsetattr(STDOUT_FILENO, TCSADRAIN, &attr);
+    }
 }

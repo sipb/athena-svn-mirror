@@ -22,11 +22,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v $
  *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.11 1997-04-30 17:25:59 ghudson Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.12 1997-11-22 19:25:57 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.11 1997-04-30 17:25:59 ghudson Exp $";
+static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.12 1997-11-22 19:25:57 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -52,6 +52,7 @@ static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/ath
 print_help()
 {
   int comm_ind;				/* Index in command table. */
+  int nl;
   FILE *file;
   char filename[100];
 
@@ -73,9 +74,9 @@ print_help()
   fclose(file);
   clear();
   refresh();
-  reset_shell_mode();
+  nl = set_nl(1);
   call_program("more", filename);
-  reset_prog_mode();
+  set_nl(nl);
   refresh();
   wait_for_key();
   unlink(filename);
@@ -805,13 +806,14 @@ redisplay()
 contents_file()
 {
   char contents_path[MAXPATHLEN];
+  int nl;
 
   make_path(Current_Dir,CONTENTS,contents_path);
   clear();
   refresh();
-  reset_shell_mode();
+  nl = set_nl(1);
   call_program("more",contents_path);
-  reset_prog_mode();
+  set_nl(nl);
   refresh();
   wait_for_key();
   clear();
