@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.4 1996-06-17 20:39:36 ghudson Exp $
+# $Id: phase3.sh,v 1.5 1996-08-06 18:36:29 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -127,8 +127,8 @@ cp -p /srvd/etc/athena/*.conf etc/athena/
 echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
 echo "Editing rc.conf and version"
-sed -e 	"s/^HOST=MITHOST.MIT.EDU/HOST=$hostname/
-	s/^ADDR=MITADDR/ADDR=$netaddr/" \
+sed -e 	"s/^HOST=NONAME/HOST=$hostname/
+	s/^ADDR=NOADDR/ADDR=$netaddr/" \
 	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
 echo installed on `date` > /root/etc/athena/version
