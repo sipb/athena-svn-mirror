@@ -1,5 +1,5 @@
 /* windows.c -- window manipulation
-   $Id: windows.c,v 1.3 2002-03-20 05:07:13 ghudson Exp $
+   $Id: windows.c,v 1.4 2002-05-22 15:15:28 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -490,7 +490,8 @@ remove_window (Lisp_Window *w, repv destroyed, repv from_error)
 	if (from_error == Qnil)
 	    destroy_window_frame (w, FALSE);
 
-	remove_from_stacking_list (w);
+	if (!WINDOW_IS_GONE_P (w))
+	    remove_from_stacking_list (w);
 
 	w->id = 0;
 	pending_destroys++;
