@@ -9,21 +9,16 @@
  * <mit-copyright.h>.
  */
 
-#ifndef lint
-static char rcsid_send_to_kdc_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.5 1997-09-30 19:16:03 ghudson Exp $";
-#endif /* lint */
+static const char rcsid[] = "$Id: krb_util.c,v 1.6 1997-11-17 16:22:44 ghudson Exp $";
 
 #include <mit-copyright.h>
 
 #include <krb.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#ifdef lint
-#include <sys/uio.h>            /* struct iovec to make lint happy */
-#endif /* lint */
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -34,10 +29,7 @@ static char rcsid_send_to_kdc_c[] =
 
 #define S_AD_SZ sizeof(struct sockaddr_in)
 
-extern int errno;
 extern int krb_debug;
-
-extern char *malloc(), *calloc(), *realloc();
 
 int krb_udp_port = 0;
 
@@ -169,15 +161,11 @@ send_to_kdc(pkt,rpkt,realm)
             goto rtn;
         }
         memcpy(cp, host->h_addr, host->h_length);
-/* At least Sun OS version 3.2 (or worse) and Ultrix version 2.2
-   (or worse) only return one name ... */
-#if !(defined(ULTRIX022) || (defined(SunOS) && SunOS < 40))
         host->h_addr_list = (char **)malloc(sizeof(char *));
         if (!host->h_addr_list) {
             retval = /*errno */SKDC_CANT;
             goto rtn;
         }
-#endif /* ULTRIX022 || SunOS */
         host->h_addr = cp;
         memset(&hostlist[n_hosts], 0, sizeof(struct hostent));
         to.sin_family = host->h_addrtype;
@@ -227,15 +215,11 @@ rtn:
         else {
 	  register struct hostent *hp;
 	  for (hp = hostlist; hp->h_name; hp++)
-#if !(defined(ULTRIX022) || (defined(SunOS) && SunOS < 40))
             if (hp->h_addr_list) {
-#endif /* ULTRIX022 || SunOS */
                 if (hp->h_addr)
                     free(hp->h_addr);
-#if !(defined(ULTRIX022) || (defined(SunOS) && SunOS < 40))
                 free((char *)hp->h_addr_list);
             }
-#endif /* ULTRIX022 || SunOS */
 	  free((char *)hostlist);
         }
     }
