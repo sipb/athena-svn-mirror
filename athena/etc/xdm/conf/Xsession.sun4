@@ -1,0 +1,68 @@
+#!/bin/sh 
+
+# Top level Xsession file for all users
+#
+# $Id: Xsession.sun4,v 1.1 1993-07-22 18:42:12 cfields Exp $
+
+trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
+
+initlib="/usr/athena/lib/init"
+defsession=$1
+defsessioncmd="$2"
+
+case $defsession in
+1|4)
+	if [ -f .xsession ]; then
+		session=".xsession"
+	else
+		session="$initlib/xsession"
+	fi
+	;;
+2)
+	NOCALLS=1; export NOCALLS
+	session="$initlib/xsession"
+	;;
+3)
+	session="xterm -ls -geometry 80x24+280+220 -display :0.0"
+	;;
+5)
+	session="$defsessioncmd"
+	;;
+esac
+
+# Do something relatively sane with the keyboard mappings.
+cat <<EOF | xmodmap -
+clear mod4
+add mod1 = Alt_L
+add mod1 = Multi_key
+keysym BackSpace = Delete
+keycode 73 = BackSpace
+EOF
+
+# Set the tty characteristics of the parent (console window)
+# Redirect stdin since some versions of stty use it instead of stdout.
+stty dec 0<&1 2>/dev/null
+$session
+
+status=$?
+if [ $status != 0 ]; then
+		echo ERROR:
+		echo "Xsession returned non-zero status."
+		echo ""
+		echo 'Select the login option to "Ignore your customizations"'
+		echo 'to login and repair your dot files.'
+		kdestroy			# destroy tickets.
+		sleep 10
+		exit $status
+fi
+
+
+# Cannot detach homedir here, since this script is executed in the users
+# homedir.
+
+kdestroy				# destroy tickets.
+cd /tmp
+unlog
+fsid -u -f $USER > /dev/null 2>&1
+sleep 3					# let them see any messages (quickly)
+exit 0
