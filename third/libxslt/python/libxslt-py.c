@@ -1,6 +1,5 @@
 /* Generated */
 
-#include "config.h"
 #include <libxslt/xsltconfig.h>
 #include "libxslt_wrap.h"
 #include "libxslt-py.h"
@@ -19,6 +18,34 @@ libxslt_xsltTransformGetInstruction(ATTRIBUTE_UNUSED PyObject *self, PyObject *a
     c_retval = ctxt->inst;
     py_retval = libxml_xmlNodePtrWrap((xmlNodePtr) c_retval);
     return(py_retval);
+}
+
+PyObject *
+libxslt_xsltParseStylesheetImportedDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+    PyObject *py_retval;
+    xsltStylesheetPtr c_retval;
+    xmlDocPtr doc;
+    PyObject *pyobj_doc;
+
+    if (!PyArg_ParseTuple(args, (char *)"O:xsltParseStylesheetImportedDoc", &pyobj_doc))
+        return(NULL);
+    doc = (xmlDocPtr) PyxmlNode_Get(pyobj_doc);
+
+    c_retval = xsltParseStylesheetImportedDoc(doc);
+    py_retval = libxslt_xsltStylesheetPtrWrap((xsltStylesheetPtr) c_retval);
+    return(py_retval);
+}
+
+PyObject *
+libxslt_xsltCalibrateAdjust(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+    long delta;
+
+    if (!PyArg_ParseTuple(args, (char *)"i:xsltCalibrateAdjust", &delta))
+        return(NULL);
+
+    xsltCalibrateAdjust(delta);
+    Py_INCREF(Py_None);
+    return(Py_None);
 }
 
 PyObject *
@@ -195,17 +222,34 @@ libxslt_xsltStylesheetGetImports(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
+libxslt_xsltAttrTemplateValueProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+    PyObject *py_retval;
+    xmlChar * c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    xmlChar * str;
+
+    if (!PyArg_ParseTuple(args, (char *)"Oz:xsltAttrTemplateValueProcess", &pyobj_ctxt, &str))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+
+    c_retval = xsltAttrTemplateValueProcess(ctxt, str);
+    py_retval = libxml_xmlCharPtrWrap((xmlChar *) c_retval);
+    return(py_retval);
+}
+
+PyObject *
 libxslt_xsltNextImport(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
-    xsltStylesheetPtr style;
-    PyObject *pyobj_style;
+    xsltStylesheetPtr cur;
+    PyObject *pyobj_cur;
 
-    if (!PyArg_ParseTuple(args, (char *)"O:xsltNextImport", &pyobj_style))
+    if (!PyArg_ParseTuple(args, (char *)"O:xsltNextImport", &pyobj_cur))
         return(NULL);
-    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+    cur = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_cur);
 
-    c_retval = xsltNextImport(style);
+    c_retval = xsltNextImport(cur);
     py_retval = libxslt_xsltStylesheetPtrWrap((xsltStylesheetPtr) c_retval);
     return(py_retval);
 }
@@ -354,6 +398,20 @@ libxslt_xsltStylePreCompute(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
     xsltStylePreCompute(style, inst);
     Py_INCREF(Py_None);
     return(Py_None);
+}
+
+PyObject *
+libxslt_xsltParseStylesheetFile(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+    PyObject *py_retval;
+    xsltStylesheetPtr c_retval;
+    xmlChar * filename;
+
+    if (!PyArg_ParseTuple(args, (char *)"z:xsltParseStylesheetFile", &filename))
+        return(NULL);
+
+    c_retval = xsltParseStylesheetFile(filename);
+    py_retval = libxslt_xsltStylesheetPtrWrap((xsltStylesheetPtr) c_retval);
+    return(py_retval);
 }
 
 PyObject *
@@ -582,18 +640,6 @@ libxslt_xsltCopyNamespace(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
     c_retval = xsltCopyNamespace(ctxt, node, cur);
     py_retval = libxml_xmlNsPtrWrap((xmlNsPtr) c_retval);
     return(py_retval);
-}
-
-PyObject *
-libxslt_xsltCalibrateAdjust(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    long delta;
-
-    if (!PyArg_ParseTuple(args, (char *)"i:xsltCalibrateAdjust", &delta))
-        return(NULL);
-
-    xsltCalibrateAdjust(delta);
-    Py_INCREF(Py_None);
-    return(Py_None);
 }
 
 PyObject *
@@ -869,6 +915,26 @@ libxslt_xsltRegisterAllFunctions(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
+libxslt_xsltAttrTemplateValueProcessNode(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+    PyObject *py_retval;
+    xmlChar * c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    xmlChar * str;
+    xmlNodePtr node;
+    PyObject *pyobj_node;
+
+    if (!PyArg_ParseTuple(args, (char *)"OzO:xsltAttrTemplateValueProcessNode", &pyobj_ctxt, &str, &pyobj_node))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+    node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
+
+    c_retval = xsltAttrTemplateValueProcessNode(ctxt, str, node);
+    py_retval = libxml_xmlCharPtrWrap((xmlChar *) c_retval);
+    return(py_retval);
+}
+
+PyObject *
 libxslt_xsltFreeTemplateHashes(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
@@ -1045,16 +1111,16 @@ libxslt_xsltAttrTemplateProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
     PyObject *pyobj_ctxt;
     xmlNodePtr target;
     PyObject *pyobj_target;
-    xmlAttrPtr attr;
-    PyObject *pyobj_attr;
+    xmlAttrPtr cur;
+    PyObject *pyobj_cur;
 
-    if (!PyArg_ParseTuple(args, (char *)"OOO:xsltAttrTemplateProcess", &pyobj_ctxt, &pyobj_target, &pyobj_attr))
+    if (!PyArg_ParseTuple(args, (char *)"OOO:xsltAttrTemplateProcess", &pyobj_ctxt, &pyobj_target, &pyobj_cur))
         return(NULL);
     ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
     target = (xmlNodePtr) PyxmlNode_Get(pyobj_target);
-    attr = (xmlAttrPtr) PyxmlNode_Get(pyobj_attr);
+    cur = (xmlAttrPtr) PyxmlNode_Get(pyobj_cur);
 
-    c_retval = xsltAttrTemplateProcess(ctxt, target, attr);
+    c_retval = xsltAttrTemplateProcess(ctxt, target, cur);
     py_retval = libxml_xmlNodePtrWrap((xmlNodePtr) c_retval);
     return(py_retval);
 }
@@ -1341,19 +1407,19 @@ PyObject *
 libxslt_xsltSaveResultToFilename(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
-    char * URI;
+    char * URL;
     xmlDocPtr result;
     PyObject *pyobj_result;
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
     int compression;
 
-    if (!PyArg_ParseTuple(args, (char *)"zOOi:xsltSaveResultToFilename", &URI, &pyobj_result, &pyobj_style, &compression))
+    if (!PyArg_ParseTuple(args, (char *)"zOOi:xsltSaveResultToFilename", &URL, &pyobj_result, &pyobj_style, &compression))
         return(NULL);
     result = (xmlDocPtr) PyxmlNode_Get(pyobj_result);
     style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
 
-    c_retval = xsltSaveResultToFilename(URI, result, style, compression);
+    c_retval = xsltSaveResultToFilename(URL, result, style, compression);
     py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
@@ -1371,6 +1437,22 @@ libxslt_xsltSystemPropertyFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *ar
     xsltSystemPropertyFunction(ctxt, nargs);
     Py_INCREF(Py_None);
     return(Py_None);
+}
+
+PyObject *
+libxslt_xsltGetProfileInformation(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+    PyObject *py_retval;
+    xmlDocPtr c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+
+    if (!PyArg_ParseTuple(args, (char *)"O:xsltGetProfileInformation", &pyobj_ctxt))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+
+    c_retval = xsltGetProfileInformation(ctxt);
+    py_retval = libxml_xmlDocPtrWrap((xmlDocPtr) c_retval);
+    return(py_retval);
 }
 
 PyObject *

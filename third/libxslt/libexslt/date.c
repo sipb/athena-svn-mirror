@@ -1656,8 +1656,10 @@ _exsltDateAddDuration (exsltDateValPtr x, exsltDateValPtr y)
     if ((((ret->value.dur.day > 0) || (ret->value.dur.sec > 0)) &&
          (ret->value.dur.mon < 0)) ||
         (((ret->value.dur.day < 0) || (ret->value.dur.sec < 0)) &&
-         (ret->value.dur.mon > 0)))
+         (ret->value.dur.mon > 0))) {
+	exsltDateFreeDate(ret);
         return NULL;
+    }
 
     return ret;
 }
@@ -2775,8 +2777,11 @@ exsltDateDifference (const xmlChar *xstr, const xmlChar *ystr)
     }
 
     if (((x->type < XS_GYEAR) || (x->type > XS_DATETIME)) ||
-        ((y->type < XS_GYEAR) || (y->type > XS_DATETIME))) 
+        ((y->type < XS_GYEAR) || (y->type > XS_DATETIME)))  {
+	exsltDateFreeDate(x);
+	exsltDateFreeDate(y);
         return NULL;
+    }
 
     dur = _exsltDateDifference(x, y, 0);
 
@@ -3431,6 +3436,9 @@ exsltDateDurationFunction (xmlXPathParserContextPtr ctxt, int nargs) {
     }
 
     ret = exsltDateDuration(number);
+
+    if (number != NULL)
+	xmlFree(number);
 
     if (ret == NULL)
 	xmlXPathReturnEmptyString(ctxt);

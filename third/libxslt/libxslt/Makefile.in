@@ -107,6 +107,7 @@ PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
 PYTHON_SUBDIR = @PYTHON_SUBDIR@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
+RELDATE = @RELDATE@
 STRIP = @STRIP@
 VERSION = @VERSION@
 WITH_DEBUGGER = @WITH_DEBUGGER@
@@ -399,18 +400,18 @@ distdir: $(DISTFILES)
 attributes.lo attributes.o : attributes.c libxslt.h ../config.h \
 	xsltconfig.h xslt.h xsltInternals.h xslt.h numbersInternals.h \
 	xsltutils.h xsltconfig.h attributes.h namespaces.h templates.h \
-	imports.h transform.h
+	imports.h transform.h xsltInternals.h
 documents.lo documents.o : documents.c libxslt.h ../config.h \
 	xsltconfig.h xslt.h xsltInternals.h xslt.h numbersInternals.h \
-	xsltutils.h xsltconfig.h documents.h transform.h imports.h \
-	keys.h security.h
+	xsltutils.h xsltconfig.h documents.h transform.h \
+	xsltInternals.h imports.h keys.h security.h
 extensions.lo extensions.o : extensions.c libxslt.h ../config.h \
 	xsltconfig.h xslt.h xsltInternals.h xslt.h numbersInternals.h \
 	xsltutils.h xsltconfig.h imports.h extensions.h
 extra.lo extra.o : extra.c libxslt.h ../config.h xsltconfig.h xslt.h \
 	xsltInternals.h xslt.h numbersInternals.h xsltutils.h \
 	xsltconfig.h extensions.h variables.h functions.h transform.h \
-	extra.h preproc.h
+	xsltInternals.h extra.h preproc.h
 functions.lo functions.o : functions.c libxslt.h ../config.h \
 	xsltconfig.h xslt.h xsltInternals.h xslt.h numbersInternals.h \
 	xsltutils.h xsltconfig.h functions.h extensions.h keys.h \
@@ -432,24 +433,26 @@ pattern.lo pattern.o : pattern.c libxslt.h ../config.h xsltconfig.h \
 	xsltconfig.h imports.h templates.h keys.h pattern.h
 preproc.lo preproc.o : preproc.c libxslt.h ../config.h xsltconfig.h \
 	xslt.h xsltutils.h xsltconfig.h xsltInternals.h xslt.h \
-	numbersInternals.h transform.h templates.h variables.h \
-	functions.h preproc.h extra.h imports.h extensions.h
+	numbersInternals.h transform.h xsltInternals.h templates.h \
+	variables.h functions.h preproc.h extra.h imports.h \
+	extensions.h
 security.lo security.o : security.c libxslt.h ../config.h xsltconfig.h \
 	xslt.h xsltInternals.h xslt.h numbersInternals.h xsltutils.h \
 	xsltconfig.h security.h
 templates.lo templates.o : templates.c libxslt.h ../config.h \
 	xsltconfig.h xslt.h xsltInternals.h xslt.h numbersInternals.h \
 	xsltutils.h xsltconfig.h variables.h functions.h templates.h \
-	transform.h namespaces.h attributes.h
+	transform.h xsltInternals.h namespaces.h attributes.h
 transform.lo transform.o : transform.c libxslt.h ../config.h \
 	xsltconfig.h xslt.h xsltInternals.h xslt.h numbersInternals.h \
-	xsltutils.h xsltconfig.h pattern.h transform.h variables.h \
-	functions.h namespaces.h attributes.h templates.h imports.h \
-	keys.h documents.h extensions.h extra.h preproc.h security.h
+	xsltutils.h xsltconfig.h pattern.h transform.h xsltInternals.h \
+	variables.h functions.h namespaces.h attributes.h templates.h \
+	imports.h keys.h documents.h extensions.h extra.h preproc.h \
+	security.h
 variables.lo variables.o : variables.c libxslt.h ../config.h \
 	xsltconfig.h xslt.h xsltInternals.h xslt.h numbersInternals.h \
 	xsltutils.h xsltconfig.h variables.h functions.h transform.h \
-	imports.h preproc.h
+	xsltInternals.h imports.h preproc.h
 xslt.lo xslt.o : xslt.c libxslt.h ../config.h xsltconfig.h xslt.h \
 	xsltInternals.h xslt.h numbersInternals.h pattern.h variables.h \
 	functions.h namespaces.h attributes.h xsltutils.h xsltconfig.h \
@@ -457,7 +460,8 @@ xslt.lo xslt.o : xslt.c libxslt.h ../config.h xsltconfig.h xslt.h \
 	security.h
 xsltutils.lo xsltutils.o : xsltutils.c libxslt.h ../config.h \
 	xsltconfig.h xsltutils.h xsltconfig.h xsltInternals.h xslt.h \
-	numbersInternals.h templates.h imports.h transform.h
+	numbersInternals.h templates.h imports.h transform.h \
+	xsltInternals.h
 
 info-am:
 info: info-am

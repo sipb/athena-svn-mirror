@@ -26,7 +26,11 @@ A:link, A:visited, A:active { text-decoration: underline }
 <td valign="top" width="200" bgcolor="#8b7765"><table border="0" cellspacing="0" cellpadding="1" width="100%" bgcolor="#000000"><tr><td>
 <table width="100%" border="0" cellspacing="1" cellpadding="3">
 <tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>Main Menu</b></center></td></tr>
-<tr><td bgcolor="#fffacd"><ul>
+<tr><td bgcolor="#fffacd">
+<form action="search.php" enctype="application/x-www-form-urlencoded" method="GET">
+<input name="query" type="TEXT" size="20" value=""><input name="submit" type="submit" value="Search ...">
+</form>
+<ul>
 <li><a href="index.html">Home</a></li>
 <li><a href="intro.html">Introduction</a></li>
 <li><a href="docs.html">Documentation</a></li>
@@ -45,20 +49,6 @@ A:link, A:visited, A:active { text-decoration: underline }
 <li>
 <a href="xslt.html">flat page</a>, <a href="site.xsl">stylesheet</a>
 </li>
-</ul></td></tr>
-</table>
-<table width="100%" border="0" cellspacing="1" cellpadding="3">
-<tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>API Indexes</b></center></td></tr>
-<tr><td bgcolor="#fffacd">
-<form action="search.php" enctype="application/x-www-form-urlencoded" method="GET">
-<input name="query" type="TEXT" size="20" value=""><input name="submit" type="submit" value="Search ...">
-</form>
-<ul>
-<li><a href="APIchunk0.html">Alphabetic</a></li>
-<li><a href="APIconstructors.html">Constructors</a></li>
-<li><a href="APIfunctions.html">Functions/Types</a></li>
-<li><a href="APIfiles.html">Modules</a></li>
-<li><a href="APIsymbols.html">Symbols</a></li>
 </ul>
 </td></tr>
 </table>
@@ -71,12 +61,22 @@ A:link, A:visited, A:active { text-decoration: underline }
 <li><a href="http://xmlsoft.org/">XML libxml</a></li>
 <li><a href="http://phd.cs.unibo.it/gdome2/">DOM gdome2</a></li>
 <li><a href="ftp://xmlsoft.org/">FTP</a></li>
-<li><a href="http://www.fh-frankfurt.de/~igor/projects/libxml/">Windows binaries</a></li>
+<li><a href="http://www.zlatkovic.com/projects/libxml/">Windows binaries</a></li>
 <li><a href="http://garypennington.net/libxml2/">Solaris binaries</a></li>
 <li><a href="http://www.zveno.com/open_source/libxml2xslt.html">MacOsX binaries</a></li>
 <li><a href="http://sourceforge.net/projects/libxml2-pas/">Pascal bindings</a></li>
 <li><a href="http://bugzilla.gnome.org/buglist.cgi?product=libxslt">Bug Tracker</a></li>
 <li><a href="http://xsldbg.sourceforge.net/">Xsldbg Debugger</a></li>
+</ul></td></tr>
+</table>
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+<tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>API Indexes</b></center></td></tr>
+<tr><td bgcolor="#fffacd"><ul>
+<li><a href="APIchunk0.html">Alphabetic</a></li>
+<li><a href="APIconstructors.html">Constructors</a></li>
+<li><a href="APIfunctions.html">Functions/Types</a></li>
+<li><a href="APIfiles.html">Modules</a></li>
+<li><a href="APIsymbols.html">Symbols</a></li>
 </ul></td></tr>
 </table>
 </td></tr></table></td>
@@ -87,12 +87,11 @@ archive</a>, Antonin Sprinzl also provides <a href="ftp://gd.tuwien.ac.at/pub/li
 you need the <a href="http://rpmfind.net/linux/RPM/libxml2.html">libxml2</a>,
 <a href="http://rpmfind.net/linux/RPM/libxml2-devel.html">libxml2-devel</a>,
 <a href="http://rpmfind.net/linux/RPM/libxslt.html">libxslt</a> and <a href="http://rpmfind.net/linux/RPM/libxslt-devel.html">libxslt-devel</a>
-packages installed to compile applications using libxslt.) <a href="mailto:igor@stud.fh-frankfurt.de">Igor  Zlatkovic</a> is now the
-maintainer of the Windows port, <a href="http://www.fh-frankfurt.de/~igor/projects/libxml/index.html">he
-provides binaries</a>. <a href="mailto:Gary.Pennington@sun.com">Gary
-Pennington</a> provides <a href="http://garypennington.net/libxml2/">Solaris
-binaries</a>. <a href="mailto:Steve.Ball@zveno.com">Steve Ball</a> provides
-<a href="http://www.zveno.com/open_source/libxml2xslt.html">Mac Os X
+packages installed to compile applications using libxslt.) <a href="mailto:igor@zlatkovic.com">Igor  Zlatkovic</a> is now the maintainer of
+the Windows port, <a href="http://www.zlatkovic.com/projects/libxml/index.html">he provides
+binaries</a>. <a href="mailto:Gary.Pennington@sun.com">Gary Pennington</a>
+provides <a href="http://garypennington.net/libxml2/">Solaris binaries</a>.
+<a href="mailto:Steve.Ball@zveno.com">Steve Ball</a> provides <a href="http://www.zveno.com/open_source/libxml2xslt.html">Mac Os X
 binaries</a>.</p>
 <p><a name="Contribs">Contribs:</a></p>
 <p>I do accept external contributions, especially if compiling on another

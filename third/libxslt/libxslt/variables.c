@@ -600,6 +600,7 @@ xsltEvalGlobalVariables(xsltTransformContextPtr ctxt) {
 		    (elem->comp->inst->doc == def->comp->inst->doc)) {
 		    xsltTransformError(ctxt, style, elem->comp->inst,
 			"Global variable %s already defined\n", elem->name);
+		    style->errors++;
 		}
 	    }
 	    elem = elem->next;
@@ -671,8 +672,20 @@ xsltRegisterGlobalVariable(xsltStylesheetPtr style, const xmlChar *name,
 	elem->next = NULL;
 	style->variables = elem;
     } else {
-	while (tmp->next != NULL)
+	while (tmp != NULL) {
+	    if ((elem->comp->type == XSLT_FUNC_VARIABLE) &&
+		(tmp->comp->type == XSLT_FUNC_VARIABLE) &&
+		(xmlStrEqual(elem->name, tmp->name)) &&
+		((elem->nameURI == tmp->nameURI) ||
+		 (xmlStrEqual(elem->nameURI, tmp->nameURI)))) {
+		xsltTransformError(NULL, style, comp->inst,
+		"redefinition of global variable %s\n", elem->name);
+		style->errors++;
+	    }
+	    if (tmp->next == NULL)
+	        break;
 	    tmp = tmp->next;
+	}
 	elem->next = NULL;
 	tmp->next = elem;
     }
@@ -936,10 +949,9 @@ xsltQuoteUserParams(xsltTransformContextPtr ctxt, const char **params) {
 
 /**
  * xsltEvalOneUserParam:
- *
  * @ctxt:  the XSLT transformation context
  * @name:  a null terminated string giving the name of the parameter
- * @value  a null terminated string giving the XPath expression to be evaluated
+ * @value:  a null terminated string giving the XPath expression to be evaluated
  *
  * This is normally called from xsltEvalUserParams to process a single
  * parameter from a list of parameters.  The @value is evaluated as an
@@ -963,10 +975,9 @@ xsltEvalOneUserParam(xsltTransformContextPtr ctxt,
 
 /**
  * xsltQuoteOneUserParam:
- *
  * @ctxt:  the XSLT transformation context
  * @name:  a null terminated string giving the name of the parameter
- * @value  a null terminated string giving the parameter value
+ * @value:  a null terminated string giving the parameter value
  *
  * This is normally called from xsltQuoteUserParams to process a single
  * parameter from a list of parameters.  The @value is stored in the
@@ -1154,7 +1165,7 @@ xsltVariableLookup(xsltTransformContextPtr ctxt, const xmlChar *name,
  * parse an XSLT transformation param declaration, compute
  * its value but doesn't record it.
  *
- * It returns the new xsltStackElemPtr or NULL
+ * Returns the new xsltStackElemPtr or NULL
  */
 
 xsltStackElemPtr

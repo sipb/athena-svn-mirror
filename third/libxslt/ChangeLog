@@ -1,3 +1,258 @@
+Tue Jan 14 16:22:48 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing release 2.0.24
+	* libxslt.spec.in: small update
+	* doc/*: updated the news, rebuilt the APIs descriptions
+
+Tue Jan 14 14:23:47 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/functions.c: fixed #101502 by applying and cleaning up
+	  the associated patch from Daniel Stodden.
+	* tests/documents/Makefile.am tests/documents/fragment*: added a
+	  specific test.
+
+Mon Jan 13 23:25:59 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/extensions.c libxslt/transform.c: fixing bug #101602
+	  for extension modules init and shutdown callbacks, check that
+	  they are now called when needed.
+	* python/libxsl.py python/libxslt-python-api.xml python/libxslt.c:
+	  started adding the extension module support at the Python level.
+	  Still a strange bug to hunt down left.
+
+Sun Jan 12 23:56:18 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/attributes.c libxslt/xsltInternals.h libxslt/imports.c
+	  libxslt/xslt.c: fixed bug #101003 on attribute-sets value
+	  computation in the presence of imports
+	* tests/docs/Makefile.am tests/docs/bug-102.xml
+	  tests/general/Makefile.am tests/general/bug-102*: added an
+	  example in the regression tests for this case
+
+Fri Jan 10 10:34:23 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xsltproc/xsltproc.c: final touch to #102800 fix
+
+Thu Jan  9 18:17:40 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xsltproc/xsltproc.c: tried to fix #102800 for good. Reenabled
+	  memory debug checking which got deactivated at some point ?!?
+	* libexslt/date.c libxslt/attributes.c: fixing some memory leaks
+	* libxslt/xsltutils.c: very small change on HTML indentation handling
+
+Thu Jan  9 14:28:19 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* tests/REC/test-8-1.xsl tests/REC/test-9.1-2.xsl 
+	  tests/general/bug-83.xsl tests/multiple/dict.xsl: added some
+	  exclude-result-prefixes to avoid extra namespace declaration being
+	  dumped following the fix for #102920 in libxml2
+
+Wed Jan  8 12:33:47 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.c: fixed a problem related to directory
+	  checking and creation raised by Craig Goss
+
+Thu Jan  2 23:23:30 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libexslt/strings.c: applied patch from Jörg Walter to provide
+	  URI escaping and unescaping functions.
+
+Thu Dec 26 15:43:31 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libexslt/strings.c: Alexey Efimov found a typo bug in
+	  exsltStrPaddingFunction()
+
+Mon Dec 23 15:43:59 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxslt.c: patch from Stéphane Bidoul for Python 2.1
+
+Sun Dec 22 22:54:04 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* vms/build_xslt.com libxslt/xsltconfig.h.in libxslt/xsltutils.c:
+	  applied patch from Craig A. Berry for the VMS port.
+
+Wed Dec 18 15:41:21 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/xsltInternals.h: increase the max number of cascaded
+	  sort operations.
+	* AUTHORS doc/* win32/*: updated Igor's mail and the Web page for
+	  the Windows binaries.
+
+Mon Dec 16 19:31:16 CET 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/libxslt.def.src: added more exports for Stephane Bidoul
+	
+Fri Dec 13 14:50:12 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/apibuild.py doc/libexslt-api.xml doc/libxslt-api.xml: updated
+	  the apibuilder script, regenerated the APIs
+
+Fri Dec 13 11:59:07 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/numbers.c: numbering should not traverse XInclude
+	  nodes left in the tree. Closes bug #101114 raised by
+	  Bernd Kuemmerlen
+
+Thu Dec 12 01:17:09 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/apibuild.py: fixed a bug in merging public info from
+	  C modules.
+	* win32/Makefile.msvc win32/configure.js: patch from Mark Vakoc
+	  the iconv option to configure.js didn't work, and 
+	  added zlib option needed when linking xsltproc statically
+
+Wed Dec 11 19:18:45 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/Makefile.am doc/apibuild.py doc/libexslt-api.xml: added
+	  the generation of libexslt-api.xml
+        * libexslt/exslt.h: small cleanup.
+
+Wed Dec 11 18:45:09 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/Makefile.am doc/apibuild.py doc/libxslt-api.xml:
+	  copied over the apibuild.py from libxml2, adapted a bit and
+	  regenerated the API description in XML. Todo: libexslt-api.xml
+	* libxslt/attributes.c libxslt/documents.c libxslt/extensions.c
+	  libxslt/imports.c libxslt/numbers.c libxslt/numbersInternals.h
+	  libxslt/pattern.c libxslt/preproc.c libxslt/security.c
+	  libxslt/templates.c libxslt/transform.c libxslt/transform.h
+	  libxslt/variables.c libxslt/xslt.c libxslt/xsltInternals.h
+	  libxslt/xsltutils.c libxslt/xsltutils.h: cleanup based on the
+	  report from the scripts.
+	* libxslt.spec.in: make sure libxslt-api.xml ends up in the devel
+	  package
+
+Thu Dec  5 18:05:44 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.c: xsl:element generated superfluous xmlns
+	  declarations, closes bug #99905
+	* tests/docs/Makefile.am tests/docs/bug-101.xml
+	  tests/general/Makefile.am tests/general/bug-101.*: added the
+	  example in the regression tests for this case
+
+Wed Dec  4 18:12:24 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/xslt.c: Matt Sergeant reported a bug when having comments
+	  within an <xsl:text>
+
+Mon Dec  2 17:19:38 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/extensions.c: applied patch from Josh Parsons fixing bug
+	  #100056
+	* tests/docs/Makefile.am tests/docs/bug-100.xml
+	  tests/general/Makefile.am tests/general/bug-100.*: added the
+	  example in the regression tests for this case
+	* tests/docs/Makefile.am tests/docs/bug-99.xml
+	  tests/general/Makefile.am tests/general/bug-99.*: this test
+	  covers an xsl:attribute namespace bug that Norm pointed out.
+
+Thu Nov 28 17:52:21 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/xsltInternals.h libxslt/xsltutils.c libxslt/xsltutils.h
+	  win32/libxslt.def.src: applied another patch from Richard Jinks
+	  for the export of teh sorting routine and allowing per context
+	  sort.
+
+Wed Nov 27 13:33:26 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/preproc.c libxslt/xsltInternals.h libxslt/xsltutils.c
+	  libxslt/xsltutils.h: Applied patch from Richard Jinks to allow
+	  redefining the sorting routine, plus a bit of tweaking of the
+	  interfaces.
+
+Tue Nov 26 16:02:38 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/Makefile.am doc/parsedecl.py: fixed the API generation
+	  scripts.
+	* doc/libxslt-api.xml doc/libxslt-refs.xml: regenerated
+	* doc/html/*.html: updated too
+	* python/libxsltclass.txt: updated too
+
+Tue Nov 26 15:17:13 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/xsltutils.c libxslt/xsltutils.h: added the function
+	  xsltGetProfileInformation() to retrieve profiling informations
+	  from an XSLT transformation context. It returns it as an XML
+	  tree. Provided by Michael Rothwell this closes RFE #99527
+
+Tue Nov 26 14:40:45 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/imports.c: apply patch from Daniel Stodden, a bug
+	  in xsltFindElemSpaceHandling() missing imported informations
+	* tests/REC/stand-2.7-1.stand.out: this change slightly the result
+	  of this test.
+
+Mon Nov 25 17:33:48 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/namespaces.c: fix for namespace generation on 
+	  attributes created with xsl:attribute
+
+Mon Nov 25 17:30:02 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt.spec.in configure.in: add a line in %changelog for releases
+
+Mon Nov 25 14:57:53 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.h: Kir Kolyshkin pointed out it lacked 
+	  xsltInternals.h reference.
+
+Sun Nov 24 15:49:58 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/tests/*.py: enable libxml2 memory debug before
+	  loading libxslt since libxslt initialization now includes
+	  EXSLT registration which initialize the libxml2 library and
+	  allocate memory
+
+Sun Nov 24 13:58:48 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxsl.py: updated with new version from Stéphane Bidoul
+
+Sat Nov 23 22:49:08 CET 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/libxslt.def.src: exported new functions
+
+Sat Nov 23 14:46:06 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libexslt/date.c: patch from Charles Bozeman fixing a memory
+	  leak in exsltDateDurationFunction pointed out by Bernard Brinkhus
+	* python/tests/exslt.py: trouble with mem debug in that specific
+	  test...
+
+Sat Nov 23 12:33:58 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/xsltInternals.h: Alexey Efimov reported a portability
+	  problem when compiling on HP-UX
+
+Sat Nov 23 12:23:32 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py python/libxslt.c: fixes for compiling
+	  without config.h
+
+Thu Nov 21 18:51:29 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.c: fixed bug #99168 select evaluating to
+	  a node list check
+
+Thu Nov 21 15:12:33 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tests/documents/result.xhtml: the XHTML1 serialization change
+	  to libxml2 modifies slightly the result of that test.
+
+Mon Nov 18 11:38:46 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: the python bindings requires libxml2 >= 2.4.25
+	  for the regexp stuff.
+
+Mon Nov 18 10:09:06 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: similar patch to #98825 for --with-python
+
+Sun Nov 17 22:06:59 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/variables.c: fix bug #98793 on clash of imported global
+	  variables.
+	* tests/reports/tst-1.err: this changes the output of that test
+
 Sun Nov 17 18:12:20 CET 2002 Daniel Veillard <daniel@veillard.com>
 
 	* configure.in: preparing 1.0.23

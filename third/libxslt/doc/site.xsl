@@ -64,6 +64,11 @@
  - The table of content
  -->
   <xsl:variable name="toc">
+    <form action="search.php"
+          enctype="application/x-www-form-urlencoded" method="GET">
+      <input name="query" type="TEXT" size="20" value=""/>
+      <input name="submit" type="submit" value="Search ..."/>
+    </form>
     <ul>
       <li><a href="index.html">Home</a></li>
       <xsl:for-each select="/html/body/h2">
@@ -85,11 +90,6 @@
     </ul>
   </xsl:variable>
   <xsl:variable name="api">
-    <form action="search.php"
-          enctype="application/x-www-form-urlencoded" method="GET">
-      <input name="query" type="TEXT" size="20" value=""/>
-      <input name="submit" type="submit" value="Search ..."/>
-    </form>
     <ul>
       <li><a href="APIchunk0.html">Alphabetic</a></li>
       <li><a href="APIconstructors.html">Constructors</a></li>
@@ -106,7 +106,7 @@
       <li><a href="http://xmlsoft.org/">XML libxml</a></li>
       <li><a href="http://phd.cs.unibo.it/gdome2/">DOM gdome2</a></li>
       <li><a href="ftp://xmlsoft.org/">FTP</a></li>
-      <li><a href="http://www.fh-frankfurt.de/~igor/projects/libxml/">Windows binaries</a></li>
+      <li><a href="http://www.zlatkovic.com/projects/libxml/">Windows binaries</a></li>
       <li><a href="http://garypennington.net/libxml2/">Solaris binaries</a></li>
       <li><a href="http://www.zveno.com/open_source/libxml2xslt.html">MacOsX binaries</a></li>
       <li><a href="http://sourceforge.net/projects/libxml2-pas/">Pascal bindings</a></li>
@@ -136,20 +136,6 @@
             <tr>
               <td colspan="1" bgcolor="#eecfa1" align="center">
                 <center>
-                  <b>API Indexes</b>
-                </center>
-              </td>
-            </tr>
-            <tr>
-              <td bgcolor="#fffacd">
-                <xsl:copy-of select="$api"/>
-              </td>
-            </tr>
-          </table>
-          <table width="100%" border="0" cellspacing="1" cellpadding="3">
-            <tr>
-              <td colspan="1" bgcolor="#eecfa1" align="center">
-                <center>
                   <b>Related links</b>
                 </center>
               </td>
@@ -157,6 +143,20 @@
             <tr>
               <td bgcolor="#fffacd">
                 <xsl:copy-of select="$related"/>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="0" cellspacing="1" cellpadding="3">
+            <tr>
+              <td colspan="1" bgcolor="#eecfa1" align="center">
+                <center>
+                  <b>API Indexes</b>
+                </center>
+              </td>
+            </tr>
+            <tr>
+              <td bgcolor="#fffacd">
+                <xsl:copy-of select="$api"/>
               </td>
             </tr>
           </table>

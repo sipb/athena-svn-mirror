@@ -1372,12 +1372,12 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 LIBXSLT_MAJOR_VERSION=1
 LIBXSLT_MINOR_VERSION=0
-LIBXSLT_MICRO_VERSION=23
+LIBXSLT_MICRO_VERSION=24
 PACKAGE=libxslt
 LIBEXSLT_MAJOR_VERSION=0
 LIBEXSLT_MINOR_VERSION=7
-LIBEXSLT_MICRO_VERSION=14
-LIBXML_REQUIRED_VERSION=2.4.23
+LIBEXSLT_MICRO_VERSION=15
+LIBXML_REQUIRED_VERSION=2.4.25
 
 
 LIBXSLT_VERSION=$LIBXSLT_MAJOR_VERSION.$LIBXSLT_MINOR_VERSION.$LIBXSLT_MICRO_VERSION
@@ -9217,10 +9217,10 @@ if test "${with_python+set}" = set; then
 
 fi;
 if test "$with_python" != "no" ; then
-    if test -x "$with_python/bin/python"
+    if test -x "$with_python"
     then
-        echo Found python in $with_python/bin/python
-        PYTHON="$with_python/bin/python"
+        echo Found python in $with_python
+        PYTHON="$with_python"
     else
 	# Extract the first word of "python python2.2 python2.1 python2.0 python1.6 python1.5", so it can be a program name with args.
 set dummy python python2.2 python2.1 python2.0 python1.6 python1.5; ac_word=$2
@@ -9545,6 +9545,9 @@ EXTRA_LIBS="$LIBXML_LIBS $M_LIBS"
 
 
 
+
+
+RELDATE=`date +'%a %b %e %Y'`
 
 
 rm -f rm COPYING.LIB COPYING
@@ -10238,6 +10241,7 @@ s,@XSLT_INCLUDEDIR@,$XSLT_INCLUDEDIR,;t t
 s,@EXTRA_LIBS@,$EXTRA_LIBS,;t t
 s,@M_LIBS@,$M_LIBS,;t t
 s,@XSLT_LIBS@,$XSLT_LIBS,;t t
+s,@RELDATE@,$RELDATE,;t t
 CEOF
 
 _ACEOF

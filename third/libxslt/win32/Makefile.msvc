@@ -10,7 +10,7 @@
 #                 a 'nmake clean' and then a 'nmake all'.
 # nmake install   to install the library and its header files.
 #
-# March 2002, Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+# March 2002, Igor Zlatkovic <igor@zlatkovic.com>
 
 AUTOCONF = .\config.msvc
 
@@ -303,6 +303,9 @@ APPLIBS = $(LIBS)
 APPLIBS = $(LIBS) libxml2_a.lib
 !if "$(WITH_ICONV)" == "1"
 APPLIBS = $(APPLIBS) iconv.lib
+!endif
+!if "$(WITH_ZLIB)" == "1"
+APPLIBS = $(APPLIBS) zlib.lib
 !endif
 {$(UTILS_SRCDIR)}.c{$(BINDIR)}.exe:
 	$(CC) /D "LIBXML_STATIC" /D "LIBXSLT_STATIC" /D "LIBEXSLT_STATIC" \

@@ -5,7 +5,7 @@
     xmlns:xt="http://www.jclark.com/xt"
     xmlns:doc="http://nwalsh.com/xsl/documentation/1.0"
     version="1.0"
-    exclude-result-prefixes="doc"
+    exclude-result-prefixes="doc xt"
     extension-element-prefixes="xt">
 
   <!--**********************************************
@@ -14,7 +14,7 @@
       *
       * Liam Quin, 2001
       *
-      * $Id: dict.xsl,v 1.1.1.1 2002-12-26 06:48:12 ghudson Exp $
+      * $Id: dict.xsl,v 1.1.1.2 2003-01-29 19:40:36 ghudson Exp $
       *
       *-->
 

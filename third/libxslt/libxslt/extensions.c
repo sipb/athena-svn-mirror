@@ -306,6 +306,10 @@ xsltRegisterExtPrefix(xsltStylesheetPtr style,
     if ((style == NULL) || (prefix == NULL) | (URI == NULL))
 	return(-1);
 
+#ifdef WITH_XSLT_DEBUG_EXTENSIONS
+    xsltGenericDebug(xsltGenericDebugContext,
+	 "Registering extension prefix %s : %s\n", prefix, URI);
+#endif
     def = (xsltExtDefPtr) style->nsDefs;
     while (def != NULL) {
 	if (xmlStrEqual(prefix, def->prefix))
@@ -317,6 +321,21 @@ xsltRegisterExtPrefix(xsltStylesheetPtr style,
 	return(-1);
     ret->next = (xsltExtDefPtr) style->nsDefs;
     style->nsDefs = ret;
+
+    /*
+     * check wether there is an extension module with a stylesheet
+     * initialization function.
+     */
+    if (xsltExtensionsHash != NULL) {
+	xsltExtModulePtr module;
+
+	module = xmlHashLookup(xsltExtensionsHash, URI);
+	if (module != NULL) {
+	    xsltExtDataPtr data;
+
+	    data = xsltStyleGetExtData(style, URI);
+	}
+    }
     return(0);
 }
 
@@ -438,17 +457,19 @@ xsltStyleGetExtData(xsltStylesheetPtr style, const xmlChar * URI) {
 #endif
 	    return(NULL);
 	} else {
-	    if (module->styleInitFunc == NULL)
-		return(NULL);
-
+	    if (module->styleInitFunc == NULL) {
 #ifdef WITH_XSLT_DEBUG_EXTENSIONS
-	    xsltGenericDebug(xsltGenericDebugContext,
-			     "Initializing module: %s\n", URI);
+		xsltGenericDebug(xsltGenericDebugContext,
+			     "Registering style module: %s\n", URI);
 #endif
-
-	    extData = module->styleInitFunc(style, URI);
-	    if (extData == NULL)
-		return(NULL);
+		extData = NULL;
+	    } else {
+#ifdef WITH_XSLT_DEBUG_EXTENSIONS
+		xsltGenericDebug(xsltGenericDebugContext,
+				 "Initializing module: %s\n", URI);
+#endif
+		extData = module->styleInitFunc(style, URI);
+	    }
 
 	    data = xsltNewExtData(module, extData);
 	    if (data == NULL)
@@ -576,7 +597,6 @@ xsltInitCtxtExt (xsltExtDataPtr styleData, xsltInitExtCtxt *ctxt,
 	xsltGenericDebug(xsltGenericDebugContext,
 			 "xsltInitCtxtExt: no extData\n");
 #endif
-	return;
     }
     ctxtData = xsltNewExtData(module, extData);
     if (ctxtData == NULL) {
@@ -757,6 +777,9 @@ xsltCheckExtPrefix(xsltStylesheetPtr style, const xmlChar *prefix) {
     if ((style == NULL) || (style->nsDefs == NULL))
 	return(0);
 
+    if (prefix == NULL)
+	prefix = BAD_CAST "#default";
+
     cur = (xsltExtDefPtr) style->nsDefs;
     while (cur != NULL) {
 	if (xmlStrEqual(prefix, cur->prefix))
@@ -872,7 +895,7 @@ xsltUnregisterAllExtModules(void)
  * xsltXPathGetTransformContext:
  * @ctxt:  an XPath transformation context
  *
- * Returns the XSLT transformation context from the XPath transformation
+ * Provides the XSLT transformation context from the XPath transformation
  * context. This is useful when an XPath function in the extension module
  * is called by the XPath interpreter and that the XSLT context is needed
  * for example to retrieve the associated data pertaining to this XSLT

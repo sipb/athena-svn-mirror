@@ -12,6 +12,7 @@
 
 #include <libxml/parser.h>
 #include <libxml/xmlIO.h>
+#include <libxslt/xsltInternals.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,11 +43,6 @@ xmlDocPtr		xsltApplyStylesheetUser	(xsltStylesheetPtr style,
  */
 void		xsltApplyStripSpaces	(xsltTransformContextPtr ctxt,
 					 xmlNodePtr node);
-xsltTransformFunction
-		xsltExtElementLookup	(xsltTransformContextPtr ctxt,
-					 const xmlChar *name,
-					 const xmlChar *URI);
-
 xmlDocPtr	xsltApplyStylesheet	(xsltStylesheetPtr style,
 					 xmlDocPtr doc,
 					 const char **params);

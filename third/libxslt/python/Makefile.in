@@ -109,6 +109,7 @@ PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
 PYTHON_SUBDIR = @PYTHON_SUBDIR@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
+RELDATE = @RELDATE@
 STRIP = @STRIP@
 VERSION = @VERSION@
 WITH_DEBUGGER = @WITH_DEBUGGER@
@@ -390,18 +391,17 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-libxslt-py.lo libxslt-py.o : libxslt-py.c ../config.h \
-	../libxslt/xsltconfig.h libxslt_wrap.h libxml_wrap.h \
-	../libxslt/xslt.h ../libxslt/xsltInternals.h \
-	../libxslt/numbersInternals.h ../libxslt/xsltutils.h \
-	../libxslt/attributes.h ../libxslt/documents.h \
-	../libxslt/extensions.h ../libxslt/extra.h \
-	../libxslt/functions.h ../libxslt/imports.h ../libxslt/keys.h \
-	../libxslt/namespaces.h ../libxslt/pattern.h \
+libxslt-py.lo libxslt-py.o : libxslt-py.c ../libxslt/xsltconfig.h \
+	libxslt_wrap.h libxml_wrap.h ../libxslt/xslt.h \
+	../libxslt/xsltInternals.h ../libxslt/numbersInternals.h \
+	../libxslt/xsltutils.h ../libxslt/attributes.h \
+	../libxslt/documents.h ../libxslt/extensions.h \
+	../libxslt/extra.h ../libxslt/functions.h ../libxslt/imports.h \
+	../libxslt/keys.h ../libxslt/namespaces.h ../libxslt/pattern.h \
 	../libxslt/preproc.h ../libxslt/templates.h \
 	../libxslt/transform.h ../libxslt/variables.h libxslt-py.h
-libxslt.lo libxslt.o : libxslt.c ../config.h libxslt_wrap.h \
-	libxml_wrap.h ../libxslt/xslt.h ../libxslt/xsltInternals.h \
+libxslt.lo libxslt.o : libxslt.c libxslt_wrap.h libxml_wrap.h \
+	../libxslt/xslt.h ../libxslt/xsltInternals.h \
 	../libxslt/numbersInternals.h ../libxslt/xsltutils.h \
 	../libxslt/xsltconfig.h ../libxslt/attributes.h \
 	../libxslt/documents.h ../libxslt/extensions.h \

@@ -1,6 +1,6 @@
 Summary: Library providing the Gnome XSLT engine
 Name: libxslt
-Version: 1.0.23
+Version: 1.0.24
 Release: 1
 License: MIT
 Group: Development/Libraries
@@ -102,6 +102,8 @@ rm -fr %{buildroot}
 %defattr(-, root, root)
 
 %doc AUTHORS ChangeLog NEWS README Copyright TODO FEATURES
+%doc doc/libxslt-api.xml
+%doc doc/libexslt-api.xml
 %doc %{_mandir}/man4/libxslt.4*
 %doc %{_mandir}/man4/libexslt.4*
 %{_libdir}/lib*.so
@@ -125,6 +127,9 @@ rm -fr %{buildroot}
 %doc python/tests/*.xsl
 
 %changelog
+* Tue Jan 14 2003 Daniel Veillard <veillard@redhat.com>
+- upstream release 1.0.24 see http://xmlsoft.org/XSLT/news.html
+
 * Wed Oct 23 2002 Daniel Veillard <veillard@redhat.com>
 - revamped the spec file, cleaned up some rpm building problems
 

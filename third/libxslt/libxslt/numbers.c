@@ -486,7 +486,9 @@ xsltNumberFormatGetAnyLevel(xsltTransformContextPtr context,
             (cur->type == XML_HTML_DOCUMENT_NODE))
 	    break; /* while */
 
-	while ((cur->prev != NULL) && (cur->prev->type == XML_DTD_NODE))
+	while ((cur->prev != NULL) && ((cur->prev->type == XML_DTD_NODE) ||
+	       (cur->prev->type == XML_XINCLUDE_START) ||
+	       (cur->prev->type == XML_XINCLUDE_END)))
 	    cur = cur->prev;
 	if (cur->prev != NULL) {
 	    for (cur = cur->prev; cur->last != NULL; cur = cur->last);
@@ -826,6 +828,8 @@ xsltFormatNumberPreSuffix(xsltDecimalFormatPtr self, xmlChar **format, xsltForma
  *   ?      multiply by 1000 and show as per mille
  *   X      any other characters can be used in the prefix or suffix
  *   '      used to quote special characters in a prefix or suffix.
+ *
+ * Returns a possible XPath error
  */
 xmlXPathError
 xsltFormatNumberConversion(xsltDecimalFormatPtr self,
