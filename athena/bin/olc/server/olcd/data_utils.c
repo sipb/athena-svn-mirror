@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.12 1990-02-08 12:51:37 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.13 1990-02-13 15:48:24 vanharen Exp $";
 #endif
 
 
@@ -980,7 +980,11 @@ connect_knuckles(a,b)
     {
       if(b->question == (QUESTION *) NULL)
 	{
-	  log_error("connect: neither knuckle has a question");
+	  sprintf(msg,
+		  "connect: neither knuckle has a question -- %s[%d], %s[%d]",
+		  a->user->username, a->instance,
+		  b->user->username, b->instance);
+	  log_error(msg);
 	  return(ERROR);
 	}
       if (owns_question(b))
@@ -990,15 +994,22 @@ connect_knuckles(a,b)
 	}
       else
 	{
-	  log_error("connect: connectee already connected");
+	  sprintf(msg,
+		  "connect: conectee already connected -- %s[%d]",
+		  b->user->username, b->instance);
+	  log_error(msg);
 	  return(ERROR);
 	}
     }
-  else
+  else  /*** a->question != NULL ***/
     {
       if(b->question != (QUESTION *) NULL)
 	{
-	  log_error("connect: connectee already has question");
+	  sprintf(msg,
+		  "connect: both connectees have questions -- %s[%d], %s[%d]",
+		  a->user->username, a->instance,
+		  b->user->username, b->instance);
+	  log_error(msg);
 	  return(ERROR);
 	}
       if (owns_question(a))
@@ -1008,7 +1019,10 @@ connect_knuckles(a,b)
 	}
       else
 	{
-	  log_error("connect: connectee already connected");
+	  sprintf(msg,
+		  "connect: conectee already connected -- %s[%d]",
+		  b->user->username, b->instance);
+	  log_error(msg);
 	  return(ERROR);
 	}
     }
@@ -1489,11 +1503,6 @@ was_connected(a,b)
 #endif /* STDC */
 {
   int i = 0;
-
-  fprintf(stderr, "Nseen: %d  UIDs: ", a->question->nseen);
-  for(i=0; a->question->seen[i] != -1; i++)
-    fprintf(stderr, "%d ", a->question->seen[i]);
-  fprintf(stderr, "\n");
 
   for(i=0; a->question->seen[i] != -1; i++)
     if(a->question->seen[i] == b->user->uid)
