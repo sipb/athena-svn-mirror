@@ -1,4 +1,4 @@
-# $Id: packages,v 1.171 2002-04-27 04:25:51 ghudson Exp $
+# $Id: packages,v 1.172 2002-04-28 14:27:05 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -87,7 +87,6 @@ athena/bin/saferm
 athena/bin/sendbug
 athena/bin/syncupdate
 athena/bin/session
-athena/bin/voldump		requires afsbin,openafs,hesiod
 athena/bin/write
 athena/bin/xcluster		requires Xj,hesiod
 athena/bin/xdsc			requires discuss
