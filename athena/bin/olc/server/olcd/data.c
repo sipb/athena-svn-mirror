@@ -12,22 +12,24 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.12 1990-07-16 10:08:54 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: data.c,v 1.13 1990-12-05 21:15:10 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.12 1990-07-16 10:08:54 vanharen Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.13 1990-12-05 21:15:10 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
-#include <olc/olc.h>
 #include <olcd.h>
 
 #include "lumberjack.h"
@@ -53,7 +55,7 @@ char *DFLT_SERVER_REALM  = "ATHENA.MIT.EDU";
 char *SRVTAB_FILE        = "/usr/lib/olc/srvtab";
 char SERVER_REALM[REALM_SZ];
 char K_INSTANCEbuf[INST_SZ];
-#endif KERBEROS
+#endif /* KERBEROS */
 
 
 /* declaraction of procedure table */
