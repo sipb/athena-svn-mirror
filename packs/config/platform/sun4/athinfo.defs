@@ -14,6 +14,7 @@ cputype		/bin/athena/machtype -v -c
 display		/bin/athena/machtype -v -d
 disks		/bin/athena/machtype -v -r
 memory		/bin/athena/machtype -v -M
+swap		/usr/sbin/swap -l
 rc.conf		cat /etc/athena/rc.conf
 version		cat /etc/athena/version
 rvdinfo		cat /srvd/.rvdinfo
@@ -21,6 +22,7 @@ services	test -r /var/server/.services && cat /var/server/.services
 date		date
 uptime		uptime
 partitions	prtvtoc `mount | sed -n -e 's/^\/ on \([^ ]*\).*$/\1/p'`
+interfaces	netstat -in
 routes		netstat -rn
 listeners	netstat -an -f inet -P tcp | grep 'LISTEN$'
 login		test ! -f /etc/nologin; echo $?
