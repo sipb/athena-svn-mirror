@@ -1,0 +1,16 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	echo "TRACKOS=true"			>> "$CONFVARS"
+	;;
+
+sgi)
+	case `uname -r` in
+	5.3)
+		;;
+	6.3)
+		;;
+	esac
+	;;
+esac
