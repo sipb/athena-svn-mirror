@@ -12,9 +12,7 @@ should be handled by
 .IR newsyslog ,
 or define additional information related to processing of the log
 files.  Blank lines and lines starting with a ``#'' are ignored.
-.PP
-.B Log file description lines
-.PP
+.SS Log file description lines
 Each log file description line has five mandatory fields and two
 optional fields describing the log file to handle, with a whitespace
 separating each field.  The fields are as follows:
@@ -40,7 +38,7 @@ entry is the name of the system log file to be archived.
 The optional
 .I owner.group
 entry specifies an ownership and group for the archive file.
-The "." is essential, even if the 
+The ``.'' is essential, even if the 
 .I owner
 or
 .I group
@@ -99,9 +97,7 @@ file.  In this case, the commands will be executed in order they are
 listed in the
 .I flags
 field.
-.PP
-.B Filtering and post-processing command definitions
-.PP
+.SS Filtering and post-processing command definitions
 It is possible to define additional flags that describe various
 operations which should be performed on the archived log file.
 Possible uses for this include defining flags that perform compression
@@ -151,16 +147,14 @@ the command that will be executed is
 It is possible to specify multiple filtering flags for a single log
 file.  In this case, the commands will be executed in order their
 flags are specified.
-.PP
-.B Description of processes to restart
-.PP
+.SS Description of processes to restart
 It is possible to define additional flags that describe processes that
 should be restarted when the logfile is turned over by sending them a
 signal.  By default (if no signal flags are specified), a HUP signal
-is sent to the
-.I syslogd
-process specified by
-.IR /etc/syslog.pid .
+is sent to the process specified by
+.IR /etc/syslog.pid ,
+which is presumably the running
+.IR syslogd .
 The flag definitions have the following fields:
 .br
 	the keyword
@@ -180,16 +174,16 @@ Flags must be defined before they are used in a log file description.
 .PP
 The
 .I pidfile
-is a file which must contain a single line specifying (in ASCII
-decimal representation) the process ID of the process to which a
-signal should be sent.
+is a file which must contain, on the first line, the process ID (in
+ASCII decimal representation) of the process to which a signal should
+be sent.
 .PP
 It is possible to specify the
 .I signal
 which will be sent either by its symbolic name or numerically.  If
 this field is omitted, HUP is used.  Note that the same signal will
-often have different numbers on various versions of UN*X, so use of
-symbolic names is encouraged.  The available names include
+often have different numbers on various versions of UNIX, so use of
+symbolic names is encouraged.  The available signal names include
 .\" I commented out all signals which are very unlikely to be useful... "
 .BR HUP ,
 .BR INT ,
@@ -210,16 +204,103 @@ symbolic names is encouraged.  The available names include
 .BR STOP
 and
 .\".BR TSTP ,"
-.BR CONT .
+.BR CONT ,
 .\".BR TTIN ,"
 .\".BR TTOU ,"
+assuming they are implemented by the operating system.  Note that some
+of these signals have special meaning to the operating system or
+certain application programs, and may not do what you want (ABRT,
+KILL, ALRM, STOP and CONT are likely offenders).
 .PP
 Each specified process will be restarted exactly once, unless none of
 the log files it is connected to are actually turned over.  The order
 in which the logfiles are turned over is unspecified and shouldn't be
 relied upon.  It is possible to specify multiple signal flags for a
 single log file.
+.SH EXAMPLES
+Adding the following line to the configuration file line makes
+.I newsyslog
+roll over
+.I /usr/spool/mqueue/syslog
+if it is longer than 50KB, keeping the most recent 5 logfiles with
+file mode of 644 (and restarting
+.I syslogd
+in the process):
+.RS
+.B /usr/spool/mqueue/syslog 644 5 50 *
+.RE
+.PP
+To also compress the logfiles and insure they are owned by user and group
+.IR daemon ,
+one would use
+.RS
+\fB/usr/spool/mqueue/syslog daemon.daemon 644 5 50 * Z\fR
+.RE
+.PP
+Compressing the logfiles using
+.I gzip --best -f
+.RI < filename >
+instead of
+.I compress -f
+.RI < filename >
+can be done as follows, assuming
+.I gzip
+is installed as
+.IR /usr/local/bin/gzip :
+.RS
+\fBfilter G .gz /usr/local/bin/gzip --best -f
+.br
+/usr/spool/mqueue/syslog daemon.daemon 644 5 50 * G\fR
+.RE
+.PP
+Multiple filters can be applied to the same file, and they will get
+executed in the same order in which their flags are specified.  Notice
+that the flags used in this example are
+.RB `` SG ''
+and not
+.RB `` GS '',
+because generating the digest must be done before compression!
+.RS
+\fBfilter G .gz /usr/local/bin/gzip --best -f
+.br
+filter S /usr/local/bin/sulog-digest bert@mit.edu
+.br
+/usr/adm/sulog 600 1 10 * SG\fR
+.RE
+.PP
+All of the previous examples restart the
+.I syslogd
+when a logfile is turned over, but you can specify any program which
+specifies a pidfile instead.  For instance, if you are running a
+.I httpd
+which can be restarted by sending it a HUP signal, and you want to
+keep a large number of old 50KB logfiles with filenames like
+``access.log.19951201.gz'' (indicating that the logfile was turned
+over on December 1, 1995), the logs can be turned over something like
+this:
+.RS
+\fBsignal W /var/httpd/httpd.pid HUP
+.br
+filter G .gz /usr/local/bin/gzip --best -f
+.br
+filter H /usr/local/bin/http-digest bert@mit.edu
+.br
+/var/httpd/access.log www.web 644 1000 50 * DHGW
+.br
+/var/httpd/error.log www.web 644 1000 50 * DHGW\fR
+.RE
+.PP
+Binary files such as
+.I /usr/adm/wtmp
+should be tagged with a
+.B B
+flag to prevent
+.I newsyslog
+from adding text messages to the file:
+.RS
+\fB/usr/adm/wtmp 644 3 50 * B\fR
+.RE
 .SH FILES
 /etc/athena/newsyslog.conf
 .SH "SEE ALSO"
-newsyslog(8), syslogd(8), compress(1)
+newsyslog(8), syslogd(8), compress(1), chmod(1), chown(1)
