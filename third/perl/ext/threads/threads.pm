@@ -31,8 +31,6 @@ use overload
     '==' => \&equal,
     'fallback' => 1;
 
-#use threads::Shared;
-
 BEGIN {
     warn "Warning, threads::shared has already been loaded. ".
        "To enable shared variables for these modules 'use threads' ".
@@ -52,18 +50,15 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw(
 async	
 );
-our $VERSION = '0.99';
+our $VERSION = '1.01';
 
 
-sub equal {
-    return 1 if($_[0]->tid() == $_[1]->tid());
-    return 0;
-}
+# || 0 to ensure compatibility with previous versions
+sub equal { ($_[0]->tid == $_[1]->tid) || 0 }
 
-sub async (&;@) {
-    my $cref = shift;
-    return threads->new($cref,@_);
-}
+# use "goto" trick to avoid pad problems from 5.8.1 (fixed in 5.8.2)
+# should also be faster
+sub async (&;@) { unshift @_,'threads'; goto &new }
 
 sub object {
     return undef unless @_ > 1;
@@ -151,10 +146,17 @@ object. The new() method is an alias for create().
 This will wait for the corresponding thread to join. When the thread
 finishes, join() will return the return values of the entry point
 function. If the thread has been detached, an error will be thrown.
+
+The context (scalar or list) of the thread creation is also the
+context for join().  This means that if you intend to return an array
+from a thread, you must use C<my ($thread) = threads->new(...)>, and
+that if you intend to return a scalar, you must use C<my $thread = ...>.
+
 If the program exits without all other threads having been either
 joined or detached, then a warning will be issued. (A program exits
 either because one of its threads explicitly calls exit(), or in the
 case of the main thread, reaches the end of the main program file.)
+
 
 =item $thread->detach
 
@@ -263,17 +265,22 @@ If your Perl has been built with PERL_OLD_SIGNALS (one has
 to explicitly add that symbol to ccflags, see C<perl -V>),
 signal handling is not threadsafe.
 
+=item Detached threads on Windows
+
+These aren't yet supported (as of perl 5.8.3), as they may lead to
+memory access violation problems.
+
 =back
 
 =head1 AUTHOR and COPYRIGHT
 
-Arthur Bergman E<lt>arthur at contiller.seE<gt>
+Arthur Bergman E<lt>sky at nanisky.comE<gt>
 
 threads is released under the same license as Perl.
 
 Thanks to
 
-Richard Soderberg E<lt>rs at crystalflame.netE<gt>
+Richard Soderberg E<lt>perl at crystalflame.netE<gt>
 Helping me out tons, trying to find reasons for races and other weird bugs!
 
 Simon Cozens E<lt>simon at brecon.co.ukE<gt>

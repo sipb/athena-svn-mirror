@@ -3,9 +3,10 @@
 #endif
 #define YYBYACC 1
 #line 2 "a2p.y"
-/* $RCSfile: a2p.c,v $$Revision: 1.1.1.4 $$Date: 2003-01-10 13:40:59 $
+/* $RCSfile: a2p.c,v $$Revision: 1.1.1.5 $$Date: 2004-02-09 18:58:00 $
  *
- *    Copyright (c) 1991-2002, Larry Wall
+ *    Copyright (C) 1991, 1992, 1993, 1994, 1996, 1997, 1998, 1999,
+ *    2000, 2001, by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.

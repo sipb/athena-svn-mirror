@@ -1,5 +1,5 @@
 # Pod::Text::Overstrike -- Convert POD data to formatted overstrike text
-# $Id: Overstrike.pm,v 1.1.1.2 2003-01-10 13:45:10 zacheiss Exp $
+# $Id: Overstrike.pm,v 1.1.1.3 2004-02-09 18:53:57 zacheiss Exp $
 #
 # Created by Joe Smith <Joe.Smith@inwap.com> 30-Nov-2000
 #   (based on Pod::Text::Color by Russ Allbery <rra@stanford.edu>)
@@ -36,7 +36,7 @@ use vars qw(@ISA $VERSION);
 # Don't use the CVS revision as the version, since this module is also in Perl
 # core and too many things could munge CVS magic revision strings.  This
 # number should ideally be the same as the CVS revision in podlators, however.
-$VERSION = 1.09;
+$VERSION = 1.10;
 
 
 ##############################################################################
@@ -85,7 +85,8 @@ sub heading {
     my ($self, $text, $line, $indent, $marker) = @_;
     $self->item ("\n\n") if defined $$self{ITEM};
     $text .= "\n" if $$self{loose};
-    $self->output (' ' x $indent . $text . "\n");
+    my $margin = ' ' x ($$self{margin} + $indent);
+    $self->output ($margin . $text . "\n");
 }
 
 # Fix the various formatting codes.

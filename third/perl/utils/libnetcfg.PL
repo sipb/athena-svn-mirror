@@ -77,9 +77,9 @@ the C<-d> options.
 The default name of the old configuration file is by default
 "libnet.cfg", unless otherwise specified using the -i option,
 C<-i oldfile>, and it is searched first from the current directory,
-and the from your module path.
+and then from your module path.
 
-The default name of new configuration file is "libnet.cfg", and by
+The default name of the new configuration file is "libnet.cfg", and by
 default it is written to the current directory, unless otherwise
 specified using the -o option, C<-o newfile>.
 
@@ -91,11 +91,11 @@ L<Net::Config>, L<Net::libnetFAQ>
 
 Graham Barr, the original Configure script of libnet.
 
-Jarkko Hietaniemi, conversion into libnet cfg for inclusion into Perl 5.8.
+Jarkko Hietaniemi, conversion into libnetcfg for inclusion into Perl 5.8.
 
 =cut
 
-# $Id: libnetcfg.PL,v 1.1.1.1 2003-01-10 13:40:55 zacheiss Exp $
+# $Id: libnetcfg.PL,v 1.1.1.2 2004-02-09 18:56:57 zacheiss Exp $
 
 use strict;
 use IO::File;
@@ -368,9 +368,9 @@ Without options, the old configuration is shown.
 The default name of the old configuration file is by default
 "libnet.cfg", unless otherwise specified using the -i option,
 C<-i oldfile>, and it is searched first from the current directory,
-and the from your module path.
+and then from your module path.
 
-The default name of new configuration file is "libnet.cfg", and by
+The default name of the new configuration file is "libnet.cfg", and by
 default it is written to the current directory, unless otherwise
 specified using the -o option.
 

@@ -1,7 +1,7 @@
 #
 # Locale::Country - ISO codes for country identification (ISO 3166)
 #
-# $Id: Country.pm,v 1.1.1.1 2003-01-10 13:45:24 zacheiss Exp $
+# $Id: Country.pm,v 1.1.1.2 2004-02-09 19:03:20 zacheiss Exp $
 #
 
 package Locale::Country;
@@ -17,7 +17,7 @@ use Locale::Constants;
 #	Public Global Variables
 #-----------------------------------------------------------------------
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
-$VERSION   = sprintf("%d.%02d", q$Revision: 1.1.1.1 $ =~ /(\d+)\.(\d+)/);
+$VERSION   = sprintf("%d.%02d", q$Revision: 1.1.1.2 $ =~ /(\d+)\.(\d+)/);
 @ISA       = qw(Exporter);
 @EXPORT    = qw(code2country country2code
                 all_country_codes all_country_names
@@ -267,6 +267,7 @@ sub _code2codeset
     my ($alpha2, $alpha3, $numeric);
     my ($country, @countries);
 
+    local $_;
 
     while (<DATA>)
     {

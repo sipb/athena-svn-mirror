@@ -5,7 +5,7 @@ BEGIN {
     @INC = '../lib';
 }
 
-print "1..47\n";
+print "1..50\n";
 
 my $CAT = ($^O eq 'MSWin32' || $^O eq 'NetWare' || $^O eq 'VMS') ? 'type'
 	: ($^O eq 'MacOS') ? 'catenate'
@@ -30,6 +30,7 @@ now @<<the@>>>> for all@|||||men to come @<<<<
 .
 
 open(OUT, '>Op_write.tmp') || die "Can't create Op_write.tmp";
+END { 1 while unlink 'Op_write.tmp' }
 
 $fox = 'foxiness';
 $good = 'good';
@@ -271,17 +272,63 @@ if (`$CAT Op_write.tmp` eq $right)
 else
     { print "not ok 11\n"; }
 
-# 12..47: scary format testing from Merijn H. Brand
+{
+    our $el;
+    format STDOUT =
+ok ^<<<<<<<<<<<<<<~~ # sv_chop() naze
+$el
+.
+    my %hash = (12 => 3);
+    for $el (keys %hash) {
+	write;
+    }
+}
+
+{
+    # Bug report and testcase by Alexey Tourbin
+    use Tie::Scalar;
+    my $v;
+    tie $v, 'Tie::StdScalar';
+    $v = 13;
+    format OUT13 =
+ok ^<<<<<<<<< ~~
+$v
+.
+    open(OUT13, '>Op_write.tmp') || die "Can't create Op_write.tmp";
+    write(OUT13);
+    close OUT13 or die "Could not close: $!";
+    print `$CAT Op_write.tmp`;
+}
+
+{
+    # Bug #24774 format without trailing \n failed assertion
+    my @v = ('k');
+    eval "format OUT14 = \n@\n\@v";
+    open(OUT14, '>Op_write.tmp') || die "Can't create Op_write.tmp";
+    write(OUT14);
+    close OUT14 or die "Could not close: $!";
+    print "ok 14\n";
+}
+
+#######################################
+# Easiest to add new tests above here #
+#######################################
+
+# 15..50: scary format testing from Merijn H. Brand
+
+my $test = 15;
+my $tests = 50;
 
 if ($^O eq 'VMS' || $^O eq 'MSWin32' || $^O eq 'dos' || $^O eq 'MacOS' ||
     ($^O eq 'os2' and not eval '$OS2::can_fork')) {
-  foreach (12..47) { print "ok $_ # skipped: '|-' and '-|' not supported\n"; }
+  foreach ($test..$tests) {
+      print "ok $_ # skipped: '|-' and '-|' not supported\n";
+  }
   exit(0);
 }
 
-use strict;	# Amazed that this hackery can be made strict ...
 
-my $test = 12;
+use strict;	# Amazed that this hackery can be made strict ...
 
 # Just a complete test for format, including top-, left- and bottom marging
 # and format detection through glob entries
@@ -399,7 +446,7 @@ if (has_format ("EOF")) {
 
 close STDOUT;
 
-# That was test 47.
+# That was test 48.
 
 __END__
     

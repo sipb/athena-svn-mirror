@@ -1,9 +1,9 @@
 #!/usr/bin/perl -w
-# $Id: man.t,v 1.1.1.1 2003-01-10 13:43:27 zacheiss Exp $
+# $Id: man.t,v 1.1.1.2 2004-02-09 18:55:58 zacheiss Exp $
 #
 # man.t -- Additional specialized tests for Pod::Man.
 #
-# Copyright 2002 by Russ Allbery <rra@stanford.edu>
+# Copyright 2002, 2003 by Russ Allbery <rra@stanford.edu>
 #
 # This program is free software; you may redistribute it and/or modify it
 # under the same terms as Perl itself.
@@ -17,7 +17,7 @@ BEGIN {
     }
     unshift (@INC, '../blib/lib');
     $| = 1;
-    print "1..3\n";
+    print "1..5\n";
 }
 
 END {
@@ -93,4 +93,47 @@ This C<.> should be quoted.
 .SH "PERIODS"
 .IX Header "PERIODS"
 This \f(CW\*(C`.\*(C'\fR should be quoted.
+###
+
+###
+=over 4
+
+=item *
+
+A bullet.
+
+=item    *
+
+Another bullet.
+
+=item * Not a bullet.
+
+=back
+###
+.IP "\(bu" 4
+A bullet.
+.IP "\(bu" 4
+Another bullet.
+.IP "* Not a bullet." 4
+.IX Item "Not a bullet."
+###
+
+###
+=over 4
+
+=item foo
+
+Not a bullet.
+
+=item *
+
+Also not a bullet.
+
+=back
+###
+.IP "foo" 4
+.IX Item "foo"
+Not a bullet.
+.IP "*" 4
+Also not a bullet.
 ###

@@ -13,7 +13,7 @@ use Net::Cmd;
 use Carp;
 use Net::Config;
 
-$VERSION = "2.23"; # $Id: POP3.pm,v 1.1.1.1 2003-01-10 13:40:23 zacheiss Exp $
+$VERSION = "2.24"; # $Id: POP3.pm,v 1.1.1.2 2004-02-09 18:59:21 zacheiss Exp $
 
 @ISA = qw(Net::Cmd IO::Socket::INET);
 
@@ -342,13 +342,13 @@ sub response
  $cmd->debug_print(0,$str)
    if ($cmd->debug);
 
- if($str =~ s/^\+OK\s+//io)
+ if($str =~ s/^\+OK\s*//io)
   {
    $code = "200"
   }
  else
   {
-   $str =~ s/^-ERR\s+//io;
+   $str =~ s/^-ERR\s*//io;
   }
 
  ${*$cmd}{'net_cmd_resp'} = [ $str ];
@@ -373,6 +373,17 @@ Net::POP3 - Post Office Protocol 3 Client class (RFC1939)
     $pop = Net::POP3->new('pop3host');
     $pop = Net::POP3->new('pop3host', Timeout => 60);
 
+    if ($pop->login($username, $password) > 0) {
+      my $msgnums = $pop->list; # hashref of msgnum => size
+      foreach my $msgnum (keys %$msgnums) {
+        my $msg = $pop->get($msgnum);
+        print @$msg;
+        $pop->delete($msgnum);
+      }
+    }
+
+    $pop->quit;
+
 =head1 DESCRIPTION
 
 This module implements a client interface to the POP3 protocol, enabling
@@ -382,10 +393,6 @@ that you are familiar with the POP3 protocol described in RFC1939.
 A new Net::POP3 object must be created with the I<new> method. Once
 this has been done, all POP3 commands are accessed via method calls
 on the object.
-
-=head1 EXAMPLES
-
-    Need some small examples in here :-)
 
 =head1 CONSTRUCTOR
 
@@ -540,6 +547,6 @@ it under the same terms as Perl itself.
 
 =for html <hr>
 
-I<$Id: POP3.pm,v 1.1.1.1 2003-01-10 13:40:23 zacheiss Exp $>
+I<$Id: POP3.pm,v 1.1.1.2 2004-02-09 18:59:21 zacheiss Exp $>
 
 =cut

@@ -1,7 +1,7 @@
 #
 # Locale::Script - ISO codes for script identification (ISO 15924)
 #
-# $Id: Script.pm,v 1.1.1.1 2003-01-10 13:45:29 zacheiss Exp $
+# $Id: Script.pm,v 1.1.1.2 2004-02-09 19:03:20 zacheiss Exp $
 #
 
 package Locale::Script;
@@ -17,7 +17,7 @@ use Locale::Constants;
 #	Public Global Variables
 #-----------------------------------------------------------------------
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
-$VERSION   = sprintf("%d.%02d", q$Revision: 1.1.1.1 $ =~ /(\d+)\.(\d+)/);
+$VERSION   = sprintf("%d.%02d", q$Revision: 1.1.1.2 $ =~ /(\d+)\.(\d+)/);
 @ISA       = qw(Exporter);
 @EXPORT    = qw(code2script script2code
                 all_script_codes all_script_names
@@ -160,6 +160,7 @@ sub all_script_names
     my ($alpha2, $alpha3, $numeric);
     my $script;
 
+    local $_;
 
     while (<DATA>)
     {

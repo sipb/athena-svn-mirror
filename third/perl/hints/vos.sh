@@ -1,4 +1,4 @@
-# $Id: vos.sh,v 1.1.1.1 2003-01-10 13:40:16 zacheiss Exp $
+# $Id: vos.sh,v 1.1.1.2 2004-02-09 19:07:54 zacheiss Exp $
 
 # This is a hints file for Stratus VOS, using the POSIX environment
 # in VOS 14.4.0 and higher.
@@ -143,3 +143,7 @@ fi
 
 $rm -f t001$_o t001$_exe t001.kp
 EOCBU
+
+
+# VOS 14.7 has minimal support for dynamic linking. Too minimal for perl.
+usedl="undef"

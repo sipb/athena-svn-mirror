@@ -29,7 +29,7 @@ package DynaLoader;
 
 use vars qw($VERSION *AUTOLOAD);
 
-$VERSION = 1.04;	# avoid typo warning
+$VERSION = '1.04';	# avoid typo warning
 
 require AutoLoader;
 *AUTOLOAD = \&AutoLoader::AUTOLOAD;
@@ -229,6 +229,15 @@ sub bootstrap {
 	"  dynamic loading or has the $module module statically linked into it.)\n")
 	unless defined(&dl_load_file);
 
+EOT
+
+print OUT <<'EOT' if $^O eq 'os2';
+    # Can dynaload, but cannot dynaload Perl modules...
+    die 'Dynaloaded Perl modules are not available in this build of Perl' if $OS2::is_static;
+
+EOT
+
+print OUT <<'EOT';
     my @modparts = split(/::/,$module);
     my $modfname = $modparts[-1];
 
@@ -501,8 +510,6 @@ sub dl_find_symbol_anywhere
 
 DynaLoader - Dynamically load C libraries into Perl code
 
-dl_error(), dl_findfile(), dl_expandspec(), dl_load_file(), dl_unload_file(), dl_find_symbol(), dl_find_symbol_anywhere(), dl_undef_symbols(), dl_install_xsub(), dl_load_flags(), bootstrap() - routines used by DynaLoader modules
-
 =head1 SYNOPSIS
 
     package YourPackage;
@@ -769,11 +776,11 @@ Apache and mod_perl built with the APXS mechanism.
 Linux, and is a common choice when providing a "wrapper" on other
 mechanisms as is done in the OS/2 port.)
 
-=item dl_loadflags()
+=item dl_load_flags()
 
 Syntax:
 
-    $flags = dl_loadflags $modulename;
+    $flags = dl_load_flags $modulename;
 
 Designed to be a method call, and to be overridden by a derived class
 (i.e. a class which has DynaLoader in its @ISA).  The definition in

@@ -1,20 +1,14 @@
 # -*- Mode: cperl; coding: utf-8; cperl-indent-level: 2 -*-
 #!/usr/local/bin/perl -w
 
-BEGIN {
-	chdir 't' if -d 't';
-	if ($ENV{PERL_CORE}) {
-		@INC = '../lib';
-	} else {
-		# Due to a bug in older versions of MakeMaker & Test::Harness, we must
-		# ensure the blib's are in @INC, else we might use the core CGI.pm
-		unshift @INC, qw( ../blib/lib ../blib/arch lib );
-	}
-}
-
 use strict;
+use lib qw(t/lib);
 
-use Test::More tests => 42;
+# Due to a bug in older versions of MakeMaker & Test::Harness, we must
+# ensure the blib's are in @INC, else we might use the core CGI.pm
+use lib qw(blib/lib blib/arch);
+
+use Test::More tests => 41;
 use IO::Handle;
 
 BEGIN { use_ok('CGI::Carp') };
@@ -74,7 +68,6 @@ like(stamp2(), $stamp, "Time in correct format");
 # set some variables to control what's going on.
 $CGI::Carp::WARN = 0;
 $CGI::Carp::EMIT_WARNINGS = 0;
-@CGI::Carp::WARNINGS = ();
 my $q_file = quotemeta($file);
 
 
@@ -88,7 +81,6 @@ $expect_l = __LINE__ + 1;
 is(CGI::Carp::warn("There is a problem"),
    "Called realwarn",
    "CGI::Carp::warn calls CORE::warn");
-is(@CGI::Carp::WARNINGS, 0, "_warn not called");
 
 # Test that message is constructed correctly
 eval 'sub CGI::Carp::realwarn {my $mess = shift; return $mess};';
@@ -97,20 +89,14 @@ $expect_l = __LINE__ + 1;
 like(CGI::Carp::warn("There is a problem"),
    "/] $id: There is a problem at $q_file line $expect_l.".'$/',
    "CGI::Carp::warn builds correct message");
-is(@CGI::Carp::WARNINGS, 0, "_warn not called");
 
 # Test that _warn is called at the correct time
 $CGI::Carp::WARN = 1;
 
-$expect_l = __LINE__ + 1;
+my $warn_expect_l = $expect_l = __LINE__ + 1;
 like(CGI::Carp::warn("There is a problem"),
    "/] $id: There is a problem at $q_file line $expect_l.".'$/',
    "CGI::Carp::warn builds correct message");
-
-is(@CGI::Carp::WARNINGS, 1, "_warn now called");
-like($CGI::Carp::WARNINGS[0],
-   "/There is a problem at $q_file line $expect_l.".'$/',
-   "CGI::Carp::WARNINGS has correct message (without stamp)");
 
 #-----------------------------------------------------------------------------
 # Test ineval
@@ -159,14 +145,33 @@ is($CGI::Carp::CUSTOM_MSG,
 CGI::Carp::set_message(''),
 
 #-----------------------------------------------------------------------------
+# Test set_progname
+#-----------------------------------------------------------------------------
+
+import CGI::Carp qw(name=new_progname);
+is($CGI::Carp::PROGNAME,
+     'new_progname',
+     'CGI::Carp::import set program name correctly');
+
+is(CGI::Carp::set_progname('newer_progname'),
+   'newer_progname',
+   'CGI::Carp::set_progname returns new program name');
+
+is($CGI::Carp::PROGNAME,
+   'newer_progname',
+   'CGI::Carp::set_progname program name set correctly');
+
+# set the message back to the empty string so that the tests later
+# work properly.
+is (CGI::Carp::set_progname(undef),undef,"CGI::Carp::set_progname returns unset name correctly");
+is ($CGI::Carp::PROGNAME,undef,"CGI::Carp::set_progname program name unset correctly");
+
+#-----------------------------------------------------------------------------
 # Test warnings_to_browser
 #-----------------------------------------------------------------------------
 
 CGI::Carp::warningsToBrowser(0);
 is($CGI::Carp::EMIT_WARNINGS, 0, "Warnings turned off");
-unless( is(@CGI::Carp::WARNINGS, 1, "_warn not called") ) {
-  print join "\n", map "'$_'", @CGI::Carp::WARNINGS;
-}
 
 # turn off STDOUT (prevents spurious warnings to screen
 tie *STDOUT, 'StoreStuff' or die "Can't tie STDOUT";
@@ -177,11 +182,10 @@ untie *STDOUT;
 open(STDOUT, ">&REAL_STDOUT");
 my $fname = $0;
 $fname =~ tr/<>-/\253\273\255/; # _warn does this so we have to also
-is( $fake_out, "<!-- warning: There is a problem at $fname line 106. -->\n",
+is( $fake_out, "<!-- warning: There is a problem at $fname line $warn_expect_l. -->\n",
                         'warningsToBrowser() on' );
 
 is($CGI::Carp::EMIT_WARNINGS, 1, "Warnings turned off");
-is(@CGI::Carp::WARNINGS, 0, "_warn is called");
 
 #-----------------------------------------------------------------------------
 # Test fatals_to_browser

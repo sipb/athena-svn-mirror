@@ -41,12 +41,14 @@ DESCRIPTION
     specifed than standard input is read.
 
     pod2usage invokes the pod2usage() function in the Pod::Usage module.
-    Please see "pod2usage()" in Pod::Usage.
+    Please see the pod2usage() entry in the Pod::Usage manpage.
 
 SEE ALSO
-    Pod::Usage, pod2text(1)
+    the Pod::Usage manpage, the pod2text(1) manpage
 
 AUTHOR
+    Please report bugs using http://rt.cpan.org.
+
     Brad Appleton <bradapp@enteract.com>
 
     Based on code for pod2text(1) written by Tom Christiansen
