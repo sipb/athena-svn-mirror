@@ -1,5 +1,5 @@
 /* sawmill_subrs.h -- prototypes
-   $Id: sawmill_subrs.h,v 1.3 2002-03-20 05:07:13 ghudson Exp $
+   $Id: sawmill_subrs.h,v 1.4 2003-01-05 00:48:01 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -25,8 +25,8 @@
 /* from colors.c */
 extern int color_type;
 extern repv Qdefault_foreground;
-extern repv Fget_color_rgb (repv red, repv green, repv blue);
-extern repv Fget_color (repv name);
+extern repv Fget_color_rgb (repv red, repv green, repv blue, repv alpha);
+extern repv Fget_color (repv name, repv alpha);
 extern repv Fcolor_name (repv color);
 extern repv Fcolor_rgb (repv color);
 extern repv Fcolorp (repv arg);
@@ -83,12 +83,15 @@ extern repv Qvisibility_notify_hook, Qdestroy_notify_hook, Qmap_notify_hook,
 extern repv Qiconify_window, Quniconify_window;
 extern struct frame_part *clicked_frame_part;
 extern void save_timestamp (Time t);
+extern void invalidate_cached_mouse_position (void);
 extern void unclick_current_fp (void);
 extern void synthesize_button_release (void);
 extern void map_request (XEvent *ev);
 extern void send_synthetic_configure (Lisp_Window *w);
 extern long get_event_mask (int type);
 extern Time get_server_timestamp (void);
+extern void mark_pointer_grabbed (void);
+extern void ungrab_pointer (void);
 extern void register_event_handler (Window w, void (*fun)(XEvent *ev));
 extern void deregister_event_handler (Window w);
 extern void handle_input_mask(long mask);
@@ -105,7 +108,7 @@ extern void events_kill (void);
 extern int font_type;
 extern repv Qdefault_font;
 extern int x_text_width (repv font, u_char *string, size_t len);
-extern void x_draw_string (Window id, repv font, GC gc,
+extern void x_draw_string (Window id, repv font, GC gc, Lisp_Color *fg_color,
 			   int x, int y, u_char *string, size_t len);
 extern repv Fget_font(repv name);
 extern repv Ffont_get(repv font, repv prop);
@@ -172,8 +175,6 @@ extern repv Flist_x_properties (repv win);
 extern repv Fget_x_property (repv win, repv prop);
 extern repv Fset_x_property (repv win, repv prop, repv data,
 			     repv type, repv format);
-extern repv Fget_x_text_property (repv win, repv prop);
-extern repv Fset_x_text_property (repv win, repv prop, repv vect);
 extern repv Fsend_client_message (repv win, repv type, repv data, repv format);
 extern repv Fcreate_window (repv parent, repv x, repv y,
 			    repv width, repv height);
@@ -277,6 +278,12 @@ extern void pixmap_cache_flush_image (Lisp_Image *im);
 extern repv Fpixmap_cache_control (repv max);
 extern void pixmap_cache_init (void);
 
+/* from property-cache.c */
+extern repv property_cache_ref (repv id, repv prop);
+extern void property_cache_set (repv id, repv prop, repv value, int invals);
+extern void property_cache_invalidate_window (repv id);
+extern void property_cache_invalidate (repv id, repv prop);
+
 /* from server.c */
 extern void server_init (void);
 extern void server_kill (void);
@@ -293,10 +300,11 @@ extern void session_kill (void);
 /* from windows.c */
 extern Lisp_Window *window_list;
 extern int window_type;
-extern Lisp_Window *focus_window, *pending_focus_window;
+extern Lisp_Window *focus_window;
 extern int pending_destroys;
 extern repv Qadd_window_hook, Qbefore_add_window_hook, Qplace_window_hook;
 extern bool mapped_not_override_p (Window id);
+extern void commit_queued_focus_change (void);
 extern void focus_on_window (Lisp_Window *w);
 extern void focus_off_window (Lisp_Window *w);
 extern void fix_window_size (Lisp_Window *w);
@@ -333,7 +341,6 @@ extern repv Fmanaged_windows (void);
 extern repv Fget_window_by_id (repv id);
 extern repv Fstacking_order (void);
 extern repv Fwindow_visibility (repv win);
-extern repv Fwindow_transient_p (repv win);
 extern repv Fwindow_shaped_p (repv win);
 extern repv Fhide_window (repv win);
 extern repv Fshow_window (repv win);

@@ -1,5 +1,5 @@
 /* windows.c -- window manipulation
-   $Id: windows.c,v 1.4 2002-05-22 15:15:28 ghudson Exp $
+   $Id: windows.c,v 1.5 2003-01-05 00:48:01 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -26,7 +26,7 @@
 Lisp_Window *window_list;
 int window_type;
 
-Lisp_Window *focus_window, *pending_focus_window;
+Lisp_Window *focus_window;
 
 int pending_destroys;
 
@@ -109,57 +109,97 @@ window_input_hint_p (Lisp_Window *w)
 	return TRUE;
 }
 
+static Window queued_focus_id;
+static bool queued_take_focus;
+static bool queued_set_focus;
+static int queued_focus_revert;
+static Time queued_focus_time;
+
+/* We can lose the focus sometimes, notably after a was-focused
+   window is closed while a keyboard grab exists.. (netscape) */
+static void
+check_for_lost_focus (void)
+{
+    Window focus;
+    int revert_to;
+    XGetInputFocus (dpy, &focus, &revert_to);
+    if (focus == None || focus == PointerRoot)
+    {
+	DB (("lost focus (%ld)\n", focus));
+	focus_on_window (focus_window);
+    }
+}
+
+void
+commit_queued_focus_change (void)
+{
+    if (0 && queued_focus_id == 0)
+	check_for_lost_focus ();
+
+    if (queued_focus_id != 0)
+    {
+	if (queued_take_focus)
+	{
+	    DB(("  sending WM_TAKE_FOCUS %x %ld\n",
+		(unsigned) queued_focus_id, queued_focus_time));
+	    send_client_message (queued_focus_id,
+				 xa_wm_take_focus,
+				 queued_focus_time);
+	}
+	if (queued_set_focus)
+	{
+	    DB(("  focusing %x %ld\n",
+		(unsigned) queued_focus_id, queued_focus_time));
+	    XSetInputFocus (dpy, queued_focus_id,
+			    queued_focus_revert, queued_focus_time);
+	}
+	queued_focus_id = 0;
+    }
+}
+
 /* Give the input focus to window W, or to no window if W is null */
 void
 focus_on_window (Lisp_Window *w)
 {
+    /* something's going to change, so */
+    queued_focus_id = 0;
+    queued_focus_time = last_event_time;
+    queued_set_focus = FALSE;
+    queued_take_focus = FALSE;
+
     if (w != 0 && !WINDOW_IS_GONE_P (w) && w->visible)
     {
-	Window focus;
 	DB(("focus_on_window (%s)\n", rep_STR(w->name)));
 	if (!w->client_unmapped)
-	{                              
+	{
+	    queued_focus_id = w->id;
+
 	    if (w->does_wm_take_focus)
 	    {
-		DB(("  sending WM_TAKE_FOCUS message\n"));
+		queued_take_focus = TRUE;
 
-		/* The -1 is an Ugly Hack. The problem is with the case
-		   where the window focuses itself after receiving the
-		   WM_TAKE_FOCUS message. If during the time between us
-		   sending the client message and the window focusing
-		   itself we focused another window using the same
-		   timestamp, the original window (that received the
-		   client message) will still get focused.
-
-		   I'm assuming that it's unlikely that two events will
-		   arrive generating focus changes with timestamps that
-		   only differ by one.. */
-
-		send_client_message (w->id, xa_wm_take_focus,
-				     last_event_time - 1);
-
-		/* Only focus on the window if accepts-input is true */
 		if (window_input_hint_p (w))
-		    focus = w->id;
-		else
-		    focus = 0;
+		    queued_set_focus = TRUE;
 	    }
 	    else
-		focus = w->id;
+		queued_set_focus = TRUE;
 	}
 	else
-	    focus = w->frame;
-	if (focus != 0)
 	{
-	    XSetInputFocus (dpy, focus, RevertToParent, last_event_time);
-	    pending_focus_window = w;
+	    queued_focus_id = w->frame;
+	    queued_set_focus = TRUE;
 	}
+
+	queued_focus_revert = RevertToParent;
     }
-    else
+
+    if (queued_focus_id == 0 || (!queued_set_focus && !queued_take_focus))
     {
 	DB(("focus_on_window (nil)\n"));
-	XSetInputFocus (dpy, no_focus_window, RevertToNone, last_event_time);
-	pending_focus_window = 0;
+	queued_focus_id = no_focus_window;
+	queued_set_focus = TRUE;
+	queued_focus_revert = RevertToNone;
+	queued_focus_time = last_event_time;
     }
 }
 
@@ -167,14 +207,16 @@ focus_on_window (Lisp_Window *w)
 void
 focus_off_window (Lisp_Window *w)
 {
-    if (focus_window == w)
+    if (w == focus_window)
     {
 	focus_window = 0;
-	if (pending_focus_window == 0 || pending_focus_window == w)
-	    focus_on_window (0);
+
+	/* Do this immediately. Any real focus-change will be queued,
+	   so will happen after this. Doing this here just prevents us
+	   getting stuck with focus on nothing in some cases.. */
+
+	XSetInputFocus (dpy, no_focus_window, RevertToNone, last_event_time);
     }
-    if (pending_focus_window == w)
-	pending_focus_window = 0;
 }
 
 /* Set flags in W relating to which window manager protocols are recognised
@@ -184,6 +226,8 @@ get_window_protocols (Lisp_Window *w)
 {
     Atom *prot;
     u_int n;
+    w->does_wm_take_focus = 0;
+    w->does_wm_delete_window = 0;
     if (XGetWMProtocols (dpy, w->id, &prot, &n) != 0)
     {
 	int i;
@@ -237,12 +281,6 @@ find_window_by_id (Window id)
 	w = w->next;
     if (w != 0 && WINDOW_IS_GONE_P (w))
 	w = 0;
-    if (w != 0)
-    {
-	DB(("find_window_by_id (%lx) --> %s\n", id,
-	    (w->name && rep_STRINGP(w->name))
-	    ? (char *) rep_STR(w->name) : ""));
-    }
     return w;
 }
 
@@ -255,12 +293,6 @@ x_find_window_by_id (Window id)
     w = window_list;
     while (w != 0 && w->saved_id != id && w->frame != id)
 	w = w->next;
-    if (w != 0)
-    {
-	DB(("x_find_window_by_id (%lx) --> %s\n", id,
-	    (w->name && rep_STRINGP(w->name))
-	    ? (char *) rep_STR(w->name) : ""));
-    }
     return w;
 }
 
@@ -277,6 +309,9 @@ install_window_frame (Lisp_Window *w)
 	w->reparented = TRUE;
 	after_local_map (w);
 	restack_window (w);
+
+	if (queued_focus_id == w->id)
+	    queued_focus_id = w->frame;
 
 	XAddToSaveSet (dpy, w->id);
 	restack_frame_parts (w);
@@ -301,6 +336,9 @@ remove_window_frame (Lisp_Window *w)
 	w->reparented = FALSE;
 	after_local_map (w);
 	restack_window (w);
+
+	if (queued_focus_id == w->frame)
+	    queued_focus_id = w->id;
 
 	if (!w->mapped)
 	    XRemoveFromSaveSet (dpy, w->id);
@@ -383,8 +421,6 @@ add_window (Window id)
 	if (!XGetWMNormalHints (dpy, w->id, &w->hints, &supplied))
 	    w->hints.flags = 0;
 	get_window_protocols (w);
-	if (!XGetTransientForHint (dpy, w->id, &w->transient_for_hint))
-	    w->transient_for_hint = 0;
 	if (!XGetWMColormapWindows (dpy, w->id,
 				    &w->cmap_windows, &w->n_cmap_windows))
 	{
@@ -493,6 +529,8 @@ remove_window (Lisp_Window *w, repv destroyed, repv from_error)
 	if (!WINDOW_IS_GONE_P (w))
 	    remove_from_stacking_list (w);
 
+	focus_off_window (w);
+
 	w->id = 0;
 	pending_destroys++;
 
@@ -500,21 +538,6 @@ remove_window (Lisp_Window *w, repv destroyed, repv from_error)
     }
     else if (w->frame != 0 && from_error == Qnil)
 	destroy_window_frame (w, FALSE);
-
-    /* We can lose the focus sometimes, notably after a was-focused
-       window is closed while a keyboard grab exists.. (netscape) */
-    if (from_error == Qnil)
-    {
-	Window focus;
-	int revert_to;
-	XGetInputFocus (dpy, &focus, &revert_to);
-	if (focus == None || focus == PointerRoot)
-	{
-	    DB (("lost focus (%ld)\n", focus));
-	    focus_on_window (pending_focus_window
-			     ? pending_focus_window : focus_window);
-	}
-    }
 }
 
 void
@@ -930,6 +953,7 @@ symbols are `fully-obscured', `partially-obscured' or `unobscured'.
 ::end:: */
 {
     repv sym = Qnil;
+    rep_DECLARE1(win, WINDOWP);
     switch (VWIN(win)->frame_vis)
     {
     case VisibilityFullyObscured:
@@ -945,20 +969,6 @@ symbols are `fully-obscured', `partially-obscured' or `unobscured'.
 	break;
     }
     return sym;
-}
-
-DEFUN("window-transient-p", Fwindow_transient_p, Swindow_transient_p,
-      (repv win), rep_Subr1) /*
-::doc:sawfish.wm.windows.subrs#window-transient-p::
-window-transient-p WINDOW
-
-Return non-nil if WINDOW is a transient window. The returned value will
-then be the numeric id of its parent window.
-::end:: */
-{
-    rep_DECLARE1(win, WINDOWP);
-    return (VWIN(win)->transient_for_hint
-	    ? rep_MAKE_INT(VWIN(win)->transient_for_hint) : Qnil);
 }
 
 DEFUN("window-urgent-p", Fwindow_urgent_p, Swindow_urgent_p,
@@ -1128,7 +1138,7 @@ associated with WINDOW. Possible keys in the alist are `min-height',
 
     /* Some sanity checking */
     if ((flags & PMinSize) 
-	&& (hints->min_width <= 0 || hints->min_height <= 0))
+	&& (hints->min_width < 0 || hints->min_height < 0))
 	flags &= ~PMinSize;
     if ((flags & PMaxSize)
 	&& (hints->max_width <= 0 || hints->max_height <= 0))
@@ -1142,9 +1152,8 @@ associated with WINDOW. Possible keys in the alist are `min-height',
 
     if (flags & PMinSize)
     {
-	ret = Fcons (Fcons (Qmin_width, rep_MAKE_INT(hints->min_width)),
-		     Fcons (Fcons (Qmin_height,
-				   rep_MAKE_INT(hints->min_height)), ret));
+	ret = Fcons (Fcons (Qmin_width, rep_MAKE_INT(MAX(hints->min_width,1))),
+		     Fcons (Fcons (Qmin_height, rep_MAKE_INT(MAX(hints->min_height, 1))), ret));
     }
     if (flags & PMaxSize)
     {
@@ -1465,6 +1474,9 @@ manage_windows (void)
 	    XEvent fake;
 	    Lisp_Window *w;
 	    fake.xmaprequest.window = children[i];
+	    /* Make sure the window is initially unmapped. We expect to
+	       get map-notify events when we later remap it.. #67601 */
+	    XUnmapWindow (dpy, children[i]);
 	    map_request (&fake);
 	    w = find_window_by_id (children[i]);
 	}
@@ -1518,7 +1530,6 @@ windows_init (void)
     rep_ADD_SUBR(Sget_window_by_id);
     rep_ADD_SUBR(Sstacking_order);
     rep_ADD_SUBR(Swindow_visibility);
-    rep_ADD_SUBR(Swindow_transient_p);
     rep_ADD_SUBR(Swindow_urgent_p);
     rep_ADD_SUBR(Swindow_shaped_p);
     rep_ADD_SUBR(Shide_window);

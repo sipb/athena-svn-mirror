@@ -1,6 +1,5 @@
 /* functions.c -- useful window manager Lisp functions
-   $Id: functions.c,v 1.3 2002-03-20 05:07:13 ghudson Exp $
-
+   $Id: functions.c,v 1.4 2003-01-05 00:48:01 ghudson Exp $
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
    This file is part of sawmill.
@@ -232,6 +231,7 @@ root window.
     {
 	XWarpPointer (dpy, None, root_window,
 		      0, 0, 0, 0, rep_INT(x), rep_INT(y));
+	invalidate_cached_mouse_position ();
 	return Qt;
     }
     else
@@ -444,6 +444,9 @@ again:
 	goto again;
     }
 
+    if (ret == GrabSuccess)
+	mark_pointer_grabbed ();
+
     DB(("grab-pointer: time=%lu ret=%d\n", last_event_time, ret));
     return (ret == GrabSuccess) ? Qt : Qnil;
 }
@@ -455,7 +458,7 @@ ungrab-pointer
 Release the grab on the mouse pointer.
 ::end:: */
 {
-    XUngrabPointer (dpy, last_event_time);
+    ungrab_pointer ();
     synthesize_button_release ();
     DB(("ungrab-pointer: time=%lu\n", last_event_time));
     return Qt;
@@ -566,6 +569,8 @@ WINDOW may be the symbol `root', a window object or a numeric window id.
 	return WINDOWP(win) ? atom : rep_signal_arg_error (win, 1);
     XDeleteProperty (dpy, w,
 		     XInternAtom (dpy, rep_STR(rep_SYM(atom)->name), False));
+    if (WINDOWP (win))
+	property_cache_invalidate (win, atom);
     return atom;
 }
 
@@ -638,6 +643,14 @@ symbols, representing the atoms read.
     rep_DECLARE2(prop, rep_SYMBOLP);
     if (w == 0)
 	return WINDOWP(win) ? Qnil : rep_signal_arg_error (win, 1);
+
+    if (WINDOWP (win))
+    {
+	ret_data = property_cache_ref (win, prop);
+	if (ret_data != rep_NULL)
+	    return ret_data;
+    }
+
     a_prop = XInternAtom (dpy, rep_STR(rep_SYM(prop)->name), False);
 
     /* First read the data.. */
@@ -646,14 +659,15 @@ symbols, representing the atoms read.
 	u_long bytes_after;
 	while (1)
 	{
+	    ret_data = Qnil;
 	    if (data != 0)
 		XFree (data);
 	    if (XGetWindowProperty (dpy, w, a_prop, 0, long_length, False,
 				    AnyPropertyType, &type, &format,
 				    &nitems, &bytes_after, &data) != Success)
-		return Qnil;
+		goto out;
 	    if (type == None)
-		return Qnil;
+		goto out;
 	    if (bytes_after == 0)
 		break;
 	    long_length += (bytes_after / sizeof(u_long)) + 1;
@@ -694,9 +708,15 @@ symbols, representing the atoms read.
 	}
 	break;
     }
-    XFree (data);
 
-    return rep_list_3 (type_sym, rep_MAKE_INT(format), ret_data);
+    XFree (data);
+    ret_data = rep_list_3 (type_sym, rep_MAKE_INT(format), ret_data);
+
+out:
+    if (WINDOWP (win))
+	property_cache_set (win, prop, ret_data, 0);
+
+    return ret_data;
 }
 
 DEFUN("set-x-property", Fset_x_property, Sset_x_property,
@@ -731,6 +751,9 @@ converted to their numeric X atoms.
     rep_DECLARE5(format, rep_INTP);
     if (w == 0)
 	return WINDOWP(win) ? prop : rep_signal_arg_error (win, 1);
+
+    if (WINDOWP (win))
+	property_cache_set (win, prop, rep_list_3 (type, format, data), 1);
 
     /* Convert to data array */
 
@@ -784,77 +807,6 @@ converted to their numeric X atoms.
     XChangeProperty (dpy, w, a_prop, a_type, rep_INT(format),
 		     PropModeReplace, c_data, nitems);
     return prop;
-}
-
-DEFUN("get-x-text-property", Fget_x_text_property, Sget_x_text_property,
-      (repv win, repv prop), rep_Subr2) /*
-::doc:sawfish.wm.misc#get-x-text-property::
-get-x-text-property WINDOW PROPERTY
-::end:: */
-{
-    Window w;
-    Atom a_prop;
-    XTextProperty t_prop;
-    repv ret = Qnil;
-
-    w = x_win_from_arg (win);
-    rep_DECLARE2(prop, rep_SYMBOLP);
-    if (w == 0)
-	return WINDOWP(win) ? Qnil : rep_signal_arg_error (win, 1);
-    a_prop = XInternAtom (dpy, rep_STR(rep_SYM(prop)->name), False);
-
-    if (XGetTextProperty (dpy, w, &t_prop, a_prop) != 0)
-    {
-	char **list;
-	int count;
-	if (XTextPropertyToStringList (&t_prop, &list, &count) != 0)
-	{
-	    int i;
-	    ret = Fmake_vector (rep_MAKE_INT(count), Qnil);
-	    for (i = 0; i < count; i++)
-		rep_VECTI(ret, i) = rep_string_dup (list[i]);
-	    XFreeStringList (list);
-	}
-	XFree (t_prop.value);
-    }
-
-    return ret;
-}
-
-DEFUN("set-x-text-property", Fset_x_text_property, Sset_x_text_property, 
-      (repv win, repv prop, repv vect), rep_Subr3) /*
-::doc:sawfish.wm.misc#set-x-text-prooperty::
-set-x-text-property WINDOW PROPERTY STRING-VECTOR
-::end:: */
-{
-    Window w;
-    Atom a_prop;
-    XTextProperty t_prop;
-    char **strings;
-    int count, i;
-
-    w = x_win_from_arg (win);
-    rep_DECLARE2(prop, rep_SYMBOLP);
-    rep_DECLARE3(vect, rep_VECTORP);
-    if (w == 0)
-	return WINDOWP(win) ? Qnil : rep_signal_arg_error (win, 1);
-    a_prop = XInternAtom (dpy, rep_STR(rep_SYM(prop)->name), False);
-
-    count = rep_VECT_LEN(vect);
-    strings = alloca (sizeof (char *) * (count + 1));
-    for (i = 0; i < count; i++)
-    {
-	if (!rep_STRINGP(rep_VECTI(vect, i)))
-	    return rep_signal_arg_error (vect, 3);
-	strings[i] = rep_STR(rep_VECTI(vect, i));
-    }
-    if (XStringListToTextProperty (strings, count, &t_prop) != 0)
-    {
-	XSetTextProperty (dpy, w, &t_prop, a_prop);
-	XFree (t_prop.value);
-    }
-
-    return Qt;
 }
 
 DEFUN("send-client-message", Fsend_client_message, Ssend_client_message,
@@ -1088,9 +1040,9 @@ refresh_message_window ()
 	char *ptr;
 	int row = 0;
 
-	values.foreground = VCOLOR(message.fg)->pixel;
 	values.background = VCOLOR(message.bg)->pixel;
-	mask = GCForeground | GCBackground;
+	values.graphics_exposures = False;
+	mask = GCBackground | GCGraphicsExposures;
 
 	if (message.gc == 0)
 	    message.gc = XCreateGC (dpy, message_win, mask, &values);
@@ -1117,7 +1069,7 @@ refresh_message_window ()
 		    offset = (message.width - width) / 2;
 	    }
 	    x_draw_string (message_win, message.font,
-			   message.gc, offset,
+			   message.gc, VCOLOR(message.fg), offset,
 			   MSG_PAD_Y
 			   + row * (VFONT(message.font)->ascent
 				    + VFONT(message.font)->descent
@@ -1134,7 +1086,7 @@ refresh_message_window ()
 static void
 message_event_handler (XEvent *ev)
 {
-    if (ev->type == Expose)
+    if (ev->type == Expose && ev->xexpose.count == 0)
 	refresh_message_window ();
     else if (ev->type == ButtonPress)
 	Fdisplay_message (Qnil, Qnil);
@@ -1197,13 +1149,13 @@ DEFUN("display-message", Fdisplay_message, Sdisplay_message,
 	    message.fg = rep_CDR(tem);
 	    if (!COLORP(message.fg))
 	    {
-		message.fg = Fget_color (message.fg);
+		message.fg = Fget_color (message.fg, Qnil);
 		if (!message.fg)
 		    return rep_NULL;
 	    }
 	}
 	if (!COLORP(message.fg))
-	    message.fg = Fget_color (rep_VAL(&black));
+	    message.fg = Fget_color (rep_VAL(&black), Qnil);
 	if (!COLORP(message.fg))
 	    return rep_signal_arg_error (Qforeground, 1);
 
@@ -1213,13 +1165,13 @@ DEFUN("display-message", Fdisplay_message, Sdisplay_message,
 	    message.bg = rep_CDR(tem);
 	    if (!COLORP(message.bg))
 	    {
-		message.bg = Fget_color (message.bg);
+		message.bg = Fget_color (message.bg, Qnil);
 		if (!message.bg)
 		    return rep_NULL;
 	    }
 	}
 	if (!COLORP(message.bg))
-	    message.bg = Fget_color (rep_VAL(&white));
+	    message.bg = Fget_color (rep_VAL(&white), Qnil);
 	if (!COLORP(message.bg))
 	    return rep_signal_arg_error (Qbackground, 1);
 
@@ -1391,8 +1343,6 @@ functions_init (void)
     rep_ADD_SUBR(Slist_x_properties);
     rep_ADD_SUBR(Sget_x_property);
     rep_ADD_SUBR(Sset_x_property);
-    rep_ADD_SUBR(Sget_x_text_property);
-    rep_ADD_SUBR(Sset_x_text_property);
     rep_ADD_SUBR(Screate_window);
     rep_ADD_SUBR(Sx_atom);
     rep_ADD_SUBR(Sx_atom_name);
