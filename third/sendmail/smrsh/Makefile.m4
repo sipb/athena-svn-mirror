@@ -75,9 +75,6 @@ smrsh: ${BEFORE} ${OBJS}
 
 undivert(3)
 
-smrsh.${MAN8SRC}: smrsh.8
-	${NROFF} ${MANDOC} smrsh.8 > smrsh.${MAN8SRC}
-
 install: install-smrsh install-docs
 
 install-smrsh: smrsh
