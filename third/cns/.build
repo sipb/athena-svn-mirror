@@ -1,0 +1,26 @@
+set rule = skip
+
+cd $BUILD/$package
+
+if ( $installman == "1" ) then
+	exit 0
+endif
+
+if ( $installonly == "0" ) then
+	(echo "Configuring in $package..." ; \
+	./configure --site=athena) >>& $outfile && \
+	(echo "Depending in $package..." ; make depend) >>& $outfile && \
+	(echo "Cleaning in $package..." ; make clean) >>& $outfile && \
+	(echo "Building in $package..." ; make) >>& $outfile
+	if ( $status == 1 ) then
+        	echo "We bombed in $package" >> & $outfile
+	       	exit -1
+	endif
+endif
+
+(echo "Installing in $package..." ; make install DESTDIR=$SRVD) >>& $outfile
+if ( $status == 1 ) then
+       	echo "We bombed in $package" >> & $outfile
+       	exit -1
+endif
+
