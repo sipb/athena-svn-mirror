@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.1 1987-12-03 19:04:50 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.2 1988-01-29 18:24:15 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.1 1987-12-03 19:04:50 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.2 1988-01-29 18:24:15 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -19,17 +19,14 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <signal.h>
 #include <stdio.h>
 
-/* Default root for source of transfer - just "" if root */
+/* Default root for source of transfer */
 #define DEF_FROMROOT	"/srvd"
 
-/* Default root for destination of transfer - just "" if root */
-#define DEF_TOROOT	""
+/* Default root for destination of transfer */
+#define DEF_TOROOT	"/"
 
-/* Default from working directory - under from root */
-#define	DEF_FROMWDIR	"/etc/athena/lib"
-
-/* Default to working directory - under to root */
-#define DEF_TOWDIR	"/etc/athena/lib"
+/* Default working directory - under to- or from- root */
+#define DEF_WORKDIR	"/etc/athena/lib"
 
 /* Default binary directory - under real root */
 #define DEF_BINDIR	"/etc/athena"
@@ -41,10 +38,10 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #define DEF_SUB 	"sys_rvd"
 
 /* Default directory containing subscription lists under working dir */
-#define DEF_SUBDIR	"/slists"
+#define DEF_SLISTDIR	"slists"
 
 /* Default directory containing stat files under working dir */
-#define DEF_STATDIR	"/stats"
+#define DEF_STATDIR	"stats"
 
 /* Default directory containing lock files under real root */
 #define DEF_LOCKDIR	"/tmp"
@@ -73,7 +70,6 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #define CNT  0
 #define ROOT 1
 #define NAME 2
-#define TAIL 3
 
 typedef struct stl {
 	char sortkey[ LINELEN];
@@ -135,8 +131,6 @@ extern char linebuf[];
 extern int wordcnt;
 extern FILE *yyin,*yyout;
 
-extern int access();
-
 #define TYPE( statbuf) ((int )(statbuf).st_mode & S_IFMT)
 #define MODE( statbuf) ((int )(statbuf).st_mode & 07777)
 #define TIME( statbuf) ((long)(statbuf).st_mtime)
@@ -144,11 +138,16 @@ extern int access();
 #define GID( statbuf)  ((int )(statbuf).st_gid)
 #define DEV( statbuf)  ((int )(statbuf).st_dev)
 
+extern int access();
+
+extern char errmsg[];
 char *gets(),*malloc(),*realloc(),*re_comp();
 char *index(),*rindex(),*strcat(),*strncat(),*strcpy(),*strncpy();
 int strcmp(),strncmp(),strlen();
 long time();
-extern char errmsg[];
+
+int stat(), lstat();
+extern int (*statf)();
 
 /* track's internal functions which need decl's */
 
@@ -156,11 +155,14 @@ extern char *next_def_except();
 extern struct stat *dec_entry(), *dec_statfile();
 extern int entrycmp(), statlinecmp();
 extern char *follow_link();
+extern char *goodname();
 extern char **initpath();
 extern char *make_name();
 extern FILE *opensubfile();
 extern char *re_conv();
 extern char *resolve();
+
+#define SIGN( i) (((i) > 0)? 1 : ((i)? -1 : 0))
 
 /* make a sortkey out of a pathname.
  * because several printing characters, notably '.',

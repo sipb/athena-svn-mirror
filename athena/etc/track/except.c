@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.3 1987-12-03 20:36:59 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.4 1988-01-29 18:22:53 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.3  87/12/03  20:36:59  don
+ * fixed a portability bug in FASTEQ macro, and made yacc sort each
+ * exceptions-list, so that goodname can run faster.
+ * 
  * Revision 2.2  87/12/03  17:33:54  don
  * fixed lint warnings.
  * 
@@ -30,7 +34,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.3 1987-12-03 20:36:59 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.4 1988-01-29 18:22:53 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -38,45 +42,49 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include "track.h"
 
 /*
-**	routine to implement exception lists
-**	returns 1 if the filename matches the fromfile in entnum's entry,
-**			and does NOT match any of entnum's exceptions.
-**	returns 0 otherwise
+**	routine to implement exception lists:
+**	returns filename's addendum to entnum's fromfile
+**		if the filename matches the fromfile
+**		and does NOT match any of entnum's exceptions.
+**	returns NULL otherwise
 */
 
-int
-goodname( tail, entnum)
-char *tail;
+char *
+goodname( path, entnum)
+char *path;
 int entnum;
 {
-	char *pattern;
+	char *pattern, *tail;
 	int e, i;
 
-	switch( ( unsigned) *tail) {
-	case '\0': return( 1);
-	case '/':  break;
-	default: sprintf( errmsg, "bad tail value: %s\n", tail);
-		 do_gripe();
-		 return(0);
-	}
+	/* strip fromfile from path:
+	 * path   == fromfile/tail
+	 * keylen == strlen( fromfile).
+	 */
+	tail = path + entries[ entnum].keylen;
 
-	/* skip the leading slash: */
-	tail++;
-	
+	if ( ! *tail) return( tail);
+
+	while( *++tail == '/');
+
 	/*	compare the tail with each exception in both lists:
 	 *	the global list ( entries[0].exceptions[] ),
 	 *	and the current entry's exceptions list.
 	 *	both lists are sorted lexicographically, not by sortkey.
 	 */
 	for( e = 0; e <= entnum; e += entnum)
-		for( i=0; pattern = entries[ e].exceptions[ i]; i++)
+		for( i=0; pattern = entries[ e].exceptions[ i]; i++) {
 			switch ( SIGN( strcmp( pattern, tail))) {
-			case 1: break;
-			case 0: return( 0);
-			case -1: if ( match( pattern, tail)) return( 0);
+			case 1:  if ( (unsigned) *pattern > '^') break;
+			case -1: if ( ! match( pattern, tail)) continue;
+			case 0:  return( NULL);
 			}
-
-	return(1);
+			/* all further patterns are strings
+			 * which are lexic'ly greater than the tail.
+			 */
+			break;
+		}
+	return( tail);
 }
 
 char *

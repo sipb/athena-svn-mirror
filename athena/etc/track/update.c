@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.1 1987-12-03 17:33:18 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.2 1988-01-29 18:24:18 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.1  87/12/03  17:33:18  don
+ * fixed lint warnings.
+ * 
  * Revision 2.1  87/12/01  20:56:26  don
  * robustified file-updating, so that more failure-checking is done,
  * and so that if either utimes() or  set_prots() fails, the other will
@@ -25,12 +28,13 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.1 1987-12-03 17:33:18 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.2 1988-01-29 18:24:18 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
 
 #include "track.h"
+#include <sys/errno.h>
 
 int
 update_file(r, remlink, remotename,
@@ -154,8 +158,8 @@ struct stat *r;
 	struct stat sbuf;
 	int error = 0;
 
-	if ( lstat( name, &sbuf)) {
-		sprintf( errmsg, "can't lstat file &s\n", name);
+	if ( (*statf)( name, &sbuf)) {
+		sprintf( errmsg, "can't stat file &s\n", name);
 		do_gripe();
 		return(-1);
 	}
@@ -178,45 +182,50 @@ copy_file(from,to)
 char *from,*to;
 {
 	char buf[MAXBSIZE],temp[LINELEN];
-	int fdf,fdt,n;
+	int cc, fdf, fdt;
 
 	fdf = open(from,O_RDONLY);
 	if ( 0 > fdf) {
 		sprintf(errmsg,"can't open input file %s\n",from);
 		do_gripe();
-		return (1);
+		return(-1);
 	}
 	sprintf( temp,"%s_trk.tmp",to);
-	fdt = open( temp,O_WRONLY|O_CREAT);
-	if ( 0 > fdt) {
+
+	if ( 0 <= ( fdt = open( temp, O_WRONLY | O_CREAT)));
+
+	else if ( errno == ENOSPC) {
+		/* creates will fail before writes do,
+		 * when the disk is full.
+		 */
+		sprintf( errmsg, "no room for temp file %s\n", temp);
+		do_panic();
+	}
+	else {
 		sprintf(errmsg,"can't open temporary file %s\n",temp);
 		do_gripe();
-		return (1);
+		close( fdf);
+		return(-1);
 	}
-
-	for (;;) {
-		n = read(fdf,buf,sizeof buf);
-		if (!n)
+	while ( 0 < ( cc  = read(  fdf, buf, sizeof buf)))
+		if  ( cc != write( fdt, buf, cc))
 			break;
-		if (n < 0) {
-			sprintf(errmsg,"error while reading file %s\n",from);
-			do_gripe();
-			close(fdf);
-			close(fdt);
-			unlink( temp);
-			return (1);
-		}
-		if (write(fdt,buf,n) != n) {
-			sprintf(errmsg,"error while writing file %s\n",temp);
-			do_gripe();
-			close(fdf);
-			close(fdt);
-			unlink( temp);
-			exit(1);
-		}
-	}
+
 	close(fdf);
 	close(fdt);
+
+	switch( SIGN( cc)) {
+	case 0: break;
+	case -1:
+		unlink( temp);
+		sprintf( errmsg,"error while reading file %s\n",from);
+		do_gripe();
+		return(-1);
+	case 1:
+		unlink( temp);
+		sprintf( errmsg,"error while writing file %s\n",temp);
+		do_panic();
+	}
 	if ( rename( temp, to)) { /* atomic! */ 
 		sprintf( errmsg, "rename( %s, %s) failed!\n", temp, to);
 		do_panic();

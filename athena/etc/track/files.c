@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.1 1987-12-03 17:33:39 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.2 1988-01-29 18:23:52 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.1  87/12/03  17:33:39  don
+ * fixed lint warnings.
+ * 
  * Revision 2.0  87/11/30  15:19:24  don
  * general rewrite; got rid of stamp data-type, with its attendant garbage,
  * cleaned up pathname-handling. readstat & writestat now sort overything
@@ -15,7 +18,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.1 1987-12-03 17:33:39 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.2 1988-01-29 18:23:52 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -51,107 +54,6 @@ long maxtime;
 	return (retval);
 }
 
-/* 
-isdir(name)
-char *name;
-{
-	int retval;
-
-	retval = (gettype(name) == 'd');
-
-	if (debug)
-		printf("isdir(%s): %d\n",name,retval);
-
-	return(retval);
-}
-
-isfile(name)
-char *name;
-{
-	int retval;
-
-	retval = (gettype(name) == 'f');
-
-	if (debug)
-		printf("isfile(%s): %d\n",name,retval);
-
-	return (retval);
-}
-
-zerolen(name)
-char *name;
-{
-	struct stat sbuf;
-	int retval;
-
-	if(stat(name,&sbuf) == -1) {
-		sprintf(errmsg,
-			"can't find file %s in routine zerolen()\n",
-			name);
-		do_panic();
-	}
-
-	retval = sbuf.st_size;
-
-	if (debug)
-		printf("zerolen(%s): %d\n",name,retval);
-
-	return (retval);
-}
-
-gettype(name)
-char *name;
-{
-	struct stat sbuf;
-	int retval;
-
-	if (!lstat(name,&sbuf)) {
-		switch(sbuf.st_mode & S_IFMT) {
-			case S_IFDIR:
-				retval = 'd';
-				break;
-			case S_IFREG:
-				retval = 'f';
-				break;
-			case S_IFLNK:
-				retval = 'l';
-				break;
-			case S_IFCHR:
-				retval = 'c';
-				break;
-			case S_IFBLK:
-				retval = 'b';
-				break;
-			default:
-				sprintf(errmsg,
-					"gettype -- bad file mode for %s\n",
-					name);
-				do_panic();
-		}
-	}
-	else
-		retval = '*';
-
-	if (debug)
-		printf("gettype(%s): %c\n",name,retval);
-
-	return (retval);
-}
-
-islink(name)
-char *name;
-{
-	int retval;
-
-	retval = (gettype(name) == 'l');
-
-	if (debug)
-		printf("islink(%s): %d\n",name,retval);
-
-	return (retval);
-}
-*/
-
 char *follow_link( name)
 char *name;
 {
@@ -178,25 +80,82 @@ char *name;
 	 * and then only if the sublist entry starts with '!'.
 	 */
 	static char path[ LINELEN];
-	char *linkval = name;	/* return unqualified name if it's not link */
+	static char home[ LINELEN] = "";
+	char *end, *linkval = path;
 	struct stat sbuf;
 
-	sprintf( path, "%s%s", writeflag ? fromroot : toroot, name);
+	sprintf( path, "%s/%s", fromroot, name);
+	if( stat( path, &sbuf)) {
+		sprintf( errmsg, "can't stat %s/%s\n", fromroot, name);
+		do_gripe();
+		return("");
+	}
+	if ( ! *home) getwd( home);
 
 	while ( 1) {
 		if ( lstat( path, &sbuf)) {
 			sprintf( errmsg, "can't lstat %s\n", path);
 			do_gripe();
+			chdir( home);
 			return("");
 		}
 		if ( S_IFLNK != TYPE( sbuf))
-			return( linkval);
+			break;
 
-		if ( NULL == ( linkval = follow_link( path)))
-			return( name);	/* back out. something's broken */
-
+		if ( NULL == ( linkval = follow_link( path))) {
+			/* back out. something's broken */
+			chdir( home);
+			return( name);
+		}
+		if ( *linkval != '/' && ( end = rindex( path, '/'))) {
+			/* linkval isn't an absolute pathname, and
+			 * we're not already in path's parent dir.
+			 * relocate to the parent, so we can lstat linkval:
+			 */
+			*end = '\0';
+			chdir( path);
+		}
 		strcpy( path, linkval);
 	}
+	/* reduce  linkval to its optimal absolute pathname:
+	 * we do this by chdir'ing to linkval's parent-dir,
+	 * so that getwd() will optimize for us.
+	 */
+	if ( *linkval == '/');
+	else if ( end = rindex( linkval, '/')) {
+		/* make relative path to parent
+		 */
+		*end = '\0';
+		getwd(  path);
+		strcat( path, "/");
+		strcat( path, linkval);
+		if ( chdir( path)) {
+			sprintf( errmsg, "can't resolve link %s/%s\n",
+				 fromroot, name);
+			do_gripe();
+			chdir( home);
+			return("");
+		}
+		getwd( path);
+		*end = '/';
+		strcat( path, end);
+		linkval = path;
+	}
+	else {			/* path is linkval's parent */
+		getwd(  path);
+		strcat( path, "/");
+		strcat( path, linkval);
+		linkval = path;
+	}
+	if ( strncmp( linkval, fromroot, strlen( fromroot))) {
+		sprintf( errmsg, "link %s->%s value not under mountpoint %s\n",
+			 name, linkval, fromroot);
+		do_gripe();
+		linkval = "";
+	}
+	linkval += strlen( fromroot) + 1;
+	chdir( home);
+	return( linkval);
 }
 
 /*
@@ -277,8 +236,8 @@ int type;
 	/* caller can pass us the file-type, if he's got it:
 	 */
 	if ( type != 0);
-	else if ( lstat( name, &sbuf)) {
-		sprintf( errmsg, "can't lstat %s\n", name);
+	else if ( (*statf)( name, &sbuf)) {
+		sprintf( errmsg, "can't stat %s\n", name);
 		do_gripe();
 		return(-1);
 	}

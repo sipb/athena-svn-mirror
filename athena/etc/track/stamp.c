@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.3 1987-12-03 19:50:02 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.4 1988-01-29 18:24:02 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.3  87/12/03  19:50:02  don
+ * moved SIGN macro to track.h.
+ * 
  * Revision 2.2  87/12/03  17:31:15  don
  * fixed rt-port bug in dec_statfile's use of sscanf():
  * can't fill a short int directly, because sscanf will interpret it
@@ -27,7 +30,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.3 1987-12-03 19:50:02 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.4 1988-01-29 18:24:02 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -55,11 +58,14 @@ char type_char[] = " cdbfls*89ABCDEF";
 write_statline( path, s)
 char **path; struct stat *s;
 {
-	char  *linebuf, *linkval, type;
+	char  *linebuf, *linkval, *name, type;
 	struct stat fromstat;
 	unsigned size;
 
-	if ( lstat( path[ ROOT], &fromstat)) {
+	if ( S_IFMT == TYPE( *s))	/* couldn't stat cmpfile */
+		s = &fromstat;
+
+	if ( (*statf)( path[ ROOT], &fromstat)) {
 		sprintf(errmsg,"can't stat %s\n", path[ ROOT]);
 		do_gripe();
 		return( S_IFMT);
@@ -77,23 +83,29 @@ char **path; struct stat *s;
 			do_panic();
 		}
 	}
-	KEYCPY( statfilebufs[ cur_line].sortkey, path[ NAME]);
+	/* root is a special case:
+	 * its "relative path" is "", which dec_statfile() can't read.
+	 */
+	name = path[ NAME];
+	if ( !*name) name = "/";
+
+	KEYCPY( statfilebufs[ cur_line].sortkey, name);
 
 	/* XXX: see type_char[]
 	 */
-	type = type_char[ TYPE( *s) >> 13 ];
+	type = type_char[ TYPE( fromstat) >> 13 ];
 
 	linebuf = statfilebufs[ cur_line].line;
 
-	switch( TYPE( *s)) {
+	switch( TYPE( fromstat)) {
 	case S_IFREG:
 	case S_IFDIR:
-                sprintf( linebuf, "%c%s %d.%d.%o.%ld\n", type, path[ NAME],
+                sprintf( linebuf, "%c%s %d.%d.%o.%ld\n", type, name,
 		 	 UID( *s), GID( *s), MODE( *s), TIME( *s));
 		break;
 	case S_IFBLK:
 	case S_IFCHR:
-                sprintf( linebuf, "%c%s %d.%d.%o.%d\n", type, path[ NAME],
+                sprintf( linebuf, "%c%s %d.%d.%o.%d\n", type, name,
 		 	 UID( *s), GID( *s), MODE( *s), DEV( *s));
 		break;
 	case S_IFLNK:
@@ -101,10 +113,10 @@ char **path; struct stat *s;
 			type = '*';	/* XXX */
 			linkval = "";
 		}
-		sprintf( linebuf, "%c%s %s\n", type, path[ NAME], linkval);
+		sprintf( linebuf, "%c%s %s\n", type, name, linkval);
 		break;
 	case S_IFMT:
-		sprintf( linebuf,"%c%s\n", type, path[ NAME]);
+		sprintf( linebuf,"%c%s\n", type, name);
 		break;
 	default:
 		sprintf( errmsg, "bad type for inode %d. apparent type = %c\n",
@@ -132,13 +144,53 @@ sort_stat() {
 	}
 }
 
+/* for sort_entries' use:
+ */
+exceptcmp( p, q) char **p, **q; {
+        return( strcmp( *p, *q));
+}
+
 sort_entries() {
+	char **e, *key, *tail;
+	int i, j, k;
 
 	/* NOTE: we assume that each entry begins with a sortkey string.
          * don't include entries[ 0] in the sort:
          */
         qsort( (char *)& entries[ 1], entrycnt - 1,
                sizeof(   entries[ 1]), strcmp);
+
+	/* for each entry's fromfile (call it A),
+	 * look for A's children amongst the subsequent entries,
+	 * and add any that you find to A's exception-list.
+	 */
+	for ( i = 1; i < entrycnt; i++) {
+	     for ( j = i + 1; j < entrycnt; j++) {
+		  key = entries[ j].sortkey;
+		  switch( keyncmp( key, i)) {
+		  case -1:
+		       break; /* get next i */
+		  case 0:
+		       tail = entries[j].fromfile + entries[i].keylen;
+		       while( '/' == *tail) tail++;
+		       for ( k=0; k < WORDMAX; k++) {
+			    e = &entries[ i].exceptions[ k];
+			    if ( ! strcmp( tail, *e));	/* j already here */
+			    else if ( *e) continue;	/* keep looking */
+			    else savestr( e, tail);	/* j not here */
+			    break;	/* leave exceptions loop, goto case 1 */
+		       }
+		  case 1:
+		       continue;
+		  }
+		  break; /* leave j loop, get next i */
+	     }
+	     for ( k = 0;    entries[ i].exceptions[ k]; k++);
+
+	     qsort( (char *)&entries[ i].exceptions[ 0], k,
+		     sizeof( entries[ 1].exceptions[ 0]),
+		     exceptcmp);
+	}
 }
 
 /*
@@ -196,6 +248,20 @@ char *line, *name, *link;
 		sprintf( errmsg, "garbled statfile: bad line = %s\n", line);
 		do_panic();
 	}
+	/* in the  statfile, which contains only relative pathnames,
+	 * "/" is the only pathname which can begin with a slash.
+	 * in entries[], the root appears as "", which is more natural,
+	 * because "" is "/"'s pathname relative to the mount-point fromroot.
+	 * and because pushpath() prepends slashes in the right places, anyway.
+	 * "" is hard to read with sscanf(), so we handle "/" specially:
+	 */
+	if ( '/' != *name);
+	else if ( ! name[ 1]) *name = '\0';
+	else {
+		sprintf(errmsg, "statfile passed an absolute pathname: %s\n",
+			name);
+		do_gripe();
+	}
 	s.st_uid   = (short) u;
 	s.st_gid   = (short) g;
 	s.st_mode |= (short) m & 07777;
@@ -209,79 +275,86 @@ char *line, *name, *link;
  * via the KEYCPY macro.
  */
 
-/* since keys are homologous to pathnames,
- * we can speak of one key containing another,
- * just as paths do: path-components have to match exactly,
- * but r can have more components that l:
- */
-#define SUBPATH( r, l, n) ('\001' == (r)[n] || '\0' == (r)[n])
-
 int cur_ent = 0;	/* not global! index into entries[]. */
 
 init_next_match() {
 	cur_ent = 1;
 }
-int
-last_match( remkey, i) char *remkey; int i; {
-	char *key;
-	int len;
 
-	/* look-ahead to find last sub-list entry that matches
-	 * the current statline:
-	 */
-	for ( ; i < entrycnt; i++) {
-		key = entries[ i].sortkey;
-		len = entries[ i].keylen;
-		if ( strncmp( remkey, key, len) ||
-	           ! SUBPATH( remkey, key, len))
-			return( i - 1);
-	}
-	return( entrycnt - 1);
+int
+get_next_match( name)
+char *name;
+{
+	int i = cur_ent;
+	char key[ LINELEN];
+
+	KEYCPY( key, name);
+
+	for ( ; cur_ent < entrycnt; cur_ent++)
+		switch ( keyncmp( key, cur_ent)) {
+		case 0:  return( cur_ent);
+		case -1: return( 0); 		/* advance name's    key */
+		case 1:  continue;		/* advance cur_ent's key */
+		}
+
+	return( -1); /* out of entries */
 }
 
+/* last_match:
+ * we know that path begins with entnum's fromfile,
+ * but path may also match other entries.
+ * for example, the path /a/b/c matches the entries /a & /a/b.
+ * we want the longest entry that matches.
+ * look-ahead to find last sub-list entry that matches
+ * the current pathname: this works because by keyncmp,
+ *	    /	is greater than		/Z...
+ *	   |	matches			/a
+ *	   |	is greater than		/a/a
+ *	   \	matches			/a/b
+ * a/b/c   <	is greater than		/a/b/a
+ *	   /	matches			/a/b/c
+ *	   |	is less than		/a/b/c/a
+ *	   |	is less than		/a/b/d
+ *	    \	is less than		/a/c...
+ * NOTE that the right-hand column is sorted by key,
+ * and that the last match is the longest.
+ */
 int
-get_next_match( remstatline)
-char *remstatline;
-{
-	char *lkey, rkey[ LINELEN], remname[ LINELEN];
-	int klen;
+last_match( path, entnum) char *path; int entnum; {
+	int i;
+	char key[ LINELEN];
 
-	while ( NULL != fgets( remstatline, LINELEN, statfile)) {
-		/* extract just the filename from the statline:
-		 */
-		sscanf( remstatline, "%*c%s ", remname);
-		KEYCPY( rkey, remname);
-
-		/* find the subscription entry corresponding to the
-		 * current statline.
-		 * if we reach an entry which is lexicographically greater
-		 * than the current statline, get a new statline.
-		 * both entries[] & statfile must be sorted by sortkey!
-		 */
-		for ( ; cur_ent < entrycnt; cur_ent++) {
-			lkey = entries[ cur_ent].sortkey;
-			klen = entries[ cur_ent].keylen;
-			switch ( SIGN( strncmp( rkey, lkey, klen))) {
-			case 0: if (   SUBPATH( rkey, lkey, klen))
-					return( last_match( rkey, cur_ent + 1));
-			case -1: break; 
-			case 1: continue;
-			}
-			break; /* entries array is ahead of statfile.
-				* go to outer loop & read statfile.  */
+        KEYCPY( key, path);
+        for ( i = entnum + 1; i < entrycnt; i++) {
+                switch ( keyncmp( key, i)) {
+		case -1: break;		/* quit at   /a/b/d */
+		case 0:  entnum = i;	/* remember  /a or /a/b */
+		case 1:  continue;	/* skip over /a/a */
 		}
-		/* XXX: when the inner loop walks off the end of entries[],
-		 * entries[ cur_ent] is garbage; but, the loop is faster
-		 * this way. the caller shouldn't be looking at cur_ent's value,
-		 * since we're saying "the party's over", but let's clean up,
-		 * anyway.
-		 */
-		if ( cur_ent >= entrycnt) {
-			cur_ent = 0;
-			return( 0);
-		}
+		break; /* quit loop */
 	}
-	return( 0);
+	return( entnum);
+}
+
+/* compare the path r with i's sortkey in the following way:
+ * if the key is a subpath of r, return 0, as a match.
+ * if the key is < or > r, return 1 or -1  respectively.
+ */
+int
+keyncmp( r, i) char *r; int i; {
+	char *l;
+	int diff, n;
+
+	l = entries[ i].sortkey;
+	n = entries[ i].keylen;
+
+	diff = SIGN( strncmp( r, l, n));
+
+	/* if diff == 0 & n != 0 ( l isn't root) &
+	 * r[n] == '\0' or '\001', we have a match.
+	 * if n == 0, l is root, which matches everything.
+	 */
+	return( diff? diff: n ? ( (unsigned) r[n] > '\001') : 0);   /* XXX */
 }
 
 struct stat *dec_entry( entnum, fr, to, cmp)
@@ -297,8 +370,14 @@ int entnum; char *fr[], *to[], *cmp[]; {
 	pushpath( to,  entries[ entnum].tofile);
 	pushpath( cmp, entries[ entnum].cmpfile);
 	
-	if ( lstat( cmp[ ROOT], &sbuf)) {
+	/* this function-var is global, and used generally.
+	 */
+	statf = entries[ entnum].followlink ? stat : lstat;
+
+	if ( (*statf)( cmp[ ROOT], &sbuf)) {
 		sbuf.st_mode = S_IFMT;	/* klooge for bad type */
+		sprintf( errmsg, "can't stat comparison-file %s", cmp[ ROOT]);
+		do_gripe();
 	}
 	prev_ent = entnum;
 	return( &sbuf);
@@ -308,34 +387,49 @@ int entnum; char *fr[], *to[], *cmp[]; {
  * which typically is a UNIX pathname.
  * the first element CNT of the stack points to a depth-counter.
  * the second element ROOT points to the beginning of the pathname string.
- * subsequent elements point to substrings of the pathname.
+ * subsequent elements point to terminal substrings of the pathname.
+ * a slash precedes each element.
  */
+#define COUNT(p) (*(int*)p[CNT])
 char **
-initpath( ) {
+initpath( name) char *name; {
 	char **p;
 
+	/* for each stack-element, alloc a pointer 
+	 * and 15 chars for a filename:
+	 */
 	p =      (char **) malloc( stackmax * sizeof NULL);
 	p[ CNT] = (char *) malloc( stackmax * 15 + sizeof ((int) 0));
-	p[ ROOT] = p[ CNT] + sizeof ((int) 0);
-	*( int*)p[ CNT] = 0;
+	COUNT( p) = 1;
+	p[ ROOT] = p[ CNT] + sizeof ((int) 1);
+	strcpy( p[ ROOT], name);
+	p[ NAME] = p[ ROOT] + strlen( name);
 	return( p);
 }
 int
 pushpath( p, name) char **p; char *name; {
-	int i;
+	char *top;
+
 	if ( ! p) return( -1);
-	if ( stackmax <= *( int*)p[ CNT]) {
-		sprintf( errmsg, "%s\n%s\n%s %s.\n",
+	if ( ++COUNT( p) >= stackmax) {
+		sprintf( errmsg, "%s\n%s\n%s %d.\n",
 			"path stack overflow: directory too deep:", p[ ROOT],
 			"use -S option, with value >", stackmax);
 		do_panic();
 	}
-	i = ++*( int*)p[ CNT];
-	strcpy( p[ i], name);
-	p[ i + 1] = p[ i] + strlen( name);
-	return( i);
+	*p[ COUNT( p)]++ = '/';
+	top = p[ COUNT( p)];
+	strcpy( top, name);
+	p[ COUNT( p) + 1] = top + strlen( top);
+	return( COUNT( p));
 }
 poppath( p) char **p; {
-	if ( ! p) return;
-	if ( *(int*)p[ CNT]) --*(int*)p[ CNT];
+	if ( ! p);
+	else if ( 1 <  COUNT( p)) /* remove element's initial slash */
+		*--p[  COUNT( p)--] = '\0';
+	else {
+		sprintf(errmsg,"can't pop root from path-stack");
+		do_panic();
+	}
+	return;
 }

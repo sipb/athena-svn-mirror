@@ -1,6 +1,6 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.7 1987-12-09 15:40:45 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.8 1988-01-29 18:24:10 don Exp $
  *
  *	$Log: not supported by cvs2svn $
  * Revision 2.6  87/12/07  18:25:49  don
@@ -34,7 +34,7 @@
  * Revision 2.1  87/12/01  16:45:00  don
  * fixed bugs in readstat's traversal of entries] and statfile:
  * cur_ent is no longer global, but is now part of get_next_match's
- * state. also, last_match() was causing entries[]'s last element to be
+ ()* state. also, last_match() was causing entries[]'s last element to be
  * skipped.
  * 
  * Revision 2.0  87/11/30  15:14:38  don
@@ -70,7 +70,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.7 1987-12-09 15:40:45 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.8 1988-01-29 18:24:10 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -116,9 +116,15 @@ int uflag = NO_CLOBBER;	/* if set, copy a older file on top of a newer one */
 int debug = 0;		/* if set, print debugging information */
 int incl_devs = 0;	/* if set, include devices in update */
 
-Entry entries[ ENTRYMAX];		/* Subscription list entries */
-int entrycnt = 0;			/* Number of entries */
-int entnum = 0;			/* Current entry number */
+/* initialize the global entry-counters with bad values,
+ * so that printmsg() can detect them.
+ */
+Entry entries[ ENTRYMAX];	/* Subscription list entries */
+int entrycnt = -1;		/* Number of entries */
+int entnum = -1;		/* Current entry number */
+
+int (*statf)();			/* dec_entry() sets value to stat() or lstat(),
+				 * according to entries[].followlinks */
 
 main(argc,argv)
 int argc;
@@ -152,7 +158,12 @@ char **argv;
 		 *    Specify source "root" directory.
 		 */
 		case 'F':
-			get_arg(fromroot,argv,&i);
+			get_arg(scratch,argv,&i);
+			if (*scratch != '/') {
+				getwd(  fromroot);
+				strcat( strcat( fromroot, "/"), scratch);
+			}
+			else strcpy( fromroot, scratch);
 			break;
 		/* -p
 		 *    Parse only.  Display a detailed list of the fields in the
@@ -172,7 +183,12 @@ char **argv;
 		 *    Specify destination "root" directory.
 		 */ 
 		case 'T':
-			get_arg(toroot,argv,&i);
+			get_arg(scratch,argv,&i);
+			if (*scratch != '/') {
+				getwd(  toroot);
+				strcat( strcat( toroot, "/"), scratch);
+			}
+			else strcpy( toroot, scratch);
 			break;
 		/* -d dirname
 		 *    Specify the working directory for
@@ -261,12 +277,32 @@ char **argv;
 	 */
 	if (!interactive)
 		setuperr();
+
+	/* check for existence of root directories:
+	 * we shouldn't create them, as they are likely to be remote,
+	 * so that the user may have forgotten to attach them.
+	 */
+	if ( *fromroot && access( fromroot, 0)) {
+		sprintf(errmsg,"can't access source root-directory %s\n",
+			fromroot);
+		do_panic();
+	}
+	if ( !writeflag && *toroot && access( toroot, 0)) {
+		sprintf(errmsg,"can't access target root-directory %s\n",
+			toroot);
+		do_panic();
+	}
 	/*
 	 * Get the proper working directory,
 	 * where the subscription-list & statfile are.
 	 */
-	if ( ! *workdir)
-		sprintf( workdir, "%s%s", fromroot, DEF_WORKDIR);
+	switch  ( (unsigned) *workdir) {
+	case '\0': sprintf( workdir, "%s%s", fromroot, DEF_WORKDIR);
+	case '.':
+	case '/':  break;
+	default:   strcpy( scratch, workdir);
+		   sprintf( workdir, "%s/%s", fromroot, scratch);
+	}
 
         if ( ! *subfilepath)
 		sprintf( subfilepath, "%s/%s/%s",
@@ -301,13 +337,14 @@ char **argv;
 
 	openstat( statfilepath, writeflag);
 
-	if ( writeflag)		/* -w: Write the initial statfile */
+	if ( writeflag)		/* -w: Write the exporting statfile */
 		writestat();
 	else	readstat();
 
 	closestat();
 
 	clearlocks();
+	exit( 0);
 }			/* end of main() */
 
 #define pathtail( p) p[1+*(int*)p[CNT]]
@@ -318,31 +355,33 @@ readstat() {
 	char **from, **to, **cmp;
 	char *cmplink, *tail;
 
-	from = initpath();
-	to   = initpath();
-	cmp  = initpath();
-
-	pushpath( from, fromroot);
-	pushpath( to,   toroot);
-	pushpath( cmp,  toroot);
+	from = initpath( fromroot);
+	to   = initpath(   toroot);
+	cmp  = initpath(   toroot);
 
 	init_next_match();
 
-	while ( entnum = get_next_match( statline)) {
-
+	while ( NULL != fgets( statline, sizeof statline, statfile)) {
 		/* extract the currency data from the statline:
 		 */
 		remstatp = dec_statfile( statline, remname, remlink);
 		if ( S_IFMT == TYPE( *remstatp))
 			continue;
 
-		/* remname begins with entnum's fromfile:
+		/* find the subscription entry corresponding to the
+		 * current pathname.
+		 * if we reach an entry which is lexicographically greater than
+		 * the current pathname, read statfile for the next pathname.
+		 * both entries[] & statfile must be sorted by sortkey!
 		 */
-		tail = remname + strlen( entries[ entnum].fromfile);
+		if ( 0 >= ( entnum = get_next_match( remname))) continue;
 
-		if ( ! goodname( tail, entnum)) continue;
+		entnum = last_match( remname, entnum);
+
+		if ( ! ( tail = goodname( remname, entnum))) continue;
 
 		/* construct the current entry's full pathnames,
+		 * set statf to either stat or lstat,
 		 * and extract the corresponding currency data for
 		 * the local cmpfile:
 		 */
@@ -352,39 +391,38 @@ readstat() {
 		 * from, to, and cmp:
 		 * the element NAME of the path 'from' indicates the start of
 		 * entnum's fromfile-name;
-		 * the element pathtail() indicates the end of the pathname.
 		 * the same holds for the corresp. elements of 'to' & 'cmp'.
 		 */
 
-		/* add the tail onto the pathnames: don't need to push.
+		/* add the tail onto the pathnames:
 		 */
-		strcpy( pathtail( from), tail);
-		strcpy( pathtail( to), tail);
+		pushpath( from, tail);
+		pushpath( to,  tail);
+		pushpath( cmp, tail);
 
 		/* a directory can have a non-dir as its cmpfile:
 		 * we append tail to cmp only if cmp is a dir.
 		 * we change stat buffers, so as not to trash
 		 * dec_entry's value, which we'll need again.
 		 */
-		if ( S_IFDIR == TYPE( *cmpstatp) && *tail) {
-			strcpy( pathtail( cmp), tail);
-			if ( lstat( cmp[ ROOT], &treestat))
-				treestat.st_mode = S_IFMT;	/* XXX */
-			cmpstatp = &treestat;
-		}
+		if ( S_IFDIR != TYPE( *cmpstatp) || ! *tail);
+		else if ( (*statf)( cmp[ ROOT], &treestat))
+			treestat.st_mode = S_IFMT;	/* XXX */
+		else cmpstatp = &treestat;
+
 		if ( S_IFLNK != TYPE( *cmpstatp) ||
 		     NULL == ( cmplink = follow_link( cmp[ ROOT])))
 			cmplink = "";
 
-		if ( update_file( remstatp, remlink, from[ ROOT],
-				  cmpstatp, cmplink,   to[ ROOT]))
-			continue;
+		if ( ! update_file( remstatp, remlink, from[ ROOT],
+				    cmpstatp, cmplink,   to[ ROOT]))
 
-		/* do_cmds needs to be rewritten;
-		   so does command-handling part of the grammar.
-		   so does the sigchild-catchiong.
-		do_cmds( entries[entnum].cmdbuf, to[ ROOT]);
-		 */
+			/* do_cmds needs to be rewritten;
+			do_cmds( entries[entnum].cmdbuf, to[ ROOT]);
+			 */
+		poppath( from);
+		poppath( to);
+		poppath( cmp);
 	}
 }
 
@@ -446,32 +484,23 @@ writestat()
 	char **from, **cmp, **dummy = (char **) NULL;
 	struct stat *cmpstatp;
 
-	from = initpath();
-	cmp  = initpath();
-
-	pushpath( from, fromroot);
-	pushpath( cmp,  fromroot);
+	from = initpath( fromroot);
+	cmp  = initpath( fromroot);
 
 	for( entnum = 1; entnum < entrycnt; entnum++) {
 
 		/* dec_entry pushes pathname-qualification
-		 * onto the paths 'from' & 'cmp'.
+		 * onto the paths 'from' & 'cmp',
+		 * and pops when appropriate.
 		 */
 		cmpstatp = dec_entry( entnum, from, dummy, cmp);
 
 		/* write_statline returns fromfile's type:
 		 */
 		if      ( S_IFDIR != write_statline( from, cmpstatp));
-		else if ( S_IFDIR != TYPE( *cmpstatp )) {
-			/* a directory can use a non-dir as its cmp-file.
-			 * the type bits must match, though, if it's to mean
-			 * anything.
-			 */
-			(*cmpstatp).st_mode &= 0x7777;
-			(*cmpstatp).st_mode |= S_IFDIR;		/* XXX */
+		else if ( S_IFDIR != TYPE( *cmpstatp ))
 
 			walk_trees( from, dummy, cmpstatp);
-		}
 		else    walk_trees( from, cmp,   cmpstatp);
 
 		/* WARNING: walk_trees alters ALL of its arguments */
@@ -497,9 +526,6 @@ struct stat *cmpstatp;
 	DIR *dirp;
 	struct direct *dp;
 
-	pushpath( f, "/");
-	pushpath( c, "/");
-
 	dirp = opendir( f[ ROOT]);
 	if (!dirp) {
 		sprintf(errmsg,"can't open directory %s\n", f[ ROOT]);
@@ -515,16 +541,10 @@ struct stat *cmpstatp;
 		pushpath( f, dp->d_name);
 		pushpath( c, dp->d_name);
 
-		/* f[ TAIL] was the end of entnum's fromfile-name,
-		 * when writestat called walk_trees.
-		 * since that call, walk_trees has recursively appended
-		 * more pathname-qualification to f.
-		 * now, f[ TAIL] shows just these additions, without the
-		 * original fromfile-name.
-		 */
-		if (! goodname( f[ TAIL], entnum));
+		if ( ! goodname( f[ NAME], entnum));
+			/* skip to poppath() */
 
-		else if ( c && lstat( c[ ROOT], cmpstatp)) {
+		else if ( c && (*statf)( c[ ROOT], cmpstatp)) {
 			sprintf(errmsg,"can't stat %s\n", c[ ROOT]);
 			do_gripe();
 			/* give up, goto poppath() calls */
@@ -538,11 +558,6 @@ struct stat *cmpstatp;
 		poppath( c);
 	}
 	closedir(dirp);
-
-	/* remove slashes:
-	 */
-	poppath( f);
-	poppath( c);
 }
 
 /*

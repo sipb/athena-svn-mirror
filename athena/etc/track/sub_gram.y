@@ -5,14 +5,12 @@ char linebuf[1024];
 char wordbuf[256][256];
 int wordcnt = 0;
 %}
-%token WHITESPACE COLON BACKSLASH NEWLINE BACKNEW BANG WORD GEXCEPT
+%token WHITESPACE COLON BACKSLASH NEWLINE BACKNEW BANG WORD GEXCEPT ENDOFFILE
 %%
 sublist	: header entrylist opt_space 
 	;
 header	: 
 		{
-			entrycnt = 0;
-			clear_ent();
 			entrycnt = 1;
 			clear_ent();
 		}
@@ -27,7 +25,7 @@ header	:
 entrylist :
 	  |	entrylist entry
 	  ;
-entry	: linkmark fromname COLON cmpname COLON toname COLON except COLON shellcmd
+entry	: linkmark fromname COLON toname COLON cmpname COLON except COLON shellcmd opt_newline
 		{
 			entrycnt++;
 			clear_ent();
@@ -41,53 +39,63 @@ linkmark  :  opt_space
 	  ;
 fromname: WORD opt_space
 		{
-			savestr(&entries[entrycnt].fromfile,wordbuf[0]);
-			KEYCPY( entries[ entrycnt].sortkey, wordbuf[0]);
-			entries[ entrycnt].keylen = strlen( wordbuf[0]);
+			char *r = wordbuf[0];
+			while ( '/' == *r) r++;
+			savestr(&entries[entrycnt].fromfile,r);
+			KEYCPY( entries[ entrycnt].sortkey, r);
+			entries[ entrycnt].keylen = strlen( r);
 			doreset();
 		}
 	;
-cmpname :	
+toname  : opt_space
 		{
-			if (entries[entrycnt].followlink)
-			{
-				savestr(&entries[entrycnt].cmpfile,
-					resolve(entries[entrycnt].fromfile));
-			}
-			else
-			{
-				savestr(&entries[entrycnt].cmpfile,
-						entries[entrycnt].fromfile);
-			}
+			char *defname;
+
+			defname = entries[ entrycnt].followlink ?
+			 resolve( entries[ entrycnt].fromfile) :
+				  entries[ entrycnt].fromfile;
+
+			savestr( &entries[ entrycnt].tofile, defname);
 			doreset();
 		}
 	| opt_word
 		{
-			savestr(&entries[entrycnt].cmpfile,wordbuf[0]);
+			char *r = wordbuf[0];
+			while ( '/' == *r) r++;
+			if ( ! entries[ entrycnt].followlink)
+				savestr(&entries[entrycnt].tofile,r);
+			else	savestr(&entries[entrycnt].tofile,
+					 resolve( r));
 			doreset();
 		}
 	;
-toname  :
+cmpname : opt_space
 		{
-			if (entries[entrycnt].followlink)
-			{
-				savestr(&entries[entrycnt].tofile,
-					resolve(entries[entrycnt].fromfile));
-			}
-			else
-			{
-				savestr(&entries[entrycnt].tofile,
-						entries[entrycnt].cmpfile);
-			}
+			char * defname;
+
+			defname = writeflag ?
+				entries[ entrycnt].fromfile :
+				entries[ entrycnt].tofile;
+
+			if ( entries[entrycnt].followlink)
+				defname = resolve( defname);
+
+			savestr( &entries[ entrycnt].cmpfile, defname);
+
 			doreset();
 		}
 	| opt_word
 		{
-			savestr(&entries[entrycnt].tofile,wordbuf[0]);
+			char *r = wordbuf[0];
+			while ( '/' == *r) r++;
+			if ( ! entries[ entrycnt].followlink)
+				savestr(&entries[entrycnt].cmpfile,r);
+			else	savestr(&entries[entrycnt].cmpfile,
+					 resolve( r));
 			doreset();
 		}
 	;
-except  :
+except  : opt_space
 		{
 			doreset();
 		}
@@ -101,56 +109,62 @@ except  :
 			for (j=0;j<wordcnt;j++)
 			{
 				r = wordbuf[ j];
+				while ( '/' == *r && r[1]) r++;
 				if ( file_pat( r))
 					r = re_conv( r);
 				if ( duplicate( r, entrycnt)) continue;
+				if ( i >= WORDMAX) {
+					sprintf( errmsg,
+						"exception-list overflow\n");
+					do_panic();
+				}
 				savestr(&entries[entrycnt].exceptions[i++], r);
 			}
-			qsort( (char *)&entries[ entrycnt].exceptions[ 0], i,
-				sizeof( entries[	0].exceptions[ 0]),
-				exceptcmp);
 			doreset();
 		}
 	;
 wordlist: WORD
 	| wordlist opt_space WORD
 	;
-shellcmd: firstl shline NEWLINE
+shellcmd: nullcmd
 		{
-			if (strlen(linebuf) > 1)
-			{
-				savestr(&entries[entrycnt].cmdbuf,linebuf);
-			}
-			else
-			{
-				savestr(&entries[entrycnt].cmdbuf,"");
-			}
+			savestr(&entries[entrycnt].cmdbuf,"");
 			doreset();
-		} ;
-shline	: 
-	| shline WORD 
-	| shline COLON
-	| shline BANG
-	| shline BACKSLASH
-	| shline WHITESPACE
+		}
+	| shline
+		{
+			savestr(&entries[entrycnt].cmdbuf,linebuf);
+			doreset();
+		}
 	;
-firstl  : 
-	| firstl shline BACKNEW 
+nullcmd: | whitebacknew
+	;
+shline:   black
+	| whitebacknew black
+	| shline black
+	| shline WHITESPACE
+	| shline BACKNEW
+	;
+black:	  WORD
+	| COLON
+	| BANG
+	| BACKSLASH
+	;
+whitebacknew: 	WHITESPACE whitebacknew
+	|	BACKNEW    whitebacknew
+	|	BACKNEW
+	|	WHITESPACE
 	;
 opt_word: opt_space WORD opt_space
 	;
 opt_space:
 	| opt_space opt_ele
 	;
-opt_ele : NEWLINE
-	| WHITESPACE
+opt_ele : NEWLINE | WHITESPACE
 	;
-	
+opt_newline: NEWLINE | ENDOFFILE
+	;
 %%
-
-exceptcmp( p, q) char **p, **q; {
-	return( strcmp( *p, *q));
-}
 
 yyerror(s)
 char *s;

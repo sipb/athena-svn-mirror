@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.2 1987-12-03 17:34:00 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.3 1988-01-29 18:23:59 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.2  87/12/03  17:34:00  don
+ * fixed lint warnings.
+ * 
  * Revision 2.1  87/12/01  16:44:49  don
  * fixed bugs in readstat's traversal of entries] and statfile:
  * cur_ent is no longer global, but is now part of get_next_match's
@@ -24,7 +27,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.2 1987-12-03 17:34:00 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.3 1988-01-29 18:23:59 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -37,13 +40,24 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 printmsg()
 
 {
-	fprintf(stderr,
-		"%s, errno = %d -- %s\nWorking on list named %s and item %s\n",
-		prgname,
-		errno,
-		errmsg,
-		subfilename,
-		entries[ entnum].fromfile);
+	int i;
+	char *s;
+
+	perror("system error is");
+
+	if	( entnum >= 0)	i = entnum;	/* passed parser */
+	else if ( entrycnt >= 0)i = entrycnt;	/* in parser */
+	else			i = -1;		/* hard to tell */
+
+	if ( *subfilepath)	s = subfilepath;
+	else if ( *subfilename)	s = subfilename;
+	else			s = "<unknown>";
+
+	fprintf(stderr, "%s: %s\nWorking on list named %s",
+		prgname, errmsg, s);
+
+	if ( i < 0)	fprintf(stderr," before parsing a list-elt.\n");
+	else		fprintf(stderr," & item %s\n", entries[ i].fromfile);
 }
 
 do_gripe()
@@ -74,6 +88,8 @@ parseinit( subfile) FILE *subfile;
 	yyin = subfile;
 	yyout = stderr;
 	doreset();
+	entrycnt = 0;
+	clear_ent();
 }
 
 clear_ent()
