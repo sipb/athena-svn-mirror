@@ -1,0 +1,84 @@
+2001-02-20 John Fleck <jfleck@inkstain.net>
+
+	* update bugzilla reference in doc/C/gcalc.sgml and it/gcalc.sgml
+
+2001-02-01 John Fleck <jfleck@inkstain.net>
+
+	* update doc/it/Makefile.am to fix typo (we were referring to
+	ln7.html, but it's ln10.html)
+
+2000-11-19 John Fleck <jfleck@inkstain.net>
+	
+	* updated doc/C/Makefile.am to install sgml in help directory
+
+2000-11-08 John Fleck <jfleck@inkstain.net>
+	* updated gcalc.sgml for Nautilus compatibility
+
+2000-11-08  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* gcalc.desktop : Added lt.
+	
+2000-04-22  Fatih Demir	<kabalak@gmx.net>
+	
+	* gcalc.desktop : Added [tr] .
+
+2000-02-23  Peter Hawkins  <peterhawkins@ozemail.com.au>
+
+	* gcalc.c: Stopped about box from being opened multiple times.
+
+1999-04-28  Ettore Perazzoli  <ettore@comm2000.it>
+
+	* gcalc.desktop: Added Italian translations.
+
+1999-02-06  Changwoo Ryu  <cwryu@adam.kaist.ac.kr>
+
+	* gcalc.desktop: Added Korean translations.
+
+Thu Jan 07 23:49:05 1999  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: change back to file
+
+Thu Jan 07 23:44:28 1999  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: call the file menu, _Calculator again
+
+Wed Jan 06 17:47:53 1999  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: standardized menus with the new app-helper macros
+
+Sun Nov 29 02:37:39 1998  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: don't put a leading space to copied string
+
+Sun Nov 29 02:31:18 1998  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: fixed the Copy command, it now works properly after
+	  "stealing" some code from gtkeditable and realizing that the
+	  calculator widget is not a window widget and as such can't
+	  get selection events and stuff
+
+Fri Nov 13 02:30:34 1998  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: got rid of the foot, and edded the copy code, which
+	  doesn't seem to work at all
+
+1998-09-24  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* gcalc.c (main): Added shortcut support
+
+1998-09-22  Federico Mena Quintero  <federico@nuclecu.unam.mx>
+
+	* Makefile.am (EXTRA_DIST): Added missing pixmap files.  There we
+	go again.
+
+Tue Aug 25 00:49:28 1998  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: added the foot menu, added an edit menu, but got 
+	  scared after looking at how to do selections, will do that
+	  later
+
+Thu Apr 30 23:15:30 1998  George Lebl  <jirka@5z.com>
+
+	* gcalc.c: added support for the accel table from the
+	  calculator widget
+
