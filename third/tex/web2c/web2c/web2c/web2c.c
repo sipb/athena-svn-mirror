@@ -157,6 +157,7 @@ yyerror (s)
     fflush(stdout);
     fprintf(stderr, " %s\n", s);
     fprintf(stderr, "Last token = %d, ", last_tok);
+    fprintf(stderr, "error buffer = `%s',\n\t", yytext);
     fprintf(stderr, "last id = `%s' (", last_id);
     ii = search_table(last_id);
     if (ii == -1)
