@@ -4,13 +4,11 @@
 BUILDTOP=$(C)$(S)$(U)
 SRCS=kinit.c kdestroy.c klist.c ksu.c ksrvtgt.c
 CODE=$(SRCS) Makefile.in
+DEFINES=-DDEBUG
 LIBS= $(KRB_LIB) $(DES_LIB) $(SYS_LIBS)
 DEPLIBS= $(KRB_LIBDEP) $(DES_LIBDEP)
 
-# Kerberos 5 hackery.  Not the way it will be done in the future.
-KRB5DIR=/build/third/supported/kerberos5/src
-KRB5LIBS=-L$(KRB5DIR)/lib -L/usr/athena/lib -lkrb5 -lcrypto -lcom_err
-DEFINES=-DDEBUG -I$(KRB5DIR)/include
+KRB5LIBS=-L/usr/athena/lib -lkrb5 -lcrypto -lcom_err
 
 all:: kinit kdestroy klist ksu ksrvtgt
 
