@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 1997-04-24 22:19:23 ghudson Exp $
+# $Id: Makefile,v 1.10 1997-10-06 16:18:10 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -24,6 +24,7 @@ install:
 	install -c -m 555 answerbook.sh ${DESTDIR}${ATHBINDIR}/answerbook
 	install -c -m 555 cc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f77 ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${ATHBINDIR}/otalk
 	ln -s /usr/bin/talk ${DESTDIR}${ATHBINDIR}/otalk
 	rm -f ${DESTDIR}${USRLIBDIR}/cpp
