@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.10 1987-06-26 03:43:15 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.11 1987-06-29 00:34:28 rfrench Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -93,6 +93,9 @@ extern C_Block __Zephyr_session;
 	
 	/* ZGetFD() macro */
 #define ZGetFD() (__Zephyr_fd)
+
+	/* ZQLength macro */
+#define ZQLength() (__Q_Length)
 
 	/* ZGetDestAddr() macro */
 #define ZGetDestAddr() (__HM_addr)
