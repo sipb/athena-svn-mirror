@@ -3,11 +3,11 @@
  * printjob.c, with demon code references taken out.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v $
- * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7 1998-01-20 23:16:41 ghudson Exp $
+ * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7.2.1 1999-03-12 19:05:51 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7 1998-01-20 23:16:41 ghudson Exp $";
+static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7.2.1 1999-03-12 19:05:51 ghudson Exp $";
 #endif lint
 
 #define TMPDIR "/tmp"
@@ -170,6 +170,7 @@ sendfile(type, file)
 	for (i = 0;  ; i++) {
 		if (write(pfd, buf, amt) != amt ||
  		    (resp = response()) < 0 || resp == '\1') {
+		  	grab_verbose_error();
 			(void) close(f);
 			return(REPRINT);
 		} else if (resp == '\0')
@@ -242,6 +243,7 @@ sendfile(type, file)
 		cleanup();	/* Never returns */
 	    }
 #endif PQUOTA
+	    grab_verbose_error();
 	    return(REPRINT);
 	}
 	return(OK);
@@ -261,6 +263,32 @@ response()
 		return(-1);
 	}
 	return(resp);
+}
+
+/* 
+ * Some servers (LPRng) give a more verbose error message after a
+ * one-byte NAK.  Grab it and throw it to stderr if there is one.
+ * Return 0 if there was no verbose error to read (indicating a
+ * non-LPRng server), and 1 otherwise.
+ */
+grab_verbose_error()
+{
+	int i;
+	char buf[BUFSIZ];
+  
+
+	if ((i=read(pfd, buf, sizeof(buf)))==0) {
+		return 0;
+	}
+	if (i>0) write(2, buf, i);
+	while ((i=read(pfd, buf, sizeof(buf)))!=0) {
+		if (i<0) {
+			if (errno==EINTR) continue;
+			else break;
+		}
+		write(2, buf, i);
+	}
+	return 1;
 }
 
 /*
@@ -312,9 +340,13 @@ openpr()
 		    cleanup();
 		}
 		if ((resp = response()) != '\0') {
-		    if (resp == '\3') 
-			fprintf(stderr, "Authentication failed. Use kinit and then try again.\n");
-		    else fprintf(stderr, "Syncronization error.\n");
+		    if (!grab_verbose_error()) {
+			if (resp == '\3') 
+			    fprintf(stderr, "Authentication failed. Use kinit and then try again.\n");
+			else {
+			    fprintf(stderr, "Syncronization error.\n");
+			}
+		    }
 		    cleanup();
 		}
 	    }
@@ -325,26 +357,28 @@ openpr()
 	    if (write(pfd, line, n) == n &&
 		(resp = response()) == '\0')
 		break;
-	    (void) close(pfd);
 	}
 
 #ifdef KERBEROS
 	if (resp == '\2') {
-	    /* Should provide better error XXX */
-	    fprintf(stderr, "Printer requires kerberos authentication\n");
+	    if (!grab_verbose_error()) 
+		/* Should provide better error XXX */
+		fprintf(stderr, "Printer requires kerberos authentication\n");
 	    cleanup();
 	}
 
 #endif						/* KERBEROS */
 		    
 	if (resp > 0) {
-	    fprintf(stderr,	"Printer queue is disabled.\n");
+	    if (!grab_verbose_error())
+		fprintf(stderr,	"Printer queue is disabled.\n");
 	    cleanup();
 	}
 	if (i>6) {
 	    fprintf(stderr, "Unable to contact printer server.\n");
 	    cleanup();
 	}
+	(void) close(pfd);
 	sleep(5);
     }
     remote = 1;
