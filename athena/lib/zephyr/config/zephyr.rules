@@ -2,7 +2,7 @@
 /**/#	For copying and distribution information, see the file
 /**/#	"mit-copyright.h"
 /**/#
-/**/#	$Id: zephyr.rules,v 1.10 1994-11-14 15:03:57 ghudson Exp $
+/**/#	$Id: zephyr.rules,v 1.11 1994-11-29 05:26:21 ghudson Exp $
 
 /* General system configuration */
 #define KERBEROS	/* Has Kerberos installed */
@@ -66,7 +66,9 @@ DEFINES = $(XDEFS) -DX11 -I$(BINC) \
 	$(CDEFS_KRB) $(CDEFS_HES) $(CDEFS_ET) $(CDEFS_SS) \
 	$(MACHDEFS)
 
+#ifndef _AIX /* AIX ANSI CcCmd doesn't want to compile compile_et output. */
 AnsiCC()
+#endif
 
 /* 
  * Supplemental rules
