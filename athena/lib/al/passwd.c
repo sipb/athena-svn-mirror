@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.11 1998-05-31 15:32:31 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.11.2.1 1998-07-31 19:24:00 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -223,7 +223,7 @@ int al__add_to_passwd(const char *username, struct al_record *record,
     }
 
   have_nocrack = !access(PATH_NOCRACK, F_OK);
-  if (cryptpw && have_nocrack)
+  if (cryptpw && !have_nocrack)
     passwd = cryptpw;
   else
     passwd = pwd->pw_passwd;
