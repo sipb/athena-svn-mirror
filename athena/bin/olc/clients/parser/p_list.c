@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.2 1990-01-17 02:53:50 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.3 1990-02-06 02:37:55 raeburn Exp $";
 #endif
 
 
@@ -50,6 +50,7 @@ do_olc_list(arguments)
   char instances[NAME_SIZE];
   char sort[NAME_SIZE][NAME_SIZE];
   char *sortP[NAME_SIZE];
+  char **sortPP = sortP;
   char file[NAME_SIZE];
   int savefile = FALSE;
   int comments = 0;
@@ -204,7 +205,9 @@ do_olc_list(arguments)
 	  continue;
 	}
 	
-      if(string_equiv(*arguments,"-sort",max(strlen(*arguments),3)))
+#if 0
+       
+       if(string_equiv(*arguments,"-sort",max(strlen(*arguments),3)))
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
@@ -236,6 +239,19 @@ do_olc_list(arguments)
 	  sortP[i] = &sort[i][0];
 	  continue;
 	}
+
+#else
+       if (!strcmp (*arguments, "-sort")) {
+	   ++arguments;
+	   if (*arguments == (char *) NULL)
+	       return ERROR;
+	   if (*arguments[0] == '-')
+	       return ERROR;
+	   *sortPP++ = *arguments++;
+	   *sortPP = NULL;
+       }
+#endif
+
 
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
