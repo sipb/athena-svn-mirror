@@ -1,14 +1,15 @@
 /* 
  * Imakefile for the FX (file exchange) intermediate level
  *
- * $Author: probe $
+ * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.2 1991-06-30 15:32:13 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.3 1992-04-27 12:56:53 epeisach Exp $
  *
  * Copyright (c) 1989, Massachusetts Institute of Technology
  *
  */
 
+AnsiCC()
 
 /* Client-server protocol, error tables kept in separate directories */
 PROTDIR=../protocol
@@ -44,15 +45,12 @@ FXCLOBJ = _fx_lengthen.o	fx_create.o		fx_move.o \
 
 #if defined(_IBMR2)
 INCLUDES = -I../include
-LIBS = -L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err
 #else
 INCLUDES = -I../rpc3.9/usr/include -I../include
-LIBS = -L../rpc3.9/usr/lib -L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err -lrpclib
 #endif
+LIBS = -L../rpc3.9/usr/lib -L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err -lfxrpc
 
 DEFINES = ${INCLUDES} -DKERBEROS -DHESIOD
-
-AnsiCC()
 
 build_library(fxcl,${FXCLOBJ})
 
@@ -69,3 +67,7 @@ saber_src:
 
 clean::
 	rm -f *.o core *~ libfxcl.a llib-lfxcl.ln libacl.a
+
+install::
+	install_library(fxcl,${ATHLIBDIR})
+
