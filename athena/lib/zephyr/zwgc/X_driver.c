@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v 1.2 1989-11-02 01:54:08 marc Exp $";
+static char rcsid_X_driver_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v 1.3 1989-11-03 02:13:38 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -54,7 +54,7 @@ Display *dpy = NULL;
  */
 
 #ifndef  APPDEFDATABASE
-#define  APPDEFDATABASE "/afs/athena.mit.edu/astaff/project/zephyr/src/zwgc/zwgc.dev/zwgc_resources"
+#define  APPDEFDATABASE "/afs/athena.mit.edu/astaff/project/zephyr/src/zwgc/zwgc.dev/misc/zwgc_resources"
 #endif
 
 /*
