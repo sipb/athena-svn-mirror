@@ -512,6 +512,9 @@ int decomp_ticket PROTOTYPE((KTEXT , unsigned char *, char *, char *, char *, un
 /* dest_tkt.c */
 int dest_tkt PROTOTYPE((void ));
 
+/* err_txt.c */
+const char *krb_get_err_text PROTOTYPE((int));
+
 /* extract_ticket.c */
 int extract_ticket PROTOTYPE((KTEXT , int , char *, int *, int *, char *, KTEXT ));
 
