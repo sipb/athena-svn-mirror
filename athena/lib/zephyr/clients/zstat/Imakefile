@@ -4,16 +4,17 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v $
-/**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v 1.5 1989-04-11 13:46:29 jtkohl Exp $
+/**/#	$Author: raeburn $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v 1.6 1990-11-16 11:19:45 raeburn Exp $
 /**/#
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB}
 LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB}
 SRCS = zstat.c
 OBJS = zstat.o
+HDRS = zserver.h
 
 SRCDIR= ${SRCTOP}/clients/zstat
-CODE= ${SRCS} Imakefile
+CODE= ${SRCS} ${HDRS} Imakefile
 
 /* dummy rule so 'make' means 'make all' */
 all::
