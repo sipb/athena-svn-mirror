@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v 1.3 1993-09-24 16:17:38 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v 1.4 1993-11-19 15:22:56 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZAsyncLocate_c[] = "$Id: ZAsyncLocate.c,v 1.3 1993-09-24 16:17:38 probe Exp $";
+static char rcsid_ZAsyncLocate_c[] = "$Id: ZAsyncLocate.c,v 1.4 1993-11-19 15:22:56 probe Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -31,7 +31,7 @@ Code_t ZRequestLocations(user, zald, kind, auth)
 	if ((retval = ZOpenPort((u_short *)0)) != ZERR_NONE)
 	    return (retval);
 
-    (void) _BZERO((char *)&notice, sizeof(notice));
+    (void) memset((char *)&notice, 0, sizeof(notice));
     notice.z_kind = kind;
     notice.z_port = __Zephyr_port;
     notice.z_class = LOCATE_CLASS;
@@ -166,5 +166,5 @@ void ZFreeALD(zald)
 
    if (zald->user) free(zald->user);
    if (zald->version) free(zald->version);
-   _BZERO(zald, sizeof(*zald));
+   (void) memset(zald, 0, sizeof(*zald));
 }

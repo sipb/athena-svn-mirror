@@ -11,11 +11,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.23 1993-09-24 16:19:03 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.24 1993-11-19 15:23:06 probe Exp $ */
 
 #ifndef lint
 static char rcsid_ZRetrieveSubscriptions_c[] =
-    "$Id: ZRetSubs.c,v 1.23 1993-09-24 16:19:03 probe Exp $";
+    "$Id: ZRetSubs.c,v 1.24 1993-11-19 15:23:06 probe Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -38,7 +38,7 @@ Code_t ZRetrieveSubscriptions(port,nsubs)
 				 sizeof(u_short))) != ZERR_NONE)
 		return (retval);
 
-	(void) _BZERO((char *)&notice, sizeof(notice));
+	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_message = asciiport;
 	notice.z_message_len = strlen(asciiport)+1;
 	notice.z_opcode = CLIENT_GIMMESUBS;
@@ -51,7 +51,7 @@ Code_t ZRetrieveDefaultSubscriptions(nsubs)
 {
 	ZNotice_t notice;
 
-	(void) _BZERO((char *)&notice, sizeof(notice));
+	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_message = (char *) 0;
 	notice.z_message_len = 0;
 	notice.z_opcode = CLIENT_GIMMEDEFS;

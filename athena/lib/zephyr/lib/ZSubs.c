@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.18 1993-09-24 16:19:05 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.19 1993-11-19 15:23:07 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.18 1993-09-24 16:19:05 probe Exp $";
+static char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.19 1993-11-19 15:23:07 probe Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -83,7 +83,7 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
     if (!list)
         return (ENOMEM);
 
-    (void) _BZERO((char *)&notice, sizeof(notice));
+    (void) memset((char *)&notice, 0, sizeof(notice));
     notice.z_kind = ACKED;
     notice.z_port = port;
     notice.z_class = ZEPHYR_CTL_CLASS;

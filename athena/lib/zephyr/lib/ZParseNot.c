@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.24 1993-09-24 16:19:13 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.25 1993-11-19 15:23:04 probe Exp $ */
 
 #ifndef lint
 static char rcsid_ZParseNotice_c[] =
@@ -99,7 +99,7 @@ Code_t ZParseNotice(buffer, len, notice)
 #define BAD	goto badpkt
 #endif
 
-    _BZERO((char *)notice, sizeof(ZNotice_t));
+    (void) memset((char *)notice, 0, sizeof(ZNotice_t));
 	
     ptr = buffer;
     end = buffer+len;
