@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.7 1990-01-10 11:43:27 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.8 1990-04-25 17:02:28 vanharen Exp $";
 #endif
 
 
@@ -39,6 +39,7 @@ static DBM *dbp = (DBM *) NULL;
 #endif /* NDBM */
 
 extern ACL  Acl_List[];
+extern int NotWhiteSpace();
 
 #ifdef __STDC__
 static int get_user_info (USER *);
@@ -142,7 +143,7 @@ load_db()
 	  fclose(fp);
 	  return(ERROR);
 	}
-      db = get_next_word(db,t->name);
+      db = get_next_word(db, t->name, NotWhiteSpace);
       sprintf(t->acl,"%s/%s.acl",SPECIALTY_DIR,t->name);
       t->value = i;
       insert_topic(t);
@@ -214,11 +215,11 @@ get_user_info(user)
   if(d.dptr != (char *) NULL)
     {
       ptr = d.dptr;
-      ptr = get_next_word(ptr, user->title1);
-      ptr = get_next_word(ptr, buf);
+      ptr = get_next_word(ptr, user->title1, NotWhiteSpace);
+      ptr = get_next_word(ptr, buf, NotWhiteSpace);
       user->max_ask = atoi(buf);
-      ptr = get_next_word(ptr, user->title2);
-      ptr = get_next_word(ptr, buf);
+      ptr = get_next_word(ptr, user->title2, NotWhiteSpace);
+      ptr = get_next_word(ptr, buf, NotWhiteSpace);
       user->max_answer = atoi(buf);
     }
   
@@ -328,14 +329,14 @@ get_user_info(user)
 	continue;
       else
 	{
-	  db = get_next_word(db,buf);	  
+	  db = get_next_word(db, buf, NotWhiteSpace);
 	  if(string_eq(canon,buf))
 	    {
-	      db = get_next_word(db, user->title1);
-	      db = get_next_word(db, buf);
+	      db = get_next_word(db, user->title1, NotWhiteSpace);
+	      db = get_next_word(db, buf, NotWhiteSpace);
 	      user->max_ask = atoi(buf);
-	      db = get_next_word(db, user->title2);
-	      db = get_next_word(db, buf);
+	      db = get_next_word(db, user->title2, NotWhiteSpace);
+	      db = get_next_word(db, buf, NotWhiteSpace);
 	      user->max_answer = atoi(buf);
 #ifdef TEST
 	      printf("%s %s %d %s %d\n",canon, user->title1, user->max_ask,
