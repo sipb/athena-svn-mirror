@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.14 1993-09-24 16:19:00 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.15 1993-11-19 15:25:48 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZReceivePacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.14 1993-09-24 16:19:00 probe Exp $";
+static char rcsid_ZReceivePacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.15 1993-11-19 15:25:48 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -37,7 +37,7 @@ Code_t ZReceivePacket(buffer, ret_len, from)
     if (*ret_len > Z_MAXPKTLEN)
 	return (ZERR_PKTLEN);
     
-    _BCOPY(nextq->packet, buffer, *ret_len);
+    (void) memcpy(buffer, nextq->packet, *ret_len);
 
     if (from)
 	*from = nextq->from;

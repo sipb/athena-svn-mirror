@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.12 1993-09-24 16:19:22 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.13 1993-11-19 15:25:43 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZIfNotice_c[] = "$Id: ZIfNotice.c,v 1.12 1993-09-24 16:19:22 probe Exp $";
+static char rcsid_ZIfNotice_c[] = "$Id: ZIfNotice.c,v 1.13 1993-11-19 15:25:43 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -44,7 +44,7 @@ Code_t ZIfNotice(notice, from, predicate, args)
 	    if ((*predicate)(&tmpnotice, args)) {
 		if (!(buffer = (char *) malloc((unsigned) qptr->packet_len)))
 		    return (ENOMEM);
-		_BCOPY(qptr->packet, buffer, qptr->packet_len);
+		(void) memcpy(buffer, qptr->packet, qptr->packet_len);
 		if (from)
 		    *from = qptr->from;
 		if ((retval = ZParseNotice(buffer, qptr->packet_len, 

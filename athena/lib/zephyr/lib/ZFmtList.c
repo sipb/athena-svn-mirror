@@ -10,11 +10,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.13 1993-09-24 16:19:07 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.14 1993-11-19 15:25:36 probe Exp $ */
 
 #ifndef lint
 static char rcsid_ZFormatNoticeList_c[] =
-    "$Id: ZFmtList.c,v 1.13 1993-09-24 16:19:07 probe Exp $";
+    "$Id: ZFmtList.c,v 1.14 1993-11-19 15:25:36 probe Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -48,13 +48,13 @@ Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len,
     if (!(*buffer = (char *) malloc((unsigned)*ret_len)))
 	return (ENOMEM);
 
-    _BCOPY(header, *buffer, hdrlen);
+    (void) memcpy(*buffer, header, hdrlen);
 
     ptr = *buffer+hdrlen;
 
     for (;nitems;nitems--, list++) {
 	i = strlen(*list)+1;
-	_BCOPY(*list, ptr, i);
+	(void) memcpy(ptr, *list, i);
 	ptr += i;
     }
 

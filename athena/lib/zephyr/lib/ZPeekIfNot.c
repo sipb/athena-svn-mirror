@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.11 1993-09-24 16:18:35 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.12 1993-11-19 15:25:44 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.11 1993-09-24 16:18:35 probe Exp $";
+static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.12 1993-11-19 15:25:44 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -43,7 +43,7 @@ Code_t ZPeekIfNotice(notice, from, predicate, args)
 	    if ((*predicate)(&tmpnotice, args)) {
 		if (!(buffer = (char *) malloc((unsigned) qptr->packet_len)))
 		    return (ENOMEM);
-		_BCOPY(qptr->packet, buffer, qptr->packet_len);
+		(void) memcpy(buffer, qptr->packet, qptr->packet_len);
 		if (from)
 		    *from = qptr->from;
 		if ((retval = ZParseNotice(buffer, qptr->packet_len, 

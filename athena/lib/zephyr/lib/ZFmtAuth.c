@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.13 1993-09-24 16:18:59 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.14 1993-11-19 15:25:35 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.13 1993-09-24 16:18:59 probe Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.14 1993-11-19 15:25:35 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -57,7 +57,7 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     if (newnotice.z_message_len+hdrlen > buffer_len)
 	return (ZERR_PKTLEN);
 
-    _BCOPY(newnotice.z_message, ptr, newnotice.z_message_len);
+    (void) memcpy(ptr, newnotice.z_message, newnotice.z_message_len);
 
     *len = hdrlen+newnotice.z_message_len;
 
