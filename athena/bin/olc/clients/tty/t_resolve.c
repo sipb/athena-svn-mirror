@@ -89,11 +89,19 @@ t_done(Request,title)
 		  Request->target.username);
 	  return(ERROR);
 	  
-	case NO_QUESTION:
 	case NOT_CONNECTED:
-	  fprintf(stderr,"You do not have a question to resolve.\n");
-	  return(ERROR);
-	  
+	case NO_QUESTION:
+	  if(OLC) {
+	    printf("You do not have a question in OLC.\n");
+	    printf("Type \"ask\" to ask a question, or \"quit\" to quit.\n");
+	    return(NO_ACTION);
+	  }
+	  else {
+	    fprintf(stderr,"You do not have a question to resolve.\n");
+	    return(ERROR);
+	  }
+	  break;
+
 	default:
 	  status = handle_response(status, Request);
 	  if(status != SUCCESS)
@@ -181,20 +189,49 @@ t_cancel(Request,title)
 
   instance = Request->requester.instance;
   
-  if(OLC)
-    {
-      printf("Using this command means that you want to withdraw your question. If you \n");
-      printf("do not, OLC will store your question until a consultant can answer it.\n");
-      printf("In that case, exit using the 'quit' command. If the consultant has\n");
-      printf("satisfactorily answered your question, use the 'done' command to exit OLC.\n");
-    }
+  set_option(Request->options,VERIFY);
+  status = OCancel(Request,title);
+  unset_option(Request->options, VERIFY);
 
-  buf[0] = '\0';
-  get_prompted_input("Are you sure you wish to cancel this question? ", buf);
-  if(buf[0] != 'y')            
+  switch(status)
     {
-      printf("OK, your question will remain in the queue.\n");
-      return(NO_ACTION);
+    case OK:
+      if(OLC)
+	{
+	  printf("Using this command means that you want to withdraw your question. If you \n");
+	  printf("do not, OLC will store your question until a consultant can answer it.\n");
+	  printf("In that case, exit using the 'quit' command. If the consultant has\n");
+	  printf("satisfactorily answered your question, use the 'done' command to exit OLC.\n");
+	}
+
+      buf[0] = '\0';
+      get_prompted_input("Are you sure you wish to cancel this question? ",
+			 buf);
+      if(buf[0] != 'y')            
+	{
+	  printf("OK, your question will remain in the queue.\n");
+	  return(NO_ACTION);
+	}
+      break;
+
+    case NOT_CONNECTED:
+    case NO_QUESTION:
+      if(OLC) {
+	printf("You do not have a question in OLC.\n");
+	printf("Type \"ask\" to ask a question, or \"quit\" to quit.\n");
+	return(NO_ACTION);
+      }
+      else {
+	fprintf(stderr,"You do not have a question to cancel.\n");
+	return(ERROR);
+      }
+      break;
+
+    default:
+      status = handle_response(status, Request);
+      if(status != SUCCESS)
+	return(status);
+      break;
     }
 
   Request->request_type = OLC_CANCEL;
