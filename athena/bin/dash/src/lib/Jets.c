@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.4 1993-07-02 17:18:12 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.5 1994-05-08 23:51:38 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -42,6 +42,7 @@ extern int StrToJustify();
 int DEBUG = 0;
 
 static XjCallbackProc checkSignals = NULL;
+static XjEventProc eventHandler = NULL;
 
 int global_argc;
 char **global_argv;
@@ -986,6 +987,12 @@ void XjStdinCallback(where)
     XjReadCallback(where, 0, 0);
 }
 
+void XjRegisterEventHandler(where)
+     XjEventProc where;
+{
+  eventHandler = where;
+}
+
 static int waitForSomething(jet)
      Jet jet;
 {
@@ -1187,8 +1194,20 @@ void XjEventLoop(jet)
 	      while (eventJet &&
 		     (eventJet->core.window == event.xany.window)
 		     && !taken);
-	      if (!taken  &&  event.type == MappingNotify)
-		XRefreshKeyboardMapping(&(event.xmapping));
+
+	      if (!taken)
+		{
+		  switch(event.type)
+		    {
+		    case MappingNotify:
+		      XRefreshKeyboardMapping(&(event.xmapping));
+		      break;
+		    default:
+		      if (eventHandler)
+			taken = eventHandler(&event);
+		      break;
+		    }
+		}
 	    }
 	}
 #ifdef DEBUG
