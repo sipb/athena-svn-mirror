@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,6 +9,8 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+# AUTOMAKE_ OPTIONS=no-dependencies
 
 
 SHELL = @SHELL@
@@ -60,6 +62,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+C14N_OBJ = @C14N_OBJ@
 CATALOG_OBJ = @CATALOG_OBJ@
 CC = @CC@
 CFLAGS = @CFLAGS@
@@ -94,17 +97,22 @@ PACKAGE = @PACKAGE@
 PYTHON = @PYTHON@
 PYTHON_INCLUDES = @PYTHON_INCLUDES@
 PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
+PYTHON_SUBDIR = @PYTHON_SUBDIR@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
+RELDATE = @RELDATE@
 RM = @RM@
 STRIP = @STRIP@
 TAR = @TAR@
+TEST_REGEXPS = @TEST_REGEXPS@
+TEST_SCHEMAS = @TEST_SCHEMAS@
 TEST_THREADS = @TEST_THREADS@
 THREAD_CFLAGS = @THREAD_CFLAGS@
 THREAD_LIBS = @THREAD_LIBS@
 U = @U@
 VERSION = @VERSION@
+WITH_C14N = @WITH_C14N@
 WITH_CATALOG = @WITH_CATALOG@
 WITH_DEBUG = @WITH_DEBUG@
 WITH_DOCB = @WITH_DOCB@
@@ -113,6 +121,8 @@ WITH_HTML = @WITH_HTML@
 WITH_HTTP = @WITH_HTTP@
 WITH_ICONV = @WITH_ICONV@
 WITH_MEM_DEBUG = @WITH_MEM_DEBUG@
+WITH_REGEXPS = @WITH_REGEXPS@
+WITH_SCHEMAS = @WITH_SCHEMAS@
 WITH_THREADS = @WITH_THREADS@
 WITH_TRIO = @WITH_TRIO@
 WITH_XINCLUDE = @WITH_XINCLUDE@
@@ -127,8 +137,6 @@ XPATH_OBJ = @XPATH_OBJ@
 XPTR_OBJ = @XPTR_OBJ@
 Z_CFLAGS = @Z_CFLAGS@
 Z_LIBS = @Z_LIBS@
-
-AUTOMAKE_OPTIONS = no-dependencies
 
 noinst_PROGRAMS = gjobread
 
@@ -172,7 +180,7 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu example/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps example/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
@@ -280,6 +288,16 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gjobread.o: gjobread.c ../include/libxml/xmlmemory.h \
+	../include/libxml/xmlversion.h ../include/libxml/threads.h \
+	../include/libxml/globals.h ../include/libxml/parser.h \
+	../include/libxml/tree.h ../include/libxml/xmlregexp.h \
+	../include/libxml/valid.h ../include/libxml/list.h \
+	../include/libxml/xmlautomata.h ../include/libxml/entities.h \
+	../include/libxml/encoding.h ../include/libxml/xmlIO.h \
+	../include/libxml/xmlerror.h ../include/libxml/SAX.h \
+	../include/libxml/xlink.h
+
 info-am:
 info: info-am
 dvi-am:

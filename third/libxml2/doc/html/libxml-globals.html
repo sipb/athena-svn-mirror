@@ -4,7 +4,7 @@
 >globals</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-GLOBALS"
->globals</A
-></H1
+NAME="LIBXML-GLOBALS">globals</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN20217"
+NAME="AEN21254"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN20217"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN20220"
-></A
-><H2
+NAME="AEN21257"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -226,6 +222,10 @@ HREF="libxml-globals.html#XMLINDENTTREEOUTPUT"
 >xmlIndentTreeOutput</A
 >
 #define     <A
+HREF="libxml-globals.html#XMLTREEINDENTSTRING"
+>xmlTreeIndentString</A
+>
+#define     <A
 HREF="libxml-globals.html#XMLKEEPBLANKSDEFAULTVALUE"
 >xmlKeepBlanksDefaultValue</A
 >
@@ -264,7 +264,7 @@ HREF="libxml-parser.html#XMLSUBSTITUTEENTITIESDEFAULTVALUE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN20251"
+NAME="AEN21289"
 ></A
 ><H2
 >Description</H2
@@ -274,20 +274,20 @@ NAME="AEN20251"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN20254"
+NAME="AEN21292"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20256"
+NAME="AEN21294"
 ></A
 ><H3
 ><A
 NAME="XMLGLOBALSTATE"
 ></A
->&#62;struct xmlGlobalState</H3
+>struct xmlGlobalState</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -330,6 +330,7 @@ CLASS="PROGRAMLISTING"
 
 	int xmlSaveNoEmptyTags;
 	int xmlIndentTreeOutput;
+	const char *xmlTreeIndentString;
 };</PRE
 ></TD
 ></TR
@@ -340,13 +341,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20261"
+NAME="AEN21299"
 ></A
 ><H3
 ><A
 NAME="XMLGLOBALSTATEPTR"
 ></A
->&#62;xmlGlobalStatePtr</H3
+>xmlGlobalStatePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -366,13 +367,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20266"
+NAME="AEN21304"
 ></A
 ><H3
 ><A
 NAME="XMLINITIALIZEGLOBALSTATE"
 ></A
->&#62;xmlInitializeGlobalState ()</H3
+>xmlInitializeGlobalState ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -400,9 +401,7 @@ default values of the library.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20274"
-></A
-><P
+NAME="AEN21312"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -438,13 +437,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20283"
+NAME="AEN21321"
 ></A
 ><H3
 ><A
 NAME="XMLMALLOC"
 ></A
->&#62;xmlMalloc()</H3
+>xmlMalloc()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -462,15 +461,13 @@ CLASS="PROGRAMLISTING"
 >Wrapper for the <GTKDOCLINK
 HREF="MALLOC"
 >malloc</GTKDOCLINK
->() function used in the XML library</P
+>() function used in the XML library.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20290"
-></A
-><P
+NAME="AEN21328"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -506,13 +503,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20299"
+NAME="AEN21337"
 ></A
 ><H3
 ><A
 NAME="XMLREALLOC"
 ></A
->&#62;xmlRealloc()</H3
+>xmlRealloc()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -530,15 +527,13 @@ CLASS="PROGRAMLISTING"
 >Wrapper for the <GTKDOCLINK
 HREF="REALLOC"
 >realloc</GTKDOCLINK
->() function used in the XML library</P
+>() function used in the XML library.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20306"
-></A
-><P
+NAME="AEN21344"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -591,13 +586,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20319"
+NAME="AEN21357"
 ></A
 ><H3
 ><A
 NAME="XMLFREE"
 ></A
->&#62;xmlFree</H3
+>xmlFree</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -612,18 +607,23 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>The variable holding the libxml <GTKDOCLINK
+HREF="FREE"
+>free</GTKDOCLINK
+>() implementation</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20324"
+NAME="AEN21364"
 ></A
 ><H3
 ><A
 NAME="XMLMEMSTRDUP"
 ></A
->&#62;xmlMemStrdup()</H3
+>xmlMemStrdup()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -644,15 +644,13 @@ HREF="STRDUP"
 >() function, <A
 HREF="libxml-parser.html#XMLSTRDUP"
 >xmlStrdup</A
->() is usually preferred</P
+>() is usually preferred.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20332"
-></A
-><P
+NAME="AEN21372"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -688,13 +686,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20341"
+NAME="AEN21381"
 ></A
 ><H3
 ><A
 NAME="DOCBDEFAULTSAXHANDLER"
 ></A
->&#62;docbDefaultSAXHandler</H3
+>docbDefaultSAXHandler</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -709,18 +707,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Default handler for SGML DocBook, builds the DOM tree</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20346"
+NAME="AEN21387"
 ></A
 ><H3
 ><A
 NAME="HTMLDEFAULTSAXHANDLER"
 ></A
->&#62;htmlDefaultSAXHandler</H3
+>htmlDefaultSAXHandler</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -735,18 +735,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Default handler for HTML, builds the DOM tree</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20351"
+NAME="AEN21393"
 ></A
 ><H3
 ><A
 NAME="OLDXMLWDCOMPATIBILITY"
 ></A
->&#62;oldXMLWDcompatibility</H3
+>oldXMLWDcompatibility</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -761,18 +763,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, DEPRECATED.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20356"
+NAME="AEN21399"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERALLOCSCHEME"
 ></A
->&#62;xmlBufferAllocScheme</H3
+>xmlBufferAllocScheme</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -787,18 +791,21 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, default allocation policy for buffers, default is
+XML_BUFFER_ALLOC_EXACT</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20361"
+NAME="AEN21405"
 ></A
 ><H3
 ><A
 NAME="XMLDEFAULTBUFFERSIZE"
 ></A
->&#62;xmlDefaultBufferSize</H3
+>xmlDefaultBufferSize</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -813,18 +820,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, default buffer size. Default value is BASE_BUFFER_SIZE</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20366"
+NAME="AEN21411"
 ></A
 ><H3
 ><A
 NAME="XMLDEFAULTSAXHANDLER"
 ></A
->&#62;xmlDefaultSAXHandler</H3
+>xmlDefaultSAXHandler</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -839,18 +848,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Default handler for XML, builds the DOM tree</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20371"
+NAME="AEN21417"
 ></A
 ><H3
 ><A
 NAME="XMLDEFAULTSAXLOCATOR"
 ></A
->&#62;xmlDefaultSAXLocator</H3
+>xmlDefaultSAXLocator</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -865,18 +876,21 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>The default SAX Locator
+{ getPublicId, getSystemId, getLineNumber, getColumnNumber}</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20376"
+NAME="AEN21423"
 ></A
 ><H3
 ><A
 NAME="XMLDOVALIDITYCHECKINGDEFAULTVALUE"
 ></A
->&#62;xmlDoValidityCheckingDefaultValue</H3
+>xmlDoValidityCheckingDefaultValue</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -891,18 +905,21 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, indicate that the parser should work in validating mode.
+Disabled by default.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20381"
+NAME="AEN21429"
 ></A
 ><H3
 ><A
 NAME="XMLGENERICERROR"
 ></A
->&#62;xmlGenericError</H3
+>xmlGenericError</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -917,18 +934,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting: function used for generic error callbacks</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20386"
+NAME="AEN21435"
 ></A
 ><H3
 ><A
 NAME="XMLGENERICERRORCONTEXT"
 ></A
->&#62;xmlGenericErrorContext</H3
+>xmlGenericErrorContext</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -943,18 +962,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting passed to generic error callbacks</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20391"
+NAME="AEN21441"
 ></A
 ><H3
 ><A
 NAME="XMLGETWARNINGSDEFAULTVALUE"
 ></A
->&#62;xmlGetWarningsDefaultValue</H3
+>xmlGetWarningsDefaultValue</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -969,18 +990,21 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, indicate that the parser should provide warnings.
+Activated by default.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20396"
+NAME="AEN21447"
 ></A
 ><H3
 ><A
 NAME="XMLINDENTTREEOUTPUT"
 ></A
->&#62;xmlIndentTreeOutput</H3
+>xmlIndentTreeOutput</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -995,18 +1019,49 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, asking the serializer to indent the output tree by default
+Enabled by default</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20401"
+NAME="AEN21453"
+></A
+><H3
+><A
+NAME="XMLTREEINDENTSTRING"
+></A
+>xmlTreeIndentString</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlTreeIndentString</PRE
+></TD
+></TR
+></TABLE
+><P
+>The string used to do one-level indent. By default is equal to "  " (two spaces)</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN21459"
 ></A
 ><H3
 ><A
 NAME="XMLKEEPBLANKSDEFAULTVALUE"
 ></A
->&#62;xmlKeepBlanksDefaultValue</H3
+>xmlKeepBlanksDefaultValue</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1021,18 +1076,24 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, indicate that the parser should keep all blanks
+nodes found in the content
+Activated by default, this is actually needed to have the parser
+conformant to the XML Recommendation, however the option is kept
+for some applications since this was libxml1 default behaviour.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20406"
+NAME="AEN21465"
 ></A
 ><H3
 ><A
 NAME="XMLLINENUMBERSDEFAULTVALUE"
 ></A
->&#62;xmlLineNumbersDefaultValue</H3
+>xmlLineNumbersDefaultValue</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1047,18 +1108,23 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, indicate that the parser should store the line number
+in the content field of elements in the DOM tree. 
+Disabled by default since this may not be safe for old classes of
+applicaton.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20411"
+NAME="AEN21471"
 ></A
 ><H3
 ><A
 NAME="XMLLOADEXTDTDDEFAULTVALUE"
 ></A
->&#62;xmlLoadExtDtdDefaultValue</H3
+>xmlLoadExtDtdDefaultValue</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1073,18 +1139,22 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, indicate that the parser should load DTD while not
+validating.
+Disabled by default.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20416"
+NAME="AEN21477"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERDEBUGENTITIES"
 ></A
->&#62;xmlParserDebugEntities</H3
+>xmlParserDebugEntities</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1099,18 +1169,22 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, asking the parser to print out debugging informations.
+while handling entities.
+Disabled by default</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20421"
+NAME="AEN21483"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERVERSION"
 ></A
->&#62;xmlParserVersion</H3
+>xmlParserVersion</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1125,18 +1199,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Constant string describing the internal version of the library</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20426"
+NAME="AEN21489"
 ></A
 ><H3
 ><A
 NAME="XMLPEDANTICPARSERDEFAULTVALUE"
 ></A
->&#62;xmlPedanticParserDefaultValue</H3
+>xmlPedanticParserDefaultValue</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1151,18 +1227,21 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, indicate that the parser be pedantic
+Disabled by default.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20431"
+NAME="AEN21495"
 ></A
 ><H3
 ><A
 NAME="XMLSAVENOEMPTYTAGS"
 ></A
->&#62;xmlSaveNoEmptyTags</H3
+>xmlSaveNoEmptyTags</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1177,18 +1256,23 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Global setting, asking the serializer to not output empty tags
+as &lt;empty/&gt; but &lt;empty&gt;&lt;/empty&gt;. those two forms are undistinguishable
+once parsed.
+Disabled by default</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20436"
+NAME="AEN21501"
 ></A
 ><H3
 ><A
 NAME="XMLSUBSTITUTEENTITIESDEFAULTVALUE"
 ></A
->&#62;xmlSubstituteEntitiesDefaultValue</H3
+>xmlSubstituteEntitiesDefaultValue</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1203,7 +1287,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->global variable controlling the entity substitution default behavior</P
+>Global variable controlling the entity substitution default behavior.</P
 ><P
 ></P
 ></DIV

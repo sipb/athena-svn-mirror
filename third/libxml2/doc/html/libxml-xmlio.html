@@ -4,7 +4,7 @@
 >xmlIO</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-XMLIO"
->xmlIO</A
-></H1
+NAME="LIBXML-XMLIO">xmlIO</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN18108"
+NAME="AEN18584"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN18108"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN18111"
-></A
-><H2
+NAME="AEN18587"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -164,10 +160,6 @@ int         (<A
 HREF="libxml-xmlio.html#XMLINPUTCLOSECALLBACK"
 >*xmlInputCloseCallback</A
 >)        (void *context);
-struct      <A
-HREF="libxml-tree.html#XMLPARSERINPUTBUFFER"
->xmlParserInputBuffer</A
->;
 int         (<A
 HREF="libxml-xmlio.html#XMLOUTPUTMATCHCALLBACK"
 >*xmlOutputMatchCallback</A
@@ -186,6 +178,10 @@ int         (<A
 HREF="libxml-xmlio.html#XMLOUTPUTCLOSECALLBACK"
 >*xmlOutputCloseCallback</A
 >)       (void *context);
+struct      <A
+HREF="libxml-tree.html#XMLPARSERINPUTBUFFER"
+>xmlParserInputBuffer</A
+>;
 struct      <A
 HREF="libxml-tree.html#XMLOUTPUTBUFFER"
 >xmlOutputBuffer</A
@@ -497,7 +493,75 @@ HREF="libxml-xmlio.html#XMLNONETEXTERNALENTITYLOADER"
                                              <A
 HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
-> ctxt);</PRE
+> ctxt);
+<A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    <A
+HREF="libxml-xmlio.html#XMLNORMALIZEWINDOWSPATH"
+>xmlNormalizeWindowsPath</A
+>         (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *path);
+int         <A
+HREF="libxml-xmlio.html#XMLCHECKFILENAME"
+>xmlCheckFilename</A
+>                (const char *path);
+int         <A
+HREF="libxml-xmlio.html#XMLFILEMATCH"
+>xmlFileMatch</A
+>                    (const char *filename);
+void*       <A
+HREF="libxml-xmlio.html#XMLFILEOPEN"
+>xmlFileOpen</A
+>                     (const char *filename);
+int         <A
+HREF="libxml-xmlio.html#XMLFILEREAD"
+>xmlFileRead</A
+>                     (void *context,
+                                             char *buffer,
+                                             int len);
+int         <A
+HREF="libxml-xmlio.html#XMLFILECLOSE"
+>xmlFileClose</A
+>                    (void *context);
+int         <A
+HREF="libxml-xmlio.html#XMLIOHTTPMATCH"
+>xmlIOHTTPMatch</A
+>                  (const char *filename);
+void*       <A
+HREF="libxml-xmlio.html#XMLIOHTTPOPEN"
+>xmlIOHTTPOpen</A
+>                   (const char *filename);
+int         <A
+HREF="libxml-xmlio.html#XMLIOHTTPREAD"
+>xmlIOHTTPRead</A
+>                   (void *context,
+                                             char *buffer,
+                                             int len);
+int         <A
+HREF="libxml-xmlio.html#XMLIOHTTPCLOSE"
+>xmlIOHTTPClose</A
+>                  (void *context);
+int         <A
+HREF="libxml-xmlio.html#XMLIOFTPMATCH"
+>xmlIOFTPMatch</A
+>                   (const char *filename);
+void*       <A
+HREF="libxml-xmlio.html#XMLIOFTPOPEN"
+>xmlIOFTPOpen</A
+>                    (const char *filename);
+int         <A
+HREF="libxml-xmlio.html#XMLIOFTPREAD"
+>xmlIOFTPRead</A
+>                    (void *context,
+                                             char *buffer,
+                                             int len);
+int         <A
+HREF="libxml-xmlio.html#XMLIOFTPCLOSE"
+>xmlIOFTPClose</A
+>                   (void *context);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -505,7 +569,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN18202"
+NAME="AEN18694"
 ></A
 ><H2
 >Description</H2
@@ -515,20 +579,20 @@ NAME="AEN18202"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN18205"
+NAME="AEN18697"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18207"
+NAME="AEN18699"
 ></A
 ><H3
 ><A
 NAME="XMLINPUTMATCHCALLBACK"
 ></A
->&#62;xmlInputMatchCallback ()</H3
+>xmlInputMatchCallback ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -543,13 +607,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Callback used in the I/O Input API to detect if the current handler 
+can provide input fonctionnalities for this resource.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18212"
-></A
-><P
+NAME="AEN18705"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -574,22 +639,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> the filename or URI</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>1 if yes and 0 if another Input module should be used</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -600,13 +668,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18225"
+NAME="AEN18718"
 ></A
 ><H3
 ><A
 NAME="XMLINPUTOPENCALLBACK"
 ></A
->&#62;xmlInputOpenCallback ()</H3
+>xmlInputOpenCallback ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -621,13 +689,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Callback used in the I/O Input API to open the resource</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18230"
-></A
-><P
+NAME="AEN18724"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -652,7 +720,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> the filename or URI</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -663,13 +731,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18239"
+NAME="AEN18733"
 ></A
 ><H3
 ><A
 NAME="XMLINPUTREADCALLBACK"
 ></A
->&#62;xmlInputReadCallback ()</H3
+>xmlInputReadCallback ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -686,13 +754,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Callback used in the I/O Input API to read the resource</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18244"
-></A
-><P
+NAME="AEN18739"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -717,7 +785,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an Input context</TD
 ></TR
 ><TR
 ><TD
@@ -734,7 +802,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the buffer to store data read</TD
 ></TR
 ><TR
 ><TD
@@ -751,22 +819,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the length of the buffer in bytes</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>the number of bytes read or -1 in case of error</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -777,13 +848,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18265"
+NAME="AEN18760"
 ></A
 ><H3
 ><A
 NAME="XMLINPUTCLOSECALLBACK"
 ></A
->&#62;xmlInputCloseCallback ()</H3
+>xmlInputCloseCallback ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -798,13 +869,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Callback used in the I/O Input API to close the resource</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18270"
-></A
-><P
+NAME="AEN18766"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -829,22 +900,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an Input context</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>0 or -1 in case of error</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -855,13 +929,356 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18283"
+NAME="AEN18779"
+></A
+><H3
+><A
+NAME="XMLOUTPUTMATCHCALLBACK"
+></A
+>xmlOutputMatchCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         (*xmlOutputMatchCallback)       (char const *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Callback used in the I/O Output API to detect if the current handler 
+can provide output fonctionnalities for this resource.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN18785"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the filename or URI</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if yes and 0 if another Output module should be used</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN18798"
+></A
+><H3
+><A
+NAME="XMLOUTPUTOPENCALLBACK"
+></A
+>xmlOutputOpenCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void*       (*xmlOutputOpenCallback)        (char const *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Callback used in the I/O Output API to open the resource</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN18804"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the filename or URI</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN18813"
+></A
+><H3
+><A
+NAME="XMLOUTPUTWRITECALLBACK"
+></A
+>xmlOutputWriteCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         (*xmlOutputWriteCallback)       (void *context,
+                                             const char *buffer,
+                                             int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Callback used in the I/O Output API to write to the resource</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN18819"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an Output context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the buffer of data to write</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the length of the buffer in bytes</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number of bytes written or -1 in case of error</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN18840"
+></A
+><H3
+><A
+NAME="XMLOUTPUTCLOSECALLBACK"
+></A
+>xmlOutputCloseCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         (*xmlOutputCloseCallback)       (void *context);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Callback used in the I/O Output API to close the resource</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN18846"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an Output context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>0 or -1 in case of error</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN18859"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFER"
 ></A
->&#62;struct xmlParserInputBuffer</H3
+>struct xmlParserInputBuffer</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -890,346 +1307,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18288"
-></A
-><H3
-><A
-NAME="XMLOUTPUTMATCHCALLBACK"
-></A
->&#62;xmlOutputMatchCallback ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->int         (*xmlOutputMatchCallback)       (char const *filename);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN18293"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->filename</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><I
-CLASS="EMPHASIS"
->Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN18306"
-></A
-><H3
-><A
-NAME="XMLOUTPUTOPENCALLBACK"
-></A
->&#62;xmlOutputOpenCallback ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void*       (*xmlOutputOpenCallback)        (char const *filename);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN18311"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->filename</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN18320"
-></A
-><H3
-><A
-NAME="XMLOUTPUTWRITECALLBACK"
-></A
->&#62;xmlOutputWriteCallback ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->int         (*xmlOutputWriteCallback)       (void *context,
-                                             const char *buffer,
-                                             int len);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN18325"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->context</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->buffer</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->len</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><I
-CLASS="EMPHASIS"
->Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN18346"
-></A
-><H3
-><A
-NAME="XMLOUTPUTCLOSECALLBACK"
-></A
->&#62;xmlOutputCloseCallback ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->int         (*xmlOutputCloseCallback)       (void *context);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN18351"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->context</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><I
-CLASS="EMPHASIS"
->Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN18364"
+NAME="AEN18864"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFER"
 ></A
->&#62;struct xmlOutputBuffer</H3
+>struct xmlOutputBuffer</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1259,13 +1343,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18369"
+NAME="AEN18869"
 ></A
 ><H3
 ><A
 NAME="XMLCLEANUPINPUTCALLBACKS"
 ></A
->&#62;xmlCleanupInputCallbacks ()</H3
+>xmlCleanupInputCallbacks ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1288,13 +1372,13 @@ compiled-in I/O.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18375"
+NAME="AEN18875"
 ></A
 ><H3
 ><A
 NAME="XMLCLEANUPOUTPUTCALLBACKS"
 ></A
->&#62;xmlCleanupOutputCallbacks ()</H3
+>xmlCleanupOutputCallbacks ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1317,13 +1401,13 @@ compiled-in I/O callbacks.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18381"
+NAME="AEN18881"
 ></A
 ><H3
 ><A
 NAME="XMLREGISTERDEFAULTINPUTCALLBACKS"
 ></A
->&#62;xmlRegisterDefaultInputCallbacks ()</H3
+>xmlRegisterDefaultInputCallbacks ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1346,13 +1430,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18387"
+NAME="AEN18887"
 ></A
 ><H3
 ><A
 NAME="XMLALLOCPARSERINPUTBUFFER"
 ></A
->&#62;xmlAllocParserInputBuffer ()</H3
+>xmlAllocParserInputBuffer ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1380,9 +1464,7 @@ HREF="libxml-encoding.html#XMLCHARENCODING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18395"
-></A
-><P
+NAME="AEN18895"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1414,9 +1496,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1433,13 +1518,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18408"
+NAME="AEN18908"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERCREATEFNAME"
 ></A
->&#62;xmlParserInputBufferCreateFname ()</H3
+>xmlParserInputBufferCreateFname ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1471,9 +1556,7 @@ HREF="libxml-xmlio.html#XMLPARSERINPUTBUFFERCREATEFILENAME"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18417"
-></A
-><P
+NAME="AEN18917"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1522,9 +1605,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1541,13 +1627,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18434"
+NAME="AEN18934"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERCREATEFILENAME"
 ></A
->&#62;xmlParserInputBufferCreateFilename ()</H3
+>xmlParserInputBufferCreateFilename ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1580,9 +1666,7 @@ Do an encoding check if enc == XML_CHAR_ENCODING_NONE</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18442"
-></A
-><P
+NAME="AEN18942"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1631,9 +1715,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1650,13 +1737,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18459"
+NAME="AEN18959"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERCREATEFILE"
 ></A
->&#62;xmlParserInputBufferCreateFile ()</H3
+>xmlParserInputBufferCreateFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1689,9 +1776,7 @@ buffered C I/O</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18468"
-></A
-><P
+NAME="AEN18968"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1740,9 +1825,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1759,13 +1847,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18485"
+NAME="AEN18985"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERCREATEFD"
 ></A
->&#62;xmlParserInputBufferCreateFd ()</H3
+>xmlParserInputBufferCreateFd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1795,9 +1883,7 @@ from a file descriptor</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18493"
-></A
-><P
+NAME="AEN18993"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1846,9 +1932,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1865,13 +1954,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18510"
+NAME="AEN19010"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERCREATEMEM"
 ></A
->&#62;xmlParserInputBufferCreateMem ()</H3
+>xmlParserInputBufferCreateMem ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1902,9 +1991,7 @@ from a memory area.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18518"
-></A
-><P
+NAME="AEN19018"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1970,9 +2057,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1989,13 +2079,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18539"
+NAME="AEN19039"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERCREATEIO"
 ></A
->&#62;xmlParserInputBufferCreateIO ()</H3
+>xmlParserInputBufferCreateIO ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2033,9 +2123,7 @@ from an I/O handler</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18549"
-></A
-><P
+NAME="AEN19049"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2118,9 +2206,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2137,13 +2228,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18574"
+NAME="AEN19074"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERREAD"
 ></A
->&#62;xmlParserInputBufferRead ()</H3
+>xmlParserInputBufferRead ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2170,9 +2261,7 @@ This routine handle the I18N transcoding to internal UTF-8</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18581"
-></A
-><P
+NAME="AEN19081"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2221,16 +2310,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of chars read and stored in the buffer, or -1
-        in case of error.</TD
+in case of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2241,13 +2333,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18598"
+NAME="AEN19098"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERGROW"
 ></A
->&#62;xmlParserInputBufferGrow ()</H3
+>xmlParserInputBufferGrow ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2271,15 +2363,13 @@ This routine handle the I18N transcoding to internal UTF-8
 This routine is used when operating the parser in normal (pull) mode</P
 ><P
 >TODO: one should be able to remove one extra copy by copying directly
-      onto in-&gt;buffer or in-&gt;raw</P
+onto in-&gt;buffer or in-&gt;raw</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18606"
-></A
-><P
+NAME="AEN19106"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2328,16 +2418,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of chars read and stored in the buffer, or -1
-        in case of error.</TD
+in case of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2348,13 +2441,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18623"
+NAME="AEN19123"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERPUSH"
 ></A
->&#62;xmlParserInputBufferPush ()</H3
+>xmlParserInputBufferPush ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2382,9 +2475,7 @@ This is used when operating the parser in progressive (push) mode.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18630"
-></A
-><P
+NAME="AEN19130"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2450,16 +2541,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of chars read and stored in the buffer, or -1
-        in case of error.</TD
+in case of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2470,13 +2564,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18651"
+NAME="AEN19151"
 ></A
 ><H3
 ><A
 NAME="XMLFREEPARSERINPUTBUFFER"
 ></A
->&#62;xmlFreeParserInputBuffer ()</H3
+>xmlFreeParserInputBuffer ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2500,9 +2594,7 @@ HREF="libxml-tree.html#XMLPARSERINPUTBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18658"
-></A
-><P
+NAME="AEN19158"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2538,13 +2630,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18667"
+NAME="AEN19167"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERGETDIRECTORY"
 ></A
->&#62;xmlParserGetDirectory ()</H3
+>xmlParserGetDirectory ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2565,9 +2657,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18673"
-></A
-><P
+NAME="AEN19173"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2599,9 +2689,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2618,13 +2711,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18686"
+NAME="AEN19186"
 ></A
 ><H3
 ><A
 NAME="XMLREGISTERINPUTCALLBACKS"
 ></A
->&#62;xmlRegisterInputCallbacks ()</H3
+>xmlRegisterInputCallbacks ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2660,9 +2753,7 @@ HREF="libxml-xmlio.html#XMLINPUTCLOSECALLBACK"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18696"
-></A
-><P
+NAME="AEN19196"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2745,9 +2836,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2764,13 +2858,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18721"
+NAME="AEN19221"
 ></A
 ><H3
 ><A
 NAME="XMLREGISTERDEFAULTOUTPUTCALLBACKS"
 ></A
->&#62;xmlRegisterDefaultOutputCallbacks ()</H3
+>xmlRegisterDefaultOutputCallbacks ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2793,13 +2887,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18727"
+NAME="AEN19227"
 ></A
 ><H3
 ><A
 NAME="XMLALLOCOUTPUTBUFFER"
 ></A
->&#62;xmlAllocOutputBuffer ()</H3
+>xmlAllocOutputBuffer ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2826,9 +2920,7 @@ HREF="libxml-encoding.html#XMLCHARENCODINGHANDLERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18735"
-></A
-><P
+NAME="AEN19235"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2860,9 +2952,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2879,13 +2974,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18748"
+NAME="AEN19248"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERCREATEFILENAME"
 ></A
->&#62;xmlOutputBufferCreateFilename ()</H3
+>xmlOutputBufferCreateFilename ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2914,15 +3009,13 @@ If filename is "-' then we use stdout as the output.
 Automatic support for ZLIB/Compress compressed document is provided
 by default if found at compile-time.
 TODO: currently if compression is set, the library only support
-      writing to a local file.</P
+writing to a local file.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18756"
-></A
-><P
+NAME="AEN19256"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2988,9 +3081,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3007,13 +3103,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18777"
+NAME="AEN19277"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERCREATEFILE"
 ></A
->&#62;xmlOutputBufferCreateFile ()</H3
+>xmlOutputBufferCreateFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3046,9 +3142,7 @@ buffered C I/O</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18786"
-></A
-><P
+NAME="AEN19286"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3097,9 +3191,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3116,13 +3213,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18803"
+NAME="AEN19303"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERCREATEFD"
 ></A
->&#62;xmlOutputBufferCreateFd ()</H3
+>xmlOutputBufferCreateFd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3151,9 +3248,7 @@ to a file descriptor</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18811"
-></A
-><P
+NAME="AEN19311"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3202,9 +3297,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3221,13 +3319,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18828"
+NAME="AEN19328"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERCREATEIO"
 ></A
->&#62;xmlOutputBufferCreateIO ()</H3
+>xmlOutputBufferCreateIO ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3264,9 +3362,7 @@ to an I/O handler</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18838"
-></A
-><P
+NAME="AEN19338"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3342,16 +3438,19 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the charset encoding if known</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3368,13 +3467,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18863"
+NAME="AEN19363"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERWRITE"
 ></A
->&#62;xmlOutputBufferWrite ()</H3
+>xmlOutputBufferWrite ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3403,9 +3502,7 @@ or delayed writes.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18870"
-></A
-><P
+NAME="AEN19370"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3471,16 +3568,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of chars immediately written, or -1
-        in case of error.</TD
+in case of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -3491,13 +3591,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18891"
+NAME="AEN19391"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERWRITESTRING"
 ></A
->&#62;xmlOutputBufferWriteString ()</H3
+>xmlOutputBufferWriteString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3525,9 +3625,7 @@ or delayed writes.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18898"
-></A
-><P
+NAME="AEN19398"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3576,16 +3674,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of chars immediately written, or -1
-        in case of error.</TD
+in case of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -3596,13 +3697,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18915"
+NAME="AEN19415"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERFLUSH"
 ></A
->&#62;xmlOutputBufferFlush ()</H3
+>xmlOutputBufferFlush ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3626,9 +3727,7 @@ HREF="libxml-tree.html#XMLOUTPUTBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18922"
-></A
-><P
+NAME="AEN19422"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3660,9 +3759,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3679,13 +3781,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18935"
+NAME="AEN19435"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERCLOSE"
 ></A
->&#62;xmlOutputBufferClose ()</H3
+>xmlOutputBufferClose ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3710,9 +3812,7 @@ and free up all the associated resources</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18942"
-></A
-><P
+NAME="AEN19442"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3744,9 +3844,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3763,13 +3866,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18955"
+NAME="AEN19455"
 ></A
 ><H3
 ><A
 NAME="XMLREGISTEROUTPUTCALLBACKS"
 ></A
->&#62;xmlRegisterOutputCallbacks ()</H3
+>xmlRegisterOutputCallbacks ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3805,9 +3908,7 @@ HREF="libxml-xmlio.html#XMLOUTPUTCLOSECALLBACK"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18965"
-></A
-><P
+NAME="AEN19465"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3890,9 +3991,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3909,13 +4013,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN18990"
+NAME="AEN19490"
 ></A
 ><H3
 ><A
 NAME="XMLIOHTTPOPENW"
 ></A
->&#62;xmlIOHTTPOpenW ()</H3
+>xmlIOHTTPOpenW ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3938,9 +4042,7 @@ request.  Non-static as is called from the output buffer creation routine.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN18996"
-></A
-><P
+NAME="AEN19496"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3993,13 +4095,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19009"
+NAME="AEN19509"
 ></A
 ><H3
 ><A
 NAME="XMLREGISTERHTTPPOSTCALLBACKS"
 ></A
->&#62;xmlRegisterHTTPPostCallbacks ()</H3
+>xmlRegisterHTTPPostCallbacks ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4023,13 +4125,13 @@ method instead.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19015"
+NAME="AEN19515"
 ></A
 ><H3
 ><A
 NAME="XMLNONETEXTERNALENTITYLOADER"
 ></A
->&#62;xmlNoNetExternalEntityLoader ()</H3
+>xmlNoNetExternalEntityLoader ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4060,9 +4162,7 @@ allowing local catalog accesses for resolution.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19023"
-></A
-><P
+NAME="AEN19523"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4128,15 +4228,1260 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >a new allocated xmlParserInputPtr, or NULL.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19544"
+></A
+><H3
+><A
+NAME="XMLNORMALIZEWINDOWSPATH"
+></A
+>xmlNormalizeWindowsPath ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    xmlNormalizeWindowsPath         (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *path);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Normalize a Windows path to make an URL from it</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19552"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a windows path like "C:/foo/bar"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a new URI which must be freed by the caller or NULL
+in case of error</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19565"
+></A
+><H3
+><A
+NAME="XMLCHECKFILENAME"
+></A
+>xmlCheckFilename ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlCheckFilename                (const char *path);</PRE
+></TD
+></TR
+></TABLE
+><P
+>function checks to see if <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+> is a valid source
+(file, socket...) for XML.</P
+><P
+>if stat is not available on the target machine,
+returns 1.  if stat fails, returns 0 (if calling
+stat on the filename fails, it can't be right).
+if stat succeeds and the file is a directory,</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19573"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the path to check</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>2.  otherwise returns 1.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19586"
+></A
+><H3
+><A
+NAME="XMLFILEMATCH"
+></A
+>xmlFileMatch ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlFileMatch                    (const char *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>input from FILE *</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19592"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the URI for matching</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if matches, 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19605"
+></A
+><H3
+><A
+NAME="XMLFILEOPEN"
+></A
+>xmlFileOpen ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void*       xmlFileOpen                     (const char *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>input from FILE *, supports compressed input
+if <TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+> is " " then the standard input is used</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19612"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the URI for matching</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19621"
+></A
+><H3
+><A
+NAME="XMLFILEREAD"
+></A
+>xmlFileRead ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlFileRead                     (void *context,
+                                             char *buffer,
+                                             int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Read <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+> bytes to <TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+> from the I/O channel.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19629"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the I/O context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  where to drop data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  number of bytes to write</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number of bytes written</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19650"
+></A
+><H3
+><A
+NAME="XMLFILECLOSE"
+></A
+>xmlFileClose ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlFileClose                    (void *context);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Close an I/O channel</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19656"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the I/O context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19669"
+></A
+><H3
+><A
+NAME="XMLIOHTTPMATCH"
+></A
+>xmlIOHTTPMatch ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlIOHTTPMatch                  (const char *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>check if the URI matches an HTTP one</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19675"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the URI for matching</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if matches, 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19688"
+></A
+><H3
+><A
+NAME="XMLIOHTTPOPEN"
+></A
+>xmlIOHTTPOpen ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void*       xmlIOHTTPOpen                   (const char *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>open an HTTP I/O channel</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19694"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the URI for matching</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19703"
+></A
+><H3
+><A
+NAME="XMLIOHTTPREAD"
+></A
+>xmlIOHTTPRead ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlIOHTTPRead                   (void *context,
+                                             char *buffer,
+                                             int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Read <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+> bytes to <TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+> from the I/O channel.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19711"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the I/O context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  where to drop data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  number of bytes to write</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number of bytes written</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19732"
+></A
+><H3
+><A
+NAME="XMLIOHTTPCLOSE"
+></A
+>xmlIOHTTPClose ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlIOHTTPClose                  (void *context);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Close an HTTP I/O channel</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19738"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the I/O context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19751"
+></A
+><H3
+><A
+NAME="XMLIOFTPMATCH"
+></A
+>xmlIOFTPMatch ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlIOFTPMatch                   (const char *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>check if the URI matches an FTP one</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19757"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the URI for matching</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if matches, 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19770"
+></A
+><H3
+><A
+NAME="XMLIOFTPOPEN"
+></A
+>xmlIOFTPOpen ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void*       xmlIOFTPOpen                    (const char *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>open an FTP I/O channel</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19776"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the URI for matching</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19785"
+></A
+><H3
+><A
+NAME="XMLIOFTPREAD"
+></A
+>xmlIOFTPRead ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlIOFTPRead                    (void *context,
+                                             char *buffer,
+                                             int len);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Read <TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+> bytes to <TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+> from the I/O channel.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19793"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the I/O context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  where to drop data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>len</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  number of bytes to write</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number of bytes written</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN19814"
+></A
+><H3
+><A
+NAME="XMLIOFTPCLOSE"
+></A
+>xmlIOFTPClose ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlIOFTPClose                   (void *context);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Close an FTP I/O channel</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN19820"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the I/O context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
 ></TR
 ></TBODY
 ></TABLE

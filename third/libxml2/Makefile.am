@@ -1,18 +1,21 @@
 ## Process this file with automake to produce Makefile.in
-AUTOMAKE_OPTIONS=no-dependencies
+# AUTOMAKE_ OPTIONS=no-dependencies
 
-SUBDIRS = include . doc example python
+SUBDIRS = include . doc example @PYTHON_SUBDIR@
 
-INCLUDES = -I@srcdir@/include -I$(top_builddir)/include @THREAD_CFLAGS@ @Z_CFLAGS@ 
+DIST_SUBDIRS = include . doc example python
 
-noinst_PROGRAMS=testSAX testHTML testXPath testURI testDocbook testThreads
+INCLUDES = -I$(top_builddir)/include -I@srcdir@/include @THREAD_CFLAGS@ @Z_CFLAGS@ 
+
+noinst_PROGRAMS=testSchemas testSAX testHTML testXPath testURI testDocbook \
+                testThreads testC14N testAutomata testRegexp testReader
 
 bin_PROGRAMS = xmllint xmlcatalog
 
 bin_SCRIPTS=xml2-config
 
 lib_LTLIBRARIES = libxml2.la
-libxml2_la_LIBADD = @Z_LIBS@ $(ICONV_LIBS) -lm
+libxml2_la_LIBADD = @THREAD_LIBS@ @Z_LIBS@ $(ICONV_LIBS) -lm
 
 libxml2_la_LDFLAGS = -version-info @LIBXML_VERSION_INFO@
 
@@ -21,21 +24,23 @@ libxml2_la_SOURCES = SAX.c entities.c encoding.c error.c parserInternals.c  \
 		parser.c tree.c hash.c list.c xmlIO.c xmlmemory.c uri.c  \
 		valid.c xlink.c HTMLparser.c HTMLtree.c debugXML.c xpath.c  \
 		xpointer.c xinclude.c nanohttp.c nanoftp.c DOCBparser.c \
-		catalog.c globals.c threads.c triostr.c trio.c
-
+		catalog.c globals.c threads.c c14n.c \
+		xmlregexp.c xmlschemas.c xmlschemastypes.c xmlunicode.c \
+		triostr.c trio.c xmlreader.c
 else
 libxml2_la_SOURCES = SAX.c entities.c encoding.c error.c parserInternals.c  \
 		parser.c tree.c hash.c list.c xmlIO.c xmlmemory.c uri.c  \
 		valid.c xlink.c HTMLparser.c HTMLtree.c debugXML.c xpath.c  \
 		xpointer.c xinclude.c nanohttp.c nanoftp.c DOCBparser.c \
-		catalog.c globals.c threads.c
-
+		catalog.c globals.c threads.c c14n.c \
+		xmlregexp.c xmlschemas.c xmlschemastypes.c xmlunicode.c \
+		xmlreader.c
 endif
 
 DEPS = $(top_builddir)/libxml2.la
 LDADDS = $(top_builddir)/libxml2.la @THREAD_LIBS@ @Z_LIBS@ $(ICONV_LIBS) -lm
 
-man_MANS = xml2-config.1 libxml.4
+man_MANS = xml2-config.1 libxml.3
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = libxml.m4
@@ -70,6 +75,11 @@ testXPath_LDFLAGS =
 testXPath_DEPENDENCIES = $(DEPS)
 testXPath_LDADD= $(LDADDS)
 
+testC14N_SOURCES=testC14N.c
+testC14N_LDFLAGS = 
+testC14N_DEPENDENCIES = $(DEPS)
+testC14N_LDADD= $(LDADDS)
+
 testThreads_SOURCES=testThreads.c
 testThreads_LDFLAGS = 
 testThreads_DEPENDENCIES = $(DEPS)
@@ -80,12 +90,37 @@ testURI_LDFLAGS =
 testURI_DEPENDENCIES = $(DEPS)
 testURI_LDADD= $(LDADDS)
 
+testRegexp_SOURCES=testRegexp.c
+testRegexp_LDFLAGS = 
+testRegexp_DEPENDENCIES = $(DEPS)
+testRegexp_LDADD= $(LDADDS)
+
+testAutomata_SOURCES=testAutomata.c
+testAutomata_LDFLAGS = 
+testAutomata_DEPENDENCIES = $(DEPS)
+testAutomata_LDADD= $(LDADDS)
+
+testSchemas_SOURCES=testSchemas.c
+testSchemas_LDFLAGS = 
+testSchemas_DEPENDENCIES = $(DEPS)
+testSchemas_LDADD= $(LDADDS)
+
+testReader_SOURCES=testReader.c
+testReader_LDFLAGS = 
+testReader_DEPENDENCIES = $(DEPS)
+testReader_LDADD= $(LDADDS)
+
 check-local: tests
 
 testall : tests SVGtests SAXtests
 
-tests: XMLtests XMLenttests HTMLtests Validtests URItests XPathtests XPtrtests XIncludetests Scripttests Catatests @TEST_THREADS@
-	@(cd python ; $(MAKE) tests)
+tests: XMLtests XMLenttests HTMLtests Validtests URItests XPathtests XPtrtests XIncludetests C14Ntests Scripttests Catatests @TEST_REGEXPS@ @TEST_SCHEMAS@ @TEST_THREADS@
+	@(if [ "@PYTHON_SUBDIR@" != "" ] ; then cd python ; $(MAKE) tests ; fi)
+
+valgrind:
+	@echo '## Running the regression tests under Valgrind'
+	@echo '## Go get a cup of coffee it is gonna take a while ...'
+	$(MAKE) CHECKER='valgrind -q' tests
 
 HTMLtests : testHTML$(EXEEXT)
 	@(echo > .memdump)
@@ -97,14 +132,14 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	      $(CHECKER) $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML $$i > result.$$name 2> error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML $$i > result.$$name 2> error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
 	      diff -b $(srcdir)/result/HTML/$$name.err error.$$name ; \
-	      $(top_builddir)/testHTML result.$$name > result2.$$name 2>error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML result.$$name > result2.$$name 2>error.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name error.$$name ; \
 	  fi ; fi ; done)
@@ -116,16 +151,16 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	      $(CHECKER) $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML --push $$i > result.$$name 2> error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML --push $$i > result.$$name 2> error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
 	      cut -b 1-15 $(srcdir)/result/HTML/$$name.err > errorcut.$$name; \
 	      cut -b 1-15 error.$$name > errorcut2.$$name; \
 	      diff -b errorcut.$$name errorcut2.$$name ; \
-	      $(top_builddir)/testHTML --push result.$$name > result2.$$name 2>error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML --push result.$$name > result2.$$name 2>error.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name error.$$name errorcut.$$name errorcut2.$$name ; \
 	  fi ; fi ; done)
@@ -137,10 +172,10 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name.sax ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML --sax $$i > result.$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --sax $$i > result.$$name.sax ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name.sax result.$$name.sax ; \
 	      rm result.$$name.sax ; \
@@ -153,10 +188,10 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML --push --sax $$i > result.$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --push --sax $$i > result.$$name.sax ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name.sax result.$$name.sax ; \
 	      rm result.$$name.sax ; \
@@ -175,12 +210,12 @@ XMLtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint $$i > $(srcdir)/result/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > $(srcdir)/result/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > result.$$name ; \
 	      diff $(srcdir)/result/$$name result.$$name ; \
-	      $(top_builddir)/xmllint result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -195,12 +230,12 @@ XMLtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --push $$i > $(srcdir)/result/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --push $$i > $(srcdir)/result/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --push $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --push $$i > result.$$name ; \
 	      diff $(srcdir)/result/$$name result.$$name ; \
-	      $(top_builddir)/xmllint --push result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --push result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -214,13 +249,13 @@ XMLtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --memory $$i > $(srcdir)/result/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --memory $$i > $(srcdir)/result/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --memory $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --memory $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/$$name result.$$name ; \
-	      $(top_builddir)/xmllint --memory result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --memory result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -235,13 +270,13 @@ Docbtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/DocBook/$$name.xml ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --sgml $$i > $(srcdir)/result/DocBook/$$name.xml ; \
-	      $(top_builddir)/xmllint --valid --noout $(srcdir)/result/DocBook/$$name.xml ; \
+	      $(CHECKER) $(top_builddir)/xmllint --sgml $$i > $(srcdir)/result/DocBook/$$name.xml ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid --noout $(srcdir)/result/DocBook/$$name.xml ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --sgml $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --sgml $$i > result.$$name ; \
 	      diff $(srcdir)/result/DocBook/$$name.xml result.$$name ; \
-	      $(top_builddir)/xmllint --valid --noout result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid --noout result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
 
@@ -255,12 +290,12 @@ XMLenttests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/noent/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --noent $$i > $(srcdir)/result/noent/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noent $$i > $(srcdir)/result/noent/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --noent $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noent $$i > result.$$name ; \
 	      diff $(srcdir)/result/noent/$$name result.$$name ; \
-	      $(top_builddir)/xmllint --noent result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noent result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -275,10 +310,10 @@ URItests : testURI$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/URI/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > $(srcdir)/result/URI/$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > $(srcdir)/result/URI/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/URI/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -288,10 +323,10 @@ URItests : testURI$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/URI/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testURI < $$i > $(srcdir)/result/URI/$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI < $$i > $(srcdir)/result/URI/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testURI < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/URI/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -309,11 +344,11 @@ XPathtests : testXPath$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/XPath/expr/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testXPath -f --expr $$i > $(srcdir)/result/XPath/expr/$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f --expr $$i > $(srcdir)/result/XPath/expr/$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testXPath -f --expr $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f --expr $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XPath/expr/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -327,11 +362,11 @@ XPathtests : testXPath$(EXEEXT)
 	  if [ ! -d $$j ] ; then \
 	  if [ ! -f $(srcdir)/result/XPath/tests/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testXPath -f -i $$i $$j > $(srcdir)/result/XPath/tests/$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f -i $$i $$j > $(srcdir)/result/XPath/tests/$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testXPath -f -i $$i $$j > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f -i $$i $$j > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XPath/tests/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -372,10 +407,10 @@ XIncludetests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/XInclude/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --xinclude $$i > $(srcdir)/result/XInclude/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --nowarning --xinclude $$i > $(srcdir)/result/XInclude/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --xinclude $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --nowarning --xinclude $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XInclude/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -393,10 +428,10 @@ Scripttests : xmllint$(EXEEXT)
 	  if [ -f $$xml ] ; then \
 	  if [ ! -f $(srcdir)/result/scripts/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --shell $$xml < $$i > $(srcdir)/result/scripts/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --shell $$xml < $$i > $(srcdir)/result/scripts/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --shell $$xml < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --shell $$xml < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/scripts/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -413,10 +448,10 @@ Catatests : xmlcatalog$(EXEEXT)
 	  if [ -f $$xml ] ; then \
 	  if [ ! -f $(srcdir)/result/catalogs/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$xml < $$i > $(srcdir)/result/catalogs/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$xml < $$i > $(srcdir)/result/catalogs/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$xml < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$xml < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/catalogs/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -427,34 +462,34 @@ Catatests : xmlcatalog$(EXEEXT)
 	  if [ -f $$sgml ] ; then \
 	  if [ ! -f $(srcdir)/result/catalogs/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$sgml < $$i > $(srcdir)/result/catalogs/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$sgml < $$i > $(srcdir)/result/catalogs/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$sgml < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$sgml < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/catalogs/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
 	@echo "Add and del operations on XML Catalogs"
-	-@($(top_builddir)/xmlcatalog --create --noout result/catalogs/mycatalog; \
+	-@($(CHECKER) $(top_builddir)/xmlcatalog --create --noout $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --add public Pubid sysid result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --add public Pubid sysid $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --add public Pubid2 sysid2 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --add public Pubid2 sysid2 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --add public Pubid3 sysid3 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --add public Pubid3 sysid3 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	diff result/catalogs/mycatalog.full result/catalogs/mycatalog; \
+	diff result/catalogs/mycatalog.full $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --del sysid result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --del sysid $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --del sysid3 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --del sysid3 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --del sysid2 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --del sysid2 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	diff result/catalogs/mycatalog.empty result/catalogs/mycatalog; \
+	diff result/catalogs/mycatalog.empty $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	rm -f result/catalogs/mycatalog)
+	rm -f $(srcdir)/result/catalogs/mycatalog)
 
 SVGtests : xmllint$(EXEEXT)
 	@echo "##"
@@ -465,12 +500,12 @@ SVGtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/SVG/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint $$i > $(srcdir)/result/SVG/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > $(srcdir)/result/SVG/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > result.$$name ; \
 	      diff $(srcdir)/result/SVG/$$name result.$$name ; \
-	      $(top_builddir)/xmllint result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -479,7 +514,7 @@ Threadtests : testThreads$(EXEEXT)
 	@echo "##"
 	@echo "## Threaded regression tests"
 	@echo "##"
-	$(top_builddir)/testThreads
+	$(CHECKER) $(top_builddir)/testThreads
 
 SAXtests : testSAX$(EXEEXT)
 	@(echo > .memdump)
@@ -491,10 +526,10 @@ SAXtests : testSAX$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/SAXresult/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testSAX $$i > $(srcdir)/SAXresult/$$name ; \
+	      $(CHECKER) $(top_builddir)/testSAX $$i > $(srcdir)/SAXresult/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testSAX $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testSAX $$i > result.$$name ; \
 	      diff $(srcdir)/SAXresult/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
@@ -509,7 +544,7 @@ Validtests : xmllint$(EXEEXT)
 	  name=`basename $$i`; \
 	  if [ ! -d $$i ] ; then \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --valid --noout --nowarning $$i ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid --noout --nowarning $$i ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  fi ; done ; exit 0)
 	@echo "##"
@@ -520,10 +555,10 @@ Validtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/VC/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --noout --valid $$i 2> $(srcdir)/result/VC/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noout --valid $$i 2> $(srcdir)/result/VC/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --noout --valid $$i 2> result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noout --valid $$i 2> result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/VC/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -536,25 +571,124 @@ Validtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/valid/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --valid $$i > $(srcdir)/result/valid/$$name 2>$(srcdir)/result/valid/$$name.err ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid $$i > $(srcdir)/result/valid/$$name 2>$(srcdir)/result/valid/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --valid $$i > result.$$name 2>error.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid $$i > result.$$name 2>error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/valid/$$name result.$$name ; \
 	      diff $(srcdir)/result/valid/$$name.err error.$$name ; \
 	      rm result.$$name error.$$name ; \
 	  fi ; fi ; done)
 
+Regexptests: testRegexp$(EXEEXT)
+	@(echo > .memdump)
+	@echo "##"
+	@echo "## Regexp regression tests"
+	@echo "##"
+	-@(for i in $(srcdir)/test/regexp/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/regexp/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(CHECKER) $(top_builddir)/testRegexp -i $$i > $(srcdir)/result/regexp/$$name; \
+	  else \
+	      echo Testing $$name ; \
+	      $(CHECKER) $(top_builddir)/testRegexp -i $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/regexp/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+
+Automatatests: testAutomata$(EXEEXT)
+	@(echo > .memdump)
+	@echo "##"
+	@echo "## Automata regression tests"
+	@echo "##"
+	-@(for i in $(srcdir)/test/automata/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/automata/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(CHECKER) $(top_builddir)/testAutomata $$i > $(srcdir)/result/automata/$$name; \
+	  else \
+	      echo Testing $$name ; \
+	      $(CHECKER) $(top_builddir)/testAutomata $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/automata/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+
+C14Ntests : testC14N$(EXEEXT)
+	@echo "##"
+	@echo "## C14N and XPath regression tests"
+	@echo "##"
+	-@(for m in with-comments without-comments exc-without-comments ; do \
+	    for i in $(srcdir)/test/c14n/$$m/*.xml ; do  \
+		if [ ! -d $$i ] ; then \
+		    name=`basename $$i .xml`; \
+		    echo Testing $$m/$$name; \
+		    cmdline="$(CHECKER) $(top_builddir)/testC14N --$$m $$i"; \
+		    if [ -f $(srcdir)/test/c14n/$$m/$$name.xpath ] ; then \
+			cmdline="$$cmdline $(srcdir)/test/c14n/$$m/$$name.xpath"; \
+			if [ -f $(srcdir)/test/c14n/$$m/$$name.ns ] ; then \
+			    cmdline="$$cmdline '`cat $(srcdir)/test/c14n/$$m/$$name.ns`'"; \
+			fi; \
+		    fi; \
+		    $$cmdline > $(srcdir)/test/c14n/test.tmp; \
+		    if [ $$? -eq 0 ]; then \
+			diff  $(srcdir)/result/c14n/$$m/$$name $(srcdir)/test/c14n/test.tmp; \
+			if [ $$? -ne 0 ]; then \
+			    echo "Test failed"; \
+			    cat $(srcdir)/test/c14n/test.tmp; \
+			fi; \
+		    else \
+			echo "C14N failed"; \
+		    fi; \
+		fi; \
+		rm -f $(srcdir)/test/c14n/test.tmp; \
+	    done; \
+	done)
+
+Schemastests: testSchemas$(EXEEXT)
+	@(echo > .memdump)
+	@echo "##"
+	@echo "## Schemas regression tests"
+	@echo "##"
+	-@(for i in $(srcdir)/test/schemas/*_*.xsd ; do \
+	  name=`basename $$i | sed 's+_.*++'`; \
+	  sno=`basename $$i | sed 's+.*_\(.*\).xsd+\1+'`; \
+	  for j in $(srcdir)/test/schemas/"$$name"_*.xml ; do \
+	      xno=`basename $$j | sed 's+.*_\(.*\).xml+\1+'`; \
+	      if [ ! -f $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno" ]; \
+	      then \
+		  echo New test file "$$name"_"$$sno"_"$$xno" ; \
+		  $(CHECKER) $(top_builddir)/testSchemas $$i $$j \
+		    > $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno" \
+		    2> $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno".err; \
+	      else \
+		  echo Testing "$$name"_"$$sno"_"$$xno" ; \
+	          $(CHECKER) $(top_builddir)/testSchemas $$i $$j \
+		    > res.$$name 2> err.$$name;\
+	          grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	          diff $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno" \
+		       res.$$name;\
+	          diff $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno".err \
+		       err.$$name;\
+		  grep Unimplemented err.$$name; \
+	          rm res.$$name err.$$name ; \
+	       fi ; \
+	  done; done)
+
 dist-hook: libxml.spec
 	-cp libxml.spec $(distdir)
 	(cd $(srcdir) ; tar -cf - --exclude CVS win32 macos vms test result SAXresult ) | (cd $(distdir); tar xf -)
 
 cleantar:
-	@(rm -f libxslt*.tar.gz COPYING.LIB)
+	@(rm -f libxml*.tar.gz COPYING.LIB)
 
 rpm: cleantar
-	@(unset CDPATH ; $(MAKE) dist && rpm -ta $(distdir).tar.gz)
+	@(unset CDPATH ; $(MAKE) dist && rpmbuild -ta $(distdir).tar.gz)
 
 ## We create xml2Conf.sh here and not from configure because we want
 ## to get the paths expanded correctly.  Macros like srcdir are given
@@ -566,12 +700,12 @@ CLEANFILES=xml2Conf.sh
 confexecdir=$(libdir)
 confexec_DATA = xml2Conf.sh
 EXTRA_DIST = xml2-config.in xml2Conf.sh.in libxml.spec.in libxml.spec \
-             libxml.m4 Copyright \
+             libxml.m4 Copyright check-xml-test-suite.py \
              example/Makefile.am example/gjobread.c example/gjobs.xml \
 	     $(man_MANS) libxml-2.0.pc.in \
 	     trionan.c trionan.h triostr.c triostr.h trio.c trio.h \
 	     triop.h triodef.h libxml.h \
-	     testThreadsWin32.c
+	     testThreadsWin32.c genUnicode.py TODO_SCHEMAS
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libxml-2.0.pc
@@ -579,7 +713,7 @@ pkgconfig_DATA = libxml-2.0.pc
 #
 # Instll the tests program sources as examples 
 #
-BASE_DIR=@HTML_DIR@
+BASE_DIR=$(datadir)/doc
 DOC_MODULE=libxml2-$(VERSION)
 EXAMPLES_DIR=$(BASE_DIR)/$(DOC_MODULE)/examples
 

@@ -12,13 +12,15 @@
 
 #include <libxml/tree.h>
 #include <libxml/list.h>
+#include <libxml/xmlautomata.h>
+#include <libxml/xmlregexp.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*
- * Validation state added for non-determinist content model
+ * Validation state added for non-determinist content model.
  */
 typedef struct _xmlValidState xmlValidState;
 typedef xmlValidState *xmlValidStatePtr;
@@ -29,7 +31,7 @@ typedef xmlValidState *xmlValidStatePtr;
  * @msg:  the string to format *printf like vararg
  * @...:  remaining arguments to the format
  *
- * Callback called when a validity error is found, this is a message
+ * Callback called when a validity error is found. This is a message
  * oriented function similar to an *printf function.
  */
 typedef void (*xmlValidityErrorFunc) (void *ctx,
@@ -42,7 +44,7 @@ typedef void (*xmlValidityErrorFunc) (void *ctx,
  * @msg:  the string to format *printf like vararg
  * @...:  remaining arguments to the format
  *
- * Callback called when a validity warning is found, this is a message
+ * Callback called when a validity warning is found. This is a message
  * oriented function similar to an *printf function.
  */
 typedef void (*xmlValidityWarningFunc) (void *ctx,
@@ -51,7 +53,7 @@ typedef void (*xmlValidityWarningFunc) (void *ctx,
 
 /**
  * xmlValidCtxt:
- * an xmlValidCtxt is used for error reporting when validating
+ * An xmlValidCtxt is used for error reporting when validating.
  */
 typedef struct _xmlValidCtxt xmlValidCtxt;
 typedef xmlValidCtxt *xmlValidCtxtPtr;
@@ -75,43 +77,51 @@ struct _xmlValidCtxt {
     int                vstateNr;      /* Depth of the validation stack */
     int                vstateMax;     /* Max depth of the validation stack */
     xmlValidState     *vstateTab;     /* array of validation states */
+
+#ifdef LIBXML_REGEXP_ENABLED
+    xmlAutomataPtr            am;     /* the automata */
+    xmlAutomataStatePtr    state;     /* used to build the automata */
+#else
+    void                     *am;
+    void                  *state;
+#endif
 };
 
 /*
- * ALl notation declarations are stored in a table
- * there is one table per DTD
+ * ALL notation declarations are stored in a table.
+ * There is one table per DTD.
  */
 
 typedef struct _xmlHashTable xmlNotationTable;
 typedef xmlNotationTable *xmlNotationTablePtr;
 
 /*
- * ALl element declarations are stored in a table
- * there is one table per DTD
+ * ALL element declarations are stored in a table.
+ * There is one table per DTD.
  */
 
 typedef struct _xmlHashTable xmlElementTable;
 typedef xmlElementTable *xmlElementTablePtr;
 
 /*
- * ALl attribute declarations are stored in a table
- * there is one table per DTD
+ * ALL attribute declarations are stored in a table.
+ * There is one table per DTD.
  */
 
 typedef struct _xmlHashTable xmlAttributeTable;
 typedef xmlAttributeTable *xmlAttributeTablePtr;
 
 /*
- * ALl IDs attributes are stored in a table
- * there is one table per document
+ * ALL IDs attributes are stored in a table.
+ * There is one table per document.
  */
 
 typedef struct _xmlHashTable xmlIDTable;
 typedef xmlIDTable *xmlIDTablePtr;
 
 /*
- * ALl Refs attributes are stored in a table
- * there is one table per document
+ * ALL Refs attributes are stored in a table.
+ * There is one table per document.
  */
 
 typedef struct _xmlHashTable xmlRefTable;
@@ -211,7 +221,7 @@ xmlListPtr	xmlGetRefs	(xmlDocPtr doc,
 				 const xmlChar *ID);
 
 /**
- * The public function calls related to validity checking
+ * The public function calls related to validity checking.
  */
 
 int		xmlValidateRoot		(xmlValidCtxtPtr ctxt,
@@ -220,6 +230,11 @@ int		xmlValidateElementDecl	(xmlValidCtxtPtr ctxt,
 					 xmlDocPtr doc,
 		                         xmlElementPtr elem);
 xmlChar *	xmlValidNormalizeAttributeValue(xmlDocPtr doc,
+					 xmlNodePtr elem,
+					 const xmlChar *name,
+					 const xmlChar *value);
+xmlChar *	xmlValidCtxtNormalizeAttributeValue(xmlValidCtxtPtr ctxt,
+					 xmlDocPtr doc,
 					 xmlNodePtr elem,
 					 const xmlChar *name,
 					 const xmlChar *value);
@@ -248,6 +263,12 @@ int		xmlValidateOneAttribute	(xmlValidCtxtPtr ctxt,
 					 xmlDocPtr doc,
 					 xmlNodePtr	elem,
 					 xmlAttrPtr attr,
+					 const xmlChar *value);
+int		xmlValidateOneNamespace	(xmlValidCtxtPtr ctxt,
+					 xmlDocPtr doc,
+					 xmlNodePtr elem,
+					 const xmlChar *prefix,
+					 xmlNsPtr ns,
 					 const xmlChar *value);
 int		xmlValidateDocumentFinal(xmlValidCtxtPtr ctxt,
 					 xmlDocPtr doc);
@@ -279,6 +300,19 @@ int		xmlValidGetPotentialChildren(xmlElementContent *ctree,
 					 const xmlChar **list,
 					 int *len,
 					 int max);
+int		xmlValidateNameValue	(const xmlChar *value);
+int		xmlValidateNamesValue	(const xmlChar *value);
+int		xmlValidateNmtokenValue	(const xmlChar *value);
+int		xmlValidateNmtokensValue(const xmlChar *value);
+
+#ifdef LIBXML_REGEXP_ENABLED
+/*
+ * Validation based on the regexp support
+ */
+int		xmlValidBuildContentModel(xmlValidCtxtPtr ctxt,
+					 xmlElementPtr elem);
+
+#endif /* LIBXML_REGEXP_ENABLED */
 #ifdef __cplusplus
 }
 #endif

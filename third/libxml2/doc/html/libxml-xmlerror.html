@@ -4,7 +4,7 @@
 >xmlerror</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-XMLERROR"
->xmlerror</A
-></H1
+NAME="LIBXML-XMLERROR">xmlerror</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN10478"
+NAME="AEN10962"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN10478"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN10481"
-></A
-><H2
+NAME="AEN10965"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -216,7 +212,7 @@ HREF="libxml-tree.html#XMLPARSERINPUTPTR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10498"
+NAME="AEN10982"
 ></A
 ><H2
 >Description</H2
@@ -226,20 +222,20 @@ NAME="AEN10498"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10501"
+NAME="AEN10985"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10503"
+NAME="AEN10987"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERERRORS"
 ></A
->&#62;enum xmlParserErrors</H3
+>enum xmlParserErrors</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -388,13 +384,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10508"
+NAME="AEN10992"
 ></A
 ><H3
 ><A
 NAME="XMLGENERICERRORFUNC"
 ></A
->&#62;xmlGenericErrorFunc ()</H3
+>xmlGenericErrorFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -411,13 +407,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Signature of the function to use when there is an error and
+no parsing or validity context available .</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10513"
-></A
-><P
+NAME="AEN10998"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -442,7 +439,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  a parsing context</TD
 ></TR
 ><TR
 ><TD
@@ -459,7 +456,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the message</TD
 ></TR
 ><TR
 ><TD
@@ -476,7 +473,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the extra arguments of the varags to format the message</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -487,13 +484,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10530"
+NAME="AEN11015"
 ></A
 ><H3
 ><A
 NAME="XMLSETGENERICERRORFUNC"
 ></A
->&#62;xmlSetGenericErrorFunc ()</H3
+>xmlSetGenericErrorFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -549,9 +546,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10542"
-></A
-><P
+NAME="AEN11027"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -604,13 +599,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10555"
+NAME="AEN11040"
 ></A
 ><H3
 ><A
 NAME="INITGENERICERRORDEFAULTFUNC"
 ></A
->&#62;initGenericErrorDefaultFunc ()</H3
+>initGenericErrorDefaultFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -628,13 +623,13 @@ HREF="libxml-xmlerror.html#XMLGENERICERRORFUNC"
 ></TR
 ></TABLE
 ><P
+>Set or reset (if NULL) the default handler for generic errors</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10561"
-></A
-><P
+NAME="AEN11047"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -659,7 +654,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the handler</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -670,13 +665,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10570"
+NAME="AEN11056"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERERROR"
 ></A
->&#62;xmlParserError ()</H3
+>xmlParserError ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -700,9 +695,7 @@ extra parameters.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10576"
-></A
-><P
+NAME="AEN11062"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -772,13 +765,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10593"
+NAME="AEN11079"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERWARNING"
 ></A
->&#62;xmlParserWarning ()</H3
+>xmlParserWarning ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -802,9 +795,7 @@ extra parameters.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10599"
-></A
-><P
+NAME="AEN11085"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -874,13 +865,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10616"
+NAME="AEN11102"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERVALIDITYERROR"
 ></A
->&#62;xmlParserValidityError ()</H3
+>xmlParserValidityError ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -904,9 +895,7 @@ line, position and extra parameters.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10622"
-></A
-><P
+NAME="AEN11108"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -976,13 +965,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10639"
+NAME="AEN11125"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERVALIDITYWARNING"
 ></A
->&#62;xmlParserValidityWarning ()</H3
+>xmlParserValidityWarning ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1006,9 +995,7 @@ position and extra parameters.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10645"
-></A
-><P
+NAME="AEN11131"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1078,13 +1065,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10662"
+NAME="AEN11148"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERPRINTFILEINFO"
 ></A
->&#62;xmlParserPrintFileInfo ()</H3
+>xmlParserPrintFileInfo ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1108,9 +1095,7 @@ HREF="libxml-tree.html#XMLPARSERINPUTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10669"
-></A
-><P
+NAME="AEN11155"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1146,13 +1131,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10678"
+NAME="AEN11164"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERPRINTFILECONTEXT"
 ></A
->&#62;xmlParserPrintFileContext ()</H3
+>xmlParserPrintFileContext ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1176,9 +1161,7 @@ HREF="libxml-tree.html#XMLPARSERINPUTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10685"
-></A
-><P
+NAME="AEN11171"><P
 ></P
 ><TABLE
 BORDER="0"

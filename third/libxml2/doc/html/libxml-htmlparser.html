@@ -4,7 +4,7 @@
 >HTMLparser</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-HTMLPARSER"
->HTMLparser</A
-></H1
+NAME="LIBXML-HTMLPARSER">HTMLparser</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN10699"
+NAME="AEN11185"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN10699"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN10702"
-></A
-><H2
+NAME="AEN11188"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -279,6 +275,13 @@ HREF="libxml-htmlparser.html#HTMLPARSEELEMENT"
 HREF="libxml-htmlparser.html#HTMLPARSERCTXTPTR"
 >htmlParserCtxtPtr</A
 > ctxt);
+int         <A
+HREF="libxml-htmlparser.html#HTMLPARSEDOCUMENT"
+>htmlParseDocument</A
+>               (<A
+HREF="libxml-htmlparser.html#HTMLPARSERCTXTPTR"
+>htmlParserCtxtPtr</A
+> ctxt);
 <A
 HREF="libxml-htmlparser.html#HTMLDOCPTR"
 >htmlDocPtr</A
@@ -395,7 +398,7 @@ HREF="libxml-htmlparser.html#HTMLPARSERCTXTPTR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10766"
+NAME="AEN11254"
 ></A
 ><H2
 >Description</H2
@@ -405,20 +408,20 @@ NAME="AEN10766"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10769"
+NAME="AEN11257"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10771"
+NAME="AEN11259"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSERCTXT"
 ></A
->&#62;htmlParserCtxt</H3
+>htmlParserCtxt</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -438,13 +441,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10776"
+NAME="AEN11264"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSERCTXTPTR"
 ></A
->&#62;htmlParserCtxtPtr</H3
+>htmlParserCtxtPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -464,13 +467,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10781"
+NAME="AEN11269"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSERNODEINFO"
 ></A
->&#62;htmlParserNodeInfo</H3
+>htmlParserNodeInfo</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -490,13 +493,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10786"
+NAME="AEN11274"
 ></A
 ><H3
 ><A
 NAME="HTMLSAXHANDLER"
 ></A
->&#62;htmlSAXHandler</H3
+>htmlSAXHandler</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -516,13 +519,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10791"
+NAME="AEN11279"
 ></A
 ><H3
 ><A
 NAME="HTMLSAXHANDLERPTR"
 ></A
->&#62;htmlSAXHandlerPtr</H3
+>htmlSAXHandlerPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -542,13 +545,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10796"
+NAME="AEN11284"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSERINPUT"
 ></A
->&#62;htmlParserInput</H3
+>htmlParserInput</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -568,13 +571,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10801"
+NAME="AEN11289"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSERINPUTPTR"
 ></A
->&#62;htmlParserInputPtr</H3
+>htmlParserInputPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -594,13 +597,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10806"
+NAME="AEN11294"
 ></A
 ><H3
 ><A
 NAME="HTMLDOCPTR"
 ></A
->&#62;htmlDocPtr</H3
+>htmlDocPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -620,13 +623,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10811"
+NAME="AEN11299"
 ></A
 ><H3
 ><A
 NAME="HTMLNODEPTR"
 ></A
->&#62;htmlNodePtr</H3
+>htmlNodePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -646,13 +649,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10816"
+NAME="AEN11304"
 ></A
 ><H3
 ><A
 NAME="HTMLELEMDESC"
 ></A
->&#62;struct htmlElemDesc</H3
+>struct htmlElemDesc</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -682,13 +685,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10821"
+NAME="AEN11309"
 ></A
 ><H3
 ><A
 NAME="HTMLELEMDESCPTR"
 ></A
->&#62;htmlElemDescPtr</H3
+>htmlElemDescPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -708,13 +711,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10826"
+NAME="AEN11314"
 ></A
 ><H3
 ><A
 NAME="HTMLENTITYDESC"
 ></A
->&#62;struct htmlEntityDesc</H3
+>struct htmlEntityDesc</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -738,13 +741,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10831"
+NAME="AEN11319"
 ></A
 ><H3
 ><A
 NAME="HTMLENTITYDESCPTR"
 ></A
->&#62;htmlEntityDescPtr</H3
+>htmlEntityDescPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -764,13 +767,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10836"
+NAME="AEN11324"
 ></A
 ><H3
 ><A
 NAME="HTMLTAGLOOKUP"
 ></A
->&#62;htmlTagLookup ()</H3
+>htmlTagLookup ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -797,9 +800,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10844"
-></A
-><P
+NAME="AEN11332"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -831,9 +832,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -850,13 +854,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10857"
+NAME="AEN11345"
 ></A
 ><H3
 ><A
 NAME="HTMLENTITYLOOKUP"
 ></A
->&#62;htmlEntityLookup ()</H3
+>htmlEntityLookup ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -885,9 +889,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10866"
-></A
-><P
+NAME="AEN11354"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -919,9 +921,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -938,13 +943,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10879"
+NAME="AEN11367"
 ></A
 ><H3
 ><A
 NAME="HTMLENTITYVALUELOOKUP"
 ></A
->&#62;htmlEntityValueLookup ()</H3
+>htmlEntityValueLookup ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -970,9 +975,7 @@ HREF="libxml-htmlparser.html#HTMLENTITYDESC"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10887"
-></A
-><P
+NAME="AEN11375"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1004,9 +1007,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1023,13 +1029,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10900"
+NAME="AEN11388"
 ></A
 ><H3
 ><A
 NAME="HTMLISAUTOCLOSED"
 ></A
->&#62;htmlIsAutoClosed ()</H3
+>htmlIsAutoClosed ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1059,9 +1065,7 @@ if a tag is autoclosed by one of it's child</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10908"
-></A
-><P
+NAME="AEN11396"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1110,9 +1114,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1129,13 +1136,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10925"
+NAME="AEN11413"
 ></A
 ><H3
 ><A
 NAME="HTMLAUTOCLOSETAG"
 ></A
->&#62;htmlAutoCloseTag ()</H3
+>htmlAutoCloseTag ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1170,9 +1177,7 @@ given tag.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10934"
-></A
-><P
+NAME="AEN11422"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1238,9 +1243,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1257,13 +1265,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10955"
+NAME="AEN11443"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSEENTITYREF"
 ></A
->&#62;htmlParseEntityRef ()</H3
+>htmlParseEntityRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1296,9 +1304,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10965"
-></A
-><P
+NAME="AEN11453"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1347,16 +1353,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the associated htmlEntityDescPtr if found, or NULL otherwise,
-        if non-NULL *str will have to be freed by the caller.</TD
+if non-NULL *str will have to be freed by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1367,13 +1376,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10982"
+NAME="AEN11470"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSECHARREF"
 ></A
->&#62;htmlParseCharRef ()</H3
+>htmlParseCharRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1394,7 +1403,7 @@ HREF="libxml-htmlparser.html#HTMLPARSERCTXTPTR"
 >parse Reference declarations</P
 ><P
 >[66] CharRef ::= '&amp;#' [0-9]+ ';' |
-                 '&amp;<GTKDOCLINK
+'&amp;<GTKDOCLINK
 HREF="X"
 >x</GTKDOCLINK
 >' [0-9a-fA-F]+ ';'</P
@@ -1403,9 +1412,7 @@ HREF="X"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10991"
-></A
-><P
+NAME="AEN11479"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1437,9 +1444,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1456,13 +1466,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11004"
+NAME="AEN11492"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSEELEMENT"
 ></A
->&#62;htmlParseElement ()</H3
+>htmlParseElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1490,9 +1500,7 @@ HREF="libxml-htmlparser.html#HTMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11013"
-></A
-><P
+NAME="AEN11501"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1528,13 +1536,99 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11022"
+NAME="AEN11510"
+></A
+><H3
+><A
+NAME="HTMLPARSEDOCUMENT"
+></A
+>htmlParseDocument ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         htmlParseDocument               (<A
+HREF="libxml-htmlparser.html#HTMLPARSERCTXTPTR"
+>htmlParserCtxtPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>parse an HTML document (and build a tree if using the standard SAX
+interface).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN11517"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an HTML parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>0, -1 in case of error. the parser context is augmented
+as a result of the parsing.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN11530"
 ></A
 ><H3
 ><A
 NAME="HTMLSAXPARSEDOC"
 ></A
->&#62;htmlSAXParseDoc ()</H3
+>htmlSAXParseDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1569,9 +1663,7 @@ behavior and return a tree.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11031"
-></A
-><P
+NAME="AEN11539"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1654,16 +1746,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the resulting document tree unless SAX is NULL or the document is
-    not well formed.</TD
+not well formed.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1674,13 +1769,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11056"
+NAME="AEN11564"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSEDOC"
 ></A
->&#62;htmlParseDoc ()</H3
+>htmlParseDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1708,9 +1803,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11064"
-></A
-><P
+NAME="AEN11572"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1759,9 +1852,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1778,13 +1874,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11081"
+NAME="AEN11589"
 ></A
 ><H3
 ><A
 NAME="HTMLSAXPARSEFILE"
 ></A
->&#62;htmlSAXParseFile ()</H3
+>htmlSAXParseFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1817,9 +1913,7 @@ If sax is NULL, fallback to the default DOM tree building routines.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11089"
-></A
-><P
+NAME="AEN11597"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1902,16 +1996,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the resulting document tree unless SAX is NULL or the document is
-    not well formed.</TD
+not well formed.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1922,13 +2019,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11114"
+NAME="AEN11622"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSEFILE"
 ></A
->&#62;htmlParseFile ()</H3
+>htmlParseFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1954,9 +2051,7 @@ compressed document is provided by default if found at compile-time.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11121"
-></A
-><P
+NAME="AEN11629"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2005,9 +2100,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2024,13 +2122,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11138"
+NAME="AEN11646"
 ></A
 ><H3
 ><A
 NAME="UTF8TOHTML"
 ></A
->&#62;UTF8ToHtml ()</H3
+>UTF8ToHtml ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2055,9 +2153,7 @@ plus HTML entities block of chars out.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11144"
-></A
-><P
+NAME="AEN11652"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2150,9 +2246,12 @@ CLASS="PARAMETER"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2165,7 +2264,7 @@ CLASS="PARAMETER"
 >inlen</I
 ></TT
 > after return is the number of octets consumed
-    as the return value is positive, else unpredictable.
+as the return value is positive, else unpredictable.
 The value of <TT
 CLASS="PARAMETER"
 ><I
@@ -2182,13 +2281,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11173"
+NAME="AEN11681"
 ></A
 ><H3
 ><A
 NAME="HTMLENCODEENTITIES"
 ></A
->&#62;htmlEncodeEntities ()</H3
+>htmlEncodeEntities ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2214,9 +2313,7 @@ plus HTML entities block of chars out.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11179"
-></A
-><P
+NAME="AEN11687"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2326,9 +2423,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2341,7 +2441,7 @@ CLASS="PARAMETER"
 >inlen</I
 ></TT
 > after return is the number of octets consumed
-    as the return value is positive, else unpredictable.
+as the return value is positive, else unpredictable.
 The value of <TT
 CLASS="PARAMETER"
 ><I
@@ -2358,13 +2458,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11212"
+NAME="AEN11720"
 ></A
 ><H3
 ><A
 NAME="HTMLISSCRIPTATTRIBUTE"
 ></A
->&#62;htmlIsScriptAttribute ()</H3
+>htmlIsScriptAttribute ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2388,9 +2488,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11219"
-></A
-><P
+NAME="AEN11727"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2422,9 +2520,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2441,13 +2542,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11232"
+NAME="AEN11740"
 ></A
 ><H3
 ><A
 NAME="HTMLHANDLEOMITTEDELEM"
 ></A
->&#62;htmlHandleOmittedElem ()</H3
+>htmlHandleOmittedElem ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2468,9 +2569,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11238"
-></A
-><P
+NAME="AEN11746"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2502,9 +2601,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2521,13 +2623,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11251"
+NAME="AEN11759"
 ></A
 ><H3
 ><A
 NAME="HTMLFREEPARSERCTXT"
 ></A
->&#62;htmlFreeParserCtxt ()</H3
+>htmlFreeParserCtxt ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2552,9 +2654,7 @@ document in ctxt-&gt;myDoc is not freed.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11258"
-></A
-><P
+NAME="AEN11766"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2590,13 +2690,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11267"
+NAME="AEN11775"
 ></A
 ><H3
 ><A
 NAME="HTMLCREATEPUSHPARSERCTXT"
 ></A
->&#62;htmlCreatePushParserCtxt ()</H3
+>htmlCreatePushParserCtxt ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2644,9 +2744,7 @@ and error/warning reports.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11278"
-></A
-><P
+NAME="AEN11786"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2763,9 +2861,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2782,13 +2883,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11311"
+NAME="AEN11819"
 ></A
 ><H3
 ><A
 NAME="HTMLPARSECHUNK"
 ></A
->&#62;htmlParseChunk ()</H3
+>htmlParseChunk ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2815,9 +2916,7 @@ HREF="libxml-htmlparser.html#HTMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11318"
-></A
-><P
+NAME="AEN11826"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2900,9 +2999,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"

@@ -59,6 +59,7 @@ dnl
       AC_TRY_RUN([
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <libxml/tree.h>
 
 int 
@@ -253,7 +254,8 @@ dnl
       AC_TRY_RUN([
 #include <stdlib.h>
 #include <stdio.h>
-#include <xmlversion.h>
+#include <string.h>
+#include <libxml/xmlversion.h>
 
 int 
 main()
@@ -348,7 +350,7 @@ main()
           CFLAGS="$CFLAGS $XML_CFLAGS"
           LIBS="$LIBS $XML_LIBS"
           AC_TRY_LINK([
-#include <xmlversion.h>
+#include <libxml/xmlversion.h>
 #include <stdio.h>
 ],      [ LIBXML_TEST_VERSION; return 0;],
         [ echo "*** The test program compiled, but did not run. This usually means"

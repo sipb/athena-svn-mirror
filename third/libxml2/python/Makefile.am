@@ -4,52 +4,46 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 SUBDIRS= . tests
 
 INCLUDES = \
-	-I/usr/include/python$(PYTHON_VERSION) \
 	-I$(PYTHON_INCLUDES) \
 	-I$(top_srcdir)/include
 
-DOCS_DIR = $(prefix)/share/doc/libxml2-python-$(LIBXML_VERSION)
-DOCS = TODO libxml2class.txt
+DOCS_DIR = $(datadir)/doc/libxml2-python-$(LIBXML_VERSION)
+# libxml2class.txt is generated
+DOCS = TODO
 
 EXTRA_DIST = 			\
 	libxml.c		\
 	types.c			\
+	setup.py		\
+	setup.py.in		\
 	generator.py		\
 	libxml_wrap.h		\
 	libxml.py		\
 	libxml2-python-api.xml	\
 	$(DOCS)
 
+libxml2mod_la_LDFLAGS = -module -avoid-version -L$(top_builddir)/.libs
+
 if WITH_PYTHON
 mylibs = \
 	$(top_builddir)/libxml2.la
 
-all: libxml2mod.so libxml2.py
+all-local:	libxml2.py
 
-LDADD = -lxml2
-CFLAGS = -Wall -g
+pythondir = $(libdir)/python${PYTHON_VERSION}/site-packages
+python_LTLIBRARIES = libxml2mod.la
 
-pythondir = $(prefix)/lib/python${PYTHON_VERSION}/site-packages
-python_PROGRAMS = libxml2mod.so
+libxml2mod_la_SOURCES = libxml.c types.c libxml2-py.c
+libxml2mod_la_LIBADD = $(mylibs)
 
-libxml2mod_so_SOURCES =
-libxml2mod_so_LDFLAGS = $(mylibs) $(LIBS) -shared -Wl,-soname,libxml2mod.so
-
-noinst_LTLIBRARIES = libxmlmodule.la
-libxmlmodule_la_SOURCES = libxml.c types.c libxml2-py.c
-
-libxml2mod.so: $(libxmlmodule_la_OBJECTS)
-	$(LINK) -o $@ $(libxmlmodule_la_OBJECTS) $(libxml2mod_so_LDFLAGS)
-
-
-libxml2.py: $(srcdir)/libxml.py libxml2class.py
-	cat $(srcdir)/libxml.py libxml2class.py > libxml2.py
+libxml2.py: $(srcdir)/libxml.py $(srcdir)/libxml2class.py
+	cat $(srcdir)/libxml.py $(srcdir)/libxml2class.py > libxml2.py
 
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(PYTHON_SITE_PACKAGES)
-	-@INSTALL@ -m 0644 libxml2.py $(DESTDIR)$(PYTHON_SITE_PACKAGES)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)/python${PYTHON_VERSION}/site-packages
+	@INSTALL@ -m 0644 libxml2.py $(DESTDIR)$(libdir)/python${PYTHON_VERSION}/site-packages
 	$(mkinstalldirs) $(DESTDIR)$(DOCS_DIR)
-	-@(for doc in $(DOCS) ; \
+	@(for doc in $(DOCS) ; \
 	   do @INSTALL@ -m 0644 $$doc $(DESTDIR)$(DOCS_DIR) ; done)
 
 GENERATE = generator.py
@@ -59,18 +53,20 @@ GENERATED= $(srcdir)/libxml2class.py \
 	   $(srcdir)/libxml2-py.c \
 	   $(srcdir)/libxml2-py.h
 
-$(GENERATED): $(srcdir)/$(GENERATE) $(API_DESC)
-	cd $(srcdir) && $(PYTHON) $(GENERATE)
+$(GENERATED): gen_prog
 
-$(libxmlmodule_la_OBJECTS): $(GENERATED)
+gen_prog: $(srcdir)/$(GENERATE) $(API_DESC)
+	cd $(srcdir) && $(PYTHON) $(GENERATE)
+	touch gen_prog
+
+$(libxml2mod_la_OBJECTS): $(GENERATED)
 
 else
 all: 
 endif
-
-tests: all
+tests test: all
 	cd tests && $(MAKE) tests
 
 clean:
-	rm -f $(GENERATED) *.o _libxml.so *.pyc libxml2.py
+	rm -f $(GENERATED) *.o _libxml.so *.pyc libxml2.py gen_prog
 

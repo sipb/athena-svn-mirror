@@ -29,6 +29,9 @@
 #endif
 #endif /* _WIN32 */
 
+#ifdef HAVE_SYS_TIMEB_H
+#include <sys/timeb.h>
+#endif
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -129,6 +132,31 @@ static const char *output = NULL;
  * function calls
  */
 
+#ifndef HAVE_GETTIMEOFDAY 
+#ifdef HAVE_SYS_TIMEB_H
+#ifdef HAVE_SYS_TIME_H
+#ifdef HAVE_FTIME
+
+static int
+my_gettimeofday(struct timeval *tvp, void *tzp)
+{
+	struct timeb timebuffer;
+
+	ftime(&timebuffer);
+	if (tvp) {
+		tvp->tv_sec = timebuffer.time;
+		tvp->tv_usec = timebuffer.millitm * 1000L;
+	}
+	return (0);
+}
+#define HAVE_GETTIMEOFDAY 1
+#define gettimeofday my_gettimeofday
+
+#endif /* HAVE_FTIME */
+#endif /* HAVE_SYS_TIME_H */
+#endif /* HAVE_SYS_TIMEB_H */
+#endif /* !HAVE_GETTIMEOFDAY */
+
 #if defined(HAVE_GETTIMEOFDAY)
 static struct timeval begin, end;
 
@@ -147,7 +175,7 @@ startTimer(void)
  *           type argument
  */
 static void
-endTimer(const char *format, ...)
+endTimer(const char *fmt, ...)
 {
     long msec;
     va_list ap;
@@ -160,19 +188,21 @@ endTimer(const char *format, ...)
 #ifndef HAVE_STDARG_H
 #error "endTimer required stdarg functions"
 #endif
-    va_start(ap, format);
-    vfprintf(stderr, format, ap);
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
     va_end(ap);
 
     fprintf(stderr, " took %ld ms\n", msec);
 }
 #elif defined(HAVE_TIME_H)
-
 /*
  * No gettimeofday function, so we have to make do with calling clock.
  * This is obviously less accurate, but there's little we can do about
  * that.
  */
+#ifndef CLOCKS_PER_SEC
+#define CLOCKS_PER_SEC 100
+#endif
 
 static clock_t begin, end;
 static void
@@ -255,13 +285,16 @@ xmlHTMLEncodeSend(void) {
 
 static void
 xmlHTMLPrintFileInfo(xmlParserInputPtr input) {
+    int len;
     xmlGenericError(xmlGenericErrorContext, "<p>");
+
+    len = strlen(buffer);
     if (input != NULL) {
 	if (input->filename) {
-	    sprintf(&buffer[strlen(buffer)], "%s:%d: ", input->filename,
+	    snprintf(&buffer[len], sizeof(buffer) - len, "%s:%d: ", input->filename,
 		    input->line);
 	} else {
-	    sprintf(&buffer[strlen(buffer)], "Entity: line %d: ", input->line);
+	    snprintf(&buffer[len], sizeof(buffer) - len, "Entity: line %d: ", input->line);
 	}
     }
     xmlHTMLEncodeSend();
@@ -277,6 +310,7 @@ xmlHTMLPrintFileInfo(xmlParserInputPtr input) {
 static void
 xmlHTMLPrintFileContext(xmlParserInputPtr input) {
     const xmlChar *cur, *base;
+    int len;
     int n;
 
     if (input == NULL) return;
@@ -293,19 +327,24 @@ xmlHTMLPrintFileContext(xmlParserInputPtr input) {
     base = cur;
     n = 0;
     while ((*cur != 0) && (*cur != '\n') && (*cur != '\r') && (n < 79)) {
-        sprintf(&buffer[strlen(buffer)], "%c", (unsigned char) *cur++);
+	len = strlen(buffer);
+        snprintf(&buffer[len], sizeof(buffer) - len, "%c", 
+		    (unsigned char) *cur++);
 	n++;
     }
-    sprintf(&buffer[strlen(buffer)], "\n");
+    len = strlen(buffer);
+    snprintf(&buffer[len], sizeof(buffer) - len, "\n");
     cur = input->cur;
     while ((*cur == '\n') || (*cur == '\r'))
 	cur--;
     n = 0;
     while ((cur != base) && (n++ < 80)) {
-        sprintf(&buffer[strlen(buffer)], " ");
+	len = strlen(buffer);
+        snprintf(&buffer[len], sizeof(buffer) - len, " ");
         base++;
     }
-    sprintf(&buffer[strlen(buffer)],"^\n");
+    len = strlen(buffer);
+    snprintf(&buffer[len], sizeof(buffer) - len, "^\n");
     xmlHTMLEncodeSend();
     xmlGenericError(xmlGenericErrorContext, "</pre>");
 }
@@ -326,6 +365,7 @@ xmlHTMLError(void *ctx, const char *msg, ...)
     xmlParserInputPtr input;
     xmlParserInputPtr cur = NULL;
     va_list args;
+    int len;
 
     buffer[0] = 0;
     input = ctxt->input;
@@ -338,7 +378,8 @@ xmlHTMLError(void *ctx, const char *msg, ...)
 
     xmlGenericError(xmlGenericErrorContext, "<b>error</b>: ");
     va_start(args, msg);
-    vsprintf(&buffer[strlen(buffer)], msg, args);
+    len = strlen(buffer);
+    vsnprintf(&buffer[len],  sizeof(buffer) - len, msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
     xmlGenericError(xmlGenericErrorContext, "</p>\n");
@@ -363,6 +404,7 @@ xmlHTMLWarning(void *ctx, const char *msg, ...)
     xmlParserInputPtr input;
     xmlParserInputPtr cur = NULL;
     va_list args;
+    int len;
 
     buffer[0] = 0;
     input = ctxt->input;
@@ -376,7 +418,8 @@ xmlHTMLWarning(void *ctx, const char *msg, ...)
         
     xmlGenericError(xmlGenericErrorContext, "<b>warning</b>: ");
     va_start(args, msg);
-    vsprintf(&buffer[strlen(buffer)], msg, args);
+    len = strlen(buffer);    
+    vsnprintf(&buffer[len],  sizeof(buffer) - len, msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
     xmlGenericError(xmlGenericErrorContext, "</p>\n");
@@ -400,6 +443,7 @@ xmlHTMLValidityError(void *ctx, const char *msg, ...)
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
     xmlParserInputPtr input;
     va_list args;
+    int len;
 
     buffer[0] = 0;
     input = ctxt->input;
@@ -409,8 +453,9 @@ xmlHTMLValidityError(void *ctx, const char *msg, ...)
     xmlHTMLPrintFileInfo(input);
 
     xmlGenericError(xmlGenericErrorContext, "<b>validity error</b>: ");
+    len = strlen(buffer);
     va_start(args, msg);
-    vsprintf(&buffer[strlen(buffer)], msg, args);
+    vsnprintf(&buffer[len],  sizeof(buffer) - len, msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
     xmlGenericError(xmlGenericErrorContext, "</p>\n");
@@ -434,6 +479,7 @@ xmlHTMLValidityWarning(void *ctx, const char *msg, ...)
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
     xmlParserInputPtr input;
     va_list args;
+    int len;
 
     buffer[0] = 0;
     input = ctxt->input;
@@ -444,7 +490,8 @@ xmlHTMLValidityWarning(void *ctx, const char *msg, ...)
         
     xmlGenericError(xmlGenericErrorContext, "<b>validity warning</b>: ");
     va_start(args, msg);
-    vsprintf(&buffer[strlen(buffer)], msg, args);
+    len = strlen(buffer); 
+    vsnprintf(&buffer[len],  sizeof(buffer) - len, msg, args);
     va_end(args);
     xmlHTMLEncodeSend();
     xmlGenericError(xmlGenericErrorContext, "</p>\n");
@@ -934,6 +981,57 @@ static void parseAndPrintFile(char *filename) {
  * 									*
  ************************************************************************/
 
+static void showVersion(const char *name) {
+    fprintf(stderr, "%s: using libxml version %s\n", name, xmlParserVersion);
+    fprintf(stderr, "   compiled with: ");
+#ifdef LIBXML_FTP_ENABLED
+    fprintf(stderr, "FTP ");
+#endif
+#ifdef LIBXML_HTTP_ENABLED
+    fprintf(stderr, "HTTP ");
+#endif
+#ifdef LIBXML_HTML_ENABLED
+    fprintf(stderr, "HTML ");
+#endif
+#ifdef LIBXML_C14N_ENABLED
+    fprintf(stderr, "C14N ");
+#endif
+#ifdef LIBXML_CATALOG_ENABLED
+    fprintf(stderr, "Catalog ");
+#endif
+#ifdef LIBXML_DOCB_ENABLED
+    fprintf(stderr, "DocBook ");
+#endif
+#ifdef LIBXML_XPATH_ENABLED
+    fprintf(stderr, "XPath ");
+#endif
+#ifdef LIBXML_XPTR_ENABLED
+    fprintf(stderr, "XPointer ");
+#endif
+#ifdef LIBXML_XINCLUDE_ENABLED
+    fprintf(stderr, "XInclude ");
+#endif
+#ifdef LIBXML_ICONV_ENABLED
+    fprintf(stderr, "Iconv ");
+#endif
+#ifdef DEBUG_MEMORY_LOCATION
+    fprintf(stderr, "MemDebug ");
+#endif
+#ifdef LIBXML_UNICODE_ENABLED
+    fprintf(stderr, "Unicode ");
+#endif
+#ifdef LIBXML_REGEXP_ENABLED
+    fprintf(stderr, "Regexps ");
+#endif
+#ifdef LIBXML_AUTOMATA_ENABLED
+    fprintf(stderr, "Automata ");
+#endif
+#ifdef LIBXML_SCHEMAS_ENABLED
+    fprintf(stderr, "Schemas ");
+#endif
+    fprintf(stderr, "\n");
+}
+
 static void usage(const char *name) {
     printf("Usage : %s [options] XMLfiles ...\n", name);
     printf("\tParse the XML files and output the result of the parsing\n");
@@ -1026,8 +1124,7 @@ main(int argc, char **argv) {
 	    noent++;
 	else if ((!strcmp(argv[i], "-version")) ||
 	         (!strcmp(argv[i], "--version"))) {
-	    fprintf(stderr, "xmllint: using libxml version %s\n",
-		    xmlParserVersion);
+	    showVersion(argv[0]);
 	    version = 1;
 	} else if ((!strcmp(argv[i], "-noout")) ||
 	         (!strcmp(argv[i], "--noout")))
@@ -1036,7 +1133,7 @@ main(int argc, char **argv) {
 	         (!strcmp(argv[i], "-output")) ||
 	         (!strcmp(argv[i], "--output"))) {
 	    i++;
-	    output = argv[i++];
+	    output = argv[i];
 	}
 	else if ((!strcmp(argv[i], "-htmlout")) ||
 	         (!strcmp(argv[i], "--htmlout")))

@@ -6,7 +6,7 @@ AC_CANONICAL_HOST
 
 LIBXML_MAJOR_VERSION=2
 LIBXML_MINOR_VERSION=4
-LIBXML_MICRO_VERSION=15
+LIBXML_MICRO_VERSION=30
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
 
@@ -82,12 +82,63 @@ LDFLAGS=${_ldflags}
 dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h unistd.h ctype.h dirent.h errno.h malloc.h)
-AC_CHECK_HEADERS(stdarg.h sys/stat.h sys/types.h time.h ansidecl.h)
-AC_CHECK_HEADERS(ieeefp.h nan.h math.h fp_class.h float.h)
-AC_CHECK_HEADERS(stdlib.h sys/socket.h netinet/in.h arpa/inet.h)
-AC_CHECK_HEADERS(netdb.h sys/time.h sys/select.h sys/mman.h)
-AC_CHECK_HEADERS(signal.h)
+AC_CHECK_HEADERS([fcntl.h])
+AC_CHECK_HEADERS([unistd.h])
+AC_CHECK_HEADERS([ctype.h])
+AC_CHECK_HEADERS([dirent.h])
+AC_CHECK_HEADERS([errno.h])
+AC_CHECK_HEADERS([malloc.h])
+AC_CHECK_HEADERS([stdarg.h])
+AC_CHECK_HEADERS([sys/stat.h])
+AC_CHECK_HEADERS([sys/types.h])
+AC_CHECK_HEADERS([time.h])
+AC_CHECK_HEADERS([ansidecl.h])
+AC_CHECK_HEADERS([ieeefp.h])
+AC_CHECK_HEADERS([nan.h])
+AC_CHECK_HEADERS([math.h])
+AC_CHECK_HEADERS([fp_class.h])
+AC_CHECK_HEADERS([float.h])
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([sys/socket.h], [], [],
+[#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+# endif
+])
+AC_CHECK_HEADERS([netinet/in.h], [], [],
+[#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+# endif
+])
+AC_CHECK_HEADERS([arpa/inet.h], [], [],
+[#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+# endif
+#if HAVE_ARPA_INET_H
+# include <arpa/inet.h>
+# endif
+])
+AC_CHECK_HEADERS([netdb.h])
+AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_HEADERS([sys/select.h])
+AC_CHECK_HEADERS([sys/mman.h])
+AC_CHECK_HEADERS([sys/timeb.h])
+AC_CHECK_HEADERS([signal.h])
+AC_CHECK_HEADERS([arpa/nameser.h], [], [],
+[#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+# endif
+])
+AC_CHECK_HEADERS([resolv.h], [], [],
+[#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+# endif
+#if HAVE_NETINET_IN_H
+# include <netinet/in.h>
+# endif
+#if HAVE_ARPA_NAMESER_H
+# include <arpa/nameser.h>
+# endif
+])
 
 dnl Specific dir for HTML output ?
 if test "x$with_html_dir" = "x" ; then
@@ -102,7 +153,7 @@ dnl Checks for library functions.
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS(strdup strndup strerror)
 AC_CHECK_FUNCS(finite isnand fp_class class fpclass)
-AC_CHECK_FUNCS(strftime localtime)
+AC_CHECK_FUNCS(strftime localtime gettimeofday ftime)
 AC_CHECK_FUNCS(stat _stat signal)
 
 dnl Checking the standard string functions availability
@@ -148,7 +199,7 @@ AC_CHECK_FUNC(isinf, AC_DEFINE(HAVE_ISINF) , AC_CHECK_LIB(m, isinf,
   [AC_DEFINE(HAVE_ISINF)]))
 
 XML_LIBDIR='-L${libdir}'
-XML_INCLUDEDIR='-I${includedir}/libxml2/libxml -I${includedir}/libxml2'
+XML_INCLUDEDIR='-I${includedir}/libxml2'
 
 dnl
 dnl Extra flags
@@ -176,12 +227,18 @@ else
           alpha*-*-linux* )
 	       CFLAGS="${CFLAGS} -mieee"
 	       ;;
+	  alpha*-*-osf* )
+	       CFLAGS="${CFLAGS} -mieee"
+	       ;;
     esac
 fi
 case ${host} in
     *-*-solaris*)
         XML_LIBDIR="${XML_LIBDIR} -R${libdir}"
         ;;
+    hppa*-hp-mpeix)
+        NEED_TRIO=1
+	;;
 esac
 
 
@@ -200,7 +257,13 @@ if test "$with_python" != "no" ; then
         echo Found python in $with_python/bin/python
         PYTHON="$with_python/bin/python"
     else
-	AC_PATH_PROG(PYTHON, python python2.2 python2.1 python2.0 python1.6 python1.5)
+	if test -x "$with_python"
+	then
+	    echo Found python in $with_python
+	    PYTHON="$with_python"
+	else
+	    AC_PATH_PROG(PYTHON, python python2.3 python2.2 python2.1 python2.0 python1.6 python1.5)
+	fi
     fi
     if test "$PYTHON" != ""
     then
@@ -218,31 +281,31 @@ if test "$with_python" != "no" ; then
 	    if test -r $prefix/include/python$PYTHON_VERSION/Python.h
 	    then
 	        PYTHON_INCLUDES='$(prefix)/include/python$(PYTHON_VERSION)'
-		PYTHON_SITE_PACKAGES='$(prefix)/lib/python$(PYTHON_VERSION)/site-packages'
+		PYTHON_SITE_PACKAGES='$(libdir)/python$(PYTHON_VERSION)/site-packages'
 	    else
 		if test -r /usr/include/python$PYTHON_VERSION/Python.h
 		then
 		    PYTHON_INCLUDES=/usr/include/python$PYTHON_VERSION
-		    PYTHON_SITE_PACKAGES='$(prefix)/lib/python$(PYTHON_VERSION)/site-packages'
+		    PYTHON_SITE_PACKAGES='$(libdir)/python$(PYTHON_VERSION)/site-packages'
 		else
 		    echo could not find python$PYTHON_VERSION/Python.h
 		fi
+	    fi
+	    if ! test -d "$PYTHON_SITE_PACKAGES"
+	    then
+		    PYTHON_SITE_PACKAGES=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib()"`
 	    fi
 	fi
     fi
 fi
 AM_CONDITIONAL(WITH_PYTHON, test "$PYTHON_INCLUDES" != "")
-
-
-dnl
-dnl Use buffers for content
-dnl
-
-AC_ARG_WITH(buffers, [  --with-buffers          Use buffers for node content])
-if test "$with_buffers" = "yes" ; then
-    CFLAGS="${CFLAGS} -DXML_USE_BUFFER_CONTENT"
-    XML_CFLAGS="${XML_CFLAGS}  -DXML_USE_BUFFER_CONTENT"
+if test "$PYTHON_INCLUDES" != ""
+then
+    PYTHON_SUBDIR=python
+else
+    PYTHON_SUBDIR=
 fi
+AC_SUBST(PYTHON_SUBDIR)
 
 dnl
 dnl Tester makes use of readline if present
@@ -272,6 +335,9 @@ if test "${LOGNAME}" = "veillard" -a "`pwd`" = "/u/veillard/XML" ; then
     fi
     if test "${with_xptr}" = "" ; then
         with_xptr="yes"
+    fi
+    if test "${with_schemas}" = "" ; then
+        with_schemas="yes"
     fi
     CFLAGS="-g -O -pedantic -W -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls "
 dnl -Wcast-qual -ansi
@@ -420,6 +486,8 @@ AC_ARG_WITH(xpath, [  --with-xpath            Add the XPATH support (on)])
 if test "$with_xpath" = "no" ; then
     echo Disabling XPATH support
     with_xptr="no"
+    with_c14n="no"
+    with_xinclude="no"
     WITH_XPATH=0
     XPATH_OBJ=
 else    
@@ -440,6 +508,18 @@ else
 fi
 AC_SUBST(WITH_XPTR)
 AC_SUBST(XPTR_OBJ)
+
+AC_ARG_WITH(c14n, [  --with-c14n             Add the Canonicalization support (on)])
+if test "$with_c14n" = "no" ; then
+    echo Disabling C14N support
+    WITH_C14N=0
+    C14N_OBJ=
+else    
+    WITH_C14N=1
+    C14N_OBJ="c14n.c"
+fi
+AC_SUBST(WITH_C14N)
+AC_SUBST(C14N_OBJ)
 
 AC_ARG_WITH(xinclude, [  --with-xinclude         Add the XInclude support (on)])
 if test "$with_xinclude" = "no" ; then
@@ -499,6 +579,31 @@ M_LIBS="-lm"
 XML_LIBS="-lxml2 $Z_LIBS $THREAD_LIBS $ICONV_LIBS $M_LIBS $LIBS"
 AC_SUBST(WITH_ICONV)
 
+AC_ARG_WITH(schemas, [  --with-schemas              Add experimental Schemas support (off)])
+if test "$with_schemas" = "yes" ; then
+    echo Enabling Schemas support
+    WITH_SCHEMAS=1
+    TEST_SCHEMAS="Schemastests"
+    with_regexps=yes
+else    
+    WITH_SCHEMAS=0
+    TEST_SCHEMAS=
+fi
+AC_SUBST(WITH_SCHEMAS)
+AC_SUBST(TEST_SCHEMAS)
+
+AC_ARG_WITH(regexps, [  --with-regexps              Add Regular Expressions support (on)])
+if test "$with_regexps" = "no" ; then
+    echo Disabling Regexps support
+    WITH_REGEXPS=0
+    TEST_REGEXPS=
+else    
+    WITH_REGEXPS=1
+    TEST_REGEXPS="Regexptests Automatatests"
+fi
+AC_SUBST(WITH_REGEXPS)
+AC_SUBST(TEST_REGEXPS)
+
 AC_ARG_WITH(debug, [  --with-debug            Add the debugging module (on)])
 if test "$with_debug" = "no" ; then
     echo Disabling DEBUG support
@@ -538,8 +643,13 @@ AC_SUBST(PYTHON_SITE_PACKAGES)
 AC_SUBST(M_LIBS)
 AC_SUBST(RDL_LIBS)
 
+dnl for the spec file
+RELDATE=`date +'%a %b %e %Y'`
+AC_SUBST(RELDATE)
+
 rm -f rm COPYING.LIB COPYING
 ln -s Copyright COPYING
 
-AC_OUTPUT(libxml.spec Makefile include/Makefile include/libxml/Makefile doc/Makefile example/Makefile python/Makefile python/tests/Makefile include/libxml/xmlversion.h include/libxml/xmlwin32version.h xml2-config libxml-2.0.pc xml2Conf.sh)
+AC_OUTPUT(libxml.spec Makefile include/Makefile include/libxml/Makefile doc/Makefile example/Makefile python/Makefile python/tests/Makefile include/libxml/xmlversion.h xml2-config libxml-2.0.pc xml2Conf.sh python/setup.py)
 
+chmod +x xml2-config xml2Conf.sh python/setup.py

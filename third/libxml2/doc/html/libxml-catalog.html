@@ -4,7 +4,7 @@
 >catalog</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="xmlIO"
 HREF="libxml-xmlio.html"><LINK
 REL="NEXT"
-TITLE="threads"
-HREF="libxml-threads.html"></HEAD
+TITLE="c14n"
+HREF="libxml-c14n.html"></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -103,7 +103,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-HREF="libxml-threads.html"
+HREF="libxml-c14n.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-CATALOG"
->catalog</A
-></H1
+NAME="LIBXML-CATALOG">catalog</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN19049"
+NAME="AEN19838"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN19049"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN19052"
-></A
-><H2
+NAME="AEN19841"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -506,7 +502,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN19153"
+NAME="AEN19942"
 ></A
 ><H2
 >Description</H2
@@ -516,20 +512,20 @@ NAME="AEN19153"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN19156"
+NAME="AEN19945"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19158"
+NAME="AEN19947"
 ></A
 ><H3
 ><A
 NAME="XML-CATALOGS-NAMESPACE-CAPS"
 ></A
->&#62;XML_CATALOGS_NAMESPACE</H3
+>XML_CATALOGS_NAMESPACE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -544,20 +540,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->The namespace for the XML Catalogs elements</P
+>The namespace for the XML Catalogs elements.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19164"
+NAME="AEN19953"
 ></A
 ><H3
 ><A
 NAME="XML-CATALOG-PI-CAPS"
 ></A
->&#62;XML_CATALOG_PI</H3
+>XML_CATALOG_PI</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -572,18 +568,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>The specific XML Catalog Processing Instuction name.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19169"
+NAME="AEN19959"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGPREFER"
 ></A
->&#62;enum xmlCatalogPrefer</H3
+>enum xmlCatalogPrefer</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -607,13 +605,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19174"
+NAME="AEN19964"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGALLOW"
 ></A
->&#62;enum xmlCatalogAllow</H3
+>enum xmlCatalogAllow</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -638,13 +636,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19179"
+NAME="AEN19969"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOG"
 ></A
->&#62;struct xmlCatalog</H3
+>struct xmlCatalog</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -664,13 +662,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19184"
+NAME="AEN19974"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGPTR"
 ></A
->&#62;xmlCatalogPtr</H3
+>xmlCatalogPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -690,13 +688,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19189"
+NAME="AEN19979"
 ></A
 ><H3
 ><A
 NAME="XMLNEWCATALOG"
 ></A
->&#62;xmlNewCatalog ()</H3
+>xmlNewCatalog ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -720,9 +718,7 @@ HREF="libxml-catalog.html#XMLCATALOGPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19196"
-></A
-><P
+NAME="AEN19986"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -754,9 +750,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -773,13 +772,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19209"
+NAME="AEN19999"
 ></A
 ><H3
 ><A
 NAME="XMLLOADACATALOG"
 ></A
->&#62;xmlLoadACatalog ()</H3
+>xmlLoadACatalog ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -806,9 +805,7 @@ Catalogs are not handled recursively.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19216"
-></A
-><P
+NAME="AEN20006"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -840,9 +837,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -859,13 +859,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19229"
+NAME="AEN20019"
 ></A
 ><H3
 ><A
 NAME="XMLLOADSGMLSUPERCATALOG"
 ></A
->&#62;xmlLoadSGMLSuperCatalog ()</H3
+>xmlLoadSGMLSuperCatalog ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -891,9 +891,7 @@ like adding and removing CATALOG or DELEGATE entries.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19236"
-></A
-><P
+NAME="AEN20026"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -925,9 +923,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -944,13 +945,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19249"
+NAME="AEN20039"
 ></A
 ><H3
 ><A
 NAME="XMLCONVERTSGMLCATALOG"
 ></A
->&#62;xmlConvertSGMLCatalog ()</H3
+>xmlConvertSGMLCatalog ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -974,9 +975,7 @@ HREF="libxml-catalog.html#XMLCATALOGPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19256"
-></A
-><P
+NAME="AEN20046"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1008,9 +1007,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1027,13 +1029,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19269"
+NAME="AEN20059"
 ></A
 ><H3
 ><A
 NAME="XMLACATALOGADD"
 ></A
->&#62;xmlACatalogAdd ()</H3
+>xmlACatalogAdd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1070,9 +1072,7 @@ different entries.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19279"
-></A
-><P
+NAME="AEN20069"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1155,9 +1155,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1174,13 +1177,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19304"
+NAME="AEN20094"
 ></A
 ><H3
 ><A
 NAME="XMLACATALOGREMOVE"
 ></A
->&#62;xmlACatalogRemove ()</H3
+>xmlACatalogRemove ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1208,9 +1211,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19312"
-></A
-><P
+NAME="AEN20102"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1259,9 +1260,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1278,13 +1282,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19329"
+NAME="AEN20119"
 ></A
 ><H3
 ><A
 NAME="XMLACATALOGRESOLVE"
 ></A
->&#62;xmlACatalogResolve ()</H3
+>xmlACatalogResolve ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1319,9 +1323,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19339"
-></A
-><P
+NAME="AEN20129"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1387,16 +1389,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the URI of the resource or NULL if not found, it must be freed
-     by the caller.</TD
+by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1407,13 +1412,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19360"
+NAME="AEN20150"
 ></A
 ><H3
 ><A
 NAME="XMLACATALOGRESOLVESYSTEM"
 ></A
->&#62;xmlACatalogResolveSystem ()</H3
+>xmlACatalogResolveSystem ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1444,9 +1449,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19369"
-></A
-><P
+NAME="AEN20159"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1495,16 +1498,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the system ID if found or NULL otherwise, the value returned
-     must be freed by the caller.</TD
+must be freed by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1515,13 +1521,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19386"
+NAME="AEN20176"
 ></A
 ><H3
 ><A
 NAME="XMLACATALOGRESOLVEPUBLIC"
 ></A
->&#62;xmlACatalogResolvePublic ()</H3
+>xmlACatalogResolvePublic ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1552,9 +1558,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19395"
-></A
-><P
+NAME="AEN20185"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1603,16 +1607,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the system ID if found or NULL otherwise, the value returned
-     must be freed by the caller.</TD
+must be freed by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1623,13 +1630,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19412"
+NAME="AEN20202"
 ></A
 ><H3
 ><A
 NAME="XMLACATALOGRESOLVEURI"
 ></A
->&#62;xmlACatalogResolveURI ()</H3
+>xmlACatalogResolveURI ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1660,9 +1667,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19421"
-></A
-><P
+NAME="AEN20211"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1711,16 +1716,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the URI of the resource or NULL if not found, it must be freed
-     by the caller.</TD
+by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1731,13 +1739,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19438"
+NAME="AEN20228"
 ></A
 ><H3
 ><A
 NAME="XMLACATALOGDUMP"
 ></A
->&#62;xmlACatalogDump ()</H3
+>xmlACatalogDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1765,9 +1773,7 @@ HREF="FILE-CAPS"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19446"
-></A
-><P
+NAME="AEN20236"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1820,13 +1826,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19459"
+NAME="AEN20249"
 ></A
 ><H3
 ><A
 NAME="XMLFREECATALOG"
 ></A
->&#62;xmlFreeCatalog ()</H3
+>xmlFreeCatalog ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1850,9 +1856,7 @@ HREF="libxml-catalog.html#XMLCATALOGPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19466"
-></A
-><P
+NAME="AEN20256"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1888,13 +1892,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19475"
+NAME="AEN20265"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGISEMPTY"
 ></A
->&#62;xmlCatalogIsEmpty ()</H3
+>xmlCatalogIsEmpty ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1918,9 +1922,7 @@ HREF="libxml-catalog.html#XMLCATALOGPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19482"
-></A
-><P
+NAME="AEN20272"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1952,9 +1954,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1971,13 +1976,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19495"
+NAME="AEN20285"
 ></A
 ><H3
 ><A
 NAME="XMLINITIALIZECATALOG"
 ></A
->&#62;xmlInitializeCatalog ()</H3
+>xmlInitializeCatalog ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2001,13 +2006,13 @@ preferably be done once at startup</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19501"
+NAME="AEN20291"
 ></A
 ><H3
 ><A
 NAME="XMLLOADCATALOG"
 ></A
->&#62;xmlLoadCatalog ()</H3
+>xmlLoadCatalog ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2031,9 +2036,7 @@ preferably be done once at startup</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19507"
-></A
-><P
+NAME="AEN20297"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2065,9 +2068,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2084,13 +2090,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19520"
+NAME="AEN20310"
 ></A
 ><H3
 ><A
 NAME="XMLLOADCATALOGS"
 ></A
->&#62;xmlLoadCatalogs ()</H3
+>xmlLoadCatalogs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2114,9 +2120,7 @@ preferably be done once at startup</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19526"
-></A
-><P
+NAME="AEN20316"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2141,7 +2145,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->  a list of file path separated by ':' or spaces</TD
+>  a space-separated list of catalog files.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2152,13 +2156,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19535"
+NAME="AEN20325"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGCLEANUP"
 ></A
->&#62;xmlCatalogCleanup ()</H3
+>xmlCatalogCleanup ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2180,13 +2184,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19541"
+NAME="AEN20331"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGDUMP"
 ></A
->&#62;xmlCatalogDump ()</H3
+>xmlCatalogDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2210,9 +2214,7 @@ HREF="FILE-CAPS"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19548"
-></A
-><P
+NAME="AEN20338"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2248,13 +2250,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19557"
+NAME="AEN20347"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGRESOLVE"
 ></A
->&#62;xmlCatalogResolve ()</H3
+>xmlCatalogResolve ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2285,9 +2287,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19566"
-></A
-><P
+NAME="AEN20356"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2336,16 +2336,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the URI of the resource or NULL if not found, it must be freed
-     by the caller.</TD
+by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2356,13 +2359,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19583"
+NAME="AEN20373"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGRESOLVESYSTEM"
 ></A
->&#62;xmlCatalogResolveSystem ()</H3
+>xmlCatalogResolveSystem ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2389,9 +2392,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19591"
-></A
-><P
+NAME="AEN20381"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2423,16 +2424,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the system ID if found or NULL otherwise, the value returned
-     must be freed by the caller.</TD
+must be freed by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2443,13 +2447,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19604"
+NAME="AEN20394"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGRESOLVEPUBLIC"
 ></A
->&#62;xmlCatalogResolvePublic ()</H3
+>xmlCatalogResolvePublic ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2476,9 +2480,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19612"
-></A
-><P
+NAME="AEN20402"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2510,16 +2512,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the system ID if found or NULL otherwise, the value returned
-     must be freed by the caller.</TD
+must be freed by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2530,13 +2535,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19625"
+NAME="AEN20415"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGRESOLVEURI"
 ></A
->&#62;xmlCatalogResolveURI ()</H3
+>xmlCatalogResolveURI ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2563,9 +2568,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19633"
-></A
-><P
+NAME="AEN20423"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2597,16 +2600,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the URI of the resource or NULL if not found, it must be freed
-     by the caller.</TD
+by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2617,13 +2623,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19646"
+NAME="AEN20436"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGADD"
 ></A
->&#62;xmlCatalogAdd ()</H3
+>xmlCatalogAdd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2661,9 +2667,7 @@ HREF="libxml-catalog.html#XMLINITIALIZECATALOG"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19656"
-></A
-><P
+NAME="AEN20446"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2729,9 +2733,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2748,13 +2755,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19677"
+NAME="AEN20467"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGREMOVE"
 ></A
->&#62;xmlCatalogRemove ()</H3
+>xmlCatalogRemove ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2778,9 +2785,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19684"
-></A
-><P
+NAME="AEN20474"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2812,9 +2817,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2831,13 +2839,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19697"
+NAME="AEN20487"
 ></A
 ><H3
 ><A
 NAME="XMLPARSECATALOGFILE"
 ></A
->&#62;xmlParseCatalogFile ()</H3
+>xmlParseCatalogFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2865,9 +2873,7 @@ except it bypass all catalog lookups.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19705"
-></A
-><P
+NAME="AEN20495"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2899,9 +2905,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2918,13 +2927,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19718"
+NAME="AEN20508"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGCONVERT"
 ></A
->&#62;xmlCatalogConvert ()</H3
+>xmlCatalogConvert ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2945,9 +2954,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19724"
-></A
-><P
+NAME="AEN20514"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2962,9 +2969,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2981,13 +2991,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19733"
+NAME="AEN20523"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGFREELOCAL"
 ></A
->&#62;xmlCatalogFreeLocal ()</H3
+>xmlCatalogFreeLocal ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3008,9 +3018,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19739"
-></A
-><P
+NAME="AEN20529"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3046,13 +3054,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19748"
+NAME="AEN20538"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGADDLOCAL"
 ></A
->&#62;xmlCatalogAddLocal ()</H3
+>xmlCatalogAddLocal ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3077,9 +3085,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19755"
-></A
-><P
+NAME="AEN20545"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3132,13 +3138,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19768"
+NAME="AEN20558"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGLOCALRESOLVE"
 ></A
->&#62;xmlCatalogLocalResolve ()</H3
+>xmlCatalogLocalResolve ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3171,9 +3177,7 @@ document's private catalog list</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19777"
-></A
-><P
+NAME="AEN20567"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3239,16 +3243,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the URI of the resource or NULL if not found, it must be freed
-     by the caller.</TD
+by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -3259,13 +3266,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19798"
+NAME="AEN20588"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGLOCALRESOLVEURI"
 ></A
->&#62;xmlCatalogLocalResolveURI ()</H3
+>xmlCatalogLocalResolveURI ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3294,9 +3301,7 @@ document's private catalog list</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19806"
-></A
-><P
+NAME="AEN20596"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3345,16 +3350,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the URI of the resource or NULL if not found, it must be freed
-     by the caller.</TD
+by the caller.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -3365,13 +3373,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19823"
+NAME="AEN20613"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGSETDEBUG"
 ></A
->&#62;xmlCatalogSetDebug ()</H3
+>xmlCatalogSetDebug ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3393,9 +3401,7 @@ debugging, 1 enable it</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19829"
-></A
-><P
+NAME="AEN20619"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3427,9 +3433,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3446,13 +3455,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19842"
+NAME="AEN20632"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGSETDEFAULTPREFER"
 ></A
->&#62;xmlCatalogSetDefaultPrefer ()</H3
+>xmlCatalogSetDefaultPrefer ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3481,9 +3490,7 @@ Values accepted are XML_CATA_PREFER_PUBLIC or XML_CATA_PREFER_SYSTEM</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19850"
-></A
-><P
+NAME="AEN20640"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3515,9 +3522,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3534,13 +3544,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19863"
+NAME="AEN20653"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGSETDEFAULTS"
 ></A
->&#62;xmlCatalogSetDefaults ()</H3
+>xmlCatalogSetDefaults ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3565,9 +3575,7 @@ be accepted</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19870"
-></A
-><P
+NAME="AEN20660"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3603,13 +3611,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19879"
+NAME="AEN20669"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGGETDEFAULTS"
 ></A
->&#62;xmlCatalogGetDefaults ()</H3
+>xmlCatalogGetDefaults ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3634,9 +3642,7 @@ be accepted</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19886"
-></A
-><P
+NAME="AEN20676"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3651,9 +3657,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3670,13 +3679,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19895"
+NAME="AEN20685"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGGETSYSTEM"
 ></A
->&#62;xmlCatalogGetSystem ()</H3
+>xmlCatalogGetSystem ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3707,9 +3716,7 @@ HREF="libxml-catalog.html#XMLCATALOGRESOLVESYSTEM"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19904"
-></A
-><P
+NAME="AEN20694"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3741,9 +3748,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3760,13 +3770,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19917"
+NAME="AEN20707"
 ></A
 ><H3
 ><A
 NAME="XMLCATALOGGETPUBLIC"
 ></A
->&#62;xmlCatalogGetPublic ()</H3
+>xmlCatalogGetPublic ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3797,9 +3807,7 @@ HREF="libxml-catalog.html#XMLCATALOGRESOLVEPUBLIC"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN19926"
-></A
-><P
+NAME="AEN20716"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3831,9 +3839,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3917,7 +3928,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-HREF="libxml-threads.html"
+HREF="libxml-c14n.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -3945,7 +3956,7 @@ ALIGN="right"
 COLOR="#FFFFFF"
 SIZE="3"
 ><B
->threads</B
+>c14n</B
 ></FONT
 ></TD
 ></TR

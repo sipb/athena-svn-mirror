@@ -11,6 +11,7 @@
  * daniel@veillard.com
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #ifdef HAVE_STDLIB_H
@@ -41,7 +42,7 @@
 /*
  * Memory allocation routines
  */
-#if defined(DEBUG_MEMORY_LOCATION) | defined(DEBUG_MEMORY)
+#if defined(DEBUG_MEMORY_LOCATION) || defined(DEBUG_MEMORY)
 extern void xmlMemFree(void *ptr);
 extern void * xmlMemMalloc(size_t size);
 extern void * xmlMemRealloc(void *ptr,size_t size);
@@ -105,6 +106,7 @@ xmlStrdupFunc xmlMemStrdup = (xmlStrdupFunc) xmlStrdup;
 #undef	xmlGenericErrorContext
 #undef	xmlGetWarningsDefaultValue
 #undef	xmlIndentTreeOutput
+#undef  xmlTreeIndentString
 #undef	xmlKeepBlanksDefaultValue
 #undef	xmlLineNumbersDefaultValue
 #undef	xmlLoadExtDtdDefaultValue
@@ -246,9 +248,17 @@ void *xmlGenericErrorContext = NULL;
  * xmlIndentTreeOutput:
  *
  * Global setting, asking the serializer to indent the output tree by default
- * Disabled by default
+ * Enabled by default
  */
-int xmlIndentTreeOutput = 0;
+int xmlIndentTreeOutput = 1;
+
+/**
+ * xmlTreeIndentString:
+ *
+ * The string used to do one-level indent. By default is equal to "  " (two spaces)
+ */
+const char *xmlTreeIndentString = "  ";
+
 /**
  * xmlSaveNoEmptyTags:
  *
@@ -399,7 +409,7 @@ xmlInitializeGlobalState(xmlGlobalStatePtr gs)
     /*
      * Perform initialization as required by libxml
      */
-    initxmlDefaultSAXHandler(&gs->xmlDefaultSAXHandler, 1);
+
 #ifdef LIBXML_DOCB_ENABLED
     initdocbDefaultSAXHandler(&gs->docbDefaultSAXHandler);
 #endif
@@ -430,7 +440,8 @@ xmlInitializeGlobalState(xmlGlobalStatePtr gs)
 #endif
     gs->xmlGenericErrorContext = NULL;
     gs->xmlGetWarningsDefaultValue = 1;
-    gs->xmlIndentTreeOutput = 0;
+    gs->xmlIndentTreeOutput = 1;
+    gs->xmlTreeIndentString = "  ";
     gs->xmlKeepBlanksDefaultValue = 1;
     gs->xmlLineNumbersDefaultValue = 0;
     gs->xmlLoadExtDtdDefaultValue = 0;
@@ -558,6 +569,15 @@ __xmlIndentTreeOutput(void) {
 	return (&xmlIndentTreeOutput);
     else
 	return (&xmlGetGlobalState()->xmlIndentTreeOutput);
+}
+
+#undef xmlTreeIndentString
+const char * *
+__xmlTreeIndentString(void) {
+    if (IS_MAIN_THREAD)
+	return (&xmlTreeIndentString);
+    else
+	return (&xmlGetGlobalState()->xmlTreeIndentString);
 }
 
 #undef	xmlKeepBlanksDefaultValue

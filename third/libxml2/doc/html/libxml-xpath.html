@@ -4,7 +4,7 @@
 >xpath</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-XPATH"
->xpath</A
-></H1
+NAME="LIBXML-XPATH">xpath</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN11861"
+NAME="AEN12391"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN11861"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN11864"
-></A
-><H2
+NAME="AEN12394"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -592,7 +588,7 @@ HREF="libxml-xpath.html#XMLXPATHCOMPEXPRPTR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11990"
+NAME="AEN12520"
 ></A
 ><H2
 >Description</H2
@@ -602,20 +598,20 @@ NAME="AEN11990"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11993"
+NAME="AEN12523"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11995"
+NAME="AEN12525"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCONTEXT"
 ></A
->&#62;struct xmlXPathContext</H3
+>struct xmlXPathContext</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -685,11 +681,11 @@ CLASS="PROGRAMLISTING"
 ><P
 >Expression evaluation occurs with respect to a context.
 he context consists of:
-   - a node (the context node) 
-   - a node list (the context node list) 
-   - a set of variable bindings 
-   - a function library 
-   - the set of namespace declarations in scope for the expression 
+- a node (the context node) 
+- a node list (the context node list) 
+- a set of variable bindings 
+- a function library 
+- the set of namespace declarations in scope for the expression 
 Following the switch to hash tables, this need to be trimmed up at
 the next binary incompatible release.</P
 ><P
@@ -698,13 +694,13 @@ the next binary incompatible release.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12001"
+NAME="AEN12531"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCONTEXTPTR"
 ></A
->&#62;xmlXPathContextPtr</H3
+>xmlXPathContextPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -724,13 +720,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12006"
+NAME="AEN12536"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHPARSERCONTEXT"
 ></A
->&#62;struct xmlXPathParserContext</H3
+>struct xmlXPathParserContext</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -760,7 +756,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->An XPath parser context, it contains pure parsing informations,
+>An XPath parser context. It contains pure parsing informations,
 an xmlXPathContext, and the stack of objects.</P
 ><P
 ></P
@@ -768,13 +764,13 @@ an xmlXPathContext, and the stack of objects.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12012"
+NAME="AEN12542"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHPARSERCONTEXTPTR"
 ></A
->&#62;xmlXPathParserContextPtr</H3
+>xmlXPathParserContextPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -794,13 +790,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12017"
+NAME="AEN12547"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHERROR"
 ></A
->&#62;enum xmlXPathError</H3
+>enum xmlXPathError</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -843,13 +839,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12022"
+NAME="AEN12552"
 ></A
 ><H3
 ><A
 NAME="XMLNODESET"
 ></A
->&#62;struct xmlNodeSet</H3
+>struct xmlNodeSet</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -863,6 +859,7 @@ CLASS="PROGRAMLISTING"
     int nodeNr;			/* number of nodes in the set */
     int nodeMax;		/* size of the array as allocated */
     xmlNodePtr *nodeTab;	/* array of nodes in no particular order */
+    /* @@ with_ns to check wether namespace nodes should be looked at @@ */
 };</PRE
 ></TD
 ></TR
@@ -873,13 +870,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12027"
+NAME="AEN12557"
 ></A
 ><H3
 ><A
 NAME="XMLNODESETPTR"
 ></A
->&#62;xmlNodeSetPtr</H3
+>xmlNodeSetPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -899,13 +896,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12032"
+NAME="AEN12562"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHOBJECTTYPE"
 ></A
->&#62;enum xmlXPathObjectType</H3
+>enum xmlXPathObjectType</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -936,13 +933,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12037"
+NAME="AEN12567"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHOBJECT"
 ></A
->&#62;struct xmlXPathObject</H3
+>struct xmlXPathObject</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -972,13 +969,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12042"
+NAME="AEN12572"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHOBJECTPTR"
 ></A
->&#62;xmlXPathObjectPtr</H3
+>xmlXPathObjectPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -998,13 +995,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12047"
+NAME="AEN12577"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCONVERTFUNC"
 ></A
->&#62;xmlXPathConvertFunc ()</H3
+>xmlXPathConvertFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1023,13 +1020,14 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ></TR
 ></TABLE
 ><P
+>A conversion function is associated to a type and used to cast
+the new type to primitive values.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12053"
-></A
-><P
+NAME="AEN12584"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1054,7 +1052,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an XPath object</TD
 ></TR
 ><TR
 ><TD
@@ -1071,22 +1069,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the number of the target type</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>-1 in case of error, 0 otherwise</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1097,13 +1098,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12070"
+NAME="AEN12601"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHTYPE"
 ></A
->&#62;struct xmlXPathType</H3
+>struct xmlXPathType</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1126,13 +1127,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12075"
+NAME="AEN12606"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHTYPEPTR"
 ></A
->&#62;xmlXPathTypePtr</H3
+>xmlXPathTypePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1152,13 +1153,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12080"
+NAME="AEN12611"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHVARIABLE"
 ></A
->&#62;struct xmlXPathVariable</H3
+>struct xmlXPathVariable</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1181,13 +1182,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12085"
+NAME="AEN12616"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHVARIABLEPTR"
 ></A
->&#62;xmlXPathVariablePtr</H3
+>xmlXPathVariablePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1207,13 +1208,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12090"
+NAME="AEN12621"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHEVALFUNC"
 ></A
->&#62;xmlXPathEvalFunc ()</H3
+>xmlXPathEvalFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1232,15 +1233,13 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ></TR
 ></TABLE
 ><P
->an XPath evaluation function, the parameters are on the XPath context stack</P
+>An XPath evaluation function, the parameters are on the XPath context stack.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12097"
-></A
-><P
+NAME="AEN12628"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1293,13 +1292,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12110"
+NAME="AEN12641"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFUNCT"
 ></A
->&#62;struct xmlXPathFunct</H3
+>struct xmlXPathFunct</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1322,13 +1321,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12115"
+NAME="AEN12646"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFUNCPTR"
 ></A
->&#62;xmlXPathFuncPtr</H3
+>xmlXPathFuncPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1348,13 +1347,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12120"
+NAME="AEN12651"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHAXISFUNC"
 ></A
->&#62;xmlXPathAxisFunc ()</H3
+>xmlXPathAxisFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1379,13 +1378,15 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ></TR
 ></TABLE
 ><P
+>An axis traversal function. To traverse an axis, the engine calls
+the first time with cur == NULL and repeat until the function returns
+NULL indicating the end of the axis traversal.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12128"
-></A
-><P
+NAME="AEN12660"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1410,7 +1411,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the XPath interpreter context</TD
 ></TR
 ><TR
 ><TD
@@ -1427,22 +1428,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the previous node being explored on that axis</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>the next node in that axis or NULL if at the end of the axis.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1453,13 +1457,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12145"
+NAME="AEN12677"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHAXIS"
 ></A
->&#62;struct xmlXPathAxis</H3
+>struct xmlXPathAxis</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1482,13 +1486,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12150"
+NAME="AEN12682"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHAXISPTR"
 ></A
->&#62;xmlXPathAxisPtr</H3
+>xmlXPathAxisPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1508,13 +1512,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12155"
+NAME="AEN12687"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCOMPEXPR"
 ></A
->&#62;struct xmlXPathCompExpr</H3
+>struct xmlXPathCompExpr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1530,8 +1534,8 @@ CLASS="PROGRAMLISTING"
 ></TABLE
 ><P
 >[14]   Expr ::=   OrExpr 
- [21]   OrExpr ::=   AndExpr 
-                | OrExpr 'or' AndExpr </P
+[21]   OrExpr ::=   AndExpr 
+| OrExpr 'or' AndExpr </P
 ><P
 >Parse and compile an expression</P
 ><P
@@ -1540,13 +1544,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12162"
+NAME="AEN12694"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCOMPEXPRPTR"
 ></A
->&#62;xmlXPathCompExprPtr</H3
+>xmlXPathCompExprPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1566,13 +1570,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12167"
+NAME="AEN12699"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFUNCTION"
 ></A
->&#62;xmlXPathFunction ()</H3
+>xmlXPathFunction ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1591,17 +1595,15 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ></TR
 ></TABLE
 ><P
->An XPath function
-The arguments (if any) are popped out of the context stack
+>An XPath function.
+The arguments (if any) are popped out from the context stack
 and the result is pushed on the stack.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12174"
-></A
-><P
+NAME="AEN12706"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1626,7 +1628,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the XPath interprestation context</TD
 ></TR
 ><TR
 ><TD
@@ -1643,7 +1645,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the number of arguments</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1654,13 +1656,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12187"
+NAME="AEN12719"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHISNAN"
 ></A
->&#62;xmlXPathIsNaN ()</H3
+>xmlXPathIsNaN ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1689,9 +1691,7 @@ http://sourceforge.net/projects/ctrio/</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12195"
-></A
-><P
+NAME="AEN12727"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1723,9 +1723,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1742,13 +1745,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12208"
+NAME="AEN12740"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHISINF"
 ></A
->&#62;xmlXPathIsInf ()</H3
+>xmlXPathIsInf ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1777,9 +1780,7 @@ http://sourceforge.net/projects/ctrio/</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12216"
-></A
-><P
+NAME="AEN12748"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1811,9 +1812,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1830,13 +1834,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12229"
+NAME="AEN12761"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHNODESETGETLENGTH"
 ></A
->&#62;xmlXPathNodeSetGetLength()</H3
+>xmlXPathNodeSetGetLength()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1851,15 +1855,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Implement a functionality similar to the DOM NodeList.length</P
+>Implement a functionality similar to the DOM NodeList.length.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12235"
-></A
-><P
+NAME="AEN12767"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1895,13 +1897,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12244"
+NAME="AEN12776"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHNODESETITEM"
 ></A
->&#62;xmlXPathNodeSetItem()</H3
+>xmlXPathNodeSetItem()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1919,15 +1921,13 @@ CLASS="PROGRAMLISTING"
 >Implements a functionality similar to the DOM NodeList.<GTKDOCLINK
 HREF="ITEM"
 >item</GTKDOCLINK
->()</P
+>().</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12251"
-></A
-><P
+NAME="AEN12783"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1980,13 +1980,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12264"
+NAME="AEN12796"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHNODESETISEMPTY"
 ></A
->&#62;xmlXPathNodeSetIsEmpty()</H3
+>xmlXPathNodeSetIsEmpty()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2006,15 +2006,13 @@ CLASS="PARAMETER"
 ><I
 >ns</I
 ></TT
-> is empty or not</P
+> is empty or not.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12271"
-></A
-><P
+NAME="AEN12803"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2050,13 +2048,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12280"
+NAME="AEN12812"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFREEOBJECT"
 ></A
->&#62;xmlXPathFreeObject ()</H3
+>xmlXPathFreeObject ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2080,9 +2078,7 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12287"
-></A
-><P
+NAME="AEN12819"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2118,13 +2114,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12296"
+NAME="AEN12828"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHNODESETCREATE"
 ></A
->&#62;xmlXPathNodeSetCreate ()</H3
+>xmlXPathNodeSetCreate ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2156,9 +2152,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12305"
-></A
-><P
+NAME="AEN12837"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2190,9 +2184,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2209,13 +2206,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12318"
+NAME="AEN12850"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFREENODESETLIST"
 ></A
->&#62;xmlXPathFreeNodeSetList ()</H3
+>xmlXPathFreeNodeSetList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2248,9 +2245,7 @@ HREF="libxml-xpath.html#XMLXPATHFREEOBJECT"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12327"
-></A
-><P
+NAME="AEN12859"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2286,13 +2281,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12336"
+NAME="AEN12868"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFREENODESET"
 ></A
->&#62;xmlXPathFreeNodeSet ()</H3
+>xmlXPathFreeNodeSet ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2316,9 +2311,7 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12343"
-></A
-><P
+NAME="AEN12875"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2354,13 +2347,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12352"
+NAME="AEN12884"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHOBJECTCOPY"
 ></A
->&#62;xmlXPathObjectCopy ()</H3
+>xmlXPathObjectCopy ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2387,9 +2380,7 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12360"
-></A
-><P
+NAME="AEN12892"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2421,9 +2412,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2440,13 +2434,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12373"
+NAME="AEN12905"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCMPNODES"
 ></A
->&#62;xmlXPathCmpNodes ()</H3
+>xmlXPathCmpNodes ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2474,9 +2468,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12381"
-></A
-><P
+NAME="AEN12913"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2525,16 +2517,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >-2 in case of error 1 if first point &lt; second point, 0 if
-        that's the same node, -1 otherwise</TD
+that's the same node, -1 otherwise</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2545,13 +2540,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12398"
+NAME="AEN12930"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTNUMBERTOBOOLEAN"
 ></A
->&#62;xmlXPathCastNumberToBoolean ()</H3
+>xmlXPathCastNumberToBoolean ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2575,9 +2570,7 @@ HREF="DOUBLE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12405"
-></A
-><P
+NAME="AEN12937"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2609,9 +2602,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2628,13 +2624,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12418"
+NAME="AEN12950"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTSTRINGTOBOOLEAN"
 ></A
->&#62;xmlXPathCastStringToBoolean ()</H3
+>xmlXPathCastStringToBoolean ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2658,9 +2654,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12425"
-></A
-><P
+NAME="AEN12957"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2692,9 +2686,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2711,13 +2708,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12438"
+NAME="AEN12970"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTNODESETTOBOOLEAN"
 ></A
->&#62;xmlXPathCastNodeSetToBoolean ()</H3
+>xmlXPathCastNodeSetToBoolean ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2741,9 +2738,7 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12445"
-></A
-><P
+NAME="AEN12977"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2775,9 +2770,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2794,13 +2792,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12458"
+NAME="AEN12990"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTTOBOOLEAN"
 ></A
->&#62;xmlXPathCastToBoolean ()</H3
+>xmlXPathCastToBoolean ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2824,9 +2822,7 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12465"
-></A
-><P
+NAME="AEN12997"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2858,9 +2854,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2877,13 +2876,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12478"
+NAME="AEN13010"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTBOOLEANTONUMBER"
 ></A
->&#62;xmlXPathCastBooleanToNumber ()</H3
+>xmlXPathCastBooleanToNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2907,9 +2906,7 @@ HREF="DOUBLE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12485"
-></A
-><P
+NAME="AEN13017"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2941,9 +2938,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2960,13 +2960,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12498"
+NAME="AEN13030"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTSTRINGTONUMBER"
 ></A
->&#62;xmlXPathCastStringToNumber ()</H3
+>xmlXPathCastStringToNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2993,9 +2993,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12506"
-></A
-><P
+NAME="AEN13038"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3027,9 +3025,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3046,13 +3047,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12519"
+NAME="AEN13051"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTNODETONUMBER"
 ></A
->&#62;xmlXPathCastNodeToNumber ()</H3
+>xmlXPathCastNodeToNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3079,9 +3080,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12527"
-></A
-><P
+NAME="AEN13059"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3113,9 +3112,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3132,13 +3134,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12540"
+NAME="AEN13072"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTNODESETTONUMBER"
 ></A
->&#62;xmlXPathCastNodeSetToNumber ()</H3
+>xmlXPathCastNodeSetToNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3165,9 +3167,7 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12548"
-></A
-><P
+NAME="AEN13080"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3199,9 +3199,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3218,13 +3221,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12561"
+NAME="AEN13093"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTTONUMBER"
 ></A
->&#62;xmlXPathCastToNumber ()</H3
+>xmlXPathCastToNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3251,9 +3254,7 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12569"
-></A
-><P
+NAME="AEN13101"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3285,9 +3286,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3304,13 +3308,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12582"
+NAME="AEN13114"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTBOOLEANTOSTRING"
 ></A
->&#62;xmlXPathCastBooleanToString ()</H3
+>xmlXPathCastBooleanToString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3334,9 +3338,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12589"
-></A
-><P
+NAME="AEN13121"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3368,9 +3370,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3387,13 +3392,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12602"
+NAME="AEN13134"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTNUMBERTOSTRING"
 ></A
->&#62;xmlXPathCastNumberToString ()</H3
+>xmlXPathCastNumberToString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3420,9 +3425,7 @@ HREF="DOUBLE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12610"
-></A
-><P
+NAME="AEN13142"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3454,9 +3457,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3473,13 +3479,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12623"
+NAME="AEN13155"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTNODETOSTRING"
 ></A
->&#62;xmlXPathCastNodeToString ()</H3
+>xmlXPathCastNodeToString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3506,9 +3512,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12631"
-></A
-><P
+NAME="AEN13163"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3540,9 +3544,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3559,13 +3566,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12644"
+NAME="AEN13176"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTNODESETTOSTRING"
 ></A
->&#62;xmlXPathCastNodeSetToString ()</H3
+>xmlXPathCastNodeSetToString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3592,9 +3599,7 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12652"
-></A
-><P
+NAME="AEN13184"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3626,9 +3631,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3645,13 +3653,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12665"
+NAME="AEN13197"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCASTTOSTRING"
 ></A
->&#62;xmlXPathCastToString ()</H3
+>xmlXPathCastToString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3681,9 +3689,7 @@ HREF="STRING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12674"
-></A
-><P
+NAME="AEN13206"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3715,22 +3721,25 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the string value of the object, NULL in case of error.
-        A new string is allocated only if needed (<TT
+A new string is allocated only if needed (<TT
 CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
 > isn't a
-        string object).</TD
+string object).</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -3741,13 +3750,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12688"
+NAME="AEN13220"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCONVERTBOOLEAN"
 ></A
->&#62;xmlXPathConvertBoolean ()</H3
+>xmlXPathConvertBoolean ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3777,9 +3786,7 @@ HREF="BOOLEAN"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12697"
-></A
-><P
+NAME="AEN13229"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3811,16 +3818,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the new object, the old one is freed (or the operation
-        is done directly on <TT
+is done directly on <TT
 CLASS="PARAMETER"
 ><I
 >val</I
@@ -3836,13 +3846,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12711"
+NAME="AEN13243"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCONVERTNUMBER"
 ></A
->&#62;xmlXPathConvertNumber ()</H3
+>xmlXPathConvertNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3872,9 +3882,7 @@ HREF="NUMBER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12720"
-></A
-><P
+NAME="AEN13252"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3906,16 +3914,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the new object, the old one is freed (or the operation
-        is done directly on <TT
+is done directly on <TT
 CLASS="PARAMETER"
 ><I
 >val</I
@@ -3931,13 +3942,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12734"
+NAME="AEN13266"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCONVERTSTRING"
 ></A
->&#62;xmlXPathConvertString ()</H3
+>xmlXPathConvertString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3967,9 +3978,7 @@ HREF="STRING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12743"
-></A
-><P
+NAME="AEN13275"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4001,16 +4010,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the new object, the old one is freed (or the operation
-        is done directly on <TT
+is done directly on <TT
 CLASS="PARAMETER"
 ><I
 >val</I
@@ -4026,13 +4038,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12757"
+NAME="AEN13289"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHINIT"
 ></A
->&#62;xmlXPathInit ()</H3
+>xmlXPathInit ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4054,13 +4066,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12763"
+NAME="AEN13295"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHNEWCONTEXT"
 ></A
->&#62;xmlXPathNewContext ()</H3
+>xmlXPathNewContext ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4087,9 +4099,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12771"
-></A
-><P
+NAME="AEN13303"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4121,15 +4131,18 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the xmlXPathContext just allocated.</TD
+>the xmlXPathContext just allocated. The caller will need to free it.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4140,13 +4153,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12784"
+NAME="AEN13316"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFREECONTEXT"
 ></A
->&#62;xmlXPathFreeContext ()</H3
+>xmlXPathFreeContext ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4170,9 +4183,7 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12791"
-></A
-><P
+NAME="AEN13323"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4208,13 +4219,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12800"
+NAME="AEN13332"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHEVAL"
 ></A
->&#62;xmlXPathEval ()</H3
+>xmlXPathEval ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4245,9 +4256,7 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12809"
-></A
-><P
+NAME="AEN13341"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4296,16 +4305,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlXPathObjectPtr resulting from the evaluation or NULL.
-        the caller has to free the object.</TD
+the caller has to free the object.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4316,13 +4328,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12826"
+NAME="AEN13358"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHEVALEXPRESSION"
 ></A
->&#62;xmlXPathEvalExpression ()</H3
+>xmlXPathEvalExpression ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4353,9 +4365,7 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12835"
-></A
-><P
+NAME="AEN13367"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4404,16 +4414,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlXPathObjectPtr resulting from the evaluation or NULL.
-        the caller has to free the object.</TD
+the caller has to free the object.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4424,13 +4437,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12852"
+NAME="AEN13384"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHEVALPREDICATE"
 ></A
->&#62;xmlXPathEvalPredicate ()</H3
+>xmlXPathEvalPredicate ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4465,9 +4478,7 @@ to the boolean function.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12860"
-></A
-><P
+NAME="AEN13392"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4516,9 +4527,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4535,13 +4549,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12877"
+NAME="AEN13409"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCOMPILE"
 ></A
->&#62;xmlXPathCompile ()</H3
+>xmlXPathCompile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4568,9 +4582,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12885"
-></A
-><P
+NAME="AEN13417"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4602,16 +4614,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlXPathObjectPtr resulting from the evaluation or NULL.
-        the caller has to free the object.</TD
+the caller has to free the object.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4622,13 +4637,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12898"
+NAME="AEN13430"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHCOMPILEDEVAL"
 ></A
->&#62;xmlXPathCompiledEval ()</H3
+>xmlXPathCompiledEval ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4659,9 +4674,7 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12907"
-></A
-><P
+NAME="AEN13439"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4710,16 +4723,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlXPathObjectPtr resulting from the evaluation or NULL.
-        the caller has to free the object.</TD
+the caller has to free the object.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4730,13 +4746,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12924"
+NAME="AEN13456"
 ></A
 ><H3
 ><A
 NAME="XMLXPATHFREECOMPEXPR"
 ></A
->&#62;xmlXPathFreeCompExpr ()</H3
+>xmlXPathFreeCompExpr ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4765,9 +4781,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN12932"
-></A
-><P
+NAME="AEN13464"><P
 ></P
 ><TABLE
 BORDER="0"

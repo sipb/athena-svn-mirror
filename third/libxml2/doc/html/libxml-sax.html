@@ -4,7 +4,7 @@
 >SAX</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-SAX"
->SAX</A
-></H1
+NAME="LIBXML-SAX">SAX</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2823"
+NAME="AEN2881"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN2823"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2826"
-></A
-><H2
+NAME="AEN2884"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -165,7 +161,7 @@ HREF="libxml-sax.html#SETDOCUMENTLOCATOR"
 >setDocumentLocator</A
 >              (void *ctx,
                                              <A
-HREF="libxml-parser.html#XMLSAXLOCATORPTR"
+HREF="libxml-tree.html#XMLSAXLOCATORPTR"
 >xmlSAXLocatorPtr</A
 > loc);
 int         <A
@@ -221,7 +217,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *SystemID);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-sax.html#GETENTITY"
@@ -232,7 +228,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *name);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-sax.html#GETPARAMETERENTITY"
@@ -514,11 +510,11 @@ HREF="libxml-parser.html#XMLSAXHANDLER"
 >xmlSAXHandler</A
 > *hdlr);
 void        <A
-HREF="libxml-parser.html#XMLDEFAULTSAXHANDLERINIT"
+HREF="libxml-sax.html#XMLDEFAULTSAXHANDLERINIT"
 >xmlDefaultSAXHandlerInit</A
 >        (void);
 void        <A
-HREF="libxml-parser.html#HTMLDEFAULTSAXHANDLERINIT"
+HREF="libxml-sax.html#HTMLDEFAULTSAXHANDLERINIT"
 >htmlDefaultSAXHandlerInit</A
 >       (void);
 void        <A
@@ -532,7 +528,7 @@ HREF="libxml-sax.html#DOCBDEFAULTSAXHANDLERINIT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2924"
+NAME="AEN2982"
 ></A
 ><H2
 >Description</H2
@@ -542,20 +538,20 @@ NAME="AEN2924"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2927"
+NAME="AEN2985"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2929"
+NAME="AEN2987"
 ></A
 ><H3
 ><A
 NAME="GETPUBLICID"
 ></A
->&#62;getPublicId ()</H3
+>getPublicId ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -579,9 +575,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN2936"
-></A
-><P
+NAME="AEN2994"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -613,9 +607,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -632,13 +629,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2949"
+NAME="AEN3007"
 ></A
 ><H3
 ><A
 NAME="GETSYSTEMID"
 ></A
->&#62;getSystemId ()</H3
+>getSystemId ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -663,9 +660,7 @@ http://www.sgmlsource.com/dtds/memo.dtd</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN2956"
-></A
-><P
+NAME="AEN3014"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -697,9 +692,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -716,13 +714,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2969"
+NAME="AEN3027"
 ></A
 ><H3
 ><A
 NAME="SETDOCUMENTLOCATOR"
 ></A
->&#62;setDocumentLocator ()</H3
+>setDocumentLocator ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -734,7 +732,7 @@ CELLPADDING="6"
 CLASS="PROGRAMLISTING"
 >void        setDocumentLocator              (void *ctx,
                                              <A
-HREF="libxml-parser.html#XMLSAXLOCATORPTR"
+HREF="libxml-tree.html#XMLSAXLOCATORPTR"
 >xmlSAXLocatorPtr</A
 > loc);</PRE
 ></TD
@@ -748,9 +746,7 @@ Everything is available on the context, so this is useless in our case.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN2976"
-></A
-><P
+NAME="AEN3034"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -803,13 +799,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2989"
+NAME="AEN3047"
 ></A
 ><H3
 ><A
 NAME="GETLINENUMBER"
 ></A
->&#62;getLineNumber ()</H3
+>getLineNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -830,9 +826,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN2995"
-></A
-><P
+NAME="AEN3053"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -864,9 +858,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -883,13 +880,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3008"
+NAME="AEN3066"
 ></A
 ><H3
 ><A
 NAME="GETCOLUMNNUMBER"
 ></A
->&#62;getColumnNumber ()</H3
+>getColumnNumber ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -910,9 +907,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3014"
-></A
-><P
+NAME="AEN3072"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -944,9 +939,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -963,13 +961,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3027"
+NAME="AEN3085"
 ></A
 ><H3
 ><A
 NAME="ISSTANDALONE"
 ></A
->&#62;isStandalone ()</H3
+>isStandalone ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -990,9 +988,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3033"
-></A
-><P
+NAME="AEN3091"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1024,9 +1020,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1043,13 +1042,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3046"
+NAME="AEN3104"
 ></A
 ><H3
 ><A
 NAME="HASINTERNALSUBSET"
 ></A
->&#62;hasInternalSubset ()</H3
+>hasInternalSubset ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1070,9 +1069,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3052"
-></A
-><P
+NAME="AEN3110"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1104,9 +1101,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1123,13 +1123,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3065"
+NAME="AEN3123"
 ></A
 ><H3
 ><A
 NAME="HASEXTERNALSUBSET"
 ></A
->&#62;hasExternalSubset ()</H3
+>hasExternalSubset ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1150,9 +1150,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3071"
-></A
-><P
+NAME="AEN3129"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1184,9 +1182,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1203,13 +1204,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3084"
+NAME="AEN3142"
 ></A
 ><H3
 ><A
 NAME="INTERNALSUBSET"
 ></A
->&#62;internalSubset ()</H3
+>internalSubset ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1242,9 +1243,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3093"
-></A
-><P
+NAME="AEN3151"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1331,13 +1330,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3114"
+NAME="AEN3172"
 ></A
 ><H3
 ><A
 NAME="EXTERNALSUBSET"
 ></A
->&#62;externalSubset ()</H3
+>externalSubset ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1370,9 +1369,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3123"
-></A
-><P
+NAME="AEN3181"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1459,13 +1456,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3144"
+NAME="AEN3202"
 ></A
 ><H3
 ><A
 NAME="GETENTITY"
 ></A
->&#62;getEntity ()</H3
+>getEntity ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1476,7 +1473,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > getEntity                      (void *ctx,
                                              const <A
@@ -1493,9 +1490,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3152"
-></A
-><P
+NAME="AEN3210"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1544,9 +1539,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1563,13 +1561,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3169"
+NAME="AEN3227"
 ></A
 ><H3
 ><A
 NAME="GETPARAMETERENTITY"
 ></A
->&#62;getParameterEntity ()</H3
+>getParameterEntity ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1580,7 +1578,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > getParameterEntity             (void *ctx,
                                              const <A
@@ -1597,9 +1595,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3177"
-></A
-><P
+NAME="AEN3235"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1648,9 +1644,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1667,13 +1666,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3194"
+NAME="AEN3252"
 ></A
 ><H3
 ><A
 NAME="RESOLVEENTITY"
 ></A
->&#62;resolveEntity ()</H3
+>resolveEntity ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1701,23 +1700,21 @@ HREF="libxml-tree.html#XMLCHAR"
 ><P
 >The entity loader, to control the loading of external entities,
 the application can either:
-   - override this <A
+- override this <A
 HREF="libxml-sax.html#RESOLVEENTITY"
 >resolveEntity</A
 >() callback in the SAX block
-   - or better use the <A
+- or better use the <A
 HREF="libxml-parser.html#XMLSETEXTERNALENTITYLOADER"
 >xmlSetExternalEntityLoader</A
 >() function to
-     set up it's own entity resolution routine</P
+set up it's own entity resolution routine</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3205"
-></A
-><P
+NAME="AEN3263"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1783,9 +1780,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1802,13 +1802,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3226"
+NAME="AEN3284"
 ></A
 ><H3
 ><A
 NAME="ENTITYDECL"
 ></A
->&#62;entityDecl ()</H3
+>entityDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1846,9 +1846,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3236"
-></A
-><P
+NAME="AEN3294"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1969,13 +1967,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3265"
+NAME="AEN3323"
 ></A
 ><H3
 ><A
 NAME="ATTRIBUTEDECL"
 ></A
->&#62;attributeDecl ()</H3
+>attributeDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2014,9 +2012,7 @@ HREF="libxml-tree.html#XMLENUMERATIONPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3275"
-></A
-><P
+NAME="AEN3333"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2154,13 +2150,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3308"
+NAME="AEN3366"
 ></A
 ><H3
 ><A
 NAME="ELEMENTDECL"
 ></A
->&#62;elementDecl ()</H3
+>elementDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2190,9 +2186,7 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3316"
-></A
-><P
+NAME="AEN3374"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2279,13 +2273,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3337"
+NAME="AEN3395"
 ></A
 ><H3
 ><A
 NAME="NOTATIONDECL"
 ></A
->&#62;notationDecl ()</H3
+>notationDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2318,9 +2312,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3346"
-></A
-><P
+NAME="AEN3404"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2407,13 +2399,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3367"
+NAME="AEN3425"
 ></A
 ><H3
 ><A
 NAME="UNPARSEDENTITYDECL"
 ></A
->&#62;unparsedEntityDecl ()</H3
+>unparsedEntityDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2450,9 +2442,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3377"
-></A
-><P
+NAME="AEN3435"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2556,13 +2546,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3402"
+NAME="AEN3460"
 ></A
 ><H3
 ><A
 NAME="STARTDOCUMENT"
 ></A
->&#62;startDocument ()</H3
+>startDocument ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2583,9 +2573,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3408"
-></A
-><P
+NAME="AEN3466"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2621,13 +2609,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3417"
+NAME="AEN3475"
 ></A
 ><H3
 ><A
 NAME="ENDDOCUMENT"
 ></A
->&#62;endDocument ()</H3
+>endDocument ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2648,9 +2636,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3423"
-></A
-><P
+NAME="AEN3481"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2686,13 +2672,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3432"
+NAME="AEN3490"
 ></A
 ><H3
 ><A
 NAME="ATTRIBUTE"
 ></A
->&#62;attribute ()</H3
+>attribute ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2724,9 +2710,7 @@ the element.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3440"
-></A
-><P
+NAME="AEN3498"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2796,13 +2780,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3457"
+NAME="AEN3515"
 ></A
 ><H3
 ><A
 NAME="STARTELEMENT"
 ></A
->&#62;startElement ()</H3
+>startElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2831,9 +2815,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3465"
-></A
-><P
+NAME="AEN3523"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2903,13 +2885,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3482"
+NAME="AEN3540"
 ></A
 ><H3
 ><A
 NAME="ENDELEMENT"
 ></A
->&#62;endElement ()</H3
+>endElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2934,9 +2916,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3489"
-></A
-><P
+NAME="AEN3547"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2989,13 +2969,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3502"
+NAME="AEN3560"
 ></A
 ><H3
 ><A
 NAME="REFERENCE"
 ></A
->&#62;reference ()</H3
+>reference ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3020,9 +3000,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3509"
-></A
-><P
+NAME="AEN3567"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3075,13 +3053,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3522"
+NAME="AEN3580"
 ></A
 ><H3
 ><A
 NAME="CHARACTERS"
 ></A
->&#62;characters ()</H3
+>characters ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3107,9 +3085,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3529"
-></A
-><P
+NAME="AEN3587"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3179,13 +3155,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3546"
+NAME="AEN3604"
 ></A
 ><H3
 ><A
 NAME="IGNORABLEWHITESPACE"
 ></A
->&#62;ignorableWhitespace ()</H3
+>ignorableWhitespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3212,9 +3188,7 @@ UNUSED: by default the DOM building will use characters</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3553"
-></A
-><P
+NAME="AEN3611"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3284,13 +3258,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3570"
+NAME="AEN3628"
 ></A
 ><H3
 ><A
 NAME="PROCESSINGINSTRUCTION"
 ></A
->&#62;processingInstruction ()</H3
+>processingInstruction ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3319,9 +3293,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3578"
-></A
-><P
+NAME="AEN3636"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3391,13 +3363,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3595"
+NAME="AEN3653"
 ></A
 ><H3
 ><A
 NAME="GLOBALNAMESPACE"
 ></A
->&#62;globalNamespace ()</H3
+>globalNamespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3426,9 +3398,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3603"
-></A
-><P
+NAME="AEN3661"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3498,13 +3468,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3620"
+NAME="AEN3678"
 ></A
 ><H3
 ><A
 NAME="SETNAMESPACE"
 ></A
->&#62;setNamespace ()</H3
+>setNamespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3529,9 +3499,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3627"
-></A
-><P
+NAME="AEN3685"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3584,13 +3552,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3640"
+NAME="AEN3698"
 ></A
 ><H3
 ><A
 NAME="GETNAMESPACE"
 ></A
->&#62;getNamespace ()</H3
+>getNamespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3614,9 +3582,7 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3647"
-></A
-><P
+NAME="AEN3705"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3648,9 +3614,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3667,13 +3636,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3660"
+NAME="AEN3718"
 ></A
 ><H3
 ><A
 NAME="CHECKNAMESPACE"
 ></A
->&#62;checkNamespace ()</H3
+>checkNamespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3699,9 +3668,7 @@ one read upon parsing.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3667"
-></A
-><P
+NAME="AEN3725"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3750,9 +3717,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3769,13 +3739,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3684"
+NAME="AEN3742"
 ></A
 ><H3
 ><A
 NAME="NAMESPACEDECL"
 ></A
->&#62;namespaceDecl ()</H3
+>namespaceDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3804,9 +3774,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3692"
-></A
-><P
+NAME="AEN3750"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3876,13 +3844,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3709"
+NAME="AEN3767"
 ></A
 ><H3
 ><A
 NAME="COMMENT"
 ></A
->&#62;comment ()</H3
+>comment ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3907,9 +3875,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3716"
-></A
-><P
+NAME="AEN3774"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3962,13 +3928,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3729"
+NAME="AEN3787"
 ></A
 ><H3
 ><A
 NAME="CDATABLOCK"
 ></A
->&#62;cdataBlock ()</H3
+>cdataBlock ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3994,9 +3960,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3736"
-></A
-><P
+NAME="AEN3794"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4066,13 +4030,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3753"
+NAME="AEN3811"
 ></A
 ><H3
 ><A
 NAME="INITXMLDEFAULTSAXHANDLER"
 ></A
->&#62;initxmlDefaultSAXHandler ()</H3
+>initxmlDefaultSAXHandler ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4091,13 +4055,13 @@ HREF="libxml-parser.html#XMLSAXHANDLER"
 ></TR
 ></TABLE
 ><P
+>Initialize the default XML SAX handler</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3759"
-></A
-><P
+NAME="AEN3818"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4122,7 +4086,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the SAX handler</TD
 ></TR
 ><TR
 ><TD
@@ -4139,7 +4103,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  flag if non-zero sets the handler warning procedure</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4150,13 +4114,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3772"
+NAME="AEN3831"
 ></A
 ><H3
 ><A
 NAME="INITHTMLDEFAULTSAXHANDLER"
 ></A
->&#62;inithtmlDefaultSAXHandler ()</H3
+>inithtmlDefaultSAXHandler ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4174,13 +4138,13 @@ HREF="libxml-parser.html#XMLSAXHANDLER"
 ></TR
 ></TABLE
 ><P
+>Initialize the default HTML SAX handler</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3778"
-></A
-><P
+NAME="AEN3838"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4205,7 +4169,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the SAX handler</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4216,13 +4180,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3787"
+NAME="AEN3847"
 ></A
 ><H3
 ><A
 NAME="INITDOCBDEFAULTSAXHANDLER"
 ></A
->&#62;initdocbDefaultSAXHandler ()</H3
+>initdocbDefaultSAXHandler ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4240,13 +4204,13 @@ HREF="libxml-parser.html#XMLSAXHANDLER"
 ></TR
 ></TABLE
 ><P
+>Initialize the default DocBook SAX handler</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN3793"
-></A
-><P
+NAME="AEN3854"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4271,7 +4235,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the SAX handler</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4282,13 +4246,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3802"
+NAME="AEN3863"
 ></A
 ><H3
 ><A
 NAME="XMLDEFAULTSAXHANDLERINIT"
 ></A
->&#62;xmlDefaultSAXHandlerInit ()</H3
+>xmlDefaultSAXHandlerInit ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4310,13 +4274,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3808"
+NAME="AEN3869"
 ></A
 ><H3
 ><A
 NAME="HTMLDEFAULTSAXHANDLERINIT"
 ></A
->&#62;htmlDefaultSAXHandlerInit ()</H3
+>htmlDefaultSAXHandlerInit ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4338,13 +4302,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3814"
+NAME="AEN3875"
 ></A
 ><H3
 ><A
 NAME="DOCBDEFAULTSAXHANDLERINIT"
 ></A
->&#62;docbDefaultSAXHandlerInit ()</H3
+>docbDefaultSAXHandlerInit ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"

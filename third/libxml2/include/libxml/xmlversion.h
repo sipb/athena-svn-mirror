@@ -26,21 +26,21 @@ extern void xmlCheckVersion(int version);
  *
  * the version string like "1.2.3"
  */
-#define LIBXML_DOTTED_VERSION "2.4.15"
+#define LIBXML_DOTTED_VERSION "2.4.30"
 
 /**
  * LIBXML_VERSION:
  *
  * the version number: 1.2.3 value is 1002003
  */
-#define LIBXML_VERSION 20415
+#define LIBXML_VERSION 20430
 
 /**
  * LIBXML_VERSION_STRING:
  *
  * the version number string, 1.2.3 value is "1002003"
  */
-#define LIBXML_VERSION_STRING "20415"
+#define LIBXML_VERSION_STRING "20430"
 
 /**
  * LIBXML_TEST_VERSION:
@@ -48,7 +48,7 @@ extern void xmlCheckVersion(int version);
  * Macro to check that the libxml version in use is compatible with
  * the version the software has been compiled against
  */
-#define LIBXML_TEST_VERSION xmlCheckVersion(20415);
+#define LIBXML_TEST_VERSION xmlCheckVersion(20430);
 
 #ifndef VMS
 #if 0
@@ -109,6 +109,15 @@ extern void xmlCheckVersion(int version);
 #endif
 
 /**
+ * LIBXML_C14N_ENABLED:
+ *
+ * Whether the Canonicalization support is configured in
+ */
+#if 1
+#define LIBXML_C14N_ENABLED
+#endif
+
+/**
  * LIBXML_CATALOG_ENABLED:
  *
  * Whether the Catalog support is configured in
@@ -158,10 +167,8 @@ extern void xmlCheckVersion(int version);
  *
  * Whether iconv support is available
  */
-#if !defined(WIN32) || defined(__CYGWIN__)
 #if 1
 #define LIBXML_ICONV_ENABLED
-#endif
 #endif
 
 /**
@@ -178,8 +185,44 @@ extern void xmlCheckVersion(int version);
  *
  * Whether the memory debugging is configured in
  */
-#if 0
+#if 1
 #define DEBUG_MEMORY_LOCATION
+#endif
+
+/**
+ * LIBXML_UNICODE_ENABLED
+ *
+ * Whether the Unicode related interfaces are compiled in
+ */
+#if 1
+#define LIBXML_UNICODE_ENABLED
+#endif
+
+/**
+ * LIBXML_REGEXP_ENABLED
+ *
+ * Whether the regular expressions interfaces are compiled in
+ */
+#if 1
+#define LIBXML_REGEXP_ENABLED
+#endif
+
+/**
+ * LIBXML_AUTOMATA_ENABLED
+ *
+ * Whether the automata interfaces are compiled in
+ */
+#if 1
+#define LIBXML_AUTOMATA_ENABLED
+#endif
+
+/**
+ * LIBXML_SCHEMAS_ENABLED
+ *
+ * Whether the Schemas validation interfaces are compiled in
+ */
+#if 1
+#define LIBXML_SCHEMAS_ENABLED
 #endif
 
 /**

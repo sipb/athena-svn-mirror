@@ -4,7 +4,7 @@
 >nanohttp</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-NANOHTTP"
->nanohttp</A
-></H1
+NAME="LIBXML-NANOHTTP">nanohttp</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN17259"
+NAME="AEN17735"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN17259"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN17262"
-></A
-><H2
+NAME="AEN17738"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -224,7 +220,7 @@ HREF="libxml-nanohttp.html#XMLNANOHTTPCLOSE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN17278"
+NAME="AEN17754"
 ></A
 ><H2
 >Description</H2
@@ -234,20 +230,20 @@ NAME="AEN17278"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN17281"
+NAME="AEN17757"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17283"
+NAME="AEN17759"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPINIT"
 ></A
->&#62;xmlNanoHTTPInit ()</H3
+>xmlNanoHTTPInit ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -270,13 +266,13 @@ Currently it just checks for proxy informations</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17289"
+NAME="AEN17765"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPCLEANUP"
 ></A
->&#62;xmlNanoHTTPCleanup ()</H3
+>xmlNanoHTTPCleanup ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -298,13 +294,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17295"
+NAME="AEN17771"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPSCANPROXY"
 ></A
->&#62;xmlNanoHTTPScanProxy ()</H3
+>xmlNanoHTTPScanProxy ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -328,9 +324,7 @@ A NULL URL cleans up proxy informations.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17301"
-></A
-><P
+NAME="AEN17777"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -366,13 +360,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17310"
+NAME="AEN17786"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPFETCH"
 ></A
->&#62;xmlNanoHTTPFetch ()</H3
+>xmlNanoHTTPFetch ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -396,9 +390,7 @@ and save it's content in the file.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17316"
-></A
-><P
+NAME="AEN17792"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -458,23 +450,26 @@ WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  if available the Content-Type information will be
-               returned at that location</TD
+returned at that location</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >-1 in case of failure, 0 incase of success. The contentType,
-    if provided must be freed by the caller</TD
+if provided must be freed by the caller</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -485,13 +480,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17337"
+NAME="AEN17813"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPMETHOD"
 ></A
->&#62;xmlNanoHTTPMethod ()</H3
+>xmlNanoHTTPMethod ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -524,9 +519,7 @@ and the input buffer for the request content.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17344"
-></A
-><P
+NAME="AEN17820"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -647,13 +640,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17373"
+NAME="AEN17849"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPMETHODREDIR"
 ></A
->&#62;xmlNanoHTTPMethodRedir ()</H3
+>xmlNanoHTTPMethodRedir ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -687,9 +680,7 @@ and the input buffer for the request content.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17380"
-></A
-><P
+NAME="AEN17856"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -827,13 +818,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17413"
+NAME="AEN17889"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPOPEN"
 ></A
->&#62;xmlNanoHTTPOpen ()</H3
+>xmlNanoHTTPOpen ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -856,9 +847,7 @@ via HTTP GET.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17419"
-></A
-><P
+NAME="AEN17895"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -901,7 +890,7 @@ WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  if available the Content-Type information will be
-               returned at that location</TD
+returned at that location</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -912,13 +901,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17432"
+NAME="AEN17908"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPOPENREDIR"
 ></A
->&#62;xmlNanoHTTPOpenRedir ()</H3
+>xmlNanoHTTPOpenRedir ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -942,9 +931,7 @@ via HTTP GET.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17438"
-></A
-><P
+NAME="AEN17914"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -987,7 +974,7 @@ WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  if available the Content-Type information will be
-               returned at that location</TD
+returned at that location</TD
 ></TR
 ><TR
 ><TD
@@ -1015,13 +1002,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17455"
+NAME="AEN17931"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPRETURNCODE"
 ></A
->&#62;xmlNanoHTTPReturnCode ()</H3
+>xmlNanoHTTPReturnCode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1042,9 +1029,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17461"
-></A
-><P
+NAME="AEN17937"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1076,9 +1061,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1095,13 +1083,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17474"
+NAME="AEN17950"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPAUTHHEADER"
 ></A
->&#62;xmlNanoHTTPAuthHeader ()</H3
+>xmlNanoHTTPAuthHeader ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1122,9 +1110,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17480"
-></A
-><P
+NAME="AEN17956"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1156,9 +1142,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1176,13 +1165,13 @@ header.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17493"
+NAME="AEN17969"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPREAD"
 ></A
->&#62;xmlNanoHTTPRead ()</H3
+>xmlNanoHTTPRead ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1216,9 +1205,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17501"
-></A
-><P
+NAME="AEN17977"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1284,16 +1271,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of byte read. 0 is an indication of an end of connection.
-        -1 indicates a parameter error.</TD
+-1 indicates a parameter error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1304,13 +1294,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17522"
+NAME="AEN17998"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPSAVE"
 ></A
->&#62;xmlNanoHTTPSave ()</H3
+>xmlNanoHTTPSave ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1333,9 +1323,7 @@ It closes and free the context at the end</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17528"
-></A
-><P
+NAME="AEN18004"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1384,9 +1372,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1403,13 +1394,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17545"
+NAME="AEN18021"
 ></A
 ><H3
 ><A
 NAME="XMLNANOHTTPCLOSE"
 ></A
->&#62;xmlNanoHTTPClose ()</H3
+>xmlNanoHTTPClose ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1431,9 +1422,7 @@ free all data related to it.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN17551"
-></A
-><P
+NAME="AEN18027"><P
 ></P
 ><TABLE
 BORDER="0"

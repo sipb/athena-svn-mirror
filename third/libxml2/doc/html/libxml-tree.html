@@ -4,7 +4,7 @@
 >tree</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-TREE"
->tree</A
-></H1
+NAME="LIBXML-TREE">tree</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3825"
+NAME="AEN3886"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN3825"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3828"
-></A
-><H2
+NAME="AEN3889"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -177,6 +173,30 @@ HREF="libxml-parser.html#XMLPARSERCTXT"
 typedef     <A
 HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
+>;
+struct      <A
+HREF="libxml-parser.html#XMLSAXLOCATOR"
+>xmlSAXLocator</A
+>;
+typedef     <A
+HREF="libxml-tree.html#XMLSAXLOCATORPTR"
+>xmlSAXLocatorPtr</A
+>;
+struct      <A
+HREF="libxml-parser.html#XMLSAXHANDLER"
+>xmlSAXHandler</A
+>;
+typedef     <A
+HREF="libxml-tree.html#XMLSAXHANDLERPTR"
+>xmlSAXHandlerPtr</A
+>;
+struct      <A
+HREF="libxml-tree.html#XMLENTITY"
+>xmlEntity</A
+>;
+typedef     <A
+HREF="libxml-tree.html#XMLENTITYPTR"
+>xmlEntityPtr</A
 >;
 #define     <A
 HREF="libxml-tree.html#BASE-BUFFER-SIZE-CAPS"
@@ -688,6 +708,28 @@ HREF="libxml-tree.html#XMLCHAR"
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *value);
+<A
+HREF="libxml-tree.html#XMLATTRPTR"
+>xmlAttrPtr</A
+>  <A
+HREF="libxml-tree.html#XMLNEWNSPROPEATNAME"
+>xmlNewNsPropEatName</A
+>             (<A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node,
+                                             <A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
+                                             <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);
 void        <A
 HREF="libxml-tree.html#XMLFREEPROPLIST"
 >xmlFreePropList</A
@@ -777,6 +819,28 @@ HREF="libxml-tree.html#XMLCHAR"
 HREF="libxml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
 >  <A
+HREF="libxml-tree.html#XMLNEWDOCNODEEATNAME"
+>xmlNewDocNodeEatName</A
+>            (<A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> doc,
+                                             <A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
+                                             <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *content);
+<A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+>  <A
 HREF="libxml-tree.html#XMLNEWDOCRAWNODE"
 >xmlNewDocRawNode</A
 >                (<A
@@ -806,6 +870,20 @@ HREF="libxml-tree.html#XMLNSPTR"
 >xmlNsPtr</A
 > ns,
                                              const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name);
+<A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+>  <A
+HREF="libxml-tree.html#XMLNEWNODEEATNAME"
+>xmlNewNodeEatName</A
+>               (<A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
+                                             <A
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *name);
@@ -1001,7 +1079,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 >  <A
 HREF="libxml-tree.html#XMLDOCCOPYNODE"
 >xmlDocCopyNode</A
->                  (<A
+>                  (const <A
 HREF="libxml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
 > node,
@@ -1016,7 +1094,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 >  <A
 HREF="libxml-tree.html#XMLCOPYNODELIST"
 >xmlCopyNodeList</A
->                 (<A
+>                 (const <A
 HREF="libxml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
 > node);
@@ -1761,6 +1839,18 @@ HREF="libxml-tree.html#XMLCHAR"
                                              const char *txt_encoding,
                                              int format);
 int         <A
+HREF="libxml-tree.html#XMLDOCFORMATDUMP"
+>xmlDocFormatDump</A
+>                (<GTKDOCLINK
+HREF="FILE-CAPS"
+>FILE</GTKDOCLINK
+> *f,
+                                             <A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> cur,
+                                             int format);
+int         <A
 HREF="libxml-tree.html#XMLDOCDUMP"
 >xmlDocDump</A
 >                      (<GTKDOCLINK
@@ -1912,7 +2002,7 @@ HREF="libxml-tree.html#XMLSETCOMPRESSMODE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4307"
+NAME="AEN4393"
 ></A
 ><H2
 >Description</H2
@@ -1922,20 +2012,20 @@ NAME="AEN4307"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4310"
+NAME="AEN4396"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4312"
+NAME="AEN4398"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFER"
 ></A
->&#62;struct xmlParserInputBuffer</H3
+>struct xmlParserInputBuffer</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1964,13 +2054,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4317"
+NAME="AEN4403"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTBUFFERPTR"
 ></A
->&#62;xmlParserInputBufferPtr</H3
+>xmlParserInputBufferPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1990,13 +2080,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4322"
+NAME="AEN4408"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFER"
 ></A
->&#62;struct xmlOutputBuffer</H3
+>struct xmlOutputBuffer</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2026,13 +2116,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4327"
+NAME="AEN4413"
 ></A
 ><H3
 ><A
 NAME="XMLOUTPUTBUFFERPTR"
 ></A
->&#62;xmlOutputBufferPtr</H3
+>xmlOutputBufferPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2052,13 +2142,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4332"
+NAME="AEN4418"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUT"
 ></A
->&#62;struct xmlParserInput</H3
+>struct xmlParserInput</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2090,7 +2180,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->an xmlParserInput is an input flow for the XML processor.
+>An xmlParserInput is an input flow for the XML processor.
 Each entity parsed is associated an xmlParserInput (except the
 few predefined ones). This is the case both for internal entities
 - in which case the flow is already completely in memory - or
@@ -2102,13 +2192,13 @@ progressive reading and I18N conversions to the internal UTF-8 format.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4338"
+NAME="AEN4424"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTPTR"
 ></A
->&#62;xmlParserInputPtr</H3
+>xmlParserInputPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2128,13 +2218,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4343"
+NAME="AEN4429"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERCTXT"
 ></A
->&#62;struct xmlParserCtxt</H3
+>struct xmlParserCtxt</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2224,26 +2314,26 @@ CLASS="PROGRAMLISTING"
 ></TABLE
 ><P
 >The parser context.
-NOTE This doesn't completely defines the parser state, the (current ?)
-     design of the parser uses recursive function calls since this allow
-     and easy mapping from the production rules of the specification
-     to the actual code. The drawback is that the actual function call
-     also reflect the parser state. However most of the parsing routines
-     takes as the only argument the parser context pointer, so migrating
-     to a state based parser for progressive parsing shouldn't be too hard.</P
+NOTE This doesn't completely define the parser state, the (current ?)
+design of the parser uses recursive function calls since this allow
+and easy mapping from the production rules of the specification
+to the actual code. The drawback is that the actual function call
+also reflect the parser state. However most of the parsing routines
+takes as the only argument the parser context pointer, so migrating
+to a state based parser for progressive parsing shouldn't be too hard.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4349"
+NAME="AEN4435"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERCTXTPTR"
 ></A
->&#62;xmlParserCtxtPtr</H3
+>xmlParserCtxtPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2263,13 +2353,228 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4354"
+NAME="AEN4440"
+></A
+><H3
+><A
+NAME="XMLSAXLOCATOR"
+></A
+>struct xmlSAXLocator</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct xmlSAXLocator {
+    const xmlChar *(*getPublicId)(void *ctx);
+    const xmlChar *(*getSystemId)(void *ctx);
+    int (*getLineNumber)(void *ctx);
+    int (*getColumnNumber)(void *ctx);
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>A SAX Locator.</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4446"
+></A
+><H3
+><A
+NAME="XMLSAXLOCATORPTR"
+></A
+>xmlSAXLocatorPtr</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef xmlSAXLocator *xmlSAXLocatorPtr;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4451"
+></A
+><H3
+><A
+NAME="XMLSAXHANDLER"
+></A
+>struct xmlSAXHandler</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct xmlSAXHandler {
+    internalSubsetSAXFunc internalSubset;
+    isStandaloneSAXFunc isStandalone;
+    hasInternalSubsetSAXFunc hasInternalSubset;
+    hasExternalSubsetSAXFunc hasExternalSubset;
+    resolveEntitySAXFunc resolveEntity;
+    getEntitySAXFunc getEntity;
+    entityDeclSAXFunc entityDecl;
+    notationDeclSAXFunc notationDecl;
+    attributeDeclSAXFunc attributeDecl;
+    elementDeclSAXFunc elementDecl;
+    unparsedEntityDeclSAXFunc unparsedEntityDecl;
+    setDocumentLocatorSAXFunc setDocumentLocator;
+    startDocumentSAXFunc startDocument;
+    endDocumentSAXFunc endDocument;
+    startElementSAXFunc startElement;
+    endElementSAXFunc endElement;
+    referenceSAXFunc reference;
+    charactersSAXFunc characters;
+    ignorableWhitespaceSAXFunc ignorableWhitespace;
+    processingInstructionSAXFunc processingInstruction;
+    commentSAXFunc comment;
+    warningSAXFunc warning;
+    errorSAXFunc error;
+    fatalErrorSAXFunc fatalError;
+    getParameterEntitySAXFunc getParameterEntity;
+    cdataBlockSAXFunc cdataBlock;
+    externalSubsetSAXFunc externalSubset;
+    int initialized;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>A SAX handler is bunch of callbacks called by the parser when processing
+of the input generate data or structure informations.</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4457"
+></A
+><H3
+><A
+NAME="XMLSAXHANDLERPTR"
+></A
+>xmlSAXHandlerPtr</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef xmlSAXHandler *xmlSAXHandlerPtr;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4462"
+></A
+><H3
+><A
+NAME="XMLENTITY"
+></A
+>struct xmlEntity</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct xmlEntity {
+    void           *_private;	        /* application data */
+    xmlElementType          type;       /* XML_ENTITY_DECL, must be second ! */
+    const xmlChar          *name;	/* Entity name */
+    struct _xmlNode    *children;	/* First child link */
+    struct _xmlNode        *last;	/* Last child link */
+    struct _xmlDtd       *parent;	/* -&gt; DTD */
+    struct _xmlNode        *next;	/* next sibling link  */
+    struct _xmlNode        *prev;	/* previous sibling link  */
+    struct _xmlDoc          *doc;       /* the containing document */
+
+    xmlChar                *orig;	/* content without ref substitution */
+    xmlChar             *content;	/* content or ndata if unparsed */
+    int                   length;	/* the content length */
+    xmlEntityType          etype;	/* The entity type */
+    const xmlChar    *ExternalID;	/* External identifier for PUBLIC */
+    const xmlChar      *SystemID;	/* URI for a SYSTEM or PUBLIC Entity */
+
+    struct _xmlEntity     *nexte;	/* unused */
+    const xmlChar           *URI;	/* the full URI as computed */
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4467"
+></A
+><H3
+><A
+NAME="XMLENTITYPTR"
+></A
+>xmlEntityPtr</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef xmlEntity *xmlEntityPtr;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4472"
 ></A
 ><H3
 ><A
 NAME="BASE-BUFFER-SIZE-CAPS"
 ></A
->&#62;BASE_BUFFER_SIZE</H3
+>BASE_BUFFER_SIZE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2284,18 +2589,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>default buffer size 4000.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4359"
+NAME="AEN4478"
 ></A
 ><H3
 ><A
 NAME="XML-XML-NAMESPACE-CAPS"
 ></A
->&#62;XML_XML_NAMESPACE</H3
+>XML_XML_NAMESPACE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2311,20 +2618,20 @@ CLASS="PROGRAMLISTING"
 ></TABLE
 ><P
 >This is the namespace for the special xml: prefix predefined in the
-XML Namespace specification</P
+XML Namespace specification.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4365"
+NAME="AEN4484"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTTYPE"
 ></A
->&#62;enum xmlElementType</H3
+>enum xmlElementType</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2368,13 +2675,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4370"
+NAME="AEN4489"
 ></A
 ><H3
 ><A
 NAME="XMLCHAR"
 ></A
->&#62;xmlChar</H3
+>xmlChar</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2398,13 +2705,13 @@ to xmlChar * (possibly making serialization back impossible).</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4376"
+NAME="AEN4495"
 ></A
 ><H3
 ><A
 NAME="BAD-CAST-CAPS"
 ></A
->&#62;BAD_CAST</H3
+>BAD_CAST</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2426,13 +2733,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4382"
+NAME="AEN4501"
 ></A
 ><H3
 ><A
 NAME="XMLNOTATION"
 ></A
->&#62;struct xmlNotation</H3
+>struct xmlNotation</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2451,20 +2758,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->a DTD Notation definition</P
+>A DTD Notation definition.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4388"
+NAME="AEN4507"
 ></A
 ><H3
 ><A
 NAME="XMLNOTATIONPTR"
 ></A
->&#62;xmlNotationPtr</H3
+>xmlNotationPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2484,13 +2791,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4393"
+NAME="AEN4512"
 ></A
 ><H3
 ><A
 NAME="XMLATTRIBUTETYPE"
 ></A
->&#62;enum xmlAttributeType</H3
+>enum xmlAttributeType</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2516,20 +2823,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->a DTD Attribute type definition</P
+>A DTD Attribute type definition.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4399"
+NAME="AEN4518"
 ></A
 ><H3
 ><A
 NAME="XMLATTRIBUTEDEFAULT"
 ></A
->&#62;enum xmlAttributeDefault</H3
+>enum xmlAttributeDefault</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2549,20 +2856,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->a DTD Attribute default definition</P
+>A DTD Attribute default definition.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4405"
+NAME="AEN4524"
 ></A
 ><H3
 ><A
 NAME="XMLENUMERATION"
 ></A
->&#62;struct xmlEnumeration</H3
+>struct xmlEnumeration</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2580,20 +2887,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->list structure used when there is an enumeration in DTDs</P
+>List structure used when there is an enumeration in DTDs.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4411"
+NAME="AEN4530"
 ></A
 ><H3
 ><A
 NAME="XMLENUMERATIONPTR"
 ></A
->&#62;xmlEnumerationPtr</H3
+>xmlEnumerationPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2613,13 +2920,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4416"
+NAME="AEN4535"
 ></A
 ><H3
 ><A
 NAME="XMLATTRIBUTE"
 ></A
->&#62;struct xmlAttribute</H3
+>struct xmlAttribute</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2652,20 +2959,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->an Attribute declaration in a DTD</P
+>An Attribute declaration in a DTD.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4422"
+NAME="AEN4541"
 ></A
 ><H3
 ><A
 NAME="XMLATTRIBUTEPTR"
 ></A
->&#62;xmlAttributePtr</H3
+>xmlAttributePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2685,13 +2992,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4427"
+NAME="AEN4546"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTCONTENTTYPE"
 ></A
->&#62;enum xmlElementContentType</H3
+>enum xmlElementContentType</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2711,20 +3018,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Possible definitions of element content types</P
+>Possible definitions of element content types.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4433"
+NAME="AEN4552"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTCONTENTOCCUR"
 ></A
->&#62;enum xmlElementContentOccur</H3
+>enum xmlElementContentOccur</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2744,20 +3051,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Possible definitions of element content occurrences</P
+>Possible definitions of element content occurrences.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4439"
+NAME="AEN4558"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTCONTENT"
 ></A
->&#62;struct xmlElementContent</H3
+>struct xmlElementContent</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2780,7 +3087,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->an XML Element content as stored after parsing an element definition
+>An XML Element content as stored after parsing an element definition
 in a DTD.</P
 ><P
 ></P
@@ -2788,13 +3095,13 @@ in a DTD.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4445"
+NAME="AEN4564"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTCONTENTPTR"
 ></A
->&#62;xmlElementContentPtr</H3
+>xmlElementContentPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2814,13 +3121,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4450"
+NAME="AEN4569"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTTYPEVAL"
 ></A
->&#62;enum xmlElementTypeVal</H3
+>enum xmlElementTypeVal</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2841,20 +3148,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->the different possibilities for an element content type</P
+>The different possibilities for an element content type.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4456"
+NAME="AEN4575"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENT"
 ></A
->&#62;struct xmlElement</H3
+>struct xmlElement</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2879,25 +3186,30 @@ CLASS="PROGRAMLISTING"
     xmlElementContentPtr content;	/* the allowed element content */
     xmlAttributePtr   attributes;	/* List of the declared attributes */
     const xmlChar        *prefix;	/* the namespace prefix if any */
+#ifdef LIBXML_REGEXP_ENABLED
+    xmlRegexpPtr       contModel;	/* the validating regexp */
+#else
+    void	      *contModel;
+#endif
 };</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->an XML Element declaration from a DTD</P
+>An XML Element declaration from a DTD.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4462"
+NAME="AEN4581"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTPTR"
 ></A
->&#62;xmlElementPtr</H3
+>xmlElementPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2917,13 +3229,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4467"
+NAME="AEN4586"
 ></A
 ><H3
 ><A
 NAME="XML-LOCAL-NAMESPACE-CAPS"
 ></A
->&#62;XML_LOCAL_NAMESPACE</H3
+>XML_LOCAL_NAMESPACE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2938,20 +3250,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->A namespace declaration node</P
+>A namespace declaration node.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4473"
+NAME="AEN4592"
 ></A
 ><H3
 ><A
 NAME="XMLNSTYPE"
 ></A
->&#62;xmlNsType</H3
+>xmlNsType</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2971,13 +3283,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4478"
+NAME="AEN4597"
 ></A
 ><H3
 ><A
 NAME="XMLNS"
 ></A
->&#62;struct xmlNs</H3
+>struct xmlNs</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2992,6 +3304,7 @@ CLASS="PROGRAMLISTING"
     xmlNsType      type;	/* global or local */
     const xmlChar *href;	/* URL for the namespace */
     const xmlChar *prefix;	/* prefix for the namespace */
+    void           *_private;   /* application data */
 };</PRE
 ></TD
 ></TR
@@ -3001,20 +3314,20 @@ CLASS="PROGRAMLISTING"
 Note that prefix == NULL is valid, it defines the default namespace
 within the subtree (until overridden).</P
 ><P
->xmlNsType is unified with xmlElementType</P
+>xmlNsType is unified with xmlElementType.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4485"
+NAME="AEN4604"
 ></A
 ><H3
 ><A
 NAME="XMLNSPTR"
 ></A
->&#62;xmlNsPtr</H3
+>xmlNsPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3034,13 +3347,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4490"
+NAME="AEN4609"
 ></A
 ><H3
 ><A
 NAME="XMLDTD"
 ></A
->&#62;struct xmlDtd</H3
+>struct xmlDtd</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3075,20 +3388,20 @@ CLASS="PROGRAMLISTING"
 ></TABLE
 ><P
 >An XML DTD, as defined by &lt;!DOCTYPE ... There is actually one for
-the internal subset and for the external subset</P
+the internal subset and for the external subset.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4496"
+NAME="AEN4615"
 ></A
 ><H3
 ><A
 NAME="XMLDTDPTR"
 ></A
->&#62;xmlDtdPtr</H3
+>xmlDtdPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3108,13 +3421,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4501"
+NAME="AEN4620"
 ></A
 ><H3
 ><A
 NAME="XMLATTR"
 ></A
->&#62;struct xmlAttr</H3
+>struct xmlAttr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3141,20 +3454,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->A attribute on an XML node.</P
+>An attribute on an XML node.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4507"
+NAME="AEN4626"
 ></A
 ><H3
 ><A
 NAME="XMLATTRPTR"
 ></A
->&#62;xmlAttrPtr</H3
+>xmlAttrPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3174,13 +3487,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4512"
+NAME="AEN4631"
 ></A
 ><H3
 ><A
 NAME="XMLID"
 ></A
->&#62;struct xmlID</H3
+>struct xmlID</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3206,13 +3519,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4518"
+NAME="AEN4637"
 ></A
 ><H3
 ><A
 NAME="XMLIDPTR"
 ></A
->&#62;xmlIDPtr</H3
+>xmlIDPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3232,13 +3545,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4523"
+NAME="AEN4642"
 ></A
 ><H3
 ><A
 NAME="XMLREF"
 ></A
->&#62;struct xmlRef</H3
+>struct xmlRef</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3264,13 +3577,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4529"
+NAME="AEN4648"
 ></A
 ><H3
 ><A
 NAME="XMLREFPTR"
 ></A
->&#62;xmlRefPtr</H3
+>xmlRefPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3290,13 +3603,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4534"
+NAME="AEN4653"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERALLOCATIONSCHEME"
 ></A
->&#62;enum xmlBufferAllocationScheme</H3
+>enum xmlBufferAllocationScheme</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3315,20 +3628,20 @@ CLASS="PROGRAMLISTING"
 ></TABLE
 ><P
 >A buffer allocation scheme can be defined to either match exactly the
-need or double it's allocated size each time it is found too small</P
+need or double it's allocated size each time it is found too small.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4540"
+NAME="AEN4659"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFER"
 ></A
->&#62;struct xmlBuffer</H3
+>struct xmlBuffer</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3348,20 +3661,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->A buffer structure</P
+>A buffer structure.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4546"
+NAME="AEN4665"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERPTR"
 ></A
->&#62;xmlBufferPtr</H3
+>xmlBufferPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3381,13 +3694,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4551"
+NAME="AEN4670"
 ></A
 ><H3
 ><A
 NAME="XMLNODE"
 ></A
->&#62;struct xmlNode</H3
+>struct xmlNode</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3410,11 +3723,7 @@ CLASS="PROGRAMLISTING"
 
     /* End of common part */
     xmlNs           *ns;        /* pointer to the associated namespace */
-#ifndef XML_USE_BUFFER_CONTENT    
     xmlChar         *content;   /* the content */
-#else
-    xmlBufferPtr     content;   /* the content in a buffer */
-#endif
     struct _xmlAttr *properties;/* properties list */
     xmlNs           *nsDef;     /* namespace definitions on this node */
 };</PRE
@@ -3429,13 +3738,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4557"
+NAME="AEN4676"
 ></A
 ><H3
 ><A
 NAME="XMLNODEPTR"
 ></A
->&#62;xmlNodePtr</H3
+>xmlNodePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3455,13 +3764,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4562"
+NAME="AEN4681"
 ></A
 ><H3
 ><A
 NAME="XML-GET-CONTENT-CAPS"
 ></A
->&#62;XML_GET_CONTENT()</H3
+>XML_GET_CONTENT()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3476,15 +3785,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->macro to extract the content pointer of a node</P
+>Macro to extract the content pointer of a node.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4568"
-></A
-><P
+NAME="AEN4687"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3520,13 +3827,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4577"
+NAME="AEN4696"
 ></A
 ><H3
 ><A
 NAME="XML-GET-LINE-CAPS"
 ></A
->&#62;XML_GET_LINE()</H3
+>XML_GET_LINE()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3541,17 +3848,15 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->macro to extract the line number of an element node. 
+>Macro to extract the line number of an element node. 
 This will work only if line numbering is activated by
-calling xmlLineNumbersDefault(1) before parsing</P
+calling xmlLineNumbersDefault(1) before parsing.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4583"
-></A
-><P
+NAME="AEN4702"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3587,13 +3892,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4592"
+NAME="AEN4711"
 ></A
 ><H3
 ><A
 NAME="XMLDOC"
 ></A
->&#62;struct xmlDoc</H3
+>struct xmlDoc</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3639,13 +3944,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4598"
+NAME="AEN4717"
 ></A
 ><H3
 ><A
 NAME="XMLDOCPTR"
 ></A
->&#62;xmlDocPtr</H3
+>xmlDocPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3665,13 +3970,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4603"
+NAME="AEN4722"
 ></A
 ><H3
 ><A
 NAME="XMLCHILDRENNODE"
 ></A
->&#62;xmlChildrenNode</H3
+>xmlChildrenNode</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3686,20 +3991,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro for compatibility naming layer with libxml1</P
+>Macro for compatibility naming layer with libxml1.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4609"
+NAME="AEN4728"
 ></A
 ><H3
 ><A
 NAME="XMLROOTNODE"
 ></A
->&#62;xmlRootNode</H3
+>xmlRootNode</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3714,20 +4019,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro for compatibility naming layer with libxml1</P
+>Macro for compatibility naming layer with libxml1.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4615"
+NAME="AEN4734"
 ></A
 ><H3
 ><A
 NAME="XMLSETBUFFERALLOCATIONSCHEME"
 ></A
->&#62;xmlSetBufferAllocationScheme ()</H3
+>xmlSetBufferAllocationScheme ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3748,15 +4053,13 @@ HREF="libxml-tree.html#XMLBUFFERALLOCATIONSCHEME"
 >Set the buffer allocation method.  Types are
 XML_BUFFER_ALLOC_EXACT - use exact sizes, keeps memory usage down
 XML_BUFFER_ALLOC_DOUBLEIT - double buffer when extra needed, 
-                            improves performance</P
+improves performance</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4622"
-></A
-><P
+NAME="AEN4741"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3792,13 +4095,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4631"
+NAME="AEN4750"
 ></A
 ><H3
 ><A
 NAME="XMLGETBUFFERALLOCATIONSCHEME"
 ></A
->&#62;xmlGetBufferAllocationScheme ()</H3
+>xmlGetBufferAllocationScheme ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3820,15 +4123,13 @@ HREF="libxml-tree.html#XMLBUFFERALLOCATIONSCHEME"
 >Types are
 XML_BUFFER_ALLOC_EXACT - use exact sizes, keeps memory usage down
 XML_BUFFER_ALLOC_DOUBLEIT - double buffer when extra needed, 
-                            improves performance</P
+improves performance</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4638"
-></A
-><P
+NAME="AEN4757"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3843,9 +4144,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3862,13 +4166,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4647"
+NAME="AEN4766"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERCREATE"
 ></A
->&#62;xmlBufferCreate ()</H3
+>xmlBufferCreate ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3892,9 +4196,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4654"
-></A
-><P
+NAME="AEN4773"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3909,9 +4211,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3928,13 +4233,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4663"
+NAME="AEN4782"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERCREATESIZE"
 ></A
->&#62;xmlBufferCreateSize ()</H3
+>xmlBufferCreateSize ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3961,9 +4266,7 @@ HREF="SIZE-T"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4671"
-></A
-><P
+NAME="AEN4790"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3995,9 +4298,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4014,13 +4320,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4684"
+NAME="AEN4803"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERRESIZE"
 ></A
->&#62;xmlBufferResize ()</H3
+>xmlBufferResize ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4050,9 +4356,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4692"
-></A
-><P
+NAME="AEN4811"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4101,9 +4405,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4120,13 +4427,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4709"
+NAME="AEN4828"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERFREE"
 ></A
->&#62;xmlBufferFree ()</H3
+>xmlBufferFree ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4144,15 +4451,14 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ></TR
 ></TABLE
 ><P
->Frees an XML buffer.</P
+>Frees an XML buffer. It frees both the content and the structure which
+encapsulate it.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4716"
-></A
-><P
+NAME="AEN4835"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4188,13 +4494,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4725"
+NAME="AEN4844"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERDUMP"
 ></A
->&#62;xmlBufferDump ()</H3
+>xmlBufferDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4222,9 +4528,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4733"
-></A
-><P
+NAME="AEN4852"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4273,9 +4577,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4295,13 +4602,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4751"
+NAME="AEN4870"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERADD"
 ></A
->&#62;xmlBufferAdd ()</H3
+>xmlBufferAdd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4331,9 +4638,7 @@ str is recomputed.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4759"
-></A
-><P
+NAME="AEN4878"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4409,13 +4714,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4778"
+NAME="AEN4897"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERADDHEAD"
 ></A
->&#62;xmlBufferAddHead ()</H3
+>xmlBufferAddHead ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4450,9 +4755,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4787"
-></A
-><P
+NAME="AEN4906"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4528,13 +4831,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4806"
+NAME="AEN4925"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERCAT"
 ></A
->&#62;xmlBufferCat ()</H3
+>xmlBufferCat ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4562,9 +4865,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4814"
-></A
-><P
+NAME="AEN4933"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4620,13 +4921,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4828"
+NAME="AEN4947"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERCCAT"
 ></A
->&#62;xmlBufferCCat ()</H3
+>xmlBufferCCat ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4651,9 +4952,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4835"
-></A
-><P
+NAME="AEN4954"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4706,13 +5005,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4848"
+NAME="AEN4967"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERSHRINK"
 ></A
->&#62;xmlBufferShrink ()</H3
+>xmlBufferShrink ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4737,9 +5036,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4855"
-></A
-><P
+NAME="AEN4974"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4788,9 +5085,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4810,13 +5110,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4873"
+NAME="AEN4992"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERGROW"
 ></A
->&#62;xmlBufferGrow ()</H3
+>xmlBufferGrow ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4841,9 +5141,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4880"
-></A
-><P
+NAME="AEN4999"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4892,9 +5190,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4911,13 +5212,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4897"
+NAME="AEN5016"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFEREMPTY"
 ></A
->&#62;xmlBufferEmpty ()</H3
+>xmlBufferEmpty ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4941,9 +5242,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4904"
-></A
-><P
+NAME="AEN5023"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4979,13 +5278,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4913"
+NAME="AEN5032"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERCONTENT"
 ></A
->&#62;xmlBufferContent ()</H3
+>xmlBufferContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5012,9 +5311,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4921"
-></A
-><P
+NAME="AEN5040"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5046,9 +5343,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5065,13 +5365,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4934"
+NAME="AEN5053"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERSETALLOCATIONSCHEME"
 ></A
->&#62;xmlBufferSetAllocationScheme ()</H3
+>xmlBufferSetAllocationScheme ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5099,9 +5399,7 @@ HREF="libxml-tree.html#XMLBUFFERALLOCATIONSCHEME"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4942"
-></A
-><P
+NAME="AEN5061"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5126,7 +5424,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->  the buffer to free</TD
+>  the buffer to tune</TD
 ></TR
 ><TR
 ><TD
@@ -5154,13 +5452,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4955"
+NAME="AEN5074"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERLENGTH"
 ></A
->&#62;xmlBufferLength ()</H3
+>xmlBufferLength ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5184,9 +5482,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4962"
-></A
-><P
+NAME="AEN5081"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5218,9 +5514,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5237,13 +5536,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4975"
+NAME="AEN5094"
 ></A
 ><H3
 ><A
 NAME="XMLCREATEINTSUBSET"
 ></A
->&#62;xmlCreateIntSubset ()</H3
+>xmlCreateIntSubset ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5282,9 +5581,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN4986"
-></A
-><P
+NAME="AEN5105"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5367,9 +5664,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5386,13 +5686,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5011"
+NAME="AEN5130"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDTD"
 ></A
->&#62;xmlNewDtd ()</H3
+>xmlNewDtd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5435,9 +5735,7 @@ HREF="libxml-tree.html#XMLCREATEINTSUBSET"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5023"
-></A
-><P
+NAME="AEN5142"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5520,9 +5818,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5539,13 +5840,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5048"
+NAME="AEN5167"
 ></A
 ><H3
 ><A
 NAME="XMLGETINTSUBSET"
 ></A
->&#62;xmlGetIntSubset ()</H3
+>xmlGetIntSubset ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5572,9 +5873,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5056"
-></A
-><P
+NAME="AEN5175"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5606,9 +5905,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5625,13 +5927,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5069"
+NAME="AEN5188"
 ></A
 ><H3
 ><A
 NAME="XMLFREEDTD"
 ></A
->&#62;xmlFreeDtd ()</H3
+>xmlFreeDtd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5655,9 +5957,7 @@ HREF="libxml-tree.html#XMLDTDPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5076"
-></A
-><P
+NAME="AEN5195"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5693,13 +5993,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5085"
+NAME="AEN5204"
 ></A
 ><H3
 ><A
 NAME="XMLNEWGLOBALNS"
 ></A
->&#62;xmlNewGlobalNs ()</H3
+>xmlNewGlobalNs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5729,16 +6029,14 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TABLE
 ><P
 >Creation of a Namespace, the old way using PI and without scoping
-  DEPRECATED !!!
+DEPRECATED !!!
 It now create a namespace on the root element of the document if found.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5095"
-></A
-><P
+NAME="AEN5214"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5804,9 +6102,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5823,13 +6124,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5116"
+NAME="AEN5235"
 ></A
 ><H3
 ><A
 NAME="XMLNEWNS"
 ></A
->&#62;xmlNewNs ()</H3
+>xmlNewNs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5868,9 +6169,7 @@ was not defined.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5126"
-></A
-><P
+NAME="AEN5245"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5936,9 +6235,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5955,13 +6257,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5147"
+NAME="AEN5266"
 ></A
 ><H3
 ><A
 NAME="XMLFREENS"
 ></A
->&#62;xmlFreeNs ()</H3
+>xmlFreeNs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5985,9 +6287,7 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5154"
-></A
-><P
+NAME="AEN5273"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6023,13 +6323,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5163"
+NAME="AEN5282"
 ></A
 ><H3
 ><A
 NAME="XMLFREENSLIST"
 ></A
->&#62;xmlFreeNsList ()</H3
+>xmlFreeNsList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6053,9 +6353,7 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5170"
-></A
-><P
+NAME="AEN5289"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6091,13 +6389,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5179"
+NAME="AEN5298"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOC"
 ></A
->&#62;xmlNewDoc ()</H3
+>xmlNewDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6124,9 +6422,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5187"
-></A
-><P
+NAME="AEN5306"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6158,9 +6454,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6177,13 +6476,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5200"
+NAME="AEN5319"
 ></A
 ><H3
 ><A
 NAME="XMLFREEDOC"
 ></A
->&#62;xmlFreeDoc ()</H3
+>xmlFreeDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6207,9 +6506,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5207"
-></A
-><P
+NAME="AEN5326"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6245,13 +6542,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5216"
+NAME="AEN5335"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOCPROP"
 ></A
->&#62;xmlNewDocProp ()</H3
+>xmlNewDocProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6286,9 +6583,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5226"
-></A
-><P
+NAME="AEN5345"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6354,9 +6649,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6373,13 +6671,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5247"
+NAME="AEN5366"
 ></A
 ><H3
 ><A
 NAME="XMLNEWPROP"
 ></A
->&#62;xmlNewProp ()</H3
+>xmlNewProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6414,9 +6712,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5257"
-></A
-><P
+NAME="AEN5376"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6482,9 +6778,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6501,13 +6800,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5278"
+NAME="AEN5397"
 ></A
 ><H3
 ><A
 NAME="XMLNEWNSPROP"
 ></A
->&#62;xmlNewNsProp ()</H3
+>xmlNewNsProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6546,9 +6845,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5289"
-></A
-><P
+NAME="AEN5408"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6631,9 +6928,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6650,13 +6950,163 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5314"
+NAME="AEN5433"
+></A
+><H3
+><A
+NAME="XMLNEWNSPROPEATNAME"
+></A
+>xmlNewNsPropEatName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-tree.html#XMLATTRPTR"
+>xmlAttrPtr</A
+>  xmlNewNsPropEatName             (<A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node,
+                                             <A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
+                                             <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new property tagged with a namespace and carried by a node.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5444"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the holding node</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the namespace</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the name of the attribute</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the value of the attribute</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a pointer to the attribute</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5469"
 ></A
 ><H3
 ><A
 NAME="XMLFREEPROPLIST"
 ></A
->&#62;xmlFreePropList ()</H3
+>xmlFreePropList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6680,9 +7130,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5321"
-></A
-><P
+NAME="AEN5476"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6718,13 +7166,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5330"
+NAME="AEN5485"
 ></A
 ><H3
 ><A
 NAME="XMLFREEPROP"
 ></A
->&#62;xmlFreeProp ()</H3
+>xmlFreeProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6748,9 +7196,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5337"
-></A
-><P
+NAME="AEN5492"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6786,13 +7232,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5346"
+NAME="AEN5501"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYPROP"
 ></A
->&#62;xmlCopyProp ()</H3
+>xmlCopyProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6823,9 +7269,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5355"
-></A
-><P
+NAME="AEN5510"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6874,9 +7318,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6896,13 +7343,13 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5373"
+NAME="AEN5528"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYPROPLIST"
 ></A
->&#62;xmlCopyPropList ()</H3
+>xmlCopyPropList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6933,9 +7380,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5382"
-></A
-><P
+NAME="AEN5537"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6984,9 +7429,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7006,13 +7454,13 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5400"
+NAME="AEN5555"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYDTD"
 ></A
->&#62;xmlCopyDtd ()</H3
+>xmlCopyDtd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7039,9 +7487,7 @@ HREF="libxml-tree.html#XMLDTDPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5408"
-></A
-><P
+NAME="AEN5563"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7073,9 +7519,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7095,13 +7544,13 @@ HREF="libxml-tree.html#XMLDTDPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5422"
+NAME="AEN5577"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYDOC"
 ></A
->&#62;xmlCopyDoc ()</H3
+>xmlCopyDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7130,9 +7579,7 @@ be copied too as well as DTD, namespaces and entities.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5430"
-></A
-><P
+NAME="AEN5585"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7181,9 +7628,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7203,13 +7653,13 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5448"
+NAME="AEN5603"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOCNODE"
 ></A
->&#62;xmlNewDocNode ()</H3
+>xmlNewDocNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7260,23 +7710,21 @@ CLASS="PARAMETER"
 >content</I
 ></TT
 > is supposed to be a piece of XML CDATA, so it allow entities
-      references, but XML special chars need to be escaped first by using
-      <A
+references, but XML special chars need to be escaped first by using
+<A
 HREF="libxml-entities.html#XMLENCODEENTITIESREENTRANT"
 >xmlEncodeEntitiesReentrant</A
 >(). Use <A
 HREF="libxml-tree.html#XMLNEWDOCRAWNODE"
 >xmlNewDocRawNode</A
 >() if you don't
-      need entities support.</P
+need entities support.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5464"
-></A
-><P
+NAME="AEN5619"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7359,9 +7807,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7378,13 +7829,189 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5489"
+NAME="AEN5644"
+></A
+><H3
+><A
+NAME="XMLNEWDOCNODEEATNAME"
+></A
+>xmlNewDocNodeEatName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+>  xmlNewDocNodeEatName            (<A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> doc,
+                                             <A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
+                                             <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *content);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creation of a new node element within a document. <TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>content</I
+></TT
+>
+are optional (NULL).
+NOTE: <TT
+CLASS="PARAMETER"
+><I
+>content</I
+></TT
+> is supposed to be a piece of XML CDATA, so it allow entities
+references, but XML special chars need to be escaped first by using
+<A
+HREF="libxml-entities.html#XMLENCODEENTITIESREENTRANT"
+>xmlEncodeEntitiesReentrant</A
+>(). Use <A
+HREF="libxml-tree.html#XMLNEWDOCRAWNODE"
+>xmlNewDocRawNode</A
+>() if you don't
+need entities support.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5660"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>doc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the document</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  namespace if any</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the node name</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>content</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XML text content if any</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a pointer to the new node object.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5685"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOCRAWNODE"
 ></A
->&#62;xmlNewDocRawNode ()</H3
+>xmlNewDocRawNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7434,9 +8061,7 @@ are optional (NULL).</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5502"
-></A
-><P
+NAME="AEN5698"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7519,9 +8144,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7538,13 +8166,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5527"
+NAME="AEN5723"
 ></A
 ><H3
 ><A
 NAME="XMLNEWNODE"
 ></A
->&#62;xmlNewNode ()</H3
+>xmlNewNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7580,9 +8208,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5537"
-></A
-><P
+NAME="AEN5733"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7631,9 +8257,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7650,13 +8279,126 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5554"
+NAME="AEN5750"
+></A
+><H3
+><A
+NAME="XMLNEWNODEEATNAME"
+></A
+>xmlNewNodeEatName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+>  xmlNewNodeEatName               (<A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
+                                             <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creation of a new node element. <TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+> is optional (NULL).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5760"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  namespace if any</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the node name</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a pointer to the new node object.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5777"
 ></A
 ><H3
 ><A
 NAME="XMLNEWCHILD"
 ></A
->&#62;xmlNewChild ()</H3
+>xmlNewChild ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7713,23 +8455,21 @@ CLASS="PARAMETER"
 >content</I
 ></TT
 > is supposed to be a piece of XML CDATA, so it allow entities
-      references, but XML special chars need to be escaped first by using
-      <A
+references, but XML special chars need to be escaped first by using
+<A
 HREF="libxml-entities.html#XMLENCODEENTITIESREENTRANT"
 >xmlEncodeEntitiesReentrant</A
 >(). Use <A
 HREF="libxml-tree.html#XMLNEWTEXTCHILD"
 >xmlNewTextChild</A
 >() if entities
-      support is not needed.</P
+support is not needed.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5571"
-></A
-><P
+NAME="AEN5794"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7812,9 +8552,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7831,13 +8574,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5596"
+NAME="AEN5819"
 ></A
 ><H3
 ><A
 NAME="XMLNEWTEXTCHILD"
 ></A
->&#62;xmlNewTextChild ()</H3
+>xmlNewTextChild ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7893,9 +8636,7 @@ a child TEXT node will be created containing the string content.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5610"
-></A
-><P
+NAME="AEN5833"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7978,9 +8719,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7997,13 +8741,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5635"
+NAME="AEN5858"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOCTEXT"
 ></A
->&#62;xmlNewDocText ()</H3
+>xmlNewDocText ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8034,9 +8778,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5644"
-></A
-><P
+NAME="AEN5867"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8085,9 +8827,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8104,13 +8849,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5661"
+NAME="AEN5884"
 ></A
 ><H3
 ><A
 NAME="XMLNEWTEXT"
 ></A
->&#62;xmlNewText ()</H3
+>xmlNewText ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8137,9 +8882,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5669"
-></A
-><P
+NAME="AEN5892"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8171,9 +8914,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8190,13 +8936,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5682"
+NAME="AEN5905"
 ></A
 ><H3
 ><A
 NAME="XMLNEWPI"
 ></A
->&#62;xmlNewPI ()</H3
+>xmlNewPI ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8227,9 +8973,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5691"
-></A
-><P
+NAME="AEN5914"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8278,9 +9022,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8297,13 +9044,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5708"
+NAME="AEN5931"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOCTEXTLEN"
 ></A
->&#62;xmlNewDocTextLen ()</H3
+>xmlNewDocTextLen ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8336,9 +9083,7 @@ text node pertain to a given document.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5717"
-></A
-><P
+NAME="AEN5940"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8404,9 +9149,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8423,13 +9171,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5738"
+NAME="AEN5961"
 ></A
 ><H3
 ><A
 NAME="XMLNEWTEXTLEN"
 ></A
->&#62;xmlNewTextLen ()</H3
+>xmlNewTextLen ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8457,9 +9205,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5746"
-></A
-><P
+NAME="AEN5969"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8508,9 +9254,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8527,13 +9276,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5763"
+NAME="AEN5986"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOCCOMMENT"
 ></A
->&#62;xmlNewDocComment ()</H3
+>xmlNewDocComment ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8564,9 +9313,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5772"
-></A
-><P
+NAME="AEN5995"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8615,9 +9362,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8634,13 +9384,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5789"
+NAME="AEN6012"
 ></A
 ><H3
 ><A
 NAME="XMLNEWCOMMENT"
 ></A
->&#62;xmlNewComment ()</H3
+>xmlNewComment ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8667,9 +9417,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5797"
-></A
-><P
+NAME="AEN6020"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8701,9 +9449,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8720,13 +9471,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5810"
+NAME="AEN6033"
 ></A
 ><H3
 ><A
 NAME="XMLNEWCDATABLOCK"
 ></A
->&#62;xmlNewCDataBlock ()</H3
+>xmlNewCDataBlock ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8758,9 +9509,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5819"
-></A
-><P
+NAME="AEN6042"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8826,9 +9575,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8845,13 +9597,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5840"
+NAME="AEN6063"
 ></A
 ><H3
 ><A
 NAME="XMLNEWCHARREF"
 ></A
->&#62;xmlNewCharRef ()</H3
+>xmlNewCharRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8882,9 +9634,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5849"
-></A
-><P
+NAME="AEN6072"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8933,9 +9683,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8952,13 +9705,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5866"
+NAME="AEN6089"
 ></A
 ><H3
 ><A
 NAME="XMLNEWREFERENCE"
 ></A
->&#62;xmlNewReference ()</H3
+>xmlNewReference ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8989,9 +9742,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5875"
-></A
-><P
+NAME="AEN6098"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9040,9 +9791,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9059,13 +9813,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5892"
+NAME="AEN6115"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYNODE"
 ></A
->&#62;xmlCopyNode ()</H3
+>xmlCopyNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9093,9 +9847,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5900"
-></A
-><P
+NAME="AEN6123"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9144,9 +9896,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9166,13 +9921,13 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5918"
+NAME="AEN6141"
 ></A
 ><H3
 ><A
 NAME="XMLDOCCOPYNODE"
 ></A
->&#62;xmlDocCopyNode ()</H3
+>xmlDocCopyNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9185,7 +9940,7 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="libxml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
->  xmlDocCopyNode                  (<A
+>  xmlDocCopyNode                  (const <A
 HREF="libxml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
 > node,
@@ -9204,9 +9959,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5927"
-></A
-><P
+NAME="AEN6150"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9272,9 +10025,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9294,13 +10050,13 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5949"
+NAME="AEN6172"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYNODELIST"
 ></A
->&#62;xmlCopyNodeList ()</H3
+>xmlCopyNodeList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9313,7 +10069,7 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="libxml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
->  xmlCopyNodeList                 (<A
+>  xmlCopyNodeList                 (const <A
 HREF="libxml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
 > node);</PRE
@@ -9327,9 +10083,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5957"
-></A
-><P
+NAME="AEN6180"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9361,9 +10115,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9383,13 +10140,13 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5971"
+NAME="AEN6194"
 ></A
 ><H3
 ><A
 NAME="XMLNEWDOCFRAGMENT"
 ></A
->&#62;xmlNewDocFragment ()</H3
+>xmlNewDocFragment ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9416,9 +10173,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN5979"
-></A
-><P
+NAME="AEN6202"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9450,9 +10205,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9469,13 +10227,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5992"
+NAME="AEN6215"
 ></A
 ><H3
 ><A
 NAME="XMLGETLINENO"
 ></A
->&#62;xmlGetLineNo ()</H3
+>xmlGetLineNo ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9503,9 +10261,7 @@ before invoking the parser by calling xmlLineNumbersDefault(1)</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6000"
-></A
-><P
+NAME="AEN6223"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9537,9 +10293,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9556,13 +10315,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6013"
+NAME="AEN6236"
 ></A
 ><H3
 ><A
 NAME="XMLGETNODEPATH"
 ></A
->&#62;xmlGetNodePath ()</H3
+>xmlGetNodePath ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9589,9 +10348,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6021"
-></A
-><P
+NAME="AEN6244"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9623,16 +10380,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the new path or NULL in case of error. The caller must free
-    the returned string</TD
+the returned string</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -9643,13 +10403,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6034"
+NAME="AEN6257"
 ></A
 ><H3
 ><A
 NAME="XMLDOCGETROOTELEMENT"
 ></A
->&#62;xmlDocGetRootElement ()</H3
+>xmlDocGetRootElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9677,9 +10437,7 @@ containing possibly comments, PIs, etc ...).</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6042"
-></A
-><P
+NAME="AEN6265"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9711,9 +10469,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9733,13 +10494,13 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6056"
+NAME="AEN6279"
 ></A
 ><H3
 ><A
 NAME="XMLGETLASTCHILD"
 ></A
->&#62;xmlGetLastChild ()</H3
+>xmlGetLastChild ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9766,9 +10527,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6064"
-></A
-><P
+NAME="AEN6287"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9800,9 +10559,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9819,13 +10581,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6077"
+NAME="AEN6300"
 ></A
 ><H3
 ><A
 NAME="XMLNODEISTEXT"
 ></A
->&#62;xmlNodeIsText ()</H3
+>xmlNodeIsText ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9849,9 +10611,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6084"
-></A
-><P
+NAME="AEN6307"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9883,9 +10643,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9902,13 +10665,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6097"
+NAME="AEN6320"
 ></A
 ><H3
 ><A
 NAME="XMLISBLANKNODE"
 ></A
->&#62;xmlIsBlankNode ()</H3
+>xmlIsBlankNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9933,9 +10696,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6104"
-></A
-><P
+NAME="AEN6327"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9967,9 +10728,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9986,13 +10750,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6117"
+NAME="AEN6340"
 ></A
 ><H3
 ><A
 NAME="XMLDOCSETROOTELEMENT"
 ></A
->&#62;xmlDocSetRootElement ()</H3
+>xmlDocSetRootElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10024,9 +10788,7 @@ containing possibly comments, PIs, etc ...).</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6126"
-></A
-><P
+NAME="AEN6349"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10075,9 +10837,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10094,13 +10859,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6143"
+NAME="AEN6366"
 ></A
 ><H3
 ><A
 NAME="XMLNODESETNAME"
 ></A
->&#62;xmlNodeSetName ()</H3
+>xmlNodeSetName ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10128,9 +10893,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6151"
-></A
-><P
+NAME="AEN6374"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10183,13 +10946,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6164"
+NAME="AEN6387"
 ></A
 ><H3
 ><A
 NAME="XMLADDCHILD"
 ></A
->&#62;xmlAddChild ()</H3
+>xmlAddChild ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10214,26 +10977,28 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
->Add a new child element, to <TT
+>Add a new node to <TT
 CLASS="PARAMETER"
 ><I
 >parent</I
 ></TT
->, at the end of the child list
+>, at the end of the child (or property) list
 merging adjacent TEXT nodes (in which case <TT
 CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
-> is freed)</P
+> is freed)
+If the new node was already inserted in a document it is
+first unlinked from its existing context.
+If the new node is ATTRIBUTE, it is added into properties instead of children.
+If there is an attribute with equal name, it is first destroyed.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6175"
-></A
-><P
+NAME="AEN6398"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10282,9 +11047,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10301,13 +11069,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6192"
+NAME="AEN6415"
 ></A
 ><H3
 ><A
 NAME="XMLADDCHILDLIST"
 ></A
->&#62;xmlAddChildList ()</H3
+>xmlAddChildList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10344,9 +11112,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6202"
-></A
-><P
+NAME="AEN6425"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10395,9 +11161,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10414,13 +11183,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6219"
+NAME="AEN6442"
 ></A
 ><H3
 ><A
 NAME="XMLREPLACENODE"
 ></A
->&#62;xmlReplaceNode ()</H3
+>xmlReplaceNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10458,9 +11227,7 @@ first unlinked from its existing context.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6229"
-></A
-><P
+NAME="AEN6452"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10509,9 +11276,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10533,13 +11303,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6247"
+NAME="AEN6470"
 ></A
 ><H3
 ><A
 NAME="XMLADDSIBLING"
 ></A
->&#62;xmlAddSibling ()</H3
+>xmlAddSibling ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10588,9 +11358,7 @@ first unlinked from its existing context.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6259"
-></A
-><P
+NAME="AEN6482"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10639,9 +11407,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10658,13 +11429,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6276"
+NAME="AEN6499"
 ></A
 ><H3
 ><A
 NAME="XMLADDPREVSIBLING"
 ></A
->&#62;xmlAddPrevSibling ()</H3
+>xmlAddPrevSibling ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10689,12 +11460,12 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
->Add a new element <TT
+>Add a new node <TT
 CLASS="PARAMETER"
 ><I
 >elem</I
 ></TT
-> as the previous siblings of <TT
+> as the previous sibling of <TT
 CLASS="PARAMETER"
 ><I
 >cur</I
@@ -10706,16 +11477,16 @@ CLASS="PARAMETER"
 >elem</I
 ></TT
 > may be freed)
-If the new element was already inserted in a document it is
-first unlinked from its existing context.</P
+If the new node was already inserted in a document it is
+first unlinked from its existing context.
+If the new node is ATTRIBUTE, it is added into properties instead of children.
+If there is an attribute with equal name, it is first destroyed.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6288"
-></A
-><P
+NAME="AEN6511"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10764,15 +11535,18 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the new element or NULL in case of error.</TD
+>the new node or NULL in case of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -10783,13 +11557,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6305"
+NAME="AEN6528"
 ></A
 ><H3
 ><A
 NAME="XMLADDNEXTSIBLING"
 ></A
->&#62;xmlAddNextSibling ()</H3
+>xmlAddNextSibling ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10814,33 +11588,33 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
->Add a new element <TT
+>Add a new node <TT
 CLASS="PARAMETER"
 ><I
 >elem</I
 ></TT
-> as the next siblings of <TT
+> as the next sibling of <TT
 CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
 >
-If the new element was already inserted in a document it is
+If the new node was already inserted in a document it is
 first unlinked from its existing context.
 As a result of text merging <TT
 CLASS="PARAMETER"
 ><I
 >elem</I
 ></TT
-> may be freed.</P
+> may be freed.
+If the new node is ATTRIBUTE, it is added into properties instead of children.
+If there is an attribute with equal name, it is first destroyed.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6317"
-></A
-><P
+NAME="AEN6540"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10889,15 +11663,18 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the new element or NULL in case of error.</TD
+>the new node or NULL in case of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -10908,13 +11685,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6334"
+NAME="AEN6557"
 ></A
 ><H3
 ><A
 NAME="XMLUNLINKNODE"
 ></A
->&#62;xmlUnlinkNode ()</H3
+>xmlUnlinkNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10938,9 +11715,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6341"
-></A
-><P
+NAME="AEN6564"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10976,13 +11751,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6350"
+NAME="AEN6573"
 ></A
 ><H3
 ><A
 NAME="XMLTEXTMERGE"
 ></A
->&#62;xmlTextMerge ()</H3
+>xmlTextMerge ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11013,9 +11788,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6359"
-></A
-><P
+NAME="AEN6582"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11064,9 +11837,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11083,13 +11859,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6376"
+NAME="AEN6599"
 ></A
 ><H3
 ><A
 NAME="XMLTEXTCONCAT"
 ></A
->&#62;xmlTextConcat ()</H3
+>xmlTextConcat ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11118,9 +11894,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6384"
-></A
-><P
+NAME="AEN6607"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11195,13 +11969,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6402"
+NAME="AEN6625"
 ></A
 ><H3
 ><A
 NAME="XMLFREENODELIST"
 ></A
->&#62;xmlFreeNodeList ()</H3
+>xmlFreeNodeList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11226,9 +12000,7 @@ the children are freed too.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6409"
-></A
-><P
+NAME="AEN6632"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11264,13 +12036,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6418"
+NAME="AEN6641"
 ></A
 ><H3
 ><A
 NAME="XMLFREENODE"
 ></A
->&#62;xmlFreeNode ()</H3
+>xmlFreeNode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11298,9 +12070,7 @@ HREF="libxml-tree.html#XMLUNLINKNODE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6426"
-></A
-><P
+NAME="AEN6649"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11336,13 +12106,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6435"
+NAME="AEN6658"
 ></A
 ><H3
 ><A
 NAME="XMLSETTREEDOC"
 ></A
->&#62;xmlSetTreeDoc ()</H3
+>xmlSetTreeDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11370,9 +12140,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6443"
-></A
-><P
+NAME="AEN6666"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11425,13 +12193,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6456"
+NAME="AEN6679"
 ></A
 ><H3
 ><A
 NAME="XMLSETLISTDOC"
 ></A
->&#62;xmlSetListDoc ()</H3
+>xmlSetListDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11459,9 +12227,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6464"
-></A
-><P
+NAME="AEN6687"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11514,13 +12280,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6477"
+NAME="AEN6700"
 ></A
 ><H3
 ><A
 NAME="XMLSEARCHNS"
 ></A
->&#62;xmlSearchNs ()</H3
+>xmlSearchNs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11566,9 +12332,7 @@ is generated to cover this case.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6488"
-></A
-><P
+NAME="AEN6711"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11634,9 +12398,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11653,13 +12420,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6509"
+NAME="AEN6732"
 ></A
 ><H3
 ><A
 NAME="XMLSEARCHNSBYHREF"
 ></A
->&#62;xmlSearchNsByHref ()</H3
+>xmlSearchNsByHref ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11695,9 +12462,7 @@ the defined namespace or return NULL otherwise.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6519"
-></A
-><P
+NAME="AEN6742"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11763,9 +12528,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11782,13 +12550,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6540"
+NAME="AEN6763"
 ></A
 ><H3
 ><A
 NAME="XMLGETNSLIST"
 ></A
->&#62;xmlGetNsList ()</H3
+>xmlGetNsList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11819,9 +12587,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6549"
-></A
-><P
+NAME="AEN6772"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11870,9 +12636,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11882,8 +12651,8 @@ VALIGN="TOP"
 HREF="libxml-tree.html#XMLNSPTR"
 >xmlNsPtr</A
 > found
-        that need to be freed by the caller or NULL if no
-        namespace if defined</TD
+that need to be freed by the caller or NULL if no
+namespace if defined</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -11894,13 +12663,13 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6567"
+NAME="AEN6790"
 ></A
 ><H3
 ><A
 NAME="XMLSETNS"
 ></A
->&#62;xmlSetNs ()</H3
+>xmlSetNs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11928,9 +12697,7 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6575"
-></A
-><P
+NAME="AEN6798"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11983,13 +12750,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6588"
+NAME="AEN6811"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYNAMESPACE"
 ></A
->&#62;xmlCopyNamespace ()</H3
+>xmlCopyNamespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12016,9 +12783,7 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6596"
-></A
-><P
+NAME="AEN6819"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12050,9 +12815,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -12072,13 +12840,13 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6610"
+NAME="AEN6833"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYNAMESPACELIST"
 ></A
->&#62;xmlCopyNamespaceList ()</H3
+>xmlCopyNamespaceList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12105,9 +12873,7 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6618"
-></A
-><P
+NAME="AEN6841"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12139,9 +12905,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -12161,13 +12930,13 @@ HREF="libxml-tree.html#XMLNSPTR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6632"
+NAME="AEN6855"
 ></A
 ><H3
 ><A
 NAME="XMLSETPROP"
 ></A
->&#62;xmlSetProp ()</H3
+>xmlSetProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12202,9 +12971,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6642"
-></A
-><P
+NAME="AEN6865"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12270,9 +13037,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -12289,13 +13059,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6663"
+NAME="AEN6886"
 ></A
 ><H3
 ><A
 NAME="XMLGETPROP"
 ></A
->&#62;xmlGetProp ()</H3
+>xmlGetProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12332,9 +13102,7 @@ default declaration values unless DTD use has been turned off.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6673"
-></A
-><P
+NAME="AEN6896"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12383,16 +13151,22 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the attribute value or NULL if not found.
-    It's up to the caller to free the memory.</TD
+It's up to the caller to free the memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -12403,13 +13177,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6690"
+NAME="AEN6914"
 ></A
 ><H3
 ><A
 NAME="XMLHASPROP"
 ></A
->&#62;xmlHasProp ()</H3
+>xmlHasProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12445,9 +13219,7 @@ default declaration values unless DTD use has been turned off.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6700"
-></A
-><P
+NAME="AEN6924"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12496,16 +13268,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the attribute or the attribute declaration or NULL if 
-        neither was found.</TD
+neither was found.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -12516,13 +13291,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6717"
+NAME="AEN6941"
 ></A
 ><H3
 ><A
 NAME="XMLHASNSPROP"
 ></A
->&#62;xmlHasNsProp ()</H3
+>xmlHasNsProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12564,9 +13339,7 @@ default declaration values unless DTD use has been turned off.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6728"
-></A
-><P
+NAME="AEN6952"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12632,16 +13405,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the attribute or the attribute declaration or NULL
-    if neither was found.</TD
+if neither was found.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -12652,13 +13428,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6749"
+NAME="AEN6973"
 ></A
 ><H3
 ><A
 NAME="XMLSETNSPROP"
 ></A
->&#62;xmlSetNsProp ()</H3
+>xmlSetNsProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12698,9 +13474,7 @@ The ns structure must be in scope, this is not checked.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6760"
-></A
-><P
+NAME="AEN6984"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12783,9 +13557,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -12802,13 +13579,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6785"
+NAME="AEN7009"
 ></A
 ><H3
 ><A
 NAME="XMLGETNSPROP"
 ></A
->&#62;xmlGetNsProp ()</H3
+>xmlGetNsProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12850,9 +13627,7 @@ default declaration values unless DTD use has been turned off.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6796"
-></A
-><P
+NAME="AEN7020"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -12918,16 +13693,22 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the attribute value or NULL if not found.
-    It's up to the caller to free the memory.</TD
+It's up to the caller to free the memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -12938,13 +13719,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6817"
+NAME="AEN7042"
 ></A
 ><H3
 ><A
 NAME="XMLSTRINGGETNODELIST"
 ></A
->&#62;xmlStringGetNodeList ()</H3
+>xmlStringGetNodeList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -12976,9 +13757,7 @@ produce a flat tree with only TEXTs and ENTITY_REFs.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6826"
-></A
-><P
+NAME="AEN7051"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13027,9 +13806,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -13046,13 +13828,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6843"
+NAME="AEN7068"
 ></A
 ><H3
 ><A
 NAME="XMLSTRINGLENGETNODELIST"
 ></A
->&#62;xmlStringLenGetNodeList ()</H3
+>xmlStringLenGetNodeList ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13085,9 +13867,7 @@ produce a flat tree with only TEXTs and ENTITY_REFs.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6852"
-></A
-><P
+NAME="AEN7077"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13153,9 +13933,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -13172,13 +13955,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6873"
+NAME="AEN7098"
 ></A
 ><H3
 ><A
 NAME="XMLNODELISTGETSTRING"
 ></A
->&#62;xmlNodeListGetString ()</H3
+>xmlNodeListGetString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13211,9 +13994,7 @@ made of TEXTs and ENTITY_REFs</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6882"
-></A
-><P
+NAME="AEN7107"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13279,15 +14060,21 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->a pointer to the string copy, the caller must free it.</TD
+>a pointer to the string copy, the caller must free it with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -13298,13 +14085,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6903"
+NAME="AEN7129"
 ></A
 ><H3
 ><A
 NAME="XMLNODELISTGETRAWSTRING"
 ></A
->&#62;xmlNodeListGetRawString ()</H3
+>xmlNodeListGetRawString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13341,9 +14128,7 @@ this function doesn't do any character encoding handling.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6913"
-></A
-><P
+NAME="AEN7139"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13409,15 +14194,21 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->a pointer to the string copy, the caller must free it.</TD
+>a pointer to the string copy, the caller must free it with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -13428,13 +14219,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6934"
+NAME="AEN7161"
 ></A
 ><H3
 ><A
 NAME="XMLNODESETCONTENT"
 ></A
->&#62;xmlNodeSetContent ()</H3
+>xmlNodeSetContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13462,9 +14253,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6942"
-></A
-><P
+NAME="AEN7169"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13517,13 +14306,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6955"
+NAME="AEN7182"
 ></A
 ><H3
 ><A
 NAME="XMLNODESETCONTENTLEN"
 ></A
->&#62;xmlNodeSetContentLen ()</H3
+>xmlNodeSetContentLen ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13552,9 +14341,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6963"
-></A
-><P
+NAME="AEN7190"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13629,13 +14416,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6981"
+NAME="AEN7208"
 ></A
 ><H3
 ><A
 NAME="XMLNODEADDCONTENT"
 ></A
->&#62;xmlNodeAddContent ()</H3
+>xmlNodeAddContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13663,9 +14450,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN6989"
-></A
-><P
+NAME="AEN7216"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13718,13 +14503,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7002"
+NAME="AEN7229"
 ></A
 ><H3
 ><A
 NAME="XMLNODEADDCONTENTLEN"
 ></A
->&#62;xmlNodeAddContentLen ()</H3
+>xmlNodeAddContentLen ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13753,9 +14538,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7010"
-></A
-><P
+NAME="AEN7237"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13830,13 +14613,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7028"
+NAME="AEN7255"
 ></A
 ><H3
 ><A
 NAME="XMLNODEGETCONTENT"
 ></A
->&#62;xmlNodeGetContent ()</H3
+>xmlNodeGetContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13866,9 +14649,7 @@ Entity references are substituted.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7036"
-></A
-><P
+NAME="AEN7263"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13900,9 +14681,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -13912,7 +14696,10 @@ VALIGN="TOP"
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > * or NULL if no content is available.
-    It's up to the caller to free the memory.</TD
+It's up to the caller to free the memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -13923,13 +14710,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7050"
+NAME="AEN7278"
 ></A
 ><H3
 ><A
 NAME="XMLNODEGETLANG"
 ></A
->&#62;xmlNodeGetLang ()</H3
+>xmlNodeGetLang ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -13957,9 +14744,7 @@ attribute or the one carried by the nearest ancestor.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7058"
-></A
-><P
+NAME="AEN7286"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -13991,16 +14776,22 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >a pointer to the lang value, or NULL if not found
-    It's up to the caller to free the memory.</TD
+It's up to the caller to free the memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -14011,13 +14802,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7071"
+NAME="AEN7300"
 ></A
 ><H3
 ><A
 NAME="XMLNODESETLANG"
 ></A
->&#62;xmlNodeSetLang ()</H3
+>xmlNodeSetLang ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14046,9 +14837,7 @@ attribute.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7079"
-></A
-><P
+NAME="AEN7308"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14101,13 +14890,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7092"
+NAME="AEN7321"
 ></A
 ><H3
 ><A
 NAME="XMLNODEGETSPACEPRESERVE"
 ></A
->&#62;xmlNodeGetSpacePreserve ()</H3
+>xmlNodeGetSpacePreserve ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14133,9 +14922,7 @@ ancestor.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7099"
-></A
-><P
+NAME="AEN7328"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14167,9 +14954,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -14186,13 +14976,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7112"
+NAME="AEN7341"
 ></A
 ><H3
 ><A
 NAME="XMLNODESETSPACEPRESERVE"
 ></A
->&#62;xmlNodeSetSpacePreserve ()</H3
+>xmlNodeSetSpacePreserve ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14218,9 +15008,7 @@ value of the xml:space attribute.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7119"
-></A
-><P
+NAME="AEN7348"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14273,13 +15061,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7132"
+NAME="AEN7361"
 ></A
 ><H3
 ><A
 NAME="XMLNODEGETBASE"
 ></A
->&#62;xmlNodeGetBase ()</H3
+>xmlNodeGetBase ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14320,9 +15108,7 @@ HREF="XMLDOCUMENTGETBASE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7142"
-></A
-><P
+NAME="AEN7371"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14371,16 +15157,22 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >a pointer to the base URL, or NULL if not found
-    It's up to the caller to free the memory.</TD
+It's up to the caller to free the memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -14391,13 +15183,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7159"
+NAME="AEN7389"
 ></A
 ><H3
 ><A
 NAME="XMLNODESETBASE"
 ></A
->&#62;xmlNodeSetBase ()</H3
+>xmlNodeSetBase ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14426,9 +15218,7 @@ xml:base attribute.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7167"
-></A
-><P
+NAME="AEN7397"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14481,13 +15271,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7180"
+NAME="AEN7410"
 ></A
 ><H3
 ><A
 NAME="XMLREMOVEPROP"
 ></A
->&#62;xmlRemoveProp ()</H3
+>xmlRemoveProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14512,9 +15302,7 @@ Note this doesn't work for namespace definition attributes</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7187"
-></A
-><P
+NAME="AEN7417"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14546,9 +15334,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -14565,13 +15356,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7200"
+NAME="AEN7430"
 ></A
 ><H3
 ><A
 NAME="XMLUNSETPROP"
 ></A
->&#62;xmlUnsetProp ()</H3
+>xmlUnsetProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14599,9 +15390,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7208"
-></A
-><P
+NAME="AEN7438"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14650,9 +15439,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -14669,13 +15461,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7225"
+NAME="AEN7455"
 ></A
 ><H3
 ><A
 NAME="XMLUNSETNSPROP"
 ></A
->&#62;xmlUnsetNsProp ()</H3
+>xmlUnsetNsProp ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14707,9 +15499,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7234"
-></A
-><P
+NAME="AEN7464"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14775,9 +15565,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -14794,13 +15587,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7255"
+NAME="AEN7485"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERWRITEXMLCHAR"
 ></A
->&#62;xmlBufferWriteXmlCHAR ()</H3
+>xmlBufferWriteXmlCHAR ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14830,9 +15623,7 @@ xmlChars at the end of the buffer.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7263"
-></A
-><P
+NAME="AEN7493"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14885,13 +15676,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7276"
+NAME="AEN7506"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERWRITECHAR"
 ></A
->&#62;xmlBufferWriteCHAR ()</H3
+>xmlBufferWriteCHAR ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -14920,9 +15711,7 @@ xmlChars at the end of the buffer.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7284"
-></A
-><P
+NAME="AEN7514"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -14975,13 +15764,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7297"
+NAME="AEN7527"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERWRITECHAR"
 ></A
->&#62;xmlBufferWriteChar ()</H3
+>xmlBufferWriteChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15007,9 +15796,7 @@ C chars at the end of the array.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7304"
-></A
-><P
+NAME="AEN7534"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15062,13 +15849,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7317"
+NAME="AEN7547"
 ></A
 ><H3
 ><A
 NAME="XMLBUFFERWRITEQUOTEDSTRING"
 ></A
->&#62;xmlBufferWriteQuotedString ()</H3
+>xmlBufferWriteQuotedString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15101,9 +15888,7 @@ quote or double-quotes internally</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7326"
-></A
-><P
+NAME="AEN7556"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15156,13 +15941,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7339"
+NAME="AEN7569"
 ></A
 ><H3
 ><A
 NAME="XMLRECONCILIATENS"
 ></A
->&#62;xmlReconciliateNs ()</H3
+>xmlReconciliateNs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15201,9 +15986,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7348"
-></A
-><P
+NAME="AEN7578"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15252,9 +16035,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -15271,13 +16057,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7365"
+NAME="AEN7595"
 ></A
 ><H3
 ><A
 NAME="XMLDOCDUMPFORMATMEMORY"
 ></A
->&#62;xmlDocDumpFormatMemory ()</H3
+>xmlDocDumpFormatMemory ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15305,15 +16091,18 @@ HREF="libxml-tree.html#XMLCHAR"
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > * and it's size.
-It's up to the caller to free the memory.</P
+It's up to the caller to free the memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().
+Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+or xmlKeepBlanksDefault(0) was called</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7374"
-></A
-><P
+NAME="AEN7605"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15400,13 +16189,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7395"
+NAME="AEN7626"
 ></A
 ><H3
 ><A
 NAME="XMLDOCDUMPMEMORY"
 ></A
->&#62;xmlDocDumpMemory ()</H3
+>xmlDocDumpMemory ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15433,15 +16222,16 @@ HREF="libxml-tree.html#XMLCHAR"
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > * and it's size.
-It's up to the caller to free the memory.</P
+It's up to the caller to free the memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7404"
-></A
-><P
+NAME="AEN7636"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15511,13 +16301,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7421"
+NAME="AEN7653"
 ></A
 ><H3
 ><A
 NAME="XMLDOCDUMPMEMORYENC"
 ></A
->&#62;xmlDocDumpMemoryEnc ()</H3
+>xmlDocDumpMemoryEnc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15543,15 +16333,16 @@ HREF="libxml-tree.html#XMLCHAR"
 ><P
 >Dump the current DOM tree into memory using the character encoding specified
 by the caller.  Note it is up to the caller of this function to free the
-allocated memory.</P
+allocated memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7429"
-></A
-><P
+NAME="AEN7662"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15638,13 +16429,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7450"
+NAME="AEN7683"
 ></A
 ><H3
 ><A
 NAME="XMLDOCDUMPFORMATMEMORYENC"
 ></A
->&#62;xmlDocDumpFormatMemoryEnc ()</H3
+>xmlDocDumpFormatMemoryEnc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15671,15 +16462,18 @@ HREF="libxml-tree.html#XMLCHAR"
 ><P
 >Dump the current DOM tree into memory using the character encoding specified
 by the caller.  Note it is up to the caller of this function to free the
-allocated memory.</P
+allocated memory with <A
+HREF="libxml-globals.html#XMLFREE"
+>xmlFree</A
+>().
+Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+or xmlKeepBlanksDefault(0) was called</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7458"
-></A
-><P
+NAME="AEN7692"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15783,13 +16577,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7483"
+NAME="AEN7717"
 ></A
 ><H3
 ><A
-NAME="XMLDOCDUMP"
+NAME="XMLDOCFORMATDUMP"
 ></A
->&#62;xmlDocDump ()</H3
+>xmlDocFormatDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15799,14 +16593,15 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         xmlDocDump                      (<GTKDOCLINK
+>int         xmlDocFormatDump                (<GTKDOCLINK
 HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *f,
                                              <A
 HREF="libxml-tree.html#XMLDOCPTR"
 >xmlDocPtr</A
-> cur);</PRE
+> cur,
+                                             int format);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -15817,9 +16612,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7491"
-></A
-><P
+NAME="AEN7725"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15868,9 +16661,29 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>format</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> should formatting spaces been added</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -15887,13 +16700,118 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7508"
+NAME="AEN7746"
+></A
+><H3
+><A
+NAME="XMLDOCDUMP"
+></A
+>xmlDocDump ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlDocDump                      (<GTKDOCLINK
+HREF="FILE-CAPS"
+>FILE</GTKDOCLINK
+> *f,
+                                             <A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> cur);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Dump an XML document to an open FILE.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7754"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>f</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the FILE*</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cur</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the document</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the number of bytes written or -1 in case of failure.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7771"
 ></A
 ><H3
 ><A
 NAME="XMLELEMDUMP"
 ></A
->&#62;xmlElemDump ()</H3
+>xmlElemDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -15925,9 +16843,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7517"
-></A
-><P
+NAME="AEN7780"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -15997,13 +16913,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7534"
+NAME="AEN7797"
 ></A
 ><H3
 ><A
 NAME="XMLSAVEFILE"
 ></A
->&#62;xmlSaveFile ()</H3
+>xmlSaveFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16035,9 +16951,7 @@ used.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7542"
-></A
-><P
+NAME="AEN7805"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -16086,9 +17000,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -16105,13 +17022,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7559"
+NAME="AEN7822"
 ></A
 ><H3
 ><A
 NAME="XMLSAVEFORMATFILE"
 ></A
->&#62;xmlSaveFormatFile ()</H3
+>xmlSaveFormatFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16149,9 +17066,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7568"
-></A
-><P
+NAME="AEN7831"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -16217,9 +17132,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -16236,13 +17154,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7589"
+NAME="AEN7852"
 ></A
 ><H3
 ><A
 NAME="XMLNODEDUMP"
 ></A
->&#62;xmlNodeDump ()</H3
+>xmlNodeDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16270,15 +17188,15 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
->Dump an XML node, recursive behaviour,children are printed too.</P
+>Dump an XML node, recursive behaviour,children are printed too.
+Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+or xmlKeepBlanksDefault(0) was called</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7598"
-></A
-><P
+NAME="AEN7861"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -16382,13 +17300,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7623"
+NAME="AEN7886"
 ></A
 ><H3
 ><A
 NAME="XMLSAVEFILETO"
 ></A
->&#62;xmlSaveFileTo ()</H3
+>xmlSaveFileTo ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16417,9 +17335,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7631"
-></A
-><P
+NAME="AEN7894"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -16485,9 +17401,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -16504,13 +17423,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7652"
+NAME="AEN7915"
 ></A
 ><H3
 ><A
 NAME="XMLSAVEFORMATFILETO"
 ></A
->&#62;xmlSaveFormatFileTo ()</H3
+>xmlSaveFormatFileTo ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16540,9 +17459,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7660"
-></A
-><P
+NAME="AEN7923"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -16625,9 +17542,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -16644,13 +17564,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7685"
+NAME="AEN7948"
 ></A
 ><H3
 ><A
 NAME="XMLNODEDUMPOUTPUT"
 ></A
->&#62;xmlNodeDumpOutput ()</H3
+>xmlNodeDumpOutput ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16679,15 +17599,15 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
->Dump an XML node, recursive behaviour, children are printed too.</P
+>Dump an XML node, recursive behaviour, children are printed too.
+Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1
+or xmlKeepBlanksDefault(0) was called</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7694"
-></A
-><P
+NAME="AEN7957"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -16808,13 +17728,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7723"
+NAME="AEN7986"
 ></A
 ><H3
 ><A
 NAME="XMLSAVEFORMATFILEENC"
 ></A
->&#62;xmlSaveFormatFileEnc ()</H3
+>xmlSaveFormatFileEnc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16841,9 +17761,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7730"
-></A
-><P
+NAME="AEN7993"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -16926,9 +17844,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -16945,13 +17866,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7755"
+NAME="AEN8018"
 ></A
 ><H3
 ><A
 NAME="XMLSAVEFILEENC"
 ></A
->&#62;xmlSaveFileEnc ()</H3
+>xmlSaveFileEnc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -16977,9 +17898,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7762"
-></A
-><P
+NAME="AEN8025"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -17045,9 +17964,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -17064,13 +17986,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7783"
+NAME="AEN8046"
 ></A
 ><H3
 ><A
 NAME="XMLGETDOCCOMPRESSMODE"
 ></A
->&#62;xmlGetDocCompressMode ()</H3
+>xmlGetDocCompressMode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -17094,9 +18016,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7790"
-></A
-><P
+NAME="AEN8053"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -17128,9 +18048,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -17147,13 +18070,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7803"
+NAME="AEN8066"
 ></A
 ><H3
 ><A
 NAME="XMLSETDOCCOMPRESSMODE"
 ></A
->&#62;xmlSetDocCompressMode ()</H3
+>xmlSetDocCompressMode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -17179,9 +18102,7 @@ Correct values: 0 (uncompressed) to 9 (max compression)</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7810"
-></A
-><P
+NAME="AEN8073"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -17234,13 +18155,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7823"
+NAME="AEN8086"
 ></A
 ><H3
 ><A
 NAME="XMLGETCOMPRESSMODE"
 ></A
->&#62;xmlGetCompressMode ()</H3
+>xmlGetCompressMode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -17261,9 +18182,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7829"
-></A
-><P
+NAME="AEN8092"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -17278,9 +18197,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -17297,13 +18219,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7838"
+NAME="AEN8101"
 ></A
 ><H3
 ><A
 NAME="XMLSETCOMPRESSMODE"
 ></A
->&#62;xmlSetCompressMode ()</H3
+>xmlSetCompressMode ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -17325,9 +18247,7 @@ Correct values: 0 (uncompressed) to 9 (max compression)</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN7844"
-></A
-><P
+NAME="AEN8107"><P
 ></P
 ><TABLE
 BORDER="0"
