@@ -17249,12 +17249,6 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 #                                                                 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-if test "$GXX" = "yes"
-then
-  case "$host" in
-    *-sun-solaris* ) extra_ldflags="-Wl,-mimpure-text";;
-  esac
-fi
 
 
 if test "$enable_win32_relocatable" = "yes"
