@@ -48,7 +48,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.7 1995-07-12 04:25:46 cfields Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.8 1995-07-12 05:28:05 cfields Exp $";
 #endif	/* ! lint */
 
 static void
@@ -66,14 +66,7 @@ static void
 	fputs(whoami, stderr);
 	fputs(": ", stderr);
     }
-#ifdef SOLARIS
-    if (code) {
-	fputs(error_message(code), stderr);
-	fputs(" ", stderr);
-    } else {
-        vfprintf (stderr, fmt, args);
-    }
-#else
+
     if (code) {
 	fputs(error_message(code), stderr);
 	fputs(" ", stderr);
@@ -81,7 +74,7 @@ static void
     if (fmt) {
         vfprintf (stderr, fmt, args);
     }
-#endif
+
     putc('\n', stderr);
     /* should do this only on a tty in raw mode */
     putc('\r', stderr);
