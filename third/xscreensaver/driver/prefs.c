@@ -86,9 +86,6 @@ chase_symlinks (const char *file)
       char buf [2048];
       if (realpath (file, buf))
         return strdup (buf);
-
-      sprintf (buf, "%s: realpath", blurb());
-      perror(buf);
     }
 # endif /* HAVE_REALPATH */
   return 0;
