@@ -4,7 +4,7 @@
 #
 # $Author: brlewis $
 # $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/etalw.et,v $
-# $Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/etalw.et,v 1.1 1994-04-06 01:06:25 brlewis Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/etalw.et,v 1.2 1994-05-12 15:47:38 brlewis Exp $
 #
 # Copyright (c) 1994, Massachusetts Institute of Technology
 # For copying and distribution information, see the file
@@ -13,9 +13,11 @@
 
 error_table alw
 
+error_code ALwarnOK,		"No warning"
 error_code ALwarnNOATTACH,	"Using non-local home directory"
 error_code ALwarnUidAttach,	"Couldn't run attach command as user"
 error_code ALwarnUidCopy,	"Couldn't copy files as user"
 error_code ALwarnTempDir,	"Using temporary home directory"
 error_code ALwarnTempDirExists,	"Temporary directory already exists"
+error_code ALwarnMax,		"Not a real warning"
 end
