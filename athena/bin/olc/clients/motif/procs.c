@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.23 1992-06-11 17:14:21 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.23.1.1 1992-08-18 19:33:10 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -137,7 +137,7 @@ olc_new_ques (w, tag, callback_data)
       return;
     }
 
-  XtSetSensitive(w_newq_btn, FALSE);
+  XtSetSensitive(w_newq_btn, TRUE);
   WAIT_CURSOR;
   XtMapWidget(w_newq_form);
   XtUnmapWidget(w_motd_form);
@@ -199,10 +199,10 @@ olc_send_newq (w, tag, callback_data)
     STANDARD_CURSOR;
     return;
   }
-
-  if (has_question == TRUE)
+/* Changed by Geetha Vijayan 03/20/92 */
+  if ((has_question == TRUE) && (num_question > 10))
     {
-      MuWarning("It appears that you already have a question entered in OLC.\nContinuing with that question...");
+      MuWarning("It appears that you already have the maximum of 10 OLC questions in the queue...");
       olc_status();
       olc_replay();
       XtMapWidget(w_contq_form);
@@ -216,13 +216,14 @@ olc_send_newq (w, tag, callback_data)
 #ifdef ATHENA
       MuError("An error occurred when trying to enter your question.\n\nEither try again or call a consultant at 253-4435.");
 #else
-      MuError("An error occurred when trying to enter your question.\n\nEither try again or contact a consultant.");
+	MuError("An error occurred when trying to enter your question.\n\nYou may alredy have 10 questions in the queue.\n\nIf you need any help contact a consultant.");
 #endif
       STANDARD_CURSOR;
       return;
     }
 
   has_question = TRUE;
+  num_question=num_question+1;
   olc_status();
   olc_replay();
   XtMapWidget(w_contq_form);
@@ -263,13 +264,21 @@ olc_cont_ques (w, tag, callback_data)
      caddr_t *tag;
      XmAnyCallbackStruct *callback_data;
 {
-  XtSetSensitive(w_contq_btn, FALSE);
+  XtSetSensitive(w_contq_btn, TRUE);
   WAIT_CURSOR;
   olc_status();
   olc_replay();
   XtMapWidget(w_contq_form);
+  if (XtIsMapped(w_newq_form)
+    XtUnmanageChild(w_newq_form);
   XtUnmapWidget(w_motd_form);
   replay_screen = TRUE;
+
+#ifdef AGORA
+  sprintf(error, "Use one of the following options.\n\n Send additional messages - Open Send Window button.\n\n Show new messages - Show new messages button\n\n Go to the next question - Next button.\n\n Mark a question done - Done button.\n\n Cancel a question - Cancel button.\n\n Quit OLC - Quit button.\n\n Get Help - Help button."); 
+  MuHelp(error);
+#endif
+
   STANDARD_CURSOR;
 #ifdef LOG_USAGE
   log_view("question_continue");
@@ -401,8 +410,12 @@ olc_done (w, tag, callback_data)
   }
 
   x_done(&Request);
-  STANDARD_CURSOR;
+  /* added by Geetha Vijayan 03/20/92 */
+  olc_status();
+  olc_replay();
 
+  STANDARD_CURSOR;
+  replay_screen = TRUE;
 }
   
 void
@@ -421,10 +434,36 @@ olc_cancel (w, tag, callback_data)
     }
   else {
     status = x_cancel(&Request);
+    olc_status();
+    olc_replay();
   }
   STANDARD_CURSOR;
+  replay_screen = TRUE;
 }
   
+void
+olc_next (w, tag, callback_data)
+     Widget w;
+     caddr_t *tag;
+     XmAnyCallbackStruct *callback_data;
+    {
+    REQUEST Request;
+    int status;
+
+  WAIT_CURSOR;
+  if (fill_request(&Request) != SUCCESS) {
+    MuError("done: Unable to fill request struct.");
+    return;
+  }
+
+  x_next(&Request);
+  olc_status();
+  olc_replay();
+
+ STANDARD_CURSOR;
+ replay_screen = TRUE;
+}
+
 void
 olc_savelog (w, tag, callback_data)
      Widget w;
