@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2003-07-24 18:48:42 ghudson Exp $
+# $Id: Makefile,v 1.8 2004-03-17 16:21:17 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -11,7 +11,6 @@ check:
 install:
 	mkdir -p ${DESTDIR}${ATHBINDIR}
 	mkdir -p ${DESTDIR}${USRBINDIR}
-	install -c -m 555 gnome-panel.sh ${DESTDIR}${ATHBINDIR}/gnome-panel
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${USRBINDIR}/lp
 	ln -s ../athena/bin/lp ${DESTDIR}${USRBINDIR}/lp
