@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.6 2000-01-01 05:40:13 ghudson Exp $
+# $Id: syncconf.sh,v 1.7 2000-04-28 13:23:46 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -176,6 +176,17 @@ handle()
 		esac
 		;;
 
+	SAVECORE)
+		case $SAVECORE in
+		false)
+			dumpadm -n
+			;;
+		*)
+			dumpadm -y
+			;;
+		esac
+		;;
+
 	*)
 		$echo "syncconf: unknown variable $1"
 		;;
@@ -214,7 +225,7 @@ $echo "Synchronizing configuration... \c"
 if [ -z "$all" -a -f "$rcsync" ]; then
 	. "$rcsync"
 else
-	changes="NFSSRV NFSCLIENT HOSTADDR MAILRELAY"
+	changes="NFSSRV NFSCLIENT HOSTADDR MAILRELAY SAVECORE"
 fi
 
 if [ -z "$changes" ]; then
@@ -247,6 +258,7 @@ if [ \$NFSCLIENT != $NFSCLIENT ]; then changes="\$changes NFSCLIENT"; fi
 if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR MAILRELAY"; fi
 if [ \$ADDR != $ADDR ]; then changes="\$changes HOSTADDR MAILRELAY"; fi
 if [ \$MAILRELAY != $MAILRELAY ]; then changes="\$changes MAILRELAY"; fi
+if [ \$SAVECORE != $SAVECORE ]; then changes="\$changes SAVECORE"; fi
 EOF
 
 if [ -n "$mustreboot" ]; then

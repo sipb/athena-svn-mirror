@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 2000-04-25 13:51:59 rbasch Exp $
+# $Id: Makefile,v 1.10 2000-04-28 13:23:39 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
 ATHLOGINDIR=${ATHRETCDIR}/login
@@ -29,7 +29,6 @@ install:
 	install -c -m 0755 nfs.client ${DESTDIR}${INITD}
 	install -c -m 0755 rpc ${DESTDIR}${INITD}
 	install -c -m 0755 inetsvc ${DESTDIR}${INITD}
-	install -c -m 0755 savecore ${DESTDIR}${INITD}
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
 	rm -f ${DESTDIR}${RC0}/K90athena
