@@ -23,7 +23,7 @@ s_/**/src.o: lp.h lp.local.h
 o_/**/src.c:								@@\
 	rm -f o_/**/src.c						@@\
 	$(LN) src.c o_/**/src.c						@@\
-SpecialObject(o_/**/src.o,o_/**/src.c,-D$(OPERATOR))			@@\
+SpecialObject(o_/**/src.o,o_/**/src.c,-DOPERATOR)			@@\
 clean:: ; rm -f o_/**/src.c						@@\
 o_/**/src.o: lp.h lp.local.h
 
