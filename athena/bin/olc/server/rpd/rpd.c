@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.9 1991-01-15 18:06:46 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.10 1991-01-21 01:29:10 lwvanels Exp $";
 #endif
 #endif
 
@@ -28,18 +28,33 @@ static int start_profile P((int sig ));
 #endif /* PROFILE */
 #undef P
 
-main()
+main(argc, argv)
+     int argc;
+     char **argv;
 {
   int len,max_fd;
   struct sockaddr_in sin,from;
   struct servent *sent;
   int onoff;
+  int nofork=0;
+  int arg;
 
 #ifdef PROFILE
     /* Turn off profiling on startup; that way, we collect "steady state" */
     /* statistics, not the initial flurry of startup activity */
     moncontrol(0);
 #endif
+
+  for (arg=1;arg< argc; arg++) {
+    if (!strcmp(argv[arg],"-nofork")) {
+      nofork = 1;
+      continue;
+    }
+    else {
+      fprintf (stderr,"rpd: Unknown argument: %s\n",argv[arg]);
+      exit(1);
+    }
+  }
 
 
   signal(SIGHUP,clean_up);
@@ -59,39 +74,41 @@ main()
 #endif
 
 #ifndef SABER
-  /* Fork off */
-  switch (fork()) {
-  case 0:		/* Child */
-    break;
-  case 1:
-    syslog(LOG_ERR,"Can't fork: %m");
-    exit(1);
-  default:
-    exit(0);		/* Parent */
-  }
+  if (!nofork) {
+    /* Fork off */
+    switch (fork()) {
+    case 0:		/* Child */
+      break;
+    case 1:
+      syslog(LOG_ERR,"Can't fork: %m");
+      exit(1);
+    default:
+      exit(0);		/* Parent */
+    }
 #endif
-  max_fd = getdtablesize();
-
-  for(fd = 0;fd<max_fd;fd++)
-    close(fd);
-  fd = open("/",O_RDONLY,S_IREAD);
-  if (fd < 0) {
-    syslog(LOG_ERR,"Can't open /: %m");
-    exit(1);
-  }
-  if (fd != 0)
-    dup2 (fd, 0);
-  if (fd != 1)
-    dup2 (fd, 1);
-  if (fd != 2)
-    dup2 (fd, 2);
-  if (fd > 2)
-    close (fd);
-
-  fd = open("/dev/tty",O_RDWR,0);
-  if (fd>=0) {
-    ioctl(fd, TIOCNOTTY, (char *) NULL);
-    close(fd);
+    max_fd = getdtablesize();
+    
+    for(fd = 0;fd<max_fd;fd++)
+      close(fd);
+    fd = open("/",O_RDONLY,S_IREAD);
+    if (fd < 0) {
+      syslog(LOG_ERR,"Can't open /: %m");
+      exit(1);
+    }
+    if (fd != 0)
+      dup2 (fd, 0);
+    if (fd != 1)
+      dup2 (fd, 1);
+    if (fd != 2)
+      dup2 (fd, 2);
+    if (fd > 2)
+      close (fd);
+    
+    fd = open("/dev/tty",O_RDWR,0);
+    if (fd>=0) {
+      ioctl(fd, TIOCNOTTY, (char *) NULL);
+      close(fd);
+    }
   }
 
   init_cache();
