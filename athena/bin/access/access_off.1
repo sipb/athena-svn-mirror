@@ -1,0 +1,54 @@
+.\" $Id: access_off.1,v 1.1 1997-01-11 19:20:14 ghudson Exp $
+.\"
+.\" Copyright 1988, 1996 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH ACCESS_OFF 1 "29 December 1996"
+.SH NAME
+access_on, access_off \- allow or prevent remote connections to workstations
+.SH SYNOPSIS
+.B access_on
+.br
+.B access_off
+.SH DESCRIPTION
+The
+.I access_on
+and
+.I access_off
+utilities control remote connections to Athena workstations.
+The workstation's
+.I reactivate
+process uses the
+.I access_off
+program to prevent the workstation's
+.I inetd
+daemon from accepting network remote connections.  In other words, no
+one can access the workstation with commands like
+.IR rlogin ,
+.IR rcp ,
+.IR ftp ,
+and
+.IR telnet .
+This protects the user from unexpected and possibly hostile remote connections.
+.PP
+Of course the user may wish to allow remote connections.
+The
+.I access_on
+command performs this function.
+Use
+.I access_off
+to prevent connections again.
+.SH SEE ALSO
+reactivate(8),
+inetd(8)
