@@ -16,6 +16,9 @@ sun4)
 	    echo "TSIpgxx.u"                    >> $LOCALPACKAGES
 	    echo "TSIpgxx.us"                   >> $LOCALPACKAGES
 	fi
+	rm -f /var/adm/utmp
+	rm -f /var/adm/wtmp
+	rm -f /var/adm/wtmp.*	
 	;;
 sgi)
 	;;
