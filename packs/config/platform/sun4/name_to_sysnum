@@ -143,7 +143,9 @@ pwrite			174
 llseek			175
 
 inst_sync		176
+acl			185
 c2audit			186
 processor_bind		187
 processor_info		188
 p_online		189
+facl			200
