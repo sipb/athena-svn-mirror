@@ -1,4 +1,4 @@
-set module = 'sunos54'
+set module = 'sunos5'
 set LoadMax = '5.0'
 set topn = '15'
 set NominalTopn = '18'
