@@ -263,6 +263,7 @@ esac
 echo "/etc/athena/athinfo.defs"				>> "$CONFCHG"
 echo "/etc/athena/attach.conf"				>> "$CONFCHG"
 echo "/etc/athena/inetd.conf"				>> "$CONFCHG"
+echo "/etc/named.conf"					>> "$CONFCHG"
 
 echo "Moving aside old attachtab."
 chmod 755 /mit
