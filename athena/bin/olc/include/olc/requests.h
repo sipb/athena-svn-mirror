@@ -18,8 +18,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.11 1990-07-16 09:50:46 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: requests.h,v 1.12 1990-07-24 14:30:42 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -37,7 +37,7 @@ typedef struct tREQUEST
 
 #ifdef KERBEROS
   KTEXT_ST  kticket;             /* Kerberos authentication ticket */
-#endif KERBEROS
+#endif /* KERBEROS */
 } REQUEST;
 
 /* IO_REQUEST is the structure to be sent over the net. In the future ther
