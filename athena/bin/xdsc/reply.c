@@ -15,7 +15,7 @@ without express or implied warranty.
 */
 
 #include	<stdio.h>
-#include	<strings.h>
+#include	<string.h>
 #include	<ctype.h>
 #include	<X11/Intrinsic.h>
 #include	<X11/StringDefs.h>
@@ -28,7 +28,7 @@ without express or implied warranty.
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.14 1992-11-08 23:12:07 probe Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.15 1996-09-20 03:37:00 ghudson Exp $";
 
 extern char     *getenv();
 extern char	*RunCommand();

@@ -9,7 +9,7 @@
 #else
 #include <mntent.h> 
 #endif
-#include <strings.h>
+#include <string.h>
 
 #include <sys/param.h>
 #include <sys/file.h>
@@ -45,9 +45,6 @@ getnfsquota(host, path, uid, dqp)
 {
 	struct getquota_args gq_args;
 	struct getquota_rslt gq_rslt;
-#ifndef sun
-	extern char *index();
-#endif
 
 	gq_args.gqa_pathp = path;
 	gq_args.gqa_uid = uid;
@@ -153,7 +150,7 @@ callaurpc(host, prognum, versnum, procnum, inproc, in, outproc, out)
 			return ((int) RPC_UNKNOWNHOST);
 		timeout.tv_usec = 0;
 		timeout.tv_sec = 6;
-		bcopy(hp->h_addr, &server_addr.sin_addr, hp->h_length);
+		memcpy(&server_addr.sin_addr, hp->h_addr, hp->h_length);
 		server_addr.sin_family = AF_INET;
 		/* ping the remote end via tcp to see if it is up */
 		server_addr.sin_port =  htons(PMAPPORT);

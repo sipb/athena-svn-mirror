@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.15 1996-04-19 00:44:11 cfields Exp $
+/* $Id: cleanup.c,v 2.16 1996-09-20 03:38:59 ghudson Exp $
  *
  * Cleanup program for stray processes
  *
@@ -29,7 +29,7 @@
 #include <sys/proc.h>
 #endif
 #include <signal.h>
-#include <strings.h>
+#include <string.h>
 #include <utmp.h>
 #include <pwd.h>
 #ifdef _IBMR2
@@ -44,7 +44,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.15 1996-04-19 00:44:11 cfields Exp $";
+char *version = "$Id: cleanup.c,v 2.16 1996-09-20 03:38:59 ghudson Exp $";
 
 
 
@@ -661,9 +661,9 @@ int *users;
     /* copy /etc/passwd.local, keeping track of who is in it */
     while (in && fgets(buffer, sizeof(buffer), in)) {
 	fputs(buffer, out);
-	p = index(buffer, ':');
+	p = strchr(buffer, ':');
 	if (p) {
-	    p = index(p + 1, ':');
+	    p = strchr(p + 1, ':');
 	    if (p) {
 		p++;
 		in_passwd[user++] = atoi(p);
@@ -686,9 +686,9 @@ int *users;
     /* now process /etc/passwd, avoiding duplicates */
     while (in && fgets(buffer, sizeof(buffer), in)) {
 	uid = -1;
-	p = index(buffer, ':');
+	p = strchr(buffer, ':');
 	if (p) {
-	    p = index(p + 1, ':');
+	    p = strchr(p + 1, ':');
 	    if (p) {
 		p++;
 		uid = atoi(p);
@@ -738,11 +738,11 @@ int *users;
 		sys_errlist[errno]);
 #ifdef SOLARIS
     /* now process /etc/shadow, avoiding duplicates */
-    bzero(buffer,sizeof(buffer));
+    memset(buffer,0,sizeof(buffer));
     while (in1 && fgets(buffer, sizeof(buffer), in1)) {
        uid = -1;
        strcpy(buffer1, buffer);
-       p = index(buffer1, ':');
+       p = strchr(buffer1, ':');
        if (p) {
 	    *p = 0;
             strncpy(username, buffer1, sizeof(username) - 1);
@@ -753,7 +753,7 @@ int *users;
 	  }
        if (uid !=-1)
 	       fputs(buffer, out1);
-    bzero(buffer,sizeof(buffer));
+    memset(buffer,0,sizeof(buffer));
     }
     fclose(in1);
     fclose(out1);
@@ -841,12 +841,12 @@ int *uids;
 	    else
 		fprintf(stderr, "cleanup: warning, too long group entry truncated\n");
 	}
-	if ((p = index(buf, ':')) == 0) {
+	if ((p = strchr(buf, ':')) == 0) {
 	    fprintf(stderr, "cleanup: Corrupt group entry \"%s\".\n", buf);
 	    continue;
         }
-	if ((p = index(p+1, ':')) == 0 ||
-	    (p = index(p+1, ':')) == 0) {
+	if ((p = strchr(p+1, ':')) == 0 ||
+	    (p = strchr(p+1, ':')) == 0) {
 	    fprintf(stderr, "cleanup: Corrupt group entry \"%s\".\n", buf);
 	    continue;
 	}
@@ -855,7 +855,7 @@ int *uids;
 
 	/* loop over each member of the group */
 	while (p != NULL) {
-	    p1 = index(p, ',');
+	    p1 = strchr(p, ',');
 	    if (p1)
 		n = p1 - p;
 	    else

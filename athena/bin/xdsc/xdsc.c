@@ -18,7 +18,7 @@ without express or implied warranty.
 #include	<unistd.h>
 #endif
 #include	<stdio.h>
-#include	<strings.h>
+#include	<string.h>
 #include	<fcntl.h>
 
 #include	<X11/IntrinsicP.h>
@@ -213,7 +213,7 @@ char *argv[];
 	if (argc > 1 && !strcmp(argv[1], "-debug"))
 		debug = True;
 
-	myname = (myname = rindex(argv[0], '/')) ? myname + 1 : argv[0];
+	myname = (myname = strrchr(argv[0], '/')) ? myname + 1 : argv[0];
 
 	if (!strcmp (myname, "lucy"))
 		simplemode = True;
