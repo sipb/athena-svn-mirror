@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4.2.2 2000-08-01 19:07:55 ghudson Exp $
+# $Id: Makefile,v 1.4.2.3 2000-09-23 19:32:28 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -18,7 +18,9 @@ install:
 	install -c -m 0755 Xreset ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 Xstartup ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 athena-ws.rc ${DESTDIR}${RCINITDIR}/athena-ws
-	install -c -m 0755 athena-verify.rc ${DESTDIR}${RCINITDIR}/athena-verify
+	install -c -m 0755 athena-verify.rc \
+		${DESTDIR}${RCINITDIR}/athena-verify
+	install -c -m 0755 fix-xconfig.sh ${DESTDIR}${ATHRETCDIR}/fix-xconfig
 	install -c -m 0755 syncconf.rc ${DESTDIR}${RCINITDIR}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 verify.sh ${DESTDIR}${ATHRETCDIR}/verify
