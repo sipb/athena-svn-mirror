@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.22 1991-11-06 15:44:07 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: list.c,v 1.23 1993-08-09 11:27:03 thorne Exp $
+ *	$Author: thorne $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.22 1991-11-06 15:44:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.23 1993-08-09 11:27:03 thorne Exp $";
 #endif
 #endif
 
@@ -375,7 +375,7 @@ char *name;
 
     fprintf(f,"%s\n%d\n",q[i].cusername, q[i].cinstance);
     OGetStatusString(q[i].cstatus,st);
-    if (q[i].cstatus = OFF)
+    if (q[i].cstatus == OFF)
       fprintf(f,"\n");
     else
       fprintf(f,"%s\n",st);
