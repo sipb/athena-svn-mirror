@@ -1,4 +1,4 @@
-# $Id: packages,v 1.146 2002-02-03 03:41:50 ghudson Exp $
+# $Id: packages,v 1.147 2002-02-03 15:47:03 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -34,9 +34,9 @@
 # These tools are critical to the build process and need to be built
 # first, even before the packs are set up.  They have build systems
 # which don't assume that much of anything is ready.
+third/gmake			early
 third/gcc			on solaris,irix early
 third/binutils			on solaris early
-third/gmake			early
 third/m4			early
 third/autoconf			early
 athena/bin/install		on solaris,irix early
