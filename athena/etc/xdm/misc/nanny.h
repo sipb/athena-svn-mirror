@@ -1,7 +1,7 @@
 #ifndef _NANNY_H_
 #define _NANNY_H_
 
-#define NANNYPORT "/tmp/nanny"
+#define NANNYPORT "/tmp/.nanny/nanny"
 
 #define N_USER		"USER"
 #define N_RMUSER	"REMOVE_USER"
