@@ -9,13 +9,13 @@ root
 1
 swap
 
-118
-48mb
+338
+140mb
 3
 unassigned
 
-294
-48mb
+850
+60mb
 4
 unassigned
 
@@ -24,13 +24,13 @@ unassigned
 5
 usr
 
-470
+118
 60mb
 6
 var
 
-690
-321mb
+1070
+796c
 7
 unassigned
 
