@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Form.c,v 1.3 1993-07-02 02:04:33 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Form.c,v 1.4 1993-07-02 13:22:42 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -64,8 +64,8 @@ FormClassRec formClassRec = {
 JetClass formJetClass = (JetClass)&formClassRec;
 
 
-#define UNDEF -1
-#define ATTACH -2
+#define XJ_FORM_UNDEF -1
+#define XJ_FORM_ATTACH -2
 
 #define LEFT 0
 #define TOP 1
@@ -100,7 +100,7 @@ static void parse(ptr, name, sides, sidestr)
 
   for (j=0; j < SIDES; j++)
     {
-      sides[j] = UNDEF;
+      sides[j] = XJ_FORM_UNDEF;
 
       while (isspace(*p)) p++;
 
@@ -117,7 +117,7 @@ static void parse(ptr, name, sides, sidestr)
 	      while (isalnum(*p))
 		*q++ = *p++;
 	      *q = '\0';
-	      sides[j] = ATTACH;
+	      sides[j] = XJ_FORM_ATTACH;
 	    }
 	}
   
@@ -132,8 +132,8 @@ static void parse(ptr, name, sides, sidestr)
   *ptr = p;
 }
 
-#define spec(x) (x != UNDEF)
-#define attachment(x) (x == ATTACH)
+#define spec(x) (x != XJ_FORM_UNDEF)
+#define attachment(x) (x == XJ_FORM_ATTACH)
 
 /*
  * This code *really* needs to be done in a better way.
