@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -148,8 +148,10 @@ KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
+KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
+KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -184,6 +186,7 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RESOLV_LIBS = @RESOLV_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
@@ -222,39 +225,81 @@ privlibdir = @privlibdir@
 
 ecpsdir = $(datadir)/evolution/ecps
 
-ecps_DATA =  	smallbook.ecps				medbook.ecps				phonelist.ecps
+ecps_DATA = \
+	smallbook.ecps			\
+	medbook.ecps			\
+	phonelist.ecps
 
 
 gladedir = $(datadir)/evolution/glade
 
-glade_DATA =  	e-contact-print.glade
+glade_DATA = \
+	e-contact-print.glade
 
 
-INCLUDES =  	$(GNOME_INCLUDEDIR)				-DG_LOG_DOMAIN=\"addressbook-printing\"		-I$(top_srcdir)/addressbook			-I$(top_srcdir)/addressbook/backend		-I$(top_builddir)/addressbook/backend		-I$(top_srcdir)				        -DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		-DEVOLUTION_ECPSDIR=\""$(ecpsdir)"\"		-DDATADIR=\""$(datadir)"\"			$(EVOLUTION_ADDRESSBOOK_CFLAGS)
+INCLUDES = \
+	$(GNOME_INCLUDEDIR)			\
+	-DG_LOG_DOMAIN=\"addressbook-printing\"	\
+	-I$(top_srcdir)/addressbook		\
+	-I$(top_srcdir)/addressbook/backend	\
+	-I$(top_builddir)/addressbook/backend	\
+	-I$(top_srcdir)				\
+        -DEVOLUTION_GLADEDIR=\""$(gladedir)"\"	\
+	-DEVOLUTION_ECPSDIR=\""$(ecpsdir)"\"	\
+	-DDATADIR=\""$(datadir)"\"		\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 
-noinst_LIBRARIES =  	libecontactprint.a
+noinst_LIBRARIES = \
+	libecontactprint.a
 
 
-libecontactprint_a_SOURCES =  	e-contact-print-envelope.c			e-contact-print-envelope.h			e-contact-print-style-editor.c			e-contact-print-style-editor.h			e-contact-print-types.h				e-contact-print.c				e-contact-print.h
+libecontactprint_a_SOURCES = \
+	e-contact-print-envelope.c		\
+	e-contact-print-envelope.h		\
+	e-contact-print-style-editor.c		\
+	e-contact-print-style-editor.h		\
+	e-contact-print-types.h			\
+	e-contact-print.c			\
+	e-contact-print.h
 
 
-noinst_PROGRAMS =  	contact-print-test			contact-print-style-editor-test
+noinst_PROGRAMS = \
+	contact-print-test		\
+	contact-print-style-editor-test
 
 
-contact_print_test_SOURCES =  	test-print.c
+contact_print_test_SOURCES = \
+	test-print.c
 
 
-contact_print_test_LDADD =  	$(top_builddir)/addressbook/backend/ebook/libebook.la		$(top_builddir)/camel/libcamel.la				$(top_builddir)/e-util/libeutil.la				$(top_builddir)/libversit/libversit.a				$(top_builddir)/e-util/ename/libename.la			libecontactprint.a						$(EVOLUTION_ADDRESSBOOK_LIBS)
+contact_print_test_LDADD = \
+	$(top_builddir)/addressbook/backend/ebook/libebook.la	\
+	$(top_builddir)/camel/libcamel.la			\
+	$(top_builddir)/e-util/libeutil.la			\
+	$(top_builddir)/libversit/libversit.a			\
+	$(top_builddir)/e-util/ename/libename.la		\
+	libecontactprint.a					\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
-contact_print_style_editor_test_SOURCES =  	test-contact-print-style-editor.c
+contact_print_style_editor_test_SOURCES = \
+	test-contact-print-style-editor.c
 
 
-contact_print_style_editor_test_LDADD =  	$(top_builddir)/addressbook/backend/ebook/libebook.la		$(top_builddir)/camel/libcamel.la				$(top_builddir)/e-util/libeutil.la				$(top_builddir)/libversit/libversit.a				$(top_builddir)/e-util/ename/libename.la			libecontactprint.a						$(EVOLUTION_ADDRESSBOOK_LIBS)
+contact_print_style_editor_test_LDADD = \
+	$(top_builddir)/addressbook/backend/ebook/libebook.la	\
+	$(top_builddir)/camel/libcamel.la			\
+	$(top_builddir)/e-util/libeutil.la			\
+	$(top_builddir)/libversit/libversit.a			\
+	$(top_builddir)/e-util/ename/libename.la		\
+	libecontactprint.a					\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
-EXTRA_DIST =  	$(glade_DATA)		$(ecps_DATA)
+EXTRA_DIST = \
+	$(glade_DATA)	\
+	$(ecps_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -301,7 +346,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libecontactprint_a_SOURCES) $(contact_print_test_SOURCES) $(contact_print_style_editor_test_SOURCES)
 OBJECTS = $(libecontactprint_a_OBJECTS) $(contact_print_test_OBJECTS) $(contact_print_style_editor_test_OBJECTS)
@@ -448,7 +493,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -474,44 +519,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-e-contact-print-envelope.o: e-contact-print-envelope.c ../../config.h \
-	e-contact-print-envelope.h \
-	../../addressbook/backend/ebook/e-card.h \
-	../../addressbook/backend/ebook/e-card-types.h \
-	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
-	../../e-util/e-iterator.h e-contact-print-types.h \
-	../../addressbook/backend/ebook/e-card-simple.h
-e-contact-print-style-editor.o: e-contact-print-style-editor.c \
-	e-contact-print-style-editor.h
-e-contact-print.o: e-contact-print.c ../../config.h e-contact-print.h \
-	../../addressbook/backend/ebook/e-book.h \
-	../../addressbook/backend/ebook/e-card.h \
-	../../addressbook/backend/ebook/e-card-types.h \
-	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
-	../../e-util/e-iterator.h \
-	../../addressbook/backend/ebook/e-card-cursor.h \
-	../../addressbook/backend/ebook/addressbook.h \
-	../../addressbook/backend/ebook/e-book-view.h \
-	../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../addressbook/backend/ebook/e-book-types.h \
-	e-contact-print-types.h \
-	../../addressbook/backend/ebook/e-card-simple.h \
-	../../addressbook/backend/ebook/e-destination.h
-test-contact-print-style-editor.o: test-contact-print-style-editor.c \
-	../../config.h e-contact-print-style-editor.h
-test-print.o: test-print.c ../../config.h e-contact-print.h \
-	../../addressbook/backend/ebook/e-book.h \
-	../../addressbook/backend/ebook/e-card.h \
-	../../addressbook/backend/ebook/e-card-types.h \
-	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
-	../../e-util/e-iterator.h \
-	../../addressbook/backend/ebook/e-card-cursor.h \
-	../../addressbook/backend/ebook/addressbook.h \
-	../../addressbook/backend/ebook/e-book-view.h \
-	../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../addressbook/backend/ebook/e-book-types.h \
-	e-contact-print-types.h
-
 info-am:
 info: info-am
 dvi-am:

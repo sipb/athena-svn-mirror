@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/config_f.h,v 1.1.1.2 1998-10-03 21:09:43 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/config_f.h,v 1.3 1998-10-04 01:39:27 danw Exp $ */
 /*
  * config_f.h -- configure various defines for tcsh
  *
@@ -104,7 +104,7 @@
  *		on the name of the tty, and environment.
  *		Does not make sense in the modern window systems!
  */
-#define AUTOLOGOUT
+#undef AUTOLOGOUT
 
 /*
  * SUSPENDED	Newer shells say 'Suspended' instead of 'Stopped'.

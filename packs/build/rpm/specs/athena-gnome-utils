@@ -1,0 +1,11 @@
+Name: athena-gnome-utils
+Summary: GNOME utility programs, for Athena
+License: GPL
+Group: Applications/System
+
+%description
+GNOME (GNU Network Object Model Environment) is a user-friendly set of
+GUI applications and desktop tools to be used in conjunction with a
+window manager for the X Window System. The gnome-utils package
+includes a set of small "desk accessory" utility applications for GNOME
+such as a calculator.

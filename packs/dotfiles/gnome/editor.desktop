@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Editor
+Comment=Edit text files
+Exec=/usr/athena/share/gnome/athena/editor-script
+Icon=/usr/athena/share/gnome/athena/editor-icon
+Type=Application

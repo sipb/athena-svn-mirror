@@ -1,0 +1,80 @@
+.\" $Id: syncupdate.1,v 1.1 2000-01-01 05:38:55 ghudson Exp $
+.\"
+.\" Copyright 1999 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH SYNCUPDATE 1 "28 December 1999"
+.SH NAME
+syncupdate \- update files with synchronously written data
+.SH SYNOPSIS
+.B syncupdate
+[
+.B \-c
+.I tempfile
+]
+.I source
+.I dest
+.fi
+.SH DESCRIPTION
+.B syncupdate
+copies or renames
+.I source
+to
+.IR dest ,
+making sure that the information in
+.I source
+has been synchronously written out to disk before performing the final
+rename.
+.PP
+If the
+.B \-c
+flag is given,
+.B syncupdate
+will copy the contents of
+.I source
+to
+.IR tempfile ,
+push the contents of
+.I tempfile
+to disk using
+.BR fsync (2),
+and then rename
+.I tempfile
+to
+.IR dest .
+.I tempfile
+will be removed prior to the copy.
+.B syncupdate
+will preserve the mode of
+.I source
+when generating
+.IR tempfile ,
+but not the ownership information.
+.PP
+If the
+.B \-c
+flag is not given,
+.B syncupdate
+will open
+.IR source ,
+use
+.BR fsync (2)
+to push its contents to disk, and then rename
+.I source
+to
+.IR dest .
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1999 by the Massachusetts Institute of Technology

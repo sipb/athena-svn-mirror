@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.4 1999-03-01 19:32:45 danw Exp $ */
 /*
  * tc.prompt.c: Prompt printing stuff
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.prompt.c,v 1.1.1.2 1998-10-03 21:10:14 danw Exp $")
+RCSID("$Id: tc.prompt.c,v 1.4 1999-03-01 19:32:45 danw Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -337,6 +337,7 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 
 			/* lukem: new directory prompt code */
 	    case '~':
+	    case 'd':
 	    case '/':
 	    case '.':
 	    case 'c':
@@ -344,6 +345,8 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		Scp = *cp;
 		if (Scp == 'c')		/* store format type (c == .) */
 		    Scp = '.';
+		if (Scp == 'd')		/* and d == ~ (Athena back compat */
+		    Scp = '~';
 		if ((z = varval(STRcwd)) == STRNULL)
 		    break;		/* no cwd, so don't do anything */
 
@@ -467,7 +470,7 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 			    if (p >= ep) break;
 		}
 		break;
-	    case 'd':
+	    case 'k':
 		for (cz = day_list[t->tm_wday]; *cz; *p++ = attributes | *cz++)
 		    if (p >= ep) break;
 		break;
@@ -502,7 +505,7 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		break;
 	    case 'y':
 		if (p >= ep - 3) break;
-		Itoa(t->tm_year, buff);
+		Itoa(t->tm_year % 100, buff);
 		if (buff[1]) {
 		    *p++ = attributes | buff[0];
 		    *p++ = attributes | buff[1];

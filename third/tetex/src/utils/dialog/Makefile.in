@@ -104,17 +104,17 @@ SHELL = /bin/sh
 @SET_MAKE@
 
 .PHONY: install installdirs install-exec
-install: install-exec $(man1dir)/tcdialog.$(manext)
+install: install-exec $(DESTDIR)$(man1dir)/tcdialog.$(manext)
 
-install-exec: installdirs $(bindir)/tcdialog
+install-exec: installdirs $(DESTDIR)$(bindir)/tcdialog
 
 installdirs:
-	$(SHELL) ${srcdir}/mkinstalldirs $(bindir) $(man1dir)
+	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir)
 
-$(bindir)/tcdialog: dialog
+$(DESTDIR)$(bindir)/tcdialog: dialog
 	$(INSTALL_PROGRAM) dialog $@
 
-$(man1dir)/tcdialog.$(manext): dialog.man
+$(DESTDIR)$(man1dir)/tcdialog.$(manext): dialog.man
 	$(INSTALL_DATA) $(srcdir)/dialog.man $@
 
 

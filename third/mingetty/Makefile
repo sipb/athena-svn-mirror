@@ -7,8 +7,8 @@ all:		mingetty
 		size mingetty
 
 install:	all
-		install -s -m 0755 -o root -g root mingetty /sbin/
-		install    -m 0644 -o root -g root mingetty.8 /usr/man/man8/
+		mkdir -p ${DESTDIR}/etc/athena
+		install mingetty ${DESTDIR}/etc/athena
 
 mingetty:	mingetty.o
 

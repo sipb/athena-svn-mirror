@@ -1,0 +1,7 @@
+Name: athena-Xft
+Summary: X Font Rendering library, for Athena
+License: MIT
+Group: System Environment/Libraries
+
+%description
+Xft is a font rendering library for X.

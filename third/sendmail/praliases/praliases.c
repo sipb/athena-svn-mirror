@@ -20,7 +20,7 @@ SM_IDSTR(copyright,
      Copyright (c) 1988, 1993\n\
 	The Regents of the University of California.  All rights reserved.\n")
 
-SM_IDSTR(id, "@(#)$Id: praliases.c,v 1.1.1.2 2003-04-08 15:06:08 zacheiss Exp $")
+SM_IDSTR(id, "@(#)$Id: praliases.c,v 1.4 2003-04-08 18:18:06 zacheiss Exp $")
 
 #include <sys/types.h>
 #include <ctype.h>
@@ -30,7 +30,6 @@ SM_IDSTR(id, "@(#)$Id: praliases.c,v 1.1.1.2 2003-04-08 15:06:08 zacheiss Exp $"
 # undef EX_OK		/* unistd.h may have another use for this */
 #endif /* EX_OK */
 #include <sysexits.h>
-
 
 #ifndef NOT_SENDMAIL
 # define NOT_SENDMAIL

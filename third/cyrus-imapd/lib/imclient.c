@@ -1,6 +1,6 @@
 /* imclient.c -- Streaming IMxP client library
  *
- * $Id: imclient.c,v 1.1.1.2 2003-02-14 21:38:22 ghudson Exp $
+ * $Id: imclient.c,v 1.2 2003-05-06 22:49:23 rbasch Exp $
  *
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -253,11 +253,51 @@ int imclient_connect(struct imclient **imclient,
     s = socket(AF_INET, SOCK_STREAM, 0);
     if (s == -1) return errno;
 
+    /* Athena modification: Set the socket to be non-blocking for the
+     * connect, so we can use our own (shorter) timeout.  After we are
+     * successfully connected, we will set the socket back to blocking
+     * mode.
+     */
+    nonblock(s, 1);
     if (connect(s, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
-	close(s);
-	return errno;
+	struct timeval timeout;
+	fd_set fds;
+	time_t time_now, time_timeout;
+	int socket_error;
+	int len;
+	int status;
+
+	if (errno != EINPROGRESS) {
+	    close(s);
+	    return errno;
+	}
+	/* Wait up to 10 seconds to be connected. */
+	time_now = time(NULL);
+	time_timeout = time_now + 10;
+	do {
+	    FD_ZERO(&fds);
+	    FD_SET(s, &fds);
+	    timeout.tv_sec = time_timeout - time_now;
+	    timeout.tv_usec = 0;
+	    status = select(s + 1, NULL, &fds, NULL, &timeout);
+	    if (!(status == -1 && errno == EINTR))
+		break;
+	    time_now = time(NULL);
+	} while (time_now <= time_timeout);
+	if (status <= 0) {
+	    close(s);
+	    return errno;
+	}
+	/* Check if we are connected. */
+	len = sizeof(socket_error);
+	if (getsockopt(s, SOL_SOCKET, SO_ERROR, &socket_error, &len) == -1)
+	    socket_error = errno;
+	if (socket_error != 0) {
+	    close(s);
+	    return socket_error;
+	}
     }
-    /*    nonblock(s, 1); */
+    nonblock(s, 0);
     *imclient = (struct imclient *)xzmalloc(sizeof(struct imclient));
     (*imclient)->fd = s;
     (*imclient)->saslconn = NULL;

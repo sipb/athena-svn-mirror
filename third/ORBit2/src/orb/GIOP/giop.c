@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <dirent.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -99,6 +100,19 @@ giop_tmpdir_init (void)
 	char *dirname;
 	char *safe_dir = NULL;
 	long iteration = 0;
+
+	/* Athena modification: Use the per-session temporary directory. */
+	{
+		char *session_dir;
+
+		session_dir = getenv ("ATHENA_SESSION_TMPDIR");
+		if (session_dir) {
+			dirname = g_strconcat (session_dir, "/orbit", NULL);
+			linc_set_tmpdir (dirname);
+			g_free (dirname);
+			return;
+		}
+	}
 
 	dirname = g_strdup_printf ("orbit-%s",
 				   g_get_user_name ());

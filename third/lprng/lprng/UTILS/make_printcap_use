@@ -1,5 +1,5 @@
 #!/bin/sh
-/usr/local/bin/perl -e '
+perl5 -e '
 while ( ($m = <>) &&  !( $m =~ m/START/) ){
 	;
 }

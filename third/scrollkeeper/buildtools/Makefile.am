@@ -7,7 +7,8 @@ INCLUDES = \
 LDADD = \
         $(XML_LIBS) \
 	$(XSLT_LIBS) \
-	$(top_builddir)/libs/libscrollkeeper.la
+	$(top_builddir)/libs/libscrollkeeper.la \
+	$(INTLLIBS)
 
 noinst_PROGRAMS = \
 	scrollkeeper-tree-separate

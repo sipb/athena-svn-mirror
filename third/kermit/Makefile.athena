@@ -1,0 +1,44 @@
+# $Id: Makefile.athena,v 1.6 2002-03-21 04:53:15 ghudson Exp $
+
+SHELL=/bin/sh
+
+dist:
+
+prepare:
+
+clean:
+	${MAKE} clean
+
+all:
+	case "$${ATHENA_HOSTTYPE}" in \
+	  linux) \
+              target=linux \
+	      ;; \
+	  inbsd) \
+              target=netbsd \
+	      MAKEFLAGS="CC=$$COMPILER CC2=$$COMPILER"; export MAKEFLAGS; \
+	      ;; \
+	  sgi) \
+	      case "`uname -r`" in \
+	        5.*) \
+                    target=irix51 \
+	            ;; \
+	        *) \
+	            target=irix60 \
+	            ;; \
+	      esac \
+	      ;; \
+	  sun4) \
+              target=solaris2xg \
+	      ;; \
+	  *) \
+	      target=posix \
+	      ;; \
+	esac; ${MAKE} MAKE="${MAKE} CC=$$COMPILER CC2=$$COMPILER" $$target
+
+check:
+
+install:
+	mkdir -p $$SRVD/usr/athena/bin $$SRVD/usr/athena/man/man1
+	${MAKE} install WERMIT=wermit DESTDIR="$$SRVD" \
+	        MANDIR=/usr/athena/man/man1 MANEXT=1 BINDIR=/usr/athena/bin

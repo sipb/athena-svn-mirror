@@ -34,10 +34,36 @@ case $1 in
 'start')
 
 #
+# Athena additions
+#
+. /etc/athena/rc.conf
+if [ "$AFSCLIENT" = false ]; then
+        exit 0
+fi
+AFSCLIENTNUM=4
+if [ "$AFSCLIENT" != true ]; then
+        AFSCLIENTNUM="$AFSCLIENT"
+else
+        AFSCLIENTNUM=4
+fi
+OPTIONS="-stat 10000 -daemons $AFSCLIENTNUM -volumes 200 -afsdb -dynroot -fakestat" 
+if [ \( "$AFSADJUST" = true -o $PUBLIC = true \) -a -d /usr/vice/cache/ ]; then
+        echo "Adjusting the cache size" > /dev/console
+        rm -f /usr/vice/etc/cacheinfo.old
+        mv -f /usr/vice/etc/cacheinfo /usr/vice/etc/cacheinfo.old
+        df -bk /usr/vice/cache/ | awk '
+                (NR == 2) {
+                        printf("/afs:/usr/vice/cache:%d\n", int($2 * 3 / 4));
+                }' > /usr/vice/etc/cacheinfo
+        sed -n '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
+                /usr/vice/etc/cacheinfo > /dev/console
+fi
+
+#
 # Make sure afs exists in /etc/name_to_sysnum
 #
 if grep -s "afs" /etc/name_to_sysnum > /dev/null; then
-    echo "Entry for afs already exists in /etc/name_to_sysnum"
+    :
 else
     echo "Creating entry for afs in /etc/name_to_sysnum"
     cp /etc/name_to_sysnum /etc/name_to_sysnum.orig
@@ -92,10 +118,10 @@ else
 fi
 
 #
-# Start the AFS server processes if a bosserver exists
+# Start the AFS server processes if this is an AFS server
 #
 
-if [ -x /usr/afs/bin/bosserver ]; then
+if [ "$AFSSRV" = true ]; then
       echo "Starting AFS Server processes"
       /usr/afs/bin/bosserver &
       OPTIONS="$OPTIONS -nosettime"
@@ -130,6 +156,12 @@ done
 
 echo "Starting afsd"
 /usr/vice/etc/afsd $OPTIONS
+
+if [ -f /afs/athena.mit.edu/system/config/afs/encrypt ]; then
+	/bin/athena/fs setcrypt on
+else
+	/bin/athena/fs setcrypt off
+fi
 
 #
 # Run package to update the disk

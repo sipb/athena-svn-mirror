@@ -1,0 +1,5 @@
+#!/bin/sh
+
+SUBJECT=$1
+export SUBJECT
+exec gnome-terminal

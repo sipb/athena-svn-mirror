@@ -7,7 +7,7 @@ abiword
 	mime_types=text/*,text/abiword,application/x-abiword,application/rtf,application/msword
 
 acroread
-	command=acroread
+	command=gathrun acro acroread
 	name=Adobe Acrobat Reader
 	can_open_multiple_files=true
 	expects_uris=false
@@ -15,7 +15,7 @@ acroread
 	mime_types=application/pdf
 
 applix
-	command=applix
+	command=gathrun applix applix
 	name=ApplixWare
 	can_open_multiple_files=true
 	expects_uris=false
@@ -78,6 +78,14 @@ eog
 	requires_terminal=false
 	mime_types=image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/x-xpixmap,image/x-bmp,image/x-png,image/x-portable-anymap,image/x-portable-bitmap,image/x-portable-graymap,image/x-portable-pixmap
 
+frame
+	command=gathrun frame fmclient -fpname /mit/frame/bin/maker -f
+	name=FrameMaker
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=application/x-framemaker
+
 file-roller
 	command=file-roller
 	name=File-roller
@@ -138,7 +146,7 @@ ggv
 	mime_types=application/pdf,application/postscript
 
 gimp
-	command=gimp-remote --new
+	command=gathrun graphics gimp
 	name=The GIMP
 	can_open_multiple_files=true
 	expects_uris=non-file
@@ -211,7 +219,7 @@ guitar
 	mime_types=application/x-bzip,application/x-bzip-compressed-tar,application/x-arj,application/x-compress,application/x-compressed-tar,application/x-gtar,application/x-gzip,application/x-lha,application/x-lhz,application/x-tar,application/zip,application/x-rar-compressed,application/x-rar
 
 gv
-	command=gv
+	command=gathrun sipb gv -safer
 	name=gv
 	can_open_multiple_files=false
 	expects_uris=false
@@ -225,6 +233,14 @@ gvim
 	expects_uris=false
 	requires_terminal=false
 	mime_types=text/*,text/plain,text/x-c,text/x-c++,text/x-c-header,text/x-perl
+
+imgview
+	command=imgview -nofork
+	name=imgview
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=image/x-sgi-image
 
 java
 	command=java
@@ -303,7 +319,7 @@ lpr
 	mime_types=application/postscript
 
 lynx
-	command=lynx
+	command=gathrun infoagents lynx
 	name=Lynx
 	can_open_multiple_files=false
 	expects_uris=true
@@ -318,6 +334,14 @@ lyx
 	expects_uris=false
 	requires_terminal=false
 	mime_types=text/x-lyx
+
+mediaplayer
+	command=mediaplayer -v -nofork
+	name=mediaplayer
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=video/quicktime,video/x-msvideo,video/x-sgi-movie
 
 mozilla
 	command=mozilla
@@ -344,6 +368,14 @@ mpg123
 	requires_terminal=false
 	supported_uri_schemes=http,ftp,file
 	mime_types=audio/x-mp3,audio/x-mpeg,audio/mpeg
+
+mswordview
+	command=gathrun mimeutils mswordview-wrapper
+	name=mswordview (convert to HTML)
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=application/msword
 
 mtv
 	command=mtv
@@ -411,6 +443,14 @@ pico
 	requires_terminal=true
 	mime_types=text/*,text/html,text/plain,text/x-c,text/x-c++,text/x-c-header,text/x-perl
 
+playaifc
+	command=playaifc -q
+	name=playaifc
+	can_open_multiple_files=false
+	expects_uris=false
+	requires_terminal=false
+	mime_types=audio/x-aiff,audio/x-aifc
+
 plaympeg
 	command=plaympeg
 	name=Simple MPEG Player (plaympeg)
@@ -420,7 +460,7 @@ plaympeg
 	mime_types=video/mpeg
 
 realplayer
-	command=realplay
+	command=gathrun infoagents realplay
 	name=realplayer
 	can_open_multiple_files=false
 	expects_uris=true
@@ -445,7 +485,7 @@ soundtracker
 	mime_types=audio/x-mod
 
 staroffice
-	command=soffice
+	command=gathrun soffice soffice
 	name=StarOffice
 	can_open_multiple_files=true
 	expects_uris=false
@@ -477,7 +517,7 @@ wine
 	mime_types=application/x-ms-dos-executable
 
 xanim
-	command=xanim
+	command=gathrun graphics xanim
 	name=xanim
 	can_open_multiple_files=true
 	expects_uris=false
@@ -499,6 +539,14 @@ xemacs
 	expects_uris=false
 	requires_terminal=false
 	mime_types=text/*,text/html,text/plain,text/x-c,text/x-c++,text/x-c-header,text/x-perl
+
+xess
+	command=gathrun xess xess
+	name=xess
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=application/vnd.ms-excel
 
 xfig
 	command=xfig
@@ -548,3 +596,11 @@ xpdf
 	expects_uris=false
 	requires_terminal=false
 	mime_types=application/pdf
+
+xv
+	command=gathrun graphics xv
+	name=xv
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=image/*

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cp $1/packs/config/os/$OS/inetd.conf.athena $2
+cp $1/packs/maint/os/$OS/athena-inetd.rc $2

@@ -66,3 +66,6 @@ EXTRA_DIST=empty.idl $(oaffiles) broken.oafinfo
 
 check:
 	OAF_INFO_PATH="$(top_srcdir)/test:$$OAF_INFO_PATH" PATH="$(top_builddir)/test:$$PATH" $(top_builddir)/test/oaf-test-client
+
+oaf-run-query.o: empty.h
+oaf-run-query.lo: empty.h

@@ -1,5 +1,5 @@
 # Makedefs.in -- input for the common Makefile definitions
-# $Id: Makedefs.in,v 1.1.1.2 2003-01-05 00:33:37 ghudson Exp $
+# $Id: Makedefs.in,v 1.5 2003-01-05 00:47:59 ghudson Exp $
 #
 # Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 #
@@ -42,7 +42,7 @@ nokogiridir=@nokogiridir@
 localedir=@localedir@
 sawfishexecdir=@sawfishexecdir@
 host_type=@host@
-GNOMEDIR=@GNOMEDIR@
+GNOMEDIR=/usr/athena
 
 CC=@CC@
 MAKEDEP=@MAKEDEP@
@@ -70,6 +70,7 @@ AUDIOFILE_LIBS=@AUDIOFILE_LIBS@
 ESD_CFLAGS=@ESD_CFLAGS@
 ESD_LIBS=@ESD_LIBS@
 LINGUAS=@LINGUAS@
+INTL_LIBS=@INTL_LIBS@
 
 DESTDIR=
 INSTALL=@INSTALL@

@@ -1,0 +1,68 @@
+Name: athena-glue
+Summary: Various small attach-and-run scripts and other such things
+License: MIT
+Group: System Environment/Base
+
+%description
+The attach-and-run scripts for the moira clients, mkserv, tellme, 
+and the help system.
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp athena-update_server.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-update_server
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-update_server
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp athena-update_server.rc $RPM_BUILD_ROOT/etc/init.d/athena-update_server
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-update_server
+ln -s ../init.d/athena-update_server \
+  $RPM_BUILD_ROOT/etc/rc2.d/S91athena-update_server
+ln -s ../init.d/athena-update_server \
+  $RPM_BUILD_ROOT/etc/rc0.d/K91athena-update_server
+%endif
+
+find $RPM_BUILD_ROOT -type f -or -type l | 
+    sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
+
+%ifos linux
+%triggerin -- setup
+( grep -s -q ^moira_db /etc/services \
+	|| echo "moira_db	775/tcp		# Moira database"
+ grep -s -q ^moira_update /etc/services \
+	|| echo "moira_update	777/tcp		# Moira update protocol"
+ grep -s -q ^moira_ureg /etc/services \
+	|| ( echo "moira_ureg	779/udp		# Moira user registration" \
+	     && echo "moira_ureg	9001/tcp	# New moira user registration" )
+ grep -s -q ^sms_db /etc/services \
+	|| echo "sms_db		775/tcp		# Moira database"
+ grep -s -q ^sms_update /etc/services \
+	|| echo "sms_update	777/tcp		# Moira update protocol"
+ grep -s -q ^sms_ureg /etc/services \
+	|| echo "sms_ureg	779/udp		# Moira user registration"
+) >> /etc/services
+%endif
+
+%post
+grep -q ^MRUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+MRUPDATE=false;		export MRUPDATE		# Moira update daemon
+EOF
+
+%ifos linux
+chkconfig --del athena-update_server
+chkconfig --add athena-update_server
+%endif
+
+%ifos linux
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-update_server
+fi
+%endif

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: build,v 1.1.1.2 2003-02-12 08:01:48 ghudson Exp $
+# $Id: build,v 1.3 2003-02-12 08:39:05 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -437,16 +437,16 @@ case $maketarg in
         if [ ! -d bin ] ;  then    mkdir bin;        fi
         cd "$PHOME/bin"
         rm -f pine mtest imapd mailutil pico pilot rpload rpdump ipop2d ipop3d
-        if [ -s ../pine/pine ] ;      then ln ../pine/pine  pine      ; fi
-        if [ -s ../mtest/mtest ] ;    then ln ../mtest/mtest mtest    ; fi
-        if [ -s ../mailutil/mailutil ] ; then ln ../mailutil/mailutil mailutil ; fi
-        if [ -s ../imapd/imapd ] ;    then ln ../imapd/imapd imapd    ; fi
-        if [ -s ../ipopd/ipop2d ] ;   then ln ../ipopd/ipop2d ipop2d  ; fi
-        if [ -s ../ipopd/ipop3d ] ;   then ln ../ipopd/ipop3d ipop3d  ; fi
-        if [ -s ../pico/pico ] ;      then ln ../pico/pico pico       ; fi
-        if [ -s ../pico/pilot ] ;     then ln ../pico/pilot pilot     ; fi
-        if [ -s ../pine/rpload ] ;    then ln ../pine/rpload rpload   ; fi
-        if [ -s ../pine/rpdump ] ;    then ln ../pine/rpdump rpdump   ; fi
+        if [ -s ../pine/pine ] ;      then ln -s ../pine/pine  pine      ; fi
+        if [ -s ../mtest/mtest ] ;    then ln -s ../mtest/mtest mtest    ; fi
+        if [ -s ../mailutil/mailutil ] ; then ln -s ../mailutil/mailutil mailutil ; fi
+        if [ -s ../imapd/imapd ] ;    then ln -s ../imapd/imapd imapd    ; fi
+        if [ -s ../ipopd/ipop2d ] ;   then ln -s ../ipopd/ipop2d ipop2d  ; fi
+        if [ -s ../ipopd/ipop3d ] ;   then ln -s ../ipopd/ipop3d ipop3d  ; fi
+        if [ -s ../pico/pico ] ;      then ln -s ../pico/pico pico       ; fi
+        if [ -s ../pico/pilot ] ;     then ln -s ../pico/pilot pilot     ; fi
+        if [ -s ../pine/rpload ] ;    then ln -s ../pine/rpload rpload   ; fi
+        if [ -s ../pine/rpdump ] ;    then ln -s ../pine/rpdump rpdump   ; fi
         cd "$PHOME"
         echo ''
         echo "Links to executables are in bin directory:"

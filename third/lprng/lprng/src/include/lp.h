@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lp.h,v 1.1.1.6 2000-03-31 15:48:06 mwhitson Exp $
+ * $Id: lp.h,v 1.11 2001-03-07 01:20:11 ghudson Exp $
  ***************************************************************************/
 
 
@@ -70,34 +70,6 @@ struct line_list;
 #include "errormsg.h"
 #include "plp_snprintf.h"
 
-/***************************************************************
- * Security stuff - needs to be in a common place
- ***************************************************************/
-
-struct security;
-typedef int (*CONNECT_PROC)( struct job *job, int *sock,
-	char **real_host,
-	int connect_timeout, char *errmsg, int errlen,
-	struct security *security, struct line_list *info );
-
-typedef int (*RECEIVE_PROC)( int *sock, char *user, char *jobsize,
-	int from_server,
-	char *authtype, struct line_list *config,
-	char *error, int errlen, struct line_list *header_info,
-	char *tempfile );
-
-typedef int (*SEND_PROC)( int *sock, int transfer_timeout, char *tempfile,
-	char *error, int errlen,
-	struct security *security, struct line_list *info );
-
-struct security {
-	char *name;				/* authentication name */
-	char *config_tag;		/* use this tag for configuration information */
-	CONNECT_PROC connect;		/* make the connection, talk to verify */
-	SEND_PROC    send;		/* authenticate transfer, talk to transfer */
-	RECEIVE_PROC receive;		/* receive from transfer */
-};
-
 /*****************************************************************
  * General variables use in the common routines;
  * while in principle we could segragate these, it is not worth it
@@ -106,7 +78,6 @@ struct security {
 
 extern char *Copyright[];	/* Copyright info */
 EXTERN int Is_server;		/* LPD sets to non-zero */
-EXTERN int Doing_cleanup;	/* process exiting */
 EXTERN int Verbose;		/* LPD sets to non-zero */
 EXTERN int Warnings;		/* set for warnings and not fatal - used with checkcp */
 EXTERN int Errorcode;		/* Exit code for an error */
@@ -126,7 +97,7 @@ void setmessage( struct job *job, const char *header, char *fmt, ... );
 void setstatus( va_alist );
 void setmessage( va_alist );
 #endif
-void send_to_logger( int sfd, int mfd, struct job *job, const char *header, char *msg );
+void send_to_logger( struct job *job, const char *header, char *msg );
 
 /***************************************************************************
  * ACKs from the remote host on job transfers
@@ -248,7 +219,22 @@ EXTERN char *FQDNHost_FQDN;		/* FQDN hostname */
 EXTERN char* FQDNRemote_FQDN;    /* FQDN of Remote host */
 EXTERN char* FQDNRemote_FQDN;    /* FQDN of Remote host */
 EXTERN char* ShortRemote_FQDN;   /* Short form of Remote host */
-/* EXTERN char* Auth_client_id_DYN;	/ * client sent/received authentication info */
+
+
+EXTERN char* Auth_client_id_DYN;	/* client sent/received authentication info */
+EXTERN char* Auth_dest_id_DYN;		/* destination server authentication id */
+EXTERN char* Auth_filter_DYN;		/* authentication to use to send to server */
+EXTERN char* Auth_id_DYN;			/* server id - client sends to this, server sends from this */
+EXTERN char* Auth_received_id_DYN;	/* from server/client id received */
+EXTERN char* Auth_sender_id_DYN;	/* origin authentication id */
+
+EXTERN char* esc_Auth_DYN;				/* client sent/received authentication info */
+EXTERN char* esc_Auth_client_id_DYN;	/* client sent/received authentication info */
+EXTERN char* esc_Auth_dest_id_DYN;		/* destination server authentication id */
+EXTERN char* esc_Auth_filter_DYN;		/* authentication to use to send to server */
+EXTERN char* esc_Auth_id_DYN;			/* server id - client sends to this, server sends from this */
+EXTERN char* esc_Auth_received_id_DYN;	/* from server/client id received */
+EXTERN char* esc_Auth_sender_id_DYN;	/* origin authentication id */
 
 EXTERN int Drop_root_DYN;				/* drop root permissions */
 
@@ -258,13 +244,18 @@ EXTERN char* Accounting_file_DYN; /* name of accounting file (see also la, ar) *
 EXTERN int Accounting_remote_DYN; /* write remote transfer accounting (if af is set) */
 EXTERN char* Accounting_start_DYN;/* accounting at start (see also af, la, ar) */
 EXTERN int Allow_duplicate_args_DYN;	/* Legacy requirement */
-EXTERN char* Allow_user_setting_DYN;	/* allow users to set job submitter */
 EXTERN int Allow_getenv_DYN;
 EXTERN int Allow_user_logging_DYN; /* allow users to get log info */
 EXTERN int Always_banner_DYN; /* always print banner, ignore lpr -h option */
 EXTERN char* Architecture_DYN;
+EXTERN int Athena_Z_compat_DYN;
 EXTERN char* Auth_DYN;			/* authentication to use to send to server */
+EXTERN char* Auth_client_filter_DYN;	/* client use authentication to server */
 EXTERN char* Auth_forward_DYN;	/* server use authentication when forwarding */
+EXTERN char* Auth_forward_filter_DYN;	/* filter for forwarding to destination */
+EXTERN char* Auth_forward_id_DYN;	/* remote server id for forwarding to destination */
+EXTERN char* Auth_receive_filter_DYN;	/* filter for receiving authentication */
+EXTERN char* Auth_server_id_DYN;	/* remote server id for client or when receiving */
 EXTERN int Auto_hold_DYN;	 /* automatically hold all jobs */
 EXTERN char* BK_filter_options_DYN;	/* backwards compatible filter options */
 EXTERN char* BK_of_filter_options_DYN;	/* backwards compatible OF filter options */
@@ -302,7 +293,7 @@ EXTERN char* Default_remote_host_DYN;
 EXTERN char* Default_tmp_dir_DYN;	/* default temporary file directory */
 EXTERN char* Destinations_DYN; /* printers that a route filter may return and we should query */
 EXTERN char* Env_names_DYN; /* environment information from config file */
-EXTERN int Exit_linger_timeout_DYN;	/* we set this timeout on all of the sockets */
+EXTERN int Extended_notification_DYN;
 EXTERN int FF_on_close_DYN; /* print a form feed when device is closed */
 EXTERN int FF_on_open_DYN; /* print a form feed when device is opened */
 EXTERN char* Filter_DYN; /* default filter */
@@ -318,13 +309,13 @@ EXTERN char* Force_queuename_DYN; /* force the use of this queue name */
 EXTERN char* Form_feed_DYN; /* string to send for a form feed */
 EXTERN char* Formats_allowed_DYN; /* valid output filter formats */
 EXTERN int Full_time_DYN; /* full or complete time format in messages */
-EXTERN int Generate_banner_DYN; /* generate a banner when not a bounce queue */
 EXTERN char* IF_Filter_DYN; /* filter command, run on a per-file basis */
 EXTERN int IPV6Protocol_DYN;	/* IPV4 or IPV6 protocol */
 EXTERN int Ignore_requested_user_priority_DYN;	 /* ignore requested user priority */
+EXTERN int KA_DYN;
 EXTERN int Keepalive_DYN;	/* TCP keepalive enabled */
 EXTERN char* Kerberos_keytab_DYN;	/* kerberos keytab file */
-EXTERN char* Kerberos_dest_id_DYN;	/* kerberos destination principle */
+EXTERN char* Kerberos_dest_id_DYN;	/* kerberos keytab file */
 EXTERN char* Kerberos_life_DYN;	/* kerberos lifetime */
 EXTERN char* Kerberos_renew_DYN;	/* kerberos newal time */
 EXTERN char* Kerberos_forward_principal_DYN;	/* kerberos server principle */
@@ -365,7 +356,6 @@ EXTERN int Minfree_DYN; /**/
 EXTERN int Ms_time_resolution_DYN;
 EXTERN int Network_connect_grace_DYN; /* grace period for reconnections */
 EXTERN char* New_debug_DYN; /* debug level set for queue handler */
-EXTERN int Nline_after_file_DYN;	/* Put Nxxx after fcfA... line in control file */
 EXTERN int No_FF_separator_DYN; /* suppress form feeds separating multiple jobs */
 EXTERN int Nonblocking_open_DYN; /* nonblocking open on io device */
 EXTERN char* OF_Filter_DYN; /* output filter, run once for all output */
@@ -376,6 +366,9 @@ EXTERN int Page_width_DYN; /* page width (in characters) */
 EXTERN int Page_x_DYN; /* page width in pixels (horizontal) */
 EXTERN int Page_y_DYN; /* page length in pixels (vertical) */
 EXTERN char* Pass_env_DYN;		/* pass these environment variables */
+EXTERN char* Pgp_path_DYN;		/* pathname of PGP program */
+EXTERN char* Pgp_passphrase_DYN;	/* pathname of PGP passphrase */
+EXTERN char* Pgp_server_key_DYN;	/* pathname of file with server PGP key */
 EXTERN int Poll_time_DYN; /* force polling job queues */
 EXTERN char* Pr_program_DYN; /* pr program for p format */
 EXTERN char* Printcap_path_DYN;
@@ -383,21 +376,15 @@ EXTERN char* Printer_DYN;		/* Printe r name for logging */
 EXTERN char* Printer_DYN;	/* printer name */
 EXTERN char* Printer_perms_path_DYN;
 EXTERN char* Queue_name_DYN;	/* Queue name used for spooling */
-EXTERN char* Queue_control_file_DYN; /* Queue control file name */
-EXTERN char* Queue_lock_file_DYN; /* Queue lock file name */
-EXTERN char* Queue_status_file_DYN; /* Queue status file name */
-EXTERN char* Queue_unspooler_file_DYN; /* Unspooler PID status file name */
 EXTERN int Read_write_DYN; /* open the printer for reading and writing */
 EXTERN char* RemoteHost_DYN; /* remote-queue machine (hostname) (with rm) */
 EXTERN char* RemotePrinter_DYN; /* remote-queue printer name (with rp) */
 EXTERN char* Remote_support_DYN; /* Operations allowed to remote system */
 EXTERN char* Report_server_as_DYN; /* report server name as this value */
-EXTERN int Require_configfiles_DYN; /* require lpd.conf, printcap, lpd.perms files */
 EXTERN int Retry_ECONNREFUSED_DYN; /* retry on ECONNREFUSED  */
 EXTERN int Retry_NOLINK_DYN; /* retry on link connection failure */
 EXTERN char* Return_short_status_DYN;	/* return short status */
 EXTERN int Reuse_addr_DYN; /* set SO_REUSEADDR on outgoing ports */
-EXTERN int Reverse_priority_order_DYN; /* priority z-aZ-A order */
 EXTERN char* Reverse_lpq_status_DYN;	/* change lpq format when from host */
 EXTERN char* Routing_filter_DYN; /* filter to determine routing of jobs */
 EXTERN char* Safe_chars_DYN; /* safe characters in control file */
@@ -415,7 +402,6 @@ EXTERN char* Server_queue_name_DYN; /* name of queue that server serves (with sv
 EXTERN char* Server_tmp_dir_DYN;	/* default temporary file directory */
 EXTERN char* Shell_DYN;
 EXTERN int Short_banner_DYN; /* short banner (one line only) */
-EXTERN int Short_status_date_DYN; /* short date in status information */
 EXTERN int Short_status_length_DYN;	/* short status length */
 EXTERN int Socket_linger_DYN;	/* set SO_linger for connections to remote hosts */
 EXTERN char* Spool_dir_DYN; /* spool directory (only ONE printer per directory!) */
@@ -435,9 +421,8 @@ EXTERN int Use_info_cache_DYN;
 EXTERN int Use_queuename_DYN;	/* put queuename in control file */
 EXTERN int Use_queuename_flag_DYN;	/* Specified with the -Q option */
 EXTERN int Use_shorthost_DYN;	/* Use short hostname in control file information */
-EXTERN char* Xlate_incoming_format_DYN;	/* translate format ids on incoming jobs */
-EXTERN char* Xlate_format_DYN;	/* translate format ids on outgoing jobs */
-EXTERN int Wait_for_eof_DYN;	/* Wait for eof on device before closing */
+EXTERN char* Xlate_format_DYN;	/* translate format ids */
+EXTERN char* Zwrite_DYN;
 
 #if defined(DMALLOC)
 #  include <dmalloc.h>

@@ -1,0 +1,117 @@
+.\" $Id: detach.1,v 1.10 1999-07-26 17:21:27 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH DETACH 1
+.SH NAME
+detach \- detach a remote file system from your workstation
+.SH SYNOPSIS
+.nf
+detach [-v | -q] [-y | -n] [-z | -h] [-x | -e] [-O] filesystem ...
+detach [options] mountpoint ...
+detach [options] [-t type] [-C] [-a | -H host ...]
+.fi
+.SH DESCRIPTION
+.I detach
+performs the appropriate filesystem-dependent operations to
+disassociate a filesystem which was attached using
+.BR attach (1)
+from the workstation.
+
+The \fI-a\fP form is used to detach all attached filesystems from the
+workstation. This is typically run when the workstation reactivates,
+so as to flush all user mounted filesystems from the workstation.
+
+The following options are available in
+.I detach\fP:
+
+.TP 8
+.I --verbose (-v)
+Display verbose information about the success of the detach.  This is
+the default.
+.TP 8
+.I --quiet (-q)
+Don't display verbose information.
+.TP 8
+.I --all (-a)
+Attempt to detach all filesystems which had been attached using the
+\fIattach\fP command.
+.TP 8
+.I --unmap (-y)
+Attempt to remove authentication for the user from the filesystem
+server.  The authentication will be removed even if the detach fails.
+This is the default.
+.TP 8
+.I --nomap (-n)
+Do not attempt to remove authentication for the user from the
+filesystem server.
+.TP 8
+.I --zephyr (-z)
+Remove \fIZephyr\fP subscription information about the server host.
+This is the default.
+.TP 8
+.I --nozephyr (-h)
+Don't remove \fIZephyr\fP subscription information about the server host.
+.TP 8
+.I --type \fIfilesystem-type\fP (-t \fIfilesystem-type\fP)
+Used with the --all option to detach all filesystems of a particular
+type.  If not specified, the --all option will detach all filesystems.
+.TP 8
+.I --explicit (-e)
+Change the behavior of \fIdetach\fP such that the \fIfilesystem\fP is
+now interpreted as \fIhost:directory\fP (in the case of NFS) or
+\fIhost:pack\fP (in the case of RVD) instead of as a Hesiod name.
+Type --type option can be used to specify the filesystem type.
+.TP 8
+.I --noexplicit (-x)
+Tell \fIdetach\fP to interpret the \fIfilesystem\fP as a Hesiod name.
+This is the default.
+.TP 8
+.I --override (-O)
+This option allows the trusted users to force a filesystem to be
+detached, even if it was attached by another user or locked.
+.TP 8
+.I --host \fIhost\fP (-H \fIhost\fP)
+Requests detach to detach all remote filesystems whose fileserver
+matches the specified host.
+.TP 8
+.I --clean (-C)
+This option indicates that the specified filesystems should be detached
+if they are not wanted by anyone who is in \fI/etc/passwd\fP.
+
+.SH DIAGNOSTICS
+If \fIdetach\fP is unable to initalize the locker library, it will
+exist with status 1. If \fIdetach\fP encounters a problem detaching a
+locker, it will continue trying to detach any remaining lockers on the
+command line, but eventually exit with status 2. (This does not apply
+to \fIdetach -a\fP or \fIdetach -H\fP, which will exit with status 0
+if they successfully detach any locker.)
+
+.SH FILES
+/etc/athena/attach.conf
+.br
+/var/athena/attachtab/
+
+.SH "SEE ALSO"
+attach(1), attach.conf(5)
+
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.PP
+based on the original detach by
+.br
+Robert French, Project Athena
+.PP
+Copyright 1988, 1998 Massachusetts Institute of Technology

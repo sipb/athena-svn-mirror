@@ -224,7 +224,7 @@ libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
 
 libcamel_la_LIBADD =				\
 	$(top_builddir)/e-util/libeutil.la 	\
-	$(CAMEL_LIBS)
+	$(CAMEL_LIBS) -lhesiod -lares $(RESOLV_LIBS)
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)
 libcamel_static_la_LIBADD  = $(libcamel_la_LIBADD)
@@ -235,6 +235,8 @@ camel_lock_helper_SOURCES = 			\
 	camel-lock-helper.h			\
 	camel-lock.c				\
 	camel-lock.h
+
+camel_lock_helper_LDADD = $(INTLLIBS)
 
 camel_index_control_SOURCES =			\
 	camel-index-control.c

@@ -13,7 +13,7 @@
 .\" IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 .\" WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 .\"
-.\"	$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.8,v 1.1.1.1 1997-09-24 06:24:34 ghudson Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.8,v 1.2 2000-09-21 15:03:32 ghudson Exp $
 .\"
 .TH TRACEROUTE 8 "22 April 1997"
 .UC 6
@@ -178,8 +178,8 @@ checksums. In some cases, the operating system can overwrite parts of
 the outgoing packet but not recalculate the checksum (so in some cases
 the default is to not calculate checksums and using
 .B \-x
-causes them to be calcualted). Note that checksums are usually required
-for the last hop when using ICMP ECHO probes
+causes them to be calcualted). Note that ICMP checksums are always
+computed when using ICMP ECHO probes
 .RB ( \-I ).
 .PP
 This program attempts to trace the route an IP packet would follow to some

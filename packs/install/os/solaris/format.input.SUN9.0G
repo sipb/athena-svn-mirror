@@ -1,0 +1,67 @@
+#
+# Disk geometry <SUN9.0G cyl 4924 alt 2 hd 27 sec 133>
+# Part      Tag    Flag     Cylinders        Size            Blocks
+#   0       root    wm       0 - 4204        7.20GB    (4205/0/0) 15100155
+#   1       swap    wu    4205 - 4775     1001.20MB    (571/0/0)   2050461
+#   2     backup    wu       0 - 4923        8.43GB    (4924/0/0) 17682084
+#   3 unassigned    wm    4776 - 4923      259.51MB    (148/0/0)    531468
+#   4 unassigned    wm       0               0         (0/0/0)           0
+#   5 unassigned    wm       0               0         (0/0/0)           0
+#   6 unassigned    wm       0               0         (0/0/0)           0
+#   7 unassigned    wm       0               0         (0/0/0)           0
+
+partition
+
+0
+root
+wm
+0
+4205c
+
+1
+swap
+wu
+4205
+571c
+
+2
+backup
+wu
+0
+4924c
+
+3
+unassigned
+wm
+4776
+148c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+unassigned
+wm
+0
+0c
+
+6
+unassigned
+wm
+0
+0c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

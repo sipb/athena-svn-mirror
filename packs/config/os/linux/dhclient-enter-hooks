@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# $Id: dhclient-enter-hooks,v 1.1 2003-06-19 20:02:41 zacheiss Exp $
+
+function make_resolv_conf() {
+  echo "dhclient not updating /etc/resolv.conf."
+}
+
+# Overwrite NTP servers we got from the DHCP server so
+# dhclient doesn't trash our /etc/ntp.conf.
+new_ntp_servers=""

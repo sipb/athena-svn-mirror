@@ -1,4 +1,4 @@
-/* $Id: pt_util.c,v 1.1.1.1 2002-01-31 21:32:02 zacheiss Exp $ */
+/* $Id: pt_util.c,v 1.2 2003-03-20 00:09:40 zacheiss Exp $ */
 
 /*
  *
@@ -16,13 +16,15 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/file.h>
 
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/pt_util.c,v 1.1.1.1 2002-01-31 21:32:02 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/pt_util.c,v 1.2 2003-03-20 00:09:40 zacheiss Exp $");
 
+#include <errno.h>
 #include <lock.h>
 #include <netinet/in.h>
 #define UBIK_INTERNALS
@@ -39,7 +41,6 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ptserver/pt
 
 extern char *optarg;
 extern int optind;
-extern int errno;
 
 int display_entry();
 void add_group();

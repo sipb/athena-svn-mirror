@@ -1049,6 +1049,12 @@ png_handle_iCCP(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
    prefix_length = profile - chunkdata;
    chunkdata = png_decompress_chunk(png_ptr, compression_type, chunkdata,
                                     slength, prefix_length, &data_length);
+   if(chunkdata)
+	   png_set_iCCP(png_ptr, info_ptr, chunkdata, compression_type,
+			   chunkdata + prefix_length, data_length);
+   else
+	   png_set_iCCP(png_ptr, info_ptr, chunkdata, compression_type,
+			   0x00, prefix_length);
 
    profile_length = data_length - prefix_length;
 

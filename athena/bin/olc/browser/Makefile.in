@@ -1,0 +1,14 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:47:21 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+SUBDIRS=curses @SUBDIR_MOTIF@
+
+default: all
+
+all clean distclean install depend.in:
+	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} ${MFLAGS} $@) || exit 1; done

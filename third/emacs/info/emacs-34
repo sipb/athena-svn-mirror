@@ -1,4 +1,4 @@
-This is ../info/emacs, produced by makeinfo version 4.0 from emacs.texi.
+This is ../info/emacs, produced by makeinfo version 4.2 from emacs.texi.
 
    This is the Fourteenth edition of the `GNU Emacs Manual', updated
 for Emacs version 21.1.
@@ -749,8 +749,8 @@ Command and Function Index
 * next-history-element:                  Minibuffer History.
 * next-line:                             Moving Point.
 * next-matching-history-element:         Minibuffer History.
-* normal-erase-is-backspace-mode <1>:    Deletion.
-* normal-erase-is-backspace-mode:        DEL Does Not Delete.
+* normal-erase-is-backspace-mode <1>:    DEL Does Not Delete.
+* normal-erase-is-backspace-mode:        Deletion.
 * normal-mode:                           Choosing Modes.
 * not-modified:                          Saving.
 * nroff-mode:                            Nroff Mode.

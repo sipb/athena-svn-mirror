@@ -10,12 +10,13 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/test/owntest.c,v 1.1.1.1 2002-01-31 21:49:34 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/test/owntest.c,v 1.2 2003-03-20 00:09:45 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <errno.h>
 
 extern int errno;
 

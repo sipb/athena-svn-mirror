@@ -100,29 +100,29 @@ test_color_SOURCES = \
 	test-color.c
 
 test_color_LDADD = \
-	$(EXTRA_GNOME_LIBS) \
 	$(top_builddir)/gal/widgets/libwidgets.la \
-	$(top_builddir)/gal/util/libutil.la
+	$(top_builddir)/gal/util/libutil.la \
+	$(EXTRA_GNOME_LIBS)
 
 test_e_font_SOURCES = \
 	test-e-font.c test-e-font.h
 
 test_e_font_LDADD = \
-	$(EXTRA_GNOME_LIBS) \
 	$(top_builddir)/gal/widgets/libwidgets.la \
 	$(top_builddir)/gal/unicode/libunicode.la \
 	$(top_builddir)/gal/util/libutil.la \
-	$(ICONV_LIBS)
+	$(ICONV_LIBS) \
+	$(EXTRA_GNOME_LIBS)
 
 test_font_loading_SOURCES = \
 	test-font-loading.c
 
 test_font_loading_LDADD = \
-	$(EXTRA_GNOME_LIBS) \
 	$(top_builddir)/gal/widgets/libwidgets.la \
 	$(top_builddir)/gal/unicode/libunicode.la \
 	$(top_builddir)/gal/util/libutil.la \
-	$(ICONV_LIBS)
+	$(ICONV_LIBS) \
+	$(EXTRA_GNOME_LIBS)
 
 dist-hook:
 	-mkdir $(distdir)/pixmaps

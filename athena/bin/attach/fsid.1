@@ -1,0 +1,111 @@
+.\" $Id: fsid.1,v 1.10 2000-01-31 15:57:59 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH FSID 1
+.SH NAME
+fsid \- Perform authorization functions to remote file servers
+.SH SYNOPSIS
+.nf
+fsid [-q | -v] [-m | -p | -r | -u] [ filesystem | host ] ...
+fsid [-q | -v] [-m | -p | -r | -u] -f filesystem ...
+fsid [-q | -v] [-m | -p | -r | -u] -h host ...
+fsid [-q | -v] [-m      |      -u] -c cell ...
+fsid [-q | -v] [-m | -p | -r | -u] -a
+.fi
+
+.SH DESCRIPTION
+\fIfsid\fP is used to authenticate to remote filesystems that have
+been brought local with
+.BR attach (1)\fP.
+.PP
+If no option specifying otherwise is given, you may pass either
+filesystems or hostnames on the command line.
+.PP
+The following arguments to \fIfsid\fP modify its default behavior.
+All arguments are processed \fIin order\fP.  Thus, if a -u option is
+followed by a -m option, the -m option will take precedence.
+
+.TP 8
+.I --verbose (-v)
+Display verbose information about the mapping operation.  This is the
+default.
+.TP 8
+.I --quiet (-q)
+Don't display verbose information.
+.TP 8
+.I --map (-m)
+Set the mapping function to "map user". This is the default, and
+is used to authenticate a user to a filesystem or server using
+Kerberos.
+.TP 8
+.I --unmap (-u)
+Set the mapping function to "unmap user".  This is used to remove an
+authentication mapping.
+.TP 8
+.I --purge (-p)
+Set the mapping function to "purge host".  This is used to remove all
+mappings associated with the user's host from the remote server. This
+option may only be used by trusted users. (This only has any effect
+for NFS servers.)
+.TP 8
+.I --purgeuser (-r)
+Set the mapping function to "purge user".  This is used to remove all
+mappings associated with the user on the host.  It requires that the
+user have Kerberos tickets. (This only has any effect for NFS
+servers.)
+.TP 8
+.I --filsys (-f)
+Perform the current mapping operation for the servers associated with
+the indicated filesystems.
+.TP 8
+.I --cell \fIcell\fP (-c \fIcell\fP)
+Authenticate the user to the specified AFS cell.
+.TP 8
+.I --host \fIhost\fP (-h \fIhost\fP)
+Authenticate the user to the specified NFS server host.
+.TP 8
+.I --all (-a)
+Perform the current mapping operation for all filesystems attached by
+the user. (For "purge" and "purge user", the operation is performed
+for all filesystems in the attachtab.) If the environment variable
+\fIFSID_EXTRA_CELLS\fR is defined, \fIfsid\fR will treat it as a
+space-separated list of additional AFS cells to authenticate or
+unauthenticate to.
+
+.SH DIAGNOSTICS
+If \fIfsid\fP is unable to initalize the locker library, it will exist
+with status 1. If \fIfsid\fP encounters a problem performing a mapping
+operation, it will continue trying to work with each remaining
+argument on the command line, but eventually exit with status 2. (This
+does not apply to \fIfsid -a\fP, which will exit with status 0 if it
+successfully maps any locker or host.)
+
+.SH FILES
+/etc/athena/attach.conf
+.br
+/var/athena/attachtab
+
+.SH "SEE ALSO"
+attach(1)
+
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.PP
+based on the original fsid by
+.br
+Robert French, Project Athena
+.PP
+Copyright 1988, 1998, Massachusetts Institute of Technology

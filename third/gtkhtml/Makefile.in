@@ -158,7 +158,7 @@ l = @l@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gtkhtml-@GTKHTML_RELEASE@.pc
 
-SUBDIRS = m4 						macros						src						capplet						doc						art						$(DIR_COMPONENTS)				po
+SUBDIRS = m4 						macros						src							doc						art						$(DIR_COMPONENTS)				po
 
 
 EXTRA_DIST = config.rpath 						gtkhtml.spec.in					gtkhtml.spec                            	COPYING.LIB					BUGS						xml-i18n-extract.in				xml-i18n-update.in				xml-i18n-merge.in
@@ -182,7 +182,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DIST_SUBDIRS =  m4 macros src capplet doc art components po
+DIST_SUBDIRS =  m4 macros src doc art components po
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 

@@ -285,7 +285,30 @@ gconf_source_set_schema        (GConfSource* source,
 static gboolean
 gconf_source_sync_all         (GConfSource* source, GError** err)
 {
-  return (*source->backend->vtable->sync_all)(source, err);
+  GError *lock_error = NULL;
+  gboolean status;
+
+  /* Make sure there has not already been an error set. */
+  g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
+
+  /* Athena local mod: lock the source during the sync. */
+  (*source->backend->vtable->lock)(source, &lock_error);
+  if (lock_error != NULL)
+    {
+      if (err != NULL)
+	*err = lock_error;
+      else
+	g_error_free(lock_error);
+      return FALSE;
+    }
+
+  /* Sync the source. */
+  status = (*source->backend->vtable->sync_all)(source, err);
+
+  /* Unlock the source, ignoring errors. */
+  (*source->backend->vtable->unlock)(source, NULL);
+
+  return status;
 }
 
 /*
@@ -1375,6 +1398,7 @@ gconf_sources_sync_all    (GConfSources* sources, GError** err)
             all_errors = gconf_compose_errors(all_errors, error);
 
           g_error_free(error);
+	  error = NULL;
         }
           
       tmp = g_list_next(tmp);

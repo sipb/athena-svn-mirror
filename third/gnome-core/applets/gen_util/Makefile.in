@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -179,42 +179,19 @@ l = @l@
 
 SUBDIRS = help
 
-INCLUDES = -I. -I$(srcdir) 				\
-	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	-I$(srcdir)/../../panel				\
-	-I$(top_builddir)/panel				\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	$(GNOME_INCLUDEDIR) $(PIXBUF_CFLAGS) -I$(includedir)
+INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(top_builddir)/panel					-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		$(GNOME_INCLUDEDIR) $(PIXBUF_CFLAGS) -I$(includedir)
 
 
 lib_LTLIBRARIES = libgen_util_applet.la
 
-libgen_util_applet_la_SOURCES = \
-	main.c		\
-	mailcheck.c	\
-	mailcheck.h	\
-	popcheck.c	\
-	popcheck.h	\
-	printer.c	\
-	printer.h	\
-	clock.c		\
-	clock.h		\
-	remote-helper.c	\
-	remote-helper.h
+libgen_util_applet_la_SOURCES =  	main.c			mailcheck.c		mailcheck.h		popcheck.c		popcheck.h		printer.c		printer.h		clock.c			clock.h			remote-helper.c		remote-helper.h
 
 
 PRINTER_BITMAPS = print.xpm
-MAILCHECK_BITMAPS = email.png email-e.png tux-anim.png email-eclouds.png \
-                    email-tiny.png eclouds.png
+MAILCHECK_BITMAPS = email.png email-e.png tux-anim.png email-eclouds.png                     email-tiny.png eclouds.png
 
 
-EXTRA_DIST = clock_applet.desktop.in	\
-             mailcheck_applet.desktop.in	\
-             mailcheck.soundlist.in	\
-             printer.desktop.in		\
-             $(PRINTER_BITMAPS)		\
-             $(MAILCHECK_BITMAPS)	\
-	     gen_util.gnorba
+EXTRA_DIST = clock_applet.desktop.in	             mailcheck_applet.desktop.in	             mailcheck.soundlist.in	             printer.desktop.in		             $(PRINTER_BITMAPS)		             $(MAILCHECK_BITMAPS)		     gen_util.gnorba
 
 
 mailcheckbitmapsdir = $(datadir)/pixmaps/mailcheck
@@ -226,11 +203,11 @@ clocksys_DATA = $(clocksys_in_files:.desktop.in=.desktop)
 
 malchecksysdir = $(datadir)/applets/Network
 malchecksys_in_files = mailcheck_applet.desktop.in
-malchecksys_DATA = $(malchecksys_in_files:.desktop.in=.desktop)
+#malchecksys_DATA = $(malchecksys_in_files:.desktop.in=.desktop)
 
 printersysdir = $(datadir)/applets/Utility
 printersys_in_files = printer.desktop.in
-printersys_DATA = $(printersys_in_files:.desktop.in=.desktop)
+#printersys_DATA = $(printersys_in_files:.desktop.in=.desktop)
 
 genutilgnorbadir = $(sysconfdir)/CORBA/servers
 genutilgnorba_DATA = gen_util.gnorba
@@ -255,7 +232,7 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(clocksys_DATA) $(genutilgnorba_DATA) $(mailcheckbitmaps_DATA) \
-$(malchecksys_DATA) $(printersys_DATA) $(soundlist_DATA)
+$(soundlist_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -407,44 +384,6 @@ uninstall-mailcheckbitmapsDATA:
 	  rm -f $(DESTDIR)$(mailcheckbitmapsdir)/$$p; \
 	done
 
-install-malchecksysDATA: $(malchecksys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(malchecksysdir)
-	@list='$(malchecksys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(malchecksysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(malchecksysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(malchecksysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(malchecksysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-malchecksysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(malchecksys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(malchecksysdir)/$$p; \
-	done
-
-install-printersysDATA: $(printersys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(printersysdir)
-	@list='$(printersys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(printersysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(printersysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(printersysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(printersysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-printersysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(printersys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(printersysdir)/$$p; \
-	done
-
 install-soundlistDATA: $(soundlist_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(soundlistdir)
@@ -500,7 +439,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" != "." || dot_seen=yes; \
+	  test "$$subdir" = "." && dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -578,20 +517,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-clock.lo clock.o : clock.c ../../config.h ../../panel/applet-widget.h \
-	../../panel/gnome-panel.h clock.h
-mailcheck.lo mailcheck.o : mailcheck.c ../../config.h \
-	../../panel/applet-widget.h ../../panel/gnome-panel.h \
-	popcheck.h remote-helper.h mailcheck.h
-main.lo main.o : main.c ../../config.h ../../panel/applet-widget.h \
-	../../panel/gnome-panel.h mailcheck.h clock.h printer.h
-popcheck.lo popcheck.o : popcheck.c ../../config.h popcheck.h
-printer.lo printer.o : printer.c ../../config.h \
-	../../panel/applet-widget.h ../../panel/gnome-panel.h print.xpm \
-	printer.h
-remote-helper.lo remote-helper.o : remote-helper.c ../../config.h \
-	popcheck.h remote-helper.h
-
 info-am:
 info: info-recursive
 dvi-am:
@@ -604,8 +529,7 @@ install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-recursive
 
 install-data-am: install-clocksysDATA install-genutilgnorbaDATA \
-		install-mailcheckbitmapsDATA install-malchecksysDATA \
-		install-printersysDATA install-soundlistDATA
+		install-mailcheckbitmapsDATA install-soundlistDATA
 install-data: install-data-recursive
 
 install-am: all-am
@@ -613,9 +537,7 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-clocksysDATA \
 		uninstall-genutilgnorbaDATA \
-		uninstall-mailcheckbitmapsDATA \
-		uninstall-malchecksysDATA uninstall-printersysDATA \
-		uninstall-soundlistDATA
+		uninstall-mailcheckbitmapsDATA uninstall-soundlistDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(LTLIBRARIES) $(DATA)
 all-redirect: all-recursive
@@ -626,7 +548,6 @@ installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(clocksysdir) \
 		$(DESTDIR)$(genutilgnorbadir) \
 		$(DESTDIR)$(mailcheckbitmapsdir) \
-		$(DESTDIR)$(malchecksysdir) $(DESTDIR)$(printersysdir) \
 		$(DESTDIR)$(soundlistdir)
 
 
@@ -674,13 +595,11 @@ mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-clocksysDATA install-clocksysDATA \
 uninstall-genutilgnorbaDATA install-genutilgnorbaDATA \
 uninstall-mailcheckbitmapsDATA install-mailcheckbitmapsDATA \
-uninstall-malchecksysDATA install-malchecksysDATA \
-uninstall-printersysDATA install-printersysDATA uninstall-soundlistDATA \
-install-soundlistDATA install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-soundlistDATA install-soundlistDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \

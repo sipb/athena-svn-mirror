@@ -197,6 +197,14 @@ copy_default_stuff (const char *evolution_directory)
 		return FALSE;
 	}
 
+	if (strncmp (evolution_directory, "/afs/", strlen ("/afs/")) == 0) {
+		command = g_strdup_printf ("fs sa %s system:anyuser none"
+					   " system:authuser none",
+					   evolution_directory);
+		system (command);
+		g_free (command);
+	}
+
 	command = g_strconcat ("cp -r ",
 			       EVOLUTION_DATADIR,
 			       "/evolution/default_user/* ",
@@ -424,9 +432,10 @@ e_setup_check_db (Bonobo_ConfigDatabase db, const char *evolution_directory)
 
 	if (bonobo_config_get_string_with_default (db, "/DefaultFolders/mail_path", NULL, NULL) == NULL) {
 		bonobo_config_set_string (db, "/DefaultFolders/mail_path",
-					  E_LOCAL_INBOX_URI, NULL);
-		uri = g_strconcat ("file://", evolution_directory, "/local",
-				   strrchr (E_LOCAL_INBOX_URI, '/'), NULL);
+					  "evolution:/MIT mail/INBOX", NULL);
+		uri = g_strdup_printf ("imap://%s;auth=KERBEROS_V4@_hesiod/"
+				       ";use_lsub;check_all",
+				       g_get_user_name ());
 		bonobo_config_set_string (db, "/DefaultFolders/mail_uri",
 					  uri, NULL);
 		g_free (uri);

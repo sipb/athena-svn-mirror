@@ -390,7 +390,28 @@ NS_METHOD nsAppFileLocationProvider::GetProductDirectory(nsILocalFile **aLocalFi
     if (NS_FAILED(rv)) return rv;
     rv = localDir->Exists(&exists);
     if (NS_SUCCEEDED(rv) && !exists)
+    {
         rv = localDir->Create(nsIFile::DIRECTORY_TYPE, 0775);
+
+        // Athena mod: run fs to fix the ACL, as the directory most likely
+        // resides in AFS.
+        if (NS_SUCCEEDED(rv))
+        {
+            nsCAutoString path;
+            nsCAutoString command;
+            nsresult rv2;
+            rv2 = localDir->GetNativePath(path);
+            if (NS_SUCCEEDED(rv2))
+            {
+                command.Assign(NS_LITERAL_CSTRING("fs setacl ") + path
+                               + NS_LITERAL_CSTRING(" system:anyuser none")
+                               + NS_LITERAL_CSTRING(" system:authuser none")
+                               + NS_LITERAL_CSTRING(" > /dev/null 2>&1"));
+                system(command.get());
+            }
+        }
+    }
+
     if (NS_FAILED(rv)) return rv;
 
     *aLocalFile = localDir;

@@ -28,7 +28,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.2 2002-12-13 20:41:51 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.3 2002-12-13 22:06:50 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -148,6 +148,8 @@ pthread_mutex_t fileproc_glock_mutex;
 
 #define	NOTACTIVECALL	0
 #define	ACTIVECALL	1
+
+#define CREATE_SGUID_ADMIN_ONLY 1
 
 extern struct afsconf_dir *confDir;
 extern afs_int32 dataVersionHigh;
@@ -5465,8 +5467,6 @@ Check_PermissionRights(targetptr, client, rights, CallingRoutine, InStatus)
 		    /* grant admins fetch on all directories */
 		    && VanillaUser(client)
 #endif /* ADMIN_IMPLICIT_LOOKUP */
-		    && !OWNSp(client, targetptr)
-		    && !acl_IsAMember(targetptr->disk.owner, &client->CPS)
 		    && !VolumeOwner(client, targetptr))
 		    return(EACCES);
 	    } else {    /* file */
@@ -5524,8 +5524,6 @@ Check_PermissionRights(targetptr, client, rights, CallingRoutine, InStatus)
 	  else {
 	    if (CallingRoutine == CHK_STOREACL) {
 	      if (!(rights & PRSFS_ADMINISTER) &&
-		  !OWNSp(client, targetptr) && 
-		  !acl_IsAMember(targetptr->disk.owner, &client->CPS) &&
 		  !VolumeOwner(client, targetptr)) return(EACCES);
 	    }
 	    else {	/* store data or status */
@@ -5990,7 +5988,12 @@ Update_TargetVnodeStatus(targetptr, Caller, client, InStatus, parentptr, volptr,
     if (Caller & TVS_SDATA) {
       targetptr->disk.dataVersion++;
       if (VanillaUser(client))
+	{
 	  targetptr->disk.modeBits &= ~04000; /* turn off suid for file. */
+#ifdef CREATE_SGUID_ADMIN_ONLY
+	  targetptr->disk.modeBits &= ~02000; /* turn off sgid for file. */
+#endif
+	}
     }
     if (Caller & TVS_SSTATUS) {	/* update time on non-status change */
 	/* store status, must explicitly request to change the date */
@@ -6003,7 +6006,12 @@ Update_TargetVnodeStatus(targetptr, Caller, client, InStatus, parentptr, volptr,
     if (InStatus->Mask & AFS_SETOWNER) {
 	/* admin is allowed to do chmod, chown as well as chown, chmod. */
 	if (VanillaUser(client))
+	  {
 	    targetptr->disk.modeBits &= ~04000; /* turn off suid for file. */
+#ifdef CREATE_SGUID_ADMIN_ONLY
+	    targetptr->disk.modeBits &= ~02000; /* turn off sgid for file. */
+	  }
+#endif
 	targetptr->disk.owner = InStatus->Owner;
 	if (VolumeRootVnode (targetptr)) {
 	    Error errorCode = 0;	/* what should be done with this? */

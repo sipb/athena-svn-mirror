@@ -1,5 +1,5 @@
 ;; match-window.jl -- match windows to properties
-;; $Id: match-window.jl,v 1.1.1.5 2003-01-05 00:33:07 ghudson Exp $
+;; $Id: match-window.jl,v 1.2 2003-05-20 18:27:54 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -98,7 +98,8 @@
 		 `(symbol ,@(delete-if-not symbolp (window-group-ids)))))
        (ungrouped boolean)
        (cycle-skip boolean)
-       (window-list-skip boolean))
+       (window-list-skip boolean)
+       (task-list-skip boolean))
       (other ,(_ "Other")
        (unique-name boolean)
        (auto-gravity boolean)

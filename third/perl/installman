@@ -45,11 +45,11 @@ GetOptions( \%opts,
 	|| die $usage;
 die $usage if $opts{help};
 
-$opts{man1dir} = $Config{'installman1dir'}
+$opts{man1dir} = $ENV{"DESTDIR"} . $Config{'installman1dir'}
     unless defined($opts{man1dir}); 
 $opts{man1ext} = $Config{'man1ext'}
     unless defined($opts{man1ext}); 
-$opts{man3dir} = $Config{'installman3dir'}
+$opts{man3dir} = $ENV{"DESTDIR"} . $Config{'installman3dir'}
     unless defined($opts{man3dir}); 
 $opts{man3ext} = $Config{'man3ext'}
     unless defined($opts{man3ext}); 
@@ -61,13 +61,13 @@ $opts{verbose} ||= $opts{V} || $opts{notify};
 
 -x  "./perl$Config{exe_ext}" 
   or warn "./perl$Config{exe_ext} not found!  Have you run make?\n";
--d  $Config{'installprivlib'}
+-d  $ENV{"DESTDIR"} . $Config{'installprivlib'}
 	|| warn "Perl library directory $Config{'installprivlib'} not found.
 		Have you run make install?.  (Installing anyway.)\n";
 -x "t/perl$Config{exe_ext}"		|| warn "WARNING: You've never run 'make test'!!!",
 	"  (Installing anyway.)\n";
 
-$packlist = ExtUtils::Packlist->new("$Config{installarchlib}/.packlist");
+$packlist = ExtUtils::Packlist->new($ENV{"DESTDIR"} . "$Config{installarchlib}/.packlist");
 
 
 # Install the main pod pages.

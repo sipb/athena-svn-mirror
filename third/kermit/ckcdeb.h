@@ -1981,7 +1981,7 @@ extern int errno;
   The following declaration causes problems for VMS and OS/2, in which
   errno is an "extern volatile int noshare"...
 */
-extern int errno;			/* Needed by most modules. */
+#include <errno.h>
 #endif /* OS2 */
 #endif /* VMS */
 #endif /* STRATUS */

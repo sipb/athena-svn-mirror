@@ -658,9 +658,9 @@ int esd_open_sound( const char *host )
 		char *cmd;
 
 		setsid();
-		cmd = malloc(strlen(SERVERDIR"/esd  -spawnfd 999999") + (esd_spawn_options?strlen(esd_spawn_options):0));
+		cmd = malloc(strlen("dustbuster -s TERM "SERVERDIR"/esd  -spawnfd 999999") + (esd_spawn_options?strlen(esd_spawn_options):0));
 
-		sprintf(cmd, "%s/esd %s -spawnfd %d", SERVERDIR, esd_spawn_options?esd_spawn_options:"", esd_pipe[1]);
+		sprintf(cmd, "dustbuster -s TERM %s/esd %s -spawnfd %d", SERVERDIR, esd_spawn_options?esd_spawn_options:"", esd_pipe[1]);
 
 		execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
 		perror("execl");
@@ -681,8 +681,8 @@ int esd_open_sound( const char *host )
 	FD_ZERO (&fdset);
 	FD_SET (esd_pipe[0], &fdset);
 	
-	timeout.tv_sec = 0;
-	timeout.tv_usec = esd_spawn_wait_ms * 1000;
+	timeout.tv_sec = esd_spawn_wait_ms / 1000;
+	timeout.tv_usec = (esd_spawn_wait_ms % 1000) * 1000;
 	
 	ret = select (esd_pipe[0] + 1, &fdset, NULL, NULL, &timeout);
 	

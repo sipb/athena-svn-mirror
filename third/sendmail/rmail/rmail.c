@@ -18,7 +18,7 @@ SM_IDSTR(copyright,
      Copyright (c) 1988, 1993\n\
 	The Regents of the University of California.  All rights reserved.\n")
 
-SM_IDSTR(id, "@(#)$Id: rmail.c,v 1.1.1.2 2003-04-08 15:06:14 zacheiss Exp $")
+SM_IDSTR(id, "@(#)$Id: rmail.c,v 1.3 2003-04-08 15:42:16 zacheiss Exp $")
 
 /*
  * RMAIL -- UUCP mail server.
@@ -60,6 +60,7 @@ SM_IDSTR(id, "@(#)$Id: rmail.c,v 1.1.1.2 2003-04-08 15:06:14 zacheiss Exp $")
 # undef EX_OK		/* unistd.h may have another use for this */
 #endif /* EX_OK */
 #include <sysexits.h>
+#include <errno.h>
 
 #include <sm/conf.h>
 #include <sm/errstring.h>

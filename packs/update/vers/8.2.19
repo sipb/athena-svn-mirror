@@ -1,0 +1,41 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	echo "TRACKOS=true"			>> "$CONFVARS"
+	echo "NEWUNIX=true"			>> "$CONFVARS"
+	echo "/etc/mail/sendmail.cf"		>> "$CONFCHG"
+	;;
+
+sgi)
+	echo "/etc/sendmail.cf"			>> "$CONFCHG"
+
+	case `uname -m` in
+	IP22)
+		# New Indy Local packages
+		echo "i patchSG0003171.eoe_sw.gfx"	>> "$LOCALPACKAGES"
+		echo "i patchSG0003171.eoe_sw.unix"	>> "$LOCALPACKAGES"
+
+		# New Indy Link packages -- deselect local and 64-bit
+		# packages.
+		echo "di patchSG0003171.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0003171.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "i patchSG0003171.eoe_sw32.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0003171.eoe_sw64.gfx"	>> "$LINKPACKAGES"
+
+		# 8.2.16 should have ensured that its locally installed
+		# packages were not reinstalled as symlinks, by explicitly
+		# di'ing them in LINKPACKAGES.  Make sure they are di'ed
+		# here, and reinstall them locally now if necessary.
+		if [ -l /usr/lib/libX11.so.1 ]; then
+		    echo "i patchSG0003143.x_eoe_sw.eoe"    >> "$LOCALPACKAGES"
+		    echo "i patchSG0003163.x_eoe_sw.Server" >> "$LOCALPACKAGES"
+		    echo "i patchSG0003163.x_eoe_sw.eoe"    >> "$LOCALPACKAGES"
+		fi
+		echo "di patchSG0003143.x_eoe_sw.eoe"	    >> "$LINKPACKAGES"
+		echo "di patchSG0003163.x_eoe_sw.Server"    >> "$LINKPACKAGES"
+		echo "di patchSG0003163.x_eoe_sw.eoe"	    >> "$LINKPACKAGES"
+		;;
+	esac
+	;;
+esac

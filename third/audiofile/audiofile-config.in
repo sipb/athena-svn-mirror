@@ -40,12 +40,12 @@ while test $# -gt 0; do
       ;;
     --cflags)
       if test @includedir@ != /usr/include ; then
-        includes=-I@includedir@
+        includes=-I${ATHTOOLROOT}@includedir@
       fi
       echo $includes
       ;;
     --libs)
-      libdirs=-L@libdir@
+      libdirs=-L${ATHTOOLROOT}@libdir@
       echo $libdirs -laudiofile -lm
       ;;
     *)

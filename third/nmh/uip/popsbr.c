@@ -2,7 +2,7 @@
 /*
  * popsbr.c -- POP client subroutines
  *
- * $Id: popsbr.c,v 1.1.1.1 1999-02-07 18:14:16 danw Exp $
+ * $Id: popsbr.c,v 1.2 2003-03-20 17:19:30 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -26,7 +26,7 @@
 #define	TRM	"."
 #define	TRMLEN	(sizeof TRM - 1)
 
-extern int errno;
+#include <errno.h>
 
 static int poprint = 0;
 static int pophack = 0;

@@ -1,0 +1,66 @@
+.\" This file uses -man macros.
+.\"	@(#)printf.3s	6.3 (Berkeley) 6/5/86
+.\"
+.TH IWRITE 2v "Sept 15, 1987" "PRPQ 5799-CGZ: IBM 4.3/RT, Rel 1 " " "
+.SH NAME
+iwrite \- write data to an inode
+.SH SYNOPSIS
+.B "cc = iwrite(dev, inode, p1, offset, buf, nbytes)"
+.br
+.B "int cc, dev, inode, p1, offset;"
+.br
+.B "char *buf;"
+.br
+.B "int nbytes;"
+.SH DESCRIPTION
+.I Iwrite
+attempts to writen
+.I nbytes
+of data to
+.I inode,
+on the mounted file system partition specified by
+.I dev.
+The bytes are written beginning at offset
+.I offset
+in the inode from the buffer pointed to by
+.I buf.
+.PP
+The inode must have been stamped with the parameter
+.I p1
+at creation time (see
+.IR icreate(2v) ).
+.SH "RETURN VALUE"
+If successful, the number of bytes actually written is returned.  Otherwise, a -1 is returned and the global variable
+.I errno
+is set to indicate the error.
+.SH ERRORS
+.I Iwrite
+can fail for one of the following principle reasons:
+.PP
+.B [ENXIO]
+	The specified device does not exist or is not mounted or the inode is not stamped with
+.I
+p1.
+.br
+.B [EPERM]
+	The caller is not the super user.
+.br
+.B [ENOENT]
+	The specified inode is not an active, regular file.
+.br
+.B [EPERM]
+	The specified inode was found, but was not created by
+.I icreate,
+nor did it have a group id of -2.
+.br
+.B [EFAULT]
+	
+.I Buf
+points outside the allocated user address space.
+.br
+.B [EFBIG]
+	An attempt was made to write a file that exceeds the process's file size limit or the maximum file size.
+.PP
+Be prepared for other, unspecified errors.
+.SH "SEE ALSO"
+icreate(2i), iopen(2i), iread(2i), iinc(2i), idec(2i), vfsck(8v)

@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.1.1.4 2003-05-04 19:07:46 ghudson Exp $"
+#ident "$Id: vte.c,v 1.2 2003-05-06 05:00:38 ghudson Exp $"
 #include "../config.h"
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -27,7 +27,7 @@
 #include <fcntl.h>
 #include <math.h>
 #include <pwd.h>
-#include <regex.h>
+#include <pcreposix.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>

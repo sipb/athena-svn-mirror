@@ -3049,6 +3049,7 @@ else
   echo "$as_me:3049: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
+PATH_PERL=/usr/athena/bin/perl
 
  cat >conftest.$ac_ext <<_ACEOF
 #line 3054 "configure"
@@ -3757,7 +3758,7 @@ if test "${ac_cv_lib_readline_readline+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lreadline  $LIBS"
+LIBS="-lreadline -lcurses  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 #line 3762 "configure"
 #include "confdefs.h"
@@ -3805,7 +3806,7 @@ if test $ac_cv_lib_readline_readline = yes; then
 #define HAVE_LIBREADLINE 1
 EOF
 
-  LIBS="-lreadline $LIBS"
+  LIBS="-lreadline -lcurses $LIBS"
 
 fi
 

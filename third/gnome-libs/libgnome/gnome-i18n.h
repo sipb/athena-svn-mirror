@@ -23,7 +23,7 @@ BEGIN_GNOME_DECLS
 #    ifdef gettext_noop
 #        define N_(String) gettext_noop (String)
 #    else
-#        define N_(String) (String)
+#        define N_(String) String
 #    endif
 #else
 /* Stubs that do something close enough.  */
@@ -33,7 +33,7 @@ BEGIN_GNOME_DECLS
 #    define dcgettext(Domain,Message,Type) (Message)
 #    define bindtextdomain(Domain,Directory) (Domain)
 #    define _(String) (String)
-#    define N_(String) (String)
+#    define N_(String) String
 #endif
 
 const char *gnome_i18n_get_language(void);

@@ -1,0 +1,41 @@
+### Some tests to make sure Transcript tools are running properly.
+
+if ( "$PRINTER" == "" ) then
+   set pr=nil
+else
+   set pr="$PRINTER"
+endif
+
+if ( -e /usr/adm/utmp ) then
+   set utmp=/usr/adm/utmp
+else
+   set utmp=/etc/utmp
+endif
+
+### enscript tests
+
+${ROOT}/usr/athena/bin/enscript -p- /mit/transcript/transcript-v4.1/.build | lpr -P$pr
+
+${ROOT}/usr/athena/bin/enscript -h1R -fCourier10 -FCourier-Bold10 -P$pr /mit/transcript/transcript-v4.1/.build
+
+${ROOT}/usr/athena/bin/enscript -c -v6 -Jhello -Cworld -\#2 -L10 -b"%%%%%%[%f] [%d] [%n]%%%%%%" -P$pr /mit/transcript/transcript-v4.1/.build
+
+${ROOT}/usr/athena/bin/enscript -G -v6 -L10 -b"%%%%%%[%f] [%d] [%n]%%%%%%" -P$pr /mit/transcript/transcript-v4.1/.build
+
+${ROOT}/usr/athena/bin/enscript -hBv3 -P$pr /mit/transcript/transcript-v4.1/.build
+
+${ROOT}/usr/athena/bin/enscript -hoq -fZapfChancery-MediumItalic8 -FZapfDingbats12 -P$pr $utmp
+
+${ROOT}/usr/athena/bin/enscript -hgm -fZapfChancery-MediumItalic8 -FZapfDingbats12 -P$pr $utmp
+
+### other stuff
+
+${ROOT}/usr/athena/bin/psroff -F Palatino -t -man man/psroff.1p | lpr -P$pr
+
+nroff -man man/enscript.1p | ${ROOT}/usr/athena/bin/enscript -2rl -P$pr
+
+${ROOT}/usr/athena/bin/psroff -t -man man/psnup.1p | ${ROOT}/usr/athena/bin/psnup -Grn1x2 | lpr -h -P$pr
+
+${ROOT}/usr/athena/bin/psroff -t -man man/pslpr.1p | ${ROOT}/usr/athena/bin/pslpr -qL -h -P$pr
+
+${ROOT}/usr/athena/bin/psroff -t -man man/psdraft.1p | ${ROOT}/usr/athena/bin/psdraft -sTRANSCRIPT -fHelvetica80 -g0.75 -x100 -r45 | lpr -h -P$pr

@@ -1,0 +1,71 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:47:44 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+libdir=@libdir@
+appdefdir=$(libdir)/X11/app-defaults
+
+CPP=@CPP@
+CC=@CC@
+PURIFY=
+LD=${PURIFY} ${CC}
+DEFS=@DEFS@ -D_NO_PROTO -DSA_LOC='"@bindir@/xbrowser"'
+CPPFLAGS=@CPPFLAGS@ @X_CFLAGS@ @MOTIF_CFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=$(LOCAL_LIBS) @HESIOD_LIBS@ @KRB4_LIBS@ @MOTIF_LIBS@ -lMu -lXm \
+  @X_LIBS@ -lXt -lXmu @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@ @LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+PARSERLIB=${top_srcdir}/clients/parser/libparser.a
+TTYLIB=${top_srcdir}/clients/tty/libtty.a
+CLIENTLIB=${top_srcdir}/clients/lib/libclient.a
+COMMONLIB=${top_srcdir}/common/libcommon.a
+CONFIGLIB=${top_srcdir}/cfgfile/libcfgfile.a
+LOGGERLIB=${top_srcdir}/logger/liblogger.a
+LOCAL_LIBS=$(CLIENTLIB) $(COMMONLIB) $(CONFIGLIB) $(LOGGERLIB)
+
+SRCS=main.c procs.c visual.c x_ask.c x_instance.c x_motd.c x_resolve.c	\
+  x_send.c x_topic.c x_utils.c Cursor.c converters.c
+OBJS=main.o procs.o visual.o x_ask.o x_instance.o x_motd.o x_resolve.o	\
+  x_send.o x_topic.o x_utils.o Cursor.o converters.o
+
+all: xolc Xolc
+
+xolc: $(OBJS)
+	${LD} ${LDFLAGS} $(OBJS) ${LIBS} -o $@
+
+Xolc: Xolc.cpp
+	rm -f Xolc Xolc-tmp*.c
+	(cp Xolc.cpp Xolc-tmp$$$$.c && $(CPP) -P Xolc-tmp$$$$.c > $@) \
+		|| test -s $@
+	rm -f Xolc-tmp*.c
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} xolc ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${appdefdir}
+	${INSTALL} Xolc ${DESTDIR}${appdefdir}
+
+clean:
+	rm -f $(OBJS) xolc Xolc Xolc-tmp*.c
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

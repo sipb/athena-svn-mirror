@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -185,31 +185,12 @@ AUTOMAKE_OPTIONS = 1.3
 
 SUBDIRS = config doc help
 
-INCLUDES = \
-	-I.			\
-	-I$(srcdir)		\
-	-I$(top_srcdir)/intl	\
-	-I$(top_builddir)/intl	\
-	-I$(top_builddir)/panel	\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DGNOME_DATADIR=\""$(datadir)"\" \
-	-DGLADEDIR=\""$(datadir)/gnome/panel"\" \
-	-DGLOBAL_CONFDIR=\""$(sysconfdir)/gnome/panel-config"\" \
-	-I$(includedir)		\
-	$(GNOME_INCLUDEDIR)	\
-	$(ORB_CFLAGS)		\
-	$(GNOME_PRINT_CFLAGS)	\
-	$(GLADE_CFLAGS)		\
-	$(PIXBUF_CFLAGS)
+INCLUDES =  	-I.				-I$(srcdir)			-I$(top_srcdir)/intl		-I$(top_builddir)/intl		-I$(top_builddir)/panel		-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DGNOME_DATADIR=\""$(datadir)"\" 	-DGLADEDIR=\""$(datadir)/gnome/panel"\" 	-DGLOBAL_CONFDIR=\""$(sysconfdir)/gnome/panel-config"\" 	-I$(includedir)			$(GNOME_INCLUDEDIR)		$(ORB_CFLAGS)			$(GNOME_PRINT_CFLAGS)		$(GLADE_CFLAGS)			$(PIXBUF_CFLAGS)
 
 
 gwmh_dir = $(top_srcdir)/applets/desk-guide
 
-bin_PROGRAMS = \
-	panel				\
-	gnome-panel-properties-capplet	\
-	gnome-panel-add-launcher	\
-	gnome-panel-screenshot
+bin_PROGRAMS =  	panel					gnome-panel-properties-capplet		gnome-panel-add-launcher		gnome-panel-screenshot
 
 
 noinst_PROGRAMS = bad-applet
@@ -219,36 +200,25 @@ libpanel_statusincludedir = $(includedir)
 
 lib_LTLIBRARIES = libpanel_applet.la libpanel_status.la
 
-CORBA_SRCLIST = \
-	gnome-panel-stubs.c	\
-	gnome-panel-skels.c	\
-	gnome-panel-common.c	\
-	gnome-panel.h
+CORBA_SRCLIST =  	gnome-panel-stubs.c		gnome-panel-skels.c		gnome-panel-common.c		gnome-panel.h
 
 
 # try to make these get cleaned properly
 CLEANFILES =  $(CORBA_SRCLIST) my_gnome_panel_idl
 
-libpanel_applet_la_SOURCES = \
-	applet-widget.c \
-	$(CORBA_SRCLIST)
+libpanel_applet_la_SOURCES =  	applet-widget.c 	$(CORBA_SRCLIST)
 
 
-libpanel_appletinclude_HEADERS = \
-	applet-widget.h		\
-	gnome-panel.h
+libpanel_appletinclude_HEADERS =  	applet-widget.h			gnome-panel.h
 
 
 libpanel_applet_la_LDFLAGS = -version-info 0:1:0 -rpath $(libdir)
 libpanel_applet_la_LIBADD = $(ORB_LIBS) -lm $(DL_LIB)
 
-libpanel_status_la_SOURCES = \
-	status-docklet.c \
-	$(CORBA_SRCLIST)
+libpanel_status_la_SOURCES =  	status-docklet.c 	$(CORBA_SRCLIST)
 
 
-libpanel_statusinclude_HEADERS = \
-	status-docklet.h
+libpanel_statusinclude_HEADERS =  	status-docklet.h
 
 
 libpanel_status_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
@@ -256,184 +226,46 @@ libpanel_status_la_LIBADD = $(ORB_LIBS) -lm $(DL_LIB)
 
 bad_applet_SOURCES = bad-applet.c
 
-bad_applet_LDADD = \
-	libpanel_applet.la	\
-	$(GNOME_LIBDIR) 	\
-	$(GNORBA_LIBS)		\
-	$(INTLLIBS)
+bad_applet_LDADD =  	libpanel_applet.la		$(GNOME_LIBDIR) 		$(GNORBA_LIBS)			$(INTLLIBS)
 
 
-GWMH_SRCLIST = \
-	gwmh.c		\
-	gwmh.h		\
-	gstc.c		\
-	gstc.h
+GWMH_SRCLIST =  	gwmh.c			gwmh.h			gstc.c			gstc.h
 
 
 BUILT_SOURCES = $(CORBA_SRCLIST) $(GWMH_SRCLIST)
 
-panel_SOURCES = \
-	$(GWMH_SRCLIST)		\
-	panel-include.h		\
-	panel-types.h		\
-	main.c			\
-	main.h			\
-	applet.c		\
-	applet.h         	\
-	panel.c			\
-	panel.h         	\
-	session.c		\
-	session.h		\
-	panel_config.c  	\
-	panel_config.h		\
-	panel_config_global.h  	\
-	distribution.c		\
-	distribution.h		\
-	menu.c  		\
-	menu.h  		\
-	menu-fentry.c  		\
-	menu-fentry.h  		\
-	menu-rh.c  		\
-	menu-rh.h  		\
-	menu-properties.c	\
-	menu-properties.h	\
-	menu-util.c		\
-	menu-util.h		\
-	launcher.c		\
-	launcher.h		\
-	logout.c		\
-	logout.h		\
-	extern.c  		\
-	extern.h  		\
-	status.c  		\
-	status.h  		\
-	swallow.c  		\
-	swallow.h  		\
-	drawer.c  		\
-	drawer.h  		\
-	panel-widget.c  	\
-	panel-widget.h		\
-	basep-widget.c  	\
-	basep-widget.h		\
-	border-widget.c		\
-	border-widget.h		\
-	edge-widget.c		\
-	edge-widget.h		\
-	aligned-widget.c	\
-	aligned-widget.h	\
-	sliding-widget.c	\
-	sliding-widget.h	\
-	floating-widget.c	\
-	floating-widget.h	\
-	drawer-widget.c		\
-	drawer-widget.h		\
-	button-widget.c  	\
-	button-widget.h		\
-	panel-util.c		\
-	panel-util.h		\
-	tearoffitem.c		\
-	tearoffitem.h		\
-	rgb-stuff.h		\
-	rgb-stuff.c		\
-	global-keys.c		\
-	global-keys.h		\
-	gnome-run.c		\
-	gnome-run.h		\
-	xstuff.c		\
-	xstuff.h		\
-	foobar-widget.h		\
-	foobar-widget.c		\
-	tasklist_icon.c		\
-	tasklist_icon.h		\
-	title-item.h		\
-	title-item.c		\
-	title-item-private.h	\
-	scroll-menu.h		\
-	scroll-menu.c		\
-	icon-entry-hack.c	\
-	icon-entry-hack.h	\
-	multiscreen-stuff.c	\
-	multiscreen-stuff.h	\
-	conditional.c		\
-	conditional.h
+panel_SOURCES =  	$(GWMH_SRCLIST)			panel-include.h			panel-types.h			main.c				main.h				applet.c			applet.h         		panel.c				panel.h         		session.c			session.h			panel_config.c  		panel_config.h			panel_config_global.h  		distribution.c			distribution.h			menu.c  			menu.h  			menu-fentry.c  			menu-fentry.h  			menu-rh.c  			menu-rh.h  			menu-properties.c		menu-properties.h		menu-util.c			menu-util.h			launcher.c			launcher.h			logout.c			logout.h			extern.c  			extern.h  			status.c  			status.h  			swallow.c  			swallow.h  			drawer.c  			drawer.h  			panel-widget.c  		panel-widget.h			basep-widget.c  		basep-widget.h			border-widget.c			border-widget.h			edge-widget.c			edge-widget.h			aligned-widget.c		aligned-widget.h		sliding-widget.c		sliding-widget.h		floating-widget.c		floating-widget.h		drawer-widget.c			drawer-widget.h			button-widget.c  		button-widget.h			panel-util.c			panel-util.h			tearoffitem.c			tearoffitem.h			rgb-stuff.h			rgb-stuff.c			global-keys.c			global-keys.h			gnome-run.c			gnome-run.h			xstuff.c			xstuff.h			foobar-widget.h			foobar-widget.c			tasklist_icon.c			tasklist_icon.h			title-item.h			title-item.c			title-item-private.h		scroll-menu.h			scroll-menu.c			icon-entry-hack.c		icon-entry-hack.h		multiscreen-stuff.c		multiscreen-stuff.h		conditional.c			conditional.h
 
 
-man_MANS = panel.1			\
-	gnome-panel-add-launcher.1	\
-	gnome-panel-properties-capplet.1
+man_MANS = panel.1				gnome-panel-add-launcher.1		gnome-panel-properties-capplet.1
 
 
-panel_LDADD = \
-	libpanel_applet.la	\
-	$(GNOME_LIBDIR)		\
-	$(GNORBA_LIBS)		\
-	$(ORB_LIBS)		\
-	$(GNOMEUI_LIBS)		\
-	$(INTLLIBS)		\
-	$(PIXBUF_LIBS)		\
-	$(XINERAMA_LIBS)
+panel_LDADD =  	libpanel_applet.la		$(GNOME_LIBDIR)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(GNOMEUI_LIBS)			$(INTLLIBS)			$(PIXBUF_LIBS)			$(XINERAMA_LIBS)
 
 
 panel_LDFLAGS = -export-dynamic
 
-gnome_panel_properties_capplet_SOURCES = \
-	gnome-panel-properties.c	\
-	panel-util.c			\
-	icon-entry-hack.c		\
-	conditional.c			\
-	$(CORBA_SRCLIST)
+gnome_panel_properties_capplet_SOURCES =  	gnome-panel-properties.c		panel-util.c				icon-entry-hack.c			conditional.c				$(CORBA_SRCLIST)
 
 
-gnome_panel_properties_capplet_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_CAPPLET_LIBS)	\
-	$(INTLLIBS)		\
-	$(PIXBUF_LIBS)
+gnome_panel_properties_capplet_LDADD =  	$(GNOME_LIBDIR)			$(GNOME_CAPPLET_LIBS)		$(INTLLIBS)			$(PIXBUF_LIBS)
 
 
-gnome_panel_add_launcher_SOURCES = \
-	gnome-panel-add-launcher.c	\
-	$(CORBA_SRCLIST)
+gnome_panel_add_launcher_SOURCES =  	gnome-panel-add-launcher.c		$(CORBA_SRCLIST)
 
 
-gnome_panel_screenshot_SOURCES = \
-	gnome-panel-screenshot.c
+gnome_panel_screenshot_SOURCES =  	gnome-panel-screenshot.c
 
 
-gnome_panel_add_launcher_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOMEUI_LIBS)		\
-	$(GNORBA_LIBS)		\
-	$(ORB_LIBS)		\
-	$(INTLLIBS)		\
-	$(PIXBUF_LIBS)
+gnome_panel_add_launcher_LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(INTLLIBS)			$(PIXBUF_LIBS)
 
 
-gnome_panel_screenshot_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOMEUI_LIBS)		\
-	$(GLADE_LIBS)		\
-	$(GNOME_PRINT_LIBS)	\
-	$(INTLLIBS)		\
-	$(PNG_LIBS)		\
-	$(PIXBUF_LIBS)
+gnome_panel_screenshot_LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(GLADE_LIBS)			$(GNOME_PRINT_LIBS)		$(INTLLIBS)			$(PNG_LIBS)			$(PIXBUF_LIBS)
 
 
 MAINTAINERCLEANFILES = $(CORBA_SRCLIST)
 
-EXTRA_DIST = \
-	appletsConf.sh.in		\
-	dockletsConf.sh.in		\
-	panel.gnorba			\
-	panel.soundlist.in		\
-	APPLET_WRITING			\
-	panel.hints			\
-	gnome-panel-properties.desktop.in	\
-	nothing.cP			\
-	title-item.gob			\
-	gnome-panel-screenshot.glade	\
-	gnome-panel-screenshot.glade.h	\
-	$(man_MANS)
+EXTRA_DIST =  	appletsConf.sh.in			dockletsConf.sh.in			panel.gnorba				panel.soundlist.in			APPLET_WRITING				panel.hints				gnome-panel-properties.desktop.in		nothing.cP				title-item.gob				gnome-panel-screenshot.glade		gnome-panel-screenshot.glade.h		$(man_MANS)
 
 
 confexecdir = $(libdir)
@@ -459,6 +291,14 @@ sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
 desk_in_files = gnome-panel-properties.desktop.in
 desk_DATA = $(desk_in_files:.desktop.in=.desktop)
+
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = info.png logout-icon-menu.png
+
+athenadir = $(datadir)/gnome/athena
+athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
+athena_SCRIPTS = mail-script browser-script terminal-script editor-script setup
+AFSMENUS = /afs/athena.mit.edu/system/config/panel/menus
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -511,6 +351,8 @@ gnome_panel_screenshot_LDFLAGS =
 bad_applet_OBJECTS =  bad-applet.$(OBJEXT)
 bad_applet_DEPENDENCIES =  libpanel_applet.la
 bad_applet_LDFLAGS = 
+SCRIPTS =  $(athena_SCRIPTS)
+
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -519,8 +361,9 @@ man1dir = $(mandir)/man1
 MANS = $(man_MANS)
 
 NROFF = nroff
-DATA =  $(confexec_DATA) $(desk_DATA) $(glade_DATA) $(hints_DATA) \
-$(panelgnorba_DATA) $(soundlist_DATA) $(sys_DATA)
+DATA =  $(athena_DATA) $(confexec_DATA) $(desk_DATA) $(glade_DATA) \
+$(hints_DATA) $(panelgnorba_DATA) $(pixmap_DATA) $(soundlist_DATA) \
+$(sys_DATA)
 
 HEADERS =  $(libpanel_appletinclude_HEADERS) \
 $(libpanel_statusinclude_HEADERS)
@@ -675,6 +518,25 @@ bad-applet$(EXEEXT): $(bad_applet_OBJECTS) $(bad_applet_DEPENDENCIES)
 	@rm -f bad-applet$(EXEEXT)
 	$(LINK) $(bad_applet_LDFLAGS) $(bad_applet_OBJECTS) $(bad_applet_LDADD) $(LIBS)
 
+install-athenaSCRIPTS: $(athena_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	@list='$(athena_SCRIPTS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_SCRIPT) $$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`; \
+	  else if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; fi; \
+	done
+
+uninstall-athenaSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	list='$(athena_SCRIPTS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(athenadir)/`echo $$p|sed '$(transform)'`; \
+	done
+
 install-man1:
 	$(mkinstalldirs) $(DESTDIR)$(man1dir)
 	@list='$(man1_MANS)'; \
@@ -713,6 +575,25 @@ install-man: $(MANS)
 uninstall-man:
 	@$(NORMAL_UNINSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) uninstall-man1
+
+install-athenaDATA: $(athena_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	@list='$(athena_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(athenadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(athenadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(athenadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(athenadir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-athenaDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(athena_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(athenadir)/$$p; \
+	done
 
 install-confexecDATA: $(confexec_DATA)
 	@$(NORMAL_INSTALL)
@@ -807,6 +688,25 @@ uninstall-panelgnorbaDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(panelgnorba_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(panelgnorbadir)/$$p; \
+	done
+
+install-pixmapDATA: $(pixmap_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pixmapdir)
+	@list='$(pixmap_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pixmapDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pixmap_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pixmapdir)/$$p; \
 	done
 
 install-soundlistDATA: $(soundlist_DATA)
@@ -913,7 +813,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" != "." || dot_seen=yes; \
+	  test "$$subdir" = "." && dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -991,279 +891,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-aligned-widget.o: aligned-widget.c ../config.h aligned-widget.h \
-	border-widget.h basep-widget.h panel-widget.h button-widget.h \
-	panel-types.h gnome-panel.h panel_config_global.h \
-	foobar-widget.h gwmh.h multiscreen-stuff.h
-applet-widget.lo applet-widget.o : applet-widget.c ../config.h \
-	applet-widget.h gnome-panel.h
-applet.o: applet.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h scroll-menu.h
-bad-applet.o: bad-applet.c applet-widget.h gnome-panel.h
-basep-widget.o: basep-widget.c ../config.h panel-widget.h \
-	button-widget.h panel-types.h gnome-panel.h basep-widget.h \
-	panel-util.h panel_config_global.h foobar-widget.h gwmh.h \
-	drawer-widget.h drawer.h panel.h applet.h panel_config.h \
-	border-widget.h aligned-widget.h sliding-widget.h edge-widget.h \
-	xstuff.h multiscreen-stuff.h
-border-widget.o: border-widget.c ../config.h border-widget.h \
-	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	gnome-panel.h panel_config_global.h multiscreen-stuff.h
-button-widget.o: button-widget.c ../config.h button-widget.h \
-	panel-types.h gnome-panel.h panel-widget.h basep-widget.h \
-	panel-util.h panel_config_global.h rgb-stuff.h
-conditional.o: conditional.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h conditional.h
-distribution.o: distribution.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h
-drawer-widget.o: drawer-widget.c ../config.h drawer-widget.h \
-	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	gnome-panel.h drawer.h panel.h applet.h panel_config.h \
-	border-widget.h aligned-widget.h sliding-widget.h panel-util.h \
-	floating-widget.h panel_config_global.h multiscreen-stuff.h
-drawer.o: drawer.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h icon-entry-hack.h \
-	xstuff.h
-edge-widget.o: edge-widget.c ../config.h edge-widget.h border-widget.h \
-	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	gnome-panel.h panel_config_global.h foobar-widget.h gwmh.h \
-	multiscreen-stuff.h
-extern.o: extern.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h gnome-run.h
-floating-widget.o: floating-widget.c ../config.h floating-widget.h \
-	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	gnome-panel.h border-widget.h panel_config_global.h \
-	foobar-widget.h gwmh.h panel-util.h multiscreen-stuff.h
-foobar-widget.o: foobar-widget.c ../config.h foobar-widget.h \
-	panel-types.h gnome-panel.h gwmh.h menu.h panel-widget.h \
-	button-widget.h applet.h menu-util.h session.h xstuff.h \
-	basep-widget.h panel_config_global.h panel-util.h \
-	drawer-widget.h drawer.h panel.h panel_config.h border-widget.h \
-	aligned-widget.h sliding-widget.h gnome-run.h scroll-menu.h \
-	tasklist_icon.h multiscreen-stuff.h
-global-keys.o: global-keys.c ../config.h global-keys.h applet.h \
-	panel-widget.h button-widget.h panel-types.h gnome-panel.h \
-	panel-include.h basep-widget.h edge-widget.h border-widget.h \
-	aligned-widget.h sliding-widget.h floating-widget.h \
-	drawer-widget.h drawer.h panel.h panel_config.h panel-util.h \
-	foobar-widget.h gwmh.h session.h main.h panel_config_global.h \
-	distribution.h menu.h menu-fentry.h menu-rh.h menu-properties.h \
-	menu-util.h swallow.h launcher.h logout.h extern.h status.h \
-	gnome-run.h
-gnome-panel-add-launcher.o: gnome-panel-add-launcher.c ../config.h \
-	gnome-panel.h
-gnome-panel-common.lo gnome-panel-common.o : gnome-panel-common.c \
-	gnome-panel.h
-gnome-panel-properties.o: gnome-panel-properties.c ../config.h \
-	global-keys.h panel-types.h gnome-panel.h panel_config_global.h \
-	panel-widget.h button-widget.h panel-util.h session.h \
-	icon-entry-hack.h conditional.h menu.h applet.h nothing.cP
-gnome-panel-screenshot.o: gnome-panel-screenshot.c ../config.h
-gnome-panel-skels.lo gnome-panel-skels.o : gnome-panel-skels.c \
-	gnome-panel.h
-gnome-panel-stubs.lo gnome-panel-stubs.o : gnome-panel-stubs.c \
-	gnome-panel.h
-gnome-run.o: gnome-run.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h multiscreen-stuff.h \
-	gnome-run.h
-gstc.o: gstc.c gstc.h
-gwmh.o: gwmh.c gwmh.h gstc.h
-icon-entry-hack.o: icon-entry-hack.c ../config.h icon-entry-hack.h
-launcher.o: launcher.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h icon-entry-hack.h
-logout.o: logout.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h
-main.o: main.c ../config.h panel-include.h panel-types.h gnome-panel.h \
-	panel-widget.h button-widget.h basep-widget.h edge-widget.h \
-	border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h xstuff.h \
-	multiscreen-stuff.h conditional.h
-menu-fentry.o: menu-fentry.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h
-menu-properties.o: menu-properties.c ../config.h panel-include.h \
-	panel-types.h gnome-panel.h panel-widget.h button-widget.h \
-	basep-widget.h edge-widget.h border-widget.h aligned-widget.h \
-	sliding-widget.h floating-widget.h drawer-widget.h drawer.h \
-	panel.h applet.h panel_config.h panel-util.h foobar-widget.h \
-	gwmh.h session.h main.h panel_config_global.h distribution.h \
-	menu.h menu-fentry.h menu-rh.h menu-properties.h menu-util.h \
-	swallow.h launcher.h logout.h extern.h status.h \
-	icon-entry-hack.h
-menu-rh.o: menu-rh.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h
-menu-util.o: menu-util.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h multiscreen-stuff.h
-menu.o: menu.c ../config.h panel-include.h panel-types.h gnome-panel.h \
-	panel-widget.h button-widget.h basep-widget.h edge-widget.h \
-	border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h tearoffitem.h gnome-run.h \
-	title-item.h scroll-menu.h icon-entry-hack.h \
-	multiscreen-stuff.h conditional.h
-multiscreen-stuff.o: multiscreen-stuff.c ../config.h panel-include.h \
-	panel-types.h gnome-panel.h panel-widget.h button-widget.h \
-	basep-widget.h edge-widget.h border-widget.h aligned-widget.h \
-	sliding-widget.h floating-widget.h drawer-widget.h drawer.h \
-	panel.h applet.h panel_config.h panel-util.h foobar-widget.h \
-	gwmh.h session.h main.h panel_config_global.h distribution.h \
-	menu.h menu-fentry.h menu-rh.h menu-properties.h menu-util.h \
-	swallow.h launcher.h logout.h extern.h status.h \
-	multiscreen-stuff.h
-panel-util.o: panel-util.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h icon-entry-hack.h
-panel-widget.o: panel-widget.c ../config.h panel-widget.h \
-	button-widget.h panel-types.h gnome-panel.h panel-util.h \
-	rgb-stuff.h
-panel.o: panel.c ../config.h panel-include.h panel-types.h gnome-panel.h \
-	panel-widget.h button-widget.h basep-widget.h edge-widget.h \
-	border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h gnome-run.h
-panel_config.o: panel_config.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h rgb-stuff.h \
-	multiscreen-stuff.h nothing.cP
-rgb-stuff.o: rgb-stuff.c ../config.h rgb-stuff.h
-scroll-menu.o: scroll-menu.c scroll-menu.h
-session.o: session.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h gnome-run.h global-keys.h \
-	xstuff.h multiscreen-stuff.h conditional.h
-sliding-widget.o: sliding-widget.c ../config.h sliding-widget.h \
-	border-widget.h basep-widget.h panel-widget.h button-widget.h \
-	panel-types.h gnome-panel.h panel_config_global.h \
-	foobar-widget.h gwmh.h panel-util.h multiscreen-stuff.h
-status-docklet.lo status-docklet.o : status-docklet.c ../config.h \
-	status-docklet.h gnome-panel.h
-status.o: status.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h xstuff.h
-swallow.o: swallow.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h xstuff.h
-tasklist_icon.o: tasklist_icon.c ../config.h gwmh.h xstuff.h \
-	tasklist_icon.h
-tearoffitem.o: tearoffitem.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h tearoffitem.h
-title-item.o: title-item.c title-item.h title-item-private.h
-xstuff.o: xstuff.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h panel-util.h foobar-widget.h gwmh.h session.h \
-	main.h panel_config_global.h distribution.h menu.h \
-	menu-fentry.h menu-rh.h menu-properties.h menu-util.h swallow.h \
-	launcher.h logout.h extern.h status.h global-keys.h xstuff.h \
-	multiscreen-stuff.h
-
 info-am:
 info: info-recursive
 dvi-am:
@@ -1276,35 +903,42 @@ install-exec-am: install-libLTLIBRARIES install-binPROGRAMS \
 		install-confexecDATA
 install-exec: install-exec-recursive
 
-install-data-am: install-man install-deskDATA install-gladeDATA \
-		install-hintsDATA install-panelgnorbaDATA \
+install-data-am: install-athenaSCRIPTS install-man install-athenaDATA \
+		install-deskDATA install-gladeDATA install-hintsDATA \
+		install-panelgnorbaDATA install-pixmapDATA \
 		install-soundlistDATA install-sysDATA \
 		install-libpanel_appletincludeHEADERS \
-		install-libpanel_statusincludeHEADERS
+		install-libpanel_statusincludeHEADERS \
+		install-data-local
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
-		uninstall-man uninstall-confexecDATA uninstall-deskDATA \
-		uninstall-gladeDATA uninstall-hintsDATA \
-		uninstall-panelgnorbaDATA uninstall-soundlistDATA \
+		uninstall-athenaSCRIPTS uninstall-man \
+		uninstall-athenaDATA uninstall-confexecDATA \
+		uninstall-deskDATA uninstall-gladeDATA \
+		uninstall-hintsDATA uninstall-panelgnorbaDATA \
+		uninstall-pixmapDATA uninstall-soundlistDATA \
 		uninstall-sysDATA \
 		uninstall-libpanel_appletincludeHEADERS \
 		uninstall-libpanel_statusincludeHEADERS
 uninstall: uninstall-recursive
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(MANS) $(DATA) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
+		$(HEADERS)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(mandir)/man1 $(DESTDIR)$(confexecdir) \
+		$(DESTDIR)$(athenadir) $(DESTDIR)$(mandir)/man1 \
+		$(DESTDIR)$(athenadir) $(DESTDIR)$(confexecdir) \
 		$(DESTDIR)$(deskdir) $(DESTDIR)$(gladedir) \
 		$(DESTDIR)$(hintsdir) $(DESTDIR)$(panelgnorbadir) \
-		$(DESTDIR)$(soundlistdir) $(DESTDIR)$(sysdir) \
+		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(soundlistdir) \
+		$(DESTDIR)$(sysdir) \
 		$(DESTDIR)$(libpanel_appletincludedir) \
 		$(DESTDIR)$(libpanel_statusincludedir)
 
@@ -1359,13 +993,16 @@ mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
-clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS install-man1 \
-uninstall-man1 install-man uninstall-man uninstall-confexecDATA \
-install-confexecDATA uninstall-deskDATA install-deskDATA \
-uninstall-gladeDATA install-gladeDATA uninstall-hintsDATA \
-install-hintsDATA uninstall-panelgnorbaDATA install-panelgnorbaDATA \
-uninstall-soundlistDATA install-soundlistDATA uninstall-sysDATA \
-install-sysDATA uninstall-libpanel_appletincludeHEADERS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+uninstall-athenaSCRIPTS install-athenaSCRIPTS install-man1 \
+uninstall-man1 install-man uninstall-man uninstall-athenaDATA \
+install-athenaDATA uninstall-confexecDATA install-confexecDATA \
+uninstall-deskDATA install-deskDATA uninstall-gladeDATA \
+install-gladeDATA uninstall-hintsDATA install-hintsDATA \
+uninstall-panelgnorbaDATA install-panelgnorbaDATA uninstall-pixmapDATA \
+install-pixmapDATA uninstall-soundlistDATA install-soundlistDATA \
+uninstall-sysDATA install-sysDATA \
+uninstall-libpanel_appletincludeHEADERS \
 install-libpanel_appletincludeHEADERS \
 uninstall-libpanel_statusincludeHEADERS \
 install-libpanel_statusincludeHEADERS install-data-recursive \
@@ -1376,8 +1013,8 @@ dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs-am \
+install-exec install-data-local install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
@@ -1423,7 +1060,24 @@ dockletsConf.sh: dockletsConf.sh.in Makefile
 @XML_I18N_MERGE_DESKTOP_RULE@
 @XML_I18N_MERGE_DESKTOP_RULE@
 
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	install -c -m 644 mail.png $(DESTDIR)$(athenadir)/mail-icon
+	install -c -m 644 browser.png $(DESTDIR)$(athenadir)/browser-icon
+	install -c -m 644 terminal.png $(DESTDIR)$(athenadir)/terminal-icon
+	install -c -m 644 editor.png $(DESTDIR)$(athenadir)/editor-icon
+	install -c -m 644 logout.png $(DESTDIR)$(athenadir)/logout-icon
+	install -c -m 644 menu.png $(DESTDIR)$(athenadir)/menu-icon
+	rm -f $(DESTDIR)$(athenadir)/menus
+	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION) \
+		$(DESTDIR)$(athenadir)/menus
+	rm -f $(DESTDIR)$(athenadir)/menus.tar
+	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION).tar \
+		$(DESTDIR)$(athenadir)/menus.tar
+
 $(srcdir)/panel-util.c: $(CORBA_SRCLIST)
+
+applet-widget.o applet.o extern.o panel.o status-docklet.o status.o xstuff.o applet-widget.lo applet.lo extern.lo panel.lo status-docklet.lo status.lo xstuff.lo: gnome-panel.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

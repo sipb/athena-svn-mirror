@@ -662,11 +662,15 @@ typedef long mflag;
 #include <sys/time.h>
 #else
 #ifdef __linux__			/* Linux */
+#if __GLIBC__ >= 2
+#include <sys/ioctl.h>
+#else
 /* Kludge to fix redefinition in <linux/wait.h> */
 #undef WNOHANG
 #undef WUNTRACED
 #include <linux/fs.h>
 #include <linux/tty.h>
+#endif
 #include <sys/time.h>
 #ifdef LINUXHISPEED
 #include <linux/serial.h>

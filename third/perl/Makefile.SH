@@ -745,11 +745,11 @@ install.perl:	all installperl
 		cd ../pod; $(MAKE) compile; \
 	else :; \
 	fi
-	$(LDLIBPTH) ./perl installperl $(INSTALLFLAGS) $(STRIPFLAGS)
+	$(LDLIBPTH) DESTDIR=${DESTDIR} ./perl installperl $(INSTALLFLAGS) $(STRIPFLAGS)
 	$(MAKE) extras.install
 
 install.man:	all installman
-	$(LDLIBPTH) ./perl installman $(INSTALLFLAGS)
+	$(LDLIBPTH) DESTDIR=${DESTDIR} ./perl installman $(INSTALLFLAGS)
 
 # XXX Experimental. Hardwired values, but useful for testing.
 # Eventually Configure could ask for some of these values.
@@ -1086,7 +1086,7 @@ minitest: miniperl$(EXE_EXT) lib/re.pm
 	@echo "to build lib/Config.pm or lib/lib.pm."
 	@echo " "
 	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
-		&& $(LDLIBPTH) ./perl TEST base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
+		&& $(LDLIBPTH) ./perl TEST base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t
 
 # Test via harness
 

@@ -324,7 +324,7 @@ int main(int argc, char **argv)
 		
 		d(fprintf(stderr, "lock helper waiting for input\n"));
 		if (select(STDIN_FILENO+1, &rset, NULL, NULL, lock_info_list?&tv:NULL) == -1) {
-			if (errno == EINTR)
+			if (errno != EINTR)
 				break;
 
 			continue;

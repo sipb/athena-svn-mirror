@@ -1,5 +1,5 @@
 ;; focus.jl -- implement standard focus behaviour
-;; $Id: focus.jl,v 1.1.1.4 2003-01-05 00:32:18 ghudson Exp $
+;; $Id: focus.jl,v 1.4 2003-01-05 00:48:00 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 

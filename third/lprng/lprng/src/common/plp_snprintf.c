@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright 1994-2000 Patrick Powell, San Diego, CA <papowell@astart.com>
+ * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 
 /*
@@ -112,6 +112,7 @@
 # include <strings.h>
 #endif
 #include <stdio.h>
+#include <errno.h>
 
 /*
  * For testing, define these values
@@ -130,7 +131,7 @@
  *************************************************/
  
  
- static char *const _id = "plp_snprintf V98.12.21 Copyright Patrick Powell 1988-2000 "
+ static char *const _id = "plp_snprintf V98.12.21 Copyright Patrick Powell 1988-1998 "
  "$Id"
  " LOCAL REVISIONS: <NONE>";
 
@@ -479,34 +480,36 @@ fmtdouble( int fmt, double value, int ljust, int len, int zpad, int precision )
 {
 	char convert[128];
 	char formatstr[128];
+	int l;
 
-	/* fprintf(stderr,"len %d, precision %d\n", len, precision ); */
+	if( len == 0 ) len = 10;
 	if( len > (sizeof(convert) - 20) ){
 		len = sizeof(convert) - 20;
 	}
-	if( precision >= 0 && precision > sizeof(convert) - 20 ){
+	if( precision > sizeof(convert) - 20 ){
 		precision = sizeof(convert) - 20;
 	}
-	if( precision >= 0 && precision > len ) precision = len;
+	if( precision > len ) precision = len;
 	strcpy( formatstr, "%" );
 	if( ljust ) mystrcat(formatstr, "-" );
 	if( zpad ) mystrcat(formatstr, "0" );
 	if( len ){
 		sprintf( formatstr+strlen(formatstr), "%d", len );
 	}
-	if( precision >= 0 ){
+	if( precision > 0 ){
 		sprintf( formatstr+strlen(formatstr), ".%d", precision );
 	}
-	sprintf( formatstr+strlen(formatstr), "%c", fmt );
+	l = strlen( formatstr );
+	formatstr[l] = fmt;
+	formatstr[l+1] = 0;
 	/* this is easier than trying to do the portable dtostr */
-	/* fprintf(stderr,"%s\n", formatstr); */
 	sprintf( convert, formatstr, value );
 	dostr( convert );
 }
 
  static void dostr( char *str )
 {
-	if(str) while(*str) dopr_outch(*str++);
+	while(*str) dopr_outch(*str++);
 }
 
  static void dopr_outch( int c )
@@ -597,16 +600,6 @@ int main( void )
 	plp_snprintf( buffer, sizeof(buffer), (t = "0%x, 0%x"), (char *)(0x01234567), (char *)0, 0, 0, 0); printf( "%s = '%s'\n", t, buffer );
 	plp_snprintf( buffer, sizeof(buffer), (t = "0%x, 0%x"), (char *)(0x01234567), (char *)0x89ABCDEF, 0, 0, 0); printf( "%s = '%s'\n", t, buffer );
 	plp_snprintf( buffer, sizeof(buffer), (t = "0%x, 0%x"), t, 0, 0, 0, 0); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%f"), 1.25 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%f"), 1.2345 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%12f"), 1.25 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%12.2f"), 1.25 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%f"), 1.0 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%.0f"), 1.0 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%0.0f"), 1.0 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%1.0f"), 1.0 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%1.5f"), 1.0 ); printf( "%s = '%s'\n", t, buffer );
-	plp_snprintf( buffer, sizeof(buffer), (t = "%5.5f"), 1.0 ); printf( "%s = '%s'\n", t, buffer );
 	return(0);
 }
 #endif

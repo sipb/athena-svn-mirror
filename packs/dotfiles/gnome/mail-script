@@ -1,0 +1,48 @@
+#!/bin/sh
+
+if [ -f $HOME/.athena-evo-noask ]; then
+  mailer=evolution
+elif [ -f $HOME/.athena-xmh-noask ]; then
+  mailer=xmh
+elif [ ! -f $HOME/Mail/inbox/.xmhcache ]; then
+  # Doesn't look like the user has run xmh before.  Wire the mail
+  # launcher to Evolution.
+  mailer=evolution
+  touch $HOME/.athena-evo-noask
+else
+  mail-dialog
+  case $? in
+  0)
+    mailer=evolution
+    ;;
+  1)
+    mailer=xmh
+    ;;
+  2)
+    mailer=evolution
+    touch $HOME/.athena-evo-noask
+    ;;
+  3)
+    mailer=xmh
+    touch $HOME/.athena-xmh-noask
+    ;;
+  4)
+    mailer=pine-info
+    ;;
+  *)
+    exit
+    ;;
+  esac
+fi
+
+case $mailer in
+evolution)
+  exec evolution --no-splash
+  ;;
+xmh)
+  exec xmh
+  ;;
+pine-info)
+  exec htmlview http://web.mit.edu/release/pine.html
+  ;;
+esac

@@ -173,7 +173,7 @@ main (int argc, char **argv)
   start_time = time (NULL);
   cur_day_start = start_time - DAYSECS;
   full_days = false;
-  no_leaf_check = false;
+  no_leaf_check = true;
   stay_on_filesystem = false;
   exit_status = 0;
   dereference = false;

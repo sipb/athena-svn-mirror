@@ -497,4 +497,5 @@ main(argc,argv)
     OutputCharSet();
     OutputFudged();
     fclose(dit);
+    return 0;
 }

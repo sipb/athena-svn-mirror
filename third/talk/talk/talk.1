@@ -33,99 +33,80 @@
 .\"
 .\"     @(#)talk.1	8.1 (Berkeley) 6/6/93
 .\"
-.Dd June 6, 1993
-.Dt TALK 1
-.Os BSD 4.2
-.Sh NAME
-.Nm talk
-.Nd talk to another user
-.Sh SYNOPSIS
-.Nm talk
-.Ar person
-.Op Ar ttyname
-.Sh DESCRIPTION
-.Nm Talk
+.TH TALK 1 "June 6, 1993"
+.UC 4
+.SH NAME
+talk \- talk to another user
+.SH SYNOPSIS
+.B talk
+person
+.B [
+ttyname
+.B ]
+.SH DESCRIPTION
+.I Talk
 is a visual communication program which copies lines from your
 terminal to that of another user.
-.Pp
+.PP
 Options available:
-.Bl -tag -width ttyname
-.It Ar person
+.IP person
 If you wish to talk to someone on your own machine, then
-.Ar person
+.I person
 is just the person's login name.  If you wish to talk to a user on
 another host, then
-.Ar person
+.I person
 is of the form
-.Ql user@host .
-.It Ar ttyname
+.I user@host .
+.IP ttyname
 If you wish to talk to a user who is logged in more than once, the
-.Ar ttyname
+.I ttyname
 argument may be used to indicate the appropriate terminal
 name, where
-.Ar ttyname
-is of the form
-.Ql ttyXX .
-.El
-.Pp
+.I ttyname
+is of the form ``ttyXX''.
+.PP
 When first called,
-.Nm talk
+.I talk
 sends the message
-.Bd -literal -offset indent -compact
-Message from TalkDaemon@his_machine...
-talk: connection requested by your_name@your_machine.
-talk: respond with: talk your_name@your_machine
-.Ed
-.Pp
+.PP
+     Message from TalkDaemon@his_machine...
+     talk: connection requested by your_name@your_machine.
+     talk: respond with: talk your_name@your_machine
+.PP
 to the user you wish to talk to. At this point, the recipient
 of the message should reply by typing
-.Pp
-.Dl talk \ your_name@your_machine
-.Pp
+.PP
+     talk \ your_name@your_machine
+.PP
 It doesn't matter from which machine the recipient replies, as
 long as his login-name is the same.  Once communication is established,
 the two parties may type simultaneously, with their output appearing
-in separate windows.  Typing control-L
-.Ql ^L
-will cause the screen to
+in separate windows.  Typing control-L (^L) will cause the screen to
 be reprinted, while your erase, kill, and word kill characters will
 behave normally.  To exit, just type your interrupt character;
-.Nm talk
+.I talk
 then moves the cursor to the bottom of the screen and restores the
 terminal to its previous state.
-.Pp
+.PP
 Permission to talk may be denied or granted by use of the
-.Xr mesg 1
+.I mesg
 command.  At the outset talking is allowed.  Certain commands, in
 particular
-.Xr nroff 1
+.I nroff
 and
-.Xr pr 1 ,
+.IR pr ,
 disallow messages in order to
 prevent messy output.
-.Pp
-.Sh FILES
-.Bl -tag -width /var/run/utmp -compact
-.It Pa /etc/hosts
-to find the recipient's machine
-.It Pa /var/run/utmp
-to find the recipient's tty
-.El
-.Sh SEE ALSO
-.Xr mail 1 ,
-.Xr mesg 1 ,
-.Xr who 1 ,
-.Xr write 1
-.Sh BUGS
+.PP
+.SH SEE ALSO
+mail(1), mesg(1), who(1), write(1)
+.SH BUGS
 The version of
-.Xr talk 1
-released with
-.Bx 4.3
-uses a protocol that
+.I talk
+released with 4.3BSD uses a protocol that
 is incompatible with the protocol used in the version released with
-.Bx 4.2 .
-.Sh HISTORY
+4.2BSD.
+.SH HISTORY
 The
-.Nm
-command appeared in
-.Bx 4.2 .
+.I talk
+command appeared in 4.2BSD.

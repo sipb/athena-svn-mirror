@@ -1,0 +1,52 @@
+# config.site: Athena-specific autconf configuration
+# $Id: config.site,v 1.1 2000-03-06 16:17:13 tb Exp $
+#
+
+athena=true
+
+# Compile programs with debugging and without optimization, for ease
+# of maintenance.  Use headers and libraries from /usr/athena.
+# ATHTOOLROOT is set to the target directory by do.sh for a
+# self-contained build.
+[ -n "$CFLAGS" ]	|| CFLAGS=-g
+[ -n "$LDFLAGS" ]	|| LDFLAGS=-L$ATHTOOLROOT/usr/athena/lib
+[ -n "$CPPFLAGS" ]	|| CPPFLAGS="-isystem $ATHTOOLROOT/usr/athena/include"
+
+# Set location of X and Motif includes and libraries.
+case "$HOSTTYPE" in
+	sun4)
+		x_includes=/usr/openwin/include
+		x_libraries=/usr/openwin/lib
+		with_motif=/usr/dt
+		;;
+	linux)
+		x_includes=/usr/X11R6/include
+		x_libraries=/usr/X11R6/lib
+		with_motif=yes
+		# Kludge.  libresolv only defines __res_foo.
+		ac_cv_lib_resolv_res_send=yes
+		;;
+	*)
+		x_includes=
+		x_libraries=
+		with_motif=yes
+		;;
+esac
+
+# Set location of various includes and libraries if they aren't
+# already set.
+[ -n "$with_afs" ]	|| with_afs=$ATHTOOLROOT/usr/afsws
+[ -n "$with_krb4" ]	|| with_krb4=yes
+[ -n "$with_krb5" ]	|| with_krb5=yes
+[ -n "$with_hesiod" ]	|| with_hesiod=yes
+[ -n "$with_com_err" ]	|| with_com_err=yes
+[ -n "$with_ss" ] 	|| with_ss=yes
+[ -n "$with_zephyr" ]	|| with_zephyr=yes
+[ -n "$with_ares" ]	|| with_ares=yes
+
+prefix=/usr/athena
+datadir='${exec_prefix}/lib'
+sbindir='${exec_prefix}/etc'
+sysconfdir=/etc/athena
+lbindir=/bin/athena
+lsbindir=/etc/athena

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ./configure --without-saslauthd --with-plugindir=/usr/athena/lib/sasl2

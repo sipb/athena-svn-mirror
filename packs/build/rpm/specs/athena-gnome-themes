@@ -1,0 +1,7 @@
+Name: athena-gnome-themes
+Summary: Themes collection for GNOME, for Athena
+License: LGPL
+Group: User Interface/Desktop
+
+%description
+Themes collection for GNOME.

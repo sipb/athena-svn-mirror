@@ -1,0 +1,22 @@
+.\" 
+.\" $Id: authwatch.1,v 1.1 2002-01-23 22:15:29 mwhitson Exp $
+.\"
+.TH authwatch 1
+.DA January 16, 2002
+.SH NAME
+authwatch - warn user when kerberos tickets are about to expire
+.SH SYNOPSIS
+authwatch [gnome-options]
+.SH DESCRIPTION
+\fIauthwatch\fR is a background utility which monitors the lifetime of
+the ticket-granting ticket in the default Kerberos v5 credentials
+cache.  If the ticket lifetime drops below 15 minutes, it displays a
+graphical warning to the user.  The warning remains until dismissed or
+until tickets are refreshed.
+
+.SH "AUTHORS"
+Mike Whitson
+.br
+Copyright 2002 by the Massachusetts Institute of Technology.
+.SH "SEE ALSO"
+\fIkerberos\fR(1), \fIklist\fR(1), \fIrenew\fR(1)

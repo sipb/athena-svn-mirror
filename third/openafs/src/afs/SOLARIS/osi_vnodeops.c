@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vnodeops.c,v 1.1.1.2 2002-12-13 20:41:59 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_vnodeops.c,v 1.3 2002-12-13 22:06:45 zacheiss Exp $");
 
 #if	defined(AFS_SUN_ENV) || defined(AFS_SUN5_ENV)
 /*

@@ -8,7 +8,7 @@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
-install_prefix	=
+install_prefix	= $(DESTDIR)
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
@@ -17,11 +17,12 @@ man1dir		= $(mandir)/man1
 mansuffix	= 1
 
 CC		= @CC@
+CPPFLAGS	= @CPPFLAGS@
 CFLAGS		= @CFLAGS@
 LDFLAGS		= @LDFLAGS@
 DEFS		= -DSTANDALONE @DEFS@
 LIBS		= @LIBS@
-PERL		= @PERL@
+PERL		= /usr/athena/bin/perl
 
 DEPEND		= @DEPEND@
 DEPEND_FLAGS	= @DEPEND_FLAGS@
@@ -88,7 +89,7 @@ SRCS		= attraction.c blitspin.c bouboule.c braid.c bubbles.c \
 		  phosphor.c xmatrix.c petri.c shadebobs.c xsublim.c ccurve.c \
 		  blaster.c bumps.c ripples.c xteevee.c xspirograph.c \
 		  nerverot.c xrayswarm.c hyperball.c zoom.c whirlwindwarp.c
-SCRIPTS		= vidwhacker webcollage
+SCRIPTS		= 
 
 OBJS		= attraction.o blitspin.o bouboule.o braid.o bubbles.o \
 		  bubbles-default.o decayscreen.o deco.o drift.o flag.o \
@@ -119,9 +120,9 @@ EXES		= attraction blitspin bouboule braid bubbles decayscreen deco \
 		  ant xjack xlyap jigsaw cynosure moire2 flow epicycle \
 		  interference truchet bsod crystal discrete distort kumppa \
 		  sonar demon loop t3d penetrate deluxe compass squiral \
-		  xflame wander spotlight critical phosphor xmatrix petri \
-		  shadebobs xsublim ccurve blaster bumps ripples xteevee \
-		  xspirograph nerverot xrayswarm hyperball zoom whirlwindwarp
+		  xflame wander critical phosphor xmatrix petri \
+		  shadebobs xsublim ccurve blaster ripples \
+		  xspirograph nerverot xrayswarm hyperball whirlwindwarp
 
 HACK_OBJS_1	= $(UTILS_BIN)/resources.o $(UTILS_BIN)/visual.o \
 		  $(UTILS_BIN)/usleep.o $(UTILS_BIN)/yarandom.o @XMU_OBJS@
@@ -147,10 +148,10 @@ MEN		= attraction.man blitspin.man bouboule.man braid.man \
 		  slip.man sphere.man spiral.man strange.man swirl.man \
 		  goop.man starfish.man munch.man rd-bomb.man \
 		  xjack.man xlyap.man jigsaw.man epicycle.man bsod.man \
-		  sonar.man t3d.man squiral.man spotlight.man critical.man \
-		  vidwhacker.man webcollage.man xsublim.man distort.man \
-		  phosphor.man xmatrix.man xteevee.man xflame.man petri.man \
-		  nerverot.man zoom.man whirlwindwarp.man hyperball.man
+		  sonar.man t3d.man squiral.man critical.man \
+		  xsublim.man distort.man \
+		  phosphor.man xmatrix.man xflame.man petri.man \
+		  nerverot.man whirlwindwarp.man hyperball.man
 STAR		= *
 EXTRAS		= README Makefile.in xlock_23.h .gdbinit \
 		  images/$(STAR).xbm \
@@ -188,7 +189,8 @@ install-program: $(EXES)
 	done
 
 install-scripts: $(SCRIPTS) munge-scripts
-	@for program in $(SCRIPTS); do					\
+	@scripts="$(SCRIPTS)" ;						\
+	[ -z "$$scripts" ] || for program in $$scripts; do		\
 	  if [ -r $$program ] ; then					\
 	    p=$$program ;						\
 	  else								\
@@ -203,14 +205,15 @@ install-scripts: $(SCRIPTS) munge-scripts
 munge-scripts: $(SCRIPTS)
 	@tmp=/tmp/mf.$$$$ ;						\
 	perl="${PERL}" ;						\
-	for program in $(SCRIPTS); do					\
+	scripts="$(SCRIPTS)" ;						\
+	[ -z "$$scripts" ] || for program in $$scripts; do		\
 	  echo "adjusting location of perl in $$program..." ;		\
 	  sed "s@^\(#!\)\(/[^ ]*/perl[^ ]*\)\(.*\)\$$@\1$$perl\3@"	\
 	      < $(srcdir)/$$program > $$tmp ;				\
 	  if cmp -s $(srcdir)/$$program $$tmp ; then			\
 	    true ;							\
 	  else								\
-	    cat $$tmp > ./$$program ;					\
+	    mv -f $$tmp ./$$program ;					\
 	  fi ;								\
 	done
 
@@ -361,7 +364,7 @@ $(UTIL_OBJS):
 
 # How we build object files in this directory.
 .c.o:
-	$(CC) -c $(INCLUDES) $(DEFS) $(CFLAGS) $(X_CFLAGS) $<
+	$(CC) -c $(INCLUDES) $(DEFS) $(CPPFLAGS) $(CFLAGS) $(X_CFLAGS) $<
 
 # Some hacks use a slightly-differently-compiled variant of this file.
 # This is how to make the the other .o file from it.

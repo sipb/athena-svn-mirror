@@ -1,0 +1,67 @@
+#
+# Disk geometry <SUN18G cyl 7506 alt 2 hd 19 sec 248>
+# Part      Tag    Flag     Cylinders        Size            Blocks
+#   0       root    wm       0 - 6943       15.60GB    (6944/0/0) 32720128
+#   1       swap    wu    6944 - 7389        1.00GB    (446/0/0)   2101552
+#   2     backup    wu       0 - 7505       16.86GB    (7506/0/0) 35368272
+#   3 unassigned    wm    7390 - 7505      266.89MB    (116/0/0)    546592
+#   4 unassigned    wm       0               0         (0/0/0)           0
+#   5 unassigned    wm       0               0         (0/0/0)           0
+#   6 unassigned    wm       0               0         (0/0/0)           0
+#   7 unassigned    wm       0               0         (0/0/0)           0
+
+partition
+
+0
+root
+wm
+0
+6944c
+
+1
+swap
+wu
+6944
+446c
+
+2
+backup
+wu
+0
+7506c
+
+3
+unassigned
+wm
+7390
+116c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+unassigned
+wm
+0
+0c
+
+6
+unassigned
+wm
+0
+0c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

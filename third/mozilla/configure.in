@@ -271,7 +271,11 @@ else
     AC_PROG_RANLIB
     AC_PATH_PROGS(AS, as, $CC)
     AC_PATH_PROGS(AR, ar, :)
-    AC_PATH_PROGS(LD, ld, :)
+    if test "$GCC" = "yes"; then
+		LD=`$CC -print-file-name=ld`
+    else
+		AC_PATH_PROGS(LD, ld, :)
+    fi
     AC_PATH_PROGS(STRIP, strip, :)
     AC_PATH_PROGS(DLLTOOL, dlltool, :)
     if test -z "$HOST_CC"; then

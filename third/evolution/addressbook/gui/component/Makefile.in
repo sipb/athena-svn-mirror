@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -148,8 +148,10 @@ KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
+KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
+KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -184,6 +186,7 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RESOLV_LIBS = @RESOLV_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
@@ -222,16 +225,70 @@ privlibdir = @privlibdir@
 
 SUBDIRS = select-names
 
-INCLUDES =  	-DG_LOG_DOMAIN=\"evolution-addressbook\"			-I$(top_srcdir)							-I$(top_builddir)						-I$(top_srcdir)/shell						-I$(top_builddir)/shell						-I$(top_srcdir)/widgets/misc					-I$(top_srcdir)/addressbook/gui/contact-editor			-I$(top_srcdir)/addressbook/gui/contact-list-editor		-I$(top_srcdir)/addressbook/gui/minicard			-I$(top_srcdir)/addressbook/gui/widgets				-I$(top_srcdir)/addressbook/backend				-I$(top_builddir)/addressbook/backend				-DEVOLUTION_DATADIR=\""$(datadir)"\"				-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"				-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"			-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"				-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"			-DCAMEL_PROVIDERDIR=\""$(providerdir)"\"			-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\" 	$(LDAP_CFLAGS)							$(EVOLUTION_ADDRESSBOOK_CFLAGS)
+INCLUDES = \
+	-DG_LOG_DOMAIN=\"evolution-addressbook\"		\
+	-I$(top_srcdir)						\
+	-I$(top_builddir)					\
+	-I$(top_srcdir)/shell					\
+	-I$(top_builddir)/shell					\
+	-I$(top_srcdir)/widgets/misc				\
+	-I$(top_srcdir)/addressbook/gui/contact-editor		\
+	-I$(top_srcdir)/addressbook/gui/contact-list-editor	\
+	-I$(top_srcdir)/addressbook/gui/minicard		\
+	-I$(top_srcdir)/addressbook/gui/widgets			\
+	-I$(top_srcdir)/addressbook/backend			\
+	-I$(top_builddir)/addressbook/backend			\
+	-DEVOLUTION_DATADIR=\""$(datadir)"\"			\
+	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			\
+	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		\
+	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"			\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DCAMEL_PROVIDERDIR=\""$(providerdir)"\"		\
+	-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\" \
+	$(LDAP_CFLAGS)						\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 
-bin_PROGRAMS =  	evolution-addressbook
+bin_PROGRAMS = \
+	evolution-addressbook
 
 
-evolution_addressbook_SOURCES =  	addressbook-component.c			addressbook-component.h			addressbook-config.c			addressbook-config.h			addressbook-factory.c			addressbook-storage.c			addressbook-storage.h			addressbook.c				addressbook.h				e-cardlist-model.c			e-cardlist-model.h			e-address-widget.h			e-address-widget.c			e-address-popup.h			e-address-popup.c
+evolution_addressbook_SOURCES = \
+	addressbook-component.c		\
+	addressbook-component.h		\
+	addressbook-config.c		\
+	addressbook-config.h		\
+	addressbook-factory.c		\
+	addressbook-storage.c		\
+	addressbook-storage.h		\
+	addressbook.c			\
+	addressbook.h			\
+	e-cardlist-model.c		\
+	e-cardlist-model.h		\
+	e-address-widget.h		\
+	e-address-widget.c		\
+	e-address-popup.h		\
+	e-address-popup.c
 
 
-evolution_addressbook_LDADD =  	select-names/libeselectnames.la								$(top_builddir)/shell/libeshell.la							$(top_builddir)/addressbook/gui/widgets/libeminicard.a					$(top_builddir)/addressbook/backend/ebook/libebook.la					$(top_builddir)/camel/libcamel.la							$(top_builddir)/e-util/ename/libename.la						$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a		$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a			$(top_builddir)/libversit/libversit.a							$(top_builddir)/widgets/misc/libemiscwidgets.a 						$(top_builddir)/addressbook/printing/libecontactprint.a					$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.a				$(top_builddir)/addressbook/gui/merging/libecardmerging.a				$(top_builddir)/filter/libfilter.la							$(top_builddir)/e-util/libeutil.la							$(top_builddir)/widgets/menus/libmenus.la						$(EVOLUTION_ADDRESSBOOK_LIBS) $(LDAP_LIBS)
+evolution_addressbook_LDADD = \
+	select-names/libeselectnames.la							\
+	$(top_builddir)/shell/libeshell.la						\
+	$(top_builddir)/addressbook/gui/widgets/libeminicard.a				\
+	$(top_builddir)/addressbook/backend/ebook/libebook.la				\
+	$(top_builddir)/camel/libcamel.la						\
+	$(top_builddir)/e-util/ename/libename.la					\
+	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a	\
+	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a		\
+	$(top_builddir)/libversit/libversit.a						\
+	$(top_builddir)/widgets/misc/libemiscwidgets.a 					\
+	$(top_builddir)/addressbook/printing/libecontactprint.a				\
+	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.a			\
+	$(top_builddir)/addressbook/gui/merging/libecardmerging.a			\
+	$(top_builddir)/filter/libfilter.la						\
+	$(top_builddir)/e-util/libeutil.la						\
+	$(top_builddir)/widgets/menus/libmenus.la					\
+	$(EVOLUTION_ADDRESSBOOK_LIBS) $(LDAP_LIBS)
 
 
 evolution_addressbook_LDFLAGS = `gnome-config --libs gdk_pixbuf` -export-dynamic
@@ -248,10 +305,14 @@ iconsdir = $(datadir)/images/evolution
 etspecdir = $(datadir)/evolution/etspec
 etspec_DATA = addressbook-config.etspec
 
-EXTRA_DIST =  	$(glade_DATA)				$(oaf_DATA)				$(oaf_in_files)				$(etspec_DATA)
+EXTRA_DIST = \
+	$(glade_DATA)			\
+	$(oaf_DATA)			\
+	$(oaf_in_files)			\
+	$(etspec_DATA)
 
 
-@ENABLE_PURIFY_TRUE@PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+@ENABLE_PURIFY_TRUE@PLINK = @ENABLE_PURIFY_TRUE@$(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
@@ -295,7 +356,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(evolution_addressbook_SOURCES)
 OBJECTS = $(evolution_addressbook_OBJECTS)
@@ -519,7 +580,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -555,239 +616,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-addressbook-component.o: addressbook-component.c ../../../config.h \
-	../../../shell/evolution-shell-component.h \
-	../../../shell/Evolution.h \
-	../../../shell/evolution-shell-client.h \
-	../../../shell/evolution-shell-component-dnd.h \
-	../../../shell/evolution-storage.h \
-	../../../shell/e-folder-list.h \
-	../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	../../../addressbook/backend/ebook/e-book-util.h \
-	addressbook-config.h addressbook-storage.h \
-	addressbook-component.h addressbook.h \
-	../../../addressbook/gui/merging/e-card-merging.h \
-	../../../addressbook/gui/widgets/e-addressbook-util.h \
-	../../../addressbook/gui/contact-editor/e-contact-editor.h \
-	select-names/e-select-names-manager.h \
-	select-names/e-select-names.h \
-	../../../addressbook/gui/widgets/e-addressbook-model.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	select-names/e-select-names-model.h \
-	../../../addressbook/backend/ebook/e-destination.h \
-	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
-addressbook-config.o: addressbook-config.c ../../../config.h \
-	addressbook-config.h addressbook-storage.h \
-	../../../shell/evolution-shell-component.h \
-	../../../shell/Evolution.h \
-	../../../shell/evolution-shell-client.h \
-	../../../shell/evolution-storage.h addressbook.h \
-	../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	../../../shell/evolution-config-control.h \
-	../../../shell/e-folder-list.h ../../../e-util/e-html-utils.h
-addressbook-factory.o: addressbook-factory.c ../../../config.h \
-	../../../e-util/e-passwords.h ../../../camel/camel.h \
-	../../../camel/camel-cipher-context.h \
-	../../../camel/camel-session.h ../../../camel/camel-object.h \
-	../../../camel/camel-arg.h ../../../camel/camel-types.h \
-	../../../camel/camel-provider.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def \
-	../../../camel/camel-url.h ../../../e-util/e-msgport.h \
-	../../../camel/camel-stream.h \
-	../../../camel/camel-cms-context.h \
-	../../../camel/camel-mime-message.h \
-	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
-	../../../camel/camel-data-wrapper.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-internet-address.h \
-	../../../camel/camel-address.h \
-	../../../camel/camel-mime-filter-bestenc.h \
-	../../../camel/camel-charset-map.h \
-	../../../camel/camel-folder.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-index.h \
-	../../../camel/camel-digest-folder.h \
-	../../../camel/camel-store.h ../../../camel/camel-service.h \
-	../../../camel/camel-operation.h \
-	../../../camel/camel-digest-store.h \
-	../../../camel/camel-disco-diary.h \
-	../../../camel/camel-disco-folder.h \
-	../../../camel/camel-disco-store.h \
-	../../../camel/camel-vee-folder.h \
-	../../../camel/camel-mime-filter-basic.h \
-	../../../camel/camel-mime-filter-charset.h \
-	../../../camel/camel-mime-filter-index.h \
-	../../../camel/camel-mime-filter-save.h \
-	../../../camel/camel-seekable-stream.h \
-	../../../camel/camel-mime-filter-crlf.h \
-	../../../camel/camel-mime-filter-tohtml.h \
-	../../../camel/camel-mime-part-utils.h \
-	../../../camel/camel-movemail.h \
-	../../../camel/camel-multipart.h \
-	../../../camel/camel-multipart-encrypted.h \
-	../../../camel/camel-multipart-signed.h \
-	../../../camel/camel-gpg-context.h \
-	../../../camel/camel-pgp-mime.h \
-	../../../camel/camel-seekable-substream.h \
-	../../../camel/camel-smime-context.h \
-	../../../camel/camel-smime-utils.h \
-	../../../camel/camel-stream-buffer.h \
-	../../../camel/camel-stream-filter.h \
-	../../../camel/camel-stream-fs.h \
-	../../../camel/camel-stream-mem.h \
-	../../../camel/camel-tcp-stream-raw.h \
-	../../../camel/camel-tcp-stream.h \
-	../../../camel/camel-tcp-stream-ssl.h \
-	../../../camel/camel-transport.h \
-	../../../camel/camel-uid-cache.h ../../../camel/gstring-util.h \
-	../../../camel/hash-table-utils.h ../../../camel/string-utils.h \
-	addressbook.h ../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	addressbook-component.h \
-	../../../shell/evolution-shell-component.h \
-	../../../shell/Evolution.h \
-	../../../shell/evolution-shell-client.h \
-	../../../shell/evolution-storage.h e-address-widget.h \
-	../../../addressbook/backend/ebook/e-book-util.h \
-	e-address-popup.h \
-	../../../addressbook/gui/widgets/e-minicard-control.h \
-	select-names/e-select-names-factory.h
-addressbook-storage.o: addressbook-storage.c ../../../config.h \
-	addressbook-storage.h \
-	../../../shell/evolution-shell-component.h \
-	../../../shell/Evolution.h \
-	../../../shell/evolution-shell-client.h \
-	../../../shell/evolution-storage.h addressbook-config.h
-addressbook.o: addressbook.c ../../../config.h \
-	../../../e-util/e-categories-master-list-wombat.h \
-	../../../e-util/e-sexp.h ../../../e-util/e-passwords.h \
-	select-names/e-select-names.h \
-	../../../addressbook/gui/widgets/e-addressbook-model.h \
-	../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	select-names/e-select-names-model.h \
-	../../../addressbook/backend/ebook/e-destination.h \
-	select-names/e-select-names-manager.h \
-	../../../shell/evolution-shell-component-utils.h \
-	../../../shell/evolution-activity-client.h \
-	../../../shell/evolution-shell-client.h \
-	../../../shell/Evolution.h \
-	../../../addressbook/gui/contact-editor/e-contact-editor.h \
-	select-names/e-select-names-manager.h \
-	../../../addressbook/gui/contact-editor/e-contact-save-as.h \
-	addressbook-config.h addressbook-storage.h \
-	../../../shell/evolution-shell-component.h \
-	../../../shell/evolution-storage.h addressbook.h \
-	addressbook-component.h \
-	../../../addressbook/gui/search/e-addressbook-search-dialog.h \
-	../../../addressbook/gui/widgets/e-addressbook-view.h \
-	../../../widgets/menus/gal-view-menus.h \
-	../../../filter/rule-context.h ../../../filter/filter-part.h \
-	../../../filter/filter-input.h ../../../filter/filter-element.h \
-	../../../filter/filter-rule.h \
-	../../../addressbook/gui/widgets/e-addressbook-util.h \
-	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
-	../../../addressbook/printing/e-contact-print.h \
-	../../../addressbook/printing/e-contact-print-types.h \
-	../../../addressbook/backend/ebook/e-book-util.h \
-	../../../widgets/misc/e-search-bar.h \
-	../../../widgets/misc/e-filter-bar.h
-e-address-popup.o: e-address-popup.c ../../../config.h addressbook.h \
-	../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	e-address-popup.h \
-	../../../addressbook/backend/ebook/e-book-util.h \
-	../../../addressbook/gui/contact-editor/e-contact-editor.h \
-	select-names/e-select-names-manager.h \
-	select-names/e-select-names.h \
-	../../../addressbook/gui/widgets/e-addressbook-model.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
-	select-names/e-select-names-model.h \
-	../../../addressbook/backend/ebook/e-destination.h \
-	../../../addressbook/gui/contact-editor/e-contact-quick-add.h \
-	../../../addressbook/gui/widgets/e-minicard-widget.h \
-	../../../addressbook/gui/widgets/e-addressbook-util.h \
-	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
-e-address-widget.o: e-address-widget.c ../../../config.h \
-	../../../addressbook/gui/contact-editor/e-contact-quick-add.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h e-address-widget.h \
-	../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	../../../addressbook/backend/ebook/e-book-util.h
-e-cardlist-model.o: e-cardlist-model.c ../../../config.h \
-	e-cardlist-model.h ../../../addressbook/backend/ebook/e-book.h \
-	../../../addressbook/backend/ebook/e-card.h \
-	../../../addressbook/backend/ebook/e-card-types.h \
-	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h \
-	../../../addressbook/backend/ebook/e-card-cursor.h \
-	../../../addressbook/backend/ebook/addressbook.h \
-	../../../addressbook/backend/ebook/e-book-view.h \
-	../../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../../addressbook/backend/ebook/e-book-types.h \
-	../../../addressbook/backend/ebook/e-card-simple.h
-ldap-config.o: ldap-config.c ../../../config.h ldap-config.h \
-	addressbook-storage.h \
-	../../../shell/evolution-shell-component.h \
-	../../../shell/Evolution.h \
-	../../../shell/evolution-shell-client.h \
-	../../../shell/evolution-storage.h \
-	../../../shell/evolution-config-control.h \
-	../../../e-util/e-html-utils.h
-
 info-am:
 info: info-recursive
 dvi-am:

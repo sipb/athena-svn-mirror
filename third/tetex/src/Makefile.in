@@ -55,34 +55,34 @@ default: all
 install: all 
 	for dir in $(ESUBDIRS); do \
 	   echo making $@ in $$dir; \
-	     (cd $$dir && PATH=$(scriptdir):$(bindir):$(PATH) \
+	     (cd $$dir && PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
                 $(MAKE) $@) || exit 1; \
 	done
-	$(srcdir)/selfautofix "$(bindir)" "$(texmf)/web2c"
-	cd $(bindir); for i in $(ALLPROGS); do test -f $$i && echo strip $$i && strip $$i || true; done
-	if test -f $(scriptdir)/mktexlsr; then \
-	  TEXMFMAIN=$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
-	    $(scriptdir)/mktexlsr; \
+	$(srcdir)/selfautofix "$(bindir)" "${DESTDIR}$(texmf)/web2c"
+	cd ${DESTDIR}$(bindir); for i in $(ALLPROGS); do test -f $$i && echo strip $$i && strip $$i || true; done
+	if test -f ${DESTDIR}$(scriptdir)/mktexlsr; then \
+	  TEXMFMAIN=${DESTDIR}$(texmf) PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
+	    ${DESTDIR}$(scriptdir)/mktexlsr; \
 	else :; fi
-	if test -f $(scriptdir)/fmtutil; then \
-	  TEXMFMAIN=$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
-	    $(scriptdir)/fmtutil --all; \
+	if test -f ${DESTDIR}$(scriptdir)/fmtutil; then \
+	  TEXMFMAIN=${DESTDIR}$(texmf) PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
+	    ${DESTDIR}$(scriptdir)/fmtutil --all; \
 	else :; fi
-	if test -f $(scriptdir)/texlinks; then \
-	  TEXMFMAIN=$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
-	    $(scriptdir)/texlinks; \
+	if test -f ${DESTDIR}$(scriptdir)/texlinks; then \
+	  TEXMFMAIN=${DESTDIR}$(texmf) PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
+	    ${DESTDIR}$(scriptdir)/texlinks; \
 	else :; fi
 
 install-exec:
 	for dir in $(ESUBDIRS); do \
 	   echo making $@ in $$dir; \
-	   (cd $$dir && PATH=$(scriptdir):$(bindir):$(PATH) \
+	   (cd $$dir && PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
               $(MAKE) $@) || exit 1; \
 	done
-	cd $(bindir); for i in $(ALLPROGS); do test -f $$i && echo strip $$i && strip $$i || true; done
-	if test -f $(scriptdir)/texlinks; then \
-	  TEXMFMAIN=$(texmf) PATH=$(scriptdir):$(bindir):$(PATH) \
-	    $(scriptdir)/texlinks; \
+	cd ${DESTDIR}$(bindir); for i in $(ALLPROGS); do test -f $$i && echo strip $$i && strip $$i || true; done
+	if test -f ${DESTDIR}$(scriptdir)/texlinks; then \
+	  TEXMFMAIN=${DESTDIR}$(texmf) PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
+	    ${DESTDIR}$(scriptdir)/texlinks; \
 	else :; fi
 
 strip:

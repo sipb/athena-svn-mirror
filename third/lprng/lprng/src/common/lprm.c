@@ -1,20 +1,20 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lprm.c,v 1.1.1.3 2000-03-31 15:47:59 mwhitson Exp $";
+"$Id: lprm.c,v 1.8 2001-03-07 21:23:12 ghudson Exp $";
 
 
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1997, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
@@ -100,6 +100,7 @@
 #include "initialize.h"
 #include "linksupport.h"
 #include "patchlevel.h"
+#include "sendauth.h"
 #include "sendreq.h"
 
 /**** ENDINCLUDE ****/
@@ -112,7 +113,6 @@
 /**** ENDINCLUDE ****/
 
 void Do_removal(char **argv);
-static char *User_name_JOB;
 
 /***************************************************************************
  * main()
@@ -132,7 +132,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
-	(void) plp_signal (SIGCHLD, (plp_sigfunc_t)SIG_DFL);
+	(void) plp_signal (SIGCHLD, SIG_DFL);
 
 	/*
 	 * set up the user state
@@ -148,51 +148,24 @@ int main(int argc, char *argv[], char *envp[])
 
 	Add_line_list(&args,Logname_DYN,0,0,0);
 	for( i = Optind; argv[i]; ++i ){
-		Add_line_list(&args,argv[i],0,0,0);
+		/* Compatibility with BSD lprm */
+		if( !strcmp(argv[i], "-") )
+			Add_line_list(&args,Logname_DYN,0,0,0);
+		else
+			Add_line_list(&args,argv[i],0,0,0);
 	}
 	Check_max(&args,2);
 	args.list[args.count] = 0;
 
 	/* now force the printer list */
-	if( All_printers || (Printer_DYN && safestrcasecmp(Printer_DYN,ALL) == 0 ) ){
+	if( All_printers || (Printer_DYN && strcasecmp(Printer_DYN,ALL) == 0 ) ){
 		All_printers = 1;
 		Get_all_printcap_entries();
 		if(DEBUGL1)Dump_line_list("lprm - final All_line_list", &All_line_list);
 	}
 	DEBUG1("lprm: Printer_DYN '%s', All_printers %d, All_line_list.count %d",
 		Printer_DYN, All_printers, All_line_list.count );
-	if( User_name_JOB ){
-		struct line_list user_list;
-		char *str, *t;
-		struct passwd *pw;
-		int found, uid;
-
-		DEBUG2("lprm: checking '%s' for -U perms",
-			Allow_user_setting_DYN );
-		Init_line_list(&user_list);
-		Split( &user_list, Allow_user_setting_DYN,File_sep,0,0,0,0,0);
-		
-		found = 0;
-		for( i = 0; !found && i < user_list.count; ++i ){
-			str = user_list.list[i];
-			DEBUG2("lprm: checking '%s'", str );
-			uid = strtol( str, &t, 10 );
-			if( str == t || *t ){
-				/* try getpasswd */
-				pw = getpwnam( str );
-				if( pw ){
-					uid = pw->pw_uid;
-				}
-			}
-			DEBUG2( "lprm: uid '%d'", uid );
-			found = ( uid == OriginalRUID );
-			DEBUG2( "lprm: found '%d'", found );
-		}
-		if( !found ){
-			Diemsg( _("-U (username) can only be used by ROOT or authorized users") );
-		}
-		Set_DYN( &Logname_DYN, User_name_JOB );
-	}
+	/* we do the individual printers */
 	if( All_printers ){
 		if( All_line_list.count == 0 ){
 			fprintf(stderr,"no printers\n");
@@ -225,6 +198,10 @@ void Do_removal(char **argv)
 	Get_printer();
 	Fix_Rm_Rp_info();
 	/* fix up authentication */
+	if( Auth_JOB ){
+		/* Fix_auth will update Auth_DYN later */
+		Set_str_value( &PC_entry_line_list, "auth", Auth_JOB );
+	}
 	if( Check_for_rg_group( Logname_DYN ) ){
 		fprintf( stderr,
 			"cannot use printer - not in privileged group\n" );
@@ -268,7 +245,7 @@ void setstatus (va_alist) va_dcl
 	return;
 }
 
-void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}
+void send_to_logger (struct job *job,const char *header, char *fmt){;}
 
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
@@ -309,7 +286,7 @@ void setmessage (va_alist) va_dcl
 extern char *next_opt;
 void usage(void);
 char LPRM_optstr[]   /* LPRM options */
- = "aD:P:U:V" ;
+ = "A:aD:P:V" ;
 char CLEAN_optstr[]   /* CLEAN options */
  = "D:" ;
 
@@ -325,7 +302,7 @@ void Get_parms(int argc, char *argv[] )
 		Name = argv[0];
 	}
 	/* check to see if we simulate (poorly) the LP options */
-	if( Name && safestrcmp( Name, "clean" ) == 0 ){
+	if( Name && strcmp( Name, "clean" ) == 0 ){
 		LP_mode = 1;
 		while ((option = Getopt (argc, argv, CLEAN_optstr )) != EOF)
 		switch (option) {
@@ -337,7 +314,7 @@ void Get_parms(int argc, char *argv[] )
 		if( Optind < argc ){
 			name = argv[argc-1];
 			Get_all_printcap_entries();
-			if( safestrcasecmp(name,ALL) ){
+			if( strcasecmp(name,ALL) ){
 				if( Find_exists_value( &All_line_list, name, Value_sep ) ){
 					Set_DYN(&Printer_DYN,name);
 					argv[argc-1] = 0;
@@ -350,10 +327,10 @@ void Get_parms(int argc, char *argv[] )
 	} else {
 		while ((option = Getopt (argc, argv, LPRM_optstr )) != EOF)
 		switch (option) {
+		case 'A': Auth_JOB = safestrdup(Optarg,__FILE__,__LINE__); break;
 		case 'a': All_printers = 1; Set_DYN(&Printer_DYN,"all"); break;
 		case 'D': Parse_debug(Optarg, 1); break;
 		case 'V': ++Verbose; break;
-		case 'U': User_name_JOB = Optarg; break;
 		case 'P': Set_DYN(&Printer_DYN, Optarg); break;
 		default: usage(); break;
 		}
@@ -365,8 +342,7 @@ void Get_parms(int argc, char *argv[] )
 }
 
 char *clean_msg = N_("\
-usage: %s [-A] [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
-  -A           - use authentication\n\
+usage: %s [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
   -Ddebuglevel - debug level\n\
   user           removes user jobs\n\
   all            removes all jobs\n\
@@ -379,11 +355,10 @@ usage: %s [-A] [-Ddebuglevel] (jobid|user|'all')* [printer]\n\
   Note: lprm removes only jobs for which you have removal permission\n");
 
 char *lprm_msg = N_("\
-usage: %s [-A] [-a | -Pprinter] [-Ddebuglevel] (jobid|user|'all')*\n\
+usage: %s [-A type] [-a | -Pprinter] [-Ddebuglevel] (jobid|user|'all')*\n\
   -a           - all printers\n\
-  -A           - use authentication\n\
+  -A type      - use specified type of authentication\n\
   -Pprinter    - printer (default PRINTER environment variable)\n\
-  -Uuser       - impersonate this user (root or privileged user only)\n\
   -Ddebuglevel - debug level\n\
   -V           - show version information\n\
   user           removes user jobs\n\
@@ -409,4 +384,36 @@ int Start_worker( struct line_list *l, int fd )
 {
 	return(1);
 }
- void Dispatch_input(int *talk, char *input ){}
+
+#if TEST
+
+#include "permission.h"
+#include "lpd.h"
+int Send_request(
+	int class,					/* 'Q'= LPQ, 'C'= LPC, M = lprm */
+	int format,					/* X for option */
+	char **options,				/* options to send */
+	int connect_timeout,		/* timeout on connection */
+	int transfer_timeout,		/* timeout on transfer */
+	int output					/* output on this FD */
+	)
+{
+	int i, n;
+	int socket = 1;
+	char cmd[SMALLBUFFER];
+
+	cmd[0] = format;
+	cmd[1] = 0;
+	plp_snprintf(cmd+1, sizeof(cmd)-1, RemotePrinter_DYN);
+	for( i = 0; options[i]; ++i ){
+		n = strlen(cmd);
+		plp_snprintf(cmd+n,sizeof(cmd)-n," %s",options[i] );
+	}
+	Perm_check.remoteuser = "papowell";
+	Perm_check.user = "papowell";
+	Is_server = 1;
+	Job_remove(&socket,cmd);
+	return(-1);
+}
+
+#endif

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.c,v 1.1.1.2 1998-10-03 21:09:54 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.c,v 1.3 1998-10-04 01:39:28 danw Exp $ */
 /*
  * sh.c: Main shell routines
  */
@@ -43,7 +43,7 @@ char    copyright[] =
  All rights reserved.\n";
 #endif /* not lint */
 
-RCSID("$Id: sh.c,v 1.1.1.2 1998-10-03 21:09:54 danw Exp $")
+RCSID("$Id: sh.c,v 1.3 1998-10-04 01:39:28 danw Exp $")
 
 #include "tc.h"
 #include "ed.h"
@@ -1255,9 +1255,8 @@ main(argc, argv)
 	if (loginsh)
 	    (void) srccat(varval(STRhome), STRsldotlogin);
 #endif
-	/* upward compat. */
-	if (!srccat(varval(STRhome), STRsldottcshrc))
-	    (void) srccat(varval(STRhome), STRsldotcshrc);
+	(void) srccat(varval(STRhome), STRsldottcshrc);
+	(void) srccat(varval(STRhome), STRsldotcshrc);
 
 	if (!fast && !arginp && !onelflg && !havhash)
 	    dohash(NULL,NULL);

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	# Ensure the hdsp0events device file is created.
+	if [ ! -c /dev/hdsp/hdsp0events ]; then
+		case `uname -r` in
+		6.5)
+			(cd /dev ; ./MAKEDEV hdsp INSTALL=/sbin/install)
+			;;
+		*)
+			# chkdev will make hdsp devices if hdsp0control
+			# does not exist.
+			rm -f /dev/hdsp/hdsp0control
+			;;
+		esac
+	fi
+	;;
+esac

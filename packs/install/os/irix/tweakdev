@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Get standard options from command line or defaults.
+. ais-options
+
+echo "Modifying disk links..."
+
+case "${AIS_MODE}" in
+    root|swap)
+	# In 6.5, /dev/root and friends are just symlinks to /hw.
+	cd ${AIS_ROOT}/dev
+	rm -f root rroot swap rswap usr rusr rvh
+	ln -s /hw/disk/root root
+	ln -s /hw/rdisk/root rroot
+	ln -s /hw/rdisk/volume_header rvh
+	if [ "${AIS_MODE}" = root ]; then
+	    rootdev=`devnm ${AIS_ROOT} | awk '{ print $1; }'`
+	    usrdev=`devnm ${AIS_ROOT}/usr | awk '{ print $1; }'`
+	    # Only make usr device links if /usr is a separate filesystem.
+	    if [ "$rootdev" != "$usrdev" ]; then
+		ln -s /hw/disk/usr usr
+		ln -s /hw/rdisk/usr rusr
+	    fi
+	    ln -s /hw/disk/swap swap
+	    ln -s /hw/rdisk/swap rswap
+	fi
+	;;
+esac
+
+exit 0

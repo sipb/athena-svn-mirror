@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: util.c,v 1.1.1.1 2000-11-10 00:48:21 ghudson Exp $
+    $Id: util.c,v 1.2 2000-11-26 05:34:21 ghudson Exp $
 
 ***************************************************************************/
 #include <assert.h>
@@ -205,7 +205,7 @@ int IDL_parse_filename (const char *filename, const char *cpp_args,
 	char *fmt = CPP_PROGRAM " " CPP_NOSTDINC " - %s%s %s < \"%s\" 2>/dev/null";
 	char *wd = "", *dirend;
 #else
-	char *fmt = CPP_PROGRAM " " CPP_NOSTDINC " -I- -I%s %s \"%s\" 2>/dev/null";
+	char *fmt = CPP_PROGRAM " " CPP_NOSTDINC " -I%s %s \"%s\" 2>/dev/null";
 	char *s, *tmpfilename;
 	char cwd[2048];
 	gchar *linkto;

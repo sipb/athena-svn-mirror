@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -148,8 +148,10 @@ KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
+KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
+KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -184,6 +186,7 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RESOLV_LIBS = @RESOLV_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
@@ -222,33 +225,167 @@ privlibdir = @privlibdir@
 
 SUBDIRS = importers
 
-bin_PROGRAMS =  	evolution-mail				evolution-mail-upgrade
+bin_PROGRAMS = \
+	evolution-mail			\
+	evolution-mail-upgrade
 
 
 importerdir = $(privlibdir)/evolution-mail-importers
 
-INCLUDES =  	-I$(top_srcdir)/widgets					-I$(top_srcdir)/widgets/e-text				-I$(top_srcdir)/widgets/misc				-I$(top_srcdir)/camel					-I$(top_srcdir)						-I$(top_srcdir)/composer				-I$(top_builddir)/composer				-I$(top_builddir)/shell					-I$(top_srcdir)/shell					-I$(top_srcdir)/shell/importer				-I$(top_builddir)/shell/importer			-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			$(EVOLUTION_MAIL_CFLAGS)					-DEVOLUTION_DATADIR=\""$(datadir)"\"			-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"			-DEVOLUTION_IMAGES=\""$(datadir)/images/evolution"\"		-DEVOLUTION_BUTTONSDIR=\""$(buttonsdir)"\"		-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		-DMAIL_IMPORTERSDIR=\""$(importerdir)"\"		-DG_LOG_DOMAIN=\"evolution-mail\"
+INCLUDES = \
+	-I$(top_srcdir)/widgets				\
+	-I$(top_srcdir)/widgets/e-text			\
+	-I$(top_srcdir)/widgets/misc			\
+	-I$(top_srcdir)/camel				\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/composer			\
+	-I$(top_builddir)/composer			\
+	-I$(top_builddir)/shell				\
+	-I$(top_srcdir)/shell				\
+	-I$(top_srcdir)/shell/importer			\
+	-I$(top_builddir)/shell/importer		\
+	-I$(top_srcdir)/addressbook/backend		\
+	-I$(top_builddir)/addressbook/backend		\
+	$(EVOLUTION_MAIL_CFLAGS)				\
+	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
+	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
+	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"	\
+	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"		\
+	-DEVOLUTION_IMAGES=\""$(datadir)/images/evolution"\"	\
+	-DEVOLUTION_BUTTONSDIR=\""$(buttonsdir)"\"	\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"	\
+	-DMAIL_IMPORTERSDIR=\""$(importerdir)"\"	\
+	-DG_LOG_DOMAIN=\"evolution-mail\"
 
 
-EVOLUTION_MAIL_CORBA_GENERATED =  	Mailer.h			Mailer-common.c			Mailer-skels.c			Mailer-stubs.c
+EVOLUTION_MAIL_CORBA_GENERATED = \
+	Mailer.h		\
+	Mailer-common.c		\
+	Mailer-skels.c		\
+	Mailer-stubs.c
 
 
 SPELL_IDL = Spell.idl
 
-IDL_GENERATED =  	Spell.h				Spell-common.c			Spell-skels.c			Spell-stubs.c
+IDL_GENERATED = \
+	Spell.h			\
+	Spell-common.c		\
+	Spell-skels.c		\
+	Spell-stubs.c
 
 
-evolution_mail_SOURCES =  	$(EVOLUTION_MAIL_CORBA_GENERATED)		$(IDL_GENERATED)			component-factory.c			component-factory.h			e-searching-tokenizer.c			e-searching-tokenizer.h			folder-browser.c			folder-browser.h			folder-browser-factory.c		folder-browser-factory.h		folder-browser-ui.c			folder-browser-ui.h			folder-info.c				folder-info.h				mail-accounts.c				mail-accounts.h				mail-account-editor.c			mail-account-editor.h			mail-account-gui.c			mail-account-gui.h			mail-autofilter.c			mail-autofilter.h			mail-callbacks.c			mail-callbacks.h			mail-composer-prefs.c			mail-composer-prefs.h			mail-font-prefs.c			mail-font-prefs.h			mail-config.c				mail-config.h				mail-config-druid.c			mail-config-druid.h			mail-config-factory.c			mail-config-factory.h			mail-crypto.c				mail-crypto.h				mail-display.c				mail-display.h				mail-folder-cache.c			mail-folder-cache.h			mail-format.c				mail-identify.c				mail-importer.c				mail-importer.h				mail-local.c				mail-local.h				mail-mt.c				mail-mt.h				mail-offline-handler.c			mail-offline-handler.h			mail-ops.c				mail-ops.h				mail-preferences.c			mail-preferences.h			mail-search.c				mail-search.h				mail-search-dialogue.c			mail-search-dialogue.h			mail-send-recv.c			mail-send-recv.h			mail-session.c				mail-session.h				mail-signature-editor.c			mail-signature-editor.h			mail-stream-gtkhtml.c			mail-stream-gtkhtml.h			mail-tools.c				mail-tools.h				mail-types.h				mail-vfolder.c				mail-vfolder.h				message-browser.c			message-browser.h			main.c					message-list.c				message-list.h				message-tag-editor.c			message-tag-editor.h			message-tag-followup.c			message-tag-followup.h			subscribe-dialog.c			subscribe-dialog.h			mail.h
+evolution_mail_SOURCES = \
+	$(EVOLUTION_MAIL_CORBA_GENERATED)	\
+	$(IDL_GENERATED)		\
+	component-factory.c		\
+	component-factory.h		\
+	e-searching-tokenizer.c		\
+	e-searching-tokenizer.h		\
+	folder-browser.c		\
+	folder-browser.h		\
+	folder-browser-factory.c	\
+	folder-browser-factory.h	\
+	folder-browser-ui.c		\
+	folder-browser-ui.h		\
+	folder-info.c			\
+	folder-info.h			\
+	mail-accounts.c			\
+	mail-accounts.h			\
+	mail-account-editor.c		\
+	mail-account-editor.h		\
+	mail-account-gui.c		\
+	mail-account-gui.h		\
+	mail-autofilter.c		\
+	mail-autofilter.h		\
+	mail-callbacks.c		\
+	mail-callbacks.h		\
+	mail-composer-prefs.c		\
+	mail-composer-prefs.h		\
+	mail-font-prefs.c		\
+	mail-font-prefs.h		\
+	mail-config.c			\
+	mail-config.h			\
+	mail-config-druid.c		\
+	mail-config-druid.h		\
+	mail-config-factory.c		\
+	mail-config-factory.h		\
+	mail-crypto.c			\
+	mail-crypto.h			\
+	mail-display.c			\
+	mail-display.h			\
+	mail-folder-cache.c		\
+	mail-folder-cache.h		\
+	mail-format.c			\
+	mail-identify.c			\
+	mail-importer.c			\
+	mail-importer.h			\
+	mail-local.c			\
+	mail-local.h			\
+	mail-mt.c			\
+	mail-mt.h			\
+	mail-offline-handler.c		\
+	mail-offline-handler.h		\
+	mail-ops.c			\
+	mail-ops.h			\
+	mail-preferences.c		\
+	mail-preferences.h		\
+	mail-search.c			\
+	mail-search.h			\
+	mail-search-dialogue.c		\
+	mail-search-dialogue.h		\
+	mail-send-recv.c		\
+	mail-send-recv.h		\
+	mail-session.c			\
+	mail-session.h			\
+	mail-signature-editor.c		\
+	mail-signature-editor.h		\
+	mail-stream-gtkhtml.c		\
+	mail-stream-gtkhtml.h		\
+	mail-tools.c			\
+	mail-tools.h			\
+	mail-types.h			\
+	mail-vfolder.c			\
+	mail-vfolder.h			\
+	message-browser.c		\
+	message-browser.h		\
+	main.c				\
+	message-list.c			\
+	message-list.h			\
+	message-tag-editor.c		\
+	message-tag-editor.h		\
+	message-tag-followup.c		\
+	message-tag-followup.h		\
+	subscribe-dialog.c		\
+	subscribe-dialog.h		\
+	mail.h
 
 
-evolution_mail_LDADD =  	$(top_builddir)/camel/libcamel.la			$(top_builddir)/e-util/libeutil.la			$(top_builddir)/shell/libeshell.la			$(top_builddir)/composer/libcomposer.a			$(top_builddir)/widgets/misc/libemiscwidgets.a		$(top_builddir)/widgets/misc/libefilterbar.a		$(top_builddir)/addressbook/backend/ebook/libebook.la		$(top_builddir)/libversit/libversit.a			$(top_builddir)/e-util/ename/libename.la		$(top_builddir)/filter/libfilter.la			$(top_builddir)/shell/importer/libevolution-importer.la					$(top_builddir)/widgets/menus/libmenus.la		$(EVOLUTION_MAIL_LIBS)
+evolution_mail_LDADD = \
+	$(top_builddir)/composer/libcomposer.a		\
+	$(top_builddir)/camel/libcamel.la		\
+	$(top_builddir)/e-util/libeutil.la		\
+	$(top_builddir)/shell/libeshell.la		\
+	$(top_builddir)/widgets/misc/libemiscwidgets.a	\
+	$(top_builddir)/widgets/misc/libefilterbar.a	\
+	$(top_builddir)/addressbook/backend/ebook/libebook.la	\
+	$(top_builddir)/libversit/libversit.a		\
+	$(top_builddir)/e-util/ename/libename.la	\
+	$(top_builddir)/filter/libfilter.la		\
+	$(top_builddir)/shell/importer/libevolution-importer.la				\
+	$(top_builddir)/widgets/menus/libmenus.la	\
+	$(EVOLUTION_MAIL_LIBS)
 
 
-evolution_mail_LDFLAGS =  	-export-dynamic
+evolution_mail_LDFLAGS = \
+	-export-dynamic
 
 
 evolution_mail_upgrade_SOURCES = upgrade-mailer.c
-evolution_mail_upgrade_LDADD =  	$(top_builddir)/camel/libcamel.la 			$(top_builddir)/e-util/libeutil.la 			$(EVOLUTION_MAIL_LIBS)
+evolution_mail_upgrade_LDADD = \
+	$(top_builddir)/camel/libcamel.la 		\
+	$(top_builddir)/e-util/libeutil.la 		\
+	$(EVOLUTION_MAIL_LIBS)
 
 
 oafdir = $(datadir)/oaf
@@ -267,10 +404,16 @@ buttonsdir = $(datadir)/images/evolution/buttons
 idldir = $(datadir)/idl
 idl_DATA = Mailer.idl
 
-EXTRA_DIST =  	Mailer.idl 				$(SPELL_IDL)				$(glade_DATA)				$(oaf_in_files)				$(oaf_DATA)				$(etspec_DATA)
+EXTRA_DIST = \
+	Mailer.idl 			\
+	$(SPELL_IDL)			\
+	$(glade_DATA)			\
+	$(oaf_in_files)			\
+	$(oaf_DATA)			\
+	$(etspec_DATA)
 
 
-@ENABLE_PURIFY_TRUE@PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+@ENABLE_PURIFY_TRUE@PLINK = @ENABLE_PURIFY_TRUE@$(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 
 BUILT_SOURCES = $(EVOLUTION_MAIL_CORBA_GENERATED)
 CLEANFILES = $(BUILT_SOURCES) $(IDL_GENERATED)
@@ -306,9 +449,9 @@ mail-stream-gtkhtml.$(OBJEXT) mail-tools.$(OBJEXT) \
 mail-vfolder.$(OBJEXT) message-browser.$(OBJEXT) main.$(OBJEXT) \
 message-list.$(OBJEXT) message-tag-editor.$(OBJEXT) \
 message-tag-followup.$(OBJEXT) subscribe-dialog.$(OBJEXT)
-evolution_mail_DEPENDENCIES =  $(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/libeutil.la $(top_builddir)/shell/libeshell.la \
-$(top_builddir)/composer/libcomposer.a \
+evolution_mail_DEPENDENCIES =  $(top_builddir)/composer/libcomposer.a \
+$(top_builddir)/camel/libcamel.la $(top_builddir)/e-util/libeutil.la \
+$(top_builddir)/shell/libeshell.la \
 $(top_builddir)/widgets/misc/libemiscwidgets.a \
 $(top_builddir)/widgets/misc/libefilterbar.a \
 $(top_builddir)/addressbook/backend/ebook/libebook.la \
@@ -333,7 +476,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(evolution_mail_SOURCES) $(evolution_mail_upgrade_SOURCES)
 OBJECTS = $(evolution_mail_OBJECTS) $(evolution_mail_upgrade_OBJECTS)
@@ -580,7 +723,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -617,2123 +760,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-component-factory.o: component-factory.c ../config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../shell/Evolution.h ../shell/evolution-storage.h \
-	../shell/evolution-wizard.h folder-browser-factory.h \
-	../e-util/e-list.h ../e-util/e-list-iterator.h \
-	../e-util/e-iterator.h folder-browser.h \
-	../widgets/misc/e-filter-bar.h ../widgets/misc/e-search-bar.h \
-	../filter/rule-context.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	../filter/filter-rule.h ../widgets/menus/gal-view-menus.h \
-	../filter/filter-context.h message-list.h mail-types.h \
-	mail-display.h mail-config.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h \
-	../shell/evolution-shell-component-dnd.h folder-info.h mail.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-config-factory.h \
-	mail-tools.h ../camel/camel-filter-driver.h mail-ops.h \
-	mail-offline-handler.h mail-local.h mail-mt.h mail-importer.h \
-	mail-folder-cache.h component-factory.h mail-send-recv.h \
-	mail-vfolder.h ../filter/vfolder-rule.h mail-autofilter.h \
-	../filter/vfolder-context.h
-control-factory.o: control-factory.c ../config.h control-factory.h \
-	../shell/Evolution.h mail-config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../libibex/ibex.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-url.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-remote-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-pgp-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	mail-accounts.h ../shell/evolution-config-control.h
-e-searching-tokenizer.o: e-searching-tokenizer.c ../config.h \
-	e-searching-tokenizer.h ../e-util/e-memory.h \
-	../e-util/e-msgport.h
-folder-browser-factory.o: folder-browser-factory.c ../config.h \
-	../widgets/menus/gal-view-menus.h folder-browser-factory.h \
-	../shell/Evolution.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	folder-browser.h ../camel/camel-stream.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../widgets/misc/e-filter-bar.h \
-	../widgets/misc/e-search-bar.h ../filter/rule-context.h \
-	../filter/filter-part.h ../filter/filter-input.h \
-	../filter/filter-element.h ../filter/filter-rule.h \
-	../filter/filter-context.h message-list.h mail-types.h \
-	mail-display.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	folder-browser-ui.h mail.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	mail-accounts.h ../shell/evolution-config-control.h \
-	mail-account-editor.h mail-account-gui.h mail-callbacks.h \
-	mail-types.h mail-config-druid.h mail-session.h mail-ops.h \
-	../camel/camel-filter-driver.h mail-folder-cache.h \
-	../shell/evolution-shell-component-utils.h
-folder-browser-ui.o: folder-browser-ui.c ../config.h \
-	../widgets/misc/e-charset-picker.h \
-	../widgets/menus/gal-view-menus.h mail-callbacks.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-types.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-session.h folder-browser-ui.h \
-	folder-browser.h ../widgets/misc/e-filter-bar.h \
-	../widgets/misc/e-search-bar.h ../filter/rule-context.h \
-	../filter/filter-part.h ../filter/filter-input.h \
-	../filter/filter-element.h ../filter/filter-rule.h \
-	../filter/filter-context.h message-list.h mail-types.h \
-	mail-display.h mail-config.h \
-	../shell/evolution-shell-component-utils.h
-folder-browser-window.o: folder-browser-window.c ../config.h \
-	folder-browser-window.h folder-browser.h \
-	../camel/camel-stream.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../widgets/misc/e-filter-bar.h ../widgets/misc/e-search-bar.h \
-	../filter/rule-context.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	../filter/filter-rule.h ../widgets/menus/gal-view-menus.h \
-	../filter/filter-context.h message-list.h mail-types.h \
-	mail-display.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h mail-config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-cms-context.h \
-	../camel/camel-folder.h ../camel/camel-folder-summary.h \
-	../camel/camel-index.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../shell/Evolution.h folder-browser-ui.h
-folder-browser.o: folder-browser.c ../config.h ../filter/vfolder-rule.h \
-	../filter/filter-rule.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	../filter/vfolder-context.h ../filter/rule-context.h \
-	../filter/filter-option.h ../filter/filter-label.h \
-	mail-search-dialogue.h ../e-util/e-sexp.h ../e-util/e-mktemp.h \
-	folder-browser.h ../camel/camel-stream.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../widgets/misc/e-filter-bar.h \
-	../widgets/misc/e-search-bar.h \
-	../widgets/menus/gal-view-menus.h ../filter/filter-context.h \
-	message-list.h mail-types.h mail-display.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../shell/Evolution.h e-searching-tokenizer.h mail.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	mail-accounts.h ../shell/evolution-config-control.h \
-	mail-account-editor.h mail-account-gui.h mail-callbacks.h \
-	mail-types.h mail-config-druid.h mail-session.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-ops.h mail-vfolder.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h mail-autofilter.h mail-mt.h \
-	mail-folder-cache.h folder-browser-ui.h mail-local.h \
-	../camel/camel-search-private.h
-folder-info.o: folder-info.c ../config.h folder-info.h Mailer.h mail.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-mt.h \
-	mail-tools.h ../camel/camel-filter-driver.h
-mail-account-editor.o: mail-account-editor.c ../config.h \
-	../camel/camel-url.h ../camel/camel-types.h \
-	mail-account-editor.h mail-account-gui.h \
-	../camel/camel-provider.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def mail-config.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	mail-accounts.h ../shell/evolution-config-control.h \
-	../shell/Evolution.h mail-session.h
-mail-account-gui.o: mail-account-gui.c ../config.h \
-	../shell/evolution-folder-selector-button.h \
-	../shell/evolution-shell-client.h ../shell/Evolution.h \
-	mail-account-gui.h ../camel/camel-provider.h \
-	../camel/camel-types.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	mail-accounts.h ../shell/evolution-config-control.h \
-	mail-session.h mail-send-recv.h mail-signature-editor.h \
-	mail-composer-prefs.h Spell.h mail-ops.h \
-	../camel/camel-filter-driver.h ../shell/evolution-storage.h \
-	mail-mt.h mail.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-account-editor.h mail-callbacks.h \
-	mail-types.h mail-config-druid.h mail-types.h
-mail-accounts.o: mail-accounts.c ../config.h mail-accounts.h \
-	../shell/evolution-config-control.h ../shell/Evolution.h \
-	../camel/camel-url.h ../camel/camel-types.h mail.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	mail-account-editor.h mail-account-gui.h mail-config.h \
-	mail-callbacks.h mail-types.h mail-config-druid.h \
-	mail-session.h mail-types.h mail-send-recv.h ../art/mark.xpm
-mail-autofilter.o: mail-autofilter.c ../config.h mail-vfolder.h \
-	../shell/Evolution.h ../shell/evolution-storage.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h ../camel/camel-folder.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-folder-summary.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-filter.h ../camel/camel-stream.h \
-	../camel/camel-index.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../filter/vfolder-rule.h \
-	../filter/filter-rule.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	mail-autofilter.h ../filter/filter-context.h \
-	../filter/rule-context.h ../filter/vfolder-context.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../filter/vfolder-editor.h ../filter/rule-editor.h \
-	../filter/filter-filter.h ../filter/filter-editor.h \
-	../filter/filter-option.h
-mail-callbacks.o: mail-callbacks.c ../config.h \
-	../e-util/e-dialog-utils.h ../filter/filter-editor.h \
-	../filter/rule-editor.h mail.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h \
-	message-browser.h folder-browser.h \
-	../widgets/misc/e-filter-bar.h ../widgets/misc/e-search-bar.h \
-	../filter/rule-context.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	../filter/filter-rule.h ../widgets/menus/gal-view-menus.h \
-	../filter/filter-context.h message-list.h mail-display.h \
-	mail-mt.h mail-tools.h ../camel/camel-filter-driver.h \
-	mail-ops.h mail-local.h ../shell/evolution-shell-client.h \
-	mail-search.h mail-send-recv.h mail-vfolder.h \
-	../shell/evolution-shell-component.h ../filter/vfolder-rule.h \
-	mail-folder-cache.h subscribe-dialog.h message-tag-editor.h \
-	message-tag-followup.h message-tag-editor.h \
-	../widgets/misc/e-dateedit.h ../widgets/misc/e-messagebox.h
-Mail-common.o: Mail-common.c Mail.h
-mail-composer-prefs.o: mail-composer-prefs.c ../config.h \
-	mail-composer-prefs.h mail-signature-editor.h mail-config.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../shell/evolution-config-control.h ../shell/Evolution.h \
-	Spell.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../widgets/misc/e-charset-picker.h \
-	../art/mark.xpm
-mail-config-druid.o: mail-config-druid.c ../config.h mail-config-druid.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../shell/Evolution.h mail-account-gui.h mail-config.h \
-	mail-accounts.h ../shell/evolution-config-control.h mail-ops.h \
-	../camel/camel-filter-driver.h ../shell/evolution-storage.h \
-	mail.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-account-editor.h mail-callbacks.h \
-	mail-types.h mail-session.h mail-types.h \
-	../shell/evolution-wizard.h
-mail-config-factory.o: mail-config-factory.c ../config.h mail-accounts.h \
-	../shell/evolution-config-control.h ../shell/Evolution.h \
-	mail-preferences.h mail-composer-prefs.h \
-	mail-signature-editor.h mail-config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h Spell.h \
-	mail-font-prefs.h mail-config-factory.h
-mail-config.o: mail-config.c ../config.h \
-	../shell/evolution-shell-client.h ../shell/Evolution.h \
-	../e-util/e-html-utils.h ../e-util/e-url.h \
-	../e-util/e-passwords.h mail.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	mail-accounts.h ../shell/evolution-config-control.h \
-	mail-account-editor.h mail-account-gui.h mail-config.h \
-	mail-callbacks.h mail-types.h mail-config-druid.h \
-	mail-session.h mail-types.h mail-mt.h mail-tools.h \
-	../camel/camel-filter-driver.h Mailer.h
-mail-crypto.o: mail-crypto.c ../config.h mail-crypto.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	mail-config.h mail-session.h
-mail-display.o: mail-display.c ../config.h ../e-util/e-html-utils.h \
-	../e-util/e-mktemp.h ../addressbook/backend/ebook/e-book-util.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h \
-	e-searching-tokenizer.h folder-browser-factory.h \
-	../shell/Evolution.h folder-browser.h ../camel/camel-stream.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../widgets/misc/e-filter-bar.h \
-	../widgets/misc/e-search-bar.h ../filter/rule-context.h \
-	../filter/filter-part.h ../filter/filter-input.h \
-	../filter/filter-element.h ../filter/filter-rule.h \
-	../widgets/menus/gal-view-menus.h ../filter/filter-context.h \
-	message-list.h mail-types.h mail-display.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	mail-stream-gtkhtml.h mail-ops.h ../camel/camel-filter-driver.h \
-	../shell/evolution-storage.h mail-mt.h mail.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h mail-config.h \
-	../composer/Editor.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h ../camel/camel-data-cache.h \
-	../art/empty.xpm
-mail-folder-cache.o: mail-folder-cache.c ../config.h \
-	../camel/camel-store.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-service.h ../camel/camel-url.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-operation.h \
-	../camel/camel-folder.h ../camel/camel-folder-summary.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-filter.h ../camel/camel-stream.h \
-	../camel/camel-index.h ../camel/camel-vtrash-folder.h \
-	../camel/camel-vee-folder.h ../camel/camel-vee-store.h \
-	../camel/camel-disco-store.h mail-mt.h ../e-util/e-msgport.h \
-	mail-folder-cache.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-ops.h ../camel/camel-filter-driver.h \
-	../camel/camel-session.h ../camel/camel-uid-cache.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h mail-vfolder.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h ../filter/vfolder-rule.h \
-	../filter/filter-rule.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	mail-autofilter.h ../filter/filter-context.h \
-	../filter/rule-context.h ../filter/vfolder-context.h \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/gstring-util.h ../camel/hash-table-utils.h \
-	../camel/string-utils.h
-mail-font-prefs.o: mail-font-prefs.c ../config.h mail-font-prefs.h \
-	../shell/Evolution.h ../shell/evolution-config-control.h
-mail-format.o: mail-format.c ../config.h ../camel/camel-mime-utils.h \
-	../camel/camel-pgp-mime.h ../camel/camel-multipart.h \
-	../camel/camel-data-wrapper.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-stream.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-stream-null.h \
-	../camel/camel-multipart-signed.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-provider.h ../camel/camel-url.h \
-	../e-util/e-msgport.h ../shell/e-setup.h \
-	../e-util/e-html-utils.h mail.h ../camel/camel.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart-encrypted.h \
-	../camel/camel-gpg-context.h \
-	../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-display.h mail-mt.h \
-	mail-crypto.h
-mail-identify.o: mail-identify.c ../config.h mail.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h
-mail-importer.o: mail-importer.c ../config.h \
-	../shell/evolution-storage.h ../shell/Evolution.h \
-	../camel/camel-folder.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-folder-summary.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-filter.h \
-	../camel/camel-stream.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-stream-mem.h \
-	../camel/camel-seekable-stream.h mail-importer.h \
-	../shell/evolution-shell-client.h mail-local.h mail.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-tcp-stream-raw.h \
-	../camel/camel-tcp-stream.h ../camel/camel-tcp-stream-ssl.h \
-	../camel/camel-transport.h ../camel/camel-uid-cache.h \
-	../camel/gstring-util.h ../camel/hash-table-utils.h \
-	../camel/string-utils.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h
-mail-local.o: mail-local.c ../config.h ../e-util/e-path.h \
-	../shell/Evolution.h ../shell/evolution-storage.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h \
-	../shell/evolution-storage-listener.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../camel/camel-vtrash-folder.h mail.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-local.h \
-	mail-tools.h ../camel/camel-filter-driver.h mail-mt.h \
-	mail-folder-cache.h mail-vfolder.h ../filter/vfolder-rule.h \
-	../filter/filter-rule.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h mail-ops.h
-mail-mt.o: mail-mt.c ../config.h folder-browser-factory.h \
-	../shell/Evolution.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	folder-browser.h ../camel/camel-stream.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../widgets/misc/e-filter-bar.h \
-	../widgets/misc/e-search-bar.h ../filter/rule-context.h \
-	../filter/filter-part.h ../filter/filter-input.h \
-	../filter/filter-element.h ../filter/filter-rule.h \
-	../widgets/menus/gal-view-menus.h ../filter/filter-context.h \
-	message-list.h mail-types.h mail-display.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../shell/evolution-activity-client.h \
-	../shell/evolution-shell-client.h mail-session.h mail-mt.h \
-	component-factory.h ../art/mail-new.xpm
-mail-offline-handler.o: mail-offline-handler.c ../config.h \
-	mail-offline-handler.h ../shell/Evolution.h mail.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	mail-accounts.h ../shell/evolution-config-control.h \
-	mail-account-editor.h mail-account-gui.h mail-config.h \
-	mail-callbacks.h mail-types.h mail-config-druid.h \
-	mail-session.h mail-types.h mail-ops.h \
-	../camel/camel-filter-driver.h
-mail-ops.o: mail-ops.c ../config.h ../camel/camel-mime-filter-from.h \
-	../camel/camel-mime-filter.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-operation.h ../camel/camel-vtrash-folder.h \
-	../camel/camel-folder.h ../camel/camel-folder-summary.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-utils.h \
-	../camel/camel-stream.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-vee-folder.h ../camel/camel-vee-store.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-url.h ../camel/camel-provider.h mail.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-digest-folder.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-ops.h mail-vfolder.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h ../filter/vfolder-rule.h \
-	../filter/filter-rule.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	folder-browser.h ../widgets/misc/e-filter-bar.h \
-	../widgets/misc/e-search-bar.h ../filter/rule-context.h \
-	../widgets/menus/gal-view-menus.h ../filter/filter-context.h \
-	message-list.h mail-display.h ../e-util/e-html-utils.h \
-	../filter/filter-filter.h mail-mt.h mail-folder-cache.h
-mail-preferences.o: mail-preferences.c ../config.h mail-preferences.h \
-	../shell/evolution-config-control.h ../shell/Evolution.h \
-	../widgets/misc/e-charset-picker.h mail-config.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h
-mail-search-dialogue.o: mail-search-dialogue.c ../config.h \
-	mail-search-dialogue.h ../filter/rule-context.h \
-	../filter/filter-part.h ../filter/filter-input.h \
-	../filter/filter-element.h ../filter/filter-rule.h
-mail-search.o: mail-search.c ../config.h mail-search.h mail-display.h \
-	../camel/camel-stream.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	mail-types.h mail-config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-provider.h ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-cms-context.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	e-searching-tokenizer.h
-mail-send-recv.o: mail-send-recv.c ../config.h ../filter/filter-filter.h \
-	../filter/filter-rule.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	../camel/camel-filter-driver.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-folder.h ../camel/camel-folder-summary.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-filter.h ../camel/camel-stream.h \
-	../camel/camel-index.h ../camel/camel-uid-cache.h \
-	../camel/camel-operation.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/gstring-util.h ../camel/hash-table-utils.h \
-	../camel/string-utils.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-mt.h \
-	mail-tools.h mail-ops.h mail-send-recv.h mail-folder-cache.h
-mail-session.o: mail-session.c ../config.h \
-	../camel/camel-filter-driver.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-folder.h ../camel/camel-folder-summary.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-filter.h ../camel/camel-stream.h \
-	../camel/camel-index.h ../camel/camel-uid-cache.h \
-	../filter/filter-context.h ../filter/rule-context.h \
-	../filter/filter-part.h ../filter/filter-input.h \
-	../filter/filter-element.h ../filter/filter-rule.h \
-	../filter/filter-filter.h mail.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/gstring-util.h ../camel/hash-table-utils.h \
-	../camel/string-utils.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-tools.h \
-	mail-mt.h mail-ops.h ../e-util/e-passwords.h
-mail-signature-editor.o: mail-signature-editor.c ../config.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../camel/camel-multipart.h \
-	../camel/camel-data-wrapper.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../composer/e-msg-composer-hdrs.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-stream.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/Editor.h mail-signature-editor.h mail-config.h
-Mail-skels.o: Mail-skels.c Mail.h
-mail-stream-gtkhtml.o: mail-stream-gtkhtml.c ../config.h \
-	mail-stream-gtkhtml.h ../camel/camel-stream.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h
-Mail-stubs.o: Mail-stubs.c Mail.h
-mail-tools.o: mail-tools.c ../config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-stream.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	mail-vfolder.h ../shell/Evolution.h \
-	../shell/evolution-storage.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h ../filter/vfolder-rule.h \
-	../filter/filter-rule.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	../filter/vfolder-context.h ../filter/rule-context.h \
-	../filter/filter-option.h mail.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-local.h mail-mt.h \
-	mail-folder-cache.h ../e-util/e-html-utils.h
-mail-vfolder.o: mail-vfolder.c ../config.h ../shell/Evolution.h \
-	../shell/evolution-storage.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h folder-browser.h \
-	../camel/camel-stream.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../widgets/misc/e-filter-bar.h ../widgets/misc/e-search-bar.h \
-	../filter/rule-context.h ../filter/filter-part.h \
-	../filter/filter-input.h ../filter/filter-element.h \
-	../filter/filter-rule.h ../widgets/menus/gal-view-menus.h \
-	../filter/filter-context.h message-list.h mail-types.h \
-	mail-display.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	mail-vfolder.h ../filter/vfolder-rule.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-autofilter.h \
-	../filter/vfolder-context.h mail-folder-cache.h mail.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-ops.h mail-mt.h \
-	../camel/camel-vee-store.h ../filter/vfolder-editor.h \
-	../filter/rule-editor.h
-Mailer-common.o: Mailer-common.c Mailer.h
-Mailer-skels.o: Mailer-skels.c Mailer.h
-Mailer-stubs.o: Mailer-stubs.c Mailer.h
-main.o: main.c ../config.h ../e-util/e-passwords.h ../e-util/e-proxy.h \
-	component-factory.h ../composer/evolution-composer.h \
-	../composer/Composer.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../camel/camel-multipart.h \
-	../camel/camel-data-wrapper.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../composer/e-msg-composer-hdrs.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-filter.h ../camel/camel-stream.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/Editor.h mail.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-mt.h
-message-browser.o: message-browser.c ../config.h message-browser.h \
-	../camel/camel-folder.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-folder-summary.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-filter.h \
-	../camel/camel-stream.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	folder-browser.h ../widgets/misc/e-filter-bar.h \
-	../widgets/misc/e-search-bar.h ../filter/rule-context.h \
-	../filter/filter-part.h ../filter/filter-input.h \
-	../filter/filter-element.h ../filter/filter-rule.h \
-	../widgets/menus/gal-view-menus.h ../filter/filter-context.h \
-	message-list.h mail-types.h mail-display.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h mail-config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-provider.h ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-cms-context.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../shell/Evolution.h mail.h ../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	mail-accounts.h ../shell/evolution-config-control.h \
-	mail-account-editor.h mail-account-gui.h mail-callbacks.h \
-	mail-types.h mail-config-druid.h mail-session.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-ops.h mail-vfolder.h \
-	../shell/evolution-shell-component.h \
-	../shell/evolution-shell-client.h ../filter/vfolder-rule.h \
-	mail-autofilter.h ../filter/vfolder-context.h mail-mt.h \
-	mail-local.h folder-browser-ui.h
-message-list.o: message-list.c ../config.h ../camel/camel-exception.h \
-	../camel/camel-types.h ../camel/camel-exception-list.def \
-	../camel/camel-file-utils.h ../camel/camel-folder.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-folder-summary.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-filter.h \
-	../camel/camel-stream.h ../camel/camel-index.h \
-	../camel/camel-folder-thread.h ../e-util/ename/e-name-western.h \
-	../e-util/e-memory.h ../filter/filter-label.h \
-	../filter/filter-option.h ../filter/filter-element.h \
-	mail-config.h ../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-provider.h \
-	../camel/camel-url.h ../e-util/e-msgport.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-internet-address.h \
-	../camel/camel-address.h ../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	message-list.h mail-types.h mail-mt.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-ops.h \
-	../shell/evolution-storage.h ../shell/Evolution.h \
-	../art/mail-new.xpm ../art/mail-read.xpm \
-	../art/mail-replied.xpm ../art/attachment.xpm \
-	../art/priority-high.xpm ../art/empty.xpm \
-	../art/score-lowest.xpm ../art/score-lower.xpm \
-	../art/score-low.xpm ../art/score-normal.xpm \
-	../art/score-high.xpm ../art/score-higher.xpm \
-	../art/score-highest.xpm ../art/flag-for-followup.xpm
-message-tag-editor.o: message-tag-editor.c ../config.h \
-	message-tag-editor.h ../camel/camel-folder.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-folder-summary.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-filter.h ../camel/camel-stream.h \
-	../camel/camel-index.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def
-message-tag-followup.o: message-tag-followup.c ../config.h \
-	message-tag-followup.h message-tag-editor.h \
-	../camel/camel-folder.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-folder-summary.h ../camel/camel-mime-parser.h \
-	../camel/camel-mime-utils.h ../camel/camel-mime-filter.h \
-	../camel/camel-stream.h ../camel/camel-index.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../widgets/misc/e-dateedit.h mail-config.h ../camel/camel.h \
-	../camel/camel-cipher-context.h ../camel/camel-session.h \
-	../camel/camel-provider.h ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-cms-context.h \
-	../camel/camel-mime-message.h ../camel/camel-mime-part.h \
-	../camel/camel-medium.h ../camel/camel-data-wrapper.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-digest-folder.h \
-	../camel/camel-store.h ../camel/camel-service.h \
-	../camel/camel-operation.h ../camel/camel-digest-store.h \
-	../camel/camel-disco-diary.h ../camel/camel-disco-folder.h \
-	../camel/camel-disco-store.h ../camel/camel-vee-folder.h \
-	../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h
-Spell-common.o: Spell-common.c Spell.h
-Spell-skels.o: Spell-skels.c Spell.h
-Spell-stubs.o: Spell-stubs.c Spell.h
-subscribe-dialog.o: subscribe-dialog.c ../config.h \
-	../shell/evolution-shell-component-utils.h mail.h \
-	../camel/camel.h ../camel/camel-cipher-context.h \
-	../camel/camel-session.h ../camel/camel-object.h \
-	../camel/camel-arg.h ../camel/camel-types.h \
-	../camel/camel-provider.h ../camel/camel-exception.h \
-	../camel/camel-exception-list.def ../camel/camel-url.h \
-	../e-util/e-msgport.h ../camel/camel-stream.h \
-	../camel/camel-cms-context.h ../camel/camel-mime-message.h \
-	../camel/camel-mime-part.h ../camel/camel-medium.h \
-	../camel/camel-data-wrapper.h ../camel/camel-mime-utils.h \
-	../camel/camel-mime-parser.h ../camel/camel-mime-filter.h \
-	../camel/camel-internet-address.h ../camel/camel-address.h \
-	../camel/camel-mime-filter-bestenc.h \
-	../camel/camel-charset-map.h ../camel/camel-folder.h \
-	../camel/camel-folder-summary.h ../camel/camel-index.h \
-	../camel/camel-digest-folder.h ../camel/camel-store.h \
-	../camel/camel-service.h ../camel/camel-operation.h \
-	../camel/camel-digest-store.h ../camel/camel-disco-diary.h \
-	../camel/camel-disco-folder.h ../camel/camel-disco-store.h \
-	../camel/camel-vee-folder.h ../camel/camel-mime-filter-basic.h \
-	../camel/camel-mime-filter-charset.h \
-	../camel/camel-mime-filter-index.h \
-	../camel/camel-mime-filter-save.h \
-	../camel/camel-seekable-stream.h \
-	../camel/camel-mime-filter-crlf.h \
-	../camel/camel-mime-filter-tohtml.h \
-	../camel/camel-mime-part-utils.h ../camel/camel-movemail.h \
-	../camel/camel-multipart.h ../camel/camel-multipart-encrypted.h \
-	../camel/camel-multipart-signed.h ../camel/camel-gpg-context.h \
-	../camel/camel-pgp-mime.h ../camel/camel-seekable-substream.h \
-	../camel/camel-smime-context.h ../camel/camel-smime-utils.h \
-	../camel/camel-stream-buffer.h ../camel/camel-stream-filter.h \
-	../camel/camel-stream-fs.h ../camel/camel-stream-mem.h \
-	../camel/camel-tcp-stream-raw.h ../camel/camel-tcp-stream.h \
-	../camel/camel-tcp-stream-ssl.h ../camel/camel-transport.h \
-	../camel/camel-uid-cache.h ../camel/gstring-util.h \
-	../camel/hash-table-utils.h ../camel/string-utils.h \
-	../composer/e-msg-composer.h \
-	../composer/e-msg-composer-attachment-bar.h \
-	../composer/e-icon-list.h ../composer/e-msg-composer-hdrs.h \
-	../addressbook/backend/ebook/e-destination.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h mail-config.h \
-	../composer/Editor.h ../shell/evolution-storage.h \
-	../shell/Evolution.h mail-accounts.h \
-	../shell/evolution-config-control.h mail-account-editor.h \
-	mail-account-gui.h mail-config.h mail-callbacks.h mail-types.h \
-	mail-config-druid.h mail-session.h mail-types.h mail-tools.h \
-	../camel/camel-filter-driver.h mail-ops.h mail-mt.h \
-	mail-folder-cache.h subscribe-dialog.h ../art/empty.xpm \
-	../art/mark.xpm
-upgrade-mailer.o: upgrade-mailer.c ../config.h \
-	../camel/camel-file-utils.h ../camel/camel-store.h \
-	../camel/camel-object.h ../camel/camel-arg.h \
-	../camel/camel-types.h ../camel/camel-service.h \
-	../camel/camel-url.h ../camel/camel-provider.h \
-	../camel/camel-exception.h ../camel/camel-exception-list.def \
-	../camel/camel-operation.h
-
 info-am:
 info: info-recursive
 dvi-am:

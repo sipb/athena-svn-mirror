@@ -1,0 +1,7 @@
+Name: athena-gtk-thinice-engine
+Summary: A simple gtk theme engine, for Athena
+License: GPL
+Group: User Interface/Desktops
+
+%description
+gtk-thinice is a theme engine for GTK+ designed to be fast and clean.

@@ -2,7 +2,7 @@
 /*
  * error.c -- main error handling routines
  *
- * $Id: error.c,v 1.1.1.1 1999-02-07 18:14:08 danw Exp $
+ * $Id: error.c,v 1.2 2003-03-20 17:19:30 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -12,7 +12,7 @@
 # include <sys/uio.h>
 #endif
 
-extern int errno;
+#include <errno.h>
 
 
 /*

@@ -23,8 +23,8 @@ NAME		= x11-ssh-askpass
 CLASS		= SshAskpass
 
 XCOMM -------- configurable settings --------
-BINDIR		= /usr/local/libexec
-MANPATH		= /usr/local/man
+BINDIR		= /usr/athena/libexec
+MANPATH		= /usr/athena/man
 MANDIR		= $(MANPATH)/man1
 APPDEFDIR	= $(XAPPLOADDIR)
 APP_DEFAULTS	= SshAskpass-default.ad

@@ -1,0 +1,38 @@
+#!/sbin/sh
+# $Id: athena-sendmail.rc,v 1.1 2002-08-27 17:33:13 zacheiss Exp $
+#
+# athena-sendmail: Stop/Start the Athena sendmail service
+#
+. /etc/athena/rc.conf
+
+HOME=/; export HOME
+PATH=/etc/athena:/bin/athena:/bin:/usr/ucb:/usr/sbin:/etc:/sbin:/usr/athena/etc
+export PATH
+
+umask 022
+
+case "$1" in
+start)
+  echo "Removing sendmail temporary files"
+  if [ -d /var/spool/mqueue ]; then
+    (cd /var/spool/mqueue && rm -f nf* lf*)
+  fi
+  # Sync aliases db.
+  /usr/lib/sendmail -bi
+
+  if [ "$SENDMAIL" = true ]; then
+    echo "Starting Athena sendmail."
+    /usr/lib/sendmail -bd -q1h
+  fi
+  ;;
+stop)
+  pkill sendmail
+  ;;
+restart)
+  $0 stop
+  $0 start
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  ;;
+esac

@@ -214,11 +214,11 @@ pref("slider.snapMultiplier", 6);
 pref("application.use_ns_plugin_finder", false);
 
 // Smart Browsing prefs
-pref("browser.related.enabled", true);
+pref("browser.related.enabled", false);
 pref("browser.related.autoload", 1);  // 0 = Always, 1 = After first use, 2 = Never
 pref("browser.related.provider", "http://www-rl.netscape.com/wtgn?");
 pref("browser.related.disabledForDomains", "");
-pref("browser.goBrowsing.enabled", true);
+pref("browser.goBrowsing.enabled", false);
 
 // URI fixup prefs
 pref("browser.fixup.alternate.enabled", true);
@@ -612,7 +612,7 @@ pref("network.proxy.socks_port",            0);
 pref("network.proxy.socks_version",         5);
 pref("network.proxy.no_proxies_on",         "localhost, 127.0.0.1");
 pref("network.online",                      true); //online/offline
-pref("network.cookie.cookieBehavior",       3); // 0-Accept, 1-dontAcceptForeign, 2-dontUse, 3-p3p
+pref("network.cookie.cookieBehavior",       1); // 0-Accept, 1-dontAcceptForeign, 2-dontUse, 3-p3p
 pref("network.cookie.disableCookieForMailNews", true); // disable all cookies for mail
 pref("network.cookie.warnAboutCookies",     false);
 pref("network.cookie.lifetime.enabled",     false);
@@ -624,20 +624,20 @@ pref("network.cookie.lifetime.days",        90);
 pref("network.cookie.p3p",                  "ffffaaaa");
 pref("network.cookie.p3plevel",             1); // 0=low, 1=medium, 2=high, 3=custom
 
-pref("signon.rememberSignons",              true);
+pref("signon.rememberSignons",              false);
 pref("signon.expireMasterPassword",         false);
 pref("network.enablePad",                   false); // Allow client to do proxy autodiscovery
 pref("network.enableIDN",                   false); // Turn on/off IDN (Internationalized Domain Name) resolution
 pref("converter.html2txt.structs",          true); // Output structured phrases (strong, em, code, sub, sup, b, i, u)
 pref("converter.html2txt.header_strategy",  1); // 0 = no indention; 1 = indention, increased with header level; 2 = numbering and slight indention
-pref("wallet.captureForms",                 true);
+pref("wallet.captureForms",                 false);
 pref("wallet.notified",                     false);
 pref("wallet.TutorialFromMenu",             "chrome://navigator/locale/navigator.properties");
 pref("wallet.Server",                       "chrome://navigator/locale/navigator.properties");
 pref("wallet.Samples",                      "chrome://navigator/locale/navigator.properties");
 pref("wallet.version",                      "1");
 pref("wallet.enabled",                      true);
-pref("wallet.crypto",                       false);
+pref("wallet.crypto",                       true);
 pref("wallet.crypto.autocompleteoverride",  false); // Ignore 'autocomplete=off' - available only when wallet.crypto is enabled. 
 pref("wallet.namePanel.hide",               false);
 pref("wallet.addressPanel.hide",            false);
@@ -814,7 +814,7 @@ pref("alerts.totalOpenTime", 4000);
 pref("alerts.height", 50);
 
 // update notifications prefs
-pref("update_notifications.enabled", true);
+pref("update_notifications.enabled", false);
 pref("update_notifications.provider.0.frequency", 7); // number of days
 pref("update_notifications.provider.0.datasource", "chrome://communicator-region/locale/region.properties");
 

@@ -1,5 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
-/* $Id: config.h.in,v 1.1.1.3 2003-02-05 19:05:02 zacheiss Exp $ */
+/* $Id: config.h.in,v 1.5 2003-02-06 03:45:46 zacheiss Exp $ */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H
@@ -201,6 +201,9 @@
 /* Define if compiler implements __func__ */
 #undef HAVE___func__
 
+/* Define this is you want GSSAPI support in the version 2 protocol */
+#undef GSSAPI
+
 /* Define if you want Kerberos 5 support */
 #undef KRB5
 
@@ -212,6 +215,9 @@
 
 /* Define if you want AFS support */
 #undef AFS
+
+/* Define if you want GSI/Globus authentication support */
+#undef GSI
 
 /* Define if you want S/Key support */
 #undef SKEY
@@ -482,6 +488,9 @@
 /* Define to 1 if you have the <glob.h> header file. */
 #undef HAVE_GLOB_H
 
+/* Define to 1 if you have the <gssapi.h> header file. */
+#undef HAVE_GSSAPI_H
+
 /* Define to 1 if you have the <ia.h> header file. */
 #undef HAVE_IA_H
 
@@ -607,6 +616,9 @@
 
 /* Define to 1 if you have the `pam_getenvlist' function. */
 #undef HAVE_PAM_GETENVLIST
+
+/* Define to 1 if you have the `pam_putenv' function. */
+#undef HAVE_PAM_PUTENV
 
 /* Define to 1 if you have the <paths.h> header file. */
 #undef HAVE_PATHS_H

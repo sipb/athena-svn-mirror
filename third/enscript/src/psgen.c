@@ -2618,30 +2618,14 @@ static char divertfname[512];
 static void
 divert ()
 {
-  char *cp;
-
   assert (divertfp == NULL);
 
   /* Open divert file. */
 
-  cp = tempnam (NULL, "ens");
-  if (cp == NULL)
-    FATAL ((stderr, _("couldn't create divert file name: %s"),
-	    strerror (errno)));
-
-  strcpy (divertfname, cp);
-
-  divertfp = fopen (divertfname, "w+b");
+  divertfp = tmpfile ();
   if (divertfp == NULL)
     FATAL ((stderr, _("couldn't create divert file \"%s\": %s"), divertfname,
 	    strerror (errno)));
-
-  if (remove (divertfname) == 0)
-    /* Remove successfull, no need to remove file in undivert(). */
-    divertfname[0] = '\0';
-
-  /* Free the buffer allocated by tempnam(). */
-  free (cp);
 
   cofp = divertfp;
 }
@@ -2696,10 +2680,6 @@ undivert ()
 
   fclose (divertfp);
   divertfp = NULL;
-
-  /* Do we have to remove the divert file? */
-  if (divertfname[0])
-    (void) remove (divertfname);
 
   cofp = ofp;
 }

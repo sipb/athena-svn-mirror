@@ -86,11 +86,9 @@ static void CheckReadFromPipe();
 static void SystemError(text)
     char* text;
 {
-    extern int sys_nerr;
-    extern char* sys_errlist[];
     char msg[BUFSIZ];
     sprintf( msg, "%s; errno = %d %s", text, errno, 
-	     (errno < sys_nerr) ? sys_errlist[errno] : NULL );
+	     strerror(errno) );
     XtWarning( msg );
 }
 
@@ -392,7 +390,7 @@ CheckReadFromPipe( fd, bufP, lenP, waitEOF )
     int *lenP;
     Bool waitEOF;
 {
-    long nread;
+    int nread;
 /*  DEBUG2( " CheckReadFromPipe #%d,len=%d,", fd, *lenP )  */
 #ifdef FIONREAD
     if (!ioctl( fd, FIONREAD, &nread )) {

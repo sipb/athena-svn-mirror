@@ -119,9 +119,11 @@ apply_settings (void)
 		if (!rate_set)
 			rate_set = xfree86_set_keyboard_autorepeat_rate (delay, rate);
 #endif
+#if 0  /* Athena hack: no sense complaining about this on Solaris */
 		if (!rate_set)
 			g_warning ("Neither XKeyboard not Xfree86's keyboard extensions are available,\n"
 				   "no way to support keyboard autorepeat rate settings");
+#endif
 	} else
 		XAutoRepeatOff (GDK_DISPLAY ());
 

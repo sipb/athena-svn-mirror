@@ -51,10 +51,10 @@ sedscript:
 	echo 's%@LOCALMODES@%$(localmodes)%'	>>sedscript
 
 install-man: manfiles
-	$(top_srcdir)/../mkinstalldirs $(man1dir)
+	$(top_srcdir)/../mkinstalldirs ${DESTDIR}$(man1dir)
 	for nameone in $(manfiles); do					\
           name=`basename $${nameone} .1`;				\
-          $(INSTALL_DATA) $${name}.1 $(man1dir)/$${name}.$(manext);	\
+          $(INSTALL_DATA) $${name}.1 ${DESTDIR}$(man1dir)/$${name}.$(manext);	\
         done
 
 uninstall-man:

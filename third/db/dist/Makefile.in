@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1.1.2 2002-02-11 16:30:07 ghudson Exp $
+# $Id: Makefile.in,v 1.4 2002-02-18 15:39:34 ghudson Exp $
 
 srcdir=	@srcdir@/..
 builddir=.
@@ -20,7 +20,7 @@ LDFLAGS=	@LDFLAGS@
 LIBDB_ARGS=	@LIBDB_ARGS@
 LIBJSO_LIBS=	@LIBJSO_LIBS@
 LIBS=		@LIBS@
-LIBSO_LIBS=	@LIBSO_LIBS@
+LIBSO_LIBS=	@LIBS@
 LIBTOOL=	@LIBTOOL@
 LIBTSO_LIBS=	@LIBTSO_LIBS@
 LIBXSO_LIBS=	@LIBXSO_LIBS@

@@ -1,4 +1,4 @@
-dnl $Id: Makefile.m4,v 1.1.1.2 2003-04-08 15:07:54 zacheiss Exp $
+dnl $Id: Makefile.m4,v 1.4 2003-04-08 15:42:16 zacheiss Exp $
 include(confBUILDTOOLSDIR`/M4/switch.m4')
 
 define(`confREQUIRE_LIBSM', `true')
@@ -34,4 +34,3 @@ install-rmail: rmail
 divert
 
 bldFINISH
-

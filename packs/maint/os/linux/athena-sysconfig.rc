@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# athena-sysconfig:	miscellaneous system configuration
+#
+# chkconfig: 345 05 95
+# description: run kudzu quietly before the default interactive version
+#
+
+# Source function library
+. /etc/rc.d/init.d/functions
+. /etc/athena/rc.conf
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+RETVAL=0
+
+case "$1" in
+  start)
+	echo -n "Preconfiguring system: "
+	/usr/sbin/kudzu -q && success "sysconfig" || failure "sysconfig"
+	RETVAL=$?
+	;;
+  stop)
+	;;
+
+  status)
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+  reload)
+	;;
+  *)
+	echo "Usage: sysconfig {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

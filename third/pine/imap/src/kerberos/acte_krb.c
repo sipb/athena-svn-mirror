@@ -27,6 +27,7 @@
  *
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <netdb.h>
 #include <sys/types.h>
@@ -35,8 +36,6 @@
 #include <krb.h>
 
 #include "acte.h"
-
-extern char *malloc();
 
 extern char *lcase P((char *str));
 

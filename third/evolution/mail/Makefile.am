@@ -138,10 +138,10 @@ evolution_mail_SOURCES =		\
 	mail.h
 
 evolution_mail_LDADD = 					\
+	$(top_builddir)/composer/libcomposer.a		\
 	$(top_builddir)/camel/libcamel.la		\
 	$(top_builddir)/e-util/libeutil.la		\
 	$(top_builddir)/shell/libeshell.la		\
-	$(top_builddir)/composer/libcomposer.a		\
 	$(top_builddir)/widgets/misc/libemiscwidgets.a	\
 	$(top_builddir)/widgets/misc/libefilterbar.a	\
 	$(top_builddir)/addressbook/backend/ebook/libebook.la	\

@@ -241,6 +241,9 @@ gconfd_ping(PortableServer_Servant servant, CORBA_Environment *ev)
   return getpid();
 }
 
+static GList* db_list = NULL;
+static GConfDatabase *default_db = NULL;
+
 static void
 gconfd_shutdown(PortableServer_Servant servant, CORBA_Environment *ev)
 {
@@ -248,6 +251,18 @@ gconfd_shutdown(PortableServer_Servant servant, CORBA_Environment *ev)
     return;
   
   gconf_log(GCL_DEBUG, _("Shutdown request received"));
+
+  /* Athena local change: sync databases before returning, so that we
+   * can use gconftool-2 --shutdown to synchronously flush changes to
+   * AFS before destroying credentials.
+   */
+  {
+    GList *l;
+
+    for (l = db_list; l; l = g_list_next(l))
+      gconf_database_synchronous_sync(l->data, NULL);
+    gconf_database_synchronous_sync(default_db, NULL);
+  }
 
   gconf_main_quit();
 }
@@ -291,7 +306,7 @@ gconf_server_load_sources(void)
   if (addresses == NULL)
     {      
       /* Try using the default address xml:readwrite:$(HOME)/.gconf */
-      addresses = g_slist_append(addresses, g_strconcat("xml:readwrite:", g_get_home_dir(), "/.gconf", NULL));
+      addresses = g_slist_append(addresses, g_strconcat("xml:readwrite:", getenv("NOCALLS") ? gconf_get_tmp_dir() : g_get_home_dir(), "/.gconf", NULL));
 
       gconf_log(GCL_DEBUG, _("No configuration files found, trying to use the default config source `%s'"), (char *)addresses->data);
     }
@@ -592,7 +607,7 @@ main(int argc, char** argv)
   gconfd_dir = gconf_get_daemon_dir ();
   lock_dir = gconf_get_lock_dir ();
   
-  if (mkdir (gconfd_dir, 0700) < 0 && errno != EEXIST)
+  if (gconf_mkdir_private (gconfd_dir) < 0 && errno != EEXIST)
     gconf_log (GCL_WARNING, _("Failed to create %s: %s"),
                gconfd_dir, g_strerror (errno));
   
@@ -780,9 +795,7 @@ gconf_main_is_running (void)
  * Database storage
  */
 
-static GList* db_list = NULL;
 static GHashTable* dbs_by_address = NULL;
-static GConfDatabase *default_db = NULL;
 
 static void
 init_databases (void)
@@ -1127,7 +1140,7 @@ gconfd_check_in_shutdown (CORBA_Environment *ev)
 static void
 get_log_names (gchar **logdir, gchar **logfile)
 {
-  *logdir = gconf_concat_dir_and_key (g_get_home_dir (), ".gconfd");
+  *logdir = gconf_get_daemon_dir ();
   *logfile = gconf_concat_dir_and_key (*logdir, "saved_state");
 }
 
@@ -1156,7 +1169,7 @@ open_append_handle (GError **err)
 
       get_log_names (&logdir, &logfile);
       
-      mkdir (logdir, 0700); /* ignore failure, we'll catch failures
+      gconf_mkdir_private (logdir); /* ignore failure, we'll catch failures
                              * that matter on open()
                              */
       
@@ -1233,7 +1246,7 @@ logfile_save (void)
   
   get_log_names (&logdir, &logfile);
 
-  mkdir (logdir, 0700); /* ignore failure, we'll catch failures
+  gconf_mkdir_private (logdir); /* ignore failure, we'll catch failures
                          * that matter on open()
                          */
 
@@ -1896,7 +1909,7 @@ logfile_read (void)
   
   if (f == NULL)
     {
-      gconf_log (GCL_ERR, _("Unable to open saved state file '%s': %s"),
+      gconf_log (GCL_DEBUG, _("Unable to open saved state file '%s': %s"),
                  logfile, g_strerror (errno));
 
       goto finished;

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: stty.c,v 1.1.1.4 2000-03-31 15:47:49 mwhitson Exp $";
+"$Id: stty.c,v 1.2 2001-03-07 01:19:47 ghudson Exp $";
 
 
 #include "lp.h"
@@ -79,27 +79,6 @@
     { "9600", 9600, B9600, },
     { "19200", 19200, B19200, },
     { "38400", 38400, B38400, },
-#if defined(B57600)
-    { "57600", 57600, B57600, },
-#endif
-#if defined(B115200)
-    { "115200", 115200, B115200, },
-#endif
-#if defined(B230400)
-    { "230400", 230400, B230400, },
-#endif
-#if defined(B460800)
-    { "460800", 460800, B460800, },
-#endif
-#if defined(B500000)
-    { "500000", 500000, B500000, },
-#endif
-#if defined(B576000)
-    { "576000", 576000, B576000, },
-#endif
-#if defined(B921600)
-    { "921600", 921600, B921600, },
-#endif
     { (char *) 0, 0, 0 }
 };
 
@@ -230,7 +209,7 @@ void Do_stty( int fd )
 
 	for( count = 0; count < l.count; ++count ){
 		arg = l.list[count];
-		for( i = 0; modes[i].string && safestrcasecmp( modes[i].string, arg); i++);
+		for( i = 0; modes[i].string && strcasecmp( modes[i].string, arg); i++);
 		if( modes[i].string ){
 			DEBUG3("stty: modes %s, mc 0x%x ms 0x%x lc 0x%x ls 0x%x",
 					 modes[i].string, modes[i].reset, modes[i].set,
@@ -241,7 +220,7 @@ void Do_stty( int fd )
 			localmode |= modes[i].lset;
 			continue;
 		}
-		for( i = 0; special[i].name && safestrcasecmp( special[i].name, arg); i++);
+		for( i = 0; special[i].name && strcasecmp( special[i].name, arg); i++);
 		if( special[i].name) {
 			++count;
 			option = l.list[count];
@@ -260,20 +239,20 @@ void Do_stty( int fd )
 			DEBUG3("stty: special %s %s", arg, option);
 			continue;
 		}
-		for( i = 0; bauds[i].string && safestrcasecmp( bauds[i].string, arg); i++);
+		for( i = 0; bauds[i].string && strcasecmp( bauds[i].string, arg); i++);
 		if( bauds[i].string) {
 			DEBUG3("stty: speed %s", arg);
 			mode.sg_ispeed = mode.sg_ospeed = bauds[i].speed;
 			continue;
 		}
-		if( !safestrcasecmp( "new", arg)) {
+		if( !strcasecmp( "new", arg)) {
 			DEBUG3("stty: ldisc %s", arg);
 			linedisc = NTTYDISC;
 			if( ioctl( fd, TIOCSETD, &linedisc) < 0)
 				logerr_die( LOG_INFO, "stty: TIOCSETD ioctl failed");
 			continue;
 		}
-		if( !safestrcasecmp( "old", arg)) {
+		if( !strcasecmp( "old", arg)) {
 			DEBUG3("stty: ldisc %s", arg);
 			linedisc = 0;
 			if( ioctl( fd, TIOCSETD, &linedisc) < 0)
@@ -323,27 +302,6 @@ void Do_stty( int fd )
     { "9600", 9600, B9600, },
     { "19200", 19200, B19200, },
     { "38400", 38400, B38400, },
-#if defined(B57600)
-    { "57600", 57600, B57600, },
-#endif
-#if defined(B115200)
-    { "115200", 115200, B115200, },
-#endif
-#if defined(B230400)
-    { "230400", 230400, B230400, },
-#endif
-#if defined(B460800)
-    { "460800", 460800, B460800, },
-#endif
-#if defined(B500000)
-    { "500000", 500000, B500000, },
-#endif
-#if defined(B576000)
-    { "576000", 576000, B576000, },
-#endif
-#if defined(B921600)
-    { "921600", 921600, B921600, },
-#endif
     { (char *) 0, 0, 0 }
 };
 
@@ -576,7 +534,7 @@ void Do_stty( int fd )
 	for( count = 0; count < l.count; ++count ){
 		arg = l.list[count];
 		for( i = 0;
-			tmodes[i].string && safestrcasecmp( tmodes[i].string, arg); i++);
+			tmodes[i].string && strcasecmp( tmodes[i].string, arg); i++);
 
 		if( tmodes[i].string) {
 			DEBUG3("stty: modes %s, ic 0x%x is 0x%x oc 0x%x os 0x%x cc 0x%x cs 0x%x lc 0x%x ls 0x%x",
@@ -594,7 +552,7 @@ void Do_stty( int fd )
 			tio.c_lflag |= tmodes[i].lset;
 			continue;
 		}
-		for( i = 0; bauds[i].string && safestrcasecmp( bauds[i].string, arg); i++);
+		for( i = 0; bauds[i].string && strcasecmp( bauds[i].string, arg); i++);
 		if( bauds[i].string) {
 			DEBUG3("stty: speed %s", arg);
 			tio.c_cflag &= ~CBAUD;
@@ -652,27 +610,6 @@ void Do_stty( int fd )
 #ifdef EXTA
 	{"EXTA", EXTA, EXTA},
 	{"EXTB", EXTB, EXTB},
-#endif
-#if defined(B57600)
-    { "57600", 57600, B57600, }, { "B57600", 57600, B57600, },
-#endif
-#if defined(B115200)
-    { "115200", 115200, B115200, }, { "B115200", 115200, B115200, },
-#endif
-#if defined(B230400)
-    { "230400", 230400, B230400, }, { "B230400", 230400, B230400, },
-#endif
-#if defined(B460800)
-    { "460800", 460800, B460800, }, { "B460800", 460800, B460800, },
-#endif
-#if defined(B500000)
-    { "500000", 500000, B500000, }, { "B500000", 500000, B500000, },
-#endif
-#if defined(B576000)
-    { "576000", 576000, B576000, }, { "B576000", 576000, B576000, },
-#endif
-#if defined(B921600)
-    { "921600", 921600, B921600, }, { "B921600", 921600, B921600, },
 #endif
 	{ (char *) 0, 0, 0 }
 };
@@ -965,7 +902,7 @@ void Do_stty( int fd )
 
 	for( count = 0; count < l.count; ++count ){
 		arg = l.list[count];
-		for( i = 0; bauds[i].string && safestrcasecmp( bauds[i].string, arg); i++);
+		for( i = 0; bauds[i].string && strcasecmp( bauds[i].string, arg); i++);
 
 		if( bauds[i].string ){
 #ifdef HAVE_CFSETISPEED
@@ -980,7 +917,7 @@ void Do_stty( int fd )
 #endif
 			continue;
 		}
-		for( i = 0; c_i_dat[i].name && safestrcasecmp( c_i_dat[i].name, arg); i++);
+		for( i = 0; c_i_dat[i].name && strcasecmp( c_i_dat[i].name, arg); i++);
 		if( c_i_dat[i].name ){
 			DEBUG3("stty: c_iflag %s, ms 0x%x mc 0x%x",
 					 c_i_dat[i].name, c_i_dat[i].or_dat, c_i_dat[i].and_dat);
@@ -988,7 +925,7 @@ void Do_stty( int fd )
 			t_dat.c_iflag |= c_i_dat[i].or_dat;
 			continue;
 		}
-		for( i = 0; c_o_dat[i].name && safestrcasecmp( c_o_dat[i].name, arg); i++);
+		for( i = 0; c_o_dat[i].name && strcasecmp( c_o_dat[i].name, arg); i++);
 		if( c_o_dat[i].name ){
 			DEBUG3("stty: c_oflag %s, ms 0x%x mc 0x%x",
 					 c_o_dat[i].name, c_o_dat[i].or_dat, c_o_dat[i].and_dat);
@@ -996,7 +933,7 @@ void Do_stty( int fd )
 			t_dat.c_oflag |= c_o_dat[i].or_dat;
 			continue;
 		}
-		for( i = 0; c_c_dat[i].name && safestrcasecmp( c_c_dat[i].name, arg); i++);
+		for( i = 0; c_c_dat[i].name && strcasecmp( c_c_dat[i].name, arg); i++);
 		if( c_c_dat[i].name ){
 			DEBUG3("stty: c_cflag %s, ms 0x%x mc 0x%x",
 					 c_c_dat[i].name, c_c_dat[i].or_dat, c_c_dat[i].and_dat);
@@ -1004,7 +941,7 @@ void Do_stty( int fd )
 			t_dat.c_cflag |= c_c_dat[i].or_dat;
 			continue;
 		}
-		for( i = 0; c_l_dat[i].name && safestrcasecmp( c_l_dat[i].name, arg); i++);
+		for( i = 0; c_l_dat[i].name && strcasecmp( c_l_dat[i].name, arg); i++);
 		if( c_l_dat[i].name ){
 			DEBUG3("stty: c_lflag %s, ms 0x%x mc 0x%x",
 					 c_l_dat[i].name, c_l_dat[i].or_dat, c_l_dat[i].and_dat);
@@ -1012,7 +949,7 @@ void Do_stty( int fd )
 			t_dat.c_lflag |= c_l_dat[i].or_dat;
 			continue;
 		}
-		for( i = 0; special[i].name && safestrcasecmp( special[i].name, arg); i++);
+		for( i = 0; special[i].name && strcasecmp( special[i].name, arg); i++);
 		if( special[i].name ){
 			++count;
 			option = l.list[count];
@@ -1032,7 +969,7 @@ void Do_stty( int fd )
 			continue;
 		}
 #ifdef USE_TERMIOX
-		for( i = 0; tx_x_dat[i].name && safestrcasecmp( tx_x_dat[i].name, arg); i++);
+		for( i = 0; tx_x_dat[i].name && strcasecmp( tx_x_dat[i].name, arg); i++);
 		if( tx_x_dat[i].name ){
 			DEBUG3("stty: tx_xflag %s, ms 0x%x mc 0x%x",
 					 tx_x_dat[i].name, tx_x_dat[i].or_dat, tx_x_dat[i].and_dat);

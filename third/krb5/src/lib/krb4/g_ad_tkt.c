@@ -245,6 +245,10 @@ get_ad_tkt(service,sinstance,realm,lifetime)
     kvno = (unsigned char) ptr[1];
     tkt->length = (unsigned char) ptr[2];
     ptr += 3;
+
+    if (tkt->length + (ptr - (char *) cip->dat) > cip->length)
+	return(INTK_ERR);
+
     memcpy((char *)(tkt->dat), ptr, tkt->length);
     ptr += tkt->length;
 

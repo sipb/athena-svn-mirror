@@ -1,0 +1,8 @@
+Name: athena-startup-notification
+Summary: Startup notification library, for athena
+License: LGPL/X11
+Group: System Environment/Libraries
+
+%description
+The startup notification library allows a desktop environment to track
+application startup, to provide user feedback and other features.

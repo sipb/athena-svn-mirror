@@ -1,5 +1,5 @@
 #include "includes.h"
-RCSID("$Id: auth2-pam.c,v 1.1.1.2 2003-02-05 19:03:20 zacheiss Exp $");
+RCSID("$Id: auth2-pam.c,v 1.3 2003-02-06 03:45:45 zacheiss Exp $");
 
 #ifdef USE_PAM
 #include <security/pam_appl.h>
@@ -139,7 +139,6 @@ input_userauth_info_response_pam(int type, u_int32_t seqnr, void *ctxt)
 
 	nresp = packet_get_int();	/* Number of responses. */
 	debug("got %d responses", nresp);
-
 
 	if (nresp != context_pam2.num_expected)
 		fatal("%s: Received incorrect number of responses "

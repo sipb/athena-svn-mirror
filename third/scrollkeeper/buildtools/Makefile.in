@@ -135,7 +135,8 @@ INCLUDES = \
 LDADD = \
         $(XML_LIBS) \
 	$(XSLT_LIBS) \
-	$(top_builddir)/libs/libscrollkeeper.la
+	$(top_builddir)/libs/libscrollkeeper.la \
+	$(INTLLIBS)
 
 
 noinst_PROGRAMS = \
@@ -288,8 +289,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-separate.o: separate.c ../config.h ../libs/scrollkeeper.h
-
 info-am:
 info: info-am
 dvi-am:

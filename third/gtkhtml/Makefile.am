@@ -10,7 +10,6 @@ pkgconfig_DATA = gtkhtml-@GTKHTML_RELEASE@.pc
 SUBDIRS = m4 					\
 	macros					\
 	src					\
-	capplet					\
 	doc					\
 	art					\
 	$(DIR_COMPONENTS)			\

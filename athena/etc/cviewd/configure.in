@@ -1,0 +1,9 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(cviewd.c)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+CPPFLAGS="$CPPFLAGS -I$ATHTOOLROOT/usr/athena/include"
+
+AC_OUTPUT(Makefile)

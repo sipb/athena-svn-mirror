@@ -23,7 +23,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.2 2002-12-13 20:42:49 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.5 2002-12-13 22:06:45 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"

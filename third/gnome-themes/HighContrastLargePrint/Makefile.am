@@ -14,5 +14,5 @@ DISTCLEANFILES= index.theme
 
 if CORE_THEMES_ONLY
 install: install-recursive
-	mv $(datadir)/themes/HighContrastLargePrint/index.theme $(datadir)/themes/HighContrastLargePrint/index.theme~
+	mv $(DESTDIR)$(datadir)/themes/HighContrastLargePrint/index.theme $(DESTDIR)$(datadir)/themes/HighContrastLargePrint/index.theme~
 endif

@@ -1,10 +1,10 @@
-.TH PSLPR  1 "19 August 1992" "Adobe Systems"
+.TH PSLPR 1 "19 August 1992" "Adobe Systems"
 \" Copyright (c) 1985,1987,1991,1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/pslpr.1p,v 1.1.1.1 1996-10-07 20:25:39 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/pslpr.1p,v 1.2 1996-10-14 05:09:48 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .SH NAME
-pslpr\(emselect or reverse the page order of a \*(PS language file
+pslpr \- select or reverse the page order of a PostScript language file
 .SH SYNOPSIS
 .B pslpr
 [ 
@@ -43,12 +43,10 @@ filename
 if the 
 .B -p
 option is used; otherwise the output is printed on the printer 
-specified by either the
+specified by the
 .br
 .BI -P printer 
-option for BSD or the 
-.BI -d dest
-option of System V. If none of these options is used, 
+option. If none of these options is used, 
 .I
 pslpr
 prints on the printer specified by the PRINTER environment variable,
@@ -148,9 +146,6 @@ language imaging model.
 Sets a printer-specific feature, such as manual feed.  If no value is
 specified, a value of "TRUE" is assumed.  Any feature named in the
 target printer's \*(PS Printer Description file can be used here.
-.PP
-In BSD UNIX systems, the following spooler options are passed on to
-lpr.
 .TP
 .BI -P printer
 causes the output to be sent to the named printer, unless 
@@ -182,86 +177,37 @@ sends mail after files have been printed.
 .BI -r
 renames the file after printing.
 .PP
-In System V UNIX systems, the following spooler options are passed on to
-lp.
-See the man pages for LP(C) and LPR(W) for more complete descriptions.
-.TP
-.BI -d dest
-causes the output to be sent to the named printer unless 
-.BI -p file
-is specified; in which case, the printer name is used to access the 
-printer's \*(PS Printer Description file for information, and the output is
-written to 
-the specified file instead of being spooled for printing.
-.TP
-.BI -c
-immediately makes a copy of the file to be printed.
-.TP
-.BI -n n
-causes 
-.I n 
-copies of the output to be produced.  The default is one.
-.TP
-.B -h
-suppresses the printing of the job burst page.
-.TP
-.B -r
-don't page-reverse the output.
-.TP
-.BI -s
-suppresses messages from 
-lp.
-.TP
-.BI -m
-sends mail after files have been printed.
-.TP
-.BI -t title
-specifies the title.
-.TP
-.BI -w
-writes to the user's terminal after files have been printed.
-.TP
-.BI -o option
-sends a printer-dependent or class dependent option to print spooler.
 
 .SH EXAMPLES
 The following command reads a \*(PS language file called printfile.ps
 and prints pages 3 through 19, 37
 through 60 and page 90, in landscape format.  The 
-.B -d
-option (System V only; for BSD use the
 .B -P
-option) directs
+option directs
 the output to the printer called ps, and is required when using the
 -L option.
 
 .RS
-pslpr -i3-19 -i37-60 -i90 -L -dps  printfile.ps
+pslpr -i3-19 -i37-60 -i90 -L -Pps  printfile.ps
 
 .RE
 In the next example, a textfile is processed by enscript, creating a \*(PS
 language file which is piped to
 .I pslpr
 and printed page-reversed on the printer
-named LaserBlaster. The first line
-in the example is for BSD, the second for System V.
+named LaserBlaster.
 
 .RS
 enscript -p- textfile | pslpr -R -PLaserBlaster
-
-enscript -p- textfile | pslpr -R -dLaserBlaster
 
 .RE
 In this example, a \*(PS language file (doc.ps) is prepared for printing on
 a specific  
 printer (LaserBlaster), but is saved in a file (LBprintfile), 
-instead of being spooled for printing.  Again, the first line
-in the example is for BSD, the second for System V.
+instead of being spooled for printing.
 
 .RS
 pslpr -pLBprintfile -PLaserBlaster doc.ps
-
-pslpr -pLBprintfile -dLaserBlaster doc.ps
 
 .RE
 .SH ENVIRONMENT
@@ -271,7 +217,7 @@ for downloadable resources
 .IP PSTEMPDIR
 path name of a temporary directory to use instead of XPSTEMPDIRX 
 for spooled temporary files
-.IP "PRINTER (BSD)"
+.IP "PRINTER"
 the name of a printer (as in the 
 .B -P
 option) for 
@@ -285,21 +231,6 @@ will use this printer.  If neither
 nor PRINTER is set,
 .I pslpr
 will spool to a printer named "PostScript".
-.IP "LPDEST (System V)"
-the name of a printer (as in the 
-.B -d
-option) for 
-lp
-to use.  If no 
-.B -d
-option is specified,
-lp
-will use this printer.  If neither 
-.B -d 
-nor LPDEST is set,
-.I pslpr
-will spool to a printer class named "PostScript".
-.br
 .SH "SEE ALSO"
 transcript(1), enscript(1), psnup(1), postscript(7)
 .SH AUTHOR

@@ -19,9 +19,10 @@
 
 AUTOMAKE_OPTIONS = 1.2 gnits
 
-EXTRA_DIST = gettext.perl gettext-sh tcl_gettext.c README-Tcl add-to-archive cvsuser.c archive.tar.gz $(lisp_LISP)
+EXTRA_DIST = gettext.perl gettext-sh tcl_gettext.c README-Tcl add-to-archive cvsuser.c archive.tar.gz $(hack_DATA)
 DISTCLEANFILES = gettextize autopoint
-lisp_LISP = po-mode.el po-compat.el
+hackdir = $(datadir)/emacs/site-lisp
+hack_DATA = po-mode.el po-compat.el
 
 bin_SCRIPTS = gettextize autopoint
 

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: permission.c,v 1.1.1.3 2000-03-31 15:47:57 mwhitson Exp $";
+"$Id: permission.c,v 1.2 2001-03-07 01:19:43 ghudson Exp $";
 
 
 #include "lp.h"
@@ -60,10 +60,6 @@ char *perm_str( int n )
 }
 int perm_val( char *s )
 {
-	if( !s )return(0);
-	if( strlen(s) == 1 && isupper(cval(s)) ){
-		return( P_CONTROLLINE );
-	}
 	return(Get_keyval(s,permwords));
 }
 
@@ -78,14 +74,13 @@ int perm_val( char *s )
  ***************************************************************************/
 
 int Perms_check( struct line_list *perms, struct perm_check *check,
-	struct job *job, int job_check )
+	struct job *job )
 {
 	int j, c, linecount, valuecount, key;
 	int invert = 0;
 	int result = 0, m = 0;
 	struct line_list values, args;
 	char *s, *t;					/* string */
-	const char *name;
 	int last_default_perm;
 
 	DEBUGFC(DDB1)Dump_perm_check( "Perms_check - checking", check );
@@ -134,8 +129,7 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 			case P_ACCEPT: result = P_ACCEPT; m = 0; break;
 			case P_USER:
 				m = 1;
-				if( !job_check ){ m = 0; }
-				else switch (check->service){
+				switch (check->service){
 				case 'X': break;
 				default:
 					m = match( &args, check->user, invert );
@@ -153,8 +147,7 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 				break;
 			case P_HOST:
 				m = 1;
-				if( !job_check ){ m = 0; }
-				else switch (check->service){
+				switch (check->service){
 				case 'X':
 					m = match_host( &args, check->remotehost, invert );
 					break;
@@ -165,8 +158,7 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 				break;
 			case P_GROUP:
 				m = 1;
-				if( !job_check ){ m = 0; }
-				else switch (check->service){
+				switch (check->service){
 				case 'X': break;
 				default:
 					m = match_group( &args, check->user, invert );
@@ -175,8 +167,7 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 				break;
 			case P_IP:
 				m = 1;
-				if( !job_check ){ m = 0; }
-				else switch (check->service){
+				switch (check->service){
 				case 'X':
 					m = match_host( &args, check->remotehost, invert );
 					break;
@@ -194,28 +185,32 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 			case P_PORT:
 				m = 1;
 				switch (check->service){
-				case 'X': case 'M': case 'C':
+				case 'X': case 'M': case 'C': case 'S':
 					m = match_range( &args, check->port, invert );
 					break;
 				}
 				break;
 			case P_REMOTEUSER:
 				m = 1;
-				if( !(name = check->remoteuser) ) name = check->user;
 				switch (check->service){
 				case 'X': break;
+				case 'M': case 'C': case 'S':
+					m = match( &args, check->remoteuser, invert );
+					break;
 				default:
-					m = match( &args, name, invert );
+					m = match( &args, check->user, invert );
 					break;
 				}
 				break;
 			case P_REMOTEGROUP:
 				m = 1;
-				if( !(name = check->remoteuser) ) name = check->user;
 				switch (check->service){
 				case 'X': break;
+				case 'M': case 'C': case 'S':
+					m = match_group( &args, check->remoteuser, invert );
+					break;
 				default:
-					m = match_group( &args, name, invert );
+					m = match_group( &args, check->user, invert );
 					break;
 				}
 				break;
@@ -275,17 +270,17 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 			case P_CONTROLLINE:
 				/* check to see if we have control line */
 				m = 1;
-				if( !job_check ){ m = 0; }
-				for( j = 0; m && j < args.count; ++j ){
-					if( !(t = args.list[j]) ) continue;
-					c = cval(t);
-					if( isupper(c) &&
-						(s = Find_first_letter(&job->controlfile,c,0))){
-						/* Find first does not return whole line */
-						m = Globmatch( t+1, s );
+				if( job && args.count){
+					for(m = j = 0; m == 0 && j < args.count; ++j ){
+						if( !(t = args.list[j]) ) continue;
+						c = cval(t);
+						if( isupper(c) &&
+							(s = Find_first_letter(&job->controlfile,c,0))){
+							m = Globmatch( t, s );
+						}
 					}
+					if( invert ) m = !m;
 				}
-				if( invert ) m = !m;
 				break;
 			case P_PRINTER:
 				m = 1;
@@ -297,14 +292,13 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 				}
 				break;
 			case P_SERVICE:
-				m = 1;
 				m = match_char( &args, check->service, invert );
 				break;
 			case P_FORWARD:
 				m = 1;
 				switch (check->service){
 				default: break;
-				case 'R': case 'Q': case 'M': case 'C':
+				case 'R': case 'Q': case 'M': case 'C': case 'S':
 					/* P_FORWARD check succeeds if P_REMOTEIP != P_IP */
 					m = !Same_host( check->host, check->remotehost );
 					if( invert ) m = !m;
@@ -313,10 +307,9 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 				break;
 			case P_SAMEHOST:
 				m = 1;
-				if( !job_check ){ m = 0; }
-				else switch (check->service){
+				switch (check->service){
 				default: break;
-				case 'R': case 'Q': case 'M': case 'C':
+				case 'R': case 'Q': case 'M': case 'C': case 'S':
 					/* P_SAMEHOST check succeeds if P_REMOTEIP == P_IP */
 					m = Same_host(check->host, check->remotehost);
 					if( m ){
@@ -339,10 +332,9 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 				break;
 			case P_SAMEUSER:
 				m = 1;
-				if( !job_check ){ m = 0; }
-				else switch (check->service){
+				switch (check->service){
 				default: break;
-				case 'Q': case 'M': case 'C':
+				case 'Q': case 'M': case 'C': case 'S':
 					/* check succeeds if remoteuser == user */
 					m = (safestrcmp( check->user, check->remoteuser ) != 0);
 					if( invert ) m = !m;
@@ -355,10 +347,9 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 
 			case P_AUTHSAMEUSER:
 				m = 1;
-				if( !job_check ){ m = 0; }
-				else switch (check->service){
+				switch (check->service){
 				default: break;
-				case 'Q': case 'M': case 'C':
+				case 'Q': case 'M': case 'C': case 'S':
 					/* check succeeds if remoteuser == user */
 					t = Find_str_value(&job->info,AUTHINFO,Value_sep);
 					m = (safestrcmp( check->auth_client_id, t ) != 0);
@@ -374,7 +365,7 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 				m = 1;
 				switch (check->service){
 				default: break;
-				case 'Q': case 'M': case 'C':
+				case 'Q': case 'M': case 'C': case 'S':
 					/* check succeeds if remoteuser == user */
 					t = Find_str_value(&job->info,AUTHINFO,Value_sep);
 					m = !t;
@@ -405,7 +396,7 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 					}
 				}
 			}
-			DEBUGF(DDB2)("Perms_check: match %d, result '%s' default now '%s'",
+			DEBUGF(DDB3)("Perms_check: match %d, result '%s' default now '%s'",
 				m, perm_str(result), perm_str(last_default_perm) );
 		}
 		if( m ){
@@ -413,14 +404,15 @@ int Perms_check( struct line_list *perms, struct perm_check *check,
 		} else if( result == 0 ){
 			result = last_default_perm;
 		}
-		DEBUGF(DDB1)("Perms_check: '%s' - match %d, result '%s' default now '%s'",
-			perms->list[linecount],
+		DEBUGF(DDB3)("Perms_check: final match %d, result '%s' default now '%s'",
 			m, perm_str(result), perm_str(last_default_perm) );
+		DEBUGF(DDB2)("Perms_check: result %d '%s'",
+					result, perm_str( result ) );
 	}
 	if( result == 0 ){
 		result = last_default_perm;
 	}
-	DEBUGF(DDB1)("Perms_check: final result %d '%s'",
+	DEBUGF(DDB2)("Perms_check: final result %d '%s'",
 				result, perm_str( result ) );
 	Free_line_list(&values);
 	Free_line_list(&args);
@@ -505,7 +497,7 @@ int portmatch( char *val, int port )
 	char *s, *t, *tend;
 
 	err = 0;
-	s = safestrchr( val, '-' );
+	s = strchr( val, '-' );
 	if( s ){
 		*s = 0;
 	}
@@ -567,7 +559,7 @@ int match_char( struct line_list *list, int value, int invert )
 	DEBUGFC(DDB3)Dump_line_list("match_char - lines", list );
 	for( i = 0; result && i < list->count; ++i ){
 		if( !(s = list->list[i]) ) continue;
-		result = (safestrchr( s, value ) == 0) && (safestrchr(s,'*') == 0) ;
+		result = (strchr( s, value ) == 0 );
 		DEBUGF(DDB3)("match_char: val %c, str '%s', match %d",
 			value, s, result);
 	}
@@ -649,9 +641,9 @@ int ingroup( char *group, const char *user )
 			result = 0;
 		} else for( members = grent->gr_mem; result && *members; ++members ){
 			DEBUGF(DDB3)("ingroup: member '%s'", *members);
-			result = (safestrcmp( user, *members ) != 0);
+			result = (strcmp( user, *members ) != 0);
 		}
-	} else if( safestrpbrk( group, "*[]") ){
+	} else if( strpbrk( group, "*[]") ){
 		/* wildcard in group name, scan through all groups */
 		setgrent();
 		while( result && (grent = getgrent()) ){
@@ -666,7 +658,7 @@ int ingroup( char *group, const char *user )
 					DEBUGF(DDB3)("ingroup: found '%s'", grent->gr_name);
 					for( members = grent->gr_mem; result && *members; ++members ){
 						DEBUGF(DDB3)("ingroup: member '%s'", *members);
-						result = (safestrcmp( user, *members ) != 0);
+						result = (strcmp( user, *members ) != 0);
 					}
 				}
 			}
@@ -700,34 +692,4 @@ void Dump_perm_check( char *title,  struct perm_check *check )
 			check->authtype, check->authfrom,
 			check->auth_client_id, check->auth_from_id );
 	}
-}
-
-/***************************************************************************
- * Perm_check_to_list( struct line_list *list, struct perm_check *check )
- *  Put perm_check information in list
- ***************************************************************************/
-
-void Perm_check_to_list( struct line_list *list, struct perm_check *check )
-{
-	char buffer[SMALLBUFFER];
-	Set_str_value( list, USER, check->user );
-	Set_str_value( list, REMOTEUSER, check->remoteuser );
-	Set_str_value( list, PRINTER, check->printer );
-	plp_snprintf(buffer,sizeof(buffer),"%c",check->service);
-	Set_str_value( list, SERVICE, buffer );
-	Set_str_value( list, LPC, check->lpc );
-	if( check->host ){
-		Set_str_value( list, HOST, check->host->fqdn );
-	}
-	if( check->remotehost ){
-		Set_str_value( list, HOST, check->remotehost->fqdn );
-	}
-	if( check->addr ){
-		Set_str_value( list, ADDR, inet_ntop_sockaddr( check->addr, buffer, sizeof(buffer)));
-		Set_decimal_value( list, PORT, check->port );
-	}
-	Set_str_value( list, AUTHTYPE, check->authtype );
-	Set_str_value( list, AUTHFROM, check->authfrom );
-	Set_str_value( list, AUTH_CLIENT_ID, check->auth_client_id );
-	Set_str_value( list, AUTH_FROM_ID, check->auth_from_id );
 }

@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987,1990,1991,1992 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[] = "$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/capcomm.c,v 1.1.1.1 1996-10-07 20:25:47 ghudson Exp $";
+_NOTICE RCSID[] = "$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/capcomm.c,v 1.2 1996-10-14 05:05:35 ghudson Exp $";
 #endif
 /* pscomm.c
  *
@@ -14,6 +14,12 @@ _NOTICE RCSID[] = "$Header: /afs/dev.mit.edu/source/repository/third/transcript/
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1996/04/25 15:28:47  ghudson
+ * Use fcntl locking instead of nonportable flock locking.
+ *
+ * Revision 1.1  1996/04/20 00:22:51  bert
+ * Initial revision
+ *
  * Revision 1.6  1994/04/11  22:44:02  snichols
  * SGI is slightly different than other SYSV's.
  *
@@ -815,20 +821,22 @@ register int c;
 private BackupStatus(file1, file2)
 char *file1, *file2;
 {
-#ifndef SYSV
+    struct flock lock;
     register int fd1, fd2;
     char buf[BUFSIZ];
     int cnt;
 
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_type = F_WRLCK;
+    lock.l_whence = SEEK_SET;
     VOIDC umask(0);
     fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
-    if ((fd1 < 0) || (flock(fd1,LOCK_EX) < 0)) {
+    if (fd1 < 0) {
 	VOIDC unlink(file1);
-	VOIDC flock(fd1,LOCK_UN);
-	VOIDC close(fd1);
-	fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
+	fd1 = open(file1, O_WRONLY|O_CREAT, 0644);
     }
-    if ((fd1 < 0) || (flock(fd1,LOCK_EX) <0)) {
+    if ((fd1 < 0) || (fcntl(fd1, F_SETLKW, &lock) < 0)) {
 	fprintf(stderr, "%s: writing %s; ",prog,file1);
 	perror("");
 	VOIDC close(fd1);
@@ -843,10 +851,10 @@ char *file1, *file2;
     }
     cnt = read(fd2,buf,BUFSIZ);
     VOIDC write(fd1,buf,cnt);
-    VOIDC flock(fd1,LOCK_UN);
+    lock.l_type = F_UNLCK;
+    VOIDC fcntl(fd1, F_SETLKW, &lock);
     VOIDC close(fd1);
     VOIDC close(fd2);
-#endif    
 }
 
 /* restore the "status" message from the backed-up ".status" copy */

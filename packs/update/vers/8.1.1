@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	# Move /tmp onto /var.
+	if [ ! -d /var/rtmp ]; then
+		if mkdir /var/rtmp; then
+			chmod 1777 /var/rtmp
+			mv /tmp /tmp.old
+			ln -s var/rtmp /tmp
+			(cd /tmp.old && tar cf - .) \
+				| (cd /var/rtmp && tar xpf -)
+			rm -rf /tmp.old
+		fi
+	fi
+	;;
+
+sgi)
+	echo "/etc/aliases"			>> "$CONFCHG"
+	;;
+esac

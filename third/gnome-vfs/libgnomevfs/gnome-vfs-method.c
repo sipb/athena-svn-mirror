@@ -156,6 +156,9 @@ gnome_vfs_method_init (void)
 	return TRUE;
 }
 
+/* Athena hack to work around Solaris #define of "tell" */
+#undef tell
+
 static void
 load_module (const gchar *module_name, const char *method_name, const char *args,
 	     GnomeVFSMethod **method, GnomeVFSTransform **transform)

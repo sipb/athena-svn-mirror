@@ -14,7 +14,7 @@ gt_PROG_LEX
 
 gt_GCJ
 if test -n "$HAVE_GCJ"; then
-  BUILDJAVAEXE=yes
+  BUILDJAVAEXE=no
 else
   BUILDJAVAEXE=no
 fi
@@ -23,7 +23,7 @@ AC_SUBST(BUILDJAVAEXE)
 gt_JAVACOMP
 AC_CHECK_PROG(JAR, jar, jar)
 if test -n "$HAVE_JAVACOMP" && test -n "$JAR"; then
-  BUILDJAVA=yes
+  BUILDJAVA=no
 else
   BUILDJAVA=no
 fi
@@ -31,7 +31,7 @@ AC_SUBST(BUILDJAVA)
 
 gt_JAVAEXEC
 if test -n "$HAVE_JAVAEXEC" && test $BUILDJAVA = yes; then
-  TESTJAVA=yes
+  TESTJAVA=no
 else
   TESTJAVA=no
 fi

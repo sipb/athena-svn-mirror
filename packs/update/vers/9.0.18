@@ -1,0 +1,19 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  # Enable logging in ufs partitions other than the vice partition.
+  sed -e '/vice/n' -e '/^[^#].*	ufs	.*-$/s/-$/logging/' \
+    /etc/vfstab > /etc/vfstab.new
+  rm -f /etc/vfstab.old
+  ln /etc/vfstab /etc/vfstab.old
+  mv /etc/vfstab.new /etc/vfstab
+
+  # New oschanges code to prod /tmp back to a symlink.
+  echo "OSCHANGES=true"				>> "$CONFVARS"
+  ;;
+
+sgi)
+  ;;
+
+esac

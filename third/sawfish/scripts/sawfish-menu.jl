@@ -3,7 +3,7 @@ exec rep "$0" "$@"
 !#
 
 ;; sawmill-menu -- subprocess to handle menus
-;; $Id: sawfish-menu.jl,v 1.1.1.3 2003-01-05 00:32:10 ghudson Exp $
+;; $Id: sawfish-menu.jl,v 1.2 2003-05-29 16:36:56 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -106,7 +106,8 @@ exec rep "$0" "$@"
     (g-signal-connect menu "deactivate" gtk-main-quit)
     (setq menu-selected nil)
     (gtk-menu-popup-interp menu nil nil 0 (or timestamp 0) position)
-    (gtk-main)
+    (when (memq 'visible (GTK-WIDGET-FLAGS menu))
+      (gtk-main))
     menu-selected))
 
 

@@ -36,7 +36,7 @@ bonobo_persist_stream_save_object_iid (Bonobo_Stream target,
 	slen = strlen (object_iid) + 1;
 	len = sizeof (gint32) + slen;
 	copy = g_malloc (len);
-	((gint32 *) copy) = slen;
+	*((gint32 *) copy) = slen;
 	strcpy (copy + sizeof (gint32), object_iid);
 		
 	bonobo_stream_client_write (target, copy, len, ev);

@@ -58,7 +58,7 @@ const int gdk_event_mask_table[20] =
   KeyReleaseMask,
   EnterWindowMask,
   LeaveWindowMask,
-  FocusChangeMask,
+  FocusChangeMask | EnterWindowMask | LeaveWindowMask,
   StructureNotifyMask,
   PropertyChangeMask,
   VisibilityChangeMask,

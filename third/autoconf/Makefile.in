@@ -28,7 +28,7 @@ MAKEINFO = makeinfo
 TEXI2DVI = texi2dvi
 M4 = @M4@
 AWK = @AWK@
-PERL = @PERL@
+PERL = /usr/athena/bin/perl
 
 # Programs that are ALWAYS installed (and are created in the build dir).
 ASCRIPTS = autoconf autoheader autoreconf autoupdate ifnames 
@@ -37,7 +37,7 @@ ASCRIPTS = autoconf autoheader autoreconf autoupdate ifnames
 M4FROZEN = autoconf.m4f autoheader.m4f
 
 # All programs, including those only installed if you have perl.
-SCRIPTS = $(ASCRIPTS) @SCRIPTS@
+SCRIPTS = $(ASCRIPTS) autoscan
 
 transform=@program_transform_name@
 
@@ -78,11 +78,11 @@ DISTFILES = AUTHORS COPYING ChangeLog ChangeLog.1 INSTALL \
 	standards.texi make-stds.texi standards.info*
 
 editsh = sed -e 's,@''datadir''@,$(acdatadir),g' -e \
-	's,@''M4''@,$(M4),g'  -e 's,@''AWK''@,$(AWK),g' \
+	's,@''M4''@,/usr/athena/bin/m4,g'  -e 's,@''AWK''@,$(AWK),g' \
 	-e 's,@''SHELL''@,$(SHELL),g'
 editpl = sed -e 's,@''datadir''@,$(acdatadir),g' -e 's,@''PERL''@,$(PERL),g'
 
-all: ${SCRIPTS} ${M4FROZEN} info
+all: ${SCRIPTS} ${M4FROZEN}
 
 .SUFFIXES:
 .SUFFIXES: .sh .pl .m4 .m4f
@@ -137,35 +137,35 @@ installcheck: all install
 	cd testsuite && ${MAKE} AUTOCONF=${bindir}/autoconf $@
 
 installdirs:
-	$(SHELL) ${srcdir}/mkinstalldirs $(bindir) $(infodir) $(acdatadir)
+	$(SHELL) ${srcdir}/mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(infodir) ${DESTDIR}$(acdatadir)
 
 install: all $(M4FILES) acconfig.h installdirs install-info
 	for p in $(ASCRIPTS); do \
-	  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  $(INSTALL_PROGRAM) $$p ${DESTDIR}$(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
 	for i in $(M4FROZEN); do \
-	  $(INSTALL_DATA) $$i $(acdatadir)/$$i; \
+	  $(INSTALL_DATA) $$i ${DESTDIR}$(acdatadir)/$$i; \
 	done
 	for i in $(M4FILES) acconfig.h; do \
-	  $(INSTALL_DATA) $(srcdir)/$$i $(acdatadir)/$$i; \
+	  $(INSTALL_DATA) $(srcdir)/$$i ${DESTDIR}$(acdatadir)/$$i; \
 	done
 	-if test -f autoscan; then \
-	$(INSTALL_PROGRAM) autoscan $(bindir)/`echo autoscan|sed '$(transform)'`; \
+	$(INSTALL_PROGRAM) autoscan ${DESTDIR}$(bindir)/`echo autoscan|sed '$(transform)'`; \
 	for i in acfunctions acheaders acidentifiers acprograms \
 	  acmakevars; do \
-	$(INSTALL_DATA) $(srcdir)/$$i $(acdatadir)/$$i; \
+	$(INSTALL_DATA) $(srcdir)/$$i ${DESTDIR}$(acdatadir)/$$i; \
 	done; \
 	else :; fi
 
 # Don't cd, to avoid breaking install-sh references.
-install-info: info installdirs
+install-info: installdirs
 	if test -f autoconf.info; then \
 	  for i in *.info*; do \
-	    $(INSTALL_DATA) $$i $(infodir)/$$i; \
+	    $(INSTALL_DATA) $$i ${DESTDIR}$(infodir)/$$i; \
 	  done; \
 	else \
 	  for i in $(srcdir)/*.info*; do \
-	    $(INSTALL_DATA) $$i $(infodir)/`echo $$i | sed 's|^$(srcdir)/||'`; \
+	    $(INSTALL_DATA) $$i ${DESTDIR}$(infodir)/`echo $$i | sed 's|^$(srcdir)/||'`; \
 	  done; \
 	fi
 
@@ -185,7 +185,7 @@ ${srcdir}/configure: configure.in $(M4FILES)
 	chmod +x configure.tmp && mv configure.tmp configure
 Makefile: Makefile.in config.status
 	$(SHELL) ./config.status
-config.status: configure
+config.status:
 	$(SHELL) ./config.status --recheck
 
 maintainer-clean::

@@ -76,7 +76,7 @@
 #include <assert.h>
 
 /*
- * $Id: accept_sec_context.c,v 1.1.1.6 2002-05-02 16:57:20 rbasch Exp $
+ * $Id: accept_sec_context.c,v 1.5 2002-05-02 18:34:20 rbasch Exp $
  */
 
 /* Decode, decrypt and store the forwarded creds in the local ccache. */

@@ -1,0 +1,10 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(saferm.c)
+
+test -z "$lbindir" && lbindir='${bindir}'
+AC_SUBST(lbindir)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_OUTPUT(Makefile)

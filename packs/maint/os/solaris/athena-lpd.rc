@@ -1,0 +1,34 @@
+#!/sbin/sh
+# $Id: athena-lpd.rc,v 1.1 2002-08-27 17:33:13 zacheiss Exp $
+#
+# athena-lpd: Stop/Start the Athena lpd
+#
+. /etc/athena/rc.conf
+
+HOME=/; export HOME
+PATH=/etc/athena:/bin/athena:/bin:/usr/ucb:/usr/sbin:/etc:/sbin:/usr/athena/etc
+export PATH
+
+umask 022
+
+if [ "$LPD" != true ]; then
+  exit 0
+fi
+
+case "$1" in
+start)
+  # Use absolute path to distinguish from the vendor lpd.
+  echo "Starting Athena lpd."
+  /usr/athena/etc/lpd &
+  ;;
+stop)
+  pkill -x /usr/athena/etc/lpd
+  ;;
+restart)
+  $0 stop
+  $0 start
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  ;;
+esac

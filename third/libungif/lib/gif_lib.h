@@ -209,7 +209,7 @@ int QuantizeBuffer(unsigned int Width, unsigned int Height, int *ColorMapSize,
 ******************************************************************************/
 extern int GifQuietPrint;
 
-#ifdef HAVE_VARARGS_H
+#if 0
 extern void GifQprintf();
 #else
 extern void GifQprintf(char *Format, ...);

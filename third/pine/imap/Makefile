@@ -424,6 +424,7 @@ an ua:
 	$(TOOLS)/$@ "$(LN)" src/c-client c-client
 	$(TOOLS)/$@ "$(LN)" src/ansilib c-client
 	$(TOOLS)/$@ "$(LN)" src/charset c-client
+	sh -c '(test -d src/kerberos) && ($(LN) `pwd`/src/kerberos/* c-client) || true'
 	$(TOOLS)/$@ "$(LN)" src/osdep/$(SYSTEM) c-client
 	$(TOOLS)/$@ "$(LN)" src/mtest mtest
 	$(TOOLS)/$@ "$(LN)" src/ipopd ipopd

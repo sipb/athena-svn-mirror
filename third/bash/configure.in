@@ -615,7 +615,7 @@ AC_CHECK_FUNCS(gettext textdomain bindtextdomain)
 
 dnl check for GNU libintl if gettext/textdomain/bindtextdomain
 dnl are not found in libc
-if test "$ac_cv_func_bindtextdomain" = "no"; then
+if test :; then
     AC_CHECK_LIB(intl,bindtextdomain)
     if test "$ac_cv_lib_intl" = "yes"; then
 	AC_CHECK_FUNCS(gettext textdomain bindtextdomain)

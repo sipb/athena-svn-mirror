@@ -73,6 +73,13 @@ typedef struct {
 	int     hostbased_uses_name_from_packet_only; /* experimental */
 	int     rsa_authentication;	/* If true, permit RSA authentication. */
 	int     pubkey_authentication;	/* If true, permit ssh2 pubkey authentication. */
+	#ifdef GSSAPI
+	int     gss_authentication;
+	int     gss_keyex;
+	int     gss_use_session_ccache;        /* If true, delegated credentials are
+	                                        * stored in a session specific cache */
+	int 	gss_cleanup_creds;	       /* If true, destroy cred cache on logout */
+#endif	
 #if defined(KRB4) || defined(KRB5)
 	int     kerberos_authentication;	/* If true, permit Kerberos
 						 * authentication. */
@@ -87,6 +94,9 @@ typedef struct {
 #if defined(AFS) || defined(KRB5)
 	int     kerberos_tgt_passing;	/* If true, permit Kerberos TGT
 					 * passing. */
+#endif
+#ifdef KRB5
+	int	kerberos524;	/* If true, get k4 tickets from k5 tickets */
 #endif
 #ifdef AFS
 	int     afs_token_passing;	/* If true, permit AFS token passing. */

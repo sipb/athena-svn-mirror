@@ -1,7 +1,7 @@
 /* Kerberos4 SASL plugin
  * Rob Siemborski
  * Tim Martin 
- * $Id: kerberos4.c,v 1.1.1.2 2003-02-12 22:34:16 ghudson Exp $
+ * $Id: kerberos4.c,v 1.2 2003-04-22 16:06:05 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -49,7 +49,7 @@
 #include <krb.h>
 
 #ifdef WITH_DES
-# ifdef WITH_SSL_DES
+# if 0 && defined(WITH_SSL_DES)
 #  include <openssl/des.h>
 # else
 #  include <des.h>
@@ -115,7 +115,7 @@ extern int gethostname(char *, int);
 
 /*****************************  Common Section  *****************************/
 
-static const char plugin_id[] = "$Id: kerberos4.c,v 1.1.1.2 2003-02-12 22:34:16 ghudson Exp $";
+static const char plugin_id[] = "$Id: kerberos4.c,v 1.2 2003-04-22 16:06:05 ghudson Exp $";
 
 #ifndef KEYFILE
 #define KEYFILE "/etc/srvtab";

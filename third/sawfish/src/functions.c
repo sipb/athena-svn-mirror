@@ -1,6 +1,5 @@
 /* functions.c -- useful window manager Lisp functions
-   $Id: functions.c,v 1.1.1.5 2003-01-05 00:33:31 ghudson Exp $
-
+   $Id: functions.c,v 1.4 2003-01-05 00:48:01 ghudson Exp $
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
    This file is part of sawmill.

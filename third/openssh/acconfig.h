@@ -1,4 +1,4 @@
-/* $Id: acconfig.h,v 1.1.1.3 2003-02-05 19:04:32 zacheiss Exp $ */
+/* $Id: acconfig.h,v 1.5 2003-02-06 03:45:44 zacheiss Exp $ */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H
@@ -201,6 +201,9 @@
 /* Define if compiler implements __func__ */
 #undef HAVE___func__
 
+/* Define this is you want GSSAPI support in the version 2 protocol */
+#undef GSSAPI
+
 /* Define if you want Kerberos 5 support */
 #undef KRB5
 
@@ -212,6 +215,9 @@
 
 /* Define if you want AFS support */
 #undef AFS
+
+/* Define if you want GSI/Globus authentication support */
+#undef GSI
 
 /* Define if you want S/Key support */
 #undef SKEY

@@ -324,3 +324,5 @@ extern char	*line;
 extern void	(*encrypt_output) P((unsigned char *, int));
 extern int	(*decrypt_input) P((int));
 #endif	/* ENCRYPTION */
+
+#define PRELOGIN_MESSAGE "/etc/prelogin"

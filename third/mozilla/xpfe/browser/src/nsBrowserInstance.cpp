@@ -792,7 +792,7 @@ NS_IMETHODIMP nsBrowserContentHandler::GetDefaultArgs(PRUnichar **aDefaultArgs)
     nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID));
     if (!prefs) return NS_ERROR_FAILURE;
 
-    if (NeedHomepageOverride(prefs)) {
+    if (NeedHomepageOverride(prefs) && 0) {
       nsXPIDLString url;
       rv = prefs->GetLocalizedUnicharPref(PREF_HOMEPAGE_OVERRIDE_URL, getter_Copies(url));
       if (NS_SUCCEEDED(rv) && (const PRUnichar *)url) {

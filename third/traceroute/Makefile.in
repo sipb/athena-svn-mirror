@@ -17,7 +17,7 @@
 #  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
 #  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #
-# @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/Makefile.in,v 1.1.1.1 1997-09-24 06:24:33 ghudson Exp $ (LBL)
+# @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/Makefile.in,v 1.4 2003-03-10 17:21:37 ghudson Exp $ (LBL)
 
 #
 # Various configurable paths (remember to edit Makefile.in, not Makefile)
@@ -59,11 +59,11 @@ INSTALL = @INSTALL@
 	@rm -f $@
 	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
 
-CSRC =	traceroute.c ifaddrlist.c savestr.c
+CSRC =	traceroute.c ifaddrlist.c
 GENSRC = version.c
 
 SRC =	$(CSRC) $(GENSRC)
-HDR =	ifaddrlist.h savestr.h
+HDR =	ifaddrlist.h
 
 TAGHDR = \
 	/usr/include/netinet/in.h \
@@ -90,9 +90,8 @@ version.c: $(srcdir)/VERSION
 	sed -e 's/.*/char version[] = "&";/' $(srcdir)/VERSION > $@
 
 install: force
+	mkdir -p $(DESTDIR)$(BINDEST) $(DESTDIR)$(MANDEST)/man8
 	$(INSTALL) -m 4555 -o root -g bin traceroute $(DESTDIR)$(BINDEST)
-
-install-man: force
 	$(INSTALL) -m 444 -o bin -g bin traceroute.8 $(DESTDIR)$(MANDEST)/man8
 
 lint: $(GENSRC) force

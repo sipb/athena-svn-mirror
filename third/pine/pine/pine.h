@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: pine.h,v 1.1.1.3 2003-05-01 01:13:35 ghudson Exp $
+  $Id: pine.h,v 1.4 2003-05-01 01:32:14 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -63,7 +63,7 @@
 #ifndef _PINE_INCLUDED
 #define _PINE_INCLUDED
 
-#define PINE_VERSION		"4.55"
+#define PINE_VERSION		"4.55L"
 #define	PHONE_HOME_VERSION	"-count"
 #define	PHONE_HOME_HOST		"docserver.cac.washington.edu"
 

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  if [ sun4u = "$SUNPLATFORM" -a -h /usr/lib/sparcv9/libm.so.1 ]; then
+    rm -f /usr/lib/sparcv9/libm.so.1
+    cp -p /os/usr/lib/sparcv9/libm.so.1 /usr/lib/sparcv9/libm.so.1
+  fi
+
+  echo "SUNWski"				>> "$LOCALPACKAGES"
+  echo "OSCHANGES=true"				>> "$CONFVARS"
+  ;;
+
+sgi)
+  ;;
+
+esac

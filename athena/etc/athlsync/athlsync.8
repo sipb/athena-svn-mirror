@@ -1,0 +1,48 @@
+.\" $Id: athlsync.8,v 1.1 2002-10-17 05:10:31 ghudson Exp $
+.\"
+.\" Copyright 2002 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH ATHLSYNC 8 "12 October 2002"
+.SH NAME
+athlsync \- synchronize a locker's contents to local disk
+.SH SYNOPSIS
+.B athlsync
+[
+.B \-s
+]
+.I source
+.I dest
+.fi
+.SH DESCRIPTION
+.B athlsync
+synchronizes the contents of the locker
+.I source
+to the local disk area
+.IR dest ,
+making adjustments for copying from AFS to local disk: permissions are
+adjusted to ensure that files are readable and (if appropriate)
+executable, and symlinks are created to make "@sys" path references
+work.
+.PP
+If the
+.B \-s
+flag is given,
+.B athlsync
+will not make any changes, but will instead output the approximate
+number of kilobytes of free space needed to synchronize.
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 2002 by the Massachusetts Institute of Technology

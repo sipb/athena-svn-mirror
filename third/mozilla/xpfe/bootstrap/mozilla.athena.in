@@ -1,0 +1,233 @@
+#!/bin/sh
+#
+# $Id: mozilla.athena.in,v 1.5 2003-05-28 22:17:44 rbasch Exp $
+# Mozilla wrapper script for Athena.
+
+# Set up the environment.
+moz_libdir=%MOZAPPDIR%
+if [ -z "$MOZILLA_FIVE_HOME" ]; then
+  MOZILLA_FIVE_HOME=$moz_libdir
+  export MOZILLA_FIVE_HOME
+fi
+
+# mozilla-xremote-client sends a command to a running mozilla using
+# X properties.  Its possible return codes are:
+#   0  success
+#   1  failed to connect to the X server
+#   2  no running window found
+#   3  failed to send command
+#   4  usage error
+moz_remote=$MOZILLA_FIVE_HOME/mozilla-xremote-client
+
+# The following lockers need to be attached to run plugins and helper
+# applications.
+lockers="infoagents acro java"
+
+# Plugins (other than the default "null" plugin) live in infoagents.
+plugin_dir=/mit/infoagents/arch/@sys/lib/mozilla/plugins
+
+# Set LD_LIBRARY_PATH
+moz_lib_path=$MOZILLA_FIVE_HOME:$MOZILLA_FIVE_HOME/plugins
+LD_LIBRARY_PATH=$moz_lib_path${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}
+export LD_LIBRARY_PATH
+
+case `uname` in
+SunOS)
+  # On Solaris, use the X server's shared memory transport for better
+  # performance.
+  if [ -z "$XSUNTRANSPORT" ]; then
+    XSUNTRANSPORT=shmem
+    XSUNSMESIZE=512
+    export XSUNTRANSPORT XSUNSMESIZE
+  fi
+  ;;
+Linux)
+  # Set LD_ASSUME_KERNEL to avoid a java crash upon exit.
+  LD_ASSUME_KERNEL=2.4.1
+  export LD_ASSUME_KERNEL
+  ;;
+esac
+
+# Append our plugins directory to the plugin path.
+MOZ_PLUGIN_PATH=${MOZ_PLUGIN_PATH:+"$MOZ_PLUGIN_PATH:"}$plugin_dir
+export MOZ_PLUGIN_PATH
+
+# Prompt the user on how to deal with an existing lock file when no
+# running Mozilla window can be found, and take action accordingly.
+# Parameter 1 is the existing profile lock file path.
+# If the function returns, the lock file may have been removed per the
+# user's choice, and the caller should continue.  Or, this process may
+# exit, if the user so chooses.
+dispose_lock () {
+  lock=$1
+  # Extract the IP address and PID from the contents of the symlink.
+  eval `ls -l $lock | awk '{
+    if (split($NF, a, ":") == 2)
+      printf("lock_ip=%s ; lock_pid=%s\n", a[1], a[2]); }'`
+
+  # If we cannot recognize the link contents, just continue.
+  if [ -z "$lock_ip" ]; then
+    return 0
+  fi
+
+  # See if the lock holder is on this machine by comparing IP addresses.
+  my_host=`hostname`
+  if [ "$lock_ip" = "`host $my_host | awk '{ print $NF; }'`" ]; then
+    # Lock is held on this machine. See if the process is running.
+    if kill -0 $lock_pid 2>/dev/null ; then
+      # Lock is held by a running process.
+      :
+    else
+      # Process is no longer running.  Nuke the lock and continue.
+      rm -f $lock
+      return 0
+    fi
+    lock_host="this machine"
+  else
+    # Lock is held on another machine.
+    # Get the host name of the lock holder.
+    lock_host=`host $lock_ip | \
+        sed -n -e 's/^.*domain name pointer \(.*\)$/\1/p' | \
+        sed -e 's/\.*$//' | tr '[A-Z]' '[a-z]'`
+    if [ -z "$lock_host" ]; then
+      lock_host=$lock_ip
+    fi
+  fi
+
+  dialog_text="
+  Your Mozilla profile directory contains a lock file, but no existing  
+  Mozilla window can be detected.  The lock is owned by process $lock_pid  
+  on $lock_host.  
+
+  Note that running multiple instances of Mozilla will likely corrupt  
+  your profile.  But, if you know for certain that this lock file is  
+  stale, i.e. that you are not running Mozilla on $lock_host,  
+  you may choose to delete the lock file and continue.  
+
+  Otherwise, you may choose to continue with the lock file in place, in  
+  which case Mozilla will display its Profile Manager, allowing you to  
+  select or create a different profile (Mozilla will not permit you to  
+  use a profile which it believes to be in use).  
+
+  Or, you can simply exit, leaving the lock file in place.  
+"
+
+  tag=`gdialog --title "Mozilla profile locked" --radiolist "$dialog_text" \
+         60 60 3 \
+         Exit,     "leaving lock file in place"           on  \
+         Continue, "and invoke Mozilla's Profile Manager" off \
+         Delete    "lock file and proceed"                off 2>&1`
+
+  case "$tag" in
+  *Continue*)
+    ;;
+  *Delete*)
+    rm -f $lock
+    ;;
+  *)
+    exit 1
+    ;;
+  esac
+}
+
+# Give a warning if we're running on a dialup machine.
+if [ -x /etc/athena/dialuptype ]; then
+  cat << \EOF
+
+*** PLEASE DO NOT RUN MOZILLA ON THE DIALUPS! ***
+
+Mozilla is a very large and resource-intensive program, and it is
+not appropriate to run it on a dialup machine.
+
+Please run Mozilla on your local machine rather than on a dialup.
+
+Thank you.
+
+EOF
+fi
+
+# Attach needed lockers.
+for locker in $lockers ; do
+  /bin/athena/attach -h -n -q $locker
+done
+
+# Add fonts for MathML.
+infoagents_bindir=`athdir /mit/infoagents`
+if [ -x $infoagents_bindir/add-mathml-fonts ]; then
+  $infoagents_bindir/add-mathml-fonts
+fi
+
+# If the user specified a profile to use, is otherwise manipulating
+# profiles, or is just looking for help, skip the check for a running
+# Mozilla, and invoke the program now.
+skip_lock_check=false
+case "$1" in
+-P|-*Profile*|-help)
+  exec $MOZILLA_FIVE_HOME/mozilla-bin "$@"
+  ;;
+esac
+
+# See if there is a running instance of Mozilla.
+if $moz_remote "ping()" >/dev/null 2>&1 ; then
+  found_running=true
+else
+  found_running=false
+fi
+
+# If Mozilla is not running, check for a (possibly stale) lock file in
+# the default profile directory.
+if [ $found_running = false ]; then
+  if [ -d $HOME/.mozilla/$USER ]; then
+    profdir=$HOME/.mozilla/$USER
+  else
+    profdir=$HOME/.mozilla/default
+  fi
+  if [ -d "$profdir" ]; then
+    for lock in $profdir/????????.slt/lock ; do
+      if [ -h $lock ]; then
+        # The profile is locked.  Ask the user how to deal with it.
+        dispose_lock $lock
+        break
+      fi
+    done
+  fi
+fi
+
+# Handle the case where no argument was given.  If there is a running
+# instance, try to open a new window.  Otherwise, run the standard
+# binary.
+if [ $# -eq 0 ]; then
+  if [ "$found_running" = true ]; then
+    exec $moz_remote "xfeDoCommand(openBrowser)"
+  else
+    exec $MOZILLA_FIVE_HOME/mozilla-bin
+  fi
+fi
+
+# Examine the argument to see if we were given a URL or filename.
+case "$1" in
+-*)
+  # No URL argument given.
+  url=
+  ;;
+*:/*|/*)
+  # Looks like a URL or absolute path.
+  url="$1"
+  ;;
+*)
+  # Handle a relative path.
+  if [ -e "$1" ]; then
+    url="`pwd`/$1"
+  else
+    url="$1"
+  fi
+  ;;
+esac
+
+# If there is a running instance, and we have a URL argument, tell
+# Mozilla to open the URL in a new window.  Otherwise, start the
+# standard binary with the given arguments.
+if [ "$found_running" = true -a -n "$url" ]; then
+  exec $moz_remote "openURL($url,new-window)"
+fi
+exec $MOZILLA_FIVE_HOME/mozilla-bin "$@"

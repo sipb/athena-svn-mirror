@@ -38,41 +38,7 @@ my @default_paths =
 # We might be running under a restricted path; try to compensate.
 $ENV{'PATH'} .= ":/bin:/usr/bin:/usr/local/bin:/usr/freeware/bin";
 
-# Ask ghostscript for a list of font directories.
 my @gs_fontpath = ();
-{
-    local (*FIL);
-    if (open (*FIL, "gs -h 2>/dev/null |")) {
-	while (<FIL>) {
-	    if (/^Search path:$/i ... /^\S/) {
-		next if /^\S/;
-
-		s/^\s+//;   # Initial white-space
-		s/\s+$//;   # Terminal white-space including \n.
-		s/\s+:$//;  # " :" at end of line.
-
-		# Absolute paths only.
-		push @gs_fontpath, (grep { m|^/|; } (split (/\s:\s/)));
-	    }
-	}
-	close (*FIL);
-
-	if (@gs_fontpath) {
-	    print "Info: ghostscript was found and has fonts in these directories:\n";
-	    foreach (@gs_fontpath) {
-		print "Info:   $_\n";
-	    }
-	} else {
-	    print STDERR "Error: ghostscript was found, but appeared to have no font\n";
-	    print STDERR "Error: information.  Please file a bug report (see bugs.gnome.org)\n";
-	    print STDERR "Error: and include the verbatim output of \"gs -h\".  Thanks.\n";
-	    print STDERR "Warning: I'll try to limp on...\n";
-	}
-    } else {
-	print STDERR "Warning: could not locate gs (aka ghostscript).\n";
-	print STDERR "Warning: I'll try to limp on...\n";
-    }
-}
 
 # Add in out defaults if they exist.
 {
@@ -127,7 +93,8 @@ my @options = (
 	       "--aliases=$datadir/fonts/adobe-urw.font",
 	       "--aliases=$datadir/gnome/fonts/adobe-urw.font",
 	       "$datadir/fonts/afms",
-	       '/usr/X11R6/lib/X11/fonts'
+	       '/usr/X11R6/lib/X11/fonts',
+	       '/usr/openwin/lib/X11/fonts'
 	       );
 print "Info: running \"$installer ", join (' ', @options), "\".\n";
 system ($installer, @options);
@@ -148,7 +115,8 @@ my @options = (
 	       '/usr/lib/texmf/fonts/type1/omega',
 	       '/usr/share/texmf/fonts/afm',
 	       '/usr/share/texmf/fonts/type1/adobe',
-	       '/usr/share/texmf/fonts/type1/omega'
+	       '/usr/share/texmf/fonts/type1/omega',
+	       '/usr/athena/share/texmf/fonts'
 	       );
 print "Info: running \"$installer ", join (' ', @options), "\".\n";
 system ($installer, @options);

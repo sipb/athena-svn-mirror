@@ -72,10 +72,10 @@ int	nofinalnl;		/* normally append \n to each output line */
 char	line[BIGBUFSIZ];
 char	*linep;
 
-void	 error __P((char *, char *));
-char	*gatherline __P((struct openfile *));
-void	 getargs __P((char *[]));
-char	*pad __P((struct openfile *));
+void	 error(char *, char *);
+char	*gatherline(struct openfile *);
+void	 getargs(char *[]);
+char	*pad(struct openfile *);
 
 int
 main(argc, argv)

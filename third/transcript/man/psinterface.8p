@@ -1,11 +1,11 @@
 .TH PSINTERFACE 8 "19 August 1992" "Adobe Systems"
 \" Copyright (c) 1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psinterface.8p,v 1.1.1.1 1996-10-07 20:25:38 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psinterface.8p,v 1.2 1996-10-14 05:09:48 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-psinterface\(em\*(TS spooler filters for \*(PS printers
+psinterface \- TranScript spooler filters for PostScript printers
 .SH "SYNOPSIS"
 .B psinterface
 .SH "DESCRIPTION"
@@ -120,8 +120,6 @@ temporary file to format text files
 .SH "SEE ALSO"
 transcript(1), lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psdman(8),
 pscomm(8), qmscomm(8), lpcomm(8), fpcomm(8), capcomm(8)
-.br
-.I System V Line Printer Spooling Utilities Guide
 .SH AUTHOR
 Adobe Systems Incorporated
 .SH NOTES

@@ -1,4 +1,4 @@
-/* $Id: auth-pam.h,v 1.1.1.2 2003-02-05 19:03:44 zacheiss Exp $ */
+/* $Id: auth-pam.h,v 1.3 2003-02-06 03:45:44 zacheiss Exp $ */
 
 /*
  * Copyright (c) 2000 Damien Miller.  All rights reserved.
@@ -44,6 +44,7 @@ void print_pam_messages(void);
 int is_pam_password_change_required(void);
 void do_pam_chauthtok(void);
 void do_pam_set_conv(struct pam_conv *);
+int do_pam_putenv(char *, char *);
 void message_cat(char **p, const char *a);
 
 #endif /* USE_PAM */

@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.1.1.2 2002-12-13 20:40:45 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.2 2003-03-20 00:09:43 zacheiss Exp $");
 
 #include "uss_vol.h"		/*Interface to this module*/
 #include "uss_common.h"		/*Common definitions*/
@@ -27,7 +27,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol
 #include <sys/stat.h>
 #include <pwd.h>
 #include <netdb.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <afs/vlserver.h>
 #include <afs/auth.h>
 #include <afs/cellconfig.h>
@@ -38,7 +38,6 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol
 #include <afs/keys.h>
 #include <ubik.h>
 
-extern int errno;
 extern struct rx_connection *UV_Bind();
 extern  struct rx_securityClass *rxnull_NewClientSecurityObject();
 extern int line;

@@ -1,0 +1,9 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(athstatusd.c)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_SEARCH_LIBS(socket, socket)
+
+AC_OUTPUT(Makefile)

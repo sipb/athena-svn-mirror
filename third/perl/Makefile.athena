@@ -1,0 +1,35 @@
+# $Id: Makefile.athena,v 1.19 2003-05-20 23:33:46 rbasch Exp $
+
+SHELL=/bin/sh
+
+dist:
+
+prepare:
+	rm -f config.sh
+	./Configure -d -s -e -Dprefix=/usr/athena -Dcc="$$COMPILER" \
+		-Dlocincpth=/usr/athena/include -Dloclibpth=/usr/athena/lib \
+		-Doptimize='-g' -Dperladmin=bugs@mit.edu
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} depend
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install "DESTDIR=$$SRVD"
+	sed -e '/^chdir/d' -e "s:/usr:$$SRVD/usr:" \
+	 -e "s:\$$Config{install:\"$$SRVD\"\.\$$Config{install:" \
+	 utils/h2ph > h2phsrvd
+	chmod 755 h2phsrvd
+	dir=`pwd`; \
+	if [ -d /os/usr/include ]; then \
+	  cd /os/usr/include; \
+	else \
+	  cd /usr/include; \
+	fi; \
+	find . -name asm -prune -o -type f -print | \
+	 xargs "$$dir/perl" "-I$$SRVD/usr/athena/lib/perl5" "$$dir/h2phsrvd";

@@ -1,6 +1,6 @@
 .\"
 .\" %nmhwarning%
-.\" $Id: repl.man,v 1.1.1.1 1999-02-07 18:14:22 danw Exp $
+.\" $Id: repl.man,v 1.2 2000-05-08 17:37:31 ghudson Exp $
 .\"
 .\" include the -mh macro file
 .so %etcdir%/tmac.h
@@ -80,7 +80,8 @@ If the switch `\-group' is given, then \fIrepl\fR will use the the
 standard forms file \*(lqreplgroupcomps\*(rq.  This will construct a
 draft message that is intended as a group or followup reply.  If a file
 named \*(lqreplgroupcomps\*(rq exists in the user's nmh directory, it
-will be used instead of this default forms file.
+will be used instead of this default forms file.  `\-group' also implies
+`\-cc all'.
 
 The default group reply template \*(lqreplgroupcomps\*(rq will direct
 \fIrepl\fR to construct the reply message draft as follows:
@@ -122,7 +123,8 @@ interactively asking you if each address that normally would be placed in
 the \*(lqTo:\*(rq and \*(lqcc:\*(rq list should actually be sent a copy.
 This is useful for special\-purpose replies.  Note that the position of
 the `\-cc' and `\-nocc' switches, like all other switches which take a
-positive and negative form, is important.
+positive and negative form, is important.  A `\-cc' switch implies
+`\-group'.
 
 Lines beginning with the fields \*(lqTo:\*(rq, \*(lqcc:\*(rq, and
 \*(rqBcc:\*(rq will be standardized and have duplicate addresses removed.

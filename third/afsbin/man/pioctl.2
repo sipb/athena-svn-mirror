@@ -1,0 +1,84 @@
+.\" This file uses -man macros.
+.\"	@(#)printf.3s	6.3 (Berkeley) 6/5/86
+.\"
+.TH PIOCTL 2v "Sept 15, 1987" "PRPQ 5799-CGZ: IBM 4.3/RT, Rel 1 " " "
+.SH NAME
+pioctl, ioctl \- ioctl's for Andrew
+.SH SYNOPSIS
+.B #include <sys/ioctl.h>
+.br
+.B #include <sys/vice.h>
+.br
+.B "pioctl(path, _VICEIOCTL(id), (caddr_t) &vi_struct, follow)"
+.br
+.B "char *path;"
+.br
+.B "int id";
+.br
+.B "struct ViceIoctl vi_struct;"
+.br
+.B "int follow;"
+.PP
+.B "ioctl(fd, _VICEIOCTL(id), (caddr_t) &vi_struct)"
+.br
+.B "int fd, id;"
+.br
+.B "struct ViceIoctl vi_struct"
+.SH DESCRIPTION
+.I Pioctl
+and
+.I ioctl
+can perform a variety of functions on remote filesystem pathname arguments.  Only the ioctl commands classified as valid by the macro _VALIDVICEIOCTL in <sys/vice.h> are acceptable.
+.I Ioctl
+is used when a file descriptor is available;
+.I pioctl
+is used if only a pathname is available (the caller may not have the required access rights to open the file in order to obtain a descriptor).  If the final component of the path supplied to
+.I pioctl
+is a symbolic link, the 
+.I follow
+argument determines whether the link or the target of the link will be affected by the command:  if 
+.I follow
+ is 1, the link is chased. 
+.PP
+The
+.I id
+of the ioctl is a number in the range 0 to 255.  These are defined for the Andrew file system in the section of the Andrew File System guide entitled "Venus".
+.PP
+The vi_struct argument is a pointer to a structure of the following type:
+.PP
+struct ViceIoctl {
+.br
+	caddr_t in, out;   /* Data to be transferred in, or out */
+.br
+	short in_size;     /* Size of input buffer <= 2K */
+.br
+	short out_size;    /* Maximum size of output buffer, <= 2K */
+.br
+};
+.PP
+The
+.I in
+and
+.I out
+fields of this structure point to buffers which are transmitted to the remote file system or received from the remote file system, respectively.  Their sizes are specified by
+.I in_size,
+and
+.I out_size.
+Either or both of these pointers may be null.
+.I In
+and
+.I out
+may also point to the same memory.
+.SH "RETURN VALUE"
+If no error occurs, 0 will be returned.
+On an error, a value of -1 is returned and errno is set to indicate the error.
+.SH ERRORS
+If the path specified is not currently being interpreted by a remote file system, or if the ioctl is invalid, then EINVAL will be returned.  Otherwise, the value of errno returned is up to the remote file system.  For Andrew, these are listed in the Venus section of the Andrew file system guide.
+.SH NOTES
+The only known use of pioctl is in conjunction with the Andrew file system.  
+.SH "SEE ALSO"
+ioctl(2), and The Venus and Kernel Support sections of the Andrew File System guide
+
+
+
+

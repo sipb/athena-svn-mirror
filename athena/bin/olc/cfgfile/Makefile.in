@@ -1,0 +1,40 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:47:30 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+RANLIB=@RANLIB@
+
+SRCS=configure.c
+OBJS=configure.o
+
+all: libcfgfile.a
+
+libcfgfile.a: $(OBJS)
+	rm -f $@
+	ar cq $@ $(OBJS)
+	${RANLIB} $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+# we don't install this library anywhere, it's here only for our
+# private use in building the binaries.
+install:
+
+clean:
+	rm -f $(OBJS) libcfgfile.a
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

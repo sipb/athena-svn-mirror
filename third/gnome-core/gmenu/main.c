@@ -329,9 +329,6 @@ int main (int argc, char *argv[])
 	gtk_box_pack_start(GTK_BOX(vbox),scrolled,TRUE,TRUE,0);
 	gtk_widget_show(scrolled);
 
-	gtk_widget_push_visual (gdk_imlib_get_visual ());
-	gtk_widget_push_colormap (gdk_imlib_get_colormap ());
-
 	/*
 	 * The GtkCTree...
 	 */

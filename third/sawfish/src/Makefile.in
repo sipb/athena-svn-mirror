@@ -1,5 +1,5 @@
 # Makefile.in -- input for the src directory's Makefile
-# $Id: Makefile.in,v 1.1.1.4 2003-01-05 00:33:04 ghudson Exp $
+# $Id: Makefile.in,v 1.5 2003-01-05 00:48:01 ghudson Exp $
 #
 # Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 #

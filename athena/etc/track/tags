@@ -1,0 +1,95 @@
+COUNT	stamp.c	/^#define COUNT(p) (*(int*)p[CNT])$/
+DEV	track.h	/^#define DEV( statbuf)  ((statbuf).st_rdev)$/
+DIFF	update.c	/^#define DIFF( l, r, field) (short)(((l).sbuf.field/
+FASTEQ	except.c	/^#define FASTEQ( a, b) (*(a) == *(b) && a[1] == b[1/
+FILE	track.c	/^FILE *logfile = NULL;			\/* the logfile *\/$/
+FLAG	track.h	/^#define  FLAG(   list_elt)		     (((char *)( list_/
+GID	track.h	/^#define GID( statbuf)  ((statbuf).st_gid)$/
+KEYCPY	track.h	/^#define KEYCPY( key, name) \\$/
+LIST	track.h	/^#define LIST( tbl) ( (tbl).shift--, (List_element*/
+MODE	track.h	/^#define MODE( statbuf) ((statbuf).st_mode & 07777)/
+Mnullmail	nullmail.c	/^main(argc,argv)$/
+Mtest	test.c	/^main( argc, argv) int argc; char *argv[]; {$/
+Mtrack	track.c	/^main(argc,argv)$/
+NEXT	track.h	/^#define  NEXT(   list_elt) *PNEXT( list_elt)$/
+PNEXT	track.h	/^#define PNEXT(   list_elt) ((List_element **)&((ch/
+SIGN	track.h	/^#define SIGN( i) (((i) > 0)? 1 : ((i)? -1 : 0))$/
+TEXT	track.h	/^#define  TEXT(   list_elt) ((char*)(list_elt))$/
+TIME	track.h	/^#define TIME( statbuf) ((statbuf).st_mtime)$/
+TYPE	track.h	/^#define TYPE( statbuf) ((statbuf).st_mode & S_IFMT/
+U	lex.yy.c	/^# define U(x) x$/
+UID	track.h	/^#define UID( statbuf)  ((statbuf).st_uid)$/
+add_list_elt	except.c	/^add_list_elt( str, flag, top) char *str; char flag/
+banner	update.c	/^banner( rname, lname, r, l, d)$/
+build_path	track.c	/^build_path( f, w, d, p) char *f, *w, *d, *p; {$/
+char	track.c	/^char workdir[LINELEN];			\/* working directory unde/
+cleanup	test.c	/^void cleanup() {$/
+clear_ent	misc.c	/^clear_ent()$/
+clear_stat	update.c	/^clear_stat( sp) struct stat *sp; {$/
+clearlocks	track.c	/^clearlocks()$/
+closestat	track.c	/^closestat() {$/
+copy_file	update.c	/^copy_file(from,to)$/
+currency_diff	update.c	/^currency_diff( l, r) struct currentness *l, *r; {$/
+dec_entry	stamp.c	/^dec_entry( entnum, fr, to, cmp, tail)$/
+dec_statfile	stamp.c	/^dec_statfile( line, c)$/
+do_cmds	track.c	/^do_cmds(cmds,local)$/
+do_gripe	misc.c	/^do_gripe()$/
+do_panic	misc.c	/^do_panic()$/
+doreset	misc.c	/^doreset()$/
+duplicate	except.c	/^duplicate( word, entnum) char *word; int entnum; {/
+fake_link	stamp.c	/^fake_link( root, name, c) char *root, *name; struc/
+file_pat	except.c	/^file_pat( ptr)$/
+findparent	files.c	/^findparent(path)$/
+follow_link	files.c	/^follow_link( name, retval)$/
+get_arg	track.c	/^get_arg(to,list,ptr)$/
+get_currentness	update.c	/^get_currentness( path, c) char **path; struct curr/
+get_next_match	stamp.c	/^get_next_match( name)$/
+gettail	except.c	/^gettail( pathp, type, entnum)$/
+hash	except.c	/^hash( p) char *p; {$/
+if	lex.yy.c	/^if (p==0) return(0);$/
+in_cksum	cksum.c	/^in_cksum( filename, statp) char *filename; struct /
+init_next_match	stamp.c	/^init_next_match() {$/
+initpath	stamp.c	/^initpath( name) char *name; {$/
+input	lex.yy.c	/^# define input() (((yytchar=yysptr>yysbuf?U(*--yys/
+justshow	track.c	/^justshow()$/
+keyncmp	stamp.c	/^keyncmp( r, i) char *r; int i; {$/
+last_match	stamp.c	/^last_match( path, entnum) char *path; int entnum; /
+list2hashtable	except.c	/^list2hashtable( p) Table *p; {$/
+log2	except.c	/^log2( len) unsigned short len; {$/
+lookup	except.c	/^lookup( name, hashval, ht) char *name; unsigned lo/
+makepath	files.c	/^int makepath( path,s)$/
+match	except.c	/^match( p, fname) char *p; char *fname;$/
+next_def_except	except.c	/^next_def_except() {$/
+openstat	track.c	/^openstat( path, write) char *path; int write;$/
+opensubfile	track.c	/^opensubfile( path) char *path; {$/
+output	lex.yy.c	/^# define output(c) putc(c,yyout)$/
+parseinit	misc.c	/^parseinit( subfile) FILE *subfile;$/
+pathtail	track.c	/^#define pathtail( p) p[1+*(int*)p[CNT]]$/
+poppath	stamp.c	/^poppath( p) char **p; {$/
+printmsg	misc.c	/^printmsg( filep) FILE *filep;$/
+pushpath	stamp.c	/^pushpath( p, name) char **p; char *name; {$/
+re_conv	except.c	/^char *re_conv(from)$/
+readstat	track.c	/^readstat() {$/
+removeit	files.c	/^removeit(name, type)$/
+resolve	files.c	/^char *resolve( name, root)$/
+savestr	misc.c	/^savestr(to,from)$/
+set_prots	update.c	/^set_prots( name, r)$/
+setlock	track.c	/^setlock()$/
+setuperr	track.c	/^setuperr()$/
+sort_entries	stamp.c	/^sort_entries() {$/
+sort_stat	stamp.c	/^sort_stat() {$/
+store	except.c	/^store( list_elt, p) List_element *list_elt; Table /
+too_old	files.c	/^too_old( name, maxtime)$/
+unput	lex.yy.c	/^# define unput(c) {yytchar= (c);if(yytchar=='\\n')y/
+update_file	update.c	/^update_file(l, lpath,$/
+updated	update.c	/^updated( cmp, fr) struct currentness *cmp, *fr; {$/
+walk_trees	track.c	/^walk_trees( f, c, currency)$/
+write_statline	stamp.c	/^write_statline( path, c)$/
+writestat	track.c	/^writestat()$/
+yyerror	y.tab.c	/^yyerror(s)$/
+yyinput	lex.yy.c	/^yyinput(){$/
+yylex	lex.yy.c	/^yylex(){$/
+yymore	lex.yy.c	/^# define yymore() (yymorfg=1)$/
+yyoutput	lex.yy.c	/^yyoutput(c)$/
+yyparse	y.tab.c	/^yyparse() {$/
+yyunput	lex.yy.c	/^yyunput(c)$/

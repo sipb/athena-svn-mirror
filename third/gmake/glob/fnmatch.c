@@ -55,7 +55,10 @@
    program understand `configure --with-gnu-libc' and omit the object files,
    it is simpler to just do this in the source for each such file.  */
 
-#if defined _LIBC || !defined __GNU_LIBRARY__
+/* Athena wants to use this file even on Linux, since there is a libc bug
+ * in Red Hat 6.2. -- GBH 2000-02-18 */
+/* #if defined _LIBC || !defined __GNU_LIBRARY__ */
+#if 1
 
 
 # if defined STDC_HEADERS || !defined isascii

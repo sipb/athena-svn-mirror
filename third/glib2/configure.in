@@ -302,11 +302,11 @@ AC_ARG_WITH(libiconv, [  --with-libiconv=[no/gnu/native] use the libiconv librar
 found_iconv=no
 case $with_libiconv in
   maybe)
-    # Check in the C library first
-    AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
     # Check if we have GNU libiconv
+    AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=gnu; found_iconv=yes)
+    # Check in the C library
     if test $found_iconv = "no"; then
-      AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=gnu; found_iconv=yes)
+      AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
     fi
     # Check if we have a iconv in -liconv, possibly from vendor
     if test $found_iconv = "no"; then

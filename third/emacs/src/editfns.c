@@ -3167,6 +3167,7 @@ Use %% to put a single % into the output.")
     if (*format++ == '%')
       {
 	int thissize = 0;
+	int actual_width = 0;
 	unsigned char *this_format_start = format - 1;
 	int field_width, precision;
 
@@ -3247,6 +3248,7 @@ Use %% to put a single % into the output.")
 	    if (*format != 's' && *format != 'S')
 	      error ("Format specifier doesn't match argument type");
 	    thissize = CONVERTED_BYTE_SIZE (multibyte, args[n]);
+	    actual_width = lisp_string_width (args[n], -1, NULL, NULL);
 	  }
 	/* Would get MPV otherwise, since Lisp_Int's `point' to low memory.  */
 	else if (INTEGERP (args[n]) && *format != 's')
@@ -3300,7 +3302,7 @@ Use %% to put a single % into the output.")
 	    goto string;
 	  }
 
-	thissize = max (field_width, thissize);
+	thissize += max (0, field_width - actual_width);
 	total += thissize + 4;
       }
 

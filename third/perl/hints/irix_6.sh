@@ -88,7 +88,7 @@ esac
 # Check for which compiler we're using
 
 case "$cc" in
-*"cc -n32"*)
+*cc*)
 
 	# If a library is requested to link against, make sure the
 	# objects in the library are of the same ABI we are compiling
@@ -105,8 +105,6 @@ case "$cc" in
   esac ;;
 esac'
 
-	# NOTE: -L/usr/lib32 -L/lib32 are automatically selected by the linker
-	ldflags=' -L/usr/local/lib32 -L/usr/local/lib'
 	cccdlflags=' '
     # From: David Billinghurst <David.Billinghurst@riotinto.com.au>
     # If you get complaints about so_locations then change the following

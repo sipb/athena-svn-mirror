@@ -14,15 +14,15 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/screen_test.c,v 1.1.1.1 2002-01-31 21:49:03 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/screen_test.c,v 1.2 2003-03-20 00:09:38 zacheiss Exp $");
 
 #include "gtxwindows.h"	    /*Generalized window interface*/
 #include "gtxcurseswin.h"    /*Curses window interface*/
 #include "gtxdumbwin.h"	    /*Dumb terminal window interface*/
 #include "gtxX11win.h"	    /*X11 window interface*/
 #include <cmd.h>		    /*Command interpretation library*/
+#include <errno.h>
 
-extern int errno;
 
 /*
  * Command line parameter indicies.

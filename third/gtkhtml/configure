@@ -1334,8 +1334,8 @@ echo "configure:1322: checking for gnomeConf.sh file in $gnome_prefix" >&5
             fi
 	fi
 
-	if test -n "capplet"; then
-	  n="capplet"
+	if test -n ""; then
+	  n=""
 	  for i in $n; do
 	    echo $ac_n "checking extra library \"$i\"""... $ac_c" 1>&6
 echo "configure:1342: checking extra library \"$i\"" >&5
@@ -2473,7 +2473,7 @@ else
   if { (eval echo configure:2474: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
     for file in conftest.*; do
       case $file in
-      *.$ac_ext | *.c | *.o | *.obj) ;;
+      *.c | *.o | *.obj) ;;
       *) ac_cv_exeext=`echo $file | sed -e s/conftest//` ;;
       esac
     done
@@ -7648,38 +7648,12 @@ echo "configure:7631: checking for $dispname >= $dispvers" >&5
 
 
 
-  dispname="Gnome configuration applet libraries"
-  dispvers="1.0.0"
-  pkgname="capplet"
-
-  echo $ac_n "checking for $dispname >= $dispvers""... $ac_c" 1>&6
-echo "configure:7657: checking for $dispname >= $dispvers" >&5
-  cmpvers=`echo $dispvers | awk -F. '{ print $1 * 1000000 + $2 * 10000 + $3 * 100 + $4;}'`
-  if gnome-config --libs $pkgname > /dev/null 2>&1; then
-    pkgvers=`gnome-config --modversion $pkgname | sed -e 's/^[^0-9]*//'`
-  else
-    pkgvers=not
-  fi
-
-  echo "$ac_t""$pkgvers found" 1>&6
-
-  pkgvers=`echo $pkgvers | awk -F. '{ print $1 * 1000000 + $2 * 10000 + $3 * 100 + $4;}'`
-
-  if test "$pkgvers" -lt $cmpvers; then
-    { echo "configure: error: 
-""
-"You need $dispname $dispvers or later to build $PACKAGE."" 1>&2; exit 1; }
-  fi
-
-
-
-
   dispname="Gnome print libraries"
   dispvers="0.29.0"
   pkgname="print"
 
   echo $ac_n "checking for $dispname >= $dispvers""... $ac_c" 1>&6
-echo "configure:7683: checking for $dispname >= $dispvers" >&5
+echo "configure:7657: checking for $dispname >= $dispvers" >&5
   cmpvers=`echo $dispvers | awk -F. '{ print $1 * 1000000 + $2 * 10000 + $3 * 100 + $4;}'`
   if gnome-config --libs $pkgname > /dev/null 2>&1; then
     pkgvers=`gnome-config --modversion $pkgname | sed -e 's/^[^0-9]*//'`
@@ -7705,7 +7679,7 @@ echo "configure:7683: checking for $dispname >= $dispvers" >&5
   pkgname="gdk_pixbuf"
 
   echo $ac_n "checking for $dispname >= $dispvers""... $ac_c" 1>&6
-echo "configure:7709: checking for $dispname >= $dispvers" >&5
+echo "configure:7683: checking for $dispname >= $dispvers" >&5
   cmpvers=`echo $dispvers | awk -F. '{ print $1 * 1000000 + $2 * 10000 + $3 * 100 + $4;}'`
   if gnome-config --libs $pkgname > /dev/null 2>&1; then
     pkgvers=`gnome-config --modversion $pkgname | sed -e 's/^[^0-9]*//'`
@@ -7738,12 +7712,12 @@ if test "x$enable_xim" = "xyes"; then
 	BACKUP_LDFLAGS=$LDFLAGS
 	LDFLAGS="$LDFLAGS `gtk-config --libs`"
 	echo $ac_n "checking for gdk_im_begin""... $ac_c" 1>&6
-echo "configure:7742: checking for gdk_im_begin" >&5
+echo "configure:7716: checking for gdk_im_begin" >&5
 if eval "test \"`echo '$''{'ac_cv_func_gdk_im_begin'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7747 "configure"
+#line 7721 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char gdk_im_begin(); below.  */
@@ -7766,7 +7740,7 @@ gdk_im_begin();
 
 ; return 0; }
 EOF
-if { (eval echo configure:7770: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:7744: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_gdk_im_begin=yes"
 else
@@ -7794,12 +7768,12 @@ fi
 
 
 echo $ac_n "checking for re_compile_pattern""... $ac_c" 1>&6
-echo "configure:7798: checking for re_compile_pattern" >&5
+echo "configure:7772: checking for re_compile_pattern" >&5
 if eval "test \"`echo '$''{'ac_cv_func_re_compile_pattern'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7803 "configure"
+#line 7777 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char re_compile_pattern(); below.  */
@@ -7822,7 +7796,7 @@ re_compile_pattern();
 
 ; return 0; }
 EOF
-if { (eval echo configure:7826: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:7800: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_re_compile_pattern=yes"
 else
@@ -7848,7 +7822,7 @@ fi
 
 have_soup=false
 echo $ac_n "checking for soup >= 0.7""... $ac_c" 1>&6
-echo "configure:7852: checking for soup >= 0.7" >&5
+echo "configure:7826: checking for soup >= 0.7" >&5
 if gnome-config --libs soup > /dev/null 2>&1; then
 	vers=`gnome-config --modversion soup | sed -e "s/soup-//" | \
 		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
@@ -7890,7 +7864,7 @@ fi
 
 have_ghttp=false
 echo $ac_n "checking for libghttp >= 1.0""... $ac_c" 1>&6
-echo "configure:7894: checking for libghttp >= 1.0" >&5
+echo "configure:7868: checking for libghttp >= 1.0" >&5
 if gnome-config --libs ghttp > /dev/null 2>&1; then
 	vers=`gnome-config --modversion ghttp | sed -e "s/ghttp-//" | \
 		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
@@ -7951,7 +7925,7 @@ fi
 
 if $try_bonobo; then
 	echo $ac_n "checking for Bonobo >= 0.32""... $ac_c" 1>&6
-echo "configure:7955: checking for Bonobo >= 0.32" >&5
+echo "configure:7929: checking for Bonobo >= 0.32" >&5
 
 	if gnome-config --libs bonobox > /dev/null 2>&1; then
 		vers=`gnome-config --modversion bonobo | sed -e "s/bonobo-//" | \
@@ -7997,7 +7971,7 @@ else
 fi
 
 echo $ac_n "checking if Bonobo uses OAF""... $ac_c" 1>&6
-echo "configure:8001: checking if Bonobo uses OAF" >&5
+echo "configure:7975: checking if Bonobo uses OAF" >&5
 if ( gnome-config --libs bonobo | grep oaf ) > /dev/null 2>&1 ; then
 	using_oaf="yes"
 	cat >> confdefs.h <<\EOF
@@ -8041,7 +8015,7 @@ GCONF_CFLAGS=""
 GCONF_LIBS=""
 if $try_gconf; then
 	echo $ac_n "checking for gconf""... $ac_c" 1>&6
-echo "configure:8045: checking for gconf" >&5
+echo "configure:8019: checking for gconf" >&5
 	if gconf-config --version > /dev/null 2>&1; then
 		gconf_ver=`gconf-config --version`
 		vers=`echo ${gconf_ver} | awk 'BEGIN { FS = "."; } { print $1 * 1000000 + $2 * 1000 + $3;}'`
@@ -8084,7 +8058,7 @@ GTKHTML_DATADIR="${datadir}/${GTKHTML_RELEASE_STRING}/"
 # Extract the first word of "gtkdoc-mkdb", so it can be a program name with args.
 set dummy gtkdoc-mkdb; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:8088: checking for $ac_word" >&5
+echo "configure:8062: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_GTKDOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else

@@ -32,8 +32,8 @@ extern afs_int32 rx_SlowGetInt32(struct rx_packet *packet, size_t offset);
 extern afs_int32 rx_SlowPutInt32(struct rx_packet *packet, size_t offset, afs_int32 data);
 extern afs_int32 rx_SlowWritePacket(struct rx_packet *packet, int offset,
 				int resid, char *in);
-extern void rxi_SendPacket(struct rx_connection * conn, struct rx_packet *p,
-		    int istack);
+extern void rxi_SendPacket(struct rx_call * call, struct rx_connection * conn, 
+			   struct rx_packet *p, int istack);
 extern afs_int32 rx_SlowReadPacket(struct rx_packet *packet,
 			       u_int offset, int resid,	char *out);
 extern void rxi_FreeAllPackets(void);

@@ -3,9 +3,8 @@
 ; default message filter for `show'
 ;
 :
-overflowtext="***",overflowoffset=5
-leftadjust,compwidth=9
-ignores=msgid,message-id,received,content-type,content-transfer-encoding,content-id
+width=0,leftadjust
+ignores=msgid,message-id,received,content-transfer-encoding,content-id
 Date:formatfield="%<(nodate{text})%{text}%|%(pretty{text})%>"
 To:
 cc:
@@ -14,4 +13,4 @@ Subject:decode
 :
 extras:nocomponent
 :
-body:nocomponent,overflowtext=,overflowoffset=0,noleftadjust
+body:nocomponent,noleftadjust

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Id: configure.in,v 1.100 2000/06/23 15:55:46 psmith Exp 
+# From configure.in Id: configure.in,v 1.4 2001/04/04 00:04:41 ghudson Exp 
 
 
 
@@ -5756,7 +5756,11 @@ rm -f conftest*
 fi
 
 case "$make_cv_sys_gnu_glob" in
-  yes) echo "$ac_t""yes" 1>&6 ;;
+  yes) echo "$ac_t""yes; using local copy anyway" 1>&6
+        GLOBDIR=glob
+        GLOBINC='-I$(srcdir)/glob'
+        GLOBLIB=glob/libglob.a
+       ;;
   no)  echo "$ac_t""no; using local copy" 1>&6
         GLOBDIR=glob
         GLOBINC='-I$(srcdir)/glob'

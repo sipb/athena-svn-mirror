@@ -1,10 +1,10 @@
 .TH PSDIT 1 "18 August 1992" "Adobe Systems"
 \" Copyright (c) 1985,1987,1991,1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psdit.1p,v 1.1.1.1 1996-10-07 20:25:39 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psdit.1p,v 1.2 1996-10-14 05:09:45 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .SH NAME
-psdit\(emconvert ditroff intermediate format to \*(PS language format
+psdit \- convert ditroff intermediate format to PostScript language format
 .SH SYNOPSIS
 .B psdit
 [
@@ -163,11 +163,7 @@ ditroff default description files for a \*(PS printer virtual device
 XPSLIBDIRX/psdit.pro
 default \*(PS language prologue
 .SH "SEE ALSO"
-transcript(1), psroff(1), psfonts(1).
-.br
-BSD: ditroff(1), lpr(1).
-.br
-System V: troff(1), lp(1).
+transcript(1), psroff(1), psfonts(1), troff(1), lpr(1), troff(1), lpr(1).
 .br
 \fIA Typesetter-independent TROFF\fR Brian W. Kernighan, Bell Laboratories 1982
 .br

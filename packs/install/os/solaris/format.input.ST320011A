@@ -1,0 +1,61 @@
+# Disk geometry: <ST320011A cyl 38790 alt 2 hd 16 sec 63>
+#
+#Part      Tag    Flag     Cylinders         Size            Blocks
+#  0       root    wm       0 - 35368       17.00GB    (35369/0/0) 35651952
+#  1       swap    wu   35369 - 37449        1.00GB    (2081/0/0)   2097648
+#  2     backup    wm       0 - 38789       18.64GB    (38790/0/0) 39100320
+#  3 unassigned    wm   37450 - 38789      659.53MB    (1340/0/0)   1350720
+#  4 unassigned    wm       0                0         (0/0/0)            0
+#  5 unassigned    wm       0                0         (0/0/0)            0
+#  6 unassigned    wm       0                0         (0/0/0)            0
+#  7 unassigned    wm       0                0         (0/0/0)            0
+
+partition
+
+0
+root
+wm
+0
+35369c
+
+1
+swap
+wu
+35369
+2081c
+
+3
+unassigned
+wm
+37450
+1340c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+unassigned
+wm
+0
+0c
+
+6
+unassigned
+wm
+0
+0c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

@@ -1,0 +1,26 @@
+Name: athena-athinfod
+Summary: An Athena server to respond to athinfo requests
+License: MIT
+Group: Applications/Internet
+
+%description 
+Respond to network queries for information about the workstation, such
+as its hardware type and configuration, its current software
+installation state, the number of users logged on, and various other
+informational state queries.
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/athena
+cp athinfo.access $RPM_BUILD_ROOT/etc/athena/athinfo.access
+cp athinfo.defs $RPM_BUILD_ROOT/etc/athena/athinfo.defs
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/athinfo.access$|%config(noreplace) \0|" \
+      -e "s|^/etc/athena/athinfo.defs$|%config \0|" |
+  sort > rpm.filelist

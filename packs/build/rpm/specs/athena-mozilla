@@ -1,0 +1,10 @@
+Name: athena-mozilla
+Summary: Web browser and mail reader, for Athena.
+License: MPL
+Group: Applications/Internet
+
+Requires: athena-gtk
+
+%description
+Mozilla is an open-source web browser, designed for standards
+compliance, performance and portability.

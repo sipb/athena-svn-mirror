@@ -43,6 +43,11 @@ RCSID("$OpenBSD: auth-passwd.c,v 1.27 2002/05/24 16:45:16 stevesk Exp $");
 #include "servconf.h"
 #include "auth.h"
 
+#ifdef GSSAPI
+#include <gssapi.h>
+extern gss_cred_id_t   gssapi_client_creds;
+#endif
+
 #if !defined(USE_PAM) && !defined(HAVE_OSF_SIA)
 /* Don't need any of these headers for the PAM or SIA cases */
 # ifdef HAVE_CRYPT_H
@@ -119,7 +124,27 @@ auth_password(Authctxt *authctxt, const char *password)
 	int authsuccess;
 	int reenter = 1;
 #endif
+#ifdef GSSAPI
+	OM_uint32 ms;
+#endif
 
+	/* If we're here, we either didn't try Kerberos/GSSAPI auth, or
+	 * it failed.  In either case, we don't want to forward credentials.
+	 *
+	 * The v1 protocol code path calls this function with an empty
+	 * password as a form of null authentication before trying any
+	 * other auth types, so we need to check if we have a real password.
+	 */
+	if (*password != '\0')
+	  {
+#ifdef KRB5
+	    options.kerberos_tgt_passing = 0;
+#endif
+#ifdef GSSAPI
+	    if (gssapi_client_creds != GSS_C_NO_CREDENTIAL)
+	      gss_release_cred(&ms, &gssapi_client_creds);
+#endif
+	  }
 	/* deny if no user. */
 	if (pw == NULL)
 		return 0;

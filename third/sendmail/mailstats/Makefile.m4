@@ -1,4 +1,4 @@
-dnl $Id: Makefile.m4,v 1.1.1.2 2003-04-08 15:07:51 zacheiss Exp $
+dnl $Id: Makefile.m4,v 1.6 2003-04-08 15:42:14 zacheiss Exp $
 include(confBUILDTOOLSDIR`/M4/switch.m4')
 
 define(`confREQUIRE_LIBSM', `true')
@@ -20,4 +20,3 @@ define(`bldSOURCES', `mailstats.8')
 bldPRODUCT_END
 
 bldFINISH
-

@@ -57,7 +57,7 @@ sysdir = $(datadir)/control-center/Session
 
 if SESSION
 sys_in_files = session-properties.desktop.in
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+#sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 endif
 
 settingsdir = $(datadir)/gnome/apps/Settings/Session

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case $ATHENA_HOSTTYPE in
+sun4)
+	./configure "$@" --disable-shm
+	;;
+*)
+	./configure "$@"
+	;;
+esac

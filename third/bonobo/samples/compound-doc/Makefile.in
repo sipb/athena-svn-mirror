@@ -170,7 +170,7 @@ bin_PROGRAMS = bonobo-sample-paint bonobo-sample-canvas-item
 
 GPRINT_LIBS = $(top_builddir)/bonobo/libbonobo-print.la
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(srcdir) -I$(top_srcdir) 				-I. -I$(top_srcdir)/bonobo			        -I$(includedir)                                 	$(BONOBOX_TEST_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(srcdir) -I$(top_srcdir) 				-I. -I$(top_srcdir)/bonobo			        $(BONOBOX_TEST_CFLAGS)
 
 
 bonobo_sample_paint_SOURCES =  	paint-component-simple.c

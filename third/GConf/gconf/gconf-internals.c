@@ -28,6 +28,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -826,7 +827,7 @@ subst_variables(const gchar* src)
 
               if ((retval_len - pos) < varval_len)
                 {
-                  retval_len *= 2;
+                  retval_len = pos + varval_len;
                   retval = g_realloc(retval, retval_len+3);
                 }
               
@@ -2555,8 +2556,17 @@ read_current_server (const gchar *iorfile,
       char buf[2048] = { '\0' };
       const char *str = NULL;
 
-      fgets (buf, sizeof (buf) - 2, fp);
+      str = fgets (buf, sizeof (buf) - 2, fp);
       fclose (fp);
+
+      if (str == NULL)
+	{
+	  if (warn_if_fail)
+	    gconf_log (GCL_WARNING,
+		       _("Failed to read IOR file '%s', no gconfd located"),
+		       iorfile);
+	  return CORBA_OBJECT_NIL;
+	}
 
       /* The lockfile format is <pid>:<ior> for gconfd
        * or <pid>:none for gconftool
@@ -2619,7 +2629,7 @@ gconf_get_lock_or_current_holder (const gchar  *lock_directory,
   if (current_server)
     *current_server = CORBA_OBJECT_NIL;
   
-  if (mkdir (lock_directory, 0700) < 0 &&
+  if (gconf_mkdir_private (lock_directory) < 0 &&
       errno != EEXIST)
     {
       gconf_set_error (err,
@@ -2677,6 +2687,7 @@ gconf_get_lock_or_current_holder (const gchar  *lock_directory,
             retval = write (lock->lock_fd, "none", 4);
           else
             retval = write (lock->lock_fd, ior, strlen (ior));
+	  fsync (lock->lock_fd);
         }
 
       if (retval < 0)
@@ -2948,7 +2959,11 @@ gconf_orb_get (void)
 char*
 gconf_get_daemon_dir (void)
 {
-  return g_strconcat (g_get_home_dir (), "/.gconfd", NULL);
+  /* Athena local mod: create the daemon directory under /tmp,
+   * instead of the home directory, so we can run a separate
+   * daemon on each machine.
+   */
+  return g_strconcat ("/tmp/gconfd-", g_get_user_name (), NULL);
 }
 
 char*
@@ -2992,14 +3007,14 @@ gconf_activate_server (gboolean  start_if_not_found,
   int p[2] = { -1, -1 };
   char buf[1];
   GError *tmp_err;
-  char *argv[3];
+  char *argv[4];
   char *gconfd_dir;
   char *lock_dir;
   CORBA_Environment ev;
   
   gconfd_dir = gconf_get_daemon_dir ();
   
-  if (mkdir (gconfd_dir, 0700) < 0 && errno != EEXIST)
+  if (gconf_mkdir_private (gconfd_dir) < 0 && errno != EEXIST)
     gconf_log (GCL_WARNING, _("Failed to create %s: %s"),
                gconfd_dir, g_strerror (errno));
 
@@ -3038,26 +3053,27 @@ gconf_activate_server (gboolean  start_if_not_found,
           goto out;
         }
 
+      argv[0] = "dustbuster";
       if (gconf_file_exists (GCONF_BINDIR"/gconfd-2"))
-        argv[0] = g_strconcat (GCONF_BINDIR, "/gconfd-2", NULL);
+        argv[1] = g_strconcat (GCONF_BINDIR, "/gconfd-2", NULL);
       else
-        argv[0] = g_strconcat (GCONF_BINDIR, "/" GCONFD, NULL);
+        argv[1] = g_strconcat (GCONF_BINDIR, "/" GCONFD, NULL);
 
-      argv[1] = g_strdup_printf ("%d", p[1]);
-      argv[2] = NULL;
+      argv[2] = g_strdup_printf ("%d", p[1]);
+      argv[3] = NULL;
   
       tmp_err = NULL;
       if (!g_spawn_async (NULL,
                           argv,
                           NULL,
-                          G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
+                          G_SPAWN_LEAVE_DESCRIPTORS_OPEN | G_SPAWN_SEARCH_PATH,
                           close_fd_func,
                           p,
                           NULL,
                           &tmp_err))
         {
-          g_free (argv[0]);
           g_free (argv[1]);
+          g_free (argv[2]);
           g_set_error (error,
                        GCONF_ERROR,
                        GCONF_ERROR_NO_SERVER,
@@ -3067,8 +3083,8 @@ gconf_activate_server (gboolean  start_if_not_found,
           goto out;
         }
       
-      g_free (argv[0]);
       g_free (argv[1]);
+      g_free (argv[2]);
   
       /* Block until server starts up */
       read (p[0], buf, 1);
@@ -3076,6 +3092,15 @@ gconf_activate_server (gboolean  start_if_not_found,
       lock_dir = gconf_get_lock_dir ();
       server = gconf_get_current_lock_holder (lock_dir);
       g_free (lock_dir);
+
+      /* Make sure we can ping the new server, since it may have failed
+       * to acquire the lock, and exited.
+       */
+      CORBA_exception_init (&ev);
+      ConfigServer_ping (server, &ev);
+      if (ev._major != CORBA_NO_EXCEPTION)
+        server = CORBA_OBJECT_NIL;
+      CORBA_exception_free (&ev);  
     }
   
  out:
@@ -3593,6 +3618,9 @@ do_exec (gint                  child_err_report_fd,
          GSpawnChildSetupFunc  child_setup,
          gpointer              user_data)
 {
+  /* Create a new session, becoming its leader. */
+  setsid();
+
   if (working_directory && chdir (working_directory) < 0)
     write_err_and_exit (child_err_report_fd,
                         CHILD_CHDIR_FAILED);
@@ -3992,6 +4020,7 @@ fork_exec_with_pipes (gboolean              intermediate_child,
               /* we have the child pid */
               pid = buf[0];
             }
+	  close_and_invalidate (&child_pid_report_pipe[0]);
         }
       
       /* Success against all odds! return the information */
@@ -4357,4 +4386,31 @@ gconf_g_utf8_validate (const gchar  *str,
     return FALSE;
   else
     return TRUE;
+}
+
+/* Wrapper for creating a directory to which only the user has access.
+ * If the directory lives in AFS, make sure that system:anyuser and
+ * system:authuser are removed from the ACL.
+ */
+int
+gconf_mkdir_private(const char *path)
+{
+  int status;
+  char *command;
+
+  status = mkdir (path, S_IRWXU);
+  if (status == 0)
+    {
+      /* We created the directory; run fs to fix the ACL, in case
+       * the directory is in AFS.
+       */
+      command = g_strdup_printf ("fs setacl %s"
+				 " system:anyuser none"
+				 " system:authuser none"
+				 " > /dev/null 2>&1",
+				 path);
+      system (command);
+      g_free (command);
+    }
+  return status;
 }

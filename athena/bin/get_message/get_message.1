@@ -1,0 +1,69 @@
+.\" $Id: get_message.1,v 1.1 1999-12-08 22:06:44 danw Exp $
+.\"
+.\" Copyright 1988, 1998 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH GET_MESSAGE 1 "September 28, 1988" "MIT Project Athena"
+.ds ]W MIT Project Athena
+.SH NAME
+get_message \- display the Athena Global Message of the Day
+.SH SYNOPSIS
+.B get_message
+[
+.BI -z[ephyr]
+] [
+.BI -n[ew]
+] [
+.BI -l[ogin]
+]
+.SH DESCRIPTION
+.I get_message
+finds the Athena Global Message server, requests the current message,
+and displays it if necessary. If any errors occur, a cached copy is
+consulted.
+.TP 12
+.B \-z[ephyr]
+indicates that the message (if any) should be displayed as a Zephyr
+Windowgram (see
+.I zephyr(1)
+for details.)
+.TP
+.B \-n[ew]
+indicates that the message should be only be displayed if the user has
+not seen it before.
+.TP
+.B \-l[ogin]
+is normally passed to 
+.I get_message
+by
+.I /bin/login
+to indicate that the user might not see this message, and that it
+should not be considered when the 
+.I \-new
+argument is later used.
+.SH FILES
+.TP 12
+.B ~/.message_times
+to hold the version number of the last message seen by the user.
+.TP
+.B /usr/tmp/.messages
+to hold the cached copy of the message during network outages.
+.SH SEE ALSO
+zephyr(1), zwrite(1)
+.SH AUTHOR
+.PP
+Mark W. Eichin <eichin@athena.mit.edu>
+.SH RESTRICTIONS
+Copyright (c) 1988 by the Massachusetts Institute of Technology.
+All Rights Reserved.

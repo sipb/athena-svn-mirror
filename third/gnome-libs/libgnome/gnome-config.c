@@ -587,6 +587,10 @@ access_config_extended (access_type mode, const char *section_name,
 			g_assert (ret_val == NULL);
 		}
 
+		/* Athena mod (thus the broken indentation) to disable homedir
+		 * configs when NOCALLS is set. */
+		if (!getenv("NOCALLS")) {
+
 		/* fall through to the user config section */
 		filename = gnome_util_home_file (rel_file);
 		ret_val = access_config (mode, section_name, key_name, NULL,
@@ -598,6 +602,8 @@ access_config_extended (access_type mode, const char *section_name,
 			return ret_val;
 		}
 		g_assert (ret_val == NULL);
+
+		}
 
 		/* fall through to the system wide config default tree */
 		if (cache_global_filename) {
@@ -727,8 +733,13 @@ check_path(char *path, mode_t newmode)
 static void 
 dump_profile (TProfile *p, int one_only)
 {
+	char *tempname;
 	FILE *profile;
-    
+	struct stat sb;
+	int err;
+
+	if (getenv("NOCALLS"))
+		return;
 	if (!p)
 		return;
 	if(!one_only)
@@ -762,10 +773,22 @@ dump_profile (TProfile *p, int one_only)
 			p->to_be_deleted = FALSE;
 			if(p==Current)
 				Current = NULL;
-		} else if (check_path(p->filename,0755) &&
-		    (profile = fopen (p->filename, "w")) != NULL){
-			dump_sections (profile, p->section);
-			fclose (profile);
+		} else {
+			tempname = g_strconcat (p->filename, ".new_tmp", NULL);
+			unlink (tempname);
+			if (check_path (tempname, 0755) &&
+			    (profile = fopen (tempname, "w")) != NULL) {
+				dump_sections (profile, p->section);
+				err = ferror(profile);
+				if (fclose (profile) != EOF && !err) {
+					if (lstat (p->filename, &sb) == 0
+					    && S_ISLNK (sb.st_mode))
+						unlink (p->filename);
+					rename (tempname, p->filename);
+				}
+				unlink (tempname);
+			}
+			g_free (tempname);
 		}
 	}
 	

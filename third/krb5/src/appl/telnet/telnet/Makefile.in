@@ -29,6 +29,8 @@ OTHERDEFS=-DLINEMODE -DKLUDGELINEMODE -DDIAGNOSTICS -DENV_HACK -DOLD_ENVIRON
 LOCALINCLUDES=-I.. -I$(srcdir)/..
 DEFINES = $(AUTH_DEF) $(OTHERDEFS)
 ARPA_TELNET= $(srcdir)/../arpa/telnet.h
+EXTRALIBS=@EXTRALIBS@
+LOCAL_LIBRARIES=-lal -llocker -lzephyr -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
 
 PROG_LIBPATH=-L$(TOPLIBD)
 PROG_RPATH=$(KRB5_LIBDIR)
@@ -46,7 +48,7 @@ OBJS=	authenc.o commands.o main.o network.o ring.o sys_bsd.o \
 all:: telnet
 
 telnet:	$(OBJS) $(KRB4COMPAT_DEPLIBS) ../libtelnet/libtelnet.a
-	$(CC_LINK) -o $@ $(OBJS) ../libtelnet/libtelnet.a $(KRB4COMPAT_LIBS)
+	$(CC_LINK) -o $@ $(OBJS) ../libtelnet/libtelnet.a $(LOCAL_LIBRARIES) $(KRB4COMPAT_LIBS)
 
 clean::
 	$(RM) telnet

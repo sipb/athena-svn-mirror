@@ -135,7 +135,8 @@ INCLUDES = \
 LDADD = \
         $(XML_LIBS) \
 	$(XSLT_LIBS) \
-	$(top_builddir)/libs/libscrollkeeper.la
+	$(top_builddir)/libs/libscrollkeeper.la \
+	$(INTLLIBS)
 
 
 bin_PROGRAMS = scrollkeeper-preinstall scrollkeeper-update scrollkeeper-install scrollkeeper-uninstall scrollkeeper-get-cl 
@@ -356,14 +357,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-get-cl.o: get-cl.c ../../config.h ../../libs/scrollkeeper.h
-preinstall.o: preinstall.c ../../config.h ../../libs/scrollkeeper.h
-scrollkeeper-install.o: scrollkeeper-install.c ../../config.h \
-	../../libs/scrollkeeper.h
-scrollkeeper-uninstall.o: scrollkeeper-uninstall.c ../../config.h \
-	../../libs/scrollkeeper.h
-update.o: update.c ../../config.h ../../libs/scrollkeeper.h
-
 info-am:
 info: info-am
 dvi-am:

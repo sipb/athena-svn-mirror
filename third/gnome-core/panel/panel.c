@@ -995,7 +995,8 @@ drop_directory (PanelWidget *panel, int pos, const char *dir)
 	tmp = panel_is_program_in_path ("nautilus");
 	if (tmp != NULL) {
 		/* nautilus */
-		char *exec[] = { "nautilus", (char *)dir, NULL };
+		char *exec[] = { "nautilus", NULL, NULL };
+		exec[1] = (char *)dir;
 
 		g_free (tmp);
 
@@ -1014,8 +1015,9 @@ drop_directory (PanelWidget *panel, int pos, const char *dir)
 			char *exec[] = {
 				"gmc-client",
 				"--create-directory",
-				(char *)dir,
+				NULL,
 				NULL };
+			exec[2] = (char *)dir;
 
 			g_free (tmp);
 

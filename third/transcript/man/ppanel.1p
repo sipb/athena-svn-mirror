@@ -1,11 +1,11 @@
 .TH PPANEL 1 "18 August 1992" "Adobe Systems"
 \" Copyright (c) 1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/ppanel.1p,v 1.1.1.1 1996-10-07 20:25:38 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/ppanel.1p,v 1.2 1996-10-14 05:09:43 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RANS\s+2S\s-2CRIPT\s+2
 .SH NAME
-ppanel\(emMotif graphical user interface to T\s-2RANS\s+2S\s-2CRIPT\s+2
+ppanel \- Motif graphical user interface to TranScript
 .SH SYNOPSIS
 .B ppanel
 [ 
@@ -47,25 +47,18 @@ path name for the \*(PS language document previewer
 .IP PSFAXDB
 location of the fax phone book
 .IP PSLIBDIR
-path name of the directory containing preview.info (and printer.list for
-System V)  
+path name of the directory containing preview.info  
 .SH FILES
 .TP 2.2i
 XPSLIBDIRX/preview.info
 path name for the \*(PS language document previewer, which can be
 overridden by the PREVIEWER 
 environment variable
-.TP
-XPSLIBDIRX/printer.list
-list of available printers, for System V machines.
 .br
 .SH "SEE ALSO"
 transcript(1), enscript(1), ptroff(1), psroff(1), ps4014(1), psplot(1),
-ps630(1), pslpr(1), psnup(1), psfax(1), psdraft(1)
-.br
-BSD Unix systems: lpr(1), lpq(1), lprm(1).
-.br
-System V Unix systems: lp(1), cancel(1), lpstat(1).
+ps630(1), pslpr(1), psnup(1), psfax(1), psdraft(1), lpr(1), lpq(1),
+lprm(1).
 .SH AUTHOR
 Adobe Systems Incorporated
 .SH NOTES

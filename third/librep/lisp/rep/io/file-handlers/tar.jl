@@ -1,7 +1,7 @@
 ;; tar-file-handler.jl -- pretend that tar files are (read-only) directories
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
-;; $Id: tar.jl,v 1.1.1.2 2002-03-20 04:54:39 ghudson Exp $
+;; $Id: tar.jl,v 1.3 2002-03-20 04:59:51 ghudson Exp $
 
 ;; This file is part of librep.
 

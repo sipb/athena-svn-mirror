@@ -18,16 +18,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static void run_in_terminal(const gchar *command);
+
 int main(int argc, char *argv[])
 {
-  GtkWidget *mainwin, *urlbtn;
+  GtkWidget *mainwin;
   gchar* msg;
   struct sigaction sa;
   poptContext ctx;
   const char **args;
-  char *urlstr;
   const char *app_version = NULL;
   int res;
+  int rescount = 0;
+  int close_res = -1;
+  int bug_buddy_res = -1;
+  int debug_res = -1;
+  int olc_res = -1;
+  int sendbug_res = -1;
   gchar *appname;
   gchar *bug_buddy_path = NULL;
   gchar *debugger = NULL;
@@ -69,7 +76,12 @@ int main(int argc, char *argv[])
         }
       else
         {
-          msg = g_strdup_printf(_("Application \"%s\" (process %d) has crashed\ndue to a fatal error.\n(%s)"),
+          msg = g_strdup_printf(_("Application \"%s\" (process %d) has crashed"
+                                  " due to a\nfatal error.\n(%s)\n\n"
+                                  "You may choose to run olc to check with an"
+                                  " On-Line Consultant\nabout this bug;"
+                                  " otherwise, please consider running sendbug"
+                                  " to\nsubmit an Athena bug report."),
                                 args[0], getppid(), g_strsignal(atoi(args[1])));
         }
 	if(args[2])
@@ -86,12 +98,14 @@ int main(int argc, char *argv[])
                                   GNOME_MESSAGE_BOX_ERROR,
                                   GNOME_STOCK_BUTTON_CLOSE,
                                   NULL);
+  close_res = rescount++;
   
   bug_buddy_path = gnome_is_program_in_path ("bug-buddy");
-  if (bug_buddy_path != NULL)
+  if (0 && bug_buddy_path != NULL)
     {
       gnome_dialog_append_button(GNOME_DIALOG(mainwin),
                                  _("Submit a bug report"));
+      bug_buddy_res = rescount++;
     }
 
   debugger = getenv("GNOME_DEBUGGER");
@@ -102,27 +116,25 @@ int main(int argc, char *argv[])
       {
         gnome_dialog_append_button(GNOME_DIALOG(mainwin),
                                    _("Debug"));
+        debug_res = rescount++;
       }
   }
   
-  /* Please download http://www.gnome.org/application_crashed-shtml.txt,
-   * translate the plain text, and send the file to webmaster@gnome.org. */
-  urlstr = g_strdup_printf("%s?app=%s%s%s&libsver=%s", 
-		_("http://www.gnome.org/application_crashed.shtml"),
-		args[0],
-		app_version?"&version=":"",
-		app_version?app_version:"",
-		VERSION);
-  urlbtn = gnome_href_new(urlstr,
-                          _("Please visit the GNOME Application Crash page for more information"));
-  gtk_widget_show(urlbtn);
-  gtk_container_add(GTK_CONTAINER(GNOME_DIALOG(mainwin)->vbox), urlbtn);
+  gnome_dialog_append_button(GNOME_DIALOG(mainwin), _("Run olc"));
+  olc_res = rescount++;
+
+  gnome_dialog_append_button(GNOME_DIALOG(mainwin), _("Submit a bug report"));
+  sendbug_res = rescount++;
 
   g_free(msg);
 
   res = gnome_dialog_run(GNOME_DIALOG(mainwin));
 
-  if (res == 1 && (bug_buddy_path != NULL))
+  if (res == -1 || res == close_res)
+    {
+      return 0;
+    }
+  if (res == bug_buddy_res)
     {
       gchar *exec_str;
       int retval;
@@ -141,7 +153,7 @@ int main(int argc, char *argv[])
           g_warning("Couldn't run bug-buddy: %s", g_strerror(errno));
         }
     }
-  else if (res == 2 || (res == 1 && (bug_buddy_path == NULL)))
+  else if (res == debug_res)
     {
       gchar *exec_str;
       int retval;
@@ -160,6 +172,34 @@ int main(int argc, char *argv[])
           g_warning("Couldn't run debugger: %s", g_strerror(errno));
         }
     }
+  else if (res == olc_res)
+    {
+      run_in_terminal("olc");
+    }
+  else if (res == sendbug_res)
+    {
+      gchar *exec_str;
+
+      exec_str = g_strdup_printf("sendbug %s", appname);
+      run_in_terminal(exec_str);
+      g_free(exec_str);
+    }
 
   return 0;
+}
+
+static void run_in_terminal(const gchar *command)
+{
+  gchar *exec_str;
+  gchar *terminal_command = "/usr/athena/bin/gnome-terminal --command=";
+  int retval;
+
+  exec_str = g_strdup_printf("%s'%s'", terminal_command, command);
+  retval = system(exec_str);
+  g_free(exec_str);
+  if (retval == -1)
+    {
+      g_warning("Couldn't run %s in terminal: %s",
+                command, g_strerror(errno));
+    }
 }

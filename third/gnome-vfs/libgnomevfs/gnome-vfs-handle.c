@@ -166,6 +166,9 @@ gnome_vfs_handle_do_seek (GnomeVFSHandle *handle,
 					  whence, offset, context));
 }
 
+/* Athena hack to work around Solaris #define of "tell" */
+#undef tell
+
 GnomeVFSResult
 gnome_vfs_handle_do_tell (GnomeVFSHandle *handle,
 			  GnomeVFSFileSize *offset_return)

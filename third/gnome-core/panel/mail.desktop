@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=E-mail
+Comment=Read E-mail
+Exec=/usr/athena/share/gnome/athena/mail-script
+Icon=/usr/athena/share/gnome/athena/mail-icon
+Type=Application

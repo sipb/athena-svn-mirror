@@ -1,5 +1,5 @@
 #! smake
-#	$Header: /afs/dev.mit.edu/source/repository/third/tiff/Makefile.in,v 1.1.1.1 2002-12-26 02:37:32 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/third/tiff/Makefile.in,v 1.2 2003-01-25 05:52:46 ghudson Exp $
 #
 # @WARNING@
 #
@@ -55,11 +55,13 @@ all default:
 	@${ECHO} "= "man; cd man; ${MAKE} -${MAKEFLAGS}
 
 install:
-	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} -${MAKEFLAGS} install
-	@${ECHO} "= "tools; cd tools; ${MAKE} -${MAKEFLAGS} install
-	@${ECHO} "= "man; cd man; ${MAKE} -${MAKEFLAGS} install
+	mkdir -p ${DESTDIR}@DIR_BIN@ ${DESTDIR}@DIR_LIB@
+	mkdir -p ${DESTDIR}@DIR_INC@ ${DESTDIR}@DIR_MAN@
+	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} install
+	@${ECHO} "= "tools; cd tools; ${MAKE} install
+	@${ECHO} "= "man; cd man; ${MAKE} install
 	@if [ "@HTML@" = yes ]; then \
-	    ${ECHO} "= "html; cd html; ${MAKE} -${MAKEFLAGS} install; \
+	    ${ECHO} "= "html; cd html; ${MAKE} install; \
 	else \
 	    true; \
 	fi

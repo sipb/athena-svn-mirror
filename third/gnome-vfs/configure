@@ -1480,7 +1480,7 @@ else
 fi
 echo "$ac_t""$CPP" 1>&6
 
-for ac_prog in gawk mawk nawk awk
+for ac_prog in mawk gawk nawk awk
 do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -10501,17 +10501,63 @@ fi
 
 found_iconv=no
 
+if test "x$with_libiconv" != "xno" ; then
+   #
+   # Check for libiconv
+   #
+   echo $ac_n "checking for libiconv_open in -liconv""... $ac_c" 1>&6
+echo "configure:10510: checking for libiconv_open in -liconv" >&5
+ac_lib_var=`echo iconv'_'libiconv_open | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-liconv  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 10518 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char libiconv_open();
+
+int main() {
+libiconv_open()
+; return 0; }
+EOF
+if { (eval echo configure:10529: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  with_libiconv=yes; found_iconv=yes
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+fi
+
 if test "x$with_libiconv" != "xyes" ; then
    # 
    # Check in the C library 
    #
    echo $ac_n "checking for iconv_open""... $ac_c" 1>&6
-echo "configure:10510: checking for iconv_open" >&5
+echo "configure:10556: checking for iconv_open" >&5
 if eval "test \"`echo '$''{'ac_cv_func_iconv_open'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 10515 "configure"
+#line 10561 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char iconv_open(); below.  */
@@ -10534,7 +10580,7 @@ iconv_open();
 
 ; return 0; }
 EOF
-if { (eval echo configure:10538: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:10584: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_iconv_open=yes"
 else
@@ -10549,52 +10595,6 @@ fi
 if eval "test \"`echo '$ac_cv_func_'iconv_open`\" = yes"; then
   echo "$ac_t""yes" 1>&6
   with_libiconv=no; found_iconv=yes
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-
-if test "x$with_libiconv" != "xno" ; then
-   #
-   # Check for libiconv
-   #
-   echo $ac_n "checking for libiconv_open in -liconv""... $ac_c" 1>&6
-echo "configure:10564: checking for libiconv_open in -liconv" >&5
-ac_lib_var=`echo iconv'_'libiconv_open | sed 'y%./+-%__p_%'`
-if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  ac_save_LIBS="$LIBS"
-LIBS="-liconv  $LIBS"
-cat > conftest.$ac_ext <<EOF
-#line 10572 "configure"
-#include "confdefs.h"
-/* Override any gcc2 internal prototype to avoid an error.  */
-/* We use char because int might match the return type of a gcc2
-    builtin and then its argument prototype would still apply.  */
-char libiconv_open();
-
-int main() {
-libiconv_open()
-; return 0; }
-EOF
-if { (eval echo configure:10583: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=yes"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=no"
-fi
-rm -f conftest*
-LIBS="$ac_save_LIBS"
-
-fi
-if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  with_libiconv=yes; found_iconv=yes
 else
   echo "$ac_t""no" 1>&6
 fi

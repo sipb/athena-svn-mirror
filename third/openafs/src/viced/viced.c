@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.1.1.2 2002-12-13 20:40:33 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.3 2002-12-13 22:06:51 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1960,12 +1960,15 @@ if test -n "$CPP" && test -d "$CPP"; then
   CPP=
 fi
 
-#### Some systems specify a CPP to use unless we are using GCC.
-#### Now that we know whether we are using GCC, we can decide whether
-#### to use that one.
+#### Some systems specify a CPP to use for Makefiles unless we are
+#### using GCC.  Now that we know whether we are using GCC, we can
+#### decide whether to use that one.
 if test "x$NON_GNU_CPP" != x && test x$GCC != xyes && test "x$CPP" = x
 then
-  CPP="$NON_GNU_CPP"
+  makecpp="$NON_GNU_CPP"
+else
+  # We'll just use the output of AC_PROG_CPP.
+  makecpp=
 fi
 
 #### Some systems specify a CC to use unless we are using GCC.
@@ -2201,6 +2204,13 @@ test -n "$YACC" && break
 done
 test -n "$YACC" || YACC="yacc"
 
+# Now default makecpp to the output of AC_PROC_CPP if we didn't set it
+# above.  (Since CPP is a quoted variable reference, we have to eval it.)
+if test "x$makecpp" = x
+then
+  makecpp=`eval "echo $CPP"`
+fi
+
 if test "x$RANLIB" = x; then
   # Extract the first word of "ranlib", so it can be a program name with args.
 set dummy ranlib; ac_word=$2
@@ -2256,8 +2266,6 @@ else
   echo "$ac_t""no" 1>&6
 fi
 rm -f conftest*
-
-
 
 #### Extract some information from the operating system and machine files.
 
@@ -2384,10 +2392,10 @@ configure___ REAL_CFLAGS=C_DEBUG_SWITCH '${SPECIFIED_CFLAGS}'
 # The value of CPP is a quoted variable reference, so we need to do this
 # to get its actual value...
 CPP=`eval "echo $CPP"`
-eval `${CPP} -Isrc ${tempcname} \
+eval `${makecpp} -Isrc ${tempcname} \
        | sed -n -e 's/^configure___ \([^=]*=\)\(.*\)$/\1"\2"/p'`
 if test "x$SPECIFIED_CFLAGS" = x; then
-  eval `${CPP} -Isrc -DTHIS_IS_CONFIGURE ${tempcname} \
+  eval `${makecpp} -Isrc -DTHIS_IS_CONFIGURE ${tempcname} \
 	 | sed -n -e 's/^configure___ \([^=]*=\)\(.*\)$/\1"\2"/p'`
 else
   REAL_CFLAGS="$CFLAGS"
@@ -4036,7 +4044,6 @@ fi
 if test x"${REL_ALLOC}" = x; then
   REL_ALLOC=${GNU_MALLOC}
 fi
-
 
 for ac_hdr in stdlib.h unistd.h sys/stat.h
 do
@@ -9561,7 +9568,7 @@ fi; done
 
 EOF
 cat >> $CONFIG_STATUS <<EOF
-GCC="$GCC" NON_GNU_CPP="$NON_GNU_CPP" CPP="$CPP" CPP_NEED_TRADITIONAL="$CPP_NEED_TRADITIONAL" CPPFLAGS="$CPPFLAGS"
+GCC="$GCC" NON_GNU_CPP="$NON_GNU_CPP" CPP="$CPP" CPP_NEED_TRADITIONAL="$CPP_NEED_TRADITIONAL" CPPFLAGS="$CPPFLAGS" makecpp="$makecpp"
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 
@@ -9604,7 +9611,7 @@ echo creating lib-src/Makefile
   sed -e '1,/start of cpp stuff/d'\
       -e 's,/\*\*/#\(.*\)$,/* \1 */,' \
       < Makefile.c > junk.c
-  $CPP $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
+  $makecpp $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
       sed -e 's/^ /	/' -e '/^#/d' -e '/^[ 	]*$/d' > junk2.c
   cat junk1.c junk2.c > Makefile.new
   rm -f junk.c junk1.c junk2.c
@@ -9620,7 +9627,7 @@ echo creating src/Makefile
   sed -e '1,/start of cpp stuff/d'\
       -e 's,/\*\*/#\(.*\)$,/* \1 */,' \
       < Makefile.c > junk.c
-  $CPP $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
+  $makecpp $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
       sed -e 's/^ /	/' -e '/^#/d' -e '/^[ 	]*$/d' > junk2.c
   cat junk1.c junk2.c > Makefile.new
   rm -f junk.c junk1.c junk2.c

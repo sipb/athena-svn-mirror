@@ -1,6 +1,6 @@
 .\"
 .\" %nmhwarning%
-.\" $Id: show.man,v 1.1.1.1 1999-02-07 18:14:22 danw Exp $
+.\" $Id: show.man,v 1.2 1999-06-07 15:57:24 danw Exp $
 .\"
 .\" include the -mh macro file
 .so %etcdir%/tmac.h
@@ -30,7 +30,9 @@ show
 \fIShow\fR lists each of the specified messages to the standard output
 (typically, the terminal).
 
-By default, text (non-MIME) messages are filtered and displayed by
+By default on Athena, text (non-MIME) messages are piped to
+\fImore\fR(1). In the default nmh configuration, text messages are
+filtered and displayed by
 the \fInmh\fR command \fImhl\fR.  This command will display text
 messages in a nice, uniform format.  It also allows you to configure
 the format of the displayed messages and which headers fields are
@@ -39,8 +41,8 @@ command.  This default can be changed by defining the \fIshowproc\fR
 profile component.  Any switches not recognized by \fIshow\fR are
 passed along to that program.  To override the default and the
 \fIshowproc\fR profile component, use the `\-showproc\ program'
-switch.  For example, `\-showproc\ more' will cause the \fImore\fR(1)
-program to list the messages with no reformatting.  Normally, this
+switch.  For example, `\-showproc\ mhl will cause the \fImhl\fR
+program to list the messages nicely formatted.  Normally, this
 program is specified as the \fIshowproc\fR in the user's
 \&.mh\(ruprofile, rather than using a command line switch.
 
@@ -68,7 +70,9 @@ messages.  If any are non-text, they are displayed by the program
 \fIshowmimeproc\fR, else they are displayed by the program
 \fIshowproc\fR.  The option `-nocheckmime' disables this test and
 instructs \fIshow\fR to use \fIshowproc\fR, regardless of whether
-any of the messages are non-text (MIME) messages.
+any of the messages are non-text (MIME) messages. `\-nocheckmime' is
+the default when showing multiple messages in a single invocation, to
+prevent formatting problems.
 
 The `\-noshowproc' switch will disable any formatting or paging of
 messages.  It is equivalent to `-nocheckmime\ -showproc\ cat'.  It

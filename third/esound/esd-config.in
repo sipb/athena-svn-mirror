@@ -43,9 +43,10 @@ while test $# -gt 0; do
       ;;
     --cflags)
       if test @includedir@ != /usr/include ; then
-        includes=-I@includedir@
+        includes=-I${ATHTOOLROOT}@includedir@
+	audiofile_cflags=`audiofile-config --cflags`
         for i in $audiofile_cflags ; do
-          if test $i = -I@includedir@ ; then
+          if test $i = -I${ATHTOOLROOT}@includedir@ ; then
             includes=""
           fi
         done      
@@ -54,9 +55,10 @@ while test $# -gt 0; do
       ;;
     --libs)
       my_audiofile_libs=
-      libdirs=-L@libdir@
+      libdirs=-L${ATHTOOLROOT}@libdir@
+      audiofile_libs=`audiofile-config --libs`
       for i in $audiofile_libs ; do
-        if test $i != -L@libdir@ ; then
+        if test $i != -L${ATHTOOLROOT}@libdir@ ; then
           if test -z "$my_audiofile_libs" ; then
             my_audiofile_libs="$i"
           else
