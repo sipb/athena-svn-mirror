@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.18 1992-06-11 17:14:21 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.18.1.1 1992-08-18 19:32:14 lwvanels Exp $";
 #endif
 #endif
 
@@ -50,6 +50,7 @@ extern char *LOCAL_REALMS[];
 
 int select_timeout = 300;
 
+int num_question; /* added by Geetha Vijayan 03/20/92 */
 int has_question=FALSE;
 int init_screen=FALSE;
 int ask_screen=FALSE;
@@ -158,8 +159,8 @@ main(argc, argv)
   MuInitialize(xolc);
 
   MakeInterface();
-  MakeNewqForm();
-  MakeContqForm();
+  MakeNewqForm();/* added by Geetha Vijayan */ 
+  MakeContqForm();  
   MakeMotdForm();
   MakeDialogs();
 
@@ -239,10 +240,13 @@ olc_init()
   switch(response)
     {
     case USER_NOT_FOUND:
-      XtManageChild(w_newq_btn);
       XtSetArg(arg, XmNleftWidget, (Widget) w_newq_btn);
-      XtSetValues(w_stock_btn, &arg, 1);
-      XtManageChild(w_stock_btn);
+     /* added by Geetha Vijayan 03/20/92 */
+     num_question = 0;
+     if(! XtIsManaged(w_contq_btn))
+       XtManageChild(w_contq_btn);
+      if (! XtIsManaged(w_newq_btn) )
+	XtManageChild(w_newq_btn);
       break;
 
     case CONNECTED:
@@ -250,14 +254,25 @@ olc_init()
       read_int_from_fd(fd, &n);
       t_set_default_instance(&Request);
       has_question = TRUE;
-      XtManageChild(w_contq_btn);
-      XtSetArg(arg, XmNleftWidget, (Widget) w_contq_btn);
-      XtSetValues(w_stock_btn, &arg, 1);
-      XtManageChild(w_stock_btn);
+      /* added bt Geetha Vijayan 03/20/92 */
+      if((has_question =TRUE) &&(num_question <= 10)) {
+	if(! XtIsManaged(w_newq_btn) )
+	  XtManageChild(w_newq_btn);
+	if (! XtIsManaged(w_contq_btn) ) {
+	  XtManageChild(w_contq_btn);
+	  XtSetArg(arg, XmNleftWidget, (Widget) w_contq_btn);
+	  XtSetValues(w_stock_btn, &arg, 1);
+	  XtManageChild(w_stock_btn);
+	}
+      }
       break;
 
     case PERMISSION_DENIED:
+#ifndef ATHENA
+      MuErrorSync("You are not allowed to use OLC.\nPlease contact a consultant by other means.");
+#else
       MuErrorSync("You are not allowed to use OLC.\nPlease contact a consultant at 253-4435.");
+#endif
       exit(1);
 
     default:
@@ -270,8 +285,7 @@ olc_init()
       if (status == ERROR)
         exit(ERROR);
     }
-
-  make_temp_name(file);
+      make_temp_name(file);
   switch(x_get_motd(&Request,OLC,file,0))
     {
     case FAILURE:
