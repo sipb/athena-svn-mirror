@@ -1,10 +1,11 @@
-# $Id: Makefile,v 1.2 1996-10-02 07:11:20 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-03-26 21:01:19 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
+ATHVARDIR=/var/athena
 ATHCONFDIR=/usr/athena/config
 ATHMANDIR=/usr/athena/man
 ATHLIBDIR=/usr/athena/lib
@@ -24,6 +25,7 @@ install:
 	-mkdir -p ${DESTDIR}${ATHETCDIR}
 	-mkdir -p ${DESTDIR}${ATHRBINDIR}
 	-mkdir -p ${DESTDIR}${ATHRETCDIR}
+	-mkdir -p ${DESTDIR}${ATHVARDIR}
 	-mkdir -p ${DESTDIR}${ATHCONFDIR}
 	-mkdir -p ${DESTDIR}${ATHLIBDIR}
 	-mkdir -p ${DESTDIR}${ATHINCDIR}
