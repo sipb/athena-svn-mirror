@@ -14,9 +14,9 @@ The authentication agent program.
 */
 
 /*
- * $Id: ssh-agent.c,v 1.1.1.2 1998-01-24 01:25:32 danw Exp $
+ * $Id: ssh-agent.c,v 1.1.1.3 1999-03-08 17:43:27 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.19  1998/01/02 06:21:42  kivinen
+ * Revision 1.19  1998/01/02  06:21:42  kivinen
  * 	Added -k option. Renamed SSH_AUTHENCATION_SOCKET to
  * 	SSH_AUTH_SOCK.
  *

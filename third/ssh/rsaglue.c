@@ -18,9 +18,9 @@ using the --with-rsaref configure option.
 */
 
 /*
- * $Id: rsaglue.c,v 1.1.1.1 1997-10-17 22:26:07 danw Exp $
+ * $Id: rsaglue.c,v 1.1.1.2 1999-03-08 17:43:18 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.5  1997/03/19 21:29:59  kivinen
+ * Revision 1.5  1997/03/19  21:29:59  kivinen
  * 	Added missing &.
  *
  * Revision 1.4  1997/03/19 21:14:08  kivinen

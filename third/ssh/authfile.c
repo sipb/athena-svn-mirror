@@ -15,9 +15,9 @@ for reading the passphrase from the user.
 */
 
 /*
- * $Id: authfile.c,v 1.1.1.1 1997-10-17 22:26:05 danw Exp $
+ * $Id: authfile.c,v 1.1.1.2 1999-03-08 17:43:17 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.2  1997/03/19 22:18:27  kivinen
+ * Revision 1.2  1997/03/19  22:18:27  kivinen
  * 	Removed check that SSH_CIPHER_NONE is in cipher_mask because
  * 	it is always internally supported, even if not in cipher_mask.
  *

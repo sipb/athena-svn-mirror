@@ -14,9 +14,12 @@ Functions for returning the canonical host name of the remote site.
 */
 
 /*
- * $Id: canohost.c,v 1.1.1.1 1997-10-17 22:26:02 danw Exp $
+ * $Id: canohost.c,v 1.1.1.2 1999-03-08 17:43:08 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.3  1997/03/19 15:59:45  kivinen
+ * Revision 1.4  1998/05/23  20:21:01  kivinen
+ * 	Changed () -> (void).
+ *
+ * Revision 1.3  1997/03/19  15:59:45  kivinen
  * 	Limit hostname to 255 characters.
  *
  * Revision 1.2  1996/10/29 22:35:11  kivinen
@@ -164,7 +167,7 @@ static char *canonical_host_ip = NULL;
    connection.  The host name is cached, so it is efficient to call this 
    several times. */
 
-const char *get_canonical_hostname()
+const char *get_canonical_hostname(void)
 {
   int fromlen, tolen;
   struct sockaddr_in from, to;
@@ -209,7 +212,7 @@ const char *get_canonical_hostname()
 /* Returns the IP-address of the remote host as a string.  The returned
    string need not be freed. */
 
-const char *get_remote_ipaddr()
+const char *get_remote_ipaddr(void)
 {
   struct sockaddr_in from, to;
   int fromlen, tolen, socket;
@@ -287,7 +290,7 @@ int get_peer_port(int sock)
 
 /* Returns the port number of the remote host.  */
 
-int get_remote_port()
+int get_remote_port(void)
 {
   int socket;
   int fromlen, tolen;

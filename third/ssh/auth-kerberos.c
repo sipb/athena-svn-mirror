@@ -9,9 +9,9 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.1.1.2 1998-01-24 01:25:35 danw Exp $
+ * $Id: auth-kerberos.c,v 1.1.1.3 1999-03-08 17:43:32 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.3  1998/01/02 06:13:56  kivinen
+ * Revision 1.3  1998/01/02  06:13:56  kivinen
  * 	Fixed kerberos ticket allocation.
  *
  * Revision 1.2  1997/04/17 03:56:51  kivinen

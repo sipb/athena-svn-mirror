@@ -17,7 +17,7 @@ This works by forking a separate process to do the reading.
 
 /*
  * $Log: not supported by cvs2svn $
- * Revision 1.9  1997/03/26 05:36:21  kivinen
+ * Revision 1.9  1997/03/26  05:36:21  kivinen
  * 	Fixed prototypes.
  *
  * Revision 1.8  1997/03/19 17:53:56  kivinen

@@ -18,9 +18,32 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.1.1.3 1998-05-13 19:11:09 danw Exp $
+ * $Id: sshd.c,v 1.1.1.4 1999-03-08 17:43:02 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.51  1998/05/11 18:51:07  kivinen
+ * Revision 1.55  1998/07/08 14:55:22  tri
+ * 	Fixed version negotiation so, that ssh 2
+ * 	compatibility is even remotedly possible.
+ *
+ * Revision 1.54  1998/07/08 00:48:46  kivinen
+ * 	Added better HPUX TCB auth support. Added SGI proj support.
+ * 	Changed to use match_host in the allow/deny checking. Changed
+ * 	to use PASSWD_PATH. Added checking that if allow/deny group is
+ * 	set then the group must exists.
+ *
+ * Revision 1.53  1998/06/11 00:11:24  kivinen
+ * 	Added ENABLE_SO_LINGER ifdef. Added username to /bin/password
+ * 	commands. Added user@host support.
+ *
+ * Revision 1.52  1998/05/23  20:28:12  kivinen
+ * 	Changed () -> (void). Added HAVE_OSF1_C2_SECURITY include
+ * 	files. Added days_before_{account,password}_expires support.
+ * 	Added chalnecho TIS authentication server response code
+ * 	support. Added call to osf1c2_check_account_and_terminal
+ * 	function. Added SSH_BINDIR to path read from
+ * 	/etc/default/login. Fixed BSDI login_getclass code for BSDI
+ * 	2.1.
+ *
+ * Revision 1.51  1998/05/11  18:51:07  kivinen
  * 	Fixed AIX authstate code.
  *
  * Revision 1.50  1998/04/30 01:58:40  kivinen
@@ -414,6 +437,11 @@ agent connections.
 #ifdef HAVE_ULIMIT_H
 #include <ulimit.h>
 #endif /* HAVE_ULIMIT_H */
+#ifdef HAVE_HPUX_TCB_AUTH
+#include <sys/types.h>
+#include <hpsecurity.h>
+#include <prot.h>
+#endif
 #ifdef HAVE_ETC_SHADOW
 #ifdef HAVE_SHADOW_H
 #include <shadow.h>
@@ -422,6 +450,10 @@ agent connections.
 #define SHADOW "/etc/shadow"
 #endif
 #endif /* HAVE_ETC_SHADOW */
+
+#ifdef HAVE_OSF1_C2_SECURITY
+#include <prot.h>
+#endif /* HAVE_OSF1_C2_SECURITY */
 
 #if defined (__bsdi__) && _BSDI_VERSION >= 199510
 #include <tzfile.h>
@@ -443,6 +475,12 @@ int deny_severity = LOG_WARNING;
 #include <unistd.h>
 #include <sys/category.h>
 extern char *setlimits();
+#endif
+
+#ifdef HAVE_SGI_PROJ_H
+#include <proj.h>
+#include <unistd.h>
+#include <sys/types.h>
 #endif
 
 #ifdef HAVE_TIS
@@ -561,7 +599,12 @@ int received_sighup = 0;
 RSAPublicKey public_key;
 
 /* Remote end username (mallocated) or NULL if not available */
-char *remote_user_name; 
+char *remote_user_name;
+
+/* Days before the password / account expires, or -1 if information not
+   available */
+int days_before_account_expires = -1;
+int days_before_password_expires = -1;
 
 /* Prototypes for various functions defined later in this file. */
 void do_connection(int privileged_port);
@@ -592,7 +635,7 @@ RETSIGTYPE sighup_handler(int sig)
 /* Called from the main program after receiving SIGHUP.  Restarts the 
    server. */
 
-void sighup_restart()
+void sighup_restart(void)
 {
   log_msg("Received SIGHUP; restarting.");
   close(listen_sock);
@@ -694,7 +737,7 @@ int main(int ac, char **av)
   char *comment;
   char *ssh_remote_version_string = NULL;
   FILE *f;
-#ifdef SO_LINGER
+#if defined(SO_LINGER) && defined(ENABLE_SO_LINGER)
   struct linger linger;
 #endif /* SO_LINGER */
   int done;
@@ -973,7 +1016,7 @@ int main(int ac, char **av)
 	 on close. */
       setsockopt(listen_sock, SOL_SOCKET, SO_REUSEADDR, (void *)&on, 
 		 sizeof(on));
-#ifdef SO_LINGER
+#if defined(SO_LINGER) && defined(ENABLE_SO_LINGER)
       linger.l_onoff = 1;
       linger.l_linger = 15;
       setsockopt(listen_sock, SOL_SOCKET, SO_LINGER, (void *)&linger, 
@@ -1155,6 +1198,9 @@ int main(int ac, char **av)
 	  /* Mark that the key has been used (it was "given" to the child). */
 	  key_used = 1;
 
+	  random_acquire_light_environmental_noise(&sensitive_data.
+						   random_state);
+	  
 	  /* Close the new socket (the child is now taking care of it). */
 	  close(newsock);
 	}
@@ -1176,7 +1222,7 @@ int main(int ac, char **av)
      as fast as possible without waiting for anything.  If the connection
      is not a socket, these will do nothing. */
   /* setsockopt(sock_in, SOL_SOCKET, SO_REUSEADDR, (void *)&on, sizeof(on)); */
-#ifdef SO_LINGER
+#if defined(SO_LINGER) && defined(ENABLE_SO_LINGER)
   linger.l_onoff = 1;
   linger.l_linger = 15;
   setsockopt(sock_in, SOL_SOCKET, SO_LINGER, (void *)&linger, sizeof(linger));
@@ -1198,15 +1244,13 @@ int main(int ac, char **av)
     if (options.num_deny_hosts > 0)
       {
 	for (i = 0; i < options.num_deny_hosts; i++)
-	  if (match_pattern(hostname, options.deny_hosts[i]) ||
-	      match_pattern(ipaddr, options.deny_hosts[i]))
+	  if (match_host(hostname, ipaddr, options.deny_hosts[i]))
 	    perm_denied = 1;
       }
     if ((!perm_denied) && options.num_allow_hosts > 0)
       {
 	for (i = 0; i < options.num_allow_hosts; i++)
-	  if (match_pattern(hostname, options.allow_hosts[i]) ||
-	      match_pattern(ipaddr, options.allow_hosts[i]))
+	  if (match_host(hostname, ipaddr, options.allow_hosts[i]))
 	    break;
 	if (i >= options.num_allow_hosts)
 	  perm_denied = 1;
@@ -1228,16 +1272,20 @@ int main(int ac, char **av)
   if (!debug_flag)
     alarm(options.login_grace_time);
 
-  /* Send our protocol version identification. */
-  sprintf(buf, "SSH-%d.%d-%.50s", 
-	  PROTOCOL_MAJOR, PROTOCOL_MINOR, SSH_VERSION);
+  
+  if (ssh_remote_version_string == NULL)
+    {
+      /* Send our protocol version identification. */
+      sprintf(buf, "SSH-%d.%d-%.50s", 
+	      PROTOCOL_MAJOR, PROTOCOL_MINOR, SSH_VERSION);
 #ifdef F_SECURE_COMMERCIAL
 
 #endif /* F_SECURE_COMMERCIAL */
-  strcat(buf, "\n");
-  if (write(sock_out, buf, strlen(buf)) != strlen(buf))
-    fatal_severity(SYSLOG_SEVERITY_INFO,
-		   "Could not write ident string.");
+      strcat(buf, "\n");
+      if (write(sock_out, buf, strlen(buf)) != strlen(buf))
+	fatal_severity(SYSLOG_SEVERITY_INFO,
+		       "Could not write ident string.");
+    }
 
   if (ssh_remote_version_string == NULL)
     {
@@ -1582,6 +1630,7 @@ int login_permitted(char *user, struct passwd *pwd)
 	return 0;
       }
     enduserdb();
+    /* XXX No days_before_password_expires calculation here */
   }
 #endif /* HAVE_USERSEC_H */
 #ifdef HAVE_ETC_SHADOW
@@ -1631,6 +1680,10 @@ int login_permitted(char *user, struct passwd *pwd)
 	    endspent();
 	    return 0;
 	  }
+	if (sp->sp_expire > 0)
+	  {
+	    days_before_account_expires = sp->sp_expire - today;
+	  }
 #endif
 	
 #ifdef HAVE_STRUCT_SPWD_INACT
@@ -1646,7 +1699,7 @@ int login_permitted(char *user, struct passwd *pwd)
 		debug("Account %.100s was inactive for more than %d days.",
 		      user, sp->sp_inact);
 		endspent();
-	      return 0;
+		return 0;
 	      }
 	  }
 #endif
@@ -1658,11 +1711,23 @@ int login_permitted(char *user, struct passwd *pwd)
 	    debug("Account %.100s's password is too old - forced to change.",
 		  user);
 	    if (options.forced_passwd_change)
-	      forced_command = "/bin/passwd";
+	      {
+		forced_command = xmalloc(sizeof(PASSWD_PATH) +
+					 strlen(user) + 1);
+		sprintf(forced_command, "%s %s", PASSWD_PATH, user);
+	      }
 	    else
 	      {
 		endspent();
 		return 0;
+	      }
+	  }
+	else
+	  {
+	    if (sp->sp_max > 0)
+	      {
+		days_before_password_expires =
+		  sp->sp_lstchg + sp->sp_max - today; 
 	      }
 	  }
 	strncpy(passwd, sp->sp_pwdp, sizeof(passwd));
@@ -1686,10 +1751,20 @@ int login_permitted(char *user, struct passwd *pwd)
 	debug("Account %.100s's password is too old - forced to change.",
 	      user);
 	if (options.forced_passwd_change)
-	  forced_command = "/usr/bin/passwd";
+	  {
+	    forced_command = xmalloc(sizeof(PASSWD_PATH) + strlen(user) + 1);
+	    sprintf(forced_command, "%s %s", PASSWD_PATH, user);
+	  }
 	else
 	  {
 	    return 0;
+	  }
+      }
+    else
+      {
+	if (pwd->pw_change)
+	  {
+	    days_before_password_expires = (pwd->pw_change - currtime) / 86400;
 	  }
       }
     
@@ -1701,8 +1776,147 @@ int login_permitted(char *user, struct passwd *pwd)
 	debug("Account %.100s has expired - access denied.", user);
 	return 0;
       }
+    else
+      {
+	if (pwd->pw_expire)
+	  {
+	    days_before_account_expires = (pwd->pw_expire - currtime) / 86400;
+	  }
+      }
   }
 #endif  /* !FreeBSD */
+
+#ifdef HAVE_HPUX_TCB_AUTH
+  {
+    struct pr_passwd *pr;
+    time_t expire, warntime;
+    short  tries;
+    
+    pr = getprpwnam(user);
+    if (pr)
+      {
+	/*
+	 * Check whether lock field exists & is set, if so
+	 * deny the user access
+	 */
+	if ( pr->uflg.fg_lock && pr->ufld.fd_lock )
+	  {
+	    debug("Account %.100s is locked.",user);
+	    packet_send_debug("\n\tAdministrative lock on account");
+	    endprpwent();
+	    return 0;
+	  }
+	/*
+	 * Check whether account lifetime exceeded, if so
+	 * deny the user access
+	 */
+	if ( pr->uflg.fg_acct_expire && time(NULL) > pr->ufld.fd_acct_expire )
+	  {
+	    debug("Account %.100s lifetime exceeded.", user);
+	    packet_send_debug("\n\tAccount lifetime exceeded");
+	    endprpwent();
+	    return 0;
+	  }
+	/*
+	 * Check whether pw_admin_num is set, if so
+	 * force passwd change.
+	 */
+	if ( pr->uflg.fg_pw_admin_num && pr->ufld.fd_pw_admin_num )
+	  {
+	    debug("Account %.100s requires passwd change",user);
+	    if (options.forced_passwd_change)
+	      {
+                forced_command = xmalloc(sizeof(PASSWD_PATH) +
+					 strlen(user) + 1);
+                sprintf(forced_command, "%s %s", PASSWD_PATH, user);
+		options.permit_empty_passwd = 1;
+	      }
+	    else
+	      {
+		endprpwent();
+		return 0;
+	      }
+	  }
+	/*
+        * Check whether passwd aging is enabled for this user
+        * (either explicitly, i.e., flag set and value != 0, or
+	* system wide, sys flag set and sys value != 0).  A user
+	* flag set and value == 0 means passwd aging explicitly
+	* disabled for this user.  If passwd expired, force
+	* passwd change.
+        */
+	if ( pr->uflg.fg_expire )
+	  expire = pr->ufld.fd_expire;
+	else if ( pr->sflg.fg_expire )
+	  expire = pr->sfld.fd_expire;
+	else
+	  expire = 0;
+	if ( expire )
+	  {
+	    days_before_password_expires = expire / 86400;
+	    if ( pr->uflg.fg_pw_expire_warning )
+	      warntime = pr->ufld.fd_pw_expire_warning;
+	    else if ( pr->sflg.fg_pw_expire_warning )
+	      warntime = pr->sfld.fd_pw_expire_warning;
+	    else
+	      warntime = 7*24*60*60; /* default to 7 days warning */
+	    if ( time(NULL) > pr->ufld.fd_schange + expire )
+	      {
+		debug("Account %.100s passwd expired, requires change", user);
+		if (options.forced_passwd_change)
+		  {
+                    forced_command = xmalloc(sizeof(PASSWD_PATH) +
+					     strlen(user) + 1);
+                    sprintf(forced_command, "%s %s", PASSWD_PATH, user);
+		  }
+		else
+		  {
+		    endprpwent();
+		    return 0;
+		  }
+	      }
+	  }
+	/*
+	 * Check for inactivity.  If set to disable inactive accounts,
+	 * then we must deny access if inactive for said period of time.
+	 */
+	if ( pr->uflg.fg_max_llogin )
+	  expire = pr->ufld.fd_max_llogin;
+	else if ( pr->sflg.fg_max_llogin )
+	  expire = pr->sfld.fd_max_llogin;
+	else
+	  expire = 0;
+	if ( expire && pr->ufld.fd_slogin
+	     && time(NULL) > pr->ufld.fd_slogin + expire )
+	  {
+	    debug("Account %.100s locked due to inactivity.", user);
+	    packet_send_debug("\n\tAccount locked due to inactivity");
+	    endprpwent();
+	    return 0;
+	  }
+	/*
+	 * If configured to lock on too many unsuccessful login attempts,
+	 * then check and deny access
+	 */
+	if ( pr->uflg.fg_max_tries )
+	  tries = pr->ufld.fd_max_tries;
+	else if ( pr->sflg.fg_max_tries )
+	  tries = pr->sfld.fd_max_tries;
+	else
+	  tries = 0;
+	if ( tries &&  pr->ufld.fd_nlogins > tries )
+	  {
+	    debug("Account %.100s locked, too many unsuccessful login attempts",
+		  user);
+	    packet_send_debug("\n\tToo many unsuccessful attempts");
+	    endprpwent();
+	    return 0;
+	  }
+      }
+    endprpwent();
+  }
+#endif /* HAVE_HPUX_TCB_AUTH */  
+
   /*
    * Check if account is locked. Check if encrypted password starts
    * with "*LK*".
@@ -1743,8 +1957,11 @@ int login_permitted(char *user, struct passwd *pwd)
   if (options.num_allow_users > 0)
     {
       int i;
+      const char *hostname = get_canonical_hostname();
+      const char *ipaddr = get_remote_ipaddr();
+      
       for (i = 0; i < options.num_allow_users; i++)
-	if (match_pattern(user, options.allow_users[i]))
+	if (match_user(user, hostname, ipaddr, options.allow_users[i]))
 	  break;
       if (i >= options.num_allow_users)
 	{
@@ -1758,8 +1975,11 @@ int login_permitted(char *user, struct passwd *pwd)
   if (options.num_deny_users > 0)
     {
       int i;
+      const char *hostname = get_canonical_hostname();
+      const char *ipaddr = get_remote_ipaddr();
+      
       for (i = 0; i < options.num_deny_users; i++)
-	if (match_pattern(user, options.deny_users[i]))
+	if (match_user(user, hostname, ipaddr, options.deny_users[i]))
 	  {
 	    log_msg("Connection for %.200s denied from %s\n",
 		    user, get_canonical_hostname());
@@ -1783,7 +2003,7 @@ int login_permitted(char *user, struct passwd *pwd)
       for (i = 0; i < options.num_allow_groups; i++)
  	if (match_pattern(group, options.allow_groups[i]))
  	  break;
-      if (i >= options.num_allow_groups)
+      if (grp == NULL || i >= options.num_allow_groups)
  	{
  	  log_msg("Connection for %.200s not allowed from %s\n",
  		  group, get_canonical_hostname());
@@ -1796,7 +2016,7 @@ int login_permitted(char *user, struct passwd *pwd)
     {
       int i;
       for (i = 0; i < options.num_deny_groups; i++)
- 	if (match_pattern(group, options.deny_groups[i]))
+ 	if (grp && match_pattern(group, options.deny_groups[i]))
  	  {
  	    log_msg("Connection for %.200s denied from %s\n",
  		    group, get_canonical_hostname());
@@ -2284,7 +2504,8 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 	    auth_send(buf);
 	    auth_recv(buf, 100); /* More than enough for the challenge */
 	    
-	    if (!strncmp(buf,"challenge ", 10)) {
+	    if (!strncmp(buf, "challenge ", 10) ||
+		!strncmp(buf, "chalnecho ", 10)) {
 	      sprintf(prompt,"Challenge \"%.100s\": ",&buf[10]);
 	      debug("TIS challenge %s", buf);
 	      packet_start(SSH_SMSG_AUTH_TIS_CHALLENGE);
@@ -2452,8 +2673,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
       hp = strtok(cap_hlist, ",");
       while(hp != NULL)
 	{
-	  if (match_pattern(hostname, hp) ||
-	      match_pattern(ipaddr, hp))
+	  if (match_host(hostname, ipaddr, hp))
 	    perm_denied = 1;
 	  hp = strtok(NULL, ",");
 	}
@@ -2465,8 +2685,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
       hp = strtok(cap_hlist, ",");
       while(hp != NULL)
 	{
-          if(match_pattern(hostname, hp) ||
-             match_pattern(ipaddr, hp))
+          if(match_host(hostname, ipaddr, hp))
             perm_denied = 0;
           hp = strtok(NULL,",");
         }
@@ -2818,15 +3037,27 @@ void do_exec_no_pty(const char *command, struct passwd *pw,
 		    const char *auth_data)
 {  
   int pid;
-  
 #ifdef USE_PIPES
   int pin[2], pout[2], perr[2];
+#else /* USE_PIPES */
+  int inout[2], err[2];
+#endif /* USE_PIPES */
+
+#ifdef HAVE_OSF1_C2_SECURITY
+  {
+    const char *str;
+    if (str = osf1c2_check_account_and_terminal(pw->pw_name, NULL))
+      {
+	packet_disconnect(str);
+      }
+  }
+#endif /* HAVE_OSF1_C2_SECURITY */
+#ifdef USE_PIPES
   /* Allocate pipes for communicating with the program. */
   if (pipe(pin) < 0 || pipe(pout) < 0 || pipe(perr) < 0)
     packet_disconnect("Could not create pipes: %.100s",
 		      strerror(errno));
 #else /* USE_PIPES */
-  int inout[2], err[2];
   /* Uses socket pairs to communicate with the program. */
   if (socketpair(AF_UNIX, SOCK_STREAM, 0, inout) < 0 ||
       socketpair(AF_UNIX, SOCK_STREAM, 0, err) < 0)
@@ -2972,6 +3203,16 @@ void do_exec_pty(const char *command, int ptyfd, int ttyfd,
 #if defined (__bsdi__) && _BSDI_VERSION >= 199510 
   struct timeval tp;
 #endif /*  __bsdi__ && _BSDI_VERSION >= 199510 */
+
+#ifdef HAVE_OSF1_C2_SECURITY
+  {
+    const char *str;
+    if (str = osf1c2_check_account_and_terminal(pw->pw_name, ttyname))
+      {
+	packet_disconnect(str);
+      }
+  }
+#endif /* HAVE_OSF1_C2_SECURITY */
 
   /* We no longer need the child running on user's privileges. */
   userfile_uninit();
@@ -3123,21 +3364,25 @@ void do_exec_pty(const char *command, int ptyfd, int ttyfd,
 	  if (pw->pw_change || pw->pw_expire)
 	    (void)gettimeofday(&tp, (struct timezone *)NULL);
 	  if (pw->pw_change)
-	    if (tp.tv_sec >= pw->pw_change) {
-	      fprintf(stderr,"Sorry -- your password has expired.\n");
-	      exit(254);
-	    } else if (pw->pw_change - tp.tv_sec <
-		       2 * DAYSPERWEEK * SECSPERDAY)
-	      fprintf(stderr,"Warning: your password expires on %s",
-		      ctime(&pw->pw_change));
+	    {
+	      if (tp.tv_sec >= pw->pw_change)
+		{
+		  fprintf(stderr,"Sorry -- your password has expired.\n");
+		  exit(254);
+		}
+	      days_before_password_expires = (pw->pw_change - tp.tv_sec) /
+		86400;
+	    }
 	  if (pw->pw_expire)
-	    if (tp.tv_sec >= pw->pw_expire) {
-	      fprintf(stderr,"Sorry -- your account has expired.\n");
-	      exit(254);
-	    } else if (pw->pw_expire - tp.tv_sec <
-		       2 * DAYSPERWEEK * SECSPERDAY)
-	      fprintf(stderr,"Warning: your account expires on %s",
-		      ctime(&pw->pw_expire));
+	    {
+	      if (tp.tv_sec >= pw->pw_expire)
+		{
+		  fprintf(stderr,"Sorry -- your account has expired.\n");
+		  exit(254);
+		}
+	      days_before_account_expires = (pw->pw_expire - tp.tv_sec) /
+		86400;
+	    }
 #endif /* __bsdi__ & _BSDI_VERSION >= 199510   */
 	}
 
@@ -3328,7 +3573,13 @@ void read_etc_default_login(char ***env, unsigned int *envsize,
   else
     def = child_get_env(defenv, "PATH");
   if (def != NULL)
-    child_set_env(env, envsize, "PATH", def);
+    {
+      char *newpath;
+      newpath = xmalloc(strlen(def) + sizeof(SSH_BINDIR) + 1);
+      sprintf(newpath, "%s:%s", def, SSH_BINDIR);
+      child_set_env(env, envsize, "PATH", newpath);
+      xfree(newpath);
+    }
   else
     child_set_env(env, envsize, "PATH", DEFAULT_PATH ":" SSH_BINDIR);
 
@@ -3409,6 +3660,53 @@ int ignore_nologin(char *username)
 }
 #endif /* NOLOGIN_ALLOW */
 
+#ifdef HAVE_SGI_PROJ_H
+/*
+ On a SGI, set the account number for the current process to the user's 
+ default account. If this is not done, the process will have an account 
+ of zero and accounting will not operate correctly.
+
+ Eivind Gjelseth
+ Para//ab, High Performance Computing Centre
+ eivind@ii.uib.no
+
+*/
+int sgi_project_setup(char *username)
+{
+  int err;
+  int naccts;
+  projid_t pbuf;
+
+  /* Find default project for a particular user */
+  if ((naccts = getprojuser(username, &pbuf, 1)) < 0)
+    {
+      debug("System call getprojuser failed");
+      return(-1);
+    }
+
+  /* Create a new array session and moves the current
+     process from its original array session to the new one. */
+  if (newarraysess() < 0)
+    {
+      debug("System call newarraysess failure");
+      return(-1);
+    }
+
+  /* Change the project ID for the array session. */
+  /* Must be changed after the new array session has been created. */
+  if (naccts)
+    err = setprid(pbuf.proj_id);
+
+  if (err != 0)
+    {
+      debug("System call setprid failure");
+      return(-1);
+    }
+
+  return(0);
+}
+#endif /* HAVE_SGI_PROJ_H */
+
 /* Performs common processing for the child, such as setting up the 
    environment, closing extra file descriptors, setting the user and group 
    ids, and executing the command or shell. */
@@ -3439,7 +3737,7 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   lc = login_getclass(pw->pw_class);
   auth_checknologin(lc);
 #else /* !HAVE_LOGIN_CAP_H */
-#if defined (__bsdi__) && _BSDI_VERSION >= 199510
+#if defined (__bsdi__) && _BSDI_VERSION > 199510
   login_cap_t *lc = 0;
   
   if ((lc = login_getclass(pw->pw_class)) == NULL)
@@ -3448,6 +3746,18 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	      pw->pw_class, pw->pw_name);
       lc = login_getclass("default") ; 
     }
+#else /* __bsdi__  && _BSDI_VERSION >= 199510  */
+#if defined (__bsdi__) && _BSDI_VERSION == 199510
+  login_cap_t *lc = 0;
+ 
+  if ((lc = login_getclass(pw)) == NULL)
+    {
+      log_msg("User class %.100s for %.100s not found, assuming default",
+              pw->pw_class, pw->pw_name);
+      pw->pw_class = "default";
+      lc = login_getclass(pw) ;
+    }
+#endif /* defined (__bsdi__) && _BSDI_VERSION == 199510 */
 #endif /* __bsdi__  && _BSDI_VERSION >= 199510  */
 
   /* Check /etc/nologin. */
@@ -3623,7 +3933,7 @@ void do_child(const char *command, struct passwd *pw, const char *term,
       xfree(s);
 
 #else /* !HAVE_LOGIN_CAP_H */
-#if	(_BSDI_VERSION >= 199510)
+#if	(_BSDI_VERSION > 199510)
       if (setusercontext(lc, pw, user_uid, LOGIN_SETALL) < 0)
 	{
 	  perror("setusercontext");
@@ -3634,7 +3944,7 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	  perror("approval");
 	  exit(1);
 	}
-#else /* (_BSDI_VERSION >= 199510) */
+#else /* (_BSDI_VERSION > 199510) */
       /* Set uid, gid, and groups. */
       if (getuid() == UID_ROOT || geteuid() == UID_ROOT)
 	{ 
@@ -3673,7 +3983,12 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	    fatal("Failure performing Cray job setup for user %d.",
 		  (int)user_uid);
 #endif
-	  
+
+#ifdef HAVE_SGI_PROJ_H
+  if (sgi_project_setup(user_name) < 0)
+    fatal("Failure performing SGI project setup for user %d.",(int)user_uid);
+#endif
+
 #ifdef HAVE_SETLUID
 	  /* Set login uid, if we have setluid(). */
 	  if (setluid(user_uid) < 0)
@@ -3687,7 +4002,7 @@ void do_child(const char *command, struct passwd *pw, const char *term,
       
       if (getuid() != user_uid || geteuid() != user_uid)
 	fatal("Failed to set uids to %d.", (int)user_uid);
-#endif /* (_BSDI_VERSION >= 199510) */
+#endif /* (_BSDI_VERSION > 199510) */
 #endif /* HAVE_LOGIN_CAP_H */
     }
   
@@ -4018,6 +4333,20 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 		  else
 		    printf("You have new mail.\n");
 		}
+	    }
+	  if (days_before_account_expires >= 0 &&
+	      days_before_account_expires <
+	      options.account_expire_warning_days)
+	    {
+	      printf("\n\tWARNING: Your account expires in %d days\n\n",
+		     days_before_account_expires);
+	    }
+	  if (days_before_password_expires >= 0 &&
+	      days_before_password_expires <
+	      options.password_expire_warning_days)
+	    {
+	      printf("\n\tWARNING: Your password expires in %d days\n\n",
+		     days_before_password_expires);
 	    }
 	  
 	  /* Start the shell.  Set initial character to '-'. */

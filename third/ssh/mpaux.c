@@ -15,9 +15,9 @@ precision integers.
 */
 
 /*
- * $Id: mpaux.c,v 1.1.1.1 1997-10-17 22:26:08 danw Exp $
+ * $Id: mpaux.c,v 1.1.1.2 1999-03-08 17:43:20 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.2  1996/04/26 00:26:48  ylo
+ * Revision 1.2  1996/04/26  00:26:48  ylo
  * 	Fixed problems with 16-bit Windows.
  *
  * Revision 1.1.1.1  1996/02/18 21:38:11  ylo

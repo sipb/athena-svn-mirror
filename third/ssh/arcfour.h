@@ -8,9 +8,9 @@ of RSA Data Security)
 */
 
 /*
- * $Id: arcfour.h,v 1.1.1.1 1997-10-17 22:26:14 danw Exp $
+ * $Id: arcfour.h,v 1.1.1.2 1999-03-08 17:43:34 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  1996/02/18 21:38:11  ylo
+ * Revision 1.1.1.1  1996/02/18  21:38:11  ylo
  * 	Imported ssh-1.2.13.
  *
  * Revision 1.2  1995/07/13  01:30:25  ylo

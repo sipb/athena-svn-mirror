@@ -20,9 +20,9 @@ following patents: PCT/CH91/00117, EP 0 482 154 B1, US Pat. 5,214,703.
 */
 
 /*
- * $Id: idea.c,v 1.1.1.1 1997-10-17 22:26:02 danw Exp $
+ * $Id: idea.c,v 1.1.1.2 1999-03-08 17:43:10 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  1996/02/18 21:38:11  ylo
+ * Revision 1.1.1.1  1996/02/18  21:38:11  ylo
  * 	Imported ssh-1.2.13.
  *
  * Revision 1.3  1995/09/13  11:55:48  ylo

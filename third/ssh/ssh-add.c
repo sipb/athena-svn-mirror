@@ -14,9 +14,12 @@ Adds an identity to the authentication server, or removes an identity.
 */
 
 /*
- * $Id: ssh-add.c,v 1.1.1.1 1997-10-17 22:26:13 danw Exp $
+ * $Id: ssh-add.c,v 1.1.1.2 1999-03-08 17:43:28 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.5  1997/04/17 04:18:19  kivinen
+ * Revision 1.6  1998/05/23  20:24:29  kivinen
+ * 	Changed () -> (void).
+ *
+ * Revision 1.5  1997/04/17  04:18:19  kivinen
  * 	Added -p (pipe) option support.
  *
  * Revision 1.4  1997/04/05 21:54:21  kivinen
@@ -104,7 +107,7 @@ void delete_file(const char *filename)
   ssh_close_authentication_connection(ac);
 }
 
-void delete_all()
+void delete_all(void)
 {
   AuthenticationConnection *ac;
   
@@ -237,7 +240,7 @@ void add_file(const char *filename)
   ssh_close_authentication_connection(ac);
 }
 
-void list_identities()
+void list_identities(void)
 {
   AuthenticationConnection *ac;
   MP_INT e, n;

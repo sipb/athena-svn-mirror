@@ -11,9 +11,26 @@ and ssh has the necessary privileges.)
 */
 
 /*
- * $Id: scp.c,v 1.1.1.2 1998-05-13 19:11:30 danw Exp $
+ * $Id: scp.c,v 1.1.1.3 1999-03-08 17:43:28 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.9  1998/03/30 22:23:06  kivinen
+ * Revision 1.14  1998/07/08 01:14:25  kivinen
+ * 	Changed scp to run ssh1 instead of ssh.
+ *
+ * Revision 1.13  1998/07/08 00:49:40  kivinen
+ * 	Added all kind of possible (and impossible) ways to
+ * 	disable/enable scp statistics. Added -L option.
+ *
+ * Revision 1.12  1998/06/12 08:04:20  kivinen
+ * 	Added disablation of statistics if stdout is not a tty or -B
+ * 	option is given.
+ *
+ * Revision 1.11  1998/06/11 00:10:25  kivinen
+ * 	Added -q option. Added statistics output.
+ *
+ * Revision 1.10  1998/05/23  20:24:07  kivinen
+ * 	Changed () -> (void).
+ *
+ * Revision 1.9  1998/03/30  22:23:06  kivinen
  * 	Changed size variable to be off_t instead of int when reading
  * 	file. This should fix the 2GB file size limit if your system
  * 	supports > 2GB files.
@@ -105,7 +122,7 @@ and ssh has the necessary privileges.)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.2 1998-05-13 19:11:30 danw Exp $
+ *	$Id: scp.c,v 1.1.1.3 1999-03-08 17:43:28 danw Exp $
  */
 
 #ifndef lint
@@ -150,12 +167,30 @@ struct utimbuf
 /* This is set to non-zero to enable verbose mode. */
 int verbose = 0;
 
+/* This is set to non-zero to enable statistics mode. */
+#ifdef SCP_STATISTICS_ENABLED
+int statistics = 1;
+#else /* SCP_STATISTICS_ENABLED */
+int statistics = 0;
+#endif /* SCP_STATISTICS_ENABLED */
+
+/* This is set to non-zero to enable printing statistics for each file */
+#ifdef SCP_ALL_STATISTICS_ENABLED
+int all_statistics = 1;
+#else /* SCP_ALL_STATISTICS_ENABLED */
+int all_statistics = 0;
+#endif /* SCP_ALL_STATISTICS_ENABLED */
+
 /* This is set to non-zero if compression is desired. */
 int compress = 0;
 
 /* This is set to non-zero if running in batch mode (that is, password
    and passphrase queries are not allowed). */
 int batchmode = 0;
+
+/* This is to call ssh with argument -P (for using non-privileged
+   ports to get through some firewalls.) */
+int use_privileged_port = 1;
 
 /* This is set to the cipher type string if given on the command line. */
 char *cipher = NULL;
@@ -168,6 +203,21 @@ char *identity = NULL;
 char *port = NULL;
 
 char *ssh_program = SSH_PROGRAM;
+
+#ifdef WITH_SCP_STATS
+
+#define SOME_STATS_FILE stderr
+
+#define ssh_max(a,b) (((a) > (b)) ? (a) : (b))
+
+unsigned long statbytes = 0;
+time_t stat_starttime = 0;
+time_t stat_lasttime = 0;
+double ratebs = 0.0;
+
+void stats_fixlen(int bytes);
+char *stat_eta(int secs);
+#endif /* WITH_SCP_STATS */
 
 /* Ssh options */
 char **ssh_options = NULL;
@@ -231,6 +281,8 @@ int do_cmd(char *host, char *remuser, char *cmd, int *fdin, int *fdout)
 	args[i++] = "-v";
       if (compress)
 	args[i++] = "-C";
+      if (!use_privileged_port)
+	args[i++] = "-P";
       if (batchmode)
 	args[i++] = "-oBatchMode yes";
       if (cipher != NULL)
@@ -260,8 +312,8 @@ int do_cmd(char *host, char *remuser, char *cmd, int *fdin, int *fdout)
       execvp(ssh_program, args);
       if (errno == ENOENT)
 	{
-	  args[0] = "ssh";
-	  execvp("ssh", args);
+	  args[0] = "ssh1";
+	  execvp("ssh1", args);
 	}
       perror(ssh_program);
       exit(1);
@@ -348,11 +400,43 @@ main(argc, argv)
 	      }
 	  }
 
+	if (getenv("SSH_SCP_STATS") != NULL)
+	  {
+	    statistics = 1;
+	  }
+	if (getenv("SSH_ALL_SCP_STATS") != NULL)
+	  {
+	    all_statistics = 1;
+	  }
+	if (getenv("SSH_NO_SCP_STATS") != NULL)
+	  {
+	    statistics = 0;
+	  }
+	if (getenv("SSH_NO_ALL_SCP_STATS") != NULL)
+	  {
+	    all_statistics = 0;
+	  }
+	
+	if (!isatty(fileno(stdout)))
+	    statistics = 0;
+
 	fflag = tflag = 0;
-	while ((ch = getopt(argc, argv, "dfprtvBCc:i:P:o:S:")) != EOF)
+	while ((ch = getopt(argc, argv, "aAqQdfprtvBCLc:i:P:o:S:")) != EOF)
 		switch(ch) {			/* User-visible flags. */
 		case 'S':
 	       		ssh_program = optarg;
+			break;
+		case 'a':
+			all_statistics = 1;
+			break;
+		case 'A':
+			all_statistics = 0;
+			break;
+		case 'q':
+			statistics = 0;
+			break;
+		case 'Q':
+			statistics = 1;
 			break;
 		case 'p':
 			pflag = 1;
@@ -406,7 +490,14 @@ main(argc, argv)
 		  	break;
 		case 'B':
 		  	batchmode = 1;
+			statistics = 0;
 		  	break;
+               case 'L':
+                 	/* -L ("large local ports" or something) means
+			   ssh -P. Since both -p and -P are already used
+			   such a non-intuitive letter had to be used. */
+		 	use_privileged_port = 0;
+		 	break;
 		case 'C':
 		  	compress = 1;
 		  	break;
@@ -447,13 +538,28 @@ main(argc, argv)
 
 	(void)signal(SIGPIPE, lostconn);
 
-	if ((targ = colon(argv[argc - 1])))	/* Dest is remote host. */
-		toremote(targ, argc, argv);
-	else {
-		tolocal(argc, argv);		/* Dest is local host. */
-		if (targetshouldbedirectory)
-			verifydir(argv[argc - 1]);
-	}
+	if ((targ = colon(argv[argc - 1]))) 	/* Dest is remote host. */
+	  {
+	    toremote(targ, argc, argv);
+#ifdef WITH_SCP_STATS
+	    if (!iamremote && statistics)
+	      {
+		fprintf(SOME_STATS_FILE,"\n");
+	      }
+#endif /* WITH_SCP_STATS */
+	  }
+	else
+	  {
+	    tolocal(argc, argv);		/* Dest is local host. */
+#ifdef WITH_SCP_STATS
+	    if (!iamremote && statistics)
+	      {
+		fprintf(SOME_STATS_FILE,"\n");
+	      }
+#endif /* WITH_SCP_STATS */
+	    if (targetshouldbedirectory)
+	      verifydir(argv[argc - 1]);
+	  }
 	exit(errs != 0);
 }
 
@@ -532,7 +638,7 @@ toremote(targ, argc, argv)
 				    thost, targ);
 		        if (verbose)
 			  fprintf(stderr, "Executing: %s\n", bp);
-			(void)system(bp);
+			if (system(bp)) errs++;
 			(void)xfree(bp);
 		} else {			/* local to remote */
 			if (remin == -1) {
@@ -670,6 +776,14 @@ syserr:			run_err("%s: %s", name, strerror(errno));
 next:			(void)close(fd);
 			continue;
 		}
+#ifdef WITH_SCP_STATS
+		if (!iamremote && statistics)
+		  {
+		    statbytes = 0;
+		    ratebs = 0.0;
+		    stat_starttime = time(NULL);
+		  }
+#endif /* WITH_SCP_STATS */
 
 		/* Keep writing after an error so that we stay sync'd up. */
 		for (haderr = i = 0; i < stb.st_size; i += bp->cnt) {
@@ -682,11 +796,67 @@ next:			(void)close(fd);
 					haderr = result >= 0 ? EIO : errno;
 			}
 			if (haderr)
-				(void)write(remout, bp->buf, amt);
+			  {
+			    (void)write(remout, bp->buf, amt);
+#ifdef WITH_SCP_STATS
+			    if (!iamremote && statistics)
+			      {
+				if ((time(NULL) - stat_lasttime) > 0)
+				  {
+				    int bwritten;
+				    bwritten = fprintf(SOME_STATS_FILE,
+						       "\r%s : ERROR..continuing to end of file anyway", last);
+				    stats_fixlen(bwritten);
+				    fflush(SOME_STATS_FILE);
+				    stat_lasttime = time(NULL);
+				  }
+			      }
+#endif /* WITH_SCP_STATS */
+			  }
 			else {
 				result = write(remout, bp->buf, amt);
 				if (result != amt)
 					haderr = result >= 0 ? EIO : errno;
+#ifdef WITH_SCP_STATS
+				if (!iamremote && statistics)
+				  {
+				    statbytes += result;
+				    /* At least one second delay between
+				       outputs, or if finished */
+				    if (time(NULL) - stat_lasttime > 0 ||
+					(result + i) == stb.st_size)
+				      {
+					int bwritten;
+					
+					if (time(NULL) == stat_starttime)
+					  {
+					    stat_starttime -= 1;
+					  }
+					ratebs = ssh_max(1.0,
+							 (double) statbytes /
+							 (time(NULL) -
+							  stat_starttime));
+					bwritten =
+					  fprintf(SOME_STATS_FILE,
+						  "\r%-25.25s | %10ld KB | %5.1f kB/s | ETA: %s | %3d%%",
+						  last,
+						  statbytes / 1024,
+						  ratebs / 1024,
+						  stat_eta((int) ((stb.st_size
+								   - statbytes)
+								  / ratebs)),
+						  (int) (100.0 *
+							 (double) statbytes /
+							 stb.st_size));
+					if (all_statistics && (result + i) ==
+					    stb.st_size)
+					  bwritten += fprintf(SOME_STATS_FILE,
+							      "\n");
+					stats_fixlen(bwritten);
+					stat_lasttime = time(NULL);
+				      }
+				  }
+#endif /* WITH_SCP_STATS */
 			}
 		}
 		if (close(fd) < 0 && !haderr)
@@ -770,6 +940,9 @@ sink(argc, argv)
 	char ch, *cp, *np, *targ, *why, *vect[1], buf[2048];
   	struct utimbuf ut;
   	int dummy_usec;
+#ifdef WITH_SCP_STATS
+        char *statslast;
+#endif /* WITH_SCP_STATS */
 
 #define	SCREWUP(str)	{ why = str; goto screwup; }
 
@@ -927,6 +1100,19 @@ bad:			run_err("%s: %s", np, strerror(errno));
 		}
 		cp = bp->buf;
 		wrerr = NO;
+#ifdef WITH_SCP_STATS
+		if (!iamremote && statistics)
+		  {
+		    statbytes = 0;
+		    ratebs = 0.0;
+		    stat_starttime = time(NULL);
+
+		    if ((statslast = strrchr(np, '/')) == NULL)
+		      statslast = np;
+		    else
+		      ++statslast;
+		  }
+#endif /* WITH_SCP_STATS */
 		for (count = i = 0; i < size; i += 4096) {
 			amt = 4096;
 			if (i + amt > size)
@@ -939,6 +1125,39 @@ bad:			run_err("%s: %s", np, strerror(errno));
 					    "dropped connection");
 					exit(1);
 				}
+#ifdef WITH_SCP_STATS
+				if (!iamremote && statistics)
+				  {
+				    int bwritten;
+				    statbytes += j;
+				    if (time(NULL) - stat_lasttime > 0 ||
+					(j + i) == size) {
+				      if (time(NULL) == stat_starttime)
+					{
+					  stat_starttime -= 1;
+					}
+				      ratebs = ssh_max(1.0,
+						       (double)
+						       statbytes /
+						       (time(NULL) -
+							stat_starttime));
+				      bwritten =
+					fprintf(SOME_STATS_FILE,
+						"\r%-25.25s | %10ld KB | %5.1f kB/s | ETA: %s | %3d%%",
+						statslast,
+						statbytes / 1024,
+						ratebs / 1024,
+						stat_eta((int)
+							 ((size - statbytes)
+							  / ratebs)),
+						100 * statbytes / size);
+				      if (all_statistics && (i + j) == size)
+					bwritten += fprintf(SOME_STATS_FILE, "\n");
+				      stats_fixlen(bwritten);
+				      stat_lasttime = time(NULL);
+				    }
+				  }
+#endif /* WITH_SCP_STATS */
 				amt -= j;
 				cp += j;
 			} while (amt > 0);
@@ -1012,7 +1231,7 @@ screwup:
 }
 
 int
-response()
+response(void)
 {
 	char ch, *cp, resp, rbuf[2048];
 
@@ -1045,10 +1264,10 @@ response()
 }
 
 void
-usage()
+usage(void)
 {
 	(void)fprintf(stderr,
-	    "usage: scp [-p] f1 f2; or: scp [-pr] f1 ... fn directory\n");
+	    "usage: scp [-qQaAprvBCL] [-S path-to-ssh] [-o ssh-options] [-P port] [-c cipher] [-i identity] f1 f2; or: scp [options] f1 ... fn directory\n");
 	exit(1);
 }
 
@@ -1111,7 +1330,7 @@ run_err(const char *fmt, ...)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.2 1998-05-13 19:11:30 danw Exp $
+ *	$Id: scp.c,v 1.1.1.3 1999-03-08 17:43:28 danw Exp $
  */
 
 char *
@@ -1206,3 +1425,33 @@ lostconn(signo)
 		fprintf(stderr, "lost connection\n");
 	exit(1);
 }
+
+#ifdef WITH_SCP_STATS
+void stats_fixlen(int bwritten)
+{
+  char rest[80];
+  int i = 0;
+  
+  while (bwritten++ < 77)
+    {
+      rest[i++]=' ';
+    }
+  rest[i]='\0';
+  fputs(rest, SOME_STATS_FILE);
+  fflush(SOME_STATS_FILE);
+}
+
+char *stat_eta(int secs)
+{
+  static char stat_result[9];
+  int hours, mins;
+
+   hours = secs / 3600;
+   secs %= 3600;
+   mins = secs / 60;
+   secs %= 60;
+
+   sprintf(stat_result, "%02d:%02d:%02d", hours, mins, secs);
+   return(stat_result);
+}
+#endif /* WITH_SCP_STATS */

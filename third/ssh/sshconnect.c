@@ -15,9 +15,22 @@ login (authentication) dialog.
 */
 
 /*
- * $Id: sshconnect.c,v 1.1.1.3 1998-05-13 19:11:27 danw Exp $
+ * $Id: sshconnect.c,v 1.1.1.4 1999-03-08 17:43:24 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.26  1998/04/30 01:56:01  kivinen
+ * Revision 1.30  1998/07/08 14:55:18  tri
+ * 	Fixed version negotiation so, that ssh 2
+ * 	compatibility is even remotedly possible.
+ *
+ * Revision 1.29  1998/07/08 00:47:33  kivinen
+ * 	Moved some debug messages around.
+ *
+ * Revision 1.28  1998/06/11 00:10:50  kivinen
+ * 	Added ENABLE_SO_LINGER ifdef.
+ *
+ * Revision 1.27  1998/05/23  20:25:58  kivinen
+ * 	Changed () -> (void).
+ *
+ * Revision 1.26  1998/04/30  01:56:01  kivinen
  * 	Added PasswordPromptLogin and PasswordPromptHost option code.
  * 	Added check that proxy command isn't empty.
  *
@@ -383,7 +396,7 @@ int ssh_connect(const char *host, int port, int connection_attempts,
   struct servent *sp;
   struct hostent *hp;
   struct sockaddr_in hostaddr;
-#ifdef SO_LINGER
+#if defined(SO_LINGER) && defined(ENABLE_SO_LINGER)
   struct linger linger;
 #endif /* SO_LINGER */
 
@@ -433,14 +446,14 @@ int ssh_connect(const char *host, int port, int connection_attempts,
 #endif /* BROKEN_INET_ADDR */
       if ((hostaddr.sin_addr.s_addr & 0xffffffff) != 0xffffffff)
 	{ 
-	  /* Valid numeric IP address */
-	  debug("Connecting to %.100s port %d.", 
-		inet_ntoa(hostaddr.sin_addr), port);
-      
 	  /* Create a socket. */
 	  sock = ssh_create_socket(original_real_uid, 
 				   !anonymous && geteuid() == UID_ROOT);
       
+	  /* Valid numeric IP address */
+	  debug("Connecting to %.100s port %d.", 
+		inet_ntoa(hostaddr.sin_addr), port);
+
 	  /* Connect to the host. */
 #if defined(SOCKS) && !defined(HAVE_SOCKS_H)
 	  if (Rconnect(sock, (struct sockaddr *)&hostaddr, sizeof(hostaddr))
@@ -560,7 +573,7 @@ int ssh_connect(const char *host, int port, int connection_attempts,
 #if defined(TCP_NODELAY) && defined(ENABLE_TCP_NODELAY)
   setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (void *)&on, sizeof(on));
 #endif /* TCP_NODELAY */
-#ifdef SO_LINGER
+#if defined(SO_LINGER) && defined(ENABLE_SO_LINGER)
   linger.l_onoff = 1;
   linger.l_linger = 15;
   setsockopt(sock, SOL_SOCKET, SO_LINGER, (void *)&linger, sizeof(linger));
@@ -575,7 +588,7 @@ int ssh_connect(const char *host, int port, int connection_attempts,
 /* Checks if the user has an authentication agent, and if so, tries to
    authenticate using the agent. */
 
-int try_agent_authentication()
+int try_agent_authentication(void)
 {
   int status, type, bits;
   MP_INT e, n, challenge;
@@ -911,7 +924,7 @@ int try_rhosts_rsa_authentication(const char *local_user,
 }
 
 #ifdef KERBEROS
-int try_kerberos_authentication()
+int try_kerberos_authentication(void)
 {
 #ifdef KRB5
   char *remotehost;
@@ -1067,7 +1080,7 @@ cleanup:
 
 #ifdef KERBEROS_TGT_PASSING
 /* Forward our local Kerberos tgt to the server. */
-int send_kerberos_tgt()
+int send_kerberos_tgt(void)
 {
 #ifdef KRB5
   char *remotehost;
@@ -1168,7 +1181,7 @@ int send_kerberos_tgt()
 /* Waits for the server identification string, and sends our own identification
    string. */
 
-void ssh_exchange_identification()
+void ssh_exchange_identification(void)
 {
   char buf[256], remote_version[256]; /* must be same size! */
   int remote_major, remote_minor, i;
@@ -1190,7 +1203,7 @@ void ssh_exchange_identification()
 	{
 	  buf[i] = '\n';
 	  buf[i + 1] = 0;
-	  break;
+	  i++;
 	}
       if (buf[i] == '\n')
 	{

@@ -14,9 +14,9 @@ RSA key generation, encryption and decryption.
 */
 
 /*
- * $Id: rsa.h,v 1.1.1.1 1997-10-17 22:26:15 danw Exp $
+ * $Id: rsa.h,v 1.1.1.2 1999-03-08 17:43:40 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.3  1997/03/26 07:11:51  kivinen
+ * Revision 1.3  1997/03/26  07:11:51  kivinen
  * 	Fixed prototypes.
  *
  * Revision 1.2  1996/02/19 16:09:38  huima

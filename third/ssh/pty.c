@@ -14,9 +14,9 @@ Allocating a pseudo-terminal, and making it the controlling tty.
 */
 
 /*
- * $Id: pty.c,v 1.1.1.1 1997-10-17 22:26:02 danw Exp $
+ * $Id: pty.c,v 1.1.1.2 1999-03-08 17:43:05 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.11  1997/03/26 07:09:31  kivinen
+ * Revision 1.11  1997/03/26  07:09:31  kivinen
  * 	Changed uid 0 to UID_ROOT.
  *
  * Revision 1.10  1997/03/25 05:39:57  kivinen

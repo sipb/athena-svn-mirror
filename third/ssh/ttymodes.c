@@ -17,9 +17,9 @@ suitable code.
 */
 
 /*
- * $Id: ttymodes.c,v 1.1.1.2 1998-05-13 19:11:19 danw Exp $
+ * $Id: ttymodes.c,v 1.1.1.3 1999-03-08 17:43:14 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.4  1998/04/17 00:42:50  kivinen
+ * Revision 1.4  1998/04/17  00:42:50  kivinen
  * 	Fixed previous fix.
  *
  * Revision 1.3  1998/03/27 17:05:47  kivinen

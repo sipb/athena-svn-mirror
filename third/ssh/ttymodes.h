@@ -13,9 +13,9 @@ Created: Tue Mar 21 15:42:09 1995 ylo
 */
 
 /*
- * $Id: ttymodes.h,v 1.1.1.1 1997-10-17 22:26:14 danw Exp $
+ * $Id: ttymodes.h,v 1.1.1.2 1999-03-08 17:43:36 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.2  1996/11/03 15:57:14  ttsalo
+ * Revision 1.2  1996/11/03  15:57:14  ttsalo
  *       tc_statusc -> ts_statusc (line 86)
  *
  * Revision 1.1.1.1  1996/02/18 21:38:10  ylo
