@@ -6,12 +6,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: syslog.c,v 1.19 1999-06-28 22:52:43 ghudson Exp $
+ *	$Id: syslog.c,v 1.20 2000-10-04 15:14:42 jweiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: syslog.c,v 1.19 1999-06-28 22:52:43 ghudson Exp $";
+static char rcsid[] ="$Id: syslog.c,v 1.20 2000-10-04 15:14:42 jweiss Exp $";
 #endif
 #endif
 
@@ -123,7 +123,7 @@ void log_error (const char *fmt, ...)
   va_end(ap);
 
 #ifdef HAVE_SYSLOG
-  syslog(LOG_ERR, buf);
+  syslog(LOG_ERR, "%s", buf);
 #else /* not HAVE_SYSLOG */
   log_to_file(error_log, buf);
 #endif /* not HAVE_SYSLOG */
@@ -157,7 +157,7 @@ void log_zephyr_error (const char *fmt, ...)
   va_end(ap);
 
 #ifdef HAVE_SYSLOG
-  syslog(LOG_ERR, buf);
+  syslog(LOG_ERR, "%s", buf);
 #else /* not HAVE_SYSLOG */
   log_to_file(error_log, buf);
 #endif /* not HAVE_SYSLOG */
@@ -178,7 +178,7 @@ void log_status (const char *fmt, ...)
   va_end(ap);
 
 #ifdef HAVE_SYSLOG
-  syslog(LOG_INFO, buf);
+  syslog(LOG_INFO, "%s", buf);
 #else /* not HAVE_SYSLOG */
   log_to_file(status_log, buf);
 #endif /* not HAVE_SYSLOG */
@@ -200,7 +200,7 @@ void log_admin (const char *fmt, ...)
   va_end(ap);
 
 #ifdef HAVE_SYSLOG
-  syslog(LOG_NOTICE, buf);
+  syslog(LOG_NOTICE, "%s", buf);
 #else /* not HAVE_SYSLOG */
   log_to_file(admin_log, buf);
 #endif /* not HAVE_SYSLOG */
@@ -221,6 +221,6 @@ void log_debug (const char *fmt, ...)
   my_vsnprintf(buf, MSG_SIZE, fmt, ap);
   va_end(ap);
 
-  syslog(LOG_DEBUG, buf);
+  syslog(LOG_DEBUG, "%s", buf);
 #endif /* not HAVE_SYSLOG */
 }
