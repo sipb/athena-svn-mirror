@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.1 1996-04-22 01:23:13 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.2 1996-06-25 20:56:26 cfields Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v $
 #	$Author: cfields $
 #
@@ -18,7 +18,7 @@
 
 # official hostname and domain
 DDMIT.EDU
-Dj$w.$D
+Dj$w
 
 
 ############################################################
