@@ -230,6 +230,7 @@ Distribution sites for software under third
   patch                 ftp.gnu.org:pub/gnu/patch
   pcre                  ftp.sourceforge.net:pub/sourceforge/pcre
   perl                  ftp.cpan.org:pub/CPAN/src
+  perl-xml-parser	ftp.cpan.org:pub/CPAN/authors/id/C/CO/COOPERCL
   pine                  ftp.cac.washington.edu:pine
                         ftp.cac.washington.edu:mail/kerberos4-patches.tar.Z
   pkgconfig             http://www.freedesktop.org/software/pkgconfig.html
