@@ -1,7 +1,13 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.14 1995-03-01 03:59:17 cfields Exp $
+# $Id: sendbug.sh,v 1.15 1996-07-06 18:55:06 ghudson Exp $
+
+# save PATH so we can restore it for user's $EDITOR later
+saved_path="$PATH"
+
 # make sure stuff this script needs is up front
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin:/usr/bsd:/usr/sbin
+export PATH
+
 bugs_address=bugs@MIT.EDU
 sendmail="/usr/lib/sendmail -t -oi"
 report_file=/tmp/bug$$.text
@@ -70,16 +76,22 @@ be displayed momentarily.
 Remember to save the file before exiting the editor.
 EOF
 
-if [ -r $HOME/.mh_profile ]; then
-	comp -form $report_file
-	rm $report_file
+if [ -r "${MH-$HOME/.mh_profile}" ]; then
+	comp -form "$report_file"
+	rm "$report_file"
 	exit 0
 fi
 # not using MH; run the editor, and send, ourselves.
 MH=/dev/null; export MH
 if [ "${EDITOR}" = "" ]; then
 	EDITOR=emacs ; export EDITOR
+else
+	# User's $EDITOR may rely on user's path.  Change to saved path.
+	# This compromises the purpose of setting the path at the beginning
+	# (because "whatnow" will get run with the user's path), but there's
+	# no way to specify one path for whatnow and one for the editor it
+	# runs.
+	PATH="$saved_path"
 fi
 
-$EDITOR $report_file
-exec whatnow $report_file
+exec whatnow -editor "$EDITOR" "$report_file"
