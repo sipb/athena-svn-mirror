@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.28 2004-06-16 16:56:51 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.29 2004-06-17 21:02:38 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -46,6 +46,7 @@ static const char rcsid[] = "$Id: xlogin.c,v 1.28 2004-06-16 16:56:51 ghudson Ex
 #include <X11/Xmu/Converters.h>
 #include <X11/Xmu/Drawing.h>
 #include <X11/Wc/WcCreate.h>
+#include <X11/xpm.h>
 
 #include <larv.h>
 
@@ -87,7 +88,6 @@ static void idle_check(void);
 static void screensave(XtPointer data, XtIntervalId *timerid);
 static void unsave(Widget w, XtPointer popdown, XEvent *event, Boolean *bool);
 static void blinkOwl(XtPointer data, XtIntervalId *intervalid);
-static void blinkIs(XtPointer data, XtIntervalId *intervalid);
 static void initOwl(Widget search);
 static void adjustOwl(Widget search);
 static void catch_child(void);
@@ -261,16 +261,16 @@ XLoginResources resources;
 GC owlGC, isGC;
 Display *dpy;
 Window owlWindow, isWindow;
-int owlNumBitmaps, isNumBitmaps;
+int owlNumBitmaps;
 /* unsigned */ int owlWidth, owlHeight, isWidth, isHeight;
 int owlState, owlDelta, isDelta, owlTimeout, isTimeout;
-Pixmap owlBitmaps[20], isBitmaps[20];
+Pixmap owlBitmaps[20], isPixmap;
 time_t starttime;
 pid_t attach_pid, attachhelp_pid, quota_pid;
 int attach_state, attachhelp_state;
 int exiting = FALSE;
 extern char *defaultpath;
-char loginname[128], passwd[128];
+char loginname[128], passwd[128], *configDir;
 sigset_t sig_zero;
 
 /* Local Globals */
@@ -302,18 +302,21 @@ int main(int argc, char **argv)
    * override those in the regular file.
    */
   for (i = 1; i < argc; i++)
-    if (!strcmp(argv[i], "-config") && (i + 1 < argc))
-      {
-	c = getenv("XUSERFILESEARCHPATH");
-	if (c)
-	  sprintf(hname, "%s:%s/%%N", c, argv[i + 1]);
-	else
-	  sprintf(hname, "%s/%%N", argv[i + 1]);
-	psetenv("XUSERFILESEARCHPATH", hname, 1);
-	sprintf(hname, "%s/Xlogin.local", argv[i + 1]);
-	psetenv("XENVIRONMENT", hname, 1);
-	break;
-      }
+    {
+      if (strcmp(argv[i], "-config") == 0 && (i + 1 < argc))
+	{
+	  configDir = argv[i + 1];
+	  c = getenv("XUSERFILESEARCHPATH");
+	  if (c)
+	    sprintf(hname, "%s:%s/%%N", c, configDir);
+	  else
+	    sprintf(hname, "%s/%%N", configDir);
+	  psetenv("XUSERFILESEARCHPATH", hname, 1);
+	  sprintf(hname, "%s/Xlogin.local", configDir);
+	  psetenv("XENVIRONMENT", hname, 1);
+	  break;
+	}
+    }
 
   /* Initialize Toolkit creating the application shell, and get
    * application resources.
@@ -421,8 +424,6 @@ int main(int argc, char **argv)
   XtGetValues(appShell, args, 2);
 
   if (xPos == 0 && yPos == 0) {
-    Screen *s;
-
     XtSetArg(args[0], XtNwidth, &width);
     XtSetArg(args[1], XtNheight, &height);
     XtGetValues(appShell, args, 2);
@@ -471,7 +472,6 @@ int main(int argc, char **argv)
 
   curr_timerid = XtAddTimeOut(resources.save_timeout * 1000, screensave, NULL);
   blink_timerid = XtAddTimeOut(1000, blinkOwl, NULL);
-  is_timerid = XtAddTimeOut(1000, blinkIs, NULL);
   time(&starttime);
   resetCB(namew, NULL, NULL);
 
@@ -810,8 +810,8 @@ static void unsave(Widget w, XtPointer popdown, XEvent *event, Boolean *bool)
 			      screensave, NULL);
   blink_timerid = XtAddTimeOut(lrand48() % (10 * 1000),
 			       blinkOwl, NULL);
-  is_timerid = XtAddTimeOut(lrand48() % (10 * 1000),
-			    blinkIs, NULL);
+  if (isWindow)
+    XCopyArea(dpy, isPixmap, isWindow, isGC, 0, 0, isWidth, isHeight, 0, 0);
 }
 
 static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
@@ -1286,9 +1286,6 @@ void prompt_user(char *msg, void (*abort_proc)(void *), void *abort_arg)
 #define updateOwl()	XCopyPlane(dpy, owlBitmaps[owlCurBitmap], \
 				   owlWindow, owlGC, 0, 0, \
 				   owlWidth, owlHeight, 0, 0, 1)
-#define updateIs()	XCopyPlane(dpy, isBitmaps[isCurBitmap], \
-				   isWindow, isGC, 0, 0, \
-				   isWidth, isHeight, 0, 0, 1)
 
 static void blinkOwl(XtPointer data, XtIntervalId *intervalid)
 {
@@ -1350,50 +1347,15 @@ static void blinkOwl(XtPointer data, XtIntervalId *intervalid)
 				blinkOwl, NULL);
 }
 
-static void blinkIs(XtPointer data, XtIntervalId *intervalid)
-{
-  static int isCurBitmap;
-  isTimeout = 0;
-
-  if (isNumBitmaps == 0)
-    return;
-
-  switch(isDelta)
-    {
-    case OWL_BLINKINGCLOSED:	/* your eyelids are getting heavy... */
-      isCurBitmap++;
-      updateIs();
-      if (isCurBitmap == isNumBitmaps - 1)
-	isDelta = OWL_BLINKINGOPEN;
-      break;
-
-    case OWL_BLINKINGOPEN:	/* you will awake, feeling refreshed... */
-      isCurBitmap--;
-      updateIs();
-      if (isCurBitmap == 0)
-	{
-	  isTimeout = lrand48() % (10 * 1000);
-	  isDelta = OWL_BLINKINGCLOSED;
-	}
-      break;
-
-    case OWL_STATIC:
-      break;
-    }
-
-  is_timerid = XtAddTimeOut((isTimeout
-			     ? isTimeout : resources.blink_timeout),
-			    blinkIs, NULL);
-}
-
 static void initOwl(Widget search)
 {
   Widget owl, is;
   Arg args[3];
   int n, done;
-  char *filenames, *ptr;
+  char *filenames, *ptr, pixname[1024];
   XGCValues values;
   XtGCMask valuemask;
+  XpmAttributes attrib;
 
   owl = WcFullNameToWidget(search, "*eyes");
 
@@ -1460,55 +1422,22 @@ static void initOwl(Widget search)
     }
 
   is = WcFullNameToWidget(search, "*logo2");
-
-  if (is != NULL)
+  if (is)
     {
-      isWindow = XtWindow(is);
-      if (isWindow != None)
+      if (configDir)
+	sprintf(pixname, "%s/bitmaps/flush.xpm", configDir);
+      else
+	strcpy(pixname, "flush.xpm");
+      attrib.valuemask = XpmSize;
+      if (XpmReadFileToPixmap(dpy, XtWindow(is), pixname, &isPixmap,
+			      NULL, &attrib) == XpmSuccess)
 	{
-	  n = 0;
-	  done = 0;
-	  XtSetArg(args[n], XtNlabel, &filenames);
-	  n++;
-	  XtSetArg(args[n], XtNforeground, &values.foreground);
-	  n++;
-	  XtSetArg(args[n], XtNbackground, &values.background);
-	  n++;
-	  XtGetValues(is, args, n);
-
-	  values.function = GXcopy;
-	  valuemask = GCForeground | GCBackground | GCFunction;
-	  isGC = XtGetGC(is, valuemask, &values);
-
-	  isNumBitmaps = 0;
-	  ptr = filenames;
-	  while (*ptr && !done)
-	    {
-	      while (*ptr != '\0' && !isspace((unsigned char)*ptr))
-		ptr++;
-
-	      if (*ptr == '\0')
-		done = 1;
-	      else
-		*ptr = '\0';
-
-	      isBitmaps[isNumBitmaps] = XmuLocateBitmapFile(XtScreen(is),
-							    filenames,
-							    NULL, 0,
-							    &isWidth,
-							    &isHeight,
-							    NULL, NULL);
-	      if (isBitmaps[isNumBitmaps] == None)
-		break;
-	      isNumBitmaps++;
-	      if (!done)
-		{
-		  *ptr = ' ';
-		  while (isspace((unsigned char)*ptr))
-		    ptr++;
-		}
-	      filenames = ptr;
-	    }
+	  isWindow = XtWindow(is);
+	  isWidth = attrib.width;
+	  isHeight = attrib.height;
+	  isGC = DefaultGCOfScreen(XtScreen(is));
+	  XCopyArea(dpy, isPixmap, isWindow, isGC, 0, 0, isWidth, isHeight,
+		    0, 0);
 	}
     }
 }

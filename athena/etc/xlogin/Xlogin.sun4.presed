@@ -1,4 +1,4 @@
-! $Id: Xlogin.sun4.presed,v 1.11 2004-05-16 21:20:55 ghudson Exp $
+! $Id: Xlogin.sun4.presed,v 1.12 2004-06-17 21:02:38 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -75,18 +75,14 @@ xlogin.Geometry: 		580x325
 *logo.bitmap:			owl
 
 *logo2.wcClassName:		Label
-*logo2.bitmap:			is
 *logo2.fromHoriz:		*welcome
-*logo2.horizDistance:		38
+*logo2.horizDistance:		29
 *logo2.vertDistance:		26
 *logo2.internalWidth:		0
 *logo2.internalHeight:		0
-*logo2.label:			is0.xbm \
-				is1.xbm \
-				is2.xbm \
-				is3.xbm \
-				is4.xbm \
-				is5.xbm
+*logo2.width:			100
+*logo2.height:			100
+*logo2.label:
 
 *eyes.wcClassName:		Label
 *eyes.bitmap:			owleyes0.xbm
@@ -693,10 +689,10 @@ xlogin.Geometry: 		580x325
 *login*background:		white
 *login*foreground:		black,gray55,black
 
-*login.logo.foreground:		black,gray15,red
-*login.eyes.foreground:		black,gray15,red
-*login.version.foreground:	black,gray15,red
-*login.logo2.foreground:	black,gray15,red
+*login.logo.foreground:		black,gray15,#b20016
+*login.eyes.foreground:		black,gray15,#b20016
+*login.version.foreground:	black,gray15,#b20016
+*login.logo2.foreground:	black,gray15,#b20016
 
 ! savershell is the big black window that covers the screen when the xlogin
 ! "screensaver" kicks in.
@@ -710,10 +706,10 @@ xlogin.Geometry: 		580x325
 *hitanykey*foreground:		white,gray80,gray80
 *hitanykey*background:		black
 
-*hitanykey.logo.foreground:	white,gray75,red
-*hitanykey.version.foreground:	white,gray75,red
-*hitanykey.logo2.foreground:	white,gray75,red
-
+*hitanykey.logo.foreground:	white,gray75,#b20016
+*hitanykey.version.foreground:	white,gray75,#b20016
+*hitanykey.logo2.foreground:	white,gray75,#b20016
+*hitanykey.logo2.bitmap:	flush.xbm
 
 *queryShell.borderColor:	black
 *warningShell.borderColor:	black

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.11 2003-04-06 17:56:48 ghudson Exp $
+# $Id: Makefile.in,v 1.12 2004-06-17 21:02:22 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -27,7 +27,7 @@ CFLAGS=@CFLAGS@ @X_CFLAGS@ ${WARN_CFLAGS}
 LDFLAGS=@LDFLAGS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 
-LIBS=@X_LIBS@ -lWc -lXp -lXmu @XAW@ -lXt -lX11 @X_EXTRA_LIBS@ \
+LIBS=@X_LIBS@ -lWc -lXp -lXmu @XAW@ -lXt -lXpm -lX11 @X_EXTRA_LIBS@ \
 	-lal @HESIOD_LIBS@ -llarv \
 	@AFS_LIBS@ @KRB4_LIBS@ @KRB5_LIBS@ @LIBS@ 
 
@@ -75,13 +75,8 @@ install:
 	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes3.xbm ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes4.xbm ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/owleyes5.xbm ${DESTDIR}${bitmapdir}
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is ${DESTDIR}${bitmapdir}
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is0.xbm ${DESTDIR}${bitmapdir}
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is1.xbm ${DESTDIR}${bitmapdir}
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is2.xbm ${DESTDIR}${bitmapdir}
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is3.xbm ${DESTDIR}${bitmapdir}
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is4.xbm ${DESTDIR}${bitmapdir}
-	${INSTALL} -m 444 ${srcdir}/bitmaps/is5.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/flush.xbm ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/flush.xpm ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/menu16 ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/Ctrl-P ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/F1 ${DESTDIR}${bitmapdir}
