@@ -10,13 +10,13 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.12 1997-09-14 21:52:38 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.13 1997-10-25 21:47:20 ghudson Exp $ */
 
 #include <internal.h>
 
 #ifndef lint
 static const char rcsid_ZGetSender_c[] =
-    "$Id: ZGetSender.c,v 1.12 1997-09-14 21:52:38 ghudson Exp $";
+    "$Id: ZGetSender.c,v 1.13 1997-10-25 21:47:20 ghudson Exp $";
 #endif
 
 #include <pwd.h>
@@ -24,7 +24,7 @@ static const char rcsid_ZGetSender_c[] =
 char *ZGetSender()
 {
     struct passwd *pw;
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
     char pname[ANAME_SZ], pinst[INST_SZ], prealm[REALM_SZ];
     static char sender[ANAME_SZ+INST_SZ+REALM_SZ+3] = "";
 #else
@@ -35,7 +35,7 @@ char *ZGetSender()
     if (*sender)
 	return (sender);
 
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
     if (krb_get_tf_fullname((char *)TKT_FILE, pname, pinst, prealm) == KSUCCESS)
     {
 	(void) sprintf(sender, "%s%s%s@%s", pname, (pinst[0]?".":""),

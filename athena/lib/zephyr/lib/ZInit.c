@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.23 1997-09-23 19:24:56 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.24 1997-10-25 21:47:21 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZInitialize_c[] =
@@ -20,7 +20,7 @@ static char rcsid_ZInitialize_c[] =
 #include <internal.h>
 
 #include <sys/socket.h>
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
 #include <krb_err.h>
 #endif
 
@@ -28,7 +28,7 @@ Code_t ZInitialize()
 {
     struct servent *hmserv;
     char addr[4];
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
     Code_t code;
     ZNotice_t notice;
     char *krealm;
@@ -61,7 +61,7 @@ Code_t ZInitialize()
     __Q_Tail = NULL;
     __Q_Head = NULL;
     
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
 
     /* if the application is a server, there might not be a zhm.  The
        code will fall back to something which might not be "right",

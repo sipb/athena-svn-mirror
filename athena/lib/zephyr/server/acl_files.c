@@ -25,7 +25,7 @@
 
 #ifndef SABER
 #ifndef lint
-static const char rcsid_acl_files_c[] = "$Id: acl_files.c,v 3.1 1997-09-14 21:54:06 ghudson Exp $";
+static const char rcsid_acl_files_c[] = "$Id: acl_files.c,v 3.2 1997-10-25 21:47:25 ghudson Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -114,7 +114,7 @@ void acl_canonicalize_principal(principal, canon)
 	canon += len;
 	*canon++ = '\0';
     } 
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
     else if (krb_get_lrealm(canon, 1) != KSUCCESS) {
 	strcpy(canon, KRB_REALM);
     }

@@ -22,11 +22,11 @@
 #ifndef lint
 #ifndef SABER
 static const char *rcsid_rd_req_c =
-    "$Id: kopt.c,v 1.12 1997-09-23 19:27:42 ghudson Exp $";
+    "$Id: kopt.c,v 1.13 1997-10-25 21:47:30 ghudson Exp $";
 #endif /* lint */
 #endif /* SABER */
 
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
 #ifndef NOENCRYPTION
 
 /* Byte ordering */
@@ -610,5 +610,5 @@ decomp_ticket(tkt, flags, pname, pinstance, prealm, paddress, session,
 
     return(KSUCCESS);
 }
-#endif /* ZEPHYR_USES_KERBEROS */
+#endif /* HAVE_KRB4 */
 

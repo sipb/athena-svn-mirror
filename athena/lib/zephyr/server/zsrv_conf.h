@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v $
  *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.10 1997-09-14 21:54:44 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.11 1997-10-25 21:47:36 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,11 +18,11 @@
 
 /* Path names are relative to CONFDIR, except for the class registry. */
 
-#ifndef ZEPHYR_USES_HESIOD
+#ifndef HAVE_HESIOD
 #define SERVER_LIST_FILE	"server.list"
 #endif
 #define REALM_LIST_FILE		"realm.list"
-#ifdef ZEPHYR_USES_KERBEROS
+#ifdef HAVE_KRB4
 #define ZEPHYR_SRVTAB		"srvtab"
 #define ZEPHYR_TKFILE		"ztkts"
 #endif

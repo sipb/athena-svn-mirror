@@ -13,9 +13,9 @@
 
 #include "zhm.h"
 
-static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.56 1997-09-23 06:01:26 ghudson Exp $";
+static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.57 1997-10-25 21:47:40 ghudson Exp $";
 
-#ifdef ZEPHYR_USES_HESIOD
+#ifdef HAVE_HESIOD
 int use_hesiod = 0;
 #endif
 
@@ -141,7 +141,7 @@ char *argv[];
 	}
 	serv_list[numserv] = NULL;
     }
-#ifdef ZEPHYR_USES_HESIOD
+#ifdef HAVE_HESIOD
     else
 	use_hesiod = 1;
 #endif
@@ -246,7 +246,7 @@ static void choose_server()
 {
     int i = 0;
 
-#ifdef ZEPHYR_USES_HESIOD
+#ifdef HAVE_HESIOD
     if (use_hesiod) {
 
 	/* Free up any previously used resources */
