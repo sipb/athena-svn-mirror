@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendauth.c,v 1.4 1999-10-27 22:31:38 mwhitson Exp $";
+"$Id: sendauth.c,v 1.5 1999-10-28 22:04:18 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -250,7 +250,6 @@ int Send_auth_transfer( int *sock, int transfer_timeout, char *tempfile, int pri
 			/* don;t talk to the server any more - ignore errors... :-) */
 			shutdown( *sock, 1);
 			logmsg(LOG_INFO, "authentication failed '%s'", tempbuf);
-			shutdown(*sock, 1);
 		}
 		goto error;
 	}
