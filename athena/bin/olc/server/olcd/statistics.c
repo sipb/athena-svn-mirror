@@ -10,13 +10,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *	$Id: statistics.c,v 1.10 1991-11-05 14:39:34 lwvanels Exp $
+ *	$Id: statistics.c,v 1.11 1991-11-06 15:46:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.10 1991-11-05 14:39:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.11 1991-11-06 15:46:27 lwvanels Exp $";
 #endif
 #endif
 
@@ -24,7 +24,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #include <olcd.h>
 #include <fcntl.h>
-#include <time.h>
+#include <sys/time.h>
 
 /*
  * Function:	dump_request_stats()  dumps info about the number of
@@ -120,7 +120,7 @@ write_ask_stats(username,topic,machine,ask_by)
   now = time(0);
   strcpy(ask_time,ctime(&now));
   ask_time[24] = '\0';
-  sprintf(buf,"%s %s %s %s %s\n",ctime(&now), username, topic, machine,
+  sprintf(buf,"%s %s %s %s %s\n",ask_time, username, topic, machine,
 	  ask_by);
   write(fd,buf,strlen(buf));
   close(fd);
