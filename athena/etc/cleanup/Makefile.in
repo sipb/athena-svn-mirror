@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 2.2 1998-01-20 23:18:49 ghudson Exp $
+# $Id: Makefile.in,v 2.3 1999-03-11 22:38:28 danw Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -16,12 +16,16 @@ CFLAGS=@CFLAGS@
 DEFS=@DEFS@
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
+KRB4_LIBS=@KRB4_LIBS@
+AFS_LIBS=-lprot -lauth -lrxkad -lubik @AFS_DIR@/lib/afs/util.a -laudit \
+	 -lsys -lrx -llwp -lsys
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 
 all: cleanup
 
 cleanup: cleanup.o
-	${CC} ${LDFLAGS} -o cleanup cleanup.o -lal -lhesiod ${LIBS}
+	${CC} ${LDFLAGS} -o cleanup cleanup.o -lal -llocker -lzephyr \
+		-lhesiod ${AFS_LIBS} ${KRB4_LIBS} ${LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
