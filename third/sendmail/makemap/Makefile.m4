@@ -104,7 +104,8 @@ install-makemap: makemap
 
 install-docs: makemap.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} makemap.${MAN8SRC} ${MAN8}/makemap.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} makemap.${MAN8SRC} ${MAN8}/makemap.${MAN8EXT}')
 
 clean:
 	rm -f ${OBJS} makemap
