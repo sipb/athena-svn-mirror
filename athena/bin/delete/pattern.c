@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.1 1989-01-26 10:46:24 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.2 1989-01-26 10:59:50 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -103,7 +103,7 @@ char *file_pattern;
  * and a character to add to the string.  It reallocs extra space if
  * necessary, adds the character, and messes with the pointers if necessary.
  */
-char *add_char(start, finish, length, chr)
+static char *add_char(start, finish, length, chr)
 char **start, **finish;
 int *length;
 char chr;
@@ -271,7 +271,7 @@ int *num_found;
 
 		    
 	  
-char **find_all_children(base, num)
+static char **find_all_children(base, num)
 char *base;
 int *num;
 {
@@ -323,7 +323,7 @@ int *num;
 	       
 
 
-char **find_dir_contents(base, num)
+static char **find_dir_contents(base, num)
 char *base;
 int *num;
 {
