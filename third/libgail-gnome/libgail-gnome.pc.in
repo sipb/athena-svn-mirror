@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libgail-gnome
+Description: GNOME Accessibility Implementation Library for gnomeui and libbonoboui
+Version: @VERSION@
+Requires: atk gtk+-2.0 libbonoboui-2.0
+Libs: -L${libdir}
