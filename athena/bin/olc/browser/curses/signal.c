@@ -70,7 +70,12 @@ static int handle_resize_event()
     endwin();
     LINES = lines;
     COLS = cols;
-    initscr();
+    if (! initscr())
+      {
+	frprintf(stderr, "%s: Can't initialize display, not enough memory.\n",
+		 Prog_Name);
+	exit(ERROR);
+      }
     crmode();
     echo();
     clear();
