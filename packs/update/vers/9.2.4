@@ -3,3 +3,14 @@
 echo "/etc/init.d/bind"                                 >> $DEADFILES
 echo "/etc/rc2.d/S72bind"                               >> $DEADFILES
 echo "/etc/rc2.d/S92volmgt"                             >> $DEADFILES
+
+# Turds from an old build of mozilla.  There are other turds but they
+# don't cause problems, and only 9.2 alpha machines should ever see them.
+echo "/usr/athena/lib/mozilla/components/libtestdynamic.so"	>> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/libMyService.so"	>> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/libxpcomsample.so"	>> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/xpcomsample.xpt"	>> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/nsSample.js"		>> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/proxytest.xpt"		>> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/xpconnect_tests.xpt"	>> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/libxpctest.so"		>> $DEADFILES
