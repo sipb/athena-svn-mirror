@@ -1,5 +1,5 @@
 /* expr.c -- Implementation File (module.c template V1.0)
-   Copyright (C) 1995-1998 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
    Contributed by James Craig Burley.
 
 This file is part of GNU Fortran.
@@ -13162,7 +13162,7 @@ again:				/* :::::::::::::::::::: */
 	  error = (expr == NULL)
 	    || ((ffeinfo_rank (info) != 0) ?
 		ffe_is_pedantic ()	/* F77 C5. */
-		: (ffeinfo_kindtype (info) != ffecom_label_kind ()))
+		: (bool) (ffeinfo_kindtype (info) != ffecom_label_kind ()))
 	    || (ffebld_op (expr) != FFEBLD_opSYMTER);
 	  break;
 

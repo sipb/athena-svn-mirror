@@ -1,5 +1,6 @@
 /* Provide a call-back mechanism for handling error output.
-   Copyright (C) 1993, 94-98, 1999 Free Software Foundation, Inc.
+   Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000
+   Free Software Foundation, Inc.
    Contributed by Jason Merrill (jason@cygnus.com)
 
    This file is part of GNU CC.
@@ -18,20 +19,12 @@ You should have received a copy of the GNU General Public License
 along with GNU CC; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
-   
+
 #include "config.h"
 #include "system.h"
 #include "tree.h"
 #include "cp-tree.h"
 #include "toplev.h"
-
-/* cp_printer is the type of a function which converts an argument into
-   a string for digestion by printf.  The cp_printer function should deal
-   with all memory management; the functions in this file will not free
-   the char*s returned.  See error.c for an example use of this code.  */
-
-typedef char* cp_printer PROTO((tree, int));
-extern cp_printer * cp_printers[256];
 
 /* Whether or not we should try to be quiet for errors and warnings; this is
    used to avoid being too talkative about problems with tentative choices
@@ -40,7 +33,7 @@ int cp_silent = 0;
 
 typedef void errorfn ();	/* deliberately vague */
 
-static void cp_thing PROTO ((errorfn *, int, const char *, va_list));
+static void cp_thing PARAMS ((errorfn *, int, const char *, va_list));
 
 #define STRDUP(f) (ap = (char *) alloca (strlen (f) +1), strcpy (ap, (f)), ap)
 
@@ -75,7 +68,7 @@ cp_thing (errfn, atarg1, format, ap)
       cp_printer * function;
       int alternate;
       int maybe_here;
-      
+
       /* ignore text */
       if (*f != '%')
 	{
@@ -106,7 +99,7 @@ cp_thing (errfn, atarg1, format, ap)
 
       if (function || *f == 's')
 	{
-	  char *p;
+	  const char *p;
 	  int plen;
 
 	  if (*f == 's')
@@ -174,13 +167,13 @@ cp_thing (errfn, atarg1, format, ap)
   buf[offset] = '\0';
 
   /* If ATARG1 is set, but we haven't extracted any arguments, then
-     extract one tree argument for ATARG.  */  
+     extract one tree argument for ATARG.  */
   if (nargs == 0 && atarg1)
     atarg = va_arg (ap, tree);
 
   if (atarg)
     {
-      char *file = cp_file_of (atarg);
+      const char *file = cp_file_of (atarg);
       int   line = cp_line_of (atarg);
       (*errfn) (file, line, "%s", buf);
     }
@@ -190,7 +183,7 @@ cp_thing (errfn, atarg1, format, ap)
 }
 
 void
-cp_error VPROTO((const char *format, ...))
+cp_error VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;
@@ -209,7 +202,7 @@ cp_error VPROTO((const char *format, ...))
 }
 
 void
-cp_warning VPROTO((const char *format, ...))
+cp_warning VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;
@@ -228,7 +221,7 @@ cp_warning VPROTO((const char *format, ...))
 }
 
 void
-cp_pedwarn VPROTO((const char *format, ...))
+cp_pedwarn VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;
@@ -247,7 +240,7 @@ cp_pedwarn VPROTO((const char *format, ...))
 }
 
 void
-cp_compiler_error VPROTO((const char *format, ...))
+cp_compiler_error VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;
@@ -272,12 +265,11 @@ cp_deprecated (msg)
   extern int warn_deprecated;
   if (!warn_deprecated)
     return;
-  cp_warning ("%s is deprecated.", msg);
-  cp_warning ("Please see the documentation for details.");
+  cp_warning ("%s is deprecated, please see the documentation for details", msg);
 }
 
 void
-cp_sprintf VPROTO((const char *format, ...))
+cp_sprintf VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;
@@ -295,7 +287,7 @@ cp_sprintf VPROTO((const char *format, ...))
 }
 
 void
-cp_error_at VPROTO((const char *format, ...))
+cp_error_at VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;
@@ -314,7 +306,7 @@ cp_error_at VPROTO((const char *format, ...))
 }
 
 void
-cp_warning_at VPROTO((const char *format, ...))
+cp_warning_at VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;
@@ -333,7 +325,7 @@ cp_warning_at VPROTO((const char *format, ...))
 }
 
 void
-cp_pedwarn_at VPROTO((const char *format, ...))
+cp_pedwarn_at VPARAMS ((const char *format, ...))
 {
 #ifndef ANSI_PROTOTYPES
   char *format;

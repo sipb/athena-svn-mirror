@@ -1,5 +1,9 @@
+#include "config.h"
 #include "f2c.h"
 #include "fio.h"
+
+#include <sys/types.h>
+#include <unistd.h>
 
 #ifdef KR_headers
 extern char *strcpy();
@@ -29,7 +33,7 @@ integer f_end(alist *a)
 	b = &f__units[a->aunit];
 	if(b->ufd==NULL) {
 		char nbuf[10];
-		sprintf(nbuf,"fort.%ld",a->aunit);
+		sprintf(nbuf,"fort.%ld",(long)a->aunit);
 		if (tf = fopen(nbuf, f__w_mode[0]))
 			fclose(tf);
 		return(0);
@@ -38,6 +42,7 @@ integer f_end(alist *a)
 	return(b->useek ? t_runc(a) : 0);
 }
 
+#ifndef HAVE_FTRUNCATE
  static int
 #ifdef KR_headers
 copy(from, len, to) FILE *from, *to; register long len;
@@ -56,6 +61,7 @@ copy(FILE *from, register long len, FILE *to)
 		}
 	return 0;
 	}
+#endif /* !defined(HAVE_FTRUNCATE) */
 
  int
 #ifdef KR_headers
@@ -66,8 +72,11 @@ t_runc(alist *a)
 {
 	long loc, len;
 	unit *b;
-	FILE *bf, *tf;
-	int rc = 0;
+	int rc;
+	FILE *bf;
+#ifndef HAVE_FTRUNCATE
+	FILE *tf;
+#endif /* !defined(HAVE_FTRUNCATE) */
 
 	b = &f__units[a->aunit];
 	if(b->url)
@@ -77,6 +86,8 @@ t_runc(alist *a)
 	len=ftell(bf);
 	if (loc >= len || b->useek == 0 || b->ufnm == NULL)
 		return(0);
+#ifndef HAVE_FTRUNCATE
+	rc = 0;
 	fclose(b->ufd);
 	if (!loc) {
 		if (!(bf = fopen(b->ufnm, f__w_mode[b->ufmt])))
@@ -103,6 +114,7 @@ t_runc(alist *a)
 	rewind(tf);
 	if (copy(tf, loc, bf))
 		goto bad1;
+	b->uwrt = 1;
 	b->urw = 2;
 #ifdef NON_UNIX_STDIO
 	if (b->ufmt) {
@@ -117,6 +129,11 @@ done1:
 	fclose(tf);
 done:
 	f__cf = b->ufd = bf;
+#else  /* !defined(HAVE_FTRUNCATE) */
+	fflush(b->ufd);
+	rc = ftruncate(fileno(b->ufd), (off_t)loc);
+	fseek(bf,loc,SEEK_SET);
+#endif /* !defined(HAVE_FTRUNCATE) */
 	if (rc)
 		err(a->aerr,111,"endfile");
 	return 0;

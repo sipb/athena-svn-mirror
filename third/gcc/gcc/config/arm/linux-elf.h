@@ -1,5 +1,6 @@
 /* Definitions for ARM running Linux-based GNU systems using ELF
-   Copyright (C) 1993, 1994, 1997, 1998, 1999 Free Software Foundation, Inc.
+   Copyright (C) 1993, 1994, 1997, 1998, 1999, 2000, 2001 
+   Free Software Foundation, Inc.
    Contributed by Philip Blundell <philb@gnu.org>
 
 This file is part of GNU CC.
@@ -25,17 +26,12 @@ Boston, MA 02111-1307, USA.  */
 /* Do not assume anything about header files.  */
 #define NO_IMPLICIT_EXTERN_C
 
-/* We have libgcc2.  */
-#define HAVE_ATEXIT
-
 /* Default is to use APCS-32 mode.  */
-#ifndef SUBTARGET_DEFAULT_APCS26
-#define TARGET_DEFAULT (ARM_FLAG_APCS_32 | ARM_FLAG_SHORT_BYTE)
-#define SUBTARGET_EXTRA_LINK_SPEC	\
-	" %{mapcs-26:-m elf32arm26} %{!mapcs-26:-m elf32arm}"
-#define SUBTARGET_EXTRA_ASM_SPEC	\
-	" %{mapcs-26:-mapcs-26} %(!mapcs-26:-mapcs-32}"
-#endif
+#define TARGET_DEFAULT (ARM_FLAG_APCS_32 | ARM_FLAG_MMU_TRAPS)
+#define SUBTARGET_EXTRA_LINK_SPEC " -m armelf_linux -p"
+#define MULTILIB_DEFAULTS \
+	{ "marm", "mlittle-endian", "mhard-float", "mapcs-32", "mno-thumb-interwork" }
+#define CPP_APCS_PC_DEFAULT_SPEC "-D__APCS_32__"
 
 /* This was defined in linux.h.  Define it here also. */
 #undef  DEFAULT_VTABLE_THUNKS
@@ -48,7 +44,8 @@ Boston, MA 02111-1307, USA.  */
 #define LIB_SPEC \
   "%{shared: -lc} \
    %{!shared: %{pthread:-lpthread} \
-	%{profile:-lc_p} %{!profile: -lc}}"
+   %{profile:-lc_p} %{!profile: -lc}}"
+
 
 #define LIBGCC_SPEC "%{msoft-float:-lfloat} -lgcc"
 
@@ -86,12 +83,8 @@ Boston, MA 02111-1307, USA.  */
 
 #undef  CPP_PREDEFINES
 #define CPP_PREDEFINES \
-"-Dunix -Darm -Dlinux -Asystem(unix) -Asystem(posix) -Acpu(arm) \
--Amachine(arm) -D__ELF__ -Darm_elf"
-
-#ifndef SUBTARGET_DEFAULT_APCS26
-#define CPP_APCS_PC_DEFAULT_SPEC "-D__APCS_32__"
-#endif
+"-Dunix -Dlinux -D__ELF__ \
+-Asystem=unix -Asystem=posix -Acpu=arm -Amachine=arm"
 
 /* Allow #sccs in preprocessor.  */
 #define SCCS_DIRECTIVE
@@ -99,27 +92,11 @@ Boston, MA 02111-1307, USA.  */
 #define USER_LABEL_PREFIX 	""	/* For ELF the default is no underscores */
 #define LOCAL_LABEL_PREFIX 	"."
 
-/* Attach a special .ident directive to the end of the file to identify
-   the version of GCC which compiled this code.  */
-#define IDENT_ASM_OP 	".ident"
+#define IDENT_ASM_OP 	"\t.ident\t"
 
 /* Output #ident as a .ident.  */
 #define ASM_OUTPUT_IDENT(FILE, NAME) \
-  fprintf (FILE, "\t%s\t\"%s\"\n", IDENT_ASM_OP, NAME);
-  
-#ifdef IDENTIFY_WITH_IDENT
-#define ASM_IDENTIFY_GCC(FILE) /* nothing */
-#define ASM_IDENTIFY_LANGUAGE(FILE)			\
- fprintf (FILE, "\t%s \"GCC (%s) %s\"\n", IDENT_ASM_OP,	\
-	 lang_identify (), version_string)
-#else
-#define ASM_FILE_END(FILE)					\
-do {				 				\
-     if (!flag_no_ident)					\
-	fprintf ((FILE), "\t%s\t\"GCC: (GNU) %s\"\n",		\
-		 IDENT_ASM_OP, version_string);			\
-   } while (0)
-#endif
+  fprintf (FILE, "%s\"%s\"\n", IDENT_ASM_OP, NAME);
 
 /* Support const sections and the ctors and dtors sections for g++.
    Note that there appears to be two different ways to support const
@@ -144,9 +121,7 @@ do {				 				\
    definition in the target-specific file which includes this file.  */
 #define SUBTARGET_EXTRA_SECTION_FUNCTIONS	CONST_SECTION_FUNCTION
 
-extern void text_section ();
-
-#define CONST_SECTION_ASM_OP	".section\t.rodata"
+#define CONST_SECTION_ASM_OP	"\t.section\t.rodata"
 
 #define CONST_SECTION_FUNCTION						\
 void									\
@@ -199,6 +174,44 @@ const_section ()							\
     const_section ();							\
 }
 
+#define MAKE_DECL_ONE_ONLY(DECL) (DECL_WEAK (DECL) = 1)
+#define UNIQUE_SECTION_P(DECL)   (DECL_ONE_ONLY (DECL))
+
+#define UNIQUE_SECTION(DECL, RELOC)				\
+  do								\
+    {								\
+      int len;							\
+      char * name;						\
+      char * string;						\
+      char * prefix;						\
+								\
+      name = IDENTIFIER_POINTER (DECL_ASSEMBLER_NAME (DECL));	\
+      								\
+      if (! DECL_ONE_ONLY (DECL))				\
+	{							\
+	  prefix = ".";                                         \
+	  if (TREE_CODE (DECL) == FUNCTION_DECL)		\
+	    prefix = ".text.";					\
+	  else if (DECL_READONLY_SECTION (DECL, RELOC))		\
+	    prefix = ".rodata.";				\
+	  else							\
+	    prefix = ".data.";					\
+	}							\
+      else if (TREE_CODE (DECL) == FUNCTION_DECL)		\
+	prefix = ".gnu.linkonce.t.";				\
+      else if (DECL_READONLY_SECTION (DECL, RELOC))		\
+	prefix = ".gnu.linkonce.r.";				\
+      else							\
+	prefix = ".gnu.linkonce.d.";				\
+      								\
+      len = strlen (name) + strlen (prefix);			\
+      string = alloca (len + 1);				\
+      sprintf (string, "%s%s", prefix, name);			\
+      								\
+      DECL_SECTION_NAME (DECL) = build_string (len, string);	\
+    }								\
+  while (0)
+
 /* A C statement or statements to switch to the appropriate
    section for output of RTX in mode MODE.  RTX is some kind
    of constant in RTL.  The argument MODE is redundant except
@@ -211,8 +224,8 @@ const_section ()							\
    crtstuff.c and other files know this by defining the following symbols.
    The definitions say how to change sections to the .init and .fini
    sections.  This is the same for all known svr4 assemblers.  */
-#define INIT_SECTION_ASM_OP	".section\t.init"
-#define FINI_SECTION_ASM_OP	".section\t.fini"
+#define INIT_SECTION_ASM_OP	"\t.section\t.init"
+#define FINI_SECTION_ASM_OP	"\t.section\t.fini"
 
 
 /* This is how we tell the assembler that a symbol is weak.  */
@@ -239,10 +252,16 @@ const_section ()							\
 #include "arm/elf.h"
 #include "arm/linux-gas.h"
 
-#ifndef SUBTARGET_DEFAULT_APCS26
-/* On 32-bit machine it is always safe to assume we have the "new"
-   floating point system.  
-   ?? Make this happen for all targets when NWFPE is better established.  */
+/* NWFPE always understands FPA instructions.  */
 #undef  FP_DEFAULT
 #define FP_DEFAULT FP_SOFT3
-#endif
+
+/* Call the function profiler with a given profile label.  */
+#undef  ARM_FUNCTION_PROFILER
+#define ARM_FUNCTION_PROFILER(STREAM, LABELNO)  			\
+{									\
+  fprintf (STREAM, "\tbl\tmcount%s\n", NEED_PLT_RELOC ? "(PLT)" : "");	\
+}
+
+#undef  CC1_SPEC
+#define CC1_SPEC "%{profile:-p}"

@@ -1,9 +1,9 @@
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
+static char junk[] = "\n@(#)LIBF77 VERSION 20000929\n";
 
 /*
 */
 
-char __G77_LIBF77_VERSION__[] = "0.5.25 19991024 (release)";
+char __G77_LIBF77_VERSION__[] = "0.5.26 20011220 (release)";
 
 /*
 2.00	11 June 1980.  File version.c added to library.
@@ -61,6 +61,25 @@ char __G77_LIBF77_VERSION__[] = "0.5.25 19991024 (release)";
 			overlapping arguments caused by equivalence.
 	3 May 1999:	"invisible" tweaks to omit compiler warnings in
 			abort_.c, ef1asc_.c, s_rnge.c, s_stop.c.
+	7 Sept. 1999: [cz]_div.c: arrange for compilation under
+			-DIEEE_COMPLEX_DIVIDE to make these routines
+			avoid calling sig_die when the denominator
+			vanishes; instead, they return pairs of NaNs
+			or Infinities, depending whether the numerator
+			also vanishes or not.  VERSION not changed.
+	15 Nov. 1999: s_rnge.c: add casts for the case of
+			sizeof(ftnint) == sizeof(int) < sizeof(long).
+	10 March 2000: z_log.c: improve accuracy of Real(log(z)) for, e.g.,
+			z near (+-1,eps) with |eps| small.  For the old
+			evaluation, compile with -DPre20000310 .
+	20 April 2000: s_cat.c: tweak argument types to accord with
+			calls by f2c when ftnint and ftnlen are of
+			different sizes (different numbers of bits).
+	4 July 2000: adjustments to permit compilation by C++ compilers;
+			VERSION string remains unchanged. NOT APPLIED FOR G77.
+	29 Sept. 2000: dtime_.c, etime_.c: use floating-point divide.
+			dtime_.d, erf_.c, erfc_.c, etime.c: for use with
+			"f2c -R", compile with -DREAL=float.
 */
 
 #include <stdio.h>

@@ -1,3 +1,53 @@
+*** Changes in GCC 3.0.1:
+
+* -fhonor-std and -fno-honor-std have been removed. -fno-honor-std was
+  a workaround to allow std compliant code to work with the non-std
+  compliant libstdc++-v2. libstdc++-v3 is std compliant.
+
+*** Changes in GCC 3.0:
+
+* Support for guiding declarations has been removed.
+
+* G++ now supports importing member functions from base classes with a
+  using-declaration.
+
+* G++ now enforces access control for nested types.
+
+* In some obscure cases, functions with the same type could have the
+  same mangled name.  This bug caused compiler crashes, link-time clashes,
+  and debugger crashes.  Fixing this bug required breaking ABI
+  compatibility for the functions involved.  The functions in questions
+  are those whose types involve non-type template arguments whose
+  mangled representations require more than one digit.
+
+* Support for assignment to `this' has been removed.  This idiom 
+  was used in the very early days of C++, before users were allowed
+  to overload `operator new'; it is no longer allowed by the C++
+  standard.
+
+* Support for signatures, a G++ extension, have been removed.
+
+* Certain invalid conversions that were previously accepted will now
+  be rejected.  For example, assigning function pointers of one type
+  to function pointers of another type now requires a cast, whereas
+  previously g++ would sometimes accept the code even without the
+  cast.
+
+* G++ previously allowed `sizeof (X::Y)' where Y was a non-static
+  member of X, even if the `sizeof' expression occurred outside
+  of a non-static member function of X (or one of its derived classes, 
+  or a member-initializer for X or one of its derived classes.)   This
+  extension has been removed.
+
+* G++ no longer allows you to overload the conditional operator (i.e., 
+  the `?:' operator.)
+
+* The "named return value" extension:
+	
+    int f () return r { r = 3; }
+
+  has been deprecated, and will be removed in a future version of G++.
+
 *** Changes in GCC 2.95:
 
 * Messages about non-conformant code that we can still handle ("pedwarns")

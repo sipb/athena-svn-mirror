@@ -1,5 +1,5 @@
 /* Implementation of Fortran lexer
-   Copyright (C) 1995-1998 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1996, 1997, 1998, 2001 Free Software Foundation, Inc.
    Contributed by James Craig Burley.
 
 This file is part of GNU Fortran.
@@ -27,19 +27,16 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 #include "malloc.h"
 #include "src.h"
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
-#include "flags.j"
-#include "input.j"
-#include "toplev.j"
-#include "tree.j"
-#include "output.j"  /* Must follow tree.j so TREE_CODE is defined! */
+#include "flags.h"
+#include "input.h"
+#include "toplev.h"
+#include "output.h"
+#include "ggc.h"
 #endif
 
 #ifdef DWARF_DEBUGGING_INFO
-void dwarfout_resume_previous_source_file (register unsigned);
-void dwarfout_start_new_source_file (register char *);
-void dwarfout_define (register unsigned, register char *);
-void dwarfout_undef (register unsigned, register char *);
-#endif DWARF_DEBUGGING_INFO
+#include "dwarfout.h"
+#endif
 
 static void ffelex_append_to_token_ (char c);
 static int ffelex_backslash_ (int c, ffewhereColumnNumber col);
@@ -806,7 +803,7 @@ ffelex_cfelex_ (ffelexToken *xtoken, FILE *finput, int c)
 
 	    case EOF:
 	    case '\n':
-	      fatal ("Badly formed directive -- no closing quote");
+	      error ("Badly formed directive -- no closing quote");
 	      done = TRUE;
 	      break;
 
@@ -855,7 +852,7 @@ ffelex_cfelex_ (ffelexToken *xtoken, FILE *finput, int c)
 
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
 static void
-ffelex_file_pop_ (char *input_filename)
+ffelex_file_pop_ (const char *input_filename)
 {
   if (input_file_stack->next)
     {
@@ -881,7 +878,7 @@ ffelex_file_pop_ (char *input_filename)
 #endif
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
 static void
-ffelex_file_push_ (int old_lineno, char *input_filename)
+ffelex_file_push_ (int old_lineno, const char *input_filename)
 {
   struct file_stack *p
     = (struct file_stack *) xmalloc (sizeof (struct file_stack));
@@ -1039,7 +1036,7 @@ ffelex_get_directive_line_ (char **text, FILE *finput)
 	  || c == EOF)
 	{
 	  if (looking_for != 0)
-	    fatal ("Bad directive -- missing close-quote");
+	    error ("Bad directive -- missing close-quote");
 
 	  *p++ = '\0';
 	  *text = directive_buffer;
@@ -1126,8 +1123,9 @@ ffelex_hash_ (FILE *finput)
 	      static char buffer [128];
 	      char * buff = buffer;
 
-	      /* Read the pragma name into a buffer.  */
-	      while (isspace (c = getc (finput)))
+	      /* Read the pragma name into a buffer.
+		 ISSPACE() may evaluate its argument more than once!  */
+	      while (((c = getc (finput)), ISSPACE(c)))
 		continue;
 	      
 	      do
@@ -1135,7 +1133,7 @@ ffelex_hash_ (FILE *finput)
 		  * buff ++ = c;
 		  c = getc (finput);
 		}
-	      while (c != EOF && ! isspace (c) && c != '\n'
+	      while (c != EOF && ! ISSPACE (c) && c != '\n'
 		     && buff < buffer + 128);
 
 	      pragma_ungetc (c);
@@ -1222,7 +1220,7 @@ ffelex_hash_ (FILE *finput)
 	      && getc (finput) == 't'
 	      && ((c = getc (finput)) == ' ' || c == '\t'))
 	    {
-	      /* #ident.  The pedantic warning is now in cccp.c.  */
+	      /* #ident.  The pedantic warning is now in cpp.  */
 
 	      /* Here we have just seen `#ident '.
 		 A string constant should follow.  */
@@ -1280,7 +1278,7 @@ ffelex_hash_ (FILE *finput)
       && (ffelex_token_type (token) == FFELEX_typeNUMBER))
     {
       int old_lineno = lineno;
-      char *old_input_filename = input_filename;
+      const char *old_input_filename = input_filename;
       ffewhereFile wf;
 
       /* subtract one, because it is the following line that
@@ -1319,7 +1317,7 @@ ffelex_hash_ (FILE *finput)
       lineno = l;
 
       if (ffelex_kludge_flag_)
-	input_filename = ffelex_token_text (token);
+	input_filename = ggc_strdup (ffelex_token_text (token));
       else
 	{
 	  wf = ffewhere_file_new (ffelex_token_text (token),
@@ -1368,7 +1366,7 @@ ffelex_hash_ (FILE *finput)
 	    {
 	      lineno = 1;
 	      input_filename = old_input_filename;
-	      fatal ("Use `#line ...' instead of `# ...' in first line");
+	      error ("Use `#line ...' instead of `# ...' in first line");
 	    }
 
 	  if (num == 1)
@@ -1412,7 +1410,13 @@ ffelex_hash_ (FILE *finput)
 	{
 	  lineno = 1;
 	  input_filename = old_input_filename;
-	  fatal ("Use `#line ...' instead of `# ...' in first line");
+	  error ("Use `#line ...' instead of `# ...' in first line");
+	}
+      if (c == '\n' || c == EOF)
+	{
+	  if (token != NULL && !ffelex_kludge_flag_)
+	    ffelex_token_kill (token);
+	  return c;
 	}
     }
   else
@@ -1552,7 +1556,7 @@ ffelex_include_ ()
     = ffewhere_line_filelinenum (current_wl);
 #if FFECOM_targetCURRENT == FFECOM_targetGCC
   int old_lineno = lineno;
-  char *old_input_filename = input_filename;
+  const char *old_input_filename = input_filename;
 #endif
 
   if (card_length != 0)

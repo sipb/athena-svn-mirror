@@ -1,0 +1,81 @@
+This is doc/cpp.info, produced by makeinfo version 4.0 from
+doc/cpp.texi.
+
+INFO-DIR-SECTION Programming
+START-INFO-DIR-ENTRY
+* Cpp: (cpp).		       The GNU C preprocessor.
+END-INFO-DIR-ENTRY
+
+
+Indirect:
+cpp.info-1: 191
+cpp.info-2: 49238
+cpp.info-3: 98566
+cpp.info-4: 138548
+
+Tag Table:
+(Indirect)
+Node: Top191
+Node: Overview2753
+Node: Initial processing5121
+Node: Tokenization11578
+Ref: Tokenization-Footnote-118749
+Node: The preprocessing language18860
+Node: Header Files21733
+Node: Include Syntax23611
+Node: Include Operation25113
+Node: Search Path27009
+Node: Once-Only Headers29561
+Node: Computed Includes31215
+Node: Wrapper Headers34354
+Node: System Headers36773
+Node: Macros38797
+Node: Object-like Macros39897
+Node: Function-like Macros43483
+Node: Macro Arguments45093
+Node: Stringification49238
+Node: Concatenation52439
+Node: Variadic Macros55553
+Node: Predefined Macros59890
+Node: Standard Predefined Macros60473
+Node: Common Predefined Macros65895
+Node: System-specific Predefined Macros72095
+Node: C++ Named Operators74107
+Node: Undefining and Redefining Macros75062
+Node: Macro Pitfalls77140
+Node: Misnesting77665
+Node: Operator Precedence Problems78766
+Node: Swallowing the Semicolon80621
+Node: Duplication of Side Effects82633
+Node: Self-Referential Macros84805
+Node: Argument Prescan87215
+Node: Newlines in Arguments90958
+Node: Conditionals91903
+Node: Conditional Uses93732
+Node: Conditional Syntax95085
+Node: Ifdef95400
+Node: If98566
+Node: Defined100979
+Node: Else102252
+Node: Elif102813
+Node: Deleted Code104093
+Node: Diagnostics105335
+Node: Line Control106952
+Node: Pragmas109066
+Node: Other Directives113334
+Node: Preprocessor Output114528
+Node: Traditional Mode117624
+Node: Implementation Details123203
+Node: Implementation-defined behavior123826
+Node: Implementation limits126099
+Node: Obsolete Features128806
+Node: Assertions129293
+Node: Obsolete once-only headers131824
+Node: Miscellaneous obsolete features133592
+Node: Differences from previous versions134925
+Node: Invocation138548
+Node: GNU Free Documentation License157071
+Node: Index of Directives176966
+Node: Concept Index178347
+
+End Tag Table

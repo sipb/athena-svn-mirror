@@ -38,9 +38,9 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 
 #include "proj.h"
 #include "bad.h"
-#include "flags.j"
+#include "flags.h"
 #include "com.h"
-#include "toplev.j"
+#include "toplev.h"
 #include "where.h"
 
 /* Externals defined here. */
@@ -457,11 +457,11 @@ ffebad_finish ()
   if (ffebad_places_ == 0)
     {
       /* Didn't output "warning:" string, capitalize it for message.  */
-      if ((s[0] != '\0') && ISALPHA (s[0]) && ISLOWER (s[0]))
+      if (s[0] != '\0')
 	{
 	  char c;
 
-	  c = toupper (s[0]);
+	  c = TOUPPER (s[0]);
 	  fprintf (stderr, "%c%s ", c, &s[1]);
 	}
       else if (s[0] != '\0')
