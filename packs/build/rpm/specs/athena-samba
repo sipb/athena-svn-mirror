@@ -1,0 +1,24 @@
+Name: athena-samba
+Summary: The Samba SMB clients and servers, for Athena
+License: GNU GPL Version 2
+Group: Applications/System
+
+%description
+Samba is the protocol by which a lot of PC-related machines share
+files, printers, and other information (such as lists of available
+files and printers).   This package includes clients and servers,
+built with Kerberos and Active Directory support.
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/etc/athena
+cp smb.conf.athena $RPM_BUILD_ROOT/etc/athena/smb.conf
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/smb.conf|%config \0|" |
+  sort > rpm.filelist
