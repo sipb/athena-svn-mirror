@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.8 2000-11-16 11:31:14 zacheiss Exp $
+### $Id: install1.sh,v 1.9 2001-03-01 20:49:06 miki Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -207,13 +207,14 @@ esac
 case $PARTITION in
 Y)
      echo "The rest of the installation assumes that
-     partition 0 is / and needs about 200MB;
-     partition 1 is swap;
-     partition 3 is AFS cache;
-     partition 5 is /usr and needs 350MB;
-     partition 6 is /var and needs at least 500MB "
+     partition 1 is swap (at least 512MB recommended);
+     partition 3 is AFS cache (256MB recommended);
+     partition 0 is / (including /usr and /var) and is at least 8GB,
+	but is normally the entire rest of the disk"
      sleep 10
      format 
+     partitioning=one
+     export partitioning
      echo "boot device you want to boot from ?"
      read bootdevice
      export bootdevice
@@ -223,71 +224,91 @@ Y)
      case $DISK in
      SUN0424)
         echo "formatting SUN0424"
+        partitioning=many
         cat /util/format.input.SUN0424 | \
 		format ${drive} >/dev/null 2>&1
         ;;
      SUN0535)
         echo "formatting SUN0535"
+        partitioning=many
         cat /util/format.input.SUN0535 | \
 		format ${drive} >/dev/null 2>&1
         ;;
     SUN1.05)
        echo "formatting SUN1.05"
+       partitioning=many
        cat /util/format.input.SUN1.05 | \
 		format ${drive} >/dev/null 2>&1
        ;;
     SUN2.1G)
        echo "formatting SUN2.1G"
+       partitioning=many
        cat /util/format.input.SUN2.1G | \
 		format ${drive} >/dev/null 2>&1
        ;;
     SUN4.2G)
        echo "formatting SUN4.2G"
+       partitioning=many
        cat /util/format.input.SUN4.2G | \
 		format ${drive} >/dev/null 2>&1
        ;;
     SUN9.0G)
        echo "formatting SUN9.0G"
+       partitioning=many
        cat /util/format.input.SUN9.0G | \
                 format ${drive} >/dev/null 2>&1
        ;;
     SUN18G)
        echo "formatting SUN18G"
+       partitioning=many
        cat /util/format.input.SUN18G | \
                 format ${drive} >/dev/null 2>&1
        ;;
+    ST320420A)
+       echo "formatting ST320420A"
+       partitioning=one
+       cat /util/format.input.ST320420A | \
+              format ${drive} >/dev/null 2>&1
+       ;;
     ST34321A)
        echo "formatting ST34321A"
+       partitioning=many
        cat /util/format.input.ST34321A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     ST34342A)
        echo "formatting ST34342A"
+       partitioning=many
        cat /util/format.input.ST34342A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     ST38420A)
        echo "formatting ST38420A"
+       partitioning=many
        cat /util/format.input.ST38420A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     ST39120A|ST39111A)
        echo "formating ST39120A"
+       partitioning=many
        cat /util/format.input.ST39120A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     ST39140A)
        echo "formatting ST39140A"
+       partitioning=many
        cat /util/format.input.ST39140A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     Seagate*)
        echo "formatting Segate Medalist"
+       partitioning=many
        cat /util/format.input.Seagate.medalist | \
 		format ${drive} >/dev/null 2>&1
        ;;
     SEAGATE*5660N)
        echo "formatting SEAGATE-ST5660N"
+       partitioning=many
        cat /util/format.input.seagate.5660 | \
 		format ${drive} >/dev/null 2>&1
        ;;
@@ -299,20 +320,26 @@ Y)
        while :; do sleep 10; done
        esac
 esac
+export partitioning
 
 echo "Making the filesystems..."
 echo ""
 echo "Making the root file system"
 echo "y" | /usr/sbin/newfs -v  $rrootdrive
 
-echo "Making the usr file system"
-echo "y" | /usr/sbin/newfs -v  $rusrdrive
-
 echo " Making the cache file system "
 echo "y" | /usr/sbin/newfs -v $rcachedrive
+case $partitioning in
+many)
+    echo "Making the var filesystem"
+    echo "y" | /usr/sbin/newfs -v $rvardrive
+    echo "Making the usr file system"
+    echo "y" | /usr/sbin/newfs -v  $rusrdrive
+    ;;
+*)
+    ;;
+esac
 
-echo "Making the var filesystem"
-echo "y" | /usr/sbin/newfs -v $rvardrive
 
 
 echo "Adding AFS filesystem"
