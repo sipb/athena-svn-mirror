@@ -18,6 +18,9 @@
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuRegisterWidget.c,v $
  * $Author: djf $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  89/12/09  15:14:44  djf
+ * Initial revision
+ * 
  *
  * This file contains the functions MuRegisterWidgetCallback (which is
  * called from uil as MuRegisterWidget -- see register.c) and MuGetWidget.
@@ -243,7 +246,7 @@ char *name;
     i = hash_store(h, quark, w);
   
     if (i == 1) {/* if a widget was already stored by that name, warn */
-	sprintf(err_buf,
+	(void)sprintf(err_buf,
 "MuRegisterName: reuse of name %s.  Previously registered value overwritten",
 		name);
 	XtWarning(err_buf);
