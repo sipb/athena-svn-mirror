@@ -14,7 +14,7 @@ INCLUDES = -I. -I$(srcdir) \
 	-I$(top_builddir)/panel \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DGNOME_DATADIR=\""$(datadir)"\" \
-	-I$(includedir) $(GNOME_INCLUDEDIR) $(ORB_CFLAGS) \
+	$(GNOME_INCLUDEDIR) $(ORB_CFLAGS) \
 	@PIXBUF_CFLAGS@
 
 bin_PROGRAMS = panel gnome-panel-properties-capplet

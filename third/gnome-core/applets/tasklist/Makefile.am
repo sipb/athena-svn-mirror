@@ -6,7 +6,7 @@ INCLUDES = -I. -I$(srcdir) 				\
 	-I$(srcdir)/../desk-guide			\
 	-I$(top_builddir)/panel \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-I$(includedir) $(GNOME_INCLUDEDIR)		\
+	$(GNOME_INCLUDEDIR)		\
 	-DVERSION=\""$(VERSION)"\" \
 	@PIXBUF_CFLAGS@
 

@@ -4,7 +4,7 @@ SUBDIRS = help
 
 defaultdir = $(datadir)/gnome
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) \
+INCLUDES = $(GNOME_INCLUDEDIR) \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale\"" \
 	-DDEFAULTDIR="\"$(defaultdir)\""

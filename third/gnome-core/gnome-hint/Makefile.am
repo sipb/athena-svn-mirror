@@ -1,5 +1,4 @@
 INCLUDES = 			\
-	-I$(includedir)		\
 	-I$(top_srcdir)/intl	\
 	-I$(top_builddir)/intl	\
 	$(GNOME_INCLUDEDIR)	\
