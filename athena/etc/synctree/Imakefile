@@ -1,7 +1,7 @@
 BINDIR=$(ATHETCDIR)
 
 SRCS= synctree.c rules.c glob_match.c bool_exp.c vtable.c err.c \
-	util.c gm.c regexp.c
+	util.c glob_match.c regexp.c
 OBJS= synctree.o rules.o glob_match.o bool_exp.o vtable.o err.o \
 	util.o y.tab.o version.o
 

@@ -1,4 +1,4 @@
 char *version_string()
 {
-  return "3.1.19";
+  return "3.1.20";
 }
