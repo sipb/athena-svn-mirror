@@ -11,14 +11,14 @@
 #include "error_table.h"
 #include "com_err.h"
 
-static const char rcsid[] = "$Id: com_err.c,v 1.10 1997-12-19 03:04:07 ghudson Exp $";
+static const char rcsid[] = "$Id: com_err.c,v 1.11 1999-11-15 15:22:35 ghudson Exp $";
 
-static void default_com_err_proc(const char *progname, long code,
+static void default_com_err_proc(const char *progname, errcode_t code,
 				 const char *fmt, va_list args);
 
 com_err_handler_t com_err_hook = default_com_err_proc;
 
-static void default_com_err_proc(const char *progname, long code,
+static void default_com_err_proc(const char *progname, errcode_t code,
 				 const char *fmt, va_list args)
 {
     if (progname) {
@@ -39,12 +39,12 @@ static void default_com_err_proc(const char *progname, long code,
     fflush(stderr);
 }
 
-void com_err_va(const char *progname, long code, const char *fmt, va_list args)
+void com_err_va(const char *progname, errcode_t code, const char *fmt, va_list args)
 {
     (*com_err_hook)(progname, code, fmt, args);
 }
 
-void com_err(const char *progname, long code, const char *fmt, ...)
+void com_err(const char *progname, errcode_t code, const char *fmt, ...)
 {
     va_list pvar;
 

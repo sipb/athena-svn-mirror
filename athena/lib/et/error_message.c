@@ -1,5 +1,5 @@
 /*
- * $Id: error_message.c,v 1.4 1999-01-22 23:17:19 ghudson Exp $
+ * $Id: error_message.c,v 1.5 1999-11-15 15:22:36 ghudson Exp $
  *
  * Copyright 1987 by the Student Information Processing Board
  * of the Massachusetts Institute of Technology
@@ -10,9 +10,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "error_table.h"
+#include "com_err.h"
 #include "mit-sipb-copyright.h"
 
-static const char rcsid[] = "$Id: error_message.c,v 1.4 1999-01-22 23:17:19 ghudson Exp $";
+static const char rcsid[] = "$Id: error_message.c,v 1.5 1999-11-15 15:22:36 ghudson Exp $";
 static const char copyright[] =
     "Copyright 1986, 1987, 1988 by the Student Information Processing Board\nand the department of Information Systems\nof the Massachusetts Institute of Technology";
 
@@ -20,7 +21,7 @@ static char buffer[25];
 
 struct et_list *_et_list = NULL;
 
-const char *error_message(long code)
+const char *error_message(errcode_t code)
 {
     int offset;
     struct et_list *et;
