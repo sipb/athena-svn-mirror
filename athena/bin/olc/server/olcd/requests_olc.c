@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.63 2001-03-30 22:01:58 zacheiss Exp $
+ *	$Id: requests_olc.c,v 1.63.2.1 2001-09-16 17:54:39 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.63 2001-03-30 22:01:58 zacheiss Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.63.2.1 2001-09-16 17:54:39 ghudson Exp $";
 #endif
 #endif
 
@@ -801,6 +801,12 @@ olc_ask(fd, request)
     }
   else
     target = requester;
+
+  /* If this pointer is NULL, return an error.  This shouldn't happen
+   * but it's better than dumping core.
+   */
+  if(!requester->user)
+    return(send_response(fd, ERROR));
 
 #ifdef OLCD_LOG_ACTIONS
   log_status("Attempted question from  %s [%d]",
