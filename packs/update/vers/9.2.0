@@ -1,0 +1,32 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  echo "MINIROOT=true"					>> $CONFVARS
+  echo "NEWOS=true"					>> $CONFVARS
+  echo "NEWDEVS=true"					>> $CONFVARS
+  echo "OSCHANGES=true"					>> $CONFVARS
+
+  cat "$LIBDIR/solaris9.1-9.2"				>> $DEADFILES
+  cat "$LIBDIR/solaris28-pkgs"				>> $OLDPKGS
+  cat "$LIBDIR/solaris28-ptchs"				>> $OLDPTCHS
+
+  # This file will be inaccurate after we remove the pkgs and patches.
+  echo "/var/sadm/install/contents"			>> $DEADFILES
+
+  # Create the lists of packages and patches to install.
+  cat "$LIBDIR/solaris9.2"			> "$PACKAGES"
+
+  echo "/etc/mail/sendmail.cf"				>> "$CONFCHG"
+  echo "/var/spool/cron/crontabs/root"			>> "$CONFCHG"
+  ;;
+
+sgi)
+  ;;
+esac
+
+echo "/etc/ntp.conf"					>> "$CONFCHG"
+echo "/etc/sshd_config"					>> "$CONFCHG"
+echo "/etc/athena/named.conf"				>> "$CONFCHG"
+
+echo "/etc/afsd"					>> "$DEADFILES"
