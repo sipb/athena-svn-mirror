@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Imakefile,v 1.1 1991-02-06 14:30:56 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Imakefile,v 1.2 1991-02-06 14:31:12 epeisach Exp $
 FONTS75=courR18 ncenB12 ncenB14 ncenB18 ncenB24 ncenR12
 FONTSM=	6x13 cursor 9x15
 BITMAPS=menu16
@@ -7,11 +7,7 @@ POPUPSCRIPTS=library lucy mitvma moira register techinfo xcluster xinfo
 create_dir(/etc/athena/login/fonts)
 create_dir(/usr/athena/lib/login)
 
-#ifdef ultrix
-install_file(Xsession.ult,/etc/athena/login/Xsession)
-#else
 install_file(Xsession,/etc/athena/login/Xsession)
-#endif
 install_file(config,/etc/athena/login/config)
 
 install::
