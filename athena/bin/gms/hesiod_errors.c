@@ -9,11 +9,13 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_hes_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/hesiod_errors.c,v 1.1 1988-09-20 21:48:18 eichin Exp $";
+static char rcsid_hes_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/hesiod_errors.c,v 1.2 1988-09-26 15:31:17 eichin Exp $";
 #endif lint
 
 #include "hesiod_err.h"
 #include <hesiod.h>
+
+typedef int Code_t;
 
 Code_t hesiod_error()
 {
