@@ -1,5 +1,5 @@
 /* functions.c -- useful window manager Lisp functions
-   $Id: functions.c,v 1.1.1.3 2001-03-09 19:35:31 ghudson Exp $
+   $Id: functions.c,v 1.2 2001-07-05 16:33:19 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -102,7 +102,7 @@ windows isn't affected.
 
 	if (!WINDOW_IS_GONE_P (this))
 	{
-	    if (pred != 0)
+	    if (pred != 0 && !WINDOW_IS_GONE_P (pred))
 	    {
 		remove_from_stacking_list (this);
 		insert_in_stacking_list_below (this, pred);
@@ -138,11 +138,19 @@ raise WINDOW to the top of the stacking order.
 
     if (!WINDOW_IS_GONE_P (VWIN (win)))
     {
-	remove_from_stacking_list (VWIN (win));
 	if (WINDOWP (above))
-	    insert_in_stacking_list_above (VWIN (win), VWIN (above));
+	{
+	    if (!WINDOW_IS_GONE_P (VWIN (above)))
+	    {
+		remove_from_stacking_list (VWIN (win));
+		insert_in_stacking_list_above (VWIN (win), VWIN (above));
+	    }
+	}
 	else
+	{
+	    remove_from_stacking_list (VWIN (win));
 	    insert_in_stacking_list_above_all (VWIN (win));
+	}
 	restack_window (VWIN (win));
 	Fcall_hook (Qafter_restacking_hook, Qnil, Qnil);
     }
@@ -162,11 +170,19 @@ lower WINDOW to the bottom of the stacking order.
 
     if (!WINDOW_IS_GONE_P (VWIN (win)))
     {
-	remove_from_stacking_list (VWIN (win));
 	if (WINDOWP (below))
-	    insert_in_stacking_list_below (VWIN (win), VWIN (below));
+	{
+	    if (!WINDOW_IS_GONE_P (VWIN (below)))
+	    {
+		remove_from_stacking_list (VWIN (win));
+		insert_in_stacking_list_below (VWIN (win), VWIN (below));
+	    }
+	}
 	else
+	{
+	    remove_from_stacking_list (VWIN (win));
 	    insert_in_stacking_list_below_all (VWIN (win));
+	}
 	restack_window (VWIN (win));
 	Fcall_hook (Qafter_restacking_hook, Qnil, Qnil);
     }
