@@ -5,12 +5,11 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.8 1988-08-16 18:09:06 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.9 1988-08-18 18:23:21 raeburn Exp $
 
 # Set the initialization directory pathname to find initialization files.
 
 set INITDIR = /usr/athena/lib/init
-set INITDIRE = /mit/protofiles/init
 
 # Now check to see if this is an interactive shell.  If it isn't (e.g.,
 # this is an rsh, we want to know about it.
@@ -41,7 +40,7 @@ endif
 if (-r ${INITDIR}/set_path) source ${INITDIR}/set_path
 if (-r ${INITDIR}/shell_init) source ${INITDIR}/shell_init
 if (-r ${INITDIR}/aliases) source  ${INITDIR}/aliases
-if (-r ${INITDIRE}/subject_aliases) source ${INITDIRE}/subject_aliases
+if (-r ${INITDIR}/subject_aliases) source ${INITDIR}/subject_aliases
 if (-r ${INITDIR}/misc) source ${INITDIR}/misc
 
 # Finally, source the personal startup file.  By keeping the commands
