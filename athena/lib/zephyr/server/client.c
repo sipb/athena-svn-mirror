@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_client_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.6 1987-07-24 15:12:57 jtkohl Exp $";
+static char rcsid_client_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.7 1987-08-09 17:50:36 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -28,8 +28,9 @@ static char rcsid_client_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/at
  *	ZClient_t **client; (RETURN)
  *	ZServerDesc_t *server;
  *
- * Code_t client_deregister(client)
+ * Code_t client_deregister(client, host)
  *	ZClient_t *client;
+ *	ZHostList_t *host;
  *
  * ZClient_t *client_which_client(who, notice)
  *	struct sockaddr_in *who;
