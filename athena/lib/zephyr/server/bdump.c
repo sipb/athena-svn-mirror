@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.22 1988-06-15 22:48:30 jtkohl Exp $";
+static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.23 1988-06-17 17:31:08 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -451,7 +451,8 @@ int num;
 	pnotice->z_opcode = opcode;
 	pnotice->z_sender = sender;
 	pnotice->z_recipient = recip;
-	pnotice->z_default_format = 0;
+	pnotice->z_default_format = "";
+	pnotice->z_num_other_fields = 0;
 
 	if ((retval = ZFormatNoticeList(pnotice, lyst, num, &pack, &packlen, ZNOAUTH)) != ZERR_NONE)
 		return(retval);
@@ -998,8 +999,8 @@ int num;
 	pnotice->z_opcode = opcode;
 	pnotice->z_sender = sender;
 	pnotice->z_recipient = recip;
-	pnotice->z_default_format = 0;
-	
+	pnotice->z_default_format = "";
+	pnotice->z_num_other_fields = 0;
 	
 	if ((retval = ZFormatNoticeList(pnotice, lyst, num, &pack, &packlen, ZNOAUTH)) != ZERR_NONE) {
 		syslog(LOG_WARNING, "sl format: %s", error_message(retval));
@@ -1044,9 +1045,10 @@ int len;
 	pnotice->z_opcode = opcode;
 	pnotice->z_sender = sender;
 	pnotice->z_recipient = recip;
-	pnotice->z_default_format = 0;
+	pnotice->z_default_format = "";
 	pnotice->z_message = message;
 	pnotice->z_message_len = len;
+	pnotice->z_num_other_fields = 0;
 
 	if ((retval = ZFormatNotice(pnotice, &pack, &packlen, ZNOAUTH)) != ZERR_NONE) {
 		syslog(LOG_WARNING, "sn format: %s", error_message(retval));
