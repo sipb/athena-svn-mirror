@@ -1,0 +1,31 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/Imakefile,v $
+ * $Id: Imakefile,v 1.1 1991-01-06 18:28:44 lwvanels Exp $
+ */
+
+/*#define Profiling*/
+
+#ifdef Profiling
+LIBSUFFIX=_p
+EXTRA_LOAD_FLAGS=-pg
+#endif
+
+SRCS=	lumberjack.c
+OBJS=	lumberjack.o
+
+#ifdef Profiling
+DEFINES=-DLOG -DSYSLOG -DPROFILE
+.c.o:
+	$(CC) -pg -c $(CFLAGS) $*.c
+#else
+DEFINES=-DLOG -DSYSLOG
+#endif /* Profiling */
+
+NormalProgramTarget(lumberjack,$(OBJS),,,)
+
+SaberProgramTarget(lumberjack,$(SRCS),$(OBJS),,)
+
+DependTarget()
+LintTarget()
+
+AllTarget(lumberjack)
