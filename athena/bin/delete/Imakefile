@@ -4,7 +4,7 @@
  *     For copying and distribution information, see the file
  *     "mit-copying.h".
  *
- *     $Id: Imakefile,v 1.16 1996-03-26 20:28:01 ghudson Exp $
+ *     $Id: Imakefile,v 1.17 1996-04-19 21:03:00 cfields Exp $
  */
 
 /*
@@ -46,7 +46,12 @@ IFLAGS= -I$(IRULESRC) -DDeleteDevelopment
  */
 
 #ifdef AfsDir
+#ifdef sgi
+AFSLIBS=	-L$(AFSDIR)/lib $(AFSDIR)/lib/afs/libsys.a -lrx \
+		$(AFSDIR)/lib/afs/libsys.a -llwp
+#else
 AFSLIBS=	-L$(AFSDIR)/lib $(AFSDIR)/lib/afs/libsys.a -lrx -llwp
+#endif
 AFSDEFINES=	-I$(AFSDIR)/include -DAFS_MOUNTPOINTS
 #endif
 
