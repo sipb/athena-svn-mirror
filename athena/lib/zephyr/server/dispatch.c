@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.23 1988-06-21 17:31:15 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.24 1988-06-24 22:55:57 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -407,6 +407,8 @@ ZClient_t *client;
 		syslog(LOG_ERR, "xmit malloc");
 		return;			/* DON'T put on nack list */
 	}
+
+	packlen = sizeof(ZPacket_t);
 
 	if (auth && client) {		/*
 					  we are distributing authentic and
