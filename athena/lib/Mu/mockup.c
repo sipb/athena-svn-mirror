@@ -134,16 +134,19 @@ char **argv;
     /*
      * set up 'Reload' item in the system menu.
      * arrange to be called back when it is selected.
+     * if the _motif_wm_messages == None, then mwm is not running, so
+     * we don't want to do any of this stuff anyway.
      */
     _motif_wm_messages=XInternAtom(XtDisplay(toplevel),_XA_MWM_MESSAGES,True);
-    reload = XInternAtom(XtDisplay(toplevel),"RELOAD",False);
-    XmAddWMProtocols(toplevel,&_motif_wm_messages,1);
-    sprintf(buf,"Reload _e %s f.send_msg %d",
-	    AppRes.reloadBinding,(int)reload);
-    XtSetArg (arglist[0], XmNmwmMenu, buf);
-    XtSetValues(toplevel,arglist,1);
-    XmAddProtocolCallback(toplevel,_motif_wm_messages,reload,Reload,NULL);
-
+    if (_motif_wm_messages != None) {
+	reload = XInternAtom(XtDisplay(toplevel),"RELOAD",False);
+	XmAddWMProtocols(toplevel,&_motif_wm_messages,1);
+	sprintf(buf,"Reload _e %s f.send_msg %d",
+		AppRes.reloadBinding,(int)reload);
+	XtSetArg (arglist[0], XmNmwmMenu, buf);
+	XtSetValues(toplevel,arglist,1);
+	XmAddProtocolCallback(toplevel,_motif_wm_messages,reload,Reload,NULL);
+    }
 
     /* register the quit callback and the Mu routines. */
     if (MrmRegisterNames (regvec, XtNumber(regvec)) != MrmSUCCESS) {
