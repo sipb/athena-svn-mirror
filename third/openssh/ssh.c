@@ -351,13 +351,16 @@ again:
 		case 'A':
 			options.forward_agent = 1;
 			break;
-#if defined(AFS) || defined(KRB5)
+#if defined(AFS) || defined(KRB5) || defined(GSSAPI)
 		case 'k':
 #ifdef KRB5
 			options.kerberos_tgt_passing = 0;
 #endif
 #ifdef AFS
 			options.afs_token_passing = 0;
+#endif
+#ifdef GSSAPI
+			options.gss_deleg_creds = 0;
 #endif
 			break;
 #endif
