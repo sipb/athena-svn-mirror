@@ -1,0 +1,138 @@
+<refentry id="gdk-pixbuf-file-saving">
+<refmeta>
+<refentrytitle>File saving</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GDK-PIXBUF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>File saving</refname><refpurpose>Saving a pixbuf to a file.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
+
+
+<link linkend="gboolean">gboolean</link>    <link linkend="gdk-pixbuf-savev">gdk_pixbuf_savev</link>                (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             char **option_keys,
+                                             char **option_values,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="gdk-pixbuf-save">gdk_pixbuf_save</link>                 (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             <link linkend="GError">GError</link> **error,
+                                             ...);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gdk-pixbuf-savev"/>gdk_pixbuf_savev ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_savev                (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             char **option_keys,
+                                             char **option_values,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Saves pixbuf to a file in <parameter>type</parameter>, which is currently "jpeg" or "png".
+If <parameter>error</parameter> is set, <literal>FALSE</literal> will be returned. See <link linkend="gdk-pixbuf-save">gdk_pixbuf_save</link>() for more
+details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkPixbuf">GdkPixbuf</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> name of file to save.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> name of file format.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>option_keys</parameter>&nbsp;:</term>
+<listitem><simpara> name of options to set, <literal>NULL</literal>-terminated
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>option_values</parameter>&nbsp;:</term>
+<listitem><simpara> values for named options
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> return location for error, or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> whether an error was set
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gdk-pixbuf-save"/>gdk_pixbuf_save ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_save                 (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             <link linkend="GError">GError</link> **error,
+                                             ...);</programlisting>
+<para>
+Saves pixbuf to a file in <parameter>type</parameter>, which is currently "jpeg" or
+"png".  If <parameter>error</parameter> is set, <literal>FALSE</literal> will be returned. Possible errors include 
+those in the <link linkend="GDK-PIXBUF-ERROR-CAPS">GDK_PIXBUF_ERROR</link> domain and those in the <link linkend="G-FILE-ERROR-CAPS">G_FILE_ERROR</link> domain.
+</para>
+<para>
+The variable argument list should be <literal>NULL</literal>-terminated; if not empty,
+it should contain pairs of strings that modify the save
+parameters. For example:
+<informalexample><programlisting>
+gdk_pixbuf_save (pixbuf, handle, "jpeg", &amp;error,
+                 "quality", "100", NULL);
+</programlisting></informalexample>
+</para>
+<para>
+Currently only few parameters exist. JPEG images can be saved with a 
+"quality" parameter; its value should be in the range [0,100]. 
+Text chunks can be attached to PNG images by specifying parameters of
+the form "tEXt::key", where key is an ASCII string of length 1-79.
+The values are UTF-8 encoded strings.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkPixbuf">GdkPixbuf</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> name of file to save.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> name of file format.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> return location for error, or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> list of key-value save options
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> whether an error was set
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

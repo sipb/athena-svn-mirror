@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Graphics Contexts</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GTK+ Reference Manual"><link rel="up" href="gtkbase.html" title="Part II. GTK+ Core Reference"><link rel="previous" href="gtk-Standard-Enumerations.html" title="Standard Enumerations"><link rel="next" href="GtkStyle.html" title="Styles"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gtk-Standard-Enumerations.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gtkbase.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GTK+ Reference Manual</th><td><a accesskey="n" href="GtkStyle.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gtk-Graphics-Contexts"></a><div class="titlepage"></div><div class="refnamediv"><h2>Graphics Contexts</h2><p>Graphics Contexts &#8212; A shared pool of GdkGC objects</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+<a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a>*      <a href="gtk-Graphics-Contexts.html#gtk-gc-get">gtk_gc_get</a>                      (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> depth,
+                                             <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColormap"
+>GdkColormap</a> *colormap,
+                                             <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGCValues"
+>GdkGCValues</a> *values,
+                                             <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGCValuesMask"
+>GdkGCValuesMask</a> values_mask);
+void        <a href="gtk-Graphics-Contexts.html#gtk-gc-release">gtk_gc_release</a>                  (<a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> *gc);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+These functions provide access to a shared pool of <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> objects.
+When a new <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> is needed, <a href="gtk-Graphics-Contexts.html#gtk-gc-get">gtk_gc_get</a>() is called with the required depth,
+colormap and <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGCValues"
+>GdkGCValues</a>. If a <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> with the required properties already
+exists then that is returned. If not, a new <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> is created.
+When the <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> is no longer needed, <a href="gtk-Graphics-Contexts.html#gtk-gc-release">gtk_gc_release</a>() should be called.
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gtk-gc-get"></a>gtk_gc_get ()</h3><pre class="programlisting"><a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a>*      gtk_gc_get                      (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> depth,
+                                             <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColormap"
+>GdkColormap</a> *colormap,
+                                             <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGCValues"
+>GdkGCValues</a> *values,
+                                             <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGCValuesMask"
+>GdkGCValuesMask</a> values_mask);</pre><p>
+Gets a <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> with the given depth, colormap and <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGCValues"
+>GdkGCValues</a>.
+If a <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> with the given properties already exists then it is returned,
+otherwise a new <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> is created.
+The returned <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> should be released with <a href="gtk-Graphics-Contexts.html#gtk-gc-release">gtk_gc_release</a>() when it is no
+longer needed.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>depth</tt></i> :</span></td><td>the depth of the <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> to create.
+</td></tr><tr><td><span class="term"><i><tt>colormap</tt></i> :</span></td><td>the <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColormap"
+>GdkColormap</a> (FIXME: I don't know why this is needed).
+</td></tr><tr><td><span class="term"><i><tt>values</tt></i> :</span></td><td>a <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGCValues"
+>GdkGCValues</a> struct containing settings for the <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a>.
+</td></tr><tr><td><span class="term"><i><tt>values_mask</tt></i> :</span></td><td>a set of flags indicating which of the fields in <i><tt>values</tt></i> has
+been set.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-gc-release"></a>gtk_gc_release ()</h3><pre class="programlisting">void        gtk_gc_release                  (<a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> *gc);</pre><p>
+Releases a <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a> allocated using <a href="gtk-Graphics-Contexts.html#gtk-gc-get">gtk_gc_get</a>().
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>gc</tt></i> :</span></td><td>a <a
+href="../gdk/gdk-Graphics-Contexts.html#GdkGC"
+>GdkGC</a>.
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gtk-Standard-Enumerations.html"><b>&lt;&lt; Standard Enumerations</b></a></td><td align="right"><a accesskey="n" href="GtkStyle.html"><b>Styles &gt;&gt;</b></a></td></tr></table></body></html>

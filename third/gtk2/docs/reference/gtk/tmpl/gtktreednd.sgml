@@ -1,0 +1,49 @@
+<!-- ##### SECTION Title ##### -->
+GtkTreeView drag-and-drop
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GtkTreeDragDest ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GtkTreeDragSource ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GtkTreeDragDestIface ##### -->
+<para>
+
+</para>
+
+@g_iface: 
+@drag_data_received: 
+@row_drop_possible: 
+
+<!-- ##### STRUCT GtkTreeDragSourceIface ##### -->
+<para>
+
+</para>
+
+@g_iface: 
+@row_draggable: 
+@drag_data_get: 
+@drag_data_delete: 
+

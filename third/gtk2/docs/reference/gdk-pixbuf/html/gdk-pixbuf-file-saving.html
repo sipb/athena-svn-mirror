@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>File saving</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="The gdk-pixbuf Library"><link rel="up" href="rn01.html" title="API Reference"><link rel="previous" href="gdk-pixbuf-file-loading.html" title="File Loading"><link rel="next" href="gdk-pixbuf-creating.html" title="Image Data in Memory"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-pixbuf-file-loading.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">The gdk-pixbuf Library</th><td><a accesskey="n" href="gdk-pixbuf-creating.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gdk-pixbuf-file-saving"></a><div class="titlepage"></div><div class="refnamediv"><h2>File saving</h2><p>File saving &#8212; Saving a pixbuf to a file.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
+
+
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gdk-pixbuf-file-saving.html#gdk-pixbuf-savev">gdk_pixbuf_savev</a>                (<a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             char **option_keys,
+                                             char **option_values,
+                                             <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gdk-pixbuf-file-saving.html#gdk-pixbuf-save">gdk_pixbuf_save</a>                 (<a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error,
+                                             ...);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gdk-pixbuf-savev"></a>gdk_pixbuf_savev ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gdk_pixbuf_savev                (<a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             char **option_keys,
+                                             char **option_values,
+                                             <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre><p>
+Saves pixbuf to a file in <i><tt>type</tt></i>, which is currently &quot;jpeg&quot; or &quot;png&quot;.
+If <i><tt>error</tt></i> is set, <tt>FALSE</tt> will be returned. See <a href="gdk-pixbuf-file-saving.html#gdk-pixbuf-save">gdk_pixbuf_save</a>() for more
+details.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>pixbuf</tt></i> :</span></td><td> a <a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>.
+</td></tr><tr><td><span class="term"><i><tt>filename</tt></i> :</span></td><td> name of file to save.
+</td></tr><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td> name of file format.
+</td></tr><tr><td><span class="term"><i><tt>option_keys</tt></i> :</span></td><td> name of options to set, <tt>NULL</tt>-terminated
+</td></tr><tr><td><span class="term"><i><tt>option_values</tt></i> :</span></td><td> values for named options
+</td></tr><tr><td><span class="term"><i><tt>error</tt></i> :</span></td><td> return location for error, or <tt>NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> whether an error was set
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gdk-pixbuf-save"></a>gdk_pixbuf_save ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gdk_pixbuf_save                 (<a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a> *pixbuf,
+                                             const char *filename,
+                                             const char *type,
+                                             <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error,
+                                             ...);</pre><p>
+Saves pixbuf to a file in <i><tt>type</tt></i>, which is currently &quot;jpeg&quot; or
+&quot;png&quot;.  If <i><tt>error</tt></i> is set, <tt>FALSE</tt> will be returned. Possible errors include 
+those in the <a href="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-ERROR-CAPS">GDK_PIXBUF_ERROR</a> domain and those in the <a
+href="../glib/glib-File-Utilities.html#G-FILE-ERROR-CAPS"
+>G_FILE_ERROR</a> domain.
+</p><p>
+The variable argument list should be <tt>NULL</tt>-terminated; if not empty,
+it should contain pairs of strings that modify the save
+parameters. For example:
+</p><div class="informalexample"><pre class="programlisting">
+gdk_pixbuf_save (pixbuf, handle, &quot;jpeg&quot;, &amp;error,
+                 &quot;quality&quot;, &quot;100&quot;, NULL);
+</pre></div><p>
+</p><p>
+Currently only few parameters exist. JPEG images can be saved with a 
+&quot;quality&quot; parameter; its value should be in the range [0,100]. 
+Text chunks can be attached to PNG images by specifying parameters of
+the form &quot;tEXt::key&quot;, where key is an ASCII string of length 1-79.
+The values are UTF-8 encoded strings.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>pixbuf</tt></i> :</span></td><td> a <a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>.
+</td></tr><tr><td><span class="term"><i><tt>filename</tt></i> :</span></td><td> name of file to save.
+</td></tr><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td> name of file format.
+</td></tr><tr><td><span class="term"><i><tt>error</tt></i> :</span></td><td> return location for error, or <tt>NULL</tt>
+</td></tr><tr><td><span class="term"><i><tt>...</tt></i> :</span></td><td> list of key-value save options
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> whether an error was set
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gdk-pixbuf-file-loading.html"><b>&lt;&lt; File Loading</b></a></td><td align="right"><a accesskey="n" href="gdk-pixbuf-creating.html"><b>Image Data in Memory &gt;&gt;</b></a></td></tr></table></body></html>

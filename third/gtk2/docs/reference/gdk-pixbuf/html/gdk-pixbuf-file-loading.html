@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>File Loading</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="The gdk-pixbuf Library"><link rel="up" href="rn01.html" title="API Reference"><link rel="previous" href="gdk-pixbuf-refcounting.html" title="Reference Counting and Memory Mangement"><link rel="next" href="gdk-pixbuf-file-saving.html" title="File saving"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-pixbuf-refcounting.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">The gdk-pixbuf Library</th><td><a accesskey="n" href="gdk-pixbuf-file-saving.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gdk-pixbuf-file-loading"></a><div class="titlepage"></div><div class="refnamediv"><h2>File Loading</h2><p>File Loading &#8212; Loading a pixbuf from a file.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
+
+
+<a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>*  <a href="gdk-pixbuf-file-loading.html#gdk-pixbuf-new-from-file">gdk_pixbuf_new_from_file</a>        (const char *filename,
+                                             <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+    The gdk-pixbuf library provides a simple mechanism for loading
+    an image from a file in synchronous fashion.  This means that the
+    library takes control of the application while the file is being
+    loaded; from the user's point of view, the application will block
+    until the image is done loading.
+  </p><p>
+    This interface can be used by applications in which blocking is
+    acceptable while an image is being loaded.  It can also be used to
+    load small images in general.  Applications that need progressive
+    loading can use the <a href="GdkPixbufLoader.html" title="GdkPixbufLoader">GdkPixbufLoader</a> functionality instead.
+  </p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gdk-pixbuf-new-from-file"></a>gdk_pixbuf_new_from_file ()</h3><pre class="programlisting"><a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>*  gdk_pixbuf_new_from_file        (const char *filename,
+                                             <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre><p>
+Creates a new pixbuf by loading an image from a file.  The file format is
+detected automatically. If <tt>NULL</tt> is returned, then <i><tt>error</tt></i> will be set.
+Possible errors are in the <a href="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-ERROR-CAPS">GDK_PIXBUF_ERROR</a> and <a
+href="../glib/glib-File-Utilities.html#G-FILE-ERROR-CAPS"
+>G_FILE_ERROR</a> domains.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>filename</tt></i> :</span></td><td> Name of file to load.
+</td></tr><tr><td><span class="term"><i><tt>error</tt></i> :</span></td><td> Return location for an error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A newly-created pixbuf with a reference count of 1, or <tt>NULL</tt> if
+any of several error conditions occurred:  the file could not be opened,
+there was no loader for the file's format, there was not enough memory to
+allocate the image buffer, or the image file contained invalid data.
+</td></tr></tbody></table></div></div></div><div class="refsect1"><h2>See Also</h2><p>
+    <a href="GdkPixbufLoader.html" title="GdkPixbufLoader">GdkPixbufLoader</a>.
+  </p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gdk-pixbuf-refcounting.html"><b>&lt;&lt; Reference Counting and Memory Mangement</b></a></td><td align="right"><a accesskey="n" href="gdk-pixbuf-file-saving.html"><b>File saving &gt;&gt;</b></a></td></tr></table></body></html>

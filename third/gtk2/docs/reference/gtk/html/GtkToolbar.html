@@ -1,0 +1,605 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkToolbar</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GTK+ Reference Manual"><link rel="up" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar"><link rel="previous" href="GtkTearoffMenuItem.html" title="GtkTearoffMenuItem"><link rel="next" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GtkTearoffMenuItem.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="MenusAndCombos.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GTK+ Reference Manual</th><td><a accesskey="n" href="SelectorWidgets.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="GtkToolbar"></a><div class="titlepage"></div><div class="refnamediv"><h2>GtkToolbar</h2><p>GtkToolbar &#8212; create bars of buttons and other widgets.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+struct      <a href="GtkToolbar.html#GtkToolbar-struct">GtkToolbar</a>;
+enum        <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a>;
+enum        <a href="GtkToolbar.html#GtkToolbarSpaceStyle">GtkToolbarSpaceStyle</a>;
+struct      <a href="GtkToolbar.html#GtkToolbarChild">GtkToolbarChild</a>;
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-new">gtk_toolbar_new</a>                 (void);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-append-item">gtk_toolbar_append_item</a>         (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-prepend-item">gtk_toolbar_prepend_item</a>        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-insert-item">gtk_toolbar_insert_item</a>         (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+void        <a href="GtkToolbar.html#gtk-toolbar-append-space">gtk_toolbar_append_space</a>        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+void        <a href="GtkToolbar.html#gtk-toolbar-prepend-space">gtk_toolbar_prepend_space</a>       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+void        <a href="GtkToolbar.html#gtk-toolbar-insert-space">gtk_toolbar_insert_space</a>        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-append-element">gtk_toolbar_append_element</a>      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> type,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-prepend-element">gtk_toolbar_prepend_element</a>     (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> type,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-insert-element">gtk_toolbar_insert_element</a>      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> type,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+void        <a href="GtkToolbar.html#gtk-toolbar-append-widget">gtk_toolbar_append_widget</a>       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text);
+void        <a href="GtkToolbar.html#gtk-toolbar-prepend-widget">gtk_toolbar_prepend_widget</a>      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text);
+void        <a href="GtkToolbar.html#gtk-toolbar-insert-widget">gtk_toolbar_insert_widget</a>       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+void        <a href="GtkToolbar.html#gtk-toolbar-set-orientation">gtk_toolbar_set_orientation</a>     (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> orientation);
+void        <a href="GtkToolbar.html#gtk-toolbar-set-style">gtk_toolbar_set_style</a>           (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> style);
+void        <a href="GtkToolbar.html#gtk-toolbar-set-tooltips">gtk_toolbar_set_tooltips</a>        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> enable);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  <a href="GtkToolbar.html#gtk-toolbar-insert-stock">gtk_toolbar_insert_stock</a>        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *stock_id,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+void        <a href="GtkToolbar.html#gtk-toolbar-set-icon-size">gtk_toolbar_set_icon_size</a>       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a> icon_size);
+<a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a> <a href="GtkToolbar.html#gtk-toolbar-get-icon-size">gtk_toolbar_get_icon_size</a>       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+<a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> <a href="GtkToolbar.html#gtk-toolbar-get-orientation">gtk_toolbar_get_orientation</a>  (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+<a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> <a href="GtkToolbar.html#gtk-toolbar-get-style">gtk_toolbar_get_style</a>       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="GtkToolbar.html#gtk-toolbar-get-tooltips">gtk_toolbar_get_tooltips</a>        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+void        <a href="GtkToolbar.html#gtk-toolbar-remove-space">gtk_toolbar_remove_space</a>        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+void        <a href="GtkToolbar.html#gtk-toolbar-unset-icon-size">gtk_toolbar_unset_icon_size</a>     (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+void        <a href="GtkToolbar.html#gtk-toolbar-unset-style">gtk_toolbar_unset_style</a>         (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);
+
+
+</pre></div><div class="refsect1"><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+         +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+               +----<a href="GtkContainer.html" title="GtkContainer">GtkContainer</a>
+                     +----GtkToolbar
+</pre></div><div class="refsect1"><h2>Implemented Interfaces</h2><p>
+GtkToolbar implements AtkImplementorIface.
+</p></div><div class="refsect1"><h2>Properties</h2><pre class="synopsis">
+
+  &quot;<a href="GtkToolbar.html#GtkToolbar--orientation">orientation</a>&quot;          <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a>       : Read / Write
+  &quot;<a href="GtkToolbar.html#GtkToolbar--toolbar-style">toolbar-style</a>&quot;        <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a>      : Read / Write
+</pre></div><div class="refsect1"><h2>Style Properties</h2><pre class="synopsis">
+
+  &quot;<a href="GtkToolbar.html#GtkToolbar--button-relief">button-relief</a>&quot;        <a href="gtk-Standard-Enumerations.html#GtkReliefStyle">GtkReliefStyle</a>       : Read
+  &quot;<a href="GtkToolbar.html#GtkToolbar--internal-padding">internal-padding</a>&quot;     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read
+  &quot;<a href="GtkToolbar.html#GtkToolbar--shadow-type">shadow-type</a>&quot;          <a href="gtk-Standard-Enumerations.html#GtkShadowType">GtkShadowType</a>        : Read
+  &quot;<a href="GtkToolbar.html#GtkToolbar--space-size">space-size</a>&quot;           <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read
+  &quot;<a href="GtkToolbar.html#GtkToolbar--space-style">space-style</a>&quot;          <a href="GtkToolbar.html#GtkToolbarSpaceStyle">GtkToolbarSpaceStyle</a> : Read
+</pre></div><div class="refsect1"><h2>Signal Prototypes</h2><pre class="synopsis">
+
+&quot;<a href="GtkToolbar.html#GtkToolbar-orientation-changed">orientation-changed</a>&quot;
+            void        user_function      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                            <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> orientation,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+&quot;<a href="GtkToolbar.html#GtkToolbar-style-changed">style-changed</a>&quot;
+            void        user_function      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                            <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> style,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+A toolbar is created with a call to <a href="GtkToolbar.html#gtk-toolbar-new">gtk_toolbar_new</a>().
+</p><p>
+Buttons with text and/or images are added with <a href="GtkToolbar.html#gtk-toolbar-append-item">gtk_toolbar_append_item</a>(), <a href="GtkToolbar.html#gtk-toolbar-prepend-item">gtk_toolbar_prepend_item</a>(), and <a href="GtkToolbar.html#gtk-toolbar-insert-item">gtk_toolbar_insert_item</a>().
+</p><p>
+Any of <a href="GtkToggleButton.html" title="GtkToggleButton">GtkToggleButton</a>, <a href="GtkRadioButton.html" title="GtkRadioButton">GtkRadioButton</a>, or an arbitrary widget can be added to the toolbar with <a href="GtkToolbar.html#gtk-toolbar-append-element">gtk_toolbar_append_element</a>(), <a href="GtkToolbar.html#gtk-toolbar-prepend-element">gtk_toolbar_prepend_element</a>(), and <a href="GtkToolbar.html#gtk-toolbar-insert-element">gtk_toolbar_insert_element</a>().
+</p><p>
+Widgets can be visibly grouped by adding gaps between widgets using <a href="GtkToolbar.html#gtk-toolbar-append-space">gtk_toolbar_append_space</a>(), <a href="GtkToolbar.html#gtk-toolbar-prepend-space">gtk_toolbar_prepend_space</a>(), and <a href="GtkToolbar.html#gtk-toolbar-insert-space">gtk_toolbar_insert_space</a>().
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GtkToolbar-struct"></a>struct GtkToolbar</h3><pre class="programlisting">struct GtkToolbar;</pre><p>
+<i><tt>num_children</tt></i> is an integer specifying how many toolbar items the <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> contains. <i><tt>children</tt></i> is a <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> of the child widgets of the toolbar.
+</p><p>
+<i><tt>orientation</tt></i>
+</p></div><hr><div class="refsect2"><h3><a name="GtkToolbarChildType"></a>enum GtkToolbarChildType</h3><pre class="programlisting">typedef enum
+{
+  GTK_TOOLBAR_CHILD_SPACE,
+  GTK_TOOLBAR_CHILD_BUTTON,
+  GTK_TOOLBAR_CHILD_TOGGLEBUTTON,
+  GTK_TOOLBAR_CHILD_RADIOBUTTON,
+  GTK_TOOLBAR_CHILD_WIDGET
+} GtkToolbarChildType;
+</pre><p>
+<a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> is used to set the type of new elements that are added 
+to a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><tt>GTK_TOOLBAR_CHILD_SPACE</tt></span></td><td>a space in the style of the toolbar's <a href="GtkToolbar.html#GtkToolbarSpaceStyle">GtkToolbarSpaceStyle</a>.
+</td></tr><tr><td><span class="term"><tt>GTK_TOOLBAR_CHILD_BUTTON</tt></span></td><td>a <a href="GtkButton.html" title="GtkButton">GtkButton</a>.
+</td></tr><tr><td><span class="term"><tt>GTK_TOOLBAR_CHILD_TOGGLEBUTTON</tt></span></td><td>a <a href="GtkToggleButton.html" title="GtkToggleButton">GtkToggleButton</a>.
+</td></tr><tr><td><span class="term"><tt>GTK_TOOLBAR_CHILD_RADIOBUTTON</tt></span></td><td>a <a href="GtkRadioButton.html" title="GtkRadioButton">GtkRadioButton</a>.
+</td></tr><tr><td><span class="term"><tt>GTK_TOOLBAR_CHILD_WIDGET</tt></span></td><td>a standard <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GtkToolbarSpaceStyle"></a>enum GtkToolbarSpaceStyle</h3><pre class="programlisting">typedef enum
+{
+  GTK_TOOLBAR_SPACE_EMPTY,
+  GTK_TOOLBAR_SPACE_LINE
+} GtkToolbarSpaceStyle;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GtkToolbarChild"></a>struct GtkToolbarChild</h3><pre class="programlisting">struct GtkToolbarChild {
+
+  GtkToolbarChildType type;
+  GtkWidget *widget;
+  GtkWidget *icon;
+  GtkWidget *label;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-new"></a>gtk_toolbar_new ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_new                 (void);</pre><p>
+Creates a new toolbar. 
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the newly-created toolbar.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-append-item"></a>gtk_toolbar_append_item ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_append_item         (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Adds a new button to the end (right or bottom edges) of the given toolbar.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>text</tt></i> :</span></td><td>give your toolbar button a label.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td>a string that appears when the user holds the mouse over this item.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td>use with <a href="GtkTipsQuery.html" title="GtkTipsQuery">GtkTipsQuery</a>.
+</td></tr><tr><td><span class="term"><i><tt>icon</tt></i> :</span></td><td>a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> that should be used as the button's icon.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td>the function to be executed when the button is pressed.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>a pointer to any data you wish to be passed to the callback.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the new toolbar item as a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-prepend-item"></a>gtk_toolbar_prepend_item ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_prepend_item        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Adds a new button to the beginning (top or left edges) of the given toolbar.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>text</tt></i> :</span></td><td>give your toolbar button a label.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td>a string that appears when the user holds the mouse over this item.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td>use with <a href="GtkTipsQuery.html" title="GtkTipsQuery">GtkTipsQuery</a>.
+</td></tr><tr><td><span class="term"><i><tt>icon</tt></i> :</span></td><td>a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> that should be used as the button's icon.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td>the function to be executed when the button is pressed.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>a pointer to any data you wish to be passed to the callback.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the new toolbar item as a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-insert-item"></a>gtk_toolbar_insert_item ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_insert_item         (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre><p>
+Inserts a new item into the toolbar. You must specify the position in the toolbar where it will be inserted.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>text</tt></i> :</span></td><td>give your toolbar button a label.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td>a string that appears when the user holds the mouse over this item.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td>use with <a href="GtkTipsQuery.html" title="GtkTipsQuery">GtkTipsQuery</a>.
+</td></tr><tr><td><span class="term"><i><tt>icon</tt></i> :</span></td><td>a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> that should be used as the button's icon.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td>the function to be executed when the button is pressed.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>a pointer to any data you wish to be passed to the callback.
+</td></tr><tr><td><span class="term"><i><tt>position</tt></i> :</span></td><td>the number of widgets to insert this item after.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the new toolbar item as a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-append-space"></a>gtk_toolbar_append_space ()</h3><pre class="programlisting">void        gtk_toolbar_append_space        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Adds a new space to the end of the toolbar.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-prepend-space"></a>gtk_toolbar_prepend_space ()</h3><pre class="programlisting">void        gtk_toolbar_prepend_space       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Adds a new space to the beginning of the toolbar.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-insert-space"></a>gtk_toolbar_insert_space ()</h3><pre class="programlisting">void        gtk_toolbar_insert_space        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre><p>
+Inserts a new space in the toolbar at the specified position.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr><tr><td><span class="term"><i><tt>position</tt></i> :</span></td><td>the number of widgets after which a space should be inserted.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-append-element"></a>gtk_toolbar_append_element ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_append_element      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> type,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Adds a new element to the end of a toolbar.
+</p><p>
+If <i><tt>type</tt></i> == <tt>GTK_TOOLBAR_CHILD_WIDGET</tt>, <i><tt>widget</tt></i> is used as the new element.
+If <i><tt>type</tt></i> == <tt>GTK_TOOLBAR_CHILD_RADIOBUTTON</tt>, <i><tt>widget</tt></i> is used to determine
+the radio group for the new element. In all other cases, <i><tt>widget</tt></i> must
+be <tt>NULL</tt>.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>a value of type <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> that determines what <i><tt>widget</tt></i> will be.
+</td></tr><tr><td><span class="term"><i><tt>widget</tt></i> :</span></td><td>a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>, or <tt>NULL</tt>.
+</td></tr><tr><td><span class="term"><i><tt>text</tt></i> :</span></td><td>the element's label.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td>the element's tooltip.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td>used for context-sensitive help about this toolbar element.
+</td></tr><tr><td><span class="term"><i><tt>icon</tt></i> :</span></td><td>a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> that provides pictorial representation of the element's function.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td>the function to be executed when the button is pressed.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>any data you wish to pass to the callback.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the new toolbar element as a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-prepend-element"></a>gtk_toolbar_prepend_element ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_prepend_element     (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> type,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Adds a new element to the beginning of a toolbar.
+</p><p>
+If <i><tt>type</tt></i> == <tt>GTK_TOOLBAR_CHILD_WIDGET</tt>, <i><tt>widget</tt></i> is used as the new element.
+If <i><tt>type</tt></i> == <tt>GTK_TOOLBAR_CHILD_RADIOBUTTON</tt>, <i><tt>widget</tt></i> is used to determine
+the radio group for the new element. In all other cases, <i><tt>widget</tt></i> must
+be <tt>NULL</tt>.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>a value of type <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> that determines what <i><tt>widget</tt></i> will be.
+</td></tr><tr><td><span class="term"><i><tt>widget</tt></i> :</span></td><td>a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>, or <tt>NULL</tt>
+</td></tr><tr><td><span class="term"><i><tt>text</tt></i> :</span></td><td>the element's label.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td>the element's tooltip.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td>used for context-sensitive help about this toolbar element.
+</td></tr><tr><td><span class="term"><i><tt>icon</tt></i> :</span></td><td>a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> that provides pictorial representation of the element's function.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td>the function to be executed when the button is pressed.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>any data you wish to pass to the callback.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the new toolbar element as a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-insert-element"></a>gtk_toolbar_insert_element ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_insert_element      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> type,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *text,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *icon,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre><p>
+Inserts a new element in the toolbar at the given position. 
+</p><p>
+If <i><tt>type</tt></i> == <tt>GTK_TOOLBAR_CHILD_WIDGET</tt>, <i><tt>widget</tt></i> is used as the new element.
+If <i><tt>type</tt></i> == <tt>GTK_TOOLBAR_CHILD_RADIOBUTTON</tt>, <i><tt>widget</tt></i> is used to determine
+the radio group for the new element. In all other cases, <i><tt>widget</tt></i> must
+be <tt>NULL</tt>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td> a value of type <a href="GtkToolbar.html#GtkToolbarChildType">GtkToolbarChildType</a> that determines what <i><tt>widget</tt></i>
+  will be.
+</td></tr><tr><td><span class="term"><i><tt>widget</tt></i> :</span></td><td> a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>, or <tt>NULL</tt>. 
+</td></tr><tr><td><span class="term"><i><tt>text</tt></i> :</span></td><td> the element's label.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td> the element's tooltip.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td> used for context-sensitive help about this toolbar element.
+</td></tr><tr><td><span class="term"><i><tt>icon</tt></i> :</span></td><td> a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> that provides pictorial representation of the element's function.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td> the function to be executed when the button is pressed.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> any data you wish to pass to the callback.
+</td></tr><tr><td><span class="term"><i><tt>position</tt></i> :</span></td><td> the number of widgets to insert this element after.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new toolbar element as a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-append-widget"></a>gtk_toolbar_append_widget ()</h3><pre class="programlisting">void        gtk_toolbar_append_widget       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text);</pre><p>
+Adds a widget to the end of the given toolbar.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>widget</tt></i> :</span></td><td> a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> to add to the toolbar. 
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td> the element's tooltip.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td> used for context-sensitive help about this toolbar element.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-prepend-widget"></a>gtk_toolbar_prepend_widget ()</h3><pre class="programlisting">void        gtk_toolbar_prepend_widget      (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text);</pre><p>
+Adds a widget to the beginning of the given toolbar.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>widget</tt></i> :</span></td><td> a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> to add to the toolbar. 
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td> the element's tooltip.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td> used for context-sensitive help about this toolbar element.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-insert-widget"></a>gtk_toolbar_insert_widget ()</h3><pre class="programlisting">void        gtk_toolbar_insert_widget       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *widget,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre><p>
+Inserts a widget in the toolbar at the given position.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>widget</tt></i> :</span></td><td> a <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> to add to the toolbar. 
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td> the element's tooltip.
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td> used for context-sensitive help about this toolbar element.
+</td></tr><tr><td><span class="term"><i><tt>position</tt></i> :</span></td><td> the number of widgets to insert this widget after.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-set-orientation"></a>gtk_toolbar_set_orientation ()</h3><pre class="programlisting">void        gtk_toolbar_set_orientation     (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> orientation);</pre><p>
+Sets whether a toolbar should appear horizontally or vertically.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>orientation</tt></i> :</span></td><td>a new <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-set-style"></a>gtk_toolbar_set_style ()</h3><pre class="programlisting">void        gtk_toolbar_set_style           (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> style);</pre><p>
+Alters the view of <i><tt>toolbar</tt></i> to display either icons only, text only, or both.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>style</tt></i> :</span></td><td>the new style for <i><tt>toolbar</tt></i>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-set-tooltips"></a>gtk_toolbar_set_tooltips ()</h3><pre class="programlisting">void        gtk_toolbar_set_tooltips        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> enable);</pre><p>
+Sets if the tooltips of a toolbar should be active or not.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>enable</tt></i> :</span></td><td>set to <tt>FALSE</tt> to disable the tooltips, or <tt>TRUE</tt> to enable them.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-insert-stock"></a>gtk_toolbar_insert_stock ()</h3><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*  gtk_toolbar_insert_stock        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *stock_id,
+                                             const char *tooltip_text,
+                                             const char *tooltip_private_text,
+                                             <a href="gtk-Types.html#GtkSignalFunc">GtkSignalFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre><p>
+Inserts a stock item at the specified position of the toolbar.  If
+<i><tt>stock_id</tt></i> is not a known stock item ID, it's inserted verbatim,
+except that underscores used to mark mnemonics are removed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> A <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr><tr><td><span class="term"><i><tt>stock_id</tt></i> :</span></td><td> The id of the stock item you want to insert
+</td></tr><tr><td><span class="term"><i><tt>tooltip_text</tt></i> :</span></td><td> The text in the tooltip of the toolbar button
+</td></tr><tr><td><span class="term"><i><tt>tooltip_private_text</tt></i> :</span></td><td> The private text of the tooltip
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td> The callback called when the toolbar button is clicked.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> user data passed to callback
+</td></tr><tr><td><span class="term"><i><tt>position</tt></i> :</span></td><td> The position the button shall be inserted at.
+           -1 means at the end.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the inserted widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-set-icon-size"></a>gtk_toolbar_set_icon_size ()</h3><pre class="programlisting">void        gtk_toolbar_set_icon_size       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a> icon_size);</pre><p>
+This function sets the size of stock icons in the toolbar. You
+can call it both before you add the icons and after they've been
+added. The size you set will override user preferences for the default
+icon size.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> A <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr><tr><td><span class="term"><i><tt>icon_size</tt></i> :</span></td><td> The <a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a> that stock icons in the toolbar shall have.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-get-icon-size"></a>gtk_toolbar_get_icon_size ()</h3><pre class="programlisting"><a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a> gtk_toolbar_get_icon_size       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Retrieves the icon size fo the toolbar. See <a href="GtkToolbar.html#gtk-toolbar-set-icon-size">gtk_toolbar_set_icon_size</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the current icon size for the icons on the toolbar.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-get-orientation"></a>gtk_toolbar_get_orientation ()</h3><pre class="programlisting"><a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> gtk_toolbar_get_orientation  (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Retrieves the current orientation of the toolbar. See
+<a href="GtkToolbar.html#gtk-toolbar-set-orientation">gtk_toolbar_set_orientation</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the orientation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-get-style"></a>gtk_toolbar_get_style ()</h3><pre class="programlisting"><a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> gtk_toolbar_get_style       (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Retrieves whether the toolbar has text, icons, or both . See
+<a href="GtkToolbar.html#gtk-toolbar-set-style">gtk_toolbar_set_style</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the current style of <i><tt>toolbar</tt></i>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-get-tooltips"></a>gtk_toolbar_get_tooltips ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_toolbar_get_tooltips        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Retrieves whether tooltips are enabled. See
+<a href="GtkToolbar.html#gtk-toolbar-set-tooltips">gtk_toolbar_set_tooltips</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt>TRUE</tt> if tooltips are enabled
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-remove-space"></a>gtk_toolbar_remove_space ()</h3><pre class="programlisting">void        gtk_toolbar_remove_space        (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre><p>
+Removes a space from the specified position.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>.
+</td></tr><tr><td><span class="term"><i><tt>position</tt></i> :</span></td><td> the index of the space to remove.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-unset-icon-size"></a>gtk_toolbar_unset_icon_size ()</h3><pre class="programlisting">void        gtk_toolbar_unset_icon_size     (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Unsets toolbar icon size set with <a href="GtkToolbar.html#gtk-toolbar-set-icon-size">gtk_toolbar_set_icon_size</a>(), so that
+user preferences will be used to determine the icon size.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-toolbar-unset-style"></a>gtk_toolbar_unset_style ()</h3><pre class="programlisting">void        gtk_toolbar_unset_style         (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar);</pre><p>
+Unsets a toolbar style set with <a href="GtkToolbar.html#gtk-toolbar-set-style">gtk_toolbar_set_style</a>(), so that
+user preferences will be used to determine the toolbar style.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td> a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>
+</td></tr></tbody></table></div></div></div><div class="refsect1"><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a name="GtkToolbar--orientation"></a>&quot;<tt>orientation</tt>&quot; (<a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkToolbar--toolbar-style"></a>&quot;<tt>toolbar-style</tt>&quot; (<a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr></tbody></table></div></div><div class="refsect1"><h2>Style Properties</h2><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a name="GtkToolbar--button-relief"></a>&quot;<tt>button-relief</tt>&quot; (<a href="gtk-Standard-Enumerations.html#GtkReliefStyle">GtkReliefStyle</a> : Read)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkToolbar--internal-padding"></a>&quot;<tt>internal-padding</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkToolbar--shadow-type"></a>&quot;<tt>shadow-type</tt>&quot; (<a href="gtk-Standard-Enumerations.html#GtkShadowType">GtkShadowType</a> : Read)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkToolbar--space-size"></a>&quot;<tt>space-size</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkToolbar--space-style"></a>&quot;<tt>space-style</tt>&quot; (<a href="GtkToolbar.html#GtkToolbarSpaceStyle">GtkToolbarSpaceStyle</a> : Read)</span></td><td><p>
+
+</p></td></tr></tbody></table></div></div><div class="refsect1"><h2>Signals</h2><div class="refsect2"><h3><a name="GtkToolbar-orientation-changed"></a>The &quot;orientation-changed&quot; signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                            <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> orientation,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Should be used if you wish to perform an action when the orientation of a toolbar is changed.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i><tt>orientation</tt></i> :</span></td><td>the new <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> of the toolbar.
+
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GtkToolbar-style-changed"></a>The &quot;style-changed&quot; signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a> *toolbar,
+                                            <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> style,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Should be used if you wish to perform an action when ever the style of a toolbar is adjusted. For example, this would be a useful signal to connect to if you want to display more items on the toolbar when it is in icon-only mode; each item takes less space on the bar.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>toolbar</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i><tt>style</tt></i> :</span></td><td>the new <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a> of <i><tt>toolbar</tt></i>.
+
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div><div class="refsect1"><h2>See Also</h2><p>
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term">GtkToolTips</span></td><td><p>Change the properties of a <a href="GtkToolbar.html" title="GtkToolbar">GtkToolbar</a>'s <a href="GtkTooltips.html" title="GtkTooltips">GtkTooltips</a>.</p></td></tr><tr><td><span class="term"><a href="GtkTipsQuery.html" title="GtkTipsQuery">GtkTipsQuery</a></span></td><td><p>Make use of the private tips of toolbar elements.</p></td></tr></tbody></table></div><p>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GtkTearoffMenuItem.html"><b>&lt;&lt; GtkTearoffMenuItem</b></a></td><td align="right"><a accesskey="n" href="SelectorWidgets.html"><b>Selectors (File/Font/Color/Input Devices) &gt;&gt;</b></a></td></tr></table></body></html>

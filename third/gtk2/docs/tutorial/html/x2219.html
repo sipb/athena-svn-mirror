@@ -1,0 +1,882 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML
+><HEAD
+><TITLE
+>Creating a Composite widget</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GTK+ 2.0 Tutorial"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Writing Your Own Widgets"
+HREF="c2199.html"><LINK
+REL="PREVIOUS"
+TITLE="The Anatomy Of A Widget"
+HREF="x2208.html"><LINK
+REL="NEXT"
+TITLE="Creating a widget from scratch"
+HREF="x2326.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GTK+ 2.0 Tutorial</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2208.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Writing Your Own Widgets</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2326.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SEC-CREATINGACOMPOSITEWIDGET">Creating a Composite widget</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2221">Introduction</H2
+><P
+>One type of widget that you may be interested in creating is a
+widget that is merely an aggregate of other GTK widgets. This type of
+widget does nothing that couldn't be done without creating new
+widgets, but provides a convenient way of packaging user interface
+elements for reuse. The FileSelection and ColorSelection widgets in
+the standard distribution are examples of this type of widget.</P
+><P
+>The example widget that we'll create in this section is the Tictactoe
+widget, a 3x3 array of toggle buttons which triggers a signal when all
+three buttons in a row, column, or on one of the diagonals are
+depressed. </P
+><P
+><SPAN
+CLASS="INLINEMEDIAOBJECT"
+><IMG
+SRC="images/tictactoe.png"></SPAN
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2229">Choosing a parent class</H2
+><P
+>The parent class for a composite widget is typically the container
+class that holds all of the elements of the composite widget. For
+example, the parent class of the FileSelection widget is the
+Dialog class. Since our buttons will be arranged in a table, it
+might seem natural to make our parent class the Table
+class. Unfortunately, this turns out not to work. The creation of a
+widget is divided among two functions - a <TT
+CLASS="LITERAL"
+>WIDGETNAME_new()</TT
+>
+function that the user calls, and a <TT
+CLASS="LITERAL"
+>WIDGETNAME_init()</TT
+> function
+which does the basic work of initializing the widget which is
+independent of the arguments passed to the <TT
+CLASS="LITERAL"
+>_new()</TT
+>
+function. Descendant widgets only call the <TT
+CLASS="LITERAL"
+>_init</TT
+> function of
+their parent widget. But this division of labor doesn't work well for
+tables, which when created need to know the number of rows and
+columns in the table. Unless we want to duplicate most of the
+functionality of <TT
+CLASS="LITERAL"
+>gtk_table_new()</TT
+> in our Tictactoe widget, we had
+best avoid deriving it from Table. For that reason, we derive it
+from VBox instead, and stick our table inside the VBox.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2237">The header file</H2
+><P
+>Each widget class has a header file which declares the object and
+class structures for that widget, along with public functions. 
+A couple of features are worth pointing out. To prevent duplicate
+definitions, we wrap the entire header file in:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifndef __TICTACTOE_H__
+#define __TICTACTOE_H__
+.
+.
+.
+#endif /* __TICTACTOE_H__ */</PRE
+></TD
+></TR
+></TABLE
+><P
+>And to keep C++ programs that include the header file happy, in:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+.
+.
+.
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */</PRE
+></TD
+></TR
+></TABLE
+><P
+>Along with the functions and structures, we declare three standard
+macros in our header file, <TT
+CLASS="LITERAL"
+>TICTACTOE(obj)</TT
+>,
+<TT
+CLASS="LITERAL"
+>TICTACTOE_CLASS(klass)</TT
+>, and <TT
+CLASS="LITERAL"
+>IS_TICTACTOE(obj)</TT
+>, which cast a
+pointer into a pointer to the object or class structure, and check
+if an object is a Tictactoe widget respectively.</P
+><P
+>Here is the complete header file:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;/* GTK - The GIMP Toolkit
+ * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+#ifndef __TICTACTOE_H__
+#define __TICTACTOE_H__
+
+
+#include &#60;gdk/gdk.h&#62;
+#include &#60;gtk/gtkvbox.h&#62;
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+#define TICTACTOE(obj)          GTK_CHECK_CAST (obj, tictactoe_get_type (), Tictactoe)
+#define TICTACTOE_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, tictactoe_get_type (), TictactoeClass)
+#define IS_TICTACTOE(obj)       GTK_CHECK_TYPE (obj, tictactoe_get_type ())
+
+
+typedef struct _Tictactoe       Tictactoe;
+typedef struct _TictactoeClass  TictactoeClass;
+
+struct _Tictactoe
+{
+  GtkVBox vbox;
+  
+  GtkWidget *buttons[3][3];
+};
+
+struct _TictactoeClass
+{
+  GtkVBoxClass parent_class;
+
+  void (* tictactoe) (Tictactoe *ttt);
+};
+
+GtkType        tictactoe_get_type        (void);
+GtkWidget*     tictactoe_new             (void);
+void	       tictactoe_clear           (Tictactoe *ttt);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __TICTACTOE_H__ */&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2249">The <TT
+CLASS="LITERAL"
+>_get_type()</TT
+> function</H2
+><P
+>We now continue on to the implementation of our widget. A core
+function for every widget is the function
+<TT
+CLASS="LITERAL"
+>WIDGETNAME_get_type()</TT
+>. This function, when first called, tells
+GTK about the widget class, and gets an ID that uniquely identifies
+the widget class. Upon subsequent calls, it just returns the ID.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GtkType
+tictactoe_get_type ()
+{
+  static guint ttt_type = 0;
+
+  if (!ttt_type)
+    {
+      GtkTypeInfo ttt_info =
+      {
+	"Tictactoe",
+	sizeof (Tictactoe),
+	sizeof (TictactoeClass),
+	(GtkClassInitFunc) tictactoe_class_init,
+	(GtkObjectInitFunc) tictactoe_init,
+	(GtkArgSetFunc) NULL,
+        (GtkArgGetFunc) NULL
+      };
+
+      ttt_type = gtk_type_unique (gtk_vbox_get_type (), &#38;ttt_info);
+    }
+
+  return ttt_type;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>The GtkTypeInfo structure has the following definition:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct _GtkTypeInfo
+{
+  gchar *type_name;
+  guint object_size;
+  guint class_size;
+  GtkClassInitFunc class_init_func;
+  GtkObjectInitFunc object_init_func;
+  GtkArgSetFunc arg_set_func;
+  GtkArgGetFunc arg_get_func;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>The fields of this structure are pretty self-explanatory. We'll ignore
+the <TT
+CLASS="LITERAL"
+>arg_set_func</TT
+> and <TT
+CLASS="LITERAL"
+>arg_get_func</TT
+> fields here: they have an important, 
+but as yet largely
+unimplemented, role in allowing widget options to be conveniently set
+from interpreted languages. Once GTK has a correctly filled in copy of
+this structure, it knows how to create objects of a particular widget
+type. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2260">The <TT
+CLASS="LITERAL"
+>_class_init()</TT
+> function</H2
+><P
+>The <TT
+CLASS="LITERAL"
+>WIDGETNAME_class_init()</TT
+> function initializes the fields of
+the widget's class structure, and sets up any signals for the
+class. For our Tictactoe widget it looks like:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>enum {
+  TICTACTOE_SIGNAL,
+  LAST_SIGNAL
+};
+
+
+static gint tictactoe_signals[LAST_SIGNAL] = { 0 };
+
+static void
+tictactoe_class_init (TictactoeClass *class)
+{
+  GtkObjectClass *object_class;
+
+  object_class = (GtkObjectClass*) class;
+  
+  tictactoe_signals[TICTACTOE_SIGNAL] = gtk_signal_new ("tictactoe",
+					 GTK_RUN_FIRST,
+					 object_class-&#62;type,
+					 GTK_SIGNAL_OFFSET (TictactoeClass, tictactoe),
+					 gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
+
+
+  gtk_object_class_add_signals (object_class, tictactoe_signals, LAST_SIGNAL);
+
+  class-&#62;tictactoe = NULL;
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>Our widget has just one signal, the <TT
+CLASS="LITERAL"
+>tictactoe</TT
+> signal that is
+invoked when a row, column, or diagonal is completely filled in. Not
+every composite widget needs signals, so if you are reading this for
+the first time, you may want to skip to the next section now, as
+things are going to get a bit complicated.</P
+><P
+>The function:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint gtk_signal_new( const gchar         *name,
+                     GtkSignalRunType     run_type,
+                     GtkType              object_type,
+                     gint                 function_offset,
+                     GtkSignalMarshaller  marshaller,
+                     GtkType              return_val,
+                     guint                nparams,
+                     ...);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new signal. The parameters are:</P
+><P
+></P
+><UL
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>name</TT
+>: The name of the signal.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>run_type</TT
+>: Whether the default handler runs before or after
+user handlers. Usually this will be <TT
+CLASS="LITERAL"
+>GTK_RUN_FIRST</TT
+>, or <TT
+CLASS="LITERAL"
+>GTK_RUN_LAST</TT
+>,
+although there are other possibilities.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>object_type</TT
+>: The ID of the object that this signal applies
+to. (It will also apply to that objects descendants.)</P
+></LI
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>function_offset</TT
+>: The offset within the class structure of
+a pointer to the default handler.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>marshaller</TT
+>: A function that is used to invoke the signal
+handler. For signal handlers that have no arguments other than the
+object that emitted the signal and user data, we can use the
+pre-supplied marshaller function <TT
+CLASS="LITERAL"
+>gtk_signal_default_marshaller</TT
+>.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>return_val</TT
+>: The type of the return val.</P
+></LI
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>nparams</TT
+>: The number of parameters of the signal handler
+(other than the two default ones mentioned above)</P
+></LI
+><LI
+><P
+> <TT
+CLASS="LITERAL"
+>...</TT
+>: The types of the parameters.</P
+></LI
+></UL
+><P
+>When specifying types, the <TT
+CLASS="LITERAL"
+>GtkType</TT
+> enumeration is used:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum
+{
+  GTK_TYPE_INVALID,
+  GTK_TYPE_NONE,
+  GTK_TYPE_CHAR,
+  GTK_TYPE_BOOL,
+  GTK_TYPE_INT,
+  GTK_TYPE_UINT,
+  GTK_TYPE_LONG,
+  GTK_TYPE_ULONG,
+  GTK_TYPE_FLOAT,
+  GTK_TYPE_DOUBLE,
+  GTK_TYPE_STRING,
+  GTK_TYPE_ENUM,
+  GTK_TYPE_FLAGS,
+  GTK_TYPE_BOXED,
+  GTK_TYPE_FOREIGN,
+  GTK_TYPE_CALLBACK,
+  GTK_TYPE_ARGS,
+
+  GTK_TYPE_POINTER,
+
+  /* it'd be great if the next two could be removed eventually */
+  GTK_TYPE_SIGNAL,
+  GTK_TYPE_C_CALLBACK,
+
+  GTK_TYPE_OBJECT
+
+} GtkFundamentalType;</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="LITERAL"
+>gtk_signal_new()</TT
+> returns a unique integer identifier for the
+signal, that we store in the <TT
+CLASS="LITERAL"
+>tictactoe_signals</TT
+> array, which we
+index using an enumeration. (Conventionally, the enumeration elements
+are the signal name, uppercased, but here there would be a conflict
+with the <TT
+CLASS="LITERAL"
+>TICTACTOE()</TT
+> macro, so we called it <TT
+CLASS="LITERAL"
+>TICTACTOE_SIGNAL</TT
+>
+instead.</P
+><P
+>After creating our signals, we need to tell GTK to associate our
+signals with the Tictactoe class. We do that by calling
+<TT
+CLASS="LITERAL"
+>gtk_object_class_add_signals()</TT
+>. We then set the pointer which
+points to the default handler for the "tictactoe" signal to NULL,
+indicating that there is no default action.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2309">The <TT
+CLASS="LITERAL"
+>_init()</TT
+> function</H2
+><P
+>Each widget class also needs a function to initialize the object
+structure. Usually, this function has the fairly limited role of
+setting the fields of the structure to default values. For composite
+widgets, however, this function also creates the component widgets.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static void
+tictactoe_init (Tictactoe *ttt)
+{
+  GtkWidget *table;
+  gint i,j;
+  
+  table = gtk_table_new (3, 3, TRUE);
+  gtk_container_add (GTK_CONTAINER(ttt), table);
+  gtk_widget_show (table);
+
+  for (i=0;i&#60;3; i++)
+    for (j=0;j&#60;3; j++)
+      {
+	ttt-&#62;buttons[i][j] = gtk_toggle_button_new ();
+	gtk_table_attach_defaults (GTK_TABLE(table), ttt-&#62;buttons[i][j], 
+				   i, i+1, j, j+1);
+	gtk_signal_connect (GTK_OBJECT (ttt-&#62;buttons[i][j]), "toggled",
+			    GTK_SIGNAL_FUNC (tictactoe_toggle), ttt);
+	gtk_widget_set_size_request (ttt-&#62;buttons[i][j], 20, 20);
+	gtk_widget_show (ttt-&#62;buttons[i][j]);
+      }
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2314">And the rest...</H2
+><P
+>There is one more function that every widget (except for base widget
+types like Bin that cannot be instantiated) needs to have - the
+function that the user calls to create an object of that type. This is
+conventionally called <TT
+CLASS="LITERAL"
+>WIDGETNAME_new()</TT
+>. In some
+widgets, though not for the Tictactoe widgets, this function takes
+arguments, and does some setup based on the arguments. The other two
+functions are specific to the Tictactoe widget. </P
+><P
+><TT
+CLASS="LITERAL"
+>tictactoe_clear()</TT
+> is a public function that resets all the
+buttons in the widget to the up position. Note the use of
+<TT
+CLASS="LITERAL"
+>gtk_signal_handler_block_by_data()</TT
+> to keep our signal handler for
+button toggles from being triggered unnecessarily.</P
+><P
+><TT
+CLASS="LITERAL"
+>tictactoe_toggle()</TT
+> is the signal handler that is invoked when the
+user clicks on a button. It checks to see if there are any winning
+combinations that involve the toggled button, and if so, emits
+the "tictactoe" signal.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GtkWidget*
+tictactoe_new ()
+{
+  return GTK_WIDGET ( gtk_type_new (tictactoe_get_type ()));
+}
+
+void	       
+tictactoe_clear (Tictactoe *ttt)
+{
+  int i,j;
+
+  for (i=0;i&#60;3;i++)
+    for (j=0;j&#60;3;j++)
+      {
+	gtk_signal_handler_block_by_data (GTK_OBJECT(ttt-&#62;buttons[i][j]), ttt);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (ttt-&#62;buttons[i][j]),
+				     FALSE);
+	gtk_signal_handler_unblock_by_data (GTK_OBJECT(ttt-&#62;buttons[i][j]), ttt);
+      }
+}
+
+static void
+tictactoe_toggle (GtkWidget *widget, Tictactoe *ttt)
+{
+  int i,k;
+
+  static int rwins[8][3] = { { 0, 0, 0 }, { 1, 1, 1 }, { 2, 2, 2 },
+			     { 0, 1, 2 }, { 0, 1, 2 }, { 0, 1, 2 },
+			     { 0, 1, 2 }, { 0, 1, 2 } };
+  static int cwins[8][3] = { { 0, 1, 2 }, { 0, 1, 2 }, { 0, 1, 2 },
+			     { 0, 0, 0 }, { 1, 1, 1 }, { 2, 2, 2 },
+			     { 0, 1, 2 }, { 2, 1, 0 } };
+
+  int success, found;
+
+  for (k=0; k&#60;8; k++)
+    {
+      success = TRUE;
+      found = FALSE;
+
+      for (i=0;i&#60;3;i++)
+	{
+	  success = success &#38;&#38; 
+	    GTK_TOGGLE_BUTTON(ttt-&#62;buttons[rwins[k][i]][cwins[k][i]])-&#62;active;
+	  found = found ||
+	    ttt-&#62;buttons[rwins[k][i]][cwins[k][i]] == widget;
+	}
+      
+      if (success &#38;&#38; found)
+	{
+	  gtk_signal_emit (GTK_OBJECT (ttt), 
+			   tictactoe_signals[TICTACTOE_SIGNAL]);
+	  break;
+	}
+    }
+}</PRE
+></TD
+></TR
+></TABLE
+><P
+>And finally, an example program using our Tictactoe widget:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#include &#60;gtk/gtk.h&#62;
+#include "tictactoe.h"
+
+/* Invoked when a row, column or diagonal is completed */
+void
+win (GtkWidget *widget, gpointer data)
+{
+  g_print ("Yay!\n");
+  tictactoe_clear (TICTACTOE (widget));
+}
+
+int 
+main (int argc, char *argv[])
+{
+  GtkWidget *window;
+  GtkWidget *ttt;
+  
+  gtk_init (&#38;argc, &#38;argv);
+
+  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  
+  gtk_window_set_title (GTK_WINDOW (window), "Aspect Frame");
+  
+  gtk_signal_connect (GTK_OBJECT (window), "destroy",
+		      GTK_SIGNAL_FUNC (gtk_exit), NULL);
+  
+  gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+
+  /* Create a new Tictactoe widget */
+  ttt = tictactoe_new ();
+  gtk_container_add (GTK_CONTAINER (window), ttt);
+  gtk_widget_show (ttt);
+
+  /* And attach to its "tictactoe" signal */
+  gtk_signal_connect (GTK_OBJECT (ttt), "tictactoe",
+		      GTK_SIGNAL_FUNC (win), NULL);
+
+  gtk_widget_show (window);
+  
+  gtk_main ();
+  
+  return 0;
+}</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2208.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2326.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The Anatomy Of A Widget</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2199.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Creating a widget from scratch</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

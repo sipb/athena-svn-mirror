@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML
+><HEAD
+><TITLE
+>I've compiled and installed GTK+, but I can't get any
+programs to link with it!</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GTK+ FAQ"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="How to find, configure, install, and troubleshoot GTK+"
+HREF="c153.html"><LINK
+REL="PREVIOUS"
+TITLE="When compiling GTK+ I get an error like: make:
+file `Makefile' line 456: Syntax error"
+HREF="x195.html"><LINK
+REL="NEXT"
+TITLE="When compiling programs with GTK+, I get compiler error
+messages about not being able to find
+glibconfig.h."
+HREF="x233.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GTK+ FAQ</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x195.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>How to find, configure, install, and troubleshoot GTK+</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x233.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN200">I've compiled and installed GTK+, but I can't get any
+programs to link with it!</H1
+><P
+>This problem is most often encountered when the GTK+
+libraries can't be  found or are the wrong version. Generally,
+the compiler will complain about an 'unresolved symbol'.
+There are two things you need to check:</P
+><P
+></P
+><UL
+><LI
+><P
+>Make sure that the libraries can be
+found. You want to edit <TT
+CLASS="FILENAME"
+>/etc/ld.so.conf</TT
+> to
+include the directories which contain the GTK libraries,
+so it looks something like:</P
+><P
+><P
+CLASS="LITERALLAYOUT"
+><TT
+CLASS="LITERAL"
+>/usr/X11R6/lib</TT
+><br>
+<TT
+CLASS="LITERAL"
+>/usr/local/lib</TT
+></P
+></P
+><P
+>Then you need to run /sbin/ldconfig as root. You can
+find what directory GTK is in using</P
+><P
+><P
+CLASS="LITERALLAYOUT"
+><TT
+CLASS="LITERAL"
+>gtk-config --libs</TT
+></P
+></P
+><P
+>If your system doesn't use ld.so to find libraries
+(such as Solaris), then you will have to use the LD_LIBRARY_PATH
+environment variable (or compile the path into your program, which I'm
+not going to cover here). So, with a Bourne type shell you can do (if
+your GTK libraries are in /usr/local/lib):</P
+><P
+><P
+CLASS="LITERALLAYOUT"
+><TT
+CLASS="LITERAL"
+>export LD_LIBRARY_PATH=/usr/local/lib</TT
+></P
+></P
+><P
+>and in a csh, you can do:</P
+><P
+><P
+CLASS="LITERALLAYOUT"
+><TT
+CLASS="LITERAL"
+>setenv LD_LIBRARY_PATH /usr/local/lib</TT
+></P
+></P
+></LI
+><LI
+><P
+>Make sure the linker is finding the
+correct set of libraries. If you have a Linux distribution that
+installs GTK+ (e.g. RedHat 5.0) then this  older version may be
+used. Now (assuming you have a RedHat system), issue the
+command</P
+><P
+><P
+CLASS="LITERALLAYOUT"
+><TT
+CLASS="LITERAL"
+>rpm -e gtk gtk-devel</TT
+></P
+></P
+><P
+>You may also want to remove the packages that depend
+on gtk (rpm will tell you which ones they are).  If you don't have a
+RedHat Linux system, check to make sure that neither
+<TT
+CLASS="FILENAME"
+>/usr/lib</TT
+> or <TT
+CLASS="FILENAME"
+>/usr/local/lib</TT
+>
+contain any of the libraries libgtk, libgdk, libglib, or libgck. If
+they do exist, remove them (and any gtk include files, such as
+<TT
+CLASS="FILENAME"
+>/usr/include/gtk</TT
+> and
+<TT
+CLASS="FILENAME"
+>/usr/include/gdk</TT
+>) and reinstall gtk+.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x195.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x233.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>When compiling GTK+ I get an error like: <TT
+CLASS="LITERAL"
+>make:
+file `Makefile' line 456: Syntax error</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c153.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>When compiling programs with GTK+, I get compiler error
+messages about not being able to find
+<TT
+CLASS="LITERAL"
+>glibconfig.h</TT
+>.</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkCellRendererPixbuf</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GTK+ Reference Manual"><link rel="up" href="TreeWidgetObjects.html" title="Tree and List Widget"><link rel="previous" href="GtkCellEditable.html" title="GtkCellEditable"><link rel="next" href="GtkCellRendererText.html" title="GtkCellRendererText"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GtkCellEditable.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="TreeWidgetObjects.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GTK+ Reference Manual</th><td><a accesskey="n" href="GtkCellRendererText.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="GtkCellRendererPixbuf"></a><div class="titlepage"></div><div class="refnamediv"><h2>GtkCellRendererPixbuf</h2><p>GtkCellRendererPixbuf &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+struct      <a href="GtkCellRendererPixbuf.html#GtkCellRendererPixbuf-struct">GtkCellRendererPixbuf</a>;
+<a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a>* <a href="GtkCellRendererPixbuf.html#gtk-cell-renderer-pixbuf-new">gtk_cell_renderer_pixbuf_new</a>
+                                            (void);
+
+
+</pre></div><div class="refsect1"><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+         +----<a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a>
+               +----GtkCellRendererPixbuf
+</pre></div><div class="refsect1"><h2>Properties</h2><pre class="synopsis">
+
+  &quot;<a href="GtkCellRendererPixbuf.html#GtkCellRendererPixbuf--pixbuf">pixbuf</a>&quot;               <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a>            : Read / Write
+  &quot;<a href="GtkCellRendererPixbuf.html#GtkCellRendererPixbuf--pixbuf-expander-closed">pixbuf-expander-closed</a>&quot; <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a>            : Read / Write
+  &quot;<a href="GtkCellRendererPixbuf.html#GtkCellRendererPixbuf--pixbuf-expander-open">pixbuf-expander-open</a>&quot; <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a>            : Read / Write
+  &quot;<a href="GtkCellRendererPixbuf.html#GtkCellRendererPixbuf--stock-detail">stock-detail</a>&quot;         <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Read / Write
+  &quot;<a href="GtkCellRendererPixbuf.html#GtkCellRendererPixbuf--stock-id">stock-id</a>&quot;             <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Read / Write
+  &quot;<a href="GtkCellRendererPixbuf.html#GtkCellRendererPixbuf--stock-size">stock-size</a>&quot;           <a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a>          : Read / Write
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GtkCellRendererPixbuf-struct"></a>struct GtkCellRendererPixbuf</h3><pre class="programlisting">struct GtkCellRendererPixbuf;</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gtk-cell-renderer-pixbuf-new"></a>gtk_cell_renderer_pixbuf_new ()</h3><pre class="programlisting"><a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a>* gtk_cell_renderer_pixbuf_new
+                                            (void);</pre><p>
+Creates a new <a href="GtkCellRendererPixbuf.html" title="GtkCellRendererPixbuf">GtkCellRendererPixbuf</a>. Adjust rendering
+parameters using object properties. Object properties can be set
+globally (with <a
+href="../gobject/gobject-The-Base-Object-Type.html#g-object-set"
+>g_object_set</a>()). Also, with <a href="GtkTreeViewColumn.html" title="GtkTreeViewColumn">GtkTreeViewColumn</a>, you
+can bind a property to a value in a <a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a>. For example, you
+can bind the &quot;pixbuf&quot; property on the cell renderer to a pixbuf value
+in the model, thus rendering a different image in each row of the
+<a href="GtkTreeView.html" title="GtkTreeView">GtkTreeView</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new cell renderer
+</td></tr></tbody></table></div></div></div><div class="refsect1"><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a name="GtkCellRendererPixbuf--pixbuf"></a>&quot;<tt>pixbuf</tt>&quot; (<a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkCellRendererPixbuf--pixbuf-expander-closed"></a>&quot;<tt>pixbuf-expander-closed</tt>&quot; (<a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkCellRendererPixbuf--pixbuf-expander-open"></a>&quot;<tt>pixbuf-expander-open</tt>&quot; (<a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkCellRendererPixbuf--stock-detail"></a>&quot;<tt>stock-detail</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkCellRendererPixbuf--stock-id"></a>&quot;<tt>stock-id</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkCellRendererPixbuf--stock-size"></a>&quot;<tt>stock-size</tt>&quot; (<a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr></tbody></table></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GtkCellEditable.html"><b>&lt;&lt; GtkCellEditable</b></a></td><td align="right"><a accesskey="n" href="GtkCellRendererText.html"><b>GtkCellRendererText &gt;&gt;</b></a></td></tr></table></body></html>
