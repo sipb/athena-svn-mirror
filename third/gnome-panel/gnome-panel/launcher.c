@@ -7,6 +7,7 @@
  *          Federico Mena
  * CORBAized by George Lebl
  * de-CORBAized by George Lebl
+ *
  */
 
 #include <config.h>
@@ -22,6 +23,7 @@
 #include <libgnomeui/libgnomeui.h>
 #include <libgnomeui/gnome-ditem-edit.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <gdk/gdkx.h>
 
 #include "launcher.h"
 
@@ -35,8 +37,12 @@
 #include "panel-gconf.h"
 #include "panel-main.h"
 #include "session.h"
+#include "xstuff.h"
 
 #include "quick-desktop-reader.h"
+
+#include "egg-screen-exec.h"
+#include "egg-screen-url.h"
 
 #undef LAUNCHER_DEBUG
 
@@ -56,12 +62,27 @@ enum {
 	REVERT_BUTTON
 };
 
+static GdkScreen *
+launcher_get_screen (Launcher *launcher)
+{
+	GtkWidget *panel;
+
+	g_return_val_if_fail (launcher != NULL, 0);
+	g_return_val_if_fail (launcher->info != NULL, 0);
+	g_return_val_if_fail (launcher->info->widget != NULL, 0);
+
+	panel = get_panel_parent (launcher->info->widget);
+
+	return gtk_window_get_screen (GTK_WINDOW (panel));
+}
+
 static void
 launch_url (Launcher *launcher)
 {
 	GnomeDesktopItem *item;
 	const char *url;
 	GError *error = NULL;
+	GdkScreen *screen;
 
 	g_return_if_fail (launcher != NULL);
 	g_return_if_fail (launcher->ditem != NULL);
@@ -70,22 +91,26 @@ launch_url (Launcher *launcher)
 	url = gnome_desktop_item_get_string (item,
 					     GNOME_DESKTOP_ITEM_URL);
 
-	if (url == NULL) {
-		panel_error_dialog ("no_url_dialog",
-				    _("This launch icon does not "
-				      "specify a url to show"));
+	screen = launcher_get_screen (launcher);
+
+	if (!url) {
+		panel_error_dialog (
+			screen,
+			"no_url_dialog",
+			_("This launch icon does not specify a url to show"));
 		return;
 	}
 
-	gnome_url_show (url, &error);
-	if (error != NULL) {
-		panel_error_dialog ("cant_show_url_dialog",
-				    _("Cannot show %s\n%s"),
-				    url, error->message);
+	egg_url_show_on_screen (url, screen, &error);
+	if (error) {
+		panel_error_dialog (
+			screen,
+			"cant_show_url_dialog",
+			_("Cannot show %s\n%s"),
+			url, error->message);
 		g_clear_error (&error);
 	}
 }
-
 
 static void
 launch_cb (GtkWidget *widget,
@@ -98,17 +123,23 @@ launch_cb (GtkWidget *widget,
 
 	item = launcher->ditem;
 
+	if (global_config.enable_animations)
+		xstuff_zoom_animate (widget, NULL);
+	
 	if (gnome_desktop_item_get_entry_type (item) == GNOME_DESKTOP_ITEM_TYPE_LINK)
 		launch_url (launcher);
 
 	else {
 		GError *error = NULL;
 
-		gnome_desktop_item_launch (item, NULL, 0, &error);
+		panel_ditem_launch (
+			item, NULL, 0, launcher_get_screen (launcher), &error);
 		if (error) {
-			panel_error_dialog ("cannot_launch_icon",
-					    _("<b>Cannot launch icon</b>\n\n"
-					      "Details: %s"), error->message);
+			panel_error_dialog (
+				launcher_get_screen (launcher),
+				"cannot_launch_icon",
+				_("<b>Cannot launch icon</b>\n\n"
+				"Details: %s"), error->message);
 			g_clear_error (&error);
 		}
 	}
@@ -142,15 +173,26 @@ drag_data_received_cb (GtkWidget        *widget,
 		       Launcher         *launcher)
 {
 	GError *error = NULL;
+	char **envp = NULL;
 
-	gnome_desktop_item_drop_uri_list (launcher->ditem,
-					  (const char *)selection_data->data,
-					  0 /* flags */,
-					  &error);
-	if (error != NULL) {
-		panel_error_dialog ("cannot_launch_icon",
-				    _("Cannot launch icon\n%s"),
-				    error->message);
+	GdkScreen *screen = launcher_get_screen (launcher);
+
+	if (gdk_screen_get_default () != screen)
+		envp = egg_screen_exec_environment (screen);
+
+	gnome_desktop_item_drop_uri_list_with_env (launcher->ditem,
+						   (const char *)selection_data->data,
+						   0 /* flags */,
+						   envp,
+						   &error);
+	g_strfreev (envp);
+
+	if (error) {
+		panel_error_dialog (
+			launcher_get_screen (launcher),
+			"cannot_launch_icon",
+			_("Cannot launch icon\n%s"),
+			error->message);
 		g_clear_error (&error);
 	}
 
@@ -177,7 +219,7 @@ launcher_properties_destroy (Launcher *launcher)
 }
 
 static void
-icon_theme_changed_cb (GnomeIconLoader *icon_loader,
+icon_theme_changed_cb (GnomeIconTheme *icon_theme,
 		       Launcher        *launcher)
 {
 	const char *icon;
@@ -187,7 +229,7 @@ icon_theme_changed_cb (GnomeIconLoader *icon_loader,
 	icon = gnome_desktop_item_get_string (
 			launcher->ditem, GNOME_DESKTOP_ITEM_ICON);
 
-	button_widget_set_pixmap (BUTTON_WIDGET (launcher->button), icon, -1);
+	button_widget_set_pixmap (BUTTON_WIDGET (launcher->button), icon);
 }
 
 static void
@@ -195,7 +237,7 @@ free_launcher (gpointer data)
 {
 	Launcher *launcher = data;
 
-	g_signal_handler_disconnect (panel_icon_loader, launcher->icon_changed_signal);
+	g_signal_handler_disconnect (panel_icon_theme, launcher->icon_changed_signal);
 
 	launchers_to_hoard = g_slist_remove (launchers_to_hoard, launcher);
 
@@ -382,13 +424,13 @@ create_launcher (const char *parameters, GnomeDesktopItem *ditem)
 	launcher->button = NULL;
 	launcher->dedit = NULL;
 	launcher->prop_dialog = NULL;
+	launcher->destroy_handler = 0;
 
-	/* Icon/Text will be setup later */
+	/* Icon will be setup later */
 	launcher->button = button_widget_new (NULL /* icon */,
 					      -1,
 					      FALSE,
-					      PANEL_ORIENT_UP,
-					      NULL /* text */);
+					      PANEL_ORIENT_UP);
 
 	gtk_widget_show (launcher->button);
 
@@ -423,9 +465,11 @@ create_launcher (const char *parameters, GnomeDesktopItem *ditem)
 			   G_CALLBACK (drag_leave_cb), launcher);
 	g_signal_connect (launcher->button, "clicked",
 			  G_CALLBACK (launch_cb), launcher);
-	g_signal_connect (launcher->button, "destroy",
-			  G_CALLBACK (destroy_launcher), launcher);
 
+	launcher->destroy_handler =
+			g_signal_connect (launcher->button, "destroy",
+					  G_CALLBACK (destroy_launcher),
+					  launcher);
 	launcher->ditem = ditem;
 
 	return launcher;
@@ -460,16 +504,13 @@ setup_button (Launcher *launcher)
 
 	g_free (str);
 
-	/* Setup text */
-	button_widget_set_text (BUTTON_WIDGET (launcher->button), name);
-
 	/* Setup icon */
 	icon = gnome_desktop_item_get_string (launcher->ditem,
 					      GNOME_DESKTOP_ITEM_ICON);
-	button_widget_set_pixmap (BUTTON_WIDGET (launcher->button), icon, -1);
+	button_widget_set_pixmap (BUTTON_WIDGET (launcher->button), icon);
 
 	launcher->icon_changed_signal =
-			g_signal_connect (panel_icon_loader, "changed",
+			g_signal_connect (panel_icon_theme, "changed",
 					  G_CALLBACK (icon_theme_changed_cb), launcher);
 
 	/* Setup help */
@@ -481,7 +522,7 @@ setup_button (Launcher *launcher)
 	if (docpath && *docpath != '\0') {
 		char *title;
 
-		title = g_strdup_printf (_("Help on %s Application"), name);
+		title = g_strdup_printf (_("Help on %s _Application"), name);
 
 		panel_applet_add_callback (launcher->info,
 					   "help_on_app",
@@ -561,7 +602,9 @@ window_response (GtkWidget *w, int response, gpointer data)
 	Launcher *launcher = data;
 
 	if (response == GTK_RESPONSE_HELP) {
-		panel_show_help ("wgospanel.xml", "gospanel-52");
+		panel_show_help (
+			gtk_window_get_screen (GTK_WINDOW (w)),
+			"wgospanel.xml", "gospanel-52");
 	} else if (response == REVERT_BUTTON) { /* revert */
 		if (launcher->ditem != NULL)
 			gnome_desktop_item_unref (launcher->ditem);
@@ -591,7 +634,8 @@ window_response (GtkWidget *w, int response, gpointer data)
 }
 
 static GtkWidget *
-create_properties_dialog (Launcher *launcher)
+create_properties_dialog (Launcher  *launcher,
+			  GdkScreen *screen)
 {
 	GtkWidget *dialog;
         GtkWidget *help;
@@ -601,6 +645,7 @@ create_properties_dialog (Launcher *launcher)
 	dialog = gtk_dialog_new ();
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Launcher Properties"));
+	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 
 	help = gtk_dialog_add_button (
 			GTK_DIALOG (dialog), GTK_STOCK_HELP, GTK_RESPONSE_HELP);
@@ -654,14 +699,17 @@ create_properties_dialog (Launcher *launcher)
 }
 
 void
-launcher_properties (Launcher *launcher)
+launcher_properties (Launcher  *launcher,
+		     GdkScreen *screen)
 {
 	if (launcher->prop_dialog != NULL) {
+		gtk_window_set_screen (
+			GTK_WINDOW (launcher->prop_dialog), screen);
 		gtk_window_present (GTK_WINDOW (launcher->prop_dialog));
 		return;
 	}
 
-	launcher->prop_dialog = create_properties_dialog (launcher);
+	launcher->prop_dialog = create_properties_dialog (launcher, screen);
 	gtk_widget_show_all (launcher->prop_dialog);
 }
 
@@ -782,7 +830,9 @@ really_add_launcher (GtkWidget *dialog, int response, gpointer data)
 
 		panel_config_sync_schedule ();
 	} else if (response == GTK_RESPONSE_HELP) {
-		panel_show_help ("wgospanel.xml", "gospanel-52");
+		panel_show_help (
+			gtk_window_get_screen (GTK_WINDOW (dialog)),
+			"wgospanel.xml", "gospanel-52");
 		/* just return as we don't want to close */
 		return;
 	}
@@ -846,7 +896,7 @@ ditem_set_icon (GnomeDesktopItem *ditem, const char *icon)
 {
 	if (icon != NULL &&
 	    icon[0] != G_DIR_SEPARATOR) {
-		char *full = gnome_desktop_item_find_icon (panel_icon_loader,
+		char *full = gnome_desktop_item_find_icon (panel_icon_theme,
 							   icon,
 							   48 /* desired size */,
 							   0 /* flags */);
@@ -1019,12 +1069,13 @@ launcher_save (Launcher *launcher)
 				 NULL /* under */,
 				 TRUE /* force */,
 				 &error);
-	if (error != NULL) {
-		panel_error_dialog ("cannot_save_launcher" /* class */,
-				    _("Cannot save launcher to disk, "
-				      "the following error occured:\n\n"
-				      "%s"),
-				    error->message);
+	if (error) {
+		panel_error_dialog (
+			launcher_get_screen (launcher),
+			"cannot_save_launcher",
+			_("Cannot save launcher to disk, "
+			  "the following error occured:\n\n%s"),
+			error->message);
 		g_clear_error (&error);
 	}
 }
@@ -1093,7 +1144,8 @@ find_launcher (const char *path)
 }
 
 void
-launcher_show_help (Launcher *launcher)
+launcher_show_help (Launcher  *launcher,
+		    GdkScreen *screen)
 {
 	GError     *error = NULL;
 	const char *docpath;
@@ -1103,9 +1155,10 @@ launcher_show_help (Launcher *launcher)
 
 	docpath = gnome_desktop_item_get_string (
 				launcher->ditem, "X-GNOME-DocPath");
-	panel_show_gnome_kde_help (docpath, &error);
+	panel_show_gnome_kde_help (screen, docpath, &error);
 	if (error) {
 		panel_error_dialog (
+			screen,
 			"cannot_show_gnome_kde_help",
 			_("<b>Cannot display help document</b>\n\nDetails: %s"),
 			error->message);

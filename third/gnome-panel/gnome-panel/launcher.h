@@ -30,6 +30,7 @@ typedef struct {
 	GtkWidget         *prop_dialog;
 
 	gulong             icon_changed_signal;
+	gulong             destroy_handler;
 } Launcher;
 
 /* If launchers are loaded from ANYWHERE but the normal panel
@@ -65,7 +66,8 @@ Launcher *	load_launcher_applet_from_info_url(const char *name,
 						   int pos,
 						   gboolean exactpos);
 
-void		launcher_properties		(Launcher  *launcher);
+void		launcher_properties		(Launcher  *launcher,
+						 GdkScreen *screen);
 
 void            launcher_save_to_gconf          (Launcher   *launcher,
 						 const char *gconf_key);
@@ -84,7 +86,8 @@ void		launcher_hoard			(Launcher *launcher);
 
 Launcher *	find_launcher			(const char *path);
 
-void            launcher_show_help              (Launcher *launcher);
+void            launcher_show_help              (Launcher  *launcher,
+						 GdkScreen *screen);
 
 void            launcher_properties_destroy     (Launcher *launcher);
 

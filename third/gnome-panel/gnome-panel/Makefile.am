@@ -58,17 +58,40 @@ CORBA_SRCLIST =			\
 $(CORBA_SRCLIST): $(top_srcdir)/idl/GNOME_Panel.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) -I $(BONOBO_IDLDIR) -I $(BONOBO_ACT_IDLDIR) $(top_srcdir)/idl/GNOME_Panel.idl
 
+EGG_RECENT_FILES_C =		\
+	egg-recent-model.c	\
+	egg-recent-item.c	\
+	egg-recent-view.c	\
+	egg-recent-view-gtk.c	\
+	egg-recent-util.c
+
+EGG_RECENT_FILES_H =		\
+	egg-recent-model.h	\
+	egg-recent-item.h	\
+	egg-recent-view.h	\
+	egg-recent-view-gtk.h	\
+	egg-recent-util.h
+
+EGG_SCREEN_EXEC_FILES =         \
+	egg-screen-exec.h       \
+	egg-screen-exec.c       \
+	egg-screen-help.h       \
+	egg-screen-help.c       \
+	egg-screen-url.h        \
+	egg-screen-url.c        \
+	$(NULL)
+
+EGG_ACCELERATORS_FILES =        \
+	eggaccelerators.c       \
+	eggaccelerators.h       \
+	$(NULL)
+
 BUILT_SOURCES = \
 	$(CORBA_SRCLIST)	\
 	panel-typebuiltins.c	\
 	panel-typebuiltins.h	\
 	panel-marshal.c		\
 	panel-marshal.h
-
-EGG_ACCELERATORS_FILES =        \
-	eggaccelerators.c       \
-	eggaccelerators.h       \
-	$(NULL)
 
 panel_sources =			\
 	panel-typebuiltins.c	\
@@ -90,10 +113,8 @@ panel_sources =			\
 	sliding-widget.c	\
 	floating-widget.c	\
 	disclosure-widget.c	\
-	rgb-stuff.c		\
 	panel.c			\
 	applet.c		\
-	logout.c		\
 	drawer.c  		\
 	panel-config-global.c  	\
 	panel-util.c		\
@@ -111,7 +132,13 @@ panel_sources =			\
 	panel-shell.c		\
 	quick-desktop-reader.c	\
 	panel-access.c		\
+	panel-background.c	\
+	panel-background-monitor.c \
 	panel-stock-icons.c	\
+	panel-action-button.c	\
+	panel-recent.c		\
+	panel-gdk-pixbuf-extensions.c \
+	$(EGG_RECENT_FILES_C)	\
 	$(NULL)
 
 panel_headers =			\
@@ -131,10 +158,8 @@ panel_headers =			\
 	sliding-widget.h	\
 	floating-widget.h	\
 	disclosure-widget.h	\
-	rgb-stuff.h		\
 	panel.h         	\
 	applet.h         	\
-	logout.h		\
 	drawer.h  		\
 	panel-util.h		\
 	global-keys.h		\
@@ -151,11 +176,18 @@ panel_headers =			\
 	panel-applet-frame.h	\
 	quick-desktop-reader.h	\
 	panel-shell.h		\
+	panel-background.h	\
+	panel-background-monitor.h \
 	panel-stock-icons.h	\
+	panel-action-button.h	\
+	panel-recent.h		\
+	panel-gdk-pixbuf-extensions.h \
+	$(EGG_RECENT_FILES_H)	\
 	$(NULL)
 
 gnome_panel_SOURCES =			\
 	$(CORBA_SRCLIST)		\
+	$(EGG_SCREEN_EXEC_FILES)	\
 	$(EGG_ACCELERATORS_FILES)	\
 	$(panel_sources)		\
 	$(panel_headers)		\
@@ -164,7 +196,8 @@ gnome_panel_SOURCES =			\
 gnome_panel_LDADD =		\
 	$(X_LIBS)		\
 	$(PANEL_LIBS)		\
-	$(XINERAMA_LIBS)
+	$(XINERAMA_LIBS)	\
+	-lpopt
 
 gnome_panel_LDFLAGS = -export-dynamic
 
@@ -175,7 +208,7 @@ gnome_panel_preferences_SOURCES =	\
 
 gnome_panel_preferences_LDADD =		\
 	$(X_LIBS)			\
-	$(PANELCONFIG_LIBS)           
+	$(PANELCONFIG_LIBS)
 
 gnome_panel_preferences_LDFLAGS =	\
 	-export-dynamic
@@ -185,13 +218,16 @@ gnome_desktop_item_edit_SOURCES = \
 	menu-ditem.c		  \
 	panel-util.c		  \
 	panel-access.c		  \
-	rgb-stuff.c
+	egg-screen-exec.c	  \
+	egg-screen-help.c	  \
+	egg-screen-url.c
 
 gnome_desktop_item_edit_LDFLAGS = -export-dynamic
 
 gnome_desktop_item_edit_LDADD = 	\
 	$(X_LIBS)			\
-	$(PANEL_LIBS)
+	$(PANEL_LIBS)			\
+	-lpopt
 
 gnome_panel_screenshot_SOURCES = \
 	gnome-panel-screenshot.c
@@ -199,6 +235,7 @@ gnome_panel_screenshot_SOURCES = \
 gnome_panel_screenshot_LDFLAGS = -export-dynamic
 
 gnome_panel_screenshot_LDADD = 	\
+	$(XSHAPE_LIBS)		\
 	$(X_LIBS)		\
 	$(PANELCONFIG_LIBS)	\
 	$(PNG_LIBS)
@@ -232,6 +269,7 @@ panel_enum_headers =					\
 	$(top_srcdir)/gnome-panel/basep-widget.h	\
 	$(top_srcdir)/gnome-panel/aligned-widget.h	\
 	$(top_srcdir)/gnome-panel/sliding-widget.h	\
+	$(top_srcdir)/gnome-panel/panel-action-button.h	\
 	$(top_builddir)/gnome-panel/GNOME_Panel.h
 
 panel-marshal.h: panel-marshal.list $(GLIB_GENMARSHAL)
@@ -263,7 +301,7 @@ panel-typebuiltins.h: @REBUILD@ $(panel_enum_headers)
 			--ftail "G_END_DECLS\n\n" \
 			--ftail "#endif /* __PANEL_TYPEBUILTINS_H__ */\n" \
 			--fprod "\n/* --- @filename@ --- */" \
-			--eprod "#define PANEL_TYPE_@ENUMNAME@ @enum_name@_get_type()\n" \
+			--eprod "#define PANEL_TYPE_@ENUMSHORT@ @enum_name@_get_type()\n" \
 			--eprod "GType @enum_name@_get_type (void);\n" \
 		$(panel_enum_headers) >  $@
 
@@ -280,7 +318,11 @@ rc_DATA = gnome-panelrc
 @INTLTOOL_SERVER_RULE@
 
 schemasdir       = $(sysconfdir)/gconf/schemas
-schemas_in_files = panel-global-config.schemas.in panel-per-panel-config.schemas.in
+schemas_in_files =				\
+	panel-global-config.schemas.in		\
+	panel-per-panel-config.schemas.in	\
+	gnome-panel-screenshot.schemas.in	\
+	$(NULL)
 schemas_DATA     = $(schemas_in_files:.schemas.in=.schemas)
 
 @INTLTOOL_SCHEMAS_RULE@
@@ -297,7 +339,12 @@ CLEANFILES = $(BUILT_SOURCES)
 dist-hook:
 	cd $(distdir) ; rm -f $(CLEANFILES)
 
+EGG_SCREEN_EXEC_DIR = $(srcdir)/../../libegg/libegg/screen-exec
 EGG_ACCELERATORS_DIR = $(srcdir)/../../libegg/libegg/treeviewutils
+EGG_RECENT_DIR = $(srcdir)/../../libegg/libegg/recent-files
 
 regenerate-built-sources:
+	EGGFILES="$(EGG_SCREEN_EXEC_FILES)"  EGGDIR="$(EGG_SCREEN_EXEC_DIR)"  $(srcdir)/update-from-egg.sh
 	EGGFILES="$(EGG_ACCELERATORS_FILES)" EGGDIR="$(EGG_ACCELERATORS_DIR)" $(srcdir)/update-from-egg.sh
+	EGGFILES="$(EGG_RECENT_FILES_C)" EGGDIR="$(EGG_RECENT_DIR)" $(srcdir)/update-from-egg.sh
+	EGGFILES="$(EGG_RECENT_FILES_H)" EGGDIR="$(EGG_RECENT_DIR)" $(srcdir)/update-from-egg.sh

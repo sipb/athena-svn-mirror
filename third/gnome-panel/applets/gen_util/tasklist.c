@@ -1,3 +1,4 @@
+/* -*- mode: C; c-file-style: "linux" -*- */
 /*
  * libwnck based tasklist applet.
  * (C) 2001 Red Hat, Inc
@@ -22,11 +23,14 @@
 #include <libbonobo.h>
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
+#include <libgnome/gnome-desktop-item.h>
 #include <glade/glade-xml.h>
 #include <libwnck/libwnck.h>
 #include <gconf/gconf-client.h>
 
 #include "tasklist.h"
+
+#include "egg-screen-help.h"
 
 typedef struct {
 	GtkWidget *applet;
@@ -42,6 +46,8 @@ typedef struct {
 	int size;
 	gint maximum_size;
 
+        GnomeIconTheme *icon_theme;
+  
 	/* Properties: */
 	GtkWidget *properties_dialog;
 	GtkWidget *show_current_radio;
@@ -88,7 +94,7 @@ tasklist_update (TasklistData *tasklist)
 							  tasklist->move_unminimized_windows);
 }
 static void
-response_cb(GtkWidget * widget,int id, gpointer data)
+response_cb(GtkWidget * widget,int id, TasklistData *tasklist)
 {
 	if(id == GTK_RESPONSE_HELP) {
 
@@ -103,8 +109,11 @@ response_cb(GtkWidget * widget,int id, gpointer data)
 							     GNOME_PROGRAM_STANDARD_PROPERTIES,NULL);
 		}
 
-		gnome_help_display_desktop (applet_program, "window-list",
-					    "window-list","windowlist-prefs", &error);
+		egg_help_display_desktop_on_screen (
+			applet_program, "window-list",
+			"window-list", "windowlist-prefs",
+			gtk_widget_get_screen (tasklist->applet),
+			&error);
 		if (error) {
 			GtkWidget *dialog;
 			dialog = gtk_message_dialog_new (GTK_WINDOW(widget),
@@ -119,12 +128,38 @@ response_cb(GtkWidget * widget,int id, gpointer data)
 					  NULL);
 	
 			gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+			gtk_window_set_screen (GTK_WINDOW (dialog),
+					       gtk_widget_get_screen (tasklist->applet));
 			gtk_widget_show (dialog);
 			g_error_free (error);
 		}
 	}
 	else
 		gtk_widget_hide (widget);
+}
+
+static WnckScreen *
+applet_get_screen (GtkWidget *applet)
+{
+	int screen_num;
+
+	if (!gtk_widget_has_screen (applet))
+		return wnck_screen_get_default ();
+
+	screen_num = gdk_screen_get_number (gtk_widget_get_screen (applet));
+
+	return wnck_screen_get (screen_num);
+}
+
+static void
+applet_realized (PanelApplet  *applet,
+		 TasklistData *tasklist)
+{
+	WnckScreen *screen;
+
+	screen = applet_get_screen (GTK_WIDGET (applet));
+
+	wnck_tasklist_set_screen (WNCK_TASKLIST (tasklist->tasklist), screen);
 }
 
 static void
@@ -213,6 +248,9 @@ destroy_tasklist(GtkWidget * widget, TasklistData *tasklist)
 {
 	GConfClient *client = gconf_client_get_default ();
 
+        g_object_unref (tasklist->icon_theme);
+        tasklist->icon_theme = NULL;
+        
 	gconf_client_notify_remove (client, tasklist->listeners[0]);
 	gconf_client_notify_remove (client, tasklist->listeners[1]);
 	gconf_client_notify_remove (client, tasklist->listeners[2]);
@@ -224,6 +262,8 @@ destroy_tasklist(GtkWidget * widget, TasklistData *tasklist)
 	tasklist->listeners[2] = 0;
 	tasklist->listeners[3] = 0;
 	tasklist->listeners[4] = 0;
+
+        g_free (tasklist);
 }
 
 static const BonoboUIVerb tasklist_menu_verbs [] = {
@@ -527,6 +567,31 @@ applet_size_request (GtkWidget      *widget,
 	g_free (new_size_hints);
 }
 
+static GdkPixbuf*
+icon_loader_func (const char  *icon,
+                  int          size,
+                  unsigned int flags,
+                  void        *data)
+{
+        TasklistData *tasklist;
+        char *file;
+        GdkPixbuf *pixbuf;
+        
+        tasklist = data;
+        
+        file = gnome_desktop_item_find_icon (tasklist->icon_theme,
+                                             icon, size, 0);
+
+        if (file == NULL)
+                return NULL;
+
+        pixbuf = gdk_pixbuf_new_from_file (file, NULL);
+
+        g_free (file);
+
+        return pixbuf;
+}
+
 gboolean
 fill_tasklist_applet(PanelApplet *applet)
 {
@@ -543,7 +608,9 @@ fill_tasklist_applet(PanelApplet *applet)
 	tasklist->applet = GTK_WIDGET (applet);
 
 	setup_gconf (tasklist);
-	
+
+        tasklist->icon_theme = gnome_icon_theme_new ();
+        
 	error = NULL;
 	tasklist->include_all_workspaces = panel_applet_gconf_get_bool (applet, "display_all_workspaces", &error);
 	if (error) {
@@ -583,13 +650,18 @@ fill_tasklist_applet(PanelApplet *applet)
 		break;
 	}
 
-	tasklist->screen = wnck_screen_get_default ();
+	tasklist->screen = applet_get_screen (tasklist->applet);
 
 	/* because the tasklist doesn't respond to signals at the moment */
 	wnck_screen_force_update (tasklist->screen);
 
 	tasklist->tasklist = wnck_tasklist_new (tasklist->screen);
 
+        wnck_tasklist_set_icon_loader (WNCK_TASKLIST (tasklist->tasklist),
+                                       icon_loader_func,
+                                       tasklist,
+                                       NULL);
+        
 	/* get size preferences */
 	error = NULL;
 	sizepref = panel_applet_gconf_get_int (applet, "minimum_size", &error);
@@ -632,6 +704,10 @@ fill_tasklist_applet(PanelApplet *applet)
 	gtk_widget_show (tasklist->applet);
 
 	g_signal_connect (G_OBJECT (tasklist->applet),
+			  "realize",
+			  G_CALLBACK (applet_realized),
+			  tasklist);
+	g_signal_connect (G_OBJECT (tasklist->applet),
 			  "change_orient",
 			  G_CALLBACK (applet_change_orient),
 			  tasklist);
@@ -672,8 +748,11 @@ display_help_dialog (BonoboUIComponent *uic,
 						     GNOME_PROGRAM_STANDARD_PROPERTIES,NULL);
 	}
 
-	gnome_help_display_desktop (applet_program, "window-list",
-				    "window-list",NULL, &error);
+	egg_help_display_desktop_on_screen (
+			applet_program, "window-list",
+			"window-list", NULL,
+			gtk_widget_get_screen (tasklist->applet),
+			&error);
 	if (error) {
 		GtkWidget *dialog;
 		dialog = gtk_message_dialog_new (NULL,
@@ -688,6 +767,8 @@ display_help_dialog (BonoboUIComponent *uic,
 				  NULL);
 
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (tasklist->applet));
 		gtk_widget_show (dialog);
 		g_error_free (error);
 	}
@@ -712,7 +793,9 @@ display_about_dialog (BonoboUIComponent *uic,
 	};
 	const char *translator_credits = _("translator_credits");
 
-	if (about != NULL) {
+	if (about) {
+		gtk_window_set_screen (GTK_WINDOW (about),
+				       gtk_widget_get_screen (tasklist->applet));
 		gtk_widget_show (about);
 		gtk_window_present (GTK_WINDOW (about));
 		return;
@@ -723,7 +806,7 @@ display_about_dialog (BonoboUIComponent *uic,
 	g_free(file);
 
 	about = gnome_about_new (_("Window List"), "1.0",
-				 _("(c) 2001 Red Hat, Inc"),
+				 "Copyright \xc2\xa9 2001-2002 Red Hat, Inc.",
 				 _("The Window List shows a list of all visible windows and lets you browse them."),
 				 authors,
 				 documenters,
@@ -731,6 +814,8 @@ display_about_dialog (BonoboUIComponent *uic,
 				 pixbuf);
 	
 	gtk_window_set_wmclass (GTK_WINDOW (about), "tasklist", "Tasklist");
+	gtk_window_set_screen (GTK_WINDOW (about),
+			       gtk_widget_get_screen (tasklist->applet));
 
 	if (pixbuf) {
 		gtk_window_set_icon (GTK_WINDOW (about), pixbuf);
@@ -910,7 +995,7 @@ display_properties_dialog (BonoboUIComponent *uic,
 		g_object_unref (G_OBJECT (xml));
 	}
 
+	gtk_window_set_screen (GTK_WINDOW (tasklist->properties_dialog),
+			       gtk_widget_get_screen (tasklist->applet));
 	gtk_window_present (GTK_WINDOW (tasklist->properties_dialog));
 }
-
-

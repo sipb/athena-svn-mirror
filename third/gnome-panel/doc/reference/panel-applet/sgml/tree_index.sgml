@@ -8,6 +8,9 @@
                             <link linkend="PanelApplet">PanelApplet</link>
         <link linkend="GtkStyle">GtkStyle</link>
         <link linkend="GdkDragContext">GdkDragContext</link>
+        <link linkend="GdkScreen">GdkScreen</link>
         <link linkend="GdkDrawable">GdkDrawable</link>
             <link linkend="GdkPixmap">GdkPixmap</link>
+    <link linkend="GInterface">GInterface</link>
+        <link linkend="AtkImplementorIface">AtkImplementorIface</link>
 </screen>

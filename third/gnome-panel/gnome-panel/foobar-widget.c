@@ -35,7 +35,10 @@
 #include "gnome-run.h"
 #include "multiscreen-stuff.h"
 #include "panel-marshal.h"
+#include "egg-screen-exec.h"
 #include "panel-stock-icons.h"
+#include "panel-action-button.h"
+#include "panel-recent.h"
 
 #define ICON_SIZE 20
 #define FOOBAR_MENU_FLAGS (MAIN_MENU_SYSTEM | MAIN_MENU_KDE_SUB | MAIN_MENU_DISTRIBUTION_SUB)
@@ -163,28 +166,8 @@ foobar_enter_notify (GtkWidget *widget,
 }
 
 static void
-foobar_screenshot (GtkWidget *widget, gpointer data) 
-{
-	char *argv[2] = {"gnome-panel-screenshot", NULL};
-
-	if (gnome_execute_async (g_get_home_dir (), 1, argv) < 0)
-		panel_error_dialog ("cannot_exec_gnome-panel-screenshot",
-				    _("Cannot execute gnome-panel-screenshot"));
-}
-
-static void
-foobar_search (GtkWidget *widget,
-	       gpointer   data)
-{
-	char *argv[2] = {"gnome-search-tool", NULL};
-
-	if (gnome_execute_async (g_get_home_dir (), 1, argv) < 0)
-		panel_error_dialog ("cannot_exec_gnome-search-tool",
-				    _("Cannot execute gnome-search-tool"));
-}
-
-static void
-append_actions_menu (GtkWidget *menu_bar)
+append_actions_menu (FoobarWidget *foo,
+		     GtkWidget    *menu_bar)
 {
 	GtkWidget *menu, *item;
 
@@ -198,8 +181,12 @@ append_actions_menu (GtkWidget *menu_bar)
 				"correct command to type in"),
 			      NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	g_signal_connect (G_OBJECT (item), "activate",
-			  G_CALLBACK (show_run_dialog), 0);
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (panel_action_run_program), NULL);
+	setup_internal_applet_drag (item, "ACTION:run:NEW");
+
+	item = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
 	if (panel_is_program_in_path  ("gnome-search-tool")) {
 		item = stock_menu_item_new (
@@ -214,8 +201,13 @@ append_actions_menu (GtkWidget *menu_bar)
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (item, "activate",
-				  G_CALLBACK (foobar_search), 0);
+				  G_CALLBACK (panel_action_search), NULL);
+		setup_internal_applet_drag (item, "ACTION:search:NEW");
 	}
+
+	panel_recent_append_documents_menu (menu);
+	item = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
 	if (panel_is_program_in_path ("gnome-panel-screenshot")) {
 		item = stock_menu_item_new (_("Screenshot..."),
@@ -225,8 +217,9 @@ append_actions_menu (GtkWidget *menu_bar)
 			      	      _("Take a screenshot of your desktop"),
 			              NULL);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-        	g_signal_connect (G_OBJECT (item), "activate",
-			  	  G_CALLBACK (foobar_screenshot), 0);	 
+        	g_signal_connect (item, "activate",
+			  	  G_CALLBACK (panel_action_screenshot), NULL);	 
+		setup_internal_applet_drag (item, "ACTION:screenshot:NEW");
 	}
 
 	item = gtk_separator_menu_item_new ();
@@ -242,8 +235,8 @@ append_actions_menu (GtkWidget *menu_bar)
 				      NULL);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (item, "activate",
-				  G_CALLBACK (panel_lock), NULL);
-		setup_internal_applet_drag(item, "LOCK:NEW");
+				  G_CALLBACK (panel_action_lock_screen), NULL);
+		setup_internal_applet_drag (item, "ACTION:lock:NEW");
 	}
 
 	item = stock_menu_item_new (_("Log Out"),
@@ -254,8 +247,8 @@ append_actions_menu (GtkWidget *menu_bar)
 			      NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	g_signal_connect (G_OBJECT (item), "activate",
-			  G_CALLBACK (panel_quit), 0);
-	setup_internal_applet_drag (item, "LOGOUT:NEW");
+			  G_CALLBACK (panel_action_logout), 0);
+	setup_internal_applet_drag  (item, "ACTION:logout:NEW");
 
 	/* FIXME: shutdown or reboot */
 
@@ -368,16 +361,19 @@ get_default_image (void)
 static void
 add_window (WnckWindow *window, FoobarWidget *foo)
 {
-	GtkWidget *item, *label;
-	char *title = NULL;
-	int slen;
-	GtkWidget *image = NULL;
-	GdkPixbuf *pb;
-	const char *name;
-	WnckScreen *screen = wnck_screen_get_default ();
-	WnckWorkspace *wspace = wnck_screen_get_active_workspace (screen);
+	WnckScreen    *screen;
+	WnckWorkspace *wspace;
+	GtkWidget     *item, *label;
+	GtkWidget     *image = NULL;
+	GdkPixbuf     *pb;
+	const char    *name;
+	char          *title = NULL;
+	int            slen;
 
 	g_assert (foo->windows != NULL);
+
+	screen = wnck_screen_get (foo->screen);
+	wspace = wnck_screen_get_active_workspace (screen);
 
 	if (wnck_window_is_skip_tasklist (window))
 		return;
@@ -452,17 +448,19 @@ static void
 create_task_menu (GtkWidget *w, gpointer data)
 {
 	FoobarWidget *foo = FOOBAR_WIDGET (data);
-	GList *list;
-	GtkWidget *separator;
-	WnckScreen *screen = wnck_screen_get_default ();
-	GList *windows = wnck_screen_get_windows (screen);
+	GtkWidget    *separator;
+	WnckScreen   *screen;
+	GList        *windows;
+	GList        *list;
 
-	/* g_message ("creating..."); */
+	screen  = wnck_screen_get (foo->screen);
+	windows = wnck_screen_get_windows (screen);
+
 	foo->windows = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	separator = add_menu_separator (foo->task_menu);
 
-	g_list_foreach (windows, (GFunc)add_window, foo);
+	g_list_foreach (windows, (GFunc) add_window, foo);
 
 	list = g_list_last (GTK_MENU_SHELL (foo->task_menu)->children);
 
@@ -579,9 +577,8 @@ bind_window_changes (WnckWindow *window, FoobarWidget *foo)
 	/* XXX: do we care about names changing? */
 }
 
-/* focused window changed */
 static void
-active_window_changed (WnckScreen *screen,
+active_window_changed (WnckScreen   *screen,
 		       FoobarWidget *foo)
 {
 	WnckWindow *window = wnck_screen_get_active_window (screen);
@@ -591,24 +588,25 @@ active_window_changed (WnckScreen *screen,
 		set_das_pixmap (foo, window);
 }
 
-/* window added */
 static void
-window_opened (WnckScreen *screen,
-	       WnckWindow *window,
+window_opened (WnckScreen   *screen,
+	       WnckWindow   *window,
 	       FoobarWidget *foo)
 {
 	if (foo->windows != NULL)
 		add_window (window, foo);
+
 	bind_window_changes (window, foo);
 }
-/* window removed */
+
 static void
-window_closed (WnckScreen *screen,
-	       WnckWindow *window,
+window_closed (WnckScreen   *screen,
+	       WnckWindow   *window,
 	       FoobarWidget *foo)
 {
 	if (window == foo->icon_window)
 		set_das_pixmap (foo, NULL);
+
 	if (foo->windows != NULL) {
 		GtkWidget *item;
 		item = g_hash_table_lookup (foo->windows, window);
@@ -626,8 +624,9 @@ window_closed (WnckScreen *screen,
 static void
 setup_task_menu (FoobarWidget *foo)
 {
-	GList *windows, *li;
 	WnckScreen *screen;
+	GList      *windows, *l;
+
 	g_assert (foo->task_item != NULL);
 
 	g_signal_connect (G_OBJECT (foo->task_item), "select",
@@ -637,22 +636,21 @@ setup_task_menu (FoobarWidget *foo)
 
 	set_the_task_submenu (foo, foo->task_item);
 
-	screen = wnck_screen_get_default ();
+	screen = wnck_screen_get (foo->screen);
 
 	/* setup the pixmap to the focused task */
 	windows = wnck_screen_get_windows (screen);
-	for (li = windows; li != NULL; li = li->next) {
-		if (wnck_window_is_active (li->data)) {
-			set_das_pixmap  (foo, li->data);
+	for (l = windows; l; l = l->next)
+		if (wnck_window_is_active (l->data)) {
+			set_das_pixmap  (foo, l->data);
 			break;
 		}
-	}
 
 	/* if no focused task found, then just set it to default */
-	if (li == NULL)
+	if (!l)
 		set_das_pixmap  (foo, NULL);
 
-	g_list_foreach (windows, (GFunc)bind_window_changes, foo);
+	g_list_foreach (windows, (GFunc) bind_window_changes, foo);
 
 	panel_signal_connect_while_alive (G_OBJECT (screen),
 					  "active_window_changed",
@@ -687,7 +685,8 @@ foobar_widget_instance_init (FoobarWidget *foo)
 
 	window = GTK_WINDOW (foo);
 
-	foo->screen = 0;
+	foo->screen  = 0;
+	foo->monitor = 0;
 
 	foo->windows    = NULL;
 	foo->task_item  = NULL;
@@ -754,7 +753,7 @@ foobar_widget_instance_init (FoobarWidget *foo)
 	panel_stretch_events_to_toplevel (
 		menuitem, PANEL_STRETCH_TOP | PANEL_STRETCH_LEFT);
 
-	append_actions_menu (menu_bar);
+	append_actions_menu (foo, menu_bar);
 
 	gtk_box_pack_start (GTK_BOX (foo->hbox), menu_bar, FALSE, FALSE, 0);
 	
@@ -813,6 +812,27 @@ foobar_widget_destroy (GtkObject *o)
 		GTK_OBJECT_CLASS (foobar_widget_parent_class)->destroy (o);
 }
 
+void
+foobar_widget_screen_size_changed (FoobarWidget *foo,
+				   GdkScreen    *screen)
+{
+	GtkWindow *window;
+	int        w, h;
+
+	window = GTK_WINDOW (foo);
+	
+	gtk_window_get_size (window, &w, &h);
+
+	gtk_window_move (window,
+			 multiscreen_x (foo->screen, foo->monitor),
+			 multiscreen_y (foo->screen, foo->monitor));
+
+	gtk_window_set_resizable (window, TRUE);
+	gtk_window_resize (window,
+			   multiscreen_width (foo->screen, foo->monitor),
+			   h);
+}
+
 static void
 foobar_widget_size_allocate (GtkWidget     *toplevel,
 			     GtkAllocation *allocation)
@@ -827,7 +847,7 @@ foobar_widget_size_allocate (GtkWidget     *toplevel,
 	foo = FOOBAR_WIDGET (toplevel);
 
 	g_slist_foreach (panel_list, queue_panel_resize, NULL);
-	basep_border_queue_recalc (foo->screen);
+	basep_border_queue_recalc (foo->screen, foo->monitor);
 
 	xstuff_set_wmspec_strut (toplevel->window, 0, 0, allocation->height, 0);
 }
@@ -848,7 +868,7 @@ foobar_widget_size_request (GtkWidget      *toplevel,
 	if (!GTK_WIDGET_REALIZED (toplevel))
 		return;
 
-	requisition->width = multiscreen_width (foo->screen);
+	requisition->width = multiscreen_width (foo->screen, foo->monitor);
 
 	if (requisition->height != old_height)
 		gtk_window_resize (GTK_WINDOW (toplevel),
@@ -856,21 +876,23 @@ foobar_widget_size_request (GtkWidget      *toplevel,
 				   requisition->height);
 
 	xstuff_set_pos_size (toplevel->window,
-			     multiscreen_x (foo->screen),
-			     multiscreen_y (foo->screen),
+			     multiscreen_x (foo->screen, foo->monitor),
+			     multiscreen_y (foo->screen, foo->monitor),
 			     requisition->width,
 			     requisition->height);
 }
 
 GtkWidget *
 foobar_widget_new (const char *panel_id,
-		   int         screen)
+		   int         screen,
+		   int         monitor)
 {
 	FoobarWidget *foo;
 
 	g_return_val_if_fail (screen >= 0, NULL);
+	g_return_val_if_fail (monitor >= 0, NULL);
 
-	if (foobar_widget_exists (screen))
+	if (foobar_widget_exists (screen, monitor))
 		return NULL;
 
 	foo = g_object_new (FOOBAR_TYPE_WIDGET, NULL);
@@ -879,10 +901,14 @@ foobar_widget_new (const char *panel_id,
 		panel_widget_set_id (PANEL_WIDGET (foo->panel), panel_id);
 
 	foo->screen  = screen;
+	foo->monitor = monitor;
+
+	gtk_window_set_screen (GTK_WINDOW (foo),
+			       panel_screen_from_number (screen));
 
 	gtk_window_move (GTK_WINDOW (foo),
-			 multiscreen_x (screen),
-			 multiscreen_y (screen));
+			 multiscreen_x (screen, monitor),
+			 multiscreen_y (screen, monitor));
 
 	foobars = g_list_prepend (foobars, foo);
 
@@ -890,16 +916,18 @@ foobar_widget_new (const char *panel_id,
 }
 
 gboolean
-foobar_widget_exists (int screen)
+foobar_widget_exists (int screen, int monitor)
 {
 	GList *l;
 
 	g_return_val_if_fail (screen  >= 0, 0);
+	g_return_val_if_fail (monitor >= 0, 0);
 
 	for (l = foobars; l; l = l->next) {
 		FoobarWidget *foo = l->data;
 
-		if (foo->screen == screen)
+		if (foo->screen == screen &&
+		    foo->monitor == monitor)
 			return TRUE;
 	}
 
@@ -923,16 +951,18 @@ foobar_widget_force_menu_remake (void)
 }
 
 int
-foobar_widget_get_height (int screen)
+foobar_widget_get_height (int screen, int monitor)
 {
 	GList *l;
 
 	g_return_val_if_fail (screen  >= 0, 0);
+	g_return_val_if_fail (monitor >= 0, 0);
 
 	for (l = foobars; l; l = l->next) {
 		FoobarWidget *foo = FOOBAR_WIDGET (l->data);
 
-		if (foo->screen  == screen)
+		if (foo->screen  == screen &&
+		    foo->monitor == monitor)
 			return GTK_WIDGET (foo)->allocation.height;
 	}
 

@@ -58,24 +58,24 @@ struct _PanelAppletPrivate {
 	BonoboPropertyBag          *prop_sack;
 	BonoboItemHandler          *item_handler;
 
-	gchar                      *iid;
+	char                       *iid;
 	GClosure                   *closure;
 	gboolean                    bound;
-	gchar                      *prefs_key;
+	char                       *prefs_key;
 
 	PanelAppletFlags            flags;
 	PanelAppletOrient           orient;
 	guint                       size;
-	gchar                      *background;
+	char                       *background;
 
 	GdkPixmap                  *bg_pixmap;
 
         int                        *size_hints;
         int                         size_hints_len;
 
-	gboolean		    moving_focus_out;
-	gint		   	    focusable_child;
-	guint			    hierarchy_changed_id;
+	gboolean                    moving_focus_out;
+	int                         focusable_child;
+	guint                       hierarchy_changed_id;
 };
 
 static GObjectClass *parent_class;
@@ -398,6 +398,7 @@ panel_applet_finalize (GObject *object)
 		bonobo_object_unref (
 			BONOBO_OBJECT (applet->priv->prop_sack));
 
+	g_free (applet->priv->size_hints);
 	g_free (applet->priv->prefs_key);
 	g_free (applet->priv->background);
 	g_free (applet->priv->iid);
@@ -406,45 +407,6 @@ panel_applet_finalize (GObject *object)
 	applet->priv = NULL;
 
 	parent_class->finalize (object);
-}
-
-static void
-panel_applet_menu_position (GtkMenu  *menu,
-			    gint     *x,
-			    gint     *y,
-			    gboolean *push_in,
-			    gpointer  data)
-{
-	GtkWidget *w = data;
-	GtkRequisition requisition;
-	gint wx, wy;
-
-	g_return_if_fail (w != NULL);
-
-	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
-
-	gdk_window_get_origin (w->window, &wx, &wy);
-	/*
-         * Make sure that the popup position is in the panel
-	 * as the menu may be popped up by a keystroke
-	 */
-	if (*x < wx)
-		*x = wx;
-	else if (*x > wx + w->allocation.width)
-		*x = wx + w->allocation.width;
-
-	if (*x + requisition.width > gdk_screen_width())
-		*x = gdk_screen_width() - requisition.width;
-
-	if (*y < wy)
-		*y = wy;
-	 else if (*y > wy + w->allocation.height)
-		*y = wy + w->allocation.height;
-
-	if (*y + requisition.height > gdk_screen_height())
-		*y = gdk_screen_height() - requisition.height;
-
-	*push_in = TRUE;
 }
 
 static GtkWidget*
@@ -500,6 +462,67 @@ panel_applet_has_focusable_child (PanelApplet *applet)
 	return  (applet->priv->focusable_child != 0);
 }
 
+static void
+panel_applet_position_menu (GtkMenu   *menu,
+			    int       *x,
+			    int       *y,
+			    gboolean  *push_in,
+			    GtkWidget *widget)
+{
+	PanelApplet    *applet;
+	GtkRequisition  requisition;
+	GdkScreen      *screen;
+	int             menu_x = 0;
+	int             menu_y = 0;
+
+	g_return_if_fail (PANEL_IS_APPLET (widget));
+
+	applet = PANEL_APPLET (widget);
+
+	screen = gtk_widget_get_screen (widget);
+
+	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
+
+	gdk_window_get_origin (widget->window, &menu_x, &menu_y);
+
+	menu_x += widget->allocation.x;
+	menu_y += widget->allocation.y;
+
+	if (applet->priv->orient == PANEL_APPLET_ORIENT_UP ||
+	    applet->priv->orient == PANEL_APPLET_ORIENT_DOWN) {
+		if (menu_y > gdk_screen_get_height (screen) / 2)
+			menu_y -= requisition.height;
+		else
+			menu_y += widget->allocation.height;
+	} else  {
+		if (menu_x > gdk_screen_get_width (screen) / 2)
+			menu_x -= requisition.width;
+		else
+			menu_x += widget->allocation.width;
+
+	}
+
+	*x = menu_x;
+	*y = menu_y;
+	*push_in = TRUE;
+}
+
+static gboolean
+panel_applet_can_focus (GtkWidget *widget)
+{
+	/*
+	 * A PanelApplet widget can focus if it has a tooltip or it does 
+	 * not have any focusable children.
+	 */
+	if (gtk_tooltips_data_get (widget))
+		return TRUE;
+
+	if (!PANEL_IS_APPLET (widget))
+		return FALSE;
+
+	return !panel_applet_has_focusable_child (PANEL_APPLET (widget));
+}
+
 static gboolean
 panel_applet_button_press (GtkWidget      *widget,
 			   GdkEventButton *event)
@@ -516,9 +539,13 @@ panel_applet_button_press (GtkWidget      *widget,
 	if (event->button == 1)
 		return TRUE;
 	else if (event->button == 3) {
-		bonobo_control_do_popup (applet->priv->control, 
-					 event->button,
-					 event->time);
+		bonobo_control_do_popup_full (
+				applet->priv->control, 
+				NULL, NULL,
+				(GtkMenuPositionFunc) panel_applet_position_menu,
+				applet,
+				event->button,
+				event->time);
 		return TRUE;
 	}
 
@@ -531,9 +558,8 @@ _panel_applet_popup_menu (PanelApplet *applet,
 			  guint32 time)			  
 {
 	bonobo_control_do_popup_full (applet->priv->control, NULL, NULL,
-				      panel_applet_menu_position,
-				      GTK_WIDGET (applet), button,
-				      time);
+				      (GtkMenuPositionFunc) panel_applet_position_menu,
+				      applet, button, time);
 	return TRUE;
 }
 
@@ -543,56 +569,59 @@ panel_applet_popup_menu (PanelApplet *applet)
 	return _panel_applet_popup_menu (applet, 3, GDK_CURRENT_TIME);
 }
 
-#ifdef FIXME
 static void
 panel_applet_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
-	PanelApplet *applet = PANEL_APPLET (widget);
-	GtkBin *bin = GTK_BIN (widget);
-	gint focus_width, focus_pad;
+	int focus_width = 0;
 
-	requisition->width = GTK_CONTAINER (widget)->border_width * 2;
-	requisition->height = GTK_CONTAINER (widget)->border_width * 2;
+	GTK_WIDGET_CLASS (parent_class)->size_request (widget, requisition);
 
+	if (!panel_applet_can_focus (widget))
+		return;
+
+	/*
+	 * We are deliberately ignoring focus-padding here to
+	 * save valuable panel real estate.
+	 */
 	gtk_widget_style_get (widget,
 			      "focus-line-width", &focus_width,
-			      "focus-padding", &focus_pad,
 			      NULL);
 
-	if (bin->child && GTK_WIDGET_VISIBLE (bin->child)) {
-		GtkRequisition child_requisition;
-
-		gtk_widget_size_request (bin->child, &child_requisition);
-
-		requisition->width += child_requisition.width;
-		requisition->height += child_requisition.height;
-	}
-	requisition->width += 2 * (2 * focus_pad + focus_width);
-	requisition->height += 2 * (2 * focus_pad + focus_width);
+	requisition->width  += 2 * focus_width;
+	requisition->height += 2 * focus_width;
 }
 
 static void
-panel_applet_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+panel_applet_size_allocate (GtkWidget     *widget,
+			    GtkAllocation *allocation)
 {
-	PanelApplet *applet = PANEL_APPLET (widget);
-	gint focus_width, focus_pad;
-	gint x, y, width, height;
-	gint border_width;
-	GtkBin *bin;
-	GtkAllocation child_allocation;
+	GtkAllocation  child_allocation;
+	GtkBin        *bin;
+	int            border_width;
+	int            focus_width = 0;
 
+	if (!panel_applet_can_focus (widget)) {
+		GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
+		return;
+	}
+
+	/*
+	 * We are deliberately ignoring focus-padding here to
+	 * save valuable panel real estate.
+	 */
 	gtk_widget_style_get (widget,
 			      "focus-line-width", &focus_width,
-			      "focus-padding", &focus_pad,
 			      NULL);
+
 	border_width = GTK_CONTAINER (widget)->border_width;
 
 	widget->allocation = *allocation;
 	bin = GTK_BIN (widget);
 
- 	child_allocation.x = focus_width + 2 * focus_pad;
- 	child_allocation.y = focus_width + 2 * focus_pad;
-	child_allocation.width = MAX (allocation->width - border_width * 2, 0);
+ 	child_allocation.x = focus_width;
+ 	child_allocation.y = focus_width;
+
+	child_allocation.width  = MAX (allocation->width  - border_width * 2, 0);
 	child_allocation.height = MAX (allocation->height - border_width * 2, 0);
 
 	if (GTK_WIDGET_REALIZED (widget))
@@ -601,43 +630,51 @@ panel_applet_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 					allocation->y + GTK_CONTAINER (widget)->border_width,
 					child_allocation.width,
 					child_allocation.height);
-	child_allocation.width = MAX (child_allocation.width - 2 * (focus_width + 2 * focus_pad), 0);
-	child_allocation.height = MAX (child_allocation.height - 2 * (focus_width + 2 * focus_pad), 0);
+
+	child_allocation.width  = MAX (child_allocation.width  - 2 * focus_width, 0);
+	child_allocation.height = MAX (child_allocation.height - 2 * focus_width, 0);
 
 	if (bin->child)
 		gtk_widget_size_allocate (bin->child, &child_allocation);
 }
-#endif /* FIXME */
 
 static gboolean
 panel_applet_expose (GtkWidget      *widget,
 		     GdkEventExpose *event) 
 {
+	int border_width;
+	int focus_width = 0;
+	int x, y, width, height;
+
 	g_return_val_if_fail (PANEL_IS_APPLET (widget), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
 	GTK_WIDGET_CLASS (parent_class)->expose_event (widget, event);
 
-        if (GTK_WIDGET_HAS_FOCUS (widget)) {
-		gint focus_width, focus_pad;
-		gint x, y, width, height;
-		gint border_width;
+        if (!GTK_WIDGET_HAS_FOCUS (widget))
+		return FALSE;
 
-		gtk_widget_style_get (widget,
-				      "focus-line-width", &focus_width,
-				      "focus-padding", &focus_pad,
-				      NULL);
-		border_width = GTK_CONTAINER (widget)->border_width;
+	/*
+	 * We are deliberately ignoring focus-padding here to
+	 * save valuable panel real estate.
+	 */
+	gtk_widget_style_get (widget,
+			      "focus-line-width", &focus_width,
+			      NULL);
 
-		x = widget->allocation.x + focus_pad;
-		y = widget->allocation.y + focus_pad;
-		width = widget->allocation.width - 2 * border_width - 0.5 * focus_pad;
-		height = widget->allocation.height - 2 * border_width - 0.5 * focus_pad;
-		gtk_paint_focus (widget->style, widget->window,
-                                 GTK_WIDGET_STATE (widget),
-                                 &event->area, widget, "panel_applet",
-                                 x, y, width, height);
-	}
+	border_width = GTK_CONTAINER (widget)->border_width;
+
+	x = widget->allocation.x;
+	y = widget->allocation.y;
+
+	width  = widget->allocation.width  - 2 * border_width;
+	height = widget->allocation.height - 2 * border_width;
+
+	gtk_paint_focus (widget->style, widget->window,
+			 GTK_WIDGET_STATE (widget),
+			 &event->area, widget, "panel_applet",
+			 x, y, width, height);
+
 	return FALSE;
 }                
 
@@ -758,7 +795,7 @@ panel_applet_get_pixmap (PanelApplet     *applet,
 			 int              x,
 			 int              y)
 {
-	GdkPixmap *pixmap;
+	GdkWindow *window;
 	GdkPixmap *retval;
 	GdkGC     *gc;
 	int        width;
@@ -766,13 +803,16 @@ panel_applet_get_pixmap (PanelApplet     *applet,
 
 	g_return_val_if_fail (PANEL_IS_APPLET (applet), NULL);
 
-	pixmap = gdk_pixmap_lookup (xid);
-	if (pixmap)
-		g_object_ref (G_OBJECT (pixmap));
-	else
-		pixmap = gdk_pixmap_foreign_new (xid);
+	if (!GTK_WIDGET_REALIZED (applet))
+		return NULL;
 
-	g_return_val_if_fail (pixmap != NULL, NULL);
+	window = gdk_window_lookup (xid);
+	if (window)
+		g_object_ref (window);
+	else
+		window = gdk_window_foreign_new (xid);
+
+	g_return_val_if_fail (window != NULL, NULL);
 
 	gdk_drawable_get_size (GDK_DRAWABLE (GTK_WIDGET (applet)->window),
 			       &width, &height);
@@ -785,13 +825,13 @@ panel_applet_get_pixmap (PanelApplet     *applet,
 
 	gdk_draw_drawable (GDK_DRAWABLE (retval),
 			   gc, 
-			   GDK_DRAWABLE (pixmap),
+			   GDK_DRAWABLE (window),
 			   x, y,
 			   0, 0,
 			   width, height);
 
 	g_object_unref (gc);
-	g_object_unref (pixmap);
+	g_object_unref (window);
 
 	return retval;
 }
@@ -806,7 +846,7 @@ panel_applet_handle_background_string (PanelApplet  *applet,
 
 	retval = PANEL_NO_BACKGROUND;
 
-	if (!applet->priv->background)
+	if (!GTK_WIDGET_REALIZED (applet) || !applet->priv->background)
 		return retval;
 
 	elements = g_strsplit (applet->priv->background, ":", -1);
@@ -932,6 +972,39 @@ panel_applet_get_prop (BonoboPropertyBag *sack,
 }
 
 static void
+panel_applet_handle_background (PanelApplet *applet)
+{
+	PanelAppletBackgroundType  type;
+	GdkColor                   color;
+	GdkPixmap                 *pixmap = NULL;
+
+	type = panel_applet_handle_background_string (applet, &color, &pixmap);
+
+	switch (type) {
+	case PANEL_NO_BACKGROUND:
+		g_signal_emit (G_OBJECT (applet),
+			       panel_applet_signals [CHANGE_BACKGROUND],
+			       0, PANEL_NO_BACKGROUND, NULL, NULL);
+		break;
+	case PANEL_COLOR_BACKGROUND:
+		g_signal_emit (G_OBJECT (applet),
+			       panel_applet_signals [CHANGE_BACKGROUND],
+			       0, PANEL_COLOR_BACKGROUND, &color, NULL);
+		break;
+	case PANEL_PIXMAP_BACKGROUND:
+		g_signal_emit (G_OBJECT (applet),
+			       panel_applet_signals [CHANGE_BACKGROUND],
+			       0, PANEL_PIXMAP_BACKGROUND, NULL, pixmap);
+
+		g_object_unref (pixmap);
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
+}
+
+static void
 panel_applet_set_prop (BonoboPropertyBag *sack,
 		       const BonoboArg   *arg,
 		       guint              arg_id,
@@ -969,42 +1042,13 @@ panel_applet_set_prop (BonoboPropertyBag *sack,
 		}
 		}
 		break;
-	case PROPERTY_BACKGROUND_IDX: {
-		PanelAppletBackgroundType  type;
-		GdkColor                   color;
-		GdkPixmap                 *pixmap = NULL;
-
-
+	case PROPERTY_BACKGROUND_IDX:
 		if (applet->priv->background)
 			g_free (applet->priv->background);
 
 		applet->priv->background = g_strdup (BONOBO_ARG_GET_STRING (arg));
 
-		type = panel_applet_handle_background_string (applet, &color, &pixmap);
-
-		switch (type) {
-		case PANEL_NO_BACKGROUND:
-			g_signal_emit (G_OBJECT (applet),
-				       panel_applet_signals [CHANGE_BACKGROUND],
-				       0, PANEL_NO_BACKGROUND, NULL, NULL);
-			break;
-		case PANEL_COLOR_BACKGROUND:
-			g_signal_emit (G_OBJECT (applet),
-				       panel_applet_signals [CHANGE_BACKGROUND],
-				       0, PANEL_COLOR_BACKGROUND, &color, NULL);
-			break;
-		case PANEL_PIXMAP_BACKGROUND:
-			g_signal_emit (G_OBJECT (applet),
-				       panel_applet_signals [CHANGE_BACKGROUND],
-				       0, PANEL_PIXMAP_BACKGROUND, NULL, pixmap);
-
-			g_object_unref (pixmap);
-			break;
-		default:
-			g_assert_not_reached ();
-			break;
-		}
-		}
+		panel_applet_handle_background (applet);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -1062,6 +1106,15 @@ panel_applet_property_bag (PanelApplet *applet)
 				 Bonobo_PROPERTY_READABLE);
 
 	return sack;
+}
+
+static void
+panel_applet_realize (GtkWidget *widget)
+{
+	GTK_WIDGET_CLASS (parent_class)->realize (widget);
+
+	if (PANEL_APPLET (widget)->priv->background)
+		panel_applet_handle_background (PANEL_APPLET (widget));
 }
 
 static void
@@ -1226,12 +1279,11 @@ panel_applet_class_init (PanelAppletClass *klass,
 	klass->move_focus_out_of_applet = panel_applet_move_focus_out_of_applet;
 
 	widget_class->button_press_event = panel_applet_button_press;
-#ifdef FIXME
 	widget_class->size_request = panel_applet_size_request;
 	widget_class->size_allocate = panel_applet_size_allocate;
-#endif /* FIXME */
 	widget_class->expose_event = panel_applet_expose;
 	widget_class->focus = panel_applet_focus;
+	widget_class->realize = panel_applet_realize;
 
 	gobject_class->finalize = panel_applet_finalize;
 
@@ -1418,110 +1470,6 @@ panel_applet_callback_data_free (PanelAppletCallBackData *data)
 	g_free (data);
 }
 
-/*
- *   Time we're prepared to wait without a ControlFrame
- * before terminating the Control. This can happen if the
- * panel activates us but crashes before the set_frame.
- *
- * NB. if we don't get a frame in 30 seconds, something
- * is badly wrong, or Gnome performance needs improving
- * markedly !
- */
-#define PANEL_APPLET_NEVER_GOT_FRAME_TIMEOUT 30 * 1000 /* ms */
-
-/* Track the living controls */
-static GSList *active_controls = NULL;
-
-static gboolean
-panel_applet_idle_quit (gpointer data)
-{
-	if (!active_controls)
-		bonobo_main_quit ();
-
-	return FALSE;
-}
-
-static void
-panel_applet_cnx_broken_callback (BonoboControl *control)
-{
-	active_controls = g_slist_remove (active_controls, control);
-	if (!active_controls)
-		g_idle_add (panel_applet_idle_quit, NULL);
-}
-
-static gboolean
-panel_applet_never_got_frame_timeout (gpointer user_data)
-{
-	g_warning ("Never got frame, panel died - abnormal exit condition");
-
-	panel_applet_cnx_broken_callback (user_data);
-	
-	return FALSE;
-}
-
-static void
-panel_applet_set_frame_callback (BonoboControl *control,
-				 gpointer       user_data)
-{
-	Bonobo_ControlFrame remote_frame;
-
-	remote_frame = bonobo_control_get_control_frame (control, NULL);
-
-	if (remote_frame != CORBA_OBJECT_NIL) {
-		ORBitConnectionStatus status;
-
-		g_source_remove (GPOINTER_TO_UINT (user_data));
-
-		status = ORBit_small_get_connection_status (remote_frame);
-
-		/* Only track out of proc controls */
-		if (status != ORBIT_CONNECTION_IN_PROC) {
-			active_controls = g_slist_prepend (active_controls,
-							   control);
-
-			g_signal_connect_closure (
-				ORBit_small_get_connection (remote_frame),
-				"broken",
-				g_cclosure_new_object_swap (
-					G_CALLBACK (panel_applet_cnx_broken_callback),
-					G_OBJECT (control)),
-				FALSE);
-			g_signal_connect (
-				control, "destroy",
-				G_CALLBACK (panel_applet_cnx_broken_callback),
-				NULL);
-		}
-	}
-}
-
-/**
- * panel_applet_instrument_for_failure:
- * @control: the control.
- * 
- *   Don't read this method - just believe in it; it'll
- * move inside libbonoboui in due course.
- **/
-static void
-panel_applet_instrument_for_failure (BonoboControl *control)
-{
-	guint no_frame_timeout_id;
-
-	no_frame_timeout_id = g_timeout_add (
-		PANEL_APPLET_NEVER_GOT_FRAME_TIMEOUT,
-		panel_applet_never_got_frame_timeout,
-		control);
-	g_signal_connect_closure (
-		control, "destroy",
-		g_cclosure_new_swap (
-			G_CALLBACK (g_source_remove_by_user_data),
-			control, NULL),
-		0);
-	g_signal_connect (
-		control, "set_frame",
-		G_CALLBACK (panel_applet_set_frame_callback),
-		GUINT_TO_POINTER (no_frame_timeout_id));
-}
-
 static BonoboObject *
 panel_applet_factory_callback (BonoboGenericFactory    *factory,
 			       const char              *iid,
@@ -1536,9 +1484,16 @@ panel_applet_factory_callback (BonoboGenericFactory    *factory,
 	applet->priv->iid     = g_strdup (iid);
 	applet->priv->closure = g_closure_ref (data->closure);
 
-	panel_applet_instrument_for_failure (applet->priv->control);
-	
+	bonobo_control_life_instrument (applet->priv->control);
+
 	return BONOBO_OBJECT (applet->priv->control);
+}
+
+static void
+panel_applet_all_controls_dead (void)
+{
+	if (!bonobo_control_life_get_count())
+		bonobo_main_quit ();
 }
 
 /**
@@ -1567,6 +1522,8 @@ panel_applet_factory_main_closure (const gchar *iid,
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+
+	bonobo_control_life_set_callback (panel_applet_all_controls_dead);
 
 	closure = bonobo_closure_store (closure, panel_applet_marshal_BOOLEAN__STRING);
 

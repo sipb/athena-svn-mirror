@@ -1,3 +1,692 @@
+2003-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c: (instrument_add_submenu_for_reload): disable
+	reloading the applet menu for the 2.2.0 release. Its
+	causing bug #103159 which I think is the result of
+	bonobo-activation setting a CORBA string to NULL rather
+	than "" somewhere, which is out of spec.
+
+2003-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	Do not migrate old logout/lock buttons to the action
+	button configuration - this broke backwards compatibility
+	with gnome-panel 2.0.x. Fixes #103927.
+
+	* panel-action-button.[ch]:
+	(panel_action_button_load): add compatibility flag to 
+	indicate a logout/lock action button should be loaded
+	and saved as an old style logout/lock button.
+	(panel_action_button_load_from_gconf),
+	(panel_action_button_load_from_drag): upd.
+
+	* applet.c:
+	(applet_callback_callback): handle old style lock
+	and logout buttons.
+	(panel_applet_load_idle_handler): fix bug with compatible
+	loading.
+	(panel_applet_save_to_gconf): handle old style lock/logout
+	buttons.
+
+	* menu.c: (add_action_button_to_panel): upd.
+
+2003-01-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-panelrc: add a comment to say this is
+	intentionally left empty. #103274.
+
+Thu Jan 09 16:39:25 2003  George Lebl <jirka@5z.com>
+
+	* gnome-panel-screenshot.c: actually fix the permission problem
+	  in the case when we don't do a temporary.  Fixes #94974
+
+2003-01-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-util.c: (set_color_back): don't try to set the
+	background colour on the hide buttons if the colour
+	contains an alpha channel. Fixes hide buttons being
+	a weird colour with transparent panels.
+
+	* panel-widget.c:
+	(panel_widget_set_background_region): impl correctly
+	setting the desktop background to use. Fixes mis-aligned
+	background when using hide-buttons.
+	(panel_widget_size_allocate),
+	(toplevel_configure_event): use it here.
+
+2003-01-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-per-panel-config.schemas.in: make the bottom
+	panel opaque again.
+
+2003-01-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-per-panel-config.schemas.in: add the
+	"Show Desktop Button" applet to the left of the tasklist
+	on the bottom panel and make the bottom panel fully
+	transparent.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* egg-recent-util.c: (load_icon_file): sync with libegg.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: remove egg-recent-vfs-utils.[ch].
+
+	* egg-recent-item.c:
+	* egg-recent-model.c:
+	* egg-recent-util.[ch]:
+	* egg-recent-view-gtk.[ch]: sync with libegg.
+
+	* egg-recent-vfs-utils.[ch]: remove
+
+	* panel-recent.c: (panel_recent_append_documents_menu):
+	Use the new RecentView icon size API to make sure we use
+	the same icon size as the panel menu.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix #95995 by making only the applications/actions menu use
+	"panel-menu" icon size and the rest use the "gtk-menu" size.
+	I swear, this icon size crap will be death of me yet ...
+
+	* menu.[ch]: (icon_to_load_copy): add a GtkIconSize member to
+	IconToLoad and IconToAdd.
+	(menu_item_style_set): pass the icon size as the signal data
+	and use it instead of "panel-menu".
+	(setup_full_menuitem), (panel_load_menu_image_deferred),
+	(setup_stock_menu_item): add a GtkIconSize param to these.
+	(do_icons_to_add), (load_icons_handler),
+	(image_menuitem_size_request), (setup_menuitem),
+	(create_menuitem): pass the icon size up the chain.
+	(show_item_menu), (applet_menu_append),
+	(create_add_panel_submenu), (create_button_menu),
+	(make_panel_submenu), (create_panel_context_menu),
+	(make_add_submenu): use "gtk-menu" for all these.
+	(create_desktop_menu), (add_distribution_submenu),
+	(add_kde_submenu), (create_root_menu):
+	use "panel-menu" here.
+
+	* applet.c: (setup_an_item), (panel_applet_create_menu):
+	Use "gtk-menu" icon size for these menus.
+
+	* menu-util.c: (stock_menu_item_new): use "panel-menu" icon
+	size for this one.
+
+2003-01-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: use @ENUMSHORT@ mkenums substitution pattern
+	instead of @ENUMNAME@. Gives nicer looking names.
+
+	* aligned-widget.c: (aligned_pos_class_init):
+	* basep-widget.c: (basep_widget_class_init):
+	* border-widget.c: (border_pos_class_init):
+	* button-widget.c: (button_widget_class_init):
+	* panel-action-button.c: (panel_action_button_class_init):
+	Update.
+
+2003-01-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* button-widget.c (button_widget_leave_notify): Call GtkButton's
+	leave_notify_event to cause the button's state to be reset from 
+	PRELIGHT.
+
+	This fixes bug #101546.
+
+2003-01-02  Mark McLoughlin  <mark@skynet.ie>
+
+	Impl periodically re-running the applet menu bonobo
+	query and re-generating the menu if it has changed.
+
+	* menu.c:
+	(Bonobo_ServerInfoList_equals): impl comparing server
+	lists.
+	(recheck_applet_list), (menu_item_destroyed),
+	(instrument_add_submenu_for_reload): impl periodically
+	re-running the bonobo-activation query to see if there
+	has been any change in the available applets.
+	(create_applets_menu): take a server list as an argument.
+	(create_button_menu), (current_panel_config),
+	(make_panel_submenu), (show_panel_help),
+	(create_panel_context_menu), (ask_about_launcher_cb):
+	(make_add_submenu), (create_root_menu):
+	lots of cleanups to make it clear there is only one place
+	the "Add to Panel" submenu appears these days.
+
+	* menu.h: remove some menu flags. Add big flashing sign
+	in neon lights to warn against assuming that the panel
+	is not on crack.
+
+2002-12-23  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* menu.c
+	(load_icon_handler): Get icon height when about to load icon
+	(image_menu_shown): Remove getting icon height; we do it in
+	load_icon_handler() as it may change by the time the icon is loaded.
+
+2002-12-22  Frank Worsley <fworsley@shaw.ca>
+
+	* gnome-run.c: (show_run_dialog): fix #77089, focus program
+	list if list expanded, otherwise focus entry in run dialog	
+
+2002-12-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c: (about_cb): remove translations marks from around
+	the copyright notices for the about dialogs. The container
+	non-ascii characters and no longer need to be translated
+	 anyhow. Fixes #101796.
+
+2002-12-20  Arvind Samptur <arvind.samptur@wipro.com>
+	* drawer-widget.c (drawer_pos_hidebutton_click):
+	guess a small typo by mark while checking in the #93541.
+	fixes the crash while closing the drawer panel.
+
+2002-12-20  Mark McLoughlin  <mark@skynet.ie>
+
+	/me shovels more crap onto the dung heap that is the panel.
+
+	More precisely, fix #93177 by loading the default panel
+	configuration on all screens, instead of just loading
+	a foobar on the non-default screens.
+
+	* applet.h: kill APPLET_EMPTY and all the string
+	ids which haven't been used since 1.4.
+
+	* applet.c:
+	(panel_applet_get_full_gconf_key): kill. dead. good bye.
+	(panel_applet_load_from_unique_id),
+	(panel_applet_load_list): use PanelGConfKeyType to
+	distinguish between "applets" and "objects" instead of
+	using the APPLET_EMPTY hack.
+	(panel_applet_load_default_applet_for_screen),
+	(panel_applet_load_defaults_for_screen): impl loading the
+	configuration for the default set of applets onto a
+	particular screen.
+	(panel_applet_save_position), (panel_applet_save_to_gconf):
+	use panel_gconf_full_key instead of panel_applet_get_full_gconf_key;
+
+	* panel-gconf.[ch]:
+	(panel_gconf_load_default_config_for_screen): impl method
+	for applying the schemas for a default panel or applet
+	to a new panel or applet on a given screen.
+
+	* panel.c:
+	(panel_load_fallback_default_panel): the worst case scenario.
+	Just load a foobar.
+	(panel_load_default_panel_for_screen),
+	(panel_load_default_panels_for_screen): impl loading the
+	configuration for the default set of panels onto a
+        particular screen.
+	(panel_ensure_panel_per_screen): load the default panels
+	if no other panels are on that screen.
+	(panel_load_panels_from_gconf): upd.
+
+2002-12-20  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes #93541, panel hogging the CPU when hide_delay
+	and show_delay are zero.
+
+	* basep-widget.c:
+	(find_non_drawer_parent_panel): recurse up through the
+	drawers to find the topmost panel.
+	(basep_leave_notify): don't queue an autohide on a drawer,
+	queue it on the topmost non-drawer parent panel instead.
+	(basep_widget_queue_autoshow): use show_delay not hide_delay.
+	Also, queue an idle instead of a timeout if the delay is
+	<= 0.
+	(basep_widget_autohide): don't return TRUE at silly times
+	where the autohide will be re-queued anyway.
+	(basep_widget_queue_autohide): Queue an idle instead of
+	a timeout if the delay is <= 0.
+
+	* drawer-widget.[ch]:
+	(drawer_pos_hidebutton_click): use drawer_widget_get_drawer().
+	(drawer_widget_set_drawer), (drawer_widget_get_drawer): impl.
+	small wrapper for the g_object_get/set_data so its in the
+	one location.
+
+	* drawer.c: (create_drawer_applet):
+	use drawer_widget_set_drawer().
+
+	* drawer.h: kill DRAWER_PANEL_KEY.
+
+2002-12-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* menu.c: (about_cb): Fix previous commit so build
+	doesn't fail.
+	
+2002-12-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c: (about_cb): Fixup reference to the
+	FSF. Fixes #101593.
+
+2002-12-19  Mark McLoughlin  <mark@skynet.ie>
+
+	No, this isn't purely random re-factoring. Its
+	needed to fix something else.
+
+	* panel.c:
+	(panel_load_panels_from_gconf): split this gigantic
+	function into several smaller ones.
+	(panel_load_edge_panel_from_gconf),
+	(panel_load_aligned_panel_from_gconf),
+	(panel_load_sliding_panel_from_gconf),
+	(panel_load_drawer_panel_from_gconf),
+	(panel_load_floating_panel_from_gconf),
+	(panel_load_panel_from_gconf): split our from
+	load_panels_from_gconf().
+
+	* aligned-widget.[ch], basep-widget.[ch],
+	  border-widget.[ch], drawer-widget.[ch],
+	  edge-widget.[ch], floating-widget.[ch]
+	  panel-widget.[ch], sliding-widget.[ch]:
+	s/char */const char */ for couple of params.
+
+2002-12-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/*: remove these files.
+
+2002-12-18  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes menu items not resizing when icon size changes.
+
+	* menu.c:
+	(reload_image_menu_items), (icon_theme_changed),
+	(panel_menu_new): re-indent the icon theme change
+	handling stuff.
+	(menu_item_style_set), (do_icons_to_add): connect
+	to the "style_set" signal and reload the image
+	if the icon size changes.
+
+2002-12-18  Mark McLoughlin  <mark@skynet.ie>
+
+	Implement support for tiled background images. #100952.
+
+	* panel-background-monitor.c:
+	(panel_background_monitor_tile_background): impl.
+	(panel_background_monitor_setup_pixbuf): if the
+	background pixmap is smaller than the actual
+	root window size, then tile it onto our pixbuf.
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	Make PanelBackgroundMonitor multiscreen aware.
+
+	* panel-background-monitor.[ch]:
+	(panel_background_monitor_init): factor out the
+	screen specific stuff to
+	(panel_background_monitor_connect_to_screen): here.
+	(panel_background_monitor_new): take a GdkScreen arg.
+	(panel_background_monitor_get_for_screen): keep a
+	list of monitors, one for each screen, instead of
+	a single one.
+	(panel_background_monitor_get): get the monitor for
+	the default screen.
+
+	* panel-background.c: (get_desktop_pixbuf): use
+	panel_background_monitor_get_for_screen().
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-stock-icons.h: add panel_button_icon_get_size()
+	to fix warning.
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-panel-preferences.c: (bool_value_changed_notify),
+	(load_checkboxes), (enum_value_changed_notify),
+	(load_animation_menu), (load_config_into_gui): receive
+	gconf notifications and update the GUI accordingly.
+	Fixes #101064.
+
+2002-12-13  Rajkumar Sivasamy  <rajkumar.siva@wipro.com>
+
+	* panel-stock-icons.[ch],
+	  basep-widget.c:  Register images used by panel show/hide button
+	  as stock images, so that they can be themed.
+	  Fixes bug #99208.
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* egg-recent-model.c:
+	* egg-recent-util.c:
+	* egg-recent-view-gtk.c:
+	* egg-recent-view-gtk.h:
+	* egg-recent-view.h:
+	* egg-screen-exec.c: sync with libegg. Fixes #101108.
+
+2002-12-16  Mark McLoughlin  <mark@skynet.ie>
+
+	Make it possible to perform all relevant drops
+	for a panel on the drawer button. Fixes #100965.
+
+	* drawer.[ch]:
+	(destroy_drawer): remove close timeout.
+	(drag_data_received_cb),
+	(drag_motion_cb), (close_drawer_in_idle),
+	(queue_drawer_close_for_drag), (drag_leave_cb),
+	(drag_drop_cb): impl.
+	(create_drawer_applet): hook up dnd signals.
+
+	* panel.[ch]:
+	(panel_check_dnd_target_data),
+	(panel_check_drop_forbidden),
+	(panel_receive_dnd_data): split out parts of the
+	panel dnd implementation so that the drawer can
+	use it.
+	(drag_data_recieved_cb), (drag_motion_cb),
+	(drag_drop_cb): use it here also.
+
+2002-12-16  Arvind Samptur <arvind.samptur@wipro.com>
+	* disclosure-widget.c (class_init): attach a 
+	destroy handler. 
+	(cddb_disclosure_destroy): remove the timer on
+	a destroy. Fixes #100992.
+	(get_x_y),(expand_collapse_timeout): remove the unused 
+	variables. Get rid of warnings.
+	(do_animation): replace gtk_timeout_remove() with
+	g_source_remove().
+	
+2002-12-16  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes a crash when moving between panels #98265.
+
+	* applet.c: (panel_applet_get_panel_id): return NULL
+	if we're in the middle of being re-parented.
+	(panel_applet_save_position): don't save our position
+	if we get a NULL panel_id.
+
+	* applet.h: don't export panel_applet_get_panel_id().
+
+2002-12-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c: (do_icons_to_add), (load_icons_handler),
+	add a ref/unref pair for the GtkImage to make
+	the crash in #99378 impossible.
+
+2002-12-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-background.c: (panel_background_prepare):
+	fix warning.
+
+2002-12-16  Mark McLoughlin  <mark@skynet.ie>
+
+	Be more robust in the face of applet crashes
+	during loading. Should fix #99205.
+
+	* panel-applet-frame.c: Keep a ref to the PanelWidget
+	so that we can reload an applet even when it hasn't
+	been fully loaded.
+	(popup_handle_move),
+	(panel_applet_frame_constrain_size),
+	(panel_applet_frame_button_changed): use that ref here.
+	(panel_applet_frame_reload_response): fix up to work even
+	when an applet hasn't fully loaded.
+	(panel_applet_frame_cnx_broken): don't require the applet
+	to have been registered.
+	(panel_applet_frame_construct): check for failure of
+	vairious remote bonobo operations.
+
+2002-12-10  Arvind Samptur <arvind.samptur@wipro.com>
+	* panel-background.c: (panel_background_prepare): re-draw
+	the panel after setting the background. Fixes #100401
+
+2002-12-10  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gnome-panel-preferences.desktop.in:  Add support 
+	for startup notification.
+	
+2002-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c: (about_cb): revert copyright changes
+	until we decide on a format.
+
+2002-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes #100650, based on a patch from Arvind.
+
+	* applet.[ch]:
+	(panel_applet_remove_in_idle): new function.
+	(applet_remove_callback): use it.
+
+	* panel.c: (drop_internal_icon): remove the
+	applet permanently rather than just destroying
+	the widget.
+
+2002-12-06  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* panel-background-monitor.c:
+	(panel_background_monitor_xevent_filter):
+	Don't leak pixbuf and pixmap.
+
+2002-12-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c, panel-config-global.c, panel-config-global.h,
+	panel-global-config.schemas.in, panel.c: Revert unapproved
+	commit.
+
+2002-12-06  Christian Neumair  <chris@gnome-de.org>
+
+	* menu.c, panel-config-global.c, panel-config-global.h,
+	panel-global-config.schemas.in, panel.c: Changed tooltips_enabled to
+	enable_tooltips for consistency.
+
+2002-12-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* menu.c: (applet_menu_get_category_icon): Add support for 
+	'Accessories' in the panel context menu.
+	* panel-stock-icons.[ch]: Add new icon. Woo.
+
+2002-12-04  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gnome-panel-screenshot.c:  Fixed an old bug where 
+	clicking the 'Ok' button in the browse dialog would 
+	activate the 'Save' button.
+	
+	* gnome-panel-screenshot.[c|glade]: More fixes for
+	bug report #98912. 
+	  - 'save to file' option doesn't remember the last 
+	  directory you saved to.  [The history id of the
+	  gnome entry was not hooked up.]  
+	
+2002-12-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* drawer.c: (key_press_drawer) (key_press_drawer_widget): Allow
+	keystroke modified by something other that accelerator mod (i.e. Alt).
+	This fixes bug #98772.	
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-config.c: (background_type_changed):
+	when changing from "Color" to "Transparent",
+	reset the opacity to 0.
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix ui-review issues raised in #98914.
+
+	* panel-config.c:
+	(make_misc_widget):
+	use "new HIG borderless/bold label style" frame.
+	(floating_notebook_page): ditto and change strings
+	to be a little less confusing. Still a horrible
+	dialog though.
+	(sliding_notebook_page):
+	s/Screen edge offset/Distance from edge/
+	(make_size_widget): remove pixel sizes from the
+	labels.
+	(background_page):
+	use "new HIG borderless/bold label style" frame.
+	"Verbalise" the image transformation options.
+	Remove redundant "Background" strings.
+	s/Rotate image for vertical panels/
+	  Rotate image when panel is vertical/
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-panel-preferences.glade:
+	s/_Animation/Drawer and Panel _Animation/.
+	Fixes ui-review bug #98911.
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix ui-review issues in #98909.
+
+	* menu.c:
+	(create_panel_submenu): add seperater between
+	'about' menu items.
+	(make_add_submenu), (add_menu_widget),
+	(create_panel_menu): s/GNOME Menu/Main Menu/g
+
+2002-12-04  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gnome-panel-screenshot.[c|glade]:  UI-review changes for bug
+	report #98912.  
+	  - Frames should follow new HIG borderless/bold label style
+	  - Replace 'Ok' with 'Save' and appropriate icon
+	  - Preview thumbnail should be left aligned
+	  - Dialog should be called 'Save Screenshot' instead of 'Screenshot'
+	
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Add a "Transparent" pseudo backround type so
+	people don't have to fiddle with the opacity
+	value in the colour picker.
+
+	* panel-config.c:
+	(background_type_changed): if set to transparent,
+	just pretend its a color with 0 alpha value.
+	(background_page): add "Transparent" option.
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-background.c: (panel_background_set):
+	don't unset loaded flag when color hasn't changed.
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Re-write the background rendering code to be
+	less buggy and to be less resource hungry for
+	opaque backgrounds. Code is a lot clearer now.
+
+	* Makefile.am: add panel-background.[ch] to the
+	build.
+
+	* panel-background.[ch]: re-written implementation
+	of the background rendering. Less resource hungry
+	for non-alpha backgrounds and colours. And a lot,
+	lot less buggy.
+
+	* launcher.c: include egg-screen-exec.h to fix
+	warning.
+
+	* menu.c: (create_new_panel): initialise colour
+	correctly.
+
+	* panel-applet-frame.c:
+	(panel_applet_frame_get_background_string): move the
+	implementation of this to panel-background.c.
+	(panel_applet_frame_change_background),
+	(panel_applet_frame_construct_moniker): upd.
+
+	* panel-background-monitor.[ch]:
+	(panel_background_monitor_finalize): don't unref
+	NULL references.
+	(panel_background_monitor_get): ref the return
+	value so we can destroy it when not needed.
+	(panel_background_monitor_setup_pixmap): don't leak
+	the property data.
+	(panel_background_monitor_get_widget_background): kill.
+
+	* panel-types.h: rename PanelBackType to PanelBackgroundType
+	and PANEL_BACK_PIXMAP to PANEL_BACK_IMAGE.
+
+	* panel-widget.[ch]: Kill all the old background code and:
+	(panel_widget_style_set), (panel_widget_state_changed):
+	set the theme defaults on the PanelBackground when they change.
+	(toplevel_configure_event): change the desktop background
+	region when the toplevel is moved or resized.
+	(panel_widget_realize), (panel_widget_unrealize): impl
+
+	* aligned-widget.[ch], basep-widget.[ch], border-widget.[ch],
+	  drawer-widget.[ch], edge-widget.[ch], floating-widget.[ch],
+	  panel-config.[ch], panel-util.c, panel.c, sliding-widget.[ch]:
+	Mucho minor and boring updates for changes in the various
+	background structs and enums.
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c: (about_cb): no whitespace before punctuation marks.
+
+2002-11-18  Fernando Herrera <fherrera@onirica.com>
+
+	* gnome-panel-preferences.desktop.in: add X-GNOME-BUGZILLA stuff
+
+2003-12-03  Arvind Samptur <arvind.samptur@wipro.com>
+	* menu.c (menu_button_menu_popup)
+	* panel.c (panel_do_popup_menu): use basep_widget_queue_autohide
+	instead of basep_widget_autohide. Fixes #97182
+
+2002-12-03  Arvind Samptur <arvind.samptur@wipro.com>
+	* launcher.[ch]: add a destroy_handler to the 
+	launcher structure. Helps in the destroying the
+	properties dialog when launchers are dragged and
+	dropped.
+	* panel.c (drop_internal_icon) disconnect the 
+	destroy handler on the properties dialog and
+	explicitly destroy it. Fixes #97112.
+
+2002-12-02  Christian Neumair  <chris@gnome-de.org>
+
+	* menu.c: Changed copyright string, made "Delete Panel" translatable.
+
+2002-11-24  Iain <iain@prettypeople.org>
+
+	* menu.c (setup_stock_menu_item): Check if the stock_is is NULL.
+	(create_button_menu): Create a submenu for the buttons.
+	(make_add_submenu): Create a buttons submenu and move all the buttons
+	into it.
+
+2002-10-10  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+
+	Fixes the Issue of drag and drop to the panel always launches the
+	application in primary screen.Bug #94258 .
+
+	* launcher.c : drag_data_received_cb(). Changed to call the new API
+	  of gnome-desktop gnome_desktop_item_drop_uri_list_with_env and
+	  passed the environment to it. So that gnome-desktop can launch the
+	  application in appropriate screen.
+
+2002-11-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-util.[ch]: (panel_ditem_launch):
+	use gnome_desktop_item_launch_on_screen so
+	that startup notification can work correctly.
+	Also change the order of the arguments to
+	reflect libgnome-desktop
+
+	* gnome-run.c: (launch_selected):
+	* launcher.c: (launch_cb):
+	* menu.c: (activate_app_def): upd.
+
+2002-11-27  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* distribution.c: Updated path to SuSE distribution menu.
+
+2002-11-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel.c: (panel_load_panels_from_gconf):
+	s/no_background/no-background/. Fixes #98565.
+
+	* applet.c: (panel_applet_load_from_unique_id):
+	* gnome-panel-preferences.c: (load_animation_menu):
+	* panel-config-global.c: (panel_global_config_set_entry):
+	* panel.c: (panel_load_panels_from_gconf): Learn from that
+	lesson and audit all usage of gconf_string_to_enum to
+	not rely on the enum value being initialised.
+
+	* panel-gconf.[ch]: kill panel_gconf_string_to_enum().
+
 2002-11-15  Mark McLoughlin  <mark@skynet.ie>
 
 	* disclosure-widget.c: (finalize), (get_x_y),
@@ -11,6 +700,88 @@
 	* gnome-run.c: (run_dialog_response): patch from
 	putte_xvi@tunedal.nu to not crash when passed a
 	symbolic link. Fixes #97534.
+
+2002-11-12  Andrew Sobala  <andrew@sobala.net>
+
+	* menu.c (image_menu_shown): Update icon height as theme may have
+	changed required height (bug #92852)
+	
+2002-11-06  Andrew Sobala  <andrew@sobala.net>
+
+	* panel-applet-frame.c: string change for localisation
+
+2002-11-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: install gnome-panel-screenshot.schemas.
+
+	* gnome-panel-screenshot.c: (main): don't pretend to
+	use GError, don't use hypens in gconf keys and don't
+	crash.
+
+	* gnome-panel-screenshot.schemas.in: new file.
+
+2002-11-01  Mark McLoughlin  <mark@skynet.ie>
+
+	Add support for translucent panels. Based on a patch
+	from Ian McKellar <yakk@yakk.net>. This is still
+	quite buggy but its a step forward.
+
+	* Makefile.am: remove rgb-stuff.[ch] from the build
+	and add panel-gdk-pixbuf-extensions.[ch] and
+	panel-background-monitor.[ch].
+
+	* aligned-widget.[ch], basep-widget.[ch], border-widget.[ch],
+	  drawer-widget.[ch], edge-widget.[ch], floating-widget.[ch],
+	  sliding-widget.[ch]: all the _new() and change_params()
+	functions take a PanelColor instead of a GdkColor now.
+
+	* basep-widget.c: (basep_update_frame): remove the frame
+	if its a colour background also.
+
+	* menu.c: (about_cb): Add Ian.
+
+	* panel-applet-frame.c: (panel_applet_frame_get_background_string):
+	pass the xid of the background pixmap, not the panel window, to
+	the applet. Doh.
+
+	* panel-background-monitor.[ch]: New object to monitor changes
+	on the desktop background.
+
+	* panel-config.[ch]: (update_config_back), (color_set_cb),
+	(background_page): Add support for configuring the alpha channel
+	in the background colour.
+
+	* panel-gdk-pixbuf-extensions.[ch]: copy from eel-gdk-pixbuf-extensions
+	for eel_gdk_pixbuf_draw_to_pixbuf_tiled(), but remove all other
+	extensions, reduce dependancies and remove the abstraction to allow
+	rendering into either a drawable or a pixbuf.
+
+	* panel-types.h: add PanelColor.
+
+	* panel-util.c: (set_color_back): upd for use of PanelColor.
+
+	* panel-widget.[ch]: More or less completely re-write the background
+	rendering code. Both image and color backgrounds are not composited
+	onto the desktop background image. This still needs work - bugs
+	abound.
+
+	* panel.c:
+	(panel_load_panels_from_gconf),
+	(panel_save_to_gconf): save the alpha channel of the color background.
+
+	* rgb-stuff.[ch]: remove. We no longer use libart to scale and rotate
+	pixbufs. We just use gdk-pixbuf directly.
+
+2002-10-27  Anders Carlsson  <andersca@gnu.org>
+
+	* gnome-panel-screenshot.c: Fix a bug with alpha, fix the
+	permission problems, and add a feature.
+
+2002-10-18  Rajkumar Sivasamy  <rajkumar.siva@wipro.com>
+
+	* button-widget.c: Fix the problem of launcher's icon not 
+	getting	updated in the case of icon-theme changes.
+	Fixes #92598
 
 2002-10-18  Mark McLoughlin  <mark@skynet.ie>
 
@@ -26,27 +797,89 @@
 	the window if neccessary
 	(foobar_widget_new): don't set width request here.
 
-Tue Oct 15 19:59:07 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+2002-10-17  Mark McLoughlin  <mark@skynet.ie>
 
-	* gnome-run.c: Reverting fix #91766 - use g_locale_from_utf8()
+	* panel-applet-frame.c:
+	(panel_applet_frame_constrain_size): impl to constrain
+	an applets position to not be larger than the the panel
+	width.
+	(panel_applet_frame_size_request): use it.
+
+2002-10-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* egg-screen-help.[ch], egg-screen-url.[ch]: sync
+	with libegg.
+
+	* gnome-run.c, launcher.c, panel-util.c: use new
+	multiscreen help functions.
+
+Tue Oct 15 19:54:28 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* gnome-run.c: Additinal fix #91766 - use g_locale_from_utf8()
 	instead of g_filename_from_utf8() to get locale text,
 	and try to run command with utf8 name when it failes with
 	locale name.
 
+2002-10-15  Brian Cameron <Brian.Cameron@sun.com>
+
+	* gnome-panel/panel.c, gnome-panel/session.c,
+	 gnome-panel/applet.c:  Removeved calls to
+	gconf_client_suggest_sync since this synching is
+	not necessary.  Performance analysis highlighted
+	that gnome-panel was causing >100 syncs to happen
+	(with ~10 items in the panel).
+
 2002-10-11  Arvind Samptur <arvind.samptur@wipro.com>
 	* gnome-run.c: (show_run_dialog_with_text)
 	Remove the parameters from the exec field when putting a menu
-	item in to run dialog. Fixes #94366
+	item in to run dialog. Fixes #94366 
+
+2002-10-10  James Willcox  <jwillcox@gnome.org>
+
+	* Makefile.am:  Add the egg-recent stuff, and panel-recent.[ch]
+	* panel-recent.[ch]:  stuff for adding recent documents menus
+	* foobar-widget.c: (append_actions_menu):  Add a recent docs menu
+	* menu.c: (create_root_menu):  same
 
 2002-10-10  Yanko Kaneti  <yaneti@declera.com>
 
 	* eggaccelerators.c (is_hyper, is_meta, is_super): resync with libegg.
 	Fix typos in array indexing, fix from Ralph Loader bug #93005.
 
+2002-10-07  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes problem with keybindings not working on any screen but
+	the default (#93757). Root cause identified by Erwan Chenede.
+
+	* global-keys.[ch]: 
+	(screen_from_event): kill.
+	(panel_global_keys_filter): don't use screen_from_event,
+	just use the passed in screen.
+
+	* xstuff.c: (xstuff_init): register the GdkScreen as
+	the filter data.
+
+2002-10-07 Mark McLoughlin  <mark@skynet.ie>
+
+	Support RandR extension by resizing the toplevel panels
+	if the screen size has changed. Based on patch from
+	Keith Packard - #94561. Requires gtk+ HEAD.
+
+	* basep-widget.[ch]: (basep_widget_screen_size_changed):
+	* foobar-widget.[ch]: (foobar_widget_screen_size_changed):
+	resize the toplevels when the screen size changed.
+
+	* multiscreen-stuff.c:
+	(multiscreen_screen_size_changed): re-initialise and request
+	a resize on the toplevels.
+	(multiscreen_support_init): connect to the "size_changed"
+	signal on all screens.
+	(multiscreen_reinit): re-initialise the monitor geometries.
+
 2002-10-04  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
-	* applet.c: (panel_applet_load_from_unique_id):
-	Don't swap launchers when loading drawer (bug #84744)
+        * applet.c: (panel_applet_load_from_unique_id):
+        Don't swap launchers when loading drawer (bug #84744)
 
 2002-10-04  Mark McLoughlin  <mark@skynet.ie>
 
@@ -57,12 +890,132 @@ Tue Oct 15 19:59:07 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 
 	* menu-fentry.h: kill fr_force_reread.
 
-2002-10-03  Alex Graveley  <alex@ximian.com>
+2002-10-04  Mark McLoughlin  <mark@skynet.ie>
 
-	* menu.c (add_new_app_to_menu): The user data passed here is a
-	ShowItemMenu not a uri.  Fixes creating launchers from the panel.
+	* menu.c: (menu_button_menu_popup): pass the
+	widget to the menu position fuction, rather
+	than the AppletInfo struct.
 
-2002-09-19  Arvind Samptur <arvind.samptur@wipro.com>
+2002-10-01  Mark McLoughlin  <mark@skynet.ie>
+
+	* applet.c: (applet_show_menu): use
+	panel_position_applet_menu.
+
+	* basep-widget.[ch], border-widget.c, drawer-widget.c:
+ 	  floating-widget.c:  kill all get_menu_pos() code.
+
+	* menu-util.[ch]: (panel_position_applet_menu): impl
+	popping up the menu outside of the applets.
+
+	* menu.c:
+	(panel_make_sure_menu_within_screen): upd.
+	(menu_button_menu_popup): use panel_position_applet_menu.
+
+2002-09-27  Alexander Larsson  <alexl@redhat.com>
+
+	* button-widget.c: 
+	* gnome-run.c:
+	* launcher.c:
+	* main.c: 
+	* menu-util.c:
+	* menu.c:
+	* panel-main.h:
+	* panel-stock-icons.c:
+	Update to the new icon theme API.
+
+2002-09-24  Mark McLoughlin  <mark@skynet.ie>
+
+	Add a new PanelActionButton widget so we can
+	generically do action buttons. Fixes #84740.
+
+	* Makefile.am: remove logout.[ch] from the build
+	and add panel-action-button.[ch]. Also generate
+	enums from panel-action-button.h.
+
+	* applet.[ch]: add support for a generic "action button"
+	applet and convert old lock/logout buttons into one of
+	these for backwards compat.
+
+	* foobar-widget.c: (append_actions_menu): use action
+	callback from panel-action-button.h and setup dnd
+	for screenshot, run and search menu items. Remove
+	"Show Desktop" menu item.
+
+	* logout.[ch]: remove.
+
+	* menu.c:
+	(add_action_button_to_panel): impl.
+	(make_add_submenu): add screenshot, run and search
+	buttons.
+	(create_desktop_menu), (create_root_menu): setup
+	dnd for screenshot, run and search menu items.
+
+	* panel.c: (drop_internal_applet): impl new dnd
+	for action buttons.
+
+	* xstuff.[ch]: (xstuff_show_desktop): remove.
+
+2002-09-24  Mark McLoughlin  <mark@skynet.ie>
+
+	Implement support for stock ids in ButtonWidget and
+	use them for the lock button and logout button.
+
+	* button-widget.[ch]:
+	(button_widget_load_pixbuf_and_scale): add support for
+	loading stock icons.
+	(button_widget_reload_pixbuf): split out from set_property().
+	(button_widget_finalize): free the stock ids.
+	(button_widget_get_property), (button_widget_set_property):
+	(button_widget_class_init), impl "stock-id" property.
+	(button_widget_new_from_stock), (button_widget_set_stock_id):
+	impl.
+
+	* logout.c: (create_logout_widget), (create_lock_widget):
+	use stock ids for icons.
+
+2002-09-24  Mark McLoughlin  <mark@skynet.ie>
+
+	* launcher.c: include xstuff.h.
+
+	* xstuff.c: (draw_zoom_animation): don't
+	use gdk_color_alloc() - its deprecated.
+
+2002-09-24  Mark McLoughlin  <mark@skynet.ie>
+
+	* button-widget.c:
+	(button_widget_load_pixbuf_and_scale): split out from
+	size_allocate(). Load the pixbuf here.
+	(button_widget_finalize): use a finalize handler instead
+	of a destroy handler.
+	(button_widget_get_property),
+	(button_widget_set_property): use GObject properties for
+	all construct time params.
+	(button_widget_size_allocate): use load_pixbuf_and_scale().
+	(button_widget_new): pass all construct time properties
+	to g_object_new and don't load the pixbuf here.
+	(button_widget_set_pixmap): just set the GObject property.
+	(button_widget_set_params): ditto.
+
+	* button-widget.h: kill button_widget_set_text(), it seems
+	this is totally unused as we set the tooltips elsewhere.
+	Don't pass size to button_widget_set_pixmap.
+
+	* drawer.c, launcher.c, logout.c, menu.c: update for
+	button-widget changes above.
+
+	* panel-types.h: actually define PanelOrient as an enum
+	so glib-mkenums will pick it up.
+
+2002-09-19  jacob berkman  <jacob@ximian.com>
+
+	* launcher.c (launch_cb): draw a zoom thingie when clicked
+
+	* xstuff.[ch] (xstuff_zoom_animate): 
+	(draw_zoom_animation): draw a square which zooms to the screen
+	size
+
+2002-09-19  Arvind Samptur <arvind.samptur@wipro.com
+
 	* gnome-panel-screenshot.c: waitpid could fail
 	due to a interuptted system call, loop till you
 	succeed. Fixes #92651
@@ -73,6 +1026,17 @@ Tue Oct 15 19:59:07 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 	icon loader's 'changed' signal is emitted. Based
 	on patch from Rajkumar Sivasamy <rajkumar.siva@wpiro.com>.
 	Fixes #92598.
+
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am, multihead-hacks.h: kill multihead-hacks.h
+
+	* applet.c, basep-widget.c, button-widget.c, foobar-widget.c,
+	  global-keys.c, gnome-desktop-item-edit.c, gnome-run.c,
+	  launcher.c, logout.c, menu-ditem.c, menu-util.c, menu.c,
+	  multiscreen-stuff.c, panel-applet-frame.c, panel-config.c,
+	  panel-shell.c, panel-util.c, panel.c, xstuff.c: remove all
+	multihead conditionals as we require gtk+ 2.1.0 now.
 
 2002-09-03 Padraig O'Briain  <padraig.obriain@sun.com>
 
@@ -137,6 +1101,11 @@ Tue Oct 15 19:59:07 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 
 	* gnome-panel-screenshot.c: Avoid the defunct process
 	by doing waitpid at  the point you fork. Fixes #92651.
+
+2002-09-11  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+
+	* launcher.c: Add mnemonic to 'Help on %s Application'.
+	Fixes bug #92942
 
 2002-08-28  Arvind Samptur <arvind.samptur@wipro.com>
 
@@ -205,13 +1174,9 @@ Tue Oct 15 19:59:07 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 	* session.c: (panel_session_die): iterate over a copy of
 	the global list of panels and destroy them.
 
-2002-09-06  Mark McLoughlin  <mark@skynet.ie>
+2002-08-31  Jacob Berkman  <jacob@ximian.com>
 
-	* gnome-panel-screenshot.c: (take_window_shot), (main):
-	* gnome-run.c: (run_dialog_response), (append_file),
-	(drag_data_received): revert last three changes by George
-	as requested by the release team. They were unapproved
-	by the release team and committed during the code freeze.
+	* Makefile.am: add -lpopt to LDFLAGS
 
 Thu Aug 29 10:35:23 2002  George Lebl <jirka@5z.com>
 
@@ -235,19 +1200,26 @@ Tue Aug 27 16:17:09 2002  Jonathan Blandford  <jrb@redhat.com>
 
 	* gnome-panel-preferences.desktop.in: OnlyShowIn=GNOME;
 
-002-08-27  Mark McLoughlin  <mark@skynet.ie>
+2002-08-23  Alex Graveley  <alex@ximian.com>
 
-	* Makefile.am: allow eggaccelerators.[ch] to be
-	automagically updated.
+	* menu.c: Re-enable menu editing by applying patch from Bug #77848.
 
-	* eggaccelerators.c: upd.
+2002-08-21  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* update-from-egg.sh: add.
+	* menu.c: Fix a typo in a string. #90953.
+	
+2002-07-13  Havoc Pennington  <hp@pobox.com>
 
-Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
+        Try fixing panel to allow Mod2-Mod5 accels. This fix is a drop in
+	the bucket though, this code needs a lot of help.
+	
+	* eggaccelerators.h: copy in from libegg to use in fixing
+	global-keys.c. evil cut-and-paste code.
 
-	* launcher.c: Fix redhat bug #72540 by hoarding launchers not in
-	  our private path on gconf load
+	* global-keys.c (grab_key): dynamically get ignored mods
+
+	* global-keys.h: remove IGNORED_MODS and USED_MODS, any uses of
+	those were broken.
 
 2002-08-27  Mark McLoughlin  <mark@skynet.ie>
 
@@ -267,32 +1239,22 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 	* panel-util.c: (create_text_entry), (create_icon_entry):
 	update for above changes.
 
-2002-08-23  Alex Graveley  <alex@ximian.com>
+2002-08-25  Anders Carlsson  <andersca@gnu.org>
 
-	* menu.c: Re-enable menu editing by applying patch from Bug #77848.
-
-2002-08-21  Kjartan Maraas  <kmaraas@gnome.org>
-
-	* menu.c: Fix a typo in a string. #90953.
+	* panel.c: (panel_realize):
+	No need to set the default cursor here; just use the one from the
+	root window.
 	
+Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
+
+	* launcher.c: Fix redhat bug #72540 by hoarding launchers not in
+	  our private path on gconf load
+
 2002-08-21  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
 
-        * menu.c :show_panel_help(), Removed the sectionId from
-         the help callback to show the TOC page. #91274
-
-2002-07-13  Havoc Pennington  <hp@pobox.com>
-
-        Try fixing panel to allow Mod2-Mod5 accels. This fix is a drop in
-	the bucket though, this code needs a lot of help.
-	
-	* eggaccelerators.h: copy in from libegg to use in fixing
-	global-keys.c. evil cut-and-paste code.
-
-	* global-keys.c (grab_key): dynamically get ignored mods
-
-	* global-keys.h: remove IGNORED_MODS and USED_MODS, any uses of
-	those were broken.
-
+	* menu.c :show_panel_help(), Removed the sectionId from
+	  the help callback to show the TOC page. #91274
+ 
 2002-08-14  Mark McLoughlin  <mark@skynet.ie>
 
 	* applet.c: (panel_applet_save_position): don't
@@ -381,6 +1343,10 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 
 2002-08-11  Mark McLoughlin  <mark@skynet.ie>
 
+	* gnome-panel-screenshot.glade: kill the seperator.
+
+2002-08-11  Mark McLoughlin  <mark@skynet.ie>
+
 	* gnome-run.c: (remove_parameters): impl stripping
 	desktop item Exec parameters.
 	(sync_list_to_entry): Use it when setting the entry
@@ -400,11 +1366,6 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 	(panel_widget_size_allocate): handle expanding applets
 	on 'packed' panels. Fixes #89266.
 
-2002-08-10  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
-
-        * gnome-panel-screenshot.c : Corrected the help links for help on
-          screenshot.
-
 2002-08-07 Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* menu.c (create_new_panel): Call gtk_window_present() to give
@@ -415,12 +1376,33 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 	* gnome-panel-screenshot.glade: handle "delete_event".
 	Fixes #90183.
 
+2002-08-09  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+
+	* gnome-panel-screenshot.c : Corrected the help links for help on 
+	  screenshot.
+
 2002-08-08  Mark McLoughlin  <mark@skynet.ie>
 
-	* applet.c: (panel_applet_register): remove
-	focusing applets, just focus launchers and
-	the like. Hopefully fixes #88202, even though
-	I can't reproduce it.
+	* Makefile.am: add egg-screen-exec file to the build.
+
+	* panel-util.[ch]:
+	(panel_show_help), (panel_show_gnome_help),
+	(panel_show_kde_help), (panel_show_gnome_kde_help):
+	add a GdkScreen* arg and use the egg_screen_help
+	variants in all of these.
+
+	* applet.c, launcher.c, menu-ditem.c, menu.c,
+	  panel-config.c: pass a GdkScreen* to the help
+	functions and use egg_screen_url_show instead of
+	gnome_url_show.
+
+2002-08-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: link against XSHAPE_LIBS. Fixes #90000.
+
+	* gnome-panel-screenshot.c: (take_window_shot):
+	dont' use the shape extension if the header wasn't
+	found.
 
 2002-08-06  Mark McLoughlin  <mark@skynet.ie>
 
@@ -437,6 +1419,16 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 	(panel_applet_load_applets_from_gconf): sort the queued
 	applets and run the idle handler over them.
 
+2002-08-05  Anders Carlsson  <andersca@gnu.org>
+
+	* gnome-panel-screenshot.c: (save_to_file_internal),
+	(on_preview_expose_event), (take_window_shot):
+	Add support for making shaped windows transparent.
+	
+2002-08-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* menu.c: (make_add_submenu): s/button/Button/
+
 2002-08-05  Mark McLoughlin  <mark@skynet.ie>
 
 	* applet.c: (panel_applet_register): focus the
@@ -444,8 +1436,22 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 
 2002-08-05  Mark McLoughlin  <mark@skynet.ie>
 
-	* panel-applet-frame.c: (panel_applet_frame_construct):
-	remove 2.2.x FIXME.
+	* foobar-widget.c: (append_actions_menu): if the wm
+	supports it, add a 'Show Desktop' item. #61988.
+
+	* xstuff.[ch]:
+	(panel_atom_get): remove display arg. We always use the
+	default display - no multidisplay support here.
+	(xstuff_net_wm_supports): impl.
+	(xstuff_show_desktop): send _NET_SHOW_DESKTOP ClientMessage.
+
+2002-08-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-frame.c: (register_stock_item),
+	(panel_applet_frame_loading_failed): determine
+	whether or not the user wants to remove the 
+	failed applet from the configuration. Fixes #89173.
+	(panel_applet_frame_construct): use it.
 
 2002-08-05  Mark McLoughlin  <mark@skynet.ie>
 
@@ -472,6 +1478,12 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 
 	* session.c: (panel_quit): request a Global
 	only session save.
+
+2002-07-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* button-widget.c, logout.c: include multihead-hacks.h.
+
+	* multihead-hacks.h: add gtk_widget_get_screen stub.
 
 2002-07-30  Mark McLoughlin  <mark@skynet.ie>
 
@@ -554,6 +1566,27 @@ Sun Aug 25 02:57:54 2002  George Lebl <jirka@5z.com>
 	* menu.c (panel_menu_key_press_handler): Ensure that Shift+F10 has
 	no effect for menus without context menus. (bug #88861)
 
+2002-07-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* drawer.c: (properties_apply_callback): kill unused (apart
+	from freeing whatever random data it points too) variable.
+	Fixes #88427.
+
+2002-07-24  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes #84101 - were casting a GtkButton to GtkMenu.
+
+	* logout.c:
+	(lock_button_pressed): impl. to use panel_lock_screen.
+	(create_lock_widget): use it here.
+
+	* menu.[ch]: (panel_menuitem_lock_screen): rename from panel_lock.
+	(create_desktop_menu): update.
+	* menu.h:
+	* panel-util.[ch]: (panel_lock_screen): implement.
+
+	* foobar-widget.c: (append_actions_menu): use panel_menuitem_lock.
+
 2002-07-23  Frank Worsley  <fworsley@shaw.ca>
 
 	* gnome-panel-screenshot.glade:
@@ -634,6 +1667,14 @@ Tue Jul 16 12:18:02 2002  George Lebl <jirka@5z.com>
 
 	* foobar-widget.c: set the direction of the foobar hbox to be LTR
 	  as otherwise it is completely whacked in RTL locales.
+
+2002-07-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* button-widget.c:
+	(button_widget_new), (button_widget_set_pixmap): realise
+	error dialogs on the default screen.
+
+	* menu.c: (remove_panel_query): remove #ifdef HAVE_GTK_MULTIHEAD.
 
 2002-07-14  Frank Worsley  <fworsley@shaw.ca>
 
@@ -807,6 +1848,16 @@ Wed Jul 10 15:13:37 2002  George Lebl <jirka@5z.com>
 	* menu.c: Changed the section Id for Panel Manual to point  
 	  correct section in the help document.
 
+2002-07-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add egg-screen-exec.[ch] to build.
+
+	* applet.c, foobar-widget.c, global-keys.c, gnome-run.c,
+	  menu.c: use egg-screen-exec methods instead of the
+	  ones in panel-util.c.
+
+	* panel-util.[ch]: kill screen-exec methods.
+
 2002-07-02  Mark McLoughlin  <mark@skynet.ie>
 
 	* gnome-panel-screenshot.c:
@@ -908,6 +1959,126 @@ Mon Jul  1 16:44:35 2002  Jonathan Blandford  <jrb@gnome.org>
 
 	* menu.c: (add_bonobo_applet): add exactpos = FALSE.
 
+2002-06-26  Mark McLoughlin  <mark@skynet.ie>
+
+	* multihead-hacks.h:
+	s/gdk_get_default_screen/gdk_screen_get_default/
+	s/gdk_get_default_display/gdk_display_get_default/
+
+	* panel-util.c:
+	s/launch_env/launch_with_env/
+
+2002-06-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add multihead-hacks.h
+
+	* border-widget.[ch]:
+	* drawer-widget.[ch]:
+	* edge-widget.[ch]:
+	* floating-widget.[ch]: 
+	* sliding-widget.[ch]: 
+	* aligned-widget.[ch]: pass screen and xinerama
+	monitor number around.
+
+	* basep-widget.[ch]:
+	(basep_widget_class_init), (basep_widget_real_screen_change),
+	(basep_widget_screen_change): screen_change signal now takes
+	monitor and screen.
+	(basep_widget_construct): set the screen to realize the
+	window on.
+	(get_borders), (basep_calculate_borders), (basep_border_recalc),
+	(queue_recalc_handler), (basep_border_queue_recalc),
+	(basep_border_get): package the screena and monitor info
+	up in a struct and pass it around.
+
+	* applet.c: (applet_user_menu_get_screen): impl helper.
+	(applet_callback_callback): use panel_execute_shell.
+	(applet_show_menu): set screen info for menu.
+
+	* drawer.c:
+	(create_empty_drawer_applet): make sure the drawer is on the
+	correct screen.
+
+	* foobar-widget.c:
+	(foobar_screenshot), (foobar_search): use panel_execute_sync.
+	(add_window), (create_task_menu): make sure we use the right WnckScreen.
+	(foobar_widget_new): set the screen on which to realize the panel.
+
+	* global-keys.c: (screen_from_event): impl helper.
+	(panel_global_keys_filter): make sure all menus, dialogs and
+	programs come up on the right screen.
+
+	* gnome-run.c: (get_environment): if DISPLAY is not already
+	in the command, set it to the screen the dialog is on.
+	(launch_selected), (run_dialog_response), (create_simple_contents),
+	(show_run_dialog), (show_run_dialog_with_text): make sure dialogs
+	etc. come up on the right screen.
+
+	* launcher.c: (launcher_get_screen): helper method.
+	(launch_url), (launch_cb), (drag_data_received_cb),
+	(create_properties_dialog), (launcher_properties), (launcher_save),
+	(launcher_show_help): dialogs on the right screen.
+
+	* menu-ditem.c, menu-properties.c, menu-util.c,
+	  panel-applet-frame.c, panel-shell.c: ditto.
+
+	* menu.c: make sure dialogs, menus and launcher apps come
+	up on the right screen. Various updates for other changes.
+
+	* multihead-hacks.h: some hacks to reduce the number
+	of HAVE_GTK_MULTIHEADs needed.
+
+	* multiscreen-stuff.c: (multiscreen_support_init): impl using
+	gtk multihead apis.
+	(multiscreen_init): use gdk_screen_get_(width|height).
+	(multiscreen_screens), (multiscreen_monitors),
+	(multiscreen_x), (multiscreen_y), (multiscreen_width),
+	(multiscreen_height), (multiscreen_locate_coords),
+	(multiscreen_locate_widget): use the screen number to
+	index the geometries vector.
+
+	* panel-config.c:
+	(update_config_screen), (screen_set), (monitor_set),
+	(make_misc_widget): add crappy UI for changing screens.
+
+	* panel-per-panel-config.schemas.in: set "screen" and
+	"monitor" key on all panels.
+
+	* panel-util.[ch]:
+	(panel_screen_from_number): helper method.
+	(panel_display_string): impl method to munge the
+	DISPLAY string into one that will set the default screen
+	to the one specified.
+	(panel_munge_environment): impl method to change the
+	value of DISPLAY in the environ array.
+	(panel_execute_async), (panel_execute_shell),
+	(panel_execute_command_line), (panel_ditem_launch): impl
+	versions of these methods that will bring the launched
+	app up on the correct screen.
+	(panel_dialog), (panel_error_dialog), (panel_info_dialog):
+	allow the screen on which to realize to be specified.
+
+	* panel-widget.c: (panel_widget_applet_move_to_cursor): make
+	sure the panels are on the same screen before trying to
+	reparent the applet.
+
+	* panel.c: (move_panel_to_cursor): use the correct root window
+	when getting pointer coords.
+	(panel_popup_menu): popup on the right screen.
+	(panel_ensure_panel_per_screen): impl method to make sure
+	there's at least one panel per screen.
+	(panel_load_panels_from_gconf): use "screen" and "monitor"
+	keys but keep support for "screen_id" key.
+	(panel_save_to_gconf): save screen and monitor numbers.
+	(panel_screen_from_toplevel), (panel_monitor_from_toplevel),
+	(panel_screen_from_panel_widget), (panel_monitor_from_panel_widget):
+	implement these utility methods.
+
+	* xstuff.c:
+	(xstuff_is_compliant_wm): use new multihead apis.
+	(xstuff_init): set the event filter on the root window
+	of every screen.
+
 2002-06-22  Mark McLoughlin  <mark@skynet.ie>
 
 	* menu.c: (remove_panel_query): remove a stray
@@ -1001,11 +2172,11 @@ Mon Jul  1 16:44:35 2002  Jonathan Blandford  <jrb@gnome.org>
 	* gnome-panel-preferences.c: Mark a string for translation.
 	
 2002-06-08  Arvind Samptur   <arvind.samptur@wipro.com>
+
 	* panel-config.h : change the data types of 
 	x and y co-ordinates in _PerPanelConfig structure to 
 	match with that of _FloatingPos structure. Fixes #83375.
         
-         
 2002-06-09  Mark McLoughlin  <mark@skynet.ie>
 
 	* quick-desktop-reader.c: (quick_desktop_item_load_uri): don't
@@ -1394,6 +2565,7 @@ Tue May 14 11:37:24 2002  George Lebl <jirka@5z.com>
 	(panel_info_dialog_with_parent): Fix up build warnings.
 
 2002-05-12  Arvind Samptur  <arvind.samptur@wipro.com>
+
 	* Reviewed by Glynn Foster
 	
 	* menu.c :

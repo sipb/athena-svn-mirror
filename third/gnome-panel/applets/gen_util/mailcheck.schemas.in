@@ -7,7 +7,9 @@
             <default></default>
             <locale name="C">
                 <short>Path to the animation file</short>
-                <long>This is the animation that will be displayed during normal use of the mailcheck applet</long>
+                <long>This is the animation that will be displayed during normal
+		      Inbox Monitor usage
+		</long>
             </locale>
         </schema>
         <schema>
@@ -76,8 +78,8 @@
             <type>string</type>
             <default></default>
             <locale name="C">
-                <short>Command to execute when the applet is clicked</short>
-                <long>We run this command when the user clicks on the applet</long>
+                <short>Command to execute when you click on the Inbox Monitor</short>
+                <long>We run this command when the user clicks on Inbox Monitor</long>
             </locale>
         </schema>
         <schema>
@@ -96,7 +98,7 @@
             <type>bool</type>
             <default>true</default>
             <locale name="C">
-                <short>Whether to reset mail status when the applet is clicked</short>
+                <short>Whether to reset mail status when you click on Inbox Monitor</short>
                 <long></long>
             </locale>
         </schema>
@@ -107,7 +109,7 @@
             <default>mail</default>
             <locale name="C">
                 <short>The mail server</short>
-                <long>Remove server to connect to for our mail</long>
+                <long>Remote server to connect to for our mail</long>
             </locale>
         </schema>
         <schema>

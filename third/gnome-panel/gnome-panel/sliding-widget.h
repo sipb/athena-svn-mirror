@@ -53,8 +53,9 @@ struct _SlidingPosClass {
 
 GType sliding_pos_get_type (void) G_GNUC_CONST;
 
-GtkWidget *sliding_widget_new (gchar *panel_id,
+GtkWidget *sliding_widget_new (const char *panel_id,
 			       int screen,
+			       int monitor,
 			       SlidingAnchor anchor,
 			       gint16 offset,
 			       BorderEdge edge,
@@ -63,15 +64,16 @@ GtkWidget *sliding_widget_new (gchar *panel_id,
 			       int sz,
 			       gboolean hidebuttons_enabled,
 			       gboolean hidebutton_pixmaps_enabled,
-			       PanelBackType back_type,
-			       char *back_pixmap,
+			       PanelBackgroundType back_type,
+			       const char *back_pixmap,
 			       gboolean fit_pixmap_bg,
 			       gboolean stretch_pixmap_bg,
 			       gboolean rotate_pixmap_bg,
-			       GdkColor *back_color);
+			       PanelColor *back_color);
 
 void sliding_widget_change_params (SlidingWidget *slidingw,
 				   int screen,
+				   int monitor,
 				   SlidingAnchor anchor,
 				   gint16 offset,
 				   BorderEdge edge,
@@ -80,12 +82,12 @@ void sliding_widget_change_params (SlidingWidget *slidingw,
 				   BasePState state,
 				   gboolean hidebuttons_enabled,
 				   gboolean hidebutton_pixmaps_enabled,
-				   PanelBackType back_type,
+				   PanelBackgroundType back_type,
 				   char *pixmap_name,
 				   gboolean fit_pixmap_bg,
 				   gboolean stretch_pixmap_bg,
 				   gboolean rotate_pixmap_bg,
-				   GdkColor *back_color);
+				   PanelColor *back_color);
 
 void sliding_widget_change_anchor (SlidingWidget *sliding,
 				   SlidingAnchor anchor);

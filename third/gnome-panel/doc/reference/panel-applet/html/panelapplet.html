@@ -14,7 +14,40 @@ TITLE="The Panel Applet Library"
 HREF="panel-applet.html"><LINK
 REL="PREVIOUS"
 TITLE="The Panel Applet Library"
-HREF="panel-applet.html"></HEAD
+HREF="panel-applet.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -22,87 +55,53 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="panel-applet.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
 BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->Panel Applet Writer's Reference Manual</FONT
-></TH
-></TR
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="panel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+ALT="Prev"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
+ACCESSKEY="u"
+HREF="panel-applet.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
 HREF="libpanel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
 ></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="panel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
->&nbsp;</TD
+><TH
+WIDTH="100%"
+align="center"
+>Panel Applet Writer's Reference Manual</TH
 ></TR
 ></TABLE
-></DIV
 ><H1
 ><A
 NAME="PANELAPPLET"
@@ -123,13 +122,6 @@ NAME="AEN95"
 ></A
 ><H2
 >Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;#include &lt;panel-applet.h&gt;
@@ -167,15 +159,21 @@ enum        <A
 HREF="panelapplet.html#PANELAPPLETFLAGS"
 >PanelAppletFlags</A
 >;
-gboolean    (<A
+<a
+href="../glib/glib-basic-types.html#GBOOLEAN"
+>gboolean</a>    (<A
 HREF="panelapplet.html#PANELAPPLETFACTORYCALLBACK"
 >*PanelAppletFactoryCallback</A
 >)   (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *iid,
-                                             gpointer user_data);
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *iid,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);
 GtkWidget*  <A
 HREF="panelapplet.html#PANEL-APPLET-NEW"
 >panel_applet_new</A
@@ -190,7 +188,9 @@ HREF="panelapplet.html#PANEL-APPLET-GET-ORIENT"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet);
-guint       <A
+<a
+href="../glib/glib-basic-types.html#GUINT"
+>guint</a>       <A
 HREF="panelapplet.html#PANEL-APPLET-GET-SIZE"
 >panel_applet_get_size</A
 >           (<A
@@ -210,7 +210,9 @@ HREF="panelapplet.html"
 > *applet,
                                              GdkColor *color,
                                              GdkPixmap **pixmap);
-gchar*      <A
+<a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a>*      <A
 HREF="panelapplet.html#PANEL-APPLET-GET-PREFERENCES-KEY"
 >panel_applet_get_preferences_key</A
 >
@@ -225,8 +227,12 @@ HREF="panelapplet.html#PANEL-APPLET-ADD-PREFERENCES"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *schema_dir,
-                                             GError **opt_error);
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *schema_dir,
+                                             <a
+href="../glib/glib-error-reporting.html#GERROR"
+>GError</a> **opt_error);
 <A
 HREF="panelapplet.html#PANELAPPLETFLAGS"
 >PanelAppletFlags</A
@@ -280,9 +286,13 @@ HREF="panelapplet.html#PANEL-APPLET-SETUP-MENU"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *xml,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *xml,
                                              const BonoboUIVerb *verb_list,
-                                             gpointer user_data);
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);
 void        <A
 HREF="panelapplet.html#PANEL-APPLET-SETUP-MENU-FROM-FILE"
 >panel_applet_setup_menu_from_file</A
@@ -291,28 +301,48 @@ HREF="panelapplet.html#PANEL-APPLET-SETUP-MENU-FROM-FILE"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *opt_datadir,
-                                             const gchar *file,
-                                             const gchar *opt_app_name,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *opt_datadir,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *file,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *opt_app_name,
                                              const BonoboUIVerb *verb_list,
-                                             gpointer user_data);
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);
 int         <A
 HREF="panelapplet.html#PANEL-APPLET-FACTORY-MAIN"
 >panel_applet_factory_main</A
->       (const gchar *iid,
-                                             GType applet_type,
+>       (const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *iid,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
                                              <A
 HREF="panelapplet.html#PANELAPPLETFACTORYCALLBACK"
 >PanelAppletFactoryCallback</A
 > callback,
-                                             gpointer data);
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> data);
 int         <A
 HREF="panelapplet.html#PANEL-APPLET-FACTORY-MAIN-CLOSURE"
 >panel_applet_factory_main_closure</A
 >
-                                            (const gchar *iid,
-                                             GType applet_type,
-                                             GClosure *closure);
+                                            (const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *iid,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
+                                             <a
+href="../gobject/gobject-closures.html#GCLOSURE"
+>GClosure</a> *closure);
 #define     <A
 HREF="panelapplet.html#PANEL-APPLET-BONOBO-FACTORY-CAPS"
 >PANEL_APPLET_BONOBO_FACTORY</A
@@ -321,32 +351,41 @@ Bonobo_Unknown <A
 HREF="panelapplet.html#PANEL-APPLET-SHLIB-FACTORY"
 >panel_applet_shlib_factory</A
 >   (const char *iid,
-                                             GType applet_type,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
                                              PortableServer_POA poa,
-                                             gpointer impl_ptr,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> impl_ptr,
                                              <A
 HREF="panelapplet.html#PANELAPPLETFACTORYCALLBACK"
 >PanelAppletFactoryCallback</A
 > callback,
-                                             gpointer user_data,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data,
                                              CORBA_Environment *ev);
 Bonobo_Unknown <A
 HREF="panelapplet.html#PANEL-APPLET-SHLIB-FACTORY-CLOSURE"
 >panel_applet_shlib_factory_closure</A
 >
                                             (const char *iid,
-                                             GType applet_type,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
                                              PortableServer_POA poa,
-                                             gpointer impl_ptr,
-                                             GClosure *closure,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> impl_ptr,
+                                             <a
+href="../gobject/gobject-closures.html#GCLOSURE"
+>GClosure</a> *closure,
                                              CORBA_Environment *ev);
 #define     <A
 HREF="panelapplet.html#PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"
 >PANEL_APPLET_BONOBO_SHLIB_FACTORY</A
 >(iid, type, descr, callback, data)&#13;</PRE
-></TD
-></TR
-></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -355,25 +394,17 @@ NAME="AEN183"
 ></A
 ><H2
 >Object Hierarchy</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
->&#13;  GObject
+>&#13;  <a
+href="../gobject/gobject-the-base-object-type.html#GOBJECT"
+>GObject</a>
    +----GtkObject
          +----GtkWidget
                +----GtkContainer
                      +----GtkBin
                            +----GtkEventBox
                                  +----PanelApplet</PRE
-></TD
-></TR
-></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -381,14 +412,17 @@ CLASS="REFSECT1"
 NAME="AEN192"
 ></A
 ><H2
+>Implemented Interfaces</H2
+><P
+>PanelApplet implements AtkImplementorIface.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN196"
+></A
+><H2
 >Signal Prototypes</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;&quot;<A
@@ -403,9 +437,13 @@ HREF="panelapplet.html"
 HREF="panelapplet.html#PANELAPPLETBACKGROUNDTYPE"
 >PanelAppletBackgroundType</A
 > arg1,
-                                            gpointer arg2,
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> arg2,
                                             GdkPixmap *arg3,
-                                            gpointer user_data);
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);
 &quot;<A
 HREF="panelapplet.html#PANELAPPLET-CHANGE-ORIENT"
 >change-orient</A
@@ -414,8 +452,12 @@ HREF="panelapplet.html#PANELAPPLET-CHANGE-ORIENT"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *panelapplet,
-                                            gint arg1,
-                                            gpointer user_data);
+                                            <a
+href="../glib/glib-basic-types.html#GINT"
+>gint</a> arg1,
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);
 &quot;<A
 HREF="panelapplet.html#PANELAPPLET-CHANGE-SIZE"
 >change-size</A
@@ -424,8 +466,12 @@ HREF="panelapplet.html#PANELAPPLET-CHANGE-SIZE"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *panelapplet,
-                                            gint arg1,
-                                            gpointer user_data);
+                                            <a
+href="../glib/glib-basic-types.html#GINT"
+>gint</a> arg1,
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);
 &quot;<A
 HREF="panelapplet.html#PANELAPPLET-MOVE-FOCUS-OUT-OF-APPLET"
 >move-focus-out-of-applet</A
@@ -435,15 +481,14 @@ HREF="panelapplet.html"
 >PanelApplet</A
 > *panelapplet,
                                             GtkDirectionType arg1,
-                                            gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN213"
+NAME="AEN217"
 ></A
 ><H2
 >Description</H2
@@ -464,33 +509,23 @@ the cross process UI emmbedding required by applets possible.</P
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN221"
+NAME="AEN225"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN223"
+NAME="AEN227"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLET-STRUCT"
 ></A
 >struct PanelApplet</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct PanelApplet;</PRE
-></TD
-></TR
-></TABLE
 ><P
 >The <A
 HREF="panelapplet.html"
@@ -500,26 +535,16 @@ HREF="panelapplet.html"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN229"
+NAME="AEN233"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLETORIENT"
 ></A
 >PanelAppletOrient</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >typedef GNOME_Vertigo_PanelOrient PanelAppletOrient;</PRE
-></TD
-></TR
-></TABLE
 ><P
 >The <A
 HREF="panelapplet.html#PANELAPPLETORIENT"
@@ -529,124 +554,77 @@ HREF="panelapplet.html#PANELAPPLETORIENT"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN235"
+NAME="AEN239"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-ORIENT-UP-CAPS"
 ></A
 >PANEL_APPLET_ORIENT_UP</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define PANEL_APPLET_ORIENT_UP    GNOME_Vertigo_PANEL_ORIENT_UP</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A panel at the top of the screen.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN240"
+NAME="AEN244"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-ORIENT-DOWN-CAPS"
 ></A
 >PANEL_APPLET_ORIENT_DOWN</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define PANEL_APPLET_ORIENT_DOWN  GNOME_Vertigo_PANEL_ORIENT_DOWN</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A panel at the bottom of the screen.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN245"
+NAME="AEN249"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-ORIENT-LEFT-CAPS"
 ></A
 >PANEL_APPLET_ORIENT_LEFT</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define PANEL_APPLET_ORIENT_LEFT  GNOME_Vertigo_PANEL_ORIENT_LEFT</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A panel at the left-hand side of the screen.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN250"
+NAME="AEN254"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-ORIENT-RIGHT-CAPS"
 ></A
 >PANEL_APPLET_ORIENT_RIGHT</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define PANEL_APPLET_ORIENT_RIGHT GNOME_Vertigo_PANEL_ORIENT_RIGHT</PRE
-></TD
-></TR
-></TABLE
 ><P
 >A panel at the right-hand side of the screen.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN255"
+NAME="AEN259"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLETBACKGROUNDTYPE"
 ></A
 >enum PanelAppletBackgroundType</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >typedef enum {
@@ -654,9 +632,6 @@ CLASS="PROGRAMLISTING"
 	PANEL_COLOR_BACKGROUND,
 	PANEL_PIXMAP_BACKGROUND
 } PanelAppletBackgroundType;</PRE
-></TD
-></TR
-></TABLE
 ><P
 >The <A
 HREF="panelapplet.html#PANELAPPLETORIENT"
@@ -666,20 +641,17 @@ of a panel.&#13;</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#F0F0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN262"><SPAN
+NAME="AEN266"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
@@ -689,18 +661,16 @@ CLASS="LITERAL"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The panel has no backround, the default is used.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN267"><SPAN
+NAME="AEN271"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
@@ -710,7 +680,6 @@ CLASS="LITERAL"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The panel has a color, i.e rgb value,
 background.</P
@@ -718,11 +687,10 @@ background.</P
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN272"><SPAN
+NAME="AEN276"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
@@ -732,7 +700,6 @@ CLASS="LITERAL"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
@@ -743,20 +710,13 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN277"
+NAME="AEN281"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLETFLAGS"
 ></A
 >enum PanelAppletFlags</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >typedef enum {
@@ -765,59 +725,49 @@ CLASS="PROGRAMLISTING"
 	PANEL_APPLET_EXPAND_MINOR = 1 &lt;&lt; 1,
 	PANEL_APPLET_HAS_HANDLE   = 1 &lt;&lt; 2,
 } PanelAppletFlags;</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN282"
+NAME="AEN286"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLETFACTORYCALLBACK"
 ></A
 >PanelAppletFactoryCallback ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->gboolean    (*PanelAppletFactoryCallback)   (<A
+><a
+href="../glib/glib-basic-types.html#GBOOLEAN"
+>gboolean</a>    (*PanelAppletFactoryCallback)   (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *iid,
-                                             gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *iid,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN292"><SPAN
+NAME="AEN296"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -829,18 +779,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN297"><SPAN
+NAME="AEN301"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -852,18 +800,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN302"><SPAN
+NAME="AEN306"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -875,18 +821,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN307"><SPAN
+NAME="AEN311"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -896,7 +840,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -907,26 +850,16 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN312"
+NAME="AEN316"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-NEW"
 ></A
 >panel_applet_new ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >GtkWidget*  panel_applet_new                (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Creates a new <A
 HREF="panelapplet.html"
@@ -937,20 +870,17 @@ HREF="panelapplet.html"
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN321"><SPAN
+NAME="AEN325"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -960,7 +890,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A GtkWidget on success, <TT
 CLASS="LITERAL"
@@ -974,20 +903,13 @@ CLASS="LITERAL"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN328"
+NAME="AEN332"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-GET-ORIENT"
 ></A
 >panel_applet_get_orient ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
@@ -997,9 +919,6 @@ HREF="panelapplet.html#PANELAPPLETORIENT"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Returns the current orientation of the panel which
 the applet is contained in.</P
@@ -1008,20 +927,17 @@ the applet is contained in.</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN337"><SPAN
+NAME="AEN341"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1033,7 +949,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A <A
 HREF="panelapplet.html"
@@ -1043,11 +958,10 @@ HREF="panelapplet.html"
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN343"><SPAN
+NAME="AEN347"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -1057,7 +971,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > a <A
 HREF="panelapplet.html#PANELAPPLETORIENT"
@@ -1071,29 +984,21 @@ HREF="panelapplet.html#PANELAPPLETORIENT"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN349"
+NAME="AEN353"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-GET-SIZE"
 ></A
 >panel_applet_get_size ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->guint       panel_applet_get_size           (<A
+><a
+href="../glib/glib-basic-types.html#GUINT"
+>guint</a>       panel_applet_get_size           (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Returns the current size of the panel which
 the applet is contained in.</P
@@ -1102,20 +1007,17 @@ the applet is contained in.</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN358"><SPAN
+NAME="AEN362"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1127,7 +1029,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A <A
 HREF="panelapplet.html"
@@ -1137,11 +1038,10 @@ HREF="panelapplet.html"
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN364"><SPAN
+NAME="AEN368"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -1151,9 +1051,10 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
-> a guint value.</P
+> a <a
+href="../glib/glib-basic-types.html#GUINT"
+>guint</a> value.</P
 ></TD
 ></TR
 ></TBODY
@@ -1162,20 +1063,13 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN370"
+NAME="AEN374"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-GET-BACKGROUND"
 ></A
 >panel_applet_get_background ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
@@ -1188,9 +1082,6 @@ HREF="panelapplet.html"
 > *applet,
                                              GdkColor *color,
                                              GdkPixmap **pixmap);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Returns the current background type. If the background
 type is <TT
@@ -1233,20 +1124,17 @@ portion of the panel's background pixmap.</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN389"><SPAN
+NAME="AEN393"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1258,7 +1146,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A <A
 HREF="panelapplet.html"
@@ -1268,11 +1155,10 @@ HREF="panelapplet.html"
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN395"><SPAN
+NAME="AEN399"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1284,18 +1170,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A GdkColor to be filled in.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN401"><SPAN
+NAME="AEN405"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1307,18 +1191,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > Returned GdkPixmap</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN407"><SPAN
+NAME="AEN411"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -1328,7 +1210,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > a <A
 HREF="panelapplet.html#PANELAPPLETORIENT"
@@ -1342,49 +1223,38 @@ HREF="panelapplet.html#PANELAPPLETORIENT"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN413"
+NAME="AEN417"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-GET-PREFERENCES-KEY"
 ></A
 >panel_applet_get_preferences_key ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->gchar*      panel_applet_get_preferences_key
+><a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a>*      panel_applet_get_preferences_key
                                             (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet);</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN421"><SPAN
+NAME="AEN425"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1396,18 +1266,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN426"><SPAN
+NAME="AEN430"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -1417,7 +1285,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -1428,50 +1295,41 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN431"
+NAME="AEN435"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-ADD-PREFERENCES"
 ></A
 >panel_applet_add_preferences ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        panel_applet_add_preferences    (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *schema_dir,
-                                             GError **opt_error);</PRE
-></TD
-></TR
-></TABLE
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *schema_dir,
+                                             <a
+href="../glib/glib-error-reporting.html#GERROR"
+>GError</a> **opt_error);</PRE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN440"><SPAN
+NAME="AEN444"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1483,18 +1341,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN445"><SPAN
+NAME="AEN449"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1506,18 +1362,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN450"><SPAN
+NAME="AEN454"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1529,7 +1383,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -1540,20 +1393,13 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN455"
+NAME="AEN459"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-GET-FLAGS"
 ></A
 >panel_applet_get_flags ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
@@ -1563,28 +1409,22 @@ HREF="panelapplet.html#PANELAPPLETFLAGS"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet);</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN463"><SPAN
+NAME="AEN467"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1596,18 +1436,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN468"><SPAN
+NAME="AEN472"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -1617,7 +1455,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -1628,20 +1465,13 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN473"
+NAME="AEN477"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-SET-FLAGS"
 ></A
 >panel_applet_set_flags ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        panel_applet_set_flags          (<A
@@ -1652,28 +1482,22 @@ HREF="panelapplet.html"
 HREF="panelapplet.html#PANELAPPLETFLAGS"
 >PanelAppletFlags</A
 > flags);</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN481"><SPAN
+NAME="AEN485"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1685,18 +1509,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN486"><SPAN
+NAME="AEN490"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1708,7 +1530,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -1719,20 +1540,13 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN491"
+NAME="AEN495"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-SET-SIZE-HINTS"
 ></A
 >panel_applet_set_size_hints ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        panel_applet_set_size_hints     (<A
@@ -1742,28 +1556,22 @@ HREF="panelapplet.html"
                                              const int *size_hints,
                                              int n_elements,
                                              int base_size);</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN498"><SPAN
+NAME="AEN502"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1775,18 +1583,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN503"><SPAN
+NAME="AEN507"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1798,18 +1604,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN508"><SPAN
+NAME="AEN512"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1821,18 +1625,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN513"><SPAN
+NAME="AEN517"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1844,7 +1646,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -1855,29 +1656,19 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN518"
+NAME="AEN522"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-GET-CONTROL"
 ></A
 >panel_applet_get_control ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >BonoboControl* panel_applet_get_control     (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the BonoboControl associated with <TT
 CLASS="PARAMETER"
@@ -1890,20 +1681,17 @@ CLASS="PARAMETER"
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN529"><SPAN
+NAME="AEN533"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1915,7 +1703,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A <A
 HREF="panelapplet.html"
@@ -1925,11 +1712,10 @@ HREF="panelapplet.html"
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN535"><SPAN
+NAME="AEN539"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -1939,7 +1725,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A BonobControl on success, <TT
 CLASS="LITERAL"
@@ -1953,20 +1738,13 @@ CLASS="LITERAL"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN542"
+NAME="AEN546"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-GET-POPUP-COMPONENT"
 ></A
 >panel_applet_get_popup_component ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >BonoboUIComponent* panel_applet_get_popup_component
@@ -1974,9 +1752,6 @@ CLASS="PROGRAMLISTING"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the BonoboUIComponent used for popup menus associated
 with <TT
@@ -1990,20 +1765,17 @@ CLASS="PARAMETER"
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN553"><SPAN
+NAME="AEN557"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2015,7 +1787,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A <A
 HREF="panelapplet.html"
@@ -2025,11 +1796,10 @@ HREF="panelapplet.html"
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN559"><SPAN
+NAME="AEN563"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -2039,7 +1809,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A BonoboUIComponent on success, or <TT
 CLASS="LITERAL"
@@ -2053,32 +1822,26 @@ CLASS="LITERAL"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN566"
+NAME="AEN570"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-SETUP-MENU"
 ></A
 >panel_applet_setup_menu ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        panel_applet_setup_menu         (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *xml,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *xml,
                                              const BonoboUIVerb *verb_list,
-                                             gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ><P
 >Sets up a popup menu for <TT
 CLASS="PARAMETER"
@@ -2098,20 +1861,17 @@ CLASS="PARAMETER"
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN579"><SPAN
+NAME="AEN583"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2123,7 +1883,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A <A
 HREF="panelapplet.html"
@@ -2133,11 +1892,10 @@ HREF="panelapplet.html"
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN585"><SPAN
+NAME="AEN589"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2149,18 +1907,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The xml character string describing the popup menu.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN590"><SPAN
+NAME="AEN594"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2172,18 +1928,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The list of BonoboUIVerbs for the menu.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN596"><SPAN
+NAME="AEN600"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2195,7 +1949,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The user data pointer for the menu.</P
 ></TD
@@ -2206,20 +1959,13 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN601"
+NAME="AEN605"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-SETUP-MENU-FROM-FILE"
 ></A
 >panel_applet_setup_menu_from_file ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        panel_applet_setup_menu_from_file
@@ -2227,14 +1973,19 @@ CLASS="PROGRAMLISTING"
 HREF="panelapplet.html"
 >PanelApplet</A
 > *applet,
-                                             const gchar *opt_datadir,
-                                             const gchar *file,
-                                             const gchar *opt_app_name,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *opt_datadir,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *file,
+                                             const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *opt_app_name,
                                              const BonoboUIVerb *verb_list,
-                                             gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ><P
 >Sets up a popup menu for <TT
 CLASS="PARAMETER"
@@ -2254,20 +2005,17 @@ the format of the xml.</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN616"><SPAN
+NAME="AEN620"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2279,7 +2027,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > A <A
 HREF="panelapplet.html"
@@ -2289,11 +2036,10 @@ HREF="panelapplet.html"
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN622"><SPAN
+NAME="AEN626"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2305,18 +2051,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The data directory - i.e. ${prefix}/share (optional).</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN627"><SPAN
+NAME="AEN631"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2328,18 +2072,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The file's name.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN632"><SPAN
+NAME="AEN636"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2351,18 +2093,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The application's name (optional).</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN637"><SPAN
+NAME="AEN641"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2374,18 +2114,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The list of BonoboUIVerbs for the menu.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN643"><SPAN
+NAME="AEN647"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2397,7 +2135,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The user data pointer for the menu.</P
 ></TD
@@ -2408,32 +2145,28 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN648"
+NAME="AEN652"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-FACTORY-MAIN"
 ></A
 >panel_applet_factory_main ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         panel_applet_factory_main       (const gchar *iid,
-                                             GType applet_type,
+>int         panel_applet_factory_main       (const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *iid,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
                                              <A
 HREF="panelapplet.html#PANELAPPLETFACTORYCALLBACK"
 >PanelAppletFactoryCallback</A
 > callback,
-                                             gpointer data);</PRE
-></TD
-></TR
-></TABLE
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> data);</PRE
 ><P
 >A generic 'main' routine for applets. This should not normally be
 used directly because it is invoked by <A
@@ -2445,20 +2178,17 @@ HREF="panelapplet.html#PANEL-APPLET-BONOBO-FACTORY-CAPS"
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN660"><SPAN
+NAME="AEN664"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2470,18 +2200,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The bonobo-activation iid of the factory.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN665"><SPAN
+NAME="AEN669"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2493,18 +2221,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN670"><SPAN
+NAME="AEN674"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2516,18 +2242,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The factory callback.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN675"><SPAN
+NAME="AEN679"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2539,18 +2263,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The factory user data pointer.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN680"><SPAN
+NAME="AEN684"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -2560,7 +2282,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > 0 on success, 1 on failure.</P
 ></TD
@@ -2571,29 +2292,25 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN685"
+NAME="AEN689"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-FACTORY-MAIN-CLOSURE"
 ></A
 >panel_applet_factory_main_closure ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >int         panel_applet_factory_main_closure
-                                            (const gchar *iid,
-                                             GType applet_type,
-                                             GClosure *closure);</PRE
-></TD
-></TR
-></TABLE
+                                            (const <a
+href="../glib/glib-basic-types.html#GCHAR"
+>gchar</a> *iid,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
+                                             <a
+href="../gobject/gobject-closures.html#GCLOSURE"
+>GClosure</a> *closure);</PRE
 ><P
 >A generic 'main' routine for applets. This should not normally be
 used directly because it is invoked by <A
@@ -2605,20 +2322,17 @@ HREF="panelapplet.html#PANEL-APPLET-BONOBO-FACTORY-CAPS"
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN696"><SPAN
+NAME="AEN700"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2630,18 +2344,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The bonobo-activation iid of the factory.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN701"><SPAN
+NAME="AEN705"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2653,18 +2365,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN706"><SPAN
+NAME="AEN710"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2676,18 +2386,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > The factory callback closure.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN711"><SPAN
+NAME="AEN715"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -2697,7 +2405,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 > 0 on success, 1 on failure.</P
 ></TD
@@ -2708,45 +2415,32 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN716"
+NAME="AEN720"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-BONOBO-FACTORY-CAPS"
 ></A
 >PANEL_APPLET_BONOBO_FACTORY()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     PANEL_APPLET_BONOBO_FACTORY(iid, type, name, version, callback, data)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Defines a 'main' routine for the applet factory.</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN722"><SPAN
+NAME="AEN726"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2758,18 +2452,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The bonobo-activation iid of the factory.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN727"><SPAN
+NAME="AEN731"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2781,18 +2473,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN732"><SPAN
+NAME="AEN736"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2804,18 +2494,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The applet ID string.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN737"><SPAN
+NAME="AEN741"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2827,18 +2515,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The applet version string.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN742"><SPAN
+NAME="AEN746"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2850,18 +2536,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The factory callback.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN747"><SPAN
+NAME="AEN751"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2873,7 +2557,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >he factory user data pointer.
 &#13;</P
@@ -2885,54 +2568,47 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN752"
+NAME="AEN756"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-SHLIB-FACTORY"
 ></A
 >panel_applet_shlib_factory ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >Bonobo_Unknown panel_applet_shlib_factory   (const char *iid,
-                                             GType applet_type,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
                                              PortableServer_POA poa,
-                                             gpointer impl_ptr,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> impl_ptr,
                                              <A
 HREF="panelapplet.html#PANELAPPLETFACTORYCALLBACK"
 >PanelAppletFactoryCallback</A
 > callback,
-                                             gpointer user_data,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data,
                                              CORBA_Environment *ev);</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN765"><SPAN
+NAME="AEN769"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2944,18 +2620,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN770"><SPAN
+NAME="AEN774"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2967,18 +2641,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN775"><SPAN
+NAME="AEN779"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2990,18 +2662,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN780"><SPAN
+NAME="AEN784"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3013,18 +2683,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN785"><SPAN
+NAME="AEN789"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3036,18 +2704,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN790"><SPAN
+NAME="AEN794"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3059,18 +2725,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN795"><SPAN
+NAME="AEN799"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3082,18 +2746,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN800"><SPAN
+NAME="AEN804"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -3103,7 +2765,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -3114,51 +2775,44 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN805"
+NAME="AEN809"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-SHLIB-FACTORY-CLOSURE"
 ></A
 >panel_applet_shlib_factory_closure ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >Bonobo_Unknown panel_applet_shlib_factory_closure
                                             (const char *iid,
-                                             GType applet_type,
+                                             <a
+href="../gobject/gobject-gtype.html#GTYPE"
+>GType</a> applet_type,
                                              PortableServer_POA poa,
-                                             gpointer impl_ptr,
-                                             GClosure *closure,
+                                             <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> impl_ptr,
+                                             <a
+href="../gobject/gobject-closures.html#GCLOSURE"
+>GClosure</a> *closure,
                                              CORBA_Environment *ev);</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN817"><SPAN
+NAME="AEN821"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3170,18 +2824,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN822"><SPAN
+NAME="AEN826"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3193,18 +2845,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN827"><SPAN
+NAME="AEN831"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3216,18 +2866,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN832"><SPAN
+NAME="AEN836"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3239,18 +2887,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN837"><SPAN
+NAME="AEN841"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3262,18 +2908,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN842"><SPAN
+NAME="AEN846"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3285,18 +2929,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN847"><SPAN
+NAME="AEN851"><SPAN
 STYLE="white-space: nowrap"
 ><I
 CLASS="EMPHASIS"
@@ -3306,7 +2948,6 @@ CLASS="EMPHASIS"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -3317,45 +2958,32 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN852"
+NAME="AEN856"
 ></A
 ><H3
 ><A
 NAME="PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"
 ></A
 >PANEL_APPLET_BONOBO_SHLIB_FACTORY()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     PANEL_APPLET_BONOBO_SHLIB_FACTORY(iid, type, descr, callback, data)</PRE
-></TD
-></TR
-></TABLE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN858"><SPAN
+NAME="AEN862"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3367,18 +2995,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN863"><SPAN
+NAME="AEN867"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3390,18 +3016,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN868"><SPAN
+NAME="AEN872"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3413,18 +3037,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN873"><SPAN
+NAME="AEN877"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3436,18 +3058,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN878"><SPAN
+NAME="AEN882"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3459,7 +3079,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >&#13;</P
 ></TD
@@ -3471,27 +3090,20 @@ WIDTH="80%"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN883"
+NAME="AEN887"
 ></A
 ><H2
 >Signals</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN885"
+NAME="AEN889"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLET-CHANGE-BACKGROUND"
 ></A
 >The &quot;change-background&quot; signal</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        user_function                  (<A
@@ -3502,12 +3114,13 @@ HREF="panelapplet.html"
 HREF="panelapplet.html#PANELAPPLETBACKGROUNDTYPE"
 >PanelAppletBackgroundType</A
 > arg1,
-                                            gpointer arg2,
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> arg2,
                                             GdkPixmap *arg3,
-                                            gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ><P
 >Emitted when the background of the panel changes. Use <TT
 CLASS="PARAMETER"
@@ -3529,20 +3142,17 @@ CLASS="PARAMETER"
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN899"><SPAN
+NAME="AEN903"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3554,18 +3164,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The object which received the signal.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN904"><SPAN
+NAME="AEN908"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3577,18 +3185,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN909"><SPAN
+NAME="AEN913"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3600,18 +3206,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN914"><SPAN
+NAME="AEN918"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3623,18 +3227,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN919"><SPAN
+NAME="AEN923"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3646,7 +3248,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >user data set when the signal handler was connected.</P
 ></TD
@@ -3657,50 +3258,41 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN924"
+NAME="AEN928"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLET-CHANGE-ORIENT"
 ></A
 >The &quot;change-orient&quot; signal</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        user_function                  (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *panelapplet,
-                                            gint arg1,
-                                            gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                            <a
+href="../glib/glib-basic-types.html#GINT"
+>gint</a> arg1,
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ><P
 >Emitted when the orientation of the panel changes.</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN933"><SPAN
+NAME="AEN937"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3712,18 +3304,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The object which received the signal.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN938"><SPAN
+NAME="AEN942"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3735,18 +3325,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN943"><SPAN
+NAME="AEN947"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3758,7 +3346,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >user data set when the signal handler was connected.</P
 ></TD
@@ -3769,31 +3356,25 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN948"
+NAME="AEN952"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLET-CHANGE-SIZE"
 ></A
 >The &quot;change-size&quot; signal</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        user_function                  (<A
 HREF="panelapplet.html"
 >PanelApplet</A
 > *panelapplet,
-                                            gint arg1,
-                                            gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                            <a
+href="../glib/glib-basic-types.html#GINT"
+>gint</a> arg1,
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ><P
 >Emitted when the size of the panel changes.</P
 ><P
@@ -3804,20 +3385,17 @@ depending on the size of the panel.</P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN960"><SPAN
+NAME="AEN964"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3829,18 +3407,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >The object which received the signal.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN965"><SPAN
+NAME="AEN969"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3852,18 +3428,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN970"><SPAN
+NAME="AEN974"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3875,7 +3449,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >user data set when the signal handler was connected.</P
 ></TD
@@ -3886,20 +3459,13 @@ WIDTH="80%"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN975"
+NAME="AEN979"
 ></A
 ><H3
 ><A
 NAME="PANELAPPLET-MOVE-FOCUS-OUT-OF-APPLET"
 ></A
 >The &quot;move-focus-out-of-applet&quot; signal</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        user_function                  (<A
@@ -3907,29 +3473,25 @@ HREF="panelapplet.html"
 >PanelApplet</A
 > *panelapplet,
                                             GtkDirectionType arg1,
-                                            gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
+                                            <a
+href="../glib/glib-basic-types.html#GPOINTER"
+>gpointer</a> user_data);</PRE
 ><P
 ></P
 ><P
 ></P
 ><TABLE
-CLASS="VARIABLELIST"
+CLASS="variablelist"
 BORDER="0"
 CELLSPACING="0"
 CELLPADDING="4"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN984"><SPAN
+NAME="AEN988"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3941,18 +3503,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >the object which received the signal.</P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN989"><SPAN
+NAME="AEN993"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3964,18 +3524,16 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 ></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="20%"
 ><A
-NAME="AEN994"><SPAN
+NAME="AEN998"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3987,7 +3545,6 @@ CLASS="PARAMETER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-WIDTH="80%"
 ><P
 >user data set when the signal handler was connected.</P
 ></TD
@@ -3996,94 +3553,28 @@ WIDTH="80%"
 ></TABLE
 ></DIV
 ></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
+><TABLE
+CLASS="navigation"
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="panel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
+>&lt;&lt;&lt;&nbsp;The Panel Applet Library</B
 ></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="libpanel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="panel-applet.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="right"
->&nbsp;</TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->The Panel Applet Library</B
-></FONT
 ></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
->&nbsp;</TD
 ></TR
 ></TABLE
-></DIV
 ></BODY
 ></HTML
 >

@@ -75,6 +75,8 @@ ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 EXEEXT = @EXEEXT@
+FISH_CFLAGS = @FISH_CFLAGS@
+FISH_LIBS = @FISH_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -83,14 +85,12 @@ GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_VFS_MODULE_REQUIRED = @GNOME_VFS_MODULE_REQUIRED@
+GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GTKDOC = @GTKDOC@
 GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -105,6 +105,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -135,6 +136,8 @@ PKG_CONFIG = @PKG_CONFIG@
 PNG_LIBS = @PNG_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
@@ -145,6 +148,7 @@ WARN_CFLAGS = @WARN_CFLAGS@
 WNCKLET_CFLAGS = @WNCKLET_CFLAGS@
 WNCKLET_LIBS = @WNCKLET_LIBS@
 XINERAMA_LIBS = @XINERAMA_LIBS@
+XSHAPE_LIBS = @XSHAPE_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
@@ -174,22 +178,31 @@ bin_PROGRAMS =  	gnome-panel 				gnome-panel-preferences			gnome-panel-screensho
 CORBA_SRCLIST =  	GNOME_Panel-stubs.c		GNOME_Panel-skels.c		GNOME_Panel-common.c		GNOME_Panel.h			$(NULL)
 
 
-BUILT_SOURCES =  	$(CORBA_SRCLIST)		panel-typebuiltins.c		panel-typebuiltins.h		panel-marshal.c			panel-marshal.h
+EGG_RECENT_FILES_C =  	egg-recent-model.c		egg-recent-item.c		egg-recent-view.c		egg-recent-view-gtk.c		egg-recent-util.c
+
+
+EGG_RECENT_FILES_H =  	egg-recent-model.h		egg-recent-item.h		egg-recent-view.h		egg-recent-view-gtk.h		egg-recent-util.h
+
+
+EGG_SCREEN_EXEC_FILES =  	egg-screen-exec.h       	egg-screen-exec.c       	egg-screen-help.h       	egg-screen-help.c       	egg-screen-url.h        	egg-screen-url.c        	$(NULL)
 
 
 EGG_ACCELERATORS_FILES =  	eggaccelerators.c       	eggaccelerators.h       	$(NULL)
 
 
-panel_sources =  	panel-typebuiltins.c		panel-typebuiltins.h		panel-marshal.c			panel-marshal.h			main.c				panel-widget.c  		basep-widget.c  		button-widget.c  		multiscreen-stuff.c		xstuff.c			session.c			foobar-widget.c			border-widget.c			edge-widget.c			aligned-widget.c		drawer-widget.c			sliding-widget.c		floating-widget.c		disclosure-widget.c		rgb-stuff.c			panel.c				applet.c			logout.c			drawer.c  			panel-config-global.c  		panel-util.c			panel-gconf.c			global-keys.c			panel-config.c  		distribution.c			gnome-run.c  			menu.c  			menu-util.c			menu-ditem.c			menu-fentry.c  			launcher.c			panel-applet-frame.c		panel-shell.c			quick-desktop-reader.c		panel-access.c			panel-stock-icons.c		$(NULL)
+BUILT_SOURCES =  	$(CORBA_SRCLIST)		panel-typebuiltins.c		panel-typebuiltins.h		panel-marshal.c			panel-marshal.h
 
 
-panel_headers =  	panel-types.h			panel-widget.h			panel-main.h			basep-widget.h			button-widget.h			multiscreen-stuff.h		xstuff.h			session.h			foobar-widget.h			border-widget.h			edge-widget.h			aligned-widget.h		drawer-widget.h			sliding-widget.h		floating-widget.h		disclosure-widget.h		rgb-stuff.h			panel.h         		applet.h         		logout.h			drawer.h  			panel-util.h			global-keys.h			panel-config.h			panel-config-global.h  		panel-gconf.h			distribution.h			gnome-run.h  			menu.h  			menu-util.h			menu-ditem.h			menu-fentry.h  			launcher.h			panel-applet-frame.h		quick-desktop-reader.h		panel-shell.h			panel-stock-icons.h		$(NULL)
+panel_sources =  	panel-typebuiltins.c		panel-typebuiltins.h		panel-marshal.c			panel-marshal.h			main.c				panel-widget.c  		basep-widget.c  		button-widget.c  		multiscreen-stuff.c		xstuff.c			session.c			foobar-widget.c			border-widget.c			edge-widget.c			aligned-widget.c		drawer-widget.c			sliding-widget.c		floating-widget.c		disclosure-widget.c		panel.c				applet.c			drawer.c  			panel-config-global.c  		panel-util.c			panel-gconf.c			global-keys.c			panel-config.c  		distribution.c			gnome-run.c  			menu.c  			menu-util.c			menu-ditem.c			menu-fentry.c  			launcher.c			panel-applet-frame.c		panel-shell.c			quick-desktop-reader.c		panel-access.c			panel-background.c		panel-background-monitor.c 	panel-stock-icons.c		panel-action-button.c		panel-recent.c			panel-gdk-pixbuf-extensions.c 	$(EGG_RECENT_FILES_C)		$(NULL)
 
 
-gnome_panel_SOURCES =  	$(CORBA_SRCLIST)			$(EGG_ACCELERATORS_FILES)		$(panel_sources)			$(panel_headers)			$(NULL)
+panel_headers =  	panel-types.h			panel-widget.h			panel-main.h			basep-widget.h			button-widget.h			multiscreen-stuff.h		xstuff.h			session.h			foobar-widget.h			border-widget.h			edge-widget.h			aligned-widget.h		drawer-widget.h			sliding-widget.h		floating-widget.h		disclosure-widget.h		panel.h         		applet.h         		drawer.h  			panel-util.h			global-keys.h			panel-config.h			panel-config-global.h  		panel-gconf.h			distribution.h			gnome-run.h  			menu.h  			menu-util.h			menu-ditem.h			menu-fentry.h  			launcher.h			panel-applet-frame.h		quick-desktop-reader.h		panel-shell.h			panel-background.h		panel-background-monitor.h 	panel-stock-icons.h		panel-action-button.h		panel-recent.h			panel-gdk-pixbuf-extensions.h 	$(EGG_RECENT_FILES_H)		$(NULL)
 
 
-gnome_panel_LDADD =  	$(X_LIBS)			$(PANEL_LIBS)			$(XINERAMA_LIBS)
+gnome_panel_SOURCES =  	$(CORBA_SRCLIST)			$(EGG_SCREEN_EXEC_FILES)		$(EGG_ACCELERATORS_FILES)		$(panel_sources)			$(panel_headers)			$(NULL)
+
+
+gnome_panel_LDADD =  	$(X_LIBS)			$(PANEL_LIBS)			$(XINERAMA_LIBS)		-lpopt
 
 
 gnome_panel_LDFLAGS = -export-dynamic
@@ -197,18 +210,18 @@ gnome_panel_LDFLAGS = -export-dynamic
 gnome_panel_preferences_SOURCES =  	gnome-panel-preferences.c		panel-gconf.c				panel-access.c
 
 
-gnome_panel_preferences_LDADD =  	$(X_LIBS)				$(PANELCONFIG_LIBS)           
+gnome_panel_preferences_LDADD =  	$(X_LIBS)				$(PANELCONFIG_LIBS)
 
 
 gnome_panel_preferences_LDFLAGS =  	-export-dynamic
 
 
-gnome_desktop_item_edit_SOURCES =  	gnome-desktop-item-edit.c 	menu-ditem.c		  	panel-util.c		  	panel-access.c		  	rgb-stuff.c
+gnome_desktop_item_edit_SOURCES =  	gnome-desktop-item-edit.c 	menu-ditem.c		  	panel-util.c		  	panel-access.c		  	egg-screen-exec.c	  	egg-screen-help.c	  	egg-screen-url.c
 
 
 gnome_desktop_item_edit_LDFLAGS = -export-dynamic
 
-gnome_desktop_item_edit_LDADD =  	$(X_LIBS)				$(PANEL_LIBS)
+gnome_desktop_item_edit_LDADD =  	$(X_LIBS)				$(PANEL_LIBS)				-lpopt
 
 
 gnome_panel_screenshot_SOURCES =  	gnome-panel-screenshot.c
@@ -216,7 +229,7 @@ gnome_panel_screenshot_SOURCES =  	gnome-panel-screenshot.c
 
 gnome_panel_screenshot_LDFLAGS = -export-dynamic
 
-gnome_panel_screenshot_LDADD =  	$(X_LIBS)			$(PANELCONFIG_LIBS)		$(PNG_LIBS)
+gnome_panel_screenshot_LDADD =  	$(XSHAPE_LIBS)			$(X_LIBS)			$(PANELCONFIG_LIBS)		$(PNG_LIBS)
 
 
 gladedir = $(datadir)/gnome/panel
@@ -230,7 +243,7 @@ sysdir = $(datadir)/control-center-2.0/capplets
 sys_in_files = gnome-panel-preferences.desktop.in
 sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 
-panel_enum_headers =  	$(top_srcdir)/gnome-panel/panel-types.h			$(top_srcdir)/gnome-panel/panel-widget.h		$(top_srcdir)/gnome-panel/basep-widget.h		$(top_srcdir)/gnome-panel/aligned-widget.h		$(top_srcdir)/gnome-panel/sliding-widget.h		$(top_builddir)/gnome-panel/GNOME_Panel.h
+panel_enum_headers =  	$(top_srcdir)/gnome-panel/panel-types.h			$(top_srcdir)/gnome-panel/panel-widget.h		$(top_srcdir)/gnome-panel/basep-widget.h		$(top_srcdir)/gnome-panel/aligned-widget.h		$(top_srcdir)/gnome-panel/sliding-widget.h		$(top_srcdir)/gnome-panel/panel-action-button.h		$(top_builddir)/gnome-panel/GNOME_Panel.h
 
 
 uidir = $(datadir)/gnome-2.0/ui
@@ -244,12 +257,15 @@ rcdir = $(datadir)
 rc_DATA = gnome-panelrc
 
 schemasdir = $(sysconfdir)/gconf/schemas
-schemas_in_files = panel-global-config.schemas.in panel-per-panel-config.schemas.in
+schemas_in_files =  	panel-global-config.schemas.in			panel-per-panel-config.schemas.in		gnome-panel-screenshot.schemas.in		$(NULL)
+
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
 CLEANFILES = $(BUILT_SOURCES)
 
+EGG_SCREEN_EXEC_DIR = $(srcdir)/../../libegg/libegg/screen-exec
 EGG_ACCELERATORS_DIR = $(srcdir)/../../libegg/libegg/treeviewutils
+EGG_RECENT_DIR = $(srcdir)/../../libegg/libegg/recent-files
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -265,22 +281,27 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 gnome_panel_OBJECTS =  GNOME_Panel-stubs.$(OBJEXT) \
 GNOME_Panel-skels.$(OBJEXT) GNOME_Panel-common.$(OBJEXT) \
-eggaccelerators.$(OBJEXT) panel-typebuiltins.$(OBJEXT) \
-panel-marshal.$(OBJEXT) main.$(OBJEXT) panel-widget.$(OBJEXT) \
-basep-widget.$(OBJEXT) button-widget.$(OBJEXT) \
+egg-screen-exec.$(OBJEXT) egg-screen-help.$(OBJEXT) \
+egg-screen-url.$(OBJEXT) eggaccelerators.$(OBJEXT) \
+panel-typebuiltins.$(OBJEXT) panel-marshal.$(OBJEXT) main.$(OBJEXT) \
+panel-widget.$(OBJEXT) basep-widget.$(OBJEXT) button-widget.$(OBJEXT) \
 multiscreen-stuff.$(OBJEXT) xstuff.$(OBJEXT) session.$(OBJEXT) \
 foobar-widget.$(OBJEXT) border-widget.$(OBJEXT) edge-widget.$(OBJEXT) \
 aligned-widget.$(OBJEXT) drawer-widget.$(OBJEXT) \
 sliding-widget.$(OBJEXT) floating-widget.$(OBJEXT) \
-disclosure-widget.$(OBJEXT) rgb-stuff.$(OBJEXT) panel.$(OBJEXT) \
-applet.$(OBJEXT) logout.$(OBJEXT) drawer.$(OBJEXT) \
-panel-config-global.$(OBJEXT) panel-util.$(OBJEXT) \
+disclosure-widget.$(OBJEXT) panel.$(OBJEXT) applet.$(OBJEXT) \
+drawer.$(OBJEXT) panel-config-global.$(OBJEXT) panel-util.$(OBJEXT) \
 panel-gconf.$(OBJEXT) global-keys.$(OBJEXT) panel-config.$(OBJEXT) \
 distribution.$(OBJEXT) gnome-run.$(OBJEXT) menu.$(OBJEXT) \
 menu-util.$(OBJEXT) menu-ditem.$(OBJEXT) menu-fentry.$(OBJEXT) \
 launcher.$(OBJEXT) panel-applet-frame.$(OBJEXT) panel-shell.$(OBJEXT) \
 quick-desktop-reader.$(OBJEXT) panel-access.$(OBJEXT) \
-panel-stock-icons.$(OBJEXT)
+panel-background.$(OBJEXT) panel-background-monitor.$(OBJEXT) \
+panel-stock-icons.$(OBJEXT) panel-action-button.$(OBJEXT) \
+panel-recent.$(OBJEXT) panel-gdk-pixbuf-extensions.$(OBJEXT) \
+egg-recent-model.$(OBJEXT) egg-recent-item.$(OBJEXT) \
+egg-recent-view.$(OBJEXT) egg-recent-view-gtk.$(OBJEXT) \
+egg-recent-util.$(OBJEXT)
 gnome_panel_DEPENDENCIES = 
 gnome_panel_preferences_OBJECTS =  gnome-panel-preferences.$(OBJEXT) \
 panel-gconf.$(OBJEXT) panel-access.$(OBJEXT)
@@ -289,7 +310,8 @@ gnome_panel_screenshot_OBJECTS =  gnome-panel-screenshot.$(OBJEXT)
 gnome_panel_screenshot_DEPENDENCIES = 
 gnome_desktop_item_edit_OBJECTS =  gnome-desktop-item-edit.$(OBJEXT) \
 menu-ditem.$(OBJEXT) panel-util.$(OBJEXT) panel-access.$(OBJEXT) \
-rgb-stuff.$(OBJEXT)
+egg-screen-exec.$(OBJEXT) egg-screen-help.$(OBJEXT) \
+egg-screen-url.$(OBJEXT)
 gnome_desktop_item_edit_DEPENDENCIES = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -568,174 +590,238 @@ GNOME_Panel-skels.o: GNOME_Panel-skels.c GNOME_Panel.h
 GNOME_Panel-stubs.o: GNOME_Panel-stubs.c GNOME_Panel.h
 aligned-widget.o: aligned-widget.c ../config.h panel-marshal.h \
 	aligned-widget.h border-widget.h basep-widget.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h \
-	panel-config-global.h foobar-widget.h multiscreen-stuff.h \
-	panel-typebuiltins.h
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-config-global.h \
+	foobar-widget.h multiscreen-stuff.h panel-typebuiltins.h
 applet.o: applet.c ../config.h basep-widget.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h drawer.h panel.h \
-	applet.h panel-config.h border-widget.h aligned-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h drawer.h panel.h applet.h \
+	panel-gconf.h panel-config.h border-widget.h aligned-widget.h \
 	sliding-widget.h panel-util.h panel-config-global.h launcher.h \
-	logout.h menu-util.h menu.h panel-gconf.h session.h \
-	panel-applet-frame.h
+	menu-util.h menu.h session.h panel-applet-frame.h \
+	egg-screen-exec.h panel-action-button.h
 basep-widget.o: basep-widget.c ../config.h panel-marshal.h \
 	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
-	basep-widget.h panel-util.h panel-config-global.h \
-	foobar-widget.h drawer-widget.h drawer.h panel.h applet.h \
+	panel-background.h panel-background-monitor.h basep-widget.h \
+	panel-util.h panel-config-global.h foobar-widget.h \
+	drawer-widget.h drawer.h panel.h applet.h panel-gconf.h \
 	panel-config.h border-widget.h aligned-widget.h \
 	sliding-widget.h edge-widget.h xstuff.h multiscreen-stuff.h \
-	panel-typebuiltins.h panel-gconf.h
+	panel-typebuiltins.h panel-stock-icons.h
 border-widget.o: border-widget.c ../config.h border-widget.h \
 	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	GNOME_Panel.h panel-marshal.h panel-config-global.h \
-	panel-typebuiltins.h
+	GNOME_Panel.h panel-background.h panel-background-monitor.h \
+	panel-marshal.h panel-config-global.h panel-typebuiltins.h
 button-widget.o: button-widget.c ../config.h button-widget.h \
-	panel-types.h GNOME_Panel.h panel-widget.h basep-widget.h \
-	panel-main.h panel-util.h panel-config-global.h panel-marshal.h
+	panel-types.h GNOME_Panel.h panel-widget.h panel-background.h \
+	panel-background-monitor.h basep-widget.h panel-main.h \
+	panel-util.h panel-config-global.h panel-marshal.h \
+	panel-typebuiltins.h
 disclosure-widget.o: disclosure-widget.c ../config.h disclosure-widget.h
 distribution.o: distribution.c ../config.h distribution.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h applet.h menu.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h menu.h \
 	menu-fentry.h panel-stock-icons.h
 drawer-widget.o: drawer-widget.c ../config.h drawer-widget.h \
 	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	GNOME_Panel.h drawer.h panel.h applet.h panel-config.h \
+	GNOME_Panel.h panel-background.h panel-background-monitor.h \
+	drawer.h panel.h applet.h panel-gconf.h panel-config.h \
 	border-widget.h aligned-widget.h sliding-widget.h panel-util.h \
 	panel-config-global.h floating-widget.h multiscreen-stuff.h
 drawer.o: drawer.c ../config.h drawer.h panel.h basep-widget.h \
 	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
-	applet.h panel-config.h border-widget.h aligned-widget.h \
+	panel-background.h panel-background-monitor.h applet.h \
+	panel-gconf.h panel-config.h border-widget.h aligned-widget.h \
 	sliding-widget.h panel-util.h panel-config-global.h \
-	drawer-widget.h panel-gconf.h session.h xstuff.h
+	drawer-widget.h session.h xstuff.h
 edge-widget.o: edge-widget.c ../config.h edge-widget.h border-widget.h \
 	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	GNOME_Panel.h panel-config-global.h foobar-widget.h \
-	multiscreen-stuff.h
+	GNOME_Panel.h panel-background.h panel-background-monitor.h \
+	panel-config-global.h foobar-widget.h multiscreen-stuff.h
+egg-recent-item.o: egg-recent-item.c egg-recent-item.h
+egg-recent-model.o: egg-recent-model.c ../config.h egg-recent-model.h \
+	egg-recent-item.h
+egg-recent-util.o: egg-recent-util.c ../config.h egg-recent-util.h
+egg-recent-view-gtk.o: egg-recent-view-gtk.c ../config.h \
+	egg-recent-model.h egg-recent-item.h egg-recent-view.h \
+	egg-recent-view-gtk.h egg-recent-util.h
+egg-recent-view.o: egg-recent-view.c ../config.h egg-recent-view.h \
+	egg-recent-model.h egg-recent-item.h
+egg-screen-exec.o: egg-screen-exec.c ../config.h egg-screen-exec.h
+egg-screen-help.o: egg-screen-help.c ../config.h egg-screen-help.h \
+	egg-screen-exec.h
+egg-screen-url.o: egg-screen-url.c ../config.h egg-screen-url.h \
+	egg-screen-exec.h
 eggaccelerators.o: eggaccelerators.c eggaccelerators.h
 floating-widget.o: floating-widget.c ../config.h floating-widget.h \
 	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	GNOME_Panel.h border-widget.h panel-marshal.h \
-	panel-config-global.h foobar-widget.h panel-util.h \
-	panel-gconf.h multiscreen-stuff.h
+	GNOME_Panel.h panel-background.h panel-background-monitor.h \
+	border-widget.h panel-marshal.h panel-config-global.h \
+	foobar-widget.h panel-util.h panel-gconf.h multiscreen-stuff.h
 foobar-widget.o: foobar-widget.c ../config.h foobar-widget.h \
 	panel-types.h GNOME_Panel.h menu.h panel-widget.h \
-	button-widget.h applet.h menu-util.h session.h xstuff.h \
+	button-widget.h panel-background.h panel-background-monitor.h \
+	applet.h panel-gconf.h menu-util.h session.h xstuff.h \
 	basep-widget.h panel-config-global.h panel-util.h \
 	drawer-widget.h drawer.h panel.h panel-config.h border-widget.h \
 	aligned-widget.h sliding-widget.h gnome-run.h \
-	multiscreen-stuff.h panel-marshal.h panel-stock-icons.h
+	multiscreen-stuff.h panel-marshal.h egg-screen-exec.h \
+	panel-stock-icons.h panel-action-button.h panel-recent.h
 global-keys.o: global-keys.c ../config.h global-keys.h applet.h \
 	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
-	gnome-run.h panel.h basep-widget.h menu.h panel-util.h \
-	panel-config-global.h eggaccelerators.h
+	panel-background.h panel-background-monitor.h panel-gconf.h \
+	foobar-widget.h gnome-run.h panel.h basep-widget.h menu.h \
+	panel-util.h panel-config-global.h egg-screen-exec.h \
+	eggaccelerators.h
 gnome-desktop-item-edit.o: gnome-desktop-item-edit.c ../config.h \
 	menu-ditem.h panel-util.h panel-widget.h button-widget.h \
-	panel-types.h GNOME_Panel.h panel-config-global.h nothing.cP \
-	rgb-stuff.h nothing.h
+	panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-config-global.h nothing.cP \
+	nothing.h
 gnome-panel-preferences.o: gnome-panel-preferences.c ../config.h \
 	panel-gconf.h panel-types.h GNOME_Panel.h
 gnome-panel-screenshot.o: gnome-panel-screenshot.c ../config.h
 gnome-run.o: gnome-run.c ../config.h gnome-run.h disclosure-widget.h \
 	menu-fentry.h menu.h panel-widget.h button-widget.h \
-	panel-types.h GNOME_Panel.h applet.h multiscreen-stuff.h \
-	panel-main.h panel-util.h panel-config-global.h panel-gconf.h \
-	quick-desktop-reader.h nothing.h panel-stock-icons.h
+	panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h \
+	multiscreen-stuff.h panel-main.h panel-util.h \
+	panel-config-global.h quick-desktop-reader.h nothing.h \
+	egg-screen-exec.h egg-screen-url.h panel-stock-icons.h
 launcher.o: launcher.c ../config.h launcher.h applet.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h basep-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-gconf.h basep-widget.h \
 	drawer-widget.h drawer.h panel.h panel-config.h border-widget.h \
 	aligned-widget.h sliding-widget.h panel-util.h \
-	panel-config-global.h menu-fentry.h menu.h panel-gconf.h \
-	panel-main.h session.h quick-desktop-reader.h
-logout.o: logout.c ../config.h logout.h panel-widget.h button-widget.h \
-	panel-types.h GNOME_Panel.h applet.h drawer-widget.h \
-	basep-widget.h drawer.h panel.h panel-config.h border-widget.h \
-	aligned-widget.h sliding-widget.h panel-util.h \
-	panel-config-global.h menu.h session.h
+	panel-config-global.h menu-fentry.h menu.h panel-main.h \
+	session.h xstuff.h quick-desktop-reader.h egg-screen-exec.h \
+	egg-screen-url.h
 main.o: main.c ../config.h drawer-widget.h basep-widget.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h drawer.h panel.h \
-	applet.h panel-config.h border-widget.h aligned-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h drawer.h panel.h applet.h \
+	panel-gconf.h panel-config.h border-widget.h aligned-widget.h \
 	sliding-widget.h panel-util.h panel-config-global.h \
-	menu-fentry.h menu.h multiscreen-stuff.h panel-gconf.h \
-	panel-shell.h session.h xstuff.h panel-stock-icons.h
+	menu-fentry.h menu.h multiscreen-stuff.h panel-shell.h \
+	session.h xstuff.h panel-stock-icons.h
 menu-ditem.o: menu-ditem.c ../config.h menu-ditem.h panel-util.h \
 	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
+	panel-background.h panel-background-monitor.h \
 	panel-config-global.h
 menu-fentry.o: menu-fentry.c ../config.h menu-fentry.h \
 	quick-desktop-reader.h panel-util.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h \
-	panel-config-global.h session.h
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-config-global.h session.h
 menu-util.o: menu-util.c ../config.h menu-util.h quick-desktop-reader.h \
 	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	GNOME_Panel.h foobar-widget.h multiscreen-stuff.h \
-	distribution.h applet.h panel-config-global.h panel-main.h \
-	panel-util.h menu.h
+	GNOME_Panel.h panel-background.h panel-background-monitor.h \
+	foobar-widget.h multiscreen-stuff.h distribution.h applet.h \
+	panel-gconf.h panel-config-global.h panel-main.h panel-util.h \
+	menu.h
 menu.o: menu.c ../config.h menu.h panel-widget.h button-widget.h \
-	panel-types.h GNOME_Panel.h applet.h aligned-widget.h \
-	border-widget.h basep-widget.h distribution.h drawer-widget.h \
-	drawer.h panel.h panel-config.h sliding-widget.h panel-util.h \
-	panel-config-global.h edge-widget.h floating-widget.h \
-	foobar-widget.h gnome-run.h launcher.h logout.h nothing.h \
-	menu-fentry.h menu-util.h menu-ditem.h multiscreen-stuff.h \
-	panel-gconf.h panel-main.h session.h panel-applet-frame.h \
-	quick-desktop-reader.h xstuff.h panel-stock-icons.h
+	panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h \
+	aligned-widget.h border-widget.h basep-widget.h distribution.h \
+	drawer-widget.h drawer.h panel.h panel-config.h \
+	sliding-widget.h panel-util.h panel-config-global.h \
+	edge-widget.h floating-widget.h foobar-widget.h gnome-run.h \
+	launcher.h nothing.h menu-fentry.h menu-util.h menu-ditem.h \
+	multiscreen-stuff.h panel-main.h session.h panel-applet-frame.h \
+	quick-desktop-reader.h xstuff.h egg-screen-exec.h \
+	panel-stock-icons.h panel-action-button.h panel-recent.h
 multiscreen-stuff.o: multiscreen-stuff.c ../config.h multiscreen-stuff.h \
 	panel-util.h panel-widget.h button-widget.h panel-types.h \
-	GNOME_Panel.h panel-config-global.h panel.h basep-widget.h \
-	applet.h
+	GNOME_Panel.h panel-background.h panel-background-monitor.h \
+	panel-config-global.h panel.h basep-widget.h applet.h \
+	panel-gconf.h foobar-widget.h
 panel-access.o: panel-access.c panel-util.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h \
-	panel-config-global.h
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-config-global.h
+panel-action-button.o: panel-action-button.c ../config.h \
+	panel-action-button.h button-widget.h panel-types.h \
+	GNOME_Panel.h panel-widget.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h \
+	drawer-widget.h basep-widget.h drawer.h panel.h panel-config.h \
+	border-widget.h aligned-widget.h sliding-widget.h panel-util.h \
+	panel-config-global.h egg-screen-exec.h gnome-run.h menu.h \
+	panel-stock-icons.h panel-typebuiltins.h session.h
 panel-applet-frame.o: panel-applet-frame.c ../config.h \
 	panel-applet-frame.h panel-widget.h button-widget.h \
-	panel-types.h GNOME_Panel.h applet.h panel-gconf.h panel-util.h \
-	panel-config-global.h session.h panel-marshal.h
+	panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h panel-util.h \
+	panel-config-global.h panel.h basep-widget.h session.h \
+	panel-marshal.h
+panel-background-monitor.o: panel-background-monitor.c \
+	panel-background-monitor.h panel-gdk-pixbuf-extensions.h
+panel-background.o: panel-background.c ../config.h panel-background.h \
+	panel-types.h GNOME_Panel.h panel-background-monitor.h \
+	panel-gdk-pixbuf-extensions.h
 panel-config-global.o: panel-config-global.c ../config.h panel.h \
 	basep-widget.h panel-widget.h button-widget.h panel-types.h \
-	GNOME_Panel.h applet.h panel-util.h panel-config-global.h \
-	panel-gconf.h
+	GNOME_Panel.h panel-background.h panel-background-monitor.h \
+	applet.h panel-gconf.h panel-util.h panel-config-global.h
 panel-config.o: panel-config.c ../config.h panel-config.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h border-widget.h \
-	basep-widget.h aligned-widget.h sliding-widget.h panel-util.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h border-widget.h basep-widget.h \
+	aligned-widget.h sliding-widget.h panel-util.h \
 	panel-config-global.h drawer-widget.h drawer.h panel.h applet.h \
-	edge-widget.h floating-widget.h multiscreen-stuff.h nothing.cP \
-	rgb-stuff.h nothing.h
+	panel-gconf.h edge-widget.h floating-widget.h \
+	multiscreen-stuff.h nothing.cP nothing.h
 panel-gconf.o: panel-gconf.c ../config.h panel-gconf.h
+panel-gdk-pixbuf-extensions.o: panel-gdk-pixbuf-extensions.c ../config.h \
+	panel-gdk-pixbuf-extensions.h
 panel-marshal.o: panel-marshal.c panel-marshal.h
+panel-recent.o: panel-recent.c ../config.h egg-recent-model.h \
+	egg-recent-item.h egg-recent-view.h egg-recent-view-gtk.h \
+	egg-screen-exec.h menu.h panel-widget.h button-widget.h \
+	panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h menu-util.h \
+	panel-util.h panel-config-global.h panel-recent.h \
+	panel-stock-icons.h
 panel-shell.o: panel-shell.c ../config.h panel-shell.h GNOME_Panel.h \
 	panel-util.h panel-widget.h button-widget.h panel-types.h \
+	panel-background.h panel-background-monitor.h \
 	panel-config-global.h
 panel-stock-icons.o: panel-stock-icons.c ../config.h panel-stock-icons.h \
 	panel-main.h
 panel-typebuiltins.o: panel-typebuiltins.c panel-typebuiltins.h \
 	panel-types.h GNOME_Panel.h basep-widget.h panel-widget.h \
-	button-widget.h aligned-widget.h border-widget.h \
-	sliding-widget.h
+	button-widget.h panel-background.h panel-background-monitor.h \
+	aligned-widget.h border-widget.h sliding-widget.h \
+	panel-action-button.h
 panel-util.o: panel-util.c ../config.h panel-util.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h \
-	panel-config-global.h applet.h nothing.h
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-config-global.h applet.h \
+	panel-gconf.h nothing.h basep-widget.h foobar-widget.h panel.h \
+	egg-screen-exec.h egg-screen-url.h egg-screen-help.h
 panel-widget.o: panel-widget.c ../config.h applet.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h panel.h \
-	basep-widget.h panel-util.h panel-config-global.h \
-	panel-marshal.h rgb-stuff.h panel-typebuiltins.h \
-	drawer-widget.h drawer.h panel-config.h border-widget.h \
-	aligned-widget.h sliding-widget.h panel-applet-frame.h
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-gconf.h panel.h basep-widget.h \
+	panel-util.h panel-config-global.h panel-marshal.h \
+	panel-typebuiltins.h drawer-widget.h drawer.h panel-config.h \
+	border-widget.h aligned-widget.h sliding-widget.h \
+	panel-applet-frame.h
 panel.o: panel.c ../config.h panel.h basep-widget.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h applet.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h \
 	distribution.h drawer-widget.h drawer.h panel-config.h \
 	border-widget.h aligned-widget.h sliding-widget.h panel-util.h \
 	panel-config-global.h edge-widget.h floating-widget.h \
-	foobar-widget.h gnome-run.h launcher.h logout.h menu-fentry.h \
-	menu-util.h menu.h panel-gconf.h session.h panel-applet-frame.h \
-	global-keys.h
+	foobar-widget.h gnome-run.h launcher.h menu-fentry.h \
+	menu-util.h menu.h multiscreen-stuff.h session.h \
+	panel-applet-frame.h global-keys.h panel-action-button.h
 quick-desktop-reader.o: quick-desktop-reader.c ../config.h panel-util.h \
 	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
+	panel-background.h panel-background-monitor.h \
 	panel-config-global.h quick-desktop-reader.h
-rgb-stuff.o: rgb-stuff.c ../config.h rgb-stuff.h
 session.o: session.c ../config.h session.h panel-widget.h \
-	button-widget.h panel-types.h GNOME_Panel.h applet.h menu.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h applet.h panel-gconf.h menu.h \
 	panel.h basep-widget.h panel-applet-frame.h \
-	panel-config-global.h panel-gconf.h panel-shell.h xstuff.h
+	panel-config-global.h panel-shell.h xstuff.h
 sliding-widget.o: sliding-widget.c ../config.h sliding-widget.h \
 	border-widget.h basep-widget.h panel-widget.h button-widget.h \
-	panel-types.h GNOME_Panel.h panel-config-global.h \
+	panel-types.h GNOME_Panel.h panel-background.h \
+	panel-background-monitor.h panel-config-global.h \
 	foobar-widget.h panel-marshal.h panel-util.h \
 	multiscreen-stuff.h panel-typebuiltins.h
 xstuff.o: xstuff.c ../config.h xstuff.h global-keys.h
@@ -864,7 +950,7 @@ panel-typebuiltins.h: @REBUILD@ $(panel_enum_headers)
 			--ftail "G_END_DECLS\n\n" \
 			--ftail "#endif /* __PANEL_TYPEBUILTINS_H__ */\n" \
 			--fprod "\n/* --- @filename@ --- */" \
-			--eprod "#define PANEL_TYPE_@ENUMNAME@ @enum_name@_get_type()\n" \
+			--eprod "#define PANEL_TYPE_@ENUMSHORT@ @enum_name@_get_type()\n" \
 			--eprod "GType @enum_name@_get_type (void);\n" \
 		$(panel_enum_headers) >  $@
 
@@ -883,7 +969,10 @@ dist-hook:
 	cd $(distdir) ; rm -f $(CLEANFILES)
 
 regenerate-built-sources:
+	EGGFILES="$(EGG_SCREEN_EXEC_FILES)"  EGGDIR="$(EGG_SCREEN_EXEC_DIR)"  $(srcdir)/update-from-egg.sh
 	EGGFILES="$(EGG_ACCELERATORS_FILES)" EGGDIR="$(EGG_ACCELERATORS_DIR)" $(srcdir)/update-from-egg.sh
+	EGGFILES="$(EGG_RECENT_FILES_C)" EGGDIR="$(EGG_RECENT_DIR)" $(srcdir)/update-from-egg.sh
+	EGGFILES="$(EGG_RECENT_FILES_H)" EGGDIR="$(EGG_RECENT_DIR)" $(srcdir)/update-from-egg.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -6,18 +6,21 @@
 
 G_BEGIN_DECLS
 
+/* FIXME and WARNING:
+ *   !!! DO NOT CHANGE THESE VALUES !!!!
+ *
+ * These values are stupidly stored in gconf. See "main_menu_flags",
+ * So changing these will screw old configurations.
+ *
+ * We have to fix this shite.
+ */
 enum {
-	/* FIXME: should we move this array or keep the bitvalues
-	 * the same??? */
 	MAIN_MENU_SYSTEM = 1<<2,
 	MAIN_MENU_SYSTEM_SUB = 1<<3,
 	MAIN_MENU_DISTRIBUTION = 1<<4,
 	MAIN_MENU_DISTRIBUTION_SUB = 1<<5,
 	MAIN_MENU_KDE = 1<<6,
 	MAIN_MENU_KDE_SUB = 1<<7,
-	MAIN_MENU_APPLETS = 1<<10,
-	MAIN_MENU_APPLETS_SUB = 1<<11,
-	MAIN_MENU_PANEL = 1<<12,
 	MAIN_MENU_PANEL_SUB = 1<<13,
 	MAIN_MENU_DESKTOP = 1<<14,
 	MAIN_MENU_DESKTOP_SUB = 1<<15
@@ -66,16 +69,17 @@ void		add_menu_widget		(Menu *menu,
 void		set_menu_applet_orient	(Menu *menu,
 					 PanelOrient orient);
 
-void		setup_menuitem		(GtkWidget  *menuitem,
-					 GtkWidget  *pixmap,
-					 const char *title);
+void		setup_menuitem		(GtkWidget   *menuitem,
+					 GtkIconSize  icon_size,
+					 GtkWidget   *pixmap,
+					 const char  *title);
 
 GtkWidget      *create_panel_context_menu (PanelWidget *panel);
 GtkWidget      *create_panel_root_menu    (PanelWidget *panel);
 
 void		menu_properties		(Menu *menu);
 
-void		panel_lock		(GtkWidget *widget);
+void		panel_menuitem_lock_screen (GtkWidget *widget);
 
 /*to be called on startup to load in some of the directories*/
 void		init_menus		(void);
@@ -109,11 +113,12 @@ enum {
 };
 
 GtkWidget *	panel_menu_new		(void);
-void		panel_load_menu_image_deferred (GtkWidget  *image_menu_item,
-						const char *stock_id,
-						const char *image_filename,
-						const char *fallback_image_filename,
-						gboolean    force_image);
+void		panel_load_menu_image_deferred (GtkWidget   *image_menu_item,
+						GtkIconSize  icon_size,
+						const char  *stock_id,
+						const char  *image_filename,
+						const char  *fallback_image_filename,
+						gboolean     force_image);
 /* Note, bind the following on 'show' or some such */
 void		panel_make_sure_menu_within_screen (GtkMenu *menu);
 

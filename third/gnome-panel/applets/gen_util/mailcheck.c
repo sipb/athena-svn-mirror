@@ -28,6 +28,8 @@
 #include "remote-helper.h"
 #include "mailcheck.h"
 
+#include "egg-screen-help.h"
+
 typedef enum {
 	MAILBOX_LOCAL,
 	MAILBOX_LOCALDIR,
@@ -120,6 +122,8 @@ struct _MailCheck {
 	/* the about box */
 	GtkWidget *about;
 
+	GtkWidget *password_dialog;
+
 	gboolean anim_changed;
 
 	char *mailcheck_text_only;
@@ -155,12 +159,14 @@ static void applet_load_prefs(MailCheck *mc);
 static void set_atk_name_description (GtkWidget *widget, const gchar *name,
 					const gchar *description);
 static void set_atk_relation (GtkWidget *label, GtkWidget *entry, AtkRelationType);
+static void got_remote_answer (int mails, gpointer data);
+static void null_remote_handle (gpointer data);
 
 #define WANT_BITMAPS(x) (x == REPORT_MAIL_USE_ANIMATION || x == REPORT_MAIL_USE_BITMAP)
 
 static void
 set_tooltip (GtkWidget  *applet,
-             const char *tip)
+	     const char *tip)
 {
 	GtkTooltips *tooltips;
 
@@ -178,7 +184,8 @@ set_tooltip (GtkWidget  *applet,
 }
 
 static void
-mailcheck_execute_shell (const char *command)
+mailcheck_execute_shell (MailCheck  *mailcheck,
+			 const char *command)
 {
 	GError *error = NULL;
 
@@ -190,7 +197,7 @@ mailcheck_execute_shell (const char *command)
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,
-						 _("There was an error executing %s : %s"),
+						 _("There was an error executing %s: %s"),
 						 command,
 						 error->message);
 
@@ -199,6 +206,8 @@ mailcheck_execute_shell (const char *command)
 				  NULL);
 
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (mailcheck->applet)));
 
 		gtk_widget_show (dialog);
 
@@ -249,17 +258,67 @@ calc_dir_contents (char *dir)
        return size;
 }
 
-static char *
-get_remote_password (void)
+static void
+check_remote_mailbox (MailCheck *mc)
+{
+	if (!mc->real_password || !mc->remote_username || !mc->remote_server)
+		return;
+
+	if (mc->mailbox_type == MAILBOX_POP3)
+		mc->remote_handle = helper_pop3_check (got_remote_answer,
+						       mc,
+						       null_remote_handle,
+						       mc->pre_remote_command,
+						       mc->remote_server,
+						       mc->remote_username,
+						       mc->real_password);
+	else if (mc->mailbox_type == MAILBOX_IMAP)
+		helper_imap_check (got_remote_answer,
+				   mc,
+				   null_remote_handle,
+				   mc->pre_remote_command,
+				   mc->remote_server,
+				   mc->remote_username,
+				   mc->real_password,
+				   mc->remote_folder);
+}
+
+static void
+password_response_cb (GtkWidget  *dialog,
+		      int         response_id,
+		      MailCheck  *mc)
+{
+
+	switch (response_id) {
+		GtkWidget *entry;
+
+	case GTK_RESPONSE_OK:
+		entry = g_object_get_data (G_OBJECT (dialog), "password_entry");
+		mc->real_password = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+		check_remote_mailbox (mc);
+		break;
+	}
+
+	gtk_widget_destroy (dialog);
+	mc->password_dialog = NULL;
+}
+static void
+get_remote_password (MailCheck *mc)
 {
 	GtkWidget *dialog;
 	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *entry;
-	int        response;
-	char      *pass = NULL;
 
-	dialog = gtk_dialog_new_with_buttons (
+	if (mc->password_dialog) {
+		gtk_window_set_screen (GTK_WINDOW (mc->password_dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
+		gtk_window_present (GTK_WINDOW (mc->password_dialog));
+		return;
+	}
+
+	mc->password_dialog = dialog =
+		gtk_dialog_new_with_buttons (
 			_("Inbox Monitor"), NULL, 0,
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
@@ -286,16 +345,14 @@ get_remote_password (void)
 	gtk_widget_show_all (hbox);
 	gtk_widget_grab_focus (GTK_WIDGET (entry));
 
-	gtk_window_set_modal (GTK_WINDOW(dialog), TRUE);
+	gtk_window_set_screen (GTK_WINDOW (dialog),
+			       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
 
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	g_signal_connect (dialog, "response",
+                          G_CALLBACK (password_response_cb), mc);
 
-	if (response == GTK_RESPONSE_OK)
-		pass = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
-
-	gtk_widget_destroy (dialog);
-
-	return pass;
+	g_object_set_data (G_OBJECT (dialog), "password_entry", entry);
+	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
 static void
@@ -373,40 +430,11 @@ check_mail_file_status (MailCheck *mc)
 		    mc->remote_password[0] != '\0') {
 			g_free (mc->real_password);
 			mc->real_password = g_strdup (mc->remote_password);
-		}
-		else if(mc->real_password == NULL) {
-			if(mc->mail_timeout != 0) {
-				gtk_timeout_remove(mc->mail_timeout);
-				mc->mail_timeout = 0;
-			}
-			mc->real_password = get_remote_password();
-			mc->mail_timeout = gtk_timeout_add(mc->update_freq,
-							   mail_check_timeout,
-							   mc);
-		}
 
-		if (mc->real_password != NULL &&
-		    mc->remote_username != NULL &&
-		    mc->remote_server != NULL) {
-			if (mc->mailbox_type == MAILBOX_POP3)
-				mc->remote_handle =
-					helper_pop3_check (got_remote_answer,
-							   mc,
-							   null_remote_handle,
-							   mc->pre_remote_command,
-							   mc->remote_server,
-							   mc->remote_username,
-							   mc->real_password);
-			else
-					helper_imap_check (got_remote_answer,
-							   mc,
-							   null_remote_handle,
-							   mc->pre_remote_command,
-							   mc->remote_server,
-							   mc->remote_username,
-							   mc->real_password,
-							   mc->remote_folder);
-		}
+		} else if (!mc->real_password)
+			get_remote_password (mc);
+
+		check_remote_mailbox (mc);
 	}
 	else if (mc->mailbox_type == MAILBOX_LOCAL) {
 		status = stat (mc->mail_file, &s);
@@ -548,7 +576,7 @@ after_mail_check (MailCheck *mc)
 		if (mc->newmail_enabled &&
 		    mc->newmail_cmd && 
 		    (strlen(mc->newmail_cmd) > 0))
-			mailcheck_execute_shell (mc->newmail_cmd);
+			mailcheck_execute_shell (mc, mc->newmail_cmd);
 	}
 
 	switch (mc->report_mail_mode) {
@@ -617,7 +645,7 @@ mail_check_timeout (gpointer data)
 			mc->mail_timeout = 0;
 		}
 
-		mailcheck_execute_shell (mc->pre_check_cmd);
+		mailcheck_execute_shell (mc, mc->pre_check_cmd);
 
 		mc->mail_timeout = gtk_timeout_add(mc->update_freq, mail_check_timeout, mc);
 	}
@@ -657,7 +685,7 @@ exec_clicked_cmd (GtkWidget *widget, GdkEventButton *event, gpointer data)
 	if (event->button == 1) {
 		
 		if (mc->clicked_enabled && mc->clicked_cmd && (strlen(mc->clicked_cmd) > 0))
-			mailcheck_execute_shell (mc->clicked_cmd);
+			mailcheck_execute_shell (mc, mc->clicked_cmd);
 		
 		if (mc->reset_on_clicked) {
 			mc->newmail = mc->unreadmail = 0;
@@ -1569,7 +1597,7 @@ mailcheck_properties_page (MailCheck *mc)
 }
 
 static void
-phelp_cb (GtkDialog *w, gint tab, gpointer data)
+phelp_cb (GtkDialog *w, gint tab, MailCheck *mc)
 {
 	GError *error = NULL;
 	static GnomeProgram *applet_program = NULL;
@@ -1582,8 +1610,10 @@ phelp_cb (GtkDialog *w, gint tab, gpointer data)
      						      GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
 	}
 
-	gnome_help_display_desktop (applet_program, "mailcheck",
-				    "mailcheck","mailcheck-prefs", &error);
+	egg_help_display_desktop_on_screen (
+			applet_program, "mailcheck", "mailcheck", "mailcheck-prefs",
+			gtk_widget_get_screen (GTK_WIDGET (mc->applet)),
+			&error);
 	if (error) {
 		GtkWidget *dialog;
 		dialog = gtk_message_dialog_new (GTK_WINDOW (w),
@@ -1598,37 +1628,37 @@ phelp_cb (GtkDialog *w, gint tab, gpointer data)
 				  NULL);
 
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
 		gtk_widget_show (dialog);
 		g_error_free (error);
 	}
 }	
 
 static void
-response_cb (GtkDialog *dialog, gint id, gpointer data)
+response_cb (GtkDialog *dialog, gint id, MailCheck *mc)
 {
-	MailCheck *mc = data;
-	if(id == GTK_RESPONSE_HELP)
-	{
-		phelp_cb (dialog,id,data);
+	if (id == GTK_RESPONSE_HELP) {
+		phelp_cb (dialog, id, mc);
 		return;	
 	}
+
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 	mc->property_window = NULL;
-	
 }
 
 
 static void
-mailcheck_properties (BonoboUIComponent *uic, gpointer data, const gchar *verbname)
+mailcheck_properties (BonoboUIComponent *uic, MailCheck *mc, const gchar *verbname)
 {
 	GtkWidget *p;
 	GtkWidget *notebook;
 
-	MailCheck *mc = data;
-
-	if (mc->property_window != NULL) {
+	if (mc->property_window) {
+		gtk_window_set_screen (GTK_WINDOW (mc->property_window),
+				       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
 		gtk_window_present (GTK_WINDOW (mc->property_window));
-		return; /* Only one instance of the properties dialog! */
+		return;
 	}
 	
 	mc->property_window = gtk_dialog_new_with_buttons (_("Inbox Monitor Preferences"), 
@@ -1642,7 +1672,8 @@ mailcheck_properties (BonoboUIComponent *uic, gpointer data, const gchar *verbna
 	gtk_dialog_set_default_response (GTK_DIALOG (mc->property_window), GTK_RESPONSE_CLOSE);
 	gnome_window_icon_set_from_file (GTK_WINDOW (mc->property_window),
 					 GNOME_ICONDIR"/gnome-mailcheck.png");
-	
+	gtk_window_set_screen (GTK_WINDOW (mc->property_window),
+			       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
 	
 	notebook = gtk_notebook_new ();
 	gtk_widget_show (notebook);
@@ -1703,9 +1734,8 @@ applet_load_prefs(MailCheck *mc)
 }
 
 static void
-mailcheck_about(BonoboUIComponent *uic, gpointer data, const gchar *verbname)
+mailcheck_about(BonoboUIComponent *uic, MailCheck *mc, const gchar *verbname)
 {
-	MailCheck *mc = data;
 	GdkPixbuf *pixbuf = NULL;
 	gchar *file;
 
@@ -1722,10 +1752,10 @@ mailcheck_about(BonoboUIComponent *uic, gpointer data, const gchar *verbname)
 	};
 	const char *translator_credits = _("translator_credits");
 
-	if (mc->about != NULL)
-	{
-		gtk_widget_show_now(mc->about);
-		gdk_window_raise(mc->about->window);
+	if (mc->about) {
+		gtk_window_set_screen (GTK_WINDOW (mc->about),
+				       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
+		gtk_window_present (GTK_WINDOW (mc->about));
 		return;
 	}
 	
@@ -1734,7 +1764,7 @@ mailcheck_about(BonoboUIComponent *uic, gpointer data, const gchar *verbname)
 	g_free (file);
 	
 	mc->about = gnome_about_new (_("Inbox Monitor"), "1.1",
-				     _("(c) 1998-2000 the Free Software Foundation"),
+				     "Copyright \xc2\xa9 1998-2002 Free Software Foundation, Inc.",
 				     _("Inbox Monitor notifies you when new mail arrives in your mailbox"),
 				     authors,
 				     documenters,
@@ -1742,7 +1772,8 @@ mailcheck_about(BonoboUIComponent *uic, gpointer data, const gchar *verbname)
 				     pixbuf);
 				     
 	gtk_window_set_wmclass (GTK_WINDOW (mc->about), "mailcheck", "Mailcheck");
-	
+	gtk_window_set_screen (GTK_WINDOW (mc->about),
+			       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
 
 	gnome_window_icon_set_from_file (GTK_WINDOW (mc->about),
 					 GNOME_ICONDIR"/gnome-mailcheck.png");
@@ -1774,7 +1805,7 @@ applet_change_pixel_size(PanelApplet * w, gint size, gpointer data)
 }
 
 static void
-help_callback (BonoboUIComponent *uic, gpointer data, const gchar *verbname)
+help_callback (BonoboUIComponent *uic, MailCheck *mc, const gchar *verbname)
 {
 	GError *error = NULL;
 	static GnomeProgram *applet_program = NULL;
@@ -1787,8 +1818,10 @@ help_callback (BonoboUIComponent *uic, gpointer data, const gchar *verbname)
 						      GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
 	}
 
-	gnome_help_display_desktop (applet_program, "mailcheck",
-				    "mailcheck",NULL, &error);
+	egg_help_display_desktop_on_screen (
+		applet_program, "mailcheck", "mailcheck",NULL,
+		gtk_widget_get_screen (GTK_WIDGET (mc->applet)),
+		&error);
 	if (error) {
 		GtkWidget *dialog;
 		dialog = gtk_message_dialog_new (NULL,
@@ -1803,6 +1836,8 @@ help_callback (BonoboUIComponent *uic, gpointer data, const gchar *verbname)
 				  NULL);
 
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
 		gtk_widget_show (dialog);
 		g_error_free (error);
 	}
@@ -1872,6 +1907,7 @@ fill_mailcheck_applet(PanelApplet *applet)
 	mc->anymail = mc->unreadmail = mc->newmail = FALSE;
 	mc->mail_timeout = 0;
 	mc->animation_tag = 0;
+	mc->password_dialog = NULL;
 
 	/*initial state*/
 	mc->report_mail_mode = REPORT_MAIL_USE_ANIMATION;

@@ -43,7 +43,17 @@ GtkWidget *	create_icon_entry	(GtkWidget *table,
 					 UpdateFunction func,
 					 gpointer data);
 
-void		panel_show_help		(const char *path,
+int             panel_ditem_launch         (const GnomeDesktopItem       *item,
+					    GList                        *file_list,
+					    GnomeDesktopItemLaunchFlags   flags,
+					    GdkScreen                    *screen,
+					    GError                      **error);
+GdkScreen      *panel_screen_from_number   (int           screen);
+
+
+
+void		panel_show_help		(GdkScreen  *screen,
+					 const char *path,
 					 const char *linkid);
 
 GList *		panel_g_list_swap_next	(GList *list,
@@ -71,20 +81,14 @@ gboolean        panel_parse_accelerator (GlobalConfigKey *key);
 char *		convert_keysym_state_to_string (guint keysym,
 						GdkModifierType state);
 
-GtkWidget *	panel_error_dialog	(const char *class,
+GtkWidget      *panel_error_dialog      (GdkScreen  *screen,
+					 const char *class,
 					 const char *format,
-					 ...) G_GNUC_PRINTF (2, 3);
-GtkWidget *	panel_info_dialog	(const char *class,
+					 ...) G_GNUC_PRINTF (3, 4);
+GtkWidget      *panel_info_dialog       (GdkScreen  *screen,
+					 const char *class,
 					 const char *format,
-					 ...) G_GNUC_PRINTF (2, 3);
-GtkWidget *	panel_error_dialog_with_parent (GtkWindow *parent,
-						const char *class,
-						const char *format,
-						...) G_GNUC_PRINTF (3, 4);
-GtkWidget *	panel_info_dialog_with_parent (GtkWindow *parent,
-					       const char *class,
-					       const char *format,
-					       ...) G_GNUC_PRINTF (3, 4);
+					 ...) G_GNUC_PRINTF (3, 4);
 
 gboolean	is_ext			(const char *file,
 					 const char *ext);
@@ -105,8 +109,9 @@ typedef enum {
 #define PANEL_HELP_ERROR panel_help_error_quark ()
 GQuark panel_help_error_quark (void);
 
-gboolean	panel_show_gnome_kde_help (const char *docpath,
-					   GError **error);
+gboolean	panel_show_gnome_kde_help (GdkScreen   *screen,
+					   const char  *docpath,
+					   GError     **error);
 
 gboolean	panel_is_url		(const char *url);
 
@@ -135,6 +140,8 @@ gboolean	panel_ensure_dir	(const char *dirname);
 
 gboolean	panel_is_uri_writable	(const char *uri);
 gboolean	panel_uri_exists	(const char *uri);
+
+void            panel_lock_screen       (GdkScreen *screen);
 
 
 /* GnomeVFS reading utils */

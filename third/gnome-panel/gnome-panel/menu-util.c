@@ -48,6 +48,7 @@ panel_standard_menu_pos (GtkMenu *menu, gint *x, gint *y)
 {
 	GtkRequisition requisition;
 	int            screen;
+	int            monitor;
 	int            monitor_basex;
 	int            monitor_basey;
 	int            monitor_width;
@@ -56,12 +57,14 @@ panel_standard_menu_pos (GtkMenu *menu, gint *x, gint *y)
 	gtk_widget_get_child_requisition (GTK_WIDGET (menu),
 					  &requisition);
 
-	screen = multiscreen_locate_coords (*x, *y);
+	screen = gdk_screen_get_number (
+			gtk_widget_get_screen (GTK_WIDGET (menu)));
+	monitor = multiscreen_locate_coords (screen, *x, *y);
 
-	monitor_basex  = multiscreen_x (screen);
-	monitor_basey  = multiscreen_y (screen);
-	monitor_width  = multiscreen_width (screen);
-	monitor_height = multiscreen_height (screen);
+	monitor_basex  = multiscreen_x (screen, monitor);
+	monitor_basey  = multiscreen_y (screen, monitor);
+	monitor_width  = multiscreen_width (screen, monitor);
+	monitor_height = multiscreen_height (screen, monitor);
 
 	*x -= monitor_basex;
 	*y -= monitor_basey;
@@ -143,80 +146,43 @@ menu_item_menu_position (GtkMenu  *menu,
 }
 
 void
-applet_menu_position (GtkMenu  *menu,
-		      gint     *x,
-		      gint     *y,
-		      gboolean *push_in,
-		      gpointer  data)
+panel_position_applet_menu (GtkMenu   *menu,
+			    int       *x,
+			    int       *y,
+			    gboolean  *push_in,
+			    GtkWidget *widget)
 {
-	AppletInfo *info = data;
-	PanelWidget *panel;
-	GtkWidget *w; /*the panel window widget*/
+	GtkRequisition  requisition;
+	GdkScreen      *screen;
+	int             menu_x = 0;
+	int             menu_y = 0;
 
-	g_return_if_fail(info != NULL);
-	g_return_if_fail(info->widget != NULL);
+	g_return_if_fail (PANEL_IS_WIDGET (widget->parent));
 
-	panel = PANEL_WIDGET(info->widget->parent);
-	g_return_if_fail(panel != NULL);
-	
-	w = panel->panel_parent;
+	screen = gtk_widget_get_screen (widget);
 
-	standard_position_within (menu, x, y, push_in, w);
-}
+	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
 
-void
-applet_menu_position_outside (GtkMenu  *menu,
-			      gint     *x,
-			      gint     *y,
-			      gboolean *push_in,
-			      gpointer  data)
-{
-	AppletInfo *info = data;
-	int wx, wy;
-	PanelWidget *panel;
-	GtkWidget *w; /*the panel window widget*/
+	gdk_window_get_origin (widget->window, &menu_x, &menu_y);
 
-	g_return_if_fail(info != NULL);
-	g_return_if_fail(info->widget != NULL);
+	menu_x += widget->allocation.x;
+	menu_y += widget->allocation.y;
 
-	panel = PANEL_WIDGET(info->widget->parent);
-	g_return_if_fail(panel != NULL);
-	
-	w = panel->panel_parent;
-
-	gdk_window_get_origin (info->widget->window, &wx, &wy);
-	if(GTK_WIDGET_NO_WINDOW(info->widget)) {
-		wx += info->widget->allocation.x;
-		wy += info->widget->allocation.y;
+	if (PANEL_WIDGET (widget->parent)->orient == GTK_ORIENTATION_HORIZONTAL) {
+		if (menu_y > gdk_screen_get_height (screen) / 2)
+			menu_y -= requisition.height;
+		else
+			menu_y += widget->allocation.height;
+	} else {
+		if (menu_x > gdk_screen_get_width (screen) / 2)
+			menu_x -= requisition.width;
+		else
+			menu_x += widget->allocation.width;
 	}
 
-#ifdef MENU_UTIL_DEBUG
-	g_print ("applet_menu_position_outside: origin x = %d, y = %d\n", wx, wy);
-#endif
-
-	if (BASEP_IS_WIDGET (w)) {
-		*x = *y = 0;
-		basep_widget_get_menu_pos(BASEP_WIDGET(w),
-					  GTK_WIDGET(menu),
-					  x,y,wx,wy,
-					  info->widget->allocation.width,
-					  info->widget->allocation.height);
-       	} else if (FOOBAR_IS_WIDGET (w)) {
-		GtkRequisition req;
-		FoobarWidget *foo = FOOBAR_WIDGET (w);
-		gtk_widget_get_child_requisition (GTK_WIDGET (menu), &req);
-		*x = MIN (*x,
-			  multiscreen_width (foo->screen) +
-			  multiscreen_x (foo->screen) -  req.width);
-		*y = w->allocation.height + multiscreen_y (foo->screen);
-	}
-
+	*x = menu_x;
+	*y = menu_y;
 	*push_in = TRUE;
- 
-#ifdef MENU_UTIL_DEBUG
-	g_print ("applet_menu_position_outside: x = %d, y = %d, push_in = %s\n",
-		 *x, *y, *push_in ? "(true)" : "(false)");
-#endif
 }
 
 int
@@ -268,7 +234,8 @@ stock_menu_item_new (const char *text,
 
         item = gtk_image_menu_item_new ();
 
-        panel_load_menu_image_deferred (item, stock_id, NULL, NULL, force_image);
+        panel_load_menu_image_deferred (
+		item, panel_menu_icon_get_size (), stock_id, NULL, NULL, force_image);
 
         if (text) {
                 label = gtk_label_new (text);
@@ -315,7 +282,7 @@ get_pixmap (const char *menudir, gboolean main_menu)
                 g_free (dentry_name);
 
                 if (qitem != NULL)
-			pixmap_name = gnome_desktop_item_find_icon (panel_icon_loader,
+			pixmap_name = gnome_desktop_item_find_icon (panel_icon_theme,
 								    qitem->icon,
                                                                     20 /* desired size */,
                                                                     0 /* flags */);

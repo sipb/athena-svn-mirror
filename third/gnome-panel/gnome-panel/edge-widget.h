@@ -46,20 +46,21 @@ struct _EdgePosClass {
 
 GType edge_pos_get_type (void) G_GNUC_CONST;
 
-GtkWidget *edge_widget_new (gchar *panel_id,
+GtkWidget *edge_widget_new (const char *panel_id,
 			    int screen,
+			    int monitor,
 			    BorderEdge edge,
 			    BasePMode mode,
 			    BasePState state,
 			    int sz,
 			    gboolean hidebuttons_enabled,
 			    gboolean hidebutton_pixmaps_enabled,
-			    PanelBackType back_type,
-			    char *back_pixmap,
+			    PanelBackgroundType back_type,
+			    const char *back_pixmap,
 			    gboolean fit_pixmap_bg,
 			    gboolean stretch_pixmap_bg,
 			    gboolean rotate_pixmap_bg,
-			    GdkColor *back_color);
+			    PanelColor *back_color);
 
 G_END_DECLS
 

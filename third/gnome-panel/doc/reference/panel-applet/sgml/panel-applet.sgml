@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;panel-applet.h&gt;
@@ -101,6 +102,14 @@ int         <link linkend="panel-applet-factory-main-closure">panel_applet_facto
 </synopsis>
 
 </refsect1>
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+PanelApplet implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
 
 
 <refsect1>
@@ -202,20 +211,20 @@ of a panel.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>PANEL_NO_BACKGROUND</literal></term>
-<listitem><para>The panel has no backround, the default is used.
-</para></listitem>
+<listitem><simpara>The panel has no backround, the default is used.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>PANEL_COLOR_BACKGROUND</literal></term>
-<listitem><para>The panel has a color, i.e rgb value,
+<listitem><simpara>The panel has a color, i.e rgb value,
 background.
-</para></listitem>
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>PANEL_PIXMAP_BACKGROUND</literal></term>
-<listitem><para>
+<listitem><simpara>
 
-</para></listitem>
+</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -239,18 +248,18 @@ background.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-new">panel_applet_new ()</title>
@@ -260,8 +269,8 @@ Creates a new <link linkend="PanelApplet">PanelApplet</link>.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A <link linkend="GtkWidget">GtkWidget</link> on success, <literal>NULL</literal> on failure.
-</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="GtkWidget">GtkWidget</link> on success, <literal>NULL</literal> on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-get-orient">panel_applet_get_orient ()</title>
@@ -273,10 +282,10 @@ the applet is contained in.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="PanelApplet">PanelApplet</link>.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a <link linkend="PanelAppletOrient">PanelAppletOrient</link> value.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="PanelApplet">PanelApplet</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PanelAppletOrient">PanelAppletOrient</link> value.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-get-size">panel_applet_get_size ()</title>
@@ -288,10 +297,10 @@ the applet is contained in.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="PanelApplet">PanelApplet</link>.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a <link linkend="guint">guint</link> value.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="PanelApplet">PanelApplet</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="guint">guint</link> value.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-get-background">panel_applet_get_background ()</title>
@@ -311,16 +320,16 @@ portion of the panel's background pixmap.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="PanelApplet">PanelApplet</link>.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="PanelApplet">PanelApplet</link>.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>color</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="GdkColor">GdkColor</link> to be filled in.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="GdkColor">GdkColor</link> to be filled in.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pixmap</parameter>&nbsp;:</term>
-<listitem><para> Returned <link linkend="GdkPixmap">GdkPixmap</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a <link linkend="PanelAppletOrient">PanelAppletOrient</link> value.
-</para></listitem></varlistentry>
+<listitem><simpara> Returned <link linkend="GdkPixmap">GdkPixmap</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PanelAppletOrient">PanelAppletOrient</link> value.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-get-preferences-key">panel_applet_get_preferences_key ()</title>
@@ -330,12 +339,12 @@ portion of the panel's background pixmap.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-add-preferences">panel_applet_add_preferences ()</title>
@@ -346,16 +355,16 @@ portion of the panel's background pixmap.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>schema_dir</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-get-flags">panel_applet_get_flags ()</title>
@@ -364,12 +373,12 @@ portion of the panel's background pixmap.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-set-flags">panel_applet_set_flags ()</title>
@@ -379,13 +388,13 @@ portion of the panel's background pixmap.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-set-size-hints">panel_applet_set_size_hints ()</title>
@@ -397,19 +406,19 @@ portion of the panel's background pixmap.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>size_hints</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_elements</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>base_size</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-get-control">panel_applet_get_control ()</title>
@@ -420,10 +429,10 @@ Retrieves the <link linkend="BonoboControl">BonoboControl</link> associated with
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="PanelApplet">PanelApplet</link>.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A <link linkend="BonobControl">BonobControl</link> on success, <literal>NULL</literal> on failure.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="PanelApplet">PanelApplet</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="BonobControl">BonobControl</link> on success, <literal>NULL</literal> on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-get-popup-component">panel_applet_get_popup_component ()</title>
@@ -436,10 +445,10 @@ with <parameter>applet</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="PanelApplet">PanelApplet</link>.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A <link linkend="BonoboUIComponent">BonoboUIComponent</link> on success, or <literal>NULL</literal> on failure.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="PanelApplet">PanelApplet</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="BonoboUIComponent">BonoboUIComponent</link> on success, or <literal>NULL</literal> on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-setup-menu">panel_applet_setup_menu ()</title>
@@ -455,17 +464,17 @@ string, <parameter>xml</parameter>. See &lt;link linkend="applet-writing"&gt;App
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="PanelApplet">PanelApplet</link>.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="PanelApplet">PanelApplet</link>.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>xml</parameter>&nbsp;:</term>
-<listitem><para> The xml character string describing the popup menu.
-</para></listitem></varlistentry>
+<listitem><simpara> The xml character string describing the popup menu.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>verb_list</parameter>&nbsp;:</term>
-<listitem><para> The list of <link linkend="BonoboUIVerbs">BonoboUIVerbs</link> for the menu.
-</para></listitem></varlistentry>
+<listitem><simpara> The list of <link linkend="BonoboUIVerbs">BonoboUIVerbs</link> for the menu.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para> The user data pointer for the menu.
-</para></listitem></varlistentry>
+<listitem><simpara> The user data pointer for the menu.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-setup-menu-from-file">panel_applet_setup_menu_from_file ()</title>
@@ -484,23 +493,23 @@ the format of the xml.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
-<listitem><para> A <link linkend="PanelApplet">PanelApplet</link>.
-</para></listitem></varlistentry>
+<listitem><simpara> A <link linkend="PanelApplet">PanelApplet</link>.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>opt_datadir</parameter>&nbsp;:</term>
-<listitem><para> The data directory - i.e. ${prefix}/share (optional).
-</para></listitem></varlistentry>
+<listitem><simpara> The data directory - i.e. ${prefix}/share (optional).
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>file</parameter>&nbsp;:</term>
-<listitem><para> The file's name.
-</para></listitem></varlistentry>
+<listitem><simpara> The file's name.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>opt_app_name</parameter>&nbsp;:</term>
-<listitem><para> The application's name (optional).
-</para></listitem></varlistentry>
+<listitem><simpara> The application's name (optional).
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>verb_list</parameter>&nbsp;:</term>
-<listitem><para> The list of <link linkend="BonoboUIVerbs">BonoboUIVerbs</link> for the menu.
-</para></listitem></varlistentry>
+<listitem><simpara> The list of <link linkend="BonoboUIVerbs">BonoboUIVerbs</link> for the menu.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para> The user data pointer for the menu.
-</para></listitem></varlistentry>
+<listitem><simpara> The user data pointer for the menu.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-factory-main">panel_applet_factory_main ()</title>
@@ -515,19 +524,19 @@ used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTOR
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
-<listitem><para> The bonobo-activation iid of the factory.
-</para></listitem></varlistentry>
+<listitem><simpara> The bonobo-activation iid of the factory.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>applet_type</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
-<listitem><para> The factory callback.
-</para></listitem></varlistentry>
+<listitem><simpara> The factory callback.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><para> The factory user data pointer.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> 0 on success, 1 on failure.
-</para></listitem></varlistentry>
+<listitem><simpara> The factory user data pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 0 on success, 1 on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-factory-main-closure">panel_applet_factory_main_closure ()</title>
@@ -542,16 +551,16 @@ used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTOR
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
-<listitem><para> The bonobo-activation iid of the factory.
-</para></listitem></varlistentry>
+<listitem><simpara> The bonobo-activation iid of the factory.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>applet_type</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
-<listitem><para> The factory callback closure.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> 0 on success, 1 on failure.
-</para></listitem></varlistentry>
+<listitem><simpara> The factory callback closure.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 0 on success, 1 on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="PANEL-APPLET-BONOBO-FACTORY-CAPS">PANEL_APPLET_BONOBO_FACTORY()</title>
@@ -560,25 +569,25 @@ used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTOR
 Defines a 'main' routine for the applet factory.
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
-<listitem><para>The bonobo-activation iid of the factory.
-</para></listitem></varlistentry>
+<listitem><simpara>The bonobo-activation iid of the factory.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><para>The applet ID string.
-</para></listitem></varlistentry>
+<listitem><simpara>The applet ID string.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>version</parameter>&nbsp;:</term>
-<listitem><para>The applet version string.
-</para></listitem></varlistentry>
+<listitem><simpara>The applet version string.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
-<listitem><para>The factory callback.
-</para></listitem></varlistentry>
+<listitem><simpara>The factory callback.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><para>he factory user data pointer.
+<listitem><simpara>he factory user data pointer.
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-shlib-factory">panel_applet_shlib_factory ()</title>
@@ -593,30 +602,30 @@ Defines a 'main' routine for the applet factory.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>applet_type</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>poa</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>impl_ptr</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="panel-applet-shlib-factory-closure">panel_applet_shlib_factory_closure ()</title>
@@ -631,27 +640,27 @@ Defines a 'main' routine for the applet factory.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>applet_type</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>poa</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>impl_ptr</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS">PANEL_APPLET_BONOBO_SHLIB_FACTORY()</title>
@@ -660,22 +669,22 @@ Defines a 'main' routine for the applet factory.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>descr</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
@@ -693,19 +702,19 @@ Emitted when the background of the panel changes. Use <parameter>type</parameter
 determine which, if any, of <parameter>color</parameter> and <parameter>pimxap</parameter> is valid.
 </para><variablelist role="params">
 <varlistentry><term><parameter>panelapplet</parameter>&nbsp;:</term>
-<listitem><para>The object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>The object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="PanelApplet-change-orient">The &quot;change-orient&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="PanelApplet">PanelApplet</link> *panelapplet,
                                             <link linkend="gint">gint</link> arg1,
@@ -714,13 +723,13 @@ determine which, if any, of <parameter>color</parameter> and <parameter>pimxap</
 Emitted when the orientation of the panel changes.
 </para><variablelist role="params">
 <varlistentry><term><parameter>panelapplet</parameter>&nbsp;:</term>
-<listitem><para>The object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>The object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="PanelApplet-change-size">The &quot;change-size&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="PanelApplet">PanelApplet</link> *panelapplet,
                                             <link linkend="gint">gint</link> arg1,
@@ -736,13 +745,13 @@ be used to determine what font size or widget layout to use
 depending on the size of the panel.
 </para><variablelist role="params">
 <varlistentry><term><parameter>panelapplet</parameter>&nbsp;:</term>
-<listitem><para>The object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>The object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="PanelApplet-move-focus-out-of-applet">The &quot;move-focus-out-of-applet&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="PanelApplet">PanelApplet</link> *panelapplet,
                                             <link linkend="GtkDirectionType">GtkDirectionType</link> arg1,
@@ -751,14 +760,14 @@ depending on the size of the panel.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>panelapplet</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 </refsect1>
 

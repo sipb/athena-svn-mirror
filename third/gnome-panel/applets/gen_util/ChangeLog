@@ -1,11 +1,125 @@
+2003-01-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* mailcheck.schemas.in: s/Remove/Remote/
+	Patch from R.I.P. Deaddog. Fixes #102733.
+	Approved by i18n and release teams.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	Makes the password dialog not modal so that we don't
+	have a locked up panel when getting the password.
+	Fixes #102399. Based on patch from Balamurali Viswanathan.
+
+	* mailcheck.c:
+	(check_remote_mailbox): factor this out from
+	check_mail_file_status().
+	(password_response_cb): check the mailbox and
+	destroy the dialog once we get the password.
+	(get_remote_password): don't make the dialog modal.
+	(check_mail_file_status), (fill_mailcheck_applet): upd.
+
+2003-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (fill_clock_applet): remove the 4 pixel
+	border around the clock as suggested by Gediminas.
+	Fixes #97409.
+
+2002-12-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (display_about_dialog):
+	* mailcheck.c: (mailcheck_about): remove translations
+	marks from around the copyright notices for the about
+	dialogs. The container non-ascii characters and no longer
+	need to be translated anyhow. Fixes #101796.
+
+2002-12-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* mailcheck.c: (mailcheck_about) fix previous commit 
+	so the build doesn't fail.
+	* clock.c: (display_about_dialog): mark for translation.
+
+2002-12-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (display_about_dialog):
+	* mailcheck.c: (mailcheck_about): fixup the
+	references to the FSF. Fixes #101589 and #101591.
+
+2002-12-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/*: remove these files.
+
+2002-12-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: don't build help subdir. Its
+	move to $(toplvel)/help/ now.
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (update_timeformat): allow date and
+	time in culturally specific orders. Fixes #100547.
+
+2002-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (display_about_dialog):
+	* mailcheck.c: (mailcheck_about):
+	* pager.c: (display_about_dialog):
+	* printer.c: (printer_about):
+	* tasklist.c: (display_about_dialog): revert
+        copyright changes until we decide on a format.
+
+2002-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* mailcheck.c: (mailcheck_execute_shell): no whitespace
+	before punctuation marks.
+
+2002-12-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* tasklist.schemas.in: put never, auto and always
+	in quotes for clarity. #100049.
+
+2002-11-29  Havoc Pennington  <hp@pobox.com>
+
+	* tasklist.c (destroy_tasklist): free the tasklist struct
+	(was leaked before, at least I think so)
+	(fill_tasklist_applet): create an icon theme object for the
+	tasklist.
+	(fill_tasklist_applet): set an icon loader function for the
+	tasklist.
+
 2002-11-12  Arvind Samptur <arvind.samputur@wipro.com>
 	* remote-helper.c: (fork_new_handler) poll for the
-	pid to wrriten on to the pipe before allowing the
+	pid to wrriten on to the pipe before allowing the 
 	number of mails to be written on to the pipe.
 	Fixes the problem of a SIGPIPE occuring causing the
 	panel to crash and sometimes the number of mails
 	having a junk value(which would be pid).
 	Fixes #98001
+
+2002-11-06  Andrew Sobala  <andrew@sobala.net>
+
+	* clock.schemas.in, mailcheck.schemas.in, tasklist.c,
+	tasklist.schemas.in: change some strings to comply with style
+	guide
+
+2002-11-03  Havoc Pennington  <hp@pobox.com>
+
+	* pager.c (num_workspaces_value_changed): when changing number of
+	workspaces, ask WM to do it, don't set stuff in gconf
+	(workspace_name_edited): change workspace names on the X property, 
+	don't set stuff in gconf
+
+2002-11-01  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (applet_change_background): this callback
+	takes a GdkPixmap *, not a filename.
+
+2002-10-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* egg-screen-help.[ch], egg-screen-url.[ch]: sync
+	with libegg.
+
+	* clock.c, mailcheck.c, pager.c, showdesktop.c,
+	  tasklist.c: use updated multiscreen help api.
 
 2002-10-15  Padraig O'Briain <padraig.obriain@sun.com>
 
@@ -13,9 +127,37 @@
 	Add CLEANFILES so that make clean deletes $(server_DATA) and
 	$(server_DATA).in
 
-2002-08-21  Havoc Pennington  <hp@redhat.com>
+2002-10-01  Yanko Kaneti <yaneti@declera.com>
 
-	* clock.schemas.in: translate the clock format. See #91355.
+	* clock.schemas.in: reorder elements so that it validates.
+
+2002-10-01  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (update_timeformat): don't use leading 0
+	for 12 hour timeformat. Fixes #94268.
+
+2002-09-23  Havoc Pennington  <hp@redhat.com>
+
+	* clock.c (destroy_clock): free the timeformat string
+
+	* showdesktop.c: show desktop applet
+
+	* GNOME_GenUtilApplet_Factory.server.in.in: add ShowDesktopApplet
+
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am, multihead-hacks.h: kill
+	multihead-hacks.h.
+
+	* clock.c, mailcheck.c, pager.c, tasklist.c:
+	Remove HAVE_GTK_MUTLIEHAD conditionals since
+	we require gtk+ 2.1.0 now.
+
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* pager.c: (applet_realized):
+	* tasklist.c: (applet_realized): require
+	libwnck HEAD.
 
 2002-09-12  Mark McLoughlin  <mark@skynet.ie>
 
@@ -29,10 +171,69 @@
 
 2002-08-21  Havoc Pennington  <hp@redhat.com>
 
+	* clock.schemas.in: translate the clock format
+
+2002-08-21  Havoc Pennington  <hp@redhat.com>
+
 	* clock.c (applet_change_background): memleak fix from 
 	Arjan van de Ven <arjanv@redhat.com>
 
 	* tasklist.c (applet_change_background): ditto
+
+2002-09-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* clock.c: (update_timeformat): put the
+	date in front of the time. Fixes #80675.
+
+2002-09-05  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/mailcheck/mailcheck.xml: updated to fix
+	bug #91146
+	* help/C/mailcheck/mailcheck-C.omf: updated to reflect
+	new version number and date of manual
+	
+2002-05-20  Dennis Smit  <synap@yourbase.nl>
+
+	* clock.schemas.in: Show seconds by default disabled.
+	Fixes #88679.
+
+2002-07-20  Dennis Smit  <synap@area101.penguin.nl>
+
+	*  clock.c
+	(display_properties_dialog): changed mnemonics for _UNIX
+        to UNI_X as a fix for bug #88678
+
+2002-08-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* tasklist.glade: use a table instead of two
+	hboxes to make sure the frame match up. #82048.
+
+2002-08-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* mailcheck.schemas.in: s/mailcheck/Inbox Monitor/
+	* pager.schemas.in: s/pager/Workspace Switcher/
+	* tasklist.schemas.in: s/tasklist/Window List/
+	(only in the descriptions of course, #83819.)
+
+2002-08-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add egg-screen-exec files to the build.
+
+	* clock.c: (properties_response_cb), (display_help_dialog):
+	* mailcheck.c: (phelp_cb), (help_callback):
+	* pager.c: (response_cb), (display_help_dialog):
+	* tasklist.c: (response_cb), (display_help_dialog):
+	use egg_screen_display_desktop().
+
+2002-08-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* GNOME_ClockApplet.xml: move Copy Date/Time to
+	the top of the menu and add seperator. #89863.
+
+2002-07-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* pager.c, tasklist.c: don't use methods from the
+	libwnck multiscreen patch if they're not defined.
 
 2002-07-29  Mark McLoughlin  <mark@skynet.ie>
 
@@ -56,6 +257,14 @@
 	* mailcheck.c: (mailcheck_get_animation_menu):
 	unconditionally get the pixmap directory, fixes
 	#88125.
+
+2002-07-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* mailcheck.c:
+	(mailcheck_execute_shell): add mailcheck arg and set
+	screen upon which the dialog should realise.
+	(after_mail_check), (mail_check_timeout),
+	(exec_clicked_cmd): update for above change.
 
 2002-05-21  Jorn Baayen  <jorn@nl.linux.org>
 
@@ -99,6 +308,30 @@
 2002-07-01  Mark McLoughlin  <mark@skynet.ie>
 
 	* tasklist.glade: #85344 - s/Tasklist/Window List/
+
+2002-06-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add multihead-hacks.h.
+
+	* multihead-hacks.h: some hacks to reduce the number
+	of HAVE_GTK_MULTIHEADs needed.
+
+	* clock.c, mailcheck.c: make sure all dialogs realize on 
+	the right screen.
+
+	* pager.c: (applet_get_screen): impl helper method.
+	(applet_realized): set the screen that the pager controls
+	when the applet is realized.
+	(response_cb), (fill_pager_applet), (display_help_dialog),
+	(display_about_dialog), (display_properties_dialog): make
+	sure all dialogs realize on the right screen.
+
+	* tasklist.c: (applet_get_screen): impl helper method.
+	(applet_realized): set the screen that the tasklist
+	controls when the applet is realized.
+	(response_cb), (fill_tasklist_applet), (display_help_dialog),
+	(display_about_dialog), (display_properties_dialog): make
+	sure all dialogs realize on the right screen.
 
 2002-06-18  Mark McLoughlin  <mark@skynet.ie>
 

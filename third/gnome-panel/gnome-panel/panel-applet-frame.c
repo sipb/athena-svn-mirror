@@ -34,11 +34,15 @@
 #include "panel-applet-frame.h"
 #include "panel-gconf.h"
 #include "panel-util.h"
+#include "panel.h"
 #include "session.h"
 #include "applet.h"
 #include "panel-marshal.h"
+#include "panel-background.h"
 
 #define HANDLE_SIZE 10
+
+#define PANEL_STOCK_DONT_DELETE "panel-dont-delete"
 
 #undef PANEL_APPLET_FRAME_DEBUG
 
@@ -47,6 +51,7 @@ struct _PanelAppletFramePrivate {
 	Bonobo_PropertyBag              property_bag;
 	BonoboUIComponent              *ui_component;
 
+	PanelWidget                    *panel;
 	AppletInfo                     *applet_info;
 	PanelOrient                     orient;
 
@@ -125,18 +130,17 @@ popup_handle_move (BonoboUIComponent *uic,
 		   PanelAppletFrame  *frame,
 		   const gchar       *verbname)
 {
-	PanelWidget *panel;
-	GtkWidget   *widget;
+	GtkWidget *widget;
 
 	g_return_if_fail (GTK_IS_WIDGET (frame));
+	g_return_if_fail (PANEL_IS_WIDGET (frame->priv->panel));
 
 	widget = GTK_WIDGET (frame);
 
 	g_return_if_fail (PANEL_IS_WIDGET (widget->parent));
 
-	panel = PANEL_WIDGET (widget->parent);
-
-	panel_widget_applet_drag_start (panel, widget, PW_DRAG_OFF_CENTER);
+	panel_widget_applet_drag_start (
+		frame->priv->panel, widget, PW_DRAG_OFF_CENTER);
 }
 
 static BonoboUIVerb popup_verbs [] = {
@@ -273,54 +277,19 @@ panel_applet_frame_change_size (PanelAppletFrame *frame,
 }
 
 static char *
-panel_applet_frame_get_background_string (PanelAppletFrame *frame,
-					  PanelWidget      *panel,
-					  PanelBackType     type)
+panel_applet_frame_get_background_string (PanelAppletFrame    *frame,
+					  PanelWidget         *panel,
+					  PanelBackgroundType  type)
 {
-	char *retval = NULL;
-
-	switch (type) {
-	case PANEL_BACK_PIXMAP: {
-		GdkNativeWindow pixmap_xid;
-
-		/* If we don't actually have a pixmap background,
-		 * then don't force the applet to copy from our
-		 * window.
-		 */
-		if (!panel->backpixmap)
-			return panel_applet_frame_get_background_string (
-					frame, panel, PANEL_BACK_NONE);
-
-		pixmap_xid = gdk_x11_drawable_get_xid (
-				GDK_DRAWABLE (GTK_WIDGET (panel)->window));
-
-		retval = g_strdup_printf (
-				"pixmap:%d,%d,%d", pixmap_xid,
-				GTK_WIDGET (frame)->allocation.x,
-				GTK_WIDGET (frame)->allocation.y);
-		}
-		break;
-	case PANEL_BACK_COLOR:
-		retval = g_strdup_printf (
-				"color:%.4x%.4x%.4x", 
-				panel->back_color.red, 
-				panel->back_color.green, 
-				panel->back_color.blue);
-		break;
-	case PANEL_BACK_NONE:
-		retval = g_strdup ("none:");
-		break;
-	default:
-		g_assert_not_reached ();
-		break;
-	}
-
-	return retval;
+	return panel_background_make_string (
+			&panel->background,
+			GTK_WIDGET (frame)->allocation.x,
+			GTK_WIDGET (frame)->allocation.y);
 }
 
 void
-panel_applet_frame_change_background (PanelAppletFrame *frame,
-				      PanelBackType     type)
+panel_applet_frame_change_background (PanelAppletFrame    *frame,
+				      PanelBackgroundType  type)
 {
 	char *bg_str;
 
@@ -426,6 +395,33 @@ panel_applet_frame_expose (GtkWidget      *widget,
 }
 
 static void
+panel_applet_frame_constrain_size (PanelAppletFrame *frame,
+				   GtkRequisition   *requisition)
+{
+	PanelWidget *panel;
+
+	g_return_if_fail (PANEL_IS_WIDGET (frame->priv->panel));
+
+	panel = frame->priv->panel;
+
+	switch (frame->priv->orient) {
+	case PANEL_ORIENT_UP:
+	case PANEL_ORIENT_DOWN:
+		if (requisition->height > panel->sz)
+			requisition->height = panel->sz;
+		break;
+	case PANEL_ORIENT_LEFT:
+	case PANEL_ORIENT_RIGHT:
+		if (requisition->width > panel->sz)
+			requisition->width = panel->sz;
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
+}
+
+static void
 panel_applet_frame_size_request (GtkWidget      *widget,
 				 GtkRequisition *requisition)
 {
@@ -438,6 +434,7 @@ panel_applet_frame_size_request (GtkWidget      *widget,
 
 	if (!(panel_applet_frame_get_flags (frame) & APPLET_HAS_HANDLE)) {
 		GTK_WIDGET_CLASS (parent_class)->size_request (widget, requisition);
+		panel_applet_frame_constrain_size (frame, requisition);
 		return;
 	}
   
@@ -467,6 +464,8 @@ panel_applet_frame_size_request (GtkWidget      *widget,
 		g_assert_not_reached ();
 		break;
 	}
+
+	panel_applet_frame_constrain_size (frame, requisition);
 }
 
 static void
@@ -575,17 +574,13 @@ panel_applet_frame_button_changed (GtkWidget      *widget,
 	case 1:
 	case 2:
 		if (button_event_in_rect (event, &frame->priv->handle_rect)) {
-			PanelWidget *panel;
-
-			panel = PANEL_WIDGET (GTK_WIDGET (frame)->parent);
-
 			if (event->type == GDK_BUTTON_PRESS ||
 			    event->type == GDK_2BUTTON_PRESS) {
 				panel_widget_applet_drag_start (
-					panel, GTK_WIDGET (frame), PW_DRAG_OFF_CURSOR);
+					frame->priv->panel, GTK_WIDGET (frame), PW_DRAG_OFF_CURSOR);
 				handled = TRUE;
 			} else if (event->type == GDK_BUTTON_RELEASE) {
-				panel_widget_applet_drag_end (panel);
+				panel_widget_applet_drag_end (frame->priv->panel);
 				handled = TRUE;
 			}
 		}
@@ -629,32 +624,32 @@ panel_applet_frame_reload_response (GtkWidget        *dialog,
 
 	g_return_if_fail (PANEL_IS_APPLET_FRAME (frame));
 
-	if (!GTK_WIDGET (frame)->parent) {
-		g_object_unref (frame);
-		gtk_widget_destroy (dialog);
+	if (!frame->priv->iid || !frame->priv->panel)
 		return;
-	}
 
 	info = frame->priv->applet_info;
 
 	if (response == GTK_RESPONSE_YES) {
 		PanelWidget *panel;
 		char        *iid;
-		char        *gconf_key;
-		int          position;
+		char        *gconf_key = NULL;
+		int          position = -1;
 
-		panel     = PANEL_WIDGET (GTK_WIDGET (frame)->parent);
-		iid       = g_strdup (frame->priv->iid);
-		gconf_key = g_strdup (info->gconf_key);
-		position  = panel_applet_get_position (info);
+		panel = frame->priv->panel;
+		iid   = g_strdup (frame->priv->iid);
 
-		panel_applet_clean (info, FALSE);
+		if (info) {
+			gconf_key = g_strdup (info->gconf_key);
+			position  = panel_applet_get_position (info);
+			panel_applet_clean (info, FALSE);
+		}
 
 		panel_applet_frame_load (iid, panel, position, TRUE, gconf_key);
 
 		g_free (iid);
 		g_free (gconf_key);
-	} else
+
+	} else if (info)
 		panel_applet_clean (info, TRUE);
 
 	g_object_unref (frame);
@@ -701,10 +696,16 @@ static void
 panel_applet_frame_cnx_broken (PanelAppletFrame *frame)
 {
 	GtkWidget *dialog;
-	char      *applet_name;
+	GdkScreen *screen;
+	char      *applet_name = NULL;
 	char      *txt;
 
-	applet_name = panel_applet_frame_get_name (frame->priv->iid);
+	g_return_if_fail (PANEL_IS_APPLET_FRAME (frame));
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (frame));
+
+	if (frame->priv->iid)
+		applet_name = panel_applet_frame_get_name (frame->priv->iid);
 
 	txt = g_strdup_printf (
 			_("The %s applet appears to have died "
@@ -721,6 +722,7 @@ panel_applet_frame_cnx_broken (PanelAppletFrame *frame)
 				GTK_MESSAGE_QUESTION,
 				GTK_BUTTONS_YES_NO,
 				txt);
+	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (panel_applet_frame_reload_response),
@@ -729,6 +731,76 @@ panel_applet_frame_cnx_broken (PanelAppletFrame *frame)
 	gtk_widget_show (dialog);
 	g_free (applet_name);
 	g_free (txt);
+}
+
+static inline void
+register_stock_item (void)
+{
+        static gboolean registered = FALSE;
+
+        if (!registered) {
+                GtkIconFactory      *factory;
+                GtkIconSet          *cancel_icons;
+
+                static GtkStockItem  dont_delete_item [] = {
+                        { PANEL_STOCK_DONT_DELETE, N_("D_on't Delete"), 0, 0, GETTEXT_PACKAGE },
+                };
+
+                cancel_icons = gtk_icon_factory_lookup_default (GTK_STOCK_CANCEL);
+
+                factory = gtk_icon_factory_new ();
+
+                gtk_icon_factory_add (factory, PANEL_STOCK_DONT_DELETE, cancel_icons);
+
+                gtk_icon_factory_add_default (factory);
+
+                gtk_stock_add_static (dont_delete_item, 1);
+
+                registered = TRUE;
+        }
+}
+
+static void
+panel_applet_frame_loading_failed (PanelAppletFrame  *frame,
+				   CORBA_Environment *ev,
+				   const char        *iid,
+				   const char        *gconf_key,
+				   GtkWindow         *panel)
+{
+	GtkWidget *dialog;
+	char      *error;
+	int        response;
+
+	error = bonobo_exception_get_text (ev);
+
+	dialog = gtk_message_dialog_new (
+				NULL, 0,
+				GTK_MESSAGE_QUESTION,
+				GTK_BUTTONS_NONE,
+				_("The panel encountered a problem while loading \"%s\"\n"
+				  "Details: %s\n\n"
+				  "Do you want to delete the applet from your configuration?"),
+				iid, error);
+
+	g_free (error);
+
+	register_stock_item ();
+
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+				PANEL_STOCK_DONT_DELETE, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_DELETE, GTK_RESPONSE_OK,
+				NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+
+	gtk_window_set_screen (GTK_WINDOW (dialog),
+			       gtk_window_get_screen (panel));
+
+        response = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	gtk_widget_destroy (dialog);
+
+	if (response == GTK_RESPONSE_OK)
+		panel_applet_clean_gconf (APPLET_BONOBO, gconf_key, TRUE);
 }
 
 static void
@@ -758,6 +830,7 @@ panel_applet_frame_instance_init (PanelAppletFrame      *frame,
 	frame->priv->applet_shell     = CORBA_OBJECT_NIL;
 	frame->priv->property_bag     = CORBA_OBJECT_NIL;
 	frame->priv->ui_component     = NULL;
+	frame->priv->panel            = NULL;
 	frame->priv->orient           = PANEL_ORIENT_UP;
 	frame->priv->applet_info      = NULL;
 	frame->priv->moving_focus_out = FALSE;
@@ -887,7 +960,8 @@ panel_applet_frame_construct_moniker (PanelAppletFrame *frame,
 	char *retval;
 	char *bg_str;
 
-	bg_str = panel_applet_frame_get_background_string (frame, panel, panel->back_type);
+	bg_str = panel_applet_frame_get_background_string (
+				frame, panel, panel->background.type);
 
 	retval = g_strdup_printf (
 			"%s!prefs_key=/apps/panel/profiles/%s/applets/%s/prefs;"
@@ -914,6 +988,8 @@ panel_applet_frame_construct (PanelAppletFrame *frame,
 	GtkWidget             *widget;
 	char                  *moniker;
 
+	frame->priv->panel = panel;
+
 	moniker = panel_applet_frame_construct_moniker (frame, panel, iid, gconf_key);
 
 	/* FIXME: this should really use bonobo_get_object_async */
@@ -925,22 +1001,13 @@ panel_applet_frame_construct (PanelAppletFrame *frame,
 	g_free (moniker);
 
 	if (BONOBO_EX (&ev)) {
-		char *err = bonobo_exception_get_text (&ev);
-
-		panel_error_dialog
-			("problem_loading_applet",
-			 _("<b>There was a problem loading applet '%s'</b>\n\n"
-			   "Details: %s"),
-			  iid, err);
-
-		panel_applet_clean_gconf (APPLET_BONOBO, gconf_key, TRUE);
-
+		panel_applet_frame_loading_failed (
+			frame, &ev, iid, gconf_key, GTK_WINDOW (panel->panel_parent));
 		CORBA_exception_free (&ev);
-
-		g_free (err);
-
 		return NULL;
 	}
+
+	frame->priv->iid = g_strdup (iid);
 
 	cnx_status = ORBit_small_get_connection_status (control);
 	if (cnx_status != ORBIT_CONNECTION_IN_PROC)
@@ -962,23 +1029,25 @@ panel_applet_frame_construct (PanelAppletFrame *frame,
 		return NULL;
 	}
 
-	frame->priv->iid = g_strdup (iid);
-
 	control_frame = bonobo_widget_get_control_frame (BONOBO_WIDGET (widget));
-
-	control = bonobo_control_frame_get_control (control_frame);
 
 	frame->priv->property_bag = 
 		bonobo_control_frame_get_control_property_bag (control_frame, NULL);
 
 	frame->priv->ui_component =
 		bonobo_control_frame_get_popup_component (control_frame, NULL);
+	if (!frame->priv->ui_component)
+		return NULL;
 
 	bonobo_ui_util_set_ui (frame->priv->ui_component, DATADIR,
 			       "GNOME_Panel_Popup.xml", "panel", NULL);
 
 	bonobo_ui_component_add_verb_list_with_data (
 		frame->priv->ui_component, popup_verbs, frame);
+
+	control = bonobo_control_frame_get_control (control_frame);
+	if (!control)
+		return NULL;
 
 	frame->priv->applet_shell = panel_applet_frame_get_applet_shell (control);
 
