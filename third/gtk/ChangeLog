@@ -1,3 +1,118 @@
+Sun Apr  1 23:01:31 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* Released 1.2.10.
+
+Sun Apr  1 22:22:47 2001  Owen Taylor  <otaylor@redhat.com>
+
+	[ Addition of safety checks to try to avoid segfaulting
+	  on broken setups always. ]
+
+	* gdk/gdkfont.c (_gdk_font_wc_to_glyphs): Add a boolean
+	return value to deal with failure of conversion of
+	wide characters to glyphs.
+
+	* gtk/gtkentry.c gtk/gtklabel.c: Handle failure of 
+	mbstowcs/wcstombs a bit better.
+
+	* gdk/gdkfont.c gdk/gdkdraw.c: Deal with failure of
+	_gdk_font_wc_to_glyphs() gracefully
+
+	* gdk/gdkim.c (_gdk_wcstombs_len): quietly return NULL on
+	failure instead of g_return_if_fail().
+
+Wed Mar 28 16:05:29 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtkfontsel.c (gtk_font_selection_select_size): Fix 
+	problem where fractional sizes caused infinite loop.
+	(bugzilla.redhat.com #33081)
+
+Wed Mar 28 14:52:08 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* docs/Makefile.am: Remove excess rules breaking
+	distcheck.
+
+Wed Mar 28 12:33:20 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtkdnd.c: Fix problem where dropping into
+	internal child widgets (such as GtkCList tab labels)
+	(#52457, reported by Daniel Erat). Can't use
+	gtk_container_children(), so provide a substitute
+	which uses gtk_container_forall().
+
+2001-03-22  Darin Adler  <darin@eazel.com>
+
+	* gtk/gtkobject.h: Fixed #if G_ENABLE_DEBUG that
+	was supposed to be #ifdef G_ENABLE_DEBUG.
+
+Thu Mar 15 15:23:11 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* NEWS: Updated
+
+	* configure.in (GTK_BINARY_AGE): Up micro => 10,
+	binary => 10, interface => 1.
+
+	* INSTALL.in: Add some discouraging words about 
+	--with-xinput=gxi.
+
+	* configure.in (x_ldflags): Make --with-xinput be
+	--with-xinput=xfree, and warn for --with-xinput=gxi.
+
+Thu Mar 15 14:29:47 2001  Owen Taylor  <otaylor@redhat.com>
+
+        * gdk/gdkselection.c (sanitize_ctext): Handle 
+	extended segments, which can contain arbitrary octets,
+	properly. (Fixes problems with cut-and-paste and,
+	e.g., KOI8-R.)
+	
+	* gtk/gtktext.c gtk/gtkeditable.c: Patch from
+	Vlad Harchev to avoid using gdk_draw_text_wc() 
+	on text that is really chars, not wchars. (Cannot
+	convert between chars and wide chars with assignment!)
+
+Thu Mar 15 01:31:07 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gdk/gdkim.c (_gdk_wcstombs_len): Make somewhat more
+	safe on broken libcs, also add a g_return_if_fail()
+	to make the failure case when we somehow get a
+	string of invalid wide characters more clear.
+	(#51644, Sergey Vlasov)
+
+Thu Mar 15 01:05:49 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtkrc.c (gtk_rc_add_initial_default_files): Fix 
+	problem in testing the result of g_get_home_dir(),
+	and test the result of g_get_home_dir() in another
+	place for consistency. (#51833). Also fix off-by-one
+	error in check against GTK_RC_MAX_MODULE_PATHS.
+
+Thu Mar 15 00:41:47 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtkcalender.c gtk/gtkcombo.c gtk/gtkeditable.c
+	gtk/gtkplug.c gtk/gtkradiobutton.c gtk/gtkvpaned.c:
+	Patch from Darin Adler to fix unused variables
+	warning. (But use gutter_size variable in 
+	gtk_vpaned_button_press.) (#51835)
+
+Wed Mar 14 23:38:23 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gdk/gdk.c (gdk_init_check): Fix missed equal_pos => option
+	for --with-xinput=gxi. (Which is broken anyways, but
+	oh well...)
+
+	* gtk/gtkeditable.c (gtk_editable_get_event_time): Fix excess free
+	in case where there is no current event.
+
+	* gtk/gtkwindow.[ch]: Handle focus for the case of 
+	PointerRoot (no window manager) by using algorithm taken 
+	from xterm.
+
+Fri Mar  9 22:32:32 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtkmenushell.c (gtk_menu_shell_enter_notify): Only
+	check the ignore_enter flag for the menu shell that
+	the item is actually a child of, not for attached
+	submenus. (#51536)
+
 Fri Mar  2 12:35:40 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* Release 1.2.9

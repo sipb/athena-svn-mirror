@@ -1493,13 +1493,13 @@ gdk_ic_get_events (GdkIC *ic)
 #ifdef USE_NATIVE_LOCALE
 gchar *
 _gdk_wcstombs_len (const GdkWChar *src,
-		   int             src_len)
+		   gint            src_len)
 {
-  int len = 0;
-  int i;
-  char *result;
-  char buf[16];
-  char *p;
+  gint len = 0;
+  gint i;
+  gchar *result = NULL;
+  gchar buf[16];
+  gchar *p;
 
   if (MB_CUR_MAX <= 16)
     p = buf;
@@ -1509,13 +1509,24 @@ _gdk_wcstombs_len (const GdkWChar *src,
   wctomb (NULL, 0);
 
   for (i=0; (src_len < 0 || i < src_len) && src[i]; i++)
-    len += wctomb (p, src[i]);
+    {
+      gint charlen = wctomb (p, src[i]);
+      if (charlen < 0)
+	goto out;
+      
+      len += charlen;
+    }
 
   result = g_malloc (len + 1);
 
-  wcstombs (result, (wchar_t *)src, len);
+  /* Old versions of GNU libc apparently can't handle a max of 0 here
+   */
+  if (len > 0)
+    wcstombs (result, (wchar_t *)src, len);
+  
   result[len] = '\0';
 
+ out:
   if (p != buf)
     g_free (p);
 
