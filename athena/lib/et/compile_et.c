@@ -23,7 +23,7 @@ static const char copyright[] =
     "Copyright 1987,1988 by MIT Student Information Processing Board";
 
 static const char rcsid_compile_et_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/compile_et.c,v 1.1 1989-02-27 19:01:48 shanzer Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/compile_et.c,v 1.2 1989-02-27 19:02:55 shanzer Exp $";
 #endif
 
 extern char *gensym();
@@ -255,12 +255,13 @@ int main (argc, argv) int argc; char **argv; {
     fprintf(cfile,
 	    "static const struct error_table et = { text, %ldL, %d };\n\n",
 	    table_number, current);
-    fputs("static struct et_list link = { (struct et_list *) 0, &et };\n\n",
+    fputs("static struct et_list link = { 0, 0 };\n\n",
 	  cfile);
     fprintf(cfile, "void initialize_%s_error_table (%s) {\n",
 	    table_name, (language == lang_C) ? "void" : "NOARGS");
-    fputs("    if (!link.next) {\n", cfile);
+    fputs("    if (!link.table) {\n", cfile);
     fputs("        link.next = _et_list;\n", cfile);
+    fputs("        link.table = &et;\n", cfile);
     fputs("        _et_list = &link;\n", cfile);
     fputs("    }\n", cfile);
     fputs("}\n", cfile);
