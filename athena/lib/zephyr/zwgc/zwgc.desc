@@ -5,7 +5,7 @@
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.desc,v $
 #	$Author: raeburn $
-#	$Id: zwgc.desc,v 1.6 1990-04-25 23:48:11 raeburn Exp $
+#	$Id: zwgc.desc,v 1.7 1990-05-21 23:11:39 raeburn Exp $
 #
 #
 # Default WindowGram description file
@@ -114,11 +114,7 @@ match "message"
 
 	print "@center(@bold("+$aval+") "+$type+" message at "+$time+
 		" on "+$date+" from "+$fromhost+")\n"+$ftext+"\n\n"
-	if (downcase($opcode) == "pretty") then
-		print $body
-	else
-		print verbatim($body)
-	endif
+	print $body
 	put
 	exit
 
@@ -141,11 +137,7 @@ match "login"
 
 default
 	print "(Authentication: @bold("+$aval+") from host: "+$fromhost+")\n"
-	if (downcase($opcode) == "verbatim") then
-		print verbatim(substitute($default))
-	else
-		print substitute($default)
-	endif
+	print substitute($default)
 	put
 	exit
 
