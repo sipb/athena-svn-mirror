@@ -1,4 +1,4 @@
-# $Id: packages,v 1.298 2004-12-24 19:03:20 ghudson Exp $
+# $Id: packages,v 1.299 2005-01-31 19:11:57 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -149,7 +149,7 @@ third/bug-buddy			requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgn
 third/bzip2			except linux
 third/cyrus-imapd		requires cyrus-sasl,perl package cyrus-imap-client
 third/cyrus-sasl		requires krb5
-third/control-center		requires gettext,intltool,gtk2,GConf2,libgnomeui,libglade2,libbonobo,libbonoboui,libglade2,libxklavier,gnome-desktop,libxml2,gnome-vfs2,esound,metacity,Xft
+third/control-center		requires gettext,intltool,gtk2,GConf2,libgnomeui,libglade2,libbonobo,libbonoboui,libglade2,libxklavier,gnome-desktop,libxml2,gnome-vfs2,esound,metacity,Xft,nautilus,metacity
 third/db
 third/diffutils			on solaris
 third/eel			requires gettext,GConf2,gtk2,glib2,gnome-vfs2,gail,libart_lgpl,libgnome,libgnomeui,libxml2,libglade2,Xrender
