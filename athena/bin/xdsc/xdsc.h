@@ -21,18 +21,18 @@ without express or implied warranty.
 #define		LONGNAMELEN		100
 #define		SHORTNAMELEN		50
 
-#define		NEXT			1
-#define		PREV			2
-#define		NEXTNEWS		3
-#define		PREVNEWS		4
-#define		UPDATE			5
-#define		NREF			6
-#define		PREF			7
-#define		FIRST			8
-#define		LAST			9
-#define		CURRENT			10
-#define		HIGHESTSEEN		11
-#define		INITIALIZE		12
+#define		NEXT			-1
+#define		PREV			-2
+#define		NEXTNEWS		-3
+#define		PREVNEWS		-4
+#define		UPDATE			-5
+#define		NREF			-6
+#define		PREF			-7
+#define		FIRST			-8
+#define		LAST			-9
+#define		CURRENT			-10
+#define		HIGHESTSEEN		-11
+#define		INITIALIZE		-12
 
 #define		BUTTONS_UPDATE		1
 #define		BUTTONS_OFF		2
@@ -53,4 +53,4 @@ typedef struct entryrec {
         struct entryrec *nextrec;
 } EntryRec;
 
-static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.5 1991-05-07 15:19:26 sao Exp $";
+static char rcsidh[] = "";
