@@ -4,7 +4,7 @@
 #include "olc.h"
 
 #include <zephyr/zephyr.h>
-#include "MrmAppl.h"		/* Motif Toolkit */
+#include <Mrm/MrmAppl.h>	/* Motif Toolkit */
 
 #include <signal.h>
 #include <sys/file.h>
