@@ -49,6 +49,8 @@
 #define BONOBO_MDI_CHILD_KEY 	"BonoboMDIChild"
 #define UI_COMPONENT_KEY 	"UIComponent"
 #define BOOK_KEY		"Book"
+#define VPANED_KEY		"VPaned"
+#define BOTTOM_PANE_KEY		"BottomPane"
 #define WINDOW_INFO_KEY		"BonoboMDIWindowInfo"
 
 static void            bonobo_mdi_class_init     (BonoboMDIClass  *);
@@ -79,7 +81,7 @@ static gboolean        book_button_press        (GtkWidget *widget, GdkEventButt
 						 gpointer data);
 static gboolean        book_button_release      (GtkWidget *widget, GdkEventButton *e,
 						 gpointer data);
-static void            book_add_view            (GtkNotebook *, GtkWidget *);
+static void            book_add_view            (BonoboMDI *mdi, GtkNotebook *, GtkWidget *);
 static void            set_page_by_widget       (GtkNotebook *, GtkWidget *);
 
 static gboolean        toplevel_focus           (BonoboWindow *, GdkEventFocus *, BonoboMDI *);
@@ -87,7 +89,7 @@ static gboolean        toplevel_focus           (BonoboWindow *, GdkEventFocus *
 static void            set_active_view          (BonoboMDI *, GtkWidget *);
 
 /* convenience functions that call child's "virtual" functions */
-static GtkWidget      *child_set_label         (BonoboMDIChild *, GtkWidget *);
+static GtkWidget      *child_set_label         (BonoboMDI *mdi, BonoboMDIChild *, GtkWidget *, GtkWidget *);
 
 static void 	       child_name_changed 	(BonoboMDIChild *mdi_child, 
 						 gchar* old_name, 
@@ -315,8 +317,6 @@ bonobo_mdi_finalize (GObject *object)
 	mdi = BONOBO_MDI (object);
 	g_return_if_fail (mdi->priv != NULL);
 	
-	bonobo_mdi_remove_all (mdi, TRUE);
-
 	if (mdi->priv->child_list_path != NULL)
 		g_free (mdi->priv->child_list_path);
 	
@@ -341,6 +341,21 @@ bonobo_mdi_finalize (GObject *object)
 	gedit_debug (DEBUG_MDI, "END");
 }
 
+void 
+bonobo_mdi_destroy (BonoboMDI *mdi)
+{
+	gedit_debug (DEBUG_MDI, "");
+
+	g_return_if_fail (BONOBO_IS_MDI (mdi));
+	
+	bonobo_mdi_remove_all (mdi, TRUE);
+
+	if (bonobo_mdi_get_active_window (mdi))
+	{
+		gtk_widget_destroy (GTK_WIDGET (bonobo_mdi_get_active_window (mdi)));
+	}
+}
+	
 
 static void 
 bonobo_mdi_instance_init (BonoboMDI *mdi)
@@ -409,10 +424,10 @@ bonobo_mdi_new (const gchar *mdi_name, const gchar *title,
 }
 
 static GtkWidget *
-child_set_label (BonoboMDIChild *child, GtkWidget *label)
+child_set_label (BonoboMDI *mdi, BonoboMDIChild *child, GtkWidget *view, GtkWidget *label)
 {
 	GtkWidget *w;
-	w = BONOBO_MDI_CHILD_GET_CLASS (child)->set_label (child, label, NULL);
+	w = BONOBO_MDI_CHILD_GET_CLASS (child)->set_label (child, view, label, NULL);
 	
 	return w;
 }
@@ -651,24 +666,25 @@ book_motion (GtkWidget *widget, GdkEventMotion *e, gpointer data)
 	mdi = BONOBO_MDI (data);
 
 	if (!drag_cursor)
-		drag_cursor = gdk_cursor_new (GDK_HAND2);
-
-	if (e->window == GTK_NOTEBOOK (widget)->event_window) 
+		drag_cursor = gdk_cursor_new (/*GDK_HAND2*/GDK_FLEUR);
+		
+	mdi->priv->in_drag = TRUE;
+	gtk_grab_add (widget);
+	gdk_pointer_grab (widget->window, 
+			  FALSE,
+			  GDK_POINTER_MOTION_MASK |
+			  GDK_BUTTON_RELEASE_MASK, 
+			  NULL,
+			  drag_cursor, 
+			  GDK_CURRENT_TIME);
+	
+	if (mdi->priv->signal_id) 
 	{
-		mdi->priv->in_drag = TRUE;
-		gtk_grab_add (widget);
-		gdk_pointer_grab (widget->window, FALSE,
-						 GDK_POINTER_MOTION_MASK |
-						 GDK_BUTTON_RELEASE_MASK, NULL,
-						 drag_cursor, GDK_CURRENT_TIME);
-		if (mdi->priv->signal_id) 
-		{
-			g_signal_handler_disconnect (G_OBJECT (widget), 
-						     mdi->priv->signal_id);
-			mdi->priv->signal_id = 0;
-		}
+		g_signal_handler_disconnect (G_OBJECT (widget), 
+					     mdi->priv->signal_id);
+		mdi->priv->signal_id = 0;
 	}
-
+	
 	return FALSE;
 }
 
@@ -676,15 +692,32 @@ static gboolean
 book_button_press (GtkWidget *widget, GdkEventButton *e, gpointer data)
 {
 	BonoboMDI *mdi;
+	BonoboMDIChild *child;
 
-	mdi = BONOBO_MDI (data);
+	g_return_val_if_fail (GTK_IS_WIDGET (data), FALSE);
+	
+	child = bonobo_mdi_get_child_from_view (GTK_WIDGET (data));
+	mdi = BONOBO_MDI (g_object_get_data (G_OBJECT (child), BONOBO_MDI_KEY));
 
-	if ((e->button == 1) && (e->window == GTK_NOTEBOOK (widget)->event_window))
+	if (e->button == 1)
+	{
+		GtkNotebook *book;
+		BonoboWindow *win;
+
+		win = bonobo_mdi_get_window_from_view (widget);
+		g_return_val_if_fail (BONOBO_IS_WINDOW (win), FALSE);
+	
+		book = GTK_NOTEBOOK (get_book_from_window (win));
+
+		if (g_list_length (mdi->priv->children) <= 1)
+			return FALSE;
+
 		mdi->priv->signal_id = g_signal_connect (
-				G_OBJECT (widget), 
+				G_OBJECT (book), 
 				"motion_notify_event",
 				G_CALLBACK (book_motion), 
 				mdi);
+	}
 
 	return FALSE;
 }
@@ -729,7 +762,7 @@ book_button_release (GtkWidget *widget, GdkEventButton *e, gpointer data)
 
 				/* page was dragged to another notebook */
 
-				old_book = GTK_NOTEBOOK(widget);
+				old_book = GTK_NOTEBOOK (widget);
 				new_book = get_book_from_window (BONOBO_WINDOW (child->data));
 
 				if (old_book == (GtkNotebook *) new_book) 
@@ -743,7 +776,7 @@ book_button_release (GtkWidget *widget, GdkEventButton *e, gpointer data)
 					view = gtk_notebook_get_nth_page (GTK_NOTEBOOK (old_book), cur_page);
 					gtk_container_remove (GTK_CONTAINER(old_book), view);
 
-					book_add_view (GTK_NOTEBOOK (new_book), view);
+					book_add_view (mdi, GTK_NOTEBOOK (new_book), view);
 
 					win = bonobo_mdi_get_window_from_view (view);
 					gdk_window_raise (GTK_WIDGET(win)->window);
@@ -799,7 +832,7 @@ book_button_release (GtkWidget *widget, GdkEventButton *e, gpointer data)
 				
 			new_book = book_create (mdi);
 	
-			book_add_view (GTK_NOTEBOOK (new_book), view);
+			book_add_view (mdi, GTK_NOTEBOOK (new_book), view);
 
 			gtk_window_set_position (GTK_WINDOW (mdi->priv->active_window), GTK_WIN_POS_MOUSE);
 	
@@ -813,15 +846,69 @@ book_button_release (GtkWidget *widget, GdkEventButton *e, gpointer data)
 	return FALSE;
 }
 
+gint 
+bonobo_mdi_n_children_for_window (BonoboWindow *win)
+{
+	GtkNotebook *book;
+
+	book = GTK_NOTEBOOK (get_book_from_window (win));
+
+	return g_list_length (book->children);
+}
+
+gboolean
+bonobo_mdi_move_view_to_new_window (BonoboMDI *mdi, GtkWidget *view)
+{
+	GtkNotebook *old_book;
+	GtkNotebook *new_book;
+
+	BonoboWindow *old_win;
+	gint width;
+	gint height;
+
+	g_return_val_if_fail (BONOBO_IS_MDI (mdi), FALSE);
+	g_return_val_if_fail (GTK_IS_WIDGET (view), FALSE);
+	
+	old_win = bonobo_mdi_get_window_from_view (view);
+	g_return_val_if_fail (BONOBO_IS_WINDOW (old_win), FALSE);
+	
+	old_book = GTK_NOTEBOOK (get_book_from_window (old_win));
+
+	if (g_list_length (old_book->children) == 1)
+		return FALSE;
+
+	gtk_window_get_size (GTK_WINDOW (old_win), &width, &height);
+
+	gtk_container_remove (GTK_CONTAINER (old_book), view);
+			
+	app_clone (mdi, old_win, NULL);
+			
+	new_book = GTK_NOTEBOOK (book_create (mdi));
+	
+	book_add_view (mdi, new_book, view);
+
+	gtk_window_set_default_size (GTK_WINDOW (mdi->priv->active_window), width, height);
+
+	if (!GTK_WIDGET_VISIBLE (mdi->priv->active_window))
+		gtk_widget_show (GTK_WIDGET (mdi->priv->active_window));
+
+	return TRUE;
+}
+
 static GtkWidget *
 book_create (BonoboMDI *mdi)
 {
 	GtkWidget *us;
 	GtkWidget *vbox;
+	GtkWidget *vpaned;
+	GtkWidget *bp;
 
 	gedit_debug (DEBUG_MDI, "");
 
 	g_return_val_if_fail (mdi->priv->active_window != NULL, NULL);
+	
+	vpaned = gtk_vpaned_new ();
+	g_return_val_if_fail (vpaned != NULL, NULL);
 	
 	vbox = gtk_vbox_new (FALSE, 0);
 	us = gtk_notebook_new ();
@@ -830,18 +917,29 @@ book_create (BonoboMDI *mdi)
 
 	gtk_box_pack_start (GTK_BOX (vbox), us, TRUE, TRUE, 0);	
 
-	gtk_widget_show_all (vbox);
+	gtk_paned_pack1 (GTK_PANED (vpaned), vbox, TRUE, FALSE);
 
-	bonobo_window_set_contents (mdi->priv->active_window, vbox);
+	bp = bonobo_mdi_get_bottom_pane_for_window (mdi->priv->active_window);
+
+	if (bp != NULL)
+		gtk_paned_pack2 (GTK_PANED (vpaned), bp, FALSE, FALSE);
+	
+	gtk_widget_show_all (vpaned);
+
+	bonobo_window_set_contents (mdi->priv->active_window, vpaned);
+	
 	g_object_set_data (G_OBJECT (mdi->priv->active_window), BOOK_KEY, us);
+	g_object_set_data (G_OBJECT (mdi->priv->active_window), VPANED_KEY, vpaned);
 	
 	gtk_widget_add_events (us, GDK_BUTTON1_MOTION_MASK);
 
 	g_signal_connect (G_OBJECT (us), "switch_page",
 			  G_CALLBACK (book_switch_page), mdi);
 
+	/*
 	g_signal_connect (G_OBJECT (us), "button_press_event",
 			  G_CALLBACK (book_button_press), mdi);
+	*/
 	g_signal_connect (G_OBJECT (us), "button_release_event",
 			  G_CALLBACK (book_button_release), mdi);
 
@@ -853,19 +951,22 @@ book_create (BonoboMDI *mdi)
 }
 
 static void 
-book_add_view (GtkNotebook *book, GtkWidget *view)
+book_add_view (BonoboMDI *mdi, GtkNotebook *book, GtkWidget *view)
 {
 	BonoboMDIChild *child;
 	GtkWidget *title;
-
+	
 	gedit_debug (DEBUG_MDI, "");
 
 	child = bonobo_mdi_get_child_from_view (view);
 
-	title = child_set_label (child, NULL);
+	title = child_set_label (mdi, child, view, NULL);
+
+	g_signal_connect (G_OBJECT (title), "button_press_event",
+			  G_CALLBACK (book_button_press), view);
 
 	gtk_notebook_append_page (book, view, title);
-
+	
 	if (g_list_length (book->children) > 1)
 		set_page_by_widget (book, view);
 
@@ -917,10 +1018,10 @@ toplevel_focus (BonoboWindow *win, GdkEventFocus *event, BonoboMDI *mdi)
 
 	/* updates active_view and active_child when a new toplevel receives focus */
 	g_return_val_if_fail (BONOBO_IS_WINDOW (win), FALSE);
-
+	
 	if (mdi->priv->active_window == win)
 		return FALSE;
-	
+
 	mdi->priv->active_window = win;
 	
 	contents = get_book_from_window (win);
@@ -1409,7 +1510,7 @@ bonobo_mdi_add_view (BonoboMDI *mdi, BonoboMDIChild *child)
 	if (book == NULL)
 		book = book_create (mdi);
 	
-	book_add_view (GTK_NOTEBOOK (book), view);
+	book_add_view (mdi, GTK_NOTEBOOK (book), view);
 	
 	/* this reference will compensate the view's unrefing
 	   when removed from its parent later, as we want it to
@@ -1475,7 +1576,7 @@ bonobo_mdi_add_toplevel_view (BonoboMDI *mdi, BonoboMDIChild *child, const char 
 	if (!GTK_WIDGET_VISIBLE (view))
 		gtk_widget_show (view);
 
-	book_add_view (GTK_NOTEBOOK (get_book_from_window (mdi->priv->active_window)), view);
+	book_add_view (mdi, GTK_NOTEBOOK (get_book_from_window (mdi->priv->active_window)), view);
 	
 	/* this reference will compensate the view's unrefing
 	   when removed from its parent later, as we want it to
@@ -1831,9 +1932,13 @@ bonobo_mdi_update_child (BonoboMDI *mdi, BonoboMDIChild *child)
 	
 	while (view_node) 
 	{
+		GtkWidget *tab_label; 
+		
 		view = GTK_WIDGET (view_node->data);
 
-		title = child_set_label (child, NULL);
+		tab_label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (view->parent), view);
+		
+		title = child_set_label (mdi, child, view, tab_label);
 		
 		gtk_notebook_set_tab_label (GTK_NOTEBOOK (view->parent), view, title);
 		
@@ -2244,4 +2349,41 @@ bonobo_mdi_get_restoring_state (BonoboMDI *mdi)
 
 	priv = mdi->priv;
 	return priv->restoring_state;
+}
+
+void
+bonobo_mdi_set_bottom_pane_for_window (BonoboWindow *win, GtkWidget *pane)
+{
+	gpointer old_pane, vpaned;
+
+	g_return_if_fail (BONOBO_IS_WINDOW (win));
+
+	old_pane =  g_object_get_data (G_OBJECT (win), BOTTOM_PANE_KEY);
+	vpaned = g_object_get_data (G_OBJECT (win), VPANED_KEY);
+
+	if (old_pane != NULL)
+	{
+		g_return_if_fail (vpaned != NULL);
+		gtk_container_remove (GTK_CONTAINER (vpaned), GTK_WIDGET (old_pane));
+	}
+
+	if (pane != NULL)
+	{
+		if (vpaned != NULL)
+			gtk_paned_pack2 (GTK_PANED (vpaned), pane, FALSE, FALSE);
+
+		g_object_set_data (G_OBJECT (win), BOTTOM_PANE_KEY, pane);
+	}
+}
+
+GtkWidget *
+bonobo_mdi_get_bottom_pane_for_window (BonoboWindow *win)
+{
+	gpointer pane;
+
+	g_return_val_if_fail (BONOBO_IS_WINDOW (win), NULL);
+
+	pane =  g_object_get_data (G_OBJECT (win), BOTTOM_PANE_KEY);
+
+	return (pane != NULL) ? GTK_WIDGET (pane) : NULL;
 }

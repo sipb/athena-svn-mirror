@@ -1,0 +1,36 @@
+[Gedit Plugin]
+Location=diff
+Name=Compare Files
+Name[bg]=Сравняване на файлове
+Name[ca]=Compara fitxers
+Name[cs]=Porovnat soubory
+Name[da]=Sammenlign filer
+Name[de]=Dateien vergleichen
+Name[el]=Σύγκριση αρχείων
+Name[es]=Comparar archivos
+Name[et]=Võrdle faile
+Name[fr]=Comparer les fichiers
+Name[he]=השווה קבצים
+Name[hu]=Fájlok összehasonlítása
+Name[it]=Confronta file
+Name[ko]=파일 비교
+Name[lv]=Salīdzināt Failus
+Name[mn]=Файлууд харьцуулах
+Name[ms]=Banding Fail
+Name[nl]=Bestanden vergelijken
+Name[no]=Sammenlign filer
+Name[pl]=Porównanie plików
+Name[pt_BR]=Comparar Arquivos
+Name[ro]=Compară fişierele
+Name[sk]=Porovnať súbory
+Name[sl]=Primerjaj datoteki
+Name[sv]=Jämför filer
+Name[tr]=Dosyaları karşılaştır
+Name[uk]=Порівняти файли
+Name[vi]=So sánh tập tin
+Name[zh_CN]=比较文件
+Name[zh_TW]=比較檔案
+Description=The Compare Files plugin uses the <tt>diff</tt> program to compare two documents or files on disk.\n\nFor more info on <tt>diff</tt> program, type <tt>man diff</tt> in a shell prompt.
+Author=Chema Celorio <chema@celorio.com>, Paolo Maggi <paolo.maggi@polito.it>
+Copyright=Copyright © 2000-2001 Chema Celorio\nCopyright © 2002-2003 Paolo Maggi
+

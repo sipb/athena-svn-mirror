@@ -178,7 +178,7 @@ cvs_changelogs_cb (BonoboUIComponent *uic, gpointer user_data, const gchar *verb
 
 	doc = gedit_view_get_document (view);
 
-	buf = gedit_document_get_buffer (doc);
+	buf = gedit_document_get_chars (doc, 0, -1);
 
 	list = get_changelogs (buf);
 
@@ -209,7 +209,7 @@ update_ui (GeditPlugin *plugin, BonoboWindow *window)
 	doc = gedit_get_active_document ();
 
 	if (doc != NULL) {	 	
-		buf = gedit_document_get_buffer (doc);
+		buf = gedit_document_get_chars (doc, 0, -1);
 
 		if (is_commit_message (buf))
 			gedit_menus_set_verb_sensitive (uic,
@@ -265,11 +265,6 @@ init (GeditPlugin* plugin)
 {
 	/* initialize */
 	gedit_debug (DEBUG_PLUGINS, "");
-
-	plugin->name = _("CVS ChangeLog");
-	plugin->desc = _("A plugin that opens ChangeLogs found in CVS commit messages.");
-	plugin->author = "James Willcox <jwillcox@cs.indiana.edu>";
-	plugin->copyright = _("Copyright (C) 2002 - James Willcox");
 
 	plugin->private_data = NULL;
 

@@ -27,11 +27,15 @@
  * See the ChangeLog files for a list of changes. 
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "gedit-plugin.h"
 #include "dialogs/gedit-dialogs.h"
 
 gchar* 
-gedit_plugin_locate_program  (gchar *program_name, gchar *plugin_name, GtkWindow *parent)
+gedit_plugin_locate_program  (const gchar *program_name, const gchar *plugin_name, GtkWindow *parent)
 {
 	return gedit_plugin_program_location_dialog (program_name, plugin_name, parent);
 }

@@ -27,6 +27,10 @@
  * See the ChangeLog files for a list of changes. 
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <glade/glade-xml.h>
 #include <libgnomeui/libgnomeui.h>
 #include <libgnome/gnome-i18n.h>
@@ -43,7 +47,7 @@ static void error_dialog (const gchar* str, GtkWindow *parent);
  * of program_name
  */
 gchar *
-gedit_plugin_program_location_dialog (gchar *program_name, gchar *plugin_name,
+gedit_plugin_program_location_dialog (const gchar *program_name, const gchar *plugin_name,
 		GtkWindow *parent)
 {
 	GladeXML *gui;
@@ -71,7 +75,7 @@ gedit_plugin_program_location_dialog (gchar *program_name, gchar *plugin_name,
 		return NULL;
 	}
 
-	dialog = gtk_dialog_new_with_buttons (_("Set program location ..."),
+	dialog = gtk_dialog_new_with_buttons (_("Set program location..."),
 					      parent,
 					      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_STOCK_CANCEL,
@@ -93,8 +97,8 @@ gedit_plugin_program_location_dialog (gchar *program_name, gchar *plugin_name,
 
 	if (!content || !program_location_entry || !label || !logo)
 	{
-		g_warning (_("Could not find the required widgets inside "
-			     "program-location-dialog.glade2.\n"));
+		g_warning (_("Could not find the required widgets inside %s."),
+			     "program-location-dialog.glade2");
 		return NULL;
 	}
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);

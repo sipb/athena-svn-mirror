@@ -28,7 +28,11 @@
  * See the ChangeLog files for a list of changes. 
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#include <string.h>
 
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
@@ -71,6 +75,9 @@ static void gedit_load_file_list (CommandLineData *data);
 
 static const struct poptOption options [] =
 {
+	{ "debug-utils", '\0', POPT_ARG_NONE, &debug_utils, 0,
+	  N_("Show utility debugging messages."), NULL },
+
 	{ "debug-mdi", '\0', POPT_ARG_NONE, &debug_mdi, 0,
 	  N_("Show mdi debugging messages."), NULL },
 
@@ -211,6 +218,7 @@ gedit_handle_automation_cmdline (GnomeProgram *program)
 	CommandLineData *data;
 	GNOME_Gedit_URIList *uri_list;
 	GList *list;
+	gchar *stdin_data;
 	int i;
 	
         CORBA_exception_init (&env);
@@ -218,6 +226,7 @@ gedit_handle_automation_cmdline (GnomeProgram *program)
         server = bonobo_activation_activate_from_id ("OAFIID:GNOME_Gedit_Application",
                                                      0, NULL, &env);
 	g_return_if_fail (server != NULL);
+
 
 	if (quit_option)
 		GNOME_Gedit_Application_quit (server, &env);
@@ -266,6 +275,38 @@ gedit_handle_automation_cmdline (GnomeProgram *program)
 		g_free (data);
 	}
 
+
+	stdin_data = gedit_utils_get_stdin ();
+
+	if (stdin_data != NULL && strlen (stdin_data) > 0)
+	{
+		gchar *converted_text;
+
+		if (g_utf8_validate (stdin_data, -1, NULL))
+		{
+			converted_text = stdin_data;
+			stdin_data = NULL;
+		}
+		else
+			converted_text = gedit_utils_convert_to_utf8 (stdin_data,
+							-1,
+							NULL);
+
+		if (converted_text != NULL)
+		{
+			window = GNOME_Gedit_Application_getActiveWindow (server, &env);
+			document = GNOME_Gedit_Window_newDocument (window, &env);
+
+			GNOME_Gedit_Document_insert (document, 0, converted_text,
+						     strlen (converted_text), &env);
+
+			g_free (converted_text);
+		}
+	}
+
+	if (stdin_data != NULL)
+		g_free (stdin_data);
+
 	if (!quit_option)
 	{
 		window = GNOME_Gedit_Application_getActiveWindow (server, &env);
@@ -276,6 +317,10 @@ gedit_handle_automation_cmdline (GnomeProgram *program)
 
 	bonobo_object_release_unref (server, &env);
         CORBA_exception_free (&env);
+
+	/* we never popup a window, so tell startup-notification that
+	 * we're done */
+	gdk_notify_startup_complete ();
 }
 
 int
@@ -346,7 +391,7 @@ main (int argc, char **argv)
 		bonobo_mdi_open_toplevel (BONOBO_MDI (gedit_mdi), NULL);
 	}
 
-	gedit_app_server = gedit_application_server_new ();
+	gedit_app_server = gedit_application_server_new (gdk_screen_get_default ());
 	
 	gtk_main();
 	

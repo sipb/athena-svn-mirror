@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-string.h>
 
 #include "gedit2.h"
 #include "gedit-file.h"
@@ -46,7 +47,7 @@
 #include "gedit-recent.h" 
 #include "gedit-file-selector-util.h"
 #include "gedit-plugins-engine.h"
-#include "gnome-recent-model.h"
+#include "recent-files/egg-recent-model.h"
 #include "gedit-prefs-manager.h"
 
 static gchar 	*get_dirname_from_uri 		(const char *uri);
@@ -147,7 +148,7 @@ gedit_file_open (GeditMDIChild *active_child)
 	files = gedit_file_selector_open_multi (
 			GTK_WINDOW (bonobo_mdi_get_active_window (BONOBO_MDI (gedit_mdi))),
 			TRUE,
-		        _("Open File ..."), 
+		        _("Open File..."), 
 			NULL, 
 			gedit_default_path);
 	
@@ -190,10 +191,11 @@ gedit_file_open (GeditMDIChild *active_child)
 static gboolean
 gedit_file_open_real (const gchar* file_name, GeditMDIChild* active_child)
 {
+	EggRecentItem *item;
 	GError *error = NULL;
 	gchar *uri;
 	
-	GnomeRecentModel *recent;
+	EggRecentModel *recent;
 
 	gedit_debug (DEBUG_FILE, "File name: %s", file_name);
 
@@ -246,7 +248,10 @@ gedit_file_open_real (const gchar* file_name, GeditMDIChild* active_child)
 	}
 	
 	recent = gedit_recent_get_model ();
-	gnome_recent_model_add (recent, uri);
+	item = egg_recent_item_new_from_uri (uri);
+	egg_recent_item_add_group (item, "gedit");
+	egg_recent_model_add_full (recent, item);
+	egg_recent_item_unref (item);
 
 	g_free (uri);
 
@@ -256,7 +261,7 @@ gedit_file_open_real (const gchar* file_name, GeditMDIChild* active_child)
 }
 
 gboolean 
-gedit_file_save (GeditMDIChild* child)
+gedit_file_save (GeditMDIChild* child, gboolean force)
 {
 	gint ret;
 	GeditDocument* doc = NULL;
@@ -277,7 +282,7 @@ gedit_file_save (GeditMDIChild* child)
 		return gedit_file_save_as (child);
 	}
 
-	if (!gedit_document_get_modified (doc))	
+	if (!force && !gedit_document_get_modified (doc))	
 	{
 		gchar *raw_uri;
 		gboolean deleted = FALSE;
@@ -301,7 +306,7 @@ gedit_file_save (GeditMDIChild* child)
 	uri = gedit_document_get_uri (doc);
 	g_return_val_if_fail (uri != NULL, FALSE);
 	
-	gedit_utils_flash_va (_("Saving file '%s' ..."), uri);	
+	gedit_utils_flash_va (_("Saving file '%s'..."), uri);	
 	
 	ret = gedit_document_save (doc, &error);
 
@@ -337,7 +342,8 @@ gedit_file_save (GeditMDIChild* child)
 	}	
 	else
 	{
-		GnomeRecentModel *recent;
+		EggRecentModel *recent;
+		EggRecentItem *item;
 		gchar *raw_uri;
 		
 		gedit_debug (DEBUG_FILE, "OK");
@@ -350,7 +356,10 @@ gedit_file_save (GeditMDIChild* child)
 		g_return_val_if_fail (raw_uri != NULL, TRUE);
 		
 		recent = gedit_recent_get_model ();
-		gnome_recent_model_add (recent, raw_uri);
+		item = egg_recent_item_new_from_uri (raw_uri);
+		egg_recent_item_add_group (item, "gedit");
+		egg_recent_model_add_full (recent, item);
+		egg_recent_item_unref (item);
 
 		g_free (raw_uri);
 		
@@ -364,6 +373,7 @@ gedit_file_save_as (GeditMDIChild *child)
 	gchar *file;
 	gboolean ret = FALSE;
 	GeditDocument *doc;
+	GtkWidget *view;
 	gchar *fname = NULL;
 	gchar *path = NULL;
 	gchar *raw_uri = NULL;
@@ -375,6 +385,18 @@ gedit_file_save_as (GeditMDIChild *child)
 	doc = child->document;
 	g_return_val_if_fail (doc != NULL, FALSE);
 
+	view = GTK_WIDGET (g_list_nth_data (
+			bonobo_mdi_child_get_views (BONOBO_MDI_CHILD (child)), 0));
+	if (view != NULL)
+	{
+		GtkWindow *window;
+
+		window = GTK_WINDOW (bonobo_mdi_get_window_from_view (view));
+		gtk_window_present (window);
+
+		bonobo_mdi_set_active_view (BONOBO_MDI (gedit_mdi), view);
+	}
+	
 	raw_uri = gedit_document_get_raw_uri (doc);
 
 	if (gedit_document_is_untitled (doc))
@@ -409,7 +431,7 @@ gedit_file_save_as (GeditMDIChild *child)
 	file = gedit_file_selector_save (
 			GTK_WINDOW (bonobo_mdi_get_active_window (BONOBO_MDI (gedit_mdi))),
 			FALSE,
-		        _("Save as ..."), 
+		        _("Save as..."), 
 			NULL, 
 			path,
 			fname);
@@ -430,7 +452,7 @@ gedit_file_save_as (GeditMDIChild *child)
 
 		file_utf8 = eel_format_uri_for_display (uri);
 		if (file_utf8 != NULL)
-			gedit_utils_flash_va (_("Saving file '%s' ..."), file_utf8);
+			gedit_utils_flash_va (_("Saving file '%s'..."), file_utf8);
 		
 		ret = gedit_file_save_as_real (uri, child);
 		
@@ -495,29 +517,14 @@ gedit_file_save_as_real (const gchar* file_name, GeditMDIChild *child)
 	}	
 	else
 	{
-#if 0
-		gchar *temp;
-
-		gedit_debug (DEBUG_FILE, "OK");
-
-		/* uri is not valid utf8 */	
-		temp = g_filename_to_utf8 (uri, -1, NULL, NULL, NULL);
-
-		if (temp != NULL)
-		{
-			GnomeRecentModel *recent;
-
-			recent = gedit_recent_get_model ();
-			gnome_recent_model_add (recent, temp);
-
-			g_free (temp);
-		}
-
-#endif
-		GnomeRecentModel *recent;
+		EggRecentModel *recent;
+		EggRecentItem *item;
 
 		recent = gedit_recent_get_model ();
-		gnome_recent_model_add (recent, uri);
+		item = egg_recent_item_new_from_uri (uri);
+		egg_recent_item_add_group (item, "gedit");
+		egg_recent_model_add_full (recent, item);
+		egg_recent_item_unref (item);
 
 		g_free (uri);
 
@@ -553,9 +560,7 @@ gedit_file_exit (void)
 
 	gedit_debug (DEBUG_FILE, "All files closed.");
 	
-	gedit_plugins_engine_save_settings ();
-	
-	gedit_prefs_manager_shutdown ();
+	bonobo_mdi_destroy (BONOBO_MDI (gedit_mdi));
 	
 	gedit_debug (DEBUG_FILE, "Unref gedit_mdi.");
 
@@ -568,6 +573,10 @@ gedit_file_exit (void)
 	bonobo_object_unref (gedit_app_server);
 
 	gedit_debug (DEBUG_FILE, "Unref gedit_app_server: DONE");
+
+	gedit_prefs_manager_shutdown ();
+
+	gedit_plugins_engine_shutdown ();
 
 	gtk_main_quit ();
 }
@@ -588,10 +597,7 @@ gedit_file_save_all (void)
 		child = GEDIT_MDI_CHILD (g_list_nth_data (
 				bonobo_mdi_get_children (BONOBO_MDI (gedit_mdi)), i));
 
-		if (gedit_document_get_modified (child->document))
-		{
-			gedit_file_save (child);	
-		}
+		gedit_file_save (child, FALSE);	
 	}
 
 	if (view !=  bonobo_mdi_get_active_view (BONOBO_MDI (gedit_mdi)))
@@ -603,6 +609,43 @@ gedit_file_save_all (void)
 
 		bonobo_mdi_set_active_view (BONOBO_MDI (gedit_mdi), view);
 	}
+}
+
+/* Displays a confirmation dialog for whether to revert a file. */
+static gboolean
+gedit_file_revert_dialog (const GeditDocument *doc)
+{
+	GtkWidget *msgbox;
+	gint ret;
+	gchar *name;
+
+	name = gedit_document_get_short_name (doc);
+
+	msgbox = gtk_message_dialog_new (GTK_WINDOW (gedit_get_active_window ()),
+					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_QUESTION,
+					 GTK_BUTTONS_NONE,
+					 _("Do you want to revert to saved the document '%s'?\n\n"
+					   "You will not be able to undo this operation."), 
+					 name);
+	g_free (name);
+
+	/* Add Cancel button */
+	gtk_dialog_add_button (GTK_DIALOG (msgbox), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+
+	/* Add Revert button */
+	gedit_dialog_add_button (GTK_DIALOG (msgbox), 
+			_("_Revert"), GTK_STOCK_REVERT_TO_SAVED, GTK_RESPONSE_YES);
+
+	gtk_dialog_set_default_response	(GTK_DIALOG (msgbox), GTK_RESPONSE_CANCEL);
+
+	gtk_window_set_resizable (GTK_WINDOW (msgbox), FALSE);
+
+	ret = gtk_dialog_run (GTK_DIALOG (msgbox));
+		
+	gtk_widget_destroy (msgbox);
+
+	return (ret == GTK_RESPONSE_YES);
 }
 
 gboolean
@@ -619,11 +662,14 @@ gedit_file_revert (GeditMDIChild *child)
 	
 	doc = child->document;
 	g_return_val_if_fail (doc != NULL, FALSE);
-
+	
+	if (!gedit_file_revert_dialog (doc))
+		return FALSE;
+	
 	uri = gedit_document_get_uri (doc);
 	g_return_val_if_fail (uri != NULL, FALSE);
-
-	gedit_utils_flash_va (_("Reverting file '%s' ..."), uri);	
+	
+	gedit_utils_flash_va (_("Reverting file '%s'..."), uri);	
 	
 	ret = gedit_document_revert (doc, &error);
 
@@ -769,28 +815,38 @@ gedit_file_open_uri_list (GList* uri_list, gint line, gboolean create)
 }
 
 gboolean 
-gedit_file_open_recent (GnomeRecentView *view, const gchar *uri, gpointer data)
+gedit_file_open_recent (EggRecentView *view, EggRecentItem *item, gpointer data)
 {
 	gboolean ret = FALSE;
 	GeditView* active_view;
+	gchar *uri_utf8;
 
-	gedit_debug (DEBUG_FILE, "Open : %s", uri);
+	uri_utf8 = egg_recent_item_get_uri_utf8 (item);
+
+	gedit_debug (DEBUG_FILE, "Open : %s", uri_utf8);
 
 	/* Note that gedit_file_open_single_uri takes a possibly mangled "uri", in UTF8 */
 
-	ret = gedit_file_open_single_uri (uri);
+	ret = gedit_file_open_single_uri (uri_utf8);
 	
 	if (!ret) 
 	{
-		GnomeRecentModel *model;
+		EggRecentModel *model;
+		gchar *uri;
+
+		uri = egg_recent_item_get_uri (item);
 
 		model = gedit_recent_get_model ();
-		gnome_recent_model_delete (model, uri);
+		egg_recent_model_delete (model, uri);
+
+		g_free (uri);
 	}
 		
 	active_view = gedit_get_active_view ();
 	if (active_view != NULL)
 		gtk_widget_grab_focus (GTK_WIDGET (active_view));
+
+	g_free (uri_utf8);
 
 	gedit_debug (DEBUG_FILE, "END");
 

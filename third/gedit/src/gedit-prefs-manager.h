@@ -32,13 +32,17 @@
 
 #include <gdk/gdkcolor.h>
 #include <gtk/gtkenums.h>
+#include <glib/gslist.h>
+
+#include <bonobo/bonobo-window.h>
 
 #define GEDIT_BASE_KEY	"/apps/gedit-2"
 
 typedef enum {
 	GEDIT_TOOLBAR_SYSTEM = 0,
 	GEDIT_TOOLBAR_ICONS,
-	GEDIT_TOOLBAR_ICONS_AND_TEXT
+	GEDIT_TOOLBAR_ICONS_AND_TEXT,
+	GEDIT_TOOLBAR_ICONS_BOTH_HORIZ
 } GeditToolbarSetting;
 
 typedef enum {
@@ -131,6 +135,17 @@ gint			 gedit_prefs_manager_get_tabs_size		(void);
 void			 gedit_prefs_manager_set_tabs_size		(gint ts);
 gboolean		 gedit_prefs_manager_tabs_size_can_set		(void);
 
+/* Insert spaces */
+gboolean		 gedit_prefs_manager_get_insert_spaces	 	(void);
+void			 gedit_prefs_manager_set_insert_spaces	 	(gboolean ai);
+gboolean		 gedit_prefs_manager_insert_spaces_can_set 	(void);
+
+
+/* Auto indent */
+gboolean		 gedit_prefs_manager_get_auto_indent	 	(void);
+void			 gedit_prefs_manager_set_auto_indent	 	(gboolean ai);
+gboolean		 gedit_prefs_manager_auto_indent_can_set 	(void);
+
 /* Display line numbers */
 gboolean		 gedit_prefs_manager_get_display_line_numbers 	(void);
 void			 gedit_prefs_manager_set_display_line_numbers 	(gboolean dln);
@@ -180,16 +195,19 @@ gboolean		 gedit_prefs_manager_print_line_numbers_can_set	(void);
 gchar			*gedit_prefs_manager_get_print_font_body	(void);
 void			 gedit_prefs_manager_set_print_font_body	(const gchar *font);
 gboolean		 gedit_prefs_manager_print_font_body_can_set	(void);
+const gchar		*gedit_prefs_manager_get_default_print_font_body (void);
 
 /* Font used to print headers */
 gchar			*gedit_prefs_manager_get_print_font_header	(void);
 void			 gedit_prefs_manager_set_print_font_header	(const gchar *font);
 gboolean		 gedit_prefs_manager_print_font_header_can_set	(void);
+const gchar		*gedit_prefs_manager_get_default_print_font_header (void);
 
 /* Font used to print line numbers */
 gchar			*gedit_prefs_manager_get_print_font_numbers	(void);
 void			 gedit_prefs_manager_set_print_font_numbers	(const gchar *font);
 gboolean		 gedit_prefs_manager_print_font_numbers_can_set	(void);
+const gchar		*gedit_prefs_manager_get_default_print_font_numbers (void);
 
 /* Max number of files in "Recent Files" menu. 
  * This is configurable only using gconftool or gconf-editor 
@@ -213,6 +231,12 @@ gint		 	 gedit_prefs_manager_get_default_window_width	(void);
 void 			 gedit_prefs_manager_set_window_width		(gint ww);
 gboolean		 gedit_prefs_manager_window_width_can_set	(void);
 
+void			 gedit_prefs_manager_save_window_size_and_state (BonoboWindow *window);
+
+/* Encodings */
+GSList 			*gedit_prefs_manager_get_encodings		(void);
+void			 gedit_prefs_manager_set_encodings		(const GSList *encs);
+gboolean 		 gedit_prefs_manager_encodings_can_set		(void);
 
 #endif  /* __GEDIT_PREFS_MANAGER_H__ */
 

@@ -32,11 +32,17 @@
 #include <config.h>
 #endif
 
+#include <string.h>
+
 #include <libgnome/gnome-i18n.h>
+#include <gdk/gdkkeysyms.h>
+
 #include "gedit-view.h"
 #include "gedit-debug.h"
 #include "gedit-menus.h"
 #include "gedit-prefs-manager.h"
+
+#include "gedit-marshal.h"
 
 #define MIN_NUMBER_WINDOW_WIDTH 20
 
@@ -52,8 +58,31 @@ struct _GeditViewPrivate
 	GtkWidget *overwrite_mode_statusbar;
 
 	gboolean overwrite_mode;
+
+	gint tab_size;
+
+	gint old_lines;
 };
 
+
+/* Implement DnD for application/x-color drops */
+typedef enum {
+	TARGET_COLOR = 200
+} GeditViewDropTypes;
+
+static GtkTargetEntry drop_types[] = {
+	{"application/x-color", 0, TARGET_COLOR}
+};
+
+static gint n_drop_types = sizeof (drop_types) / sizeof (drop_types[0]);
+
+enum
+{
+ 	POPULATE_POPUP,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 static void gedit_view_class_init 	(GeditViewClass	*klass);
 static void gedit_view_init 		(GeditView 	*view);
@@ -73,8 +102,18 @@ static void gedit_view_doc_readonly_changed_handler (GeditDocument *document,
 static gint gedit_view_calculate_real_tab_width (GeditView *view, gint tab_size);
 
 static void gedit_view_populate_popup (GtkTextView *textview, GtkMenu *menu, gpointer data);
-static void gedit_view_undo_activate_callback (GtkWidget *menu_item, GeditDocument *doc);
-static void gedit_view_redo_activate_callback (GtkWidget *menu_item, GeditDocument *doc);
+static void gedit_view_undo_activate_callback (GtkWidget *menu_item, GeditView *view);
+static void gedit_view_redo_activate_callback (GtkWidget *menu_item, GeditView *view);
+
+static void gedit_view_dnd_drop (GtkTextView *view, 
+			     GdkDragContext *context,
+			     gint x,
+			     gint y,
+			     GtkSelectionData *selection_data,
+			     guint info,
+			     guint time,
+			     gpointer data);
+static gint gedit_view_key_press_cb (GtkWidget *widget, GdkEventKey *event, GeditView *view);
 
 static GtkVBoxClass *parent_class = NULL;
 
@@ -116,9 +155,7 @@ gedit_view_grab_focus (GtkWidget *widget)
 	
 	view = GEDIT_VIEW (widget);
 
-	GTK_TEXT_VIEW (view->priv->text_view)->disable_scroll_on_focus = TRUE;
 	gtk_widget_grab_focus (GTK_WIDGET (view->priv->text_view));
-	GTK_TEXT_VIEW (view->priv->text_view)->disable_scroll_on_focus = FALSE;
 }
 
 static void
@@ -143,6 +180,17 @@ gedit_view_class_init (GeditViewClass *klass)
   	object_class->finalize = gedit_view_finalize;
 
 	GTK_WIDGET_CLASS (klass)->grab_focus = gedit_view_grab_focus;
+
+	signals[POPULATE_POPUP] =
+		g_signal_new ("populate_popup",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GeditViewClass, populate_popup),
+			      NULL, NULL,
+			      gedit_marshal_VOID__OBJECT,
+			      G_TYPE_NONE,
+			      1,
+			      GTK_TYPE_MENU);
 }
 
 /* This function is taken from gtk+/tests/testtext.c */
@@ -284,6 +332,18 @@ gedit_view_line_numbers_expose (GtkWidget      *widget,
 			      pixels,
 			      numbers,
 			      &count);
+	
+	/* a zero-lined document should display a "1"; we don't need to worry about
+	scrolling effects of the text widget in this special case */
+	
+	if (count == 0)
+	{
+		gint y = 0;
+		gint n = 0;
+		count = 1;
+		g_array_append_val (pixels, y);
+		g_array_append_val (numbers, n);
+	}
   
 	layout = gtk_widget_create_pango_layout (widget, "");
   
@@ -313,7 +373,7 @@ gedit_view_line_numbers_expose (GtkWidget      *widget,
 						       &pos);
 
 		str = g_strdup_printf ("%d", g_array_index (numbers, gint, i) + 1);
-
+		
 		pango_layout_set_text (layout, str, -1);
 
 		gtk_paint_layout (widget->style,
@@ -336,9 +396,37 @@ gedit_view_line_numbers_expose (GtkWidget      *widget,
   
 	g_object_unref (G_OBJECT (layout));
 
-	return TRUE;
+	/* don't stop emission, need to draw children */
+	return FALSE;
 }
 
+/* when the user right-clicks on a word, we move the cursor to the 
+ * location of the clicked-upon word.
+ */
+static gboolean
+button_press_event (GtkTextView *view, GdkEventButton *event, gpointer data) 
+{
+	if (event->button == 3) 
+	{
+		gint x, y;
+		GtkTextIter iter;
+		GtkTextIter start, end;
+
+		gtk_text_view_window_to_buffer_coords (view, 
+				GTK_TEXT_WINDOW_TEXT, 
+				event->x, event->y,
+				&x, &y);
+		
+		gtk_text_view_get_iter_at_location(view, &iter, x, y);
+
+		if (!(gtk_text_buffer_get_selection_bounds (
+					gtk_text_view_get_buffer (view), &start, &end) &&          
+		    gtk_text_iter_in_range (&iter, &start, &end)))
+			gtk_text_buffer_place_cursor (gtk_text_view_get_buffer (view), &iter);
+	}
+	return FALSE; /* false: let gtk process this event, too.
+			 we don't want to eat any events. */
+}
 
 static void 
 gedit_view_init (GeditView  *view)
@@ -402,10 +490,16 @@ gedit_view_init (GeditView  *view)
 	gtk_text_view_set_left_margin (GTK_TEXT_VIEW (view->priv->text_view), 2);
 	gtk_text_view_set_right_margin (GTK_TEXT_VIEW (view->priv->text_view), 2);
 
+	/*
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET (view), GTK_CAN_FOCUS);
+	GTK_WIDGET_SET_FLAGS (GTK_WIDGET (view->priv->text_view), GTK_CAN_FOCUS);
+	*/
 
 	g_signal_connect (G_OBJECT (view->priv->text_view), "populate-popup",
 			  G_CALLBACK (gedit_view_populate_popup), view);
+
+	g_signal_connect (G_OBJECT (view->priv->text_view), "button-press-event",
+			  G_CALLBACK (button_press_event), NULL);
 }
 
 static void 
@@ -424,6 +518,10 @@ gedit_view_finalize (GObject *object)
 	g_return_if_fail (view->priv != NULL);
 
 	g_return_if_fail (view->priv->document != NULL);
+
+	g_signal_handlers_disconnect_matched (G_OBJECT (view->priv->document),
+			(GSignalMatchType)G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
+
 	g_object_unref (view->priv->document);
 	view->priv->document = NULL;
 
@@ -432,6 +530,38 @@ gedit_view_finalize (GObject *object)
 	g_free (view->priv);
 
 	gedit_debug (DEBUG_VIEW, "END");
+}
+
+static void
+gedit_view_realize_cb (GtkWidget *widget, GeditView *view)
+{
+	gedit_debug (DEBUG_VIEW, "");
+			
+	g_return_if_fail (GEDIT_IS_VIEW (view));
+			
+	/* Set tab size: this function must be called after the widget is
+	 * realized */
+	gedit_view_set_tab_size (view, 
+				 gedit_prefs_manager_get_tabs_size ());
+}
+
+static void
+gedit_view_doc_changed_handler (GtkTextBuffer *buffer, GeditView* view)
+{
+	gint lines;
+
+	lines = gtk_text_buffer_get_line_count (buffer);
+
+	if (view->priv->old_lines != lines)
+	{
+		GdkWindow *w;
+		view->priv->old_lines = lines;
+
+		w = gtk_text_view_get_window (view->priv->text_view, GTK_TEXT_WINDOW_LEFT);
+
+		if (w != NULL)
+			gdk_window_invalidate_rect (w, NULL, FALSE);
+	}
 }
 
 
@@ -450,6 +580,7 @@ GeditView*
 gedit_view_new (GeditDocument *doc)
 {
 	GeditView *view;
+	GtkTargetList *tl;
 	
 	gedit_debug (DEBUG_VIEW, "START");
 
@@ -473,12 +604,24 @@ gedit_view_new (GeditDocument *doc)
 			
 	gtk_widget_show_all (GTK_WIDGET (view));
 
-	/* Set tab size: this function must be called after show */
-	gedit_view_set_tab_size (view, gedit_prefs_manager_get_tabs_size ());
+	tl = gtk_drag_dest_get_target_list (GTK_WIDGET (view->priv->text_view));
+	g_return_val_if_fail (tl != NULL, view);
 
-	g_signal_connect (GTK_TEXT_BUFFER (doc),
+	gtk_target_list_add_table (tl, drop_types, n_drop_types);
+	
+	g_signal_connect (G_OBJECT (view->priv->text_view), 
+			  "drag_data_received", 
+			  G_CALLBACK (gedit_view_dnd_drop), 
+			  doc);
+
+	g_signal_connect (GTK_TEXT_BUFFER (doc), 
 			  "changed",
 			  G_CALLBACK (gedit_view_update_cursor_position_statusbar),
+			  view);
+
+	g_signal_connect (GTK_TEXT_BUFFER (doc), 
+			  "changed",
+			  G_CALLBACK (gedit_view_doc_changed_handler),
 			  view);
 
 	g_signal_connect (GTK_TEXT_BUFFER (doc),
@@ -496,8 +639,18 @@ gedit_view_new (GeditDocument *doc)
 			  G_CALLBACK (gedit_view_doc_readonly_changed_handler),
 			  view);
 
-	gtk_text_view_set_editable (view->priv->text_view, !gedit_document_is_readonly (doc));	
+	g_signal_connect (G_OBJECT (view->priv->text_view),
+			  "key_press_event",
+			  G_CALLBACK (gedit_view_key_press_cb),
+			  view);
 
+	g_signal_connect (G_OBJECT (view->priv->text_view),
+			  "realize",
+			  G_CALLBACK (gedit_view_realize_cb),
+			  view);
+
+	gtk_text_view_set_editable (view->priv->text_view, 
+				    !gedit_document_is_readonly (doc));	
 	
 	gedit_debug (DEBUG_VIEW, "END: %d", G_OBJECT (view)->ref_count);
 
@@ -584,28 +737,6 @@ gedit_view_delete_selection (GeditView *view)
 	gtk_text_view_scroll_mark_onscreen (view->priv->text_view,
 				gtk_text_buffer_get_mark (buffer,
 				"insert"));
-}
-
-void
-gedit_view_select_all (GeditView *view)
-{
-	/* FIXME: it does not select the last char of the buffer */
-  	GtkTextBuffer* buffer = NULL;
-	GtkTextIter start_iter, end_iter;
-	
-	gedit_debug (DEBUG_VIEW, "");
-
-	buffer = gtk_text_view_get_buffer (view->priv->text_view);
-	g_return_if_fail (buffer != NULL);
-
-	gtk_text_buffer_get_start_iter (buffer, &start_iter);
-	gtk_text_buffer_get_end_iter (buffer, &end_iter);
-
-	gtk_text_buffer_place_cursor (buffer, &end_iter);
-
-	gtk_text_buffer_move_mark (buffer,
-                               gtk_text_buffer_get_mark (buffer, "selection_bound"),
-                               &start_iter);
 }
 
 GeditDocument*	
@@ -779,6 +910,9 @@ gedit_view_calculate_real_tab_width (GeditView *view, gint tab_size)
 	return tab_width;
 }
 
+/* This function must be called after the widget is
+ * realized 
+ */
 void
 gedit_view_set_tab_size (GeditView* view, gint tab_size)
 {
@@ -788,6 +922,9 @@ gedit_view_set_tab_size (GeditView* view, gint tab_size)
 	gedit_debug (DEBUG_VIEW, "Tab size: %d", tab_size);
 
 	g_return_if_fail (GEDIT_IS_VIEW (view));
+
+	if (view->priv->tab_size == tab_size)
+		return;
 
 	real_tab_width = gedit_view_calculate_real_tab_width (
 					 GEDIT_VIEW (view),
@@ -802,8 +939,15 @@ gedit_view_set_tab_size (GeditView* view, gint tab_size)
 	tab_array = pango_tab_array_new (1, TRUE);
 	pango_tab_array_set_tab (tab_array, 0, PANGO_TAB_LEFT, real_tab_width);
 
-	gtk_text_view_set_tabs (GTK_TEXT_VIEW (view->priv->text_view), tab_array);
+	gtk_text_view_set_tabs (GTK_TEXT_VIEW (view->priv->text_view), 
+				tab_array);
+
 	pango_tab_array_free (tab_array);
+
+	view->priv->tab_size = tab_size;
+	gedit_view_update_cursor_position_statusbar (
+			GTK_TEXT_BUFFER (gedit_view_get_document (view)),
+			view);	
 }
 
 void
@@ -879,14 +1023,15 @@ gedit_view_set_overwrite_mode_statusbar (GeditView *view, GtkWidget* status)
 	if (status != NULL)
 		gedit_view_update_overwrite_mode_statusbar (view->priv->text_view, view);
 }
-
+			
 static void
 gedit_view_update_cursor_position_statusbar (GtkTextBuffer *buffer, GeditView* view)
 {
 	gchar *msg;
-	gint row, col;
+	gint row, col/*, chars*/;
 	GtkTextIter iter;
-
+	GtkTextIter start;
+	
 	gedit_debug (DEBUG_VIEW, "");
   
 	if (view->priv->cursor_position_statusbar == NULL)
@@ -900,15 +1045,42 @@ gedit_view_update_cursor_position_statusbar (GtkTextBuffer *buffer, GeditView* v
 					  gtk_text_buffer_get_insert (buffer));
 	
 	row = gtk_text_iter_get_line (&iter);
-	col = gtk_text_iter_get_line_offset (&iter);
-	msg = g_strdup_printf (_("  Ln %d, Col. %d"), row + 1, col + 1);
+	
+	/*
+	chars = gtk_text_iter_get_line_offset (&iter);
+	*/
+	
+	start = iter;
+	gtk_text_iter_set_line_offset (&start, 0);
+	col = 0;
 
+	while (!gtk_text_iter_equal (&start, &iter))
+	{
+		if (gtk_text_iter_get_char (&start) == '\t')
+		{
+			col += (view->priv->tab_size - (col  % view->priv->tab_size));
+		}
+		else
+			++col;
+
+		gtk_text_iter_forward_char (&start);
+	}
+	
+	/*
+	if (col == chars)
+		msg = g_strdup_printf (_("  Ln %d, Col. %d"), row + 1, col + 1);
+	else
+		msg = g_strdup_printf (_("  Ln %d, Col. %d-%d"), row + 1, chars + 1, col + 1);
+	*/
+
+	msg = g_strdup_printf (_("  Ln %d, Col. %d"), row + 1, col + 1);
+	
 	gtk_statusbar_push (GTK_STATUSBAR (view->priv->cursor_position_statusbar), 
 			    0, msg);
 
       	g_free (msg);
 }
-
+	
 static void
 gedit_view_cursor_moved (GtkTextBuffer     *buffer,
 			 const GtkTextIter *new_location,
@@ -950,23 +1122,47 @@ gedit_view_update_overwrite_mode_statusbar (GtkTextView* w, GeditView* view)
 }
 
 static void
-gedit_view_undo_activate_callback (GtkWidget *menu_item, GeditDocument *doc)
+gedit_view_undo_activate_callback (GtkWidget *menu_item, GeditView *view)
 {
+	GeditDocument *doc;
+	
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (GEDIT_IS_VIEW (view));
+
+	doc = gedit_view_get_document (view);
+
 	g_return_if_fail (doc != NULL);
 	g_return_if_fail (GEDIT_IS_DOCUMENT (doc));
 
 	if (gedit_document_can_undo (doc))
+	{
 		gedit_document_undo (doc);
+		gedit_view_scroll_to_cursor (view);
+	}
+
+	gtk_widget_grab_focus (GTK_WIDGET (view));
 }
 
 static void
-gedit_view_redo_activate_callback (GtkWidget *menu_item, GeditDocument *doc)
+gedit_view_redo_activate_callback (GtkWidget *menu_item, GeditView *view)
 {
+	GeditDocument *doc;
+
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (GEDIT_IS_VIEW (view));
+
+	doc = gedit_view_get_document (view);
+	
 	g_return_if_fail (doc != NULL);
 	g_return_if_fail (GEDIT_IS_DOCUMENT (doc));
 
 	if (gedit_document_can_redo (doc))
+	{
 		gedit_document_redo (doc);
+		gedit_view_scroll_to_cursor (view);
+	}
+
+	gtk_widget_grab_focus (GTK_WIDGET (view));
 }
 
 static void
@@ -982,7 +1178,7 @@ gedit_view_populate_popup (GtkTextView *textview, GtkMenu *menu, gpointer data)
 	g_return_if_fail (GEDIT_IS_VIEW (data));
 
 	view = GEDIT_VIEW (data);
-
+	
 	doc = gedit_view_get_document (view);
 	g_return_if_fail (doc != NULL);
 
@@ -996,15 +1192,186 @@ gedit_view_populate_popup (GtkTextView *textview, GtkMenu *menu, gpointer data)
 	gtk_widget_set_sensitive (menu_item, gedit_document_can_redo (doc));
 	gtk_widget_show (menu_item);
 	g_signal_connect (G_OBJECT (menu_item), "activate",
-		      	  G_CALLBACK (gedit_view_redo_activate_callback), doc);
+		      	  G_CALLBACK (gedit_view_redo_activate_callback), view);
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
 
 	/* Add the undo button */
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_UNDO, NULL);
 	gtk_widget_set_sensitive (menu_item, gedit_document_can_undo (doc));
 	g_signal_connect (G_OBJECT (menu_item), "activate",
-		      	  G_CALLBACK (gedit_view_undo_activate_callback), doc);
+		      	  G_CALLBACK (gedit_view_undo_activate_callback), view);
 	gtk_widget_show (menu_item);
-	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);	
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+
+	g_signal_emit (G_OBJECT (view), signals[POPULATE_POPUP], 0, menu);
 }
+
+static void 
+gedit_view_dnd_drop (GtkTextView *view, 
+		     GdkDragContext *context,
+		     gint x,
+		     gint y,
+		     GtkSelectionData *selection_data,
+		     guint info,
+		     guint time,
+		     gpointer data)
+{
+
+	GtkTextIter iter;
+
+	gedit_debug (DEBUG_VIEW, "");
+
+	if (info == TARGET_COLOR) 
+	{
+		guint16 *vals;
+		gchar string[] = "#000000";
+		
+		if (selection_data->length < 0)
+			return;
+
+		if ((selection_data->format != 16) || (selection_data->length != 8)) 
+		{
+			g_warning ("Received invalid color data\n");
+			return;
+		}
+
+		vals = (guint16 *) selection_data->data;
+
+		vals[0] /= 256;
+	        vals[1] /= 256;
+		vals[2] /= 256;
+		
+		g_snprintf (string, sizeof (string), "#%02X%02X%02X", vals[0], vals[1], vals[2]);
+		
+		gtk_text_view_get_iter_at_location (view, &iter, x, y);
+
+		if (!gedit_document_is_readonly (GEDIT_DOCUMENT (data)))
+			gtk_text_buffer_insert (GTK_TEXT_BUFFER (view->buffer), &iter, string, strlen (string));
+
+		/*
+		 * FIXME: Check if the iter is inside a selection
+		 * If it is, remove the selection and then insert at
+		 * the cursor position
+		 */
+
+		return;
+	}
+}
+
+GtkTextView *
+gedit_view_get_gtk_text_view (const GeditView *view)
+{
+	gedit_debug (DEBUG_VIEW, "");
+
+	g_return_val_if_fail (GEDIT_IS_VIEW (view), NULL);
+
+	return view->priv->text_view;
+}
+
+static gchar*
+compute_indentation (GeditView *view, gint line)
+{
+	GtkTextIter start;
+	GtkTextIter end;
+	gunichar ch;
+
+	gedit_debug (DEBUG_VIEW, "");
+
+	gtk_text_buffer_get_iter_at_line (GTK_TEXT_BUFFER (view->priv->document), 
+			&start, line);
+
+	end = start;
+
+	ch = gtk_text_iter_get_char (&end);
+	while (g_unichar_isspace (ch) && ch != '\n')
+	{
+		if (!gtk_text_iter_forward_char (&end))
+			break;
+
+		ch = gtk_text_iter_get_char (&end);
+	}
+
+	if (gtk_text_iter_equal (&start, &end))
+		return NULL;
+
+	return gtk_text_iter_get_slice (&start, &end);
+}
+
+static gint
+gedit_view_key_press_cb (GtkWidget *widget, GdkEventKey *event, GeditView *view)
+{
+	GtkTextBuffer *buf;
+	GtkTextIter cur;
+	GtkTextMark *mark;
+	gint key;
+
+	buf = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
+
+	key = event->keyval;
+
+	mark = gtk_text_buffer_get_mark (buf, "insert");
+	gtk_text_buffer_get_iter_at_mark (buf, &cur, mark);
+	
+	if ((key == GDK_Return) && gtk_text_iter_ends_line (&cur) && 
+			gedit_prefs_manager_get_auto_indent ()) 
+	{
+		/* Auto-indent means that when you press ENTER at the end of a
+		 * line, the new line is automatically indented at the same
+		 * level as the previous line.
+		 */
+		gchar *indent = NULL;
+
+		/* Calculate line indentation and create indent string. */
+		indent = compute_indentation (view, gtk_text_iter_get_line (&cur));
+
+		if (indent != NULL)
+		{
+			/* Insert new line and auto-indent. */
+			gtk_text_buffer_begin_user_action (buf);
+			gtk_text_buffer_insert (buf, &cur, "\n", 1);
+			gtk_text_buffer_insert (buf, &cur, indent, strlen (indent));
+			g_free (indent);
+			gtk_text_buffer_end_user_action (buf);
+			gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (widget),
+							    gtk_text_buffer_get_insert (buf));
+			return TRUE;
+		}
+	}
+
+	if ((key == GDK_Tab) && gedit_prefs_manager_get_insert_spaces ())
+	{
+		gint cur_pos;
+		gint num_of_equivalent_spaces;
+		gint tabs_size;
+		gint i;
+		gchar *spaces;
+
+		tabs_size = gedit_prefs_manager_get_tabs_size (); 
+		
+		cur_pos = gtk_text_iter_get_line_offset (&cur);
+
+		num_of_equivalent_spaces = tabs_size - (cur_pos % tabs_size); 
+
+		spaces = g_malloc (num_of_equivalent_spaces + 1);
+		
+		for (i = 0; i < num_of_equivalent_spaces; i++)
+			spaces [i] = ' ';
+		
+		spaces [num_of_equivalent_spaces] = '\0';
+		
+		gtk_text_buffer_begin_user_action (buf);
+		gtk_text_buffer_insert (buf,  &cur, spaces, num_of_equivalent_spaces);
+		gtk_text_buffer_end_user_action (buf);
+
+		gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (widget),
+						    gtk_text_buffer_get_insert (buf));
+		
+		g_free (spaces);
+
+		return TRUE;
+	}
+		
+	return FALSE;
+}
+
 

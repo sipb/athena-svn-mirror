@@ -59,8 +59,6 @@ struct _GeditDocumentClass
 {
 	GtkTextBufferClass parent_class;
 
-	GtkTextTagTable *tag_table;
-
 	/* File name (uri) changed */
 	void (* name_changed)		(GeditDocument *document);
 
@@ -115,12 +113,9 @@ gboolean 	gedit_document_revert 		(GeditDocument *doc,  GError **error);
 gboolean	gedit_document_is_untitled 	(const GeditDocument* doc);
 gboolean	gedit_document_get_modified 	(const GeditDocument* doc);
 
-gchar* 		gedit_document_get_buffer 	(const GeditDocument *doc);
 gint		gedit_document_get_char_count	(const GeditDocument *doc);
 gint		gedit_document_get_line_count 	(const GeditDocument *doc);
 		
-void 		gedit_document_delete_all_text 	(GeditDocument *doc);
-
 void		gedit_document_insert_text	(GeditDocument *doc, 
 						 gint	        pos,
                                                  const gchar   *text,
@@ -139,10 +134,8 @@ void 		gedit_document_delete_text 	(GeditDocument *doc,
 gchar*		gedit_document_get_chars 	(GeditDocument *doc, 
 					         gint start, gint end);
 
-gchar*		gedit_document_get_selected_text (GeditDocument *doc,
-						  gint* start, gint* end);
-
-gboolean	gedit_document_has_selected_text (GeditDocument *doc);
+gboolean	gedit_document_get_selection 	(GeditDocument *doc,
+						 gint* start, gint* end);
 
 /* Multi-level Undo/Redo operations */
 gboolean	gedit_document_can_undo		(const GeditDocument *doc);
@@ -162,17 +155,28 @@ void		gedit_document_goto_line 	(GeditDocument* doc, guint line);
 gchar* 		gedit_document_get_last_searched_text (GeditDocument* doc);
 gchar* 		gedit_document_get_last_replace_text  (GeditDocument* doc);
 
+void 		gedit_document_set_last_searched_text (GeditDocument* doc, const gchar *text);
+void 		gedit_document_set_last_replace_text  (GeditDocument* doc, const gchar *text);
+
 gboolean	gedit_document_find 		(GeditDocument* doc, const gchar* str, 
 						 gboolean from_cursor, 
-						 gboolean case_sensitive);
-gboolean	gedit_document_find_again	(GeditDocument* doc);
+						 gboolean case_sensitive,
+						 gboolean entire_word);
+gboolean	gedit_document_find_again	(GeditDocument* doc,
+						 gboolean from_cursor);
 
 void		gedit_document_replace_selected_text (GeditDocument *doc, 
 						      const gchar *replace);
-gboolean	gedit_document_replace_all (GeditDocument *doc,
-				            const gchar *find, const gchar *replace, 
-					    gboolean case_sensitive);
+gboolean	gedit_document_replace_all 	(GeditDocument *doc,
+				            	 const gchar *find, 
+						 const gchar *replace, 
+					    	 gboolean case_sensitive,
+						 gboolean entire_word);
 guint		gedit_document_get_line_at_offset (const GeditDocument *doc, guint offset);
+
+void		gedit_document_set_selection 	(GeditDocument *doc, 
+						 gint start, 
+						 gint end);
 
 #endif /* __GEDIT_DOCUMENT_H__ */
 

@@ -91,3 +91,5 @@ gedit_marshal_BOOLEAN__OBJECT (GClosure     *closure,
 
 /* VOID:BOOLEAN (gedit-marshal.list:3) */
 
+/* VOID:OBJECT (gedit-marshal.list:4) */
+

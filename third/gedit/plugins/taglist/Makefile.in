@@ -66,6 +66,8 @@ BONOBO_ACTIVATION_IDL = @BONOBO_ACTIVATION_IDL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
@@ -100,9 +102,11 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
 LIBBONOBO_IDL = @LIBBONOBO_IDL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -118,7 +122,11 @@ PKG_CONFIG = @PKG_CONFIG@
 PLUGIN_LIBTOOL_FLAGS = @PLUGIN_LIBTOOL_FLAGS@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+PSPELL_LIBS = @PSPELL_LIBS@
 RANLIB = @RANLIB@
+SPELL_PLUGIN_DIR = @SPELL_PLUGIN_DIR@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
@@ -129,7 +137,7 @@ pixmapsdir = @pixmapsdir@
 plugindir = $(libdir)/gedit-2/plugins
 
 taglistdir = $(datadir)/gedit-2/taglist
-taglist_DATA =  	HTML.tags		Latex.tags
+taglist_DATA =  	HTML.tags		Latex.tags		XSLT.tags
 
 
 INCLUDES =  	-I$(top_srcdir)/src 					$(GEDIT_CFLAGS) 					-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 		-DGEDIT_GLADEDIR=\""$(datadir)/gedit-2/glade/"\"		-DGEDIT_TAGLIST_DIR=\""$(taglistdir)/"\"		-DG_DISABLE_DEPRECATED					-DGDK_DISABLE_DEPRECATED				-DGTK_DISABLE_DEPRECATED				-DGDK_PIXBUF_DISABLE_DEPRECATED				-DGNOME_DISABLE_DEPRECATED			
@@ -142,7 +150,11 @@ libtaglist_la_SOURCES =  	gedit-taglist-plugin-parser.c		gedit-taglist-plugin-pa
 
 libtaglist_la_LDFLAGS = $(PLUGIN_LIBTOOL_FLAGS)
 
-EXTRA_DIST = $(taglist_DATA)
+plugin_in_files = taglist.gedit-plugin.desktop.in
+
+plugin_DATA = $(plugin_in_files:.gedit-plugin.desktop.in=.gedit-plugin)
+
+EXTRA_DIST = $(taglist_DATA) $(plugin_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -150,18 +162,15 @@ LTLIBRARIES =  $(plugin_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libtaglist_la_LIBADD = 
 libtaglist_la_OBJECTS =  gedit-taglist-plugin-parser.lo \
 gedit-taglist-plugin-window.lo gedit-taglist-plugin.lo
-CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(taglist_DATA)
+DATA =  $(plugin_DATA) $(taglist_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -256,6 +265,25 @@ maintainer-clean-libtool:
 libtaglist.la: $(libtaglist_la_OBJECTS) $(libtaglist_la_DEPENDENCIES)
 	$(LINK) -rpath $(plugindir) $(libtaglist_la_LDFLAGS) $(libtaglist_la_OBJECTS) $(libtaglist_la_LIBADD) $(LIBS)
 
+install-pluginDATA: $(plugin_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(plugindir)
+	@list='$(plugin_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(plugindir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(plugindir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(plugindir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(plugindir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pluginDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(plugin_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(plugindir)/$$p; \
+	done
+
 install-taglistDATA: $(taglist_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(taglistdir)
@@ -319,6 +347,31 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gedit-taglist-plugin-parser.lo gedit-taglist-plugin-parser.o : \
+	gedit-taglist-plugin-parser.c ../../config.h \
+	../../src/gedit-debug.h gedit-taglist-plugin-parser.h \
+	gedit-taglist-plugin.h
+gedit-taglist-plugin-window.lo gedit-taglist-plugin-window.o : \
+	gedit-taglist-plugin-window.c ../../config.h \
+	gedit-taglist-plugin.h gedit-taglist-plugin-window.h \
+	../../src/gedit-debug.h ../../src/gedit2.h \
+	../../src/gedit-mdi.h ../../src/bonobo-mdi.h \
+	../../src/bonobo-mdi-child.h ../../src/gedit-recent.h \
+	../../src/recent-files/egg-recent-model.h \
+	../../src/recent-files/egg-recent-item.h \
+	../../src/recent-files/egg-recent-view.h \
+	../../src/gedit-document.h ../../src/gedit-view.h \
+	../../src/gedit-utils.h ../../src/gedit-menus.h
+gedit-taglist-plugin.lo gedit-taglist-plugin.o : gedit-taglist-plugin.c \
+	../../config.h ../../src/gedit-menus.h ../../src/gedit-plugin.h \
+	../../src/gedit2.h ../../src/gedit-mdi.h ../../src/bonobo-mdi.h \
+	../../src/bonobo-mdi-child.h ../../src/gedit-recent.h \
+	../../src/recent-files/egg-recent-model.h \
+	../../src/recent-files/egg-recent-item.h \
+	../../src/recent-files/egg-recent-view.h \
+	../../src/gedit-document.h ../../src/gedit-view.h \
+	../../src/gedit-debug.h gedit-taglist-plugin.h \
+	gedit-taglist-plugin-window.h gedit-taglist-plugin-parser.h
 
 info-am:
 info: info-am
@@ -331,20 +384,23 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-pluginLTLIBRARIES install-taglistDATA
+install-data-am: install-pluginLTLIBRARIES install-pluginDATA \
+		install-taglistDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-pluginLTLIBRARIES uninstall-taglistDATA
+uninstall-am: uninstall-pluginLTLIBRARIES uninstall-pluginDATA \
+		uninstall-taglistDATA
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(plugindir) $(DESTDIR)$(taglistdir)
+	$(mkinstalldirs)  $(DESTDIR)$(plugindir) $(DESTDIR)$(plugindir) \
+		$(DESTDIR)$(taglistdir)
 
 
 mostlyclean-generic:
@@ -388,15 +444,17 @@ clean-pluginLTLIBRARIES maintainer-clean-pluginLTLIBRARIES \
 uninstall-pluginLTLIBRARIES install-pluginLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-taglistDATA \
-install-taglistDATA tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+clean-libtool maintainer-clean-libtool uninstall-pluginDATA \
+install-pluginDATA uninstall-taglistDATA install-taglistDATA tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-am install-data \
+install-am install uninstall-am uninstall all-redirect all-am all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+%.gedit-plugin: %.gedit-plugin.desktop.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

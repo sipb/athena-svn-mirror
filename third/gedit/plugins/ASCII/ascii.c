@@ -180,7 +180,6 @@ static void
 insert_char (gint i)
 {
 	GeditDocument *doc;
-	gchar *ch;
 	gchar *ch_utf8;
 	
 	gedit_debug (DEBUG_PLUGINS, "");
@@ -190,42 +189,13 @@ insert_char (gint i)
 	if (doc == NULL)
 	     return;
 
-	g_return_if_fail ((i >=0) && (i < 256));
+	g_return_if_fail ((i >=0) && (i <= 0x7f));
 
-	ch = g_strdup_printf ("%c", i);
+	ch_utf8 = g_strdup_printf ("%c", i);
 	
-	ch_utf8 = g_locale_to_utf8 (ch, -1, NULL, NULL, NULL);
-		
-	if (ch_utf8 == NULL)
-		g_warning ("Unable to convert '%s' to utf8", ch);
-	else
-	{
-		gedit_document_insert_text_at_cursor (doc, ch_utf8, -1);	
-
-		g_free (ch_utf8);
-	}
-
-	g_free (ch);
+	gedit_document_insert_text_at_cursor (doc, ch_utf8, -1);	
+	g_free (ch_utf8);
 }
-
-#if 0
-static void
-ascii_table_row_selected (GtkCList *clist, gint row, gint column, 
-		          GdkEventButton *event, gpointer user_data)
-{
-	gedit_debug (DEBUG_PLUGINS, "");
-	
-	selected_row = row;
-	
-	if (!event) 
-		return;
-
-	if (event->type == GDK_2BUTTON_PRESS)
-	{
-		insert_char (selected_row);
-	}
-}
-#endif
 
 static GtkTreeModel*
 create_model (void)
@@ -242,31 +212,29 @@ create_model (void)
 	gedit_debug (DEBUG_PLUGINS, "");
 
 	/* create list store */
-	store = gtk_list_store_new (NUM_COLUMNS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT);
+	store = gtk_list_store_new (NUM_COLUMNS, 
+				    G_TYPE_STRING, 
+				    G_TYPE_STRING, 
+				    G_TYPE_STRING, 
+				    G_TYPE_STRING, 
+				    G_TYPE_INT);
 
 	/* add data to the list store */
-	for (i = 0; i < 256; ++i)
+	for (i = 0; i <= 0x7f; ++i)
 	{
-		gchar* ch_utf8;
-		
-		if (i < 33)
+		if ((i < 0x21) || (i == 0x7f))
 			sprintf (ch, "    ");
 		else
 			sprintf (ch, "   %c", i);
 		
 		sprintf (dec, "%3d", i);
 		sprintf (hex, "%2.2X", i);
-		
-		ch_utf8 = g_locale_to_utf8 (ch, -1, NULL, NULL, NULL);
-		
-		if (ch_utf8 == NULL)
-			g_warning ("Unable to convert '%s' to utf8", ch);
-		
-		if (i < 33)
+
+		if (i < 0x21)
 			name = names[i];
 		else
 		{
-			if (i == 127)
+			if (i == 0x7f)
 				name = "DEL";
 			else
 				name = "";
@@ -275,14 +243,13 @@ create_model (void)
 		gtk_list_store_append (store, &iter);
 		
 		gtk_list_store_set (store, &iter,
-				    CHAR_COLUMN, (ch_utf8 != NULL) ? ch_utf8 : " ",
+				    CHAR_COLUMN, ch,
 				    DEC_COLUMN, dec,
 				    HEX_COLUMN, hex,
 				    NAME_COLUMN, name,
 				    INDEX_COLUMN, i,
 				    -1);
 
-		g_free (ch_utf8);
 	}
 	
 	return GTK_TREE_MODEL (store);
@@ -399,7 +366,7 @@ get_dialog (void)
 
 	dialog = g_new0 (ASCIITableDialog, 1);
 
-	dialog->dialog = gtk_dialog_new_with_buttons (_("ASCII table"),
+	dialog->dialog = gtk_dialog_new_with_buttons (_("ASCII Table"),
 						      window,
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
 						      GTK_STOCK_CLOSE,
@@ -519,13 +486,6 @@ init (GeditPlugin *pd)
 {
 	/* initialize */
 	gedit_debug (DEBUG_PLUGINS, "");
-     
-	pd->name = _("ASCII table");
-	pd->desc = _("This plugin displays a pop-up dialog which contains an ASCII Table.");
-	pd->author = "Paolo Maggi <maggi@athena.polito.it>";
-	pd->copyright = _("Copyright (C) 2001-2002 Paolo Maggi");
-	
-	pd->private_data = NULL;
 		
 	return PLUGIN_OK;
 }

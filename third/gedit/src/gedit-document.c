@@ -52,8 +52,6 @@
 
 #include "gedit-marshal.h"
 
-#define NOT_EDITABLE_TAG_NAME "not_editable_tag"
-
 #ifdef MAXPATHLEN
 #define GEDIT_MAX_PATH_LEN  MAXPATHLEN
 #elif defined (PATH_MAX)
@@ -61,8 +59,6 @@
 #else
 #define GEDIT_MAX_PATH_LEN  2048
 #endif
-
-#define DEFAULT_ENCODING "ISO-8859-15"
 
 struct _GeditDocumentPrivate
 {
@@ -74,6 +70,7 @@ struct _GeditDocumentPrivate
 	gchar		*last_searched_text;
 	gchar		*last_replace_text;
 	gboolean  	 last_search_was_case_sensitive;
+	gboolean  	 last_search_was_entire_word;
 
 	guint		 auto_save_timeout;
 	gboolean	 last_save_was_manually; 
@@ -93,8 +90,6 @@ enum {
 	LAST_SIGNAL
 };
 
-static void gedit_document_base_init 		(GeditDocumentClass 	*klass);
-static void gedit_document_base_finalize	(GeditDocumentClass 	*klass);
 static void gedit_document_class_init 		(GeditDocumentClass 	*klass);
 static void gedit_document_init 		(GeditDocument 		*document);
 static void gedit_document_finalize 		(GObject 		*object);
@@ -177,8 +172,8 @@ gedit_document_get_type (void)
       		static const GTypeInfo our_info =
       		{
         		sizeof (GeditDocumentClass),
-        		(GBaseInitFunc) gedit_document_base_init,
-        		(GBaseFinalizeFunc) gedit_document_base_finalize,
+        		NULL, 		/* base_init,*/
+        		NULL, 		/* base_finalize, */
         		(GClassInitFunc) gedit_document_class_init,
         		NULL,           /* class_finalize */
         		NULL,           /* class_data */
@@ -196,25 +191,6 @@ gedit_document_get_type (void)
 	return document_type;
 }
 
-static void
-gedit_document_base_init (GeditDocumentClass *klass)
-{
-	GtkTextTag *not_editable_tag;
-
-	klass->tag_table = gtk_text_tag_table_new ();
-
-	not_editable_tag =  gtk_text_tag_new (NOT_EDITABLE_TAG_NAME);	
-	g_object_set (G_OBJECT (not_editable_tag), "editable", FALSE, NULL);
-	
-	gtk_text_tag_table_add (klass->tag_table, not_editable_tag);	
-}
-
-static void
-gedit_document_base_finalize (GeditDocumentClass *klass)
-{
-	g_object_unref (G_OBJECT (klass->tag_table));
-	klass->tag_table = NULL;
-}
 	
 static void
 gedit_document_class_init (GeditDocumentClass *klass)
@@ -302,10 +278,6 @@ gedit_document_init (GeditDocument *document)
 {
 	gedit_debug (DEBUG_DOCUMENT, "");
 
-	g_return_if_fail (document->buffer.tag_table == NULL);
-	document->buffer.tag_table = (GEDIT_DOCUMENT_GET_CLASS (document))->tag_table;
-	g_object_ref (G_OBJECT (document->buffer.tag_table));
-		
 	document->priv = g_new0 (GeditDocumentPrivate, 1);
 	
 	document->priv->uri = NULL;
@@ -361,18 +333,10 @@ gedit_document_finalize (GObject *object)
 				document->priv->untitled_number);
 	}
 
-	if (document->priv->uri)
-    	{
-		g_free (document->priv->uri);
-      		document->priv->uri = NULL;
-	}		
-	
-	if (document->priv->last_searched_text)
-		g_free (document->priv->last_searched_text);
-
-	if (document->priv->last_replace_text)
-		g_free (document->priv->last_replace_text);
-
+	g_free (document->priv->uri);
+	g_free (document->priv->last_searched_text);
+	g_free (document->priv->last_replace_text);
+	g_free (document->priv->encoding);
 
 	g_object_unref (G_OBJECT (document->priv->undo_manager));
 	
@@ -716,84 +680,30 @@ gedit_document_load (GeditDocument* doc, const gchar *uri, GError **error)
 
 	if (file_size > 0)
 	{
-		if (!g_utf8_validate (file_contents, file_size, NULL))
+		gchar *converted_text;
+		gint len = -1;
+
+		if (g_utf8_validate (file_contents, file_size, NULL))
 		{
-			/* The file contains invalid UTF8 data */
-			/* Try to convert it to UTF-8 from currence locale */
-			GError *conv_error = NULL;
-			gchar* converted_file_contents = NULL;
-			gsize bytes_written;
-			
-			converted_file_contents = g_locale_to_utf8 (file_contents, file_size,
-					NULL, &bytes_written, &conv_error); 
-						
-			if ((conv_error != NULL) || 
-			    !g_utf8_validate (converted_file_contents, bytes_written, NULL))		
-			{
-				/* Coversion failed */	
-				if (conv_error != NULL) {
-					g_error_free (conv_error);
-					conv_error = NULL;
-				}
-
-				if (converted_file_contents != NULL)
-					g_free (converted_file_contents);
-				
-				/* Try to convert it to UTF-8 from default encoding */
-				converted_file_contents = g_convert (file_contents, file_size, 
-						"UTF-8", DEFAULT_ENCODING,
-						NULL, &bytes_written, &conv_error); 
-							
-				if ((conv_error != NULL) || 
-			    		!g_utf8_validate (converted_file_contents, bytes_written, NULL))		
-				{
-					/* Coversion failed */	
-					if (conv_error != NULL)
-						g_error_free (conv_error);
-
-					g_set_error (error, GEDIT_DOCUMENT_IO_ERROR, 
-						     GEDIT_ERROR_INVALID_UTF8_DATA,
-					     	     _("Invalid UTF-8 data"));
-				
-					if (converted_file_contents != NULL)
-						g_free (converted_file_contents);
-				
-					g_free (file_contents);
-
-					return FALSE;
-				}
-				else
-				{
-					if (doc->priv->encoding != NULL)
-						g_free (doc->priv->encoding);	
-				
-					doc->priv->encoding = g_strdup (DEFAULT_ENCODING);
-				}
-					
-			}
-			else
-			{
-				const gchar *encoding = NULL;
-				g_get_charset(&encoding);
-				
-				if (doc->priv->encoding != NULL)
-					g_free (doc->priv->encoding);	
-				
-				doc->priv->encoding = g_strdup (encoding);
-			}
-			
-			g_free (file_contents);
-
-			file_contents = converted_file_contents;
-			file_size = bytes_written;
+			converted_text = file_contents;
+			len = file_size;
+			file_contents = NULL;
 		}
 		else
+			converted_text = gedit_utils_convert_to_utf8 (file_contents,
+							file_size,
+							&doc->priv->encoding);
+
+		if (converted_text == NULL)
 		{
-			if (doc->priv->encoding != NULL)
-			{
-				g_free (doc->priv->encoding);	
-				doc->priv->encoding = NULL;
-			}
+			/* bail out */
+			g_set_error (error, GEDIT_DOCUMENT_IO_ERROR,
+				     GEDIT_ERROR_INVALID_UTF8_DATA,
+				     _("Invalid UTF-8 data"));
+
+			g_free (file_contents);
+
+			return FALSE;
 		}
 
 		gedit_debug (DEBUG_DOCUMENT, "Document encoding: %s", 
@@ -802,7 +712,8 @@ gedit_document_load (GeditDocument* doc, const gchar *uri, GError **error)
 		gedit_undo_manager_begin_not_undoable_action (doc->priv->undo_manager);
 		/* Insert text in the buffer */
 		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &iter, 0);
-		gtk_text_buffer_insert (GTK_TEXT_BUFFER (doc), &iter, file_contents, file_size);
+		gtk_text_buffer_insert (GTK_TEXT_BUFFER (doc), &iter, converted_text, len);
+		g_free (converted_text);
 
 		/* We had a newline in the buffer to begin with. (The buffer always contains
    		 * a newline, so we delete to the end of the buffer to clean up. */
@@ -816,7 +727,8 @@ gedit_document_load (GeditDocument* doc, const gchar *uri, GError **error)
 		gedit_undo_manager_end_not_undoable_action (doc->priv->undo_manager);
 	}
 
-	g_free (file_contents);
+	if (file_contents != NULL)
+		g_free (file_contents);
 
 	if (gedit_utils_is_uri_read_only (uri))
 	{
@@ -840,97 +752,48 @@ gedit_document_load (GeditDocument* doc, const gchar *uri, GError **error)
 	return TRUE;
 }
 
-#define GEDIT_STDIN_BUFSIZE 1024
-
 gboolean
 gedit_document_load_from_stdin (GeditDocument* doc, GError **error)
 {
-	GString * file_contents;
-	gchar *tmp_buf = NULL;
-	struct stat stats;
-	guint buffer_length;
-
+	gchar *stdin_data;
 	GtkTextIter iter, end;
-	GnomeVFSResult	res;
 	
 	gedit_debug (DEBUG_DOCUMENT, "");
 
 	g_return_val_if_fail (doc != NULL, FALSE);
 	
-	fstat (STDIN_FILENO, &stats);
-	
-	if (stats.st_size  == 0)
-		return FALSE;
+	stdin_data = gedit_utils_get_stdin ();
 
-	tmp_buf = g_new0 (gchar, GEDIT_STDIN_BUFSIZE + 1);
-	g_return_val_if_fail (tmp_buf != NULL, FALSE);
-
-	file_contents = g_string_new (NULL);
-	
-	while (feof (stdin) == 0)
+	if (stdin_data != NULL && strlen (stdin_data) > 0)
 	{
-		buffer_length = fread (tmp_buf, 1, GEDIT_STDIN_BUFSIZE, stdin);
-		tmp_buf [buffer_length] = '\0';
-		g_string_append (file_contents, tmp_buf);
+		gchar *converted_text;
 
-		if (ferror (stdin) != 0)
+		if (g_utf8_validate (stdin_data, -1, NULL))
 		{
-			res = gnome_vfs_result_from_errno (); 
-		
-			g_set_error (error, GEDIT_DOCUMENT_IO_ERROR, res,
-				gnome_vfs_result_to_string (res));
-
-			g_free (tmp_buf);
-			g_string_free (file_contents, TRUE);
-			return FALSE;
+			converted_text = stdin_data;
+			stdin_data = NULL;
 		}
-	}
+		else
+			converted_text = gedit_utils_convert_to_utf8 (stdin_data,
+							-1,
+							&doc->priv->encoding);
 
-	fclose (stdin);
-
-	if (file_contents->len > 0)
-	{
-		if (!g_utf8_validate (file_contents->str, file_contents->len, NULL))
+		if (converted_text == NULL)
 		{
-			/* The file contains invalid UTF8 data */
-			/* Try to convert it to UTF-8 from currence locale */
-			GError *conv_error = NULL;
-			gchar* converted_file_contents = NULL;
-			gsize bytes_written;
-			
-			converted_file_contents = g_locale_to_utf8 (file_contents->str, file_contents->len,
-					NULL, &bytes_written, &conv_error); 
-						
-			if ((conv_error != NULL) || 
-			    !g_utf8_validate (converted_file_contents, bytes_written, NULL))		
-			{
+			/* bail out */
+			g_set_error (error, GEDIT_DOCUMENT_IO_ERROR,
+				     GEDIT_ERROR_INVALID_UTF8_DATA,
+				     _("Invalid UTF-8 data"));
 
-				/* Coversion failed */	
-				if (conv_error != NULL)
-					g_error_free (conv_error);
+			g_free (stdin_data);
 
-				g_set_error (error, GEDIT_DOCUMENT_IO_ERROR, 
-					     GEDIT_ERROR_INVALID_UTF8_DATA,
-				     	     _("Invalid UTF-8 data"));
-				
-				if (converted_file_contents != NULL)
-					g_free (converted_file_contents);
-				
-				g_string_free (file_contents, TRUE);
-				
-				return FALSE;
-			}
-
-			g_string_free (file_contents, TRUE);
-
-			/* FIXME: this could be more efficient */
-			file_contents = g_string_new (converted_file_contents);
+			return FALSE;
 		}
 
 		gedit_undo_manager_begin_not_undoable_action (doc->priv->undo_manager);
 		/* Insert text in the buffer */
 		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &iter, 0);
-		gtk_text_buffer_insert (GTK_TEXT_BUFFER (doc), &iter, file_contents->str, file_contents->len);
+		gtk_text_buffer_insert (GTK_TEXT_BUFFER (doc), &iter, converted_text, -1);
 
 		/* We had a newline in the buffer to begin with. (The buffer always contains
    		 * a newline, so we delete to the end of the buffer to clean up. */
@@ -942,9 +805,13 @@ gedit_document_load_from_stdin (GeditDocument* doc, GError **error)
 		gtk_text_buffer_place_cursor (GTK_TEXT_BUFFER (doc), &iter);
 
 		gedit_undo_manager_end_not_undoable_action (doc->priv->undo_manager);
+		
+		g_free (converted_text);
 	}
 
-	g_string_free (file_contents, TRUE);
+	if (stdin_data != NULL)
+		g_free (stdin_data);
+			
 
 	gedit_document_set_readonly (doc, FALSE);
 	gtk_text_buffer_set_modified (GTK_TEXT_BUFFER (doc), TRUE);
@@ -1213,14 +1080,14 @@ gedit_document_save_as_real (GeditDocument* doc, const gchar *uri,
 	gchar *dirname;
 	mode_t saved_umask;
 	struct stat st;
-	char *chars;
+	gchar *chars = NULL;
 	gint chars_len;
 	gint fd;
 	gint retval;
 	GeditSaveEncodingSetting encoding_setting;
 	gboolean res;
 	gboolean add_cr;
-
+	
 	gedit_debug (DEBUG_DOCUMENT, "");
 
 	g_return_val_if_fail (doc != NULL, FALSE);
@@ -1304,9 +1171,9 @@ gedit_document_save_as_real (GeditDocument* doc, const gchar *uri,
 		create_backup_copy = FALSE;
 
 		/* Use default permissions */
-		saved_umask = umask (0);
+		saved_umask = umask(0);
 		st.st_mode = 0666 & ~saved_umask;
-		umask (saved_umask);
+		umask(saved_umask);
 		st.st_uid = getuid ();
 
 		result = stat (dirname, &dir_st);
@@ -1334,7 +1201,7 @@ gedit_document_save_as_real (GeditDocument* doc, const gchar *uri,
 		goto out;
 	}
 
-      	chars = gedit_document_get_buffer (doc);
+	chars = gedit_document_get_chars (doc, 0, -1);
 
 	encoding_setting = gedit_prefs_manager_get_save_encoding ();
 
@@ -1441,12 +1308,17 @@ gedit_document_save_as_real (GeditDocument* doc, const gchar *uri,
 
 	if (create_backup_copy)
 	{
+		gchar *bak_ext;
 		gint result;
 
+		bak_ext = gedit_prefs_manager_get_backup_extension ();
+		
 		backup_filename = g_strconcat (real_filename, 
-				               gedit_prefs_manager_get_backup_extension (), 
+					       bak_ext,
 					       NULL);
 
+		g_free (bak_ext);
+		
 		result = rename (real_filename, backup_filename);
 
 		if (result != 0)
@@ -1491,27 +1363,14 @@ gedit_document_save_as_real (GeditDocument* doc, const gchar *uri,
 
  out:
 
+	g_free (chars);
+
 	g_free (filename);
 	g_free (real_filename);
 	g_free (backup_filename);
 	g_free (temp_filename);
 
 	return retval;
-}
-
-gchar* 
-gedit_document_get_buffer (const GeditDocument *doc)
-{
-	GtkTextIter start, end;
-
-	gedit_debug (DEBUG_DOCUMENT, "");
-
-	g_return_val_if_fail (doc != NULL, FALSE);
-
-	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &start, 0);
-      	gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (doc), &end);
-  
-      	return gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (doc), &start, &end, TRUE);
 }
 
 gboolean	
@@ -1573,21 +1432,6 @@ gedit_document_get_line_count (const GeditDocument *doc)
 	return gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (doc));
 }
 
-void 
-gedit_document_delete_all_text (GeditDocument *doc)
-{
-	GtkTextIter start, end;
-
-	gedit_debug (DEBUG_DOCUMENT, "");
-
-	g_return_if_fail (doc != NULL);
-
-	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &start, 0);
-      	gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (doc), &end);
-	
-	gtk_text_buffer_delete (GTK_TEXT_BUFFER (doc), &start, &end);
-}
-
 gboolean 
 gedit_document_revert (GeditDocument *doc,  GError **error)
 {
@@ -1604,11 +1448,11 @@ gedit_document_revert (GeditDocument *doc,  GError **error)
 		return FALSE;
 	}
 			
-	buffer = gedit_document_get_buffer (doc);
+	buffer = gedit_document_get_chars (doc, 0, -1);
 
 	gedit_undo_manager_begin_not_undoable_action (doc->priv->undo_manager);
 
-	gedit_document_delete_all_text (doc);
+	gedit_document_delete_text (doc, 0, -1);
 
 	if (!gedit_document_load (doc, doc->priv->uri, error))
 	{
@@ -1672,10 +1516,14 @@ gedit_document_delete_text (GeditDocument *doc, gint start, gint end)
 
 	g_return_if_fail (GEDIT_IS_DOCUMENT (doc));
 	g_return_if_fail (start >= 0);
-	g_return_if_fail (end >= 0);
+	g_return_if_fail ((end > start) || end < 0);
 
 	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &start_iter, start);
-	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &end_iter, end);
+
+	if (end < 0)
+		gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (doc), &end_iter);
+	else
+		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &end_iter, end);
 
 	gtk_text_buffer_delete (GTK_TEXT_BUFFER (doc), &start_iter, &end_iter);
 }
@@ -1690,10 +1538,14 @@ gedit_document_get_chars (GeditDocument *doc, gint start, gint end)
 
 	g_return_val_if_fail (GEDIT_IS_DOCUMENT (doc), NULL);
 	g_return_val_if_fail (start >= 0, NULL);
-	g_return_val_if_fail (end >= 0, NULL);
+	g_return_val_if_fail ((end > start) || (end < 0), NULL);
 
 	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &start_iter, start);
-	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &end_iter, end);
+
+	if (end < 0)
+		gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (doc), &end_iter);
+	else
+		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &end_iter, end);
 
 	return gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (doc), &start_iter, &end_iter, TRUE);
 }
@@ -1856,9 +1708,39 @@ gedit_document_get_last_replace_text (GeditDocument* doc)
 		g_strdup (doc->priv->last_replace_text) : NULL;	
 }
 
+void 
+gedit_document_set_last_searched_text (GeditDocument* doc, const gchar *text)
+{
+	gedit_debug (DEBUG_DOCUMENT, "");
+
+	g_return_if_fail (GEDIT_IS_DOCUMENT (doc));
+	g_return_if_fail (doc->priv != NULL);
+	g_return_if_fail (text != NULL);
+
+	if (doc->priv->last_searched_text != NULL)
+		g_free (doc->priv->last_searched_text);
+
+	doc->priv->last_searched_text = g_strdup (text);
+}
+
+void 
+gedit_document_set_last_replace_text (GeditDocument* doc, const gchar *text)
+{
+	gedit_debug (DEBUG_DOCUMENT, "");
+
+	g_return_if_fail (GEDIT_IS_DOCUMENT (doc));
+	g_return_if_fail (doc->priv != NULL);
+	g_return_if_fail (text != NULL);
+
+	if (doc->priv->last_replace_text != NULL)
+		g_free (doc->priv->last_replace_text);
+
+	doc->priv->last_replace_text = g_strdup (text);
+}
+
 gboolean
 gedit_document_find (GeditDocument* doc, const gchar* str, 
-		gboolean from_cursor, gboolean case_sensitive)
+		gboolean from_cursor, gboolean case_sensitive, gboolean entire_word)
 {
 	GtkTextIter iter;
 	gboolean found = FALSE;
@@ -1903,13 +1785,31 @@ gedit_document_find (GeditDocument* doc, const gchar* str,
 	else		
 		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &iter, 0);
 
+	found = FALSE;
+	
 	if (*converted_str != '\0')
     	{
       		GtkTextIter match_start, match_end;
 
-          	found = gedit_text_iter_forward_search (&iter, converted_str, search_flags,
-                                        	&match_start, &match_end,
-                                               	NULL);	
+		while (!found)
+		{
+          		found = gedit_text_iter_forward_search (&iter, converted_str, search_flags,
+                        	                	&match_start, &match_end,
+                                	               	NULL);	
+
+			if (found && entire_word)
+			{
+				found = gtk_text_iter_starts_word (&match_start) && 
+					gtk_text_iter_ends_word (&match_end);
+
+				if (!found) 
+					iter = match_end;
+
+			}
+			else
+				break;
+		}
+		
 		if (found)
 		{
 			gtk_text_buffer_place_cursor (GTK_TEXT_BUFFER (doc),
@@ -1924,6 +1824,7 @@ gedit_document_find (GeditDocument* doc, const gchar* str,
 
 		doc->priv->last_searched_text = g_strdup (str);
 		doc->priv->last_search_was_case_sensitive = case_sensitive;
+		doc->priv->last_search_was_entire_word = entire_word;
 	}
 
 	g_free (converted_str);
@@ -1932,7 +1833,7 @@ gedit_document_find (GeditDocument* doc, const gchar* str,
 }
 
 gboolean
-gedit_document_find_again (GeditDocument* doc)
+gedit_document_find_again (GeditDocument* doc, gboolean from_cursor)
 {
 	gchar* last_searched_text;
 	gboolean found;
@@ -1947,22 +1848,26 @@ gedit_document_find_again (GeditDocument* doc)
 	if (last_searched_text == NULL)
 		return FALSE;
 	
-	found = gedit_document_find (doc, last_searched_text, TRUE, 
-				doc->priv->last_search_was_case_sensitive);
+	found = gedit_document_find (doc, 
+				     last_searched_text, 
+				     from_cursor, 
+				     doc->priv->last_search_was_case_sensitive, 
+				     doc->priv->last_search_was_entire_word);
+
 	g_free (last_searched_text);
 
 	return found;
 }
 
-gchar*
-gedit_document_get_selected_text (GeditDocument *doc, gint *start, gint *end)
+gboolean 
+gedit_document_get_selection (GeditDocument *doc, gint *start, gint *end)
 {
 	GtkTextIter iter;
 	GtkTextIter sel_bound;
 
 	gedit_debug (DEBUG_DOCUMENT, "");
 
-	g_return_val_if_fail (GEDIT_IS_DOCUMENT (doc), NULL);
+	g_return_val_if_fail (GEDIT_IS_DOCUMENT (doc), FALSE);
 
 	gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (doc),			
                                     &iter,
@@ -1980,35 +1885,6 @@ gedit_document_get_selected_text (GeditDocument *doc, gint *start, gint *end)
 
 	if (end != NULL)
 		*end = gtk_text_iter_get_offset (&sel_bound); 
-
-	if (gtk_text_iter_equal (&sel_bound, &iter))
-	{
-		gedit_debug (DEBUG_DOCUMENT, "There is no selected text");
-
-		return NULL;
-	}
-	return gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (doc), &iter, &sel_bound, TRUE);
-}
-
-gboolean
-gedit_document_has_selected_text (GeditDocument *doc)
-{
-	GtkTextIter iter;
-	GtkTextIter sel_bound;
-
-	gedit_debug (DEBUG_DOCUMENT, "");
-
-	g_return_val_if_fail (GEDIT_IS_DOCUMENT (doc), FALSE);
-
-	gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (doc),			
-                                    &iter,
-                                    gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (doc),
-					                      "insert"));
-		
-	gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (doc),			
-                                    &sel_bound,
-                                    gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (doc),
-					                      "selection_bound"));
 
 	return !gtk_text_iter_equal (&sel_bound, &iter);	
 }
@@ -2072,7 +1948,7 @@ gedit_document_replace_selected_text (GeditDocument *doc, const gchar *replace)
 
 gboolean
 gedit_document_replace_all (GeditDocument *doc,
-	      	const gchar *find, const gchar *replace, gboolean case_sensitive)
+	      	const gchar *find, const gchar *replace, gboolean case_sensitive, gboolean entire_word)
 {
 	gboolean from_cursor = FALSE;
 	gboolean cont = 0;
@@ -2085,7 +1961,7 @@ gedit_document_replace_all (GeditDocument *doc,
 
 	gedit_document_begin_user_action (doc);
 
-	while (gedit_document_find (doc, find, from_cursor, case_sensitive)) 
+	while (gedit_document_find (doc, find, from_cursor, case_sensitive, entire_word)) 
 	{
 		gedit_document_replace_selected_text (doc, replace);
 		
@@ -2140,4 +2016,29 @@ gedit_document_set_cursor (GeditDocument *doc, gint cursor)
 	/* Place the cursor at the requested position */
 	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &iter, cursor);
 	gtk_text_buffer_place_cursor (GTK_TEXT_BUFFER (doc), &iter);
+}
+
+void
+gedit_document_set_selection (GeditDocument *doc, gint start, gint end)
+{
+ 	GtkTextIter start_iter;
+	GtkTextIter end_iter;
+
+	gedit_debug (DEBUG_DOCUMENT, "");
+
+	g_return_if_fail (GEDIT_IS_DOCUMENT (doc));
+	g_return_if_fail (start >= 0);
+	g_return_if_fail ((end > start) || (end < 0));
+
+	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &start_iter, start);
+
+	if (end < 0)
+		gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (doc), &end_iter);
+	else
+		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (doc), &end_iter, end);
+
+	gtk_text_buffer_place_cursor (GTK_TEXT_BUFFER (doc), &end_iter);
+
+	gtk_text_buffer_move_mark_by_name (GTK_TEXT_BUFFER (doc),
+					"selection_bound", &start_iter);
 }
