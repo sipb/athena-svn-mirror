@@ -1,4 +1,4 @@
-# $Id: packages,v 1.266 2004-03-16 23:23:53 ghudson Exp $
+# $Id: packages,v 1.267 2004-03-23 20:44:12 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -43,9 +43,6 @@ third/pkgconfig			early on solaris
 third/sed			early on solaris
 third/bison			early on solaris
 third/flex			early on solaris
-
-# Initial packs setup
-packs/build/setup		early except linux
 
 # Athena software
 athena/bin/access
@@ -298,11 +295,10 @@ third/yelp			except linux requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libg
 third/zenity			requires gtk2,libglade2,GConf2,libgnomecanvas,scrollkeeper,gettext
 
 # Final packs stuff
-packs/config			late except linux
 packs/dotfiles			late
 packs/glue			late
-packs/install			late package base
+packs/base			late
+packs/install			late package osinstall except linux
 packs/maint			late package ws
 packs/update			late except linux
 packs/build/config		late package imakecf
-packs/build/finish		late except linux
