@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.22 1990-06-06 19:06:17 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.23 1990-09-26 03:58:50 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -73,7 +73,7 @@
 
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
-int emulate_rm;
+int emulate_rm, linked_to_rm, linked_to_rmdir;
 extern int errno;
 
 main(argc, argv)
@@ -89,7 +89,13 @@ char *argv[];
      initialize_del_error_table();
      
      force = interactive = recursive = noop = verbose = filesonly =
-	  directoriesonly = emulate_rm = 0;
+	  directoriesonly = emulate_rm = linked_to_rm = linked_to_rmdir = 0;
+
+     if (!strcmp(whoami, "rm"))
+	  emulate_rm++, filesonly++, linked_to_rm++;
+     if (!strcmp(whoami, "rmdir") || !strcmp(whoami, "rd"))
+	  emulate_rm++, directoriesonly++, linked_to_rmdir++;
+     
      while ((arg = getopt(argc, argv, "efirnvFD")) != -1) {
 	  switch (arg) {
 	  case 'r':
@@ -168,16 +174,22 @@ usage()
 {
      printf("Usage: %s [ options ] filename ...\n", whoami);
      printf("Options are:\n");
-     printf("     -r     recursive\n");
+     if (! linked_to_rmdir)
+	  printf("     -r     recursive\n");
      printf("     -i     interactive\n");
      printf("     -f     force\n");
      printf("     -n     noop\n");
      printf("     -v     verbose\n");
-     printf("     -F     files only\n");
-     printf("     -D     directories only\n");
+     if (! (linked_to_rmdir || linked_to_rm)) {
+	  printf("     -e     emulate rm/rmdir\n");
+	  printf("     -F     files only\n");
+	  printf("     -D     directories only\n");
+     }
      printf("     --     end options and start filenames\n");
-     printf("-r and -D are mutually exclusive\n");
-     printf("-F and -D are mutually exclusive\n");
+     if (! (linked_to_rmdir || linked_to_rm)) {
+	  printf("-r and -D are mutually exclusive\n");
+	  printf("-F and -D are mutually exclusive\n");
+     }
 }
 
 
