@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.24 1991-01-15 17:41:34 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.25 1991-01-23 13:54:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.24 1991-01-15 17:41:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.25 1991-01-23 13:54:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -601,6 +601,7 @@ mail_message(user, consultant, msgfile, args)
   int nbytes;		        /* Number of bytes in message. */
   char *msgbuf;		        /* Ptr. to mail message buffer. */
 
+#if 0
 #ifdef HESIOD
   char **hp;
   char buf[LINE_SIZE];
@@ -620,6 +621,7 @@ mail_message(user, consultant, msgfile, args)
     }
 #endif /* HESIOD */
 #endif /* ATHENA */
+#endif
 
   if ((nbytes = file_length(msgfile)) == ERROR)
     {
