@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.7 1990-01-17 02:54:03 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.8 1990-02-23 16:55:26 vanharen Exp $";
 #endif
 
 
@@ -51,10 +51,18 @@ do_olc_replay(arguments)
      char **arguments;
 {
   REQUEST Request;
+  int status;
+  int  stati = 0;
+  char queues[NAME_SIZE];
+  char users[NAME_SIZE];
+  char topics[NAME_SIZE];
   char file[NAME_SIZE];
   int savefile = FALSE;
-  int status;
-  int sort = FALSE;
+  int i, mask;
+
+  queues[0] = '\0';
+  users[0] = '\0';
+  topics[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -83,12 +91,98 @@ do_olc_replay(arguments)
 	  continue;
 	}
       
-      if (string_equiv(*arguments, "-sort",max(2,strlen(*arguments))))
+      if(string_equiv(*arguments,"-queue",max(strlen(*arguments),2)))
 	{
-	  sort = TRUE;
+	  ++arguments;
+	  if(*arguments == (char *) NULL)
+	    {
+	      fprintf(stderr,
+		      "You must specify a queue after the -queue option.\n");
+	      return(ERROR);
+	    }
+	 
+	  for(i=0; *arguments != (char *) NULL; arguments++)
+	    {
+	      if(strlen(*arguments) >= (NAME_SIZE -i))
+		fprintf(stderr,"Too many queues specified. Continuing...\n");
+	      else
+		{
+		  strcat(queues," ");
+		  strncat(queues,*arguments,NAME_SIZE-1);
+		  break;
+		}
+	      if(*(arguments+1) && (*(arguments+1)[0] == '-'))
+		break;
+	      if(arguments[1] == (char *) NULL)
+		break;
+	    }
 	  continue;
 	}
 
+      if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
+	{
+	  ++arguments;
+	  if(*arguments != (char *) NULL)
+	    for(i=0; *arguments != (char *) NULL; arguments++)
+	      {
+		OGetStatusCode(*arguments, &mask);
+		if(mask == -1)
+		  {
+		    printf("Invalid status label specified. Choose one of...\n");
+		    t_pp_stati();
+		    return(ERROR);
+		  }
+		else
+		  stati |= mask;
+		if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
+		  break;
+		if(arguments[1] == (char *) NULL)
+		  break;
+	      }
+	  continue;
+	}
+
+      if(string_equiv(*arguments,"-user",max(strlen(*arguments),2)))
+	{
+	  ++arguments;
+	  if(*arguments == (char *) NULL)
+	    {
+	      fprintf(stderr,
+		      "You must specify something after the -user option.\n");
+	      return(ERROR);
+	    }
+	  strncpy(users,*arguments,NAME_SIZE-1);
+	  continue;
+	}
+      
+      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
+	{
+	  ++arguments;
+	  if(*arguments == (char *) NULL)
+	    {
+	      fprintf(stderr,
+		      "You must specify a topic after the -topic option.\n");
+	      return(ERROR);
+	    }
+
+	  for(i=0; *arguments != (char *) NULL; arguments++)
+	    {
+	      if(strlen(*arguments) >= (NAME_SIZE -i))
+		fprintf(stderr,
+			"Too many topics specified. Continuing...\n");
+	      else
+		{
+		  strncpy(topics, *arguments, NAME_SIZE-1);
+		  break;
+		}
+	      if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
+		break;
+	      if(arguments[1] == (char *) NULL)
+		break;
+	    }
+	  continue;
+	}
+ 
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
@@ -110,7 +204,7 @@ do_olc_replay(arguments)
     }
 
 
-  status = t_replay(&Request,file, !savefile, sort);
+  status = t_replay(&Request, queues, topics, users, stati, file, !savefile);
   if((savefile == FALSE) || (status != SUCCESS))
     (void) unlink(file);
   return(status);
