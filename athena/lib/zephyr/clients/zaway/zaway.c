@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zaway.c,v 1.13 1999-01-22 23:18:27 ghudson Exp $
+ *	$Id: zaway.c,v 1.14 1999-07-21 12:34:22 ghudson Exp $
  *
  *	Copyright (c) 1987, 1993 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.13 1999-01-22 23:18:27 ghudson Exp $";
+static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.14 1999-07-21 12:34:22 ghudson Exp $";
 #endif
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -26,6 +26,17 @@ static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.13 1999-01-22 23:18:27 ghu
 
 RETSIGTYPE cleanup();
 u_short port;
+
+void usage(name)
+	char *name;
+{
+	printf("Usage: %s [OPTIONS] [FILE]\n"
+	       "\n"
+	       "  -m STRING    use STRING as the body of the reply message\n"
+	       "  -w           watch your location and only reply if you aren't locatable\n"
+	       "  -h           display this help and exit\n",
+	       name);
+}
 
 int main(argc,argv)
 	int argc;
@@ -38,6 +49,9 @@ int main(argc,argv)
 	struct passwd *pw;
 	register char *ptr;
 	char awayfile[BUFSIZ],*msg[2],*envptr;
+	int optchar, watch_location;
+	char *cmdline_msg;
+	int nlocs;
 	char *find_message();
 #ifdef _POSIX_VERSION
 	struct sigaction sa;
@@ -58,8 +72,33 @@ int main(argc,argv)
 	sub.zsub_classinst = "*";
 	sub.zsub_recipient = ZGetSender();
 
-	if (argc > 1)
-		(void) strcpy(awayfile,argv[1]);
+	cmdline_msg = 0;
+	watch_location = 0;
+	while ((optchar = getopt(argc, argv, "m:wh")) != EOF) {
+		switch (optchar) {
+		case 'm':
+			cmdline_msg = optarg;
+			break;
+
+		case 'w':
+			watch_location = 1;
+			break;
+
+		case 'h':
+			usage(argv[0]);
+			return 0;
+
+		case '?':
+			fprintf(stderr,
+				"Unrecognized option '-%c'.\n"
+				"Try '%s -h' for more information.\n",
+				optopt, argv[0]);
+			return 1;
+		}
+	}
+
+	if (argc > optind)
+		(void) strcpy(awayfile,argv[optind]);
 	else {
 		envptr = getenv("HOME");
 		if (envptr)
@@ -108,7 +147,30 @@ int main(argc,argv)
 		     continue;
 		}
 
-		if (fp) {
+		if (watch_location) {
+			if ((retval = ZLocateUser(ZGetSender(), &nlocs, ZNOAUTH))
+			    != ZERR_NONE) {
+				com_err(argv[0],retval,"while locating self");
+				continue;
+			}
+
+			if (nlocs != 0) {
+				/* User is logged in.  Don't send an autoreply. */
+				continue;
+			}
+
+			ZFlushLocations();
+		}
+
+		if (cmdline_msg) {
+			ptr = malloc(strlen(cmdline_msg));
+			if (!ptr) {
+				com_err(argv[0],ENOMEM,"while getting cmdline message");
+				exit(1);
+			}
+			(void) strcpy(ptr,cmdline_msg);
+		}
+		else if (fp) {
 			if (!(ptr = find_message(&notice,fp))) {
 				ZFreeNotice(&notice);
 				continue;
