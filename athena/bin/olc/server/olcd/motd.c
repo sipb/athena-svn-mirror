@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.12 1991-10-21 11:11:30 lwvanels Exp $
+ *	$Id: motd.c,v 1.13 1992-06-26 13:01:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.12 1991-10-21 11:11:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.13 1992-06-26 13:01:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -132,6 +132,7 @@ KNUCKLE *requester;
   FILE *new_motd;	/* altered motd file fd */
   char line[BUF_SIZE];	/* buffer to read in to parse possible timeout */
   char msgbuf[BUF_SIZE];
+  char tmp_motd_file[BUF_SIZE];
   char *time;
   struct stat statb;
   int fd;
@@ -143,10 +144,11 @@ KNUCKLE *requester;
     log_error("set_motd_timeout: Couldn't create/truncate motd file");
     return;
   }
-  new_motd = fopen("/tmp/new_motd","w+");
+  sprintf(tmp_motd_file,"%s.new",MOTD_FILE);
+  new_motd = fopen(tmp_motd_file,"w+");
   /* strip out the timeout line and write it to a new file */
   if (new_motd == NULL) { 
-    log_error("set_motd_timeout: opening /tmp/new_motd: %m");
+    log_error("set_motd_timeout: opening tmp motd file: %m");
     return;
   }
 
@@ -193,7 +195,7 @@ KNUCKLE *requester;
   write_message_to_user(requester,msgbuf,0);
   
   if (in_time == 0) {
-    if (rename("/tmp/new_motd",MOTD_FILE) != 0)
+    if (rename(tmp_motd_file,MOTD_FILE) != 0)
       log_error("change_motd_timeout: rename: %m");
   }
   else {
@@ -202,7 +204,7 @@ KNUCKLE *requester;
       log_error("set_motd_timeout: Couldn't create/truncate motd file");
     close(fd);
     check_motd_timeout();
-    if (rename("/tmp/new_motd",MOTD_HOLD_FILE) != 0)
+    if (rename(tmp_motd_file,MOTD_HOLD_FILE) != 0)
       log_error("change_motd_timeout: rename: %m");
   }  
   write_motd_times();
