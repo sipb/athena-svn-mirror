@@ -4,8 +4,8 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Imakefile,v $
-/**/#	$Author: jfc $
-/**/#	$Id: Imakefile,v 1.10 1991-06-20 09:23:11 jfc Exp $
+/**/#	$Author: lwvanels $
+/**/#	$Id: Imakefile,v 1.11 1991-12-05 15:35:14 lwvanels Exp $
 /**/#
 
 SUBDIRS= Memory String Dictionary
@@ -80,15 +80,16 @@ program($(OUTPUT),$(OBJS),,$(LIBRARIES) $(LIBS),$(CLIENTDIR))
 
 #ifdef ATHENA_COMPAT
 /* On Athena, zwgc has been in /usr/etc on VAXes and RTs and some people
-   run in with a full pathname.  For compatbility, install a link. */
+   run in with a full pathname.  For compatbility, make a link. */
 install::
-	$(RM) $(DESTDIR)$(USRETCDIR)/zwgc
-	ln $(DESTDIR)$(CLIENTDIR)/zwgc $(DESTDIR)$(USRETCDIR)/zwgc || ln -s $(CLIENTDIR)/zwgc $(DESTDIR)$(USRETCDIR)/zwgc 
+	$(RM) $(DESTDIR)/usr/etc/zwgc
+	ln $(DESTDIR)$(CLIENTDIR)/zwgc $(DESTDIR)/usr/etc/zwgc || ln -s $(CLIENTDIR)/zwgc $(DESTDIR)/usr/etc/zwgc 
 #endif
 
 depend:: ${DEPENDSRCS}
 	
 install::
+	-mkdir $(DESTDIR)$(ACLDIR)
 	$(RM) $(DESTDIR)$(ACLDIR)/zwgc.desc
 	$(CP) zwgc.desc $(DESTDIR)$(ACLDIR)/zwgc.desc
 	$(CHMOD) 644 $(DESTDIR)$(ACLDIR)/zwgc.desc
