@@ -791,7 +791,7 @@ LoadApplicationResources(file, disp)
 char * file;
 Display * disp;
 {
-  XrmDatabase my_database;
+  XrmDatabase my_database, db = XrmGetDatabase(disp);
 
   if (file == NULL || streq(file, "") ) return;
 
@@ -800,5 +800,6 @@ Display * disp;
     return;
   }
 
-  XrmMergeDatabases(my_database, &(disp->db));
+  XrmMergeDatabases(my_database, &db);
+  XrmSetDatabase(disp, db);
 }
