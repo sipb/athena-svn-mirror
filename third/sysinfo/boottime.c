@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: boottime.c,v 1.1.1.2 1998-02-12 21:31:54 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -17,6 +18,34 @@ static char *RCSid = "$Id: boottime.c,v 1.1.1.2 1998-02-12 21:31:54 ghudson Exp 
 #include <utmp.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+
+#if	defined(BOOT_TIME) && defined(HAVE_GETUTID)
+/*
+ * Look in utmp for the system boot time using getutid()
+ */
+extern char *GetBootTimeGetutid()
+{
+    static struct utmp		Utmp;
+    struct utmp		       *Ptr;
+    char		       *DateStr = NULL;
+    register char	       *cp;
+
+    setutent();
+    memset(&Utmp, 0, sizeof(Utmp));
+    Utmp.ut_type = BOOT_TIME;
+
+    if (Ptr = getutid(&Utmp))
+	if (Ptr->ut_type == BOOT_TIME) {
+	    DateStr = (char *) ctime(&(Ptr->ut_time));
+	    if (cp = strchr(DateStr, '\n'))
+		*cp = CNULL;
+	}
+
+    endutent();
+
+    return(DateStr);
+}
+#endif	/* BOOT_TIME && HAVE_GETUTID */
 
 #if	defined(BOOT_TIME)
 
@@ -38,19 +67,19 @@ extern char *GetBootTimeUtmp()
     register char	       *cp;
 
     if (stat(UTMP_FILE, &StatBuff) < 0) {
-	if (Debug) Error("stat failed: %s: %s", UTMP_FILE, SYSERR);
+	SImsg(SIM_GERR, "stat failed: %s: %s", UTMP_FILE, SYSERR);
 	return((char *) NULL);
     }
     Amt = StatBuff.st_size;
 
     if ((fd = open(UTMP_FILE, O_RDONLY)) < 0) {
-	if (Debug) Error("open O_RDONLY failed: %s: %s", UTMP_FILE, SYSERR);
+	SImsg(SIM_GERR, "open O_RDONLY failed: %s: %s", UTMP_FILE, SYSERR);
 	return((char *) NULL);
     }
 
     UtmpBuff = (struct utmp *) xmalloc(Amt);
     if (read(fd, (char *)UtmpBuff, Amt) != Amt) {
-	if (Debug) Error("read failed: %s: %s", UTMP_FILE, SYSERR);
+	SImsg(SIM_GERR, "read failed: %s: %s", UTMP_FILE, SYSERR);
 	(void) close(fd);
 	return((char *) NULL);
     }
@@ -58,7 +87,7 @@ extern char *GetBootTimeUtmp()
 
     for (Ptr = UtmpBuff; Ptr < UtmpBuff + Amt; ++Ptr) 
 	if (Ptr->ut_type == BOOT_TIME) {
-	    DateStr = ctime(&(Ptr->ut_time));
+	    DateStr = (char *) ctime(&(Ptr->ut_time));
 	    if (cp = strchr(DateStr, '\n'))
 		*cp = CNULL;
 	    break;
@@ -69,6 +98,7 @@ extern char *GetBootTimeUtmp()
 }
 #endif	/* BOOT_TIME */
 
+#if	defined(HAVE_KVM) && defined(HAVE_NLIST)
 #if !defined(BOOTTIME_SYM)
 #	define BOOTTIME_SYM 	"_boottime"
 #endif
@@ -95,11 +125,11 @@ extern char *GetBootTimeSym()
 
 	if (KVMget(kd, nlptr->n_value, (char *) &BootTime, 
 		   sizeof(BootTime), KDT_DATA)){
-	    if (Debug) Error("Read of \"%s\" from kernel failed.",
-			     BOOTTIME_SYM);
+	    SImsg(SIM_GERR, "Read of \"%s\" from kernel failed.", 
+		  BOOTTIME_SYM);
 	} else {
 	    TimeVal = BootTime.tv_sec;
-	    DateStr = ctime(&TimeVal);
+	    DateStr = (char *) ctime(&TimeVal);
 	    if (cp = strchr(DateStr, '\n'))
 		*cp = CNULL;
 	}
@@ -110,6 +140,7 @@ extern char *GetBootTimeSym()
 
     return(DateStr);
 }
+#endif	/* HAVE_KVM && HAVE_NLIST */
 
 /*
  * Get Boot Time

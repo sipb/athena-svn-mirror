@@ -1,7 +1,13 @@
 #
-# $Id: aix.cf,v 1.1.1.1 1996-10-07 20:16:56 ghudson Exp $
+# $Id: aix.cf,v 1.1.1.2 1998-12-24 22:02:59 ghudson Exp $
 #
-# AIX Sysinfo Configuration File
+# Copyright (c) 1992-1998 Michael A. Cooper.  
+# This software may be freely used and distributed provided it is not
+# sold for profit or used in part or in whole for commercial gain
+# without prior written agreement, and the author is credited
+# appropriately.
+#
+# 	AIX Sysinfo Configuration File
 #
 include		local.cf
 #
@@ -12,34 +18,67 @@ include		local.cf
 #
 # System Model definetions
 #
-#	Values are the uname(1) man page.
+#	Values are described in the uname(1) man page.
 #
+#	A Value of 0x4C is used by most new models.
+#
+define	|SysModel	||0x0042 	|RS/6000 410 (7006)
+define	|SysModel	||0x00F0 	|RS/6000 N40 (7007)
 define	|SysModel	||0x0043 	|RS/6000 M20 or M20A (7008)
+define	|SysModel	||0x0048 	|RS/6000 C10 (7009)
+
 define	|SysModel	||0x0041 	|RS/6000 220 (7011)
 define	|SysModel	||0x0045 	|RS/6000 220 (7011)
+define	|SysModel	||0x0047 	|RS/6000 230 (7011)
+define	|SysModel	||0x0046 	|RS/6000 250 (7011)
+
 define	|SysModel	||0x0031 	|RS/6000 320 (7012)
 define	|SysModel	||0x0035 	|RS/6000 320H (7012)
 define	|SysModel	||0x0037 	|RS/6000 340 (7012)
 define	|SysModel	||0x0038 	|RS/6000 350 (7012)
-define	|SysModel	||0x0077 	|RS/6000 355 (7012)
 define	|SysModel	||0x0076 	|RS/6000 360 or 365 (7012)
-define	|SysModel	||0x0075 	|RS/6000 370 or 375 (7112)
-define	|SysModel	||0x0030 	|RS/6000 520 (7013)
+define	|SysModel	||0x0075 	|RS/6000 370 or 375 (7012)
+define	|SysModel	||0x0058 	|RS/6000 380 (7012)
+define	|SysModel	||0x0057 	|RS/6000 390 (7012)
+define	|SysModel	||0x00A6 	|RS/6000 G30 (7012)
+define	|SysModel	||0x00A7 	|RS/6000 G40 (7012)
+
+define	|SysModel	||0x0030 	|RS/6000 520 or 740 (7013)
 define	|SysModel	||0x0034 	|RS/6000 520H (7013)
 define	|SysModel	||0x0010 	|RS/6000 530 (7013) or 730 (7016)
 define	|SysModel	||0x0018 	|RS/6000 530H (7013)
+define	|SysModel	||0x0011 	|RS/6000 540 (7013)
 define	|SysModel	||0x0014 	|RS/6000 540 (7013)
 define	|SysModel	||0x001C 	|RS/6000 550 (7013)
+define	|SysModel	||0x0077 	|RS/6000 355 or 550L (7013)
 define	|SysModel	||0x005C 	|RS/6000 560 (7013)
-define	|SysModel	||0x0067 	|RS/6000 570 (7013)
+define	|SysModel	||0x0067 	|RS/6000 570 or R10 (7013)
+define	|SysModel	||0x0066 	|RS/6000 580 (7013)
+define	|SysModel	||0x0071 	|RS/6000 58H (7013)
+define	|SysModel	||0x0070 	|RS/6000 590 (7013)
 define	|SysModel	||0x0400 	|RS/6000 590 (7013)
+define	|SysModel	||0x0072 	|RS/6000 590H or R20 (7013)
+define	|SysModel	||0x00A0 	|RS/6000 J30 (7013)
+define	|SysModel	||0x00A1 	|RS/6000 J40 (7013)
+
+define	|SysModel	||0x0002 	|RS/6000 930 (7015)
 define	|SysModel	||0x0020 	|RS/6000 930 (7015)
 define	|SysModel	||0x002E 	|RS/6000 950 (7015)
-define	|SysModel	||0x0102 	|RS/6000 970 or 970B (7015)
 define	|SysModel	||0x0063 	|RS/6000 970 or 970B (7015)
 define	|SysModel	||0x0064 	|RS/6000 980 or 980B (7015)
+define	|SysModel	||0x0101 	|RS/6000 975 (7015)
+define	|SysModel	||0x0102 	|RS/6000 970 or 970B (7015)
 define	|SysModel	||0x0402 	|RS/6000 990 (7015)
 define	|SysModel	||0x0080 	|RS/6000 990 (7015)
+define	|SysModel	||0x800004c 	|RS/6000 H50 (7026)
+
+define	|SysModel	||0x0081 	|RS/6000 R24 (7015)
+define	|SysModel	||0x00A3 	|RS/6000 R30 (7015)
+define	|SysModel	||0x00A4 	|RS/6000 R40 (7015)
+
+define	|SysModel	||0x00C0 	|RS/6000 E20 (7024)
+
+define	|SysModel	||0x00C4 	|RS/6000 F30 (7025)
 #
 # Variable expansion
 #
@@ -49,16 +88,18 @@ define	|vpd	|EC			||EC Level
 define	|vpd	|FC			||Feature Code
 define	|vpd	|FN			||FRU Number
 define	|vpd	|LL			||Loadable ROM Level
-define	|vpd	|MF			||Manufacturer
 define	|vpd	|PC			||Processor Component
 define	|vpd	|PI			||Processor ID
 define	|vpd	|PN			||Part Number
 define	|vpd	|RL			||ROM Level
 define	|vpd	|RN			||Rack Name
 define	|vpd	|SL			||Slot Location
-define	|vpd	|SN			||Serial Number
 define	|vpd	|SZ			||Size
+# These values are used directly in os-aix.c and are here for completeness
+define	|vpd	|MF			||Manufacturer
 define	|vpd	|TM			||Model
+define	|vpd	|SN			||Serial Number
+define	|vpd	|DS			||Description
 #
 # Device definetions.
 #

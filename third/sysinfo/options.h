@@ -5,24 +5,18 @@
  */
 
 /*
- * $Id: options.h,v 1.1.1.1 1996-10-07 20:16:55 ghudson Exp $
+ * $Revision: 1.1.1.2 $
  */
-
+#ifndef __options_h__
+#define __options_h__
 
 #include <stdio.h>
 #include <sys/types.h>
-#include <sys/errno.h>
+#include "mconfig.h"
 
 #define Num_Opts(o)	(sizeof(o)/sizeof(OptionDescRec))
 #define HELPSTR		"-help"
-#define __		(caddr_t)
 
-#if !defined(SYSERR) && defined(_AIX)
-#define SYSERR		strerror(errno)
-#endif
-#ifndef SYSERR
-#define SYSERR		sys_errlist[errno]
-#endif
 #ifndef TRUE
 #define TRUE	1
 #endif
@@ -49,12 +43,13 @@
 /*
  * Option description record.
  */
+typedef void *		OptPtr_t;
 typedef struct {
     char	*option;		/* Option string in argv	    */
     int		 flags;			/* Flag bits			    */
     int		(*cvtarg)();		/* Function to convert argument     */
-    caddr_t	 valp;			/* Variable to set		    */
-    caddr_t	 value;			/* Default value to provide	    */
+    OptPtr_t	 valp;			/* Variable to set		    */
+    OptPtr_t	 value;			/* Default value to provide	    */
     char	*usage;			/* Usage message		    */
     char	*desc;			/* Description message		    */
 } OptionDescRec, *OptionDescList;
@@ -77,7 +72,8 @@ void 		UserError();
 extern char *OptionChars;
 #ifndef _AIX
 extern int errno;
-extern char *sys_errlist[];
 extern long strtol();
 extern char *strcpy();
 #endif
+
+#endif /*  __options_h__ */

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: report.c,v 1.1.1.2 1998-02-12 21:32:00 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -28,14 +29,14 @@ int				NumData;
     if (!ClassType)
 	return;
 
-    printf("%s%s%s%s%s", 
-	   strlower(ClassType), RepSep, PS(InfoType), RepSep, PS(Key));
+    SImsg(SIM_INFO, "%s%s%s%s%s", 
+	   strlower(ClassType), RepSep, PRTS(InfoType), RepSep, PRTS(Key));
 
     for (i = 0; i < NumData; ++i) {
-	printf("%s", RepSep);
+	SImsg(SIM_INFO, "%s", RepSep);
 	if (Data[i])
-	    printf("%s", Data[i]);
+	    SImsg(SIM_INFO, "%s", Data[i]);
     }
 
-    printf("\n");
+    SImsg(SIM_INFO, "\n");
 }

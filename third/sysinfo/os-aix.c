@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-aix.c,v 1.1.1.2 1998-02-12 21:32:21 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -16,7 +17,6 @@ static char *RCSid = "$Id: os-aix.c,v 1.1.1.2 1998-02-12 21:32:21 ghudson Exp $"
 #include "defs.h"
 #include <nl_types.h>
 #include <locale.h>
-
 
 /*
  * Platform Specific Interfaces
@@ -49,6 +49,9 @@ PSI_t GetKernVerPSI[] = {		/* Get Kernel Version */
 PSI_t GetOSNamePSI[] = {		/* Get OS Name */
     { GetOSNameSysinfo },
     { GetOSNameUname },
+    { NULL },
+};
+PSI_t GetOSDistPSI[] = {		/* Get OS Release */
     { NULL },
 };
 extern char		       *GetOSVerFiles();
@@ -100,10 +103,11 @@ PSI_t GetBootTimePSI[] = {		/* Get System Boot Time */
  */
 static char *odmerror()
 {
-    static char odmerrstr[BUFSIZ];
+    static char odmerrstr[256];
 
     if (odm_err_msg(odmerrno, (char **) &odmerrstr))
-	(void) sprintf(odmerrstr, "unknown ODM error %d", odmerrno);
+	(void) snprintf(odmerrstr, sizeof(odmerrstr),
+			"unknown ODM error %d", odmerrno);
 
     return(odmerrstr);
 }
@@ -117,26 +121,27 @@ static char *GetAttrVal(Name, Attr)
     char		       *Attr;
 {
     static struct CuAt		CuAt;
-    static char			Buff[BUFSIZ];
+    static char			Query[128];
     char		       *errstr = NULL;
     int				ret;
 
     if (odm_initialize() == -1) {
-	Error("ODM initialize failed: %s", odmerror());
+	SImsg(SIM_GERR, "ODM initialize failed: %s", odmerror());
 	return((char *) NULL);
     }
 
-    (void) sprintf(Buff, "attribute = '%s' and name = '%s'", Attr, Name);
+    (void) snprintf(Query, sizeof(Query), "attribute = '%s' and name = '%s'", 
+		    Attr, Name);
 
-    ret = (int) odm_get_obj(CuAt_CLASS, Buff, &CuAt, ODM_FIRST);
+    ret = (int) odm_get_obj(CuAt_CLASS, Query, &CuAt, ODM_FIRST);
     if (ret == -1)
 	errstr = odmerror();
     else if (ret == 0)
 	errstr = "No entry found";
 
     if (errstr) {
-	if (Debug) Error("ODM get \"%s\" from \"%s\" failed: %s",
-			 Buff, CuAt_CLASS[0].classname, errstr);
+	SImsg(SIM_GERR, "ODM get \"%s\" from \"%s\" failed: %s",
+			 Query, CuAt_CLASS[0].classname, errstr);
 	return((char *) NULL);
     }
 
@@ -154,7 +159,7 @@ static struct PdDv *GetPdDv(Criteria)
     int				ret;
 
     if (odm_initialize() == -1) {
-	Error("ODM initialize failed: %s", odmerror());
+	SImsg(SIM_GERR, "ODM initialize failed: %s", odmerror());
 	return((struct PdDv *) NULL);
     }
 
@@ -165,7 +170,7 @@ static struct PdDv *GetPdDv(Criteria)
 	errstr = "No entry found";
 
     if (errstr) {
-	if (Debug) Error("ODM get \"%s\" from \"%s\" failed: %s",
+	SImsg(SIM_GERR, "ODM get \"%s\" from \"%s\" failed: %s",
 			 Criteria, PdDv_CLASS[0].classname, errstr);
 	return((struct PdDv *) NULL);
     }
@@ -200,32 +205,23 @@ static char *CleanVPD(string)
  * Find the VPD info entry for "String".  Return a vpdinfo_t
  * entry for the matching entry and set it's "value" correctly.
  */
-static vpdinfo_t *GetVPDinfo(String)
+static VPDinfo_t *GetVPDinfo(String)
     char		       *String;
 {
-    Define_t		       *VPDdef;
     static char			Buff[BUFSIZ];
     static char			Code[3];
-    static vpdinfo_t		VPDinfo;
+    static VPDinfo_t		VPDinfo;
 
     (void) strncpy(Code, String, 2);	/* XXX Assume codes are only 2 bytes */
     Code[2] = CNULL;
 
-    VPDdef = DefGet(DL_VPD, Code, -1, 0);
-    if (!VPDdef) {
-	if (Debug)
-	    printf("Unknown VPD info \"%s\".\n", String);
-	return((vpdinfo_t *) NULL);
-    }
-
-    VPDinfo.code = VPDdef->KeyStr;
-    VPDinfo.title = VPDdef->ValStr1;
+    VPDinfo.Code = Code;
     /*
      * The "value" portion of "String" starts after the "code" portion.
      * CleanVPD() is harmful, so we need to pass it a private copy.
      */
-    (void) strcpy(Buff, String + strlen(VPDinfo.code));
-    VPDinfo.value = CleanVPD(Buff);
+    (void) snprintf(Buff, sizeof(Buff), "%s", String + strlen(VPDinfo.Code));
+    VPDinfo.Value = CleanVPD(Buff);
 
     return(&VPDinfo);
 }
@@ -237,17 +233,14 @@ static int DecodeVPD(DevInfo, VPDstr)
     DevInfo_t		       *DevInfo;
     char		       *VPDstr;
 {
-    static char			Buff[BUFSIZ];
-    static char			Man[BUFSIZ];
-    static char			Model[BUFSIZ];
     char		       *myVPDstr;
     register char	       *cp;
-    vpdinfo_t		       *VPDinfo;
+    Define_t		       *Def;
+    VPDinfo_t		       *VPDinfo;
 
     if (!VPDstr)
 	return(-1);
 
-    Man[0] = Model[0] = CNULL;
     /* strtok() is destructive */
     myVPDstr = strdup(VPDstr);
 
@@ -261,24 +254,22 @@ static int DecodeVPD(DevInfo, VPDstr)
 	if (!(VPDinfo = GetVPDinfo(cp)))
 	    continue;
 
-	if (EQ(VPDinfo->code, "MF") && strlen(VPDinfo->value) < sizeof(Man))
-	    (void) strcpy(Man, VPDinfo->value);
-	if (EQ(VPDinfo->code, "TM") && strlen(VPDinfo->value) < sizeof(Model))
-	    (void) strcpy(Model, VPDinfo->value);
-
-	AddDevDesc(DevInfo, VPDinfo->value, VPDinfo->title, DA_APPEND);
+	if (EQ(VPDinfo->Code, "MF"))
+	    DevInfo->Vendor = strdup(VPDinfo->Value);
+	else if (EQ(VPDinfo->Code, "TM"))
+	    DevInfo->Model = strdup(VPDinfo->Value);
+	else if (EQ(VPDinfo->Code, "DS"))
+	    DevInfo->ModelDesc = strdup(VPDinfo->Value);
+	else if (EQ(VPDinfo->Code, "SN"))
+	    DevInfo->Serial = strdup(VPDinfo->Value);
+	else {
+	    if (Def = DefGet(DL_VPD, VPDinfo->Code, -1, 0))
+		AddDevDesc(DevInfo, VPDinfo->Value, Def->ValStr1, DA_APPEND);
+	    else
+		SImsg(SIM_UNKN, "Unknown VPD code=`%s' value=`%s'.", 
+		      VPDinfo->Code, VPDinfo->Value);
+	}
     }
-
-    Buff[0] = CNULL;
-    if (Man[0])
-	(void) strcpy(Buff, Man);
-    if (Model[0]) {
-	if (Buff[0])
-	    (void) strcat(Buff, " ");
-	(void) strcat(Buff, Model);
-    }
-    if (Buff[0])
-	DevInfo->Model = strdup(Buff);
 
     if (myVPDstr)
 	(void) free(myVPDstr);
@@ -293,29 +284,25 @@ static int GetVPD(DevInfo)
     DevInfo_t		       *DevInfo;
 {
     static struct CuVPD		cuvpd;
-    static char			Buff[BUFSIZ];
+    static char			Query[128];
     int 			ret;
 
     if (odm_initialize() == -1) {
-	Error("ODM initialize failed: %s", odmerror());
+	SImsg(SIM_GERR, "ODM initialize failed: %s", odmerror());
 	return(-1);
     }
 
-    (void) sprintf(Buff, "name=%s", DevInfo->Name);
-    ret = (int) odm_get_obj(CuVPD_CLASS, Buff, &cuvpd, ODM_FIRST);
+    (void) snprintf(Query, sizeof(Query),  "name=%s", DevInfo->Name);
+    ret = (int) odm_get_obj(CuVPD_CLASS, Query, &cuvpd, ODM_FIRST);
     if (ret == -1) {
-	if (Debug)
-	    Error("ODM get VPD object for \"%s\" failed: %s", 
+	SImsg(SIM_GERR, "ODM get VPD object for \"%s\" failed: %s", 
 		  DevInfo->Name, odmerror());
 	return(-1);
     } else if (ret == 0) {
-	if (Debug) 
-	    Error("No VPD information for \"%s\".", DevInfo->Name);
 	return(-1);
     }
 
-    if (Debug)
-	printf("VPD: name = '%s' type = %d VPD = '%s'\n", 
+    SImsg(SIM_DBG, "VPD: name = '%s' type = %d VPD = '%s'", 
 	       cuvpd.name, cuvpd.vpd_type, cuvpd.vpd);
 
     return(DecodeVPD(DevInfo, cuvpd.vpd));
@@ -331,22 +318,20 @@ extern char *GetModelODM()
     register int		i, SysType;
 
     if ((val = GetAttrVal(NN_SYS0, AT_MODELCODE)) == NULL) {
-	if (Debug) Error("Cannot get \"%s\" for \"%s\" from ODM.",
+	SImsg(SIM_GERR, "Cannot get \"%s\" for \"%s\" from ODM.",
 			 AT_MODELCODE, NN_SYS0);
 	return((char *) NULL);
     }
 
     SysType = (int) strtol(val, NULL, 0);
 
-    if (Debug)
-	printf("System type = 0x%x (%s)\n", SysType, val);
+    SImsg(SIM_DBG, "System type = 0x%x (%s)", SysType, val);
 
     Model = DefGet(DL_SYSMODEL, NULL, (long) SysType, 0);
     if (Model && Model->ValStr1)
 	return(Model->ValStr1);
 
-    if (Debug)
-	Error("system model/type 0x%x is unknown.", SysType);
+    SImsg(SIM_UNKN, "system model/type 0x%x is unknown.", SysType);
 
     return((char *) NULL);
 }
@@ -377,7 +362,7 @@ extern char *GetKernArchCfg()
 	return((char *) NULL);
     if (KVMget(kd, NLPtr->n_value, (char *) &_system_configuration, 
 	       sizeof(_system_configuration), KDT_DATA)) {
-	if (Debug) Error("Cannot read `%s' from kernel.", SysCfgSYM);
+	SImsg(SIM_GERR, "Cannot read `%s' from kernel.", SysCfgSYM);
 	return((char *) NULL);
     }
     KVMclose(kd);
@@ -395,17 +380,18 @@ extern char *GetKernArchCfg()
 extern char *GetMemoryODM()
 {
     register char	       *val;
-    register int		amtval;
-    static char			Buff[100];
+    Large_t			amtval;
+    static char			Buff[64];
 
     if ((val = GetAttrVal(NN_SYS0, AT_REALMEM)) == NULL) {
-	if (Debug) Error("Cannot get \"%s\" for \"%s\" from ODM.",
-			 AT_REALMEM, NN_SYS0);
+	SImsg(SIM_GERR, "Cannot get \"%s\" for \"%s\" from ODM.",
+	      AT_REALMEM, NN_SYS0);
 	return((char *) NULL);
     }
 
-    amtval = (int) strtol(val, NULL, 0);
-    (void) sprintf(Buff, "%d MB", DivRndUp(amtval, KBYTES));
+    amtval = (Large_t) strtol(val, NULL, 0);
+    (void) snprintf(Buff, sizeof(Buff), "%d MB", 
+		    DivRndUp(amtval, (Large_t)KBYTES));
 
     return(Buff);
 }
@@ -436,7 +422,7 @@ extern char *GetOSVerFiles()
     for (PtrPtr = OSVfiles; PtrPtr && *PtrPtr; ++PtrPtr) {
 	FilePtr = fopen(*PtrPtr, "r");
 	if (!FilePtr) {
-	    if (Debug) Error("Open %s failed: %s.", *PtrPtr, SYSERR);
+	    SImsg(SIM_GERR, "Open %s failed: %s.", *PtrPtr, SYSERR);
 	    continue;
 	}
 	if (fgets(Buff, sizeof(Buff), FilePtr) && isdigit(Buff[0])) {
@@ -463,7 +449,7 @@ extern char *GetOSVerFiles()
 	    return(Version);
     }
 
-    return(UnSupported);
+    return((char *) NULL);
 }
 
 /*
@@ -526,24 +512,28 @@ static void SetDescript(DevInfo, CuDvPtr)
 /*
  * Special routine to get memory information.
  */
-extern DevInfo_t *ProbeMemory(Name, DevData, DevDefine, CuDvPtr, PdDvPtr)
-    /*ARGSUSED*/
-    char 		       *Name;
-    DevData_t 		       *DevData;
-    DevDefine_t		       *DevDefine;
-    struct CuDv		       *CuDvPtr;
-    struct PdDv		       *PdDvPtr;
+extern DevInfo_t *ProbeMemory(ProbeData, CuDvPtr, PdDvPtr)
+     ProbeData_t	       *ProbeData;
+     struct CuDv	       *CuDvPtr;
+     struct PdDv	       *PdDvPtr;
 {
     DevInfo_t 		       *DevInfo;
     char		       *cp;
-    char			Buff[BUFSIZ];
+    char			Buff[64];
+    char 		       *Name;
+    DevData_t 		       *DevData;
 
+    if (!ProbeData)
+	return((DevInfo_t *) NULL);
+    Name = ProbeData->DevName;
+    DevData = ProbeData->DevData;
+    
     if ((cp = GetAttrVal(Name, AT_SIZE)) == NULL)
 	return((DevInfo_t *) NULL);
 
     DevInfo = NewDevInfo((DevInfo_t *) NULL);
 
-    (void) sprintf(Buff, "%s MB Memory Card", cp);
+    (void) snprintf(Buff, sizeof(Buff),  "%s MB Memory Card", cp);
     DevInfo->Model = strdup(Buff);
 
     DevInfo->Name = Name;
@@ -584,7 +574,7 @@ static char *GetDescript(CuDvPtr, PdDvPtr)
 	     */
 
 	    if (putenv(ENV_NLSPATH) != 0)
-		if (Debug) Error("Cannot set environment $NLSPATH.");
+		SImsg(SIM_GERR, "Cannot set environment $NLSPATH.");
 
 	    /*
 	     * If our LANG is "C", then set to our default in order to
@@ -593,9 +583,9 @@ static char *GetDescript(CuDvPtr, PdDvPtr)
 	     */
 	    cp = (char *) getenv("LANG");
 	    if (!cp || (cp && EQ(cp, "C"))) {
-		(void) sprintf(Buff, "LANG=%s", DEFAULT_LANG);
+		(void) snprintf(Buff, sizeof(Buff),  "LANG=%s", DEFAULT_LANG);
 		if (putenv(strdup(Buff)) != 0)
-		    if (Debug) Error("Cannot set environment %s.", Buff);
+		    SImsg(SIM_GERR, "Cannot set environment %s.", Buff);
 		Buff[0] = CNULL;
 	    }
 	    (void) setlocale(LC_ALL, "");
@@ -603,7 +593,7 @@ static char *GetDescript(CuDvPtr, PdDvPtr)
 
 	catd = catopen(PdDvPtr->catalog, 0);
 	if ((int) catd <= 0)
-	    if (Debug) Error("Catalog open of \"%s\" failed: %s.",
+	    SImsg(SIM_GERR, "Catalog open of \"%s\" failed: %s.",
 			     PdDvPtr->catalog, SYSERR);
     }
 
@@ -630,23 +620,28 @@ extern DevInfo_t *ProbeODM(DevData, TreePtr, CuDvPtr)
 {
     DevDefine_t		       *DevDefine;
     DevInfo_t 		       *DevInfo;
+    DevInfo_t 		       *Master;
+    char		       *MasterName;
     char		       *DevName;
     char		       *desc;
     char		       *cp;
-    static char			Buff[BUFSIZ];
+    static char			Query[128];
     struct PdDv		       *PdDvPtr;
+    static ProbeData_t		ProbeData;
+    static DevFind_t		Find;
 
     DevName = MkDevName(DevData->DevName, DevData->DevUnit, 0, 0);
-    if (FindDeviceByName(DevName, *TreePtr)) {
-	if (Debug) printf("Device %s already exists.\n", DevName);
-	return((DevInfo_t *) NULL);
-    }
+    (void) memset(&Find, 0, sizeof(Find));
+    Find.Tree = *TreePtr;
+    Find.NodeName = DevName;
+    DevInfo = DevFind(&Find);
 
     if (CuDvPtr->PdDvLn_Lvalue[0]) {
-	(void) sprintf(Buff, "uniquetype='%s'", CuDvPtr->PdDvLn_Lvalue);
-	PdDvPtr = GetPdDv(Buff);
+	(void) snprintf(Query, sizeof(Query), "uniquetype='%s'", 
+			CuDvPtr->PdDvLn_Lvalue);
+	PdDvPtr = GetPdDv(Query);
     } else {
-	if (Debug) Error("No PdDv link value for '%s'.", DevName);
+	SImsg(SIM_GERR, "No PdDv link value for '%s'.", DevName);
 	return((DevInfo_t *) NULL);
     }
 
@@ -656,24 +651,41 @@ extern DevInfo_t *ProbeODM(DevData, TreePtr, CuDvPtr)
      */
     if ((desc = GetDescript(CuDvPtr, PdDvPtr)) == (char *) NULL) {
 	if ((DevDefine = DevDefGet(DL_VPD, DevData->DevName, 0)) && 
-	    DevDefine->Probe)
-	    return((*DevDefine->Probe)(DevName, DevData, DevDefine, 
-				       CuDvPtr, PdDvPtr));
-	else {
+	    DevDefine->Probe) {
+	    (void) memset(&ProbeData, CNULL, sizeof(ProbeData));
+	    ProbeData.DevName = DevName;
+	    ProbeData.DevData = DevData;
+	    ProbeData.DevDefine = DevDefine;
+	    return((*DevDefine->Probe)(&ProbeData, CuDvPtr, PdDvPtr));
+	} else {
 	    if (Debug) 
-		Error("No description found for '%s'.", DevName);
+		SImsg(SIM_GERR, "No description found for '%s'.", DevName);
 	    return((DevInfo_t *) NULL);
 	}
     }
 
-    DevInfo = NewDevInfo((DevInfo_t *) NULL);
+    if (!DevInfo)
+	DevInfo = NewDevInfo((DevInfo_t *) NULL);
 
     DevInfo->Name = DevName;
     DevInfo->Unit = DevData->DevUnit;
-    DevInfo->Master = MkMasterFromDevData(DevData);
     DevInfo->Type = DT_GENERIC;
     DevInfo->ModelDesc = strdup(desc);
     SetDescript(DevInfo, CuDvPtr);
+    if (!DevInfo->MasterName)
+	DevInfo->MasterName = MkMasterName(DevData);
+    if (!DevInfo->Master) {
+	(void) memset(&Find, 0, sizeof(Find));
+	Find.Tree = *TreePtr;
+	Find.NodeName = DevInfo->MasterName;
+	if (Master = DevFind(&Find))
+	    DevInfo->Master = Master;
+	else {
+	    DevInfo->Master = MkMasterFromDevData(DevData);
+	    if (DevInfo->Master)
+		DevInfo->MasterName = DevInfo->Master->Name;
+	}
+    }
 
     return(DevInfo);
 }
@@ -692,7 +704,7 @@ static int BuildODM(TreePtr, Names)
     int 			op, ret;
 
     if (odm_initialize() == -1) {
-	Error("ODM initialize failed: %s", odmerror());
+	SImsg(SIM_GERR, "ODM initialize failed: %s", odmerror());
 	return(-1);
     }
 
@@ -702,7 +714,7 @@ static int BuildODM(TreePtr, Names)
 	 */
 	ret = (int) odm_get_obj(CuDv_CLASS, (char *)NULL, &CuDv, op);
 	if (ret == -1) {
-	    if (Debug) Error("ODM get object \"%s\" failed: %s", 
+	    SImsg(SIM_GERR, "ODM get object \"%s\" failed: %s", 
 			     CuDv_CLASS[0].classname, odmerror());
 	    return(-1);
 	} else if (ret == 0)
@@ -712,7 +724,7 @@ static int BuildODM(TreePtr, Names)
 	    break;
 
 	if (CuDv.status != AVAILABLE) {
-	    if (Debug) printf("Device \"%s\" is not available.\n", CuDv.name);
+	    SImsg(SIM_GERR, "Device \"%s\" is not available.", CuDv.name);
 	    continue;
 	}
 
@@ -734,9 +746,8 @@ static int BuildODM(TreePtr, Names)
 	}
 	DevData.Flags |= DD_IS_ALIVE;
 
-	if (Debug)
-	    printf("ODM: Found '%s' parent '%s' location '%s' uniq = '%s'\n",
-		   CuDv.name, CuDv.parent, CuDv.location, CuDv.PdDvLn_Lvalue);
+	SImsg(SIM_DBG, "ODM: Found '%s' parent '%s' location '%s' uniq = '%s'",
+	      CuDv.name, CuDv.parent, CuDv.location, CuDv.PdDvLn_Lvalue);
 
 	/* Probe and add device */
 	if (DevInfo = ProbeODM(&DevData, TreePtr, &CuDv))
@@ -744,7 +755,7 @@ static int BuildODM(TreePtr, Names)
     }
 
     if (odm_terminate() != 0)
-	if (Debug) Error("ODM Terminate did not succeed.");
+	SImsg(SIM_WARN, "ODM Terminate did not succeed.");
 
     return(0);
 }
@@ -776,9 +787,9 @@ extern char *GetVirtMemODM()
     struct CuAt		       *CuAtPtr;
     struct objlistinfo		ObjListInfo;
     register int		i;
-    static char			DevName[BUFSIZ];
+    static char			DevName[MAXPATHLEN];
     static struct pginfo	pginfo;
-    off_t			Amount = 0;
+    Large_t			Amount = 0;
     static char			Buff[100];
 
     odm_initialize();
@@ -786,24 +797,25 @@ extern char *GetVirtMemODM()
 
     CuAtPtr = get_CuAt_list(CuAt_CLASS, QueryStr, &ObjListInfo, 20, 1);
     if ((int)CuAtPtr == -1) {
-	if (Debug) Error("get_CuAt_list paging info failed: %s.", SYSERR);
+	SImsg(SIM_GERR, "get_CuAt_list paging info failed: %s.", SYSERR);
 	odm_terminate();
 	return((char *)NULL);
     }
 
     for (i = 0; i < ObjListInfo.num; ++i, ++CuAtPtr) {
-	(void) sprintf(DevName, "/dev/%s", CuAtPtr->name);
+	(void) snprintf(DevName, sizeof(DevName),  "/dev/%s", CuAtPtr->name);
 
 	if (swapqry(DevName, &pginfo) == -1) {
-	    if (Debug) Error("swapqry %s failed: %s.", DevName, SYSERR);
+	    SImsg(SIM_GERR, "swapqry %s failed: %s.", DevName, SYSERR);
 	    continue;
 	}
 
-	Amount += (off_t) ( (pginfo.size * getpagesize() ) / KBYTES );
+	Amount += (Large_t) ( (pginfo.size * getpagesize() ) / KBYTES );
     }
 
     odm_terminate();
-    (void) sprintf(Buff, "%d MB", DivRndUp(Amount, KBYTES));
+    (void) snprintf(Buff, sizeof(Buff), "%d MB", 
+		    DivRndUp(Amount, (Large_t)KBYTES));
 
     return(Buff);
 }

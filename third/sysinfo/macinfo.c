@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: macinfo.c,v 1.1.1.2 1998-02-12 21:32:08 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -26,28 +27,28 @@ static char *RCSid = "$Id: macinfo.c,v 1.1.1.2 1998-02-12 21:32:08 ghudson Exp $
 /*
  * Find and set the MAC info using ifreq.ifr_enaddr
  */
-extern void SetMacInfo(DevName, NetIf)
-    char 		       *DevName;
-    NetIF_t 		       *NetIf;
+extern void SetMacInfo(DevInfo, NetIf)
+     DevInfo_t		       *DevInfo;
+     NetIF_t 		       *NetIf;
 {
     struct ifreq	        ifreq;
     struct ether_addr	       *EtherAddr;
     struct ether_addr	       *ether_aton();
-    static char			Buff[BUFSIZ];
+    static char			Buff[256];
     static int			Sock = -1;
 
-    if (!NetIf)
+    if (!NetIf || !DevInfo || !DevInfo->Name)
 	return;
 
     Sock = socket(AF_INET, SOCK_STREAM, 0);
     if (Sock < 0) {
-	if (Debug) Error("Create AF_INET SOCK_STREAM failed: %s", SYSERR);
+	SImsg(SIM_GERR, "Create AF_INET SOCK_STREAM failed: %s", SYSERR);
 	return;
     }
 
-    strncpy(ifreq.ifr_name, DevName, sizeof(ifreq.ifr_name));
+    strncpy(ifreq.ifr_name, DevInfo->Name, sizeof(ifreq.ifr_name));
     if (ioctl(Sock, SIOCGENADDR, &ifreq) < 0) {
-	if (Debug) Error("%s: ioctl SIOCGENADDR failed: %s.", 
+	SImsg(SIM_GERR, "%s: ioctl SIOCGENADDR failed: %s.", 
 			 ifreq.ifr_name, SYSERR);
 	close(Sock);
 	return;
@@ -72,29 +73,29 @@ extern void SetMacInfo(DevName, NetIf)
 /*
  * Find and set the MAC info using the Network Interface Tap (NIT)
  */
-extern void SetMacInfo(DevName, NetIf)
-    char 		       *DevName;
-    NetIF_t 		       *NetIf;
+extern void SetMacInfo(DevInfo, NetIf)
+     DevInfo_t		       *DevInfo;
+     NetIF_t 		       *NetIf;
 {
     register struct sockaddr   *SockAddr;
     struct ifreq 	        ifreq;
     char 		       *ether_ntoa(), Buf[MAXHOSTNAMLEN+1];
     int 		        Desc;
 
-    if (!NetIf)
+    if (!NetIf || !DevInfo || !DevInfo->Name)
 	return;
 
     if ((Desc = open("/dev/nit", O_RDONLY)) == SYSFAIL) {
-	if (Debug) Error("open /dev/nit failed");
+	SImsg(SIM_GERR, "open /dev/nit failed");
 	return;
     }
 
     /*
      * Bind to NIT for DevName
      */
-    strncpy(ifreq.ifr_name, DevName, sizeof ifreq.ifr_name);
+    strncpy(ifreq.ifr_name, DevInfo->Name, sizeof ifreq.ifr_name);
     if (ioctl(Desc, NIOCBIND, (caddr_t) &ifreq) < 0) {
-	if (Debug) Error("ioctl:  NIOCBIND");
+	SImsg(SIM_GERR, "ioctl NIOCBIND failed: %s", SYSERR);
 	return;
     }
 
@@ -102,7 +103,7 @@ extern void SetMacInfo(DevName, NetIf)
      * Get address
      */
     if (ioctl(Desc, SIOCGIFADDR, (caddr_t)&ifreq) < 0) {
-	if (Debug) Error("ioctl (SIOCGIFADDR)");
+	SImsg(SIM_GERR, "ioctl SIOCGIFADDR failed: %s", SYSERR);
 	return;
     }
 
@@ -131,10 +132,9 @@ extern void SetMacInfo(DevName, NetIf)
 /*
  * Find and set the MAC info using the Data Link Provider Interface (DLPI)
  */
-extern void SetMacInfo(DevName, NetIf, DevInfo)
-    char 		       *DevName;
-    NetIF_t 		       *NetIf;
-    DevInfo_t		       *DevInfo;
+extern void SetMacInfo(DevInfo, NetIf)
+     DevInfo_t		       *DevInfo;
+     NetIF_t 		       *NetIf;
 {
     char 		        buff[MAXHOSTNAMLEN+1];
     int 		        fd;
@@ -145,11 +145,11 @@ extern void SetMacInfo(DevName, NetIf, DevInfo)
     union DL_primitives	       *dlp;
     u_char			addr[MAXDLADDR];
 
-    if (!NetIf)
+    if (!NetIf || !DevInfo || !DevInfo->Name)
 	return;
 
     dlp = (union DL_primitives *) dlbuf;
-    (void) sprintf(devname, "%s/%s", _PATH_DEV, DevName);
+    (void) snprintf(devname, sizeof(devname),  "%s/%s", _PATH_DEV, DevInfo->Name);
     /*
      * Remove unit part of name from the device name.
      */
@@ -161,7 +161,7 @@ extern void SetMacInfo(DevName, NetIf, DevInfo)
     }
 
     if ((fd = open(devname, O_RDWR)) == SYSFAIL) {
-	if (Debug) Error("Cannot open %s: %s.", devname, SYSERR);
+	SImsg(SIM_GERR, "Cannot open %s: %s.", devname, SYSERR);
 	return;
     }
 
@@ -255,25 +255,27 @@ static char *GetNetType(type)
 /*
  * Find and set the MAC info using the Packet Filter
  */
-extern void SetMacInfo(DevName, Netif, DevInfo)
-     char 		       *DevName;
-     NetIF_t 		       *Netif;
+extern void SetMacInfo(DevInfo, NetIf)
      DevInfo_t		       *DevInfo;
+     NetIF_t 		       *NetIf;
 {
     struct endevp		endevp;
     struct ether_addr		ether_addr;
     char 		       *ether_ntoa(), HostBuf[MAXHOSTNAMLEN+1];
     char 		       *p;
     int 		        Desc;
+    char		       *DevName;
 
-    if (!DevName || !Netif)
+    if (!NetIf || !DevInfo || !DevInfo->Name)
 	return;
+
+    DevName = DevInfo->Name;
 
     /*
      * Open this device using the packet filter
      */
     if ((Desc = pfopen(DevName, O_RDONLY)) < 0) {
-	if (Debug) Error("pfopen %s failed: %s.", DevName, SYSERR);
+	SImsg(SIM_GERR, "pfopen %s failed: %s.", DevName, SYSERR);
 	return;
     }
 
@@ -281,7 +283,7 @@ extern void SetMacInfo(DevName, Netif, DevInfo)
      * Retrieve info
      */
     if (ioctl(Desc, EIOCDEVP, &endevp) < 0) {
-	if (Debug) Error("ioctl EIOCDEVP of %s failed: %s.", DevName, SYSERR);
+	SImsg(SIM_GERR, "ioctl EIOCDEVP of %s failed: %s.", DevName, SYSERR);
 	return;
     }
 
@@ -308,11 +310,15 @@ extern void SetMacInfo(DevName, Netif, DevInfo)
 #endif	/* HAVE_PACKETFILTER */
 
 #if	!defined(GETMAC_TYPE)
-extern void SetMacInfo(DevName, NetIf)
+extern void SetMacInfo(DevInfo, NetIf)
     /*ARGSUSED*/
-    char 		       *DevName;
-    NetIF_t 		       *NetIf;
+     DevInfo_t		       *DevInfo;
+     NetIF_t 		       *NetIf;
 {
+#if	defined(SETMACINFO_FUNC)
+    SETMACINFO_FUNC(DevInfo, NetIf);
+#else
     /* Do Nothing */
+#endif
 }
 #endif	/* !GETMAC_TYPE */

@@ -1,19 +1,16 @@
 .\"
-.\" Copyright (c) 1992-1994 Michael A. Cooper.
+.\" Copyright (c) 1992-1998 Michael A. Cooper.
 .\" This software may be freely distributed provided it is not sold for 
 .\" profit and the author is credited appropriately.
 .\"
-.\" $Id: sysinfo.man,v 1.1.1.1 1996-10-07 20:16:47 ghudson Exp $
+.\" $Revision: 1.1.1.2 $
 .\" 
-.TH sysinfo 1 "6 February 1996"
-.ds ]W USC-UCS
+.TH sysinfo 1 "1 September 1998"
+.ds ]W MagniComp Systems
 .SH NAME
 sysinfo \- Display system information
 .SH SYNOPSIS
 sysinfo
-[
-.B +|\-all
-] 
 [
 .B \-cfdir
 .I DirName
@@ -27,15 +24,19 @@ sysinfo
 .I item1,item2,...
 ] 
 [
-.B \-debug
+\-danger
 ]
 [
 .B \-format
 .I FormatType
 ] 
 [
-.B \-level
-.I level1,level2,...
+.B \-msgclass
+.I msgclass1,msgclass2,...
+]
+[
+.B \-msglevel
+.I msglevel1,msglevel2,...
 ]
 [
 .B \-offset 
@@ -57,6 +58,9 @@ sysinfo
 .B +|\-unknown
 ] 
 [
+.B +|\-useconfig
+] 
+[
 .B +|\-useprom
 ] 
 .br
@@ -64,21 +68,26 @@ sysinfo
 sysinfo 
 .B \-list
 [
-.B class|format|level|show|type
+.B class|format|msgclass|msglevel|show|type
 ]
 .br
 .sp
 sysinfo 
 .B \-version
 .SH DESCRIPTION
-.I Sysinfo
+.I SysInfo
 displays various types of information about the local host's hardware
 and
 operating system (OS) software.
-It is intended to provide information in both a human readable format
-and
-a consistant interface for use by other programs to obtain
-system information
+It is intended to provide information in both human readable and
+program parsable formats.
+System Administrators can use 
+.I SysInfo
+to obtain hardware asset information and OS configuration information.
+Programs which use 
+.I SysInfo 
+can obtain
+this information
 in a platform independent manner.
 .PP
 The amount of information displayed varies by operating system.
@@ -120,10 +129,11 @@ A variety of different system configuration parameters
 .PP
 By default,
 .B sysinfo
-will display most info items it knows about.
+will display a "medium" level of output suitable for a quick glance at
+system configuration information.
 The
-.B "\-level all" 
-option will provide an even greater amount of detail.
+.B "\-msglevel all" 
+option provides the maximum amount of system information.
 .PP
 The scope of the information presented can by limited by classes
 using the ``\fB\-class \fIName\fR''
@@ -134,12 +144,19 @@ a specific item using ``\fB\-class \fIName\fR \fB\-show \fIItem\fR''
 Upon startup,
 .B sysinfo
 searches for a configuration file to parse.
+If the
+\fB\-cffile\fR
+option is given, the specified configuration file will be used.
+Otherwise
+.B SysInfo
+will search for a suitable configuration file.
 Searching stops when the first configuration file is found.
 The following search order is used:
 .br
 .sp
 .nf
 .RS
+\fB/etc/sysinfo.cf
 \fIConfDir\fB/${OSname}_${OSver}.cf
 \fIConfDir\fB/${OSname}_${OSmajver}.cf
 \fIConfDir\fB/${OSname}.cf
@@ -147,15 +164,18 @@ The following search order is used:
 .RE
 .sp
 .fi
+.I ConfDir
+is
+.B /var/local/conf/sysinfo
+by default, but can be overridden with the
+.B \-cfdir
+option.
 .PP
 If the file
 .I /etc/sysmodel
 exists, the first line of the file is read and used as the
 system model name.
 .SH OPTIONS
-.IP "\fB+|-all\fP"
-Enable (\fB+all\fP) or disable (\fB\-all\fP) displaying all known information.
-This option is enabled by default.
 .IP "\fB\-cfdir \fIDirName\fR"
 Specify the name of the directory to use to find
 .B sysinfo.cf
@@ -164,10 +184,22 @@ format configuration files.
 Specify the name of a 
 .B sysinfo.cf
 format configuration file to use.
+If the specified 
+.I FileName
+cannot be opened for any reason, an error message is displayed and the
+program will exit.
 .IP "\fB\-class \fIName1,Name2,...\fR"
 Limit information to a specific class or classes of information.
 The default class is
 .B General.
+.IP "\fB\-danger\fR"
+Normally
+.I SysInfo
+checks upon startup to make sure it's running on the same platform
+(OS Name, OS Version, CPU Type, and CPU Archecture (on some platforms))
+as it was built on.  This option overrides/disables this check.
+Using this option usually means that the information provided may be
+false or incomplete.
 .IP "\fB\-format \fIFormatType\fR"
 Display output in
 .I FormatType
@@ -189,20 +221,89 @@ option can be used to change this value.
 .B NOTE:
 Output format is currently not finalized and may change in a future release.
 .RE
-.IP "\fB\-debug\fR"
-Enable debugging messages.
-This includes printing all error messages that are normally
-not shown.
-.IP "\fB\-level \fIlevels\fR"
-Set the level of information that is shown.
-.I levels
+.IP "\fB\-msgclass \fImsgclass1,msgclass2,...\fR"
+Specify which class of messages should be output.
+The default value for
+.B \-msgclass
+is
+.B info,warn,cerror.
+The list of possible 
+.I msgclass
+values are:
+.RS
+.IP "\fBall\fR"
+All of the below classes except for 
+.B debug.
+.IP "\fBinfo\fR"
+Display normal informational messages.
+All the actual useful bits of 
+information about your system are output as msgclass \fBinfo\fB.
+.IP "\fBwarn\fR"
+Display warning messages about any condition that occured while 
+.B SysInfo
+is running which may affect what information is found.
+Normally these are things like 
+.B SysInfo
+is not running with the right permissions or certain things are missing from
+the system which are not required, but may result in incomplete information.
+.IP "\fBgerror\fR"
+Display general error messages.
+These are non-fatal errors which are usually quite normal.
+For instance, a certain type of query (such as a ioctl() call) of a device
+fails because it's not supported on that particuliar model.
+.IP "\fBcerror\fR"
+Display critical errors which prevent 
+.B SysInfo
+from continuing further.
+.IP "\fBdebug\fR"
+Print debugging information.
+Lots of information you normally don't want to see, but which is very 
+valuable for debugging problems with
+.B SysInfo.
+.RE
+.IP "\fB\-msglevel \fImsglevel1,msglevel2,...\fR"
+Set the level of messages that are shown.
+.I msglevels
 is a comma separated list of values used to determine what
-levels of information will be displayed.
-Use the
-.B "\-list level"
-option to get a list of valid 
-.I levels.
-.IP "\fB\-list [ class|format|level|show|type ]\fR"
+levels of message will be displayed.
+The list of possible 
+.I msglevel
+values are:
+.RS
+.IP "\fBall\fR"
+All possible levels of information.
+This option provides the maximum amount of detailed information about a 
+system.
+.IP "\fBterse\fR"
+Display output in terse format.
+The affect of this option is dependent on the 
+.I Class
+of information being displayed.
+It usually results in the labels for each output value being suppressed.
+This is useful if you are running 
+.B SysInfo
+from a script
+to obtain a few specific values (e.g. System Model, CPU Architecture, etc).
+.IP "\fBbrief\fR"
+More than 
+.B terse
+but less than 
+.B all.
+.IP "\fBgeneral\fR"
+General level of information useful for a quick look at overall system 
+configuration.
+This is the default.
+.IP "\fBdescriptions\fR"
+Like
+.B general
+but with more descriptive information.
+.IP "\fBconfig\fR"
+Similiar to 
+.B general
+and
+.B descriptions
+.RE
+.IP "\fB\-list [ class|format|msgclass|msglevel|show|type ]\fR"
 List the possible values that may be used with an option.
 With no arguments are specified, a list is valid arguments is
 displayed.
@@ -239,6 +340,16 @@ for a list of valid item arguments.
 Enable (\fB+unknown\fP) or disable (\fB\-unknown\fP) showing devices
 that appear to be present on the system, but are not "known" to sysinfo.
 This option is enabled by default.
+.IP "\fB+|-useconfig\fP"
+Enable (\fB+useconfig\fP) or disable (\fB\-useconfig\fP) use of
+configuration files.  This option is useful if you want to run
+.I sysinfo
+without having the configuration files installed.
+Note that only certain types of information - such as some of the
+.B General
+values - will be available without use of configuration files.
+The default is
+\fB+useconfig\fP.
 .IP "\fB+|-useprom\fP"
 Enable (\fB+useprom\fP) or disable (\fB\-useprom\fP) using values
 obtained from the system PROM instead of intepreting values obtained
@@ -259,16 +370,51 @@ a system PROM.
 Show version
 information for
 .I sysinfo.
+.SH EXAMPLES
+The following command displays the maximum amount of information about 
+a system:
+.RS
+.nf
+.B sysinfo -msglevel all
+.fi
+.RE
+.PP
+A very useful command to use when \fBDEBUGGING\fR 
+.I SysInfo
+is:
+.RS
+.nf
+.B sysinfo -msglevel all -msgclass all,debug
+.fi
+.RE
+.PP
+The following example outputs just the System Model:
+.RS
+.nf
+.B sysinfo -msglevel terse -show model
+.fi
+.RE
+.PP
+This command will limit the output to just information about
+.B Kernel
+variables:
+.RS
+.nf
+.B sysinfo -class kernel
+.fi
+.RE
 .SH AUTHOR
 Michael A. Cooper
 .br
-University Computing Services
+MagniComp Systems
 .br
-University of Southern California
-.br
-mcooper@usc.edu
+mcooper@magnicomp.com
+.SH "HOME PAGE"
+.B http://www.magnicomp.com/sysinfo/
 .SH FILES
-/usr/lsd/conf/sysinfo	\- Directory of config files
+/var/local/conf/sysinfo	\- Directory of config files
+.br
+/etc/sysinfo.cf \- Master configuration file
 .br
 /etc/sysmodel	\- Explicitly set the CPU model name
 .SH SEE ALSO
@@ -297,7 +443,7 @@ open.
 This may result in certain pieces of information 
 not always showing up consistantly.  When in doubt,
 enable debugging
-.B (\-debug).
+(\fB\-msgclass debug\fP).
 .PP
 Under 
 .B "SunOS 5.4"
@@ -336,13 +482,3 @@ Under
 there is no way to tell the difference between an MC68020 (like the
 3/60) and MC68030 (like the 3/80)
 based machine.
-.PP
-Under 
-.B Ultrix
-it's virtually impossible to determine the actual
-.B "System Model"
-for 
-.B VAX
-and 
-.B "DEC MIPS"
-based machines.

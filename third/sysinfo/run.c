@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: run.c,v 1.1.1.2 1998-02-12 21:32:01 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -31,17 +32,17 @@ int SetUserID(RealUID, EffectUID)
     uid_t			RealUID;
     uid_t			EffectUID;
 {
-    if (Debug) printf("SetUserID(%d, %d) current: ruid=%d euid=%d\n", 
-		      RealUID, EffectUID, getuid(), geteuid());
+    SImsg(SIM_DBG, "SetUserID(%d, %d) current: ruid=%d euid=%d", 
+	  RealUID, EffectUID, getuid(), geteuid());
 
     if (setreuid(RealUID, EffectUID) == -1) {
-	if (Debug) Error("setreuid to %d, %d failed: %s", 
-			 RealUID, EffectUID, SYSERR);
+	SImsg(SIM_GERR, "setreuid to %d, %d failed: %s", 
+	      RealUID, EffectUID, SYSERR);
 	return(-1);
     }
 
-    if (Debug) printf("SetUserID(%d, %d) new: ruid=%d euid=%d\n",
-		      RealUID, EffectUID, getuid(), geteuid());
+    SImsg(SIM_DBG, "SetUserID(%d, %d) new: ruid=%d euid=%d",
+	  RealUID, EffectUID, getuid(), geteuid());
 
     return(0);
 }
@@ -53,11 +54,11 @@ int SetEnv(Key, Value)
     char		       *Key;
     char		       *Value;
 {
-    static char			Buff[BUFSIZ];
+    static char			Buff[1024];
 
-    (void) sprintf(Buff, "%s=%s", Key, (Value) ? Value : "");
+    (void) snprintf(Buff, sizeof(Buff), "%s=%s", Key, (Value) ? Value : "");
     if (putenv(strdup(Buff)) != 0) {
-	if (Debug) Error("putenv(%s) failed.", Buff);
+	SImsg(SIM_GERR, "putenv(%s) failed.", Buff);
 	return(-1);
     }
 
@@ -118,7 +119,7 @@ extern char *RunCmds(Cmds, WithPrivs)
     char 		      **Cmds;
     int				WithPrivs;
 {
-    static char			Buf[BUFSIZ];
+    static char			Buf[MAXPATHLEN];
     int 			l;
     int				Done = 0;
     FILE 		       *pf;
@@ -133,7 +134,7 @@ extern char *RunCmds(Cmds, WithPrivs)
 	/*
 	 * If this command has any args, nuke them for the access() test.
 	 */
-	strcpy(Buf, *Cmd);
+	(void) snprintf(Buf, sizeof(Buf), "%s", *Cmd);
 	p = strchr(Buf, ' ');
 	if (p != NULL)
 	    *p = C_NULL;
@@ -141,8 +142,8 @@ extern char *RunCmds(Cmds, WithPrivs)
 	if (access(Buf, X_OK) != 0)
 	    continue;
 
-	if (Debug) printf("RunCmd '%s' %s Privs\n", 
-			  *Cmd, (WithPrivs) ? "With" : "Without");
+	SImsg(SIM_DBG, "RunCmd '%s' %s Privs", 
+	      *Cmd, (WithPrivs) ? "With" : "Without");
 
 	if ((pf = popen(*Cmd, "r")) == NULL)
 	    continue;
@@ -182,7 +183,7 @@ int WaitForProc(ProcID)
 	if (WIFEXITED(ProcStatus))
 	    return(WAITEXITSTATUS(ProcStatus));
 	else {
-	    Error("waitpid(%d, , 0) failed and returned %d: %s.", 
+	    SImsg(SIM_GERR, "waitpid(%d, , 0) failed and returned %d: %s.", 
 		  ProcID, RetProcID, SYSERR);
 	    return(-1);
 	}
@@ -203,7 +204,7 @@ int WaitForProc(ProcID)
 	if (WIFEXITED(ProcStatus))
 	    return(WAITEXITSTATUS(ProcStatus));
 	else {
-	    Error("wait4(%d) failed and returned %d: %s.", 
+	    SImsg(SIM_GERR, "wait4(%d) failed and returned %d: %s.", 
 		  ProcID, RetProcID, SYSERR);
 	    return(-1);
 	}
@@ -234,15 +235,15 @@ int Execute(Cmd, Argv, Env, WithPrivs, StdOut, StdErr)
 	Env = DefEnviron;
 
     if (Debug) {
-	printf("Execute '%s'", Cmd);
+	SImsg(SIM_INFO, "Execute '%s'", Cmd);
 	for (PtrPtr = Argv; PtrPtr && *PtrPtr; ++PtrPtr)
-	    printf(" '%s'", *PtrPtr);
-	printf("\t%s Privs\n", (WithPrivs) ? "With" : "Without");
+	    SImsg(SIM_INFO, " '%s'", *PtrPtr);
+	SImsg(SIM_INFO, "\t%s Privs\n", (WithPrivs) ? "With" : "Without");
     }
 
     ProcID = fork();
     if (ProcID < 0) {
-	Error("Fork failed: %s", SYSERR);
+	SImsg(SIM_GERR, "Fork failed: %s", SYSERR);
 	return(-1);
     } else if (ProcID == 0) {
 	/*
@@ -250,20 +251,20 @@ int Execute(Cmd, Argv, Env, WithPrivs, StdOut, StdErr)
 	 */
 	if (StdOut >= 0)
 	    if (dup2(StdOut, fileno(stdout)) < 0)
-		Error("dup2(%d, stdout) failed: %s.", StdOut);
+		SImsg(SIM_GERR, "dup2(%d, stdout) failed: %s.", StdOut);
 	if (StdErr >= 0)
 	    if (dup2(StdErr, fileno(stderr)) < 0)
-		Error("dup2(%d, stderr) failed: %s.", StdErr);
+		SImsg(SIM_GERR, "dup2(%d, stderr) failed: %s.", StdErr);
 	ExecInit(WithPrivs);
 	execve(Cmd, Argv, Env);
-	Error("Execve \"%s\" failed: %s", Cmd, SYSERR);
+	SImsg(SIM_GERR, "Execve \"%s\" failed: %s", Cmd, SYSERR);
 	exit(127);
     } else {
 	/*
 	 * Parent
 	 */
 	Status = WaitForProc(ProcID);
-	if (Debug) printf("\tCommand '%s' exited %d.\n", Cmd, Status);
+	SImsg(SIM_DBG, "\tCommand '%s' exited %d.", Cmd, Status);
 	return(Status);
     }
     return(-1);
@@ -327,7 +328,7 @@ extern char *RunTestFiles(Cmds)
     char		      **Argv;
     char		       *Name = NULL;
     register char	       *p;
-    static char			Buf[BUFSIZ];
+    static char			Buf[MAXPATHLEN];
     int				StdOut = -1;
     int				StdErr = -1;
 
@@ -344,7 +345,7 @@ extern char *RunTestFiles(Cmds)
 	/*
 	 * If this command has any args, nuke them for the access() test.
 	 */
-	strcpy(Buf, *Cmd);
+	(void) snprintf(Buf, sizeof(Buf), "%s", *Cmd);
 	p = strchr(Buf, ' ');
 	if (p != NULL)
 	    *p = C_NULL;

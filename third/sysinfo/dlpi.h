@@ -1,5 +1,5 @@
 /*
- * $Id: dlpi.h,v 1.1.1.1 1996-10-07 20:16:55 ghudson Exp $
+ * $Revision: 1.1.1.2 $
  *
  * The code contained in this file is from Neal Nuckolls's (Sun Internet
  * Engineering) DLPI "test" kit.
@@ -26,7 +26,6 @@
  * Maximum address buffer length.
  */
 #define		MAXDLADDR	1024
-
 
 /*
  * Handy macro.

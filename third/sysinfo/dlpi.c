@@ -4,7 +4,7 @@
  */
 
 #ifndef lint
-static char *RCSid = "$Id: dlpi.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.2 $";
 #endif
 
 /*
@@ -18,7 +18,6 @@ static char *RCSid = "$Id: dlpi.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp $";
  *   Connection Oriented stuff
  *   QOS stuff
  */
-
 
 #include "defs.h"
 
@@ -51,7 +50,7 @@ u_long	ppa;
 	flags = 0;
 
 	if (putmsg(fd, &ctl, (struct strbuf*) NULL, flags) < 0)
-		if (Debug) Error("dlattachreq:  putmsg");
+		SImsg(SIM_GERR, "dlattachreq:  putmsg");
 }
 
 dlphysaddrreq(fd, addrtype)
@@ -72,7 +71,7 @@ u_long	addrtype;
 	flags = 0;
 
 	if (putmsg(fd, &ctl, (struct strbuf*) NULL, flags) < 0)
-		if (Debug) Error("dlphysaddrreq:  putmsg");
+		SImsg(SIM_GERR, "dlphysaddrreq:  putmsg");
 }
 
 dldetachreq(fd)
@@ -91,7 +90,7 @@ int	fd;
 	flags = 0;
 
 	if (putmsg(fd, &ctl, (struct strbuf*) NULL, flags) < 0)
-		if (Debug) Error("dldetachreq:  putmsg");
+		SImsg(SIM_GERR, "dldetachreq:  putmsg");
 }
 
 dlbindreq(fd, sap, max_conind, service_mode, conn_mgmt, xidtest)
@@ -120,7 +119,7 @@ u_long	xidtest;
 	flags = 0;
 
 	if (putmsg(fd, &ctl, (struct strbuf*) NULL, flags) < 0)
-		if (Debug) Error("dlbindreq:  putmsg");
+		SImsg(SIM_GERR, "dlbindreq:  putmsg");
 }
 
 dlunbindreq(fd)
@@ -139,7 +138,7 @@ int	fd;
 	flags = 0;
 
 	if (putmsg(fd, &ctl, (struct strbuf*) NULL, flags) < 0)
-		if (Debug) Error("dlunbindreq:  putmsg");
+		SImsg(SIM_GERR, "dlunbindreq:  putmsg");
 }
 
 dlokack(fd, bufp)
@@ -161,13 +160,13 @@ char	*bufp;
 	expecting(DL_OK_ACK, dlp);
 
 	if (ctl.len < sizeof (dl_ok_ack_t))
-		if (Debug) Error("dlokack:  response ctl.len too short:  %d", ctl.len);
+		SImsg(SIM_GERR, "dlokack:  response ctl.len too short:  %d", ctl.len);
 
 	if (flags != RS_HIPRI)
-		if (Debug) Error("dlokack:  DL_OK_ACK was not M_PCPROTO");
+		SImsg(SIM_GERR, "dlokack:  DL_OK_ACK was not M_PCPROTO");
 
 	if (ctl.len < sizeof (dl_ok_ack_t))
-		if (Debug) Error("dlokack:  short response ctl.len:  %d", ctl.len);
+		SImsg(SIM_GERR, "dlokack:  short response ctl.len:  %d", ctl.len);
 }
 
 dlbindack(fd, bufp)
@@ -189,10 +188,10 @@ char	*bufp;
 	expecting(DL_BIND_ACK, dlp);
 
 	if (flags != RS_HIPRI)
-		if (Debug) Error("dlbindack:  DL_OK_ACK was not M_PCPROTO");
+		SImsg(SIM_GERR, "dlbindack:  DL_OK_ACK was not M_PCPROTO");
 
 	if (ctl.len < sizeof (dl_bind_ack_t))
-		if (Debug) Error("dlbindack:  short response ctl.len:  %d", ctl.len);
+		SImsg(SIM_GERR, "dlbindack:  short response ctl.len:  %d", ctl.len);
 }
 
 dlphysaddrack(fd, bufp)
@@ -214,16 +213,16 @@ char	*bufp;
 	expecting(DL_PHYS_ADDR_ACK, dlp);
 
 	if (flags != RS_HIPRI)
-		if (Debug) Error("dlbindack:  DL_OK_ACK was not M_PCPROTO");
+		SImsg(SIM_GERR, "dlbindack:  DL_OK_ACK was not M_PCPROTO");
 
 	if (ctl.len < sizeof (dl_phys_addr_ack_t))
-		if (Debug) Error("dlphysaddrack:  short response ctl.len:  %d", ctl.len);
+		SImsg(SIM_GERR, "dlphysaddrack:  short response ctl.len:  %d", ctl.len);
 }
 
 static void
 mysigalrm()
 {
-	Error("sigalrm:  TIMEOUT");
+	SImsg(SIM_GERR, "sigalrm:  TIMEOUT");
 	exit(1);
 }
 
@@ -241,8 +240,8 @@ char	*caller;
 	 */
 	(void) signal(SIGALRM, mysigalrm);
 	if (alarm((unsigned) MAXWAIT) < (unsigned) 0) {
-		(void) sprintf(errmsg, "%s:  alarm", caller);
-		if (Debug) Error(errmsg);
+		(void) snprintf(errmsg, sizeof(errmsg),  "%s:  alarm", caller);
+		SImsg(SIM_GERR, errmsg);
 	}
 
 	/*
@@ -250,33 +249,33 @@ char	*caller;
 	 */
 	*flagsp = 0;
 	if ((rc = getmsg(fd, ctlp, datap, flagsp)) < 0) {
-		(void) sprintf(errmsg, "%s:  getmsg", caller);
-		if (Debug) Error(errmsg);
+		(void) snprintf(errmsg, sizeof(errmsg),  "%s:  getmsg", caller);
+		SImsg(SIM_GERR, errmsg);
 	}
 
 	/*
 	 * Stop timer.
 	 */
 	if (alarm((unsigned) 0) < (unsigned) 0) {
-		(void) sprintf(errmsg, "%s:  alarm", caller);
-		if (Debug) Error(errmsg);
+		(void) snprintf(errmsg, sizeof(errmsg),  "%s:  alarm", caller);
+		SImsg(SIM_GERR, errmsg);
 	}
 
 	/*
 	 * Check for MOREDATA and/or MORECTL.
 	 */
 	if ((rc & (MORECTL | MOREDATA)) == (MORECTL | MOREDATA))
-		if (Debug) Error("%s:  MORECTL|MOREDATA", caller);
+		SImsg(SIM_GERR, "%s:  MORECTL|MOREDATA", caller);
 	if (rc & MORECTL)
-		if (Debug) Error("%s:  MORECTL", caller);
+		SImsg(SIM_GERR, "%s:  MORECTL", caller);
 	if (rc & MOREDATA)
-		if (Debug) Error("%s:  MOREDATA", caller);
+		SImsg(SIM_GERR, "%s:  MOREDATA", caller);
 
 	/*
 	 * Check for at least sizeof (long) control data portion.
 	 */
 	if (ctlp->len < sizeof (long))
-		if (Debug) Error("getmsg:  control portion length < sizeof (long):  %d", ctlp->len);
+		SImsg(SIM_GERR, "getmsg:  control portion length < sizeof (long):  %d", ctlp->len);
 }
 
 expecting(prim, dlp)
@@ -284,7 +283,7 @@ int	prim;
 union	DL_primitives	*dlp;
 {
 	if (dlp->dl_primitive != (u_long)prim)
-	    if (Debug) Error("DLPI: expected %d got %d", prim,
+	    SImsg(SIM_GERR, "DLPI: expected %d got %d", prim,
 			     dlp->dl_primitive);
 }
 

@@ -1,18 +1,20 @@
-/*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
- * appropriately.
- */
+/* 
+ * Copyright (c) 1992-1998 Michael A. Cooper. 
+ * This software may be freely used and distributed provided it is not 
+ * sold for profit or used in part or in whole for commercial gain 
+ * without prior written agreement, and the author is credited 
+ * appropriately. 
+ */ 
 
 #ifndef lint
-static char *RCSid = "$Id: strutil.c,v 1.1.1.2 1998-02-12 21:31:59 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
  * String utility functions
  */
 #include "defs.h"
+#include "strutil.h"
 
 /*
  * Is What in List?
@@ -48,13 +50,50 @@ char *FindSep(String, List)
 }
 
 /*
+ * Is What a quote character?  If so, return the ending quote char
+ * which is the next char in QuoteChars.  QuoteChars may contain
+ * multiple pairs of quote characters. e.g ""<>''`'
+ */
+int IsQuote(What, QuoteChars)
+     int			What;
+     char		       *QuoteChars;
+{
+    int				QuotePair;
+    static int			NumQuotes;
+    static char		       *LastQuoteChars;
+
+    if (!QuoteChars)
+	return(0);
+
+    if (LastQuoteChars != QuoteChars || !NumQuotes)
+	NumQuotes = strlen(QuoteChars);
+    LastQuoteChars = QuoteChars;
+
+    for (QuotePair = 0; QuotePair < NumQuotes; QuotePair += 2) {
+	if (What == QuoteChars[QuotePair])
+	    return(QuoteChars[QuotePair+1]);
+    }
+
+    return(0);
+}
+
+/*
  * Parse a string into an argument vector.
+ * List is the string to be parsed.
+ * SepChars is the list of seperator characters which will be used to
+ *		break apart List.
+ * ArgvPtr is where the argument results will be stored.
+ * QuoteChars is the list of characters which indicate single arguments.
+ * 		This is a list of pairs.  The first char indicated begining
+ *		of quoted argument, the next char indicates end. e.g ""<>''`'
  */
 extern int
-StrToArgv(List, SepChars, ArgvPtr)
+StrToArgv(List, SepChars, ArgvPtr, QuoteChars, Flags)
     char		       *List;
     char		       *SepChars;
     char		     ***ArgvPtr;
+    char		       *QuoteChars;
+    int				Flags;
 {
     char		      **Argv = NULL;
     char		       *String;
@@ -62,6 +101,7 @@ StrToArgv(List, SepChars, ArgvPtr)
     char		       *Start;
     char		       *Next;
     char		       *End;
+    int				EndQuote;
     register char	       *cp;
     register int		Count;
     register int		i;
@@ -70,9 +110,17 @@ StrToArgv(List, SepChars, ArgvPtr)
 	return(0);
 
     String = List;
-    for (Count = 0, Ptr = String; Ptr && *Ptr; ++Ptr)
+    for (Count = 0, Ptr = String; Ptr && *Ptr; ++Ptr) {
+	if (EndQuote = IsQuote(*Ptr, QuoteChars))
+	    while (*(++Ptr) != EndQuote);
 	if (IsSep(*Ptr, SepChars))
 	    ++Count;
+	if (FLAGS_ON(Flags, STRTO_SKIPRP)) {
+	    /* Skip over rest of SepChars for now */
+	    while (Ptr && *Ptr && IsSep(*Ptr, SepChars))
+		++Ptr;
+	}
+    }
 
     /*
      * Watch for ending seperator
@@ -93,18 +141,25 @@ StrToArgv(List, SepChars, ArgvPtr)
     Argv = (char **) xcalloc(Count+1, sizeof(char *));
 
     /* 
-     * XXX We don't use strtok() because it doesn't like back-to-back
+     * We don't use strtok() because it doesn't like back-to-back
      * seperators.  e.g. "foo||bar" will skip the NULL argument.
+     * strtok() also doesn't do QuoteChars like we do.
      */
     for (i = 0, Start = NULL, Ptr = String; i < Count; ++i) {
 	Start = Ptr;
 	if (!isspace(*SepChars))
 	    /* Skip leading white space */
 	    for ( ; Start && *Start && isspace(*Start); ++Start);
+	if (EndQuote = IsQuote(*Start, QuoteChars))
+	    ++Start;
 	/* Find end of word */
-	for (End = Start; End && *End; ++End)
-	    if (IsSep(*End, SepChars))
+	for (End = Start; End && *End; ++End) {
+	    if (EndQuote) {
+		if (*End == EndQuote)
+		    break;
+	    } else if (IsSep(*End, SepChars))
 		break;
+	}
 	/* Mark next field */
 	Next = End;
 	if (Next)
@@ -122,6 +177,11 @@ StrToArgv(List, SepChars, ArgvPtr)
 	Ptr = Next;
 	if (!Next)
 	    break;
+	if (FLAGS_ON(Flags, STRTO_SKIPRP)) {
+	    /* Skip over rest of SepChars for now */
+	    while (Ptr && *Ptr && IsSep(*Ptr, SepChars))
+		++Ptr;
+	}
     }
 
     *ArgvPtr = Argv;

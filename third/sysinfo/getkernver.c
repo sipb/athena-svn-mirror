@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: getkernver.c,v 1.1.1.2 1998-02-12 21:32:05 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
-
 
 /*
  * Kernel related functions.
@@ -16,6 +16,7 @@ static char *RCSid = "$Id: getkernver.c,v 1.1.1.2 1998-02-12 21:32:05 ghudson Ex
 
 #include "defs.h"
 
+#if	defined(HAVE_KVM)
 #if !defined(VERSION_SYM)
 #	define VERSION_SYM 	"_version"
 #endif
@@ -27,7 +28,7 @@ static char *RCSid = "$Id: getkernver.c,v 1.1.1.2 1998-02-12 21:32:05 ghudson Ex
 extern char *GetKernVerSym()
 {
     nlist_t	 	       *nlptr;
-    static char			Buf[BUFSIZ];
+    static char			Buf[256];
     register char	       *p;
     kvm_t		       *kd;
 
@@ -39,7 +40,7 @@ extern char *GetKernVerSym()
 	    return((char *) NULL);
 
 	if (KVMget(kd, nlptr->n_value, (char *) Buf, sizeof(Buf), KDT_STRING)){
-	    if (Debug) Error("Read of \"%s\" from kernel failed.",
+	    SImsg(SIM_GERR, "Read of \"%s\" from kernel failed.",
 			     VERSION_SYM);
 	    Buf[0] = C_NULL;
 	}
@@ -59,6 +60,7 @@ extern char *GetKernVerSym()
 
     return( (Buf[0]) ? Buf : (char *) NULL);
 }
+#endif	/* HAVE_KVM */
 
 /*
  * Get kernel version string

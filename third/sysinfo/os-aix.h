@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 /*
- * $Id: os-aix.h,v 1.1.1.2 1998-02-12 21:32:26 ghudson Exp $
+ * $Revision: 1.1.1.3 $
  */
 
 #ifndef __os_aix_h__
@@ -33,12 +34,18 @@
 #define HAVE_UNAME
 #define HAVE_VARARGS
 #define HAVE_WAITPID
+#define HAVE_IN_IFADDR
 #define NAMELIST		"/unix"
 #define NEED_KVM
 #define UNAME_REL_VER_COMB
 #define WAITARG_T		int
 #define _PATH_ODM		"/etc/objrepos"
 #define RE_TYPE			RE_COMP
+
+/*
+ * We don't need Root Access
+ */
+#define RA_LEVEL		RA_NONE
 
 /*
  * Directories where the catalog files of devices reside.
@@ -75,11 +82,9 @@
 /*
  * Vital Product Data Information
  */
-struct _vpdinfo {
-    char		       *code;
-    char		       *title;
-    char		       *value;
-};
-typedef struct _vpdinfo vpdinfo_t;
+typedef struct {
+    char	       *Code;			/* VPD ID code */
+    char	       *Value;			/* Cleaned up value */
+} VPDinfo_t;
 
 #endif	/* __aix_h__ */

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 /*
- * $Id: os-sunos4.h,v 1.1.1.2 1998-02-12 21:32:28 ghudson Exp $
+ * $Revision: 1.1.1.3 $
  */
 
 #ifndef __os_sunos4_h__
@@ -81,9 +82,12 @@
 #define HAVE_NLIST
 #define HAVE_PHYSMEM
 #define HAVE_UNAME
+#define HAVE_VARARGS
 #define HAVE_WAITPID
 #define HAVE_SYSCONF
+#define HAVE_IN_IFADDR		/* struct in_ifaddr */
 #define NEED_SOCKIO
+#define HAVE_DOPRNT
 #if !defined(SECSIZE)
 #	define SECSIZE	512		/* Size of a disk sector */
 #endif
@@ -162,5 +166,9 @@ typedef struct dk_geom		DKgeom;
 typedef struct dk_info		DKinfo;
 typedef struct dk_label		DKlabel;
 typedef struct dk_type		DKtype;
+
+#ifndef _BIT_FIELDS_HTOL
+#define _BIT_FIELDS_HTOL 1	/* High-to-low bit order */
+#endif
 
 #endif	/* __os_sunos4_h__ */

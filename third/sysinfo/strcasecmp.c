@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: strcasecmp.c,v 1.1.1.2 1998-02-12 21:32:10 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 #ifndef lint
@@ -7,9 +7,11 @@ static char sccsid[] = "@(#)strcasecmp.c 1.1 89/05/19 SMI"; /* from UCB 1.3 8/3/
 #endif
 
 /*
- * Copyright (c) 1987 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
+ * appropriately.
  */
 
 /*

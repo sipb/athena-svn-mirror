@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: getman.c,v 1.1.1.2 1998-02-12 21:32:06 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -33,18 +34,18 @@ extern char *GetManShortDef()
  */
 extern char *GetManShortSysinfo()
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[256];
 #if	defined(HAVE_SYSINFO)
     register char	       *cp;
 
-    if (sysinfo(SI_HW_PROVIDER, buff, sizeof(buff)) < 0)
-	    Error("sysinfo SI_HW_PROVIDER failed.");
+    if (sysinfo(SI_HW_PROVIDER, Buff, sizeof(Buff)) < 0)
+	    SImsg(SIM_GERR, "sysinfo SI_HW_PROVIDER failed.");
     else
-	if (cp = strchr(buff, '_'))
+	if (cp = strchr(Buff, '_'))
 	    *cp = C_NULL;
 #endif	/* HAVE_SYSINFO */
 
-    return( (buff[0]) ? buff : (char *) NULL );
+    return( (Buff[0]) ? Buff : (char *) NULL );
 }
 
 /*
@@ -78,20 +79,20 @@ extern char *GetManLongDef()
  */
 extern char *GetManLongSysinfo()
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[256];
 #if	defined(HAVE_SYSINFO)
     register char	       *cp;
 
-    if (sysinfo(SI_HW_PROVIDER, buff, sizeof(buff)) < 0)
-	Error("sysinfo SI_HW_PROVIDER failed.");
+    if (sysinfo(SI_HW_PROVIDER, Buff, sizeof(Buff)) < 0)
+	SImsg(SIM_GERR, "sysinfo SI_HW_PROVIDER failed.");
     else {
-	cp = buff;
+	cp = Buff;
 	while (cp && (cp = strchr(cp, '_')))
 	    *cp++ = ' ';
     }
 #endif	/* HAVE_SYSINFO */
 
-    return((buff[0]) ? buff : (char *)NULL);
+    return((Buff[0]) ? Buff : (char *)NULL);
 }
 
 /*
@@ -114,7 +115,7 @@ extern char *GetManLong()
 extern char *GetMan()
 {
     char 		       *ms, *ml;
-    static char 		Buf[BUFSIZ];
+    static char 		Buf[256];
 
     Buf[0] = CNULL;
     ms = GetManShort();
@@ -124,9 +125,9 @@ extern char *GetMan()
 	return((char *) NULL);
 
     if (!VL_TERSE && !VL_BRIEF)
-	(void) sprintf(Buf, "%s (%s)", ms, ml);
+	(void) snprintf(Buf, sizeof(Buf),  "%s (%s)", ms, ml);
     else
-	(void) sprintf(Buf, "%s", ms);
+	(void) snprintf(Buf, sizeof(Buf),  "%s", ms);
 
     return(Buf);
 }

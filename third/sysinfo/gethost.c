@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: gethost.c,v 1.1.1.2 1998-02-12 21:32:06 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -40,20 +41,25 @@ extern char *GetHostName()
  */
 extern char *GetHostAliases()
 {
-    static char 		Buf[BUFSIZ];
+    static char 		Buf[256];
     struct hostent 	       *hp;
     register char	      **pp;
     char 		       *HName;
+    register int		Len;
 
     if ((HName = GetHostName()) == NULL)
 	return((char *) NULL);
 
     if ((hp = gethostbyname(HName)) == NULL) {
-	Error("Cannot find lookup host info for \"%s\": %s", HName, SYSERR);
+	SImsg(SIM_GERR, "Cannot find lookup host info for \"%s\": %s", 
+	      HName, SYSERR);
 	return((char *) NULL);
     }
 
     for (pp = hp->h_aliases, Buf[0] = C_NULL; pp && *pp; ++pp) {
+	Len = strlen(Buf);
+	if ((Len + strlen(*pp) + 1) >= (sizeof(Buf) - Len - 2))
+	    break;
 	(void) strcat(Buf, *pp);
 	(void) strcat(Buf, " ");
     }
@@ -66,22 +72,33 @@ extern char *GetHostAliases()
  */
 extern char *GetHostAddrs()
 {
-    static char 		Buf[BUFSIZ];
+    static char 		Buf[256];
     struct hostent 	       *hp;
     register char	      **pp;
     char 		       *HName;
+    char 		       *AddrStr;
+    register int		Len;
 
     if ((HName = GetHostName()) == NULL)
 	return((char *) NULL);
 
     if ((hp = gethostbyname(HName)) == NULL) {
-	Error("Cannot find lookup host info for \"%s\": %s", HName, SYSERR);
+	SImsg(SIM_GERR, "Cannot find lookup host info for \"%s\": %s", 
+	      HName, SYSERR);
 	return((char *) NULL);
     }
 
     for (pp = hp->h_addr_list, Buf[0] = C_NULL; pp && *pp; ++pp) {
 	if (hp->h_addrtype == AF_INET) {
-	    (void) strcat(Buf, (char *) inet_ntoa(*(struct in_addr *)*pp));
+	    AddrStr = (char *) inet_ntoa(*(struct in_addr *)*pp);
+	    if (!AddrStr)
+		continue;
+
+	    Len = strlen(Buf);
+	    if ((Len + strlen(AddrStr) + 1) >= (sizeof(Buf) - Len - 2))
+		break;
+
+	    (void) strcat(Buf, AddrStr);
 	    (void) strcat(Buf, " ");
 	}
     }

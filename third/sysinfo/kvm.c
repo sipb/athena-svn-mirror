@@ -1,12 +1,10 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
-#ifndef lint
-static char *RCSid = "$Id: kvm.c,v 1.1.1.2 1998-02-12 21:32:02 ghudson Exp $";
-#endif
 
 /*
  * Frontend functions for kvm_*() functions
@@ -42,7 +40,7 @@ extern kvm_t *KVMopen()
 
     if ((kd = kvm_open((char *)NULL, (char *)NULL, (char *)NULL, O_RDONLY,
 		       ProgramName)) == NULL) {
-	if (Debug) Error("kvm_open failed: %s.", SYSERR);
+	SImsg(SIM_GERR, "kvm_open failed: %s.", SYSERR);
 	return((kvm_t *) NULL);
     }
 
@@ -104,7 +102,7 @@ extern nlist_t *KVMnlist(kd, Symbol, NameList, NumNameList)
 #endif	/* HAVE_KNLIST */
     if (Status == -1) {
 	cp = GetNlNamePtr(NLPtr);
-	if (Debug) Error("kvm_nlist name \"%s\" failed (status = %d): %s.", 
+	SImsg(SIM_GERR, "kvm_nlist name \"%s\" failed (status = %d): %s.", 
 			 (cp) ? cp : "(unknown)", Status, SYSERR);
 	KVMclose(kd);
 	return((nlist_t *) NULL);
@@ -127,38 +125,40 @@ extern nlist_t *KVMnlist(kd, Symbol, NameList, NumNameList)
  */
 extern int KVMget(kd, Addr, Buf, NumBytes, DataType)
     kvm_t 		       *kd;
-    OFF_T_TYPE	 		Addr;
-    char 		       *Buf;
+    KVMaddr_t	 		Addr;
+    void 		       *Buf;
     size_t 		        NumBytes;
     int				DataType;
 {
     char		       *Ptr;
+    char		       *End;
 
     if (!kd)
 	return(-1);
 
     switch (DataType) {
     case KDT_STRING:
-	Ptr = Buf;
+	Ptr = (char *) Buf;
+	End = (char *) &Ptr[NumBytes-1];
 	do {
 	    if (kvm_read(kd, Addr++, Ptr, 1) != 1) {
-		if (Debug) Error("kvm_read failed prematurely: %s.", SYSERR);
+		SImsg(SIM_GERR, "kvm_read failed prematurely: %s.", SYSERR);
 		return(-1);
 	    }
-	} while (Ptr < &Buf[NumBytes-1] && *Ptr++);
+	} while (Ptr < End && *Ptr++);
 	*Ptr = C_NULL;
 	break;
 
     case KDT_DATA:
 	if (kvm_read(kd, Addr, Buf, NumBytes) != NumBytes) {
-	    if (Debug) Error("kvm_read failed (amount=%d): %s.", 
+	    SImsg(SIM_GERR, "kvm_read failed (amount=%d): %s.", 
 			     NumBytes, SYSERR);
 	    return(-1);
 	}
 	break;
 
     default:
-	if (Debug) Error("Unknown Kernel Data Type: %d.", DataType);
+	SImsg(SIM_UNKN, "Unknown Kernel Data Type: %d.", DataType);
 	return(-1);
     }
 
@@ -182,8 +182,8 @@ extern int _CheckNlist(PtrNL)
      */
     if (!PtrNL->n_value) {
 	cp = GetNlNamePtr(PtrNL);
-	if (Debug) Error("Kernel symbol \"%s\" not found.", 
-			 (cp) ? cp : "(unknown)");
+	SImsg(SIM_DBG, "Kernel symbol \"%s\" not found.", 
+	      (cp) ? cp : "(unknown)");
 	return(-1);
     }
 

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-sunos.c,v 1.1.1.2 1998-02-12 21:32:17 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -14,31 +15,25 @@ static char *RCSid = "$Id: os-sunos.c,v 1.1.1.2 1998-02-12 21:32:17 ghudson Exp 
  */
 
 #include "defs.h"
-#include "kdt-sunos.h"
+#include "sunos-kdt.h"
 #include <utmp.h>
-#include <sys/stat.h>
-
-/*
- * Name of frame buffer "indirect" device.
- */
-#define FBDEVICE		"fb"
 
 #if	OSMVER == 5
 #include "os-sunos5.h"
-#include <sys/scsi/scsi.h>			/* SCSI inquiry */
-#include <sys/scsi/impl/uscsi.h>		/* SCSI inquiry */
+#include <sys/scsi/impl/uscsi.h>		/* USCSICMD */
 #if		OSVER >= 56
 #include <sys/scsi/scsi_types.h>		/* For stdef.h */
-#else
+#else		/* OSVER < 56 */
 #include <sys/t_lock.h>				/* For stdef.h */
 #endif		/* 5.6 */
 #include <sys/scsi/targets/stdef.h>		/* For st_drivetype */
-#else
+#else	/* OSMVER != 5 */
 #include "os-sunos4.h"
 #include <scsi/targets/stdef.h>			/* For st_drivetype */
-#include <scsi/impl/uscsi.h>			/* SCSI inquiry */
-#include <scsi/generic/commands.h>		/* SCSI inquiry */
+#include <scsi/impl/uscsi.h>			/* USCSICMD */
 #endif	/* SUNOS == 5 */
+#include "myscsi.h"
+#include "sunos-obp.h"
 
 /*
  * RomVec
@@ -93,6 +88,7 @@ PSI_t GetAppArchPSI[] = {		/* Get Application Architecture */
     { NULL },
 };
 PSI_t GetCpuTypePSI[] = {		/* Get CPU Type */
+    { GetCpuTypeIsalist },
     { GetCpuTypeSysinfo },
     { GetCpuTypeTest },
     { GetCpuTypeCmds },
@@ -104,7 +100,9 @@ PSI_t GetNumCpuPSI[] = {		/* Get Number of CPU's */
     { GetNumCpuNCpuSym },
     { NULL },
 };
+#if	OSMVER == 5
 extern char		       *GetKernVerSunOS5();
+#endif	/* OSMVER == 5 */
 PSI_t GetKernVerPSI[] = {		/* Get Kernel Version */
 #if	OSMVER == 5
     { GetKernVerSunOS5 },
@@ -115,6 +113,15 @@ PSI_t GetKernVerPSI[] = {		/* Get Kernel Version */
 PSI_t GetOSNamePSI[] = {		/* Get OS Name */
     { GetOSNameSysinfo },
     { GetOSNameUname },
+    { NULL },
+};
+#if	OSMVER == 5
+extern char		       *GetOSDistSunOS5();
+#endif	/* OSMVER == 5 */
+PSI_t GetOSDistPSI[] = {		/* Get OS Dist */
+#if	OSMVER == 5
+    { GetOSDistSunOS5 },
+#endif	/* OSMVER == 5 */
     { NULL },
 };
 PSI_t GetOSVerPSI[] = {			/* Get OS Version */
@@ -157,19 +164,25 @@ PSI_t GetManLongPSI[] = {		/* Get Long Man Name */
     { GetManLongDef },
     { NULL },
 };
-extern char		       *GetMemorySunOS5();
+extern char		       *GetMemorySunOSsysmem();
+extern char		       *GetMemorySunOSsysconf();
 PSI_t GetMemoryPSI[] = {		/* Get amount of memory */
 #if	OSMVER == 5
-    { GetMemorySunOS5 },
+    { GetMemorySunOSsysmem },
+    { GetMemorySunOSsysconf },
 #endif	/* OSMVER == 5 */
     { GetMemoryPhysmemSym },
     { NULL },
 };
 PSI_t GetVirtMemPSI[] = {		/* Get amount of virtual memory */
+    { GetVirtMemSwapctl },
     { GetVirtMemAnoninfo },
     { NULL },
 };
 PSI_t GetBootTimePSI[] = {		/* Get System Boot Time */
+#if	defined(HAVE_GETUTID)
+    { GetBootTimeGetutid },
+#endif	/* HAVE_GETUTID */
 #if	defined(BOOT_TIME)
     { GetBootTimeUtmp },
 #endif	/* BOOT_TIME */
@@ -177,10 +190,7 @@ PSI_t GetBootTimePSI[] = {		/* Get System Boot Time */
     { NULL },
 };
 
-struct stat			StatBuf;
 cputype_t			CpuType = 0;
-static DevInfo_t	       *DevInfo;
-static char 			Buf[BUFSIZ];
 kvm_t		       	       *kd;
 extern char		        CpuSYM[];
 extern char		        IdpromSYM[];
@@ -192,6 +202,7 @@ extern int BuildMisc(TreePtr, SearchNames)
     DevInfo_t		      **TreePtr;
     char		      **SearchNames;
 {
+    DevInfo_t		       *DevInfo;
     DevInfo_t		       *ProbeKbd();
     int				Found = 1;
 
@@ -257,7 +268,7 @@ cputype_t SunGetCpuType()
 
     if (KVMget(kd, (u_long) nlptr->n_value, (char *) &cpu, 
 	       sizeof(cpu), KDT_DATA)) {
-	if (Debug) Error("Cannot read cpu type from kernel.");
+	SImsg(SIM_GERR, "Cannot read cpu type from kernel.");
 	return(-1);
     }
 
@@ -299,7 +310,7 @@ char *GetModelSun()
 	if (cp = GetSysModel())
 	    Name = strdup(cp);
 
-    if (Debug) printf("CPU = 0x%x  Name = <%s>\n", CpuType, ARG(Name));
+    SImsg(SIM_DBG, "CPU = 0x%x  Name = <%s>", CpuType, ARG(Name));
 
     return(Name);
 }
@@ -328,7 +339,7 @@ extern char *GetKernArchSun()
 	return(Def->ValStr1);
 
     if (Debug)
-	Error("Kernel Arch 0x%x not defined; Cpu = 0x%x Mask = 0x%x", 
+	SImsg(SIM_UNKN, "Kernel Arch 0x%x not defined; Cpu = 0x%x Mask = 0x%x",
 	      CpuType & ARCH_MASK, CpuType, ARCH_MASK);
 #endif	/* ARCH_MASK */
 
@@ -356,7 +367,7 @@ static struct idprom *GetIDPROM()
 
     if (KVMget(kd, (u_long) nlptr->n_value, (char *) &idprom, 
 	       sizeof(idprom), KDT_DATA)) {
-	if (Debug) Error("Cannot read \"%s\" from kernel.", IdpromSYM);
+	SImsg(SIM_GERR, "Cannot read \"%s\" from kernel.", IdpromSYM);
 	return((struct idprom *)NULL);
     }
 
@@ -371,7 +382,7 @@ static struct idprom *GetIDPROM()
  */
 extern char *GetSerialIDPROM()
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[128];
 #if	defined(HAVE_IDPROM)
     struct idprom	       *idprom;
 
@@ -382,207 +393,13 @@ extern char *GetSerialIDPROM()
      * id_format is not set correctly under SunOS 4.x
      */
     if (idprom->id_format != IDFORM_1)
-	if (Debug) Error("Warning: IDPROM format (%d) is incorrect.",
-			 idprom->id_format);
+	SImsg(SIM_DBG, "Warning: IDPROM format (%d) is incorrect.",
+	      idprom->id_format);
 
-    (void) sprintf(buff, "%d", idprom->id_serial);
+    (void) snprintf(Buff, sizeof(Buff),  "%d", idprom->id_serial);
 
 #endif	/* HAVE_IDPROM */
-    return((buff[0]) ? buff : (char *)NULL);
-}
-
-/*
- * Probe a FrameBuffer.
- */
-extern DevInfo_t *ProbeFrameBuffer(FBname, DevData, DevDefine)
-    char 		       *FBname;
-    DevData_t 		       *DevData;
-    DevDefine_t	 	       *DevDefine;
-{
-#if	defined(FBIOMONINFO)
-    struct mon_info		mon_info;
-#endif	/* FBIOMONINFO */
-#if	defined(FBIOGXINFO)
-    struct cg6_info 		cg6_info;
-#endif	/* FBIOGXINFO */
-    struct fbgattr		fbgattr;
-    DevInfo_t 		       *DevInfo;
-    FrameBuffer_t 	       *fb;
-    DevDefine_t		       *FBdef;
-    char 		       *File;
-    static char			FileBuff[MAXPATHLEN];
-    static char			Buff[BUFSIZ], Buff2[BUFSIZ];
-    int 			FileDesc;
-    int				GotAttr = 0;
-    register int		i;
-
-    if (!FBname)
-	return((DevInfo_t *) NULL);
-
-    if (Debug)
-	printf("ProbeFrameBuffer '%s'\n", FBname);
-
-#if	OSMVER == 5
-    if (DevDefine->File)
-	(void) sprintf(FileBuff, "%s/%s%d", 
-		       _PATH_DEV_FBS, DevDefine->File, 
-		       DevData->DevUnit);
-    else if (EQ(FBname, FBDEVICE))
-	(void) sprintf(FileBuff, "%s/%s", _PATH_DEV, FBname);
-    else
-	(void) sprintf(FileBuff, "%s/%s", _PATH_DEV_FBS, FBname);
-    File = FileBuff;
-#else
-    File = GetCharFile(FBname, NULL);
-#endif	/* OSMVER == 5 */
-
-    /*
-     * Check the device file.  If the stat fails because
-     * the device doesn't exist, trying the default framebuffer
-     * device /dev/fb.
-     */
-    if (stat(File, &StatBuf) != 0) {
-	if (errno == ENOENT && !EQ(FBname, FBDEVICE)) {
-	    if (Debug) 
-		Error("Framebuffer device `%s' does not exist.  Trying `%s'.",
-		      FBname, FBDEVICE);
-	    return(ProbeFrameBuffer(FBDEVICE, DevData, DevDefine));
-	}
-    }
-
-    if ((FileDesc = open(File, O_RDONLY)) < 0) {
-	if (Debug) Error("%s: Cannot open for reading: %s.", File, SYSERR);
-	return((DevInfo_t *) NULL);
-    }
-
-    /*
-     * Get real fb attributes
-     */
-    if ((GotAttr = ioctl(FileDesc, FBIOGATTR, &fbgattr)) != 0) {
-	if (Debug) Error("%s: FBIOGATTR failed: %s.", File, SYSERR);
-	if ((GotAttr = ioctl(FileDesc, FBIOGTYPE, &fbgattr.fbtype)) != 0)
-	    if (Debug) Error("%s: FBIOGTYPE failed: %s.", File, SYSERR);
-    }
-    if (GotAttr == 0)
-	GotAttr = 1;
-    else
-	GotAttr = 0;
-
-    /*
-     * We're committed to try
-     */
-    if (!(fb = NewFrameBuffer(NULL))) {
-	Error("Cannot create new frame buffer.");
-	return((DevInfo_t *) NULL);
-    }
-
-    if (!(DevInfo = NewDevInfo(NULL))) {
-	Error("Cannot create new frame buffer device entry.");
-	return((DevInfo_t *) NULL);
-    }
-
-#if	defined(FBIOGXINFO)
-    /*
-     * GX (cgsix) info
-     */
-    if (ioctl(FileDesc, FBIOGXINFO, &cg6_info) == 0) {
-	AddDevDesc(DevInfo, itoa(cg6_info.slot), "SBus Slot", DA_APPEND);
-	AddDevDesc(DevInfo, itoa(cg6_info.boardrev), "Board Revision", 
-		   DA_APPEND);
-	AddDevDesc(DevInfo, 
-		   (cg6_info.hdb_capable) ? "Double Buffered" : 
-		   "Single Buffered", "Buffering", DA_APPEND);
-	if (cg6_info.vmsize)
-	    fb->VMSize 	= mbytes_to_bytes(cg6_info.vmsize);
-    } else
-	if (Debug) Error("%s: FBIOGXINFO failed: %s.", File, SYSERR);
-#endif 	/* FBIOGXINFO */
-
-#if	defined(FBIOMONINFO)
-    /*
-     * Monitor info
-     */
-    if (ioctl(FileDesc, FBIOMONINFO, &mon_info) == 0) {
-	AddDevDesc(DevInfo, FreqStr(mon_info.pixfreq), 
-		   "Monitor Pixel Frequency", DA_APPEND);
-	AddDevDesc(DevInfo, FreqStr(mon_info.hfreq), 
-		   "Monitor Horizontal Frequency", DA_APPEND);
-	AddDevDesc(DevInfo, FreqStr(mon_info.vfreq), 
-		   "Monitor Vertical Frequency", DA_APPEND);
-	AddDevDesc(DevInfo, itoa(mon_info.hsync), 
-		   "Monitor Horizontal Sync (pixels)", DA_APPEND);
-	AddDevDesc(DevInfo, itoa(mon_info.vsync), 
-		   "Monitor Vertical Sync (scanlines)", DA_APPEND);
-    } else
-	if (Debug) Error("%s: FBIOMONINFO failed: %s.", File, SYSERR);
-#endif	/* FBIOMONINFO */
-
-    /*
-     * We're done doing ioctl()'s
-     */
-    close(FileDesc);
-
-    /*
-     * Find out what type of fb this is.
-     */
-    if (!GotAttr || FLAGS_ON(DevDefine->Flags, DDT_DEFINFO)) {
-	DevInfo->Model = DevDefine->Model;
-    } else if (GotAttr && (FBdef = DevDefGet(NULL, DT_FRAMEBUFFER, 
-					     fbgattr.fbtype.fb_type))) {
-	if (FBdef->Model) {
-	    (void) strcpy(Buff, FBdef->Model);
-	    if (FBdef->Name)
-		(void) sprintf(Buff + strlen(FBdef->Model), " [%s]",
-			       FBdef->Name);
-	    DevInfo->Model	= strdup(Buff);
-	} else
-	    DevInfo->Model 	= FBdef->Name;
-    } else if (GotAttr) {
-	Error("Device `%s' is an unknown type (%d) of frame buffer.",
-	      FBname, fbgattr.fbtype.fb_type);
-	DevInfo->Model 		= "UNKNOWN";
-    }
-
-#if	defined(FB_ATTR_NEMUTYPES)
-    if (GotAttr) {
-	/*
-	 * See if this fb emulates other fb's.
-	 */
-	Buff[0] = CNULL;
-	for (i = 0; i < FB_ATTR_NEMUTYPES && fbgattr.emu_types[i] >= 0; ++i)
-	    if (fbgattr.emu_types[i] != fbgattr.fbtype.fb_type &&
-		(FBdef = DevDefGet(NULL, DT_FRAMEBUFFER, 
-				   (long)fbgattr.emu_types[i]))) {
-		if (Buff[0])
-		    (void) strcat(Buff, ", ");
-		(void) strcat(Buff,
-			      (FBdef->Name) ? FBdef->Name : 
-			      ((FBdef->Model) ? FBdef->Model : ""));
-	    }
-	if (Buff[0])
-	    AddDevDesc(DevInfo, Buff, "Emulates", DA_APPEND);
-    }
-#endif	/* FB_ATTR_NEMUTYPES */
-
-    /*
-     * Put things together
-     */
-    DevInfo->Name 			= FBname;
-    DevInfo->Type 			= DT_FRAMEBUFFER;
-    DevInfo->NodeID			= DevData->NodeID;
-    DevInfo->DevSpec	 		= (caddr_t *) fb;
-
-    if (GotAttr) {
-	fb->Height 			= fbgattr.fbtype.fb_height;
-	fb->Width 			= fbgattr.fbtype.fb_width;
-	fb->Depth 			= fbgattr.fbtype.fb_depth;
-	fb->Size 			= fbgattr.fbtype.fb_size;
-	fb->CMSize 			= fbgattr.fbtype.fb_cmsize;
-    }
-
-    DevInfo->Master 			= MkMasterFromDevData(DevData);
-
-    return(DevInfo);
+    return((Buff[0]) ? Buff : (char *)NULL);
 }
 
 /*
@@ -594,12 +411,13 @@ extern char *GetTapeModel(Type)
     extern char		        STdrivetypeSYM[];
     extern char		        STndrivetypeSYM[];
     register int		i;
+    register int		l;
     kvm_t		       *kd;
     struct nlist	       *nlptr;
     u_long			Addr;
     static struct st_drivetype  STDriveType;
-    static char			Buff[BUFSIZ];
-    static char			Name[BUFSIZ];
+    static char			Buff[128];
+    static char			Name[128];
     int				NumTypes = 0;
     DevDefine_t		       *DevDef;
 
@@ -614,7 +432,7 @@ extern char *GetTapeModel(Type)
     if (nlptr && CheckNlist(nlptr) == 0)
 	if (KVMget(kd, (u_long) nlptr->n_value, (int *)&NumTypes,
 		   sizeof(NumTypes), KDT_DATA))
-	    if (Debug) Error("Read num drive types fromm kernel failed.");
+	    SImsg(SIM_GERR, "Read num drive types fromm kernel failed.");
 
     if (NumTypes > 0) {
 	/*
@@ -628,9 +446,8 @@ extern char *GetTapeModel(Type)
 		if (KVMget(kd, Addr, 
 			   (struct st_drivetype *) &STDriveType, 
 			   sizeof(STDriveType), KDT_DATA)) {
-		    if (Debug) 
-			Error("Cannot read ST Drive Types entry from 0x%x.",
-			      Addr);
+		    SImsg(SIM_GERR, 
+			  "Cannot read ST Drive Types entry from 0x%x.", Addr);
 		    break;
 		}
 
@@ -643,19 +460,21 @@ extern char *GetTapeModel(Type)
 			break;
 		    if (KVMget(kd, Addr, (char *) Name, 
 			       sizeof(Name), KDT_STRING)) {
-			if (Debug) Error("Failed to read STDriveType name.");
+			SImsg(SIM_GERR, "Failed to read STDriveType name.");
 			break;
 		    }
 		    KVMclose(kd);
 		    (void) strcpy(Buff, Name);
 		    if (STDriveType.vid[0])
-			(void) sprintf(Buff + strlen(Name), " (%s)",
-				       STDriveType.vid);
+			(void) snprintf(Buff + (l=strlen(Name)), 
+					sizeof(Buff)-l, 
+					" (%s)",
+					STDriveType.vid);
 		    return(Buff);
 		}
 	    }
-	} else if (Debug)
-	    Error("Cannot read ST drive types from kernel.");
+	} else
+	    SImsg(SIM_GERR, "Cannot read ST drive types from kernel.");
     }
 
     KVMclose(kd);
@@ -675,6 +494,23 @@ extern char *GetTapeModel(Type)
 }
 
 /*
+ * Lookup a Vendors abbreviation (e.g. 'SUNW') and return the full name.
+ */
+extern char *GetVendorName(Abbr)
+     char		       *Abbr;
+{
+    Define_t		       *Def;
+
+    if (Def = DefGet("Vendor", Abbr, 0, 0))
+	return(Def->ValStr1);
+
+    SImsg(SIM_DBG, "Warning: <%s> is not a defined Vendor in config/*.cf.", 
+	  Abbr);
+
+    return((char *) NULL);
+}
+
+/*
  * Initialize the OS specific parts of the Device Types table
  */
 void DevTypesInit()
@@ -688,6 +524,9 @@ void DevTypesInit()
 	case DT_KEYBOARD:	DevTypes[i].Probe = ProbeKbd;		break;
 	case DT_NETIF:		DevTypes[i].Probe = ProbeNetif;		break;
 	case DT_TAPEDRIVE:	DevTypes[i].Probe = ProbeTapeDrive;	break;
+#if	OSMVER == 5
+	case DT_FLOPPY:		DevTypes[i].Probe = ProbeFloppy;	break;
+#endif
 #if	OSMVER == 4
 	case DT_CDROM:		DevTypes[i].Probe = ProbeCDROMDrive;	break;
 #endif	/* OSMVER==4 */
@@ -720,14 +559,14 @@ extern char *GetNumCpuNCpuSym()
 
     if (KVMget(kd, (u_long) nlptr->n_value, (char *) &NumCpu, 
 	       sizeof(NumCpu), KDT_DATA)) {
-	if (Debug) Error("Cannot read ncpu from kernel.");
+	SImsg(SIM_GERR, "Cannot read ncpu from kernel.");
 	return((char *) NULL);
     }
 
     KVMclose(kd);
 
     if (NumCpu > 0) {
-	(void) sprintf(Buff, "%d", NumCpu);
+	(void) snprintf(Buff, sizeof(Buff),  "%d", NumCpu);
 	return(Buff);
     } else
 	return((char *)NULL);
@@ -755,11 +594,56 @@ extern int SetDiskCtlrModel(DevInfo, CtlrType)
 }
 
 /*
- * Get system CPU type from OBP.
+ * Get system model using sysinfo(SI_ISALIST) call.
+ * See isalist(5).
+ */
+extern char *GetModelISAList()
+{
+    char		       *BuffPtr = NULL;
+#if	defined(SI_ISALIST)
+    static char			Buff[128];
+    char		       *cp;
+    int				DoCapAll = FALSE;
+    int 			DoCapOnce = FALSE;
+
+    if (sysinfo(SI_ISALIST, Buff, sizeof(Buff)) <= 0)
+	return;
+
+    /*
+     * Now cleanup what we got.  Take something like
+     * "pentium_pro+mmx pentium i486 i386" and make it into
+     * "Pentium Pro MMX".
+     */
+    for (cp = Buff; *cp; ++cp) {
+	if (cp == Buff || DoCapOnce || DoCapAll)
+	    *cp = toupper(*cp);
+	if (DoCapOnce) DoCapOnce = FALSE;
+	if (*cp == ' ' || *cp == '\t') {
+	    /* End of first word so we're done! */
+	    *cp = CNULL;
+	    break;
+	} else if (*cp == '_') {
+	    *cp = ' ';
+	    DoCapOnce = TRUE;
+	    DoCapAll = FALSE;
+	} else if (*cp == '+') {
+	    *cp = ' ';
+	    DoCapAll = TRUE;
+	}
+    }
+
+    BuffPtr = Buff;
+#endif /* SI_ISALIST */
+    return(BuffPtr);
+}
+
+/*
+ * Get system CPU type from OBP or KDT.
  */
 extern char *GetSysModel()
 {
     char		       *Name;
+    char		       *cp;
 
     /*
      * First try getting it from the kernel, if that
@@ -771,6 +655,13 @@ extern char *GetSysModel()
 	Name = OBPgetSysModel();
 #endif	/* HAVE_OPENPROM */
 
+    /*
+     * Use sysinfo(SI_ISALIST) if we're running on a x86
+     */
+    if (Name && EQ(Name, "i86pc"))
+	if (cp = GetModelISAList())
+	    return(cp);
+
     if (Name)
 	return(KDTcleanName(Name, TRUE));
     else
@@ -780,22 +671,24 @@ extern char *GetSysModel()
 /*
  * Expand a key string into something more easily read.
  */
-extern char *ExpandKey(string)
-    char		       *string;
+extern char *ExpandKey(String)
+    char		       *String;
 {
+    static char			Buff[BUFSIZ];
+    register int		Len;
     register char	       *cp;
-    register int		len;
-    static char			buff[BUFSIZ];
 
-    if (!string)
+    if (!String)
 	return((char *)NULL);
 
-    (void) strcpy(buff, string);
+    Len = strlen(String);
+    (void) strncpy(Buff, String, (Len < sizeof(Buff)) ? Len : sizeof(Buff));
+    Buff[Len] = CNULL;
 
     /* Capitolize first letter */
-    buff[0] = toupper(buff[0]);
+    Buff[0] = toupper(Buff[0]);
 
-    for (cp = &buff[0]; cp && *cp; ++cp) {
+    for (cp = &Buff[0]; cp && *cp; ++cp) {
 	if (*cp == '-' || *cp == '_') {
 	    *cp++ = ' ';
 	    if (*cp)
@@ -804,30 +697,53 @@ extern char *ExpandKey(string)
     }
 
     /* Remove ending '?' */
-    len = strlen(buff);
-    if (buff[len-1] == '?')
-	buff[len-1] = CNULL;
+    Len = strlen(Buff);
+    if (Buff[Len-1] == '?')
+	Buff[Len-1] = CNULL;
 
-    return(buff);
+    return(Buff);
 }
 
 /*
  * Get a string version of a long 
  */
-static char *GetLongValStr(String)
+static char *GetLongValStr(String, Size)
     char		       *String;
+    int				Size;
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[128];
+    static char			Buff2[4];
     long			lval;
-    long		       *lptr;
-    long			nval;
+    register int		i;
+    unsigned char		c;
 
-    lval = strtol(String, (char **)NULL, 0);
-    lptr = (long *) &String[0];
-    nval = *lptr;
-    (void) sprintf(buff, "%u", (u_long) nval);
+    if (Size > sizeof(Buff)) {
+	SImsg(SIM_GERR, "GetLongValStr(..., %d): Buffer too small (%d).",
+	      Size, sizeof(Buff));
+	return((char *) NULL);
+    }
 
-    return(buff);
+    /*
+     * We convert String -> hex-string-number -> long -> decimal-number
+     * This torterous route is the only way to insure we handle large 
+     * values on 32 and 64-bit systems.  Sigh!
+     */
+
+    /* Convert to hex-string-number */
+    Buff[0] = CNULL;
+    for (i = 0; i < Size; ++i) {
+	c = (unsigned char) String[i];
+	(void) snprintf(Buff2, sizeof(Buff2), "%2.2x", c);
+	(void) strcat(Buff, Buff2);
+    }
+
+    /* Convert to long */
+    lval = strtol(Buff, (char **)NULL, 16);
+
+    /* Convert to decimal-number */
+    (void) snprintf(Buff, sizeof(Buff), "%u", lval);
+
+    return(Buff);
 }
 
 /*
@@ -852,156 +768,164 @@ extern int IsString(opvalue, opsize)
 /*
  * Decode a value into a printable string.
  */
-extern char *DecodeVal(Value, Size)
+extern char *DecodeVal(Key, Value, Size)
+    char		       *Key;
     char		       *Value;
     int				Size;
 {
-    static char			Buff[2*BUFSIZ];
+    static char			Buff[512];
     static char			Buff2[2];
     register int		i;
+    int				Len;
     int				OpMask = 0xff;
 
     if (Size == 0 || !Value)
 	return((char *) NULL);
 
     if (IsString(Value, Size)) {
-	(void) strcpy(Buff, Value);
+	(void) strncpy(Buff, Value, 
+		       (Size < sizeof(Buff)) ? Size : sizeof(Buff)-1);
+	Buff[Size] = CNULL;
 	return(Buff);
     } else {
 	if (Size > 4) {
-	    if (Size > OpMask)
-		return((char *) NULL);
+	    /* Get the hex string representatin */
 	    (void) strcpy(Buff, "0x");
-	    for (i = 0; i < Size; ++i) {
+	    Len = strlen(Buff);
+	    for (i = 0; i < Size && i < sizeof(Buff)-Len-4; ++i) {
 		if (i > 0 && ((i % 4) == 0))
 		    (void) strcat(Buff, ".0x");
-		(void) sprintf(Buff2, "%02x", Value[i] & OpMask);
+		(void) snprintf(Buff2, sizeof(Buff2), "%02x", 
+				Value[i] & OpMask);
 		(void) strcat(Buff, Buff2);
+		Len = strlen(Buff);
 	    }
 	} else
-	    (void) strcpy(Buff, GetLongValStr(Value));
+	    /* Get the decimal string representation */
+	    (void) snprintf(Buff, sizeof(Buff), "%s", 
+			    GetLongValStr(Value, Size));
+
 	return(Buff);
     }
 }
 
 /*
- * Get description info about SCSI devices by sending a SCSI INQUIRY
- * to the device.
+ * Issue a SCSI command and return the results.
  */
-extern int ScsiGetDesc(DevInfo, DevFD)
-    DevInfo_t		       *DevInfo;
-    int				DevFD;
+extern int ScsiCmd(ScsiCmd)
+     ScsiCmd_t		       *ScsiCmd;
 {
-    struct scsi_inquiry	       *Inq;
-    char			InqBuff[8192];
-    union scsi_cdb		Cdb;
-    int 			CdbLen;
-    struct uscsi_cmd 		Cmd;
-    char			DevModel[BUFSIZ];
-    char		       *DevType = NULL;
-    Define_t		       *Def;
-    static char			Vendor[sizeof(Inq->inq_vid)+1];
-    static char			Model[sizeof(Inq->inq_pid)+1];
-    static char			Revision[sizeof(Inq->inq_revision)+1];
-#if	OSMVER >= 5
-    static char			Serial[sizeof(Inq->inq_serial)+1];
-#endif
+    static char			Buff[SCSI_BUF_LEN];
+    static struct uscsi_cmd	Cmd;
+    ScsiCdbG0_t		       *CdbPtr = NULL;
 
-    if (!DevInfo || DevFD < 0) {
-	if (Debug) Error("ScsiGetDesc: Bad parameters");
+    if (!ScsiCmd || !ScsiCmd->Cdb || !ScsiCmd->CdbLen || 
+	ScsiCmd->DevFD < 0 || !ScsiCmd->DevFile) {
+	SImsg(SIM_DBG, "ScsiCmd: Bad parameters.");
 	return(-1);
     }
 
-    /*
-     * Initialize
-     */
-    Inq = (struct scsi_inquiry *) InqBuff;
-    memset(Inq, 0, sizeof(Inq));
-    memset(&Cdb, 0, sizeof(Cdb));
-    memset(&Cmd, 0, sizeof(Cmd));
+    (void) memset(Buff, 0, sizeof(Buff));
+    (void) memset(&Cmd, 0, sizeof(Cmd));
 
-    Cdb.scc_cmd = SCMD_INQUIRY;
-    Cdb.scc_lun = 0;
-    Cdb.g0_count0 = 200;
-    
-    Cmd.uscsi_cdb = (caddr_t) &Cdb;
-    Cmd.uscsi_cdblen = 6;	/* SCSI Group 0 cmd */
-    Cmd.uscsi_bufaddr = (caddr_t) Inq;
-    Cmd.uscsi_buflen = sizeof(InqBuff);
+    Cmd.uscsi_cdb = (caddr_t) ScsiCmd->Cdb;
+    Cmd.uscsi_cdblen = ScsiCmd->CdbLen;
+    Cmd.uscsi_bufaddr = (caddr_t) Buff;
+    Cmd.uscsi_buflen = sizeof(Buff);
     Cmd.uscsi_flags = USCSI_ISOLATE | USCSI_SILENT | USCSI_READ;
+#if	OSMVER >= 5
+    Cmd.uscsi_timeout = MySCSI_CMD_TIMEOUT;	/* uscsi_timeout==seconds */
+#endif	/* OSMVER >= 5 */
 
     /*
-     * Send inquiry to device
+     * Send cmd to device
      */
     errno = 0;
-    ioctl(DevFD,  USCSICMD, &Cmd);
+    (void) ioctl(ScsiCmd->DevFD,  USCSICMD, &Cmd);
     if (Cmd.uscsi_status != 0 || errno > 0)  {
-	if (Debug) Error("SCSI Inquiry failed: %s", SYSERR);
+	/* 
+	 * We just need Cdb.cmd so it's ok to assume ScsiCdbG0_t here
+	 */
+	CdbPtr = (ScsiCdbG0_t *) ScsiCmd->Cdb;
+	SImsg(SIM_GERR, "%s: SCSI command 0x%x failed: %s", 
+	      ScsiCmd->DevFile, CdbPtr->cmd, SYSERR);
 	return(-1);
     }
 
-    /*
-     * Decode results
-     */
-    if (Inq->inq_vid && Inq->inq_vid[0]) {
-	(void) strncpy(Vendor, Inq->inq_vid, sizeof(Inq->inq_vid));
-	if (Vendor[sizeof(Vendor)-2] == ' ') 
-	    Vendor[sizeof(Vendor)-2] = CNULL;
-	AddDevDesc(DevInfo, Vendor, "Vendor", DA_APPEND);
-    }
-    if (Inq->inq_pid && Inq->inq_pid[0]) {
-	(void) strncpy(Model, Inq->inq_pid, sizeof(Inq->inq_pid));
-	if (Model[sizeof(Model)-2] == ' ') 
-	    Model[sizeof(Model)-2] = CNULL;
-	AddDevDesc(DevInfo, Model, "Model", DA_APPEND);
-    }
-    if (Inq->inq_revision && Inq->inq_revision[0]) {
-	(void) strncpy(Revision, Inq->inq_revision, sizeof(Inq->inq_revision));
-	if (Revision[sizeof(Revision)-2] == ' ') 
-	    Revision[sizeof(Revision)-2] = CNULL;
-	AddDevDesc(DevInfo, Revision, "Revision", DA_APPEND);
-    }
-#if	OSMVER >= 5
-    if (Inq->inq_serial && Inq->inq_serial[0]) {
-	(void) strncpy(Serial, Inq->inq_serial, sizeof(Inq->inq_serial));
-	if (Serial[sizeof(Serial)-2] == ' ') 
-	    Serial[sizeof(Serial)-2] = CNULL;
-	AddDevDesc(DevInfo, Inq->inq_serial, "Serial", DA_APPEND);
-    }
-#endif
-    if (Inq->inq_rmb)
-	AddDevDesc(DevInfo, "Removable Media", "Has", DA_APPEND);
-
-    /*
-     * Look up device type
-     */
-    Def = DefGet(DL_SCSI_DTYPE, (char *) NULL, (long) Inq->inq_dtype, 0);
-    if (Def) {
-	if (Def->ValStr2) {
-	    DevType = Def->ValStr2;
-	    AddDevDesc(DevInfo, Def->ValStr2, "Device Type", DA_APPEND);
-	}
-	/*
-	 * Set Device Type 
-	 */
-	if (Def->ValStr1) {
-	    DevType_t		*dtPtr;
-
-	    dtPtr = TypeGetByName(Def->ValStr1);
-	    if (dtPtr)
-		DevInfo->Type = dtPtr->Type;
-	}
-    }
-
-    /*
-     * Add Model name if none exists
-     */
-    if (!DevInfo->Model && Vendor && Model) { 
-	(void) sprintf(DevModel, "%s %s%s%s", Vendor, Model,
-		       (DevType) ? " " : "", (DevType) ? DevType : "");
-	DevInfo->Model = strdup(DevModel);
-    }
-
-	
+    ScsiCmd->Data = (void *) Buff;
     return(0);
 }
+
+#ifdef NOTYET
+/*
+ * dadkio_status values
+ */
+static char *DadErrs[] = {
+    "Command succeeded",		/* DADKIO_STAT_NO_ERROR */
+    "Device not ready",			/* DADKIO_STAT_NOT_READY */
+    "Media error",			/* DADKIO_STAT_MEDIUM_ERROR */
+    "Hardware error",			/* DADKIO_STAT_HARDWARE_ERROR */
+    "Illegal Request",			/* DADKIO_STAT_ILLEGAL_REQUEST */
+    "Illegal Block Address",		/* DADKIO_STAT_ILLEGAL_ADDRESS */
+    "Device is write protected",	/* DADKIO_STAT_WRITE_PROTECTED */
+    "No response from device",		/* DADKIO_STAT_TIMED_OUT */
+    "Parity error in data",		/* DADKIO_STAT_PARITY */
+    "Error on bus",			/* DADKIO_STAT_BUS_ERROR */
+    "Data recovered via ECC",		/* DADKIO_STAT_SOFT_ERROR */
+    "No resources for command",		/* DADKIO_STAT_NO_RESOURCES */
+    "Device is not formatted",		/* DADKIO_STAT_NOT_FORMATTED */
+    "Device is reserved",		/* DADKIO_STAT_RESERVED */
+    "Feature not supported"		/* DADKIO_STAT_NOT_SUPPORTED */
+};
+#define NumDadErrs	(sizeof(DadErrs)/sizeof(char *))
+
+/*
+ * Issue a ATA command and return the results.
+ */
+extern int AtaCmd(AtaCmd)
+     AtaCmd_t		       *AtaCmd;
+{
+    static char			Buff[ATA_BUF_LEN];
+    static struct dadkio_rwcmd	Cmd;
+
+    if (!AtaCmd || !AtaCmd->Cdb || !AtaCmd->CdbLen || 
+	AtaCmd->DevFD < 0 || !AtaCmd->DevFile) {
+	SImsg(SIM_DBG, "AtaCmd: Bad parameters.");
+	return(-1);
+    }
+
+    (void) memset(Buff, 0, sizeof(Buff));
+    (void) memset(&Cmd, 0, sizeof(Cmd));
+
+    Cmd.cmd = DADKIO_RWCMD_READ;
+    Cmd.flags = DADKIO_FLAG_SILENT;		/* No console messages */
+    Cmd.blkaddr = 0; /* XXX What should this be? */
+    Cmd.bufaddr = (caddr_t) Buff;
+    Cmd.buflen = sizeof(Buff);
+
+    /*
+     * Send cmd to device
+     */
+    if (ioctl(AtaCmd->DevFD, DIOCTL_RWCMD, &Cmd) < 0) {
+	/* 
+	 * We just need Cdb.cmd so it's ok to assume AtaCdbG0_t here
+	 */
+	SImsg(SIM_GERR, "%s: ATA ioctl DIOCTL_RWCMD command failed: %s", 
+	      AtaCmd->DevFile, SYSERR);
+	return(-1);
+    }
+
+    if (Cmd.status.status) {
+	if (Cmd.status.status > 0 && Cmd.status.status < NumDadErrs)
+	    SImsg(SIM_DBG, "%s: ATA query failed: %s",
+		  AtaCmd->DevFile, DadErrs[Cmd.status.status]);
+	else
+	    SImsg(SIM_DBG, "%s: ATA query failed with status %d.",
+		  AtaCmd->DevFile, Cmd.status.status);
+	return(-1);
+    }
+
+    AtaCmd->Data = (void *) Buff;
+    return(0);
+}
+#endif	/* NOTYET */

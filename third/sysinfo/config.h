@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 /*
- * $Id: config.h,v 1.1.1.2 1998-02-12 21:32:25 ghudson Exp $
+ * $Revision: 1.1.1.3 $
  */
 
 #ifndef __config_h__
@@ -20,11 +21,18 @@
 #define _PATH_NULL		"/dev/null"
 
 /*
+ * Path name of master sysinfo.cf file (optional)
+ */
+#ifndef MASTER_CONFIG_FILE
+#define MASTER_CONFIG_FILE	"/etc/sysinfo.cf"
+#endif
+
+/*
  * Path to configuration directory.
  * Override in Makefile.
  */
 #ifndef CONFIG_DIR
-#define CONFIG_DIR		"/usr/lsd/conf/sysinfo"
+#define CONFIG_DIR		"/var/local/conf/sysinfo"
 #endif
 
 /*
@@ -33,6 +41,13 @@
 #ifndef DEFAULT_CONFIG_FILE
 #define DEFAULT_CONFIG_FILE	"Default.cf"
 #endif
+
+/*
+ * Default Root Access level is RA_ADVISED.
+ */
+#if	!defined(RA_LEVEL)
+#define RA_LEVEL RA_ADVISED
+#endif	/* RA_LEVEL */
 
 #if	defined(IS_POSIX_SOURCE)
 /*

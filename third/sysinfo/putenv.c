@@ -33,7 +33,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)putenv.c	5.4 (Berkeley) 2/23/91";
-static char rcsid[] = "$Id: putenv.c,v 1.1.1.1 1996-10-07 20:16:52 ghudson Exp $";
+static char rcsid[] = "$Revision: 1.1.1.2 $";
 #endif /* LIBC_SCCS and not lint */
 
 #include <stdlib.h>

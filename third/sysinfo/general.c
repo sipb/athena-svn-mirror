@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: general.c,v 1.1.1.2 1998-02-12 21:31:55 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -41,6 +42,7 @@ static ShowInfo_t ShowInfo[] = {
     { "karch",		"Kernel Architecture",	GetKernArch },
     { "osname",		"OS Name",		GetOSName },
     { "osvers",		"OS Version",		GetOSVer },
+    { "osdist",		"OS Distribution",	GetOSDist },
     { "kernver",	"Kernel Version",	GetKernVer },
     { "boottime",	"Boot Time",		GetBootTime },
     { 0 },
@@ -53,11 +55,11 @@ extern void GeneralList()
 {
     register ShowInfo_t	       *ShowPtr;
 
-    printf("\n\nThe following are valid arguments for `-class General -show Name1,Name2,...':\n\n");
-    printf("%-25s %s\n", "NAME", "DESCRIPTION");
+    SImsg(SIM_INFO, "\n\nThe following are valid arguments for `-class General -show Name1,Name2,...':\n\n");
+    SImsg(SIM_INFO, "%-25s %s\n", "NAME", "DESCRIPTION");
 
     for (ShowPtr = &ShowInfo[0]; ShowPtr->Name; ++ShowPtr)
-	printf("%-25s %s\n", ShowPtr->Name, ShowPtr->Label);
+	SImsg(SIM_INFO, "%-25s %s\n", ShowPtr->Name, ShowPtr->Label);
 }
 
 /*
@@ -69,6 +71,7 @@ extern void GeneralShow(MyClass, Names)
 {
     static char		       *RptData[3];
     register char	      **cpp;
+    char		       *Value;
     register ShowInfo_t	       *ShowPtr;
     int				Found = 0;
     register int		Len = 0;
@@ -97,7 +100,7 @@ extern void GeneralShow(MyClass, Names)
     }
 
     if (Found)
-	ClassShowLabel(MyClass);
+	ClassShowBanner(MyClass);
 
     for (ShowPtr = ShowInfo; ShowPtr->Name; ++ShowPtr) {
 	Len = strlen(ShowPtr->Label);
@@ -111,12 +114,15 @@ extern void GeneralShow(MyClass, Names)
 	if (ShowPtr->Enabled) 
 	    switch (FormatType) {
 	    case FT_PRETTY:
+		Value = (*ShowPtr->Get)();
+		if (!Value)
+		    Value = UnSupported;
 		ClassShowValue(ShowPtr->Label, ShowPtr->Name, 
-			       (*ShowPtr->Get)(), MaxLen);
+			       Value, MaxLen);
 		break;
 	    case FT_REPORT:
-		RptData[0] = PS(ShowPtr->Label);
-		RptData[1] = PS((*ShowPtr->Get)());
+		RptData[0] = PRTS(ShowPtr->Label);
+		RptData[1] = PRTS((*ShowPtr->Get)());
 		Report(CN_GENERAL, NULL, ShowPtr->Name, RptData, 2);
 		break;
 	    }

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-irix.c,v 1.1.1.2 1998-02-12 21:32:19 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -25,27 +26,20 @@ static char *RCSid = "$Id: os-irix.c,v 1.1.1.2 1998-02-12 21:32:19 ghudson Exp $
  */
 
 #include "defs.h"
+#include "myscsi.h"
 #include <invent.h>
 #include <mntent.h>
 #include <sys/systeminfo.h>
 #include <sys/conf.h>
 #include <sys/stat.h>
 #include <sys/syssgi.h>
+#include <sys/dsreq.h>
+
 /*
  * Disk
  */
 #include <sys/dkio.h>
 #include <sys/dvh.h>
-/*
- * Graphics
- */
-#include <sys/gfx.h>
-#include <sys/ng1.h>
-#include <sys/gr1new.h>
-#include <sys/gr2.h>
-#include <sys/lg1hw.h>
-#include <sys/lg1.h>
-#include <sys/venice.h>
 
 /*
  * These are usually only defined if _KERNEL is defined
@@ -104,6 +98,9 @@ PSI_t GetOSNamePSI[] = {		/* Get OS Name */
     { GetOSNameUname },
     { NULL },
 };
+PSI_t GetOSDistPSI[] = {		/* Get OS Dist */
+    { NULL },
+};
 extern char			       *GetOSVerSGI();
 PSI_t GetOSVerPSI[] = {			/* Get OS Version */
     { GetOSVerSGI },
@@ -127,6 +124,7 @@ PSI_t GetMemoryPSI[] = {		/* Get amount of memory */
 };
 extern char			       *GetVirtMemSGI();
 PSI_t GetVirtMemPSI[] = {		/* Get amount of virtual memory */
+    { GetVirtMemSwapctl },
     { GetVirtMemSGI },
     { NULL },
 };
@@ -147,7 +145,7 @@ extern char *GetModelSGI()
     char		       *Graphics = NULL;
     char		       *Video = NULL;
     Define_t		       *Def;
-    static char			QueryBuff[BUFSIZ];
+    static char			Query[256];
 
     setinvent();
 
@@ -163,7 +161,7 @@ extern char *GetModelSGI()
 		     * We couldn't find a definetion so we'll use the
 		     * numeric value in case that's in the config file.
 		     */
-		    if (Debug) Error("Unknown CPU Board Type (%d)",
+		    SImsg(SIM_UNKN, "Unknown CPU Board Type (%d)",
 				     Inv->inv_state);
 		    CpuBoard = strdup(itoa(Inv->inv_state));
 		}
@@ -188,7 +186,7 @@ extern char *GetModelSGI()
      * Ya gotta have a CpuBoard right?
      */
     if (!CpuBoard) {
-	if (Debug) Error("GetModelSGI(): No CPU Board found.");
+	SImsg(SIM_DBG, "GetModelSGI(): No CPU Board found.");
 	return((char *) NULL);
     }
 
@@ -204,7 +202,7 @@ extern char *GetModelSGI()
 	    *cp = CNULL;
     }
     if (!CpuType) {
-	if (Debug) Error("GetModelSGI(): Cannot determine CPUType.");
+	SImsg(SIM_GERR, "GetModelSGI(): Cannot determine CPUType.");
 	return((char *) NULL);
     }
 
@@ -212,11 +210,12 @@ extern char *GetModelSGI()
      * Format query (CpuType,CpuBoard,Graphics,Video) and see if we
      * can find a match.
      */
-    (void) sprintf(QueryBuff, "%s,%s,%s,%s",
-		   CpuType, CpuBoard,
-		   (Graphics) ? Graphics : "-",
-		   (Video) ? Video : "-");
-    Def = DefGet("SysModels", QueryBuff, -1, DO_REGEX);
+    (void) snprintf(Query, sizeof(Query),  "%s,%s,%s,%s",
+		    CpuType, CpuBoard,
+		    (Graphics) ? Graphics : "-",
+		    (Video) ? Video : "-");
+    SImsg(SIM_DBG, "GetModelSGI: Look for <%s>", Query);
+    Def = DefGet("SysModels", Query, -1, DO_REGEX);
     if (Def && Def->ValStr1)
 	return(Def->ValStr1);
 
@@ -248,7 +247,7 @@ extern char *GetSerialSGI()
 	if (Okay)
 	    return(Serial);
     } else
-	if (Debug) Error("syssgi(SGI_SYSID, ...) failed: %s", SYSERR);
+	SImsg(SIM_GERR, "syssgi(SGI_SYSID, ...) failed: %s", SYSERR);
 
     return(GetSerialSysinfo());
 }
@@ -258,20 +257,21 @@ extern char *GetSerialSGI()
  */
 extern char *GetKernVerSGI()
 {
-    static char 		buf[BUFSIZ];
-    char 			version[256];
-    long 			style = -1;
+    static char 		Buff[128];
+    char 			Version[256];
+    long 			Style = -1;
   
 #if	defined(_SC_KERN_POINTERS)
-    style = sysconf(_SC_KERN_POINTERS);
+    Style = sysconf(_SC_KERN_POINTERS);
 #endif
-    sysinfo(SI_VERSION, version, sizeof(version));
+    sysinfo(SI_VERSION, Version, sizeof(Version));
     /* IRIX Release 6.0 IP21 Version 08241804 System V - 64 Bit */
-    sprintf(buf, "IRIX Release %s %s Version %s System V (%d bit)",
-	    GetOSVer(), GetKernArch(),
-	    version, (style == -1) ? 32 : style);
+    snprintf(Buff, sizeof(Buff),
+	     "IRIX Release %s %s Version %s System V (%d bit)",
+	     GetOSVer(), GetKernArch(),
+	     Version, (Style == -1) ? 32 : Style);
 
-    return( (char *) buf);
+    return( (char *) Buff);
 }
 
 /*
@@ -279,42 +279,46 @@ extern char *GetKernVerSGI()
  */
 extern char *GetOSVerSGI()
 {
-    static char 		build[BUFSIZ];
-    char 			patch[50];	/* To hold patch version */
-    char 		       *pos = build;
-    char 			minver[50];
+    static char 		Build[256];
+    char 			Patch[50];	/* To hold patch version */
+    char 		       *pos = Build;
+    char 			MinVer[50];
+    int				Len;
     static int 			done = 0;
-    static char 	       *retval;
+    static char 	       *RetVal;
 
     if (done)			/* Already did it */
-	return((char *) retval);
+	return((char *) RetVal);
 
-    if (sysinfo(_MIPS_SI_OSREL_MAJ, pos, sizeof(build)) < 0) {
-	strcpy(build,GetOSVerUname());
+    if (sysinfo(_MIPS_SI_OSREL_MAJ, Build, sizeof(Build)) < 0) {
+	(void) snprintf(Build, sizeof(Build), "%s", GetOSVerUname());
 	done = 1;
-	return ((retval = (char *) build));
+	return ((RetVal = (char *) Build));
     } else
-	pos += strlen(build);
+	pos += strlen(Build);
 
-    if (sysinfo(_MIPS_SI_OSREL_MIN, minver, sizeof(minver)) >= 0) {
-	if (minver[0] != '.')
+    if (sysinfo(_MIPS_SI_OSREL_MIN, MinVer, sizeof(MinVer)) >= 0) {
+	if (MinVer[0] != '.')
 	    *pos++ = '.';
-	strcpy(pos,minver);
+	Len = pos - &Build[0];
+	(void) snprintf(pos, sizeof(Build)-Len, "%s", MinVer);
+
 	/* Pre-load buffer with an initial '.', then stuff in version after */
-	if (sysinfo(_MIPS_SI_OSREL_PATCH, patch+1, sizeof(patch)) >= 0) {
-	    patch[0] = '.';	/* Pre-load string with a '.' delimiter */
-	    if ( ! ((strlen(patch) == 2) && (patch[1] == '0')) ) {
-		strcat(pos,patch);
+	if (sysinfo(_MIPS_SI_OSREL_PATCH, Patch+1, sizeof(Patch)) >= 0) {
+	    Patch[0] = '.';	/* Pre-load string with a '.' delimiter */
+	    if ( ! ((strlen(Patch) == 2) && (Patch[1] == '0')) ) {
+		Len = pos - Build;
+		(void) snprintf(pos, sizeof(Build)-Len, "%s", Patch);
 	    }
 	}
     }
 
     done = 1;			/* We're done! */
 
-    if (pos == build)		/* If we didn't get anything, return NULL */
-	return((retval = (char *) NULL));
+    if (pos == Build)		/* If we didn't get anything, return NULL */
+	return((RetVal = (char *) NULL));
     else
-	return((retval = (char *) build));
+	return((RetVal = (char *) Build));
 }
 
 /*
@@ -322,29 +326,29 @@ extern char *GetOSVerSGI()
  */
 extern char *GetCpuTypeSGI()
 {
-    static char 		build[BUFSIZ];
-    char 		       *pos = build;
+    static char 		Build[128];
+    char 		       *pos = Build;
     static int 			done = 0;
-    static char 	       *retval;
+    static char 	       *RetVal;
     int				Len = 0;
 
     if (done)
-	return((char *) retval);
+	return((char *) RetVal);
 
-    if (sysinfo(SI_ARCHITECTURE, pos, sizeof(build)) >= 0) {
-	Len = strlen(build);
+    if (sysinfo(SI_ARCHITECTURE, Build, sizeof(Build)) >= 0) {
+	Len = strlen(Build);
 	pos += Len;
 	*(pos++) = ' ';
     }
-    if (sysinfo(_MIPS_SI_PROCESSORS, pos, sizeof(build) - Len + 2) >= 0)
-	if ( ( pos = strchr(build,',')) != NULL)
+    if (sysinfo(_MIPS_SI_PROCESSORS, pos, sizeof(Build) - Len + 2) >= 0)
+	if ( ( pos = strchr(Build,',')) != NULL)
 	    *pos = CNULL;
 
     done = 1;
-    if (pos == build)
-	return((retval = (char *) NULL));
+    if (pos == Build)
+	return((RetVal = (char *) NULL));
     else
-	return((retval =(char *) build));
+	return((RetVal =(char *) Build));
 }
 
 /*
@@ -352,18 +356,18 @@ extern char *GetCpuTypeSGI()
  */
 extern char *GetNumCpuSGI()
 {
-    static char 		buf[BUFSIZ];
+    static char 		Buff[32];
     static int 			done = 0;
-    static char 	       *retval;
+    static char 	       *RetVal;
 
     if (done)
-	return ((char *) retval);
+	return ((char *) RetVal);
     done = 1;
 
-    if (sysinfo(_MIPS_SI_NUM_PROCESSORS, buf, sizeof(buf)) < 0)
-	return((retval = (char *) NULL));
+    if (sysinfo(_MIPS_SI_NUM_PROCESSORS, Buff, sizeof(Buff)) < 0)
+	return((RetVal = (char *) NULL));
     else
-	return((retval = buf));
+	return((RetVal = Buff));
 }
 
 /*
@@ -371,12 +375,12 @@ extern char *GetNumCpuSGI()
  */
 extern char *GetManLongSysinfoSGI()
 {
-    static char 		buf[BUFSIZ];
+    static char 		Buff[128];
 
-    if (sysinfo(_MIPS_SI_VENDOR, buf, sizeof(buf)) < 0)
+    if (sysinfo(_MIPS_SI_VENDOR, Buff, sizeof(Buff)) < 0)
 	return((char *) NULL);
     else
-	return((char *) buf);
+	return((char *) Buff);
 }
 
 /*
@@ -426,6 +430,59 @@ void DevTypesInit()
 }
 
 /*
+ * Issue a SCSI command and return the results.
+ * Uses the ds(7M) interface.
+ */
+extern int ScsiCmd(ScsiCmd)
+     ScsiCmd_t		       *ScsiCmd;
+{
+#if	defined(DS_ENTER)
+    static char			Buff[SCSI_BUF_LEN];
+    static dsreq_t		Cmd;
+    ScsiCdbG0_t		       *CdbPtr = NULL;
+
+    if (!ScsiCmd || !ScsiCmd->Cdb || !ScsiCmd->CdbLen || 
+	ScsiCmd->DevFD < 0 || !ScsiCmd->DevFile) {
+	SImsg(SIM_DBG, "ScsiCmd: Bad parameters.");
+	return(-1);
+    }
+
+    (void) memset(Buff, 0, sizeof(Buff));
+    (void) memset(&Cmd, 0, sizeof(Cmd));
+
+    Cmd.ds_cmdbuf = (caddr_t) ScsiCmd->Cdb;
+    Cmd.ds_cmdlen = ScsiCmd->CdbLen;
+    Cmd.ds_databuf = (caddr_t) Buff;
+    Cmd.ds_datalen = sizeof(Buff);
+    Cmd.ds_time = MySCSI_CMD_TIMEOUT * 1000;	/* ds_time==milliseconds */
+    Cmd.ds_flags = DSRQ_READ;
+
+    /* 
+     * We just need Cdb.cmd so it's ok to assume ScsiCdbG0_t here
+     */
+    CdbPtr = (ScsiCdbG0_t *) ScsiCmd->Cdb;
+
+    /*
+     * Send cmd to device
+     */
+    if (ioctl(ScsiCmd->DevFD,  DS_ENTER, &Cmd) == -1) {
+	SImsg(SIM_GERR, "%s: ioctl DS_ENTER for SCSI 0x%x failed: %s", 
+	      ScsiCmd->DevFile, CdbPtr->cmd, SYSERR);
+	return(-1);
+    }
+
+    if (Cmd.ds_status != 0) {
+	SImsg(SIM_GERR, "%s: SCSI command 0x%x failed with ds_status=%d", 
+	      ScsiCmd->DevFile, CdbPtr->cmd, Cmd.ds_status);
+	return(-1);
+    }
+
+    ScsiCmd->Data = (void *) Buff;
+#endif	/* DS_ENTER */
+    return(0);
+}
+
+/*
  * Clean a string of unprintable characters and excess white-space.
  */
 static char *CleanStr(String, StrSize)
@@ -435,7 +492,7 @@ static char *CleanStr(String, StrSize)
     register int		i, n;
     char		       *NewString;
 
-    NewString = (char *) xcalloc(1, StrSize);
+    NewString = (char *) xcalloc(1, StrSize + 1);
 
     for (i = 0, n = 0; i < StrSize; ++i) {
 	if (i == 0)
@@ -473,13 +530,13 @@ static int IsSpecialUse(MntDevice, DevName)
 	!EQ(MntDevice, "/dev/swap"))
 	return(0);
 
-    (void) sprintf(DevFile, "%s/%s", _PATH_DEV_DSK, DevName);
+    (void) snprintf(DevFile, sizeof(DevFile), "%s/%s", _PATH_DEV_DSK, DevName);
     if (stat(MntDevice, &MntStat) != 0) {
-	if (Debug) Error("stat failed: %s: %s", MntDevice, SYSERR);
+	SImsg(SIM_GERR, "stat failed: %s: %s", MntDevice, SYSERR);
 	return(0);
     }
     if (stat(DevFile, &DevStat) != 0) {
-	if (Debug) Error("stat failed: %s: %s", DevFile, SYSERR);
+	SImsg(SIM_GERR, "stat failed: %s: %s", DevFile, SYSERR);
 	return(0);
     }
 
@@ -531,14 +588,14 @@ static char *LookupPartUse(DevName, PartName)
     if (!DevName || !PartName)
 	return((char *) NULL);
 
-    (void) sprintf(Name, "%s%s", DevName, PartName);
+    (void) snprintf(Name, sizeof(Name), "%s%s", DevName, PartName);
 
     /*
      * First try the current mount table
      */
     if (!mntFilePtr) {
 	if ((mntFilePtr = setmntent(MOUNTED, "r")) == NULL) {
-	    Error("%s: Cannot open for reading: %s.", MNTTAB, SYSERR);
+	    SImsg(SIM_GERR, "%s: Cannot open for reading: %s.", MNTTAB, SYSERR);
 	    return(NULL);
 	}
     } else
@@ -553,7 +610,7 @@ static char *LookupPartUse(DevName, PartName)
      */
     if (!fstabFilePtr) {
 	if ((fstabFilePtr = setmntent(MNTTAB, "r")) == NULL) {
-	    Error("%s: Cannot open for reading: %s.", MNTTAB, SYSERR);
+	    SImsg(SIM_GERR, "%s: Cannot open for reading: %s.", MNTTAB, SYSERR);
 	    return(NULL);
 	}
     } else
@@ -581,24 +638,36 @@ static void GetPartUse(DiskName, Part, PartType, DiskPart)
     Type[0] = Usage[0] = CNULL;
 
     switch (PartType) {
+#if	defined(PTYPE_VOLHDR)
     case PTYPE_VOLHDR:	
 	strcpy(Type, "volhdr");		strcpy(Usage, "Volume Header");	
 	break;
+#endif
+#if	defined(PTYPE_TRKREPL)
     case PTYPE_TRKREPL:	
 	strcpy(Type, "trkrepl");	strcpy(Usage, "Track Replacement");
 	break;
+#endif
+#if	defined(PTYPE_SECREPL)
     case PTYPE_SECREPL:	
 	strcpy(Type, "secrepl");	strcpy(Usage, "Sector Replacement");
 	break;
+#endif
+#if	defined(PTYPE_LVOL)
     case PTYPE_LVOL:	
 	strcpy(Type, "lvol");		strcpy(Usage, "Logical Volume");
 	break;
+#endif
+#if	defined(PTYPE_RLVOL)
     case PTYPE_RLVOL: 
 	strcpy(Type, "rlvol");		strcpy(Usage, "Raw Logical Volume");
 	break;
+#endif
+#if	defined(PTYPE_VOLUME)
     case PTYPE_VOLUME:	
 	strcpy(Type, "volume");		strcpy(Usage, "Entire Volume");
 	break;
+#endif
 #if	defined(PTYPE_XLV)
     case PTYPE_XLV:
 	strcpy(Type, "xlv");		strcpy(Usage, "XLV Volume");
@@ -613,10 +682,18 @@ static void GetPartUse(DiskName, Part, PartType, DiskPart)
 	/*
 	 * These types of partitions should be looked up
 	 */
+#if	defined(PTYPE_RAW)
     case PTYPE_RAW:	strcpy(Type, "raw");			break;
+#endif
+#if	defined(PTYPE_EFS)
     case PTYPE_EFS:	strcpy(Type, "efs");			break;
+#endif
+#if	defined(PTYPE_SYSV)
     case PTYPE_SYSV:	strcpy(Type, "sysv");			break;
+#endif
+#if	defined(PTYPE_BSD)
     case PTYPE_BSD:	strcpy(Type, "bsd");			break;
+#endif
 #if	defined(PTYPE_XFS)
     case PTYPE_XFS:	strcpy(Type, "xfs");			break;
 #endif
@@ -650,10 +727,12 @@ static DiskPart_t *GetDiskPart(DevInfo, VolHdr)
 	if (VolHdr->vh_pt[i].pt_nblks == 0)
 	    continue;
 	DiskPart = (DiskPart_t *) xcalloc(1, sizeof(DiskPart_t));
-	(void) sprintf(PName, "s%d", i);
+	(void) snprintf(PName, sizeof(PName),  "s%d", i);
 	DiskPart->Name = strdup(PName);
-	DiskPart->StartSect = VolHdr->vh_pt[i].pt_firstlbn;
-	DiskPart->NumSect = VolHdr->vh_pt[i].pt_nblks;
+	DiskPart->StartSect = (Large_t) VolHdr->vh_pt[i].pt_firstlbn;
+	DiskPart->NumSect = (Large_t) VolHdr->vh_pt[i].pt_nblks;
+	/* Store pt_type for possible later use in finding drive capacity */
+	DiskPart->NumType = VolHdr->vh_pt[i].pt_type;
 	GetPartUse(DevInfo->Name, PName,
 		   VolHdr->vh_pt[i].pt_type, DiskPart);
 
@@ -668,6 +747,202 @@ static DiskPart_t *GetDiskPart(DevInfo, VolHdr)
 }
 
 /*
+ * Get total disk size (capacity) in bytes.
+ * Look for the PTYPE_VOLUME (entire disk) partiton and use its 
+ * size as return value.
+ */
+float IRIXGetDiskSize(DiskDrive)
+    DiskDrive_t		       *DiskDrive;
+{
+    DiskPart_t		       *dp;
+
+#if	defined(PTYPE_VOLUME)
+    for (dp = DiskDrive->DiskPart; dp; dp = dp->Next) {
+	if (dp->NumType == PTYPE_VOLUME) {
+	    SImsg(SIM_DBG, "DISK PTYPE_VOLUME numsects=%.0f size=%.0f",
+		  (float) dp->NumSect, (float) DiskDrive->SecSize);
+	    return((float) ((float)dp->NumSect * (float)DiskDrive->SecSize));
+	}
+    }
+#else
+    SImsg(SIM_DBG, "PTYPE_VOLUME is not defined on this OS");
+#endif	/* PTYPE_VOLUME */
+
+    return((float) 0);
+}
+
+/*
+ * Find the Disk Device.
+ * Stores device name in DevNamePtr and File name in DevFilePtr.
+ * Returns 0 on success.
+ */
+static int FindDiskDev(CtlrDev, Inv, DevName, DevNameSize, 
+		       DevFile, DevFileSize)
+     DevInfo_t		       *CtlrDev;
+     inventory_t	       *Inv;
+     char		       *DevName;
+     size_t			DevNameSize;
+     char		       *DevFile;
+     size_t			DevFileSize;
+{
+    register int		i;
+
+    /*
+     * INV_SCSIFLOPPY is for various types of floppy devices
+     */
+    if (Inv->inv_type == INV_SCSIFLOPPY) {
+	(void) snprintf(DevName, DevNameSize, "fds%dd%d", 
+			Inv->inv_controller, Inv->inv_unit);
+	(void) snprintf(DevFile, DevFileSize, "%s/%svh", 
+			_PATH_DEV_RDSK, DevName);
+	return(0);
+    }
+
+    /*
+     * Normal disk drive name?
+     */
+    (void) snprintf(DevName, DevNameSize, "%sd%d", 
+		    CtlrDev->Name, Inv->inv_unit);
+    (void) snprintf(DevFile, DevFileSize, "%s/%svh", 
+		    _PATH_DEV_RDSK, DevName);
+    if (FileExists(DevFile))
+	return(0);
+
+    /*
+     * Check for Logical Unit Number (LUN) devices.
+     * i.e. dksXdXlX
+     */
+    for (i = 0; i < SI_MAX_LUN; ++i) {
+	(void) snprintf(DevName, DevNameSize, "%sd%dl%d", 
+			CtlrDev->Name, Inv->inv_unit, i);
+	(void) snprintf(DevFile, DevFileSize, "%s/%svh", 
+			_PATH_DEV_RDSK, DevName);
+	if (FileExists(DevFile))
+	    return(0);
+    }
+
+    return(1);
+}
+
+/*
+ * Query disk using SCSI methods
+ */
+static int ProbeDiskDriveScsi(DevInfo, DevFile)
+     DevInfo_t		       *DevInfo;
+     char		       *DevFile;
+{
+    int				fd;
+
+    fd = open(DevFile, O_RDONLY|O_NDELAY|O_NONBLOCK);
+    if (fd < 0) {
+	SImsg(SIM_GERR, "open failed: %s: %s", DevFile, SYSERR);
+	return(-1);
+    }
+
+    (void) ScsiQuery(DevInfo, DevFile, fd, TRUE);
+
+    (void) close(fd);
+
+    return(0);
+}
+
+/*
+ * Query disk using normal OS methods
+ */
+static int ProbeDiskDriveQuery(DevInfo, DevFile)
+     DevInfo_t		       *DevInfo;
+     char		       *DevFile;
+{
+    DiskDriveData_t	       *DiskDriveData = NULL;
+    DiskDrive_t		       *OSdisk = NULL;
+    DiskDrive_t		       *HWdisk = NULL;
+    char		       *Vendor = NULL;
+    char		       *Model = NULL;
+    u_int			DiskCap = 0;
+    static struct volume_header	VolHdr;
+    static char			DriveType[SCSI_DEVICE_NAME_SIZE + 1];
+    int				fd;
+
+    fd = open(DevFile, O_RDONLY);
+    if (fd < 0) {
+	SImsg(SIM_GERR, "open failed: %s: %s", DevFile, SYSERR);
+	return(-1);
+    }
+
+    if (!DevInfo->Model || !DevInfo->Vendor) {
+	/*
+	 * Get the Drive Type
+	 */
+	if (ioctl(fd, DIOCDRIVETYPE, DriveType) < 0)
+	    SImsg(SIM_GERR, "ioctl DIOCDRIVETYPE failed: %s: %s", 
+		  DevFile,SYSERR);
+	else {
+	    if (Vendor = strchr(DriveType, ' ')) {
+		*Vendor = CNULL;
+		++Vendor;
+	    } else
+		Vendor = DriveType;
+	    if (!DevInfo->Vendor)
+		DevInfo->Vendor = strdup(Vendor);
+	    if (!DevInfo->Model)
+		DevInfo->Model = strdup(DriveType);
+	}
+    }
+
+    DiskDriveData = (DiskDriveData_t *) DevInfo->DevSpec;
+    OSdisk = DiskDriveData->OSdata;
+    HWdisk = DiskDriveData->HWdata;
+
+    /*
+     * Get the volume header data.
+     */
+    if (ioctl(fd, DIOCGETVH, &VolHdr) < 0) {
+	SImsg(SIM_GERR, "ioctl DIOCGETVH failed: %s: %s", DevFile, SYSERR);
+    } else {
+	OSdisk->DiskPart = GetDiskPart(DevInfo, &VolHdr);
+	OSdisk->SecSize = VolHdr.vh_dp.dp_secbytes;
+#if	OSVER <= 63
+	/*
+	 * This stuff was removed starting with IRIX 6.4
+	 */
+	OSdisk->DataCyl = VolHdr.vh_dp.dp_cyls;
+	OSdisk->Tracks = VolHdr.vh_dp.dp_trks0;
+	OSdisk->Sect = VolHdr.vh_dp.dp_secs;
+	OSdisk->IntrLv = VolHdr.vh_dp.dp_interleave;
+	OSdisk->APC = VolHdr.vh_dp.dp_spares_cyl;
+#endif	/* OSVER <= 63 */
+	if (isprint(VolHdr.vh_bootfile[0]))
+	    AddDevDesc(DevInfo, VolHdr.vh_bootfile, "Boot File", 0);
+    }
+
+#if	defined(DIOCREADCAPACITY)
+    /*
+     * Get the Disk Capacity
+     */
+    if (ioctl(fd, DIOCREADCAPACITY, &DiskCap) < 0)
+	SImsg(SIM_GERR, "ioctl DIOCREADCAPACITY failed: %s: %s", 
+	      DevFile, SYSERR);
+    else {
+	SImsg(SIM_DBG, "DISK: %s DIOCREADCAPACITY = %d", DevFile, DiskCap);
+	/*
+	 * If we still don't have the disk capacity, try getting it
+	 * from the partition table.
+	 */
+	DiskCap = (u_int) IRIXGetDiskSize(OSdisk);
+	if (!HWdisk->Size && DiskCap && OSdisk->SecSize) {
+	    HWdisk->Size = (float) nsect_to_mbytes(DiskCap, OSdisk->SecSize);
+	    SImsg(SIM_DBG, "DISK: %s: size=%.0f MB", 
+		  DevInfo->Name, OSdisk->Size);
+	}
+    }
+#endif	/* DIOCREADCAPACITY */
+
+    (void) close(fd);
+
+    return(0);
+}
+
+/*
  * Probe a Disk Drive
  */
 extern DevInfo_t *ProbeDiskDrive(Inv, TreePtr)
@@ -677,17 +952,17 @@ extern DevInfo_t *ProbeDiskDrive(Inv, TreePtr)
     static char			DevName[50];
     static char			DevFile[sizeof(DevName) + 
 				       sizeof(_PATH_DEV_RDSK) + 4];
-    static char			DriveType[SCSI_DEVICE_NAME_SIZE + 1];
-    int				fd;
-    struct volume_header	VolHdr;
-    DiskDrive_t		       *DiskDrive = NULL;
+    static DevFind_t		Find;
+    DiskDriveData_t	       *DiskDriveData = NULL;
+    DiskDrive_t		       *OSdisk = NULL;
+    DiskDrive_t		       *HWdisk = NULL;
     DevInfo_t		       *DevInfo = NULL;
     DevInfo_t		       *CtlrDev;
+    DevType_t		       *DevType = NULL;
+    ClassType_t		       *ClassType = NULL;
     Define_t		       *Def;
-    char		       *Model = NULL;
-    int				VolHdrOK = 1;
 
-    if (!DevName)
+    if (!Inv)
 	return((DevInfo_t *) NULL);
 
     DevInfo = (DevInfo_t *) xcalloc(1, sizeof(DevInfo_t));
@@ -697,83 +972,90 @@ extern DevInfo_t *ProbeDiskDrive(Inv, TreePtr)
      * Find the disk controller for this disk so that we
      * can figure out the correct disk device name.
      */
-    CtlrDev = FindDeviceByType(DT_DISKCTLR, -1, Inv->inv_controller, TreePtr);
+    (void) memset(&Find, 0, sizeof(Find));
+    Find.Tree = TreePtr;
+    Find.DevType = DT_CONTROLLER;
+    Find.ClassType = -1;
+    Find.Unit = Inv->inv_controller;
+    CtlrDev = DevFind(&Find);
     if (!CtlrDev) {
-	if (Debug) 
-	    Error("No disk controller found for type %d ctlr %d unit %d",
-		  Inv->inv_type, Inv->inv_controller, Inv->inv_unit);
-	(void) sprintf(DevName, "c%dd%d", Inv->inv_controller, Inv->inv_unit);
+	SImsg(SIM_DBG, 
+	      "No disk controller found for type %d ctlr %d unit %d",
+	      Inv->inv_type, Inv->inv_controller, Inv->inv_unit);
+	(void) snprintf(DevName, sizeof(DevName), "c%dd%d", 
+			Inv->inv_controller, Inv->inv_unit);
 	DevInfo->Name = strdup(DevName);
 	return(DevInfo);
     }
 
     /*
-     * INV_SCSIFLOPPY is for various types of floppy devices
+     * Setup DiskDrive data
      */
-    if (Inv->inv_type == INV_SCSIFLOPPY) {
-	(void) sprintf(DevName, "fds%dd%d", 
-		       Inv->inv_controller, Inv->inv_unit);
-	(void) sprintf(DevFile, "%s/%svh", _PATH_DEV_RDSK, DevName);
-    } else {
-	(void) sprintf(DevName, "%sd%d", CtlrDev->Name, Inv->inv_unit);
-	(void) sprintf(DevFile, "%s/%svh", _PATH_DEV_RDSK, DevName);
+    if (DevInfo->DevSpec) 
+	DiskDriveData = (DiskDriveData_t *) DevInfo->DevSpec;
+    else {
+	DiskDriveData = NewDiskDriveData(NULL);
+	DevInfo->DevSpec = (void *) DiskDriveData;
     }
-
-    fd = open(DevFile, O_RDONLY);
-    if (fd < 0) {
-	if (Debug) Error("open failed: %s: %s", DevFile, SYSERR);
-	return((DevInfo_t *) NULL);
-    }
-
-    /*
-     * Get the Drive Type
-     */
-    if (ioctl(fd, DIOCDRIVETYPE, DriveType) < 0) {
-	if (Debug) Error("ioctl DIOCDRIVETYPE failed: %s: %s", DevFile,SYSERR);
-	DriveType[0] = CNULL;
-    }
-    if (DriveType[0])
-	Model = CleanStr(DriveType, (int)sizeof(DriveType));
-
-    /*
-     * Get the volume header data.
-     */
-    if (ioctl(fd, DIOCGETVH, &VolHdr) < 0) {
-	if (Debug) Error("ioctl DIOCGETVH failed: %s: %s", DevFile, SYSERR);
-	VolHdrOK = 0;
-    }
+    if (DiskDriveData->OSdata)
+	OSdisk = DiskDriveData->OSdata;
+    else
+	DiskDriveData->OSdata = OSdisk = NewDiskDrive(NULL);
+    if (DiskDriveData->HWdata)
+	HWdisk = DiskDriveData->HWdata;
+    else
+	DiskDriveData->HWdata = HWdisk = NewDiskDrive(NULL);
 
     /*
      * Put it all together
      */
     DevInfo->Master = CtlrDev;
     DevInfo->Name = DevName;
-    if (Model)
-	DevInfo->Model = Model; 
-    else {
-	/*
-	 * See if there's a generic name in the .cf files
-	 */
-	Def = DefGet("DiskTypes", NULL, Inv->inv_type, 0);
-	if (Def && Def->ValStr1)
-	    Model = strdup(Def->ValStr1);
-    }
+    OSdisk->Unit = Inv->inv_unit;
 
-    DiskDrive = (DiskDrive_t *) xcalloc(1, sizeof(DiskDrive_t));
-    DevInfo->DevSpec = (caddr_t *) DiskDrive;
-    DiskDrive->Unit = Inv->inv_unit;
-    if (VolHdrOK) {
-	DiskDrive->DataCyl = VolHdr.vh_dp.dp_cyls;
-	DiskDrive->Heads = VolHdr.vh_dp.dp_trks0;
-	DiskDrive->Sect = VolHdr.vh_dp.dp_secs;
-	DiskDrive->SecSize = VolHdr.vh_dp.dp_secbytes;
-	DiskDrive->IntrLv = VolHdr.vh_dp.dp_interleave;
-	DiskDrive->APC = VolHdr.vh_dp.dp_spares_cyl;
-	DiskDrive->DiskPart = GetDiskPart(DevInfo, &VolHdr);
+    /*
+     * Perform SCSI query of drive
+     */
+    (void) snprintf(DevFile, sizeof(DevFile), "%s/sc%dd%dl0",
+		    _PATH_DEV_SCSI, Inv->inv_controller, Inv->inv_unit);
+    ProbeDiskDriveScsi(DevInfo, DevFile);
 
-	if (isprint(VolHdr.vh_bootfile[0]))
-	    AddDevDesc(DevInfo, VolHdr.vh_bootfile, "Boot File", 0);
+    /*
+     * If we know this to be a Floppy, set it here, AFTER the SCSI
+     * query has been done to override that.
+     */
+    if (Inv->inv_type == INV_SCSIFLOPPY)
+	DevInfo->Type = DT_FLOPPY;
+
+    /*
+     * Find name of disk device (DevName) and device file (DevFile)
+     */
+    if (FindDiskDev(CtlrDev, Inv, DevName, sizeof(DevName), 
+		    DevFile, sizeof(DevFile)) != 0) {
+	SImsg(SIM_GERR, 
+	      "Cannot find disk device file for type %d ctlr %d unit %d",
+	      Inv->inv_type, Inv->inv_controller, Inv->inv_unit);
+	return((DevInfo_t *) NULL);
     }
+    DevAddFile(DevInfo, strdup(DevFile));
+    /*
+     * Do OS Query's
+     */
+    ProbeDiskDriveQuery(DevInfo, DevFile);
+
+    /*
+     * See if there's a generic name in the .cf files
+     */
+    Def = DefGet("DiskTypes", NULL, Inv->inv_type, 0);
+    if (Def->ValStr2)
+	if (DevType = TypeGetByName(Def->ValStr2))
+	    DevInfo->Type = DevType->Type;
+    if (Def->ValStr3)
+	if (ClassType = ClassTypeGetByName(DevInfo->Type, Def->ValStr3))
+	    DevInfo->ClassType = ClassType->Type;
+
+    if (!DevInfo->Model && Def && Def->ValStr1)
+	DevInfo->Model = Def->ValStr1;
 
     return(DevInfo);
 }
@@ -801,56 +1083,69 @@ static DevInfo_t *InvGetDisk(Inv, TreePtr)
      * See if this is a Disk Controller
      */
     switch (Inv->inv_type) {
+#if	defined(INV_SCSICONTROL)
     case INV_SCSICONTROL:
 	/*
 	 * SCSI
 	 */
 	ClassType = CT_SCSI;
-	(void) sprintf(CtlrName, "dks%d", Inv->inv_controller);
+	(void) snprintf(CtlrName, sizeof(CtlrName), "dks%d",
+			Inv->inv_controller);
 
 	Def = DefGet("scsi-ctlr", NULL, Inv->inv_state, 0);
 	if (Def && Def->ValStr1)
 	    (void) strcpy(CtlrModel, Def->ValStr1);
 	else
-	    (void) sprintf(CtlrModel,"Cannot lookup SCSI Cltr (Type=%d)",
-			   Inv->inv_state);
+	    (void) snprintf(CtlrModel, sizeof(CtlrModel), 
+			    "Cannot lookup SCSI Cltr (Type=%d)",
+			    Inv->inv_state);
 	/*
 	 * Check for additional bits of info
 	 */
 	if (Inv->inv_unit) {
-	    (void) sprintf(Buff, "%X", Inv->inv_unit);
+	    (void) snprintf(Buff, sizeof(Buff),  "%X", Inv->inv_unit);
 	    DevDesc.Desc = Buff;
 	    DevDesc.Label = "Revision";
 	}
 
 	break;
+#endif	/* INV_SCSICONTROL */
+#if	defined(INV_DKIPCONTROL)
     case INV_DKIPCONTROL:
 	/*
 	 * IPI
 	 */
 	ClassType = CT_IPI;
-	(void) sprintf(CtlrName, "ipi%d", Inv->inv_controller);
+	(void) snprintf(CtlrName, sizeof(CtlrName), "ipi%d", 
+			Inv->inv_controller);
 	Def = DefGet("DiskTypes", NULL, Inv->inv_state, 0);
 	if (Def && Def->ValStr1)
 	    (void) strcpy(CtlrModel, Def->ValStr1);
 	else
-	    (void) sprintf(CtlrModel,"Cannot lookup INV_DKIPCONTROL (Type=%d)",
-			   Inv->inv_state);
+	    (void) snprintf(CtlrModel, sizeof(CtlrModel), 
+			    "Cannot lookup INV_DKIPCONTROL (Type=%d)",
+			    Inv->inv_state);
 	break;
+#endif	/* INV_DKIPCONTROL */
+#if	defined(INV_XYL714)
     case INV_XYL714:
+#endif	/* INV_XYL714 */
+#if	defined(INV_XYL754)
     case INV_XYL754:
 	/*
 	 * SMD
 	 */
 	ClassType = CT_SMD;
-	(void) sprintf(CtlrName, "xyl%d", Inv->inv_controller);
+	(void) snprintf(CtlrName, sizeof(CtlrName), "xyl%d", 
+			Inv->inv_controller);
 	Def = DefGet("DiskTypes", NULL, Inv->inv_state, 0);
 	if (Def && Def->ValStr1)
 	    (void) strcpy(CtlrModel, Def->ValStr1);
 	else
-	    (void) sprintf(CtlrModel, 
+	    (void) snprintf(CtlrModel, sizeof(CtlrModel),  
 			   "Cannot lookup INV_XYL* (Type=%d)", Inv->inv_state);
 	break;
+#endif	/* INV_XYL754 */
     }
 
     if (CtlrName[0]) {
@@ -863,7 +1158,7 @@ static DevInfo_t *InvGetDisk(Inv, TreePtr)
 	if (CtlrModel[0])
 	    DevInfo->Model = strdup(CtlrModel);
 	DevInfo->Unit = Inv->inv_controller;
-	DevInfo->Type = DT_DISKCTLR;
+	DevInfo->Type = DT_CONTROLLER;
 	DevInfo->ClassType = ClassType;
 	if (DevDesc.Desc || DevDesc.Label)
 	    AddDevDesc(DevInfo, DevDesc.Desc, DevDesc.Label, 0);
@@ -900,27 +1195,37 @@ static DevInfo_t *InvGetIOBoard(Inv)
 	AddDevDesc(DevInfo, itoa(Inv->inv_unit), "Ebus Slot", 0);
     }
 
-    Def = DefGet("IOBoardTypes", NULL, Inv->inv_type, 0);
+#if	defined(INV_O200IO)
+    if (Inv->inv_type == INV_O200IO)
+	/* See if we can find the specific type of O2000 board */
+	Def = DefGet("O2000ioTypes", NULL, Inv->inv_state, 0);
+    else
+#endif	/* INV_O200IO */
+	/* Just get the generic I/O Board type */
+	Def = DefGet("IOBoardTypes", NULL, Inv->inv_type, 0);
     if (Def) {
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, 
+	    (void) snprintf(DevName, sizeof(DevName),  "%s%d", Def->ValStr2, 
 			   (DevInfo->Unit) ? DevInfo->Unit : DevNum++);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "IOBoard%d", DevNum++);
+	(void) snprintf(DevName, sizeof(DevName), "IOBoard%d", DevNum++);
 	DevInfo->Name = strdup(DevName);
     }
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown IOBoard Type (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown IOBoard Type (%d)", 
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
 
-    Def = DefGet("IOBoardStates", NULL, Inv->inv_state, 0);
+    Def = NULL;
+    if (Inv->inv_type == INV_EVIO)
+	Def = DefGet("EVIOBoardStates", NULL, Inv->inv_state, 0);
     if (Def && Def->ValStr1)
 	AddDevDesc(DevInfo, Def->ValStr1, NULL, 0);
 
@@ -934,6 +1239,7 @@ static DevInfo_t *InvGetBus(Inv)
     inventory_t		       *Inv;
 {
     DevInfo_t		       *DevInfo = NULL;
+    ClassType_t		       *Class;
     Define_t		       *Def;
     char			Model[256];
     char			DevName[128];
@@ -949,17 +1255,22 @@ static DevInfo_t *InvGetBus(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, DevInfo->Unit);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d", 
+			    Def->ValStr2, DevInfo->Unit);
 	    DevInfo->Name = strdup(DevName);
 	}
+	if (Def->ValStr3)
+	    if (Class = ClassTypeGetByName(DT_BUS, Def->ValStr3))
+		DevInfo->ClassType = Class->Type;
     }
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "bus%d", DevInfo->Unit);
+	(void) snprintf(DevName, sizeof(DevName), "bus%d", DevInfo->Unit);
 	DevInfo->Name = strdup(DevName);
     }
-    if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown BusTypes (%d)", Inv->inv_type);
+    if (!DevInfo->Model && !DevInfo->ClassType) {
+	(void) snprintf(Model, sizeof(Model), "Unknown BusTypes (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
 
@@ -988,17 +1299,19 @@ static DevInfo_t *InvGetComp(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, DevInfo->Unit);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d",
+			    Def->ValStr2, DevInfo->Unit);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "compress%d", DevInfo->Unit);
+	(void) snprintf(DevName, sizeof(DevName), "compress%d", DevInfo->Unit);
 	DevInfo->Name = strdup(DevName);
     }
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown CompressionTypes (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown CompressionTypes (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
 
@@ -1027,23 +1340,67 @@ static DevInfo_t *InvGetMisc(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, DevInfo->Unit);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d", 
+			    Def->ValStr2, DevInfo->Unit);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "misc%d", DevInfo->Unit);
+	(void) snprintf(DevName, sizeof(DevName), "misc%d", DevInfo->Unit);
 	DevInfo->Name = strdup(DevName);
     }
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown MiscTypes (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown MiscTypes (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
 
     return(DevInfo);
 }
 
+/*
+ * Get PROM Device info from Inventory
+ */
+static DevInfo_t *InvGetPROM(Inv)
+    inventory_t		       *Inv;
+{
+    DevInfo_t		       *DevInfo = NULL;
+    Define_t		       *Def;
+    char			Model[256];
+    char			DevName[128];
+    static char			Desc[128];
+
+    DevInfo = (DevInfo_t *) xcalloc(1, sizeof(DevInfo_t));
+    DevInfo->Unit = DevInfo->Addr = DevInfo->Prio = DevInfo->Vec = -1;
+    DevInfo->Type = DT_GENERIC;
+    DevInfo->Unit = Inv->inv_unit;
+
+    Def = DefGet("PROMTypes", NULL, Inv->inv_type, 0);
+    if (Def) {
+	if (Def->ValStr1)
+	    DevInfo->Model = Def->ValStr1;
+	if (Def->ValStr2) {
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d", 
+			    Def->ValStr2, DevInfo->Unit);
+	    DevInfo->Name = strdup(DevName);
+	}
+    }
+
+    if (!DevInfo->Name) {
+	(void) snprintf(DevName, sizeof(DevName), "prom%d", DevInfo->Unit);
+	DevInfo->Name = strdup(DevName);
+    }
+    if (!DevInfo->Model) {
+	(void) snprintf(Model, sizeof(Model), "Unknown PROMTypes (%d)", 
+			Inv->inv_type);
+	DevInfo->Model = strdup(Model);
+    }
+
+    return(DevInfo);
+}
+
+#if	defined(HAVE_GRAPHICS_HDRS)
 /*
  * Probe Frame Buffer
  */
@@ -1065,7 +1422,7 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
 
     fd = open(_PATH_DEV_GRAPHICS, O_RDONLY);
     if (fd < 0) {
-	if (Debug) Error("Open failed: %s: %s", _PATH_DEV_GRAPHICS, SYSERR);
+	SImsg(SIM_GERR, "Open failed: %s: %s", _PATH_DEV_GRAPHICS, SYSERR);
 	return((DevInfo_t *) NULL);
     }
 
@@ -1108,12 +1465,12 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
      */
     BoardInfo.board = Inv->inv_unit;
     if (ioctl(fd, GFX_GETBOARDINFO, &BoardInfo) < 0) {
-	if (Debug) Error("ioctl GFX_GETBOARDINFO failed: %s", SYSERR);
+	SImsg(SIM_GERR, "ioctl GFX_GETBOARDINFO failed: %s", SYSERR);
 	return((DevInfo_t *) NULL);
     }
 
     Frame = (FrameBuffer_t *) xcalloc(1, sizeof(FrameBuffer_t));
-    DevInfo->DevSpec = (caddr_t *) Frame;
+    DevInfo->DevSpec = (void *) Frame;
 
     /*
      * Get Graphics Device specific info
@@ -1130,22 +1487,22 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
 	if (NG1info.videoinstalled)
 	    AddDevDesc(DevInfo, "Video is Installed", NULL, 0);
 
-	(void) sprintf(Desc, "%c", 'A' + NG1info.rex3rev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + NG1info.rex3rev);
 	AddDevDesc(DevInfo, Desc, "REX3 Revision", 0);
 
-	(void) sprintf(Desc, "%c", 'A' + NG1info.vc2rev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + NG1info.vc2rev);
 	AddDevDesc(DevInfo, Desc, "VC2 Revision", 0);
 
-	(void) sprintf(Desc, "%c", 'A' + NG1info.mcrev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + NG1info.mcrev);
 	AddDevDesc(DevInfo, Desc, "MC Revision", 0);
 
-	(void) sprintf(Desc, "%c", 'A' + NG1info.xmap9rev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + NG1info.xmap9rev);
 	AddDevDesc(DevInfo, Desc, "XMAP9 Revision", 0);
 
-	(void) sprintf(Desc, "%c", 'A' + NG1info.cmaprev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + NG1info.cmaprev);
 	AddDevDesc(DevInfo, Desc, "CMAP Revision", 0);
 
-	(void) sprintf(Desc, "%c", 'A' + NG1info.bt445rev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + NG1info.bt445rev);
 	AddDevDesc(DevInfo, Desc, "BT445 Revision", 0);
 	break;
 
@@ -1160,23 +1517,24 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
 	case GR1_TYPE_PGR:	
 	    (void) strcpy(Desc, "6U Sized on Private Bus");	break;
 	default:
-	    (void) sprintf(Desc, "Unknown (Type %d)", GR1info.BoardType);
+	    (void) snprintf(Desc, sizeof(Desc), "Unknown (Type %d)", 
+			    GR1info.BoardType);
 	}
 	AddDevDesc(DevInfo, Desc, "Board Type", 0);
 
-	(void) sprintf(Desc, "%d", GR1info.REversion);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR1info.REversion);
 	AddDevDesc(DevInfo, Desc, "REversion", 0);
 
-	(void) sprintf(Desc, "%d", GR1info.Auxplanes);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR1info.Auxplanes);
 	AddDevDesc(DevInfo, Desc, "Auxilary Planes", 0);
 
-	(void) sprintf(Desc, "%d", GR1info.Widplanes);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR1info.Widplanes);
 	AddDevDesc(DevInfo, Desc, "Wid Planes", 0);
 
-	(void) sprintf(Desc, "%d", GR1info.Zplanes);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR1info.Zplanes);
 	AddDevDesc(DevInfo, Desc, "Zplanes", 0);
 
-	(void) sprintf(Desc, "%d", GR1info.Cursorplanes);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR1info.Cursorplanes);
 	AddDevDesc(DevInfo, Desc, "Cursor Planes", 0);
 
 	if (GR1info.Turbo)
@@ -1188,7 +1546,7 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
 	if (GR1info.VRAM1Meg)
 	    AddDevDesc(DevInfo, "1 megabit VRAMs", "Has", 0);
 
-	(void) sprintf(Desc, "%c", GR1info.picrev);
+	(void) snprintf(Desc, sizeof(Desc),  "%c", GR1info.picrev);
 	AddDevDesc(DevInfo, Desc, "PIC Revision", 0);
 	break;
 
@@ -1201,73 +1559,74 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
 	case GR2_TYPE_HI1:	
 	    (void) strcpy(Desc, "HI1");			break;
 	default:
-	    (void) sprintf(Desc, "Unknown (Type %d)", GR2info.BoardType);
+	    (void) snprintf(Desc, sizeof(Desc), "Unknown (Type %d)", 
+			    GR2info.BoardType);
 	}
 	AddDevDesc(DevInfo, Desc, "Board Type", 0);
 
-	(void) sprintf(Desc, "%d", GR2info.Auxplanes);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR2info.Auxplanes);
 	AddDevDesc(DevInfo, Desc, "Auxilary Planes", 0);
 
-	(void) sprintf(Desc, "%d", GR2info.Wids);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR2info.Wids);
 	AddDevDesc(DevInfo, Desc, "Wids", 0);
 
-	if (GR2info.Zbuffer)
-	    AddDevDesc(DevInfo, "ZBuffer Option", "Has", 0);
-
-	(void) sprintf(Desc, "%c", 'A'+GR2info.GfxBoardRev);
-	AddDevDesc(DevInfo, Desc, "GFX Board Revision", 0);
- 
-	(void) sprintf(Desc, "%d", GR2info.MonitorType);
-	AddDevDesc(DevInfo, Desc, "Monitor Type", 0);
- 
-	(void) sprintf(Desc, "%d", GR2info.MonTiming);
-	AddDevDesc(DevInfo, Desc, "Monitor Timing", 0);
- 
-	(void) sprintf(Desc, "%c", 'A' + GR2info.PICRev);
-	AddDevDesc(DevInfo, Desc, "PIC Revision", 0);
- 
-	(void) sprintf(Desc, "%c", 'A' + GR2info.HQ2Rev);
-	AddDevDesc(DevInfo, Desc, "HQ2 Revision", 0);
- 
-	(void) sprintf(Desc, "%c", 'A' + GR2info.GE7Rev);
-	AddDevDesc(DevInfo, Desc, "GE7 Revision", 0);
- 
-	(void) sprintf(Desc, "%c", 'A' + GR2info.RE3Rev);
-	AddDevDesc(DevInfo, Desc, "RE3 Revision", 0);
- 
-	(void) sprintf(Desc, "%c", 'A' + GR2info.VC1Rev);
-	AddDevDesc(DevInfo, Desc, "VC1 Revision", 0);
- 
-	(void) sprintf(Desc, "%d", GR2info.GEs);
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR2info.GEs);
 	AddDevDesc(DevInfo, Desc, "GEs", 0);
  
-	(void) sprintf(Desc, "%c", 'A' + GR2info.VidBckEndRev);
+	if (GR2info.Zbuffer)
+	    AddDevDesc(DevInfo, "Z-Buffer", "Has", 0);
+
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + GR2info.VidBckEndRev);
 	AddDevDesc(DevInfo, Desc, "Video Back End Revision", 0);
  
-	(void) sprintf(Desc, "%c", 'A' + GR2info.VidBrdRev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + GR2info.VidBrdRev);
 	AddDevDesc(DevInfo, Desc, "Video Board Revision", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR2info.MonitorType);
+	AddDevDesc(DevInfo, Desc, "Monitor Type", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR2info.MonTiming);
+	AddDevDesc(DevInfo, Desc, "Monitor Timing", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%d", GR2info.GfxBoardRev);
+	AddDevDesc(DevInfo, Desc, "GFX Board Revision", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + GR2info.PICRev - 1);
+	AddDevDesc(DevInfo, Desc, "PIC Revision", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + GR2info.HQ2Rev - 1);
+	AddDevDesc(DevInfo, Desc, "HQ2 Revision", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + GR2info.GE7Rev - 1);
+	AddDevDesc(DevInfo, Desc, "GE7 Revision", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%c", GR2info.RE3Rev);
+	AddDevDesc(DevInfo, Desc, "RE3 Revision", 0);
+ 
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + GR2info.VC1Rev - 1);
+	AddDevDesc(DevInfo, Desc, "VC1 Revision", 0);
  
 	break;
 
     case INV_LIGHT:
-	(void) sprintf(Desc, "%d", LG1info.boardrev);
+	(void) snprintf(Desc, sizeof(Desc), "%d", LG1info.boardrev);
 	AddDevDesc(DevInfo, Desc, "Board Revision", 0);
 
 	if (LG1info.boardrev >= 1) {
-	    (void) sprintf(Desc, "%d", LG1info.monitortype);
+	    (void) snprintf(Desc, sizeof(Desc), "%d", LG1info.monitortype);
 	    AddDevDesc(DevInfo, Desc, "Monitor Type", 0);
 
 	    if (LG1info.videoinstalled)
 		AddDevDesc(DevInfo, "Video is Installed", NULL, 0);
 	}
 
-	(void) sprintf(Desc, "%c", 'A' + LG1info.rexrev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + LG1info.rexrev);
 	AddDevDesc(DevInfo, Desc, "REX Revision", 0);
 
-	(void) sprintf(Desc, "%c", 'A' + LG1info.vc1rev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + LG1info.vc1rev);
 	AddDevDesc(DevInfo, Desc, "VC1 Revision", 0);
 
-	(void) sprintf(Desc, "%c", 'A' + LG1info.picrev);
+	(void) snprintf(Desc, sizeof(Desc), "%c", 'A' + LG1info.picrev);
 	AddDevDesc(DevInfo, Desc, "PIC Revision", 0);
 
 	break;
@@ -1276,34 +1635,34 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
     case INV_VENICE:
 	Frame->Depth = VENICEinfo.pixel_depth;
 
-	(void) sprintf(Desc, "%d", VENICEinfo.ge_rev);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.ge_rev);
 	AddDevDesc(DevInfo, Desc, "GE Revision", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.ge_count);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.ge_count);
 	AddDevDesc(DevInfo, Desc, "GE Count", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.rm_rev);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.rm_rev);
 	AddDevDesc(DevInfo, Desc, "RM Revision", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.rm_count);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.rm_count);
 	AddDevDesc(DevInfo, Desc, "RM Count", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.ge_rev);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.ge_rev);
 	AddDevDesc(DevInfo, Desc, "GT Revision", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.tiles_per_line);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.tiles_per_line);
 	AddDevDesc(DevInfo, Desc, "Tiles/Line", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.ilOffset);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.ilOffset);
 	AddDevDesc(DevInfo, Desc, "Initial Line Offset", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.pixel_density);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.pixel_density);
 	AddDevDesc(DevInfo, Desc, "Pixel Density", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.hwalk_length);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.hwalk_length);
 	AddDevDesc(DevInfo, Desc, "No. of ops available in hblank", 0);
 
-	(void) sprintf(Desc, "%d", VENICEinfo.tex_memory_size);
+	(void) snprintf(Desc, sizeof(Desc), "%d", VENICEinfo.tex_memory_size);
 	AddDevDesc(DevInfo, Desc, "Texture Memory Size", 0);
 
 	break;
@@ -1325,6 +1684,7 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
     /* Return something */
     return(DevInfo);
 }
+#endif	/* HAVE_GRAPHICS_HDRS */
 
 /*
  * Get Graphics info from Inventory
@@ -1332,6 +1692,7 @@ extern DevInfo_t *ProbeFrameBuffer(DevInfo, Inv)
 static DevInfo_t *InvGetGraphics(Inv)
     inventory_t		       *Inv;
 {
+#if	defined(HAVE_GRAPHICS_HDRS)
     DevInfo_t		       *DevInfo = NULL;
     Define_t		       *Def;
     Define_t		       *DefList;
@@ -1353,16 +1714,17 @@ static DevInfo_t *InvGetGraphics(Inv)
     if (Def && Def->ValStr1)
 	DevInfo->Model = Def->ValStr1;
     else {
-	(void) sprintf(Model, "Unknown Graphics (Type=%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown Graphics (Type=%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
 
     (void) ProbeFrameBuffer(DevInfo, Inv);
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "%s%d", 
-		       (Def && Def->ValStr2) ? Def->ValStr2 : "gfx", 
-		       Inv->inv_unit);
+	(void) snprintf(DevName, sizeof(DevName), "%s%d", 
+			(Def && Def->ValStr2) ? Def->ValStr2 : "gfx", 
+			Inv->inv_unit);
 	DevInfo->Name = strdup(DevName);
     }
 
@@ -1380,6 +1742,30 @@ static DevInfo_t *InvGetGraphics(Inv)
 	case INV_NEWPORT:
 	    ListName = "NEWPORTStates";
 	    break;
+	case INV_MGRAS:
+#if	defined(INV_MGRAS_ARCHS)
+	    Def = DefGet("MGRASarchs", NULL, 
+			 Inv->inv_state & INV_MGRAS_ARCHS, 0);
+	    if (Def)
+		AddDevDesc(DevInfo, Def->ValStr1, NULL, 0);
+	    else
+		if (Debug) printf("Unknown MGRASarchs: 0x%x\n", 
+				  Inv->inv_state & INV_MGRAS_ARCHS);
+#endif	/* INV_MGRAS_ARCHS */
+
+	    Def = DefGet("MGRASges", NULL, 
+			 Inv->inv_state & INV_MGRAS_GES, 0);
+	    if (Def) AddDevDesc(DevInfo, Def->ValStr1, NULL, 0);
+
+	    Def = DefGet("MGRASres", NULL, 
+			 Inv->inv_state & INV_MGRAS_RES, 0);
+	    if (Def) AddDevDesc(DevInfo, Def->ValStr1, NULL, 0);
+
+	    Def = DefGet("MGRAStrs", NULL, 
+			 Inv->inv_state & INV_MGRAS_TRS, 0);
+	    if (Def) AddDevDesc(DevInfo, Def->ValStr1, NULL, 0);
+
+	    break;
 	}
 
     if (ListName)
@@ -1391,16 +1777,22 @@ static DevInfo_t *InvGetGraphics(Inv)
      * See if there's a more specific submodel defined.
      */
     if (GrType) {
-	if (Debug) 
-	    printf("DEBUG: GraphicsType=`%s' class=%d type=%d state=0x%x",
-		   GrType, Inv->inv_class, Inv->inv_type, Inv->inv_state);
-	(void) sprintf(GrTmp, "%sconfigs", GrType);
+	SImsg(SIM_DBG, 
+	      "GRDEBUG: GraphicsType=`%s' class=%d type=%d state=0x%x",
+	      GrType, Inv->inv_class, Inv->inv_type, Inv->inv_state);
+	(void) snprintf(GrTmp, sizeof(GrTmp), "%sconfigs", GrType);
 	Def = DefGetList(GrTmp, NULL, Inv->inv_state, 0);
 	if (Def)
 	    DevInfo->Model = Def->ValStr1;
     }
 
     return(DevInfo);
+#else	/* !defined(HAVE_GRAPHICS_HDRS) */
+    SImsg(SIM_GERR, 
+"Graphics/FrameBuffer found, but SysInfo compiled without HAVE_GRAPHICS_HDRS."
+	  );
+    return((DevInfo_t *) NULL);
+#endif	/* HAVE_GRAPHICS_HDRS */
 }
 
 /*
@@ -1411,10 +1803,10 @@ static DevInfo_t *InvGetNetwork(Inv)
 {
     DevInfo_t		       *DevInfo = NULL;
     Define_t		       *Def;
+    ClassType_t		       *Class = NULL;
     char			ModelBuff[256];
     char		       *Model = NULL;
     char			DevName[128];
-    char			Desc[128];
     char		       *DevBase = NULL;
 
     /*
@@ -1430,23 +1822,29 @@ static DevInfo_t *InvGetNetwork(Inv)
 	    Model = Def->ValStr1;
 	if (Def->ValStr2) 
 	    DevBase = Def->ValStr2;
+	if (Def->ValStr3)
+	    Class = ClassTypeGetByName(DT_NETIF, Def->ValStr3);
     } 
 
     if (!Model) {
-	(void) sprintf(ModelBuff, "Unknown Network Device (Type=%d)",
-		       Inv->inv_type);
+	(void) snprintf(ModelBuff, sizeof(ModelBuff),
+			"Unknown Network Device (Type=%d)", Inv->inv_type);
 	Model = ModelBuff;
     }
 
-    (void) sprintf(DevName, "%s%d", (DevBase) ? DevBase : "netif",
-		   Inv->inv_unit);
+    (void) snprintf(DevName, sizeof(DevName), "%s%d",
+		    (DevBase) ? DevBase : "netif", Inv->inv_unit);
 
-    if (DevBase)
+    if (DevBase) {
 	/*
 	 * Attempt to check system for device
 	 */
-	DevInfo = ProbeNetif(DevName, (DevData_t *) NULL, 
-			     (DevDefine_t *) NULL);
+	ProbeData_t		ProbeData;
+
+	memset(&ProbeData, CNULL, sizeof(ProbeData));
+	ProbeData.DevName = DevName;
+	DevInfo = ProbeNetif(&ProbeData);
+    }
     if (!DevInfo) {
 	DevInfo = (DevInfo_t *) xcalloc(1, sizeof(DevInfo_t));
 	DevInfo->Unit = DevInfo->Addr = DevInfo->Prio = DevInfo->Vec = -1;
@@ -1456,6 +1854,8 @@ static DevInfo_t *InvGetNetwork(Inv)
 
     if (Model)
 	DevInfo->Model = strdup(Model);
+    if (Class)
+	DevInfo->ClassType = Class->Type;
 	    
     /*
      * Set what we know
@@ -1463,20 +1863,17 @@ static DevInfo_t *InvGetNetwork(Inv)
     switch (Inv->inv_controller) {
     case INV_FDDI_IPG:
     case INV_ETHER_EC:
-	(void) sprintf(Desc, "%d", Inv->inv_state);
-	AddDevDesc(DevInfo, Desc, "Version", 0);
+	AddDevDesc(DevInfo, itoa(Inv->inv_state), "Version", 0);
 	break;
     case INV_ETHER_EE:
-	(void) sprintf(Desc, "%d", Inv->inv_state);
-	AddDevDesc(DevInfo, Desc, "Ebus Slot", 0);
+	AddDevDesc(DevInfo, itoa(Inv->inv_state), "Ebus Slot", 0);
 	break;
     default:
 	/*
 	 * We don't know what inv_state means, but it may be useful
 	 * so we'll just add it.
 	 */
-	(void) sprintf(Desc, "%d", Inv->inv_state);
-	AddDevDesc(DevInfo, Desc, "State", 0);
+	AddDevDesc(DevInfo, itoa(Inv->inv_state), "State", 0);
     }
 
     /*
@@ -1504,8 +1901,11 @@ static DevInfo_t *InvGetTape(Inv)
 {
     DevInfo_t		       *DevInfo = NULL;
     Define_t		       *Def;
+    static char			DevFile[MAXPATHLEN];
     char			Model[256];
     char			DevName[128];
+    int				ClassType = 0;
+    ClassType_t		       *Class = NULL;
 
     Model[0] = DevName[0] = CNULL;
 
@@ -1520,12 +1920,22 @@ static DevInfo_t *InvGetTape(Inv)
 	 * Lookup as a SCSI Tape
 	 */
 	Def = DefGet("SCSITapeTypes", NULL, Inv->inv_state, 0);
+	ClassType = CT_SCSI;
+	/*
+	 * Perform SCSI queries
+	 */
+	(void) snprintf(DevFile, sizeof(DevFile), "%s/sc%dd%dl0",
+			_PATH_DEV_SCSI, Inv->inv_controller, Inv->inv_unit);
+	(void) ScsiQuery(DevInfo, DevFile, -1, TRUE);
 	break;
     default:
 	/*
 	 * Lookup as a general tape type
 	 */
 	Def = DefGet("TapeTypes", NULL, Inv->inv_type, 0);
+	if (Def && Def->ValStr3)
+	    if (Class = ClassTypeGetByName(DT_TAPEDRIVE, Def->ValStr3))
+		ClassType = Class->Type;
 	break;
     }
 
@@ -1533,17 +1943,19 @@ static DevInfo_t *InvGetTape(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2)
-	    (void) sprintf(DevName, "%s%dd%d", Def->ValStr2, 
-			   Inv->inv_controller, Inv->inv_unit);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%dd%d", Def->ValStr2, 
+			    Inv->inv_controller, Inv->inv_unit);
     }
     if (!DevName[0]) 
-	(void) sprintf(DevName, "tape%d", Inv->inv_unit);
+	(void) snprintf(DevName, sizeof(DevName), "tape%d", Inv->inv_unit);
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown Tape Drive Type %d",Inv->inv_state);
+	(void) snprintf(Model, sizeof(Model), "Unknown Tape Drive Type %d",
+			Inv->inv_state);
 	DevInfo->Model = strdup(Model);
     }
 
     DevInfo->Name = strdup(DevName);
+    DevInfo->ClassType = ClassType;
 
     return(DevInfo);
 }
@@ -1571,17 +1983,19 @@ static DevInfo_t *InvGetParallel(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, ParallelNum++);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d",
+			    Def->ValStr2, ParallelNum++);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "parallel%d", ParallelNum++);
+	(void) snprintf(DevName, sizeof(DevName), "parallel%d", ParallelNum++);
 	DevInfo->Name = strdup(DevName);
     }
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown Parallel Type (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown Parallel Type (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
 
@@ -1600,6 +2014,11 @@ static DevInfo_t *InvGetSerial(Inv)
     char			DevName[128];
     static int			DevNum = 0;
 
+#if	defined(INV_INVISIBLE)
+    if (Inv->inv_type == INV_INVISIBLE)
+	return((DevInfo_t *) NULL);
+#endif	/* INV_INVISIBLE */
+
     DevInfo = (DevInfo_t *) xcalloc(1, sizeof(DevInfo_t));
     DevInfo->Unit = DevInfo->Addr = DevInfo->Prio = DevInfo->Vec = -1;
     DevInfo->Type = DT_SERIAL;
@@ -1611,17 +2030,19 @@ static DevInfo_t *InvGetSerial(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, DevNum++);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d",
+			    Def->ValStr2, DevNum++);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "serial%d", DevNum++);
+	(void) snprintf(DevName, sizeof(DevName), "serial%d", DevNum++);
 	DevInfo->Name = strdup(DevName);
     }
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown Serial Type (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown Serial Type (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
 
@@ -1644,7 +2065,9 @@ static DevInfo_t *InvGetSCSI(Inv, TreePtr)
 {
     DevInfo_t		       *DevInfo = NULL;
     DevInfo_t		       *CtlrDev = NULL;
+    DevType_t		       *DevType = NULL;
     Define_t		       *Def;
+    static DevFind_t		Find;
     char			Model[256];
     char			DevName[128];
     static int			DevNum = 0;
@@ -1652,40 +2075,52 @@ static DevInfo_t *InvGetSCSI(Inv, TreePtr)
     DevInfo = (DevInfo_t *) xcalloc(1, sizeof(DevInfo_t));
     DevInfo->Unit = DevInfo->Addr = DevInfo->Prio = DevInfo->Vec = -1;
     DevInfo->Type = DT_GENERIC;
+    DevInfo->ClassType = CT_SCSI;
     DevInfo->Unit = Inv->inv_unit;
 
-    CtlrDev = FindDeviceByType(DT_DISKCTLR, CT_SCSI, Inv->inv_controller, 
-			       TreePtr);
-    if (CtlrDev)
+    (void) memset(&Find, 0, sizeof(Find));
+    Find.Tree = TreePtr;
+    Find.DevType = DT_CONTROLLER;
+    Find.ClassType = CT_SCSI;
+    Find.Unit = Inv->inv_controller;
+    if (CtlrDev = DevFind(&Find))
 	DevInfo->Master = CtlrDev;
 
     Model[0] = DevName[0] = CNULL;
 
     Def = DefGet("SCSITypes", NULL, Inv->inv_type, 0);
     if (Def) {
-	if (Def->ValStr1)
-	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, DevNum++);
+	    if (DevType = TypeGetByName(Def->ValStr2))
+		DevInfo->Type = DevType->Type;
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d", 
+			    Def->ValStr2, DevNum++);
 	    DevInfo->Name = strdup(DevName);
 	}
+	if (Def->ValStr1)
+	    /*
+	     * If we were unable to lookup ValStr2 (the DevType) then
+	     * go ahead and use ValStr1 as the Model.
+	     */
+	    if (!DevInfo->Type)
+		DevInfo->Model = Def->ValStr1;
     }
 
-    if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown SCSITypes (%d)", Inv->inv_type);
+    if (!DevInfo->Model && !DevInfo->Type) {
+	(void) snprintf(Model, sizeof(Model), "Unknown SCSITypes (%d)", 
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
     if (!DevInfo->Name) {
 	DevInfo->Name = strdup(DevName);
-	(void) sprintf(DevName, "scsi%d", DevNum++);
+	(void) snprintf(DevName, sizeof(DevName), "scsi%d", DevNum++);
     }
 
     /*
      * Get what else we can find.
      */
     if (Inv->inv_state > 0) {
-	AddDevDesc(DevInfo, strdup(itoa(Inv->inv_state)), 
-		   "State", 0);
+	AddDevDesc(DevInfo, strdup(itoa(Inv->inv_state)), "State", DA_APPEND);
 	if (Inv->inv_state & INV_REMOVE)
 	    AddDevDesc(DevInfo, "Is Removable", NULL, 0);
     }
@@ -1716,18 +2151,20 @@ static DevInfo_t *InvGetAudio(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, DevNum++);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d", 
+			    Def->ValStr2, DevNum++);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown AudioTypes (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown AudioTypes (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
     if (!DevInfo->Name) {
 	DevInfo->Name = strdup(DevName);
-	(void) sprintf(DevName, "audio%d", DevNum++);
+	(void) snprintf(DevName, sizeof(DevName), "audio%d", DevNum++);
     }
 
     /*
@@ -1765,18 +2202,20 @@ static DevInfo_t *InvGetVideo(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, Inv->inv_unit);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d",
+			    Def->ValStr2, Inv->inv_unit);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown VideoTypes (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown VideoTypes (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
     if (!DevInfo->Name) {
 	DevInfo->Name = strdup(DevName);
-	(void) sprintf(DevName, "video%d", Inv->inv_unit);
+	(void) snprintf(DevName, sizeof(DevName), "video%d", Inv->inv_unit);
     }
 
     /*
@@ -1826,18 +2265,20 @@ static DevInfo_t *InvGetDisplay(Inv)
 	if (Def->ValStr1)
 	    DevInfo->Model = Def->ValStr1;
 	if (Def->ValStr2) {
-	    (void) sprintf(DevName, "%s%d", Def->ValStr2, Inv->inv_unit);
+	    (void) snprintf(DevName, sizeof(DevName), "%s%d", 
+			    Def->ValStr2, Inv->inv_unit);
 	    DevInfo->Name = strdup(DevName);
 	}
     }
 
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown DisplayTypes (%d)", Inv->inv_type);
+	(void) snprintf(Model, sizeof(Model), "Unknown DisplayTypes (%d)",
+			Inv->inv_type);
 	DevInfo->Model = strdup(Model);
     }
     if (!DevInfo->Name) {
 	DevInfo->Name = strdup(DevName);
-	(void) sprintf(DevName, "display%d", Inv->inv_unit);
+	(void) snprintf(DevName, sizeof(DevName), "display%d", Inv->inv_unit);
     }
 
     return(DevInfo);
@@ -1871,11 +2312,12 @@ static DevInfo_t *InvGetMemory(Inv)
     DevInfo->Unit = DevInfo->Addr = DevInfo->Prio = DevInfo->Vec = -1;
     DevInfo->Type = DT_MEMORY;
 
-    SizeStr = GetSizeStr((u_long)Inv->inv_state, (u_long)BYTES);
+    SizeStr = GetSizeStr((Large_t)Inv->inv_state, BYTES);
     Def = DefGet("MemoryTypes", NULL, Inv->inv_type, 0);
     if (Def) {
 	if (Def->ValStr1) {
-	    (void) sprintf(Model, "%s %s", SizeStr, Def->ValStr1);
+	    (void) snprintf(Model, sizeof(Model), "%s %s", 
+			    SizeStr, Def->ValStr1);
 	    DevInfo->Model = strdup(Model);
 	}
 	if (Def->ValStr2)
@@ -1883,11 +2325,11 @@ static DevInfo_t *InvGetMemory(Inv)
     }
 
     if (!DevInfo->Name) {
-	(void) sprintf(DevName, "mem%d", MemNum++);
+	(void) snprintf(DevName, sizeof(DevName), "mem%d", MemNum++);
 	DevInfo->Name = strdup(DevName);
     }
     if (!DevInfo->Model) {
-	(void) sprintf(Model, "Unknown Memory Type (%d) %s",
+	(void) snprintf(Model, sizeof(Model), "Unknown Memory Type (%d) %s",
 		       Inv->inv_type, SizeStr);
 	DevInfo->Model = strdup(Model);
     }
@@ -1896,7 +2338,7 @@ static DevInfo_t *InvGetMemory(Inv)
      * Get what else we can find.
      */
     if (Inv->inv_unit > 0) {
-	(void) sprintf(Desc, "%d-way", Inv->inv_unit);
+	(void) snprintf(Desc, sizeof(Desc), "%d-way", Inv->inv_unit);
 	AddDevDesc(DevInfo, Desc, "Interleave", 0);
     }
 
@@ -1927,19 +2369,20 @@ static DevInfo_t *InvGetCPU(Inv)
 	 * It doesn't appear there is a real unit number assigned
 	 * to a system board, so we'll make one up for now.
 	 */
-	(void) sprintf(DevName, "cpuboard%d", CPUboardNum++);
+	(void) snprintf(DevName, sizeof(DevName), "cpuboard%d", CPUboardNum++);
 
 	Def = DefGet("cpuboard", NULL, Inv->inv_state, 0);
 	if (Def && Def->ValStr1)
 	    (void) strcpy(Model, Def->ValStr1);
 	else
-	    (void) sprintf(Model, "Type %d CPU Board", Inv->inv_state);
+	    (void) snprintf(Model, sizeof(Model), "Type %d CPU Board", 
+			    Inv->inv_state);
 
 	/*
 	 * What vague CPU info there is is associated with the cpuboard
 	 * for some silly reason.
 	 */
-	(void) sprintf(Desc, "%s %d MHz %s CPUs",
+	(void) snprintf(Desc, sizeof(Desc), "%s %d MHz %s CPUs",
 		       GetNumCpu(), Inv->inv_controller, 
 		       strupper(GetCpuType()));
 	break;
@@ -1947,10 +2390,10 @@ static DevInfo_t *InvGetCPU(Inv)
 	/* This doesn't tell us anything */
 	break;
     case INV_FPUCHIP:
-	(void) sprintf(DevName, "fpu%d", Inv->inv_unit);
-	(void) sprintf(Model, "Floating Point Unit");
-	(void) sprintf(Label, "Revision");
-	(void) sprintf(Desc, "%d", Inv->inv_state);
+	(void) snprintf(DevName, sizeof(DevName), "fpu%d", Inv->inv_unit);
+	(void) snprintf(Model, sizeof(Model), "Floating Point Unit");
+	(void) snprintf(Label, sizeof(Label), "Revision");
+	(void) snprintf(Desc, sizeof(Desc), "%d", Inv->inv_state);
 	break;
     case INV_CCSYNC:
 	/* What the hell is this? */
@@ -1958,8 +2401,10 @@ static DevInfo_t *InvGetCPU(Inv)
 	(void) strcpy(Model, "CC Revision 2+ sync join counter");
 	break;
     default:
-	(void) sprintf(DevName, "processor%d", ProcessorNum++);
-	(void) sprintf(Model, "Unknown Processor Type (%d)", Inv->inv_type);
+	(void) snprintf(DevName, sizeof(DevName), "processor%d", 
+			ProcessorNum++);
+	(void) snprintf(Model, sizeof(Model), "Unknown Processor Type (%d)", 
+			Inv->inv_type);
     }
 
     if (DevName[0]) {
@@ -1983,6 +2428,7 @@ static int BuildDevicesInvent(TreePtrPtr, Names)
     char		       **Names;
 {
     static DevData_t	        DevData;
+    static DevFind_t		Find;
     DevInfo_t		       *DevInfo;
     DevInfo_t		       *CtlrDev = NULL;
     inventory_t		       *Inv;
@@ -1993,11 +2439,10 @@ static int BuildDevicesInvent(TreePtrPtr, Names)
 
     while (Inv = getinvent()) {
 	DevInfo = NULL;
-	if (Debug) 
-	    printf(
-	   "INV: Class = %d Type = %d ctrl = %d unit = %d state = %d\n",
-		   Inv->inv_class, Inv->inv_type, Inv->inv_controller,
-		   Inv->inv_unit, Inv->inv_state);
+	SImsg(SIM_DBG, 
+	      "INV: Class = %d Type = %d ctrl = %d unit = %d state = %d",
+	      Inv->inv_class, Inv->inv_type, Inv->inv_controller,
+	      Inv->inv_unit, Inv->inv_state);
 	switch (Inv->inv_class) {
 	case INV_PROCESSOR:
 	    DevInfo = InvGetCPU(Inv);
@@ -2047,24 +2492,32 @@ static int BuildDevicesInvent(TreePtrPtr, Names)
 	case INV_MISC:
 	    DevInfo = InvGetMisc(Inv);
 	    break;
+#if	OSVER >= 64
+	case INV_PROM:
+	    DevInfo = InvGetPROM(Inv);
+	    break;
+#endif	/* OSVER >= 64 */
 	default:
 	    DevInfo = (DevInfo_t *) xcalloc(1, sizeof(DevInfo_t));
-	    (void) sprintf(Buff, "unknown%d", DevNum++);
+	    (void) snprintf(Buff, sizeof(Buff), "unknown%d", DevNum++);
 	    DevInfo->Name = strdup(Buff);
 	    DevInfo->Unit = Inv->inv_unit;
-	    (void) sprintf(Buff, 
+	    (void) snprintf(Buff, sizeof(Buff), 
 	   "Unknown Device Type (class=%d type=%d ctlr=%d unit=%d state=%d)",
-			   Inv->inv_class, Inv->inv_type, Inv->inv_controller,
-			   Inv->inv_unit, Inv->inv_state);
+			    Inv->inv_class, Inv->inv_type, Inv->inv_controller,
+			    Inv->inv_unit, Inv->inv_state);
 	    DevInfo->Model = strdup(Buff);
 	}
 	/*
 	 * See if we can find a generic controller card for this device
 	 */
 	if (DevInfo && !DevInfo->Master && Inv->inv_controller > 0) {
-	    CtlrDev = FindDeviceByType(DT_CARD, -1, Inv->inv_controller, 
-				       *TreePtrPtr);
-	    if (CtlrDev)
+	    (void) memset(&Find, 0, sizeof(Find));
+	    Find.Tree = *TreePtrPtr;
+	    Find.DevType = DT_CARD;
+	    Find.ClassType = -1;
+	    Find.Unit = Inv->inv_controller;
+	    if (CtlrDev = DevFind(&Find))
 		DevInfo->Master = CtlrDev;
 	}
 	if (DevInfo)

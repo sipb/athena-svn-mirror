@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: memory.c,v 1.1.1.2 1998-02-12 21:31:53 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
-
 
 /*
  * Memory related functions.
@@ -19,11 +19,11 @@ static char *RCSid = "$Id: memory.c,v 1.1.1.2 1998-02-12 21:31:53 ghudson Exp $"
 /*
  * Divide and Round Up
  */
-extern int DivRndUp(Num, Div)
-    unsigned long 		Num;
-    unsigned long 		Div;
+extern Large_t DivRndUp(Num, Div)
+    Large_t	 		Num;
+    Large_t	 		Div;
 {
-    int 			i;
+    Large_t			i;
 
     i = Num / Div;
 
@@ -34,12 +34,12 @@ extern int DivRndUp(Num, Div)
  * Get string of the amount of physical memory
  */
 extern char *GetMemoryStr(Amount)
-    u_long			Amount;
+    Large_t			Amount;
 {
-    static char			Buff[BUFSIZ];
+    static char			Buff[64];
 
     if (Amount > 0) {
-	(void) sprintf(Buff, "%s", GetSizeStr(Amount, MBYTES));
+	(void) snprintf(Buff, sizeof(Buff), "%s", GetSizeStr(Amount, MBYTES));
 	return(Buff);
     }
 
@@ -67,8 +67,8 @@ extern char *GetMemoryPhysmemSym()
 {
 #if	defined(HAVE_PHYSMEM)
     nlist_t		       *nlptr;
-    u_long 			Bytes;
-    u_long	 		Amount = 0;
+    Large_t			Bytes;
+    Large_t	 		Amount = 0;
     kvm_t		       *kd;
     int				physmem;
 
@@ -85,18 +85,17 @@ extern char *GetMemoryPhysmemSym()
 	     * Could use ctob() instead of "Page Size * Num Pages",
 	     * but this is more portable.
 	     */
-	    Bytes = (unsigned long) (GETPAGESIZE() * physmem);
-	    if (Debug)
-		printf("Bytes = %d physmem = %d pagesize = %d\n", 
-		       Bytes, physmem, GETPAGESIZE());
-	    Amount = DivRndUp(Bytes, MBYTES);
+	    Bytes = (Large_t)GETPAGESIZE() * (Large_t)physmem;
+	    SImsg(SIM_DBG, "Physmem: Bytes = %.0f physmem = %d pagesize = %d", 
+		  (float) Bytes, physmem, GETPAGESIZE());
+	    Amount = DivRndUp(Bytes, (Large_t)MBYTES);
 	}
     }
 
     if (kd)
 	KVMclose(kd);
 
-    return(GetMemoryStr((u_long)Amount));
+    return(GetMemoryStr(Amount));
 #else	/* !HAVE_PHYSMEM */
     return((char *) NULL);
 #endif	/* HAVE_PHYSMEM */

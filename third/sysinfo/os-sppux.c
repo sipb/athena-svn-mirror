@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-sppux.c,v 1.1.1.2 1998-02-12 21:32:21 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -112,7 +113,7 @@ extern char *GetModelCnxUname()
 	return((char *) NULL);
 
 #if	defined(MODEL_NAME)
-    (void) sprintf(Buff, "%s ", MODEL_NAME);
+    (void) snprintf(Buff, sizeof(Buff),  "%s ", MODEL_NAME);
 #else
     Buff[0] = CNULL;
 #endif
@@ -143,7 +144,7 @@ extern char *GetAppArchHPUX()
 
     CpuVersion = sysconf(_SC_CPU_VERSION);
     if (CpuVersion < 0) {
-	if (Debug) Error("sysconf(_SC_CPU_VERSION) failed: %s.", SYSERR);
+	SImsg(SIM_GERR, "sysconf(_SC_CPU_VERSION) failed: %s.", SYSERR);
 	return((char *) NULL);
     }
 
@@ -154,7 +155,6 @@ extern char *GetAppArchHPUX()
 
     return((char *) NULL);
 }
-
 
 /*
  * Determine CPU type using sysconf().
@@ -167,7 +167,7 @@ extern char *GetCpuTypeHPUX()
 
     CpuVersion = sysconf(_SC_CPU_VERSION);
     if (CpuVersion < 0) {
-	if (Debug) Error("sysconf(_SC_CPU_VERSION) failed: %s.", SYSERR);
+	SImsg(SIM_GERR, "sysconf(_SC_CPU_VERSION) failed: %s.", SYSERR);
 	return((char *) NULL);
     }
 
@@ -194,19 +194,18 @@ extern char *GetNumCpuCnxSysinfo()
     Status = cnx_sysinfo(CNX_IS_COMPLEX_BASIC_INFO, &Target, &Basic,
 			 1, CNX_IS_COMPLEX_BASIC_INFO_COUNT, NULL);
     if (Status != 1) {
-	if (Debug) 
-	    Error("cnx_sysinfo(CNX_IS_COMPLEX_BASIC_INFO) failed: %s", SYSERR);
+	SImsg(SIM_GERR, "cnx_sysinfo(CNX_IS_COMPLEX_BASIC_INFO) failed: %s", SYSERR);
 	return((char *) NULL);
     }
 
     Num = Basic.cpu_cnt;
     if (Num < 1) {
 	if (Debug)
-	    Error("cnx_sysinfo(CNX_IS_COMPLEX_BASIC_INFO): Bad cpu count (%d)",
+	    SImsg(SIM_GERR, "cnx_sysinfo(CNX_IS_COMPLEX_BASIC_INFO): Bad cpu count (%d)",
 		  Num);
 	return((char *) NULL);
     }
-    (void) sprintf(Buff, "%d", Num);
+    (void) snprintf(Buff, sizeof(Buff),  "%d", Num);
 
     return(Buff);
 }
@@ -230,8 +229,7 @@ extern char *GetKernVerCnxSysinfo()
     Status = cnx_sysinfo(CNX_IS_COMPLEX_VERS_INFO, &Target, &Version,
 			 1, CNX_IS_COMPLEX_VERS_INFO_COUNT, NULL);
     if (Status != 1) {
-	if (Debug) 
-	    Error("cnx_sysinfo(CNX_IS_COMPLEX_VERS_INFO) failed: %s", SYSERR);
+	SImsg(SIM_GERR, "cnx_sysinfo(CNX_IS_COMPLEX_VERS_INFO) failed: %s", SYSERR);
 	return((char *) NULL);
     }
 
@@ -240,7 +238,7 @@ extern char *GetKernVerCnxSysinfo()
 	VerString = strdup(cp);
     else {
 	if (Debug)
-	    Error("cnx_sysinfo(CNX_IS_COMPLEX_VERS_INFO): No version string.");
+	    SImsg(SIM_GERR, "cnx_sysinfo(CNX_IS_COMPLEX_VERS_INFO): No version string.");
 	return((char *) NULL);
     }
 
@@ -287,7 +285,7 @@ extern char *GetOSNameCnxSysinfo()
     }
 
     if (cp - KernStr > sizeof(OSName)) {
-	if (Debug) Error("GetOSNameCnx(): OSName buffer too small.");
+	SImsg(SIM_DBG, "GetOSNameCnx(): OSName buffer too small.");
 	return((char *) NULL);
     }
 
@@ -328,7 +326,7 @@ extern char *GetOSVerCnxSysinfo()
 	return((char *) NULL);
 
     if (cp - KernStr > sizeof(OSVer)) {
-	if (Debug) Error("GetOSVerCnxSysinfo(): OSVer buffer too small.");
+	SImsg(SIM_DBG, "GetOSVerCnxSysinfo(): OSVer buffer too small.");
 	return((char *) NULL);
     }
 
@@ -346,7 +344,7 @@ extern char *GetMemoryCnxSysinfo()
     cnx_is_complex_mem_info_data_t 
 				Mem;
     cnx_is_target_data_t	Target;
-    u_long			Num;
+    SYSINFO_LARGE_T		Num;
     int				Status;
     static char			Buff[100];
 
@@ -354,12 +352,11 @@ extern char *GetMemoryCnxSysinfo()
     Status = cnx_sysinfo(CNX_IS_COMPLEX_MEM_INFO, &Target, &Mem,
 			 1, CNX_IS_COMPLEX_MEM_INFO_COUNT, NULL);
     if (Status != 1) {
-	if (Debug) 
-	    Error("cnx_sysinfo(CNX_IS_COMPLEX_MEM_INFO) failed: %s", SYSERR);
+	SImsg(SIM_GERR, "cnx_sysinfo(CNX_IS_COMPLEX_MEM_INFO) failed: %s", SYSERR);
 	return((char *) NULL);
     }
 
-    Num = Mem.total_memory;
+    Num = (SYSINFO_LARGE_T)Mem.total_memory;
 
     return(GetSizeStr(Num, BYTES));
 }

@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# $Id: mkdirhier,v 1.1.1.1 1998-12-24 22:02:58 ghudson Exp $
+#
+# Make directory hierarchy
+#
+
+dirmode=755
+mkdirprog=mkdir
+
+dstdir=$1
+
+# Skip lots of stat calls in the usual case.
+if [ -d "$dstdir" ]; then
+    exit 0
+fi
+
+defaultIFS='
+'
+IFS="${IFS-${defaultIFS}}"
+
+oIFS="${IFS}"
+# Some sh's can't handle IFS=/ for some reason.
+IFS='%'
+set - `echo ${dstdir} | sed -e 's@/@%@g' -e 's@^%@/@'`
+IFS="${oIFS}"
+
+pathcomp=''
+
+while [ $# -ne 0 ] ; do
+        pathcomp="${pathcomp}${1}"
+        shift
+
+        if [ ! -d "${pathcomp}" ] ;
+        then
+                $mkdirprog "${pathcomp}"
+                echo $mkdirprog "${pathcomp}"
+		chmod $dirmode "${pathcomp}"
+        else
+                true
+        fi
+
+        pathcomp="${pathcomp}/"
+done
+

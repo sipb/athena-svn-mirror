@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: netif.c,v 1.1.1.2 1998-02-12 21:32:16 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
-
 
 /*
  * Portions of code found in this file are based on the 4.3BSD 
@@ -29,11 +29,13 @@ static char *RCSid = "$Id: netif.c,v 1.1.1.2 1998-02-12 21:32:16 ghudson Exp $";
 #endif	/* NEED_SOCKIO */
 #include <sys/param.h>
 #include <sys/errno.h>
+#include <netdb.h>
 #include <net/if.h>
 #include <netinet/in.h>
-#include <netinet/in_var.h>
 #include <netinet/if_ether.h>
-#include <netdb.h>
+#if	defined(HAVE_IN_IFADDR)
+#include <netinet/in_var.h>
+#endif	/* HAVE_IN_IFADDR */
 
 #include "defs.h"
 
@@ -49,41 +51,48 @@ char 				NetifSYM[] = "_ifnet";
  */
 union {
     struct ifaddr 	ifaddr;
+#if	defined(HAVE_IN_IFADDR)
     struct in_ifaddr 	in_ifaddr;
+#endif	/* HAVE_IN_IFADDR */
 } 				ifaddress;
 
 /*
  * Create a DevInfo_t for a network interface.
  */
-static DevInfo_t *CreateNetif(FullName, IfNet, DevData, DevDefine)
-    char		       *FullName;
-    struct ifnet               *IfNet;
-    DevData_t		       *DevData;
-    DevDefine_t		       *DevDefine;
+static DevInfo_t *CreateNetif(ProbeData, FullName, IfNet)
+     ProbeData_t	       *ProbeData;
+     char		       *FullName;
+     struct ifnet              *IfNet;
 {
     DevInfo_t		       *DevInfo;
 
-    DevInfo = NewDevInfo(NULL);
+    /* There's no guarentee this is already set */
+    if (!ProbeData->DevDefine)
+	ProbeData->DevDefine = DevDefGet(NULL, DT_NETIF, 0);
+    else
+	ProbeData->DevDefine->Type = DT_NETIF;
+    if (FullName)
+	ProbeData->DevName = FullName;
 
-    DevInfo->Name 	= strdup(FullName);
-    DevInfo->Type 	= DT_NETIF;
+    /* Create the device */
+    if (!(DevInfo = DeviceCreate(ProbeData)))
+	return((DevInfo_t *) NULL);
+
     if (IfNet)
 	DevInfo->Unit 	= IfNet->if_unit;
-    if (DevData) {
-	DevInfo->NodeID = DevData->NodeID;
-	DevInfo->Master = MkMasterFromDevData(DevData);
+
+    if (!DevInfo->Model) {
+#if	defined(HAVE_IF_VERSION)
+	if (IfNet->if_version && IfNet->if_version[0])
+	    DevInfo->Model 	= strdup(IfNet->if_version);
+	else
+#endif	/* HAVE_IF_VERSION */
+	    if (ProbeData->DevDefine)
+		DevInfo->Model 	= ProbeData->DevDefine->Model;
     }
 
-#if	defined(HAVE_IF_VERSION)
-    if (IfNet->if_version && IfNet->if_version[0])
-	DevInfo->Model 	= strdup(IfNet->if_version);
-    else
-#endif	/* HAVE_IF_VERSION */
-	if (DevDefine)
-	    DevInfo->Model 	= DevDefine->Model;
-
-    if (DevDefine)
-	DevInfo->ModelDesc = DevDefine->Desc;
+    if (!DevInfo->ModelDesc && ProbeData->DevDefine)
+	DevInfo->ModelDesc = ProbeData->DevDefine->Desc;
 
     return(DevInfo);
 }
@@ -101,7 +110,7 @@ static struct netent *GetNet(inaddr, mask)
     int 			subnetshift;
     static struct in_addr 	in_addr;
 
-    if (in_addr.s_addr = ntohl(inaddr)) {
+    if (in_addr.s_addr = inaddr) {
 	i = in_addr.s_addr;
 	if (mask == 0) {
 	    if (IN_CLASSA(i)) {
@@ -152,18 +161,20 @@ extern NetIF_t *GetNetifINET(AddrFam, hostaddr, maskaddr)
     ni = NewNetif(NULL);
 
     if (hostaddr && maskaddr) {
-	np = GetNet((u_long) htonl(hostaddr->sin_addr.s_addr), 
-		    (u_long) htonl(maskaddr->sin_addr.s_addr));
-	in_addr.s_addr = ntohl(hostaddr->sin_addr.s_addr & 
-			       maskaddr->sin_addr.s_addr);
+	np = GetNet((u_long) hostaddr->sin_addr.s_addr, 
+		    (u_long) maskaddr->sin_addr.s_addr);
+	in_addr.s_addr = hostaddr->sin_addr.s_addr & 
+	  maskaddr->sin_addr.s_addr;
 	ni->NetAddr = strdup(inet_ntoa(in_addr));
 	sin = hostaddr;
     } else {
-	np = GetNet((u_long) htonl(ifaddress.in_ifaddr.ia_subnet), 
+#if	defined(HAVE_IN_IFADDR)
+	np = GetNet((u_long) ifaddress.in_ifaddr.ia_subnet, 
 		    (u_long) ifaddress.in_ifaddr.ia_subnetmask);
-	in_addr.s_addr = ntohl(ifaddress.in_ifaddr.ia_subnet);
+	in_addr.s_addr = ifaddress.in_ifaddr.ia_subnet;
 	ni->NetAddr = strdup(inet_ntoa(in_addr));
 	sin = (struct sockaddr_in *) &ifaddress.in_ifaddr.ia_addr;
+#endif	/* HAVE_IN_IFADDR */
     }
 
     ni->HostAddr = strdup(inet_ntoa(sin->sin_addr));
@@ -214,6 +225,29 @@ static AddrFamily_t *GetAddrFamily(type)
     return((AddrFamily_t *) NULL);
 }
 
+/*
+ * See if IfName matches any names in ProbeData and return name
+ * found.
+ */
+static int IFmatch(ProbeData, IfName)
+     ProbeData_t	       *ProbeData;
+     char		       *IfName;
+{
+    register char	      **cpp;
+
+    if (!ProbeData)
+	return(FALSE);
+
+    if (EQ(ProbeData->DevName, IfName))
+	return(TRUE);
+
+    for (cpp = ProbeData->AliasNames; cpp && *cpp; ++cpp)
+	if (EQ(*cpp, IfName))
+	    return(TRUE);
+
+    return(FALSE);
+}
+
 #if	GETNETIF_TYPE == GETNETIF_IFNET
 /*
  * Get a linked list of NetIF_t's for each address starting at 'startaddr'.
@@ -235,7 +269,7 @@ static NetIF_t *GetNetifAddrs(kd, startaddr, FullName, DevInfo)
 	 */
 	if (KVMget(kd, addr, (char *) &ifaddress, 
 		   sizeof(ifaddress), KDT_DATA)) {
-	    Error("cannot read if address");
+	    SImsg(SIM_GERR, "cannot read if address");
 	    continue;
 	}
 
@@ -245,9 +279,9 @@ static NetIF_t *GetNetifAddrs(kd, startaddr, FullName, DevInfo)
 	 */
 	if (AddrFamPtr = GetAddrFamily(ifaddress.ifaddr.ifa_addr.sa_family)) {
 	    if (ni = (*AddrFamPtr->GetNetIF)(AddrFamPtr, NULL, NULL))
-		SetMacInfo(FullName, ni, DevInfo);
+		SetMacInfo(DevInfo, ni);
 	} else {
-	    if (Debug) Error("Address family %d is not defined.", 
+	    SImsg(SIM_DBG, "Address family %d is not defined.", 
 			     ifaddress.ifaddr.ifa_addr.sa_family);
 	    continue;
 	}
@@ -269,10 +303,8 @@ static NetIF_t *GetNetifAddrs(kd, startaddr, FullName, DevInfo)
 /*
  * Query/find network interface devices and add them to devicelist
  */
-extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
-    char 		       *name;
-    DevData_t 		       *DevData;
-    DevDefine_t	 	       *DevDefine;
+extern DevInfo_t *ProbeNetif(ProbeData)
+     ProbeData_t	       *ProbeData;
 {
     DevInfo_t 		       *DevInfo = NULL;
     static struct ifnet         ifnet;
@@ -281,8 +313,18 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
     register char	       *p;
     u_long 		        ifnetaddr;
     kvm_t 		       *kd;
+    char 		       *DevName;
+    DevData_t 		       *DevData;
+    DevDefine_t	 	       *DevDefine;
+    int				NameMatch = FALSE;
 
-    if (Debug) printf("ProbeNetif() '%s'\n", name);
+    if (!ProbeData || !ProbeData->DevName)
+	return((DevInfo_t *) NULL);
+
+    DevName = ProbeData->DevName;
+    DevData = ProbeData->DevData;
+    DevDefine = ProbeData->DevDefine;
+    SImsg(SIM_DBG, "ProbeNetif(%s)", DevName);
 
     if (!(kd = KVMopen()))
 	return((DevInfo_t *) NULL);
@@ -298,7 +340,7 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
      */
     if (KVMget(kd, nlptr->n_value, (char *) &ifnetaddr, 
 		sizeof(ifnetaddr), KDT_DATA)) {
-	if (Debug) Error("kvm_read ifnetaddr failed");
+	SImsg(SIM_GERR, "kvm_read ifnetaddr failed");
 	KVMclose(kd);
 	return((DevInfo_t *) NULL);
     }
@@ -311,7 +353,7 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
 	 * Read the ifnet structure
 	 */
 	if (KVMget(kd, ifnetaddr, (char *)&ifnet, sizeof(ifnet), KDT_DATA)) {
-	    if (Debug) Error("kvm_read ifnetaddr ifnet failed");
+	    SImsg(SIM_GERR, "kvm_read ifnetaddr ifnet failed");
 	    continue;
 	}
 
@@ -320,36 +362,44 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
 	 */
 	if (KVMget(kd, (u_long)ifnet.if_name, ifname, 
 		   sizeof(ifname), KDT_STRING)) {
-	    if (Debug) Error("kvm_read ifname failed");
+	    SImsg(SIM_GERR, "kvm_read ifname failed");
 	    continue;
 	}
 
 	/*
 	 * Copy if_name to 'FullName' and add unit number
 	 */
-	(void) sprintf(FullName, "%s%d", ifname, ifnet.if_unit);
+	(void) snprintf(FullName, sizeof(FullName),  "%s%d", ifname, ifnet.if_unit);
 
 	/*
 	 * Check to see if this is the interface we want.
 	 */
-	if (!EQ(FullName, name))
-	    continue;
-
-	/*
-	 * Create and set device
-	 */
-	DevInfo = CreateNetif(FullName, &ifnet, DevData, DevDefine);
-
-	/*
-	 * Get and set address info
-	 */
-	if (ifnet.if_addrlist) {
-	    NetIF_t 	       *ni;
-
-	    if (ni = GetNetifAddrs(kd, (off_t) ifnet.if_addrlist, 
-				   FullName, DevInfo))
-		DevInfo->DevSpec = (caddr_t *) ni;
+	if (IFmatch(ProbeData, FullName)) {
+	    NameMatch = TRUE;
+	    break;
 	}
+    }
+
+    if (!NameMatch) {
+	/* Device Not Found */
+	SImsg(SIM_DBG, "%s: Could not find netif in ifconf table.", DevName);
+	return((DevInfo_t *) NULL);
+    }
+
+    /*
+     * Create and set device
+     */
+    DevInfo = CreateNetif(ProbeData, FullName, &ifnet);
+
+    /*
+     * Get and set address info
+     */
+    if (ifnet.if_addrlist) {
+	NetIF_t 	       *ni;
+	
+	if (ni = GetNetifAddrs(kd, (off_t) ifnet.if_addrlist, 
+			       FullName, DevInfo))
+	    DevInfo->DevSpec = (caddr_t *) ni;
     }
 
     KVMclose(kd);
@@ -376,7 +426,7 @@ static int SetNetifAddrs(ifname, sock, hostaddr, maskaddr)
      * Get address info
      */
     if (ioctl(sock, SIOCGIFADDR, (char *) &ifr) < 0) {
-	if (Debug) Error("%s: ioctl SIOCGIFADDR failed: %s.", ifname, SYSERR);
+	SImsg(SIM_GERR, "%s: ioctl SIOCGIFADDR failed: %s.", ifname, SYSERR);
 	return(-1);
     }
     memcpy((char *)hostaddr, (char *)&ifr.ifr_addr, 
@@ -386,7 +436,7 @@ static int SetNetifAddrs(ifname, sock, hostaddr, maskaddr)
      * Get the network mask
      */
     if (ioctl(sock, SIOCGIFNETMASK, (char *) &ifr) < 0) {
-	if (Debug) Error("%s: ioctl SIOCGIFNETMASK failed: %s.", 
+	SImsg(SIM_GERR, "%s: ioctl SIOCGIFNETMASK failed: %s.", 
 			 ifname, SYSERR);
 	return(-1);
     }
@@ -399,42 +449,49 @@ static int SetNetifAddrs(ifname, sock, hostaddr, maskaddr)
 /*
  * Query/find network interface devices and add them to devicelist
  */
-extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
-    char 		       *name;
-    DevData_t 		       *DevData;
-    DevDefine_t	 	       *DevDefine;
+extern DevInfo_t *ProbeNetif(ProbeData)
+     ProbeData_t	       *ProbeData;
 {
     DevInfo_t 		       *DevInfo = NULL;
     NetIF_t	 	       *ni;
     struct ifreq	       *ifreq;
     static struct ifconf	ifconf;
-    static struct sockaddr_in	hostaddr;
-    static struct sockaddr_in	maskaddr;
-    static char			reqbuf[BUFSIZ];
-    static char			buff[BUFSIZ];
-    static int			sock = -1;
+    static struct sockaddr_in	HostAddr;
+    static struct sockaddr_in	MaskAddr;
+    static char			ReqBuff[BUFSIZ];
+    static int			SockDesc = -1;
     register int		n;
     register char	      **cpp;
     register char 	       *Alias = NULL;
     AddrFamily_t	       *AddrFamPtr;
     int				NameMatch = FALSE;
+    char 		       *DevName;
+    DevData_t 		       *DevData;
+    DevDefine_t	 	       *DevDefine;
 
-    if (Debug) printf("ProbeNetif() '%s'\n", name);
+    if (!ProbeData || !ProbeData->DevName)
+	return((DevInfo_t *) NULL);
 
-    if (sock < 0) {
+    DevName = ProbeData->DevName;
+    DevData = ProbeData->DevData;
+    DevDefine = ProbeData->DevDefine;
+    SImsg(SIM_DBG, "ProbeNetif(%s)", DevName);
+
+    if (SockDesc < 0) {
 	/*
 	 * Get list of all interfaces
 	 */
-	ifconf.ifc_len = sizeof(reqbuf);
-	ifconf.ifc_buf = reqbuf;
+	ifconf.ifc_len = sizeof(ReqBuff);
+	ifconf.ifc_buf = ReqBuff;
 
-	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-	    if (Debug) Error("Cannot create socket: %s.", SYSERR);
+	if ((SockDesc = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	    SImsg(SIM_GERR, "Cannot create socket: %s.", SYSERR);
 	    return((DevInfo_t *)NULL);
 	}
 
-	if (ioctl(sock, SIOCGIFCONF, (char *) &ifconf) < 0) {
-	    if (Debug) Error("%s: ioctl SIOCGIFCONF failed: %s.", name,SYSERR);
+	if (ioctl(SockDesc, SIOCGIFCONF, (char *) &ifconf) < 0) {
+	    SImsg(SIM_GERR, "%s: ioctl SIOCGIFCONF failed: %s.", 
+			     DevName, SYSERR);
 	    return((DevInfo_t *)NULL);
 	}
     }
@@ -446,70 +503,68 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
 	 --n >= 0; ifreq++) {
 
 	/*
-	 * Compare the hardware name as passed to us, the config file name
+	 * Compare the hardware DevName as passed to us, the config file name
 	 * and all config file aliases.
 	 * Check to see if this is the interface we want.
 	 */
-	if (EQ(name, ifreq->ifr_name))
+	if (IFmatch(ProbeData, ifreq->ifr_name)) {
 	    NameMatch = TRUE;
+	    break;
+	}
 
 	if (DevDefine && DevData && !NameMatch) {
 	    /* Check config file name */
 	    Alias = MkDevName(DevDefine->Name, DevData->DevUnit,
 			      DevDefine->Type, DevDefine->Flags);
-	    if (EQ(Alias, ifreq->ifr_name))
+	    if (EQ(Alias, ifreq->ifr_name)) {
 		NameMatch = TRUE;
+		break;
+	    }
 	  
 	    /* Check all name aliases */
 	    for (cpp = DevDefine->Aliases; !NameMatch && cpp && *cpp; ++cpp) {
 		Alias = MkDevName(*cpp, DevData->DevUnit,
 				  DevDefine->Type, DevDefine->Flags);
-		if (EQ(Alias, ifreq->ifr_name))
+		if (EQ(Alias, ifreq->ifr_name)) {
 		    NameMatch = TRUE;
+		    break;
+		}
 	    }
 	}
-	
-	if (!NameMatch)
-	    continue;
-
-	/*
-	 * Create and set device
-	 */
-	DevInfo 		= NewDevInfo(NULL);
-	DevInfo->Name 		= strdup(ifreq->ifr_name);
-	DevInfo->Type 		= DT_NETIF;
-	if (DevData) {
-	    DevInfo->NodeID 	= DevData->NodeID;
-	    DevInfo->Unit 	= DevData->DevUnit;
-	    DevInfo->Master 	= MkMasterFromDevData(DevData);
-	}
-	if (DevDefine) {
-	    DevInfo->Model 	= DevDefine->Model;
-	    DevInfo->ModelDesc 	= DevDefine->Desc;
-	}
-
-	/*
-	 * Set address info
-	 */
-	if (SetNetifAddrs(ifreq->ifr_name, sock, &hostaddr, &maskaddr) == 0) {
-	    /*
-	     * Now get and call the Address Family specific routine
-	     * to extract a NetIF_t.
-	     */
-	    if (AddrFamPtr = GetAddrFamily(hostaddr.sin_family)) {
-		if (ni = (*AddrFamPtr->GetNetIF)(AddrFamPtr, &hostaddr, 
-						 &maskaddr)) {
-		    SetMacInfo(DevInfo->Name, ni, DevInfo);
-		    DevInfo->DevSpec = (caddr_t *) ni;
-		}
-	    } else
-		if (Debug) Error("Address family %d is not defined.", 
-				 hostaddr.sin_family);
-	}
-
-	return(DevInfo);
     }
 
-    return((DevInfo_t *)NULL);
+    if (!NameMatch) {
+	/* Device Not Found */
+	SImsg(SIM_DBG, "%s: Could not find netif in ifconf table.", DevName);
+	return((DevInfo_t *) NULL);
+    }
+
+    /* Use the system's canonical name */
+    ProbeData->DevName = ifreq->ifr_name;
+    if (!(DevInfo = DeviceCreate(ProbeData)))
+	return((DevInfo_t *) NULL);
+
+    DevInfo->Type = DT_NETIF;
+
+    /*
+     * Set address info
+     */
+    if (SetNetifAddrs(ifreq->ifr_name, SockDesc, &HostAddr, &MaskAddr) == 0) {
+	/*
+	 * Now get and call the Address Family specific routine
+	 * to extract a NetIF_t.
+	 */
+	if (AddrFamPtr = GetAddrFamily(HostAddr.sin_family)) {
+	    if (ni = (*AddrFamPtr->GetNetIF)(AddrFamPtr, &HostAddr, 
+					     &MaskAddr)) {
+		SetMacInfo(DevInfo, ni);
+		DevInfo->DevSpec = (caddr_t *) ni;
+	    }
+	} else
+	    SImsg(SIM_DBG, "Address family %d is not defined.", 
+		  HostAddr.sin_family);
+    }
+
+    return(ProbeData->RetDevInfo = DevInfo);
 }
 #endif	/* GETNETIF_IFCONF */
