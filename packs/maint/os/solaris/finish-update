@@ -4,7 +4,9 @@
 
 case "$1" in
 start)
-	if [ `awk '{a=$5} END {print a}' /etc/athena/version` = Reboot ]; then
+	state=`awk '{a=$5} END {print a}' /etc/athena/version`
+	case "$state" in
+	Reboot)
 		method=`awk '{a=$6} END {print a}' /etc/athena/version`
 		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
 
@@ -41,9 +43,37 @@ start)
 		sync
 		sleep 15
 		exec reboot
-	fi
-	;;
+		;;
+	ClearSwap)
+		method=`awk '{a=$6} END {print a}' /etc/athena/version`
+		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
 
+		UPDATE_ROOT=/
+		export UPDATE_ROOT
+
+		. /srvd/usr/athena/lib/update/update-environment
+		. $CONFDIR/rc.conf
+
+		# We get run before bind and inetsvc (since we don't want 
+		# to run inetd), which means named isn't running.  Run it.
+		/etc/athena/named
+
+		{ sh /srvd/usr/athena/lib/update/setup-swap-boot \
+ 			"$method" "$newvers" 2>&1 || {
+  			echo "Please contact Athena Hotline at x3-1410."
+  			echo "Thank you. -Athena Operations"
+  
+  			echo "Athena Workstation ($HOSTTYPE) Version Update" \
+  				"`date`" >> "$CONFDIR/version"
+  			exit 0
+ 		}; } | tee -a /var/athena/update.log
+
+		sync
+		sleep 15
+		exec reboot
+		;;
+	esac
+	;;
 stop)
 	;;
 
