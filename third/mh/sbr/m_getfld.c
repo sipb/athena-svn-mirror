@@ -1,6 +1,6 @@
 /* m_getfld.c - read/parse a message */
 #ifndef	lint
-static char ident[] = "@(#)$Id: m_getfld.c,v 1.1.1.1 1996-10-07 07:13:51 ghudson Exp $";
+static char ident[] = "@(#)$Id: m_getfld.c,v 1.2 1999-01-29 18:17:34 ghudson Exp $";
 #endif /* lint */
 
 #include "../h/mh.h"
@@ -244,22 +244,40 @@ register FILE	*iob;
 	     */
 	    cp = name; i = NAMESZ - 1;
 	    for (;;) {
+#ifdef _STDIO_USES_IOSTREAM
+		bp = sp = (unsigned char *) iob->_IO_read_ptr - 1;
+		cnt = iob->_IO_read_end - iob->_IO_read_ptr + 1;
+		j = cnt < i ? cnt : i;
+#else
 		bp = sp = (unsigned char *) iob->_ptr - 1;
 		j = (cnt = iob->_cnt+1) < i ? cnt : i;
+#endif
 		while ((c = *bp++) != ':' && c != '\n' && --j >= 0)
 		    *cp++ = c;
 
 		j = bp - sp;
 		if ((cnt -= j) <= 0) {
+#ifdef _STDIO_USES_IOSTREAM
+		    iob->_IO_read_ptr = iob->_IO_read_end;
+		    if (__underflow(iob) == EOF) {
+#else
 		    if (_filbuf(iob) == EOF) {
+#endif
 			*cp = *buf = 0;
 			advise (NULLCP, "eof encountered in field \"%s\"",
 				name);
 			return FMTERR;
 		    }
+#ifdef _STDIO_USES_IOSTREAM
+		    iob->_IO_read_ptr++; /* NOT automatic in __underflow()! */
+#endif
 		} else {
+#ifdef _STDIO_USES_IOSTREAM
+		    iob->_IO_read_ptr = bp + 1;
+#else
 		    iob->_ptr = bp + 1;
 		    iob->_cnt = cnt - 1;
+#endif
 		}
 		if (c == ':')
 		    break;
@@ -298,16 +316,27 @@ register FILE	*iob;
 	     */
 	    cp = buf; i = bufsz-1;
 	    for (;;) {
+#ifdef _STDIO_USES_IOSTREAM
+		cnt = (long) iob->_IO_read_end - (long) iob->_IO_read_ptr;
+		bp = (unsigned char *) --iob->_IO_read_ptr;
+#else
 		cnt = iob->_cnt++; bp = (unsigned char *) --iob->_ptr;
+#endif
 		c = cnt < i ? cnt : i;
 		while (ep = locc( c, bp, '\n' )) {
 		    /*
 		     * if we hit the end of this field, return.
 		     */
 		    if ((j = *++ep) != ' ' && j != '\t') {
+#ifdef _STDIO_USES_IOSTREAM
+			j = ep - (unsigned char *) iob->_IO_read_ptr;
+			(void) bcopy( iob->_IO_read_ptr, cp, j);
+			iob->_IO_read_ptr = ep;
+#else
 			j = ep - (unsigned char *) iob->_ptr;
 			(void) bcopy( iob->_ptr, cp, j);
 			iob->_ptr = ep; iob->_cnt -= j;
+#endif
 			cp += j;
 			state = FLD;
 			goto finish;
@@ -317,12 +346,21 @@ register FILE	*iob;
 		/*
 		 * end of input or dest buffer - copy what we've found.
 		 */
+#ifdef _STDIO_USES_IOSTREAM
+		c += bp - (unsigned char *) iob->_IO_read_ptr;
+		(void) bcopy( iob->_IO_read_ptr, cp, c);
+#else
 		c += bp - (unsigned char *) iob->_ptr;
 		(void) bcopy( iob->_ptr, cp, c);
+#endif
 		i -= c; cp += c;
 		if (i <= 0) {
 		    /* the dest buffer is full */
+#ifdef _STDIO_USES_IOSTREAM
+		    iob->_IO_read_ptr += c;
+#else
 		    iob->_cnt -= c; iob->_ptr += c;
+#endif
 		    state = FLDPLUS;
 		    break;
 		}
@@ -333,11 +371,22 @@ register FILE	*iob;
 		 * this is the end of the field.  Otherwise loop.
 		 */
 		--i;
+#ifdef _STDIO_USES_IOSTREAM
+		*cp++ = j = *(iob->_IO_read_ptr + c);
+		iob->_IO_read_ptr = iob->_IO_read_end;
+		c = __underflow(iob);
+		iob->_IO_read_ptr++;	/* NOT automatic! */
+#else
 		*cp++ = j = *(iob->_ptr + c);
 		c = _filbuf(iob);
+#endif
 		if ((j == '\0' || j == '\n') && c != ' ' && c != '\t') {
 		    if (c != EOF)
+#ifdef _STDIO_USES_IOSTREAM
+			--iob->_IO_read_ptr;
+#else
 			--iob->_ptr, ++iob->_cnt;
+#endif
 		    state = FLD;
 		    break;
 		}
@@ -353,7 +402,12 @@ register FILE	*iob;
 	     * the output buffer and we don't add an eos.
 	     */
 	    i = (bufsz < 0) ? -bufsz : bufsz-1;
+#ifdef _STDIO_USES_IOSTREAM
+	    bp = (unsigned char *) --iob->_IO_read_ptr;
+	    cnt = (long) iob->_IO_read_end - (long) iob->_IO_read_ptr;
+#else
 	    bp = (unsigned char *) --iob->_ptr; cnt = ++iob->_cnt;
+#endif
 	    c = (cnt < i ? cnt : i);
 	    if (msg_style != MS_DEFAULT && c > 1) {
 		/*
@@ -410,8 +464,12 @@ register FILE	*iob;
 		}
 	    }
 	    (void) bcopy( bp, buf, c );
+#ifdef _STDIO_USES_IOSTREAM
+	    iob->_IO_read_ptr += c;
+#else
 	    iob->_cnt -= c;
 	    iob->_ptr += c;
+#endif
 	    if (bufsz < 0) {
 		msg_count = c;
 		return (state);
