@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2.4.2 2000-02-03 17:50:06 ghudson Exp $
+# $Id: Makefile,v 1.2.4.3 2000-02-05 07:11:53 tb Exp $
 
 SHELL=/bin/sh
 
@@ -19,6 +19,7 @@ install:
 	-mkdir -p $(DESTDIR)/etc/rc.d/init.d
 	-mkdir -p $(DESTDIR)/etc/sysconfig
 	-mkdir -p $(DESTDIR)/usr/vice/cache
+	-mkdir -p $(DESTDIR)/afs
 	install -c -m 444 libafs-2.2.0.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.1.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.2.mp.o $(DESTDIR)$(VICE)/modload
