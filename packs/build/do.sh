@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.65 2001-04-24 22:13:56 ghudson Exp $
+# $Id: do.sh,v 1.66 2001-04-24 22:14:32 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -109,6 +109,10 @@ case `uname -srm` in
 Linux\ 2.2.*\ i?86)
   ATHENA_SYS=i386_linux22
   ATHENA_SYS_COMPAT=i386_linux3:i386_linux2:i386_linux1
+  ;;
+Linux\ 2.4.*\ i?86)
+  ATHENA_SYS=i386_linux24
+  ATHENA_SYS_COMPAT=i386_linux22:i386_linux3:i386_linux2:i386_linux1
   ;;
 *)
   echo "Unrecognized system type, aborting." 1>&2
