@@ -816,6 +816,8 @@ void doit(f, fromp)
 	       kremuser, remuser, hostaddra, hostname,
 	       locuser); /* xxx sprintf buffer in syslog*/
 	error("Login incorrect.\n");
+	if (acctpid)
+	    al_acct_revert(locuser, acctpid);
 	exit(1);
     }
     
@@ -1949,6 +1951,8 @@ recvauth(netf, peersin, valid_checksum)
 	pwd = getpwnam(locuser);
 	if (!pwd) {
 	    error("Login incorrect.\n");
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    exit(1);
 	}
 	uid = pwd->pw_uid;
@@ -1957,11 +1961,15 @@ recvauth(netf, peersin, valid_checksum)
 					     ticket, &ccache))) {
 	    error("Can't get forwarded credentials: %s\n",
 		  error_message(status));
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    exit(1);
 	}
 	if (chown(krb5_cc_get_name(bsd_context, ccache), uid, gid) == -1) {
 	    error("Can't chown forwarded credentials: %s\n",
 		  error_message(errno));
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    exit(1);
 	}
     }
