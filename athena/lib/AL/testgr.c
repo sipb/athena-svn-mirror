@@ -25,13 +25,16 @@ main(argc, argv)
 
 #define ERROR() { com_err(argv[0], code, ALcontext(&sessionp)); exit(1); }
 
-  code = ALsetUser(&sessionp, argv[1], ALflagNone);
+  code = ALinitAL(&sessionp, ALflagNone);
+  if (code) ERROR();
+
+  code = ALsetUser(&sessionp, argv[1]);
   if (code) ERROR();
 
   code = ALgetGroups(&sessionp);
   if (code) ERROR();
 
-  code = ALmodifyLinesOfFile(&sessionp, "group.test", "group.test.tmp",
+  code = ALmodifyLinesOfFile(&sessionp, "group.test", ALlockTEST,
 			     ALmodifyGroupAdd, ALappendGroups);
   if (code) ERROR();
 
