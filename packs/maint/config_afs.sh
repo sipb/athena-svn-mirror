@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.16 1999-10-01 13:46:16 rbasch Exp $
+# $Id: config_afs.sh,v 1.17 1999-12-07 21:46:24 danw Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -48,6 +48,7 @@ for cellname in `/etc/athena/listsuidcells`; do
 	fs setcell "$cellname" -nosuid
 done
 cat ${SUIDDB} | awk '
+	/^-$/	{ numcells = 0; exit; }
 	/^-/	{ suid[substr($1,2,length($1)-1)] = 0; }
 	/^[^-]/	{ suid[$1] = 1;
 		  cells[numcells++] = $1; }
