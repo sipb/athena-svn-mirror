@@ -1,0 +1,2727 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FSF-India <locale@gnu.org.in>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:gnome-media.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 14:28+0200\n"
+"PO-Revision-Date: 2003-07-05 10:29+0530\n"
+"Last-Translator: FSF-India <locale@gnu.org.in>\n"
+"Language-Team: Malayalam <locale@gnu.org.in>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2
+msgid "Information to send to server"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3 cddb-slave2/cddb-slave-capplet.c:832
+#, fuzzy
+msgid "Port"
+msgstr "വഴി:"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "Server name"
+msgstr "സ‌ര്‌വ‌ര് പേര‌്"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+#, fuzzy
+msgid "Server type"
+msgstr "സ‌ര്‌വ‌ര് പേര‌്"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The hostname that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The port that the server is running the database on"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid ""
+"The type of the server to contact for CD queries. Possible values are 0 "
+"(FreeDB round robin server), 1 (other freedb server) and 2 (other server)."
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:9
+msgid "The username"
+msgstr "ഉപയോക്തൃ നാമം"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:10
+msgid "The username that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:11
+msgid ""
+"This key specifies which user information will be sent to the server to "
+"contact for CD queries. Possible values are 0 (no information), 1 (real "
+"information) and 3 (other information)."
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:12
+msgid "Your hostname"
+msgstr ""
+
+#: cddb-slave2/cddb-disclosure.c:241
+msgid "Expander Size"
+msgstr "വികസിതരൂപം"
+
+#: cddb-slave2/cddb-disclosure.c:242
+msgid "Size of the expander arrow"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:115
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"സഹായം ലഭിക്കുന്നതില് തകരാറ്: \n"
+"%s"
+
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:696
+#, fuzzy
+msgid "Login Information"
+msgstr "വിവരം"
+
+#: cddb-slave2/cddb-slave-capplet.c:702
+#, fuzzy
+msgid "Sen_d no information"
+msgstr "വിവരം"
+
+#: cddb-slave2/cddb-slave-capplet.c:711
+#, fuzzy
+msgid "Send real _information"
+msgstr "സേവന വിവരം"
+
+#: cddb-slave2/cddb-slave-capplet.c:720
+#, fuzzy
+msgid "Send _other information:"
+msgstr "കംപ്യൂട്ടര് താല്‌ക്കാലികമായി നിര്‌ത്തിവയ്‌ക്കൂ"
+
+#: cddb-slave2/cddb-slave-capplet.c:745
+#, fuzzy
+msgid "_Name:"
+msgstr "നാമം:"
+
+#: cddb-slave2/cddb-slave-capplet.c:765
+#, fuzzy
+msgid "Hostna_me:"
+msgstr "തലവന്റെ പേര‍‌്"
+
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:785 cddb-slave2/cddb-slave-capplet.c:829
+msgid "Server"
+msgstr "സ‍ര്‍വ്വര്"
+
+#: cddb-slave2/cddb-slave-capplet.c:791
+msgid "FreeDB _round robin server"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:797
+#, fuzzy
+msgid "Other _FreeDB server:"
+msgstr "മറ്റ് സ‍ര്‍വ്വര്..."
+
+#: cddb-slave2/cddb-slave-capplet.c:835
+msgid "Location"
+msgstr "സ്ഥാനം"
+
+#: cddb-slave2/cddb-slave-capplet.c:864
+msgid "_Update Server List"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:871
+#, fuzzy
+msgid "Other _server:"
+msgstr "മറ്റ് സ‍ര്‍വ്വര്..."
+
+#: cddb-slave2/cddb-slave-capplet.c:891
+#, fuzzy
+msgid "Hos_tname:"
+msgstr "തലവന്റെ പേര‍‌്"
+
+#: cddb-slave2/cddb-slave-capplet.c:908
+msgid "_Port:"
+msgstr "വഴി:"
+
+#: cddb-slave2/cddb-slave-capplet.c:972
+#, fuzzy
+msgid "CD Database Preferences"
+msgstr "സി.ഡി പ്ളേയര്‍ മുന്ഗണനകള്"
+
+#: cddb-slave2/cddb-slave.c:221
+#, fuzzy
+msgid "Unknown / Unknown"
+msgstr "അറിയാത്ത തരം ജോലി %u"
+
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:227 grecord/src/gsr-window.c:697
+#: grecord/src/gsr-window.c:706 grecord/src/gsr-window.c:715
+#: grecord/src/gsr-window.c:725 grecord/src/gsr-window.c:1032
+msgid "Unknown"
+msgstr "അറിയപ്പെടാത്ത"
+
+#: cddb-slave2/cddb-slave.c:272
+msgid "Multiple matches..."
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:277
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:288
+msgid "Category"
+msgstr "വിഭാഗങ്ങള്"
+
+#: cddb-slave2/cddb-slave.c:292
+#, fuzzy
+msgid "Disc ID"
+msgstr "ഡിസ്‌കോ"
+
+#: cddb-slave2/cddb-slave.c:296
+#, fuzzy
+msgid "Artist and Title"
+msgstr "ജാലക തലക്കുറി"
+
+#: cddb-slave2/cddb-slave.c:1351 cddb-slave2/cddb-slave.c:1353
+#: gnome-cd/gnome-cd.c:176
+#, fuzzy
+msgid "Unknown track"
+msgstr "അറിയാത്ത ഇനം"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+#, fuzzy
+msgid "CD Database Server"
+msgstr "CD വസ്തുതാശേഖരം"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+#, fuzzy
+msgid "Modify your CD database server preferences"
+msgstr "മൌസ് മുന്‌ഗണനകള് രേഖപ്പെടുത്തുക"
+
+#: cddb-slave2/cddb-track-editor.c:79
+#, fuzzy
+msgid "Blues"
+msgstr "ബസ്"
+
+#: cddb-slave2/cddb-track-editor.c:80
+#, fuzzy
+msgid "Classical Rock"
+msgstr "വ‍ര്ഗ്ഗീകരണം"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Country"
+msgstr "രാജ്യം"
+
+#: cddb-slave2/cddb-track-editor.c:82
+msgid "Dance"
+msgstr "നൃത്തം"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Disco"
+msgstr "ഡിസ്‌കോ"
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Funk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:85
+#, fuzzy
+msgid "Grunge"
+msgstr "മധുരനാരങ്ങ"
+
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Hip-Hop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Jazz"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:88
+#, fuzzy
+msgid "Metal"
+msgstr "Meta"
+
+#: cddb-slave2/cddb-track-editor.c:89
+#, fuzzy
+msgid "New Age"
+msgstr "പുതിയകളി"
+
+#: cddb-slave2/cddb-track-editor.c:90
+#, fuzzy
+msgid "Oldies"
+msgstr "മാല്‌ഡീവ്‌സ്"
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Other"
+msgstr "മറ്റുള്ളവ"
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "Pop"
+msgstr "പോപ്"
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "R&B"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Rap"
+msgstr "റാപ്"
+
+#: cddb-slave2/cddb-track-editor.c:95
+#, fuzzy
+msgid "Reggae"
+msgstr "പേര‍‍് മാറ്റല്"
+
+#: cddb-slave2/cddb-track-editor.c:96
+msgid "Rock"
+msgstr "റോക്ക്"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Techno"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:98
+#, fuzzy
+msgid "Industrial"
+msgstr "ഓസ്‌ട്രിയ"
+
+#: cddb-slave2/cddb-track-editor.c:99
+#, fuzzy
+msgid "Alternative"
+msgstr "അചേതനമായ"
+
+#: cddb-slave2/cddb-track-editor.c:100
+#, fuzzy
+msgid "Ska"
+msgstr "ആകാശം"
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Death Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:102
+msgid "Pranks"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:103
+#, fuzzy
+msgid "Soundtrack"
+msgstr "ശബ്ദം"
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Euro-Techno"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:105
+#, fuzzy
+msgid "Ambient"
+msgstr "ക്രിയാങ്കം"
+
+#: cddb-slave2/cddb-track-editor.c:106
+msgid "Trip-Hop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:107
+#, fuzzy
+msgid "Vocal"
+msgstr "പ്രാദേശിക"
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Jazz+Funk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:109
+#, fuzzy
+msgid "Fusion"
+msgstr "ചോദ്യം"
+
+#: cddb-slave2/cddb-track-editor.c:110
+#, fuzzy
+msgid "Trance"
+msgstr "ഫ്രാന്‌സ്"
+
+#: cddb-slave2/cddb-track-editor.c:111
+#, fuzzy
+msgid "Classical"
+msgstr "ക്ളാസ്"
+
+#: cddb-slave2/cddb-track-editor.c:112
+#, fuzzy
+msgid "Instrumental"
+msgstr "ആന്തരിക"
+
+#: cddb-slave2/cddb-track-editor.c:113
+#, fuzzy
+msgid "Acid"
+msgstr "ആസ്കി"
+
+#: cddb-slave2/cddb-track-editor.c:114
+#, fuzzy
+msgid "House"
+msgstr "മൌസ്"
+
+#: cddb-slave2/cddb-track-editor.c:115
+#, fuzzy
+msgid "Game"
+msgstr "കളികള്"
+
+#: cddb-slave2/cddb-track-editor.c:116
+#, fuzzy
+msgid "Sound Clip"
+msgstr "ശബ്ദം"
+
+#: cddb-slave2/cddb-track-editor.c:117
+msgid "Gospel"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:118
+#, fuzzy
+msgid "Noise"
+msgstr "ശ്രദ്ദിക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:119
+msgid "Alt"
+msgstr "Alt"
+
+#: cddb-slave2/cddb-track-editor.c:120
+#, fuzzy
+msgid "Bass"
+msgstr "ആധാരം"
+
+#: cddb-slave2/cddb-track-editor.c:121
+#, fuzzy
+msgid "Soul"
+msgstr "ശബ്ദം"
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Punk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Space"
+msgstr "സ്ഥലം"
+
+#: cddb-slave2/cddb-track-editor.c:124
+#, fuzzy
+msgid "Meditative"
+msgstr "മാധ്യമ കീ"
+
+#: cddb-slave2/cddb-track-editor.c:125
+#, fuzzy
+msgid "Instrumental Pop"
+msgstr "യഥാകാല പരിഷ്കരണം"
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Instrumental Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:127
+#, fuzzy
+msgid "Ethnic"
+msgstr "ഇസ്‌ടോണിയ"
+
+#: cddb-slave2/cddb-track-editor.c:128
+#, fuzzy
+msgid "Gothic"
+msgstr "ശ്രദ്ദിക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:129
+#, fuzzy
+msgid "Darkwave"
+msgstr "ഖരസാമഗ്രി"
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Techno-Industrial"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:131
+#, fuzzy
+msgid "Electronic"
+msgstr "ഇലക‍്ട്രോണിക് മെയില്"
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Pop-Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:133
+#, fuzzy
+msgid "Eurodance"
+msgstr "ഫ്രാന്‌സ്"
+
+#: cddb-slave2/cddb-track-editor.c:134
+#, fuzzy
+msgid "Dream"
+msgstr "ആരേഖം"
+
+#: cddb-slave2/cddb-track-editor.c:135
+#, fuzzy
+msgid "Southern Rock"
+msgstr "കംപ്യ‍ൂട്ടര് ഘടികാരം"
+
+#: cddb-slave2/cddb-track-editor.c:136
+#, fuzzy
+msgid "Comedy"
+msgstr "ആജ്ഞ:"
+
+#: cddb-slave2/cddb-track-editor.c:137
+#, fuzzy
+msgid "Cult"
+msgstr "മുറിപ്പ്"
+
+#: cddb-slave2/cddb-track-editor.c:138
+msgid "Gangsta Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:139
+#, fuzzy
+msgid "Top 40"
+msgstr "മുകളില്"
+
+#: cddb-slave2/cddb-track-editor.c:140
+#, fuzzy
+msgid "Christian Rap"
+msgstr "ക്രിസ്ത്മസ് ഐലന്റ്"
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Pop/Funk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:142
+#, fuzzy
+msgid "Jungle"
+msgstr "ജൂണ്"
+
+#: cddb-slave2/cddb-track-editor.c:143
+#, fuzzy
+msgid "Native American"
+msgstr "ഋണ ദ്വിപദം"
+
+#: cddb-slave2/cddb-track-editor.c:144
+#, fuzzy
+msgid "Cabaret"
+msgstr "അക്ഷരക്കുട്ടം:"
+
+#: cddb-slave2/cddb-track-editor.c:145
+#, fuzzy
+msgid "New Wave"
+msgstr "പുതിയകളി"
+
+#: cddb-slave2/cddb-track-editor.c:146
+msgid "Psychedelic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:147
+#, fuzzy
+msgid "Rave"
+msgstr "സംരംക്ഷിക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:148
+#, fuzzy
+msgid "Showtunes"
+msgstr "തുള്ളിമഴ"
+
+#: cddb-slave2/cddb-track-editor.c:149
+#, fuzzy
+msgid "Trailer"
+msgstr "തലക്കെട്ട്"
+
+#: cddb-slave2/cddb-track-editor.c:150
+msgid "Lo-Fi"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:151
+#, fuzzy
+msgid "Tribal"
+msgstr "ടെ‍ര്മിനല്"
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Punk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:153
+msgid "Acid Jazz"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:154
+#, fuzzy
+msgid "Polka"
+msgstr "പോളണ്ട്"
+
+#: cddb-slave2/cddb-track-editor.c:155
+#, fuzzy
+msgid "Retro"
+msgstr "വീണ്ടും ശ്രമിക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:156
+#, fuzzy
+msgid "Musical"
+msgstr "സംഗീതം"
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Rock & Roll"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:158
+#, fuzzy
+msgid "Hard Rock"
+msgstr "റോക്ക്"
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:160
+#, fuzzy
+msgid "Folk/Rock"
+msgstr "റോക്ക്"
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "National Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:162
+#, fuzzy
+msgid "Swing"
+msgstr "സംരക്ഷിക്കുന്നു"
+
+#: cddb-slave2/cddb-track-editor.c:163
+#, fuzzy
+msgid "Fast-Fusion"
+msgstr "ചെറുഭാഗം"
+
+#: cddb-slave2/cddb-track-editor.c:164
+msgid "Bebop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:165
+#, fuzzy
+msgid "Latin"
+msgstr "ലാിയന്‌"
+
+#: cddb-slave2/cddb-track-editor.c:166
+#, fuzzy
+msgid "Revival"
+msgstr "വലിപ്പം മാറ്റാവുന്ന"
+
+#: cddb-slave2/cddb-track-editor.c:167
+msgid "Celtic"
+msgstr "സെല്റ്റിക്"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Bluegrass"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Avantgarde"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Gothic Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:171
+#, fuzzy
+msgid "Progressive Rock"
+msgstr "പൂരോഗതി‌"
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Psychedelic Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Symphonic Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:174
+#, fuzzy
+msgid "Slow Rock"
+msgstr "വാതില് അടയ്‍ക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Big Band"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:176
+#, fuzzy
+msgid "Chorus"
+msgstr "കുറക്കുവഴികള്"
+
+#: cddb-slave2/cddb-track-editor.c:177
+msgid "Easy Listening"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:178
+#, fuzzy
+msgid "Acoustic"
+msgstr "ഓസ്‌ട്രിയ"
+
+#: cddb-slave2/cddb-track-editor.c:179
+#, fuzzy
+msgid "Humour"
+msgstr "ലക്സംബ‌ര്ഗ്"
+
+#: cddb-slave2/cddb-track-editor.c:180
+msgid "Speech"
+msgstr "സംഭാഷണം"
+
+#: cddb-slave2/cddb-track-editor.c:181
+#, fuzzy
+msgid "Chanson"
+msgstr "ചിഹ്നം മാറ്റുക"
+
+#: cddb-slave2/cddb-track-editor.c:182
+#, fuzzy
+msgid "Opera"
+msgstr "തുറക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Chamber Music"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:184
+#, fuzzy
+msgid "Sonata"
+msgstr "ക്രൊയോഷ്യ"
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Symphony"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Booty Bass"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:187
+#, fuzzy
+msgid "Primus"
+msgstr "പിന്നോട്ട്"
+
+#: cddb-slave2/cddb-track-editor.c:188
+msgid "Porn Groove"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:189
+#, fuzzy
+msgid "Satire"
+msgstr "പങ്ക്"
+
+#: cddb-slave2/cddb-track-editor.c:190
+#, fuzzy
+msgid "Slow Jam"
+msgstr "ജാവ അനുവദിക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:191
+#, fuzzy
+msgid "Club"
+msgstr "ക്യ‌ൂബ"
+
+#: cddb-slave2/cddb-track-editor.c:192
+#, fuzzy
+msgid "Tango"
+msgstr "മാങ്ങ"
+
+#: cddb-slave2/cddb-track-editor.c:193
+#, fuzzy
+msgid "Samba"
+msgstr "സമോവ"
+
+#: cddb-slave2/cddb-track-editor.c:194
+#, fuzzy
+msgid "Folklore"
+msgstr "വ‍ര്ണ്ണങ്ങള്‌"
+
+#: cddb-slave2/cddb-track-editor.c:195
+#, fuzzy
+msgid "Ballad"
+msgstr "ബംഗ്ളാദേശ്"
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Power Ballad"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Rhythmic Soul"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:198
+#, fuzzy
+msgid "Freestyle"
+msgstr "ബാ‌ര് സ്റ്റൈല്‌"
+
+#: cddb-slave2/cddb-track-editor.c:199
+#, fuzzy
+msgid "Duet"
+msgstr "ഡച്ച്"
+
+#: cddb-slave2/cddb-track-editor.c:200
+#, fuzzy
+msgid "Punk Rock"
+msgstr "റോക്ക്"
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "Drum Solo"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "A Cappella"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Euro-House"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:204
+#, fuzzy
+msgid "Dance Hall"
+msgstr "എല്ലാം റദ്ദാക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:205
+#, fuzzy
+msgid "Goa"
+msgstr "പോകുക"
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Drum & Bass"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:207
+#, fuzzy
+msgid "Club-House"
+msgstr "അടയ്‍ക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:208
+#, fuzzy
+msgid "Hardcore"
+msgstr "ഖരസാമഗ്രി"
+
+#: cddb-slave2/cddb-track-editor.c:209
+#, fuzzy
+msgid "Terror"
+msgstr "പിശക്"
+
+#: cddb-slave2/cddb-track-editor.c:210
+#, fuzzy
+msgid "Indie"
+msgstr "സൂചിക"
+
+#: cddb-slave2/cddb-track-editor.c:211
+#, fuzzy
+msgid "BritPop"
+msgstr "ബ്രിട്ടണ്"
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Negerpunk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:213
+msgid "Polsk Punk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Beat"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Christian Gangsta Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:216
+#, fuzzy
+msgid "Heavy Metal"
+msgstr "ശക്തമായ ‍മഴ"
+
+#: cddb-slave2/cddb-track-editor.c:217
+#, fuzzy
+msgid "Black Metal"
+msgstr "കറുപ്പ്"
+
+#: cddb-slave2/cddb-track-editor.c:218
+#, fuzzy
+msgid "Crossover"
+msgstr "സ‍ര്‍വ്വര് തിരഞ്ഞെടുക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Contemporary Christian"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Christian Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:221
+#, fuzzy
+msgid "Merengue"
+msgstr "പട്ടിക"
+
+#: cddb-slave2/cddb-track-editor.c:222
+#, fuzzy
+msgid "Salsa"
+msgstr "സോമാലിയ"
+
+#: cddb-slave2/cddb-track-editor.c:223
+#, fuzzy
+msgid "Thrash Metal"
+msgstr "ശുദ്ധലോഹം"
+
+#: cddb-slave2/cddb-track-editor.c:224
+#, fuzzy
+msgid "Anime"
+msgstr "പേര‍്"
+
+#: cddb-slave2/cddb-track-editor.c:225
+#, fuzzy
+msgid "JPop"
+msgstr "പോപ്"
+
+#: cddb-slave2/cddb-track-editor.c:226
+#, fuzzy
+msgid "Synthpop"
+msgstr "നിര്‌ത്തുക"
+
+#: cddb-slave2/cddb-track-editor.c:227
+#, fuzzy
+msgid "Nu-Metal"
+msgstr "Meta"
+
+#: cddb-slave2/cddb-track-editor.c:228
+#, fuzzy
+msgid "Art Rock"
+msgstr "റോക്ക്"
+
+#: cddb-slave2/cddb-track-editor.c:532 gnome-cd/callbacks.c:558
+#: gnome-cd/callbacks.c:690 gnome-cd/callbacks.c:701 gnome-cd/display.c:74
+#, fuzzy
+msgid "Unknown Artist"
+msgstr "<അറിയാത്ത പ്ര‌വൃത്തി‌>"
+
+#: cddb-slave2/cddb-track-editor.c:533 gnome-cd/callbacks.c:559
+#: gnome-cd/callbacks.c:693 gnome-cd/callbacks.c:705 gnome-cd/display.c:75
+#, fuzzy
+msgid "Unknown Album"
+msgstr "അറിയപ്പെടാത്ത"
+
+#: cddb-slave2/cddb-track-editor.c:541
+#, c-format
+msgid "Editing Disc ID: %s"
+msgstr ""
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:630
+msgid "Editing Disc ID: "
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:641
+msgid "_Artist:"
+msgstr "കലാകാരന്‍:"
+
+#: cddb-slave2/cddb-track-editor.c:655
+msgid "Disc _Title:"
+msgstr "തലക്കെട്ട്:"
+
+#: cddb-slave2/cddb-track-editor.c:665
+#, fuzzy
+msgid "Show advanced disc options"
+msgstr "തിയ്യതി ഉപകരണതന്തുവില് കാണിക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:666
+msgid "Hide advanced disc options"
+msgstr ""
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:678
+#, fuzzy
+msgid "_Disc comments:"
+msgstr "അഭിപ്രായം"
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:693
+#, fuzzy
+msgid "_Genre:"
+msgstr "പച്ച:"
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:709
+#, fuzzy
+msgid "_Year:"
+msgstr "വാക്യം മായ്‍ക്കുക"
+
+#: cddb-slave2/cddb-track-editor.c:748
+msgid "Title"
+msgstr "തലക്കെട്ട്"
+
+#: cddb-slave2/cddb-track-editor.c:755
+msgid "Length"
+msgstr "നീളം"
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:766
+msgid "Show advanced track options"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:767
+msgid "Hide advanced track options"
+msgstr ""
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:775
+msgid "_Extra track data:"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:903
+#, fuzzy
+msgid "CDDB Track Editor"
+msgstr "പിന് ചരിത്രം"
+
+#: cddb-slave2/cddb-track-editor.c:1040
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:118
+#, fuzzy
+msgid "CD Display"
+msgstr "പ്രദ‍ര്ശനം"
+
+#: gnome-cd/access/cddisplayaccessible.c:120
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:189
+#, fuzzy
+msgid "Time Line"
+msgstr "ടൈമ്ഡ് ലോഗിന്"
+
+#: gnome-cd/access/cddisplayaccessible.c:190
+msgid "Line for displaying the time elapsed for the current track"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:193
+#, fuzzy
+msgid "Info Line"
+msgstr "വരിയിലേക്ക് പോകുക"
+
+#: gnome-cd/access/cddisplayaccessible.c:194
+#, fuzzy
+msgid "Line for displaying information"
+msgstr "ചിത്ര-വിവരം ലഭിക്കുന്നതില്‌ പരാജയം"
+
+#: gnome-cd/access/cddisplayaccessible.c:197
+#, fuzzy
+msgid "Artist Line"
+msgstr "കലാകാരന്‍:"
+
+#: gnome-cd/access/cddisplayaccessible.c:198
+msgid "Line for displaying the name of the artist"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Album Line"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:202
+msgid "Line for displaying the name of the album"
+msgstr ""
+
+#: gnome-cd/callbacks.c:83 gnome-cd/callbacks.c:171 gnome-cd/callbacks.c:270
+#: gnome-cd/callbacks.c:573 gnome-cd/gnome-cd.c:671 grecord/gsr.xml.h:13
+msgid "Play"
+msgstr "കളിക്കുക"
+
+#: gnome-cd/callbacks.c:156 gnome-cd/callbacks.c:202 gnome-cd/callbacks.c:232
+#: gnome-cd/callbacks.c:312 gnome-cd/callbacks.c:352 gnome-cd/callbacks.c:376
+#: gnome-cd/callbacks.c:417 gnome-cd/callbacks.c:511
+msgid "Pause"
+msgstr "ചെറിയ ഇടവേള"
+
+#: gnome-cd/callbacks.c:557
+#, fuzzy, c-format
+msgid "Playing %s - %s"
+msgstr "%s കേള്പ്പി‌ക്കുന്നു"
+
+#: gnome-cd/callbacks.c:561
+#, fuzzy
+msgid "Playing"
+msgstr "പ്രതലമായ"
+
+#: gnome-cd/callbacks.c:585
+#, fuzzy
+msgid "Paused"
+msgstr "ചെറിയ ഇടവേള"
+
+#: gnome-cd/callbacks.c:631 gnome-cd/callbacks.c:873 gnome-cd/gnome-cd.c:88
+#: gnome-cd/gnome-cd.c:534 gnome-cd/gnome-cd.c:721 gnome-cd/gnome-cd.c:724
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "സി.ഡി പ്ളേയര്‍"
+
+#: gnome-cd/callbacks.c:649
+msgid "Stopped"
+msgstr "നിര്‍ത്തി"
+
+#: gnome-cd/callbacks.c:655
+#, fuzzy
+msgid "Disc error"
+msgstr "പൊതു പിശക്"
+
+#: gnome-cd/callbacks.c:666 gnome-cd/callbacks.c:761
+#, fuzzy
+msgid "No disc"
+msgstr "നോര്ഡിക്"
+
+#: gnome-cd/callbacks.c:789
+#, fuzzy
+msgid "Drive open"
+msgstr "വികസനം‌"
+
+#: gnome-cd/callbacks.c:813
+#, fuzzy
+msgid "Data CD"
+msgstr "വസ്തുത"
+
+#: gnome-cd/callbacks.c:835 gnome-cd/callbacks.c:840
+#, fuzzy
+msgid "No Cdrom"
+msgstr "പ്രശ്നം ഇല്ല"
+
+#: gnome-cd/callbacks.c:851
+#, fuzzy
+msgid "Drive Error"
+msgstr "IO പിശക്"
+
+#: gnome-cd/callbacks.c:875
+msgid "A CD player for GNOME"
+msgstr ""
+
+#: gnome-cd/cdrom.c:368
+#, fuzzy, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr "നിങ്ങള്ക്ക് \"%s\" ന്റെ പേര‍് മാറ്റാന് അനുവാദമില്ല."
+
+#: gnome-cd/cdrom.c:374
+#, c-format
+msgid ""
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not present in your machine\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:215
+#, fuzzy, c-format
+msgid "%d - Unknown"
+msgstr "അറിയപ്പെടാത്ത"
+
+#: gnome-cd/gnome-cd.c:329
+#, fuzzy
+msgid "P_revious track"
+msgstr "മുന് ഭാഗം"
+
+#: gnome-cd/gnome-cd.c:330 grecord/gsr.xml.h:44
+msgid "_Stop"
+msgstr "നിര്‌ത്തുക"
+
+#: gnome-cd/gnome-cd.c:331
+#, fuzzy
+msgid "_Play / Pause"
+msgstr "പ്രവ‌ര്‍ത്തിപ്പിക്കുക / സ്തംഭിപ്പിക്കുക"
+
+#: gnome-cd/gnome-cd.c:332
+#, fuzzy
+msgid "_Next track"
+msgstr "അടുത്ത ഭാഗം"
+
+#: gnome-cd/gnome-cd.c:333
+#, fuzzy
+msgid "_Eject disc"
+msgstr "പുറന്തള്ളുക"
+
+#: gnome-cd/gnome-cd.c:334 grecord/gsr.xml.h:37
+msgid "_Help"
+msgstr "സഹായം"
+
+#: gnome-cd/gnome-cd.c:335
+#, fuzzy
+msgid "_About CD player"
+msgstr "സി.ഡി പ്ളേയര്‍"
+
+#: gnome-cd/gnome-cd.c:454
+msgid ""
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:458
+#, fuzzy
+msgid "Set device"
+msgstr "സേവനം"
+
+#: gnome-cd/gnome-cd.c:460
+#, fuzzy
+msgid "No CD device"
+msgstr "നിവേശകസംവിധാനങ്ങള്‌ ഇല്ല"
+
+#: gnome-cd/gnome-cd.c:513
+msgid ""
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:517
+msgid "_Details"
+msgstr "വിശദാംശങ്ങള്"
+
+#: gnome-cd/gnome-cd.c:518
+#, fuzzy
+msgid "_Set device"
+msgstr "സേവനം"
+
+#: gnome-cd/gnome-cd.c:520
+#, fuzzy
+msgid "Invalid CD device"
+msgstr "അസാധുവായ XBM ശേഖരം"
+
+#: gnome-cd/gnome-cd.c:584
+#, fuzzy
+msgid "Volume control"
+msgstr "ശബ്ദം ക്രമീകാരി"
+
+#: gnome-cd/gnome-cd.c:595
+msgid "Position"
+msgstr "സ്ഥാനം:"
+
+#: gnome-cd/gnome-cd.c:612
+#, fuzzy
+msgid "Open track editor"
+msgstr "അടയാളം ചിട്ടപ്പെടുത്തുക"
+
+#: gnome-cd/gnome-cd.c:613
+#, fuzzy
+msgid "Track editor"
+msgstr "പിന് ചരിത്രം"
+
+#: gnome-cd/gnome-cd.c:620
+#, fuzzy
+msgid "Open preferences"
+msgstr "അക്ഷരരൂപ മുന്‍ഗണനകള്‍"
+
+#: gnome-cd/gnome-cd.c:621
+msgid "Preferences"
+msgstr "മുന്‍ഗണനകള്‍"
+
+#: gnome-cd/gnome-cd.c:629
+#, fuzzy
+msgid "Track List"
+msgstr "അനുബന്ധ പട്ടിക"
+
+#: gnome-cd/gnome-cd.c:650
+#, fuzzy
+msgid "Previous track"
+msgstr "മുന് ഭാഗം"
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous"
+msgstr "പിന്നോട്ട്"
+
+#: gnome-cd/gnome-cd.c:654
+#, fuzzy
+msgid "Rewind"
+msgstr "റുവാണ്ട"
+
+#: gnome-cd/gnome-cd.c:671
+msgid "Play / Pause"
+msgstr "പ്രവ‌ര്‍ത്തിപ്പിക്കുക / സ്തംഭിപ്പിക്കുക"
+
+#: gnome-cd/gnome-cd.c:676 grecord/gsr.xml.h:30
+msgid "Stop"
+msgstr "നിര്‌ത്തുക"
+
+#: gnome-cd/gnome-cd.c:680
+#, fuzzy
+msgid "Fast forward"
+msgstr "മുന്നോട്ട്"
+
+#: gnome-cd/gnome-cd.c:688
+#, fuzzy
+msgid "Next track"
+msgstr "അടുത്ത ഭാഗം"
+
+#: gnome-cd/gnome-cd.c:692
+#, fuzzy
+msgid "Eject CD"
+msgstr "പുറന്തള്ളുക"
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject"
+msgstr "പുറന്തള്ളുക"
+
+#: gnome-cd/gnome-cd.c:808
+#, fuzzy
+msgid "CD device to use"
+msgstr "ഉപയോഗിക്കുന്നതിനായി X പ്രദര്ശനം"
+
+#: gnome-cd/gnome-cd.c:810
+msgid "Only start if there isn't already a CD player application running"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:812
+msgid "Play the CD on startup"
+msgstr ""
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:842
+#, fuzzy
+msgid "Cannot create player"
+msgstr "അരിപ്പ് ഉണ്ടാക്കാന്‌ കഴിയുന്നില്ല"
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+#, fuzzy
+msgid "Play audio CDs"
+msgstr "ശ്രവണ സി.ഡി"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+#, fuzzy
+msgid "CD player theme"
+msgstr "സി.ഡി പ്ളേയര്‍"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+#, fuzzy
+msgid "Device path"
+msgstr "ഉപകരണ ‌വഴി"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "Eject the CD when CD player quits?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Play when the CD player starts?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD be ejected when the CD player quits?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "What theme should the CD player use for its appearance"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid "When the CD player is started, should it start playing the CD?"
+msgstr ""
+
+#: gnome-cd/preferences.c:84
+#, c-format
+msgid ""
+"%s\n"
+"This means that the CD player will not be able to run."
+msgstr ""
+
+#: gnome-cd/preferences.c:85
+#, fuzzy
+msgid "Error setting device"
+msgstr "ഉടമയെ നിശ്ചയിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: gnome-cd/preferences.c:638
+msgid "CD Player Preferences"
+msgstr "സി.ഡി പ്ളേയര്‍ മുന്ഗണനകള്"
+
+#: gnome-cd/preferences.c:672
+msgid "CD Player De_vice:"
+msgstr ""
+
+#: gnome-cd/preferences.c:696
+#, fuzzy
+msgid "_Apply change"
+msgstr "പ്രവ‍ര്ത്തികമാക്കുക"
+
+#: gnome-cd/preferences.c:708
+msgid "CD Player Behaviour:"
+msgstr ""
+
+#: gnome-cd/preferences.c:721
+msgid "Start _playing CD when CD Player starts"
+msgstr ""
+
+#: gnome-cd/preferences.c:722
+msgid "Start playing CD when CD Player starts"
+msgstr ""
+
+#: gnome-cd/preferences.c:734
+msgid "Attempt to _eject CD when CD Player exits"
+msgstr ""
+
+#: gnome-cd/preferences.c:735
+msgid "Attempt to eject CD when CD Player exits"
+msgstr ""
+
+#: gnome-cd/preferences.c:755
+msgid "_Available Themes:"
+msgstr ""
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr ""
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:914
+#: grecord/src/gsr-window.c:1241
+#, fuzzy
+msgid "Sound Recorder"
+msgstr "ക്രമീകരണ മുറ"
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "കുറിപ്പ്"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "അടയ്‍ക്കുക"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "ഈ ജാലകം അടയ്‍ക്കുക"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "ഉള്ളടക്കം"
+
+#: grecord/gsr.xml.h:5
+#, fuzzy
+msgid "Create a new sample"
+msgstr "പുതിയ ഒരു പ്രസ്താവം ഉണ്ടാക്കുക"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr ""
+
+#: grecord/gsr.xml.h:7 grecord/src/gsr-window.c:783
+#, fuzzy
+msgid "File Information"
+msgstr "വിവരം"
+
+#: grecord/gsr.xml.h:8
+#, fuzzy
+msgid "File _Information"
+msgstr "അക്ഷരരൂപ വിവരം"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "പ്രധാന ആയുധപ്പട്ട"
+
+#: grecord/gsr.xml.h:10
+msgid "New"
+msgstr "പുതിയ"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "തുറക്കുക"
+
+#: grecord/gsr.xml.h:12 grecord/src/gsr-window.c:346
+msgid "Open a file"
+msgstr "ഒരു രചന തുറക്കുക"
+
+#: grecord/gsr.xml.h:14
+#, fuzzy
+msgid "Play sound"
+msgstr "പോളണ്ട്"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "പുറത്ത് കടക്കുക"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "ഈ പ്രയോഗത്തിന്റെ പ്രവ‍ര്ത്തനം നിര്ത്തുക"
+
+#: grecord/gsr.xml.h:17
+#, fuzzy
+msgid "Recent _Files"
+msgstr "ഏറ്റവും കൂടിയ നവരചനകള്‌"
+
+#: grecord/gsr.xml.h:18
+#, fuzzy
+msgid "Record"
+msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#: grecord/gsr.xml.h:19
+#, fuzzy
+msgid "Record sound"
+msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr ""
+
+#: grecord/gsr.xml.h:21
+msgid "Run _Mixer"
+msgstr ""
+
+#: grecord/gsr.xml.h:22
+#, fuzzy
+msgid "Run the audio mixer"
+msgstr "ഉപേക്ഷിച്ച നീക്കം വീണ്ടും നടത്തുക"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "സംരംക്ഷിക്കുക"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "പേ‍ര‍് മാറ്റി‌ സംരക്ഷിക്കുക"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "പേ‍ര‍് മാറ്റി‌ സംരക്ഷിക്കുക"
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "ഇപ്പോഴത്തെ രചന സംരക്ഷിക്കുക"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "സജീവ കാലികശേഖരം മറ്റൊരു പേരില്‌ സംരക്ഷിക്കൂ"
+
+#: grecord/gsr.xml.h:28
+#, fuzzy
+msgid "Show information about the current file"
+msgstr "ഇപ്പോഴത്തെ രചന അച്ചടിക്കുക"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr ""
+
+#: grecord/gsr.xml.h:31
+#, fuzzy
+msgid "Stop sound"
+msgstr "ശബ്ദം"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "കുറിപ്പ്"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "ജാലകം അടയ്‍ക്കുക"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "ഉള്ളടക്കം"
+
+#: grecord/gsr.xml.h:35
+#, fuzzy
+msgid "_Control"
+msgstr "Control"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "ശേഖരം"
+
+#: grecord/gsr.xml.h:38
+msgid "_New"
+msgstr "പുതിയ"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "തുറക്കുക..."
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "കേള്പ്പിക്കുക"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "പുറത്ത് കടക്കുക"
+
+#: grecord/gsr.xml.h:42
+#, fuzzy
+msgid "_Record"
+msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "സംരംക്ഷിക്കുക"
+
+#: grecord/src/gnome-recorder.c:162
+#, fuzzy
+msgid "Dummy option"
+msgstr "ശബദ ബദലുകള്"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+#, fuzzy
+msgid "hours"
+msgstr "തുള്ളിമഴ"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+#, fuzzy
+msgid "hour"
+msgstr "12 മണിക്കുര്"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minutes"
+msgstr "മിനിട്ട്"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#, fuzzy
+msgid "minute"
+msgstr "മിനിട്ട്"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "സെക്കന്റ്സ്"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+#, fuzzy
+msgid "second"
+msgstr "സെക്കന്റ്സ്"
+
+#: grecord/src/gsr-window.c:398 grecord/src/gsr-window.c:1193
+#: grecord/src/gsr-window.c:1357 grecord/src/gsr-window.c:1627
+#, fuzzy
+msgid "Ready"
+msgstr "വായിക്കുക"
+
+#: grecord/src/gsr-window.c:529
+#, fuzzy
+msgid "Save file as"
+msgstr "രചന സംരക്ഷിക്കുക"
+
+#: grecord/src/gsr-window.c:585
+#, c-format
+msgid "%s is not installed in the path."
+msgstr ""
+
+#: grecord/src/gsr-window.c:595
+#, fuzzy, c-format
+msgid "There was an error starting %s: %s"
+msgstr "%s പ്രവ‍ര്ത്തിക്കുന്നതില് തകരാറ്: %s"
+
+#: grecord/src/gsr-window.c:672
+#, fuzzy, c-format
+msgid "%s (Has not been saved)"
+msgstr "രചന സംരക്ഷിക്കപ്പെട്ടിട്ടില്ല."
+
+#: grecord/src/gsr-window.c:688
+#, fuzzy
+msgid "Unknown size"
+msgstr "അറിയാത്ത ഇനം"
+
+#: grecord/src/gsr-window.c:708
+#, fuzzy, c-format
+msgid "%.1f kHz"
+msgstr "%.1f MB"
+
+#: grecord/src/gsr-window.c:717
+#, c-format
+msgid "%.0f kb/s"
+msgstr ""
+
+#: grecord/src/gsr-window.c:729
+#, fuzzy
+msgid "1 (mono)"
+msgstr "മോണോ"
+
+#: grecord/src/gsr-window.c:733
+#, fuzzy
+msgid "2 (stereo)"
+msgstr "സ്റ്റീരിയോ‌"
+
+#: grecord/src/gsr-window.c:762
+#, fuzzy, c-format
+msgid "%s Information"
+msgstr "വിവരം"
+
+#: grecord/src/gsr-window.c:797
+#, fuzzy
+msgid "Folder:"
+msgstr "കൂട്:"
+
+#: grecord/src/gsr-window.c:803 grecord/src/gsr-window.c:1559
+msgid "Filename:"
+msgstr "രചനാനാമം"
+
+#: grecord/src/gsr-window.c:809
+msgid "File size:"
+msgstr "രചനയുടെ വലിപ്പം:‌‌"
+
+#: grecord/src/gsr-window.c:818
+#, fuzzy
+msgid "Audio Information"
+msgstr "അക്ഷരരൂപ വിവരം"
+
+#: grecord/src/gsr-window.c:832
+msgid "Song length:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:838
+#, fuzzy
+msgid "Number of channels:"
+msgstr "വരികളുടെ എണ്ണം"
+
+#: grecord/src/gsr-window.c:844
+#, fuzzy
+msgid "Sample rate:"
+msgstr "മാതൃകാ പട്ടികപ്പട്ട:"
+
+#: grecord/src/gsr-window.c:850
+#, fuzzy
+msgid "Bit rate:"
+msgstr "Bitrate"
+
+#: grecord/src/gsr-window.c:916
+msgid "A sound recorder for GNOME"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1178
+#, fuzzy
+msgid "Playing..."
+msgstr "കാത്തിരിക്കൂ..."
+
+#: grecord/src/gsr-window.c:1237
+#, fuzzy, c-format
+msgid "%s.%s - Sound Recorder"
+msgstr "ക്രമീകരണ മുറ"
+
+#: grecord/src/gsr-window.c:1328
+#, fuzzy
+msgid "Recording..."
+msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#: grecord/src/gsr-window.c:1388
+msgid ""
+"There is no default GStreamer audio input element set - please install the "
+"GStreamer-GConf schemas or set one manually"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1403
+msgid "Failed to create GStreamer encoder elements - check your encoding setup"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1413
+msgid "Could not find GStreamer filesink plugin - please install it"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1421
+msgid ""
+"Failed to link encoder elements with file output element - you probably "
+"selected an invalid encoder"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1527
+#, fuzzy
+msgid "Record as"
+msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#: grecord/src/gsr-window.c:1544
+#, fuzzy
+msgid "File information"
+msgstr "വിവരം"
+
+#: grecord/src/gsr-window.c:1566
+#, fuzzy
+msgid "<none>"
+msgstr "ഒന്നും"
+
+#: grecord/src/gsr-window.c:1575
+#, fuzzy
+msgid "Length:"
+msgstr "നീളം"
+
+#: gst-mixer/gnome-volume-control.desktop.in.h:1
+#, fuzzy
+msgid "Adjust the volume level"
+msgstr "ശബ്ദം ക്രമീകരിക്കുക"
+
+#. create main window + menus
+#: gst-mixer/gnome-volume-control.desktop.in.h:2 gst-mixer/src/mixer.c:588
+#: gst-mixer/src/mixer.c:681
+msgid "Volume Control"
+msgstr "ശബ്ദം ക്രമീകാരി"
+
+#: gst-mixer/src/mixer.c:258
+#, c-format
+msgid "%s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:260
+#, c-format
+msgid "Channel %d of %s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:261
+#, c-format
+msgid "%s Slider %d"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:274
+msgid "Lock"
+msgstr "പൂട്ട്"
+
+#: gst-mixer/src/mixer.c:284
+#, fuzzy, c-format
+msgid "%s Lock"
+msgstr "പൂട്ട്"
+
+#. mute button
+#: gst-mixer/src/mixer.c:290 gst-mixer/src/mixer.c:386
+#, fuzzy
+msgid "Mute"
+msgstr "നിശബദമാക്കുക"
+
+#: gst-mixer/src/mixer.c:302 gst-mixer/src/mixer.c:398
+#, fuzzy, c-format
+msgid "%s Mute"
+msgstr "നിശബദമാക്കുക"
+
+#: gst-mixer/src/mixer.c:308
+msgid "Rec."
+msgstr ""
+
+#: gst-mixer/src/mixer.c:320
+#, fuzzy, c-format
+msgid "%s Record"
+msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#: gst-mixer/src/mixer.c:591
+msgid "A GNOME/GStreamer-based mixer application"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:698
+msgid "Sorry, no mixer elements and/or devices found"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:274
+msgid "Failure instantiating main window"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:312
+#, fuzzy, c-format
+msgid "Could not load UI resource %s"
+msgstr ""
+"%s നീക്കം ചെയ്യാന് കഴിയുന്നില്ല:\n"
+"%s"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+#, fuzzy
+msgid "Configure defaults for GStreamer applications"
+msgstr "പ്രയോഗത്തെ അനുരൂപമാക്കുക"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "Multimedia Systems Selector"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+#: profiles/gnome-audio-profiles.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+#, fuzzy
+msgid "<b>Default Sink</b>"
+msgstr "മുന്‌വിധി വിടവ്"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+#, fuzzy
+msgid "<b>Default Source</b>"
+msgstr "സ്വതേയുള്ള സെ‌ര്‌വ‌ര്"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+#, fuzzy
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">തുറക്കുക</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio"
+msgstr "ശബ്ദം"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish."
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+#, fuzzy
+msgid "GStreamer Preferences"
+msgstr "‌പാളി-ഗുണഗണങ്ങള്‌"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+#, fuzzy
+msgid "Pipe_line:"
+msgstr "പിക്സല് വലിപ്പം:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+#, fuzzy
+msgid "Te_st"
+msgstr "പരീക്ഷിക്കുക"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+#, fuzzy
+msgid "Testing Pipeline"
+msgstr "ആര്‍ക്കേവ് പരിശോധിക്കുന്നു"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Video"
+msgstr "ചലനചിത്രം"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+#, fuzzy
+msgid "_Input:"
+msgstr "നിവേശകം"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:13
+#, fuzzy
+msgid "_Output:"
+msgstr "അവസാന ഫലം"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+#, fuzzy
+msgid "_Pipeline:"
+msgstr "പിക്സല് വലിപ്പം:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+#, fuzzy
+msgid "_Test"
+msgstr "പരീക്ഷിക്കുക"
+
+#: gstreamer-properties/pipeline-constants.c:61
+#: gstreamer-properties/pipeline-constants.c:83
+#: gstreamer-properties/pipeline-constants.c:100
+#: gstreamer-properties/pipeline-constants.c:115
+msgid "Custom"
+msgstr ""
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:110
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr ""
+
+#: profiles/audio-profile-edit.c:164
+#, fuzzy, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+"സഹായം ലഭിക്കുന്നതില് തകരാറ്: \n"
+"%s"
+
+#: profiles/audio-profile-edit.c:366
+#, c-format
+msgid "Editing profile \"%s\""
+msgstr ""
+
+#: profiles/audio-profile.c:103
+#, fuzzy
+msgid "<not named>"
+msgstr "ഒന്നും"
+
+#: profiles/audio-profile.c:104
+msgid "<not described>"
+msgstr ""
+
+#: profiles/audio-profile.c:219
+#, fuzzy, c-format
+msgid "There was an error getting the list of gm_audio profiles. (%s)\n"
+msgstr "%s പ്രവ‍ര്ത്തിക്കുന്നതില് തകരാറ്: %s"
+
+#: profiles/audio-profile.c:720
+#, fuzzy, c-format
+msgid ""
+"There was an error subscribing to notification of audio profile list "
+"changes. (%s)\n"
+msgstr "%s പ്രവ‍ര്ത്തിക്കുന്നതില് തകരാറ്: %s"
+
+#: profiles/audio-profile.c:910
+#, fuzzy, c-format
+msgid "There was an error forgetting profile path %s. (%s)\n"
+msgstr "%s പ്രവ‍ര്ത്തിക്കുന്നതില് തകരാറ്: %s"
+
+#: profiles/audio-profile.c:1002
+msgid "<no description>"
+msgstr ""
+
+#: profiles/audio-profile.c:1013
+msgid "identity"
+msgstr ""
+
+#: profiles/audio-profile.c:1024
+msgid "wav"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:115
+#, fuzzy
+msgid "_Edit"
+msgstr "പുറത്ത് കടക്കുക"
+
+#: profiles/audio-profiles-edit.c:452
+msgid "You must select one or more profiles to delete."
+msgstr ""
+
+#. the first argument will never be used since we only run for count > 1
+#: profiles/audio-profiles-edit.c:461
+#, fuzzy, c-format
+msgid "Delete this profile?\n"
+msgid_plural "Delete these %d profiles?\n"
+msgstr[0] "ശബ്ദരചന തെരഞ്ഞെടുക്കുക"
+msgstr[1] "ശബ്ദരചന തെരഞ്ഞെടുക്കുക"
+
+#: profiles/audio-profiles-edit.c:480
+#, c-format
+msgid "Delete profile \"%s\"?"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:502
+#, fuzzy
+msgid "Delete Profile"
+msgstr "ശബ്ദരചന തെരഞ്ഞെടുക്കുക"
+
+#.
+#. dialog =
+#. gtk_dialog_new_with_buttons (_("Edit Profiles"),
+#. NULL,
+#. GTK_DIALOG_DESTROY_WITH_PARENT,
+#. GTK_STOCK_HELP,
+#. GTK_RESPONSE_HELP,
+#. GTK_STOCK_CLOSE,
+#. GTK_RESPONSE_ACCEPT,
+#. NULL);
+#.
+#. FIXME: GTK_DIALOG_DESTROY_WITH_PARENT,
+#: profiles/audio-profiles-edit.c:597
+msgid "Edit GMAudio Profiles"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:650
+#, fuzzy
+msgid "_Profiles:"
+msgstr "നിര്‍ദ്ദേശ-സംഹിത"
+
+#: profiles/audio-profiles-edit.c:878
+#, c-format
+msgid "You already have a profile called \"%s\""
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:903
+#, c-format
+msgid "GConf Error (FIXME): %s\n"
+msgstr ""
+
+#: profiles/gmp-util.c:64
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:2
+msgid "Edit Audio Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:3
+#, fuzzy
+msgid "File _Extension:"
+msgstr "രചനയുടെ വലിപ്പം:‌‌"
+
+#: profiles/gnome-audio-profiles.glade2.h:4
+msgid "New Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:5
+msgid "Profile Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:6
+msgid "Profile _Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:7
+#, fuzzy
+msgid "Profile _name:"
+msgstr "രചനാനാമം"
+
+#: profiles/gnome-audio-profiles.glade2.h:8
+msgid "_Active?"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:9
+#, fuzzy
+msgid "_Create"
+msgstr "കേന്ദ്രം"
+
+#: profiles/gnome-audio-profiles.glade2.h:10
+#, fuzzy
+msgid "_GStreamer Pipeline:"
+msgstr "‌പാളി-ഗുണഗണങ്ങള്‌"
+
+#: profiles/gnome-audio-profiles.glade2.h:11
+#, fuzzy
+msgid "_Profile name:"
+msgstr "രചനാനാമം"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:1
+msgid "A description for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:2
+msgid ""
+"A description of the profile, containing more information and describing "
+"when to use this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:3
+msgid ""
+"A filename extension to be used when storing files encoded with this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:4
+msgid "A partial GStreamer pipeline to use for this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:5
+msgid "A short name for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:6
+msgid ""
+"A short name for the audio profile, to be used in selections and uniquely "
+"identifying the profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:7
+msgid "CD Quality, Lossless"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:8
+msgid "CD Quality, Lossy"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:9
+msgid ""
+"List of audio recording profiles. The list contains strings naming "
+"subdirectories relative to /system/gstreamer/audio/profiles."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:10
+msgid "List of profiles"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:11
+msgid "The default file extension for this profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:12
+msgid "The partial GStreamer pipeline used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:13
+msgid ""
+"Used for converting to CD-quality audio, but with a lossless compression "
+"codec. Use this if you later want to edit the file or burn it to CD."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:14
+msgid ""
+"Used for converting to CD-quality audio, but with a lossy compression codec. "
+"Use this for CD extraction and radio recordings."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:15
+msgid ""
+"Used for converting to voice-quality audio. Use this for recording speech."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:16
+#, fuzzy
+msgid "Voice"
+msgstr "ചലനചിത്രം"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:17
+msgid "Whether or not this profile is to be used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:18
+msgid "Whether or not to use and display this profile."
+msgstr ""
+
+#: vu-meter/main.c:102
+msgid ""
+"Cannot connect to sound daemon.\n"
+"Please run 'esd' at a command prompt."
+msgstr ""
+
+#: vu-meter/main.c:228
+#, fuzzy
+msgid "Specify the X position of the meter."
+msgstr "ഇതിന്റെ വിവരണം."
+
+#: vu-meter/main.c:229
+#, fuzzy
+msgid "X-Position"
+msgstr "സ്ഥാനം:"
+
+#: vu-meter/main.c:231
+#, fuzzy
+msgid "Specify the Y position of the meter."
+msgstr "ഇതിന്റെ വിവരണം."
+
+#: vu-meter/main.c:232
+#, fuzzy
+msgid "Y-Position"
+msgstr "സ്ഥാനം:"
+
+#: vu-meter/main.c:234
+msgid "Connect to the esd server on this host."
+msgstr ""
+
+#: vu-meter/main.c:235
+#, fuzzy
+msgid "ESD Server Host"
+msgstr "സെ‍ര്‍വ‍ര് പട്ടിക..."
+
+#: vu-meter/main.c:237
+#, fuzzy
+msgid "Open a vertical version of the meter."
+msgstr "ശേഖരത്തെ അവസാനം സംരക്ഷിച്ച അവസ്ഥയിലേക്ക് മാറ്റുക"
+
+#: vu-meter/main.c:239
+msgid "Act as recording level meter."
+msgstr ""
+
+#: vu-meter/main.c:256
+#, c-format
+msgid "Host is %s\n"
+msgstr ""
+
+#: vu-meter/main.c:273
+#, fuzzy
+msgid "Recording level"
+msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#: vu-meter/main.c:273
+#, fuzzy
+msgid "Volume Meter"
+msgstr "ശബ്ദം ക്രമീകാരി"
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr ""
+
+#: vu-meter/reclevel.desktop.in.h:2
+msgid "Recording level monitor"
+msgstr ""
+
+#: vu-meter/vumeter.desktop.in.h:1
+#, fuzzy
+msgid "Monitor the sound output volume"
+msgstr "ശബ്ദം ക്രമീകരിക്കുക"
+
+#: vu-meter/vumeter.desktop.in.h:2
+#, fuzzy
+msgid "Volume monitor"
+msgstr "ശബ്ദം ക്രമീകാരി"
+
+#, fuzzy
+#~ msgid "Unknown artist"
+#~ msgstr "അറിയാത്ത ഇനം"
+
+#, fuzzy
+#~ msgid "Unknown disc"
+#~ msgstr "അറിയപ്പെടാത്ത"
+
+#, fuzzy
+#~ msgid "GStreamer Volume Control"
+#~ msgstr "ശബ്ദം ക്രമീകാരി"
+
+#, fuzzy
+#~ msgid "GStreamer"
+#~ msgstr "സെപ്തംബ‌ര്"
+
+#, fuzzy
+#~ msgid "_Replace"
+#~ msgstr "സ്ഥലം"
+
+#, fuzzy
+#~ msgid ""
+#~ "A file named \"%s\" already exists.\n"
+#~ "Do you want to replace it with the one you are saving?"
+#~ msgstr "ആര്‍ക്കേവ് നിലനില്‌ക്കുന്നുണ്ട്. മാറ്റിയെഴുതണോ?"
+
+#, fuzzy
+#~ msgid "Could not build pipeline"
+#~ msgstr "ആര്‍ക്കേവ് പക‌ര്‍ത്താനായില്ല"
+
+#, fuzzy
+#~ msgid "Saving %s..."
+#~ msgstr "%s നിറയ്‌ക്കുന്നു...‌"
+
+#, fuzzy
+#~ msgid "DAC"
+#~ msgstr "എല്ലാം വൃത്തിയാക്കല്"
+
+#, fuzzy
+#~ msgid "DSP Input"
+#~ msgstr "നിവേശകം"
+
+#~ msgid "Line"
+#~ msgstr "വരി‌"
+
+#, fuzzy
+#~ msgid "MIC"
+#~ msgstr "IRC"
+
+#~ msgid "CD"
+#~ msgstr "സി.ഡി"
+
+#, fuzzy
+#~ msgid "Radio"
+#~ msgstr "പ്രവ‍ര്ത്തനങ്ങള്‌"
+
+#, fuzzy
+#~ msgid "Phone"
+#~ msgstr "ഒന്നുമില്ല"
+
+#, fuzzy
+#~ msgid "Mono"
+#~ msgstr "മൊണാക്കോ"
+
+#, fuzzy
+#~ msgid "Center Input"
+#~ msgstr "കേന്ദ്രം"
+
+#, fuzzy
+#~ msgid "Woofer Input"
+#~ msgstr "പാദ അക്ഷരരൂപം"
+
+#, fuzzy
+#~ msgid "Master"
+#~ msgstr "ഒട്ടിപ്പ്"
+
+#, fuzzy
+#~ msgid "Phone Output"
+#~ msgstr "ആജ്ഞമേഘല ഫലം"
+
+#~ msgid "Center"
+#~ msgstr "കേന്ദ്രം"
+
+#, fuzzy
+#~ msgid "Surround"
+#~ msgstr "ശബ്ദം"
+
+#, fuzzy
+#~ msgid "DSP Output"
+#~ msgstr "അവസാന ഫലം"
+
+#, fuzzy
+#~ msgid "Treble"
+#~ msgstr "വൃക്ഷം"
+
+#, fuzzy
+#~ msgid "Fader"
+#~ msgstr "കൂട്"
+
+#, fuzzy
+#~ msgid "Effect"
+#~ msgstr "പ്രഭാവം"
+
+#, fuzzy
+#~ msgid "3D Effect"
+#~ msgstr "പ്രഭാവം"
+
+#, fuzzy
+#~ msgid "Mic Gain"
+#~ msgstr "പിറ്റ്‌കെയ്‌ന്‌"
+
+#, fuzzy
+#~ msgid "Input Gain"
+#~ msgstr "നിവേശകം"
+
+#, fuzzy
+#~ msgid "Output Gain"
+#~ msgstr "നിര്ഗ്ഗമ വരികള്"
+
+#, fuzzy
+#~ msgid "Bass "
+#~ msgstr "ആധാരം"
+
+#, fuzzy
+#~ msgid "Trebl"
+#~ msgstr "വൃക്ഷം"
+
+#, fuzzy
+#~ msgid "Line "
+#~ msgstr "വരികള്‌"
+
+#, fuzzy
+#~ msgid "Mic  "
+#~ msgstr "Misc"
+
+#, fuzzy
+#~ msgid "CD   "
+#~ msgstr "   "
+
+#, fuzzy
+#~ msgid "IGain"
+#~ msgstr "ഇറ്റാലിയന്‌"
+
+#, fuzzy
+#~ msgid "OGain"
+#~ msgstr "മഴ"
+
+#, fuzzy
+#~ msgid "Line1"
+#~ msgstr "വരികള്‌"
+
+#, fuzzy
+#~ msgid "Line2"
+#~ msgstr "വരികള്‌"
+
+#, fuzzy
+#~ msgid "Line3"
+#~ msgstr "വരികള്‌"
+
+#, fuzzy
+#~ msgid "Digital1"
+#~ msgstr "അക്കങ്ങള്"
+
+#, fuzzy
+#~ msgid "Digital2"
+#~ msgstr "അക്കങ്ങള്"
+
+#, fuzzy
+#~ msgid "Digital3"
+#~ msgstr "അക്കങ്ങള്"
+
+#, fuzzy
+#~ msgid "PhoneOut"
+#~ msgstr "ബിന്ദു"
+
+#, fuzzy
+#~ msgid "Monitor"
+#~ msgstr "മോണിറ്റര്‌..."
+
+#~ msgid "Help"
+#~ msgstr "സഹായം"
+
+#, fuzzy
+#~ msgid "Mixer device to use"
+#~ msgstr "ക്രമീകരിക്കേണ്ട ഉപകരണം"
+
+#, fuzzy
+#~ msgid "Invalid mixer device"
+#~ msgstr "സാധുതയില്ലാത്ത രചന നാമം"
+
+#, fuzzy
+#~ msgid "left %s"
+#~ msgstr "ഇടത്"
+
+#, fuzzy
+#~ msgid "Right %s"
+#~ msgstr "വലത്"
+
+#, fuzzy
+#~ msgid "GNOME Volume Control"
+#~ msgstr "ശബ്ദം ക്രമീകാരി"
+
+#, fuzzy
+#~ msgid "Shown"
+#~ msgstr "കാണിക്കുക"
+
+#, fuzzy
+#~ msgid "Mixer label"
+#~ msgstr "പട്ടിക ലിഖിതം"
+
+#, fuzzy
+#~ msgid "_Reset labels to their defaults"
+#~ msgstr "സ്വതേയുള്ളതുപോലെയാക്കുക"
+
+#, fuzzy
+#~ msgid "Gnome Volume Control Preferences"
+#~ msgstr "ജാലക നാമാവലി മുന്ഗണനകള്"
+
+#, fuzzy
+#~ msgid "Sound Recorder:"
+#~ msgstr "ക്രമീകരണ മുറ"
+
+#, fuzzy
+#~ msgid "Don't show this message again."
+#~ msgstr "ഈ സംവാദം വീണ്ടും കാണിക്കുക"
+
+#, fuzzy
+#~ msgid "Converting file..."
+#~ msgstr "രചന '%s' പൂ‌‌‌‌ര്‌വ്വസ്ഥിതിയിലാക്കുക..."
+
+#~ msgid "Cancel"
+#~ msgstr "റദ്ദാക്കുക"
+
+#, fuzzy
+#~ msgid "Sample rate: "
+#~ msgstr "മാതൃകാ പട്ടികപ്പട്ട:"
+
+#, fuzzy
+#~ msgid "Channels: "
+#~ msgstr "മാറ്റം "
+
+#, fuzzy
+#~ msgid "Cancel open"
+#~ msgstr "തുറക്കുന്നത് റദ്ദാക്കണോ?"
+
+#, fuzzy
+#~ msgid "Select a sound file"
+#~ msgstr "ശബ്ദരചന തെരഞ്ഞെടുക്കുക"
+
+#, fuzzy
+#~ msgid "Undoing all changes..."
+#~ msgstr "മാറ്റങ്ങള് അര്പ്പിക്കുന്നു..."
+
+#, fuzzy
+#~ msgid "File '%s isn't a valid sound file."
+#~ msgstr "%s ഒരു സാധാരണ രചന അല്ല."
+
+#, fuzzy
+#~ msgid "Cancel save"
+#~ msgstr "പുനറ്മാനകരണം റദ്ദാക്കണോ?"
+
+#~ msgid "Overwrite"
+#~ msgstr "മേലെഴുത്ത്"
+
+#, fuzzy
+#~ msgid "Error saving '%s'"
+#~ msgstr "%s തകരാറ്: %s"
+
+#, fuzzy
+#~ msgid ""
+#~ "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
+#~ "\n"
+#~ "Your changes will be lost if you don't save them."
+#~ msgstr ""
+#~ "%s-ല്‌ താങ്കള്‌ വരുത്തിയ മാറ്റങ്ങള്‌ സംരക്ഷിക്കേണ്ടതുണ്ടോ?\n"
+#~ "താങ്കള്‌ സംരക്ഷിച്ചില്ലെങ്കില്‌ വരുത്തിയ മാറ്റങ്ങള്‌ നഷ്ടപ്പെടും."
+
+#~ msgid "Do_n't save"
+#~ msgstr "സംരക്ഷിക്കേണ്ട"
+
+#, fuzzy
+#~ msgid "Save %s?"
+#~ msgstr "പേ‍ര‍് മാറ്റി‌ സംരക്ഷിക്കുക"
+
+#, fuzzy
+#~ msgid "Saving..."
+#~ msgstr "സംരക്ഷിക്കുന്നു"
+
+#, fuzzy
+#~ msgid ""
+#~ "The size of the current sample is more than\n"
+#~ "%i Mb!"
+#~ msgstr "നിലവിലുള്ള താളിന്റെ സൂചിക"
+
+#, fuzzy
+#~ msgid "Save sound file"
+#~ msgstr "ശബ്ദരചന തെരഞ്ഞെടുക്കുക"
+
+#, fuzzy
+#~ msgid "Run GNOME Volume Control"
+#~ msgstr "ശബ്ദം ക്രമീകാരി പ്രവ‌ര്‍ത്തിപ്പിക്കുക..."
+
+#, fuzzy
+#~ msgid "Add echo"
+#~ msgstr "സേവനം ചേര്‍ക്കുക "
+
+#, fuzzy
+#~ msgid "Add echo to the current sample"
+#~ msgstr "സജീവമായ കത്തിനുള്ള മറുപടി അയ‍യ്‍ക്കുക"
+
+#~ msgid "Echo"
+#~ msgstr "മാറ്റൊലി"
+
+#, fuzzy
+#~ msgid "_Undo All"
+#~ msgstr "ചുരുളഴിക്കുക"
+
+#, fuzzy
+#~ msgid "Undo all changes made on the current sample"
+#~ msgstr "ഇപ്പോഴുള്ള അവസ്ഥയ്‌ക്ക് മാത്രം മാറ്റം വരുത്തുക"
+
+#~ msgid "Effects"
+#~ msgstr "പ്രഭാവം"
+
+#~ msgid "stereo"
+#~ msgstr "സ്റ്റീരിയോ‌"
+
+#~ msgid "mono"
+#~ msgstr "മോണോ"
+
+#, fuzzy
+#~ msgid "Create new sample"
+#~ msgstr "പുതിയ ഒരു പ്രസ്താവം ഉണ്ടാക്കുക"
+
+#, fuzzy
+#~ msgid "Play current sample"
+#~ msgstr "ഇപ്പോഴുള്ള സന്ദേശം അച്ചടിക്കുക"
+
+#, fuzzy
+#~ msgid "Start recording"
+#~ msgstr "വിശദീകരണം ആരംഭിക്കുക"
+
+#, fuzzy
+#~ msgid "Audio format: "
+#~ msgstr "തിരുത്തല്‌ സംവിധാനത്തിലെ അക്ഷരരൂപം"
+
+#, fuzzy
+#~ msgid "File '%s' doesn't exist; using default."
+#~ msgstr "%s ഭാഷ നിലവിലില്ല. പകരം %s ഉപയോഗിക്കുന്നു"
+
+#, fuzzy
+#~ msgid "File '%s' isn't a supported soundfile."
+#~ msgstr "രചന '%s'ഒരു സാധാരണ രചനയോ കൂടോ അല്ല."
+
+#~ msgid "translator_credits"
+#~ msgstr "എഫ്.എസ്.എഫ് - ഇന്ത്യ <gnu@gnu.org.in>"
+
+#, fuzzy
+#~ msgid "Gnome Sound Recorder Preferences"
+#~ msgstr "ശബ്ദ മുന്ഗണനകള്"
+
+#, fuzzy
+#~ msgid "Sound Recorder Preferences"
+#~ msgstr "ശബ്ദ മുന്ഗണനകള്"
+
+#~ msgid "Recording"
+#~ msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#~ msgid "Time"
+#~ msgstr "സമയം"
+
+#, fuzzy
+#~ msgid "_Recording timeout: "
+#~ msgstr "ലേഖനം ചെയ്യ‌ുന്നു"
+
+#, fuzzy
+#~ msgid "_Stop recording on timeout"
+#~ msgstr "സമയം തീരുന്നതിനുള്ളില് അവസ്ഥ അറിയിച്ചിട്ടില്ല."
+
+#~ msgid "Size"
+#~ msgstr "വലിപ്പം"
+
+#, fuzzy
+#~ msgid "Repetition"
+#~ msgstr "ലക്ഷ്യം"
+
+#, fuzzy
+#~ msgid "_Repeat the sound"
+#~ msgstr "കംപ്യൂട്ടര് വീണ്ടും തുടങ്ങുക"
+
+#, fuzzy
+#~ msgid "Repeat _forever"
+#~ msgstr "അവസാനം ഉപയോഗിച്ച കൂടുകള്‍"
+
+#, fuzzy
+#~ msgid "_Number of times:"
+#~ msgstr "രചനകളുടെ എണ്ണം:"
+
+#, fuzzy
+#~ msgid "Paths"
+#~ msgstr "വഴി"
+
+#, fuzzy
+#~ msgid "Program files"
+#~ msgstr "നിര്‍ദ്ദേശ-സംഹിത"
+
+#, fuzzy
+#~ msgid "_Path to sox:"
+#~ msgstr "രചനയിലേക്കുള്ള വഴി"
+
+#~ msgid "_Apply"
+#~ msgstr "പ്രവ‍ര്ത്തികമാക്കുക"
+
+#~ msgid "Folders"
+#~ msgstr "കൂടുകള്"
+
+#, fuzzy
+#~ msgid "_Temporary folder:"
+#~ msgstr "അവസാനം ഉപയോഗിച്ച കൂടുകള്‍"
+
+#~ msgid "Apply"
+#~ msgstr "പ്രവ‍ര്ത്തികമാക്കുക"
+
+#~ msgid "Sound"
+#~ msgstr "ശബ്ദം"
+
+#, fuzzy
+#~ msgid "Audio format:"
+#~ msgstr "സമയ രൂപം"
+
+#, fuzzy
+#~ msgid "S_ample rate:"
+#~ msgstr "മാതൃകാ പട്ടികപ്പട്ട:"
+
+#, fuzzy
+#~ msgid "_Mono"
+#~ msgstr "മൊണാക്കോ"
+
+#, fuzzy
+#~ msgid "_Stereo"
+#~ msgstr "സ്റ്റീരിയോ‌"
+
+#, fuzzy
+#~ msgid "Stereo"
+#~ msgstr "സ്റ്റീരിയോ‌"
+
+#, fuzzy
+#~ msgid "Specify the geometry of the main window"
+#~ msgstr "ജാലകത്തിന്റെ തരം"
+
+#~ msgid "GEOMETRY"
+#~ msgstr "ജ്യാമിതി"
+
+#, fuzzy
+#~ msgid "Specify a file to be opened"
+#~ msgstr "തുടങ്ങേണ്ട അവസ്ഥ ഏതെന്ന് വ്യക്തമാക്കുക"
+
+#, fuzzy
+#~ msgid "Specify a file to start recording"
+#~ msgstr "തുടങ്ങേണ്ട അവസ്ഥ ഏതെന്ന് വ്യക്തമാക്കുക"
+
+#, fuzzy
+#~ msgid "Specify a file to start playing"
+#~ msgstr "തുടങ്ങേണ്ട അവസ്ഥ ഏതെന്ന് വ്യക്തമാക്കുക"
+
+#, fuzzy
+#~ msgid "Sound recorder"
+#~ msgstr "ക്രമീകരണ മുറ"
+
+#, fuzzy
+#~ msgid "Sample rate: %s"
+#~ msgstr "രചനാനാമം: %s"
+
+#, fuzzy
+#~ msgid "_Hostname:"
+#~ msgstr "തലവന്റെ പേര‍‌്"

@@ -1,0 +1,384 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "Sound Recorder">
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Apr 11, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="sv">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>Manual f&ouml;r &app;, version&nbsp;&manrevision;</title>
+
+    <copyright> 
+      <year>2003</year> 
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+    <publisher> 
+      <publishername> Dokumentationsprojekt f&ouml;r GNOME </publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup>
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>GNOMEs dokumentationsteam</surname> 
+	<affiliation> 
+	  <orgname>Sun Microsystems</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+    <revhistory>
+      <revision> 
+	<revnumber>Manual f&ouml;r &app; version &manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Suns GNOME-dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Dokumentationsprojekt f&ouml;r GNOME</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Manual f&ouml;r Ljudinspelare version 2.1</revnumber> 
+	<date>Juni 2002</date> 
+	<revdescription> 
+	  <para role="author">Suns GNOME-dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Dokumentationsprojekt f&ouml;r GNOME</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Manual f&ouml;r Ljudinspelare, version&nbsp;2.0</revnumber> 
+	<date>Maj 2002</date> 
+	<revdescription> 
+	  <para role="author">Suns GNOME-dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Dokumentationsprojekt f&ouml;r GNOME</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo> I den h&auml;r manualen beskrivs version &appversion; av &app;.
+    </releaseinfo>
+    <legalnotice> 
+      <title>Feedback</title>
+      <para>Om du vill rapportera ett fel eller ge f&ouml;rslag om panelprogrammet &app;
+		  eller den h&auml;r manualen, f&ouml;ljer du instruktionerna p&aring;
+		  <ulink url="ghelp:gnome-feedback" type="help">GNOME:s feedbacksida</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm> 
+    <primary>Ljudinspelaren</primary> 
+  </indexterm> 
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+
+  <sect1 id="grecord-introduction"> 
+    <title>Introduktion</title>
+    <para>Med programmet <application>&app;</application> kan du spela in och spela upp ljudfiler i WAV-format (<filename>.wav</filename>).</para>
+  </sect1>
+
+  <sect1 id="grecord-getting-started">
+    <title>Komma ig&aring;ng</title>
+
+    <para>Du kan starta <application>&app;</application> p&aring; f&ouml;ljande s&auml;tt:
+    </para>
+    <variablelist>
+    	<varlistentry>
+    		<term><guimenu>Program</guimenu>-menyn</term>
+    		<listitem>
+    		<para>V&auml;lj <menuchoice><guisubmenu>Ljud &amp; Video</guisubmenu><guimenuitem>Ljudinspelare</guimenuitem></menuchoice></para>
+    		</listitem>
+    	</varlistentry>
+    	<varlistentry>
+    		<term>Kommandoraden</term>
+    		<listitem>
+    		<para>Skriv <command>gnome-sound-recorder</command> och tryck sedan p&aring; <keycap>Retur</keycap>.</para>
+    		<para>		 
+    		</para>
+    		</listitem>
+    	</varlistentry>
+    </variablelist>
+
+    <para>N&auml;r du startar <application>&app;</application> visas f&ouml;ljande f&ouml;nster.</para>
+
+    <!-- ==== Figure ==== -->
+      <figure id="grecord-fig"> 
+	<title>&app;-f&ouml;nstret</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject>
+	    <imagedata fileref="figures/grecord_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase>Visar huvudf&ouml;nstret i &app;. Inneh&aring;ller en menyrad, en verktygsrad, en f&ouml;rloppsindikator och en statusrad. </phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+    <!-- ==== End of Figure ==== -->
+
+  </sect1>
+
+<!-- ================ Usage ================================ -->
+
+  <sect1 id="grecord-usage"> 
+    <title>Anv&auml;ndning</title>
+
+    <sect2 id="grecord-record">
+    	<title>S&aring; h&auml;r startar du en ny inspelning</title>
+    	<para>Om du vill starta en ny inspelning f&ouml;ljer du stegen nedan:</para>
+    	<orderedlist>
+    		<listitem><para>Klicka p&aring; <guibutton>Ny</guibutton> i verktygsraden.</para></listitem>
+    		<listitem><para>Om du vill starta inspelningen klickar du p&aring; <guibutton>Spela in</guibutton> i verktygsraden.</para></listitem>
+    		<listitem><para>Om du vill avsluta inspelningen klickar du p&aring; <guibutton>Stopp</guibutton> i verktygsraden.</para></listitem>
+    		<listitem><para>Om du vill spela upp inspelningen klickar du p&aring; <guibutton>Spela</guibutton> i verktygsraden.</para></listitem>
+    		<listitem><para>Om du vill spara inspelningen klickar du p&aring;
+<menuchoice> <guimenu>Fil</guimenu> <guimenuitem>Spara som</guimenuitem> </menuchoice> och
+    		anger sedan ett namn p&aring; ljudfilen. </para></listitem>		
+    	</orderedlist>
+    </sect2>
+ 
+    <sect2 id="grecord-play">
+    	<title>S&aring; h&auml;r spelar du upp en ljudfil</title>
+    	<para>Om du vill spela upp en ljudfil v&auml;ljer du 
+		<menuchoice><guimenu>Fil</guimenu><guimenuitem>&Ouml;ppna</guimenuitem></menuchoice>. Markera en 
+		ljudfil i dialogrutan <guilabel>V&auml;lj en ljudfil</guilabel> och klicka sedan p&aring; <guibutton>OK</guibutton>. 
+		<application>&app;</application> visar filens l&auml;ngd i minuter och sekunder till h&ouml;ger
+		om f&ouml;rloppsindikatorn. Om du vill spela upp filen klickar du p&aring; <guibutton>Spela</guibutton>. F&ouml;rloppsindikatorn flyttas
+		allteftersom ljudfilen spelas. </para>
+    </sect2>
+ 
+    <sect2 id="grecord-echo">
+    	<title>S&aring; h&auml;r l&auml;gger du till eko i en ljudfil</title>
+    	<para>Om du vill l&auml;gga till eko i en ljudfil &ouml;ppnar du ljudfilen och v&auml;ljer 
+		<menuchoice><guimenu>Redigera</guimenu><guisubmenu>Effekter</guisubmenu>
+		<guisubmenu>Eko</guisubmenu><guimenuitem>L&auml;gg till eko</guimenuitem></menuchoice>.</para>
+    </sect2>
+    
+    
+    <sect2 id="grecord-undo">
+    	<title>S&aring; h&auml;r &aring;ngrar du &auml;ndringar i en ljudfil</title>
+    	<para>Om du vill &aring;ngra alla &auml;ndringar som du har gjort i en ljudfil sedan den senast sparades v&auml;ljer du 
+    	<menuchoice><guimenu>Redigera</guimenu><guimenuitem>&Aring;ngra alla</guimenuitem></menuchoice>.</para>
+    </sect2>
+    
+  </sect1>
+
+<!-- ================ Preferences ================================ -->
+
+  <sect1 id="grecord-prefs"> 
+     <title>Inst&auml;llningar</title>
+    <para>Om du vill konfigurera <application>&app;</application> v&auml;ljer du
+		<menuchoice> 
+		<guimenu>Redigera</guimenu>
+		<guimenuitem>Inst&auml;llningar</guimenuitem> 
+		</menuchoice>. 
+	Dialogrutan <guilabel>Inst&auml;llningar</guilabel> 		inneh&aring;ller f&ouml;ljande flikar:</para>
+	<itemizedlist>
+		<listitem><para><xref linkend="grecord-prefs-recording"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-playing"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-paths"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-sound"/></para>
+		</listitem>
+	</itemizedlist>
+	
+	<sect2 id="grecord-prefs-recording">
+	<title>Inspelning</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Inspelningstimeout</guilabel> </term> 
+			<listitem>
+			<para>Anv&auml;nd den h&auml;r rotationsrutan f&ouml;r att ange efter hur l&aring;ng tid i minuter som <application>&app;</application> 
+			ska avsluta inspelningen om ingen anv&auml;ndaraktivitet f&ouml;rekommer. </para>
+			<para>Standard: 2 minuter.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Stanna inspelning vid time-out</guilabel> </term> 
+			<listitem>
+			<para>Markera det h&auml;r alternativet om du vill avsluta inspelningen n&auml;r <application>&app;</application> kommer till
+			den timeoutgr&auml;ns som har angivits i 			rotationsrutan <guilabel>Inspelningstimeout</guilabel>. </para>
+			<para>Standard: markerat.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>&Ouml;ppna dialogrutan Spara n&auml;r inspelningen &auml;r klar</guilabel> </term> 
+			<listitem>
+			<para>Markera det h&auml;r alternativet om du automatiskt vill &ouml;ppna dialogrutan <guilabel>Spara ljudfil</guilabel> n&auml;r 
+			<application>&app;</application> har avslutat inspelningen. </para>
+			<para>Standard: ej markerat.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Visa varningsmeddelande om ljudklippets storlek (MB) blir st&ouml;rre &auml;n</guilabel> </term> 
+			<listitem>
+			<para>Markera det h&auml;r alternativet om du vill visa en varning om storleken p&aring; den ljudfil som du spelar in &ouml;verstiger 100 MB. 
+			Anv&auml;nd rotationsrutan om du vill &auml;ndra vid vilken filstorlek varningen ska visas.</para>
+			<para>Standard: markerat, 100 MB.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Stanna inspelning om ljudklippets storlek (MB) blir st&ouml;rre &auml;n</guilabel> </term> 
+			<listitem>
+			<para>Markera det h&auml;r alternativet om du vill avsluta inspelningen d&aring; storleken p&aring; ljudfilen &ouml;verstiger 200 MB. 
+			Anv&auml;nd rotationsrutan om du vill &auml;ndra vid vilken filstorlek du vill avsluta inspelningen.</para>
+			<para>Standard: ej markerat, 200 MB.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-playing">
+	<title>Spela upp</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Repetition</guilabel> </term> 
+			<listitem>
+			<para>Markera n&aring;got av f&ouml;ljande alternativ om du vill ange hur <application>&app;</application> ska spela upp ljudfiler:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Spela bara ljudet en g&aring;ng</guilabel></para>
+				<para>Markera det h&auml;r alternativet om du vill spela upp filen en g&aring;ng.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Upprepa f&ouml;r evigt</guilabel></para>
+				<para>Markera det h&auml;r alternativet om du vill att filen ska spelas upp tills du klickar p&aring; <guibutton>Stopp</guibutton> eller
+				avslutar programmet.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Antal g&aring;nger</guilabel></para>
+				<para>Markera det h&auml;r alternativet om du vill spela upp ljudfilen s&aring; m&aring;nga g&aring;nger som har angetts i rotationsrutan. 
+				Anv&auml;nd rotationsrutan om du vill &auml;ndra antalet g&aring;nger som <application>&app;</application> spelar upp filen.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Standard: <guilabel>Antal g&aring;nger</guilabel>, 2.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+	
+	<sect2 id="grecord-prefs-paths">
+	<title>S&ouml;kv&auml;gar</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>S&ouml;kv&auml;g till sox</guilabel> </term> 
+			<listitem>
+			<para>Anv&auml;nd det h&auml;r f&auml;ltet f&ouml;r att ange s&ouml;kv&auml;gen till programmet <application>sox</application>. 
+			<application>&app;</application> anv&auml;nder <application>sox</application> f&ouml;r att spela upp inspelningar. Om du vill avg&ouml;ra
+			plats f&ouml;r <application>sox</application>, skriver du <command>which sox</command> p&aring; kommandoraden. 
+			Om du vill till&auml;mpa en &auml;ndring p&aring; f&auml;ltet klickar du p&aring; <guibutton>Verkst&auml;ll</guibutton>.</para>
+			<para>Standard: operativsystemsberoende.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+
+<term><guilabel>Tempor&auml;r mapp</guilabel> </term> 
+			<listitem>
+			<para>Anv&auml;nd det h&auml;r f&auml;ltet f&ouml;r att ange i vilken mapp du vill spara ljudfiler tillf&auml;lligt n&auml;r <application>&app;</application> 
+			spelar in filerna. Om du vill till&auml;mpa en &auml;ndring p&aring; f&auml;ltet klickar du p&aring; <guibutton>Verkst&auml;ll</guibutton>.</para>
+			<para>Standard: operativsystemsberoende.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-sound">
+	<title>Ljud</title>
+	<para>De inst&auml;llningar du anger p&aring; den h&auml;r fliken g&auml;ller bara f&ouml;r nya ljudfiler som du skapar.</para>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Ljudformat</guilabel> </term> 
+			<listitem>
+			<para>Markera n&aring;got av f&ouml;ljande alternativ f&ouml;r att avg&ouml;ra antalet bitar per sampling i ljudfilerna:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>8-bitars PCM</guilabel></para>
+				<para>Markera det h&auml;r alternativet om du vill spara ljudfiler med 8-bitars PCM (pulse code modulation). </para>
+				</listitem>
+				<listitem>
+				<para><guilabel>16-bitars PCM</guilabel></para>
+				<para>Markera det h&auml;r alternativet om du vill spara ljudfiler med 16-bitars PCM (pulse code modulation). </para>
+				</listitem>
+				</itemizedlist>
+			<para>Standard: <guilabel>8-bitars PCM</guilabel>.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Samplingsfrekvens</guilabel> </term> 
+			<listitem>
+			<para>Anv&auml;nd det h&auml;r f&auml;ltet om du vill ange antalet samplingar per sekund.</para>
+			<para>Standard: 11025.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Mono/Stereo</guilabel> </term> 
+			<listitem>
+			<para>Markera n&aring;got av f&ouml;ljande alternativ f&ouml;r att avg&ouml;ra om ljudfilen ska sparas i mono- eller stereoformat:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Mono</guilabel></para>
+				<para>Markera det h&auml;r alternativet om du vill spara ljudfiler i monoformat. </para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Stereo</guilabel></para>
+				<para>Markera det h&auml;r alternativet om du vill spara ljudfiler i stereoformat. Det h&auml;r formatet
+				ger st&ouml;rre ljudfiler.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Standard: <guilabel>Stereo</guilabel>.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>		
+	
+
+  </sect1>
+
+</article>

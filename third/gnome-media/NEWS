@@ -1,3 +1,75 @@
+This is gnome-media 2.7.92
+
+Changes since 2.7.1:
+
+	* GStreamer-based (CDDB-capable) backend to GNOME CD
+	* Added "nb" and "bs" translations
+	* Added ALSA switches (simple boolean on/off) to Volume Control
+	* Made the whole release compile properly using -Wall -Werror
+
+Bugs fixed since 2.7.1:
+
+	* 51152: CD Player does not support CDDA
+	* 123937: Progress bar does not move while recording
+	* 140082: Too many "name-changed" events for Play/Pause button
+	* 142828: Bad preprocessor directive in gnet-private.h
+	* 143287: [Solaris], Need to set the audio port
+	* 143327: No ATK name for Available Themes selection widget
+	* 144341: gnome-cd chrashes/hangs when opening/closing tray
+	* 144536: missing gst-cdparanoia-cdrom.c and gst-cdparanoia-cdrom.h
+	* 148353: gnome-cd crashes when pressing ejecting a cd while it is ...
+	* 151305: missing return value in seek_to()
+	* 151306: Cleanup of issues reported by sparse/gcc
+
+This is gnome-media 2.7.1
+
+Changes since 2.6.1:
+
+      * Swapped About and Help (Jorn Baayen)
+      * Fixed cddb-slave2 documentation link (Kaushal Kumar)
+      * Added "tk" translation
+      * Fixed compiler warnings in CDDBSlave2
+      * Lots of functionality updates in CDDBSlave2
+      * Fixed spelling errors in schemas
+
+Bugs fixed since 2.6.1:
+
+      * 117695: Don't flood syslog with failed CDROMVOLREAD ioctls (Thomas)
+      * 130233: Internationalize profile names and descriptions (Thomas)
+      * 134339: Change dir to path in source (Thomas)
+      * 134340: Use ngettext (Thomas)
+      * 134341: Whitespace before punctuation in gnome-media message (Thomas)
+      * 137139: Change terminal to profile (Thomas)
+      * 141985: Check .cddb directory for entries (Thomas)
+      * 114015: Fix window title for gnome-cd on unknown discs (Thomas)
+      * 135139: Add NetBSD support (Julio M. Merino Vidal)
+      * 130651: Change name and comment in .desktop file (Thomas)
+      * 140344: use gnome-common (Christian Neumair)
+      * 141406: use a colorspace convertor from gst-plugins
+      * 137198: install gstreamer-properties correctly (Julio Vidal)
+      * 125409: redraw display text when style changes (Leena Gunda)
+      * 137464: use gtk_icon_theme in recorder (Fernando Herrera)
+      * 141985: also check .cddb entries (Thomas)
+      * 114015: Fix display of unknown entries (Thomas)
+      * 124924: Initialize pointers (Thomas)
+      * 119596: Differentiate between audio and data cd (Balamurali Viswanathan)
+      * 139555: Make CD playback stop when application exits (Richard Kinder)
+
+Changes since 2.6.0:
+
+      * Added Gujarati translation (Guntupalli Karunakar)
+      * Fixed mixer icons for ALSA (Ronald Bultje)
+
+Bugs fixed since 2.6.0:
+
+      * 133217: Underquoted definitions in acinclude.m4
+      * 134094: Small g_print errors
+
+
+Everything below this line is from pre-GNOME 2 and should move to OLDS.
+
+--------------------------------------------------------------------------
+
 New in 1.2.3:
 
 	* Only configure ALSA when the user asks for it

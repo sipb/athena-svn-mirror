@@ -1,0 +1,435 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "CD Player">
+]>
+
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="sv">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>Manual f&ouml;r &app;, version&nbsp;&manrevision;</title>
+
+    <copyright> 
+      <year>2003</year> 
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+    <publisher> 
+      <publishername> Dokumentationsprojekt f&ouml;r GNOME </publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup>
+      <author> 
+	<firstname>Suns</firstname> 
+	<surname>GNOME-dokumentationsteam</surname> 
+	<affiliation> 
+	  <orgname>Dokumentationsprojekt f&ouml;r GNOME</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+ 
+    <revhistory>
+      <revision> 
+	<revnumber>Manual f&ouml;r &app;, version &manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Suns GNOME-dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Dokumentationsprojekt f&ouml;r GNOME</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Manual f&ouml;r CD-spelaren, version 2.1</revnumber> 
+	<date>juli 2002</date> 
+	<revdescription> 
+	  <para role="author">Suns GNOME-dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Dokumentationsprojekt f&ouml;r GNOME</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Manual f&ouml;r CD-spelaren, version 2.0</revnumber> 
+	<date>maj 2002</date> 
+	<revdescription> 
+	  <para role="author">Suns GNOME-dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Dokumentationsprojekt f&ouml;r GNOME</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo> I den h&auml;r manualen beskrivs version &appversion; av &app;.
+    </releaseinfo>
+    <legalnotice> 
+      <title>Feedback</title>
+      <para>Om du vill rapportera ett fel eller ge f&ouml;rslag om programmet &app;
+		  eller den h&auml;r manualen f&ouml;ljer du instruktionerna p&aring;
+		  <ulink url="ghelp:gnome-feedback" type="help">GNOME:s feedbacksida</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm> 
+    <primary>CD-spelaren</primary> 
+  </indexterm> 
+
+
+<sect1 id="gtcd-introduction">
+<title>Introduktion</title>
+<para>Med programmet <application>&app;</application> kan du spela
+CD-skivor p&aring; datorn. Du kan anv&auml;nda <application>CD-spelaren</application>
+f&ouml;r att utf&ouml;ra f&ouml;ljande aktiviteter:</para>
+<itemizedlist>
+<listitem><para>Spela, pausa, stoppa eller mata ut en CD-skiva.</para></listitem>
+<listitem><para>G&aring; mellan olika sp&aring;r p&aring; CD-skivan.</para></listitem>
+<listitem><para>Justera volymen p&aring; CD-spelaren.</para></listitem>
+<listitem><para>Redigera information om olika sp&aring;r.</para></listitem>
+</itemizedlist>
+</sect1>
+<!-- =========== Getting Started ============================== -->
+<sect1 id="gtcd-getting-started"> 
+<title>Komma ig&aring;ng</title>
+
+<sect2 id="gtcd-to-start">
+<title>S&aring; h&auml;r startar du CD-spelaren</title>
+<para>Du kan starta <application>&app;</application> p&aring; f&ouml;ljande s&auml;tt:</para>
+<variablelist>
+<varlistentry>
+<term><guimenu>Program</guimenu>-menyn</term>
+<listitem>
+<para>V&auml;lj 
+<menuchoice>
+<guisubmenu>Ljud &amp; Video </guisubmenu>
+<guimenuitem> &app;</guimenuitem>
+</menuchoice>. </para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Kommandoraden</term>
+<listitem>
+<para>Skriv <command>gnome-cd</command> och tryck sedan p&aring; <keycap>Retur</keycap>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gtcd-when-start">
+<title>N&auml;r du startar CD-spelaren</title>
+<para>N&auml;r du startar <application>&app;</application> visas f&ouml;ljande f&ouml;nster.</para>
+<!-- ==== Figure ==== -->
+      <figure id="cdplayer_start_window">
+	<title>&app;-f&ouml;nstret</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata  fileref="figures/cdplayer_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase>Visar huvudf&ouml;nstret i CD-spelaren.</phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+<para><application>&app;</application>-f&ouml;nstret inneh&aring;ller f&ouml;ljande:</para>
+<itemizedlist>
+<listitem><para>Med knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen &Ouml;ppna sp&aring;rredigerare.</phrase></textobject>
+</inlinemediaobject> kan du &ouml;ppna dialogrutan <guilabel>Sp&aring;rredigerare</guilabel>. </para></listitem>
+<listitem><para>Med knappen <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Inst&auml;llningar.</phrase></textobject>
+</inlinemediaobject> kan du &ouml;ppna dialogrutan<guilabel>Inst&auml;llningar</guilabel>. </para></listitem>
+<listitem><para>Ett visningsomr&aring;de som visar detaljer om den CD-skiva som du spelar. </para></listitem>
+<listitem><para>Ett skjutreglage som du kan anv&auml;nda f&ouml;r att justera volymen. </para></listitem>
+<listitem><para>En nedrullningsbar lista som du kan anv&auml;nda f&ouml;r att visa namnen p&aring; CD-skivans sp&aring;r och f&ouml;r att g&aring; till ett sp&aring;r. </para></listitem>
+<listitem><para>Ett knappomr&aring;de som du kan anv&auml;nda f&ouml;r att spela olika sp&aring;r p&aring; CD-skivan. </para></listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+
+<!-- ============= Usage ============================= -->
+<sect1 id="gtcd-usage">
+<title>Anv&auml;ndning</title>
+
+<!--=========== To Play a CD ============================= -->
+<sect2 id="gtcd_play">
+<title>S&aring; h&auml;r spelar du en CD-skiva</title>
+<para>Om du vill spela en CD-skiva matar du in CD-skivan i datorns CD-enhet och trycker sedan p&aring; knappen
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Spela.</phrase></textobject>
+</inlinemediaobject>. </para>
+<para>Programmet visar f&ouml;ljande information i visningsomr&aring;det:
+</para>
+<itemizedlist>
+<listitem><para>Spelad tid f&ouml;r aktuellt sp&aring;r.</para></listitem>
+<listitem><para>Namnet p&aring; artisten.</para></listitem>
+<listitem><para>CD-skivans titel.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_pause">
+<title>S&aring; h&auml;r pausar du en CD-skiva</title>
+<para>Om du vill pausa en CD-skiva som spelas klickar du p&aring; knappen
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/pause_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Paus.</phrase></textobject>
+</inlinemediaobject>. Om du vill spela CD-skivan igen klickar du &aring;terigen p&aring; knappen <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Spela.</phrase></textobject>
+</inlinemediaobject>. </para>
+</sect2>
+
+<sect2 id="gtcd_movetracks">
+<title>S&aring; h&auml;r f&ouml;rflyttar du dig mellan olika sp&aring;r</title>
+<para>Om du vill spela olika sp&aring;r p&aring; CD-skivan utf&ouml;r du f&ouml;ljande:
+</para>
+<itemizedlist>
+<listitem><para>Om du vill f&ouml;rflytta dig mellan olika sp&aring;r klickar du p&aring; knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/next_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen N&auml;sta sp&aring;r.</phrase></textobject>
+</inlinemediaobject>. </para></listitem>
+<listitem><para>Om du vill g&aring; till f&ouml;reg&aring;ende sp&aring;r p&aring; CD-skivan klickar du p&aring; knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/previous_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen F&ouml;reg&aring;ende sp&aring;r.</phrase></textobject>
+</inlinemediaobject>. </para></listitem>
+<listitem><para>Om du vill visa en lista med CD-sp&aring;r anv&auml;nder du den nedrullningsbara listrutan under visningsomr&aring;det. 
+Om du vill g&aring; till ett sp&aring;r i listan markerar du &ouml;nskat sp&aring;r i listan.</para></listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_forward">
+<title>S&aring; h&auml;r snabbspolar du</title>
+<para>Om du vill snabbspola klickar du p&aring; knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/forward_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Snabbspola.</phrase></textobject>
+</inlinemediaobject>.</para>
+</sect2>
+
+<sect2 id="gtcd_rewind">
+<title>S&aring; h&auml;r spolar du tillbaka</title>
+<para>Om du vill spola tillbaka klickar du p&aring; knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/rewind_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Spola tillbaka.</phrase></textobject>
+</inlinemediaobject>.</para>
+</sect2>
+
+<sect2 id="gtcd_stop">
+<title>S&aring; h&auml;r stoppar du en CD-skiva</title>
+<para>Om du vill stoppa en CD-skiva klickar du p&aring; knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/stop_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Stopp.</phrase></textobject>
+</inlinemediaobject>.</para>
+</sect2>
+
+<sect2 id="gtcd_adjust_vol">
+<title>S&aring; h&auml;r &auml;ndrar du volymen</title>
+<para>Om du vill &auml;ndra volymen p&aring; CD-spelaren flyttar du volymreglaget till &ouml;nskad volym. Volymreglaget finns till h&ouml;ger i visningsomr&aring;det i programf&ouml;nstret. Flytta reglaget upp&aring;t f&ouml;r att &ouml;ka volymen.
+Flytta reglaget ned&aring;t f&ouml;r att minska volymen.</para>
+</sect2>
+
+<sect2 id="gtcd_edit_info">
+<title>S&aring; h&auml;r redigerar du CD-information</title>
+<para>Om du vill redigera CD-information f&ouml;ljer du stegen nedan:</para>
+<orderedlist>
+<listitem><para>Om du vill &ouml;ppna dialogrutan <guilabel>Sp&aring;rredigerare</guilabel> klickar du p&aring; knappen <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>. Dialogrutan <guilabel>Sp&aring;rredigerare</guilabel> visas, 
+se &auml;ven <xref linkend="fig-cd-track-editor"/>. </para></listitem>
+<listitem><para>Om du vill &auml;ndra artistens namn &auml;ndrar du i textrutan  <guilabel>Artist</guilabel>.</para></listitem>
+<listitem><para>Om du vill &auml;ndra CD-skivans titel &auml;ndrar du i textrutan  <guilabel>Skivtitel</guilabel>.</para></listitem>
+<listitem><para>Om du vill l&auml;gga till kommentarer om CD-skivan, musikgenre och produktions&aring;r klickar du p&aring; pilen bredvid 
+<guilabel>Visa avancerade skivalternativ</guilabel>.</para></listitem>
+<listitem><para>Om du vill redigera en titel p&aring; ett sp&aring;r dubbelklickar du p&aring; sp&aring;ret i kolumnen <guilabel>Titel</guilabel> i sp&aring;rtabellen och anger sedan en ny titel.</para></listitem>
+<listitem><para>Om du vill l&auml;gga till ytterligare kommentarer om ett sp&aring;r markerar du sp&aring;ret i tabellen och klickar sedan p&aring; pilen bredvid 
+<guilabel>Visa avancerade skivalternativ</guilabel>.</para></listitem>
+<listitem><para>Ange ytterligare information om sp&aring;r i textrutan <guilabel>Extra sp&aring;rdata</guilabel>.</para></listitem>
+<listitem><para>Om du vill spara &auml;ndringarna lokalt p&aring; din dator klickar du p&aring; <guibutton>Spara</guibutton>.</para></listitem>
+</orderedlist>
+<!-- ==== Figure ==== -->
+      <figure id="fig-cd-track-editor"> 
+	<title>Dialogrutan Sp&aring;rredigerare</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata 		fileref="figures/cdplayer_trackeditor_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase></phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+</sect2>
+
+<sect2 id="gtcd_eject">
+<title>S&aring; h&auml;r matar du ut en CD-skiva</title>
+<para>Om du vill mata ut en CD-skiva klickar du p&aring; knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/eject_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Mata ut CD.</phrase></textobject>
+</inlinemediaobject>. Den h&auml;r &aring;tg&auml;rden stoppar CD-skivan om den fortfarande spelas och &ouml;ppnar CD-luckan.</para>
+</sect2>
+
+</sect1>
+
+<!-- ================= Preferences =================== -->
+<sect1 id="gtcd-prefs">
+<title>Inst&auml;llningar</title>
+<para>Om du vill konfigurera <application>&app;</application> klickar du p&aring; knappen 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Bild av knappen Inst&auml;llningar.</phrase></textobject>
+</inlinemediaobject>. </para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>CD-spelarenheten</guilabel> </term>
+<listitem>
+<para>Anv&auml;nd den h&auml;r textrutan f&ouml;r att ange namnet p&aring; CD-rom-enheten. Klicka p&aring; <guibutton>Verkst&auml;ll &auml;ndring</guibutton> f&ouml;r att spara en &auml;ndring i den h&auml;r inst&auml;llningen.</para>
+<para>Standard: beror p&aring; ditt operativsystem. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>N&auml;r GNOME-CD-spelaren startas</guilabel> </term>
+<listitem>
+<para>Markera en av f&ouml;ljande alternativknappar f&ouml;r att ange vilken &aring;tg&auml;rd <application>CD-spelaren</application> ska utf&ouml;ra n&auml;r du startar programmet:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>G&ouml;r inget</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>B&ouml;rja spela CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Sluta spela CD</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Standard: <guilabel>G&ouml;r inget</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>D&aring; Gnome-CD avslutas</guilabel> </term>
+<listitem>
+<para>Markera en av f&ouml;ljande alternativknappar f&ouml;r att ange vilken &aring;tg&auml;rd <application>CD-spelaren</application> ska utf&ouml;ra n&auml;r du avslutar programmet:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>G&ouml;r inget</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Sluta spela CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>F&ouml;rs&ouml;k att &ouml;ppna CD-luckan</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Standard: <guilabel>G&ouml;r inget</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Temanamn</guilabel> </term>
+<listitem>
+<para>Anv&auml;nd den h&auml;r listrutan om du vill ange ett visningstema f&ouml;r <application>&app;</application>. Tillg&auml;ngliga teman &auml;r f&ouml;ljande:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>lcd</guilabel> </para>
+<para>Har standardknappar och gr&aring; bakgrund i visningsomr&aring;det.</para>
+</listitem>
+<listitem>
+<para><guilabel>media</guilabel> </para>
+<para>Har &auml;ndrade knappar och r&ouml;d bakgrund i visningsomr&aring;det.</para>
+</listitem>
+<listitem>
+<para><guilabel>r&ouml;d lcd</guilabel> </para>
+<para>Har standardknappar och r&ouml;d bakgrund i visningsomr&aring;det.</para>
+</listitem>
+</itemizedlist>
+<para>Standard: <guilabel>lcd</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect1>
+
+</article>

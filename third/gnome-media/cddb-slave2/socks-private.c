@@ -12,7 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -29,7 +29,7 @@ gnet_private_negotiate_socks_server (GTcpSocket *s, const GInetAddr *dst)
   int ver, ret;
   const char *verc;
 
-  if ((verc = g_getenv("SOCKS_VERSION"))) 
+  if ((verc = g_getenv("SOCKS_VERSION")))
     ver = atoi(verc);
   else
     ver = GNET_DEFAULT_SOCKS_VERSION;
@@ -57,7 +57,7 @@ gnet_private_negotiate_socks5 (GIOChannel *ioc, const GInetAddr *dst)
 
   s5r[0] = 5;
   s5r[1] = 1;	/* XXX no authentication yet */
-  s5r[2] = 0;	
+  s5r[2] = 0;
 
   if (gnet_io_channel_writen(ioc, s5r, 3, &len) != G_IO_ERROR_NONE)
     return -1;
@@ -65,7 +65,7 @@ gnet_private_negotiate_socks5 (GIOChannel *ioc, const GInetAddr *dst)
     return -1;
   if ((s5r[0] != 5) || (s5r[1] != 0))
     return -1;
-	
+
   sa_in = (struct sockaddr_in*)&dst->sa;
 
   /* fill in SOCKS5 request */
@@ -73,7 +73,7 @@ gnet_private_negotiate_socks5 (GIOChannel *ioc, const GInetAddr *dst)
   s5h.cd    = 1;
   s5h.rsv   = 0;
   s5h.atyp  = 1;
-  s5h.dip   = (long)sa_in->sin_addr.s_addr; 
+  s5h.dip   = (long)sa_in->sin_addr.s_addr;
   s5h.dport = (short)sa_in->sin_port;
 
   if (gnet_io_channel_writen(ioc, (gchar*)&s5h, 10, &len) != G_IO_ERROR_NONE)

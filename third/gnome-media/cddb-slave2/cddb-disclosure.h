@@ -53,6 +53,9 @@ struct _CDDBDisclosureClass {
 GType cddb_disclosure_get_type (void);
 GtkWidget *cddb_disclosure_new (const char *shown,
 				const char *hidden);
+void cddb_disclosure_set_container (CDDBDisclosure *disclosure,
+                                    GtkWidget *container);
+
 
 #ifdef __cplusplus
 }

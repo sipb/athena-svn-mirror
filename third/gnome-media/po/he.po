@@ -8,133 +8,168 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media.HEAD.he\n"
-"POT-Creation-Date: 2003-01-06 05:59+0100\n"
-"PO-Revision-Date: 2003-01-06 20:24+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 14:28+0200\n"
+"PO-Revision-Date: 2003-07-26 12:09+0300\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0\n"
+"X-Generator: KBabel 1.0.1\n"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:1
 msgid "Address of the server to contact for CD queries"
 msgstr "כתובת השרת להתחברות לשאילתות תקליטורים"
 
-#: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2
+msgid "Information to send to server"
+msgstr "מידע לשליחה לשרת"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3 cddb-slave2/cddb-slave-capplet.c:832
 msgid "Port"
 msgstr "פתחה"
 
-#: cddb-slave2/CDDB-Slave2.schemas.in.h:3
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
 msgid "Server name"
 msgstr "שם השרת"
 
-#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "Server type"
+msgstr "סוג השרת"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
 msgid "The hostname that will be sent with all queries"
 msgstr "שם השרת אליו ישלחו כל השאילתות"
 
-#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
 msgid "The port that the server is running the database on"
 msgstr "הפתחה שעליה השרת מריץ את מסד הנתונים"
 
-#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid ""
+"The type of the server to contact for CD queries. Possible values are 0 "
+"(FreeDB round robin server), 1 (other freedb server) and 2 (other server)."
+msgstr ""
+"סוג השרת ליצירת קשר לשאילתות תקליטור. ערכים אפשריים הם 0 (שרת FreeDB round "
+"robin), 1 (שרת freedb אחר) ו 2 (שרת אחר)."
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:9
 msgid "The username"
 msgstr "שם המשתמש"
 
-#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:10
 msgid "The username that will be sent with all queries"
 msgstr "שם המשתמש שישלח עם כל השאילתות"
 
-#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:11
+msgid ""
+"This key specifies which user information will be sent to the server to "
+"contact for CD queries. Possible values are 0 (no information), 1 (real "
+"information) and 3 (other information)."
+msgstr ""
+"מפתח זה מציין איזה מידע משתמש ישלח לשרת ליצירת קשר לשאילתות תקליטור. ערכים "
+"אפשריים הם 0 (אף מידע), 1 (מידע אמיתי) ו 3 (מידע אחר)."
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:12
 msgid "Your hostname"
 msgstr "שם המארח שלך"
 
-#: cddb-slave2/cddb-disclosure.c:245
+#: cddb-slave2/cddb-disclosure.c:241
 msgid "Expander Size"
 msgstr "גודל המרחיב"
 
-#: cddb-slave2/cddb-disclosure.c:246
+#: cddb-slave2/cddb-disclosure.c:242
 msgid "Size of the expander arrow"
 msgstr "גודלו של חץ ההרחבה"
 
+#: cddb-slave2/cddb-slave-capplet.c:115
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"ארעה שגיאה בהצגת העזרה: \n"
+"%s"
+
 #. Log on info
-#: cddb-slave2/cddb-slave-capplet.c:648
-msgid "Log on information"
+#: cddb-slave2/cddb-slave-capplet.c:696
+msgid "Login Information"
 msgstr "מידע התחברות"
 
-#: cddb-slave2/cddb-slave-capplet.c:657
-msgid "Send _no info"
+#: cddb-slave2/cddb-slave-capplet.c:702
+msgid "Sen_d no information"
 msgstr "_אל תשלח מידע"
 
-#: cddb-slave2/cddb-slave-capplet.c:666
-msgid "Send real _info"
+#: cddb-slave2/cddb-slave-capplet.c:711
+msgid "Send real _information"
 msgstr "שלח _מידע אמיתי"
 
-#: cddb-slave2/cddb-slave-capplet.c:675
-msgid "Send _other info..."
-msgstr "שלח מידע א_חר..."
+#: cddb-slave2/cddb-slave-capplet.c:720
+msgid "Send _other information:"
+msgstr "שלח מידע א_חר:"
 
-#: cddb-slave2/cddb-slave-capplet.c:692
-msgid "N_ame:"
+#: cddb-slave2/cddb-slave-capplet.c:745
+msgid "_Name:"
 msgstr "_שם:"
 
-#: cddb-slave2/cddb-slave-capplet.c:711
-msgid "_Hostname:"
-msgstr "מא_רח:"
+#: cddb-slave2/cddb-slave-capplet.c:765
+msgid "Hostna_me:"
+msgstr "שם מא_רח:"
 
 #. Server info
-#: cddb-slave2/cddb-slave-capplet.c:733 cddb-slave2/cddb-slave-capplet.c:773
+#: cddb-slave2/cddb-slave-capplet.c:785 cddb-slave2/cddb-slave-capplet.c:829
 msgid "Server"
 msgstr "שרת"
 
-#: cddb-slave2/cddb-slave-capplet.c:741
+#: cddb-slave2/cddb-slave-capplet.c:791
 msgid "FreeDB _round robin server"
 msgstr "שרת FreeDB _round robin"
 
-#: cddb-slave2/cddb-slave-capplet.c:747
-msgid "Other _FreeDB server..."
-msgstr "שרת _FreeDB אחר..."
+#: cddb-slave2/cddb-slave-capplet.c:797
+msgid "Other _FreeDB server:"
+msgstr "שרת _FreeDB אחר:"
 
-#: cddb-slave2/cddb-slave-capplet.c:779
+#: cddb-slave2/cddb-slave-capplet.c:835
 msgid "Location"
 msgstr "מיקום"
 
-#: cddb-slave2/cddb-slave-capplet.c:785
-msgid "Update server list"
-msgstr "עדכן רשימת שרתים"
+#: cddb-slave2/cddb-slave-capplet.c:864
+msgid "_Update Server List"
+msgstr "_עדכן רשימת שרתים"
 
-#: cddb-slave2/cddb-slave-capplet.c:792
-msgid "Other _server..."
-msgstr "_שרת אחר..."
+#: cddb-slave2/cddb-slave-capplet.c:871
+msgid "Other _server:"
+msgstr "_שרת אחר:"
 
-#: cddb-slave2/cddb-slave-capplet.c:804
-msgid "Hostname:"
-msgstr "מארח:"
+#: cddb-slave2/cddb-slave-capplet.c:891
+msgid "Hos_tname:"
+msgstr "שם מ_ארח:"
 
-#: cddb-slave2/cddb-slave-capplet.c:816
+#: cddb-slave2/cddb-slave-capplet.c:908
 msgid "_Port:"
 msgstr "_יציאה:"
 
-#: cddb-slave2/cddb-slave-capplet.c:866
+#: cddb-slave2/cddb-slave-capplet.c:972
 msgid "CD Database Preferences"
 msgstr "העדפות מסד נתוני תקליטור"
 
-#: cddb-slave2/cddb-slave.c:213
+#: cddb-slave2/cddb-slave.c:221
 msgid "Unknown / Unknown"
 msgstr "לא ידוע / לא ידוע"
 
 #. Attempts to get length ran out.
-#: cddb-slave2/cddb-slave.c:219 grecord/src/gsr-window.c:760
-#: grecord/src/gsr-window.c:769 grecord/src/gsr-window.c:778
-#: grecord/src/gsr-window.c:788 grecord/src/gsr-window.c:1108
+#: cddb-slave2/cddb-slave.c:227 grecord/src/gsr-window.c:697
+#: grecord/src/gsr-window.c:706 grecord/src/gsr-window.c:715
+#: grecord/src/gsr-window.c:725 grecord/src/gsr-window.c:1032
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: cddb-slave2/cddb-slave.c:441
+#: cddb-slave2/cddb-slave.c:272
 msgid "Multiple matches..."
 msgstr "מספר התאמות..."
 
-#: cddb-slave2/cddb-slave.c:446
+#: cddb-slave2/cddb-slave.c:277
 msgid ""
 "There were multiple matches found in the database.\n"
 "Below is a list of possible matches, please choose the best match"
@@ -142,1208 +177,828 @@ msgstr ""
 "נמצאו מספר התאמות במסד הנתונים.\n"
 "למטה מופיעה הרשימה של ההתאמות האפשריות, אנא בחר את ההתאמה הטובה ביותר"
 
-#: cddb-slave2/cddb-slave.c:457
+#: cddb-slave2/cddb-slave.c:288
 msgid "Category"
 msgstr "קטגוריה"
 
-#: cddb-slave2/cddb-slave.c:461
+#: cddb-slave2/cddb-slave.c:292
 msgid "Disc ID"
 msgstr "זיהוי דיסק"
 
-#: cddb-slave2/cddb-slave.c:465
+#: cddb-slave2/cddb-slave.c:296
 msgid "Artist and Title"
 msgstr "אמן וכותרת"
 
-#: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
-#: gnome-cd/gnome-cd.c:130
+#: cddb-slave2/cddb-slave.c:1351 cddb-slave2/cddb-slave.c:1353
+#: gnome-cd/gnome-cd.c:176
 msgid "Unknown track"
 msgstr "מסילה לא ידועה"
 
 #: cddb-slave2/cddb-slave.desktop.in.h:1
-msgid "CD Database"
+#, fuzzy
+msgid "CD Database Server"
 msgstr "מסד נתוני תקליטורים"
 
 #: cddb-slave2/cddb-slave.desktop.in.h:2
-msgid "Modify your CD database preferences"
+#, fuzzy
+msgid "Modify your CD database server preferences"
 msgstr "ערוך את העדפות מסד נתוני התקליטורים של"
 
-#: cddb-slave2/cddb-track-editor.c:78
+#: cddb-slave2/cddb-track-editor.c:79
 msgid "Blues"
 msgstr "בלוז"
 
-#: cddb-slave2/cddb-track-editor.c:79
+#: cddb-slave2/cddb-track-editor.c:80
 msgid "Classical Rock"
 msgstr "רוק קלאסי"
 
-#: cddb-slave2/cddb-track-editor.c:80
+#: cddb-slave2/cddb-track-editor.c:81
 msgid "Country"
 msgstr "קאנטרי"
 
-#: cddb-slave2/cddb-track-editor.c:81
+#: cddb-slave2/cddb-track-editor.c:82
 msgid "Dance"
 msgstr "דאנס"
 
-#: cddb-slave2/cddb-track-editor.c:82
+#: cddb-slave2/cddb-track-editor.c:83
 msgid "Disco"
 msgstr "דיסקו"
 
-#: cddb-slave2/cddb-track-editor.c:83
+#: cddb-slave2/cddb-track-editor.c:84
 msgid "Funk"
 msgstr "Fאנק"
 
-#: cddb-slave2/cddb-track-editor.c:84
-msgid "Grunge"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:85
+msgid "Grunge"
+msgstr "גראנג'"
+
+#: cddb-slave2/cddb-track-editor.c:86
 msgid "Hip-Hop"
 msgstr "היפ-הופ"
 
-#: cddb-slave2/cddb-track-editor.c:86
+#: cddb-slave2/cddb-track-editor.c:87
 msgid "Jazz"
 msgstr "ג'אז"
 
-#: cddb-slave2/cddb-track-editor.c:87
+#: cddb-slave2/cddb-track-editor.c:88
 msgid "Metal"
 msgstr "מטאל"
 
-#: cddb-slave2/cddb-track-editor.c:88
+#: cddb-slave2/cddb-track-editor.c:89
 msgid "New Age"
 msgstr "ניו-אייג'"
 
-#: cddb-slave2/cddb-track-editor.c:89
+#: cddb-slave2/cddb-track-editor.c:90
 msgid "Oldies"
 msgstr "אולדייז"
 
-#: cddb-slave2/cddb-track-editor.c:90
+#: cddb-slave2/cddb-track-editor.c:91
 msgid "Other"
 msgstr "אחר"
 
-#: cddb-slave2/cddb-track-editor.c:91
+#: cddb-slave2/cddb-track-editor.c:92
 msgid "Pop"
 msgstr "פופ"
 
-#: cddb-slave2/cddb-track-editor.c:92
+#: cddb-slave2/cddb-track-editor.c:93
 msgid "R&B"
 msgstr "R&B"
 
-#: cddb-slave2/cddb-track-editor.c:93
+#: cddb-slave2/cddb-track-editor.c:94
 msgid "Rap"
 msgstr "ראפ"
 
-#: cddb-slave2/cddb-track-editor.c:94
+#: cddb-slave2/cddb-track-editor.c:95
 msgid "Reggae"
 msgstr "ראגיי"
 
-#: cddb-slave2/cddb-track-editor.c:95
+#: cddb-slave2/cddb-track-editor.c:96
 msgid "Rock"
 msgstr "רוק"
 
-#: cddb-slave2/cddb-track-editor.c:96
+#: cddb-slave2/cddb-track-editor.c:97
 msgid "Techno"
 msgstr "טכנו"
 
-#: cddb-slave2/cddb-track-editor.c:97
+#: cddb-slave2/cddb-track-editor.c:98
 msgid "Industrial"
 msgstr "תעשייתי"
 
-#: cddb-slave2/cddb-track-editor.c:98
+#: cddb-slave2/cddb-track-editor.c:99
 msgid "Alternative"
 msgstr "אלטרנטיבי"
 
-#: cddb-slave2/cddb-track-editor.c:99
-msgid "Ska"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:100
+msgid "Ska"
+msgstr "סקה"
+
+#: cddb-slave2/cddb-track-editor.c:101
 msgid "Death Metal"
 msgstr "דת' מטאל"
 
-#: cddb-slave2/cddb-track-editor.c:101
-msgid "Pranks"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:102
+msgid "Pranks"
+msgstr "פראנקס"
+
+#: cddb-slave2/cddb-track-editor.c:103
 msgid "Soundtrack"
 msgstr "פס-קול"
 
-#: cddb-slave2/cddb-track-editor.c:103
+#: cddb-slave2/cddb-track-editor.c:104
 msgid "Euro-Techno"
 msgstr "אירו-טכנו"
 
-#: cddb-slave2/cddb-track-editor.c:104
-msgid "Ambient"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:105
-msgid "Trip-Hop"
-msgstr ""
+msgid "Ambient"
+msgstr "אופף"
 
 #: cddb-slave2/cddb-track-editor.c:106
+msgid "Trip-Hop"
+msgstr "טריפ-הופ"
+
+#: cddb-slave2/cddb-track-editor.c:107
 msgid "Vocal"
 msgstr "וקלי"
 
-#: cddb-slave2/cddb-track-editor.c:107
+#: cddb-slave2/cddb-track-editor.c:108
 msgid "Jazz+Funk"
 msgstr "ג'אז+Fאנק"
 
-#: cddb-slave2/cddb-track-editor.c:108
+#: cddb-slave2/cddb-track-editor.c:109
 msgid "Fusion"
 msgstr "פיוז'ן"
 
-#: cddb-slave2/cddb-track-editor.c:109
+#: cddb-slave2/cddb-track-editor.c:110
 msgid "Trance"
 msgstr "טראנס"
 
-#: cddb-slave2/cddb-track-editor.c:110
+#: cddb-slave2/cddb-track-editor.c:111
 msgid "Classical"
 msgstr "קלאסי"
 
-#: cddb-slave2/cddb-track-editor.c:111
+#: cddb-slave2/cddb-track-editor.c:112
 msgid "Instrumental"
 msgstr "אינסטרומנטלי"
 
-#: cddb-slave2/cddb-track-editor.c:112
+#: cddb-slave2/cddb-track-editor.c:113
 msgid "Acid"
 msgstr "אסיד"
 
-#: cddb-slave2/cddb-track-editor.c:113
+#: cddb-slave2/cddb-track-editor.c:114
 msgid "House"
 msgstr "האוס"
 
-#: cddb-slave2/cddb-track-editor.c:114
+#: cddb-slave2/cddb-track-editor.c:115
 msgid "Game"
 msgstr "משחק"
 
-#: cddb-slave2/cddb-track-editor.c:115
+#: cddb-slave2/cddb-track-editor.c:116
 msgid "Sound Clip"
 msgstr "קטע קול"
 
-#: cddb-slave2/cddb-track-editor.c:116
+#: cddb-slave2/cddb-track-editor.c:117
 msgid "Gospel"
 msgstr "גוספל"
 
-#: cddb-slave2/cddb-track-editor.c:117
+#: cddb-slave2/cddb-track-editor.c:118
 msgid "Noise"
 msgstr "רעש"
 
-#: cddb-slave2/cddb-track-editor.c:118
+#: cddb-slave2/cddb-track-editor.c:119
 msgid "Alt"
 msgstr "אלט"
 
-#. groups
-#. max 24 chars
-#: cddb-slave2/cddb-track-editor.c:119 gmix/device_labels_alsa.h:37
+#: cddb-slave2/cddb-track-editor.c:120
 msgid "Bass"
 msgstr "בס"
 
-#: cddb-slave2/cddb-track-editor.c:120
+#: cddb-slave2/cddb-track-editor.c:121
 msgid "Soul"
 msgstr "נשמה"
 
-#: cddb-slave2/cddb-track-editor.c:121
+#: cddb-slave2/cddb-track-editor.c:122
 msgid "Punk"
 msgstr "Pאנק"
 
-#: cddb-slave2/cddb-track-editor.c:122
+#: cddb-slave2/cddb-track-editor.c:123
 msgid "Space"
 msgstr "חלל"
 
-#: cddb-slave2/cddb-track-editor.c:123
-msgid "Meditative"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:124
+msgid "Meditative"
+msgstr "מהורהר"
+
+#: cddb-slave2/cddb-track-editor.c:125
 msgid "Instrumental Pop"
 msgstr "פופ אינסטרומנטלי"
 
-#: cddb-slave2/cddb-track-editor.c:125
+#: cddb-slave2/cddb-track-editor.c:126
 msgid "Instrumental Rock"
 msgstr "רוק אינסטרומנטלי"
 
-#: cddb-slave2/cddb-track-editor.c:126
+#: cddb-slave2/cddb-track-editor.c:127
 msgid "Ethnic"
 msgstr "אתני"
 
-#: cddb-slave2/cddb-track-editor.c:127
+#: cddb-slave2/cddb-track-editor.c:128
 msgid "Gothic"
 msgstr "גותי"
 
-#: cddb-slave2/cddb-track-editor.c:128
-msgid "Darkwave"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:129
+msgid "Darkwave"
+msgstr "דארק ווייב"
+
+#: cddb-slave2/cddb-track-editor.c:130
 msgid "Techno-Industrial"
 msgstr "טכנו תעשייתי"
 
-#: cddb-slave2/cddb-track-editor.c:130
+#: cddb-slave2/cddb-track-editor.c:131
 msgid "Electronic"
 msgstr "אלקטרוני"
 
-#: cddb-slave2/cddb-track-editor.c:131
+#: cddb-slave2/cddb-track-editor.c:132
 msgid "Pop-Folk"
 msgstr "פופ-פולק"
 
-#: cddb-slave2/cddb-track-editor.c:132
+#: cddb-slave2/cddb-track-editor.c:133
 msgid "Eurodance"
 msgstr "אירו-דאנס"
 
-#: cddb-slave2/cddb-track-editor.c:133
+#: cddb-slave2/cddb-track-editor.c:134
 msgid "Dream"
 msgstr "חלום"
 
-#: cddb-slave2/cddb-track-editor.c:134
+#: cddb-slave2/cddb-track-editor.c:135
 msgid "Southern Rock"
 msgstr "רוק-דרומי"
 
-#: cddb-slave2/cddb-track-editor.c:135
+#: cddb-slave2/cddb-track-editor.c:136
 msgid "Comedy"
 msgstr "קומדיה"
 
-#: cddb-slave2/cddb-track-editor.c:136
+#: cddb-slave2/cddb-track-editor.c:137
 msgid "Cult"
 msgstr "פולחן"
 
-#: cddb-slave2/cddb-track-editor.c:137
+#: cddb-slave2/cddb-track-editor.c:138
 msgid "Gangsta Rap"
 msgstr "גאנגסטראפ"
 
-#: cddb-slave2/cddb-track-editor.c:138
+#: cddb-slave2/cddb-track-editor.c:139
 msgid "Top 40"
 msgstr "40 הגדולים"
 
-#: cddb-slave2/cddb-track-editor.c:139
+#: cddb-slave2/cddb-track-editor.c:140
 msgid "Christian Rap"
 msgstr "ראפ נוצרי"
 
-#: cddb-slave2/cddb-track-editor.c:140
+#: cddb-slave2/cddb-track-editor.c:141
 msgid "Pop/Funk"
 msgstr "פופ/Fאנק"
 
-#: cddb-slave2/cddb-track-editor.c:141
+#: cddb-slave2/cddb-track-editor.c:142
 msgid "Jungle"
 msgstr "ג'ונגל"
 
-#: cddb-slave2/cddb-track-editor.c:142
+#: cddb-slave2/cddb-track-editor.c:143
 msgid "Native American"
 msgstr "אינדיאני"
 
-#: cddb-slave2/cddb-track-editor.c:143
+#: cddb-slave2/cddb-track-editor.c:144
 msgid "Cabaret"
 msgstr "קאברט"
 
-#: cddb-slave2/cddb-track-editor.c:144
+#: cddb-slave2/cddb-track-editor.c:145
 msgid "New Wave"
 msgstr "הגל החדש"
 
-#: cddb-slave2/cddb-track-editor.c:145
+#: cddb-slave2/cddb-track-editor.c:146
 msgid "Psychedelic"
 msgstr "פסיכודלי"
 
-#: cddb-slave2/cddb-track-editor.c:146
-msgid "Rave"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:147
-msgid "Showtunes"
-msgstr ""
+msgid "Rave"
+msgstr "רייב"
 
 #: cddb-slave2/cddb-track-editor.c:148
+msgid "Showtunes"
+msgstr "מנגינות הופעה"
+
+#: cddb-slave2/cddb-track-editor.c:149
 msgid "Trailer"
 msgstr "טריילר"
 
-#: cddb-slave2/cddb-track-editor.c:149
-msgid "Lo-Fi"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:150
+msgid "Lo-Fi"
+msgstr "Lo-Fi"
+
+#: cddb-slave2/cddb-track-editor.c:151
 msgid "Tribal"
 msgstr "שבטי"
 
-#: cddb-slave2/cddb-track-editor.c:151
+#: cddb-slave2/cddb-track-editor.c:152
 msgid "Acid Punk"
 msgstr "אסיד Pאנק"
 
-#: cddb-slave2/cddb-track-editor.c:152
+#: cddb-slave2/cddb-track-editor.c:153
 msgid "Acid Jazz"
 msgstr "אסיד ג'אז"
 
-#: cddb-slave2/cddb-track-editor.c:153
+#: cddb-slave2/cddb-track-editor.c:154
 msgid "Polka"
 msgstr "פולקה"
 
-#: cddb-slave2/cddb-track-editor.c:154
+#: cddb-slave2/cddb-track-editor.c:155
 msgid "Retro"
 msgstr "רטרו"
 
-#: cddb-slave2/cddb-track-editor.c:155
+#: cddb-slave2/cddb-track-editor.c:156
 msgid "Musical"
 msgstr "מוסיקלי"
 
-#: cddb-slave2/cddb-track-editor.c:156
+#: cddb-slave2/cddb-track-editor.c:157
 msgid "Rock & Roll"
 msgstr "רוק אנד רול"
 
-#: cddb-slave2/cddb-track-editor.c:157
+#: cddb-slave2/cddb-track-editor.c:158
 msgid "Hard Rock"
 msgstr "רוק כבד"
 
-#: cddb-slave2/cddb-track-editor.c:158
+#: cddb-slave2/cddb-track-editor.c:159
 msgid "Folk"
 msgstr "עממי"
 
-#: cddb-slave2/cddb-track-editor.c:159
+#: cddb-slave2/cddb-track-editor.c:160
 msgid "Folk/Rock"
 msgstr "רוק/עממי"
 
-#: cddb-slave2/cddb-track-editor.c:160
+#: cddb-slave2/cddb-track-editor.c:161
 msgid "National Folk"
 msgstr "עממי לאומי"
 
-#: cddb-slave2/cddb-track-editor.c:161
+#: cddb-slave2/cddb-track-editor.c:162
 msgid "Swing"
 msgstr "סווינג"
 
-#: cddb-slave2/cddb-track-editor.c:162
+#: cddb-slave2/cddb-track-editor.c:163
 msgid "Fast-Fusion"
 msgstr "פיוז'ן מהיר"
 
-#: cddb-slave2/cddb-track-editor.c:163
+#: cddb-slave2/cddb-track-editor.c:164
 msgid "Bebop"
 msgstr "ביבופ"
 
-#: cddb-slave2/cddb-track-editor.c:164
+#: cddb-slave2/cddb-track-editor.c:165
 msgid "Latin"
 msgstr "לטיני"
 
-#: cddb-slave2/cddb-track-editor.c:165
+#: cddb-slave2/cddb-track-editor.c:166
 msgid "Revival"
 msgstr "תחייה"
 
-#: cddb-slave2/cddb-track-editor.c:166
+#: cddb-slave2/cddb-track-editor.c:167
 msgid "Celtic"
 msgstr "קלטי"
 
-#: cddb-slave2/cddb-track-editor.c:167
-msgid "Bluegrass"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:168
-msgid "Avantgarde"
-msgstr ""
+msgid "Bluegrass"
+msgstr "בלוגראס"
 
 #: cddb-slave2/cddb-track-editor.c:169
+msgid "Avantgarde"
+msgstr "אוואנטגרייד"
+
+#: cddb-slave2/cddb-track-editor.c:170
 msgid "Gothic Rock"
 msgstr "רוק גותי"
 
-#: cddb-slave2/cddb-track-editor.c:170
+#: cddb-slave2/cddb-track-editor.c:171
 msgid "Progressive Rock"
 msgstr "פרוגרסיב רוק"
 
-#: cddb-slave2/cddb-track-editor.c:171
+#: cddb-slave2/cddb-track-editor.c:172
 msgid "Psychedelic Rock"
 msgstr "רוק פסיכודלי"
 
-#: cddb-slave2/cddb-track-editor.c:172
+#: cddb-slave2/cddb-track-editor.c:173
 msgid "Symphonic Rock"
 msgstr "רוק סימפוני"
 
-#: cddb-slave2/cddb-track-editor.c:173
+#: cddb-slave2/cddb-track-editor.c:174
 msgid "Slow Rock"
 msgstr "רוק איטי"
 
-#: cddb-slave2/cddb-track-editor.c:174
-msgid "Big Band"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:175
+msgid "Big Band"
+msgstr "ביג באנד"
+
+#: cddb-slave2/cddb-track-editor.c:176
 msgid "Chorus"
 msgstr "פזמון"
 
-#: cddb-slave2/cddb-track-editor.c:176
+#: cddb-slave2/cddb-track-editor.c:177
 msgid "Easy Listening"
 msgstr "שמיעה-קלה"
 
-#: cddb-slave2/cddb-track-editor.c:177
+#: cddb-slave2/cddb-track-editor.c:178
 msgid "Acoustic"
 msgstr "אקוסטי"
 
-#: cddb-slave2/cddb-track-editor.c:178
+#: cddb-slave2/cddb-track-editor.c:179
 msgid "Humour"
 msgstr "הומוריסטי"
 
-#: cddb-slave2/cddb-track-editor.c:179
+#: cddb-slave2/cddb-track-editor.c:180
 msgid "Speech"
 msgstr "דיבור"
 
-#: cddb-slave2/cddb-track-editor.c:180
+#: cddb-slave2/cddb-track-editor.c:181
 msgid "Chanson"
 msgstr "שנסון"
 
-#: cddb-slave2/cddb-track-editor.c:181
+#: cddb-slave2/cddb-track-editor.c:182
 msgid "Opera"
 msgstr "אופרה"
 
-#: cddb-slave2/cddb-track-editor.c:182
-msgid "Chamber Music"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:183
+msgid "Chamber Music"
+msgstr "מוסיקת חדר"
+
+#: cddb-slave2/cddb-track-editor.c:184
 msgid "Sonata"
 msgstr "סונטה"
 
-#: cddb-slave2/cddb-track-editor.c:184
+#: cddb-slave2/cddb-track-editor.c:185
 msgid "Symphony"
 msgstr "סימפוניה"
 
-#: cddb-slave2/cddb-track-editor.c:185
-msgid "Booty Bass"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:186
+msgid "Booty Bass"
+msgstr "בוטי בס"
+
+#: cddb-slave2/cddb-track-editor.c:187
 msgid "Primus"
 msgstr "פרימוס"
 
-#: cddb-slave2/cddb-track-editor.c:187
-msgid "Porn Groove"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:188
+msgid "Porn Groove"
+msgstr "פורן גרוב"
+
+#: cddb-slave2/cddb-track-editor.c:189
 msgid "Satire"
 msgstr "סאטירה"
 
-#: cddb-slave2/cddb-track-editor.c:189
-msgid "Slow Jam"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:190
+msgid "Slow Jam"
+msgstr "ג'אם איטי"
+
+#: cddb-slave2/cddb-track-editor.c:191
 msgid "Club"
 msgstr "מועדון"
 
-#: cddb-slave2/cddb-track-editor.c:191
+#: cddb-slave2/cddb-track-editor.c:192
 msgid "Tango"
 msgstr "טנגו"
 
-#: cddb-slave2/cddb-track-editor.c:192
+#: cddb-slave2/cddb-track-editor.c:193
 msgid "Samba"
 msgstr "סמבה"
 
-#: cddb-slave2/cddb-track-editor.c:193
+#: cddb-slave2/cddb-track-editor.c:194
 msgid "Folklore"
 msgstr "פולקלור"
 
-#: cddb-slave2/cddb-track-editor.c:194
+#: cddb-slave2/cddb-track-editor.c:195
 msgid "Ballad"
 msgstr "בלדה"
 
-#: cddb-slave2/cddb-track-editor.c:195
-msgid "Power Ballad"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:196
-msgid "Rythmic Soul"
-msgstr ""
+msgid "Power Ballad"
+msgstr "בלדה חזקה"
 
 #: cddb-slave2/cddb-track-editor.c:197
+msgid "Rhythmic Soul"
+msgstr "נשמה קצבית"
+
+#: cddb-slave2/cddb-track-editor.c:198
 msgid "Freestyle"
 msgstr "סגנון חופשי"
 
-#: cddb-slave2/cddb-track-editor.c:198
+#: cddb-slave2/cddb-track-editor.c:199
 msgid "Duet"
 msgstr "דואט"
 
-#: cddb-slave2/cddb-track-editor.c:199
+#: cddb-slave2/cddb-track-editor.c:200
 msgid "Punk Rock"
 msgstr "Pאנק רוק"
 
-#: cddb-slave2/cddb-track-editor.c:200
+#: cddb-slave2/cddb-track-editor.c:201
 msgid "Drum Solo"
 msgstr "סולו תופים"
 
-#: cddb-slave2/cddb-track-editor.c:201
-msgid "A Cappella"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:202
+msgid "A Cappella"
+msgstr "הקפלה"
+
+#: cddb-slave2/cddb-track-editor.c:203
 msgid "Euro-House"
 msgstr "אירו-האוס"
 
-#: cddb-slave2/cddb-track-editor.c:203
+#: cddb-slave2/cddb-track-editor.c:204
 msgid "Dance Hall"
 msgstr "היכל ריקודים"
 
-#: cddb-slave2/cddb-track-editor.c:204
+#: cddb-slave2/cddb-track-editor.c:205
 msgid "Goa"
 msgstr "גואה"
 
-#: cddb-slave2/cddb-track-editor.c:205
+#: cddb-slave2/cddb-track-editor.c:206
 msgid "Drum & Bass"
 msgstr "תופים ובס"
 
-#: cddb-slave2/cddb-track-editor.c:206
+#: cddb-slave2/cddb-track-editor.c:207
 msgid "Club-House"
 msgstr "האוס מועדונים"
 
-#: cddb-slave2/cddb-track-editor.c:207
-msgid "Hardcore"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:208
+msgid "Hardcore"
+msgstr "הארד קור"
+
+#: cddb-slave2/cddb-track-editor.c:209
 msgid "Terror"
 msgstr "טרור"
 
-#: cddb-slave2/cddb-track-editor.c:209
-msgid "Indie"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:210
-msgid "BritPop"
-msgstr ""
+msgid "Indie"
+msgstr "עצמאי"
 
 #: cddb-slave2/cddb-track-editor.c:211
+msgid "BritPop"
+msgstr "בריטפופ"
+
+#: cddb-slave2/cddb-track-editor.c:212
 msgid "Negerpunk"
 msgstr "ניגרפאנק"
 
-#: cddb-slave2/cddb-track-editor.c:212
-msgid "Polsk Punk"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:213
+msgid "Polsk Punk"
+msgstr "פולסק Pאנק"
+
+#: cddb-slave2/cddb-track-editor.c:214
 msgid "Beat"
 msgstr "קצב"
 
-#: cddb-slave2/cddb-track-editor.c:214
+#: cddb-slave2/cddb-track-editor.c:215
 msgid "Christian Gangsta Rap"
 msgstr "גאנגסטראפ נוצרי"
 
-#: cddb-slave2/cddb-track-editor.c:215
+#: cddb-slave2/cddb-track-editor.c:216
 msgid "Heavy Metal"
 msgstr "האבי מטאל"
 
-#: cddb-slave2/cddb-track-editor.c:216
+#: cddb-slave2/cddb-track-editor.c:217
 msgid "Black Metal"
 msgstr "בלאק מטאל"
 
-#: cddb-slave2/cddb-track-editor.c:217
-msgid "Crossover"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:218
+msgid "Crossover"
+msgstr "קרוסאובר"
+
+#: cddb-slave2/cddb-track-editor.c:219
 msgid "Contemporary Christian"
 msgstr "נוצרי מודרני"
 
-#: cddb-slave2/cddb-track-editor.c:219
+#: cddb-slave2/cddb-track-editor.c:220
 msgid "Christian Rock"
 msgstr "רוק נוצרי"
 
-#: cddb-slave2/cddb-track-editor.c:220
+#: cddb-slave2/cddb-track-editor.c:221
 msgid "Merengue"
 msgstr "מרנג"
 
-#: cddb-slave2/cddb-track-editor.c:221
+#: cddb-slave2/cddb-track-editor.c:222
 msgid "Salsa"
 msgstr "סלסה"
 
-#: cddb-slave2/cddb-track-editor.c:222
+#: cddb-slave2/cddb-track-editor.c:223
 msgid "Thrash Metal"
 msgstr "טראש מטאל"
 
-#: cddb-slave2/cddb-track-editor.c:223
+#: cddb-slave2/cddb-track-editor.c:224
 msgid "Anime"
 msgstr "אנימה"
 
-#: cddb-slave2/cddb-track-editor.c:224
-msgid "JPop"
-msgstr ""
-
 #: cddb-slave2/cddb-track-editor.c:225
-msgid "Synthpop"
-msgstr ""
+msgid "JPop"
+msgstr "ג'י פופ"
 
 #: cddb-slave2/cddb-track-editor.c:226
+msgid "Synthpop"
+msgstr "סינת' פופ"
+
+#: cddb-slave2/cddb-track-editor.c:227
 msgid "Nu-Metal"
 msgstr "ניו-מטאל"
 
-#: cddb-slave2/cddb-track-editor.c:227
+#: cddb-slave2/cddb-track-editor.c:228
 msgid "Art Rock"
 msgstr "רוק אומנותי"
 
-#: cddb-slave2/cddb-track-editor.c:525
+#: cddb-slave2/cddb-track-editor.c:532 gnome-cd/callbacks.c:558
+#: gnome-cd/callbacks.c:690 gnome-cd/callbacks.c:701 gnome-cd/display.c:74
+msgid "Unknown Artist"
+msgstr "אמן לא ידוע"
+
+#: cddb-slave2/cddb-track-editor.c:533 gnome-cd/callbacks.c:559
+#: gnome-cd/callbacks.c:693 gnome-cd/callbacks.c:705 gnome-cd/display.c:75
+msgid "Unknown Album"
+msgstr "אלבום לא ידוע"
+
+#: cddb-slave2/cddb-track-editor.c:541
 #, c-format
 msgid "Editing Disc ID: %s"
 msgstr "ערוך זיהוי תקליטור: %s"
 
 #. Info label
-#: cddb-slave2/cddb-track-editor.c:615
+#: cddb-slave2/cddb-track-editor.c:630
 msgid "Editing Disc ID: "
 msgstr "עורך זיהוי תקליטור: "
 
-#: cddb-slave2/cddb-track-editor.c:626
+#: cddb-slave2/cddb-track-editor.c:641
 msgid "_Artist:"
 msgstr "_אמן:"
 
-#: cddb-slave2/cddb-track-editor.c:640
+#: cddb-slave2/cddb-track-editor.c:655
 msgid "Disc _Title:"
 msgstr "_כותרת הדיסק:"
 
-#: cddb-slave2/cddb-track-editor.c:650
+#: cddb-slave2/cddb-track-editor.c:665
 msgid "Show advanced disc options"
 msgstr "הצג אפשרויות דיסק מתקדמות"
 
-#: cddb-slave2/cddb-track-editor.c:651
+#: cddb-slave2/cddb-track-editor.c:666
 msgid "Hide advanced disc options"
 msgstr "הסתר אפשרויות דיסק מתקדמות"
 
 #. Top box: Disc comments. Maybe should be a GtkText?
-#: cddb-slave2/cddb-track-editor.c:664
+#: cddb-slave2/cddb-track-editor.c:678
 msgid "_Disc comments:"
 msgstr "הערות _דיסק:"
 
 #. Genre
-#: cddb-slave2/cddb-track-editor.c:679
+#: cddb-slave2/cddb-track-editor.c:693
 msgid "_Genre:"
 msgstr "_סוגה:"
 
 #. Year
-#: cddb-slave2/cddb-track-editor.c:695
+#: cddb-slave2/cddb-track-editor.c:709
 msgid "_Year:"
 msgstr "_שנה:"
 
-#: cddb-slave2/cddb-track-editor.c:734
+#: cddb-slave2/cddb-track-editor.c:748
 msgid "Title"
 msgstr "כותרת"
 
-#: cddb-slave2/cddb-track-editor.c:741
+#: cddb-slave2/cddb-track-editor.c:755
 msgid "Length"
 msgstr "אורך"
 
 #. More advanced options
-#: cddb-slave2/cddb-track-editor.c:755
+#: cddb-slave2/cddb-track-editor.c:766
 msgid "Show advanced track options"
 msgstr "הצג אפשרויות מסילה מתקדמות"
 
-#: cddb-slave2/cddb-track-editor.c:756
+#: cddb-slave2/cddb-track-editor.c:767
 msgid "Hide advanced track options"
 msgstr "הסתר אפשרויות מסילה מתקדמות"
 
 #. Extra data
-#: cddb-slave2/cddb-track-editor.c:764
+#: cddb-slave2/cddb-track-editor.c:775
 msgid "_Extra track data:"
 msgstr "מידע מסילה _נוסף:"
 
-#: cddb-slave2/cddb-track-editor.c:891
+#: cddb-slave2/cddb-track-editor.c:903
 msgid "CDDB Track Editor"
 msgstr "עורך המסילה CDDB"
 
-#: cddb-slave2/cddb-track-editor.c:1021
+#: cddb-slave2/cddb-track-editor.c:1040
 msgid ""
 "Cannot create CDDBTrackEditor factory.\n"
 "This may be caused by another copy of cddb-track-editor already running.\n"
 msgstr ""
+"לא ניתן ליצור יצרן CDDBTrackEditor\n"
+"זה עשוי להיגרם על-ידי עותק אחר של cddb-track-editor שכבר פועל.\n"
 
-#: gmix/device_labels_alsa.h:7 gmix/device_labels_linux.h:7
-msgid "Synth"
-msgstr "Synth"
-
-#: gmix/device_labels_alsa.h:8
-msgid "PCM"
-msgstr "PCM"
-
-#: gmix/device_labels_alsa.h:9
-msgid "DAC"
-msgstr "DAC"
-
-#: gmix/device_labels_alsa.h:10
-msgid "FM"
-msgstr "FM"
-
-#: gmix/device_labels_alsa.h:11
-msgid "DSP Input"
-msgstr "קלט DSP"
-
-#: gmix/device_labels_alsa.h:12
-msgid "Line"
-msgstr "קו"
-
-#: gmix/device_labels_alsa.h:13
-msgid "MIC"
-msgstr "מיקרופון"
-
-#: gmix/device_labels_alsa.h:14
-msgid "CD"
-msgstr "תקליטור"
-
-#: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
-#: gstreamer-properties/gstreamer-properties.glade.h:13
-msgid "Video"
-msgstr "וידאו"
-
-#: gmix/device_labels_alsa.h:16 gmix/device_labels_linux.h:10
-msgid "Radio"
-msgstr "רדיו"
-
-#: gmix/device_labels_alsa.h:17
-msgid "Phone"
-msgstr "טלפון"
-
-#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1087
-msgid "Mono"
-msgstr "מונו"
-
-#: gmix/device_labels_alsa.h:19
-msgid "PC Speaker"
-msgstr "רמקול המערכת"
-
-#: gmix/device_labels_alsa.h:20
-msgid "Aux"
-msgstr "Aux"
-
-#: gmix/device_labels_alsa.h:21
-msgid "Center Input"
-msgstr "קלט מרכז"
-
-#: gmix/device_labels_alsa.h:22
-msgid "Woofer Input"
-msgstr "קלט וופר"
-
-#: gmix/device_labels_alsa.h:23
-msgid "Surround Input"
-msgstr "קלט סרוונד"
-
-#. outputs
-#. max 24 chars
-#: gmix/device_labels_alsa.h:26
-msgid "Master"
-msgstr "כללי"
-
-#: gmix/device_labels_alsa.h:27
-msgid "Master Mono"
-msgstr "כללי מונו"
-
-#: gmix/device_labels_alsa.h:28
-msgid "Master Digital"
-msgstr "כללי דיגיטלי"
-
-#: gmix/device_labels_alsa.h:29
-msgid "Headphone"
-msgstr "אוזניות"
-
-#: gmix/device_labels_alsa.h:30
-msgid "Phone Output"
-msgstr "פלט טלפון"
-
-#: gmix/device_labels_alsa.h:31
-msgid "Center"
-msgstr "מרכז"
-
-#: gmix/device_labels_alsa.h:32
-msgid "Woofer"
-msgstr "וופר"
-
-#: gmix/device_labels_alsa.h:33
-msgid "Surround"
-msgstr "סרוונד"
-
-#: gmix/device_labels_alsa.h:34
-msgid "DSP Output"
-msgstr "פלט DSP"
-
-#: gmix/device_labels_alsa.h:38
-msgid "Treble"
-msgstr "טריבל"
-
-#: gmix/device_labels_alsa.h:39
-msgid "Equalizer"
-msgstr "אקווילייזר"
-
-#: gmix/device_labels_alsa.h:40
-msgid "Fader"
-msgstr "פאדר"
-
-#: gmix/device_labels_alsa.h:41
-msgid "Effect"
-msgstr "אפקט"
-
-#: gmix/device_labels_alsa.h:42
-msgid "3D Effect"
-msgstr "אפקט 3D"
-
-#: gmix/device_labels_alsa.h:43
-msgid "Mic Gain"
-msgstr "מיקרופון נוסף"
-
-#: gmix/device_labels_alsa.h:44
-msgid "Input Gain"
-msgstr "קלט נוסף"
-
-#: gmix/device_labels_alsa.h:45
-msgid "Output Gain"
-msgstr "פלט נוסף"
-
-#: gmix/device_labels_alsa.h:46
-msgid "Analog Loopback"
-msgstr ""
-
-#: gmix/device_labels_alsa.h:47
-msgid "Digital Loopback"
-msgstr ""
-
-#: gmix/device_labels_linux.h:7
-msgid "Vol  "
-msgstr "עוצמה  "
-
-#: gmix/device_labels_linux.h:7
-msgid "Bass "
-msgstr "בס "
-
-#: gmix/device_labels_linux.h:7
-msgid "Trebl"
-msgstr "טריבל"
-
-#: gmix/device_labels_linux.h:7
-msgid "Pcm  "
-msgstr "Pcm  "
-
-#: gmix/device_labels_linux.h:7
-msgid "Spkr "
-msgstr "רמקול "
-
-#: gmix/device_labels_linux.h:7
-msgid "Line "
-msgstr "קו "
-
-#: gmix/device_labels_linux.h:8
-msgid "Mic  "
-msgstr "מיקרופון "
-
-#: gmix/device_labels_linux.h:8
-msgid "CD   "
-msgstr "תקליטור   "
-
-#: gmix/device_labels_linux.h:8
-msgid "Mix  "
-msgstr "מערבל  "
-
-#: gmix/device_labels_linux.h:8
-msgid "Pcm2 "
-msgstr "Pcm2 "
-
-#: gmix/device_labels_linux.h:8
-msgid "Rec  "
-msgstr "הקלטה  "
-
-#: gmix/device_labels_linux.h:8
-msgid "IGain"
-msgstr "ק-נוסף"
-
-#: gmix/device_labels_linux.h:8
-msgid "OGain"
-msgstr "פ-נוסף"
-
-#: gmix/device_labels_linux.h:9
-msgid "Line1"
-msgstr "קו1"
-
-#: gmix/device_labels_linux.h:9
-msgid "Line2"
-msgstr "קו2"
-
-#: gmix/device_labels_linux.h:9
-msgid "Line3"
-msgstr "קו3"
-
-#: gmix/device_labels_linux.h:9
-msgid "Digital1"
-msgstr "דיגיטלי1"
-
-#: gmix/device_labels_linux.h:9
-msgid "Digital2"
-msgstr "דיגיטלי2"
-
-#: gmix/device_labels_linux.h:9
-msgid "Digital3"
-msgstr "דיגיטלי3"
-
-#: gmix/device_labels_linux.h:10
-msgid "PhoneIn"
-msgstr "כניסת טלפון"
-
-#: gmix/device_labels_linux.h:10
-msgid "PhoneOut"
-msgstr "יציאת טלפון"
-
-#: gmix/device_labels_linux.h:10
-msgid "Monitor"
-msgstr "צג"
-
-#: gmix/gmix.c:115
-msgid "Help"
-msgstr "עזרה"
-
-#: gmix/gmix.c:146
-msgid "Mixer device to use"
-msgstr "התקן מערבל לשימוש"
-
-#: gmix/gmix.c:327
-#, c-format
-msgid ""
-"Volume control is unable to run correctly.\n"
-"\n"
-"Unable to open audio device '%s'.\n"
-"Please check that you have permissions to open '%s'\n"
-"and that you have sound support in your kernel.\n"
-"\n"
-"Press Quit to exit Volume control"
-msgstr ""
-"בקרת העוצמה לא יכולה לפעול כראוע.\n"
-"\n"
-"לא ניתן לפתוח את התקן השמע '%s'.\n"
-"אנא בדוק שיש לך את ההרשאות לפתוח את '%s'\n"
-"ושיש לך תמיכת קול בגרעין.\n"
-"\n"
-"לחץ יציאה כדי לצאת מבקרת העוצמה"
-
-#: gmix/gmix.c:381
-msgid ""
-"Volume control is unable to run correctly.\n"
-"\n"
-"Press the details button for more details on the reasons for failure.\n"
-"\n"
-"Press Quit to quit Volume control"
-msgstr ""
-"בקרת העוצמה לא יכולה לפעול כראוי.\n"
-"\n"
-"לחץ על כפתור הפרטים לעוד פרטים על הסיבות לכישלון.\n"
-"\n"
-"לחץ יציאה כדי לצאת מבקרת העוצמה"
-
-#: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
-msgid "_Details"
-msgstr "_פרטים"
-
-#: gmix/gmix.c:387
-msgid "Invalid mixer device"
-msgstr "התקן מערבל לא תקני"
-
-#: gmix/gmix.c:626
-#, c-format
-msgid ""
-"Warning: This version of the Gnome Volume Control was compiled with\n"
-"OSS version %d.%d.%d, and your system is running\n"
-"a version prior to 3.6.0.\n"
-msgstr ""
-"אזהרה: גירסה זו של שליטה בעוצמת השמע הודרה עם\n"
-"OSS בגירסה %d.%d.%d, והמערכת שלך מפעילה\n"
-"גירסה קודמת ל 3.6.0.\n"
-
-#: gmix/gmix.c:634
-#, c-format
-msgid ""
-"Warning: This version of the Gnome Volume Control was compiled with\n"
-"OSS version %d.%d.%d, and your system is running\n"
-"version %d.%d.%d.\n"
-msgstr ""
-"אזהרה: גירסה זו של שליטה בעוצמת השמע הודרה עם\n"
-"OSS בגירסה %d.%d.%d, והמערכת שלך מפעילה\n"
-"גירסה קודמת ל %d.%d.%d.\n"
-
-#: gmix/gmix.c:1088
-#, c-format
-msgid "left %s"
-msgstr "שמאלה %s"
-
-#: gmix/gmix.c:1114
-#, c-format
-msgid "Right %s"
-msgstr "ימינה %s"
-
-#: gmix/gmix.c:1207
-msgid "Lock"
-msgstr "נעל"
-
-#: gmix/gmix.c:1220
-#, c-format
-msgid "%s Lock"
-msgstr "%s נעול"
-
-#: gmix/gmix.c:1231
-msgid "Mute"
-msgstr "השתק"
-
-#: gmix/gmix.c:1244
-#, c-format
-msgid "%s Mute"
-msgstr "%s מושתק"
-
-#: gmix/gmix.c:1258
-msgid "Rec."
-msgstr "הקלט"
-
-#: gmix/gmix.c:1270
-#, c-format
-msgid "%s Record"
-msgstr "%s מקליט"
-
-#: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
-#: gnome-volume-control/gnome-volume-control.desktop.in.h:2
-msgid "Volume Control"
-msgstr "בקרת עוצמה"
-
-#: gmix/gmix.c:1748
-msgid "GNOME Volume Control"
-msgstr "בקרת העוצמה של GNOME"
-
-#: gmix/gmix.c:1751
-msgid "A mixer for sound devices"
-msgstr "מערבל להתקני השמע"
-
-#: gmix/gnome-volume-control.desktop.in.in.h:1
-#: gnome-volume-control/gnome-volume-control.desktop.in.h:1
-msgid "Adjust the volume level"
-msgstr "קבע את רמת העוצמה"
-
-#: gmix/prefs.c:193 gmix/prefs.c:196
-msgid "Shown"
-msgstr "מוצג"
-
-#: gmix/prefs.c:204 gmix/prefs.c:207
-msgid "Mixer label"
-msgstr "תוית המערבל"
-
-#. Add the label reset button
-#: gmix/prefs.c:216
-msgid "_Reset labels to their defaults"
-msgstr "_החזר תויות לברירת המחדל"
-
-#: gmix/prefs.c:313
-msgid "Gnome Volume Control Preferences"
-msgstr "העדפות בקרת העוצמה של GNOME"
-
-#: gnome-cd/access/cddisplayaccessible.c:117
+#: gnome-cd/access/cddisplayaccessible.c:118
 msgid "CD Display"
 msgstr "תצוגת תקליטור"
 
-#: gnome-cd/access/cddisplayaccessible.c:119
+#: gnome-cd/access/cddisplayaccessible.c:120
 msgid ""
 "Displays information about the currently playing album, artist and time "
 "elapsed"
 msgstr "מציג מידע על האבלום הנוכחי שמנגן, אמן וזמן נותר"
 
-#: gnome-cd/access/cddisplayaccessible.c:188
+#: gnome-cd/access/cddisplayaccessible.c:189
 msgid "Time Line"
 msgstr "קו זמן"
 
-#: gnome-cd/access/cddisplayaccessible.c:189
+#: gnome-cd/access/cddisplayaccessible.c:190
 msgid "Line for displaying the time elapsed for the current track"
 msgstr "קו לתצוגת הזמן שנותר למסילה הנוכחית"
 
-#: gnome-cd/access/cddisplayaccessible.c:192
+#: gnome-cd/access/cddisplayaccessible.c:193
 msgid "Info Line"
 msgstr "מידע קו"
 
-#: gnome-cd/access/cddisplayaccessible.c:193
+#: gnome-cd/access/cddisplayaccessible.c:194
 msgid "Line for displaying information"
 msgstr "קו להצגת מידע"
 
-#: gnome-cd/access/cddisplayaccessible.c:196
+#: gnome-cd/access/cddisplayaccessible.c:197
 msgid "Artist Line"
 msgstr "קו אמן"
 
-#: gnome-cd/access/cddisplayaccessible.c:197
+#: gnome-cd/access/cddisplayaccessible.c:198
 msgid "Line for displaying the name of the artist"
 msgstr "קו להצגת שם האמן"
 
-#: gnome-cd/access/cddisplayaccessible.c:200
+#: gnome-cd/access/cddisplayaccessible.c:201
 msgid "Album Line"
 msgstr "קו אלבום"
 
-#: gnome-cd/access/cddisplayaccessible.c:201
+#: gnome-cd/access/cddisplayaccessible.c:202
 msgid "Line for displaying the name of the album"
 msgstr "קו להצגת שם האלבום"
 
-#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:165 gnome-cd/callbacks.c:264
-#: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
-#: grecord/gsr.xml.h:13
+#: gnome-cd/callbacks.c:83 gnome-cd/callbacks.c:171 gnome-cd/callbacks.c:270
+#: gnome-cd/callbacks.c:573 gnome-cd/gnome-cd.c:671 grecord/gsr.xml.h:13
 msgid "Play"
 msgstr "נגן"
 
-#: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
-#: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
-#: gnome-cd/callbacks.c:411 gnome-cd/callbacks.c:499
+#: gnome-cd/callbacks.c:156 gnome-cd/callbacks.c:202 gnome-cd/callbacks.c:232
+#: gnome-cd/callbacks.c:312 gnome-cd/callbacks.c:352 gnome-cd/callbacks.c:376
+#: gnome-cd/callbacks.c:417 gnome-cd/callbacks.c:511
 msgid "Pause"
 msgstr "הפסק"
 
-#: gnome-cd/callbacks.c:530
+#: gnome-cd/callbacks.c:557
 #, c-format
 msgid "Playing %s - %s"
 msgstr "מנגן %s - %s"
 
-#: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
-msgid "Unknown Artist"
-msgstr "אמן לא ידוע"
-
-#: gnome-cd/callbacks.c:532 gnome-cd/callbacks.c:665 gnome-cd/callbacks.c:677
-msgid "Unknown Album"
-msgstr "אלבום לא ידוע"
-
-#: gnome-cd/callbacks.c:534 grecord/src/gui.c:824
+#: gnome-cd/callbacks.c:561
 msgid "Playing"
 msgstr "נגינה"
 
-#. Update the tray icon tooltip
-#: gnome-cd/callbacks.c:557
+#: gnome-cd/callbacks.c:585
 msgid "Paused"
 msgstr "מופסק"
 
-#. Update tray icon tooltip
-#: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
-#: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
+#: gnome-cd/callbacks.c:631 gnome-cd/callbacks.c:873 gnome-cd/gnome-cd.c:88
+#: gnome-cd/gnome-cd.c:534 gnome-cd/gnome-cd.c:721 gnome-cd/gnome-cd.c:724
 #: gnome-cd/gnome-cd.desktop.in.h:1
 msgid "CD Player"
 msgstr "נגן תקליטורים"
 
-#. Update the tray icon tooltip
-#: gnome-cd/callbacks.c:620
+#: gnome-cd/callbacks.c:649
 msgid "Stopped"
 msgstr "נעצר"
 
-#: gnome-cd/callbacks.c:626
+#: gnome-cd/callbacks.c:655
 msgid "Disc error"
 msgstr "שגיאת דיסק"
 
-#. Update the tray icon tooltip
-#: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
+#: gnome-cd/callbacks.c:666 gnome-cd/callbacks.c:761
 msgid "No disc"
 msgstr "אין דיסק"
 
-#: gnome-cd/callbacks.c:742
+#: gnome-cd/callbacks.c:789
 msgid "Drive open"
 msgstr "כונן פתוח"
 
-#: gnome-cd/callbacks.c:766
+#: gnome-cd/callbacks.c:813
 msgid "Data CD"
 msgstr "מידע תקליטור"
 
-#. Updated the tray icon tooltip
-#: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
+#: gnome-cd/callbacks.c:835 gnome-cd/callbacks.c:840
 msgid "No Cdrom"
 msgstr "אין תקליטור"
 
-#: gnome-cd/callbacks.c:803
+#: gnome-cd/callbacks.c:851
 msgid "Drive Error"
 msgstr "שגיאת כונן"
 
-#: gnome-cd/callbacks.c:825
+#: gnome-cd/callbacks.c:875
 msgid "A CD player for GNOME"
 msgstr "נגן תקליטורים ל GNOME"
 
-#: gnome-cd/cdrom.c:367
+#: gnome-cd/cdrom.c:368
 #, c-format
 msgid "You do not seem to have permission to access %s."
 msgstr "לא נראה שיש לך רשות לגשת ל %s."
 
-#: gnome-cd/cdrom.c:373
+#: gnome-cd/cdrom.c:374
 #, c-format
 msgid ""
 "%s does not appear to point to a valid CD device. This may be because:\n"
@@ -1356,48 +1011,40 @@ msgstr ""
 "ב) אין לך את ההרשאות הנכונות כדי לגשת לכונן התקליטורים\n"
 "ג) %s איננו כונן התקליטורים.\n"
 
-#: gnome-cd/display.c:74
-msgid "Unknown artist"
-msgstr "אמן לא ידוע"
-
-#: gnome-cd/display.c:75
-msgid "Unknown disc"
-msgstr "דיסק לא ידוע"
-
-#: gnome-cd/gnome-cd.c:156
+#: gnome-cd/gnome-cd.c:215
 #, c-format
 msgid "%d - Unknown"
 msgstr "%d - לא ידוע"
 
-#: gnome-cd/gnome-cd.c:300
+#: gnome-cd/gnome-cd.c:329
 msgid "P_revious track"
 msgstr "מסילה _קודמת"
 
-#: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
+#: gnome-cd/gnome-cd.c:330 grecord/gsr.xml.h:44
 msgid "_Stop"
 msgstr "_עצור"
 
-#: gnome-cd/gnome-cd.c:302
+#: gnome-cd/gnome-cd.c:331
 msgid "_Play / Pause"
 msgstr "_נגן / הפסק"
 
-#: gnome-cd/gnome-cd.c:303
+#: gnome-cd/gnome-cd.c:332
 msgid "_Next track"
 msgstr "מסילה _הבאה"
 
-#: gnome-cd/gnome-cd.c:304
+#: gnome-cd/gnome-cd.c:333
 msgid "_Eject disc"
 msgstr "ה_וצא דיסק"
 
-#: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
+#: gnome-cd/gnome-cd.c:334 grecord/gsr.xml.h:37
 msgid "_Help"
 msgstr "_עזרה"
 
-#: gnome-cd/gnome-cd.c:306
+#: gnome-cd/gnome-cd.c:335
 msgid "_About CD player"
 msgstr "_אודות נגן התקליטורים"
 
-#: gnome-cd/gnome-cd.c:414
+#: gnome-cd/gnome-cd.c:454
 msgid ""
 "There is no CD device set. This means that the CD player\n"
 "will be unable to run. Click 'Set device' to go to a dialog\n"
@@ -1407,15 +1054,15 @@ msgstr ""
 "לא יוכל לפעול. לחץ על 'קבע התקן' כדי להגיע לתיבת דו-שיח\n"
 "בה תוכל לקבוע את ההתקן, או לחץ 'יציאה' כדי לצאת מנגן התקליטורים."
 
-#: gnome-cd/gnome-cd.c:418
+#: gnome-cd/gnome-cd.c:458
 msgid "Set device"
 msgstr "קבע התקן"
 
-#: gnome-cd/gnome-cd.c:420
+#: gnome-cd/gnome-cd.c:460
 msgid "No CD device"
 msgstr "אין התקן תקליטור"
 
-#: gnome-cd/gnome-cd.c:474
+#: gnome-cd/gnome-cd.c:513
 msgid ""
 "The CD player is unable to run correctly.\n"
 "\n"
@@ -1431,88 +1078,96 @@ msgstr ""
 "לחץ 'קבע התקן' כדי ללכת לתיבת דו-שיח בה תוכל לקבוע את ההתקן, או לחץ 'יציאה' "
 "כדי לצאת מנגן התקליטורים"
 
-#: gnome-cd/gnome-cd.c:479
+#: gnome-cd/gnome-cd.c:517
+msgid "_Details"
+msgstr "_פרטים"
+
+#: gnome-cd/gnome-cd.c:518
 msgid "_Set device"
 msgstr "_קבע התקן"
 
-#: gnome-cd/gnome-cd.c:481
+#: gnome-cd/gnome-cd.c:520
 msgid "Invalid CD device"
 msgstr "התקן תקליטור לא תקני"
 
-#: gnome-cd/gnome-cd.c:542
+#: gnome-cd/gnome-cd.c:584
 msgid "Volume control"
 msgstr "בקרת עוצמה"
 
-#: gnome-cd/gnome-cd.c:551
+#: gnome-cd/gnome-cd.c:595
+msgid "Position"
+msgstr "מיקום"
+
+#: gnome-cd/gnome-cd.c:612
 msgid "Open track editor"
 msgstr "פתח עורך מסילה"
 
-#: gnome-cd/gnome-cd.c:552
+#: gnome-cd/gnome-cd.c:613
 msgid "Track editor"
 msgstr "עורך מסילה"
 
-#: gnome-cd/gnome-cd.c:559
+#: gnome-cd/gnome-cd.c:620
 msgid "Open preferences"
 msgstr "פתח העדפות"
 
-#: gnome-cd/gnome-cd.c:560
+#: gnome-cd/gnome-cd.c:621
 msgid "Preferences"
 msgstr "העדפות"
 
-#: gnome-cd/gnome-cd.c:568
+#: gnome-cd/gnome-cd.c:629
 msgid "Track List"
 msgstr "רשימת מסילות"
 
-#: gnome-cd/gnome-cd.c:589
+#: gnome-cd/gnome-cd.c:650
 msgid "Previous track"
 msgstr "מסילה קודמת"
 
-#: gnome-cd/gnome-cd.c:589
+#: gnome-cd/gnome-cd.c:650
 msgid "Previous"
 msgstr "קודם"
 
-#: gnome-cd/gnome-cd.c:593
+#: gnome-cd/gnome-cd.c:654
 msgid "Rewind"
 msgstr "הרץ אחורה"
 
-#: gnome-cd/gnome-cd.c:610
+#: gnome-cd/gnome-cd.c:671
 msgid "Play / Pause"
 msgstr "נגן / הפסק"
 
-#: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
+#: gnome-cd/gnome-cd.c:676 grecord/gsr.xml.h:30
 msgid "Stop"
 msgstr "עצור"
 
-#: gnome-cd/gnome-cd.c:619
+#: gnome-cd/gnome-cd.c:680
 msgid "Fast forward"
 msgstr "הרץ קדימה"
 
-#: gnome-cd/gnome-cd.c:627
+#: gnome-cd/gnome-cd.c:688
 msgid "Next track"
 msgstr "מסילה הבאה"
 
-#: gnome-cd/gnome-cd.c:631
+#: gnome-cd/gnome-cd.c:692
 msgid "Eject CD"
 msgstr "הוצא תקליטור"
 
-#: gnome-cd/gnome-cd.c:631
+#: gnome-cd/gnome-cd.c:692
 msgid "Eject"
 msgstr "הוצא"
 
-#: gnome-cd/gnome-cd.c:731
+#: gnome-cd/gnome-cd.c:808
 msgid "CD device to use"
 msgstr "התקן תקליטור לשימוש"
 
-#: gnome-cd/gnome-cd.c:740
+#: gnome-cd/gnome-cd.c:810
 msgid "Only start if there isn't already a CD player application running"
 msgstr "התחל רק אם אין יישום נגן תקליטורים שכבר פועל"
 
-#: gnome-cd/gnome-cd.c:742
+#: gnome-cd/gnome-cd.c:812
 msgid "Play the CD on startup"
 msgstr "נגן את התקליטור בהפעלה"
 
 #. Stick a message box here?
-#: gnome-cd/gnome-cd.c:773
+#: gnome-cd/gnome-cd.c:842
 msgid "Cannot create player"
 msgstr "לא ניתן ליצור נגן"
 
@@ -1521,54 +1176,40 @@ msgid "Play audio CDs"
 msgstr "נגן תקליטורי שמע"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:1
-msgid "Action on application exit"
-msgstr "פעולה ביציאה מהיישום"
-
-#: gnome-cd/gnome-cd.schemas.in.in.h:2
-msgid "Action on start"
-msgstr "פעולה בהתחלה"
-
-#: gnome-cd/gnome-cd.schemas.in.in.h:3
 msgid "CD player theme"
 msgstr "ערכת נושא לנגן התקליטורים"
 
-#: gnome-cd/gnome-cd.schemas.in.in.h:4
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
 msgid "Device path"
 msgstr "נתיב ההתקן"
 
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "Eject the CD when CD player quits?"
+msgstr "האם להוציא את התקליטור כאשר נגן התקליטורים מסתיים?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Play when the CD player starts?"
+msgstr "האם לנגן כאשר נגן התקליטורים מתחיל?"
+
 #: gnome-cd/gnome-cd.schemas.in.in.h:5
-msgid "Should the CD player attempt to shut the CD drive on start up?"
-msgstr "האם על נגן התקליטורים לנסות לסגור את כונן התקליטורים בהפעלה?"
+msgid "Should the CD be ejected when the CD player quits?"
+msgstr "האם יש להוציא את התקליטור כאשר נגן התקליטורים מסתיים?"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:6
-msgid "Shut the CD tray on start"
-msgstr "סגור את מגש התקליטור בהפעלה"
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr ""
+"הנתיב לכונן התקליטורים שבו נגן התקליטורים צריך להשתמש כדי לנגן תקליטורים"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:7
-msgid "The path to the CD drive that the CD player should use to play CDs"
-msgstr "הנתיב לכונן התקליטורים שבו נגן התקליטורים צריך להשתמש כדי לנגן תקליטורים"
-
-#: gnome-cd/gnome-cd.schemas.in.in.h:8
-msgid ""
-"What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
-"playing, 2 = Eject the CD, 3 = Attempt to close the tray"
-msgstr ""
-"איזו פעולה על נגן התקליטורים לבצע ביציאה? 0 = כלום, 1 = עצור נגינה, 2 = הוצא "
-"את התקליטור, 3 = נסה לסגור את המגש"
-
-#: gnome-cd/gnome-cd.schemas.in.in.h:9
-msgid ""
-"What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
-"playing, 2 = Stop playing"
-msgstr ""
-"איזו פעולה על נגן התקליטורים לבצע בהפעלה? 0 = כלום, 1 = התחל נגינה, 2 = עצור "
-"נגינה"
-
-#: gnome-cd/gnome-cd.schemas.in.in.h:10
-msgid "What theme should the CD player use for it's appearance"
+#, fuzzy
+msgid "What theme should the CD player use for its appearance"
 msgstr "באיזו ערכת נושא נגן התקליטורים צריך להשתמש למראה שלו"
 
-#: gnome-cd/preferences.c:83
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid "When the CD player is started, should it start playing the CD?"
+msgstr "כאשר נגן התקליטורים מתחיל, האם עליו להתחיל לנגן את התקליטור?"
+
+#: gnome-cd/preferences.c:84
 #, c-format
 msgid ""
 "%s\n"
@@ -1577,719 +1218,54 @@ msgstr ""
 "%s\n"
 "זה אומר שנגן התקליטורים לא יכול לפעול."
 
-#: gnome-cd/preferences.c:84
+#: gnome-cd/preferences.c:85
 msgid "Error setting device"
 msgstr "שגיאה בקביעת ההתקן"
 
-#: gnome-cd/preferences.c:824
+#: gnome-cd/preferences.c:638
 msgid "CD Player Preferences"
 msgstr "העדפות נגן התקליטורים"
 
-#: gnome-cd/preferences.c:853
-msgid "CD player de_vice:"
-msgstr "ה_תקן נגן התקליטור:"
+#: gnome-cd/preferences.c:672
+msgid "CD Player De_vice:"
+msgstr "ה_תקן נגן התקליטורים:"
 
-#: gnome-cd/preferences.c:868
+#: gnome-cd/preferences.c:696
 msgid "_Apply change"
 msgstr "_החל שינויים"
 
-#. left side
-#: gnome-cd/preferences.c:881
-msgid "When CD player starts"
-msgstr "כאשר נגן התקליטורים מתחיל"
+#: gnome-cd/preferences.c:708
+msgid "CD Player Behaviour:"
+msgstr "התנהגות נגן התקליטורים:"
 
-#: gnome-cd/preferences.c:889
-msgid "Do _nothing"
-msgstr "אל תעשה _דבר"
+#: gnome-cd/preferences.c:721
+msgid "Start _playing CD when CD Player starts"
+msgstr "התחל ל_נגן את התקליטור כאשר נגן התקליטורים מתחיל"
 
-#: gnome-cd/preferences.c:890
-msgid "Do nothing when CD Player starts"
-msgstr "אל תעשה כלום כאשר נגן התקליטורים מתחיל"
-
-#: gnome-cd/preferences.c:900
-msgid "Start _playing CD"
-msgstr "התחל _לנגן תקליטור"
-
-#: gnome-cd/preferences.c:901
+#: gnome-cd/preferences.c:722
 msgid "Start playing CD when CD Player starts"
 msgstr "התחל לנגן את התקליטור כאשר נגן התקליטורים מתחיל"
 
-#: gnome-cd/preferences.c:910
-msgid "_Stop playing CD"
-msgstr "_עצור נגינת תקליטור"
+#: gnome-cd/preferences.c:734
+msgid "Attempt to _eject CD when CD Player exits"
+msgstr "נסה להו_ציא את התקליטור כאשר נגן התקליטורים מסתיים"
 
-#: gnome-cd/preferences.c:911
-msgid "Stop playing CD when CD Player starts"
-msgstr "הפסק לנגן את התקליטור כאשר נגן התקליטורים מתחיל"
+#: gnome-cd/preferences.c:735
+msgid "Attempt to eject CD when CD Player exits"
+msgstr "נסה להוציא את התקליטור כאשר נגן התקליטורים מסתיים"
 
-#: gnome-cd/preferences.c:925
-msgid "Attempt to _close CD tray"
-msgstr "נסה ל_סגור את מגש התקליטור"
-
-#. Right side
-#: gnome-cd/preferences.c:937
-msgid "When CD player quits"
-msgstr "כאשר נגן התקליטורים מסתיים"
-
-#: gnome-cd/preferences.c:945
-msgid "Do not_hing"
-msgstr "אל תעשה ד_בר"
-
-#: gnome-cd/preferences.c:946
-msgid "Do nothing when CD Player exits"
-msgstr "אל תעשה כלום כאשר נגן התקליטורים מסתיים"
-
-#: gnome-cd/preferences.c:955
-msgid "S_top playing CD"
-msgstr "ע_צור נגינת תקליטור"
-
-#: gnome-cd/preferences.c:956
-msgid "Stop playing CD when CD player quits"
-msgstr "הפסק לנגן את התקליטור כאשר נגן התקליטורים מסתיים"
-
-#: gnome-cd/preferences.c:966
-msgid "Attempt to _open CD tray"
-msgstr "נסה לפ_תוח את מגש התקליטור"
-
-#: gnome-cd/preferences.c:967
-msgid "Attempt to open CD tray when CD Player exits"
-msgstr "נסה לפתוח את מגש התקליטור כאשר נגן התקליטורים מסתיים"
-
-#: gnome-cd/preferences.c:977
-msgid "Attempt to c_lose CD tray"
-msgstr "נסה לס_גור את מגש התקליטור"
-
-#: gnome-cd/preferences.c:1008
-msgid "Theme name"
-msgstr "שם ערכת הנושא"
+#: gnome-cd/preferences.c:755
+msgid "_Available Themes:"
+msgstr "ערכות נושא _זמינות:"
 
 #: grecord/gnome-sound-recorder.desktop.in.h:1
 msgid "Record sound clips"
 msgstr "הקלט קטעי קול"
 
-#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
-#: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:914
+#: grecord/src/gsr-window.c:1241
 msgid "Sound Recorder"
 msgstr "רשמקול"
-
-#: grecord/src/grec.c:56
-msgid "Sound Recorder:"
-msgstr "רשמקול:"
-
-#: grecord/src/grec.c:108 grecord/src/main.c:248
-msgid "Don't show this message again."
-msgstr "אל תציג הודעה זו שוב."
-
-#: grecord/src/grec.c:110 grecord/src/main.c:250
-#, c-format
-msgid ""
-"Could not find '%s'.\n"
-"Set the correct path to sox inpreferences under the tab 'paths'.\n"
-"\n"
-"If you don't have sox, you will not be able to record or do any effects."
-msgstr ""
-"לא ניתן למצוא '%s'.\n"
-"קבע את הנתיב הנכון להגדרות sox תחת הכרטיסייה 'נתיבים'.\n"
-"\n"
-"אם אין לך sox, לא תוכל להקליט או לעשות אפקטים כלשהם."
-
-#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1361
-msgid "Could not fork child process"
-msgstr "לא ניתן לשכפל הליך ילד"
-
-#: grecord/src/grec.c:173 grecord/src/gsr-window.c:1342
-msgid "Recording..."
-msgstr "מקליט..."
-
-#: grecord/src/grec.c:220 grecord/src/gsr-window.c:1221
-msgid "Playing..."
-msgstr "מנגן..."
-
-#: grecord/src/grec.c:272
-msgid "Converting file..."
-msgstr "ממיר קובץ..."
-
-#: grecord/src/grec.c:302 grecord/src/grec.c:436
-msgid "Cancel"
-msgstr "ביטול"
-
-#: grecord/src/grec.c:345 grecord/src/grec.c:795
-msgid "Audioformat: "
-msgstr "פורמט שמע: "
-
-#: grecord/src/grec.c:349 grecord/src/grec.c:781 grecord/src/gui.c:308
-msgid "Sample rate: "
-msgstr "קצב דגימה: "
-
-#: grecord/src/grec.c:359 grecord/src/grec.c:785 grecord/src/gui.c:315
-msgid "Channels: "
-msgstr "ערוצים: "
-
-#: grecord/src/grec.c:381
-msgid "Cancel open"
-msgstr "בטל פתיחה"
-
-#: grecord/src/grec.c:390
-msgid "Select a sound file"
-msgstr "בחר קובץ קול"
-
-#: grecord/src/grec.c:516
-#, c-format
-msgid "%s is not installed in the path"
-msgstr "%s לא מותקן בנתיב"
-
-#: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
-#, c-format
-msgid "There was an error starting %s: %s"
-msgstr "ארעה שגיאה בהפעלת %s: %s"
-
-#: grecord/src/grec.c:615
-msgid "Undoing all changes..."
-msgstr "מבטל את כל השינויים..."
-
-#: grecord/src/grec.c:718
-#, c-format
-msgid ""
-"'%s' is a folder.\n"
-"Please select a sound file to be opened."
-msgstr ""
-"'%s' זה תיקייה.\n"
-"אנא בחר קובץ קול לפתיחה."
-
-#: grecord/src/grec.c:730
-#, c-format
-msgid ""
-"File '%s' doesn't exist.\n"
-"Please select an existing sound file to be opened."
-msgstr ""
-"הקובץ '%s' לא קיים.\n"
-"אנא בחר קובץ קול קיים לפתיחה."
-
-#: grecord/src/grec.c:743
-#, c-format
-msgid "File '%s isn't a valid sound file."
-msgstr "הקובץ '%s' אינו קובץ קול תקני."
-
-#: grecord/src/grec.c:819
-#, c-format
-msgid ""
-"'%s' is a folder.\n"
-"Please enter another filename."
-msgstr ""
-"'%s' זה תיקייה.\n"
-"אנא הכנס שם קובץ אחר."
-
-#: grecord/src/grec.c:831
-#, c-format
-msgid ""
-"<b>File '%s' already exists.</b>\n"
-"Do you want to overwrite it?"
-msgstr ""
-"<b>הקובץ '%s' כבר קיים.</b>\n"
-"האם ברצונך להחליף אותו?"
-
-#: grecord/src/grec.c:834
-msgid "Cancel save"
-msgstr "בטל שמירה"
-
-#: grecord/src/grec.c:835
-msgid "Overwrite"
-msgstr "החלף"
-
-#: grecord/src/grec.c:862
-#, c-format
-msgid "Error saving '%s'"
-msgstr "שגיאה בשמירת '%s'"
-
-#: grecord/src/grec.c:976
-#, c-format
-msgid ""
-"<b>Do you want to save the changes you made to \"%s\"?</b>\n"
-"\n"
-"Your changes will be lost if you don't save them."
-msgstr ""
-"<b>האם ברצונך לשמור את השינויים שביצעת ב \"%s\"?</b>\n"
-"\n"
-"השינויים שלך יאבדו אם לא תשמור אותם."
-
-#: grecord/src/grec.c:981
-msgid "Do_n't save"
-msgstr "_אל תשמור"
-
-#: grecord/src/grec.c:988
-#, c-format
-msgid "Save %s?"
-msgstr "לשמור %s?"
-
-#. Save the file
-#: grecord/src/grec.c:1012
-msgid "Saving..."
-msgstr "שומר..."
-
-#: grecord/src/grec.c:1142
-#, c-format
-msgid ""
-"The size of the current sample is more than\n"
-"%i Mb!"
-msgstr ""
-"הגודל של הדגימה הנוכחית גדול יותר מ:\n"
-"%i MB!"
-
-#: grecord/src/grec.c:1198
-msgid "Save sound file"
-msgstr "שמור קובץ קול"
-
-#: grecord/src/grec.c:1429
-msgid ""
-"The sound device is not ready. Please check that there isn't\n"
-"another program running that is using the device."
-msgstr ""
-"התקן הקול אינו מוכן. אנא בדוק שאין\n"
-"תוכנה אחרת שרצה שמשתמשת בהתקן."
-
-#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
-#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
-msgid "hours"
-msgstr "שעות"
-
-#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
-#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
-msgid "hour"
-msgstr "שעה"
-
-#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
-#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
-#: grecord/src/gui.c:753
-msgid "minutes"
-msgstr "דקות"
-
-#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
-#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
-msgid "minute"
-msgstr "דקה"
-
-#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
-#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
-#: grecord/src/gsr-window.c:284
-msgid "seconds"
-msgstr "שניות"
-
-#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
-#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
-msgid "second"
-msgstr "שניה"
-
-#: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
-msgid "Open a file"
-msgstr "פותח קובץ"
-
-#: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
-#: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
-msgid "Ready"
-msgstr "מוכן"
-
-#: grecord/src/gsr-window.c:541
-#, c-format
-msgid "Saving %s..."
-msgstr "שומר %s..."
-
-#: grecord/src/gsr-window.c:600
-msgid "Save file as"
-msgstr "שמור קובץ בשם"
-
-#: grecord/src/gsr-window.c:654
-#, c-format
-msgid "%s is not installed in the path."
-msgstr "%s .לא מותקן בנתיב"
-
-#: grecord/src/gsr-window.c:736
-#, c-format
-msgid "%s (Has not been saved)"
-msgstr "%s (טרם נשמר)"
-
-#: grecord/src/gsr-window.c:751
-msgid "Unknown size"
-msgstr "גודל לא ידוע"
-
-#: grecord/src/gsr-window.c:771
-#, c-format
-msgid "%.1f kHz"
-msgstr "%.1f kHz"
-
-#: grecord/src/gsr-window.c:780
-#, c-format
-msgid "%.0f kb/s"
-msgstr "%.0f kb/s"
-
-#: grecord/src/gsr-window.c:792
-msgid "1 (mono)"
-msgstr "1 (מונו)"
-
-#: grecord/src/gsr-window.c:796
-msgid "2 (stereo)"
-msgstr "2 (סטריאו)"
-
-#: grecord/src/gsr-window.c:825
-#, c-format
-msgid "%s Information"
-msgstr "מידע %s"
-
-#: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
-msgid "File Information"
-msgstr "מידע על הקובץ"
-
-#: grecord/src/gsr-window.c:859
-msgid "Folder:"
-msgstr "תיקייה:"
-
-#: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
-msgid "Filename:"
-msgstr "שם הקובץ:"
-
-#: grecord/src/gsr-window.c:871
-msgid "File size:"
-msgstr "גודל הקובץ:"
-
-#: grecord/src/gsr-window.c:880
-msgid "Audio Information"
-msgstr "מידע שמע"
-
-#: grecord/src/gsr-window.c:894
-msgid "Song length:"
-msgstr "אורך השיר:"
-
-#: grecord/src/gsr-window.c:900
-msgid "Number of channels:"
-msgstr "מספר ערוצים:"
-
-#: grecord/src/gsr-window.c:906
-msgid "Sample rate:"
-msgstr "קצב דגימה:"
-
-#: grecord/src/gsr-window.c:912
-msgid "Bit rate:"
-msgstr "קצב:"
-
-#: grecord/src/gsr-window.c:982
-msgid "A sound recorder for GNOME"
-msgstr "רשמקול ל GNOME"
-
-#: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
-#, c-format
-msgid "%s - Sound Recorder"
-msgstr "%s - רשמקול"
-
-#: grecord/src/gsr-window.c:1548
-msgid "File information"
-msgstr "מידע על הקובץ"
-
-#: grecord/src/gsr-window.c:1569
-msgid "<none>"
-msgstr "<ללא>"
-
-#: grecord/src/gsr-window.c:1578
-msgid "Length:"
-msgstr "אורך:"
-
-#: grecord/src/gui.c:45 grecord/gsr.xml.h:38
-msgid "_New"
-msgstr "_חדש"
-
-#: grecord/src/gui.c:46 grecord/gsr.xml.h:5
-msgid "Create a new sample"
-msgstr "צור דגימה חדשה"
-
-#: grecord/src/gui.c:54 grecord/gsr.xml.h:21
-msgid "Run _Mixer"
-msgstr "הפעל _מערבל"
-
-#: grecord/src/gui.c:55
-msgid "Run GNOME Volume Control"
-msgstr "הפעל את בקרת העוצמה של GNOME"
-
-#: grecord/src/gui.c:69
-msgid "Add echo"
-msgstr "הוסף הד"
-
-#: grecord/src/gui.c:70
-msgid "Add echo to the current sample"
-msgstr "הוסף הד לדגימה הנוכחית"
-
-#: grecord/src/gui.c:103
-msgid "Echo"
-msgstr "הד"
-
-#: grecord/src/gui.c:112
-msgid "_Undo All"
-msgstr "_בטל הכל"
-
-#: grecord/src/gui.c:113
-msgid "Undo all changes made on the current sample"
-msgstr "בטל את כל השינויים שנעשו לדגימה הנוכחית"
-
-#: grecord/src/gui.c:120
-msgid "Effects"
-msgstr "אפקטים"
-
-#: grecord/src/gui.c:197
-msgid "16bit PCM"
-msgstr "16 סיביות PCM"
-
-#: grecord/src/gui.c:199
-msgid "8bit PCM"
-msgstr "8 סיביות PCM"
-
-#: grecord/src/gui.c:202
-msgid "stereo"
-msgstr "סטריאו"
-
-#: grecord/src/gui.c:204
-msgid "mono"
-msgstr "מונו"
-
-#: grecord/src/gui.c:217 grecord/gsr.xml.h:10
-msgid "New"
-msgstr "חדש"
-
-#: grecord/src/gui.c:218
-msgid "Create new sample"
-msgstr "צור דגימה חדשה"
-
-#: grecord/src/gui.c:234
-msgid "Play current sample"
-msgstr "נגן דגימה נוכחית"
-
-#: grecord/src/gui.c:248
-msgid "Stop playing/recording"
-msgstr "עצור נגינה/הקלטה"
-
-#: grecord/src/gui.c:261 grecord/gsr.xml.h:18
-msgid "Record"
-msgstr "הקלט"
-
-#: grecord/src/gui.c:262
-msgid "Start recording"
-msgstr "מתחיל להקליט"
-
-#: grecord/src/gui.c:301
-msgid "Audio format: "
-msgstr "פורמט שמע: "
-
-#: grecord/src/gui.c:358
-#, c-format
-msgid "File '%s' doesn't exist; using default."
-msgstr "הקובץ '%s' אינו קיים; משתמש בברירת המחדל."
-
-#: grecord/src/gui.c:382
-#, c-format
-msgid "File '%s' isn't a supported soundfile."
-msgstr "הקובץ '%s' אינו קובץ קול נתמך."
-
-#: grecord/src/gui.c:425
-msgid "translator_credits"
-msgstr ""
-"גיל אשר\n"
-"dolfin@rpg.org.il\n"
-"פרוייקט linBrew\n"
-"http://linbrew.sourceforge.net"
-
-#: grecord/src/gui.c:429
-msgid "GNOME Sound Recorder"
-msgstr "רשמקול GNOME"
-
-#: grecord/src/gui.c:431
-msgid ""
-"A simple soundrecorder and soundplayer for GNOME.\n"
-"Dedicated to my cat, Malte."
-msgstr ""
-"רשמקול פשוט ונגן קול ל GNOME.\n"
-"מוקדש לחתול שלי, מאלטי."
-
-#: grecord/src/gui.c:700
-msgid "Gnome Sound Recorder Preferences"
-msgstr "העדפות רשמקול Gnome"
-
-#: grecord/src/gui.c:707
-msgid "Sound Recorder Preferences"
-msgstr "העדפות רשמקול"
-
-#: grecord/src/gui.c:719
-msgid "Recording"
-msgstr "הקלטה"
-
-#: grecord/src/gui.c:724
-msgid "Time"
-msgstr "זמן"
-
-#: grecord/src/gui.c:737
-msgid "_Recording timeout: "
-msgstr "_הפסקת הקלטה: "
-
-#: grecord/src/gui.c:760
-msgid "_Stop recording on timeout"
-msgstr "_עצור הקלטה בהפסקת ההקלטה"
-
-#: grecord/src/gui.c:768
-msgid "_Open save dialog when recording is finished"
-msgstr "_פתח תיבת דו-שיח שמירה כשההקלטה מסתיימת"
-
-#: grecord/src/gui.c:775
-msgid "Size"
-msgstr "גודל"
-
-#: grecord/src/gui.c:784
-msgid "Show warning _message if size (MB) of sample becomes bigger than:"
-msgstr "הצג הודעת _שגיאה אם הגודל (MB) של הדגימה נעשה גדול מ:"
-
-#: grecord/src/gui.c:802
-msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
-msgstr "ע_צור הקלטה אם הגודל (MB) של הדגימה נעשה גדול מ:"
-
-#: grecord/src/gui.c:829
-msgid "Repetition"
-msgstr "חזרה"
-
-#: grecord/src/gui.c:839
-msgid "_Repeat the sound"
-msgstr "_חזור על הקול"
-
-#: grecord/src/gui.c:846
-msgid "Play the sound _once only."
-msgstr "נגן את הקול פעם _אחת בלבד."
-
-#: grecord/src/gui.c:852
-msgid "Repeat _forever"
-msgstr "חזור _לנצח"
-
-#: grecord/src/gui.c:863
-msgid "_Number of times:"
-msgstr "_מספר פעמים:"
-
-#: grecord/src/gui.c:885
-msgid "Paths"
-msgstr "נתיבים"
-
-#: grecord/src/gui.c:890
-msgid "Program files"
-msgstr "קבצי תוכנית"
-
-#: grecord/src/gui.c:903
-msgid "_Path to sox:"
-msgstr "_נתיב ל sox:"
-
-#: grecord/src/gui.c:917
-msgid "_Apply"
-msgstr "_החל"
-
-#: grecord/src/gui.c:926
-msgid "Folders"
-msgstr "תיקיות"
-
-#: grecord/src/gui.c:939
-msgid "_Temporary folder:"
-msgstr "תיקייה _זמנית:"
-
-#: grecord/src/gui.c:953
-msgid "Apply"
-msgstr "החל"
-
-#: grecord/src/gui.c:965
-msgid "Sound"
-msgstr "קול"
-
-#: grecord/src/gui.c:970
-msgid "Sound options"
-msgstr "אפשרויות קול"
-
-#: grecord/src/gui.c:979
-msgid ""
-"Note: These options only take effect whenever a new sound sample\n"
-"is created. They do not operate on an existing sample."
-msgstr ""
-"הערה: אפשרויות אלו יפעלו רק כשתיווצר דגימה חדשה.\n"
-"הם לא יפעלו על הדגימה הנוכחית."
-
-#: grecord/src/gui.c:992
-msgid "Audio format:"
-msgstr "פורמט שמע:"
-
-#: grecord/src/gui.c:1001
-msgid "8 _bit PCM"
-msgstr "8 _סיביות PCM"
-
-#: grecord/src/gui.c:1007
-msgid "16 b_it PCM"
-msgstr "16 סי_ביות PCM"
-
-#. If only combos didn't suck!
-#: grecord/src/gui.c:1021
-msgid "S_ample rate:"
-msgstr "קצב דגימה:"
-
-#: grecord/src/gui.c:1052
-msgid "Mono or Stereo:"
-msgstr "מונו או סטריאו:"
-
-#: grecord/src/gui.c:1061
-msgid "_Mono"
-msgstr "_מונו"
-
-#: grecord/src/gui.c:1067
-msgid "_Stereo"
-msgstr "_סטריאו"
-
-#: grecord/src/gui.c:1088
-msgid "Stereo"
-msgstr "סטריאו"
-
-#: grecord/src/main.c:50
-msgid "Specify the geometry of the main window"
-msgstr "ציין את הגיאומטריה של החלון הראשי"
-
-#: grecord/src/main.c:51
-msgid "GEOMETRY"
-msgstr "גיאומטריה"
-
-#: grecord/src/main.c:59
-msgid "Specify a file to be opened"
-msgstr "ציין קובץ לפתיחה"
-
-#: grecord/src/main.c:68
-msgid "Specify a file to start recording"
-msgstr "ציין קובץ להתחלת ההקלטה"
-
-#: grecord/src/main.c:77
-msgid "Specify a file to start playing"
-msgstr "ציין קובץ להתחלת הנגינה"
-
-#: grecord/src/main.c:172
-msgid "Sound recorder"
-msgstr "רשמקול"
-
-#: grecord/src/preferences.c:201
-msgid "Audio format: 8bit PCM"
-msgstr "פורמט שמע: 8 סיביות PCM"
-
-#: grecord/src/preferences.c:201
-msgid "Audio format: 16bit PCM"
-msgstr "פורמט שמע: 16 סיביות PCM"
-
-#: grecord/src/preferences.c:222
-#, c-format
-msgid "Sample rate: %s"
-msgstr "קצב דגימה: %s"
-
-#: grecord/src/preferences.c:240
-msgid "Channels: mono"
-msgstr "ערוצים: מונו"
-
-#: grecord/src/preferences.c:240
-msgid "Channels: stereo"
-msgstr "ערוצים: סטריאו"
-
-#: grecord/src/sound.c:137
-msgid "Adding echo to sample..."
-msgstr "מוסיף הד לדגימה..."
 
 #: grecord/gsr.xml.h:1
 msgid "About"
@@ -2307,9 +1283,17 @@ msgstr "סוגר את החלון הזה"
 msgid "Contents"
 msgstr "תכנים"
 
+#: grecord/gsr.xml.h:5
+msgid "Create a new sample"
+msgstr "צור דגימה חדשה"
+
 #: grecord/gsr.xml.h:6
 msgid "Display help for Sound Recorder"
 msgstr "מציג עזרה לרשמקול"
+
+#: grecord/gsr.xml.h:7 grecord/src/gsr-window.c:783
+msgid "File Information"
+msgstr "מידע על הקובץ"
 
 #: grecord/gsr.xml.h:8
 msgid "File _Information"
@@ -2319,9 +1303,17 @@ msgstr "_מידע על הקובץ"
 msgid "Main toolbar"
 msgstr "סרגל כלים ראשי"
 
+#: grecord/gsr.xml.h:10
+msgid "New"
+msgstr "חדש"
+
 #: grecord/gsr.xml.h:11
 msgid "Open"
 msgstr "פתח"
+
+#: grecord/gsr.xml.h:12 grecord/src/gsr-window.c:346
+msgid "Open a file"
+msgstr "פותח קובץ"
 
 #: grecord/gsr.xml.h:14
 msgid "Play sound"
@@ -2339,6 +1331,10 @@ msgstr "יציאה מהיישום"
 msgid "Recent _Files"
 msgstr "_קבצים אחרונים"
 
+#: grecord/gsr.xml.h:18
+msgid "Record"
+msgstr "הקלט"
+
 #: grecord/gsr.xml.h:19
 msgid "Record sound"
 msgstr "הקלט קול"
@@ -2346,6 +1342,10 @@ msgstr "הקלט קול"
 #: grecord/gsr.xml.h:20
 msgid "Run Mixer"
 msgstr "הפעל מערבל"
+
+#: grecord/gsr.xml.h:21
+msgid "Run _Mixer"
+msgstr "הפעל _מערבל"
 
 #: grecord/gsr.xml.h:22
 msgid "Run the audio mixer"
@@ -2403,6 +1403,10 @@ msgstr "_בקרה"
 msgid "_File"
 msgstr "_קובץ"
 
+#: grecord/gsr.xml.h:38
+msgid "_New"
+msgstr "_חדש"
+
 #: grecord/gsr.xml.h:39
 msgid "_Open..."
 msgstr "_פתיחה..."
@@ -2423,13 +1427,247 @@ msgstr "_הקלט"
 msgid "_Save"
 msgstr "_שמור"
 
+#: grecord/src/gnome-recorder.c:162
+#, fuzzy
+msgid "Dummy option"
+msgstr "אפשרויות קול"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "שעות"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "שעה"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minutes"
+msgstr "דקות"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "דקה"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "שניות"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "שניה"
+
+#: grecord/src/gsr-window.c:398 grecord/src/gsr-window.c:1193
+#: grecord/src/gsr-window.c:1357 grecord/src/gsr-window.c:1627
+msgid "Ready"
+msgstr "מוכן"
+
+#: grecord/src/gsr-window.c:529
+msgid "Save file as"
+msgstr "שמור קובץ בשם"
+
+#: grecord/src/gsr-window.c:585
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "%s .לא מותקן בנתיב"
+
+#: grecord/src/gsr-window.c:595
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr "ארעה שגיאה בהפעלת %s: %s"
+
+#: grecord/src/gsr-window.c:672
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (טרם נשמר)"
+
+#: grecord/src/gsr-window.c:688
+msgid "Unknown size"
+msgstr "גודל לא ידוע"
+
+#: grecord/src/gsr-window.c:708
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f kHz"
+
+#: grecord/src/gsr-window.c:717
+#, c-format
+msgid "%.0f kb/s"
+msgstr "%.0f kb/s"
+
+#: grecord/src/gsr-window.c:729
+msgid "1 (mono)"
+msgstr "1 (מונו)"
+
+#: grecord/src/gsr-window.c:733
+msgid "2 (stereo)"
+msgstr "2 (סטריאו)"
+
+#: grecord/src/gsr-window.c:762
+#, c-format
+msgid "%s Information"
+msgstr "מידע %s"
+
+#: grecord/src/gsr-window.c:797
+msgid "Folder:"
+msgstr "תיקייה:"
+
+#: grecord/src/gsr-window.c:803 grecord/src/gsr-window.c:1559
+msgid "Filename:"
+msgstr "שם הקובץ:"
+
+#: grecord/src/gsr-window.c:809
+msgid "File size:"
+msgstr "גודל הקובץ:"
+
+#: grecord/src/gsr-window.c:818
+msgid "Audio Information"
+msgstr "מידע שמע"
+
+#: grecord/src/gsr-window.c:832
+msgid "Song length:"
+msgstr "אורך השיר:"
+
+#: grecord/src/gsr-window.c:838
+msgid "Number of channels:"
+msgstr "מספר ערוצים:"
+
+#: grecord/src/gsr-window.c:844
+msgid "Sample rate:"
+msgstr "קצב דגימה:"
+
+#: grecord/src/gsr-window.c:850
+msgid "Bit rate:"
+msgstr "קצב:"
+
+#: grecord/src/gsr-window.c:916
+msgid "A sound recorder for GNOME"
+msgstr "רשמקול ל GNOME"
+
+#: grecord/src/gsr-window.c:1178
+msgid "Playing..."
+msgstr "מנגן..."
+
+#: grecord/src/gsr-window.c:1237
+#, fuzzy, c-format
+msgid "%s.%s - Sound Recorder"
+msgstr "%s - רשמקול"
+
+#: grecord/src/gsr-window.c:1328
+msgid "Recording..."
+msgstr "מקליט..."
+
+#: grecord/src/gsr-window.c:1388
+msgid ""
+"There is no default GStreamer audio input element set - please install the "
+"GStreamer-GConf schemas or set one manually"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1403
+msgid "Failed to create GStreamer encoder elements - check your encoding setup"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1413
+msgid "Could not find GStreamer filesink plugin - please install it"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1421
+msgid ""
+"Failed to link encoder elements with file output element - you probably "
+"selected an invalid encoder"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1527
+#, fuzzy
+msgid "Record as"
+msgstr "הקלט"
+
+#: grecord/src/gsr-window.c:1544
+msgid "File information"
+msgstr "מידע על הקובץ"
+
+#: grecord/src/gsr-window.c:1566
+msgid "<none>"
+msgstr "<ללא>"
+
+#: grecord/src/gsr-window.c:1575
+msgid "Length:"
+msgstr "אורך:"
+
+#: gst-mixer/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr "קבע את רמת העוצמה"
+
+#. create main window + menus
+#: gst-mixer/gnome-volume-control.desktop.in.h:2 gst-mixer/src/mixer.c:588
+#: gst-mixer/src/mixer.c:681
+msgid "Volume Control"
+msgstr "בקרת עוצמה"
+
+#: gst-mixer/src/mixer.c:258
+#, c-format
+msgid "%s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:260
+#, c-format
+msgid "Channel %d of %s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:261
+#, c-format
+msgid "%s Slider %d"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:274
+msgid "Lock"
+msgstr "נעל"
+
+#: gst-mixer/src/mixer.c:284
+#, c-format
+msgid "%s Lock"
+msgstr "%s נעול"
+
+#. mute button
+#: gst-mixer/src/mixer.c:290 gst-mixer/src/mixer.c:386
+msgid "Mute"
+msgstr "השתק"
+
+#: gst-mixer/src/mixer.c:302 gst-mixer/src/mixer.c:398
+#, c-format
+msgid "%s Mute"
+msgstr "%s מושתק"
+
+#: gst-mixer/src/mixer.c:308
+msgid "Rec."
+msgstr "הקלט"
+
+#: gst-mixer/src/mixer.c:320
+#, c-format
+msgid "%s Record"
+msgstr "%s מקליט"
+
+#: gst-mixer/src/mixer.c:591
+msgid "A GNOME/GStreamer-based mixer application"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:698
+msgid "Sorry, no mixer elements and/or devices found"
+msgstr ""
+
 #. Fatal error
-#: gstreamer-properties/gstreamer-properties.c:263
+#: gstreamer-properties/gstreamer-properties.c:274
 msgid "Failure instantiating main window"
 msgstr "שגיאה ביצירת עותק של החלון הראשי"
 
 #. Fatal error
-#: gstreamer-properties/gstreamer-properties.c:303
+#: gstreamer-properties/gstreamer-properties.c:312
 #, c-format
 msgid "Could not load UI resource %s"
 msgstr "לא ניתן לטעון משאב ממשק משתמש %s"
@@ -2439,72 +1677,330 @@ msgid "Configure defaults for GStreamer applications"
 msgstr "הגדר ברירות מחדל ליישומי GStreamer"
 
 #: gstreamer-properties/gstreamer-properties.desktop.in.h:2
-msgid "GStreamer"
-msgstr "GStreamer"
+msgid "Multimedia Systems Selector"
+msgstr ""
 
 #: gstreamer-properties/gstreamer-properties.glade.h:1
+#: profiles/gnome-audio-profiles.glade2.h:1
 msgid "*"
 msgstr "*"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<b>Default Sink</b>"
+msgstr "<b>קולט ברירת מחדל</b>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "<b>Default Source</b>"
+msgstr "<b>מקור ברירת מחדל</b>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
 msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
 msgstr "<span weight=\"bold\" size=\"x-large\">בודק...</span>"
 
-#: gstreamer-properties/gstreamer-properties.glade.h:3
+#: gstreamer-properties/gstreamer-properties.glade.h:5
 msgid "Audio"
 msgstr "שמע"
 
-#: gstreamer-properties/gstreamer-properties.glade.h:4
-msgid "Audio _Input:"
-msgstr "_קלט שמע:"
-
-#: gstreamer-properties/gstreamer-properties.glade.h:5
-msgid "Audio _Output:"
-msgstr "_פלט שמע:"
-
 #: gstreamer-properties/gstreamer-properties.glade.h:6
-msgid "Click Ok to finish"
-msgstr "לחץ אישור לסיום"
+msgid "Click Ok to finish."
+msgstr "לחץ אישור לסיום."
 
 #: gstreamer-properties/gstreamer-properties.glade.h:7
-msgid "Default Sink"
-msgstr "קולט ברירת מחדל"
+msgid "GStreamer Preferences"
+msgstr "העדפות GStreamer"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:8
-msgid "Default Source"
-msgstr "מקור ברירת מחדל"
+msgid "Pipe_line:"
+msgstr "צי_נור:"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:9
-msgid "GStreamer Properties"
-msgstr "מאפייני GStreamer"
+msgid "Te_st"
+msgstr "_בדוק"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:10
-msgid "Pipeline:"
-msgstr "צינור:"
-
-#: gstreamer-properties/gstreamer-properties.glade.h:11
-msgid "Test..."
-msgstr "בדוק..."
-
-#: gstreamer-properties/gstreamer-properties.glade.h:12
 msgid "Testing Pipeline"
 msgstr "בודק צינור"
 
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Video"
+msgstr "וידאו"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "_Input:"
+msgstr "_קלט:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:13
+msgid "_Output:"
+msgstr "_פלט:"
+
 #: gstreamer-properties/gstreamer-properties.glade.h:14
-msgid "Video _Input:"
-msgstr "_קלט וידאו:"
+msgid "_Pipeline:"
+msgstr "_צינור:"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:15
-msgid "Video _Output:"
-msgstr "_פלט וידאו:"
+msgid "_Test"
+msgstr "_בדוק"
+
+#: gstreamer-properties/pipeline-constants.c:61
+#: gstreamer-properties/pipeline-constants.c:83
+#: gstreamer-properties/pipeline-constants.c:100
+#: gstreamer-properties/pipeline-constants.c:115
+msgid "Custom"
+msgstr "מותאם אישית"
 
 #: gstreamer-properties/pipeline-test-old.c:215
-#: gstreamer-properties/pipeline-tests.c:111
+#: gstreamer-properties/pipeline-tests.c:110
 #, c-format
 msgid "Failed to construct test pipeline for '%s'"
 msgstr "נכשל בהקמת צינור ניסיון ל '%s'"
 
-#: vu-meter/main.c:120
+#: profiles/audio-profile-edit.c:164
+#, fuzzy, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+"ארעה שגיאה בהצגת העזרה: \n"
+"%s"
+
+#: profiles/audio-profile-edit.c:366
+#, fuzzy, c-format
+msgid "Editing profile \"%s\""
+msgstr "ערוך זיהוי תקליטור: %s"
+
+#: profiles/audio-profile.c:103
+#, fuzzy
+msgid "<not named>"
+msgstr "<ללא>"
+
+#: profiles/audio-profile.c:104
+msgid "<not described>"
+msgstr ""
+
+#: profiles/audio-profile.c:219
+#, fuzzy, c-format
+msgid "There was an error getting the list of gm_audio profiles. (%s)\n"
+msgstr "ארעה שגיאה בהפעלת %s: %s"
+
+#: profiles/audio-profile.c:720
+#, fuzzy, c-format
+msgid ""
+"There was an error subscribing to notification of audio profile list "
+"changes. (%s)\n"
+msgstr "ארעה שגיאה בהפעלת %s: %s"
+
+#: profiles/audio-profile.c:910
+#, fuzzy, c-format
+msgid "There was an error forgetting profile path %s. (%s)\n"
+msgstr "ארעה שגיאה בהפעלת %s: %s"
+
+#: profiles/audio-profile.c:1002
+msgid "<no description>"
+msgstr ""
+
+#: profiles/audio-profile.c:1013
+msgid "identity"
+msgstr ""
+
+#: profiles/audio-profile.c:1024
+msgid "wav"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:115
+#, fuzzy
+msgid "_Edit"
+msgstr "_יציאה"
+
+#: profiles/audio-profiles-edit.c:452
+msgid "You must select one or more profiles to delete."
+msgstr ""
+
+#. the first argument will never be used since we only run for count > 1
+#: profiles/audio-profiles-edit.c:461
+#, fuzzy, c-format
+msgid "Delete this profile?\n"
+msgid_plural "Delete these %d profiles?\n"
+msgstr[0] "בחר קובץ קול"
+msgstr[1] "בחר קובץ קול"
+
+#: profiles/audio-profiles-edit.c:480
+#, c-format
+msgid "Delete profile \"%s\"?"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:502
+#, fuzzy
+msgid "Delete Profile"
+msgstr "בחר קובץ קול"
+
+#.
+#. dialog =
+#. gtk_dialog_new_with_buttons (_("Edit Profiles"),
+#. NULL,
+#. GTK_DIALOG_DESTROY_WITH_PARENT,
+#. GTK_STOCK_HELP,
+#. GTK_RESPONSE_HELP,
+#. GTK_STOCK_CLOSE,
+#. GTK_RESPONSE_ACCEPT,
+#. NULL);
+#.
+#. FIXME: GTK_DIALOG_DESTROY_WITH_PARENT,
+#: profiles/audio-profiles-edit.c:597
+#, fuzzy
+msgid "Edit GMAudio Profiles"
+msgstr "ערוך זיהוי תקליטור: %s"
+
+#: profiles/audio-profiles-edit.c:650
+#, fuzzy
+msgid "_Profiles:"
+msgstr "קבצי תוכנית"
+
+#: profiles/audio-profiles-edit.c:878
+#, c-format
+msgid "You already have a profile called \"%s\""
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:903
+#, c-format
+msgid "GConf Error (FIXME): %s\n"
+msgstr ""
+
+#: profiles/gmp-util.c:64
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:2
+msgid "Edit Audio Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:3
+#, fuzzy
+msgid "File _Extension:"
+msgstr "גודל הקובץ:"
+
+#: profiles/gnome-audio-profiles.glade2.h:4
+msgid "New Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:5
+msgid "Profile Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:6
+msgid "Profile _Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:7
+#, fuzzy
+msgid "Profile _name:"
+msgstr "שם הקובץ:"
+
+#: profiles/gnome-audio-profiles.glade2.h:8
+msgid "_Active?"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:9
+#, fuzzy
+msgid "_Create"
+msgstr "מרכז"
+
+#: profiles/gnome-audio-profiles.glade2.h:10
+#, fuzzy
+msgid "_GStreamer Pipeline:"
+msgstr "העדפות GStreamer"
+
+#: profiles/gnome-audio-profiles.glade2.h:11
+#, fuzzy
+msgid "_Profile name:"
+msgstr "שם הקובץ:"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:1
+msgid "A description for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:2
+msgid ""
+"A description of the profile, containing more information and describing "
+"when to use this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:3
+msgid ""
+"A filename extension to be used when storing files encoded with this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:4
+msgid "A partial GStreamer pipeline to use for this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:5
+msgid "A short name for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:6
+msgid ""
+"A short name for the audio profile, to be used in selections and uniquely "
+"identifying the profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:7
+msgid "CD Quality, Lossless"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:8
+msgid "CD Quality, Lossy"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:9
+msgid ""
+"List of audio recording profiles. The list contains strings naming "
+"subdirectories relative to /system/gstreamer/audio/profiles."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:10
+msgid "List of profiles"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:11
+msgid "The default file extension for this profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:12
+msgid "The partial GStreamer pipeline used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:13
+msgid ""
+"Used for converting to CD-quality audio, but with a lossless compression "
+"codec. Use this if you later want to edit the file or burn it to CD."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:14
+msgid ""
+"Used for converting to CD-quality audio, but with a lossy compression codec. "
+"Use this for CD extraction and radio recordings."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:15
+msgid ""
+"Used for converting to voice-quality audio. Use this for recording speech."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:16
+#, fuzzy
+msgid "Voice"
+msgstr "וידאו"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:17
+msgid "Whether or not this profile is to be used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:18
+msgid "Whether or not to use and display this profile."
+msgstr ""
+
+#: vu-meter/main.c:102
 msgid ""
 "Cannot connect to sound daemon.\n"
 "Please run 'esd' at a command prompt."
@@ -2512,48 +2008,48 @@ msgstr ""
 "לא ניתן להתחבר לשירות הקול.\n"
 "אנא הפעל 'esd' בשורת הפקודה."
 
-#: vu-meter/main.c:246
+#: vu-meter/main.c:228
 msgid "Specify the X position of the meter."
 msgstr "ציין את מיקום ה X של המד."
 
-#: vu-meter/main.c:247
+#: vu-meter/main.c:229
 msgid "X-Position"
 msgstr "מיקום X"
 
-#: vu-meter/main.c:249
+#: vu-meter/main.c:231
 msgid "Specify the Y position of the meter."
 msgstr "ציין את מיקום ה Y של המד."
 
-#: vu-meter/main.c:250
+#: vu-meter/main.c:232
 msgid "Y-Position"
 msgstr "מיקום Y"
 
-#: vu-meter/main.c:252
+#: vu-meter/main.c:234
 msgid "Connect to the esd server on this host."
 msgstr "התחבר לשרת esd במארח הזה."
 
-#: vu-meter/main.c:253
+#: vu-meter/main.c:235
 msgid "ESD Server Host"
 msgstr "מארח שרת ESD"
 
-#: vu-meter/main.c:255
+#: vu-meter/main.c:237
 msgid "Open a vertical version of the meter."
 msgstr "פתח גירסה אנכית של המד."
 
-#: vu-meter/main.c:257
+#: vu-meter/main.c:239
 msgid "Act as recording level meter."
 msgstr "התנהג כמד רמת הקלטה."
 
-#: vu-meter/main.c:274
+#: vu-meter/main.c:256
 #, c-format
 msgid "Host is %s\n"
 msgstr "המארח הוא %s\n"
 
-#: vu-meter/main.c:291
+#: vu-meter/main.c:273
 msgid "Recording level"
 msgstr "רמת הקלטה"
 
-#: vu-meter/main.c:291
+#: vu-meter/main.c:273
 msgid "Volume Meter"
 msgstr "מד עוצמה"
 
@@ -2573,8 +2069,682 @@ msgstr "מציג את עוצמת יציאת הקול"
 msgid "Volume monitor"
 msgstr "צג עוצמה"
 
-#~ msgid "Gnome Volume Control"
+#~ msgid "Unknown artist"
+#~ msgstr "אמן לא ידוע"
+
+#~ msgid "Unknown disc"
+#~ msgstr "דיסק לא ידוע"
+
+#, fuzzy
+#~ msgid "GStreamer Volume Control"
 #~ msgstr "בקרת העוצמה של GNOME"
+
+#~ msgid "GStreamer"
+#~ msgstr "GStreamer"
+
+#, fuzzy
+#~ msgid "_Replace"
+#~ msgstr "חלל"
+
+#, fuzzy
+#~ msgid ""
+#~ "A file named \"%s\" already exists.\n"
+#~ "Do you want to replace it with the one you are saving?"
+#~ msgstr ""
+#~ "<b>הקובץ '%s' כבר קיים.</b>\n"
+#~ "האם ברצונך להחליף אותו?"
+
+#, fuzzy
+#~ msgid "Could not build pipeline"
+#~ msgstr "לא ניתן לשכפל הליך ילד"
+
+#~ msgid "Saving %s..."
+#~ msgstr "שומר %s..."
+
+#~ msgid "Synth"
+#~ msgstr "Synth"
+
+#~ msgid "PCM"
+#~ msgstr "PCM"
+
+#~ msgid "DAC"
+#~ msgstr "DAC"
+
+#~ msgid "FM"
+#~ msgstr "FM"
+
+#~ msgid "DSP Input"
+#~ msgstr "קלט DSP"
+
+#~ msgid "Line"
+#~ msgstr "קו"
+
+#~ msgid "MIC"
+#~ msgstr "מיקרופון"
+
+#~ msgid "CD"
+#~ msgstr "תקליטור"
+
+#~ msgid "Radio"
+#~ msgstr "רדיו"
+
+#~ msgid "Phone"
+#~ msgstr "טלפון"
+
+#~ msgid "Mono"
+#~ msgstr "מונו"
+
+#~ msgid "PC Speaker"
+#~ msgstr "רמקול המערכת"
+
+#~ msgid "Aux"
+#~ msgstr "Aux"
+
+#~ msgid "Center Input"
+#~ msgstr "קלט מרכז"
+
+#~ msgid "Woofer Input"
+#~ msgstr "קלט וופר"
+
+#~ msgid "Surround Input"
+#~ msgstr "קלט סרוונד"
+
+#~ msgid "Master"
+#~ msgstr "כללי"
+
+#~ msgid "Master Mono"
+#~ msgstr "כללי מונו"
+
+#~ msgid "Master Digital"
+#~ msgstr "כללי דיגיטלי"
+
+#~ msgid "Headphone"
+#~ msgstr "אוזניות"
+
+#~ msgid "Phone Output"
+#~ msgstr "פלט טלפון"
+
+#~ msgid "Center"
+#~ msgstr "מרכז"
+
+#~ msgid "Woofer"
+#~ msgstr "וופר"
+
+#~ msgid "Surround"
+#~ msgstr "סרוונד"
+
+#~ msgid "DSP Output"
+#~ msgstr "פלט DSP"
+
+#~ msgid "Treble"
+#~ msgstr "טריבל"
+
+#~ msgid "Equalizer"
+#~ msgstr "אקווילייזר"
+
+#~ msgid "Fader"
+#~ msgstr "פאדר"
+
+#~ msgid "Effect"
+#~ msgstr "אפקט"
+
+#~ msgid "3D Effect"
+#~ msgstr "אפקט 3D"
+
+#~ msgid "Mic Gain"
+#~ msgstr "מיקרופון נוסף"
+
+#~ msgid "Input Gain"
+#~ msgstr "קלט נוסף"
+
+#~ msgid "Output Gain"
+#~ msgstr "פלט נוסף"
+
+#~ msgid "Analog Loopback"
+#~ msgstr "לולאת חזרה אנאלוגית"
+
+#~ msgid "Digital Loopback"
+#~ msgstr "לולאת חזרה דיגיטלית"
+
+#~ msgid "Vol  "
+#~ msgstr "עוצמה  "
+
+#~ msgid "Bass "
+#~ msgstr "בס "
+
+#~ msgid "Trebl"
+#~ msgstr "טריבל"
+
+#~ msgid "Pcm  "
+#~ msgstr "Pcm  "
+
+#~ msgid "Spkr "
+#~ msgstr "רמקול "
+
+#~ msgid "Line "
+#~ msgstr "קו "
+
+#~ msgid "Mic  "
+#~ msgstr "מיקרופון "
+
+#~ msgid "CD   "
+#~ msgstr "תקליטור   "
+
+#~ msgid "Mix  "
+#~ msgstr "מערבל  "
+
+#~ msgid "Pcm2 "
+#~ msgstr "Pcm2 "
+
+#~ msgid "Rec  "
+#~ msgstr "הקלטה  "
+
+#~ msgid "IGain"
+#~ msgstr "ק-נוסף"
+
+#~ msgid "OGain"
+#~ msgstr "פ-נוסף"
+
+#~ msgid "Line1"
+#~ msgstr "קו1"
+
+#~ msgid "Line2"
+#~ msgstr "קו2"
+
+#~ msgid "Line3"
+#~ msgstr "קו3"
+
+#~ msgid "Digital1"
+#~ msgstr "דיגיטלי1"
+
+#~ msgid "Digital2"
+#~ msgstr "דיגיטלי2"
+
+#~ msgid "Digital3"
+#~ msgstr "דיגיטלי3"
+
+#~ msgid "PhoneIn"
+#~ msgstr "כניסת טלפון"
+
+#~ msgid "PhoneOut"
+#~ msgstr "יציאת טלפון"
+
+#~ msgid "Monitor"
+#~ msgstr "צג"
+
+#~ msgid "Help"
+#~ msgstr "עזרה"
+
+#~ msgid "Mixer device to use"
+#~ msgstr "התקן מערבל לשימוש"
+
+#~ msgid ""
+#~ "Volume control is unable to run correctly.\n"
+#~ "\n"
+#~ "Unable to open audio device '%s'.\n"
+#~ "Please check that you have permissions to open '%s'\n"
+#~ "and that you have sound support in your kernel.\n"
+#~ "\n"
+#~ "Press Quit to exit Volume control"
+#~ msgstr ""
+#~ "בקרת העוצמה לא יכולה לפעול כראוי.\n"
+#~ "\n"
+#~ "לא ניתן לפתוח את התקן השמע '%s'.\n"
+#~ "אנא בדוק שיש לך את ההרשאות לפתוח את '%s'\n"
+#~ "ושיש לך תמיכת קול בגרעין.\n"
+#~ "\n"
+#~ "לחץ יציאה כדי לצאת מבקרת העוצמה"
+
+#~ msgid ""
+#~ "Volume control is unable to run correctly.\n"
+#~ "\n"
+#~ "Press the details button for more details on the reasons for failure.\n"
+#~ "\n"
+#~ "Press Quit to quit Volume control"
+#~ msgstr ""
+#~ "בקרת העוצמה לא יכולה לפעול כראוי.\n"
+#~ "\n"
+#~ "לחץ על כפתור הפרטים לעוד פרטים על הסיבות לכישלון.\n"
+#~ "\n"
+#~ "לחץ יציאה כדי לצאת מבקרת העוצמה"
+
+#~ msgid "Invalid mixer device"
+#~ msgstr "התקן מערבל לא תקני"
+
+#~ msgid ""
+#~ "Warning: This version of the Gnome Volume Control was compiled with\n"
+#~ "OSS version %d.%d.%d, and your system is running\n"
+#~ "a version prior to 3.6.0.\n"
+#~ msgstr ""
+#~ "אזהרה: גירסה זו של שליטה בעוצמת השמע הודרה עם\n"
+#~ "OSS בגירסה %d.%d.%d, והמערכת שלך מפעילה\n"
+#~ "גירסה קודמת ל 3.6.0.\n"
+
+#~ msgid ""
+#~ "Warning: This version of the Gnome Volume Control was compiled with\n"
+#~ "OSS version %d.%d.%d, and your system is running\n"
+#~ "version %d.%d.%d.\n"
+#~ msgstr ""
+#~ "אזהרה: גירסה זו של שליטה בעוצמת השמע הודרה עם\n"
+#~ "OSS בגירסה %d.%d.%d, והמערכת שלך מפעילה\n"
+#~ "גירסה קודמת ל %d.%d.%d.\n"
+
+#~ msgid "left %s"
+#~ msgstr "שמאלה %s"
+
+#~ msgid "Right %s"
+#~ msgstr "ימינה %s"
+
+#~ msgid "GNOME Volume Control"
+#~ msgstr "בקרת העוצמה של GNOME"
+
+#~ msgid "A mixer for sound devices"
+#~ msgstr "מערבל להתקני השמע"
+
+#~ msgid "Shown"
+#~ msgstr "מוצג"
+
+#~ msgid "Mixer label"
+#~ msgstr "תווית המערבל"
+
+#~ msgid "_Reset labels to their defaults"
+#~ msgstr "_החזר תוויות לברירת המחדל"
+
+#~ msgid "Gnome Volume Control Preferences"
+#~ msgstr "העדפות בקרת העוצמה של GNOME"
+
+#~ msgid "Sound Recorder:"
+#~ msgstr "רשמקול:"
+
+#~ msgid "Don't show this message again."
+#~ msgstr "אל תציג הודעה זו שוב."
+
+#~ msgid ""
+#~ "Could not find '%s'.\n"
+#~ "Set the correct path to sox inpreferences under the tab 'paths'.\n"
+#~ "\n"
+#~ "If you don't have sox, you will not be able to record or do any effects."
+#~ msgstr ""
+#~ "לא ניתן למצוא '%s'.\n"
+#~ "קבע את הנתיב הנכון להגדרות sox תחת הכרטיסייה 'נתיבים'.\n"
+#~ "\n"
+#~ "אם אין לך sox, לא תוכל להקליט או לעשות אפקטים כלשהם."
+
+#~ msgid "Converting file..."
+#~ msgstr "ממיר קובץ..."
+
+#~ msgid "Cancel"
+#~ msgstr "ביטול"
+
+#~ msgid "Audioformat: "
+#~ msgstr "פורמט שמע: "
+
+#~ msgid "Sample rate: "
+#~ msgstr "קצב דגימה: "
+
+#~ msgid "Channels: "
+#~ msgstr "ערוצים: "
+
+#~ msgid "Cancel open"
+#~ msgstr "בטל פתיחה"
+
+#~ msgid "Select a sound file"
+#~ msgstr "בחר קובץ קול"
+
+#~ msgid "%s is not installed in the path"
+#~ msgstr "%s לא מותקן בנתיב"
+
+#~ msgid "Undoing all changes..."
+#~ msgstr "מבטל את כל השינויים..."
+
+#~ msgid ""
+#~ "'%s' is a folder.\n"
+#~ "Please select a sound file to be opened."
+#~ msgstr ""
+#~ "'%s' זה תיקייה.\n"
+#~ "אנא בחר קובץ קול לפתיחה."
+
+#~ msgid ""
+#~ "File '%s' doesn't exist.\n"
+#~ "Please select an existing sound file to be opened."
+#~ msgstr ""
+#~ "הקובץ '%s' לא קיים.\n"
+#~ "אנא בחר קובץ קול קיים לפתיחה."
+
+#~ msgid "File '%s isn't a valid sound file."
+#~ msgstr "הקובץ '%s' אינו קובץ קול תקני."
+
+#~ msgid ""
+#~ "'%s' is a folder.\n"
+#~ "Please enter another filename."
+#~ msgstr ""
+#~ "'%s' זה תיקייה.\n"
+#~ "אנא הכנס שם קובץ אחר."
+
+#~ msgid "Cancel save"
+#~ msgstr "בטל שמירה"
+
+#~ msgid "Overwrite"
+#~ msgstr "החלף"
+
+#~ msgid "Error saving '%s'"
+#~ msgstr "שגיאה בשמירת '%s'"
+
+#~ msgid ""
+#~ "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
+#~ "\n"
+#~ "Your changes will be lost if you don't save them."
+#~ msgstr ""
+#~ "<b>האם ברצונך לשמור את השינויים שביצעת ב \"%s\"?</b>\n"
+#~ "\n"
+#~ "השינויים שלך יאבדו אם לא תשמור אותם."
+
+#~ msgid "Do_n't save"
+#~ msgstr "_אל תשמור"
+
+#~ msgid "Save %s?"
+#~ msgstr "לשמור %s?"
+
+#~ msgid "Saving..."
+#~ msgstr "שומר..."
+
+#~ msgid ""
+#~ "The size of the current sample is more than\n"
+#~ "%i Mb!"
+#~ msgstr ""
+#~ "הגודל של הדגימה הנוכחית גדול יותר מ:\n"
+#~ "%i MB!"
+
+#~ msgid "Save sound file"
+#~ msgstr "שמור קובץ קול"
+
+#~ msgid ""
+#~ "The sound device is not ready. Please check that there isn't\n"
+#~ "another program running that is using the device."
+#~ msgstr ""
+#~ "התקן הקול אינו מוכן. אנא בדוק שאין\n"
+#~ "תוכנה אחרת שרצה שמשתמשת בהתקן."
+
+#~ msgid "Run GNOME Volume Control"
+#~ msgstr "הפעל את בקרת העוצמה של GNOME"
+
+#~ msgid "Add echo"
+#~ msgstr "הוסף הד"
+
+#~ msgid "Add echo to the current sample"
+#~ msgstr "הוסף הד לדגימה הנוכחית"
+
+#~ msgid "Echo"
+#~ msgstr "הד"
+
+#~ msgid "_Undo All"
+#~ msgstr "_בטל הכל"
+
+#~ msgid "Undo all changes made on the current sample"
+#~ msgstr "בטל את כל השינויים שנעשו לדגימה הנוכחית"
+
+#~ msgid "Effects"
+#~ msgstr "אפקטים"
+
+#~ msgid "16bit PCM"
+#~ msgstr "16 סיביות PCM"
+
+#~ msgid "8bit PCM"
+#~ msgstr "8 סיביות PCM"
+
+#~ msgid "stereo"
+#~ msgstr "סטריאו"
+
+#~ msgid "mono"
+#~ msgstr "מונו"
+
+#~ msgid "Create new sample"
+#~ msgstr "צור דגימה חדשה"
+
+#~ msgid "Play current sample"
+#~ msgstr "נגן דגימה נוכחית"
+
+#~ msgid "Stop playing/recording"
+#~ msgstr "עצור נגינה/הקלטה"
+
+#~ msgid "Start recording"
+#~ msgstr "מתחיל להקליט"
+
+#~ msgid "Audio format: "
+#~ msgstr "פורמט שמע: "
+
+#~ msgid "File '%s' doesn't exist; using default."
+#~ msgstr "הקובץ '%s' אינו קיים; משתמש בברירת המחדל."
+
+#~ msgid "File '%s' isn't a supported soundfile."
+#~ msgstr "הקובץ '%s' אינו קובץ קול נתמך."
+
+#~ msgid "translator_credits"
+#~ msgstr ""
+#~ "גיל אשר\n"
+#~ "dolfin@rpg.org.il\n"
+#~ "פרויקט linBrew\n"
+#~ "http://linbrew.sourceforge.net"
+
+#~ msgid "GNOME Sound Recorder"
+#~ msgstr "רשמקול GNOME"
+
+#~ msgid ""
+#~ "A simple soundrecorder and soundplayer for GNOME.\n"
+#~ "Dedicated to my cat, Malte."
+#~ msgstr ""
+#~ "רשמקול פשוט ונגן קול ל GNOME.\n"
+#~ "מוקדש לחתול שלי, מאלטי."
+
+#~ msgid "Gnome Sound Recorder Preferences"
+#~ msgstr "העדפות רשמקול Gnome"
+
+#~ msgid "Sound Recorder Preferences"
+#~ msgstr "העדפות רשמקול"
+
+#~ msgid "Recording"
+#~ msgstr "הקלטה"
+
+#~ msgid "Time"
+#~ msgstr "זמן"
+
+#~ msgid "_Recording timeout: "
+#~ msgstr "_הפסקת הקלטה: "
+
+#~ msgid "_Stop recording on timeout"
+#~ msgstr "_עצור הקלטה בהפסקת ההקלטה"
+
+#~ msgid "_Open save dialog when recording is finished"
+#~ msgstr "_פתח תיבת דו-שיח שמירה כשההקלטה מסתיימת"
+
+#~ msgid "Size"
+#~ msgstr "גודל"
+
+#~ msgid "Show warning _message if size (MB) of sample becomes bigger than:"
+#~ msgstr "הצג הודעת _שגיאה אם הגודל (MB) של הדגימה נעשה גדול מ:"
+
+#~ msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
+#~ msgstr "ע_צור הקלטה אם הגודל (MB) של הדגימה נעשה גדול מ:"
+
+#~ msgid "Repetition"
+#~ msgstr "חזרה"
+
+#~ msgid "_Repeat the sound"
+#~ msgstr "_חזור על הקול"
+
+#~ msgid "Play the sound _once only."
+#~ msgstr "נגן את הקול פעם _אחת בלבד."
+
+#~ msgid "Repeat _forever"
+#~ msgstr "חזור _לנצח"
+
+#~ msgid "_Number of times:"
+#~ msgstr "_מספר פעמים:"
+
+#~ msgid "Paths"
+#~ msgstr "נתיבים"
+
+#~ msgid "Program files"
+#~ msgstr "קבצי תוכנית"
+
+#~ msgid "_Path to sox:"
+#~ msgstr "_נתיב ל sox:"
+
+#~ msgid "_Apply"
+#~ msgstr "_החל"
+
+#~ msgid "Folders"
+#~ msgstr "תיקיות"
+
+#~ msgid "_Temporary folder:"
+#~ msgstr "תיקייה _זמנית:"
+
+#~ msgid "Apply"
+#~ msgstr "החל"
+
+#~ msgid "Sound"
+#~ msgstr "קול"
+
+#~ msgid ""
+#~ "Note: These options only take effect whenever a new sound sample\n"
+#~ "is created. They do not operate on an existing sample."
+#~ msgstr ""
+#~ "הערה: אפשרויות אלו יפעלו רק כשתיווצר דגימה חדשה.\n"
+#~ "הם לא יפעלו על הדגימה הנוכחית."
+
+#~ msgid "Audio format:"
+#~ msgstr "פורמט שמע:"
+
+#~ msgid "8 _bit PCM"
+#~ msgstr "8 _סיביות PCM"
+
+#~ msgid "16 b_it PCM"
+#~ msgstr "16 סי_ביות PCM"
+
+#~ msgid "S_ample rate:"
+#~ msgstr "קצב דגימה:"
+
+#~ msgid "Mono or Stereo:"
+#~ msgstr "מונו או סטריאו:"
+
+#~ msgid "_Mono"
+#~ msgstr "_מונו"
+
+#~ msgid "_Stereo"
+#~ msgstr "_סטריאו"
+
+#~ msgid "Stereo"
+#~ msgstr "סטריאו"
+
+#~ msgid "Specify the geometry of the main window"
+#~ msgstr "ציין את הגאומטריה של החלון הראשי"
+
+#~ msgid "GEOMETRY"
+#~ msgstr "גאומטריה"
+
+#~ msgid "Specify a file to be opened"
+#~ msgstr "ציין קובץ לפתיחה"
+
+#~ msgid "Specify a file to start recording"
+#~ msgstr "ציין קובץ להתחלת ההקלטה"
+
+#~ msgid "Specify a file to start playing"
+#~ msgstr "ציין קובץ להתחלת הנגינה"
+
+#~ msgid "Sound recorder"
+#~ msgstr "רשמקול"
+
+#~ msgid "Audio format: 8bit PCM"
+#~ msgstr "פורמט שמע: 8 סיביות PCM"
+
+#~ msgid "Audio format: 16bit PCM"
+#~ msgstr "פורמט שמע: 16 סיביות PCM"
+
+#~ msgid "Sample rate: %s"
+#~ msgstr "קצב דגימה: %s"
+
+#~ msgid "Channels: mono"
+#~ msgstr "ערוצים: מונו"
+
+#~ msgid "Channels: stereo"
+#~ msgstr "ערוצים: סטריאו"
+
+#~ msgid "Adding echo to sample..."
+#~ msgstr "מוסיף הד לדגימה..."
+
+#~ msgid "_Hostname:"
+#~ msgstr "מא_רח:"
+
+#~ msgid "Audio _Input:"
+#~ msgstr "_קלט שמע:"
+
+#~ msgid "Video _Output:"
+#~ msgstr "_פלט וידאו:"
+
+#~ msgid "Action on application exit"
+#~ msgstr "פעולה ביציאה מהיישום"
+
+#~ msgid "Action on start"
+#~ msgstr "פעולה בהתחלה"
+
+#~ msgid "Should the CD player attempt to shut the CD drive on start up?"
+#~ msgstr "האם על נגן התקליטורים לנסות לסגור את כונן התקליטורים בהפעלה?"
+
+#~ msgid "Shut the CD tray on start"
+#~ msgstr "סגור את מגש התקליטור בהפעלה"
+
+#~ msgid ""
+#~ "What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
+#~ "playing, 2 = Eject the CD, 3 = Attempt to close the tray"
+#~ msgstr ""
+#~ "איזו פעולה על נגן התקליטורים לבצע ביציאה? 0 = כלום, 1 = עצור נגינה, 2 = "
+#~ "הוצא את התקליטור, 3 = נסה לסגור את המגש"
+
+#~ msgid ""
+#~ "What action should the CD player perform on start up? 0 = Nothing, 1 = "
+#~ "Start playing, 2 = Stop playing"
+#~ msgstr ""
+#~ "איזו פעולה על נגן התקליטורים לבצע בהפעלה? 0 = כלום, 1 = התחל נגינה, 2 = "
+#~ "עצור נגינה"
+
+#~ msgid "Do _nothing"
+#~ msgstr "אל תעשה _דבר"
+
+#~ msgid "Do nothing when CD Player starts"
+#~ msgstr "אל תעשה כלום כאשר נגן התקליטורים מתחיל"
+
+#~ msgid "Start _playing CD"
+#~ msgstr "התחל _לנגן תקליטור"
+
+#~ msgid "_Stop playing CD"
+#~ msgstr "_עצור נגינת תקליטור"
+
+#~ msgid "Stop playing CD when CD Player starts"
+#~ msgstr "הפסק לנגן את התקליטור כאשר נגן התקליטורים מתחיל"
+
+#~ msgid "Attempt to _close CD tray"
+#~ msgstr "נסה ל_סגור את מגש התקליטור"
+
+#~ msgid "When CD player quits"
+#~ msgstr "כאשר נגן התקליטורים מסתיים"
+
+#~ msgid "Do not_hing"
+#~ msgstr "אל תעשה ד_בר"
+
+#~ msgid "Do nothing when CD Player exits"
+#~ msgstr "אל תעשה כלום כאשר נגן התקליטורים מסתיים"
+
+#~ msgid "S_top playing CD"
+#~ msgstr "ע_צור נגינת תקליטור"
+
+#~ msgid "Attempt to _open CD tray"
+#~ msgstr "נסה לפ_תוח את מגש התקליטור"
+
+#~ msgid "Attempt to c_lose CD tray"
+#~ msgstr "נסה לס_גור את מגש התקליטור"
+
+#~ msgid "Theme name"
+#~ msgstr "שם ערכת הנושא"
 
 #~ msgid "Copyright (C) 2001, 2002"
 #~ msgstr "כל הזכויות שמורות (C) 2001, 2002"
@@ -2605,4 +2775,3 @@ msgstr "צג עוצמה"
 
 #~ msgid "_About Gnome-CD"
 #~ msgstr "_אודות Gnome-CD"
-

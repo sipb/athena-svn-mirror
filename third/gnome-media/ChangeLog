@@ -1,3 +1,1061 @@
+2004-09-13  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gnome-cd/Makefile.am:
+	* gnome-cd/gnome-cd.c: (main):
+	  Disable GStreamer backend for now. We'll re-enable it if there's
+	  some more testing. Following approval from release-team.
+	* gnome-cd/bsd-cdrom.c:
+	  Fix BSD backend (#151573) with approval from release-team.
+	* gnome-cd/cdrom.c: (timeout_update_cd):
+	* gnome-cd/linux-cdrom.c: (linux_cdrom_update_cd):
+	  Those two free()es are occasionally causing crashes elsewhere.
+	  Don't know what else to do right now, so just pushing back to
+	  the GNOME 2.6 code status basically.
+	  The problem appears to be that the Linux native CD backend touches
+	  those variables when they shouldn't be. The GStreamer backend
+	  doesn't, so those reversals are basically part of the disabling
+	  of the GStreamer backend. Anyway, those are leaks. This needs
+	  careful looking over.
+	* gnome-cd/gst-cdparanoia-cdrom.c: (msf_struct_to_frames),
+	(frames_to_msf_struct), (build_pipeline):
+	  This fixes BSD support in the (now unused) GStreamer backend.
+
+2004-09-04  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+	  set ACLOCAL_AMFLAGS
+
+2004-08-31  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+	
+	* configure.in:
+	  And we're in CVS mode again.
+
+=== release 2.7.92 ===
+
+2004-08-31  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* NEWS:
+	* configure.in:
+	  Set version number for release.
+
+2004-08-31  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c: (create_options_widget):
+	  Unbreak string freeze. Accidently had intltool mark an #if 0'ed
+	  string (in new code) for translation, unmarked for now.
+
+2004-08-31  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* configure.in:
+	* gst-mixer/src/mixer.c: (cb_opt_changed), (create_track_header),
+	(create_track_widget), (create_options_widget),
+	(create_switch_widget), (create_mixer_widget), (cb_about):
+	  Add switches (ALSA uses those, and is unusable on several sound
+	  cards without). Add options, but #ifdef'ed out because the UI is
+	  so severely uglified by it that it doesn't belong in there at all.
+	  Also up GStreamer requirement to 0.8.2 because that's when the
+	  required API was added to the mixer interface.
+
+2004-08-29  Ronald S. Bultje  <Ronald S. Bultje <rbultje@ronald.bitfreak.net>>
+
+	* cddb-slave2/cddb-parser.c: (cddb_entry_new_from_file):
+	* cddb-slave2/cddb-slave.h:
+	* cddb-slave2/tcp.c: (gnet_tcp_socket_connect_inetaddr_cb):
+	* gnome-cd/access/cddisplayaccessiblefactory.c:
+	(cddisplay_accessible_factory_get_type),
+	(cddisplay_accessible_factory_new):
+	* gnome-cd/access/cddisplayaccessiblefactory.h:
+	* gnome-cd/access/pangoaccessiblefactory.h:
+	* gnome-cd/callbacks.c:
+	* gnome-cd/cdrom.c: (cdrom_set_device):
+	* gnome-cd/eggtrayicon.c: (egg_tray_icon_init),
+	(egg_tray_icon_class_init), (egg_tray_icon_get_property),
+	(egg_tray_icon_get_orientation_property),
+	(egg_tray_icon_manager_filter), (egg_tray_icon_unrealize),
+	(egg_tray_icon_send_manager_message),
+	(egg_tray_icon_update_manager_window), (egg_tray_icon_realize),
+	(egg_tray_icon_new_for_screen), (egg_tray_icon_new),
+	(egg_tray_icon_send_message), (egg_tray_icon_cancel_message),
+	(egg_tray_icon_get_orientation):
+	* gnome-cd/eggtrayicon.h:
+	* gnome-cd/gnome-cd.c: (client_die):
+	* gnome-cd/gst-cdparanoia-cdrom.c: (eos), (build_pipeline),
+	(gst_cdparanoia_cdrom_play), (gst_cdparanoia_cdrom_pause),
+	(gst_cdparanoia_cdrom_stop), (gst_cdparanoia_cdrom_get_status):
+	* gnome-cd/linux-cdrom.c: (linux_cdrom_update_cd):
+	* grecord/src/gnome-recorder.c: (main):
+	* grecord/src/gsr-window.c: (file_close):
+	* gst-mixer/src/mixer.c:
+	* gstreamer-properties/gstreamer-properties.c: (create_dialog),
+	(main):
+	* profiles/audio-profile-choose.c: (gm_audio_profile_choose_new),
+	(gm_audio_profile_choose_get_active),
+	(gm_audio_profile_choose_set_active):
+	* profiles/audio-profile-choose.h:
+	* profiles/audio-profile-edit.c: (gm_audio_profile_edit_init):
+	* profiles/audio-profile-private.h:
+	* profiles/audio-profile.c: (gm_audio_profile_create):
+	* profiles/audio-profile.h:
+	* profiles/audio-profiles-edit.c: (profile_activated_callback),
+	(on_profile_changed), (edit_button_clicked),
+	(gm_audio_profiles_edit_new), (new_profile_response_callback):
+	* profiles/gnome-audio-profiles-properties.c: (main):
+	* profiles/gnome-audio-profiles-test.c: (edit_cb), (test_cb),
+	(main):
+	* profiles/gnome-media-profiles.c:
+	* vu-meter/gtkled.c: (gtk_led_new):
+	* vu-meter/main.c: (main):
+	  Compile using -Wall -Werror and fix all. Also includes the cleanup
+	  patch from bug #151306 (thanks to Kjartan Maraas <kmaraas@gnome.org>)
+	  and updates the egg widgets to their latest version.
+
+2004-08-29  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* grecord/src/gsr-window.c: (seek_to):
+	  Remove unused variable, always return a boolean (fix #151305).
+
+2004-08-28  Akagic Amila  <bono@linux.org.ba>
+
+	* configure.in: Added 'bs' to ALL_LINGUAS.
+
+2004-08-17  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Sylvain.Pasche@switzerland.org
+
+	* gnome-cd/cdrom.c:
+	  fix unitialized GError.  Fixes #148353.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add nb to ALL_LINGUAS.
+
+2004-06-16  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* grecord/src/gsr-window.c: (make_record_pipeline):
+	  Don't g_error() when common problems occur like a non-found
+	  element. Don't ever even use g_error() at all, basically. Also
+	  add a graphical error dialog instead and use this also if no
+	  audio source could be loaded (which appears to happen a lot on
+	  recent FC2/JDS installs...).
+
+2004-06-15  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* cddb-slave2/gnet-private.h:
+	  Define socklen_t properly, and only if needed. Fixes #142828.
+
+2004-06-15  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	reviewed by: Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* grecord/src/gsr-window.c: (record_start):
+	  Also update the record status slider the second time. Fixes
+	  #123937.
+
+2004-06-15  Padraig O'Briain <draig.obriain@sun.com>
+
+	reviewed by: Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* gnome-cd/preferences.c: (preferences_dialog_show):
+	  Give proper accessibility name to themes widget. Fixes #143327.
+
+2004-06-15  Padraig O'Briain <draig.obriain@sun.com>
+
+	reviewed by: Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* gnome-cd/callbacks.c: (status_ok):
+	  Don't fire name-change events unless we change name, because
+	  otherwise we confuse accessibility tools. Fixes #140082.
+
+2004-06-15  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	reviewed by: Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* gnome-cd/solaris-cdrom.c: (set_audio_port),
+	(solaris_cdrom_get_status):
+	  Set audio port on Solaris so that audio actually works.
+
+2004-06-15  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* configure.in:
+	* gnome-cd/Makefile.am:
+	* gnome-cd/gnome-cd.c: (main):
+	* gnome-cd/gst-cdparanoia-cdrom.c: *:
+	* gnome-cd/gst-cdparanoia-cdrom.h:
+	  Add GStreamer-based (cdparanoia) option. Based on work from Iain
+	  Holmes <bugs@prettypeople.org>. Fixes bug #51152.
+
+2004-06-14  Fernando Herrera  <fherrera@onirica.com>
+
+	Reviewed by: Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* gnome-cd/cddb.c: (cddb_get_query): don't free discid and free
+	  offsets. Fixes #144341.
+
+2004-06-15  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gnome-cd/cdrom.c: (timeout_update_cd):
+	  Fix memleak.
+
+2004-06-02  Mariano Suárez-Alvarez  <mariano@gnome.org>
+
+	* autogen.sh: do not overwrite ACLOCAL_FLAGS, but append to it.
+
+=== release 2.7.1 ===
+
+2004-06-01  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* Makefile.am:
+	* configure.in:
+	* m4/as-compiler-flag.m4:
+	* m4/as-version.m4:
+	  adding m4 files for compiler flags and versioning
+
+2004-05-29  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "tk" to ALL_LINGUAS.
+
+2004-05-26  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c: (create_mixer_widget):
+	  Workaround for not showing options without depending on a CVS
+	  version of GStreamer.
+
+2004-05-10  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* cddb-slave2/cddb-disclosure.c: (get_x_y),
+	(expand_collapse_timeout), (do_animation):
+	* cddb-slave2/cddb-disclosure.h:
+	* cddb-slave2/cddb-parser.c:
+	* cddb-slave2/cddb-parser.h:
+	* cddb-slave2/cddb-slave-client.h:
+	* cddb-slave2/cddb-slave.c: (do_goodbye), (do_read_response),
+	(display_results), (read_from_server),
+	(impl_GNOME_Media_CDDBSlave2_query),
+	(impl_GNOME_Media_CDDBSlave2_isValid),
+	(impl_GNOME_Media_CDDBSlave2_setAllTracks):
+	* cddb-slave2/cddb-track-editor.c: (make_tree_model),
+	(load_new_track_data), (make_track_editor_control), (main):
+	* cddb-slave2/main.c: (factory_fn), (main):
+	  fix loads of -Wall -Werror-related bugs
+	* configure.in:
+	  turn on -Wall -Werror for CDDBSLAVE
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* gnome-cd/gnome-cd.schemas.in.in:
+          Its funny how hard its eems to be to have an its y bits'y schema
+          entry have it's translation spelled correctly
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/gnome-audio-profiles.schemas.in.in:
+          i18n-ize profile names and descriptions.  Fixes #130233
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/audio-profile.c: (gm_audio_profile_forget):
+          change dir to path in source. Fixes #134339
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/audio-profiles-edit.c: (delete_button_clicked):
+          Use ngettext. Fixes #134340.
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/gnome-audio-profiles.glade2:
+          Fix #134341
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/audio-profile.c: (gm_audio_profile_initialize):
+	  change terminal to profile.  Fixes #137139
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Julio M. Merino Vidal <jmmv at menta dot net>
+
+	* configure.in:
+	* gnome-cd/Makefile.am:
+	* gnome-cd/bsd-cdrom.c: (bsd_cdrom_finalize), (msf_to_frames),
+	(frames_to_msf), (add_msf), (bsd_cdrom_open), (bsd_cdrom_close),
+	(bsd_cdrom_invalidate), (calculate_track_lengths):
+	* gnome-cd/bsd-cdrom.h:
+          add NetBSD support.
+          rename FREEBSD functions/variables to BSD
+          Fixes #135139
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* cddb-slave2/cddb-slave.desktop.in:
+          change name and comment.  Fixes #130651.
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* autogen.sh: don't use common doc stuff until it passes distcheck
+	* acconfig.h: removed
+	* configure.in: add third argument for AC_DEFINE*
+
+2004-05-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* autogen.sh: use gnome-common.  Fixes #140344
+
+2004-04-30  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* gstreamer-properties/pipeline-constants.c:
+          use ffmpegcolorspace (from gst-plugins) over ffcolorspace
+          (from gst-ffmpeg) (#141406)
+
+2004-04-29  Julio M. Merino Vidal  <jmmv@menta.net>
+
+	reviewed by: Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gstreamer-properties/Makefile.am:
+	  Install gstreamer-properties shortcut in proper location so
+	  it's found by contor-center. Fixes #137198.
+
+2004-04-23  Jorn Baayen  <jbaayen@gnome.org>
+
+	reviewed by: Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c:
+	  Swap "About" and "Help" menu items for consistency.
+
+2004-04-24  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	reviewed by: Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* cddb-slave2/ChangeLog:
+	* cddb-slave2/cddb-slave-capplet.c: (dialog_button_clicked_cb):
+	  s/wgoscustlookandfeel.xml/user-guide.xml.
+
+2004-04-24  Leena Gunda  <leena.gunda@wipro.com>
+
+	reviewed by: Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* gnome-cd/ChangeLog:
+	* gnome-cd/display.c: (cd_display_set_style):
+	* gnome-cd/display.h:
+	  Callback to redraw the display text when the style changes. Fixes
+	  #125409.
+	* gnome-cd/gnome-cd.c: (init_player):
+	  Connect cd_display_set_style callback for the style_set signal
+	  of the CDDisplay.
+
+2004-04-24  Fernando Herrera  <fherrera@onirica.com>
+
+	reviewed by: Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* grecord/ChangeLog:
+	* grecord/src/gnome-recorder.c: (main):
+          use gtk_icon_theme. Fix #137464.
+
+=== release 2.6.1 ===
+
+2004-04-19  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in: releasing 2.6.1, "Maintain in Vain"
+
+2004-04-19  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: nos@utel.no
+
+	* cddb-slave2/cddb-slave.c: (do_open_response), (cddb_send_cmd):
+          fix g_print format (#134094)
+
+2004-04-19  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Alexander Winston
+
+	* acinclude.m4:
+          Fix underquotedness (#133217)
+
+2004-04-18  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c: (create_track_widget):
+	  Fix up icons for the ALSA mixer.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+=== release 2.6.0 ===
+
+2004-03-22  Ted Gould <ted@gould.cx>
+
+	* configure.in: Upping to 2.6.0
+
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-11  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in: require gtk 2.3 for recorder and profiles (#135549)
+
+2004-03-09  Ted Gould <ted@gould.cx>
+
+	* configure.in: Upping to 2.5.5
+
+2004-03-09  Jan Schmidt  <thaytan@mad.scientist.com>
+ 
+ 	* gstreamer-properties/gstreamer-properties.c:
+ 	(create_pipeline_menu):
+ 	* gstreamer-properties/pipeline-constants.c:
+           - Add "audioconvert ! audioscale" to the pipeline for testing 
+ 	  audio sinks.  This makes esdsink 'work' and fixes #136407
+ 	  - Wrap lines in pipeline-constants to 80 chars for readability.
+ 	  - Use gst_parse_launch to evaluate the validity of a sink pipeline, i
+ 	  rather than assuming that they contain only a single sink. 
+ 	  Resurrects Ascii Art.
+ 	  - Add a disabled cacasink destination. Disabled because apparently
+ 	  cacasink briefly creates an empty window, even though we never 
+ 	  set the element to READY.
+ 	  - Disable jack source & sink, since they're not working.
+ 	  - Remove ossgst audio source which no longer exists.
+ 	  - Remove fakesrc as a video source.
+
+2004-03-09  Ted Gould <ted@gould.cx>
+
+	* grecord/src/gsr-window.c, gst-mixer/src/mixer.c: Adding
+	Sun Microsystems at the documenters as requested by Breda McColgan
+	who did the documentation for those.
+
+2004-03-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+    * configure.in: check for 0.8 and 0.7 GStreamer
+
+2004-03-08  Jan Schmidt  <thaytan@mad.scientist.com>
+
+	* gstreamer-properties/gstreamer-properties.c:
+	(update_from_option), (entry_changed), (init_pipeline_editor),
+	(main):
+	* gstreamer-properties/pipeline-constants.c:
+	  Use gst-gconf library for gconf access
+
+2004-03-07  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* configure.in:
+	  Check for gst-gconf lib correctly.
+
+2004-03-01  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/Makefile.am:
+	* gst-mixer/src/mixer.c: (main):
+	  Fix docs display (fixes #135692).
+
+2004-02-29  Seth Nickell  <seth@gnome.org>
+
+	Reviews by: Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c: (create_mixer_widget):
+	  Remove borders that are automatically put around GtkViewports.
+	  Fixes #134331.
+
+2004-02-29  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c: (cb_about), (main):
+	  s/GStreamer Volume Control/Volume Control/. Fixes #134329.
+
+2004-02-27 Breda McColgan <breda.mccolgan@sun.com>
+
+	* gst-mixer/doc/C/gnome-volume-control.xml: Updated for GNOME 2.6, technical review draft
+	* gst-mixer/doc/C/gnome-volume-control-C.omf: Updated for GNOME 2.6
+	* gst-mixer/doc/C/l10n.txt: Added for GNOME 2.6
+	* gst-mixer/doc/C/figures/gnome-volume-control_window.png: Added for GNOME 2.6
+
+
+2004-02-25  Ted Gould <ted@gould.cx>
+
+	* configure.in: release 2.5.4
+
+2004-02-25  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in: add gstreamer-gconf to requirements for GSR
+
+2004-02-24  Johan Dahlin  <johan@gnome.org>
+
+	* profiles/audio-profile-choose.c
+	(gm_audio_profile_choose_set_active): And fix leak(s)
+	(gm_audio_profile_choose_get_active): One more leak fix, 
+	thanks Richard.
+
+	* profiles/audio-profile-choose.[ch] New function, 
+	gm_audio_profile_choose_set_active
+
+2004-02-23  Ted Gould <ted@gould.cx>
+
+	* configure.in: release 2.5.3
+
+2004-02-23  Ted Gould <ted@gould.cx>
+
+	* gst-mixer/gnome-volume-control.desktop.in: Patch from
+	Grzegorz Golawski which makes this more fd.o
+	compatible.  This is bug #129207.
+
+2004-02-23  Ted Gould <ted@gould.cx>
+
+	* cddb-slave2/Makefile.am, gnome-cd/Makefile.am, grecord/Makefile.am
+	profiles/Makefile.am:  Patch from Elijah Newren to clean
+	up the usage of GConf.  Fixes bug #135135 (cool number).
+
+2004-02-23  Ted Gould <ted@gould.cx>
+
+	* profiles/schemas.in.in: Adding a default value
+	to active.  Patch from Julio M. Merino Vidal for
+	bug #135133
+
+2004-02-21  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2004-02-19  Kaushal Kumar  <kaushal.kumar@wipro.com>
+ 
+ 	* gst-mixer/src/mixer.c (create_track_widget):
+ 	Make all the slider and checkbox widgets accessible.
+ 	Fix bugzilla #133208.
+ 
+2004-02-18  Ted Gould <ted@gould.cx>
+
+	* autogen.sh, configure.in:  Applying a patch by
+	Malcolm Tredinnick which is located in bug #133384 and
+	fully fixes everything for versions of intltool greater
+	than 0.30.
+
+2004-02-15  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* grecord/Makefile.am:
+	* grecord/src/Makefile.am:
+          fix cleaning of schemas/desktop files to make make distcheck work
+
+Sun Feb  8 00:53:23 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* autogen.sh (have_intltoolize): Make the version check pass
+	for 0.30.
+
+2004-01-17  Ted Gould <ted@gould.cx>
+
+	* gnome-cd/callbacks.c, gnome-cd/gnome-cd.c:
+	Applying patch by padraig.obriain@sun.com for bug # 125321 that
+	deals with the title getting updated too much.
+
+2004-01-17  Ted Gould <ted@gould.cx>
+
+	* gnome-cd/cdda.c, gnome-cd/callbacks.c:
+	Applying a patch done by Sanjiv Agarwala.  It fixes a sleu of
+	bugs but has been placed in an umbrella bug #131799
+
+2004-01-14  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c: (create_mixer_widget):
+	  Make UI somewhat bigger by default.
+
+2004-01-14  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst-mixer/src/mixer.c: (create_mixer_collection):
+	  Fix for crash if array from propertyprobe is NULL.
+
+2004-01-12  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* grecord/src/Makefile.am:
+	* grecord/src/gnome-recorder.c: (gsr_open_window), (main):
+	* grecord/src/gsr-window.c: (set_extension), (profile_changed),
+	(gsr_window_new):
+	* profiles/gnome-media-profiles.c: (gnome_media_profiles_init):
+          use audio profile selection to record
+
+2004-01-12  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/gnome-audio-profiles.schemas.in.in:
+          fix defaults
+
+2004-01-12  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/Makefile.am:
+	* profiles/README:
+	* profiles/audio-profile-choose.c:
+	* profiles/audio-profile-choose.h:
+	* profiles/audio-profile-edit.c:
+	* profiles/audio-profile-private.h:
+	* profiles/audio-profile.c:
+	* profiles/audio-profile.h:
+	* profiles/audio-profiles-edit.c:
+	* profiles/gnome-audio-profiles-test.c:
+	* profiles/gnome-media-profiles.c:
+	* profiles/gnome-media-profiles.h:
+          separate AudioProfile in public and private bits and prefix with GM
+          make test code to show how it works
+
+2004-01-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/audio-profile-edit.c:
+	* profiles/audio-profile-private.h:
+	* profiles/audio-profile.c:
+	* profiles/audio-profile.h:
+	* profiles/audio-profiles-edit.c:
+          privatise audio-profile bits that are internal
+
+2004-01-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+	* profiles/README:
+	* profiles/audio-profile-edit.c: (gm_audio_profile_edit_init),
+	(gm_audio_profile_edit_new):
+	* profiles/audio-profile-edit.h:
+	* profiles/audio-profile.h:
+	* profiles/audio-profiles-edit.c: (gm_audio_profiles_edit_new):
+	* profiles/audio-profiles-edit.h:
+          assorted changes and notes
+
+2004-01-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/audio-profile-choose.c: (gm_audio_profile_choose_new),
+	(gm_audio_profile_choose_get_active):
+	* profiles/audio-profile-choose.h:
+	* profiles/gnome-media-profiles.h:
+          adding profile choose combo box
+
+2004-01-11 Christian Schaller <Uraeus@gnome.org>
+
+	* Switch gstreamer-properties to use new videosinks
+	* Switch gstreamer-properties to use ffcolorspace
+
+2004-01-10 Christian Schaller <Uraeus@gnome.org>
+
+	* Some updates to the spec file (re-enablind gsr)
+	* fix gnome-sound-recorder desktop file
+	 to point to actuall binary
+	* Update TODO
+
+2004-01-05  Ted Gould <ted@gould.cx>
+
+	* gnome-cd/linux-cdrom.c:
+	* gnome-cd/freebsd-cdrom.c:
+	* gnome-cd/solaris-cdrom.c:
+	Changing some errors to warnings.  Patch submitted by
+	Srinivasa Ragavan to fix bug #119715
+
+	The patch was for the linux files, I changed the Solaris and FreeBSD
+	ones.
+
+2004-01-05  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gmix/.cvsignore:
+	* gmix/AUTHORS:
+	* gmix/BUGS:
+	* gmix/CHANGES:
+	* gmix/ChangeLog:
+	* gmix/Makefile.am:
+	* gmix/README:
+	* gmix/TODO:
+	* gmix/device_labels_alsa.h:
+	* gmix/device_labels_alsa.sed:
+	* gmix/device_labels_linux.h:
+	* gmix/device_labels_linux.sed:
+	* gmix/doc/.cvsignore:
+	* gmix/doc/C/.cvsignore:
+	* gmix/doc/C/Makefile.am:
+	* gmix/doc/C/figures/gmix-prefs.eps:
+	* gmix/doc/C/figures/gmix-prefs.png:
+	* gmix/doc/C/figures/gmix.eps:
+	* gmix/doc/C/figures/gmix.png:
+	* gmix/doc/C/gnome-volume-control-C.omf:
+	* gmix/doc/C/gnome-volume-control.xml:
+	* gmix/doc/C/legal.xml:
+	* gmix/doc/C/topic.dat:
+	* gmix/doc/Makefile.am:
+	* gmix/doc/it/.cvsignore:
+	* gmix/doc/it/Makefile.am:
+	* gmix/doc/it/figures/gmix-prefs.png:
+	* gmix/doc/it/figures/gmix.png:
+	* gmix/doc/it/gmix-it.omf:
+	* gmix/doc/it/gmix.sgml:
+	* gmix/doc/it/topic.dat:
+	* gmix/gmix.c:
+	* gmix/gmix.h:
+	* gmix/gnome-fader.c:
+	* gmix/gnome-mixer.c:
+	* gmix/gnome-mixer.h:
+	* gmix/gnome-mixer.png:
+	* gmix/gnome-volume-control.desktop.in.in:
+	* gmix/gnome-volume-control.schemas.in:
+	* gmix/prefs.c:
+	* gmix/prefs.h:
+	* gnome-volume-control/.cvsignore:
+	* gnome-volume-control/ChangeLog:
+	* gnome-volume-control/Makefile.am:
+	* gnome-volume-control/alsa-channel.c:
+	* gnome-volume-control/alsa-channel.h:
+	* gnome-volume-control/alsa-device.c:
+	* gnome-volume-control/alsa-mixer.c:
+	* gnome-volume-control/alsa-mixer.h:
+	* gnome-volume-control/debug.c:
+	* gnome-volume-control/debug.h:
+	* gnome-volume-control/device-module.h:
+	* gnome-volume-control/gnome-channel-group.c:
+	* gnome-volume-control/gnome-channel-group.h:
+	* gnome-volume-control/gnome-channel-widget.c:
+	* gnome-volume-control/gnome-channel-widget.h:
+	* gnome-volume-control/gnome-channel.c:
+	* gnome-volume-control/gnome-channel.h:
+	* gnome-volume-control/gnome-mixer.c:
+	* gnome-volume-control/gnome-mixer.h:
+	* gnome-volume-control/gnome-volume-control.c:
+	* gnome-volume-control/gnome-volume-control.desktop.in:
+	* gnome-volume-control/gnome-volume-control.png:
+	* gnome-volume-control/oss-channel.c:
+	* gnome-volume-control/oss-channel.h:
+	* gnome-volume-control/oss-device.c:
+	* gnome-volume-control/oss-mixer.c:
+	* gnome-volume-control/oss-mixer.h:
+	* gnome-volume-control/volume-marshal.list:
+	* grecord/src/grec.c:
+	* grecord/src/grec.h:
+	* grecord/src/gui.c:
+	* grecord/src/gui.h:
+	* grecord/src/main.c:
+	* grecord/src/preferences.c:
+	* grecord/src/preferences.h:
+	* grecord/src/sound.c:
+	* grecord/src/sound.h:
+	  Remove old/unused files of sound recorder and mixer.
+
+2004-01-04  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* configure.in:
+	  Fix grecord not being compiled.
+
+2004-01-04  Ronald Bultje  <rbultje@ronald.bitfreak.net>
+
+	* grecord/src/gsr-window.c: (eos_done), (save_sink_eos),
+	(cb_iterate), (cb_error), (do_save_file), (make_play_pipeline),
+	(make_record_pipeline), (init):
+	  Fix crashes when saving file, add some checks in various places,
+	  and recording works again (well, a bit). Other bugs are likely
+	  GStreamer bugs, not GSR bugs.
+
+2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS.
+
+2003-12-31  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in: release 2.5.2 - "no more no make distcheck"
+        * cddb-slave2/Makefile.am: fix distcheck issues, rewrite for clarity
+        * Makefile.am:
+        * gnome-cd/Makefile.am:
+        * gst-mixer/Makefile.am:
+        * gstreamer-properties/Makefile.am:
+        * vu-meter/Makefile.am:
+          fix distcheck
+
+2003-12-31  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * omf.make:
+	* xmldocs.make:
+	  fix DESTDIR for uninstalling
+	  remove strange regeneration rule for legal.xml that caused
+          stray files after distcleaning caused by cvs commit time
+          difference between legal.xml and gnome-cd.xml
+
+2003-12-31  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* po/POTFILES.in:
+	* po/am.po:
+	* po/ar.po:
+	* po/az.po:
+	* po/be.po:
+	* po/bg.po:
+	* po/bn.po:
+	* po/ca.po:
+	* po/cs.po:
+	* po/cy.po:
+	* po/da.po:
+	* po/de.po:
+	* po/el.po:
+	* po/en_GB.po:
+	* po/es.po:
+	* po/et.po:
+	* po/eu.po:
+	* po/fa.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/ga.po:
+	* po/gl.po:
+	* po/he.po:
+	* po/hi.po:
+	* po/hu.po:
+	* po/id.po:
+	* po/it.po:
+	* po/ja.po:
+	* po/ko.po:
+	* po/lt.po:
+	* po/lv.po:
+	* po/mk.po:
+	* po/ml.po:
+	* po/mn.po:
+	* po/ms.po:
+	* po/nl.po:
+	* po/nn.po:
+	* po/no.po:
+	* po/pl.po:
+	* po/pt.po:
+	* po/pt_BR.po:
+	* po/ro.po:
+	* po/ru.po:
+	* po/sk.po:
+	* po/sl.po:
+	* po/sq.po:
+	* po/sr.po:
+	* po/sr@Latn.po:
+	* po/sv.po:
+	* po/ta.po:
+	* po/tr.po:
+	* po/uk.po:
+	* po/vi.po:
+	* po/wa.po:
+	* po/zh_CN.po:
+	* po/zh_TW.po:
+	  Remove files that aren't disted anymore
+
+2003-12-29  Christian Schaller <Uraeus@gnome.org>
+
+	* Commit po updates
+	* Fix gst-mixer menu icon
+
+2003-12-21  Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* grecord/src/gnome-record.c:
+	  fix command-line option mess up, add a dummy -p option so that
+	  it no longer crashes when evocated using nautilus.
+
+2003-12-21  Ronald Bultje <rbultje@ronald.bitfreak.net>
+
+	* configure.in: fix detection of mixer/interface headers
+	* gst-mixer/src/Makefile.am:
+	* gst-mixer/pixmaps/Makefile.am: change installation directory
+	  for pixmaps so that it goes in pkgdatadir instead of datadir.
+	  datadir is being cluttered with icons that don't belong there.
+	* gst-mixer/src/mixer.c: add a scrollbar so that it won't fill
+	  up your whole screen (which happens with ALSA, for example).
+	  Patch from Leif Johnson. Since he wrote ALSA mixer support in
+	  GStreamer too, I've added him to the about dialog, too.
+
+2003-12-17  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/audio-profiles-edit.c: (profile_activated_callback),
+	(edit_button_clicked), (new_profile_response_callback):
+	* profiles/gnome-audio-profiles.schemas.in.in:
+	* profiles/gnome-media-profiles.c: (gnome_media_profiles_init):
+ 	  initialize the custom widget in the library, doh :)
+          cosmetic fixes and print removal
+
+2003-12-17  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * Makefile.am: undid the stupid gettextize m4 additions
+
+2003-12-15  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+	* profiles/Makefile.am:
+	* profiles/glade/Makefile.am:
+	* profiles/glade/gnome-media-profiles-glade.c:
+	(gm_audio_profile_edit_new_2), (glade_module_register_widgets):
+	* profiles/gnome-audio-profiles.glade2:
+          adding .so for glade
+
+2003-12-15  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * configure.in: rework so that it doesn't fail without gst 0.7
+
+2003-12-14  Christian Schaller <uraeus@gnome.org>
+
+	* Fix gstreamer properties icon name
+	* Add docs to gstreamer properties
+	* Update docs to gst-mixer
+	* Update spec to reflect other changes
+
+2003-12-14  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* profiles/gnome-audio-profiles.schemas.in.in: add defaults
+
+2003-12-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+          profiles/Makefile.am:
+          profiles/gnome-media-profiles.pc.in:
+          Add pkg-config stuff
+
+2003-12-04  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+          Makefile.am:
+          profiles/:
+          Add media profile code
+
+2003-12-02  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* gstreamer-properties/pipeline-tests.c: remove gstautoplug.h
+
+2003-11-25 Ted Gould <ted@gould.cx>
+
+	* configure.in: release 2.5.1
+
+2003-10-26 Christian Schaller <Uraeus@gnome.org>
+
+	* Adding config.rpath. Generated file, shouldn't be here
+	* Fixing the calling of the mixer from gnome-sound-recorder
+
+2003-10-25 Christian Schaller <Uraeus@gnome.org>
+
+	* Fix so that gstreamer-properties works
+	* Put gstreamer-properties.desktop file back in action
+	* Move and somewhat update docs from gmix to gst-mixer
+	* Get appicon working for gst-mixer
+
+2003-10-25  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add m4.
+	(ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): Add config.rpath.
+	* configure.in (AC_OUTPUT): Add m4/Makefile.
+
+2003-10-25 Christian Schaller <Uraeus@gnome.org>
+
+	* Replace gmixer with the new gst-mixer
+	* Remove build dependency on gnome-common
+	* Update GStreamer dependency to 0.7.1
+	* Comment out some mixer tie in code in sound-recorder,
+	  should be re-enabled by someone with the right skills
+	* Update SPEC file for latest changes
+
+2003-10-15  Thomas Vander Stichele <thomas at apestaart dot org>
+	* configure.in: release 2.5.0
+
+
+2003-10-15  Thomas Vander Stichele <thomas at apestaart dot org>
+
+	* configure.in, gnome-cd/Makefile.am:
+	  fix conditionals for cdrom host source
+
+2003-09-17  Ted Gould   <ted@gould.cx>
+
+	* configure.in:  Finially figured out how to make a branch
+	in CVS, so I did for gnome-2-4 and now I've labeled this
+	2.5.0 in the main branch - just so if someone posts a bug
+	I'll know a little bit more.
+
+2003-09-17  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" (Tamil) to the languages' list.
+
+2003-09-08  Ted Gould   <ted@gould.cx>
+
+	* configure.in:  Updating version number to 2.4.0
+
+2003-09-05  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-08-25  Ted Gould   <ted@gould.cx>
+
+	* configure.in:  Updating version number to 2.3.8
+
+2003-08-11  Ted Gould   <ted@gould.cx>
+
+	* configure.in:  Updating version number to 2.3.7
+	
+2003-08-04  Ted Gould   <ted@gould.cx>
+
+	* configure.in:  Updating version number to 2.3.6
+	
+2003-07-25  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Macedonian (mk) to ALL_LINGUAS
+
+2003-07-16  Ted Gould   <ted@gould.cx>
+
+	* configure.in:  Updating version number to 2.3.5
+	
+2003-07-03  Ted Gould   <ted@gould.cx>
+	* configure.in:  Updating version number to 2.3.4
+
+	* configure.in:
+	* gnome-cd/images/None-theme/*:
+	* gnome-cd/images/Makefile.am:
+	* gnome-cd/gnome-cd.schemas.in.in:
+	Adding a new default theme for gnome-cd.  Basically this theme
+	is a NULL theme, in that it looks basically like the GTK theme
+	that is being used.  I called it 'None' because this is most
+	likely how a user will think about it.  Calum Benson contributed
+	the theme itself, and it was all discussed in bugzilla
+	bug 82190.
+
+	* cddb-slave2/Makefile.am:
+	* gnome-cd/Makefile.am:
+	Changed these so that the IDL generated files are not included
+	in a distribution.  These had some ripple through effects that made
+	distcheck not work, but those issues are resolved also.
+
+2003-06-30  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2003-06-23  Ted Gould   <ted@gould.cx>
+
+	* gmix/gmix.c:
+	Added a patch given to Iain, unknown origin.  It adds FreeBSD
+	name support to the mixer.
+
+2003-06-20  Ted Gould  <ted@gould.cx>
+
+	* AUTHORS:
+	* HACKING:
+	* MAINTAINERS:
+	Made myself into the maintainer.
+
+2003-06-18  Alex Duggan  <aldug@gnome.org>
+
+	* gmix/gmix.c:
+	* gnome-cd/Makefile.am:
+	* gnome-cd/callbacks.c:
+	* grecord/src/gsr-window.c:
+	Add use the logos of these programs in their about dialogs.
+	Fixes #102983.
+
+2003-05-20  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-05  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+                                                                                
+        * configure.in: Added cy to ALL_LINGUAS
+        * po/cy.po: Added
+
+2003-04-08  Mike Lei <mike.lei@sun.com>
+
+	* configure.in: Added l10n doc Makefile support for 
+	  gnome-cd and grecord
+	
+	* Added l10n doc files for gnome-cd and grecord
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "ml" to ALL_LINGUAS
+
+2003-02-22  Abel Cheung  <maddog@linux.org.hk>
+
+	* cddb-slave2/cddb-track-editor.c: Fix tyop in genres name.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
 2003-01-29  Laurent Dhima  <laurenti@alblinux.net>
 
 	* configure.in: Added "sq" to ALL_LINGUAS.

@@ -1,3 +1,115 @@
+2004-03-17  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gnome-recorder.c: (main): use gtk_icon_theme. Fix #137464
+
+2004-03-08  Johan Dahlin  <johan@gnome.org>
+
+	* src/gsr-window.c (media_record): If we already have a record
+	pipeline, destroy it before trying to record again.
+
+2004-03-01  Alex Duggan <aldug@astrolinux.com>
+
+	* src/gsr-window.c: s/gst-mixer/gnome-volume-control/
+
+2004-02-26 Breda McColgan <breda.mccolgan@sun.com>
+
+	* doc/C/gnome-sound-recorder.xml: Updated for GNOME 2.6, technical review draft
+	* doc/C/grecord-C.omf: Updated for GNOME 2.6
+	* doc/C/l10n.txt: Updated for GNOME 2.6
+	* doc/C/figures/grecord_window.png: Updated for GNOME 2.6
+
+2004-02-25  Johan Dahlin  <johan@gnome.org>
+
+	* src/gsr-window.c: Major cleanups. Add support for audio
+	profiles. More error checking and better gstreamer integration.
+
+2004-02-24  Ted Gould <ted@gould.cx>
+
+	* src/gsr-window.c: Adding in checking to see if the file
+	name has already been used.  This is a patch from
+	Glynn Foster and is related to bug #130653.
+
+2004-02-19  Ted Gould <ted@gould.cx>
+
+	* gsr.xml, Makefile.am, media-rec.png, media-record.png,
+	  src/gnome-recorder.h:
+    Applying a patch by Balamurali Viswanathan to fix bug #128091
+	which deals with the fact that media-rec.png should be
+	media-record.png.  This changes that in all places it should be.
+
+2003-12-13  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* src/grec.c: (on_open_activate_cb), (store_filename),
+	(save_filename), (save_dialog):
+	* src/gsr-window.c: (fchooser_response), (file_open),
+	(fchooser_save_response), (file_save_as): Replace GtkFileSelection
+	with GtkFileChooser.
+
+2003-10-14  Ted Gould <ted@gould.cx>
+
+	* src/gsr-window.c: Undid part of the patch below, because it
+	was using the slider.  The problem here is that the slider implies
+	that there is a fixed length of something, and really, we can
+	record for quite a long time.  So, just using the counter to
+	show that we're recording.
+
+2003-10-08  Ted Gould <ted@gould.cx>
+
+	* src/gsr-window.c: Fix for bug 123937 to make the gnome-recorder
+	have a time status so that people know it's recording.  Patch
+	contributed by Balamurali Viswanathan.
+
+2003-09-05  Ted Gould <ted@gould.cx>
+
+	* gsr-window.c: Adding in a couple of patches at the eleventh hour
+	for GSR.  But they all really help.  111820 is about playing multiple
+	files sequencially - this was submitted by Balamurali Viswanathan.  The
+	second is 118077 and done by Frederic Crozat.  It fixes a problem where
+	a bonobo call was in a callback.
+
+2003-09-05  Irene Ryan <irene.ryan@sun.com>
+
+	* doc/C/gnome-sound-recorder.xml: updates to reflect Sound Recorder 2.2.2 for
+     the GNOME 2.4 release
+	* doc/C/grecord.xml: updated manual release/date information
+	* doc/C/l10n.txt: updated instuctions for L10N teams
+	* doc/C/figures/grecord_window.png: new screenshot of application
+
+2003-07-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/gnome-recorder.c: Pull up fix from stable to make
+	recording work again. Should fix bug #110738.
+
+2003-07-02  Jordi Mallach  <jordi@sindominio.net>
+
+	* gnome-sound-recorder.desktop.in: Add X-GNOME-Bugzilla entries.
+
+2003-06-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/grec.c: (save_dialog):
+	* src/gsr-window.c: (fill_in_information), (file_properties):
+	* src/preferences.c: (sox_command_changed): Pull up changes from stable.
+
+2003-04-28  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* src/gsr-window.c: (finalize), (seek_started), (seek_to),
+	(tick_callback), (error_handler), (make_play_pipeline),
+	(make_record_pipeline), (init), (gsr_window_new):
+	- use g_get_tmp_dir().
+	- fix seeking.
+	- pop-up error dialog if gst reports error.
+
+2003-04-26  Christian Neumair  <chris@gnome-de.org>
+
+	* gsr.xml: Fixed a typo (#110819).
+
+2003-03-28 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (shutdown_pipeline): Destroy the pipeline.
+	(finalize): Shutdown the pipelines. Turn off the tick id.
+	(make_play_pipeline): Store the state change ID.
+	(make_record_piipeline): Ditto.
+
 2003-01-22  Irene Ryan <irene.ryan@sun.com>
 
 	* help/C/gnome-sound-recorder.xml, record-C.omf: updated to reflect changes for 
@@ -1062,7 +1174,7 @@
 2000-04-17  Andreas Hyden  <a.hyden@cyberpoint.se>
 
 	* grecord.spec: Added, thanks to:
-	  Marc Lavallée <odradek@videotron.ca>
+	  Marc LavallÃ©e <odradek@videotron.ca>
 
 2000-04-17  Andreas Hyden  <a.hyden@cyberpoint.se>
 

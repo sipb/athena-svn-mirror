@@ -15,7 +15,8 @@
 #include <gtk/gtkrange.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkmessagedialog.h> 
+#include <gtk/gtkmessagedialog.h>
+#include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-about.h>
 #include <libgnome/gnome-help.h>
@@ -33,7 +34,12 @@
 
 #include "GNOME_Media_CDDBSlave2.h"
 
+extern void destroy_cache_hashTable (void);
+
 static GNOME_Media_CDDBTrackEditor track_editor = CORBA_OBJECT_NIL;
+
+static gboolean position_auto_update=TRUE;
+static gboolean position_update_ignore_event=FALSE;
 
 static void
 maybe_close_tray (GnomeCD *gcd)
@@ -445,22 +451,30 @@ set_track_option_menu (GtkOptionMenu *menu,
 					   G_CALLBACK (skip_to_track), NULL);
 }
 
+/* set the window title
+ *   with the current artist (through gcd)
+ *   and the track title (through status' track index)
+ * FIXME: only called during PAUSE/PLAY state changes, while this
+ *        would make sense to be used during track changes too.
+ *        What is being done instead there ?
+ */
 static void
 set_window_track_title (GnomeCD *gcd,
 			GnomeCDRomStatus *status)
 {
 	int idx = status->track - 1;
-	const char *artist = "";
-	const char *track_name = "";
+	const char *artist = NULL;
+	const char *track_name = NULL;
 
 	if (gcd->disc_info) {
 		if (idx >= 0 && idx < gcd->disc_info->ntracks &&
 		    gcd->disc_info->track_info)
 			track_name = gcd->disc_info->track_info [idx]->name;
 
-		artist = gcd->disc_info->artist ? gcd->disc_info->artist : "";
+		artist = gcd->disc_info->artist;
 	}
 
+	gcd_debug ("track_title: setting artist %s, track_name %s", artist, track_name);
 	gnome_cd_set_window_title (gcd, artist, track_name);
 }
 
@@ -479,14 +493,11 @@ status_ok (GnomeCD *gcd,
 	/* Set the track menu on. */
 	gtk_widget_set_sensitive (gcd->tracks, TRUE);
 	
-	/* All buttons can be used when the tray is open,
-	   they should shut the tray. */
-	gtk_widget_set_sensitive (gcd->back_b, TRUE);
+	/* All buttons can be used when the state is ok */
 	gtk_widget_set_sensitive (gcd->rewind_b, TRUE);
 	gtk_widget_set_sensitive (gcd->play_b, TRUE);
 	gtk_widget_set_sensitive (gcd->stop_b, TRUE);
 	gtk_widget_set_sensitive (gcd->ffwd_b, TRUE);
-	gtk_widget_set_sensitive (gcd->next_b, TRUE);
 	gtk_widget_set_sensitive (gcd->eject_b, TRUE);
 
 	switch (status->audio) {
@@ -495,10 +506,9 @@ status_ok (GnomeCD *gcd,
 
 	case GNOME_CDROM_AUDIO_PLAY:
 		/* Change the play button to pause */
-		aob = gtk_widget_get_accessible (GTK_WIDGET (gcd->play_b));
-		atk_object_set_name (aob, _("Pause"));
-
 		if (gcd->current_image != gcd->pause_image) {
+			aob = gtk_widget_get_accessible (GTK_WIDGET (gcd->play_b));
+			atk_object_set_name (aob, _("Pause"));
 			gtk_container_remove (GTK_CONTAINER (gcd->play_b),
 					      gcd->play_image);
 			gtk_container_add (GTK_CONTAINER (gcd->play_b),
@@ -506,18 +516,35 @@ status_ok (GnomeCD *gcd,
 			gcd->current_image = gcd->pause_image;
 		}
 		/* Find out if the track has changed */
-		track = gtk_option_menu_get_history (GTK_OPTION_MENU (gcd->tracks));
-		if (track + 1 != status->track) {
+                /* FIXME: this would be a good place to call
+                   set_window_track_title instead.
+                   Also, gtk_option_menu_get_history is now deprecated. */
+		track = gtk_option_menu_get_history (GTK_OPTION_MENU (gcd->tracks)) + 1;
+		if (track != status->track) {
 			set_track_option_menu (GTK_OPTION_MENU (gcd->tracks),
 					       status->track);
 		}
 		
-		
 /*  		cd_display_clear (CD_DISPLAY (gcd->display)); */
-		if (status->relative.second >= 10) {
-			text = g_strdup_printf ("%d:%d", status->relative.minute, status->relative.second);
-		} else {
-			text = g_strdup_printf ("%d:0%d", status->relative.minute, status->relative.second);
+		text = g_strdup_printf ("%d:%02d / %d:%02d", 
+					status->relative.minute, status->relative.second,
+					status->length.minute, status->length.second);
+		
+		/* update position slider */
+		if(position_auto_update && (status->length.minute!=0 ||
+					    status->length.second!=0)){
+			gboolean update_ignore_save = position_update_ignore_event;
+			
+			gint pos = status->relative.minute*60+status->relative.second;
+			gint length = status->length.minute*60+status->length.second;
+			
+			if(pos>length) length = pos;
+			if(pos<0) pos = 0;
+			
+			position_update_ignore_event = TRUE;
+			gtk_adjustment_set_value (GTK_ADJUSTMENT(gcd->position_adj),
+						  100.0*(double)pos/(double)length);
+			position_update_ignore_event = update_ignore_save;
 		}
 		
 		cd_display_set_line (CD_DISPLAY (gcd->display),
@@ -533,17 +560,17 @@ status_ok (GnomeCD *gcd,
 		} else {
 			text = g_strdup (_("Playing"));
 		}
-		
-		gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, text, NULL);
+		if (gcd->tray_tips)	
+			gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, text, NULL);
 		g_free (text);
 		
 		break;
 
 	case GNOME_CDROM_AUDIO_PAUSE:
 		/* Change the play button to pause */
-		aob = gtk_widget_get_accessible (GTK_WIDGET (gcd->play_b));
-		atk_object_set_name (aob, _("Play"));
 		if (gcd->current_image != gcd->play_image) {
+			aob = gtk_widget_get_accessible (GTK_WIDGET (gcd->play_b));
+			atk_object_set_name (aob, _("Play"));
 			gtk_container_remove (GTK_CONTAINER (gcd->play_b),
 					      gcd->pause_image);
 			gtk_container_add (GTK_CONTAINER (gcd->play_b),
@@ -554,7 +581,8 @@ status_ok (GnomeCD *gcd,
 		set_window_track_title (gcd, status);
 
 		/* Update the tray icon tooltip */
-		gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("Paused"), NULL);
+		if (gcd->tray_tips)	
+			gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("Paused"), NULL);
 		break;
 		
 	case GNOME_CDROM_AUDIO_COMPLETE:
@@ -599,7 +627,8 @@ status_ok (GnomeCD *gcd,
 			set_track_option_menu (GTK_OPTION_MENU (gcd->tracks), 1);
 
 			/* Update tray icon tooltip */
-			gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("CD Player"), NULL);
+			if (gcd->tray_tips)	
+				gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("CD Player"), NULL);
 		}		
 		break;
 		
@@ -607,17 +636,17 @@ status_ok (GnomeCD *gcd,
 		cd_display_set_line (CD_DISPLAY (gcd->display),
 				     CD_DISPLAY_LINE_TIME, "");
 		if (gcd->disc_info != NULL) {
+                        gcd_debug ("AUDIO_STOP: artist %s, title %s", gcd->disc_info->artist, gcd->disc_info->title);
 			gnome_cd_set_window_title (gcd,
-						   gcd->disc_info->artist ?
-						   gcd->disc_info->artist : "",
-						   gcd->disc_info->title ?
-						   gcd->disc_info->title : "");
+						   gcd->disc_info->artist,
+						   gcd->disc_info->title);
 		} else {
 			gnome_cd_set_window_title (gcd, NULL, NULL);
 		}
 
 		/* Update the tray icon tooltip */
-		gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("Stopped"), NULL);
+		if (gcd->tray_tips)	
+			gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("Stopped"), NULL);
 		break;
 		
 	case GNOME_CDROM_AUDIO_ERROR:
@@ -625,25 +654,24 @@ status_ok (GnomeCD *gcd,
 		cd_display_set_line (CD_DISPLAY (gcd->display),
 				     CD_DISPLAY_LINE_TIME, _("Disc error"));
 		if (gcd->disc_info != NULL) {
-			gnome_cd_set_window_title (gcd, gcd->disc_info->artist ?
-						   gcd->disc_info->artist : "",
-						   gcd->disc_info->title ?
-						   gcd->disc_info->title : "");
+                        gcd_debug ("AUDIO_ERROR: artist %s, title %s", gcd->disc_info->artist, gcd->disc_info->title);
+			gnome_cd_set_window_title (gcd, gcd->disc_info->artist,
+						   gcd->disc_info->title);
 		} else {
 			gnome_cd_set_window_title (gcd, NULL, NULL);
 		}
 
 		/* Update the tray icon tooltip */
-		gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("No disc"), NULL);
+		if (gcd->tray_tips)	
+			gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("No disc"), NULL);
 		break;
 		
 	default:
 		if (gcd->disc_info != NULL) {
+                        gcd_debug ("default: artist %s, title %s", gcd->disc_info->artist, gcd->disc_info->title);
 			gnome_cd_set_window_title (gcd,
-						   gcd->disc_info->artist ?
-						   gcd->disc_info->artist : "",
-						   gcd->disc_info->title ?
-						   gcd->disc_info->title : "");
+						   gcd->disc_info->artist,
+						   gcd->disc_info->title);
 		} else {
 			gnome_cd_set_window_title (gcd, NULL, NULL);
 		}
@@ -678,6 +706,7 @@ status_ok (GnomeCD *gcd,
 	}
 }
 
+/* GnomeCDRom status-changed signal handler */
 void
 cd_status_changed_cb (GnomeCDRom *cdrom,
 		      GnomeCDRomStatus *status,
@@ -686,12 +715,28 @@ cd_status_changed_cb (GnomeCDRom *cdrom,
 	if (gcd->not_ready == TRUE) {
 		return;
 	}
-	
+
 	switch (status->cd) {
 	case GNOME_CDROM_STATUS_OK:
+                /* does everything when the state is ok */
 		status_ok (gcd, status);
+                /* next is sensitive when this is not the last track */
+		/* but gcd->disc_info might be NULL when
+                 * this gets called on startup but we haven't looked at the
+                 * disc yet */
+		if (gcd->disc_info && status->track >= gcd->disc_info->ntracks)
+                       gtk_widget_set_sensitive (gcd->next_b, FALSE);
+		else
+                       gtk_widget_set_sensitive (gcd->next_b, TRUE);
+                /* back is sensitive when it's not the first track and
+                   we're playing */
+               if (status->track <= 1 && (status->audio == GNOME_CDROM_AUDIO_STOP || status->audio == GNOME_CDROM_AUDIO_COMPLETE))
+                       gtk_widget_set_sensitive (gcd->back_b, FALSE);
+		else
+                       gtk_widget_set_sensitive (gcd->back_b, TRUE);
 		break;
-		
+
+        /* everything below are states where we're not playing */
 	case GNOME_CDROM_STATUS_NO_DISC:
 		if (gcd->disc_info != NULL) {
 			cddb_free_disc_info (gcd->disc_info);
@@ -721,6 +766,8 @@ cd_status_changed_cb (GnomeCDRom *cdrom,
 		if (gcd->disc_info != NULL) {
 			cddb_free_disc_info (gcd->disc_info);
 			gcd->disc_info = NULL;
+			/* we need to destroy the hashtable(cddb_cache) */
+			destroy_cache_hashTable();
 		}
 		
 		gtk_widget_set_sensitive (gcd->trackeditor_b, FALSE);
@@ -789,7 +836,8 @@ cd_status_changed_cb (GnomeCDRom *cdrom,
                 gnome_cd_set_window_title (gcd, NULL, NULL);
 
 		/* Updated the tray icon tooltip */
-		gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("No Cdrom"), NULL);
+		if (gcd->tray_tips)	
+			gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("No Cdrom"), NULL);
                 break;
 
 	default:
@@ -817,13 +865,18 @@ about_cb (GtkWidget *widget,
 	  gpointer data)
 {
 	static GtkWidget *about = NULL;
+	GdkPixbuf *pixbuf = NULL;
 	const char *authors[2] = {"Iain Holmes <iain@prettypeople.org>", NULL};
 	
 	if (about == NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (GNOME_ICONDIR "/gnome-cd.png", NULL);
 		about = gnome_about_new (_("CD Player"), VERSION,
 					 "Copyright \xc2\xa9 2001-2002 Iain Holmes",
 					 _("A CD player for GNOME"),
-					 authors, NULL, NULL, NULL);
+					authors, NULL, NULL, pixbuf);
+		if (pixbuf != NULL)
+			gdk_pixbuf_unref (pixbuf);
+		
 		g_signal_connect (G_OBJECT (about), "destroy",
 				  G_CALLBACK (gtk_widget_destroyed), &about);
 		gtk_widget_show (about);
@@ -883,6 +936,52 @@ tray_icon_clicked (GtkWidget *widget, GdkEventButton *event, GnomeCD *gcd)
 	} else {
 		return FALSE;
 	}
+}
+
+gboolean
+tray_icon_pressed (GtkWidget *widget, GdkEventKey *event, GnomeCD *gcd)
+{
+	if (event->keyval == GDK_space ||
+	    event->keyval == GDK_KP_Space ||
+	    event->keyval == GDK_Return ||
+	    event->keyval == GDK_KP_Enter) {
+		if (GTK_WIDGET_VISIBLE (gcd->window)) {
+			gtk_widget_hide (gcd->window);
+		} else {
+			gtk_widget_show (gcd->window);
+		}
+
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+gint
+tray_icon_expose (GtkWidget* widget, GdkEventExpose *event)
+{
+  /*
+   * Draw focus indication if the GtkEventBox has focus.
+   */
+  if (GTK_WIDGET_HAS_FOCUS (gtk_widget_get_parent (widget)))
+    {
+      gint focus_width, focus_pad;
+      gint x, y, width, height;
+
+      gtk_widget_style_get (widget,
+                            "focus-line-width", &focus_width,
+                            "focus-padding", &focus_pad,
+                            NULL);
+      x = widget->allocation.x + focus_pad;
+      y = widget->allocation.y + focus_pad;
+      width = widget->allocation.width -  2 * focus_pad;
+      height = widget->allocation.height - 2 * focus_pad;
+      gtk_paint_focus (widget->style, widget->window,
+                       GTK_STATE_NORMAL,
+                       &event->area, widget, "button",
+                       x, y, width, height);
+    }
+  return FALSE;
 }
 
 void
@@ -994,9 +1093,87 @@ volume_changed (GtkRange *range,
 	GError *error;
 
 	volume = gtk_range_get_value (range);
-
-	if (gnome_cdrom_set_volume (gcd->cdrom, (int) -volume, &error) == FALSE) {
+	if (gnome_cdrom_set_volume (gcd->cdrom, (int) volume, &error) == FALSE) {
 		gcd_warning ("Error setting volume: %s", error);
 		g_error_free (error);
 	}
+}
+
+void
+position_changed (GtkRange *range,
+		  GnomeCD *gcd)
+{
+	double position;
+	int end_track;
+	GnomeCDRomStatus *status = NULL;
+	GnomeCDRomMSF msf, msf2, *endmsf;
+	GError *error;
+	gint length, pos;
+	GtkAdjustment *adj;
+	
+	if(position_update_ignore_event) return;
+	
+	position = gtk_range_get_value (range);
+		
+	if (gnome_cdrom_get_status (GNOME_CDROM (gcd->cdrom), &status, NULL) == FALSE) 
+		goto out;
+	
+	/* slider should have no effect unless the CD is playing or 
+	 * at lease pausing 
+	 */
+	if(status->cd!=GNOME_CDROM_STATUS_OK) goto out;
+	if(status->audio!=GNOME_CDROM_AUDIO_PLAY &&
+	   status->audio!=GNOME_CDROM_AUDIO_PAUSE) goto out;
+	
+	adj=gtk_range_get_adjustment (range);
+	length = status->length.minute*60 + status->length.second;
+	pos = length * position / (adj->upper - adj->lower);
+	
+	msf.minute = pos / 60;
+	msf.second = pos % 60;
+	msf.frame = 0;
+	
+	msf2.minute = 0;
+	msf2.second = 0;
+	msf2.frame = 0;
+	
+	if (gcd->cdrom->playmode == GNOME_CDROM_SINGLE_TRACK) {
+		end_track = status->track + 1;
+		endmsf = &msf2;
+	} else {
+		end_track = -1;
+		endmsf = NULL;
+	}
+	
+	if (gnome_cdrom_play (GNOME_CDROM (gcd->cdrom), status->track, 
+			      &msf, end_track, endmsf, &error) == FALSE) {
+		gcd_warning ("Error skipping %s", error);
+		g_error_free (error);
+	}
+	if (status->audio==GNOME_CDROM_AUDIO_PAUSE){
+		if (gnome_cdrom_pause (gcd->cdrom, &error) == FALSE) {
+			gcd_warning ("%s", error);
+			g_error_free (error);
+		}
+	}
+	
+out:
+	if(status) g_free(status);
+	return;
+}
+
+void 
+position_slider_enter (GtkRange *range, 
+		       GdkEventCrossing *event,
+		       GnomeCD *gcd){
+	/* stop updating our position slider so the user has full control */
+	position_auto_update = FALSE; 
+}
+
+void 
+position_slider_leave (GtkRange *range, 
+		       GdkEventCrossing *event,
+		       GnomeCD *gcd){
+	/* user has moved the mouse away, we may now update the slider again */
+	position_auto_update = TRUE;
 }

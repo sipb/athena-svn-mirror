@@ -1,0 +1,369 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "Agosto 2002">
+  <!ENTITY app "Grabador de sonido">
+]>
+<!--
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Apr 11, 2002
+
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="es">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>Manual de &app; V&manrevision;</title>
+
+    <copyright>
+      <year>2003</year>
+      <holder>Sun Microsystems</holder>
+    </copyright>
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+    <publisher>
+      <publishername> Proyecto de documentaci&oacute;n de GNOME </publishername>
+    </publisher>
+
+   &legal;
+
+    <authorgroup>
+      <author>
+	<firstname>Equipo de documentaci&oacute;n de</firstname>
+	<surname>Sun GNOME</surname>
+	<affiliation>
+	  <orgname>Sun Microsystems</orgname>
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname>
+	<surname>Translator 1</surname>
+	<affiliation>
+	  <orgname>Latin Translation Team</orgname>
+	  <address> <email>translator@gnome.org</email> </address>
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+    <revhistory>
+      <revision>
+	<revnumber>&app; Manual V&manrevision;</revnumber>
+	<date>&date;</date>
+	<revdescription>
+	  <para role="author">Equipo de documentaci&oacute;n de Sun GNOME
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Proyecto de documentaci&oacute;n de GNOME</para>
+	</revdescription>
+      </revision>
+      <revision>
+	<revnumber>Manual del Grabador de sonido V2.1</revnumber>
+	<date>Junio 2002</date>
+	<revdescription>
+	  <para role="author">Equipo de documentaci&oacute;n de Sun GNOME
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Proyecto de documentaci&oacute;n de GNOME</para>
+	</revdescription>
+      </revision>
+      <revision>
+	<revnumber>Manual del Grabador de sonido V2.0</revnumber>
+	<date>Mayo 2002</date>
+	<revdescription>
+	  <para role="author">Equipo de documentaci&oacute;n de Sun GNOME
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Proyecto de documentaci&oacute;n de GNOME</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>Este manual describe la versi&oacute;n &appversion; de &app;.
+    </releaseinfo>
+    <legalnotice>
+      <title>Comentarios</title>
+      <para>Para informar de un defecto o hacer una sugerencia sobre la aplicaci&oacute;n &app; o el presente manual, siga las indicaciones que aparecen en la
+	<ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>.
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm>
+    <primary>Grabador de sonido</primary>
+  </indexterm>
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+
+  <sect1 id="grecord-introduction">
+	 <title>Introducci&oacute;n</title>
+    <para>La aplicaci&oacute;n <application>&app;</application> permite grabar y reproducir archivos de sonido en forma de ondas (<filename>.wav</filename>).</para>
+  </sect1>
+
+  <sect1 id="grecord-getting-started">
+	 <title>Procedimientos iniciales</title>
+
+    <para>Para iniciar <application>&app;</application>, siga los siguientes pasos:
+    </para>
+    <variablelist>
+    	<varlistentry>
+    		<term>Men&uacute; <guimenu>Aplicaciones</guimenu> </term>
+    		<listitem>
+    		<para>Seleccione <menuchoice><guisubmenu>Sonido &amp; v&iacute;deo</guisubmenu><guimenuitem>Grabador de sonido</guimenuitem></menuchoice></para>
+    		</listitem>
+    	</varlistentry>
+    	<varlistentry>
+    		<term>L&iacute;nea de comandos</term>
+    		<listitem>
+    		<para>Escriba <command>gnome-sound-recorder</command> y, a continuaci&oacute;n, pulse <keycap>Intro</keycap>.</para>
+    		<para>
+    		</para>
+    		</listitem>
+    	</varlistentry>
+    </variablelist>
+
+    <para>Al iniciar <application>&app;</application>, se muestra la siguiente ventana.</para>
+
+    <!-- ==== Figure ==== -->
+      <figure id="grecord-fig">
+	<title>Ventana de &app;</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject>
+	    <imagedata fileref="figures/grecord_window.png" format="PNG"/>
+	    </imageobject>
+	    <textobject>
+	      <phrase>Muestra la ventana principal de &app;. Contiene barra de men&uacute;, barra de herramientas, barra de progreso y barra de estado. </phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+    <!-- ==== End of Figure ==== -->
+
+  </sect1>
+
+<!-- ================ Usage ================================ -->
+
+  <sect1 id="grecord-usage">
+    <title>Uso</title>
+
+    <sect2 id="grecord-record">
+    	<title>Iniciar una nueva grabaci&oacute;n</title>
+    	<para>Para iniciar una nueva sesi&oacute;n de grabaci&oacute;n, ejecute los siguientes pasos:</para>
+    	<orderedlist>
+    		<listitem><para>Haga clic en <guibutton>Nueva</guibutton>, en la barra de herramientas.</para></listitem>
+    		<listitem><para>Para iniciar la grabaci&oacute;n, haga clic en <guibutton>Grabar</guibutton>, en la barra de herramientas.</para></listitem>
+    		<listitem><para>Para detener la grabaci&oacute;n, haga clic en <guibutton>Parar</guibutton>, en la barra de herramientas.</para></listitem>
+    		<listitem><para>Para reanudar la grabaci&oacute;n, haga clic en <guibutton>Reproducir</guibutton>, en la barra de herramientas.</para></listitem>
+    		<listitem><para>Para guardar la grabaci&oacute;n, seleccione <menuchoice><guimenu>Archivo</guimenu><guimenuitem>Guardar como</guimenuitem></menuchoice> y, luego, escriba un nombre para el archivo de sonido. </para></listitem>
+    	</orderedlist>
+    </sect2>
+
+    <sect2 id="grecord-play">
+    	<title>Reproducir un archivo de sonido</title>
+    	<para>Para reproducir un archivo de sonido, seleccione <menuchoice><guimenu>Archivo</guimenu><guimenuitem>Abrir</guimenuitem></menuchoice>. Seleccione un archivo de sonido en el cuadro de di&aacute;logo <guilabel>Seleccione un archivo de sonido</guilabel> y, a continuaci&oacute;n, haga clic en <guibutton>Aceptar</guibutton>.
+		<application>&app;</application> muestra la duraci&oacute;n del archivo en minutos y segundos en la parte derecha de la barra de progreso. Para reproducir el archivo, haga clic en <guibutton>Reproducir</guibutton>. El indicador de progreso se mueve a lo largo de la barra de progreso mientras se reproduce el archivo de sonido. </para>
+    </sect2>
+
+    <sect2 id="grecord-echo">
+    	<title>A&ntilde;adir eco a un archivo de sonido</title>
+    	<para>Para a&ntilde;adir un eco a un archivo de sonido, abra dicho archivo y, a continuaci&oacute;n, seleccione <menuchoice><guimenu>Editar</guimenu><guisubmenu>Efectos</guisubmenu>
+		<guisubmenu>Eco</guisubmenu><guimenuitem>A&ntilde;adir eco</guimenuitem></menuchoice>.</para>
+    </sect2>
+
+
+    <sect2 id="grecord-undo">
+    	<title>Deshacer cambios en un archivo de sonido</title>
+    	<para>Para deshacer todos los cambios realizados en un archivo de sonido desde la &uacute;ltima vez que guard&oacute; el archivo, seleccione     	<menuchoice><guimenu>Editar</guimenu><guimenuitem>Deshacer todo</guimenuitem></menuchoice>.</para>
+    </sect2>
+
+  </sect1>
+
+<!-- ================ Preferences ================================ -->
+
+  <sect1 id="grecord-prefs">
+     <title>Preferencias</title>
+    <para>Para configurar <application>&app;</application>, seleccione
+		<menuchoice>
+		<guimenu>Editar</guimenu>
+		<guimenuitem>Preferencias</guimenuitem>
+		</menuchoice>.
+	El cuadro de di&aacute;logo <guilabel>&app; Preferencias de </guilabel> contiene las siguientes secciones con pesta&ntilde;as: </para>
+	<itemizedlist>
+		<listitem><para><xref linkend="grecord-prefs-recording"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-playing"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-paths"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-sound"/></para>
+		</listitem>
+	</itemizedlist>
+
+	<sect2 id="grecord-prefs-recording">
+	<title>Grabaci&oacute;n</title>
+    	<variablelist>
+	 		<varlistentry>
+	 		<term><guilabel>Fin de la grabaci&oacute;n</guilabel> </term>
+			<listitem>
+			<para>Utilice este cuadro de incremento para especificar el tiempo en minutos tras el cual <application>&app;</application> parar&aacute; de grabar si no recibe ninguna se&ntilde;al del usuario.  </para>
+			<para>Valor predeterminado:   2 minutos.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry>
+	 		<term><guilabel>Detener la grabaci&oacute;n al agotarse el tiempo</guilabel> </term>
+			<listitem>
+			<para>Seleccione esta opci&oacute;n para parar las grabaciones cuando <application>&app;</application> alcance el l&iacute;mite de tiempo de expiraci&oacute;n especificado en el cuadro de incremento <guilabel>Fin de la grabaci&oacute;n</guilabel>. </para>
+			<para>Valor predeterminado:  seleccionado.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry>
+	 		<term><guilabel>Abrir cuadro de di&aacute;logo de Guardar una vez finalizada la grabaci&oacute;n</guilabel> </term>
+			<listitem>
+			<para>Seleccione esta opci&oacute;n para abrir autom&aacute;ticamente el cuadro de di&aacute;logo <guilabel>Guardar archivo de sonido</guilabel> cuando		<application>&app;</application> haya finalizado una grabaci&oacute;n. </para>
+			<para>Valor predeterminado:  no seleccionado.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry>
+	 		<term><guilabel>Mostrar mensaje de aviso si el tama&ntilde;o (en MB) de la muestra es mayor que</guilabel> </term>
+			<listitem>
+			<para>Seleccione esta opci&oacute;n para visualizar un mensaje de aviso si el tama&ntilde;o del archivo de sonido que est&aacute; grabando supera los 100 MB.
+			Utilice el cuadro de incremento para modificar el tama&ntilde;o de archivo a partir del cual desea visualizar un aviso. </para>
+			<para>Valor predeterminado:   seleccionado, 100 MB.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry>
+	 		<term><guilabel>Detener reproducci&oacute;n si el tama&ntilde;o (MB) de la grabaci&oacute;n es mayor que</guilabel> </term>
+			<listitem>
+			<para>Seleccione esta opci&oacute;n para detener la grabaci&oacute;n si el tama&ntilde;o del archivo de sonido supera los 200 MB.
+			Utilice el cuadro de desplazamiento para modificar el tama&ntilde;o de archivo a partir del cual desea detener la grabaci&oacute;n. </para>
+			<para>Valor predeterminado:   no seleccionado, 200 MB.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+
+	<sect2 id="grecord-prefs-playing">
+	<title>Reproducci&oacute;n</title>
+    	<variablelist>
+	 		<varlistentry>
+	 		<term><guilabel>Repetici&oacute;n</guilabel> </term>
+			<listitem>
+			<para>Seleccione una de las siguientes opciones para determinar c&oacute;mo <application>&app;</application>
+			reproduce archivos de sonido:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Reproducir el sonido una sola vez</guilabel></para>
+				<para>Seleccione esta opci&oacute;n para reproducir el archivo de sonido una vez. </para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Repetir siempre</guilabel></para>
+				<para>Seleccione esta opci&oacute;n para reproducir el archivo de sonido de forma indefinida hasta que haga clic en <guibutton>Parar</guibutton> o salga de la aplicaci&oacute;n.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>N&uacute;mero de veces</guilabel></para>
+				<para>Seleccione esta opci&oacute;n para reproducir el archivo de sonido el n&uacute;mero de veces que se haya especificado en el cuadro de desplazamiento.
+				Utilice el cuadro de incremento para modificar el n&uacute;mero de veces que <application>&app;</application> reproduce el archivo.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Valor predeterminado:   <guilabel>N&uacute;mero de veces</guilabel>, 2.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+
+	<sect2 id="grecord-prefs-paths">
+	<title>Rutas</title>
+    	<variablelist>
+	 		<varlistentry>
+	 		<term><guilabel>Ruta a sox</guilabel> </term>
+			<listitem>
+			<para>Utilice este campo para especificar la ubicaci&oacute;n de la aplicaci&oacute;n <application>sox</application>.
+			<application>&app;</application> utiliza <application>sox</application> para volver a reproducir grabaciones. Para determinar la ubicaci&oacute;n de <application>sox</application>, escriba <command>which sox</command> en la l&iacute;nea de comandos.
+			Para aplicar un cambio en el campo, haga clic en <guibutton>Aplicar</guibutton>.</para>
+			<para>Valor predeterminado:   depende del sistema operativo. </para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry>
+	 		<term><guilabel>Carpeta temporal</guilabel> </term>
+			<listitem>
+			<para>Utilice este campo para especificar el directorio en el que desea guardar temporalmente los archivos de sonido mientras <application>&app;</application>
+est&eacute; reproduci&eacute;ndolos. Para aplicar un cambio en el campo, haga clic en <guibutton>Aplicar</guibutton>.</para>
+			<para>Valor predeterminado:   depende del sistema operativo. </para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+
+	<sect2 id="grecord-prefs-sound">
+	<title>Sonido</title>
+	<para>Las preferencias que seleccione en esta secci&oacute;n con pesta&ntilde;as s&oacute;lo se aplicar&aacute;n a nuevos archivos de sonido que cree.</para>
+    	<variablelist>
+	 		<varlistentry>
+	 		<term><guilabel>Formato de audio</guilabel> </term>
+			<listitem>
+			<para>Seleccione una de las siguientes opciones para determinar el n&uacute;mero de bits por grabaci&oacute;n en los archivos de sonido:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>8 bits PCM</guilabel></para>
+				<para>Seleccione esta opci&oacute;n para guardar los archivos de sonido utilizando modulaci&oacute;n de c&oacute;digo de pulsos (PCM) de 8 bits.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>16 bits PCM</guilabel></para>
+				<para>Seleccione esta opci&oacute;n para guardar archivos de sonido utilizando PCM de 16 bits. </para>
+				</listitem>
+				</itemizedlist>
+			<para>Valor predeterminado:   <guilabel>8 bits PCM</guilabel>.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry>
+	 		<term><guilabel>Frecuencia de muestreo</guilabel> </term>
+			<listitem>
+			<para>Utilice este campo para especificar el n&uacute;mero de muestras por segundo. </para>
+			<para>Valor predeterminado:   11025.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry>
+	 		<term><guilabel>Mono o est&eacute;reo</guilabel> </term>
+			<listitem>
+			<para>Seleccione una de las siguientes opciones para determinar si el archivo de sonido es mono o est&eacute;reo: </para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Mono</guilabel></para>
+				<para>Seleccione esta opci&oacute;n para guardar los archivos de sonido en formato monof&oacute;nico.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Est&eacute;reo</guilabel></para>
+				<para>Seleccione esta opci&oacute;n para guardar los archivos de sonido en formato estereof&oacute;nico. Este formato hace que el archivo de sonido sea mayor.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Valor predeterminado:   <guilabel>Est&eacute;reo</guilabel></para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+
+
+  </sect1>
+
+</article>

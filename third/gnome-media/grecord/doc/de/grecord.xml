@@ -1,0 +1,384 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "Sound Recorder">
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Apr 11, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="de">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>&app; Handbuch V&manrevision;</title>
+
+    <copyright> 
+      <year>2003</year> 
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+    <publisher> 
+      <publishername> GNOME-Dokumentationsprojekt </publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup>
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>GNOME-Dokumentationsteam</surname> 
+	<affiliation> 
+	  <orgname>Sun Microsystems</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+    <revhistory>
+      <revision> 
+	<revnumber>&app; Handbuch V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME-Dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME-Dokumentationsprojekt</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Sound-Recorder-Handbuch V2.1</revnumber> 
+	<date>Juni 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME-Dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME-Dokumentationsprojekt</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Sound-Recorder-Handbuch V2.0</revnumber> 
+	<date>Mai 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME-Dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME-Dokumentationsprojekt</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>In diesem Handbuch wird Version &appversion; von &app; beschrieben.
+    </releaseinfo>
+    <legalnotice> 
+      <title>Feedback</title>
+      <para>Wenn Sie einen Programmfehler melden m&ouml;chten oder Vorschl&auml;ge zur Anwendung &app; oder
+	zu diesem Handbuch haben, folgen Sie den Anweisungen auf der
+	<ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm> 
+    <primary>Sound-Recorder</primary> 
+  </indexterm> 
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+
+  <sect1 id="grecord-introduction"> 
+     <title>Einf&uuml;hrung</title>
+    <para>Mit der Anwendung <application>&app;</application> k&ouml;nnen Sie Sounddateien im .wav-Format (<filename>.wav</filename>) aufnehmen und wiedergeben.</para>
+  </sect1>
+
+  <sect1 id="grecord-getting-started"> 
+     <title>Erste Schritte</title>
+
+    <para>Sie k&ouml;nnen die Anwendung <application>&app;</application> auf eine der folgenden Arten starten:
+    </para>
+    <variablelist>
+    	<varlistentry>
+    		<term><guimenu>Anwendungsmen&uuml;</guimenu> </term>
+    		<listitem>
+    		<para>W&auml;hlen Sie <menuchoice><guisubmenu>Sound &amp; Video</guisubmenu><guimenuitem>Sound-Recorder</guimenuitem></menuchoice>.</para>
+    		</listitem>
+    	</varlistentry>
+    	<varlistentry>
+    		<term>Befehlszeile</term>
+    		<listitem>
+    		<para>Geben Sie <command>Gnome-Sound-Recorder</command> ein, und dr&uuml;cken Sie die <keycap>Eingabetaste</keycap>.</para>
+    		<para>		 
+    		</para>
+    		</listitem>
+    	</varlistentry>
+    </variablelist>
+
+    <para>Wenn Sie die Anwendung <application>&app;</application> starten, wird das folgende Fenster angezeigt.</para>
+
+    <!-- ==== Figure ==== -->
+      <figure id="grecord-fig"> 
+	<title>&app; Fenster</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject>
+	    <imagedata fileref="figures/grecord_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase>&Ouml;ffnet das Hauptfenster von &app;. Enth&auml;lt Men&uuml;leiste, Symbolleiste, Verlaufsleiste und Statusleiste </phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+    <!-- ==== End of Figure ==== -->
+
+  </sect1>
+
+<!-- ================ Usage ================================ -->
+
+  <sect1 id="grecord-usage"> 
+     <title>Verwendung</title>
+
+    <sect2 id="grecord-record">
+    	<title>So erstellen Sie eine neue Aufnahme</title>
+    	<para>Eine neue Aufnahme erstellen Sie wie folgt:</para>
+    	<orderedlist>
+    		<listitem><para>Klicken Sie auf der Symbolleiste auf <guibutton>Neu</guibutton>.</para></listitem>
+    		<listitem><para>Um die Aufnahme zu starten, klicken Sie auf der Symbolleiste auf <guibutton>Aufnahme</guibutton>.</para></listitem>
+    		<listitem><para>Um die Aufnahme zu beenden, klicken Sie auf der Symbolleiste auf <guibutton>Stopp</guibutton>.</para></listitem>
+    		<listitem><para>Um die Aufnahme wiederzugeben, klicken Sie auf der Symbolleiste auf <guibutton>Wiedergabe</guibutton>.</para></listitem>
+    		<listitem><para>Um die Aufnahme zu speichern, w&auml;hlen Sie <menuchoice><guimenu>Datei</guimenu><guimenuitem>Speichern unter</guimenuitem></menuchoice>, und geben Sie einen Namen f&uuml;r die Sounddatei ein.</para></listitem>		
+    	</orderedlist>
+    </sect2>
+ 
+    <sect2 id="grecord-play">
+    	<title>So geben Sie eine Sounddatei wieder</title>
+    	<para>Zur Wiedergabe einer Sounddatei w&auml;hlen Sie 
+		<menuchoice><guimenu>Datei</guimenu><guimenuitem>&Ouml;ffnen</guimenuitem></menuchoice>. W&auml;hlen Sie 
+		im Dialogfeld <guilabel>Audiodatei ausw&auml;hlen</guilabel> eine Sounddatei, und klicken Sie auf <guibutton>OK</guibutton>. 
+		<application>&app;</application> zeigt rechts neben der Verlaufsleiste die Dauer der Datei in Minuten 
+		und Sekunden an. Zur Wiedergabe der Datei klicken Sie auf <guibutton>Wiedergabe</guibutton>. W&auml;hrend der Wiedergabe verschiebt sich die Verlaufsanzeige 
+		entlang der Verlaufsleiste. </para>
+    </sect2>
+ 
+    <sect2 id="grecord-echo">
+    	<title>So f&uuml;gen Sie einer Sounddatei ein Echo hinzu</title>
+    	<para>Wenn Sie einer Sounddatei ein Echo hinzuf&uuml;gen m&ouml;chten, &ouml;ffnen Sie die Datei, und w&auml;hlen Sie 
+		<menuchoice><guimenu>Bearbeiten</guimenu><guisubmenu>Effekte</guisubmenu>
+		<guisubmenu>Echo</guisubmenu><guimenuitem>Hinzuf&uuml;gen echo</guimenuitem></menuchoice>.</para>
+    </sect2>
+    
+    
+    <sect2 id="grecord-undo">
+    	<title>So machen Sie &Auml;nderungen an einer Sounddatei r&uuml;ckg&auml;ngig</title>
+    	<para>Wenn Sie alle &Auml;nderungen r&uuml;ckg&auml;ngig machen m&ouml;chten, die Sie seit dem letzten Speichern der Sounddatei vorgenommen haben, w&auml;hlen Sie 
+    	<menuchoice><guimenu>Bearbeiten</guimenu><guimenuitem>Alles r&uuml;ckg&auml;ngig machen</guimenuitem></menuchoice>.</para>
+    </sect2>
+    
+  </sect1>
+
+<!-- ================ Preferences ================================ -->
+
+  <sect1 id="grecord-prefs"> 
+    <title>Einstellungen</title>
+    <para>Zur Konfiguration von <application>&app;</application> w&auml;hlen Sie 
+		<menuchoice> 
+		<guimenu>Bearbeiten</guimenu>
+		<guimenuitem>Einstellungen</guimenuitem> 
+		</menuchoice>.
+	Das Dialogfeld <guilabel>&app;Einstellungen</guilabel> enth&auml;lt die folgenden
+	Registerkarten:</para>
+	<itemizedlist>
+		<listitem><para><xref linkend="grecord-prefs-recording"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-playing"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-paths"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-sound"/></para>
+		</listitem>
+	</itemizedlist>
+	
+	<sect2 id="grecord-prefs-recording">
+	<title>Aufnehmen</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Ende der Aufnahme nach</guilabel> </term> 
+			<listitem>
+			<para>Legen Sie mit diesem Drehfeld fest, nach wie vielen Minuten <application>&app;</application> 
+			die Aufnahme beenden soll, wenn es zu keiner Benutzerinteraktion kommt. </para>
+			<para>Standard:  2 Minuten</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Aufnahme beim Erreichen des Endes der Zeitvorgabe stoppen</guilabel> </term> 
+			<listitem>
+			<para>Bei dieser Option beendet <application>&app;</application> die Aufnahme, 
+			sobald das im Drehfeld 
+			<guilabel>Ende der Aufnahme nach</guilabel> festgelegte Timeout erreicht ist. </para>
+			<para>Standard: Aktiviert</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Dialogfeld zum Speichern anzeigen, wenn die Aufnahme beendet ist</guilabel> </term> 
+			<listitem>
+			<para>Bei dieser Option wird das Dialogfeld <guilabel>Audiodatei speichern</guilabel> automatisch ge&ouml;ffnet, sobald 
+			<application>&app;</application> die Aufnahme beendet hat. </para>
+			<para>Standard:  Nicht aktiviert</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Warnmeldung anzeigen, wenn das Sample gr&ouml;&szlig;er wird als (in MB)</guilabel> </term> 
+			<listitem>
+			<para>Bei dieser Option wird eine Warnung angezeigt, sobald die aufgenomme Datei gr&ouml;&szlig;er als 100 MB ist. 
+			Mit dem Drehfeld k&ouml;nnen Sie einstellen, ab welcher Dateigr&ouml;&szlig;e die Warnung angezeigt wird.</para>
+			<para>Standard:  Aktiviert, 100 MB</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Aufnahme stoppen, wenn das Sample gr&ouml;&szlig;er wird als (in MB)</guilabel> </term> 
+			<listitem>
+			<para>Bei dieser Option wird die Aufnahme gestoppt, wenn die Sounddatei gr&ouml;&szlig;er als 200 MB ist. 
+			Mit dem Drehfeld k&ouml;nnen Sie einstellen, ab welcher Dateigr&ouml;&szlig;e die Aufnahme gestoppt wird.</para>
+			<para>Standard:  Nicht aktiviert, 200 MB</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-playing">
+	<title>Abspielen</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Wiederholen</guilabel> </term> 
+			<listitem>
+			<para>W&auml;hlen Sie mit folgenden Optionen, wie <application>&app;</application>
+			Sounddateien wiedergibt:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Einmalige Wiedergabe des Sounds</guilabel></para>
+				<para>Bei dieser Option wird die Sounddatei nur einmal wiedergegeben.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Endlos wiederholen</guilabel></para>
+				<para>Bei dieser Option wird die Sounddatei endlos wiederholt, bis Sie auf die Schaltfl&auml;che <guibutton>Stopp</guibutton> klicken
+				oder die Anwendung beenden.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Anzahl</guilabel></para>
+				<para>Bei dieser Option wird die Sounddatei so oft abgespielt, wie Sie im Drehfeld festgelegt haben. 
+				Mit dem Drehfeld k&ouml;nnen Sie festlegen, wie oft der Titel von <application>&app;</application> wiedergegeben wird.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Standard:  <guilabel>Anzahl</guilabel>, 2</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+	
+	<sect2 id="grecord-prefs-paths">
+	<title>Pfade</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Pfad zu sox</guilabel> </term> 
+			<listitem>
+			<para>Geben Sie in diesem Feld den Speicherort der Anwendung <application>sox</application> an. 
+			<application>&app;</application> ben&ouml;tigt <application>sox</application> zur Wiedergabe der Aufnahmen. Wenn Sie den Speicherort
+			der Anwendung <application>sox</application> herausfinden m&ouml;chten, geben Sie in der Befehlszeile den Befehl <command>which sox</command> ein. 
+			Best&auml;tigen Sie eine &Auml;nderung in diesem Feld mit der Schaltfl&auml;che <guibutton>&Uuml;bernehmen</guibutton>.</para>
+			<para>Standard:  Abh&auml;ngig vom Betriebssystem </para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Tempor&auml;rer Ordner</guilabel> </term> 
+			<listitem>
+			<para>Geben Sie in diesem Feld das Verzeichnis ein, in dem Sounddateien vor&uuml;bergehend gespeichert werden sollen, w&auml;hrend <application>&app;</application> 
+			die Dateien aufnimmt. Best&auml;tigen Sie eine &Auml;nderung in diesem Feld mit der Schaltfl&auml;che <guibutton>&Uuml;bernehmen</guibutton>.</para>
+			<para>Standard:  Abh&auml;ngig vom Betriebssystem </para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-sound">
+	<title>Sound</title>
+	<para>Die auf dieser Registerkarte vorgenommenen Einstellungen beziehen sich nur auf neu erstellte Sounddateien.</para>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Audioformat</guilabel> </term> 
+			<listitem>
+			<para>W&auml;hlen Sie eine der folgenden Optionen, um die Anzahl der Bits pro Sample in Ihren Sounddateien festzulegen:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>8-Bit-PCM</guilabel></para>
+				<para>Bei dieser Option werden die Sounddateien im PCM-Format (Pulse Code Modulation) mit 8 Bit gespeichert.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>16-Bit-PCM</guilabel></para>
+				<para>Bei dieser Option werden die Sounddateien im PCM-Format mit 16 Bit gespeichert.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Standard:  <guilabel>8-Bit PCM</guilabel></para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Samplerate</guilabel> </term> 
+			<listitem>
+			<para>In diesem Feld legen Sie die Anzahl der Samples pro Sekunde fest.</para>
+			<para>Standard:  11025.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Mono/Stereo</guilabel> </term> 
+			<listitem>
+			<para>Mit den folgenden Optionen legen Sie fest, ob die Sounddatei in Mono oder in Stereo gespeichert wird:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Mono</guilabel></para>
+				<para>Bei dieser Option werden die Sounddateien im Mono-Format gespeichert.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Stereo</guilabel></para>
+				<para>Bei dieser Option werden die Sounddateien im Stereo-Format gespeichert. Dieses Format
+				ergibt gr&ouml;&szlig;ere Sounddateien.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Standard:  <guilabel>Stereo</guilabel></para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>		
+	
+
+  </sect1>
+
+</article>

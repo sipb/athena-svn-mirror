@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<omf>
+  <resource>
+    <creator>
+      gdocteam@sun.com (Sun Microsystems)
+    </creator>
+    <maintainer>
+      gdocteam@sun.com (Sun Microsystems)
+    </maintainer>
+<!--
+    <title>
+      Manual del Lector de CD V2.2
+    </title>
+-->
+    <title>
+      Lector de CD
+    </title>    
+    <date>
+      2002-08-02
+    </date>
+    <version identifier="2.2" date="2002-08-02" description="Updated for GNOME 2.0, program version 1.547.0"/>
+    <subject category="GNOME|Applications|Sound and Video"/>
+    <description>
+      Manual del usuario para el Lector de CD. 
+    </description>
+    <type>
+      guía del usuario
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="gnome-cd.xml"/>
+    <language code="es"/>
+    <relation seriesid="b9e5caae-6437-11d6-9e62-8b945ed9d489"/>
+    <rights type="GNU FDL" license.version="1.1" holder="Sun Microsystems"/>
+  </resource>        
+</omf>

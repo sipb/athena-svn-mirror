@@ -90,6 +90,7 @@ typedef struct _GnomeCDRomStatus {
 	int track;
 	GnomeCDRomMSF relative;
 	GnomeCDRomMSF absolute;
+	GnomeCDRomMSF length;
 	int volume;
 } GnomeCDRomStatus;
 

@@ -1,0 +1,2567 @@
+# translation of th.po to Thai
+# translation of gnome-media.po to Thai
+# translation of gnome-media.po to
+# translation of gnome-media.po to
+# Thai translation of gnome-media.
+# This file is distributed under the same license as the gnome-media package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Sawit Kasuriya <sawitk@hotmail.com>, 2003.
+# Sapa <sapac@hotmail.com>, 2003, 2004.
+# Chanchai Junlouchai <taz@opentle.org>, 2004.
+# Supranee Thirawatthanasuk <supranee@opentle.org>, 2004.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: th\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 14:28+0200\n"
+"PO-Revision-Date: 2004-09-12 15:24+0700\n"
+"Last-Translator: Supranee Thirawatthanasuk <supranee@opentle.org>\n"
+"Language-Team: Thai <l10n>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.3.1\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "ที่อยู่ของเครื่องเซิร์ฟเวอร์ที่ใช้ในการค้นหาข้อมูลซีดี"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2
+msgid "Information to send to server"
+msgstr "ข้อมูลที่ส่งไปยังเซิร์ฟเวอร์"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3 cddb-slave2/cddb-slave-capplet.c:832
+msgid "Port"
+msgstr "พอร์ต"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "Server name"
+msgstr "ชื่อเซิร์ฟเวอร์"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "Server type"
+msgstr "ชนิดของเซิร์ฟเวอร์"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The hostname that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The port that the server is running the database on"
+msgstr "พอร์ตที่เซิร์ฟเวอร์กำลังกำลังใช้งานฐานข้อมูล"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid ""
+"The type of the server to contact for CD queries. Possible values are 0 "
+"(FreeDB round robin server), 1 (other freedb server) and 2 (other server)."
+msgstr ""
+"ประเภทของเครื่องเซิร์ฟเวอร์ที่ใช้สำหรับค้นหาข้อมูลของซีดี ค่าที่เป็นไปได้คือค่า 0 (สำหรับเครื่อง "
+"Freedb round robin server) ค่า, 1 (สำหรับเครื่องเซิร์ฟเวอร์ Freedb แบบอื่นๆ) และ 2 "
+"(สำหรับเครื่องเซิร์ฟเวอร์แบบอื่นๆ)"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:9
+msgid "The username"
+msgstr "ชื่อผู้ใช้"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:10
+msgid "The username that will be sent with all queries"
+msgstr "ชื่อผู้ใช้ที่จะถูกส่งไปกับการค้นหาทุกครั้ง"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:11
+msgid ""
+"This key specifies which user information will be sent to the server to "
+"contact for CD queries. Possible values are 0 (no information), 1 (real "
+"information) and 3 (other information)."
+msgstr ""
+"ค่าที่จะระบุว่าข้อมูลของผู้ใช้ที่จะถูกส่งไปที่เครื่องเซิร์ฟเวอร์เพื่อค้นหาข้อมูลของซีดี เป็นแบบใด "
+"ค่าที่เป็นไปได้คือค่า 0 (ไม่ส่งข้อมูล) ค่า 1 (ข้อมูลแบบจริง) และค่า 3 (ข้อมูลแบบอื่นๆ)"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:12
+msgid "Your hostname"
+msgstr "ชื่อโฮสต์ของคุณ"
+
+#: cddb-slave2/cddb-disclosure.c:241
+msgid "Expander Size"
+msgstr "ขนาดที่ขยายมากขึ้น"
+
+#: cddb-slave2/cddb-disclosure.c:242
+msgid "Size of the expander arrow"
+msgstr "ขนาดของลูกศรที่ขยายมากขึ้น"
+
+#: cddb-slave2/cddb-slave-capplet.c:115
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"เกิดข้อผิดพลาดในการแสดงข้อความช่วยเหลือ: \n"
+"%s"
+
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:696
+msgid "Login Information"
+msgstr "ข้อมูลการเข้าระบบ"
+
+#: cddb-slave2/cddb-slave-capplet.c:702
+msgid "Sen_d no information"
+msgstr "ไม่มี_ข้อมูลส่ง"
+
+#: cddb-slave2/cddb-slave-capplet.c:711
+msgid "Send real _information"
+msgstr "ส่งข้อมูลแบบ_จริง"
+
+#: cddb-slave2/cddb-slave-capplet.c:720
+msgid "Send _other information:"
+msgstr "ส่งข้อมูลแบบ_อื่น:"
+
+#: cddb-slave2/cddb-slave-capplet.c:745
+msgid "_Name:"
+msgstr "_ชื่อ:"
+
+#: cddb-slave2/cddb-slave-capplet.c:765
+msgid "Hostna_me:"
+msgstr "ชื่อโ_ฮสต์:"
+
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:785 cddb-slave2/cddb-slave-capplet.c:829
+msgid "Server"
+msgstr "เซิร์ฟเวอร์"
+
+#: cddb-slave2/cddb-slave-capplet.c:791
+msgid "FreeDB _round robin server"
+msgstr "เครื่องเ_ซิร์ฟเวอร์ที่มี FreeDB เป็นแบบ Round robin"
+
+#: cddb-slave2/cddb-slave-capplet.c:797
+msgid "Other _FreeDB server:"
+msgstr "เครื่องเซิร์ฟเวอร์แบบ FreeDB _อื่นๆ:"
+
+#: cddb-slave2/cddb-slave-capplet.c:835
+msgid "Location"
+msgstr "ตำแหน่งที่ตั้ง"
+
+#: cddb-slave2/cddb-slave-capplet.c:864
+msgid "_Update Server List"
+msgstr "_ปรับปรุงรายชื่อเซิร์ฟเวอร์"
+
+#: cddb-slave2/cddb-slave-capplet.c:871
+msgid "Other _server:"
+msgstr "เ_ครื่องเซิร์ฟเวอร์อื่น:"
+
+#: cddb-slave2/cddb-slave-capplet.c:891
+msgid "Hos_tname:"
+msgstr "ชื่อโฮส_ต์:"
+
+#: cddb-slave2/cddb-slave-capplet.c:908
+msgid "_Port:"
+msgstr "_พอร์ต:"
+
+#: cddb-slave2/cddb-slave-capplet.c:972
+msgid "CD Database Preferences"
+msgstr "การปรับแต่งฐานข้อมูลซีดี"
+
+#: cddb-slave2/cddb-slave.c:221
+msgid "Unknown / Unknown"
+msgstr "ไม่รู้จัก / ไม่รู้จัก"
+
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:227 grecord/src/gsr-window.c:697
+#: grecord/src/gsr-window.c:706 grecord/src/gsr-window.c:715
+#: grecord/src/gsr-window.c:725 grecord/src/gsr-window.c:1032
+msgid "Unknown"
+msgstr "ไม่รู้จัก"
+
+#: cddb-slave2/cddb-slave.c:272
+msgid "Multiple matches..."
+msgstr "พบข้อมูลที่ตรงกับที่ต้องการหลายอัน..."
+
+#: cddb-slave2/cddb-slave.c:277
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+"มีข้อมูลที่ตรงกับที่ต้องการในฐานข้อมูลมากกว่าหนึ่ง\n"
+"รายการต่อไปนี้คือผลการค้นหาที่ได้ กรุณาเลือกอันที่ดีที่สุด"
+
+#: cddb-slave2/cddb-slave.c:288
+msgid "Category"
+msgstr "หมวด"
+
+#: cddb-slave2/cddb-slave.c:292
+msgid "Disc ID"
+msgstr "หมายเลข ID ของแผ่นดิสก์"
+
+#: cddb-slave2/cddb-slave.c:296
+msgid "Artist and Title"
+msgstr "ศิลปิน และชื่อเพลง"
+
+#: cddb-slave2/cddb-slave.c:1351 cddb-slave2/cddb-slave.c:1353
+#: gnome-cd/gnome-cd.c:176
+msgid "Unknown track"
+msgstr "แทร็กที่ไม่รู้จัก"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+msgid "CD Database Server"
+msgstr "เซิร์ฟเวอร์ฐานข้อมูล CD"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+msgid "Modify your CD database server preferences"
+msgstr "แก้ไขการปรับแต่งค่าเซิร์ฟเวอร์ของฐานข้อมูลซีดี"
+
+#: cddb-slave2/cddb-track-editor.c:79
+msgid "Blues"
+msgstr "Blues"
+
+#: cddb-slave2/cddb-track-editor.c:80
+msgid "Classical Rock"
+msgstr "Classical Rock"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Country"
+msgstr "Country"
+
+#: cddb-slave2/cddb-track-editor.c:82
+msgid "Dance"
+msgstr "Dance"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Disco"
+msgstr "Disco"
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Funk"
+msgstr "Funk"
+
+#: cddb-slave2/cddb-track-editor.c:85
+msgid "Grunge"
+msgstr "Grunge"
+
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Hip-Hop"
+msgstr "Hip-Hop"
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Jazz"
+msgstr "Jazz"
+
+#: cddb-slave2/cddb-track-editor.c:88
+msgid "Metal"
+msgstr "Metal"
+
+#: cddb-slave2/cddb-track-editor.c:89
+msgid "New Age"
+msgstr "New Age"
+
+#: cddb-slave2/cddb-track-editor.c:90
+msgid "Oldies"
+msgstr "Oldies"
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Other"
+msgstr "Other"
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "Pop"
+msgstr "Pop"
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "R&B"
+msgstr "R&B"
+
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Rap"
+msgstr "Rap"
+
+#: cddb-slave2/cddb-track-editor.c:95
+msgid "Reggae"
+msgstr "Reggae"
+
+#: cddb-slave2/cddb-track-editor.c:96
+msgid "Rock"
+msgstr "Rock"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Techno"
+msgstr "Techno"
+
+#: cddb-slave2/cddb-track-editor.c:98
+msgid "Industrial"
+msgstr "Industrial"
+
+#: cddb-slave2/cddb-track-editor.c:99
+msgid "Alternative"
+msgstr "Alternative"
+
+#: cddb-slave2/cddb-track-editor.c:100
+msgid "Ska"
+msgstr "Ska"
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Death Metal"
+msgstr "Death Metal"
+
+#: cddb-slave2/cddb-track-editor.c:102
+msgid "Pranks"
+msgstr "Pranks"
+
+#: cddb-slave2/cddb-track-editor.c:103
+msgid "Soundtrack"
+msgstr "Soundtrack"
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Euro-Techno"
+msgstr "Euro-Techno"
+
+#: cddb-slave2/cddb-track-editor.c:105
+msgid "Ambient"
+msgstr "Ambient"
+
+#: cddb-slave2/cddb-track-editor.c:106
+msgid "Trip-Hop"
+msgstr "Trip-Hop"
+
+#: cddb-slave2/cddb-track-editor.c:107
+msgid "Vocal"
+msgstr "Vocal"
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Jazz+Funk"
+msgstr "Jazz+Funk"
+
+#: cddb-slave2/cddb-track-editor.c:109
+msgid "Fusion"
+msgstr "Fusion"
+
+#: cddb-slave2/cddb-track-editor.c:110
+msgid "Trance"
+msgstr "Trance"
+
+#: cddb-slave2/cddb-track-editor.c:111
+msgid "Classical"
+msgstr "Classical"
+
+#: cddb-slave2/cddb-track-editor.c:112
+msgid "Instrumental"
+msgstr "Instrumental"
+
+#: cddb-slave2/cddb-track-editor.c:113
+msgid "Acid"
+msgstr "Acid"
+
+#: cddb-slave2/cddb-track-editor.c:114
+msgid "House"
+msgstr "House"
+
+#: cddb-slave2/cddb-track-editor.c:115
+msgid "Game"
+msgstr "Game"
+
+#: cddb-slave2/cddb-track-editor.c:116
+msgid "Sound Clip"
+msgstr "Sound Clip"
+
+#: cddb-slave2/cddb-track-editor.c:117
+msgid "Gospel"
+msgstr "Gospel"
+
+#: cddb-slave2/cddb-track-editor.c:118
+msgid "Noise"
+msgstr "Noise"
+
+#: cddb-slave2/cddb-track-editor.c:119
+msgid "Alt"
+msgstr "Alt"
+
+#: cddb-slave2/cddb-track-editor.c:120
+msgid "Bass"
+msgstr "Bass"
+
+#: cddb-slave2/cddb-track-editor.c:121
+msgid "Soul"
+msgstr "Soul"
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Punk"
+msgstr "Punk"
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Space"
+msgstr "Space"
+
+#: cddb-slave2/cddb-track-editor.c:124
+msgid "Meditative"
+msgstr "Meditative"
+
+#: cddb-slave2/cddb-track-editor.c:125
+msgid "Instrumental Pop"
+msgstr "Instrumental Pop"
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Instrumental Rock"
+msgstr "Instrumental Rock"
+
+#: cddb-slave2/cddb-track-editor.c:127
+msgid "Ethnic"
+msgstr "Ethnic"
+
+#: cddb-slave2/cddb-track-editor.c:128
+msgid "Gothic"
+msgstr "Gothic"
+
+#: cddb-slave2/cddb-track-editor.c:129
+msgid "Darkwave"
+msgstr "Darkwave"
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Techno-Industrial"
+msgstr "Techno-Industrial"
+
+#: cddb-slave2/cddb-track-editor.c:131
+msgid "Electronic"
+msgstr "Electronic"
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Pop-Folk"
+msgstr "Pop-Folk"
+
+#: cddb-slave2/cddb-track-editor.c:133
+msgid "Eurodance"
+msgstr "Eurodance"
+
+#: cddb-slave2/cddb-track-editor.c:134
+msgid "Dream"
+msgstr "Dream"
+
+#: cddb-slave2/cddb-track-editor.c:135
+msgid "Southern Rock"
+msgstr "Southern Rock"
+
+#: cddb-slave2/cddb-track-editor.c:136
+msgid "Comedy"
+msgstr "Comedy"
+
+#: cddb-slave2/cddb-track-editor.c:137
+msgid "Cult"
+msgstr "Cult"
+
+#: cddb-slave2/cddb-track-editor.c:138
+msgid "Gangsta Rap"
+msgstr "Gangsta Rap"
+
+#: cddb-slave2/cddb-track-editor.c:139
+msgid "Top 40"
+msgstr "เพลงฮิต 40 ลำดับแรก"
+
+#: cddb-slave2/cddb-track-editor.c:140
+msgid "Christian Rap"
+msgstr "Christian Rap"
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Pop/Funk"
+msgstr "Pop/Funk"
+
+#: cddb-slave2/cddb-track-editor.c:142
+msgid "Jungle"
+msgstr "Jungle"
+
+#: cddb-slave2/cddb-track-editor.c:143
+msgid "Native American"
+msgstr "Native American"
+
+#: cddb-slave2/cddb-track-editor.c:144
+msgid "Cabaret"
+msgstr "Cabaret"
+
+#: cddb-slave2/cddb-track-editor.c:145
+msgid "New Wave"
+msgstr "New Wave"
+
+#: cddb-slave2/cddb-track-editor.c:146
+msgid "Psychedelic"
+msgstr "Psychedelic"
+
+#: cddb-slave2/cddb-track-editor.c:147
+msgid "Rave"
+msgstr "Rave"
+
+#: cddb-slave2/cddb-track-editor.c:148
+msgid "Showtunes"
+msgstr "Showtunes"
+
+#: cddb-slave2/cddb-track-editor.c:149
+msgid "Trailer"
+msgstr "Trailer"
+
+#: cddb-slave2/cddb-track-editor.c:150
+msgid "Lo-Fi"
+msgstr "Lo-Fi"
+
+#: cddb-slave2/cddb-track-editor.c:151
+msgid "Tribal"
+msgstr "Tribal"
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Punk"
+msgstr "Acid Punk"
+
+#: cddb-slave2/cddb-track-editor.c:153
+msgid "Acid Jazz"
+msgstr "Acid Jazz"
+
+#: cddb-slave2/cddb-track-editor.c:154
+msgid "Polka"
+msgstr "Polka"
+
+#: cddb-slave2/cddb-track-editor.c:155
+msgid "Retro"
+msgstr "Retro"
+
+#: cddb-slave2/cddb-track-editor.c:156
+msgid "Musical"
+msgstr "Musical"
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Rock & Roll"
+msgstr "Rock & Roll"
+
+#: cddb-slave2/cddb-track-editor.c:158
+msgid "Hard Rock"
+msgstr "Hard Rock"
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk"
+msgstr "Folk"
+
+#: cddb-slave2/cddb-track-editor.c:160
+msgid "Folk/Rock"
+msgstr "Folk/Rock"
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "National Folk"
+msgstr "National Folk"
+
+#: cddb-slave2/cddb-track-editor.c:162
+msgid "Swing"
+msgstr "Swing"
+
+#: cddb-slave2/cddb-track-editor.c:163
+msgid "Fast-Fusion"
+msgstr "Fast-Fusion"
+
+#: cddb-slave2/cddb-track-editor.c:164
+msgid "Bebop"
+msgstr "Bebop"
+
+#: cddb-slave2/cddb-track-editor.c:165
+msgid "Latin"
+msgstr "Latin"
+
+#: cddb-slave2/cddb-track-editor.c:166
+msgid "Revival"
+msgstr "Revival"
+
+#: cddb-slave2/cddb-track-editor.c:167
+msgid "Celtic"
+msgstr "Celtic"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Bluegrass"
+msgstr "Bluegrass"
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Avantgarde"
+msgstr "Avantgarde"
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Gothic Rock"
+msgstr "Gothic Rock"
+
+#: cddb-slave2/cddb-track-editor.c:171
+msgid "Progressive Rock"
+msgstr "Progressive Rock"
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Psychedelic Rock"
+msgstr "Psychedelic Rock"
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Symphonic Rock"
+msgstr "Symphonic Rock"
+
+#: cddb-slave2/cddb-track-editor.c:174
+msgid "Slow Rock"
+msgstr "Slow Rock"
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Big Band"
+msgstr "Big Band"
+
+#: cddb-slave2/cddb-track-editor.c:176
+msgid "Chorus"
+msgstr "Chorus"
+
+#: cddb-slave2/cddb-track-editor.c:177
+msgid "Easy Listening"
+msgstr "Easy Listening"
+
+#: cddb-slave2/cddb-track-editor.c:178
+msgid "Acoustic"
+msgstr "Acoustic"
+
+#: cddb-slave2/cddb-track-editor.c:179
+msgid "Humour"
+msgstr "Humour"
+
+#: cddb-slave2/cddb-track-editor.c:180
+msgid "Speech"
+msgstr "Speech"
+
+#: cddb-slave2/cddb-track-editor.c:181
+msgid "Chanson"
+msgstr "Chanson"
+
+#: cddb-slave2/cddb-track-editor.c:182
+msgid "Opera"
+msgstr "Opera"
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Chamber Music"
+msgstr "Chamber Music"
+
+#: cddb-slave2/cddb-track-editor.c:184
+msgid "Sonata"
+msgstr "Sonata"
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Symphony"
+msgstr "Symphony"
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Booty Bass"
+msgstr "Booty Bass"
+
+#: cddb-slave2/cddb-track-editor.c:187
+msgid "Primus"
+msgstr "Primus"
+
+#: cddb-slave2/cddb-track-editor.c:188
+msgid "Porn Groove"
+msgstr "Porn Groove"
+
+#: cddb-slave2/cddb-track-editor.c:189
+msgid "Satire"
+msgstr "Satire"
+
+#: cddb-slave2/cddb-track-editor.c:190
+msgid "Slow Jam"
+msgstr "Slow Jam"
+
+#: cddb-slave2/cddb-track-editor.c:191
+msgid "Club"
+msgstr "Club"
+
+#: cddb-slave2/cddb-track-editor.c:192
+msgid "Tango"
+msgstr "Tango"
+
+#: cddb-slave2/cddb-track-editor.c:193
+msgid "Samba"
+msgstr "Samba"
+
+#: cddb-slave2/cddb-track-editor.c:194
+msgid "Folklore"
+msgstr "Folklore"
+
+#: cddb-slave2/cddb-track-editor.c:195
+msgid "Ballad"
+msgstr "Ballad"
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Power Ballad"
+msgstr "Power Ballad"
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Rhythmic Soul"
+msgstr "Rhythmic Soul"
+
+#: cddb-slave2/cddb-track-editor.c:198
+msgid "Freestyle"
+msgstr "Freestyle"
+
+#: cddb-slave2/cddb-track-editor.c:199
+msgid "Duet"
+msgstr "Duet"
+
+#: cddb-slave2/cddb-track-editor.c:200
+msgid "Punk Rock"
+msgstr "Punk Rock"
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "Drum Solo"
+msgstr "Drum Solo"
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "A Cappella"
+msgstr "A Cappella"
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Euro-House"
+msgstr "Euro-House"
+
+#: cddb-slave2/cddb-track-editor.c:204
+msgid "Dance Hall"
+msgstr "Dance Hall"
+
+#: cddb-slave2/cddb-track-editor.c:205
+msgid "Goa"
+msgstr "Goa"
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Drum & Bass"
+msgstr "Drum & Bass"
+
+#: cddb-slave2/cddb-track-editor.c:207
+msgid "Club-House"
+msgstr "Club-House"
+
+#: cddb-slave2/cddb-track-editor.c:208
+msgid "Hardcore"
+msgstr "Hardcore"
+
+#: cddb-slave2/cddb-track-editor.c:209
+msgid "Terror"
+msgstr "Terror"
+
+#: cddb-slave2/cddb-track-editor.c:210
+msgid "Indie"
+msgstr "Indie"
+
+#: cddb-slave2/cddb-track-editor.c:211
+msgid "BritPop"
+msgstr "BritPop"
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Negerpunk"
+msgstr "Negerpunk"
+
+#: cddb-slave2/cddb-track-editor.c:213
+msgid "Polsk Punk"
+msgstr "Polsk Punk"
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Beat"
+msgstr "Beat"
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Christian Gangsta Rap"
+msgstr "Christian Gangsta Rap"
+
+#: cddb-slave2/cddb-track-editor.c:216
+msgid "Heavy Metal"
+msgstr "Heavy Metal"
+
+#: cddb-slave2/cddb-track-editor.c:217
+msgid "Black Metal"
+msgstr "Black Metal"
+
+#: cddb-slave2/cddb-track-editor.c:218
+msgid "Crossover"
+msgstr "Crossover"
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Contemporary Christian"
+msgstr "Contemporary Christian"
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Christian Rock"
+msgstr "Christian Rock"
+
+#: cddb-slave2/cddb-track-editor.c:221
+msgid "Merengue"
+msgstr "Merengue"
+
+#: cddb-slave2/cddb-track-editor.c:222
+msgid "Salsa"
+msgstr "Salsa"
+
+#: cddb-slave2/cddb-track-editor.c:223
+msgid "Thrash Metal"
+msgstr "Thrash Metal"
+
+#: cddb-slave2/cddb-track-editor.c:224
+msgid "Anime"
+msgstr "Anime"
+
+#: cddb-slave2/cddb-track-editor.c:225
+msgid "JPop"
+msgstr "JPop"
+
+#: cddb-slave2/cddb-track-editor.c:226
+msgid "Synthpop"
+msgstr "Synthpop"
+
+#: cddb-slave2/cddb-track-editor.c:227
+msgid "Nu-Metal"
+msgstr "Nu-Metal"
+
+#: cddb-slave2/cddb-track-editor.c:228
+msgid "Art Rock"
+msgstr "Art Rock"
+
+#: cddb-slave2/cddb-track-editor.c:532 gnome-cd/callbacks.c:558
+#: gnome-cd/callbacks.c:690 gnome-cd/callbacks.c:701 gnome-cd/display.c:74
+msgid "Unknown Artist"
+msgstr "ไม่รู้ชื่อศิลปิน"
+
+#: cddb-slave2/cddb-track-editor.c:533 gnome-cd/callbacks.c:559
+#: gnome-cd/callbacks.c:693 gnome-cd/callbacks.c:705 gnome-cd/display.c:75
+msgid "Unknown Album"
+msgstr "ไม่รู้ชื่ออัลบั้ม"
+
+#: cddb-slave2/cddb-track-editor.c:541
+#, c-format
+msgid "Editing Disc ID: %s"
+msgstr "กำลังแก้ไขหมายเลขของแผ่นดิสก์: %s"
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:630
+msgid "Editing Disc ID: "
+msgstr "กำลังแก้ไขหมายเลขของแผ่นดิสก์:"
+
+#: cddb-slave2/cddb-track-editor.c:641
+msgid "_Artist:"
+msgstr "_ศิลปิน: "
+
+#: cddb-slave2/cddb-track-editor.c:655
+msgid "Disc _Title:"
+msgstr "ชื่อแผ่น_ดิสก์: "
+
+#: cddb-slave2/cddb-track-editor.c:665
+msgid "Show advanced disc options"
+msgstr "แสดงคุณสมบัติขั้นสูงของแผ่นดิสก์"
+
+#: cddb-slave2/cddb-track-editor.c:666
+msgid "Hide advanced disc options"
+msgstr "ซ่อนคุณสมบัติขั้นสูงของแผ่นดิสก์"
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:678
+msgid "_Disc comments:"
+msgstr "คำ_บรรยายแผ่นดิสก์: "
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:693
+msgid "_Genre:"
+msgstr "ประเ_ภท: "
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:709
+msgid "_Year:"
+msgstr "_ปี: "
+
+#: cddb-slave2/cddb-track-editor.c:748
+msgid "Title"
+msgstr "_ชื่อเพลง"
+
+#: cddb-slave2/cddb-track-editor.c:755
+msgid "Length"
+msgstr "ความ_ยาว"
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:766
+msgid "Show advanced track options"
+msgstr "แสดงคุณสมบัติพิเศษของแทร็ก"
+
+#: cddb-slave2/cddb-track-editor.c:767
+msgid "Hide advanced track options"
+msgstr "ซ่อนคุณสมบัติพิเศษของแทร็ก"
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:775
+msgid "_Extra track data:"
+msgstr "ข้อมูล_พิเศษของแทร็ก: "
+
+#: cddb-slave2/cddb-track-editor.c:903
+msgid "CDDB Track Editor"
+msgstr "CDDB Track Editor"
+
+#: cddb-slave2/cddb-track-editor.c:1040
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+"ไม่สามารถสร้าง CDDBTrackEditor factory ได้อาจจะเกิดจากสาเหตุมี cddb-track-edito "
+"ตัวอื่นกำลังทำงานอยู่\n"
+
+#: gnome-cd/access/cddisplayaccessible.c:118
+msgid "CD Display"
+msgstr "แสดงข้อมูลซีดี"
+
+#: gnome-cd/access/cddisplayaccessible.c:120
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
+msgstr "แสดงข้อมูลของอัลบั้ม ศิลปิน และเวลาที่เล่นเพลง"
+
+#: gnome-cd/access/cddisplayaccessible.c:189
+msgid "Time Line"
+msgstr "เส้นแสดงเวลา"
+
+#: gnome-cd/access/cddisplayaccessible.c:190
+msgid "Line for displaying the time elapsed for the current track"
+msgstr "เส้นสำหรับแสดงเวลาที่ใช้ไปของแทร็กปัจจุบัน"
+
+#: gnome-cd/access/cddisplayaccessible.c:193
+msgid "Info Line"
+msgstr "เส้นแสดงข้อมูล"
+
+#: gnome-cd/access/cddisplayaccessible.c:194
+msgid "Line for displaying information"
+msgstr "เส้นสำหรับแสดงข้อมูล"
+
+#: gnome-cd/access/cddisplayaccessible.c:197
+msgid "Artist Line"
+msgstr "เส้นแสดงชื่อศิลปิน"
+
+#: gnome-cd/access/cddisplayaccessible.c:198
+msgid "Line for displaying the name of the artist"
+msgstr "เส้นสำหรับแสดงชื่อของศิลปิน"
+
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Album Line"
+msgstr "เส้นแสดงชื่ออัลบั้ม"
+
+#: gnome-cd/access/cddisplayaccessible.c:202
+msgid "Line for displaying the name of the album"
+msgstr "เส้นสำหรับแสดงชื่อของอัลบั้ม"
+
+#: gnome-cd/callbacks.c:83 gnome-cd/callbacks.c:171 gnome-cd/callbacks.c:270
+#: gnome-cd/callbacks.c:573 gnome-cd/gnome-cd.c:671 grecord/gsr.xml.h:13
+msgid "Play"
+msgstr "เล่น"
+
+#: gnome-cd/callbacks.c:156 gnome-cd/callbacks.c:202 gnome-cd/callbacks.c:232
+#: gnome-cd/callbacks.c:312 gnome-cd/callbacks.c:352 gnome-cd/callbacks.c:376
+#: gnome-cd/callbacks.c:417 gnome-cd/callbacks.c:511
+msgid "Pause"
+msgstr "หยุดชั่วขณะ"
+
+#: gnome-cd/callbacks.c:557
+#, c-format
+msgid "Playing %s - %s"
+msgstr "กำลังเล่น %s - %s"
+
+#: gnome-cd/callbacks.c:561
+msgid "Playing"
+msgstr "กำลังเล่น"
+
+#: gnome-cd/callbacks.c:585
+msgid "Paused"
+msgstr "หยุดชั่วขณะ"
+
+#: gnome-cd/callbacks.c:631 gnome-cd/callbacks.c:873 gnome-cd/gnome-cd.c:88
+#: gnome-cd/gnome-cd.c:534 gnome-cd/gnome-cd.c:721 gnome-cd/gnome-cd.c:724
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "ตัวเล่นซีดี"
+
+#: gnome-cd/callbacks.c:649
+msgid "Stopped"
+msgstr "หยุด"
+
+#: gnome-cd/callbacks.c:655
+msgid "Disc error"
+msgstr "เกิดข้อผิดพลาดบนแผ่นดิสก์"
+
+#: gnome-cd/callbacks.c:666 gnome-cd/callbacks.c:761
+msgid "No disc"
+msgstr "ไม่มีแผ่นดิสก์"
+
+#: gnome-cd/callbacks.c:789
+msgid "Drive open"
+msgstr "เปิดไดรฟ์"
+
+#: gnome-cd/callbacks.c:813
+msgid "Data CD"
+msgstr "ซีดีข้อมูล"
+
+#: gnome-cd/callbacks.c:835 gnome-cd/callbacks.c:840
+msgid "No Cdrom"
+msgstr "ไม่มีซีดีรอม"
+
+#: gnome-cd/callbacks.c:851
+msgid "Drive Error"
+msgstr "ไดรฟ์เกิดข้อผิดพลาด"
+
+#: gnome-cd/callbacks.c:875
+msgid "A CD player for GNOME"
+msgstr "ตัวเล่นซีดีสำหรับ GNOME"
+
+#: gnome-cd/cdrom.c:368
+#, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr "ท่านไม่มีสิทธิ์ในการเข้าถึง %s"
+
+#: gnome-cd/cdrom.c:374
+#, c-format
+msgid ""
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not present in your machine\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
+msgstr ""
+"%s ไม่สามารถหาซีดีได้ สาเหตุอาจเกิดจาก\n"
+"1) เครื่องของท่านไม่สนับสนุนซีดีดังกล่าว \n"
+"2) ท่านไม่มีสิทธิ์ในการเข้าถึงไดรฟ์ซีดีได้ \n"
+"3) %s ไม่ใช่ไดรฟ์ซีดี \n"
+
+#: gnome-cd/gnome-cd.c:215
+#, c-format
+msgid "%d - Unknown"
+msgstr "%d - ไม่รู้จัก"
+
+#: gnome-cd/gnome-cd.c:329
+msgid "P_revious track"
+msgstr "แทร็ก_ก่อนหน้านี้"
+
+#: gnome-cd/gnome-cd.c:330 grecord/gsr.xml.h:44
+msgid "_Stop"
+msgstr "ห_ยุด"
+
+#: gnome-cd/gnome-cd.c:331
+msgid "_Play / Pause"
+msgstr "เล่น / หยุด_ชั่วขณะ"
+
+#: gnome-cd/gnome-cd.c:332
+msgid "_Next track"
+msgstr "แทร็ก_ต่อไป"
+
+#: gnome-cd/gnome-cd.c:333
+msgid "_Eject disc"
+msgstr "_ดันแผ่นดิสก์ออกมา"
+
+#: gnome-cd/gnome-cd.c:334 grecord/gsr.xml.h:37
+msgid "_Help"
+msgstr "คำแ_นะนำ"
+
+#: gnome-cd/gnome-cd.c:335
+msgid "_About CD player"
+msgstr "เ_กี่ยวกับตัวเล่นซีดี"
+
+#: gnome-cd/gnome-cd.c:454
+msgid ""
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
+msgstr ""
+"ไม่มีการตั้งค่าอุปกรณ์ซีดี ดังนั้นตัวเล่นซีดี \n"
+"จะไม่สามารถทำงานได้ กดปุ่ม 'ตั้งค่าอุปกรณ์' เพื่อไปยังกรอบข้อความ\n"
+"สำหรับตั้งค่าอุปกรณ์หรือกดปุ่ม 'ออก' เพื่อออกจากการทำงานของตัวเล่นซีดี"
+
+#: gnome-cd/gnome-cd.c:458
+msgid "Set device"
+msgstr "ตั้งค่าอุปกรณ์"
+
+#: gnome-cd/gnome-cd.c:460
+msgid "No CD device"
+msgstr "ไม่มีอุปกรณ์อ่านซีดี"
+
+#: gnome-cd/gnome-cd.c:513
+msgid ""
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
+msgstr ""
+"ตัวเล่นซีดีทำงานไม่ถูกต้อง \n"
+"\n"
+"กดปุ่ม 'รายละเอียด' เพื่อดูรายละเอียดของข้อผิดพลาด\n"
+"\n"
+"กดปุ่ม 'ตั้งค่าอุปกรณ์' เพื่อดูที่ที่คุณสามารถตั้งค่าของอุปกรณ์ หรือกดปุ่ม 'ออก' "
+"เพื่อออกจากการทำงานตัวเล่นซีดี"
+
+#: gnome-cd/gnome-cd.c:517
+msgid "_Details"
+msgstr "_รายละเอียด"
+
+#: gnome-cd/gnome-cd.c:518
+msgid "_Set device"
+msgstr "_ตั้งค่าอุปกรณ์"
+
+#: gnome-cd/gnome-cd.c:520
+msgid "Invalid CD device"
+msgstr "อุปกรณ์อ่านซีดีใช้ไม่ได้"
+
+#: gnome-cd/gnome-cd.c:584
+msgid "Volume control"
+msgstr "การควบคุมระดับเสียง"
+
+#: gnome-cd/gnome-cd.c:595
+msgid "Position"
+msgstr "ตำแหน่ง"
+
+#: gnome-cd/gnome-cd.c:612
+msgid "Open track editor"
+msgstr "เปิดแทร็กเอดิเตอร์"
+
+#: gnome-cd/gnome-cd.c:613
+msgid "Track editor"
+msgstr "แทร็กเอดิเตอร์"
+
+#: gnome-cd/gnome-cd.c:620
+msgid "Open preferences"
+msgstr "เปิดดูการปรับแต่งค่า"
+
+#: gnome-cd/gnome-cd.c:621
+msgid "Preferences"
+msgstr "การปรับแต่งค่า"
+
+#: gnome-cd/gnome-cd.c:629
+msgid "Track List"
+msgstr "รายชื่อแทร็ก"
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous track"
+msgstr "แทร็กก่อนหน้า"
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous"
+msgstr "ก่อนหน้า"
+
+#: gnome-cd/gnome-cd.c:654
+msgid "Rewind"
+msgstr "กรอกลับ"
+
+#: gnome-cd/gnome-cd.c:671
+msgid "Play / Pause"
+msgstr "เล่น / หยุดชั่วขณะ"
+
+#: gnome-cd/gnome-cd.c:676 grecord/gsr.xml.h:30
+msgid "Stop"
+msgstr "หยุด"
+
+#: gnome-cd/gnome-cd.c:680
+msgid "Fast forward"
+msgstr "กรอไปข้างหน้า"
+
+#: gnome-cd/gnome-cd.c:688
+msgid "Next track"
+msgstr "แทร็กต่อไป"
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject CD"
+msgstr "ดันแผ่นซีดีออกมา"
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject"
+msgstr "ดันออกมา"
+
+#: gnome-cd/gnome-cd.c:808
+msgid "CD device to use"
+msgstr "อุปกรณ์อ่านซีดีที่จะใช้"
+
+#: gnome-cd/gnome-cd.c:810
+msgid "Only start if there isn't already a CD player application running"
+msgstr "เพียงแค่กดปุ่มเริ่มต้นหากยังไม่มีโปรแกรมตัวเล่นซีดีทำงานอยู่"
+
+#: gnome-cd/gnome-cd.c:812
+msgid "Play the CD on startup"
+msgstr "เล่นซีดีบน Startup"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:842
+msgid "Cannot create player"
+msgstr "ไม่สามารถสร้างตัวเล่นซีดีได้"
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+msgid "Play audio CDs"
+msgstr "เล่นซีดีเพลง"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "CD player theme"
+msgstr "ชุดรูปแบบของตัวเล่นซีดี"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Device path"
+msgstr "พาธของอุปกรณ์"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "Eject the CD when CD player quits?"
+msgstr "ดันซีดีออกมาเมื่อจบการทำงานของตัวเล่นซีดีใช่หรือไม่ ?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Play when the CD player starts?"
+msgstr "เล่นเมื่อเริ่มเปิดตัวเล่นซีดีใช่หรือไม่ ?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD be ejected when the CD player quits?"
+msgstr "แผ่นซีดีควรจะถูกดันออกมาเมื่อจบการทำงานของตัวเล่นซีดีใช่หรือไม่ ?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr "พาธของอุปกรณ์อ่านแผ่นซีดีที่ตัวเล่นซีดีควรจะใช้ในการเล่นแผ่นซีดี"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "What theme should the CD player use for its appearance"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid "When the CD player is started, should it start playing the CD?"
+msgstr "เมื่อตัวเล่นซีดีเริ่มทำงาน ควรจะเริ่มต้นเล่นแผ่นซีดีด้วยหรือไม่ ?"
+
+#: gnome-cd/preferences.c:84
+#, c-format
+msgid ""
+"%s\n"
+"This means that the CD player will not be able to run."
+msgstr ""
+"%s\n"
+"นี้หมายความว่าตัวเล่นซีดีไม่สามารถทำงานได้"
+
+#: gnome-cd/preferences.c:85
+msgid "Error setting device"
+msgstr "เกิดความผิดพลาดขณะติดตั้งอุปกรณ์"
+
+#: gnome-cd/preferences.c:638
+msgid "CD Player Preferences"
+msgstr "ค่าปรับแต่งตัวเล่นซีดี"
+
+#: gnome-cd/preferences.c:672
+msgid "CD Player De_vice:"
+msgstr "_อุปกรณ์ของตัวเล่นซีดี: "
+
+#: gnome-cd/preferences.c:696
+msgid "_Apply change"
+msgstr "ใช้งานการเ_ปลี่ยนแปลงทันที"
+
+#: gnome-cd/preferences.c:708
+msgid "CD Player Behaviour:"
+msgstr "ลักษณะการทำงานของตัวเล่นซีดี:"
+
+#: gnome-cd/preferences.c:721
+msgid "Start _playing CD when CD Player starts"
+msgstr "เ_ริ่มเล่นซีดีเมื่อตัวเล่นซีดีเริ่มทำงาน"
+
+#: gnome-cd/preferences.c:722
+msgid "Start playing CD when CD Player starts"
+msgstr "เริ่มเล่นแผ่นซีดีเมื่อตัวเล่นซีดีเริ่มทำงาน"
+
+#: gnome-cd/preferences.c:734
+msgid "Attempt to _eject CD when CD Player exits"
+msgstr "พยายามที่จะ_ดันแผ่นซีดีออกเมื่อออกจากการใช้งานตัวเล่นซีดี"
+
+#: gnome-cd/preferences.c:735
+msgid "Attempt to eject CD when CD Player exits"
+msgstr "พยายามที่จะดันแผ่นซีดีออกเมื่อออกจากการใช้งานตัวเล่นซีดี"
+
+#: gnome-cd/preferences.c:755
+msgid "_Available Themes:"
+msgstr "ชุดรูปแบบที่มีอยู่:"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr "บันทึก sound clips"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:914
+#: grecord/src/gsr-window.c:1241
+msgid "Sound Recorder"
+msgstr "ตัวบันทึกเสียง"
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "เกี่ยวกับ"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "ปิด"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "ปิดหน้าต่างนี้"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "เนื้อหา"
+
+#: grecord/gsr.xml.h:5
+msgid "Create a new sample"
+msgstr "สร้างตัวอย่างใหม่"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr "แสดงตัวช่วยสำหรับตัวบันทึกเสียง"
+
+#: grecord/gsr.xml.h:7 grecord/src/gsr-window.c:783
+msgid "File Information"
+msgstr "ข้อมูลของแฟ้ม"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr "_ข้อมูลของแฟ้ม"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "แ_ถบเครื่องมือหลัก"
+
+#: grecord/gsr.xml.h:10
+msgid "New"
+msgstr "ใหม่"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "เปิด"
+
+#: grecord/gsr.xml.h:12 grecord/src/gsr-window.c:346
+msgid "Open a file"
+msgstr "เปิดแฟ้ม"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "เล่นเสียง"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "ออก"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "ออกจากโปรแกรม"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "แฟ้มเปิด_ล่าสุด"
+
+#: grecord/gsr.xml.h:18
+msgid "Record"
+msgstr "บันทึก"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "บันทึกเสียง"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "เรียกใช้งานมิกเซอร์เสียง"
+
+#: grecord/gsr.xml.h:21
+msgid "Run _Mixer"
+msgstr "เรียกใช้งาน_มิกเซอร์เสียง"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "เรียกใช้งานมิกเซอร์เสียง"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "บันทึก"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "บันทึกเป็น"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "บันทึกเ_ป็น..."
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "บันทึกแฟ้มปัจจุบัน"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "บันทึกแฟ้มปัจจุบันด้วยชื่ออื่น"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "แสดงข้อมูลเกี่ยวกับแฟ้มปัจจุบัน"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "แสดงข้อมูลสำหรับตัวบันทึกเสียง"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "หยุดเสียง"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "เ_กี่ยวกับ"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "_ปิดหน้าต่าง"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "เ_นื้อหา"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "_ควบคุม"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "แ_ฟ้ม"
+
+#: grecord/gsr.xml.h:38
+msgid "_New"
+msgstr "ให_ม่"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "เ_ปิด..."
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "เ_ล่น..."
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "_ออกจากโปรแกรม"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "_บันทึกเสียง"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "บัน_ทึก"
+
+#: grecord/src/gnome-recorder.c:162
+msgid "Dummy option"
+msgstr ""
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "_ชั่วโมง"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "ชั่วโมง"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minutes"
+msgstr "นาที"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "นาที"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "วินาที"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "วินาที"
+
+#: grecord/src/gsr-window.c:398 grecord/src/gsr-window.c:1193
+#: grecord/src/gsr-window.c:1357 grecord/src/gsr-window.c:1627
+msgid "Ready"
+msgstr "พร้อม"
+
+#: grecord/src/gsr-window.c:529
+msgid "Save file as"
+msgstr "บันทึกข้อมูลเป็น"
+
+#: grecord/src/gsr-window.c:585
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "%s ไม่ได้ติดตั้งไว้ในพาธ"
+
+#: grecord/src/gsr-window.c:595
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr "เกิดข้อผิดพลาดขณะเริ่ม %s %s"
+
+#: grecord/src/gsr-window.c:672
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (ไม่ได้ถูกบันทึก)"
+
+#: grecord/src/gsr-window.c:688
+msgid "Unknown size"
+msgstr "ขนาดที่ไม่รู้จัก"
+
+#: grecord/src/gsr-window.c:708
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f กิโลเฮิรตซ์"
+
+#: grecord/src/gsr-window.c:717
+#, c-format
+msgid "%.0f kb/s"
+msgstr "%.0f กิโลไบต์ต่อวินาที"
+
+#: grecord/src/gsr-window.c:729
+msgid "1 (mono)"
+msgstr "1 (โมโน)"
+
+#: grecord/src/gsr-window.c:733
+msgid "2 (stereo)"
+msgstr "2 (สเตริโอ)"
+
+#: grecord/src/gsr-window.c:762
+#, c-format
+msgid "%s Information"
+msgstr "ข้อมูล %s"
+
+#: grecord/src/gsr-window.c:797
+msgid "Folder:"
+msgstr "โฟลเดอร์:"
+
+#: grecord/src/gsr-window.c:803 grecord/src/gsr-window.c:1559
+msgid "Filename:"
+msgstr "ชื่อแฟ้ม:"
+
+#: grecord/src/gsr-window.c:809
+msgid "File size:"
+msgstr "ขนาดของแฟ้ม:"
+
+#: grecord/src/gsr-window.c:818
+msgid "Audio Information"
+msgstr "ข้อมูลเสียง"
+
+#: grecord/src/gsr-window.c:832
+msgid "Song length:"
+msgstr "ความยาวของเพลง:"
+
+#: grecord/src/gsr-window.c:838
+msgid "Number of channels:"
+msgstr "จำนวนของช่องสัญญาณ:"
+
+#: grecord/src/gsr-window.c:844
+msgid "Sample rate:"
+msgstr "อัตราการสุ่มตัวอย่าง:"
+
+#: grecord/src/gsr-window.c:850
+msgid "Bit rate:"
+msgstr "อัตราการส่งข้อมูล:"
+
+#: grecord/src/gsr-window.c:916
+msgid "A sound recorder for GNOME"
+msgstr "ตัวบันทึกเสียงสำหรับ GNOME"
+
+#: grecord/src/gsr-window.c:1178
+msgid "Playing..."
+msgstr "กำลังเล่น..."
+
+#: grecord/src/gsr-window.c:1237
+#, c-format
+msgid "%s.%s - Sound Recorder"
+msgstr "%s %s - ตัวบันทึกเสียง"
+
+#: grecord/src/gsr-window.c:1328
+msgid "Recording..."
+msgstr "กำลังบันทึกเสียง..."
+
+#: grecord/src/gsr-window.c:1388
+msgid ""
+"There is no default GStreamer audio input element set - please install the "
+"GStreamer-GConf schemas or set one manually"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1403
+msgid "Failed to create GStreamer encoder elements - check your encoding setup"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1413
+msgid "Could not find GStreamer filesink plugin - please install it"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1421
+msgid ""
+"Failed to link encoder elements with file output element - you probably "
+"selected an invalid encoder"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1527
+msgid "Record as"
+msgstr "บันทึกเป็น"
+
+#: grecord/src/gsr-window.c:1544
+msgid "File information"
+msgstr "ข้อมูลของแฟ้ม"
+
+#: grecord/src/gsr-window.c:1566
+msgid "<none>"
+msgstr "<ไม่มี>"
+
+#: grecord/src/gsr-window.c:1575
+msgid "Length:"
+msgstr "ความยาว:"
+
+#: gst-mixer/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr "ปรับระดับเสียง"
+
+#. create main window + menus
+#: gst-mixer/gnome-volume-control.desktop.in.h:2 gst-mixer/src/mixer.c:588
+#: gst-mixer/src/mixer.c:681
+msgid "Volume Control"
+msgstr "ตัวควบคุมระดับเสียง"
+
+#: gst-mixer/src/mixer.c:258
+#, c-format
+msgid "%s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:260
+#, c-format
+msgid "Channel %d of %s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:261
+#, c-format
+msgid "%s Slider %d"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:274
+msgid "Lock"
+msgstr "ล็อค"
+
+#: gst-mixer/src/mixer.c:284
+#, c-format
+msgid "%s Lock"
+msgstr "%s ล็อค"
+
+#. mute button
+#: gst-mixer/src/mixer.c:290 gst-mixer/src/mixer.c:386
+msgid "Mute"
+msgstr "เงียบ"
+
+#: gst-mixer/src/mixer.c:302 gst-mixer/src/mixer.c:398
+#, c-format
+msgid "%s Mute"
+msgstr "%s เงียบ"
+
+#: gst-mixer/src/mixer.c:308
+msgid "Rec."
+msgstr "บันทึก"
+
+#: gst-mixer/src/mixer.c:320
+#, c-format
+msgid "%s Record"
+msgstr "%s บันทึก"
+
+#: gst-mixer/src/mixer.c:591
+msgid "A GNOME/GStreamer-based mixer application"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:698
+msgid "Sorry, no mixer elements and/or devices found"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:274
+msgid "Failure instantiating main window"
+msgstr "การสร้างหน้าต่างหลักล้มเหลว"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:312
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr "ไม่สามารถโหลดที่มาของ UI %s"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr "กำหนดค่าปริยายสำหรับโปรแกรม GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "Multimedia Systems Selector"
+msgstr "Multimedia Systems Selector"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+#: profiles/gnome-audio-profiles.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<b>Default Sink</b>"
+msgstr "<b>Default Sink</b>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "<b>Default Source</b>"
+msgstr "<b>Default Source</b>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">กำลังทดสอบ...</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio"
+msgstr "เสียง"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish."
+msgstr "กดปุ่มตกลง เพื่อจบการทำงาน"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "GStreamer Preferences"
+msgstr "ค่าปรับแต่ง GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Pipe_line:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "Te_st"
+msgstr "_ทดสอบ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Testing Pipeline"
+msgstr "กำลังทดสอบ pipeline"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Video"
+msgstr "วิดีโอ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "_Input:"
+msgstr "_อินพุต: "
+
+#: gstreamer-properties/gstreamer-properties.glade.h:13
+msgid "_Output:"
+msgstr "เอาต์_พุต: "
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "_Pipeline:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "_Test"
+msgstr "ทด_สอบ"
+
+#: gstreamer-properties/pipeline-constants.c:61
+#: gstreamer-properties/pipeline-constants.c:83
+#: gstreamer-properties/pipeline-constants.c:100
+#: gstreamer-properties/pipeline-constants.c:115
+msgid "Custom"
+msgstr "กำหนดเอง"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:110
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr "ไม่สามารถสร้าง test pipeline สำหรับ '%s' "
+
+#: profiles/audio-profile-edit.c:164
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "เกิดข้อผิดพลาดในการแสดงแนะนำวิธี: %s"
+
+#: profiles/audio-profile-edit.c:366
+#, c-format
+msgid "Editing profile \"%s\""
+msgstr "กำลังแก้ไขโพรไฟล์ \"%s\""
+
+#: profiles/audio-profile.c:103
+msgid "<not named>"
+msgstr "<ไม่ได้ตั้งชื่อ>"
+
+#: profiles/audio-profile.c:104
+msgid "<not described>"
+msgstr "<ไม่ได้อธิบายรายละเอียด>"
+
+#: profiles/audio-profile.c:219
+#, c-format
+msgid "There was an error getting the list of gm_audio profiles. (%s)\n"
+msgstr "เกิดข้อผิดพลาดขณะเรียกดูโพรไฟล์ gmaudio (%s)\n"
+
+#: profiles/audio-profile.c:720
+#, c-format
+msgid ""
+"There was an error subscribing to notification of audio profile list "
+"changes. (%s)\n"
+msgstr ""
+
+#: profiles/audio-profile.c:910
+#, fuzzy, c-format
+msgid "There was an error forgetting profile path %s. (%s)\n"
+msgstr "เกิดข้อผิดพลาดขณะเรียกดูโพรไฟล์ gmaudio (%s)\n"
+
+#: profiles/audio-profile.c:1002
+msgid "<no description>"
+msgstr "<ไม่มีคำอธิบายรายละเอียด>"
+
+#: profiles/audio-profile.c:1013
+msgid "identity"
+msgstr ""
+
+#: profiles/audio-profile.c:1024
+msgid "wav"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:115
+msgid "_Edit"
+msgstr "แ_ก้ไข"
+
+#: profiles/audio-profiles-edit.c:452
+msgid "You must select one or more profiles to delete."
+msgstr "คุณจะต้องเลือกหนึ่งโพรไฟล์หรือมากกว่านั้นเพื่อลบ"
+
+#. the first argument will never be used since we only run for count > 1
+#: profiles/audio-profiles-edit.c:461
+#, c-format
+msgid "Delete this profile?\n"
+msgid_plural "Delete these %d profiles?\n"
+msgstr[0] "ลบโพรไฟล์นี้หรือไม่ ?\n"
+msgstr[1] "ลบ %d โพรไฟล์นี้หรือไม่?\n"
+
+#: profiles/audio-profiles-edit.c:480
+#, c-format
+msgid "Delete profile \"%s\"?"
+msgstr "ลบโพรไฟล์ \"%s\" หรือไม่ ?"
+
+#: profiles/audio-profiles-edit.c:502
+msgid "Delete Profile"
+msgstr "ลบโพรไฟล์"
+
+#.
+#. dialog =
+#. gtk_dialog_new_with_buttons (_("Edit Profiles"),
+#. NULL,
+#. GTK_DIALOG_DESTROY_WITH_PARENT,
+#. GTK_STOCK_HELP,
+#. GTK_RESPONSE_HELP,
+#. GTK_STOCK_CLOSE,
+#. GTK_RESPONSE_ACCEPT,
+#. NULL);
+#.
+#. FIXME: GTK_DIALOG_DESTROY_WITH_PARENT,
+#: profiles/audio-profiles-edit.c:597
+msgid "Edit GMAudio Profiles"
+msgstr "แก้ไขโพรไฟล์ GMAudio"
+
+#: profiles/audio-profiles-edit.c:650
+msgid "_Profiles:"
+msgstr "โ_พรไฟล์:"
+
+#: profiles/audio-profiles-edit.c:878
+#, c-format
+msgid "You already have a profile called \"%s\""
+msgstr "คุณมีโพรไฟล์ที่เรียกว่า \"%s\" แล้ว"
+
+#: profiles/audio-profiles-edit.c:903
+#, c-format
+msgid "GConf Error (FIXME): %s\n"
+msgstr ""
+
+#: profiles/gmp-util.c:64
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+"ไฟล์ \"%s\" ขาดหายไป แสดงว่าติดตั้งโปรแกรมไม่ถูกต้อง ดังนั้นจึงไม่สามารถแสดงกรอบข้อความได้"
+
+#: profiles/gnome-audio-profiles.glade2.h:2
+msgid "Edit Audio Profile"
+msgstr "แก้ไขโพรไฟล์เสียง"
+
+#: profiles/gnome-audio-profiles.glade2.h:3
+msgid "File _Extension:"
+msgstr "นาม_สกุลแฟ้ม:"
+
+#: profiles/gnome-audio-profiles.glade2.h:4
+msgid "New Profile"
+msgstr "โพรไฟล์ใหม่"
+
+#: profiles/gnome-audio-profiles.glade2.h:5
+msgid "Profile Description:"
+msgstr "คำอธิบายโพรไฟล์ม:"
+
+#: profiles/gnome-audio-profiles.glade2.h:6
+msgid "Profile _Description:"
+msgstr "คำ_อธิบายโพรไฟล์:"
+
+#: profiles/gnome-audio-profiles.glade2.h:7
+msgid "Profile _name:"
+msgstr "_ชื่อโพรไฟล์:"
+
+#: profiles/gnome-audio-profiles.glade2.h:8
+msgid "_Active?"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:9
+msgid "_Create"
+msgstr "_สร้าง"
+
+#: profiles/gnome-audio-profiles.glade2.h:10
+msgid "_GStreamer Pipeline:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:11
+msgid "_Profile name:"
+msgstr "_ชื่อโพรไฟล์:"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:1
+msgid "A description for the audio profile"
+msgstr "คำอธิบายสำหรับโพรไฟล์เสียง"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:2
+msgid ""
+"A description of the profile, containing more information and describing "
+"when to use this profile."
+msgstr "คำอธิบายของโพรไฟล์ประกอบด้วยข้อมูลจำนวนมาก และคำอธิบายนี้จะมีเมื่อใช้โพรไฟล์นี้"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:3
+msgid ""
+"A filename extension to be used when storing files encoded with this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:4
+msgid "A partial GStreamer pipeline to use for this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:5
+msgid "A short name for the audio profile"
+msgstr "ชื่อสั้นๆ ของโพรไฟล์เสียง"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:6
+msgid ""
+"A short name for the audio profile, to be used in selections and uniquely "
+"identifying the profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:7
+msgid "CD Quality, Lossless"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:8
+msgid "CD Quality, Lossy"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:9
+msgid ""
+"List of audio recording profiles. The list contains strings naming "
+"subdirectories relative to /system/gstreamer/audio/profiles."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:10
+msgid "List of profiles"
+msgstr "รายการของโพรไฟล์"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:11
+msgid "The default file extension for this profile"
+msgstr "นามสกุลแฟ้มปริยายสำหรับโพรไฟล์นี้"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:12
+msgid "The partial GStreamer pipeline used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:13
+msgid ""
+"Used for converting to CD-quality audio, but with a lossless compression "
+"codec. Use this if you later want to edit the file or burn it to CD."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:14
+msgid ""
+"Used for converting to CD-quality audio, but with a lossy compression codec. "
+"Use this for CD extraction and radio recordings."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:15
+msgid ""
+"Used for converting to voice-quality audio. Use this for recording speech."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:16
+msgid "Voice"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:17
+msgid "Whether or not this profile is to be used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:18
+msgid "Whether or not to use and display this profile."
+msgstr ""
+
+#: vu-meter/main.c:102
+msgid ""
+"Cannot connect to sound daemon.\n"
+"Please run 'esd' at a command prompt."
+msgstr ""
+"ไม่สามารถเชื่อมต่อดีมอนเสียง \n"
+"กรุณาเรียกใช้งาน 'esd' ที่พรอมต์คำสั่ง"
+
+#: vu-meter/main.c:228
+msgid "Specify the X position of the meter."
+msgstr "กำหนดตำแหน่งของค่า X ของมิเตอร์"
+
+#: vu-meter/main.c:229
+msgid "X-Position"
+msgstr ""
+
+#: vu-meter/main.c:231
+msgid "Specify the Y position of the meter."
+msgstr "กำหนดตำแหน่งค่า Y ของมิเตอร์"
+
+#: vu-meter/main.c:232
+msgid "Y-Position"
+msgstr ""
+
+#: vu-meter/main.c:234
+msgid "Connect to the esd server on this host."
+msgstr "เชื่อมต่อเซิร์ฟเวอร์ ESD ที่อยู่ในโฮสต์นี้"
+
+#: vu-meter/main.c:235
+msgid "ESD Server Host"
+msgstr "โฮสต์ของเซิร์ฟเวอร์ ESD"
+
+#: vu-meter/main.c:237
+msgid "Open a vertical version of the meter."
+msgstr ""
+
+#: vu-meter/main.c:239
+msgid "Act as recording level meter."
+msgstr "ใช้เป็นมิเตอร์แสดงระดับเสียงของการบันทึก"
+
+#: vu-meter/main.c:256
+#, c-format
+msgid "Host is %s\n"
+msgstr "โฮสต์คือ %s\n"
+
+#: vu-meter/main.c:273
+msgid "Recording level"
+msgstr "ระดับการบันทึกเสียง"
+
+#: vu-meter/main.c:273
+msgid "Volume Meter"
+msgstr "มิเตอร์ระดับเสียง"
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr "หน้าจอแสดงระดับเสียงของสัญญาณขาเข้าที่กำลังบันทึก"
+
+#: vu-meter/reclevel.desktop.in.h:2
+msgid "Recording level monitor"
+msgstr "หน้าจอแสดงระดับสัญญาณที่กำลังบันทึก"
+
+#: vu-meter/vumeter.desktop.in.h:1
+msgid "Monitor the sound output volume"
+msgstr "หน้าจอแสดงสัญญาณเสียงขาออก"
+
+#: vu-meter/vumeter.desktop.in.h:2
+msgid "Volume monitor"
+msgstr "หน้าจอแสดงระดับเสียง"
+
+#~ msgid "Unknown artist"
+#~ msgstr "ไม่รู้ชื่อศิลปิน"
+
+#~ msgid "Unknown disc"
+#~ msgstr "ไม่รู้จักแผ่นดิสก์"
+
+#~ msgid "GStreamer Volume Control"
+#~ msgstr "GStreamer ตัวควบคุมระดับเสียง"
+
+#~ msgid ""
+#~ "A file named \"%s\" already exists.\n"
+#~ "Do you want to replace it with the one you are saving?"
+#~ msgstr ""
+#~ "แฟ้ม '%s' มีอยู่แล้ว </b>\n"
+#~ "คุณต้องการจะเขียนทับมันหรือไม่?"
+
+#~ msgid "Could not build pipeline"
+#~ msgstr "ไม่สามารถสร้าง pipeline ได้"
+
+#~ msgid "Saving %s..."
+#~ msgstr "กำลังบันทึกข้อมูล %s..."
+
+#~ msgid "DSP Input"
+#~ msgstr "สัญญาณเข้าแบบ DSP"
+
+#~ msgid "Line"
+#~ msgstr "สาย"
+
+#~ msgid "MIC"
+#~ msgstr "ไมค์"
+
+#~ msgid "CD"
+#~ msgstr "ซีดี"
+
+#~ msgid "Radio"
+#~ msgstr "วิทยุ"
+
+#~ msgid "Mono"
+#~ msgstr "โมโน"
+
+#~ msgid "PC Speaker"
+#~ msgstr "ลำโพง"
+
+#~ msgid "Aux"
+#~ msgstr "อุปกรณ์เสริม"
+
+#~ msgid "Master"
+#~ msgstr "ต้นฉบับ"
+
+#~ msgid "Master Mono"
+#~ msgstr "ต้นฉบับแบบโมโน"
+
+#~ msgid "Master Digital"
+#~ msgstr "ต้นฉบับแบบดิจิทัล"
+
+#~ msgid "Headphone"
+#~ msgstr "หูฟังแบบสวมหัว"
+
+#~ msgid "Phone Output"
+#~ msgstr "ช่องเสียบหูฟัง"
+
+#~ msgid "Woofer"
+#~ msgstr "วูฟเฟอร์"
+
+#~ msgid "Surround"
+#~ msgstr "รอบทิศทาง"
+
+#~ msgid "DSP Output"
+#~ msgstr "สัญญาณออก DSP"
+
+#~ msgid "Treble"
+#~ msgstr "เสียงแหลม"
+
+#~ msgid "Equalizer"
+#~ msgstr "ตัวปรับระดับเสียง"
+
+#~ msgid "Effect"
+#~ msgstr "เอฟเฟ็กต์"
+
+#~ msgid "3D Effect"
+#~ msgstr "เอฟเฟ็กต์ 3 มิติ"
+
+#~ msgid "Mic Gain"
+#~ msgstr "เพิ่มระดับเสียงของไมค์"
+
+#~ msgid "Input Gain"
+#~ msgstr "เพิ่มระดับเสียงขาเข้า"
+
+#~ msgid "Output Gain"
+#~ msgstr "เพิ่มระดับเสียงขาออก"
+
+#~ msgid "Vol  "
+#~ msgstr "ระดับเสียง"
+
+#~ msgid "Bass "
+#~ msgstr "เสียงต่ำ"
+
+#~ msgid "Trebl"
+#~ msgstr "เสียงแหลม"
+
+#~ msgid "Spkr "
+#~ msgstr "ลำโพง"
+
+#~ msgid "Line "
+#~ msgstr "สาย"
+
+#~ msgid "Mic  "
+#~ msgstr "ไมค์"
+
+#~ msgid "CD   "
+#~ msgstr "ซีดี"
+
+#~ msgid "Rec  "
+#~ msgstr "บันทึก"
+
+#~ msgid "Digital1"
+#~ msgstr "ดิจิทัล1"
+
+#~ msgid "Digital2"
+#~ msgstr "ดิจิทัล2"
+
+#~ msgid "Digital3"
+#~ msgstr "ดิจิทัล3"
+
+#~ msgid "Monitor"
+#~ msgstr "หน้าจอ"
+
+#~ msgid "Help"
+#~ msgstr "คำแนะนำ"
+
+#~ msgid "Mixer device to use"
+#~ msgstr "อุปกรณ์ Mixer ที่จะใช้"
+
+#~ msgid ""
+#~ "Volume control is unable to run correctly.\n"
+#~ "\n"
+#~ "Unable to open audio device '%s'.\n"
+#~ "Please check that you have permissions to open '%s'\n"
+#~ "and that you have sound support in your kernel.\n"
+#~ "\n"
+#~ "Press Quit to exit Volume control"
+#~ msgstr ""
+#~ "ตัวควบคุมระดับเสียงไม่สามารถทำงานได้อย่างถูกต้อง\n"
+#~ "\n"
+#~ "ไม่สามารถเปิดอุปกรณ์ออดิโอ '%s' \n"
+#~ "กรุณาตรวจสอบว่าคุณมีสิทธิ์เปิด '%s' \n"
+#~ "และ Kernal ของคุณสนับสนุนการ์ดเสียงนี้ \n"
+#~ "\n"
+#~ "กดปุ่มออก เพื่อออกจากการทำงานของตัวควบคุมระดับเสียง"
+
+#~ msgid ""
+#~ "Volume control is unable to run correctly.\n"
+#~ "\n"
+#~ "Press the details button for more details on the reasons for failure.\n"
+#~ "\n"
+#~ "Press Quit to quit Volume control"
+#~ msgstr ""
+#~ "ตัวควบคุมระดับเสียงไม่สามารถทำงานได้ถูกต้อง\n"
+#~ "\n"
+#~ "กดปุ่มรายละเอียดเพื่อดูรายละเอียดเพิ่มเติมเกี่ยวกับข้อผิดพลาด\n"
+#~ "\n"
+#~ "กดปุ่มออก เพื่อออกจากตัวควบคุมระดับเสียง"
+
+#~ msgid "Invalid mixer device"
+#~ msgstr "มิกเซอร์เสียงที่มีอยู่ไม่ถูกต้อง"
+
+#~ msgid ""
+#~ "Warning: This version of the Gnome Volume Control was compiled with\n"
+#~ "OSS version %d.%d.%d, and your system is running\n"
+#~ "a version prior to 3.6.0.\n"
+#~ msgstr ""
+#~ "คำเตือน: ตัวควบคุมเสียงของ Gnome เวอร์ชันนี้ถูกคอมไพล์ด้วย\n"
+#~ "OSS เวอร์ชัน %d.%d.%d \n"
+#~ "แต่ระบบของคุณทำงานบนเวอร์ชันก่อน 3.6.0.\n"
+
+#~ msgid ""
+#~ "Warning: This version of the Gnome Volume Control was compiled with\n"
+#~ "OSS version %d.%d.%d, and your system is running\n"
+#~ "version %d.%d.%d.\n"
+#~ msgstr ""
+#~ "คำเตือน: ตัวควบคุมเสียงของ Gnome เวอร์ชันนี้ถูกคอมไพล์ด้วย\n"
+#~ "OSS เวอร์ชัน %d.%d.%d แต่ระบบของคุณทำงานบน เวอร์ชันก่อน %d.%d.%d.\n"
+
+#~ msgid "left %s"
+#~ msgstr "ซ้าย %s"
+
+#~ msgid "Right %s"
+#~ msgstr "ขวา %s"
+
+#~ msgid "GNOME Volume Control"
+#~ msgstr "ตัวควบคุมระดับเสียง GNOME"
+
+#~ msgid "A mixer for sound devices"
+#~ msgstr "มิกเซอร์สำหรับอุปกรณ์เสียง"
+
+#~ msgid "Shown"
+#~ msgstr "แสดง"
+
+#~ msgid "Mixer label"
+#~ msgstr "ป้ายชื่อมิกเซอร์"
+
+#~ msgid "_Reset labels to their defaults"
+#~ msgstr "ตั้งค่าแถบข้อความใ_หม่ ให้เป็นค่าปริยาย"
+
+#~ msgid "Gnome Volume Control Preferences"
+#~ msgstr "การปรับแต่งค่าตัวควบคุมระดับเสียง Gnome"
+
+#~ msgid "Sound Recorder:"
+#~ msgstr "ตัวบันทึกเสียง:"
+
+#~ msgid "Don't show this message again."
+#~ msgstr "ไม่ต้องแสดงข้อความนี้อีก"
+
+#~ msgid ""
+#~ "Could not find '%s'.\n"
+#~ "Set the correct path to sox inpreferences under the tab 'paths'.\n"
+#~ "\n"
+#~ "If you don't have sox, you will not be able to record or do any effects."
+#~ msgstr ""
+#~ "ไม่สามารถหา '%s' \n"
+#~ "ใส่พาธที่ถูกต้องให้กับ sox inpreference ภายใต้ 'path' \n"
+#~ "\n"
+#~ "ถ้าคุณไม่มี sox คุณก็ไม่สามารถจะบันทึกหรือทำอะไรอย่างอื่นได้"
+
+#~ msgid "Converting file..."
+#~ msgstr "กำลังแปลงแฟ้ม..."
+
+#~ msgid "Cancel"
+#~ msgstr "ยกเลิก"
+
+#~ msgid "Audioformat: "
+#~ msgstr "รูปแบบของเสียง:"
+
+#~ msgid "Sample rate: "
+#~ msgstr "อัตราการสุ่มตัวอย่าง:"
+
+#~ msgid "Channels: "
+#~ msgstr "ช่องสัญญาณ:"
+
+#~ msgid "Cancel open"
+#~ msgstr "ยกเลิกการเปิด"
+
+#~ msgid "%s is not installed in the path"
+#~ msgstr "%s ไม่สามารถติดตั้งในพาธได้"
+
+#~ msgid "Undoing all changes..."
+#~ msgstr "ไม่สามารถเปลี่ยนแปลงทั้งหมด..."
+
+#~ msgid ""
+#~ "'%s' is a folder.\n"
+#~ "Please select a sound file to be opened."
+#~ msgstr ""
+#~ "%s เป็นโฟลเดอร์ \n"
+#~ "กรุณาเลือกแฟ้มเสียงที่จะเปิด"
+
+#~ msgid ""
+#~ "File '%s' doesn't exist.\n"
+#~ "Please select an existing sound file to be opened."
+#~ msgstr ""
+#~ "แฟ้ม '%s' ไม่มี \n"
+#~ "กรุณาเลือกเปิดแฟ้มเสียงที่มีอยู่"
+
+#~ msgid "File '%s isn't a valid sound file."
+#~ msgstr "แฟ้ม '%s' ไม่ใช่แฟ้มเสียง"
+
+#~ msgid ""
+#~ "'%s' is a folder.\n"
+#~ "Please enter another filename."
+#~ msgstr ""
+#~ "'%s' เป็นโฟลเดอร์ \n"
+#~ "กรุณาเข้าชื่อแฟ้มอื่น"
+
+#~ msgid "Cancel save"
+#~ msgstr "ยกเลิกการบันทึกข้อมูล"
+
+#~ msgid "Overwrite"
+#~ msgstr "เขียนทับ"
+
+#~ msgid "Error saving '%s'"
+#~ msgstr "ผิดพลาดในการบันทึก '%s'"
+
+#~ msgid "Do_n't save"
+#~ msgstr "ไ_ม่ต้องบันทึกข้อมูล"
+
+#~ msgid "Save %s?"
+#~ msgstr "บันทึก %s หรือไม่?"
+
+#~ msgid "Saving..."
+#~ msgstr "กำลังบันทึก..."
+
+#~ msgid ""
+#~ "The size of the current sample is more than\n"
+#~ "%i Mb!"
+#~ msgstr ""
+#~ "ขนาดของตัวอย่างปัจจุบันใหญ่เกินกว่า \n"
+#~ "%i เมกะไบต์"
+
+#~ msgid "Save sound file"
+#~ msgstr "บันทึกแฟ้มเสียง"
+
+#~ msgid ""
+#~ "The sound device is not ready. Please check that there isn't\n"
+#~ "another program running that is using the device."
+#~ msgstr ""
+#~ "อุปกรณ์เสียงไม่ทำงาน กรุณาตรวจสอบว่ามันไม่ถูก\n"
+#~ " โปรแกรมอื่นเรียกใช้งานอยู่"
+
+#~ msgid "Run GNOME Volume Control"
+#~ msgstr "เรียกใช้งานตัวควบคุมระดับเสียงของ GNOME"
+
+#~ msgid "Add echo"
+#~ msgstr "เพิ่มเสียงสะท้อน"
+
+#~ msgid "Add echo to the current sample"
+#~ msgstr "เพิ่มเสียงสะท้อนในตัวอย่างปัจจุบัน"
+
+#~ msgid "Echo"
+#~ msgstr "เสียงสะท้อน"
+
+#~ msgid "_Undo All"
+#~ msgstr "_ยกเลิกการทำทั้งหมด"
+
+#~ msgid "Undo all changes made on the current sample"
+#~ msgstr "ยกเลิกการเปลี่ยนแปลงทั้งหมดที่ทำในตัวอย่างปัจจุบัน"
+
+#~ msgid "Effects"
+#~ msgstr "เอฟเฟ็กต์"
+
+#~ msgid "16bit PCM"
+#~ msgstr "16 บิต PCM"
+
+#~ msgid "8bit PCM"
+#~ msgstr "8 บิต PCM"
+
+#~ msgid "stereo"
+#~ msgstr "สเตริโอ"
+
+#~ msgid "mono"
+#~ msgstr "โมโน"
+
+#~ msgid "Create new sample"
+#~ msgstr "สร้างตัวอย่างใหม่"
+
+#~ msgid "Play current sample"
+#~ msgstr "เล่นตัวอย่างปัจจุบัน"
+
+#~ msgid "Stop playing/recording"
+#~ msgstr "หยุดการเล่นหรือการบันทึกเสียง"
+
+#~ msgid "Start recording"
+#~ msgstr "เริ่มบันทึกเสียง"
+
+#~ msgid "Audio format: "
+#~ msgstr "รูปแบบของเสียง:"
+
+#~ msgid "File '%s' doesn't exist; using default."
+#~ msgstr "แฟ้ม '%s' ไม่มีอยู่ กำลังใช้ค่าปริยาย"
+
+#~ msgid "File '%s' isn't a supported soundfile."
+#~ msgstr "แฟ้ม '%s' ไม่ใช่แฟ้มเสียงที่รู้จัก"
+
+#~ msgid "translator_credits"
+#~ msgstr "เ_ครดิตผู้แปล"
+
+#~ msgid "GNOME Sound Recorder"
+#~ msgstr "ตัวบันทึกเสียง GNOME"
+
+#~ msgid ""
+#~ "A simple soundrecorder and soundplayer for GNOME.\n"
+#~ "Dedicated to my cat, Malte."
+#~ msgstr ""
+#~ "ตัวบันทึกเสียงและตัวเล่นเสียงอย่างง่ายสำหรับ GNOME\n"
+#~ "อุทิศแด่คนรักของฉัน Malte"
+
+#~ msgid "Gnome Sound Recorder Preferences"
+#~ msgstr "การปรับแต่งค่าตัวบันทึกเสียง Gnome"
+
+#~ msgid "Sound Recorder Preferences"
+#~ msgstr "การปรับแต่งค่าของตัวบันทึกเสียง"
+
+#~ msgid "Recording"
+#~ msgstr "กำลังบันทึกเสียง"
+
+#~ msgid "Time"
+#~ msgstr "เวลา"
+
+#~ msgid "_Recording timeout: "
+#~ msgstr "เ_วลาที่ใช้ในการบันทึกเสียง: "
+
+#~ msgid "_Stop recording on timeout"
+#~ msgstr "หยุ_ดการบันทึกเสียงเมื่อเวลาหมด"
+
+#~ msgid "_Open save dialog when recording is finished"
+#~ msgstr "เ_ปิดกรอบข้อความสำหรับบันทึกเมื่อการบันทึกเสียงเสร็จสิ้น"
+
+#~ msgid "Size"
+#~ msgstr "ขนาด"
+
+#~ msgid "Show warning _message if size (MB) of sample becomes bigger than:"
+#~ msgstr "แสดงข้อความเ_ตือนถ้าขนาด (มีหน่วยเป็นเมกะไบต์) ของตัวอย่างใหญ่เกินกว่า: "
+
+#~ msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
+#~ msgstr "ห_ยุดการบันทึกเสียงถ้าขนาดของตัวอย่าง (มีหน่วยเป็นเมกะไบต์) ใหญ่กว่า:"
+
+#~ msgid "Repetition"
+#~ msgstr "การเล่นซ้ำ"
+
+#~ msgid "_Repeat the sound"
+#~ msgstr "เล่นเสียง_ซ้ำ"
+
+#~ msgid "Play the sound _once only."
+#~ msgstr "เล่นเสียงเพียงห_นึ่งครั้ง"
+
+#~ msgid "Repeat _forever"
+#~ msgstr "เล่นซ้ำไปต_ลอด"
+
+#~ msgid "_Number of times:"
+#~ msgstr "จำนวน_ครั้ง"
+
+#~ msgid "Paths"
+#~ msgstr "พาธ"
+
+#~ msgid "_Path to sox:"
+#~ msgstr "_พาธของ Sox:"
+
+#~ msgid "_Apply"
+#~ msgstr "ใ_ช้งานทันที"
+
+#~ msgid "Folders"
+#~ msgstr "โฟลเดอร์"
+
+#~ msgid "_Temporary folder:"
+#~ msgstr "โฟลเดอร์ชั่ว_คราว: "
+
+#~ msgid "Apply"
+#~ msgstr "ใช้งานทันที"
+
+#~ msgid "Sound"
+#~ msgstr "เสียง"
+
+#~ msgid ""
+#~ "Note: These options only take effect whenever a new sound sample\n"
+#~ "is created. They do not operate on an existing sample."
+#~ msgstr ""
+#~ "หมายเหตุ: ตัวเลือกเหล่านี้จะมีผลเฉพาะตัวอย่างเสียงที่จะสร้างใหม่เท่านั้น "
+#~ "ไม่มีผลกับตัวอย่างเสียงที่มีอยู่แล้ว"
+
+#~ msgid "Audio format:"
+#~ msgstr "รูปแบบเสียง:"
+
+#~ msgid "8 _bit PCM"
+#~ msgstr "8 _บิต PCM"
+
+#~ msgid "16 b_it PCM"
+#~ msgstr "16 บิ_ต PCM"
+
+#~ msgid "S_ample rate:"
+#~ msgstr "_อัตราการสุ่มตัวอย่างเสียง: "
+
+#~ msgid "Mono or Stereo:"
+#~ msgstr "โมโนหรือสเตริโอ:"
+
+#~ msgid "_Mono"
+#~ msgstr "โ_มโน"
+
+#~ msgid "_Stereo"
+#~ msgstr "สเ_ตริโอ"
+
+#~ msgid "Stereo"
+#~ msgstr "สเตริโอ"
+
+#~ msgid "Specify the geometry of the main window"
+#~ msgstr "กำหนดค่าเรขาคณิตของหน้าต่างหลัก"
+
+#~ msgid "GEOMETRY"
+#~ msgstr "เรขาคณิต"
+
+#~ msgid "Specify a file to be opened"
+#~ msgstr "กำหนดแฟ้มที่จะเปิด"
+
+#~ msgid "Specify a file to start recording"
+#~ msgstr "กำหนดแฟ้มที่จะเริ่มการบันทึกเสียง"
+
+#~ msgid "Specify a file to start playing"
+#~ msgstr "กำหนดแฟ้มที่จะเริ่มเล่น"
+
+#~ msgid "Sound recorder"
+#~ msgstr "ตัวบันทึกเสียง"
+
+#~ msgid "Audio format: 8bit PCM"
+#~ msgstr "รูปแบบเสียง: 8 บิต PCM"
+
+#~ msgid "Audio format: 16bit PCM"
+#~ msgstr "รูปแบบเสียง: 16 บิต PCM"
+
+#~ msgid "Sample rate: %s"
+#~ msgstr "อัตราการสุ่มตัวอย่าง: %s"
+
+#~ msgid "Channels: mono"
+#~ msgstr "ช่องสัญญาณ: โมโน"
+
+#~ msgid "Channels: stereo"
+#~ msgstr "ช่องสัญญาณ: สเตริโอ"
+
+#~ msgid "Adding echo to sample..."
+#~ msgstr "กำลังเพิ่มเสียงสะท้อนที่ตัวอย่าง..."

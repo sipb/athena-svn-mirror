@@ -1,0 +1,32 @@
+<gnome-cd>
+	<display>
+		<image location="top-left">top-left.png</image>
+		<image location="top-right">top-right.png</image>
+		<image location="bottom-left">bottom-left.png</image>
+		<image location="bottom-right">bottom-right.png</image>
+
+		<image location="left">middle-left.png</image>
+		<image location="right">middle-right.png</image>
+		<image location="top">top.png</image>
+		<image location="bottom">bottom.png</image>
+
+		<image location="middle">middle.png</image>
+	</display>
+
+	<icons>
+		<image button="previous">media-prev.png</image>
+		<image button="rewind">media-rew.png</image>
+		<image button="play">media-play.png</image>
+		<image button="pause">media-pause.png</image>
+		<image button="stop">media-stop.png</image>
+		<image button="forward">media-fwd.png</image>
+		<image button="next">media-next.png</image>
+		<image button="eject">media-eject.png</image>
+		
+		<image menu="previous">a-first-menu.png</image>
+		<image menu="stop">a-stop-menu.png</image>
+		<image menu="play">a-play-menu.png</image>
+		<image menu="next">a-last-menu.png</image>
+		<image menu="eject">a-eject-menu.png</image>
+	</icons>
+</gnome-cd>

@@ -29,7 +29,7 @@ static AtkObject* cddisplay_accessible_factory_create_accessible (GObject *obj);
 static GType cddisplay_accessible_factory_get_accessible_type (void);
 
 GType
-cddisplay_accessible_factory_get_type ()
+cddisplay_accessible_factory_get_type (void)
 {
 	static GType type = 0;
 
@@ -69,7 +69,7 @@ cddisplay_accessible_factory_class_init (CDDisplayAccessibleFactoryClass *klass)
 }
 
 AtkObjectFactory*
-cddisplay_accessible_factory_new ()
+cddisplay_accessible_factory_new (void)
 {
 	GObject *factory;
 

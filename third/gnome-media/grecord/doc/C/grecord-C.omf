@@ -2,23 +2,18 @@
 <omf>
   <resource>
     <creator>
-      gdocteam@sun.com (Sun Microsystems)
+      docs@gnome.org (GDP)
     </creator>
     <maintainer>
-      gdocteam@sun.com (Sun Microsystems)
+      docs@gnome.org (GDP)
     </maintainer>
-<!--
     <title>
-      Sound Recorder Manual V2.3
-    </title>
--->    
-    <title>
-      Sound Recorder
+      Sound Recorder Manual V2.5
     </title>
     <date>
-      2003-01-22
+      2004-02-26
     </date>
-    <version identifier="2.3" date="2003-01-22" description="Updated for GNOME 2.2, program version 2.0.0"/>
+    <version identifier="2.5" date="2004-02-26" description="Updated for GNOME 2.6, program version 2.5.2"/>
     <subject category="GNOME|Applications|Sound and Video"/>
     <description>
       User manual for Sound Recorder. 

@@ -1,0 +1,390 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "CD Player">
+]>
+
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="zh_tw">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>&app; 手冊 V&manrevision;</title>
+
+    <copyright> 
+      <year>2002</year> 
+
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+    <publisher> 
+      <publishername> GNOME 文件專案</publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup>
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>GNOME 文件小組</surname> 
+	<affiliation> 
+	  <orgname>GNOME 文件專案</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+ 
+    <revhistory>
+      <revision> 
+	<revnumber>&app; 手冊 V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME 文件小組
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME 文件專案</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>CD 播放機手冊 V2.1</revnumber> 
+	<date>2002 年 7 月</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME 文件小組
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME 文件專案</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>CD 播放機手冊 V2.0</revnumber> 
+	<date>2002 年 5 月</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME 文件小組
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME 文件專案</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>本手冊的內容是說明 &appversion; 版的 &app;。
+    </releaseinfo>
+    <legalnotice> 
+      <title>回饋</title>
+      <para>關於 &app; 應用程式或本手冊，如果要報告錯誤或提出建議，請遵照<ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink> 的指示。 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm> 
+    <primary>CD 播放機</primary> 
+  </indexterm> 
+
+
+<sect1 id="gtcd-introduction">
+<title>介紹</title>
+<para>您可以使用 <application>&app;</application> 應用程式，在電腦上播放音訊光碟 (Compact Disc，CD)。 使用 <application>CD 播放機</application>，您可以對音訊 CD 執行下列工作：</para>
+<itemizedlist>
+<listitem><para>播放、暫停、停止播放或彈出 CD。</para></listitem>
+<listitem><para>在 CD 的音軌間移動。</para></listitem>
+<listitem><para>由 CD 播放機調整輸出音量。</para></listitem>
+<listitem><para>編輯音軌資訊。</para></listitem>
+</itemizedlist>
+</sect1>
+<!-- =========== Getting Started ============================== -->
+<sect1 id="gtcd-getting-started">
+<title>入門</title>
+
+<sect2 id="gtcd-to-start">
+<title>啟動 CD 播放機</title>
+<para>您可以使用下列方式啟動 <application>&app;</application>：</para>
+<variablelist>
+<varlistentry>
+<term><guimenu>應用程式</guimenu>功能表</term>
+<listitem>
+<para>請選擇<menuchoice><guisubmenu>聲音 &amp; 視訊</guisubmenu><guimenuitem> &app;</guimenuitem>
+</menuchoice>。 </para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>指令行</term>
+<listitem>
+<para>請輸入 <command>gnome-cd</command>，然後按一下 <keycap>Return</keycap> 鍵。</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gtcd-when-start">
+<title>當您啟動 CD 播放機</title>
+<para>當您啟動 <application>&app;</application> 時，會出現如下面所列的視窗。</para>
+<!-- ==== Figure ==== -->
+      <figure id="cdplayer_start_window"> 
+	<title>&app; 視窗</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata  fileref="figures/cdplayer_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase>顯示 CD 播放機主視窗。</phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+<para> <application>&app;</application> 視窗中包含下列元素：</para>
+<itemizedlist>
+<listitem><para>A 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>顯示開啟音軌編輯器按鈕。</phrase></textobject>
+</inlinemediaobject> 這個按鈕可以讓您開啟<guilabel>音軌編輯器</guilabel>對話方塊。 </para></listitem>
+<listitem><para> <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>顯示個人喜好按鈕。</phrase></textobject>
+</inlinemediaobject> 這個按鈕可以讓您開啟<guilabel>個人喜好</guilabel>對話方塊。 </para></listitem>
+<listitem><para>一個顯示區域，顯示的是正在播放 CD 的相關詳細資訊。 </para></listitem>
+<listitem><para>一個調整器控制，可以讓您控制輸出音量。 </para></listitem>
+<listitem><para>一個下拉式清單方塊，可以讓您檢視 CD 音軌的名稱，或是移動到某個音軌。 </para></listitem>
+<listitem><para>一個按鈕區域，可以讓您播放 CD 上的音軌。 </para></listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+
+<!-- ============= Usage ============================= -->
+<sect1 id="gtcd-usage">
+<title>使用</title>
+
+<!--=========== To Play a CD ============================= -->
+<sect2 id="gtcd_play">
+<title>播放 CD</title>
+<para>如果要播放 CD，請將 CD 放入電腦的光碟機中，然後按一下 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>顯示播放按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。 </para>
+<para>本應用程式會在顯示區域中，顯示下列資訊：
+</para>
+<itemizedlist>
+<listitem><para>目前音軌的經過時間。</para></listitem>
+<listitem><para>藝人的名稱。</para></listitem>
+<listitem><para>CD 的專輯名稱。</para>
+</listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_pause">
+<title>暫停 CD 播放</title>
+<para>如果要暫停正在播放的 CD，請按一下 <inlinemediaobject>
+<imageobject><imagedata fileref="figures/pause_button.png" format="PNG"/></imageobject><textobject><phrase>顯示暫停按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。 如果要回復播放 CD，請按一下<inlinemediaobject><imageobject><imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject><textobject><phrase>顯示播放按鈕。</phrase></textobject>
+</inlinemediaobject> 再一次按鈕。</para>
+</sect2>
+
+<sect2 id="gtcd_movetracks">
+<title>在音軌間移動</title>
+<para>如果要播放 CD 上不同的音軌，請執行下列動作：
+</para>
+<itemizedlist>
+<listitem><para>如果要移動到 CD 的下一個音軌，請按一下 <inlinemediaobject>
+<imageobject><imagedata fileref="figures/next_button.png" format="PNG"/></imageobject><textobject><phrase>顯示下一首曲目按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。 </para></listitem>
+<listitem><para>如果要移至 CD 上的上一個音軌，請按一下 <inlinemediaobject>
+<imageobject><imagedata fileref="figures/previous_button.png" format="PNG"/></imageobject><textobject><phrase>顯示上一首曲目按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。 </para></listitem>
+<listitem><para>如果要顯示 CD 上音軌的清單，請按一下顯示區域下方的下拉式清單方塊。
+如果要移至清單中某個的音軌，請從清單中選擇音軌。</para></listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_forward">
+<title>音軌快速前進</title>
+<para>如果要在音軌中快速前進，請按一下<inlinemediaobject><imageobject><imagedata fileref="figures/forward_button.png" format="PNG"/>
+</imageobject><textobject><phrase>顯示快速前進按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。</para>
+</sect2>
+
+<sect2 id="gtcd_rewind">
+<title>音軌倒退</title>
+<para>如果要倒退音軌，請按一下<inlinemediaobject><imageobject><imagedata fileref="figures/rewind_button.png" format="PNG"/>
+</imageobject><textobject><phrase>顯示倒退按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。</para>
+</sect2>
+
+<sect2 id="gtcd_stop">
+<title>停止 CD 播放</title>
+<para>如果要停止播放 CD，請按一下<inlinemediaobject><imageobject><imagedata fileref="figures/stop_button.png" format="PNG"/>
+</imageobject><textobject><phrase>顯示停止按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。</para>
+</sect2>
+
+<sect2 id="gtcd_adjust_vol"><title>調整音量</title>
+<para>如果要調整 CD 播放機的輸出音量，請移動音量調整器，指定您要的音量等級。 音量調整器位於應用程式視窗中，顯示區域的右邊。 將調整器往上移動，便可調高音量。
+將調整器往下移動，便可調低音量。</para>
+</sect2>
+
+<sect2 id="gtcd_edit_info">
+<title>編輯 CD 資訊</title>
+<para>如果要編輯 CD 資訊，請執行下列步驟：</para>
+<orderedlist>
+<listitem><para>如果要開啟<guilabel>音軌編輯器</guilabel>對話方塊，請按一下<inlinemediaobject><imageobject><imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/></imageobject></inlinemediaobject>按鈕。  程式會顯示<guilabel>音軌編輯器</guilabel>對話方塊，請參閱<xref linkend="fig-cd-track-editor"/>。</para></listitem>
+<listitem><para>如果要編輯藝人的名稱，請編輯<guilabel>藝人</guilabel>文字方塊中內容。</para></listitem>
+<listitem><para>如果要編輯 CD 的專輯名稱，請編輯 <guilabel>CD 專輯名稱</guilabel>文字方塊中的內容。</para></listitem>
+<listitem><para>如果要新增有關 CD 的註釋、音樂類型以及 CD 的製作年份，請按一下 
+<guilabel>顯示進階 CD 選項</guilabel>旁的箭頭。</para></listitem>
+<listitem><para>如果要編輯音軌的標題，請在音軌表的<guilabel>標題</guilabel>欄中，按兩下音軌， 然後輸入新的標題。</para></listitem>
+<listitem><para>如果要新增有關音軌的其他資訊，請在音軌表中選取音軌， 
+然後按一下<guilabel>顯示進階音軌選項</guilabel>旁的箭頭。</para></listitem>
+<listitem><para>請在<guilabel>音軌附加資料</guilabel>文字方塊中，輸入其他的音軌資訊。</para></listitem>
+<listitem><para>如果要將變更儲存在您的本機電腦中，請按一下<guibutton>儲存</guibutton>。</para></listitem>
+</orderedlist>
+<!-- ==== Figure ==== -->
+      <figure id="fig-cd-track-editor"> 
+	<title>音軌編輯器對話方塊</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata 		fileref="figures/cdplayer_trackeditor_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase></phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+</sect2>
+
+<sect2 id="gtcd_eject">
+<title>彈出 CD</title>
+<para>如果要彈出 CD，請按一下<inlinemediaobject><imageobject>
+<imagedata fileref="figures/eject_button.png" format="PNG"/>
+</imageobject><textobject><phrase>顯示彈出 CD 按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。 如果 CD 仍在播放中，這個動作會停止 CD 播放，然後彈出 CD 托盤。</para>
+</sect2>
+
+</sect1>
+
+<!-- ================= Preferences =================== -->
+<sect1 id="gtcd-prefs">
+<title>個人喜好</title>
+<para>如果要配置 <application>&app;</application> 的組態，請按一下<inlinemediaobject><imageobject><imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject><textobject><phrase>顯示個人喜好按鈕。</phrase></textobject>
+</inlinemediaobject> 按鈕。 </para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>CD 播放機裝置</guilabel> </term>
+<listitem>
+<para>請使用這個文字方塊，指定 CDROM 裝置的名稱。 請按一下<guibutton>套用變更</guibutton>，儲存此設定的變更。</para>
+<para>預設值： 視您的作業系統而定。 </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>啟動 GNOME CD 播放機時</guilabel> </term>
+<listitem>
+<para>請選取下列任一個單選按鈕，以決定啟動本應用程式時，<application>CD 播放機</application>所要採取的動作：</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>沒有動作</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>開始播放 CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>停止播放 CD</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>預設值： <guilabel>沒有動作</guilabel>。</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>結束 GNOME CD 播放機時</guilabel> </term>
+<listitem>
+<para>請選擇下列任一個單選按鈕，以決定當您結束本應用程式時，<application>CD 播放機</application>所要採取的動作：</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>沒有動作</guilabel></para>
+</listitem>
+<listitem>
+<para><guilabel>停止播放 CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>嘗試彈出 CD 托盤</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>預設值： <guilabel>沒有動作</guilabel>。</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>主題名稱</guilabel> </term>
+<listitem>
+<para>請使用這個清單方塊，選取 <application>&app;</application> 的顯示主題。可用的主題如下：</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>lcd</guilabel> </para>
+<para>在顯示區域中，提供標準按鈕以及灰色的背景。</para>
+</listitem>
+<listitem>
+<para><guilabel>媒體</guilabel> </para>
+<para>在顯示區域中，提供修改過的按鈕以及紅色的背景。</para>
+</listitem>
+<listitem>
+<para><guilabel>red-lcd</guilabel> </para>
+<para>在顯示區域中，提供標準按鈕以及紅色的背景。</para>
+</listitem>
+</itemizedlist>
+<para>預設值： <guilabel>lcd</guilabel>。</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect1>
+
+</article>

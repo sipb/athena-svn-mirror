@@ -78,7 +78,7 @@ gtk_led_instance_init (GtkLed *led)
 }
 
 GtkWidget*
-gtk_led_new ()
+gtk_led_new (void)
 {
 	GtkLed *led;
 	

@@ -29,10 +29,8 @@
 
 #include <libgnome/gnome-util.h>
 
-#include <libxml/tree.h>
-#include <libxml/parser.h>
-
 #include "gnome-cd.h"
+#include "display.h"
 
 GCDTheme *
 theme_load (GnomeCD *gcd,
@@ -96,6 +94,8 @@ theme_load (GnomeCD *gcd,
 		xmlFreeDoc (xml);
 		return NULL;
 	}
+
+	g_free (theme_path);
 	
 	theme = g_new0 (GCDTheme, 1);
 
@@ -113,7 +113,7 @@ theme_load (GnomeCD *gcd,
 
 	while (ptr != NULL) {
 		if (xmlStrcmp (ptr->name, (const xmlChar *) "display") == 0) {
-			cd_display_parse_theme (gcd->display, theme, xml, ptr->xmlChildrenNode);
+			cd_display_parse_theme ((CDDisplay*)gcd->display, theme, xml, ptr->xmlChildrenNode);
 		}
 		
 		ptr = ptr->next;

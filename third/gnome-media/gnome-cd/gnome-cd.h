@@ -57,11 +57,13 @@ typedef struct _GCDTheme {
 struct _GnomeCD {
 	GtkWidget *tray;
 	GtkWidget *tray_icon;
-	GtkWidget *tray_tips;
+	GtkTooltips *tray_tips;
 
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *display;
+	GtkObject *position_adj;
+	GtkWidget *position_slider;
 	GtkWidget *tracks;
 	GtkWidget *menu;
 	GtkWidget *slider;
@@ -98,6 +100,8 @@ struct _GnomeCD {
 
 	/* Set if if --device was given on the command line */
 	char *device_override;
+
+	char *discid;	/* used to track which one we're looking up */
 };
 
 void skip_to_track (GtkWidget *item,
@@ -108,6 +112,7 @@ void gnome_cd_set_window_title (GnomeCD *gcd,
 void gnome_cd_build_track_list_menu (GnomeCD *gcd);
 
 void gcd_warning (const char *message, GError *error);
+void gcd_debug (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 /* theme.c */
 GCDTheme *theme_load (GnomeCD    *gcd,

@@ -171,5 +171,15 @@
       <locale name="C">
       </locale>
     </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-sound-recorder/last-profile-id</key>
+      <applyto>/apps/gnome-sound-recorder/last-profile-id</applyto>
+      <owner>Gnome Sound Recorder</owner>
+      <type>string</type>
+      <default>cdlossy</default>
+      <locale name="C">
+      </locale>
+    </schema>
   </schemalist>
 </gconfschemafile>

@@ -71,8 +71,8 @@ static gulong display_signals[LAST_SIGNAL] = { 0, };
 static char *default_text[CD_DISPLAY_END] = {
 	"0:00",
 	" ",
-	N_("Unknown artist"),
-	N_("Unknown disc")
+	N_("Unknown Artist"),
+	N_("Unknown Album")
 };
 
 static void
@@ -579,11 +579,9 @@ cd_image_new (const char *filename,
 		fullname = gnome_program_locate_file (NULL,
 			   GNOME_FILE_DOMAIN_PIXMAP, filename, TRUE, NULL);
 		if (fullname == NULL) {
-			g_warning ("Error loading %s", filename);
-			g_free (image);
-			return NULL;
+			/* If the elegant way doesn't work, try and brute force it */
+			fullname = g_strconcat(GNOME_ICONDIR, "/", filename, NULL);
 		}
-		
 		image->pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
 		g_free (fullname);
 	} else {
@@ -675,6 +673,33 @@ cd_display_new (void)
 
 	disp = g_object_new (cd_display_get_type (), NULL);
 	return CD_DISPLAY (disp);
+}
+
+void
+cd_display_set_style (CDDisplay *disp)
+{
+	CDDisplayPrivate *priv;
+	CDDisplayLine line;
+	GnomeCDText *text;
+	PangoRectangle rect;
+	int height, max_width = 0;
+
+	priv = disp->priv;
+
+	for (line = CD_DISPLAY_LINE_TIME; line < CD_DISPLAY_END; line++) {
+		text = priv->layout[line];
+		height = priv->height - text->height;
+
+		pango_layout_set_text (text->layout, text->text, text->length);
+		pango_layout_get_extents (text->layout, NULL, &rect);
+		text->height = rect.height / 1000;
+
+		priv->height = height + text->height;
+		max_width = MAX (priv->max_width, rect.width / 1000);
+	}
+
+	priv->max_width = max_width;
+	gtk_widget_queue_resize (GTK_WIDGET (disp));
 }
 
 const char *
@@ -795,6 +820,7 @@ cd_display_parse_theme (CDDisplay *disp,
 
 				file = xmlNodeListGetString (doc, cur->xmlChildrenNode, 1);
 				full = make_fullname (cd_theme->name, file);
+				xmlFree (file);
 				
 				if (xmlStrcmp (location, "top-left") == 0) {
 					theme->corners[TOPLEFT] = cd_image_new (full, 0, 0);
@@ -820,6 +846,7 @@ cd_display_parse_theme (CDDisplay *disp,
 
 				g_free (full);
 			}
+			xmlFree (location);
 		}
 
 		cur = cur->next;

@@ -1,3 +1,215 @@
+2004-06-01  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* linux-cdrom.c: (linux_cdrom_get_status):
+          fix #117695 - if ENOTSUP, flag and don't retry
+
+2004-05-10  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* callbacks.c: (cd_status_changed_cb):
+	* cddb.c: (get_disc_info), (cddb_listener_event_cb),
+	(cddb_close_client), (cddb_get_query):
+	  - add debugging
+	  - rename slave to slave_client since that's what it really is
+	  - check the discid from the listener callback against the one
+            we stored internally for lookup so we only use discid's we
+	    asked to look up
+	* gnome-cd.h:
+	  add discid
+
+2004-05-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* HACKING:
+	* callbacks.c: (set_window_track_title), (status_ok):
+          do not pass "" strings for display, but use NULL.
+	* display.c:
+          replace unknown strings with others also used for translation
+          so they match and don't seem to change
+	* gnome-cd.c: (gnome_cd_set_window_title):
+	  when either artist or track is NULL, display the other.
+          Only display app name when both are NULL.
+	  Fixes #114015
+
+2004-05-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* HACKING:
+          adding hacking notes
+	* callbacks.c: (status_ok):
+	* cddb.c: (get_disc_info), (cddb_sum):
+          use gcd_debug
+	* gnome-cd.c: (gcd_warning), (gcd_debug):
+	* gnome-cd.h:
+          adding gcd_debug
+
+2004-05-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* callbacks.c: (status_ok), (cd_status_changed_cb):
+	* cdrom.c:
+	* gnome-cd.c:
+          adding clarifying comments
+
+2004-05-06  Thomas Vander Stichele  <thomas at apestaart dot org>
+                                                                                
+        * gnome-cd/cddb.c: (cddb_sum):
+        * gnome-cd/cdrom.c: (gnome_cdrom_status_changed):
+          initializes pointers.  Fixes #124924.
+
+2004-03-26  Leena Gunda  <leena.gunda@wipro.com>
+
+	* gnome-cd.c (init_player): Connect cd_display_set_style
+	callback for the style_set signal of the CDDisplay.
+	* display.h, display.c (cd_display_set_style): Callback
+	to redraw the display text when the style changes.
+	Fixes bug #125409.
+
+2004-04-23  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* linux-cdrom.c: Differentiate between a audio and a data cd
+	Solves bug #119596
+
+2004-04-23  Richard Kinder <r_kinder@yahoo.com>
+	* gnome-cd.c: make the CD stop when the app exits. Fixes #139555.
+
+2004-03-09  Ted Gould <ted@gould.cx>
+
+	* gnome-cd.c, callbacks.c: Adding a patch from Mihael Vrbanec
+	which fixes the slider on startup, and also resets it so that it
+	is possitive instead of negative.  This is bug #131158
+
+2004-02-27  Breda McColgan <breda.mccolgan@sun.com>
+
+	* doc/C/gnome-cd-C.omf: Original category was correct after all -- see http://mail.gnome.org/archives/gnome-doc-list/2004-February/msg00126.html
+
+2004-02-23  Ted Gould <ted@gould.cx>
+
+	* cddb.c, display.c, preferences.c, theme.c:
+	Applying a patch by Kjartan Maraas to fix bug #124923
+	which is several memory leaks in GNOME-CD.
+
+2004-02-18  Ted Gould <ted@gould.cx>
+
+	* callbacks.c, callbacks.h, gnome-cd.c:
+	Adding patch for bug 112474 which was submitted by
+	padraig.obriain@sun.com and fixes accessibility issues
+	with the icon tray icon with gnome-cd.  Now key press
+	events are handled.
+
+2004-02-18  Breda McColgan <breda.mccolgan@sun.com>
+
+	* doc/C/gnome-cd-C.omf: Corrected the category.
+	
+2004-02-18  Breda McColgan <breda.mccolgan@sun.com>
+
+	* doc/C/gnome-cd.xml: Updated for GNOME 2.6 release.
+	* doc/C/gnome-cd-C.omf: Updated for GNOME 2.6 release.
+	* doc/C/l10n.txt: Updated for GNOME 2.6 release.
+
+2003-10-13  Ted Gould  <ted@gould.cx>
+
+	* callbacks.c: Applying patch with bug 123301 that is about the
+	next and previous buttons not working appropriately when the
+	player is at the end or beginning of a CD.  Patch was written
+	by Vijaykumar Patwari.
+
+2003-10-13  Ted Gould  <ted@gould.cx>
+
+	* display.c, gnome-cd.c: If the GNOME searching programs can't
+	find the graphics (usually if GNOME-CD is in a different directory
+	than the rest of the GNOME stuff) then the compiler define is
+	used.
+
+2003-10-08  Ted Gould  <ted@gould.cx>
+
+	* theme.c: Kjartan Maraas submitted a patch for bug #123662 to
+	fix compiler warnings.
+
+2003-09-17  Ted Gould  <ted@gould.cx>
+
+	* gnome-cd.c: Added a patch from Balamurali Viswanathan to fix
+	bug 82077 which talkings about song names getting too long.  This
+	bug checks them and truncates them.  It also sets a tooltip for
+	the complete name.
+
+2003-09-05  Ted Gould  <ted@gould.cx>
+
+	* callbacks.c, gnome-cd.c: Just adding the patch that is documented
+	bellow.  Thanks Kaushal.
+
+2003-09-05  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	* gnome-cd.c: Added a monitor for tray destroy.
+	* gnome-cd.c(tray_object_destroyed): Callback.   
+	* callbacks.c: Null check tray_tips before passing it.
+	Fixes bugzilla bug #121538.
+
+2003-08-25  Irene Ryan <irene.ryan@sun.com>
+
+	* doc/C/gnome-cd.xml: minor updates to Help for GNOME 2.4 release
+	* doc/C/gnome-cd-C.omf: updated release and version information
+	* doc/C/l10n.txt: updated instructions for L10N teams
+	* doc/C/figures/cdplayer_window.png: updated screenshot of main window
+
+2003-08-25  Ted Gould  <ted@gould.cx>
+
+	* cddb.c: Another patch from Balamurali Viswanathan - this one
+        to update the CDDB information a little more often (like when
+        it should be :)
+
+2003-08-10  Ted Gould  <ted@gould.cx>
+
+	* solaris-cdrom.c: Added patch that was included in bug 94506 and
+	submitted by Balamurali Viswanathan.
+
+2003-07-02  Jordi Mallach  <jordi@sindominio.net>
+
+	* gnome-cd.desktop.in: Add X-Bugzilla entries.
+
+2003-05-04 Iain <iain@prettypeople.org>
+
+	* Applied patches from Achim Settelmeier <gnome-cd@sirlab.de> to add
+	a position bar to the display, add a total length to the display and
+	fix some crashes.
+
+2003-04-24  Irene Ryan <irene.ryan@sun.com>
+
+	* doc/C/gnome-cd.xml: Various updates, removed
+	  default settings from the Preferences section as they
+	  vary with each distribution
+	* doc/C/gnome-cd-C.omf: Updated the release info 
+	  for the help
+	* doc/C/l10n.txt: Updated instructions for translators
+
+2003-04-08 Padraig O'Briain <padraig.obriain@sun.com>
+
+	* access/cddisplayaccessible.c (cddisplay_accessible_ref_child):
+	Omit warning message if index is too large.
+
+	* access/pangoaccessible.c (pango_accessible_ref_state_set): New 
+	function to cause VISIBLE and SHOWING states to be reported.
+	Fixes bug #106711.
+
+2003-03-28 Iain <iain@prettypeople.org>
+
+	* access/cddisplayaccessiblefactory.h: Fix warnings
+
+2003-03-28 Iain <iain@prettypeople.org>
+
+	* applied patch from Alex Duggan to fix warnings.
+
+2003-03-14 Iain <iain@prettypeople.org>
+
+	* preferences.c (on_start_changed): Get the boolean.
+	(on_stop_changed): Ditto.
+	(restore_preferences): Get booleans.
+	(preferences_free): Remove notifies.
+	(preferences_dialog_show): HIGify the dialog, remove the abundance of
+	behaviourial options.
+
+	* gnome-cd.c (main): Remove the case statement, just check the 
+	start_play value.
+	(window_destroy_cb): Remove the switch.
+
+	* gnome-cd.schemas.in.in: Remove the unused schemas, add the new ones
+
 2003-01-23  Irene Ryan <irene.ryan@sun.com>
 
 	* help/C/gnome-cd.xml: updated the help manual for GNOME 2.2

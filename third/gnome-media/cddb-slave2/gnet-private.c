@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -29,10 +29,10 @@
  *  Create an internet address from a sockaddr struct.  WARNING: This
  *  may go away or be hidden in a future version.
  *
- *  Returns: a new InetAddr, or NULL if there was a failure.  
+ *  Returns: a new InetAddr, or NULL if there was a failure.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_private_inetaddr_sockaddr_new(const struct sockaddr sa)
 {
   GInetAddr* ia = g_new0(GInetAddr, 1);
@@ -53,7 +53,7 @@ gnet_private_inetaddr_sockaddr_new(const struct sockaddr sa)
  *
  *  Returns: the sockaddr struct
  **/
-struct sockaddr 
+struct sockaddr
 gnet_private_inetaddr_get_sockaddr(const GInetAddr* ia)
 {
   g_assert(ia != NULL);
@@ -71,7 +71,7 @@ gnet_private_inetaddr_get_sockaddr(const GInetAddr* ia)
  *  gnet_udp_socket_get_MTU:
  *  @us: GUdpSocket to get MTU from.
  *
- *  Get the MTU for outgoing packets.  
+ *  Get the MTU for outgoing packets.
  *
  *  Returns: MTU; -1 if unknown.
  *
@@ -83,7 +83,7 @@ gnet_udp_socket_get_MTU(GUdpSocket* us)
 
   /* FIX: Not everyone has ethernet, right? */
   strncpy (ifr.ifr_name, "eth0", sizeof (ifr.ifr_name));
-  if (!ioctl(us->sockfd, SIOCGIFMTU, &ifr)) 
+  if (!ioctl(us->sockfd, SIOCGIFMTU, &ifr))
     return ifr.ifr_mtu;
 
   return -1;
@@ -94,7 +94,7 @@ gnet_udp_socket_get_MTU(GUdpSocket* us)
 
 
 
-/* 
+/*
 
    Below is the Windows specific code and a general idea of how
    things were implemented.
@@ -136,23 +136,23 @@ gnet_udp_socket_get_MTU(GUdpSocket* us)
 	 code were fixed so only a few gnet functions still use this method.
 
    I believe I have taken care of the multi-threaded issues by using
-   mutexes.  
+   mutexes.
 
 */
 
 #ifdef GNET_WIN32
 
 WNDCLASSEX gnetWndClass;
-HWND  gnet_hWnd; 
+HWND  gnet_hWnd;
 guint gnet_io_watch_ID;
 GIOChannel *gnet_iochannel;
-	
+
 GHashTable *gnet_hash;
-HANDLE gnet_Mutex; 
+HANDLE gnet_Mutex;
 HANDLE gnet_hostent_Mutex;
 
 
-int 
+int
 gnet_MainCallBack(GIOChannel *iochannel, GIOCondition condition, void *nodata)
 {
   MSG msg;
@@ -164,11 +164,11 @@ gnet_MainCallBack(GIOChannel *iochannel, GIOCondition condition, void *nodata)
   int i;
 
   /*Take the msg off the message queue */
-  i = PeekMessage (&msg, gnet_hWnd, 0, 0, PM_REMOVE); 
+  i = PeekMessage (&msg, gnet_hWnd, 0, 0, PM_REMOVE);
   if (!i)
     return 1; /* you have a buggy version of glib that is calling this func when it shouldn't*/
 
-  switch (msg.message) 
+  switch (msg.message)
     {
     case IA_NEW_MSG:
       {
@@ -176,7 +176,7 @@ gnet_MainCallBack(GIOChannel *iochannel, GIOCondition condition, void *nodata)
 	data = g_hash_table_lookup(gnet_hash, (gpointer)msg.wParam);
 	g_hash_table_remove(gnet_hash, (gpointer)msg.wParam);
 	ReleaseMutex(gnet_Mutex);
-		
+
 	IAstate = (GInetAddrAsyncState*) data;
 	IAstate->errorcode = WSAGETASYNCERROR(msg.lParam); /* NULL if OK */
 
@@ -194,7 +194,7 @@ gnet_MainCallBack(GIOChannel *iochannel, GIOCondition condition, void *nodata)
 
 	IARstate = (GInetAddrReverseAsyncState*) data;
 	IARstate->errorcode = WSAGETASYNCERROR(msg.lParam); /* NULL if OK */
-			
+
 	/* Now call the callback function */
 	gnet_inetaddr_get_name_async_cb(NULL, G_IO_IN, (gpointer)IARstate);
 	break;
@@ -210,44 +210,44 @@ GnetWndProc(HWND hwnd,        /* handle to window */
 	    UINT uMsg,        /* message identifier */
 	    WPARAM wParam,    /* first message parameter */
 	    LPARAM lParam)    /* second message parameter */
-{ 
+{
 
-    switch (uMsg) 
-    { 
-        case WM_CREATE: 
+    switch (uMsg)
+    {
+        case WM_CREATE:
             /* Initialize the window. */
-            return 0; 
- 
-        case WM_PAINT: 
-            /* Paint the window's client area. */ 
-            return 0; 
- 
-        case WM_SIZE: 
-            /* Set the size and position of the window. */ 
-            return 0; 
- 
-        case WM_DESTROY: 
+            return 0;
+
+        case WM_PAINT:
+            /* Paint the window's client area. */
+            return 0;
+
+        case WM_SIZE:
+            /* Set the size and position of the window. */
+            return 0;
+
+        case WM_DESTROY:
             /* Clean up window-specific data objects. */
-            return 0; 
- 
-        /* 
-          Process other messages. 
-        */ 
- 
-        default: 
-            return DefWindowProc(hwnd, uMsg, wParam, lParam); 
-    } 
-    return 0; 
-} 
+            return 0;
+
+        /*
+          Process other messages.
+        */
+
+        default:
+            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+    return 0;
+}
 
 
-BOOL WINAPI 
+BOOL WINAPI
 DllMain(HINSTANCE hinstDLL,  /* handle to DLL module */
 	DWORD fdwReason,     /* reason for calling functionm */
 	LPVOID lpvReserved   /* reserved */)
 {
 
-  switch(fdwReason) 
+  switch(fdwReason)
     {
     case DLL_PROCESS_ATTACH:
       /* The DLL is being mapped into process's address space */
@@ -256,68 +256,68 @@ DllMain(HINSTANCE hinstDLL,  /* handle to DLL module */
 	WORD wVersionRequested;
 	WSADATA wsaData;
 	int err;
- 
+
 	wVersionRequested = MAKEWORD( 2, 0 );
- 
+
 	err = WSAStartup( wVersionRequested, &wsaData );
-	if ( err != 0 ) 
+	if ( err != 0 )
 	  {
 				/* Tell the user that we could not find a usable */
 				/* WinSock DLL.                                  */
 	    return FALSE;
 	  }
- 
+
 	/* Confirm that the WinSock DLL supports 2.0.*/
 	/* Note that if the DLL supports versions greater    */
 	/* than 2.0 in addition to 2.0, it will still return */
 	/* 2.0 in wVersion since that is the version we      */
 	/* requested.                                        */
- 
+
 	if ( LOBYTE( wsaData.wVersion ) != 2 ||
 	     HIBYTE( wsaData.wVersion ) != 0 ) {
 	  /* Tell the user that we could not find a usable */
 	  /* WinSock DLL.                                  */
 	  WSACleanup();
-	  return FALSE; 
+	  return FALSE;
 	}
- 
+
 	/* The WinSock DLL is acceptable. Proceed. */
 
 	/* Setup and register a windows class that we use for our GIOchannel */
-	gnetWndClass.cbSize = sizeof(WNDCLASSEX); 
-	gnetWndClass.style = CS_SAVEBITS; /* doesn't matter, need something? */ 
-	gnetWndClass.lpfnWndProc = (WNDPROC) GnetWndProc; 
-	gnetWndClass.cbClsExtra = 0; 
-	gnetWndClass.cbWndExtra = 0; 
-	gnetWndClass.hInstance = hinstDLL; 
-	gnetWndClass.hIcon = NULL; 
-	gnetWndClass.hCursor = NULL; 
-	gnetWndClass.hbrBackground = NULL; 
-	gnetWndClass.lpszMenuName = NULL; 
-	gnetWndClass.lpszClassName = "Gnet"; 
-	gnetWndClass.hIconSm = NULL; 
+	gnetWndClass.cbSize = sizeof(WNDCLASSEX);
+	gnetWndClass.style = CS_SAVEBITS; /* doesn't matter, need something? */
+	gnetWndClass.lpfnWndProc = (WNDPROC) GnetWndProc;
+	gnetWndClass.cbClsExtra = 0;
+	gnetWndClass.cbWndExtra = 0;
+	gnetWndClass.hInstance = hinstDLL;
+	gnetWndClass.hIcon = NULL;
+	gnetWndClass.hCursor = NULL;
+	gnetWndClass.hbrBackground = NULL;
+	gnetWndClass.lpszMenuName = NULL;
+	gnetWndClass.lpszClassName = "Gnet";
+	gnetWndClass.hIconSm = NULL;
 
 	if (!RegisterClassEx(&gnetWndClass))
 	  {
-	    return FALSE;	
+	    return FALSE;
 	  }
 
 	gnet_hWnd  = CreateWindowEx
 	  (
 	   0,
-	   "Gnet", 
+	   "Gnet",
 	   "none",
-	   WS_OVERLAPPEDWINDOW, 
-	   CW_USEDEFAULT, 
-	   CW_USEDEFAULT, 
-	   CW_USEDEFAULT, 
-	   CW_USEDEFAULT, 
-	   (HWND) NULL, 
-	   (HMENU) NULL, 
-	   hinstDLL, 
-	   (LPVOID) NULL);  
+	   WS_OVERLAPPEDWINDOW,
+	   CW_USEDEFAULT,
+	   CW_USEDEFAULT,
+	   CW_USEDEFAULT,
+	   CW_USEDEFAULT,
+	   (HWND) NULL,
+	   (HMENU) NULL,
+	   hinstDLL,
+	   (LPVOID) NULL);
 
-	if (!gnet_hWnd) 
+	if (!gnet_hWnd)
 	  {
 	    return FALSE;
 	  }
@@ -327,27 +327,27 @@ DllMain(HINSTANCE hinstDLL,  /* handle to DLL module */
 	/* Add a watch */
 	gnet_io_watch_ID = g_io_add_watch(gnet_iochannel,
 					  (GIOCondition)(G_IO_IN|G_IO_ERR|G_IO_HUP|G_IO_NVAL),
-					  gnet_MainCallBack, 
+					  gnet_MainCallBack,
 					  NULL);
 
-	gnet_hash = g_hash_table_new(NULL, NULL);	
+	gnet_hash = g_hash_table_new(NULL, NULL);
 
-	gnet_Mutex = CreateMutex( 
+	gnet_Mutex = CreateMutex(
 				 NULL,                       /* no security attributes */
 				 FALSE,                      /* initially not owned */
 				 "gnet_Mutex");  /* name of mutex */
 
-	if (gnet_Mutex == NULL) 
+	if (gnet_Mutex == NULL)
 	  {
 	    return FALSE;
 	  }
 
-	gnet_hostent_Mutex = CreateMutex( 
+	gnet_hostent_Mutex = CreateMutex(
 					 NULL,                       /* no security attributes */
 					 FALSE,                      /* initially not owned */
 					 "gnet_hostent_Mutex");  /* name of mutex */
 
-	if (gnet_hostent_Mutex == NULL) 
+	if (gnet_hostent_Mutex == NULL)
 	  {
 	    return FALSE;
 	  }
@@ -361,7 +361,7 @@ DllMain(HINSTANCE hinstDLL,  /* handle to DLL module */
       }
     case DLL_THREAD_DETACH:
       /* Thread exits with  cleanup */
-      {	
+      {
 	/*Nothing needs to be done. */
 	break;
       }
@@ -381,5 +381,5 @@ DllMain(HINSTANCE hinstDLL,  /* handle to DLL module */
 
   return TRUE;
 }
- 
+
 #endif

@@ -10,6 +10,10 @@
 
 #include <glib-object.h>
 #include <gtk/gtkdrawingarea.h>
+
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+
 #include "cdrom.h"
 #include "gnome-cd.h"
 
@@ -49,12 +53,17 @@ struct _CDDisplayClass {
 
 GType cd_display_get_type (void);
 CDDisplay *cd_display_new (void);
+void cd_display_set_style (CDDisplay *disp);
 const char *cd_display_get_line (CDDisplay *disp,
 				 int line);
 void cd_display_set_line (CDDisplay *disp,
 			  CDDisplayLine line,
 			  const char *str);
 void cd_display_clear (CDDisplay *disp);
+void cd_display_parse_theme (CDDisplay *disp,
+			GCDTheme *cd_theme,
+			xmlDocPtr doc,
+			xmlNodePtr cur);
 
 GnomeCDText *cd_display_get_layout (CDDisplay *disp,
 				    int i);

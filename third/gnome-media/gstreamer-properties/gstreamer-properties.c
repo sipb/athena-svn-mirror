@@ -29,7 +29,7 @@
 #include <locale.h>
 #include <string.h>
 #include <gnome.h>
-#include <gconf/gconf-client.h>
+#include <gst/gconf/gconf.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gst/gst.h>
@@ -42,8 +42,6 @@ static GtkDialog *main_window;
 
 static gchar pipeline_editor_property[] = "gstp-editor";
 static gchar pipeline_desc_property[] = "gstp-pipe-desc";
-
-static GConfClient *client = NULL;
 
 static void
 dialog_response (GtkDialog * widget, gint response_id, GladeXML * dialog)
@@ -90,7 +88,7 @@ update_from_option (GSTPPipelineEditor* editor,
 		gtk_widget_set_sensitive (GTK_WIDGET (editor->entry), FALSE);
 
 		/* Update GConf */
-		gconf_client_set_string (client, editor->gconf_key, pipeline_desc->pipeline, NULL);
+		gst_gconf_set_string (editor->gconf_key, pipeline_desc->pipeline);
 	}
 	else
 	{
@@ -141,6 +139,8 @@ update_from_gconf(GSTPPipelineEditor* editor,
 		editor->cur_pipeline_index = custom_desc;
 		if (custom_desc >= 0) {
 			gtk_entry_set_text (editor->entry, pipeline_str);
+			if (pipeline_str == NULL || *pipeline_str == '\0')
+				gtk_widget_set_sensitive (GTK_WIDGET(editor->test_button), FALSE);
 		}
 	}
 	
@@ -174,9 +174,15 @@ entry_changed (GtkEditable *editable, gpointer user_data)
 {
 	GSTPPipelineEditor* editor = (GSTPPipelineEditor*)(user_data);
 	const gchar* new_text = gtk_entry_get_text(GTK_ENTRY(editable));
-	
+
+	if (new_text == NULL || *new_text == '\0') {
+		/* disable test button */
+		gtk_widget_set_sensitive (GTK_WIDGET(editor->test_button), FALSE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET(editor->test_button), TRUE);
+	}
 	/* Update GConf */
-	gconf_client_set_string (client, editor->gconf_key, new_text, NULL);
+	gst_gconf_set_string (editor->gconf_key, new_text);
 }
 
 static GtkOptionMenu *create_pipeline_menu (GladeXML * dialog, GSTPPipelineEditor* editor)
@@ -195,16 +201,21 @@ static GtkOptionMenu *create_pipeline_menu (GladeXML * dialog, GSTPPipelineEdito
 		for (i = 0; i < editor->n_pipeline_desc; i++)
 		{
 			GSTPPipelineDescription *cur_pipeline_desc = &(pipeline_desc[i]);
-			GstElementFactory *factory;
+			GstElement *pipeline;
+			GError     *error = NULL;
 
 			if (cur_pipeline_desc->pipeline != NULL) {
-				factory = gst_element_factory_find (cur_pipeline_desc->pipeline);
-				if (factory == NULL) {
+				pipeline = gst_parse_launch (cur_pipeline_desc->pipeline, &error);
+				if (pipeline != NULL) {
+					gst_object_unref (GST_OBJECT (pipeline));
+				}
+				if (error != NULL) {
+					g_error_free (error);
 					continue;
 				}
 			}
 			
-			mi = GTK_MENU_ITEM (gtk_menu_item_new_with_label(cur_pipeline_desc->name));
+			mi = GTK_MENU_ITEM (gtk_menu_item_new_with_label(_(cur_pipeline_desc->name)));
 			cur_pipeline_desc->index = i;
 			g_object_set_data (G_OBJECT (mi), pipeline_desc_property,
 					   (gpointer) (cur_pipeline_desc));
@@ -240,7 +251,7 @@ init_pipeline_editor(GladeXML * dialog, GSTPPipelineEditor* editor)
 	g_object_set_data (G_OBJECT (editor->test_button), pipeline_editor_property, (gpointer) (editor));
 	g_signal_connect (G_OBJECT (editor->test_button), "clicked",  (GCallback) test_button_clicked, (gpointer) (editor));
 	
-	gconf_init_pipe = gconf_client_get_string (client, editor->gconf_key, NULL);
+	gconf_init_pipe = gst_gconf_get_string (editor->gconf_key);
 	
 	if (gconf_init_pipe) {
 		update_from_gconf(editor, gconf_init_pipe);
@@ -248,7 +259,7 @@ init_pipeline_editor(GladeXML * dialog, GSTPPipelineEditor* editor)
 	}
 }
 
-void create_dialog ()
+void create_dialog (void)
 {
 	int i = 0;
 	GdkPixbuf* icon = NULL;
@@ -266,13 +277,13 @@ void create_dialog ()
 	
 	g_signal_connect (G_OBJECT (main_window),
 			  "response", (GCallback) dialog_response, interface_xml);
-	icon = gdk_pixbuf_new_from_file(GSTPROPS_ICONS_DIR "/gstreamer-properties.png", NULL);
+	icon = gdk_pixbuf_new_from_file(GSTPROPS_ICONDIR"/gstreamer-properties.png", NULL);
 	if (icon) {
 		gtk_window_set_icon(GTK_WINDOW(main_window), icon);
 	}
 	else {
 		/* FIXME:warning */
-		g_print("Error loading main window icon %s", GSTPROPS_ICONS_DIR "/gstreamer-properties.png");
+		g_print("Error loading main window icon %s", GSTPROPS_ICONDIR "/gstreamer-properties.png");
 	}
 	gtk_widget_show (GTK_WIDGET (main_window));
 }
@@ -288,20 +299,18 @@ main (int argc, char **argv)
 			    argc, argv, NULL);
 	gst_init_with_popt_table (&argc, &argv, NULL);
 
-	client = gconf_client_get_default ();
-	
 	/* FIXME: hardcode uninstalled path here */
 	if (g_file_test("gstreamer-properties.glade", G_FILE_TEST_EXISTS) == TRUE) {
 		interface_xml = glade_xml_new ("gstreamer-properties.glade", NULL, NULL);
 	}
-	else if (g_file_test(GSTPROPS_GLADE_DIR "/gstreamer-properties.glade", G_FILE_TEST_EXISTS) == TRUE) {
-		interface_xml = glade_xml_new (GSTPROPS_GLADE_DIR "/gstreamer-properties.glade", NULL, NULL);
+	else if (g_file_test(GSTPROPS_GLADEDIR "/gstreamer-properties.glade", G_FILE_TEST_EXISTS) == TRUE) {
+		interface_xml = glade_xml_new (GSTPROPS_GLADEDIR"/gstreamer-properties.glade", NULL, NULL);
 	}
 	
 	if (!interface_xml) {
 		/* Fatal error */
-		char *err = g_strdup_printf (_("Could not load UI resource %s"), "gstreamer-properties.glade");
-		g_print ("Error: could not load glade file\n");
+		char *err = g_strdup_printf (_("Could not load UI resource %s"),"gstreamer-properties.glade");
+		g_print ("Error: could not load glade file gstreamer-properties.glade\n");
 		gnome_app_error (GNOME_APP (gnome_program_get ()), err);
 		return 1;
 	}

@@ -56,34 +56,16 @@ static GtkWidget *window;
 static char *esd_host = NULL;
 static int curbuf = 0;
 static int lag = 2;
-static int locount = 0;
 static int plevel_l = 0;
 static int plevel_r = 0;
 
 /* function prototypes to make gcc happy: */
-static void update (void);
-static char *itoa (int i);
 static void open_sound (gint record);
 static void update_levels (gpointer data);
 static gint update_display (gpointer data);
 static void handle_read (gpointer data, 
 			 int source, 
 			 GdkInputCondition condition);
-
-static void 
-sig_alarm (int sig)
-{
-	led_bar_light_percent (dial[0], (0.0));
-	led_bar_light_percent (dial[1], (0.0));
-}
-
-static char *
-itoa (int i)
-{
-	static char ret[ 30 ];
-	sprintf (ret, "%d", i);
-	return ret;
-}
 
 static int
 save_state (GnomeClient *client, 
@@ -233,7 +215,7 @@ main (int argc,
 	GtkWidget *hbox;
 	GtkWidget *frame;
 	vumeter *meter;
-	int time_id;
+	/*int time_id;*/
 	int i;
 	gint          session_xpos = -1;
 	gint          session_ypos = -1;
@@ -267,7 +249,7 @@ main (int argc,
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
-	gnome_init_with_popt_table ("Volume Meter", VERSION, argc, argv, options, 
+	gnome_init_with_popt_table ("vumeter", VERSION, argc, argv, options, 
 				    0, NULL);
 #ifdef DEBUG
 	if (esd_host) {

@@ -14,38 +14,26 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/gnome-cd/on-start</key>
-      <applyto>/apps/gnome-cd/on-start</applyto>
-      <owner>Gnome-CD</owner>
-      <type>int</type>
-      <default>0</default>
-      <locale name="C">
-	<short>Action on start</short>
-	<long>What action should the CD player perform on start up? 0 = Nothing, 1 = Start playing, 2 = Stop playing</long>
-      </locale>
-    </schema>
-
-    <schema>
-      <key>/schemas/apps/gnome-cd/close-on-start</key>
-      <applyto>/apps/gnome-cd/close-on-start</applyto>
+      <key>/schemas/apps/gnome-cd/on-start-play</key>
+      <applyto>/apps/gnome-cd/on-start-play</applyto>
       <owner>Gnome-CD</owner>
       <type>bool</type>
       <default>FALSE</default>
       <locale name="C">
-	<short>Shut the CD tray on start</short>
-	<long>Should the CD player attempt to shut the CD drive on start up?</long>
+	<short>Play when the CD player starts?</short>
+ 	<long>When the CD player is started, should it start playing the CD?</long>
       </locale>
     </schema>
 
     <schema>
-      <key>/schemas/apps/gnome-cd/on-stop</key>
-      <applyto>/apps/gnome-cd/on-stop</applyto>
+      <key>/schemas/apps/gnome-cd/on-stop-eject</key>
+      <applyto>/apps/gnome-cd/on-stop-eject</applyto>
       <owner>Gnome-CD</owner>
-      <type>int</type>
-      <default>1</default>
+      <type>bool</type>
+      <default>FALSE</default>
       <locale name="C">
-	<short>Action on application exit</short>
-	<long>What action should the CD player perform on exit? 0 = Nothing, 1 = Stop playing, 2 = Eject the CD, 3 = Attempt to close the tray</long>
+        <short>Eject the CD when CD player quits?</short>
+        <long>Should the CD be ejected when the CD player quits?</long>
       </locale>
     </schema>
 
@@ -54,10 +42,10 @@
       <applyto>/apps/gnome-cd/theme-name</applyto>
       <owner>Gnome-CD</owner>
       <type>string</type>
-      <default>media</default>
+      <default>None</default>
       <locale name="C">
 	<short>CD player theme</short>
-	<long>What theme should the CD player use for it's appearance</long>
+	<long>What theme should the CD player use for its appearance</long>
       </locale>
     </schema>
 

@@ -46,9 +46,9 @@ struct _PangoAccessibleFactoryClass
 	AtkObjectFactoryClass parent_class;
 };
 
-GType pango_accessible_factory_get_type();
+GType pango_accessible_factory_get_type(void);
 
-AtkObjectFactory *pango_accessible_factory_new();
+AtkObjectFactory *pango_accessible_factory_new(void);
 
 #ifdef __cplusplus
 }

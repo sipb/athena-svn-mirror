@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<gconfschemafile>
+  <schemalist>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/server</key>
+      <applyto>/apps/CDDB-Slave2/server</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>string</type>
+      <default>freedb.freedb.org</default>
+      <locale name="C">
+	<short>Server name</short>
+	<long>Address of the server to contact for CD queries</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/port</key>
+      <applyto>/apps/CDDB-Slave2/port</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>int</type>
+      <default>888</default>
+      <locale name="C">
+	<short>Port</short>
+	<long>The port that the server is running the database on</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/server-type</key>
+      <applyto>/apps/CDDB-Slave2/server-type</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+	<short>Server type</short>
+	<long>
+	  The type of the server to contact for CD queries. Possible values
+	  are 0 (FreeDB round robin server), 1 (other freedb server) and 2
+	  (other server).
+	</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/info</key>
+      <applyto>/apps/CDDB-Slave2/info</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+	<short>Information to send to server</short>
+	<long>
+	  This key specifies which user information will be sent to the server
+	  to contact for CD queries. Possible values are 0 (no information),
+	  1 (real information) and 3 (other information).
+	</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/name</key>
+      <applyto>/apps/CDDB-Slave2/name</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+	<short>The username</short>
+	<long>The username that will be sent with all queries</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/hostname</key>
+      <applyto>/apps/CDDB-Slave2/hostname</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+	<short>Your hostname</short>
+	<long>The hostname that will be sent with all queries</long>
+      </locale>
+    </schema>
+  </schemalist>
+</gconfschemafile>
