@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.71 1998-04-08 22:14:13 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.72 1998-05-03 22:40:07 rbasch Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1117,9 +1117,9 @@ void runACT(w, event, p, n)
 
 #ifdef sgi
   psetenv("PRELOGIN", "true", 1);
-  if (nanny_setupUser(N_DAEMON, 0, environ, argv))
+  if (nanny_setupUser(N_DAEMON, environ, argv))
     {
-      fprintf(stderr, "Unable set up for daemon app\n");
+      fprintf(stderr, "Unable to set up for daemon app\n");
       return;
     }
 
