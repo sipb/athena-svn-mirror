@@ -10,7 +10,7 @@
  */
 
 #ifndef lint
-static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.2 1986-01-22 18:02:45 treese Exp $";
+static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.3 1986-01-22 21:15:04 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -178,10 +178,13 @@ display_entry(index)
       clear();
       make_display();
     }
-  else
+  else if (entry->type == CREF_DIR)
     {
       Previous_Index = Current_Index;
+      Current_Index = 0;
       set_current_dir(entry->filename);
       make_display();
     }
+  else
+    message(1, "Invalid CREF contents.");
 }
