@@ -290,23 +290,8 @@ static PRBool SetCoord(const nsCSSValue& aValue, nsStyleCoord& aCoord,
   } 
   else if (((aMask & SETCOORD_INHERIT) != 0) && 
            (aValue.GetUnit() == eCSSUnit_Inherit)) {
-    nsStyleUnit unit = aParentCoord.GetUnit();
-    if ((eStyleUnit_Null == unit) ||  // parent has explicit computed value
-        (eStyleUnit_Factor == unit) ||
-        (eStyleUnit_Coord == unit) ||
-        (eStyleUnit_Integer == unit) ||
-        (eStyleUnit_Enumerated == unit) ||
-        (eStyleUnit_Normal == unit) ||
-        (eStyleUnit_Chars == unit)) {
-      aCoord = aParentCoord;  // just inherit value from parent
-      aInherited = PR_TRUE;
-    }
-    else {
-      aCoord.SetInheritValue(); // needs to be computed by client
-                                // Since this works just like being
-                                // specified and not inherited, that's
-                                // how it's treated.
-    }
+    aCoord = aParentCoord;  // just inherit value from parent
+    aInherited = PR_TRUE;
   }
   else if (((aMask & SETCOORD_NORMAL) != 0) && 
            (aValue.GetUnit() == eCSSUnit_Normal)) {
@@ -362,6 +347,11 @@ static PRBool SetColor(const nsCSSValue& aValue, const nscolor aParentColor,
           break;
         case NS_COLOR_MOZ_VISITEDHYPERLINKTEXT:
           if (NS_SUCCEEDED(aPresContext->GetDefaultVisitedLinkColor(&aResult))) {
+            result = PR_TRUE;
+          }
+          break;
+        case NS_COLOR_MOZ_ACTIVEHYPERLINKTEXT:
+          if (NS_SUCCEEDED(aPresContext->GetDefaultActiveLinkColor(&aResult))) {
             result = PR_TRUE;
           }
           break;
@@ -441,19 +431,6 @@ nsRuleNode::~nsRuleNode()
     PL_DHashTableDestroy(children);
   } else if (HaveChildren())
     ChildrenList()->Destroy(mPresContext);
-}
-
-nsresult 
-nsRuleNode::GetBits(PRInt32 aType, PRUint32* aResult)
-{
-  switch (aType) {
-    case eNoneBits :      *aResult = mNoneBits;      break;
-    case eDependentBits : *aResult = mDependentBits; break;
-    default:
-      NS_ERROR("invalid arg");
-      return NS_ERROR_INVALID_ARG;
-  }
-  return NS_OK;
 }
 
 nsresult 
@@ -594,7 +571,6 @@ nsRuleNode::PropagateDependentBit(PRUint32 aBit, nsRuleNode* aHighestNode)
 struct PropertyCheckData {
   size_t offset;
   nsCSSType type;
-  PRPackedBool mayHaveExplicitInherit;
 };
 
 /* the information for all the properties in a style struct */
@@ -640,48 +616,6 @@ ExamineRectProperties(const nsCSSRect* aRect,
   }
 }
 
-static void
-ExamineRectCoordProperties(const nsCSSRect* aRect,
-                           PRUint32& aSpecifiedCount,
-                           PRUint32& aInheritedCount,
-                           PRBool& aCanHaveExplicitInherit)
-{
-  if (!aRect)
-    return;
-
-  if (eCSSUnit_Null != aRect->mLeft.GetUnit()) {
-    aSpecifiedCount++;
-    if (eCSSUnit_Inherit == aRect->mLeft.GetUnit()) {
-      aInheritedCount++;
-      aCanHaveExplicitInherit = PR_TRUE;
-    }
-  }
-
-  if (eCSSUnit_Null != aRect->mTop.GetUnit()) {
-    aSpecifiedCount++;
-    if (eCSSUnit_Inherit == aRect->mTop.GetUnit()) {
-      aInheritedCount++;
-      aCanHaveExplicitInherit = PR_TRUE;
-    }
-  }
-
-  if (eCSSUnit_Null != aRect->mRight.GetUnit()) {
-    aSpecifiedCount++;
-    if (eCSSUnit_Inherit == aRect->mRight.GetUnit()) {
-      aInheritedCount++;
-      aCanHaveExplicitInherit = PR_TRUE;
-    }
-  }
-
-  if (eCSSUnit_Null != aRect->mBottom.GetUnit()) {
-    aSpecifiedCount++;
-    if (eCSSUnit_Inherit == aRect->mBottom.GetUnit()) {
-      aInheritedCount++;
-      aCanHaveExplicitInherit = PR_TRUE;
-    }
-  }
-}
-
 PR_STATIC_CALLBACK(nsRuleNode::RuleDetail)
 CheckFontCallback(const nsRuleDataStruct& aData)
 {
@@ -720,140 +654,140 @@ CheckFontCallback(const nsRuleDataStruct& aData)
 
 static const PropertyCheckData FontCheckProperties[] = {
 #define CSS_PROP_FONT(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_FONT
 };
 
 static const PropertyCheckData DisplayCheckProperties[] = {
 #define CSS_PROP_DISPLAY(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_DISPLAY
 };
 
 static const PropertyCheckData VisibilityCheckProperties[] = {
 #define CSS_PROP_VISIBILITY(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_VISIBILITY
 };
 
 static const PropertyCheckData MarginCheckProperties[] = {
 #define CSS_PROP_MARGIN(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_MARGIN
 };
 
 static const PropertyCheckData BorderCheckProperties[] = {
 #define CSS_PROP_BORDER(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_BORDER
 };
 
 static const PropertyCheckData PaddingCheckProperties[] = {
 #define CSS_PROP_PADDING(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_PADDING
 };
 
 static const PropertyCheckData OutlineCheckProperties[] = {
 #define CSS_PROP_OUTLINE(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_OUTLINE
 };
 
 static const PropertyCheckData ListCheckProperties[] = {
 #define CSS_PROP_LIST(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_LIST
 };
 
 static const PropertyCheckData ColorCheckProperties[] = {
 #define CSS_PROP_COLOR(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_COLOR
 };
 
 static const PropertyCheckData BackgroundCheckProperties[] = {
 #define CSS_PROP_BACKGROUND(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_BACKGROUND
 };
 
 static const PropertyCheckData PositionCheckProperties[] = {
 #define CSS_PROP_POSITION(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_POSITION
 };
 
 static const PropertyCheckData TableCheckProperties[] = {
 #define CSS_PROP_TABLE(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_TABLE
 };
 
 static const PropertyCheckData TableBorderCheckProperties[] = {
 #define CSS_PROP_TABLEBORDER(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_TABLEBORDER
 };
 
 static const PropertyCheckData ContentCheckProperties[] = {
 #define CSS_PROP_CONTENT(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_CONTENT
 };
 
 static const PropertyCheckData QuotesCheckProperties[] = {
 #define CSS_PROP_QUOTES(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_QUOTES
 };
 
 static const PropertyCheckData TextCheckProperties[] = {
 #define CSS_PROP_TEXT(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_TEXT
 };
 
 static const PropertyCheckData TextResetCheckProperties[] = {
 #define CSS_PROP_TEXTRESET(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_TEXTRESET
 };
 
 static const PropertyCheckData UserInterfaceCheckProperties[] = {
 #define CSS_PROP_USERINTERFACE(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_USERINTERFACE
 };
 
 static const PropertyCheckData UIResetCheckProperties[] = {
 #define CSS_PROP_UIRESET(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_UIRESET
 };
 
 static const PropertyCheckData XULCheckProperties[] = {
 #define CSS_PROP_XUL(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_XUL
 };
@@ -861,7 +795,7 @@ static const PropertyCheckData XULCheckProperties[] = {
 #ifdef MOZ_SVG
 static const PropertyCheckData SVGCheckProperties[] = {
 #define CSS_PROP_SVG(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  { offsetof(nsRuleData##datastruct_, member_), type_, iscoord_ },
+  { offsetof(nsRuleData##datastruct_, member_), type_ },
 #include "nsCSSPropList.h"
 #undef CSS_PROP_SVG
 };
@@ -959,8 +893,6 @@ nsRuleNode::CheckSpecifiedProperties(const nsStyleStructID aSID,
             ++specified;
             if (eCSSUnit_Inherit == value.GetUnit()) {
               ++inherited;
-              if (prop->mayHaveExplicitInherit)
-                canHaveExplicitInherit = PR_TRUE;
             }
           }
         }
@@ -968,13 +900,8 @@ nsRuleNode::CheckSpecifiedProperties(const nsStyleStructID aSID,
 
       case eCSSType_Rect:
         total += 4;
-        if (prop->mayHaveExplicitInherit)
-          ExamineRectCoordProperties(RectAtOffset(aRuleDataStruct, prop->offset),
-                                     specified, inherited,
-                                     canHaveExplicitInherit);
-        else
-          ExamineRectProperties(RectAtOffset(aRuleDataStruct, prop->offset),
-                                specified, inherited);
+        ExamineRectProperties(RectAtOffset(aRuleDataStruct, prop->offset),
+                              specified, inherited);
         break;
 
       case eCSSType_ValueList:
@@ -986,8 +913,6 @@ nsRuleNode::CheckSpecifiedProperties(const nsStyleStructID aSID,
             ++specified;
             if (eCSSUnit_Inherit == valueList->mValue.GetUnit()) {
               ++inherited;
-              if (prop->mayHaveExplicitInherit)
-                canHaveExplicitInherit = PR_TRUE;
             }
           }
         }
@@ -996,8 +921,6 @@ nsRuleNode::CheckSpecifiedProperties(const nsStyleStructID aSID,
       case eCSSType_CounterData:
         {
           ++total;
-          NS_ASSERTION(!prop->mayHaveExplicitInherit,
-                       "counters can't be coordinates");
           const nsCSSCounterData* counterData =
               CounterDataAtOffset(aRuleDataStruct, prop->offset);
           if (counterData) {
@@ -1012,8 +935,6 @@ nsRuleNode::CheckSpecifiedProperties(const nsStyleStructID aSID,
       case eCSSType_Quotes:
         {
           ++total;
-          NS_ASSERTION(!prop->mayHaveExplicitInherit,
-                       "quotes can't be coordinates");
           const nsCSSQuotes* quotes =
               QuotesAtOffset(aRuleDataStruct, prop->offset);
           if (quotes) {
@@ -1592,12 +1513,12 @@ nsRuleNode::SetDefaultOnRoot(const nsStyleStructID aSID, nsStyleContext* aContex
   return nsnull;
 }
 
-static void
-SetFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
-        nscoord aMinFontSize, PRBool aUseDocumentFonts, PRBool aChromeOverride,
-        PRBool aIsGeneric, const nsRuleDataFont& aFontData,
-        const nsFont& aDefaultFont, const nsStyleFont* aParentFont,
-        nsStyleFont* aFont, PRBool& aInherited)
+/* static */ void
+nsRuleNode::SetFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
+                    nscoord aMinFontSize, PRBool aUseDocumentFonts,
+                    PRBool aIsGeneric, const nsRuleDataFont& aFontData,
+                    const nsFont& aDefaultFont, const nsStyleFont* aParentFont,
+                    nsStyleFont* aFont, PRBool& aInherited)
 {
   const nsFont* defaultVariableFont;
   const nsFont* defaultFixedFont;
@@ -1608,7 +1529,7 @@ SetFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
   if (eCSSUnit_String == aFontData.mFamily.GetUnit()) {
     // set the correct font if we are using DocumentFonts OR we are overriding for XUL
     // MJA: bug 31816
-    if (aChromeOverride || aUseDocumentFonts) {
+    if (aUseDocumentFonts) {
       if (!aIsGeneric) {
         // only bother appending fallback fonts if this isn't a fallback generic font itself
         aFont->mFont.name.Append((PRUnichar)',');
@@ -1826,13 +1747,7 @@ SetFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
     aFont->mSize = nsStyleFont::ZoomText(aPresContext, aFont->mSize);
 
   // enforce the user' specified minimum font-size on the value that we expose
-  if (aChromeOverride) {
-    // the chrome is unconstrained, it always uses our cascading size
-    aFont->mFont.size = aFont->mSize;
-  }
-  else {
-    aFont->mFont.size = PR_MAX(aFont->mSize, aMinFontSize);
-  }
+  aFont->mFont.size = PR_MAX(aFont->mSize, aMinFontSize);
 
   // font-size-adjust: number, none, inherit
   if (eCSSUnit_Number == aFontData.mSizeAdjust.GetUnit()) {
@@ -1854,22 +1769,22 @@ SetFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
 //  - backtrack to an ancestor with the same generic font name (possibly
 //    up to the root where default values come from the presentation context)
 //  - re-apply cascading rules from there without caching intermediate values
-static void
-SetGenericFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
-               const nsRuleDataFont& aFontData, PRUint8 aGenericFontID,
-               nscoord aMinFontSize, PRBool aUseDocumentFonts,
-               PRBool aChromeOverride, nsStyleFont* aFont)
+/* static */ void
+nsRuleNode::SetGenericFont(nsIPresContext* aPresContext,
+                           nsStyleContext* aContext,
+                           const nsRuleDataFont& aFontData,
+                           PRUint8 aGenericFontID, nscoord aMinFontSize,
+                           PRBool aUseDocumentFonts, nsStyleFont* aFont)
 {
   // walk up the contexts until a context with the desired generic font
   nsAutoVoidArray contextPath;
   nsStyleContext* higherContext = aContext->GetParent();
   while (higherContext) {
-    contextPath.AppendElement(higherContext);
-    const nsStyleFont* higherFont = higherContext->GetStyleFont();
-    if (higherFont && higherFont->mFlags & aGenericFontID) {
+    if (higherContext->GetStyleFont()->mFlags & aGenericFontID) {
       // done walking up the higher contexts
       break;
     }
+    contextPath.AppendElement(higherContext);
     higherContext = higherContext->GetParent();
   }
 
@@ -1883,24 +1798,20 @@ SetGenericFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
   nsStyleFont parentFont(*defaultFont);
   parentFont.mSize = parentFont.mFont.size
       = nsStyleFont::ZoomText(aPresContext, parentFont.mSize);
-  PRInt32 i = contextPath.Count() - 1;
   if (higherContext) {
-    nsStyleContext* context = (nsStyleContext*)contextPath[i];
-    const nsStyleFont* tmpFont = context->GetStyleFont();
+    const nsStyleFont* tmpFont = higherContext->GetStyleFont();
     parentFont.mFlags = tmpFont->mFlags;
     parentFont.mFont = tmpFont->mFont;
     parentFont.mSize = tmpFont->mSize;
-    --i;
   }
   aFont->mFlags = parentFont.mFlags;
   aFont->mFont = parentFont.mFont;
   aFont->mSize = parentFont.mSize;
 
   PRBool dummy;
-  PRUint32 noneBits;
   PRUint32 fontBit = nsCachedStyleData::GetBitForSID(eStyleStruct_Font);
   
-  for (; i >= 0; --i) {
+  for (PRInt32 i = contextPath.Count() - 1; i >= 0; --i) {
     nsStyleContext* context = (nsStyleContext*)contextPath[i];
     nsRuleDataFont fontData; // Declare a struct with null CSS values.
     nsRuleData ruleData(eStyleStruct_Font, aPresContext, context);
@@ -1909,8 +1820,8 @@ SetGenericFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
     // Trimmed down version of ::WalkRuleTree() to re-apply the style rules
     for (nsRuleNode* ruleNode = context->GetRuleNode(); ruleNode;
          ruleNode = ruleNode->GetParent()) {
-      ruleNode->GetBits(nsRuleNode::eNoneBits, &noneBits);
-      if (noneBits & fontBit) // no more font rules on this branch, get out
+      if (ruleNode->mNoneBits & fontBit)
+        // no more font rules on this branch, get out
         break;
 
       nsIStyleRule *rule = ruleNode->GetRule();
@@ -1921,9 +1832,9 @@ SetGenericFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
     // Compute the delta from the information that the rules specified
     fontData.mFamily.Reset(); // avoid unnecessary operations in SetFont()
 
-    SetFont(aPresContext, context, aMinFontSize,
-            aUseDocumentFonts, aChromeOverride, PR_TRUE,
-            fontData, *defaultFont, &parentFont, aFont, dummy);
+    nsRuleNode::SetFont(aPresContext, context, aMinFontSize,
+                        aUseDocumentFonts, PR_TRUE, fontData, *defaultFont,
+                        &parentFont, aFont, dummy);
 
     // XXX Not sure if we need to do this here
     // If we have a post-resolve callback, handle that now.
@@ -1938,9 +1849,9 @@ SetGenericFont(nsIPresContext* aPresContext, nsStyleContext* aContext,
   // Finish off by applying our own rules. In this case, aFontData
   // already has the current cascading information that we want. We
   // can just compute the delta from the parent.
-  SetFont(aPresContext, aContext, aMinFontSize,
-          aUseDocumentFonts, aChromeOverride, PR_TRUE,
-          aFontData, *defaultFont, &parentFont, aFont, dummy);
+  nsRuleNode::SetFont(aPresContext, aContext, aMinFontSize,
+                      aUseDocumentFonts, PR_TRUE, aFontData, *defaultFont,
+                      &parentFont, aFont, dummy);
 }
 
 const nsStyleStruct* 
@@ -1989,8 +1900,9 @@ nsRuleNode::ComputeFontData(nsStyleStruct* aStartStruct,
   // See if there is a minimum font-size constraint to honor
   nscoord minimumFontSize = 0; // unconstrained by default
   mPresContext->GetCachedIntPref(kPresContext_MinimumFontSize, minimumFontSize);
+  if (minimumFontSize < 0)
+    minimumFontSize = 0;
 
-  PRBool chromeOverride = PR_FALSE;
   PRBool useDocumentFonts = PR_TRUE;
 
   // Figure out if we are a generic font
@@ -2001,7 +1913,7 @@ nsRuleNode::ComputeFontData(nsStyleStruct* aStartStruct,
 
     // MJA: bug 31816
     // if we are not using document fonts, but this is a XUL document,
-    // then we set the chromeOverride flag to use the document fonts anyway
+    // then we use the document fonts anyway
     mPresContext->GetCachedBoolPref(kPresContext_UseDocumentFonts, useDocumentFonts);
     if (!useDocumentFonts) {
       // check if the prefs have been disabled for this shell
@@ -2020,15 +1932,14 @@ nsRuleNode::ComputeFontData(nsStyleStruct* aStartStruct,
   // We only need to know this to determine if we have to use the
   // document fonts (overriding the useDocumentFonts flag), or to
   // determine if we have to override the minimum font-size constraint.
-  if (!useDocumentFonts || minimumFontSize > 0) {
-    chromeOverride = IsChrome(mPresContext);
-    // XXXldb Just fix up |useDocumentFonts| here and drop the
-    // |chromeOverride| variable from here on!
+  if ((!useDocumentFonts || minimumFontSize > 0) && IsChrome(mPresContext)) {
+    useDocumentFonts = PR_TRUE;
+    minimumFontSize = 0;
   }
 
   // If we don't have to use document fonts, then we are only entitled
   // to use the user's default variable-width font and fixed-width font
-  if (!useDocumentFonts && !chromeOverride) {
+  if (!useDocumentFonts) {
     if (generic != kGenericFont_moz_fixed)
       generic = kGenericFont_NONE;
   }
@@ -2037,19 +1948,18 @@ nsRuleNode::ComputeFontData(nsStyleStruct* aStartStruct,
   if (generic == kGenericFont_NONE) {
     // continue the normal processing
     // our default font is the most recent generic font
-    generic = parentFont->mFlags & NS_STYLE_FONT_FACE_MASK;
     const nsFont* defaultFont;
-    mPresContext->GetDefaultFont(generic, &defaultFont);
-    SetFont(mPresContext, aContext, minimumFontSize,
-            useDocumentFonts, chromeOverride, PR_FALSE,
-            fontData, *defaultFont, parentFont, font, inherited);
+    mPresContext->GetDefaultFont(parentFont->mFlags & NS_STYLE_FONT_FACE_MASK,
+                                 &defaultFont);
+    nsRuleNode::SetFont(mPresContext, aContext, minimumFontSize,
+                        useDocumentFonts, PR_FALSE,
+                        fontData, *defaultFont, parentFont, font, inherited);
   }
   else {
     // re-calculate the font as a generic font
     inherited = PR_TRUE;
-    SetGenericFont(mPresContext, aContext, fontData,
-                   generic, minimumFontSize, useDocumentFonts,
-                   chromeOverride, font);
+    nsRuleNode::SetGenericFont(mPresContext, aContext, fontData, generic,
+                               minimumFontSize, useDocumentFonts, font);
   }
   // Set our generic font's bit to inform our descendants
   font->mFlags &= ~NS_STYLE_FONT_FACE_MASK;
@@ -2113,18 +2023,32 @@ nsRuleNode::ComputeTextData(nsStyleStruct* aStartStruct,
 
   // line-height: normal, number, length, percent, inherit
   if (eCSSUnit_Percent == textData.mLineHeight.GetUnit()) {
-    aInherited = PR_TRUE;
-    const nsStyleFont* font = aContext->GetStyleFont();
-    text->mLineHeight.SetCoordValue((nscoord)((float)(font->mSize) *
-                                     textData.mLineHeight.GetPercentValue()));
+    inherited = PR_TRUE;
+    // Use |mFont.size| to pick up minimum font size.
+    text->mLineHeight.SetCoordValue(
+        nscoord(float(aContext->GetStyleFont()->mFont.size) *
+                textData.mLineHeight.GetPercentValue()));
   } else {
     SetCoord(textData.mLineHeight, text->mLineHeight, parentText->mLineHeight,
              SETCOORD_LH | SETCOORD_FACTOR | SETCOORD_NORMAL,
              aContext, mPresContext, inherited);
     if (textData.mLineHeight.IsFixedLengthUnit() ||
-        textData.mLineHeight.GetUnit() == eCSSUnit_Pixel)
-      text->mLineHeight.SetCoordValue(nsStyleFont::ZoomText(mPresContext,
-                                           text->mLineHeight.GetCoordValue()));
+        textData.mLineHeight.GetUnit() == eCSSUnit_Pixel) {
+      nscoord lh = nsStyleFont::ZoomText(mPresContext,
+                                         text->mLineHeight.GetCoordValue());
+      nscoord minimumFontSize = 0;
+      mPresContext->GetCachedIntPref(kPresContext_MinimumFontSize,
+                                     minimumFontSize);
+      if (minimumFontSize > 0 && !IsChrome(mPresContext)) {
+        // If we applied a minimum font size, scale the line height by
+        // the same ratio.  (If we *might* have applied a minimum font
+        // size, we can't cache in the rule tree.)
+        inherited = PR_TRUE;
+        const nsStyleFont *font = aContext->GetStyleFont();
+        lh = float(lh) * float(font->mFont.size) / float(font->mSize);
+      }
+      text->mLineHeight.SetCoordValue(lh);
+    }
   }
 
 
@@ -2321,7 +2245,7 @@ nsRuleNode::ComputeUserInterfaceData(nsStyleStruct* aStartData,
       ui->mCursor = NS_STYLE_CURSOR_AUTO;
     }
     else if (eCSSUnit_URL == list->mValue.GetUnit()) {
-      list->mValue.GetStringValue(ui->mCursorImage);
+      ui->mCursorImage = list->mValue.GetURLValue();
     }
     else if (eCSSUnit_Inherit == list->mValue.GetUnit()) {
       inherited = PR_TRUE;
@@ -2492,7 +2416,7 @@ nsRuleNode::ComputeDisplayData(nsStyleStruct* aStartStruct,
     display = new (mPresContext) nsStyleDisplay();
   const nsStyleDisplay* parentDisplay = display;
 
-  nsCOMPtr<nsIAtom> pseudoTag = aContext->GetPseudoType();
+  nsIAtom* pseudoTag = aContext->GetPseudoType();
   PRBool generatedContent = (pseudoTag == nsCSSPseudoElements::before || 
                              pseudoTag == nsCSSPseudoElements::after);
 
@@ -2503,6 +2427,19 @@ nsRuleNode::ComputeDisplayData(nsStyleStruct* aStartStruct,
        generatedContent))
     parentDisplay = parentContext->GetStyleDisplay();
   PRBool inherited = aInherited;
+
+  // opacity: factor, inherit
+  if (eCSSUnit_Number == displayData.mOpacity.GetUnit()) {
+    display->mOpacity = displayData.mOpacity.GetFloatValue();
+    if (display->mOpacity > 1.0f)
+      display->mOpacity = 1.0f;
+    if (display->mOpacity < 0.0f)
+      display->mOpacity = 0.0f;
+  }
+  else if (eCSSUnit_Inherit == displayData.mOpacity.GetUnit()) {
+    inherited = PR_TRUE;
+    display->mOpacity = parentDisplay->mOpacity;
+  }
 
   // display: enum, none, inherit
   if (eCSSUnit_Enumerated == displayData.mDisplay.GetUnit()) {
@@ -2530,10 +2467,10 @@ nsRuleNode::ComputeDisplayData(nsStyleStruct* aStartStruct,
 
   // binding: url, none, inherit
   if (eCSSUnit_URL == displayData.mBinding.GetUnit()) {
-    displayData.mBinding.GetStringValue(display->mBinding);
+    display->mBinding = displayData.mBinding.GetURLValue();
   }
   else if (eCSSUnit_None == displayData.mBinding.GetUnit()) {
-    display->mBinding.Truncate();
+    display->mBinding = nsnull;
   }
   else if (eCSSUnit_Inherit == displayData.mBinding.GetUnit()) {
     inherited = PR_TRUE;
@@ -2764,15 +2701,6 @@ nsRuleNode::ComputeVisibilityData(nsStyleStruct* aStartStruct,
   if (!parentVisibility)
     parentVisibility = visibility;
 
-  // opacity: factor, inherit
-  if (eCSSUnit_Number == displayData.mOpacity.GetUnit()) {
-    visibility->mOpacity = displayData.mOpacity.GetFloatValue();
-  }
-  else if (eCSSUnit_Inherit == displayData.mOpacity.GetUnit()) {
-    inherited = PR_TRUE;
-    visibility->mOpacity = parentVisibility->mOpacity;
-  }
-
   // direction: enum, inherit
   if (eCSSUnit_Enumerated == displayData.mDirection.GetUnit()) {
     visibility->mDirection = displayData.mDirection.GetIntValue();
@@ -2926,11 +2854,11 @@ nsRuleNode::ComputeBackgroundData(nsStyleStruct* aStartStruct,
 
   // background-image: url, none, inherit
   if (eCSSUnit_URL == colorData.mBackImage.GetUnit()) {
-    colorData.mBackImage.GetStringValue(bg->mBackgroundImage);
+    bg->mBackgroundImage = colorData.mBackImage.GetURLValue();
     bg->mBackgroundFlags &= ~NS_STYLE_BG_IMAGE_NONE;
   }
   else if (eCSSUnit_None == colorData.mBackImage.GetUnit()) {
-    bg->mBackgroundImage.Truncate();
+    bg->mBackgroundImage = nsnull;
     bg->mBackgroundFlags |= NS_STYLE_BG_IMAGE_NONE;
   }
   else if (eCSSUnit_Inherit == colorData.mBackImage.GetUnit()) {
@@ -3448,10 +3376,10 @@ nsRuleNode::ComputeListData(nsStyleStruct* aStartStruct,
 
   // list-style-image: url, none, inherit
   if (eCSSUnit_URL == listData.mImage.GetUnit()) {
-    listData.mImage.GetStringValue(list->mListStyleImage);
+    list->mListStyleImage = listData.mImage.GetURLValue();
   }
   else if (eCSSUnit_None == listData.mImage.GetUnit()) {
-    list->mListStyleImage.Truncate();
+    list->mListStyleImage = nsnull;
   }
   else if (eCSSUnit_Inherit == listData.mImage.GetUnit()) {
     inherited = PR_TRUE;
@@ -3813,10 +3741,8 @@ nsRuleNode::ComputeContentData(nsStyleStruct* aStartStruct,
       inherited = PR_TRUE;
       count = parentContent->ContentCount();
       if (NS_SUCCEEDED(content->AllocateContents(count))) {
-        nsStyleContentType type;
         while (0 < count--) {
-          parentContent->GetContentAt(count, type, buffer);
-          content->SetContentAt(count, type, buffer);
+          content->ContentAt(count) = parentContent->ContentAt(count);
         }
       }
     }
@@ -3834,6 +3760,7 @@ nsRuleNode::ComputeContentData(nsStyleStruct* aStartStruct,
           const nsCSSValue& value = contentValue->mValue;
           nsCSSUnit unit = value.GetUnit();
           nsStyleContentType type;
+          nsStyleContentData &data = content->ContentAt(count++);
           switch (unit) {
             case eCSSUnit_String:   type = eStyleContentType_String;    break;
             case eCSSUnit_URL:      type = eStyleContentType_URL;       break;
@@ -3857,13 +3784,18 @@ nsRuleNode::ComputeContentData(nsStyleStruct* aStartStruct,
             default:
               NS_ERROR("bad content type");
           }
-          if (type < eStyleContentType_OpenQuote) {
+          data.mType = type;
+          if (type == eStyleContentType_URL) {
+            data.mContent.mURL = value.GetURLValue();
+            NS_IF_ADDREF(data.mContent.mURL);
+          }
+          else if (type < eStyleContentType_OpenQuote) {
             value.GetStringValue(buffer);
             Unquote(buffer);
-            content->SetContentAt(count++, type, buffer);
+            data.mContent.mString = nsCRT::strdup(buffer.get());
           }
           else {
-            content->SetContentAt(count++, type, nullStr);
+            data.mContent.mString = nsnull;
           }
           contentValue = contentValue->mNext;
         }

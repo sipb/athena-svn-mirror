@@ -3,7 +3,7 @@
   FILE: icaltime.c
   CREATOR: eric 02 June 2000
   
-  $Id: icaltime.c,v 1.1.1.1.2.2 2004-01-02 19:56:26 ghudson Exp $
+  $Id: icaltime.c,v 1.1.1.1.2.3 2004-03-06 19:28:47 ghudson Exp $
   $Locker:  $
     
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -55,7 +55,7 @@
 #include "icaltimezone.h"
 
 #ifdef WIN32
-#include <Windows.h>
+#include <windows.h>
 
 #define snprintf      _snprintf
 #define strcasecmp    stricmp

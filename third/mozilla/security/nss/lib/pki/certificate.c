@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: certificate.c,v $ $Revision: 1.1.1.1.2.2 $ $Date: 2004-01-02 19:59:18 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: certificate.c,v $ $Revision: 1.1.1.1.2.3 $ $Date: 2004-03-06 19:30:00 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSPKI_H
@@ -131,8 +131,7 @@ nssCertificate_Destroy (
 	} else {
 	    nssTrustDomain_LockCertCache(td);
 	}
-	PR_AtomicDecrement(&c->object.refCount);
-	if (c->object.refCount == 0) {
+	if (PR_AtomicDecrement(&c->object.refCount) == 0) {
 	    /* --- remove cert and UNLOCK storage --- */
 	    if (cc) {
 		nssCertificateStore_RemoveCertLOCKED(cc->certStore, c);
@@ -302,8 +301,23 @@ nssCertificate_GetDecoding (
   NSSCertificate *c
 )
 {
+    /* There is a race in assigning c->decoding.  
+    ** This is a workaround.  Bugzilla bug 225525.
+    */
     if (!c->decoding) {
-	c->decoding = nssDecodedCert_Create(NULL, &c->encoding, c->type);
+	nssDecodedCert * deco =
+	    nssDecodedCert_Create(NULL, &c->encoding, c->type);
+	/* Once this race is fixed, an assertion should be put 
+	** here to detect any regressions. 
+    	PORT_Assert(!c->decoding); 
+	*/
+	if (!c->decoding) {
+	    /* we won the race. Use our copy. */
+	    c->decoding = deco;
+        } else {
+	    /* we lost the race.  discard deco. */
+	    nssDecodedCert_Destroy(deco);
+	}
     }
     return c->decoding;
 }
@@ -369,7 +383,6 @@ filter_certs_for_valid_issuers (
     NSSCertificate **cp;
     nssDecodedCert *dcp;
     int nextOpenSlot = 0;
-    int i;
 
     for (cp = certs; *cp; cp++) {
 	dcp = nssCertificate_GetDecoding(*cp);

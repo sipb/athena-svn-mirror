@@ -57,9 +57,11 @@ REQUIRES	= xpcom \
 		  uriloader \
 		  webbrwsr \
 		  plugin \
+		  prefetch \
 		  $(NULL)
 
 CPPSRCS		= \
+		nsContentSink.cpp \
 		nsPrintEngine.cpp \
 		nsPrintData.cpp \
 		nsPrintObject.cpp \
@@ -76,6 +78,7 @@ CPPSRCS		= \
 		nsDOMAttribute.cpp \
 		nsDOMAttributeMap.cpp \
 		nsDOMDocumentType.cpp \
+		nsDOMLists.cpp \
 		nsGeneratedIterator.cpp \
 		nsGenericDOMDataNode.cpp \
 		nsGenericDOMNodeList.cpp \

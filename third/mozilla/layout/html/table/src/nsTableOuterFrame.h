@@ -53,7 +53,7 @@ class nsTableCaptionFrame : public nsBlockFrame
 {
 public:
   // nsISupports
-  NS_IMETHOD  GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
   friend nsresult NS_NewTableCaptionFrame(nsIPresShell* aPresShell, nsIFrame** aNewFrame);
 
 protected:
@@ -157,7 +157,7 @@ public:
    *
    * @see nsLayoutAtoms::tableOuterFrame
    */
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
@@ -377,7 +377,8 @@ protected:
                               nsMargin&                 aMarginNoAuto,
                               nsMargin&                 aPadding,
                               nsReflowReason            aReflowReason,
-                              nsReflowStatus&           aStatus);
+                              nsReflowStatus&           aStatus,
+                              PRBool*                   aNeedToReflowCaption = nsnull);
 
   // Set the reflow metrics,  aInnerMarginNoAuto is  aInnerMargin, but with 
   // auto margins set to 0
@@ -394,9 +395,10 @@ protected:
 
   void InvalidateDamage(nsIPresContext* aPresContext,
                         PRUint8         aCaptionSide,
-                        nsSize&         aOuterSize,
+                        const nsSize&   aOuterSize,
                         PRBool          aInnerChanged,
-                        PRBool          aCaptionChanged);
+                        PRBool          aCaptionChanged,
+                        nsRect*         aOldOverflowArea);
   
   // Get the margin and padding, aMarginNoAuto is aMargin, but with auto 
   // margins set to 0

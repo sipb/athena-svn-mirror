@@ -33,7 +33,7 @@
 /*
  * certt.h - public data structures for the certificate library
  *
- * $Id: pcertt.h,v 1.1.1.1.2.2 2004-01-02 20:00:04 ghudson Exp $
+ * $Id: pcertt.h,v 1.1.1.1.2.3 2004-03-06 19:30:30 ghudson Exp $
  */
 #ifndef _PCERTT_H_
 #define _PCERTT_H_

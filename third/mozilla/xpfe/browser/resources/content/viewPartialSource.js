@@ -44,7 +44,7 @@ var gTargetNode = null;
 
 var gEntityConverter = null;
 var gWrapLongLines = false;
-const gViewSourceCSS = 'resource:///res/viewsource.css';
+const gViewSourceCSS = 'resource://gre/res/viewsource.css';
 const NS_XHTML = 'http://www.w3.org/1999/xhtml';
 
 // These are markers used to delimit the selection during processing. They
@@ -196,7 +196,7 @@ function viewPartialSourceForSelection(selection)
   // all our content is held by the data:URI and URIs are internally stored as utf-8 (see nsIURI.idl)
   var loadFlags = Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE;
   getBrowser().webNavigation
-              .loadURI("view-source:data:text/html;charset=utf-8," + escape(tmpNode.innerHTML),
+              .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(tmpNode.innerHTML),
                        loadFlags, null, null, null);
 }
 

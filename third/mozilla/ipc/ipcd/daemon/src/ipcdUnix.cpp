@@ -59,8 +59,8 @@
 #include "ipcdPrivate.h"
 #include "ipcd.h"
 
-#ifdef XP_UNIX
-void
+#if 0
+static void
 IPC_Sleep(int seconds)
 {
     while (seconds > 0) {
@@ -70,10 +70,23 @@ IPC_Sleep(int seconds)
     }
     LOG(("\ndone sleeping\n"));
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // ipc directory and locking...
 //-----------------------------------------------------------------------------
+
+//
+// advisory file locking is used to ensure that only one IPC daemon is active
+// and bound to the local domain socket at a time.
+//
+// XXX this code does not work on OS/2.
+//
+#if !defined(XP_OS2)
+#define IPC_USE_FILE_LOCK
+#endif
+
+#ifdef IPC_USE_FILE_LOCK
 
 static int ipcLockFD = 0;
 
@@ -175,7 +188,8 @@ static void ShutdownDaemonDir()
         ipcLockFD = 0;
     }
 }
-#endif
+
+#endif // IPC_USE_FILE_LOCK
 
 //-----------------------------------------------------------------------------
 // poll list
@@ -187,7 +201,6 @@ static void ShutdownDaemonDir()
 ipcClient *ipcClients = NULL;
 int        ipcClientCount = 0;
 
-#ifdef XP_UNIX
 //
 // the first element of this array is always zero; this is done so that the
 // k'th element of ipcClientArray corresponds to the k'th element of
@@ -279,6 +292,7 @@ static void PollLoop(PRFileDesc *listenFD)
         //
         // XXX add #define for timeout value
         //
+        LOG(("calling PR_Poll [pollCount=%d]\n", pollCount));
         rv = PR_Poll(ipcPollList, pollCount, PR_SecondsToInterval(60 * 5));
         if (rv == -1) {
             LOG(("PR_Poll failed [%d]\n", PR_GetError()));
@@ -343,14 +357,12 @@ static void PollLoop(PRFileDesc *listenFD)
         }
     }
 }
-#endif
 
 //-----------------------------------------------------------------------------
 
 PRStatus
 IPC_PlatformSendMsg(ipcClient  *client, ipcMessage *msg)
 {
-#ifdef XP_UNIX
     LOG(("IPC_PlatformSendMsg\n"));
 
     //
@@ -366,18 +378,12 @@ IPC_PlatformSendMsg(ipcClient  *client, ipcMessage *msg)
     ipcPollList[clientIndex].in_flags |= PR_POLL_WRITE;
 
     return PR_SUCCESS;
-#else
-    const char notimplemented[] = "IPC_PlatformSendMsg not implemented";
-    PR_SetErrorText(sizeof(notimplemented), notimplemented);
-    return PR_FAILURE;
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
 int main(int argc, char **argv)
 {
-#ifdef XP_UNIX
     PRFileDesc *listenFD = NULL;
     PRNetAddr addr;
 
@@ -396,8 +402,7 @@ int main(int argc, char **argv)
     LOG(("daemon started...\n"));
 
     //XXX uncomment these lines to test slow starting daemon
-    //LOG(("sleeping for 2 seconds...\n"));
-    //PR_Sleep(PR_SecondsToInterval(2));
+    //IPC_Sleep(2);
 
     // set socket address
     addr.local.family = PR_AF_LOCAL;
@@ -406,10 +411,12 @@ int main(int argc, char **argv)
     else
         PL_strncpyz(addr.local.path, argv[1], sizeof(addr.local.path));
 
+#ifdef IPC_USE_FILE_LOCK
     if (!InitDaemonDir(addr.local.path)) {
         LOG(("InitDaemonDir failed\n"));
         goto end;
     }
+#endif
 
     listenFD = PR_OpenTCPSocket(PR_AF_LOCAL);
     if (!listenFD) {
@@ -429,25 +436,28 @@ int main(int argc, char **argv)
         goto end;
     }
 
+    IPC_NotifyParent();
+
     PollLoop(listenFD);
 
 end:
     IPC_ShutdownModuleReg();
 
+    IPC_NotifyParent();
+
     //IPC_Sleep(5);
 
+#ifdef IPC_USE_FILE_LOCK
     // it is critical that we release the lock before closing the socket,
     // otherwise, a client might launch another daemon that would be unable
     // to acquire the lock and would then leave the client without a daemon.
  
     ShutdownDaemonDir();
+#endif
 
     if (listenFD) {
         LOG(("closing socket\n"));
         PR_Close(listenFD);
     }
     return 0;
-#else
-    return -1;
-#endif
 }

@@ -39,6 +39,7 @@
 #define nsIContent_h___
 
 #include <stdio.h>
+#include "nsCOMPtr.h"
 #include "nsISupports.h"
 #include "nsEvent.h"
 #include "nsAString.h"
@@ -70,11 +71,14 @@ class nsIContent : public nsISupports {
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_ICONTENT_IID)
 
+  nsIContent()
+    : mDocument(nsnull), mParentPtrBits(0) { }
+
   /**
    * Get the document for this content.
    * @return the document
    */
-  NS_IMETHOD_(nsIDocument*) GetDocument() const = 0;
+  nsIDocument* GetDocument() const { return mDocument; }
 
   /**
    * Set the document for this content.
@@ -84,20 +88,32 @@ public:
    * @param aCompileEventHandlers whether to initialize the event handlers in
    *        the document (used by nsXULElement)
    */
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCompileEventHandlers) = 0;
+  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
+                         PRBool aCompileEventHandlers)
+  {
+    mDocument = aDocument;
+    return NS_OK;
+  }
 
   /**
    * Get the parent content for this content.
    * @return the parent, or null if no parent
    */
-  NS_IMETHOD_(nsIContent*) GetParent() const = 0;
+  nsIContent* GetParent() const
+  {
+    return NS_REINTERPRET_CAST(nsIContent *, mParentPtrBits & ~kParentBitMask);
+  }
 
   /**
    * Set the parent content for this content.  (This does not add the child to
-   * its parent's child list.)
+   * its parent's child list.)  This clobbers the low 2 bits of the parent
+   * pointer, so subclasses which use those bits should override this.
    * @param aParent the new parent content to set (could be null)
    */
-  NS_IMETHOD SetParent(nsIContent* aParent) = 0;
+  NS_IMETHOD_(void) SetParent(nsIContent* aParent)
+  {
+    mParentPtrBits = NS_REINTERPRET_CAST(PtrBits, aParent);
+  }
 
   /**
    * Get whether this content is C++-generated anonymous content
@@ -120,42 +136,42 @@ public:
   NS_IMETHOD GetNameSpaceID(PRInt32* aResult) const = 0;
 
   /**
-   * Get the tag for this element
-   * @param aResult the tag [OUT]
+   * Get the tag for this element. This will always return a non-null
+   * atom pointer (as implied by the naming of the method).
    */
-  NS_IMETHOD GetTag(nsIAtom** aResult) const = 0;
+  virtual nsIAtom *Tag() const = 0;
 
   /**
    * Get the NodeInfo for this element
    * @param aResult the tag [OUT]
    */
-  NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const = 0;
+  NS_IMETHOD_(nsINodeInfo *) GetNodeInfo() const = 0;
 
   /**
    * Tell whether this element can contain children
    * @param aResult whether this element can contain children [OUT]
    */
-  NS_IMETHOD CanContainChildren(PRBool& aResult) const = 0;
+  NS_IMETHOD_(PRBool) CanContainChildren() const = 0;
 
   /**
    * Get the number of children
    * @param aResult the number of children [OUT]
    */
-  NS_IMETHOD ChildCount(PRInt32& aResult) const = 0;
+  NS_IMETHOD_(PRUint32) GetChildCount() const = 0;
 
   /**
    * Get a child by index
    * @param aIndex the index of the child to get, or null if index out of bounds
    * @param aResult the child [OUT]
    */
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const = 0;
+  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const = 0;
 
   /**
    * Get the index of a child within this content
    * @param aPossibleChild the child to get the index
    * @param aIndex the index of the child, or -1 if not a child [OUT]
    */
-  NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aIndex) const = 0;
+  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const = 0;
 
   /**
    * Insert a content node at a particular index.
@@ -167,7 +183,7 @@ public:
    *        occurred
    * @param aDeepSetDocument whether to set document on all children of aKid
    */
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
+  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                            PRBool aNotify, PRBool aDeepSetDocument) = 0;
 
   /**
@@ -179,7 +195,7 @@ public:
    *        occurred
    * @param aDeepSetDocument whether to set document on all children of aKid
    */
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex,
+  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex,
                             PRBool aNotify, PRBool aDeepSetDocument) = 0;
 
   /**
@@ -200,20 +216,33 @@ public:
    * @param aNotify whether to notify the document that the replace has
    *        occurred
    */
-  NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify) = 0;
+  NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify) = 0;
 
   /**
-   * Normalizes an attribute string into an atom that represents the
-   * qualified attribute name of the attribute. This method is intended
-   * for character case conversion if the content object is case
-   * insensitive (e.g. HTML).
+   * Returns an atom holding the name of the attribute of type ID on
+   * this content node (if applicable).  Returns null for non-element
+   * content nodes.
+   */
+  NS_IMETHOD_(nsIAtom*) GetIDAttributeName() const = 0;
+
+  /**
+   * Returns an atom holding the name of the "class" attribute on this
+   * content node (if applicable).  Returns null for non-element
+   * content nodes.
+   */
+  NS_IMETHOD_(nsIAtom*) GetClassAttributeName() const = 0;
+
+  /**
+   * Normalizes an attribute name and returns it as a nodeinfo if an attribute
+   * with that name exists. This method is intended for character case
+   * conversion if the content object is case insensitive (e.g. HTML). Returns
+   * the nodeinfo of the attribute with the specified name if one exists or
+   * null otherwise.
    *
    * @param aStr the unparsed attribute string
-   * @param aName out parameter representing the complete name of the
-   *        attribute
+   * @return the node info. May be nsnull.
    */
-  NS_IMETHOD NormalizeAttrString(const nsAString& aStr, 
-                                 nsINodeInfo** aNodeInfo) = 0;
+  NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr) = 0;
 
   /**
    * Set attribute values. All attribute values are assumed to have a
@@ -229,8 +258,7 @@ public:
    *        notified of the attribute change.
    */
   NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue,
-                     PRBool aNotify) = 0;
+                     const nsAString& aValue, PRBool aNotify) = 0;
 
   /**
    * Set attribute values. All attribute values are assumed to have a
@@ -245,8 +273,7 @@ public:
    * @param aNotify specifies whether or not the document should be
    *        notified of the attribute change.
    */
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
+  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo, const nsAString& aValue,
                      PRBool aNotify) = 0;
 
   /**
@@ -279,7 +306,6 @@ public:
    * @throws NS_CONTENT_ATTR_HAS_VALUE if the attribute exists and has a
    *         non-empty value (==NS_OK)
    */
-
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                      nsIAtom** aPrefix, nsAString& aResult) const = 0;
 
@@ -290,7 +316,6 @@ public:
    * @param aAttr the attribute name
    * @return whether an attribute exists
    */
-
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const = 0;
 
   /**
@@ -314,7 +339,7 @@ public:
    * @param aPrefix the attribute prefix [OUT]
    *
    */
-  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex,
+  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex,
                            PRInt32* aNameSpaceID,
                            nsIAtom** aName,
                            nsIAtom** aPrefix) const = 0;
@@ -322,9 +347,9 @@ public:
   /**
    * Get the number of all specified attributes.
    *
-   * @param aCountResult the number of attributes [OUT]
+   * @returns the number of attributes
    */
-  NS_IMETHOD GetAttrCount(PRInt32& aCountResult) const = 0;
+  NS_IMETHOD_(PRUint32) GetAttrCount() const = 0;
 
   /**
    * Inform content of range ownership changes.  This allows content
@@ -345,11 +370,14 @@ public:
    */
   NS_IMETHOD RangeRemove(nsIDOMRange* aRange) = 0;
   /**
-   * Get the list of ranges that have either endpoint in this content item
-   * @param aResult the list of ranges owned partially by this content [OUT]
+   * Get the list of ranges that have either endpoint in this content
+   * item.
+   * @returns the list of ranges owned partially by this content. The
+   * nsVoidArray is owned by the content object and its lifetime is
+   * controlled completely by the content object.
    */
-  NS_IMETHOD GetRangeList(nsVoidArray** aResult) const = 0;
-  
+  virtual const nsVoidArray *GetRangeList() const = 0;
+
   /**
    * Handle a DOM event for this piece of content.  This method is responsible
    * for handling and controlling all three stages of events, capture, local
@@ -397,12 +425,10 @@ public:
    * An opaque pointer to this dictionary is passed to the session
    * history as a handle associated with the current document's state
    *
-   * @param aID the unique ID for this content [OUT]
-   *
    * These methods are DEPRECATED, DON'T USE THEM!!!
    *
    */
-  NS_IMETHOD GetContentID(PRUint32* aID) = 0;
+  virtual PRUint32 ContentID() const = 0;
   /**
    * Set the unique content ID for this content.
    * @param aID the ID to set
@@ -512,8 +538,9 @@ public:
    * sink of your choice to do so.  This is an efficiency measure.
    *
    * If you also need to determine whether the parser is the one creating your
-   * element (through createElement() or cloneNode() generally)   * aFromParser to the NS_NewXXX() constructor for your element and have the
-   * parser pass true.  See nsHTMLInputElement.cpp and
+   * element (through createElement() or cloneNode() generally) then add a
+   * boolean aFromParser to the NS_NewXXX() constructor for your element and
+   * have the parser pass true.  See nsHTMLInputElement.cpp and
    * nsHTMLContentSink::MakeContentObject().
    *
    * DO NOT USE THIS METHOD to get around the fact that it's hard to deal with
@@ -540,6 +567,15 @@ public:
    */
   NS_IMETHOD DumpContent(FILE* out = stdout, PRInt32 aIndent = 0,PRBool aDumpAll=PR_TRUE) const = 0;
 #endif
+
+protected:
+  typedef long PtrBits;
+
+  // Subclasses may use the low two bits of mParentPtrBits to store other data
+  enum { kParentBitMask = 0x3 };
+
+  nsIDocument *mDocument;
+  PtrBits      mParentPtrBits;
 };
 
 #endif /* nsIContent_h___ */

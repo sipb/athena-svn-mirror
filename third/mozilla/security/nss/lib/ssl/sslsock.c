@@ -39,7 +39,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslsock.c,v 1.1.1.1.2.2 2004-01-02 20:00:08 ghudson Exp $
+ * $Id: sslsock.c,v 1.1.1.1.2.3 2004-03-06 19:30:35 ghudson Exp $
  */
 #include "seccomon.h"
 #include "cert.h"

@@ -34,7 +34,7 @@
 /*
  * CMS encryptedData methods.
  *
- * $Id: cmsencdata.c,v 1.1.1.1.2.2 2004-01-02 20:00:00 ghudson Exp $
+ * $Id: cmsencdata.c,v 1.1.1.1.2.3 2004-03-06 19:30:27 ghudson Exp $
  */
 
 #include "cmslocal.h"

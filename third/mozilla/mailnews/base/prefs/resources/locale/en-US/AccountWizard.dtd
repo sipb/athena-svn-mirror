@@ -1,8 +1,7 @@
 <!-- Entities for AccountWizard -->
 
 <!ENTITY windowTitle.label "Account Wizard">
-<!ENTITY accountWizard.width "500">
-<!ENTITY accountWizard.height "380">
+<!ENTITY accountWizard.size "width: 40em; height: 30em;">
 
 <!-- Entities for Account Type page -->
 
@@ -11,14 +10,14 @@
 <!ENTITY accountTypeDesc.label "This Wizard will collect the information necessary to set up a Mail or Newsgroup account. If you do not know the information requested, please contact your System Administrator or Internet Service Provider.">
 <!ENTITY accountTypeDirections.label "Select the type of account you would like to set up:">
 <!ENTITY accountTypeMail.label "Email account">
-<!ENTITY accountTypeMail.accesskey "E">
+<!ENTITY accountTypeMail.accesskey "m">
 <!ENTITY accountTypeNews.label "Newsgroup account">
 <!ENTITY accountTypeNews.accesskey "w">
 
 <!-- Entities for Identity page -->
 
 <!ENTITY identityTitle.label "Identity">
-<!ENTITY identityDesc.label "Each account can have its own identity, which is the information that identifies you to others when they receive your messages.">
+<!ENTITY identityDesc.label "Each account has an identity, which is the information that identifies you to others when they receive your messages.">
 
 <!-- LOCALIZATION NOTE (fullnameDesc.label) : do not translate two of "&quot;" in below line -->
 <!ENTITY fullnameDesc.label "Enter the name you would like to appear in the &quot;From&quot; field of your outgoing messages">
@@ -69,17 +68,36 @@
      this variable. Also, translate currentSmtpBefore.label and currentSmtpAfter.label as a single sentence,
 	  inserting text after the "&quot;" entity in currentSmtpAfter.label, if required grammatically
 -->
-<!-- LOCALIZATION NOTE (haveSmtp1.label) : Do not translate "SMTP" in below line -->
-<!ENTITY haveSmtp1.label "Your existing outgoing server (SMTP), &quot;@server_name@&quot;, will be used. You can modify outgoing server settings by choosing Mail &amp; Newsgroups Account Settings from the Edit menu.">
+<!-- LOCALIZATION NOTE (haveSmtp1.prefix and haveSmtp1.suffix) : Do not translate "SMTP" and "&quot;" in
+     these variables. Also, translate haveSmtp1.prefix and haveSmtp1.suffix as a single sentence, inserting
+     text after the "&quot;" entity in haveSmtp1.suffix, if required grammatically.
+-->
+<!ENTITY haveSmtp1.prefix "Your existing outgoing server (SMTP), &quot;">
+<!ENTITY haveSmtp1.suffix "&quot;, will be used. You can modify outgoing server settings by choosing Mail &amp; Newsgroups Account Settings from the Edit menu.">
 
 <!-- Entities for Login page -->
 
-<!ENTITY loginTitle.label "User Name">
-<!ENTITY usernameDesc.label "Enter the user name given to you by your email provider ">
+<!ENTITY loginTitle.label "User Names">
+<!ENTITY usernameDesc.label "Enter the incoming user name given to you by your email provider ">
 <!-- LOCALIZATION NOTE (usernameExample.label) : do not translate "&quot;jsmith&quot;" in below line -->
 <!ENTITY usernameExample.label "(for example, &quot;jsmith&quot;).">
-<!ENTITY usernameLabel.label "User Name:">
-<!ENTITY usernameLabel.accesskey "U">
+<!ENTITY usernameLabel.label "Incoming User Name:">
+<!ENTITY usernameLabel.accesskey "I">
+<!ENTITY usernameSmtpDesc.label "Enter the outgoing user name given to you by your email provider (this is typically the same as your incoming user name).">
+<!ENTITY usernameSmtpLabel.label "Outgoing User Name:">
+<!ENTITY usernameSmtpLabel.accesskey "O">
+<!-- LOCALIZATION NOTE (haveSmtp2.prefix and haveSmtp2.suffix) : Do not translate "SMTP" and "&quot;" in
+     these variables. Also, translate haveSmtp2.prefix and haveSmtp2.suffix as a single sentence, inserting
+     text after the "&quot;" entity in haveSmtp2.suffix, if required grammatically.
+-->
+<!ENTITY haveSmtp2.prefix "Your existing outgoing (SMTP) username, &quot;">
+<!ENTITY haveSmtp2.suffix "&quot;, will be used. You can modify outgoing server settings by choosing Mail &amp; Newsgroups Account Settings from the Edit menu.">
+<!-- LOCALIZATION NOTE (haveSmtp3.prefix and haveSmtp3.suffix) : Do not translate "SMTP" and "&quot;" in
+     these variables. Also, translate haveSmtp3.prefix and haveSmtp3.suffix as a single sentence, inserting
+     text after the "&quot;" entity in haveSmtp3.suffix, if required grammatically.
+-->
+<!ENTITY haveSmtp3.prefix "Your outgoing (SMTP) server, &quot;">
+<!ENTITY haveSmtp3.suffix "&quot;, is identical to your incoming server, your incoming user name will be used to access it. You can modify outgoing server settings by choosing Mail &amp; Newsgroups Account Settings from the Edit menu.">
 
 <!-- Entities for Account name page -->
 
@@ -94,12 +112,9 @@
 
 <!ENTITY completionTitle.label "Congratulations!">
 <!ENTITY completionText.label "Please verify that the information below is correct.">
-<!ENTITY userNamePrefix.label "User Name:">
-<!ENTITY emailPrefix.label "Email Address:">
 <!ENTITY serverTypePrefix.label "Incoming Server Type:">
 <!ENTITY serverNamePrefix.label "Incoming Server Name:">
 <!ENTITY smtpServerNamePrefix.label "Outgoing Server Name (SMTP):">
 <!ENTITY newsServerNamePrefix.label "News Server Name (NNTP):">
-<!ENTITY accountNamePrefix.label "Account Name:">
 <!ENTITY downloadOnLogin.label "Download messages now">
 <!ENTITY clickFinish.label "Click Finish to save these settings and exit the Account Wizard.">

@@ -34,7 +34,7 @@
 /*
  * Moved from secpkcs7.c
  *
- * $Id: crl.c,v 1.1.1.1.2.2 2004-01-02 19:58:39 ghudson Exp $
+ * $Id: crl.c,v 1.1.1.1.2.3 2004-03-06 19:29:29 ghudson Exp $
  */
  
 #include "cert.h"
@@ -151,8 +151,8 @@ static const SEC_ASN1Template cert_CrlEntryTemplate[] = {
 	  0, NULL, sizeof(CERTCrlEntry) },
     { SEC_ASN1_INTEGER,
 	  offsetof(CERTCrlEntry,serialNumber) },
-    { SEC_ASN1_UTC_TIME,
-	  offsetof(CERTCrlEntry,revocationDate) },
+    { SEC_ASN1_INLINE,
+	  offsetof(CERTCrlEntry,revocationDate), CERT_TimeChoiceTemplate },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF,
 	  offsetof(CERTCrlEntry, extensions),
 	  SEC_CERTExtensionTemplate},
@@ -171,10 +171,10 @@ const SEC_ASN1Template CERT_CrlTemplate[] = {
     { SEC_ASN1_INLINE,
 	  offsetof(CERTCrl,name),
 	  CERT_NameTemplate },
-    { SEC_ASN1_UTC_TIME,
-	  offsetof(CERTCrl,lastUpdate) },
-    { SEC_ASN1_OPTIONAL | SEC_ASN1_UTC_TIME,
-	  offsetof(CERTCrl,nextUpdate) },
+    { SEC_ASN1_INLINE,
+	  offsetof(CERTCrl,lastUpdate), CERT_TimeChoiceTemplate },
+    { SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL,
+	  offsetof(CERTCrl,nextUpdate), CERT_TimeChoiceTemplate },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF,
 	  offsetof(CERTCrl,entries),
 	  cert_CrlEntryTemplate },
@@ -197,10 +197,10 @@ const SEC_ASN1Template CERT_CrlTemplateNoEntries[] = {
     { SEC_ASN1_INLINE,
 	  offsetof(CERTCrl,name),
 	  CERT_NameTemplate },
-    { SEC_ASN1_UTC_TIME,
-	  offsetof(CERTCrl,lastUpdate) },
-    { SEC_ASN1_OPTIONAL | SEC_ASN1_UTC_TIME,
-	  offsetof(CERTCrl,nextUpdate) },
+    { SEC_ASN1_INLINE,
+	  offsetof(CERTCrl,lastUpdate), CERT_TimeChoiceTemplate },
+    { SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL,
+	  offsetof(CERTCrl,nextUpdate), CERT_TimeChoiceTemplate },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF |
       SEC_ASN1_SKIP }, /* skip entries */
     { SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | SEC_ASN1_CONTEXT_SPECIFIC |
@@ -216,8 +216,10 @@ const SEC_ASN1Template CERT_CrlTemplateEntriesOnly[] = {
     { SEC_ASN1_SKIP | SEC_ASN1_INTEGER | SEC_ASN1_OPTIONAL },
     { SEC_ASN1_SKIP },
     { SEC_ASN1_SKIP },
-    { SEC_ASN1_SKIP | SEC_ASN1_UTC_TIME },
-    { SEC_ASN1_SKIP | SEC_ASN1_OPTIONAL | SEC_ASN1_UTC_TIME },
+    { SEC_ASN1_SKIP | SEC_ASN1_INLINE,
+        offsetof(CERTCrl,lastUpdate), CERT_TimeChoiceTemplate },
+    { SEC_ASN1_SKIP | SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL,
+        offsetof(CERTCrl,nextUpdate), CERT_TimeChoiceTemplate },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF,
 	  offsetof(CERTCrl,entries),
 	  cert_CrlEntryTemplate }, /* decode entries */
@@ -637,7 +639,7 @@ crl_storeCRL (PK11SlotInfo *slot,char *url,
 {
     CERTSignedCrl *oldCrl = NULL, *crl = NULL;
     PRBool deleteOldCrl = PR_FALSE;
-    CK_OBJECT_HANDLE crlHandle;
+    CK_OBJECT_HANDLE crlHandle = CK_INVALID_HANDLE;
 
     PORT_Assert(newCrl);
     PORT_Assert(derCrl);
@@ -1189,7 +1191,7 @@ PRBool CRLStillExists(CERTSignedCrl* crl)
 }
 
 SECStatus DPCache_Refresh(CRLDPCache* cache, CERTSignedCrl* crlobject,
-                          void* wincx)
+                          PRTime vfdate, void* wincx)
 {
     SECStatus rv = SECSuccess;
     /*  Check if it is an invalid CRL
@@ -1211,12 +1213,8 @@ SECStatus DPCache_Refresh(CRLDPCache* cache, CERTSignedCrl* crlobject,
     } else {
         SECStatus signstatus = SECFailure;
         if (cache->issuer) {
-            int64 issuingDate = 0;
-            signstatus = DER_UTCTimeToTime(&issuingDate, &crlobject->crl.lastUpdate);
-            if (SECSuccess == signstatus) {
-                signstatus = CERT_VerifySignedData(&crlobject->signatureWrap,
-                                                    cache->issuer, issuingDate, wincx);
-            }
+            signstatus = CERT_VerifySignedData(&crlobject->signatureWrap,
+                                                cache->issuer, vfdate, wincx);
         }
         if (SECSuccess != signstatus) {
             if (!cache->issuer) {
@@ -1320,7 +1318,7 @@ void DPCache_Empty(CRLDPCache* cache)
     }
 }
 
-SECStatus DPCache_Fetch(CRLDPCache* cache, void* wincx)
+SECStatus DPCache_Fetch(CRLDPCache* cache, PRTime vfdate, void* wincx)
 {
     SECStatus rv = SECSuccess;
     CERTSignedCrl* crlobject = NULL;
@@ -1380,7 +1378,7 @@ SECStatus DPCache_Fetch(CRLDPCache* cache, void* wincx)
 
     /* update the cache with this new CRL */
     if (SECSuccess == rv) {
-        rv = DPCache_Refresh(cache, crlobject, wincx);
+        rv = DPCache_Refresh(cache, crlobject, vfdate, wincx);
     }
     return rv;
 }
@@ -1444,7 +1442,7 @@ SECStatus DPCache_Lookup(CRLDPCache* cache, SECItem* sn, CERTCrlEntry** returned
 #endif
 
 SECStatus DPCache_Update(CRLDPCache* cache, CERTCertificate* issuer,
-                         void* wincx, PRBool readlocked)
+                         PRBool readlocked, PRTime vfdate, void* wincx)
 {
     /* Update the CRLDPCache now. We don't cache token CRL lookup misses
        yet, as we have no way of getting notified of new PKCS#11 object
@@ -1476,12 +1474,12 @@ SECStatus DPCache_Update(CRLDPCache* cache, CERTCertificate* issuer,
                     DPCache_LockWrite();
                     /* check that we are the first thread to update */
                     if (PR_TRUE == GetOpaqueCRLFields(acrl)->unverified) {
-                        DPCache_Refresh(cache, acrl, wincx);
+                        DPCache_Refresh(cache, acrl, vfdate, wincx);
                         /* also check all the other CRLs */
                         for (i = i+1 ; i < cache->ncrls ; i++) {
                             acrl = cache->crls[i];
                             if (acrl && (PR_TRUE == GetOpaqueCRLFields(acrl)->unverified)) {
-                                DPCache_Refresh(cache, acrl, wincx);
+                                DPCache_Refresh(cache, acrl, vfdate, wincx);
                             }
                         }
                     }
@@ -1517,7 +1515,7 @@ SECStatus DPCache_Update(CRLDPCache* cache, CERTCertificate* issuer,
                         }
                     }
                     /* and try to fetch a new one */
-                    rv = DPCache_Fetch(cache, wincx);
+                    rv = DPCache_Fetch(cache, vfdate, wincx);
                     updated = PR_TRUE;
                     if (SECSuccess == rv) {
                         rv = DPCache_Cleanup(cache); /* clean up deleted CRLs
@@ -1534,7 +1532,7 @@ SECStatus DPCache_Update(CRLDPCache* cache, CERTCertificate* issuer,
         if (0 == cache->ncrls)
         {
             /* we are the first */
-            rv = DPCache_Fetch(cache, wincx);
+            rv = DPCache_Fetch(cache, vfdate, wincx);
         }
         DPCache_UnlockWrite();
     }
@@ -1818,7 +1816,7 @@ SECStatus AcquireDPCache(CERTCertificate* issuer, SECItem* subject, SECItem* dp,
         if (*dpcache)
         {
             /* make sure the DP cache is up to date before using it */
-            rv = DPCache_Update(*dpcache, issuer, wincx, PR_FALSE == *writeLocked);
+            rv = DPCache_Update(*dpcache, issuer, PR_FALSE == *writeLocked, t, wincx);
         }
         else
         {
@@ -1859,6 +1857,14 @@ CERT_CheckCRL(CERTCertificate* cert, CERTCertificate* issuer, SECItem* dp,
         return SECFailure;
     }
 
+    if (SECSuccess != CERT_CheckCertValidTimes(issuer, t, PR_FALSE)) {
+        /* we won't be able to check the CRL's signature if the issuer cert
+           is expired as of the time we are verifying. This may cause a valid
+           CRL to be cached as bad. short-circuit to avoid this case. */
+        PORT_SetError(SEC_ERROR_EXPIRED_ISSUER_CERTIFICATE);
+        return SECFailure;
+    }
+
     rv = AcquireDPCache(issuer, &issuer->derSubject, dp, t, wincx, &dpcache, &lockedwrite);
     
     if (SECSuccess == rv) {
@@ -1869,8 +1875,8 @@ CERT_CheckCRL(CERTCertificate* cert, CERTCertificate* issuer, SECItem* dp,
             /* check the time if we have one */
             if (entry->revocationDate.data && entry->revocationDate.len) {
                 int64 revocationDate = 0;
-                if (SECSuccess == DER_UTCTimeToTime(&revocationDate,
-                                                    &entry->revocationDate)) {
+                if (SECSuccess == CERT_DecodeTimeChoice(&revocationDate,
+                                                        &entry->revocationDate)) {
                     /* we got a good revocation date, only consider the
                        certificate revoked if the time we are inquiring about
                        is past the revocation date */
@@ -1915,7 +1921,6 @@ SEC_FindCrlByName(CERTCertDBHandle *handle, SECItem *crlKey, int type)
 
 void CERT_CRLCacheRefreshIssuer(CERTCertDBHandle* dbhandle, SECItem* crlKey)
 {
-    CERTSignedCrl* acrl = NULL;
     CRLDPCache* cache = NULL;
     SECStatus rv = SECSuccess;
     PRBool writeLocked = PR_FALSE;

@@ -74,7 +74,8 @@ nsIIOService* nsImageLoadingContent::sIOService = nsnull;
 nsImageLoadingContent::nsImageLoadingContent()
   : mObserverList(nsnull),
     mLoadingEnabled(PR_TRUE),
-    mImageIsBlocked(PR_FALSE)
+    mImageIsBlocked(PR_FALSE),
+    mHaveHadObserver(PR_FALSE)
 {
   if (!sImgLoader)
     mLoadingEnabled = PR_FALSE;
@@ -243,6 +244,8 @@ nsImageLoadingContent::AddObserver(imgIDecoderObserver* aObserver)
 {
   NS_ENSURE_ARG_POINTER(aObserver);
 
+  mHaveHadObserver = PR_TRUE;
+  
   if (!mObserverList.mObserver) {
     mObserverList.mObserver = aObserver;
     // Don't touch the linking of the list!
@@ -419,20 +422,20 @@ nsImageLoadingContent::ImageURIChanged(const nsACString& aNewURI)
     return NS_OK;
   }
 
-  nsCOMPtr<nsILoadGroup> loadGroup;
-  doc->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
+  nsCOMPtr<nsILoadGroup> loadGroup = doc->GetDocumentLoadGroup();
   NS_WARN_IF_FALSE(loadGroup, "Could not get loadgroup; onload may fire too early");
 
-  nsCOMPtr<nsIURI> documentURI;
-  doc->GetDocumentURL(getter_AddRefs(documentURI));
+  nsIURI *documentURI = doc->GetDocumentURL();
 
   nsCOMPtr<imgIRequest> & req = mCurrentRequest ? mPendingRequest : mCurrentRequest;
 
   // It may be that one of our frames has replaced itself with alt text... This
   // would only have happened if our mCurrentRequest had issues, and we would
   // have set it to null by now in that case.  Have to save that information
-  // here, since LoadImage may clobber the value of mCurrentRequest.
-  PRBool mayNeedReframe = !mCurrentRequest;
+  // here, since LoadImage may clobber the value of mCurrentRequest.  On the
+  // other hand, if we've never had an observer, we know there aren't any frames
+  // that have changed to alt text on us yet.
+  PRBool mayNeedReframe = mHaveHadObserver && !mCurrentRequest;
   
   // XXXbz using "documentURI" for the initialDocumentURI is not quite
   // right, but the best we can do here...
@@ -470,8 +473,7 @@ nsImageLoadingContent::ImageURIChanged(const nsACString& aNewURI)
   // and it's not of the right type, reframe it.
   PRInt32 numShells = doc->GetNumberOfShells();
   for (PRInt32 i = 0; i < numShells; ++i) {
-    nsCOMPtr<nsIPresShell> shell;
-    doc->GetShellAt(i, getter_AddRefs(shell));
+    nsIPresShell *shell = doc->GetShellAt(i);
     if (shell) {
       nsIFrame* frame = nsnull;
       shell->GetPrimaryFrameFor(thisContent, &frame);
@@ -481,8 +483,7 @@ nsImageLoadingContent::ImageURIChanged(const nsACString& aNewURI)
         // to be easily detectable.  For example, I suspect that this code will
         // fail for <object> in the current CantRenderReplacedElement
         // implementation...
-        nsCOMPtr<nsIAtom> frameType;
-        frame->GetFrameType(getter_AddRefs(frameType));
+        nsIAtom* frameType = frame->GetType();
         if (frameType != nsLayoutAtoms::imageFrame &&
             frameType != nsLayoutAtoms::imageControlFrame &&
             frameType != nsLayoutAtoms::objectFrame) {
@@ -525,9 +526,8 @@ nsImageLoadingContent::CanLoadImage(nsIURI* aURI, nsIDocument* aDocument)
   
   // Check with the content-policy things to make sure this load is permitted.
 
-  nsCOMPtr<nsIScriptGlobalObject> globalScript;
-  nsresult rv = aDocument->GetScriptGlobalObject(getter_AddRefs(globalScript));
-  if (NS_FAILED(rv)) {
+  nsIScriptGlobalObject *globalScript = aDocument->GetScriptGlobalObject();
+  if (!globalScript) {
     // just let it load.  Documents loaded as data should take care to
     // prevent image loading themselves.
     return NS_OK;
@@ -536,8 +536,8 @@ nsImageLoadingContent::CanLoadImage(nsIURI* aURI, nsIDocument* aDocument)
   nsCOMPtr<nsIDOMWindow> domWin(do_QueryInterface(globalScript));
 
   PRBool shouldLoad = PR_TRUE;
-  rv = NS_CheckContentLoadPolicy(nsIContentPolicy::IMAGE, aURI, this,
-                                 domWin, &shouldLoad);
+  nsresult rv = NS_CheckContentLoadPolicy(nsIContentPolicy::IMAGE, aURI, this,
+                                          domWin, &shouldLoad);
   if (NS_SUCCEEDED(rv) && !shouldLoad) {
     return NS_ERROR_IMAGE_BLOCKED;
   }
@@ -556,8 +556,7 @@ nsImageLoadingContent::GetOurDocument()
   
   if (!doc) {  // nodeinfo time
     // XXXbz GetOwnerDocument
-    nsCOMPtr<nsINodeInfo> nodeInfo;
-    thisContent->GetNodeInfo(getter_AddRefs(nodeInfo));
+    nsINodeInfo *nodeInfo = thisContent->GetNodeInfo();
     if (nodeInfo) {
       doc = nodeInfo->GetDocument();
     }
@@ -584,13 +583,12 @@ nsImageLoadingContent::StringToURI(const nsACString& aSpec,
   NS_ENSURE_SUCCESS(rv, rv);
 
   // (2) Get the charset
-  nsCAutoString charset;
-  aDocument->GetDocumentCharacterSet(charset);
+  const nsACString &charset = aDocument->GetDocumentCharacterSet();
 
   // (3) Construct the silly thing
   return NS_NewURI(aURI,
                    aSpec,
-                   charset.IsEmpty() ? nsnull : charset.get(),
+                   charset.IsEmpty() ? nsnull : PromiseFlatCString(charset).get(),
                    baseURL,
                    sIOService);
 }
@@ -684,11 +682,9 @@ nsImageLoadingContent::FireEvent(const nsAString& aEventType)
                                            getter_AddRefs(eventQ));
   NS_ENSURE_TRUE(eventQ, rv);
 
-  nsCOMPtr<nsILoadGroup> loadGroup;
-  document->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
+  nsCOMPtr<nsILoadGroup> loadGroup = document->GetDocumentLoadGroup();
 
-  nsCOMPtr<nsIPresShell> shell;
-  document->GetShellAt(0, getter_AddRefs(shell));
+  nsIPresShell *shell = document->GetShellAt(0);
   NS_ENSURE_TRUE(shell, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIPresContext> presContext;
@@ -711,7 +707,7 @@ nsImageLoadingContent::FireEvent(const nsAString& aEventType)
 
   rv = eventQ->PostEvent(evt);
 
-  if (rv == PR_SUCCESS) {
+  if (NS_SUCCEEDED(rv)) {
     // Add the dummy request (the ImageEvent) to the load group only
     // after all the early returns here!
     loadGroup->AddRequest(evt, nsnull);

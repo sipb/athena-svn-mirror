@@ -47,16 +47,37 @@
 #include "nsContentUtils.h"
 #include "nsReadableUtils.h"
 
+// static
+nsNodeInfo*
+nsNodeInfo::Create()
+{
+  if (sCachedNodeInfo) {
+    // We have cached unused instances of this class, return a cached
+    // instance instead of always creating a new one.
+    nsNodeInfo *nodeInfo = sCachedNodeInfo;
+    sCachedNodeInfo = nsnull;
+    return nodeInfo;
+  }
+
+  // Create a new one
+  return new nsNodeInfo();
+}
+
 nsNodeInfo::nsNodeInfo()
-  : nsINodeInfo(), mOwnerManager(nsnull)
 {
 }
 
 
 nsNodeInfo::~nsNodeInfo()
 {
+  Clear();
+}
+
+void
+nsNodeInfo::Clear()
+{
   if (mOwnerManager) {
-    mOwnerManager->RemoveNodeInfo(this);
+    NS_STATIC_CAST(nsNodeInfoManager*, mOwnerManager)->RemoveNodeInfo(this);
     NS_RELEASE(mOwnerManager);
   }
 
@@ -91,12 +112,13 @@ nsNodeInfo::Init(nsIAtom *aName, nsIAtom *aPrefix, PRInt32 aNamespaceID,
 
 // nsISupports
 
-NS_IMPL_ISUPPORTS1(nsNodeInfo, nsINodeInfo)
-
+NS_IMPL_ADDREF(nsNodeInfo)
+NS_IMPL_RELEASE_WITH_DESTROY(nsNodeInfo, LastRelease())
+NS_IMPL_QUERY_INTERFACE1(nsNodeInfo, nsINodeInfo)
 
 // nsINodeInfo
 
-NS_IMETHODIMP
+void
 nsNodeInfo::GetQualifiedName(nsAString& aQualifiedName) const
 {
   if (mInner.mPrefix) {
@@ -111,29 +133,25 @@ nsNodeInfo::GetQualifiedName(nsAString& aQualifiedName) const
   mInner.mName->ToString(name);
 
   aQualifiedName.Append(name);
-
-  return NS_OK;
 }
 
 
-NS_IMETHODIMP
+void
 nsNodeInfo::GetLocalName(nsAString& aLocalName) const
 {
 #ifdef STRICT_DOM_LEVEL2_LOCALNAME
   if (mInner.mNamespaceID > 0) {
-    return mInner.mName->ToString(aLocalName);
+    mInner.mName->ToString(aLocalName);
+  } else {
+    SetDOMStringToNull(aLocalName);
   }
-
-  SetDOMStringToNull(aLocalName);
-
-  return NS_OK;
 #else
-  return mInner.mName->ToString(aLocalName);
+  mInner.mName->ToString(aLocalName);
 #endif
 }
 
 
-NS_IMETHODIMP
+nsresult
 nsNodeInfo::GetNamespaceURI(nsAString& aNameSpaceURI) const
 {
   nsresult rv = NS_OK;
@@ -149,43 +167,14 @@ nsNodeInfo::GetNamespaceURI(nsAString& aNameSpaceURI) const
 }
 
 
-NS_IMETHODIMP
-nsNodeInfo::GetIDAttributeAtom(nsIAtom** aResult) const
-{
-  *aResult = mIDAttributeAtom;
-  NS_IF_ADDREF(*aResult);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsNodeInfo::SetIDAttributeAtom(nsIAtom* aID)
-{
-  NS_ENSURE_ARG(aID);
-  mIDAttributeAtom = aID;
-
-  return NS_OK;
-}
-
-
-
-NS_IMETHODIMP
-nsNodeInfo::GetNodeInfoManager(nsINodeInfoManager** aNodeInfoManager) const
-{
-  NS_ADDREF(*aNodeInfoManager = mOwnerManager);
-
-  return NS_OK;
-}
-
-
-NS_IMETHODIMP_(PRBool)
+PRBool
 nsNodeInfo::Equals(const nsAString& aName) const
 {
   return mInner.mName->Equals(aName);
 }
 
 
-NS_IMETHODIMP_(PRBool)
+PRBool
 nsNodeInfo::Equals(const nsAString& aName, const nsAString& aPrefix) const
 {
   if (!mInner.mName->Equals(aName)) {
@@ -200,7 +189,7 @@ nsNodeInfo::Equals(const nsAString& aName, const nsAString& aPrefix) const
 }
 
 
-NS_IMETHODIMP_(PRBool)
+PRBool
 nsNodeInfo::Equals(const nsAString& aName, PRInt32 aNamespaceID) const
 {
   return mInner.mNamespaceID == aNamespaceID &&
@@ -208,7 +197,7 @@ nsNodeInfo::Equals(const nsAString& aName, PRInt32 aNamespaceID) const
 }
 
 
-NS_IMETHODIMP_(PRBool)
+PRBool
 nsNodeInfo::Equals(const nsAString& aName, const nsAString& aPrefix,
                    PRInt32 aNamespaceID) const
 {
@@ -221,7 +210,7 @@ nsNodeInfo::Equals(const nsAString& aName, const nsAString& aPrefix,
 }
 
 
-NS_IMETHODIMP_(PRBool)
+PRBool
 nsNodeInfo::NamespaceEquals(const nsAString& aNamespaceURI) const
 {
   PRInt32 nsid;
@@ -230,7 +219,7 @@ nsNodeInfo::NamespaceEquals(const nsAString& aNamespaceURI) const
   return nsINodeInfo::NamespaceEquals(nsid);
 }
 
-NS_IMETHODIMP_(PRBool)
+PRBool
 nsNodeInfo::QualifiedNameEquals(const nsACString& aQualifiedName) const
 {
   
@@ -273,29 +262,36 @@ nsNodeInfo::QualifiedNameEquals(const nsACString& aQualifiedName) const
   return mInner.mName->EqualsUTF8(Substring(colon, end));
 }
 
-NS_IMETHODIMP
-nsNodeInfo::NameChanged(nsIAtom *aName, nsINodeInfo** aResult)
+// static
+nsNodeInfo *nsNodeInfo::sCachedNodeInfo = nsnull;
+
+// static
+void
+nsNodeInfo::ClearCache()
 {
-  return mOwnerManager->GetNodeInfo(aName, mInner.mPrefix, mInner.mNamespaceID,
-                                    aResult);
+  // Clear our cache.
+  delete sCachedNodeInfo;
+  sCachedNodeInfo = nsnull;
 }
 
-
-NS_IMETHODIMP
-nsNodeInfo::PrefixChanged(nsIAtom *aPrefix, nsINodeInfo** aResult)
+void
+nsNodeInfo::LastRelease()
 {
-  return mOwnerManager->GetNodeInfo(mInner.mName, aPrefix, mInner.mNamespaceID,
-                                    aResult);
-}
+  if (sCachedNodeInfo) {
+    // No room in cache
+    delete this;
+    return;
+  }
 
-nsIDocument*
-nsNodeInfo::GetDocument() const
-{
-  return mOwnerManager->GetDocument();
-}
+  // There's space in the cache for one instance. Put
+  // this instance in the cache instead of deleting it.
+  sCachedNodeInfo = this;
 
-NS_IMETHODIMP
-nsNodeInfo::GetDocumentPrincipal(nsIPrincipal** aPrincipal) const
-{
-  return mOwnerManager->GetDocumentPrincipal(aPrincipal);
+  // Clear object so that we have no references to anything external
+  Clear();
+
+  // The refcount balancing and destructor re-entrancy protection
+  // code in Release() sets mRefCnt to 1 so we have to set it to 0
+  // here to prevent leaks
+  mRefCnt = 0;
 }

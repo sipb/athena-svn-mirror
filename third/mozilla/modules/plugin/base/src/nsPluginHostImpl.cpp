@@ -107,6 +107,7 @@
 #include "nsIPrincipal.h"
 
 #include "nsIServiceManager.h"
+#include "nsNetCID.h"
 #include "nsICookieService.h"
 #include "nsIDOMPlugin.h"
 #include "nsIDOMMimeType.h"
@@ -176,6 +177,10 @@
 #include <TextServices.h>  // for ::UseInputWindow()
 #endif
 #endif
+
+#ifdef XP_OS2
+#include "nsILegacyPluginWrapperOS2.h"
+#endif 
 
 // this is the name of the directory which will be created
 // to cache temporary files.
@@ -301,8 +306,7 @@ nsresult nsPluginDocReframeEvent::HandlePluginDocReframeEvent() {
   for (PRUint32 i = 0; i < c; i++) {
     nsCOMPtr<nsIDocument> doc (do_QueryElementAt(mDocs, i));
     if (doc) {
-      nsCOMPtr<nsIPresShell> shell;
-      doc->GetShellAt(0, getter_AddRefs(shell));
+      nsIPresShell *shell = doc->GetShellAt(0);
       
       // if this document has a presentation shell, then it has frames and can be reframed
       if (shell) {
@@ -1213,8 +1217,6 @@ public:
 
   nsresult OnFileAvailable(nsIFile* aFile);
 
-  nsILoadGroup* GetLoadGroup();
-
   nsresult ServeStreamAsFile(nsIRequest *request, nsISupports *ctxt);
 
 private:
@@ -2095,7 +2097,10 @@ nsPluginStreamListenerPeer::OnStartRequest(nsIRequest *request, nsISupports* aCo
           // If we've got a native window, the let the plugin know
           // about it.
           if (window->window)
-            mInstance->SetWindow(window);
+          {
+            nsCOMPtr<nsIPluginInstance> inst = mInstance;
+            ((nsPluginNativeWindow*)window)->CallSetWindow(inst);
+          }
         }
       }
     }
@@ -2508,21 +2513,6 @@ nsPluginStreamListenerPeer::OnFileAvailable(nsIFile* aFile)
 
 
 ////////////////////////////////////////////////////////////////////////
-nsILoadGroup*
-nsPluginStreamListenerPeer::GetLoadGroup()
-{
-  nsILoadGroup* loadGroup = nsnull;
-  nsIDocument* doc;
-  nsresult rv = mOwner->GetDocument(&doc);
-  if (NS_SUCCEEDED(rv)) {
-    doc->GetDocumentLoadGroup(&loadGroup);
-    NS_RELEASE(doc);
-  }
-  return loadGroup;
-}
-
-
-////////////////////////////////////////////////////////////////////////
 NS_IMETHODIMP
 nsPluginStreamListenerPeer::VisitHeader(const nsACString &header, const nsACString &value)
 {
@@ -2638,6 +2628,13 @@ NS_IMETHODIMP nsPluginHostImpl::GetValue(nsPluginManagerVariable aVariable, void
     }
   }
 #endif
+  if (nsPluginManagerVariable_SupportsXEmbed == aVariable) {
+#ifdef MOZ_WIDGET_GTK2
+    *(NPBool*)aValue = PR_TRUE;
+#else
+    *(NPBool*)aValue = PR_FALSE;
+#endif
+  }
   return rv;
 }
 
@@ -2816,10 +2813,7 @@ nsresult nsPluginHostImpl:: GetPrompt(nsIPluginInstanceOwner *aOwner, nsIPrompt 
       nsCOMPtr<nsIDocument> document;
       aOwner->GetDocument(getter_AddRefs(document));
       if (document) {
-        nsCOMPtr<nsIScriptGlobalObject> globalScript;
-        document->GetScriptGlobalObject(getter_AddRefs(globalScript));
-        if (globalScript)
-          domWindow = do_QueryInterface(globalScript);
+        domWindow = do_QueryInterface(document->GetScriptGlobalObject());
       }
     }
 
@@ -3454,7 +3448,10 @@ NS_IMETHODIMP nsPluginHostImpl::InstantiateEmbededPlugin(const char *aMimeType,
 
     // If we've got a native window, the let the plugin know about it.
     if (window->window)
-      instance->SetWindow(window);
+    {
+      nsCOMPtr<nsIPluginInstance> inst = instance;
+      ((nsPluginNativeWindow*)window)->CallSetWindow(inst);
+    }
 
     // create an initial stream with data 
     // don't make the stream if it's a java applet or we don't have SRC or DATA attribute
@@ -3596,7 +3593,10 @@ nsresult nsPluginHostImpl::FindStoppedPluginForURL(nsIURI* aURL,
 
     // If we've got a native window, the let the plugin know about it.
     if (window->window)
-      instance->SetWindow(window);
+    {
+      nsCOMPtr<nsIPluginInstance> inst = instance;
+      ((nsPluginNativeWindow*)window)->CallSetWindow(inst);
+    }
 
     plugin->setStopped(PR_FALSE);
     return NS_OK;
@@ -3960,22 +3960,13 @@ nsresult nsPluginHostImpl::SetUpDefaultPluginInstance(const char *aMimeType, nsI
   if(mimetype == nsnull)
   {
     nsresult res = NS_OK;
-    nsCOMPtr<nsIURL> url = do_QueryInterface(aURL);
-    if(url)
+    nsCOMPtr<nsIMIMEService> ms (do_GetService(NS_MIMESERVICE_CONTRACTID, &res));
+    if(NS_SUCCEEDED(res))
     {
-      nsCAutoString extension;
-      url->GetFileExtension(extension);
-    
-      if(!extension.IsEmpty())
-      {
-        nsCOMPtr<nsIMIMEService> ms (do_GetService(NS_MIMESERVICE_CONTRACTID, &res));
-        if(NS_SUCCEEDED(res) && ms)
-        {
-          res = ms->GetTypeFromExtension(extension.get(), getter_Copies(mt));
-          if(NS_SUCCEEDED(res))
-            mimetype = mt;
-        }
-      }
+      nsXPIDLCString mt;
+      res = ms->GetTypeFromURI(aURL, getter_Copies(mt));
+      if(NS_SUCCEEDED(res))
+        mimetype = mt;
     }
   }
 
@@ -4554,7 +4545,11 @@ NS_IMETHODIMP nsPluginHostImpl::GetPluginFactory(const char *aMimeType, nsIPlugi
 
       // need to get the plugin factory from this plugin.
       nsFactoryProc nsGetFactory = nsnull;
+#ifdef XP_OS2
+      nsGetFactory = (nsFactoryProc) PR_FindSymbol(pluginTag->mLibrary, "_NSGetFactory");
+#else
       nsGetFactory = (nsFactoryProc) PR_FindSymbol(pluginTag->mLibrary, "NSGetFactory");
+#endif
       if(nsGetFactory != nsnull && IsCompatibleExecutable(pluginTag->mFullPath))
       {
 // XPCOM-style plugins (or at least the OJI one) cause crashes on
@@ -4567,6 +4562,25 @@ NS_IMETHODIMP nsPluginHostImpl::GetPluginFactory(const char *aMimeType, nsIPlugi
           plugin->Initialize();
 #endif
       }
+#ifdef XP_OS2
+      // on OS2, first check if this might be legacy XPCOM module.
+      else if (PR_FindSymbol(pluginTag->mLibrary, "NSGetFactory") &&
+               IsCompatibleExecutable(pluginTag->mFullPath))
+      {
+        // Possibly a legacy XPCOM module. We'll need to create a calling
+        // vtable/calling convention wrapper for it.
+        nsCOMPtr<nsILegacyPluginWrapperOS2> wrapper =
+                       do_GetService(NS_LEGACY_PLUGIN_WRAPPER_CONTRACTID, &rv);
+        if (NS_SUCCEEDED(rv))
+        {
+          rv = wrapper->GetFactory(serviceManager, kPluginCID, nsnull, nsnull,
+                                   pluginTag->mLibrary, &pluginTag->mEntryPoint);
+          plugin = pluginTag->mEntryPoint;
+          if (plugin != NULL)
+            plugin->Initialize();
+        }
+      }
+#endif
       else
       {
        // Now lets try to get the entry point from a 4.x plugin
@@ -5609,11 +5623,8 @@ NS_IMETHODIMP nsPluginHostImpl::NewPluginURLStream(const nsString& aURL,
       rv = owner->GetDocument(getter_AddRefs(doc));
       if (NS_SUCCEEDED(rv) && doc)
       {
-        nsCOMPtr<nsIURI> docURL;
-        doc->GetBaseURL(getter_AddRefs(docURL));
- 
         // Create an absolute URL
-        rv = NS_MakeAbsoluteURI(absUrl, aURL, docURL);
+        rv = NS_MakeAbsoluteURI(absUrl, aURL, doc->GetBaseURL());
       }
     }
   }
@@ -5639,8 +5650,7 @@ NS_IMETHODIMP nsPluginHostImpl::NewPluginURLStream(const nsString& aURL,
       if (doc) 
       {
         // Get the script global object owner and use that as the notification callback
-        nsCOMPtr<nsIScriptGlobalObject> global;
-        doc->GetScriptGlobalObject(getter_AddRefs(global));
+        nsIScriptGlobalObject* global = doc->GetScriptGlobalObject();
 
         if (global) 
         {
@@ -5664,10 +5674,7 @@ NS_IMETHODIMP nsPluginHostImpl::NewPluginURLStream(const nsString& aURL,
       if (doc) 
       {
         // Set the owner of channel to the document principal...
-        nsCOMPtr<nsIPrincipal> principal;
-        doc->GetPrincipal(getter_AddRefs(principal));
-
-        channel->SetOwner(principal);
+        channel->SetOwner(doc->GetPrincipal());
       }
 
       // deal with headers and post data
@@ -5723,7 +5730,6 @@ nsPluginHostImpl::DoURLLoadSecurityCheck(nsIPluginInstance *aInstance,
   // get the URL of the document that loaded the plugin
   nsCOMPtr<nsIDocument> doc;
   nsCOMPtr<nsIPluginInstancePeer> peer;
-  nsCOMPtr<nsIURI> sourceURL;
   rv = aInstance->GetPeer(getter_AddRefs(peer));
   if (NS_FAILED(rv) || !peer)
     return NS_ERROR_FAILURE;
@@ -5738,16 +5744,13 @@ nsPluginHostImpl::DoURLLoadSecurityCheck(nsIPluginInstance *aInstance,
   if (!doc)
     return NS_ERROR_FAILURE;
 
-  rv = doc->GetDocumentURL(getter_AddRefs(sourceURL));
+  nsIURI *sourceURL = doc->GetDocumentURL();
   if (!sourceURL)
     return NS_ERROR_FAILURE;
 
   // Create an absolute URL for the target in case the target is relative
-  nsCOMPtr<nsIURI> docBaseURL;
-  doc->GetBaseURL(getter_AddRefs(docBaseURL));
-
   nsCOMPtr<nsIURI> targetURL;
-  rv = NS_NewURI(getter_AddRefs(targetURL), aURL, docBaseURL);
+  rv = NS_NewURI(getter_AddRefs(targetURL), aURL, doc->GetBaseURL());
 
   if (!targetURL)
     return NS_ERROR_FAILURE;
@@ -5903,7 +5906,7 @@ nsresult nsPluginHostImpl::NewEmbededPluginStream(nsIURI* aURL,
     if (aOwner) {
       rv = aOwner->GetDocument(getter_AddRefs(doc));
       if (NS_SUCCEEDED(rv) && doc) {
-        doc->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
+        loadGroup = doc->GetDocumentLoadGroup();
       }
     }
 
@@ -5914,11 +5917,8 @@ nsresult nsPluginHostImpl::NewEmbededPluginStream(nsIURI* aURL,
       // if this is http channel, set referrer, some servers are configured
       // to reject requests without referrer set, see bug 157796
       nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(channel));
-      if (httpChannel && doc) {
-        nsCOMPtr<nsIURI> referrerURL;
-        if (NS_SUCCEEDED(doc->GetBaseURL(getter_AddRefs(referrerURL))))
-          httpChannel->SetReferrer(referrerURL);
-      }
+      if (httpChannel && doc)
+        httpChannel->SetReferrer(doc->GetBaseURL());
 
       rv = channel->AsyncOpen(listener, nsnull);
       if (NS_SUCCEEDED(rv))
@@ -6601,7 +6601,10 @@ nsresult nsPluginStreamListenerPeer::ServeStreamAsFile(nsIRequest *request,
       nsPluginWindow    *window = nsnull;
       owner->GetWindow(window);
       if (window->window)
-        mInstance->SetWindow(window);
+      {
+        nsCOMPtr<nsIPluginInstance> inst = mInstance;
+        ((nsPluginNativeWindow*)window)->CallSetWindow(inst);
+      }
     }
   }
   

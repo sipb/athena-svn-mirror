@@ -20,7 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Brian Ryner <bryner@netscape.com>
+ *  Brian Ryner <bryner@brianryner.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -98,6 +98,7 @@
 #endif
 
 // cookie
+#include "nsNetCID.h"
 #include "nsICookieService.h"
 
 #define DIALOG_FONT      "Helvetica"
@@ -1088,9 +1089,7 @@ nsViewerApp::CreateRobot(nsBrowserWindow* aWindow)
       shell->GetDocument(getter_AddRefs(doc));
       if (doc) {
         nsCAutoString str;
-        nsCOMPtr<nsIURI> uri;
-        doc->GetDocumentURL(getter_AddRefs(uri));
-        nsresult rv = uri->GetSpec(str);
+        nsresult rv = doc->GetDocumentURL()->GetSpec(str);
         if (NS_FAILED(rv)) {
           return rv;
         }

@@ -74,7 +74,11 @@ NS_IMETHODIMP nsOuterDocAccessible::GetValue(nsAString& aValue)
 /* unsigned long getRole (); */
 NS_IMETHODIMP nsOuterDocAccessible::GetRole(PRUint32 *_retval)
 {
+#ifndef MOZ_ACCESSIBILITY_ATK
   *_retval = ROLE_CLIENT;
+#else
+  *_retval = ROLE_PANE;
+#endif
   return NS_OK;
 }
 
@@ -105,13 +109,11 @@ NS_IMETHODIMP nsOuterDocAccessible::Init()
   nsCOMPtr<nsIDocument> outerDoc = content->GetDocument();
   NS_ENSURE_TRUE(outerDoc, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIDocument> innerDoc;
-  outerDoc->GetSubDocumentFor(content, getter_AddRefs(innerDoc));
+  nsIDocument *innerDoc = outerDoc->GetSubDocumentFor(content);
   nsCOMPtr<nsIDOMNode> innerNode(do_QueryInterface(innerDoc));
   NS_ENSURE_TRUE(innerNode, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIPresShell> innerPresShell;
-  innerDoc->GetShellAt(0, getter_AddRefs(innerPresShell));
+  nsIPresShell *innerPresShell = innerDoc->GetShellAt(0);
   NS_ENSURE_TRUE(innerPresShell, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIAccessible> innerAccessible;

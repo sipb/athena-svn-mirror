@@ -34,7 +34,7 @@
 /*
  * Support routines for SECItem data structure.
  *
- * $Id: secitem.c,v 1.1.1.1 2003-02-14 19:01:59 rbasch Exp $
+ * $Id: secitem.c,v 1.1.1.1.2.1 2004-03-06 19:30:38 ghudson Exp $
  */
 
 #include "seccomon.h"
@@ -143,6 +143,11 @@ SECITEM_CompareItem(const SECItem *a, const SECItem *b)
     unsigned m;
     SECComparison rv;
 
+    if (!a || !a->len || !a->data) 
+        return (!b || !b->len || !b->data) ? SECEqual : SECLessThan;
+    if (!b || !b->len || !b->data) 
+    	return SECGreaterThan;
+
     m = ( ( a->len < b->len ) ? a->len : b->len );
     
     rv = (SECComparison) PORT_Memcmp(a->data, b->data, m);
@@ -161,10 +166,15 @@ SECITEM_CompareItem(const SECItem *a, const SECItem *b)
 PRBool
 SECITEM_ItemsAreEqual(const SECItem *a, const SECItem *b)
 {
-    if (SECITEM_CompareItem(a, b) == SECEqual)
-	return PR_TRUE;
-
-    return PR_FALSE;
+    if (a->len != b->len)
+        return PR_FALSE;
+    if (!a->len)
+    	return PR_TRUE;
+    if (!a->data || !b->data) {
+        /* avoid null pointer crash. */
+	return (PRBool)(a->data == b->data);
+    }
+    return (PRBool)!PORT_Memcmp(a->data, b->data, a->len);
 }
 
 SECItem *

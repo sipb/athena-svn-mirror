@@ -32,7 +32,7 @@
  *
  * hasht.h - public data structures for the hashing library
  *
- * $Id: hasht.h,v 1.1.1.1.2.2 2004-01-02 19:58:55 ghudson Exp $
+ * $Id: hasht.h,v 1.1.1.1.2.3 2004-03-06 19:29:40 ghudson Exp $
  */
 
 #ifndef _HASHT_H_

@@ -34,7 +34,7 @@
 /*
  * Test program for SDR (Secret Decoder Ring) functions.
  *
- * $Id: shlibsign.c,v 1.1.2.2 2004-01-02 19:58:26 ghudson Exp $
+ * $Id: shlibsign.c,v 1.1.2.3 2004-03-06 19:29:20 ghudson Exp $
  */
 
 #ifdef XP_UNIX
@@ -50,7 +50,6 @@
 
 #include "plgetopt.h"
 #include "pk11sdr.h"
-#include "secrng.h"
 #include "shsign.h"
 #include "pk11pqg.h"
 

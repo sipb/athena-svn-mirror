@@ -34,7 +34,7 @@
 /*
  * CMS signerInfo methods.
  *
- * $Id: cmssiginfo.c,v 1.1.1.1.2.2 2004-01-02 20:00:01 ghudson Exp $
+ * $Id: cmssiginfo.c,v 1.1.1.1.2.3 2004-03-06 19:30:27 ghudson Exp $
  */
 
 #include "cmslocal.h"
@@ -56,10 +56,13 @@
  * SIGNERINFO
  */
 NSSCMSSignerInfo *
-nss_cmssignerinfo_create(NSSCMSMessage *cmsg, NSSCMSSignerIDSelector type, CERTCertificate *cert, SECItem *subjKeyID, SECKEYPublicKey *pubKey, SECKEYPrivateKey *signingKey, SECOidTag digestalgtag);
+nss_cmssignerinfo_create(NSSCMSMessage *cmsg, NSSCMSSignerIDSelector type, 
+	CERTCertificate *cert, SECItem *subjKeyID, SECKEYPublicKey *pubKey, 
+	SECKEYPrivateKey *signingKey, SECOidTag digestalgtag);
 
 NSSCMSSignerInfo *
-NSS_CMSSignerInfo_CreateWithSubjKeyID(NSSCMSMessage *cmsg, SECItem *subjKeyID, SECKEYPublicKey *pubKey, SECKEYPrivateKey *signingKey, SECOidTag digestalgtag)
+NSS_CMSSignerInfo_CreateWithSubjKeyID(NSSCMSMessage *cmsg, SECItem *subjKeyID, 
+	SECKEYPublicKey *pubKey, SECKEYPrivateKey *signingKey, SECOidTag digestalgtag)
 {
     return nss_cmssignerinfo_create(cmsg, NSSCMSSignerID_SubjectKeyID, NULL, subjKeyID, pubKey, signingKey, digestalgtag); 
 }
@@ -71,7 +74,9 @@ NSS_CMSSignerInfo_Create(NSSCMSMessage *cmsg, CERTCertificate *cert, SECOidTag d
 }
 
 NSSCMSSignerInfo *
-nss_cmssignerinfo_create(NSSCMSMessage *cmsg, NSSCMSSignerIDSelector type, CERTCertificate *cert, SECItem *subjKeyID, SECKEYPublicKey *pubKey, SECKEYPrivateKey *signingKey, SECOidTag digestalgtag)
+nss_cmssignerinfo_create(NSSCMSMessage *cmsg, NSSCMSSignerIDSelector type, 
+	CERTCertificate *cert, SECItem *subjKeyID, SECKEYPublicKey *pubKey, 
+	SECKEYPrivateKey *signingKey, SECOidTag digestalgtag)
 {
     void *mark;
     NSSCMSSignerInfo *signerinfo;
@@ -535,7 +540,8 @@ NSS_CMSSignerInfo_GetVersion(NSSCMSSignerInfo *signerinfo)
 
 /*
  * NSS_CMSSignerInfo_GetSigningTime - return the signing time,
- *				      in UTCTime format, of a CMS signerInfo.
+ *				      in UTCTime or GeneralizedTime format,
+ *                                    of a CMS signerInfo.
  *
  * sinfo - signerInfo data for this signer
  *
@@ -560,7 +566,7 @@ NSS_CMSSignerInfo_GetSigningTime(NSSCMSSignerInfo *sinfo, PRTime *stime)
     /* XXXX multi-valued attributes NIH */
     if (attr == NULL || (value = NSS_CMSAttribute_GetValue(attr)) == NULL)
 	return SECFailure;
-    if (DER_UTCTimeToTime(stime, value) != SECSuccess)
+    if (CERT_DecodeTimeChoice(stime, value) != SECSuccess)
 	return SECFailure;
     sinfo->signingTime = *stime;	/* make cached copy */
     return SECSuccess;
@@ -645,7 +651,7 @@ NSS_CMSSignerInfo_GetSignerEmailAddress(NSSCMSSignerInfo *sinfo)
     if ((signercert = NSS_CMSSignerInfo_GetSigningCertificate(sinfo, NULL)) == NULL)
 	return NULL;
 
-    if (signercert->emailAddr == NULL)
+    if (!signercert->emailAddr || !signercert->emailAddr[0])
 	return NULL;
 
     return (PORT_Strdup(signercert->emailAddr));
@@ -697,7 +703,7 @@ NSS_CMSSignerInfo_AddSigningTime(NSSCMSSignerInfo *signerinfo, PRTime t)
     mark = PORT_ArenaMark(poolp);
 
     /* create new signing time attribute */
-    if (DER_TimeToUTCTime(&stime, t) != SECSuccess)
+    if (CERT_EncodeTimeChoice(NULL, &stime, t) != SECSuccess)
 	goto loser;
 
     if ((attr = NSS_CMSAttribute_Create(poolp, SEC_OID_PKCS9_SIGNING_TIME, &stime, PR_FALSE)) == NULL) {
@@ -881,7 +887,7 @@ NSS_SMIMESignerInfo_SaveSMIMEProfile(NSSCMSSignerInfo *signerinfo)
     CERTCertificate *cert = NULL;
     SECItem *profile = NULL;
     NSSCMSAttribute *attr;
-    SECItem *utc_stime = NULL;
+    SECItem *stime = NULL;
     SECItem *ekp;
     CERTCertDBHandle *certdb;
     int save_error;
@@ -915,11 +921,12 @@ NSS_SMIMESignerInfo_SaveSMIMEProfile(NSSCMSSignerInfo *signerinfo)
 	/* no preferred cert found?
 	 * find the cert the signerinfo is signed with instead */
 	cert = NSS_CMSSignerInfo_GetSigningCertificate(signerinfo, certdb);
-	if (cert == NULL || cert->emailAddr == NULL)
+	if (cert == NULL || cert->emailAddr == NULL || !cert->emailAddr[0])
 	    return SECFailure;
     }
 
-    /* verify this cert for encryption (has been verified for signing so far) */    /* don't verify this cert for encryption. It may just be a signing cert.
+    /* verify this cert for encryption (has been verified for signing so far) */
+    /* don't verify this cert for encryption. It may just be a signing cert.
      * that's OK, we can still save the S/MIME profile. The encryption cert
      * should have already been saved */
 #ifdef notdef
@@ -946,10 +953,10 @@ NSS_SMIMESignerInfo_SaveSMIMEProfile(NSSCMSSignerInfo *signerinfo)
 	attr = NSS_CMSAttributeArray_FindAttrByOidTag(signerinfo->authAttr,
 				       SEC_OID_PKCS9_SIGNING_TIME,
 				       PR_TRUE);
-	utc_stime = NSS_CMSAttribute_GetValue(attr);
+	stime = NSS_CMSAttribute_GetValue(attr);
     }
 
-    rv = CERT_SaveSMimeProfile (cert, profile, utc_stime);
+    rv = CERT_SaveSMimeProfile (cert, profile, stime);
     if (must_free_cert)
 	CERT_DestroyCertificate(cert);
 

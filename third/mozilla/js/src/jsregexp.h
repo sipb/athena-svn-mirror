@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
- * Contributor(s): 
+ * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 #ifndef jsregexp_h___
 #define jsregexp_h___
@@ -40,6 +45,10 @@
 #include <stddef.h>
 #include "jspubtd.h"
 #include "jsstr.h"
+
+#ifdef JS_THREADSAFE
+#include "jsdhash.h"
+#endif
 
 struct JSRegExpStatics {
     JSString    *input;         /* input string to match (perl $_, GC root) */
@@ -53,6 +62,27 @@ struct JSRegExpStatics {
     JSSubString leftContext;    /* input to left of last match (perl $`) */
     JSSubString rightContext;   /* input to right of last match (perl $') */
 };
+
+/*
+ * This struct holds a bitmap representation of a class from a regexp.
+ * There's a list of these referenced by the classList field in the JSRegExp 
+ * struct below. The initial state has startIndex set to the offset in the
+ * original regexp source of the beginning of the class contents. The first 
+ * use of the class converts the source representation into a bitmap.
+ *
+ */
+typedef struct RECharSet {
+    JSBool converted;
+    JSBool sense;
+    uint16 length;
+    union {
+        uint8 *bits;
+        struct {
+            uint16 startIndex;
+            uint16 length;
+        } src;
+    } u;
+} RECharSet;
 
 /*
  * This macro is safe because moreParens is guaranteed to be allocated and big
@@ -71,8 +101,10 @@ struct JSRegExp {
     jsrefcount   nrefs;         /* reference count */
     uint32       parenCount:24, /* number of parenthesized submatches */
                  flags:8;       /* flags, see jsapi.h's JSREG_* defines */
-    RENode       *ren;          /* regular expression tree root */
+    uint32       classCount;    /* count [...] bitmaps */
+    RECharSet    *classList;    /* list of [...] bitmaps */
     JSString     *source;       /* locked source string, sans // */
+    jsbytecode  program[1];     /* regular expression bytecode */
 };
 
 extern JSRegExp *
@@ -120,6 +152,9 @@ js_InitRegExpClass(JSContext *cx, JSObject *obj);
 extern JSObject *
 js_NewRegExpObject(JSContext *cx, JSTokenStream *ts,
                    jschar *chars, size_t length, uintN flags);
+
+extern JSBool
+js_XDRRegExp(JSXDRState *xdr, JSObject **objp);
 
 extern JSObject *
 js_CloneRegExpObject(JSContext *cx, JSObject *obj, JSObject *parent);

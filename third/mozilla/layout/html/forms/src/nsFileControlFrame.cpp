@@ -140,14 +140,14 @@ nsFileControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
 {
   // Get the NodeInfoManager and tag necessary to create input elements
   nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
-  nsCOMPtr<nsINodeInfoManager> nimgr;
-  nsresult rv = doc->GetNodeInfoManager(getter_AddRefs(nimgr));
-  NS_ENSURE_SUCCESS(rv, rv);
+  nsINodeInfoManager *nimgr = doc->GetNodeInfoManager();
+  NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
   nimgr->GetNodeInfo(nsHTMLAtoms::input, nsnull, kNameSpaceID_None,
                      getter_AddRefs(nodeInfo));
 
+  nsresult rv;
   nsCOMPtr<nsIElementFactory> ef(do_GetService(kHTMLElementFactoryCID,&rv));
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -212,7 +212,7 @@ nsFileControlFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
 }
 
 NS_IMETHODIMP_(PRInt32)
-nsFileControlFrame::GetType() const
+nsFileControlFrame::GetFormControlType() const
 {
   return NS_FORM_INPUT_FILE;
 }
@@ -272,12 +272,7 @@ nsFileControlFrame::MouseClick(nsIDOMEvent* aMouseEvent)
   if (!doc)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-  result = doc->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
-  if (!scriptGlobalObject)
-    return NS_FAILED(result) ? result : NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIDOMWindowInternal> parentWindow = do_QueryInterface(scriptGlobalObject);
+  nsCOMPtr<nsIDOMWindowInternal> parentWindow = do_QueryInterface(doc->GetScriptGlobalObject());
   if (!parentWindow)
     return NS_ERROR_FAILURE;
 
@@ -452,22 +447,11 @@ nsFileControlFrame::GetTextControlFrame(nsIPresContext* aPresContext, nsIFrame* 
 
   while (childFrame) {
     // see if the child is a text control
-    nsIContent* content = childFrame->GetContent();
-    if (content) {
-      nsCOMPtr<nsIAtom> atom;
-      nsresult res = content->GetTag(getter_AddRefs(atom));
-      if (NS_SUCCEEDED(res) && atom) {
-        if (atom.get() == nsHTMLAtoms::input) {
+    nsCOMPtr<nsIFormControl> formCtrl =
+      do_QueryInterface(childFrame->GetContent());
 
-          // It's an input, is it a text input?
-          nsAutoString value;
-          if (NS_CONTENT_ATTR_HAS_VALUE == content->GetAttr(kNameSpaceID_None, nsHTMLAtoms::type, value)) {
-            if (value.EqualsIgnoreCase("text")) {
-              result = (nsNewFrame*)childFrame;      
-            }
-          }
-        }
-      }
+    if (formCtrl && formCtrl->GetType() == NS_FORM_INPUT_TEXT) {
+      result = (nsNewFrame*)childFrame;
     }
 
     // if not continue looking
@@ -556,7 +540,7 @@ nsFileControlFrame::GetFrameForPoint(nsIPresContext* aPresContext,
     return nsAreaFrame::GetFrameForPoint(aPresContext, aPoint, aWhichLayer, aFrame);
   }
 #endif
-  return NS_OK;
+  return NS_ERROR_FAILURE;
 }
 
 #ifdef NS_DEBUG

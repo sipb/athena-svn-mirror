@@ -117,10 +117,7 @@ public:
     return nsGenericElement::GetAttribute(aName, aReturn);
   }
   NS_METHOD SetAttribute(const nsAString& aName,
-                         const nsAString& aValue)
-  {
-    return nsGenericElement::SetAttribute(aName, aValue);
-  }
+                         const nsAString& aValue);
   NS_METHOD GetTagName(nsAString& aTagName);
   NS_METHOD GetElementsByTagName(const nsAString& aTagname,
                                  nsIDOMNodeList** aReturn);
@@ -177,8 +174,7 @@ public:
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
   NS_IMETHOD GetNameSpaceID(PRInt32* aID) const;
-  NS_IMETHOD NormalizeAttrString(const nsAString& aStr,
-                                 nsINodeInfo** aNodeInfo);
+  NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr);
   NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                      const nsAString& aValue,
                           PRBool aNotify);
@@ -192,11 +188,11 @@ public:
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const;
   NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                        PRBool aNotify);
-  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex,
+  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex,
                            PRInt32* aNameSpaceID,
                            nsIAtom** aName,
                            nsIAtom** aPrefix) const;
-  NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
+  NS_IMETHOD_(PRUint32) GetAttrCount() const;
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
@@ -223,9 +219,12 @@ public:
   NS_IMETHOD GetHTMLAttribute(nsIAtom* aAttribute, nsHTMLValue& aValue) const;
   NS_IMETHOD GetID(nsIAtom** aResult) const;
   NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
+  NS_IMETHOD_(nsIAtom*) GetIDAttributeName() const;
+  NS_IMETHOD_(nsIAtom*) GetClassAttributeName() const;
   NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
-  NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule);
+  NS_IMETHOD GetInlineStyleRule(nsICSSStyleRule** aStyleRule);
+  NS_IMETHOD SetInlineStyleRule(nsICSSStyleRule* aStyleRule, PRBool aNotify);
   NS_IMETHOD GetBaseURL(nsIURI** aBaseURL) const;
   NS_IMETHOD GetBaseTarget(nsAString& aBaseTarget) const;
 
@@ -502,6 +501,7 @@ public:
   static const AttributeDependenceEntry sImageAlignAttributeMap[];
   static const AttributeDependenceEntry sDivAlignAttributeMap[];
   static const AttributeDependenceEntry sBackgroundAttributeMap[];
+  static const AttributeDependenceEntry sScrollingAttributeMap[];
   
   /**
    * A common method where you can just pass in a list of maps to check
@@ -571,6 +571,16 @@ public:
    */
   static void MapBackgroundAttributesInto(const nsIHTMLMappedAttributes* aAttributes,
                                           nsRuleData* aData);
+  /**
+   * Helper to map the scrolling attribute on FRAME and IFRAME
+   * into a style struct.
+   *
+   * @param aAttributes the list of attributes to map
+   * @param aData the returned rule data [INOUT]
+   * @see GetAttributeMappingFunction
+   */
+  static void MapScrollingAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
+                                        nsRuleData* aData);
   /**
    * Get the primary frame for a piece of content.
    *
@@ -662,7 +672,7 @@ public:
    *
    * @param aFormControl the form control to set the form for
    */
-  nsresult FindAndSetForm(nsIFormControl *aFormControl);
+  void FindAndSetForm(nsIFormControl *aFormControl);
 
   /**
    * See if the document being tested has nav-quirks mode enabled.
@@ -809,27 +819,23 @@ public:
   NS_IMETHOD Compact() {
     return NS_OK;
   }
-  NS_IMETHOD CanContainChildren(PRBool& aResult) const {
-    aResult = PR_FALSE;
-    return NS_OK;
+  NS_IMETHOD_(PRBool) CanContainChildren() const {
+    return PR_FALSE;
   }
-  NS_IMETHOD ChildCount(PRInt32& aResult) const {
-    aResult = 0;
-    return NS_OK;
+  NS_IMETHOD_(PRUint32) GetChildCount() const {
+    return 0;
   }
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const {
-    aResult = nsnull;
-    return NS_OK;
+  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const {
+    return nsnull;
   }
-  NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const {
-    aResult = -1;
-    return NS_OK;
+  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const {
+    return -1;
   }
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
+  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
                            PRBool aDeepSetDocument) {
     return NS_OK;
   }
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
+  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
                             PRBool aDeepSetDocument) {
     return NS_OK;
   }
@@ -837,7 +843,7 @@ public:
                            PRBool aDeepSetDocument) {
     return NS_OK;
   }
-  NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify) {
+  NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify) {
     return NS_OK;
   }
 };
@@ -884,17 +890,24 @@ public:
 
   // Remainder of nsIHTMLContent (and nsIContent)
   NS_IMETHOD Compact();
-  NS_IMETHOD CanContainChildren(PRBool& aResult) const;
-  NS_IMETHOD ChildCount(PRInt32& aResult) const;
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
-  NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const;
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
-                           PRBool aDeepSetDocument);
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
-                            PRBool aDeepSetDocument);
-  NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
-                           PRBool aDeepSetDocument);
-  NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify);
+  NS_IMETHOD_(PRBool) CanContainChildren() const;
+  NS_IMETHOD_(PRUint32) GetChildCount() const;
+  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const;
+  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const;
+
+  // Child list modification hooks
+  virtual PRBool InternalInsertChildAt(nsIContent* aKid, PRUint32 aIndex) {
+    return mChildren.InsertElementAt(aKid, aIndex);
+  }
+  virtual PRBool InternalReplaceChildAt(nsIContent* aKid, PRUint32 aIndex) {
+    return mChildren.ReplaceElementAt(aKid, aIndex);
+  }
+  virtual PRBool InternalAppendChildTo(nsIContent* aKid) {
+    return mChildren.AppendElement(aKid);
+  }
+  virtual PRBool InternalRemoveChildAt(PRUint32 aIndex) {
+    return mChildren.RemoveElementAt(aIndex);
+  }
 
   /** The list of children */
   nsSmallVoidArray mChildren;
@@ -944,7 +957,7 @@ public:
   NS_IMETHOD RestoreState(nsIPresState* aState) { return NS_OK; }
 
   // nsIContent
-  NS_IMETHOD SetParent(nsIContent *aParent);
+  NS_IMETHOD_(void) SetParent(nsIContent *aParent);
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
 
@@ -991,7 +1004,7 @@ public:
   NS_IMETHOD RestoreState(nsIPresState* aState) { return NS_OK; }
 
   // nsIContent
-  NS_IMETHOD SetParent(nsIContent *aParent);
+  NS_IMETHOD_(void) SetParent(nsIContent *aParent);
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
 
@@ -1250,12 +1263,6 @@ NS_NewHTMLAreaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 nsresult
 NS_NewHTMLBRElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
-inline nsresult
-NS_NewHTMLBaseElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo)
-{
-  return NS_NewHTMLSharedLeafElement(aResult, aNodeInfo);
-}
-
 nsresult
 NS_NewHTMLBaseFontElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
@@ -1276,12 +1283,6 @@ NS_NewHTMLDirectoryElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
 nsresult
 NS_NewHTMLDivElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
-
-inline nsresult
-NS_NewHTMLEmbedElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo)
-{
-  return NS_NewHTMLSharedLeafElement(aResult, aNodeInfo);
-}
 
 nsresult
 NS_NewHTMLFieldSetElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
@@ -1323,12 +1324,6 @@ NS_NewHTMLInputElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
 nsresult
 NS_NewHTMLInsElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
-inline nsresult
-NS_NewHTMLIsIndexElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo)
-{
-  return NS_NewHTMLSharedLeafElement(aResult, aNodeInfo);
-}
-
 nsresult
 NS_NewHTMLLIElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
@@ -1365,12 +1360,6 @@ NS_NewHTMLOptionElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 nsresult
 NS_NewHTMLParagraphElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
-inline nsresult
-NS_NewHTMLParamElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo)
-{
-  return NS_NewHTMLSharedLeafElement(aResult, aNodeInfo);
-}
-
 nsresult
 NS_NewHTMLPreElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
@@ -1383,12 +1372,6 @@ NS_NewHTMLScriptElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 nsresult
 NS_NewHTMLSelectElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
                         PRBool aFromParser);
-
-inline nsresult
-NS_NewHTMLSpacerElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo)
-{
-  return NS_NewHTMLSharedLeafElement(aResult, aNodeInfo);
-}
 
 nsresult
 NS_NewHTMLSpanElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
@@ -1404,13 +1387,6 @@ NS_NewHTMLTableCellElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
 nsresult
 NS_NewHTMLTableColElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
-
-inline nsresult
-NS_NewHTMLTableColGroupElement(nsIHTMLContent** aResult,
-                               nsINodeInfo *aNodeInfo)
-{
-  return NS_NewHTMLTableColElement(aResult, aNodeInfo);
-}
 
 nsresult
 NS_NewHTMLTableElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
@@ -1441,12 +1417,5 @@ NS_NewHTMLUListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
 nsresult
 NS_NewHTMLUnknownElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
-
-inline nsresult
-NS_NewHTMLWBRElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo)
-{
-  return NS_NewHTMLSharedLeafElement(aResult, aNodeInfo);
-}
-
 
 #endif /* nsGenericHTMLElement_h___ */

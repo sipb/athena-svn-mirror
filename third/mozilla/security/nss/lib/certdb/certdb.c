@@ -34,7 +34,7 @@
 /*
  * Certificate handling code
  *
- * $Id: certdb.c,v 1.1.1.1.2.2 2004-01-02 19:58:38 ghudson Exp $
+ * $Id: certdb.c,v 1.1.1.1.2.3 2004-03-06 19:29:28 ghudson Exp $
  */
 
 #include "nssilock.h"
@@ -565,7 +565,7 @@ cert_GetCertType(CERTCertificate *cert)
 	 * to be used for email
 	 */
 	if ( ( nsCertType & NS_CERT_TYPE_SSL_CLIENT ) &&
-	    cert->emailAddr ) {
+	    cert->emailAddr && cert->emailAddr[0]) {
 	    nsCertType |= NS_CERT_TYPE_EMAIL;
 	}
 	/*
@@ -955,16 +955,21 @@ CERT_SetSlopTime(PRInt32 slop)		/* seconds */
 SECStatus
 CERT_GetCertTimes(CERTCertificate *c, PRTime *notBefore, PRTime *notAfter)
 {
-    int rv;
+    SECStatus rv;
+
+    if (!c || !notBefore || !notAfter) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return SECFailure;
+    }
     
     /* convert DER not-before time */
-    rv = DER_UTCTimeToTime(notBefore, &c->validity.notBefore);
+    rv = CERT_DecodeTimeChoice(notBefore, &c->validity.notBefore);
     if (rv) {
 	return(SECFailure);
     }
     
     /* convert DER not-after time */
-    rv = DER_UTCTimeToTime(notAfter, &c->validity.notAfter);
+    rv = CERT_DecodeTimeChoice(notAfter, &c->validity.notAfter);
     if (rv) {
 	return(SECFailure);
     }
@@ -1015,14 +1020,14 @@ SEC_GetCrlTimes(CERTCrl *date, PRTime *notBefore, PRTime *notAfter)
     int rv;
     
     /* convert DER not-before time */
-    rv = DER_UTCTimeToTime(notBefore, &date->lastUpdate);
+    rv = CERT_DecodeTimeChoice(notBefore, &date->lastUpdate);
     if (rv) {
 	return(SECFailure);
     }
     
     /* convert DER not-after time */
     if (date->nextUpdate.data) {
-	rv = DER_UTCTimeToTime(notAfter, &date->nextUpdate);
+	rv = CERT_DecodeTimeChoice(notAfter, &date->nextUpdate);
 	if (rv) {
 	    return(SECFailure);
 	}
@@ -1924,7 +1929,7 @@ CERT_IsNewer(CERTCertificate *certa, CERTCertificate *certb)
 	return(PR_FALSE);
     }
 
-    /* get current UTC time */
+    /* get current time */
     now = PR_Now();
 
     if ( newerbefore ) {
@@ -2159,7 +2164,7 @@ CERT_SaveImportedCert(CERTCertificate *cert, SECCertUsage usage,
 		trust.emailFlags = CERTDB_VALID_CA;
 	    }
 	} else {
-	    if ( cert->emailAddr == NULL ) {
+	    if ( !cert->emailAddr || !cert->emailAddr[0] ) {
 		saveit = PR_FALSE;
 	    }
 	    

@@ -282,7 +282,50 @@ DateFormater.prototype.getShortDayName = function( dayIndex )
    return dayName;
 }
 
+DateFormater.prototype.parseShortDate = function ( dateString )
+{ 
+  // probe for date format -- this part could be in constructor
+  // probe result state:
+  var parseShortDateRegex = /^\s*(\d+)\D(\d+)\D(\d+)\s*$/; //digits & nonDigits
+  var parsedYearIndex = -1, parsedMonthIndex = -1, parsedDayIndex = -1;
+  var parseTwoDigitYear = false;
+  { // do probe 
+    var probeDate = new Date(2002,3-1,4); // month is 0-based
+    var probeString = this.getShortFormatedDate(probeDate);
 
+    var probeArray = parseShortDateRegex.exec(probeString);
+    for (var i = 1; i <= 3; i++) { 
+      switch (Number(probeArray[i])) {
+      case 02:    parseTwoDigitYear = true;  // fall thru
+      case 2002:  parsedYearIndex = i;       break;
+      case 3:             parsedMonthIndex = i; break;
+      case 4:             parsedDayIndex = i;   break;
+      }
+    }
+    // all three parsed indexes are now set (no longer -1)
+  }
+  // parse dateString
+  var dateNumbersArray = parseShortDateRegex.exec(dateString);
+  if (dateNumbersArray != null) { 
+     var year = Number(dateNumbersArray[parsedYearIndex]);
+     if (parseTwoDigitYear && 0 <= year && year < 100) {
+       // If 2-digit year format and 0 <= year < 100,
+       //   parse year as up to 30 years in future or 69 years in past.
+       //   (Covers 30-year mortgage and most working people's birthdate.)
+       // otherwise will be treated as four digit year.
+       var currentYear = 1900 + new Date().getYear(); // getYear 0 is 1900.
+       var currentCentury = currentYear - currentYear % 100;
+       year = currentCentury + year;
+       if (year < currentYear - 69)
+         year += 100;
+       if (year > currentYear + 30)
+ 	year -= 100;
+     }
+     return new Date(year, // four-digit year
+		    Number(dateNumbersArray[parsedMonthIndex]) - 1, // 0-based
+		    Number(dateNumbersArray[parsedDayIndex]));
+  } else return null; // did not match regex, not a valid date
+}
 
 
 

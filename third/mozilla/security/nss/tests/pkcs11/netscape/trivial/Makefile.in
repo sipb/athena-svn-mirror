@@ -30,7 +30,7 @@
 # GPL.
 #
 
-MAKEFILE_IN_CVS_ID = "@(#) $RCSfile: Makefile.in,v $ $Revision: 1.1.1.1.2.2 $ $Date: 2004-01-02 20:00:20 $ $Name: not supported by cvs2svn $"
+MAKEFILE_IN_CVS_ID = "@(#) $RCSfile: Makefile.in,v $ $Revision: 1.1.1.1.2.3 $ $Date: 2004-03-06 19:30:45 $ $Name: not supported by cvs2svn $"
 
 SHELL = /bin/sh
 .SUFFIXES:

@@ -230,16 +230,22 @@ NS_IMETHODIMP
 nsXBLContentSink::HandleStartElement(const PRUnichar *aName, 
                                      const PRUnichar **aAtts, 
                                      PRUint32 aAttsCount, 
-                                     PRUint32 aIndex, 
+                                     PRInt32 aIndex, 
                                      PRUint32 aLineNumber)
 {
   nsresult rv = nsXMLContentSink::HandleStartElement(aName,aAtts,aAttsCount,aIndex,aLineNumber);
   if (NS_FAILED(rv))
     return rv;
 
-  if (mState == eXBL_InBinding && !mBinding)
+  if (mState == eXBL_InBinding && !mBinding) {
+    // XXX need to return nsresult here.  Need error-handling in this
+    // file in general.
     ConstructBinding();
-  
+    if (!mBinding) {
+      return NS_ERROR_UNEXPECTED;
+    }
+  }
+
   return rv;
 }
 
@@ -339,12 +345,9 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
       if (!mDocInfo)
         return NS_ERROR_FAILURE;
 
-      nsCOMPtr<nsIBindingManager> bindingManager;
-      mDocument->GetBindingManager(getter_AddRefs(bindingManager));
-      bindingManager->PutXBLDocumentInfo(mDocInfo);
+      mDocument->GetBindingManager()->PutXBLDocumentInfo(mDocInfo);
 
-      nsCOMPtr<nsIURI> url;
-      mDocument->GetDocumentURL(getter_AddRefs(url));
+      nsIURI *url = mDocument->GetDocumentURL();
       
       PRBool isChrome = PR_FALSE;
       PRBool isRes = PR_FALSE;
@@ -452,9 +455,16 @@ nsXBLContentSink::ConstructBinding()
   nsCAutoString cid; cid.AssignWithConversion(id);
 
   if (!cid.IsEmpty()) {
-    mBinding = new nsXBLPrototypeBinding(cid, mDocInfo, binding);
-    mDocInfo->SetPrototypeBinding(cid, mBinding);
-    binding->UnsetAttr(kNameSpaceID_None, nsHTMLAtoms::id, PR_FALSE);
+    mBinding = new nsXBLPrototypeBinding();
+    if (mBinding) {
+      if (NS_SUCCEEDED(mBinding->Init(cid, mDocInfo, binding))) {
+        mDocInfo->SetPrototypeBinding(cid, mBinding);
+        binding->UnsetAttr(kNameSpaceID_None, nsHTMLAtoms::id, PR_FALSE);
+      } else {
+        delete mBinding;
+        mBinding = nsnull;
+      }
+    }
   }
 }
 

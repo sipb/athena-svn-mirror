@@ -404,7 +404,7 @@ MozAxAutoPushJSContext::MozAxAutoPushJSContext(JSContext *cx,
         if (NS_SUCCEEDED(mPushResult))
         {
             JSPrincipals* jsprinc;
-            principal->GetJSPrincipals(&jsprinc);
+            principal->GetJSPrincipals(cx, &jsprinc);
 
             mFrame.script = JS_CompileScriptForPrincipals(cx, JS_GetGlobalObject(cx),
                                                           jsprinc, "", 0, "", 1);
@@ -855,8 +855,7 @@ NewControl(const char *pluginType,
                         nsCOMPtr<nsIDocument> doc(do_QueryInterface(DOMdocument));
                         if (doc)
                         {
-                            nsCOMPtr<nsIURI> baseURI;
-                            doc->GetBaseURL(getter_AddRefs(baseURI));
+                            nsIURI *baseURI = doc->GetBaseURL();
                             if (baseURI)
                             {
                                 nsCAutoString newURL;

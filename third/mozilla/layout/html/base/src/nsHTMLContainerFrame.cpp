@@ -42,6 +42,7 @@
 #include "nsStyleConsts.h"
 #include "nsIContent.h"
 #include "nsLayoutAtoms.h"
+#include "nsLayoutUtils.h"
 #include "nsCSSAnonBoxes.h"
 #include "nsIWidget.h"
 #include "nsILinkHandler.h"
@@ -230,25 +231,15 @@ static PRBool
 HasTextFrameDescendant(nsIPresContext* aPresContext, nsIFrame* aParent)
 {
   nsIFrame* kid = nsnull;
-  nsCOMPtr<nsIAtom> frameType;
     
-  for (aParent->FirstChild(aPresContext, nsnull, &kid); kid; 
+  for (aParent->FirstChild(aPresContext, nsnull, &kid); kid;
        kid = kid->GetNextSibling())
   {
-    kid->GetFrameType(getter_AddRefs(frameType));
-    if (frameType == nsLayoutAtoms::textFrame) {
+    if (kid->GetType() == nsLayoutAtoms::textFrame) {
       // This is only a candidate. We need to determine if this text
       // frame is empty, as in containing only (non-pre) whitespace.
       // See bug 20163.
-      nsCompatibility mode;
-      aPresContext->GetCompatibilityMode(&mode);
-      const nsStyleText* styleText = kid->GetStyleText();
-      // XXXldb This is the wrong way to set |isPre|.
-      PRBool isPre = NS_STYLE_WHITESPACE_PRE == styleText->mWhiteSpace ||
-            NS_STYLE_WHITESPACE_MOZ_PRE_WRAP == styleText->mWhiteSpace;
-      PRBool isEmpty;
-      kid->IsEmpty(mode, isPre, &isEmpty);
-      if (!isEmpty) {
+      if (!kid->IsEmpty()) {
         return PR_TRUE;
       }
     }
@@ -376,8 +367,8 @@ ReparentFrameViewTo(nsIPresContext* aPresContext,
     aViewManager->RemoveChild(view);
     
     // The view will remember the Z-order and other attributes that have been set on it.
-    // XXX Pretend this view is last of the parent's views in document order
-    aViewManager->InsertChild(aNewParentView, view, nsnull, PR_TRUE);
+    nsIView* insertBefore = nsLayoutUtils::FindSiblingViewFor(aNewParentView, aFrame);
+    aViewManager->InsertChild(aNewParentView, view, insertBefore, insertBefore != nsnull);
   } else {
     PRInt32 listIndex = 0;
     nsCOMPtr<nsIAtom> listName;
@@ -537,9 +528,7 @@ nsHTMLContainerFrame::ReparentFrameViewList(nsIPresContext* aPresContext,
 }
 
 nsresult
-nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
-                                         nsIFrame* aFrame,
-                                         nsStyleContext* aStyleContext,
+nsHTMLContainerFrame::CreateViewForFrame(nsIFrame* aFrame,
                                          nsIFrame* aContentParentFrame,
                                          PRBool aForce)
 {
@@ -548,7 +537,7 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
   }
 
   // If we don't yet have a view, see if we need a view
-  if (!(aForce || FrameNeedsView(aPresContext, aFrame, aStyleContext))) {
+  if (!(aForce || FrameNeedsView(aFrame))) {
     // don't need a view
     return NS_OK;
   }
@@ -574,7 +563,7 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
   // Initialize the view
   view->Init(viewManager, aFrame->GetRect(), parentView);
 
-  SyncFrameViewProperties(aPresContext, aFrame, aStyleContext, view);
+  SyncFrameViewProperties(aFrame->GetPresContext(), aFrame, nsnull, view);
 
   // Insert the view into the view hierarchy. If the parent view is a
   // scrolling view we need to do this differently
@@ -582,20 +571,24 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
   if (NS_SUCCEEDED(CallQueryInterface(parentView, &scrollingView))) {
     scrollingView->SetScrolledView(view);
   } else {
-    // XXX Drop it at the end of the document order until we can do better
-    viewManager->InsertChild(parentView, view, nsnull, PR_TRUE);
+    nsIView* insertBefore = nsLayoutUtils::FindSiblingViewFor(parentView, aFrame);
+    // we insert this view 'above' the insertBefore view, unless insertBefore is null,
+    // in which case we want to call with aAbove == PR_FALSE to insert at the beginning
+    // in document order
+    viewManager->InsertChild(parentView, view, insertBefore, insertBefore != nsnull);
 
     if (nsnull != aContentParentFrame) {
       nsIView* zParentView = aContentParentFrame->GetClosestView();
       if (zParentView != parentView) {
-        viewManager->InsertZPlaceholder(zParentView, view, nsnull, PR_TRUE);
+        insertBefore = nsLayoutUtils::FindSiblingViewFor(zParentView, aFrame);
+        viewManager->InsertZPlaceholder(zParentView, view, insertBefore, insertBefore != nsnull);
       }
     }
   }
 
   // XXX If it's fixed positioned, then create a widget so it floats
   // above the scrolling area
-  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
+  const nsStyleDisplay* display = aFrame->GetStyleContext()->GetStyleDisplay();
   if (NS_STYLE_POSITION_FIXED == display->mPosition) {
     view->CreateWidget(kCChildCID);
   }
@@ -648,6 +641,11 @@ nsHTMLContainerFrame::CheckInvalidateSizeChange(nsIPresContext* aPresContext,
     }
   }
 
+  if (mRect.IsEmpty()) {
+    // nothing else to do here
+    return;
+  }
+  
   // Invalidate the old frame if the frame has borders. Those borders
   // may be moving.
   const nsStyleBorder* border = GetStyleBorder();

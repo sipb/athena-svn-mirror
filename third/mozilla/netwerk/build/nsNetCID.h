@@ -57,6 +57,20 @@
     {0x93, 0x37, 0x00, 0x10, 0x4b, 0xa0, 0xfd, 0x40} \
 }
 
+// service implementing nsIEventTarget.  events dispatched to this event
+// target will be executed on one of necko's background i/o threads.
+#define NS_IOTHREADPOOL_CLASSNAME \
+    "nsIOThreadPool"
+#define NS_IOTHREADPOOL_CONTRACTID \
+    "@mozilla.org/network/io-thread-pool;1"
+#define NS_IOTHREADPOOL_CID                          \
+{ /* f1d62b49-5051-48e2-9155-c3509428461e */         \
+    0xf1d62b49,                                      \
+    0x5051,                                          \
+    0x48e2,                                          \
+    {0x91, 0x55, 0xc3, 0x50, 0x94, 0x28, 0x46, 0x1e} \
+}
+
 // service implementing nsIProtocolProxyService.
 #define NS_PROTOCOLPROXYSERVICE_CLASSNAME \
     "nsProtocolProxyService"
@@ -295,6 +309,19 @@
     {0xbb, 0x4f, 0x96, 0x5c, 0xff, 0xd2, 0x3e, 0xce} \
 }
 
+// component implementing nsISyncStreamListener.
+#define NS_SYNCSTREAMLISTENER_CLASSNAME \
+    "nsSyncStreamListener"
+#define NS_SYNCSTREAMLISTENER_CONTRACTID \
+    "@mozilla.org/network/sync-stream-listener;1"
+#define NS_SYNCSTREAMLISTENER_CID \
+{ /* 439400d3-6f23-43db-8b06-8aafe1869bd8 */         \
+    0x439400d3,                                      \
+    0x6f23,                                          \
+    0x43db,                                          \
+    {0x8b, 0x06, 0x8a, 0xaf, 0xe1, 0x86, 0x9b, 0xd8} \
+}
+
 // component implementing nsIURIChecker.
 #define NS_URICHECKER_CLASSNAME \
     "nsURIChecker"
@@ -345,6 +372,19 @@
     0xef12,                                          \
     0x11d2,                                          \
     {0x92, 0xb6, 0x00, 0x10, 0x5a, 0x1b, 0x0d, 0x64} \
+}
+
+// component implementing nsIServerSocket
+#define NS_SERVERSOCKET_CLASSNAME \
+    "nsServerSocket"
+#define NS_SERVERSOCKET_CONTRACTID \
+    "@mozilla.org/network/server-socket;1"
+#define NS_SERVERSOCKET_CID                          \
+{ /* 2ec62893-3b35-48fa-ab1d-5e68a9f45f08 */         \
+    0x2ec62893,                                      \
+    0x3b35,                                          \
+    0x48fa,                                          \
+    {0xab, 0x1d, 0x5e, 0x68, 0xa9, 0xf4, 0x5f, 0x08} \
 }
 
 #define NS_FILETRANSPORTSERVICE_CLASSNAME \
@@ -557,6 +597,18 @@
  * netwerk/dns/ classes
  */
 
+#define NS_DNSSERVICE_CLASSNAME \
+    "nsDNSService"
+#define NS_DNSSERVICE_CONTRACTID \
+    "@mozilla.org/network/dns-service;1"
+#define NS_DNSSERVICE_CID \
+{ /* b0ff4572-dae4-4bef-a092-83c1b88f6be9 */         \
+    0xb0ff4572,                                      \
+    0xdae4,                                          \
+    0x4bef,                                          \
+    {0xa0, 0x92, 0x83, 0xc1, 0xb8, 0x8f, 0x6b, 0xe9} \
+}
+
 #define NS_IDNSERVICE_CLASSNAME \
     "nsIDNService"
 /* ContractID of the XPCOM package that implements nsIIDNService */
@@ -585,5 +637,68 @@
 }
 
 #define NS_MIMEHEADERPARAM_CONTRACTID "@mozilla.org/network/mime-hdrparam;1"
+
+
+/******************************************************************************
+ * netwerk/socket classes
+ */
+
+#define NS_SOCKETPROVIDERSERVICE_CLASSNAME \
+    "nsSocketProviderService"
+#define NS_SOCKETPROVIDERSERVICE_CONTRACTID \
+    "@mozilla.org/network/socket-provider-service;1"
+#define NS_SOCKETPROVIDERSERVICE_CID                   \
+{ /* ed394ba0-5472-11d3-bbc8-0000861d1237 */           \
+    0xed394ba0,                                        \
+    0x5472,                                            \
+    0x11d3,                                            \
+    { 0xbb, 0xc8, 0x00, 0x00, 0x86, 0x1d, 0x12, 0x37 } \
+}
+
+#define NS_SOCKSSOCKETPROVIDER_CID                     \
+{ /* 8dbe7246-1dd2-11b2-9b8f-b9a849e4403a */           \
+    0x8dbe7246,                                        \
+    0x1dd2,                                            \
+    0x11b2,                                            \
+    { 0x9b, 0x8f, 0xb9, 0xa8, 0x49, 0xe4, 0x40, 0x3a } \
+}
+
+#define NS_SOCKS4SOCKETPROVIDER_CID                    \
+{ /* F7C9F5F4-4451-41c3-A28A-5BA2447FBACE */           \
+    0xf7c9f5f4,                                        \
+    0x4451,                                            \
+    0x41c3,                                            \
+    { 0xa2, 0x8a, 0x5b, 0xa2, 0x44, 0x7f, 0xba, 0xce } \
+}
+
+/******************************************************************************
+ * netwerk/cookie classes
+ */
+
+// service implementing nsICookieManager and nsICookieManager2.
+#define NS_COOKIEMANAGER_CLASSNAME \
+    "CookieManager"
+#define NS_COOKIEMANAGER_CONTRACTID \
+    "@mozilla.org/cookiemanager;1"
+#define NS_COOKIEMANAGER_CID                           \
+{ /* aaab6710-0f2c-11d5-a53b-0010a401eb10 */           \
+    0xaaab6710,                                        \
+    0x0f2c,                                            \
+    0x11d5,                                            \
+    { 0xa5, 0x3b, 0x00, 0x10, 0xa4, 0x01, 0xeb, 0x10 } \
+}
+
+// service implementing nsICookieService.
+#define NS_COOKIESERVICE_CLASSNAME \
+    "CookieService"
+#define NS_COOKIESERVICE_CONTRACTID \
+    "@mozilla.org/cookieService;1"
+#define NS_COOKIESERVICE_CID                           \
+{ /* c375fa80-150f-11d6-a618-0010a401eb10 */           \
+    0xc375fa80,                                        \
+    0x150f,                                            \
+    0x11d6,                                            \
+    { 0xa6, 0x18, 0x00, 0x10, 0xa4, 0x01, 0xeb, 0x10 } \
+}
 
 #endif // nsNetCID_h__

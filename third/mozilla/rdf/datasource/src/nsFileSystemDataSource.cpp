@@ -277,9 +277,12 @@ FileSystemDataSource::FileSystemDataSource(void)
 {
     if (gRefCnt++ == 0)
     {
-        nsresult rv = nsServiceManager::GetService(kRDFServiceCID,
-                       NS_GET_IID(nsIRDFService),
-                       (nsISupports**) &gRDFService);
+#ifdef DEBUG
+        nsresult rv =
+#endif
+        nsServiceManager::GetService(kRDFServiceCID,
+                                     NS_GET_IID(nsIRDFService),
+                                     (nsISupports**) &gRDFService);
 
         PR_ASSERT(NS_SUCCEEDED(rv));
 
@@ -1250,7 +1253,6 @@ FileSystemDataSource::isValidFolder(nsIRDFResource *source)
     rv = source->GetValueConst(&uri);
     if (NS_FAILED(rv)) return(isValid);
 
-    PRBool          isIEFavorite = PR_FALSE;
     nsAutoString        theURI; theURI.AssignWithConversion(uri);
     if (theURI.Find(ieFavoritesDir) == 0)
     {

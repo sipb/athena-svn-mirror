@@ -177,7 +177,7 @@ NS_ScriptErrorReporter(JSContext *cx,
       //send error event first, then proceed
       nsCOMPtr<nsIDocShell> docShell;
       globalObject->GetDocShell(getter_AddRefs(docShell));
-      if (docShell) {
+      if (docShell && !JSREPORT_IS_WARNING(report->flags)) {
         static PRInt32 errorDepth; // Recursion prevention
         errorDepth++;
 
@@ -309,7 +309,7 @@ ChangeCase(JSContext *cx, JSString *src, jsval *rval,
   nsAutoString result;
   changeCaseFnc(str, result);
 
-  JSString *ucstr = JS_NewUCStringCopyN(cx, result.get(), result.Length());
+  JSString *ucstr = JS_NewUCStringCopyN(cx, (jschar*)result.get(), result.Length());
   if (!ucstr) {
     return JS_FALSE;
   }
@@ -381,6 +381,24 @@ LocaleCompare(JSContext *cx, JSString *src1, JSString *src2, jsval *rval)
   *rval = INT_TO_JSVAL(result);
 
   return JS_TRUE;
+}
+
+static void
+NotifyXPCIfExceptionPending(JSContext *cx)
+{
+  if (!::JS_IsExceptionPending(cx)) {
+    return;
+  }
+
+  nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID()));
+
+  if (xpc) {
+    nsCOMPtr<nsIXPCNativeCallContext> nccx;
+    xpc->GetCurrentNativeCallContext(getter_AddRefs(nccx));
+    if (nccx) {
+      nccx->SetExceptionWasThrown(PR_TRUE);
+    }
+  }
 }
 
 
@@ -628,7 +646,7 @@ nsJSContext::EvaluateStringWithValue(const nsAString& aScript,
   JSPrincipals *jsprin;
   nsCOMPtr<nsIPrincipal> principal = aPrincipal;
   if (aPrincipal) {
-    aPrincipal->GetJSPrincipals(&jsprin);
+    aPrincipal->GetJSPrincipals(mContext, &jsprin);
   }
   else {
     nsCOMPtr<nsIScriptGlobalObject> global;
@@ -641,7 +659,7 @@ nsJSContext::EvaluateStringWithValue(const nsAString& aScript,
     rv = objPrincipal->GetPrincipal(getter_AddRefs(principal));
     if (NS_FAILED(rv))
       return NS_ERROR_FAILURE;
-    principal->GetJSPrincipals(&jsprin);
+    principal->GetJSPrincipals(mContext, &jsprin);
   }
   // From here on, we must JSPRINCIPALS_DROP(jsprin) before returning...
 
@@ -695,8 +713,17 @@ nsJSContext::EvaluateStringWithValue(const nsAString& aScript,
                                               aURL,
                                               aLineNo,
                                               &val);
+
       if (aVersion)
         ::JS_SetVersion(mContext, oldVersion);
+
+      if (!ok) {
+        // Tell XPConnect about any pending exceptions. This is needed
+        // to avoid dropping JS exceptions in case we got here through
+        // nested calls through XPConnect.
+
+        NotifyXPCIfExceptionPending(mContext);
+      }
     }
   }
 
@@ -762,19 +789,11 @@ JSValueToAString(JSContext *cx, jsval val, nsAString *result,
       return NS_ERROR_OUT_OF_MEMORY;
     }
 
-    // We've got a pending exception. Tell XPConnect's current native
-    // call context (if any) about this exception so that it doesn't
-    // keep going as if nothing happened.
+    // Tell XPConnect about any pending exceptions. This is needed to
+    // avoid dropping JS exceptions in case we got here through nested
+    // calls through XPConnect.
 
-    nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID()));
-
-    if (xpc) {
-      nsCOMPtr<nsIXPCNativeCallContext> nccx;
-      xpc->GetCurrentNativeCallContext(getter_AddRefs(nccx));
-      if (nccx) {
-        nccx->SetExceptionWasThrown(PR_TRUE);
-      }
-    }
+    NotifyXPCIfExceptionPending(cx);
   }
 
   return NS_OK;
@@ -806,7 +825,7 @@ nsJSContext::EvaluateString(const nsAString& aScript,
   JSPrincipals *jsprin;
   nsCOMPtr<nsIPrincipal> principal = aPrincipal;
   if (aPrincipal) {
-    aPrincipal->GetJSPrincipals(&jsprin);
+    aPrincipal->GetJSPrincipals(mContext, &jsprin);
   }
   else {
     nsCOMPtr<nsIScriptGlobalObject> global;
@@ -819,7 +838,7 @@ nsJSContext::EvaluateString(const nsAString& aScript,
     rv = objPrincipal->GetPrincipal(getter_AddRefs(principal));
     if (NS_FAILED(rv))
       return NS_ERROR_FAILURE;
-    principal->GetJSPrincipals(&jsprin);
+    principal->GetJSPrincipals(mContext, &jsprin);
   }
   // From here on, we must JSPRINCIPALS_DROP(jsprin) before returning...
 
@@ -873,8 +892,18 @@ nsJSContext::EvaluateString(const nsAString& aScript,
                                               aURL,
                                               aLineNo,
                                               &val);
-      if (aVersion)
+
+      if (aVersion) {
         ::JS_SetVersion(mContext, oldVersion);
+      }
+
+      if (!ok) {
+        // Tell XPConnect about any pending exceptions. This is needed
+        // to avoid dropping JS exceptions in case we got here through
+        // nested calls through XPConnect.
+
+        NotifyXPCIfExceptionPending(mContext);
+      }
     }
   }
 
@@ -919,7 +948,7 @@ nsJSContext::CompileScript(const PRUnichar* aText,
     aScopeObject = ::JS_GetGlobalObject(mContext);
 
   JSPrincipals *jsprin;
-  aPrincipal->GetJSPrincipals(&jsprin);
+  aPrincipal->GetJSPrincipals(mContext, &jsprin);
   // From here on, we must JSPRINCIPALS_DROP(jsprin) before returning...
 
   PRBool ok = PR_FALSE;
@@ -1031,6 +1060,12 @@ nsJSContext::ExecuteScript(void* aScriptObject,
     if (aRetValue) {
       aRetValue->Truncate();
     }
+
+    // Tell XPConnect about any pending exceptions. This is needed to
+    // avoid dropping JS exceptions in case we got here through nested
+    // calls through XPConnect.
+
+    NotifyXPCIfExceptionPending(mContext);
   }
 
   ScriptEvaluated(PR_TRUE);
@@ -1093,7 +1128,7 @@ nsJSContext::CompileEventHandler(void *aTarget, nsIAtom *aName,
                                                        getter_AddRefs(prin));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    prin->GetJSPrincipals(&jsprin);
+    prin->GetJSPrincipals(mContext, &jsprin);
     NS_ENSURE_TRUE(jsprin, NS_ERROR_NOT_AVAILABLE);
   }
 
@@ -1146,7 +1181,7 @@ nsJSContext::CompileFunction(void* aTarget,
       nsCOMPtr<nsIPrincipal> prin;
       if (NS_FAILED(globalData->GetPrincipal(getter_AddRefs(prin))))
         return NS_ERROR_FAILURE;
-      prin->GetJSPrincipals(&jsprin);
+      prin->GetJSPrincipals(mContext, &jsprin);
     }
   }
 
@@ -1178,7 +1213,8 @@ nsJSContext::CompileFunction(void* aTarget,
 
 NS_IMETHODIMP
 nsJSContext::CallEventHandler(void *aTarget, void *aHandler, PRUint32 argc,
-                              void *argv, PRBool *aBoolResult, PRBool aReverseReturnResult)
+                              void *argv, PRBool *aBoolResult,
+                              PRBool aReverseReturnResult)
 {
   if (!mScriptsEnabled) {
     *aBoolResult = !aReverseReturnResult;
@@ -1210,16 +1246,27 @@ nsJSContext::CallEventHandler(void *aTarget, void *aHandler, PRUint32 argc,
   // check if the event handler can be run on the object in question
   rv = securityManager->CheckFunctionAccess(mContext, aHandler, aTarget);
 
-  if (NS_SUCCEEDED(rv)) {
+  if (NS_FAILED(rv)) {
+    *aBoolResult = !aReverseReturnResult;
+  } else {
     jsval val;
     jsval funval = OBJECT_TO_JSVAL(aHandler);
     PRBool ok = ::JS_CallFunctionValue(mContext, (JSObject *)aTarget, funval,
-                                argc, (jsval *)argv, &val);
+                                       argc, (jsval *)argv, &val);
+
     *aBoolResult = ok
                    ? !JSVAL_IS_BOOLEAN(val) || (aReverseReturnResult ? !JSVAL_TO_BOOLEAN(val) : JSVAL_TO_BOOLEAN(val))
                    : JS_TRUE;
 
     ScriptEvaluated(PR_TRUE);
+
+    if (!ok) {
+      // Tell XPConnect about any pending exceptions. This is needed
+      // to avoid dropping JS exceptions in case we got here through
+      // nested calls through XPConnect.
+
+      NotifyXPCIfExceptionPending(mContext);
+    }
   }
 
   if (NS_FAILED(stack->Pop(nsnull)))
@@ -1229,7 +1276,8 @@ nsJSContext::CallEventHandler(void *aTarget, void *aHandler, PRUint32 argc,
 }
 
 NS_IMETHODIMP
-nsJSContext::BindCompiledEventHandler(void *aTarget, nsIAtom *aName, void *aHandler)
+nsJSContext::BindCompiledEventHandler(void *aTarget, nsIAtom *aName,
+                                      void *aHandler)
 {
   const char *charName = AtomToEventHandlerName(aName);
 

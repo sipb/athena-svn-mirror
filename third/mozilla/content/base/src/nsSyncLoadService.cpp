@@ -58,6 +58,7 @@
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptSecurityManager.h"
 #include "nsContentCID.h"
+#include "nsContentUtils.h"
 #include "nsNetUtil.h"
 #include "nsIHttpChannel.h"
 #include "nsIScriptLoader.h"
@@ -313,13 +314,12 @@ nsSyncLoader::LoadDocument(nsIChannel* aChannel,
     mChannel = aChannel;
 
     if (aLoaderURI) {
-        nsCOMPtr<nsIScriptSecurityManager> securityManager = 
-            do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-        NS_ENSURE_SUCCESS(rv, rv);
-
         nsCOMPtr<nsIURI> docURI;
         rv = aChannel->GetOriginalURI(getter_AddRefs(docURI));
         NS_ENSURE_SUCCESS(rv, rv);
+
+        nsIScriptSecurityManager *securityManager =
+            nsContentUtils::GetSecurityManager();
 
         rv = securityManager->CheckLoadURI(aLoaderURI, docURI,
                                            nsIScriptSecurityManager::STANDARD);
@@ -388,9 +388,7 @@ nsSyncLoader::LoadDocument(nsIChannel* aChannel,
 
     NS_ENSURE_TRUE(mLoadSuccess, NS_ERROR_FAILURE);
 
-    nsCOMPtr<nsIContent> rootContent;
-    document->GetRootContent(getter_AddRefs(rootContent));
-    NS_ENSURE_TRUE(rootContent, NS_ERROR_FAILURE);
+    NS_ENSURE_TRUE(document->GetRootContent(), NS_ERROR_FAILURE);
 
     return CallQueryInterface(document, aResult);
 }
@@ -499,21 +497,15 @@ nsSyncLoader::OnRedirect(nsIHttpChannel *aHttpChannel,
 {
     NS_ENSURE_ARG_POINTER(aNewChannel);
 
-    nsresult rv = NS_ERROR_FAILURE;
-
-    nsCOMPtr<nsIScriptSecurityManager> secMan =
-        do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
-
     nsCOMPtr<nsIURI> oldURI;
-    rv = aHttpChannel->GetURI(getter_AddRefs(oldURI)); // The original URI
+    nsresult rv = aHttpChannel->GetURI(getter_AddRefs(oldURI)); // The original URI
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIURI> newURI;
     rv = aNewChannel->GetURI(getter_AddRefs(newURI)); // The new URI
     NS_ENSURE_SUCCESS(rv, rv);
 
-    rv = secMan->CheckSameOriginURI(oldURI, newURI);
+    rv = nsContentUtils::GetSecurityManager()->CheckSameOriginURI(oldURI, newURI);
 
     NS_ENSURE_SUCCESS(rv, rv);
 

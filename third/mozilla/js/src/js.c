@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * JS shell.
@@ -41,9 +46,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "jstypes.h"
-#include "jsarena.h" /* Added by JSIFY */
-/* Removed by JSIFY: #include "prlog.h" */
-#include "jsutil.h" /* Added by JSIFY */
+#include "jsarena.h"
+#include "jsutil.h"
 #include "jsprf.h"
 #include "jsapi.h"
 #include "jsatom.h"
@@ -91,6 +95,8 @@
 #define EXITCODE_FILE_NOT_FOUND 4
 
 size_t gStackChunkSize = 8192;
+static size_t gMaxStackSize = 0;
+static jsuword gStackBase;
 int gExitCode = 0;
 JSBool gQuitting = JS_FALSE;
 FILE *gErrFile = NULL;
@@ -296,6 +302,7 @@ Process(JSContext *cx, JSObject *obj, char *filename)
     int lineno;
     int startline;
     FILE *file;
+    jsuword stackLimit;
 
     if (!filename || strcmp(filename, "-") == 0) {
         file = stdin;
@@ -308,6 +315,20 @@ Process(JSContext *cx, JSObject *obj, char *filename)
             return;
         }
     }
+
+    if (gMaxStackSize == 0) {
+        /*
+         * Disable checking for stack overflow if limit is zero.
+         */
+        stackLimit = 0;
+    } else {
+#if JS_STACK_GROWTH_DIRECTION > 0
+        stackLimit = gStackBase + gMaxStackSize;
+#else
+        stackLimit = gStackBase - gMaxStackSize;
+#endif
+    }
+    JS_SetThreadStackLimit(cx, stackLimit);
 
     if (!isatty(fileno(file))) {
         /*
@@ -386,7 +407,7 @@ static int
 usage(void)
 {
     fprintf(gErrFile, "%s\n", JS_GetImplementationVersion());
-    fprintf(gErrFile, "usage: js [-s] [-w] [-W] [-b branchlimit] [-c stackchunksize] [-v version] [-f scriptfile] [scriptfile] [scriptarg...]\n");
+    fprintf(gErrFile, "usage: js [-PswW] [-b branchlimit] [-c stackchunksize] [-v version] [-f scriptfile] [-S maxstacksize] [scriptfile] [scriptarg...]\n");
     return 2;
 }
 
@@ -406,6 +427,8 @@ my_BranchCallback(JSContext *cx, JSScript *script)
     }
     return JS_TRUE;
 }
+
+extern JSClass global_class;
 
 static int
 ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
@@ -427,8 +450,11 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
             break;
         }
         switch (argv[i][1]) {
-          case 'v':
+          case 'b':
+          case 'c':
           case 'f':
+          case 'v':
+          case 'S':
             ++i;
             break;
         }
@@ -484,6 +510,23 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
             JS_ToggleOptions(cx, JSOPTION_STRICT);
             break;
 
+        case 'P':
+            if (JS_GET_CLASS(cx, JS_GetPrototype(cx, obj)) != &global_class) {
+                JSObject *gobj;
+
+                if (!JS_SealObject(cx, obj, JS_TRUE))
+                    return JS_FALSE;
+                gobj = JS_NewObject(cx, &global_class, NULL, NULL);
+                if (!gobj)
+                    return JS_FALSE;
+                if (!JS_SetPrototype(cx, gobj, obj))
+                    return JS_FALSE;
+                JS_SetParent(cx, gobj, NULL);
+                JS_SetGlobalObject(cx, gobj);
+                obj = gobj;
+            }
+            break;
+
         case 'b':
             gBranchLimit = atoi(argv[++i]);
             JS_SetBranchCallback(cx, my_BranchCallback);
@@ -505,6 +548,14 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
              * harness. Just execute foo.js for now.
              */
             isInteractive = JS_FALSE;
+            break;
+
+        case 'S':
+            if (++i == argc) {
+                return usage();
+            }
+            /* Set maximum stack size. */
+            gMaxStackSize = atoi(argv[i]);
             break;
 
         default:
@@ -763,7 +814,7 @@ TrapHandler(JSContext *cx, JSScript *script, jsbytecode *pc, jsval *rval,
     JSStackFrame *caller;
 
     str = (JSString *) closure;
-    caller = cx->fp->down;
+    caller = JS_GetScriptedCaller(cx, NULL);
     if (!JS_EvaluateScript(cx, caller->scopeChain,
                            JS_GetStringBytes(str), JS_GetStringLength(str),
                            caller->script->filename, caller->script->lineno,
@@ -1452,19 +1503,6 @@ Seal(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_SealObject(cx, target, deep);
 }
 
-static JSBool
-Unseal(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    JSObject *target;
-    JSBool deep = JS_FALSE;
-
-    if (!JS_ConvertArguments(cx, argc, argv, "o/b", &target, &deep))
-        return JS_FALSE;
-    if (!target)
-        return JS_TRUE;
-    return JS_UnsealObject(cx, target, deep);
-}
-
 static JSFunctionSpec shell_functions[] = {
     {"version",         Version,        0},
     {"options",         Options,        0},
@@ -1495,7 +1533,6 @@ static JSFunctionSpec shell_functions[] = {
     {"intern",          Intern,         1},
     {"clone",           Clone,          1},
     {"seal",            Seal,           1, 0, 1},
-    {"unseal",          Unseal,         1, 0, 1},
     {0}
 };
 
@@ -1531,7 +1568,6 @@ static char *shell_help_messages[] = {
     "intern(str)            Internalize str in the atom table",
     "clone(fun[, scope])    Clone function object",
     "seal(obj[, deep])      Seal object, or object graph if deep",
-    "unseal(obj[, deep])    Unseal object, or object graph if deep",
     0
 };
 
@@ -2006,7 +2042,7 @@ global_resolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
 #endif
 }
 
-static JSClass global_class = {
+JSClass global_class = {
     "global", JSCLASS_NEW_RESOLVE,
     JS_PropertyStub,  JS_PropertyStub,
     JS_PropertyStub,  JS_PropertyStub,
@@ -2131,6 +2167,7 @@ static JSClass env_class = {
 int
 main(int argc, char **argv, char **envp)
 {
+    int stackDummy;
     JSVersion version;
     JSRuntime *rt;
     JSContext *cx;
@@ -2142,6 +2179,8 @@ main(int argc, char **argv, char **envp)
 #ifdef JSDEBUGGER_JAVA_UI
     JNIEnv *java_env;
 #endif
+
+    gStackBase = (jsuword)&stackDummy;
 
 #ifdef XP_OS2
    /* these streams are normally line buffered on OS/2 and need a \n, *

@@ -171,10 +171,7 @@ nsFocusController::UpdateCommands(const nsAString& aEventName)
     if (domDoc) {
       nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
  
-      nsCOMPtr<nsIScriptGlobalObject> global;
-      doc->GetScriptGlobalObject(getter_AddRefs(global));
-
-      nsCOMPtr<nsIDOMWindowInternal> window(do_QueryInterface(global));
+      nsCOMPtr<nsIDOMWindowInternal> window(do_QueryInterface(doc->GetScriptGlobalObject()));
       if (window)
         window->UpdateCommands(aEventName);
     }
@@ -247,8 +244,7 @@ nsFocusController::MoveFocus(PRBool aForward, nsIDOMElement* aElt)
   if (count == 0)
     return NS_OK;
 
-  nsCOMPtr<nsIPresShell> shell;
-  doc->GetShellAt(0, getter_AddRefs(shell));
+  nsIPresShell *shell = doc->GetShellAt(0);
   if (!shell)
     return NS_OK;
 
@@ -365,11 +361,7 @@ nsFocusController::GetParentWindowFromDocument(nsIDOMDocument* aDocument, nsIDOM
   nsCOMPtr<nsIDocument> objectOwner = do_QueryInterface(aDocument);
   if(!objectOwner) return NS_OK;
 
-  nsCOMPtr<nsIScriptGlobalObject> globalObject;
-  objectOwner->GetScriptGlobalObject(getter_AddRefs(globalObject));
-  if(!globalObject) return NS_OK;
-
-  nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(globalObject);
+  nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(objectOwner->GetScriptGlobalObject());
   *aWindow = domWindow;
   NS_IF_ADDREF(*aWindow);
   return NS_OK;

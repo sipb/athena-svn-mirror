@@ -79,15 +79,13 @@ public:
    *
    * @see nsLayoutAtoms::placeholderFrame
    */
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
 #endif
 
-  NS_IMETHOD IsEmpty(nsCompatibility aCompatMode,
-                     PRBool aIsPre,
-                     PRBool *aResult);
+  virtual PRBool IsEmpty();
 
 protected:
   nsIFrame* mOutOfFlowFrame;

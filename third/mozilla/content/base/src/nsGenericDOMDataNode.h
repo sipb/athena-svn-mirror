@@ -58,8 +58,6 @@ class nsURI;
 
 #define PARENT_BIT_RANGELISTS       ((PtrBits)0x1 << 0)
 #define PARENT_BIT_LISTENERMANAGER  ((PtrBits)0x1 << 1)
-#define PARENT_BIT_MASK             (PARENT_BIT_RANGELISTS | \
-                                     PARENT_BIT_LISTENERMANAGER)
 
 class nsGenericDOMDataNode : public nsITextContent
 {
@@ -169,16 +167,15 @@ public:
                        const nsAString& aArg);
 
   // Implementation for nsIContent
-  NS_IMETHOD_(nsIDocument*) GetDocument() const;
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
-  NS_IMETHOD_(nsIContent*) GetParent() const;
-  NS_IMETHOD SetParent(nsIContent* aParent);
+  NS_IMETHOD_(void) SetParent(nsIContent* aParent);
   NS_IMETHOD_(PRBool) IsNativeAnonymous() const;
   NS_IMETHOD_(void) SetNativeAnonymous(PRBool aAnonymous);
   NS_IMETHOD GetNameSpaceID(PRInt32* aID) const;
-  NS_IMETHOD NormalizeAttrString(const nsAString& aStr,
-                                 nsINodeInfo** aNodeInfo);
+  NS_IMETHOD_(nsIAtom*) GetIDAttributeName() const;
+  NS_IMETHOD_(nsIAtom*) GetClassAttributeName() const;
+  NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr);
   NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                      const nsAString& aValue, PRBool aNotify);
   NS_IMETHOD SetAttr(nsINodeInfo *aNodeInfo,
@@ -190,9 +187,9 @@ public:
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute,
                      nsIAtom** aPrefix, nsAString& aResult) const;
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute) const;
-  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID,
+  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex, PRInt32* aNameSpaceID,
                            nsIAtom** aName, nsIAtom** aPrefix) const;
-  NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
+  NS_IMETHOD_(PRUint32) GetAttrCount() const;
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent, PRBool aDumpAll) const;
@@ -200,11 +197,11 @@ public:
   NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
                             nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
                             nsEventStatus* aEventStatus);
-  NS_IMETHOD GetContentID(PRUint32* aID);
+  virtual PRUint32 ContentID() const;
   NS_IMETHOD SetContentID(PRUint32 aID);
   NS_IMETHOD RangeAdd(nsIDOMRange* aRange);
   NS_IMETHOD RangeRemove(nsIDOMRange* aRange);
-  NS_IMETHOD GetRangeList(nsVoidArray** aResult) const;
+  virtual const nsVoidArray *GetRangeList() const;
   NS_IMETHOD SetFocus(nsIPresContext *aPresContext);
   NS_IMETHOD RemoveFocus(nsIPresContext *aPresContext);
 
@@ -216,18 +213,18 @@ public:
   NS_IMETHOD GetBaseURL(nsIURI** aURI) const;
   NS_IMETHOD DoneCreatingElement();
 
-  NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const;
-  NS_IMETHOD CanContainChildren(PRBool& aResult) const;
-  NS_IMETHOD ChildCount(PRInt32& aResult) const;
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
-  NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const;
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
+  NS_IMETHOD_(nsINodeInfo *) GetNodeInfo() const;
+  NS_IMETHOD_(PRBool) CanContainChildren() const;
+  NS_IMETHOD_(PRUint32) GetChildCount() const;
+  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const;
+  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const;
+  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
                            PRBool aDeepSetDocument);
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
+  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
                             PRBool aDeepSetDocument);
   NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
                            PRBool aDeepSetDocument);
-  NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify);
+  NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
 
   // nsITextContent
   NS_IMETHOD SplitText(PRUint32 aOffset, nsIDOMText** aReturn);
@@ -252,15 +249,7 @@ public:
   static void Shutdown();
 
 protected:
-  nsIContent *GetParentWeak() const
-  {
-    PtrBits bits = mParentPtrBits & ~PARENT_BIT_MASK;
-
-    return NS_REINTERPRET_CAST(nsIContent *, bits);
-  }
-
   nsTextFragment mText;
-  nsIDocument* mDocument; // WEAK
 
 private:
   void LookupListenerManager(nsIEventListenerManager **aListenerManager) const;
@@ -268,8 +257,6 @@ private:
 
   void SetBidiStatus();
 
-
-  typedef long PtrBits;
 
   void SetHasRangeList(PRBool aHasRangeList)
   {
@@ -300,10 +287,6 @@ private:
     return (mParentPtrBits & PARENT_BIT_LISTENERMANAGER &&
             nsGenericElement::sEventListenerManagersHash.ops);
   }
-
-  // Weak parent pointer (nsIContent *) and bits for knowing if
-  // there's a rangelist or listener manager for this node
-  PtrBits mParentPtrBits;
 };
 
 //----------------------------------------------------------------------
@@ -322,12 +305,8 @@ private:
   NS_IMETHOD GetLocalName(nsAString& aLocalName) {                          \
     return nsGenericDOMDataNode::GetLocalName(aLocalName);                  \
   }                                                                         \
-  NS_IMETHOD GetNodeValue(nsAString& aNodeValue) {                          \
-    return nsGenericDOMDataNode::GetNodeValue(aNodeValue);                  \
-  }                                                                         \
-  NS_IMETHOD SetNodeValue(const nsAString& aNodeValue) {                    \
-    return nsGenericDOMDataNode::SetNodeValue(aNodeValue);                  \
-  }                                                                         \
+  NS_IMETHOD GetNodeValue(nsAString& aNodeValue);                           \
+  NS_IMETHOD SetNodeValue(const nsAString& aNodeValue);                     \
   NS_IMETHOD GetNodeType(PRUint16* aNodeType);                              \
   NS_IMETHOD GetParentNode(nsIDOMNode** aParentNode) {                      \
     return nsGenericDOMDataNode::GetParentNode(aParentNode);                \

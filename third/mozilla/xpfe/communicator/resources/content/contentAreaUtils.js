@@ -263,15 +263,17 @@ function foundHeaderInfo(aSniffer, aData)
   var contentEncodingType = aSniffer.contentEncodingType;
 
   var shouldDecode = false;
+  var urlExt = null;
   // Are we allowed to decode?
   try {
     const helperAppService =
       Components.classes["@mozilla.org/uriloader/external-helper-app-service;1"].
         getService(Components.interfaces.nsIExternalHelperAppService);
     var url = aSniffer.uri.QueryInterface(Components.interfaces.nsIURL);
-    var urlExt = url.fileExtension;
-    if (helperAppService.applyDecodingForType(contentType) &&
-        (!urlExt || helperAppService.applyDecodingForExtension(urlExt))) {
+    urlExt = url.fileExtension;
+    if (contentEncodingType &&
+        helperAppService.applyDecodingForExtension(urlExt,
+                                                   contentEncodingType)) {
       shouldDecode = true;
     }
   }
@@ -295,7 +297,7 @@ function foundHeaderInfo(aSniffer, aData)
     contentType = contentEncodingType;
   }
 
-  appendFiltersForContentType(fp, contentType,
+  appendFiltersForContentType(fp, contentType, urlExt,
                               isDocument ? saveMode : SAVEMODE_FILEONLY);
 
   const prefSvcContractID = "@mozilla.org/preferences-service;1";
@@ -418,7 +420,8 @@ function nsHeaderSniffer(aURL, aCallback, aData)
   this.uri = makeURL(aURL);
   
   this.linkChecker = Components.classes["@mozilla.org/network/urichecker;1"]
-    .createInstance().QueryInterface(Components.interfaces.nsIURIChecker);
+    .createInstance(Components.interfaces.nsIURIChecker);
+  this.linkChecker.init(this.uri);
 
   var flags;
   if (aData.bypassCache) {
@@ -426,8 +429,9 @@ function nsHeaderSniffer(aURL, aCallback, aData)
   } else {
     flags = Components.interfaces.nsIRequest.LOAD_FROM_CACHE;
   }
+  this.linkChecker.loadFlags = flags;
 
-  this.linkChecker.asyncCheckURI(aURL, this, null, flags);
+  this.linkChecker.asyncCheck(this, null);
 }
 
 nsHeaderSniffer.prototype = {
@@ -485,7 +489,7 @@ nsHeaderSniffer.prototype = {
     try {
       if (aStatus == 0) { // NS_BINDING_SUCCEEDED, so there's something there
         var linkChecker = aRequest.QueryInterface(Components.interfaces.nsIURIChecker);
-        var channel = linkChecker.baseRequest.QueryInterface(Components.interfaces.nsIChannel);
+        var channel = linkChecker.baseChannel;
         this.contentType = channel.contentType;
         try {
           var httpChannel = channel.QueryInterface(Components.interfaces.nsIHttpChannel);
@@ -498,11 +502,9 @@ nsHeaderSniffer.prototype = {
           // corresponding to each encoding starting from the end, so the first
           // thing it returns corresponds to the outermost encoding.
           var encodingEnumerator = encodedChannel.contentEncodings;
-          if (encodingEnumerator && encodingEnumerator.hasMoreElements()) {
+          if (encodingEnumerator && encodingEnumerator.hasMore()) {
             try {
-              this.contentEncodingType =
-                encodingEnumerator.getNext().
-                  QueryInterface(Components.interfaces.nsISupportsCString).data;
+              this.contentEncodingType = encodingEnumerator.getNext();
             } catch (e) {
             }
           }
@@ -529,18 +531,9 @@ nsHeaderSniffer.prototype = {
       if (this.mData.document) {
         this.contentType = this.mData.document.contentType;
       } else {
-        try {
-          var url = this.uri.QueryInterface(Components.interfaces.nsIURL);
-          var ext = url.fileExtension;
-          if (ext) {
-            var mimeInfo = getMIMEInfoForExtension(ext);
-            if (mimeInfo)
-              this.contentType = mimeInfo.MIMEType;
-          }
-        }
-        catch (e) {
-          // Not much we can do here.  Give up.
-        }
+        var type = getMIMETypeForURI(this.uri);
+        if (type)
+          this.contentType = type;
       }
     }
     this.mCallback(this, this.mData);
@@ -598,7 +591,7 @@ const SAVEMODE_COMPLETE_TEXT = 0x02;
 // must be the first filter appended.  The 'save page only' counterpart
 // must be the second filter appended.  And the 'save as complete text'
 // filter must be the third filter appended.
-function appendFiltersForContentType(aFilePicker, aContentType, aSaveMode)
+function appendFiltersForContentType(aFilePicker, aContentType, aFileExtension, aSaveMode)
 {
   var bundle = getStringBundle();
   // The bundle name for saving only a specific content type.
@@ -630,7 +623,7 @@ function appendFiltersForContentType(aFilePicker, aContentType, aSaveMode)
       throw "Invalid save mode for type '" + aContentType + "'";
     }
 
-    var mimeInfo = getMIMEInfoForType(aContentType);
+    var mimeInfo = getMIMEInfoForType(aContentType, aFileExtension);
     if (mimeInfo) {
       
       var extEnumerator = mimeInfo.getFileExtensions();
@@ -691,7 +684,7 @@ function getStringBundle()
   const lsContractID = "@mozilla.org/intl/nslocaleservice;1";
   const lsIID = Components.interfaces.nsILocaleService;
   const ls = Components.classes[lsContractID].getService(lsIID);
-  var appLocale = ls.GetApplicationLocale();
+  var appLocale = ls.getApplicationLocale();
   return sbs.createBundle(bundleURL, appLocale);    
 }
 
@@ -743,20 +736,20 @@ function getMIMEService()
   return mimeSvc;
 }
 
-function getMIMEInfoForExtension(aExtension)
+function getMIMETypeForURI(aURI)
 {
   try {  
-    return getMIMEService().GetFromTypeAndExtension(null, aExtension);
+    return getMIMEService().getTypeFromURI(aURI);
   }
   catch (e) {
   }
   return null;
 }
 
-function getMIMEInfoForType(aMIMEType)
+function getMIMEInfoForType(aMIMEType, aExtension)
 {
   try {  
-    return getMIMEService().GetFromTypeAndExtension(aMIMEType, null);
+    return getMIMEService().getFromTypeAndExtension(aMIMEType, aExtension);
   }
   catch (e) {
   }
@@ -773,7 +766,7 @@ function getDefaultFileName(aDefaultFileName, aNameFromHeaders, aDocumentURI, aD
     var url = aDocumentURI.QueryInterface(Components.interfaces.nsIURL);
     if (url.fileName != "") {
       // 2) Use the actual file name, if present
-      return validateFileName(unescape(url.fileName));
+      return validateFileName(decodeURIComponent(url.fileName));
     }
   } catch (e) {
     try {
@@ -782,7 +775,7 @@ function getDefaultFileName(aDefaultFileName, aNameFromHeaders, aDocumentURI, aD
       var textToSubURI = Components.classes["@mozilla.org/intl/texttosuburi;1"]
                                    .getService(Components.interfaces.nsITextToSubURI);
       var charset = getCharsetforSave(aDocument);
-      return textToSubURI.unEscapeURIForUI(charset, url.fileName);
+      return validateFileName(textToSubURI.unEscapeURIForUI(charset, url.fileName));
     } catch (e) {
       // This is something like a wyciwyg:, data:, and so forth
       // URI... no usable filename here.
@@ -790,9 +783,9 @@ function getDefaultFileName(aDefaultFileName, aNameFromHeaders, aDocumentURI, aD
   }
   
   if (aDocument) {
-    var docTitle = validateFileName(aDocument.title).replace(/^\s+|\s+$/g, "");
+    var docTitle = GenerateValidFilename(aDocument.title, "");
 
-    if (docTitle != "") {
+    if (docTitle) {
       // 3) Use the document title
       return docTitle;
     }
@@ -825,22 +818,6 @@ function getDefaultFileName(aDefaultFileName, aNameFromHeaders, aDocumentURI, aD
   return "index";
 }
 
-function validateFileName(aFileName)
-{
-  var re = /[\/]+/g;
-  if (navigator.appVersion.indexOf("Windows") != -1) {
-    re = /[\\\/\|]+/g;
-    aFileName = aFileName.replace(/[\"]+/g, "'");
-    aFileName = aFileName.replace(/[\*\:\?]+/g, " ");
-    aFileName = aFileName.replace(/[\<]+/g, "(");
-    aFileName = aFileName.replace(/[\>]+/g, ")");
-  }
-  else if (navigator.appVersion.indexOf("Macintosh") != -1)
-    re = /[\:\/]+/g;
-  
-  return aFileName.replace(re, "_");
-}
-
 function getNormalizedLeafName(aFile, aDefaultExtension)
 {
   if (!aDefaultExtension)
@@ -864,11 +841,6 @@ function getDefaultExtension(aFilename, aURI, aContentType)
   if (aContentType == "text/plain" || aContentType == "application/octet-stream" || aURI.scheme == "ftp")
     return "";   // temporary fix for bug 120327
 
-  // This mirrors some code in nsExternalHelperAppService::DoContent
-  // Use the filename first and then the URI if that fails
-  
-  var mimeInfo = getMIMEInfoForType(aContentType);
-
   // First try the extension from the filename
   const stdURLContractID = "@mozilla.org/network/standard-url;1";
   const stdURLIID = Components.interfaces.nsIURL;
@@ -876,6 +848,11 @@ function getDefaultExtension(aFilename, aURI, aContentType)
   url.filePath = aFilename;
 
   var ext = url.fileExtension;
+
+  // This mirrors some code in nsExternalHelperAppService::DoContent
+  // Use the filename first and then the URI if that fails
+  
+  var mimeInfo = getMIMEInfoForType(aContentType, ext);
 
   if (ext && mimeInfo && mimeInfo.ExtensionExists(ext)) {
     return ext;

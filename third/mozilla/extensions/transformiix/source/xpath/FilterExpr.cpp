@@ -26,25 +26,10 @@
  */
 
 #include "Expr.h"
-#include "NodeSet.h"
+#include "txNodeSet.h"
 #include "txIXPathContext.h"
 
 //-- Implementation of FilterExpr --/
-
-/**
- * Creates a new FilterExpr using the given Expr
- * @param expr the Expr to use for evaluation
-**/
-FilterExpr::FilterExpr(Expr* expr) : PredicateList() {
-    this->expr = expr;
-} //-- FilterExpr
-
-/**
- * Destroys this FilterExpr, all predicates and the expr will be deleted
-**/
-FilterExpr::~FilterExpr() {
-    delete expr;
-} //-- ~FilterExpr
 
   //-----------------------------/
  //- Virtual methods from Expr -/
@@ -70,11 +55,12 @@ FilterExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     NS_ENSURE_TRUE(exprRes->getResultType() == txAExprResult::NODESET,
                    NS_ERROR_XSLT_NODESET_EXPECTED);
 
-    nsRefPtr<NodeSet> nodes =
-        NS_STATIC_CAST(NodeSet*, NS_STATIC_CAST(txAExprResult*, exprRes));
+    nsRefPtr<txNodeSet> nodes =
+        NS_STATIC_CAST(txNodeSet*, NS_STATIC_CAST(txAExprResult*, exprRes));
     // null out exprRes so that we can test for shared-ness
     exprRes = nsnull;
-    nsRefPtr<NodeSet> nonShared;
+
+    nsRefPtr<txNodeSet> nonShared;
     rv = aContext->recycler()->getNonSharedNodeSet(nodes,
                                                    getter_AddRefs(nonShared));
     NS_ENSURE_SUCCESS(rv, rv);

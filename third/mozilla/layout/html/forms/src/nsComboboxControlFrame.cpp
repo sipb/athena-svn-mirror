@@ -430,7 +430,7 @@ nsComboboxControlFrame::InitializeControl(nsIPresContext* aPresContext)
 
 //--------------------------------------------------------------
 NS_IMETHODIMP_(PRInt32)
-nsComboboxControlFrame::GetType() const
+nsComboboxControlFrame::GetFormControlType() const
 {
   return NS_FORM_SELECT;
 }
@@ -946,7 +946,7 @@ nsComboboxControlFrame::ReflowCombobox(nsIPresContext *         aPresContext,
     aDropDownBtn->SetRect(buttonRect);
     SetChildFrameSize(aDropDownBtn, aBtnWidth, aDesiredSize.height);
     aDesiredSize.width = 0;
-    aDesiredSize.height = dispHeight;
+    aDesiredSize.height = dispHeight + aBorderPadding.top + aBorderPadding.bottom;
     // XXX What about ascent and descent?
     return;
   }
@@ -2126,9 +2126,8 @@ nsComboboxControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
     nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
     // mContent->AppendChildTo(labelContent, PR_FALSE, PR_FALSE);
 
-    nsCOMPtr<nsINodeInfoManager> nimgr;
-    result = doc->GetNodeInfoManager(getter_AddRefs(nimgr));
-    NS_ENSURE_SUCCESS(result, result);
+    nsINodeInfoManager *nimgr = doc->GetNodeInfoManager();
+    NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsINodeInfo> nodeInfo;
     nimgr->GetNodeInfo(nsHTMLAtoms::input, nsnull, kNameSpaceID_None,
@@ -2302,7 +2301,7 @@ nsComboboxControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
       nsIFormControlFrame* fcFrame = nsnull;
       CallQueryInterface(child, &fcFrame);
       if (fcFrame) {
-        if (fcFrame->GetType() == NS_FORM_INPUT_BUTTON) {
+        if (fcFrame->GetFormControlType() == NS_FORM_INPUT_BUTTON) {
           mButtonFrame = child;
         }
       } else {
@@ -2403,7 +2402,7 @@ nsComboboxControlFrame::Paint(nsIPresContext*     aPresContext,
     nsAreaFrame::Paint(aPresContext, aRenderingContext, aDirtyRect,
                        NS_FRAME_PAINT_LAYER_BACKGROUND);
     nsAreaFrame::Paint(aPresContext, aRenderingContext, aDirtyRect,
-                       NS_FRAME_PAINT_LAYER_FLOATERS);
+                       NS_FRAME_PAINT_LAYER_FLOATS);
     nsAreaFrame::Paint(aPresContext, aRenderingContext, aDirtyRect,
                        NS_FRAME_PAINT_LAYER_FOREGROUND);
 

@@ -59,8 +59,7 @@ nsXBLProtoImpl::InstallImplementation(nsXBLPrototypeBinding* aBinding, nsIConten
   nsIDocument* document = aBoundElement->GetDocument();
   if (!document) return NS_OK;
 
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  document->GetScriptGlobalObject(getter_AddRefs(global));
+  nsIScriptGlobalObject *global = document->GetScriptGlobalObject();
   if (!global) return NS_OK;
 
   nsCOMPtr<nsIScriptContext> context;
@@ -94,17 +93,20 @@ nsXBLProtoImpl::InitTargetObjects(nsXBLPrototypeBinding* aBinding,
                                   void** aScriptObject, 
                                   void** aTargetClassObject)
 {
-  if (!mClassObject)
-    CompilePrototypeMembers(aBinding); // This is the first time we've ever installed this binding on an element.
+  nsresult rv = NS_OK;
+  if (!mClassObject) {
+    rv = CompilePrototypeMembers(aBinding); // This is the first time we've ever installed this binding on an element.
                                  // We need to go ahead and compile all methods and properties on a class
                                  // in our prototype binding.
-  
-  if (!mClassObject)
-    return NS_OK; // This can be ok, if all we've got are fields (and no methods/properties).
+    if (NS_FAILED(rv))
+      return rv;
+
+    if (!mClassObject)
+      return NS_OK; // This can be ok, if all we've got are fields (and no methods/properties).
+  }
 
   // Because our prototype implementation has a class, we need to build up a corresponding
   // class for the concrete implementation in the bound document.
-  nsresult rv = NS_OK;
   JSContext* jscontext = (JSContext*)aContext->GetNativeContext();
   JSObject* global = ::JS_GetGlobalObject(jscontext);
   nsCOMPtr<nsIXPConnectJSObjectHolder> wrapper;
@@ -122,7 +124,9 @@ nsXBLProtoImpl::InitTargetObjects(nsXBLPrototypeBinding* aBinding,
   // between the object and its base class.  We become the new base class of the object, and the
   // object's old base class becomes the new class' base class.
   *aScriptObject = object;
-  aBinding->InitClass(mClassName, aContext, (void *) object, aTargetClassObject);
+  rv = aBinding->InitClass(mClassName, aContext, (void *) object, aTargetClassObject);
+  if (NS_FAILED(rv))
+    return rv;
 
   // Root ourselves in the document.
   nsIDocument* doc = aBoundElement->GetDocument();
@@ -154,7 +158,10 @@ nsXBLProtoImpl::CompilePrototypeMembers(nsXBLPrototypeBinding* aBinding)
  
   void* classObject;
   JSObject* scopeObject = globalObject->GetGlobalJSObject();
-  aBinding->InitClass(mClassName, context, scopeObject, &classObject);
+  nsresult rv = aBinding->InitClass(mClassName, context, scopeObject, &classObject);
+  if (NS_FAILED(rv))
+    return rv;
+
   mClassObject = (JSObject*) classObject;
   if (!mClassObject)
     return NS_ERROR_FAILURE;
@@ -164,7 +171,29 @@ nsXBLProtoImpl::CompilePrototypeMembers(nsXBLPrototypeBinding* aBinding)
   for (nsXBLProtoImplMember* curr = mMembers;
        curr;
        curr = curr->GetNext()) {
-    curr->CompileMember(context, mClassName, mClassObject);
+    nsresult rv = curr->CompileMember(context, mClassName, mClassObject);
+    if (NS_FAILED(rv))
+      return rv;
   }
   return NS_OK;
 }
+
+
+nsresult
+NS_NewXBLProtoImpl(nsXBLPrototypeBinding* aBinding, 
+                   const PRUnichar* aClassName, 
+                   nsXBLProtoImpl** aResult)
+{
+  nsXBLProtoImpl* impl = new nsXBLProtoImpl();
+  if (!impl)
+    return NS_ERROR_OUT_OF_MEMORY;
+  if (aClassName)
+    impl->mClassName.AssignWithConversion(aClassName);
+  else
+    aBinding->BindingURI()->GetSpec(impl->mClassName);
+  aBinding->SetImplementation(impl);
+  *aResult = impl;
+
+  return NS_OK;
+}
+

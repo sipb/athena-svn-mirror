@@ -94,7 +94,8 @@ input {
   letter-spacing: normal;
   cursor: text;
   -moz-user-focus: normal;
-  -moz-binding: url("resource:///res/builtin/platformHTMLBindings.xml#inputFields");
+  -moz-binding: url("resource://gre/res/builtin/platformHTMLBindings.xml#inputFields");
+  text-indent: 0;
 }
 
 textarea {
@@ -111,8 +112,9 @@ textarea {
   vertical-align: text-bottom;
   cursor: text;
   -moz-user-focus: normal;
-  -moz-binding: url("resource:///res/builtin/platformHTMLBindings.xml#textAreas");
+  -moz-binding: url("resource://gre/res/builtin/platformHTMLBindings.xml#textAreas");
   -moz-appearance: textfield;
+  text-indent: 0;
 }
 
 textarea > scrollbar {
@@ -120,7 +122,7 @@ textarea > scrollbar {
 }
 
 *|*::-moz-singleline-textcontrol-frame {
-  overflow: hidden;
+  overflow: -moz-hidden-unscrollable;
   white-space: nowrap;
   background-color: inherit;
   text-align: inherit;
@@ -143,14 +145,22 @@ select {
   border-width: 2px !important;
   border-style: inset !important;
   -moz-border-radius: 0 !important;
+  text-indent: 0;
 }
 
-select[size] {
+/* Need the "select[size][multiple]" selector to override the settings on
+   'select[size="1"]', eg if one has <select size="1" multiple> */
+   
+select[size],
+select[multiple],
+select[size][multiple] {
   /* Different alignment and padding for listbox vs combobox */
   vertical-align: text-bottom;
   padding: 1px 0 1px 0;
+  -moz-appearance: listbox;
 }
 
+select[size="0"],
 select[size="1"] {
   /* Except this is not a listbox */
   vertical-align: baseline;
@@ -175,17 +185,13 @@ select > input[type="button"]:active {
   background-image: url("arrowd.gif") !important;
 }
 
-select[size] {
-   -moz-appearance: listbox;
-}
-
 select::-moz-dummy-option { 
   visibility: hidden; 
   content: "XX"; /* demo 8, edge case test 1 */
 }
 
 *|*::-moz-display-comboboxcontrol-frame {
-  overflow: hidden;
+  overflow: -moz-hidden-unscrollable;
   /* This top/bottom padding plus the combobox top/bottom border need to
      add up to the top/bottom borderpadding of text inputs and buttons */ 
   padding: 1px 0 1px 4px;
@@ -202,6 +208,7 @@ option {
   line-height: normal !important;
   -moz-user-select: none;
   -moz-user-focus: none;
+  text-indent: 0;
 }
 
 select > option {
@@ -221,6 +228,7 @@ optgroup {
   font-weight: bold;
   -moz-user-select: none;
   -moz-user-focus: none;
+  text-indent: 0;
 }
 
 optgroup > option {
@@ -322,7 +330,7 @@ input[type="radio"] {
   width: 13px;
   height: 13px;
   margin: 3px 3px 0px 5px;
-  padding: 0;
+  padding: 0 !important;
   cursor: default;
   -moz-binding: none;
 
@@ -335,7 +343,7 @@ input[type="checkbox"] {
   width: 13px;
   height: 13px;
   margin: 3px 3px 3px 4px;
-  padding: 0;
+  padding: 0 !important;
   vertical-align: text-bottom;
   cursor: default;
   -moz-binding: none;
@@ -417,6 +425,7 @@ input[type="submit"] {
 button {
   /* Buttons should lay out like "normal" html, mostly */
   white-space: normal;  
+  text-indent: 0;
 }
 
 *|*::-moz-button-content {

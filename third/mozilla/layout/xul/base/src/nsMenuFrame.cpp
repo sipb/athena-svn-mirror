@@ -356,15 +356,8 @@ nsMenuFrame::GetFrameForPoint(nsIPresContext* aPresContext,
                               nsFramePaintLayer aWhichLayer,    
                               nsIFrame**     aFrame)
 {
-  if ((aWhichLayer != NS_FRAME_PAINT_LAYER_FOREGROUND))
-    return NS_ERROR_FAILURE;
-
- // if it is not inside us or not in the layer in which we paint, fail
-  if (!mRect.Contains(aPoint)) 
-      return NS_ERROR_FAILURE;
-  
   nsresult result = nsBoxFrame::GetFrameForPoint(aPresContext, aPoint, aWhichLayer, aFrame);
-  if ((result != NS_OK) || (*aFrame == this)) {
+  if (NS_FAILED(result) || *aFrame == this) {
     return result;
   }
   nsIContent* content = (*aFrame)->GetContent();
@@ -928,16 +921,14 @@ nsMenuFrame::GetMenuChildrenElement(nsIContent** aResult)
   nsCOMPtr<nsIXBLService> xblService = 
            do_GetService("@mozilla.org/xbl;1", &rv);
   PRInt32 dummy;
-  PRInt32 count;
-  mContent->ChildCount(count);
+  PRUint32 count = mContent->GetChildCount();
 
-  for (PRInt32 i = 0; i < count; i++) {
-    nsCOMPtr<nsIContent> child;
-    mContent->ChildAt(i, getter_AddRefs(child));
+  for (PRUint32 i = 0; i < count; i++) {
+    nsIContent *child = mContent->GetChildAt(i);
     nsCOMPtr<nsIAtom> tag;
     xblService->ResolveTag(child, &dummy, getter_AddRefs(tag));
-    if (tag && tag.get() == nsXULAtoms::menupopup) {
-      *aResult = child.get();
+    if (tag == nsXULAtoms::menupopup) {
+      *aResult = child;
       NS_ADDREF(*aResult);
       return;
     }
@@ -947,16 +938,14 @@ nsMenuFrame::GetMenuChildrenElement(nsIContent** aResult)
 PRBool
 nsMenuFrame::IsSizedToPopup(nsIContent* aContent, PRBool aRequireAlways)
 {
-  nsCOMPtr<nsIAtom> tag;
-  aContent->GetTag(getter_AddRefs(tag));
   PRBool sizeToPopup;
-  if (tag == nsHTMLAtoms::select)
+  if (aContent->Tag() == nsHTMLAtoms::select)
     sizeToPopup = PR_TRUE;
   else {
     nsAutoString sizedToPopup;
     aContent->GetAttr(kNameSpaceID_None, nsXULAtoms::sizetopopup, sizedToPopup);
-    sizeToPopup = (sizedToPopup.EqualsIgnoreCase("always") ||
-                   (!aRequireAlways && sizedToPopup.EqualsIgnoreCase("pref")));
+    sizeToPopup = sizedToPopup.Equals(NS_LITERAL_STRING("always")) ||
+                  !aRequireAlways && sizedToPopup.Equals(NS_LITERAL_STRING("pref"));
   }
   
   return sizeToPopup;
@@ -1735,14 +1724,11 @@ nsMenuFrame::OnCreate()
   if (child) {
     nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(child->GetDocument()));
 
-    PRInt32 count;
-    child->ChildCount(count);
-    for (PRInt32 i = 0; i < count; i++) {
-      nsCOMPtr<nsIContent> grandChild;
-      child->ChildAt(i, getter_AddRefs(grandChild));
-      nsCOMPtr<nsIAtom> tag;
-      grandChild->GetTag(getter_AddRefs(tag));
-      if (tag.get() == nsXULAtoms::menuitem) {
+    PRUint32 count = child->GetChildCount();
+    for (PRUint32 i = 0; i < count; i++) {
+      nsIContent *grandChild = child->GetChildAt(i);
+
+      if (grandChild->Tag() == nsXULAtoms::menuitem) {
         // See if we have a command attribute.
         nsAutoString command;
         grandChild->GetAttr(kNameSpaceID_None, nsXULAtoms::command, command);
@@ -1924,7 +1910,6 @@ nsMenuFrame::InsertFrames(nsIPresContext* aPresContext,
                             nsIFrame* aPrevFrame,
                             nsIFrame* aFrameList)
 {
-  nsCOMPtr<nsIAtom> tag;
   nsresult          rv;
 
   nsIMenuParent *menuPar;
@@ -1954,7 +1939,6 @@ nsMenuFrame::AppendFrames(nsIPresContext* aPresContext,
   if (!aFrameList)
     return NS_OK;
 
-  nsCOMPtr<nsIAtom> tag;
   nsresult          rv;
 
   nsIMenuParent *menuPar;

@@ -36,7 +36,7 @@
  * Encoding Rules).  The routines are found in and used extensively by the
  * security library, but exported for other use.
  *
- * $Id: secasn1.h,v 1.1.1.1.2.2 2004-01-02 20:00:11 ghudson Exp $
+ * $Id: secasn1.h,v 1.1.1.1.2.3 2004-03-06 19:30:37 ghudson Exp $
  */
 
 #ifndef _SECASN1_H_
@@ -70,6 +70,9 @@ extern SECStatus SEC_ASN1DecoderUpdate(SEC_ASN1DecoderContext *cx,
 
 extern SECStatus SEC_ASN1DecoderFinish(SEC_ASN1DecoderContext *cx);
 
+/* Higher level code detected an error, abort the rest of the processing */
+extern void SEC_ASN1DecoderAbort(SEC_ASN1DecoderContext *cx, int error);
+
 extern void SEC_ASN1DecoderSetFilterProc(SEC_ASN1DecoderContext *cx,
 					 SEC_ASN1WriteProc fn,
 					 void *arg, PRBool no_store);
@@ -88,11 +91,11 @@ extern SECStatus SEC_ASN1Decode(PRArenaPool *pool, void *dest,
 
 extern SECStatus SEC_ASN1DecodeItem(PRArenaPool *pool, void *dest,
 				    const SEC_ASN1Template *t,
-				    SECItem *item);
+				    const SECItem *src);
 
 extern SECStatus SEC_QuickDERDecodeItem(PRArenaPool* arena, void* dest,
                      const SEC_ASN1Template* templateEntry,
-                     SECItem* src);
+                     const SECItem* src);
 
 /*
 ** Encoding.
@@ -109,6 +112,9 @@ extern SECStatus SEC_ASN1EncoderUpdate(SEC_ASN1EncoderContext *cx,
 				       unsigned long len);
 
 extern void SEC_ASN1EncoderFinish(SEC_ASN1EncoderContext *cx);
+
+/* Higher level code detected an error, abort the rest of the processing */
+extern void SEC_ASN1EncoderAbort(SEC_ASN1EncoderContext *cx, int error);
 
 extern void SEC_ASN1EncoderSetNotifyProc(SEC_ASN1EncoderContext *cx,
 					 SEC_ASN1NotifyProc fn,

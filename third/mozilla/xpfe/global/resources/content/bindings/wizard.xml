@@ -12,7 +12,7 @@
   </binding>
   
   <binding id="wizard" extends="chrome://global/content/bindings/wizard.xml#wizard-base">
-    <content width="500" height="380" persist="x y width height">
+    <content>
       <xul:hbox class="wizard-header" anonid="Header"/>
       
       <xul:deck class="wizard-page-box" flex="1" anonid="Deck">
@@ -154,7 +154,7 @@
                               .getService(Components.interfaces.nsILocaleService);
         var stringBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(Components.interfaces.nsIStringBundleService);
         var bundleURL = "chrome://global-platform/locale/wizard.properties";
-        this._bundle = stringBundleService.createBundle(bundleURL, localeService.GetApplicationLocale());
+        this._bundle = stringBundleService.createBundle(bundleURL, localeService.getApplicationLocale());
         
         // get anonymous content references
         this._wizardHeader = document.getAnonymousElementByAttribute(this, "anonid", "Header");

@@ -71,7 +71,6 @@ class nsDOMCSSDeclaration;
 class nsIDOMCSSStyleDeclaration;
 class nsDOMAttributeMap;
 class nsIURI;
-class nsINodeInfo;
 
 typedef unsigned long PtrBits;
 
@@ -363,59 +362,25 @@ public:
   static void Shutdown();
 
   // nsIContent interface methods
-  NS_IMETHOD_(nsIDocument*) GetDocument() const;
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
-  NS_IMETHOD_(nsIContent*) GetParent() const;
-  NS_IMETHOD SetParent(nsIContent* aParent);
+  NS_IMETHOD_(void) SetParent(nsIContent* aParent);
   NS_IMETHOD_(PRBool) IsNativeAnonymous() const;
   NS_IMETHOD_(void) SetNativeAnonymous(PRBool aAnonymous);
   NS_IMETHOD GetNameSpaceID(PRInt32* aNameSpaceID) const;
-  NS_IMETHOD GetTag(nsIAtom** aResult) const;
-  NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const;
-  // NS_IMETHOD CanContainChildren(PRBool& aResult) const;
-  // NS_IMETHOD ChildCount(PRInt32& aResult) const;
-  // NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
-  // NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const;
-  // NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
-  //                          PRBool aNotify);
-  // NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex,
-  //                           PRBool aNotify);
-  // NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify);
-  // NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify);
-  // NS_IMETHOD NormalizeAttrString(const nsAString& aStr,
-  //                                nsINodeInfo** aNodeInfo);
-  // NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-  //                    const nsAString& aValue,
-  //                    PRBool aNotify);
-  // NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-  //                    const nsAString& aValue,
-  //                    PRBool aNotify);
-  // NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-  //                    nsAString& aResult) const;
-  // NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, 
-  //                    nsIAtom** aPrefix,
-  //                    nsAString& aResult) const;
-  // NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute, 
-  //                      PRBool aNotify);
-  // NS_IMETHOD GetAttrNameAt(PRInt32 aIndex,
-  //                          PRInt32& aNameSpaceID, 
-  //                          nsIAtom** aName,
-  //                          nsIAtom** aPrefix) const;
-  // NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
-#ifdef DEBUG
-  // NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
-  // NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
-#endif
+  virtual nsIAtom *Tag() const;
+  NS_IMETHOD_(nsINodeInfo *) GetNodeInfo() const;
+  NS_IMETHOD_(nsIAtom*) GetIDAttributeName() const;
+  NS_IMETHOD_(nsIAtom*) GetClassAttributeName() const;
   NS_IMETHOD RangeAdd(nsIDOMRange* aRange);
   NS_IMETHOD RangeRemove(nsIDOMRange* aRange);
-  NS_IMETHOD GetRangeList(nsVoidArray** aResult) const;
+  virtual const nsVoidArray *GetRangeList() const;
   NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext,
                             nsEvent* aEvent,
                             nsIDOMEvent** aDOMEvent,
                             PRUint32 aFlags,
                             nsEventStatus* aEventStatus);
-  NS_IMETHOD GetContentID(PRUint32* aID);
+  virtual PRUint32 ContentID() const;
   NS_IMETHOD SetContentID(PRUint32 aID);
   NS_IMETHOD SetFocus(nsIPresContext* aContext);
   NS_IMETHOD RemoveFocus(nsIPresContext* aContext);
@@ -426,13 +391,24 @@ public:
   NS_IMETHOD GetBaseURL(nsIURI** aBaseURL) const;
   NS_IMETHOD DoneCreatingElement();
 
+  // Declare these here so we can consolidate the implementations.
+  // Subclasses that don't want to implement these should override.
+  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
+                           PRBool aDeepSetDocument);
+  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
+                            PRBool aDeepSetDocument);
+  NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
+                           PRBool aDeepSetDocument);
+  NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
+
 
   // nsIStyledContent interface methods
   NS_IMETHOD GetID(nsIAtom** aResult) const;
   NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
   NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
-  NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule);
+  NS_IMETHOD GetInlineStyleRule(nsICSSStyleRule** aStyleRule);
+  NS_IMETHOD SetInlineStyleRule(nsICSSStyleRule* aStyleRule, PRBool aNotify);
   NS_IMETHOD_(PRBool)
     HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
@@ -612,6 +588,29 @@ public:
   static PLDHashTable sRangeListsHash;
 
 protected:
+  /**
+   * InsertChildAt/ReplaceChildAt/AppendChildTo/RemoveChildAt subclass
+   * hooks.  These methods are called to perform the actual moving
+   * around of content nodes in child lists.  The return value should
+   * be true if something changed, false otherwise.
+   *
+   * These methods should not change the refcount on the kids in question;
+   * that's handled by the
+   * InsertChildAt/ReplaceChildAt/AppendChildTo/RemoveChildAt functions.
+   */
+  virtual PRBool InternalInsertChildAt(nsIContent* aKid, PRUint32 aIndex) {
+    return PR_FALSE;
+  }
+  virtual PRBool InternalReplaceChildAt(nsIContent* aKid, PRUint32 aIndex) {
+    return PR_FALSE;
+  }
+  virtual PRBool InternalAppendChildTo(nsIContent* aKid) {
+    return PR_FALSE;
+  }
+  virtual PRBool InternalRemoveChildAt(PRUint32 aIndex) {
+    return PR_FALSE;
+  }
+
   PRBool HasDOMSlots() const
   {
     return !(mFlagsOrSlots & GENERIC_ELEMENT_DOESNT_HAVE_DOMSLOTS);
@@ -704,16 +703,14 @@ protected:
     return mDocument ? mDocument : mNodeInfo->GetDocument();
   }
   
-  /**
-   * The document for this content
-   */
-  nsIDocument* mDocument;                   // WEAK
+  nsIContent*  GetParent() const {
+    // Override nsIContent::GetParent to be more efficient internally,
+    // since no subclasses of nsGenericElement use the low 2 bits of
+    // mParentPtrBits for anything.
 
-  /**
-   * The parent content
-   */
-  nsIContent* mParent;                      // WEAK
-  
+    return NS_REINTERPRET_CAST(nsIContent *, mParentPtrBits);
+  }
+
   /**
    * Information about this type of node
    */
@@ -785,8 +782,7 @@ public:
   }
 
   // Remainder of nsIContent
-  NS_IMETHOD NormalizeAttrString(const nsAString& aStr,
-                                 nsINodeInfo** aNodeInfo);
+  NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr);
   NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                      const nsAString& aValue,
                      PRBool aNotify);
@@ -800,27 +796,34 @@ public:
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const;
   NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                        PRBool aNotify);
-  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex,
+  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex,
                            PRInt32* aNameSpaceID,
                            nsIAtom** aName,
                            nsIAtom** aPrefix) const;
-  NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
+  NS_IMETHOD_(PRUint32) GetAttrCount() const;
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
 #endif
-  NS_IMETHOD CanContainChildren(PRBool& aResult) const;
-  NS_IMETHOD ChildCount(PRInt32& aResult) const;
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
-  NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const;
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
-                           PRBool aDeepSetDocument);
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
-                            PRBool aDeepSetDocument);
-  NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
-                           PRBool aDeepSetDocument);
-  NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify);
+  NS_IMETHOD_(PRBool) CanContainChildren() const;
+  NS_IMETHOD_(PRUint32) GetChildCount() const;
+  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const;
+  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const;
 
+  // Child list modification hooks
+  virtual PRBool InternalInsertChildAt(nsIContent* aKid, PRUint32 aIndex) {
+    return mChildren.InsertElementAt(aKid, aIndex);
+  }
+  virtual PRBool InternalReplaceChildAt(nsIContent* aKid, PRUint32 aIndex) {
+    return mChildren.ReplaceElementAt(aKid, aIndex);
+  }
+  virtual PRBool InternalAppendChildTo(nsIContent* aKid) {
+    return mChildren.AppendElement(aKid);
+  }
+  virtual PRBool InternalRemoveChildAt(PRUint32 aIndex) {
+    return mChildren.RemoveElementAt(aIndex);
+  }
+  
 #ifdef DEBUG
   void ListAttributes(FILE* out) const;
 #endif

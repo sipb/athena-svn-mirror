@@ -52,7 +52,7 @@
 #include "nsIServiceManager.h"
 #include "nsIXBLService.h"
 #include "nsSVGAtoms.h"
-#include "nsIStyleRule.h"
+#include "nsICSSStyleRule.h"
 #include "nsIDOMSVGSVGElement.h"
 #include "nsRuleWalker.h"
 #include "nsSVGStyleValue.h"
@@ -107,10 +107,6 @@ nsSVGElement::Init()
   rv = nsSVGAttributes::Create(this,&mAttributes);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  nsCOMPtr<nsINodeInfoManager> nimgr;  
-  rv = mNodeInfo->GetNodeInfoManager(getter_AddRefs(nimgr));
-  NS_ENSURE_SUCCESS(rv,rv);
-  
   nsCOMPtr<nsINodeInfo> ni;
 
   // Create mapped properties:
@@ -127,205 +123,40 @@ nsSVGElement::Init()
 //----------------------------------------------------------------------
 // nsIContent methods
 
-NS_IMETHODIMP
-nsSVGElement::CanContainChildren(PRBool& aResult) const
+NS_IMETHODIMP_(PRBool)
+nsSVGElement::CanContainChildren() const
 {
-  aResult = PR_TRUE;
-  return NS_OK;
+  return PR_TRUE;
 }
 
-NS_IMETHODIMP
-nsSVGElement::ChildCount(PRInt32& aResult) const
+NS_IMETHODIMP_(PRUint32)
+nsSVGElement::GetChildCount() const
 {
-  aResult = mChildren.Count();
-  return NS_OK;
+  return mChildren.Count();
 }
 
-NS_IMETHODIMP
-nsSVGElement::ChildAt(PRInt32 aIndex, nsIContent** aResult) const
+NS_IMETHODIMP_(nsIContent *)
+nsSVGElement::GetChildAt(PRUint32 aIndex) const
 {
-  nsIContent *child = (nsIContent *)mChildren.SafeElementAt(aIndex);
-
-  *aResult = child;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
+  return (nsIContent *)mChildren.SafeElementAt(aIndex);
 }
 
-NS_IMETHODIMP
-nsSVGElement::IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const
+NS_IMETHODIMP_(PRInt32)
+nsSVGElement::IndexOf(nsIContent* aPossibleChild) const
 {
-  NS_PRECONDITION(nsnull != aPossibleChild, "null ptr");
-  aResult = mChildren.IndexOf(aPossibleChild);
-  return NS_OK;
+  return mChildren.IndexOf(aPossibleChild);
 }
 
-NS_IMETHODIMP
-nsSVGElement::InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
-                            PRBool aNotify,
-                            PRBool aDeepSetDocument)
+NS_IMETHODIMP_(nsIAtom*)
+nsSVGElement::GetIDAttributeName() const
 {
-  NS_PRECONDITION(nsnull != aKid, "null ptr");
-  nsIDocument* doc = mDocument;
-  if (aNotify && (nsnull != doc)) {
-    doc->BeginUpdate();
-  }
-  PRBool rv = mChildren.InsertElementAt(aKid, aIndex);/* XXX fix up void array api to use nsresult's*/
-  if (rv) {
-    NS_ADDREF(aKid);
-    aKid->SetParent(this);
-    nsRange::OwnerChildInserted(this, aIndex);
-    if (nsnull != doc) {
-      aKid->SetDocument(doc, aDeepSetDocument, PR_TRUE);
-      if (aNotify) {
-        doc->ContentInserted(this, aKid, aIndex);
-      }
-
-      if (nsGenericElement::HasMutationListeners(this, NS_EVENT_BITS_MUTATION_NODEINSERTED)) {
-        nsCOMPtr<nsIDOMEventTarget> node(do_QueryInterface(aKid));
-        nsMutationEvent mutation;
-        mutation.eventStructType = NS_MUTATION_EVENT;
-        mutation.message = NS_MUTATION_NODEINSERTED;
-        mutation.mTarget = node;
-
-        nsCOMPtr<nsIDOMNode> relNode(do_QueryInterface(NS_STATIC_CAST(nsIContent *, this)));
-        mutation.mRelatedNode = relNode;
-
-        nsEventStatus status = nsEventStatus_eIgnore;
-        nsCOMPtr<nsIDOMEvent> domEvent;
-        aKid->HandleDOMEvent(nsnull, &mutation, getter_AddRefs(domEvent), NS_EVENT_FLAG_INIT, &status);
-      }
-    }
-  }
-  if (aNotify && (nsnull != doc)) {
-    doc->EndUpdate();
-  }
-  return NS_OK;
+  return nsSVGAtoms::id;
 }
 
-NS_IMETHODIMP
-nsSVGElement::ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex,
-                             PRBool aNotify,
-                             PRBool aDeepSetDocument)
+NS_IMETHODIMP_(already_AddRefed<nsINodeInfo>)
+nsSVGElement::GetExistingAttrNameFromQName(const nsAString& aStr)
 {
-  NS_PRECONDITION(nsnull != aKid, "null ptr");
-  nsIDocument* doc = mDocument;
-  if (aNotify && (nsnull != mDocument)) {
-    doc->BeginUpdate();
-  }
-  nsIContent* oldKid = (nsIContent *)mChildren.ElementAt(aIndex);
-  nsRange::OwnerChildReplaced(this, aIndex, oldKid);
-  PRBool rv = mChildren.ReplaceElementAt(aKid, aIndex);
-  if (rv) {
-    NS_ADDREF(aKid);
-    aKid->SetParent(this);
-    if (nsnull != doc) {
-      aKid->SetDocument(doc, aDeepSetDocument, PR_TRUE);
-      if (aNotify) {
-        doc->ContentReplaced(this, oldKid, aKid, aIndex);
-      }
-    }
-    oldKid->SetDocument(nsnull, PR_TRUE, PR_TRUE);
-    oldKid->SetParent(nsnull);
-    NS_RELEASE(oldKid);
-  }
-  if (aNotify && (nsnull != mDocument)) {
-    doc->EndUpdate();
-  }
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::AppendChildTo(nsIContent* aKid, PRBool aNotify,
-                            PRBool aDeepSetDocument)
-{
-  NS_PRECONDITION(nsnull != aKid && this != aKid, "null ptr");
-  nsIDocument* doc = mDocument;
-  if (aNotify && (nsnull != doc)) {
-    doc->BeginUpdate();
-  }
-  PRBool rv = mChildren.AppendElement(aKid);
-  if (rv) {
-    NS_ADDREF(aKid);
-    aKid->SetParent(this);
-    // ranges don't need adjustment since new child is at end of list
-    if (nsnull != doc) {
-      aKid->SetDocument(doc, aDeepSetDocument, PR_TRUE);
-      if (aNotify) {
-        doc->ContentAppended(this, mChildren.Count() - 1);
-      }
-
-      if (nsGenericElement::HasMutationListeners(this, NS_EVENT_BITS_MUTATION_NODEINSERTED)) {
-        nsCOMPtr<nsIDOMEventTarget> node(do_QueryInterface(aKid));
-        nsMutationEvent mutation;
-        mutation.eventStructType = NS_MUTATION_EVENT;
-        mutation.message = NS_MUTATION_NODEINSERTED;
-        mutation.mTarget = node;
-
-        nsCOMPtr<nsIDOMNode> relNode(do_QueryInterface(NS_STATIC_CAST(nsIContent *, this)));
-        mutation.mRelatedNode = relNode;
-
-        nsEventStatus status = nsEventStatus_eIgnore;
-        nsCOMPtr<nsIDOMEvent> domEvent;
-        aKid->HandleDOMEvent(nsnull, &mutation, getter_AddRefs(domEvent), NS_EVENT_FLAG_INIT, &status);
-      }
-    }
-  }
-  if (aNotify && (nsnull != doc)) {
-    doc->EndUpdate();
-  }
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGElement::RemoveChildAt(PRInt32 aIndex, PRBool aNotify)
-{
-  nsIDocument* doc = mDocument;
-  if (aNotify && (nsnull != doc)) {
-    doc->BeginUpdate();
-  }
-  nsIContent* oldKid = (nsIContent *)mChildren.ElementAt(aIndex);
-  if (nsnull != oldKid ) {
-
-    if (nsGenericElement::HasMutationListeners(this, NS_EVENT_BITS_MUTATION_NODEREMOVED)) {
-      nsCOMPtr<nsIDOMEventTarget> node(do_QueryInterface(oldKid));
-      nsMutationEvent mutation;
-      mutation.eventStructType = NS_MUTATION_EVENT;
-      mutation.message = NS_MUTATION_NODEREMOVED;
-      mutation.mTarget = node;
-
-      nsCOMPtr<nsIDOMNode> relNode(do_QueryInterface(NS_STATIC_CAST(nsIContent *, this)));
-      mutation.mRelatedNode = relNode;
-
-      nsEventStatus status = nsEventStatus_eIgnore;
-      nsCOMPtr<nsIDOMEvent> domEvent;
-      oldKid->HandleDOMEvent(nsnull, &mutation, getter_AddRefs(domEvent),
-                             NS_EVENT_FLAG_INIT, &status);
-    }
-
-    nsRange::OwnerChildRemoved(this, aIndex, oldKid);
-
-    mChildren.RemoveElementAt(aIndex);
-    if (aNotify) {
-      if (nsnull != doc) {
-        doc->ContentRemoved(this, oldKid, aIndex);
-      }
-    }
-    oldKid->SetDocument(nsnull, PR_TRUE, PR_TRUE);
-    oldKid->SetParent(nsnull);
-    NS_RELEASE(oldKid);
-  }
-  if (aNotify && (nsnull != doc)) {
-    doc->EndUpdate();
-  }
-
-  return NS_OK;  
-}
-
-NS_IMETHODIMP
-nsSVGElement::NormalizeAttrString(const nsAString& aStr,
-                                  nsINodeInfo** aNodeInfo)
-{
-  return mAttributes->NormalizeAttrString(aStr, aNodeInfo);
+  return mAttributes->GetExistingAttrNameFromQName(aStr);
 }
 
 NS_IMETHODIMP
@@ -333,13 +164,9 @@ nsSVGElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                       const nsAString& aValue,
                       PRBool aNotify)
 {
-    nsCOMPtr<nsINodeInfoManager> nimgr;
-
-    mNodeInfo->GetNodeInfoManager(getter_AddRefs(nimgr));
-    NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
-
     nsCOMPtr<nsINodeInfo> ni;
-    nimgr->GetNodeInfo(aName, nsnull, aNameSpaceID, getter_AddRefs(ni));
+    mNodeInfo->NodeInfoManager()->GetNodeInfo(aName, nsnull, aNameSpaceID,
+                                              getter_AddRefs(ni));
 
     return SetAttr(ni, aValue, aNotify);
 }
@@ -387,7 +214,7 @@ nsSVGElement::HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const
 }
 
 NS_IMETHODIMP
-nsSVGElement::GetAttrNameAt(PRInt32 aIndex,
+nsSVGElement::GetAttrNameAt(PRUint32 aIndex,
                             PRInt32* aNameSpaceID,
                             nsIAtom** aName,
                             nsIAtom** aPrefix) const
@@ -395,11 +222,10 @@ nsSVGElement::GetAttrNameAt(PRInt32 aIndex,
   return mAttributes->GetAttrNameAt(aIndex, aNameSpaceID, aName, aPrefix);
 }
 
-NS_IMETHODIMP
-nsSVGElement::GetAttrCount(PRInt32& aResult) const
+NS_IMETHODIMP_(PRUint32)
+nsSVGElement::GetAttrCount() const
 {
-  aResult = mAttributes->Count();
-  return NS_OK;
+  return mAttributes->Count();
 }
 
 #ifdef DEBUG
@@ -445,7 +271,7 @@ nsSVGElement::WalkContentStyleRules(nsRuleWalker* aRuleWalker)
 }
 
 NS_IMETHODIMP
-nsSVGElement::GetInlineStyleRule(nsIStyleRule** aStyleRule)
+nsSVGElement::GetInlineStyleRule(nsICSSStyleRule** aStyleRule)
 {
   return mStyle->GetStyleRule(this, aStyleRule);
 }
@@ -456,20 +282,24 @@ nsSVGElement::GetInlineStyleRule(nsIStyleRule** aStyleRule)
 NS_IMETHODIMP
 nsSVGElement::GetNodeName(nsAString& aNodeName)
 {
-  return mNodeInfo->GetQualifiedName(aNodeName);
+  mNodeInfo->GetQualifiedName(aNodeName);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
 nsSVGElement::GetNodeValue(nsAString& aNodeValue)
 {
-  aNodeValue.Truncate();
+  SetDOMStringToNull(aNodeValue);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsSVGElement::SetNodeValue(const nsAString& aNodeValue)
 {
-  return NS_ERROR_DOM_NO_MODIFICATION_ALLOWED_ERR;
+  // The DOM spec says that when nodeValue is defined to be null "setting it
+  // has no effect", so we don't throw an exception.
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -482,8 +312,8 @@ nsSVGElement::GetNodeType(PRUint16* aNodeType)
 NS_IMETHODIMP
 nsSVGElement::GetParentNode(nsIDOMNode** aParentNode)
 {
-  if (mParent) {
-    return CallQueryInterface(mParent, aParentNode);
+  if (GetParent()) {
+    return CallQueryInterface(GetParent(), aParentNode);
   }
   if (mDocument) {
     // we're the root content
@@ -650,12 +480,8 @@ nsSVGElement::HasAttributes(PRBool* aReturn)
 {
   NS_ENSURE_ARG_POINTER(aReturn);
   
-  PRInt32 attrCount = 0;
-  
-  GetAttrCount(attrCount);
-  
-  *aReturn = (attrCount > 0);
-  
+  *aReturn = GetAttrCount() > 0;
+
   return NS_OK;
 }
 
@@ -685,9 +511,9 @@ nsSVGElement::GetOwnerSVGElement(nsIDOMSVGSVGElement * *aOwnerSVGElement)
 {
   *aOwnerSVGElement = nsnull;
 
-  nsCOMPtr<nsIBindingManager> bindingManager;
+  nsIBindingManager *bindingManager = nsnull;
   if (mDocument) {
-    mDocument->GetBindingManager(getter_AddRefs(bindingManager));
+    bindingManager = mDocument->GetBindingManager();
   }
 
   nsCOMPtr<nsIContent> parent;
@@ -700,7 +526,7 @@ nsSVGElement::GetOwnerSVGElement(nsIDOMSVGSVGElement * *aOwnerSVGElement)
   if (!parent) {
     // if we didn't find an anonymous parent, use the explicit one,
     // whether it's null or not...
-    parent = mParent;
+    parent = GetParent();
   }
 
   while (parent) {    

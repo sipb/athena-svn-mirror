@@ -69,7 +69,6 @@ nsBlockReflowContext::nsBlockReflowContext(nsIPresContext* aPresContext,
   : mPresContext(aPresContext),
     mOuterReflowState(aParentRS),
     mMetrics(aComputeMaxElementWidth),
-    mIsTable(PR_FALSE),
     mComputeMaximumWidth(aComputeMaximumWidth)
 {
   mStyleBorder = nsnull;
@@ -106,18 +105,10 @@ nsBlockReflowContext::ComputeCollapsedTopMargin(nsIPresContext* aPresContext,
     nsBlockFrame* bf;
     if (NS_SUCCEEDED(aRS.frame->QueryInterface(kBlockFrameCID,
                                        NS_REINTERPRET_CAST(void**, &bf)))) {
-      nsCompatibility compat;
-      aPresContext->GetCompatibilityMode(&compat);
-
-      const nsStyleText* text = bf->GetStyleText();
-      PRBool isPre = NS_STYLE_WHITESPACE_PRE == text->mWhiteSpace ||
-                     NS_STYLE_WHITESPACE_MOZ_PRE_WRAP == text->mWhiteSpace;
-
       for (nsBlockFrame::line_iterator line = bf->begin_lines(),
                                    line_end = bf->end_lines();
            line != line_end; ++line) {
-        PRBool isEmpty;
-        line->IsEmpty(compat, isPre, &isEmpty);
+        PRBool isEmpty = line->IsEmpty();
         if (line->IsBlock()) {
           // Here is where we recur. Now that we have determined that a
           // generational collapse is required we need to compute the
@@ -164,13 +155,7 @@ nsBlockReflowContext::AlignBlockHorizontally(nscoord                 aWidth,
 
   // Get style unit associated with the left and right margins
   nsStyleUnit leftUnit = mStyleMargin->mMargin.GetLeftUnit();
-  if (eStyleUnit_Inherit == leftUnit) {
-    leftUnit = GetRealMarginLeftUnit();
-  }
   nsStyleUnit rightUnit = mStyleMargin->mMargin.GetRightUnit();
-  if (eStyleUnit_Inherit == rightUnit) {
-    rightUnit = GetRealMarginRightUnit();
-  }
 
   // Apply post-reflow horizontal alignment. When a block element
   // doesn't use it all of the available width then we need to
@@ -362,9 +347,9 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
   }
 
   /* We build a different reflow context based on the width attribute of the block,
-   * if it's a floater.
-   * Auto-width floaters need to have their containing-block size set explicitly,
-   * factoring in other floaters that impact it.  
+   * if it's a float.
+   * Auto-width floats need to have their containing-block size set explicitly,
+   * factoring in other floats that impact it.  
    * It's possible this should be quirks-only.
    * All other blocks proceed normally.
    */
@@ -392,7 +377,6 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
   if (!aIsAdjacentWithTop) {
     aFrameRS.mFlags.mIsTopOfPage = PR_FALSE;  // make sure this is cleared
   }
-  mIsTable = NS_STYLE_DISPLAY_TABLE == aFrameRS.mStyleDisplay->mDisplay;
   mComputedWidth = aFrameRS.mComputedWidth;
 
   if (aApplyTopMargin) {
@@ -439,7 +423,7 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
                    aFrameRS.mComputedBorderPadding.right;
     }
 
-    // if this is an unconstrained width reflow, then just place the floater at the left margin
+    // if this is an unconstrained width reflow, then just place the float at the left margin
     if (NS_UNCONSTRAINEDSIZE == mSpace.width)
       x = mSpace.x;
     else
@@ -453,7 +437,8 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
 
   // If it's an auto-width table, then it doesn't behave like other blocks
   // XXX why not for a floating table too?
-  if (mIsTable && !aFrameRS.mStyleDisplay->IsFloating()) {
+  if (aFrameRS.mStyleDisplay->mDisplay == NS_STYLE_DISPLAY_TABLE &&
+      !aFrameRS.mStyleDisplay->IsFloating()) {
     // If this isn't the table's initial reflow, then use its existing
     // width to determine where it will be placed horizontally
     if (aFrameRS.reason != eReflowReason_Initial) {
@@ -657,8 +642,8 @@ nsBlockReflowContext::PlaceBlock(const nsHTMLReflowState& aReflowState,
   // XXXldb What should really matter is whether there exist non-
   // empty frames in the block (with appropriate whitespace munging).
   // Consider the case where we clip off the overflow with
-  // 'overflow: hidden' (which doesn't currently affect mOverflowArea,
-  // but probably should.
+  // 'overflow: -moz-hidden-unscrollable' (which doesn't currently
+  // affect mOverflowArea, but probably should.
   if ((0 == mMetrics.height) && (0 == mMetrics.mOverflowArea.height)) 
   {
     // Collapse the bottom margin with the top margin that was already
@@ -682,7 +667,7 @@ nsBlockReflowContext::PlaceBlock(const nsHTMLReflowState& aReflowState,
     // always fit. Note: don't force the width to 0
     aInFlowBounds = nsRect(x, y, mMetrics.width, 0);
 
-    // Retain combined area information in case we contain a floater
+    // Retain combined area information in case we contain a float
     // and nothing else.
     aCombinedRect = mMetrics.mOverflowArea;
     aCombinedRect.x += x;
@@ -760,42 +745,4 @@ nsBlockReflowContext::PlaceBlock(const nsHTMLReflowState& aReflowState,
   }
 
   return fits;
-}
-
-// If we have an inherited margin its possible that its auto all the
-// way up to the top of the tree. If that is the case, we need to know
-// it.
-nsStyleUnit
-nsBlockReflowContext::GetRealMarginLeftUnit()
-{
-  nsStyleUnit unit = eStyleUnit_Inherit;
-  nsStyleContext* sc = mFrame->GetStyleContext();
-  while (sc && eStyleUnit_Inherit == unit) {
-    // Get parent style context
-    sc = sc->GetParent();
-    if (sc) {
-      const nsStyleMargin* margin = sc->GetStyleMargin();
-      unit = margin->mMargin.GetLeftUnit();
-    }
-  }
-  return unit;
-}
-
-// If we have an inherited margin its possible that its auto all the
-// way up to the top of the tree. If that is the case, we need to know
-// it.
-nsStyleUnit
-nsBlockReflowContext::GetRealMarginRightUnit()
-{
-  nsStyleUnit unit = eStyleUnit_Inherit;
-  nsStyleContext* sc = mFrame->GetStyleContext();
-  while (sc && eStyleUnit_Inherit == unit) {
-    // Get parent style context
-    sc = sc->GetParent();
-    if (sc) {
-      const nsStyleMargin* margin = sc->GetStyleMargin();
-      unit = margin->mMargin.GetRightUnit();
-    }
-  }
-  return unit;
 }

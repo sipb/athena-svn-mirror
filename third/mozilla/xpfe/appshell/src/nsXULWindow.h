@@ -65,6 +65,12 @@ public:
    NS_DECL_NSIBASEWINDOW
 
 protected:
+   enum persistentAttributes {
+     PAD_MISC =         0x1,
+     PAD_POSITION =     0x2,
+     PAD_SIZE =         0x4
+   };
+
    nsXULWindow();
    virtual ~nsXULWindow();
 
@@ -79,12 +85,12 @@ protected:
                         PRInt32 aSpecWidth, PRInt32 aSpecHeight);
    PRBool     LoadPositionFromXUL();
    PRBool     LoadSizeFromXUL();
-   PRBool     LoadSizeStateFromXUL();
+   PRBool     LoadMiscPersistentAttributesFromXUL();
    nsresult   LoadChromeHidingFromXUL();
    NS_IMETHOD LoadTitleFromXUL();
    NS_IMETHOD LoadWindowClassFromXUL();
    NS_IMETHOD LoadIconFromXUL();
-   NS_IMETHOD PersistPositionAndSize(PRBool aPosition, PRBool aSize, PRBool aSizeMode);
+   NS_IMETHOD SavePersistentAttributes();
 
    NS_IMETHOD GetWindowDOMWindow(nsIDOMWindowInternal** aDOMWindow);
    NS_IMETHOD GetWindowDOMElement(nsIDOMElement** aDOMElement);
@@ -100,11 +106,14 @@ protected:
       nsIXULWindow **_retval);
    NS_IMETHOD NotifyObservers(const PRUnichar* aTopic, const PRUnichar* aData);
 
-   void EnableParent(PRBool aEnable);
-   PRBool ConstrainToZLevel(PRBool aImmediate, nsWindowZ *aPlacement,
-            nsIWidget *aReqBelow, nsIWidget **aActualBelow);
-   void                    SetContentScrollbarVisibility(PRBool aVisible);
-   PRBool                  GetContentScrollbarVisibility();
+   void       EnableParent(PRBool aEnable);
+   PRBool     ConstrainToZLevel(PRBool aImmediate, nsWindowZ *aPlacement,
+                                nsIWidget *aReqBelow, nsIWidget **aActualBelow);
+   void       PlaceWindowLayersBehind(PRUint32 aLowLevel, PRUint32 aHighLevel,
+                                      nsIXULWindow *aBehind);
+   void       SetContentScrollbarVisibility(PRBool aVisible);
+   PRBool     GetContentScrollbarVisibility();
+   void       PersistentAttributesDirty(PRUint32 aDirtyFlags);
 
    nsChromeTreeOwner*      mChromeTreeOwner;
    nsContentTreeOwner*     mContentTreeOwner;
@@ -124,9 +133,10 @@ protected:
    PRPackedBool            mIntrinsicallySized; 
    PRPackedBool            mCenterAfterLoad;
    PRPackedBool            mIsHiddenWindow;
-   PRUint32                mZlevel;
    PRUint32                mContextFlags;
    PRUint32                mBlurSuppressionLevel;
+   PRUint32                mPersistentAttributesDirty; // persistentAttributes
+   PRUint32                mPersistentAttributesMask;
 };
 
 // nsContentShellInfo

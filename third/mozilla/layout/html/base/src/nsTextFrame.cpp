@@ -389,9 +389,6 @@ public:
   nsTextFrame();
 
   // nsIFrame
-  NS_IMETHOD QueryInterface(const nsIID& aIID,
-                            void** aInstancePtrResult);
-
   NS_IMETHOD Paint(nsIPresContext*      aPresContext,
                    nsIRenderingContext& aRenderingContext,
                    const                nsRect& aDirtyRect,
@@ -428,7 +425,7 @@ public:
    *
    * @see nsLayoutAtoms::textFrame
    */
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
   
 #ifdef DEBUG
   NS_IMETHOD List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
@@ -486,9 +483,7 @@ public:
                                   PRBool               aCheckVis,
                                   PRBool*              aIsVisible);
 
-  NS_IMETHOD IsEmpty(nsCompatibility aCompatMode,
-                     PRBool aIsPre,
-                     PRBool* aResult);
+  virtual PRBool IsEmpty();
 
 #ifdef ACCESSIBILITY
   NS_IMETHOD GetAccessible(nsIAccessible** aAccessible);
@@ -807,7 +802,6 @@ protected:
 #ifdef ACCESSIBILITY
 NS_IMETHODIMP nsTextFrame::GetAccessible(nsIAccessible** aAccessible)
 {
-#ifndef MOZ_ACCESSIBILITY_ATK
   if (mRect.width > 0 || mRect.height > 0) {
 
     nsCOMPtr<nsIAccessibilityService> accService = do_GetService("@mozilla.org/accessibilityService;1");
@@ -816,7 +810,6 @@ NS_IMETHODIMP nsTextFrame::GetAccessible(nsIAccessible** aAccessible)
       return accService->CreateHTMLTextAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
     }
   }
-#endif
   return NS_ERROR_FAILURE;
 }
 #endif
@@ -827,17 +820,6 @@ PRPackedBool nsTextFrame::sWordSelectEatSpaceAfter = PR_TRUE;
 
 
 //-----------------------------------------------------------------------------
-NS_IMETHODIMP nsTextFrame::QueryInterface(const nsIID& aIID,
-                                     void** aInstancePtrResult)
-{
-
-  NS_PRECONDITION(aInstancePtrResult, "null pointer");
-  if (!aInstancePtrResult)
-  return NS_ERROR_NULL_POINTER;
-
-  return nsFrame::QueryInterface(aIID, aInstancePtrResult);
-}
-
 NS_IMETHODIMP
 nsTextFrame::Destroy(nsIPresContext* aPresContext)
 {
@@ -1997,11 +1979,7 @@ nsTextFrame::GetContentAndOffsetsForSelection(nsIPresContext *aPresContext, nsIC
           }
           else
           {
-            PRInt32 numChildren;
-            if (NS_SUCCEEDED(rv = (*aContent)->ChildCount(numChildren)))
-              *aOffset = numChildren;
-            else
-              return rv;
+            *aOffset = (*aContent)->GetChildCount();
           }
         }
         else
@@ -2073,7 +2051,7 @@ nsresult nsTextFrame::GetTextInfoForPainting(nsIPresContext*          aPresConte
   if (!doc)
     return NS_ERROR_FAILURE;
 
-  doc->GetLineBreaker(aLineBreaker);
+  NS_IF_ADDREF(*aLineBreaker = doc->GetLineBreaker());
 
   aIsSelected = (GetStateBits() & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT;
 
@@ -2298,7 +2276,9 @@ nsTextFrame::PaintUnicodeText(nsIPresContext* aPresContext,
       nsBidiPresUtils* bidiUtils;
       aPresContext->GetBidiUtils(&bidiUtils);
       if (bidiUtils) {
+#ifdef DEBUG
         PRInt32 rememberTextLength = textLength;
+#endif
         bidiUtils->ReorderUnicodeText(text, textLength,
                                       charType, level & 1, isBidiSystem);
         NS_ASSERTION(rememberTextLength == textLength, "Bidi formatting changed text length");
@@ -2526,9 +2506,7 @@ nsTextFrame::GetPositionSlowly(nsIPresContext* aPresContext,
   }
 
   // Transform text from content into renderable form
-  nsCOMPtr<nsILineBreaker> lb;
-  doc->GetLineBreaker(getter_AddRefs(lb));
-  nsTextTransformer tx(lb, nsnull, aPresContext);
+  nsTextTransformer tx(doc->GetLineBreaker(), nsnull, aPresContext);
   PRInt32 textLength;
   PRInt32 numSpaces;
 
@@ -2986,7 +2964,9 @@ nsTextFrame::PaintTextSlowly(nsIPresContext* aPresContext,
                         (void**) &level,sizeof(level));
         GetBidiProperty(aPresContext, nsLayoutAtoms::charType, 
                         (void**) &charType,sizeof(charType));
+#ifdef DEBUG
         PRInt32 rememberTextLength = textLength;
+#endif
         // Since we paint char by char, handle the text like on non-bidi platform
         bidiUtils->ReorderUnicodeText(text, textLength, charType,
                                       level & 1, PR_FALSE);
@@ -3423,9 +3403,7 @@ nsTextFrame::GetPosition(nsIPresContext* aCX,
 
       // Get the renderable form of the text
       nsCOMPtr<nsIDocument> doc(GetDocument(aCX));
-      nsCOMPtr<nsILineBreaker> lb;
-      doc->GetLineBreaker(getter_AddRefs(lb));
-      nsTextTransformer tx(lb, nsnull, aCX);
+      nsTextTransformer tx(doc->GetLineBreaker(), nsnull, aCX);
       PRInt32 textLength;
       // no need to worry about justification, that's always on the slow path
       PrepareUnicodeText(tx, &indexBuffer, &paintBuffer, &textLength);
@@ -3761,9 +3739,7 @@ nsTextFrame::GetPointFromOffset(nsIPresContext* aPresContext,
 
   // Transform text from content into renderable form
   nsCOMPtr<nsIDocument> doc(GetDocument(aPresContext));
-  nsCOMPtr<nsILineBreaker> lb;
-  doc->GetLineBreaker(getter_AddRefs(lb));
-  nsTextTransformer tx(lb, nsnull, aPresContext);
+  nsTextTransformer tx(doc->GetLineBreaker(), nsnull, aPresContext);
   PRInt32 textLength;
   PRInt32 numSpaces;
 
@@ -3894,7 +3870,7 @@ nsTextFrame::GetChildFrameContainingOffset(PRInt32 inContentOffset,
     }
   }
 
-  if (inContentOffset < mContentOffset) //could happen with floaters!
+  if (inContentOffset < mContentOffset) //could happen with floats!
   {
     result = GetPrevInFlow(outChildFrame);
     if (NS_SUCCEEDED(result) && *outChildFrame)
@@ -3972,10 +3948,7 @@ nsTextFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
       if (!doc) {
         return NS_OK;
       }
-      nsCOMPtr<nsILineBreaker> lb;
-      doc->GetLineBreaker(getter_AddRefs(lb));
-
-      nsTextTransformer tx(lb, nsnull, aPresContext);
+      nsTextTransformer tx(doc->GetLineBreaker(), nsnull, aPresContext);
       PrepareUnicodeText(tx, &indexBuffer, &paintBuffer, &textLength);
 
       if (textLength)//if no renderable length, you cant park here.
@@ -4002,10 +3975,7 @@ nsTextFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
       if (!doc) {
         return NS_OK;
       }
-      nsCOMPtr<nsILineBreaker> lb;
-      doc->GetLineBreaker(getter_AddRefs(lb));
-
-      nsTextTransformer tx(lb, nsnull, aPresContext);
+      nsTextTransformer tx(doc->GetLineBreaker(), nsnull, aPresContext);
       PrepareUnicodeText(tx, &indexBuffer, &paintBuffer, &textLength);
 
       nsIFrame *frameUsed = nsnull;
@@ -4147,12 +4117,8 @@ nsTextFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
         return result;
       }
 
-      nsCOMPtr<nsILineBreaker> lb;
-      doc->GetLineBreaker(getter_AddRefs(lb));
-      nsCOMPtr<nsIWordBreaker> wb;
-      doc->GetWordBreaker(getter_AddRefs(wb));
-
-      nsTextTransformer tx(lb, wb, aPresContext);
+      nsTextTransformer tx(doc->GetLineBreaker(),
+                           doc->GetWordBreaker(), aPresContext);
 
       PrepareUnicodeText(tx, &indexBuffer, &paintBuffer, &textLength);
       nsIFrame *frameUsed = nsnull;
@@ -4431,11 +4397,8 @@ nsTextFrame::CheckVisibility(nsIPresContext* aContext, PRInt32 aStartIndex, PRIn
       return rv;
     if (!doc)
       return NS_ERROR_FAILURE;
-  //get the linebreaker
-    nsCOMPtr<nsILineBreaker> lb;
-    doc->GetLineBreaker(getter_AddRefs(lb));
   //create texttransformer
-    nsTextTransformer tx(lb, nsnull, aContext);
+    nsTextTransformer tx(doc->GetLineBreaker(), nsnull, aContext);
   //create the buffers
     nsAutoTextBuffer paintBuffer;
     nsAutoIndexBuffer indexBuffer;
@@ -4584,10 +4547,8 @@ nsTextFrame::EstimateNumChars(PRUint32 aAvailableWidth,
 // Replaced by precompiled CCMap (see bug 180266). To update the list
 // of characters, see one of files included below. As for the way
 // the original list of characters was obtained by Frank Tang, see bug 54467.
-static const PRUint16 gPuncCharsCCMap[] = 
-{
 #include "punct_marks.ccmap"
-};
+DEFINE_CCMAP(gPuncCharsCCMap, const);
   
 #define IsPunctuationMark(ch) (CCMAP_HAS_CHAR(gPuncCharsCCMap, ch))
 
@@ -4610,7 +4571,6 @@ nsTextFrame::MeasureText(nsIPresContext*          aPresContext,
   nscoord prevMaxWordWidth = 0, prevAscent = 0, prevDescent = 0;
   PRInt32 lastWordLen = 0;
   PRUnichar* lastWordPtr = nsnull;
-  PRBool  textStartsWithNBSP = PR_FALSE;
   PRBool  endsInWhitespace = PR_FALSE;
   PRBool  endsInNewline = PR_FALSE;
   PRBool  justDidFirstLetter = PR_FALSE;
@@ -4829,12 +4789,6 @@ nsTextFrame::MeasureText(nsIPresContext*          aPresContext,
       } //(aTextData.mMeasureText)
     }
     else {
-      // See if the first thing in the section of text is a
-      // non-breaking space (html nbsp entity). If it is then make
-      // note of that fact for the line layout logic.
-      if (aTextData.mWrapping && firstThing && (firstChar == ' ')) {
-        textStartsWithNBSP = PR_TRUE;
-      }
       aTextData.mSkipWhitespace = PR_FALSE;
 
       if (aTextData.mFirstLetterOK) {
@@ -5202,7 +5156,6 @@ nsTextFrame::MeasureText(nsIPresContext*          aPresContext,
   // effect the current setting of the ends-in-whitespace flag.
   lineLayout.SetColumn(column);
   lineLayout.SetUnderstandsWhiteSpace(PR_TRUE);
-  lineLayout.SetTextStartsWithNBSP(textStartsWithNBSP);
   if (0 != aTextData.mX) {
     lineLayout.SetEndsInWhiteSpace(endsInWhitespace);
   }
@@ -5337,12 +5290,11 @@ nsTextFrame::Reflow(nsIPresContext*          aPresContext,
     NS_WARNING("Content has no document.");
     return NS_ERROR_FAILURE; 
   }
-  nsCOMPtr<nsILineBreaker> lb;
-  doc->GetLineBreaker(getter_AddRefs(lb));
   PRBool forceArabicShaping = (ts.mSmallCaps ||
                                (0 != ts.mWordSpacing) ||
                                (0 != ts.mLetterSpacing) ||
                                ts.mJustifying);
+  nsILineBreaker *lb = doc->GetLineBreaker();
   nsTextTransformer tx(lb, nsnull, aPresContext);
   // Keep the text in ascii if possible. Note that if we're measuring small
   // caps text then transform to Unicode because the helper function only
@@ -5928,33 +5880,28 @@ nsTextFrame::ToCString(nsString& aBuf, PRInt32* aTotalContentLength) const
   }
 }
 
-NS_IMETHODIMP
-nsTextFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsTextFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::textFrame; 
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::textFrame;
 }
 
-NS_IMETHODIMP
-nsTextFrame::IsEmpty(nsCompatibility aCompatMode,
-                     PRBool aIsPre,
-                     PRBool* aResult)
+/* virtual */ PRBool
+nsTextFrame::IsEmpty()
 {
-    // XXXldb Should this check aCompatMode as well???
-  if (aIsPre) {
-    *aResult = PR_FALSE;
-    return NS_OK;
+    // XXXldb Should this check compatibility mode as well???
+  if (GetStyleText()->WhiteSpaceIsSignificant()) {
+    return PR_FALSE;
   }
 
   nsCOMPtr<nsITextContent> textContent( do_QueryInterface(mContent) );
   if (! textContent) {
     NS_NOTREACHED("text frame has no text content");
-    *aResult = PR_TRUE;
-    return NS_ERROR_UNEXPECTED;
+    return PR_TRUE;
   }
-  return textContent->IsOnlyWhitespace(aResult);
+  PRBool isOnlyWS;
+  textContent->IsOnlyWhitespace(&isOnlyWS);
+  return isOnlyWS;
 }
 
 #ifdef DEBUG

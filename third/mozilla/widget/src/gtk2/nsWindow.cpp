@@ -55,6 +55,8 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "gtk2xtbin.h"
+
 #include "nsIPref.h"
 #include "nsIServiceManager.h"
 
@@ -94,6 +96,9 @@ static GdkWindow *get_inner_gdk_window (GdkWindow *aWindow,
 static inline PRBool is_context_menu_key(const nsKeyEvent& inKeyEvent);
 static void   key_event_to_context_menu_event(const nsKeyEvent* inKeyEvent,
                                               nsMouseEvent* outCMEvent);
+
+static int    is_parent_ungrab_enter(GdkEventCrossing *aEvent);
+static int    is_parent_grab_leave(GdkEventCrossing *aEvent);
 
 /* callbacks from widgets */
 static gboolean expose_event_cb           (GtkWidget *widget,
@@ -173,6 +178,7 @@ static nsresult    initialize_prefs        (void);
   
 // this is the last window that had a drag event happen on it.
 nsWindow *nsWindow::mLastDragMotionWindow = NULL;
+PRBool nsWindow::sIsDraggingOutOf = PR_FALSE;
 
 // This is the time of the last button press event.  The drag service
 // uses it as the time to start drags.
@@ -233,12 +239,12 @@ nsWindow::nsWindow()
     mIsVisible           = PR_FALSE;
     mRetryPointerGrab    = PR_FALSE;
     mRetryKeyboardGrab   = PR_FALSE;
-    mHasNonXembedPlugin  = PR_FALSE;
     mActivatePending     = PR_FALSE;
     mTransientParent     = nsnull;
     mWindowType          = eWindowType_child;
     mSizeState           = nsSizeMode_Normal;
     mOldFocusWindow      = 0;
+    mPluginType          = PluginType_NONE;
 
     if (!gGlobalsInitialized) {
         gGlobalsInitialized = PR_TRUE;
@@ -498,8 +504,9 @@ nsWindow::Move(PRInt32 aX, PRInt32 aY)
 }
 
 NS_IMETHODIMP
-nsWindow::PlaceBehind(nsIWidget *aWidget,
-                      PRBool     aActivate)
+nsWindow::PlaceBehind(nsTopLevelWidgetZPlacement  aPlacement,
+                      nsIWidget                  *aWidget,
+                      PRBool                      aActivate)
 {
     return NS_ERROR_NOT_IMPLEMENTED; 
 }
@@ -1081,13 +1088,18 @@ nsWindow::CaptureRollupEvents(nsIRollupListener *aListener,
         gRollupListener = aListener;
         gRollupWindow = do_GetWeakReference(NS_STATIC_CAST(nsIWidget*,
                                                            this));
-        gtk_grab_add(widget);
-        GrabPointer();
-        GrabKeyboard();
+        // real grab is only done when there is no dragging
+        if (!nsWindow::DragInProgress()) {
+            gtk_grab_add(widget);
+            GrabPointer();
+            GrabKeyboard();
+        }
     }
     else {
-        ReleaseGrabs();
-        gtk_grab_remove(widget);
+        if (!nsWindow::DragInProgress()) {
+            ReleaseGrabs();
+            gtk_grab_remove(widget);
+        }
         gRollupListener = nsnull;
         gRollupWindow = nsnull;
     }
@@ -1264,6 +1276,10 @@ nsWindow::OnLeaveNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 void
 nsWindow::OnMotionNotifyEvent(GtkWidget *aWidget, GdkEventMotion *aEvent)
 {
+    // when we receive this, it must be that the gtk dragging is over,
+    // it is dropped either in or out of mozilla, clear the flag
+    sIsDraggingOutOf = PR_FALSE;
+
     // see if we can compress this event
     XEvent xevent;
     PRPackedBool synthEvent = PR_FALSE;
@@ -1682,6 +1698,8 @@ nsWindow::OnDragMotionEvent(GtkWidget *aWidget,
 {
     LOG(("nsWindow::OnDragMotionSignal\n"));
 
+    sIsDraggingOutOf = PR_FALSE;
+
     // Reset out drag motion timer
     ResetDragMotionTimer(aWidget, aDragContext, aX, aY, aTime);
 
@@ -1770,6 +1788,8 @@ nsWindow::OnDragLeaveEvent(GtkWidget *aWidget,
 {
     LOG(("nsWindow::OnDragLeaveSignal(%p)\n", this));
 
+    sIsDraggingOutOf = PR_TRUE;
+
     // make sure to unset any drag motion timers here.
     ResetDragMotionTimer(0, 0, 0, 0, 0);
 
@@ -1835,7 +1855,10 @@ nsWindow::OnDragDropEvent(GtkWidget *aWidget,
 
     // clear any drag leave timer that might be pending so that it
     // doesn't get processed when we actually go out to get data.
-    mDragLeaveTimer = 0;
+    if (mDragLeaveTimer) {
+        mDragLeaveTimer->Cancel();
+        mDragLeaveTimer = 0;
+    }
 
     // set the last window to this
     mLastDragMotionWindow = innerMostWidget;
@@ -2108,6 +2131,17 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
 
         // and the drawing area
         mDrawingarea = moz_drawingarea_new(nsnull, mContainer);
+
+        if (mWindowType == eWindowType_popup) {
+            // gdk does not automatically set the cursor for "temporary"
+            // windows, which are what gtk uses for popups.
+
+            mCursor = eCursor_wait; // force SetCursor to actually set the
+                                    // cursor, even though our internal state
+                                    // indicates that we already have the
+                                    // standard cursor.
+            SetCursor(eCursor_standard);
+        }
     }
         break;
     case eWindowType_child: {
@@ -2120,6 +2154,10 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
             gtk_widget_realize(GTK_WIDGET(mContainer));
 
             mDrawingarea = moz_drawingarea_new(nsnull, mContainer);
+        }
+        else {
+            NS_WARNING("Warning: tried to create a new child widget with no parent!");
+            return NS_ERROR_FAILURE;
         }
     }
         break;
@@ -2579,15 +2617,15 @@ nsWindow::SetDefaultIcon(void)
 }
 
 void
-nsWindow::SetPluginType(PRBool aIsXembed)
+nsWindow::SetPluginType(PluginType aPluginType)
 {
-    mHasNonXembedPlugin = !aIsXembed;
+    mPluginType = aPluginType;
 }
 
 void
 nsWindow::SetNonXEmbedPluginFocus()
 {
-    if (gPluginFocusWindow == this) {
+    if (gPluginFocusWindow == this || mPluginType!=PluginType_NONXEMBED) {
         return;
     }
 
@@ -2643,7 +2681,7 @@ nsWindow::LoseNonXEmbedPluginFocus()
 
     // This method is only for the nsWindow which contains a
     // Non-XEmbed plugin, for example, JAVA plugin.
-    if (gPluginFocusWindow != this) {
+    if (gPluginFocusWindow != this || mPluginType!=PluginType_NONXEMBED) {
         return;
     }
 
@@ -2809,6 +2847,16 @@ check_for_rollup(GdkWindow *aWindow, gdouble aMouseX, gdouble aMouseY,
     }
 
     return retVal;
+}
+
+/* static */
+PRBool
+nsWindow::DragInProgress(void)
+{
+    // mLastDragMotionWindow means the drag arrow is over mozilla
+    // sIsDraggingOutOf means the drag arrow is out of mozilla
+    // both cases mean the dragging is happenning.
+    return (mLastDragMotionWindow || sIsDraggingOutOf);
 }
 
 /* static */
@@ -3114,6 +3162,10 @@ gboolean
 enter_notify_event_cb (GtkWidget *widget,
                        GdkEventCrossing *event)
 {
+    if (is_parent_ungrab_enter(event)) {
+        return TRUE;
+    }
+
     nsWindow *window = get_window_for_gdk_window(event->window);
     if (!window)
         return TRUE;
@@ -3128,6 +3180,10 @@ gboolean
 leave_notify_event_cb (GtkWidget *widget,
                        GdkEventCrossing *event)
 {
+    if (is_parent_grab_leave(event)) {
+        return TRUE;
+    }
+
     nsWindow *window = get_window_for_gdk_window(event->window);
     if (!window)
         return TRUE;
@@ -3235,16 +3291,19 @@ plugin_window_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data
                 gdk_window_get_user_data(plugin_window, &user_data);
                 widget = GTK_WIDGET(user_data);
 
-                if (GTK_IS_SOCKET(widget)) {
+                if (GTK_IS_XTBIN(widget)) {
+                    nswindow->SetPluginType(nsWindow::PluginType_NONXEMBED);
+                    break;
+                }
+                else if(GTK_IS_SOCKET(widget)) {
+                    nswindow->SetPluginType(nsWindow::PluginType_XEMBED);
                     break;
                 }
             }
-            nswindow->SetPluginType(PR_FALSE);
+            nswindow->SetPluginType(nsWindow::PluginType_NONXEMBED);
             return_val = GDK_FILTER_REMOVE;
             break;
         case EnterNotify:
-            // Currently we consider all plugins are non-xembed and calls
-            // SetNonXEmbedPluginFocus without any checking.
             nswindow->SetNonXEmbedPluginFocus();
             break;
         case DestroyNotify:
@@ -3661,6 +3720,25 @@ key_event_to_context_menu_event(const nsKeyEvent* aKeyEvent,
     aCMEvent->isAlt = aCMEvent->isMeta = PR_FALSE;
     aCMEvent->clickCount = 0;
     aCMEvent->acceptActivation = PR_FALSE;
+}
+
+/* static */
+int
+is_parent_ungrab_enter(GdkEventCrossing *aEvent)
+{
+    return (GDK_CROSSING_UNGRAB == aEvent->mode) &&
+        ((GDK_NOTIFY_ANCESTOR == aEvent->detail) ||
+         (GDK_NOTIFY_VIRTUAL == aEvent->detail));
+
+}
+
+/* static */
+int
+is_parent_grab_leave(GdkEventCrossing *aEvent)
+{
+    return (GDK_CROSSING_GRAB == aEvent->mode) &&
+        ((GDK_NOTIFY_ANCESTOR == aEvent->detail) ||
+            (GDK_NOTIFY_VIRTUAL == aEvent->detail));
 }
 
 #ifdef ACCESSIBILITY

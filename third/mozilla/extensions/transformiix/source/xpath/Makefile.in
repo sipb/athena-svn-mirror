@@ -39,6 +39,7 @@ REQUIRES +=	  dom \
 		  js \
 		  unicharutil \
 		  layout \
+		  necko \
 		  $(NULL)
 endif
 
@@ -53,7 +54,6 @@ CPPSRCS = AdditiveExpr.cpp \
         FunctionCall.cpp \
         LocationStep.cpp \
         MultiplicativeExpr.cpp \
-        NodeSet.cpp \
         NodeSetFunctionCall.cpp \
         NumberFunctionCall.cpp \
         NumberResult.cpp \
@@ -65,6 +65,7 @@ CPPSRCS = AdditiveExpr.cpp \
         StringResult.cpp \
         txLiteralExpr.cpp \
         txNameTest.cpp \
+        txNodeSet.cpp \
         txNodeTypeTest.cpp \
         txForwardContext.cpp \
         txNodeSetContext.cpp \
@@ -78,7 +79,10 @@ CPPSRCS += nsXPathEvaluator.cpp \
            nsXPathExpression.cpp \
            nsXPathNSResolver.cpp \
            nsXPathResult.cpp \
-           nsXPath1Scheme.cpp
+           nsXPath1Scheme.cpp \
+           txMozillaXPathTreeWalker.cpp
+else
+CPPSRCS += txStandaloneXPathTreeWalker.cpp
 endif
 
 include $(topsrcdir)/config/rules.mk

@@ -68,7 +68,7 @@ class nsInputFileStream;
 class nsIMsgFilter;
 class MSG_FolderInfoMail;
 class nsIMsgFilterList;
-class nsIFolder;
+class nsIMsgFolder;
 
 /* Used for the various things that parse RFC822 headers...
  */
@@ -82,70 +82,69 @@ typedef struct message_header
 class nsParseMailMessageState : public nsIMsgParseMailMsgState
 {
 public:
-	NS_DECL_ISUPPORTS
+  NS_DECL_ISUPPORTS
   NS_DECL_NSIMSGPARSEMAILMSGSTATE
 	
   nsParseMailMessageState();
-	virtual			~nsParseMailMessageState();
-	
-	void			Init(PRUint32 fileposition);
-	virtual PRInt32	ParseFolderLine(const char *line, PRUint32 lineLength);
-	virtual int		StartNewEnvelope(const char *line, PRUint32 lineLength);
-	int				ParseHeaders();
-	int				FinalizeHeaders();
-	int				ParseEnvelope (const char *line, PRUint32 line_size);
-	int				InternSubject (struct message_header *header);
-	nsresult		InternRfc822 (struct message_header *header, 
-								char **ret_name);
-
-	static PRBool	IsEnvelopeLine(const char *buf, PRInt32 buf_size);
-	static int		msg_UnHex(char C); 
-
-	nsCOMPtr<nsIMsgHeaderParser> m_HeaderAddressParser;
-
-	nsCOMPtr<nsIMsgDBHdr> m_newMsgHdr; /* current message header we're building */
-	nsCOMPtr<nsIMsgDatabase>	m_mailDB;
-
-	nsMailboxParseState m_state;
-	PRUint32			m_position;
-	PRUint32			m_envelope_pos;
-	PRUint32			m_headerstartpos;
-
-	nsByteArray		m_headers;
-
-	nsByteArray		m_envelope;
-
-	struct message_header m_message_id;
-	struct message_header m_references;
-	struct message_header m_date;
-	struct message_header m_from;
-	struct message_header m_sender;
-	struct message_header m_newsgroups;
-	struct message_header m_subject;
-	struct message_header m_status;
-	struct message_header m_mozstatus;
-	struct message_header m_mozstatus2;
-	struct message_header m_in_reply_to;
-	struct message_header m_content_type;
-
-	// Support for having multiple To or Cc header lines in a message
-	nsVoidArray m_toList;
-	nsVoidArray m_ccList;
-	struct message_header *GetNextHeaderInAggregate (nsVoidArray &list);
-	void GetAggregateHeader (nsVoidArray &list, struct message_header *);
-	void ClearAggregateHeader (nsVoidArray &list);
-
-	struct message_header m_envelope_from;
-	struct message_header m_envelope_date;
-	struct message_header m_priority;
-	// Mdn support
-	struct message_header m_mdn_original_recipient;
-	struct message_header m_return_path;
-	struct message_header m_mdn_dnt; /* MDN Disposition-Notification-To: header */
-
-	PRUint16			m_body_lines;
-	
-	PRBool			m_IgnoreXMozillaStatus;
+  virtual               ~nsParseMailMessageState();
+  
+  void                  Init(PRUint32 fileposition);
+  virtual PRInt32       ParseFolderLine(const char *line, PRUint32 lineLength);
+  virtual int           StartNewEnvelope(const char *line, PRUint32 lineLength);
+  int                   ParseHeaders();
+  int                   FinalizeHeaders();
+  int                   ParseEnvelope (const char *line, PRUint32 line_size);
+  int                   InternSubject (struct message_header *header);
+  nsresult  InternRfc822 (struct message_header *header, char **ret_name);
+  
+  static PRBool	IsEnvelopeLine(const char *buf, PRInt32 buf_size);
+  static int  msg_UnHex(char C); 
+  
+  nsCOMPtr<nsIMsgHeaderParser> m_HeaderAddressParser;
+  
+  nsCOMPtr<nsIMsgDBHdr> m_newMsgHdr; /* current message header we're building */
+  nsCOMPtr<nsIMsgDatabase>  m_mailDB;
+  
+  nsMailboxParseState   m_state;
+  PRUint32              m_position;
+  PRUint32              m_envelope_pos;
+  PRUint32              m_headerstartpos;
+  
+  nsByteArray           m_headers;
+  
+  nsByteArray           m_envelope;
+  
+  struct message_header m_message_id;
+  struct message_header m_references;
+  struct message_header m_date;
+  struct message_header m_from;
+  struct message_header m_sender;
+  struct message_header m_newsgroups;
+  struct message_header m_subject;
+  struct message_header m_status;
+  struct message_header m_mozstatus;
+  struct message_header m_mozstatus2;
+  struct message_header m_in_reply_to;
+  struct message_header m_content_type;
+  
+  // Support for having multiple To or Cc header lines in a message
+  nsVoidArray m_toList;
+  nsVoidArray m_ccList;
+  struct message_header *GetNextHeaderInAggregate (nsVoidArray &list);
+  void GetAggregateHeader (nsVoidArray &list, struct message_header *);
+  void ClearAggregateHeader (nsVoidArray &list);
+  
+  struct message_header m_envelope_from;
+  struct message_header m_envelope_date;
+  struct message_header m_priority;
+  // Mdn support
+  struct message_header m_mdn_original_recipient;
+  struct message_header m_return_path;
+  struct message_header m_mdn_dnt; /* MDN Disposition-Notification-To: header */
+  
+  PRUint16			m_body_lines;
+  
+  PRBool			m_IgnoreXMozillaStatus;
 protected:
   nsCOMPtr<nsIMsgStringService> mStringService;
 
@@ -163,59 +162,59 @@ inline int	nsParseMailMessageState::msg_UnHex(char C)
 class nsMsgMailboxParser : public nsIStreamListener, public nsParseMailMessageState, public nsMsgLineBuffer, public nsMsgLineBufferHandler, public nsIDBChangeListener
 {
 public:
-	nsMsgMailboxParser(nsIMsgFolder *);
+  nsMsgMailboxParser(nsIMsgFolder *);
   nsMsgMailboxParser();
-	virtual ~nsMsgMailboxParser();
+  virtual ~nsMsgMailboxParser();
 
-	PRBool  IsRunningUrl() { return m_urlInProgress;} // returns true if we are currently running a url and false otherwise...
-	NS_DECL_ISUPPORTS_INHERITED
+  PRBool  IsRunningUrl() { return m_urlInProgress;} // returns true if we are currently running a url and false otherwise...
+  NS_DECL_ISUPPORTS_INHERITED
 
-	////////////////////////////////////////////////////////////////////////////////////////
-	// we suppport the nsIStreamListener interface 
-	////////////////////////////////////////////////////////////////////////////////////////
-    NS_DECL_NSIREQUESTOBSERVER
-    NS_DECL_NSISTREAMLISTENER
-    NS_DECL_NSIDBCHANGELISTENER
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // we suppport the nsIStreamListener interface 
+  ////////////////////////////////////////////////////////////////////////////////////////
+  NS_DECL_NSIREQUESTOBSERVER
+  NS_DECL_NSISTREAMLISTENER
+  NS_DECL_NSIDBCHANGELISTENER
 
-	void			SetDB (nsIMsgDatabase *mailDB) {m_mailDB = mailDB; }
+  void    SetDB (nsIMsgDatabase *mailDB) {m_mailDB = mailDB; }
 
-	// message socket libnet callbacks, which come through folder pane
-	virtual int ProcessMailboxInputStream(nsIURI* aURL, nsIInputStream *aIStream, PRUint32 aLength);
+  // message socket libnet callbacks, which come through folder pane
+  virtual int ProcessMailboxInputStream(nsIURI* aURL, nsIInputStream *aIStream, PRUint32 aLength);
 
-	virtual void	DoneParsingFolder(nsresult status);
-	virtual void	AbortNewHeader();
+  virtual void	DoneParsingFolder(nsresult status);
+  virtual void	AbortNewHeader();
 
-	// for nsMsgLineBuffer
-	virtual PRInt32 HandleLine(char *line, PRUint32 line_length);
+  // for nsMsgLineBuffer
+  virtual PRInt32 HandleLine(char *line, PRUint32 line_length);
 
-	void			UpdateDBFolderInfo();
-	void			UpdateDBFolderInfo(nsIMsgDatabase *mailDB);
-	void			UpdateStatusText (PRUint32 stringID);
+  void  UpdateDBFolderInfo();
+  void  UpdateDBFolderInfo(nsIMsgDatabase *mailDB);
+  void  UpdateStatusText (PRUint32 stringID);
 
-	// Update the progress bar based on what we know.
-	virtual void    UpdateProgressPercent ();
+  // Update the progress bar based on what we know.
+  virtual void    UpdateProgressPercent ();
 
 protected:
-	nsCOMPtr<nsIMsgStatusFeedback> m_statusFeedback;
+  nsCOMPtr<nsIMsgStatusFeedback> m_statusFeedback;
 
-	virtual PRInt32			PublishMsgHeader(nsIMsgWindow *msgWindow);
-	virtual void			FolderTypeSpecificTweakMsgHeader(nsIMsgDBHdr *tweakMe);
-	void					FreeBuffers();
+  virtual PRInt32     PublishMsgHeader(nsIMsgWindow *msgWindow);
+  virtual void        FolderTypeSpecificTweakMsgHeader(nsIMsgDBHdr *tweakMe);
+  void                FreeBuffers();
 
-	// data
-    nsXPIDLString        m_folderName;
-	nsXPIDLCString		m_inboxUri;
-	nsByteArray		m_inputStream;
-	PRInt32			m_obuffer_size;
-	char			*m_obuffer;
-	PRInt32			m_graph_progress_total;
-	PRInt32			m_graph_progress_received;
-	PRBool			m_parsingDone;
-	nsTime			m_startTime;
+  // data
+  nsXPIDLString        m_folderName;
+  nsXPIDLCString		m_inboxUri;
+  nsByteArray		m_inputStream;
+  PRInt32			m_obuffer_size;
+  char			*m_obuffer;
+  PRInt32			m_graph_progress_total;
+  PRInt32			m_graph_progress_received;
+  PRBool			m_parsingDone;
+  nsTime			m_startTime;
 private:
-		// the following flag is used to determine when a url is currently being run. It is cleared on calls
-	// to ::StopBinding and it is set whenever we call Load on a url
-	PRBool	m_urlInProgress;
+  // the following flag is used to determine when a url is currently being run. It is cleared on calls
+  // to ::StopBinding and it is set whenever we call Load on a url
+  PRBool	m_urlInProgress;
   nsWeakPtr m_folder; 
   void Init();
   void ReleaseFolderLock();
@@ -229,46 +228,37 @@ public:
   nsParseNewMailState();
   virtual ~nsParseNewMailState();
   NS_DECL_ISUPPORTS_INHERITED
-  nsresult Init(nsIFolder *rootFolder, nsIMsgFolder *downloadFolder, nsFileSpec &folder, nsIOFileStream *inboxFileStream, nsIMsgWindow *aMsgWindow);
-
+  nsresult Init(nsIMsgFolder *rootFolder, nsIMsgFolder *downloadFolder, nsFileSpec &folder, nsIOFileStream *inboxFileStream, nsIMsgWindow *aMsgWindow);
+  
   virtual void	DoneParsingFolder(nsresult status);
-
+  
   void DisableFilters() {m_disableFilters = PR_TRUE;}
-
-#ifdef DOING_JSFILTERS
-	// from jsmsg.cpp
-	friend void JSMailFilter_MoveMessage(ParseNewMailState *state, 
-										 nsIMsgDBHdr *msgHdr, 
-										 nsMailDatabase *mailDB, 
-										 const char *folder, 
-										 nsIMsgFilter *filter,
-										 PRBool *pMoved);
-#endif
-	NS_DECL_NSIMSGFILTERHITNOTIFY
-
-	nsOutputFileStream *GetLogFile();
-	virtual PRInt32	PublishMsgHeader(nsIMsgWindow *msgWindow);
+  
+  NS_DECL_NSIMSGFILTERHITNOTIFY
+    
+  nsOutputFileStream *GetLogFile();
+  virtual PRInt32 PublishMsgHeader(nsIMsgWindow *msgWindow);
   void            GetMsgWindow(nsIMsgWindow **aMsgWindow);
 protected:
-	virtual void	ApplyFilters(PRBool *pMoved, nsIMsgWindow *msgWindow);
-	virtual nsresult GetTrashFolder(nsIMsgFolder **pTrashFolder);
-	virtual nsresult	MoveIncorporatedMessage(nsIMsgDBHdr *mailHdr, 
-                                            nsIMsgDatabase *sourceDB, 
-                                            const nsACString& destFolder,
-                                            nsIMsgFilter *filter,
-                                            nsIMsgWindow *msgWindow);
-	virtual	int			MarkFilteredMessageRead(nsIMsgDBHdr *msgHdr);
-  void		LogRuleHit(nsIMsgFilter *filter, nsIMsgDBHdr *msgHdr);
-	nsCOMPtr <nsIMsgFilterList> m_filterList;
-	nsCOMPtr <nsIFolder> m_rootFolder;
+  virtual void	ApplyFilters(PRBool *pMoved, nsIMsgWindow *msgWindow);
+  virtual nsresult GetTrashFolder(nsIMsgFolder **pTrashFolder);
+  virtual nsresult  MoveIncorporatedMessage(nsIMsgDBHdr *mailHdr, 
+                                          nsIMsgDatabase *sourceDB, 
+                                          const nsACString& destFolder,
+                                          nsIMsgFilter *filter,
+                                          nsIMsgWindow *msgWindow);
+  virtual int   MarkFilteredMessageRead(nsIMsgDBHdr *msgHdr);
+  void          LogRuleHit(nsIMsgFilter *filter, nsIMsgDBHdr *msgHdr);
+  nsCOMPtr <nsIMsgFilterList> m_filterList;
+  nsCOMPtr <nsIMsgFolder> m_rootFolder;
   nsCOMPtr <nsIMsgWindow> m_msgWindow;
-	nsIOFileStream		*m_inboxFileStream;
-	nsFileSpec    m_inboxFileSpec;
-	PRBool        m_disableFilters;
-	PRBool        m_msgMovedByFilter;
-	PRUint32      m_ibuffer_fp;
-	char          *m_ibuffer;
-	PRUint32      m_ibuffer_size;
+  nsIOFileStream  *m_inboxFileStream;
+  nsFileSpec    m_inboxFileSpec;
+  PRBool        m_disableFilters;
+  PRBool        m_msgMovedByFilter;
+  PRUint32      m_ibuffer_fp;
+  char          *m_ibuffer;
+  PRUint32      m_ibuffer_size;
 };
 
 #endif

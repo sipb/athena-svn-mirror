@@ -172,8 +172,7 @@ nsDragService::ComputeGlobalRectFromFrame ( nsIDOMNode* aDOMNode, Rect & outScre
   // coordinates.
   //
   
-	nsRect	aRect(0,0,0,0);
-	aFrame->GetRect(aRect);
+  nsRect rect = aFrame->GetRect();
 
   // Find offset from our view
 	nsIView *containingView = nsnull;
@@ -193,23 +192,22 @@ nsDragService::ComputeGlobalRectFromFrame ( nsIDOMNode* aDOMNode, Rect & outScre
 
     // GetOffsetFromWidget() actually returns the _parent's_ offset from its widget, so we
     // still have to add in the offset to |containingView|'s parent ourselves.
-    nscoord viewOffsetToParentX = 0, viewOffsetToParentY = 0;
-    containingView->GetPosition ( &viewOffsetToParentX, &viewOffsetToParentY );
+    nsPoint viewOffsetToParent = containingView->GetPosition();
     
     // Shift our offset rect by offset into our view, the view's offset to its parent, and
     // the parent's offset to the closest widget. Then convert that to global coordinates. 
     // Recall that WidgetToScreen() will give us the global coordinates of the rectangle we 
     // give it, but it expects  everything to be in pixels.
     nsRect screenOffset;                                
-    screenOffset.MoveBy ( NSTwipsToIntPixels(widgetOffsetX + viewOffsetToParentX + viewOffset.x, t2p),
-                            NSTwipsToIntPixels(widgetOffsetY + viewOffsetToParentY + viewOffset.y, t2p) );
+    screenOffset.MoveBy ( NSTwipsToIntPixels(widgetOffsetX + viewOffsetToParent.x + viewOffset.x, t2p),
+                            NSTwipsToIntPixels(widgetOffsetY + viewOffsetToParent.y + viewOffset.y, t2p) );
 		aWidget->WidgetToScreen ( screenOffset, screenOffset );
 
     // stash it all in a mac rect
 		outScreenRect.left = screenOffset.x;
 		outScreenRect.top = screenOffset.y;
-    outScreenRect.right = outScreenRect.left + NSTwipsToIntPixels(aRect.width, t2p);
-    outScreenRect.bottom = outScreenRect.top + NSTwipsToIntPixels(aRect.height, t2p);
+    outScreenRect.right = outScreenRect.left + NSTwipsToIntPixels(rect.width, t2p);
+    outScreenRect.bottom = outScreenRect.top + NSTwipsToIntPixels(rect.height, t2p);
             
 		haveRectFlag = PR_TRUE;
 	}

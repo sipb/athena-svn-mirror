@@ -52,32 +52,28 @@ public:
   NS_DECL_ISUPPORTS
 
   // nsINodeInfo
-  NS_IMETHOD GetQualifiedName(nsAString &aQualifiedName) const;
-  NS_IMETHOD GetLocalName(nsAString& aLocalName) const;
-  NS_IMETHOD GetNamespaceURI(nsAString& aNameSpaceURI) const;
-  NS_IMETHOD GetIDAttributeAtom(nsIAtom** aResult) const;
-  NS_IMETHOD SetIDAttributeAtom(nsIAtom* aResult);
-  NS_IMETHOD GetNodeInfoManager(nsINodeInfoManager** aNodeInfoManager) const;
-  NS_IMETHOD_(PRBool) Equals(const nsAString& aName) const;
-  NS_IMETHOD_(PRBool) Equals(const nsAString& aName,
-                             const nsAString& aPrefix) const;
-  NS_IMETHOD_(PRBool) Equals(const nsAString& aName,
-                             PRInt32 aNamespaceID) const;
-  NS_IMETHOD_(PRBool) Equals(const nsAString& aName, const nsAString& aPrefix,
-                             PRInt32 aNamespaceID) const;
-  NS_IMETHOD_(PRBool) NamespaceEquals(const nsAString& aNamespaceURI) const;
-  NS_IMETHOD_(PRBool) QualifiedNameEquals(const nsACString& aQualifiedName) const;
-
-  NS_IMETHOD NameChanged(nsIAtom *aName, nsINodeInfo** aResult);
-  NS_IMETHOD PrefixChanged(nsIAtom *aPrefix, nsINodeInfo** aResult);
-  
-  virtual nsIDocument* GetDocument() const;
-  NS_IMETHOD GetDocumentPrincipal(nsIPrincipal** aPrincipal) const;
+  virtual void GetQualifiedName(nsAString &aQualifiedName) const;
+  virtual void GetLocalName(nsAString& aLocalName) const;
+  virtual nsresult GetNamespaceURI(nsAString& aNameSpaceURI) const;
+  virtual PRBool Equals(const nsAString& aName) const;
+  virtual PRBool Equals(const nsAString& aName,
+                        const nsAString& aPrefix) const;
+  virtual PRBool Equals(const nsAString& aName, PRInt32 aNamespaceID) const;
+  virtual PRBool Equals(const nsAString& aName, const nsAString& aPrefix,
+                        PRInt32 aNamespaceID) const;
+  virtual PRBool NamespaceEquals(const nsAString& aNamespaceURI) const;
+  virtual PRBool QualifiedNameEquals(const nsACString& aQualifiedName) const;
 
   // nsNodeInfo
+  // Create objects with Create
+public:
+  static nsNodeInfo *Create();
+private:
   nsNodeInfo();
+protected:
   virtual ~nsNodeInfo();
 
+public:
   /*
    * Note! Init() must be called exactly once on every nsNodeInfo before
    * the object is used, if Init() returns an error code the nsNodeInfo
@@ -88,10 +84,22 @@ public:
   nsresult Init(nsIAtom *aName, nsIAtom *aPrefix, PRInt32 aNamespaceID,
                 nsNodeInfoManager *aOwnerManager);
 
-protected:
-  nsCOMPtr<nsIAtom>   mIDAttributeAtom;
+  /**
+   * Call before shutdown to clear the cache and free memory for this class.
+   */
+  static void ClearCache();
 
-  nsNodeInfoManager* mOwnerManager; // Strong reference!
+private:
+  void Clear();
+
+  static nsNodeInfo *sCachedNodeInfo;
+
+  /**
+   * This method gets called by Release() when it's time to delete 
+   * this object, instead of always deleting the object we'll put the
+   * object in the cache unless the cache is already full.
+   */
+   void LastRelease();
 };
 
 #endif /* nsNodeInfo_h___ */

@@ -20,9 +20,9 @@
 
 /*
  *  nsXmlRpcClient XPCOM component
- *  Version: $Revision: 1.1.1.1.2.2 $
+ *  Version: $Revision: 1.1.1.1.2.3 $
  *
- *  $Id: nsXmlRpcClient.js,v 1.1.1.1.2.2 2004-01-02 19:41:05 ghudson Exp $
+ *  $Id: nsXmlRpcClient.js,v 1.1.1.1.2.3 2004-03-06 19:23:39 ghudson Exp $
  */
 
 /*

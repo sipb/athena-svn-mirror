@@ -166,15 +166,15 @@ const gPopupPrefListener =
 
     var hosts = [];
 
-    var popupManager = Components.classes["@mozilla.org/PopupWindowManager;1"]
-                                 .getService(Components.interfaces.nsIPopupWindowManager);
+    var permManager = Components.classes["@mozilla.org/permissionmanager;1"]
+                                .getService(Components.interfaces.nsIPermissionManager);
     
-    var enumerator = popupManager.getEnumerator();
+    var enumerator = permManager.enumerator;
     var count=0;
     while (enumerator.hasMoreElements()) {
       var permission = enumerator.getNext()
                                  .QueryInterface(Components.interfaces.nsIPermission);
-      if (permission.capability == policy)
+      if (permission.type == POPUP_TYPE && permission.capability == policy)
         hosts[permission.host] = permission.host;
     }
 
@@ -748,7 +748,7 @@ function Translate()
   if (targetURI.indexOf(serviceDomain) >= 0)
     BrowserReload();
   else {
-    loadURI(service + escape(targetURI));
+    loadURI(encodeURI(service + targetURI));
   }
 }
 
@@ -1025,7 +1025,7 @@ function OpenSearch(tabName, forceDialogFlag, searchStr, newWindowFlag)
         }
       } else {
         if (searchStr) {
-          var escapedSearchStr = escape(searchStr);
+          var escapedSearchStr = encodeURIComponent(searchStr);
           defaultSearchURL += escapedSearchStr;
           var searchDS = Components.classes["@mozilla.org/rdf/datasource;1?name=internetsearch"]
                                    .getService(Components.interfaces.nsIInternetSearchService);
@@ -1408,7 +1408,11 @@ function readFromClipboard()
                           .createInstance(Components.interfaces.nsITransferable);
 
     trans.addDataFlavor("text/unicode");
-    clipboard.getData(trans, clipboard.kSelectionClipboard);
+    // If available, use selection clipboard, otherwise global one
+    if (clipboard.supportsSelectionClipboard())
+      clipboard.getData(trans, clipboard.kSelectionClipboard);
+    else
+      clipboard.getData(trans, clipboard.kGlobalClipboard);
 
     var data = {};
     var dataLen = {};
@@ -2105,7 +2109,7 @@ function onPopupWindow(aEvent) {
     }
     if (showDialog) {
       window.openDialog("chrome://communicator/content/aboutPopups.xul", "",
-                        "chrome,centerscreen,resizable=yes", true);
+                        "chrome,centerscreen,dependent", true);
       pref.setBoolPref("privacy.popups.first_popup", false);
     }
   }
@@ -2168,7 +2172,7 @@ function StatusbarViewPopupManager() {
   
   // open whitelist with site prefilled to unblock
   window.openDialog("chrome://communicator/content/popupManager.xul", "",
-                      "chrome,resizable=yes", hostPort, false);
+                      "chrome,resizable=yes", hostPort);
 }
 
 function toHistory()

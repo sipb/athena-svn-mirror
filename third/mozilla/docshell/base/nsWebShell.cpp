@@ -85,6 +85,7 @@
 #include "nsIDOMRange.h"
 #include "nsIURIContentListener.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMHTMLAnchorElement.h"
 #include "nsIBaseWindow.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellTreeItem.h"
@@ -117,10 +118,8 @@
 #include "nsIDocument.h"
 #include "nsITextToSubURI.h"
 
-#ifdef MOZ_THUNDERBIRD
 #include "nsIExternalProtocolService.h"
 #include "nsCExternalHandlerService.h"
-#endif
 
 #ifdef NS_DEBUG
 /**
@@ -378,7 +377,7 @@ nsWebShell::LoadDocument(const char* aURL,
           mCharsetReloadState = eCharsetReloadRequested;
           LoadURI(NS_ConvertASCIItoUCS2(aURL).get(),  // URI string
                   LOAD_FLAGS_NONE,                    // Load flags
-                  nsnull,                             // Refering URI
+                  nsnull,                             // Referring URI
                   nsnull,                             // Post data stream
                   nsnull);                            // Header stream
         }
@@ -560,48 +559,30 @@ nsWebShell::OnLinkClickSync(nsIContent *aContent,
                             nsIDocShell** aDocShell,
                             nsIRequest** aRequest)
 {
-#ifdef MOZ_THUNDERBIRD
-  // XXX ugly thunderbird hack to force all url clicks to go to the system default app
-  // I promise this will be removed once we figure out a better way. 
-  nsCAutoString scheme;
-  aURI->GetScheme(scheme);
-
-  nsCAutoString spec;
-  aURI->GetSpec(spec);
-                                          
-  static const char kMailToURI[] = "mailto";                                    
-  static const char kNewsURI[] = "news";                                        
-  static const char kSnewsURI[] = "snews";                                      
-  static const char kNntpURI[] = "nntp";                                        
-  static const char kImapURI[] = "imap"; 
-
-  if (scheme.EqualsIgnoreCase(kMailToURI)) 
+  PRBool earlyReturn = PR_FALSE;
   {
-    // the scheme is mailto, we can handle it
-  } 
-  else if (scheme.EqualsIgnoreCase(kNewsURI)) 
-  {
-    // the scheme is news, we can handle it
-  } 
-  else if (scheme.EqualsIgnoreCase(kSnewsURI)) 
-  {
-    // the scheme is snews, we can handle it
-  } 
-  else if (scheme.EqualsIgnoreCase(kNntpURI)) 
-  {
-     // the scheme is nntp, we can handle it 
-  } else if (scheme.EqualsIgnoreCase(kImapURI)) 
-  {
-    // the scheme is imap, we can handle it
-  } else 
-  {
-    // we don't handle this type, the the registered handler take it 
-    nsresult rv = NS_OK;
-    nsCOMPtr<nsIExternalProtocolService> extProtService = do_GetService(NS_EXTERNALPROTOCOLSERVICE_CONTRACTID, &rv);
-    NS_ENSURE_SUCCESS(rv,rv);
-    return extProtService->LoadUrl(aURI);                                                                 
-  }                                                                               
-#endif
+    // defer to an external protocol handler if necessary...
+    nsCOMPtr<nsIExternalProtocolService> extProtService = do_GetService(NS_EXTERNALPROTOCOLSERVICE_CONTRACTID);
+    if (extProtService) {
+      nsCAutoString scheme;
+      aURI->GetScheme(scheme);
+      if (!scheme.IsEmpty()) {
+        // if the URL scheme does not correspond to an exposed protocol, then we
+        // need to hand this link click over to the external protocol handler.
+        PRBool isExposed;
+        nsresult rv = extProtService->IsExposedProtocol(scheme.get(), &isExposed);
+        if (NS_SUCCEEDED(rv) && !isExposed) {
+          rv = extProtService->LoadUrl(aURI);
+          if (NS_SUCCEEDED(rv))
+            earlyReturn = PR_TRUE;
+          else
+            NS_WARNING("failed to launch external protocol handler");
+        }
+      }
+    }
+  }
+  if (earlyReturn)
+    return NS_OK;
 
   nsCOMPtr<nsIDOMNode> node(do_QueryInterface(aContent));
   NS_ENSURE_TRUE(node, NS_ERROR_UNEXPECTED);
@@ -649,14 +630,20 @@ nsWebShell::OnLinkClickSync(nsIContent *aContent,
   nsCOMPtr<nsIDocument> refererDoc(do_QueryInterface(refererOwnerDoc));
   NS_ENSURE_TRUE(refererDoc, NS_ERROR_UNEXPECTED);
 
-  nsCOMPtr<nsIURI> referer;
-  refererDoc->GetDocumentURL(getter_AddRefs(referer));
+  nsIURI *referer = refererDoc->GetDocumentURL();
 
   // referer could be null here in some odd cases, but that's ok,
   // we'll just load the link w/o sending a referer in those cases.
 
   nsAutoString target(aTargetSpec);
 
+  // If this is an anchor element, grab its type property to use as a hint
+  nsAutoString typeHint;
+  nsCOMPtr<nsIDOMHTMLAnchorElement> anchor(do_QueryInterface(aContent));
+  if (anchor) {
+    anchor->GetType(typeHint);
+  }
+  
   // Initialize the DocShell / Request
   if (aDocShell) {
     *aDocShell = nsnull;
@@ -678,6 +665,7 @@ nsWebShell::OnLinkClickSync(nsIContent *aContent,
                             nsnull,             // No onwer
                             PR_TRUE,            // Inherit owner from document
                             target.get(),       // Window target
+                            NS_LossyConvertUCS2toASCII(typeHint).get(),
                             aPostDataStream,    // Post data stream
                             aHeadersDataStream, // Headers stream
                             LOAD_LINK,          // Load type
@@ -940,7 +928,7 @@ nsresult nsWebShell::EndPageLoad(nsIWebProgress *aProgress,
 
           return LoadURI(newSpecW.get(),      // URI string
                          LOAD_FLAGS_NONE, // Load flags
-                         nsnull,          // Refering URI
+                         nsnull,          // Referring URI
                          nsnull,          // Post data stream
                          nsnull);         // Headers stream
         }
@@ -1049,10 +1037,11 @@ nsresult nsWebShell::EndPageLoad(nsIWebProgress *aProgress,
                postDataSeekable->Seek(nsISeekableStream::NS_SEEK_SET, 0);
             }
             InternalLoad(url,                               // URI
-                         referrer,                          // Refering URI
+                         referrer,                          // Referring URI
                          nsnull,                            // Owner
                          PR_TRUE,                           // Inherit owner
                          nsnull,                            // No window target
+                         nsnull,                            // No type hint
                          inputStream,                       // Post data stream
                          nsnull,                            // No headers stream
                          LOAD_RELOAD_BYPASS_PROXY_AND_CACHE,// Load type

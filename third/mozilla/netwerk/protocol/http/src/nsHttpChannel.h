@@ -48,7 +48,7 @@
 #include "nsIEncodedChannel.h"
 #include "nsITransport.h"
 #include "nsIUploadChannel.h"
-#include "nsISimpleEnumerator.h"
+#include "nsIStringEnumerator.h"
 #include "nsIOutputStream.h"
 #include "nsIAsyncInputStream.h"
 #include "nsIInputStreamPump.h"
@@ -146,9 +146,10 @@ private:
     nsresult OnDoneReadingPartialCacheEntry(PRBool *streamDone);
 
     // auth specific methods
+    nsresult GenCredsAndSetEntry(nsIHttpAuthenticator *, PRBool proxyAuth, const char *host, PRInt32 port, const char *dir, const char *realm, const char *challenge, const nsHttpAuthIdentity &ident, nsCOMPtr<nsISupports> &session, char **result);
     nsresult GetCredentials(const char *challenges, PRBool proxyAuth, nsAFlatCString &creds);
-    nsresult SelectChallenge(const char *challenges, nsCString &challenge, nsCString &scheme, nsIHttpAuthenticator **); 
-    nsresult GetAuthenticator(const char *scheme, nsIHttpAuthenticator **);
+    nsresult GetCredentialsForChallenge(const char *challenge, const char *scheme,  PRBool proxyAuth, nsIHttpAuthenticator *auth, nsAFlatCString &creds);
+    nsresult ParseChallenge(const char *challenge, nsCString &scheme, nsIHttpAuthenticator **auth); 
     void     ParseRealm(const char *challenge, nsACString &realm);
     void     GetIdentityFromURI(PRUint32 authFlags, nsHttpAuthIdentity&);
     nsresult PromptForIdentity(const char *host, PRInt32 port, PRBool proxyAuth, const char *realm, const char *scheme, PRUint32 authFlags, nsHttpAuthIdentity &);
@@ -222,11 +223,11 @@ private:
     PRUint32                          mUploadStreamHasHeaders   : 1;
     PRUint32                          mAuthRetryPending         : 1;
 
-    class nsContentEncodings : public nsISimpleEnumerator
+    class nsContentEncodings : public nsIUTF8StringEnumerator
     {
     public:
         NS_DECL_ISUPPORTS
-        NS_DECL_NSISIMPLEENUMERATOR
+        NS_DECL_NSIUTF8STRINGENUMERATOR
 
         nsContentEncodings(nsIHttpChannel* aChannel, const char* aEncodingHeader);
         virtual ~nsContentEncodings();

@@ -247,14 +247,15 @@ public:
  
    /**
     * Resolve a new style context for a content node and return the URL
-    * for its XBL binding, or the empty string if it has no binding
-    * specified in CSS.
+    * for its XBL binding, or null if it has no binding specified in CSS.
     */
-   NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsAString& aResult) = 0;
+   NS_IMETHOD GetXBLBindingURL(nsIContent* aContent, nsIURI** aResult) = 0;
 
   /** 
    * For a given frame tree, get a new style context that is the equivalent
-   * but within a new parent
+   * but within a new parent.  The StyleContextParent of aFrame should be
+   * changed _before_ this method is called, so that style tree verification
+   * can take place correctly.
    */
   NS_IMETHOD ReParentStyleContext(nsIFrame* aFrame, 
                                   nsStyleContext* aNewParentContext) = 0;
@@ -299,6 +300,7 @@ public:
   NS_IMETHOD GetDefaultColor(nscolor* aColor) = 0;
   NS_IMETHOD GetDefaultBackgroundColor(nscolor* aColor) = 0;
   NS_IMETHOD GetDefaultLinkColor(nscolor* aColor) = 0;
+  NS_IMETHOD GetDefaultActiveLinkColor(nscolor* aColor) = 0;
   NS_IMETHOD GetDefaultVisitedLinkColor(nscolor* aColor) = 0;
   NS_IMETHOD GetFocusBackgroundColor(nscolor* aColor) = 0;
   NS_IMETHOD GetFocusTextColor(nscolor* aColor) = 0; 
@@ -310,6 +312,7 @@ public:
   NS_IMETHOD SetDefaultColor(nscolor aColor) = 0;
   NS_IMETHOD SetDefaultBackgroundColor(nscolor aColor) = 0;
   NS_IMETHOD SetDefaultLinkColor(nscolor aColor) = 0;
+  NS_IMETHOD SetDefaultActiveLinkColor(nscolor aColor) = 0;
   NS_IMETHOD SetDefaultVisitedLinkColor(nscolor aColor) = 0;
 
   /**
@@ -319,7 +322,7 @@ public:
    * method will be invoked (via the ViewManager) so that the
    * appropriate damage repair is done.
    */
-  NS_IMETHOD LoadImage(const nsString& aURL,
+  NS_IMETHOD LoadImage(nsIURI* aURL,
                        nsIFrame* aTargetFrame,
                        imgIRequest **aRequest) = 0;
 

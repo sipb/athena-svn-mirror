@@ -753,10 +753,7 @@ nsPrintEngine::Print(nsIPrintSettings*       aPrintSettings,
     if (!printSilently) {
       nsCOMPtr<nsIPrintingPromptService> printPromptService(do_GetService(kPrintingPromptService));
       if (printPromptService) {
-        nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-        mDocument->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
-        NS_ENSURE_TRUE(scriptGlobalObject, NS_ERROR_FAILURE);
-        nsCOMPtr<nsIDOMWindow> domWin = do_QueryInterface(scriptGlobalObject); 
+        nsCOMPtr<nsIDOMWindow> domWin = do_QueryInterface(mDocument->GetScriptGlobalObject()); 
         NS_ENSURE_TRUE(domWin, NS_ERROR_FAILURE);
 
         // Platforms not implementing a given dialog for the service may
@@ -1685,10 +1682,7 @@ nsPrintEngine::ShowPrintProgress(PRBool aIsForPrinting, PRBool& aDoNotify)
   if (mPrt->mShowProgressDialog) {
     nsCOMPtr<nsIPrintingPromptService> printPromptService(do_GetService(kPrintingPromptService));
     if (printPromptService) {
-      nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-      mDocument->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
-      if (!scriptGlobalObject) return;
-      nsCOMPtr<nsIDOMWindow> domWin = do_QueryInterface(scriptGlobalObject); 
+      nsCOMPtr<nsIDOMWindow> domWin = do_QueryInterface(mDocument->GetScriptGlobalObject()); 
       if (!domWin) return;
 
       nsCOMPtr<nsIWebBrowserPrint> wbp(do_QueryInterface(mDocViewerPrint));
@@ -1778,8 +1772,7 @@ nsPrintEngine::IsParentAFrameSet(nsIWebShell * aParent)
     nsCOMPtr<nsIDocument> doc;
     shell->GetDocument(getter_AddRefs(doc));
     if (doc) {
-      nsCOMPtr<nsIContent> rootContent;
-      doc->GetRootContent(getter_AddRefs(rootContent));
+      nsIContent *rootContent = doc->GetRootContent();
       if (rootContent) {
         if (NS_SUCCEEDED(mDocViewerPrint->FindFrameSetWithIID(rootContent, NS_GET_IID(nsIDOMHTMLFrameSetElement)))) {
           isFrameSet = PR_TRUE;
@@ -1857,14 +1850,12 @@ nsPrintEngine::GetWebShellTitleAndURL(nsIWebShell* aWebShell,
   *aTitle  = nsnull;
   *aURLStr = nsnull;
 
-  nsAutoString docTitle;
-  aDoc->GetDocumentTitle(docTitle);
+  const nsAString &docTitle = aDoc->GetDocumentTitle();
   if (!docTitle.IsEmpty()) {
     *aTitle = ToNewUnicode(docTitle);
   }
 
-  nsCOMPtr<nsIURI> url;
-  aDoc->GetDocumentURL(getter_AddRefs(url));
+  nsIURI* url = aDoc->GetDocumentURL();
   if (!url) return;
 
   nsCAutoString urlCStr;
@@ -1966,16 +1957,12 @@ nsPrintEngine::MapContentForPO(nsPrintObject*   aRootObject,
     return;
   }
 
-  nsCOMPtr<nsIDocument> subDoc;
-  doc->GetSubDocumentFor(aContent, getter_AddRefs(subDoc));
+  nsIDocument* subDoc = doc->GetSubDocumentFor(aContent);
 
   if (subDoc) {
-    nsCOMPtr<nsISupports> container;
-    subDoc->GetContainer(getter_AddRefs(container));
+    nsIPresShell *presShell = subDoc->GetShellAt(0);
 
-    nsCOMPtr<nsIPresShell> presShell;
-    subDoc->GetShellAt(0, getter_AddRefs(presShell));
-
+    nsCOMPtr<nsISupports> container = subDoc->GetContainer();
     nsCOMPtr<nsIWebShell> webShell(do_QueryInterface(container));
 
     if (presShell && webShell) {
@@ -2015,11 +2002,9 @@ nsPrintEngine::MapContentForPO(nsPrintObject*   aRootObject,
   }
 
   // walk children content
-  PRInt32 count;
-  aContent->ChildCount(count);
-  nsCOMPtr<nsIContent> child;
-  for (PRInt32 i = 0; i < count; ++i) {
-    aContent->ChildAt(i, getter_AddRefs(child));
+  PRUint32 count = aContent->GetChildCount();
+  for (PRUint32 i = 0; i < count; ++i) {
+    nsIContent *child = aContent->GetChildAt(i);
     MapContentForPO(aRootObject, aPresShell, child);
   }
 }
@@ -2428,7 +2413,7 @@ nsPrintEngine::SetupToPrintContent(nsIDeviceContext*     aDContext,
 
 #ifdef PR_LOGGING
     {
-      float calcRatio;
+      float calcRatio = 0.0f;
       if (mPrt->mPrintDocList->Count() > 1 && mPrt->mPrintObject->mFrameType == eFrameSet) {
         nsPrintObject* smallestPO = FindSmallestSTF();
         NS_ASSERTION(smallestPO, "There must always be an XMost PO!");
@@ -3082,9 +3067,7 @@ static void GetIFramePosition(nsPrintObject * aPO, nscoord& aX, nscoord& aY)
           nsPoint pt = frame->GetPosition();
           aX += pt.x;
           aY += pt.y;
-          nsCOMPtr<nsIAtom> frameType;
-          frame->GetFrameType(getter_AddRefs(frameType));
-          if (nsLayoutAtoms::pageContentFrame == frameType.get()) {
+          if (nsLayoutAtoms::pageContentFrame == frame->GetType()) {
             break;
           }
           frame = frame->GetParent();
@@ -3679,15 +3662,11 @@ nsPrintEngine::FindFrameByType(nsIPresContext* aPresContext,
   aParentFrame->FirstChild(aPresContext, nsnull, &child);
   while (child) {
     nsIContent* content = child->GetContent();
-    if (content) {
-      nsCOMPtr<nsIAtom> type;
-      content->GetTag(getter_AddRefs(type));
-      if (type.get() == aType) {
-        nsRect r = child->GetRect();
-        aChildRect.SetRect(aRect.x + r.x, aRect.y + r.y, r.width, r.height);
-        aRect -= aParentFrame->GetPosition();
-        return child;
-      }
+    if (content && content->Tag() == aType) {
+      nsRect r = child->GetRect();
+      aChildRect.SetRect(aRect.x + r.x, aRect.y + r.y, r.width, r.height);
+      aRect -= aParentFrame->GetPosition();
+      return child;
     }
     nsIFrame * fndFrame = FindFrameByType(aPresContext, child, aType, aRect, aChildRect);
     if (fndFrame != nsnull) {
@@ -3906,19 +3885,19 @@ nsPrintEngine::GetPageRangeForSelection(nsIPresShell *        aPresShell,
 
 //---------------------------------------------------------------------
 // Note this is also defined in DocumentViewerImpl
-nsIPresShell*
-nsPrintEngine::GetPresShellFor(nsIDocShell* aDocShell)
+// static
+nsIPresShell *
+GetPresShellFor(nsIDocShell* aDocShell)
 {
   nsCOMPtr<nsIDOMDocument> domDoc(do_GetInterface(aDocShell));
-  if (!domDoc) return nsnull;
+  if (!domDoc)
+    return nsnull;
 
   nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
-  if (!doc) return nsnull;
+  if (!doc)
+    return nsnull;
 
-  nsIPresShell* shell = nsnull;
-  doc->GetShellAt(0, &shell);
-
-  return shell;
+  return doc->GetShellAt(0);
 }
 
 //---------------------------------------------------------------------
@@ -3960,13 +3939,12 @@ nsPrintEngine::FindFocusedDOMWindowInternal()
 {
   nsCOMPtr<nsIDOMWindowInternal>  theDOMWin;
   nsCOMPtr<nsIDocument>           theDoc;
-  nsCOMPtr<nsIScriptGlobalObject> theSGO;
   nsCOMPtr<nsIFocusController>    focusController;
   nsIDOMWindowInternal *          domWin = nsnull;
 
   mDocViewer->GetDocument(getter_AddRefs(theDoc));
   if(theDoc){
-    theDoc->GetScriptGlobalObject(getter_AddRefs(theSGO));
+    nsIScriptGlobalObject* theSGO = theDoc->GetScriptGlobalObject();
     if(theSGO){
       nsCOMPtr<nsPIDOMWindow> theDOMWindow = do_QueryInterface(theSGO);
       if(theDOMWindow){
@@ -4451,11 +4429,10 @@ nsPrintEngine::TurnScriptingOn(PRBool aDoTurnOn)
   NS_ASSERTION(mDocument, "We MUST have a document.");
 
   // get the script global object
-  nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObj;
-  nsresult rv = mDocument->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObj));
-  NS_ASSERTION(NS_SUCCEEDED(rv) && scriptGlobalObj, "Can't get nsIScriptGlobalObject");
+  nsIScriptGlobalObject *scriptGlobalObj = mDocument->GetScriptGlobalObject();
+  NS_ASSERTION(scriptGlobalObj, "Can't get nsIScriptGlobalObject");
   nsCOMPtr<nsIScriptContext> scx;
-  rv = scriptGlobalObj->GetContext(getter_AddRefs(scx));
+  nsresult rv = scriptGlobalObj->GetContext(getter_AddRefs(scx));
   NS_ASSERTION(NS_SUCCEEDED(rv) && scx, "Can't get nsIScriptContext");
   scx->SetScriptsEnabled(aDoTurnOn, PR_TRUE);
 }
@@ -4780,7 +4757,7 @@ DumpViews(nsIDocShell* aDocShell, FILE* out)
   if (nsnull != aDocShell) {
     fprintf(out, "docshell=%p \n", aDocShell);
     nsIPresShell* shell = nsPrintEngine::GetPresShellFor(aDocShell);
-    if (nsnull != shell) {
+    if (shell) {
       nsIViewManager* vm = shell->GetViewManager();
       if (vm) {
         nsIView* root;
@@ -4789,7 +4766,6 @@ DumpViews(nsIDocShell* aDocShell, FILE* out)
           root->List(out);
         }
       }
-      NS_RELEASE(shell);
     }
     else {
       fputs("null pres shell\n", out);

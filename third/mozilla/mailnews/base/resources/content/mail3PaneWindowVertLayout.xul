@@ -183,17 +183,13 @@ Rights Reserved.
         <browser id="messagepane" context="messagePaneContext" autofind="false"
                  style="height: 0px; min-height: 1px" flex="1" name="messagepane" 
                  disablehistory="true" type="content-primary" src="about:blank"
-                 disablesecurity="true" onclick="contentAreaClick(event);"/>
+                 disablesecurity="true" onclick="messagePaneOnClick(event);"/>
       </vbox>  
 
     </vbox>
 
   </hbox>
 
-	<statusbar id="status-bar" class="mailwindow-statusbar">
-		<statusbarpanel id="unreadMessageCount" style="min-width: 5px"/>
-		<statusbarpanel id="totalMessageCount" style="min-width: 5px"/>
-	</statusbar>
-	
+  <statusbar id="status-bar" class="chromeclass-status mailwindow-statusbar"/>
 	
 </window>

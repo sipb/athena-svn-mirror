@@ -40,14 +40,21 @@ var editCard;
 var gOnSaveListeners = new Array;
 var gOkCallback = null;
 var gAddressBookBundle;
+var gHideABPicker = false;
 
 function OnLoadNewCard()
 {
   InitEditCard();
 
-  doSetOKCancel(NewCardOKButton, 0);
+  var cardproperty;
 
-  var cardproperty = Components.classes["@mozilla.org/addressbook/cardproperty;1"].createInstance(Components.interfaces.nsIAbCard);
+  // if one is passed in, use it
+  try {
+    cardproperty = window.arguments[0].QueryInterface(Components.interfaces.nsIAbCard);
+  }
+  catch (ex) {
+    cardproperty = Components.classes["@mozilla.org/addressbook/cardproperty;1"].createInstance(Components.interfaces.nsIAbCard);
+  }
 
   editCard.card = cardproperty;
   editCard.titleProperty = "newCardTitle";
@@ -96,6 +103,20 @@ function OnLoadNewCard()
     }
     if ("aimScreenName" in window.arguments[0])
       editCard.card.aimScreenName = window.arguments[0].aimScreenName;
+    
+    if ("okCallback" in window.arguments[0])
+      gOkCallback = window.arguments[0].okCallback;
+
+    if ("escapedVCardStr" in window.arguments[0]) {
+      var addressbook = Components.classes["@mozilla.org/addressbook;1"].createInstance(Components.interfaces.nsIAddressBook);
+      editCard.card = addressbook.escapedVCardToAbCard(window.arguments[0].escapedVCardStr);
+    }
+
+    if ("titleProperty" in window.arguments[0])
+      editCard.titleProperty = window.arguments[0].titleProperty;
+    
+    if ("hideABPicker" in window.arguments[0])
+      gHideABPicker = window.arguments[0].hideABPicker;
   }
 
   // set popup with address book names
@@ -124,6 +145,14 @@ function OnLoadNewCard()
     }
   }
 
+  if (gHideABPicker && abPopup) {
+    abPopup.hidden = true;
+    var abPopupLabel = document.getElementById("abPopupLabel");
+    abPopupLabel.hidden = true;
+  }
+
+  SetCardDialogTitle(editCard.card.displayName);
+    
   GetCardValues(editCard.card, document);
 
   // FIX ME - looks like we need to focus on both the text field and the tab widget
@@ -205,24 +234,9 @@ function EditCardOKButton()
   return true;  // close the window
 }
 
-
-function OnNewCardEnter()
-{
-  if (NewCardOKButton()) 
-    window.close();
-}
-
-function OnEditCardEnter()
-{
-  if (EditCardOKButton()) 
-    window.close();
-}
-
 function OnLoadEditCard()
 {
   InitEditCard();
-
-  doSetOKCancel(EditCardOKButton, 0);
 
   editCard.titleProperty = "editCardTitle";
 
@@ -247,9 +261,8 @@ function OnLoadEditCard()
 
   GetCardValues(editCard.card, document);
 
-  var displayName = editCard.card.displayName;
-  top.window.title = gAddressBookBundle.getFormattedString(editCard.titleProperty,
-                                                           [ displayName ]);
+  SetCardDialogTitle(editCard.card.displayName);
+
   // check if selectedAB is a writeable
   // if not disable all the fields
   if ("arguments" in window && window.arguments[0])
@@ -341,6 +354,14 @@ function InitEditCard()
 
 function NewCardOKButton()
 {
+  if (gOkCallback)
+  {
+    SetCardValues(editCard.card, document);
+    var addressbook = Components.classes["@mozilla.org/addressbook;1"].createInstance(Components.interfaces.nsIAddressBook);
+    gOkCallback(addressbook.abCardToEscapedVCard(editCard.card));
+    return true;  // close the window
+  }
+
   var popup = document.getElementById('abPopup');
   if ( popup )
   {
@@ -502,16 +523,6 @@ function CleanUpWebPage(webPage)
 }
 
 
-function NewCardCancelButton()
-{
-  top.window.close();
-}
-
-function EditCardCancelButton()
-{
-  top.window.close();
-}
-
 function GenerateDisplayName()
 {
   if ( editCard.generateDisplayName )
@@ -534,8 +545,8 @@ function GenerateDisplayName()
     }
 
     displayNameField.value = displayName;
-        top.window.title = gAddressBookBundle.getFormattedString(editCard.titleProperty,
-                                                                 [ displayName ]);
+
+    SetCardDialogTitle(displayName);
   }
 }
 
@@ -545,9 +556,11 @@ function DisplayNameChanged()
   editCard.generateDisplayName = false;
 
     var displayName = document.getElementById('DisplayName').value;
-    var title = gAddressBookBundle.getFormattedString(editCard.titleProperty,
-                                                      [ displayName ]);
-  if ( top.window.title != title )
-    top.window.title = title;
+
+  SetCardDialogTitle(displayName);
 }
 
+function SetCardDialogTitle(displayName)
+{
+   top.window.title = displayName ? gAddressBookBundle.getFormattedString(editCard.titleProperty + "WithDisplayName", [displayName]) : gAddressBookBundle.getString(editCard.titleProperty);                                          
+}

@@ -22,7 +22,7 @@
  * Contributor(s):
  *   Chris Waterson <waterson@netscape.com>
  *   Ben Goodger <ben@netscape.com>
- *   Jan Varga <varga@utcru.sk>
+ *   Jan Varga <varga@nixcorp.com>
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -41,6 +41,7 @@
 
 #include "nscore.h"
 #include "nsIContent.h"
+#include "nsINodeInfo.h"
 #include "nsIDOMElement.h"
 #include "nsILocalStore.h"
 #include "nsIBoxObject.h"
@@ -458,18 +459,19 @@ nsXULTreeBuilder::Sort(nsIDOMElement* aElement)
     // Unset sort attribute(s) on the other columns
     nsIContent* parentContent = header->GetParent();
     if (parentContent) {
-        nsCOMPtr<nsIAtom> parentTag;
-        parentContent->GetTag(getter_AddRefs(parentTag));
-        if (parentTag == nsXULAtoms::treecols) {
-            PRInt32 numChildren;
-            parentContent->ChildCount(numChildren);
-            for (int i = 0; i < numChildren; ++i) {
-                nsCOMPtr<nsIContent> childContent;
-                nsCOMPtr<nsIAtom> childTag;
-                parentContent->ChildAt(i, getter_AddRefs(childContent));
+        nsINodeInfo *ni = parentContent->GetNodeInfo();
+
+        if (ni && ni->Equals(nsXULAtoms::treecols, kNameSpaceID_XUL)) {
+            PRUint32 numChildren = parentContent->GetChildCount();
+            for (PRUint32 i = 0; i < numChildren; ++i) {
+                nsIContent *childContent = parentContent->GetChildAt(i);
+
                 if (childContent) {
-                    childContent->GetTag(getter_AddRefs(childTag));
-                    if (childTag == nsXULAtoms::treecol && childContent != header) {
+                    ni = childContent->GetNodeInfo();
+
+                    if (ni &&
+                        ni->Equals(nsXULAtoms::treecol, kNameSpaceID_XUL) &&
+                        childContent != header) {
                         childContent->UnsetAttr(kNameSpaceID_None,
                                                 nsXULAtoms::sortDirection, PR_TRUE);
                         childContent->UnsetAttr(kNameSpaceID_None,
@@ -817,13 +819,12 @@ nsXULTreeBuilder::SetTree(nsITreeBoxObject* tree)
         return NS_ERROR_UNEXPECTED;
 
     // Grab the doc's principal...
-    nsCOMPtr<nsIPrincipal> docPrincipal;
-    nsresult rv = doc->GetPrincipal(getter_AddRefs(docPrincipal));
-    if (NS_FAILED(rv)) 
-        return rv;
+    nsIPrincipal* docPrincipal = doc->GetPrincipal();
+    if (!docPrincipal)
+        return NS_ERROR_FAILURE;
 
     PRBool isTrusted = PR_FALSE;
-    rv = IsSystemPrincipal(docPrincipal.get(), &isTrusted);
+    nsresult rv = IsSystemPrincipal(docPrincipal, &isTrusted);
     if (NS_SUCCEEDED(rv) && isTrusted) {
         // Get the datasource we intend to use to remember open state.
         nsAutoString datasourceStr;
@@ -1111,11 +1112,12 @@ nsXULTreeBuilder::ReplaceMatch(nsIRDFResource* aMember,
             // Remove the rows from the view
             PRInt32 row = iter.GetRowIndex();
             PRInt32 delta = mRows.GetSubtreeSizeFor(iter);
-            mRows.RemoveRowAt(iter);
-
-            // XXX Could potentially invalidate the iterator's
-            // mContainer[Type|State] caching here, but it'll work
-            // itself out.
+            if (mRows.RemoveRowAt(iter) == 0) {
+              // In this case iter now points to its parent
+              // Invalidate the row's cached fill state
+              iter->mContainerFill = nsTreeRows::eContainerFill_Unknown;
+              mBoxObject->InvalidatePrimaryCell(iter.GetRowIndex());
+            }
 
             // Notify the box object
             mBoxObject->RowCountChanged(row, -delta - 1);
@@ -1263,14 +1265,12 @@ nsXULTreeBuilder::EnsureSortVariables()
     if (!treecols)
         return NS_OK;
 
-    PRInt32 count;
-    treecols->ChildCount(count);
-    for (PRInt32 i = 0; i < count; i++) {
-        nsCOMPtr<nsIContent> child;
-        treecols->ChildAt(i, getter_AddRefs(child));
-        nsCOMPtr<nsIAtom> tag;
-        child->GetTag(getter_AddRefs(tag));
-        if (tag == nsXULAtoms::treecol) {
+    PRUint32 count = treecols->GetChildCount();
+    for (PRUint32 i = 0; i < count; ++i) {
+        nsIContent *child = treecols->GetChildAt(i);
+
+        nsINodeInfo *ni = child->GetNodeInfo();
+        if (ni && ni->Equals(nsXULAtoms::treecol, kNameSpaceID_XUL)) {
             nsAutoString sortActive;
             child->GetAttr(kNameSpaceID_None, nsXULAtoms::sortActive, sortActive);
             if (sortActive == NS_LITERAL_STRING("true")) {
@@ -1350,12 +1350,14 @@ nsXULTreeBuilder::RebuildAll()
     if (!doc)
         return NS_OK;
 
-    if (mBoxObject) {
-        mBoxObject->BeginUpdateBatch();
-    }
-
+    PRInt32 count = mRows.Count();
     mRows.Clear();
     mConflictSet.Clear();
+
+    if (mBoxObject) {
+        mBoxObject->BeginUpdateBatch();
+        mBoxObject->RowCountChanged(0, -count);
+    }
 
     nsresult rv = CompileRules();
     if (NS_FAILED(rv)) return rv;
@@ -1483,8 +1485,8 @@ nsXULTreeBuilder::GetTemplateActionRowFor(PRInt32 aRow, nsIContent** aResult)
 
 nsresult
 nsXULTreeBuilder::GetTemplateActionCellFor(PRInt32 aRow,
-                                               const PRUnichar* aColID,
-                                               nsIContent** aResult)
+                                           const PRUnichar* aColID,
+                                           nsIContent** aResult)
 {
     *aResult = nsnull;
 
@@ -1495,22 +1497,21 @@ nsXULTreeBuilder::GetTemplateActionCellFor(PRInt32 aRow,
         if (mBoxObject)
             mBoxObject->GetColumnIndex(aColID, &colIndex);
 
-        PRInt32 count;
-        row->ChildCount(count);
-        PRInt32 j = 0;
-        for (PRInt32 i = 0; i < count; ++i) {
-            nsCOMPtr<nsIContent> child;
-            row->ChildAt(i, getter_AddRefs(child));
-            nsCOMPtr<nsIAtom> tag;
-            child->GetTag(getter_AddRefs(tag));
-            if (tag == nsXULAtoms::treecell) {
+        PRUint32 count = row->GetChildCount();
+        PRUint32 j = 0;
+        for (PRUint32 i = 0; i < count; ++i) {
+            nsIContent *child = row->GetChildAt(i);
+
+            nsINodeInfo *ni = child->GetNodeInfo();
+
+            if (ni && ni->Equals(nsXULAtoms::treecell, kNameSpaceID_XUL)) {
                 nsAutoString ref;
                 child->GetAttr(kNameSpaceID_None, nsXULAtoms::ref, ref);
                 if (!ref.IsEmpty() && ref.Equals(aColID)) {
                     *aResult = child;
                     break;
                 }
-                else if (j == colIndex)
+                else if (j == (PRUint32)colIndex)
                     *aResult = child;
                 j++;
             }

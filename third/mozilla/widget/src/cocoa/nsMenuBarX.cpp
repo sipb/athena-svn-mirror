@@ -61,7 +61,6 @@
 #include <Menus.h>
 #include <TextUtils.h>
 #include <Balloons.h>
-#include <Traps.h>
 #include <Resources.h>
 #include <Appearance.h>
 #include <Gestalt.h>
@@ -84,7 +83,11 @@ EventHandlerUPP nsMenuBarX::sCommandEventHandler = nsnull;
 // nsMenuBarX constructor
 //
 nsMenuBarX::nsMenuBarX()
-  : mNumMenus(0), mParent(nsnull), mIsMenuBarAdded(PR_FALSE), mDocument(nsnull), mCurrentCommandID(1)
+  : mCurrentCommandID(1),
+    mNumMenus(0),
+    mParent(nsnull),
+    mIsMenuBarAdded(PR_FALSE),
+    mDocument(nsnull)
 {
   OSStatus status = ::CreateNewMenu(0, 0, &mRootMenu);
   NS_ASSERTION(status == noErr, "nsMenuBarX::nsMenuBarX:  creation of root menu failed.");
@@ -463,15 +466,12 @@ nsMenuBarX::MenuConstruct( const nsMenuEvent & aMenuEvent, nsIWidget* aParentWin
   // set this as a nsMenuListener on aParentWindow
   aParentWindow->AddMenuListener((nsIMenuListener *)this);
 
-  PRInt32 count;
-  mMenuBarContent->ChildCount(count);
-  for ( int i = 0; i < count; ++i ) { 
-    nsCOMPtr<nsIContent> menu;
-    mMenuBarContent->ChildAt ( i, getter_AddRefs(menu) );
+  PRUint32 count = mMenuBarContent->GetChildCount();
+  for ( PRUint32 i = 0; i < count; ++i ) { 
+    nsIContent *menu = mMenuBarContent->GetChildAt(i);
     if ( menu ) {
-      nsCOMPtr<nsIAtom> tag;
-      menu->GetTag ( getter_AddRefs(tag) );
-      if (tag == nsWidgetAtoms::menu) {
+      if (menu->Tag() == nsWidgetAtoms::menu &&
+          menu->IsContentOfType(nsIContent::eXUL)) {
         nsAutoString menuName;
         nsAutoString menuAccessKey(NS_LITERAL_STRING(" "));
         menu->GetAttr(kNameSpaceID_None, nsWidgetAtoms::label, menuName);
@@ -567,7 +567,7 @@ NS_METHOD nsMenuBarX::AddMenu(nsIMenu * aMenu)
       // won't overwrite the apple menu by reusing the ID.
       mNumMenus = 1;
       ::InsertMenuItem(mRootMenu, "\pA", mNumMenus);
-      OSStatus status = ::SetMenuItemHierarchicalMenu(mRootMenu, 1, sAppleMenu);
+      ::SetMenuItemHierarchicalMenu(mRootMenu, 1, sAppleMenu);
     }
   }
 
@@ -725,13 +725,13 @@ NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsMenuBarX)
 NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsMenuBarX)
 
 NS_IMETHODIMP
-nsMenuBarX::BeginUpdate( nsIDocument * aDocument )
+nsMenuBarX::BeginUpdate( nsIDocument * aDocument, nsUpdateType aUpdateType )
 {
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsMenuBarX::EndUpdate( nsIDocument * aDocument )
+nsMenuBarX::EndUpdate( nsIDocument * aDocument, nsUpdateType aUpdateType )
 {
   return NS_OK;
 }

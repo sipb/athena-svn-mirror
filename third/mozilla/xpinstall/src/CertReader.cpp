@@ -42,6 +42,10 @@
 #include "nsIServiceManager.h"
 #include "nsISignatureVerifier.h"
 #include "nsIInputStream.h"
+#include "nsIPrincipal.h"
+#include "nsIURI.h"
+#include "nsPICertNotification.h"
+
 
 #include "nsNetUtil.h"
 
@@ -172,7 +176,6 @@ CertReader::OnDataAvailable(nsIRequest *request,
       continue;
 
     const char* caret = mLeftoverBuffer.get();
-    const char* end = caret + mLeftoverBuffer.Length();
 
     ZipLocal_* ziplocal = (ZipLocal_*) caret;
 

@@ -370,15 +370,12 @@ nsMenuBar::MenuConstruct( const nsMenuEvent & aMenuEvent, nsIWidget* aParentWind
   // set this as a nsMenuListener on aParentWindow
   aParentWindow->AddMenuListener((nsIMenuListener *)this);
   
-  PRInt32 count;
-  mMenuBarContent->ChildCount(count);
-  for ( int i = 0; i < count; ++i ) { 
-    nsCOMPtr<nsIContent> menu;
-    mMenuBarContent->ChildAt ( i, *getter_AddRefs(menu) );
+  PRUint32 count = mMenuBarContent->GetChildCount();
+  for ( PRUint32 i = 0; i < count; ++i ) { 
+    nsIContent *menu = mMenuBarContent->GetChildAt(i);
     if ( menu ) {
-      nsCOMPtr<nsIAtom> tag;
-      menu->GetTag ( *getter_AddRefs(tag) );
-      if (tag == nsWidgetAtoms::menu) {
+      if (menu->Tag() == nsWidgetAtoms::menu &&
+          menu->IsContentOfType(nsIContent::eXUL)) {
         nsAutoString menuName;
         nsAutoString menuAccessKey(NS_LITERAL_STRING(" "));
         menu->GetAttr(kNameSpaceID_None, nsWidgetAtoms::label, menuName);
@@ -622,13 +619,13 @@ NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsMenuBar)
 NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsMenuBar)
 
 NS_IMETHODIMP
-nsMenuBar::BeginUpdate( nsIDocument * aDocument )
+nsMenuBar::BeginUpdate( nsIDocument * aDocument, nsUpdateType aUpdateType )
 {
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsMenuBar::EndUpdate( nsIDocument * aDocument )
+nsMenuBar::EndUpdate( nsIDocument * aDocument, nsUpdateType aUpdateType )
 {
   return NS_OK;
 }

@@ -34,7 +34,7 @@
 /*
  * CMS message methods.
  *
- * $Id: cmsmessage.c,v 1.1.1.1 2003-02-14 17:29:00 rbasch Exp $
+ * $Id: cmsmessage.c,v 1.1.1.1.2.1 2004-03-06 19:30:27 ghudson Exp $
  */
 
 #include "cmslocal.h"
@@ -193,8 +193,9 @@ NSS_CMSMessage_ContentLevelCount(NSSCMSMessage *cmsg)
     NSSCMSContentInfo *cinfo;
 
     /* walk down the chain of contentinfos */
-    for (cinfo = &(cmsg->contentInfo); cinfo != NULL; cinfo = NSS_CMSContentInfo_GetChildContentInfo(cinfo)) {
+    for (cinfo = &(cmsg->contentInfo); cinfo != NULL; ) {
 	count++;
+	cinfo = NSS_CMSContentInfo_GetChildContentInfo(cinfo);
     }
     return count;
 }

@@ -138,6 +138,10 @@ nsImapURI2Path(const char* rootURI, const char* uriStr, nsFileSpec& pathResult)
     rv = localPath->GetFileSpec(&pathResult);
     if (NS_FAILED(rv)) return rv;
     
+    // This forces the creation of the parent server directory
+    // so that we don't get imapservername.sbd instead
+    // when the host directory has been deleted. See bug 210683
+    nsFileSpec tempPath(pathResult.GetNativePathCString(), PR_TRUE); 
     pathResult.CreateDirectory();
   }
   
@@ -281,6 +285,7 @@ nsImapMailboxSpec::nsImapMailboxSpec()
   number_of_recent_messages = 0;
   
   box_flags = 0;
+  supportedUserFlags = 0;
   
   allocatedPathName = nsnull;
   unicharPathName = nsnull;
@@ -302,15 +307,16 @@ nsImapMailboxSpec::~nsImapMailboxSpec()
 }
 
 NS_IMPL_GETSET(nsImapMailboxSpec, Folder_UIDVALIDITY, PRInt32, folder_UIDVALIDITY)
-NS_IMPL_GETSET(nsImapMailboxSpec, Number_of_messages, PRInt32, number_of_messages)
-NS_IMPL_GETSET(nsImapMailboxSpec, Number_of_unseen_messages, PRInt32, number_of_unseen_messages)
-NS_IMPL_GETSET(nsImapMailboxSpec, Number_of_recent_messages, PRInt32, number_of_recent_messages)
+NS_IMPL_GETSET(nsImapMailboxSpec, NumMessages, PRInt32, number_of_messages)
+NS_IMPL_GETSET(nsImapMailboxSpec, NumUnseenMessages, PRInt32, number_of_unseen_messages)
+NS_IMPL_GETSET(nsImapMailboxSpec, NumRecentMessages, PRInt32, number_of_recent_messages)
 NS_IMPL_GETSET(nsImapMailboxSpec, HierarchySeparator, char, hierarchySeparator)
 NS_IMPL_GETSET(nsImapMailboxSpec, FolderSelected, PRBool, folderSelected)
 NS_IMPL_GETSET(nsImapMailboxSpec, DiscoveredFromLsub, PRBool, discoveredFromLsub)
 NS_IMPL_GETSET(nsImapMailboxSpec, OnlineVerified, PRBool, onlineVerified)
 NS_IMPL_GETSET_STR(nsImapMailboxSpec, HostName, hostName)
 NS_IMPL_GETSET_STR(nsImapMailboxSpec, AllocatedPathName, allocatedPathName)
+NS_IMPL_GETSET(nsImapMailboxSpec, SupportedUserFlags, PRUint32, supportedUserFlags)
 NS_IMPL_GETSET(nsImapMailboxSpec, Box_flags, PRUint32, box_flags)
 NS_IMPL_GETSET(nsImapMailboxSpec, NamespaceForFolder, nsIMAPNamespace *, namespaceForFolder)
 
@@ -353,7 +359,8 @@ nsImapMailboxSpec& nsImapMailboxSpec::operator=(const nsImapMailboxSpec& aCopy)
   number_of_recent_messages = aCopy.number_of_recent_messages;
 	
   box_flags = aCopy.box_flags;
-	
+  supportedUserFlags = aCopy.supportedUserFlags;
+  
   allocatedPathName = (aCopy.allocatedPathName) ? strdup(aCopy.allocatedPathName) : nsnull;
   unicharPathName = (aCopy.unicharPathName) ? nsCRT::strdup(aCopy.unicharPathName) : nsnull;
   hierarchySeparator = aCopy.hierarchySeparator;

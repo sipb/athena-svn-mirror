@@ -34,9 +34,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-@import url(resource:/res/html.css);
+@import url(resource://gre/res/html.css);
 @import url(chrome://global/content/xul.css);
-@import url(resource:/res/quirk.css);
+@import url(resource://gre/res/quirk.css);
 
 @namespace parsererror url(http://www.mozilla.org/newlayout/xml/parsererror.xml);
 
@@ -55,8 +55,6 @@
   display: table !important;
   margin: 0;
   padding: 0;
-  width: 0;
-  height: 0;
   float: inherit;
   clear: inherit;
   position: inherit;
@@ -116,10 +114,6 @@
   -moz-user-focus: normal;
 }
 
-*|*:-moz-any-link:active {
-  color: red;
-}
-
 *|*:-moz-any-link:focus {
   -moz-outline: 1px dotted invert;
 }
@@ -141,10 +135,10 @@
 
 *|*::-moz-scrolled-content { 
   /* e.g., text inputs, select boxes */
-  background: inherit;
   padding: inherit;
   display: inherit;
   -moz-box-orient: inherit;
+  -moz-counter-reset: inherit;
 }
 
 *|*::-moz-page, *|*::-moz-page-sequence {

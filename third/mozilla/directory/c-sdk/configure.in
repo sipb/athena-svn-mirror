@@ -693,7 +693,7 @@ case "$target" in
     AC_DEFINE(XP_UNIX)
     AC_DEFINE(AIX)
     AC_DEFINE(SYSV)
-    DSO_LDOPTS='-brtl -bM:SRE -bnoentry -bexpall'
+    DSO_LDOPTS='-brtl -bM:SRE -bnoentry -bexpall -blibpath:/usr/lib:/lib'
     AC_CHECK_HEADER(sys/atomic_op.h, AC_DEFINE(AIX_HAVE_ATOMIC_OP_H))
     case "${target_os}" in
     aix3.2*)
@@ -1199,7 +1199,8 @@ case "$target" in
         CXX="$CXX -mno-cygwin"
         DLL_SUFFIX=dll
         MKSHLIB='$(CC) -shared -Wl,--export-all-symbols -Wl,--out-implib -Wl,$(IMPORT_LIBRARY) -o $@'
-        RC="$WINDRES -O coff"
+        # Use temp file for windres (bug 213281)
+        RC="$WINDRES -O coff --use-temp-file"
     else
         CC=cl
         CXX=cl
@@ -1482,27 +1483,23 @@ mips-sony-newsos*)
 #        AC_DEFINE(USE_OS2_TOOLKIT_HEADERS)
         AC_DEFINE(XP_OS2_EMX)
         AC_DEFINE(OS2)
+        AC_DEFINE(TCPV40HDRS)
         AR=emxomfar
-        AR_FLAGS='-p256 r $@'
+        AR_FLAGS='r $@'
         LD='$(CC)'
-        CFLAGS="$CFLAGS -Wall -Zmtd -Zomf"
-        CXXFLAGS="$CFLAGS -Wall -Zmtd -Zomf"
+        CFLAGS="$CFLAGS -Wall -Zomf"
+        CXXFLAGS="$CFLAGS -Wall -Zomf"
         MKSHLIB='$(CC) $(DSO_LDOPTS) -o $@'
         DSO_CFLAGS=
-        DSO_LDOPTS='-Zomf -Zdll -Zmtd'
+        DSO_LDOPTS='-Zomf -Zdll'
         _OPTIMIZE_FLAGS="-O2 -s"
         _DEBUG_FLAGS="-g -fno-inline"
         if test -n "$MOZ_OPTIMIZE"; then
           DSO_LDOPTS="$DSO_LDOPTS -Zlinker /EXEPACK:2 -Zlinker /PACKCODE -Zlinker /PACKDATA"
         fi
-        OS_LIBS="-lsocket -lemxio"
+        OS_LIBS="-lsocket"
         IMPLIB='emximp -o'
         FILTER='emxexp -o'
-
-        if test -z "$EMXOMFLD_LINKER"; then
-          # using LINK386.EXE
-          DSO_LDOPTS="$DSO_LDOPTS -Zlinker /NOO"
-        fi
 
         # GCC for OS/2 currently predefines these, but we don't want them
         DEFINES="$DEFINES -Uunix -U__unix -U__unix__"

@@ -18,7 +18,7 @@
  * Rights Reserved.
  *
  * Contributors(s):
- *   Jan Varga <varga@utcru.sk>
+ *   Jan Varga <varga@nixcorp.com>
  *   Håkan Waara (hwaara@chello.se)
  */
 
@@ -201,7 +201,6 @@ function InitMsgWindow()
 
   var messagepane = document.getElementById("messagepane");
   messagepane.docShell.allowAuth = false;
-  messagepane.addEventListener("click",messagePaneOnClick,true);
 }
 
 function messagePaneOnClick(event)
@@ -209,7 +208,10 @@ function messagePaneOnClick(event)
   // if this is stand alone mail (no browser)
   // or this isn't a simple left click, do nothing, and let the normal code execute
   if (event.button != 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+  {
+    contentAreaClick(event);
     return;
+  }
 
   // try to determine the href for what you are clicking on.  
   // for example, it might be "" if you aren't left clicking on a link
@@ -228,15 +230,27 @@ function messagePaneOnClick(event)
   if (href.search(needABrowser) == -1) 
     return;
 
+  // however, if the protocol should not be loaded internally, then we should
+  // not put up a new browser window.  we should just let the usual processing
+  // take place.
+  try {
+    var extProtService = Components.classes["@mozilla.org/uriloader/external-protocol-service;1"].getService();
+    extProtService = extProtService.QueryInterface(Components.interfaces.nsIExternalProtocolService);
+    var scheme = href.substring(0, href.indexOf(":"));
+    if (!extProtService.isExposedProtocol(scheme))
+      return;
+  } 
+  catch (ex) {} // ignore errors, and just assume that we can proceed.
+
   // if you get here, the user did a simple left click on a link
   // that we know should be in a browser window.
   // since we are in the message pane, send it to the top most browser window 
   // (or open one) right away, instead of waiting for us to get some data and
   // determine the content type, and then open a browser window
-  openTopBrowserWith(href);
   // we want to preventDefault, so that in
   // nsGenericHTMLElement::HandleDOMEventForAnchors(), we don't try to handle the click again
   event.preventDefault();
+  openTopBrowserWith(href);
 }
 
 function AddDataSources()
@@ -523,6 +537,8 @@ function ShowAccountCentral()
     {
         var acctCentralPage = pref.getComplexValue("mailnews.account_central_page.url",
                                                    Components.interfaces.nsIPrefLocalizedString).data;
+        GetUnreadCountElement().hidden = true;
+        GetTotalCountElement().hidden = true;
         switch (gPaneConfig)
         {
             case 0:

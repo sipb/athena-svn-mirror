@@ -178,7 +178,7 @@ public:
    *
    * @see nsLayoutAtoms::tableRowGroupFrame
    */
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 
   NS_IMETHOD IsPercentageBase(PRBool& aBase) const;
 
@@ -272,6 +272,7 @@ protected:
 
   void DidResizeRows(nsIPresContext&          aPresContext,
                      const nsHTMLReflowState& aReflowState,
+                     nsHTMLReflowMetrics&     aDesiredSize,
                      nsTableRowFrame*         aStartRowFrameIn = nsnull);
 
   /** Incremental Reflow attempts to do column balancing with the minimum number of reflow
@@ -361,7 +362,7 @@ public:
   virtual nsIFrame* GetFirstFrame() { return mFrames.FirstChild(); };
   virtual nsIFrame* GetLastFrame() { return mFrames.LastChild(); };
   virtual void GetNextFrame(nsIFrame*  aFrame, 
-                            nsIFrame** aResult) { aFrame->GetNextSibling(aResult); };
+                            nsIFrame** aResult) { *aResult = aFrame->GetNextSibling(); };
   PRBool IsRepeatable() const;
   void   SetRepeatable(PRBool aRepeatable);
   PRBool HasStyleHeight() const;

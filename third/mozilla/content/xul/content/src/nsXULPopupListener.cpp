@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -238,9 +238,8 @@ XULPopupListenerImpl::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
   // submenu of an already-showing popup.  We don't need to do anything at all.
   if (popupType == eXULPopupType_popup) {
     nsCOMPtr<nsIContent> targetContent = do_QueryInterface(target);
-    nsCOMPtr<nsIAtom> tag;
-    targetContent->GetTag(getter_AddRefs(tag));
-    if (tag && (tag.get() == nsXULAtoms::menu || tag.get() == nsXULAtoms::menuitem))
+    nsIAtom *tag = targetContent->Tag();
+    if (tag == nsXULAtoms::menu || tag == nsXULAtoms::menuitem)
       return NS_OK;
   }
 
@@ -302,12 +301,13 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
   rv = aTargetNode->GetOwnerDocument(getter_AddRefs(domDoc));
   if(NS_SUCCEEDED(rv) && domDoc)
   {
-    nsCOMPtr<nsIPresShell> shell;
     nsCOMPtr<nsIPresContext> context;
     nsCOMPtr<nsIDocument> tempdoc = do_QueryInterface(domDoc);
-    tempdoc->GetShellAt(0, getter_AddRefs(shell));  // Get nsIDOMElement for targetNode
+
+    // Get nsIDOMElement for targetNode
+    nsIPresShell *shell = tempdoc->GetShellAt(0);
     if (!shell)
-        return NS_ERROR_FAILURE;
+      return NS_ERROR_FAILURE;
 
     shell->GetPresContext(getter_AddRefs(context));
  
@@ -402,14 +402,10 @@ static void
 GetImmediateChild(nsIContent* aContent, nsIAtom *aTag, nsIContent** aResult) 
 {
   *aResult = nsnull;
-  PRInt32 childCount;
-  aContent->ChildCount(childCount);
+  PRInt32 childCount = aContent->GetChildCount();
   for (PRInt32 i = 0; i < childCount; i++) {
-    nsCOMPtr<nsIContent> child;
-    aContent->ChildAt(i, getter_AddRefs(child));
-    nsCOMPtr<nsIAtom> tag;
-    child->GetTag(getter_AddRefs(tag));
-    if (aTag == tag.get()) {
+    nsIContent *child = aContent->GetChildAt(i);
+    if (child->Tag() == aTag) {
       *aResult = child;
       NS_ADDREF(*aResult);
       return;
@@ -497,9 +493,9 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
   mElement->GetAttribute(type, identifier);
 
   if (identifier.IsEmpty()) {
-    if (type.EqualsIgnoreCase("popup"))
+    if (type.Equals(NS_LITERAL_STRING("popup")))
       mElement->GetAttribute(NS_LITERAL_STRING("menu"), identifier);
-    else if (type.EqualsIgnoreCase("context"))
+    else if (type.Equals(NS_LITERAL_STRING("context")))
       mElement->GetAttribute(NS_LITERAL_STRING("contextmenu"), identifier);
     if (identifier.IsEmpty())
       return rv;
@@ -521,10 +517,8 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
 
   if (identifier == NS_LITERAL_STRING("_child")) {
     nsCOMPtr<nsIContent> popup;
-    
-    nsIAtom* tag = nsXULAtoms::menupopup;
 
-    GetImmediateChild(content, tag, getter_AddRefs(popup));
+    GetImmediateChild(content, nsXULAtoms::menupopup, getter_AddRefs(popup));
     if (popup)
       popupContent = do_QueryInterface(popup);
     else {
@@ -538,9 +532,10 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
         for (ctr = 0; ctr < listLength; ctr++) {
           list->Item(ctr, getter_AddRefs(node));
           nsCOMPtr<nsIContent> childContent(do_QueryInterface(node));
-          nsCOMPtr<nsIAtom> childTag;
-          childContent->GetTag(getter_AddRefs(childTag));
-          if (childTag.get() == tag) {
+
+          nsINodeInfo *ni = childContent->GetNodeInfo();
+
+          if (ni && ni->Equals(nsXULAtoms::menupopup, kNameSpaceID_XUL)) {
             popupContent = do_QueryInterface(childContent);
             break;
           }
@@ -560,8 +555,7 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
 
   // We have some popup content. Obtain our window.
   nsCOMPtr<nsIScriptContext> context;
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  document->GetScriptGlobalObject(getter_AddRefs(global));
+  nsCOMPtr<nsIScriptGlobalObject> global = document->GetScriptGlobalObject();
   if (global) {
     if ((NS_OK == global->GetContext(getter_AddRefs(context))) && context) {
       // Get the DOM window

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.5.2.3 2004-01-02 20:05:21 ghudson Exp $
+# $Id: mozilla.athena.in,v 1.5.2.4 2004-03-06 19:33:04 ghudson Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -50,12 +50,18 @@ esac
 LD_LIBRARY_PATH=$moz_lib_path${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}
 export LD_LIBRARY_PATH
 
-# Append our plugin path to the the user's setting (if any).
-# The Java plugin is in the locally-installed JRE package, and its
-# directory is set above; others (besides the default "null" plugin)
-# live in infoagents.
-plugin_path=$java_plugin_dir:/mit/infoagents/arch/@sys/lib/mozilla/plugins
-MOZ_PLUGIN_PATH=${MOZ_PLUGIN_PATH:+"$MOZ_PLUGIN_PATH:"}$plugin_path
+# Set the plugin path.  We allow the user to skip loading our
+# standard plugins via the MOZ_PLUGIN_PATH_OVERRIDE variable.
+if [ "${MOZ_PLUGIN_PATH_OVERRIDE+set}" = set ]; then
+  MOZ_PLUGIN_PATH="$MOZ_PLUGIN_PATH_OVERRIDE"
+else
+  # Append our plugin path to the user's setting (if any).
+  # The Java plugin is in the locally-installed JRE package, and its
+  # directory is set above; others (besides the default "null" plugin)
+  # live in infoagents.
+  plugin_path=$java_plugin_dir:/mit/infoagents/arch/@sys/lib/mozilla/plugins
+  MOZ_PLUGIN_PATH=${MOZ_PLUGIN_PATH:+"$MOZ_PLUGIN_PATH:"}$plugin_path
+fi
 export MOZ_PLUGIN_PATH
 
 # Prompt the user on how to deal with an existing lock file when no

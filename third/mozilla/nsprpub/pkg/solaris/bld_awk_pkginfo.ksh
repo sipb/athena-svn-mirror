@@ -1,6 +1,6 @@
 #!/usr/bin/ksh -p
 #
-#ident	"$Id: bld_awk_pkginfo.ksh,v 1.1.2.2 2004-01-02 19:55:57 ghudson Exp $"
+#ident	"$Id: bld_awk_pkginfo.ksh,v 1.1.2.3 2004-03-06 19:28:19 ghudson Exp $"
 #
 # Copyright 2002 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.

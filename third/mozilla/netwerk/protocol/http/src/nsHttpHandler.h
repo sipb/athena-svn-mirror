@@ -39,8 +39,8 @@
 #include "nsIProtocolProxyService.h"
 #include "nsIIOService.h"
 #include "nsIObserver.h"
+#include "nsIObserverService.h"
 #include "nsIProxyObjectManager.h"
-#include "nsINetModuleMgr.h"
 #include "nsIProxy.h"
 #include "nsIStreamConverterService.h"
 #include "nsICacheSession.h"
@@ -92,6 +92,8 @@ public:
     PRUint16       MaxRequestAttempts()      { return mMaxRequestAttempts; }
     const char    *DefaultSocketType()       { return mDefaultSocketType.get(); /* ok to return null */ }
     nsIIDNService *IDNConverter()            { return mIDNConverter; }
+    
+    PRBool         IsPersistentHttpsCachingEnabled() { return mEnablePersistentHttpsCaching; }
 
     nsHttpAuthCache     *AuthCache() { return &mAuthCache; }
     nsHttpConnectionMgr *ConnMgr()   { return mConnMgr; }
@@ -138,11 +140,15 @@ public:
         return mConnMgr->ProcessPendingQ(cinfo);
     }
 
+    nsresult GetSocketThreadEventTarget(nsIEventTarget **target)
+    {
+        return mConnMgr->GetSocketThreadEventTarget(target);
+    }
+
     //
     // The HTTP handler caches pointers to specific XPCOM services, and
     // provides the following helper routines for accessing those services:
     //
-    nsresult GetProxyObjectManager(nsIProxyObjectManager **);
     nsresult GetEventQueueService(nsIEventQueueService **);
     nsresult GetStreamConverterService(nsIStreamConverterService **);
     nsresult GetMimeService(nsIMIMEService **);
@@ -150,10 +156,22 @@ public:
     nsICookieService * GetCookieService(); // not addrefed
 
     // Called by the channel before writing a request
-    nsresult OnModifyRequest(nsIHttpChannel *);
+    void OnModifyRequest(nsIHttpChannel *chan)
+    {
+        NotifyObservers(chan, NS_HTTP_ON_MODIFY_REQUEST_TOPIC);
+    }
 
     // Called by the channel once headers are available
-    nsresult OnExamineResponse(nsIHttpChannel *);
+    void OnExamineResponse(nsIHttpChannel *chan)
+    {
+        NotifyObservers(chan, NS_HTTP_ON_EXAMINE_RESPONSE_TOPIC);
+    }
+
+    // Called by the channel once headers have been merged with cached headers
+    void OnExamineMergedResponse(nsIHttpChannel *chan)
+    {
+        NotifyObservers(chan, NS_HTTP_ON_EXAMINE_MERGED_RESPONSE_TOPIC);
+    }
 
 private:
 
@@ -170,21 +188,19 @@ private:
     nsresult SetAcceptEncodings(const char *);
     nsresult SetAcceptCharsets(const char *);
 
-    // timer callback for cleansing the idle connection list
-    //static void DeadConnectionCleanupCB(nsITimer *, void *);
-
     nsresult InitConnectionMgr();
     void     StartPruneDeadConnectionsTimer();
     void     StopPruneDeadConnectionsTimer();
+
+    void     NotifyObservers(nsIHttpChannel *chan, const char *event);
 
 private:
 
     // cached services
     nsCOMPtr<nsIIOService>              mIOService;
-    nsCOMPtr<nsIProxyObjectManager>     mProxyMgr;
     nsCOMPtr<nsIEventQueueService>      mEventQueueService;
-    nsCOMPtr<nsINetModuleMgr>           mNetModuleMgr;
     nsCOMPtr<nsIStreamConverterService> mStreamConvSvc;
+    nsCOMPtr<nsIObserverService>        mObserverService;
     nsCOMPtr<nsICookieService>          mCookieService;
     nsCOMPtr<nsIMIMEService>            mMimeService;
     nsCOMPtr<nsIIDNService>             mIDNConverter;
@@ -254,6 +270,9 @@ private:
     // mSendSecureXSiteReferrer: default is false, 
     // if true allow referrer headers between secure non-matching hosts
     PRPackedBool   mSendSecureXSiteReferrer;
+
+    // Persitent HTTPS caching flag
+    PRPackedBool   mEnablePersistentHttpsCaching;
 };
 
 //-----------------------------------------------------------------------------

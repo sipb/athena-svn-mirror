@@ -72,9 +72,6 @@ public:
                   nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
-  NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
-                                 nsIAtom*        aListName,
-                                 nsIFrame*       aChildList);
   NS_IMETHOD AppendFrames(nsIPresContext* aPresContext,
                           nsIPresShell&   aPresShell,
                           nsIAtom*        aListName,
@@ -106,16 +103,6 @@ public:
                    nsFramePaintLayer    aWhichLayer,
                    PRUint32             aFlags = 0);
 
-
-  /** ask all children to paint themselves, without clipping (for cells with rowspan>1)
-    * @see nsIFrame::Paint 
-    */
-  virtual void PaintChildren(nsIPresContext*      aPresContext,
-                             nsIRenderingContext& aRenderingContext,
-                             const nsRect&        aDirtyRect,
-                             nsFramePaintLayer    aWhichLayer,
-                             PRUint32             aFlags = 0);
-
   NS_IMETHOD GetFrameForPoint(nsIPresContext*   aPresContext,
                               const nsPoint&    aPoint, 
                               nsFramePaintLayer aWhichLayer,
@@ -141,15 +128,15 @@ public:
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
 
-  virtual void DidResize(nsIPresContext*          aPresContext,
-                         const nsHTMLReflowState& aReflowState);
+  void DidResize(nsIPresContext*          aPresContext,
+                 const nsHTMLReflowState& aReflowState);
 
   /**
    * Get the "type" of the frame
    *
    * @see nsLayoutAtoms::tableRowFrame
    */
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;

@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: ssl.h,v 1.1.1.1.2.2 2004-01-02 20:00:06 ghudson Exp $
+ * $Id: ssl.h,v 1.1.1.1.2.3 2004-03-06 19:30:33 ghudson Exp $
  */
 
 #ifndef __ssl_h_
@@ -103,6 +103,10 @@ SSL_IMPORT PRFileDesc *SSL_ImportFD(PRFileDesc *model, PRFileDesc *fd);
                                           /* (on by default) */
 #define SSL_ENABLE_TLS		       13 /* enable TLS (on by default) */
 #define SSL_ROLLBACK_DETECTION         14 /* for compatibility, default: on */
+#define SSL_NO_STEP_DOWN               15 /* Disable export cipher suites   */
+                                          /* if step-down keys are needed.  */
+					  /* default: off, generate         */
+					  /* step-down keys if needed.      */
 
 #ifdef SSL_DEPRECATED_FUNCTION 
 /* Old deprecated function names */

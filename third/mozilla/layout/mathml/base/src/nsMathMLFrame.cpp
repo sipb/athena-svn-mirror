@@ -169,13 +169,12 @@ nsMathMLFrame::GetPresentationDataFrom(nsIFrame*           aFrame,
       break;
     }
     // stop if we reach the root <math> tag
-    nsCOMPtr<nsIAtom> tag;
     nsIContent* content = frame->GetContent();
     NS_ASSERTION(content, "dangling frame without a content node");
     if (!content)
       break;
-    content->GetTag(getter_AddRefs(tag));
-    if (tag.get() == nsMathMLAtoms::math) {
+
+    if (content->Tag() == nsMathMLAtoms::math) {
       const nsStyleDisplay* display = frame->GetStyleDisplay();
       if (display->mDisplay == NS_STYLE_DISPLAY_BLOCK) {
         aPresentationData.flags |= NS_MATHML_DISPLAYSTYLE;
@@ -534,7 +533,7 @@ GetMathMLAttributeStyleSheet(nsIPresContext* aPresContext,
   nsCOMPtr<nsICSSStyleSheet> cssSheet(do_CreateInstance(kCSSStyleSheetCID));
   if (!cssSheet)
     return;
-  cssSheet->Init(uri);
+  cssSheet->SetURL(uri);
   nsCOMPtr<nsIDOMCSSStyleSheet> domSheet(do_QueryInterface(cssSheet));
   if (domSheet) {
     PRUint32 index;
@@ -559,9 +558,9 @@ nsMathMLFrame::MapAttributesIntoCSS(nsIPresContext* aPresContext,
 {
   // normal case, quick return if there are no attributes
   NS_ASSERTION(aContent, "null arg");
-  PRInt32 attrCount = 0;
+  PRUint32 attrCount = 0;
   if (aContent)
-    aContent->GetAttrCount(attrCount);
+    attrCount = aContent->GetAttrCount();
   if (!attrCount)
     return 0;
 
@@ -587,7 +586,7 @@ nsMathMLFrame::MapAttributesIntoCSS(nsIPresContext* aPresContext,
   nsCOMPtr<nsIAtom> prefix;
   nsCOMPtr<nsIAtom> attrAtom;
   PRInt32 ruleCount = 0;
-  for (PRInt32 i = 0; i < attrCount; ++i) {
+  for (PRUint32 i = 0; i < attrCount; ++i) {
     aContent->GetAttrNameAt(i, &nameSpaceID,
                             getter_AddRefs(attrAtom),
                             getter_AddRefs(prefix));

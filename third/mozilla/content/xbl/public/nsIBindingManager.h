@@ -46,7 +46,6 @@
 #ifndef nsIBinding_Manager_h__
 #define nsIBinding_Manager_h__
 
-#include "nsString.h"
 #include "nsISupports.h"
 
 class nsIContent;
@@ -54,6 +53,7 @@ class nsIXBLBinding;
 class nsIXBLDocumentInfo;
 class nsIAtom;
 class nsIStreamListener;
+class nsIURI;
 class nsIXPConnectWrappedJS;
 class nsIDOMNodeList;
 class nsVoidArray;
@@ -150,9 +150,9 @@ public:
   NS_IMETHOD GetSingleInsertionPoint(nsIContent* aParent, nsIContent** aResult, PRUint32* aIndex,  
                                      PRBool* aMultipleInsertionPoints) = 0;
 
-  NS_IMETHOD AddLayeredBinding(nsIContent* aContent, const nsAString& aURL) = 0;
-  NS_IMETHOD RemoveLayeredBinding(nsIContent* aContent, const nsAString& aURL) = 0;
-  NS_IMETHOD LoadBindingDocument(nsIDocument* aDocument, const nsAString& aURL,
+  NS_IMETHOD AddLayeredBinding(nsIContent* aContent, nsIURI* aURL) = 0;
+  NS_IMETHOD RemoveLayeredBinding(nsIContent* aContent, nsIURI* aURL) = 0;
+  NS_IMETHOD LoadBindingDocument(nsIDocument* aDocument, nsIURI* aURL,
                                  nsIDocument** aResult) = 0;
 
   NS_IMETHOD AddToAttachedQueue(nsIXBLBinding* aBinding)=0;
@@ -163,11 +163,11 @@ public:
 
   NS_IMETHOD PutXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)=0;
   NS_IMETHOD RemoveXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)=0;
-  NS_IMETHOD GetXBLDocumentInfo(const nsCString& aURL, nsIXBLDocumentInfo** aResult)=0;
+  NS_IMETHOD GetXBLDocumentInfo(nsIURI* aURI, nsIXBLDocumentInfo** aResult)=0;
 
-  NS_IMETHOD PutLoadingDocListener(const nsCString& aURL, nsIStreamListener* aListener) = 0;
-  NS_IMETHOD GetLoadingDocListener(const nsCString& aURL, nsIStreamListener** aResult) = 0;
-  NS_IMETHOD RemoveLoadingDocListener(const nsCString& aURL)=0;
+  NS_IMETHOD PutLoadingDocListener(nsIURI* aURL, nsIStreamListener* aListener) = 0;
+  NS_IMETHOD GetLoadingDocListener(nsIURI* aURL, nsIStreamListener** aResult) = 0;
+  NS_IMETHOD RemoveLoadingDocListener(nsIURI* aURL) = 0;
 
   NS_IMETHOD InheritsStyle(nsIContent* aContent, PRBool* aResult) = 0;
   NS_IMETHOD FlushSkinBindings() = 0;

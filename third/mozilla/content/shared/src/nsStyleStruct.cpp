@@ -76,45 +76,6 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
       // Auto margins are handled by layout
       break;
 
-    case eStyleUnit_Inherit:
-      // XXX may not be direct parent...
-      if (parentFrame) {
-        nsStyleContext* parentContext = parentFrame->GetStyleContext();
-        if (nsnull != parentContext) {
-          nsMargin  parentSpacing;
-          switch (aSpacing) {
-            case NS_SPACING_MARGIN:
-              {
-                const nsStyleMargin* parentMargin = parentContext->GetStyleMargin();
-                parentMargin->CalcMarginFor(parentFrame, parentSpacing);  
-              }
-
-              break;
-            case NS_SPACING_PADDING:
-              {
-                const nsStylePadding* parentPadding = parentContext->GetStylePadding();
-                parentPadding->CalcPaddingFor(parentFrame, parentSpacing);  
-              }
-
-              break;
-            case NS_SPACING_BORDER:
-              {
-                const nsStyleBorder* parentBorder = parentContext->GetStyleBorder();
-                parentBorder->CalcBorderFor(parentFrame, parentSpacing);  
-              }
-
-              break;
-          }
-          switch (aSide) {
-            case NS_SIDE_LEFT:    result = parentSpacing.left;   break;
-            case NS_SIDE_TOP:     result = parentSpacing.top;    break;
-            case NS_SIDE_RIGHT:   result = parentSpacing.right;  break;
-            case NS_SIDE_BOTTOM:  result = parentSpacing.bottom; break;
-          }
-        }
-      }
-      break;
-
     case eStyleUnit_Percent:
       {
         nscoord baseWidth = 0;
@@ -189,6 +150,15 @@ inline void CalcSidesFor(const nsIFrame* aFrame, const nsStyleSides& aSides,
                               aEnumTable, aNumEnums);
   aResult.bottom = CalcSideFor(aFrame, aSides.GetBottom(coord), aSpacing, NS_SIDE_BOTTOM,
                                aEnumTable, aNumEnums);
+}
+
+static PRBool EqualURIs(nsIURI *aURI1, nsIURI *aURI2)
+{
+  PRBool eq;
+  return aURI1 == aURI2 ||    // handle null==null, and optimize
+         (aURI1 && aURI2 &&
+          NS_SUCCEEDED(aURI1->Equals(aURI2, &eq)) && // not equal on fail
+          eq);
 }
 
 // --------------------
@@ -701,7 +671,6 @@ nsStyleList::nsStyleList()
 {
   mListStyleType = NS_STYLE_LIST_STYLE_BASIC;
   mListStylePosition = NS_STYLE_LIST_STYLE_POSITION_OUTSIDE;
-  mListStyleImage.Truncate();  
 }
 
 nsStyleList::~nsStyleList() 
@@ -709,16 +678,16 @@ nsStyleList::~nsStyleList()
 }
 
 nsStyleList::nsStyleList(const nsStyleList& aSource)
+  : mListStyleType(aSource.mListStyleType),
+    mListStylePosition(aSource.mListStylePosition),
+    mListStyleImage(aSource.mListStyleImage)
 {
-  mListStyleType = aSource.mListStyleType;
-  mListStylePosition = aSource.mListStylePosition;
-  mListStyleImage = aSource.mListStyleImage;
 }
 
 nsChangeHint nsStyleList::CalcDifference(const nsStyleList& aOther) const
 {
   if (mListStylePosition == aOther.mListStylePosition &&
-      mListStyleImage == aOther.mListStyleImage &&
+      EqualURIs(mListStyleImage, aOther.mListStyleImage) &&
       mListStyleType == aOther.mListStyleType) {
     if (mImageRegion == aOther.mImageRegion)
       return NS_STYLE_HINT_NONE;
@@ -906,9 +875,12 @@ nsStyleTable::nsStyleTable(const nsStyleTable& aSource)
 
 nsChangeHint nsStyleTable::CalcDifference(const nsStyleTable& aOther) const
 {
+  // Changes in mRules may require reframing (if border-collapse stuff changes, for example).
+  if (mRules != aOther.mRules)
+    return NS_STYLE_HINT_FRAMECHANGE;
+
   if ((mLayoutStrategy == aOther.mLayoutStrategy) &&
       (mFrame == aOther.mFrame) &&
-      (mRules == aOther.mRules) &&
       (mCols == aOther.mCols) &&
       (mSpan == aOther.mSpan))
     return NS_STYLE_HINT_NONE;
@@ -1030,7 +1002,7 @@ nsChangeHint nsStyleBackground::CalcDifference(const nsStyleBackground& aOther) 
       (mBackgroundClip == aOther.mBackgroundClip) &&
       (mBackgroundInlinePolicy == aOther.mBackgroundInlinePolicy) &&
       (mBackgroundOrigin == aOther.mBackgroundOrigin) &&
-      (mBackgroundImage == aOther.mBackgroundImage) &&
+      EqualURIs(mBackgroundImage, aOther.mBackgroundImage) &&
       ((!(mBackgroundFlags & NS_STYLE_BG_X_POSITION_PERCENT) ||
        (mBackgroundXPosition.mFloat == aOther.mBackgroundXPosition.mFloat)) &&
        (!(mBackgroundFlags & NS_STYLE_BG_X_POSITION_LENGTH) ||
@@ -1060,6 +1032,7 @@ nsStyleDisplay::nsStyleDisplay()
   mOverflow = NS_STYLE_OVERFLOW_VISIBLE;
   mClipFlags = NS_STYLE_CLIP_AUTO;
   mClip.SetRect(0,0,0,0);
+  mOpacity = 1.0f;
 }
 
 nsStyleDisplay::nsStyleDisplay(const nsStyleDisplay& aSource)
@@ -1076,18 +1049,25 @@ nsStyleDisplay::nsStyleDisplay(const nsStyleDisplay& aSource)
   mOverflow = aSource.mOverflow;
   mClipFlags = aSource.mClipFlags;
   mClip = aSource.mClip;
+  mOpacity = aSource.mOpacity;
 }
 
 nsChangeHint nsStyleDisplay::CalcDifference(const nsStyleDisplay& aOther) const
 {
   nsChangeHint hint = nsChangeHint(0);
 
-  if (mBinding != aOther.mBinding
+  if (!EqualURIs(mBinding, aOther.mBinding)
       || mPosition != aOther.mPosition
       || mDisplay != aOther.mDisplay
-      || mFloats != aOther.mFloats
-      || mOverflow != aOther.mOverflow)
+      || (mFloats == NS_STYLE_FLOAT_NONE) != (aOther.mFloats == NS_STYLE_FLOAT_NONE)
+      || mOverflow != aOther.mOverflow
+      // might need to create a view to handle change from 1.0 to partial opacity
+      || (mOpacity != aOther.mOpacity
+          && ((mOpacity < 1.0) != (aOther.mOpacity < 1.0))))
     NS_UpdateHint(hint, nsChangeHint_ReconstructFrame);
+
+  if (mFloats != aOther.mFloats)
+    NS_UpdateHint(hint, nsChangeHint_ReflowFrame);    
 
   // XXX the following is conservative, for now: changing float breaking shouldn't
   // necessarily require a repaint, reflow should suffice.
@@ -1098,7 +1078,8 @@ nsChangeHint nsStyleDisplay::CalcDifference(const nsStyleDisplay& aOther) const
     NS_UpdateHint(hint, NS_CombineHint(nsChangeHint_ReflowFrame, nsChangeHint_RepaintFrame));
 
   if (mClipFlags != aOther.mClipFlags
-      || mClip != aOther.mClip)
+      || mClip != aOther.mClip
+      || mOpacity != aOther.mOpacity)
     NS_UpdateHint(hint, nsChangeHint_SyncFrameView);
 
   return hint;
@@ -1119,7 +1100,6 @@ nsStyleVisibility::nsStyleVisibility(nsIPresContext* aPresContext)
 
   aPresContext->GetLanguage(getter_AddRefs(mLanguage));
   mVisible = NS_STYLE_VISIBILITY_VISIBLE;
-  mOpacity = 1.0f;
 }
 
 nsStyleVisibility::nsStyleVisibility(const nsStyleVisibility& aSource)
@@ -1127,23 +1107,14 @@ nsStyleVisibility::nsStyleVisibility(const nsStyleVisibility& aSource)
   mDirection = aSource.mDirection;
   mVisible = aSource.mVisible;
   mLanguage = aSource.mLanguage;
-  mOpacity = aSource.mOpacity;
 } 
 
 nsChangeHint nsStyleVisibility::CalcDifference(const nsStyleVisibility& aOther) const
 {
-  if (mOpacity != aOther.mOpacity
-      && ((mOpacity < 1.0) != (aOther.mOpacity < 1.0)))
-     // might need to create a view to handle change from 1.0 to partial opacity
-     return NS_STYLE_HINT_FRAMECHANGE;
-
   if ((mDirection == aOther.mDirection) &&
       (mLanguage == aOther.mLanguage)) {
     if ((mVisible == aOther.mVisible)) {
-      if (mOpacity == aOther.mOpacity)
-        return NS_STYLE_HINT_NONE;
-      else
-        return NS_STYLE_HINT_VISUAL;
+      return NS_STYLE_HINT_NONE;
     }
     if ((mVisible != aOther.mVisible) && 
         ((NS_STYLE_VISIBILITY_COLLAPSE == mVisible) || 
@@ -1192,7 +1163,7 @@ nsStyleContent::nsStyleContent(const nsStyleContent& aSource)
   PRUint32 index;
   if (NS_SUCCEEDED(AllocateContents(aSource.ContentCount()))) {
     for (index = 0; index < mContentCount; index++) {
-      aSource.GetContentAt(index, mContents[index].mType, mContents[index].mContent);
+      ContentAt(index) = aSource.ContentAt(index);
     }
   }
 
@@ -1219,8 +1190,7 @@ nsChangeHint nsStyleContent::CalcDifference(const nsStyleContent& aOther) const
         (mResetCount == aOther.mResetCount)) {
       PRUint32 ix = mContentCount;
       while (0 < ix--) {
-        if ((mContents[ix].mType != aOther.mContents[ix].mType) || 
-            (mContents[ix].mContent != aOther.mContents[ix].mContent)) {
+        if (mContents[ix] != aOther.mContents[ix]) {
           // Unfortunately we need to reframe here; a simple reflow
           // will not pick up different text or different image URLs,
           // since we set all that up in the CSSFrameConstructor
@@ -1387,7 +1357,7 @@ nsStyleUserInterface::~nsStyleUserInterface(void)
 nsChangeHint nsStyleUserInterface::CalcDifference(const nsStyleUserInterface& aOther) const
 {
   if ((mCursor != aOther.mCursor) ||
-      (mCursorImage != aOther.mCursorImage))
+      !EqualURIs(mCursorImage, aOther.mCursorImage))
     return NS_STYLE_HINT_VISUAL;
 
   if (mUserInput == aOther.mUserInput) {

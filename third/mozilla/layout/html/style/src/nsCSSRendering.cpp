@@ -65,6 +65,7 @@
 #include "nsIDOMHTMLBodyElement.h"
 #include "nsIDOMHTMLDocument.h"
 #include "nsLayoutUtils.h"
+#include "nsINameSpaceManager.h"
 
 #define BORDER_FULL    0        //entire side
 #define BORDER_INSIDE  1        //inside half
@@ -193,7 +194,7 @@ protected:
 static InlineBackgroundData gInlineBGData;
 
 static void GetPath(nsFloatPoint aPoints[],nsPoint aPolyPath[],PRInt32 *aCurIndex,ePathTypes  aPathType,PRInt32 &aC1Index,float aFrac=0);
-static nsresult GetFrameForBackgroundUpdate(nsIPresContext *aPresContext,nsIFrame *aFrame, nsIFrame **aBGFrame);
+static void GetFrameForBackgroundUpdate(nsIPresContext *aPresContext,nsIFrame *aFrame, nsIFrame **aBGFrame);
 
 // FillRect or InvertRect depending on the renderingaInvert parameter
 static void FillOrInvertRect(nsIRenderingContext& aRC,nscoord aX, nscoord aY, nscoord aWidth, nscoord aHeight, PRBool aInvert);
@@ -1552,35 +1553,32 @@ PRBool GetBGColorForHTMLElement( nsIPresContext *aPresContext,
     nsIDocument *doc = nsnull;
     if (NS_SUCCEEDED(shell->GetDocument(&doc)) && doc) {
       nsIContent *pContent;
-      if (NS_SUCCEEDED(doc->GetRootContent(&pContent)) && pContent) {
+      if ((pContent = doc->GetRootContent())) {
         // make sure that this is the HTML element
-        nsCOMPtr<nsIAtom> tag;
-        pContent->GetTag(getter_AddRefs(tag));
+        nsIAtom *tag = pContent->Tag();
         NS_ASSERTION(tag, "Tag could not be retrieved from root content element");
-        if (tag) {
-          if (tag == nsHTMLAtoms::html ||
-              tag == nsHTMLAtoms::body) {
-            // use this guy's color
-            nsIFrame *pFrame = nsnull;
-            if (NS_SUCCEEDED(shell->GetPrimaryFrameFor(pContent, &pFrame)) && pFrame) {
-              nsStyleContext *pContext = pFrame->GetStyleContext();
-              if (pContext) {
-                const nsStyleBackground* color = pContext->GetStyleBackground();
-                if (0 == (color->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT)) {
-                  aBGColor = color;
-                  // set the reslt to TRUE to indicate we mapped the color
-                  result = PR_TRUE;
-                }
-              }// if context
-            }// if frame
-          }// if tag == html or body
+        if (tag == nsHTMLAtoms::html ||
+            tag == nsHTMLAtoms::body) {
+          // use this guy's color
+          nsIFrame *pFrame = nsnull;
+          if (NS_SUCCEEDED(shell->GetPrimaryFrameFor(pContent, &pFrame)) &&
+              pFrame) {
+            nsStyleContext *pContext = pFrame->GetStyleContext();
+            if (pContext) {
+              const nsStyleBackground* color = pContext->GetStyleBackground();
+              if (0 == (color->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT)) {
+                aBGColor = color;
+                // set the reslt to TRUE to indicate we mapped the color
+                result = PR_TRUE;
+              }
+            }// if context
+          }// if frame
+        }// if tag == html or body
 #ifdef DEBUG
-          else {
-            printf( "Root Content is not HTML or BODY: cannot get bgColor of HTML or BODY\n");
-          }
+        else {
+          printf( "Root Content is not HTML or BODY: cannot get bgColor of HTML or BODY\n");
+        }
 #endif
-        }// if tag
-        NS_RELEASE(pContent);
       }// if content
       NS_RELEASE(doc);
     }// if doc
@@ -1599,41 +1597,36 @@ PRBool GetBGColorForHTMLElement( nsIPresContext *aPresContext,
 // The check is a bit expensive, however until the canvas frame is somehow cached on the 
 // body frame, or the root element, we need to walk the frames up until we find the canvas
 //
-nsresult GetFrameForBackgroundUpdate(nsIPresContext *aPresContext,nsIFrame *aFrame, nsIFrame **aBGFrame)
+void
+GetFrameForBackgroundUpdate(nsIPresContext *aPresContext,nsIFrame *aFrame,
+                            nsIFrame **aBGFrame)
 {
-  NS_ASSERTION(aFrame && aBGFrame, "illegal null parameter");
+  if (!aFrame || !aBGFrame) {
+    NS_ERROR("illegal null parameter");
 
-  nsresult rv = NS_OK;
-
-  if (aFrame && aBGFrame) {
-    *aBGFrame = aFrame; // default to the frame passed in
-
-    nsIContent* pContent = aFrame->GetContent();
-    if (pContent) {
-      // make sure that this is the HTML or BODY element
-      nsCOMPtr<nsIAtom> tag;
-      pContent->GetTag(getter_AddRefs(tag));
-      if (tag) {
-        if (tag.get() == nsHTMLAtoms::html ||
-            tag.get() == nsHTMLAtoms::body) {
-          // the frame is the body frame, so we provide the canvas frame
-          nsIFrame *pCanvasFrame = aFrame->GetParent();
-          while (pCanvasFrame) {
-            nsCOMPtr<nsIAtom>  parentType;
-            pCanvasFrame->GetFrameType(getter_AddRefs(parentType));
-            if (parentType.get() == nsLayoutAtoms::canvasFrame) {
-              *aBGFrame = pCanvasFrame;
-              break;
-            }
-            pCanvasFrame = pCanvasFrame->GetParent();
-          }
-        }// if tag == html or body
-      }// if tag
-    }
-  } else {
-    rv = NS_ERROR_NULL_POINTER;
+    return;
   }
-  return rv;
+
+  *aBGFrame = aFrame; // default to the frame passed in
+
+  nsIContent* pContent = aFrame->GetContent();
+  if (pContent) {
+    // make sure that this is the HTML or BODY element
+    nsIAtom *tag = pContent->Tag();
+
+    if (tag == nsHTMLAtoms::html ||
+        tag == nsHTMLAtoms::body) {
+      // the frame is the body frame, so we provide the canvas frame
+      nsIFrame *pCanvasFrame = aFrame->GetParent();
+      while (pCanvasFrame) {
+        if (pCanvasFrame->GetType() == nsLayoutAtoms::canvasFrame) {
+          *aBGFrame = pCanvasFrame;
+          break;
+        }
+        pCanvasFrame = pCanvasFrame->GetParent();
+      }
+    }// if tag == html or body
+  }
 }
 
 // helper macro to determine if the borderstyle 'a' is a MOZ-BG-XXX style
@@ -1745,8 +1738,6 @@ void nsCSSRendering::PaintBorder(nsIPresContext* aPresContext,
   for(i=0;i<4;i++) {
     borderRadii[i] = 0;
     switch ( bordStyleRadius[i].GetUnit()) {
-    case eStyleUnit_Inherit:
-      break;
     case eStyleUnit_Percent:
       percent = bordStyleRadius[i].GetPercentValue();
       borderRadii[i] = (nscoord)(percent * aBorderArea.width);
@@ -2136,8 +2127,6 @@ nscoord width;
   for(i=0;i<4;i++) {
     borderRadii[i] = 0;
     switch ( bordStyleRadius[i].GetUnit()) {
-    case eStyleUnit_Inherit:
-      break;
     case eStyleUnit_Percent:
       percent = bordStyleRadius[i].GetPercentValue();
       borderRadii[i] = (nscoord)(percent * aBorderArea.width);
@@ -2516,11 +2505,8 @@ static nsIFrame*
 GetNearestScrollFrame(nsIFrame* aFrame)
 {
   for (nsIFrame* f = aFrame; f; f = f->GetParent()) {
-    nsCOMPtr<nsIAtom> frameType;
-
     // Is it a scroll frame?
-    f->GetFrameType(getter_AddRefs(frameType));
-    if (nsLayoutAtoms::scrollFrame == frameType) {
+    if (nsLayoutAtoms::scrollFrame == f->GetType()) {
       return f;
     }
   }
@@ -2535,17 +2521,12 @@ GetRootScrollableFrame(nsIPresContext* aPresContext, nsIFrame* aRootFrame)
 {
   nsIScrollableFrame* scrollableFrame = nsnull;
 
-  nsCOMPtr<nsIAtom> frameType;
-  aRootFrame->GetFrameType(getter_AddRefs(frameType));
-
-  if (nsLayoutAtoms::viewportFrame == frameType) {
+  if (nsLayoutAtoms::viewportFrame == aRootFrame->GetType()) {
     nsIFrame* childFrame;
     aRootFrame->FirstChild(aPresContext, nsnull, &childFrame);
 
     if (childFrame) {
-      childFrame->GetFrameType(getter_AddRefs(frameType));
-
-      if (nsLayoutAtoms::scrollFrame == frameType) {
+      if (nsLayoutAtoms::scrollFrame == childFrame->GetType()) {
         // Use this frame, even if we are using GFX frames for the
         // viewport, which contains another scroll frame below this
         // frame, since the GFX scrollport frame does not implement
@@ -2632,8 +2613,7 @@ nsCSSRendering::FindNonTransparentBackground(nsStyleContext* aContext,
 inline nsIFrame*
 IsCanvasFrame(nsIPresContext* aPresContext, nsIFrame *aFrame)
 {
-  nsCOMPtr<nsIAtom> frameType;
-  aFrame->GetFrameType(getter_AddRefs(frameType));
+  nsIAtom* frameType = aFrame->GetType();
   if (frameType == nsLayoutAtoms::canvasFrame ||
       frameType == nsLayoutAtoms::rootFrame ||
       frameType == nsLayoutAtoms::pageFrame) {
@@ -2662,11 +2642,9 @@ FindCanvasBackground(nsIPresContext* aPresContext,
     const nsStyleBackground* result = firstChild->GetStyleBackground();
   
     // for printing and print preview.. this should be a pageContentFrame
-    nsCOMPtr<nsIAtom> frameType;
     nsStyleContext* parentContext;
 
-    firstChild->GetFrameType(getter_AddRefs(frameType));
-    if ( (frameType == nsLayoutAtoms::pageContentFrame) ){
+    if (firstChild->GetType() == nsLayoutAtoms::pageContentFrame) {
       // we have to find the background style ourselves.. since the 
       // pageContentframe does not have content
       while(firstChild){
@@ -2695,25 +2673,28 @@ FindCanvasBackground(nsIPresContext* aPresContext,
         node->GetOwnerDocument(getter_AddRefs(doc));
         nsCOMPtr<nsIDOMHTMLDocument> htmlDoc = do_QueryInterface(doc);
         if (htmlDoc) {
-          nsCOMPtr<nsIDOMHTMLElement> body;
-          htmlDoc->GetBody(getter_AddRefs(body));
-          nsCOMPtr<nsIContent> bodyContent = do_QueryInterface(body);
-          // We need to null check the body node (bug 118829) since
-          // there are cases, thanks to the fix for bug 5569, where we
-          // will reflow a document with no body.  In particular, if a
-          // SCRIPT element in the head blocks the parser and then has a
-          // SCRIPT that does "document.location.href = 'foo'", then
-          // nsParser::Terminate will call |DidBuildModel| methods
-          // through to the content sink, which will call |StartLayout|
-          // and thus |InitialReflow| on the pres shell.  See bug 119351
-          // for the ugly details.
-          if (bodyContent) {
-            nsCOMPtr<nsIPresShell> shell;
-            aPresContext->GetShell(getter_AddRefs(shell));
-            nsIFrame *bodyFrame;
-            nsresult rv = shell->GetPrimaryFrameFor(bodyContent, &bodyFrame);
-            if (NS_SUCCEEDED(rv) && bodyFrame)
-              result = bodyFrame->GetStyleBackground();
+          nsCOMPtr<nsIDocument> document = do_QueryInterface(doc);
+          if (!document->IsCaseSensitive()) { // HTML, not XHTML
+            nsCOMPtr<nsIDOMHTMLElement> body;
+            htmlDoc->GetBody(getter_AddRefs(body));
+            nsCOMPtr<nsIContent> bodyContent = do_QueryInterface(body);
+            // We need to null check the body node (bug 118829) since
+            // there are cases, thanks to the fix for bug 5569, where we
+            // will reflow a document with no body.  In particular, if a
+            // SCRIPT element in the head blocks the parser and then has a
+            // SCRIPT that does "document.location.href = 'foo'", then
+            // nsParser::Terminate will call |DidBuildModel| methods
+            // through to the content sink, which will call |StartLayout|
+            // and thus |InitialReflow| on the pres shell.  See bug 119351
+            // for the ugly details.
+            if (bodyContent) {
+              nsCOMPtr<nsIPresShell> shell;
+              aPresContext->GetShell(getter_AddRefs(shell));
+              nsIFrame *bodyFrame;
+              nsresult rv = shell->GetPrimaryFrameFor(bodyContent, &bodyFrame);
+              if (NS_SUCCEEDED(rv) && bodyFrame)
+                result = bodyFrame->GetStyleBackground();
+            }
           }
         }
       }
@@ -2750,13 +2731,11 @@ FindElementBackground(nsIPresContext* aPresContext,
   nsIContent* content = aForFrame->GetContent();
   if (!content || !content->IsContentOfType(nsIContent::eHTML))
     return PR_TRUE;  // not frame for an HTML element
-  
+
   if (!parentFrame)
     return PR_TRUE; // no parent to look at
-  
-  nsCOMPtr<nsIAtom> tag;
-  content->GetTag(getter_AddRefs(tag));
-  if (tag != nsHTMLAtoms::body)
+
+  if (content->Tag() != nsHTMLAtoms::body)
     return PR_TRUE; // not frame for <BODY> element
 
   // We should only look at the <html> background if we're in an HTML document
@@ -2767,6 +2746,10 @@ FindElementBackground(nsIPresContext* aPresContext,
   if (!htmlDoc)
     return PR_TRUE;
 
+  nsCOMPtr<nsIDocument> document(do_QueryInterface(doc));
+  if (document->IsCaseSensitive()) // XHTML, not HTML
+    return PR_TRUE;
+  
   const nsStyleBackground* htmlBG = parentFrame->GetStyleBackground();
   return !htmlBG->IsTransparent();
 }
@@ -2926,7 +2909,7 @@ nsCSSRendering::PaintBackgroundWithSC(nsIPresContext* aPresContext,
   }
 
   // if there is no background image or background images are turned off, try a color.
-  if (aColor.mBackgroundImage.IsEmpty() || !canDrawBackgroundImage) {
+  if (!aColor.mBackgroundImage || !canDrawBackgroundImage) {
     PaintBackgroundColor(aPresContext, aRenderingContext, aForFrame, bgClipArea,
                          aColor, aBorder, aPadding, canDrawBackgroundColor);
     return;
@@ -2971,8 +2954,7 @@ nsCSSRendering::PaintBackgroundWithSC(nsIPresContext* aPresContext,
 
   nsRect bgOriginArea;
 
-  nsCOMPtr<nsIAtom> frameType;
-  aForFrame->GetFrameType(getter_AddRefs(frameType));
+  nsIAtom* frameType = aForFrame->GetType();
   if (frameType == nsLayoutAtoms::inlineFrame) {
     switch (aColor.mBackgroundInlinePolicy) {
     case NS_STYLE_BG_INLINE_POLICY_EACH_BOX:
@@ -3389,9 +3371,6 @@ nsCSSRendering::PaintBackgroundColor(nsIPresContext* aPresContext,
   for (; side < 4; ++side) {
     borderRadii[side] = 0;
     switch (bordStyleRadius[side].GetUnit()) {
-      case eStyleUnit_Inherit:
-        // do nothing
-        break;
       case eStyleUnit_Percent:
         borderRadii[side] = nscoord(bordStyleRadius[side].GetPercentValue() * aBgClipArea.width);
         break;

@@ -23,7 +23,7 @@
  *
  * Contributor(s):
  *  Dean Tessman <dean_tessman@hotmail.com>
- *  Brian Ryner <bryner@netscape.com>
+ *  Brian Ryner <bryner@brianryner.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -407,6 +407,9 @@ protected:
 
   // Update the curpos of the scrollbar.
   void UpdateScrollbar();
+
+  // Update the maxpos of the scrollbar.
+  void InvalidateScrollbar();
 
   // Check vertical overflow.
   nsresult CheckVerticalOverflow();

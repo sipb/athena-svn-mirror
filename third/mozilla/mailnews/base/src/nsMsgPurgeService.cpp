@@ -162,7 +162,6 @@ nsresult nsMsgPurgeService::PerformPurge()
 {
   PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("performing purge"));
 
-  nsTime currentTime;
   nsresult rv;
   
   nsCOMPtr <nsIMsgAccountManager> accountManager = do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
@@ -175,6 +174,9 @@ nsresult nsMsgPurgeService::PerformPurge()
     PRUint32 numServers;
     rv = allServers->Count(&numServers);
     PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("%d servers", numServers));
+    nsCOMPtr<nsIMsgFolder> folderToPurge;
+    PRInt32 purgeIntervalToUse;
+    PRInt64 oldestPurgeTime = 0; // we're going to pick the least-recently purged folder
     for (PRUint32 serverIndex=0; serverIndex < numServers; serverIndex++)
     {
       nsCOMPtr <nsIMsgIncomingServer> server =
@@ -275,9 +277,9 @@ nsresult nsMsgPurgeService::PerformPurge()
           
           PRBool serverBusy = PR_FALSE;
           PRBool serverRequiresPassword = PR_TRUE;
-          PRBool userAuthenticated;
+          PRBool passwordPromptRequired;
           PRBool canSearchMessages = PR_FALSE;
-          junkFolderServer->GetIsAuthenticated(&userAuthenticated);
+          junkFolderServer->GetPasswordPromptRequired(&passwordPromptRequired);
           junkFolderServer->GetServerBusy(&serverBusy);
           junkFolderServer->GetServerRequiresPasswordForBiff(&serverRequiresPassword);
           junkFolderServer->GetCanSearchMessages(&canSearchMessages);
@@ -287,14 +289,19 @@ nsresult nsMsgPurgeService::PerformPurge()
           PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("[%d] (search in progress? %s)", serverIndex, mSearchSession ? "true" : "false")); 
           PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("[%d] (server busy? %s)", serverIndex, serverBusy ? "true" : "false"));
           PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("[%d] (serverRequiresPassword? %s)", serverIndex, serverRequiresPassword ? "true" : "false"));
-          PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("[%d] (userAuthenticated? %s)", serverIndex, userAuthenticated ? "true" : "false"));
-          if (canSearchMessages && !mSearchSession && !serverBusy && (!serverRequiresPassword || userAuthenticated))
+          PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("[%d] (passwordPromptRequired? %s)", serverIndex, passwordPromptRequired ? "true" : "false"));
+          if (canSearchMessages && !mSearchSession && !serverBusy && (!serverRequiresPassword || !passwordPromptRequired))
           {
             PRInt32 purgeInterval;
             spamSettings->GetPurgeInterval(&purgeInterval);
-            PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("[%d] purging! searching for messages older than %d days", serverIndex, purgeInterval));            
-            rv = SearchFolderToPurge(junkFolder, purgeInterval);
-            break;
+            PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("[%d] purging! searching for messages older than %d days", serverIndex, purgeInterval));
+
+            if (!oldestPurgeTime || LL_CMP(oldestPurgeTime, >, lastPurgeTime))
+            {
+              oldestPurgeTime = lastPurgeTime;
+              purgeIntervalToUse = purgeInterval;
+              folderToPurge = junkFolder;
+            }
           }
           else {
             NS_ASSERTION(canSearchMessages, "unexpected, you should be able to search");
@@ -306,11 +313,13 @@ nsresult nsMsgPurgeService::PerformPurge()
         }
       }
     }
+    if (folderToPurge)
+      rv = SearchFolderToPurge(folderToPurge, purgeIntervalToUse);
   }
     
   // set up timer to check accounts again
   SetupNextPurge();
-  return NS_OK;
+  return rv;
 }
 
 nsresult nsMsgPurgeService::SearchFolderToPurge(nsIMsgFolder *folder, PRInt32 purgeInterval)
@@ -320,6 +329,15 @@ nsresult nsMsgPurgeService::SearchFolderToPurge(nsIMsgFolder *folder, PRInt32 pu
   NS_ENSURE_SUCCESS(rv, rv);
   mSearchSession->RegisterListener(this);
   
+  // update the time we attempted to purge this folder
+  char dateBuf[100];
+  dateBuf[0] = '\0';
+  PRExplodedTime exploded;
+  PR_ExplodeTime(PR_Now(), PR_LocalTimeParameters, &exploded);
+  PR_FormatTimeUSEnglish(dateBuf, sizeof(dateBuf), "%a %b %d %H:%M:%S %Y", &exploded);
+  folder->SetStringProperty("lastPurgeTime", dateBuf);
+  PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("lastPurgeTime is now %s", dateBuf));
+
   nsCOMPtr<nsIMsgIncomingServer> server;
   rv = folder->GetServer(getter_AddRefs(server)); //we need to get the folder's server scope because imap can have local junk folder
   NS_ENSURE_SUCCESS(rv, rv);
@@ -433,17 +451,6 @@ NS_IMETHODIMP nsMsgPurgeService::OnSearchDone(nsresult status)
     if (count > 0) {
       PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("delete messages"));
       rv = mSearchFolder->DeleteMessages(mHdrsToDelete, nsnull, PR_FALSE /*delete storage*/, PR_FALSE /*isMove*/, nsnull, PR_FALSE /*allowUndo*/);
-    }
-    // update the time this folder was last purged
-    if (NS_SUCCEEDED(rv))
-    {
-      char dateBuf[100];
-      dateBuf[0] = '\0';
-      PRExplodedTime exploded;
-      PR_ExplodeTime(PR_Now(), PR_LocalTimeParameters, &exploded);
-      PR_FormatTimeUSEnglish(dateBuf, sizeof(dateBuf), "%a %b %d %H:%M:%S %Y", &exploded);
-      mSearchFolder->SetStringProperty("lastPurgeTime", dateBuf);
-      PR_LOG(MsgPurgeLogModule, PR_LOG_ALWAYS, ("lastPurgeTime is now %s", dateBuf));
     }
   }
   mHdrsToDelete->Clear();

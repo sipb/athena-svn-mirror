@@ -177,7 +177,15 @@ function dumpObjectTree (o, recurse, compress, level)
                 break;
 
             case "object":
-                s += pfx + tee + i + " (object)\n";
+                s += pfx + tee + i + " (object)";
+                if (o[i] == null)
+                {
+                    s += " null\n";
+                    break;
+                }
+                
+                s += "\n";
+                
                 if (!compress)
                     s += pfx + "|\n";
                 if ((i != "parent") && (recurse))
@@ -211,6 +219,57 @@ function dumpObjectTree (o, recurse, compress, level)
     
     return s;
     
+}
+
+function ecmaEscape(str)
+{
+    function replaceNonPrintables(ch)
+    {
+        rv = ch.charCodeAt().toString(16);
+        if (rv.length == 1)
+            rv = "0" + rv;
+        else if (rv.length == 3)
+            rv = "u0" + rv;
+        else if (rv.length == 4)
+            rv = "u" + rv;
+      
+        return "%" + rv;
+    };
+
+    // Replace any character that is not in the 69 character set
+    // [ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*_+-./]
+    // with an escape sequence.  Two digit sequences in the form %XX are used
+    // for characters whose codepoint is less than 255, %uXXXX for all others.
+    // See section B.2.1 of ECMA-262 rev3 for more information.
+    return str.replace(/[^A-Za-z0-9@*_+.\-\/]/g, replaceNonPrintables);
+}
+
+function ecmaUnescape(str)
+{
+    function replaceEscapes(seq)
+    {
+        var ary = seq.match(/([\da-f]{1,2})(.*)|u([\da-f]{1,4})/);
+        if (!ary)
+            return "<ERROR>";
+
+        if (ary[1])
+        {
+            // two digit escape, possibly with cruft after
+            rv = String.fromCharCode(parseInt(ary[1], 16)) + ary[2];
+        }
+        else
+        {
+            // four digits, no cruft
+            rv = String.fromCharCode(parseInt(ary[3], 16));
+        }
+
+        return rv;
+    };
+
+    // Replace the escape sequences %X, %XX, %uX, %uXX, %uXXX, and %uXXXX with
+    // the characters they represent, where X is a hexadecimal digit.
+    // See section B.2.2 of ECMA-262 rev3 for more information.
+    return str.replace(/%u?([\da-f]{1,4})/ig, replaceEscapes);
 }
 
 function replaceVars(str, vars)
@@ -540,6 +599,11 @@ function formatDateOffset (offset, format)
     return format;
 }
 
+function arrayHasElementAt(ary, i)
+{
+    return typeof ary[i] != "undefined";
+}
+
 function arrayContains (ary, elem)
 {
     return (arrayIndexOf (ary, elem) != -1);
@@ -556,38 +620,12 @@ function arrayIndexOf (ary, elem)
     
 function arrayInsertAt (ary, i, o)
 {
-
     ary.splice (i, 0, o);
-
-    /* doh, forgot about that 'splice' thing
-    if (ary.length < i)
-    {
-        this[i] = o;
-        return;
-    }
-
-    for (var j = ary.length; j > i; j--)
-        ary[j] = ary[j - 1];
-
-    ary[i] = o;
-    */
 }
 
 function arrayRemoveAt (ary, i)
 {
-
     ary.splice (i, 1);
-
-    /* doh, forgot about that 'splice' thing
-    if (ary.length < i)
-        return false;
-
-    for (var j = i; j < ary.length; j++)
-        ary[j] = ary[j + 1];
-
-    ary.length--;
-    */
-
 }
 
 /* length should be an even number >= 6 */
@@ -819,4 +857,62 @@ function getURLSpecFromFile (file)
     var fileHandler = service.getProtocolHandler("file");
     fileHandler = fileHandler.QueryInterface(nsIFileProtocolHandler);
     return fileHandler.getURLSpecFromFile(file);
+}
+
+function alert(msg, parent, title)
+{
+    var PROMPT_CTRID = "@mozilla.org/embedcomp/prompt-service;1";
+    var nsIPromptService = Components.interfaces.nsIPromptService;
+    var ps = Components.classes[PROMPT_CTRID].createInstance(nsIPromptService);
+    if (!parent)
+        parent = window;
+    if (!title)
+        title = MSG_ALERT;
+    ps.alert (parent, title, msg);
+}
+
+function confirm(msg, parent, title)
+{
+    var PROMPT_CTRID = "@mozilla.org/embedcomp/prompt-service;1";
+    var nsIPromptService = Components.interfaces.nsIPromptService;
+    var ps = Components.classes[PROMPT_CTRID].createInstance(nsIPromptService);
+    if (!parent)
+        parent = window;
+    if (!title)
+        title = MSG_CONFIRM;
+    return ps.confirm (parent, title, msg);
+}
+
+function prompt(msg, initial, parent, title)
+{
+    var PROMPT_CTRID = "@mozilla.org/embedcomp/prompt-service;1";
+    var nsIPromptService = Components.interfaces.nsIPromptService;
+    var ps = Components.classes[PROMPT_CTRID].createInstance(nsIPromptService);
+    if (!parent)
+        parent = window;
+    if (!title)
+        title = MSG_PROMPT;
+    rv = { value: initial };
+
+    if (!ps.prompt (parent, title, msg, rv, null, {value: null}))
+        return null;
+
+    return rv.value
+}
+
+function promptPassword(msg, initial, parent, title)
+{
+    var PROMPT_CTRID = "@mozilla.org/embedcomp/prompt-service;1";
+    var nsIPromptService = Components.interfaces.nsIPromptService;
+    var ps = Components.classes[PROMPT_CTRID].createInstance(nsIPromptService);
+    if (!parent)
+        parent = window;
+    if (!title)
+        title = MSG_PROMPT;
+    rv = { value: initial };
+
+    if (!ps.promptPassword (parent, title, msg, rv, null, {value: null}))
+        return null;
+
+    return rv.value
 }

@@ -49,9 +49,6 @@ static NS_DEFINE_CID(kInspectorCSSUtilsCID, NS_INSPECTORCSSUTILS_CID);
 inCSSValueSearch::inCSSValueSearch()
   : mResults(nsnull),
     mProperties(nsnull),
-    mLastResult(nsnull),
-    mBaseURL(nsnull),
-    mTextCriteria(nsnull),
     mResultCount(0),
     mPropertyCount(0),
     mIsActive(PR_FALSE),
@@ -109,13 +106,10 @@ inCSSValueSearch::SearchSync()
   
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocument);
   if (doc) {
-    PRInt32 count = 0;
     // we want all the sheets, including inline style and such
-    doc->GetNumberOfStyleSheets(PR_TRUE, &count);
+    PRInt32 count = doc->GetNumberOfStyleSheets(PR_TRUE);
     for (PRInt32 i = 0; i < count; i++) {
-      nsCOMPtr<nsIStyleSheet> sheet;
-      doc->GetStyleSheetAt(i, PR_TRUE, getter_AddRefs(sheet));
-      SearchStyleSheet(sheet);
+      SearchStyleSheet(doc->GetStyleSheetAt(i, PR_TRUE));
     }
   }
 
@@ -154,7 +148,7 @@ inCSSValueSearch::GetStringResultAt(PRInt32 aIndex, nsAString& _retval)
     nsAutoString* result = (nsAutoString*)mResults->ElementAt(aIndex);
     _retval = *result;
   } else if (aIndex == mResultCount-1) {
-    _retval = *mLastResult;
+    _retval = mLastResult;
   } else {
     return NS_ERROR_FAILURE;
   }
@@ -194,16 +188,15 @@ inCSSValueSearch::SetDocument(nsIDOMDocument* aDocument)
 NS_IMETHODIMP 
 inCSSValueSearch::GetBaseURL(PRUnichar** aBaseURL)
 {
-  *aBaseURL = ToNewUnicode(*mBaseURL);
+  if (!(*aBaseURL = ToNewUnicode(mBaseURL)))
+    return NS_ERROR_OUT_OF_MEMORY;
   return NS_OK;
 }
 
 NS_IMETHODIMP 
 inCSSValueSearch::SetBaseURL(const PRUnichar* aBaseURL)
 {
-  nsAutoString url;
-  mBaseURL = &url;
-  url.Assign(aBaseURL);
+  mBaseURL.Assign(aBaseURL);
   return NS_OK;
 }
 
@@ -248,15 +241,15 @@ inCSSValueSearch::AddPropertyCriteria(const PRUnichar *aPropName)
 NS_IMETHODIMP 
 inCSSValueSearch::GetTextCriteria(PRUnichar** aTextCriteria)
 {
-  *aTextCriteria = ToNewUnicode(*mTextCriteria);
+  if (!(*aTextCriteria = ToNewUnicode(mTextCriteria)))
+    return NS_ERROR_OUT_OF_MEMORY;
   return NS_OK;
 }
 
 NS_IMETHODIMP 
 inCSSValueSearch::SetTextCriteria(const PRUnichar* aTextCriteria)
 {
-  if (!mTextCriteria) mTextCriteria = new nsAutoString();
-  mTextCriteria->Assign(aTextCriteria);
+  mTextCriteria.Assign(aTextCriteria);
   return NS_OK;
 }
 
@@ -336,12 +329,16 @@ inCSSValueSearch::SearchStyleValue(nsICSSStyleRule* aRule, nsCSSProperty aProp)
   aRule->GetValue(aProp, value);
 
   if (value.GetUnit() == eCSSUnit_URL) {
-    nsAutoString* result = new nsAutoString();
-    value.GetStringValue(*result);
-    if (mReturnRelativeURLs)
+    nsCAutoString spec;
+    nsIURI* url = value.GetURLValue();
+    if (url) {
+      url->GetSpec(spec);
+      nsAutoString* result = new NS_ConvertUTF8toUTF16(spec);
+      if (mReturnRelativeURLs)
         EqualizeURL(result);
-    mResults->AppendElement((void*)result);
-    mResultCount++;
+      mResults->AppendElement(result);
+      mResultCount++;
+    }
   }
 
   return NS_OK;

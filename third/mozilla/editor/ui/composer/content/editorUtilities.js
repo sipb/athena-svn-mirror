@@ -355,12 +355,7 @@ function newCommandParams()
 function GetDocumentTitle()
 {
   try {
-    var domhtmldoc = GetCurrentEditor().document.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
-    
-    // See bug 77315 for details on this wacky code! 
-    // (It seems DOM hasn't consistently returned title string, 
-    /// but "[xpconnect wrapped HTMLObjectElement]" instead! )
-    return Components.lookupMethod(domhtmldoc, 'title').call(domhtmldoc);
+    return new XPCNativeWrapper(GetCurrentEditor().document, "title").title;
   } catch (e) {}
 
   return "";
@@ -599,7 +594,7 @@ function SaveFilePickerDirectory(filePicker, fileType)
 function GetDefaultBrowserColors()
 {
   var prefs = GetPrefs();
-  var colors = { TextColor:0, BackgroundColor:0, LinkColor:0, VisitedLinkColor:0 };
+  var colors = { TextColor:0, BackgroundColor:0, LinkColor:0, ActiveLinkColor:0 , VisitedLinkColor:0 };
   var useSysColors = false;
   try { useSysColors = prefs.getBoolPref("browser.display.use_system_colors"); } catch (e) {}
 
@@ -617,6 +612,7 @@ function GetDefaultBrowserColors()
     colors.BackgroundColor = "window";
 
   colors.LinkColor = prefs.getCharPref("browser.anchor_color");
+  colors.ActiveLinkColor = prefs.getCharPref("browser.active_color");
   colors.VisitedLinkColor = prefs.getCharPref("browser.visited_color");
 
   return colors;

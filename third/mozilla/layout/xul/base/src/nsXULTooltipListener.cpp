@@ -287,9 +287,7 @@ nsXULTooltipListener::Init(nsIContent* aSourceNode, nsIRootBox* aRootBox)
 #ifdef MOZ_XUL
   // if the target is an treechildren, we may have some special
   // case handling to do
-  nsCOMPtr<nsIAtom> tag;
-  mSourceNode->GetTag(getter_AddRefs(tag));
-  mIsSourceTree = tag == nsXULAtoms::treechildren;
+  mIsSourceTree = mSourceNode->Tag() == nsXULAtoms::treechildren;
 #endif
 
   static PRBool prefChangeRegistered = PR_FALSE;
@@ -437,6 +435,7 @@ nsXULTooltipListener::ShowTooltip()
 }
 
 #ifdef MOZ_XUL
+#ifdef DEBUG_crap
 static void
 GetTreeCellCoords(nsITreeBoxObject* aTreeBox, nsIContent* aSourceNode, 
                   PRInt32 aRow, nsAutoString aCol, PRInt32* aX, PRInt32* aY)
@@ -453,6 +452,7 @@ GetTreeCellCoords(nsITreeBoxObject* aTreeBox, nsIContent* aSourceNode,
   *aX += myX;
   *aY += myY;
 }
+#endif
 
 static void
 SetTitletipLabel(nsITreeBoxObject* aTreeBox, nsIContent* aTooltip,
@@ -533,15 +533,13 @@ static void
 GetImmediateChild(nsIContent* aContent, nsIAtom *aTag, nsIContent** aResult) 
 {
   *aResult = nsnull;
-  PRInt32 childCount;
-  aContent->ChildCount(childCount);
-  for (PRInt32 i = 0; i < childCount; i++) {
-    nsCOMPtr<nsIContent> child;
-    aContent->ChildAt(i, getter_AddRefs(child));
-    nsCOMPtr<nsIAtom> tag;
-    child->GetTag(getter_AddRefs(tag));
-    if (aTag == tag.get()) {
+  PRUint32 childCount = aContent->GetChildCount();
+  for (PRUint32 i = 0; i < childCount; i++) {
+    nsIContent *child = aContent->GetChildAt(i);
+
+    if (child->Tag() == aTag) {
       *aResult = child;
+      NS_ADDREF(*aResult);
       return;
     }
   }
@@ -565,10 +563,9 @@ nsXULTooltipListener::GetTooltipFor(nsIContent* aTarget, nsIContent** aTooltip)
     NS_ERROR("Unable to retrieve the tooltip node document.");
     return NS_ERROR_FAILURE;
   }
-  nsCOMPtr<nsIScriptContext> context;
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  document->GetScriptGlobalObject(getter_AddRefs(global));
+  nsIScriptGlobalObject *global = document->GetScriptGlobalObject();
   if (global) {
+    nsCOMPtr<nsIScriptContext> context;
     if (NS_SUCCEEDED(global->GetContext(getter_AddRefs(context))) && context) {
       nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(global);
       if (!domWindow)
@@ -587,8 +584,7 @@ nsXULTooltipListener::GetTooltipFor(nsIContent* aTarget, nsIContent** aTooltip)
 
           // if tooltip == _child, look for first <tooltip> child
           if (tooltipId.Equals(NS_LITERAL_STRING("_child"))) {
-            GetImmediateChild(aTarget, nsXULAtoms::tooltip, aTooltip); // this addrefs
-            NS_IF_ADDREF(*aTooltip);
+            GetImmediateChild(aTarget, nsXULAtoms::tooltip, aTooltip);
             return NS_OK;
           } else {
             if (!tooltipId.IsEmpty()) {

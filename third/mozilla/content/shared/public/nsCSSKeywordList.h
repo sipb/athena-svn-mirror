@@ -66,6 +66,7 @@
 // OUTPUT_CLASS=nsCSSKeywords
 // MACRO_NAME=CSS_KEY
 
+CSS_KEY(-moz-activehyperlinktext, _moz_activehyperlinktext)
 CSS_KEY(-moz-alias, _moz_alias)
 CSS_KEY(-moz-all, _moz_all)
 CSS_KEY(-moz-anchor-decoration, _moz_anchor_decoration)
@@ -111,6 +112,7 @@ CSS_KEY(-moz-groupbox, _moz_groupbox)
 CSS_KEY(-moz-gujarati, _moz_gujarati)
 CSS_KEY(-moz-gurmukhi, _moz_gurmukhi)
 CSS_KEY(-moz-hangul-consonant, _moz_hangul_consonant)
+CSS_KEY(-moz-hidden-unscrollable, _moz_hidden_unscrollable)
 CSS_KEY(-moz-hangul, _moz_hangul)
 CSS_KEY(-moz-hyperlinktext, _moz_hyperlinktext)
 CSS_KEY(-moz-info, _moz_info)

@@ -81,6 +81,7 @@
 #include "nsUnicharUtils.h"
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
+#include "nsXBLEventHandler.h"
 
 static NS_DEFINE_CID(kDOMScriptObjectFactoryCID,
                      NS_DOM_SCRIPT_OBJECT_FACTORY_CID);
@@ -279,9 +280,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
         if (!doc)
           return NS_ERROR_FAILURE;
 
-        nsCOMPtr<nsIScriptGlobalObject> globalObject;
-        doc->GetScriptGlobalObject(getter_AddRefs(globalObject));
-        privateWindow = do_QueryInterface(globalObject);
+        privateWindow = do_QueryInterface(doc->GetScriptGlobalObject());
       }
 
       privateWindow->GetRootFocusController(getter_AddRefs(focusController));
@@ -388,7 +387,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
         return NS_OK;
     }
 
-    boundDocument->GetScriptGlobalObject(getter_AddRefs(boundGlobal));
+    boundGlobal = boundDocument->GetScriptGlobalObject();
   }
 
   // If we still don't have a 'boundGlobal', we're doomed. bug 95465.
@@ -434,7 +433,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
     
     nsCAutoString bindingURI;
     if (mPrototypeBinding)
-      mPrototypeBinding->GetDocURI(bindingURI);
+      mPrototypeBinding->DocURI()->GetSpec(bindingURI);
     
     boundContext->CompileEventHandler(scriptObject, onEventAtom, handlerText,
                                       bindingURI.get(),
@@ -592,13 +591,9 @@ nsXBLPrototypeHandler::GetController(nsIDOMEventReceiver* aReceiver)
   return controller;
 }
 
-
 PRBool
-nsXBLPrototypeHandler::KeyEventMatched(nsIAtom* aEventType, nsIDOMKeyEvent* aKeyEvent)
+nsXBLPrototypeHandler::KeyEventMatched(nsIDOMKeyEvent* aKeyEvent)
 {
-  if (aEventType != mEventName.get())
-    return PR_FALSE;
-
   if (mDetail == -1 && mMisc == 0 && mKeyMask == 0)
     return PR_TRUE; // No filters set up. It's generic.
 
@@ -623,11 +618,8 @@ nsXBLPrototypeHandler::KeyEventMatched(nsIAtom* aEventType, nsIDOMKeyEvent* aKey
 }
 
 PRBool
-nsXBLPrototypeHandler::MouseEventMatched(nsIAtom* aEventType, nsIDOMMouseEvent* aMouseEvent)
+nsXBLPrototypeHandler::MouseEventMatched(nsIDOMMouseEvent* aMouseEvent)
 {
-  if (aEventType != mEventName.get())
-    return PR_FALSE;
-
   if (mDetail == -1 && mMisc == 0 && mKeyMask == 0)
     return PR_TRUE; // No filters set up. It's generic.
 
@@ -977,27 +969,4 @@ nsXBLPrototypeHandler::ModifiersMatchMask(nsIDOMUIEvent* aEvent,
   }
 
   return PR_TRUE;
-}
-
-
-nsresult
-nsXBLPrototypeHandler::GetTextData(nsIContent *aParent, nsString& aResult)
-{
-  aResult.Truncate(0);
-
-  nsCOMPtr<nsIContent> textChild;
-  PRInt32 textCount;
-  aParent->ChildCount(textCount);
-  nsAutoString answer;
-  for (PRInt32 j = 0; j < textCount; j++) {
-    // Get the child.
-    aParent->ChildAt(j, getter_AddRefs(textChild));
-    nsCOMPtr<nsIDOMText> text(do_QueryInterface(textChild));
-    if (text) {
-      nsAutoString data;
-      text->GetData(data);
-      aResult += data;
-    }
-  }
-  return NS_OK;
 }

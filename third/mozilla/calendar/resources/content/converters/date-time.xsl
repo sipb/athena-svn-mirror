@@ -10,7 +10,7 @@
   <doc:reference xmlns="">
     <referenceinfo>
       <releaseinfo role="meta">
-        $Id: date-time.xsl,v 1.1.2.2 2004-01-02 19:28:22 ghudson Exp $
+        $Id: date-time.xsl,v 1.1.2.3 2004-03-06 19:19:55 ghudson Exp $
       </releaseinfo>
       <author>
         <surname>Diamond</surname>

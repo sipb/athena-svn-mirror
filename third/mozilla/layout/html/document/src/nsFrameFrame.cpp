@@ -76,7 +76,6 @@
 #include "nsLayoutAtoms.h"
 #include "nsIChromeEventHandler.h"
 #include "nsIScriptSecurityManager.h"
-#include "nsICodebasePrincipal.h"
 #include "nsXPIDLString.h"
 #include "nsIScrollable.h"
 #include "nsINameSpaceManager.h"
@@ -146,7 +145,7 @@ public:
   NS_IMETHOD_(nsrefcnt) AddRef(void) { return 2; }
   NS_IMETHOD_(nsrefcnt) Release(void) { return 1; }
 
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 
   NS_IMETHOD Paint(nsIPresContext*      aPresContext,
                    nsIRenderingContext& aRenderingContext,
@@ -214,7 +213,7 @@ public:
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
 #endif
 
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
 
@@ -254,7 +253,6 @@ public:
 
   PRBool GetURL(nsIContent* aContent, nsString& aResult);
   PRBool GetName(nsIContent* aContent, nsString& aResult);
-  PRInt32 GetScrolling(nsIContent* aContent);
   nsFrameborder GetFrameBorder();
   PRInt32 GetMarginWidth(nsIContent* aContent);
   PRInt32 GetMarginHeight(nsIContent* aContent);
@@ -395,7 +393,7 @@ nsHTMLFrameOuterFrame::Init(nsIPresContext*  aPresContext,
       }
     }
   
-    nsHTMLContainerFrame::CreateViewForFrame(aPresContext,this,mStyleContext,contentParent,PR_TRUE); 
+    nsHTMLContainerFrame::CreateViewForFrame(this, contentParent, PR_TRUE);
   }
   nsIView* view = GetView();
 
@@ -500,13 +498,10 @@ NS_IMETHODIMP nsHTMLFrameOuterFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-NS_IMETHODIMP
-nsHTMLFrameOuterFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsHTMLFrameOuterFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::htmlFrameOuterFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::htmlFrameOuterFrame;
 }
 
 NS_IMETHODIMP
@@ -610,8 +605,7 @@ nsHTMLFrameOuterFrame::AttributeChanged(nsIPresContext* aPresContext,
                                         nsIAtom* aAttribute,
                                         PRInt32 aModType)
 {
-  nsCOMPtr<nsIAtom> type;
-  aChild->GetTag(getter_AddRefs(type));
+  nsIAtom *type = aChild->Tag();
 
   if ((type != nsHTMLAtoms::object && aAttribute == nsHTMLAtoms::src) ||
       (type == nsHTMLAtoms::object && aAttribute == nsHTMLAtoms::data)) {
@@ -624,10 +618,7 @@ nsHTMLFrameOuterFrame::AttributeChanged(nsIPresContext* aPresContext,
   }
   // If the noResize attribute changes, dis/allow frame to be resized
   else if (aAttribute == nsHTMLAtoms::noresize) {
-    nsCOMPtr<nsIAtom> parentTag;
-    mContent->GetParent()->GetTag(getter_AddRefs(parentTag));
-
-    if (parentTag == nsHTMLAtoms::frameset) {
+    if (mContent->GetParent()->Tag() == nsHTMLAtoms::frameset) {
       nsIFrame* parentFrame = GetParent();
 
       if (parentFrame) {
@@ -755,10 +746,8 @@ nsHTMLFrameInnerFrame::Destroy(nsIPresContext* aPresContext)
 PRBool nsHTMLFrameInnerFrame::GetURL(nsIContent* aContent, nsString& aResult)
 {
   aResult.SetLength(0);
-  nsCOMPtr<nsIAtom> type;
-  aContent->GetTag(getter_AddRefs(type));
 
-  if (type.get() == nsHTMLAtoms::object) {
+  if (aContent->Tag() == nsHTMLAtoms::object) {
     if (NS_CONTENT_ATTR_HAS_VALUE == (aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::data, aResult)))
       if (!aResult.IsEmpty())
         return PR_TRUE;
@@ -781,48 +770,6 @@ PRBool nsHTMLFrameInnerFrame::GetName(nsIContent* aContent, nsString& aResult)
   }
 
   return PR_FALSE;
-}
-
-PRInt32 nsHTMLFrameInnerFrame::GetScrolling(nsIContent* aContent)
-{
-  PRInt32 returnValue = -1;
-  nsresult rv = NS_OK;
-  nsCOMPtr<nsIHTMLContent> content = do_QueryInterface(mContent, &rv);
-
-  if (NS_SUCCEEDED(rv) && content) {
-    nsHTMLValue value;
-    // XXXldb This code belongs in the attribute mapping code for the
-    // content node -- otherwise it doesn't follow the CSS cascading
-    // rules correctly.
-    if (NS_CONTENT_ATTR_HAS_VALUE == content->GetHTMLAttribute(nsHTMLAtoms::scrolling, value)) {
-      if (eHTMLUnit_Enumerated == value.GetUnit()) {
-        switch (value.GetIntValue()) {
-          case NS_STYLE_FRAME_ON:
-          case NS_STYLE_FRAME_SCROLL:
-          case NS_STYLE_FRAME_YES:
-            returnValue = NS_STYLE_OVERFLOW_SCROLL;
-            break;
-
-          case NS_STYLE_FRAME_OFF:
-          case NS_STYLE_FRAME_NOSCROLL:
-          case NS_STYLE_FRAME_NO:
-            returnValue = NS_STYLE_OVERFLOW_HIDDEN;
-            break;
-        
-          case NS_STYLE_FRAME_AUTO:
-          default:
-            returnValue = NS_STYLE_OVERFLOW_AUTO;
-            break;
-        }
-      }
-    }
-
-    // Check style for overflow
-    const nsStyleDisplay* display = GetStyleDisplay();
-    if (display->mOverflow)
-      returnValue = display->mOverflow;
-  }
-  return returnValue;
 }
 
 nsFrameborder nsHTMLFrameInnerFrame::GetFrameBorder()
@@ -903,13 +850,10 @@ NS_IMETHODIMP nsHTMLFrameInnerFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-NS_IMETHODIMP
-nsHTMLFrameInnerFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsHTMLFrameInnerFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::htmlFrameInnerFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::htmlFrameInnerFrame;
 }
 
 NS_IMETHODIMP
@@ -1062,12 +1006,33 @@ nsHTMLFrameInnerFrame::ShowDocShell(nsIPresContext* aPresContext)
   nsCOMPtr<nsIScrollable> sc(do_QueryInterface(docShell));
 
   if (sc) {
-    PRInt32 scrolling = GetScrolling(content);
+    PRInt32 scrolling = GetStyleDisplay()->mOverflow;
+    PRInt32 scrollX, scrollY;
+    switch (scrolling) {
+      case NS_STYLE_OVERFLOW_SCROLLBARS_NONE:
+        scrollX = NS_STYLE_OVERFLOW_HIDDEN;
+        scrollY = NS_STYLE_OVERFLOW_HIDDEN;
+        break;
+      case NS_STYLE_OVERFLOW_SCROLLBARS_HORIZONTAL:
+        scrollX = NS_STYLE_OVERFLOW_SCROLL;
+        scrollY = NS_STYLE_OVERFLOW_HIDDEN;
+        break;
+      case NS_STYLE_OVERFLOW_SCROLLBARS_VERTICAL:
+        scrollX = NS_STYLE_OVERFLOW_HIDDEN;
+        scrollY = NS_STYLE_OVERFLOW_SCROLL;
+        break;
+      case NS_STYLE_OVERFLOW_VISIBLE:
+        scrollX = scrollY = NS_STYLE_OVERFLOW_AUTO;
+        break;
+      default:
+        scrollX = scrollY = scrolling;
+        break;
+    }
 
     sc->SetDefaultScrollbarPreferences(nsIScrollable::ScrollOrientation_Y,
-                                       scrolling);
+                                       scrollX);
     sc->SetDefaultScrollbarPreferences(nsIScrollable::ScrollOrientation_X,
-                                       scrolling);
+                                       scrollY);
   }
 
   nsCOMPtr<nsIWidget> widget;

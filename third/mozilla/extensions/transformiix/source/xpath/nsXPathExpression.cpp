@@ -48,7 +48,7 @@
 #include "nsXPathResult.h"
 #include "nsDOMError.h"
 #include "txURIUtils.h"
-
+#include "txXPathTreeWalker.h"
 
 NS_IMPL_ADDREF(nsXPathExpression)
 NS_IMPL_RELEASE(nsXPathExpression)
@@ -58,7 +58,7 @@ NS_INTERFACE_MAP_BEGIN(nsXPathExpression)
   NS_INTERFACE_MAP_ENTRY_EXTERNAL_DOM_CLASSINFO(XPathExpression)
 NS_INTERFACE_MAP_END
 
-nsXPathExpression::nsXPathExpression(Expr* aExpression,
+nsXPathExpression::nsXPathExpression(nsAutoPtr<Expr>& aExpression,
                                      txResultRecycler* aRecycler)
     : mExpression(aExpression),
       mRecycler(aRecycler)
@@ -67,14 +67,13 @@ nsXPathExpression::nsXPathExpression(Expr* aExpression,
 
 nsXPathExpression::~nsXPathExpression()
 {
-    delete mExpression;
 }
 
 NS_IMETHODIMP
 nsXPathExpression::Evaluate(nsIDOMNode *aContextNode,
                             PRUint16 aType,
-                            nsIDOMXPathResult *aInResult,
-                            nsIDOMXPathResult **aResult)
+                            nsISupports *aInResult,
+                            nsISupports **aResult)
 {
     NS_ENSURE_ARG(aContextNode);
 
@@ -113,16 +112,12 @@ nsXPathExpression::Evaluate(nsIDOMNode *aContextNode,
     NS_ENSURE_ARG(aResult);
     *aResult = nsnull;
 
-    nsCOMPtr<nsIDOMDocument> ownerDOMDocument;
-    aContextNode->GetOwnerDocument(getter_AddRefs(ownerDOMDocument));
-    if (!ownerDOMDocument) {
-        ownerDOMDocument = do_QueryInterface(aContextNode);
-        NS_ENSURE_TRUE(ownerDOMDocument, NS_ERROR_FAILURE);
+    nsAutoPtr<txXPathNode> contextNode(txXPathNativeNode::createXPathNode(aContextNode));
+    if (!contextNode) {
+        return NS_ERROR_OUT_OF_MEMORY;
     }
-    Document document(ownerDOMDocument);
-    Node* node = document.createWrapper(aContextNode);
 
-    EvalContextImpl eContext(node, mRecycler);
+    EvalContextImpl eContext(*contextNode, mRecycler);
     nsRefPtr<txAExprResult> exprResult;
     rv = mExpression->evaluate(&eContext, getter_AddRefs(exprResult));
     NS_ENSURE_SUCCESS(rv, rv);
@@ -176,7 +171,7 @@ nsXPathExpression::EvalContextImpl::getVariable(PRInt32 aNamespace,
     return NS_ERROR_INVALID_ARG;
 }
 
-MBool nsXPathExpression::EvalContextImpl::isStripSpaceAllowed(Node* aNode)
+MBool nsXPathExpression::EvalContextImpl::isStripSpaceAllowed(const txXPathNode& aNode)
 {
     return MB_FALSE;
 }
@@ -199,9 +194,9 @@ void nsXPathExpression::EvalContextImpl::receiveError(const nsAString& aMsg,
     // forward aMsg to console service?
 }
 
-Node* nsXPathExpression::EvalContextImpl::getContextNode()
+const txXPathNode& nsXPathExpression::EvalContextImpl::getContextNode()
 {
-    return mNode;
+    return mContextNode;
 }
 
 PRUint32 nsXPathExpression::EvalContextImpl::size()

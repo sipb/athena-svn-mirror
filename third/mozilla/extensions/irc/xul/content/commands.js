@@ -55,6 +55,8 @@ function initCommands()
          ["channel-pref",      cmdPref,            CMD_NEED_CHAN | CMD_CONSOLE],
          ["op",                cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
          ["deop",              cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
+         ["hop",               cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
+         ["dehop",             cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
          ["voice",             cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
          ["devoice",           cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
          ["clear-view",        cmdClearView,                       CMD_CONSOLE],
@@ -106,6 +108,7 @@ function initCommands()
          ["server",            cmdServer,                          CMD_CONSOLE],
          ["squery",            cmdSquery,           CMD_NEED_SRV | CMD_CONSOLE],
          ["stalk",             cmdStalk,                           CMD_CONSOLE],
+         ["supports",          cmdSupports,         CMD_NEED_SRV | CMD_CONSOLE],
          ["sync-headers",      cmdSync,                                      0],
          ["sync-logs",         cmdSync,                                      0],
          ["sync-motifs",       cmdSync,                                      0],
@@ -129,7 +132,7 @@ function initCommands()
          ["exit",             "quit",                              CMD_CONSOLE],
          ["exit-mozilla",     "quit-mozilla",                      CMD_CONSOLE],
          ["desc",             "pref desc",                         CMD_CONSOLE],
-         ["name",             "pref name",                         CMD_CONSOLE],
+         ["name",             "pref username",                     CMD_CONSOLE],
          ["part",             "leave",                             CMD_CONSOLE],
          ["j",                "join",                              CMD_CONSOLE],
          ["toggle-oas",       "open-at-startup toggle",                      0],
@@ -472,7 +475,7 @@ function parsePlugin(e, name)
 
     }
 
-    e.unparsedData = (4 in ary) ? ary[4] : "";
+    e.unparsedData = arrayHasElementAt(ary, 4) ? ary[4] : "";
     e[name] = plugin;
     return true;
 }
@@ -541,6 +544,14 @@ function cmdChanUserMode(e)
             
         case "deop":
             modestr = "-oooo";
+            break;
+            
+        case "hop":
+            modestr = "+hhhh";
+            break;
+            
+        case "dehop":
+            modestr = "-hhhh";
             break;
             
         case "voice":
@@ -809,7 +820,7 @@ function cmdHelp (e)
     }
 
     for (var i in ary)
-    {        
+    {
         display (getMsg(MSG_FMT_USAGE, [ary[i].name, ary[i].usage]), MT_USAGE);
         display (ary[i].help, MT_HELP);
     }
@@ -1171,7 +1182,7 @@ function cmdMe(e)
 
     e.action = filterOutput (e.action, "ACTION", "ME!");
     display (e.action, "ACTION", "ME!", e.sourceObject);
-    e.sourceObject.act (fromUnicode(e.action, e.sourceObject));
+    e.sourceObject.act (e.action);
 }
 
 function cmdMotif(e)
@@ -1295,7 +1306,7 @@ function cmdQuery(e)
     {
         e.message = filterOutput(e.message, "PRIVMSG", "ME!");
         user.display(e.message, "PRIVMSG", "ME!", user);
-        user.say(fromUnicode(e.message, e.sourceObject));
+        user.say(e.message, e.sourceObject);
     }
 
     return user;
@@ -1307,7 +1318,7 @@ function cmdMsg(e)
 
     var msg = filterOutput(e.message, "PRIVMSG", "ME!");
     usr.display(e.message, "PRIVMSG", "ME!", usr);
-    usr.say(fromUnicode(e.message, e.sourceObject));
+    usr.say(e.message, e.sourceObject);
 }
 
 function cmdNick(e)
@@ -1482,7 +1493,11 @@ function cmdLeave(e)
     if (e.channel && e.noDelete)
         e.channel.noDelete = true;
 
-    e.server.sendData("PART " + e.channelName + "\n");
+    if (!e.reason)
+        e.reason = "";
+    
+    e.server.sendData("PART " + e.channelName + " :" +
+                      fromUnicode(e.reason, e.channel) + "\n");
 }
 
 function cmdLoad (e)
@@ -1556,7 +1571,7 @@ function cmdTopic(e)
     if (!e.newTopic)
         e.server.sendData ("TOPIC " + e.channel.name + "\n");
     else
-        e.channel.setTopic(fromUnicode(e.newTopic, e.channel));
+        e.channel.setTopic(e.newTopic);
 }
 
 function cmdAbout(e)
@@ -2025,4 +2040,62 @@ function cmdLog(e)
         else
             display(MSG_LOGGING_OFF);
     }
+}
+
+function cmdSupports(e)
+{
+    var server = e.server;
+    var data = server.supports;
+    
+    if ("channelTypes" in server)
+        display(getMsg(MSG_SUPPORTS_CHANTYPES, 
+                       keys(server.channelTypes).join(MSG_COMMASP)));
+    if ("channelModes" in server)
+    {
+        display(getMsg(MSG_SUPPORTS_CHANMODESA, 
+                       server.channelModes.a.join(MSG_COMMASP)));
+        display(getMsg(MSG_SUPPORTS_CHANMODESB, 
+                       server.channelModes.b.join(MSG_COMMASP)));
+        display(getMsg(MSG_SUPPORTS_CHANMODESC, 
+                       server.channelModes.c.join(MSG_COMMASP)));
+        display(getMsg(MSG_SUPPORTS_CHANMODESD, 
+                       server.channelModes.d.join(MSG_COMMASP)));
+    }
+    
+    if ("userModes" in server)
+    {
+        var list = new Array();
+        for (var m in server.userModes)
+        {
+            list.push(getMsg(MSG_SUPPORTS_USERMODE, [
+                                                      server.userModes[m].mode, 
+                                                      server.userModes[m].symbol
+                                                    ]));
+        }
+        display(getMsg(MSG_SUPPORTS_USERMODES, list.join(MSG_COMMASP)));
+    }
+    
+    var listB1 = new Array();
+    var listB2 = new Array();
+    var listN = new Array();
+    for (var k in data)
+    {
+        if (typeof data[k] == "boolean")
+        {
+            if (data[k])
+                listB1.push(k);
+            else
+                listB2.push(k);
+        }
+        else
+        {
+            listN.push(getMsg(MSG_SUPPORTS_MISCOPTION, [ k, data[k] ] ));
+        }
+    }
+    listB1.sort();
+    listB2.sort();
+    listN.sort();
+    display(getMsg(MSG_SUPPORTS_FLAGSON, listB1.join(MSG_COMMASP)));
+    display(getMsg(MSG_SUPPORTS_FLAGSOFF, listB2.join(MSG_COMMASP)));
+    display(getMsg(MSG_SUPPORTS_MISCOPTIONS, listN.join(MSG_COMMASP)));
 }

@@ -64,7 +64,7 @@ static PRLogModuleInfo *gStreamPumpLog = nsnull;
 nsInputStreamPump::nsInputStreamPump()
     : mState(STATE_IDLE)
     , mStreamOffset(0)
-    , mStreamLength(~0U)
+    , mStreamLength(PR_UINT32_MAX)
     , mStatus(NS_OK)
     , mSuspendCount(0)
     , mLoadFlags(LOAD_NORMAL)
@@ -84,8 +84,11 @@ nsInputStreamPump::~nsInputStreamPump()
 nsresult
 nsInputStreamPump::EnsureWaiting()
 {
+    // no need to worry about multiple threads... an input stream pump lives
+    // on only one thread.
+
     if (!mWaiting) {
-        nsresult rv = mAsyncStream->AsyncWait(this, 0, mEventQ);
+        nsresult rv = mAsyncStream->AsyncWait(this, 0, 0, mEventQ);
         if (NS_FAILED(rv)) {
             NS_ERROR("AsyncWait failed");
             return rv;
@@ -104,7 +107,7 @@ nsInputStreamPump::EnsureWaiting()
 // understands the limitations of this.
 NS_IMPL_THREADSAFE_ISUPPORTS3(nsInputStreamPump,
                               nsIRequest,
-                              nsIInputStreamNotify,
+                              nsIInputStreamCallback,
                               nsIInputStreamPump)
 
 //-----------------------------------------------------------------------------
@@ -148,7 +151,7 @@ nsInputStreamPump::Cancel(nsresult status)
 
     // close input stream
     if (mAsyncStream) {
-        mAsyncStream->CloseEx(status);
+        mAsyncStream->CloseWithStatus(status);
         mSuspendCount = 0; // un-suspend
         EnsureWaiting();
     }
@@ -244,8 +247,20 @@ nsInputStreamPump::AsyncRead(nsIStreamListener *listener, nsISupports *ctxt)
     rv = mStream->IsNonBlocking(&nonBlocking);
     if (NS_FAILED(rv)) return rv;
 
-    if (nonBlocking)
+    if (nonBlocking) {
         mAsyncStream = do_QueryInterface(mStream);
+        //
+        // if the stream supports nsIAsyncInputStream, and if we need to seek
+        // to a starting offset, then we must do so here.  in the non-async
+        // stream case, the stream transport service will take care of seeking
+        // for us.
+        // 
+        if (mAsyncStream && (mStreamOffset != PR_UINT32_MAX)) {
+            nsCOMPtr<nsISeekableStream> seekable = do_QueryInterface(mStream);
+            if (seekable)
+                seekable->Seek(nsISeekableStream::NS_SEEK_SET, mStreamOffset);
+        }
+    }
 
     if (!mAsyncStream) {
         // ok, let's use the stream transport service to read this stream.
@@ -295,7 +310,7 @@ nsInputStreamPump::AsyncRead(nsIStreamListener *listener, nsISupports *ctxt)
 }
 
 //-----------------------------------------------------------------------------
-// nsInputStreamPump::nsIInputStreamNotify implementation
+// nsInputStreamPump::nsIInputStreamCallback implementation
 //-----------------------------------------------------------------------------
 
 NS_IMETHODIMP
@@ -472,7 +487,7 @@ nsInputStreamPump::OnStateStop()
     // this is OK.  otherwise, be sure to honor the "close-when-done" option.
 
     if (NS_FAILED(mStatus))
-        mAsyncStream->CloseEx(mStatus);
+        mAsyncStream->CloseWithStatus(mStatus);
     else if (mCloseWhenDone)
         mAsyncStream->Close();
 

@@ -24,7 +24,7 @@
  */
 
 #include "Expr.h"
-#include "NodeSet.h"
+#include "txNodeSet.h"
 #include "txNodeSetContext.h"
 
 /*
@@ -51,20 +51,24 @@ PredicateList::~PredicateList()
  * Adds the given Expr to the list
  * @param expr the Expr to add to the list
  */
-void PredicateList::add(Expr* expr)
+nsresult
+PredicateList::add(Expr* aExpr)
 {
-    predicates.add(expr);
+    NS_ASSERTION(aExpr, "missing expression");
+    nsresult rv = predicates.add(aExpr);
+    if (NS_FAILED(rv)) {
+        delete aExpr;
+    }
+    return rv;
 } // add
 
 nsresult
-PredicateList::evaluatePredicates(NodeSet* nodes,
+PredicateList::evaluatePredicates(txNodeSet* nodes,
                                   txIMatchContext* aContext)
 {
     NS_ASSERTION(nodes, "called evaluatePredicates with NULL NodeSet");
-    nsRefPtr<NodeSet> newNodes;
-    nsresult rv = aContext->recycler()->getNodeSet(getter_AddRefs(newNodes));
-    NS_ENSURE_SUCCESS(rv, rv);
-    
+    nsresult rv = NS_OK;
+
     txListIterator iter(&predicates);
     while (iter.hasNext() && !nodes->isEmpty()) {
         Expr* expr = (Expr*)iter.next();
@@ -74,31 +78,28 @@ PredicateList::evaluatePredicates(NodeSet* nodes,
          * or, if the result is a number, add the node with the right
          * position
          */
-        newNodes->clear();
+        PRInt32 index = 0;
         while (predContext.hasNext()) {
             predContext.next();
             nsRefPtr<txAExprResult> exprResult;
             rv = expr->evaluate(&predContext, getter_AddRefs(exprResult));
             NS_ENSURE_SUCCESS(rv, rv);
 
-            switch(exprResult->getResultType()) {
-                case txAExprResult::NUMBER:
-                    // handle default, [position() == numberValue()]
-                    if ((double)predContext.position() ==
-                        exprResult->numberValue())
-                        newNodes->append(predContext.getContextNode());
-                    break;
-                default:
-                    if (exprResult->booleanValue())
-                        newNodes->append(predContext.getContextNode());
-                    break;
+            // handle default, [position() == numberValue()]
+            if (exprResult->getResultType() == txAExprResult::NUMBER) {
+                if ((double)predContext.position() == exprResult->numberValue()) {
+                    nodes->mark(index);
+                }
             }
+            else if (exprResult->booleanValue()) {
+                nodes->mark(index);
+            }
+            ++index;
         }
-        // Move new NodeSet to the current one
-        nodes->clear();
-        nodes->append(newNodes);
+        // sweep the non-marked nodes
+        nodes->sweep();
     }
-    
+
     return NS_OK;
 }
 

@@ -15,7 +15,7 @@
 
   <script type="application/x-javascript" src="chrome://inspector/content/jsutil/xul/inBaseTreeView.js"/>
   <script type="application/x-javascript" src="chrome://inspector/content/viewers/styleRules/styleRules.js"/>
-
+  <script type="application/x-javascript" src="chrome://communicator/content/XPCNativeWrapper.js"/>
   <script type="application/x-javascript" src="chrome://inspector/content/utils.js"/>
   <script type="application/x-javascript" src="chrome://inspector/content/jsutil/xpcom/XPCU.js"/>
   <script type="application/x-javascript" src="chrome://inspector/content/jsutil/rdf/RDFU.js"/>
@@ -68,7 +68,7 @@
       <splitter class="tree-splitter"/>
       <treecol id="olcPropValue" label="&styleRulePropValue.label;" flex="1"/>
     </treecols>
-    <treechildren id="olbStyleProps"/>
+    <treechildren id="olbStyleProps" ondblclick="viewer.cmdEditSelectedProperty()"/>
   </tree>
 
 </page>

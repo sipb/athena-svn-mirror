@@ -38,6 +38,7 @@
 #include "nsOS2Locale.h"
 #include "nsLocaleCID.h"
 #include "prprf.h"
+#include "nsReadableUtils.h"
 
 /* nsOS2Locale ISupports */
 NS_IMPL_ISUPPORTS1(nsOS2Locale,nsIOS2Locale)
@@ -61,7 +62,6 @@ nsOS2Locale::GetPlatformLocale(PRUnichar* os2Locale, size_t length)
 {
 
   LocaleObject locObj = NULL;
-  int          result = 0;
   UniChar      *localeName = NULL;
  
   int  res = UniCreateLocaleObject(UNI_UCS_STRING_POINTER, (UniChar *)L"", &locObj);
@@ -80,7 +80,7 @@ nsOS2Locale::GetPlatformLocale(PRUnichar* os2Locale, size_t length)
 }
 
 NS_IMETHODIMP
-nsOS2Locale::GetXPLocale(const char* os2Locale, nsString* locale)
+nsOS2Locale::GetXPLocale(const char* os2Locale, nsAString& locale)
 {
   char  country_code[3];
   char  lang_code[3];
@@ -89,12 +89,13 @@ nsOS2Locale::GetXPLocale(const char* os2Locale, nsString* locale)
 
   if (os2Locale!=nsnull) {
     if (strcmp(os2Locale,"C")==0 || strcmp(os2Locale,"OS2")==0) {
-      locale->Assign(NS_LITERAL_STRING("en-US"));
+      locale.Assign(NS_LITERAL_STRING("en-US"));
       return NS_OK;
     }
     if (!ParseLocaleString(os2Locale,lang_code,country_code,extra,'_')) {
 //      * locale = "x-user-defined";
-      locale->AssignWithConversion(os2Locale);  // use os2 if parse failed
+      // use os2 if parse failed
+      CopyASCIItoUTF16(nsDependentCString(os2Locale), locale);  
       return NS_OK;
     }
 
@@ -115,7 +116,7 @@ nsOS2Locale::GetXPLocale(const char* os2Locale, nsString* locale)
       }
     }
 
-    locale->AssignWithConversion(os2_locale);
+    CopyASCIItoUTF16(nsDependentCString(os2_locale), locale);  
     return NS_OK;
 
   }

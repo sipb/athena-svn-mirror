@@ -159,6 +159,7 @@ nsHTMLEditor::nsHTMLEditor()
 , mIsObjectResizingEnabled(PR_TRUE)
 , mIsResizing(PR_FALSE)
 , mIsAbsolutelyPositioningEnabled(PR_TRUE)
+, mGrabberClicked(PR_FALSE)
 , mIsMoving(PR_FALSE)
 , mResizedObjectIsAbsolutelyPositioned(PR_FALSE)
 , mIsInlineTableEditingEnabled(PR_TRUE)
@@ -575,7 +576,7 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
     return NS_OK;
   }
 
-  nsCOMPtr<nsIAtom> tagAtom = nsEditor::GetTag(aNode);
+  nsIAtom *tagAtom = GetTag(aNode);
   if (!tagAtom) return NS_ERROR_NULL_POINTER;
 
   if (!sParserService) {
@@ -885,10 +886,8 @@ nsHTMLEditor::GetBlockSectionsForRange(nsIDOMRange *aRange,
       nsCOMPtr<nsIDOMNode>currentNode = do_QueryInterface(currentContent);
       if (currentNode)
       {
-        nsCOMPtr<nsIAtom> currentContentTag;
-        currentContent->GetTag(getter_AddRefs(currentContentTag));
         // <BR> divides block content ranges.  We can achieve this by nulling out lastRange
-        if (nsEditProperty::br==currentContentTag)
+        if (currentContent->Tag() == nsEditProperty::br)
         {
           lastRange = nsnull;
         }
@@ -1263,11 +1262,8 @@ nsHTMLEditor::UpdateBaseURL()
   {
     nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
     if (!doc) return NS_ERROR_FAILURE;
-    nsCOMPtr<nsIURI> uri;
-    rv = doc->GetDocumentURL(getter_AddRefs(uri));
-    NS_ENSURE_SUCCESS(rv, rv);
 
-    return doc->SetBaseURL(uri);
+    return doc->SetBaseURL(doc->GetDocumentURL());
   }
   return NS_OK;
 }
@@ -1632,8 +1628,7 @@ nsHTMLEditor::GetDOMEventReceiver(nsIDOMEventReceiver **aEventReceiver)
     nsIContent* parent = content->GetParent();
     if (parent)
     { 
-      PRInt32 index; 
-      if (NS_FAILED(parent->IndexOf(content, index)) || index < 0 ) 
+      if (parent->IndexOf(content) < 0)
       { 
         rootElement = do_QueryInterface(parent); //this will put listener on the form element basically 
         result = CallQueryInterface(rootElement, aEventReceiver); 
@@ -3533,9 +3528,6 @@ nsHTMLEditor::GetLinkedObjects(nsISupportsArray** aNodeList)
   if (!iter) return NS_ERROR_NULL_POINTER;
   if ((NS_SUCCEEDED(res)))
   {
-    // get the root content
-    nsCOMPtr<nsIContent> rootContent;
-
     nsCOMPtr<nsIDOMDocument> domdoc;
     nsEditor::GetDocument(getter_AddRefs(domdoc));
     if (!domdoc)
@@ -3545,9 +3537,7 @@ nsHTMLEditor::GetLinkedObjects(nsISupportsArray** aNodeList)
     if (!doc)
       return NS_ERROR_UNEXPECTED;
 
-    doc->GetRootContent(getter_AddRefs(rootContent));
-
-    iter->Init(rootContent);
+    iter->Init(doc->GetRootContent());
 
     // loop through the content iterator for each content node
     while (NS_ENUMERATOR_FALSE == iter->IsDone())
@@ -3710,9 +3700,12 @@ nsHTMLEditor::AddOverrideStyleSheet(const nsAString& aURL)
     return NS_ERROR_NULL_POINTER;
   styleSheet->SetOwningDocument(document);
 
-  // This notifies document observers to rebuild all frames
+  // This notifies document observers to recompute style data
   // (this doesn't affect style sheet because it is not a doc sheet)
+  // XXXbz this is a major misuse of the API....
+  document->BeginUpdate(UPDATE_STYLE);
   document->SetStyleSheetApplicableState(styleSheet, PR_TRUE);
+  document->EndUpdate(UPDATE_STYLE);
 
   // Save as the last-loaded sheet
   mLastOverrideStyleSheetURL = aURL;
@@ -3769,9 +3762,12 @@ nsHTMLEditor::RemoveOverrideStyleSheet(const nsAString &aURL)
 
   styleSet->RemoveOverrideStyleSheet(styleSheet);
 
-  // This notifies document observers to rebuild all frames
+  // This notifies document observers to recompute style data
   // (this doesn't affect style sheet because it is not a doc sheet)
+  // XXXbz this is a major misuse of the API....
+  document->BeginUpdate(UPDATE_STYLE);
   document->SetStyleSheetApplicableState(styleSheet, PR_FALSE);
+  document->EndUpdate(UPDATE_STYLE);
 
   // Remove it from our internal list
   return RemoveStyleSheetFromList(aURL);
@@ -3939,9 +3935,6 @@ nsHTMLEditor::GetEmbeddedObjects(nsISupportsArray** aNodeList)
   if (!iter) return NS_ERROR_NULL_POINTER;
   if ((NS_SUCCEEDED(res)))
   {
-    // get the root content
-    nsCOMPtr<nsIContent> rootContent;
-
     nsCOMPtr<nsIDOMDocument> domdoc;
     nsEditor::GetDocument(getter_AddRefs(domdoc));
     if (!domdoc)
@@ -3951,9 +3944,7 @@ nsHTMLEditor::GetEmbeddedObjects(nsISupportsArray** aNodeList)
     if (!doc)
       return NS_ERROR_UNEXPECTED;
 
-    doc->GetRootContent(getter_AddRefs(rootContent));
-
-    iter->Init(rootContent);
+    iter->Init(doc->GetRootContent());
 
     // loop through the content iterator for each content node
     while (NS_ENUMERATOR_FALSE == iter->IsDone())
@@ -4598,15 +4589,14 @@ nsHTMLEditor::SetCaretInTableCell(nsIDOMElement* aElement)
     nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
     if (content)
     {
-      nsCOMPtr<nsIAtom> atom;
-      content->GetTag(getter_AddRefs(atom));
-      if (atom.get() == nsEditProperty::table ||
-          atom.get() == nsEditProperty::tbody ||
-          atom.get() == nsEditProperty::thead ||
-          atom.get() == nsEditProperty::tfoot ||
-          atom.get() == nsEditProperty::caption ||
-          atom.get() == nsEditProperty::tr ||
-          atom.get() == nsEditProperty::td )
+      nsIAtom *atom = content->Tag();
+      if (atom == nsEditProperty::table ||
+          atom == nsEditProperty::tbody ||
+          atom == nsEditProperty::thead ||
+          atom == nsEditProperty::tfoot ||
+          atom == nsEditProperty::caption ||
+          atom == nsEditProperty::tr ||
+          atom == nsEditProperty::td )
       {
         nsCOMPtr<nsIDOMNode> node = do_QueryInterface(aElement);
         nsCOMPtr<nsIDOMNode> parent;
@@ -4802,7 +4792,7 @@ nsHTMLEditor::CollapseAdjacentTextNodes(nsIDOMRange *aInRange)
     nsCOMPtr<nsIDOMNode>          node = do_QueryInterface(content);
     if (text && node && IsEditable(node))
     {
-      textNodes.AppendElement((void*)(node.get()));
+      textNodes.AppendElement(node.get());
     }
     iter->Next();
     iter->CurrentNode(getter_AddRefs(content));
@@ -4865,9 +4855,7 @@ nsHTMLEditor::GetNextElementByTagName(nsIDOMElement    *aCurrentElement,
     if (NS_FAILED(res)) return res;
     if (!nextNode) break;
 
-    nsCOMPtr<nsIAtom> atom = GetTag(currentNode);
-
-    if (tagAtom == atom)
+    if (GetTag(currentNode) == tagAtom)
     {
       nsCOMPtr<nsIDOMElement> element = do_QueryInterface(currentNode);
       if (!element) return NS_ERROR_NULL_POINTER;
@@ -5909,11 +5897,10 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
   PRBool useCSS;
   GetIsCSSEnabled(&useCSS);
 
-  nsCOMPtr<nsIAtom> atom1 = GetTag(aNode1);
-  nsCOMPtr<nsIAtom> atom2 = GetTag(aNode2);
-  
-  if (atom1.get() == atom2.get()) {
-    if (useCSS && atom1 == nsEditProperty::span) {
+  nsIAtom *tag1 = GetTag(aNode1);
+
+  if (tag1 == GetTag(aNode2)) {
+    if (useCSS && tag1 == nsEditProperty::span) {
       if (mHTMLCSSUtils->ElementsSameStyle(aNode1, aNode2)) {
         return PR_TRUE;
       }
@@ -6010,30 +5997,21 @@ nsHTMLEditor::GetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 &
 
 
   if (nsHTMLEditUtils::IsHR(aElement)) {
-    nsIFrame* childFrame;
-    //frame->FirstChild(pcontext, nsnull, &childFrame);
-    frame->GetNextSibling(&childFrame);
-    frame = childFrame;
+    frame = frame->GetNextSibling();
   }
   PRInt32 offsetX = 0, offsetY = 0;
-  nsCOMPtr<nsIWidget> widget;
-  nsresult rv;
   while (frame) {
     // Look for a widget so we can get screen coordinates
-    nsIView* view = frame->GetViewExternal(pcontext);
-    if (view) {
-      rv = view->GetWidget(*getter_AddRefs(widget));
-      if (widget)
-        break;
-    }
+    nsIView* view = frame->GetViewExternal();
+    if (view && view->HasWidget())
+      break;
     
     // No widget yet, so count up the coordinates of the frame 
-    nsPoint origin;
-    frame->GetOrigin(origin);
+    nsPoint origin = frame->GetPosition();
     offsetX += origin.x;
     offsetY += origin.y;
 
-    frame->GetParent(&frame);
+    frame = frame->GetParent();
   }
 
   aX = NSTwipsToIntPixels(offsetX , t2p);

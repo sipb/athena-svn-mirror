@@ -134,6 +134,8 @@ NS_IMETHODIMP nsFontMetricsBeOS::Init(const nsFont& aFont, nsIAtom* aLangGroup,
   PRInt16  face = 0;
 
   mFont = new nsFont(aFont);
+  if (!mFont)
+    return NS_ERROR_OUT_OF_MEMORY;
 
   float       app2dev, app2twip;
   aContext->GetAppUnitsToDevUnits(app2dev);
@@ -627,11 +629,14 @@ static nsresult EnumFonts(const char * aLangGroup, const char* aGeneric, PRUint3
     uint32 flags; 
     if (get_font_family(i, &family, &flags) == B_OK) 
     {
-      if (family && FontMatchesGenericType(family, flags, aGeneric, aLangGroup)
-         && MatchesLangGroup(family,  aLangGroup)) 
+      if (family &&
+          (!aLangGroup ||
+           FontMatchesGenericType(family, flags, aGeneric, aLangGroup) &&
+           MatchesLangGroup(family,  aLangGroup))) 
       {
         font_name.AssignWithConversion(family); 
-        array[j] = ToNewUnicode(font_name); 
+        if (!(array[j] = ToNewUnicode(font_name)))
+          break; 
         ++j;
       }
     } 

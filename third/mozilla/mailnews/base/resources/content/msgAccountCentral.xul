@@ -47,7 +47,7 @@ Rights Reserved.
   <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
   <script type="application/x-javascript" src="chrome://messenger/content/msgAccountCentral.js"/>
 
-  <grid flex="1" id="acctCentralGrid"> 
+  <grid id="acctCentralGrid" flex="1" style="overflow: auto;"> 
     <columns>
       <column flex="40" id="acctCentralActionsColumn"/>
       <column flex="60" id="acctCentralHelpDataColumn"/>
@@ -92,7 +92,7 @@ Rights Reserved.
       <separator id="NewsHeader.separator" class="thin"/>
       <row id="SubscribeNewsgroups" class="acctCentralRow">
         <hbox> 
-          <label class="acctCentralText acctCentralLinkText" value="&subscribeNewsLink.label;" onclick="SubscribeNewsgroups();"/> 
+          <label class="acctCentralText acctCentralLinkText" value="&subscribeNewsLink.label;" onclick="Subscribe();"/> 
         </hbox> 
       </row>
       <separator id="SubscribeNewsgroups.separator" class="thin"/>
@@ -145,6 +145,12 @@ Rights Reserved.
       <row id="CreateFilters" class="acctCentralRow">
         <hbox> 
           <label class="acctCentralText acctCentralLinkText" value="&filtersLink.label;" onclick="CreateMsgFilters();"/> 
+        </hbox> 
+      </row>
+      <separator id="SubscribeImapFolders.separator" class="thin"/>
+      <row id="SubscribeImapFolders" class="acctCentralRow">
+        <hbox> 
+          <label class="acctCentralText acctCentralLinkText" value="&subscribeImapFolders.label;" onclick="Subscribe();"/> 
         </hbox> 
       </row>
       <separator id="CreateFilters.separator" class="thin"/>

@@ -59,6 +59,7 @@
 #include "nsArray.h"
 #include "nsArrayEnumerator.h"
 #include "nsProxyEventPrivate.h"
+#include "nsProxyRelease.h"
 #include "xpt_xdr.h"
 #include "xptcall.h"
 #include "nsILocalFile.h"
@@ -88,6 +89,7 @@
 #include "pldhash.h"
 #include "nsVariant.h"
 #include "nsEscape.h"
+#include "nsStreamUtils.h"
 
 void XXXNeverCalled()
 {
@@ -108,7 +110,7 @@ void XXXNeverCalled()
     NS_NewPipe2(nsnull, nsnull, PR_FALSE, PR_FALSE, 0, 0, nsnull);
     NS_NewInputStreamReadyEvent(nsnull, nsnull, nsnull);
     NS_NewOutputStreamReadyEvent(nsnull, nsnull, nsnull);
-    NS_AsyncCopy(nsnull, nsnull, PR_TRUE, PR_TRUE, 0, 0, nsnull);
+    NS_AsyncCopy(nsnull, nsnull, nsnull, NS_ASYNCCOPY_VIA_READSEGMENTS, 0, nsnull, nsnull);
     PL_DHashStubEnumRemove(nsnull, nsnull, nsnull, nsnull);
     nsIDHashKey::HashKey(nsnull);
     nsFixedSizeAllocator a;
@@ -125,6 +127,7 @@ void XXXNeverCalled()
     NS_QuickSort(nsnull, 0, 0, nsnull, nsnull);
     nsString();
     nsProxyObject(nsnull, 0, nsnull);
+    NS_ProxyRelease(nsnull, nsnull, PR_FALSE);
     XPT_DoString(nsnull, nsnull, nsnull);
     XPT_DoHeader(nsnull, nsnull, nsnull);
 #ifdef DEBUG
@@ -172,4 +175,5 @@ void XXXNeverCalled()
     nsCStringArray carray;
     NS_NewUTF8StringEnumerator(nsnull, &carray);
     NS_NewAdoptingUTF8StringEnumerator(nsnull, &carray);
+    nsVoidableString str3;
 }

@@ -154,7 +154,6 @@ protected:
             id == sParent_id       ||
             id == sScrollbars_id   ||
             id == sContent_id      ||
-            id == sSidebar_id      ||
             id == sMenubar_id      ||
             id == sToolbar_id      ||
             id == sLocationbar_id  ||
@@ -207,7 +206,6 @@ protected:
   static jsval sConstructor_id;
   static jsval s_content_id;
   static jsval sContent_id;
-  static jsval sSidebar_id;
   static jsval sMenubar_id;
   static jsval sToolbar_id;
   static jsval sLocationbar_id;
@@ -312,6 +310,8 @@ public:
   NS_IMETHOD SetProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
                          JSObject *obj, jsval id, jsval *vp,
                          PRBool *_retval);
+  NS_IMETHOD AddProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
+                         JSObject *obj, jsval id, jsval *vp, PRBool *_retval);
 };
 
 
@@ -436,12 +436,36 @@ public:
 };
 
 
-// NodeList scriptable helper
+// Generic array scriptable helper
 
-class nsArraySH : public nsDOMClassInfo
+class nsGenericArraySH : public nsDOMClassInfo
 {
 protected:
-  nsArraySH(nsDOMClassInfoData* aData) : nsDOMClassInfo(aData)
+  nsGenericArraySH(nsDOMClassInfoData* aData) : nsDOMClassInfo(aData)
+  {
+  }
+
+  virtual ~nsGenericArraySH()
+  {
+  }
+  
+public:
+  NS_IMETHOD Enumerate(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
+                       JSObject *obj, PRBool *_retval);
+  
+  static nsIClassInfo *doCreate(nsDOMClassInfoData* aData)
+  {
+    return new nsGenericArraySH(aData);
+  }
+};
+
+
+// NodeList scriptable helper
+
+class nsArraySH : public nsGenericArraySH
+{
+protected:
+  nsArraySH(nsDOMClassInfoData* aData) : nsGenericArraySH(aData)
   {
   }
 
@@ -959,12 +983,12 @@ public:
 };
 
 
-// History helper
+// String array helper
 
-class nsStringArraySH : public nsDOMClassInfo
+class nsStringArraySH : public nsGenericArraySH
 {
 protected:
-  nsStringArraySH(nsDOMClassInfoData* aData) : nsDOMClassInfo(aData)
+  nsStringArraySH(nsDOMClassInfoData* aData) : nsGenericArraySH(aData)
   {
   }
 
@@ -1004,6 +1028,31 @@ public:
   static nsIClassInfo *doCreate(nsDOMClassInfoData* aData)
   {
     return new nsHistorySH(aData);
+  }
+};
+
+// StringList scriptable helper
+
+class nsStringListSH : public nsStringArraySH
+{
+protected:
+  nsStringListSH(nsDOMClassInfoData* aData) : nsStringArraySH(aData)
+  {
+  }
+
+  virtual ~nsStringListSH()
+  {
+  }
+
+  virtual nsresult GetStringAt(nsISupports *aNative, PRInt32 aIndex,
+                               nsAString& aResult);
+
+public:
+  // Inherit GetProperty, Enumerate from nsStringArraySH
+  
+  static nsIClassInfo *doCreate(nsDOMClassInfoData* aData)
+  {
+    return new nsStringListSH(aData);
   }
 };
 

@@ -70,7 +70,7 @@
 #include "nsIStringBundle.h"
 #include "nsIFileSpec.h"
 #include "prmem.h"
-#include "prprf.h"  
+#include "prprf.h"
 #include "nsIContent.h"
 #include "nsIObserverService.h"
 
@@ -103,7 +103,6 @@ PRLogModuleInfo* gWalletLog = nsnull;
 /* The following data and procedures are for preference */
 /********************************************************/
 
-static const char *pref_WalletExtractTables = "wallet.extractTables";
 static const char *pref_Caveat = "wallet.caveat";
 #ifdef AutoCapture
 static const char *pref_captureForms = "wallet.captureForms";
@@ -112,16 +111,12 @@ static const char *pref_enabled = "wallet.enabled";
 static const char *pref_WalletNotified = "wallet.Notified";
 #endif /* AutoCapture */
 static const char *pref_WalletSchemaValueFileName = "wallet.SchemaValueFileName";
-static const char *pref_WalletServer = "wallet.Server";
-static const char *pref_WalletVersion = "wallet.version";
-static const char *pref_WalletLastModified = "wallet.lastModified";
 
 #ifdef AutoCapture
 PRIVATE PRBool wallet_captureForms = PR_FALSE;
 #else
 PRIVATE PRBool wallet_Notified = PR_FALSE;
 #endif
-PRIVATE char * wallet_Server = nsnull;
 
 #ifdef AutoCapture
 PRIVATE void
@@ -228,11 +223,11 @@ public:
 };
 
 /*
- * The data structure below consists of mapping tables that map one item into another.  
- * The actual interpretation of the items depend on which table we are in.  For 
- * example, if in the field-to-schema table, item1 is a field name and item2 is a 
- * schema name.  Whereas in the schema-to-value table, item1 is a schema name and 
- * item2 is a value.  Therefore this generic data structure refers to them simply as 
+ * The data structure below consists of mapping tables that map one item into another.
+ * The actual interpretation of the items depend on which table we are in.  For
+ * example, if in the field-to-schema table, item1 is a field name and item2 is a
+ * schema name.  Whereas in the schema-to-value table, item1 is a schema name and
+ * item2 is a value.  Therefore this generic data structure refers to them simply as
  * item1 and item2.
  */
 MOZ_DECL_CTOR_COUNTER(wallet_MapElement)
@@ -292,16 +287,16 @@ public:
 };
 wallet_HelpMac * helpMac;
 
-PRIVATE nsVoidArray * wallet_FieldToSchema_list=0;
-PRIVATE nsVoidArray * wallet_VcardToSchema_list=0;
-PRIVATE nsVoidArray * wallet_SchemaToValue_list=0;
-PRIVATE nsVoidArray * wallet_SchemaConcat_list=0;
-PRIVATE nsVoidArray * wallet_SchemaStrings_list=0;
-PRIVATE nsVoidArray * wallet_PositionalSchema_list=0;
-PRIVATE nsVoidArray * wallet_StateSchema_list=0;
-PRIVATE nsVoidArray * wallet_URL_list=0;
+PRIVATE nsVoidArray * wallet_FieldToSchema_list = 0;
+PRIVATE nsVoidArray * wallet_VcardToSchema_list = 0;
+PRIVATE nsVoidArray * wallet_SchemaToValue_list = 0;
+PRIVATE nsVoidArray * wallet_SchemaConcat_list = 0;
+PRIVATE nsVoidArray * wallet_SchemaStrings_list = 0;
+PRIVATE nsVoidArray * wallet_PositionalSchema_list = 0;
+PRIVATE nsVoidArray * wallet_StateSchema_list = 0;
+PRIVATE nsVoidArray * wallet_URL_list = 0;
 #ifdef AutoCapture
-PRIVATE nsVoidArray * wallet_DistinguishedSchema_list=0;
+PRIVATE nsVoidArray * wallet_DistinguishedSchema_list = 0;
 #endif
 
 #define NO_CAPTURE(x) x[0]
@@ -392,7 +387,7 @@ PRBool stopwatchRunning = PR_FALSE;
 
 static void
 wallet_ClearTiming() {
-  timing_index  = 0;
+  timing_index = 0;
   LL_I2L(timings[timing_index++], PR_IntervalNow());
 }
 
@@ -463,7 +458,7 @@ wallet_DumpStopwatch() {
   LL_I2L(r1, 100);
   LL_DIV(r2, stopwatch, r1);
   LL_L2I(r3, r2);
-  fprintf(stdout, "stopwatch = %ld\n", (long)r3);  
+  fprintf(stdout, "stopwatch = %ld\n", (long)r3);
 }
 #endif /* DEBUG_morse */
 
@@ -531,9 +526,9 @@ Wallet_Confirm(PRUnichar * szMessage, nsIDOMWindowInternal* window)
 {
   PRBool retval = PR_TRUE; /* default value */
 
-  nsresult res;  
-  nsCOMPtr<nsIPrompt> dialog; 
-  window->GetPrompter(getter_AddRefs(dialog)); 
+  nsresult res;
+  nsCOMPtr<nsIPrompt> dialog;
+  window->GetPrompter(getter_AddRefs(dialog));
   if (!dialog) {
     return retval;
   } 
@@ -546,9 +541,9 @@ Wallet_Confirm(PRUnichar * szMessage, nsIDOMWindowInternal* window)
 
 PUBLIC PRBool
 Wallet_ConfirmYN(PRUnichar * szMessage, nsIDOMWindowInternal* window) {
-  nsresult res;  
-  nsCOMPtr<nsIPrompt> dialog; 
-  window->GetPrompter(getter_AddRefs(dialog)); 
+  nsresult res;
+  nsCOMPtr<nsIPrompt> dialog;
+  window->GetPrompter(getter_AddRefs(dialog));
   if (!dialog) {
     return PR_FALSE;
   } 
@@ -568,9 +563,9 @@ Wallet_ConfirmYN(PRUnichar * szMessage, nsIDOMWindowInternal* window) {
 PUBLIC PRInt32
 Wallet_3ButtonConfirm(PRUnichar * szMessage, nsIDOMWindowInternal* window)
 {
-  nsresult res;  
-  nsCOMPtr<nsIPrompt> dialog; 
-  window->GetPrompter(getter_AddRefs(dialog)); 
+  nsresult res;
+  nsCOMPtr<nsIPrompt> dialog;
+  window->GetPrompter(getter_AddRefs(dialog));
   if (!dialog) {
     return 0; /* default value is NO */
   } 
@@ -595,8 +590,8 @@ PRIVATE void
 wallet_Alert(PRUnichar * szMessage, nsIDOMWindowInternal* window)
 {
   nsresult res;
-  nsCOMPtr<nsIPrompt> dialog; 
-  window->GetPrompter(getter_AddRefs(dialog)); 
+  nsCOMPtr<nsIPrompt> dialog;
+  window->GetPrompter(getter_AddRefs(dialog));
   if (!dialog) {
     return;     // XXX should return the error
   } 
@@ -611,7 +606,7 @@ wallet_Alert(PRUnichar * szMessage, nsIDOMWindowInternal* window)
 PRIVATE void
 wallet_Alert(PRUnichar * szMessage, nsIPrompt* dialog)
 {
-  nsresult res;  
+  nsresult res;
   const nsAutoString message( szMessage );
   PRUnichar * title = Wallet_Localize("CaveatTitle");
   res = dialog->Alert(title, message.get());
@@ -624,8 +619,8 @@ Wallet_CheckConfirmYN
     (PRUnichar * szMessage, PRUnichar * szCheckMessage, PRBool* checkValue,
      nsIDOMWindowInternal* window) {
   nsresult res;
-  nsCOMPtr<nsIPrompt> dialog; 
-  window->GetPrompter(getter_AddRefs(dialog)); 
+  nsCOMPtr<nsIPrompt> dialog;
+  window->GetPrompter(getter_AddRefs(dialog));
   if (!dialog) {
     return PR_FALSE;
   } 
@@ -883,7 +878,7 @@ wallet_Clear(nsVoidArray ** list) {
  * element at a time was very inefficient on the mac
  */
 
-PRIVATE nsVoidArray * wallet_MapElementAllocations_list=0;
+PRIVATE nsVoidArray * wallet_MapElementAllocations_list = 0;
 const PRInt32 kAllocBlockElems = 500;
 static PRInt32 wallet_NextAllocSlot = kAllocBlockElems;
 
@@ -1181,11 +1176,6 @@ Wallet_UTF8Put(nsOutputFileStream& strm, PRUnichar c) {
   }
 }
 
-static void
-wallet_Put(nsOutputFileStream& strm, char c) {
-  strm.put(c);
-}
-
 static char
 wallet_Get(nsInputFileStream& strm) {
   const PRUint32 buflen = 1000;
@@ -1448,7 +1438,7 @@ wallet_WriteToFile(const char * filename, nsVoidArray* list) {
     return;
   }
 
-  nsOutputFileStream strm(dirSpec + filename);
+  nsOutputFileStream strm(dirSpec + filename, nsOutputFileStream::kDefaultMode, 0600);
   if (!strm.is_open()) {
     NS_ERROR("unable to open file");
     return;
@@ -1996,7 +1986,7 @@ wallet_StepForwardOrBack
     if (siblingNameUTF8.EqualsIgnoreCase("#text")) {
       nsAutoString siblingValue;
       result = elementNode->GetNodeValue(siblingValue);
-      text.Append(siblingValue);      
+      text.Append(siblingValue);
     }
 
     /* if we've reached a SCRIPT node, don't fetch its siblings */
@@ -2029,7 +2019,7 @@ wallet_StepForwardOrBack
 
 //#include "nsICaseConversion.h"
 //static NS_DEFINE_IID(kICaseConversionIID, NS_ICASECONVERSION_IID);
-//static nsICaseConversion* gCaseConv =  nsnull;
+//static nsICaseConversion* gCaseConv = nsnull;
 
 static void
 wallet_ResolvePositionalSchema(nsIDOMNode* elementNode, nsACString& schema) {
@@ -2120,7 +2110,7 @@ wallet_ResolvePositionalSchema(nsIDOMNode* elementNode, nsACString& schema) {
 //          nsresult res = nsServiceManager::GetService(kUnicharUtilCID, kICaseConversionIID,
 //                                      (nsISupports**)&gCaseConv);
 //
-//          nsIUGenCategory* intl =  nsnull;
+//          nsIUGenCategory* intl = nsnull;
 //          nsresult rv = nsServiceManager::GetService(kUnicharUtilCID, kIUGenCategoryIID,
 //                                      (nsISupports**)&intl);
 //          Whaaaaaa, intl is never released here!
@@ -2351,7 +2341,7 @@ wallet_GetSchemaFromDisplayableText
 
         /* process state schema if any */
         if (!skipStateChecking && !schema.IsEmpty() && schema.First() == '$') {
-          wallet_ResolveStateSchema(elementNode, schema); 
+          wallet_ResolveStateSchema(elementNode, schema);
         }
         lastSchema.Assign(schema);
         return;
@@ -2383,7 +2373,7 @@ wallet_GetSchemaFromDisplayableText
    */
 
   if (!skipStateChecking && !schema.IsEmpty() && schema.First() == '$') {
-    wallet_ResolveStateSchema(elementNode, schema); 
+    wallet_ResolveStateSchema(elementNode, schema);
   }
 
   lastSchema.Assign(schema);
@@ -2707,8 +2697,7 @@ static void
 wallet_InitializeCurrentURL(nsIDocument * doc) {
 
   /* get url */
-  nsCOMPtr<nsIURI> url;
-  doc->GetDocumentURL(getter_AddRefs(url));
+  nsIURI *url = doc->GetDocumentURL();
   if (wallet_lastUrl == url) {
     return;
   } else {
@@ -3092,7 +3081,7 @@ WLLT_PostEdit(const nsString& walletList)
   }
 
   /* open SchemaValue file */
-  nsOutputFileStream strm(dirSpec + schemaValueFileName);
+  nsOutputFileStream strm(dirSpec + schemaValueFileName, nsOutputFileStream::kDefaultMode, 0600);
   if (!strm.is_open()) {
     NS_ERROR("unable to open file");
     return;
@@ -3436,8 +3425,7 @@ wallet_TraversalForPrefill
     if (NS_SUCCEEDED(result)) {
       nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
       if (doc) {
-        nsCOMPtr<nsIURI> url;
-        doc->GetDocumentURL(getter_AddRefs(url));
+        nsIURI *url = doc->GetDocumentURL();
         if (url) {
           wallet_GetHostFile(url, urlName);
         }
@@ -3651,7 +3639,7 @@ PRIVATE PRBool
 wallet_CaptureInputElement(nsIDOMNode* elementNode, nsIDocument* doc) {
   nsresult result;
   PRBool captured = PR_FALSE;
-  nsCOMPtr<nsIDOMHTMLInputElement> inputElement = do_QueryInterface(elementNode);  
+  nsCOMPtr<nsIDOMHTMLInputElement> inputElement = do_QueryInterface(elementNode);
   if (inputElement) {
     /* it's an input element */
     nsAutoString type;
@@ -3697,7 +3685,7 @@ PRIVATE PRBool
 wallet_CaptureSelectElement(nsIDOMNode* elementNode, nsIDocument* doc) {
   nsresult result;
   PRBool captured = PR_FALSE;
-  nsCOMPtr<nsIDOMHTMLSelectElement> selectElement = do_QueryInterface(elementNode);  
+  nsCOMPtr<nsIDOMHTMLSelectElement> selectElement = do_QueryInterface(elementNode);
   if (selectElement) {
     /* it's a dropdown list */
     nsAutoString field;
@@ -3911,8 +3899,7 @@ WLLT_OnSubmit(nsIContent* currentForm, nsIDOMWindowInternal* window) {
   if (!doc) {
     return;
   }
-  nsCOMPtr<nsIURI> docURL;
-  doc->GetDocumentURL(getter_AddRefs(docURL));
+  nsIURI *docURL = doc->GetDocumentURL();
   if (!docURL) {
     return;
   }
@@ -3993,10 +3980,11 @@ WLLT_OnSubmit(nsIContent* currentForm, nsIDOMWindowInternal* window) {
                       isPassword = PR_FALSE;
                     }
                   }
-#define WALLET_DONT_CACHE_ALL_PASSWORDS
-#ifdef WALLET_DONT_CACHE_ALL_PASSWORDS
-                  // Do not store this form element if the 'autocomplete = off' attibute is present, 
-                  // unless 'wallet.crypto.autocompleteoverride' is enabled.
+
+                  // Do not store this 'password' form element if the 'autocomplete = off'
+                  // attribute is present, unless the 'wallet.crypto.autocompleteoverride'
+                  // preference is enabled. (The "autocomplete" property is a Microsoft
+                  // extension to HTML.)
                   if (isPassword && !SI_GetBoolPref(pref_AutoCompleteOverride, PR_FALSE)) {
                     nsAutoString val;
                     (void) inputElement->GetAttribute(NS_LITERAL_STRING("autocomplete"), val);
@@ -4009,7 +3997,7 @@ WLLT_OnSubmit(nsIContent* currentForm, nsIDOMWindowInternal* window) {
                       }
                     }
                   }
-#endif
+
 #ifdef AutoCapture
                   if (isPassword) {
                     passwordcount++;
@@ -4161,9 +4149,4 @@ WLLT_OnSubmit(nsIContent* currentForm, nsIDOMWindowInternal* window) {
       }
     }
   }
-}
-
-PUBLIC void
-WLLT_FetchFromNetCenter() {
-//  wallet_FetchFromNetCenter();
 }

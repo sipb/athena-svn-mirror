@@ -766,7 +766,7 @@ function GetExtensionBasedOnMimeType(aMIMEType)
     mimeService = Components.classes["@mozilla.org/mime;1"].getService();
     mimeService = mimeService.QueryInterface(Components.interfaces.nsIMIMEService);
 
-    var mimeInfo = mimeService.GetFromTypeAndExtension(aMIMEType, null);
+    var mimeInfo = mimeService.getFromTypeAndExtension(aMIMEType, null);
     if (!mimeInfo) return "";
 
     var fileExtension = mimeInfo.primaryExtension;
@@ -807,18 +807,8 @@ function GetSuggestedFileName(aDocumentURLString, aMIMEType)
 
   // check if there is a title we can use
   var title = GetDocumentTitle();
-  if (title) // we have a title; let's see if it's usable
-  {
-    // clean up the title to make it a usable filename
-    title = title.replace(/\"/g, "");  // Strip out quote character: "
-    title = TrimString(title); // trim whitespace from beginning and end
-    title = title.replace(/[ \.\\@\/:]/g, "_");  //Replace "bad" filename characters with "_"
-    if (title.length > 0)
-      return title + extension;
-  }
-
-  // if we still don't have a file name, let's just go with "untitled"
-  return GetString("untitled") + extension;
+  // generate a valid filename, if we can't just go with "untitled"
+  return GenerateValidFilename(title, extension) || GetString("untitled") + extension;
 }
 
 // returns file picker result

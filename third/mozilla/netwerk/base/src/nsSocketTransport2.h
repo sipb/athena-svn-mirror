@@ -46,8 +46,7 @@
 #include "nsIInterfaceRequestor.h"
 #include "nsIAsyncInputStream.h"
 #include "nsIAsyncOutputStream.h"
-#include "nsIDNSListener.h"
-#include "nsIRequest.h"
+#include "nsIDNSService.h"
 
 class nsSocketTransport;
 
@@ -76,13 +75,14 @@ public:
     void OnSocketReady(nsresult condition);
 
 private:
-    nsSocketTransport             *mTransport;
-    nsrefcnt                       mReaderRefCnt;
+    nsSocketTransport               *mTransport;
+    nsrefcnt                         mReaderRefCnt;
 
     // access to these is protected by mTransport->mLock
-    nsresult                       mCondition;
-    nsCOMPtr<nsIInputStreamNotify> mNotify;
-    PRUint32                       mByteCount;
+    nsresult                         mCondition;
+    nsCOMPtr<nsIInputStreamCallback> mCallback;
+    PRUint32                         mCallbackFlags;
+    PRUint32                         mByteCount;
 };
 
 //-----------------------------------------------------------------------------
@@ -109,52 +109,65 @@ private:
                                        const char *, PRUint32 offset,
                                        PRUint32 count, PRUint32 *countRead);
 
-    nsSocketTransport              *mTransport;
-    nsrefcnt                        mWriterRefCnt;
+    nsSocketTransport                *mTransport;
+    nsrefcnt                          mWriterRefCnt;
 
     // access to these is protected by mTransport->mLock
-    nsresult                        mCondition;
-    nsCOMPtr<nsIOutputStreamNotify> mNotify;
-    PRUint32                        mByteCount;
+    nsresult                          mCondition;
+    nsCOMPtr<nsIOutputStreamCallback> mCallback;
+    PRUint32                          mCallbackFlags;
+    PRUint32                          mByteCount;
 };
 
 //-----------------------------------------------------------------------------
 
 class nsSocketTransport : public nsASocketHandler
-                        , public nsISocketEventHandler
                         , public nsISocketTransport
                         , public nsIDNSListener
 {
 public:
     NS_DECL_ISUPPORTS
-    NS_DECL_NSISOCKETEVENTHANDLER
     NS_DECL_NSITRANSPORT
     NS_DECL_NSISOCKETTRANSPORT
     NS_DECL_NSIDNSLISTENER
 
     nsSocketTransport();
 
+    // this method instructs the socket transport to open a socket of the
+    // given type(s) to the given host or proxy.
     nsresult Init(const char **socketTypes, PRUint32 typeCount,
                   const nsACString &host, PRUint16 port,
                   nsIProxyInfo *proxyInfo);
+
+    // this method instructs the socket transport to use an already connected
+    // socket with the given address.
+    nsresult InitWithConnectedSocket(PRFileDesc *socketFD,
+                                     const PRNetAddr *addr);
 
     // nsASocketHandler methods:
     void OnSocketReady(PRFileDesc *, PRInt16 outFlags); 
     void OnSocketDetached(PRFileDesc *);
 
-private:
+    // called when a socket event is handled
+    void OnSocketEvent(PRUint32 type, nsresult status, nsISupports *param);
+
+protected:
 
     virtual ~nsSocketTransport();
 
+private:
+
+    // event types
     enum {
-        MSG_ENSURE_CONNECT,       // no args
-        MSG_DNS_LOOKUP_COMPLETE,  // uparam holds "status"
-        MSG_RETRY_INIT_SOCKET,    // no args
-        MSG_INPUT_CLOSED,         // uparam holds "reason"
-        MSG_INPUT_PENDING,        // no args
-        MSG_OUTPUT_CLOSED,        // uparam holds "reason"
-        MSG_OUTPUT_PENDING        // no args
+        MSG_ENSURE_CONNECT,
+        MSG_DNS_LOOKUP_COMPLETE,
+        MSG_RETRY_INIT_SOCKET,
+        MSG_INPUT_CLOSED,
+        MSG_INPUT_PENDING,
+        MSG_OUTPUT_CLOSED,
+        MSG_OUTPUT_PENDING
     };
+    nsresult PostEvent(PRUint32 type, nsresult status = NS_OK, nsISupports *param = nsnull);
 
     enum {
         STATE_CLOSED,
@@ -162,24 +175,6 @@ private:
         STATE_RESOLVING,
         STATE_CONNECTING,
         STATE_TRANSFERRING
-    };
-
-    class NetAddrList {
-    public:
-        NetAddrList() : mList(nsnull), mLen(0) {}
-       ~NetAddrList() { delete[] mList; }
-
-        // allocate space for the address list
-        nsresult Init(PRUint32 len);
-
-        // given a net addr in the list, return the next addr.
-        // if given NULL, then return the first addr in the list.
-        // returns NULL if given addr is the last addr.
-        PRNetAddr *GetNext(PRNetAddr *currentAddr);
-
-    private:
-        PRNetAddr *mList;
-        PRUint32   mLen;
     };
 
     //-------------------------------------------------------------------------
@@ -210,7 +205,13 @@ private:
     PRPackedBool mInputClosed;
     PRPackedBool mOutputClosed;
 
-    nsCOMPtr<nsIRequest> mDNSRequest;
+    // this flag is used to determine if the results of a host lookup arrive
+    // recursively or not.  this flag is not protected by any lock.
+    PRPackedBool mResolving;
+
+    nsCOMPtr<nsIDNSRequest> mDNSRequest;
+    nsCOMPtr<nsIDNSRecord>  mDNSRecord;
+    PRNetAddr               mNetAddr;
 
     // socket methods (these can only be called on the socket thread):
 
@@ -270,7 +271,7 @@ private:
         if (PR_GetCurrentThread() == gSocketThread)
             OnMsgInputClosed(reason);
         else
-            gSocketTransportService->PostEvent(this, MSG_INPUT_CLOSED, reason, nsnull);
+            PostEvent(MSG_INPUT_CLOSED, reason);
     }
     void OnInputPending()
     {
@@ -278,7 +279,7 @@ private:
         if (PR_GetCurrentThread() == gSocketThread)
             OnMsgInputPending();
         else
-            gSocketTransportService->PostEvent(this, MSG_INPUT_PENDING, 0, nsnull);
+            PostEvent(MSG_INPUT_PENDING);
     }
     void OnOutputClosed(nsresult reason)
     {
@@ -286,7 +287,7 @@ private:
         if (PR_GetCurrentThread() == gSocketThread)
             OnMsgOutputClosed(reason); // XXX need to not be inside lock!
         else
-            gSocketTransportService->PostEvent(this, MSG_OUTPUT_CLOSED, reason, nsnull);
+            PostEvent(MSG_OUTPUT_CLOSED, reason);
     }
     void OnOutputPending()
     {
@@ -294,16 +295,8 @@ private:
         if (PR_GetCurrentThread() == gSocketThread)
             OnMsgOutputPending();
         else
-            gSocketTransportService->PostEvent(this, MSG_OUTPUT_PENDING, 0, nsnull);
+            PostEvent(MSG_OUTPUT_PENDING);
     }
-
-    //-------------------------------------------------------------------------
-    // we have to be careful with these.  they are modified on the DNS thread,
-    // while we are in the resolving state.  once we've received the event
-    // MSG_DNS_LOOKUP_COMPLETE, these can only be accessed on the socket thread.
-    //
-    NetAddrList  mNetAddrList;
-    PRNetAddr   *mNetAddr;
 };
 
 #endif // !nsSocketTransport_h__
