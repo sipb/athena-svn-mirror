@@ -187,8 +187,16 @@ main()
     char s1[80], s2[80];
     int s3;
 
+ #ifdef POSIX
+    static struct sigaction sa;
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = (void (*)()) cleanup;
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
     signal(SIGINT,cleanup);
 
+#endif
 loop:
     printf("Pattern ==> ");
     if (!gets(s1))
