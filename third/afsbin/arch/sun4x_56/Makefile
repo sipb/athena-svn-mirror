@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1999-12-21 04:56:55 ghudson Exp $
+# $Id: Makefile,v 1.3 1999-12-21 13:43:58 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
@@ -210,7 +210,7 @@ install:
 	install -c -m 444 lib/pam_afs.so.1 ${DESTDIR}${WS}/lib
 	install -c -m 444 lib/pam_afs.krb.so.1 ${DESTDIR}${WS}/lib
 	install -c -m 444 lib/afs/libacl.a ${DESTDIR}${WS}/lib/afs
-	install -c -m 444 lib/afs/libafsadmin.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libafsadminutil.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libafsint.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libaudit.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libauth.a ${DESTDIR}${WS}/lib/afs
