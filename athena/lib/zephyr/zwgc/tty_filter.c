@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.6 1989-11-15 15:26:50 jtkohl Exp $";
+static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.7 1989-11-15 23:24:03 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -497,5 +497,9 @@ string tty_filter(text, use_fonts)
 
     free_info(info);
     free(text_copy);
+    if (number_of_lines &&
+	(result_so_far[string_Length(result_so_far)-1] != '\n'))
+	/* CRLF-terminate all results */
+	result_so_far = string_Concat2(result_so_far, "\r\n");
     return(result_so_far);
 }
