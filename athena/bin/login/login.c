@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.96 1997-09-10 01:15:00 ghudson Exp $
+ * $Id: login.c,v 1.97 1997-10-03 17:41:35 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.96 1997-09-10 01:15:00 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.97 1997-10-03 17:41:35 ghudson Exp $";
 #endif
 
 /*
@@ -1452,6 +1452,8 @@ doKerberosLogin(host)
 	int rc;
         struct hostent *hp = gethostbyname(host);
 	struct sockaddr_in sin;
+	KTEXT ticket;
+	char instance[INST_SZ], version[9];
 
 	/*
 	 * Kerberos autologin protocol.
@@ -1474,8 +1476,12 @@ doKerberosLogin(host)
 		}
 
 	kdata = (AUTH_DAT *)malloc( sizeof(AUTH_DAT) );
-	if (rc=GetKerberosData(0, sin.sin_addr, kdata, "rcmd" )) {
-		printf("Kerberos rlogin failed: %s\r\n",krb_err_txt[rc]);
+	ticket = (KTEXT) malloc(sizeof(KTEXT_ST));
+
+	strcpy(instance, "*");
+	if (rc=krb_recvauth(0L, 0, ticket, "rcmd", instance, &sin,
+			    NULL, kdata, NULL, NULL, version )) {
+		printf("Kerberos rlogin failed: %s\r\n",krb_get_err_text(rc));
 		if (Kflag) {
 paranoid:
 			/*
