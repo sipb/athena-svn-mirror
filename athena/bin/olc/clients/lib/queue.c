@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.2 1989-07-06 22:03:03 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.3 1989-07-12 18:04:43 tjcoppet Exp $";
 #endif
 
 
@@ -73,7 +73,6 @@ OReadList(fd,list, size)
   int errflag = 0;
 
   l = *list;
-  printf("list size: %d\n",size);
   for(i=0;i<size;i++)
     {
       status = read_list(fd, l);
@@ -84,7 +83,6 @@ OReadList(fd,list, size)
 	    return(ERROR);
 	  continue;
 	}
-      printf("%s %d %s %d \n",l->user.username,l->user.instance,l->user.machine,l->ustatus);
       if(l->ustatus == END_OF_LIST)
 	return(status);
       ++l;
