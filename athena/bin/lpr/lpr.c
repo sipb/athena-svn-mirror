@@ -17,13 +17,13 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.14 1992-11-09 00:48:42 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.15 1995-07-11 20:24:50 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.14 1992-11-09 00:48:42 probe Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.15 1995-07-11 20:24:50 miki Exp $";
 #endif lint
 
 /*
@@ -60,10 +60,15 @@ static char sccsid[] = "@(#)lpr.c	5.2 (Berkeley) 11/17/85";
 #include <signal.h>
 #include <ctype.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
+#include <stdlib.h>
 #include "lp.local.h"
 #endif SERVER
-	
+#if defined(POSIX) && !defined(ultrix)
+#include "posix.h"
+#endif
+#include "nonposix.h"	
+#include <unistd.h>
 #define UNLINK unlink
 
 #ifndef SERVER
@@ -132,7 +137,7 @@ short	SC;			/* suppress multiple copies */
 #endif SERVER
 char	*getenv();
 char	*linked();
-int	cleanup();
+void	cleanup();
 extern char *malloc();
 
 /*ARGSUSED*/
@@ -422,7 +427,7 @@ main(argc, argv)
 			if (argc == 1)
 				jobname = "stdin";
 			else
-				jobname = (arg = rindex(argv[1], '/')) ? arg+1 : argv[1];
+				jobname = (arg = strrchr(argv[1], '/')) ? arg+1 : argv[1];
 		}
 		card('J', jobname);
 		card('C', class);
@@ -592,7 +597,7 @@ linked(file)
 	static char buf[BUFSIZ];
 
 	if (*file != '/') {
-		if (getwd(buf) == NULL)
+		if (getcwd(buf, sizeof(buf)) == NULL)
 			return(NULL);
 		while (file[0] == '.') {
 			switch (file[1]) {
@@ -601,7 +606,7 @@ linked(file)
 				continue;
 			case '.':
 				if (file[2] == '/') {
-					if ((cp = rindex(buf, '/')) != NULL)
+					if ((cp = strrchr(buf, '/')) != NULL)
 						*cp = '\0';
 					file += 3;
 					continue;
@@ -670,6 +675,7 @@ nfile(n)
 /*
  * Cleanup after interrupts and errors.
  */
+void
 cleanup()
 {
 	register int i;
@@ -715,11 +721,6 @@ cleanup()
 test(file)
 	char *file;
 {
-#if defined(LP_COFF_DEFINES)
-	struct filehdr execb;
-#else
-	struct exec execb;
-#endif
 	register int fd;
 	register char *cp;
 
@@ -733,7 +734,11 @@ test(file)
 		printf("%s: cannot stat %s\n", name, file);
 		return(-1);
 	}
+#ifdef POSIX
+        if (S_ISDIR(statb.st_mode)) {
+#else
 	if ((statb.st_mode & S_IFMT) == S_IFDIR) {
+#endif
 		printf("%s: %s is a directory\n", name, file);
 		return(-1);
 	}
@@ -746,34 +751,13 @@ test(file)
 		return(-1);
 	}
 
-	if (read(fd, &execb, sizeof(execb)) == sizeof(execb))
-#ifndef LP_COFF_DEFINES
-		switch((int) execb.a_magic) {
-		case A_MAGIC1:
-		case A_MAGIC2:
-		case A_MAGIC3:
-#ifdef A_MAGIC4
-		case A_MAGIC4:
-#endif
-			printf("%s: %s is an executable program", name, file);
-			goto error1;
-		case ARMAG:
-			printf("%s: %s is an archive file", name, file);
-			goto error1;
-		}
-#else /* LP_COFF_DEFINES */
-	if(ISCOFF(execb.f_magic)) {
-			printf("%s: %s is an executable program", name, file);
-			goto error1;
-		}
-	if(execb.f_magic == ARMAG) {
-			printf("%s: %s is an archive file", name, file);
-			goto error1;
-		}
-#endif /* coff */
+        if (isexec (fd)) {
+	  printf("%s: %s is an executable program\n", name, file);
+	  goto error1;
+	}
 	(void) close(fd);
 	if (rflag) {
-		if ((cp = rindex(file, '/')) == NULL) {
+		if ((cp = strrchr(file, '/')) == NULL) {
 			if (access(".", 2) == 0)
 				return(1);
 		} else {
