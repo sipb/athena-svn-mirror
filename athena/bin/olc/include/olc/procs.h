@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.15 1991-10-31 14:58:46 lwvanels Exp $
+ *	$Id: procs.h,v 1.16 1991-11-05 14:01:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -39,6 +39,9 @@
 ERRCODE OSetAcl P((REQUEST *Request , char *acl ));
 ERRCODE OListAcl P((REQUEST *Request , char *acl , char *file ));
 ERRCODE OGetAccesses P((REQUEST *Request , char *file ));
+
+/* admin.c */
+ERRCODE OTweakZephyr P((REQUEST *Request , int what, int how_long));
 
 /* ask.c */
 ERRCODE OAsk_buffer P((REQUEST *Request , char *topic , char *buf ));
