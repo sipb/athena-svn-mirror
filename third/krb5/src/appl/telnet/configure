@@ -313,7 +313,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS EXTRA_FILES CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT HAVE_GCC CPP LD KRB4_INCLUDES KRB4_LIBPATH KRB4_LIB KRB4_DEPLIB KRB_ERR_H_DEP DES425_DEPLIB DES425_LIB compile_et COM_ERR_VERSION SS_LIB SS_VERSION DB_HEADER DB_LIB DB_VERSION DB_HEADER_VERSION KDB5_DB_LIB HESIOD_DEFS HESIOD_LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CONFIG_RELTOPDIR subdirs build build_cpu build_vendor build_os host host_cpu host_vendor host_os krb5_cv_host acx_pthread_config PTHREAD_CC PTHREAD_LIBS PTHREAD_CFLAGS LIBOBJS EGREP SETENVSRC SETENVOBJ LN_S RANLIB ac_ct_RANLIB ARCHIVE ARADD INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR PERL LIBLIST LIBLINKS MAKE_SHLIB_COMMAND SHLIB_EXPFLAGS SHLIB_EXPORT_FILE_DEP INSTALL_SHLIB STLIBEXT SHLIBEXT SHLIBVEXT SHLIBSEXT DEPLIBEXT PFLIBEXT LIBINSTLIST OBJLISTS STOBJEXT SHOBJEXT PFOBJEXT PICFLAGS PROFFLAGS GEN_LIB CC_LINK RPATH_FLAG TELNET_LIBS TELNETD_LIBS UTIL_LIB LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS EXTRA_FILES CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT HAVE_GCC CPP LD KRB4_INCLUDES KRB4_LIBPATH KRB4_LIB KRB4_DEPLIB KRB_ERR_H_DEP DES425_DEPLIB DES425_LIB compile_et COM_ERR_VERSION SS_LIB SS_VERSION DB_HEADER DB_LIB DB_VERSION DB_HEADER_VERSION KDB5_DB_LIB HESIOD_DEFS HESIOD_LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CONFIG_RELTOPDIR subdirs build build_cpu build_vendor build_os host host_cpu host_vendor host_os krb5_cv_host acx_pthread_config PTHREAD_CC PTHREAD_LIBS PTHREAD_CFLAGS LIBOBJS EGREP SETENVSRC SETENVOBJ LN_S RANLIB ac_ct_RANLIB ARCHIVE ARADD INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR PERL LIBLIST LIBLINKS MAKE_SHLIB_COMMAND SHLIB_EXPFLAGS SHLIB_EXPORT_FILE_DEP INSTALL_SHLIB STLIBEXT SHLIBEXT SHLIBVEXT SHLIBSEXT DEPLIBEXT PFLIBEXT LIBINSTLIST OBJLISTS STOBJEXT SHOBJEXT PFOBJEXT PICFLAGS PROFFLAGS EXTRALIBS GEN_LIB CC_LINK RPATH_FLAG TELNET_LIBS TELNETD_LIBS UTIL_LIB LTLIBOBJS'
 ac_subst_files='lib_frag libobj_frag'
 
 # Initialize some variables set by options.
@@ -899,6 +899,8 @@ Optional Packages:
   --with-system-db        use system Berkeley db [private version]
   --with-netlib=LIBS      use user defined resolver library
   --with-hesiod=path      compile with hesiod support [omitted]
+  --without-afs        don't have afs libraries to build against (default)
+  --with-afs=AFSDIR    use preinstalled AFS library tree
 
 Some influential environment variables:
   CC          C compiler command
@@ -9062,6 +9064,185 @@ echo "${ECHO_T}Kerberos 4 authentication enabled" >&6
 _ACEOF
 
 fi
+EXTRALIBS=
+echo "$as_me:$LINENO: checking for res_send" >&5
+echo $ECHO_N "checking for res_send... $ECHO_C" >&6
+if test "${ac_cv_func_res_send+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* Define res_send to an innocuous variant, in case <limits.h> declares res_send.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define res_send innocuous_res_send
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char res_send (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef res_send
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char res_send ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_res_send) || defined (__stub___res_send)
+choke me
+#else
+char (*f) () = res_send;
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int
+main ()
+{
+return f != res_send;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_func_res_send=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_func_res_send=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_func_res_send" >&5
+echo "${ECHO_T}$ac_cv_func_res_send" >&6
+if test $ac_cv_func_res_send = yes; then
+  :
+else
+  echo "$as_me:$LINENO: checking for res_send in -lresolv" >&5
+echo $ECHO_N "checking for res_send in -lresolv... $ECHO_C" >&6
+if test "${ac_cv_lib_resolv_res_send+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lresolv  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char res_send ();
+int
+main ()
+{
+res_send ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_resolv_res_send=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_resolv_res_send=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_resolv_res_send" >&5
+echo "${ECHO_T}$ac_cv_lib_resolv_res_send" >&6
+if test $ac_cv_lib_resolv_res_send = yes; then
+  EXTRALIBS=-lresolv
+fi
+
+fi
+
+
+
+# Check whether --with-afs or --without-afs was given.
+if test "${with_afs+set}" = set; then
+  withval="$with_afs"
+
+else
+  with_afs=no
+fi; if test $with_afs != no; then
+        cat >>confdefs.h <<\_ACEOF
+#define SETPAG 1
+_ACEOF
+
+        EXTRALIBS="$EXTRALIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik -laudit -lsys -lrx -llwp -lsys -lafsutil"
+fi
 
 echo "$as_me:$LINENO: checking for working regcomp" >&5
 echo $ECHO_N "checking for working regcomp... $ECHO_C" >&6
@@ -9895,6 +10076,7 @@ fi
 TELNETD_LIBS="$LIBS"
 
 LIBS="$old_LIBS"
+
 echo "$as_me:$LINENO: checking for main in -lutil" >&5
 echo $ECHO_N "checking for main in -lutil... $ECHO_C" >&6
 if test "${ac_cv_lib_util_main+set}" = set; then
@@ -10702,6 +10884,7 @@ s,@SHOBJEXT@,$SHOBJEXT,;t t
 s,@PFOBJEXT@,$PFOBJEXT,;t t
 s,@PICFLAGS@,$PICFLAGS,;t t
 s,@PROFFLAGS@,$PROFFLAGS,;t t
+s,@EXTRALIBS@,$EXTRALIBS,;t t
 s,@GEN_LIB@,$GEN_LIB,;t t
 s,@CC_LINK@,$CC_LINK,;t t
 s,@RPATH_FLAG@,$RPATH_FLAG,;t t
