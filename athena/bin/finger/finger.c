@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.15 1991-08-11 22:02:58 probe Exp $
+ * $Id: finger.c,v 1.16 1991-08-11 22:17:03 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.15 1991-08-11 22:02:58 probe Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.16 1991-08-11 22:17:03 probe Exp $";
 #endif lint
 
 /*
@@ -432,6 +432,10 @@ donames(argv)
 	while (read(uf, (char *) &user, sizeof user) == sizeof user) {
 		if (*user.ut_name == 0)
 			continue;
+#if defined(USER_PROCESS)
+		if (user.ut_type != USER_PROCESS)
+			continue;
+#endif
 		for (p = person1; p != 0; p = p->link) {
 			if (p->loggedin == 2)
 				continue;
@@ -707,13 +711,14 @@ shortprint(pers)
 	else
 		(void) putchar(' ');
 	if (*pers->tty) {
-		if (pers->tty[0] == 't' && pers->tty[1] == 't' &&
-		    pers->tty[2] == 'y') {
+		if (!strncmp(pers->tty, "tty", 3)) {
 			if (pers->tty[3] == 'd' && pers->loggedin)
 				dialup = 1;
 			printf("%-2.2s ", pers->tty + 3);
-		}
-		else
+		} else
+		if (!strncmp(pers->tty, "pts/", 4)) {
+			printf("p%-1.1s ", pers->tty + 4);
+		} else
 			printf("%-2.2s ", pers->tty);
 	}
 	else
