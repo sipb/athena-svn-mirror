@@ -3,7 +3,7 @@
 # This software may be freely distributed provided it is not sold for 
 # profit and the author is credited appropriately.
 #
-# $Id: Makefile,v 1.2 1996-10-10 21:03:55 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-09-24 07:34:08 ghudson Exp $
 #
 # Sysinfo Makefile
 #
@@ -234,11 +234,11 @@ install.man: sysinfo.man sysinfo.cf.man
 	$(INSTALLPROG) -c -m 444 -o bin -g bin sysinfo.cf.man \
 		${DESTDIR}${ManDir5}/${PROG}.cf.${ManSect5}
 
-$(CONFDIR):
-	mkdir $(CONFDIR)
-	chmod 755 $(CONFDIR)
+${DESTDIR}$(CONFDIR):
+	mkdir ${DESTDIR}$(CONFDIR)
+	chmod 755 ${DESTDIR}$(CONFDIR)
 
-install.cf: $(CONFDIR)
+install.cf: ${DESTDIR}$(CONFDIR)
 	@for file in config/*.cf ; do \
 		cf=`echo $$file | sed -e 's;.*/;;'`; \
 		echo $(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file ${DESTDIR}$(CONFDIR)/$$cf; \
