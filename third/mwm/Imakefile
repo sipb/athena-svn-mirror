@@ -5,12 +5,12 @@ XCOMM
 XCOMM 
 XCOMM Motif Release 1.2.1
 XCOMM 
-XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1997-03-25 09:12:15 $
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.2 $ $Date: 1997-03-25 09:15:13 $
 
-DEFINES = AutoDefines MwmDefines
-INCLUDES = -I. -I$(INCLUDESRC) -I$(MINCLUDESRC) AutoIncludes
-DEPLIBS1 = XmClientDepLibs
-LOCAL_LIBRARIES = $(AUTOUTILLIB) XmClientLibs 
+#ifdef SOLARIS
+INCLUDES = -I/usr/dt/include
+EXTRA_LIBRARIES = -L/usr/dt/lib -Xlinker -R/usr/dt/lib -lXm -lXt -lX11 -lXext
+#endif
 
 OBJS1=	WmCDecor.o\
 	WmColormap.o\
@@ -80,7 +80,7 @@ PROGRAMS=mwm
 
 NormalLibraryObjectRule()
 
-MComplexProgramTarget_1(mwm,$(LOCAL_LIBRARIES),NullParameter)
+ComplexProgramTarget_1(mwm,$(LOCAL_LIBRARIES),NullParameter)
 SpecialObjectRule(WmResParse.o,$(ICONFIGFILES),-DLIBDIR=\"$(LIBDIR)\")
 SpecialObjectRule(WmResource.o,$(ICONFIGFILES),-DBITMAPDIR=\"$(INCDIR)/bitmaps/\")
 
