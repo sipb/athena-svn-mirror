@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -73,6 +73,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -154,44 +155,20 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = \
-	-I$(top_srcdir)				\
-	$(GNOME_INCLUDEDIR)			\
-	$(ICONV_CFLAGS)				\
-	-DG_LOG_DOMAIN=\"e-text\"		\
-	$(EXTRA_GNOME_CFLAGS)
+INCLUDES =  	-I$(top_srcdir)					$(GNOME_INCLUDEDIR)				$(ICONV_CFLAGS)					-DG_LOG_DOMAIN=\"e-text\"			$(EXTRA_GNOME_CFLAGS)
 
 
 noinst_LTLIBRARIES = libetext.la
 
-libetext_la_SOURCES = \
-	e-entry.c				\
-	e-completion-match.c			\
-	e-completion.c				\
-	e-completion-view.c			\
-	e-table-text-model.c			\
-	e-text-model-repos.c			\
-	e-text-model.c				\
-	e-text-model-uri.c                      \
-	e-text.c
+libetext_la_SOURCES =  	e-entry.c					e-completion-match.c				e-completion.c					e-completion-view.c				e-table-text-model.c				e-text-model-repos.c				e-text-model.c					e-text-model-uri.c                      	e-text.c
 
 
-libetextincludedir = $(includedir)/gal/e-text
+libetextincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/e-text
 
-libetextinclude_HEADERS = \
-	e-entry.h				\
-	e-completion-match.h			\
-	e-completion.h				\
-	e-completion-view.h			\
-	e-table-text-model.h			\
-	e-text-model-repos.h			\
-	e-text-model.h				\
-	e-text-model-uri.h			\
-	e-text.h
+libetextinclude_HEADERS =  	e-entry.h					e-completion-match.h				e-completion.h					e-completion-view.h				e-table-text-model.h				e-text-model-repos.h				e-text-model.h					e-text-model-uri.h				e-text.h
 
 
-noinst_PROGRAMS = \
-	e-completion-test
+noinst_PROGRAMS =  	e-completion-test
 
 #	e-text-model-test \
 #
@@ -229,8 +206,7 @@ noinst_PROGRAMS = \
 #	 $(top_builddir)/gal/unicode/libunicode.la \
 #	 $(top_builddir)/gal/util/libutil.la
 
-e_completion_test_SOURCES = \
-	e-completion-test.c
+e_completion_test_SOURCES =  	e-completion-test.c
 
 
 e_completion_test_LDADD = \
