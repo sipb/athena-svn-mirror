@@ -1,4 +1,8 @@
-/* $Id: larv.h,v 1.1.2.1 1998-09-24 13:54:48 ghudson Exp $ */
+<<<<<<< larv.h
+/* $Id: larv.h,v 1.1.2.2 1998-09-30 17:44:51 ghudson Exp $ */
+=======
+/* $Id: larv.h,v 1.1.2.2 1998-09-30 17:44:51 ghudson Exp $ */
+>>>>>>> 1.2
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +22,7 @@
 #ifndef LARV__H
 #define LARV__H
 
-int larv_send_status(int fd);
+int larv_send_status(int fd, struct sockaddr *addr, int size);
 int larv_set_busy(int busy);
 
 #endif /* LARV__H */

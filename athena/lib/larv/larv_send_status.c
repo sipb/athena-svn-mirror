@@ -13,7 +13,11 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: larv_send_status.c,v 1.1.2.1 1998-09-24 13:54:50 ghudson Exp $";
+<<<<<<< larv_send_status.c
+static const char rcsid[] = "$Id: larv_send_status.c,v 1.1.2.2 1998-09-30 17:44:51 ghudson Exp $";
+=======
+static const char rcsid[] = "$Id: larv_send_status.c,v 1.1.2.2 1998-09-30 17:44:51 ghudson Exp $";
+>>>>>>> 1.2
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -21,7 +25,7 @@ static const char rcsid[] = "$Id: larv_send_status.c,v 1.1.2.1 1998-09-24 13:54:
 #include "larv.h"
 #include "larv_private.h"
 
-int larv_send_status(int fd)
+int larv_send_status(int fd, struct sockaddr *addr, int size)
 {
   char buf[LARVNET_MAX_PACKET];
   int len;
@@ -30,5 +34,5 @@ int larv_send_status(int fd)
   if (len == -1)
     return -1;
 
-  return send(fd, buf, len, 0);
+  return (sendto(fd, buf, len, 0, addr, size) == -1) ? -1 : 0;
 }

@@ -13,7 +13,11 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: busyd.c,v 1.1.2.1 1998-09-24 13:57:14 ghudson Exp $";
+<<<<<<< busyd.c
+static const char rcsid[] = "$Id: busyd.c,v 1.1.2.2 1998-09-30 17:46:11 ghudson Exp $";
+=======
+static const char rcsid[] = "$Id: busyd.c,v 1.1.2.2 1998-09-30 17:46:11 ghudson Exp $";
+>>>>>>> 1.2
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -33,7 +37,7 @@ int main(int argc, char **argv)
     return 1;
 
   /* Now send the response. */
-  if (larv_send_status(0) == -1)
+  if (larv_send_status(0, (struct sockaddr *) &sin, sz) == -1)
     return 1;
 
   return 0;
