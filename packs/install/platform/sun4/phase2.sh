@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.23 1997-06-20 19:05:37 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.24 1997-10-17 02:18:20 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -12,6 +12,26 @@ PATH=/sbin:/os/usr/bin:/srvd/bin/athena:/os/etc:/os/usr/sbin:/bin:/etc:/sbin:/us
 export PATH
 umask 2
 
+# Use format to get information about the available drives.
+format < /dev/null | awk '/[0-9]\./ { print; }' > /tmp/disks
+
+ndrives=`wc -l /tmp/disks`
+case `uname -m` in
+sun4u)
+	defaultdrive=c0t0d0;
+	;;
+*)
+	defaultdrive=c0t3d0;
+	;;
+esac
+
+if [ "$ndrives" -gt 1 ]; then
+	echo ""
+	echo "WARNING: This system has multiple disks.  A non-custom install"
+	echo "will pick what we believe is the internal disk, $defaultdrive."
+	echo "Choose a custom installation if this disk isn't right."
+	echo ""
+fi
 echo "Custom installation ? (will default to n after 60 seconds)[n]"
 
 case x`/util/to 60` in
@@ -21,10 +41,33 @@ xtimeout|xn|xN|x)
      CUSTOM=Y; echo "Doing custom installation"; export CUSTOM;;
 esac
 
+case $CUSTOM in
+Y)
+	if [ "$ndrives" -gt 1 ]; then
+		echo ""
+		echo "This system has multiple disks.  You must select a disk"
+		echo "to install onto."
+		echo ""
+		cat /tmp/disks
+		echo ""
+		echo "Please select a disk by number: \c"
+		read selection
+		drive=`awk "/ $selection\./ "'{ print $2; exit; }' /tmp/disks`
+		if [ -z "$drive" ]; then
+			echo "Invalid selection, starting over."
+			exit 1
+		fi
+	else
+		# Only one drive, pick it.
+		drive=`awk '{ print $2; }' /tmp/disks`
+	fi
+N)
+	drive=$defaultdrive
+	;;
+esac
+
 # Define the partitions
 echo "Define the partitions"
-
-drive=c0t3d0
 
 rootdrive=/dev/dsk/${drive}s0
 rrootdrive=/dev/rdsk/${drive}s0
@@ -80,7 +123,8 @@ ls -l /os
 ls -l /tmp/os
 
 echo "formatting  "
-DISK=`/sbin/machtype -r`
+DISK=`format < /dev/null | \
+    awk "/$drive/"'{ print substr($3, 2, length($3) - 1); }'`
 export DISK
 echo $DISK
 
@@ -143,7 +187,9 @@ Y)
     *)
        echo "can't format the disks - type unknown"
        echo "Call an expert !"
-       exit 1
+       echo "Press ^C for a shell or Stop-A for the boot prompt."
+       trap /bin/sh 2
+       while :; do sleep 10; done
        esac
 esac
 
