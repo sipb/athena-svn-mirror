@@ -26,7 +26,8 @@
  * install_file(src,dest)		- Install file
  *
  * foreach_subdirs(name,subdirs)	- Make 'name' in subdirs
- * do_subdirs_imakefile(subdirs)	- Make Makefile in subdirs 
+ * do_subdirs_imakefile(subdirs)	- Make Makefile in subdirs (Athena)
+ * do_subdirs_xmakefile(subdirs)	- Make Makefile in subdirs (X-style)
  * do_subdirs(subdirs)			- Make common instances in subdirs
  */
 
@@ -69,7 +70,7 @@ obj: depends								@@\
 	$(CC) -c $(CFLAGS) options $*.c
 
 #define install_man(src,name)						@@\
-install::								@@\
+install.man::								@@\
 	base=`expr name \: '\(.*\)\.'`; \				@@\
 	ext=`expr name \: '.*\.\(.*\)'`; \				@@\
 	sdir=$(DESTDIR)$(ATHMANDIR)/man`expr name \: '.*\.\(.\)'`; \	@@\
@@ -82,7 +83,7 @@ name.so:								@@\
 	echo ".so $${sdir}/name" > name.so				@@\
 clean::									@@\
 	$(RM) name.so							@@\
-install:: name.so							@@\
+install.man:: name.so							@@\
 	for i in links; do \						@@\
 		sdir=$(DESTDIR)$(ATHMANDIR)/man`expr $$i \: '.*\.\(.\)'`;\ @@\
 		$(INSTALL) -m 0444 name.so $${sdir}/$$i;\		@@\
@@ -168,7 +169,15 @@ Makefile:: $(ICONFIGFILE)						@@\
         	echo "  $(RM) Makefile.bak; mv Makefile Makefile.bak"; \ @@\
 		$(RM) Makefile.bak; mv Makefile Makefile.bak; \		@@\
         else exit 0; fi                                                 @@\
-	$(IMAKE) $(IFLAGS) $(IPROJ) -DNEWTOP=$(TOP) -DNEWCURDIR=$(CURDIR)
+	$(IMAKE) $(IFLAGS) $(IPROJ) -DNEWTOP=$(TOP) -DNEWCURDIR=$(CURDIR)\ @@\
+									@@\
+XMakefile::								@@\
+	-@if [ -f Makefile ]; then \                                    @@\
+        	echo "  $(RM) Makefile.bak; mv Makefile Makefile.bak"; \ @@\
+		$(RM) Makefile.bak; mv Makefile Makefile.bak; \		@@\
+        else exit 0; fi                                                 @@\
+	$(IMAKE) $(XIFLAGS)
+
 
 #define foreach_subdirs_flags(name,subdirs,flgs)			@@\
 name:: FRC								@@\
@@ -193,14 +202,7 @@ subdirs:: FRC								@@\
 	foreach_subdirs_flags(name,subdirs,)
 
 #define do_subdirs(subdirs)						@@\
-	foreach_subdirs(all, subdirs)					@@\
-	foreach_subdirs(install, subdirs)				@@\
-	foreach_subdirs(clean, subdirs)					@@\
-	foreach_subdirs(depend, subdirs)				@@\
-subdirs:: FRC								@@\
-	@(cd $@; echo "### Making" all "in $(CURDIR)/$@"; \		@@\
-		make $(MFLAGS) DESTDIR=$(DESTDIR) all ; \		@@\
-		echo "### Done with $(CURDIR)/$@")
+	do_subdirs_flags(subdirs,)
 
 #define do_subdirs_imakefile(subdirs)					@@\
 Makefiles:: Makefile							@@\
@@ -224,6 +226,33 @@ Makefiles:: Makefile							@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
 		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
 			CURDIR=$(CURDIR)/$$d Makefile; \		@@\
+		  make $(MFLAGS) Makefiles; \				@@\
+		  echo "### Done with $(CURDIR)/$$d" ) ; \		@@\
+	done
+
+#define do_subdirs_xmakefile(subdirs)					@@\
+	foreach_subdirs(install.man,subdirs)				@@\
+Makefiles:: Makefile							@@\
+	@echo "### Making Makefiles in $(CURDIR)"			@@\
+	@-for d in subdirs; \						@@\
+	do \								@@\
+		case "$$d" in \						@@\
+                ./?*/?*/?*/?*)	newtop=../../../.. ;; \			@@\
+                ./?*/?*/?*)	newtop=../../.. ;; \			@@\
+                ./?*/?*)	newtop=../.. ;; \			@@\
+                ./?*)		newtop=.. ;; \				@@\
+                */?*/?*/?*)	newtop=../../../.. ;; \			@@\
+                */?*/?*)	newtop=../../.. ;; \			@@\
+                */?*)		newtop=../.. ;; \			@@\
+                *)		newtop=.. ;; \				@@\
+                esac; \							@@\
+		( cd $$d; \						@@\
+		  echo "### Making Makefile in $(CURDIR)/$$d"; \	@@\
+		  if [ -f Makefile ]; then \				@@\
+			$(RM) Makefile.bak; \				@@\
+		 	mv Makefile Makefile.bak; fi; \			@@\
+		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
+			CURDIR=$(CURDIR)/$$d XMakefile; \		@@\
 		  make $(MFLAGS) Makefiles; \				@@\
 		  echo "### Done with $(CURDIR)/$$d" ) ; \		@@\
 	done
