@@ -1,7 +1,0 @@
-# $Id: Imakefile,v 1.5 1999-01-22 23:16:11 ghudson Exp $
-
-LIBS = -lX11 -lal -lhesiod
-
-SimpleProgram(dm,dm.o,$(LIBS),/etc/athena)
-install_man(dm.8,dm.8)
-
