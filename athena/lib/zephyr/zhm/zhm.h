@@ -6,8 +6,8 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
- *      $Author: rfrench $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.3 1987-08-06 00:43:21 rfrench Exp $
+ *      $Author: opus $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.4 1987-10-06 20:36:04 opus Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -17,6 +17,9 @@
 #include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr.h>
 #include <syslog.h>
+#include <sys/socket.h>
+#include <sys/param.h>
+#include <netdb.h>
 
 #ifdef DEBUG
 #define DPR(a) fprintf(stderr, a); fflush(stderr)
@@ -38,5 +41,17 @@
 #define MAXRETRIES 2
 
 extern char *malloc();
+
+#ifdef vax
+#define MACHINE "vax"
+#define ok
+#endif vax
+#ifdef ibm032
+#define MACHINE "rt"
+#define ok
+#endif ibm032
+#ifndef ok
+#define MACHINE "unknown"
+#endif ok
 
 #endif !__HM_H__
