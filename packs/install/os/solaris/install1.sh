@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.14 2001-06-07 17:13:17 zacheiss Exp $
+### $Id: install1.sh,v 1.15 2001-07-19 21:23:37 zacheiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -271,6 +271,12 @@ Y)
        partitioning=one
        cat /util/format.input.SUN18G | \
                 format ${drive} >/dev/null 2>&1
+       ;;
+    SUN36G)
+       echo "formatting SUN36G"
+       partitioning=one
+       cat /util/format.input.SUN36G | \
+		format ${drive} >/dev/null 2>&1
        ;;
     ST315320A)
        echo "formatting ST315320A"
