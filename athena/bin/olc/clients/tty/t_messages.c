@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.6 1990-01-17 02:40:25 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.7 1990-02-14 18:22:40 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -35,6 +35,9 @@ t_replay(Request,file, display, sort)
 {
   int status;
   char cmd[LINE_SIZE];
+  char users[NAME_SIZE];
+
+  users[0] = (char) NULL;
 
   status = OReplayLog(Request,file);
   
@@ -64,6 +67,15 @@ t_replay(Request,file, display, sort)
     case ERROR:
       fprintf(stderr, "Error replaying conversation.\n");
        break;
+
+    case NAME_NOT_UNIQUE:
+      fprintf(stderr,
+	      "The string \"%s\" is not unique.  Choose one of:\n",
+	      Request->target.username);
+      strcpy(users, Request->target.username);
+      (void) t_list_queue(Request, (char *) NULL, (char) NULL, (char) NULL,
+			  users, 0, 0, file, FALSE);
+      break;
 
     default:
       status = handle_response(status, Request);
