@@ -52,14 +52,14 @@ print_help()
   
   clear();
   refresh();
-  printf("Commands are:\n\n");
+  printf("Commands are:\n");
   for (comm_index = 0; comm_index < Command_Count; comm_index++)
     {
       printf("\t%c\t%s\n", Command_Table[comm_index].command,
 	     Command_Table[comm_index].help_string);
     }
   printf("   <space>\tDisplay next index page.\n");
-  printf("   <number>\tDisplay specified entry.\n");
+  printf("  <number>\tDisplay specified entry.\n");
   wait_for_key();
   clear();
   refresh();
@@ -203,11 +203,14 @@ next_page()
 {
   int new_index;			/* New index value. */
 
-  new_index = Index_Start + MAX_INDEX_LINES - 3;
-  if (new_index < (Entry_Count - MAX_INDEX_LINES + 2))
+  if (Entry_Count <= MAX_INDEX_LINES)
+    return;
+
+  new_index = Index_Start + MAX_INDEX_LINES - 2;
+  if (new_index < (Entry_Count - MAX_INDEX_LINES + 1))
     Index_Start = new_index;
   else
-    Index_Start = Entry_Count - MAX_INDEX_LINES + 2;
+    Index_Start = Entry_Count - MAX_INDEX_LINES + 1;
   make_display(Index_Start);
 }
 
@@ -437,7 +440,7 @@ insert_entry()
       get_input(inbuf);
       if (inbuf[0] == (char) NULL)
 	return;
-      if ( (fp = fopen(inbuf,"a")) < 0)
+      if ( (fp = fopen(inbuf,"a")) == NULL)
 	{
 	  sprintf(line1, "Unable to open: %s",inbuf);
 	  sprintf(line2, "Check the pathname and try again.");
@@ -670,7 +673,7 @@ delete_entry()
       get_input(inbuf);
       if (inbuf[0] == (char) NULL)
 	return;
-      if ( (fp = fopen(inbuf,"a")) < 0)
+      if ( (fp = fopen(inbuf,"a")) == NULL)
 	{
 	  sprintf(line1, "Unable to open: %s",inbuf);
 	  sprintf(line2, "Check the pathname and try again.");
