@@ -271,3 +271,5 @@ if [ -f /var/athena/attachtab ]; then
 	echo "Ignore following messages about old attach.conf options."
 	/srvd/usr/athena/etc/atconvert /var/athena/attachtab.old
 fi
+
+chmod 755 /mit
