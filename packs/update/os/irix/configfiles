@@ -10,6 +10,7 @@
 /etc/compiler.defaults
 /etc/ftpusers
 /etc/inetd.conf
+/etc/lpd.conf
 /etc/named.conf
 /etc/ntp.conf
 /etc/printcap
