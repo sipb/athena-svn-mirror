@@ -76,6 +76,7 @@ EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_LIBS = @GCONF_LIBS@
 GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
 GMOFILES = @GMOFILES@
@@ -154,13 +155,7 @@ l = @l@
 
 PLUGIN_DIR = $(libdir)/bonobo/plugin
 
-INCLUDES = \
-        -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \
-	-I$(srcdir) -I$(top_srcdir) 			\
-	-I$(top_builddir)				\
-	-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		\
-        -I$(includedir)                                 \
-	$(EXTRA_GNOME_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)					-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		        -I$(includedir)                                 	$(EXTRA_GNOME_CFLAGS)
 
 
 common_ldflags = -avoid-version
@@ -171,16 +166,10 @@ bonobo_plugin_LTLIBRARIES = libstorage_http.la
 #
 # HTTP storage module
 #
-libstorage_http_la_SOURCES = \
-	bonobo-storage-http.c	\
-	bonobo-storage-http.h	\
-	bonobo-stream-http.c	\
-	bonobo-stream-http.h
+libstorage_http_la_SOURCES =  	bonobo-storage-http.c		bonobo-storage-http.h		bonobo-stream-http.c		bonobo-stream-http.h
 
 
-libstorage_http_la_LDFLAGS = \
-	$(common_ldflags)	\
-	$(GHTTP_LIBS)
+libstorage_http_la_LDFLAGS =  	$(common_ldflags)		$(GHTTP_LIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -202,7 +191,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libstorage_http_la_SOURCES)
 OBJECTS = $(libstorage_http_la_OBJECTS)
@@ -308,7 +297,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -334,10 +323,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-bonobo-storage-http.lo bonobo-storage-http.o : bonobo-storage-http.c \
-	../../config.h bonobo-storage-http.h bonobo-stream-http.h
-bonobo-stream-http.lo bonobo-stream-http.o : bonobo-stream-http.c \
-	../../config.h bonobo-stream-http.h
 
 info-am:
 info: info-am

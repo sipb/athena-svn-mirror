@@ -1,4 +1,33 @@
+2003-03-26  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* configure.in (AC_OUTPUT): Add po/Makefile.in.
+
+2003-03-26  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add m4.
+	(EXTRA_DIST): Add config.rpath.
+	* configure.in (AC_OUTPUT): Add po/Makefile.in,
+
+2003-03-25  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: make gtkhtml-1.1.9 release.
+
+2003-03-14  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Remove intl.
+	(ACLOCAL_AMFLAGS): New variable.
+
+2003-02-07  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: Apply reworked patch form Akira TAGOH
+	<tagoh@redhat.com> to set GNOME_EXPLICIT_TRANSLATION_DOMAIN to
+	GTKHTML_RELEASE_STRING.
+
+	* acconfig.h: add GNOME_EXPLICIT_TRANSLATION_DOMAIN
+
 2003-02-04  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in (GTKHTML_RELEASE_STRING): bump for snapshots.
 
 	* Make gtkhtml-1.1.8 release.
 

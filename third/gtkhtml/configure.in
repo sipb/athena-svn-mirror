@@ -1,4 +1,4 @@
-dnl Initialization
+e dnl Initialization
 
 AC_INIT(src/gtkhtml.c)
 AM_CONFIG_HEADER(config.h)
@@ -6,14 +6,24 @@ AM_CONFIG_HEADER(config.h)
 PACKAGE=gtkhtml
 
 GTKHTML_RELEASE=1.1
-AC_SUBST(GTKHTML_RELEASE)
 AC_DEFINE_UNQUOTED(GTKHTML_RELEASE, "${GTKHTML_RELEASE}")
+AC_SUBST(GTKHTML_RELEASE)
 
 GTKHTML_RELEASE_STRING=${PACKAGE}-${GTKHTML_RELEASE}
 AC_DEFINE_UNQUOTED(GTKHTML_RELEASE_STRING, "${GTKHTML_RELEASE_STRING}")
 AC_SUBST(GTKHTML_RELEASE_STRING)
 
-AM_INIT_AUTOMAKE($PACKAGE, $GTKHTML_RELEASE.8)
+dnl because intltool has an extremely broken way of getting the
+dnl GETTEXT_PACKAGE name we cannot do variable substitution here
+dnl so we have to hard code it instead.
+dnl GETTEXT_PACKAGE=${GTKHTML_RELEASE_STRING}
+GETTEXT_PACKAGE=gtkhtml-1.1
+AC_SUBST(GETTEXT_PACKAGE)
+
+GNOME_EXPLICIT_TRANSLATION_DOMAIN=${GTKHTML_RELEASE_STRING}
+AC_DEFINE_UNQUOTED(GNOME_EXPLICIT_TRANSLATION_DOMAIN, "${GNOME_EXPLICIT_TRANSLATION_DOMAIN}")
+
+AM_INIT_AUTOMAKE($PACKAGE, $GTKHTML_RELEASE.9)
 
 EDITOR_API_VERSION=1.1
 AC_DEFINE_UNQUOTED(EDITOR_API_VERSION, "${EDITOR_API_VERSION}")
@@ -29,15 +39,6 @@ AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_XML_I18N_TOOLS
 AM_PROG_LIBTOOL
-
-if test -f $srcdir/po/Makefile.in.in ; then
-   cp $srcdir/po/Makefile.in.in $srcdir/po/Makefile.in.in.bak
-   sed -e  "s/\$(PACKAGE).mo/\$(PACKAGE)-\@GTKHTML_RELEASE@.mo/" $srcdir/po/Makefile.in.in.bak > $srcdir/po/Makefile.in.in
-else
-    AC_MSG_ERROR([
-""
-"Can not find Makefile: $srcdir/po/Makefile.in.in"])
-fi
 
 GNOME_COMPILE_WARNINGS
 
@@ -348,7 +349,7 @@ GTKHTML_CURRENT=3
 
 dnl Increment any time the source changes; set to 0 if you
 dnl increment CURRENT.
-GTKHTML_REVISION=3
+GTKHTML_REVISION=4
 
 dnl Increment if any interfaces have been added; set to 0
 dnl if any interfaces have been removed. removal has 
@@ -383,12 +384,11 @@ dnl **************
 dnl Done.
 dnl **************
 
-AC_OUTPUT([
+AC_OUTPUT([ po/Makefile.in m4/Makefile  po/Makefile.in 
 Makefile
 gtkhtml.spec
 gtkhtml-1.1.pc
 po/Makefile.in
-intl/Makefile
 macros/Makefile
 src/Makefile
 doc/Makefile

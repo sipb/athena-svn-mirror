@@ -1,12 +1,7 @@
-2003-01-23  Radek Doulik  <rodo@ximian.com>
+2003-02-25  Larry Ewing  <lewing@ximian.com>
 
-	* spell.c: removed spell_create_language_menu and language_cb as
-	they are not needed any more
-
-	* menubar.c (menubar_setup): don't create language menu
-
-	* GNOME_GtkHTML_Editor.xml.in: removed place holder for language
-	menu
+	* image.c (set_ui): remove debug printf that was sometimes being
+	called with a NULL string.
 
 2002-10-28  Larry Ewing  <lewing@ximian.com>
 

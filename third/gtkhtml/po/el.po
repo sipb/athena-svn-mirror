@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.8.1\n"
-"POT-Creation-Date: 2003-02-04 16:16-0600\n"
+"POT-Creation-Date: 2003-03-26 13:38-0500\n"
 "PO-Revision-Date: 2001-01-30 15:55:46+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -18,150 +18,154 @@ msgid "<None>"
 msgstr "<Κενό>"
 
 #: capplet/gnome-bindings-prop.c:216 capplet/main.c:253
-#: components/html-editor/cell.c:391 components/html-editor/image.c:543
+#: components/html-editor/cell.c:391 components/html-editor/image.c:542
 #: components/html-editor/rule.c:315 components/html-editor/table.c:528
 #: components/html-editor/table.c:619 components/html-editor/template.c:249
 msgid "Could not load glade file."
 msgstr "Αδυναμία φόρτωσης αρχείου glade."
 
 #: capplet/gtkhtml-capplet.glade.h:1
+msgid "\n"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:3
 msgid "*********************"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:2
+#: capplet/gtkhtml-capplet.glade.h:4
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr "ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩω"
 
-#: capplet/gtkhtml-capplet.glade.h:3
+#: capplet/gtkhtml-capplet.glade.h:5
 #, fuzzy
 msgid "Add Keyboard Shortcuts"
 msgstr "Συντομεύσεις πληκτρολογίου"
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:6
 msgid "Automatically detect links"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:5
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Automatically insert smiley images"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:8
 msgid "Behavior"
 msgstr "Συμπεριφορά"
 
 #
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Command"
 msgstr "Εντολή"
 
 #
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:10
 #, fuzzy
 msgid "Composer Properties"
 msgstr "Ιδιότητες"
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Composer Properties planned"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:12
 #, fuzzy
 msgid "Configure spell checking"
 msgstr "Έλεγχος ορθογραφίας"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:13
 #, fuzzy
 msgid "Enable spell checking"
 msgstr "Έλεγχος ορθογραφίας"
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:14
 msgid "Fixed width"
 msgstr "Σταθερό πλάτος"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Fonts"
 msgstr "Γραμματοσειρές"
 
 #
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "For printing"
 msgstr "Για εκτύπωση"
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:17
 #, fuzzy
 msgid "Grab keys"
 msgstr "¶δραγμα πλήκτρου"
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:18
 msgid "Information"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:19
 #, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "Συντομεύσεις πληκτρολογίου"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:20
 #: components/html-editor/gtkhtml-editor-properties.glade.h:46
 msgid "Miscellaneous"
 msgstr "Διάφορα"
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "New shortcut:"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "On screen"
 msgstr "Στην οθόνη"
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font"
 msgstr "Επιλογή γραμματοσειράς HTML σταθερού πλάτους"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:24
 #, fuzzy
 msgid "Select HTML fixed width font for printing"
 msgstr "Επιλογή γραμματοσειράς HTML σταθερού πλάτους"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font"
 msgstr "Επιλογή γραμματοσειράς HTML μεταβλητού πλάτους"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:26
 #, fuzzy
 msgid "Select HTML variable width font for printing"
 msgstr "Επιλογή γραμματοσειράς HTML μεταβλητού πλάτους"
 
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Select command "
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:26
-#, fuzzy
-msgid "Shortcut"
-msgstr "Συντομεύσεις πληκτρολογίου"
-
 #: capplet/gtkhtml-capplet.glade.h:27
-msgid "Shortcuts _type:"
+msgid "Select command "
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:28
 #, fuzzy
+msgid "Shortcut"
+msgstr "Συντομεύσεις πληκτρολογίου"
+
+#: capplet/gtkhtml-capplet.glade.h:29
+msgid "Shortcuts _type:"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:30
+#, fuzzy
 msgid "Show animated images"
 msgstr "Κινούμενες εικόνες"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "Μεταβλητό πλάτος"
 
 #
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:32
 #, fuzzy
 msgid "_Add"
 msgstr "Προσθήκη"
 
 #
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:33
 #, fuzzy
 msgid "_Delete"
 msgstr "Διαγραφή"
@@ -1583,6 +1587,11 @@ msgstr "Αναζήτηση με κανονική έκφραση"
 msgid "No misspelled word found"
 msgstr ""
 
+#: components/html-editor/spell.c:493
+#, fuzzy
+msgid "Current _Languages"
+msgstr "Έλεγχος Ορθογραφίας"
+
 #: components/html-editor/table.c:198
 msgid "Flat gray"
 msgstr ""
@@ -1695,10 +1704,6 @@ msgstr "Προεπισκόπιση εκ_τύπωσης"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Προεπισκόπιση εκτύπωσης"
-
-#, fuzzy
-#~ msgid "Spell Checking _Languages"
-#~ msgstr "Έλεγχος Ορθογραφίας"
 
 #
 #, fuzzy

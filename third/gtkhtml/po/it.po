@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.8.2\n"
-"POT-Creation-Date: 2003-02-04 16:16-0600\n"
+"POT-Creation-Date: 2003-03-26 13:38-0500\n"
 "PO-Revision-Date: 2001-04-09 17:10+0100\n"
 "Last-Translator: Pier Luigi Fiorini <plfiorini@libero.it>\n"
 "Language-Team: Italiano <it@li.org>\n"
@@ -18,143 +18,147 @@ msgid "<None>"
 msgstr "<Nessuno>"
 
 #: capplet/gnome-bindings-prop.c:216 capplet/main.c:253
-#: components/html-editor/cell.c:391 components/html-editor/image.c:543
+#: components/html-editor/cell.c:391 components/html-editor/image.c:542
 #: components/html-editor/rule.c:315 components/html-editor/table.c:528
 #: components/html-editor/table.c:619 components/html-editor/template.c:249
 msgid "Could not load glade file."
 msgstr "Impossibile caricare il file glade."
 
 #: capplet/gtkhtml-capplet.glade.h:1
-msgid "*********************"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:2
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgid "\n"
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:3
+msgid "*********************"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:4
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:5
 #, fuzzy
 msgid "Add Keyboard Shortcuts"
 msgstr "Scorciatoie tastiera"
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:6
 msgid "Automatically detect links"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:5
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Automatically insert smiley images"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:8
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Command"
 msgstr "Comando"
 
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:10
 #, fuzzy
 msgid "Composer Properties"
 msgstr "Proprietà"
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Composer Properties planned"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:12
 #, fuzzy
 msgid "Configure spell checking"
 msgstr "Controllo ortografico"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:13
 #, fuzzy
 msgid "Enable spell checking"
 msgstr "Controllo ortografico"
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:14
 msgid "Fixed width"
 msgstr "Larghezza fissa"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Fonts"
 msgstr "Caratteri"
 
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "For printing"
 msgstr "Per la stampa"
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:17
 #, fuzzy
 msgid "Grab keys"
 msgstr "Cattura tasti"
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:18
 msgid "Information"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:19
 #, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "Scorciatoie tastiera"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:20
 #: components/html-editor/gtkhtml-editor-properties.glade.h:46
 msgid "Miscellaneous"
 msgstr "Varie"
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "New shortcut:"
 msgstr ""
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "On screen"
 msgstr "Su schermo"
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font"
 msgstr "Seleziona un carattere HTML a spazio fisso"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML fixed width font for printing"
 msgstr "Seleziona un carattere HTML a spazio fisso per la stampa"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font"
 msgstr "Seleziona un carattare HTML proporzionale"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select HTML variable width font for printing"
 msgstr "Seleziona un carattere HTML proporzionale per la stampa"
 
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Select command "
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:26
-#, fuzzy
-msgid "Shortcut"
-msgstr "Scorciatoie tastiera"
-
 #: capplet/gtkhtml-capplet.glade.h:27
-msgid "Shortcuts _type:"
+msgid "Select command "
 msgstr ""
 
 #: capplet/gtkhtml-capplet.glade.h:28
 #, fuzzy
+msgid "Shortcut"
+msgstr "Scorciatoie tastiera"
+
+#: capplet/gtkhtml-capplet.glade.h:29
+msgid "Shortcuts _type:"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:30
+#, fuzzy
 msgid "Show animated images"
 msgstr "Immagini animate"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "Larghezza proporzionale"
 
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:32
 #, fuzzy
 msgid "_Add"
 msgstr "Aggiungi"
 
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:33
 #, fuzzy
 msgid "_Delete"
 msgstr "Elimina"
@@ -1556,6 +1560,11 @@ msgstr "Cerca con espressioni regolari"
 msgid "No misspelled word found"
 msgstr ""
 
+#: components/html-editor/spell.c:493
+#, fuzzy
+msgid "Current _Languages"
+msgstr "Controllo ortografico"
+
 #: components/html-editor/table.c:198
 msgid "Flat gray"
 msgstr ""
@@ -1664,10 +1673,6 @@ msgstr "Antepri_ma di stampa"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Anteprima di stampa"
-
-#, fuzzy
-#~ msgid "Spell Checking _Languages"
-#~ msgstr "Controllo ortografico"
 
 #, fuzzy
 #~ msgid "Test"

@@ -392,7 +392,6 @@ set_ui (GtkHTMLEditImageProperties *d)
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (d->spin_padv), d->padv);
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (d->spin_border), d->border);
 
-	printf ("set ui (8) %s\n", d->url);
 	url = e_utf8_to_gtk_string (d->entry_url, d->url ? d->url : "");
 	gtk_entry_set_text (GTK_ENTRY (d->entry_url), url);
 	g_free (url);

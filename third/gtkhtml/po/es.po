@@ -1,14 +1,16 @@
 # Translations of gtkhtml into spanish.
-# Copyright (C) 2000-2001 Free Software Foundation, Inc.
+# Copyright © 2000-2003 Free Software Foundation, Inc.
 # Héctor García Álvarez <hector@scouts-es.org>, 2000-2001.
 # QA by Carlos Perelló Marín <carlos@gnome-db.org>
+# Héctor García Álvarez <hector@scouts-es.org>, 2003.
+# Francisco Javier Fernández <serrador@arrakis.es>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.9.99.1\n"
-"POT-Creation-Date: 2003-02-04 16:16-0600\n"
-"PO-Revision-Date: 2001-11-09 12:30+0100\n"
-"Last-Translator: Héctor García Álvarez <hector@scouts-es.org>\n"
+"POT-Creation-Date: 2003-03-26 13:38-0500\n"
+"PO-Revision-Date: 2003-02-26 18:51+0100\n"
+"Last-Translator: Francisco Javier Fernandez <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -19,135 +21,138 @@ msgid "<None>"
 msgstr "<Nada>"
 
 #: capplet/gnome-bindings-prop.c:216 capplet/main.c:253
-#: components/html-editor/cell.c:391 components/html-editor/image.c:543
+#: components/html-editor/cell.c:391 components/html-editor/image.c:542
 #: components/html-editor/rule.c:315 components/html-editor/table.c:528
 #: components/html-editor/table.c:619 components/html-editor/template.c:249
 msgid "Could not load glade file."
 msgstr "No se pudo cargar el archivo glade."
 
 #: capplet/gtkhtml-capplet.glade.h:1
+msgid "\n"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:3
 msgid "*********************"
 msgstr "*********************"
 
-#: capplet/gtkhtml-capplet.glade.h:2
+#: capplet/gtkhtml-capplet.glade.h:4
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnÑñOoPpQqRrSsTtUuVvWwXxYyZz"
 
-#: capplet/gtkhtml-capplet.glade.h:3
+#: capplet/gtkhtml-capplet.glade.h:5
 msgid "Add Keyboard Shortcuts"
 msgstr "Añadir atajos de teclado"
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:6
 msgid "Automatically detect links"
 msgstr "Detección automática de enlaces"
 
-#: capplet/gtkhtml-capplet.glade.h:5
-#, fuzzy
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Automatically insert smiley images"
-msgstr "Detección automática de enlaces"
+msgstr "Introducir automáticamente imágenes de caritas"
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:8
 msgid "Behavior"
 msgstr "Comportamiento"
 
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Command"
 msgstr "Comando"
 
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:10
 msgid "Composer Properties"
 msgstr "Propiedades del editor"
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Composer Properties planned"
 msgstr "Propiedades planeadas del compositor"
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:12
 msgid "Configure spell checking"
 msgstr "Configurar corrección ortográfica"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:13
 msgid "Enable spell checking"
 msgstr "Activar corrección ortográfica"
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:14
 msgid "Fixed width"
 msgstr "Anchura fija"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Fonts"
-msgstr "Fuentes"
+msgstr "Tipografías"
 
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "For printing"
 msgstr "Para imprimir"
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:17
 msgid "Grab keys"
 msgstr "Grabar teclas"
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:18
 msgid "Information"
 msgstr "Información"
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:19
 msgid "Keyboard Shortcuts"
 msgstr "Atajos de teclado"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:20
 #: components/html-editor/gtkhtml-editor-properties.glade.h:46
 msgid "Miscellaneous"
 msgstr "Miscelánea"
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "New shortcut:"
 msgstr "Nuevo atajo:"
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "On screen"
 msgstr "En pantalla"
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font"
 msgstr "Selecciona letra de anchura fija para HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML fixed width font for printing"
 msgstr "Selecciona letra de anchura fija en HTML para imprimir"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font"
 msgstr "Selecciona letra de anchura variable en HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select HTML variable width font for printing"
 msgstr "Selecciona letra de anchura variable en HTML para imprimir"
 
-#: capplet/gtkhtml-capplet.glade.h:25
+#: capplet/gtkhtml-capplet.glade.h:27
 msgid "Select command "
 msgstr "Seleccione comando "
 
-#: capplet/gtkhtml-capplet.glade.h:26
+#: capplet/gtkhtml-capplet.glade.h:28
 msgid "Shortcut"
 msgstr "Atajo"
 
-#: capplet/gtkhtml-capplet.glade.h:27
+#: capplet/gtkhtml-capplet.glade.h:29
 msgid "Shortcuts _type:"
 msgstr "_Tipo de atajo:"
 
-#: capplet/gtkhtml-capplet.glade.h:28
+#: capplet/gtkhtml-capplet.glade.h:30
 msgid "Show animated images"
 msgstr "Mostrar imágenes animadas"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "Anchura variable"
 
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:32
 msgid "_Add"
 msgstr "_Añadir"
 
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:33
 msgid "_Delete"
 msgstr "_Borrar"
 
@@ -165,11 +170,11 @@ msgstr "Control EBrowser"
 
 #: components/ebrowser/GNOME_GtkHTML_EBrowser.oaf.in.h:2
 msgid "EBrowser factory"
-msgstr "Factoría EBrowser"
+msgstr "Fábrica EBrowser"
 
 #: components/ebrowser/GNOME_GtkHTML_EBrowser.oaf.in.h:3
 msgid "Factory for the EBrowser control"
-msgstr "Factoría para el control EBrowser"
+msgstr "Fábrica para el control EBrowser"
 
 #: components/ebrowser/GNOME_GtkHTML_EBrowser.oaf.in.h:4
 msgid "HTML Browser control"
@@ -185,7 +190,7 @@ msgstr "Control del editor HTML de GNOME"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.oaf.in.in.h:3
 msgid "GNOME HTML Editor Factory"
-msgstr "Factoría del editor HTML de GNOME"
+msgstr "Fábrica del editor HTML de GNOME"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
 #: components/html-editor/gtkhtml-editor-properties.glade.h:3
@@ -263,7 +268,7 @@ msgstr "Copia la selección"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:17
 msgid "Cr_ying"
-msgstr ""
+msgstr "Llo_rando"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
 msgid "Cu_t"
@@ -293,11 +298,11 @@ msgstr "Buscar una expresión regular"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:24
 msgid "Find And Replace"
-msgstr "Buscar y remplazar"
+msgstr "Buscar y reemplazar"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:25
 msgid "Find Regular E_xpression..."
-msgstr "Buscar por e_xpresión regular..."
+msgstr "Buscar una e_xpresión regular..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:26
 msgid "Find _Again"
@@ -309,7 +314,7 @@ msgstr "Buscar otra vez"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:28
 msgid "Find and Replace"
-msgstr "Buscar y remplazar"
+msgstr "Buscar y reemplazar"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:29
 msgid "For_mat"
@@ -351,19 +356,16 @@ msgid "Image"
 msgstr "Imagen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:38
-#, fuzzy
 msgid "Insert Crying smiley into document..."
-msgstr "Inserta una regla en el documento..."
+msgstr "Inserta una carita llorando en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:39
-#, fuzzy
 msgid "Insert Frown smiley into document..."
-msgstr "Inserta una regla en el documento..."
+msgstr "Inserta una carita triste en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:40
-#, fuzzy
 msgid "Insert HTML file into document..."
-msgstr "Inserta un enlace HTML en el documento..."
+msgstr "Inserta un archivo HTML en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:41
 msgid "Insert HTML link into document..."
@@ -374,44 +376,36 @@ msgid "Insert HTML template into document..."
 msgstr "Inserta plantilla HTML en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:43
-#, fuzzy
 msgid "Insert Indifferent smiley into document..."
-msgstr "Inserta una regla en el documento..."
+msgstr "Insertar una carita indiferente en en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:44
-#, fuzzy
 msgid "Insert Laughing smiley into document..."
-msgstr "Inserta una regla en el documento..."
+msgstr "Inserta una carita riéndose en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
-#, fuzzy
 msgid "Insert Lick smiley into document..."
-msgstr "Inserta una imagen en el documento..."
+msgstr "Inserta una carita sacando la lengua en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:46
-#, fuzzy
 msgid "Insert Oh no! smiley into document..."
-msgstr "Inserta una regla en el documento..."
+msgstr "Inserta una carita ¡Oh no! en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:47
-#, fuzzy
 msgid "Insert Smile smiley into document..."
-msgstr "Inserta una imagen en el documento..."
+msgstr "Inserta una carita sonriendo en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:48
-#, fuzzy
 msgid "Insert Surprised smiley into document..."
-msgstr "Inserta una regla en el documento..."
+msgstr "Inserta una carita sorprendida en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
-#, fuzzy
 msgid "Insert Undecided smiley into document..."
-msgstr "Inserta una imagen en el documento..."
+msgstr "Inserta una carita indecisa en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:50
-#, fuzzy
 msgid "Insert Wink smiley into document..."
-msgstr "Inserta una imagen en el documento..."
+msgstr "Inserta una carita guiñando un ojo en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:51
 msgid "Insert image into document..."
@@ -426,9 +420,8 @@ msgid "Insert table into document..."
 msgstr "Inserta una tabla en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:54
-#, fuzzy
 msgid "Insert text file into document..."
-msgstr "Inserta una tabla en el documento..."
+msgstr "Inserta un archivo de texto en el documento..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:55
 #: components/html-editor/toolbar.c:515
@@ -436,9 +429,8 @@ msgid "Left justifies the paragraphs"
 msgstr "Justifica los párrafos a la izquierda"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
-#, fuzzy
 msgid "Li_ck"
-msgstr "Enlace"
+msgstr "_Burlón"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:57
 #: components/html-editor/body.c:327 components/html-editor/menubar.c:141
@@ -516,7 +508,7 @@ msgstr "_Lista numerada"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:74
 msgid "Oh _no!"
-msgstr ""
+msgstr "¡Oh _no!"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 msgid "Orange"
@@ -533,7 +525,7 @@ msgstr "Pegar"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:78
 msgid "Paste _Quotation"
-msgstr ""
+msgstr "Pegar _citación"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:79
 msgid "Paste from clipboard"
@@ -544,9 +536,8 @@ msgid "Paste the clipboard"
 msgstr "Pega el contenido del portapapeles"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:81
-#, fuzzy
 msgid "Paste the clipboard as a quotation"
-msgstr "Pega el contenido del portapapeles"
+msgstr "Pega el contenido del portapapeles como una cita"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:82
 #: components/html-editor/toolbar.c:51
@@ -578,7 +569,7 @@ msgstr "Rehacer la operación deshecha"
 #: components/html-editor/replace.c:86 components/html-editor/replace.c:149
 #: components/html-editor/replace.c:161 components/html-editor/replace.c:209
 msgid "Replace"
-msgstr "Remplazar"
+msgstr "Reemplazar"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:89
 #: components/html-editor/toolbar.c:519
@@ -616,7 +607,7 @@ msgstr "Su_períndice"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:96
 msgid "Su_rprised"
-msgstr ""
+msgstr "So_rprendido"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:97
 msgid "Subs_cript"
@@ -642,9 +633,8 @@ msgid "Te_mplate..."
 msgstr "Pla_ntilla..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:102
-#, fuzzy
 msgid "Te_xt file..."
-msgstr "Abrir archivo..."
+msgstr "Archivo de texto...."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:103
 #: components/html-editor/body.c:253
@@ -701,7 +691,7 @@ msgstr "_Copiar"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:115
 msgid "_Decrease Indent"
-msgstr "_Decrementar indentación"
+msgstr "_Decrementar sangrado"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:116
 msgid "_Edit"
@@ -713,16 +703,15 @@ msgstr "_Buscar..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:118
 msgid "_Font Size"
-msgstr "Tamaño de la _fuente"
+msgstr "Tamaño de la _tipografía"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:119
 msgid "_Frown"
-msgstr ""
+msgstr "_Triste"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:120
-#, fuzzy
 msgid "_HTML file..."
-msgstr "Abrir archivo..."
+msgstr "Archivo _HTML ..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:121
 msgid "_Heading"
@@ -734,12 +723,11 @@ msgstr "_Imagen..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:123
 msgid "_Increase Indent"
-msgstr "_Incrementar indentación"
+msgstr "_Incrementar sangrado"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:124
-#, fuzzy
 msgid "_Indifferent"
-msgstr "Indentar"
+msgstr "_Indiferente"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:125
 msgid "_Insert"
@@ -751,7 +739,7 @@ msgstr "_Itálica"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:127
 msgid "_Laughing"
-msgstr ""
+msgstr "_Riendo"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:128
 msgid "_Left"
@@ -791,7 +779,7 @@ msgstr "_Rehacer"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:137
 msgid "_Replace..."
-msgstr "_Remplazar..."
+msgstr "_Reemplazar..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:138
 msgid "_Right"
@@ -806,14 +794,12 @@ msgid "_Rule..."
 msgstr "_Regla..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:141
-#, fuzzy
 msgid "_Smile"
-msgstr "Ejemplo"
+msgstr "_Sonrie"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:142
-#, fuzzy
 msgid "_Smiley"
-msgstr "E_stilo"
+msgstr "Ca_rita"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:143
 msgid "_Spell Check Document..."
@@ -836,9 +822,8 @@ msgid "_Text..."
 msgstr "_Texto..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:148
-#, fuzzy
 msgid "_Undecided"
-msgstr "S_ubrayado"
+msgstr "_Indeciso"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:149
 msgid "_Underline"
@@ -849,9 +834,8 @@ msgid "_Undo"
 msgstr "_Deshacer"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:151
-#, fuzzy
 msgid "_Wink"
-msgstr "Enlace"
+msgstr "_Guiñando"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
 msgid "etc..."
@@ -864,16 +848,15 @@ msgstr "Nada"
 
 #: components/html-editor/body.c:73
 msgid "Perforated Paper"
-msgstr ""
+msgstr "Página perforada"
 
 #: components/html-editor/body.c:81
-#, fuzzy
 msgid "Blue Ink"
-msgstr "Azul 3D"
+msgstr "Tinta azul"
 
 #: components/html-editor/body.c:89
 msgid "Rectangles"
-msgstr ""
+msgstr "Rectángulos"
 
 #: components/html-editor/body.c:271
 msgid "Document Title"
@@ -910,12 +893,11 @@ msgstr "Fondo"
 #: components/html-editor/cell.c:164 components/html-editor/cell.c:166
 #: components/html-editor/text.c:105
 msgid "The quick brown fox jumps over the lazy dog."
-msgstr ""
+msgstr "El árabe pesca con la caña de bambú en el río húmedo"
 
 #: components/html-editor/cell.c:169
-#, fuzzy
 msgid "Other"
-msgstr "Otro..."
+msgstr "Otro"
 
 #: components/html-editor/editor-control-factory.c:176
 #: components/html-editor/menubar.c:318 components/html-editor/menubar.c:336
@@ -992,17 +974,16 @@ msgstr "Celda"
 #: components/html-editor/gtkhtml-editor-properties.glade.h:20
 #: components/html-editor/paragraph.c:159 components/html-editor/toolbar.c:517
 msgid "Center"
-msgstr "Centro"
+msgstr "Centrar"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:21
 #: components/html-editor/link.c:115 components/html-editor/text.c:241
 msgid "Click will follow this URL"
-msgstr "Piche para seguir esta URL"
+msgstr "Pulse para seguir esta URL"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
-#, fuzzy
 msgid "Click will follow this URL:"
-msgstr "Piche para seguir esta URL"
+msgstr "Pulse para seguir esta URL:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:23
 msgid "Color:"
@@ -1011,7 +992,7 @@ msgstr "Color:"
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
 #: components/html-editor/popup.c:522
 msgid "Column"
-msgstr "columna"
+msgstr "Columna"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:26
 msgid "Column span:"
@@ -1022,9 +1003,8 @@ msgid "Columns:"
 msgstr "Columnas:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:28
-#, fuzzy
 msgid "Description:"
-msgstr "Superíndice"
+msgstr "Descripción:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:29
 msgid "Don't wrap"
@@ -1040,7 +1020,7 @@ msgstr "Seguir"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:32
 msgid "Font size"
-msgstr "Tamaño de la fuente"
+msgstr "Tamaño de la tipografía"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
 msgid "Foreground color"
@@ -1175,9 +1155,8 @@ msgstr "Insertar tabla"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:74
 #: components/html-editor/link.c:120
-#, fuzzy
 msgid "Test URL..."
-msgstr "Probar URL"
+msgstr "Probar URL..."
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:76
 msgid "Thickness:"
@@ -1219,10 +1198,9 @@ msgstr "xxxxxxxxxxxxxx"
 #: components/html-editor/image.c:119 components/html-editor/rule.c:92
 #: components/html-editor/table.c:190
 msgid "Plain"
-msgstr "Simple"
+msgstr "Plano"
 
 #: components/html-editor/image.c:121
-#, fuzzy
 msgid ""
 "@link_begin@<img@alt@@width@@height@@align@ "
 "border=@border@@padh@@padv@@src@>@link_end@"
@@ -1235,7 +1213,6 @@ msgid "Frame"
 msgstr "Marco"
 
 #: components/html-editor/image.c:126
-#, fuzzy
 msgid ""
 "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
 "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
@@ -1246,15 +1223,14 @@ msgstr ""
 "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
 "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
 "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-"@src@@width@@height@align=top border=0></td></tr></table></td></tr></table></"
-"center>"
+"@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
+"table></center>"
 
 #: components/html-editor/image.c:134
 msgid "Caption"
-msgstr "Subtitulo"
+msgstr "Subtítulo"
 
 #: components/html-editor/image.c:136
-#, fuzzy
 msgid ""
 "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
 "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
@@ -1265,12 +1241,12 @@ msgstr ""
 "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
 "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
 "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-"@src@@width@@height@align=top border=0></td></tr><tr><td><b>[Place your "
-"comment here]</td></tr></table></td></tr></table></center>"
+"@src@@width@@height@align=top border=0></td></tr><tr><td><b>[Ponga su "
+"comentario aquí]</td></tr></table></td></tr></table></center>"
 
 #: components/html-editor/image.c:258 components/html-editor/image.c:261
 msgid "The quick brown fox jumped over the lazy dog."
-msgstr ""
+msgstr "El árabe pesca con la caña de bambú en el río húmedo."
 
 #: components/html-editor/link.c:97
 msgid "Link text"
@@ -1285,11 +1261,11 @@ msgstr "Insertar"
 
 #: components/html-editor/menubar.c:267
 msgid "Insert HTML file"
-msgstr ""
+msgstr "Insertar archivo HTML"
 
 #: components/html-editor/menubar.c:267
 msgid "Insert text file"
-msgstr ""
+msgstr "Inserta un fichero de texto"
 
 #: components/html-editor/paragraph.c:125
 msgid "Pre"
@@ -1341,16 +1317,15 @@ msgstr "Elemento alfabético"
 
 #: components/html-editor/paragraph.c:145
 msgid "Align"
-msgstr "Alineación"
+msgstr "Alinear"
 
 #: components/html-editor/popup.c:425
 msgid "Paste Quotation"
-msgstr ""
+msgstr "Pegar cita"
 
 #: components/html-editor/popup.c:428
-#, fuzzy
 msgid "Insert link"
-msgstr "Insertar"
+msgstr "Insertar enlace"
 
 #: components/html-editor/popup.c:436
 msgid "Remove link"
@@ -1359,17 +1334,17 @@ msgstr "Borrar enlace"
 #: components/html-editor/popup.c:444
 #, c-format
 msgid "Check '%s' spelling..."
-msgstr "Comprobar la ortografía de '%s'..."
+msgstr "Comprobar la ortografía de «%s»...."
 
 #: components/html-editor/popup.c:447
 #, c-format
 msgid "Add '%s' to dictionary"
-msgstr "Añadir '%s' al diccionario"
+msgstr "Añadir «%s» al diccionario"
 
 #: components/html-editor/popup.c:450
 #, c-format
 msgid "Ignore '%s'"
-msgstr "Ignorar '%s'"
+msgstr "Ignorar «%s»"
 
 #: components/html-editor/popup.c:454 components/html-editor/spell.c:418
 msgid "Spell checker"
@@ -1442,11 +1417,11 @@ msgstr "Página..."
 
 #: components/html-editor/replace.c:85
 msgid "Replace confirmation"
-msgstr "Remplazar con confirmación"
+msgstr "Reemplazar con confirmación"
 
 #: components/html-editor/replace.c:86
 msgid "Replace all"
-msgstr "Remplazar todos"
+msgstr "Reemplazar todos"
 
 #: components/html-editor/replace.c:86
 msgid "Next"
@@ -1484,6 +1459,11 @@ msgstr "Buscar una expresión regular"
 msgid "No misspelled word found"
 msgstr "No se encontró ninguna palabra errónea"
 
+#: components/html-editor/spell.c:493
+#, fuzzy
+msgid "Current _Languages"
+msgstr "_Lenguaje"
+
 #: components/html-editor/table.c:198
 msgid "Flat gray"
 msgstr "Gris plano"
@@ -1498,7 +1478,7 @@ msgstr "Nota"
 
 #: components/html-editor/template.c:91
 msgid "Place your text here"
-msgstr ""
+msgstr "Ponga su texto aquí"
 
 #: components/html-editor/template.c:94
 msgid "Image frame"
@@ -1506,7 +1486,7 @@ msgstr "Frame de la imagen"
 
 #: components/html-editor/template.c:104
 msgid "Image 1: <b>description</b>"
-msgstr ""
+msgstr "Imagen 1: <b>descripción</b>"
 
 #: components/html-editor/test-html-editor-control.c:329
 msgid "Open file..."
@@ -1535,7 +1515,7 @@ msgstr "Alineación derecha"
 
 #: components/html-editor/toolbar.c:526
 msgid "Toggle typewriter font style"
-msgstr "Activar el estilo de fuentes de máquina de escribir"
+msgstr "Activar el estilo de tipografía de máquina de escribir"
 
 #: components/html-editor/toolbar.c:528
 msgid "Makes the text bold"
@@ -1555,19 +1535,19 @@ msgstr "Tacha el texto"
 
 #: components/html-editor/toolbar.c:543
 msgid "Unindent"
-msgstr "No indentar"
+msgstr "Quitar sangrado"
 
 #: components/html-editor/toolbar.c:543
 msgid "Indents the paragraphs less"
-msgstr "Indenta menos el párrafo"
+msgstr "Sangrar menos los párrafos"
 
 #: components/html-editor/toolbar.c:545
 msgid "Indent"
-msgstr "Indentar"
+msgstr "Sangrado"
 
 #: components/html-editor/toolbar.c:545
 msgid "Indents the paragraphs more"
-msgstr "Indenta más los párrafos"
+msgstr "Sangrar más los párrafos"
 
 #: components/html-editor/utils.c:106
 msgid "Sample"
@@ -1575,7 +1555,7 @@ msgstr "Ejemplo"
 
 #: src/htmlengine-print.c:199
 msgid "Cannot allocate default font for printing\n"
-msgstr "No puedo encontrar la fuente por defecto imprimir\n"
+msgstr "No puedo encontrar la tipografía predeterminada para imprimir\n"
 
 #: src/htmlprinter.c:62
 msgid "US-Letter"
@@ -1693,6 +1673,3 @@ msgstr "Previsualización de la impresión"
 
 #~ msgid "URL"
 #~ msgstr "URL"
-
-#~ msgid "_Languages"
-#~ msgstr "_Lenguaje"

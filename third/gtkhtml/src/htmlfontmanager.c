@@ -205,9 +205,9 @@ html_font_manager_set_default (HTMLFontManager *manager, gchar *variable, gchar 
 static gint
 get_font_num (GtkHTMLFontStyle style)
 {
-	return (style == GTK_HTML_FONT_STYLE_DEFAULT)
-		? GTK_HTML_FONT_STYLE_SIZE_3
-		: (style & GTK_HTML_FONT_STYLE_MAX_FONT_MASK);
+	style |= (style & GTK_HTML_FONT_STYLE_SIZE_MASK) ? 0 : GTK_HTML_FONT_STYLE_SIZE_3;
+	
+	return (style & GTK_HTML_FONT_STYLE_MAX_FONT_MASK);
 }
 
 static gint
