@@ -10,7 +10,7 @@
 
 #ifndef lint
 static char const rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/execute_cmd.c,v 1.1 1992-08-20 18:35:53 lwvanels Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/execute_cmd.c,v 1.2 1992-08-20 18:42:23 lwvanels Exp $";
 #endif
 
 /*
@@ -193,6 +193,7 @@ int ss_execute_line (sci_idx, line_ptr)
 {
     char **argv;
     int argc;
+    int retval;
 
     /* flush leading whitespace */
     while (line_ptr[0] == ' ' || line_ptr[0] == '\t')
@@ -215,5 +216,7 @@ int ss_execute_line (sci_idx, line_ptr)
         return 0;
 
     /* look it up in the request tables, execute if found */
-    return really_execute_command (sci_idx, argc, &argv);
+    retval = really_execute_command (sci_idx, argc, &argv);
+    free(argv);
+    return(retval);
 }
