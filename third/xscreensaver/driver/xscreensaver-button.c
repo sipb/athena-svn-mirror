@@ -70,7 +70,7 @@ static XtResource resources[] =
     sizeof(String),
     XtOffsetOf(AppData, xscreensaver),
     XtRString,
-    BINDIR "xss -no-splash -no-start-locked"
+    BINDIR "xscreensaver -no-splash -no-start-locked"
   },
   {
     XtNcheckCommand,
@@ -79,7 +79,7 @@ static XtResource resources[] =
     sizeof(String),
     XtOffsetOf(AppData, check_command),
     XtRString,
-    BINDIR "xss-command -version"
+    BINDIR "xscreensaver-command -version"
   },
   {
     XtNactivateCommand,
@@ -88,7 +88,7 @@ static XtResource resources[] =
     sizeof(String),
     XtOffsetOf(AppData, activate_command),
     XtRString,
-    BINDIR "xss-command -lock"
+    BINDIR "xscreensaver-command -lock"
   },
   {
     XtNprefsCommand,
@@ -97,7 +97,7 @@ static XtResource resources[] =
     sizeof(String),
     XtOffsetOf(AppData, prefs_command),
     XtRString,
-    BINDIR "xss-command -prefs"
+    BINDIR "xscreensaver-command -prefs"
   },
   {
     XtNredirect,
@@ -238,7 +238,7 @@ static void usage(int argc, char **argv)
 {
   int i;
 
-  fprintf(stderr, "\nxss-button: Ignoring command line option(s): ");
+  fprintf(stderr, "\nxscreensaver-button: Ignoring command line option(s): ");
 
   for (i = 1; i < argc; i++) 
     fprintf(stderr, "%s ", argv[i]);

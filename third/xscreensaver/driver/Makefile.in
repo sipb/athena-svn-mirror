@@ -16,7 +16,7 @@ mandir		= @mandir@
 man1dir		= $(mandir)/man1
 mansuffix	= 1
 
-GNOME_DATADIR	= /usr/athena/share
+GNOME_DATADIR	= @GNOME_DATADIR@
 GNOME_CCDIR	= $(GNOME_DATADIR)/control-center/Desktop
 GNOME_PANELDIR	= $(GNOME_DATADIR)/gnome/apps/Settings/Desktop
 GNOME_ICONDIR	= $(GNOME_DATADIR)/pixmaps
@@ -210,18 +210,26 @@ install-program: $(EXES)
 	if [ @NEED_SETUID@ = yes ]; then				\
 	   inst="$(INSTALL_SETUID)" ;					\
 	fi ;								      \
-	echo $$inst xscreensaver $(install_prefix)$(bindir)/xss ;    \
-	$$inst xscreensaver $(install_prefix)$(bindir)/xss
+	echo $$inst xscreensaver $(install_prefix)$(bindir)/xscreensaver ;    \
+	$$inst xscreensaver $(install_prefix)$(bindir)/xscreensaver
 	@echo $(INSTALL_PROGRAM) xscreensaver-command \
-	  $(install_prefix)$(bindir)/xss-command ; \
+	  $(install_prefix)$(bindir)/xscreensaver-command ; \
 	$(INSTALL_PROGRAM) xscreensaver-command \
-	  $(install_prefix)$(bindir)/xss-command
+	  $(install_prefix)$(bindir)/xscreensaver-command
 	@echo $(INSTALL_PROGRAM) xscreensaver-demo \
-	  $(install_prefix)$(bindir)/xss-demo ; \
+	  $(install_prefix)$(bindir)/xscreensaver-demo ; \
 	$(INSTALL_PROGRAM) xscreensaver-demo \
-	  $(install_prefix)$(bindir)/xss-demo
+	  $(install_prefix)$(bindir)/xscreensaver-demo
 	$(INSTALL_PROGRAM) xscreensaver-button \
-	  $(install_prefix)$(bindir)/xss-button
+	  $(install_prefix)$(bindir)/xscreensaver-button
+	rm -f $(install_prefix)$(bindir)/xss
+	ln -s xscreensaver $(install_prefix)$(bindir)/xss
+	rm -f $(install_prefix)$(bindir)/xss-command
+	ln -s xscreensaver-command $(install_prefix)$(bindir)/xss-command
+	rm -f $(install_prefix)$(bindir)/xss-demo
+	ln -s xscreensaver-demo $(install_prefix)$(bindir)/xss-demo
+	rm -f $(install_prefix)$(bindir)/xss-button
+	ln -s xscreensaver-button $(install_prefix)$(bindir)/xss-button
 
 install-ad: XScreenSaver.ad
 	@if [ ! -d $(install_prefix)$(AD_DIR) ]; then			      \
@@ -262,7 +270,7 @@ install-man: $(MEN)
 	  $(INSTALL_DIRS) $(install_prefix)$(man1dir) ;			\
 	 fi ;								\
 	for man in $$men; do						\
-	  instname=`echo $$man | sed -e 's/xscreensaver/xss/' -e 's/\.man$$/\.$(mansuffix)/'` ;	\
+	  instname=`echo $$man | sed 's/\.man$$/\.$(mansuffix)/'` ;	\
 	  echo $(INSTALL_DATA) $(srcdir)/$$man				\
 	   $(install_prefix)$(man1dir)/$$instname ;			\
 	  $(INSTALL_DATA) $(srcdir)/$$man				\

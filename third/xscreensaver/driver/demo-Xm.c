@@ -418,7 +418,7 @@ restart_menu_cb (Widget button, XtPointer client_data, XtPointer ignored)
   apply_changes_and_save (button);
   xscreensaver_command (XtDisplay (button), XA_EXIT, 0, False, NULL);
   sleep (1);
-  system ("xss -nosplash &");
+  system ("xscreensaver -nosplash &");
 #endif
 
   await_xscreensaver (button);

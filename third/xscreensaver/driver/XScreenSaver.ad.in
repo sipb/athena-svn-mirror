@@ -59,10 +59,10 @@
 *procInterrupts:	True
 
 ! This is what the "Demo" button on the splash screen runs (/bin/sh syntax.)
-*demoCommand: xss-demo
+*demoCommand: xscreensaver-demo
 
 ! This is what the "Prefs" button on the splash screen runs (/bin/sh syntax.)
-*prefsCommand: xss-demo -prefs
+*prefsCommand: xscreensaver-demo -prefs
 
 ! This is the URL that the "Help" button on the splash screen loads.
 *helpURL: http://www.jwz.org/xscreensaver/man.html

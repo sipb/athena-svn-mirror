@@ -596,7 +596,7 @@ restart_menu_cb (GtkWidget *widget, gpointer user_data)
   apply_changes_and_save (GTK_WIDGET (widget));
   xscreensaver_command (gdk_display, XA_EXIT, 0, False, NULL);
   sleep (1);
-  system ("xss -nosplash &");
+  system ("xscreensaver -nosplash &");
 #endif
 
   await_xscreensaver (GTK_WIDGET (widget));
@@ -2249,7 +2249,7 @@ main (int argc, char **argv)
 
       if (init_results == 1)
 	{
-	  system ("xss -nosplash &");
+	  system ("xscreensaver -nosplash &");
 	  return 0;
 	}
 

@@ -13,18 +13,18 @@
 ..
 .TH XScreenSaver 1 "13-Feb-2001 (3.29)" "X Version 11"
 .SH NAME
-xss-demo - interactively control the background xss daemon
+xscreensaver-demo - interactively control the background xscreensaver daemon
 .SH SYNOPSIS
-.B xss\-demo
+.B xscreensaver\-demo
 [\-display \fIhost:display.screen\fP] [\-prefs] [\-xrm \fIresources\fP]
 .SH DESCRIPTION
-The \fIxss\-demo\fP program is a graphical front-end for 
+The \fIxscreensaver\-demo\fP program is a graphical front-end for 
 setting the parameters used by the background
-.BR xss (1)
+.BR xscreensaver (1)
 daemon.
 It is essentially two things: a tool for editing the \fI~/.xscreensaver\fP
 file; and a tool for demoing the various graphics hacks that 
-the \fIxss\fP daemon will launch.
+the \fIxscreensaver\fP daemon will launch.
 
 The main window consists of a menu bar and two tabbed pages.  The first page
 is for editing the list of demos, and the second is for editing various other
@@ -33,38 +33,38 @@ parameters of the screensaver.
 All of these commands are on either the \fBFile\fP or \fBHelp\fP menus:
 .TP 4
 .B Blank Screen Now
-Activates the background \fIxss\fP daemon, which will then run
+Activates the background \fIxscreensaver\fP daemon, which will then run
 a demo at random.  This is the same as running
-.BR xss-command (1)
+.BR xscreensaver-command (1)
 with the \fI\-activate\fP option.
 .TP 4
 .B Lock Screen Now
 Just like \fBBlank Screen Now\fP, except the screen will be locked as 
 well (even if it is not configured to lock all the time.)  This is the
 same as running
-.BR xss-command (1)
+.BR xscreensaver-command (1)
 with the \fI\-lock\fP option.
 .TP 4
 .B Kill Daemon
-If the xss daemon is running on this screen, kill it.
+If the xscreensaver daemon is running on this screen, kill it.
 This is the same as running
-.BR xss-command (1)
+.BR xscreensaver-command (1)
 with the \fI\-exit\fP option.
 .TP 4
 .B Restart Daemon
-If the xss daemon is running on this screen, kill it.
+If the xscreensaver daemon is running on this screen, kill it.
 Then launch it again.  This is the same as doing
-``\fIxss-command -exit\fP'' followed by ``\fIxss\fP''.
+``\fIxscreensaver-command -exit\fP'' followed by ``\fIxscreensaver\fP''.
 
 Note that it is \fInot\fP the same as doing
-``\fIxss-command -restart\fP''.
+``\fIxscreensaver-command -restart\fP''.
 .TP 4
 .B Exit
-Exits the \fIxss-demo\fP program (this program) without
-affecting the background \fIxss\fP daemon, if any.
+Exits the \fIxscreensaver-demo\fP program (this program) without
+affecting the background \fIxscreensaver\fP daemon, if any.
 .TP 4
 .B About...
-Displays the version number of this program, \fIxss-demo\fP.
+Displays the version number of this program, \fIxscreensaver-demo\fP.
 .TP 4
 .B Documentation...
 Opens up a web browser looking at the XScreenSaver web page, where you
@@ -81,7 +81,7 @@ on the right are some fields that let you edit their behavior.
 .B Demo List
 Double-clicking in the list on the left will let you try out the indicated
 demo.  The screen will go black, and the program will run in full-screen
-mode, just as it would if the \fIxss\fP daemon had launched it.
+mode, just as it would if the \fIxscreensaver\fP daemon had launched it.
 Clicking the mouse again will stop the demo and un-blank the screen, making
 the dialog box visible again.
 
@@ -90,7 +90,7 @@ the window.
 
 Each name in the list has a checkbox next to it: this is a duplicate of
 the \fIEnabled\fP checkbox, and indicates (and controls) whether
-xss will  use this display mode at all.  If the box is not
+xscreensaver will  use this display mode at all.  If the box is not
 checked, then this demo will not be run automatically (though you can
 run it explicitly by double-clicking on its name.)
 .TP 4
@@ -102,12 +102,12 @@ way.  This is just a shortcut for trying out all of the display modes in turn.
 .TP 4
 .B Program Description
 At the top will be a brief description of the program.  Below that is a
-text field where you can edit the arguments to the program as xss
+text field where you can edit the arguments to the program as xscreensaver
 will invoke it.  (Note that most of these programs have their own man pages
 that describe the command-line options they take.)
 .TP 4
 .B Enabled
-The \fIEnabled\fP checkbox controls whether xss will use this
+The \fIEnabled\fP checkbox controls whether xscreensaver will use this
 display mode at all.  This way, all the modes can remain available, but
 you can choose which ones will be automatically run.
 .TP 4
@@ -118,7 +118,7 @@ program will only be run on that kind of visual.  For example, you can
 specify that a particular program should only be run if color is available,
 and another should only be run in monochrome.  See the discussion of the
 \fIprograms\fP parameter in the \fIConfiguration\fP section of the
-.BR xss (1)
+.BR xscreensaver (1)
 manual.
 
 This is a combo-box, so you can either select an item from the popup menu,
@@ -133,11 +133,11 @@ Since each of the display modes is actually a separate program, they each
 may have their own manual.  This opens a window viewing the man page of
 this program, if it has one.
 .SH SCREENSAVER OPTIONS TAB
-This tab lets you change various settings used by the xss daemon
+This tab lets you change various settings used by the xscreensaver daemon
 itself, rather than its sub-programs.
 .TP 4
 .B Blank After
-After the user has been idle this long, the \fIxss\fP daemon
+After the user has been idle this long, the \fIxscreensaver\fP daemon
 will blank the screen.
 .TP 4
 .B Cycle After
@@ -171,11 +171,11 @@ stdout or stderr, it will show up on the screen immediately (instead of
 being lost in a hidden terminal or file that you can't see.)
 
 If you change this option, it will only take effect the next time the
-xss daemon is restarted.  (All other settings take effect
+xscreensaver daemon is restarted.  (All other settings take effect
 immediately.)
 .TP 4
 .B Display Splash Screen at Startup
-Normally when xss starts up, it briefly displays a splash dialog
+Normally when xscreensaver starts up, it briefly displays a splash dialog
 showing the version number, a \fIHelp\fP button, etc.  If this option is
 turned off, the splash screen will not be shown at all.
 .TP 4
@@ -232,26 +232,26 @@ take.
 .PP
 There are more settings than these available, but these are the most 
 commonly used ones; see the manual for
-.BR xss (1)
+.BR xscreensaver (1)
 for other parameters that can be set by editing the \fI~/.xscreensaver\fP
 file, or the X resource database.
 .SH COMMAND-LINE OPTIONS
-.I xss\-demo
+.I xscreensaver\-demo
 accepts the following command line options.
 .TP 8
 .B \-display \fIhost:display.screen\fP
-The X display to use.  The \fIxss\-demo\fP program will open its
-window on that display, and also control the \fIxss\fP daemon that
+The X display to use.  The \fIxscreensaver\-demo\fP program will open its
+window on that display, and also control the \fIxscreensaver\fP daemon that
 is managing that same display.
 .TP 8
 .B \-prefs
 Start up with the \fBScreensaver Options\fP tab selected by default
 instead of the \fBGraphics Demos\fP tab.
 .P
-It is important that the \fIxss\fP and \fIxss\-demo\fP
+It is important that the \fIxscreensaver\fP and \fIxscreensaver\-demo\fP
 processes be running on the same machine, or at least, on two machines
-that share a file system.  When \fIxss\-demo\fP writes a new version
-of the \fI~/.xscreensaver\fP file, it's important that the \fIxss\fP
+that share a file system.  When \fIxscreensaver\-demo\fP writes a new version
+of the \fI~/.xscreensaver\fP file, it's important that the \fIxscreensaver\fP
 see that same file.  If the two processes are seeing 
 different \fI~/.xscreensaver\fP files, things will malfunction.
 .SH ENVIRONMENT
@@ -262,9 +262,9 @@ to get the default host and display number.
 .TP 8
 .B PATH
 to find the sub-programs to run.  However, note that the sub-programs 
-are actually launched by the \fIxss\fP daemon, not 
-by \fIxss-demo\fP itself.  So, what matters is what \fB$PATH\fP
-the \fIxss\fP program sees.
+are actually launched by the \fIxscreensaver\fP daemon, not 
+by \fIxscreensaver-demo\fP itself.  So, what matters is what \fB$PATH\fP
+the \fIxscreensaver\fP program sees.
 .TP 8
 .B HOME
 for the directory in which to read and write the \fI.xscreensaver\fP file.
@@ -277,8 +277,8 @@ The latest version can always be found at
 http://www.jwz.org/xscreensaver/
 .SH SEE ALSO
 .BR X (1),
-.BR xss (1),
-.BR xss\-command (1)
+.BR xscreensaver (1),
+.BR xscreensaver\-command (1)
 .SH COPYRIGHT
 Copyright \(co 1992, 1993, 1997, 1998, 1999, 2000, 2001
 by Jamie Zawinski.  Permission to use, copy, modify, distribute, and sell
