@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.24 1998-08-18 17:31:14 ghudson Exp $
+## $Id: os_rvd,v 1.25 1998-11-01 01:51:28 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -338,7 +338,6 @@ GLOBAL : *.CKP *.local *.pid :
 		:		
 	/usr/bin:::
 		-> acctcom
-		-> adb
 		-> addbib
 		-> admintool
 		-> aliasadm
@@ -439,7 +438,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> newform
 		-> newgrp
 		-> news
-		-> netstat
 		-> nice
 		-> nis*
 		-> nfsstat
