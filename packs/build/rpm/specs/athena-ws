@@ -25,7 +25,6 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena,/etc/cron.d}
 cp masks $RPM_BUILD_ROOT/etc/athena/masks
 cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
-cp rc.conf $RPM_BUILD_ROOT/etc/athena/rc.conf
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
 cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
 cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena

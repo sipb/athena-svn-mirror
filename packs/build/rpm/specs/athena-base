@@ -21,6 +21,7 @@ mkdir $RPM_BUILD_ROOT
 
 #Extra stuff
 mkdir -p $RPM_BUILD_ROOT{/usr/athena/man,/etc/athena}
+cp rc.conf $RPM_BUILD_ROOT/etc/athena/rc.conf
 cp mandesc $RPM_BUILD_ROOT/usr/athena/man/mandesc
 
 %post
