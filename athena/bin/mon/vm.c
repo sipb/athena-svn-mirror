@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v $
- *	$Author: builder $
+ *	$Author: kaufer $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.2 1985-11-13 00:05:10 builder Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.3 1987-04-21 14:16:55 kaufer Exp $
  */
 
 #ifndef lint
-static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.2 1985-11-13 00:05:10 builder Exp $";
+static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.3 1987-04-21 14:16:55 kaufer Exp $";
 #endif	lint
 
 /*
@@ -86,7 +86,14 @@ vm()
                 , pgtok(deficit), rate.v_scan);
 
 	/* Display CPU info */
-        mvprintw(CPUY+1,4,"%4d  %4d", (rate.v_intr) - hz, rate.v_syscall);
+        mvprintw(CPUY+1,4,"%4d  %4d", 
+#ifdef vax
+	(rate.v_intr) - hz, rate.v_syscall);
+#endif
+#if defined(sun) || defined(ibm032)
+	rate.v_intr, rate.v_syscall);
+#endif
+/* if not vax, sun or ibm, a syntax error will result */
         mvprintw(CPUY+1,17,"%4d", rate.v_swtch);
         cputime();
 

@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/mon/mon.c,v $
- *	$Author: dgg $
+ *	$Author: kaufer $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/mon.c,v 1.1 1984-12-13 12:00:58 dgg Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/mon.c,v 1.2 1987-04-21 14:16:36 kaufer Exp $
  */
 
 #ifndef lint
-static char *rcsid_mon_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/mon.c,v 1.1 1984-12-13 12:00:58 dgg Exp $";
+static char *rcsid_mon_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/mon.c,v 1.2 1987-04-21 14:16:36 kaufer Exp $";
 #endif	lint
 
 /*
@@ -38,8 +38,18 @@ struct nlist namelist[] = {
 	{ "_total" },
 	{ "_deficit" },
 	{ "_dk_xfer" },
+#ifdef vax
 	{ "_mbdinit" },
 	{ "_ubdinit" },
+#endif
+#ifdef sun
+	{ "_mbdinit" },
+	{ "_dummy" },
+#endif
+#ifdef ibm032
+	{ "_ioccdinit" },
+	{ "_dummy" },
+#endif
 	{ "_ifnet" },
 	{ "_dk_time" },
 	{ "_dk_wds" },
