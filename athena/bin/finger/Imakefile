@@ -1,0 +1,19 @@
+/* 
+ * Imakefile for Hesiod/Zephyr client finger
+ *
+ *	MIT Project Athena
+ * 
+ * $Id: Imakefile,v 1.1 1991-05-27 13:16:47 probe Exp $
+ */
+
+LIBS =  -lhesiod -lzephyr -lcom_err -lkrb -ldes
+
+SRCS =	finger.c hespwnam.c
+
+OBJECTS = finger.o hespwnam.o
+
+SimpleProgram(finger,$(OBJECTS),$(LIBS),$(ATHBINDIR))
+
+lint::
+	lint *.c
+
