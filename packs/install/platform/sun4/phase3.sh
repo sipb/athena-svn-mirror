@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.6 1996-08-08 22:01:24 ghudson Exp $
+# $Id: phase3.sh,v 1.7 1997-01-05 14:18:22 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -166,8 +166,7 @@ cp -p /srvd/etc/crontab.root.add  /root/var/spool/cron/crontabs/root
 rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
 cp -p /ufsboot /root
-#/usr/sbin/installboot /srvd/lib/fs/ufs/bootblk $rrootdrive
-/usr/sbin/installboot /os/lib/fs/ufs/bootblk $rrootdrive
+installboot /os/usr/platform/`uname -i`/lib/fs/ufs/bootblk $rrootdrive
 cd /root
 
 # Note: device scripts depend on ROOT being set properly.
