@@ -1,6 +1,6 @@
 # $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v $
 # $Author: jtkohl $
-# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.11 1989-11-16 10:05:03 jtkohl Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.9 1989-07-29 22:33:59 jtkohl Exp $
 #
 # Makefile for creating a Zephyr configuration
 #
@@ -27,7 +27,7 @@ SUBDIR	= et et/lib et/compile_et ss ss/lib ss/make_commands clients \
 	clients/zlocate clients/zmailnotify clients/znol clients/zpopnotify \
 	clients/zshutdown_notify clients/zstat clients/zwrite \
 	include include/zephyr lib man man/man1 man/man8 server zhm zwgc \
-	zwgc/String zwgc/Memory zwgc/Dictionary ozwgc ozwgc/zbrowser
+	zwgc/zbrowser
 
 
 # Empty directories which also need to be built.

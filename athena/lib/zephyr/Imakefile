@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.9 1989-11-15 23:13:14 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.8 1989-10-19 17:33:06 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
@@ -15,7 +15,7 @@ CODE=Imakefile
 #ifdef LOCAL_LIBS
 LOC_SUBDIRS = et ss
 #endif /*LOCAL_LIBS*/
-SUBDIRS= ${LOC_SUBDIRS} include lib clients server zhm zwgc ozwgc man
+SUBDIRS= ${LOC_SUBDIRS} include lib clients server zhm zwgc man
 /* Need to make sure `all' is the first target */
 all::
 /**/# we need to remove these here; it is not appropriate to remove them
