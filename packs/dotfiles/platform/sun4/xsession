@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.13 1990-11-06 08:36:33 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.14 1990-11-18 22:01:50 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -49,8 +49,27 @@ endif
 
 # Identify this as a window session.
 
-setenv XSESSION
+setenv XSESSION $$
 
+# Set the sleep time for waiting between launching large applications.
+# These can be overriden in the ~/.cshrc or ~/.environment files.
+
+switch (`machtype -c`)
+    case VAXSTAR:
+	setenv SLEEP_TIME 10
+	breaksw
+    case MVAX-II:
+	setenv SLEEP_TIME 10
+	breaksw
+    case RTPC_ROMPC:
+	setenv SLEEP_TIME 6
+	breaksw
+    case ps2:
+	setenv SLEEP_TIME 10
+	breaksw
+    default:
+	setenv SLEEP_TIME 0
+endsw
 
 # The ~/.cshrc file sets environment variables, attaches lockers, and sets
 # the command search path.
@@ -83,7 +102,9 @@ if ((! $?NOCALLS) && (-r ~/.Xresources)) /usr/bin/X11/xrdb -merge ~/.Xresources
 if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER mwm
 if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 ($WINDOW_MANAGER &)
-
+sleep $SLEEP_TIME
+# mwm takes twice as long to start
+if ($WINDOW_MANAGER =~ mwm) sleep $SLEEP_TIME	
 
 
 # *******************   ACTIVITY STARTUP   *******************
@@ -101,16 +122,46 @@ if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
 	(xterm -geometry 80x56+0+0 &)
+	sleep $SLEEP_TIME
 endif
+
+
+# Run the Athena Dashboard.
+# If the user has not set $skip_xlogout, create a logout button
+# If the user has a ~/.dashrc file, create default widgets
+# with any additions or overrides in ~/.dashrc
+
+	if ((! $?skip_xlogout) && (! -r ~/.dashrc)) then
+	if ($?verbose_login) echo "Creating logout button..."
+	/usr/athena/dash -l &
+	sleep $SLEEP_TIME
+	sleep $SLEEP_TIME
+	else if ((! $?skip_xlogout) && (-r ~/.dashrc)) then
+	if ($?verbose_login) \
+		echo "Starting Athena Dashboard with logout button..."
+	/usr/athena/dash -all &
+	sleep $SLEEP_TIME
+	sleep $SLEEP_TIME
+	else if (($?skip_xlogout) && (! -r ~/.dashrc)) then
+	# run nothing 
+	else if (($?skip_xlogout) && (-r ~/.dashrc)) then
+	if ($?verbose_login) echo "Starting Athena Dashboard..."
+	/usr/athena/dash &
+	sleep $SLEEP_TIME
+	sleep $SLEEP_TIME
+	else echo Error in xsession - we should never arrive here!
+	endif
+
 
 # Run default system startup activities.  To skip these, put the command
 # "set skip_x_startup" in your ~/.environment file.
 
 if (! $?skip_x_startup) then
 	if ($?verbose_login) echo "Running standard startup activities..."
-	/usr/etc/zwgc					# Start Zephyr client
-	# If zephyr started okay, send message of the day as windowgram
-	if ($status == 0) /bin/athena/get_message -new -zephyr
+	# Start Zephyr client, and if zephyr started okay, send
+	# message of the day as windowgram
+	(/usr/etc/zwgc; if ($status == 0) /bin/athena/get_message -new -zephyr)&
+	sleep $SLEEP_TIME
 	/usr/new/mh/bin/msgchk -nonotify nomail		# Check for mail
 	(/usr/athena/olc who &) >& /dev/null		# Ping the OLC server
 endif
@@ -132,24 +183,12 @@ else
 endif
 
 
-# Start the xlogout window.  To skip this, put the command
-# "set skip_xlogout" in your .environment file.
-
-if (! $?skip_xlogout) then
-	(/usr/athena/xlogout &)
-endif
-
-
 # Gate the session.
 
-# This command, NOT run in the background, "gates" your session.  When
-# this process terminates, the session ends and you are logged out.
+# This command replaces this script and will wait for you to log out.
 # To terminate this process, type the "logout" command in an xterm window
 # or invoke the "end_session" program.
 
-/usr/athena/session_gate				# Wait for logout
+exec /usr/athena/session_gate -logout			# Wait for logout
 
-
-# Run any user-specified shutdown activities
-
-if ((! $?NOCALLS) && (-r ~/.logout)) source ~/.logout
+# The session gate will source .logout when it gets a SIGHUP.
