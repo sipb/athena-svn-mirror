@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cat $LIBDIR/deadfiles-9.2.10				>> $DEADFILES
