@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -148,10 +148,8 @@ KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
-KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
-KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -186,7 +184,6 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-RESOLV_LIBS = @RESOLV_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
@@ -231,78 +228,16 @@ eutilincludedir = $(includedir)/evolution/e-util
 econdincludedir = $(includedir)/evolution/e-conduit
 edb3includedir = $(includedir)/evolution/e-db3util
 
-INCLUDES = \
-	-I$(top_srcdir)							\
-	-DEVOLUTION_IMAGES=\""$(imagesdir)"\"				\
-	-DEVOLUTION_CATEGORY_ICONS=\""$(imagesdir)/categories"\"	\
-	-DG_LOG_DOMAIN=\"e-utils\"					\
-	$(DB3_CFLAGS)							\
-	$(PISOCK_CFLAGS)						\
-	$(E_UTIL_CFLAGS)
+INCLUDES =  	-I$(top_srcdir)								-DEVOLUTION_IMAGES=\""$(imagesdir)"\"					-DEVOLUTION_CATEGORY_ICONS=\""$(imagesdir)/categories"\"		-DG_LOG_DOMAIN=\"e-utils\"						$(DB3_CFLAGS)								$(PISOCK_CFLAGS)							$(E_UTIL_CFLAGS)
 
 
 privlib_LTLIBRARIES = libeutil.la libedb3util.la libeconduit.la
 noinst_LTLIBRARIES = libeutil-static.la libeconduit-static.la
 
-eutilinclude_HEADERS = \
-	e-bonobo-factory-util.h			\
-	e-categories-master-list-wombat.h	\
-	e-categories-config.h			\
-	e-component-listener.h			\
-	e-config-listener.h			\
-	e-corba-utils.h				\
-	e-dialog-utils.h			\
-	e-dialog-widgets.h			\
-	e-gtk-utils.h				\
-	e-gui-utils.h				\
-	e-host-utils.h				\
-	e-html-utils.h				\
-	e-iterator.h				\
-	e-lang-utils.h				\
-	e-list-iterator.h			\
-	e-list.h				\
-	e-memory.h				\
-	e-mktemp.h				\
-	e-msgport.h				\
-	e-passwords.h				\
-	e-path.h				\
-	e-proxy.h				\
-	e-request.h				\
-	e-sexp.h				\
-	e-time-utils.h				\
-	e-url.h					\
-	md5-utils.h
+eutilinclude_HEADERS =  	e-bonobo-factory-util.h				e-categories-master-list-wombat.h		e-categories-config.h				e-component-listener.h				e-config-listener.h				e-corba-utils.h					e-dialog-utils.h				e-dialog-widgets.h				e-gtk-utils.h					e-gui-utils.h					e-host-utils.h					e-html-utils.h					e-iterator.h					e-lang-utils.h					e-list-iterator.h				e-list.h					e-memory.h					e-mktemp.h					e-msgport.h					e-passwords.h					e-path.h					e-proxy.h					e-request.h					e-sexp.h					e-time-utils.h					e-url.h						md5-utils.h
 
 
-libeutil_la_SOURCES = \
-	$(eutilinclude_HEADERS)			\
-	e-bonobo-factory-util.c			\
-	e-categories-master-list-wombat.c	\
-	e-categories-config.c			\
-	e-component-listener.c			\
-	e-config-listener.c			\
-	e-corba-utils.c				\
-	e-dialog-utils.c			\
-	e-dialog-widgets.c			\
-	e-gtk-utils.c				\
-	e-gui-utils.c				\
-	e-host-utils.c				\
-	e-html-utils.c				\
-	e-iterator.c				\
-	e-lang-utils.c				\
-	e-list-iterator.c			\
-	e-list.c				\
-	e-memory.c				\
-	e-mktemp.c				\
-	e-msgport.c				\
-	e-passwords.c				\
-	e-path.c				\
-	e-proxy.c				\
-	e-request.c				\
-	e-sexp.c				\
-	e-time-utils.c				\
-	e-url.c					\
-	md5-utils.c
+libeutil_la_SOURCES =  	$(eutilinclude_HEADERS)				e-bonobo-factory-util.c				e-categories-master-list-wombat.c		e-categories-config.c				e-component-listener.c				e-config-listener.c				e-corba-utils.c					e-dialog-utils.c				e-dialog-widgets.c				e-gtk-utils.c					e-gui-utils.c					e-host-utils.c					e-html-utils.c					e-iterator.c					e-lang-utils.c					e-list-iterator.c				e-list.c					e-memory.c					e-mktemp.c					e-msgport.c					e-passwords.c					e-path.c					e-proxy.c					e-request.c					e-sexp.c					e-time-utils.c					e-url.c						md5-utils.c
 
 
 libeutil_la_LIBADD = $(E_UTIL_LIBS)
@@ -311,20 +246,13 @@ libeutil_static_la_SOURCES = $(libeutil_la_SOURCES)
 libeutil_static_la_LIBADD = $(libeutil_la_LIBADD)
 libeutil_static_la_LDFLAGS = -all-static
 
-econdinclude_HEADERS = \
-	e-pilot-map.h		\
-	e-pilot-settings.h	\
-	e-pilot-util.h
+econdinclude_HEADERS =  	e-pilot-map.h			e-pilot-settings.h		e-pilot-util.h
 
 
-pilot_sources = \
-	$(econdinclude_HEADERS)	\
-	e-pilot-map.c		\
-	e-pilot-settings.c	\
-	e-pilot-util.c
+pilot_sources =  	$(econdinclude_HEADERS)		e-pilot-map.c			e-pilot-settings.c		e-pilot-util.c
 
-@ENABLE_PILOT_CONDUITS_TRUE@pilot_compile = @ENABLE_PILOT_CONDUITS_TRUE@$(pilot_sources)
-@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = @ENABLE_PILOT_CONDUITS_FALSE@empty.c
+@ENABLE_PILOT_CONDUITS_TRUE@pilot_compile = $(pilot_sources)
+@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = e-pilot-settings.c e-pilot-settings.h
 
 libeconduit_la_SOURCES = $(pilot_compile)
 
@@ -333,15 +261,10 @@ libeconduit_static_la_LDFLAGS = -all-static
 
 EXTRA_DIST = $(pilot_sources)
 
-edb3include_HEADERS = \
-	e-db3-utils.h			\
-	e-dbhash.h
+edb3include_HEADERS =  	e-db3-utils.h				e-dbhash.h
 
 
-libedb3util_la_SOURCES = \
-	$(edb3include_HEADERS)		\
-	e-db3-utils.c			\
-	e-dbhash.c
+libedb3util_la_SOURCES =  	$(edb3include_HEADERS)			e-db3-utils.c				e-dbhash.c
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -363,10 +286,11 @@ e-list-iterator.lo e-list.lo e-memory.lo e-mktemp.lo e-msgport.lo \
 e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
 e-time-utils.lo e-url.lo md5-utils.lo
 libeconduit_static_la_LIBADD = 
-@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_static_la_OBJECTS =  empty.lo
 @ENABLE_PILOT_CONDUITS_TRUE@libeconduit_static_la_OBJECTS =  \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-map.lo e-pilot-settings.lo \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-util.lo
+@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_static_la_OBJECTS =  \
+@ENABLE_PILOT_CONDUITS_FALSE@e-pilot-settings.lo
 libeutil_la_LDFLAGS = 
 libeutil_la_DEPENDENCIES = 
 libeutil_la_OBJECTS =  e-bonobo-factory-util.lo \
@@ -382,9 +306,10 @@ libedb3util_la_LIBADD =
 libedb3util_la_OBJECTS =  e-db3-utils.lo e-dbhash.lo
 libeconduit_la_LDFLAGS = 
 libeconduit_la_LIBADD = 
-@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_la_OBJECTS =  empty.lo
 @ENABLE_PILOT_CONDUITS_TRUE@libeconduit_la_OBJECTS =  e-pilot-map.lo \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-settings.lo e-pilot-util.lo
+@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_la_OBJECTS =  \
+@ENABLE_PILOT_CONDUITS_FALSE@e-pilot-settings.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -398,7 +323,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libeutil_static_la_SOURCES) $(libeconduit_static_la_SOURCES) $(libeutil_la_SOURCES) $(libedb3util_la_SOURCES) $(libeconduit_la_SOURCES)
 OBJECTS = $(libeutil_static_la_OBJECTS) $(libeconduit_static_la_OBJECTS) $(libeutil_la_OBJECTS) $(libedb3util_la_OBJECTS) $(libeconduit_la_OBJECTS)
@@ -630,7 +555,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -666,6 +591,57 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+e-bonobo-factory-util.lo e-bonobo-factory-util.o : \
+	e-bonobo-factory-util.c ../config.h e-bonobo-factory-util.h
+e-categories-config.lo e-categories-config.o : e-categories-config.c \
+	e-categories-config.h e-categories-master-list-wombat.h
+e-categories-master-list-wombat.lo e-categories-master-list-wombat.o : \
+	e-categories-master-list-wombat.c ../config.h \
+	e-categories-master-list-wombat.h e-categories-config.h
+e-component-listener.lo e-component-listener.o : e-component-listener.c \
+	e-component-listener.h
+e-config-listener.lo e-config-listener.o : e-config-listener.c \
+	e-config-listener.h
+e-corba-utils.lo e-corba-utils.o : e-corba-utils.c ../config.h \
+	e-corba-utils.h
+e-db3-utils.lo e-db3-utils.o : e-db3-utils.c ../config.h e-db3-utils.h
+e-dbhash.lo e-dbhash.o : e-dbhash.c ../config.h e-dbhash.h md5-utils.h
+e-dialog-utils.lo e-dialog-utils.o : e-dialog-utils.c e-dialog-utils.h \
+	../widgets/misc/e-bonobo-widget.h
+e-dialog-widgets.lo e-dialog-widgets.o : e-dialog-widgets.c ../config.h \
+	e-dialog-widgets.h
+e-gtk-utils.lo e-gtk-utils.o : e-gtk-utils.c ../config.h e-gtk-utils.h
+e-gui-utils.lo e-gui-utils.o : e-gui-utils.c ../config.h e-gui-utils.h
+e-host-utils.lo e-host-utils.o : e-host-utils.c ../config.h \
+	e-host-utils.h
+e-html-utils.lo e-html-utils.o : e-html-utils.c e-html-utils.h
+e-iterator.lo e-iterator.o : e-iterator.c ../config.h e-iterator.h
+e-lang-utils.lo e-lang-utils.o : e-lang-utils.c ../config.h \
+	e-lang-utils.h
+e-list-iterator.lo e-list-iterator.o : e-list-iterator.c ../config.h \
+	e-list-iterator.h e-iterator.h e-list.h e-list-iterator.h \
+	e-list.h
+e-list.lo e-list.o : e-list.c ../config.h e-list.h e-list-iterator.h \
+	e-iterator.h e-list.h e-list-iterator.h
+e-memory.lo e-memory.o : e-memory.c e-memory.h
+e-mktemp.lo e-mktemp.o : e-mktemp.c ../config.h e-mktemp.h
+e-msgport.lo e-msgport.o : e-msgport.c ../config.h e-msgport.h
+e-passwords.lo e-passwords.o : e-passwords.c ../config.h e-passwords.h
+e-path.lo e-path.o : e-path.c ../config.h e-path.h
+e-pilot-map.lo e-pilot-map.o : e-pilot-map.c e-pilot-map.h
+e-pilot-settings.lo e-pilot-settings.o : e-pilot-settings.c ../config.h \
+	e-pilot-settings.h
+e-pilot-util.lo e-pilot-util.o : e-pilot-util.c e-pilot-util.h
+e-proxy.lo e-proxy.o : e-proxy.c ../config.h e-proxy.h
+e-request.lo e-request.o : e-request.c ../config.h e-request.h
+e-sexp.lo e-sexp.o : e-sexp.c e-sexp.h e-memory.h
+e-time-utils.lo e-time-utils.o : e-time-utils.c ../config.h \
+	e-time-utils.h
+e-unicode-i18n.lo e-unicode-i18n.o : e-unicode-i18n.c ../config.h \
+	e-unicode-i18n.h
+e-url.lo e-url.o : e-url.c ../config.h e-url.h
+md5-utils.lo md5-utils.o : md5-utils.c md5-utils.h
+
 info-am:
 info: info-recursive
 dvi-am:
@@ -761,8 +737,6 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-@ENABLE_PILOT_CONDUITS_FALSE@empty.c:
-@ENABLE_PILOT_CONDUITS_FALSE@	cp /dev/null $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
