@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 
-#if defined(MSDOS) || defined(SYS5) || defined(vaxc)
+#if defined(MSDOS) || defined(SYS5) || defined(vaxc) || defined(_AUX_SOURCE)
 #  include <string.h>
 #else
 #  include <strings.h>
