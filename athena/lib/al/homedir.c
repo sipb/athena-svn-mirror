@@ -61,14 +61,15 @@ int al__setup_homedir(const char *username, struct al_record *record,
       return AL_WNOTMPDIR;
 
     case 0:
-      if (setgid(local_pwd->pw_gid) == -1 || setuid(local_pwd->pw_uid) == -1)
-	_exit(1);
       if (havecred)
-	execl(PATH_ATTACH, "attach", "-quiet", "-nozephyr", username, NULL);
+	{
+	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
+		"-nozephyr", username, NULL);
+	}
       else
 	{
-	  execl(PATH_ATTACH, "attach", "-quiet", "-nozephyr", "-nomap",
-		username, NULL);
+	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
+		"-nozephyr", "-nomap", username, NULL);
 	}
       _exit(1);
 
