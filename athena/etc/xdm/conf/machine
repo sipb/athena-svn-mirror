@@ -19,6 +19,8 @@ case `/bin/athena/machtype -c` in
 		df="/bin/df";;
 	KN02ba) type="Digital DECstation 5000/120"
 		df="/bin/df";;
+	KN02ca) type="Digital Personal DECstation 5000/25"
+		df="/bin/df";;
 	KN210) type="Digital DECstation 5400"
 		df="/bin/df";;
 	PS2-70) type="IBM PS/2 Model 70"
@@ -29,7 +31,8 @@ case `/bin/athena/machtype -c` in
 		df="/bin/df";;
 	POWER*) type="IBM RISC/6000"
 		df="/bin/df";;
-	*) type=`/bin/athena/machtype -c -v`;;
+	*) type=`/bin/athena/machtype -c -v`
+		df="/bin/df";;
 	esac
 
 echo `hostname` "is a" $type 					
