@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.10 1988-06-15 22:55:16 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.11 1988-06-22 10:47:36 jtkohl Exp $ */
 
 #ifndef __ZINTERNAL_H__
 #define __ZINTERNAL_H__
@@ -18,6 +18,10 @@
 #include <zephyr/zephyr.h>
 #include <strings.h>			/* for strcpy, etc. */
 #include <sys/types.h>			/* for time_t, uid_t, etc */
+#ifdef lint
+#include <sys/uio.h>			/* to make lint shut up about
+					   struct/union iovec */
+#endif /* lint */
 
 struct _Z_Hole {
     struct _Z_Hole	*next;
