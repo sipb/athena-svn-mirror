@@ -1,15 +1,53 @@
-alias mail Mail		# Both mail and Mail are obsolete, but Mail is better
-set history=40 savehist=50	# number of history events saved
-set cdpath=(~)		# change directory path
-set mail=(120 /usr/spool/mail/$USER)	# set mail parameters
-# conveniant aliases for common commands
-# the cd and back commands are defined so that cd saves the last directory
-# you were in before the cd; then back can return you to the previous directory
-alias	cd	'set old=$cwd; chdir \!*'
-alias	back	'set back=$old; set old=$cwd; cd $back; unset back; dirs'
-alias	term	'setenv TERM `tset -Q - \!*`'
-if ($?prompt) then	# set prompt to a value depending on host name
-	set prompt="`hostname | sed s/mit-//`% "
+# Standard Athena .cshrc file for new users.
+#
+#	MIT Project Athena
+#
+#	RCS Information:
+#
+#	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.3 1987-07-30 16:57:45 treese Exp $
+
+# First, source the standard csh startup script.  If it can't be found, notify
+# the user and execute some backup commands.
+
+if (-r /usr/athena/.cshrc) then
+	source /usr/athena/.cshrc
+else
+	echo "Unable to load system-wide cshrc file."
+	echo "Some initialization has not been performed."
+	set athena_path = ( /usr/athena /bin/athena /usr/new \
+			 /usr/new/mh/bin /usr/ucb /bin /usr/bin /usr/games)
 endif
 
-set msg = "Sourcing .cshrc and .login..."
+# Note that the variable athena_path is set in the standard Athena .login
+# file. It contains the standard system directories, which may be changed
+# in the future.  Additional directories should be added at the desired
+# place in the following command:
+
+set path = (. $HOME/Bin $athena_path)
+
+# Set important CSH variables
+
+set history = 20			# Save 20 past commands.
+set cdpath = (~)			# Search home directory on cd's
+set noclobber				# Don't overwrite existing files on
+					# redirection
+
+# Limit resources
+
+limit coredumpsize 0
+
+# Set the prompt depending on the hostname
+
+if ($?prompt) then
+	set prompt = "`hostname`% "
+endif
+
+# Useful aliases
+
+alias mail	'Mail'
+alias 'Mail'	echo "'Mail' is obsolete -- use 'inc' to read mail or 'comp' to send it"
+
+# To enable T-shell line editing, uncomment the following line
+# set lineedit
+
