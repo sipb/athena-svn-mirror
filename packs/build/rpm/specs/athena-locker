@@ -43,7 +43,7 @@ EOF
 
 
 %post
-mkdir -p /mit
+mkdir -p -m 755 /mit
 chkconfig --add attach
 
 
