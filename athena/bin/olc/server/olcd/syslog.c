@@ -7,12 +7,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.6 1990-07-16 08:31:04 lwvanels Exp $
+ *	$Id: syslog.c,v 1.7 1990-08-25 23:51:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.6 1990-07-16 08:31:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.7 1990-08-25 23:51:50 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -111,8 +111,13 @@ log_to_syslogd (level, text) char *text;
 #endif
 {
     static int initialized = 0;
+#ifdef LOG_CONS
     if (!initialized)
 	openlog ("olc", LOG_CONS | LOG_PID, SYSLOG_LEVEL);
+#else
+    if (!initialized)
+	openlog ("olc", LOG_PID, SYSLOG_LEVEL);
+#endif
     syslog (level, text);
 }
 
