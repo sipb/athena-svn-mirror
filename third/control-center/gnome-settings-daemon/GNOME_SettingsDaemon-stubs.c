@@ -16,16 +16,17 @@ GNOME_SettingsDaemon_awake(GNOME_SettingsDaemon _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_SettingsDaemon__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_SettingsDaemon__classid))->awake) {
+	(POA_GNOME_SettingsDaemon__epv *) ORBIT_STUB_GetEpv(_obj,
+							    GNOME_SettingsDaemon__classid))->
+       awake) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval =
 	 _ORBIT_epv->awake(ORBIT_STUB_GetServant(_obj), service, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & service
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & service;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_SettingsDaemon__iinterface.methods, 0,
 				&_ORBIT_retval, _args, NULL, ev);

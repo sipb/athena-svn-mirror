@@ -445,29 +445,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-file-types-capplet.o: file-types-capplet.c ../../config.h \
-	../../capplets/common/capplet-util.h mime-types-model.h \
-	model-entry.h mime-edit-dialog.h mime-type-info.h \
-	mime-category-edit-dialog.h service-edit-dialog.h \
-	service-info.h
-mime-category-edit-dialog.o: mime-category-edit-dialog.c ../../config.h \
-	mime-types-model.h model-entry.h mime-type-info.h \
-	mime-category-edit-dialog.h mime-edit-dialog.h
-mime-edit-dialog.o: mime-edit-dialog.c ../../config.h \
-	../../capplets/common/capplet-util.h mime-edit-dialog.h \
-	mime-type-info.h model-entry.h mime-types-model.h \
-	libuuid/uuid.h
-mime-type-info.o: mime-type-info.c ../../config.h libuuid/uuid.h \
-	mime-type-info.h model-entry.h mime-types-model.h
-mime-types-model.o: mime-types-model.c ../../config.h mime-types-model.h \
-	model-entry.h mime-type-info.h service-info.h
-model-entry.o: model-entry.c ../../config.h model-entry.h \
-	mime-type-info.h service-info.h mime-types-model.h
-service-edit-dialog.o: service-edit-dialog.c ../../config.h \
-	service-edit-dialog.h service-info.h model-entry.h \
-	mime-types-model.h
-service-info.o: service-info.c ../../config.h libuuid/uuid.h \
-	service-info.h model-entry.h mime-types-model.h
 
 info-am:
 info: info-recursive

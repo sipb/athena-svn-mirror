@@ -430,15 +430,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-window-manager.lo gnome-window-manager.o : gnome-window-manager.c \
-	gnome-window-manager.h
-gnome-wm-manager.lo gnome-wm-manager.o : gnome-wm-manager.c ../config.h \
-	gnome-wm-manager.h gnome-window-manager.h
-metacity-window-manager.lo metacity-window-manager.o : \
-	metacity-window-manager.c ../config.h metacity-window-manager.h \
-	gnome-window-manager.h
-wm-exec.lo wm-exec.o : wm-exec.c wm-properties.h
-wm-list.lo wm-list.o : wm-list.c wm-properties.h
 
 info-am:
 info: info-am

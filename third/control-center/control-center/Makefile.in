@@ -403,13 +403,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-capplet-dir-view-list.o: capplet-dir-view-list.c ../config.h \
-	capplet-dir-view.h capplet-dir.h
-capplet-dir-view.o: capplet-dir-view.c ../config.h capplet-dir-view.h \
-	capplet-dir.h
-capplet-dir.o: capplet-dir.c ../config.h capplet-dir.h \
-	capplet-dir-view.h
-main.o: main.c ../config.h capplet-dir.h capplet-dir-view.h
 
 info-am:
 info: info-am

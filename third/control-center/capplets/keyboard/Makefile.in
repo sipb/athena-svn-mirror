@@ -412,12 +412,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-keyboard-properties.o: gnome-keyboard-properties.c ../../config.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/capplet-stock-icons.h \
-	../accessibility/keyboard/accessibility-keyboard.h
 
 info-am:
 info: info-am

@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center CVS\n"
-"POT-Creation-Date: 2003-01-13 04:00+0100\n"
-"PO-Revision-Date: 2003-01-13 13:29+0100\n"
+"POT-Creation-Date: 2003-02-04 16:51-0500\n"
+"PO-Revision-Date: 2003-01-23 13:39+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -298,7 +298,7 @@ msgstr "Selecteer af_beelding:"
 #: capplets/mouse/gnome-mouse-properties.c:712
 #: capplets/sound/sound-properties-capplet.c:149
 msgid "Retrieve and store legacy settings"
-msgstr "Ga terug naar de standaard instellingen"
+msgstr "Standaardinstellingen terughalen en opslaan"
 
 #
 #: capplets/background/background-properties-capplet.c:593
@@ -403,6 +403,11 @@ msgstr "Instellingen toepassen en afsluiten"
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Er is een fout opgetreden bij de hulpweergave: %s"
+
+#: capplets/common/capplet-stock-icons.c:94
+#, c-format
+msgid "Unable to load capplet stock icon '%s'\n"
+msgstr "Niet in staat capplet-pictogram '%s' uit inventaris te laden\n"
 
 #: capplets/common/file-transfer-dialog.c:95
 #, c-format
@@ -533,7 +538,7 @@ msgstr "Object dat de eigenschap beheert (meestal een widget)"
 
 #: capplets/common/gconf-property-editor.c:219
 msgid "Property editor object data"
-msgstr "Objectgegevens van Eigenschappen-editor"
+msgstr "Objectgegevens van eigenschappen-editor"
 
 #: capplets/common/gconf-property-editor.c:220
 msgid "Custom data required by the specific property editor"
@@ -1836,15 +1841,15 @@ msgstr "Nog een onderdeel"
 
 #: capplets/theme-switcher/control/control.c:80
 msgid "Radio Button 1"
-msgstr "Radioknop 1"
+msgstr "Keuzerondje 1"
 
 #: capplets/theme-switcher/control/control.c:86
 msgid "Radio Button 2"
-msgstr "Radioknop 2"
+msgstr "Keuzerondje 2"
 
 #: capplets/theme-switcher/control/control.c:107
 msgid "One"
-msgstr "Een"
+msgstr "Eén"
 
 #: capplets/theme-switcher/control/control.c:113
 msgid "Two"
@@ -1946,7 +1951,7 @@ msgstr "_Themanaam:"
 
 #: capplets/theme-switcher/theme-install.glade.h:2
 msgid "Install new theme"
-msgstr "Nieuw thema installeren..."
+msgstr "Nieuw thema installeren"
 
 #: capplets/theme-switcher/theme-install.glade.h:3
 msgid "_Install"
@@ -1956,8 +1961,8 @@ msgstr "_Installeren"
 msgid "_Location of new theme:"
 msgstr "_Locatie van nieuw thema:"
 
-#: capplets/theme-switcher/gnome-theme-details.c:329
-#: capplets/theme-switcher/gnome-theme-manager.c:606
+#: capplets/theme-switcher/gnome-theme-details.c:372
+#: capplets/theme-switcher/gnome-theme-manager.c:609
 msgid ""
 "No themes could be found on your system.  This probably means that your "
 "\"Theme Preferences\" dialog was improperly installed, or you haven't "
@@ -1967,13 +1972,17 @@ msgstr ""
 "\"Thema-voorkeuren\"-venster onjuist is geïnstalleerd, of dat u het \"gnome-"
 "themes\"-pakket niet geïnstalleerd hebt."
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-save.c:72
+msgid "Theme name must be present"
+msgstr "Themanaam dient aanwezig te zijn"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "Custom theme"
 msgstr "Aangepast thema"
 
-#: capplets/theme-switcher/gnome-theme-manager.c:662
-#: capplets/theme-switcher/gnome-theme-manager.c:722
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
 msgid "You can save this theme by pressing the Save Theme button."
 msgstr "U kunt dit thema opslaan door op de knop \"Thema opslaan\" te drukken."
 
@@ -2048,7 +2057,7 @@ msgstr "P_ictogrammen in menu's tonen"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:14
 msgid "Text Below Icons"
-msgstr "Tekst Onder Iconen"
+msgstr "Tekst onder pictogrammen"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:15
 msgid "Text Beside Icons"
@@ -2097,7 +2106,7 @@ msgstr "_Plakken"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:26
 msgid "_Print"
-msgstr "_Afdrukken"
+msgstr "A_fdrukken"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:27
 msgid "_Quit"
@@ -2397,11 +2406,11 @@ msgstr "Geluidsbestand selecteren"
 msgid "Window manager \"%s\" has not registered a configuration tool\n"
 msgstr "Window manager \"%s\" heeft geen configuratieprogramma geregistreerd\n"
 
-#: libwindow-settings/metacity-window-manager.c:373
+#: libwindow-settings/metacity-window-manager.c:374
 msgid "Maximize"
 msgstr "Maximaliseren"
 
-#: libwindow-settings/metacity-window-manager.c:374
+#: libwindow-settings/metacity-window-manager.c:375
 msgid "Roll up"
 msgstr "Oprollen"
 

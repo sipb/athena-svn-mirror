@@ -32,7 +32,7 @@ static const CORBA_unsigned_long ORBit_zero_int = 0;
 && (TC_IMPL_TC_GNOME_SettingsDaemon_19 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_SettingsDaemon)
 #define TC_DEF_TC_GNOME_SettingsDaemon 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_SettingsDaemon_struct = {
@@ -40,7 +40,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_SettingsDaemon_struct = {
    CORBA_tk_objref,
    0,
    0,
-   4,
+   ORBIT_ALIGNOF_CORBA_POINTER,
    0,
    0,
    NULL,
@@ -55,23 +55,22 @@ const struct CORBA_TypeCode_struct TC_GNOME_SettingsDaemon_struct = {
 };
 #endif
 
-#ifndef ORBIT_IDL_C_IMODULE
+#ifndef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
 CORBA_unsigned_long GNOME_SettingsDaemon__classid = 0;
 #endif
 
 /* Interface type data */
 
 static ORBit_IArg GNOME_SettingsDaemon_awake__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "service"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "service"}
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
 static
 #endif
 ORBit_IMethod GNOME_SettingsDaemon__imethods[] = {
    {
-    {2, 2, GNOME_SettingsDaemon_awake__arginfo, FALSE},
+    {1, 1, GNOME_SettingsDaemon_awake__arginfo, FALSE},
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
     TC_CORBA_boolean, "awake", 5,
@@ -82,7 +81,7 @@ static CORBA_string GNOME_SettingsDaemon__base_itypes[] = {
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
 static
 #endif
 ORBit_IInterface GNOME_SettingsDaemon__iinterface = {
