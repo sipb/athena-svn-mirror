@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/lumberjack.h,v $
- *	$Id: lumberjack.h,v 1.2 1990-12-07 09:16:41 lwvanels Exp $
+ *	$Id: lumberjack.h,v 1.3 1990-12-09 16:50:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -17,6 +17,8 @@
 
 #ifndef __lumberjack_h
 #define __lumberjack_h __FILE__
+
+#include <syslog.h>
 
 char *DONE_DIR		 = "/usr/spool/olc/donelogs";
 
