@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.19 1998-02-02 22:24:33 ghudson Exp $";
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.19.2.1 1998-07-05 05:47:35 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -110,6 +110,7 @@ Code_t remove_notice_from_queue(notice, kind, repl)
 #ifdef DEBUG
     dump_queue();
 #endif /* DEBUG */
+    free(entry);
     return(ZERR_NONE);
 }
 
