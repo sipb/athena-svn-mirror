@@ -239,4 +239,8 @@ if test $ac_cv_func_connect = no; then
 fi
 AC_SUBST(DFLAGS)
 
+AC_CHECK_FUNC(res_send, :, AC_CHECK_LIB(resolv, res_send, HES_RES_LIB=-lresolv))
+AC_SUBST(HES_RES_LIB)
+AC_SUBST(lbindir)
+
 AC_OUTPUT(Makefile)
