@@ -200,7 +200,7 @@ ORBit_free_via_TypeCode(gpointer mem, gpointer tcp, gboolean free_strings)
 		    ORBit_free_via_TypeCode(mem, &subtc, free_strings);
 		    /* the end of the body (subtc) may not be the
 		     * same as the end of the union */
-		    retval = mem + sz;
+		    retval = (guchar *)mem + sz;
 		}
 		break;
 	case CORBA_tk_wstring:
@@ -232,7 +232,7 @@ ORBit_free_via_TypeCode(gpointer mem, gpointer tcp, gboolean free_strings)
 		break;
 	default:
 		/* NB. alignment != alloc size */
-		retval  = ALIGN_ADDRESS (mem, ORBit_find_alignment (tc)) +
+		retval = (guchar *)ALIGN_ADDRESS (mem, ORBit_find_alignment (tc)) +
 			ORBit_gather_alloc_info (tc);
 		break;
 	}

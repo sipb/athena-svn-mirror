@@ -220,7 +220,7 @@ ORBit_create_object_with_info(GSList *profiles,
 	}
 
 	/* XXX badhack :) */
-	refcheck.object_id = type_id;
+	refcheck.object_id = (char *)type_id;
 	refcheck.profile_list = profiles;
 
 	new = g_hash_table_lookup(orb->objrefs, &refcheck);

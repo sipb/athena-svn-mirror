@@ -3,7 +3,7 @@ echo-local test-any-client test-any-server test-tc-client \
 test-tc-server test-ir-client test-ir-server \
 empty-server empty-client test-dynany
 bin_PROGRAMS=ior-decode
-SUBDIRS=test-poa idl
+SUBDIRS=test-poa idl everything
 BUILT_SOURCES=echo.h echo-common.c echo-stubs.c echo-skels.c \
 test-any.h test-any-common.c test-any-stubs.c test-any-skels.c \
 test-tc.h test-tc-common.c test-tc-stubs.c test-tc-skels.c \

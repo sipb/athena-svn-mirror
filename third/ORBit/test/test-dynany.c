@@ -1,5 +1,7 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <orb/orbit.h>
 
 #define CHECK_OK(ev)           (g_assert ((ev)->_major == CORBA_NO_EXCEPTION))
@@ -21,6 +23,17 @@
 		          !strcmp ((ev)->_repo_id, "IDL:CORBA/OBJECT_NOT_EXIST:1.0")); \
 		CORBA_exception_free (ev); \
 	} while (0)
+
+static int
+double_equal (double a, double b)
+{
+	const double delta = 0.0001;
+
+	if (fabs (a - b) < delta)
+		return TRUE;
+	else
+		return FALSE;
+}
 
 static void
 test_long (CORBA_ORB orb, CORBA_Environment *ev)
@@ -327,7 +340,7 @@ test_array (CORBA_ORB orb, CORBA_Environment *ev)
 		DynamicAny_DynAny_seek (dyn_any, i, ev);
 		CHECK_OK (ev);
 
-		g_assert (DynamicAny_DynAny_get_double (dyn_any, ev) == d);
+		g_assert (double_equal (DynamicAny_DynAny_get_double (dyn_any, ev), d));
 		CHECK_OK (ev);
 	}
 
@@ -553,7 +566,7 @@ test_struct (CORBA_ORB orb, CORBA_Environment *ev)
 	g_assert (DynamicAny_DynAny_next (dyn_any, ev));
 	CHECK_OK (ev);
 
-	g_assert (DynamicAny_DynAny_get_double (dyn_any, ev) == dv);
+	g_assert (double_equal (DynamicAny_DynAny_get_double (dyn_any, ev), dv));
 	CHECK_OK (ev);
 
 	g_assert (DynamicAny_DynAny_next (dyn_any, ev));

@@ -240,12 +240,12 @@ ORBit_TypeCode_release(gpointer obj, CORBA_Environment *ev)
       CORBA_TypeCode tc = obj;
       int i;
 
-      g_free(tc->name);
-      g_free(tc->repo_id);
+      g_free((gpointer)tc->name);
+      g_free((gpointer)tc->repo_id);
 
       for(i = 0; i < tc->sub_parts; i++) {
 	if(tc->subnames)
-	  g_free(tc->subnames[i]);
+	  g_free((gpointer)tc->subnames[i]);
 
 	if(tc->subtypes)
 	  CORBA_Object_release((CORBA_Object)tc->subtypes[i], ev);
@@ -320,6 +320,7 @@ static void tc_dec(CORBA_TypeCode* t, CDR_Codec* c, TCDecodeContext* ctx)
 				       NULL);
 
 	tc->kind=kind;
+	((ORBit_RootObject)tc)->refs=-1;   /* negative so that it doesn't get freed by CORBA_Object_release() */
 	switch(info->type){
 		guint tmp_index;
 		CORBA_octet o;
@@ -359,8 +360,8 @@ static void tc_enc_tk_objref(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ct
 
 static void tc_dec_tk_objref(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx)
 {
-	CDR_get_string(c, &t->repo_id);
-	CDR_get_string(c, &t->name);
+	CDR_get_string(c, (char **)&t->repo_id);
+	CDR_get_string(c, (char **)&t->name);
 }
 
 static void tc_enc_tk_sequence(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ctx)
@@ -373,6 +374,7 @@ static void tc_dec_tk_sequence(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* 
 {
 	t->subtypes=g_new(CORBA_TypeCode, 1);
 	tc_dec(&t->subtypes[0], c, ctx);
+	t->sub_parts=1;
 	CORBA_Object_duplicate((CORBA_Object)t->subtypes[0], NULL);
 	CDR_get_ulong(c, &t->length);
 }
@@ -402,13 +404,13 @@ static void tc_enc_tk_struct(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ct
 static void tc_dec_tk_struct(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx)
 {
 	CORBA_unsigned_long i;
-	CDR_get_string(c, &t->repo_id);
-	CDR_get_string(c, &t->name);
+	CDR_get_string(c, (char **)&t->repo_id);
+	CDR_get_string(c, (char **)&t->name);
 	CDR_get_ulong(c, &t->sub_parts);
-	t->subnames=g_new(gchar*, t->sub_parts);
+	t->subnames=g_new(const char*, t->sub_parts);
 	t->subtypes=g_new(CORBA_TypeCode, t->sub_parts);
 	for(i=0;i<t->sub_parts;i++){
-		CDR_get_string(c, &t->subnames[i]);
+		CDR_get_string(c, (char **)&t->subnames[i]);
 		tc_dec(&t->subtypes[i], c, ctx);
 		CORBA_Object_duplicate((CORBA_Object)t->subtypes[i], NULL);
 	}
@@ -460,15 +462,15 @@ static void tc_enc_tk_union(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ctx
 static void tc_dec_tk_union(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx)
 {
 	CORBA_unsigned_long i;
-	CDR_get_string(c, &t->repo_id);
-	CDR_get_string(c, &t->name);
+	CDR_get_string(c, (char **)&t->repo_id);
+	CDR_get_string(c, (char **)&t->name);
 	tc_dec(&t->discriminator, c, ctx);
 	CORBA_Object_duplicate((CORBA_Object)t->discriminator, NULL);
 	CDR_get_ulong(c, &t->default_index);
 	CDR_get_ulong(c, &t->sub_parts);
 
 	t->sublabels=g_new(CORBA_any, t->sub_parts);
-	t->subnames=g_new(gchar*, t->sub_parts);
+	t->subnames=g_new(const char*, t->sub_parts);
 	t->subtypes=g_new(CORBA_TypeCode, t->sub_parts);
 
 #define MEMBER_LOOPER_DEC(getname, typename, tkname) \
@@ -479,7 +481,7 @@ static void tc_dec_tk_union(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx
 	    t->sublabels[i]._value = g_new(CORBA_##typename,1); \
 	    t->sublabels[i]._release = CORBA_TRUE; \
 	    CDR_get_##getname(c, t->sublabels[i]._value); \
-	    CDR_get_string(c, &t->subnames[i]); \
+	    CDR_get_string(c, (char **)&t->subnames[i]); \
 	    tc_dec(&t->subtypes[i], c, ctx); \
 	    CORBA_Object_duplicate((CORBA_Object)t->subtypes[i], NULL); \
 	} \
@@ -506,12 +508,12 @@ static void tc_enc_tk_enum(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ctx)
 static void tc_dec_tk_enum(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx)
 {
 	CORBA_unsigned_long i;
-	CDR_get_string(c, &t->repo_id);
-	CDR_get_string(c, &t->name);
+	CDR_get_string(c, (char **)&t->repo_id);
+	CDR_get_string(c, (char **)&t->name);
 	CDR_get_ulong(c, &t->sub_parts);
-	t->subnames=g_new(gchar*, t->sub_parts);
+	t->subnames=g_new(const char*, t->sub_parts);
 	for(i=0;i<t->sub_parts;i++)
-		CDR_get_string(c, &t->subnames[i]);
+		CDR_get_string(c, (char **)&t->subnames[i]);
 }
 
 static void tc_enc_tk_alias(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ctx)
@@ -523,9 +525,10 @@ static void tc_enc_tk_alias(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ctx
 
 static void tc_dec_tk_alias(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx)
 {
-	CDR_get_string(c, &t->repo_id);
-	CDR_get_string(c, &t->name);
+	CDR_get_string(c, (char **)&t->repo_id);
+	CDR_get_string(c, (char **)&t->name);
 	t->subtypes=g_new(CORBA_TypeCode, 1);
+	t->sub_parts=1;
 	tc_dec(t->subtypes, c, ctx);
 	CORBA_Object_duplicate((CORBA_Object)t->subtypes[0], NULL);
 }
@@ -537,7 +540,7 @@ static void tc_enc_tk_except(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ct
 	CDR_put_string(c, t->repo_id);
 	CDR_put_string(c, t->name);
 	CDR_put_ulong(c, t->sub_parts);
-	for(i=0;i<t->length;i++){
+	for(i=0;i<t->sub_parts;i++){
 		CDR_put_string(c, t->subnames[i]);
 		tc_enc(t->subtypes[i], c, ctx);
 	}
@@ -546,13 +549,13 @@ static void tc_enc_tk_except(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ct
 static void tc_dec_tk_except(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx)
 {
 	gulong i;
-	CDR_get_string(c, &t->repo_id);
-	CDR_get_string(c, &t->name);
+	CDR_get_string(c, (char **)&t->repo_id);
+	CDR_get_string(c, (char **)&t->name);
 	CDR_get_ulong(c, &t->sub_parts);
 	t->subtypes=g_new(CORBA_TypeCode, t->sub_parts);
-	t->subnames=g_new(gchar*, t->sub_parts);
-	for(i=0;i<t->length;i++){
-		CDR_get_string(c, &t->subnames[i]);
+	t->subnames=g_new(const char*, t->sub_parts);
+	for(i=0;i<t->sub_parts;i++){
+		CDR_get_string(c, (char **)&t->subnames[i]);
 		tc_dec(&t->subtypes[i], c, ctx);
 		CORBA_Object_duplicate((CORBA_Object)t->subtypes[i], NULL);
 	}
@@ -570,6 +573,7 @@ static void tc_dec_tk_array(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx
 	tc_dec(t->subtypes, c, ctx);
 	CORBA_Object_duplicate((CORBA_Object)t->subtypes[0], NULL);
 	CDR_get_ulong(c, &t->length);
+	t->sub_parts=1;
 }
 
 static void tc_enc_tk_wstring(CORBA_TypeCode t, CDR_Codec* c, TCEncodeContext* ctx)

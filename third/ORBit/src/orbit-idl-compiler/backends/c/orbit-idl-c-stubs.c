@@ -104,7 +104,7 @@ cs_output_stub(IDL_tree tree, OIDL_C_Info *ci)
     fprintf(ci->fh, "static const ORBit_ContextMarshalItem _context_items[] = {\n");
 
     for(curitem = IDL_OP_DCL(tree).context_expr; curitem; curitem = IDL_LIST(curitem).next) {
-      fprintf(ci->fh, "{%d, \"%s\"},\n", strlen(IDL_STRING(IDL_LIST(curitem).data).value) + 1,
+      fprintf(ci->fh, "{%u, \"%s\"},\n", strlen(IDL_STRING(IDL_LIST(curitem).data).value) + 1,
 	      IDL_STRING(IDL_LIST(curitem).data).value);
     }
     fprintf(ci->fh, "};\n");
@@ -174,11 +174,11 @@ cs_output_stub(IDL_tree tree, OIDL_C_Info *ci)
     fprintf(ci->fh, "_ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));\n");
 
   fprintf(ci->fh, "{ /* marshalling */\n");
-  fprintf(ci->fh, "static const struct { CORBA_unsigned_long len; char opname[%d]; } _ORBIT_operation_name_data = { %d, \"%s\" };\n",
+  fprintf(ci->fh, "static const struct { CORBA_unsigned_long len; char opname[%u]; } _ORBIT_operation_name_data = { %u, \"%s\" };\n",
 	  strlen(IDL_IDENT(IDL_OP_DCL(tree).ident).str) + 1,
 	  strlen(IDL_IDENT(IDL_OP_DCL(tree).ident).str) + 1,
 	  IDL_IDENT(IDL_OP_DCL(tree).ident).str);
-  fprintf(ci->fh, "static const struct iovec _ORBIT_operation_vec = {(gpointer)&_ORBIT_operation_name_data, %d};\n",
+  fprintf(ci->fh, "static const struct iovec _ORBIT_operation_vec = {(gpointer)&_ORBIT_operation_name_data, %u};\n",
 	  sizeof(CORBA_unsigned_long) +
 	  strlen(IDL_IDENT(IDL_OP_DCL(tree).ident).str) + 1);
 
@@ -433,9 +433,9 @@ cbe_stub_op_param_free(FILE *of, IDL_tree node, GString *tmpstr)
 		    IDL_IDENT(IDL_PARAM_DCL(node).simple_declarator).str);
   switch(IDL_NODE_TYPE(ts)) {
   case IDLN_TYPE_ANY:
-    fprintf(of, "if((%s)._release) CORBA_free((%s)._value);\n",
+    fprintf(of, "if(CORBA_any_get_release(&(%s))) CORBA_free((%s)._value);\n",
 	    tmpstr->str, tmpstr->str);
-    fprintf(of, "CORBA_Object_release((%s)._type, ev);\n", tmpstr->str);
+    fprintf(of, "CORBA_Object_release((CORBA_Object)(%s)._type, ev);\n", tmpstr->str);
     break;
   case IDLN_TYPE_SEQUENCE:
     fprintf(of, "if((%s)._release) CORBA_free((%s)._buffer);\n",
@@ -457,7 +457,7 @@ cbe_stub_op_param_free(FILE *of, IDL_tree node, GString *tmpstr)
   case IDLN_FORWARD_DCL:
   case IDLN_TYPE_OBJECT:
   case IDLN_TYPE_TYPECODE:
-    fprintf(of, "CORBA_Object_release(%s, ev);\n", tmpstr->str);
+    fprintf(of, "CORBA_Object_release((CORBA_Object)%s, ev);\n", tmpstr->str);
     break;
   default:
     g_assert(orbit_cbe_type_is_fixed_length(node));

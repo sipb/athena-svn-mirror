@@ -707,7 +707,7 @@ CORBA_char *CORBA_ORB_object_to_string(CORBA_ORB orb,
 
 	  if (CORBA_Object_is_nil(obj, &myev)) {
 		  g_warning("Bug in %s, created bad IOR `%s'\n",
-			    __FUNCTION__, rc);
+			    G_GNUC_FUNCTION, rc);
 		  CORBA_free(rc);
 		  return NULL;
 	  }
@@ -1034,8 +1034,14 @@ CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB orb, CORBA_ORB_Objec
 		return CORBA_Object_duplicate(orb->naming, ev);
 	else if(!strcmp(identifier, "RootPOA")) {
 		if(CORBA_Object_is_nil(orb->root_poa, ev)) {
-			CORBA_PolicyList policies = {0,0,NULL,CORBA_FALSE};
+			CORBA_Policy policybuf[1];
+			CORBA_PolicyList policies  = {1,1,policybuf,CORBA_FALSE};
 			PortableServer_POAManager poa_mgr;
+			/* The only non-default policy used by the RootPOA is IMPLICIT ACTIVATION */ 
+			policies._buffer[0]=
+				PortableServer_POA_create_implicit_activation_policy(NULL,
+										     PortableServer_IMPLICIT_ACTIVATION,
+										     ev);			
 			/* Create a poa manager */
 			poa_mgr = ORBit_POAManager_new();
 			poa_mgr->orb = orb;
@@ -1048,6 +1054,7 @@ CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB orb, CORBA_ORB_Objec
 					      &policies,
 					      ev);
 			CORBA_Object_duplicate(orb->root_poa, ev);
+			CORBA_Object_release(policies._buffer[0],ev);
 		}
 
 		return CORBA_Object_duplicate(orb->root_poa, ev);
@@ -1221,7 +1228,7 @@ CORBA_TypeCode CORBA_ORB_create_struct_tc(CORBA_ORB obj, CORBA_RepositoryId id, 
 	if(tc->subtypes == NULL)
 	  goto subtypes_alloc_failed;
 
-	tc->subnames=g_new0(char *, members._length);
+	tc->subnames=g_new0(const char *, members._length);
 	if(tc->subnames == NULL)
 	  goto subnames_alloc_failed;
 
@@ -1278,7 +1285,7 @@ CORBA_ORB_create_union_tc(CORBA_ORB obj, CORBA_RepositoryId id,
 	if(tc->subtypes==NULL)
 	  goto subtypes_alloc_failed;
 
-	tc->subnames=g_new0(char *, members._length);
+	tc->subnames=g_new0(const char *, members._length);
 	if(tc->subnames==NULL)
 	  goto subnames_alloc_failed;
 
@@ -1332,7 +1339,7 @@ CORBA_TypeCode CORBA_ORB_create_enum_tc(CORBA_ORB obj, CORBA_RepositoryId id, CO
 	if(tc == NULL)
 	  goto tc_alloc_failed;
 
-	tc->subnames=g_new0(char *, members._length);
+	tc->subnames=g_new0(const char *, members._length);
 	if(tc->subnames==NULL)
 	  goto subnames_alloc_failed;
 
@@ -1398,7 +1405,7 @@ CORBA_TypeCode CORBA_ORB_create_exception_tc(CORBA_ORB obj, CORBA_RepositoryId i
 	if(tc->subtypes==NULL)
 	  goto subtypes_alloc_failed;
 
-	tc->subnames=g_new0(char *, members._length);
+	tc->subnames=g_new0(const char *, members._length);
 	if(tc->subnames==NULL)
 	  goto subnames_alloc_failed;
 

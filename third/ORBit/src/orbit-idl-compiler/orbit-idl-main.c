@@ -18,7 +18,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: orbit-idl-main.c,v 1.1.1.1 2000-11-10 00:49:12 ghudson Exp $
+    $Id: orbit-idl-main.c,v 1.1.1.2 2001-02-12 02:05:10 ghudson Exp $
 
 ***************************************************************************/
 
@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <libIDL/IDL.h>
 #include <popt.h>
+#include <string.h>
 
 #include "orbit-idl2.h"
 
@@ -41,6 +42,7 @@ static gboolean cl_disable_stubs = FALSE,
   cl_enable_skeleton_impl = FALSE;
 static int cl_debuglevel;
 static char *cl_output_lang = "c";
+static char *cl_backend_dir = ORBITLIBDIR;
 
 #define BASE_CPP_ARGS "-D__ORBIT_IDL__ "
 static GString *cl_cpp_args;
@@ -107,6 +109,7 @@ struct poptOption options[] = {
   {"nocommon", '\0', POPT_ARG_NONE, &cl_disable_common, 0, "Don't output common", NULL},
   {"noheaders", '\0', POPT_ARG_NONE, &cl_disable_headers, 0, "Don't output headers", NULL},
   {"skeleton-impl", '\0', POPT_ARG_NONE, &cl_enable_skeleton_impl, 0, "Don't output headers", NULL},
+  {"backenddir", '\0', POPT_ARG_STRING, &cl_backend_dir, 0, "Override IDL backend library directory", "DIR"},
   {"c-output-formatter", '\0', POPT_ARG_STRING, &c_output_formatter, 0, "Program to use to format output (normally, indent)", "PROGRAM"},
   POPT_AUTOHELP
   {NULL, '\0', 0, NULL, 0, NULL, NULL}
@@ -117,7 +120,7 @@ int main(int argc, char *argv[])
 {
   poptContext pcon;
   int rc;
-  char *arg;
+  const char *arg;
   OIDL_Run_Info rinfo;
 
   /* Argument parsing, etc. */
@@ -126,7 +129,7 @@ int main(int argc, char *argv[])
   if(getenv("C_OUTPUT_FORMATTER"))
     c_output_formatter = getenv("C_OUTPUT_FORMATTER");
 
-  pcon=poptGetContext("orbit-idl", argc, argv, options, 0);
+  pcon=poptGetContext("orbit-idl", argc, (const char **)argv, options, 0);
   poptSetOtherOptionHelp(pcon, "<IDL files>");
 
   if(argc < 2) {
@@ -152,6 +155,7 @@ int main(int argc, char *argv[])
     |(cl_enable_skeleton_impl?OUTPUT_SKELIMPL:0);
   rinfo.output_formatter = c_output_formatter;
   rinfo.output_language = cl_output_lang;
+  rinfo.backend_directory = cl_backend_dir;
 
   /* Do it */
   while((arg=poptGetArg(pcon))!=NULL) {

@@ -430,8 +430,10 @@ cbe_skel_op_param_free(IDL_tree tree, OIDL_C_Info *ci, gboolean free_internal)
     fprintf(ci->fh, "if(ev->_major == CORBA_NO_EXCEPTION)");
     switch(IDL_NODE_TYPE(ts)) {
     case IDLN_TYPE_OBJECT:
+	case IDLN_FORWARD_DCL:
     case IDLN_INTERFACE:
-      fprintf(ci->fh, "CORBA_Object_release(%s, ev);\n",
+	case IDLN_TYPE_TYPECODE:
+      fprintf(ci->fh, "CORBA_Object_release((CORBA_Object)%s, ev);\n",
 	      IDL_IDENT(IDL_PARAM_DCL(tree).simple_declarator).str);
       break;
     default:
@@ -445,7 +447,8 @@ cbe_skel_op_param_free(IDL_tree tree, OIDL_C_Info *ci, gboolean free_internal)
     switch(IDL_NODE_TYPE(ts)) {
     case IDLN_TYPE_OBJECT:
     case IDLN_INTERFACE:
-      fprintf(ci->fh, "CORBA_Object_release(%s, ev);\n",
+	case IDLN_TYPE_TYPECODE:
+      fprintf(ci->fh, "CORBA_Object_release((CORBA_Object)%s, ev);\n",
 	      IDL_IDENT(IDL_PARAM_DCL(tree).simple_declarator).str);
       break;
     default:

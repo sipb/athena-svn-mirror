@@ -7,6 +7,7 @@
 #include "orbit.h"
 #include "orbit_poa.h"
 #include "orbit_poa_type.h"
+#include <IIOP/IIOP-private.h>
 #ifdef HAVE_SYS_POLL_H
 #include <sys/poll.h>
 #endif
