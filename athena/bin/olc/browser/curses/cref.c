@@ -35,6 +35,7 @@ static char *rcsid_cref_c = "$Header: ";
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 #include <ctype.h>			/* Character type macros. */
+#include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
 #include <strings.h>
 #include "cref.h"			/* CREF finder defs. */
@@ -95,9 +96,9 @@ main(argc, argv)
 
 command_loop()
 {
-  int index;				/* Index in command table. */
+  int ind;				/* Ind in command table. */
   int command;				/* Input command. */
-  int entry_index;			/* Index of entry. */
+  int entry_ind;			/* Index of entry. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   
   while (1)
@@ -123,8 +124,8 @@ command_loop()
 	      move(LINES-2, 0);
 	      clrtoeol();
 	      refresh();
-	      entry_index = atoi(inbuf);
-	      display_entry(entry_index);
+	      entry_ind = atoi(inbuf);
+	      display_entry(entry_ind);
 	    }
 	}
       else if (command == '\n')
@@ -151,15 +152,15 @@ command_loop()
 	{
 	  echo();
 	  message(1,"");
-	  for (index = 0; index < Command_Count; index++)
+	  for (ind = 0; ind < Command_Count; ind++)
 	    {
-	      if (command == (int) Command_Table[index].command)
+	      if (command == (int) Command_Table[ind].command)
 		{
-		  (*(Command_Table[index].procedure))();
+		  (*(Command_Table[ind].procedure))();
 		  break;
 		}
 	    }
-	  if (index == Command_Count)
+	  if (ind == Command_Count)
 	    message(1, "Invalid command.  Type '?' for help.");
 	}
     }
