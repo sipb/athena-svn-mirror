@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.55.4.3 2002-07-16 06:24:44 ghudson Exp $
+# $Id: update_ws.sh,v 1.55.4.4 2002-07-18 18:04:02 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
