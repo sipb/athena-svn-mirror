@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.69 1998-02-02 22:25:08 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.70 1998-04-08 02:19:03 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1073,7 +1073,7 @@ void runACT(w, event, p, n)
   if (access(resources.srvdcheck, F_OK) != 0)
     {
       fprintf(stderr, "Workstation failed to activate successfully.\n"
-	      "Please notify the Athena Hotline, x3-1410, hotline@mit.edu.");
+	      "Please notify the Athena Hotline, x3-1410, hotline@mit.edu.\n");
       return;
     }
   sigconsCB(NULL, "hide", NULL);
