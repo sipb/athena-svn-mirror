@@ -32,7 +32,7 @@
  * GPL.
  */
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:32:06 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:32:06 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef BUILTINS_H
@@ -448,7 +448,7 @@ static const NSSItem nss_builtins_items_0 [] = {
   { (void *)&ck_false, (PRUint32)sizeof(CK_BBOOL) },
   { (void *)"CVS ID", (PRUint32)7 },
   { (void *)"NSS", (PRUint32)4 },
-  { (void *)"@(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $", (PRUint32)179 }
+  { (void *)"@(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:32:06 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:32:06 $ $Name: not supported by cvs2svn $", (PRUint32)179 }
 };
 #endif /* DEBUG */
 static const NSSItem nss_builtins_items_1 [] = {

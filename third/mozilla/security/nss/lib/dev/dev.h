@@ -41,7 +41,7 @@
  */
 
 #ifdef DEBUG
-static const char DEV_CVS_ID[] = "@(#) $RCSfile: dev.h,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:12:59 $ $Name: not supported by cvs2svn $";
+static const char DEV_CVS_ID[] = "@(#) $RCSfile: dev.h,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:24:23 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSCKT_H
