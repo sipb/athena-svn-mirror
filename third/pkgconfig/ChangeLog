@@ -1,3 +1,36 @@
+2003-01-16  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 0.15
+
+2003-01-15  Havoc Pennington  <hp@pobox.com>
+
+	* pkg.c (package_init): honor a PKG_CONFIG_LIBDIR to move default 
+	search dir, useful in cross-compilation for example, bug 
+	#103545 fix from David Schleef
+	
+2003-01-01  Zack Rusin  <zack@kde.org>
+
+	* main.c (main): added --libs-only-other and --cflags-only-other
+	arguments, thanks to which a more obscure dependencies can be
+	retrieved, e.g. -pthread
+
+2002-11-19  Havoc Pennington  <hp@redhat.com>
+
+	* pkg-config.1: apply formatting fixes from  Peter Breitenlohner
+
+2002-10-24  Tor Lillqvist  <tml@iki.fi>
+
+	* configure.in: Move the check for Win32 (which tests the $host
+	variable) and dependent code later, as it turns out that $host
+	isn't normally yet set at that point... (I hadn't noticed as I by
+	habit always pass --host=i386-pc-mingw32 to the configure script,
+	which sets $host.)
+
+2002-10-11  Havoc Pennington  <hp@redhat.com>
+
+	* pkg.c (verify_package): fix to properly cast iter->data to char*
+	before doing pointer arithmetic, from David Robins
+
 2002-10-10  Havoc Pennington  <hp@redhat.com>
 
 	* configure.in: 0.14

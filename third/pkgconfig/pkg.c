@@ -187,6 +187,11 @@ void
 package_init ()
 {
   static gboolean initted = FALSE;
+  const char *pkglibdir;
+
+  pkglibdir = g_getenv ("PKG_CONFIG_LIBDIR");
+  if (pkglibdir == NULL)
+    pkglibdir = PKGLIBDIR;
 
   if (!initted)
     {
@@ -197,7 +202,7 @@ package_init ()
       path_positions = g_hash_table_new (g_str_hash, g_str_equal);
       
       g_slist_foreach (search_dirs, (GFunc)scan_dir, NULL);
-      scan_dir (PKGLIBDIR);
+      scan_dir (pkglibdir);
     }
 }
 
@@ -813,7 +818,8 @@ verify_package (Package *pkg)
 	  system_dir_iter = system_directories;
 	  while (system_dir_iter != NULL)
 	    {
-	      if (strcmp (system_dir_iter->data, iter->data + offset) == 0)
+	      if (strcmp (system_dir_iter->data,
+                          ((char*)iter->data) + offset) == 0)
 		{
 		  debug_spew ("Package %s has %s in Cflags\n",
 			      pkg->name, (gchar *)iter->data);

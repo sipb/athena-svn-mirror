@@ -477,18 +477,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-findme.o: findme.c config.h findme.h
-main.o: main.c config.h pkg.h partial-glib.h glib-1.2.8/glib.h \
-	glib-1.2.8/glibconfig.h parse.h popt.h
-parse.o: parse.c config.h parse.h pkg.h partial-glib.h glib-1.2.8/glib.h \
-	glib-1.2.8/glibconfig.h popt.h
-partial-glib.o: partial-glib.c
-pkg.o: pkg.c config.h pkg.h partial-glib.h glib-1.2.8/glib.h \
-	glib-1.2.8/glibconfig.h parse.h
-popt.o: popt.c config.h findme.h popt.h poptint.h
-poptconfig.o: poptconfig.c config.h popt.h poptint.h
-popthelp.o: popthelp.c config.h popt.h poptint.h
-poptparse.o: poptparse.c config.h popt.h
 
 info-am:
 info: info-recursive
