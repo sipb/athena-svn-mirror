@@ -12,6 +12,7 @@ cp $1/packs/config/os/$OS/XTerm $2
 if [ linux = "$OS" ]; then
   cp $1/packs/config/os/$OS/man.config $2
   cp $1/packs/config/os/$OS/athena.cron $2
+  cp $1/packs/config/os/$OS/dhclient-enter-hooks $2
 fi
 if [ solaris = "$OS" ]; then
   cp $1/packs/config/os/$OS/crontab.root $2
