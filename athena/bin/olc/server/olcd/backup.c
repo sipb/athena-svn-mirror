@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.16 1990-12-05 21:14:08 lwvanels Exp $
+ *	$Id: backup.c,v 1.17 1990-12-09 16:41:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.16 1990-12-05 21:14:08 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.17 1990-12-09 16:41:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -42,8 +42,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 # define P(s) ()
 #endif
 
-static char *read_msgs P((int fd ));
-static int write_msgs P((int fd , char *msg ));
 static int write_knuckle_info P((int fd , KNUCKLE *knuckle ));
 static int read_knuckle_info P((int fd , KNUCKLE *knuckle ));
 static int write_user_info P((int fd , USER *user ));
@@ -61,53 +59,11 @@ static void type_error P((int fd , char *string ));
 static char *DATA_SEP      = "  new data:    ";
 static char *USER_SEP      = "  new user:    ";
 static char *KNUCKLE_SEP   = "  new knuckle: ";
-static char *TEXT_SEP      = "  new text:    ";
 static char *BLANK_SEP     = "  a blank:     ";
 static char *TRANS_SEP     = "  new train:   ";
 
 static type_buf[BUF_SIZE];
 static int skip;
-
-static char *
-  read_msgs(fd)
-int fd;
-{
-  int length;
-  char *return_value = (char *)NULL;
-  
-  if (read_int_from_fd(fd, &length) == ERROR) 
-    return((char *)NULL);
-  
-  return_value = malloc((unsigned)length*sizeof(char));
-  if (return_value == (char *)NULL)
-    return(return_value);
-  
-  if (read(fd, return_value, length) != length) 
-    return((char *)NULL);
-  
-  return(return_value);
-}
-
-static int
-  write_msgs(fd, msg)
-int fd;
-char *msg;
-{
-  int length;
-  
-  length = strlen(msg);
-  
-  if(write(fd,TEXT_SEP,sizeof(char) * STRING_SIZE) != 
-     sizeof(char) * STRING_SIZE)
-    {
-      perror("write_msgs");
-      return(ERROR);
-    }
-  
-  if (write_int_to_fd(fd, length) != SUCCESS)
-    return(ERROR);
-  return(write(fd, msg, length) != length);
-}
 
 static int
   write_knuckle_info(fd, knuckle)
@@ -151,16 +107,6 @@ KNUCKLE *knuckle;
 	return(ERROR);
       }
   
-  if (knuckle->new_messages != (char *) NULL)
-    return(write_msgs(fd, knuckle->new_messages));
-  else
-    if(write(fd,BLANK_SEP,sizeof(char) * STRING_SIZE) != 
-       sizeof(char) * STRING_SIZE)
-      {
-	perror("write_knuckle_info");
-	return(ERROR);
-      }
-  
   return(SUCCESS);
 }
 
@@ -169,7 +115,6 @@ static int
 int fd;
 KNUCKLE *knuckle;
 {
-  QUESTION q;
   int size;
   char type[STRING_SIZE];
   
@@ -191,43 +136,26 @@ KNUCKLE *knuckle;
   
   if(string_eq(type,TRANS_SEP))
     {
-      size = read(fd,(char *) &q, sizeof(QUESTION));
-      if(size != sizeof(QUESTION))
-	{
-	  log_error("read_knuckle_info: cannot read transaction");
-	  return(ERROR);
-	}	  
       knuckle->question = (QUESTION *) malloc(sizeof(QUESTION));
       if(knuckle->question == (QUESTION *) NULL)
 	{
 	  perror("question malloc");
 	  return(ERROR);
 	}
-      q.owner = knuckle;
-      q.topic_code = get_topic_code(q.topic);
-      bcopy((char *) &q, (char *) knuckle->question, sizeof(QUESTION));
+      size = read(fd,(char *) knuckle->question, sizeof(QUESTION));
+      if(size != sizeof(QUESTION))
+	{
+	  log_error("read_knuckle_info: cannot read transaction");
+	  return(ERROR);
+	}	  
+      knuckle->question->owner = knuckle;
+      knuckle->question->topic_code =
+	get_topic_code(knuckle->question->topic);
     }
 
   else
     knuckle->question = (QUESTION *) NULL;
-  
-  if(read(fd, (char *) type, sizeof(char) * STRING_SIZE) != 
-     sizeof(char) * STRING_SIZE)
-    {
-      log_error("read_kncukle_info: cannot read second type");
-      perror("read_knuckle");
-      type_error(fd,type);
-      return(ERROR);
-    }
-  
-  if (string_eq(type,TEXT_SEP))
-    {
-      knuckle->new_messages = read_msgs(fd);
-      return(knuckle->new_messages == (char *) NULL);
-    }
-  else
-    knuckle->new_messages = (char *) NULL;
-  
+
   return(SUCCESS);
 }
 
@@ -259,6 +187,8 @@ USER *user;
   
   size = read(fd, (char *) user, sizeof(USER));
   
+  /* Should re-load this information from the database */
+
 #ifdef TEST
   printf("size read in: %d/%d\n",size,sizeof(USER));
   printf("user: %s %s %s\n",user->username,user->realname,user->nickname);
@@ -530,19 +460,6 @@ void
 	  kptr->user = uptr;
 	  insert_knuckle_in_user(kptr,uptr);
 	  kptr->user->no_knuckles++;
-	  continue;
-	}
-      
-      if(string_eq(type,TEXT_SEP))
-	{
-	  log_error("load_data: text found in data");
-	  read_msgs(fd);
-	  continue;
-	}
-      
-      if(string_eq(type,BLANK_SEP))
-	{
-	  log_error("load_data: blank in data");
 	  continue;
 	}
       
