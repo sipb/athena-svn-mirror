@@ -8,6 +8,7 @@ The areas covered in this file are:
 
 	Mailing lists
 	Permissions
+	Build machines
 	The wash process
 	Imake templates
 	Release notes
@@ -114,6 +115,38 @@ permissions are correct in the repository or in a working directory.
 Run it from the top level of the repository or of /mit/source, giving
 it the argument "repository" or "wd".
 
+Build machines
+--------------
+
+We do release builds in a chrooted environment to avoid damaging the
+machines we are building on.  So that builds can have access to AFS,
+we mount AFS inside the chrooted environments and make a symlink from
+/afs to the place AFS is mounted.  Each build machine has two such
+environments, one in /rel (for the release build) and one in /rel/wash
+(for the wash).  The second environment has to be located within the
+first, of course, so that AFS can be visible from both.
+
+To set up a build machine, follow these instructions after installing:
+
+	* Set the root password.
+	* Put "builder rl" in /etc/athena/access.
+	* In /etc/athena/rc.conf, set SSHD and ACCESSON to true.  Set
+	  AFSADJUST to false.
+	* Edit /usr/vice/etc/cacheinfo and change the AFS mountpoint
+	  from "/afs" to "/rel/wash/afs".
+	* Reboot.  (Remote access daemons should work without AFS,
+	  more or less.)
+	* Create symlinks /afs -> rel/wash/afs and /rel/afs ->
+	  wash/afs.
+	* Create /rel/wash/afs and parents.
+	* Run "/mit/source/packs/build/makeroot.sh /rel X.Y", where
+	  X.Y is the full release this build is for.
+	* Run "/mit/source/packs/build/makeroot.sh /rel/wash".
+	* Make a symlink from /rel/.srvd to the AFS srvd volume, and
+	  from /rel/build to the AFS build volume.  (These steps can
+	  be ommitted if the release cycle hasn't progressed far
+	  enough for those volumes to exist.)
+
 The wash process
 ----------------
 
@@ -166,7 +199,7 @@ To set up the source update on a machine:
 
 	* Ensure that rcmd.machinename is in write:update.
 
-To set up the wash on a machine:
+To set up the wash on a build machine:
 
 	* Ensure that it is in the set of machines installed onto by
 	  /afs/dev.mit.edu/service/wash/inst, and run that script to
@@ -255,31 +288,15 @@ following guidelines should help the release go smoothly:
 	  /afs/dev.mit.edu/system/<sysname>/srvd-<version>.
 
 	  Each platform needs a new-release build machine to generate
-	  system packs to test.  For an existing platform, this is
-	  generally the wash machine.  The wash machine needs to be
-	  updated to the new operating system (a reinstall is
-	  sometimes the simplest way).  Release build machines are set
-	  up as follows:
+	  system packs to test.  Set it up according to the directions
+	  in "Build Machines" above.
 
-		- /etc/athena/access contains "builder rl"
- 		- In /etc/athena/rc.conf:
-			SSHD is true
-			ACCESSON is true
-			RVDCLIENT is false
-			AUTOUPDATE is false
-		- /build is a symlink to the build tree
-		- /os is a symlink to the rw of the os volume
-		- /install is a symlink to the rw of the os volume
-		- /srvd is a symlink to the ro of the packs
-		- /.srvd is a symlink to the rw of the packs
-		- For Solaris, /usr/gcc is a symlink to /.srvd/usr/gcc
-		- The source locker is attached and locked.
-
-	  Doing a full build for release testing is then simple:
+	  To do a full build for release testing:
 
 		# Get tickets as builder and ssh to the wash machine
-		rm -rf /.srvd/* /.srvd/.??* /build/* /build/.??*
-		sh /build/packs/build/build.sh -l &
+		rm -rf /rel/.srvd/* /rel/.srvd/.??*
+		rm -rf /rel/build/* /rel/build/.??*
+		chroot /rel sh /mit/source-X.Y/packs/build/build.sh -l &
 
 	  (It can be useful to run the ssh to the build machine inside
 	  a screen session so you don't have to log out of the build
