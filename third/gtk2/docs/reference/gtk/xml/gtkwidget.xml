@@ -639,6 +639,15 @@ style properties and <link linkend="gtk-widget-style-get-property">gtk_widget_st
 <refsect2>
 <title><anchor id="GtkWidgetClass"/>struct GtkWidgetClass</title>
 <programlisting>struct GtkWidgetClass {
+
+  /* The object class structure needs to be the first
+   *  element in the widget class structure in order for
+   *  the class mechanism to work correctly. This allows a
+   *  GtkWidgetClass pointer to be cast to a GtkObjectClass
+   *  pointer.
+   */
+  GtkObjectClass parent_class;
+
   
   guint activate_signal;
 

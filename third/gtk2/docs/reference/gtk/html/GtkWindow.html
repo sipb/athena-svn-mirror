@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkWindow</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkWindow</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -859,7 +859,7 @@ is not focused then  <tt>GTK_WIDGET_HAS_FOCUS (widget)</tt> will
 not be <tt>TRUE</tt> for the widget.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>window</tt></i> :</span></td><td> a <a href="GtkWindow.html" title="GtkWindow">GtkWindow</a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the currently focused widget.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the currently focused widget, or <tt>NULL</tt> if there is none.
 </td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-window-set-focus"></a>gtk_window_set_focus ()</h3><pre class="programlisting">void        gtk_window_set_focus            (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *window,
                                              <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *focus);</pre><p>
 If <i><tt>focus</tt></i> is not the current focus widget, and is focusable, sets

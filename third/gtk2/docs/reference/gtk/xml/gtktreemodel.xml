@@ -161,7 +161,7 @@ void        <link linkend="gtk-tree-model-rows-reordered">gtk_tree_model_rows_re
 <refsect1>
 <title>Implementations</title>
 <para>
-GtkTreeModel is implemented by <link linkend="GtkTreeStore">GtkTreeStore</link>, <link linkend="GtkListStore">GtkListStore</link> and <link linkend="GtkTreeModelSort">GtkTreeModelSort</link>.
+GtkTreeModel is implemented by <link linkend="GtkTreeModelSort">GtkTreeModelSort</link>, <link linkend="GtkTreeStore">GtkTreeStore</link> and <link linkend="GtkListStore">GtkListStore</link>.
 </para>
 </refsect1>
 

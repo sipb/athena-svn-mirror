@@ -1309,9 +1309,14 @@ gtk_notebook_size_allocate (GtkWidget     *widget,
       GdkRectangle position;
 
       if (gtk_notebook_get_event_window_position (notebook, &position))
-	gdk_window_move_resize (notebook->event_window,
-				position.x, position.y,
-				position.width, position.height);
+	{
+	  gdk_window_move_resize (notebook->event_window,
+				  position.x, position.y,
+				  position.width, position.height);
+	  gdk_window_show_unraised (notebook->event_window);
+	}
+      else
+	gdk_window_hide (notebook->event_window);
     }
 
   if (notebook->children)
@@ -2355,6 +2360,7 @@ gtk_notebook_remove_tab_label (GtkNotebook     *notebook,
 				     page->mnemonic_activate_signal);
       page->mnemonic_activate_signal = 0;
 
+      gtk_widget_set_state (page->tab_label, GTK_STATE_NORMAL);
       gtk_widget_unparent (page->tab_label);
     }
 }
@@ -2412,10 +2418,6 @@ gtk_notebook_real_remove (GtkNotebook *notebook,
     }
   
   g_free (page);
-
-  if (!notebook->children && notebook->show_tabs &&
-      GTK_WIDGET_MAPPED (notebook))
-    gdk_window_hide (notebook->event_window);
 
   gtk_notebook_update_labels (notebook);
   if (need_resize)
@@ -3510,6 +3512,25 @@ gtk_notebook_calc_tabs (GtkNotebook  *notebook,
     }
 }
 
+static void
+gtk_notebook_update_tab_states (GtkNotebook *notebook)
+{
+  GList *list;
+
+  for (list = notebook->children; list != NULL; list = list->next)
+    {
+      GtkNotebookPage *page = list->data;
+      
+      if (page->tab_label)
+	{
+	  if (page == notebook->cur_page)
+	    gtk_widget_set_state (page->tab_label, GTK_STATE_NORMAL);
+	  else
+	    gtk_widget_set_state (page->tab_label, GTK_STATE_ACTIVE);
+	}
+    }
+}
+
 /* Private GtkNotebook Page Switch Methods:
  *
  * gtk_notebook_real_switch_page
@@ -3551,6 +3572,7 @@ gtk_notebook_real_switch_page (GtkNotebook     *notebook,
 	  gtk_widget_grab_focus (GTK_WIDGET (notebook));
     }
   
+  gtk_notebook_update_tab_states (notebook);
   gtk_widget_queue_resize (GTK_WIDGET (notebook));
   g_object_notify (G_OBJECT (notebook), "page");
 }
@@ -4091,15 +4113,14 @@ gtk_notebook_insert_page_menu (GtkNotebook *notebook,
       gtk_notebook_switch_focus_tab (notebook, NULL);
     }
 
+  gtk_notebook_update_tab_states (notebook);
+
   if (tab_label)
     page->mnemonic_activate_signal =
       g_signal_connect (tab_label,
 			"mnemonic_activate",
 			G_CALLBACK (gtk_notebook_mnemonic_activate_switch_page),
 			notebook);
-
-  if (notebook->show_tabs && GTK_WIDGET_MAPPED (notebook))
-    gdk_window_show_unraised (notebook->event_window);
 
   gtk_widget_child_notify (child, "tab_expand");
   gtk_widget_child_notify (child, "tab_fill");
@@ -4782,6 +4803,8 @@ gtk_notebook_set_tab_label (GtkNotebook *notebook,
       gtk_widget_show (page->tab_label);
       gtk_widget_queue_resize (GTK_WIDGET (notebook));
     }
+
+  gtk_notebook_update_tab_states (notebook);
   gtk_widget_child_notify (child, "tab_label");
 }
 
@@ -4987,7 +5010,8 @@ gtk_notebook_child_reordered (GtkNotebook     *notebook,
       gtk_container_remove (GTK_CONTAINER (notebook->menu), menu_item);
       gtk_notebook_menu_item_create (notebook, g_list_find (notebook->children, page));
     }
-  
+
+  gtk_notebook_update_tab_states (notebook);
   gtk_notebook_update_labels (notebook);
 }
 

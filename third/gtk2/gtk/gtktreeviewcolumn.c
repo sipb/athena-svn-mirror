@@ -1103,8 +1103,9 @@ _gtk_tree_view_column_count_special_cells (GtkTreeViewColumn *column)
     {
       GtkTreeViewColumnCellInfo *cellinfo = list->data;
 
-      if (cellinfo->cell->mode == GTK_CELL_RENDERER_MODE_EDITABLE ||
-	  cellinfo->cell->mode == GTK_CELL_RENDERER_MODE_ACTIVATABLE)
+      if ((cellinfo->cell->mode == GTK_CELL_RENDERER_MODE_EDITABLE ||
+	  cellinfo->cell->mode == GTK_CELL_RENDERER_MODE_ACTIVATABLE) &&
+	  cellinfo->cell->visible)
 	i++;
     }
 
@@ -2109,7 +2110,7 @@ gtk_tree_view_column_set_sort_column_id (GtkTreeViewColumn *tree_column,
 					 gint               sort_column_id)
 {
   g_return_if_fail (GTK_IS_TREE_VIEW_COLUMN (tree_column));
-  g_return_if_fail (sort_column_id >= 0);
+  g_return_if_fail (sort_column_id >= -1);
 
   if (tree_column->sort_column_id == sort_column_id)
     return;
@@ -2119,6 +2120,8 @@ gtk_tree_view_column_set_sort_column_id (GtkTreeViewColumn *tree_column,
   /* Handle unsetting the id */
   if (sort_column_id == -1)
     {
+      GtkTreeModel *model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree_column->tree_view));
+
       if (tree_column->sort_clicked_signal)
 	{
 	  g_signal_handler_disconnect (tree_column, tree_column->sort_clicked_signal);
@@ -2127,12 +2130,13 @@ gtk_tree_view_column_set_sort_column_id (GtkTreeViewColumn *tree_column,
 
       if (tree_column->sort_column_changed_signal)
 	{
-	  g_signal_handler_disconnect (tree_column, tree_column->sort_column_changed_signal);
+	  g_signal_handler_disconnect (model, tree_column->sort_column_changed_signal);
 	  tree_column->sort_column_changed_signal = 0;
 	}
 
       gtk_tree_view_column_set_sort_order (tree_column, GTK_SORT_ASCENDING);
       gtk_tree_view_column_set_sort_indicator (tree_column, FALSE);
+      gtk_tree_view_column_set_clickable (tree_column, FALSE);
       return;
     }
 
@@ -2465,7 +2469,7 @@ gtk_tree_view_column_cell_process_action (GtkTreeViewColumn  *tree_column,
       full_requested_width += info->requested_width;
     }
 
-  extra_space = background_area->width - full_requested_width;
+  extra_space = background_area->width - full_requested_width - dx;
   if (extra_space < 0)
     extra_space = 0;
   else if (extra_space > 0 && expand_cell_count > 0)
@@ -3253,7 +3257,8 @@ _gtk_tree_view_column_get_neighbor_sizes (GtkTreeViewColumn *column,
 	  if (info->cell == cell)
 	    break;
 
-	  *left += info->real_width;
+	  if (info->cell->visible)
+	    *left += info->real_width;
 	}
     }
 
@@ -3283,7 +3288,8 @@ _gtk_tree_view_column_get_neighbor_sizes (GtkTreeViewColumn *column,
 	      GtkTreeViewColumnCellInfo *info =
 	        (GtkTreeViewColumnCellInfo *)list->data;
 
-	      *right += info->real_width;
+	      if (info->cell->visible)
+	        *right += info->real_width;
 	    }
 	}
     }
@@ -3309,7 +3315,9 @@ gtk_tree_view_column_cell_get_position (GtkTreeViewColumn *tree_column,
           found_cell = TRUE;
           break;
         }
-      current_x += cellinfo->real_width;
+
+      if (cellinfo->cell->visible)
+        current_x += cellinfo->real_width;
     }
 
   if (found_cell)

@@ -375,6 +375,7 @@ INCLUDES = @STRIP_BEGIN@ 			\
 	-DGTK_BINARY_VERSION=\"@GTK_BINARY_VERSION@\"	\
 	-DG_DISABLE_DEPRECATED			\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
+	-DPREFIX=\"$(prefix)\"			\
 	@INCLUDED_LOADER_DEFINE@ 		\
 	@GTK_DEBUG_FLAGS@			\
 	@GDK_PIXBUF_DEP_CFLAGS@			\
@@ -456,8 +457,6 @@ MAINTAINERCLEANFILES = $(gdk_pixbuf_built_headers) $(gdk_pixbuf_built_cfiles) gd
 
 EXTRA_DIST = \
         gdk-pixbuf-csource.1    \
-	makefile.mingw		\
-	makefile.mingw.in	\
 	makefile.msc		\
 	gdk_pixbuf.def		\
 	gdk_pixbuf.rc		\
@@ -481,7 +480,7 @@ EXTRA_DIST = \
 @CROSS_COMPILING_FALSE@RUN_QUERY_LOADER_TEST = @CROSS_COMPILING_FALSE@test -z "$(DESTDIR)"
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES =  makefile.mingw gdk_pixbuf.rc gdk-pixbuf-features.h
+CONFIG_CLEAN_FILES =  gdk_pixbuf.rc gdk-pixbuf-features.h
 LTLIBRARIES =  $(lib_LTLIBRARIES) $(loader_LTLIBRARIES) \
 $(noinst_LTLIBRARIES)
 
@@ -604,7 +603,7 @@ DATA =  $(noinst_DATA)
 HEADERS =  $(libgdk_pixbufinclude_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in \
-gdk-pixbuf-features.h.in gdk_pixbuf.rc.in makefile.mingw.in
+gdk-pixbuf-features.h.in gdk_pixbuf.rc.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -624,8 +623,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-makefile.mingw: $(top_builddir)/config.status makefile.mingw.in
-	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 gdk_pixbuf.rc: $(top_builddir)/config.status gdk_pixbuf.rc.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 gdk-pixbuf-features.h: $(top_builddir)/config.status gdk-pixbuf-features.h.in
@@ -1349,12 +1346,13 @@ install-data-local: install-ms-lib install-libtool-import-lib
 	  echo "***" ; \
 	fi
 
-all-local: gdk-pixbuf.loaders
+@CROSS_COMPILING_FALSE@all-local: gdk-pixbuf.loaders
 
 gdk-pixbuf.loaders: $(loader_LTLIBRARIES) gdk-pixbuf-query-loaders
-	if find . -name 'libpixbufloader-*.so' | grep 'so' > /dev/null ; then \
+	LOADERS=`echo libpixbufloader-*.la` ; \
+	if test "x$$LOADERS" != 'xlibpixbufloader-*.la' ; then \
           echo "Writing a gdk-pixbuf.loader file to use when running examples before installing gdk-pixbuf."; \
-	  GDK_PIXBUF_MODULEDIR=.libs $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders > ./gdk-pixbuf.loaders ;\
+	  $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders $$LOADERS > ./gdk-pixbuf.loaders ;\
 	else \
           echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
 	  touch gdk-pixbuf.loaders; \

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Running GTK+ Applications</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Running GTK+ Applications</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -95,12 +95,12 @@ debugging, but it will slow down the performance considerably.
 This option is only available if GTK+ has been configured with
 <tt>--gdk-target=x11</tt>.
 </p><p><b><tt>--gxid-host <i><tt>host</tt></i></tt>. </b>
-The host to contact the gxid daemon on; overwrites 
+The host to contact the gxid daemon on; overrides 
 the <a href="gtk-running.html#GXID"><tt>GXID_HOST</tt></a> environment variable.
 This option is only available if GTK+ has been configured with
 <tt>--gdk-target=x11</tt>.
 </p><p><b><tt>--gxid-port <i><tt>port</tt></i></tt>. </b>
-The port for the connection to gxid; overwrites 
+The port for the connection to gxid; overrides 
 the <a href="gtk-running.html#GXID"><tt>GXID_PORT</tt></a> environment variable.
 This option is only available if GTK+ has been configured with
 <tt>--gdk-target=x11</tt>.
@@ -155,8 +155,8 @@ or <tt>DISPLAY</tt>; mostly to determine paths to look for certain files.
     from the locale. 
   </p><p><a name="im-module-file"></a><b><tt>GTK_IM_MODULE_FILE</tt>. </b>
     Specifies the file listing the IM modules to load. This environment
-    variable overwrites the <tt>im_module_file</tt> specified in 
-    the RC files, which in turn overwrites the default value 
+    variable overrides the <tt>im_module_file</tt> specified in 
+    the RC files, which in turn overrides the default value 
     <tt><i><tt>sysconfdir</tt></i>/gtk-2.0/gtk.immodules</tt>
     (<i><tt>sysconfdir</tt></i> is the sysconfdir specified when GTK+ was configured, 
      usually <tt>/usr/local/etc</tt>.)
@@ -175,7 +175,7 @@ Pango, not by GTK+ itself, but we list them here for completeness
 nevertheless.
 </p><p><b><tt>GDK_PIXBUF_MODULE_FILE</tt>. </b>
     Specifies the file listing the GdkPixbuf loader modules to load. 
-    This environment variable overwrites the default value 
+    This environment variable overrides the default value 
     <tt><i><tt>sysconfdir</tt></i>/gtk-2.0/gdk-pixbuf.loaders</tt>
     (<i><tt>sysconfdir</tt></i> is the sysconfdir specified when
 	  GTK+ was configured, usually <tt>/usr/local/etc</tt>.)

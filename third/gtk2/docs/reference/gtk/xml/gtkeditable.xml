@@ -62,7 +62,7 @@ void        <link linkend="gtk-editable-set-editable">gtk_editable_set_editable<
 <refsect1>
 <title>Implementations</title>
 <para>
-GtkEditable is implemented by <link linkend="GtkText">GtkText</link>, <link linkend="GtkEntry">GtkEntry</link>, <link linkend="GtkSpinButton">GtkSpinButton</link> and <link linkend="GtkOldEditable">GtkOldEditable</link>.
+GtkEditable is implemented by <link linkend="GtkEntry">GtkEntry</link>, <link linkend="GtkOldEditable">GtkOldEditable</link>, <link linkend="GtkSpinButton">GtkSpinButton</link> and <link linkend="GtkText">GtkText</link>.
 </para>
 </refsect1>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkWidget</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkWidget</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -1187,6 +1187,15 @@ style properties and <a href="GtkWidget.html#gtk-widget-style-get-property">gtk_
 </p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GtkWidget-struct"></a>struct GtkWidget</h3><pre class="programlisting">struct GtkWidget;</pre><p>
 
 </p></div><hr><div class="refsect2"><h3><a name="GtkWidgetClass"></a>struct GtkWidgetClass</h3><pre class="programlisting">struct GtkWidgetClass {
+
+  /* The object class structure needs to be the first
+   *  element in the widget class structure in order for
+   *  the class mechanism to work correctly. This allows a
+   *  GtkWidgetClass pointer to be cast to a GtkObjectClass
+   *  pointer.
+   */
+  GtkObjectClass parent_class;
+
   
   guint activate_signal;
 

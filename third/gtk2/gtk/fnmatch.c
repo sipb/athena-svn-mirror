@@ -46,9 +46,8 @@ get_char (const char **str)
   gunichar c = g_utf8_get_char (*str);
   *str = g_utf8_next_char (*str);
 
-#if defined(G_OS_WIN32) || defined(G_WITH_CYGWIN)
-  if (c <= 0xff)
-      c = g_ascii_tolower (c);
+#ifdef G_PLATFORM_WIN32
+  c = g_unichar_tolower (c);
 #endif
 
   return c;
@@ -256,7 +255,7 @@ _gtk_fnmatch (const char *pattern,
   return gtk_fnmatch_intern (pattern, string, TRUE);
 }
 
-#define FNMATCH_TEST_CASES
+#undef FNMATCH_TEST_CASES
 #ifdef FNMATCH_TEST_CASES
 
 #define TEST(pat, str, result) \
