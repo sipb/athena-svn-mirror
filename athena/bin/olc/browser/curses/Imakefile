@@ -7,8 +7,8 @@
 #    For copying and distribution information, see the file "mit-copyright.h".
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v $
-#	$Author: lwvanels $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.6 1991-06-30 13:46:51 lwvanels Exp $
+#	$Author: ghudson $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.7 1997-04-30 17:23:57 ghudson Exp $
 #
 
 SRCS	= cref.c commands.c display.c cref_utils.c globals.c update.c \
@@ -17,19 +17,22 @@ OBJS	= cref.o commands.o display.o cref_utils.o globals.o update.o \
 	  signal.o
 
 
+PROGRAM =	olc_browser
+
+DEFINES =	$(PROJECT_DEFS)
 #if DoUsageLog
-LOCAL_LIBS = $(LOGGERLIB)
-SYS_LIBRARIES = $(CursesLib) $(HesiodLib)
+LOCAL_LIBS = $(CONFIGLIB) $(LOGGERLIB)
+SYS_LIBRARIES = $(CursesLib) $(HesiodLib) $(EXTRA_LIBRARIES)
 #else
-LOCAL_LIBS =
-SYS_LIBRARIES = $(CursesLib)
+LOCAL_LIBS = $(CONFIGLIB)
+SYS_LIBRARIES = $(CursesLib) $(EXTRA_LIBRARIES)
 #endif
 
 
-NormalProgramTarget(olc_browser,$(OBJS),,$(LOCAL_LIBS),$(SYS_LIBRARIES))
-SaberProgramTarget(olc_browser,$(SRCS),$(OBJS),$(LOCAL_LIBS),$(SYS_LIBRARIES))
+NormalProgramTarget($(PROGRAM),$(OBJS),,$(LOCAL_LIBS),$(SYS_LIBRARIES))
+SaberProgramTarget($(PROGRAM),$(SRCS),$(OBJS),$(LOCAL_LIBS),$(SYS_LIBRARIES))
 
 DependTarget()
 LintTarget()
 
-AllTarget(olc_browser)
+AllTarget($(PROGRAM))
