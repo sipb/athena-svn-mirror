@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.84 1999-05-06 16:05:50 ghudson Exp $ */
+/* $Id: xlogin.c,v 1.85 1999-05-11 18:10:05 rbasch Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1229,6 +1229,10 @@ void restartCB(w, s, unused)
      char *s;
      caddr_t unused;
 {
+#ifdef sgi
+  /* On IRIX, we must tell nanny to restart X. */
+  nanny_restartX();
+#endif
   exit(0);
 }
 

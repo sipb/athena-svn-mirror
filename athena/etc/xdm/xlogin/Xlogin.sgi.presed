@@ -1,4 +1,4 @@
-! $Id: Xlogin.sgi.presed,v 1.10 1999-05-06 16:07:43 ghudson Exp $
+! $Id: Xlogin.sgi.presed,v 1.11 1999-05-11 18:10:04 rbasch Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -431,7 +431,7 @@ xlogin.Geometry: 		580x325+350+180
 				omenuEntry6, menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
 				omenuEntry10, omenuEntry11, omenuEntry12, \
-				omenuEntry13, omenuEntry14
+				omenuEntry13, omenuEntry14, omenuEntry15
 
 *menuLine.wcClassName:		SmeLine
 *omenuEntry1.wcClassName:	SmeBSB
@@ -446,6 +446,7 @@ xlogin.Geometry: 		580x325+350+180
 *omenuEntry12.wcClassName:	SmeBSB
 *omenuEntry13.wcClassName:	SmeBSB
 *omenuEntry14.wcClassName:	SmeBSB
+*omenuEntry15.wcClassName:	SmeBSB
 
 *omenuEntry1.label:		Information
 *omenuEntry1.justify:		center
@@ -467,12 +468,15 @@ xlogin.Geometry: 		580x325+350+180
 *omenuEntry10.callback:		signalConsoleCB(show)
 *omenuEntry11.label:		Shut Down Window System
 *omenuEntry11.callback:		windowShutdownCB()
-*omenuEntry12.label:		Eject Floppy (if present)
-*omenuEntry12.callback:		commandCB(eject /floppy)
-*omenuEntry13.label:		Eject Zip Disk (if present)
-*omenuEntry13.callback:		commmandCB(attachandrun mtools mzip mzip -e z:)
-*omenuEntry14.label:		Eject CD-ROM (if present)
-*omenuEntry14.callback:		commandCB(eject /cdrom)
+*omenuEntry12.label:		Restart X in 8-bit Mode
+*omenuEntry12.callback:		commandCB(touch /var/athena/x-8-bit), \
+				restartCB()
+*omenuEntry13.label:		Eject Floppy (if present)
+*omenuEntry13.callback:		commandCB(eject /floppy)
+*omenuEntry14.label:		Eject Zip Disk (if present)
+*omenuEntry14.callback:		commandCB(eject /zip)
+*omenuEntry15.label:		Eject CD-ROM (if present)
+*omenuEntry15.callback:		commandCB(eject /CDROM)
 
 *omenuEntry3.rightBitmap:	Shift-F2
 *omenuEntry5.rightBitmap:	Shift-F4
