@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.13 1991-06-30 02:40:28 probe Exp $
+ *   $Id: quota.c,v 1.14 1991-07-09 10:58:09 epeisach Exp $
  *   
  *   Uses the rcquota rpc call for group and user quotas
  */
@@ -48,7 +48,13 @@ struct fs_data mountbuffer[NMOUNT];
 
 #endif /* !_IBMR2 */
 
+#ifdef ultrix
+#undef mntent
+#endif
 #include "attach.h"
+#ifdef ultrix
+#define mntent fs_data
+#endif
 
 #if defined(vax) || defined(ibm032)
 #include <qoent.h>
