@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.13 1997-12-02 03:16:04 cfields Exp $
+# $Id: Xsession.sgi,v 1.14 1998-01-30 22:11:17 rbasch Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -17,9 +17,44 @@ if [ -f .noignore ]; then
 fi
 
 host=`hostname`
-dotdesktop=.desktop_indy
-hostdir=$dotdesktop/athenahosts
 ldesktop=.desktop-$host
+indydotdesktop=.desktop_indy
+o2dotdesktop=.desktop_o2
+
+# The O2/6.3 dotdesktop directory is incompatible with the Indy/5.3/6.2
+# contents.  So, for an O2 machine, set the dotdesktop to be .desktop_o2.
+# If this directory does not yet exist, and the .desktop_indy does
+# exist, create .desktop_o2 as a copy of .desktop_indy; the autoconvert
+# program, called from Xsession.dt, will update the directory contents
+# as needed.
+# (see /var/X11/xdm/firsttime/autoconvert).
+machine=`uname -m`
+if [ "$machine" = "IP32" ]; then
+  dotdesktop=$o2dotdesktop
+  if [ -d $indydotdesktop -a ! -d $o2dotdesktop ]; then
+    cp -Rp $indydotdesktop $o2dotdesktop 2>/dev/null
+    if [ $? != 0 ]; then
+      # Copy failed, clean up
+      rm -rf $o2dotdesktop
+    fi
+  fi
+  # Remove an existing .desktop-<host> if it points to the indy directory.
+  # Also remove the flag file in athenahosts for consistency.
+  # (The proper link will be created below).
+  if [ -l $ldesktop -a -d $indydotdesktop ]; then
+    indyinode=`/sbin/stat -iq $indydotdesktop`
+    if [ "`/sbin/stat -iq $ldesktop`" = "$indyinode" ]; then
+      rm -f $ldesktop
+      rm -f $indydotdesktop/athenahosts/$host
+      rm -f $o2dotdesktop/athenahosts/$host
+    fi
+  fi
+else
+  # Not an O2
+  dotdesktop=$indydotdesktop
+fi
+
+hostdir=$dotdesktop/athenahosts
 
 if [ ! -r $hostdir ]; then
   mkdir -p $hostdir
