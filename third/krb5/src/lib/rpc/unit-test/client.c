@@ -1,12 +1,12 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: client.c,v 1.1.1.5 2004-02-27 04:18:56 zacheiss Exp $
+ * $Id: client.c,v 1.1.1.6 2005-03-14 19:45:55 zacheiss Exp $
  *
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.5 2004-02-27 04:18:56 zacheiss Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.6 2005-03-14 19:45:55 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
@@ -32,7 +32,7 @@ struct auth_gssapi_data {
 
      /* pre-serialized ah_cred */
      u_char cred_buf[MAX_AUTH_BYTES];
-     rpc_int32 cred_len;
+     int32_t cred_len;
 };
 #define AUTH_PRIVATE(auth) ((struct auth_gssapi_data *)auth->ah_private)
 

@@ -2,7 +2,7 @@
  * Data Types for policy and principal information that
  * exists in the respective databases.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.6 2004-02-27 03:59:44 zacheiss Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.7 2005-03-14 19:46:29 zacheiss Exp $
  *
  * This file was originally created with rpcgen.
  * It has been hacked up since then.
@@ -69,12 +69,12 @@ typedef struct _osa_princ_ent_t {
 typedef struct _osa_policy_ent_t {
     int		version;
     char	*name;
-    rpc_u_int32	pw_min_life;
-    rpc_u_int32	pw_max_life;
-    rpc_u_int32	pw_min_length;
-    rpc_u_int32	pw_min_classes;
-    rpc_u_int32	pw_history_num;
-    rpc_u_int32	policy_refcnt;
+    uint32_t	pw_min_life;
+    uint32_t	pw_max_life;
+    uint32_t	pw_min_length;
+    uint32_t	pw_min_classes;
+    uint32_t	pw_history_num;
+    uint32_t	policy_refcnt;
 } osa_policy_ent_rec, *osa_policy_ent_t;
 
 typedef	void	(*osa_adb_iter_princ_func) (void *, osa_princ_ent_t);

@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: gss-misc.h,v 1.1.1.1 2004-02-27 04:06:52 zacheiss Exp $
+ * $Id: gss-misc.h,v 1.1.1.2 2005-03-14 19:43:38 zacheiss Exp $
  */
 
 #ifndef _GSSMISC_H_

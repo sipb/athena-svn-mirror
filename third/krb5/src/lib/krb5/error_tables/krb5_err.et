@@ -170,7 +170,7 @@ error_code KRB5PLACEHOLD_125,	"KRB5 error code 125"
 error_code KRB5PLACEHOLD_126,	"KRB5 error code 126"
 error_code KRB5PLACEHOLD_127,	"KRB5 error code 127"
 
-error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.6 2004-02-27 04:06:27 zacheiss Exp $"
+error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.7 2005-03-14 19:48:23 zacheiss Exp $"
 
 error_code KRB5_LIBOS_BADLOCKFLAG,	"Invalid flag for file lock mode"
 error_code KRB5_LIBOS_CANTREADPWD,	"Cannot read password"
@@ -340,4 +340,6 @@ error_code KRB5_ERR_NO_SERVICE,	"service not available"
 
 error_code KRB5_CC_READONLY,    "Ccache function not supported: read-only ccache type"
 error_code KRB5_CC_NOSUPP,      "Ccache function not supported: not implemented"
+
+error_code KRB5_DELTAT_BADFORMAT,	"Invalid format of Kerberos lifetime or clock skew string"
 end

@@ -641,7 +641,7 @@ Previous:<a rel=previous href="#Building%20Kerberos%20V5">Building Kerberos V5</
 Up:<a rel=up href="#Building%20Kerberos%20V5">Building Kerberos V5</a>
 <br>
 
-<h2>Build Requirements</h2>
+<h2>Organization of the Source Directory</h2>
 
 <p>Below is a brief overview of the organization of the complete source
 directory.  More detailed descriptions follow.
@@ -738,7 +738,7 @@ a credentials cache, or the keys held in a keytab file.
 <dd>This program changes a user's Kerberos password.
 
 <dt><b>ksu</b>
-<dd>This program is a Kerberized verions of the <code>su</code> program that is
+<dd>This program is a Kerberized version of the <code>su</code> program that is
 meant to securely change the real and effective user ID to that of the
 target user and to create a new security context.
 
@@ -898,7 +898,8 @@ functions which parse the Kerberos configuration files (<code>krb5.conf</code>
 and <code>kdc.conf</code>).  Also in this directory are the Kerberos error table
 library and utilities (<i>et</i>), the Sub-system library and utilities
 (<i>ss</i>), database utilities (<i>db2</i>), pseudo-terminal utilities
-(<i>pty</i>), and bug-reporting program <code>send-pr</code>.
+(<i>pty</i>), bug-reporting program <code>send-pr</code>, and a generic
+support library <code>support</code> used by several of our other libraries.
 
 <p><hr>
 Node:<a name="Build%20Requirements">Build Requirements</a>,
@@ -907,12 +908,17 @@ Previous:<a rel=previous href="#Organization%20of%20the%20Source%20Directory">Or
 Up:<a rel=up href="#Building%20Kerberos%20V5">Building Kerberos V5</a>
 <br>
 
-<h2>Organization of the Source Directory</h2>
+<h2>Build Requirements</h2>
 
 <p>In order to build Kerberos V5, you will need approximately 60-70
 megabytes of disk space.  The exact amount will vary depending on the
 platform and whether the distribution is compiled with debugging symbol
 tables or not.
+
+<p>Your C compiler must conform to ANSI C (ISO/IEC 9899:1990, "c89"). 
+Some operating systems do not have an ANSI C compiler, or their
+default compiler requires extra command-line options to enable ANSI C
+conformance.
 
 <p>If you wish to keep a separate <dfn>build tree</dfn>, which contains the compiled
 <code>*.o</code> file and executables, separate from your source tree, you
@@ -1073,6 +1079,11 @@ libraries into <code>DESTDIR/PREFIX/lib</code>, etc.
 <p>Note that if you want to test the build (see <a href="#Testing%20the%20Build">Testing the Build</a>),
 you usually do not need to do a <code>make install</code> first.
 
+<p>Some implementations of <code>make</code> allow multiple commands to be run in
+parallel, for faster builds.  We test our Makefiles in parallel builds with
+GNU <code>make</code> only; they may not be compatible with other parallel build
+implementations.
+
 <p><hr>
 Node:<a name="Testing%20the%20Build">Testing the Build</a>,
 Next:<a rel=next href="#Options%20to%20Configure">Options to Configure</a>,
@@ -1111,7 +1122,7 @@ client/server activities.
 
 <p>DejaGnu may be found wherever GNU software is archived.
 
-<p>Most of the tests are setup to run as a non-privledged user.  For some
+<p>Most of the tests are setup to run as a non-privileged user.  For some
 of the krb-root tests to work properly, either (a) the user running the
 tests must not have a .k5login file in the home directory or (b) the
 .k5login file must contain an entry for <code>&lt;username&gt;@KRBTEST.COM</code>. 
@@ -1472,14 +1483,15 @@ Up:<a rel=up href="#Building%20Kerberos%20V5">Building Kerberos V5</a>
 
 <p>This section details operating system incompatibilities with Kerberos V5
 which have been reported to the developers at MIT.  If you find
-additional incompatibilities, and/or discover work arounds to such
+additional incompatibilities, and/or discover workarounds to such
 problems, please send a report via the <code>krb5-send-pr</code> program. 
 Thanks!
 
 <ul>
 <li><a href="#AIX">AIX</a>: 
 <li><a href="#Alpha%20OSF%2f1%20V1.3">Alpha OSF/1 V1.3</a>: 
-<li><a href="#Alpha%20OSF%2f1%20(Digital%20Unix)%20V2.0++">Alpha OSF/1 (Digital Unix) V2.0++</a>: 
+<li><a href="#Alpha%20OSF%2f1%20V2.0">Alpha OSF/1 V2.0</a>: 
+<li><a href="#Alpha%20OSF%2f1%20V4.0">Alpha OSF/1 V4.0</a>: 
 <li><a href="#BSDI">BSDI</a>: 
 <li><a href="#HPUX">HPUX</a>: 
 <li><a href="#Solaris%20versions%202.0%20through%202.3">Solaris versions 2.0 through 2.3</a>: 
@@ -1504,7 +1516,7 @@ compiler works fine.  This problem is fixed using the AIX 4.1 linker.
 
 <p><hr>
 Node:<a name="Alpha%20OSF%2f1%20V1.3">Alpha OSF/1 V1.3</a>,
-Next:<a rel=next href="#Alpha%20OSF%2f1%20(Digital%20Unix)%20V2.0++">Alpha OSF/1 (Digital Unix) V2.0++</a>,
+Next:<a rel=next href="#Alpha%20OSF%2f1%20V2.0">Alpha OSF/1 V2.0</a>,
 Previous:<a rel=previous href="#AIX">AIX</a>,
 Up:<a rel=up href="#OS%20Incompatibilities">OS Incompatibilities</a>
 <br>
@@ -1518,13 +1530,13 @@ causes the <code>asn.1</code> library to be compiled incorrectly.
 fine, both with or without optimization.
 
 <p><hr>
-Node:<a name="Alpha%20OSF%2f1%20(Digital%20Unix)%20V2.0++">Alpha OSF/1 (Digital Unix) V2.0++</a>,
-Next:<a rel=next href="#BSDI">BSDI</a>,
+Node:<a name="Alpha%20OSF%2f1%20V2.0">Alpha OSF/1 V2.0</a>,
+Next:<a rel=next href="#Alpha%20OSF%2f1%20V4.0">Alpha OSF/1 V4.0</a>,
 Previous:<a rel=previous href="#Alpha%20OSF%2f1%20V1.3">Alpha OSF/1 V1.3</a>,
 Up:<a rel=up href="#OS%20Incompatibilities">OS Incompatibilities</a>
 <br>
 
-<h3>Alpha OSF/1 V2.0++</h3>
+<h3>Alpha OSF/1 V2.0</h3>
 
 <p>There used to be a bug when using the native compiler in compiling
 <code>md4.c</code> when compiled without either the <code>-O</code> or <code>-g</code>
@@ -1533,13 +1545,29 @@ under V2.1, but we do not have access to V2.0 to test and see if the
 problem would exist there. (We welcome feedback on this issue). There
 was never a problem in using GCC version 2.6.3.
 
-<p>In version 3.2 and beyond of the operating system, we have not seen any
-problems with the native compiler.
+<p>In version 3.2 and beyond of the operating system, we have not seen
+this sort of problem with the native compiler.
+
+<p><hr>
+Node:<a name="Alpha%20OSF%2f1%20V4.0">Alpha OSF/1 V4.0</a>,
+Next:<a rel=next href="#BSDI">BSDI</a>,
+Previous:<a rel=previous href="#Alpha%20OSF%2f1%20V2.0">Alpha OSF/1 V2.0</a>,
+Up:<a rel=up href="#OS%20Incompatibilities">OS Incompatibilities</a>
+<br>
+
+<h3>Alpha OSF/1 (Digital UNIX) V4.0</h3>
+
+<p>The C compiler provided with Alpha OSF/1 V4.0 (a.k.a. Digital UNIX)
+defaults to an extended K&amp;R C mode, not ANSI C.  You need to provide
+the <code>-std</code> argument to the compiler (i.e., <code>./configure
+CC='cc -std'</code>) to enable extended ANSI C mode.  More recent versions
+of the operating system, such as 5.0, seem to have C compilers which
+default to <code>-std</code>.
 
 <p><hr>
 Node:<a name="BSDI">BSDI</a>,
 Next:<a rel=next href="#HPUX">HPUX</a>,
-Previous:<a rel=previous href="#Alpha%20OSF%2f1%20(Digital%20Unix)%20V2.0++">Alpha OSF/1 (Digital Unix) V2.0++</a>,
+Previous:<a rel=previous href="#Alpha%20OSF%2f1%20V4.0">Alpha OSF/1 V4.0</a>,
 Up:<a rel=up href="#OS%20Incompatibilities">OS Incompatibilities</a>
 <br>
 
@@ -1651,6 +1679,12 @@ elevated priority limits.
 
 <p>as root, where <code>nnnn</code> is the pid of the shell whose priority
 limit you wish to raise.
+
+<p>Sun has released kernel patches for this race condition.  Apply patch
+117171-11 for sparc, or patch 117172-11 for x86.  Later revisions of
+the patches should also work.  It is not necessary to run "make
+check" from a shell with elevated priority limits once the patch has
+been applied.
 
 <p><hr>
 Node:<a name="SGI%20Irix%205.X">SGI Irix 5.X</a>,
@@ -2469,7 +2503,7 @@ the name of the directory in which you installed Kerberos V5.)
 
 kdclist = "kerberos-1.mit.edu kerberos-2.mit.edu"
 
-/usr/local/sbin/kdb5_util -R "dump
+/usr/local/sbin/kdb5_util "dump
 =&gt; /usr/local/var/krb5kdc/slave_datatrans"
 
 for kdc in $kdclist
@@ -3265,7 +3299,7 @@ an example.
 </ul>
 <li><a href="#Building%20Kerberos%20V5">Building Kerberos V5</a>
 <ul>
-<li><a href="#Organization%20of%20the%20Source%20Directory">Build Requirements</a>
+<li><a href="#Organization%20of%20the%20Source%20Directory">Organization of the Source Directory</a>
 <ul>
 <li><a href="#The%20appl%20Directory">The appl Directory</a>
 <li><a href="#The%20clients%20Directory">The clients Directory</a>
@@ -3279,7 +3313,7 @@ an example.
 <li><a href="#The%20slave%20Directory">The slave Directory</a>
 <li><a href="#The%20util%20Directory">The util Directory</a>
 </ul>
-<li><a href="#Build%20Requirements">Organization of the Source Directory</a>
+<li><a href="#Build%20Requirements">Build Requirements</a>
 <li><a href="#Unpacking%20the%20Sources">Unpacking the Sources</a>
 <li><a href="#Doing%20the%20Build">Doing the Build</a>
 <ul>
@@ -3300,7 +3334,8 @@ an example.
 <ul>
 <li><a href="#AIX">AIX</a>
 <li><a href="#Alpha%20OSF%2f1%20V1.3">Alpha OSF/1 V1.3</a>
-<li><a href="#Alpha%20OSF%2f1%20(Digital%20Unix)%20V2.0++">Alpha OSF/1 V2.0++</a>
+<li><a href="#Alpha%20OSF%2f1%20V2.0">Alpha OSF/1 V2.0</a>
+<li><a href="#Alpha%20OSF%2f1%20V4.0">Alpha OSF/1 (Digital UNIX) V4.0</a>
 <li><a href="#BSDI">BSDI</a>
 <li><a href="#HPUX">HPUX</a>
 <li><a href="#Solaris%20versions%202.0%20through%202.3">Solaris versions 2.0 through 2.3</a>

@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/clnt_policy.c,v 1.1.1.5 2004-02-27 04:17:06 zacheiss Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/clnt_policy.c,v 1.1.1.6 2005-03-14 19:43:51 zacheiss Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/clnt_policy.c,v 1.1.1.5 2004-02-27 04:17:06 zacheiss Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/clnt_policy.c,v 1.1.1.6 2005-03-14 19:43:51 zacheiss Exp $";
 #endif
 
 #include    <gssrpc/rpc.h>
@@ -61,7 +61,6 @@ kadm5_delete_policy(void *server_handle, char *name)
 kadm5_ret_t
 kadm5_modify_policy(void *server_handle,
 			 kadm5_policy_ent_t policy, long mask)
-
 {
     mpol_arg		arg;
     generic_ret		*r;
@@ -84,7 +83,6 @@ kadm5_modify_policy(void *server_handle,
 
 kadm5_ret_t
 kadm5_get_policy(void *server_handle, char *name, kadm5_policy_ent_t ent)
-
 {
     gpol_arg	    arg;
     gpol_ret	    *r;
