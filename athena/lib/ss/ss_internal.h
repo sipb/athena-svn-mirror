@@ -17,7 +17,7 @@ typedef char BOOL;
 typedef struct _ss_abbrev_entry {
     char *name;			/* abbrev name */
     char **abbrev;		/* new tokens to insert */
-    int beginning_of_line : 1;
+    unsigned int beginning_of_line : 1;
 } ss_abbrev_entry;
 
 typedef struct _ss_abbrev_list {
@@ -47,8 +47,8 @@ typedef struct _ss_data {	/* init values */
     ss_request_table **rqt_tables;
     ss_abbrev_info *abbrev_info;
     struct {
-	int escape_disabled : 1,
-	    abbrevs_disabled : 1;
+	unsigned int escape_disabled : 1;
+	unsigned int abbrevs_disabled : 1;
     } flags;
     /* to get out */
     int abort;			/* exit subsystem */

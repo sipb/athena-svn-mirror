@@ -1,7 +1,7 @@
 /*
  * make_commands.c
  *
- * $Id: mk_cmds.c,v 1.8 1999-01-22 23:18:22 ghudson Exp $
+ * $Id: mk_cmds.c,v 1.9 1999-08-13 00:17:45 danw Exp $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *
@@ -86,7 +86,7 @@ main(argc, argv)
     return result;
 }
 
-yyerror(s)
+void yyerror(s)
     char *s;
 {
     fputs(s, stderr);

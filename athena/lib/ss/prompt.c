@@ -1,7 +1,7 @@
 /*
  * prompt.c: Routines for retrieving and setting a prompt.
  *
- * $Id: prompt.c,v 1.2 1999-01-22 23:18:23 ghudson Exp $
+ * $Id: prompt.c,v 1.3 1999-08-13 00:17:45 danw Exp $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *
@@ -13,8 +13,9 @@
 #include "ss_internal.h"
 
 static const char rcsid[] =
-    "$Id: prompt.c,v 1.2 1999-01-22 23:18:23 ghudson Exp $";
+    "$Id: prompt.c,v 1.3 1999-08-13 00:17:45 danw Exp $";
 
+void
 ss_set_prompt(sci_idx, new_prompt)
      int sci_idx;
      char *new_prompt;
