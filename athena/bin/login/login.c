@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.6 1987-08-06 16:42:55 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.7 1987-08-07 04:34:43 kubitron Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.6 1987-08-06 16:42:55 rfrench Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.7 1987-08-07 04:34:43 kubitron Exp $";
 #endif	lint
 
 /*
@@ -510,7 +510,7 @@ leavethis:
 	/*
 	 * If user not super-user, check for logins disabled.
 	 */
-	if (pwd->pw_uid != 0 && (nlfd = fopen(nolog, "r")) > 0) {
+	if (pwd->pw_uid != 0 && (nlfd = fopen(nolog, "r")) != 0) {
 	    while ((c = getc(nlfd)) != EOF)
 		putchar(c);
 	    fflush(stdout);
@@ -1439,7 +1439,7 @@ get_groups()
 		*ptr++ = '\0';
 	}
 
-	while (fgets(grbuf,sizeof grbuf,grin) > 0) {
+	while (fgets(grbuf,sizeof grbuf,grin) != 0) {
 		if (!*grbuf)
 			break;
 		grbuf[strlen(grbuf)-1] = '\0';
