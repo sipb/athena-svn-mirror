@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.10 1998-03-06 02:50:45 ghudson Exp $
+# $Id: syncconf.sh,v 1.10.2.1 1998-07-05 05:59:30 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -37,7 +37,7 @@ remove()
 
 move()
 {
-	$maybe mv "$1" "$2"
+	$maybe mv -f "$1" "$2"
 }
 
 quiet_move()
