@@ -20,12 +20,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.24 1990-08-20 04:46:10 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.25 1990-08-26 16:10:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.24 1990-08-20 04:46:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.25 1990-08-26 16:10:29 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -869,6 +869,7 @@ olc_ask(fd, request, auth)
   char msgbuf[BUF_SIZE];	      /* Message buffer. */
   char *question, *machinfo;
   int status;
+  int question_len;
   char topic[TOPIC_SIZE], *text;
   int qcount = 0;
 
@@ -949,19 +950,37 @@ olc_ask(fd, request, auth)
   
   strncpy(topic,text,TOPIC_SIZE);
 
-  question = read_text_from_fd(fd);
-  if(question == (char *) NULL)
+  text = read_text_from_fd(fd);
+  if(text == (char *) NULL)
     return(send_response(fd,ERROR));
   else
     if (request->version >= VERSION_5)
       send_response(fd, SUCCESS);
 
-  if (request->version >= VERSION_5)
+  /*
+   * question will be overwritten on the next read
+   * Need to save away info so the question doesn't get overwritten by the
+   * machine type information
+   */
+  
+  if (request->version >= VERSION_5) {
+    question_len = strlen(text);
+    question = malloc(question_len+1);
+    if (!question) {
+      log_error("Couldn't malloc %d bytes for question");
+      return(send_response(fd,ERROR));
+    }
+    question[question_len] = '\0';
+    strcpy(question,text);
     machinfo = read_text_from_fd(fd);
-  else
+  }
+  else {
+    question = text;
     machinfo = NULL;
-
+  }
   init_question(target,topic,question,machinfo);
+  if (request->version >= VERSION_5)
+    free(question);
   set_status(target, NOT_SEEN);
   strcpy(target->title,target->user->title1); 
 
