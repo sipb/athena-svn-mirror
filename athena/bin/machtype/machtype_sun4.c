@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.20 1998-03-11 20:25:19 ghudson Exp $
+ *    $Id: machtype_sun4.c,v 1.21 1998-03-27 03:52:28 rbasch Exp $
  *    $Locker:  $
  */
 
@@ -17,6 +17,8 @@
 #include <sys/file.h>
 #include <sys/cpu.h>
 #include <ctype.h>
+#include <dirent.h>
+#include <sys/vtoc.h>
 /* OpenPROM stuff */
 #include <sys/promif.h>
 #include <sys/ddi.h>
@@ -27,7 +29,6 @@
 #include <errno.h>
 
 int verbose =0;
-char mydisk[128];
 
 struct nlist nl[] = {
 #define X_cpu 0
@@ -358,21 +359,59 @@ do_disk(kernel, mf)
 char *kernel;
 int mf;
 {
-   int len;
+  DIR *dp;
+  struct dirent *de;
+  char path[MAXPATHLEN];
+  const char *devdir = "/dev/rdsk";
+  char *cp;
+  int fd;
+  int devlen;			/* Length of device name, w/o partition */
+  struct vtoc vtoc;
+  
+  dp = opendir(devdir);
+  if (dp == NULL)
+    {
+      fprintf(stderr, "Cannot open %s: %s\n", devdir, strerror(errno));
+      exit(1);
+    }
 
-   mf = open ("/dev/dsk/c0t3d0s0", O_RDONLY);
-   len = read (mf, mydisk, sizeof(mydisk)-1);
-   if (len != -1)
-     mydisk[len] = '\0';
+  while ((de = readdir(dp)) != NULL)
+    {
+      if ((!strcmp(de->d_name, ".")) || (!strcmp(de->d_name, "..")))
+	continue;
 
-   if (verbose)
-     printf("c0t3d0s0 : ");
-   if (mydisk[1] == 'U')
-     printf("%.7s\n", mydisk);
-   else
-     printf("%.15s\n", mydisk);
+      /* By convention partition (slice) 2 is the whole disk. */
+      cp = strrchr(de->d_name, 's');
+      if ((cp == NULL) || (strcmp(cp, "s2") != 0))
+	continue;
+      devlen = cp - de->d_name;		/* Get name length w/o partition */
+      sprintf(path, "%s/%s", devdir, de->d_name);
+      fd = open(path, O_RDONLY);
+      if (fd == -1)
+	continue;
 
-    return;
+      if ((read_vtoc(fd, &vtoc) < 0) || (vtoc.v_sanity != VTOC_SANE))
+	{
+	  close(fd);
+	  continue;
+	}
+      close(fd);
+
+      if (!verbose)
+	{
+	  /* Strip geometry info from the label text. */
+	  cp = strchr(vtoc.v_asciilabel, ' ');
+	  if (cp)
+	    *cp = '\0';
+	}
+
+      printf("%.*s: %.*s\n",
+	     devlen, de->d_name,
+	     LEN_DKL_ASCII, vtoc.v_asciilabel);
+    }
+
+  closedir(dp);
+  return;
 }
 
 #define MEG (1024*1024)

@@ -1,9 +1,9 @@
 /*
- * $Id: Imakefile,v 1.16 1997-06-27 22:44:39 ghudson Exp $
+ * $Id: Imakefile,v 1.17 1998-03-27 03:52:27 rbasch Exp $
  */
 
 #ifdef SOLARIS
-LIBS=-lkvm
+LIBS=-lkvm -ladm
 #endif
 
 #ifdef sgi
