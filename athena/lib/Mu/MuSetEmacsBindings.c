@@ -14,8 +14,12 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetEmacsBindings.c,v $
- * $Author: vanharen $
+ * $Author: cfields $
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  1990/08/30  12:40:31  vanharen
+ * Two strings were not terminated correctly -- the end-quotes were on the
+ * next line down.  GCC didn't complain, but other compilers did...
+ *
  * Revision 1.4  90/08/28  14:33:58  vanharen
  * added return binding for single-line bindings.
  * 
@@ -41,8 +45,10 @@
 
 static XtTranslations EmacsBindings = NULL;
 static char EmacsBindingsText[] =
-       "<Key>Delete:		delete-previous-character() \n\
-	Meta<Key>Delete:	kill-previous-word() \n\
+	"~Shift ~Ctrl ~Meta ~Alt <Key>osfDelete:       delete-previous-character() \n\
+	~Shift ~Ctrl  Meta ~Alt <Key>osfDelete: kill-previous-word() \n\
+	~Meta ~Alt <Key>osfBackSpace:   delete-previous-character() \n\
+	Meta ~Alt <Key>osfBackSpace:   kill-previous-word() \n\
 	Ctrl<Key>D:		delete-next-character() \n\
 	Meta<Key>D:		kill-next-word() \n\
 	Ctrl<Key>K:		kill-to-end-of-line() \n\
@@ -70,19 +76,21 @@ static char EmacsBindingsText[] =
 
 static XtTranslations SingleLineEmacsBindings = NULL;
 static char SingleLineEmacsBindingsText[] = 
-       "<Key>Delete:            delete-previous-character() \n\
-        Meta<Key>Delete:        kill-previous-word() \n\
-        Ctrl<Key>D:             delete-next-character() \n\
-        Meta<Key>D:             kill-next-word() \n\
-        Ctrl<Key>K:             kill-to-end-of-line() \n\
-        Ctrl<Key>W:             kill-selection() \n\
-        Ctrl<Key>Y:             unkill() \n\
-        Ctrl<Key>F:             forward-character() \n\
-        Ctrl<Key>B:             backward-character() \n\
-        Ctrl<Key>A:		beginning-of-line() \n\
+	"~Shift ~Ctrl ~Meta ~Alt <Key>osfDelete:       delete-previous-character() \n\
+	~Shift ~Ctrl  Meta ~Alt <Key>osfDelete: kill-previous-word() \n\
+	~Meta ~Alt <Key>osfBackSpace:   delete-previous-character() \n\
+	Meta ~Alt <Key>osfBackSpace:   kill-previous-word() \n\
+	Ctrl<Key>D:		delete-next-character() \n\
+	Meta<Key>D:		kill-next-word() \n\
+	Ctrl<Key>K:		kill-to-end-of-line() \n\
+	Ctrl<Key>W:		kill-selection() \n\
+	Ctrl<Key>Y:		unkill() \n\
+	Ctrl<Key>F:		forward-character() \n\
+	Ctrl<Key>B:		backward-character() \n\
+	Ctrl<Key>A:		beginning-of-line() \n\
 	Ctrl<Key>E:		end-of-line() \n\
-        Meta<Key>F:             forward-word() \n\
-        Meta<Key>B:             backward-word() \n\
+	Meta<Key>F:		forward-word() \n\
+	Meta<Key>B:		backward-word() \n\
 	~Shift Meta<Key><:	beginning-of-line() \n\
 	Shift Meta<Key><:	end-of-line() \n\
 	Meta<Key>>:		end-of-line() \n\
