@@ -510,7 +510,7 @@ MAKE_SHLIB_COMMAND=@MAKE_SHLIB_COMMAND@
 
 # flags for explicit libraries depending on this one,
 # e.g. "-R$(SHLIB_RPATH) $(SHLIB_SHLIB_DIRFLAGS) $(SHLIB_EXPLIBS)"
-SHLIB_EXPFLAGS=@SHLIB_EXPFLAGS@
+SHLIB_EXPFLAGS=@SHLIB_EXPFLAGS@ $(LDFLAGS)
 
 ## Parameters to be set by configure for use in libobj.in:
 
