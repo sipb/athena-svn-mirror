@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.3 1999-12-14 18:58:27 tb Exp $
+! $Id: Xlogin.linux.presed,v 1.4 1999-12-14 19:01:12 tb Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -667,7 +667,7 @@ xlogin.Geometry: 		580x325+205+105
 !
 
 *login*background:		white
-*login*foreground:		black,gray55,black
+*login*foreground:		black,gray55,red
 
 *login.logo.foreground:		black,gray15,red
 *login.eyes.foreground:		black,gray15,red
