@@ -231,6 +231,8 @@ int gconf_mkdir_private (const char *path);
 #    define N_(String) (String)
 #endif
 
+gchar * gconf_get_tmp_dir(void);
+
 #endif /* GCONF_ENABLE_INTERNALS */
 
 #endif /* GCONF_GCONF_INTERNALS_H */

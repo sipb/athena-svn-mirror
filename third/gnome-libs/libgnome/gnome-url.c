@@ -147,6 +147,13 @@ gnome_url_show(const gchar *url)
 			argv[i] = (char *)url;
 	}
 
+	/* Athena hack: we don't install gnome-help-browser any more;
+	   we install yelp, from GNOME 2.  And our nautilus never did
+	   like to render HTML. */
+	if (strcmp(argv[0], "gnome-help-browser") == 0
+	    || strcmp(argv[0], "nautilus") == 0)
+	  argv[0] = "yelp";
+
 	/* use execute async, and not the shell, shell is evil and a
 	 * security hole */
 	gnome_execute_async (NULL, argc, argv);

@@ -238,6 +238,9 @@ gconfd_ping(PortableServer_Servant servant, CORBA_Environment *ev)
   return getpid();
 }
 
+static GList* db_list = NULL;
+static GConfDatabase *default_db = NULL;
+
 static void
 gconfd_shutdown(PortableServer_Servant servant, CORBA_Environment *ev)
 {
@@ -245,6 +248,18 @@ gconfd_shutdown(PortableServer_Servant servant, CORBA_Environment *ev)
     return;
   
   gconf_log(GCL_DEBUG, _("Shutdown request received"));
+
+  /* Athena local change: sync databases before returning, so that we
+   * can use gconftool-2 --shutdown to synchronously flush changes to
+   * AFS before destroying credentials.
+   */
+  {
+    GList *l;
+
+    for (l = db_list; l; l = g_list_next(l))
+      gconf_database_synchronous_sync(l->data, NULL);
+    gconf_database_synchronous_sync(default_db, NULL);
+  }
 
   gconf_main_quit();
 }
@@ -290,7 +305,7 @@ gconf_server_load_sources(void)
       /* Try using the default address xml:readwrite:$(HOME)/.gconf */
       addresses = g_new0(gchar*, 2);
 
-      addresses[0] = g_strconcat("xml:readwrite:", g_get_home_dir(), "/.gconf", NULL);
+      addresses[0] = g_strconcat("xml:readwrite:", getenv("NOCALLS") ? gconf_get_tmp_dir() : g_get_home_dir(), "/.gconf", NULL);
 
       addresses[1] = NULL;
       
@@ -771,9 +786,7 @@ gconf_main_is_running (void)
  * Database storage
  */
 
-static GList* db_list = NULL;
 static GHashTable* dbs_by_address = NULL;
-static GConfDatabase *default_db = NULL;
 
 static void
 init_databases (void)
@@ -1890,7 +1903,7 @@ logfile_read (void)
   
   if (f == NULL)
     {
-      gconf_log (GCL_ERR, _("Unable to open saved state file '%s': %s"),
+      gconf_log (GCL_DEBUG, _("Unable to open saved state file '%s': %s"),
                  logfile, g_strerror (errno));
 
       goto finished;
