@@ -15,7 +15,7 @@
 
 /* This contains the NFS quota-checking routines. */
 
-static const char rcsid[] = "$Id: nfs.c,v 1.3 1999-06-03 14:54:24 danw Exp $";
+static const char rcsid[] = "$Id: nfs.c,v 1.4 1999-10-07 17:06:22 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -29,6 +29,7 @@ static const char rcsid[] = "$Id: nfs.c,v 1.3 1999-06-03 14:54:24 danw Exp $";
 #include <rpc/clnt_soc.h>
 #endif
 #include <rpc/pmap_prot.h>
+#include <rpc/pmap_clnt.h>
 #include <rpcsvc/rquota.h>
 
 #include <netdb.h>
@@ -105,15 +106,25 @@ int get_nfs_quota(struct quota_fs *fs, uid_t uid, int verbose)
 	fs->warn_files = 1;
 
       status = 0;
+      break;
 
     case Q_NOQUOTA:
       fs->have_quota = 0;
       status = -1;
+      break;
 
     case Q_EPERM:
       if (verbose)
-	fprintf(stderr, "quota: Permission denied. %s\n", host);
+	fprintf(stderr, "quota: %s: Permission denied\n", host);
       status = -1;
+      break;
+
+    default:
+      if (verbose)
+	fprintf(stderr, "quota: %s: Unrecognized status %d\n", host, status);
+      status = -1;
+      break;
+
     }
 
   free(host);
@@ -129,6 +140,9 @@ static int callaurpc(char *host, int prognum, int versnum, int procnum,
   struct timeval timeout;
   CLIENT *client;
   int socket, status;
+  u_short port;
+  u_long pmap_port;
+  struct pmap map;
 
   socket = RPC_ANYSOCK;
   if ((hp = gethostbyname(host)) == NULL)
@@ -138,22 +152,24 @@ static int callaurpc(char *host, int prognum, int versnum, int procnum,
   memcpy(&server_addr.sin_addr, hp->h_addr, hp->h_length);
   server_addr.sin_family = AF_INET;
 
-  /* ping the remote end via tcp to see if it is up */
-  server_addr.sin_port = htons(PMAPPORT);
-  if ((client = clnttcp_create(&server_addr, PMAPPROG,
-			       PMAPVERS, &socket, 0, 0)) == NULL)
-    return rpc_createerr.cf_stat;
-  else
-    {
-      /* the fact we succeeded means the machine is up */
-      close(socket);
-      socket = RPC_ANYSOCK;
-      clnt_destroy(client);
-      client = NULL;
-    }
+  /* Ask the remote portmapper for the program's UDP port number.
+   * This also provides a handy ping of the remote host, as we can
+   * thus specify a non-default (shorter) timeout for the portmapper
+   * exchange.
+   */
+  map.pm_prog = prognum;
+  map.pm_vers = versnum;
+  map.pm_prot = IPPROTO_UDP;
+  map.pm_port = 0;
+  status = pmap_rmtcall(&server_addr, PMAPPROG, PMAPVERS, PMAPPROC_GETPORT,
+			xdr_pmap, (caddr_t) &map,
+			xdr_u_short, (caddr_t) &port,
+			timeout, &pmap_port);
+  if (status != RPC_SUCCESS)
+    return status;
 
   /* now really create a udp client handle */
-  server_addr.sin_port =  0;
+  server_addr.sin_port = htons(port);
   if ((client = clntudp_create(&server_addr, prognum,
 			       versnum, timeout, &socket)) == NULL)
     return rpc_createerr.cf_stat;
