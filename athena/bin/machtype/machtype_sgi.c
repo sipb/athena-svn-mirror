@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.6 1997-10-17 03:56:24 cfields Exp $
+ *	$Id: machtype_sgi.c,v 1.7 1998-03-30 22:39:08 rbasch Exp $
  *	$Locker:  $
  */
 
@@ -25,6 +25,7 @@
 #include <sys/cpu.h>
 #include <invent.h>
 void do_INV_SCSI(inventory_t *);
+void do_INV_SCSICONTROL(inventory_t *);
 void do_INV_DISK(inventory_t *);
 void do_INV_PROCESSOR(inventory_t *,int);
 void do_INV_GRAPHICS(inventory_t *);
@@ -471,20 +472,17 @@ int done=0;
         inv = getinvent();
         t = 0;
         while ((inv != NULL) && !done) {
-                if ((inv->inv_class == 2) || (inv->inv_class ==9) ) {
-                                if ( inv->inv_class == 9) {
-                                do_INV_SCSI(inv);
-                                } else {
-                                        do_INV_DISK(inv);
-                                }
-                }
-                inv = getinvent();
+		if (inv->inv_class == INV_DISK) 
+		  do_INV_DISK(inv);
+		else if (inv->inv_class == INV_SCSI)
+		  do_INV_SCSI(inv);
+		inv = getinvent();
         }
 }
 void do_INV_SCSI(inventory_t *i)
 {
 if (i->inv_type == INV_CDROM) {
-        fprintf(stdout,"CDROM : unit %i, on SCSI controller %i\n",i->inv_unit,i->inv_controller);
+        fprintf(stdout,"CDROM: unit %i, on SCSI controller %i\n",i->inv_unit,i->inv_controller);
 } else {
         fprintf(stdout,"Unknown type %i:unit %i, on SCSI controller %i\n",i->inv_type,i->inv_unit,i->inv_controller);
 }
@@ -492,30 +490,93 @@ if (i->inv_type == INV_CDROM) {
 
 void do_INV_DISK(inventory_t *i)
 {
-if (i->inv_type == INV_SCSIDRIVE) {
-         fprintf(stdout,"Disk drive: unit %i, on SCSI controller %i\n",i->inv_unit,i->inv_controller);
-} else if (i->inv_type == INV_SCSIFLOPPY) {
-        fprintf(stdout,"Floppy drive: unit %i, on SCSI controller %i\n",i->inv_unit,i->inv_controller);
-} else if (i->inv_type == INV_SCSICONTROL) {
-        if (i->inv_type == INV_WD93) {
-                fprintf(stdout,"SCSI controller %i: Version %s, rev. %c\n",i->inv_controller,"WD 33C93",i->inv_state);
-        } else if (i->inv_type == INV_WD93A) {
-                fprintf(stdout,"SCSI controller %i: Version %s, rev. %d\n",i->inv_controller,"WD 33C93A",i->inv_state);
-        } else if (i->inv_type == INV_WD93B) {
-                fprintf(stdout,"SCSI controller %i: Version %s, rev. %d\n",i->inv_controller,"WD 33C93B",i->inv_state);
-        } else if (i->inv_type == INV_WD95A) {
-                fprintf(stdout,"SCSI controller %i: Version %s, rev. %d\n",i->inv_controller,"WD 33C95A",i->inv_state);
-        } else if (i->inv_type == INV_SCIP95) {
-                fprintf(stdout,"SCSI controller %i: Version %s, rev. %d\n",i->inv_controller,"SCIP w/WD 33C95A",i->inv_state);
-        } else {
-                fprintf(stdout,"SCSI controller %i: Version %s, rev. %d\n",i->inv_controller,"Unkown",i->inv_state);
-        }
-} else {
-        fprintf(stdout,"Unknown type %i:unit %i, on SCSI controller %i\n",i->inv_type,i->inv_unit,i->inv_controller);
+  switch (i->inv_type)
+    {
+    case INV_SCSIDRIVE:
+      printf("Disk drive: unit %u, on SCSI controller %u\n",
+	     i->inv_unit, i->inv_controller);
+      break;
+
+    case INV_SCSIFLOPPY:
+      printf("Floppy drive: unit %u, on SCSI controller %u\n",
+	     i->inv_unit, i->inv_controller);
+      break;
+
+    case INV_SCSICONTROL:
+    case INV_GIO_SCSICONTROL:
+#ifdef INV_PCI_SCSICONTROL
+    case INV_PCI_SCSICONTROL:
+#endif
+      do_INV_SCSICONTROL(i);
+      break;
+
+    default:
+      printf("Unknown type %u: unit %u, on SCSI controller %u\n",
+	     i->inv_type, i->inv_unit, i->inv_controller);
+      break;
+    }
 }
 
-}
+void do_INV_SCSICONTROL(inventory_t *i)
+{
+  switch (i->inv_type)
+    {
+    case INV_SCSICONTROL:
+      printf("Integral");
+      break;
+    case INV_GIO_SCSICONTROL:
+      printf("GIO");
+      break;
+#ifdef INV_PCI_SCSICONTROL
+    case INV_PCI_SCSICONTROL:
+      printf("PCI");
+      break;
+#endif
+    default:
+      printf("Unknown");
+      break;
+    }
 
+  printf(" SCSI controller %u: Version ", i->inv_controller);
+
+  switch (i->inv_state)
+    {
+    case INV_WD93:
+      printf("WD 33C93");
+      break;
+
+    case INV_WD93A:
+      printf("WD 33C93A");
+      break;
+
+    case INV_WD93B:
+      printf("WD 33C93B");
+      break;
+
+    case INV_WD95A:
+      printf("WD 33C95A");
+      break;
+
+    case INV_SCIP95:
+      printf("SCIP w/WD 33C95A");
+      break;
+
+#ifdef INV_ADP7880
+    case INV_ADP7880:
+      printf("ADAPTEC 7880");
+      break;
+#endif
+
+    default:
+      printf("Unknown");
+      break;
+    }
+
+  if (i->inv_unit)
+    printf(", rev. %X", i->inv_unit);
+
+  putchar('\n');
+}
 
 
 #define MEG (1024*1024)
