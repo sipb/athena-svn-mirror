@@ -60,11 +60,10 @@ ttloop()
     if (nfrontp-nbackp) {
 	netflush();
     }
-read_again:
     ncc = read(net, netibuf, sizeof netibuf);
     if (ncc < 0) {
 	if (errno == EINTR)
-	    goto read_again;
+	    return; /* interrupt from alarm() */
 	syslog(LOG_INFO, "ttloop:  read: %m");
 	exit(1);
     } else if (ncc == 0) {

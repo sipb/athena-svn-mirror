@@ -791,12 +791,14 @@ getterminaltype(name)
 	 * we have to just go with what we (might) have already gotten.
 	 */
 	if (his_state_is_will(TELOPT_TTYPE) && !terminaltypeok(terminaltype)) {
-	    (void) strncpy(first, terminaltype, sizeof(first));
+	    (void) strncpy(first, terminaltype, sizeof(first) - 1);
+	    first[sizeof(first) - 1] = '\0';
 	    for(;;) {
 		/*
 		 * Save the unknown name, and request the next name.
 		 */
-		(void) strncpy(last, terminaltype, sizeof(last));
+		(void) strncpy(last, terminaltype, sizeof(last) - 1);
+		last[sizeof(last) - 1] = '\0';
 		_gettermname();
 		if (terminaltypeok(terminaltype))
 		    break;
@@ -813,9 +815,12 @@ getterminaltype(name)
 		     * RFC1091 compliant telnets will cycle back to
 		     * the start of the list.
 		     */
-		     _gettermname();
-		    if (strncmp(first, terminaltype, sizeof(first)) != 0)
-			(void) strncpy(terminaltype, first, sizeof(first));
+		    _gettermname();
+		    if (strncmp(first, terminaltype, sizeof(first)) != 0) {
+			(void) strncpy(terminaltype, first,
+				       sizeof(terminaltype) - 1);
+			terminaltype[sizeof(terminaltype) - 1] = '\0';
+		    }
 		    break;
 		}
 	    }
@@ -882,6 +887,12 @@ extern void telnet P((int, int));
 #else
 extern void telnet P((int, int, char *));
 #endif
+
+void encr_intr(sig)
+	int sig;
+{
+  return;
+}
 
 /*
  * Get a pty, scan input lines.
@@ -965,7 +976,20 @@ pty_init();
 	 */
 	*user_name = 0;
 	level = getterminaltype(user_name);
-	setenv("TERM", terminaltype ? terminaltype : "network", 1);
+	setenv("TERM", *terminaltype ? terminaltype : "network", 1);
+
+	/* Give slow clients one last chance before we fork */
+	if (his_state_is_will(TELOPT_ENCRYPT) && !decrypt_input) {
+		struct sigaction sa, osa;
+		sa.sa_handler = encr_intr;
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sigaction(SIGALRM, &sa, &osa);
+		alarm(2);
+		ttloop();
+		alarm(0);
+		sigaction(SIGALRM, &osa, &sa);
+	}
 
 	/*
 	 * Start up the login process on the slave side of the terminal
