@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.8 1991-06-28 13:16:17 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.9 1992-04-19 21:26:04 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.8 1991-06-28 13:16:17 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.9 1992-04-19 21:26:04 epeisach Exp $";
 #endif lint
 
 /*
@@ -322,7 +322,9 @@ readjob()
 				continue;
 			}
 
-			strcpy(dfname, cp);
+			(void) strcpy(dfname, cp);
+			if (index(dfname, '/'))
+				frecverr("illegal path name");
 			(void) readfile(dfname, size, 1);
 			continue;
 		}
