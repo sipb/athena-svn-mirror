@@ -38,8 +38,12 @@ static int	lflag;		/* long output option */
  * Termcap stuff for fancy display
  */
 #ifdef TERMCAP
+
+#ifndef _AUX_SOURCE
 struct sgttyb sbuf;
 static unsigned ospeed;
+#endif
+
 static int	dumb;		/* whether to use capabilities */
 static char	PC;		/* pad character for output */
 static char	*UP;		/* up one line */
@@ -193,8 +197,10 @@ termcap()
 	char *bp = buf;
 	register char **p, ***q, *cp;
 
+#ifndef _AUX_SOURCE
 	ioctl(0, TIOCGETP, (char *)&sbuf);
 	ospeed = sbuf.sg_ospeed;
+#endif
 	if ((term = getenv("TERM")) != NULL && tgetent(tbuf, term) > 0) {
 		for (p = capstrings, q = caps; *p != NULL; p++, q++)
 			**q = tgetstr(*p, &bp);
