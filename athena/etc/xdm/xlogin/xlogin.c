@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.55 1997-02-05 17:56:03 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.56 1997-02-05 18:00:01 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
