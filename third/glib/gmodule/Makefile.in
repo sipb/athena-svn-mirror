@@ -71,6 +71,7 @@ GLIB_MAJOR_VERSION = @GLIB_MAJOR_VERSION@
 GLIB_MICRO_VERSION = @GLIB_MICRO_VERSION@
 GLIB_MINOR_VERSION = @GLIB_MINOR_VERSION@
 GLIB_VERSION = @GLIB_VERSION@
+G_MODULE_BROKEN_RTLD_GLOBAL = @G_MODULE_BROKEN_RTLD_GLOBAL@
 G_MODULE_HAVE_DLERROR = @G_MODULE_HAVE_DLERROR@
 G_MODULE_IMPL = @G_MODULE_IMPL@
 G_MODULE_LDFLAGS = @G_MODULE_LDFLAGS@
@@ -99,7 +100,8 @@ EXTRA_DIST =  		gmoduleconf.h.in 		gmodule.def			gmodule-dl.c			gmodule-dld.c			
 
 BUILT_SOURCES = gmoduleconf.h
 
-include_HEADERS =  		gmodule.h
+glibincludedir = $(includedir)/glib-1.2
+glibinclude_HEADERS =  		gmodule.h
 
 
 libglib = $(top_builddir)/libglib.la # -lglib
@@ -151,7 +153,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS)
+HEADERS =  $(glibinclude_HEADERS)
 
 DIST_COMMON =  AUTHORS COPYING ChangeLog Makefile.am Makefile.in \
 gmoduleconf.h.in
@@ -159,7 +161,7 @@ gmoduleconf.h.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libgmodule_la_SOURCES) $(libgplugin_a_la_SOURCES) $(libgplugin_b_la_SOURCES) testgmodule.c
 OBJECTS = $(libgmodule_la_OBJECTS) $(libgplugin_a_la_OBJECTS) $(libgplugin_b_la_OBJECTS) testgmodule.o
@@ -252,19 +254,19 @@ testgmodule: $(testgmodule_OBJECTS) $(testgmodule_DEPENDENCIES)
 	@rm -f testgmodule
 	$(LINK) $(testgmodule_LDFLAGS) $(testgmodule_OBJECTS) $(testgmodule_LDADD) $(LIBS)
 
-install-includeHEADERS: $(include_HEADERS)
+install-glibincludeHEADERS: $(glibinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(glibincludedir)
+	@list='$(glibinclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(glibincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(glibincludedir)/$$p; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-glibincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(includedir)/$$p; \
+	list='$(glibinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(glibincludedir)/$$p; \
 	done
 
 tags: TAGS
@@ -311,6 +313,14 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gmodule.lo gmodule.o : gmodule.c gmodule.h ../glib.h ../glibconfig.h \
+	gmoduleconf.h gmodule-dl.c
+libgplugin_a.lo libgplugin_a.o : libgplugin_a.c gmodule.h ../glib.h \
+	../glibconfig.h
+libgplugin_b.lo libgplugin_b.o : libgplugin_b.c gmodule.h ../glib.h \
+	../glibconfig.h
+testgmodule.o: testgmodule.c gmodule.h ../glib.h ../glibconfig.h \
+	gmoduleconf.h
 
 info-am:
 info: info-am
@@ -323,20 +333,20 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
-install-data-am: install-includeHEADERS
+install-data-am: install-glibincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-includeHEADERS
+uninstall-am: uninstall-libLTLIBRARIES uninstall-glibincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(glibincludedir)
 
 
 mostlyclean-generic:
@@ -384,10 +394,10 @@ distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
-maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
-install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
+maintainer-clean-noinstPROGRAMS uninstall-glibincludeHEADERS \
+install-glibincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \

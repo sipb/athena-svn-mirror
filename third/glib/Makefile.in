@@ -73,6 +73,7 @@ GLIB_MAJOR_VERSION = @GLIB_MAJOR_VERSION@
 GLIB_MICRO_VERSION = @GLIB_MICRO_VERSION@
 GLIB_MINOR_VERSION = @GLIB_MINOR_VERSION@
 GLIB_VERSION = @GLIB_VERSION@
+G_MODULE_BROKEN_RTLD_GLOBAL = @G_MODULE_BROKEN_RTLD_GLOBAL@
 G_MODULE_HAVE_DLERROR = @G_MODULE_HAVE_DLERROR@
 G_MODULE_IMPL = @G_MODULE_IMPL@
 G_MODULE_LDFLAGS = @G_MODULE_LDFLAGS@
@@ -105,7 +106,7 @@ BUILT_SOURCES = stamp-gc-h #note: not glibconfig.h
 
 INCLUDES = -DG_LOG_DOMAIN=g_log_domain_glib @GLIB_DEBUG_FLAGS@
 
-EXTRA_DIST =  	glib.m4				glib.spec.in			acglib.m4			sanity_check			README.win32			glib.def			makefile.msc.in			makefile.msc			giowin32.c			glibconfig.h.win32		glibconfig.h.win32.in		config.h.win32			config.h.win32.in
+EXTRA_DIST =  	glib.m4				glib.spec.in			acglib.m4			sanity_check			README.win32			glib.def			makefile.msc.in			makefile.msc			giowin32.c			glibconfig.h.win32		glibconfig.h.win32.in		config.h.win32			config.h.win32.in		glib.pc.in 			gmodule.pc.in			gthread.pc.in
 
 
 lib_LTLIBRARIES = libglib.la
@@ -113,7 +114,8 @@ lib_LTLIBRARIES = libglib.la
 libglib_la_SOURCES =  	garray.c		gcache.c		gcompletion.c		gdataset.c		gdate.c         	gerror.c		ghash.c			ghook.c			giochannel.c    	giounix.c       	glist.c			gmain.c         	gmem.c			gmessages.c		gmutex.c		gnode.c			gprimes.c		grel.c			gscanner.c		gslist.c		gstrfuncs.c		gstring.c		gtimer.c		gtree.c			gutils.c
 
 
-include_HEADERS =  	glib.h
+glibincludedir = $(includedir)/glib-1.2
+glibinclude_HEADERS =  	glib.h
 
 
 configinclude_DATA =  	glibconfig.h
@@ -131,10 +133,14 @@ testgdateparser_LDADD = libglib.la
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = glib.m4
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = glib.pc gmodule.pc gthread.pc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  glib.spec glib-config
+CONFIG_CLEAN_FILES =  glib.spec glib-config glib.pc gmodule.pc \
+gthread.pc
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
@@ -169,20 +175,20 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(configinclude_DATA) $(m4data_DATA)
+DATA =  $(configinclude_DATA) $(m4data_DATA) $(pkgconfig_DATA)
 
-HEADERS =  $(include_HEADERS)
+HEADERS =  $(glibinclude_HEADERS)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
 Makefile.am Makefile.in NEWS acconfig.h acinclude.m4 aclocal.m4 \
 config.guess config.h.in config.sub configure configure.in \
-glib-config.in glib.spec.in install-sh ltconfig ltmain.sh missing \
-mkinstalldirs
+glib-config.in glib.pc.in glib.spec.in gmodule.pc.in gthread.pc.in \
+install-sh ltconfig ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libglib_la_SOURCES) testglib.c testgdate.c testgdateparser.c
 OBJECTS = $(libglib_la_OBJECTS) testglib.o testgdate.o testgdateparser.o
@@ -235,6 +241,12 @@ maintainer-clean-hdr:
 glib.spec: $(top_builddir)/config.status glib.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 glib-config: $(top_builddir)/config.status glib-config.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+glib.pc: $(top_builddir)/config.status glib.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+gmodule.pc: $(top_builddir)/config.status gmodule.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+gthread.pc: $(top_builddir)/config.status gthread.pc.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
@@ -381,19 +393,38 @@ uninstall-m4dataDATA:
 	  rm -f $(DESTDIR)$(m4datadir)/$$p; \
 	done
 
-install-includeHEADERS: $(include_HEADERS)
+install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  fi; fi; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-pkgconfigDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(includedir)/$$p; \
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
+	done
+
+install-glibincludeHEADERS: $(glibinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(glibincludedir)
+	@list='$(glibinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(glibincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(glibincludedir)/$$p; \
+	done
+
+uninstall-glibincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(glibinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(glibincludedir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -544,6 +575,34 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+garray.lo garray.o : garray.c glib.h glibconfig.h
+gcache.lo gcache.o : gcache.c glib.h glibconfig.h
+gcompletion.lo gcompletion.o : gcompletion.c glib.h glibconfig.h
+gdataset.lo gdataset.o : gdataset.c glib.h glibconfig.h
+gdate.lo gdate.o : gdate.c config.h glib.h glibconfig.h
+gerror.lo gerror.o : gerror.c config.h glib.h glibconfig.h
+ghash.lo ghash.o : ghash.c glib.h glibconfig.h
+ghook.lo ghook.o : ghook.c glib.h glibconfig.h
+giochannel.lo giochannel.o : giochannel.c config.h glib.h glibconfig.h
+giounix.lo giounix.o : giounix.c glib.h glibconfig.h
+glist.lo glist.o : glist.c glib.h glibconfig.h
+gmain.lo gmain.o : gmain.c config.h glib.h glibconfig.h
+gmem.lo gmem.o : gmem.c config.h glib.h glibconfig.h
+gmessages.lo gmessages.o : gmessages.c config.h glib.h glibconfig.h
+gmutex.lo gmutex.o : gmutex.c glib.h glibconfig.h
+gnode.lo gnode.o : gnode.c glib.h glibconfig.h
+gprimes.lo gprimes.o : gprimes.c glib.h glibconfig.h
+grel.lo grel.o : grel.c glib.h glibconfig.h
+gscanner.lo gscanner.o : gscanner.c config.h glib.h glibconfig.h
+gslist.lo gslist.o : gslist.c glib.h glibconfig.h
+gstrfuncs.lo gstrfuncs.o : gstrfuncs.c config.h glib.h glibconfig.h
+gstring.lo gstring.o : gstring.c glib.h glibconfig.h
+gtimer.lo gtimer.o : gtimer.c config.h glib.h glibconfig.h
+gtree.lo gtree.o : gtree.c glib.h glibconfig.h
+gutils.lo gutils.o : gutils.c config.h glibconfig.h glib.h
+testgdate.o: testgdate.c glib.h glibconfig.h
+testgdateparser.o: testgdateparser.c glib.h glibconfig.h
+testglib.o: testglib.c glib.h glibconfig.h
 
 info-am:
 info: info-recursive
@@ -560,7 +619,7 @@ install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
 install-exec: install-exec-recursive
 
 install-data-am: install-configincludeDATA install-m4dataDATA \
-		install-includeHEADERS
+		install-pkgconfigDATA install-glibincludeHEADERS
 install-data: install-data-recursive
 
 install-am: all-am
@@ -568,7 +627,7 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binSCRIPTS \
 		uninstall-configincludeDATA uninstall-m4dataDATA \
-		uninstall-includeHEADERS
+		uninstall-pkgconfigDATA uninstall-glibincludeHEADERS
 uninstall: uninstall-recursive
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
 		$(HEADERS) config.h
@@ -579,7 +638,7 @@ installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(configincludedir) $(DESTDIR)$(m4datadir) \
-		$(DESTDIR)$(includedir)
+		$(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(glibincludedir)
 
 
 mostlyclean-generic:
@@ -634,12 +693,13 @@ maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-binSCRIPTS install-binSCRIPTS \
 uninstall-configincludeDATA install-configincludeDATA \
-uninstall-m4dataDATA install-m4dataDATA uninstall-includeHEADERS \
-install-includeHEADERS install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-m4dataDATA install-m4dataDATA uninstall-pkgconfigDATA \
+install-pkgconfigDATA uninstall-glibincludeHEADERS \
+install-glibincludeHEADERS install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \

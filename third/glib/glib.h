@@ -1291,16 +1291,32 @@ GLogLevelFlags	g_log_set_always_fatal	(GLogLevelFlags	 fatal_mask);
 #ifndef	G_LOG_DOMAIN
 #define	G_LOG_DOMAIN	((gchar*) 0)
 #endif	/* G_LOG_DOMAIN */
-#ifdef	__GNUC__
-#define	g_error(format, args...)	g_log (G_LOG_DOMAIN, \
-					       G_LOG_LEVEL_ERROR, \
-					       format, ##args)
-#define	g_message(format, args...)	g_log (G_LOG_DOMAIN, \
-					       G_LOG_LEVEL_MESSAGE, \
-					       format, ##args)
-#define	g_warning(format, args...)	g_log (G_LOG_DOMAIN, \
-					       G_LOG_LEVEL_WARNING, \
-					       format, ##args)
+#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#define	g_error(...)	g_log (G_LOG_DOMAIN,         \
+			       G_LOG_LEVEL_ERROR,    \
+			       __VA_ARGS__)
+#define	g_message(...)	g_log (G_LOG_DOMAIN,         \
+			       G_LOG_LEVEL_MESSAGE,  \
+			       __VA_ARGS__)
+#define	g_critical(...)	g_log (G_LOG_DOMAIN,         \
+			       G_LOG_LEVEL_CRITICAL, \
+			       __VA_ARGS__)
+#define	g_warning(...)	g_log (G_LOG_DOMAIN,         \
+			       G_LOG_LEVEL_WARNING,  \
+			       __VA_ARGS__)
+#elif defined (__GNUC__)
+#define	g_error(format...)	g_log (G_LOG_DOMAIN,         \
+				       G_LOG_LEVEL_ERROR,    \
+				       format)
+#define	g_message(format...)	g_log (G_LOG_DOMAIN,         \
+				       G_LOG_LEVEL_MESSAGE,  \
+				       format)
+#define	g_critical(format...)	g_log (G_LOG_DOMAIN,         \
+				       G_LOG_LEVEL_CRITICAL, \
+				       format)
+#define	g_warning(format...)	g_log (G_LOG_DOMAIN,         \
+				       G_LOG_LEVEL_WARNING,  \
+				       format)
 #else	/* !__GNUC__ */
 static void
 g_error (const gchar *format,
@@ -1538,6 +1554,9 @@ gchar*  g_path_skip_root	(gchar       *file_name);
 /* strings are newly allocated with g_malloc() */
 gchar*	g_dirname		(const gchar *file_name);
 gchar*	g_get_current_dir	(void);
+
+/* return the environment string for the variable. The returned memory
+ * must not be freed. */
 gchar*  g_getenv		(const gchar *variable);
 
 
@@ -1658,9 +1677,9 @@ void	 g_string_sprintfa  (GString	 *string,
  * order by moving the last element to the position of the removed 
  */
 
-#define g_array_append_val(a,v)	  g_array_append_vals (a, &v, 1)
-#define g_array_prepend_val(a,v)  g_array_prepend_vals (a, &v, 1)
-#define g_array_insert_val(a,i,v) g_array_insert_vals (a, i, &v, 1)
+#define g_array_append_val(a,v)	  g_array_append_vals (a, &(v), 1)
+#define g_array_prepend_val(a,v)  g_array_prepend_vals (a, &(v), 1)
+#define g_array_insert_val(a,i,v) g_array_insert_vals (a, i, &(v), 1)
 #define g_array_index(a,t,i)      (((t*) (a)->data) [(i)])
 
 GArray* g_array_new	          (gboolean	    zero_terminated,
