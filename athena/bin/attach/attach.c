@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.6 1990-07-06 10:54:24 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.7 1990-07-16 07:30:54 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -107,8 +107,11 @@ retry:
 			    MOUNTPROC_KUIDMAP, 1, name, 1, real_uid);
 		if(atp->mode != 'm')
 		  return ret;
-		error_status = 0;
-		clear_errored(atp->hostaddr);
+		if (ret == FAILURE)
+		  {
+		    error_status = 0;
+		    clear_errored(atp->hostaddr);
+		  }
 		return SUCCESS;
 	    }
 #endif
@@ -116,9 +119,7 @@ retry:
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_AFS) {
 		    if (verbose && !print_path)
 			    printf(" (authenticating)\n");
-		    return(afs_auth(atp->hesiodname, atp->hostdir,
-				    AFSAUTH_DOAUTH |
-				    (use_zephyr ? AFSAUTH_DOZEPHYR : 0)));
+		    return(afs_auth(atp->hesiodname, atp->hostdir));
 	    }
 #endif
 	    if (!print_path)
@@ -332,9 +333,13 @@ try_attach(name, hesline, errorout)
 	 */
 #ifdef ZEPHYR
 	if (use_zephyr && at.fs->flags & FS_REMOTE) {
-		sprintf(instbfr, "%s:%s", at.host, at.hostdir);
-		zephyr_addsub(instbfr);
-		zephyr_addsub(at.host);
+		if(at.fs->type == TYPE_AFS) {
+			afs_zinit(at.hesiodname, at.hostdir);
+		} else {
+			sprintf(instbfr, "%s:%s", at.host, at.hostdir);
+			zephyr_addsub(instbfr);
+			zephyr_addsub(at.host);
+		}
 	}
 #endif ZEPHYR
 	free_attachtab();
