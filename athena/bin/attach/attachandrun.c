@@ -15,7 +15,7 @@
 
 /* This is attachandrun, used to attach a locker and run a program in it. */
 
-static const char rcsid[] = "$Id: attachandrun.c,v 1.3 1999-03-29 17:35:38 danw Exp $";
+static const char rcsid[] = "$Id: attachandrun.c,v 1.4 1999-04-09 21:50:30 danw Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -38,8 +38,18 @@ int attachandrun_main(int argc, char **argv)
   locker_attachent *at;
   uid_t uid = getuid();
   char **found, *path, *mountpoint;
+  int check = 0;
 
-  if (argc < 4)
+  if (!strcmp(argv[1], "--check") || !strcmp(argv[1], "-c"))
+    {
+      if (argc < 3)
+	usage();
+
+      check = 1;
+      argc--;
+      argv++;
+    }
+  else if (argc < 4)
     usage();
 
   if (locker_init(&context, uid, NULL, NULL))
@@ -76,6 +86,9 @@ int attachandrun_main(int argc, char **argv)
 
       sprintf(path, "%s/%s", found[0], argv[2]);
       athdir_free_paths(found);
+
+      if (check)
+	exit(-access(path, X_OK));
 
       execv(path, argv + 3);
 
