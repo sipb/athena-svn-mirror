@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.31 1990-12-12 15:19:50 lwvanels Exp $
+ *	$Id: olcd.c,v 1.32 1990-12-17 08:32:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.31 1990-12-12 15:19:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.32 1990-12-17 08:32:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -442,6 +442,32 @@ restart:
     {
 	int s;		        /* Duplicated file descriptor */
 	int len = sizeof (from);  /* Length of address. */
+	struct timeval tval;
+	int nfound;
+	fd_set readfds;
+
+	FD_ZERO(&readfds);
+	FD_SET(fd,&readfds);
+	tval.tv_sec = 600;   /* 10 minutes */
+	tval.tv_usec = 0;
+
+	/* Try to get kerberos ticket if no activity in 10 minutes */
+	/* This guarantees we _always_ have one, even if no requests have */
+	/* come in for > 15 minutes */
+
+	nfound = select(fd+1,&readfds,NULL,NULL,&tval);
+	if (nfound < 0)
+	  if (errno == EINTR)
+	    continue;
+	  else {
+	    log_error("Error in select: %m");
+	    continue;
+	  }
+
+	if (nfound == 0) {
+	  get_kerberos_ticket();
+	  continue;
+	}
 
 	s = accept(fd, (struct sockaddr *) &from, &len);
 	if (s < 0) {
@@ -755,6 +781,8 @@ get_kerberos_ticket()
     char principal[ANAME_SZ];
     char *ptr;
 
+    /* If the ticket time is going to expire in 15 minutes or less, get a */
+    /* new one */
     if(ticket_time < NOW - ((96L * 5L) - 15L) * 60)
     {
 	strcpy(principal,K_SERVICE);
