@@ -1,9 +1,0 @@
-#!/bin/sh
-
-case $HOSTTYPE in
-sun4)
-  rm -f /etc/rc2.d/S76nscd
-  ;;
-sgi)
-  ;;
-esac
