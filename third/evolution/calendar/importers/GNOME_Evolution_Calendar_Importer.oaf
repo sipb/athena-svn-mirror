@@ -9,8 +9,6 @@
 	</oaf_attribute>
 	<oaf_attribute name="description" type="string"
                        value="Factory to import iCalendar files into Evolution"/>
-	<oaf_attribute name="description-sv" type="string"
-                       value="Fabrik f&#246;r import av iCalendar-filer till Evolution"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:GNOME_Evolution_Calendar_iCalendar_Importer"
@@ -24,8 +22,6 @@
                        value="iCalendar files (.ics)"/>
         <oaf_attribute name="description" type="string"
                        value="Imports iCalendar files into Evolution"/>
-        <oaf_attribute name="description-sv" type="string"
-                       value="Importerar iCalendar-filer till Evolution"/>
 
 </oaf_server>
 </oaf_info>

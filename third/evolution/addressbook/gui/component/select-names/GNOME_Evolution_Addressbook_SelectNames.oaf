@@ -48,8 +48,10 @@
                        value="F&#225;brica para interface para sele&#231;&#227;o de nomes do cat&#225;logo de endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
                        value="Procesator interfa&#254;a de selectare nume a agendei"/>
+	<oaf_attribute name="description-ru" type="string"
+                       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#201;&#206;&#212;&#197;&#210;&#198;&#197;&#202;&#211;&#193; &#215;&#217;&#194;&#207;&#210;&#193; &#201;&#205;&#197;&#206;&#201; &#215; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#197;."/>
 	<oaf_attribute name="description-sk" type="string"
-                       value="Vytv&#225;racie rozhranie pre rozhranie pre v&#253;ber mena adres&#225;ra."/>
+                       value="Vytv&#195;&#161;racie rozhranie pre rozhranie pre v&#195;&#189;ber mena adres&#195;&#161;ra."/>
 	<oaf_attribute name="description-sl" type="string"
                        value="Tovarna Evolucijinih vmesnikov za izbiro imen iz adresarja"/>
 	<oaf_attribute name="description-sv" type="string"
@@ -77,8 +79,6 @@
                        value="Evolution &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri ad se&#195;&#167;m&#201;&#153; ara &#195;&#188;z&#195;&#188;."/>
 	<oaf_attribute name="description-bg" type="string"
                        value="&#200;&#237;&#242;&#229;&#240;&#244;&#229;&#233;&#241; &#231;&#224; &#242;&#250;&#240;&#241;&#229;&#237;&#229;&#242;&#238; &#239;&#238; &#232;&#236;&#229;&#237;&#224; &#226; &#224;&#228;&#240;&#229;&#241;&#237;&#224;&#242;&#224; &#234;&#237;&#232;&#227;&#224; &#237;&#224; &#197;&#226;&#238;&#235;&#254;&#248;&#250;&#237;"/>
-	<oaf_attribute name="description-ca" type="string"
-                       value="Conducte de la llibreta d&#39;adreces de l&#39;Evolution"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Evolution adressebog-komponent"/>
 	<oaf_attribute name="description-de" type="string"
@@ -105,8 +105,6 @@
                        value="Evolution adre&#240;u gr&#226;matas v&#226;rda izv&#231;les interfeiss."/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De adresboeknaam-selectie-interface van Evolution."/>
-	<oaf_attribute name="description-nn" type="string"
-                       value="Gpilotd adressekomponent"/>
 	<oaf_attribute name="description-no" type="string"
                        value="Evolution adressebok-komponent"/>
 	<oaf_attribute name="description-pl" type="string"
@@ -118,15 +116,13 @@
 	<oaf_attribute name="description-ru" type="string"
                        value="&#233;&#206;&#212;&#197;&#210;&#198;&#197;&#202;&#211; &#215;&#217;&#194;&#207;&#210;&#193; &#201;&#205;&#197;&#206;&#201; &#215; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#202; &#203;&#206;&#201;&#199;&#197; Evolution."/>
 	<oaf_attribute name="description-sk" type="string"
-                       value="Rozhranie pre v&#253;ber mena adres&#225;ra Evolution."/>
+                       value="Rozhranie pre v&#195;&#189;ber mena adres&#195;&#161;ra Evolution."/>
 	<oaf_attribute name="description-sl" type="string"
                        value="Evolucijin vmesnik za izibro imen iz adresarja."/>
 	<oaf_attribute name="description-sv" type="string"
                        value="Evolutions adressboks namnvalsgr&#228;nssnitt."/>
 	<oaf_attribute name="description-tr" type="string"
                        value="Evolution adres defteri isim se&#231;me aray&#252;z&#252;."/>
-	<oaf_attribute name="description-uk" type="string"
-                       value="&#235;&#193;&#206;&#193;&#204; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#167; &#203;&#206;&#201;&#199;&#201; Evolution"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="Evolution &#231;&#154;&#132;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#144;&#141;&#231;&#167;&#176;&#233;&#128;&#137;&#230;&#139;&#169;&#231;&#149;&#140;&#233;&#157;&#162;&#227;&#128;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"

@@ -711,8 +711,8 @@ camel-lock-client.lo camel-lock-client.o : camel-lock-client.c \
 camel-lock-helper.o: camel-lock-helper.c camel-lock-helper.h \
 	camel-lock.h camel-exception.h camel-types.h \
 	camel-exception-list.def
-camel-lock.lo camel-lock.o : camel-lock.c ../config.h camel-lock.h \
-	camel-exception.h camel-types.h camel-exception-list.def
+camel-lock.o: camel-lock.c ../config.h camel-lock.h camel-exception.h \
+	camel-types.h camel-exception-list.def
 camel-medium.lo camel-medium.o : camel-medium.c ../config.h \
 	camel-medium.h camel-data-wrapper.h camel-object.h \
 	camel-types.h string-utils.h hash-table-utils.h

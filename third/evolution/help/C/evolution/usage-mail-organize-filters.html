@@ -186,7 +186,7 @@ CLASS="GUILABEL"
 ></LI
 ><LI
 ><P
->		    Date Recieved - This works the same way as the <SPAN
+>		    Date Received - This works the same way as the <SPAN
 CLASS="GUILABEL"
 >Date Sent</SPAN
 > 
@@ -198,7 +198,7 @@ CLASS="GUILABEL"
 ><P
 >		    Score - Emails have a standard priority range from -3 (least
 		    important) to 3 (most important). You can have filters set the
-		    priority of messages you recieve, and then have other filters 
+		    priority of messages you receive, and then have other filters 
 		    applied only to those messages which have a certain priority.
 		  </P
 ></LI
@@ -381,6 +381,49 @@ CLASS="GUIBUTTON"
 ></OL
 >
       </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><A
+NAME="WHEN-FILTERS-GO-WRONG"
+></A
+><P
+><B
+>When Are Filters Applied?: </B
+>           If you move mail from your server into your local system
+           using POP mail, filters are applied to incoming mail every
+           time you check for mail.
+        </P
+><P
+>           If you store your mail on the mail server and check your
+           mail with IMAP, filters are applied to the INBOX when you
+           open it. In some cases, you will see a number of unread
+           messages in the INBOX, click the INBOX, and then have the
+           messages move elsewhere as they are filtered out.
+         </P
+><P
+>           If you use Ximian Connector to store your mail on an
+           Exchange server, filters are not applied until you open
+           your INBOX folder and select
+           <SPAN
+CLASS="GUIMENU"
+>Actions</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Apply
+           Filters</SPAN
+> or press
+           <B
+CLASS="KEYCAP"
+>Ctrl</B
+>-<B
+CLASS="KEYCAP"
+>Y</B
+>
+         </P
+></BLOCKQUOTE
+></DIV
 ><DIV
 CLASS="EXAMPLE"
 ><A
@@ -604,9 +647,10 @@ CLASS="NOTE"
 ><UL
 ><LI
 ><P
->		  Incoming email that your filters don't move goes into the Inbox; 
-		  outgoing mail that they don't move ends up in the Sent
-		  folder.  So be sure to change the filters that go with it.
+>		  Incoming email that your filters don't move goes
+		  into the Inbox; outgoing mail that they don't move
+		  ends up in the Sent folder.  So be sure to change
+		  the filters that go with it.
 		</P
 ></LI
 ></UL

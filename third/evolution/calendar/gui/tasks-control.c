@@ -139,17 +139,14 @@ tasks_control_get_property		(BonoboPropertyBag	*bag,
 					 CORBA_Environment      *ev,
 					 gpointer		 user_data)
 {
-	/*GnomeCalendar *gcal = user_data;*/
+	ETasks *tasks = user_data;
+	char *uri;
 
 	switch (arg_id) {
 
 	case TASKS_CONTROL_PROPERTY_URI_IDX:
-		/*
-		if (fb && fb->uri)
-			BONOBO_ARG_SET_STRING (arg, fb->uri);
-		else
-			BONOBO_ARG_SET_STRING (arg, "");
-		*/
+		uri = cal_client_get_uri (e_tasks_get_cal_client (tasks));
+		BONOBO_ARG_SET_STRING (arg, uri);
 		break;
 
 	default:
@@ -166,15 +163,21 @@ tasks_control_set_property		(BonoboPropertyBag	*bag,
 					 gpointer		 user_data)
 {
 	ETasks *tasks = user_data;
-	char *filename;
+	char *uri;
 
 	switch (arg_id) {
 
 	case TASKS_CONTROL_PROPERTY_URI_IDX:
-		filename = g_strdup_printf ("%s/tasks.ics",
-					    BONOBO_ARG_GET_STRING (arg));
-		e_tasks_open (tasks, filename);
-		g_free (filename);
+		uri = BONOBO_ARG_GET_STRING (arg);
+		if (!e_tasks_open (tasks, uri)) {
+			char *msg;
+
+			msg = g_strdup_printf (_("Could not load the tasks in `%s'"), uri);
+			gnome_error_dialog_parented (
+				msg,
+				GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (tasks))));
+			g_free (msg);
+		}
 		break;
 
 	default:

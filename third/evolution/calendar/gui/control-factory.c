@@ -68,17 +68,14 @@ get_prop (BonoboPropertyBag *bag,
 	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
-	/*GnomeCalendar *gcal = user_data;*/
+	GnomeCalendar *gcal = user_data;
+	char *uri;
 
 	switch (arg_id) {
 
 	case PROPERTY_CALENDAR_URI_IDX:
-		/*
-		if (fb && fb->uri)
-			BONOBO_ARG_SET_STRING (arg, fb->uri);
-		else
-			BONOBO_ARG_SET_STRING (arg, "");
-		*/
+		uri = cal_client_get_uri (gnome_calendar_get_cal_client (gcal));
+		BONOBO_ARG_SET_STRING (arg, uri);
 		break;
 
 	default:
@@ -95,14 +92,20 @@ set_prop (BonoboPropertyBag *bag,
 	  gpointer           user_data)
 {
 	GnomeCalendar *gcal = user_data;
-	char *filename;
+	char *uri;
 
 	switch (arg_id) {
 	case PROPERTY_CALENDAR_URI_IDX:
-		filename = g_strdup_printf ("%s/calendar.ics",
-					    BONOBO_ARG_GET_STRING (arg));
-		gnome_calendar_open (gcal, filename); /* FIXME: result value -> exception? */
-		g_free (filename);
+		uri = BONOBO_ARG_GET_STRING (arg);
+		if (!gnome_calendar_open (gcal, uri)) {
+			char *msg;
+
+			msg = g_strdup_printf (_("Could not open the folder in '%s'"), uri);
+			gnome_error_dialog_parented (
+				msg,
+				GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (gcal))));
+			g_free (msg);
+		}
 		break;
 
 	default:

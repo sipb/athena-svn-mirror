@@ -1,3 +1,197 @@
+2002-03-06  Rodrigo Moya <rodrigo@ximian.com>
+
+	Should fix #21240
+
+	* gui/alarm-notify/alarm-notify.c: replaced use of GnomeVFSURI
+	with EUri, to allow non-registered methods.
+
+2002-03-05  Rodrigo Moya <rodrigo@ximian.com>
+
+	* gui/e-itip-control.c (e_itip_control_set_data): reverted my last
+	change of adding the METHOD property to the incoming request.
+
+	* gui/itip-utils.c (comp_string): added extra
+	X-MICROSOFT-CDO-REPLYTIME property for broken Outlook. Should fix
+	#20783.
+
+2002-03-04  Dan Winship  <danw@ximian.com>
+
+	* gui/itip-utils.c (comp_compliant): Reset the DTSTAMP of the new
+	component. (RFC2245 says DTSTAMP corresponds to the time the
+	particular iCalendar representation of the object was created.)
+	Fixes #21198.
+
+2002-03-04  JP Rosevear  <jpr@ximian.com>
+
+	* gui/print.c: remove unneeded parameter from print_text_size
+	everywhere
+	(get_font_for_size): calculate a font size based on the available
+	height
+	(print_text): calculate the top of where the font should be drawn
+	(print_text_size): use get_font_for_size
+	(print_day_background): use get_font_for_size
+
+2002-03-04  Dan Winship  <danw@ximian.com>
+
+	* gui/itip-utils.c (comp_subject): Prefix the subject with an
+	indicator like "Accepted" or "Cancelled" explaining what the
+	action is, since Outlook doesn't display any of that information
+	inline like we do. (20780)
+
+2002-03-01  JP Rosevear  <jpr@ximian.com>
+
+	* gui/e-itip-control.c (write_html): if this is a reply, print the
+	attendee status
+
+2002-02-28  Rodrigo Moya <rodrigo@ximian.com>
+
+	* calendar/gui/e-itip-control.c (e_itip_control_set_data): added the
+	METHOD property to the top level component we create.
+
+2002-02-26  Rodrigo Moya <rodrigo@ximian.com>
+
+	* gui/control-factory.c (set_prop):
+	* gui/tasks-control.c (tasks_control_set_property): display an error
+	message if the call to gnome_calendar_open or e_tasks_open does not
+	return TRUE. Fixes #20346.
+
+2002-02-25  Dan Winship  <danw@ximian.com>
+
+	* gui/itip-utils.c (itip_send_comp): use
+	GNOME_Evolution_Composer_setBody rather than _setMultipartType and
+	_attachData now, to send a message containing just a text/calendar
+	part. Fixes 14705. Mostly.
+	(comp_content_type): Include the filename here since we can't add
+	a Content-Disposition now.
+
+2002-02-24  JP Rosevear  <jpr@ximian.com>
+
+	* gui/e-meeting-time-sel-item.c
+	(e_meeting_time_selector_item_draw): pass the real table
+	to e_meeting_model_etable_view_to_model_row
+	(e_meeting_time_selector_item_paint_busy_periods): ditto
+
+	* gui/dialogs/meeting-page.c (right_click_cb): ditto
+	
+	* gui/e-meeting-model.h: update protos
+
+	* gui/e-meeting-model.c
+	(e_meeting_model_etable_model_to_view_row): take in to account the
+	fact the table used the without model
+	(e_meeting_model_etable_view_to_model_row): ditto
+
+2002-02-24  Chris Toshok  <toshok@ximian.com>
+
+	* gui/cal-search-bar.c (cal_search_bar_class_init): change
+	query_changed to search_activated.
+	(cal_search_bar_search_activated): rename
+	cal_search_bar_query_changed to this.
+
+2002-02-19  JP Rosevear  <jpr@ximian.com>
+ 
+ 	* gui/e-itip-control.c (send_item): pass extra itip_send_comp
+ 	params
+ 	(send_freebusy): ditto
+ 	(ok_clicked_cb): ditto, including the timezones culled from the
+ 	component
+ 
+ 	* gui/e-week-view.c: pass extra itip_send_comp params
+ 
+ 	* gui/calendar-commands.c: ditto
+ 
+ 	* gui/e-day-view.c: ditto
+ 
+ 	* gui/dialogs/task-editor.c: ditto
+ 
+ 	* gui/dialogs/event-editor.c: ditto
+ 
+ 	* gui/dialogs/comp-editor.c: ditto
+ 	
+ 	* gui/itip-utils.h (itip_send_comp): update proto
+ 
+ 	* gui/itip-utils.c (foreach_tzid_callback): check the passed in
+ 	zones, then the builtin time zones then the client
+
+2002-02-19  JP Rosevear  <jpr@ximian.com>
+ 
+ 	* gui/e-itip-control.c (find_my_address): strip the ical value and
+ 	do a case insensitive compare
+ 	(find_attendee): ditto
+ 	(change_status): put the error message here
+ 	(ok_clicked_cb): don't update the item or rsvp unless
+ 	change_status was successful, trip the ical value and do a case
+ 	insensitive compare
+ 
+ 	* gui/itip-utils.c (get_address): strip the incoming address
+ 	(itip_strip_mailto): use g_strncasecmp
+ 	(comp_limit_attendees): strip the ical value and do a case
+ 	insensitive compare
+
+2002-02-14  JP Rosevear  <jpr@ximian.com>
+ 
+ 	* gui/e-meeting-model.c: use new column enums
+ 	(set_value_at): emit pre-change/cell change signals
+ 	(destroy): destroy refresh_queue and refresh_data
+ 	(init): init new elements
+ 	(refresh_queue_add): if the attendee is being refreshed already,
+ 	possibly update the start/end times to look for and update the
+ 	callback info, otherwise add it to the queue
+ 	(refresh_queue_remove): remove a refreshing attende from the queue
+ 	(process_callbacks): make all the callbacks and remove the
+ 	attendee from the queue
+ 	(process_free_busy): process the callbacks immediately if parsing
+ 	fails or on successful completion of processing
+ 	(async_close): process free busy
+	(cursor_cb): we're only looking for one at a time now
+ 	(refresh_busy_periods): idle callback to start processing the queue
+ 	(e_meeting_model_refresh_all_busy_periods): add every row to the queue
+ 	(e_meeting_model_refresh_busy_periods): add a single row to the queue
+ 
+ 	* gui/e-meeting-model.h: new protos, enum the columns
+ 
+ 	* gui/e-meeting-time-sel.c: use new compare time function
+ 	(e_meeting_time_selector_construct): listen for a cell changed
+ 	signal and use separate callbacks for rows_inserted and
+ 	rows_deleted
+ 	(e_meeting_time_selector_refresh_free_busy): util function to
+ 	refresh free busy info
+ 	(e_meeting_time_selector_on_update_free_busy): use above
+ 	(rows_inserted_cb): refresh free busy on the new rows
+ 	(cell_changed_cb): refresh free busy on the row when the address
+ 	changes
+ 	(rows_deleted_cb): redraw
+ 
+ 	* gui/e-meeting-utils.[hc]: a holding spot for a meeting time
+ 	comparison function
+ 
+ 	* gui/Makefile.am: compile new files
+ 
+2002-02-13  Rodrigo Moya <rodrigo@ximian.com>
+
+	* gui/control-factory.c (set_prop): don't append 'calendar.ics'
+	to the URI.
+	(get_prop): finished.
+
+	* gui/tasks-control.c (tasks_control_set_property): don't append
+	'tasks.ics' to the URI.
+	(tasks_control_get_property): finished.
+
+	* gui/gnome-cal.c (gnome_calendar_open):
+	* gui/e-tasks.c (e_tasks_open): append $filename.ics to the uri to be
+	opened if the uri is local. Leave intact in other cases.
+
+2002-02-06  Damon Chaplin  <damon@ximian.com>
+
+	* cal-util/cal-recur.c (cal_recur_from_icalproperty): convert months
+	from 1-12 to 0-11. Fixes bug #19235.
+
+2002-01-22  Federico Mena Quintero  <federico@ximian.com>
+
+	* gui/dialogs/alarm-options.glade: Use 1 instead of zero as the
+	minimum value for the repetitions spin button as we use a check
+	box to specify whether the alarm has repetitions or not.  Fixes
+	bug #19054.
+
 2002-01-17  Damon Chaplin  <damon@ximian.com>
 
 	* gui/dialogs/alarm-page.c (get_alarm_string): save the alarm string

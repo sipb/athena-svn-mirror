@@ -13,10 +13,6 @@
                        value="The Personal Addressbook Server"/>
 	<oaf_attribute name="description-az" type="string"
                        value="&#197;&#158;&#201;&#153;xsi &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri Vericisi"/>
-	<oaf_attribute name="description-bg" type="string"
-                       value="&#200;&#231;&#242;&#238;&#247;&#237;&#232;&#234; &#237;&#224; &#224;&#228;&#240;&#229;&#241;&#232;"/>
-	<oaf_attribute name="description-ca" type="string"
-                       value="Afegeix una font"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Personlig adressebogs-server"/>
 	<oaf_attribute name="description-de" type="string"
@@ -49,8 +45,6 @@
                        value="Personlig adressebok-tjener"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Osobisty serwer ksi&#177;&#191;ki adresowej"/>
-	<oaf_attribute name="description-pt" type="string"
-                       value="Adicionar Fonte"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="O servidor pessoal de cat&#225;logo de endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
@@ -58,7 +52,7 @@
 	<oaf_attribute name="description-ru" type="string"
                        value="&#243;&#197;&#210;&#215;&#197;&#210; &#208;&#197;&#210;&#211;&#207;&#206;&#193;&#204;&#216;&#206;&#217;&#200; &#193;&#196;&#210;&#197;&#211;&#206;&#217;&#200; &#203;&#206;&#201;&#199;"/>
 	<oaf_attribute name="description-sk" type="string"
-                       value="Osobn&#253; adres&#225;rov&#253; server"/>
+                       value="Osobn&#195;&#189; adres&#195;&#161;rov&#195;&#189; server"/>
 	<oaf_attribute name="description-sl" type="string"
                        value="Stre&#197;&#190;nik osebnega adresarja"/>
 	<oaf_attribute name="description-sv" type="string"
@@ -113,6 +107,8 @@
                        value="Person&#226;lais Kalend&#226;ra Serveris, kalend&#226;ra ra&#254;otne"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De Persoonlijke Kalenderserver; kalender fabriek"/>
+	<oaf_attribute name="description-nn" type="string"
+                       value="Personleg kalendertenar: kalendarfabrikk"/>
 	<oaf_attribute name="description-no" type="string"
                        value="Personlig adressebok-tjener; factory"/>
 	<oaf_attribute name="description-pl" type="string"
@@ -124,7 +120,7 @@
 	<oaf_attribute name="description-ru" type="string"
                        value="&#240;&#197;&#210;&#211;&#207;&#206;&#193;&#204;&#216;&#206;&#217;&#202; &#203;&#193;&#204;&#197;&#206;&#196;&#193;&#210;&#206;&#217;&#202; &#211;&#197;&#210;&#215;&#197;&#210;; &#198;&#193;&#194;&#210;&#201;&#203;&#193; &#203;&#193;&#204;&#197;&#206;&#196;&#193;&#210;&#209;"/>
 	<oaf_attribute name="description-sk" type="string"
-                       value="Vytv&#225;racie rozhranie kalend&#225;ra pre Osobn&#253; kalend&#225;rov&#253; server."/>
+                       value="Vytv&#195;&#161;racie rozhranie kalend&#195;&#161;ra pre Osobn&#195;&#189; kalend&#195;&#161;rov&#195;&#189; server."/>
 	<oaf_attribute name="description-sl" type="string"
                        value="Stre&#197;&#190;nik osebnega koledarja; tovarna koledarjal"/>
 	<oaf_attribute name="description-sv" type="string"

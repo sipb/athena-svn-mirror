@@ -627,7 +627,7 @@ load_uri_cb (EBook *book, EBookStatus status, gpointer closure)
 
 		if (source &&
 		    source->type == ADDRESSBOOK_SOURCE_LDAP &&
-		    source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE) {
+		    source->auth != ADDRESSBOOK_LDAP_AUTH_NONE) {
 			const char *password;
 			char *pass_dup = NULL;
 
@@ -637,7 +637,12 @@ load_uri_cb (EBook *book, EBookStatus status, gpointer closure)
 				char *prompt;
 				gboolean remember;
 
-				prompt = g_strdup_printf (_("Enter password for %s (user %s)"), source->name, source->email_addr);
+				if (source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE_BINDDN)
+					prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
+								  source->name, source->binddn);
+				else
+					prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
+								  source->name, source->email_addr);
 				remember = source->remember_passwd;
 				pass_dup = e_passwords_ask_password (
 								     prompt, load_uri_data->uri, prompt, TRUE,
@@ -651,7 +656,16 @@ load_uri_cb (EBook *book, EBookStatus status, gpointer closure)
 			}
 
 			if (password || pass_dup) {
-				e_book_authenticate_user (book, source->email_addr, password ? password : pass_dup,
+				char *user;
+
+				if (source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE_BINDDN)
+					user = source->binddn;
+				else
+					user = source->email_addr;
+				if (!user)
+					user = "";
+				e_book_authenticate_user (book, user, password ? password : pass_dup,
+							  addressbook_storage_auth_type_to_string (source->auth),
 							  load_uri_auth_cb, closure);
 				g_free (pass_dup);
 				return;
@@ -797,18 +811,18 @@ static ESearchBarItem addressbook_search_menu_items[] = {
 };
 
 enum {
-	ESB_ANY,
 	ESB_FULL_NAME,
 	ESB_EMAIL,
 	ESB_CATEGORY,
+	ESB_ANY,
 	ESB_ADVANCED
 };
 
 static ESearchBarItem addressbook_search_option_items[] = {
-	{ N_("Any field contains"), ESB_ANY, NULL },
-	{ N_("Name contains"), ESB_FULL_NAME, NULL },
-	{ N_("Email contains"), ESB_EMAIL, NULL },
+	{ N_("Name begins with"), ESB_FULL_NAME, NULL },
+	{ N_("Email is"), ESB_EMAIL, NULL },
 	{ N_("Category is"), ESB_CATEGORY, NULL }, /* We attach subitems below */
+	{ N_("Any field contains"), ESB_ANY, NULL },
 	{ N_("Advanced..."), ESB_ADVANCED, NULL },
 	{ NULL, -1, NULL }
 };
@@ -836,7 +850,7 @@ addressbook_menu_activated (ESearchBar *esb, int id, AddressbookView *view)
 }
 
 static void
-addressbook_query_changed (ESearchBar *esb, AddressbookView *view)
+addressbook_search_activated (ESearchBar *esb, AddressbookView *view)
 {
 	ECategoriesMasterList *master_list;
 	char *search_word, *search_query;
@@ -861,11 +875,11 @@ addressbook_query_changed (ESearchBar *esb, AddressbookView *view)
 								s->str);
 				break;
 			case ESB_FULL_NAME:
-				search_query = g_strdup_printf ("(contains \"full_name\" %s)",
+				search_query = g_strdup_printf ("(beginswith \"full_name\" %s)",
 								s->str);
 				break;
 			case ESB_EMAIL:
-				search_query = g_strdup_printf ("(contains \"email\" %s)",
+				search_query = g_strdup_printf ("(is \"email\" %s)",
 								s->str);
 				break;
 			case ESB_CATEGORY:
@@ -894,7 +908,22 @@ addressbook_query_changed (ESearchBar *esb, AddressbookView *view)
 					NULL);
 
 		g_free (search_query);
-		g_free (search_word);
+	}
+
+	g_free (search_word);
+}
+
+static void
+addressbook_query_changed (ESearchBar *esb, AddressbookView *view)
+{
+	int search_type;
+
+	gtk_object_get(GTK_OBJECT(esb),
+		       "item_id", &search_type,
+		       NULL);
+
+	if (search_type == ESB_ADVANCED) {
+		gtk_widget_show(e_addressbook_search_dialog_new(view->view));
 	}
 }
 
@@ -1089,6 +1118,8 @@ addressbook_factory_new_control (void)
 			    FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (view->search), "query_changed",
 			    GTK_SIGNAL_FUNC (addressbook_query_changed), view);
+	gtk_signal_connect (GTK_OBJECT (view->search), "search_activated",
+			    GTK_SIGNAL_FUNC (addressbook_search_activated), view);
 	gtk_signal_connect (GTK_OBJECT (view->search), "menu_activated",
 			    GTK_SIGNAL_FUNC (addressbook_menu_activated), view);
 

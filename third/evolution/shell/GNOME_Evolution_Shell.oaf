@@ -12,24 +12,18 @@
                        value="The Evolution shell."/>
 	<oaf_attribute name="description-az" type="string"
                        value="&#39;Evolution&#39; qab&#196;&#177;&#196;&#159;&#196;&#177;."/>
-	<oaf_attribute name="description-ca" type="string"
-                       value="No es pot inicialitzat l&#39;int&#232;rpret d&#39;ordres de l&#39;Evolution."/>
 	<oaf_attribute name="description-da" type="string"
                        value="Evolution skallen."/>
 	<oaf_attribute name="description-de" type="string"
                        value="Die Evolution-Shell."/>
 	<oaf_attribute name="description-el" type="string"
                        value="&#212;&#239; &#240;&#229;&#241;&#233;&#226;&#220;&#235;&#235;&#239;&#237; Evolution."/>
-	<oaf_attribute name="description-en_GB" type="string"
-                       value="Cannot initialise the Evolution shell."/>
 	<oaf_attribute name="description-es" type="string"
                        value="La shell de Evolution."/>
 	<oaf_attribute name="description-fi" type="string"
                        value="Evolution-kuori."/>
 	<oaf_attribute name="description-fr" type="string"
                        value="Le shell Evolution."/>
-	<oaf_attribute name="description-ga" type="string"
-                       value="Go raibh maith agat\nAn Fhoireann Evolution\n"/>
 	<oaf_attribute name="description-gl" type="string"
                        value="O shell de Evolution."/>
 	<oaf_attribute name="description-hu" type="string"
@@ -45,15 +39,11 @@
 	<oaf_attribute name="description-lv" type="string"
                        value="Evolution kommandrinda."/>
 	<oaf_attribute name="description-nl" type="string"
-                       value="De Evolution schil."/>
-	<oaf_attribute name="description-nn" type="string"
-                       value="Kan ikkje initialisera adresseboka"/>
+                       value="De Evolution shell."/>
 	<oaf_attribute name="description-no" type="string"
                        value="Evolution skallet."/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Pow&#179;oka Evolution."/>
-	<oaf_attribute name="description-pt" type="string"
-                       value="Evolution - %s"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="A shell do Evolution."/>
 	<oaf_attribute name="description-ro" type="string"

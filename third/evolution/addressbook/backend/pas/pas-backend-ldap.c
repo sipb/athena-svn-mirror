@@ -36,6 +36,8 @@
 #include "ldap_schema.h"
 #endif
 
+#include <sys/time.h>
+
 #include <e-util/e-sexp.h>
 #include <ebook/e-card-simple.h>
 
@@ -46,6 +48,22 @@
 
 
 #define LDAP_MAX_SEARCH_RESPONSES 100
+
+/* interval for our poll_ldap timeout */
+#define LDAP_POLL_INTERVAL 20
+
+/* timeout for ldap_result */
+#define LDAP_RESULT_TIMEOUT_MILLIS 10
+
+/* smart grouping stuff */
+#define GROUPING_INITIAL_SIZE 1
+#define GROUPING_MAXIMUM_SIZE 200
+
+/* the next two are in milliseconds */
+#define GROUPING_MINIMUM_WAIT 0  /* we never send updates faster than this, to avoid totally spamming the UI */
+#define GROUPING_MAXIMUM_WAIT 250 /* we always send updates (if there are pending cards) when we hit this */
+
+#define TV_TO_MILLIS(timeval) ((timeval).tv_sec * 1000 + (timeval).tv_usec / 1000)
 
 /* the objectClasses we need */
 #define TOP                  "top"
@@ -82,6 +100,8 @@ struct _PASBackendLDAPPrivate {
 
 	gboolean writable;
 
+	char     **search_attrs;
+
 	/* whether or not there's a request in process on our LDAP* */
 	LDAPOp *current_op;
 	GList *pending_ops;
@@ -101,9 +121,21 @@ struct _PASBackendLDAPBookView {
 	PASBackendLDAPPrivate *blpriv;
 	gchar                 *search;
 	PASBackendCardSExp    *card_sexp;
-	int                   search_idle;
+	int                   search_timeout;
 	int                   search_msgid;
 	LDAPOp                *search_op;
+
+	/* grouping stuff */
+
+	GList    *pending_adds;        /* the cards we're sending */
+	int       num_pending_adds;    /* the number waiting to be sent */
+	int       target_pending_adds; /* the cutoff that forces a flush to the client, if it happens before the timeout */
+	int       num_sent_this_time;  /* the number of cards we sent to the client before the most recent timeout */
+	int       num_sent_last_time;  /* the number of cards we sent to the client before the previous timeout */
+	glong     grouping_time_start;
+	
+	/* used by poll_ldap to only send the status messages once */
+	gboolean notified_receiving_results;
 };
 
 typedef gboolean (*LDAPOpHandler)(PASBackend *backend, LDAPOp *op);
@@ -253,11 +285,11 @@ view_destroy(GtkObject *object, gpointer data)
 	for (list = bl->priv->book_views; list; list = g_list_next(list)) {
 		PASBackendLDAPBookView *view = list->data;
 		if (view->book_view == PAS_BOOK_VIEW(object)) {
-			if (view->search_idle != 0) {
+			if (view->search_timeout != 0) {
 				/* we have a search running on the
-				   ldap connection.  remove the idle
+				   ldap connection.  remove the timeout
 				   handler and anbandon the msg id */
-				g_source_remove(view->search_idle);
+				g_source_remove(view->search_timeout);
 				if (view->search_msgid != -1)
 					ldap_abandon (bl->priv->ldap, view->search_msgid);
 
@@ -583,11 +615,29 @@ create_dn_from_ecard (ECardSimple *card, const char *root_dn)
 {
 	char *cn, *cn_part = NULL;
 	char *dn;
-	gboolean need_comma = FALSE;
 
 	cn = e_card_simple_get (card, E_CARD_SIMPLE_FIELD_FULL_NAME);
 	if (cn) {
-		cn_part = g_strdup_printf ("cn=%s%s", cn, need_comma ? "," : "");
+		if (strchr (cn, ',')) {
+			/* need to escape commas */
+			char *new_cn = g_malloc0 (strlen (cn) * 3 + 1);
+			int i, j;
+
+			for (i = 0, j = 0; i < strlen (cn); i ++) {
+				if (cn[i] == ',') {
+					sprintf (new_cn + j, "%%%02X", cn[i]);
+					j += 3;
+				}
+				else {
+					new_cn[j++] = cn[i];
+				}
+			}
+			cn_part = g_strdup_printf ("cn=%s", new_cn);
+			g_free (new_cn);
+		}
+		else {
+			cn_part = g_strdup_printf ("cn=%s", cn);
+		}
 	}
 	else {
 		cn_part = g_strdup ("");
@@ -1762,8 +1812,12 @@ birthday_compare (ECardSimple *ecard1, ECardSimple *ecard2)
 	return equal;
 }
 
+typedef struct {
+	GList *list;
+	PASBackendLDAP *bl;
+} PASBackendLDAPSExpData;
+
 #define IS_RFC2254_CHAR(c) ((c) == '*' || (c) =='\\' || (c) == '(' || (c) == ')' || (c) == '\0')
-static char hex[] = "0123456789abcdef";
 static char *
 rfc2254_escape(char *str)
 {
@@ -1786,9 +1840,8 @@ rfc2254_escape(char *str)
 		int j = 0;
 		for (i = 0; i < len; i ++) {
 			if (IS_RFC2254_CHAR(str[i])) {
-				newstr[j++] = '\\';
-				newstr[j++] = hex[(str[i]&0xf0) >> 4];
-				newstr[j++] = hex[str[i]&0x0f];
+				sprintf (newstr + j, "\\%02x", str[i]);
+				j+= 3;
 			}
 			else {
 				newstr[j++] = str[i];
@@ -1796,13 +1849,12 @@ rfc2254_escape(char *str)
 		}
 		return newstr;
 	}
-		
 }
 
 static ESExpResult *
 func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-	GList **list = data;
+	PASBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 	char ** strings;
 
@@ -1814,15 +1866,15 @@ func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		strings[argc+3 - 2] = g_strdup (")");
 		
 		for (i = 0; i < argc; i ++) {
-			GList *list_head = *list;
+			GList *list_head = ldap_data->list;
 			if (!list_head)
 				break;
 			strings[argc - i] = list_head->data;
-			*list = g_list_remove_link(list_head, list_head);
+			ldap_data->list = g_list_remove_link(list_head, list_head);
 			g_list_free_1(list_head);
 		}
 
-		*list = g_list_prepend(*list, g_strjoinv(" ", strings));
+		ldap_data->list = g_list_prepend(ldap_data->list, g_strjoinv(" ", strings));
 
 		for (i = 0 ; i < argc + 2; i ++)
 			g_free (strings[i]);
@@ -1839,7 +1891,7 @@ func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 static ESExpResult *
 func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-	GList **list = data;
+	PASBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 	char ** strings;
 
@@ -1851,15 +1903,15 @@ func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		strings[argc+3 - 2] = g_strdup (")");
 
 		for (i = 0; i < argc; i ++) {
-			GList *list_head = *list;
+			GList *list_head = ldap_data->list;
 			if (!list_head)
 				break;
 			strings[argc - i] = list_head->data;
-			*list = g_list_remove_link(list_head, list_head);
+			ldap_data->list = g_list_remove_link(list_head, list_head);
 			g_list_free_1(list_head);
 		}
 
-		*list = g_list_prepend(*list, g_strjoinv(" ", strings));
+		ldap_data->list = g_list_prepend(ldap_data->list, g_strjoinv(" ", strings));
 
 		for (i = 0 ; i < argc + 2; i ++)
 			g_free (strings[i]);
@@ -1876,13 +1928,13 @@ func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 static ESExpResult *
 func_not(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-	GList **list = data;
+	PASBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 
 	/* just replace the head of the list with the NOT of it. */
 	if (argc > 0) {
-		char *term = (*list)->data;
-		(*list)->data = g_strdup_printf("(!%s)", term);
+		char *term = ldap_data->list->data;
+		ldap_data->list->data = g_strdup_printf("(!%s)", term);
 		g_free (term);
 	}
 
@@ -1895,7 +1947,7 @@ func_not(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 static ESExpResult *
 func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-	GList **list = data;
+	PASBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 
 	if (argc == 2
@@ -1932,7 +1984,7 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 			}
 			strcat (big_query, ")");
 
-			*list = g_list_prepend(*list, big_query);
+			ldap_data->list = g_list_prepend(ldap_data->list, big_query);
 
 			g_free (match_str);
 		}
@@ -1940,11 +1992,11 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 			char *ldap_attr = query_prop_to_ldap(propname);
 
 			if (ldap_attr)
-				*list = g_list_prepend(*list,
-						       g_strdup_printf("(%s=*%s%s)",
-								       ldap_attr,
-								       str,
-								       one_star ? "" : "*"));
+				ldap_data->list = g_list_prepend(ldap_data->list,
+								 g_strdup_printf("(%s=*%s%s)",
+										 ldap_attr,
+										 str,
+										 one_star ? "" : "*"));
 		}
 
 		g_free (str);
@@ -1959,7 +2011,7 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 static ESExpResult *
 func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-	GList **list = data;
+	PASBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 
 	if (argc == 2
@@ -1970,14 +2022,14 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		char *ldap_attr = query_prop_to_ldap(propname);
 
 		if (ldap_attr)
-			*list = g_list_prepend(*list,
-					       g_strdup_printf("(%s=%s)",
-							       ldap_attr, str));
+			ldap_data->list = g_list_prepend(ldap_data->list,
+							 g_strdup_printf("(%s=%s)",
+									 ldap_attr, str));
 		else {
 			g_warning ("unknown query property\n");
 			/* we want something that'll always be false */
-			*list = g_list_prepend(*list,
-					       g_strdup("objectClass=MyBarnIsBiggerThanYourBarn"));
+			ldap_data->list = g_list_prepend(ldap_data->list,
+							 g_strdup("objectClass=MyBarnIsBiggerThanYourBarn"));
 		}
 
 		g_free (str);
@@ -1992,7 +2044,7 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 static ESExpResult *
 func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-	GList **list = data;
+	PASBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 
 	if (argc == 2
@@ -2001,16 +2053,31 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 		char *propname = argv[0]->value.string;
 		char *str = rfc2254_escape(argv[1]->value.string);
 		char *ldap_attr = query_prop_to_ldap(propname);
-		gboolean one_star = FALSE;
 
-		if (strlen(str) == 0)
-			one_star = TRUE;
+		/* insert hack for fileAs queries, since we need to do
+		   the right thing if the server supports them or not,
+		   and for entries that have no fileAs attribute. */
+		if (ldap_attr) {
+			if (!strcmp (propname, "full_name")) {
+				ldap_data->list = g_list_prepend(ldap_data->list,
+							       g_strdup_printf(
+								       "(|(cn=%s*)(sn=%s*))",
+								       str, str));
+			}
+			else if (!strcmp (ldap_attr, "fileAs")) {
+				ldap_data->list = g_list_prepend(ldap_data->list,
+								 g_strdup_printf(
+								 "(|(fileAs=%s*)(&(!(fileAs=*))(sn=%s*)))",
+								 str, str));
+			}
+			else {
+				ldap_data->list = g_list_prepend(ldap_data->list,
+								 g_strdup_printf("(%s=%s*)",
+										 ldap_attr,
+										 str));
+			}
+		}
 
-		if (ldap_attr)
-			*list = g_list_prepend(*list,
-					       g_strdup_printf("(%s=%s*)",
-							       ldap_attr,
-							       str));
 		g_free (str);
 	}
 
@@ -2023,7 +2090,7 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 static ESExpResult *
 func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
-	GList **list = data;
+	PASBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 
 	if (argc == 2
@@ -2032,16 +2099,12 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 		char *propname = argv[0]->value.string;
 		char *str = rfc2254_escape(argv[1]->value.string);
 		char *ldap_attr = query_prop_to_ldap(propname);
-		gboolean one_star = FALSE;
-
-		if (strlen(str) == 0)
-			one_star = TRUE;
 
 		if (ldap_attr)
-			*list = g_list_prepend(*list,
-					       g_strdup_printf("(%s=*%s)",
-							       ldap_attr,
-							       str));
+			ldap_data->list = g_list_prepend(ldap_data->list,
+							 g_strdup_printf("(%s=*%s)",
+									 ldap_attr,
+									 str));
 		g_free (str);
 	}
 
@@ -2068,23 +2131,26 @@ static struct {
 };
 
 static gchar *
-pas_backend_ldap_build_query (gchar *query)
+pas_backend_ldap_build_query (PASBackendLDAP *bl, gchar *query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
 	gchar *retval;
-	GList *list = NULL;
+	PASBackendLDAPSExpData data;
 	int i;
+
+	data.list = NULL;
+	data.bl = bl;
 
 	sexp = e_sexp_new();
 
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
-					     (ESExpIFunc *)symbols[i].func, &list);
+					     (ESExpIFunc *)symbols[i].func, &data);
 		} else {
 			e_sexp_add_function(sexp, 0, symbols[i].name,
-					    symbols[i].func, &list);
+					    symbols[i].func, &data);
 		}
 	}
 
@@ -2096,14 +2162,14 @@ pas_backend_ldap_build_query (gchar *query)
 	e_sexp_result_free(sexp, r);
 	e_sexp_unref (sexp);
 
-	if (list) {
-		if (list->next) {
+	if (data.list) {
+		if (data.list->next) {
 			g_warning ("conversion to ldap query string failed");
 			retval = NULL;
-			g_list_foreach (list, (GFunc)g_free, NULL);
+			g_list_foreach (data.list, (GFunc)g_free, NULL);
 		}
 		else {
-			retval = list->data;
+			retval = data.list->data;
 		}
 	}
 	else {
@@ -2111,7 +2177,7 @@ pas_backend_ldap_build_query (gchar *query)
 		retval = NULL;
 	}
 
-	g_list_free (list);
+	g_list_free (data.list);
 	return retval;
 }
 
@@ -2144,7 +2210,7 @@ build_card_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectclasse
 	char *attr;
 	BerElement *ber = NULL;
 
-	g_print ("build_card_from_entry, dn = %s\n", dn);
+	//	g_print ("build_card_from_entry, dn = %s\n", dn);
 	e_card_simple_set_id (card, dn);
 
 	for (attr = ldap_first_attribute (ldap, e, &ber); attr;
@@ -2197,7 +2263,19 @@ build_card_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectclasse
 
 	e_card_simple_sync_card (card);
 
+	gtk_object_unref (GTK_OBJECT (ecard));
+
 	return card;
+}
+
+static void
+send_pending_adds (PASBackendLDAPBookView *view)
+{
+	view->num_sent_this_time += view->num_pending_adds;
+	pas_book_view_notify_add (view->book_view, view->pending_adds);
+	g_list_foreach (view->pending_adds, (GFunc)g_free, NULL);
+	view->pending_adds = NULL;
+	view->num_pending_adds = 0;
 }
 
 static gboolean
@@ -2208,54 +2286,89 @@ poll_ldap (LDAPSearchOp *op)
 	LDAP           *ldap = bl->priv->ldap;
 	int            rc;
 	LDAPMessage    *res, *e;
-	GList   *cards = NULL;
 	static int received = 0;
+	GTimeVal cur_time;
+	glong cur_millis;
+	struct timeval timeout;
 
-	pas_book_view_notify_status_message (view->book_view, _("Receiving LDAP search results..."));
+	timeout.tv_sec = 0;
+	timeout.tv_usec = LDAP_RESULT_TIMEOUT_MILLIS * 1000;
 
-	rc = ldap_result (ldap, view->search_msgid, 0, NULL, &res);
-	
-	if (rc == -1 && received == 0) {
-		pas_book_view_notify_status_message (view->book_view, _("Restarting search."));
-		/* connection went down and we never got any. */
-		bl->priv->connected = FALSE;
-
-		/* this will reopen the connection */
-		ldap_op_restart ((LDAPOp*)op);
-		return FALSE;
+	if (!view->notified_receiving_results) {
+		view->notified_receiving_results = TRUE;
+		pas_book_view_notify_status_message (view->book_view, _("Receiving LDAP search results..."));
 	}
 
-	if (rc != LDAP_RES_SEARCH_ENTRY) {
-		view->search_idle = 0;
-		pas_book_view_notify_complete (view->book_view);
-		ldap_op_finished ((LDAPOp*)op);
-		received = 0;
-		return FALSE;
+	rc = ldap_result (ldap, view->search_msgid, 0, &timeout, &res);
+	if (rc != 0) {/* rc == 0 means timeout exceeded */
+		if (rc == -1 && received == 0) {
+			pas_book_view_notify_status_message (view->book_view, _("Restarting search."));
+			/* connection went down and we never got any. */
+			bl->priv->connected = FALSE;
+
+			/* this will reopen the connection */
+			ldap_op_restart ((LDAPOp*)op);
+			return FALSE;
+		}
+
+		if (rc != LDAP_RES_SEARCH_ENTRY) {
+			view->search_timeout = 0;
+			if (view->num_pending_adds)
+				send_pending_adds (view);
+			pas_book_view_notify_complete (view->book_view);
+			ldap_op_finished ((LDAPOp*)op);
+			received = 0;
+			return FALSE;
+		}
+
+		received = 1;
+
+		e = ldap_first_entry(ldap, res);
+
+		while (NULL != e) {
+			ECardSimple *card = build_card_from_entry (ldap, e, NULL);
+
+			view->pending_adds = g_list_append (view->pending_adds,
+							    e_card_simple_get_vcard_assume_utf8 (card));
+			view->num_pending_adds ++;
+
+			gtk_object_unref (GTK_OBJECT(card));
+
+			e = ldap_next_entry(ldap, e);
+		}
+
+		ldap_msgfree(res);
 	}
 
-	received = 1;
-		
-	e = ldap_first_entry(ldap, res);
+	g_get_current_time (&cur_time);
+	cur_millis = TV_TO_MILLIS (cur_time);
 
-	while (NULL != e) {
-		ECardSimple *card = build_card_from_entry (ldap, e, NULL);
+	if (cur_millis - view->grouping_time_start > GROUPING_MINIMUM_WAIT) {
 
-		cards = g_list_append (cards, e_card_simple_get_vcard_assume_utf8 (card));
+		if (view->num_pending_adds >= view->target_pending_adds)
+			send_pending_adds (view);
 
-		gtk_object_unref (GTK_OBJECT(card));
+		if (cur_millis - view->grouping_time_start > GROUPING_MAXIMUM_WAIT) {
+			GTimeVal new_start;
 
-		e = ldap_next_entry(ldap, e);
+			if (view->num_pending_adds)
+				send_pending_adds (view);
+			view->target_pending_adds = MIN (GROUPING_MAXIMUM_SIZE,
+							 (view->num_sent_this_time + view->num_sent_last_time) / 2);
+			view->target_pending_adds = MAX (view->target_pending_adds, 1);
+
+#ifdef PERFORMANCE_SPEW
+			printf ("num sent this time %d, last time %d, target pending adds set to %d\n",
+				view->num_sent_this_time,
+				view->num_sent_last_time,
+				view->target_pending_adds);
+#endif
+			g_get_current_time (&new_start);
+			view->grouping_time_start = TV_TO_MILLIS (new_start); 
+			view->num_sent_last_time = view->num_sent_this_time;
+			view->num_sent_this_time = 0;
+		}
 	}
-
-	if (cards) {
-		pas_book_view_notify_add (view->book_view, cards);
-			
-		g_list_foreach (cards, (GFunc)g_free, NULL);
-		g_list_free (cards);
-		cards = NULL;
-	}
-
-	ldap_msgfree(res);
 
 	return TRUE;
 }
@@ -2270,20 +2383,30 @@ ldap_search_handler (PASBackend *backend, LDAPOp *op)
 
 	/* it might not be NULL if we've been restarted */
 	if (search_op->ldap_query == NULL)
-		search_op->ldap_query = pas_backend_ldap_build_query(search_op->view->search);
+		search_op->ldap_query = pas_backend_ldap_build_query(PAS_BACKEND_LDAP (backend), search_op->view->search);
 
 	if (search_op->ldap_query != NULL) {
 		PASBackendLDAP *bl = PAS_BACKEND_LDAP (backend);
 		PASBackendLDAPBookView *view = search_op->view;
 		LDAP *ldap = bl->priv->ldap;
 		int ldap_err;
+		GTimeVal search_start;
+
+		view->pending_adds = NULL;
+		view->num_pending_adds = 0;
+		view->target_pending_adds = GROUPING_INITIAL_SIZE;
+
+		g_get_current_time (&search_start);
+		view->grouping_time_start = TV_TO_MILLIS (search_start);
+		view->num_sent_last_time = 0;
+		view->num_sent_this_time = 0;
+		view->notified_receiving_results = FALSE;
 
 		ldap_err = ldap_search_ext (ldap, bl->priv->ldap_rootdn,
 					    bl->priv->ldap_scope,
 					    search_op->ldap_query,
-					    NULL, 0,
-					    NULL, /* XXX */
-					    NULL, /* XXX */
+					    bl->priv->search_attrs, 0,
+					    NULL, NULL,
 					    NULL,
 					    LDAP_MAX_SEARCH_RESPONSES, &view->search_msgid);
 
@@ -2297,7 +2420,9 @@ ldap_search_handler (PASBackend *backend, LDAPOp *op)
 			return TRUE; /* act synchronous in this case */
 		}
 		else {
-			view->search_idle = g_idle_add((GSourceFunc)poll_ldap, search_op);
+			view->search_timeout = g_timeout_add (LDAP_POLL_INTERVAL,
+							      (GSourceFunc) poll_ldap,
+							      search_op);
 		}
 
 		/* we're async */
@@ -2316,9 +2441,6 @@ ldap_search_dtor (PASBackend *backend, LDAPOp *op)
 {
 	LDAPSearchOp *search_op = (LDAPSearchOp*) op;
 
-	if (op->view)
-		bonobo_object_release_unref(bonobo_object_corba_objref(BONOBO_OBJECT(op->view)), NULL);
-
 	g_free (search_op->ldap_query);
 	g_free (search_op);
 }
@@ -2330,7 +2452,6 @@ pas_backend_ldap_search (PASBackendLDAP  	*bl,
 {
 	LDAPSearchOp *op = g_new (LDAPSearchOp, 1);
 
-	bonobo_object_dup_ref(bonobo_object_corba_objref(BONOBO_OBJECT(view->book_view)), NULL);
 	ldap_op_init ((LDAPOp*)op, PAS_BACKEND(bl), book, view->book_view, ldap_search_handler, ldap_search_dtor);
 
 	op->ldap_query = NULL;
@@ -2409,46 +2530,50 @@ pas_backend_ldap_process_authenticate_user (PASBackend *backend,
 {
 	PASBackendLDAP *bl = PAS_BACKEND_LDAP (backend);
 	int ldap_error;
-	char *query;
-	LDAPMessage    *res, *e;
+	char *dn = NULL;
 
-	query = g_strdup_printf ("(mail=%s)", req->user);
+	if (!strcmp (req->auth_method, "ldap/simple-email")) {
+		LDAPMessage    *res, *e;
+		char *query = g_strdup_printf ("(mail=%s)", req->user);
 
-	ldap_error = ldap_search_s (bl->priv->ldap,
-				    bl->priv->ldap_rootdn,
-				    bl->priv->ldap_scope,
-				    query,
-				    NULL, 0, &res);
+		ldap_error = ldap_search_s (bl->priv->ldap,
+					    bl->priv->ldap_rootdn,
+					    bl->priv->ldap_scope,
+					    query,
+					    NULL, 0, &res);
+		g_free (query);
 
-	if (ldap_error == LDAP_SUCCESS) {
-		char *dn;
-
-		e = ldap_first_entry (bl->priv->ldap, res);
-		dn = ldap_get_dn (bl->priv->ldap, e);
-
-		printf ("authenticating as %s\n", dn);
-
-		ldap_error = ldap_simple_bind_s(bl->priv->ldap,
-						dn,
-						req->passwd);
-
-		pas_book_respond_authenticate_user (book,
-						    ldap_error_to_response (ldap_error));
-
-		bl->priv->writable = (ldap_error == LDAP_SUCCESS);
-
-		if (!bl->priv->evolutionPersonChecked)
-			check_schema_support (bl);
-
-		ldap_msgfree (res);
+		if (ldap_error == LDAP_SUCCESS) {
+			e = ldap_first_entry (bl->priv->ldap, res);
+			dn = g_strdup(ldap_get_dn (bl->priv->ldap, e));
+			ldap_msgfree (res);
+		}
+		else {
+			pas_book_respond_authenticate_user (book,
+						    GNOME_Evolution_Addressbook_BookListener_PermissionDenied);
+			return;
+		}
 	}
 	else {
-		pas_book_respond_authenticate_user (book, GNOME_Evolution_Addressbook_BookListener_PermissionDenied);
+		dn = g_strdup (req->user);
 	}
 
-	pas_book_report_writable (book, bl->priv->writable);
+	/* now authenticate against the DN we were either supplied or queried for */
+	printf ("authenticating as %s\n", dn);
+	ldap_error = ldap_simple_bind_s(bl->priv->ldap,
+					dn,
+					req->passwd);
+	g_free (dn);
 
-	g_free (query);
+	pas_book_respond_authenticate_user (book,
+					    ldap_error_to_response (ldap_error));
+
+	bl->priv->writable = (ldap_error == LDAP_SUCCESS);
+
+	if (!bl->priv->evolutionPersonChecked)
+		check_schema_support (bl);
+
+	pas_book_report_writable (book, bl->priv->writable);
 }
 
 static void
@@ -2531,7 +2656,7 @@ pas_backend_ldap_book_destroy_cb (PASBook *book, gpointer data)
 	pas_backend_remove_client (PAS_BACKEND (backend), book);
 }
 
-static gboolean
+static GNOME_Evolution_Addressbook_BookListener_CallStatus
 pas_backend_ldap_load_uri (PASBackend             *backend,
 			   const char             *uri)
 {
@@ -2557,11 +2682,11 @@ pas_backend_ldap_load_uri (PASBackend             *backend,
 
 		pas_backend_ldap_connect (bl);
 		if (bl->priv->ldap == NULL)
-			return FALSE;
+			return GNOME_Evolution_Addressbook_BookListener_RepositoryOffline;
 		else
-			return TRUE;
+			return GNOME_Evolution_Addressbook_BookListener_Success;
 	} else
-		return FALSE;
+		return GNOME_Evolution_Addressbook_BookListener_OtherError;
 }
 
 /* Get_uri handler for the addressbook LDAP backend */
@@ -2713,6 +2838,7 @@ pas_backend_ldap_destroy (GtkObject *object)
 	if (bl->priv->supported_fields)
 		gtk_object_unref (GTK_OBJECT (bl->priv->supported_fields));
 
+	g_free (bl->priv->search_attrs);
 	g_free (bl->priv->uri);
 
 	GTK_OBJECT_CLASS (pas_backend_ldap_parent_class)->destroy (object);	
@@ -2742,10 +2868,16 @@ static void
 pas_backend_ldap_init (PASBackendLDAP *backend)
 {
 	PASBackendLDAPPrivate *priv;
+	int i;
 
 	priv                   = g_new0 (PASBackendLDAPPrivate, 1);
 
 	priv->supported_fields = e_list_new ((EListCopyFunc)g_strdup, (EListFreeFunc)g_free, NULL);
+	priv->search_attrs = g_new (char*, num_prop_infos+1);
+	for (i = 0; i < num_prop_infos; i ++) {
+		priv->search_attrs[i] = prop_info[i].ldap_attr;
+	}
+	priv->search_attrs[num_prop_infos] = NULL;
 
 	backend->priv = priv;
 }

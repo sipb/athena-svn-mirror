@@ -13,6 +13,7 @@
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gnome.h>
+#include <gal/widgets/e-gui-utils.h>
 
 #define PARENT_TYPE gtk_object_get_type()
 GtkObjectClass *parent_class;
@@ -47,6 +48,21 @@ enum {
 #define COLS (E_CARD_SIMPLE_FIELD_LAST)
 
 static guint e_addressbook_model_signals [LAST_SIGNAL] = {0, };
+
+static void
+free_data (EAddressbookModel *model)
+{
+	int i;
+
+	for ( i = 0; i < model->data_count; i++ ) {
+		gtk_object_unref(GTK_OBJECT(model->data[i]));
+	}
+
+	g_free(model->data);
+	model->data = NULL;
+	model->data_count = 0;
+	model->allocated_count = 0;
+}
 
 static void
 remove_book_view(EAddressbookModel *model)
@@ -86,7 +102,6 @@ static void
 addressbook_destroy(GtkObject *object)
 {
 	EAddressbookModel *model = E_ADDRESSBOOK_MODEL(object);
-	int i;
 
 	if (model->get_view_idle) {
 		g_source_remove(model->get_view_idle);
@@ -94,6 +109,7 @@ addressbook_destroy(GtkObject *object)
 	}
 
 	remove_book_view(model);
+	free_data (model);
 
 	if (model->book) {
 		if (model->writable_status_id)
@@ -105,13 +121,6 @@ addressbook_destroy(GtkObject *object)
 		gtk_object_unref(GTK_OBJECT(model->book));
 		model->book = NULL;
 	}
-
-	for ( i = 0; i < model->data_count; i++ ) {
-		gtk_object_unref(GTK_OBJECT(model->data[i]));
-	}
-
-	g_free(model->data);
-	model->data = NULL;
 }
 
 static void
@@ -151,18 +160,13 @@ create_card(EBookView *book_view,
 
 	if (model->data_count + length > model->allocated_count) {
 		while (model->data_count + length > model->allocated_count)
-			model->allocated_count += 256;
+			model->allocated_count = model->allocated_count * 2 + 1;
 		model->data = g_renew(ECard *, model->data, model->allocated_count);
 	}
 
 	for ( ; cards; cards = cards->next) {
-		char *file_as;
-
 		model->data[model->data_count++] = cards->data;
 		gtk_object_ref (cards->data);
-		gtk_object_get (GTK_OBJECT (cards->data),
-				"file_as", &file_as,
-				NULL);
 	}
 
 	gtk_signal_emit (GTK_OBJECT (model),
@@ -358,8 +362,14 @@ static void
 book_view_loaded (EBook *book, EBookStatus status, EBookView *book_view, gpointer closure)
 {
 	EAddressbookModel *model = closure;
-	int i;
+
 	remove_book_view(model);
+
+	if (status != E_BOOK_STATUS_SUCCESS) {
+		e_addressbook_error_dialog (_("Error getting book view"), status);
+		return;
+	}
+
 	model->book_view = book_view;
 	if (model->book_view)
 		gtk_object_ref(GTK_OBJECT(model->book_view));
@@ -384,14 +394,8 @@ book_view_loaded (EBook *book, EBookStatus status, EBookView *book_view, gpointe
 							 GTK_SIGNAL_FUNC(sequence_complete),
 							 model);
 
-	for ( i = 0; i < model->data_count; i++ ) {
-		gtk_object_unref(GTK_OBJECT(model->data[i]));
-	}
+	free_data (model);
 
-	g_free(model->data);
-	model->data = NULL;
-	model->data_count = 0;
-	model->allocated_count = 0;
 	model->search_in_progress = TRUE;
 	gtk_signal_emit (GTK_OBJECT (model),
 			 e_addressbook_model_signals [MODEL_CHANGED]);
@@ -408,6 +412,13 @@ get_view (EAddressbookModel *model)
 			capabilities = e_book_get_static_capabilities (model->book);
 			if (capabilities && strstr (capabilities, "local")) {
 				e_book_get_book_view (model->book, model->query, book_view_loaded, model);
+			} else {
+				remove_book_view(model);
+				free_data (model);
+				gtk_signal_emit (GTK_OBJECT (model),
+						 e_addressbook_model_signals [MODEL_CHANGED]);
+				gtk_signal_emit (GTK_OBJECT (model),
+						 e_addressbook_model_signals [STOP_STATE_CHANGED]);
 			}
 			model->first_get_view = FALSE;
 			g_free (capabilities);
@@ -452,6 +463,7 @@ e_addressbook_model_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 		}
 		model->book = E_BOOK(GTK_VALUE_OBJECT (*arg));
 		if (model->book) {
+			model->first_get_view = TRUE;
 			gtk_object_ref(GTK_OBJECT(model->book));
 			if (model->get_view_idle == 0)
 				model->get_view_idle = g_idle_add((GSourceFunc)get_view, model);
@@ -533,7 +545,6 @@ e_addressbook_model_new (void)
 void   e_addressbook_model_stop    (EAddressbookModel *model)
 {
 	remove_book_view(model);
-	model->search_in_progress = FALSE;
 	gtk_signal_emit (GTK_OBJECT (model),
 			 e_addressbook_model_signals [STOP_STATE_CHANGED]);
 	gtk_signal_emit (GTK_OBJECT (model),

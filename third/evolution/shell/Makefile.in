@@ -746,6 +746,7 @@ e-shell-offline-handler.o: e-shell-offline-handler.c ../config.h \
 e-shell-startup-wizard.o: e-shell-startup-wizard.c ../config.h \
 	e-shell-startup-wizard.h \
 	../widgets/e-timezone-dialog/e-timezone-dialog.h \
+	../libical/src/libical/ical.h \
 	importer/GNOME_Evolution_Importer.h ../e-util/e-gtk-utils.h \
 	evolution-wizard.h Evolution.h
 e-shell-user-creatable-items-handler.o: \

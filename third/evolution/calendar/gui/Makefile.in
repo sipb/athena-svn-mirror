@@ -219,7 +219,7 @@ glade_DATA =  	e-itip-control.glade				goto-dialog.glade
 etspecdir = $(datadir)/evolution/etspec/
 etspec_DATA = e-calendar-table.etspec e-meeting-time-sel.etspec
 
-evolution_calendar_SOURCES =  	$(IDL_GENERATED)				cal-search-bar.c				cal-search-bar.h				calendar-config.c				calendar-config.h				calendar-commands.c				calendar-commands.h				calendar-model.c				calendar-model.h				calendar-offline-handler.c			calendar-offline-handler.h			calendar-view.c					calendar-view.h					calendar-view-factory.c				calendar-view-factory.h				comp-editor-factory.c				comp-editor-factory.h				comp-util.c					comp-util.h					control-factory.c				control-factory.h				component-factory.c				component-factory.h				e-calendar-table.h				e-calendar-table.c				e-cell-date-edit-text.h				e-cell-date-edit-text.c				e-day-view-layout.c				e-day-view-layout.h				e-day-view-main-item.c				e-day-view-main-item.h				e-day-view-time-item.c				e-day-view-time-item.h				e-day-view-top-item.c				e-day-view-top-item.h				e-day-view.c					e-day-view.h					e-itip-control.h				e-itip-control.c				e-meeting-attendee.c				e-meeting-attendee.h				e-meeting-model.c				e-meeting-model.h				e-meeting-time-sel.c				e-meeting-time-sel.h				e-meeting-time-sel-item.c			e-meeting-time-sel-item.h			e-meeting-types.h				e-week-view-event-item.c			e-week-view-event-item.h			e-week-view-layout.c				e-week-view-layout.h				e-week-view-main-item.c				e-week-view-main-item.h				e-week-view-titles-item.c			e-week-view-titles-item.h			e-week-view.c					e-week-view.h					e-tasks.c					e-tasks.h					e-timezone-entry.c				e-timezone-entry.h				gnome-cal.c					gnome-cal.h					goto.c						goto.h						itip-control-factory.c				itip-control-factory.h				itip-utils.c					itip-utils.h					main.c						misc.c						misc.h						print.c						print.h						tag-calendar.c					tag-calendar.h					tasks-control-factory.c				tasks-control-factory.h				tasks-control.c					tasks-control.h					tasks-migrate.c					tasks-migrate.h					weekday-picker.c				weekday-picker.h
+evolution_calendar_SOURCES =  	$(IDL_GENERATED)				cal-search-bar.c				cal-search-bar.h				calendar-config.c				calendar-config.h				calendar-commands.c				calendar-commands.h				calendar-model.c				calendar-model.h				calendar-offline-handler.c			calendar-offline-handler.h			calendar-view.c					calendar-view.h					calendar-view-factory.c				calendar-view-factory.h				comp-editor-factory.c				comp-editor-factory.h				comp-util.c					comp-util.h					control-factory.c				control-factory.h				component-factory.c				component-factory.h				e-calendar-table.h				e-calendar-table.c				e-cell-date-edit-text.h				e-cell-date-edit-text.c				e-day-view-layout.c				e-day-view-layout.h				e-day-view-main-item.c				e-day-view-main-item.h				e-day-view-time-item.c				e-day-view-time-item.h				e-day-view-top-item.c				e-day-view-top-item.h				e-day-view.c					e-day-view.h					e-itip-control.h				e-itip-control.c				e-meeting-attendee.c				e-meeting-attendee.h				e-meeting-model.c				e-meeting-model.h				e-meeting-time-sel.c				e-meeting-time-sel.h				e-meeting-time-sel-item.c			e-meeting-time-sel-item.h			e-meeting-types.h				e-meeting-utils.c				e-meeting-utils.h				e-week-view-event-item.c			e-week-view-event-item.h			e-week-view-layout.c				e-week-view-layout.h				e-week-view-main-item.c				e-week-view-main-item.h				e-week-view-titles-item.c			e-week-view-titles-item.h			e-week-view.c					e-week-view.h					e-tasks.c					e-tasks.h					e-timezone-entry.c				e-timezone-entry.h				gnome-cal.c					gnome-cal.h					goto.c						goto.h						itip-control-factory.c				itip-control-factory.h				itip-utils.c					itip-utils.h					main.c						misc.c						misc.h						print.c						print.h						tag-calendar.c					tag-calendar.h					tasks-control-factory.c				tasks-control-factory.h				tasks-control.c					tasks-control.h					tasks-migrate.c					tasks-migrate.h					weekday-picker.c				weekday-picker.h
 
 
 evolution_calendar_LDADD =  	alarm-notify/libalarm.a									$(DB3_LDADD)										$(top_builddir)/widgets/menus/libmenus.la						$(top_builddir)/shell/libeshell.la							$(top_builddir)/calendar/cal-client/libcal-client.la					$(top_builddir)/calendar/cal-util/libcal-util.la					$(top_builddir)/e-util/libeutil.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/libical/src/libical/libical-evolution.la				$(top_builddir)/libwombat/libwombat.la							$(top_builddir)/addressbook/backend/ebook/libebook.la					$(top_builddir)/camel/libcamel.la							$(top_builddir)/libibex/libibex.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/e-util/ename/libename.la						dialogs/libcal-dialogs.a								$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a				$(top_builddir)/widgets/misc/libemiscwidgets.a						$(EXTRA_GNOME_LIBS)									$(BONOBO_HTML_GNOME_LIBS)								$(GNOME_VFS_LIBS)									$(BONOBO_CONF_LIBS)									$(GAL_LIBS)										$(INTLLIBS)
@@ -268,14 +268,14 @@ e-day-view-time-item.$(OBJEXT) e-day-view-top-item.$(OBJEXT) \
 e-day-view.$(OBJEXT) e-itip-control.$(OBJEXT) \
 e-meeting-attendee.$(OBJEXT) e-meeting-model.$(OBJEXT) \
 e-meeting-time-sel.$(OBJEXT) e-meeting-time-sel-item.$(OBJEXT) \
-e-week-view-event-item.$(OBJEXT) e-week-view-layout.$(OBJEXT) \
-e-week-view-main-item.$(OBJEXT) e-week-view-titles-item.$(OBJEXT) \
-e-week-view.$(OBJEXT) e-tasks.$(OBJEXT) e-timezone-entry.$(OBJEXT) \
-gnome-cal.$(OBJEXT) goto.$(OBJEXT) itip-control-factory.$(OBJEXT) \
-itip-utils.$(OBJEXT) main.$(OBJEXT) misc.$(OBJEXT) print.$(OBJEXT) \
-tag-calendar.$(OBJEXT) tasks-control-factory.$(OBJEXT) \
-tasks-control.$(OBJEXT) tasks-migrate.$(OBJEXT) \
-weekday-picker.$(OBJEXT)
+e-meeting-utils.$(OBJEXT) e-week-view-event-item.$(OBJEXT) \
+e-week-view-layout.$(OBJEXT) e-week-view-main-item.$(OBJEXT) \
+e-week-view-titles-item.$(OBJEXT) e-week-view.$(OBJEXT) \
+e-tasks.$(OBJEXT) e-timezone-entry.$(OBJEXT) gnome-cal.$(OBJEXT) \
+goto.$(OBJEXT) itip-control-factory.$(OBJEXT) itip-utils.$(OBJEXT) \
+main.$(OBJEXT) misc.$(OBJEXT) print.$(OBJEXT) tag-calendar.$(OBJEXT) \
+tasks-control-factory.$(OBJEXT) tasks-control.$(OBJEXT) \
+tasks-migrate.$(OBJEXT) weekday-picker.$(OBJEXT)
 evolution_calendar_DEPENDENCIES =  alarm-notify/libalarm.a \
 $(top_builddir)/widgets/menus/libmenus.la \
 $(top_builddir)/shell/libeshell.la \
@@ -587,8 +587,8 @@ calendar-commands.o: calendar-commands.c ../../config.h \
 	../../shell/evolution-shell-component-utils.h
 calendar-config.o: calendar-config.c ../../config.h \
 	../../widgets/e-timezone-dialog/e-timezone-dialog.h \
-	../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h component-factory.h \
+	../../libical/src/libical/ical.h \
+	../../calendar/cal-util/timeutil.h component-factory.h \
 	calendar-commands.h gnome-cal.h ../../widgets/misc/e-calendar.h \
 	../../widgets/misc/e-calendar-item.h \
 	../../calendar/cal-client/cal-client.h \
@@ -854,7 +854,8 @@ e-meeting-model.o: e-meeting-model.c ../../config.h \
 	calendar-model.h ../../calendar/cal-client/cal-client.h \
 	../../calendar/cal-client/cal-query.h \
 	../../calendar/cal-client/evolution-calendar.h itip-utils.h \
-	e-meeting-attendee.h e-meeting-types.h e-meeting-model.h
+	e-meeting-utils.h e-meeting-types.h e-meeting-attendee.h \
+	e-meeting-model.h
 e-meeting-time-sel-item.o: e-meeting-time-sel-item.c ../../config.h \
 	calendar-config.h ../../widgets/misc/e-calendar.h \
 	../../widgets/misc/e-calendar-item.h \
@@ -883,10 +884,12 @@ e-meeting-time-sel.o: e-meeting-time-sel.c ../../config.h \
 	calendar-config.h ../../widgets/misc/e-calendar.h \
 	../../widgets/misc/e-calendar-item.h \
 	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h e-meeting-time-sel-item.h
-e-tasks.o: e-tasks.c ../../config.h ../../widgets/menus/gal-view-menus.h \
-	dialogs/task-editor.h dialogs/comp-editor.h \
-	../../calendar/cal-client/cal-client.h \
+	calendar-model.h e-meeting-utils.h e-meeting-time-sel-item.h
+e-meeting-utils.o: e-meeting-utils.c ../../config.h e-meeting-utils.h \
+	e-meeting-types.h
+e-tasks.o: e-tasks.c ../../config.h ../../e-util/e-url.h \
+	../../widgets/menus/gal-view-menus.h dialogs/task-editor.h \
+	dialogs/comp-editor.h ../../calendar/cal-client/cal-client.h \
 	../../calendar/cal-util/cal-recur.h \
 	../../calendar/cal-util/cal-component.h \
 	../../libical/src/libical/ical.h \
@@ -905,10 +908,10 @@ e-tasks.o: e-tasks.c ../../config.h ../../widgets/menus/gal-view-menus.h \
 	calendar-model.h component-factory.h e-tasks.h
 e-timezone-entry.o: e-timezone-entry.c ../../config.h \
 	../../widgets/e-timezone-dialog/e-timezone-dialog.h \
-	e-timezone-entry.h ../../calendar/cal-client/cal-client.h \
+	../../libical/src/libical/ical.h e-timezone-entry.h \
+	../../calendar/cal-client/cal-client.h \
 	../../calendar/cal-util/cal-recur.h \
 	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
 	../../calendar/cal-util/cal-util.h \
 	../../calendar/cal-client/cal-query.h \
 	../../calendar/cal-client/evolution-calendar.h \

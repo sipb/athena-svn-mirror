@@ -53,6 +53,7 @@ static void e_select_names_class_init	(ESelectNamesClass	 *klass);
 static void e_select_names_set_arg (GtkObject *o, GtkArg *arg, guint arg_id);
 static void e_select_names_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 static void e_select_names_destroy (GtkObject *object);
+static void update_query (GtkWidget *button, ESelectNames *e_select_names);
 
 static GnomeDialogClass *parent_class = NULL;
 #define PARENT_TYPE gnome_dialog_get_type()
@@ -127,17 +128,30 @@ e_select_names_class_init (ESelectNamesClass *klass)
 GtkWidget *e_addressbook_create_ebook_table(char *name, char *string1, char *string2, int num1, int num2);
 
 static void
-set_book(EBook *book, EBookStatus status, EAddressbookModel *model)
+set_book(EBook *book, EBookStatus status, ESelectNames *esn)
+{
+	gtk_object_set(GTK_OBJECT(esn->model),
+		       "book", book,
+		       NULL);
+	update_query (NULL, esn);
+	gtk_object_unref(GTK_OBJECT(book));
+	gtk_object_unref(GTK_OBJECT(esn));
+	gtk_object_unref(GTK_OBJECT(esn->model));
+}
+
+static void
+set_book_with_model_data(EBook *book, EBookStatus status, EAddressbookModel *model)
 {
 	gtk_object_set(GTK_OBJECT(model),
 		       "book", book,
+		       "query", "(contains \"email\" \"\")",
 		       NULL);
 	gtk_object_unref(GTK_OBJECT(book));
 	gtk_object_unref(GTK_OBJECT(model));
 }
 
 static void
-addressbook_model_set_uri(EAddressbookModel *model, char *uri)
+addressbook_model_set_uri(ESelectNames *e_select_names, EAddressbookModel *model, char *uri)
 {
 	EBook *book;
 
@@ -150,8 +164,14 @@ addressbook_model_set_uri(EAddressbookModel *model, char *uri)
 	}
 
 	book = e_book_new();
-	gtk_object_ref(GTK_OBJECT(model));
-	addressbook_load_uri(book, uri, (EBookCallback) set_book, model);
+	if (e_select_names) {
+		gtk_object_ref(GTK_OBJECT(e_select_names));
+		gtk_object_ref(GTK_OBJECT(model));
+		addressbook_load_uri(book, uri, (EBookCallback) set_book, e_select_names);
+	} else {
+		gtk_object_ref(GTK_OBJECT(model));
+		addressbook_load_uri(book, uri, (EBookCallback) set_book_with_model_data, model);
+	}
 }
 
 static void *
@@ -287,14 +307,13 @@ e_addressbook_create_ebook_table(char *name, char *string1, char *string2, int n
 	filename = gnome_util_prepend_user_home("evolution/local/Contacts/addressbook.db");
 	uri = g_strdup_printf("file://%s", filename);
 
-	addressbook_model_set_uri(model, uri);
+	addressbook_model_set_uri(NULL, model, uri);
 
 	g_free(uri);
 	g_free(filename);
 
 	gtk_object_set(GTK_OBJECT(model),
 		       "editable", FALSE,
-		       "query", "(contains \"email\" \"\")",
 		       NULL);
 
 	without = e_table_without_new (adapter,
@@ -338,7 +357,7 @@ e_select_names_option_activated(GtkWidget *widget, ESelectNames *e_select_names)
 {
 	ESelectNamesFolder *e_folder = gtk_object_get_data (GTK_OBJECT (widget), "EsnChoiceFolder");
 
-	addressbook_model_set_uri(e_select_names->model, e_folder->uri);
+	addressbook_model_set_uri(e_select_names, e_select_names->model, e_folder->uri);
 }
 
 typedef struct {
@@ -463,7 +482,10 @@ update_query (GtkWidget *button, ESelectNames *e_select_names)
 	if (category && *category)
 		q_array[i++] = g_strdup_printf ("(is \"category\" \"%s\")", category);
 	if (search && *search)
-		q_array[i++] = g_strdup_printf ("(contains \"x-evolution-any-field\" \"%s\")", search);
+		q_array[i++] = g_strdup_printf ("(or (beginswith \"email\" \"%s\") "
+						"    (beginswith \"full_name\" \"%s\") "
+						"    (beginswith \"nickname\" \"%s\"))",
+						search, search, search);
 	q_array[i++] = NULL;
 	if (i > 2) {
 		char *temp = g_strjoinv (" ", q_array);
@@ -479,6 +501,15 @@ update_query (GtkWidget *button, ESelectNames *e_select_names)
 		g_free (q_array[i]);
 	}
 	g_free (query);
+}
+
+static void
+status_message (EAddressbookModel *model, const gchar *message, ESelectNames *e_select_names)
+{
+	if (message == NULL)
+		gtk_label_set_text (GTK_LABEL (e_select_names->status_message), "");
+	else
+		gtk_label_set_text (GTK_LABEL (e_select_names->status_message), message);
 }
 
 static void
@@ -673,6 +704,13 @@ e_select_names_init (ESelectNames *e_select_names)
 	e_select_names->model = gtk_object_get_data(GTK_OBJECT(e_select_names->table), "model");
 	e_select_names->adapter = gtk_object_get_data(GTK_OBJECT(e_select_names->table), "adapter");
 	e_select_names->without = gtk_object_get_data(GTK_OBJECT(e_select_names->table), "without");
+
+	e_select_names->status_message = glade_xml_get_widget (gui, "status-message");
+	if (e_select_names->status_message && !GTK_IS_LABEL (e_select_names->status_message))
+		e_select_names->status_message = NULL;
+	if (e_select_names->status_message)
+		gtk_signal_connect (GTK_OBJECT (e_select_names->model), "status_message",
+				    GTK_SIGNAL_FUNC (status_message), e_select_names);
 
 	e_select_names->categories = glade_xml_get_widget (gui, "custom-categories");
 	if (e_select_names->categories && !GTK_IS_COMBO (e_select_names->categories))

@@ -1,3 +1,34 @@
+2002-03-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #19303.]
+
+	* mail-ops.c (mail_send_message): Set X-Mailer to say "Ximian
+	Evolution", not just "Evolution".
+
+2002-02-24  Chris Toshok  <toshok@ximian.com>
+
+	* folder-browser.c (folder_browser_search_do_search): rename
+	folder_browser_search_query_changed to this.
+	(folder_browser_gui_init): hook both query_changed and
+	search_activated up to folder_browser_search_do_search, preserving
+	current behavior.
+
+2002-02-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (launch_cb): Some programs are buggy when it
+	comes to parsing file: uris, so make sure we do file://%s. Fixes
+	bug #20456.
+
+2002-02-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (do_forward_non_attached): Show the signature.
+
+2002-02-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (try_inline_pgp_sig): Handle cases where there
+	isn't a hash header (apparently some PGP versions don't use them
+	and/or are configurable to not display them?). Fixes bug #18935.
+
 2002-01-23  Dan Winship  <danw@ximian.com>
 
 	* mail-folder-cache.c (mail_note_store): Allow this to be called

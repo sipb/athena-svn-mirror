@@ -369,8 +369,8 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 e-timezone-dialog.o: e-timezone-dialog.c ../../config.h \
-	../../libical/src/libical/ical.h ../../widgets/misc/e-map.h \
-	e-timezone-dialog.h
+	../../widgets/misc/e-map.h e-timezone-dialog.h \
+	../../libical/src/libical/ical.h
 
 info-am:
 info: info-am

@@ -85,14 +85,15 @@
 	message with the original, so you can follow the thread of a
 	conversation from one message to the next.
       </para>
-<figure>
+      <figure>
         <title>Threaded Mail View</title>
-<screenshot>
-<screeninfo>Threaded Mail View</screeninfo>
-<mediaobject><imageobject><imagedata  format="png" fileref="figures/mail-threaded" srccredit="Aaron Weber">
-</imageobject></mediaobject>
-</screenshot>
-</figure>
+	<screenshot>
+	  <screeninfo>Threaded Mail View</screeninfo>
+	  <mediaobject><imageobject>
+	      <imagedata  format="png" fileref="figures/mail-threaded" srccredit="Aaron Weber">
+	    </imageobject></mediaobject>
+	</screenshot>
+      </figure>
 
     </sect2>
     
@@ -151,14 +152,22 @@
       <note>
 	<title>Trash is Actually a vFolder?</title>
 	<para>
-	  Your trash folder is actually a vFolder that displays all
-          messages you have marked for later deletion.  For more
-          information about vFolders, see <xref
-          linkend="usage-mail-organize-vfolders">.  If you choose
-          <menuchoice> <guimenu>Actions</guimenu> <guimenuitem>Empty
-          Trash</guimenuitem> </menuchoice> you will expunge
-          <emphasis>all</emphasis> your folders.
+	  Both local and IMAP Trash folders are actually vFolders that
+          display all messages you have marked for later deletion.
+          For more information about vFolders, see <xref
+          linkend="usage-mail-organize-vfolders">.  Since emptying
+          your trash expunges the messages in your Trash folder,
+          choosing <menuchoice> <guimenu>Actions</guimenu>
+          <guimenuitem>Empty Trash</guimenuitem> </menuchoice> is the
+          same as expunging deleted mail from <emphasis>all</emphasis>
+          your folders.
 	</para>
+        <para>
+           This is not, however, true for the Trash folder on Exchange
+           servers, which behaves just the same as it would in
+           Outlook. That is to say, the Trash folder on an Exchange
+           server is a normal folder with actual messages in it.
+        </para>
       </note>
     </sect2>
     <sect2 id="usage-mail-getnsend-undelete">
@@ -549,7 +558,7 @@
            charges: you can remain offline until you need to send
            mail, then connect and send all your mail at once.  Mail in
            the outbox is sent when you click
-           <guibutton>Send/Recieve</guibutton> in the main window.
+           <guibutton>Send/Receive</guibutton> in the main window.
         </para>
         <para>
            To learn more about how you can specify message queue and
@@ -691,12 +700,42 @@
            linkend="usage-contact-organize-group-list">.
         </para>
 
+	<tip id="reply-to-per-mail">
+	  <title>Setting Reply-to On a Per-Mail Basis</title>
+	  <para>
+	    <application>Evolution</application> has the ability to
+	    let you specify the Reply-To in an email. Using this, you
+	    can setup a special Reply-To for an email.  To do this:
+	    <orderedlist numeration="arabic">
+	      <listitem>
+                <para>
+		  Open a composer window
+			 </para>
+			 </listitem>
+			 <listitem>
+			 <para>
+			 Open the Reply-To field by selecting
+			 <menuchoice>
+			 <guimenu>View</guimenu>
+			 <guimenuitem>Reply To</guimenuitem>
+			 </menuchoice>
+			 </para>
+			 </listitem>
+			 <listitem>
+			 <para>
+			 Enter the address you wish to have be the
+			 Reply-To address in the new Reply-To field.
+			 </para>
+			 </listitem>
+			 </orderedlist>			 
+	  </para>
+	</tip>
         </sect3>
-
-        <sect3 id="usage-mail-getnsend-send-to">
-        <title>Choosing Recipients Quickly</title>
-        <para>
-	  If you have created address cards in the contact manager,
+			 
+			 <sect3 id="usage-mail-getnsend-send-to">
+	      <title>Choosing Recipients Quickly</title>
+	      <para>
+		If you have created address cards in the contact manager,
           you can also enter nicknames or other portions of address
           data, and <application>Evolution</application> will offer a
           drop down list of possible address completions from your
@@ -939,8 +978,18 @@
                   of bullet points for the highly
                   organized.
                 </para>
-              </listitem>
-           </varlistentry>
+	      <tip>
+		<title>Using Bullets to Make Your Email More
+		Attractive</title>
+		<para>
+		  Often times, people use asterisks instead of real bullets.
+		  Not only do asterisks look nicer, but
+		  <application>Evolution</application> will word wrap for you,
+		  which makes your text looks nicer.
+		</para>
+	      </tip>
+	    </listitem>
+	  </varlistentry>
 	  <varlistentry>
 	    <term>Text style:</term>
 	    <listitem>
@@ -1135,10 +1184,10 @@
 
 		  <listitem>
 		    <para>
-		    Choose the alignment and style.  For the plain
-		    line, you can choose the thickness of the line,
-		    and whether it will be shaded, or solid.  For the
-		    other types, you can only choose alignment.
+		      Choose the alignment and style.  For the plain
+		      line, you can choose the thickness of the line,
+		      and whether it will be shaded, or solid.  For the
+		      other types, you can only choose alignment.
 		    </para>
 		  </listitem>
 
@@ -1335,7 +1384,7 @@
 	    </listitem>
 	    <listitem>
 	      <para>
-	      Set the size and alignment of the HTML template.
+		Set the size and alignment of the HTML template.
 	      </para>
 	    </listitem>
 
@@ -1347,8 +1396,8 @@
 	    </listitem>
 	    <listitem>
 	      <para>
-		Once you have inserted the template, click on the text
-		in the template, and enter the text you want to use.
+		Click on the text in the template, and enter the text
+		you want to use.
               </para>
 	      <para>
 		If you have selected an image frame template,
@@ -1558,7 +1607,115 @@
 	  </listitem>
 	</itemizedlist>
       </para>
-      <para> Happy mailing! </para>
+    </sect2>
+    <sect2 id="fancy-mail">
+      <title>Making Your Email More Fancy</title>
+      <para>
+	<application>Evolution</application> can do a lot with email
+	by utilizing the HTML features.  Making an email functional
+	and visually attractive can be challenging.  The following
+	section provides tips to make your mail functional, while
+	being more visually attractive than ever.
+      </para>
+      <sect3 id="sections-bolded-title">
+	<title>Sections Outlined in Bold</title>
+	<para>
+	  Indented sections are a great way to categorize and group
+	  your thoughts together.  Below is an example of indented
+	  text with headings to help separate your thoughts into the
+	  proper sections:
+	  <figure>
+	    <title>Indented Text with Headlines</title>
+	    <screenshot>
+	      <screeninfo></screeninfo>
+	      <graphic  format="png" fileref="figures/outline" srccredit="Kevin Breit">
+	    </screenshot>
+	  </figure>
+	</para>
+	<para>
+	  This message is not only more attractive, but more
+	  informative.  Each section is broken down into subsctions.
+	  The title for each section is in bold text, with the
+	  following content indented.
+	</para>
+	<para>
+	You may want to increase the size of your section headlings
+	instead of merely putting them in bold.  Header size 4 is
+	often the best choice, since it is not too large.  You can
+	change your text to size 4 by selecting it and pressing
+	Ctrl+4.  You can set your text to the normal text size by
+	hitting Ctrl+0.
+	</para>
+      </sect3>
+      <sect3 id="bulleted-lists">
+	<title>Bulleted Lists</title>
+	<para>
+	  Select the <guimenuitem>Bulleted List</guimenuitem> option
+	  from the text style drop-down box to begin making a bulleted
+	  list. <application>Evolution</application> will handle the
+	  word wrap and indentation for you.  If you prefer to send
+	  the message in plain text, you can still write it up in
+	  HTML, and <application>Evolution</application> will convert
+	  to a well-formed plain-text bulleted list, using asterisks
+	  instead of HTML bullets.
+	</para>
+      </sect3>
+      <sect3 id="inline-images">
+	<title>Images In Your Email</title>
+	<para>
+	  Images can help people to understand your point.  You can
+	  even use a HTML Picture Frame Template in
+	  <application>Evolution</application>, which looks very
+	  attractive and sets your image off from the rest of your
+	  message with a border and caption.
+	</para>
+	<para>
+	  If you do choose to use images, try to keep them narrow.  If
+	  your images are wider than 400 pixels, the image may not fit
+	  in the whole email window, making it hard for your reader to
+	  read the email and view the image.  Consider using a smaller
+	  version ("thumbnail") of your image, and offering a link to
+	  the larger version your readers can view in a web browser if
+	  they want.
+	  <figure>
+	    <title>Images in an email</title>
+	    <screenshot>
+	      <screeninfo></screeninfo>
+	      <graphic  format="png" fileref="figures/small_desktop" srccredit="Kevin Breit">
+	    </screenshot>
+	  </figure>
+	</para>
+      </sect3>
+      <sect3 id="color-suggestions">
+	<title>Coloring Your Text</title>
+	<para>
+	  Colors can help bring words or sentences out for emphasis.  You
+	  should choose your colors carefully though, as the wrong color
+	  can be distracting.  Some good colors to use would be:
+	  <itemizedlist>
+	    <listitem>
+	      <para>
+		Light brown
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		Dull purple
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		Dark red
+	      </para>
+	    </listitem>
+	  </itemizedlist>
+	  <!-- Include a screenshot -->
+	  Notice how these colors are similar saturation <!-- Confirm I am using the right word -->
+	</para>
+	<para>
+	  Happy mailing!
+	</para>
+      </sect3>
     </sect2>
   </sect1>
   <sect1 id="rsvp-stuff">
@@ -1705,7 +1862,7 @@
 	  <title>Public Key?  Private Key?  What is the difference?</title>
 	  <para>
 	    GPG uses two keys: public and private.  You can give your
-	    public key to anyone you want to recieve
+	    public key to anyone you want to receive
 	    encrypted messages, or put it on a public key server so
 	    that people can look it up before contacting you.
 	    <emphasis>Never give your private key to anyone,
@@ -1936,7 +2093,7 @@ wwwkeys.pgp.net 32j38dk2</command>.  Substitute your key ID for
 	  <guimenuitem>Mail Settings</guimenuitem>
 	</menuchoice>
 	Once there, select the account with which you'd like to send
-	and recieve encrypted mail, and click the
+	and receive encrypted mail, and click the
 	<guibutton>Edit</guibutton> button.  In the
 	<guilabel>Security</guilabel> tab is a section labeled
 	<guilabel>Pretty Good Privacy</guilabel>.  Enter your key ID
@@ -1988,7 +2145,7 @@ wwwkeys.pgp.net 32j38dk2</command>.  Substitute your key ID for
 	</para>
       </sect2>
       <sect2 id="unencrypting">
-	<title>Unencrypting a Recieved Message</title>
+	<title>Unencrypting a Received Message</title>
 	<para>
 	  If you get an encrypted message, you will need to decrypt it
 	  before you read it. Remember, the sender has to have your

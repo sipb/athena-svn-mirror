@@ -32,7 +32,7 @@
 ## Release information
 my $PROGRAM      = "intltool-extract";
 my $PACKAGE      = "intltool";
-my $VERSION      = "0.12";
+my $VERSION      = "0.17";
 
 ## Loaded modules
 use strict; 
@@ -189,8 +189,6 @@ sub entity_decode
     local ($_) = @_;
 
     s/&apos;/'/g; # '
-    s/&gt;/>/g;
-    s/&lt;/</g;
     s/&quot;/"/g; # "
     s/&amp;/&/g;
 
@@ -233,7 +231,7 @@ sub type_xml {
         $messages{entity_decode($1)} = [];
     }
 
-    while ($input =~ /<_($w+)>([^<]+)<\/_\1>/sg) {
+    while ($input =~ /<_($w+)>(.+?)<\/_\1>/sg) {
         $_ = $2;
         s/\s+/ /g;
 	s/^ //;
@@ -258,6 +256,11 @@ sub type_glade {
 	for my $item (split (/\n/, $1)) {
 	    $messages{entity_decode($item)} = [];
 	}
+    }
+
+    ## handle new glade files
+    while ($input =~ /<(property|atkproperty)\s+[^>]*translatable\s*=\s*"yes"[^>]*>([^<]+)<\/\1>/sg) {
+	$messages{entity_decode($2)} = [] unless $2 =~ /^(window|label)[0-9]+$/;
     }
 
 }

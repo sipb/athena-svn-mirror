@@ -46,7 +46,7 @@ HREF="config-prefs-cal.html"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 9. Advanced Configuration</TD
+>Chapter 10. Advanced Configuration</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -69,13 +69,13 @@ NAME="CONFIG-PREFS-CONTACT"
 >Managing the Addressbook</A
 ></H1
 ><P
->          The addressbook does not have a large list of configuration
-          settings, but those that are there can be found in the
-          <SPAN
+>      The addressbook does not have a large list of configuration
+      settings, but those that are there can be found in the
+      <SPAN
 CLASS="GUIMENU"
 >Tools</SPAN
 > menu.
-        </P
+    </P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -85,8 +85,14 @@ NAME="CONFIG-PREFS-CONTACT-LDAP-ADD"
 >Adding Directory Servers</A
 ></H2
 ><P
->              To add a new LDAP server to your available contact
-              folders:
+>	To add a new <A
+HREF="apx-gloss.html#LDAP"
+><I
+CLASS="GLOSSTERM"
+>LDAP</I
+></A
+> server
+	to your available contact folders:
 	<P
 ></P
 ><OL
@@ -101,19 +107,21 @@ CLASS="GUIMENU"
 CLASS="GUIMENUITEM"
 >Addressbook Sources</SPAN
 >
+	      from the menu.
 	    </P
 ></LI
 ><LI
 ><P
->	      Click <SPAN
+>	      Click the <SPAN
 CLASS="GUIBUTTON"
 >Add</SPAN
->.
+> button on the right
+	      side.
 	    </P
 ></LI
 ><LI
 ><P
->	      Enter the server information.
+>	      Enter the server information:
 	      <P
 ></P
 ><DIV
@@ -123,7 +131,8 @@ CLASS="VARIABLELIST"
 >Account name</DT
 ><DD
 ><P
->		      The name that you see on the screen.  This could be anything you wish.
+>		      The name that you see on the screen.  This could
+		      be anything you wish.
 		    </P
 ></DD
 ><DT
@@ -137,28 +146,86 @@ CLASS="VARIABLELIST"
 >My server requires authentication</DT
 ><DD
 ><P
->		      Select this if the server needs a password to access the addressbook.
+>		      Select this if the server requires
+		      <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> to provide
+		      a server in order to access the LDAP contacts.
 		    </P
 ></DD
 ><DT
 >Port</DT
 ><DD
 ><P
->		      The internet port to connect to in order to access the database.  This is normally 389.
+>		      The internet port
+		      <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> connects to
+		      in order to access the LDAP database.  This is
+		      normally 389.
 		    </P
 ></DD
 ><DT
->Search base</DT
+><A
+HREF="apx-gloss.html#SEARCH-BASE"
+><I
+CLASS="GLOSSTERM"
+>Search base</I
+></A
+></DT
 ><DD
 ><P
->		      The base node to use for all your searches.  Contact your administrator for information about setting this up.
+>		      The base entry to use for all your searches.
+		      Contact your administrator for information about
+		      the correct settings.
 		    </P
 ></DD
 ><DT
->Search scope</DT
+><A
+HREF="apx-gloss.html#SEARCH-SCOPE"
+><I
+CLASS="GLOSSTERM"
+>Search scope</I
+></A
+></DT
 ><DD
 ><P
->How broad the search is in the directory.
+>		      How broad the search is in the directory.  The
+		      following options are available:
+		      <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Base</DT
+><DD
+><P
+>			      Searches just the Search Base.  Most of the time,
+			      not very useful.
+			    </P
+></DD
+><DT
+>One</DT
+><DD
+><P
+>			      Searches the Search Base and one entry
+			      below it.
+			    </P
+></DD
+><DT
+>Sub</DT
+><DD
+><P
+>			      Searches the Search Base and all entries
+			      below it.
+			    </P
+></DD
+></DL
+></DIV
+>
 		    </P
 ></DD
 ></DL
@@ -179,13 +246,37 @@ CLASS="GUIBUTTON"
 >	      Click <SPAN
 CLASS="GUIBUTTON"
 >OK</SPAN
-> to permanenty make changes or <SPAN
+> to permanenty make
+	      changes or <SPAN
 CLASS="GUIBUTTON"
 >Apply</SPAN
-> to temporarily set the changes.
+> to temporarily
+	      set the changes.
 	    </P
 ></LI
 ></OL
+>
+	<DIV
+CLASS="EXAMPLE"
+><A
+NAME="LDAP-CONFIG-EXAMPLE"
+></A
+><P
+><B
+>Example 10-1. LDAP Configuration</B
+></P
+><P
+>	    Rich works at a large chip manufacturer.  He needs to
+	    access the company's LDAP server.  Their LDAP address is
+	    wemakechips.com.
+	  </P
+><P
+>	    His Account Name would be: We Make Chips Employees
+	  </P
+><P
+>	    His Server Name would be: ldap.wemakechips.com
+	  </P
+></DIV
 >
       </P
 ></DIV
