@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
- *	$Author: ghudson $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.8 1997-12-17 18:17:22 ghudson Exp $
+ *	$Author: cfields $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.9 1998-04-08 21:56:20 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.8 1997-12-17 18:17:22 ghudson Exp $";
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.9 1998-04-08 21:56:20 cfields Exp $";
 #endif
 
 #include "attach.h"
@@ -135,6 +135,7 @@ read_config_file(config_file_name)
 					keyword);
 		}
 	}
+	fclose(f);
 	return(SUCCESS);
 }
 
