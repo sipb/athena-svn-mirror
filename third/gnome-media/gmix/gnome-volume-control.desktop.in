@@ -3,6 +3,7 @@ _Name=Volume Control
 _Comment=Adjust the volume level
 Exec=gnome-volume-control
 Icon=gnome-mixer.png
+StartupNotify=true
 Info=Gnome Mixer
 Terminal=0
 Type=Application

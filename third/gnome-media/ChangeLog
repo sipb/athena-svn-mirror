@@ -1,6 +1,71 @@
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-10  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am) to ALL_LINGUAS
+
+2003-01-08  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	Fix for 64-bit platforms. Probably better do the other way round
+	(aka guint -> gsize) since underlying g_io_channel_read()/...
+	operate the same way. This would change cddb-slave2
+	visible API.
+
+	* cddb-slave2/cddb-slave-capplet.c: (do_goodbye), (do_sites),
+	(do_hello):
+	* cddb-slave2/cddb-slave.c: (do_goodbye), (do_read), (do_query),
+	(do_hello):
+	* cddb-slave2/iochannel.c: (gnet_io_channel_writen),
+	(gnet_io_channel_readn): Use guint instead of gsize to comply with 
+	cddb-slave API.
+	
+
+2003-01-07  Naba Kumar <naba@gnome.org>
+
+	* configure.in: Added hi (hindi) in ALL_LINGUAS
+	
+2002-12-16  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * gstreamer-properties/Makefile.am: don't install desktop stuff
+          until proper UI review is done
+
+2002-12-11  Alex Duggan <aldug@gnome.org>
+	
+   * gmix/gnome-volume-control.desktop.in.in:
+   * gnome-cd/gnome-cd.desktop.in:
+   * record/gnome-sound-recorder.desktop.in:
+   * gstreamer-properties/gstreamer-properties.desktop.in:
+   * vu-meter/vumeter.desktop.in:
+   Add startup-notification support to all .desktop files
+   Fixes #100958
+
+2002-12-10  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in: require GStreamer >= 0.5.0
+
+2002-12-01  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in, Makefile.am: added gstreamer-properties
+	  gstreamer-properties: merged in thaytan's capplet, needs cleaning
+
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-11-01  Iain <iain@prettypeople.org>
+
+	* configure.in: Bump version number and require the new GST
+
+2002-10-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Require a newer intltool for better .schemas 
+	support.
+
+2002-10-10 Iain <iain@prettypeople.org>
+
+	* : Applied Bala's patch for some solaris issues.
 
 2002-08-11  Ross Burton  <ross@burtonini.com>
 

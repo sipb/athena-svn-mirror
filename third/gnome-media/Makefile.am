@@ -7,10 +7,11 @@ SUBDIRS = po $(always_built_SUBDIRS) \
 	  @PROGRAMS_VUMETER@ \
 	  @PROGRAMS_GMIX@ \
 	  @PROGRAMS_GNOME_CD@ \
-	  @PROGRAMS_GRECORD@
+	  @PROGRAMS_GRECORD@ \
+	  @PROGRAMS_GSTPROPS@
 
 DIST_SUBDIRS = po $(always_built_SUBDIRS) \
-	       vu-meter gmix grecord gnome-cd
+	       vu-meter gmix grecord gnome-cd gstreamer-properties
 
 EXTRA_DIST = gnome-media.spec.in configure acinclude.m4 COPYING-DOCS \
 		sgmldocs.make xmldocs.make omf.make \

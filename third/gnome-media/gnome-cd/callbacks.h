@@ -56,4 +56,8 @@ void open_track_editor (GtkWidget *widget,
 void destroy_track_editor (void);
 void volume_changed (GtkRange *range,
 		     GnomeCD *gcd);
+
+gboolean tray_icon_clicked (GtkWidget *widget,
+                           GdkEventButton *event,
+                           GnomeCD *gcd);
 #endif

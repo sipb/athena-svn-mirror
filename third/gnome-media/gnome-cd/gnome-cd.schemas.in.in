@@ -8,6 +8,8 @@
       <type>string</type>
       <default>@default_cd_device@</default>
       <locale name="C">
+	<short>Device path</short>
+	<long>The path to the CD drive that the CD player should use to play CDs</long>
       </locale>
     </schema>
 
@@ -18,6 +20,8 @@
       <type>int</type>
       <default>0</default>
       <locale name="C">
+	<short>Action on start</short>
+	<long>What action should the CD player perform on start up? 0 = Nothing, 1 = Start playing, 2 = Stop playing</long>
       </locale>
     </schema>
 
@@ -28,6 +32,8 @@
       <type>bool</type>
       <default>FALSE</default>
       <locale name="C">
+	<short>Shut the CD tray on start</short>
+	<long>Should the CD player attempt to shut the CD drive on start up?</long>
       </locale>
     </schema>
 
@@ -36,8 +42,10 @@
       <applyto>/apps/gnome-cd/on-stop</applyto>
       <owner>Gnome-CD</owner>
       <type>int</type>
-      <default>0</default>
+      <default>1</default>
       <locale name="C">
+	<short>Action on application exit</short>
+	<long>What action should the CD player perform on exit? 0 = Nothing, 1 = Stop playing, 2 = Eject the CD, 3 = Attempt to close the tray</long>
       </locale>
     </schema>
 
@@ -48,6 +56,8 @@
       <type>string</type>
       <default>media</default>
       <locale name="C">
+	<short>CD player theme</short>
+	<long>What theme should the CD player use for it's appearance</long>
       </locale>
     </schema>
 

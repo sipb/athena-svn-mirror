@@ -27,6 +27,10 @@
 
 /* Debugging? */
 gboolean debug_mode = FALSE;
+static char *cd_option_device = NULL;
+
+static gboolean cd_option_unique = FALSE;
+static gboolean cd_option_play = FALSE;
 
 void
 gcd_warning (const char *message,
@@ -48,9 +52,9 @@ gnome_cd_set_window_title (GnomeCD *gcd,
 
 	if (artist == NULL ||
 	    track == NULL) {
-		title = g_strdup (_("Gnome CD Player"));
+		title = g_strdup (_("CD Player"));
 	} else {
-		title = g_strconcat (artist, " - ", track, NULL);
+		title = g_strconcat (track, " - ", artist, NULL);
 	}
 
 	gtk_window_set_title (GTK_WINDOW (gcd->window), title);
@@ -70,6 +74,7 @@ skip_to_track (GtkWidget *item,
 	track = gtk_option_menu_get_history (GTK_OPTION_MENU (gcd->tracks));
 
 	if (gnome_cdrom_get_status (GNOME_CDROM (gcd->cdrom), &status, NULL) == FALSE) {
+		g_free (status);
 		return;
 	}
 
@@ -162,8 +167,8 @@ gnome_cd_build_track_list_menu (GnomeCD *gcd)
 				}
 			}
 
-			g_free (status);
 		}
+		g_free (status);
 	}
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (gcd->tracks), GTK_WIDGET (menu));
@@ -292,13 +297,13 @@ struct _MenuItem {
 };
 
 struct _MenuItem menuitems[] = {
-	{N_("P_revious track"), "gnome-cd/a-first-menu.png", G_CALLBACK (back_cb)},
-	{N_("_Stop"), "gnome-cd/a-stop-menu.png", G_CALLBACK (stop_cb)},
-	{N_("_Play / Pause"), "gnome-cd/a-play-menu.png", G_CALLBACK (play_cb)},
-	{N_("_Next track"), "gnome-cd/a-last-menu.png", G_CALLBACK (next_cb)},
-	{N_("_Eject disc"), "gnome-cd/a-eject-menu.png", G_CALLBACK (eject_cb)},
+	{N_("P_revious track"), GNOME_CD_PREVIOUS, G_CALLBACK (back_cb)},
+	{N_("_Stop"), GNOME_CD_STOP, G_CALLBACK (stop_cb)},
+	{N_("_Play / Pause"), GNOME_CD_PLAY, G_CALLBACK (play_cb)},
+	{N_("_Next track"), GNOME_CD_NEXT, G_CALLBACK (next_cb)},
+	{N_("_Eject disc"), GNOME_CD_EJECT, G_CALLBACK (eject_cb)},
 	{N_("_Help"), GTK_STOCK_HELP, G_CALLBACK (help_cb)},
-	{N_("_About Gnome-CD"), GNOME_STOCK_ABOUT, G_CALLBACK (about_cb)},
+	{N_("_About CD player"), GNOME_STOCK_ABOUT, G_CALLBACK (about_cb)},
 	{NULL, NULL, NULL}
 };
 
@@ -352,8 +357,38 @@ make_popup_menu (GnomeCD *gcd)
 	return menu;
 }
 
+static void
+show_error (GtkWidget	*dialog,
+	    GError 	*error,
+	    GError	*detailed_error,
+	    GnomeCD 	*gcd)
+{
+	switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
+	case 1:
+		gtk_label_set_text (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
+				    detailed_error->message);
+
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), 1, FALSE);
+		show_error (dialog, error, detailed_error, gcd);
+
+		break;
+
+	case 2:
+		gtk_widget_destroy (dialog);
+		dialog = GTK_WIDGET(preferences_dialog_show (gcd, TRUE));
+
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		break;
+
+	default:
+		exit (0);
+	}
+}
+
 static GnomeCD *
-init_player (void) 
+init_player (const char *device_override)
 {
 	GnomeCD *gcd;
 	GnomeCDRomStatus *status;
@@ -361,20 +396,24 @@ init_player (void)
 	GtkWidget *top_hbox, *button_hbox, *option_hbox;
 	GtkWidget *button;
 	GdkPixbuf *pixbuf;
+	GtkWidget *box;
 	GError *error = NULL;
+	GError *detailed_error = NULL;
 
 	gcd = g_new0 (GnomeCD, 1);
 
 	gcd->not_ready = TRUE;
 	gcd->preferences = (GnomeCDPreferences *)preferences_new (gcd);
+	gcd->device_override = g_strdup (device_override);
+	
 	if (gcd->preferences->device == NULL || gcd->preferences->device[0] == 0) {
 		GtkWidget *dialog;
 
 		dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_NONE,
-						 _("There is no CD device set. This means that GnomeCD\n"
-						   "will be unable to run. Press Set device to go to a dialog\n"
-						   "where you can set the device, or click Quit to quit GnomeCD"));
+						 _("There is no CD device set. This means that the CD player\n"
+						   "will be unable to run. Click 'Set device' to go to a dialog\n"
+						   "where you can set the device, or click 'Quit' to quit the CD player."));
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_QUIT, GTK_RESPONSE_CLOSE,
 					_("Set device"), 1, NULL);
 		gtk_dialog_set_default_response (GTK_DIALOG (dialog), 1);
@@ -395,11 +434,24 @@ init_player (void)
 			exit (0);
 		}
 	}
-		
-	gcd->cdrom = gnome_cdrom_new (gcd->preferences->device, GNOME_CDROM_UPDATE_CONTINOUS, &error);
+
+ nodevice:		
+	gcd->cdrom = gnome_cdrom_new (gcd->device_override ? gcd->device_override : gcd->preferences->device, 
+				      GNOME_CDROM_UPDATE_CONTINOUS, &error);
+
 	if (gcd->cdrom == NULL) {
+
 		if (error != NULL) {
 			gcd_warning ("%s", error);
+		}
+		if (gcd->device_override) {
+			g_free (gcd->device_override);
+			gcd->device_override = NULL;
+
+			g_error_free (error);
+			error = NULL;
+
+			goto nodevice;
 		}
 	} else {
 		g_signal_connect (G_OBJECT (gcd->cdrom), "status-changed",
@@ -408,38 +460,40 @@ init_player (void)
 
 	if (error != NULL) {
 		GtkWidget *dialog;
+
+		detailed_error = g_error_new (GNOME_CDROM_ERROR,
+					      GNOME_CDROM_ERROR_NOT_OPENED,
+					      "The CD player is unable to run correctly.\n\n"
+					      "%s\n"
+					      "Press 'Set device' to go to a dialog"
+					      " where you can set the device, or press 'Quit' to quit the CD player", error->message ? error->message : " ");
+
 		
 		dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_NONE,
-						 _("%s\nThis means that GnomeCD"
-						   " will be unable to run correctly. Press Set device to go to a dialog "
-						   "where you can set the device, or click Quit to quit GnomeCD"), error->message);
-		gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_QUIT, GTK_RESPONSE_CLOSE,
-					_("Set device"), 1, NULL);
-		gtk_dialog_set_default_response (GTK_DIALOG (dialog), 1);
+						 _("The CD player is unable to run correctly.\n\n"
+						 "Press 'Details' for more details on reasons for the failure.\n\n" 
+						 "Press 'Set device' to go to a dialog"
+						 " where you can set the device, or press 'Quit' to quit the CD player"));
+		gtk_dialog_add_buttons (GTK_DIALOG (dialog), _("_Details"), 1, GTK_STOCK_QUIT, GTK_RESPONSE_CLOSE,
+					_("_Set device"), 2, NULL);
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog), 2);
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Invalid CD device"));
-		
-		switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
-		case 1:
-			gtk_widget_destroy (dialog);
-			dialog = GTK_WIDGET(preferences_dialog_show (gcd, TRUE));
-
-			/* Don't care what it returns */
-			gtk_dialog_run (GTK_DIALOG (dialog));
-			gtk_widget_destroy (dialog);
-
-			break;
-
-		default:
-			exit (0);
-		}
+		show_error (dialog, error, detailed_error, gcd);
 
 		g_error_free (error);
+		g_error_free (detailed_error);
+		error = NULL;
+		detailed_error = NULL;
+
+		goto nodevice;
 	}
 		
+	gcd->cd_selection = cd_selection_start (gcd->device_override ?
+						gcd->device_override : gcd->preferences->device);
 	gcd->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (gcd->window), _("Gnome CD Player"));
-	gtk_window_set_wmclass (GTK_WINDOW (gcd->window), "main_window", "gnome-cd");
+	gtk_window_set_title (GTK_WINDOW (gcd->window), _("CD Player"));
+	gtk_window_set_role (GTK_WINDOW (gcd->window), "gnome-cd-main-window");
 	gtk_window_set_default_size (GTK_WINDOW (gcd->window), 350, 129);
 	
 	pixbuf = pixbuf_from_file ("gnome-cd/cd.png");
@@ -523,6 +577,7 @@ init_player (void)
 				     (double) status->volume);
 		g_free (status);
 	} else {
+		g_free (status);
 		gcd_warning ("Error getting status: %s", NULL);
 	}
 
@@ -531,11 +586,11 @@ init_player (void)
 	
 	button_hbox = gtk_hbox_new (TRUE, 2);
 	
-  	button = make_button_from_pixbuf (gcd, gcd->theme->previous, G_CALLBACK (back_cb), _("Previous track"), _("Previous"));
+  	button = make_button_from_stock (gcd, GNOME_CD_PREVIOUS, G_CALLBACK (back_cb), _("Previous track"), _("Previous"));
 	gtk_box_pack_start (GTK_BOX (button_hbox), button, TRUE, TRUE, 0);
 	gcd->back_b = button;
 
-	button = make_button_from_pixbuf (gcd, gcd->theme->rewind, NULL, _("Rewind"), _("Rewind"));
+	button = make_button_from_stock (gcd, GNOME_CD_REWIND, NULL, _("Rewind"), _("Rewind"));
 	g_signal_connect (G_OBJECT (button), "button-press-event",
 			  G_CALLBACK (rewind_press_cb), gcd);
 	g_signal_connect (G_OBJECT (button), "button-release-event",
@@ -545,10 +600,10 @@ init_player (void)
 
 	/* Create the play and pause images, and ref them so they never
 	   get destroyed */
-	gcd->play_image = gtk_image_new_from_pixbuf (gcd->theme->play);
+	gcd->play_image = gtk_image_new_from_stock (GNOME_CD_PLAY, GTK_ICON_SIZE_BUTTON);
 	g_object_ref (gcd->play_image);
 
-	gcd->pause_image = gtk_image_new_from_pixbuf (gcd->theme->pause);
+	gcd->pause_image = gtk_image_new_from_stock (GNOME_CD_PAUSE, GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (gcd->pause_image);
 	g_object_ref (gcd->pause_image);
 
@@ -557,11 +612,11 @@ init_player (void)
 	gcd->play_b = button;
 	gcd->current_image = gcd->play_image;
 	
-	button = make_button_from_pixbuf (gcd, gcd->theme->stop, G_CALLBACK (stop_cb), _("Stop"), _("Stop"));
+	button = make_button_from_stock (gcd, GNOME_CD_STOP, G_CALLBACK (stop_cb), _("Stop"), _("Stop"));
 	gtk_box_pack_start (GTK_BOX (button_hbox), button, TRUE, TRUE, 0);
 	gcd->stop_b = button;
 
-	button = make_button_from_pixbuf (gcd, gcd->theme->forward, NULL, _("Fast forward"), _("Fast forward"));
+	button = make_button_from_stock (gcd, GNOME_CD_FFWD, NULL, _("Fast forward"), _("Fast forward"));
 	g_signal_connect (G_OBJECT (button), "button-press-event",
 			  G_CALLBACK (ffwd_press_cb), gcd);
 	g_signal_connect (G_OBJECT (button), "button-release-event",
@@ -569,11 +624,11 @@ init_player (void)
 	gtk_box_pack_start (GTK_BOX (button_hbox), button, TRUE, TRUE, 0);
 	gcd->ffwd_b = button;
 
-	button = make_button_from_pixbuf (gcd, gcd->theme->next, G_CALLBACK (next_cb), _("Next track"), _("Next track"));
+	button = make_button_from_stock (gcd, GNOME_CD_NEXT, G_CALLBACK (next_cb), _("Next track"), _("Next track"));
 	gtk_box_pack_start (GTK_BOX (button_hbox), button, TRUE, TRUE, 0);
 	gcd->next_b = button;
 	
-	button = make_button_from_pixbuf (gcd, gcd->theme->eject, G_CALLBACK (eject_cb), _("Eject CD"), _("Eject"));
+	button = make_button_from_stock (gcd, GNOME_CD_EJECT, G_CALLBACK (eject_cb), _("Eject CD"), _("Eject"));
 	gtk_box_pack_start (GTK_BOX (button_hbox), button, TRUE, TRUE, 0);
 	gcd->eject_b = button;
 
@@ -583,6 +638,22 @@ init_player (void)
 	gtk_widget_show_all (gcd->vbox);
 
 	gcd->not_ready = FALSE;
+
+	/* Tray icon */
+	gcd->tray = GTK_WIDGET (egg_tray_icon_new ("GnomeCD Tray Icon"));
+	box = gtk_event_box_new ();
+	g_signal_connect (G_OBJECT (box), "button_press_event",
+			 	G_CALLBACK (tray_icon_clicked), gcd);
+	gtk_container_add (GTK_CONTAINER (gcd->tray), box);
+	pixbuf = gdk_pixbuf_scale_simple (pixbuf_from_file ("gnome-cd/cd.png"),
+				16, 16, GDK_INTERP_BILINEAR);
+	gcd->tray_icon = gtk_image_new_from_pixbuf (pixbuf);
+	gtk_container_add (GTK_CONTAINER (box), gcd->tray_icon);
+	gcd->tray_tips = gtk_tooltips_new ();
+	gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("CD Player"), NULL);
+	gnome_popup_menu_attach (make_popup_menu (gcd), box, NULL);
+	gtk_widget_show_all (gcd->tray);
+
 	return gcd;
 }
 
@@ -612,11 +683,64 @@ static gint client_die(GnomeClient *client,
 	gtk_main_quit ();
 }
 
+static const char *items [] =
+{
+	GNOME_CD_PLAY,
+	GNOME_CD_STOP,
+	GNOME_CD_PAUSE,
+	GNOME_CD_PREVIOUS,
+	GNOME_CD_NEXT,
+	GNOME_CD_FFWD,
+	GNOME_CD_REWIND,
+	GNOME_CD_EJECT
+};
+
+static void
+register_stock_icons (void)
+{
+	GtkIconFactory *factory;
+	int i;
+
+	factory = gtk_icon_factory_new ();
+	gtk_icon_factory_add_default (factory);
+
+	for (i = 0; i < (int) G_N_ELEMENTS (items); i++) {
+		GtkIconSet *icon_set;
+		GdkPixbuf *pixbuf;
+		char *filename, *fullname;
+
+		filename = g_strconcat ("gnome-cd/", items[i], ".png", NULL);
+		fullname = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, filename, TRUE, NULL);
+		g_free (filename);
+
+		pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
+		g_free (fullname);
+
+		icon_set = gtk_icon_set_new_from_pixbuf (pixbuf);
+		gtk_icon_factory_add (factory, items[i], icon_set);
+		gtk_icon_set_unref (icon_set);
+
+		g_object_unref (G_OBJECT (pixbuf));
+	}
+
+	g_object_unref (G_OBJECT (factory));
+}
 
 int 
 main (int argc, char *argv[])
 {
+	static const struct poptOption cd_popt_options [] = {
+		{ "device", '\0', POPT_ARG_STRING, &cd_option_device, 0,
+		  N_("CD device to use"), NULL },
+		{ "unique", '\0', POPT_ARG_NONE, &cd_option_unique, 0,
+		  N_("Only start if there isn't already a CD player application running"), NULL },
+		{ "play",   '\0', POPT_ARG_NONE, &cd_option_play, 0,
+		  N_("Play the CD on startup"), NULL },
+		{ NULL, '\0', 0, NULL, 0 },
+	};
+
 	GnomeCD *gcd;
+	CDSelection *cd_selection;
 	GnomeClient *client;
 
 	free (malloc (8)); /* -lefence */
@@ -630,17 +754,23 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 
 	gnome_program_init ("gnome-cd", VERSION, LIBGNOMEUI_MODULE, 
-			    argc, argv, GNOME_PARAM_APP_DATADIR, DATADIR, NULL);
+			    argc, argv, 
+			    GNOME_PARAM_POPT_TABLE, cd_popt_options,
+			    GNOME_PARAM_APP_DATADIR, DATADIR, NULL);
+
+	register_stock_icons ();
 	client = gnome_master_client ();
     	g_signal_connect (client, "save_yourself",
                          G_CALLBACK (save_session), (gpointer) argv[0]);
 
-	gcd = init_player ();
+	gcd = init_player (cd_option_device);
 	if (gcd == NULL) {
+		/* Stick a message box here? */
 		g_error (_("Cannot create player"));
 		exit (0);
 	}
 
+	gtk_widget_show_all (gcd->window);
 	g_signal_connect (client, "die",
 			  G_CALLBACK (client_die), gcd);
 
@@ -650,7 +780,11 @@ main (int argc, char *argv[])
 		gnome_cdrom_close_tray (gcd->cdrom, NULL);
 	}
 #endif
-	
+
+	if (cd_option_play) {
+		/* Just fake a click on the button */
+		play_cb (NULL, gcd);
+	} else {
 	switch (gcd->preferences->start) {
 	case GNOME_CD_PREFERENCES_START_NOTHING:
 		break;
@@ -667,8 +801,11 @@ main (int argc, char *argv[])
 	default:
 		break;
 	}
+	}
 	
-	gtk_widget_show (gcd->window);
+	if (cd_option_unique &&
+	    !cd_selection_is_master (gcd->cd_selection))
+		return 0;
 
 	setup_a11y_factory ();
 

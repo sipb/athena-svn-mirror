@@ -52,4 +52,5 @@
 
 #undef HAVE_CDROMCLOSETRAY_IOCTL
 #undef DEFAULT_MIXER
+#undef default_cd_device
 #undef HAVE_MIXER

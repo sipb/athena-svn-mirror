@@ -1,3 +1,20 @@
+2002-12-16  Christian Neumair  <chris@gnome-de.org>
+
+	* .cvsignore: Updated.
+
+Wed Nov 13 11:29:22 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* cddb-slave-client.c :
+	Fix for #89092: removed unnecessary code conversion to UTF-8
+
+2002-10-08 Iain <iain@prettypeople.org>
+
+	* CDDBSlave2.schemas.in: Add descriptions
+
+2002-10-08 Iain <iain@prettypeople.org>
+
+	* cddb-slave-capplet.c: Apply a11y patch
+
 2002-09-23  Iain <iain@prettypeople.org>
 
 	* cddb-slave.c (display_results): Set the default size on the window,

@@ -65,6 +65,15 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/gnome-sound-recorder/play-once</key>
+      <applyto>/apps/gnome-sound-recorder/play-once</applyto>
+      <owner>Gnome Sound Recorder</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C"></locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/gnome-sound-recorder/play-repeat</key>
       <applyto>/apps/gnome-sound-recorder/play-repeat</applyto>
       <owner>Gnome Sound Recorder</owner>
@@ -96,7 +105,7 @@
       <applyto>/apps/gnome-sound-recorder/sox-command</applyto>
       <owner>Gnome Sound Recorder</owner>
       <type>string</type>
-      <default>/usr/bin/sox</default>
+      <default>@path_to_sox@</default>
       <locale name="C"></locale>
     </schema>
 
@@ -145,5 +154,22 @@
       <locale name="C"></locale>
     </schema>
 
+    <schema>
+      <key>/schemas/apps/gnome-sound-recorder/system-state/open-file-directory</key>
+      <applyto>/apps/gnome-sound-recorder/system-state/open-file-directory</applyto>
+      <owner>Gnome Sound Recorder</owner>
+      <type>string</type>
+      <locale name="C">
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-sound-recorder/system-state/save-file-directory</key>
+      <applyto>/apps/gnome-sound-recorder/system-state/save-file-directory</applyto>
+      <owner>Gnome Sound Recorder</owner>
+      <type>string</type>
+      <locale name="C">
+      </locale>
+    </schema>
   </schemalist>
 </gconfschemafile>

@@ -88,11 +88,18 @@ GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMIX_LIBS = @GMIX_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOMECC_DESKTOP_DIR = @GNOMECC_DESKTOP_DIR@
+GSR_CFLAGS = @GSR_CFLAGS@
+GSR_LIBS = @GSR_LIBS@
+GSTPROPS_CFLAGS = @GSTPROPS_CFLAGS@
+GSTPROPS_GLADE_DIR = @GSTPROPS_GLADE_DIR@
+GSTPROPS_ICONS_DIR = @GSTPROPS_ICONS_DIR@
+GSTPROPS_LIBS = @GSTPROPS_LIBS@
+GSTPROPS_MEDIA_DIR = @GSTPROPS_MEDIA_DIR@
+GSTPROPS_PIXMAPS_DIR = @GSTPROPS_PIXMAPS_DIR@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +109,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -125,14 +134,16 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PROGRAMS_GMIX = @PROGRAMS_GMIX@
 PROGRAMS_GNOME_CD = @PROGRAMS_GNOME_CD@
 PROGRAMS_GRECORD = @PROGRAMS_GRECORD@
+PROGRAMS_GSTPROPS = @PROGRAMS_GSTPROPS@
 PROGRAMS_VUMETER = @PROGRAMS_VUMETER@
 RANLIB = @RANLIB@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SDTAUDIOCONTROL = @SDTAUDIOCONTROL@
-SOX_PATH = @SOX_PATH@
 STRIP = @STRIP@
 USE_CD_CHANGER = @USE_CD_CHANGER@
 USE_NLS = @USE_NLS@
@@ -140,7 +151,6 @@ VERSION = @VERSION@
 VUMETER_CFLAGS = @VUMETER_CFLAGS@
 VUMETER_LIBS = @VUMETER_LIBS@
 default_cd_device = @default_cd_device@
-path_to_sox = @path_to_sox@
 
 SUBDIRS = images access doc
 INCLUDES = \
@@ -178,6 +188,8 @@ IDL_GENERATED = \
 bin_PROGRAMS = gnome-cd
 gnome_cd_SOURCES = \
 	$(IDL_GENERATED)	\
+	eggtrayicon.c		\
+	eggtrayicon.h		\
 	gnome-cd.c		\
 	gnome-cd.h		\
 	gnome-cd-type.h		\
@@ -193,6 +205,8 @@ gnome_cd_SOURCES = \
 	$(CDROM_HOST)-cdrom.h	\
 	preferences.c		\
 	preferences.h		\
+	cd-selection.c		\
+	cd-selection.h		\
 	theme.c
 
 
@@ -222,9 +236,10 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
 gnome_cd_OBJECTS =  GNOME_Media_CDDBSlave2-common.$(OBJEXT) \
 GNOME_Media_CDDBSlave2-skels.$(OBJEXT) \
-GNOME_Media_CDDBSlave2-stubs.$(OBJEXT) gnome-cd.$(OBJEXT) \
-callbacks.$(OBJEXT) cddb.$(OBJEXT) cdrom.$(OBJEXT) display.$(OBJEXT) \
-$(CDROM_HOST)-cdrom.$(OBJEXT) preferences.$(OBJEXT) theme.$(OBJEXT)
+GNOME_Media_CDDBSlave2-stubs.$(OBJEXT) eggtrayicon.$(OBJEXT) \
+gnome-cd.$(OBJEXT) callbacks.$(OBJEXT) cddb.$(OBJEXT) cdrom.$(OBJEXT) \
+display.$(OBJEXT) $(CDROM_HOST)-cdrom.$(OBJEXT) preferences.$(OBJEXT) \
+cd-selection.$(OBJEXT) theme.$(OBJEXT)
 gnome_cd_DEPENDENCIES =  $(top_builddir)/cddb-slave2/libcddb-slave2.la \
 $(top_builddir)/gnome-cd/access/libgnomecdaccess.la
 gnome_cd_LDFLAGS = 
@@ -503,19 +518,24 @@ distdir: $(DISTFILES)
 	done
 callbacks.o: callbacks.c ../config.h cddb.h gnome-cd.h \
 	../cddb-slave2/cddb-slave-client.h gnome-cd-type.h \
-	preferences.h cdrom.h display.h GNOME_Media_CDDBSlave2.h
+	cd-selection.h preferences.h cdrom.h eggtrayicon.h display.h \
+	GNOME_Media_CDDBSlave2.h
+cd-selection.o: cd-selection.c cd-selection.h
 cddb.o: cddb.c ../config.h ../cddb-slave2/cddb-slave-client.h \
 	GNOME_Media_CDDBSlave2.h gnome-cd.h gnome-cd-type.h \
-	preferences.h cdrom.h cddb.h
+	cd-selection.h preferences.h cdrom.h eggtrayicon.h cddb.h
 cdrom.o: cdrom.c ../config.h cdrom.h gnome-cd.h \
 	../cddb-slave2/cddb-slave-client.h gnome-cd-type.h \
-	preferences.h
+	cd-selection.h preferences.h eggtrayicon.h
 display.o: display.c gnome-cd.h ../cddb-slave2/cddb-slave-client.h \
-	gnome-cd-type.h preferences.h ../config.h cdrom.h display.h
+	gnome-cd-type.h cd-selection.h preferences.h ../config.h \
+	cdrom.h eggtrayicon.h display.h
+eggtrayicon.o: eggtrayicon.c eggtrayicon.h
 gnome-cd.o: gnome-cd.c ../config.h gnome-cd.h \
 	../cddb-slave2/cddb-slave-client.h gnome-cd-type.h \
-	preferences.h cdrom.h cddb.h display.h callbacks.h \
-	access/factory.h access/pangoaccessiblefactory.h \
+	cd-selection.h preferences.h cdrom.h eggtrayicon.h cddb.h \
+	display.h callbacks.h access/factory.h \
+	access/pangoaccessiblefactory.h \
 	access/cddisplayaccessiblefactory.h
 GNOME_Media_CDDBSlave2-common.o: GNOME_Media_CDDBSlave2-common.c \
 	GNOME_Media_CDDBSlave2.h
@@ -525,13 +545,13 @@ GNOME_Media_CDDBSlave2-stubs.o: GNOME_Media_CDDBSlave2-stubs.c \
 	GNOME_Media_CDDBSlave2.h
 linux-cdrom.o: linux-cdrom.c ../config.h linux-cdrom.h cdrom.h cddb.h \
 	gnome-cd.h ../cddb-slave2/cddb-slave-client.h gnome-cd-type.h \
-	preferences.h
+	cd-selection.h preferences.h eggtrayicon.h
 preferences.o: preferences.c ../config.h gnome-cd.h \
 	../cddb-slave2/cddb-slave-client.h gnome-cd-type.h \
-	preferences.h cdrom.h
+	cd-selection.h preferences.h cdrom.h eggtrayicon.h
 theme.o: theme.c ../config.h gnome-cd.h \
 	../cddb-slave2/cddb-slave-client.h gnome-cd-type.h \
-	preferences.h cdrom.h
+	cd-selection.h preferences.h cdrom.h eggtrayicon.h
 
 info-am:
 info: info-recursive

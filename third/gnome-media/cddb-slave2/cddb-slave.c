@@ -225,7 +225,7 @@ static void
 do_goodbye (ConnectionData *cd)
 {
 	char *quit;
-	gsize bytes_writen;
+	guint bytes_writen;
 	GIOError status;
 	
 	/* Send quit command */
@@ -383,7 +383,7 @@ do_read (ConnectionData *cd,
 	 const char *dtitle)
 {
 	char *query;
-	gsize bytes_writen;
+	guint bytes_writen;
 	GIOError status;
 	
 	/* Send read command */
@@ -674,7 +674,7 @@ static void
 do_query (ConnectionData *cd)
 {
 	char *query;
-	gsize bytes_writen;
+	guint bytes_writen;
 	GIOError status;
 	
 	/* Send query command */
@@ -744,7 +744,7 @@ static void
 do_hello (ConnectionData *cd)
 {
 	char *hello;
-	gsize bytes_writen;
+	guint bytes_writen;
 	GIOError status;
 	
 	/* Send the Hello command

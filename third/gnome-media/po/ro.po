@@ -1,18 +1,50 @@
 # Romanian translation for gnome-media.
 # Copyright (C) YEAR Free Software Foundation, Inc.
-# Mugurel Tudor <mugurelu@go.ro>, 2002.
+# Mugurel Tudor <mugurelu@go.ro>, 2002-2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media-2.0.2\n"
-"POT-Creation-Date: 2002-11-18 23:59+0000\n"
-"PO-Revision-Date: 2002-09-12 20:43+0300\n"
+"POT-Creation-Date: 2003-01-21 12:08+0100\n"
+"PO-Revision-Date: 2003-01-21 23:02+0200\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team: română <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "Adresa serverului contactat pentru informaţii referitoare la CD"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
+msgid "Port"
+msgstr "Port"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3
+msgid "Server name"
+msgstr "Nume server"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "The hostname that will be sent with all queries"
+msgstr "Numele gazdei care va fi trimis împreună cu toate cererile"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "The port that the server is running the database on"
+msgstr "Portul pe care serverul rulează baza de date"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The username"
+msgstr "Nume utilizator"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The username that will be sent with all queries"
+msgstr "Numele utilizatorului care va fi trimis împreună cu interogările"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid "Your hostname"
+msgstr "Numele gazdei dumneavoastră"
 
 #: cddb-slave2/cddb-disclosure.c:245
 msgid "Expander Size"
@@ -43,48 +75,44 @@ msgstr "Trimite _alte informaţii..."
 msgid "N_ame:"
 msgstr "N_ume:"
 
-#: cddb-slave2/cddb-slave-capplet.c:710
+#: cddb-slave2/cddb-slave-capplet.c:711
 msgid "_Hostname:"
 msgstr "Nume _gazdă:"
 
 #. Server info
-#: cddb-slave2/cddb-slave-capplet.c:731 cddb-slave2/cddb-slave-capplet.c:771
+#: cddb-slave2/cddb-slave-capplet.c:733 cddb-slave2/cddb-slave-capplet.c:773
 msgid "Server"
 msgstr "Server"
 
-#: cddb-slave2/cddb-slave-capplet.c:739
+#: cddb-slave2/cddb-slave-capplet.c:741
 msgid "FreeDB _round robin server"
 msgstr "Server _round robin FreeDB"
 
-#: cddb-slave2/cddb-slave-capplet.c:745
+#: cddb-slave2/cddb-slave-capplet.c:747
 msgid "Other _FreeDB server..."
 msgstr "Alte servere _FreeDB..."
 
-#: cddb-slave2/cddb-slave-capplet.c:774
-msgid "Port"
-msgstr "Port"
-
-#: cddb-slave2/cddb-slave-capplet.c:777
+#: cddb-slave2/cddb-slave-capplet.c:779
 msgid "Location"
 msgstr "Locaţie"
 
-#: cddb-slave2/cddb-slave-capplet.c:783
+#: cddb-slave2/cddb-slave-capplet.c:785
 msgid "Update server list"
 msgstr "Actualizează lista serverelor"
 
-#: cddb-slave2/cddb-slave-capplet.c:790
+#: cddb-slave2/cddb-slave-capplet.c:792
 msgid "Other _server..."
 msgstr "Alte _servere..."
 
-#: cddb-slave2/cddb-slave-capplet.c:802
+#: cddb-slave2/cddb-slave-capplet.c:804
 msgid "Hostname:"
 msgstr "Nume gazdă:"
 
-#: cddb-slave2/cddb-slave-capplet.c:814
+#: cddb-slave2/cddb-slave-capplet.c:816
 msgid "_Port:"
 msgstr "_Port:"
 
-#: cddb-slave2/cddb-slave-capplet.c:863
+#: cddb-slave2/cddb-slave-capplet.c:866
 msgid "CD Database Preferences"
 msgstr "Preferinţe Bază de date CD"
 
@@ -92,7 +120,10 @@ msgstr "Preferinţe Bază de date CD"
 msgid "Unknown / Unknown"
 msgstr "Necunoscut / Necunoscut"
 
-#: cddb-slave2/cddb-slave.c:219
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:219 grecord/src/gsr-window.c:760
+#: grecord/src/gsr-window.c:769 grecord/src/gsr-window.c:778
+#: grecord/src/gsr-window.c:788 grecord/src/gsr-window.c:1108
 msgid "Unknown"
 msgstr "Necunoscut"
 
@@ -122,7 +153,7 @@ msgid "Artist and Title"
 msgstr "Artist şi Titlu"
 
 #: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
-#: gnome-cd/gnome-cd.c:125
+#: gnome-cd/gnome-cd.c:130
 msgid "Unknown track"
 msgstr "Melodie necunoscută"
 
@@ -845,6 +876,7 @@ msgid "CD"
 msgstr "CD"
 
 #: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
+#: gstreamer-properties/gstreamer-properties.glade.h:13
 msgid "Video"
 msgstr "Video"
 
@@ -1050,33 +1082,52 @@ msgstr "Monitor"
 msgid "Help"
 msgstr "Ajutor"
 
-#: gmix/gmix.c:147
-msgid "don't restore mixer-settings from configuration"
-msgstr "nu restaura setările mixerului din configuraţie"
+#: gmix/gmix.c:146
+msgid "Mixer device to use"
+msgstr "Dispozitivul de mixare folosit"
 
-#: gmix/gmix.c:148
-msgid "restore mixer-settings from configuration"
-msgstr "restaurează setările mixerului din configuraţie"
-
-#: gmix/gmix.c:149
-msgid "initialise the mixer(s) from stored configuration and exit"
-msgstr "iniţializează mixerul(e) din configuraţia salvată şi ieşi"
-
-#: gmix/gmix.c:150
-msgid "don't save (modified) mixer-settings into configuration"
-msgstr "nu salva noile setări ale mixerului către configuraţie"
-
-#: gmix/gmix.c:382
+#: gmix/gmix.c:327
+#, c-format
 msgid ""
-"I was not able to open your audio device.\n"
-"Please check that you have permission to open /dev/mixer\n"
-"and make sure you have sound support compiled into your kernel."
+"Volume control is unable to run correctly.\n"
+"\n"
+"Unable to open audio device '%s'.\n"
+"Please check that you have permissions to open '%s'\n"
+"and that you have sound support in your kernel.\n"
+"\n"
+"Press Quit to exit Volume control"
 msgstr ""
-"Nu am putut deschide dispozitivul dumneavoastră audio.\n"
-"Vă rugăm verificaţi dacă aveţi permisiunea de a deschide /dev/mixer\n"
-"şi asiguraţi-vă că aveţi compilat în kernel suportul pentru sunet."
+"Controlul volumului nu poate rula corect.\n"
+"\n"
+"Nu am putut deschide dispozitivul audio '%s'.\n"
+"Vă rugăm verificaţi dacă aveţi permisiunea de a deschide '%s'\n"
+"şi dacă aveţi suportul de sunet integrat în kernel.\n"
+"\n"
+"Apăsaţi Ieşire pentru a părăsi Controlul volumului."
 
-#: gmix/gmix.c:603
+#: gmix/gmix.c:381
+msgid ""
+"Volume control is unable to run correctly.\n"
+"\n"
+"Press the details button for more details on the reasons for failure.\n"
+"\n"
+"Press Quit to quit Volume control"
+msgstr ""
+"Controlul volumului nu poate rula corect.\n"
+"\n"
+"Apăsaţi butonul detalii pentru mai multe detalii asupra motivelor acestei probleme.\n"
+"\n"
+"Apăsaţi Ieşire pentru a părăsi Controlul volumului."
+
+#: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
+msgid "_Details"
+msgstr "_Detalii"
+
+#: gmix/gmix.c:387
+msgid "Invalid mixer device"
+msgstr "Dispozitiv de mixat invalid"
+
+#: gmix/gmix.c:626
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1087,7 +1138,7 @@ msgstr ""
 "cu versiunea OSS %d.%d.%d, iar sistemul dumneavoastră rulează o\n"
 "versiune mai veche decât 3.6.0.\n"
 
-#: gmix/gmix.c:611
+#: gmix/gmix.c:634
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1098,55 +1149,55 @@ msgstr ""
 "cu versiunea OSS %d.%d.%d, iar sistemul dumneavoastră rulează o\n"
 "versiune %d.%d.%d.\n"
 
-#: gmix/gmix.c:1065
+#: gmix/gmix.c:1088
 #, c-format
 msgid "left %s"
 msgstr "Stânga %s"
 
-#: gmix/gmix.c:1091
+#: gmix/gmix.c:1114
 #, c-format
 msgid "Right %s"
 msgstr "Dreapta %s"
 
-#: gmix/gmix.c:1184
+#: gmix/gmix.c:1207
 msgid "Lock"
 msgstr "Blocat"
 
-#: gmix/gmix.c:1197
+#: gmix/gmix.c:1220
 #, c-format
 msgid "%s Lock"
 msgstr "%s blocat"
 
-#: gmix/gmix.c:1208
+#: gmix/gmix.c:1231
 msgid "Mute"
 msgstr "Mut"
 
-#: gmix/gmix.c:1221
+#: gmix/gmix.c:1244
 #, c-format
 msgid "%s Mute"
 msgstr "%s mut"
 
-#: gmix/gmix.c:1235
+#: gmix/gmix.c:1258
 msgid "Rec."
 msgstr "Înr."
 
-#: gmix/gmix.c:1247
+#: gmix/gmix.c:1270
 #, c-format
 msgid "%s Record"
 msgstr "%s înreg."
 
-#: gmix/gmix.c:1319 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:2
 msgid "Volume Control"
 msgstr "Control volum"
 
-#: gmix/gmix.c:1725
-msgid "Gnome Volume Control"
-msgstr "Controlul de Volum Gnome"
+#: gmix/gmix.c:1748
+msgid "GNOME Volume Control"
+msgstr "Control Volum GNOME"
 
-#: gmix/gmix.c:1728
-msgid "This is a mixer for sound devices"
-msgstr "Acesta este un mixer pentru sunet"
+#: gmix/gmix.c:1751
+msgid "A mixer for sound devices"
+msgstr "Un mixer pentru dispozitivele de sunet"
 
 #: gmix/gnome-volume-control.desktop.in.in.h:1
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:1
@@ -1214,73 +1265,98 @@ msgstr "Linie album"
 msgid "Line for displaying the name of the album"
 msgstr "Linie pentru afişarea numelui albumului"
 
-#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:164 gnome-cd/callbacks.c:263
-#: gnome-cd/callbacks.c:531 gnome-cd/gnome-cd.c:555 grecord/src/gui.c:233
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:165 gnome-cd/callbacks.c:264
+#: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
+#: grecord/gsr.xml.h:13
 msgid "Play"
 msgstr "Redă"
 
-#: gnome-cd/callbacks.c:149 gnome-cd/callbacks.c:195 gnome-cd/callbacks.c:225
-#: gnome-cd/callbacks.c:305 gnome-cd/callbacks.c:345 gnome-cd/callbacks.c:369
-#: gnome-cd/callbacks.c:410 gnome-cd/callbacks.c:497
+#: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
+#: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
+#: gnome-cd/callbacks.c:411 gnome-cd/callbacks.c:499
 msgid "Pause"
 msgstr "Pauză"
 
-#: gnome-cd/callbacks.c:603
-msgid "Disc error"
-msgstr "Eroare disc"
+#: gnome-cd/callbacks.c:530
+#, c-format
+msgid "Playing %s - %s"
+msgstr "Redare %s - %s"
 
-#: gnome-cd/callbacks.c:636 gnome-cd/callbacks.c:647
+#: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
 msgid "Unknown Artist"
 msgstr "Artist necunoscut"
 
-#: gnome-cd/callbacks.c:639 gnome-cd/callbacks.c:651
+#: gnome-cd/callbacks.c:532 gnome-cd/callbacks.c:665 gnome-cd/callbacks.c:677
 msgid "Unknown Album"
 msgstr "Album necunoscut"
 
-#: gnome-cd/callbacks.c:690
+#: gnome-cd/callbacks.c:534 grecord/src/gui.c:824
+msgid "Playing"
+msgstr "Redare"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:557
+msgid "Paused"
+msgstr "Pauză"
+
+#. Update tray icon tooltip
+#: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
+#: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "Player CD"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:620
+msgid "Stopped"
+msgstr "Oprit"
+
+#: gnome-cd/callbacks.c:626
+msgid "Disc error"
+msgstr "Eroare disc"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
 msgid "No disc"
 msgstr "Nici un disc"
 
-#: gnome-cd/callbacks.c:716
+#: gnome-cd/callbacks.c:742
 msgid "Drive open"
 msgstr "Unitate deschisă"
 
-#: gnome-cd/callbacks.c:740
+#: gnome-cd/callbacks.c:766
 msgid "Data CD"
 msgstr "CD de date"
 
-#: gnome-cd/callbacks.c:762
+#. Updated the tray icon tooltip
+#: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
 msgid "No Cdrom"
 msgstr "Nici un cdrom"
 
-#: gnome-cd/callbacks.c:774
+#: gnome-cd/callbacks.c:803
 msgid "Drive Error"
 msgstr "Eroare a unităţii"
 
-#: gnome-cd/callbacks.c:795
-msgid "Copyright (C) 2001, 2002"
-msgstr "Copyright (C) 2001, 2002"
+#: gnome-cd/callbacks.c:825
+msgid "A CD player for GNOME"
+msgstr "Un CD player pentru GNOME"
 
-#: gnome-cd/callbacks.c:796
-msgid "A GNOME cd player"
-msgstr "Un cd player GNOME"
-
-#: gnome-cd/cdrom.c:362
+#: gnome-cd/cdrom.c:367
 #, c-format
 msgid "You do not seem to have permission to access %s."
 msgstr "Se pare că nu aveţi permisiunea de a accesa %s."
 
-#: gnome-cd/cdrom.c:368
+#: gnome-cd/cdrom.c:373
 #, c-format
 msgid ""
 "%s does not appear to point to a valid CD device. This may be because:\n"
-"a) CD support is not compiled into Linux\n"
+"a) CD support is not present in your machine\n"
 "b) You do not have the correct permissions to access the CD drive\n"
 "c) %s is not the CD drive.\n"
 msgstr ""
 "%s se pare că nu arată către un dispozitiv CD valid. Acest lucru poate "
 "însemna că:\n"
-"a) Suportul CD nu este compilat în Linux\n"
+"a) Suportul CD nu este prezent pe aceast calculator\n"
 "b) Nu aveţi permisiunile corecte pentru a accesa unitatea CD\n"
 "c) %s nu este o unitate CD.\n"
 
@@ -1292,220 +1368,302 @@ msgstr "Artist necunoscut"
 msgid "Unknown disc"
 msgstr "Disc necunoscut"
 
-#: gnome-cd/gnome-cd.c:51 gnome-cd/gnome-cd.c:441
-msgid "Gnome CD Player"
-msgstr "Player CD Gnome"
-
-#: gnome-cd/gnome-cd.c:151
+#: gnome-cd/gnome-cd.c:156
 #, c-format
 msgid "%d - Unknown"
 msgstr "%d - Necunoscut"
 
-#: gnome-cd/gnome-cd.c:295
+#: gnome-cd/gnome-cd.c:300
 msgid "P_revious track"
 msgstr "Melodia _precedentă"
 
-#: gnome-cd/gnome-cd.c:296
+#: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
 msgid "_Stop"
 msgstr "_Stop"
 
-#: gnome-cd/gnome-cd.c:297
+#: gnome-cd/gnome-cd.c:302
 msgid "_Play / Pause"
 msgstr "_Redare / Pauză"
 
-#: gnome-cd/gnome-cd.c:298
+#: gnome-cd/gnome-cd.c:303
 msgid "_Next track"
-msgstr "_Următoarea melodie"
+msgstr "Melodia _următoare"
 
-#: gnome-cd/gnome-cd.c:299
+#: gnome-cd/gnome-cd.c:304
 msgid "_Eject disc"
 msgstr "_Scoate discul"
 
-#: gnome-cd/gnome-cd.c:300
-#, fuzzy
+#: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
 msgid "_Help"
-msgstr "Ajutor"
+msgstr "_Ajutor"
 
-#: gnome-cd/gnome-cd.c:301
-msgid "_About Gnome-CD"
-msgstr "_Despre Gnome-CD"
+#: gnome-cd/gnome-cd.c:306
+msgid "_About CD player"
+msgstr "_Despre playerul CD"
 
-#: gnome-cd/gnome-cd.c:375
+#: gnome-cd/gnome-cd.c:414
 msgid ""
-"There is no CD device set. This means that GnomeCD\n"
-"will be unable to run. Press Set device to go to a dialog\n"
-"where you can set the device, or click Quit to quit GnomeCD"
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
 msgstr ""
 "Nu este nici un dispozitiv CD setat. Acest lucru înseamnă că\n"
-"GnomeCD nu va putea rula. Apăsaţi Setaţi dispozitiv pentru a\n"
-"seta dispozitivul, sau Ieşire pentru a părăsi GnomeCD"
+"playerul CD nu va putea rula. Apăsaţi 'Setaţi dispozitiv' pentru a\n"
+"seta dispozitivul, sau 'Ieşire' pentru a părăsi GnomeCD."
 
-#: gnome-cd/gnome-cd.c:379 gnome-cd/gnome-cd.c:418
+#: gnome-cd/gnome-cd.c:418
 msgid "Set device"
 msgstr "Setează dispozitiv"
 
-#: gnome-cd/gnome-cd.c:381
+#: gnome-cd/gnome-cd.c:420
 msgid "No CD device"
 msgstr "Nici un dispozitiv CD"
 
-#: gnome-cd/gnome-cd.c:414
-#, c-format
+#: gnome-cd/gnome-cd.c:474
 msgid ""
-"%s\n"
-"This means that GnomeCD will be unable to run correctly. Press Set device to "
-"go to a dialog where you can set the device, or click Quit to quit GnomeCD"
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
 msgstr ""
-"%s\n"
-"Acest lucru înseamnă că GnomeCD nu va putea rula corect. Apăsaţi Setaţi "
-"dispozitiv pentru a seta dispozitivul, sau apăsaţi Ieşire pentru a părăsi "
-"GnomeCD"
+"Playerul de CD nu poate rula corect.\n"
+"\n"
+"Apăsaţi 'Detalii' pentru mai multe detalii despre motivele acestei probleme.\n"
+"\n"
+"Apăsaţi 'Setaţi dispozitiv' pentru a seta dispozitivul, sau apăsaţi 'Ieşire' pentru a părăsi "
+"playerul CD"
 
-#: gnome-cd/gnome-cd.c:420
+#: gnome-cd/gnome-cd.c:479
+msgid "_Set device"
+msgstr "_Setează dispozitiv"
+
+#: gnome-cd/gnome-cd.c:481
 msgid "Invalid CD device"
 msgstr "Dispozitiv CD invalid"
 
-#: gnome-cd/gnome-cd.c:488
+#: gnome-cd/gnome-cd.c:542
 msgid "Volume control"
 msgstr "Control volum"
 
-#: gnome-cd/gnome-cd.c:497
+#: gnome-cd/gnome-cd.c:551
 msgid "Open track editor"
 msgstr "Deschide editor melodii"
 
-#: gnome-cd/gnome-cd.c:498
+#: gnome-cd/gnome-cd.c:552
 msgid "Track editor"
 msgstr "Editor melodii"
 
-#: gnome-cd/gnome-cd.c:505
+#: gnome-cd/gnome-cd.c:559
 msgid "Open preferences"
 msgstr "Deschide preferinţele"
 
-#: gnome-cd/gnome-cd.c:506
+#: gnome-cd/gnome-cd.c:560
 msgid "Preferences"
 msgstr "Preferinţe"
 
-#: gnome-cd/gnome-cd.c:514
+#: gnome-cd/gnome-cd.c:568
 msgid "Track List"
 msgstr "Listă melodii"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous track"
 msgstr "Melodia precedentă"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous"
 msgstr "Precedenta"
 
-#: gnome-cd/gnome-cd.c:538
+#: gnome-cd/gnome-cd.c:593
 msgid "Rewind"
 msgstr "Derulează înapoi"
 
-#: gnome-cd/gnome-cd.c:555
+#: gnome-cd/gnome-cd.c:610
 msgid "Play / Pause"
 msgstr "Redare / Pauză"
 
-#: gnome-cd/gnome-cd.c:560 grecord/src/gui.c:247
+#: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
 msgid "Stop"
 msgstr "Stop"
 
-#: gnome-cd/gnome-cd.c:564
+#: gnome-cd/gnome-cd.c:619
 msgid "Fast forward"
 msgstr "Derulează înainte"
 
-#: gnome-cd/gnome-cd.c:572
+#: gnome-cd/gnome-cd.c:627
 msgid "Next track"
-msgstr "Următoarea melodie"
+msgstr "Melodia următoare"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject CD"
 msgstr "Scoate CD-ul"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject"
 msgstr "Scoate"
 
-#: gnome-cd/gnome-cd.c:640
+#: gnome-cd/gnome-cd.c:734
+msgid "CD device to use"
+msgstr "Dispozitivul CD folosit"
+
+#: gnome-cd/gnome-cd.c:736
+msgid "Only start if there isn't already a CD player application running"
+msgstr "Porneşte doar dacă nu există deja o aplicaţie CD player ce rulează"
+
+#: gnome-cd/gnome-cd.c:738
+msgid "Play the CD on startup"
+msgstr "Porneşte redarea CD-ului la pornire"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:769
 msgid "Cannot create player"
 msgstr "Nu pot crea player"
-
-#: gnome-cd/gnome-cd.desktop.in.h:1
-#, fuzzy
-msgid "CD Player"
-msgstr "Player CD"
 
 #: gnome-cd/gnome-cd.desktop.in.h:2
 msgid "Play audio CDs"
 msgstr "Redă CD-uri audio"
 
-#: gnome-cd/preferences.c:82
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "Action on application exit"
+msgstr "Acţiune la terminarea aplicaţiei"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Action on start"
+msgstr "Acţiune la pornire"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "CD player theme"
+msgstr "Temă player CD"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Device path"
+msgstr "Calea către dispozitiv"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD player attempt to shut the CD drive on start up?"
+msgstr "Ar trebui playerul CD să închidă unitatea CD la pornire ?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "Shut the CD tray on start"
+msgstr "Închide tăviţa unităţii CD la pornire"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr "Calea către unitatea CD folosită de playerul de CD pentru a reda CD-uri"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid ""
+"What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
+"playing, 2 = Eject the CD, 3 = Attempt to close the tray"
+msgstr ""
+"Ce acţiune ar trebui să realizeze playerul CD la ieşire ? 0 = Nimic, 1 = Opreşte "
+"redarea, 2 = Ejectează CD, 3 = Încearcă să închizi tăviţa"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:9
+msgid ""
+"What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
+"playing, 2 = Stop playing"
+msgstr ""
+"Ce ar trebui sa realizeze playerul CD la pornire ? 0 = Nimic, 1 = Începe redarea, "
+"2 = Opreşte redarea"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:10
+msgid "What theme should the CD player use for it's appearance"
+msgstr "Ce temă ar trebui să folosească playerul de CD pentru aspect"
+
+#: gnome-cd/preferences.c:83
 #, c-format
 msgid ""
 "%s\n"
-"This means that Gnome-CD will not be able to run."
+"This means that the CD player will not be able to run."
 msgstr ""
 "%s\n"
-"Acest lucru înseamnă că Gnome-CD nu va putea rula."
+"Acest lucru înseamnă că playerul CD nu va putea rula."
 
-#: gnome-cd/preferences.c:83
+#: gnome-cd/preferences.c:84
 msgid "Error setting device"
 msgstr "Eroare la setarea dispozitivului"
 
-#: gnome-cd/preferences.c:793
-msgid "Gnome CD Player Preferences"
-msgstr "Preferinţe Player CD Gnome"
+#: gnome-cd/preferences.c:824
+msgid "CD Player Preferences"
+msgstr "Preferinţe Player CD"
 
-#: gnome-cd/preferences.c:813
-#, fuzzy
+#: gnome-cd/preferences.c:853
 msgid "CD player de_vice:"
-msgstr "Di_spozitiv CD"
+msgstr "Di_spozitiv CD:"
 
-#: gnome-cd/preferences.c:828
+#: gnome-cd/preferences.c:868
 msgid "_Apply change"
 msgstr "_Aplică modificările"
 
 #. left side
-#: gnome-cd/preferences.c:841
-msgid "When Gnome CD Player starts"
-msgstr "La pornirea Player CD Gnome"
+#: gnome-cd/preferences.c:881
+msgid "When CD player starts"
+msgstr "La pornirea  redării CD-ului"
 
-#: gnome-cd/preferences.c:849
+#: gnome-cd/preferences.c:889
 msgid "Do _nothing"
 msgstr "Nu face _nimic"
 
-#: gnome-cd/preferences.c:858
+#: gnome-cd/preferences.c:890
+msgid "Do nothing when CD Player starts"
+msgstr "Nu fă nimic la pornirea playerului CD"
+
+#: gnome-cd/preferences.c:900
 msgid "Start _playing CD"
 msgstr "Începe _redarea CD-ului"
 
-#: gnome-cd/preferences.c:867
+#: gnome-cd/preferences.c:901
+msgid "Start playing CD when CD Player starts"
+msgstr "Porneşte redarea CD-ului la pornirea playerului CD"
+
+#: gnome-cd/preferences.c:910
 msgid "_Stop playing CD"
 msgstr "_Opreşte redarea CD-ului"
 
-#: gnome-cd/preferences.c:880
+#: gnome-cd/preferences.c:911
+msgid "Stop playing CD when CD Player starts"
+msgstr "Opreşte redarea CD-ului la pornirea playerului CD"
+
+#: gnome-cd/preferences.c:925
 msgid "Attempt to _close CD tray"
 msgstr "Încearcă să _închizi unitatea"
 
 #. Right side
-#: gnome-cd/preferences.c:892
-msgid "When Gnome CD Player quits"
-msgstr "La oprirea Player CD Gnome"
+#: gnome-cd/preferences.c:937
+msgid "When CD player quits"
+msgstr "La oprirea redării CD-ului"
 
-#: gnome-cd/preferences.c:900
+#: gnome-cd/preferences.c:945
 msgid "Do not_hing"
 msgstr "Nu face ni_mic"
 
-#: gnome-cd/preferences.c:909
+#: gnome-cd/preferences.c:946
+msgid "Do nothing when CD Player exits"
+msgstr "Nu fă nimic la oprirea playerului CD"
+
+#: gnome-cd/preferences.c:955
 msgid "S_top playing CD"
 msgstr "O_preşte redarea CD-ului"
 
-#: gnome-cd/preferences.c:918
+#: gnome-cd/preferences.c:956
+msgid "Stop playing CD when CD player quits"
+msgstr "Opreşte redarea CD-ului la oprirea playerului CD"
+
+#: gnome-cd/preferences.c:966
 msgid "Attempt to _open CD tray"
 msgstr "Înc_earcă să deschizi unitatea"
 
-#: gnome-cd/preferences.c:928
+#: gnome-cd/preferences.c:967
+msgid "Attempt to open CD tray when CD Player exits"
+msgstr "Încearcă să deschizi unitatea la oprirea CD playerului"
+
+#: gnome-cd/preferences.c:977
 msgid "Attempt to c_lose CD tray"
 msgstr "Înce_arcă să închizi unitatea"
 
-#: gnome-cd/preferences.c:959
+#: gnome-cd/preferences.c:1008
 msgid "Theme name"
 msgstr "Nume temă"
 
@@ -1513,7 +1671,8 @@ msgstr "Nume temă"
 msgid "Record sound clips"
 msgstr "Înregistrează eşantioane sonore"
 
-#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gui.c:193
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
+#: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
 msgid "Sound Recorder"
 msgstr "Înregistrează sunet"
 
@@ -1538,15 +1697,15 @@ msgstr ""
 "\n"
 "Dacă nu aveţi sox, nu veţi putea înregistra sau face face nici un efect."
 
-#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1359
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1361
 msgid "Could not fork child process"
 msgstr "Nu am putut bifurca procesul copil"
 
-#: grecord/src/grec.c:173
+#: grecord/src/grec.c:173 grecord/src/gsr-window.c:1342
 msgid "Recording..."
 msgstr "Înregistrez..."
 
-#: grecord/src/grec.c:220
+#: grecord/src/grec.c:220 grecord/src/gsr-window.c:1221
 msgid "Playing..."
 msgstr "Redau..."
 
@@ -1558,15 +1717,15 @@ msgstr "Convertesc fişierul..."
 msgid "Cancel"
 msgstr "Anulare"
 
-#: grecord/src/grec.c:345 grecord/src/grec.c:793
+#: grecord/src/grec.c:345 grecord/src/grec.c:795
 msgid "Audioformat: "
 msgstr "Format audio:"
 
-#: grecord/src/grec.c:349 grecord/src/grec.c:779 grecord/src/gui.c:308
+#: grecord/src/grec.c:349 grecord/src/grec.c:781 grecord/src/gui.c:308
 msgid "Sample rate: "
 msgstr "Rată eşantionare:"
 
-#: grecord/src/grec.c:359 grecord/src/grec.c:783 grecord/src/gui.c:315
+#: grecord/src/grec.c:359 grecord/src/grec.c:785 grecord/src/gui.c:315
 msgid "Channels: "
 msgstr "Canale:"
 
@@ -1583,7 +1742,7 @@ msgstr "Selectaţi un fişier sunet"
 msgid "%s is not installed in the path"
 msgstr "%s nu este instalat în cale"
 
-#: grecord/src/grec.c:523
+#: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
 #, c-format
 msgid "There was an error starting %s: %s"
 msgstr "A intervenit o eroare la pornirea %s: %s"
@@ -1615,7 +1774,7 @@ msgstr ""
 msgid "File '%s isn't a valid sound file."
 msgstr "Fişierul '%s' nu este un fişier de sunet valid."
 
-#: grecord/src/grec.c:817
+#: grecord/src/grec.c:819
 #, c-format
 msgid ""
 "'%s' is a folder.\n"
@@ -1624,7 +1783,7 @@ msgstr ""
 "'%s' este un director.\n"
 "Vă rugăm introduceţi alt nume de fişier."
 
-#: grecord/src/grec.c:829
+#: grecord/src/grec.c:831
 #, c-format
 msgid ""
 "<b>File '%s' already exists.</b>\n"
@@ -1633,45 +1792,45 @@ msgstr ""
 "<b>Fişierul '%s' există deja.</b>\n"
 "Doriţi să-l suprascrieţi ?"
 
-#: grecord/src/grec.c:832
+#: grecord/src/grec.c:834
 msgid "Cancel save"
 msgstr "Anulează salvarea"
 
-#: grecord/src/grec.c:833
+#: grecord/src/grec.c:835
 msgid "Overwrite"
 msgstr "Suprascrie"
 
-#: grecord/src/grec.c:860
+#: grecord/src/grec.c:862
 #, c-format
 msgid "Error saving '%s'"
 msgstr "Eroare la salvarea '%s'"
 
-#: grecord/src/grec.c:974
-#, fuzzy, c-format
+#: grecord/src/grec.c:976
+#, c-format
 msgid ""
 "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
 "\n"
 "Your changes will be lost if you don't save them."
 msgstr ""
-"<b>Doriţi să salvaţi schimbările aduse fişierului \"%s\" ?</b>\n"
+"<b>Doriţi să salvaţi schimbările aduse la \"%s\" ?</b>\n"
 "\n"
 "Schimbările vor fi pierdute dacă nu vor fi salvate."
 
-#: grecord/src/grec.c:979
+#: grecord/src/grec.c:981
 msgid "Do_n't save"
 msgstr "_Nu salva"
 
-#: grecord/src/grec.c:986
+#: grecord/src/grec.c:988
 #, c-format
 msgid "Save %s?"
 msgstr "Salvaţi %s ?"
 
 #. Save the file
-#: grecord/src/grec.c:1010
+#: grecord/src/grec.c:1012
 msgid "Saving..."
 msgstr "Salvez..."
 
-#: grecord/src/grec.c:1140
+#: grecord/src/grec.c:1142
 #, c-format
 msgid ""
 "The size of the current sample is more than\n"
@@ -1680,11 +1839,11 @@ msgstr ""
 "Mărimea fişierului curent este mai mare decât\n"
 "%i Mb !"
 
-#: grecord/src/grec.c:1196
+#: grecord/src/grec.c:1198
 msgid "Save sound file"
 msgstr "Salvaţi fişierul sunet"
 
-#: grecord/src/grec.c:1425
+#: grecord/src/grec.c:1429
 msgid ""
 "The sound device is not ready. Please check that there isn't\n"
 "another program running that is using the device."
@@ -1692,15 +1851,159 @@ msgstr ""
 "Dispozitivul de sunet nu este pregătit. Vă rugăm verificaţi că nu\n"
 "există un alt program care rulează şi foloseşte acest dispozitiv."
 
-#: grecord/src/gui.c:45
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "ore"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "oră"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#: grecord/src/gui.c:753
+msgid "minutes"
+msgstr "minute"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "minute"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "secunde"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "secunde"
+
+#: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
+msgid "Open a file"
+msgstr "Deschide un fişier"
+
+#: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
+#: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
+msgid "Ready"
+msgstr "Pregătit"
+
+#: grecord/src/gsr-window.c:541
+#, c-format
+msgid "Saving %s..."
+msgstr "Salvez %s..."
+
+#: grecord/src/gsr-window.c:600
+msgid "Save file as"
+msgstr "Salvaţi fişierul ca"
+
+#: grecord/src/gsr-window.c:654
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "%s nu este instalat în cale."
+
+#: grecord/src/gsr-window.c:736
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (Nu a fost salvat)"
+
+#: grecord/src/gsr-window.c:751
+msgid "Unknown size"
+msgstr "Mărime necunoscută"
+
+#: grecord/src/gsr-window.c:771
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f kHz"
+
+#: grecord/src/gsr-window.c:780
+#, c-format
+msgid "%.0f kb/s"
+msgstr "%.0f kb/s"
+
+#: grecord/src/gsr-window.c:792
+msgid "1 (mono)"
+msgstr "1 (mono)"
+
+#: grecord/src/gsr-window.c:796
+msgid "2 (stereo)"
+msgstr "2 (stereo)"
+
+#: grecord/src/gsr-window.c:825
+#, c-format
+msgid "%s Information"
+msgstr "Informaţii %s"
+
+#: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
+msgid "File Information"
+msgstr "Informaţii fişier"
+
+#: grecord/src/gsr-window.c:859
+msgid "Folder:"
+msgstr "Dosar:"
+
+#: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
+msgid "Filename:"
+msgstr "Nume fişier:"
+
+#: grecord/src/gsr-window.c:871
+msgid "File size:"
+msgstr "Mărime fişier:"
+
+#: grecord/src/gsr-window.c:880
+msgid "Audio Information"
+msgstr "Informaţie audio"
+
+#: grecord/src/gsr-window.c:894
+msgid "Song length:"
+msgstr "Lungime melodie:"
+
+#: grecord/src/gsr-window.c:900
+msgid "Number of channels:"
+msgstr "Număr de canale:"
+
+#: grecord/src/gsr-window.c:906
+msgid "Sample rate:"
+msgstr "Rata eşantionare:"
+
+#: grecord/src/gsr-window.c:912
+msgid "Bit rate:"
+msgstr "Rata de biţi:"
+
+#: grecord/src/gsr-window.c:982
+msgid "A sound recorder for GNOME"
+msgstr "O aplicaţie GNOME pentru înregistrat sunete"
+
+#: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
+#, c-format
+msgid "%s - Sound Recorder"
+msgstr "%s - Înregistreaza sunet"
+
+#: grecord/src/gsr-window.c:1548
+msgid "File information"
+msgstr "Informaţii fişier"
+
+#: grecord/src/gsr-window.c:1569
+msgid "<none>"
+msgstr "<nici unul>"
+
+#: grecord/src/gsr-window.c:1578
+msgid "Length:"
+msgstr "Lungime:"
+
+#: grecord/src/gui.c:45 grecord/gsr.xml.h:38
 msgid "_New"
 msgstr "_Nou"
 
-#: grecord/src/gui.c:46
+#: grecord/src/gui.c:46 grecord/gsr.xml.h:5
 msgid "Create a new sample"
 msgstr "Crează un nou eşantion"
 
-#: grecord/src/gui.c:54
+#: grecord/src/gui.c:54 grecord/gsr.xml.h:21
 msgid "Run _Mixer"
 msgstr "Rulează _mixer"
 
@@ -1732,11 +2035,6 @@ msgstr "Anulează toate modificările făcute fişierului curent"
 msgid "Effects"
 msgstr "Efecte"
 
-#: grecord/src/gui.c:155
-#, c-format
-msgid "%s - Sound Recorder"
-msgstr "%s - Înregistreaza sunet"
-
 #: grecord/src/gui.c:197
 msgid "16bit PCM"
 msgstr "16bit PCM"
@@ -1753,7 +2051,7 @@ msgstr "stereo"
 msgid "mono"
 msgstr "mono"
 
-#: grecord/src/gui.c:217
+#: grecord/src/gui.c:217 grecord/gsr.xml.h:10
 msgid "New"
 msgstr "Nou"
 
@@ -1769,7 +2067,7 @@ msgstr "Redă eşantionul curent"
 msgid "Stop playing/recording"
 msgstr "Opreşte redarea/înregistrarea"
 
-#: grecord/src/gui.c:261
+#: grecord/src/gui.c:261 grecord/gsr.xml.h:18
 msgid "Record"
 msgstr "Înregistrare"
 
@@ -1791,27 +2089,15 @@ msgstr "Fişierul '%s' nu există; folosesc implicit."
 msgid "File '%s' isn't a supported soundfile."
 msgstr "Fişierul '%s' nu este un fişier de sunet suportat."
 
-#. if your charset allows it, replace the "e" of "Hyden"
-#. *  by an "eacute" (U00E9)
-#: grecord/src/gui.c:420
-msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
-msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
-
-#: grecord/src/gui.c:427
+#: grecord/src/gui.c:425
 msgid "translator_credits"
 msgstr "Mugurel Tudor <mugurelu@go.ro>"
 
+#: grecord/src/gui.c:429
+msgid "GNOME Sound Recorder"
+msgstr "Înregistrare sunete GNOME"
+
 #: grecord/src/gui.c:431
-msgid "Gnome Sound Recorder"
-msgstr "Înregistrare Sunet Gnome"
-
-#. if your charset allows it, replace the
-#. "e" of Hyden by an "eacute" (U00E9)
-#: grecord/src/gui.c:434
-msgid "Copyright (C)  2000 Andreas Hyden"
-msgstr "Copyright (C)  2000 Andreas Hyden"
-
-#: grecord/src/gui.c:435
 msgid ""
 "A simple soundrecorder and soundplayer for GNOME.\n"
 "Dedicated to my cat, Malte."
@@ -1819,71 +2105,63 @@ msgstr ""
 "Un simplu program de înregistrare şi redare sunete pentru GNOME.\n"
 "Dedicat pisicii mele, Malte."
 
-#: grecord/src/gui.c:701
+#: grecord/src/gui.c:700
 msgid "Gnome Sound Recorder Preferences"
 msgstr "Preferinţe Înregistrare Sunet Gnome"
 
-#: grecord/src/gui.c:708
+#: grecord/src/gui.c:707
 msgid "Sound Recorder Preferences"
 msgstr "Preferinţe înregistrare sunet"
 
-#: grecord/src/gui.c:720
+#: grecord/src/gui.c:719
 msgid "Recording"
 msgstr "Înregistrare"
 
-#: grecord/src/gui.c:725
+#: grecord/src/gui.c:724
 msgid "Time"
 msgstr "Timp"
 
-#: grecord/src/gui.c:738
+#: grecord/src/gui.c:737
 msgid "_Recording timeout: "
 msgstr "_Limită înregistrare:"
 
-#: grecord/src/gui.c:754
-msgid "minutes"
-msgstr "minute"
-
-#: grecord/src/gui.c:761
+#: grecord/src/gui.c:760
 msgid "_Stop recording on timeout"
 msgstr "_Opreşte înregistrarea la depăşirea limitei"
 
-#: grecord/src/gui.c:769
+#: grecord/src/gui.c:768
 msgid "_Open save dialog when recording is finished"
 msgstr "_Deschide dialogul de salvare la oprirea înregistrării"
 
-#: grecord/src/gui.c:776
+#: grecord/src/gui.c:775
 msgid "Size"
 msgstr "Mărime"
 
-#: grecord/src/gui.c:785
+#: grecord/src/gui.c:784
 msgid "Show warning _message if size (MB) of sample becomes bigger than:"
 msgstr "Arată mesaj de a_vertizare dacă mărimea (MB) eşantionului depăşeşte:"
 
-#: grecord/src/gui.c:803
+#: grecord/src/gui.c:802
 msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
 msgstr "O_preşte înregistrarea dacă mărimea (MB) eşantionului depăşeşte: "
 
-#: grecord/src/gui.c:825
-msgid "Playing"
-msgstr "Redare"
-
-#: grecord/src/gui.c:830
+#: grecord/src/gui.c:829
 msgid "Repetition"
 msgstr "Repetare"
 
-#: grecord/src/gui.c:840
+#: grecord/src/gui.c:839
 msgid "_Repeat the sound"
 msgstr "_Repetă sunetul"
 
-#: grecord/src/gui.c:847
+#: grecord/src/gui.c:846
 msgid "Play the sound _once only."
 msgstr "Redă sunetul doar _odată."
 
-#: grecord/src/gui.c:853
+#: grecord/src/gui.c:852
 msgid "Repeat _forever"
 msgstr "Repetă _la infinit"
 
-#: grecord/src/gui.c:864
+#: grecord/src/gui.c:863
 msgid "_Number of times:"
 msgstr "_Număr de ori:"
 
@@ -1988,30 +2266,243 @@ msgstr "Specifică un fişier pentru începerea redării"
 msgid "Sound recorder"
 msgstr "Înregistrare sunet"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 8bit PCM"
 msgstr "Format audio: PCM 8bit"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 16bit PCM"
 msgstr "Format audio: PCM 16bit"
 
-#: grecord/src/preferences.c:213
+#: grecord/src/preferences.c:222
 #, c-format
 msgid "Sample rate: %s"
 msgstr "Rată eşantionare: %s"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: mono"
 msgstr "Canale: mono"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: stereo"
 msgstr "Canale: stereo"
 
-#: grecord/src/sound.c:136
+#: grecord/src/sound.c:137
 msgid "Adding echo to sample..."
 msgstr "Adaug ecou la eşantion..."
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "Despre"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "Închide"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "Închide această fereastră"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "Conţinut"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr "Afişează ajutorul pentru Înregistrare sunete"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr "_Informaţii fişier"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "Bara de unelte principală"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "Deschide"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "Rulează sunet"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "Închide"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "Închide aplicaţia"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "_Fişiere recente"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "Înregistrează sunet"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "Rulează mixer"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "Rulează mixerul audio"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "Salvează"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "Salvează ca"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "Salvează _ca..."
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "Salvează fişierul curent"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "Salvează fişierul curent sub un alt nume"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "Arată informaţii despre fişierul curent"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "Arată informaţii pentru Înregistrare sunet"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "Opreşte sunet"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "_Despre"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "Î_nchide fereastra"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "_Conţinut"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "_Control"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "_Fişier"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "_Deschide..."
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "_Redă"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "Î_nchide"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "În_registrare"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "_Salvează"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:263
+msgid "Failure instantiating main window"
+msgstr "Eroare la instanţierea fereastrei principale"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:303
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr "Nu am putut încărca resursa UI %s"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr "Configurează setările implicite pentru aplicaţiile GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "GStreamer"
+msgstr "GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">Testez...</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "Audio"
+msgstr "Audio"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "Audio _Input:"
+msgstr "_Intrare audio:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio _Output:"
+msgstr "Ieşire _audio:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish"
+msgstr "Apăsaţi OK pentru terminare"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "Default Sink"
+msgstr "Destinaţie implicită"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Default Source"
+msgstr "Sursa implicită"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "GStreamer Properties"
+msgstr "Proprietăţi GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Pipeline:"
+msgstr "Conexiune:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Test..."
+msgstr "Testare..."
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "Testing Pipeline"
+msgstr "Testez conexiune"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "Video _Input:"
+msgstr "_Intrare video:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "Video _Output:"
+msgstr "Ieşire _video:"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:111
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr "Nu am putut construi conexiunea de test pentru '%s'"
 
 #: vu-meter/main.c:120
 msgid ""
@@ -2081,3 +2572,35 @@ msgstr "Monitorizează volumul de ieşire pentru sunet"
 #: vu-meter/vumeter.desktop.in.h:2
 msgid "Volume monitor"
 msgstr "Monitor volum"
+
+#~ msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
+#~ msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
+
+
+#~ msgid "(C) 2000 Andreas Hyden"
+#~ msgstr "(C)  2000 Andreas Hyden"
+
+#~ msgid "Gnome Volume Control"
+#~ msgstr "Controlul de Volum Gnome"
+
+#~ msgid "Copyright (C) 2001, 2002"
+#~ msgstr "Copyright (C) 2001, 2002"
+
+#~ msgid "A GNOME cd player"
+#~ msgstr "Un cd player GNOME"
+
+#~ msgid "_About Gnome-CD"
+#~ msgstr "_Despre Gnome-CD"
+
+#~ msgid "don't restore mixer-settings from configuration"
+#~ msgstr "nu restaura setările mixerului din configuraţie"
+
+#~ msgid "restore mixer-settings from configuration"
+#~ msgstr "restaurează setările mixerului din configuraţie"
+
+#~ msgid "initialise the mixer(s) from stored configuration and exit"
+#~ msgstr "iniţializează mixerul(e) din configuraţia salvată şi ieşi"
+
+#~ msgid "don't save (modified) mixer-settings into configuration"
+#~ msgstr "nu salva noile setări ale mixerului către configuraţie"
+

@@ -8,6 +8,128 @@
       <type>string</type>
       <default>freedb.freedb.org</default>
       <locale name="C">
+	<short>Server name</short>
+	<long>Address of the server to contact for CD queries</long>
+      </locale>
+
+      <locale name="am">
+	<short>á¨á°á­á¨á­ áµá</short>
+	
+      </locale>
+
+      <locale name="bg">
+	<short>ÐÐ¼Ðµ Ð½Ð° ÑÑÑÐ²ÑÑ</short>
+	<long>ÐÐ´ÑÐµÑ Ð½Ð° ÑÑÑÐ²ÑÑ ÐºÑÐ¼ ÐºÐ¾Ð¹ÑÐ¾ ÑÐµ ÑÐµ Ð¿ÑÐ°Ð²ÑÑ Ð´Ð¾Ð¿Ð¸ÑÐ²Ð°Ð½Ð¸Ñ Ð¾ÑÐ½Ð¾ÑÐ½Ð¾ CD</long>
+      </locale>
+
+      <locale name="ca">
+	<short>Nom del servidor</short>
+	<long>AdreÃ§a del servidor a contactar per a consultes de CD</long>
+      </locale>
+
+      <locale name="cs">
+	<short>JmÃ©no serveru</short>
+	<long>Adresa serveru, kterÃ½ kontaktovat pro dotazy o CD</long>
+      </locale>
+
+      <locale name="da">
+	<short>Servernavn</short>
+	<long>Adresse pÃ¥ serveren der skal kontaktes ved cd-forespÃ¸rgsler</long>
+      </locale>
+
+      <locale name="de">
+	<short>Server-Name</short>
+	<long>Bei CD-Abfragen zu verwendende Server-Adresse</long>
+      </locale>
+
+      <locale name="el">
+	<short>ÎÎ½Î¿Î¼Î± ÎÎ¾ÏÏÎ·ÏÎµÏÎ·ÏÎ®</short>
+	<long>ÎÎ¹ÎµÏÎ¸ÏÎ½ÏÎ· ÎµÎ¾ÏÏÎ·ÏÎµÏÎ·ÏÎ® ÎµÏÎ¹ÎºÎ¿Î¹Î½ÏÎ½Î¯Î±Ï Î³Î¹Î± Î±Î½Î±Î¶Î·ÏÎ®ÏÎµÎ¹Ï CD </long>
+      </locale>
+
+      <locale name="es">
+	<short>Nombre del servidor</short>
+	<long>DirecciÃ³n del servidor que se contactarÃ¡ para consultas de CD</long>
+      </locale>
+
+      <locale name="fr">
+	<short>Nom du serveur</short>
+	<long>Adresse du serveur Ã  contacter pour les requÃªtes CD</long>
+      </locale>
+
+      <locale name="he">
+	<short>×©× ××©×¨×ª</short>
+	<long>××ª×××ª ××©×¨×ª ×××ª×××¨××ª ××©××××ª××ª ×ª×§×××××¨××</long>
+      </locale>
+
+      <locale name="hu">
+	<short>KiszolgÃ¡lÃ³ neve</short>
+	<long>A CD-lekÃ©rdezÃ©sekhez hasznÃ¡lt kiszolgÃ¡lÃ³ neve</long>
+      </locale>
+
+      <locale name="it">
+	<short>Nome del server</short>
+	<long>Indirizzo del server da contattare per interrogazioni di CD</long>
+      </locale>
+
+      <locale name="lv">
+	<short>Servera nosukums</short>
+	<long>Servera adrese, ar kuru kontaktÄties CD pieprasÄ«jumiem</long>
+      </locale>
+
+      <locale name="mn">
+	<short>Ð¡ÐµÑÐ²ÐµÑÐ¸Ð¹Ð½ Ð½ÑÑ</short>
+	<long>CD query-ÑÒ¯Ò¯ ÑÐ°Ð½Ð´Ð°Ñ ÑÐµÑÐ²ÐµÑÐ¸Ð¹Ð½ ÑÐ°ÑÐ³</long>
+      </locale>
+
+      <locale name="ms">
+	<short>Nama pelayan</short>
+	<long>Alamat bagi pelayan untuk dihubungi bagi kueri CD</long>
+      </locale>
+
+      <locale name="nl">
+	<short>Servernaam</short>
+	<long>Adres van de voor CD-aanvragen te benaderen server</long>
+      </locale>
+
+      <locale name="no">
+	<short>Tjenernavn</short>
+	<long>Adresse til tjeneren som skal kontaktes for CD-spÃ¸rringer</long>
+      </locale>
+
+      <locale name="pt_BR">
+	<short>Nome do Servidor</short>
+	<long>EndereÃ§o do servidor a ser contatado em requisiÃ§Ãµes de CD</long>
+      </locale>
+
+      <locale name="ro">
+	<short>Nume server</short>
+	<long>Adresa serverului contactat pentru informaÅ£ii referitoare la CD</long>
+      </locale>
+
+      <locale name="sk">
+	<short>Meno serveru</short>
+	<long>Adresa serveru pre dotazy na CD</long>
+      </locale>
+
+      <locale name="sl">
+	<short>Ime streÅ¾nika</short>
+	<long>Naslov streÅ¾nika z podatki o CDjih</long>
+      </locale>
+
+      <locale name="sv">
+	<short>Servernamn</short>
+	<long>Adress till servern som ska kontaktas fÃ¶r cd-frÃ¥gor</long>
+      </locale>
+
+      <locale name="vi">
+	<short>TÃªn Server</short>
+	<long>Äá»a chá» serve cáº§n liÃªn láº¡c Äá» truy váº¥n CD</long>
+      </locale>
+
+      <locale name="zh_TW">
+	<short>ä¼ºæå¨åç¨±</short>
+	<long>é£ä¸æå®çä¼ºæå¨å°åä¾é²è¡ CD è³è¨æ¥è©¢</long>
       </locale>
     </schema>
     <schema>
@@ -17,6 +139,223 @@
       <type>int</type>
       <default>888</default>
       <locale name="C">
+	<short>Port</short>
+	<long>The port that the server is running the database on</long>
+      </locale>
+
+      <locale name="am">
+	<short>áá­áµ</short>
+	
+      </locale>
+
+      <locale name="ar">
+	<short>Ø§ÙÙÙÙØ°</short>
+	
+      </locale>
+
+      <locale name="az">
+	<short>QapÄ±</short>
+	
+      </locale>
+
+      <locale name="be">
+	<short>ÐÐ¾ÑÑ</short>
+	
+      </locale>
+
+      <locale name="bg">
+	<short>ÐÐ¾ÑÑ</short>
+	<long>ÐÐ¾ÑÑ, Ð½Ð° ÐºÐ¾Ð¹ÑÐ¾ Ðµ Ð´Ð¾ÑÑÑÐ¿Ð½Ð° Ð±Ð°Ð·Ð°ÑÐ° Ð´Ð°Ð½Ð½Ð¸</long>
+      </locale>
+
+      <locale name="ca">
+	<short>Port</short>
+	<long>El port en el que el servidor estÃ  executant la base de dades</long>
+      </locale>
+
+      <locale name="cs">
+	<short>Port</short>
+	<long>Port, na kterÃ©m bÄÅ¾Ã­ server databÃ¡ze</long>
+      </locale>
+
+      <locale name="da">
+	<short>Port</short>
+	<long>Den port som serveren kÃ¸rer database ved</long>
+      </locale>
+
+      <locale name="de">
+	<short>Port</short>
+	<long>Der Port, auf dem die Datenbank auf dem Server lÃ¤uft</long>
+      </locale>
+
+      <locale name="el">
+	<short>ÎÏÏÎ±</short>
+	<long>Î Î¸ÏÏÎ± ÏÏÎ·Î½ Î¿ÏÎ¿Î¯Î± Î¿ ÎµÎ¾ÏÏÎ·ÏÎµÏÎ·ÏÎ®Ï ÏÏÎ­ÏÎµÎ¹ ÏÎ·Î½ Î²Î¬ÏÎ· Î´ÎµÎ´Î¿Î¼Î­Î½ÏÎ½</long>
+      </locale>
+
+      <locale name="es">
+	<short>Puerto</short>
+	<long>El puerto en el que el servidor ejecuta la base de datos.</long>
+      </locale>
+
+      <locale name="et">
+	<short>Port</short>
+	
+      </locale>
+
+      <locale name="eu">
+	<short>Ataka</short>
+	
+      </locale>
+
+      <locale name="fi">
+	<short>Portti</short>
+	
+      </locale>
+
+      <locale name="fr">
+	<short>Port</short>
+	<long>Le port du serveur sur lequel fonctionne la base de donnÃ©es</long>
+      </locale>
+
+      <locale name="gl">
+	<short>Porto</short>
+	
+      </locale>
+
+      <locale name="he">
+	<short>×¤×ª××</short>
+	<long>××¤×ª×× ×©×¢××× ××©×¨×ª ××¨××¥ ××ª ××¡× ×× ×ª×× ××</long>
+      </locale>
+
+      <locale name="hi">
+	<short>à¤ªà¥à¤°à¥à¤</short>
+	
+      </locale>
+
+      <locale name="hu">
+	<short>Port</short>
+	<long>A port, amelyen a kiszolgÃ¡lÃ³ adatbÃ¡zisa elÃ©rhetÅ</long>
+      </locale>
+
+      <locale name="it">
+	<short>Porta</short>
+	<long>La porta su cui il server sta eseguendo il database</long>
+      </locale>
+
+      <locale name="ja">
+	<short>ãã¼ã</short>
+	
+      </locale>
+
+      <locale name="ko">
+	<short>í¬í¸</short>
+	
+      </locale>
+
+      <locale name="lt">
+	<short>Portas</short>
+	
+      </locale>
+
+      <locale name="lv">
+	<short>Ports</short>
+	<long>Ports, uz kura serveris darbina datu bÄzi</long>
+      </locale>
+
+      <locale name="mn">
+	<short>ÐÐ¾ÑÑ</short>
+	<long>Ð¡ÐµÑÐ²ÐµÑÐ¸Ð¹Ð½ Ó©Ð³Ó©Ð³Ð´Ð»Ð¸Ð¹Ð½ Ð±Ð°Ð°Ð·ÑÐ°Ð¹ Ð°Ð¶Ð¸Ð»Ð»Ð°Ñ Ð¿Ð¾ÑÑÑÐ³ Ð´ÑÐ³Ð°Ð°Ñ</long>
+      </locale>
+
+      <locale name="ms">
+	<short>Liang</short>
+	<long>Liang pada pelayan yang dilaksana oleh pangkalan data</long>
+      </locale>
+
+      <locale name="nl">
+	<short>Poort</short>
+	<long>De serverpoort waarop de database actief is</long>
+      </locale>
+
+      <locale name="nn">
+	<short>Port</short>
+	
+      </locale>
+
+      <locale name="no">
+	<short>Port</short>
+	<long>Port som tjeneren kjÃ¸rer databasen pÃ¥</long>
+      </locale>
+
+      <locale name="pl">
+	<short>Port</short>
+	
+      </locale>
+
+      <locale name="pt">
+	<short>Porto</short>
+	
+      </locale>
+
+      <locale name="pt_BR">
+	<short>Porta</short>
+	<long>A porta em que o servidor estÃ¡ rodando o banco de dados</long>
+      </locale>
+
+      <locale name="ro">
+	<short>Port</short>
+	<long>Portul pe care serverul ruleazÄ baza de date</long>
+      </locale>
+
+      <locale name="ru">
+	<short>ÐÐ¾ÑÑ</short>
+	
+      </locale>
+
+      <locale name="sk">
+	<short>Port</short>
+	<long>Port serveru, na ktorom beÅ¾Ã­ databÃ¡za</long>
+      </locale>
+
+      <locale name="sl">
+	<short>Vrata</short>
+	<long>Vrata na katerih teÄe streÅ¾nik podatkovne zbirke</long>
+      </locale>
+
+      <locale name="sv">
+	<short>Port</short>
+	<long>Porten som servern kÃ¶r databasen pÃ¥</long>
+      </locale>
+
+      <locale name="tr">
+	<short>Port</short>
+	
+      </locale>
+
+      <locale name="uk">
+	<short>ÐÐ¾ÑÑ</short>
+	
+      </locale>
+
+      <locale name="vi">
+	<short>Cá»ng</short>
+	<long>Sá» hiá»u cá»ng mÃ  server Äang cháº¡y</long>
+      </locale>
+
+      <locale name="wa">
+	<short>PÃ´rt</short>
+	
+      </locale>
+
+      <locale name="zh_CN">
+	<short>ç«¯å£</short>
+	
+      </locale>
+
+      <locale name="zh_TW">
+	<short>é£æ¥å </short>
+	<long>ä¼ºæå¨çè³æåº«æä½¿ç¨çé£æ¥å </long>
       </locale>
     </schema>
     <schema>
@@ -42,7 +381,130 @@
       <owner>CDDB-Slave2</owner>
       <type>string</type>
       <default></default>
-      <locale name="C"></locale>
+      <locale name="C">
+	<short>The username</short>
+	<long>The username that will be sent with all queries</long>
+      </locale>
+
+      <locale name="am">
+	<short>á¨á°á ááá áµá</short>
+	
+      </locale>
+
+      <locale name="bg">
+	<short>ÐÐ¾ÑÑÐµÐ±Ð¸ÑÐµÐ»ÑÐºÐ¾ Ð¸Ð¼Ðµ</short>
+	<long>ÐÐ¼Ðµ Ð½Ð° Ð¿Ð¾ÑÑÐµÐ±Ð¸ÑÐµÐ», ÐºÐ¾ÐµÑÐ¾ ÑÐµ Ð¸Ð·Ð¿ÑÐ°ÑÐ° Ñ Ð²ÑÐ¸ÑÐºÐ¸ Ð´Ð¾Ð¿Ð¸ÑÐ²Ð°Ð½Ð¸Ñ</long>
+      </locale>
+
+      <locale name="ca">
+	<short>El nom d&apos;usuari</short>
+	<long>El nom d&apos;usuari que s&apos;enviarÃ  amb totes les consultes</long>
+      </locale>
+
+      <locale name="cs">
+	<short>JmÃ©no uÅ¾ivatele</short>
+	<long>JmÃ©no uÅ¾ivatele, kterÃ© se bude posÃ­lat se vÅ¡emi dotazy</long>
+      </locale>
+
+      <locale name="da">
+	<short>Brugernavnet</short>
+	<long>Det brugernavn som sendes med alle forespÃ¸rgsler</long>
+      </locale>
+
+      <locale name="de">
+	<short>Der Benutzername</short>
+	<long>Der zusammen mit allen Abfragen Ã¼bermittelte Benutzername</long>
+      </locale>
+
+      <locale name="el">
+	<short>Î¤Î¿ ÏÎ½Î¿Î¼Î± ÏÏÎ®ÏÏÎ·</short>
+	<long>Î¤Î¿ ÏÎ½Î¿Î¼Î± ÏÏÎ®ÏÏÎ· ÏÎ¿Ï Î¸Î± ÏÏÎ­Î»Î½ÎµÏÎ±Î¹ ÏÎµ ÏÎ»ÎµÏ ÏÎ¹Ï Î±Î½Î±Î¶Î·ÏÎ®ÏÎµÎ¹Ï</long>
+      </locale>
+
+      <locale name="es">
+	<short>El nombre de usuario</short>
+	<long>El nombre de usuario que se enviarÃ¡ con todas las consultas</long>
+      </locale>
+
+      <locale name="fr">
+	<short>Le nom d&apos;utilisateur</short>
+	<long>Le nom d&apos;utilisateur qui sera envoyÃ© avec toutes les requÃªtes</long>
+      </locale>
+
+      <locale name="he">
+	<short>×©× ×××©×ª××©</short>
+	<long>×©× ×××©×ª××© ×©××©×× ×¢× ×× ××©××××ª××ª</long>
+      </locale>
+
+      <locale name="hu">
+	<short>FelhasznÃ¡lÃ³ neve</short>
+	<long>A felhasznÃ¡lÃ³i nÃ©v, amely minden lekÃ©rdezÃ©skor el lesz kÃ¼ldve</long>
+      </locale>
+
+      <locale name="it">
+	<short>Username</short>
+	<long>Nome dell&apos;utente che sarÃ  comunicato in tutte le interrogazioni</long>
+      </locale>
+
+      <locale name="lv">
+	<short>LietotÄjvÄrds</short>
+	<long>LietotÄjvÄrds, kas tiks sÅ«tÄ«ts visos pieprasÄ«jumos</long>
+      </locale>
+
+      <locale name="mn">
+	<short>Ð¥ÑÑÑÐ³Ð»ÑÐ³ÑÐ¸Ð¹Ð½ Ð½ÑÑ</short>
+	<long>ÐÒ¯Ñ ÑÒ¯ÑÑÐ»ÑÑÑÐ¹ Ð¸Ð»Ð³ÑÑÑ ÑÑÑÑÐ³Ð»ÑÐ³ÑÐ¸Ð¹Ð½ Ð½ÑÑ</long>
+      </locale>
+
+      <locale name="ms">
+	<short>Nama pengguna</short>
+	<long>Nama pengguna yang akan dihantar dengan semua kueri</long>
+      </locale>
+
+      <locale name="nl">
+	<short>De gebruikersnaam</short>
+	<long>De gebruikersnaam die met alle aanvragen wordt meegestuurd</long>
+      </locale>
+
+      <locale name="no">
+	<short>Brukernavn</short>
+	<long>Brukernavn som sendes med alle spÃ¸rringer</long>
+      </locale>
+
+      <locale name="pt_BR">
+	<short>O nome do usuÃ¡rio</short>
+	<long>O nome do usuÃ¡rio que serÃ¡ enviado com todas as requisiÃ§Ãµes</long>
+      </locale>
+
+      <locale name="ro">
+	<short>Nume utilizator</short>
+	<long>Numele utilizatorului care va fi trimis Ã®mpreunÄ cu interogÄrile</long>
+      </locale>
+
+      <locale name="sk">
+	<short>PouÅ¾Ã­vateÄ¾</short>
+	<long>PouÅ¾Ã­vateÄ¾, ktorÃ½ sa bude pre dotazy pouÅ¾Ã­vaÅ¥</long>
+      </locale>
+
+      <locale name="sl">
+	<short>UporabniÅ¡ko ime</short>
+	<long>UporabniÅ¡ko ime, ki bo poslano skupaj z vsemi poizvedbami</long>
+      </locale>
+
+      <locale name="sv">
+	<short>AnvÃ¤ndarnamnet</short>
+	<long>AnvÃ¤ndarnamnet som kommer att skickas med alla frÃ¥gor</long>
+      </locale>
+
+      <locale name="vi">
+	<short>TÃªn ngÆ°á»i dÃ¹ng</short>
+	<long>TÃªn ngÆ°á»i dÃ¹ng sáº½ ÄÆ°á»£c gá»­i cÃ¹ng vá»i truy váº¥n</long>
+      </locale>
+
+      <locale name="zh_TW">
+	<short>ç¨æ¶åç¨±</short>
+	<long>é²è¡æ¥è©¢æä½¿ç¨çç¨æ¶åç¨±</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/apps/CDDB-Slave2/hostname</key>
@@ -50,7 +512,125 @@
       <owner>CDDB-Slave2</owner>
       <type>string</type>
       <default></default>
-      <locale name="C"></locale>
+      <locale name="C">
+	<short>Your hostname</short>
+	<long>The hostname that will be sent with all queries</long>
+      </locale>
+
+      <locale name="bg">
+	<short>ÐÐ¼Ðµ Ð½Ð° ÑÐ¾ÑÑÐ°:</short>
+	<long>ÐÐ¼Ðµ Ð½Ð° ÑÐ¾ÑÑ, ÐºÐ¾ÐµÑÐ¾ ÑÐµ Ð¸Ð·Ð¿ÑÐ°ÑÐ° Ñ Ð²ÑÐ¸ÑÐºÐ¸ Ð´Ð¾Ð¿Ð¸ÑÐ²Ð°Ð½Ð¸Ñ</long>
+      </locale>
+
+      <locale name="ca">
+	<short>Nom del vostre ordinador central:</short>
+	<long>El nom de la mÃ quina que s&apos;enviarÃ  amb totes les consultes</long>
+      </locale>
+
+      <locale name="cs">
+	<short>NÃ¡zev vaÅ¡eho poÄÃ­taÄe</short>
+	<long>JmÃ©no poÄÃ­taÄe, kterÃ© se bude posÃ­lat se vÅ¡emi dotazy</long>
+      </locale>
+
+      <locale name="da">
+	<short>Dit vÃ¦rtsnavn</short>
+	<long>VÃ¦rtsnavnet der bliver sendt med alle forespÃ¸rgsler</long>
+      </locale>
+
+      <locale name="de">
+	<short>Ihr Rechnername</short>
+	<long>Der zusammen mit allen Abfragen Ã¼bermittelte Rechnername</long>
+      </locale>
+
+      <locale name="el">
+	<short>Î¤Î¿ ÏÎ½Î¿Î¼Î± ÏÏÏÏÎ®Î¼Î±ÏÎ¿Ï ÏÎ±Ï</short>
+	<long>Î¤Î¿ ÏÎ½Î¿Î¼Î± ÏÎ¿Ï ÏÏÏÏÎ®Î¼Î±ÏÎ¿Ï ÏÏÎ¿Ï Î¸Î± ÏÏÎ­Î»Î½Î¿Î½ÏÎ±Î¹ ÏÎ»ÎµÏ Î¿Î¹ Î±Î½Î±Î¶Î·ÏÎ®ÏÎµÎ¹Ï</long>
+      </locale>
+
+      <locale name="es">
+	<short>Su nombre de host</short>
+	<long>El nombre de host que se mandarÃ¡ con todas las consultas</long>
+      </locale>
+
+      <locale name="fr">
+	<short>Votre nom d&apos;hÃ´te</short>
+	<long>Le nom d&apos;hÃ´te qui sera envoyÃ© avec toutes les requÃªtes</long>
+      </locale>
+
+      <locale name="he">
+	<short>×©× ××××¨× ×©××</short>
+	<long>×©× ××©×¨×ª ×××× ××©××× ×× ××©××××ª××ª</long>
+      </locale>
+
+      <locale name="hu">
+	<short>GÃ©ped neve</short>
+	<long>A gÃ©pnÃ©v, amelyre a lekÃ©rdezÃ©sek lesznek kÃ¼ldve</long>
+      </locale>
+
+      <locale name="it">
+	<short>Proprio hostname</short>
+	<long>Il nome dell&apos;host che sarÃ  comunicato in tutte le interrogazioni</long>
+      </locale>
+
+      <locale name="lv">
+	<short>JÅ«su hostdatora vÄrds</short>
+	<long>Hostdatora vÄrds, kas tiks sÅ«tÄ«ts visos pieprasÄ«jumos</long>
+      </locale>
+
+      <locale name="mn">
+	<short>Ð¢Ð°Ð½Ñ ÑÐ¾ÑÑÑÐ½ Ð½ÑÑ</short>
+	<long>ÐÒ¯Ñ ÑÒ¯ÑÑÐ»ÑÑÑÐ¹ Ð¸Ð»Ð³ÑÑÑ ÑÐ¾ÑÑÑÐ½ Ð½ÑÑ</long>
+      </locale>
+
+      <locale name="ms">
+	<short>Namahos anda</short>
+	<long>Namahos yang akan dihantar dengan semua kueri</long>
+      </locale>
+
+      <locale name="nl">
+	<short>Uw hostnaam</short>
+	<long>De hostnaam die met alle aanvragen wordt meegestuurd</long>
+      </locale>
+
+      <locale name="no">
+	<short>Ditt vertsnavn</short>
+	<long>Vertsnavnet som sendes med alle spÃ¸rringer</long>
+      </locale>
+
+      <locale name="pt_BR">
+	<short>Nome da sua mÃ¡quina</short>
+	<long>O nome do host que serÃ¡ enviado com todas as requisiÃ§Ãµes</long>
+      </locale>
+
+      <locale name="ro">
+	<short>Numele gazdei dumneavoastrÄ</short>
+	<long>Numele gazdei care va fi trimis Ã®mpreunÄ cu toate cererile</long>
+      </locale>
+
+      <locale name="sk">
+	<short>VÃ¡Å¡ hostiteÄ¾</short>
+	<long>HostiteÄ¾, ktorÃ©mu budÃº poslanÃ© vÅ¡etky dotazy</long>
+      </locale>
+
+      <locale name="sl">
+	<short>Ime vaÅ¡ega raÄunalnika</short>
+	<long>Ime gostitelja, ki bo poslano skupaj z vsemi poizvedbami</long>
+      </locale>
+
+      <locale name="sv">
+	<short>Ditt vÃ¤rdnamn</short>
+	<long>VÃ¤rdnamnet som kommer att skickas med alla frÃ¥gor</long>
+      </locale>
+
+      <locale name="vi">
+	<short>TÃªn mÃ¡y chá»§</short>
+	<long>TÃªn mÃ¡y sáº½ ÄÆ°á»£c gá»­i cÃ¹ng vá»i truy váº¥n</long>
+      </locale>
+
+      <locale name="zh_TW">
+	<short>é£ä¸çä¸»æ©åç¨±</short>
+	<long>é²è¡æ¥è©¢æä½¿ç¨çä¸»æ©åç¨±</long>
+      </locale>
     </schema>
   </schemalist>
 </gconfschemafile>

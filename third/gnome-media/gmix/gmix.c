@@ -138,17 +138,13 @@ static GnomeUIInfo main_menu[] = {
 GList *devices;
 GHashTable *device_by_name = NULL;
 
-int mode=0, mode_norestore=0, mode_initonly=0, mode_nosave=0, num_mixers, mode_restore=0;
-#define M_NORESTORE	1
-#define M_INITONLY 	2
-#define M_NOSAVE	4
+static int num_mixers;
+static char *mixer_device = NULL;
 
 static const struct poptOption options[] = {
-	{"norestore", 'r', POPT_ARG_NONE, &mode_norestore, 0, N_("don't restore mixer-settings from configuration"), NULL},
-	{"restore", 'R', POPT_ARG_NONE, &mode_restore, 0, N_("restore mixer-settings from configuration"), NULL},
-	{"initonly", 'i', POPT_ARG_NONE, &mode_initonly, 0, N_("initialise the mixer(s) from stored configuration and exit"), NULL},
-	{"nosave", 's', POPT_ARG_NONE, &mode_nosave, 0, N_("don't save (modified) mixer-settings into configuration"), NULL},
-	{NULL, '\0', 0, NULL, 0}
+  { "device", '\0', POPT_ARG_STRING, &mixer_device,0,
+    N_("Mixer device to use"), NULL },
+  {NULL, '\0', 0, NULL, 0}
 };
 
 /*
@@ -164,18 +160,18 @@ static const struct poptOption options[] = {
 #define GNOME_STOCK_PIXMAP_BLANK NULL
 #endif
 struct pixmap device_pixmap[] = {
-	"Input Gain", GNOME_STOCK_PIXMAP_BLANK,
-	"PC Speaker", GNOME_STOCK_VOLUME,
-	"MIC", GNOME_STOCK_PIXMAP_BLANK,
-	"Line", GNOME_STOCK_LINE_IN,
-	"CD", GTK_STOCK_CDROM,
-	"Synth", GNOME_STOCK_PIXMAP_BLANK,
-	"PCM", GNOME_STOCK_PIXMAP_BLANK,
-	"Output Gain", GNOME_STOCK_PIXMAP_BLANK,
-	"Treble", GNOME_STOCK_PIXMAP_BLANK,
-	"Bass", GNOME_STOCK_PIXMAP_BLANK,
-	"Master", GNOME_STOCK_VOLUME,
-	"default", GNOME_STOCK_PIXMAP_BLANK,
+  "Input Gain", GNOME_STOCK_PIXMAP_BLANK,
+  "PC Speaker", GNOME_STOCK_VOLUME,
+  "MIC", GNOME_STOCK_PIXMAP_BLANK,
+  "Line", GNOME_STOCK_LINE_IN,
+  "CD", GTK_STOCK_CDROM,
+  "Synth", GNOME_STOCK_PIXMAP_BLANK,
+  "PCM", GNOME_STOCK_PIXMAP_BLANK,
+  "Output Gain", GNOME_STOCK_PIXMAP_BLANK,
+  "Treble", GNOME_STOCK_PIXMAP_BLANK,
+  "Bass", GNOME_STOCK_PIXMAP_BLANK,
+  "Master", GNOME_STOCK_VOLUME,
+  "default", GNOME_STOCK_PIXMAP_BLANK,
 };
 #else
 const char *device_labels[] = SOUND_DEVICE_LABELS;
@@ -184,34 +180,34 @@ const char *device_names[]  = SOUND_DEVICE_NAMES;
 #define GNOME_STOCK_PIXMAP_BLANK NULL
 #endif
 const char *device_pixmap[] = {
-	GNOME_STOCK_PIXMAP_VOLUME,               /* Master Volume */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Bass */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Treble */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Synth */
-	GNOME_STOCK_PIXMAP_BLANK,                /* PCM */
-	GNOME_STOCK_PIXMAP_VOLUME,               /* Speaker */
-	GNOME_STOCK_PIXMAP_LINE_IN,              /* Line In */
-	GNOME_STOCK_PIXMAP_MIC,                  /* Microphone */
-	GNOME_STOCK_PIXMAP_CDROM,                /* CD-Rom */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Recording monitor ? */
-	GNOME_STOCK_PIXMAP_BLANK,                /* ALT PCM */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Rec Level? */
-	GNOME_STOCK_PIXMAP_BLANK,                /* In Gain */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Out Gain */
-	GNOME_STOCK_PIXMAP_LINE_IN,              /* Aux 1 */
-	GNOME_STOCK_PIXMAP_LINE_IN,              /* Aux 2 */
-	GNOME_STOCK_PIXMAP_LINE_IN,              /* Line */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Digital 1 ? */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Digital 2 ? */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Digital 3 ? */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Phone in */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Phone Out */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Video */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Radio */
-	GNOME_STOCK_PIXMAP_BLANK,                /* Monitor (usually mic) vol */
-	GNOME_STOCK_PIXMAP_BLANK,                /* 3d Depth/space param */
-	GNOME_STOCK_PIXMAP_BLANK,                /* 3d center param */
-	GNOME_STOCK_PIXMAP_BLANK                 /* Midi */
+  GNOME_STOCK_PIXMAP_VOLUME,               /* Master Volume */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Bass */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Treble */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Synth */
+  GNOME_STOCK_PIXMAP_BLANK,                /* PCM */
+  GNOME_STOCK_PIXMAP_VOLUME,               /* Speaker */
+  GNOME_STOCK_PIXMAP_LINE_IN,              /* Line In */
+  GNOME_STOCK_PIXMAP_MIC,                  /* Microphone */
+  GNOME_STOCK_PIXMAP_CDROM,                /* CD-Rom */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Recording monitor ? */
+  GNOME_STOCK_PIXMAP_BLANK,                /* ALT PCM */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Rec Level? */
+  GNOME_STOCK_PIXMAP_BLANK,                /* In Gain */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Out Gain */
+  GNOME_STOCK_PIXMAP_LINE_IN,              /* Aux 1 */
+  GNOME_STOCK_PIXMAP_LINE_IN,              /* Aux 2 */
+  GNOME_STOCK_PIXMAP_LINE_IN,              /* Line */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Digital 1 ? */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Digital 2 ? */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Digital 3 ? */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Phone in */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Phone Out */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Video */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Radio */
+  GNOME_STOCK_PIXMAP_BLANK,                /* Monitor (usually mic) vol */
+  GNOME_STOCK_PIXMAP_BLANK,                /* 3d Depth/space param */
+  GNOME_STOCK_PIXMAP_BLANK,                /* 3d center param */
+  GNOME_STOCK_PIXMAP_BLANK                 /* Midi */
 };
 
 #endif
@@ -220,7 +216,7 @@ const char *device_pixmap[] = {
 snd_mixer_callbacks_t read_cbs;
 
 static void rebuild_cb(void *data) {
-	fprintf(stderr, "gmix rebuild_cb()\n");
+        fprintf(stderr, "gmix rebuild_cb()\n");
 }
 
 static void element_cb(void *data, int cmd, snd_mixer_eid_t *eid) {
@@ -321,12 +317,34 @@ void config_cb(GtkWidget *widget, gpointer data)
 	prefs_make_window (app);
 };
 
+static void
+show_error (GtkDialog *dialog)
+{
+	char *text;
+
+	switch (gtk_dialog_run (dialog)) {
+	case 1:
+		text = g_strdup_printf (_("Volume control is unable to run correctly.\n\n"
+					  "Unable to open audio device '%s'.\n"
+					  "Please check that you have permissions to open '%s'\n"
+					  "and that you have sound support in your kernel.\n\n"
+					  "Press Quit to exit Volume control"), 
+					mixer_device, mixer_device);
+		gtk_label_set_text (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label), text);
+		g_free (text);
+		gtk_dialog_set_response_sensitive (dialog, 1, FALSE);
+		show_error (dialog);
+		break;
+
+	default:
+		exit (0);
+	}
+}
+				    
 int
 main(int argc,
      char *argv[]) 
 {
-	mode = 0;
-
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
@@ -335,58 +353,41 @@ main(int argc,
 			   GNOME_PARAM_POPT_TABLE, options,
 			   GNOME_PARAM_POPT_FLAGS, 0,
 			   GNOME_PARAM_APP_DATADIR, DATADIR, NULL);		
+	if (mixer_device == NULL) {
+		mixer_device = "/dev/mixer";
+	}
 
 	if (g_file_exists (GNOME_ICONDIR"/gnome-volume.png"))
 		gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-volume.png");
 	else
 		gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-mixer.png");
 
-	if (mode_nosave) {
-		mode |= M_NOSAVE;
-	}
-	
-	if (mode_initonly) {
-		mode |= M_INITONLY;
-	}
-
 	scan_devices();
 	if (devices) {
-		if (~mode & M_INITONLY) {
-		        get_gui_config();
-			/* Beware boolean bastardization */
-			if (!prefs.set_mixer_on_start)
-				mode |= M_NORESTORE;
-			  
-		}
-		/* Command line always overrides */
-		if(mode_norestore) mode |= M_NORESTORE;
-		if(mode_restore) mode &= ~M_NORESTORE;
-
-/*  		if (~mode & M_NORESTORE) { */
+		get_gui_config();
+		/* Beware boolean bastardization */
 		get_device_config();
 		init_devices();
-/*  		}  */
-
-		if (~mode & M_INITONLY) {
-			open_dialog();
-		}
-
-/*  		if (~mode & M_NOSAVE) { */
+		
+		open_dialog();
 		put_device_config();
-/*  		} */
-
+		
 		free_devices();
 	} else {
-		GtkWidget *box;
-
-		box = gnome_error_dialog(_("I was not able to open your audio device.\n"
-					   "Please check that you have permission to open /dev/mixer\n"
-					   "and make sure you have sound support compiled into your kernel."));
-
-		gtk_signal_connect(GTK_OBJECT(box), "close",
-				   GTK_SIGNAL_FUNC(error_close_cb), NULL);
-		gtk_main();
+		GtkWidget *dialog;
+		
+		dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_NONE,
+						 _("Volume control is unable to run correctly.\n\n"
+						   "Press the details button for more details on the reasons for failure.\n\n"
+						   "Press Quit to quit Volume control"));
+		gtk_dialog_add_buttons (GTK_DIALOG (dialog), _("_Details"), 1, 
+					GTK_STOCK_QUIT, GTK_RESPONSE_CLOSE, NULL);
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Invalid mixer device"));
+		show_error GTK_DIALOG(dialog);
 	}
+
 	return 0;
 }
 
@@ -406,6 +407,25 @@ recsrc_from_channels (device_info *device)
 	}
 
 	return recsrc;
+}
+
+static int
+open_mixer_device (const char *name,
+		   int device_num)
+{
+	char *device;
+	int fd;
+
+	if (device_num == 0) {
+		device = g_strdup (name);
+	} else {
+		device = g_strdup_printf ("%s%i", name, device_num);
+	}
+
+	fd = open (device, O_RDWR, 0);
+
+	g_free (device);
+	return fd;
 }
 
 static void
@@ -428,6 +448,11 @@ device_info *
 open_device (int num)
 {
 	device_info *new_device;
+	/*
+	 * This list is borrowed from GCONF_SOURCE/gconf/gconf.c
+	 */
+	gchar gconf_key_invalid_chars[] = " \t\r\n\"$&<>,+=#!()'|{}[]?~`;%\\";
+
 #ifdef ALSA
 	int device = 0, err; 
 	snd_mixer_info_t info; 
@@ -465,6 +490,7 @@ open_device (int num)
 	/* This is the name used thoughout all the config stuff
 	   Numerical part will probably change if you start adding more cards,
 	   screwing things up, but there's probably no way we can stop that. */
+	g_strdelimit (new_device->info.name, gconf_key_invalid_chars, '_');
 	new_device->card_name = g_strdup_printf ("alsa-%s-%d", new_device->info.name, num + 1);
 
 	if (!g_ascii_isalpha (new_device->info.name[0])) {
@@ -561,17 +587,10 @@ open_device (int num)
 	gdk_input_add (snd_mixer_file_descriptor(new_device->handle), GDK_INPUT_READ,
 		       read_mixer, new_device);
 #else
-	char device_name[255];
 	int res, ver, cnt;
 	/* Masks for the channel data - OSS blows compared to ALSA */
 	int recmask, recsrc, stereodee;
 
-	/*
-	 * This list is borrowed from GCONF_SOURCE/gconf/gconf.c
-	 */
-	gchar gconf_key_invalid_chars[] = " \t\r\n\"$&<>,+=#!()'|{}[]?~`;%\\";
-
-	
 	/*
 	 * create new device configureation
 	 */
@@ -579,17 +598,21 @@ open_device (int num)
 	/*
 	 * open the mixer-device
 	 */
-	if (num == 0) {
-		sprintf (device_name, "/dev/mixer");
-	} else {
-		sprintf (device_name, "/dev/mixer%i", num);
-	}
 
-	new_device->fd = open (device_name, O_RDWR, 0);
-	
+	new_device->fd = open_mixer_device (mixer_device, num);
+
 	if (new_device->fd < 0) {
-		g_free (new_device);
-		return NULL;
+		/* If the supplied value didn't work try the default */
+		new_device->fd = open_mixer_device (mixer_device, num);
+
+		if (new_device->fd < 0) {
+			new_device->fd = open_mixer_device ("/dev/sound/mixer", num);
+		}
+
+		if (new_device->fd > 0) {
+			g_free (new_device);
+			return NULL;
+		}
 	}
 	
 	/*
@@ -1722,14 +1745,14 @@ about_cb (GtkWidget *widget,
 		gdk_window_show (about->window);
 		gdk_window_raise (about->window);
 	} else {
-		about = gnome_about_new ( _("Gnome Volume Control"), VERSION,
-					  "(C) 1998 Jens Ch. Restemeier\n"
-					  "(C) 2001-2002 Iain Holmes",
-					  _("This is a mixer for sound devices"),
+		about = gnome_about_new ( _("GNOME Volume Control"), VERSION,
+					  "Copyright \xc2\xa9 1998-2000 Jens Ch. Restemeier\n"
+					  "Copyright \xc2\xa9 2001-2002 Iain Holmes",
+					  _("A mixer for sound devices"),
 					  authors,
 					  NULL, NULL,
 					  NULL);
-		
+
 		g_signal_connect (G_OBJECT (about), "destroy",
 				  G_CALLBACK (gtk_widget_destroyed), &about);
 		gtk_widget_show (about);

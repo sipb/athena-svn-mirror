@@ -34,96 +34,6 @@
 
 #include "gnome-cd.h"
 
-static char *
-make_fullname (const char *theme_name,
-	       const char *name)
-{
-	char *image;
-
-	image = g_build_filename (THEME_DIR, theme_name, name, NULL);
-
-	return image;
-}
-
-static void
-parse_theme (GCDTheme *theme,
-	     xmlDocPtr doc,
-	     xmlNodePtr cur)
-{
-	while (cur != NULL) {
-		if (xmlStrcmp (cur->name, (const xmlChar *) "image") == 0) {
-			xmlChar *button;
-			
-			button = xmlGetProp (cur, (const xmlChar *) "button");
-			if (button != NULL) {
-				char *file, *full;
-				
-				file = xmlNodeListGetString (doc, cur->xmlChildrenNode, 1);
-				full = make_fullname (theme->name, file);
-				
-				if (xmlStrcmp (button, "previous") == 0) {
-					theme->previous = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->previous));
-				} else if (xmlStrcmp (button, "rewind") == 0) {
-					theme->rewind = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->rewind));
-				} else if (xmlStrcmp (button, "play") == 0) {
-					theme->play = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->play));
-				} else if (xmlStrcmp (button, "pause") == 0) {
-					theme->pause = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->pause));
-				} else if (xmlStrcmp (button, "stop") == 0) {
-					theme->stop = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->stop));
-				} else if (xmlStrcmp (button, "forward") == 0) {
-					theme->forward = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->forward));
-				} else if (xmlStrcmp (button, "next") == 0) {
-					theme->next = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->next));
-				} else if (xmlStrcmp (button, "eject") == 0) {
-					theme->eject = gdk_pixbuf_new_from_file (full, NULL);
-					g_object_ref (G_OBJECT (theme->eject));
-				} else {
-					/* Hmmm */
-				}
-				
-				g_free (full);
-			} else {
-				/* Check for menu */
-				char *menu;
-				
-				menu = xmlGetProp (cur, (const xmlChar *) "menu");
-				if (menu != NULL) {
-					char *file, *full;
-
-					file = xmlNodeListGetString (doc, cur->xmlChildrenNode, 1);
-					full = make_fullname (theme->name, file);
-					
-					if (xmlStrcmp (menu, "previous") == 0) {
-						theme->previous_menu = gdk_pixbuf_new_from_file (full, NULL);
-					} else if (xmlStrcmp (menu, "stop") == 0) {
-						theme->stop_menu = gdk_pixbuf_new_from_file (full, NULL);
-					} else if (xmlStrcmp (menu, "play") == 0) {
-						theme->play_menu = gdk_pixbuf_new_from_file (full, NULL);
-					} else if (xmlStrcmp (menu, "next") == 0) {
-						theme->play_menu = gdk_pixbuf_new_from_file (full, NULL);
-					} else if (xmlStrcmp (menu, "eject") == 0) {
-						theme->eject_menu = gdk_pixbuf_new_from_file (full, NULL);
-					} else {
-						/* Hmm */
-					}
-
-					g_free (full);
-				}
-			}
-		}
-
-		cur = cur->next;
-	}
-}
-
 GCDTheme *
 theme_load (GnomeCD *gcd,
 	    const char *theme_name)
@@ -204,9 +114,6 @@ theme_load (GnomeCD *gcd,
 	while (ptr != NULL) {
 		if (xmlStrcmp (ptr->name, (const xmlChar *) "display") == 0) {
 			cd_display_parse_theme (gcd->display, theme, xml, ptr->xmlChildrenNode);
-		} else if (xmlStrcmp (ptr->name, (const xmlChar *) "icons") == 0) {
-			parse_theme (theme, xml, ptr->xmlChildrenNode);
-		} else {
 		}
 		
 		ptr = ptr->next;
@@ -221,19 +128,6 @@ theme_free (GCDTheme *theme)
 	g_return_if_fail (theme != NULL);
 	
 	g_free (theme->name);
-	g_object_unref (G_OBJECT (theme->previous));
-/* 	g_object_unref (G_OBJECT (theme->previous_menu)); */
-	g_object_unref (G_OBJECT (theme->rewind));
-	g_object_unref (G_OBJECT (theme->play));
-/* 	g_object_unref (G_OBJECT (theme->play_menu)); */
-	g_object_unref (G_OBJECT (theme->pause));
-	g_object_unref (G_OBJECT (theme->stop));
-/* 	g_object_unref (G_OBJECT (theme->stop_menu)); */
-	g_object_unref (G_OBJECT (theme->forward));
-	g_object_unref (G_OBJECT (theme->next));
-/* 	g_object_unref (G_OBJECT (theme->next_menu)); */
-	g_object_unref (G_OBJECT (theme->eject));
-/* 	g_object_unref (G_OBJECT (theme->eject_menu)); */
 	
 	g_free (theme);
 }
@@ -241,22 +135,4 @@ theme_free (GCDTheme *theme)
 void
 theme_change_widgets (GnomeCD *gcd)
 {
-	gtk_image_set_from_pixbuf (GTK_IMAGE (GTK_BIN (gcd->back_b)->child),
-				   gcd->theme->previous);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (GTK_BIN (gcd->rewind_b)->child),
-				   gcd->theme->rewind);
-	
-	gtk_image_set_from_pixbuf (GTK_IMAGE (gcd->play_image),
-				   gcd->theme->play);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (gcd->pause_image),
-				   gcd->theme->pause);
-	
-	gtk_image_set_from_pixbuf (GTK_IMAGE (GTK_BIN (gcd->stop_b)->child),
-				   gcd->theme->stop);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (GTK_BIN (gcd->ffwd_b)->child),
-				   gcd->theme->forward);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (GTK_BIN (gcd->next_b)->child),
-				   gcd->theme->next);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (GTK_BIN (gcd->eject_b)->child),
-				   gcd->theme->eject);
 }

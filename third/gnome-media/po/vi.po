@@ -4,13 +4,45 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media VERSION\n"
-"POT-Creation-Date: 2002-11-18 23:59+0000\n"
-"PO-Revision-Date: 2002-08-31 17:39+0700\n"
+"POT-Creation-Date: 2003-01-19 04:57+0100\n"
+"PO-Revision-Date: 2003-01-10 22:45+0700\n"
 "Last-Translator: Trinh Minh Thanh <tmthanh@linuxmail.org>\n"
 "Language-Team: Gnome-Vi Team <Gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "Địa chỉ serve cần liên lạc để truy vấn CD"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
+msgid "Port"
+msgstr "Cổng"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3
+msgid "Server name"
+msgstr "Tên Server"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "The hostname that will be sent with all queries"
+msgstr "Tên máy sẽ được gửi cùng với truy vấn"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "The port that the server is running the database on"
+msgstr "Số hiệu cổng mà server đang chạy"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The username"
+msgstr "Tên người dùng"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The username that will be sent with all queries"
+msgstr "Tên người dùng sẽ được gửi cùng với truy vấn"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid "Your hostname"
+msgstr "Tên máy chủ"
 
 #: cddb-slave2/cddb-disclosure.c:245
 msgid "Expander Size"
@@ -41,48 +73,44 @@ msgstr "Gửi thông tin khác..."
 msgid "N_ame:"
 msgstr "_Tên:"
 
-#: cddb-slave2/cddb-slave-capplet.c:710
+#: cddb-slave2/cddb-slave-capplet.c:711
 msgid "_Hostname:"
 msgstr "Tên _máy chủ:"
 
 #. Server info
-#: cddb-slave2/cddb-slave-capplet.c:731 cddb-slave2/cddb-slave-capplet.c:771
+#: cddb-slave2/cddb-slave-capplet.c:733 cddb-slave2/cddb-slave-capplet.c:773
 msgid "Server"
 msgstr "Server"
 
-#: cddb-slave2/cddb-slave-capplet.c:739
+#: cddb-slave2/cddb-slave-capplet.c:741
 msgid "FreeDB _round robin server"
 msgstr "FreeDB _round robin server"
 
-#: cddb-slave2/cddb-slave-capplet.c:745
+#: cddb-slave2/cddb-slave-capplet.c:747
 msgid "Other _FreeDB server..."
 msgstr "Server FreeDB khác..."
 
-#: cddb-slave2/cddb-slave-capplet.c:774
-msgid "Port"
-msgstr "Cổng"
-
-#: cddb-slave2/cddb-slave-capplet.c:777
+#: cddb-slave2/cddb-slave-capplet.c:779
 msgid "Location"
 msgstr "Địa điểm"
 
-#: cddb-slave2/cddb-slave-capplet.c:783
+#: cddb-slave2/cddb-slave-capplet.c:785
 msgid "Update server list"
 msgstr "Danh sách server cập nhật"
 
-#: cddb-slave2/cddb-slave-capplet.c:790
+#: cddb-slave2/cddb-slave-capplet.c:792
 msgid "Other _server..."
 msgstr "_Server khác..."
 
-#: cddb-slave2/cddb-slave-capplet.c:802
+#: cddb-slave2/cddb-slave-capplet.c:804
 msgid "Hostname:"
 msgstr "Tên máy chủ:"
 
-#: cddb-slave2/cddb-slave-capplet.c:814
+#: cddb-slave2/cddb-slave-capplet.c:816
 msgid "_Port:"
 msgstr "_Cổng:"
 
-#: cddb-slave2/cddb-slave-capplet.c:863
+#: cddb-slave2/cddb-slave-capplet.c:866
 msgid "CD Database Preferences"
 msgstr "Tùy Thích Cơ Sở Dữ Liệu CD"
 
@@ -90,7 +118,10 @@ msgstr "Tùy Thích Cơ Sở Dữ Liệu CD"
 msgid "Unknown / Unknown"
 msgstr "Không biết / Không biết"
 
-#: cddb-slave2/cddb-slave.c:219
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:219 grecord/src/gsr-window.c:760
+#: grecord/src/gsr-window.c:769 grecord/src/gsr-window.c:778
+#: grecord/src/gsr-window.c:788 grecord/src/gsr-window.c:1108
 msgid "Unknown"
 msgstr "Không biết"
 
@@ -119,7 +150,7 @@ msgid "Artist and Title"
 msgstr "Nghệ sĩ và Tựa đề"
 
 #: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
-#: gnome-cd/gnome-cd.c:125
+#: gnome-cd/gnome-cd.c:130
 msgid "Unknown track"
 msgstr "Rãnh lạ"
 
@@ -841,6 +872,7 @@ msgid "CD"
 msgstr "CD"
 
 #: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
+#: gstreamer-properties/gstreamer-properties.glade.h:13
 msgid "Video"
 msgstr "Video"
 
@@ -1046,33 +1078,52 @@ msgstr "Bộ theo dõi"
 msgid "Help"
 msgstr "Trợ giúp"
 
-#: gmix/gmix.c:147
-msgid "don't restore mixer-settings from configuration"
-msgstr "không khôi phục thiết lập mixer từ cấu hình"
+#: gmix/gmix.c:146
+msgid "Mixer device to use"
+msgstr "Thiết bị mixer cần dùng"
 
-#: gmix/gmix.c:148
-msgid "restore mixer-settings from configuration"
-msgstr "khôi phục thiết lập mixer từ cấu hình"
-
-#: gmix/gmix.c:149
-msgid "initialise the mixer(s) from stored configuration and exit"
-msgstr "khởi động mixer từ cấu hình được lưu rồi thoát"
-
-#: gmix/gmix.c:150
-msgid "don't save (modified) mixer-settings into configuration"
-msgstr "không lưu cấu hình mixer (đã thay đổi)"
-
-#: gmix/gmix.c:382
+#: gmix/gmix.c:327
+#, c-format
 msgid ""
-"I was not able to open your audio device.\n"
-"Please check that you have permission to open /dev/mixer\n"
-"and make sure you have sound support compiled into your kernel."
+"Volume control is unable to run correctly.\n"
+"\n"
+"Unable to open audio device '%s'.\n"
+"Please check that you have permissions to open '%s'\n"
+"and that you have sound support in your kernel.\n"
+"\n"
+"Press Quit to exit Volume control"
 msgstr ""
-"Không thể mở thiết bị audio.\n"
-"Vui lòng kiểm tra bạn có đủ quyền truy cập /dev/mixer hay không\n"
-"và chắc rằng bạn kernel của bạn hỗ trợ âm thanh."
+"Điều khiển Âm lượng hoạt động không chính xác.\n"
+"\n"
+"Không thể mở thiết bị audio '%s'.\n"
+"Vui lòng kiểm tra bạn có đủ quyền truy cập để mở '%s' hay không\n"
+"và chắc rằng bạn kernel của bạn hỗ trợ âm thanh.\n"
+"\n"
+"Nhấn Thoát để thoát Điều khiển Âm lượng"
 
-#: gmix/gmix.c:603
+#: gmix/gmix.c:381
+msgid ""
+"Volume control is unable to run correctly.\n"
+"\n"
+"Press the details button for more details on the reasons for failure.\n"
+"\n"
+"Press Quit to quit Volume control"
+msgstr ""
+"Điều khiển Âm lượng không thể hoạt động chính xác.\n"
+"\n"
+"Nhấn nút Chi tiết để biết chi tiết nguyên nhân lỗi.\n"
+"\n"
+"Nhấn Thoát để thoát Điều khiển Âm lượng"
+
+#: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
+msgid "_Details"
+msgstr "_Chi tiết"
+
+#: gmix/gmix.c:387
+msgid "Invalid mixer device"
+msgstr "Thiết bị trộn (mixer) không hợp lệ"
+
+#: gmix/gmix.c:626
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1083,7 +1134,7 @@ msgstr ""
 "phiên bản OSS %d.%d.%d, trong khi hệ thống bạn đang chạy một phiên\n"
 "bản trước 3.6.0.\n"
 
-#: gmix/gmix.c:611
+#: gmix/gmix.c:634
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1094,54 +1145,54 @@ msgstr ""
 "phiên bản OSS %d.%d.%d, trong khi hệ thống bạn đang chạy một phiên\n"
 "bản trước %d.%d.%d.\n"
 
-#: gmix/gmix.c:1065
+#: gmix/gmix.c:1088
 #, c-format
 msgid "left %s"
 msgstr "Trái %s"
 
-#: gmix/gmix.c:1091
+#: gmix/gmix.c:1114
 #, c-format
 msgid "Right %s"
 msgstr "Phải %s"
 
-#: gmix/gmix.c:1184
+#: gmix/gmix.c:1207
 msgid "Lock"
 msgstr "Khóa"
 
-#: gmix/gmix.c:1197
+#: gmix/gmix.c:1220
 #, c-format
 msgid "%s Lock"
 msgstr "%s Khóa"
 
-#: gmix/gmix.c:1208
+#: gmix/gmix.c:1231
 msgid "Mute"
 msgstr "Câm"
 
-#: gmix/gmix.c:1221
+#: gmix/gmix.c:1244
 #, c-format
 msgid "%s Mute"
 msgstr "%s Câm"
 
-#: gmix/gmix.c:1235
+#: gmix/gmix.c:1258
 msgid "Rec."
 msgstr "Rec."
 
-#: gmix/gmix.c:1247
+#: gmix/gmix.c:1270
 #, c-format
 msgid "%s Record"
 msgstr "%s Thu"
 
-#: gmix/gmix.c:1319 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:2
 msgid "Volume Control"
 msgstr "Bộ điều khiển âm lượng"
 
-#: gmix/gmix.c:1725
-msgid "Gnome Volume Control"
-msgstr "Bộ điều khiển âm lượng Gnome"
+#: gmix/gmix.c:1748
+msgid "GNOME Volume Control"
+msgstr "Bộ điều khiển âm lượng GNOME"
 
-#: gmix/gmix.c:1728
-msgid "This is a mixer for sound devices"
+#: gmix/gmix.c:1751
+msgid "A mixer for sound devices"
 msgstr "Đây là mixer của thiết bị âm thanh"
 
 #: gmix/gnome-volume-control.desktop.in.in.h:1
@@ -1210,72 +1261,97 @@ msgstr "Dòng album"
 msgid "Line for displaying the name of the album"
 msgstr "Dòng hiển thị tên album"
 
-#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:164 gnome-cd/callbacks.c:263
-#: gnome-cd/callbacks.c:531 gnome-cd/gnome-cd.c:555 grecord/src/gui.c:233
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:165 gnome-cd/callbacks.c:264
+#: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
+#: grecord/gsr.xml.h:13
 msgid "Play"
 msgstr "Chơi"
 
-#: gnome-cd/callbacks.c:149 gnome-cd/callbacks.c:195 gnome-cd/callbacks.c:225
-#: gnome-cd/callbacks.c:305 gnome-cd/callbacks.c:345 gnome-cd/callbacks.c:369
-#: gnome-cd/callbacks.c:410 gnome-cd/callbacks.c:497
+#: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
+#: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
+#: gnome-cd/callbacks.c:411 gnome-cd/callbacks.c:499
 msgid "Pause"
 msgstr "Tạm ngừng"
 
-#: gnome-cd/callbacks.c:603
-msgid "Disc error"
-msgstr "Lỗi đĩa"
+#: gnome-cd/callbacks.c:530
+#, c-format
+msgid "Playing %s - %s"
+msgstr "Đang chơi %s - %s"
 
-#: gnome-cd/callbacks.c:636 gnome-cd/callbacks.c:647
+#: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
 msgid "Unknown Artist"
 msgstr "Nghệ sĩ lạ"
 
-#: gnome-cd/callbacks.c:639 gnome-cd/callbacks.c:651
+#: gnome-cd/callbacks.c:532 gnome-cd/callbacks.c:665 gnome-cd/callbacks.c:677
 msgid "Unknown Album"
 msgstr "Album lạ"
 
-#: gnome-cd/callbacks.c:690
+#: gnome-cd/callbacks.c:534 grecord/src/gui.c:824
+msgid "Playing"
+msgstr "Đang chơi"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:557
+msgid "Paused"
+msgstr "Tạm ngừng"
+
+#. Update tray icon tooltip
+#: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
+#: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "Trình chơi CD"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:620
+msgid "Stopped"
+msgstr "Dừng"
+
+#: gnome-cd/callbacks.c:626
+msgid "Disc error"
+msgstr "Lỗi đĩa"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
 msgid "No disc"
 msgstr "Không có đĩa"
 
-#: gnome-cd/callbacks.c:716
+#: gnome-cd/callbacks.c:742
 msgid "Drive open"
 msgstr "Ổ đĩa mở"
 
-#: gnome-cd/callbacks.c:740
+#: gnome-cd/callbacks.c:766
 msgid "Data CD"
 msgstr "CD Dữ Liệu"
 
-#: gnome-cd/callbacks.c:762
+#. Updated the tray icon tooltip
+#: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
 msgid "No Cdrom"
 msgstr "Không có CD-ROM"
 
-#: gnome-cd/callbacks.c:774
+#: gnome-cd/callbacks.c:803
 msgid "Drive Error"
 msgstr "Lỗi ổ đĩa"
 
-#: gnome-cd/callbacks.c:795
-msgid "Copyright (C) 2001, 2002"
-msgstr "Copyright (C) 2001, 2002"
+#: gnome-cd/callbacks.c:825
+msgid "A CD player for GNOME"
+msgstr "Bộ chơi CD cho GNOME"
 
-#: gnome-cd/callbacks.c:796
-msgid "A GNOME cd player"
-msgstr "Bộ chơi CD Gnome"
-
-#: gnome-cd/cdrom.c:362
+#: gnome-cd/cdrom.c:367
 #, c-format
 msgid "You do not seem to have permission to access %s."
 msgstr "Có lẽ bạn không có quyền truy cập %s."
 
-#: gnome-cd/cdrom.c:368
+#: gnome-cd/cdrom.c:373
 #, c-format
 msgid ""
 "%s does not appear to point to a valid CD device. This may be because:\n"
-"a) CD support is not compiled into Linux\n"
+"a) CD support is not present in your machine\n"
 "b) You do not have the correct permissions to access the CD drive\n"
 "c) %s is not the CD drive.\n"
 msgstr ""
-"%s có vẻ không chỉ tới một thiết bị CD. Có thể là do:\n"
-"a) Phiên bản Linux này không hỗ trợ CD\n"
+"%s có vẻ không chỉ tới một thiết bị CD hợp lệ. Có thể là do:\n"
+"a) Máy bạn không hỗ trợ CD\n"
 "b) Bạn không có quyền truy cập ổ CD\n"
 "c> %s không phải là ổ CD.\n"
 
@@ -1287,219 +1363,302 @@ msgstr "Nghệ sĩ lạ"
 msgid "Unknown disc"
 msgstr "Đĩa lạ"
 
-#: gnome-cd/gnome-cd.c:51 gnome-cd/gnome-cd.c:441
-msgid "Gnome CD Player"
-msgstr "Bộ chơi CD Gnome"
-
-#: gnome-cd/gnome-cd.c:151
+#: gnome-cd/gnome-cd.c:156
 #, c-format
 msgid "%d - Unknown"
 msgstr "%d - Không biết"
 
-#: gnome-cd/gnome-cd.c:295
+#: gnome-cd/gnome-cd.c:300
 msgid "P_revious track"
 msgstr "Rãnh _trước"
 
-#: gnome-cd/gnome-cd.c:296
+#: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
 msgid "_Stop"
 msgstr "_Dừng"
 
-#: gnome-cd/gnome-cd.c:297
+#: gnome-cd/gnome-cd.c:302
 msgid "_Play / Pause"
 msgstr "_Chơi / Tạm ngừng"
 
-#: gnome-cd/gnome-cd.c:298
+#: gnome-cd/gnome-cd.c:303
 msgid "_Next track"
 msgstr "Rãnh _kế"
 
-#: gnome-cd/gnome-cd.c:299
+#: gnome-cd/gnome-cd.c:304
 msgid "_Eject disc"
 msgstr "Đẩ_y đĩa ra"
 
-#: gnome-cd/gnome-cd.c:300
-#, fuzzy
+#: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
 msgid "_Help"
-msgstr "Trợ giúp"
+msgstr "Trợ _giúp"
 
-#: gnome-cd/gnome-cd.c:301
-msgid "_About Gnome-CD"
-msgstr "_Giới thiệu Gnome-CD"
+#: gnome-cd/gnome-cd.c:306
+msgid "_About CD player"
+msgstr "_Giới thiệu Bộ chơi CD"
 
-#: gnome-cd/gnome-cd.c:375
+#: gnome-cd/gnome-cd.c:414
 msgid ""
-"There is no CD device set. This means that GnomeCD\n"
-"will be unable to run. Press Set device to go to a dialog\n"
-"where you can set the device, or click Quit to quit GnomeCD"
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
 msgstr ""
-"Chưa thiết lập thiết bị CD. Bởi vậy GnomeCD không thể chạy.\n"
-"Bạn có thể nhất \"Chọn thiết bị\" để mở hộp thoại chọn thiết\n"
-"bị hoặc nhấn \"Thoát\" để thoát khỏi GnomeCD"
+"Chưa thiết lập thiết bị CD. Bởi vậy Bộ chơi CD không thể chạy.\n"
+"Bạn có thể nhấn \"Chọn thiết bị\" để mở hộp thoại chọn thiết\n"
+"bị hoặc nhấn \"Thoát\" để thoát khỏi Bộ chơi CD."
 
-#: gnome-cd/gnome-cd.c:379 gnome-cd/gnome-cd.c:418
+#: gnome-cd/gnome-cd.c:418
 msgid "Set device"
 msgstr "Chọn thiết bị"
 
-#: gnome-cd/gnome-cd.c:381
+#: gnome-cd/gnome-cd.c:420
 msgid "No CD device"
 msgstr "Không có thiết bị CD"
 
-#: gnome-cd/gnome-cd.c:414
-#, c-format
+#: gnome-cd/gnome-cd.c:474
 msgid ""
-"%s\n"
-"This means that GnomeCD will be unable to run correctly. Press Set device to "
-"go to a dialog where you can set the device, or click Quit to quit GnomeCD"
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
 msgstr ""
-"%s\n"
-"Bởi vậy GnomeCD không thể chạy ổn định. Bạn có thể nhấn nút \"Chọn thiết bị"
-"\" để mở hộp thoại chọn thiết bị hoặc nhấn \"Thoát\" để thoát khỏi GnomeCD."
+"Bộ chơi CD hoạt động không chính xác.\n"
+"\n"
+"Nhấn 'Chi tiết' để biết chi tiết nguyên nhân lỗi.\n"
+"\n"
+"Nhấn nút \"Chọn thiết bị\" để mở hộp thoại chọn thiết bị hoặc nhấn \"Thoát\" "
+"để thoát khỏi Bộ chơi CD"
 
-#: gnome-cd/gnome-cd.c:420
+#: gnome-cd/gnome-cd.c:479
+msgid "_Set device"
+msgstr "_Chọn thiết bị"
+
+#: gnome-cd/gnome-cd.c:481
 msgid "Invalid CD device"
 msgstr "Thiết bị CD không hợp lệ"
 
-#: gnome-cd/gnome-cd.c:488
+#: gnome-cd/gnome-cd.c:542
 msgid "Volume control"
 msgstr "Điều Khiển Âm Lượng"
 
-#: gnome-cd/gnome-cd.c:497
+#: gnome-cd/gnome-cd.c:551
 msgid "Open track editor"
 msgstr "Mở bộ biên soạn rãnh"
 
-#: gnome-cd/gnome-cd.c:498
+#: gnome-cd/gnome-cd.c:552
 msgid "Track editor"
 msgstr "Bộ biên soạn rãnh"
 
-#: gnome-cd/gnome-cd.c:505
+#: gnome-cd/gnome-cd.c:559
 msgid "Open preferences"
 msgstr "Mở thông số"
 
-#: gnome-cd/gnome-cd.c:506
+#: gnome-cd/gnome-cd.c:560
 msgid "Preferences"
 msgstr "Thông số"
 
-#: gnome-cd/gnome-cd.c:514
+#: gnome-cd/gnome-cd.c:568
 msgid "Track List"
 msgstr "Danh sách track"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous track"
 msgstr "Rãnh trước"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous"
 msgstr "Trước"
 
-#: gnome-cd/gnome-cd.c:538
+#: gnome-cd/gnome-cd.c:593
 msgid "Rewind"
 msgstr "Quay về đầu"
 
-#: gnome-cd/gnome-cd.c:555
+#: gnome-cd/gnome-cd.c:610
 msgid "Play / Pause"
 msgstr "Chơi / Tạm ngừng"
 
-#: gnome-cd/gnome-cd.c:560 grecord/src/gui.c:247
+#: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
 msgid "Stop"
 msgstr "Dừng"
 
-#: gnome-cd/gnome-cd.c:564
+#: gnome-cd/gnome-cd.c:619
 msgid "Fast forward"
 msgstr "Tới nhanh"
 
-#: gnome-cd/gnome-cd.c:572
+#: gnome-cd/gnome-cd.c:627
 msgid "Next track"
 msgstr "Rãnh kế"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject CD"
 msgstr "Đẩy CD ra"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject"
 msgstr "Đẩy ra"
 
-#: gnome-cd/gnome-cd.c:640
+#: gnome-cd/gnome-cd.c:734
+msgid "CD device to use"
+msgstr "Thiết bị CD cần dùng"
+
+#: gnome-cd/gnome-cd.c:736
+msgid "Only start if there isn't already a CD player application running"
+msgstr "Chỉ khởi động nếu  chưa có bộ chơi CD nào khác đang chạy"
+
+#: gnome-cd/gnome-cd.c:738
+msgid "Play the CD on startup"
+msgstr "Chơi CD lúc khởi động"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:769
 msgid "Cannot create player"
 msgstr "Không thể tạo bộ chơi CD"
-
-#: gnome-cd/gnome-cd.desktop.in.h:1
-#, fuzzy
-msgid "CD Player"
-msgstr "Trình chơi CD"
 
 #: gnome-cd/gnome-cd.desktop.in.h:2
 msgid "Play audio CDs"
 msgstr "Chơi CD Audio"
 
-#: gnome-cd/preferences.c:82
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "Action on application exit"
+msgstr "Hành động khi thoát"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Action on start"
+msgstr "Hành động khi khởi động"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "CD player theme"
+msgstr "Them Bộ chơi CD"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Device path"
+msgstr "Đường dẫn thiết bị"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD player attempt to shut the CD drive on start up?"
+msgstr "Nên đóng ổ CD khi khởi động?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "Shut the CD tray on start"
+msgstr "Đóng khe CD khi khởi động"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr "Đường dẫn đến ổ CD mà bộ chơi CD sử dụng để chơi CD"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid ""
+"What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
+"playing, 2 = Eject the CD, 3 = Attempt to close the tray"
+msgstr ""
+"Hành động nào nên được thực hiện khi thoát? 0 = Không gì cả, 1 = Dừng chơi, "
+"2 = Đẩy khe CD, 3 = Đóng khe CD"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:9
+msgid ""
+"What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
+"playing, 2 = Stop playing"
+msgstr ""
+"Hành động nào nên được thực hiện khi khởi động? 0 = Không gì cả, 1 = Chơi, 2 "
+"= Dừng chơi"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:10
+msgid "What theme should the CD player use for it's appearance"
+msgstr "Theme nào được dùng với CD player"
+
+#: gnome-cd/preferences.c:83
 #, c-format
 msgid ""
 "%s\n"
-"This means that Gnome-CD will not be able to run."
+"This means that the CD player will not be able to run."
 msgstr ""
 "%s\n"
-"Do đó Gnome-CD không thể chạy."
+"Do đó Bộ chơi CD không thể chạy."
 
-#: gnome-cd/preferences.c:83
+#: gnome-cd/preferences.c:84
 msgid "Error setting device"
 msgstr "Lỗi thiết lập thiết bị"
 
-#: gnome-cd/preferences.c:793
-msgid "Gnome CD Player Preferences"
-msgstr "Thông số Bộ chơi CD Gnome"
+#: gnome-cd/preferences.c:824
+msgid "CD Player Preferences"
+msgstr "Thông số Bộ chơi CD"
 
-#: gnome-cd/preferences.c:813
-#, fuzzy
+#: gnome-cd/preferences.c:853
 msgid "CD player de_vice:"
-msgstr "thiết bị chơi CD"
+msgstr "_Thiết bị chơi CD:"
 
-#: gnome-cd/preferences.c:828
+#: gnome-cd/preferences.c:868
 msgid "_Apply change"
 msgstr "Á_p dụng"
 
 #. left side
-#: gnome-cd/preferences.c:841
-msgid "When Gnome CD Player starts"
-msgstr "Khi Bộ chơi CD Gnome khởi động"
+#: gnome-cd/preferences.c:881
+msgid "When CD player starts"
+msgstr "Khi Bộ chơi CD khởi động"
 
-#: gnome-cd/preferences.c:849
+#: gnome-cd/preferences.c:889
 msgid "Do _nothing"
 msgstr "_Không làm gì cả"
 
-#: gnome-cd/preferences.c:858
+#: gnome-cd/preferences.c:890
+msgid "Do nothing when CD Player starts"
+msgstr "Không làm gì cả jhi Bộ chơi CD khởi động"
+
+#: gnome-cd/preferences.c:900
 msgid "Start _playing CD"
 msgstr "_Bắt đầu chơi CD"
 
-#: gnome-cd/preferences.c:867
+#: gnome-cd/preferences.c:901
+msgid "Start playing CD when CD Player starts"
+msgstr "Bắt đầu chơi CD khi Bộ chơi CD khởi động"
+
+#: gnome-cd/preferences.c:910
 msgid "_Stop playing CD"
 msgstr "_Ngừng chơi CD"
 
-#: gnome-cd/preferences.c:880
+#: gnome-cd/preferences.c:911
+msgid "Stop playing CD when CD Player starts"
+msgstr "Ngừng chơi CD khi Bộ chơi CD khởi động"
+
+#: gnome-cd/preferences.c:925
 msgid "Attempt to _close CD tray"
 msgstr "_Thử đóng khay CD"
 
 #. Right side
-#: gnome-cd/preferences.c:892
-msgid "When Gnome CD Player quits"
-msgstr "Khi Bộ chơi CD Gnome thoát"
+#: gnome-cd/preferences.c:937
+msgid "When CD player quits"
+msgstr "Khi Bộ chơi CD thoát"
 
-#: gnome-cd/preferences.c:900
+#: gnome-cd/preferences.c:945
 msgid "Do not_hing"
 msgstr "_Không làm gì cả"
 
-#: gnome-cd/preferences.c:909
+#: gnome-cd/preferences.c:946
+msgid "Do nothing when CD Player exits"
+msgstr "Không làm gì cả khi Bộ chơi CD thoát"
+
+#: gnome-cd/preferences.c:955
 msgid "S_top playing CD"
 msgstr "_Dừng chơi CD"
 
-#: gnome-cd/preferences.c:918
+#: gnome-cd/preferences.c:956
+msgid "Stop playing CD when CD player quits"
+msgstr "Dừng chơi CD khi thoát"
+
+#: gnome-cd/preferences.c:966
 msgid "Attempt to _open CD tray"
 msgstr "_Thử mở khay CD"
 
-#: gnome-cd/preferences.c:928
+#: gnome-cd/preferences.c:967
+msgid "Attempt to open CD tray when CD Player exits"
+msgstr "Thử mở khay CD khi Bộ chơi CD thoát"
+
+#: gnome-cd/preferences.c:977
 msgid "Attempt to c_lose CD tray"
 msgstr "Thử đó_ng khay CD"
 
-#: gnome-cd/preferences.c:959
+#: gnome-cd/preferences.c:1008
 msgid "Theme name"
 msgstr "Tên theme"
 
@@ -1507,7 +1666,8 @@ msgstr "Tên theme"
 msgid "Record sound clips"
 msgstr "Thu đoạn âm thanh"
 
-#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gui.c:193
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
+#: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
 msgid "Sound Recorder"
 msgstr "Bộ thu âm"
 
@@ -1532,15 +1692,15 @@ msgstr ""
 "\n"
 "Nếu bạn không có sox, bạn không thể thu âm hoặc tạp ra các hiệu ứng đặc biệt."
 
-#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1359
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1361
 msgid "Could not fork child process"
 msgstr "Không thể tạo tiến trình con"
 
-#: grecord/src/grec.c:173
+#: grecord/src/grec.c:173 grecord/src/gsr-window.c:1342
 msgid "Recording..."
 msgstr "Đang thu..."
 
-#: grecord/src/grec.c:220
+#: grecord/src/grec.c:220 grecord/src/gsr-window.c:1221
 msgid "Playing..."
 msgstr "Đang chơi..."
 
@@ -1552,15 +1712,15 @@ msgstr "Đang chuyển đổi tập tin..."
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
-#: grecord/src/grec.c:345 grecord/src/grec.c:793
+#: grecord/src/grec.c:345 grecord/src/grec.c:795
 msgid "Audioformat: "
 msgstr "Dạng thức Audio: "
 
-#: grecord/src/grec.c:349 grecord/src/grec.c:779 grecord/src/gui.c:308
+#: grecord/src/grec.c:349 grecord/src/grec.c:781 grecord/src/gui.c:308
 msgid "Sample rate: "
 msgstr "Tần số lấy mẫu: "
 
-#: grecord/src/grec.c:359 grecord/src/grec.c:783 grecord/src/gui.c:315
+#: grecord/src/grec.c:359 grecord/src/grec.c:785 grecord/src/gui.c:315
 msgid "Channels: "
 msgstr "Kênh: "
 
@@ -1577,7 +1737,7 @@ msgstr "Chọn tập tin âm thanh"
 msgid "%s is not installed in the path"
 msgstr "%s không được cài đặt trong đường dẫn"
 
-#: grecord/src/grec.c:523
+#: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
 #, c-format
 msgid "There was an error starting %s: %s"
 msgstr "Gặp lỗi khi khởi động %s: %s"
@@ -1609,7 +1769,7 @@ msgstr ""
 msgid "File '%s isn't a valid sound file."
 msgstr "Tập tin '%s' không phải là tập tin âm thanh hợp lệ"
 
-#: grecord/src/grec.c:817
+#: grecord/src/grec.c:819
 #, c-format
 msgid ""
 "'%s' is a folder.\n"
@@ -1618,7 +1778,7 @@ msgstr ""
 "'%s' là thư mục.\n"
 "Vui lòng nhập tên tập tin khác."
 
-#: grecord/src/grec.c:829
+#: grecord/src/grec.c:831
 #, c-format
 msgid ""
 "<b>File '%s' already exists.</b>\n"
@@ -1627,21 +1787,21 @@ msgstr ""
 "<b>Tập tin '%s' đã tồn tại.</b>\n"
 "Bạn có muốn ghi đè không?"
 
-#: grecord/src/grec.c:832
+#: grecord/src/grec.c:834
 msgid "Cancel save"
 msgstr "Ngừng lưu"
 
-#: grecord/src/grec.c:833
+#: grecord/src/grec.c:835
 msgid "Overwrite"
 msgstr "Ghi đè"
 
-#: grecord/src/grec.c:860
+#: grecord/src/grec.c:862
 #, c-format
 msgid "Error saving '%s'"
 msgstr "Lỗi khi lưu '%s'"
 
-#: grecord/src/grec.c:974
-#, fuzzy, c-format
+#: grecord/src/grec.c:976
+#, c-format
 msgid ""
 "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
 "\n"
@@ -1651,21 +1811,21 @@ msgstr ""
 "\n"
 "Các thay đổi của bạn sẽ mất nếu bạn không lưu."
 
-#: grecord/src/grec.c:979
+#: grecord/src/grec.c:981
 msgid "Do_n't save"
 msgstr "_Không lưu"
 
-#: grecord/src/grec.c:986
+#: grecord/src/grec.c:988
 #, c-format
 msgid "Save %s?"
 msgstr "Lưu %s chứ?"
 
 #. Save the file
-#: grecord/src/grec.c:1010
+#: grecord/src/grec.c:1012
 msgid "Saving..."
 msgstr "Đang lưu..."
 
-#: grecord/src/grec.c:1140
+#: grecord/src/grec.c:1142
 #, c-format
 msgid ""
 "The size of the current sample is more than\n"
@@ -1674,11 +1834,11 @@ msgstr ""
 "Kích thước của mẫu hiện tại lớn hơn\n"
 "%i Mb!"
 
-#: grecord/src/grec.c:1196
+#: grecord/src/grec.c:1198
 msgid "Save sound file"
 msgstr "Lưu tập tin âm thanh"
 
-#: grecord/src/grec.c:1425
+#: grecord/src/grec.c:1429
 msgid ""
 "The sound device is not ready. Please check that there isn't\n"
 "another program running that is using the device."
@@ -1686,15 +1846,159 @@ msgstr ""
 "Thiết bị âm thanh chưa sẵn sàng. Vui lòng kiểm tra xem có chương\n"
 "trình nào khác đang dùng thiết bị này hay không."
 
-#: grecord/src/gui.c:45
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "giờ"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "giờ"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#: grecord/src/gui.c:753
+msgid "minutes"
+msgstr "phút"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "phút"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "giây"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "giây"
+
+#: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
+msgid "Open a file"
+msgstr "Mở tập tin"
+
+#: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
+#: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
+msgid "Ready"
+msgstr "Sẵn sàng"
+
+#: grecord/src/gsr-window.c:541
+#, c-format
+msgid "Saving %s..."
+msgstr "Đang lưu %s..."
+
+#: grecord/src/gsr-window.c:600
+msgid "Save file as"
+msgstr "Lưu tập tin là"
+
+#: grecord/src/gsr-window.c:654
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "%s không được cài đặt trong đường dẫn."
+
+#: grecord/src/gsr-window.c:736
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (Chưa được lưu)"
+
+#: grecord/src/gsr-window.c:751
+msgid "Unknown size"
+msgstr "Không biết kích thước"
+
+#: grecord/src/gsr-window.c:771
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f kHz"
+
+#: grecord/src/gsr-window.c:780
+#, c-format
+msgid "%.0f kb/s"
+msgstr "%.0f kb/s"
+
+#: grecord/src/gsr-window.c:792
+msgid "1 (mono)"
+msgstr "1 (mono)"
+
+#: grecord/src/gsr-window.c:796
+msgid "2 (stereo)"
+msgstr "2 (stereo)"
+
+#: grecord/src/gsr-window.c:825
+#, c-format
+msgid "%s Information"
+msgstr "Thông tin %s"
+
+#: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
+msgid "File Information"
+msgstr "Thông tin tập tin"
+
+#: grecord/src/gsr-window.c:859
+msgid "Folder:"
+msgstr "Thư mục:"
+
+#: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
+msgid "Filename:"
+msgstr "Tên tập tin:"
+
+#: grecord/src/gsr-window.c:871
+msgid "File size:"
+msgstr "Kích thước tập tin:"
+
+#: grecord/src/gsr-window.c:880
+msgid "Audio Information"
+msgstr "Thông tin Âm thanh"
+
+#: grecord/src/gsr-window.c:894
+msgid "Song length:"
+msgstr "Độ dài bài hát:"
+
+#: grecord/src/gsr-window.c:900
+msgid "Number of channels:"
+msgstr "Số kênh:"
+
+#: grecord/src/gsr-window.c:906
+msgid "Sample rate:"
+msgstr "Tần số lấy mẫu:"
+
+#: grecord/src/gsr-window.c:912
+msgid "Bit rate:"
+msgstr "Tần số bit:"
+
+#: grecord/src/gsr-window.c:982
+msgid "A sound recorder for GNOME"
+msgstr "Bộ thu âm cho GNOME"
+
+#: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
+#, c-format
+msgid "%s - Sound Recorder"
+msgstr "%s - Bộ thu âm"
+
+#: grecord/src/gsr-window.c:1548
+msgid "File information"
+msgstr "Thông tin tập tin"
+
+#: grecord/src/gsr-window.c:1569
+msgid "<none>"
+msgstr "<không>"
+
+#: grecord/src/gsr-window.c:1578
+msgid "Length:"
+msgstr "Dài:"
+
+#: grecord/src/gui.c:45 grecord/gsr.xml.h:38
 msgid "_New"
 msgstr "Tạo _mới"
 
-#: grecord/src/gui.c:46
+#: grecord/src/gui.c:46 grecord/gsr.xml.h:5
 msgid "Create a new sample"
 msgstr "Tạo mẫu mới"
 
-#: grecord/src/gui.c:54
+#: grecord/src/gui.c:54 grecord/gsr.xml.h:21
 msgid "Run _Mixer"
 msgstr "Chạy _Mixer"
 
@@ -1726,11 +2030,6 @@ msgstr "Hoàn lại mọi thay đổi đã tạo ra trong mẫu hiện thời"
 msgid "Effects"
 msgstr "Hiệu ứng"
 
-#: grecord/src/gui.c:155
-#, c-format
-msgid "%s - Sound Recorder"
-msgstr "%s - Bộ thu âm"
-
 #: grecord/src/gui.c:197
 msgid "16bit PCM"
 msgstr "16bit PCM"
@@ -1747,7 +2046,7 @@ msgstr "stereo"
 msgid "mono"
 msgstr "mono"
 
-#: grecord/src/gui.c:217
+#: grecord/src/gui.c:217 grecord/gsr.xml.h:10
 msgid "New"
 msgstr "Tạo mới"
 
@@ -1763,7 +2062,7 @@ msgstr "Chơi mẫu hiện tại"
 msgid "Stop playing/recording"
 msgstr "Dừng chơi/Dừng thu"
 
-#: grecord/src/gui.c:261
+#: grecord/src/gui.c:261 grecord/gsr.xml.h:18
 msgid "Record"
 msgstr "Thu"
 
@@ -1785,27 +2084,15 @@ msgstr "Tập tin '%s' không tồn tại; dùng mặc định."
 msgid "File '%s' isn't a supported soundfile."
 msgstr "Tập tin '%s' không được hỗ trợ."
 
-#. if your charset allows it, replace the "e" of "Hyden"
-#. *  by an "eacute" (U00E9)
-#: grecord/src/gui.c:420
-msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
-msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
-
-#: grecord/src/gui.c:427
+#: grecord/src/gui.c:425
 msgid "translator_credits"
 msgstr "Nguyễn Thái Ngọc Duy"
 
+#: grecord/src/gui.c:429
+msgid "GNOME Sound Recorder"
+msgstr "Bộ thu âm GNOME"
+
 #: grecord/src/gui.c:431
-msgid "Gnome Sound Recorder"
-msgstr "Bộ thu âm Gnome"
-
-#. if your charset allows it, replace the
-#. "e" of Hyden by an "eacute" (U00E9)
-#: grecord/src/gui.c:434
-msgid "Copyright (C)  2000 Andreas Hyden"
-msgstr "Copyright (C)  2000 Andreas Hyden"
-
-#: grecord/src/gui.c:435
 msgid ""
 "A simple soundrecorder and soundplayer for GNOME.\n"
 "Dedicated to my cat, Malte."
@@ -1813,71 +2100,63 @@ msgstr ""
 "Bộ thu âm đơn giả và bộ phát âm cho GNOME.\n"
 "Dành tặng con mèo của tôi, Malte."
 
-#: grecord/src/gui.c:701
+#: grecord/src/gui.c:700
 msgid "Gnome Sound Recorder Preferences"
 msgstr "Thông số Bộ thu âm Gnome"
 
-#: grecord/src/gui.c:708
+#: grecord/src/gui.c:707
 msgid "Sound Recorder Preferences"
 msgstr "Thông số Bộ thu âm"
 
-#: grecord/src/gui.c:720
+#: grecord/src/gui.c:719
 msgid "Recording"
 msgstr "Đang thu"
 
-#: grecord/src/gui.c:725
+#: grecord/src/gui.c:724
 msgid "Time"
 msgstr "Thời gian"
 
-#: grecord/src/gui.c:738
+#: grecord/src/gui.c:737
 msgid "_Recording timeout: "
 msgstr "Thời hạn t_hu âm: "
 
-#: grecord/src/gui.c:754
-msgid "minutes"
-msgstr "phút"
-
-#: grecord/src/gui.c:761
+#: grecord/src/gui.c:760
 msgid "_Stop recording on timeout"
 msgstr "_Dừng thu nếu quá hạn"
 
-#: grecord/src/gui.c:769
+#: grecord/src/gui.c:768
 msgid "_Open save dialog when recording is finished"
 msgstr "_Mở hộp thoại lưu khi hoàn tất thu âm"
 
-#: grecord/src/gui.c:776
+#: grecord/src/gui.c:775
 msgid "Size"
 msgstr "Kích thước"
 
-#: grecord/src/gui.c:785
+#: grecord/src/gui.c:784
 msgid "Show warning _message if size (MB) of sample becomes bigger than:"
 msgstr "_Hiện cảnh báo nếu kích thước mẫu (MB) lớn hơn:"
 
-#: grecord/src/gui.c:803
+#: grecord/src/gui.c:802
 msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
 msgstr "_Dừng thu âm nếu kích thước mẫu (MB) lớn hơn:"
 
-#: grecord/src/gui.c:825
-msgid "Playing"
-msgstr "Đang chơi"
-
-#: grecord/src/gui.c:830
+#: grecord/src/gui.c:829
 msgid "Repetition"
 msgstr "Lặp lại"
 
-#: grecord/src/gui.c:840
+#: grecord/src/gui.c:839
 msgid "_Repeat the sound"
 msgstr "_Lặp lại âm thanh"
 
-#: grecord/src/gui.c:847
+#: grecord/src/gui.c:846
 msgid "Play the sound _once only."
 msgstr "Chơi chỉ một lần"
 
-#: grecord/src/gui.c:853
+#: grecord/src/gui.c:852
 msgid "Repeat _forever"
 msgstr "Lặp _hoài"
 
-#: grecord/src/gui.c:864
+#: grecord/src/gui.c:863
 msgid "_Number of times:"
 msgstr "_Số lần:"
 
@@ -1982,30 +2261,243 @@ msgstr "Xác định tập tin bắt đầu chơi"
 msgid "Sound recorder"
 msgstr "Bộ thu âm"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 8bit PCM"
 msgstr "Dạng thức Audio: 8bit PCM"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 16bit PCM"
 msgstr "Dạng thức Audio: 16bit PCM"
 
-#: grecord/src/preferences.c:213
+#: grecord/src/preferences.c:222
 #, c-format
 msgid "Sample rate: %s"
 msgstr "Tần số lấy mẫu: %s"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: mono"
 msgstr "Kênh: mono"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: stereo"
 msgstr "Kênh: stereo"
 
-#: grecord/src/sound.c:136
+#: grecord/src/sound.c:137
 msgid "Adding echo to sample..."
 msgstr "Đang thêm âm vang vào mẫu..."
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "Giới thiệu"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "Đóng"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "Đóng cửa sổ này"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "Nội dung"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr "Hiện trợ giúp cho Bộ thu âm"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr "Thông tin _tập tin"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "Thanh công cụ chính"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "Mở"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "Mở nhạc"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "Thoát"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "Thoát khỏi ứng dụng"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "Tập tin _gần đây"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "Thu âm"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "Chạy _Mixer"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "Chạy bộ trộn âm"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "Lưu"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "Lưu là"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "Lư_u là..."
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "Lưu tập tin hiện thời"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "Lưu tập tin hiện thời với tên khác"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "Hiện thông tin về tập tin hiện thời"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "Hiện thông tin về Bộ thu âm"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "Dừng thu"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "_Giới thiệu"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "Đón_g cửa sổ"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "_Nội dung"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "Điều _khiển"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "_Tập tin"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "_Mở..."
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "_Chơi"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "T_hoát"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "_Thu"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "_Lưu"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:263
+msgid "Failure instantiating main window"
+msgstr "Lỗi tạo cửa sổ chính"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:303
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr "Không thể nạp tài nguyên UI %s"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr "Cấu hình mặc định cho ứng dụng GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "GStreamer"
+msgstr "GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">Đang kiểm tra...</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "Audio"
+msgstr "Âm thanh"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "Audio _Input:"
+msgstr "Đầu _vào âm thanh:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio _Output:"
+msgstr "Đầu _ra âm thanh:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish"
+msgstr "Nhấn Đồng ý để hoàn tất"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "Default Sink"
+msgstr "Sink mặc định"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Default Source"
+msgstr "Nguồn mặc định"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "GStreamer Properties"
+msgstr "Thuộc tính GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Pipeline:"
+msgstr "Ống dẫn:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Test..."
+msgstr "Kiểm tra..."
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "Testing Pipeline"
+msgstr "Đang kiểm tra ống dẫn"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "Video _Input:"
+msgstr "Đầu _vào hình ảnh:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "Video _Output:"
+msgstr "Đầu _ra hình ảnh:"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:111
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr "Lỗi khởi tạo kiểm tra ống dẫn cho '%s'"
 
 #: vu-meter/main.c:120
 msgid ""
@@ -2076,8 +2568,36 @@ msgstr "Theo dõi âm lượng ngõ ra"
 msgid "Volume monitor"
 msgstr "Trình Theo Dõi Âm Lượng"
 
-#~ msgid "CDDBSlave 2 Properties"
-#~ msgstr "Thuộc tính CDDBSlave 2"
+#~ msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
+#~ msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
+
+#, fuzzy
+#~ msgid "(C) 2000 Andreas Hyden"
+#~ msgstr "Copyright (C)  2000 Andreas Hyden"
+
+#~ msgid "Gnome Volume Control"
+#~ msgstr "Bộ điều khiển âm lượng Gnome"
+
+#~ msgid "Copyright (C) 2001, 2002"
+#~ msgstr "Copyright (C) 2001, 2002"
+
+#~ msgid "A GNOME cd player"
+#~ msgstr "Bộ chơi CD Gnome"
+
+#~ msgid "_About Gnome-CD"
+#~ msgstr "_Giới thiệu Gnome-CD"
+
+#~ msgid "don't restore mixer-settings from configuration"
+#~ msgstr "không khôi phục thiết lập mixer từ cấu hình"
+
+#~ msgid "restore mixer-settings from configuration"
+#~ msgstr "khôi phục thiết lập mixer từ cấu hình"
+
+#~ msgid "initialise the mixer(s) from stored configuration and exit"
+#~ msgstr "khởi động mixer từ cấu hình được lưu rồi thoát"
+
+#~ msgid "don't save (modified) mixer-settings into configuration"
+#~ msgstr "không lưu cấu hình mixer (đã thay đổi)"
 
 #~ msgid "CDDB"
 #~ msgstr "CDDB"

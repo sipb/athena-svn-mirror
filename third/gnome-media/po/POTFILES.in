@@ -25,10 +25,17 @@ gnome-volume-control/gnome-volume-control.desktop.in
 grecord/gnome-sound-recorder.desktop.in
 grecord/gnome-sound-recorder.schemas.in.in
 grecord/src/grec.c
+grecord/src/gsr-window.c
 grecord/src/gui.c
 grecord/src/main.c
 grecord/src/preferences.c
 grecord/src/sound.c
+grecord/gsr.xml
+gstreamer-properties/gstreamer-properties.c
+gstreamer-properties/gstreamer-properties.desktop.in
+gstreamer-properties/gstreamer-properties.glade
+gstreamer-properties/pipeline-test-old.c
+gstreamer-properties/pipeline-tests.c
 vu-meter/main.c
 vu-meter/reclevel.desktop.in
 vu-meter/vumeter.desktop.in

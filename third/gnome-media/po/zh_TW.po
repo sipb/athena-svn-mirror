@@ -1,31 +1,63 @@
 # traditional Chinese translation of gnome-media.
-# Copyright (C) 1999-2002 Free Software Foundation, Inc.
+# Copyright (C) 1999-2003 Free Software Foundation, Inc.
 #
 # GNOME 1.x:
 # Fernando <bv1al@journalist.com.tw>, 1999.
 # Abel Cheung <maddog@linux.org.hk>, 2001-2002.
 #
 # GNOME 2.x:
-# Abel Cheung <maddog@linux.org.hk>, 2002.
+# Abel Cheung <maddog@linux.org.hk>, 2002-2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-media 2.0.0\n"
-"POT-Creation-Date: 2002-11-18 23:59+0000\n"
-"PO-Revision-Date: 2002-06-23 04:17+0800\n"
+"Project-Id-Version: gnome-media 2.1.3\n"
+"POT-Creation-Date: 2003-01-08 03:40+0800\n"
+"PO-Revision-Date: 2003-01-11 10:44+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "連上指定的伺服器地址來進行 CD 資訊查詢"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
+msgid "Port"
+msgstr "連接埠"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3
+msgid "Server name"
+msgstr "伺服器名稱"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "The hostname that will be sent with all queries"
+msgstr "進行查詢時使用的主機名稱"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "The port that the server is running the database on"
+msgstr "伺服器的資料庫所使用的連接埠"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The username"
+msgstr "用戶名稱"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The username that will be sent with all queries"
+msgstr "進行查詢所使用的用戶名稱"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid "Your hostname"
+msgstr "閣下的主機名稱"
+
 #: cddb-slave2/cddb-disclosure.c:245
 msgid "Expander Size"
-msgstr ""
+msgstr "箭頭大小"
 
 #: cddb-slave2/cddb-disclosure.c:246
 msgid "Size of the expander arrow"
-msgstr ""
+msgstr "用作展開資料的箭頭的大小"
 
 #. Log on info
 #: cddb-slave2/cddb-slave-capplet.c:648
@@ -48,57 +80,55 @@ msgstr "送出其它資料(_O)..."
 msgid "N_ame:"
 msgstr "名稱(_A)："
 
-#: cddb-slave2/cddb-slave-capplet.c:710
+#: cddb-slave2/cddb-slave-capplet.c:711
 msgid "_Hostname:"
 msgstr "主機名稱(_H)："
 
 #. Server info
-#: cddb-slave2/cddb-slave-capplet.c:731 cddb-slave2/cddb-slave-capplet.c:771
+#: cddb-slave2/cddb-slave-capplet.c:733 cddb-slave2/cddb-slave-capplet.c:773
 msgid "Server"
 msgstr "伺服器"
 
-#: cddb-slave2/cddb-slave-capplet.c:739
+#: cddb-slave2/cddb-slave-capplet.c:741
 msgid "FreeDB _round robin server"
-msgstr "FreeDB round robin 伺服器(_R)"
+msgstr "輪流使用 FreeDB 伺服器(_R)"
 
-#: cddb-slave2/cddb-slave-capplet.c:745
+#: cddb-slave2/cddb-slave-capplet.c:747
 msgid "Other _FreeDB server..."
 msgstr "其它 _FreeDB 伺服器..."
 
-#: cddb-slave2/cddb-slave-capplet.c:774
-msgid "Port"
-msgstr "連接埠"
-
-#: cddb-slave2/cddb-slave-capplet.c:777
+#: cddb-slave2/cddb-slave-capplet.c:779
 msgid "Location"
 msgstr "位置"
 
-#: cddb-slave2/cddb-slave-capplet.c:783
+#: cddb-slave2/cddb-slave-capplet.c:785
 msgid "Update server list"
 msgstr "更新伺服器清單"
 
-#: cddb-slave2/cddb-slave-capplet.c:790
+#: cddb-slave2/cddb-slave-capplet.c:792
 msgid "Other _server..."
 msgstr "其它伺服器(_S)..."
 
-#: cddb-slave2/cddb-slave-capplet.c:802
+#: cddb-slave2/cddb-slave-capplet.c:804
 msgid "Hostname:"
 msgstr "主機名稱："
 
-#: cddb-slave2/cddb-slave-capplet.c:814
+#: cddb-slave2/cddb-slave-capplet.c:816
 msgid "_Port:"
 msgstr "連接埠(_P)："
 
-#: cddb-slave2/cddb-slave-capplet.c:863
-#, fuzzy
+#: cddb-slave2/cddb-slave-capplet.c:866
 msgid "CD Database Preferences"
-msgstr "Gnome CD 播放程式偏好設定"
+msgstr "CD 資料庫偏好設定"
 
 #: cddb-slave2/cddb-slave.c:213
 msgid "Unknown / Unknown"
 msgstr "不明 / 不明"
 
-#: cddb-slave2/cddb-slave.c:219
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:219 grecord/src/gsr-window.c:760
+#: grecord/src/gsr-window.c:769 grecord/src/gsr-window.c:778
+#: grecord/src/gsr-window.c:788 grecord/src/gsr-window.c:1108
 msgid "Unknown"
 msgstr "不明"
 
@@ -127,17 +157,17 @@ msgid "Artist and Title"
 msgstr "藝人及標題"
 
 #: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
-#: gnome-cd/gnome-cd.c:125
+#: gnome-cd/gnome-cd.c:130
 msgid "Unknown track"
 msgstr "不明的音軌"
 
 #: cddb-slave2/cddb-slave.desktop.in.h:1
 msgid "CD Database"
-msgstr ""
+msgstr "CD 資料庫"
 
 #: cddb-slave2/cddb-slave.desktop.in.h:2
 msgid "Modify your CD database preferences"
-msgstr ""
+msgstr "修改閣下的 CD 資料庫偏好設定"
 
 #: cddb-slave2/cddb-track-editor.c:78
 msgid "Blues"
@@ -157,15 +187,15 @@ msgstr "舞曲"
 
 #: cddb-slave2/cddb-track-editor.c:82
 msgid "Disco"
-msgstr ""
+msgstr "Disco"
 
 #: cddb-slave2/cddb-track-editor.c:83
 msgid "Funk"
-msgstr ""
+msgstr "Funk"
 
 #: cddb-slave2/cddb-track-editor.c:84
 msgid "Grunge"
-msgstr "油漬搖滾 (Grunge)"
+msgstr "油漬搖滾(Grunge)"
 
 #: cddb-slave2/cddb-track-editor.c:85
 msgid "Hip-Hop"
@@ -201,27 +231,27 @@ msgstr "節奏藍調"
 
 #: cddb-slave2/cddb-track-editor.c:93
 msgid "Rap"
-msgstr "說唱樂 (Rap)"
+msgstr "饒舌樂(Rap)"
 
 #: cddb-slave2/cddb-track-editor.c:94
 msgid "Reggae"
-msgstr "雷鬼樂 (Reggae)"
+msgstr "雷鬼樂(Reggae)"
 
 #: cddb-slave2/cddb-track-editor.c:95
 msgid "Rock"
-msgstr ""
+msgstr "搖滾樂"
 
 #: cddb-slave2/cddb-track-editor.c:96
 msgid "Techno"
-msgstr "電子舞曲 (Techno)"
+msgstr "科技舞曲(Techno)"
 
 #: cddb-slave2/cddb-track-editor.c:97
 msgid "Industrial"
-msgstr "工業音樂 (Industrial)"
+msgstr "工業搖滾(Industrial)"
 
 #: cddb-slave2/cddb-track-editor.c:98
 msgid "Alternative"
-msgstr "另類金屬音樂"
+msgstr "另類音樂"
 
 #: cddb-slave2/cddb-track-editor.c:99
 msgid "Ska"
@@ -229,7 +259,7 @@ msgstr "Ska"
 
 #: cddb-slave2/cddb-track-editor.c:100
 msgid "Death Metal"
-msgstr ""
+msgstr "死金屬音樂(Death Metal)"
 
 #: cddb-slave2/cddb-track-editor.c:101
 msgid "Pranks"
@@ -241,11 +271,11 @@ msgstr "電影原聲大碟"
 
 #: cddb-slave2/cddb-track-editor.c:103
 msgid "Euro-Techno"
-msgstr "歐陸電子舞曲 (Euro-Techno)"
+msgstr "歐陸科技舞曲(Euro-Techno)"
 
 #: cddb-slave2/cddb-track-editor.c:104
 msgid "Ambient"
-msgstr "環境音樂 (Ambient)"
+msgstr "環境音樂(Ambient)"
 
 #: cddb-slave2/cddb-track-editor.c:105
 msgid "Trip-Hop"
@@ -255,17 +285,18 @@ msgstr "Trip-Hop"
 msgid "Vocal"
 msgstr "聲樂"
 
+# damn those who created these ID3 genres -- Abel
 #: cddb-slave2/cddb-track-editor.c:107
 msgid "Jazz+Funk"
-msgstr ""
+msgstr "爵士+Funk"
 
 #: cddb-slave2/cddb-track-editor.c:108
 msgid "Fusion"
-msgstr "融合爵士樂 (Fusion)"
+msgstr "融合爵士樂(Fusion)"
 
 #: cddb-slave2/cddb-track-editor.c:109
 msgid "Trance"
-msgstr ""
+msgstr "Trance"
 
 #: cddb-slave2/cddb-track-editor.c:110
 msgid "Classical"
@@ -277,7 +308,7 @@ msgstr "樂器演奏"
 
 #: cddb-slave2/cddb-track-editor.c:112
 msgid "Acid"
-msgstr ""
+msgstr "迷幻音樂(Acid)"
 
 #: cddb-slave2/cddb-track-editor.c:113
 msgid "House"
@@ -297,7 +328,7 @@ msgstr "福音音樂"
 
 #: cddb-slave2/cddb-track-editor.c:117
 msgid "Noise"
-msgstr ""
+msgstr "噪音音樂(Noise)"
 
 #: cddb-slave2/cddb-track-editor.c:118
 msgid "Alt"
@@ -307,19 +338,19 @@ msgstr ""
 #. max 24 chars
 #: cddb-slave2/cddb-track-editor.c:119 gmix/device_labels_alsa.h:37
 msgid "Bass"
-msgstr "低音"
+msgstr "貝斯"
 
 #: cddb-slave2/cddb-track-editor.c:120
 msgid "Soul"
-msgstr "靈魂樂 (Soul)"
+msgstr "靈魂樂(Soul)"
 
 #: cddb-slave2/cddb-track-editor.c:121
 msgid "Punk"
-msgstr ""
+msgstr "龐克音樂(Punk)"
 
 #: cddb-slave2/cddb-track-editor.c:122
 msgid "Space"
-msgstr "太空音樂"
+msgstr "太空搖滾"
 
 #: cddb-slave2/cddb-track-editor.c:123
 msgid "Meditative"
@@ -339,15 +370,15 @@ msgstr ""
 
 #: cddb-slave2/cddb-track-editor.c:127
 msgid "Gothic"
-msgstr "歌德式音樂 (Gothic)"
+msgstr "歌德搖滾(Gothic)"
 
 #: cddb-slave2/cddb-track-editor.c:128
 msgid "Darkwave"
-msgstr ""
+msgstr "Darkwave"
 
 #: cddb-slave2/cddb-track-editor.c:129
 msgid "Techno-Industrial"
-msgstr ""
+msgstr "電子工業搖滾"
 
 #: cddb-slave2/cddb-track-editor.c:130
 msgid "Electronic"
@@ -355,11 +386,11 @@ msgstr "電子音樂"
 
 #: cddb-slave2/cddb-track-editor.c:131
 msgid "Pop-Folk"
-msgstr ""
+msgstr "流行民歌"
 
 #: cddb-slave2/cddb-track-editor.c:132
 msgid "Eurodance"
-msgstr "歐陸舞曲 (Eurodance)"
+msgstr "歐陸舞曲(Eurodance)"
 
 #: cddb-slave2/cddb-track-editor.c:133
 msgid "Dream"
@@ -371,7 +402,7 @@ msgstr "南方搖滾"
 
 #: cddb-slave2/cddb-track-editor.c:135
 msgid "Comedy"
-msgstr ""
+msgstr "喜劇音樂"
 
 #: cddb-slave2/cddb-track-editor.c:136
 msgid "Cult"
@@ -379,11 +410,11 @@ msgstr ""
 
 #: cddb-slave2/cddb-track-editor.c:137
 msgid "Gangsta Rap"
-msgstr ""
+msgstr "幫派饒舌樂(Gangsta Rap)"
 
 #: cddb-slave2/cddb-track-editor.c:138
 msgid "Top 40"
-msgstr ""
+msgstr "流行歌曲排行榜首四十位"
 
 #: cddb-slave2/cddb-track-editor.c:139
 msgid "Christian Rap"
@@ -391,11 +422,11 @@ msgstr "基督說唱樂"
 
 #: cddb-slave2/cddb-track-editor.c:140
 msgid "Pop/Funk"
-msgstr ""
+msgstr "流行樂/Funk"
 
 #: cddb-slave2/cddb-track-editor.c:141
 msgid "Jungle"
-msgstr ""
+msgstr "叢林音樂(Jungle)"
 
 #: cddb-slave2/cddb-track-editor.c:142
 msgid "Native American"
@@ -403,11 +434,11 @@ msgstr "美國本土音樂"
 
 #: cddb-slave2/cddb-track-editor.c:143
 msgid "Cabaret"
-msgstr ""
+msgstr "夜總會音樂"
 
 #: cddb-slave2/cddb-track-editor.c:144
 msgid "New Wave"
-msgstr ""
+msgstr "新浪潮音樂(New Wave)"
 
 #: cddb-slave2/cddb-track-editor.c:145
 msgid "Psychedelic"
@@ -415,11 +446,11 @@ msgstr "迷幻音樂"
 
 #: cddb-slave2/cddb-track-editor.c:146
 msgid "Rave"
-msgstr ""
+msgstr "銳舞音樂(Rave)"
 
 #: cddb-slave2/cddb-track-editor.c:147
 msgid "Showtunes"
-msgstr ""
+msgstr "歌舞劇音樂(Showtunes)"
 
 #: cddb-slave2/cddb-track-editor.c:148
 msgid "Trailer"
@@ -427,23 +458,23 @@ msgstr "電影預告片音樂"
 
 #: cddb-slave2/cddb-track-editor.c:149
 msgid "Lo-Fi"
-msgstr "低度傳真音樂 (Lo-Fi)"
+msgstr "Lo-Fi"
 
 #: cddb-slave2/cddb-track-editor.c:150
 msgid "Tribal"
-msgstr ""
+msgstr "部落音樂"
 
 #: cddb-slave2/cddb-track-editor.c:151
 msgid "Acid Punk"
-msgstr ""
+msgstr "迷幻龐克(Acid Punk)"
 
 #: cddb-slave2/cddb-track-editor.c:152
 msgid "Acid Jazz"
-msgstr "迷幻爵士 (Acid Jazz)"
+msgstr "迷幻爵士(Acid Jazz)"
 
 #: cddb-slave2/cddb-track-editor.c:153
 msgid "Polka"
-msgstr "波爾卡舞曲 (Polka)"
+msgstr "波爾卡舞曲(Polka)"
 
 #: cddb-slave2/cddb-track-editor.c:154
 msgid "Retro"
@@ -451,15 +482,15 @@ msgstr ""
 
 #: cddb-slave2/cddb-track-editor.c:155
 msgid "Musical"
-msgstr "音樂劇 (Musical)"
+msgstr "音樂劇"
 
 #: cddb-slave2/cddb-track-editor.c:156
 msgid "Rock & Roll"
-msgstr "搖滾音樂"
+msgstr "搖滾樂"
 
 #: cddb-slave2/cddb-track-editor.c:157
 msgid "Hard Rock"
-msgstr "硬式搖滾 (Hard Rock)"
+msgstr "硬式搖滾(Hard Rock)"
 
 #: cddb-slave2/cddb-track-editor.c:158
 msgid "Folk"
@@ -471,11 +502,11 @@ msgstr "民謠搖滾"
 
 #: cddb-slave2/cddb-track-editor.c:160
 msgid "National Folk"
-msgstr ""
+msgstr "國家民族音樂"
 
 #: cddb-slave2/cddb-track-editor.c:161
 msgid "Swing"
-msgstr "搖擺樂 (Swing)"
+msgstr "搖擺樂(Swing)"
 
 #: cddb-slave2/cddb-track-editor.c:162
 msgid "Fast-Fusion"
@@ -483,7 +514,7 @@ msgstr ""
 
 #: cddb-slave2/cddb-track-editor.c:163
 msgid "Bebop"
-msgstr "咆勃爵士 (Bebop)"
+msgstr "Bebop"
 
 #: cddb-slave2/cddb-track-editor.c:164
 msgid "Latin"
@@ -491,27 +522,27 @@ msgstr "拉丁音樂"
 
 #: cddb-slave2/cddb-track-editor.c:165
 msgid "Revival"
-msgstr ""
+msgstr "復興音樂"
 
 #: cddb-slave2/cddb-track-editor.c:166
 msgid "Celtic"
-msgstr ""
+msgstr "克爾特音樂(Celtic)"
 
 #: cddb-slave2/cddb-track-editor.c:167
 msgid "Bluegrass"
-msgstr "草根藍調 (Bluegrass)"
+msgstr "草根藍調(Bluegrass)"
 
 #: cddb-slave2/cddb-track-editor.c:168
 msgid "Avantgarde"
-msgstr ""
+msgstr "前衛爵士"
 
 #: cddb-slave2/cddb-track-editor.c:169
 msgid "Gothic Rock"
-msgstr "歌德式搖滾 (Gothic Rock)"
+msgstr "歌德搖滾(Gothic Rock)"
 
 #: cddb-slave2/cddb-track-editor.c:170
 msgid "Progressive Rock"
-msgstr "前衛搖滾 (Progressive Rock)"
+msgstr "前衛搖滾(Progressive Rock)"
 
 #: cddb-slave2/cddb-track-editor.c:171
 msgid "Psychedelic Rock"
@@ -523,7 +554,7 @@ msgstr "交響搖滾"
 
 #: cddb-slave2/cddb-track-editor.c:173
 msgid "Slow Rock"
-msgstr ""
+msgstr "慢搖滾(Slow Rock)"
 
 #: cddb-slave2/cddb-track-editor.c:174
 msgid "Big Band"
@@ -535,11 +566,11 @@ msgstr "合唱"
 
 #: cddb-slave2/cddb-track-editor.c:176
 msgid "Easy Listening"
-msgstr ""
+msgstr "輕音樂"
 
 #: cddb-slave2/cddb-track-editor.c:177
 msgid "Acoustic"
-msgstr ""
+msgstr "原音音樂"
 
 #: cddb-slave2/cddb-track-editor.c:178
 msgid "Humour"
@@ -571,19 +602,19 @@ msgstr "交響曲"
 
 #: cddb-slave2/cddb-track-editor.c:185
 msgid "Booty Bass"
-msgstr ""
+msgstr "Booty Bass"
 
 #: cddb-slave2/cddb-track-editor.c:186
 msgid "Primus"
-msgstr ""
+msgstr "Primus"
 
 #: cddb-slave2/cddb-track-editor.c:187
 msgid "Porn Groove"
-msgstr ""
+msgstr "Porn Groove"
 
 #: cddb-slave2/cddb-track-editor.c:188
 msgid "Satire"
-msgstr ""
+msgstr "諷刺曲"
 
 #: cddb-slave2/cddb-track-editor.c:189
 msgid "Slow Jam"
@@ -603,19 +634,22 @@ msgstr "森巴"
 
 #: cddb-slave2/cddb-track-editor.c:193
 msgid "Folklore"
-msgstr ""
+msgstr "民俗音樂"
 
 #: cddb-slave2/cddb-track-editor.c:194
 msgid "Ballad"
-msgstr "芭樂曲 (Ballad)"
+msgstr "情歌"
 
 #: cddb-slave2/cddb-track-editor.c:195
 msgid "Power Ballad"
-msgstr ""
+msgstr "強力情歌(Power Ballad)"
 
 #: cddb-slave2/cddb-track-editor.c:196
 msgid "Rythmic Soul"
-msgstr ""
+msgstr "節奏靈魂樂(Rhythmic Soul)"
+
+msgid "Rhythmic Soul"
+msgstr "節奏靈魂樂(Rhythmic Soul)"
 
 #: cddb-slave2/cddb-track-editor.c:197
 msgid "Freestyle"
@@ -627,7 +661,7 @@ msgstr "二重奏"
 
 #: cddb-slave2/cddb-track-editor.c:199
 msgid "Punk Rock"
-msgstr "龐克搖滾 (Punk Rock)"
+msgstr "龐克搖滾(Punk Rock)"
 
 #: cddb-slave2/cddb-track-editor.c:200
 msgid "Drum Solo"
@@ -643,15 +677,16 @@ msgstr "Euro-House"
 
 #: cddb-slave2/cddb-track-editor.c:203
 msgid "Dance Hall"
-msgstr ""
+msgstr "舞廳音樂"
 
 #: cddb-slave2/cddb-track-editor.c:204
 msgid "Goa"
 msgstr "Goa"
 
+# Bad, I don't want to translate this -- Abel
 #: cddb-slave2/cddb-track-editor.c:205
 msgid "Drum & Bass"
-msgstr "鼓與低音"
+msgstr "鼓及貝斯"
 
 #: cddb-slave2/cddb-track-editor.c:206
 msgid "Club-House"
@@ -659,7 +694,7 @@ msgstr "Club-House"
 
 #: cddb-slave2/cddb-track-editor.c:207
 msgid "Hardcore"
-msgstr ""
+msgstr "Hardcore"
 
 #: cddb-slave2/cddb-track-editor.c:208
 msgid "Terror"
@@ -667,7 +702,7 @@ msgstr ""
 
 #: cddb-slave2/cddb-track-editor.c:209
 msgid "Indie"
-msgstr "獨立創作音樂 (Indie)"
+msgstr "獨立創作音樂(Indie)"
 
 #: cddb-slave2/cddb-track-editor.c:210
 msgid "BritPop"
@@ -687,19 +722,19 @@ msgstr ""
 
 #: cddb-slave2/cddb-track-editor.c:214
 msgid "Christian Gangsta Rap"
-msgstr ""
+msgstr "基督教幫派饒舌樂(Christian Gangsta Rap)"
 
 #: cddb-slave2/cddb-track-editor.c:215
 msgid "Heavy Metal"
-msgstr "重金屬音樂 (Heavy Metal)"
+msgstr "重金屬音樂(Heavy Metal)"
 
 #: cddb-slave2/cddb-track-editor.c:216
 msgid "Black Metal"
-msgstr "黑金屬音樂 (Black Metal)"
+msgstr "黑金屬音樂(Black Metal)"
 
 #: cddb-slave2/cddb-track-editor.c:217
 msgid "Crossover"
-msgstr "跨界音樂 (Crossover)"
+msgstr "跨界音樂(Crossover)"
 
 #: cddb-slave2/cddb-track-editor.c:218
 msgid "Contemporary Christian"
@@ -719,11 +754,11 @@ msgstr "Salsa"
 
 #: cddb-slave2/cddb-track-editor.c:222
 msgid "Thrash Metal"
-msgstr ""
+msgstr "鞭擊金屬音樂(Thrash Metal)"
 
 #: cddb-slave2/cddb-track-editor.c:223
 msgid "Anime"
-msgstr "動漫畫 (Anime)"
+msgstr "動漫畫(Anime)"
 
 #: cddb-slave2/cddb-track-editor.c:224
 msgid "JPop"
@@ -731,7 +766,7 @@ msgstr "日本流行曲"
 
 #: cddb-slave2/cddb-track-editor.c:225
 msgid "Synthpop"
-msgstr ""
+msgstr "Synthpop"
 
 #: cddb-slave2/cddb-track-editor.c:226
 msgid "Nu-Metal"
@@ -744,12 +779,12 @@ msgstr "藝術搖滾"
 #: cddb-slave2/cddb-track-editor.c:525
 #, c-format
 msgid "Editing Disc ID: %s"
-msgstr "準備編輯的光碟的識別碼：%s"
+msgstr "修改光碟的識別碼：%s"
 
 #. Info label
 #: cddb-slave2/cddb-track-editor.c:615
 msgid "Editing Disc ID: "
-msgstr "準備編輯的光碟的識別碼："
+msgstr "修改光碟的識別碼："
 
 #: cddb-slave2/cddb-track-editor.c:626
 msgid "_Artist:"
@@ -849,6 +884,7 @@ msgid "CD"
 msgstr "CD"
 
 #: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
+#: gstreamer-properties/gstreamer-properties.glade.h:13
 msgid "Video"
 msgstr "Video"
 
@@ -1052,103 +1088,122 @@ msgstr "Monitor"
 
 #: gmix/gmix.c:115
 msgid "Help"
-msgstr "說明"
+msgstr "求助"
 
-#: gmix/gmix.c:147
-msgid "don't restore mixer-settings from configuration"
-msgstr "不要由設定檔讀入混音設定值"
+#: gmix/gmix.c:146
+msgid "Mixer device to use"
+msgstr "使用的混音裝置"
 
-#: gmix/gmix.c:148
-msgid "restore mixer-settings from configuration"
-msgstr "由設定檔讀入混音設定值"
-
-#: gmix/gmix.c:149
-msgid "initialise the mixer(s) from stored configuration and exit"
-msgstr "根據已儲存的組態來初始化混音器並離開"
-
-#: gmix/gmix.c:150
-msgid "don't save (modified) mixer-settings into configuration"
-msgstr "不要將（已修改的）混音設定值存入設定檔"
-
-#: gmix/gmix.c:382
+#: gmix/gmix.c:327
+#, c-format
 msgid ""
-"I was not able to open your audio device.\n"
-"Please check that you have permission to open /dev/mixer\n"
-"and make sure you have sound support compiled into your kernel."
+"Volume control is unable to run correctly.\n"
+"\n"
+"Unable to open audio device '%s'.\n"
+"Please check that you have permissions to open '%s'\n"
+"and that you have sound support in your kernel.\n"
+"\n"
+"Press Quit to exit Volume control"
 msgstr ""
-"無法開啟音效裝置。\n"
-"請檢查是否有足夠權限開啟 /dev/mixer\n"
-"及請確定核心裡已有音效支援。"
+"音量控制程式無法正常執行。\n"
+"\n"
+"無法開啟音效裝置‘%s’。\n"
+"請檢查是否有足夠權限開啟 ‘%s’\n"
+"及核心裡是否有音效支援。\n"
+"\n"
+"請按「離開」退出音量控制程式"
 
-#: gmix/gmix.c:603
+#: gmix/gmix.c:381
+msgid ""
+"Volume control is unable to run correctly.\n"
+"\n"
+"Press the details button for more details on the reasons for failure.\n"
+"\n"
+"Press Quit to quit Volume control"
+msgstr ""
+"音量控制程式無法正常執行。\n"
+"\n"
+"請按「詳細資料」按鈕獲取有關錯誤的詳細原因。\n"
+"\n"
+"請按「離開」退出音量控制程式"
+
+#: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
+msgid "_Details"
+msgstr "詳細資料(_D)"
+
+#: gmix/gmix.c:387
+msgid "Invalid mixer device"
+msgstr "無效的混音裝置"
+
+#: gmix/gmix.c:626
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
 "OSS version %d.%d.%d, and your system is running\n"
 "a version prior to 3.6.0.\n"
 msgstr ""
-"警告：此版本的 Gnome 音量控制程式是配合 OSS 版本 %d.%d.%d\n"
+"警告：此版本的 GNOME 音量控制程式是配合 OSS 版本 %d.%d.%d\n"
 "編譯的，但系統的 OSS 版本舊於 3.6.0。\n"
 
-#: gmix/gmix.c:611
+#: gmix/gmix.c:634
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
 "OSS version %d.%d.%d, and your system is running\n"
 "version %d.%d.%d.\n"
 msgstr ""
-"警告：此版本的 Gnome 音量控制程式是配合 OSS 版本 %d.%d.%d\n"
+"警告：此版本的 GNOME 音量控制程式是配合 OSS 版本 %d.%d.%d\n"
 "編譯的，但系統的 OSS 版本是 %d.%d.%d。\n"
 
-#: gmix/gmix.c:1065
+#: gmix/gmix.c:1088
 #, c-format
 msgid "left %s"
 msgstr "左邊 %s"
 
-#: gmix/gmix.c:1091
+#: gmix/gmix.c:1114
 #, c-format
 msgid "Right %s"
 msgstr "右邊 %s"
 
-#: gmix/gmix.c:1184
+#: gmix/gmix.c:1207
 msgid "Lock"
 msgstr "鎖定"
 
-#: gmix/gmix.c:1197
+#: gmix/gmix.c:1220
 #, c-format
 msgid "%s Lock"
 msgstr "鎖定 %s"
 
-#: gmix/gmix.c:1208
+#: gmix/gmix.c:1231
 msgid "Mute"
 msgstr "靜音"
 
-#: gmix/gmix.c:1221
+#: gmix/gmix.c:1244
 #, c-format
 msgid "%s Mute"
 msgstr "%s 靜音"
 
-#: gmix/gmix.c:1235
+#: gmix/gmix.c:1258
 msgid "Rec."
 msgstr "錄音"
 
-#: gmix/gmix.c:1247
+#: gmix/gmix.c:1270
 #, c-format
 msgid "%s Record"
 msgstr "%s 錄音"
 
-#: gmix/gmix.c:1319 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:2
 msgid "Volume Control"
 msgstr "音量控制"
 
-#: gmix/gmix.c:1725
-msgid "Gnome Volume Control"
-msgstr "Gnome 音量控制"
+#: gmix/gmix.c:1748
+msgid "GNOME Volume Control"
+msgstr "GNOME 音量控制程式"
 
-#: gmix/gmix.c:1728
-msgid "This is a mixer for sound devices"
-msgstr "音效裝置用的混音器"
+#: gmix/gmix.c:1751
+msgid "A mixer for sound devices"
+msgstr "給音效裝置用的混音程式"
 
 #: gmix/gnome-volume-control.desktop.in.in.h:1
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:1
@@ -1170,7 +1225,7 @@ msgstr "將標籤名稱重設為預設值(_R)"
 
 #: gmix/prefs.c:313
 msgid "Gnome Volume Control Preferences"
-msgstr "Gnome 音量控制偏好設定"
+msgstr "GNOME 音量控制偏好設定"
 
 #: gnome-cd/access/cddisplayaccessible.c:117
 msgid "CD Display"
@@ -1180,7 +1235,7 @@ msgstr "CD 顯示畫面"
 msgid ""
 "Displays information about the currently playing album, artist and time "
 "elapsed"
-msgstr "顯示有關目前播放的音樂專輯資訊、藝人名稱及已播放的時間"
+msgstr "顯示有關目前播放的音樂專輯資訊、藝人名稱及播放的時間"
 
 #: gnome-cd/access/cddisplayaccessible.c:188
 msgid "Time Line"
@@ -1214,72 +1269,97 @@ msgstr "專輯欄位"
 msgid "Line for displaying the name of the album"
 msgstr "顯示專輯名稱的欄位"
 
-#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:164 gnome-cd/callbacks.c:263
-#: gnome-cd/callbacks.c:531 gnome-cd/gnome-cd.c:555 grecord/src/gui.c:233
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:165 gnome-cd/callbacks.c:264
+#: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
+#: grecord/gsr.xml.h:13
 msgid "Play"
 msgstr "播放"
 
-#: gnome-cd/callbacks.c:149 gnome-cd/callbacks.c:195 gnome-cd/callbacks.c:225
-#: gnome-cd/callbacks.c:305 gnome-cd/callbacks.c:345 gnome-cd/callbacks.c:369
-#: gnome-cd/callbacks.c:410 gnome-cd/callbacks.c:497
+#: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
+#: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
+#: gnome-cd/callbacks.c:411 gnome-cd/callbacks.c:499
 msgid "Pause"
 msgstr "暫停"
 
-#: gnome-cd/callbacks.c:603
-msgid "Disc error"
-msgstr "光碟出現錯誤"
+#: gnome-cd/callbacks.c:530
+#, c-format
+msgid "Playing %s - %s"
+msgstr "正在播放 %s ─ %s"
 
-#: gnome-cd/callbacks.c:636 gnome-cd/callbacks.c:647
+#: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
 msgid "Unknown Artist"
 msgstr "藝人身份不詳"
 
-#: gnome-cd/callbacks.c:639 gnome-cd/callbacks.c:651
+#: gnome-cd/callbacks.c:532 gnome-cd/callbacks.c:665 gnome-cd/callbacks.c:677
 msgid "Unknown Album"
 msgstr "專輯標題不詳"
 
-#: gnome-cd/callbacks.c:690
+#: gnome-cd/callbacks.c:534 grecord/src/gui.c:824
+msgid "Playing"
+msgstr "播放中"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:557
+msgid "Paused"
+msgstr "暫停"
+
+#. Update tray icon tooltip
+#: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
+#: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "CD 播放程式"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:620
+msgid "Stopped"
+msgstr "已停止"
+
+#: gnome-cd/callbacks.c:626
+msgid "Disc error"
+msgstr "光碟出現錯誤"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
 msgid "No disc"
 msgstr "沒有光碟"
 
-#: gnome-cd/callbacks.c:716
+#: gnome-cd/callbacks.c:742
 msgid "Drive open"
 msgstr "光碟匣已開啟"
 
-#: gnome-cd/callbacks.c:740
+#: gnome-cd/callbacks.c:766
 msgid "Data CD"
-msgstr ""
+msgstr "數據 CD"
 
-#: gnome-cd/callbacks.c:762
+#. Updated the tray icon tooltip
+#: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
 msgid "No Cdrom"
-msgstr ""
+msgstr "沒有光碟"
 
-#: gnome-cd/callbacks.c:774
+#: gnome-cd/callbacks.c:803
 msgid "Drive Error"
 msgstr "光碟機出現錯誤"
 
-#: gnome-cd/callbacks.c:795
-msgid "Copyright (C) 2001, 2002"
-msgstr "版權所有 (C) 2001, 2002"
+#: gnome-cd/callbacks.c:825
+msgid "A CD player for GNOME"
+msgstr "適用於 GNOME 的 CD 播放程式"
 
-#: gnome-cd/callbacks.c:796
-msgid "A GNOME cd player"
-msgstr "GNOME CD 播放程式"
-
-#: gnome-cd/cdrom.c:362
+#: gnome-cd/cdrom.c:367
 #, c-format
 msgid "You do not seem to have permission to access %s."
-msgstr "似乎沒有存取 %s 的權限。"
+msgstr "閣下似乎沒有存取 %s 的權限。"
 
-#: gnome-cd/cdrom.c:368
+#: gnome-cd/cdrom.c:373
 #, c-format
 msgid ""
 "%s does not appear to point to a valid CD device. This may be because:\n"
-"a) CD support is not compiled into Linux\n"
+"a) CD support is not present in your machine\n"
 "b) You do not have the correct permissions to access the CD drive\n"
 "c) %s is not the CD drive.\n"
 msgstr ""
 "%s 似乎不是有效的 CD 裝置。可能的原因包括：\n"
-"a) 此 Linux 系統不支援 CD\n"
+"a) 系統不支援 CD\n"
 "b) 沒有正確的權限存取光碟機\n"
 "c) %s 不是光碟機\n"
 
@@ -1291,219 +1371,306 @@ msgstr "藝人身份不詳"
 msgid "Unknown disc"
 msgstr "光碟內容不詳"
 
-#: gnome-cd/gnome-cd.c:51 gnome-cd/gnome-cd.c:441
-msgid "Gnome CD Player"
-msgstr "Gnome CD 播放程式"
-
-#: gnome-cd/gnome-cd.c:151
+#: gnome-cd/gnome-cd.c:156
 #, c-format
 msgid "%d - Unknown"
-msgstr "%d - 不明"
+msgstr "%d ─ 不明"
 
-#: gnome-cd/gnome-cd.c:295
+#: gnome-cd/gnome-cd.c:300
 msgid "P_revious track"
 msgstr "上一個音軌(_R)"
 
-#: gnome-cd/gnome-cd.c:296
+#: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
 msgid "_Stop"
 msgstr "停止(_S)"
 
-#: gnome-cd/gnome-cd.c:297
+#: gnome-cd/gnome-cd.c:302
 msgid "_Play / Pause"
 msgstr "播放/暫停(_P)"
 
-#: gnome-cd/gnome-cd.c:298
+#: gnome-cd/gnome-cd.c:303
 msgid "_Next track"
 msgstr "下一個音軌(_N)"
 
-#: gnome-cd/gnome-cd.c:299
+#: gnome-cd/gnome-cd.c:304
 msgid "_Eject disc"
 msgstr "退片(_E)"
 
-#: gnome-cd/gnome-cd.c:300
-#, fuzzy
+#: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
 msgid "_Help"
-msgstr "說明"
+msgstr "求助(_H)"
 
-#: gnome-cd/gnome-cd.c:301
-msgid "_About Gnome-CD"
-msgstr "關於 Gnome-CD(_A)"
+#: gnome-cd/gnome-cd.c:306
+msgid "_About CD player"
+msgstr "關於 CD 播放程式(_A)"
 
-#: gnome-cd/gnome-cd.c:375
+#: gnome-cd/gnome-cd.c:414
 msgid ""
-"There is no CD device set. This means that GnomeCD\n"
-"will be unable to run. Press Set device to go to a dialog\n"
-"where you can set the device, or click Quit to quit GnomeCD"
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
 msgstr ""
-"目前未有設定任何 CD 裝置。這表示 GnomeCD 無法執行。\n"
-"請按「設定裝置」跳至設定 CD 裝置的對話窗，\n"
-"或按「離開」退出 GnomeCD。"
+"目前未有設定任何 CD 裝置。這表示 CD 播放程式\n"
+"無法執行。請按「設定裝置」來顯示設定 CD 裝置\n"
+"的對話窗，或按「離開」退出 CD 播放程式。"
 
-#: gnome-cd/gnome-cd.c:379 gnome-cd/gnome-cd.c:418
+#: gnome-cd/gnome-cd.c:418
 msgid "Set device"
 msgstr "設定裝置"
 
-#: gnome-cd/gnome-cd.c:381
+#: gnome-cd/gnome-cd.c:420
 msgid "No CD device"
 msgstr "沒有 CD 裝置"
 
-#: gnome-cd/gnome-cd.c:414
-#, c-format
+#: gnome-cd/gnome-cd.c:474
 msgid ""
-"%s\n"
-"This means that GnomeCD will be unable to run correctly. Press Set device to "
-"go to a dialog where you can set the device, or click Quit to quit GnomeCD"
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
 msgstr ""
-"%s\n"
-"這表示 GnomeCD 無法正常執行。請按「設定裝置」跳至設定 CD 裝置的對話窗，或按"
-"「離開」退出 GnomeCD。"
+"CD 播放程式無法正常執行。\n"
+"\n"
+"請按「詳細資料」獲取有關錯誤的詳細原因。\n"
+"\n"
+"請按「設定裝置」跳至設定 CD 裝置的對話窗，或按「離開」退出 GnomeCD。"
 
-#: gnome-cd/gnome-cd.c:420
+#: gnome-cd/gnome-cd.c:479
+msgid "_Set device"
+msgstr "設定裝置(_S)"
+
+#: gnome-cd/gnome-cd.c:481
 msgid "Invalid CD device"
 msgstr "無效的 CD 裝置"
 
-#: gnome-cd/gnome-cd.c:488
-#, fuzzy
+#: gnome-cd/gnome-cd.c:542
 msgid "Volume control"
 msgstr "音量控制"
 
-#: gnome-cd/gnome-cd.c:497
+#: gnome-cd/gnome-cd.c:551
 msgid "Open track editor"
 msgstr "開啟音軌編輯器"
 
-#: gnome-cd/gnome-cd.c:498
+#: gnome-cd/gnome-cd.c:552
 msgid "Track editor"
 msgstr "音軌編輯器"
 
-#: gnome-cd/gnome-cd.c:505
+#: gnome-cd/gnome-cd.c:559
 msgid "Open preferences"
 msgstr "進行設定"
 
-#: gnome-cd/gnome-cd.c:506
+#: gnome-cd/gnome-cd.c:560
 msgid "Preferences"
 msgstr "偏好設定"
 
-#: gnome-cd/gnome-cd.c:514
+#: gnome-cd/gnome-cd.c:568
 msgid "Track List"
 msgstr "音軌清單"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous track"
 msgstr "上一個音軌"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous"
 msgstr "上個音軌"
 
-#: gnome-cd/gnome-cd.c:538
+#: gnome-cd/gnome-cd.c:593
 msgid "Rewind"
 msgstr "倒捲"
 
-#: gnome-cd/gnome-cd.c:555
+#: gnome-cd/gnome-cd.c:610
 msgid "Play / Pause"
 msgstr "播放/暫停"
 
-#: gnome-cd/gnome-cd.c:560 grecord/src/gui.c:247
+#: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
 msgid "Stop"
 msgstr "停止"
 
-#: gnome-cd/gnome-cd.c:564
+#: gnome-cd/gnome-cd.c:619
 msgid "Fast forward"
 msgstr "快轉"
 
-#: gnome-cd/gnome-cd.c:572
+#: gnome-cd/gnome-cd.c:627
 msgid "Next track"
 msgstr "下一個音軌"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject CD"
 msgstr "退出 CD"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject"
 msgstr "退片"
 
-#: gnome-cd/gnome-cd.c:640
+#: gnome-cd/gnome-cd.c:731
+msgid "CD device to use"
+msgstr "使用的 CD 裝置"
+
+#: gnome-cd/gnome-cd.c:740
+msgid "Only start if there isn't already a CD player application running"
+msgstr "只有當沒有任何 CD 播放程式正在執行時才會啟動"
+
+#: gnome-cd/gnome-cd.c:742
+msgid "Play the CD on startup"
+msgstr "啟動時立刻播放 CD"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:773
 msgid "Cannot create player"
 msgstr "無法執行播放程式"
-
-#: gnome-cd/gnome-cd.desktop.in.h:1
-msgid "CD Player"
-msgstr "CD 播放程式"
 
 #: gnome-cd/gnome-cd.desktop.in.h:2
 msgid "Play audio CDs"
 msgstr "播放音樂 CD"
 
-#: gnome-cd/preferences.c:82
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "Action on application exit"
+msgstr "離開程式時進行的操作"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Action on start"
+msgstr "啟動時進行的操作"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "CD player theme"
+msgstr "CD 播放程式佈景主題"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Device path"
+msgstr "裝置的路徑"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD player attempt to shut the CD drive on start up?"
+msgstr "CD 播放程式啟動時應否嘗試關閉 CD 匣？"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "Shut the CD tray on start"
+msgstr "啟動時關閉 CD 匣"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr "表示光碟機的裝置檔路徑"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid ""
+"What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
+"playing, 2 = Eject the CD, 3 = Attempt to close the tray"
+msgstr ""
+"CD 播放程式離開時應進行甚麼行動？\n"
+"0：無\n"
+"1：停止播放\n"
+"2：退出 CD\n"
+"3：嘗試關閉 CD 匣"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:9
+msgid ""
+"What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
+"playing, 2 = Stop playing"
+msgstr ""
+"CD 播放程式啟動時應進行甚麼行動？\n"
+"0：無\n"
+"1：開始播放\n"
+"2：停止播放"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:10
+msgid "What theme should the CD player use for it's appearance"
+msgstr "CD 播放程式應選用哪個佈景主題作為外觀"
+
+#: gnome-cd/preferences.c:83
 #, c-format
 msgid ""
 "%s\n"
-"This means that Gnome-CD will not be able to run."
+"This means that the CD player will not be able to run."
 msgstr ""
 "%s\n"
-"這表示 Gnome-CD 將會無法執行。"
+"這表示 CD 播放程式將會無法執行。"
 
-#: gnome-cd/preferences.c:83
+#: gnome-cd/preferences.c:84
 msgid "Error setting device"
 msgstr "設定裝置時發生錯誤"
 
-#: gnome-cd/preferences.c:793
-msgid "Gnome CD Player Preferences"
-msgstr "Gnome CD 播放程式偏好設定"
+#: gnome-cd/preferences.c:824
+msgid "CD Player Preferences"
+msgstr "CD 播放程式偏好設定"
 
-#: gnome-cd/preferences.c:813
-#, fuzzy
+#: gnome-cd/preferences.c:853
 msgid "CD player de_vice:"
-msgstr "CD 播放裝置(_V)"
+msgstr "CD 播放裝置(_V)："
 
-#: gnome-cd/preferences.c:828
+#: gnome-cd/preferences.c:868
 msgid "_Apply change"
 msgstr "套用設定(_A)"
 
 #. left side
-#: gnome-cd/preferences.c:841
-msgid "When Gnome CD Player starts"
-msgstr "當啟動 Gnome CD 播放程式時"
+#: gnome-cd/preferences.c:881
+msgid "When CD player starts"
+msgstr "當啟動 CD 播放程式時"
 
-#: gnome-cd/preferences.c:849
+#: gnome-cd/preferences.c:889
 msgid "Do _nothing"
 msgstr "不進行任何操作(_N)"
 
-#: gnome-cd/preferences.c:858
+#: gnome-cd/preferences.c:890
+msgid "Do nothing when CD Player starts"
+msgstr "當啟動 CD 播放程式時不進行任何操作"
+
+#: gnome-cd/preferences.c:900
 msgid "Start _playing CD"
 msgstr "開始播放 CD(_P)"
 
-#: gnome-cd/preferences.c:867
+#: gnome-cd/preferences.c:901
+msgid "Start playing CD when CD Player starts"
+msgstr "當啟動 CD 播放程式時立刻開始播放 CD"
+
+#: gnome-cd/preferences.c:910
 msgid "_Stop playing CD"
 msgstr "停止播放 CD(_S)"
 
-#: gnome-cd/preferences.c:880
+#: gnome-cd/preferences.c:911
+msgid "Stop playing CD when CD Player starts"
+msgstr "當啟動 CD 播放程式時停止播放 CD"
+
+#: gnome-cd/preferences.c:925
 msgid "Attempt to _close CD tray"
 msgstr "嘗試關閉 CD 匣(_C)"
 
 #. Right side
-#: gnome-cd/preferences.c:892
-msgid "When Gnome CD Player quits"
-msgstr "當 Gnome CD 播放程式結束時"
+#: gnome-cd/preferences.c:937
+msgid "When CD player quits"
+msgstr "當 CD 播放程式結束時"
 
-#: gnome-cd/preferences.c:900
+#: gnome-cd/preferences.c:945
 msgid "Do not_hing"
 msgstr "不進行任何操作(_H)"
 
-#: gnome-cd/preferences.c:909
+#: gnome-cd/preferences.c:946
+msgid "Do nothing when CD Player exits"
+msgstr "當 CD 播放程式結束時不進行任何操作"
+
+#: gnome-cd/preferences.c:955
 msgid "S_top playing CD"
 msgstr "停止播放 CD(_T)"
 
-#: gnome-cd/preferences.c:918
+#: gnome-cd/preferences.c:956
+msgid "Stop playing CD when CD player quits"
+msgstr "當 CD 播放程式結束時停止播放 CD"
+
+#: gnome-cd/preferences.c:966
 msgid "Attempt to _open CD tray"
 msgstr "嘗試開啟 CD 匣(_O)"
 
-#: gnome-cd/preferences.c:928
+#: gnome-cd/preferences.c:967
+msgid "Attempt to open CD tray when CD Player exits"
+msgstr "當 CD 播放程式結束時嘗試開啟 CD 匣"
+
+#: gnome-cd/preferences.c:977
 msgid "Attempt to c_lose CD tray"
 msgstr "嘗試關閉 CD 匣(_L)"
 
-#: gnome-cd/preferences.c:959
+#: gnome-cd/preferences.c:1008
 msgid "Theme name"
 msgstr "佈景主題名稱"
 
@@ -1511,7 +1678,8 @@ msgstr "佈景主題名稱"
 msgid "Record sound clips"
 msgstr "錄音"
 
-#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gui.c:193
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
+#: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
 msgid "Sound Recorder"
 msgstr "錄音程式"
 
@@ -1536,15 +1704,15 @@ msgstr ""
 "\n"
 "如果沒有安裝 sox，將不能錄音或製作任何效果。"
 
-#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1359
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1361
 msgid "Could not fork child process"
 msgstr "無法衍生副程序"
 
-#: grecord/src/grec.c:173
+#: grecord/src/grec.c:173 grecord/src/gsr-window.c:1342
 msgid "Recording..."
 msgstr "錄音中..."
 
-#: grecord/src/grec.c:220
+#: grecord/src/grec.c:220 grecord/src/gsr-window.c:1221
 msgid "Playing..."
 msgstr "播放中..."
 
@@ -1556,15 +1724,15 @@ msgstr "正在轉換檔案..."
 msgid "Cancel"
 msgstr "取消"
 
-#: grecord/src/grec.c:345 grecord/src/grec.c:793
+#: grecord/src/grec.c:345 grecord/src/grec.c:795
 msgid "Audioformat: "
 msgstr "音效格式："
 
-#: grecord/src/grec.c:349 grecord/src/grec.c:779 grecord/src/gui.c:308
+#: grecord/src/grec.c:349 grecord/src/grec.c:781 grecord/src/gui.c:308
 msgid "Sample rate: "
 msgstr "取樣率："
 
-#: grecord/src/grec.c:359 grecord/src/grec.c:783 grecord/src/gui.c:315
+#: grecord/src/grec.c:359 grecord/src/grec.c:785 grecord/src/gui.c:315
 msgid "Channels: "
 msgstr "聲道："
 
@@ -1581,7 +1749,7 @@ msgstr "請選擇音效檔"
 msgid "%s is not installed in the path"
 msgstr "在執行檔路徑中找不到 %s"
 
-#: grecord/src/grec.c:523
+#: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
 #, c-format
 msgid "There was an error starting %s: %s"
 msgstr "啟動 %s 時出現錯誤：%s"
@@ -1613,7 +1781,7 @@ msgstr ""
 msgid "File '%s isn't a valid sound file."
 msgstr "檔案‘%s’不是有效的音效檔。"
 
-#: grecord/src/grec.c:817
+#: grecord/src/grec.c:819
 #, c-format
 msgid ""
 "'%s' is a folder.\n"
@@ -1622,7 +1790,7 @@ msgstr ""
 "‘%s’是一個資料夾。\n"
 "請輸入另一個檔案名稱。"
 
-#: grecord/src/grec.c:829
+#: grecord/src/grec.c:831
 #, c-format
 msgid ""
 "<b>File '%s' already exists.</b>\n"
@@ -1631,21 +1799,21 @@ msgstr ""
 "<b>檔案‘%s’已存在。</b>\n"
 "是否要覆寫？"
 
-#: grecord/src/grec.c:832
+#: grecord/src/grec.c:834
 msgid "Cancel save"
 msgstr "取消儲存"
 
-#: grecord/src/grec.c:833
+#: grecord/src/grec.c:835
 msgid "Overwrite"
 msgstr "覆寫"
 
-#: grecord/src/grec.c:860
+#: grecord/src/grec.c:862
 #, c-format
 msgid "Error saving '%s'"
 msgstr "儲存‘%s’時發生問題"
 
-#: grecord/src/grec.c:974
-#, fuzzy, c-format
+#: grecord/src/grec.c:976
+#, c-format
 msgid ""
 "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
 "\n"
@@ -1655,21 +1823,21 @@ msgstr ""
 "\n"
 "如果不儲存，將會遺失所有修改的部份。"
 
-#: grecord/src/grec.c:979
+#: grecord/src/grec.c:981
 msgid "Do_n't save"
-msgstr "不要儲存(_N)"
+msgstr "不儲存(_N)"
 
-#: grecord/src/grec.c:986
+#: grecord/src/grec.c:988
 #, c-format
 msgid "Save %s?"
 msgstr "是否儲存 %s？"
 
 #. Save the file
-#: grecord/src/grec.c:1010
+#: grecord/src/grec.c:1012
 msgid "Saving..."
 msgstr "儲存中..."
 
-#: grecord/src/grec.c:1140
+#: grecord/src/grec.c:1142
 #, c-format
 msgid ""
 "The size of the current sample is more than\n"
@@ -1678,25 +1846,169 @@ msgstr ""
 "目前的音效樣本\n"
 "大於 %i Mb！"
 
-#: grecord/src/grec.c:1196
+#: grecord/src/grec.c:1198
 msgid "Save sound file"
 msgstr "儲存音效檔"
 
-#: grecord/src/grec.c:1425
+#: grecord/src/grec.c:1429
 msgid ""
 "The sound device is not ready. Please check that there isn't\n"
 "another program running that is using the device."
 msgstr "音效裝置無法提供服務。請確定沒有其它程式正在使用該音效裝置。"
 
-#: grecord/src/gui.c:45
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "時"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "時"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#: grecord/src/gui.c:753
+msgid "minutes"
+msgstr "分"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "分"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "秒"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "秒"
+
+#: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
+msgid "Open a file"
+msgstr "開啟檔案"
+
+#: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
+#: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
+msgid "Ready"
+msgstr "準備就緒"
+
+#: grecord/src/gsr-window.c:541
+#, c-format
+msgid "Saving %s..."
+msgstr "正在儲存 %s..."
+
+#: grecord/src/gsr-window.c:600
+msgid "Save file as"
+msgstr "將檔案另存為"
+
+#: grecord/src/gsr-window.c:654
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "%s 並未安裝在執行檔路徑中。"
+
+#: grecord/src/gsr-window.c:736
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (仍未儲存)"
+
+#: grecord/src/gsr-window.c:751
+msgid "Unknown size"
+msgstr "大小不詳"
+
+#: grecord/src/gsr-window.c:771
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f kHz"
+
+#: grecord/src/gsr-window.c:780
+#, c-format
+msgid "%.0f kb/s"
+msgstr "每秒 %.0f kb"
+
+#: grecord/src/gsr-window.c:792
+msgid "1 (mono)"
+msgstr "1 (單聲道)"
+
+#: grecord/src/gsr-window.c:796
+msgid "2 (stereo)"
+msgstr "2 (立體聲)"
+
+#: grecord/src/gsr-window.c:825
+#, c-format
+msgid "%s Information"
+msgstr "%s 資訊"
+
+#: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
+msgid "File Information"
+msgstr "檔案資訊"
+
+#: grecord/src/gsr-window.c:859
+msgid "Folder:"
+msgstr "資料夾："
+
+#: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
+msgid "Filename:"
+msgstr "檔案名稱："
+
+#: grecord/src/gsr-window.c:871
+msgid "File size:"
+msgstr "檔案大小："
+
+#: grecord/src/gsr-window.c:880
+msgid "Audio Information"
+msgstr "音效資訊"
+
+#: grecord/src/gsr-window.c:894
+msgid "Song length:"
+msgstr "歌曲長度："
+
+#: grecord/src/gsr-window.c:900
+msgid "Number of channels:"
+msgstr "聲道數目(_N)："
+
+#: grecord/src/gsr-window.c:906
+msgid "Sample rate:"
+msgstr "取樣率："
+
+#: grecord/src/gsr-window.c:912
+msgid "Bit rate:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:982
+msgid "A sound recorder for GNOME"
+msgstr "適用於 GNOME 的錄音程式"
+
+#: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
+#, c-format
+msgid "%s - Sound Recorder"
+msgstr "%s ─ 錄音程式："
+
+#: grecord/src/gsr-window.c:1548
+msgid "File information"
+msgstr "檔案資訊"
+
+#: grecord/src/gsr-window.c:1569
+msgid "<none>"
+msgstr "<無>"
+
+#: grecord/src/gsr-window.c:1578
+msgid "Length:"
+msgstr "長度："
+
+#: grecord/src/gui.c:45 grecord/gsr.xml.h:38
 msgid "_New"
 msgstr "新增(_N)"
 
-#: grecord/src/gui.c:46
+#: grecord/src/gui.c:46 grecord/gsr.xml.h:5
 msgid "Create a new sample"
-msgstr "建立新的音效樣本"
+msgstr "製作新的音效樣本"
 
-#: grecord/src/gui.c:54
+#: grecord/src/gui.c:54 grecord/gsr.xml.h:21
 msgid "Run _Mixer"
 msgstr "執行混音程式(_M)..."
 
@@ -1722,16 +2034,11 @@ msgstr "全部還原(_U)"
 
 #: grecord/src/gui.c:113
 msgid "Undo all changes made on the current sample"
-msgstr "還原所有對現時的音效樣本的改變"
+msgstr "還原所有對現時的音效樣本的更改"
 
 #: grecord/src/gui.c:120
 msgid "Effects"
 msgstr "效果"
-
-#: grecord/src/gui.c:155
-#, c-format
-msgid "%s - Sound Recorder"
-msgstr "%s ─ 錄音程式："
 
 #: grecord/src/gui.c:197
 msgid "16bit PCM"
@@ -1749,13 +2056,13 @@ msgstr "立體聲"
 msgid "mono"
 msgstr "單聲道"
 
-#: grecord/src/gui.c:217
+#: grecord/src/gui.c:217 grecord/gsr.xml.h:10
 msgid "New"
 msgstr "新增"
 
 #: grecord/src/gui.c:218
 msgid "Create new sample"
-msgstr "建立新的音效樣本"
+msgstr "製作新的音效樣本"
 
 #: grecord/src/gui.c:234
 msgid "Play current sample"
@@ -1765,7 +2072,7 @@ msgstr "播放目前的音效樣本"
 msgid "Stop playing/recording"
 msgstr "停止播放或錄音"
 
-#: grecord/src/gui.c:261
+#: grecord/src/gui.c:261 grecord/gsr.xml.h:18
 msgid "Record"
 msgstr "錄音"
 
@@ -1787,103 +2094,86 @@ msgstr "檔案‘%s’不存在；使用預設值。"
 msgid "File '%s' isn't a supported soundfile."
 msgstr "檔案‘%s’不是已支援的音效檔格式。"
 
-#. if your charset allows it, replace the "e" of "Hyden"
-#. *  by an "eacute" (U00E9)
-#: grecord/src/gui.c:420
-msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
-msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
-
-#: grecord/src/gui.c:427
+#: grecord/src/gui.c:425
 msgid "translator_credits"
 msgstr ""
-"Abel Cheung <maddog@linux.org.hk>, 2001-2002.\n"
+"i18n 程式中文化計劃\n"
+"http://i18n.linux.org.tw/\n"
+"\n"
+"Abel Cheung <maddog@linux.org.hk>, 2001-2003.\n"
 "Fernando <bv1al@journalist.com.tw>, 1999."
 
-#: grecord/src/gui.c:431
-msgid "Gnome Sound Recorder"
+#: grecord/src/gui.c:429
+msgid "GNOME Sound Recorder"
 msgstr "GNOME 錄音程式"
 
-#. if your charset allows it, replace the
-#. "e" of Hyden by an "eacute" (U00E9)
-#: grecord/src/gui.c:434
-msgid "Copyright (C)  2000 Andreas Hyden"
-msgstr "版權 (C)  2000 Andreas Hyden"
-
-#: grecord/src/gui.c:435
+#: grecord/src/gui.c:431
 msgid ""
 "A simple soundrecorder and soundplayer for GNOME.\n"
 "Dedicated to my cat, Malte."
 msgstr ""
-"GNOME 的一個簡單音效播放及錄音程式。\n"
+"適用於 GNOME 的簡單音效播放及錄音程式。\n"
 "奉獻給我的貓兒，Malte。"
 
-#: grecord/src/gui.c:701
+#: grecord/src/gui.c:700
 msgid "Gnome Sound Recorder Preferences"
-msgstr "Gnome 錄音程式偏好設定"
+msgstr "GNOME 錄音程式偏好設定"
 
-#: grecord/src/gui.c:708
+#: grecord/src/gui.c:707
 msgid "Sound Recorder Preferences"
 msgstr "錄音程式偏好設定"
 
-#: grecord/src/gui.c:720
+#: grecord/src/gui.c:719
 msgid "Recording"
 msgstr "錄音"
 
-#: grecord/src/gui.c:725
+#: grecord/src/gui.c:724
 msgid "Time"
 msgstr "時間"
 
-#: grecord/src/gui.c:738
+#: grecord/src/gui.c:737
 msgid "_Recording timeout: "
 msgstr "錄音的逾時時限(_R)："
 
-#: grecord/src/gui.c:754
-msgid "minutes"
-msgstr "分鐘"
-
-#: grecord/src/gui.c:761
+#: grecord/src/gui.c:760
 msgid "_Stop recording on timeout"
 msgstr "逾時後停止錄音(_S)"
 
-#: grecord/src/gui.c:769
+#: grecord/src/gui.c:768
 msgid "_Open save dialog when recording is finished"
 msgstr "當錄音完成後顯示儲存檔案的對話窗(_O)"
 
-#: grecord/src/gui.c:776
+#: grecord/src/gui.c:775
 msgid "Size"
 msgstr "大小"
 
-#: grecord/src/gui.c:785
+#: grecord/src/gui.c:784
 msgid "Show warning _message if size (MB) of sample becomes bigger than:"
-msgstr "如果音效樣本大於此數值時顯示警告對話窗 [以 Mb 計](_M)："
+msgstr "如果音效樣本大於此數值時顯示警告對話窗[以 Mb 計](_M)："
 
-#: grecord/src/gui.c:803
+#: grecord/src/gui.c:802
 msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
-msgstr "如果音效樣本大於此數值時停止錄音 [以 Mb 計](_P)："
+msgstr "如果音效樣本大於此數值時停止錄音[以 Mb 計](_P)："
 
-#: grecord/src/gui.c:825
-msgid "Playing"
-msgstr "播放"
-
-#: grecord/src/gui.c:830
+#: grecord/src/gui.c:829
 msgid "Repetition"
-msgstr "重覆"
+msgstr "重複"
 
-#: grecord/src/gui.c:840
+#: grecord/src/gui.c:839
 msgid "_Repeat the sound"
-msgstr "重覆播放音效(_R)"
+msgstr "重複播放音效(_R)"
 
-#: grecord/src/gui.c:847
+#: grecord/src/gui.c:846
 msgid "Play the sound _once only."
-msgstr "只播放音效一次。(_O)"
+msgstr "只播放音效一次(_O)"
 
-#: grecord/src/gui.c:853
+#: grecord/src/gui.c:852
 msgid "Repeat _forever"
-msgstr "不斷重覆(_F)"
+msgstr "不斷重複(_F)"
 
-#: grecord/src/gui.c:864
+#: grecord/src/gui.c:863
 msgid "_Number of times:"
-msgstr "重覆次數(_N)："
+msgstr "重複次數(_N)："
 
 #: grecord/src/gui.c:885
 msgid "Paths"
@@ -1927,7 +2217,7 @@ msgid ""
 "is created. They do not operate on an existing sample."
 msgstr ""
 "注意：這些選項只適用於新製作的音效樣本。\n"
-"　　　已存在的音效樣本不會進行任何修改。"
+"　　　已存在的音效樣本不會有任何改變。"
 
 #: grecord/src/gui.c:992
 msgid "Audio format:"
@@ -1964,11 +2254,11 @@ msgstr "立體聲"
 
 #: grecord/src/main.c:50
 msgid "Specify the geometry of the main window"
-msgstr "指定主視窗的位置大小"
+msgstr "指定主視窗的位置尺寸"
 
 #: grecord/src/main.c:51
 msgid "GEOMETRY"
-msgstr "位置大小"
+msgstr "位置尺寸"
 
 #: grecord/src/main.c:59
 msgid "Specify a file to be opened"
@@ -1986,30 +2276,245 @@ msgstr "指定準備播放的檔案"
 msgid "Sound recorder"
 msgstr "錄音程式"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 8bit PCM"
 msgstr "音效格式：8 位元 PCM"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 16bit PCM"
 msgstr "音效格式：16 位元 PCM"
 
-#: grecord/src/preferences.c:213
+#: grecord/src/preferences.c:222
 #, c-format
 msgid "Sample rate: %s"
 msgstr "取樣率：%s"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: mono"
 msgstr "聲道：單聲道"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: stereo"
 msgstr "聲道：立體聲"
 
-#: grecord/src/sound.c:136
+#: grecord/src/sound.c:137
 msgid "Adding echo to sample..."
 msgstr "在音效樣本中加入迴音..."
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "關於"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "關閉"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "關閉本視窗"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "內容"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr "顯示錄音程式的說明文件"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr "檔案資訊(_I)"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "主工具列"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "開啟"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "播放音效"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "離開"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "離開應用程式"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "最近使用的檔案(_F)"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "錄音"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "執行混音程式"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "執行混音程式"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "儲存"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "另存檔案"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "另存檔案(_A)..."
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "儲存目前的檔案"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "以另一個名稱儲存目前的檔案"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "顯示有關目前檔案的資訊"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "顯示有關錄音程式的資訊"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "停止播放"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "關於(_A)"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "關閉視窗(_C)"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "內容(_C)"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "控制(_C)"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "檔案(_F)"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "開啟(_O)..."
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "播放(_P)"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "離開(_Q)"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "錄音(_R)"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "儲存(_S)"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:263
+msgid "Failure instantiating main window"
+msgstr "開啟主視窗出現錯誤"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:303
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr "無法載入界面資源檔 %s"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr "修改 GStreamer 應用程式的預設設定"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "GStreamer"
+msgstr "GStreamer"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">測試中...</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "Audio"
+msgstr "音效"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "Audio _Input:"
+msgstr "音效輸入(_I)："
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio _Output:"
+msgstr "音效輸出(_O)："
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "Default Sink"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Default Source"
+msgstr "預設音源"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "GStreamer Properties"
+msgstr "GStreamer 屬性"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+#, fuzzy
+msgid "Pipeline:"
+msgstr "管道："
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Test..."
+msgstr "測試中..."
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+#, fuzzy
+msgid "Testing Pipeline"
+msgstr "測試管道"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "Video _Input:"
+msgstr "視訊輸入(_I)："
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "Video _Output:"
+msgstr "視訊輸出(_O)："
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:111
+#, fuzzy, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr "無法建立‘%s’的測試管道"
 
 #: vu-meter/main.c:120
 msgid ""
@@ -2037,7 +2542,7 @@ msgstr "垂直位置"
 
 #: vu-meter/main.c:252
 msgid "Connect to the esd server on this host."
-msgstr "連接此主機的 esd 伺服程式。"
+msgstr "連接指定主機的 esd 伺服程式。"
 
 #: vu-meter/main.c:253
 msgid "ESD Server Host"
@@ -2069,7 +2574,6 @@ msgid "Monitor the recording input volume"
 msgstr "監控錄音音量"
 
 #: vu-meter/reclevel.desktop.in.h:2
-#, fuzzy
 msgid "Recording level monitor"
 msgstr "錄音音量計"
 
@@ -2078,135 +2582,5 @@ msgid "Monitor the sound output volume"
 msgstr "監控輸出音量"
 
 #: vu-meter/vumeter.desktop.in.h:2
-#, fuzzy
 msgid "Volume monitor"
 msgstr "音量計"
-
-#~ msgid "CDDBSlave 2 Properties"
-#~ msgstr "CDDBSlave 2 屬性"
-
-#~ msgid "CDDB"
-#~ msgstr "CDDB"
-
-#~ msgid "CDDB Properties"
-#~ msgstr "CDDB 屬性"
-
-#~ msgid "On startup"
-#~ msgstr "起動時"
-
-#~ msgid "Restore saved mixer levels on startup"
-#~ msgstr "起動時載入已儲存的混音設定"
-
-#~ msgid "GUI"
-#~ msgstr "圖型介面"
-
-#~ msgid "Show mixer icons"
-#~ msgstr "顯示混音器圖示"
-
-#~ msgid "Show mixer labels"
-#~ msgstr "顯示混音器標籤"
-
-#~ msgid "Labels"
-#~ msgstr "標籤"
-
-#~ msgid "Error opening CD"
-#~ msgstr "開啟 CD 裝置時出現錯誤"
-
-#~ msgid "Error reading CD header"
-#~ msgstr "讀取 CD 開始部份資料時出現錯誤"
-
-#~ msgid "IOCtl failed"
-#~ msgstr "IOCtl 失敗"
-
-#~ msgid ""
-#~ "CD changed\n"
-#~ "Track count: %d\n"
-#~ "------------------\n"
-#~ msgstr ""
-#~ "已替換 CD\n"
-#~ "音軌數目：%d\n"
-#~ "------------------\n"
-
-#~ msgid "(eject): ioctl failed: %s"
-#~ msgstr "(eject)：ioctl 失敗：%s"
-
-#~ msgid "(freebsd_cdrom_play): Drive not ready"
-#~ msgstr "(freebsd_cdrom_play)：光碟機未準備好"
-
-#~ msgid "(freebsd_cdrom_play): Drive still not ready"
-#~ msgstr "(freebsd_cdrom_play)：光碟機仍然未準備好"
-
-#~ msgid "(freebsd_cdrom_play) ioctl failed %s"
-#~ msgstr "(freebsd_cdrom_play)：ioctl 失敗：%s"
-
-#~ msgid "(freebsd_cdrom_pause): Drive not ready"
-#~ msgstr "(freebsd_cdrom_pause)：光碟機未準備好"
-
-#~ msgid "(freebsd_cdrom_pause): Resume failed %s"
-#~ msgstr "(freebsd_cdrom_pause)：繼續播放不成功：%s"
-
-#~ msgid "(freebsd_cdrom_pause): ioctl failed %s"
-#~ msgstr "(freebsd_cdrom_pause)：ioctl 失敗：%s"
-
-#~ msgid "(freebsd_cdrom_stop) ioctl failed %s"
-#~ msgstr "(freebsd_cdrom_stop)：ioctl 失敗：%s"
-
-#~ msgid "(freebsd_cdrom_get_status): ioctl error %s"
-#~ msgstr "(freebsd_cdrom_get_status)：ioctl 錯誤：%s"
-
-#~ msgid "(freebsd_cdrom_get_status): CDIOCREADSUBCHANNEL ioctl failed %s"
-#~ msgstr "(freebsd_cdrom_get_status)：CDIOCREADSUBCHANNEL ioctl 失敗：%s"
-
-#~ msgid "(freebsd_cdrom_get_status): CDIOCGETVOL ioctl failed %s"
-#~ msgstr "(freebsd_cdrom_get_status)：CDIOCGETVOL ioctl 失敗：%s"
-
-#~ msgid "(freebsd_cdrom_close_tray): ioctl failed %s"
-#~ msgstr "(freebsd_cdrom_close_tray)：ioctl 失敗：%s"
-
-#~ msgid "(freebsd_cdrom_set_volume:1): ioctl failed %s"
-#~ msgstr "(freebsd_cdrom_set_volume:1)：ioctl 失敗：%s"
-
-#~ msgid "%s is not a CDROM drive\n"
-#~ msgstr "%s 不是光碟機\n"
-
-#~ msgid "%s is a CDROM drive\n"
-#~ msgstr "%s 是光碟機\n"
-
-#~ msgid "(linux_cdrom_play): Drive not ready"
-#~ msgstr "(linux_cdrom_play)：光碟機未準備好"
-
-#~ msgid "(linux_cdrom_play): Drive still not ready"
-#~ msgstr "(linux_cdrom_play)：光碟機仍然未準備好"
-
-#~ msgid "(linux_cdrom_play) ioctl failed %s"
-#~ msgstr "(linux_cdrom_play)：ioctl 失敗：%s"
-
-#~ msgid "(linux_cdrom_pause): Drive not ready"
-#~ msgstr "(linux_cdrom_pause)：光碟機未準備好"
-
-#~ msgid "(linux_cdrom_pause): Resume failed %s"
-#~ msgstr "(linux_cdrom_pause)：繼續播放不成功：%s"
-
-#~ msgid "(linux_cdrom_pause): ioctl failed %s"
-#~ msgstr "(linux_cdrom_pause)：ioctl 失敗：%s"
-
-#~ msgid "(linux_cdrom_stop) ioctl failed %s"
-#~ msgstr "(linux_cdrom_stop)：ioctl 失敗：%s"
-
-#~ msgid "(linux_cdrom_get_status): ioctl error %s"
-#~ msgstr "(linux_cdrom_get_status)：ioctl 錯誤：%s"
-
-#~ msgid "(linux_cdrom_get_status): CDROMSUBCHNL ioctl failed %s"
-#~ msgstr "(linux_cdrom_get_status)：CDROMSUBCHNL ioctl 失敗：%s"
-
-#~ msgid "(linux_cdrom_get_status): CDROMVOLREAD ioctl failed %s"
-#~ msgstr "(linux_cdrom_get_status)：CDROMVOLREAD ioctl 失敗：%s"
-
-#~ msgid "(linux_cdrom_close_tray): ioctl failed %s"
-#~ msgstr "(linux_cdrom_close_tray)：ioctl 失敗：%s"
-
-#~ msgid "(linux_cdrom_set_volume:1): ioctl failed %s"
-#~ msgstr "(linux_cdrom_set_volume:1)：ioctl 失敗：%s"
-
-#~ msgid "%s is not a CDROM drive"
-#~ msgstr "%s 不是光碟機"

@@ -1,0 +1,23 @@
+2002-12-16 Iain <iain@prettypeople.org>
+
+	* gstreamer-properties.c (create_pipeline_menu): Only add elements that
+	exist to the menu.
+
+2002-12-07 Iain <iain@prettypeople.org>
+
+	* gstreamer-properties.c: Use gconf_client instead of gst_gconf
+
+2002-12-04  Christian Neumair  <chris@gnome-de.org>
+
+	* pipeline-constants.c: Do'h, strings must be constant so do not make them
+	translatable.
+
+2002-12-04  Christian Neumair  <chris@gnome-de.org>
+
+	* .cvsignore, ChangeLog: Added.
+	* gstreamer-properties.desktop.in: Exec is now gstreamer-properties
+	instead of gst-properties, some small fixes.
+	* pipeline-constants.c: Made strings in GSTPPipelineDescription
+	translatable, changed GST_PROPS_KEY_DEFAULT_(VIDEO/AUDIO)(SINK/SRC) to
+	match defaults.
+

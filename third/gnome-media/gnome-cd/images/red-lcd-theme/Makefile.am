@@ -9,20 +9,7 @@ BITMAPS = 		\
 	    middle-right.png	\
 	    top.png		\
 	    bottom.png		\
-	    middle.png		\
-	    a-eject-menu.png	\
-	    a-eject.png		\
-	    a-first-menu.png	\
-	    a-first.png		\
-	    a-fwd.png		\
-	    a-last-menu.png	\
-	    a-last.png		\
-	    a-pause.png		\
-	    a-play-menu.png	\
-	    a-play.png		\
-	    a-rwnd.png		\
-	    a-stop-menu.png	\
-	    a-stop.png
+	    middle.png
 	    
 pixmap_DATA = $(BITMAPS) red-lcd.theme
 

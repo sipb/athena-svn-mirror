@@ -1,3 +1,209 @@
+2003-01-22  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gnome-sound-recorder.xml, record-C.omf: updated to reflect changes for 
+	  GNOME 2.2 release.
+	  
+2003-01-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/gsr-window.c: (get_length), (tick_callback): update
+	for gstreamer API changes.
+
+2002-12-16  Christian Neumair  <chris@gnome-de.org>
+
+	* .cvsignore: Updated.
+	* src/gsr-window.c: Revamped about dialog.
+	* src/gui.c: Revamped about dialog.
+
+2002-12-09 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (help_about): Removed translation, and fixed copyright
+
+2002-12-03  Christian Neumair  <chris@gnome-de.org>
+ 
+	* src/gsr-window.c: renamed "Directory:" to "Folder:", revamped about
+       dialog.
+	* src/gui.c: Revamped about dialog.
+	* gsr.xml: renamed "program" to "application".
+
+2002-11-30  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsr.xml: Add mnemonics to run mixer, file information, play,
+	stop, record, and about menu items.  Change 'Run mixer' to 
+	'Run Mixer' and 'About Sound Recorder' to 'About'. Add
+	accelerators to play, stop, and record.  Fix the 'save as'
+	accelerator.  Also, add a 'Contents' menu item to the help menu.
+
+	* src/gnome-recorder.c (gsr_open_window):  Fix compiler warning.
+	* src/gsr-window.c (gsr_window_close):  Fix compiler warning.
+	* src/gsr-window.c (fill_in_information):  Dialog clean up. Fix 
+	padding.  Remove colons from file and audio information titles.
+	Reduce excessive use of bold labels. Use consistent wording for
+	unknown labels. Disable resizing of the dialog. 
+	* src/gsr-window.c (help_contents):  New function to display 
+	the help documentation.
+	
+	* docs/C/Makefile.am:  Set docname to gnome-sound-recorder.
+	* docs/C/gnome-sound-recorder.xml:  Rename grecord.xml. 
+
+2002-11-30 Iain <iain@prettypeople.org>
+
+	* src/gnome-recorder.c (main): Set the default icon.
+
+2002-10-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/sound.c (get_play_time): Fix a leak.
+	* src/sound.c (store_filename): Fix a leak.
+	* src/sound.c (soundfile_supported): Fix a leak.
+	
+2002-10-25 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (fill_in_information): Fill in the rest of the 
+	details
+	(file_properties): Enable the window to be closed, and switch the
+	channels and sample rate around.
+	(play_deep_notify): Find out the details.
+	(make_play_pipeline) : Attach to deep notify
+
+2002-10-24 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (fill_in_information): Use gnome-vfs to format
+	bytes into MB
+
+2002-10-24 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (gsr_window_new): Word wrap the filename.
+	(file_properties): Create a sexy new dialog
+	(fill_in_information): Fill in the file info.
+
+2002-10-24 Iain <iain@prettypeople.org>
+
+	* gsr.xml: Add a Media menu
+
+2002-10-24 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (file_quit): Call gsr_quit.
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (file_mixer): Start the mixer.
+
+	* gsr.xml: Add the mixer and the info menu items.
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (play_state_changed): Start the tick_callback every
+	time.
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (tick_callback): Check the state of the pipeline
+	first.
+	(play_state_changed): Reset the seekbar to 0.
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (do_save_file): Set the cursor for the ev to wait
+	Ghost all buttons that can't be used. Set the status bar.
+	(save_sink_eos): Reset the pipeline start an idle t set up the gui
+	(eos_done): Fix up the GUI,
+	(play_state_changed): Set the statusbar.
+	(record_state_changed): ditto.
+	(init): Ditto.
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (do_save_file): Save the file.
+	(get_encoder_for_mimetype): Get the encoder.
+
+2002-10-24 Iain <iain@prettypeople.org>
+
+	* src/gr-window.c (file_save): Implement.
+	(file_save_as): Open a directory and save the file.
+	(file_sel_save_respone): Save file and store last dir.
+
+	* src/gnome-recorder.c: Default name is now got .wav appended.
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (media_play): Put some stuff into the state change
+	(media_stop): Ditto.
+	(media_record): Ditto.
+	(record_state_changed): state change callback for record pipeline.
+	(make_record_pipeline): Hook up to the state change.
+	
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gsr-window.c (media_play): We can seek now that we're playing.
+	(media_stop): We can't seek anymore.
+	(get_length): Can't seek yet.
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* src/gst-window.c (gsr_window_new): Use the basename.
+	(set_propety): Ditto
+
+2002-10-23 Iain <iain@prettypeople.org>
+
+	* gnome-sound-recorder.schemas: Add a key for the open file dir path
+	
+	* src/gsr-window.c (media_play): Grey out the Save and Save As buttons.
+	(media_stop): Ungrey them again.
+	(file_sel_response): Store the directory.
+	(file_open): Set the stored directory.
+
+2002-10-22 Iain <iain@prettypeople.org>
+
+	* gsr-window.c (finalize): Free working filename.
+	(set_property): Set the location property.
+	(get_property): Get the property
+	(class_init): Add the property.
+	(file_sel_response): Open the file.
+	(file_open): Open a file selector.
+	(gsr_window_new): Use the property.
+
+2002-10-22 Iain <iain@prettypeople.org>
+
+	* gsr-window.c (file_about): Removed the reference to GNOME.
+	(media_play): Check if the file exists before playing.
+	Set the correct state on the toolbar buttons.
+	(media_stop): Set the correct state on the toolbar buttons.
+	(media_record): Ditto.
+	(get_length): If the get_length fails, set the length label to Unknown.
+	(gsr_window_new): Set the buttons correctly.
+
+2002-10-20 Iain <iain@prettypeople.org>
+
+	* gsr-window.c (finalize): Destroy the pipelines.
+	(seconds_to_string): Convert seconds to hr:mn:sec
+	(seconds_to_full_string): Convert seconds to HH hours MM minutes SS 
+	seconds
+	(get_length): Try to get the length from the sink.
+	(seek_to): Seek to a position.
+	(tick_callback): Get the position, set the scale.
+	(play_iterate): Iterate the play pipeline.
+	(play_state_changed): Start all the timeouts and idles for the play
+	pipeline.
+	(make_play_pipeline): Make play pipeline a normal pipeline.
+	Add a real spider.
+	(make_record_pipeline): Use the wavenc. Add a warning if you don't
+	have wavenc.
+	(init): Set temppath;
+	(calculate_format_value): print the format.
+ 	(gsr_window_new): Add the info strings. Tidy the dialog.
+
+2002-10-19 Iain <iain@prettypeople.org>
+
+	* src/gnome-recorder.[ch]
+	  src/gsr-window.[ch]: New code for gst based recorder.
+
+2002-10-07 Iain <iain@prettypeople.org.
+
+	* Lots: Applied Bala's patch for bug 90626
+
+2002-10-07 Iain <iain@prettypeople.org>
+
+	* src/grec.c: Destroy the dialog after the dialog is closed
+
 2002-09-23 Iain <iain@prettypeople.org>
 
 	* gnome-sound-recorder.desktop.in: Fix spelling

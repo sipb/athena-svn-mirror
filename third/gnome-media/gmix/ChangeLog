@@ -1,3 +1,37 @@
+2002-12-16  Christian Neumair  <chris@gnome-de.org>
+
+	* .cvsignore: Updated.
+	* gmix.c: Revamped about dialog.
+
+2002-12-09 Iain <iain@prettypeople.org>
+
+	* gmix.c (about_cb): Remove the translation bit.
+
+2002-12-03  Christian Neumair  <chris@gnome-de.org>
+
+	* gmix.c: Revamped about dialog.
+
+2002-10-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gmix.c (main): Cast to fix a warning.
+	
+2002-10-08 Iain <iain@prettypeople.org>
+
+	* gmix.c (open_device): Fall back onto /dev/mixer and /dev/sound/mixer
+	if the supplied doesn't work.
+
+2002-10-08 Iain <iain@prettypeople.org>
+	
+	* gmix.c (main): Remove all the options that we were ignoring before.
+	Add a --device option.
+	Use a better error dialog.
+	(show_error): Show the error in a pretty dialog.
+	(open_device): Use the --device option.
+
+2002-10-07  Iain <iain@prettypeople.org>
+
+	* gmix.c (open_device): Use below patch in both ALSA and OSS
+
 2002-09-23  Iain <iain@prettypeople.org>
 
 	* gmix.c: Patch from Trevor Hamm to stop generating invalid GConf keys

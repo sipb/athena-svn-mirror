@@ -4,6 +4,7 @@ _Name=Sound Recorder
 _Comment=Record sound clips
 Exec=gnome-sound-recorder
 Icon=gnome-grecord.png
+StartupNotify=true
 Terminal=false
 Type=Application
 X-GNOME-DocPath=grecord/grecord.xml

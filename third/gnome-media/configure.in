@@ -2,10 +2,10 @@ AC_PREREQ(2.52)
 AC_INIT(gmix)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-media, 2.0.3)
+AM_INIT_AUTOMAKE(gnome-media, 2.2.0)
 AM_MAINTAINER_MODE
 
-AC_PROG_INTLTOOL
+AC_PROG_INTLTOOL([0.21])
 
 #GNOME_COMMON_INIT
 #GNOME_PLATFORM_GNOME_2(yes, force)
@@ -47,7 +47,7 @@ PKG_CHECK_MODULES(MEDIA, glib-2.0 >= 1.3.7 gmodule-2.0 >= 1.3.7 \
 host=`uname -s`
 case "$host" in
 *SunOS*)
-	MEDIA_LIBS="$MEDIA_LIBS -ldevinfo"
+	MEDIA_LIBS="$MEDIA_LIBS -ldevinfo -lX11"
         ;;
 esac
 
@@ -72,6 +72,30 @@ PKG_CHECK_MODULES(VUMETER, glib-2.0 >= 1.3.7 gtk+-2.0 >= 1.3.7 \
 AC_SUBST(VUMETER_CFLAGS)
 AC_SUBST(VUMETER_LIBS)
 
+# Check for GStreamer stuff
+HAVE_GST=no
+
+GST_MAJORMINOR=0.6
+PKG_CHECK_MODULES(GSR, \
+  gstreamer-$GST_MAJORMINOR >= 0.5.2 gstreamer-libs-$GST_MAJORMINOR >= 0.5.2 \
+		  libgnomeui-2.0 >= 1.102.0,
+		  HAVE_GST=yes,HAVE_GST=no)
+
+if test "x$HAVE_GST" = "xno"; then
+  GST_MAJORMINOR=0.5
+  PKG_CHECK_MODULES(GSR, \
+		    gstreamer-$GST_MAJORMINOR >= 0.5.2 gstreamer-libs-$GST_MAJORMINOR >= 0.5.2 \
+		    libgnomeui-2.0 >= 1.102.0,
+		    HAVE_GST=yes,HAVE_GST=no)
+fi
+
+if test "x$HAVE_GST" = "xno"; then
+  AC_MSG_ERROR(you need GStreamer installed)
+fi
+
+AC_SUBST(GSR_CFLAGS)
+AC_SUBST(GSR_LIBS)
+
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
 AM_GCONF_SOURCE_2
 
@@ -84,15 +108,6 @@ AC_SUBST(BONOBO_ACT_IDLDIR)
 
 ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
 AC_SUBST(ORBIT_IDL)
-
-# Check for sox
-AC_PATH_PROG(SOX_PATH, sox, no)
-if test "$SOX_PATH" = "no"; then
-  path_to_sox="sox"
-else
-  path_to_sox=$SOX_PATH
-fi
-AC_SUBST(path_to_sox)
 
 # Check for esound library
 got_esd=no
@@ -130,7 +145,7 @@ if test "x$enable_alsa" = "xyes"; then
     fi
 fi
 
-ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sv tr uk vi wa zh_TW zh_CN"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hi hu it ja ko lt lv mn ms nl nn no pl pt pt_BR ro ru sk sl sv tr uk vi wa zh_TW zh_CN"
 AM_GLIB_GNU_GETTEXT
 
 AC_SUBST(CFLAGS)
@@ -276,6 +291,7 @@ esac
 
 AC_SUBST(CDROM_HOST)
 AC_SUBST(default_cd_device)
+AC_DEFINE_UNQUOTED(default_cd_device, "$default_cd_device")
 
 PKG_CHECK_MODULES(GAILUTIL, gail >= 0.0.3)
 
@@ -285,6 +301,48 @@ AC_SUBST(GAILUTIL_LIBS)
 # grecord
 PROGRAMS_GRECORD="grecord"
 AC_SUBST(PROGRAMS_GRECORD)
+
+# gstreamer-properties
+#x_libs="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
+
+# FIXME: COMMON_MODULES should go because it is silly ...
+# ... and I'm sure we can narrow down some of these dependencies because
+# ... they depend on each other
+COMMON_MODULES="gtk+-2.0 gconf-2.0 libgnomeui-2.0 libglade-2.0 >= 1.99.12 libglade-2.0 gconf-2.0 gnome-desktop-2.0 gstreamer-0.5 gstreamer-libs-0.5"
+PKG_CHECK_MODULES(GSTPROPS, $COMMON_MODULES libxml-2.0 gnome-vfs-2.0,
+		  PROGRAMS_GSTPROPS="gstreamer-properties",
+		  PROGRAMS_GSTPROPS="")
+
+GSTPROPS_LIBS="$GSTPROPS_LIBS $x_libs -lgstgconf-0.5"
+AC_SUBST(GSTPROPS_LIBS)
+AC_SUBST(GSTPROPS_CFLAGS)
+
+GNOMECC_DESKTOP_DIR=${datadir}/control-center-2.0/capplets
+AS_AC_EXPAND(GNOMECC_DESKTOP_DIR, $GNOMECC_DESKTOP_DIR)
+AC_DEFINE_UNQUOTED(GNOMECC_DESKTOP_DIR, "$GNOMECC_DESKTOP_DIR", 
+                   [Install path for Gnome control-center integration])
+AC_SUBST(GNOMECC_DESKTOP_DIR)
+
+GSTPROPS_DATADIR="${datadir}/${GETTEXT_PACKAGE}"
+AS_AC_EXPAND(GSTPROPS_DATADIR, $GSTPROPS_DATADIR)
+GSTPROPS_ICONS_DIR=$GSTPROPS_DATADIR/icons
+GSTPROPS_GLADE_DIR=$GSTPROPS_DATADIR/interfaces
+GSTPROPS_PIXMAPS_DIR=$GSTPROPS_DATADIR/pixmaps
+GSTPROPS_MEDIA_DIR=$GSTPROPS_DATADIR/media
+
+AC_DEFINE_UNQUOTED(GSTPROPS_ICONS_DIR, "$GSTPROPS_ICONS_DIR", 
+                   [Install path for package icons])
+AC_DEFINE_UNQUOTED(GSTPROPS_GLADE_DIR, "$GSTPROPS_GLADE_DIR",
+                   [Install path for package interfaces])
+AC_DEFINE_UNQUOTED(GSTPROPS_PIXMAPS_DIR, "$GSTPROPS_PIXMAPS_DIR", 
+                   [Install path for package pixmaps])
+AC_DEFINE_UNQUOTED(GSTPROPS_MEDIA_DIR, "$GSTPROPS_MEDIA_DIR", 
+                   [Install path for package media files])
+AC_SUBST(GSTPROPS_ICONS_DIR)
+AC_SUBST(GSTPROPS_GLADE_DIR)
+AC_SUBST(GSTPROPS_PIXMAPS_DIR)
+AC_SUBST(GSTPROPS_MEDIA_DIR)
+AC_SUBST(PROGRAMS_GSTPROPS)
 
 AC_OUTPUT([
 gnome-media.spec
@@ -310,6 +368,7 @@ grecord/gnome-sound-recorder.schemas.in
 grecord/src/Makefile
 grecord/doc/Makefile
 grecord/doc/C/Makefile
+gstreamer-properties/Makefile
 version.h])
 
 echo ""
@@ -322,25 +381,14 @@ echo "System CDRom header:    ${cdrom_header}"
 echo "Default CD device:      ${default_cd_device}"
 echo "Default mixer program:  ${DEFAULT_MIXER}"
 echo "OS supports close tray: ${close_tray}"
-if test x$got_esd = xyes; then
-  echo "ESD support:            ${got_esd} (Building gnome-sound-recorder and vumeter.)"
-  if test x$SOX_PATH = xno; then
-    echo ""
-    echo "sox is not installed on this machine. This means that"
-    echo "gnome-sound-recorder will be unable to record."
-    echo ""
-    echo "sox is available from http://sox.sourceforge.net"
-  else
-    echo "Sox path:               ${path_to_sox}"
-  fi
+if test x$PROGRAMS_GSTPROPS != x; then
+  echo "GStreamer capplet:      yes"
 else
-  echo ""
-  echo "ESD was not found."
-  echo "vumeter and gnome-sound-recorder will not be built."
-  echo ""
-  echo "ESD is available from ftp://ftp.gnome.org"
+  echo "GStreamer capplet:      no"
 fi
 echo "------------------------------------------- "
 echo ""
 echo "Hope (n): Theological virtue defined as the desire and search for a future good,"
 echo "          difficult but not impossible to attain with God's help."
+
+

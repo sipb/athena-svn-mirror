@@ -34,7 +34,7 @@ static const CORBA_unsigned_long ORBit_zero_int = 0;
 && (TC_IMPL_TC_GNOME_Media_CDDBTrackEditor_21 == '2') \
 ) && !defined(TC_DEF_TC_GNOME_Media_CDDBTrackEditor)
 #define TC_DEF_TC_GNOME_Media_CDDBTrackEditor 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBTrackEditor_struct = {
@@ -83,7 +83,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBTrackEditor_struct = {
 static const char *anon_subnames_array3[] =
    { "OK", "REQUEST_PENDING", "ERROR_CONTACTING_SERVER",
 "ERROR_RETRIEVING_DATA", "MALFORMED_DATA", "IO_ERROR" };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_Result_struct = {
@@ -133,7 +133,7 @@ static const char *anon_subnames_array6[] = { "discid", "result" };
 static const CORBA_TypeCode anon_subtypes_array7[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
 (CORBA_TypeCode) & TC_GNOME_Media_CDDBSlave2_Result_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct
@@ -184,7 +184,7 @@ static const char *anon_subnames_array9[] = { "name", "length", "comment" };
 static const CORBA_TypeCode anon_subtypes_array10[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
 (CORBA_TypeCode) & TC_CORBA_short_struct, (CORBA_TypeCode) & TC_CORBA_string_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_TrackInfo_struct
@@ -233,7 +233,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_TrackInfo_struct
 #define TC_DEF_TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo 1
 static const CORBA_TypeCode anon_subtypes_array13[] =
    { (CORBA_TypeCode) & TC_GNOME_Media_CDDBSlave2_TrackInfo_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct
@@ -282,7 +282,7 @@ const struct CORBA_TypeCode_struct
 #define TC_DEF_TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo 1
 static const CORBA_TypeCode anon_subtypes_array20[] =
    { (CORBA_TypeCode) & TC_GNOME_Media_CDDBSlave2_TrackInfo_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct
@@ -332,7 +332,7 @@ const struct CORBA_TypeCode_struct
 static const CORBA_TypeCode anon_subtypes_array23[] =
    { (CORBA_TypeCode) &
 TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_struct };
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_TrackList_struct
@@ -379,7 +379,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_TrackList_struct
 && (TC_IMPL_TC_GNOME_Media_CDDBSlave2_UnknownDiscID_21 == '2') \
 ) && !defined(TC_DEF_TC_GNOME_Media_CDDBSlave2_UnknownDiscID)
 #define TC_DEF_TC_GNOME_Media_CDDBSlave2_UnknownDiscID 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct
@@ -426,7 +426,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Media_CDDBSlave2_21 == '2') \
 ) && !defined(TC_DEF_TC_GNOME_Media_CDDBSlave2)
 #define TC_DEF_TC_GNOME_Media_CDDBSlave2 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_struct = {
@@ -449,44 +449,43 @@ const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_struct = {
 };
 #endif
 
-#ifndef ORBIT_IDL_C_IMODULE
+#ifndef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 CORBA_unsigned_long GNOME_Media_CDDBTrackEditor__classid = 0;
 #endif
 
-#ifndef ORBIT_IDL_C_IMODULE
+#ifndef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 CORBA_unsigned_long GNOME_Media_CDDBSlave2__classid = 0;
 #endif
 
 /* Interface type data */
 
 static ORBit_IArg GNOME_Media_CDDBTrackEditor_setDiscID__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 ORBit_IMethod GNOME_Media_CDDBTrackEditor__imethods[] = {
    {
-    {2, 2, GNOME_Media_CDDBTrackEditor_setDiscID__arginfo, FALSE},
+    {1, 1, GNOME_Media_CDDBTrackEditor_setDiscID__arginfo, FALSE},
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
-    CORBA_OBJECT_NIL, "setDiscID", 9,
-    0},
-   {
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    CORBA_OBJECT_NIL, "showWindow", 10,
-    0},
+    TC_void, "setDiscID", 9,
+    0}
+   , {
+      {0, 0, NULL, FALSE},
+      {0, 0, NULL, FALSE},
+      {0, 0, NULL, FALSE},
+      TC_void, "showWindow", 10,
+      0}
 };
 static CORBA_string GNOME_Media_CDDBTrackEditor__base_itypes[] = {
    "IDL:Bonobo/Unknown:1.0",
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 ORBit_IInterface GNOME_Media_CDDBTrackEditor__iinterface = {
@@ -502,12 +501,10 @@ static ORBit_IArg GNOME_Media_CDDBSlave2_query__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "offsets"},
    {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "nsecs"},
    {TC_CORBA_string, ORBit_I_ARG_IN, "name"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "version"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "version"}
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_save__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
 /* Exceptions */
@@ -516,8 +513,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_save__exceptinfo[] = {
    NULL
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_getArtist__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
 /* Exceptions */
@@ -527,8 +523,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_getArtist__exceptinfo[] = {
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_setArtist__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "artist"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "artist"}
 };
 
 /* Exceptions */
@@ -537,8 +532,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_setArtist__exceptinfo[] = {
    NULL
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_getDiscTitle__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
 /* Exceptions */
@@ -548,8 +542,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_getDiscTitle__exceptinfo[] = {
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_setDiscTitle__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "disctitle"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "disctitle"}
 };
 
 /* Exceptions */
@@ -558,8 +551,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_setDiscTitle__exceptinfo[] = {
    NULL
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_getNTrks__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
 /* Exceptions */
@@ -569,8 +561,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_getNTrks__exceptinfo[] = {
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_getAllTracks__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_GNOME_Media_CDDBSlave2_TrackList, ORBit_I_ARG_OUT, "names"},
-   {TC_null, 0, NULL}
+   {TC_GNOME_Media_CDDBSlave2_TrackList, ORBit_I_ARG_OUT, "names"}
 };
 
 /* Exceptions */
@@ -580,8 +571,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_getAllTracks__exceptinfo[] = {
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_setAllTracks__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_GNOME_Media_CDDBSlave2_TrackList, ORBit_I_ARG_IN, "names"},
-   {TC_null, 0, NULL}
+   {TC_GNOME_Media_CDDBSlave2_TrackList, ORBit_I_ARG_IN, "names"}
 };
 
 /* Exceptions */
@@ -590,8 +580,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_setAllTracks__exceptinfo[] = {
    NULL
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_getComment__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
 /* Exceptions */
@@ -601,8 +590,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_getComment__exceptinfo[] = {
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_setComment__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "comment"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "comment"}
 };
 
 /* Exceptions */
@@ -611,8 +599,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_setComment__exceptinfo[] = {
    NULL
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_getYear__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
 /* Exceptions */
@@ -622,8 +609,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_getYear__exceptinfo[] = {
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_setYear__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_CORBA_short, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "year"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_short, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "year"}
 };
 
 /* Exceptions */
@@ -632,8 +618,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_setYear__exceptinfo[] = {
    NULL
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_getGenre__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "discid"}
 };
 
 /* Exceptions */
@@ -643,8 +628,7 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_getGenre__exceptinfo[] = {
 };
 static ORBit_IArg GNOME_Media_CDDBSlave2_setGenre__arginfo[] = {
    {TC_CORBA_string, ORBit_I_ARG_IN, "discid"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "genre"},
-   {TC_null, 0, NULL}
+   {TC_CORBA_string, ORBit_I_ARG_IN, "genre"}
 };
 
 /* Exceptions */
@@ -653,107 +637,107 @@ static CORBA_TypeCode GNOME_Media_CDDBSlave2_setGenre__exceptinfo[] = {
    NULL
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 ORBit_IMethod GNOME_Media_CDDBSlave2__imethods[] = {
    {
-    {7, 7, GNOME_Media_CDDBSlave2_query__arginfo, FALSE},
+    {6, 6, GNOME_Media_CDDBSlave2_query__arginfo, FALSE},
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
-    CORBA_OBJECT_NIL, "query", 5,
-    0},
-   {
-    {2, 2, GNOME_Media_CDDBSlave2_save__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_save__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "save", 4,
-    0},
-   {
-    {2, 2, GNOME_Media_CDDBSlave2_getArtist__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_getArtist__exceptinfo, FALSE},
-    TC_CORBA_string, "getArtist", 9,
-    0},
-   {
-    {3, 3, GNOME_Media_CDDBSlave2_setArtist__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_setArtist__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "setArtist", 9,
-    0},
-   {
-    {2, 2, GNOME_Media_CDDBSlave2_getDiscTitle__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_getDiscTitle__exceptinfo, FALSE},
-    TC_CORBA_string, "getDiscTitle", 12,
-    0},
-   {
-    {3, 3, GNOME_Media_CDDBSlave2_setDiscTitle__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_setDiscTitle__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "setDiscTitle", 12,
-    0},
-   {
-    {2, 2, GNOME_Media_CDDBSlave2_getNTrks__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_getNTrks__exceptinfo, FALSE},
-    TC_CORBA_short, "getNTrks", 8,
-    0 | ORBit_I_COMMON_FIXED_SIZE},
-   {
-    {3, 3, GNOME_Media_CDDBSlave2_getAllTracks__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_getAllTracks__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "getAllTracks", 12,
-    0},
-   {
-    {3, 3, GNOME_Media_CDDBSlave2_setAllTracks__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_setAllTracks__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "setAllTracks", 12,
-    0},
-   {
-    {2, 2, GNOME_Media_CDDBSlave2_getComment__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_getComment__exceptinfo, FALSE},
-    TC_CORBA_string, "getComment", 10,
-    0},
-   {
-    {3, 3, GNOME_Media_CDDBSlave2_setComment__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_setComment__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "setComment", 10,
-    0},
-   {
-    {2, 2, GNOME_Media_CDDBSlave2_getYear__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_getYear__exceptinfo, FALSE},
-    TC_CORBA_short, "getYear", 7,
-    0 | ORBit_I_COMMON_FIXED_SIZE},
-   {
-    {3, 3, GNOME_Media_CDDBSlave2_setYear__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_setYear__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "setYear", 7,
-    0},
-   {
-    {2, 2, GNOME_Media_CDDBSlave2_getGenre__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_getGenre__exceptinfo, FALSE},
-    TC_CORBA_string, "getGenre", 8,
-    0},
-   {
-    {3, 3, GNOME_Media_CDDBSlave2_setGenre__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {1, 1, GNOME_Media_CDDBSlave2_setGenre__exceptinfo, FALSE},
-    CORBA_OBJECT_NIL, "setGenre", 8,
-    0},
+    TC_void, "query", 5,
+    0}
+   , {
+      {1, 1, GNOME_Media_CDDBSlave2_save__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_save__exceptinfo, FALSE},
+      TC_void, "save", 4,
+      0}
+   , {
+      {1, 1, GNOME_Media_CDDBSlave2_getArtist__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_getArtist__exceptinfo, FALSE},
+      TC_CORBA_string, "getArtist", 9,
+      0}
+   , {
+      {2, 2, GNOME_Media_CDDBSlave2_setArtist__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_setArtist__exceptinfo, FALSE},
+      TC_void, "setArtist", 9,
+      0}
+   , {
+      {1, 1, GNOME_Media_CDDBSlave2_getDiscTitle__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_getDiscTitle__exceptinfo, FALSE},
+      TC_CORBA_string, "getDiscTitle", 12,
+      0}
+   , {
+      {2, 2, GNOME_Media_CDDBSlave2_setDiscTitle__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_setDiscTitle__exceptinfo, FALSE},
+      TC_void, "setDiscTitle", 12,
+      0}
+   , {
+      {1, 1, GNOME_Media_CDDBSlave2_getNTrks__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_getNTrks__exceptinfo, FALSE},
+      TC_CORBA_short, "getNTrks", 8,
+      0 | ORBit_I_COMMON_FIXED_SIZE}
+   , {
+      {2, 2, GNOME_Media_CDDBSlave2_getAllTracks__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_getAllTracks__exceptinfo, FALSE},
+      TC_void, "getAllTracks", 12,
+      0}
+   , {
+      {2, 2, GNOME_Media_CDDBSlave2_setAllTracks__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_setAllTracks__exceptinfo, FALSE},
+      TC_void, "setAllTracks", 12,
+      0}
+   , {
+      {1, 1, GNOME_Media_CDDBSlave2_getComment__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_getComment__exceptinfo, FALSE},
+      TC_CORBA_string, "getComment", 10,
+      0}
+   , {
+      {2, 2, GNOME_Media_CDDBSlave2_setComment__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_setComment__exceptinfo, FALSE},
+      TC_void, "setComment", 10,
+      0}
+   , {
+      {1, 1, GNOME_Media_CDDBSlave2_getYear__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_getYear__exceptinfo, FALSE},
+      TC_CORBA_short, "getYear", 7,
+      0 | ORBit_I_COMMON_FIXED_SIZE}
+   , {
+      {2, 2, GNOME_Media_CDDBSlave2_setYear__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_setYear__exceptinfo, FALSE},
+      TC_void, "setYear", 7,
+      0}
+   , {
+      {1, 1, GNOME_Media_CDDBSlave2_getGenre__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_getGenre__exceptinfo, FALSE},
+      TC_CORBA_string, "getGenre", 8,
+      0}
+   , {
+      {2, 2, GNOME_Media_CDDBSlave2_setGenre__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Media_CDDBSlave2_setGenre__exceptinfo, FALSE},
+      TC_void, "setGenre", 8,
+      0}
 };
 static CORBA_string GNOME_Media_CDDBSlave2__base_itypes[] = {
    "IDL:Bonobo/Unknown:1.0",
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
 static
 #endif
 ORBit_IInterface GNOME_Media_CDDBSlave2__iinterface = {

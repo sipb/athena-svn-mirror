@@ -5,13 +5,48 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media 1.520.5\n"
-"POT-Creation-Date: 2002-11-18 23:59+0000\n"
+"POT-Creation-Date: 2002-12-07 15:16+0000\n"
 "PO-Revision-Date: 2002-10-06 04:19+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
+msgid "Port"
+msgstr "포트"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3
+#, fuzzy
+msgid "Server name"
+msgstr "서버"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "The hostname that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "The port that the server is running the database on"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+#, fuzzy
+msgid "The username"
+msgstr "테마 이름"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The username that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+#, fuzzy
+msgid "Your hostname"
+msgstr "호스트이름:"
 
 #: cddb-slave2/cddb-disclosure.c:245
 msgid "Expander Size"
@@ -42,48 +77,44 @@ msgstr "다른 정보 보내기(_O)..."
 msgid "N_ame:"
 msgstr "이름(_A):"
 
-#: cddb-slave2/cddb-slave-capplet.c:710
+#: cddb-slave2/cddb-slave-capplet.c:711
 msgid "_Hostname:"
 msgstr "호스트이름(_H):"
 
 #. Server info
-#: cddb-slave2/cddb-slave-capplet.c:731 cddb-slave2/cddb-slave-capplet.c:771
+#: cddb-slave2/cddb-slave-capplet.c:733 cddb-slave2/cddb-slave-capplet.c:773
 msgid "Server"
 msgstr "서버"
 
-#: cddb-slave2/cddb-slave-capplet.c:739
+#: cddb-slave2/cddb-slave-capplet.c:741
 msgid "FreeDB _round robin server"
 msgstr "FreeDB 라운드 로빈 서버(_R)"
 
-#: cddb-slave2/cddb-slave-capplet.c:745
+#: cddb-slave2/cddb-slave-capplet.c:747
 msgid "Other _FreeDB server..."
 msgstr "다른 FreeDB 서버(_F)..."
 
-#: cddb-slave2/cddb-slave-capplet.c:774
-msgid "Port"
-msgstr "포트"
-
-#: cddb-slave2/cddb-slave-capplet.c:777
+#: cddb-slave2/cddb-slave-capplet.c:779
 msgid "Location"
 msgstr "위치"
 
-#: cddb-slave2/cddb-slave-capplet.c:783
+#: cddb-slave2/cddb-slave-capplet.c:785
 msgid "Update server list"
 msgstr "서버 목록 업데이트"
 
-#: cddb-slave2/cddb-slave-capplet.c:790
+#: cddb-slave2/cddb-slave-capplet.c:792
 msgid "Other _server..."
 msgstr "다른 서버(_S)..."
 
-#: cddb-slave2/cddb-slave-capplet.c:802
+#: cddb-slave2/cddb-slave-capplet.c:804
 msgid "Hostname:"
 msgstr "호스트이름:"
 
-#: cddb-slave2/cddb-slave-capplet.c:814
+#: cddb-slave2/cddb-slave-capplet.c:816
 msgid "_Port:"
 msgstr "포트(_P):"
 
-#: cddb-slave2/cddb-slave-capplet.c:863
+#: cddb-slave2/cddb-slave-capplet.c:866
 msgid "CD Database Preferences"
 msgstr "CD 데이타베이스 기본 설정"
 
@@ -91,7 +122,10 @@ msgstr "CD 데이타베이스 기본 설정"
 msgid "Unknown / Unknown"
 msgstr "모름 / 모름"
 
-#: cddb-slave2/cddb-slave.c:219
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:219 grecord/src/gsr-window.c:760
+#: grecord/src/gsr-window.c:769 grecord/src/gsr-window.c:778
+#: grecord/src/gsr-window.c:788 grecord/src/gsr-window.c:1108
 msgid "Unknown"
 msgstr "모름"
 
@@ -120,7 +154,7 @@ msgid "Artist and Title"
 msgstr "음악가 및 제목"
 
 #: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
-#: gnome-cd/gnome-cd.c:125
+#: gnome-cd/gnome-cd.c:130
 msgid "Unknown track"
 msgstr "알 수 없는 트랙"
 
@@ -845,6 +879,7 @@ msgid "CD"
 msgstr "CD"
 
 #: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
+#: gstreamer-properties/gstreamer-properties.glade.h:13
 msgid "Video"
 msgstr "비디오"
 
@@ -856,7 +891,7 @@ msgstr "라디오"
 msgid "Phone"
 msgstr "전화입력"
 
-#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1087
+#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1090
 msgid "Mono"
 msgstr "모노"
 
@@ -1050,33 +1085,45 @@ msgstr "모니터"
 msgid "Help"
 msgstr "도움말"
 
-#: gmix/gmix.c:147
-msgid "don't restore mixer-settings from configuration"
-msgstr "볼륨조정 믹서상태를 읽어오지 않음"
+#: gmix/gmix.c:146
+msgid "Mixer device to use"
+msgstr ""
 
-#: gmix/gmix.c:148
-msgid "restore mixer-settings from configuration"
-msgstr "설정에서 믹서 상태를 복구"
-
-#: gmix/gmix.c:149
-msgid "initialise the mixer(s) from stored configuration and exit"
-msgstr "저장된 설정상태에서부터 믹서 초기화하고 끝내기"
-
-#: gmix/gmix.c:150
-msgid "don't save (modified) mixer-settings into configuration"
-msgstr "(변경된) 믹서 설정상태를 저장하지 않음"
-
-#: gmix/gmix.c:382
+#: gmix/gmix.c:327
+#, fuzzy, c-format
 msgid ""
-"I was not able to open your audio device.\n"
-"Please check that you have permission to open /dev/mixer\n"
-"and make sure you have sound support compiled into your kernel."
+"Volume control is unable to run correctly.\n"
+"\n"
+"Unable to open audio device '%s'.\n"
+"Please check that you have permissions to open '%s'\n"
+"and that you have sound support in your kernel.\n"
+"\n"
+"Press Quit to exit Volume control"
 msgstr ""
 "오디오 장치를 열 수 없습니다.\n"
 "/dev/mixer를 열 권한이 있는 지 확인해 보십시오.\n"
 "그리고 커널을 컴파일할 때 사운드 기능을 포함시켰는지 확인하십시오."
 
-#: gmix/gmix.c:603
+#: gmix/gmix.c:381
+msgid ""
+"Volume control is unable to run correctly.\n"
+"\n"
+"Press the details button for more details on the reasons for failure.\n"
+"\n"
+"Press Quit to quit Volume control"
+msgstr ""
+
+#: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
+#, fuzzy
+msgid "_Details"
+msgstr "메탈 (Metal)"
+
+#: gmix/gmix.c:387
+#, fuzzy
+msgid "Invalid mixer device"
+msgstr "CD 장치가 잘못되었습니다"
+
+#: gmix/gmix.c:626
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1087,7 +1134,7 @@ msgstr ""
 "컴파일 되었고 이 시스템에서는 3.6.0 이전의 \n"
 "버전이 실행되고 있습니다.\n"
 
-#: gmix/gmix.c:611
+#: gmix/gmix.c:634
 #, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1098,54 +1145,62 @@ msgstr ""
 "컴파일 되었고 이 시스템에서는 %d.%d.%d 버전이\n"
 "실행되고 있습니다.\n"
 
-#: gmix/gmix.c:1065
+#: gmix/gmix.c:1088
 #, c-format
 msgid "left %s"
 msgstr "왼쪽 %s"
 
-#: gmix/gmix.c:1091
+#: gmix/gmix.c:1114
 #, c-format
 msgid "Right %s"
 msgstr "오른쪽 %s"
 
-#: gmix/gmix.c:1184
+#: gmix/gmix.c:1207
 msgid "Lock"
 msgstr "잠금"
 
-#: gmix/gmix.c:1197
+#: gmix/gmix.c:1220
 #, c-format
 msgid "%s Lock"
 msgstr "%s 잠금"
 
-#: gmix/gmix.c:1208
+#: gmix/gmix.c:1231
 msgid "Mute"
 msgstr "조용"
 
-#: gmix/gmix.c:1221
+#: gmix/gmix.c:1244
 #, c-format
 msgid "%s Mute"
 msgstr "%s 조용"
 
-#: gmix/gmix.c:1235
+#: gmix/gmix.c:1258
 msgid "Rec."
 msgstr "녹음"
 
-#: gmix/gmix.c:1247
+#: gmix/gmix.c:1270
 #, c-format
 msgid "%s Record"
 msgstr "%s 녹음"
 
-#: gmix/gmix.c:1319 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:2
 msgid "Volume Control"
 msgstr "볼륨 조정"
 
-#: gmix/gmix.c:1725
-msgid "Gnome Volume Control"
-msgstr "그놈 볼륨 조정"
+#: gmix/gmix.c:1748
+#, fuzzy
+msgid "GNOME Volume Control"
+msgstr "그놈 볼륨 조정 실행"
 
-#: gmix/gmix.c:1728
-msgid "This is a mixer for sound devices"
+#: gmix/gmix.c:1749
+msgid ""
+"(C) 1998 Jens Ch. Restemeier\n"
+"(C) 2001 Iain Holmes"
+msgstr ""
+
+#: gmix/gmix.c:1751
+#, fuzzy
+msgid "A mixer for sound devices"
 msgstr "사운드 장치를 위한 믹서입니다"
 
 #: gmix/gnome-volume-control.desktop.in.in.h:1
@@ -1212,67 +1267,98 @@ msgstr "앨범 라인"
 msgid "Line for displaying the name of the album"
 msgstr "앨범의 이름을 표시하는 라인"
 
-#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:164 gnome-cd/callbacks.c:263
-#: gnome-cd/callbacks.c:531 gnome-cd/gnome-cd.c:555 grecord/src/gui.c:233
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:165 gnome-cd/callbacks.c:264
+#: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
+#: grecord/gsr.xml.h:13
 msgid "Play"
 msgstr "재생"
 
-#: gnome-cd/callbacks.c:149 gnome-cd/callbacks.c:195 gnome-cd/callbacks.c:225
-#: gnome-cd/callbacks.c:305 gnome-cd/callbacks.c:345 gnome-cd/callbacks.c:369
-#: gnome-cd/callbacks.c:410 gnome-cd/callbacks.c:497
+#: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
+#: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
+#: gnome-cd/callbacks.c:411 gnome-cd/callbacks.c:499
 msgid "Pause"
 msgstr "일시 중지"
 
-#: gnome-cd/callbacks.c:603
-msgid "Disc error"
-msgstr "디스크 오류"
+#: gnome-cd/callbacks.c:530
+#, fuzzy, c-format
+msgid "Playing %s - %s"
+msgstr "재생"
 
-#: gnome-cd/callbacks.c:636 gnome-cd/callbacks.c:647
+#: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
 msgid "Unknown Artist"
 msgstr "알 수 없는 음악가"
 
-#: gnome-cd/callbacks.c:639 gnome-cd/callbacks.c:651
+#: gnome-cd/callbacks.c:532 gnome-cd/callbacks.c:665 gnome-cd/callbacks.c:677
 msgid "Unknown Album"
 msgstr "알 수 없는 앨범"
 
-#: gnome-cd/callbacks.c:690
+#: gnome-cd/callbacks.c:534 grecord/src/gui.c:827
+msgid "Playing"
+msgstr "재생"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:557
+#, fuzzy
+msgid "Paused"
+msgstr "일시 중지"
+
+#. Update tray icon tooltip
+#: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
+#: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "CD 플레이어"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:620
+#, fuzzy
+msgid "Stopped"
+msgstr "중지"
+
+#: gnome-cd/callbacks.c:626
+msgid "Disc error"
+msgstr "디스크 오류"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
 msgid "No disc"
 msgstr "디스크 없음"
 
-#: gnome-cd/callbacks.c:716
+#: gnome-cd/callbacks.c:742
 msgid "Drive open"
 msgstr "드라이브 열림"
 
-#: gnome-cd/callbacks.c:740
+#: gnome-cd/callbacks.c:766
 msgid "Data CD"
 msgstr "데이타 CD"
 
-#: gnome-cd/callbacks.c:762
+#. Updated the tray icon tooltip
+#: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
 msgid "No Cdrom"
 msgstr "CD-ROM 없음"
 
-#: gnome-cd/callbacks.c:774
+#: gnome-cd/callbacks.c:803
 msgid "Drive Error"
 msgstr "드라이브 오류"
 
-#: gnome-cd/callbacks.c:795
-msgid "Copyright (C) 2001, 2002"
-msgstr "Copyright (C) 2001, 2002"
+#: gnome-cd/callbacks.c:824
+msgid "(C) 2001 Iain Holmes"
+msgstr ""
 
-#: gnome-cd/callbacks.c:796
-msgid "A GNOME cd player"
-msgstr "그놈 CD 플레이어"
+#: gnome-cd/callbacks.c:825
+msgid "A CD player for GNOME"
+msgstr ""
 
-#: gnome-cd/cdrom.c:362
+#: gnome-cd/cdrom.c:367
 #, c-format
 msgid "You do not seem to have permission to access %s."
 msgstr "%s에 접근할 권한이 없습니다."
 
-#: gnome-cd/cdrom.c:368
-#, c-format
+#: gnome-cd/cdrom.c:373
+#, fuzzy, c-format
 msgid ""
 "%s does not appear to point to a valid CD device. This may be because:\n"
-"a) CD support is not compiled into Linux\n"
+"a) CD support is not present in your machine\n"
 "b) You do not have the correct permissions to access the CD drive\n"
 "c) %s is not the CD drive.\n"
 msgstr ""
@@ -1289,216 +1375,309 @@ msgstr "알 수 없는 음악가"
 msgid "Unknown disc"
 msgstr "알 수 없는 디스크"
 
-#: gnome-cd/gnome-cd.c:51 gnome-cd/gnome-cd.c:441
-msgid "Gnome CD Player"
-msgstr "그놈 CD 플레이어"
-
-#: gnome-cd/gnome-cd.c:151
+#: gnome-cd/gnome-cd.c:156
 #, c-format
 msgid "%d - Unknown"
 msgstr "%d - 알 수 없음"
 
-#: gnome-cd/gnome-cd.c:295
+#: gnome-cd/gnome-cd.c:300
 msgid "P_revious track"
 msgstr "이전 트랙(_R)"
 
-#: gnome-cd/gnome-cd.c:296
+#: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
 msgid "_Stop"
 msgstr "중지(_S)"
 
-#: gnome-cd/gnome-cd.c:297
+#: gnome-cd/gnome-cd.c:302
 msgid "_Play / Pause"
 msgstr "재생 / 일시 중지(_P)"
 
-#: gnome-cd/gnome-cd.c:298
+#: gnome-cd/gnome-cd.c:303
 msgid "_Next track"
 msgstr "다음 트랙(_N)"
 
-#: gnome-cd/gnome-cd.c:299
+#: gnome-cd/gnome-cd.c:304
 msgid "_Eject disc"
 msgstr "디스크 꺼내기(_E)"
 
-#: gnome-cd/gnome-cd.c:300
+#: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
 msgid "_Help"
 msgstr "도움말(_H)"
 
-#: gnome-cd/gnome-cd.c:301
-msgid "_About Gnome-CD"
-msgstr "그놈 CD 정보(_A)"
+#: gnome-cd/gnome-cd.c:306
+#, fuzzy
+msgid "_About CD player"
+msgstr "그놈 CD 플레이어"
 
-#: gnome-cd/gnome-cd.c:375
+#: gnome-cd/gnome-cd.c:414
+#, fuzzy
 msgid ""
-"There is no CD device set. This means that GnomeCD\n"
-"will be unable to run. Press Set device to go to a dialog\n"
-"where you can set the device, or click Quit to quit GnomeCD"
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
 msgstr ""
 "CD 장치가 설정되어 있지 않습니다. GnomeCD를 실행할 수\n"
 "없습니다. 장치를 설정할 수 있는 대화 상자에서 장치를\n"
 "설정하시거나, \"끝내기\"를 클릭해 GnomeCD를 끝내십시오"
 
-#: gnome-cd/gnome-cd.c:379 gnome-cd/gnome-cd.c:418
+#: gnome-cd/gnome-cd.c:418
 msgid "Set device"
 msgstr "장치 설정"
 
-#: gnome-cd/gnome-cd.c:381
+#: gnome-cd/gnome-cd.c:420
 msgid "No CD device"
 msgstr "CD 장치가 없습니다"
 
-#: gnome-cd/gnome-cd.c:414
-#, c-format
+#: gnome-cd/gnome-cd.c:474
+#, fuzzy
 msgid ""
-"%s\n"
-"This means that GnomeCD will be unable to run correctly. Press Set device to "
-"go to a dialog where you can set the device, or click Quit to quit GnomeCD"
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
 msgstr ""
 "%s\n"
 "GnomeCD를 실행할 수 없습니다. 장치를 설정할 수 있는 대화 상자에서 장치를 설정"
 "하시거나, \"끝내기\"를 클릭해 GnomeCD를 끝내십시오"
 
-#: gnome-cd/gnome-cd.c:420
+#: gnome-cd/gnome-cd.c:479
+#, fuzzy
+msgid "_Set device"
+msgstr "장치 설정"
+
+#: gnome-cd/gnome-cd.c:481
 msgid "Invalid CD device"
 msgstr "CD 장치가 잘못되었습니다"
 
-#: gnome-cd/gnome-cd.c:488
+#: gnome-cd/gnome-cd.c:542
 msgid "Volume control"
 msgstr "볼륨 조정"
 
-#: gnome-cd/gnome-cd.c:497
+#: gnome-cd/gnome-cd.c:551
 msgid "Open track editor"
 msgstr "트랙 편집기 열기"
 
-#: gnome-cd/gnome-cd.c:498
+#: gnome-cd/gnome-cd.c:552
 msgid "Track editor"
 msgstr "트랙 편집기"
 
-#: gnome-cd/gnome-cd.c:505
+#: gnome-cd/gnome-cd.c:559
 msgid "Open preferences"
 msgstr "기본 설정 열기"
 
-#: gnome-cd/gnome-cd.c:506
+#: gnome-cd/gnome-cd.c:560
 msgid "Preferences"
 msgstr "기본 설정"
 
-#: gnome-cd/gnome-cd.c:514
+#: gnome-cd/gnome-cd.c:568
 msgid "Track List"
 msgstr "트랙 목록"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous track"
 msgstr "이전 트랙"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous"
 msgstr "이전"
 
-#: gnome-cd/gnome-cd.c:538
+#: gnome-cd/gnome-cd.c:593
 msgid "Rewind"
 msgstr "되감기"
 
-#: gnome-cd/gnome-cd.c:555
+#: gnome-cd/gnome-cd.c:610
 msgid "Play / Pause"
 msgstr "재생 / 일시 중지"
 
-#: gnome-cd/gnome-cd.c:560 grecord/src/gui.c:247
+#: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
 msgid "Stop"
 msgstr "중지"
 
-#: gnome-cd/gnome-cd.c:564
+#: gnome-cd/gnome-cd.c:619
 msgid "Fast forward"
 msgstr "앞으로 빨리 감기"
 
-#: gnome-cd/gnome-cd.c:572
+#: gnome-cd/gnome-cd.c:627
 msgid "Next track"
 msgstr "다음 트랙"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject CD"
 msgstr "CD 꺼내기"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject"
 msgstr "꺼내기"
 
-#: gnome-cd/gnome-cd.c:640
+#: gnome-cd/gnome-cd.c:731
+#, fuzzy
+msgid "CD device to use"
+msgstr "CD 장치가 없습니다"
+
+#: gnome-cd/gnome-cd.c:740
+msgid "Only start if there isn't already a CD player application running"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:742
+msgid "Play the CD on startup"
+msgstr ""
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:773
 msgid "Cannot create player"
 msgstr "플레이어를 만들 수 없습니다"
-
-#: gnome-cd/gnome-cd.desktop.in.h:1
-msgid "CD Player"
-msgstr "CD 플레이어"
 
 #: gnome-cd/gnome-cd.desktop.in.h:2
 msgid "Play audio CDs"
 msgstr "오디오 CD를 재생합니다"
 
-#: gnome-cd/preferences.c:82
-#, c-format
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "Action on application exit"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Action on start"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+#, fuzzy
+msgid "CD player theme"
+msgstr "CD 플레이어 장치(_V):"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Device path"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD player attempt to shut the CD drive on start up?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "Shut the CD tray on start"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid ""
+"What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
+"playing, 2 = Eject the CD, 3 = Attempt to close the tray"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:9
+msgid ""
+"What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
+"playing, 2 = Stop playing"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:10
+msgid "What theme should the CD player use for it's appearance"
+msgstr ""
+
+#: gnome-cd/preferences.c:83
+#, fuzzy, c-format
 msgid ""
 "%s\n"
-"This means that Gnome-CD will not be able to run."
+"This means that the CD player will not be able to run."
 msgstr ""
 "%s\n"
 "이때문에 그놈CD를 실행할 수 없습니다."
 
-#: gnome-cd/preferences.c:83
+#: gnome-cd/preferences.c:84
 msgid "Error setting device"
 msgstr "장치 설정에서 오류"
 
-#: gnome-cd/preferences.c:793
-msgid "Gnome CD Player Preferences"
+#: gnome-cd/preferences.c:824
+#, fuzzy
+msgid "CD Player Preferences"
 msgstr "그놈 CD 플레이어 기본 설정"
 
-#: gnome-cd/preferences.c:813
+#: gnome-cd/preferences.c:853
 msgid "CD player de_vice:"
 msgstr "CD 플레이어 장치(_V):"
 
-#: gnome-cd/preferences.c:828
+#: gnome-cd/preferences.c:868
 msgid "_Apply change"
 msgstr "바뀐 사항 적용(_A)"
 
 #. left side
-#: gnome-cd/preferences.c:841
-msgid "When Gnome CD Player starts"
+#: gnome-cd/preferences.c:881
+#, fuzzy
+msgid "When CD player starts"
 msgstr "그놈  CD 플레이어가 시작할 때"
 
-#: gnome-cd/preferences.c:849
+#: gnome-cd/preferences.c:889
 msgid "Do _nothing"
 msgstr "아무 것도 하지 않음(_N)"
 
-#: gnome-cd/preferences.c:858
+#: gnome-cd/preferences.c:890
+#, fuzzy
+msgid "Do nothing when CD Player starts"
+msgstr "그놈  CD 플레이어가 시작할 때"
+
+#: gnome-cd/preferences.c:900
 msgid "Start _playing CD"
 msgstr "CD 재생 시작(_P)"
 
-#: gnome-cd/preferences.c:867
+#: gnome-cd/preferences.c:901
+#, fuzzy
+msgid "Start playing CD when CD Player starts"
+msgstr "그놈  CD 플레이어가 시작할 때"
+
+#: gnome-cd/preferences.c:910
 msgid "_Stop playing CD"
 msgstr "CD 재생 중지(_S)"
 
-#: gnome-cd/preferences.c:880
+#: gnome-cd/preferences.c:911
+#, fuzzy
+msgid "Stop playing CD when CD Player starts"
+msgstr "그놈  CD 플레이어가 시작할 때"
+
+#: gnome-cd/preferences.c:925
 msgid "Attempt to _close CD tray"
 msgstr "CD 트레이 닫기 시도(_C)"
 
 #. Right side
-#: gnome-cd/preferences.c:892
-msgid "When Gnome CD Player quits"
+#: gnome-cd/preferences.c:937
+#, fuzzy
+msgid "When CD player quits"
 msgstr "그놈 CD 플레이어가 끝날 때"
 
-#: gnome-cd/preferences.c:900
+#: gnome-cd/preferences.c:945
 msgid "Do not_hing"
 msgstr "아무 것도 하지 않음(_H)"
 
-#: gnome-cd/preferences.c:909
+#: gnome-cd/preferences.c:946
+#, fuzzy
+msgid "Do nothing when CD Player exits"
+msgstr "그놈 CD 플레이어가 끝날 때"
+
+#: gnome-cd/preferences.c:955
 msgid "S_top playing CD"
 msgstr "CD 재생 중지(_T)"
 
-#: gnome-cd/preferences.c:918
+#: gnome-cd/preferences.c:956
+msgid "Stop playing CD when CD player quits"
+msgstr ""
+
+#: gnome-cd/preferences.c:966
 msgid "Attempt to _open CD tray"
 msgstr "CD 트레이 열기 시도(_O)"
 
-#: gnome-cd/preferences.c:928
+#: gnome-cd/preferences.c:967
+#, fuzzy
+msgid "Attempt to open CD tray when CD Player exits"
+msgstr "CD 트레이 열기 시도(_O)"
+
+#: gnome-cd/preferences.c:977
 msgid "Attempt to c_lose CD tray"
 msgstr "CD 트레이 닫기 시도(_L)"
 
-#: gnome-cd/preferences.c:959
+#: gnome-cd/preferences.c:1008
 msgid "Theme name"
 msgstr "테마 이름"
 
@@ -1506,7 +1685,8 @@ msgstr "테마 이름"
 msgid "Record sound clips"
 msgstr "사운드 클립을 녹음합니다"
 
-#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gui.c:193
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
+#: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
 msgid "Sound Recorder"
 msgstr "녹음기"
 
@@ -1531,15 +1711,15 @@ msgstr ""
 "\n"
 "sox가 없으면, 녹음 혹은 여러가지 효과를 사용하지 못합니다."
 
-#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1359
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1361
 msgid "Could not fork child process"
 msgstr "자식 프로세스를 포크할 수 없습니다"
 
-#: grecord/src/grec.c:173
+#: grecord/src/grec.c:173 grecord/src/gsr-window.c:1342
 msgid "Recording..."
 msgstr "녹음중..."
 
-#: grecord/src/grec.c:220
+#: grecord/src/grec.c:220 grecord/src/gsr-window.c:1221
 msgid "Playing..."
 msgstr "연주중..."
 
@@ -1551,15 +1731,15 @@ msgstr "파일 변환중..."
 msgid "Cancel"
 msgstr "취소"
 
-#: grecord/src/grec.c:345 grecord/src/grec.c:793
+#: grecord/src/grec.c:345 grecord/src/grec.c:795
 msgid "Audioformat: "
 msgstr "오디오 형식: "
 
-#: grecord/src/grec.c:349 grecord/src/grec.c:779 grecord/src/gui.c:308
+#: grecord/src/grec.c:349 grecord/src/grec.c:781 grecord/src/gui.c:308
 msgid "Sample rate: "
 msgstr "샘플 속도: "
 
-#: grecord/src/grec.c:359 grecord/src/grec.c:783 grecord/src/gui.c:315
+#: grecord/src/grec.c:359 grecord/src/grec.c:785 grecord/src/gui.c:315
 msgid "Channels: "
 msgstr "채널: "
 
@@ -1576,7 +1756,7 @@ msgstr "음향 파일 선택"
 msgid "%s is not installed in the path"
 msgstr "%s은(는) 경로에 설치되어 있지 않습니다"
 
-#: grecord/src/grec.c:523
+#: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
 #, c-format
 msgid "There was an error starting %s: %s"
 msgstr "%s을(를) 시작하는 데 오류가 발생했습니다: %s"
@@ -1608,7 +1788,7 @@ msgstr ""
 msgid "File '%s isn't a valid sound file."
 msgstr "'%s' 파일은 올바른 사운드 파일이 아닙니다."
 
-#: grecord/src/grec.c:817
+#: grecord/src/grec.c:819
 #, c-format
 msgid ""
 "'%s' is a folder.\n"
@@ -1617,7 +1797,7 @@ msgstr ""
 "'%s'은(는) 폴더입니다.\n"
 "다른 파일이름을 입력하십시오."
 
-#: grecord/src/grec.c:829
+#: grecord/src/grec.c:831
 #, c-format
 msgid ""
 "<b>File '%s' already exists.</b>\n"
@@ -1626,20 +1806,20 @@ msgstr ""
 "<b>'%s' 파일이 이미 존재합니다.</b>\n"
 "이 파일을 덮어 쓸까요?"
 
-#: grecord/src/grec.c:832
+#: grecord/src/grec.c:834
 msgid "Cancel save"
 msgstr "저장 취소"
 
-#: grecord/src/grec.c:833
+#: grecord/src/grec.c:835
 msgid "Overwrite"
 msgstr "덮어쓰기"
 
-#: grecord/src/grec.c:860
+#: grecord/src/grec.c:862
 #, c-format
 msgid "Error saving '%s'"
 msgstr "'%s'을(를) 저장하는 데 오류"
 
-#: grecord/src/grec.c:974
+#: grecord/src/grec.c:976
 #, c-format
 msgid ""
 "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
@@ -1650,21 +1830,21 @@ msgstr ""
 "\n"
 "저장하지 않으면 바꾼 사항들을 잃어버릴 것입니다."
 
-#: grecord/src/grec.c:979
+#: grecord/src/grec.c:981
 msgid "Do_n't save"
 msgstr "저장 안 함(_N)"
 
-#: grecord/src/grec.c:986
+#: grecord/src/grec.c:988
 #, c-format
 msgid "Save %s?"
 msgstr "%s을(를) 저장할까요?"
 
 #. Save the file
-#: grecord/src/grec.c:1010
+#: grecord/src/grec.c:1012
 msgid "Saving..."
 msgstr "저장중..."
 
-#: grecord/src/grec.c:1140
+#: grecord/src/grec.c:1142
 #, c-format
 msgid ""
 "The size of the current sample is more than\n"
@@ -1673,11 +1853,11 @@ msgstr ""
 "현재 샘플의 크기가\n"
 "%i Mb보다 큽니다!"
 
-#: grecord/src/grec.c:1196
+#: grecord/src/grec.c:1198
 msgid "Save sound file"
 msgstr "음향 파일 저장"
 
-#: grecord/src/grec.c:1425
+#: grecord/src/grec.c:1429
 msgid ""
 "The sound device is not ready. Please check that there isn't\n"
 "another program running that is using the device."
@@ -1685,15 +1865,179 @@ msgstr ""
 "사운드 장치를 사용할 수 없습니다. 다른 프로그램이 이 장치를\n"
 "쓰고 있지 않은 지 확인하십시오."
 
-#: grecord/src/gui.c:45
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+#, fuzzy
+msgid "hours"
+msgstr "코러스"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr ""
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#: grecord/src/gui.c:756
+msgid "minutes"
+msgstr "분"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#, fuzzy
+msgid "minute"
+msgstr "분"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+#, fuzzy
+msgid "seconds"
+msgstr "%s 녹음"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+#, fuzzy
+msgid "second"
+msgstr "%s 녹음"
+
+#: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
+msgid "Open a file"
+msgstr ""
+
+#: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
+#: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
+msgid "Ready"
+msgstr ""
+
+#: grecord/src/gsr-window.c:541
+#, fuzzy, c-format
+msgid "Saving %s..."
+msgstr "저장중..."
+
+#: grecord/src/gsr-window.c:600
+#, fuzzy
+msgid "Save file as"
+msgstr "음향 파일 저장"
+
+#: grecord/src/gsr-window.c:654
+#, fuzzy, c-format
+msgid "%s is not installed in the path."
+msgstr "%s은(는) 경로에 설치되어 있지 않습니다"
+
+#: grecord/src/gsr-window.c:736
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr ""
+
+#: grecord/src/gsr-window.c:751
+#, fuzzy
+msgid "Unknown size"
+msgstr "알 수 없는 디스크"
+
+#: grecord/src/gsr-window.c:771
+#, c-format
+msgid "%.1f kHz"
+msgstr ""
+
+#: grecord/src/gsr-window.c:780
+#, c-format
+msgid "%.0f kb/s"
+msgstr ""
+
+#: grecord/src/gsr-window.c:792
+#, fuzzy
+msgid "1 (mono)"
+msgstr "모노"
+
+#: grecord/src/gsr-window.c:796
+#, fuzzy
+msgid "2 (stereo)"
+msgstr "스테레오"
+
+#: grecord/src/gsr-window.c:825
+#, fuzzy, c-format
+msgid "%s Information"
+msgstr "로그온 정보"
+
+#: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
+#, fuzzy
+msgid "File Information"
+msgstr "로그온 정보"
+
+#: grecord/src/gsr-window.c:859
+#, fuzzy
+msgid "Folder:"
+msgstr "폴더"
+
+#: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
+msgid "Filename:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:871
+msgid "File size:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:880
+#, fuzzy
+msgid "Audio Information"
+msgstr "오디오 형식:"
+
+#: grecord/src/gsr-window.c:894
+msgid "Song length:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:900
+#, fuzzy
+msgid "Number of channels:"
+msgstr "횟수(_N):"
+
+#: grecord/src/gsr-window.c:906
+#, fuzzy
+msgid "Sample rate:"
+msgstr "샘플 속도: "
+
+#: grecord/src/gsr-window.c:912
+msgid "Bit rate:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:981
+msgid "(C) 2002 Iain Holmes"
+msgstr ""
+
+#: grecord/src/gsr-window.c:982
+#, fuzzy
+msgid "A sound recorder for GNOME"
+msgstr "녹음기"
+
+#: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
+#, c-format
+msgid "%s - Sound Recorder"
+msgstr "%s - 녹음기"
+
+#: grecord/src/gsr-window.c:1548
+#, fuzzy
+msgid "File information"
+msgstr "로그온 정보"
+
+#: grecord/src/gsr-window.c:1569
+msgid "<none>"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1578
+#, fuzzy
+msgid "Length:"
+msgstr "길이"
+
+#: grecord/src/gui.c:45 grecord/gsr.xml.h:38
 msgid "_New"
 msgstr "새 샘플(_N)"
 
-#: grecord/src/gui.c:46
+#: grecord/src/gui.c:46 grecord/gsr.xml.h:5
 msgid "Create a new sample"
 msgstr "새 샘플을 만듭니다"
 
-#: grecord/src/gui.c:54
+#: grecord/src/gui.c:54 grecord/gsr.xml.h:21
 msgid "Run _Mixer"
 msgstr "볼륨 조정 실행(_M)"
 
@@ -1725,11 +2069,6 @@ msgstr "현재 샘플에 대한 모든 바뀐 사항을 취소합니다"
 msgid "Effects"
 msgstr "효과"
 
-#: grecord/src/gui.c:155
-#, c-format
-msgid "%s - Sound Recorder"
-msgstr "%s - 녹음기"
-
 #: grecord/src/gui.c:197
 msgid "16bit PCM"
 msgstr "16비트 PCM"
@@ -1746,7 +2085,7 @@ msgstr "스테레오"
 msgid "mono"
 msgstr "모노"
 
-#: grecord/src/gui.c:217
+#: grecord/src/gui.c:217 grecord/gsr.xml.h:10
 msgid "New"
 msgstr "새로 만들기"
 
@@ -1762,7 +2101,7 @@ msgstr "현재 샘플을 재생합니다"
 msgid "Stop playing/recording"
 msgstr "연주/녹음 중지"
 
-#: grecord/src/gui.c:261
+#: grecord/src/gui.c:261 grecord/gsr.xml.h:18
 msgid "Record"
 msgstr "녹음"
 
@@ -1797,13 +2136,15 @@ msgstr ""
 "차영호 <ganadist@chollian.net>"
 
 #: grecord/src/gui.c:431
-msgid "Gnome Sound Recorder"
-msgstr "그놈 녹음기"
+#, fuzzy
+msgid "GNOME Sound Recorder"
+msgstr "녹음기"
 
 #. if your charset allows it, replace the
 #. "e" of Hyden by an "eacute" (U00E9)
 #: grecord/src/gui.c:434
-msgid "Copyright (C)  2000 Andreas Hyden"
+#, fuzzy
+msgid "(C) 2000 Andreas Hyden"
 msgstr "Copyright (C)  2000 Andreas Hyden"
 
 #: grecord/src/gui.c:435
@@ -1814,111 +2155,103 @@ msgstr ""
 "그놈용 간단한 음향 녹음기와 연주기.\n"
 "나의 고양이 'Malte'에게 바칩니다"
 
-#: grecord/src/gui.c:701
+#: grecord/src/gui.c:703
 msgid "Gnome Sound Recorder Preferences"
 msgstr "그놈 녹음기 기본 설정"
 
-#: grecord/src/gui.c:708
+#: grecord/src/gui.c:710
 msgid "Sound Recorder Preferences"
 msgstr "녹음기 기본 설정"
 
-#: grecord/src/gui.c:720
+#: grecord/src/gui.c:722
 msgid "Recording"
 msgstr "녹음중"
 
-#: grecord/src/gui.c:725
+#: grecord/src/gui.c:727
 msgid "Time"
 msgstr "시간"
 
-#: grecord/src/gui.c:738
+#: grecord/src/gui.c:740
 msgid "_Recording timeout: "
 msgstr "녹음 시간제한(_R): "
 
-#: grecord/src/gui.c:754
-msgid "minutes"
-msgstr "분"
-
-#: grecord/src/gui.c:761
+#: grecord/src/gui.c:763
 msgid "_Stop recording on timeout"
 msgstr "시간제한이 지나면 녹음을 멈춥니다(_S)"
 
-#: grecord/src/gui.c:769
+#: grecord/src/gui.c:771
 msgid "_Open save dialog when recording is finished"
 msgstr "녹음이 끝났을 때 저장 대화 상자를 엽니다(_O)"
 
-#: grecord/src/gui.c:776
+#: grecord/src/gui.c:778
 msgid "Size"
 msgstr "크기"
 
-#: grecord/src/gui.c:785
+#: grecord/src/gui.c:787
 msgid "Show warning _message if size (MB) of sample becomes bigger than:"
 msgstr "샘플의 크기(Mb)가 다음보다 커질 때 경고를 표시합니다(_M):"
 
-#: grecord/src/gui.c:803
+#: grecord/src/gui.c:805
 msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
 msgstr "샘플의 크기(Mb)가 다음보다 커질 때 녹음을 멈춥니다(_P):"
 
-#: grecord/src/gui.c:825
-msgid "Playing"
-msgstr "재생"
-
-#: grecord/src/gui.c:830
+#: grecord/src/gui.c:832
 msgid "Repetition"
 msgstr "반복"
 
-#: grecord/src/gui.c:840
+#: grecord/src/gui.c:842
 msgid "_Repeat the sound"
 msgstr "사운드를 반복합니다(_R)"
 
-#: grecord/src/gui.c:847
+#: grecord/src/gui.c:849
 msgid "Play the sound _once only."
 msgstr "사운드를 한 번만 재생합니다(_O)"
 
-#: grecord/src/gui.c:853
+#: grecord/src/gui.c:855
 msgid "Repeat _forever"
 msgstr "계속"
 
-#: grecord/src/gui.c:864
+#: grecord/src/gui.c:866
 msgid "_Number of times:"
 msgstr "횟수(_N):"
 
-#: grecord/src/gui.c:885
+#: grecord/src/gui.c:888
 msgid "Paths"
 msgstr "경로"
 
-#: grecord/src/gui.c:890
+#: grecord/src/gui.c:893
 msgid "Program files"
 msgstr "프로그램 위치"
 
-#: grecord/src/gui.c:903
+#: grecord/src/gui.c:906
 msgid "_Path to sox:"
 msgstr "sox 경로(_P):"
 
-#: grecord/src/gui.c:917
+#: grecord/src/gui.c:920
 msgid "_Apply"
 msgstr "적용(_A)"
 
-#: grecord/src/gui.c:926
+#: grecord/src/gui.c:929
 msgid "Folders"
 msgstr "폴더"
 
-#: grecord/src/gui.c:939
+#: grecord/src/gui.c:942
 msgid "_Temporary folder:"
 msgstr "임시 폴더(_T):"
 
-#: grecord/src/gui.c:953
+#: grecord/src/gui.c:956
 msgid "Apply"
 msgstr "적용"
 
-#: grecord/src/gui.c:965
+#: grecord/src/gui.c:968
 msgid "Sound"
 msgstr "소리"
 
-#: grecord/src/gui.c:970
+#: grecord/src/gui.c:973
 msgid "Sound options"
 msgstr "음향 설정"
 
-#: grecord/src/gui.c:979
+#: grecord/src/gui.c:982
 msgid ""
 "Note: These options only take effect whenever a new sound sample\n"
 "is created. They do not operate on an existing sample."
@@ -1926,36 +2259,36 @@ msgstr ""
 "알림: 이 옵션은 새로운 사운드 샘플을 만들 때에만 효과가 있습니다.\n"
 "이미 존재하는 샘플에 대해서는 영향을 작동하지 않습니다."
 
-#: grecord/src/gui.c:992
+#: grecord/src/gui.c:995
 msgid "Audio format:"
 msgstr "오디오 형식:"
 
-#: grecord/src/gui.c:1001
+#: grecord/src/gui.c:1004
 msgid "8 _bit PCM"
 msgstr "8비트 PCM(_B)"
 
-#: grecord/src/gui.c:1007
+#: grecord/src/gui.c:1010
 msgid "16 b_it PCM"
 msgstr "16비트 PCM(_I)"
 
 #. If only combos didn't suck!
-#: grecord/src/gui.c:1021
+#: grecord/src/gui.c:1024
 msgid "S_ample rate:"
 msgstr "샘플 속도(_A):"
 
-#: grecord/src/gui.c:1052
+#: grecord/src/gui.c:1055
 msgid "Mono or Stereo:"
 msgstr "모노/스테레오:"
 
-#: grecord/src/gui.c:1061
+#: grecord/src/gui.c:1064
 msgid "_Mono"
 msgstr "모노(_M)"
 
-#: grecord/src/gui.c:1067
+#: grecord/src/gui.c:1070
 msgid "_Stereo"
 msgstr "스테레오(_S)"
 
-#: grecord/src/gui.c:1088
+#: grecord/src/gui.c:1091
 msgid "Stereo"
 msgstr "스테레오"
 
@@ -1983,30 +2316,264 @@ msgstr "연주를 시작할 파일을 지정"
 msgid "Sound recorder"
 msgstr "녹음기"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 8bit PCM"
 msgstr "오디오 형식: 8비트 PCM"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 msgid "Audio format: 16bit PCM"
 msgstr "오디오 형식: 16비트 PCM"
 
-#: grecord/src/preferences.c:213
+#: grecord/src/preferences.c:222
 #, c-format
 msgid "Sample rate: %s"
 msgstr "샘플 속도: %s"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: mono"
 msgstr "채널: 모노"
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 msgid "Channels: stereo"
 msgstr "채널: 스테레오"
 
-#: grecord/src/sound.c:136
+#: grecord/src/sound.c:137
 msgid "Adding echo to sample..."
 msgstr "샘플에 메아리효과 추가..."
+
+#: grecord/gsr.xml.h:1
+#, fuzzy
+msgid "About"
+msgstr "어쿠스틱 (Acoustic)"
+
+#: grecord/gsr.xml.h:2
+#, fuzzy
+msgid "Close"
+msgstr "클럽-하우스 (Club-House)"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr ""
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr ""
+
+#: grecord/gsr.xml.h:6
+#, fuzzy
+msgid "Display help for Sound Recorder"
+msgstr "%s - 녹음기"
+
+#: grecord/gsr.xml.h:8
+#, fuzzy
+msgid "File _Information"
+msgstr "로그온 정보"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr ""
+
+#: grecord/gsr.xml.h:11
+#, fuzzy
+msgid "Open"
+msgstr "오페라 (Opera)"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr ""
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr ""
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr ""
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr ""
+
+#: grecord/gsr.xml.h:19
+#, fuzzy
+msgid "Record sound"
+msgstr "사운드 클립을 녹음합니다"
+
+#: grecord/gsr.xml.h:20
+#, fuzzy
+msgid "Run Mixer"
+msgstr "볼륨 조정 실행(_M)"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr ""
+
+#: grecord/gsr.xml.h:23
+#, fuzzy
+msgid "Save"
+msgstr "레이브 (Rave)"
+
+#: grecord/gsr.xml.h:24
+#, fuzzy
+msgid "Save As"
+msgstr "%s을(를) 저장할까요?"
+
+#: grecord/gsr.xml.h:25
+#, fuzzy
+msgid "Save _As..."
+msgstr "%s을(를) 저장할까요?"
+
+#: grecord/gsr.xml.h:26
+#, fuzzy
+msgid "Save the current file"
+msgstr "음향 파일 저장"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr ""
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr ""
+
+#: grecord/gsr.xml.h:29
+#, fuzzy
+msgid "Show information for Sound Recorder"
+msgstr "그놈 녹음기"
+
+#: grecord/gsr.xml.h:31
+#, fuzzy
+msgid "Stop sound"
+msgstr "소리"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr ""
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr ""
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr ""
+
+#: grecord/gsr.xml.h:35
+#, fuzzy
+msgid "_Control"
+msgstr "컨츄리 (Country)"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr ""
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr ""
+
+#: grecord/gsr.xml.h:40
+#, fuzzy
+msgid "_Play"
+msgstr "재생"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr ""
+
+#: grecord/gsr.xml.h:42
+#, fuzzy
+msgid "_Record"
+msgstr "녹음"
+
+#: grecord/gsr.xml.h:43
+#, fuzzy
+msgid "_Save"
+msgstr "레이브 (Rave)"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:249
+msgid "Failure instantiating main window"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:289
+#, fuzzy, c-format
+msgid "Could not load UI resource %s"
+msgstr "자식 프로세스를 포크할 수 없습니다"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+#, fuzzy
+msgid "GStreamer"
+msgstr "게임"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+msgid "*"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "Audio"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+#, fuzzy
+msgid "Audio _Input:"
+msgstr "오디오 형식:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+#, fuzzy
+msgid "Audio _Output:"
+msgstr "전화 출력"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "Default Sink"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Default Source"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "GStreamer Properties"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Pipeline:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Test..."
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "Testing Pipeline"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "Video _Input:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+#, fuzzy
+msgid "Video _Output:"
+msgstr "전화 출력"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:111
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr ""
 
 #: vu-meter/main.c:120
 msgid ""
@@ -2076,3 +2643,27 @@ msgstr "사운드 출력 볼륨을 모니터합니다"
 #: vu-meter/vumeter.desktop.in.h:2
 msgid "Volume monitor"
 msgstr "볼륨 모니터"
+
+#~ msgid "Gnome Volume Control"
+#~ msgstr "그놈 볼륨 조정"
+
+#~ msgid "Copyright (C) 2001, 2002"
+#~ msgstr "Copyright (C) 2001, 2002"
+
+#~ msgid "A GNOME cd player"
+#~ msgstr "그놈 CD 플레이어"
+
+#~ msgid "_About Gnome-CD"
+#~ msgstr "그놈 CD 정보(_A)"
+
+#~ msgid "don't restore mixer-settings from configuration"
+#~ msgstr "볼륨조정 믹서상태를 읽어오지 않음"
+
+#~ msgid "restore mixer-settings from configuration"
+#~ msgstr "설정에서 믹서 상태를 복구"
+
+#~ msgid "initialise the mixer(s) from stored configuration and exit"
+#~ msgstr "저장된 설정상태에서부터 믹서 초기화하고 끝내기"
+
+#~ msgid "don't save (modified) mixer-settings into configuration"
+#~ msgstr "(변경된) 믹서 설정상태를 저장하지 않음"
