@@ -1,0 +1,67 @@
+.\" 
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v 1.1 1989-01-22 16:47:11 qjb Exp $
+.\" $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v $
+.\" $Author: qjb $
+.\"
+.\"
+.TH RKINITD 8 "January 20, 1988"
+.UC 4
+.SH NAME
+rkinitd \- server for 
+.I rkinit,
+a remote ticket establishment utility
+.SH SYNOPSIS
+.B rkinit [-notimeout]
+.SH DESCRIPTION
+.I rkinitd
+is the server for 
+.I rkinit. 
+See rkinit(1) for information about
+.I rkinit.
+.I rkinitd
+can be started either from the commandline or by inetd.  In either
+case it must be run as root or be installed setuid root 
+as it does a setuid(2) call before establishing tickets, attempts
+to bind to a privileged port, and needs to be able to read
+/etc/srvtab. 
+
+.I rkinitd
+normally times out in 30 seconds.  Invoking 
+.I rkinitd
+with the 
+.I -notimeout
+flag will override this behavior.
+
+If you wish to run 
+.I rkinitd
+from inetd, you should install the following line in inetd.conf:
+
+atest6	dgram	udp	wait	unswitched	root	
+.br
+/site/local/rtbin/rkinitd	rkinitd
+
+.I rkinitd 
+must be running on a machine with a srvtab containing an rcmd.<host>
+key. 
+
+.SH BUGS
+Only one 
+.I rkinit
+can be run to a given server at a time.  This is because 
+.I rkinitd
+does not make any effort to keep track of where requests are coming
+from or what the nature of the requests are.
+
+.SH FUTURE EXPANSION
+It might be good for the user running 
+.I rkinit 
+to be able to specify the
+name of the ticket file and for
+.I rkinitd 
+to be smarter about where to put tickets owned by root.
+
+.SH SEE ALSO
+rkinit(1) inetd(8)
+
+.SH AUTHOR
+Emanuel Jay Berkenbilt (MIT-Project Athena)
