@@ -1,5 +1,5 @@
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.1,v $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.1,v 1.3 1990-07-20 14:48:50 probe Exp $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.1,v 1.4 1990-11-16 16:08:38 probe Exp $
 .\"     $Author: probe $
 .\"
 .TH ATTACH 1 "15 July 1990"
@@ -292,6 +292,8 @@ Theodore Ts'o, Project Athena
 .br
 John Carr, Project Athena
 .br
+Richard Basch, Project Athena
+.br
 Copyright 1988, 1990 Massachusetts Institute of Technology
 
 .SH BUGS
@@ -299,9 +301,14 @@ Nosetuid is not possible for AFS filesystems.
 Except for 'n', modes are ignored for AFS filesystems.
 These are side effects of the current implementation using symbolic links.
 
+\fIAttach -p\fR with filesystems of type \fIMUL\fR will print out
+a newline-separated list of all the directories on which filesystems
+were attached.  If used in conjunction with the standard \fIadd\fR and
+\fIsetup\fR aliases, errors will occur.  It is yet undetermined as to
+what \fIattach -p\fR should output when used on filesystems of type
+\fIMUL\fR.
+
 AIX on the PS/2 does not support nosetuid, so attach ignores nosetuid
 on this system.
 
 Mount options in attach.conf always override those on the command line.
-
-
