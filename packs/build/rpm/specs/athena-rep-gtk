@@ -3,7 +3,7 @@ Summary: GTK+/GNOME/libglade bindings for the rep Lisp interpreter, for Athena
 Copyright: GPL
 Group: System Environment/Libraries
 
-Requires: athena-librep athena-libglade athena-gtk
+Requires: athena-librep athena-libglade athena-gnome-libs
 
 %description
 rep-gtk is a binding of GTK+/GNOME/libglade for the rep Lisp
