@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: raeburn $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.36 1990-11-09 18:36:14 raeburn Exp $";
+static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.37 1990-12-14 10:57:03 jfc Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -265,14 +265,16 @@ main(argc, argv)
     } else {
 	if (isatty(0)) {
 	    for (;;) {
+		unsigned int l;
 		if (!fgets(bfr, sizeof bfr, stdin))
 		    break;
 		if (!nodot && bfr[0] == '.' &&
 		    (bfr[1] == '\n' || bfr[1] == '\0'))
 		    break;
-		message = realloc(message, (unsigned)(msgsize+strlen(bfr)));
+		l = strlen(bfr);
+		message = realloc(message, msgsize+l+1);
 		(void) strcpy(message+msgsize, bfr);
-		msgsize += strlen(bfr);
+		msgsize += l;
 	    }
 	    message = realloc(message, (unsigned)(msgsize+1));
 	}
