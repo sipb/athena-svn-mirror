@@ -8,5 +8,35 @@ sun4)
 sgi)
 	touch /var/spool/mqueue/syslog
 	chmod 600 /var/spool/mqueue/syslog
+	case `uname -m` in
+	IP22)
+		# Indy Local packages
+		echo "i patchSG0003143.x_eoe_sw.eoe"	>> "$LOCALPACKAGES"
+		echo "i patchSG0003163.x_eoe_sw.Server" >> "$LOCALPACKAGES"
+		echo "i patchSG0003163.x_eoe_sw.eoe"	>> "$LOCALPACKAGES"
+
+		# Indy Link packages
+		echo "remove whatsnew.registration"	>> "$LINKPACKAGES"
+		echo "i patchSG0003163.x_dev_sw.dev"	>> "$LINKPACKAGES"
+		echo "i patchSG0003163.x_dev_sw32.dev"	>> "$LINKPACKAGES"
+		echo "i patchSG0003163.x_eoe_sw32.eoe"	>> "$LINKPACKAGES"
+		echo "di patchSG0003163.x_eoe_sw64.eoe" >> "$LINKPACKAGES"
+		echo "di patchSG0003163.x_dev_sw64.dev" >> "$LINKPACKAGES"
+		;;
+
+	IP32)
+		# O2 Local packages
+		echo "i patchSG0003144.x_eoe_sw.eoe"	>> "$LOCALPACKAGES"
+		echo "i patchSG0003164.x_eoe_sw.eoe"	>> "$LOCALPACKAGES"
+
+		# O2 Link packages
+		echo "remove Register"			>> "$LINKPACKAGES"
+		echo "i patchSG0003164.x_dev_sw.dev"	>> "$LINKPACKAGES"
+		echo "i patchSG0003164.x_dev_sw32.dev"	>> "$LINKPACKAGES"
+		echo "i patchSG0003164.x_dev_sw64.dev"	>> "$LINKPACKAGES"
+		echo "i patchSG0003164.x_eoe_sw32.eoe"	>> "$LINKPACKAGES"
+		echo "i patchSG0003164.x_eoe_sw64.eoe"	>> "$LINKPACKAGES"
+		;;
+	esac
 	;;
 esac
