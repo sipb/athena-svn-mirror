@@ -72,6 +72,16 @@ name). This must be implemented by any Bonobo Embeddables
 or Controls that can be used as Nautilus views (for the content in
 the main window, not in the sidebar).
 
+* "nautilus:view_as_label" (string) - A string generally of the form
+"View as <view_as_name>". This is easier for translators to handle
+than composed strings. It also allows changes to that text, like "View
+with <foo>" rather than "View as <foo>".
+
+* "nautilus:viewer_label" (string) - A string generally of the form
+"<view_as_name> Viewer". This is easier for translators to handle
+than composed strings.
+
+
 I am not totally sure if the following two should be in the nautilus:
 or bonobo: namespace; I can see them being useful for other components
 at least in theory. Leaving as "nautilus:" attributes for now.

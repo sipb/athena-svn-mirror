@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OAF\n"
-"POT-Creation-Date: 2000-12-31 00:03+0200\n"
+"POT-Creation-Date: 2001-03-01 19:16-0800\n"
 "PO-Revision-Date: 2000-12-09 19:40+02:00\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -15,25 +15,30 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: liboaf/oaf-mainloop.c:190
+#: liboaf/oaf-mainloop.c:191
 msgid "Object directory to use when registering servers"
 msgstr "Palvelimia rekisteröidessä käytettävä oliohakemisto"
 
-#: liboaf/oaf-mainloop.c:192
+#: liboaf/oaf-mainloop.c:193
 msgid "File descriptor to print IOR on"
 msgstr "Tiedostokahva, johon IOR tulostuu"
 
-#: liboaf/oaf-mainloop.c:192 oafd/main.c:68
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
 msgid "FD"
 msgstr "FD"
 
-#: liboaf/oaf-mainloop.c:194
+#: liboaf/oaf-mainloop.c:195
 msgid "IID to activate"
 msgstr "Aktivoitava IID"
 
-#: liboaf/oaf-mainloop.c:196
+#: liboaf/oaf-mainloop.c:197
 msgid "Prevent registering of server with OAF"
 msgstr "Estä palvelimen rekisteröityminen OAF:lla"
+
+#: liboaf/oaf-mainloop.c:381
+#, fuzzy
+msgid "OAF options"
+msgstr "OAF-asetukset"
 
 #: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
@@ -66,47 +71,47 @@ msgstr "Kysely epäonnistui: "
 msgid "Activation failed: "
 msgstr "Aktivointi epäonnistui: "
 
-#: oafd/ac-corba.c:1089
+#: oafd/ac-corba.c:1096
 msgid "Could not parse AID"
 msgstr "AID:ta ei voitu tulkita"
 
-#: oafd/ac-corba.c:1098
+#: oafd/ac-corba.c:1106
 msgid "Could not parse context: "
 msgstr "Kontekstia ei voitu tulkita: "
 
-#: oafd/ac-corba.c:1121
+#: oafd/ac-corba.c:1130
 msgid "Could not activate server: "
 msgstr "Palvelinta ei voitu aktivoida: "
 
-#: oafd/main.c:58
+#: oafd/main.c:62
 msgid "Directory to read .oafinfo files from"
 msgstr "Hakemisto, josta .oafinfo-tiedostot luetaan"
 
-#: oafd/main.c:58
+#: oafd/main.c:62
 msgid "DIRECTORY"
 msgstr "HAKEMISTO"
 
-#: oafd/main.c:60
+#: oafd/main.c:64
 msgid "Domain of ObjectDirectory"
 msgstr "ObjectDirectoryn verkkoalue"
 
-#: oafd/main.c:60
+#: oafd/main.c:64
 msgid "DOMAIN"
 msgstr "VERKKOALUE"
 
-#: oafd/main.c:63
+#: oafd/main.c:67
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr "Toimi ActivationContextina (oletuksena on vain ObjectDirectory)"
 
-#: oafd/main.c:68
+#: oafd/main.c:72
 msgid "File descriptor to write IOR to"
 msgstr "Tiedostokahva, johon IOR kirjoitetaan"
 
-#: oafd/main.c:73
+#: oafd/main.c:77
 msgid "Query expression to evaluate"
 msgstr "Käsiteltävä kyselylauseke"
 
-#: oafd/main.c:73
+#: oafd/main.c:77
 msgid "EXPRESSION"
 msgstr "LAUSEKE"
 
@@ -146,6 +151,14 @@ msgid ""
 msgstr ""
 "OAF-asetustiedoston lukeminen ei onnistunut. Tarkista, että se on kunnossa: "
 "%s"
+
+#: oafd/OAF_naming-service.oaf.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "CORBA CosNaming -palvelu."
+
+#: oafd/OAF_naming-service.oaf.in.h:2
+msgid "Name service"
+msgstr "Nimipalvelu"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"

@@ -23,22 +23,26 @@
  *
  */
 
-#include "config.h"
+#include <config.h>
+
 #include "oaf-i18n.h"
-
-#include <popt.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <locale.h>
-
+#include "oafd.h"
+#include "ac-query-expr.h"
+#include "od-utils.h"
 #include "liboaf/liboaf.h"
 
 #include <ORBitservices/CosNaming.h>
 #include <ORBitservices/CosNaming_impl.h>
 
-#include "oafd.h"
-#include "ac-query-expr.h"
-#include "od-utils.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <popt.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <locale.h>
+
 
 #ifdef OAF_DEBUG
 static void debug_queries (void);
@@ -90,6 +94,13 @@ main (int argc, char *argv[])
 	char *ior;
 	FILE *fh;
 	struct sigaction sa;
+        char *oaf_debug_output;
+        int dev_null_fd;
+        
+	if (chdir ("/")) {
+		g_print ("Couldn't chdir() to '/' (why ?!!). Exiting.\n");
+		exit (EXIT_FAILURE);
+	}
 
 	setlocale(LC_ALL, "");
 
@@ -104,12 +115,22 @@ main (int argc, char *argv[])
 	CORBA_exception_init (&ev);
 
 	ctx = poptGetContext ("oafd", argc, (const char **)argv, options, 0);
-	while (poptGetNextOpt (ctx) >= 0)
-		/**/;
+	while (poptGetNextOpt (ctx) >= 0) {
+        }
 
 	poptFreeContext (ctx);
 
         LIBXML_TEST_VERSION
+
+        oaf_debug_output = g_getenv ("OAF_DEBUG_OUTPUT");
+
+        if (oaf_debug_output == NULL || strlen (oaf_debug_output) == 0) {
+                dev_null_fd = open ("/dev/null", O_RDWR);
+                dup2 (dev_null_fd, 0);
+                dup2 (dev_null_fd, 1);
+                dup2 (dev_null_fd, 2);
+                close (dev_null_fd);
+        }
 
 	ml = g_main_new (FALSE);
 

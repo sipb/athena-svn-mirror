@@ -198,6 +198,24 @@ oaf_plugin_use (PortableServer_Servant servant, gpointer impl_ptr)
 #endif
 }
 
+static gboolean
+oaf_plugin_real_unuse (gpointer impl_ptr)
+{
+	ActivePluginInfo *api;
+
+	g_return_val_if_fail (impl_ptr, FALSE);
+
+	api = impl_ptr;
+
+	api->refcount--;
+
+	if (api->refcount <= 0) {
+		gnome_plugin_unload (&(api->refcount), api);
+        }        
+
+        return FALSE;
+}
+
 /**
  * oaf_plugin_unuse:
  * @impl_ptr: The impl_ptr that was passed to the activation routine
@@ -212,17 +230,6 @@ oaf_plugin_use (PortableServer_Servant servant, gpointer impl_ptr)
 void
 oaf_plugin_unuse (gpointer impl_ptr)
 {
-	ActivePluginInfo *api;
-
-	g_return_if_fail (impl_ptr);
-
-	api = impl_ptr;
-
-	api->refcount--;
-
-	if (api->refcount <= 0)
-		gnome_plugin_unload (&(api->refcount), api);
+        g_idle_add (oaf_plugin_real_unuse, impl_ptr);
 }
-
-
 

@@ -42,8 +42,8 @@
 #include <stdlib.h>
 
 void yyerror(char *s);
-int yylex();
-void initFlex(const char *s);
+int yylex ();
+void initFlex (const char *s);
 
 static QueryExpr *parsed_expression;
 
@@ -834,15 +834,15 @@ case 25:
     break;}
 case 26:
 #line 109 "./ac-query-parse.y"
-{ yyval.qexp = qexp_binop_new(yyvsp[-2].qexp, yyvsp[-1].val_enum, yyvsp[0].qexp); ;
+{ yyval.qexp = qexp_binop_new (yyvsp[-2].qexp, yyvsp[-1].val_enum, yyvsp[0].qexp); ;
     break;}
 case 27:
 #line 111 "./ac-query-parse.y"
-{ yyval.qexp = qexp_unop_new(P_NOT, yyvsp[0].qexp); ;
+{ yyval.qexp = qexp_unop_new (P_NOT, yyvsp[0].qexp); ;
     break;}
 case 28:
 #line 112 "./ac-query-parse.y"
-{ yyval.qexp = qexp_unop_new(P_NEGATE, yyvsp[0].qexp); ;
+{ yyval.qexp = qexp_unop_new (P_NEGATE, yyvsp[0].qexp); ;
     break;}
 case 29:
 #line 114 "./ac-query-parse.y"
@@ -850,7 +850,7 @@ case 29:
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_STRING;
 	  qctmp.u.v_string = yyvsp[0].val_string;
-	  yyval.qexp = qexp_constant_new(qctmp);
+	  yyval.qexp = qexp_constant_new (qctmp);
         ;
     break;}
 case 30:
@@ -859,7 +859,7 @@ case 30:
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_NUMBER;
 	  qctmp.u.v_number = yyvsp[0].val_number;
-	  yyval.qexp = qexp_constant_new(qctmp);
+	  yyval.qexp = qexp_constant_new (qctmp);
 	;
     break;}
 case 31:
@@ -868,7 +868,7 @@ case 31:
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_BOOLEAN;
 	  qctmp.u.v_boolean = yyvsp[0].val_boolean;
-	  yyval.qexp = qexp_constant_new(qctmp);
+	  yyval.qexp = qexp_constant_new (qctmp);
 	;
     break;}
 case 32:
@@ -877,7 +877,7 @@ case 32:
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_STRINGV;
 	  qctmp.u.v_stringv = yyvsp[0].val_stringv;
-	  yyval.qexp = qexp_constant_new(qctmp);
+	  yyval.qexp = qexp_constant_new (qctmp);
 	;
     break;}
 case 33:
@@ -888,50 +888,50 @@ case 33:
   GSList *cur;
 
   n = g_slist_length(yyvsp[-1].elist);
-  new_stringv = g_new(char *, n + 1);
-  for(cur = yyvsp[-1].elist, i = 0; i < n; i++, cur = cur->next) {
+  new_stringv = g_new (char *, n + 1);
+  for (cur = yyvsp[-1].elist, i = 0; i < n; i++, cur = cur->next) {
     new_stringv[i] = cur->data;
   }
   new_stringv[i] = NULL;
 
-  g_slist_free(yyvsp[-1].elist);
+  g_slist_free (yyvsp[-1].elist);
 
   yyval.val_stringv = new_stringv;
 ;
     break;}
 case 34:
 #line 156 "./ac-query-parse.y"
-{ yyval.elist = g_slist_prepend(NULL, yyvsp[0].val_string); ;
+{ yyval.elist = g_slist_prepend (NULL, yyvsp[0].val_string); ;
     break;}
 case 35:
 #line 157 "./ac-query-parse.y"
-{ yyval.elist = g_slist_append(yyvsp[-2].elist, yyvsp[0].val_string); ;
+{ yyval.elist = g_slist_append (yyvsp[-2].elist, yyvsp[0].val_string); ;
     break;}
 case 36:
 #line 159 "./ac-query-parse.y"
-{ yyval.qexp = qexp_variable_new(yyvsp[0].val_string); ;
+{ yyval.qexp = qexp_variable_new (yyvsp[0].val_string); ;
     break;}
 case 37:
 #line 161 "./ac-query-parse.y"
-{ yyval.qexp = qexp_function_new(yyvsp[-3].val_string, yyvsp[-1].elist); ;
+{ yyval.qexp = qexp_function_new (yyvsp[-3].val_string, yyvsp[-1].elist); ;
     break;}
 case 38:
 #line 162 "./ac-query-parse.y"
-{ yyval.qexp = qexp_function_new(yyvsp[-2].val_string, NULL); ;
+{ yyval.qexp = qexp_function_new (yyvsp[-2].val_string, NULL); ;
     break;}
 case 39:
 #line 163 "./ac-query-parse.y"
 {
-	yyval.qexp = qexp_function_new(yyvsp[-3].val_string, g_slist_prepend(yyvsp[-1].elist, qexp_id_new(yyvsp[-5].val_string))); ;
+	yyval.qexp = qexp_function_new(yyvsp[-3].val_string, g_slist_prepend (yyvsp[-1].elist, qexp_id_new (yyvsp[-5].val_string))); ;
     break;}
 case 40:
 #line 165 "./ac-query-parse.y"
 {
-	yyval.qexp = qexp_function_new(yyvsp[-2].val_string, g_slist_prepend(NULL, qexp_id_new(yyvsp[-4].val_string))); ;
+	yyval.qexp = qexp_function_new(yyvsp[-2].val_string, g_slist_prepend (NULL, qexp_id_new (yyvsp[-4].val_string))); ;
     break;}
 case 41:
 #line 168 "./ac-query-parse.y"
-{ yyval.qexp = qexp_id_new(yyvsp[0].val_string); ;
+{ yyval.qexp = qexp_id_new (yyvsp[0].val_string); ;
     break;}
 }
    /* the action file gets copied in in place of this dollarsign */
@@ -1160,29 +1160,30 @@ yyerrhandle:
 
 static GString *parse_errors = NULL;
 
-void yyerror ( char *s )
+void yyerror (char *s)
 {
-  g_string_append(parse_errors, s);
-  g_string_append_c(parse_errors, '\n');
+  g_string_append (parse_errors, s);
+  g_string_append_c (parse_errors, '\n');
 }
 
-const char *qexp_parse( const char *_code, QueryExpr **retme )
+const char *qexp_parse (const char *_code, 
+			QueryExpr **retme)
 {
   parsed_expression = NULL;
 
-  g_assert(retme);
+  g_assert (retme);
 
-  if(!parse_errors)
-    parse_errors = g_string_new(NULL);
+  if (!parse_errors)
+    parse_errors = g_string_new (NULL);
   else
-    g_string_truncate(parse_errors, 0);
+    g_string_truncate (parse_errors, 0);
 
-  initFlex( _code );
+  initFlex (_code);
   yyparse();
 
   *retme = parsed_expression;
 
-  if(parse_errors->len)
+  if (parse_errors->len)
     return parse_errors->str;
   else
     return NULL;

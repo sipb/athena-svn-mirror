@@ -684,6 +684,7 @@ OAF_GeneralError__alloc(void)
    memset(&(retval->description), '\0', sizeof(retval->description));
    return retval;
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'f') \
@@ -716,6 +717,7 @@ CORBA_sequence_CORBA_string__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 CORBA_char **
 CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
 {
@@ -737,16 +739,17 @@ OAF_ActivationResultData__free(gpointer mem, gpointer dat,
 
    switch (val->_d) {
      case OAF_RESULT_OBJECT:
-      CORBA_Object__free(&(val->_u.res_object), NULL, free_strings);
-      break;
+	CORBA_Object__free(&(val->_u.res_object), NULL, free_strings);
+	break;
      case OAF_RESULT_SHLIB:
-      GNOME_stringlist__free(&(val->_u.res_shlib), NULL, free_strings);
-      break;
+	GNOME_stringlist__free(&(val->_u.res_shlib), NULL, free_strings);
+	break;
      default:
-      break;
+	break;
    }
    return (gpointer) (val + 1);
 }
+
 OAF_ActivationResultData *
 OAF_ActivationResultData__alloc(void)
 {
@@ -759,6 +762,7 @@ OAF_ActivationResultData__alloc(void)
    memset(retval, '\0', sizeof(OAF_ActivationResultData));
    return retval;
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'f') \
@@ -791,6 +795,7 @@ CORBA_sequence_CORBA_string__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 CORBA_char **
 CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
 {
@@ -812,7 +817,8 @@ OAF_ActivationResult__free(gpointer mem, gpointer dat,
 
    if (free_strings) {
       CORBA_string__free(&(var->aid), NULL, free_strings);
-   } {
+   }
+   {
       OAF_ActivationResultData__free(&(var->res), NULL, free_strings);
    }
    return (gpointer) (var + 1);
@@ -831,6 +837,7 @@ OAF_ActivationResult__alloc(void)
    memset(&(retval->res), '\0', sizeof(retval->res));
    return retval;
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'f') \
@@ -863,6 +870,7 @@ CORBA_sequence_CORBA_string__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 CORBA_char **
 CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
 {
@@ -884,20 +892,21 @@ OAF_PropertyValue__free(gpointer mem, gpointer dat,
 
    switch (val->_d) {
      case OAF_P_STRING:
-      CORBA_string__free(&(val->_u.value_string), NULL, free_strings);
-      break;
+	CORBA_string__free(&(val->_u.value_string), NULL, free_strings);
+	break;
      case OAF_P_NUMBER:
-      break;
+	break;
      case OAF_P_BOOLEAN:
-      break;
+	break;
      case OAF_P_STRINGV:
-      GNOME_stringlist__free(&(val->_u.value_stringv), NULL, free_strings);
-      break;
+	GNOME_stringlist__free(&(val->_u.value_stringv), NULL, free_strings);
+	break;
      default:
-      break;
+	break;
    }
    return (gpointer) (val + 1);
 }
+
 OAF_PropertyValue *
 OAF_PropertyValue__alloc(void)
 {
@@ -910,6 +919,7 @@ OAF_PropertyValue__alloc(void)
    memset(retval, '\0', sizeof(OAF_PropertyValue));
    return retval;
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'f') \
@@ -942,6 +952,7 @@ CORBA_sequence_CORBA_string__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 CORBA_char **
 CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
 {
@@ -962,7 +973,8 @@ OAF_Property__free(gpointer mem, gpointer dat, CORBA_boolean free_strings)
 
    if (free_strings) {
       CORBA_string__free(&(var->name), NULL, free_strings);
-   } {
+   }
+   {
       OAF_PropertyValue__free(&(var->v), NULL, free_strings);
    }
    return (gpointer) (var + 1);
@@ -981,6 +993,7 @@ OAF_Property__alloc(void)
    memset(&(retval->v), '\0', sizeof(retval->v));
    return retval;
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_OAF_Property_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_Property_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_Property_2 == 'f') \
@@ -1013,6 +1026,7 @@ CORBA_sequence_OAF_Property__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 OAF_Property *
 CORBA_sequence_OAF_Property_allocbuf(CORBA_unsigned_long len)
 {
@@ -1044,7 +1058,8 @@ OAF_ServerInfo__free(gpointer mem, gpointer dat, CORBA_boolean free_strings)
       CORBA_string__free(&(var->username), NULL, free_strings);
       CORBA_string__free(&(var->hostname), NULL, free_strings);
       CORBA_string__free(&(var->domain), NULL, free_strings);
-   } {
+   }
+   {
       CORBA_sequence_OAF_Property__free(&(var->props), NULL, free_strings);
    }
    return (gpointer) (var + 1);
@@ -1068,6 +1083,7 @@ OAF_ServerInfo__alloc(void)
    memset(&(retval->props), '\0', sizeof(retval->props));
    return retval;
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_OAF_ServerInfo_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_ServerInfo_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_ServerInfo_2 == 'f') \
@@ -1100,6 +1116,7 @@ CORBA_sequence_OAF_ServerInfo__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 OAF_ServerInfo *
 CORBA_sequence_OAF_ServerInfo_allocbuf(CORBA_unsigned_long len)
 {
@@ -1125,6 +1142,7 @@ OAF_ServerInfoList__alloc(void)
 {
    return CORBA_sequence_OAF_ServerInfo__alloc();
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_OAF_ServerInfo_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_ServerInfo_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_ServerInfo_2 == 'f') \
@@ -1157,6 +1175,7 @@ CORBA_sequence_OAF_ServerInfo__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 OAF_ServerInfo *
 CORBA_sequence_OAF_ServerInfo_allocbuf(CORBA_unsigned_long len)
 {
@@ -1178,13 +1197,14 @@ OAF_ServerInfoListCache__free(gpointer mem, gpointer dat,
 
    switch (val->_d) {
      case CORBA_TRUE:
-      OAF_ServerInfoList__free(&(val->_u.server_list), NULL, free_strings);
-      break;
+	OAF_ServerInfoList__free(&(val->_u.server_list), NULL, free_strings);
+	break;
      default:
-      break;
+	break;
    }
    return (gpointer) (val + 1);
 }
+
 OAF_ServerInfoListCache *
 OAF_ServerInfoListCache__alloc(void)
 {
@@ -1197,6 +1217,7 @@ OAF_ServerInfoListCache__alloc(void)
    memset(retval, '\0', sizeof(OAF_ServerInfoListCache));
    return retval;
 }
+
 #if ( (ORBIT_IMPL_CORBA_sequence_OAF_ImplementationID_0 == 'o') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_ImplementationID_1 == 'a') \
 && (ORBIT_IMPL_CORBA_sequence_OAF_ImplementationID_2 == 'f') \
@@ -1230,6 +1251,7 @@ CORBA_sequence_OAF_ImplementationID__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 OAF_ImplementationID *
 CORBA_sequence_OAF_ImplementationID_allocbuf(CORBA_unsigned_long len)
 {
@@ -1251,14 +1273,15 @@ OAF_ServerStateCache__free(gpointer mem, gpointer dat,
 
    switch (val->_d) {
      case CORBA_TRUE:
-      CORBA_sequence_OAF_ImplementationID__free(&(val->_u.active_servers),
-						NULL, free_strings);
-      break;
+	CORBA_sequence_OAF_ImplementationID__free(&(val->_u.active_servers),
+						  NULL, free_strings);
+	break;
      default:
-      break;
+	break;
    }
    return (gpointer) (val + 1);
 }
+
 OAF_ServerStateCache *
 OAF_ServerStateCache__alloc(void)
 {
@@ -1271,6 +1294,7 @@ OAF_ServerStateCache__alloc(void)
    memset(retval, '\0', sizeof(OAF_ServerStateCache));
    return retval;
 }
+
 CORBA_unsigned_long OAF_ActivationCallback__classid = 0;
 CORBA_unsigned_long OAF_ObjectDirectory__classid = 0;
 
@@ -1307,6 +1331,7 @@ CORBA_sequence_OAF_ObjectDirectory__alloc(void)
    retval->_release = CORBA_FALSE;
    return retval;
 }
+
 OAF_ObjectDirectory *
 CORBA_sequence_OAF_ObjectDirectory_allocbuf(CORBA_unsigned_long len)
 {
@@ -1332,6 +1357,7 @@ OAF_ObjectDirectoryList__alloc(void)
 {
    return CORBA_sequence_OAF_ObjectDirectory__alloc();
 }
+
 gpointer
 OAF_ActivationContext_NotListed__free(gpointer mem, gpointer dat,
 				      CORBA_boolean free_strings)
@@ -1384,4 +1410,5 @@ OAF_ActivationContext_ParseFailed__alloc(void)
    memset(&(retval->description), '\0', sizeof(retval->description));
    return retval;
 }
+
 CORBA_unsigned_long OAF_ActivationContext__classid = 0;

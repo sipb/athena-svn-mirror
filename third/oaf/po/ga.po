@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf CVS\n"
-"POT-Creation-Date: 2000-10-25 01:50+0200\n"
+"POT-Creation-Date: 2001-03-01 19:16-0800\n"
 "PO-Revision-Date: 2000-08-24 20:00-0000\n"
 "Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
 "Language-Team: Irish <ga@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "File descriptor to print IOR on"
 msgstr ""
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:67
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
 msgid "FD"
 msgstr "FD"
 
@@ -32,21 +32,25 @@ msgstr ""
 msgid "Prevent registering of server with OAF"
 msgstr ""
 
-#: liboaf/oaf-registration.c:323
+#: liboaf/oaf-mainloop.c:381
+msgid "OAF options"
+msgstr ""
+
+#: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
 msgstr ""
 
-#: liboaf/oaf-registration.c:344
+#: liboaf/oaf-registration.c:330
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr ""
 
-#: liboaf/oaf-registration.c:350
+#: liboaf/oaf-registration.c:336
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr ""
 
-#: liboaf/oaf-registration.c:426
+#: liboaf/oaf-registration.c:413
 #, c-format
 msgid "Exec failed: %d (%s)\n"
 msgstr "Teip ar 'Exec': %d (%s)\n"
@@ -63,47 +67,47 @@ msgstr ""
 msgid "Activation failed: "
 msgstr ""
 
-#: oafd/ac-corba.c:1092
+#: oafd/ac-corba.c:1096
 msgid "Could not parse AID"
 msgstr ""
 
-#: oafd/ac-corba.c:1101
+#: oafd/ac-corba.c:1106
 msgid "Could not parse context: "
 msgstr ""
 
-#: oafd/ac-corba.c:1124
+#: oafd/ac-corba.c:1130
 msgid "Could not activate server: "
 msgstr ""
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "Directory to read .oafinfo files from"
 msgstr ""
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "DIRECTORY"
 msgstr ""
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "Domain of ObjectDirectory"
 msgstr ""
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "DOMAIN"
 msgstr ""
 
-#: oafd/main.c:62
+#: oafd/main.c:67
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 
-#: oafd/main.c:67
+#: oafd/main.c:72
 msgid "File descriptor to write IOR to"
 msgstr ""
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "Query expression to evaluate"
 msgstr ""
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "EXPRESSION"
 msgstr ""
 
@@ -111,12 +115,12 @@ msgstr ""
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 
-#: oafd/od-load.c:122 oafd/od-load.c:152
+#: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
 msgstr ""
 
-#: oafd/od-load.c:172
+#: oafd/od-load.c:171
 msgid "a NULL iid is not valid"
 msgstr ""
 
@@ -125,19 +129,14 @@ msgstr ""
 msgid "iid %s has a NULL type"
 msgstr ""
 
-#: oafd/od-load.c:178
+#: oafd/od-load.c:179
 #, c-format
 msgid "iid %s has a NULL location"
 msgstr ""
 
-#: oafd/od-load.c:186
+#: oafd/od-load.c:188
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
-msgstr ""
-
-#: oafd/od-load.c:219
-#, c-format
-msgid "Trying dir %s\n"
 msgstr ""
 
 #: oafd/od-utils.c:45
@@ -145,6 +144,14 @@ msgstr ""
 msgid ""
 "The OAF configuration file was not read successfully. Please, check it is "
 "valid in: %s"
+msgstr ""
+
+#: oafd/OAF_naming-service.oaf.in.h:1
+msgid "CORBA CosNaming service."
+msgstr ""
+
+#: oafd/OAF_naming-service.oaf.in.h:2
+msgid "Name service"
 msgstr ""
 
 #: utils/oaf-sysconf.c:65
@@ -194,4 +201,8 @@ msgstr ""
 
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
+msgstr ""
+
+#: liboaf/oaf-async-corba.c:182
+msgid "No server corresponding to your query"
 msgstr ""

@@ -15,7 +15,9 @@ extern "C"
 
 /** typedefs **/
 #include <liboaf/oaf-factory.h>
+# 12 "../idl/oaf-factory.idl"
 #include <liboaf/oaf-factory-suppress.h>
+# 13 "../idl/oaf-factory.idl"
 #define ex_OAF_GeneralError "IDL:OAF/GeneralError:1.0"
    void _ORBIT_OAF_GeneralError_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
 					  CORBA_Environment * ev);

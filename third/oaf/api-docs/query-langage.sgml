@@ -125,6 +125,15 @@ has(stringv, string)
 </para></listitem>
 
 <listitem><para>
+prefer_by_list_order(string, stringv) 
+   This function is intended to use as a sort condition when you have a prioritized list of 
+   preferred values. It returns -1 if the 'string' is not in the 'stringv' array, otherwise 
+   it's position measured from the end of 'stringv'. The result is that the first item is 
+   most preferred, items after that are next most preferred, and items not in the list are 
+   lowest priority.
+</para></listitem>
+
+<listitem><para>
 max(expr)
    Evaluates 'expr' over all the available server information records in the database, and returns
    the maximum value as dictated by the normal sort order for the data type of 'expr'.

@@ -14,20 +14,23 @@ SUBDIRS=		\
 
 bin_SCRIPTS=oaf-config
 
-EXTRA_DIST=			\
-	oaf-config.in		\
-	oaf.m4			\
-	oafConf.sh.in		\
-	oafConf.sh		\
-	oaf.spec.in		\
-	oaf-config.xml		\
-	oaf-config.xml.sample	\
-	oaf.spec		\
-	AUTHORS 		\
-	COPYING 		\
-	ChangeLog 		\
-	NEWS 			\
-	README			\
+EXTRA_DIST=					\
+	oaf-config.in				\
+	oaf.m4					\
+	oafConf.sh.in				\
+	oafConf.sh				\
+	oaf.spec.in				\
+	oaf-config.xml				\
+	oaf-config.xml.sample			\
+	oaf.spec				\
+	xml-i18n-extract.in			\
+	xml-i18n-merge.in			\
+	xml-i18n-update.in			\
+	AUTHORS					\
+	COPYING					\
+	ChangeLog				\
+	NEWS					\
+	README					\
 	$(NULL)
 
 oafconfigdir=$(sysconfdir)/oaf

@@ -877,6 +877,10 @@ ac_query_run (impl_POA_OAF_ActivationContext * servant,
 
 	qexp_sort (items, item_count, qexp_sort_items,
 		   selection_order->_length, &qctx);
+
+        qexp_free (qexp_requirements);
+        for (i = 0; i < selection_order->_length; i++)
+                qexp_free (qexp_sort_items[i]);
 }
 
 static OAF_ServerInfoList *
@@ -1059,6 +1063,7 @@ impl_OAF_ActivationContext_activate_from_id (impl_POA_OAF_ActivationContext *
         g_free (sort_criteria[0]);
         g_free (sort_criteria[1]);
         g_free (sort_criteria[2]);
+        g_free (requirements);
 
         servant->refs--;
 
@@ -1117,6 +1122,7 @@ impl_OAF_ActivationContext_activate_from_id_async
         g_free (sort_criteria[0]);
         g_free (sort_criteria[1]);
         g_free (sort_criteria[2]);
+        g_free (requirements);
 
         if (ev->_major != CORBA_NO_EXCEPTION) {
                 char *message;

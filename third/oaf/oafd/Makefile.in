@@ -106,6 +106,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 YACC = @YACC@
@@ -320,66 +321,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-ac-corba.o: ac-corba.c oafd.h ../liboaf/oaf.h ../liboaf/oaf-factory.h \
-	../liboaf/oaf-factory-suppress.h ../liboaf/oaf-i18n.h \
-	../config.h ../liboaf/liboaf.h ../liboaf/liboaf-version.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h ac-query-expr.h \
-	oafd-corba-extensions.h
-ac-query-expr.o: ac-query-expr.c ac-query-expr.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	ac-query-parse.h qsort_ex.h
-ac-query-lex.o: ac-query-lex.c ac-query-expr.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	ac-query-parse.h
-ac-query-parse.o: ac-query-parse.c ac-query-expr.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h
-client.o: client.c ../config.h ../liboaf/liboaf-private.h \
-	../liboaf/liboaf.h ../liboaf/liboaf-version.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h oafd.h
-main.o: main.c ../config.h ../liboaf/oaf-i18n.h ../liboaf/liboaf.h \
-	../liboaf/liboaf-version.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h oafd.h ac-query-expr.h od-utils.h
-oafd-corba-extensions.o: oafd-corba-extensions.c oafd.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/oaf-i18n.h ../config.h ../liboaf/liboaf.h \
-	../liboaf/liboaf-version.h ../liboaf/oaf-activate.h \
-	../liboaf/oaf-servreg.h ../liboaf/oaf-util.h \
-	../liboaf/oaf-actid.h ../liboaf/oaf-plugin.h \
-	../liboaf/oaf-mainloop.h ../liboaf/oaf-registration.h \
-	oafd-corba-extensions.h
-oaf-skels.o: oaf-skels.c ../liboaf/oaf.h ../liboaf/oaf-factory.h \
-	../liboaf/oaf-factory-suppress.h
-od-activate.o: od-activate.c ../config.h oafd.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/liboaf-private.h ../liboaf/liboaf.h \
-	../liboaf/liboaf-version.h ../liboaf/oaf-activate.h \
-	../liboaf/oaf-servreg.h ../liboaf/oaf-util.h \
-	../liboaf/oaf-actid.h ../liboaf/oaf-plugin.h \
-	../liboaf/oaf-mainloop.h ../liboaf/oaf-registration.h \
-	../liboaf/oaf-i18n.h oafd-corba-extensions.h
-od-corba.o: od-corba.c ../config.h oafd.h ../liboaf/oaf.h \
-	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
-	../liboaf/liboaf.h ../liboaf/liboaf-version.h \
-	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
-	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
-	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
-	../liboaf/oaf-registration.h oafd-corba-extensions.h
-od-load.o: od-load.c oafd.h ../liboaf/oaf.h ../liboaf/oaf-factory.h \
-	../liboaf/oaf-factory-suppress.h ../liboaf/oaf-i18n.h \
-	../config.h
-od-utils.o: od-utils.c ../config.h od-utils.h ../liboaf/oaf-i18n.h
-qsort_ex.o: qsort_ex.c qsort_ex.h
 
 info-am:
 info: info-am

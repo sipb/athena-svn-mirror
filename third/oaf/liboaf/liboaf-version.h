@@ -27,7 +27,7 @@
 
 #define OAF_MAJOR_VERSION (0)
 #define OAF_MINOR_VERSION (6)
-#define OAF_MICRO_VERSION (2)
+#define OAF_MICRO_VERSION (5)
 
 #endif
 

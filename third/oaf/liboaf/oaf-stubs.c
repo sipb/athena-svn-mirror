@@ -42,6 +42,7 @@ _ORBIT_OAF_GeneralError_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
    CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
 		       TC_OAF_GeneralError_struct.repo_id, _ORBIT_exdata);
 }
+
 void
 OAF_ActivationCallback_report_activation_failed(OAF_ActivationCallback _obj,
 						const CORBA_char * reason,
@@ -121,6 +122,7 @@ OAF_ActivationCallback_report_activation_failed(OAF_ActivationCallback _obj,
    giop_send_buffer_unuse(_ORBIT_send_buffer);
    return;
 }
+
 void
 OAF_ActivationCallback_report_activation_succeeded(OAF_ActivationCallback
 						   _obj,
@@ -197,67 +199,69 @@ report_activation_succeeded(_obj->servant, result, ev);
 				     sizeof((*result).res._d));
       switch ((*result).res._d) {
 	case OAF_RESULT_OBJECT:
-	 ORBit_marshal_object(_ORBIT_send_buffer,
-			      (*result).res._u.res_object);
-	 break;
+	   ORBit_marshal_object(_ORBIT_send_buffer,
+				(*result).res._u.res_object);
+	   break;
 	case OAF_RESULT_SHLIB:
-	 {
-	    guchar *_ORBIT_t;
+	   {
+	      guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof((*result).res._u.res_shlib._length));
-	    memcpy(_ORBIT_t, &((*result).res._u.res_shlib._length),
-		   sizeof((*result).res._u.res_shlib._length));
-	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof((*result).res._u.res_shlib.
-						  _length));
-	 }
-	 for (_ORBIT_tmpvar_2 = 0;
-	      _ORBIT_tmpvar_2 < (*result).res._u.res_shlib._length;
-	      _ORBIT_tmpvar_2++) {
-	    _ORBIT_tmpvar_4 =
-	       strlen((*result).res._u.res_shlib._buffer[_ORBIT_tmpvar_2]) +
-	       1;
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
-	    {
-	       guchar *_ORBIT_t;
+	      _ORBIT_t = alloca(sizeof((*result).res._u.res_shlib._length));
+	      memcpy(_ORBIT_t, &((*result).res._u.res_shlib._length),
+		     sizeof((*result).res._u.res_shlib._length));
+	      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), (_ORBIT_t),
+					     sizeof((*result).res._u.
+						    res_shlib._length));
+	   }
+	   for (_ORBIT_tmpvar_2 = 0;
+		_ORBIT_tmpvar_2 < (*result).res._u.res_shlib._length;
+		_ORBIT_tmpvar_2++) {
+	      _ORBIT_tmpvar_4 =
+		 strlen((*result).res._u.res_shlib._buffer[_ORBIT_tmpvar_2]) +
+		 1;
+	      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					       (_ORBIT_send_buffer), 4);
+	      {
+		 guchar *_ORBIT_t;
 
-	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
-	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4), sizeof(_ORBIT_tmpvar_4));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof(_ORBIT_tmpvar_4));
-	    }
-	    {
-	       guchar *_ORBIT_t;
+		 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
+		 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4),
+			sizeof(_ORBIT_tmpvar_4));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof(_ORBIT_tmpvar_4));
+	      }
+	      {
+		 guchar *_ORBIT_t;
 
-	       _ORBIT_t =
-		  alloca(sizeof
-			 ((*result).res._u.res_shlib.
-			  _buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
-			 _ORBIT_tmpvar_4);
-		  memcpy(_ORBIT_t,
-			 ((*result).res._u.res_shlib.
-			  _buffer[_ORBIT_tmpvar_2]),
-			 sizeof((*result).res._u.res_shlib.
-				_buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
-			 _ORBIT_tmpvar_4);
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof((*result).res._u.
-						     res_shlib.
-						     _buffer[_ORBIT_tmpvar_2]
-						     [_ORBIT_tmpvar_3]) *
-					      _ORBIT_tmpvar_4);
-	    }
-	 }
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*result).res._u.res_shlib.
+			    _buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
+			   _ORBIT_tmpvar_4);
+		    memcpy(_ORBIT_t,
+			   ((*result).res._u.res_shlib.
+			    _buffer[_ORBIT_tmpvar_2]),
+			   sizeof((*result).res._u.res_shlib.
+				  _buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
+			   _ORBIT_tmpvar_4);
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*result).res._u.
+						       res_shlib.
+						       _buffer
+						       [_ORBIT_tmpvar_2]
+						       [_ORBIT_tmpvar_3]) *
+						_ORBIT_tmpvar_4);
+	      }
+	   }
 
-	 break;
+	   break;
 	default:
-	 break;
+	   break;
       }
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
@@ -272,6 +276,7 @@ report_activation_succeeded(_obj->servant, result, ev);
    giop_send_buffer_unuse(_ORBIT_send_buffer);
    return;
 }
+
 OAF_ServerInfoListCache *
 OAF_ObjectDirectory_get_servers(OAF_ObjectDirectory _obj,
 				const OAF_CacheTime only_if_newer,
@@ -369,566 +374,615 @@ OAF_ObjectDirectory_get_servers(OAF_ObjectDirectory _obj,
 	 _ORBIT_curptr += 1;
 	 switch ((*_ORBIT_retval)._d) {
 	   case CORBA_TRUE:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    
-	       (*((guint32 *) & ((*_ORBIT_retval)._u.server_list._length))) =
-	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval)._u.server_list._buffer =
-	       CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._u.
-						      server_list._length);
-	    (*_ORBIT_retval)._u.server_list._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_21 = 0;
-		 _ORBIT_tmpvar_21 < (*_ORBIT_retval)._u.server_list._length;
-		 _ORBIT_tmpvar_21++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_23))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  iid = CORBA_string_alloc(_ORBIT_tmpvar_23);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].iid, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     iid[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].iid[_ORBIT_tmpvar_22]) *
-		  _ORBIT_tmpvar_23;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_25))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  server_type = CORBA_string_alloc(_ORBIT_tmpvar_25);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].server_type, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     server_type[_ORBIT_tmpvar_24]) *
-		      _ORBIT_tmpvar_25);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 server_type[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_27))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  location_info = CORBA_string_alloc(_ORBIT_tmpvar_27);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].location_info, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     location_info[_ORBIT_tmpvar_26]) *
-		      _ORBIT_tmpvar_27);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 location_info[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_29))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  username = CORBA_string_alloc(_ORBIT_tmpvar_29);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].username, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     username[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 username[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_31))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  hostname = CORBA_string_alloc(_ORBIT_tmpvar_31);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].hostname, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     hostname[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 hostname[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_33))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  domain = CORBA_string_alloc(_ORBIT_tmpvar_33);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].domain, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     domain[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].domain[_ORBIT_tmpvar_32]) *
-		  _ORBIT_tmpvar_33;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*
-		((guint32 *) &
-	      ((*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-	       props._length))) =
-GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
-	       (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  props._buffer =
-		  CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval)._u.
-						       server_list.
-						       _buffer
-						       [_ORBIT_tmpvar_21].
-						       props._length);
-	       (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  props._release = CORBA_TRUE;
-	       for (_ORBIT_tmpvar_34 = 0;
-		    _ORBIT_tmpvar_34 <
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      
+		 (*((guint32 *) & ((*_ORBIT_retval)._u.server_list._length)))
+		 = GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.server_list._maximum = (*_ORBIT_retval)._u.server_list._length;
+	      
+		 (*_ORBIT_retval)._u.server_list._buffer =
+		 CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._u.
+							server_list._length);
+	      (*_ORBIT_retval)._u.server_list._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_21 = 0;
+		   _ORBIT_tmpvar_21 < (*_ORBIT_retval)._u.server_list._length;
+		   _ORBIT_tmpvar_21++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_23))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
 		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		    props._length; _ORBIT_tmpvar_34++) {
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		  
-		     (*((guint32 *) & (_ORBIT_tmpvar_36))) =
-		     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._u.server_list.
-		     _buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].name =
-		     CORBA_string_alloc(_ORBIT_tmpvar_36);
-		  memcpy((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].props.
-			 _buffer[_ORBIT_tmpvar_34].name, _ORBIT_curptr,
-			 sizeof((*_ORBIT_retval)._u.server_list.
+		    iid = CORBA_string_alloc(_ORBIT_tmpvar_23);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].iid, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       iid[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].iid[_ORBIT_tmpvar_22]) *
+		    _ORBIT_tmpvar_23;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_25))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    server_type = CORBA_string_alloc(_ORBIT_tmpvar_25);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].server_type, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       server_type[_ORBIT_tmpvar_24]) *
+			_ORBIT_tmpvar_25);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   server_type[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_27))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    location_info = CORBA_string_alloc(_ORBIT_tmpvar_27);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].location_info,
+			_ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       location_info[_ORBIT_tmpvar_26]) *
+			_ORBIT_tmpvar_27);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   location_info[_ORBIT_tmpvar_26]) *
+		    _ORBIT_tmpvar_27;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_29))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    username = CORBA_string_alloc(_ORBIT_tmpvar_29);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].username, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       username[_ORBIT_tmpvar_28]) *
+			_ORBIT_tmpvar_29);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   username[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_31))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    hostname = CORBA_string_alloc(_ORBIT_tmpvar_31);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].hostname, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       hostname[_ORBIT_tmpvar_30]) *
+			_ORBIT_tmpvar_31);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   hostname[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_33))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    domain = CORBA_string_alloc(_ORBIT_tmpvar_33);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].domain, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       domain[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   domain[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*
+		  ((guint32 *) &
+		((*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		 props._length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
+		 (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._maximum =
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._length;
+		 (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._buffer =
+		    CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval)._u.
+							 server_list.
+							 _buffer
+							 [_ORBIT_tmpvar_21].
+							 props._length);
+		 (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._release = CORBA_TRUE;
+		 for (_ORBIT_tmpvar_34 = 0;
+		      _ORBIT_tmpvar_34 <
+		      (*_ORBIT_retval)._u.server_list.
+		      _buffer[_ORBIT_tmpvar_21].props._length;
+		      _ORBIT_tmpvar_34++) {
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    
+		       (*((guint32 *) & (_ORBIT_tmpvar_36))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._u.server_list.
+		       _buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].name =
+		       CORBA_string_alloc(_ORBIT_tmpvar_36);
+		    memcpy((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].props.
+			   _buffer[_ORBIT_tmpvar_34].name, _ORBIT_curptr,
+			   sizeof((*_ORBIT_retval)._u.server_list.
+				  _buffer[_ORBIT_tmpvar_21].props.
+				  _buffer[_ORBIT_tmpvar_34].
+				  name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    _ORBIT_curptr +=
+		       sizeof((*_ORBIT_retval)._u.server_list.
+			      _buffer[_ORBIT_tmpvar_21].props.
+			      _buffer[_ORBIT_tmpvar_34].
+			      name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36;
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    
+		       (*
+		     ((guint32 *) &
+		   ((*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._buffer[_ORBIT_tmpvar_34].v._d))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    switch ((*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._d) {
+		      case OAF_P_STRING:
+			 
+			    (*((guint32 *) & (_ORBIT_tmpvar_38))) =
+			    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+			 _ORBIT_curptr += 4;
+			 
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_string =
+			    CORBA_string_alloc(_ORBIT_tmpvar_38);
+			 memcpy((*_ORBIT_retval)._u.server_list.
 				_buffer[_ORBIT_tmpvar_21].props.
-				_buffer[_ORBIT_tmpvar_34].
-				name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
-		  _ORBIT_curptr +=
-		     sizeof((*_ORBIT_retval)._u.server_list.
-			    _buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].
-			    name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36;
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		  
-		     (*
-		   ((guint32 *) &
-		 ((*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  props._buffer[_ORBIT_tmpvar_34].v._d))) =
-		     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		  _ORBIT_curptr += 4;
-		  switch ((*_ORBIT_retval)._u.server_list.
-			  _buffer[_ORBIT_tmpvar_21].props.
-			  _buffer[_ORBIT_tmpvar_34].v._d) {
-		    case OAF_P_STRING:
-		     
-			(*((guint32 *) & (_ORBIT_tmpvar_38))) =
-			GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_string =
-			CORBA_string_alloc(_ORBIT_tmpvar_38);
-		     memcpy((*_ORBIT_retval)._u.server_list.
-			    _buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].v._u.value_string,
-			    _ORBIT_curptr,
+				_buffer[_ORBIT_tmpvar_34].v._u.value_string,
+				_ORBIT_curptr,
+				sizeof((*_ORBIT_retval)._u.server_list.
+				       _buffer[_ORBIT_tmpvar_21].props.
+				       _buffer[_ORBIT_tmpvar_34].v._u.
+				       value_string[_ORBIT_tmpvar_37]) *
+				_ORBIT_tmpvar_38);
+			 _ORBIT_curptr +=
 			    sizeof((*_ORBIT_retval)._u.server_list.
 				   _buffer[_ORBIT_tmpvar_21].props.
 				   _buffer[_ORBIT_tmpvar_34].v._u.
 				   value_string[_ORBIT_tmpvar_37]) *
-			    _ORBIT_tmpvar_38);
-		     _ORBIT_curptr +=
-			sizeof((*_ORBIT_retval)._u.server_list.
-			       _buffer[_ORBIT_tmpvar_21].props.
-			       _buffer[_ORBIT_tmpvar_34].v._u.
-			       value_string[_ORBIT_tmpvar_37]) *
-			_ORBIT_tmpvar_38;
-		     break;
-		    case OAF_P_NUMBER:
-		     _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-		     iiop_byteswap((guchar *) &
-				   ((*_ORBIT_retval)._u.server_list.
-				    _buffer[_ORBIT_tmpvar_21].props.
-				    _buffer[_ORBIT_tmpvar_34].v._u.
-				    value_number), _ORBIT_curptr, 8);
-		     _ORBIT_curptr += 8;
-		     break;
-		    case OAF_P_BOOLEAN:
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
-			*((CORBA_boolean *) _ORBIT_curptr);
-		     _ORBIT_curptr += 1;
-		     break;
-		    case OAF_P_STRINGV:
-		     
-			(*
-		      ((guint32 *) &
-		    ((*_ORBIT_retval)._u.server_list.
-		     _buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length))) =
-			GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_stringv._buffer =
-			CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-							     _u.server_list.
-							     _buffer
-							     [_ORBIT_tmpvar_21].
-							     props.
-							     _buffer
-							     [_ORBIT_tmpvar_34].
-							     v._u.
-							     value_stringv.
-							     _length);
-		     (*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			_release = CORBA_TRUE;
-		     for (_ORBIT_tmpvar_39 = 0;
-			  _ORBIT_tmpvar_39 <
-			  (*_ORBIT_retval)._u.server_list.
-			  _buffer[_ORBIT_tmpvar_21].props.
-			  _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			  _length; _ORBIT_tmpvar_39++) {
-			_ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-			
-			   (*((guint32 *) & (_ORBIT_tmpvar_41))) =
-			   GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-			_ORBIT_curptr += 4;
-			
-			   (*_ORBIT_retval)._u.server_list.
-			   _buffer[_ORBIT_tmpvar_21].props.
-			   _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			   _buffer[_ORBIT_tmpvar_39] =
-			   CORBA_string_alloc(_ORBIT_tmpvar_41);
-			memcpy((*_ORBIT_retval)._u.server_list.
+			    _ORBIT_tmpvar_38;
+			 break;
+		      case OAF_P_NUMBER:
+			 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+			 iiop_byteswap((guchar *) &
+				       ((*_ORBIT_retval)._u.server_list.
+					_buffer[_ORBIT_tmpvar_21].props.
+					_buffer[_ORBIT_tmpvar_34].v._u.
+					value_number), _ORBIT_curptr, 8);
+			 _ORBIT_curptr += 8;
+			 break;
+		      case OAF_P_BOOLEAN:
+			 
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
+			    *((CORBA_boolean *) _ORBIT_curptr);
+			 _ORBIT_curptr += 1;
+			 break;
+		      case OAF_P_STRINGV:
+			 
+			    (*
+			  ((guint32 *) &
+			((*_ORBIT_retval)._u.server_list.
+			 _buffer[_ORBIT_tmpvar_21].props.
+			 _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			 _length))) =
+			    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+			    _ORBIT_curptr += 4;
+			 (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _maximum =
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _length;
+			 (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _buffer =
+			    CORBA_sequence_CORBA_string_allocbuf(
+								 (*_ORBIT_retval).
+								 _u.
+								 server_list.
+								 _buffer
+								 [_ORBIT_tmpvar_21].
+								 props.
+								 _buffer
+								 [_ORBIT_tmpvar_34].
+								 v._u.
+								 value_stringv.
+								 _length);
+			 (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _release = CORBA_TRUE;
+			 for (_ORBIT_tmpvar_39 = 0;
+			      _ORBIT_tmpvar_39 <
+			      (*_ORBIT_retval)._u.server_list.
+			      _buffer[_ORBIT_tmpvar_21].props.
+			      _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			      _length; _ORBIT_tmpvar_39++) {
+			    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+			    
+			       (*((guint32 *) & (_ORBIT_tmpvar_41))) =
+			       GUINT32_SWAP_LE_BE(*
+						  ((guint32 *)
+						   _ORBIT_curptr));
+			       _ORBIT_curptr += 4;
+			    (*_ORBIT_retval)._u.server_list.
 			       _buffer[_ORBIT_tmpvar_21].props.
 			       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			       _buffer[_ORBIT_tmpvar_39], _ORBIT_curptr,
+			       _buffer[_ORBIT_tmpvar_39] =
+			       CORBA_string_alloc(_ORBIT_tmpvar_41);
+			    memcpy((*_ORBIT_retval)._u.server_list.
+				   _buffer[_ORBIT_tmpvar_21].props.
+				   _buffer[_ORBIT_tmpvar_34].v._u.
+				   value_stringv._buffer[_ORBIT_tmpvar_39],
+				   _ORBIT_curptr,
+				   sizeof((*_ORBIT_retval)._u.server_list.
+					  _buffer[_ORBIT_tmpvar_21].props.
+					  _buffer[_ORBIT_tmpvar_34].v._u.
+					  value_stringv.
+					  _buffer[_ORBIT_tmpvar_39]
+					  [_ORBIT_tmpvar_40]) *
+				   _ORBIT_tmpvar_41);
+			    _ORBIT_curptr +=
 			       sizeof((*_ORBIT_retval)._u.server_list.
 				      _buffer[_ORBIT_tmpvar_21].props.
 				      _buffer[_ORBIT_tmpvar_34].v._u.
 				      value_stringv.
 				      _buffer[_ORBIT_tmpvar_39]
-				      [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41);
-			_ORBIT_curptr +=
-			   sizeof((*_ORBIT_retval)._u.server_list.
-				  _buffer[_ORBIT_tmpvar_21].props.
-				  _buffer[_ORBIT_tmpvar_34].v._u.
-				  value_stringv.
-				  _buffer[_ORBIT_tmpvar_39][_ORBIT_tmpvar_40])
-			   * _ORBIT_tmpvar_41;
-		     }
+				      [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41;
+			 }
 
-		     break;
-		    default:
-		     break;
-		  }
-	       }
+			 break;
+		      default:
+			 break;
+		    }
+		 }
 
-	    }
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       } else {
 	 (*_ORBIT_retval)._d = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 switch ((*_ORBIT_retval)._d) {
 	   case CORBA_TRUE:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    
-	       (*_ORBIT_retval)._u.server_list._length =
-	       *((CORBA_unsigned_long *) _ORBIT_curptr);
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval)._u.server_list._buffer =
-	       CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._u.
-						      server_list._length);
-	    (*_ORBIT_retval)._u.server_list._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_21 = 0;
-		 _ORBIT_tmpvar_21 < (*_ORBIT_retval)._u.server_list._length;
-		 _ORBIT_tmpvar_21++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_23 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  iid = CORBA_string_alloc(_ORBIT_tmpvar_23);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].iid, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     iid[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].iid[_ORBIT_tmpvar_22]) *
-		  _ORBIT_tmpvar_23;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_25 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  server_type = CORBA_string_alloc(_ORBIT_tmpvar_25);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].server_type, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     server_type[_ORBIT_tmpvar_24]) *
-		      _ORBIT_tmpvar_25);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 server_type[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_27 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  location_info = CORBA_string_alloc(_ORBIT_tmpvar_27);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].location_info, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     location_info[_ORBIT_tmpvar_26]) *
-		      _ORBIT_tmpvar_27);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 location_info[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_29 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  username = CORBA_string_alloc(_ORBIT_tmpvar_29);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].username, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     username[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 username[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_31 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  hostname = CORBA_string_alloc(_ORBIT_tmpvar_31);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].hostname, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     hostname[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].
-			 hostname[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_33 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  domain = CORBA_string_alloc(_ORBIT_tmpvar_33);
-	       memcpy((*_ORBIT_retval)._u.server_list.
-		      _buffer[_ORBIT_tmpvar_21].domain, _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.server_list.
-			     _buffer[_ORBIT_tmpvar_21].
-			     domain[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].domain[_ORBIT_tmpvar_32]) *
-		  _ORBIT_tmpvar_33;
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  props._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  props._buffer =
-		  CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval)._u.
-						       server_list.
-						       _buffer
-						       [_ORBIT_tmpvar_21].
-						       props._length);
-	       (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		  props._release = CORBA_TRUE;
-	       for (_ORBIT_tmpvar_34 = 0;
-		    _ORBIT_tmpvar_34 <
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      
+		 (*_ORBIT_retval)._u.server_list._length =
+		 *((CORBA_unsigned_long *) _ORBIT_curptr);
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.server_list._maximum = (*_ORBIT_retval)._u.server_list._length;
+	      
+		 (*_ORBIT_retval)._u.server_list._buffer =
+		 CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._u.
+							server_list._length);
+	      (*_ORBIT_retval)._u.server_list._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_21 = 0;
+		   _ORBIT_tmpvar_21 < (*_ORBIT_retval)._u.server_list._length;
+		   _ORBIT_tmpvar_21++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_23 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
 		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
-		    props._length; _ORBIT_tmpvar_34++) {
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		  _ORBIT_tmpvar_36 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._u.server_list.
-		     _buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].name =
-		     CORBA_string_alloc(_ORBIT_tmpvar_36);
-		  memcpy((*_ORBIT_retval)._u.server_list.
-			 _buffer[_ORBIT_tmpvar_21].props.
-			 _buffer[_ORBIT_tmpvar_34].name, _ORBIT_curptr,
-			 sizeof((*_ORBIT_retval)._u.server_list.
+		    iid = CORBA_string_alloc(_ORBIT_tmpvar_23);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].iid, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       iid[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].iid[_ORBIT_tmpvar_22]) *
+		    _ORBIT_tmpvar_23;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_25 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    server_type = CORBA_string_alloc(_ORBIT_tmpvar_25);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].server_type, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       server_type[_ORBIT_tmpvar_24]) *
+			_ORBIT_tmpvar_25);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   server_type[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_27 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    location_info = CORBA_string_alloc(_ORBIT_tmpvar_27);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].location_info,
+			_ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       location_info[_ORBIT_tmpvar_26]) *
+			_ORBIT_tmpvar_27);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   location_info[_ORBIT_tmpvar_26]) *
+		    _ORBIT_tmpvar_27;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_29 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    username = CORBA_string_alloc(_ORBIT_tmpvar_29);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].username, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       username[_ORBIT_tmpvar_28]) *
+			_ORBIT_tmpvar_29);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   username[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_31 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    hostname = CORBA_string_alloc(_ORBIT_tmpvar_31);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].hostname, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       hostname[_ORBIT_tmpvar_30]) *
+			_ORBIT_tmpvar_31);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   hostname[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_33 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    domain = CORBA_string_alloc(_ORBIT_tmpvar_33);
+		 memcpy((*_ORBIT_retval)._u.server_list.
+			_buffer[_ORBIT_tmpvar_21].domain, _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.server_list.
+			       _buffer[_ORBIT_tmpvar_21].
+			       domain[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].
+			   domain[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33;
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._maximum =
+		    (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._length;
+		 (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._buffer =
+		    CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval)._u.
+							 server_list.
+							 _buffer
+							 [_ORBIT_tmpvar_21].
+							 props._length);
+		 (*_ORBIT_retval)._u.server_list._buffer[_ORBIT_tmpvar_21].
+		    props._release = CORBA_TRUE;
+		 for (_ORBIT_tmpvar_34 = 0;
+		      _ORBIT_tmpvar_34 <
+		      (*_ORBIT_retval)._u.server_list.
+		      _buffer[_ORBIT_tmpvar_21].props._length;
+		      _ORBIT_tmpvar_34++) {
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    _ORBIT_tmpvar_36 =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._u.server_list.
+		       _buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].name =
+		       CORBA_string_alloc(_ORBIT_tmpvar_36);
+		    memcpy((*_ORBIT_retval)._u.server_list.
+			   _buffer[_ORBIT_tmpvar_21].props.
+			   _buffer[_ORBIT_tmpvar_34].name, _ORBIT_curptr,
+			   sizeof((*_ORBIT_retval)._u.server_list.
+				  _buffer[_ORBIT_tmpvar_21].props.
+				  _buffer[_ORBIT_tmpvar_34].
+				  name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    _ORBIT_curptr +=
+		       sizeof((*_ORBIT_retval)._u.server_list.
+			      _buffer[_ORBIT_tmpvar_21].props.
+			      _buffer[_ORBIT_tmpvar_34].
+			      name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36;
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    
+		       (*_ORBIT_retval)._u.server_list.
+		       _buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._d =
+		       *((OAF_PropertyType *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    switch ((*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._d) {
+		      case OAF_P_STRING:
+			 _ORBIT_tmpvar_38 =
+			    *((CORBA_unsigned_long *) _ORBIT_curptr);
+			 _ORBIT_curptr += 4;
+			 
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_string =
+			    CORBA_string_alloc(_ORBIT_tmpvar_38);
+			 memcpy((*_ORBIT_retval)._u.server_list.
 				_buffer[_ORBIT_tmpvar_21].props.
-				_buffer[_ORBIT_tmpvar_34].
-				name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
-		  _ORBIT_curptr +=
-		     sizeof((*_ORBIT_retval)._u.server_list.
-			    _buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].
-			    name[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36;
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		  
-		     (*_ORBIT_retval)._u.server_list.
-		     _buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._d =
-		     *((OAF_PropertyType *) _ORBIT_curptr);
-		  _ORBIT_curptr += 4;
-		  switch ((*_ORBIT_retval)._u.server_list.
-			  _buffer[_ORBIT_tmpvar_21].props.
-			  _buffer[_ORBIT_tmpvar_34].v._d) {
-		    case OAF_P_STRING:
-		     _ORBIT_tmpvar_38 =
-			*((CORBA_unsigned_long *) _ORBIT_curptr);
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_string =
-			CORBA_string_alloc(_ORBIT_tmpvar_38);
-		     memcpy((*_ORBIT_retval)._u.server_list.
-			    _buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].v._u.value_string,
-			    _ORBIT_curptr,
+				_buffer[_ORBIT_tmpvar_34].v._u.value_string,
+				_ORBIT_curptr,
+				sizeof((*_ORBIT_retval)._u.server_list.
+				       _buffer[_ORBIT_tmpvar_21].props.
+				       _buffer[_ORBIT_tmpvar_34].v._u.
+				       value_string[_ORBIT_tmpvar_37]) *
+				_ORBIT_tmpvar_38);
+			 _ORBIT_curptr +=
 			    sizeof((*_ORBIT_retval)._u.server_list.
 				   _buffer[_ORBIT_tmpvar_21].props.
 				   _buffer[_ORBIT_tmpvar_34].v._u.
 				   value_string[_ORBIT_tmpvar_37]) *
-			    _ORBIT_tmpvar_38);
-		     _ORBIT_curptr +=
-			sizeof((*_ORBIT_retval)._u.server_list.
-			       _buffer[_ORBIT_tmpvar_21].props.
-			       _buffer[_ORBIT_tmpvar_34].v._u.
-			       value_string[_ORBIT_tmpvar_37]) *
-			_ORBIT_tmpvar_38;
-		     break;
-		    case OAF_P_NUMBER:
-		     _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_number =
-			*((CORBA_double *) _ORBIT_curptr);
-		     _ORBIT_curptr += 8;
-		     break;
-		    case OAF_P_BOOLEAN:
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
-			*((CORBA_boolean *) _ORBIT_curptr);
-		     _ORBIT_curptr += 1;
-		     break;
-		    case OAF_P_STRINGV:
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length =
-			*((CORBA_unsigned_long *) _ORBIT_curptr);
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_stringv._buffer =
-			CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-							     _u.server_list.
-							     _buffer
-							     [_ORBIT_tmpvar_21].
-							     props.
-							     _buffer
-							     [_ORBIT_tmpvar_34].
-							     v._u.
-							     value_stringv.
-							     _length);
-		     (*_ORBIT_retval)._u.server_list.
-			_buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			_release = CORBA_TRUE;
-		     for (_ORBIT_tmpvar_39 = 0;
-			  _ORBIT_tmpvar_39 <
-			  (*_ORBIT_retval)._u.server_list.
-			  _buffer[_ORBIT_tmpvar_21].props.
-			  _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			  _length; _ORBIT_tmpvar_39++) {
-			_ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-			_ORBIT_tmpvar_41 =
-			   *((CORBA_unsigned_long *) _ORBIT_curptr);
-			_ORBIT_curptr += 4;
-			
-			   (*_ORBIT_retval)._u.server_list.
-			   _buffer[_ORBIT_tmpvar_21].props.
-			   _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			   _buffer[_ORBIT_tmpvar_39] =
-			   CORBA_string_alloc(_ORBIT_tmpvar_41);
-			memcpy((*_ORBIT_retval)._u.server_list.
+			    _ORBIT_tmpvar_38;
+			 break;
+		      case OAF_P_NUMBER:
+			 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+			 
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_number =
+			    *((CORBA_double *) _ORBIT_curptr);
+			 _ORBIT_curptr += 8;
+			 break;
+		      case OAF_P_BOOLEAN:
+			 
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
+			    *((CORBA_boolean *) _ORBIT_curptr);
+			 _ORBIT_curptr += 1;
+			 break;
+		      case OAF_P_STRINGV:
+			 
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _length =
+			    *((CORBA_unsigned_long *) _ORBIT_curptr);
+			 _ORBIT_curptr += 4;
+			 
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _maximum =
+			    (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _length;
+			 (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _buffer =
+			    CORBA_sequence_CORBA_string_allocbuf(
+								 (*_ORBIT_retval).
+								 _u.
+								 server_list.
+								 _buffer
+								 [_ORBIT_tmpvar_21].
+								 props.
+								 _buffer
+								 [_ORBIT_tmpvar_34].
+								 v._u.
+								 value_stringv.
+								 _length);
+			 (*_ORBIT_retval)._u.server_list.
+			    _buffer[_ORBIT_tmpvar_21].props.
+			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			    _release = CORBA_TRUE;
+			 for (_ORBIT_tmpvar_39 = 0;
+			      _ORBIT_tmpvar_39 <
+			      (*_ORBIT_retval)._u.server_list.
+			      _buffer[_ORBIT_tmpvar_21].props.
+			      _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			      _length; _ORBIT_tmpvar_39++) {
+			    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+			    _ORBIT_tmpvar_41 =
+			       *((CORBA_unsigned_long *) _ORBIT_curptr);
+			    _ORBIT_curptr += 4;
+			    
+			       (*_ORBIT_retval)._u.server_list.
 			       _buffer[_ORBIT_tmpvar_21].props.
 			       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			       _buffer[_ORBIT_tmpvar_39], _ORBIT_curptr,
+			       _buffer[_ORBIT_tmpvar_39] =
+			       CORBA_string_alloc(_ORBIT_tmpvar_41);
+			    memcpy((*_ORBIT_retval)._u.server_list.
+				   _buffer[_ORBIT_tmpvar_21].props.
+				   _buffer[_ORBIT_tmpvar_34].v._u.
+				   value_stringv._buffer[_ORBIT_tmpvar_39],
+				   _ORBIT_curptr,
+				   sizeof((*_ORBIT_retval)._u.server_list.
+					  _buffer[_ORBIT_tmpvar_21].props.
+					  _buffer[_ORBIT_tmpvar_34].v._u.
+					  value_stringv.
+					  _buffer[_ORBIT_tmpvar_39]
+					  [_ORBIT_tmpvar_40]) *
+				   _ORBIT_tmpvar_41);
+			    _ORBIT_curptr +=
 			       sizeof((*_ORBIT_retval)._u.server_list.
 				      _buffer[_ORBIT_tmpvar_21].props.
 				      _buffer[_ORBIT_tmpvar_34].v._u.
 				      value_stringv.
 				      _buffer[_ORBIT_tmpvar_39]
-				      [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41);
-			_ORBIT_curptr +=
-			   sizeof((*_ORBIT_retval)._u.server_list.
-				  _buffer[_ORBIT_tmpvar_21].props.
-				  _buffer[_ORBIT_tmpvar_34].v._u.
-				  value_stringv.
-				  _buffer[_ORBIT_tmpvar_39][_ORBIT_tmpvar_40])
-			   * _ORBIT_tmpvar_41;
-		     }
+				      [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41;
+			 }
 
-		     break;
-		    default:
-		     break;
-		  }
-	       }
+			 break;
+		      default:
+			 break;
+		    }
+		 }
 
-	    }
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       }
       giop_recv_buffer_unuse(_ORBIT_recv_buffer);
@@ -1037,84 +1091,93 @@ OAF_ObjectDirectory_get_active_servers(OAF_ObjectDirectory _obj,
 	 _ORBIT_curptr += 1;
 	 switch ((*_ORBIT_retval)._d) {
 	   case CORBA_TRUE:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    
-	       (*((guint32 *) & ((*_ORBIT_retval)._u.active_servers._length)))
-	       = GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval)._u.active_servers._buffer =
-	       CORBA_sequence_OAF_ImplementationID_allocbuf((*_ORBIT_retval).
-							    _u.active_servers.
-							    _length);
-	    (*_ORBIT_retval)._u.active_servers._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_3 = 0;
-		 _ORBIT_tmpvar_3 < (*_ORBIT_retval)._u.active_servers._length;
-		 _ORBIT_tmpvar_3++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_5))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.active_servers.
-		  _buffer[_ORBIT_tmpvar_3] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_5);
-	       memcpy((*_ORBIT_retval)._u.active_servers.
-		      _buffer[_ORBIT_tmpvar_3], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.active_servers.
-			     _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
-		      _ORBIT_tmpvar_5);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.active_servers.
-			 _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
-		  _ORBIT_tmpvar_5;
-	    }
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      
+		 (*
+	       ((guint32 *) & ((*_ORBIT_retval)._u.active_servers._length))) =
+	     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.active_servers._maximum = (*_ORBIT_retval)._u.active_servers._length;
+	      
+		 (*_ORBIT_retval)._u.active_servers._buffer =
+		 CORBA_sequence_OAF_ImplementationID_allocbuf(
+							      (*_ORBIT_retval).
+							      _u.
+							      active_servers.
+							      _length);
+	      (*_ORBIT_retval)._u.active_servers._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_3 = 0;
+		   _ORBIT_tmpvar_3 <
+		   (*_ORBIT_retval)._u.active_servers._length;
+		   _ORBIT_tmpvar_3++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.active_servers.
+		    _buffer[_ORBIT_tmpvar_3] =
+		    CORBA_string_alloc(_ORBIT_tmpvar_5);
+		 memcpy((*_ORBIT_retval)._u.active_servers.
+			_buffer[_ORBIT_tmpvar_3], _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.active_servers.
+			       _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+			_ORBIT_tmpvar_5);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.active_servers.
+			   _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+		    _ORBIT_tmpvar_5;
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       } else {
 	 (*_ORBIT_retval)._d = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 switch ((*_ORBIT_retval)._d) {
 	   case CORBA_TRUE:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    
-	       (*_ORBIT_retval)._u.active_servers._length =
-	       *((CORBA_unsigned_long *) _ORBIT_curptr);
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval)._u.active_servers._buffer =
-	       CORBA_sequence_OAF_ImplementationID_allocbuf((*_ORBIT_retval).
-							    _u.active_servers.
-							    _length);
-	    (*_ORBIT_retval)._u.active_servers._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_3 = 0;
-		 _ORBIT_tmpvar_3 < (*_ORBIT_retval)._u.active_servers._length;
-		 _ORBIT_tmpvar_3++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval)._u.active_servers.
-		  _buffer[_ORBIT_tmpvar_3] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_5);
-	       memcpy((*_ORBIT_retval)._u.active_servers.
-		      _buffer[_ORBIT_tmpvar_3], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._u.active_servers.
-			     _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
-		      _ORBIT_tmpvar_5);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._u.active_servers.
-			 _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
-		  _ORBIT_tmpvar_5;
-	    }
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      
+		 (*_ORBIT_retval)._u.active_servers._length =
+		 *((CORBA_unsigned_long *) _ORBIT_curptr);
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.active_servers._maximum = (*_ORBIT_retval)._u.active_servers._length;
+	      
+		 (*_ORBIT_retval)._u.active_servers._buffer =
+		 CORBA_sequence_OAF_ImplementationID_allocbuf(
+							      (*_ORBIT_retval).
+							      _u.
+							      active_servers.
+							      _length);
+	      (*_ORBIT_retval)._u.active_servers._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_3 = 0;
+		   _ORBIT_tmpvar_3 <
+		   (*_ORBIT_retval)._u.active_servers._length;
+		   _ORBIT_tmpvar_3++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval)._u.active_servers.
+		    _buffer[_ORBIT_tmpvar_3] =
+		    CORBA_string_alloc(_ORBIT_tmpvar_5);
+		 memcpy((*_ORBIT_retval)._u.active_servers.
+			_buffer[_ORBIT_tmpvar_3], _ORBIT_curptr,
+			sizeof((*_ORBIT_retval)._u.active_servers.
+			       _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+			_ORBIT_tmpvar_5);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval)._u.active_servers.
+			   _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
+		    _ORBIT_tmpvar_5;
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       }
       giop_recv_buffer_unuse(_ORBIT_recv_buffer);
@@ -1762,6 +1825,7 @@ OAF_ObjectDirectory_unlock(OAF_ObjectDirectory _obj, CORBA_Environment * ev)
    giop_send_buffer_unuse(_ORBIT_send_buffer);
    return;
 }
+
 OAF_RegistrationResult
 OAF_ObjectDirectory_register_new(OAF_ObjectDirectory _obj,
 				 const OAF_ImplementationID iid,
@@ -2006,6 +2070,7 @@ _ORBIT_OAF_ActivationContext_NotListed_demarshal(GIOPRecvBuffer *
 		       TC_OAF_ActivationContext_NotListed_struct.repo_id,
 		       NULL);
 }
+
 void
 _ORBIT_OAF_ActivationContext_AlreadyListed_demarshal(GIOPRecvBuffer *
 						     _ORBIT_recv_buffer,
@@ -2015,6 +2080,7 @@ _ORBIT_OAF_ActivationContext_AlreadyListed_demarshal(GIOPRecvBuffer *
 		       TC_OAF_ActivationContext_AlreadyListed_struct.repo_id,
 		       NULL);
 }
+
 void
 _ORBIT_OAF_ActivationContext_IncompleteContext_demarshal(GIOPRecvBuffer *
 							 _ORBIT_recv_buffer,
@@ -2025,6 +2091,7 @@ _ORBIT_OAF_ActivationContext_IncompleteContext_demarshal(GIOPRecvBuffer *
 		       TC_OAF_ActivationContext_IncompleteContext_struct.
 		       repo_id, NULL);
 }
+
 void
 _ORBIT_OAF_ActivationContext_ParseFailed_demarshal(GIOPRecvBuffer *
 						   _ORBIT_recv_buffer,
@@ -2065,6 +2132,7 @@ _ORBIT_OAF_ActivationContext_ParseFailed_demarshal(GIOPRecvBuffer *
 		       TC_OAF_ActivationContext_ParseFailed_struct.repo_id,
 		       _ORBIT_exdata);
 }
+
 OAF_ObjectDirectoryList *
 OAF_ActivationContext__get_directories(OAF_ActivationContext _obj,
 				       CORBA_Environment * ev)
@@ -2139,6 +2207,7 @@ OAF_ActivationContext__get_directories(OAF_ActivationContext _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_OAF_ObjectDirectory_allocbuf((*_ORBIT_retval).
@@ -2160,6 +2229,7 @@ OAF_ActivationContext__get_directories(OAF_ActivationContext _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_OAF_ObjectDirectory_allocbuf((*_ORBIT_retval).
@@ -2583,51 +2653,54 @@ OAF_ActivationContext_activate(OAF_ActivationContext _obj,
 	 _ORBIT_curptr += 4;
 	 switch ((*_ORBIT_retval).res._d) {
 	   case OAF_RESULT_OBJECT:
-	    GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	    
-	       (*_ORBIT_retval).res._u.res_object =
-	       ORBit_demarshal_object(_ORBIT_recv_buffer,
-				      GIOP_MESSAGE_BUFFER
-				      (_ORBIT_recv_buffer)->connection->
-				      orb_data);
-	    _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	    break;
+	      GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	      
+		 (*_ORBIT_retval).res._u.res_object =
+		 ORBit_demarshal_object(_ORBIT_recv_buffer,
+					GIOP_MESSAGE_BUFFER
+					(_ORBIT_recv_buffer)->connection->
+					orb_data);
+	      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	      break;
 	   case OAF_RESULT_SHLIB:
-	    
-	       (*((guint32 *) & ((*_ORBIT_retval).res._u.res_shlib._length)))
-	       = GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval).res._u.res_shlib._buffer =
-	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
-						    res_shlib._length);
-	    (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_12 = 0;
-		 _ORBIT_tmpvar_12 < (*_ORBIT_retval).res._u.res_shlib._length;
-		 _ORBIT_tmpvar_12++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_14))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval).res._u.res_shlib.
-		  _buffer[_ORBIT_tmpvar_12] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_14);
-	       memcpy((*_ORBIT_retval).res._u.res_shlib.
-		      _buffer[_ORBIT_tmpvar_12], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval).res._u.res_shlib.
-			     _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
-		      _ORBIT_tmpvar_14);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval).res._u.res_shlib.
-			 _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
-		  _ORBIT_tmpvar_14;
-	    }
+	      
+		 (*
+	       ((guint32 *) & ((*_ORBIT_retval).res._u.res_shlib._length))) =
+	     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval).res._u.res_shlib._maximum = (*_ORBIT_retval).res._u.res_shlib._length;
+	      
+		 (*_ORBIT_retval).res._u.res_shlib._buffer =
+		 CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
+						      res_shlib._length);
+	      (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_12 = 0;
+		   _ORBIT_tmpvar_12 <
+		   (*_ORBIT_retval).res._u.res_shlib._length;
+		   _ORBIT_tmpvar_12++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_14))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval).res._u.res_shlib.
+		    _buffer[_ORBIT_tmpvar_12] =
+		    CORBA_string_alloc(_ORBIT_tmpvar_14);
+		 memcpy((*_ORBIT_retval).res._u.res_shlib.
+			_buffer[_ORBIT_tmpvar_12], _ORBIT_curptr,
+			sizeof((*_ORBIT_retval).res._u.res_shlib.
+			       _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
+			_ORBIT_tmpvar_14);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval).res._u.res_shlib.
+			   _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
+		    _ORBIT_tmpvar_14;
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
@@ -2644,49 +2717,51 @@ OAF_ActivationContext_activate(OAF_ActivationContext _obj,
 	 _ORBIT_curptr += 4;
 	 switch ((*_ORBIT_retval).res._d) {
 	   case OAF_RESULT_OBJECT:
-	    GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	    
-	       (*_ORBIT_retval).res._u.res_object =
-	       ORBit_demarshal_object(_ORBIT_recv_buffer,
-				      GIOP_MESSAGE_BUFFER
-				      (_ORBIT_recv_buffer)->connection->
-				      orb_data);
-	    _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	    break;
+	      GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	      
+		 (*_ORBIT_retval).res._u.res_object =
+		 ORBit_demarshal_object(_ORBIT_recv_buffer,
+					GIOP_MESSAGE_BUFFER
+					(_ORBIT_recv_buffer)->connection->
+					orb_data);
+	      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	      break;
 	   case OAF_RESULT_SHLIB:
-	    
-	       (*_ORBIT_retval).res._u.res_shlib._length =
-	       *((CORBA_unsigned_long *) _ORBIT_curptr);
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval).res._u.res_shlib._buffer =
-	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
-						    res_shlib._length);
-	    (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_12 = 0;
-		 _ORBIT_tmpvar_12 < (*_ORBIT_retval).res._u.res_shlib._length;
-		 _ORBIT_tmpvar_12++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_14 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval).res._u.res_shlib.
-		  _buffer[_ORBIT_tmpvar_12] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_14);
-	       memcpy((*_ORBIT_retval).res._u.res_shlib.
-		      _buffer[_ORBIT_tmpvar_12], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval).res._u.res_shlib.
-			     _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
-		      _ORBIT_tmpvar_14);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval).res._u.res_shlib.
-			 _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
-		  _ORBIT_tmpvar_14;
-	    }
+	      
+		 (*_ORBIT_retval).res._u.res_shlib._length =
+		 *((CORBA_unsigned_long *) _ORBIT_curptr);
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval).res._u.res_shlib._maximum = (*_ORBIT_retval).res._u.res_shlib._length;
+	      
+		 (*_ORBIT_retval).res._u.res_shlib._buffer =
+		 CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
+						      res_shlib._length);
+	      (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_12 = 0;
+		   _ORBIT_tmpvar_12 <
+		   (*_ORBIT_retval).res._u.res_shlib._length;
+		   _ORBIT_tmpvar_12++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_14 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval).res._u.res_shlib.
+		    _buffer[_ORBIT_tmpvar_12] =
+		    CORBA_string_alloc(_ORBIT_tmpvar_14);
+		 memcpy((*_ORBIT_retval).res._u.res_shlib.
+			_buffer[_ORBIT_tmpvar_12], _ORBIT_curptr,
+			sizeof((*_ORBIT_retval).res._u.res_shlib.
+			       _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
+			_ORBIT_tmpvar_14);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval).res._u.res_shlib.
+			   _buffer[_ORBIT_tmpvar_12][_ORBIT_tmpvar_13]) *
+		    _ORBIT_tmpvar_14;
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       }
       giop_recv_buffer_unuse(_ORBIT_recv_buffer);
@@ -2863,6 +2938,7 @@ OAF_ActivationContext_activate_async(OAF_ActivationContext _obj,
    giop_send_buffer_unuse(_ORBIT_send_buffer);
    return;
 }
+
 OAF_ServerInfoList *
 OAF_ActivationContext__get_servers(OAF_ActivationContext _obj,
 				   CORBA_Environment * ev)
@@ -2956,6 +3032,7 @@ OAF_ActivationContext__get_servers(OAF_ActivationContext _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._length);
@@ -3061,7 +3138,9 @@ OAF_ActivationContext__get_servers(OAF_ActivationContext _obj,
 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._buffer =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._buffer =
 	       CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval).
 						    _buffer[_ORBIT_tmpvar_21].
 						    props._length);
@@ -3100,98 +3179,105 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       switch ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
 		       _buffer[_ORBIT_tmpvar_34].v._d) {
 		 case OAF_P_STRING:
-		  
-		     (*((guint32 *) & (_ORBIT_tmpvar_38))) =
-		     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_string =
-		     CORBA_string_alloc(_ORBIT_tmpvar_38);
-		  memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			 _buffer[_ORBIT_tmpvar_34].v._u.value_string,
-			 _ORBIT_curptr,
-			 sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
-				props._buffer[_ORBIT_tmpvar_34].v._u.
-				value_string[_ORBIT_tmpvar_37]) *
-			 _ORBIT_tmpvar_38);
-		  _ORBIT_curptr +=
-		     sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].v._u.
-			    value_string[_ORBIT_tmpvar_37]) *
-		     _ORBIT_tmpvar_38;
-		  break;
+		    
+		       (*((guint32 *) & (_ORBIT_tmpvar_38))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_string =
+		       CORBA_string_alloc(_ORBIT_tmpvar_38);
+		    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+			   _buffer[_ORBIT_tmpvar_34].v._u.value_string,
+			   _ORBIT_curptr,
+			   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+				  props._buffer[_ORBIT_tmpvar_34].v._u.
+				  value_string[_ORBIT_tmpvar_37]) *
+			   _ORBIT_tmpvar_38);
+		    _ORBIT_curptr +=
+		       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+			      props._buffer[_ORBIT_tmpvar_34].v._u.
+			      value_string[_ORBIT_tmpvar_37]) *
+		       _ORBIT_tmpvar_38;
+		    break;
 		 case OAF_P_NUMBER:
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-		  iiop_byteswap((guchar *) &
-				((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
-				 props._buffer[_ORBIT_tmpvar_34].v._u.
-				 value_number), _ORBIT_curptr, 8);
-		  _ORBIT_curptr += 8;
-		  break;
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+		    iiop_byteswap((guchar *) &
+				  ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+				   props._buffer[_ORBIT_tmpvar_34].v._u.
+				   value_number), _ORBIT_curptr, 8);
+		    _ORBIT_curptr += 8;
+		    break;
 		 case OAF_P_BOOLEAN:
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
-		     *((CORBA_boolean *) _ORBIT_curptr);
-		  _ORBIT_curptr += 1;
-		  break;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
+		       *((CORBA_boolean *) _ORBIT_curptr);
+		    _ORBIT_curptr += 1;
+		    break;
 		 case OAF_P_STRINGV:
-		  
-		     (*
-		   ((guint32 *) &
-		 ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		  _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length))) =
-		     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._buffer =
-		     CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-							  _buffer
-							  [_ORBIT_tmpvar_21].
-							  props.
-							  _buffer
-							  [_ORBIT_tmpvar_34].
-							  v._u.value_stringv.
-							  _length);
-		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._release =
-		     CORBA_TRUE;
-		  for (_ORBIT_tmpvar_39 = 0;
-		       _ORBIT_tmpvar_39 <
+		    
+		       (*
+		     ((guint32 *) &
+		   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._maximum =
 		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
 		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length;
-		       _ORBIT_tmpvar_39++) {
-		     _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		     
-			(*((guint32 *) & (_ORBIT_tmpvar_41))) =
-			GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			_buffer[_ORBIT_tmpvar_39] =
-			CORBA_string_alloc(_ORBIT_tmpvar_41);
-		     memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			    _buffer[_ORBIT_tmpvar_39], _ORBIT_curptr,
-			    sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
-				   props._buffer[_ORBIT_tmpvar_34].v._u.
-				   value_stringv.
-				   _buffer[_ORBIT_tmpvar_39]
-				   [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41);
-		     _ORBIT_curptr +=
-			sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
-			       props._buffer[_ORBIT_tmpvar_34].v._u.
-			       value_stringv.
-			       _buffer[_ORBIT_tmpvar_39][_ORBIT_tmpvar_40]) *
-			_ORBIT_tmpvar_41;
-		  }
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_21].
+							    props.
+							    _buffer
+							    [_ORBIT_tmpvar_34].
+							    v._u.
+							    value_stringv.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_39 = 0;
+			 _ORBIT_tmpvar_39 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+			 _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length;
+			 _ORBIT_tmpvar_39++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       
+			  (*((guint32 *) & (_ORBIT_tmpvar_41))) =
+			  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+			  _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			  _buffer[_ORBIT_tmpvar_39] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_41);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+			      props._buffer[_ORBIT_tmpvar_34].v._u.
+			      value_stringv._buffer[_ORBIT_tmpvar_39],
+			      _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_21].props.
+				     _buffer[_ORBIT_tmpvar_34].v._u.
+				     value_stringv.
+				     _buffer[_ORBIT_tmpvar_39]
+				     [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+				 props._buffer[_ORBIT_tmpvar_34].v._u.
+				 value_stringv.
+				 _buffer[_ORBIT_tmpvar_39][_ORBIT_tmpvar_40])
+			  * _ORBIT_tmpvar_41;
+		    }
 
-		  break;
+		    break;
 		 default:
-		  break;
+		    break;
 	       }
 	    }
 
@@ -3201,6 +3287,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._length);
@@ -3292,7 +3379,9 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._buffer =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props._buffer =
 	       CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval).
 						    _buffer[_ORBIT_tmpvar_21].
 						    props._length);
@@ -3327,93 +3416,101 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       switch ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
 		       _buffer[_ORBIT_tmpvar_34].v._d) {
 		 case OAF_P_STRING:
-		  _ORBIT_tmpvar_38 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_string =
-		     CORBA_string_alloc(_ORBIT_tmpvar_38);
-		  memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			 _buffer[_ORBIT_tmpvar_34].v._u.value_string,
-			 _ORBIT_curptr,
-			 sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
-				props._buffer[_ORBIT_tmpvar_34].v._u.
-				value_string[_ORBIT_tmpvar_37]) *
-			 _ORBIT_tmpvar_38);
-		  _ORBIT_curptr +=
-		     sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].v._u.
-			    value_string[_ORBIT_tmpvar_37]) *
-		     _ORBIT_tmpvar_38;
-		  break;
+		    _ORBIT_tmpvar_38 =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_string =
+		       CORBA_string_alloc(_ORBIT_tmpvar_38);
+		    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+			   _buffer[_ORBIT_tmpvar_34].v._u.value_string,
+			   _ORBIT_curptr,
+			   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+				  props._buffer[_ORBIT_tmpvar_34].v._u.
+				  value_string[_ORBIT_tmpvar_37]) *
+			   _ORBIT_tmpvar_38);
+		    _ORBIT_curptr +=
+		       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+			      props._buffer[_ORBIT_tmpvar_34].v._u.
+			      value_string[_ORBIT_tmpvar_37]) *
+		       _ORBIT_tmpvar_38;
+		    break;
 		 case OAF_P_NUMBER:
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_number =
-		     *((CORBA_double *) _ORBIT_curptr);
-		  _ORBIT_curptr += 8;
-		  break;
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_number =
+		       *((CORBA_double *) _ORBIT_curptr);
+		    _ORBIT_curptr += 8;
+		    break;
 		 case OAF_P_BOOLEAN:
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
-		     *((CORBA_boolean *) _ORBIT_curptr);
-		  _ORBIT_curptr += 1;
-		  break;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_boolean =
+		       *((CORBA_boolean *) _ORBIT_curptr);
+		    _ORBIT_curptr += 1;
+		    break;
 		 case OAF_P_STRINGV:
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length =
-		     *((CORBA_unsigned_long *) _ORBIT_curptr);
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._buffer =
-		     CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-							  _buffer
-							  [_ORBIT_tmpvar_21].
-							  props.
-							  _buffer
-							  [_ORBIT_tmpvar_34].
-							  v._u.value_stringv.
-							  _length);
-		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-		     _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._release =
-		     CORBA_TRUE;
-		  for (_ORBIT_tmpvar_39 = 0;
-		       _ORBIT_tmpvar_39 <
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._maximum =
 		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
 		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length;
-		       _ORBIT_tmpvar_39++) {
-		     _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		     _ORBIT_tmpvar_41 =
-			*((CORBA_unsigned_long *) _ORBIT_curptr);
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			_buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			_buffer[_ORBIT_tmpvar_39] =
-			CORBA_string_alloc(_ORBIT_tmpvar_41);
-		     memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
-			    _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
-			    _buffer[_ORBIT_tmpvar_39], _ORBIT_curptr,
-			    sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
-				   props._buffer[_ORBIT_tmpvar_34].v._u.
-				   value_stringv.
-				   _buffer[_ORBIT_tmpvar_39]
-				   [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41);
-		     _ORBIT_curptr +=
-			sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
-			       props._buffer[_ORBIT_tmpvar_34].v._u.
-			       value_stringv.
-			       _buffer[_ORBIT_tmpvar_39][_ORBIT_tmpvar_40]) *
-			_ORBIT_tmpvar_41;
-		  }
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_21].
+							    props.
+							    _buffer
+							    [_ORBIT_tmpvar_34].
+							    v._u.
+							    value_stringv.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+		       _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_39 = 0;
+			 _ORBIT_tmpvar_39 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+			 _buffer[_ORBIT_tmpvar_34].v._u.value_stringv._length;
+			 _ORBIT_tmpvar_39++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       _ORBIT_tmpvar_41 =
+			  *((CORBA_unsigned_long *) _ORBIT_curptr);
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].props.
+			  _buffer[_ORBIT_tmpvar_34].v._u.value_stringv.
+			  _buffer[_ORBIT_tmpvar_39] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_41);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+			      props._buffer[_ORBIT_tmpvar_34].v._u.
+			      value_stringv._buffer[_ORBIT_tmpvar_39],
+			      _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_21].props.
+				     _buffer[_ORBIT_tmpvar_34].v._u.
+				     value_stringv.
+				     _buffer[_ORBIT_tmpvar_39]
+				     [_ORBIT_tmpvar_40]) * _ORBIT_tmpvar_41);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_21].
+				 props._buffer[_ORBIT_tmpvar_34].v._u.
+				 value_stringv.
+				 _buffer[_ORBIT_tmpvar_39][_ORBIT_tmpvar_40])
+			  * _ORBIT_tmpvar_41;
+		    }
 
-		  break;
+		    break;
 		 default:
-		  break;
+		    break;
 	       }
 	    }
 
@@ -3624,6 +3721,7 @@ OAF_ActivationContext_query(OAF_ActivationContext _obj,
 	    (*((guint32 *) & ((*_ORBIT_retval)._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._length);
@@ -3729,7 +3827,9 @@ OAF_ActivationContext_query(OAF_ActivationContext _obj,
 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._buffer =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._buffer =
 	       CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval).
 						    _buffer[_ORBIT_tmpvar_26].
 						    props._length);
@@ -3768,98 +3868,105 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       switch ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
 		       _buffer[_ORBIT_tmpvar_39].v._d) {
 		 case OAF_P_STRING:
-		  
-		     (*((guint32 *) & (_ORBIT_tmpvar_43))) =
-		     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_string =
-		     CORBA_string_alloc(_ORBIT_tmpvar_43);
-		  memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			 _buffer[_ORBIT_tmpvar_39].v._u.value_string,
-			 _ORBIT_curptr,
-			 sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
-				props._buffer[_ORBIT_tmpvar_39].v._u.
-				value_string[_ORBIT_tmpvar_42]) *
-			 _ORBIT_tmpvar_43);
-		  _ORBIT_curptr +=
-		     sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			    _buffer[_ORBIT_tmpvar_39].v._u.
-			    value_string[_ORBIT_tmpvar_42]) *
-		     _ORBIT_tmpvar_43;
-		  break;
+		    
+		       (*((guint32 *) & (_ORBIT_tmpvar_43))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_string =
+		       CORBA_string_alloc(_ORBIT_tmpvar_43);
+		    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+			   _buffer[_ORBIT_tmpvar_39].v._u.value_string,
+			   _ORBIT_curptr,
+			   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+				  props._buffer[_ORBIT_tmpvar_39].v._u.
+				  value_string[_ORBIT_tmpvar_42]) *
+			   _ORBIT_tmpvar_43);
+		    _ORBIT_curptr +=
+		       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+			      props._buffer[_ORBIT_tmpvar_39].v._u.
+			      value_string[_ORBIT_tmpvar_42]) *
+		       _ORBIT_tmpvar_43;
+		    break;
 		 case OAF_P_NUMBER:
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-		  iiop_byteswap((guchar *) &
-				((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
-				 props._buffer[_ORBIT_tmpvar_39].v._u.
-				 value_number), _ORBIT_curptr, 8);
-		  _ORBIT_curptr += 8;
-		  break;
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+		    iiop_byteswap((guchar *) &
+				  ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+				   props._buffer[_ORBIT_tmpvar_39].v._u.
+				   value_number), _ORBIT_curptr, 8);
+		    _ORBIT_curptr += 8;
+		    break;
 		 case OAF_P_BOOLEAN:
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_boolean =
-		     *((CORBA_boolean *) _ORBIT_curptr);
-		  _ORBIT_curptr += 1;
-		  break;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_boolean =
+		       *((CORBA_boolean *) _ORBIT_curptr);
+		    _ORBIT_curptr += 1;
+		    break;
 		 case OAF_P_STRINGV:
-		  
-		     (*
-		   ((guint32 *) &
-		 ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		  _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length))) =
-		     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._buffer =
-		     CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-							  _buffer
-							  [_ORBIT_tmpvar_26].
-							  props.
-							  _buffer
-							  [_ORBIT_tmpvar_39].
-							  v._u.value_stringv.
-							  _length);
-		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._release =
-		     CORBA_TRUE;
-		  for (_ORBIT_tmpvar_44 = 0;
-		       _ORBIT_tmpvar_44 <
+		    
+		       (*
+		     ((guint32 *) &
+		   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		    _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._maximum =
 		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
 		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length;
-		       _ORBIT_tmpvar_44++) {
-		     _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		     
-			(*((guint32 *) & (_ORBIT_tmpvar_46))) =
-			GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			_buffer[_ORBIT_tmpvar_39].v._u.value_stringv.
-			_buffer[_ORBIT_tmpvar_44] =
-			CORBA_string_alloc(_ORBIT_tmpvar_46);
-		     memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			    _buffer[_ORBIT_tmpvar_39].v._u.value_stringv.
-			    _buffer[_ORBIT_tmpvar_44], _ORBIT_curptr,
-			    sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
-				   props._buffer[_ORBIT_tmpvar_39].v._u.
-				   value_stringv.
-				   _buffer[_ORBIT_tmpvar_44]
-				   [_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
-		     _ORBIT_curptr +=
-			sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
-			       props._buffer[_ORBIT_tmpvar_39].v._u.
-			       value_stringv.
-			       _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
-			_ORBIT_tmpvar_46;
-		  }
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_26].
+							    props.
+							    _buffer
+							    [_ORBIT_tmpvar_39].
+							    v._u.
+							    value_stringv.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_44 = 0;
+			 _ORBIT_tmpvar_44 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+			 _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length;
+			 _ORBIT_tmpvar_44++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       
+			  (*((guint32 *) & (_ORBIT_tmpvar_46))) =
+			  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+			  _buffer[_ORBIT_tmpvar_39].v._u.value_stringv.
+			  _buffer[_ORBIT_tmpvar_44] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_46);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+			      props._buffer[_ORBIT_tmpvar_39].v._u.
+			      value_stringv._buffer[_ORBIT_tmpvar_44],
+			      _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_26].props.
+				     _buffer[_ORBIT_tmpvar_39].v._u.
+				     value_stringv.
+				     _buffer[_ORBIT_tmpvar_44]
+				     [_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+				 props._buffer[_ORBIT_tmpvar_39].v._u.
+				 value_stringv.
+				 _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45])
+			  * _ORBIT_tmpvar_46;
+		    }
 
-		  break;
+		    break;
 		 default:
-		  break;
+		    break;
 	       }
 	    }
 
@@ -3869,6 +3976,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 (*_ORBIT_retval)._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval)._maximum = (*_ORBIT_retval)._length;
 	 
 	    (*_ORBIT_retval)._buffer =
 	    CORBA_sequence_OAF_ServerInfo_allocbuf((*_ORBIT_retval)._length);
@@ -3960,7 +4068,9 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._buffer =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props._buffer =
 	       CORBA_sequence_OAF_Property_allocbuf((*_ORBIT_retval).
 						    _buffer[_ORBIT_tmpvar_26].
 						    props._length);
@@ -3995,93 +4105,101 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       switch ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
 		       _buffer[_ORBIT_tmpvar_39].v._d) {
 		 case OAF_P_STRING:
-		  _ORBIT_tmpvar_43 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_string =
-		     CORBA_string_alloc(_ORBIT_tmpvar_43);
-		  memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			 _buffer[_ORBIT_tmpvar_39].v._u.value_string,
-			 _ORBIT_curptr,
-			 sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
-				props._buffer[_ORBIT_tmpvar_39].v._u.
-				value_string[_ORBIT_tmpvar_42]) *
-			 _ORBIT_tmpvar_43);
-		  _ORBIT_curptr +=
-		     sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			    _buffer[_ORBIT_tmpvar_39].v._u.
-			    value_string[_ORBIT_tmpvar_42]) *
-		     _ORBIT_tmpvar_43;
-		  break;
+		    _ORBIT_tmpvar_43 =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_string =
+		       CORBA_string_alloc(_ORBIT_tmpvar_43);
+		    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+			   _buffer[_ORBIT_tmpvar_39].v._u.value_string,
+			   _ORBIT_curptr,
+			   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+				  props._buffer[_ORBIT_tmpvar_39].v._u.
+				  value_string[_ORBIT_tmpvar_42]) *
+			   _ORBIT_tmpvar_43);
+		    _ORBIT_curptr +=
+		       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+			      props._buffer[_ORBIT_tmpvar_39].v._u.
+			      value_string[_ORBIT_tmpvar_42]) *
+		       _ORBIT_tmpvar_43;
+		    break;
 		 case OAF_P_NUMBER:
-		  _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_number =
-		     *((CORBA_double *) _ORBIT_curptr);
-		  _ORBIT_curptr += 8;
-		  break;
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_number =
+		       *((CORBA_double *) _ORBIT_curptr);
+		    _ORBIT_curptr += 8;
+		    break;
 		 case OAF_P_BOOLEAN:
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_boolean =
-		     *((CORBA_boolean *) _ORBIT_curptr);
-		  _ORBIT_curptr += 1;
-		  break;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_boolean =
+		       *((CORBA_boolean *) _ORBIT_curptr);
+		    _ORBIT_curptr += 1;
+		    break;
 		 case OAF_P_STRINGV:
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length =
-		     *((CORBA_unsigned_long *) _ORBIT_curptr);
-		  _ORBIT_curptr += 4;
-		  
-		     (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._buffer =
-		     CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-							  _buffer
-							  [_ORBIT_tmpvar_26].
-							  props.
-							  _buffer
-							  [_ORBIT_tmpvar_39].
-							  v._u.value_stringv.
-							  _length);
-		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-		     _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._release =
-		     CORBA_TRUE;
-		  for (_ORBIT_tmpvar_44 = 0;
-		       _ORBIT_tmpvar_44 <
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._maximum =
 		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
 		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length;
-		       _ORBIT_tmpvar_44++) {
-		     _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-		     _ORBIT_tmpvar_46 =
-			*((CORBA_unsigned_long *) _ORBIT_curptr);
-		     _ORBIT_curptr += 4;
-		     
-			(*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			_buffer[_ORBIT_tmpvar_39].v._u.value_stringv.
-			_buffer[_ORBIT_tmpvar_44] =
-			CORBA_string_alloc(_ORBIT_tmpvar_46);
-		     memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
-			    _buffer[_ORBIT_tmpvar_39].v._u.value_stringv.
-			    _buffer[_ORBIT_tmpvar_44], _ORBIT_curptr,
-			    sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
-				   props._buffer[_ORBIT_tmpvar_39].v._u.
-				   value_stringv.
-				   _buffer[_ORBIT_tmpvar_44]
-				   [_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
-		     _ORBIT_curptr +=
-			sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
-			       props._buffer[_ORBIT_tmpvar_39].v._u.
-			       value_stringv.
-			       _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
-			_ORBIT_tmpvar_46;
-		  }
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_26].
+							    props.
+							    _buffer
+							    [_ORBIT_tmpvar_39].
+							    v._u.
+							    value_stringv.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+		       _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_44 = 0;
+			 _ORBIT_tmpvar_44 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+			 _buffer[_ORBIT_tmpvar_39].v._u.value_stringv._length;
+			 _ORBIT_tmpvar_44++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       _ORBIT_tmpvar_46 =
+			  *((CORBA_unsigned_long *) _ORBIT_curptr);
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].props.
+			  _buffer[_ORBIT_tmpvar_39].v._u.value_stringv.
+			  _buffer[_ORBIT_tmpvar_44] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_46);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+			      props._buffer[_ORBIT_tmpvar_39].v._u.
+			      value_stringv._buffer[_ORBIT_tmpvar_44],
+			      _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_26].props.
+				     _buffer[_ORBIT_tmpvar_39].v._u.
+				     value_stringv.
+				     _buffer[_ORBIT_tmpvar_44]
+				     [_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_26].
+				 props._buffer[_ORBIT_tmpvar_39].v._u.
+				 value_stringv.
+				 _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45])
+			  * _ORBIT_tmpvar_46;
+		    }
 
-		  break;
+		    break;
 		 default:
-		  break;
+		    break;
 	       }
 	    }
 
@@ -4248,50 +4366,54 @@ OAF_ActivationContext_activate_from_id(OAF_ActivationContext _obj,
 	 _ORBIT_curptr += 4;
 	 switch ((*_ORBIT_retval).res._d) {
 	   case OAF_RESULT_OBJECT:
-	    GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	    
-	       (*_ORBIT_retval).res._u.res_object =
-	       ORBit_demarshal_object(_ORBIT_recv_buffer,
-				      GIOP_MESSAGE_BUFFER
-				      (_ORBIT_recv_buffer)->connection->
-				      orb_data);
-	    _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	    break;
+	      GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	      
+		 (*_ORBIT_retval).res._u.res_object =
+		 ORBit_demarshal_object(_ORBIT_recv_buffer,
+					GIOP_MESSAGE_BUFFER
+					(_ORBIT_recv_buffer)->connection->
+					orb_data);
+	      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	      break;
 	   case OAF_RESULT_SHLIB:
-	    
-	       (*((guint32 *) & ((*_ORBIT_retval).res._u.res_shlib._length)))
-	       = GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval).res._u.res_shlib._buffer =
-	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
-						    res_shlib._length);
-	    (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_9 = 0;
-		 _ORBIT_tmpvar_9 < (*_ORBIT_retval).res._u.res_shlib._length;
-		 _ORBIT_tmpvar_9++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_11))) =
-		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval).res._u.res_shlib._buffer[_ORBIT_tmpvar_9] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_11);
-	       memcpy((*_ORBIT_retval).res._u.res_shlib.
-		      _buffer[_ORBIT_tmpvar_9], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval).res._u.res_shlib.
-			     _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
-		      _ORBIT_tmpvar_11);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval).res._u.res_shlib.
-			 _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
-		  _ORBIT_tmpvar_11;
-	    }
+	      
+		 (*
+	       ((guint32 *) & ((*_ORBIT_retval).res._u.res_shlib._length))) =
+	     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval).res._u.res_shlib._maximum = (*_ORBIT_retval).res._u.res_shlib._length;
+	      
+		 (*_ORBIT_retval).res._u.res_shlib._buffer =
+		 CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
+						      res_shlib._length);
+	      (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_9 = 0;
+		   _ORBIT_tmpvar_9 <
+		   (*_ORBIT_retval).res._u.res_shlib._length;
+		   _ORBIT_tmpvar_9++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 
+		    (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+		    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval).res._u.res_shlib.
+		    _buffer[_ORBIT_tmpvar_9] =
+		    CORBA_string_alloc(_ORBIT_tmpvar_11);
+		 memcpy((*_ORBIT_retval).res._u.res_shlib.
+			_buffer[_ORBIT_tmpvar_9], _ORBIT_curptr,
+			sizeof((*_ORBIT_retval).res._u.res_shlib.
+			       _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
+			_ORBIT_tmpvar_11);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval).res._u.res_shlib.
+			   _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
+		    _ORBIT_tmpvar_11;
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
@@ -4308,48 +4430,51 @@ OAF_ActivationContext_activate_from_id(OAF_ActivationContext _obj,
 	 _ORBIT_curptr += 4;
 	 switch ((*_ORBIT_retval).res._d) {
 	   case OAF_RESULT_OBJECT:
-	    GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	    
-	       (*_ORBIT_retval).res._u.res_object =
-	       ORBit_demarshal_object(_ORBIT_recv_buffer,
-				      GIOP_MESSAGE_BUFFER
-				      (_ORBIT_recv_buffer)->connection->
-				      orb_data);
-	    _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	    break;
+	      GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
+	      
+		 (*_ORBIT_retval).res._u.res_object =
+		 ORBit_demarshal_object(_ORBIT_recv_buffer,
+					GIOP_MESSAGE_BUFFER
+					(_ORBIT_recv_buffer)->connection->
+					orb_data);
+	      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+	      break;
 	   case OAF_RESULT_SHLIB:
-	    
-	       (*_ORBIT_retval).res._u.res_shlib._length =
-	       *((CORBA_unsigned_long *) _ORBIT_curptr);
-	    _ORBIT_curptr += 4;
-	    
-	       (*_ORBIT_retval).res._u.res_shlib._buffer =
-	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
-						    res_shlib._length);
-	    (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
-	    for (_ORBIT_tmpvar_9 = 0;
-		 _ORBIT_tmpvar_9 < (*_ORBIT_retval).res._u.res_shlib._length;
-		 _ORBIT_tmpvar_9++) {
-	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	       _ORBIT_curptr += 4;
-	       
-		  (*_ORBIT_retval).res._u.res_shlib._buffer[_ORBIT_tmpvar_9] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_11);
-	       memcpy((*_ORBIT_retval).res._u.res_shlib.
-		      _buffer[_ORBIT_tmpvar_9], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval).res._u.res_shlib.
-			     _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
-		      _ORBIT_tmpvar_11);
-	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval).res._u.res_shlib.
-			 _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
-		  _ORBIT_tmpvar_11;
-	    }
+	      
+		 (*_ORBIT_retval).res._u.res_shlib._length =
+		 *((CORBA_unsigned_long *) _ORBIT_curptr);
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval).res._u.res_shlib._maximum = (*_ORBIT_retval).res._u.res_shlib._length;
+	      
+		 (*_ORBIT_retval).res._u.res_shlib._buffer =
+		 CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).res._u.
+						      res_shlib._length);
+	      (*_ORBIT_retval).res._u.res_shlib._release = CORBA_TRUE;
+	      for (_ORBIT_tmpvar_9 = 0;
+		   _ORBIT_tmpvar_9 <
+		   (*_ORBIT_retval).res._u.res_shlib._length;
+		   _ORBIT_tmpvar_9++) {
+		 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		 _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    (*_ORBIT_retval).res._u.res_shlib.
+		    _buffer[_ORBIT_tmpvar_9] =
+		    CORBA_string_alloc(_ORBIT_tmpvar_11);
+		 memcpy((*_ORBIT_retval).res._u.res_shlib.
+			_buffer[_ORBIT_tmpvar_9], _ORBIT_curptr,
+			sizeof((*_ORBIT_retval).res._u.res_shlib.
+			       _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
+			_ORBIT_tmpvar_11);
+		 _ORBIT_curptr +=
+		    sizeof((*_ORBIT_retval).res._u.res_shlib.
+			   _buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
+		    _ORBIT_tmpvar_11;
+	      }
 
-	    break;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       }
       giop_recv_buffer_unuse(_ORBIT_recv_buffer);

@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf\n"
-"POT-Creation-Date: 2000-10-16 03:45+0200\n"
-"PO-Revision-Date: 2000-10-29 15:03+0100\n"
+"POT-Creation-Date: 2001-03-01 19:16-0800\n"
+"PO-Revision-Date: 2001-02-25 20:48+0100\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
 "MIME-Version: 1.0\n"
@@ -20,13 +20,13 @@ msgstr ""
 
 #: liboaf/oaf-mainloop.c:191
 msgid "Object directory to use when registering servers"
-msgstr "Directorio de obxectos que se usará ó rexistra-los servidores"
+msgstr "Directorio de obxectos que se usará ó rexistrar os servidores"
 
 #: liboaf/oaf-mainloop.c:193
 msgid "File descriptor to print IOR on"
-msgstr "Descriptor de ficheiro no que escribi-lo IOR"
+msgstr "Descriptor de ficheiro onde escribir o IOR"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:67
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
 msgid "FD"
 msgstr "DF"
 
@@ -36,23 +36,27 @@ msgstr "IID a activar"
 
 #: liboaf/oaf-mainloop.c:197
 msgid "Prevent registering of server with OAF"
-msgstr "Evita-lo rexistro do servidor con OAF"
+msgstr "Evitar o rexistro do servidor con OAF"
 
-#: liboaf/oaf-registration.c:323
+#: liboaf/oaf-mainloop.c:381
+msgid "OAF options"
+msgstr "Opcións de OAF"
+
+#: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
 msgstr "Non foi posible crear (fork) un novo proceso fillo"
 
-#: liboaf/oaf-registration.c:344
+#: liboaf/oaf-registration.c:330
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "O fillo recibiu o sinal %u (%s)"
 
-#: liboaf/oaf-registration.c:350
+#: liboaf/oaf-registration.c:336
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Erro non de saída descoñecido (o estado é %u)"
 
-#: liboaf/oaf-registration.c:426
+#: liboaf/oaf-registration.c:413
 #, c-format
 msgid "Exec failed: %d (%s)\n"
 msgstr "A execución fallou: %d (%s)\n"
@@ -70,48 +74,48 @@ msgstr "A consulta fallou: "
 msgid "Activation failed: "
 msgstr "A activación fallou: "
 
-#: oafd/ac-corba.c:1092
+#: oafd/ac-corba.c:1096
 msgid "Could not parse AID"
 msgstr "Non foi posible analizar o AID"
 
-#: oafd/ac-corba.c:1101
+#: oafd/ac-corba.c:1106
 msgid "Could not parse context: "
 msgstr "Non foi posible analizar o contexto: "
 
-#: oafd/ac-corba.c:1124
+#: oafd/ac-corba.c:1130
 msgid "Could not activate server: "
 msgstr "Non foi posible activar o servidor: "
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "Directory to read .oafinfo files from"
 msgstr "Directorio do que ler os ficheiros .oafinfo"
 
-#: oafd/main.c:57
+#: oafd/main.c:62
 msgid "DIRECTORY"
 msgstr "DIRECTORIO"
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "Domain of ObjectDirectory"
 msgstr "Dominio de ObjectDirectory"
 
-#: oafd/main.c:59
+#: oafd/main.c:64
 msgid "DOMAIN"
 msgstr "DOMINIO"
 
-#: oafd/main.c:62
+#: oafd/main.c:67
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 "Servir como un ActivationContext (por defecto é só como un ObjectDirectory)"
 
-#: oafd/main.c:67
-msgid "File descriptor to write IOR to"
-msgstr "Descriptor do ficheiro no que escribi-lo IOR"
-
 #: oafd/main.c:72
+msgid "File descriptor to write IOR to"
+msgstr "Descriptor do ficheiro onde escribir o IOR"
+
+#: oafd/main.c:77
 msgid "Query expression to evaluate"
 msgstr "Expresión da consulta a evaluar"
 
-#: oafd/main.c:72
+#: oafd/main.c:77
 msgid "EXPRESSION"
 msgstr "EXPRESIÓN"
 
@@ -120,12 +124,12 @@ msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "Aínda non está soportada a activación de obxectos shlib nun proceso remoto"
 
-#: oafd/od-load.c:122 oafd/od-load.c:152
+#: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "A propiedade '%s' non ten valor"
 
-#: oafd/od-load.c:172
+#: oafd/od-load.c:171
 msgid "a NULL iid is not valid"
 msgstr "un iid NULO non é válido"
 
@@ -134,20 +138,15 @@ msgstr "un iid NULO non é válido"
 msgid "iid %s has a NULL type"
 msgstr "o iid %s ten un tipo NULO"
 
-#: oafd/od-load.c:178
+#: oafd/od-load.c:179
 #, c-format
 msgid "iid %s has a NULL location"
 msgstr "o iid %s ten unha localización NULA"
 
-#: oafd/od-load.c:186
+#: oafd/od-load.c:188
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
 msgstr "carácter '%c' non válido no iid '%s'"
-
-#: oafd/od-load.c:219
-#, c-format
-msgid "Trying dir %s\n"
-msgstr "Tentando o directorio %s\n"
 
 #: oafd/od-utils.c:45
 #, c-format
@@ -155,18 +154,26 @@ msgid ""
 "The OAF configuration file was not read successfully. Please, check it is "
 "valid in: %s"
 msgstr ""
-"O ficheiro de configuración de OAF non se leu correctamente. Verifique que é "
+"O ficheiro de configuración de OAF non se leu correctamente. Comprobe que é "
 "válido en: %s"
+
+#: oafd/OAF_naming-service.oaf.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Servicio CosNaming de CORBA."
+
+#: oafd/OAF_naming-service.oaf.in.h:2
+msgid "Name service"
+msgstr "Servicio de nomes"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
-msgstr "Non foi posible garda-lo ficheiro de configuración de OAF.\n"
+msgstr "Non foi posible gardar o ficheiro de configuración de OAF.\n"
 
 #: utils/oaf-sysconf.c:66
 msgid ""
 "Please, make sure you have permissions to write OAF configuration file.\n"
 msgstr ""
-"Asegúrese de que ten permisos para escribi-lo ficheiro de configuración de "
+"Asegúrese de que ten permisos para escribir o ficheiro de configuración de "
 "OAF.\n"
 
 #: utils/oaf-sysconf.c:69
@@ -201,12 +208,16 @@ msgstr "camiño do directorio"
 
 #: utils/oaf-sysconf.c:219
 msgid "Directory to add to OAF configuration file"
-msgstr "Directorio para engadir ó ficheiro de configuración de OAF"
+msgstr "Directorio para engadir no ficheiro de configuración de OAF"
 
 #: utils/oaf-sysconf.c:222
 msgid "Display directories in OAF configuration file"
-msgstr "Amosa-los directorios do ficheiro de configuración de OAF"
+msgstr "Amosar os directorios do ficheiro de configuración de OAF"
 
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
-msgstr "Amosa-lo camiño ó ficheiro de configuración de OAF"
+msgstr "Amosar o camiño para o ficheiro de configuración de OAF"
+
+#: liboaf/oaf-async-corba.c:182
+msgid "No server corresponding to your query"
+msgstr "Ningún servidor corresponde coa consulta"

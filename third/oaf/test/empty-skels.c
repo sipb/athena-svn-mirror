@@ -39,13 +39,13 @@ get_skel_Empty(POA_Empty * servant,
 
    switch (opname[0]) {
      case 'd':
-      if (strcmp((opname + 1), "oNothing"))
-	 break;
-      *impl = (gpointer) servant->vepv->Empty_epv->doNothing;
-      return (ORBitSkeleton) _ORBIT_skel_Empty_doNothing;
-      break;
+	if (strcmp((opname + 1), "oNothing"))
+	   break;
+	*impl = (gpointer) servant->vepv->Empty_epv->doNothing;
+	return (ORBitSkeleton) _ORBIT_skel_Empty_doNothing;
+	break;
      default:
-      break;
+	break;
    }
    return NULL;
 }
@@ -55,6 +55,7 @@ init_local_objref_Empty(CORBA_Object obj, POA_Empty * servant)
 {
    obj->vepv[Empty__classid] = servant->vepv->Empty_epv;
 }
+
 void
 POA_Empty__init(PortableServer_Servant servant, CORBA_Environment * env)
 {

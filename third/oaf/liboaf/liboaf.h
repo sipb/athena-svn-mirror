@@ -45,10 +45,6 @@ extern "C" {
 #include <liboaf/oaf-registration.h>
 
 
-#include <popt.h>
-
-extern struct poptOption oaf_popt_options[];
-        
 extern const guint liboaf_major_version,
                    liboaf_minor_version, 
                    liboaf_micro_version;

@@ -14,6 +14,7 @@ _ORBIT_GNOME_ObjectFactory_CannotActivate_demarshal(GIOPRecvBuffer *
 		       TC_GNOME_ObjectFactory_CannotActivate_struct.repo_id,
 		       NULL);
 }
+
 CORBA_boolean
 GNOME_ObjectFactory_manufactures(GNOME_ObjectFactory _obj,
 				 const CORBA_char * obj_oaf_id,
