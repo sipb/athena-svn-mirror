@@ -4,7 +4,7 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.1 1989-11-06 23:49:41 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.2 1989-11-07 18:56:09 jik Exp $
 #	$Locker:  $
 #
 
@@ -25,9 +25,9 @@ FILES=	Makefile et_name.c error_message.c compile_et.c \
 		error_table.h mit-sipb-copyright.h \
 		test.c test1.et test2.et \
 		compiler.h internal.h \
-		com_err.texinfo texinfo.tex
+		com_err.texinfo texinfo.tex strcasecmp.c
 CFILES=	compile_et.c error_table.c error_message.c et_name.c \
-	init_et.c com_err.c
+	init_et.c com_err.c strcasecmp.c
 
 #
 # what to build...
@@ -67,8 +67,9 @@ doc:	com_err.dvi
 #
 # real entries...
 #
-compile_et:	compile_et.o error_table.o
-	${CC} ${CFLAGS} -o compile_et compile_et.o error_table.o -ll
+compile_et:	compile_et.o error_table.o strcasecmp.o
+	${CC} ${CFLAGS} -o compile_et compile_et.o error_table.o\
+		strcasecmp.o -ll
 
 et.tar:	${FILES}
 	rm -f et.tar
@@ -78,6 +79,8 @@ tags:	TAGS
 
 com_err.ps : com_err.dvi
 com_err.dvi: com_err.texinfo
+
+error_table.o: et_lex.lex.c
 
 install: all
 	install -c -s compile_et ${DESTDIR}${BINDIR}/compile_et
@@ -139,7 +142,13 @@ depend: ${CFILES} et_lex.lex.c
 	sed -e ':loop' \
 	    -e 's/\.\.\/[^ /]*\/\.\./../' \
 	    -e 't loop' > makedep
-	echo '/^# DO NOT DELETE THIS LINE/+1,$$d' >eddep
+# add a blank line so that if there are no dependencies, ed
+# won't report an error (it does on some 
+	echo "$$" > eddep
+	echo "a" >> eddep
+	echo "" >> eddep
+	echo "." >> eddep
+	echo '/^# DO NOT DELETE THIS LINE/+1,$$d' >> eddep
 	echo '$$r makedep' >>eddep
 	echo 'w' >>eddep
 	cp Makefile Makefile.bak
