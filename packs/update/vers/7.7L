@@ -7,6 +7,44 @@ case ${MACH} in
 DS*)
 	;;
 RSAIX)
+	echo "NEWOS=true"		>> ${CONFVARS}
+
+ODMDIR=/usr/lib/objrepos odmchange -o sm_cmd_hdr -q id=passwd <<ODM
+sm_cmd_hdr:
+	cmd_to_exec = "x() { \n\
+/bin/passwd $1\n\
+if [ $? -ne 0 ]\n\
+then\n\
+        echo Hit enter to continue.\n\
+        read\n\
+fi\n\
+}\n\
+x"
+ODM
+
+ODMDIR=/etc/objrepos odmadd <<ODM
+errnotify:
+	en_pid = 0
+	en_name = "logerror_athena"
+	en_persistenceflg = 1
+	en_label = ""
+	en_crcid = 0
+	en_class = ""
+	en_type = ""
+	en_alertflg = ""
+	en_resource = ""
+	en_rtype = ""
+	en_rclass = ""
+	en_method = "/etc/athena/logerror \$1 \$6 \$9"
+ODM
+
+if [ "${PUBLIC}" = "true" ]; then
+ed - /etc/security/passwd <<PASSWD
+/^root:/+1s/=.*/= BOC244HgdLBz6/
+w
+q
+PASSWD
+fi
 	;;
 SUN*)
 	echo "NEWUNIX=true"		>> ${CONFVARS}
