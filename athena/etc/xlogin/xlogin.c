@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.20 2001-06-20 17:37:49 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.20.2.1 2001-07-10 16:39:53 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -65,6 +65,10 @@ static const char rcsid[] = "$Id: xlogin.c,v 1.20 2001-06-20 17:37:49 ghudson Ex
 
 #ifndef MOTD_FILENAME
 #define MOTD_FILENAME "/afs/athena.mit.edu/system/config/motd/login.77"
+#endif
+
+#ifndef BACKGROUND_COLOR
+#define BACKGROUND_COLOR "#5e738f"
 #endif
 
 #ifdef NANNY
@@ -287,14 +291,18 @@ static struct sigaction sigact, osigact;
 int main(int argc, char **argv)
 {
   XtAppContext app;
+  XColor bgcolor;
   XEvent e;
   Widget hitanykey, namew;
   Display *dpy1;
   Position xPos, yPos;
   Dimension width, height;
+  Atom prop, type;
   char hname[1024], *c;
   Arg args[2];
-  int i;
+  int i, format;
+  unsigned long length, after;
+  unsigned char *data;
   long acc = 0;
   int pid;
   extern char **environ;
@@ -378,6 +386,28 @@ int main(int argc, char **argv)
   XtGetApplicationResources(appShell, (caddr_t)&resources, 
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal)0);
+
+  /* Moire begone!  We'll use the same pale blue as the new default gnome
+   * desktop background.
+   */
+  if (XParseColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)),
+		  BACKGROUND_COLOR, &bgcolor)
+      && XAllocColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)), &bgcolor))
+    {
+      XSetWindowBackground(dpy, DefaultRootWindow(dpy), bgcolor.pixel);
+      XClearWindow(dpy, DefaultRootWindow(dpy));
+      prop = XInternAtom(dpy, "_XSETROOT_ID", False);
+      if (DefaultVisual(dpy, DefaultScreen(dpy))->class & 1)
+	{
+	  XGetWindowProperty(dpy, DefaultRootWindow(dpy), prop, 0L, 1L, True,
+			     AnyPropertyType, &type, &format, &length, &after,
+			     &data);
+	  if ((type == XA_PIXMAP) && (format == 32) && (length == 1)
+	      && (after == 0))
+	    XKillClient(dpy, *((Pixmap *)data));
+	}
+      XSetCloseDownMode(dpy, RetainPermanent);
+    }
 
 #ifndef NANNY
   /* Tell the display manager we're ready, just like the X server
