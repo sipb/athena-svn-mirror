@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: notify.c,v 1.44 2002-07-05 21:34:02 zacheiss Exp $
+ *	$Id: notify.c,v 1.45 2002-07-20 19:30:42 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: notify.c,v 1.44 2002-07-05 21:34:02 zacheiss Exp $";
+static char rcsid[] ="$Id: notify.c,v 1.45 2002-07-20 19:30:42 zacheiss Exp $";
 #endif
 #endif
 
@@ -488,7 +488,6 @@ zsend(notice)
       /* Server acknowledgement error here. */
       sigprocmask(SIG_SETMASK, &oldmask, NULL);
       log_zephyr_error("zsend: error %s from ZIfNotice",error_message(ret));
-      ZFreeNotice(&retnotice);
       alarm(0);
       action.sa_handler = SIG_IGN;           /* struct already initialized */
       sigaction(SIGALRM, &action, NULL);
