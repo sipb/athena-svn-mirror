@@ -1,7 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.7 1997-12-19 05:00:35 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.8 1998-01-20 23:10:27 ghudson Exp $
  *	$Locker:  $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -18,7 +18,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-static const char rcsid[] = "$Id: listen.c,v 1.7 1997-12-19 05:00:35 ghudson Exp $";
+static const char rcsid[] = "$Id: listen.c,v 1.8 1998-01-20 23:10:27 ghudson Exp $";
 
 static ss_data *current_info;
 static jmp_buf listen_jmpb;
@@ -28,10 +28,8 @@ static void print_prompt()
     struct termios termbuf;
 
     if (tcgetattr(STDIN_FILENO, &termbuf) == 0) {
-	if (!(termbuf.c_lflag & (ICANON&ISIG))) {
-	    termbuf.c_lflag &= ICANON&ISIG;
-	    tcsetattr(STDIN_FILENO, TCSANOW, &termbuf);
-	}
+	termbuf.c_lflag |= ICANON|ISIG|ECHO;
+	tcsetattr(STDIN_FILENO, TCSANOW, &termbuf);
     }
     (void) fputs(current_info->prompt, stdout);
     (void) fflush(stdout);
