@@ -247,7 +247,7 @@ choose_afsdoptions() {
 
 case "$1" in 
   start)
-    if [ ! "$afs_rh" -o ! -f /var/lock/subsys/afs ]; then
+    if [ ! "$afs_rh" -o ! -f /var/lock/subsys/openafs ]; then
 	on_network || exit 1
 
 	athena_afsadjust
@@ -264,13 +264,13 @@ case "$1" in
 	# Start bosserver, it if exists
 	if  is_on $AFS_SERVER && test -x /usr/afs/bin/bosserver  ; then
 		/usr/afs/bin/bosserver 
-		test "$afs_rh" && touch /var/lock/subsys/afs
+		test "$afs_rh" && touch /var/lock/subsys/openafs
 	fi
 
 	# Start AFS client
 	if  is_on $AFS_CLIENT && test -x /usr/vice/etc/afsd  ; then
 		/usr/vice/etc/afsd ${AFSD_OPTIONS}
-		test "$afs_rh" && touch /var/lock/subsys/afs
+		test "$afs_rh" && touch /var/lock/subsys/openafs
 		$AFS_POST_INIT
 		if [ -f /afs/athena.mit.edu/system/config/afs/encrypt ]; then
 			/bin/athena/fs setcrypt on
@@ -282,7 +282,7 @@ case "$1" in
 	;;
 
   stop)
-    if [ ! "$afs_rh" -o -f /var/lock/subsys/afs ]; then
+    if [ ! "$afs_rh" -o -f /var/lock/subsys/openafs ]; then
 	# Stop AFS
 	echo "Stopping AFS services..... "
 
@@ -308,7 +308,7 @@ case "$1" in
 		/sbin/rmmod $LIBAFS
 	fi
 
-	rm -f /var/lock/subsys/afs
+	rm -f /var/lock/subsys/openafs
     fi
 	;;
 
