@@ -136,6 +136,11 @@ char* gss_services[] = { "ftp", "host", 0 };
 char *auth_type;	/* Authentication succeeded?  If so, what type? */
 static char *temp_auth_type;
 
+#include <krb5.h>
+krb5_context kcontext;
+krb5_ccache ccache;
+int have_creds = 0;
+
 /*
  * File containing login names
  * NOT to be used on this machine.
@@ -695,62 +700,89 @@ end_login()
 	(void) seteuid((uid_t)0);
 	if (logged_in)
 		logwtmp(ttyline, "", "");
+	if (have_creds) {
+		krb5_cc_destroy(kcontext, ccache);
+		dest_tkt();
+	}
 	pw = NULL;
 	logged_in = 0;
 	guest = 0;
 }
 
-#ifdef KRB5_KRB4_COMPAT
-static char *services[] = { "ftp", "rcmd", NULL };
+krb5_data tgtname = {
+  0,
+  KRB5_TGS_NAME_SIZE,
+  KRB5_TGS_NAME
+};
 
-kpass(name, passwd)
+kpass (name, passwd)
 char *name, *passwd;
 {
-	char **service;
-	char instance[INST_SZ];
+	krb5_error_code code;
+	krb5_principal server, me;
+	krb5_creds my_creds;
+	krb5_timestamp now;
+	char ccname[MAXPATHLEN];
+#ifdef KRB5_KRB4_COMPAT
 	char realm[REALM_SZ];
-	char tkt_file[20];
-	KTEXT_ST ticket;
-	AUTH_DAT authdata;
-	des_cblock key;
-	unsigned long faddr;
-	struct hostent *hp;
-
-	if (krb_get_lrealm(realm, 1) != KSUCCESS)
-		return(0);
-
-	strcpy(tkt_file, TKT_ROOT);
-	strcat(tkt_file, "_ftpdXXXXXX");
-	krb_set_tkt_string(mktemp(tkt_file));
-
-	(void) strncpy(instance, krb_get_phost(hostname), sizeof(instance));
-
-	if ((hp = gethostbyname(instance)) == NULL)
-		return(0);
-
-	memcpy((char *) &faddr, (char *)hp->h_addr, sizeof(faddr));
-
-	if (krb_get_pw_in_tkt(name, "", realm, "krbtgt", realm, 1, passwd)) {
-	  for (service = services; *service; service++)
-	    if (!read_service_key(*service, instance, realm, 0, keyfile, key)) {
-	      (void) memset(key, 0, sizeof(key));
-	      if (krb_mk_req(&ticket, *service, instance, realm, 33) ||
-	          krb_rd_req(&ticket, *service, instance, faddr, &authdata,keyfile)||
-	          kuserok(&authdata, name)) {
-		dest_tkt();
-		return(0);
-	      } else {
-		dest_tkt();
-		return(1);
-	      }
-	    }
-	  dest_tkt();
-	  return(0);
-	}
-	dest_tkt();
-	return(1);
-}
 #endif /* KRB5_KRB4_COMPAT */
+
+	krb5_init_context(&kcontext);
+	memset((char *)&my_creds, 0, sizeof(my_creds));
+	if (krb5_parse_name (kcontext, name, &me))
+		return 0;
+	my_creds.client = me;
+
+	sprintf(ccname, "FILE:/tmp/krb5cc_p%d", getpid());
+	if (krb5_cc_resolve(kcontext, ccname, &ccache))
+		return 0;
+	if (krb5_cc_initialize (kcontext, ccache, me))
+		return 0;
+	if (krb5_build_principal_ext(kcontext, &server,
+				     krb5_princ_realm(kcontext, me)->length,
+				     krb5_princ_realm(kcontext, me)->data,
+				     tgtname.length, tgtname.data,
+				     krb5_princ_realm(kcontext, me)->length,
+				     krb5_princ_realm(kcontext, me)->data,
+				     0))
+		goto nuke_ccache;
+
+	my_creds.server = server;
+	if (krb5_timeofday(kcontext, &now))
+		goto nuke_ccache;
+	my_creds.times.starttime = 0; /* start timer when 
+					 request gets to KDC */
+	my_creds.times.endtime = now + 60 * 60 * 10;
+	my_creds.times.renew_till = 0;
+
+	if (krb5_get_in_tkt_with_password(kcontext, 0,
+					  0, NULL, 0 /*preauth*/,
+					  passwd,
+					  ccache,
+					  &my_creds, 0))
+		goto nuke_ccache;
+
+#ifdef KRB5_KRB4_COMPAT
+	if (krb_get_lrealm(realm, 1) != KSUCCESS)
+		goto nuke_ccache;
+
+	sprintf(ccname, "%s_p%d", TKT_ROOT, getpid());
+	krb_set_tkt_string(ccname);
+	setenv("KRBTKFILE", ccname, 1);
+
+	if (krb_get_pw_in_tkt(name, "", realm, "krbtgt", realm, 120, passwd)) {
+		dest_tkt();
+		goto nuke_ccache;
+	}
+#endif /* KRB5_KRB4_COMPAT */
+
+	have_creds = 1;
+	return(1);
+
+nuke_ccache:
+	krb5_cc_destroy(kcontext, ccache);
+	return(0);
+}
 
 pass(passwd)
 	char *passwd;
@@ -780,17 +812,10 @@ pass(passwd)
 #else
 		xpasswd = crypt(passwd, salt);
 #endif
-#ifdef KRB5_KRB4_COMPAT
-		/* null pw_passwd ok if Kerberos password ok */
 		if (pw == NULL ||
 		    (*pw->pw_passwd && strcmp(xpasswd, pw->pw_passwd) &&
 			!kpass(pw->pw_name, passwd)) ||
 		    (!*pw->pw_passwd && !kpass(pw->pw_name, passwd))) {
-#else
-		/* The strcmp does not catch null passwords! */
-		if (pw == NULL || *pw->pw_passwd == '\0' ||
-		    strcmp(xpasswd, pw->pw_passwd)) {
-#endif /* KRB5_KRB4_COMPAT */
 			reply(530, "Login incorrect.");
 			pw = NULL;
 			if (login_attempts++ >= 5) {
@@ -802,6 +827,12 @@ pass(passwd)
 			return;
 		}
 	}
+
+	if (have_creds) {
+		chown(krb5_ccname(kcontext, ccache)+5, pw->pw_uid, pw->pw_gid);
+		chown(tkt_string(), pw->pw_uid, pw->pw_gid);
+	}
+
 	login_attempts = 0;		/* this time successful */
 	(void) setegid((gid_t)pw->pw_gid);
 	(void) initgroups(pw->pw_name, pw->pw_gid);
@@ -1676,6 +1707,10 @@ dologout(status)
 	if (logged_in) {
 		(void) seteuid((uid_t)0);
 		logwtmp(ttyline, "", "");
+	}
+	if (have_creds) {
+		krb5_cc_destroy(kcontext, ccache);
+		dest_tkt();
 	}
 	/* beware of flushing buffers after a SIGPIPE */
 	_exit(status);
