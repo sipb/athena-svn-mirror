@@ -1,27 +1,27 @@
-.TH DESYNC 1 "22 Jul 1995"
+.TH DESYNC 1 "1 Jun 1996"
 .ds ]W MIT Athena
 .SH NAME
 desync \- desynchronize timed jobs on networks
 .SH SYNOPSIS
 .nf
-desync [offset]
+desync [range]
 .fi
 .SH DESCRIPTION
-\fIdesync\fR is a tool which sleeps an ip-address dependent period of
-time (13 * the LSB of the ip address seconds) in order to skew over
-the course of an hour the network load from several machines running
-\fIcron\fR jobs that would otherwise be synchronized.
+\fIdesync\fR is a tool which sleeps a random (ip-address seeded)
+period of time (up to an hour, by default) in order to skew the
+network load from several machines running \fIcron\fR jobs that would
+otherwise be synchronized.
 
-It would appear something like
+An invocation would appear something like
 
      42 * * * *          desync; /usr/lib/sendmail -q
 
-in a crontab.
+in a crontab file.
 .SH OPTIONS
 .TP 8
-.B offset
-This optional offset will be added to the normally computed sleep
-time.
+.B range
+This optional range specifies, in seconds, the maximum value for the
+randomly selected sleep time. The default value is 3600.
 .SH DIAGNOSTICS
 If \fIdesync\fR fails to acquire the machine's IP address from
 \fIrc.conf\fR, it returns a nonzero exit status and does not sleep.
