@@ -15,7 +15,7 @@
 
 /* This is the server for the lert system. */
 
-static const char rcsid[] = "$Id: lertsrv.c,v 1.5 1999-12-09 22:24:24 danw Exp $";
+static const char rcsid[] = "$Id: lertsrv.c,v 1.6 2000-06-19 17:40:36 zacheiss Exp $";
 
 #include <stdio.h>
 #include <krb.h>
@@ -59,6 +59,7 @@ int main(int argc, char **argv)
   des_key_schedule sched;		/* session key schedule */
   struct hostent *hp;
   struct utsname thishost;
+  char instance[INST_SZ];
 
 #ifdef LOGGING
   setbuf(stdout, NULL);
@@ -123,7 +124,8 @@ int main(int argc, char **argv)
       /* Copy authenticator into aligned region. */
       memcpy(&authent, &packet[LERT_LENGTH], sizeof(authent));
 
-      status = krb_rd_req(&authent, LERT_SERVICE, LERT_HOME, 0, &ad,
+      strcpy(instance, "*");
+      status = krb_rd_req(&authent, LERT_SERVICE, instance, 0, &ad,
 			  LERTS_SRVTAB);
 
       if (status != KSUCCESS)
