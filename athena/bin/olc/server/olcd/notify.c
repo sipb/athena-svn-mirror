@@ -19,12 +19,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.25 1990-09-02 10:53:51 lwvanels Exp $
+ *	$Id: notify.c,v 1.26 1990-12-05 21:24:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.25 1990-09-02 10:53:51 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.26 1990-12-05 21:24:24 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -39,23 +41,12 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sgtty.h>              /* Terminal param. definitions. */
 #include <setjmp.h>
 
-#include <olc/lang.h>
-
-#if is_cplusplus
-extern "C" {
-#endif
 #include <netdb.h>              /* Net database defs. */
-#include <sys/uio.h>		/* for perror() */
 #ifdef ZEPHYR
 #include <com_err.h>
 #include <zephyr/zephyr.h>
 #endif /* ZEPHYR */
-#if is_cplusplus
-    extern int writev (int, struct iovec *, int);
-};
-#endif
 
-#include <olc/olc.h>
 #include <olcd.h>
 
 /* External Variables. */
@@ -66,22 +57,21 @@ extern char DaemonInst[];	/* "olc", "olz", "olta", etc. */
 static int punt_zephyr = 0;
 static long zpunt_time;
 
-
-#if __STDC__
-int notice_timeout(int a);
+#ifdef __STDC__
+# define        P(s) s
 #else
-int notice_timeout();
+# define P(s) ()
 #endif
-static jmp_buf env;
 
-#if __STDC__
-#ifdef ZEPHYR
-static ERRCODE zwrite_message (const char *, const char *);
-static ERRCODE zsend_message (const char *, const char *, const char *,
-			      const char *, const char *, int);
-static ERRCODE zsend (ZNotice_t *);
-#endif
-#endif
+static int notice_timeout P((int a ));
+static ERRCODE zwrite_message P((char *username , char *message ));
+static ERRCODE zsend_message P((char *c_class , char *instance , char *opcode , char *username , char *message , int flags ));
+static ERRCODE zsend P((ZNotice_t *notice ));
+
+#undef P
+
+
+static jmp_buf env;
 
 /*
  * Function:	write_message() uses the program "write" to send a message
@@ -103,13 +93,8 @@ static ERRCODE zsend (ZNotice_t *);
 static int write_port = 0;
 
 ERRCODE
-#if __STDC__
-write_message(const char *touser, const char *tomachine, const char *fromuser,
-	      const char *frommachine, const char *message)
-#else
 write_message(touser, tomachine, fromuser, frommachine, message)
      char *touser, *tomachine, *fromuser, *frommachine, *message;
-#endif
 {
 	FILE *tf = NULL;	/* Temporary file. */
 	int fds;		/* Socket descriptor. */
@@ -223,13 +208,9 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 }
 
  
-int
-#if __STDC__
-notice_timeout(int a)
-#else
+static int
 notice_timeout(a)
      int a;
-#endif
 {
     longjmp(env, 1);
 }
@@ -249,21 +230,20 @@ notice_timeout(a)
 
 
 ERRCODE
-#if __STDC__
-write_message_to_user(KNUCKLE *k, char *message, int flags)
-#else
 write_message_to_user(k, message, flags)
      KNUCKLE *k;
      char *message;
      int flags;
-#endif
 {
   int result;		/* Result of writing the message. */
   char msgbuf[BUF_SIZE];	/* Message buffer. */
+  static char namebuf[BUF_SIZE];
   int status;
 
   if (k == (KNUCKLE *) NULL)
     return(ERROR);
+
+  if (namebuf[0] == 0)  sprintf(namebuf,"%s Service",DaemonInst);
 
   if(k->user->no_knuckles > 1)
     {
@@ -275,7 +255,7 @@ write_message_to_user(k, message, flags)
     strcpy(msgbuf,message);
 
   result = write_message(k->user->username, k->user->machine,
-			 "OLC-Service", DaemonHost, msgbuf);
+			 namebuf, DaemonHost, msgbuf);
   
   switch(result)
     {
@@ -331,13 +311,8 @@ write_message_to_user(k, message, flags)
  */
 
 ERRCODE
-#if __STDC__
-olc_broadcast_message(const char *instance, const char *message,
-		      const char *code)
-#else
 olc_broadcast_message(instance, message, code)
      char *instance, *message, *code;
-#endif
 {
 #ifdef ZEPHYR  
   if (punt_zephyr)
@@ -366,12 +341,8 @@ olc_broadcast_message(instance, message, code)
 
 
 static ERRCODE
-#if __STDC__
-zwrite_message(const char *username, const char *message)
-#else
 zwrite_message(username, message)
      char *username, *message;
-#endif
 {
 
     /* Sanity check the username. */
@@ -396,24 +367,21 @@ zwrite_message(username, message)
 
 
 static ERRCODE
-#if __STDC__
-zsend_message(const char *c_class, const char *instance, const char *opcode,
-	      const char *username, const char *message, int flags)
-#else
 zsend_message(c_class, instance, opcode, username, message, flags)
      char *c_class, *instance, *opcode, *username, *message;
      int flags;
-#endif
 {
   ZNotice_t notice;		/* Zephyr notice */
   int ret;			/* return value */
   char buf[BUF_SIZE];
-  char *signature = "From: OLC Service\n";
+  static char signature[100];	/* Zephyr Signature */
 
 #ifdef lint
   flags = flags;
-#endif lint;
+#endif /* lint; */
 
+  if (signature[0] == 0)
+    sprintf(signature,"From: %s Service\n",DaemonInst);
   bzero(&notice, sizeof(ZNotice_t));
 
   notice.z_kind = (username && username[0]) ? ACKED : UNSAFE;
@@ -451,12 +419,8 @@ zsend_message(c_class, instance, opcode, username, message, flags)
  */
 
 static ERRCODE
-#if __STDC__
-zsend(ZNotice_t *notice)
-#else
 zsend(notice)
      ZNotice_t *notice;
-#endif
 {
   int ret,sigm;
   ZNotice_t retnotice;
@@ -547,70 +511,5 @@ zsend(notice)
 
 
 
-#endif ZEPHYR
+#endif /* ZEPHYR */
 
-/*
- * Function:	perror() similar to that of the C library, except that
- *	a datestamp precedes the message printed.
- * Arguments:	msg:	Message to print.
- * Returns:	nothing
- *
- */
-
-extern int sys_nerr;
-extern char *sys_errlist[];
-extern int errno;
-static char time_buf[25];
- 
-#ifdef mips
-int errno; /* declared in same file as perror in libc,
-	      so we must declare it here to avoid
-	      multiple defs & linker lossage */
-#endif
-
-void
-#if __STDC__
-perror(const char *msg)
-#else
-perror(msg)
-     char *msg;
-#endif
-{
-	register int error_number;
-	struct iovec iov[6];
-	register struct iovec *v = iov;
-
-	error_number = errno;
-
-	time_now(time_buf);
-	v->iov_base = time_buf;
-	v->iov_len = strlen(time_buf);
-	v++;
-
-	v->iov_base = " ";
-	v->iov_len = 1;
-	v++;
-
-	if (msg) {
-		if (*msg) {
-			v->iov_base = (char *) msg;
-			v->iov_len = strlen(msg);
-			v++;
-			v->iov_base = ": ";
-			v->iov_len = 2;
-			v++;
-		}
-	}
-
-	if (error_number < sys_nerr)
-		v->iov_base = sys_errlist[error_number];
-	else
-		v->iov_base = "Unknown error";
-	v->iov_len = strlen(v->iov_base);
-	v++;
-
-	v->iov_base = "\n";
-	v->iov_len = 1;
-	(void) lseek(2, 0L, L_XTND);
-	(void) writev(2, iov, (v - iov) + 1);
-}
