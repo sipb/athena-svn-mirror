@@ -25,7 +25,7 @@ SM_UNUSED(static char copyright[]) =
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* ! lint */
 
-SM_RCSID("@(#)$Id: main.c,v 1.1.1.1 2003-04-08 15:09:04 zacheiss Exp $")
+SM_RCSID("@(#)$Id: main.c,v 1.2 2003-07-03 22:18:02 zacheiss Exp $")
 
 
 #if NETINET || NETINET6
@@ -626,6 +626,12 @@ main(argc, argv, envp)
 	ExternalEnviron = environ;
 	emptyenviron[0] = NULL;
 	environ = emptyenviron;
+
+	/* Restore KRB5CCNAME and KRBTKFILE from the old environment.
+	 * We may need them later if we're doing SMTP authentication.
+	 */
+	setuserenv("KRB5CCNAME", NULL);
+	setuserenv("KRBTKFILE", NULL);
 
 	/*
 	**  restore any original TZ setting until TimeZoneSpec has been
