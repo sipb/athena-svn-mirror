@@ -1,8 +1,11 @@
+
 #include <sys/types.h>
 #include <sys/socket.h>
 
 #include <errno.h>
 #include <fcntl.h>
+
+#undef fcntl
 
 int
 __bind_mpe_fcntl(int fd, int cmd, int arg) {

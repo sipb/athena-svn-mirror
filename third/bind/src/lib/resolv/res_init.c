@@ -52,7 +52,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -70,27 +70,23 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)res_init.c	8.1 (Berkeley) 6/7/93";
-static char rcsid[] = "$Id: res_init.c,v 1.1.1.2 1999-03-16 19:46:31 danw Exp $";
+static char rcsid[] = "$Id: res_init.c,v 1.2 2000-04-22 04:42:21 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
-
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <arpa/nameser.h>
-
 #include <ctype.h>
 #include <resolv.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
 #include "port_after.h"
 
 /* Options.  Should all be left alone. */
@@ -98,7 +94,7 @@ static char rcsid[] = "$Id: res_init.c,v 1.1.1.2 1999-03-16 19:46:31 danw Exp $"
 #define RFC1535
 #define DEBUG
 
-static void res_setoptions __P((res_state, const char *, const char *));
+static void res_setoptions __P((char *, char *));
 
 #ifdef RESOLVSORT
 static const char sort_mask[] = "/&";
@@ -113,6 +109,13 @@ static u_int32_t net_mask __P((struct in_addr));
 /*
  * Resolver state default settings.
  */
+
+struct __res_state _res
+# if defined(__BIND_RES_TEXT)
+	= { RES_TIMEOUT, }	/* Motorola, et al. */
+# endif
+        ;
+
 
 /*
  * Set up default settings.  If the configuration file exist, the values
@@ -136,15 +139,7 @@ static u_int32_t net_mask __P((struct in_addr));
  * Return 0 if completes successfully, -1 on error
  */
 int
-res_ninit(res_state statp) {
-	extern int __res_vinit(res_state, int);
-
-	return (__res_vinit(statp, 0));
-}
-
-/* This function has to be reachable by res_data.c but not publically. */
-int
-__res_vinit(res_state statp, int preinit) {
+res_init() {
 	register FILE *fp;
 	register char *cp, **pp;
 	register int n;
@@ -160,32 +155,53 @@ __res_vinit(res_state statp, int preinit) {
 	int dots;
 #endif
 
-	if (!preinit) {
-		statp->retrans = RES_TIMEOUT;
-		statp->retry = 4;
-		statp->options = RES_DEFAULT;
-		statp->id = res_randomid();
-	}
+	/*
+	 * These three fields used to be statically initialized.  This made
+	 * it hard to use this code in a shared library.  It is necessary,
+	 * now that we're doing dynamic initialization here, that we preserve
+	 * the old semantics: if an application modifies one of these three
+	 * fields of _res before res_init() is called, res_init() will not
+	 * alter them.  Of course, if an application is setting them to
+	 * _zero_ before calling res_init(), hoping to override what used
+	 * to be the static default, we can't detect it and unexpected results
+	 * will follow.  Zero for any of these fields would make no sense,
+	 * so one can safely assume that the applications were already getting
+	 * unexpected results.
+	 *
+	 * _res.options is tricky since some apps were known to diddle the bits
+	 * before res_init() was first called. We can't replicate that semantic
+	 * with dynamic initialization (they may have turned bits off that are
+	 * set in RES_DEFAULT).  Our solution is to declare such applications
+	 * "broken".  They could fool us by setting RES_INIT but none do (yet).
+	 */
+	if (!_res.retrans)
+		_res.retrans = RES_TIMEOUT;
+	if (!_res.retry)
+		_res.retry = 4;
+	if (!(_res.options & RES_INIT))
+		_res.options = RES_DEFAULT;
+
+	/*
+	 * This one used to initialize implicitly to zero, so unless the app
+	 * has set it to something in particular, we can randomize it now.
+	 */
+	if (!_res.id)
+		_res.id = res_randomid();
 
 #ifdef USELOOPBACK
-	statp->nsaddr.sin_addr = inet_makeaddr(IN_LOOPBACKNET, 1);
+	_res.nsaddr.sin_addr = inet_makeaddr(IN_LOOPBACKNET, 1);
 #else
-	statp->nsaddr.sin_addr.s_addr = INADDR_ANY;
+	_res.nsaddr.sin_addr.s_addr = INADDR_ANY;
 #endif
-	statp->nsaddr.sin_family = AF_INET;
-	statp->nsaddr.sin_port = htons(NAMESERVER_PORT);
-	statp->nscount = 1;
-	statp->ndots = 1;
-	statp->pfcode = 0;
-	statp->_sock = -1;
-	statp->_flags = 0;
-	statp->qhook = NULL;
-	statp->rhook = NULL;
+	_res.nsaddr.sin_family = AF_INET;
+	_res.nsaddr.sin_port = htons(NAMESERVER_PORT);
+	_res.nscount = 1;
+	_res.ndots = 1;
+	_res.pfcode = 0;
 
 	/* Allow user to override the local domain definition */
 	if ((cp = getenv("LOCALDOMAIN")) != NULL) {
-		(void)strncpy(statp->defdname, cp, sizeof(statp->defdname) - 1);
-		statp->defdname[sizeof(statp->defdname) - 1] = '\0';
+		(void)strncpy(_res.defdname, cp, sizeof(_res.defdname) - 1);
 		haveenv++;
 
 		/*
@@ -195,10 +211,10 @@ __res_vinit(res_state statp, int preinit) {
 		 * one that they want to use as an individual (even more
 		 * important now that the rfc1535 stuff restricts searches)
 		 */
-		cp = statp->defdname;
-		pp = statp->dnsrch;
+		cp = _res.defdname;
+		pp = _res.dnsrch;
 		*pp++ = cp;
-		for (n = 0; *cp && pp < statp->dnsrch + MAXDNSRCH; cp++) {
+		for (n = 0; *cp && pp < _res.dnsrch + MAXDNSRCH; cp++) {
 			if (*cp == '\n')	/* silly backwards compat */
 				break;
 			else if (*cp == ' ' || *cp == '\t') {
@@ -237,9 +253,8 @@ __res_vinit(res_state statp, int preinit) {
 			    cp++;
 		    if ((*cp == '\0') || (*cp == '\n'))
 			    continue;
-		    strncpy(statp->defdname, cp, sizeof(statp->defdname) - 1);
-		    statp->defdname[sizeof(statp->defdname) - 1] = '\0';
-		    if ((cp = strpbrk(statp->defdname, " \t\n")) != NULL)
+		    strncpy(_res.defdname, cp, sizeof(_res.defdname) - 1);
+		    if ((cp = strpbrk(_res.defdname, " \t\n")) != NULL)
 			    *cp = '\0';
 		    havesearch = 0;
 		    continue;
@@ -253,18 +268,17 @@ __res_vinit(res_state statp, int preinit) {
 			    cp++;
 		    if ((*cp == '\0') || (*cp == '\n'))
 			    continue;
-		    strncpy(statp->defdname, cp, sizeof(statp->defdname) - 1);
-		    statp->defdname[sizeof(statp->defdname) - 1] = '\0';
-		    if ((cp = strchr(statp->defdname, '\n')) != NULL)
+		    strncpy(_res.defdname, cp, sizeof(_res.defdname) - 1);
+		    if ((cp = strchr(_res.defdname, '\n')) != NULL)
 			    *cp = '\0';
 		    /*
 		     * Set search list to be blank-separated strings
 		     * on rest of line.
 		     */
-		    cp = statp->defdname;
-		    pp = statp->dnsrch;
+		    cp = _res.defdname;
+		    pp = _res.dnsrch;
 		    *pp++ = cp;
-		    for (n = 0; *cp && pp < statp->dnsrch + MAXDNSRCH; cp++) {
+		    for (n = 0; *cp && pp < _res.dnsrch + MAXDNSRCH; cp++) {
 			    if (*cp == ' ' || *cp == '\t') {
 				    *cp = 0;
 				    n = 1;
@@ -289,9 +303,9 @@ __res_vinit(res_state statp, int preinit) {
 		    while (*cp == ' ' || *cp == '\t')
 			cp++;
 		    if ((*cp != '\0') && (*cp != '\n') && inet_aton(cp, &a)) {
-			statp->nsaddr_list[nserv].sin_addr = a;
-			statp->nsaddr_list[nserv].sin_family = AF_INET;
-			statp->nsaddr_list[nserv].sin_port =
+			_res.nsaddr_list[nserv].sin_addr = a;
+			_res.nsaddr_list[nserv].sin_family = AF_INET;
+			_res.nsaddr_list[nserv].sin_port =
 				htons(NAMESERVER_PORT);
 			nserv++;
 		    }
@@ -314,7 +328,7 @@ __res_vinit(res_state statp, int preinit) {
 			n = *cp;
 			*cp = 0;
 			if (inet_aton(net, &a)) {
-			    statp->sort_list[nsort].addr = a;
+			    _res.sort_list[nsort].addr = a;
 			    if (ISSORTMASK(n)) {
 				*cp++ = n;
 				net = cp;
@@ -324,14 +338,14 @@ __res_vinit(res_state statp, int preinit) {
 				n = *cp;
 				*cp = 0;
 				if (inet_aton(net, &a)) {
-				    statp->sort_list[nsort].mask = a.s_addr;
+				    _res.sort_list[nsort].mask = a.s_addr;
 				} else {
-				    statp->sort_list[nsort].mask = 
-					net_mask(statp->sort_list[nsort].addr);
+				    _res.sort_list[nsort].mask = 
+					net_mask(_res.sort_list[nsort].addr);
 				}
 			    } else {
-				statp->sort_list[nsort].mask = 
-				    net_mask(statp->sort_list[nsort].addr);
+				_res.sort_list[nsort].mask = 
+				    net_mask(_res.sort_list[nsort].addr);
 			    }
 			    nsort++;
 			}
@@ -341,35 +355,35 @@ __res_vinit(res_state statp, int preinit) {
 		}
 #endif
 		if (MATCH(buf, "options")) {
-		    res_setoptions(statp, buf + sizeof("options") - 1, "conf");
+		    res_setoptions(buf + sizeof("options") - 1, "conf");
 		    continue;
 		}
 	    }
 	    if (nserv > 1) 
-		statp->nscount = nserv;
+		_res.nscount = nserv;
 #ifdef RESOLVSORT
-	    statp->nsort = nsort;
+	    _res.nsort = nsort;
 #endif
 	    (void) fclose(fp);
 	}
-	if (statp->defdname[0] == 0 &&
-	    gethostname(buf, sizeof(statp->defdname) - 1) == 0 &&
+	if (_res.defdname[0] == 0 &&
+	    gethostname(buf, sizeof(_res.defdname) - 1) == 0 &&
 	    (cp = strchr(buf, '.')) != NULL)
-		strcpy(statp->defdname, cp + 1);
+		strcpy(_res.defdname, cp + 1);
 
 	/* find components of local domain that might be searched */
 	if (havesearch == 0) {
-		pp = statp->dnsrch;
-		*pp++ = statp->defdname;
+		pp = _res.dnsrch;
+		*pp++ = _res.defdname;
 		*pp = NULL;
 
 #ifndef RFC1535
 		dots = 0;
-		for (cp = statp->defdname; *cp; cp++)
+		for (cp = _res.defdname; *cp; cp++)
 			dots += (*cp == '.');
 
-		cp = statp->defdname;
-		while (pp < statp->dnsrch + MAXDFLSRCH) {
+		cp = _res.defdname;
+		while (pp < _res.dnsrch + MAXDFLSRCH) {
 			if (dots < LOCALDOMAINPARTS)
 				break;
 			cp = strchr(cp, '.') + 1;    /* we know there is one */
@@ -378,9 +392,9 @@ __res_vinit(res_state statp, int preinit) {
 		}
 		*pp = NULL;
 #ifdef DEBUG
-		if (statp->options & RES_DEBUG) {
+		if (_res.options & RES_DEBUG) {
 			printf(";; res_init()... default dnsrch list:\n");
-			for (pp = statp->dnsrch; *pp; pp++)
+			for (pp = _res.dnsrch; *pp; pp++)
 				printf(";;\t%s\n", *pp);
 			printf(";;\t..END..\n");
 		}
@@ -389,18 +403,20 @@ __res_vinit(res_state statp, int preinit) {
 	}
 
 	if ((cp = getenv("RES_OPTIONS")) != NULL)
-		res_setoptions(statp, cp, "env");
-	statp->options |= RES_INIT;
+		res_setoptions(cp, "env");
+	_res.options |= RES_INIT;
 	return (0);
 }
 
 static void
-res_setoptions(res_state statp, const char *options, const char *source) {
-	const char *cp = options;
+res_setoptions(options, source)
+	char *options, *source;
+{
+	char *cp = options;
 	int i;
 
 #ifdef DEBUG
-	if (statp->options & RES_DEBUG)
+	if (_res.options & RES_DEBUG)
 		printf(";; res_setoptions(\"%s\", \"%s\")...\n",
 		       options, source);
 #endif
@@ -412,41 +428,24 @@ res_setoptions(res_state statp, const char *options, const char *source) {
 		if (!strncmp(cp, "ndots:", sizeof("ndots:") - 1)) {
 			i = atoi(cp + sizeof("ndots:") - 1);
 			if (i <= RES_MAXNDOTS)
-				statp->ndots = i;
+				_res.ndots = i;
 			else
-				statp->ndots = RES_MAXNDOTS;
+				_res.ndots = RES_MAXNDOTS;
 #ifdef DEBUG
-			if (statp->options & RES_DEBUG)
-				printf(";;\tndots=%d\n", statp->ndots);
+			if (_res.options & RES_DEBUG)
+				printf(";;\tndots=%d\n", _res.ndots);
 #endif
-		} else if (!strncmp(cp, "timeout:", sizeof("timeout:") - 1)) {
-			i = atoi(cp + sizeof("timeout:") - 1);
-			if (i <= RES_MAXRETRANS)
-				statp->retrans = i;
-			else
-				statp->retrans = RES_MAXRETRANS;
-		} else if (!strncmp(cp, "attempts:", sizeof("attempts:") - 1)){
-			i = atoi(cp + sizeof("attempts:") - 1);
-			if (i <= RES_MAXRETRY)
-				statp->retry = i;
-			else
-				statp->retry = RES_MAXRETRY;
 		} else if (!strncmp(cp, "debug", sizeof("debug") - 1)) {
 #ifdef DEBUG
-			if (!(statp->options & RES_DEBUG)) {
+			if (!(_res.options & RES_DEBUG)) {
 				printf(";; res_setoptions(\"%s\", \"%s\")..\n",
 				       options, source);
-				statp->options |= RES_DEBUG;
+				_res.options |= RES_DEBUG;
 			}
 			printf(";;\tdebug\n");
 #endif
 		} else if (!strncmp(cp, "inet6", sizeof("inet6") - 1)) {
-			statp->options |= RES_USE_INET6;
-		} else if (!strncmp(cp, "rotate", sizeof("rotate") - 1)) {
-			statp->options |= RES_ROTATE;
-		} else if (!strncmp(cp, "no-check-names",
-				    sizeof("no-check-names") - 1)) {
-			statp->options |= RES_NOCHECKNAME;
+			_res.options |= RES_USE_INET6;
 		} else {
 			/* XXX - print a warning here? */
 		}
@@ -473,7 +472,8 @@ net_mask(in)		/* XXX - should really use system's version of this */
 #endif
 
 u_int
-res_randomid(void) {
+res_randomid()
+{
 	struct timeval now;
 
 	gettimeofday(&now, NULL);

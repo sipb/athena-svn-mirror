@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_lookup.c	4.18 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: db_lookup.c,v 1.1.1.3 1999-03-16 19:45:07 danw Exp $";
+static char rcsid[] = "$Id: db_lookup.c,v 1.2 2000-04-22 04:39:43 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -57,7 +57,7 @@ static char rcsid[] = "$Id: db_lookup.c,v 1.1.1.3 1999-03-16 19:45:07 danw Exp $
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -82,7 +82,6 @@ static char rcsid[] = "$Id: db_lookup.c,v 1.1.1.3 1999-03-16 19:45:07 danw Exp $
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
-#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>
@@ -140,7 +139,11 @@ nlookup(const char *name, struct hashbuf **htpp,
 			break;
 		}
 
-		HASHIMILATE(hval, c);
+		/* rotate left HASHSHIFT */
+		hval = (hval << HASHSHIFT) |
+			(hval>>((sizeof(hval)*8)-HASHSHIFT));
+		hval += ((isascii(c) && isupper(c)) ? tolower(c) : c)
+			& HASHMASK;
 		if (escaped)
 			escaped = 0;
 		else if (c == '\\')
@@ -183,7 +186,7 @@ nlookup(const char *name, struct hashbuf **htpp,
 	np->n_next = htp->h_tab[hval];
 	htp->h_tab[hval] = np;
 	/* Increase hash table size. */
-	if (++htp->h_cnt > (htp->h_size * AVGCH_NLOOKUP)) {
+	if (++htp->h_cnt > htp->h_size * 2) {
 		*htpp = savehash(htp);
 		if (parent == NULL) {
 			if (htp == hashtab) {
@@ -206,10 +209,12 @@ nlookup(const char *name, struct hashbuf **htpp,
  *	This is tricky since the parent of "com" is "" and both are stored
  *	in the same hashbuf.
  * See also:
- *	the AXFR wart description in ns_axfr.c
+ *	the AXFR wart description in ns_req.c
  */
 struct namebuf *
-np_parent(struct namebuf *np) {
+np_parent(np)
+	struct namebuf *np;
+{
 	struct hashbuf *htp;
 	struct namebuf *np2;
 
@@ -223,17 +228,19 @@ np_parent(struct namebuf *np) {
 	/* Search the hash chain that np should be part of. */
 	for (np2 = htp->h_tab[np->n_hashval % htp->h_size];
 	     np2 != NULL;
-	     np2 = np2->n_next)
-	{
+	     np2 = np2->n_next) {
+		
 		if (np == np2) {	/* found it! */
 			/* "" hashes into the first bucket */
-			for (np = htp->h_tab[0]; np != NULL; np = np->n_next) {
+			for (np = htp->h_tab[0]; np ; np=np->n_next) {
 				if (NAME(*np)[0] == '\0')
 					/* found the root namebuf */
 					return (np);
 			}
-			/* there are no RR's with a owner name of "." yet */
-			return (NULL);
+			ns_debug(ns_log_db, 1,
+				 "np_parent(0x%lx) couldn't find root entry",
+				 (u_long) np);
+			return (NULL);  /* XXX shouldn't happen */
 		}
 	}
 	/* Try the hints. */
@@ -241,7 +248,7 @@ np_parent(struct namebuf *np) {
 		htp = fcachetab;
 		goto try_again;
 	}
-	ns_debug(ns_log_db, 1, "np_parent(0x%lx) couldn't find namebuf",
+	ns_debug(ns_log_db, 1, "np_parent(0x%lx) couldn't namebuf",
 		 (u_long)np);
 	return (NULL);  /* XXX shouldn't happen */
 }
@@ -256,74 +263,7 @@ int
 match(struct databuf *dp, int class, int type) {
 	if (dp->d_class != class && class != C_ANY)
 		return (0);
-	if (dp->d_type != type && dp->d_type != T_SIG && type != T_ANY)
-		return (0);
-	if (type != T_SIG && dp->d_type == T_SIG && SIG_COVERS(dp) != type)
+	if (dp->d_type != type && type != T_ANY)
 		return (0);
 	return (1);
-}
-
-/* static int
- * nxtlower(name, dp)
- *	Is the NXT/SIG NXT record 'lower'?
- * return value:
- *	boolean
- */
-static int
-nxtlower(const char *name, struct databuf *dp) {
-	/* An NXT is a lower NXT iff the SOA bit is set in the bitmap */
-	if (dp->d_type == T_NXT) {
-		u_char *nxtbitmap = dp->d_data + strlen((char *)dp->d_data) + 1;
-		return (NS_NXT_BIT_ISSET(T_SOA, nxtbitmap) ? 1 : 0);
-	}
-	/* If it's not an NXT, it's a SIG NXT.  An NXT record must be signed
-	 * by the zone, so the signer name must be the same as the owner.
-	 */
-	return(strcasecmp(name, (char *)dp->d_data + SIG_HDR_SIZE) ? 0 : 1);
-}   
-
-/* int
- * nxtmatch(name, dp1, dp2)
- *	Do NXT/SIG NXT records `dp1' and `dp2' belong to the same NXT set?
- * return value:
- *	boolean
- */
-int
-nxtmatch(const char *name, struct databuf *dp1, struct databuf *dp2) {
-        int dp1_lower, dp2_lower;
-                
-        dp1_lower = nxtlower(name, dp1);
-        dp2_lower = nxtlower(name, dp2);
-        return(dp1_lower == dp2_lower); 
-}
-
-/* int
- * rrmatch(name, dp1, dp2)
- *	Do data records `dp1' and `dp2' match in class and type?
- *	If both are NXTs, do they belong in the same NXT set?
- *	If both are SIGs, do the covered types match?
- *	If both are SIG NXTs, do the covered NXTs belong in the same set?
- *	Why is DNSSEC so confusing?
- * return value:
- *	boolean
- */
-int
-rrmatch(const char *name, struct databuf *dp1, struct databuf *dp2) {
-	if (dp1->d_class != dp2->d_class &&
-	    dp1->d_class != C_ANY && dp2->d_class != C_ANY)
-		return(0);
-	if (dp1->d_type != dp2->d_type &&
-	    dp1->d_type != T_ANY && dp2->d_type != T_ANY)
-		return(0);
-	if (dp1->d_type == T_NXT)
-		return(nxtmatch(name, dp1, dp2));
-	if (dp1->d_type != T_SIG)
-		return(1);
-	if (SIG_COVERS(dp1) == SIG_COVERS(dp2)) {
-		if (SIG_COVERS(dp1) == ns_t_nxt)
-			return(nxtmatch(name, dp1, dp2));
-		else
-			return(1);
-	}
-	return(0);
 }

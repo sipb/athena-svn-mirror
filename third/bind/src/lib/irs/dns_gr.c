@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: dns_gr.c,v 1.1.1.3 1999-03-16 19:45:43 danw Exp $";
+static const char rcsid[] = "$Id: dns_gr.c,v 1.2 2000-04-22 04:41:37 ghudson Exp $";
 #endif
 
 /*
@@ -39,13 +39,6 @@ static int __bind_irs_gr_unneeded;
 #include <errno.h>
 #include <unistd.h>
 
-#include <sys/types.h>
-#include <netinet/in.h> 
-#include <arpa/nameser.h>
-#include <resolv.h>
-
-#include <isc/memcluster.h>
-
 #include <irs.h>
 
 #include "port_after.h"
@@ -60,7 +53,7 @@ struct pvt {
 	/*
 	 * This is our private accessor data.  It has a shared hesiod context.
 	 */
-	struct dns_p *	dns;
+	struct dns_p *dns;
 	/*
 	 * Need space to store the entries read from the group file.
 	 * The members list also needs space per member, and the
@@ -84,10 +77,6 @@ static void		gr_close(struct irs_gr *);
 static int		gr_list(struct irs_gr *, const char *,
 				gid_t, gid_t *, int *);
 static void		gr_minimize(struct irs_gr *);
-static struct __res_state * gr_res_get(struct irs_gr *);
-static void		gr_res_set(struct irs_gr *,
-				   struct __res_state *,
-				   void (*)(void *));
 
 static struct group *	get_hes_group(struct irs_gr *this,
 				      const char *name,
@@ -105,14 +94,14 @@ irs_dns_gr(struct irs_acc *this) {
 		errno = ENODEV;
 		return (NULL);
 	}
-	if (!(pvt = memget(sizeof *pvt))) {
+	if (!(pvt = (struct pvt *)malloc(sizeof *pvt))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(pvt, 0, sizeof *pvt);
 	pvt->dns = dns;
-	if (!(gr = memget(sizeof *gr))) {
-		memput(pvt, sizeof *pvt);
+	if (!(gr = (struct irs_gr *)malloc(sizeof *gr))) {
+		free(pvt);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -125,8 +114,6 @@ irs_dns_gr(struct irs_acc *this) {
 	gr->close = gr_close;
 	gr->list = gr_list;
 	gr->minimize = gr_minimize;
-	gr->res_get = gr_res_get;
-	gr->res_set = gr_res_set;
 	return (gr);
 }
 
@@ -140,8 +127,8 @@ gr_close(struct irs_gr *this) {
 		free(pvt->group.gr_mem);
 	if (pvt->membuf)
 		free(pvt->membuf);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static struct group *
@@ -258,23 +245,6 @@ get_hes_group(struct irs_gr *this, const char *name, const char *type) {
 		pvt->membuf = NULL;
 	}
 	return (NULL);
-}
-
-static struct __res_state *
-gr_res_get(struct irs_gr *this) {
-	struct pvt *pvt = (struct pvt *)this->private;
-	struct dns_p *dns = pvt->dns;
-
-	return (__hesiod_res_get(dns->hes_ctx));
-}
-
-static void
-gr_res_set(struct irs_gr *this, struct __res_state * res,
-	   void (*free_res)(void *)) {
-	struct pvt *pvt = (struct pvt *)this->private;
-	struct dns_p *dns = pvt->dns;
-
-	__hesiod_res_set(dns->hes_ctx, res, free_res);
 }
 
 #endif /* WANT_IRS_GR */

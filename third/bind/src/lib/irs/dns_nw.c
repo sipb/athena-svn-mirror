@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: dns_nw.c,v 1.1.1.3 1999-03-16 19:45:47 danw Exp $";
+static const char rcsid[] = "$Id: dns_nw.c,v 1.2 2000-04-22 04:41:37 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /* Imports. */
@@ -38,7 +38,6 @@ static const char rcsid[] = "$Id: dns_nw.c,v 1.1.1.3 1999-03-16 19:45:47 danw Ex
 #include <stdlib.h>
 #include <string.h>
 
-#include <isc/memcluster.h>
 #include <irs.h>
 
 #include "port_after.h"
@@ -51,6 +50,8 @@ static const char rcsid[] = "$Id: dns_nw.c,v 1.1.1.3 1999-03-16 19:45:47 danw Ex
 #else
 # define SPRINTF(x) sprintf x
 #endif
+
+extern int h_errno;
 
 /* Definitions. */
 
@@ -66,8 +67,6 @@ struct pvt {
 	struct nwent	net;
 	char *		ali[MAXALIASES];
 	char		buf[BUFSIZ+1];
-	struct __res_state * res;
-	void		(*free_res)(void *);
 };
 
 typedef union {
@@ -85,10 +84,6 @@ static struct nwent *	nw_byaddr(struct irs_nw *, void *, int, int);
 static struct nwent *	nw_next(struct irs_nw *);
 static void		nw_rewind(struct irs_nw *);
 static void		nw_minimize(struct irs_nw *);
-static struct __res_state * nw_res_get(struct irs_nw *this);
-static void		nw_res_set(struct irs_nw *this,
-				   struct __res_state *res,
-				   void (*free_res)(void *));
 
 static struct nwent *	get1101byaddr(struct irs_nw *, u_char *, int);
 static struct nwent *	get1101byname(struct irs_nw *, const char *);
@@ -97,10 +92,9 @@ static struct nwent *	get1101answer(struct irs_nw *,
 				      enum by_what by_what,
 				      int af, const char *name,
 				      const u_char *addr, int addrlen);
-static struct nwent *	get1101mask(struct irs_nw *this, struct nwent *);
+static struct nwent *	get1101mask(struct nwent *);
 static int		make1101inaddr(const u_char *, int, char *, int);
 static void		normalize_name(char *name);
-static int		init(struct irs_nw *this);
 
 /* Exports. */
 
@@ -109,13 +103,13 @@ irs_dns_nw(struct irs_acc *this) {
 	struct irs_nw *nw;
 	struct pvt *pvt;
 
-	if (!(pvt = memget(sizeof *pvt))) {
+	if (!(pvt = (struct pvt *)malloc(sizeof *pvt))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(pvt, 0, sizeof *pvt);
-	if (!(nw = memget(sizeof *nw))) {
-		memput(pvt, sizeof *pvt);
+	if (!(nw = (struct irs_nw *)malloc(sizeof *nw))) {
+		free(pvt);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -127,8 +121,6 @@ irs_dns_nw(struct irs_acc *this) {
 	nw->next = nw_next;
 	nw->rewind = nw_rewind;
 	nw->minimize = nw_minimize;
-	nw->res_get = nw_res_get;
-	nw->res_set = nw_res_set;
 	return (nw);
 }
 
@@ -138,47 +130,32 @@ static void
 nw_close(struct irs_nw *this) {
 	struct pvt *pvt = (struct pvt *)this->private;
 
-	nw_minimize(this);
-
-	if (pvt->res && pvt->free_res)
-		(*pvt->free_res)(pvt->res);
-
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static struct nwent *
 nw_byname(struct irs_nw *this, const char *name, int af) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (init(this) == -1)
-		return (NULL);
-
 	switch (af) {
 	case AF_INET:
 		return (get1101byname(this, name));
 	default:
 		(void)NULL;
 	}
-	RES_SET_H_ERRNO(pvt->res, NETDB_INTERNAL);
+	h_errno = NETDB_INTERNAL;
 	errno = EAFNOSUPPORT;
 	return (NULL);
 }
 
 static struct nwent *
 nw_byaddr(struct irs_nw *this, void *net, int len, int af) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (init(this) == -1)
-		return (NULL);
-
 	switch (af) {
 	case AF_INET:
 		return (get1101byaddr(this, net, len));
 	default:
 		(void)NULL;
 	}
-	RES_SET_H_ERRNO(pvt->res, NETDB_INTERNAL);
+	h_errno = NETDB_INTERNAL;
 	errno = EAFNOSUPPORT;
 	return (NULL);
 }
@@ -195,80 +172,43 @@ nw_rewind(struct irs_nw *this) {
 
 static void
 nw_minimize(struct irs_nw *this) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (pvt->res)
-		res_nclose(pvt->res);
-}
-
-static struct __res_state *
-nw_res_get(struct irs_nw *this) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (!pvt->res) {
-		struct __res_state *res;
-		res = (struct __res_state *)malloc(sizeof *res);
-		if (!res) {
-			errno = ENOMEM;
-			return (NULL);
-		}
-		memset(res, 0, sizeof *res);
-		nw_res_set(this, res, free);
-	}
-
-	return (pvt->res);
-}
-
-static void
-nw_res_set(struct irs_nw *this, struct __res_state *res,
-		void (*free_res)(void *)) {
-	struct pvt *pvt = (struct pvt *)this->private;
-
-	if (pvt->res && pvt->free_res) {
-		res_nclose(pvt->res);
-		(*pvt->free_res)(pvt->res);
-	}
-
-	pvt->res = res;
-	pvt->free_res = free_res;
+	/* NOOP */
 }
 
 /* Private. */
 
 static struct nwent *
 get1101byname(struct irs_nw *this, const char *name) {
-	struct pvt *pvt = (struct pvt *)this->private;
 	u_char ansbuf[MAXPACKET];
 	int anslen;
 
-	anslen = res_nsearch(pvt->res, name, C_IN, T_PTR,
-			     ansbuf, sizeof ansbuf);
+	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
+		return (NULL);
+	anslen = res_search(name, C_IN, T_PTR, ansbuf, sizeof ansbuf);
 	if (anslen < 0)
 		return (NULL);
-	return (get1101mask(this, get1101answer(this, ansbuf, anslen, by_name,
-						AF_INET, name, NULL, 0)));
+	return (get1101mask(get1101answer(this, ansbuf, anslen, by_name,
+					  AF_INET, name, NULL, 0)));
 }
 
 static struct nwent *
 get1101byaddr(struct irs_nw *this, u_char *net, int len) {
-	struct pvt *pvt = (struct pvt *)this->private;
-	char qbuf[sizeof "255.255.255.255.in-addr.arpa"];
 	u_char ansbuf[MAXPACKET];
+	char qbuf[sizeof "255.255.255.255.in-addr.arpa"];
 	int anslen;
 
 	if (len < 1 || len > 32) {
 		errno = EINVAL;
-		RES_SET_H_ERRNO(pvt->res, NETDB_INTERNAL);
+		h_errno = NETDB_INTERNAL;
 		return (NULL);
 	}
 	if (make1101inaddr(net, len, qbuf, sizeof qbuf) < 0)
 		return (NULL);
-	anslen = res_nquery(pvt->res, qbuf, C_IN, T_PTR,
-			    ansbuf, sizeof ansbuf);
+	anslen = res_query(qbuf, C_IN, T_PTR, ansbuf, sizeof ansbuf);
 	if (anslen < 0)
 		return (NULL);
-	return (get1101mask(this, get1101answer(this, ansbuf, anslen, by_addr,
-						AF_INET, NULL, net, len)));
+	return (get1101mask(get1101answer(this, ansbuf, anslen, by_addr,
+					  AF_INET, NULL, net, len)));
 }
 
 static struct nwent *
@@ -285,7 +225,7 @@ get1101answer(struct irs_nw *this,
 	/* Initialize, and parse header. */
 	eom = ansbuf + anslen;
 	if (ansbuf + HFIXEDSZ > eom) {
-		RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+		h_errno = NO_RECOVERY;
 		return (NULL);
 	}
 	hp = (HEADER *)ansbuf;
@@ -295,16 +235,16 @@ get1101answer(struct irs_nw *this,
 		int n = dn_skipname(cp, eom);
 		cp += n + QFIXEDSZ;
 		if (n < 0 || cp > eom) {
-			RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+			h_errno = NO_RECOVERY;
 			return (NULL);
 		}
 	}
 	ancount = ntohs(hp->ancount);
 	if (!ancount) {
 		if (hp->aa)
-			RES_SET_H_ERRNO(pvt->res, HOST_NOT_FOUND);
+			h_errno = HOST_NOT_FOUND;
 		else
-			RES_SET_H_ERRNO(pvt->res, TRY_AGAIN);
+			h_errno = TRY_AGAIN;
 		return (NULL);
 	}
 
@@ -324,7 +264,7 @@ get1101answer(struct irs_nw *this,
 			int n = strlen(name) + 1;
 
 			if (n > buflen) {
-				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+				h_errno = NO_RECOVERY;
 				return (NULL);
 			}
 			pvt->net.n_name = strcpy(bp, name);
@@ -337,7 +277,7 @@ get1101answer(struct irs_nw *this,
 			int n = addrlen / 8 + ((addrlen % 8) != 0);
 
 			if (INADDRSZ > buflen) {
-				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+				h_errno = NO_RECOVERY;
 				return (NULL);
 			}
 			memset(bp, 0, INADDRSZ);
@@ -358,9 +298,9 @@ get1101answer(struct irs_nw *this,
 		int n = dn_expand(ansbuf, eom, cp, bp, buflen);
 
 		cp += n;		/* Owner */
-		if (n < 0 || !maybe_dnok(pvt->res, bp) ||
+		if (n < 0 || !res_dnok(bp) ||
 		    cp + 3 * INT16SZ + INT32SZ > eom) {
-			RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+			h_errno = NO_RECOVERY;
 			return (NULL);
 		}
 		GETSHORT(type, cp);	/* Type */
@@ -371,8 +311,8 @@ get1101answer(struct irs_nw *this,
 			int nn;
 
 			nn = dn_expand(ansbuf, eom, cp, bp, buflen);
-			if (nn < 0 || !maybe_hnok(pvt->res, bp) || nn != n) {
-				RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+			if (nn < 0 || !res_hnok(bp) || nn != n) {
+				h_errno = NO_RECOVERY;
 				return (NULL);
 			}
 			normalize_name(bp);
@@ -398,7 +338,7 @@ get1101answer(struct irs_nw *this,
 					   &b1, &b2, &b3, &b4) != 4)
 					break;
 				if (buflen < INADDRSZ) {
-					RES_SET_H_ERRNO(pvt->res, NO_RECOVERY);
+					h_errno = NO_RECOVERY;
 					return (NULL);
 				}
 				pvt->net.n_addr = bp;
@@ -415,7 +355,7 @@ get1101answer(struct irs_nw *this,
 		cp += n;		/* RDATA */
 	}
 	if (!haveanswer) {
-		RES_SET_H_ERRNO(pvt->res, TRY_AGAIN);
+		h_errno = TRY_AGAIN;
 		return (NULL);
 	}
 	*ap = NULL;
@@ -424,8 +364,7 @@ get1101answer(struct irs_nw *this,
 }
 
 static struct nwent *
-get1101mask(struct irs_nw *this, struct nwent *nwent) {
-	struct pvt *pvt = (struct pvt *)this->private;
+get1101mask(struct nwent *nwent) {
 	char qbuf[sizeof "255.255.255.255.in-addr.arpa"], owner[MAXDNAME];
 	int anslen, type, class, ancount, qdcount;
 	u_char ansbuf[MAXPACKET], *cp, *eom;
@@ -440,7 +379,7 @@ get1101mask(struct irs_nw *this, struct nwent *nwent) {
 	}
 
 	/* Query for the A RR that would hold this network's mask. */
-	anslen = res_nquery(pvt->res, qbuf, C_IN, T_A, ansbuf, sizeof ansbuf);
+	anslen = res_query(qbuf, C_IN, T_A, ansbuf, sizeof ansbuf);
 	if (anslen < HFIXEDSZ)
 		return (nwent);
 
@@ -461,7 +400,7 @@ get1101mask(struct irs_nw *this, struct nwent *nwent) {
 	while (--ancount >= 0 && cp < eom) {
 		int n = dn_expand(ansbuf, eom, cp, owner, sizeof owner);
 
-		if (n < 0 || !maybe_dnok(pvt->res, owner))
+		if (n < 0 || !res_dnok(owner))
 			break;
 		cp += n;		/* Owner */
 		if (cp + 3 * INT16SZ + INT32SZ > eom)
@@ -545,16 +484,4 @@ normalize_name(char *name) {
 	/* Remove trailing dots. */
 	while (t > name && t[-1] == '.')
 		*--t = '\0';
-}
-
-static int
-init(struct irs_nw *this) {
-	struct pvt *pvt = (struct pvt *)this->private;
-	
-	if (!pvt->res && !nw_res_get(this))
-		return (-1);
-	if (((pvt->res->options & RES_INIT) == 0) &&
-	    res_ninit(pvt->res) == -1)
-		return (-1);
-	return (0);
 }

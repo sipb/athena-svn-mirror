@@ -4,8 +4,7 @@ uname=/usr/bin/uname
 
 if [ -f $uname ]; then
 	case `$uname -s`-`$uname -r` in
-	HP-UX-B.10.30) exit 0 ;;
-	HP-UX-B.11.*) exit 0 ;;
+	HP-UX-B.10.*) exit 0 ;;
 	esac
 fi
 

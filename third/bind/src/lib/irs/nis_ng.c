@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: nis_ng.c,v 1.1.1.3 1999-03-16 19:45:45 danw Exp $";
+static const char rcsid[] = "$Id: nis_ng.c,v 1.2 2000-04-22 04:41:51 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -34,7 +34,7 @@ static int __bind_irs_nis_unneeded;
 #include <rpcsvc/yp_prot.h>
 #include <rpcsvc/ypclnt.h>
 
-#include <isc/assertions.h>
+#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <netdb.h>
@@ -42,11 +42,6 @@ static int __bind_irs_nis_unneeded;
 #include <stdlib.h>
 #include <string.h>
 
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
-
-#include <isc/memcluster.h>
 #include <irs.h>
 
 #include "port_after.h"
@@ -96,13 +91,13 @@ irs_nis_ng(struct irs_acc *this) {
 	struct irs_ng *ng;
 	struct pvt *pvt;
 
-	if (!(ng = memget(sizeof *ng))) {
+	if (!(ng = malloc(sizeof *ng))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(ng, 0x5e, sizeof *ng);
-	if (!(pvt = memget(sizeof *pvt))) {
-		memput(ng, sizeof *ng);
+	if (!(pvt = (struct pvt *)malloc(sizeof *pvt))) {
+		free(ng);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -124,13 +119,14 @@ ng_close(struct irs_ng *this) {
 	struct pvt *pvt = (struct pvt *)this->private;
 
 	tmpfree(pvt);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static int
 ng_next(struct irs_ng *this, char **host, char **user, char **domain) {
 	struct pvt *pvt = (struct pvt *)this->private;
+	struct netgrp *rval;
 
 	if (!pvt->cur)
 		return (0);
@@ -163,6 +159,7 @@ ng_test(struct irs_ng *this, const char *name,
 static void
 ng_rewind(struct irs_ng *this, const char *name) {
 	struct pvt *pvt = (struct pvt *)this->private;
+	struct netgrp *rval;
 
 	/* Either hand back or free the existing list. */
 	if (pvt->tmpgroup) {
@@ -197,10 +194,7 @@ add_group_to_list(struct pvt *pvt, const char *name, int len) {
 	r = yp_match(pvt->nis_domain, netgroup_map, (char *)name, len,
 		     &vdata, &vlen);
 	if (r == 0) {
-		cp = vdata;
-		if (*cp && cp[strlen(cp)-1] == '\n')
-                  cp[strlen(cp)-1] = '\0';
-		for ( ; cp; cp = np) {
+		for (cp = vdata; cp; cp = np) {
 			np = strchr(cp, ' ');
 			if (np)
 				*np++ = '\0';
@@ -218,7 +212,7 @@ add_tuple_to_list(struct pvt *pvt, const char *name, char *cp) {
 	struct tmpgrp *tmp;
 	char *tp, *np;
 
-	INSIST(*cp++ == '(');
+	assert(*cp++ == '(');
 
 	tmp = malloc(sizeof *tmp + strlen(name) + sizeof '\0' +
 		     strlen(cp) - sizeof ')');

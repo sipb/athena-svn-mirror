@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 1996-1999 by Internet Software Consortium
+/* Copyright (c) 1996, 1997, 1998 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,7 +19,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: ev_streams.c,v 1.1.1.3 1999-03-16 19:46:08 danw Exp $";
+static const char rcsid[] = "$Id: ev_streams.c,v 1.2 2000-04-22 04:42:07 ghudson Exp $";
 #endif
 
 #include "port_before.h"

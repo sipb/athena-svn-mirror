@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 /*
- * $Id: nis_p.h,v 1.1.1.2 1999-03-16 19:45:30 danw Exp $
+ * $Id: nis_p.h,v 1.2 2000-04-22 04:41:51 ghudson Exp $
  */
 
 /*
@@ -27,9 +27,7 @@
  * Object state.
  */
 struct nis_p {
-	char *			domain;
-	struct __res_state *	res;
-	void                    (*free_res) __P((void *));
+	char *		domain;
 };
 
 
