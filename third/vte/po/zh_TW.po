@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: vte 0.10.8\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2003-01-10 23:39+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -66,52 +66,52 @@ msgstr "從副程序讀取資料時出現錯誤：%s"
 msgid "Error (%s) converting data for child, dropping."
 msgstr "從副程序轉換資料時出現錯誤 (%s)，放棄。"
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr "使用字集“%s”，但它缺少了以下的字元集：%s。"
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr "無法載入 Xft 字型樣式“%s”，使用預設字型作為後備。"
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "無法載入預設的 Xft 字型。"
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr "無法載入字集“%s”，使用預設字型作為後備。"
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr "無法載入預設字型，可能會突然中止或無法正常運作。"
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "無法獲取 PTY 的尺寸，使用預設定值：%s。"
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "無法設定 PTY 的尺寸：%s。"
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr "分配記憶體給 draw 結構時出現錯誤，停止使用 Xft。"
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr "分配記憶體給 context 時出現錯誤，停止使用 Pango。"
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr "分配記憶體給 layout 時出現錯誤，停止使用 Pango。"
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr "g_iconv_open() 無法轉換字元"

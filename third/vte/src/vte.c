@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.1.1.1 2003-01-29 21:57:59 ghudson Exp $"
+#ident "$Id: vte.c,v 1.1.1.2 2003-02-12 07:02:49 ghudson Exp $"
 #include "../config.h"
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -7125,8 +7125,8 @@ vte_terminal_process_incoming(gpointer data)
 			}
 		}
 
-		/* Add the cell we just moved to the region we need to
-		 * refresh for the user. */
+		/* Add the cell into which we just moved to the region we
+		 * need to refresh for the user. */
 		bbox_topleft.x = MIN(bbox_topleft.x,
 				     screen->cursor_current.col);
 		bbox_topleft.y = MIN(bbox_topleft.y,
@@ -9532,14 +9532,19 @@ vte_terminal_button_press(GtkWidget *widget, GdkEventButton *event)
 				fprintf(stderr, "Handling click ourselves.\n");
 			}
 #endif
-			/* If the user hit shift, override event mode. */
-			if ((terminal->pvt->modifiers & GDK_SHIFT_MASK) ||
-			    !event_mode) {
-				/* If shift is pressed in non-event
-				 * mode, extend selection if the cell
-				 * isn't already selected, otherwise
-				 * start selection. */
-				if (terminal->pvt->has_selection &&
+			/* If we're in event mode, and the user held down the
+			 * shift key, we start selecting. */
+			if (event_mode) {
+				if (terminal->pvt->modifiers & GDK_SHIFT_MASK) {
+					start_selecting = TRUE;
+				}
+			} else {
+				/* If the user hit shift, and the location
+				 * clicked isn't selected, and we already have
+				 * a selection, extend selection, otherwise
+				 * start over. */
+				if ((terminal->pvt->modifiers & GDK_SHIFT_MASK) &&
+				    terminal->pvt->has_selection &&
 				    !vte_cell_is_selected(terminal,
 							  cellx,
 							  celly,
@@ -12232,9 +12237,11 @@ vte_unichar_isgraphic(gunichar c)
 		return TRUE;
 	}
 	switch (c) {
+	case 0x00a3: /* british pound */
 	case 0x00b0: /* degree */
 	case 0x00b1: /* plus/minus */
 	case 0x00b7: /* bullet */
+	case 0x03c0: /* pi */
 	case 0x2190: /* left arrow */
 	case 0x2191: /* up arrow */
 	case 0x2192: /* right arrow */
@@ -12252,6 +12259,9 @@ vte_unichar_isgraphic(gunichar c)
 	case 0x240c: /* FF symbol */
 	case 0x240d: /* CR symbol */
 	case 0x2424: /* NL symbol */
+	case 0x2592: /* checkerboard */
+	case 0x25ae: /* solid rectangle */
+	case 0x25c6: /* diamond */
 		return TRUE;
 		break;
 	default:

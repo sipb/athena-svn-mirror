@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2003-01-04 15:47+0100\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -68,55 +68,55 @@ msgstr "Chyba pri čítaní z potomka: %s."
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Chyba (%s) pri prevode dát pre potomka, končím."
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr "Použitie sady písiem \"%s\", v ktorej chýbajú tieto sady znakov: %s."
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr ""
 "Nepodarilo sa načítať vzorku písiem Xft \"%s\", použijem štandardné písmo."
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "Nepodarilo sa načítať štandardné písmo Xft."
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr "Nepodarilo sa načítať sadu písiem \"%s\", použijem štandardné písmo."
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr ""
 "Nepodarilo sa načítať štandardné písmo, dá sa očakávať pád alebo neobvyklé "
 "chovanie."
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "Chyba pri čítaní veľkosti PTY, použijem štandardné: %s."
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Chyba pri čítaní veľkosti PTY: %s."
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr "Chyba pri alokácii kresliacej plochy, vypínam Xft."
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr "Chyba pri alokácii kontextu, vypínam Pango."
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr "Chyba pri alokácii rozloženia, vypínam PangoXft."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr "g_iconv_open() zlyhal pri nastavení znakov slov"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: vte 0.10.14\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2003-01-24 10:44+0900\n"
 "Last-Translator: Nam SungHyun <namsh@kldp.org>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
@@ -66,52 +66,52 @@ msgstr "자식으로 부터 읽기 에러: %s."
 msgid "Error (%s) converting data for child, dropping."
 msgstr "자식을 위한 데이타 변환 에러 (%s), 그만둡니다."
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr "다음 문자셋에 없는 글꼴셋 \"%s\"을(를) 사용: %s."
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr "Xft 글꼴 패턴 \"%s\"을(를) 읽기 실패, 기본 글꼴을 사용합니다."
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "기본 Xft 글꼴을 읽는 데 실패했습니다."
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr "글꼴셋 \"%s\"을(를) 읽기 실패, 기본 글꼴을 사용합니다."
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr "기본 글꼴을 읽기 실패, 죽거나 이상하게 동작할 수 있습니다."
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "PTY 크기 읽기 에러, 기본값 사용: %s."
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "PTY 크기 설정 에러: %s."
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr "draw 할당 에러, Xft를 사용하지 않습니다."
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr "콘텍스트 할당 에러, Pango를 사용하지 않습니다."
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr "레이아웃 할당 에러, Pango를 사용하지 않습니다."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr "g_iconv_open()가 단어 문자들을 설정하는 데 실패했습니다"

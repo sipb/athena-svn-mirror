@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VTE\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2002-09-11 13:55GMT-03:00\n"
 "Last-Translator: Germán Poo Caamaño <gpoo@ubiobio.cl>\n"
 "Language-Team: Español <traductores@es.gnome.org>\n"
@@ -69,63 +69,63 @@ msgstr "Ha ocurrido un error al leer desde el hijo: %s"
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Ha ocurrido un error (%s) al convertir datos desde el hijo, omitiendo."
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr ""
 "Se esta usando el juego de tipografía «%s», el cual no posee este juego de "
 "caracteres: %s."
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr ""
 "Ha fallado la carga del patrón de tipografía Xft «%s», volviendo a la "
 "tipografía predeterminada."
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "Ha fallado la carga del la tipografía predeterminada Xft."
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr ""
 "Ha fallado la carga del conjunto de tipografía «%s», volviendo a la "
 "tipografía predeterminada."
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr ""
 "Ha fallado la carga de la tipografía predeterminada, ha fallado o se ha "
 "comportado anormalmente."
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "Ha ocurrido un error al leer el tamaño PTY, utilizando el predeterminado: %s."
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Ha ocurrido un error al establecer el tamaño del PTY: %s."
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr ""
 "Ha ocurrido un error al reservar memoria de dibujo, deshabilitando Xft."
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr "Ha ocurrido un error al ubicar el contexto, deshabilitando Pango."
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr "Ha ocurrido un error al ubicar el formato, deshabilitando Pango."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr ""
 "Ha ocurrido un error en g_iconv_open() al establecer los caracteres de la "

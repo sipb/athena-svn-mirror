@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: vte.HEAD\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2003-01-16 21:13+0100\n"
 "Last-Translator: Sanlig Badral <badral@chinggis.com>\n"
 "Language-Team: mongolian <mn@li.org>\n"
@@ -68,53 +68,53 @@ msgstr "Хүүг уншихад алдаа: %s."
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Хүүгийн өгөгдлийн хөрвүүлэлтэнд алдаа (%s) гарч тасарлаа."
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr "»%s« бичгийн хэвүүдийг хэрэглэхэд дараах тэмдэгтүүд дутуу байна: %s."
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr ""
 "»%s« Xft-бичгийн хэвүүдийг ачаалахад боломжгүй, стандарт бичиг рүү буцах."
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "Стандарт Xft-бичиг ачаалах бүтсэнгүй"
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr "»%s« бичгийн хэвүүдийг ачаалахад боломжгүй, стандарт бичиг рүү буцах."
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr "Стандарт бичиг ачаалах нурлаа. Гацаа эсвэл энгийн бус харьцаа."
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "PTY-хэмжээ уншихад алдаа, стандартыг хэрэглэх: %s."
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "PTY-хэмжээ тогтооход алдаа: %s."
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr "Зургийг эмхлэхэд алдаа, Xft хаагдав."
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr "Контекст эмхлэхэд алдаа, Pango хаагдав."
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr "layout эмхлэхэд алдаа, Pango хаагдав."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr "g_iconv_open() үгийн тэмдэгтүүдийг тогтоож чадсангүй"
