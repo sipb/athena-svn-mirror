@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.12 2003-05-13 22:33:42 ghudson Exp $
+# $Id: Makefile.in,v 1.13 2003-05-20 18:31:36 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -25,8 +25,7 @@ ALL_CFLAGS=-I/usr/include/rpm -DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} \
 all: rpmupdate
 
 rpmupdate: rpmupdate.o
-	${CC} ${LDFLAGS} -o rpmupdate rpmupdate.o ${LIBS} -lrpm -lrpmio \
-	  -lrpmdb -lpopt -lz -lbz2 -lpthread -lelf
+	${CC} ${LDFLAGS} -o rpmupdate rpmupdate.o ${LIBS} -lrpm
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
