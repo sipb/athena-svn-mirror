@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.22 1988-09-07 18:14:59 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.23 1988-09-09 17:10:36 shanzer Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.22 1988-09-07 18:14:59 shanzer Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.23 1988-09-09 17:10:36 shanzer Exp $";
 #endif	lint
 
 /*
@@ -1185,8 +1185,7 @@ attach_homedir()
 	if (!(attachpid = fork())) {
 		setuid(pwd->pw_uid);
 		freopen("/dev/null","w",stdout);
-		freopen("/dev/null","w",stderr);
-		execl("/bin/athena/attach","attach",lusername,0);
+		execl("/bin/athena/attach","attach","-q", lusername,0);
 		exit (-1);
 	} 
 	while (wait(&status) != attachpid)
