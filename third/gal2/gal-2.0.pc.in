@@ -8,5 +8,5 @@ Description: GNOME Application Library
 Version: @VERSION@
 Requires: gtk+-2.0 libxml-2.0 libglade-2.0 libgnomeprint-2.2
 
-Libs: -L${libdir} -lgal-2.0
+Libs: -L${libdir} -lgal-2.0 -lgal-a11y-2.0
 Cflags: -I${includedir}/gal-2.0

@@ -1,4 +1,23 @@
 ----------------------
+gal-1.99.10  2003-09-12
+----------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+	#43156 - multiple column sorting not persistent. (Mike)
+	#47474 - make e_filename_make_safe utf8 friendly. (Suresh Chandrasekharan)
+	#47874 - Warnings trying to open files that don't exist. (Harry Lu)
+	#48153 - field chooser dialog adds wrong fields to table views. (Mike)
+
+Other bugs and changes:
+
+	- build system fixes (Rodney, Dan, Stanislav Brabec)
+	- a11y library restructuring (Gilbert Fang)
+	- S-F10 popup menu binding for etext (Maxx Cao)
+	- updated translations: de (Christian Neumair), mk (Abel Cheung), nl (Vincent van Adrighem) fr (Christophe Merlet)
+
+
+----------------------
 gal-1.99.9  2003-07-28
 ----------------------
 

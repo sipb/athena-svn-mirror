@@ -717,7 +717,7 @@ uninstall-am: uninstall-gladeDATA uninstall-info-am \
 	tags uninstall uninstall-am uninstall-gladeDATA \
 	uninstall-info-am uninstall-libetableincludeHEADERS
 
-#	 sample.table		\
+#	 sample.table
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -1,3 +1,28 @@
+2003-09-11  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-config.c (get_source_model_col_index): new method to
+	get the source model column for a specified available_model idx.
+	(create_global_store): save the source model index in a new col.
+	(config_button_add): use the new index lookup function.
+
+2003-09-11  Mike Kestner  <mkestner@ximian.com>
+
+	* e-table-sort-info.c (e_table_sort_info_load_from_node): move
+	the scnt and gcnt initializations outside the for loop. [43156]
+
+2003-08-26  Harry Lu  <harry.lu@sun.com>
+
+	** For bug #47874.
+
+	* e-table-specification.c (e_table_specification_load_from_file):
+	check whether file exists before call xmlParseFile().
+	* e-table-state.c (e_table_state_load_from_file): ditto.
+	* e-tree-table-adapter.c (open_file): ditto.
+
+2003-08-08  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* Makefile.am: Removed trailing backslash on last line.
+
 2003-07-28  Mike Kestner  <mkestner@ximian.com>
 
 	* e-table-config (setup_fields): map model_column to available

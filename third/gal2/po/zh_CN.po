@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2003-07-28 11:55-0500\n"
+"POT-Creation-Date: 2003-09-11 17:09-0500\n"
 "PO-Revision-Date: 2003-06-18 13:38+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -90,7 +90,7 @@ msgstr "给列着色"
 
 # gal/menus/gal-view-factory-etable.c:38
 #: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3447 gal/e-text/e-text.c:3448
+#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
 msgid "Editable"
 msgstr "可编辑"
 
@@ -110,8 +110,8 @@ msgstr "标题"
 
 #: gal/e-table/e-table-click-to-add.c:463
 #: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
-#: gal/e-text/e-text.c:3312
+#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
+#: gal/e-text/e-text.c:3357
 msgid "Model"
 msgstr "模型"
 
@@ -122,16 +122,16 @@ msgstr "消息"
 #: gal/e-table/e-table-click-to-add.c:477
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3489
-#: gal/e-text/e-text.c:3490
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
+#: gal/e-text/e-text.c:3535
 msgid "Width"
 msgstr "宽度"
 
 #: gal/e-table/e-table-click-to-add.c:484
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3497
-#: gal/e-text/e-text.c:3498
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
+#: gal/e-text/e-text.c:3543
 msgid "Height"
 msgstr "高度"
 
@@ -270,27 +270,27 @@ msgid "dialog1"
 msgstr "dialog1"
 
 # gal/widgets/e-categories-master-list-array.c:80
-#: gal/e-table/e-table-config.c:154
+#: gal/e-table/e-table-config.c:152
 msgid "State"
 msgstr "状态"
 
 # gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Ascending)"
 msgstr "(升序)"
 
 # gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Descending)"
 msgstr "(降序)"
 
 # gal/e-table/e-table-config.c:289
-#: gal/e-table/e-table-config.c:318
+#: gal/e-table/e-table-config.c:316
 msgid "Not sorted"
 msgstr "未排序"
 
 # gal/e-table/e-table-config.c:330
-#: gal/e-table/e-table-config.c:359
+#: gal/e-table/e-table-config.c:357
 msgid "No grouping"
 msgstr "未分组"
 
@@ -1064,131 +1064,131 @@ msgstr "光标模式"
 
 # gal/e-table/e-table-config-no-group.glade.h:4
 # gal/e-table/e-table-config.glade.h:4
-#: gal/e-text/e-text.c:2561
+#: gal/e-text/e-text.c:2598
 msgid "Select All"
 msgstr "全部选中"
 
-#: gal/e-text/e-text.c:2573
+#: gal/e-text/e-text.c:2610
 msgid "Input Methods"
 msgstr "输入法"
 
-#: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
+#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
 msgid "Event Processor"
 msgstr "事件处理器"
 
-#: gal/e-text/e-text.c:3325 gal/e-text/e-text.c:3326
+#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
 msgid "Text"
 msgstr "文字"
 
 # gal/widgets/color-palette.c:604
-#: gal/e-text/e-text.c:3332 gal/e-text/e-text.c:3333
+#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
 msgid "Bold"
 msgstr "粗体"
 
-#: gal/e-text/e-text.c:3339 gal/e-text/e-text.c:3340
+#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
 msgid "Strikeout"
 msgstr "删除线"
 
-#: gal/e-text/e-text.c:3346 gal/e-text/e-text.c:3347
+#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
 msgid "Anchor"
 msgstr "锚点"
 
-#: gal/e-text/e-text.c:3354 gal/e-text/e-text.c:3355
+#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
 msgid "Justification"
 msgstr "两端对齐"
 
-#: gal/e-text/e-text.c:3361 gal/e-text/e-text.c:3362
+#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
 msgid "Clip Width"
 msgstr "裁剪宽度"
 
-#: gal/e-text/e-text.c:3368 gal/e-text/e-text.c:3369
+#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
 msgid "Clip Height"
 msgstr "裁剪高度"
 
-#: gal/e-text/e-text.c:3375 gal/e-text/e-text.c:3376
+#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
 msgid "Clip"
 msgstr "裁剪"
 
-#: gal/e-text/e-text.c:3382 gal/e-text/e-text.c:3383
+#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
 msgid "Fill clip rectangle"
 msgstr "填充裁剪矩形"
 
-#: gal/e-text/e-text.c:3389 gal/e-text/e-text.c:3390
+#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
 msgid "X Offset"
 msgstr "水平偏移"
 
-#: gal/e-text/e-text.c:3396 gal/e-text/e-text.c:3397
+#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
 msgid "Y Offset"
 msgstr "垂直偏移"
 
 # gal/e-table/e-table-field-chooser.glade.h:1
-#: gal/e-text/e-text.c:3403 gal/e-text/e-text.c:3404
+#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
 msgid "Fill color"
 msgstr "填充颜色"
 
-#: gal/e-text/e-text.c:3410 gal/e-text/e-text.c:3411 gal/e-text/e-text.c:3418
-#: gal/e-text/e-text.c:3419
+#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
+#: gal/e-text/e-text.c:3464
 msgid "GDK fill color"
 msgstr "GDK 填充颜色"
 
 # gal/widgets/color-palette.c:608
-#: gal/e-text/e-text.c:3425 gal/e-text/e-text.c:3426
+#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
 msgid "Fill stipple"
 msgstr "点绘填充"
 
-#: gal/e-text/e-text.c:3432 gal/e-text/e-text.c:3433
+#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
 msgid "Text width"
 msgstr "文字宽度"
 
-#: gal/e-text/e-text.c:3439 gal/e-text/e-text.c:3440
+#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
 msgid "Text height"
 msgstr "文字高度"
 
-#: gal/e-text/e-text.c:3454 gal/e-text/e-text.c:3455
+#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
 msgid "Use ellipsis"
 msgstr "使用椭圆"
 
-#: gal/e-text/e-text.c:3461 gal/e-text/e-text.c:3462
+#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
 msgid "Ellipsis"
 msgstr "椭圆"
 
-#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
+#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
 msgid "Line wrap"
 msgstr "换行"
 
-#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
+#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
 msgid "Break characters"
 msgstr "换行字符"
 
-#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
+#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
 msgid "Max lines"
 msgstr "最多行数"
 
-#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
+#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
 msgid "Draw borders"
 msgstr "绘制边框"
 
-#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
+#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
 msgid "Allow newlines"
 msgstr "允许新行"
 
-#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
+#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
 msgid "Draw background"
 msgstr "绘制背景"
 
-#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
+#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
 msgid "Draw button"
 msgstr "绘制按钮"
 
 # gal/widgets/color-palette.c:472
-#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
+#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
 msgid "Cursor position"
 msgstr "光标位置"
 
-#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
+#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
 msgid "IM Context"
 msgstr "输入法环境"
 
-#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
+#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
 msgid "Handle Popup"
 msgstr "处理弹出"
