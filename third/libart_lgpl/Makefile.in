@@ -59,12 +59,19 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 CC = @CC@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 LIBART_INCLUDEDIR = @LIBART_INCLUDEDIR@
 LIBART_LIBDIR = @LIBART_LIBDIR@
 LIBART_LIBS = @LIBART_LIBS@
@@ -81,6 +88,7 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ms_librarian = @ms_librarian@
@@ -99,13 +107,17 @@ lib_LTLIBRARIES = libart_lgpl_2.la
 
 @OS_WIN32_TRUE@no_undefined = -no-undefined
 
+@OS_WIN32_TRUE@export_symbols = -export-symbols libart.def
+
+@OS_WIN32_FALSE@libm = -lm
+
 @MS_LIB_AVAILABLE_TRUE@noinst_DATA = art_lgpl_2.lib
 
 libart_lgpl_2_la_SOURCES =  	art_affine.c 	art_alphagamma.c 	art_bpath.c 	art_gray_svp.c 	art_misc.c 	art_pixbuf.c 	art_rect.c 	art_rect_svp.c 	art_rect_uta.c 	art_render.c 	art_render_gradient.c 	art_render_mask.c 	art_render_svp.c 	art_rgb.c 	art_rgb_affine.c 	art_rgb_affine_private.c 	art_rgb_affine_private.h 	art_rgb_bitmap_affine.c 	art_rgb_pixbuf_affine.c 	art_rgb_rgba_affine.c 	art_rgb_a_affine.c 	art_rgba.c 	art_rgb_svp.c 	art_svp.c 	art_svp_intersect.c 	art_svp_ops.c 	art_svp_point.c 	art_svp_render_aa.c 	art_svp_vpath.c 	art_svp_vpath_stroke.c 	art_svp_wind.c 	art_uta.c 	art_uta_ops.c 	art_uta_rect.c 	art_uta_vpath.c 	art_uta_svp.c 	art_vpath.c 	art_vpath_bpath.c 	art_vpath_dash.c 	art_vpath_svp.c		libart-features.c
 
 
-libart_lgpl_2_la_LDFLAGS = -version-info @LIBART_VERSION_INFO@ $(no_undefined)
-libart_lgpl_2_la_LIBADD = -lm
+libart_lgpl_2_la_LDFLAGS = -version-info @LIBART_VERSION_INFO@ $(no_undefined) $(export_symbols)
+libart_lgpl_2_la_LIBADD = $(libm)
 
 libart_lgplincdir = $(includedir)/libart-2.0/libart_lgpl
 libart_lgplinc_HEADERS =  	art_affine.h 	art_alphagamma.h 	art_bpath.h 	art_config.h 	art_filterlevel.h 	art_gray_svp.h 	art_misc.h 	art_pathcode.h 	art_pixbuf.h 	art_point.h 	art_rect.h 	art_rect_svp.h 	art_rect_uta.h 	art_render.h 	art_render_gradient.h 	art_render_mask.h 	art_render_svp.h 	art_rgb.h 	art_rgb_affine.h 	art_rgb_bitmap_affine.h 	art_rgb_pixbuf_affine.h 	art_rgb_rgba_affine.h 	art_rgb_a_affine.h 	art_rgb_svp.h 	art_rgba.h 	art_svp.h 	art_svp_intersect.h 	art_svp_ops.h 	art_svp_point.h 	art_svp_render_aa.h 	art_svp_vpath.h 	art_svp_vpath_stroke.h 	art_svp_wind.h 	art_uta.h 	art_uta_ops.h 	art_uta_rect.h 	art_uta_vpath.h 	art_uta_svp.h 	art_vpath.h 	art_vpath_bpath.h 	art_vpath_dash.h 	art_vpath_svp.h		libart.h		libart-features.h
@@ -119,12 +131,12 @@ LDADDS = $(top_builddir)/libart_lgpl_2.la
 testart_SOURCES = testart.c
 testart_LDFLAGS = 
 testart_DEPENDENCIES = $(DEPS)
-testart_LDADD = $(LDADDS) -lm
+testart_LDADD = $(LDADDS) $(libm)
 
 testuta_SOURCES = testuta.c
 testuta_LDFLAGS = 
 testuta_DEPENDENCIES = $(DEPS)
-testuta_LDADD = $(LDADDS) -lm
+testuta_LDADD = $(LDADDS) $(libm)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libart-2.0.pc
@@ -140,7 +152,8 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libart_lgpl_2_la_DEPENDENCIES = 
+@OS_WIN32_FALSE@libart_lgpl_2_la_DEPENDENCIES = 
+@OS_WIN32_TRUE@libart_lgpl_2_la_DEPENDENCIES = 
 libart_lgpl_2_la_OBJECTS =  art_affine.lo art_alphagamma.lo art_bpath.lo \
 art_gray_svp.lo art_misc.lo art_pixbuf.lo art_rect.lo art_rect_svp.lo \
 art_rect_uta.lo art_render.lo art_render_gradient.lo art_render_mask.lo \
@@ -572,8 +585,6 @@ art_vpath_dash.lo art_vpath_dash.o : art_vpath_dash.c config.h \
 art_vpath_svp.lo art_vpath_svp.o : art_vpath_svp.c config.h \
 	art_vpath_svp.h art_svp.h art_rect.h art_point.h art_vpath.h \
 	art_pathcode.h art_misc.h art_config.h
-composite.o: composite.c art_render.h art_alphagamma.h art_misc.h \
-	art_config.h
 gen_art_config.o: gen_art_config.c config.h
 libart-features.lo libart-features.o : libart-features.c \
 	libart-features.h
@@ -587,7 +598,7 @@ testart.o: testart.c art_misc.h art_config.h art_vpath.h art_rect.h \
 	art_svp_intersect.h
 testuta.o: testuta.c art_misc.h art_config.h art_uta.h art_vpath.h \
 	art_rect.h art_pathcode.h art_uta_vpath.h art_rect_uta.h \
-	art_uta_rect.h
+	art_uta_rect.h libart-features.h
 
 info-am:
 info: info-am
@@ -704,7 +715,7 @@ art_config.h:	gen_art_config
 @MS_LIB_AVAILABLE_TRUE@	-rm $(DESTDIR)$(libdir)/art_lgpl_2.lib
 
 @MS_LIB_AVAILABLE_TRUE@art_lgpl_2.lib : libart_lgpl_2.la
-@MS_LIB_AVAILABLE_TRUE@	lib -name:libart_lgpl_2-@LIBART_MAJOR_VERSION@.dll -def:.libs/libart_lgpl_2-@LIBART_MAJOR_VERSION@.dll-def -out:$@
+@MS_LIB_AVAILABLE_TRUE@	lib -name:libart_lgpl_2-@LIBART_MAJOR_VERSION@.dll -def:libart.def -out:$@
 
 @MS_LIB_AVAILABLE_FALSE@install-ms-lib:
 @MS_LIB_AVAILABLE_FALSE@uninstall-ms-lib:
