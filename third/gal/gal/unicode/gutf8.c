@@ -1031,7 +1031,7 @@ g_ucs4_to_utf8 (const gunichar *str,
 	  if (items_read)
 	    *items_read = i;
 	  
-	  g_error (_("Character out of range for UTF-8"));
+	  utf8_error_msg (_("Character out of range for UTF-8"));
 	  goto err_out;
 	}
       

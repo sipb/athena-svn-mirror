@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-07-18 09:14+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -225,26 +225,6 @@ msgstr "可用的欄位"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "用這個次序顯示"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d 項目)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d 項目)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d 項目)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d 項目)"
 
 # gal/e-table/e-table-header-item.c:1254
 #: gal/e-table/e-table-header-item.c:1294
@@ -806,3 +786,15 @@ msgstr "修改的類別 (_C)："
 # gal/e-table/e-table-config.glade.h:18
 #~ msgid "_Fields..."
 #~ msgstr "欄位 (_F)..."
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d 項目)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d 項目)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d 項目)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d 項目)"

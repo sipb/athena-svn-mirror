@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal CVS\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-10-01 23:06+0900\n"
 "Last-Translator: Takuo KITAME <kitame@debian.org>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -187,26 +187,6 @@ msgstr "可能な項目"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "順番に表示"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d 項目)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d 項目)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d 項目)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d 項目)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -644,6 +624,18 @@ msgstr "追加するカテゴリ(_C):"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "変更するカテゴリ(_C):"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d 項目)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d 項目)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d 項目)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d 項目)"
 
 #~ msgid "Table HERE"
 #~ msgstr "テーブル"

@@ -1,3 +1,26 @@
+2001-11-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c (eti_event): Ungrab and set maybe_in_grab to
+	FALSE before sending the double click signal.
+
+2001-11-10  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table.c (group_key_press), e-tree.c (item_key_press): Handle
+	the case where page up or page down goes off the end of the table
+	or tree.
+
+2001-11-08  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-sorter.c (ets_sort_info_changed): Make a printout here
+	be conditionally compiled (and compiled out by default.)
+
+
+2001-11-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-selection-model.c (etsm_select_all): Don't select all if
+	the source model doesn't have a root node (it used to crash.)
+	Fixes Ximian bug #14542.
+
 2001-11-03  Christopher James Lahey  <clahey@ximian.com>
 
 	* e-cell-popup.c, e-cell-popup.h (e_cell_popup_set_shown,

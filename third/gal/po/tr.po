@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.10.99.4\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-08-21 09:10+0300\n"
 "Last-Translator: KEMAL YILMAZ <kyilmaz@uekae.tubitak.gov.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -186,26 +186,6 @@ msgstr "Varolan alanlar"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Bu sýrada göster"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d eleman)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d eleman)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d eleman)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d eleman)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -646,3 +626,15 @@ msgstr "_Deðiþtirilecek Kategori:"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Alanlar..."
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d eleman)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d eleman)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d eleman)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d eleman)"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.12.99.1\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-09-26 17:39GMT +0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkish <linuxaz@azerimal.net>\n"
@@ -187,26 +187,6 @@ msgstr "Mövcud sahələr"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Bu sırada göstər"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d üzv)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d üzv)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d üzv)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d üzv)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -644,3 +624,15 @@ msgstr "Əlavə Ediləcək _Kateqoriya:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "Düzəldiləcək _Kateqoriya:"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d üzv)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d üzv)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d üzv)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d üzv)"

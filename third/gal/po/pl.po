@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-09-01 10:59+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -190,26 +190,6 @@ msgstr "Dostêpne pola"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Pola w kolejno¶ci wy¶wietlania"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s: %s (%d element)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d elementów)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d element)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d elementów)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -650,3 +630,15 @@ msgstr "Modyfikowana kategoria:"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Pola..."
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s: %s (%d element)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d elementów)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d element)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d elementów)"

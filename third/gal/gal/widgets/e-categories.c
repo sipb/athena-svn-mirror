@@ -465,14 +465,9 @@ table_right_click (ETable *table, int row, int col, GdkEvent *event, ECategories
 static void
 e_categories_init (ECategories *categories)
 {
-	GladeXML *gui;
-	GtkWidget *table;
-	GtkWidget *e_table;
-	GtkWidget *button;
-	ECategoriesMasterList *ecml;
-
 	categories->priv = g_new(ECategoriesPriv, 1);
 
+	categories->priv->gui = NULL;
 	categories->priv->ecml = NULL;
 
 	categories->priv->list_length = 0;
@@ -481,79 +476,6 @@ e_categories_init (ECategories *categories)
 	categories->priv->categories = g_strdup ("");
 	categories->priv->ecmld = NULL;
 	categories->priv->ecmld_destroy_id = 0;
-
-	gnome_dialog_append_button ( GNOME_DIALOG(categories),
-				     GNOME_STOCK_BUTTON_OK);
-	
-	gnome_dialog_append_button ( GNOME_DIALOG(categories),
-				     GNOME_STOCK_BUTTON_CANCEL);
-
-	gnome_dialog_set_default (GNOME_DIALOG (categories), 0);
-
-	gtk_window_set_policy(GTK_WINDOW(categories), FALSE, TRUE, FALSE);
-
-	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-categories.glade", NULL, PACKAGE);
-	categories->priv->gui = gui;
-
-	table = glade_xml_get_widget(gui, "table-categories");
-	gtk_widget_ref(table);
-	gtk_container_remove(GTK_CONTAINER(table->parent), table);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (categories)->vbox), table, TRUE, TRUE, 0);
-	gtk_widget_unref(table);
-
-	categories->priv->entry = glade_xml_get_widget(gui, "entry-categories");
-	
-	gtk_signal_connect(GTK_OBJECT(categories->priv->entry), "changed",
-			   GTK_SIGNAL_FUNC(e_categories_entry_change), categories);
-
-	button = glade_xml_get_widget(gui, "button-ecmld");
-	
-	gtk_signal_connect(GTK_OBJECT(button), "clicked",
-			   GTK_SIGNAL_FUNC(e_categories_button_clicked), categories);
-
-	categories->priv->model = e_table_simple_new(e_categories_col_count, 
-						     e_categories_row_count,
-						     NULL,
-
-						     e_categories_value_at,
-						     e_categories_set_value_at,
-						     e_categories_is_cell_editable,
-
-						     e_categories_has_save_id,
-						     e_categories_get_save_id,
-
-						     e_categories_duplicate_value,
-						     e_categories_free_value,
-						     e_categories_initialize_value,
-						     e_categories_value_is_empty,
-						     e_categories_value_to_string,
-						     categories);
-
-	e_table = e_table_scrolled_new (categories->priv->model, NULL, INITIAL_SPEC, NULL);
-
-	categories->priv->table = e_table_scrolled_get_table(E_TABLE_SCROLLED(e_table));
-	gtk_signal_connect(GTK_OBJECT(categories->priv->table), "key_press",
-			   GTK_SIGNAL_FUNC(table_key_press), categories);
-	gtk_signal_connect(GTK_OBJECT(categories->priv->table), "right_click",
-			   GTK_SIGNAL_FUNC(table_right_click), categories);
-
-	gtk_object_sink(GTK_OBJECT(categories->priv->model));
-	
-	gtk_widget_show(e_table);
-
-	gtk_table_attach_defaults(GTK_TABLE(table),
-				  e_table, 
-				  0, 1,
-				  3, 4);
-
-	gtk_widget_grab_focus (categories->priv->entry);
-	gnome_dialog_editable_enters (GNOME_DIALOG (categories), GTK_EDITABLE (categories->priv->entry));
-
-	ecml = e_categories_master_list_array_new();
-	gtk_object_set (GTK_OBJECT (categories),
-			"ecml", ecml,
-			NULL);
-	gtk_object_unref(GTK_OBJECT (ecml));
 }
 
 static void
@@ -598,13 +520,95 @@ void
 e_categories_construct (ECategories *categories,
 			const char *initial_category_list)
 {
+	GladeXML *gui;
+	GtkWidget *table;
+	GtkWidget *e_table;
+	GtkWidget *button;
+	ECategoriesMasterList *ecml;
+
 	g_return_if_fail (categories != NULL);
 	g_return_if_fail (E_IS_CATEGORIES (categories));
 	g_return_if_fail (initial_category_list != NULL);
 
-	ec_set_categories (categories->priv->entry, initial_category_list);
+	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-categories.glade", NULL, PACKAGE);
 
-	gtk_window_set_default_size (GTK_WINDOW (categories), 200, 400);
+	if (gui) {
+		categories->priv->gui = gui;
+
+		gnome_dialog_append_button ( GNOME_DIALOG(categories),
+					     GNOME_STOCK_BUTTON_OK);
+	
+		gnome_dialog_append_button ( GNOME_DIALOG(categories),
+					     GNOME_STOCK_BUTTON_CANCEL);
+
+		gnome_dialog_set_default (GNOME_DIALOG (categories), 0);
+
+		gtk_window_set_policy(GTK_WINDOW(categories), FALSE, TRUE, FALSE);
+
+		table = glade_xml_get_widget(gui, "table-categories");
+		gtk_widget_ref(table);
+		gtk_container_remove(GTK_CONTAINER(table->parent), table);
+		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (categories)->vbox), table, TRUE, TRUE, 0);
+		gtk_widget_unref(table);
+		
+		categories->priv->entry = glade_xml_get_widget(gui, "entry-categories");
+	
+		gtk_signal_connect(GTK_OBJECT(categories->priv->entry), "changed",
+				   GTK_SIGNAL_FUNC(e_categories_entry_change), categories);
+
+		button = glade_xml_get_widget(gui, "button-ecmld");
+		
+		gtk_signal_connect(GTK_OBJECT(button), "clicked",
+				   GTK_SIGNAL_FUNC(e_categories_button_clicked), categories);
+		
+		categories->priv->model = e_table_simple_new(e_categories_col_count, 
+							     e_categories_row_count,
+							     NULL,
+
+							     e_categories_value_at,
+							     e_categories_set_value_at,
+							     e_categories_is_cell_editable,
+							     
+							     e_categories_has_save_id,
+							     e_categories_get_save_id,
+							     
+							     e_categories_duplicate_value,
+							     e_categories_free_value,
+							     e_categories_initialize_value,
+							     e_categories_value_is_empty,
+							     e_categories_value_to_string,
+							     categories);
+
+		e_table = e_table_scrolled_new (categories->priv->model, NULL, INITIAL_SPEC, NULL);
+		
+		categories->priv->table = e_table_scrolled_get_table(E_TABLE_SCROLLED(e_table));
+		gtk_signal_connect(GTK_OBJECT(categories->priv->table), "key_press",
+				   GTK_SIGNAL_FUNC(table_key_press), categories);
+		gtk_signal_connect(GTK_OBJECT(categories->priv->table), "right_click",
+				   GTK_SIGNAL_FUNC(table_right_click), categories);
+		
+		gtk_object_sink(GTK_OBJECT(categories->priv->model));
+		
+		gtk_widget_show(e_table);
+
+		gtk_table_attach_defaults(GTK_TABLE(table),
+					  e_table, 
+					  0, 1,
+					  3, 4);
+		
+		gtk_widget_grab_focus (categories->priv->entry);
+		gnome_dialog_editable_enters (GNOME_DIALOG (categories), GTK_EDITABLE (categories->priv->entry));
+		
+		ecml = e_categories_master_list_array_new();
+		gtk_object_set (GTK_OBJECT (categories),
+				"ecml", ecml,
+				NULL);
+		gtk_object_unref(GTK_OBJECT (ecml));
+		
+		ec_set_categories (categories->priv->entry, initial_category_list);
+		
+		gtk_window_set_default_size (GTK_WINDOW (categories), 200, 400);
+	}
 }
 
 /**
@@ -618,13 +622,18 @@ e_categories_construct (ECategories *categories,
 GtkWidget*
 e_categories_new (const char *initial_category_list)
 {
-	GtkWidget *widget;
+	ECategories *ecat;
 
-	widget = GTK_WIDGET (gtk_type_new (e_categories_get_type ()));
+	ecat = E_CATEGORIES (gtk_type_new (e_categories_get_type ()));
 
-	e_categories_construct (E_CATEGORIES (widget), initial_category_list);
+	e_categories_construct (ecat, initial_category_list);
 
-	return widget;
+	if (ecat->priv->gui == NULL) {
+		gtk_object_unref (GTK_OBJECT (ecat));
+		return NULL;
+	}
+
+	return GTK_WIDGET (ecat);
 }
 
 static void
