@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_rpc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.1 1990-04-19 12:12:30 jfc Exp $";
+static char rcsid_rpc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.2 1990-04-19 12:12:37 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -207,18 +207,14 @@ CLIENT *rpc_create(addr, sinp)
  * ask for all groups, but only pass on the first 8. */
 
 AUTH *
-spoofunix_create_default(spoofname)
+spoofunix_create_default(spoofname, uid)
 	char *spoofname;
+	int uid;
 {
 	register int len;
 	char machname[MAX_MACHINE_NAME + 1];
-	register int uid;
 	register int gid;
-#ifdef notdef
-	int gids[NGRPS];
-#else
 	int gids[NGROUPS];
-#endif
 
 	if (spoofname)
 		(void) strncpy(machname, spoofname, MAX_MACHINE_NAME);
@@ -228,36 +224,27 @@ spoofunix_create_default(spoofname)
 			abort();
 		}
 	machname[MAX_MACHINE_NAME] = 0;
-	uid = geteuid();
 	gid = getegid();
-#ifdef notdef
-	if ((len = getgroups(NGRPS, gids)) < 0) {
-#else
 	if ((len = getgroups(NGROUPS,gids)) < 0) {
-#endif
 		fprintf(stderr,"Fatal error: User in too many groups!\n");
 		exit(1);
 	} 
-#ifdef notdef
-	return (authunix_create(machname, uid, gid, len, gids));
-#else
 	return (authunix_create(machname, uid, gid,
 				(len > NGRPS) ? NGRPS : len, gids));
-#endif
 }
-	
+
 /*
  * Perform a mapping operation of some kind on the indicated host.  If
  * errorout is zero, don't print error messages.  errname is the name
  * of the filesystem/host/whatever to prefix error message with.
  */
 
-nfsid(host, addr, op, errorout, errname, inattach)
+int nfsid(host, addr, op, errorout, errname, inattach, uid)
     char *host;
     struct in_addr addr;
     int op, errorout;
     char *errname;
-    int inattach;
+    int inattach, uid;
 {
     CLIENT *client;
     KTEXT_ST authent;
@@ -346,9 +333,7 @@ nfsid(host, addr, op, errorout, errname, inattach)
 	return (FAILURE);
     }
 
-    setreuid(geteuid(), getuid());
-    client->cl_auth = spoofunix_create_default(spoofhost);
-    setreuid(geteuid(), getuid());
+    client->cl_auth = spoofunix_create_default(spoofhost, uid);
 	
     timeout.tv_usec = 0;
     timeout.tv_sec = 20;
