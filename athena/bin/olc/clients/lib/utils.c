@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.15 1991-03-28 13:18:05 lwvanels Exp $
+ *	$Id: utils.c,v 1.16 1991-04-08 20:46:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.15 1991-03-28 13:18:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.16 1991-04-08 20:46:28 lwvanels Exp $";
 #endif
 #endif
 
@@ -119,7 +119,7 @@ open_connection_to_mailhost()
   s = socket(AF_INET, SOCK_STREAM, 0);
   if (s < 0)
      {
-       perror("no socket");
+       olc_perror("no socket");
        return(ERROR);
      }
 
@@ -174,7 +174,7 @@ can_receive_mail(name)   /*ARGSUSED*/
   status = close(fd);
   if(status == ERROR)
     {
-      perror("fatal error");
+      olc_perror("fatal error");
       exit(1);
     }
   if(code != MAIL_SUCCESS)
@@ -213,14 +213,14 @@ call_program(program, argument)
 
   if ((pid = fork()) == -1) 
     {
-      perror("call_program");
+      olc_perror("call_program");
       return(ERROR);
     }
   else 
     if (pid == 0) 
       {
 	execlp(program, program, argument, 0);
-	perror("call_program");
+	olc_perror("call_program");
 	return(ERROR);
       }
     else 
@@ -337,7 +337,7 @@ sendmail(smargs)
   switch (fork()) 
     {
     case -1:		/* error */
-      perror("mail");
+      olc_perror("mail");
       printf("sendmail: error starting process.\n");
       return(-1);
     case 0:		/* child */
@@ -345,7 +345,7 @@ sendmail(smargs)
       (void) close(0);
       (void) dup2(fildes[0], 0);
       execv("/usr/lib/sendmail", args);
-      perror("sendmail: exec");
+      olc_perror("sendmail: exec");
       exit(1);
     default:
       (void) close(fildes[0]);
