@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.5 1992-04-30 14:43:21 lwvanels Exp $
+# $Id: config_afs.sh,v 1.6 1992-05-08 13:36:55 epeisach Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -32,12 +32,6 @@ cp /afs/athena.mit.edu/service/SuidCells ${VICEDIR}/Ctmp && \
 	mv -f ${VICEDIR}/Ctmp ${SUIDDB}.public && \
 	cat ${SUIDDB}.public ${SUIDDB}.local >${VICEDIR}/Ctmp 2>/dev/null
 mv -f ${VICEDIR}/Ctmp ${SUIDDB}
-
-/bin/awk ' \
-	  /^>/ {printf("\nfs newcell %s", substr($1,2,length($1)-1))}; \
-	  /^[0-9]/ {printf(" %s",$1)}; \
-	  END {printf("\n")}' ${CELLDB} | \
-	/bin/sh
 
 echo "Only allowing setuid/setgid programs from the following cells:"
 
