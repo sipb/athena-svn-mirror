@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $OS in
+linux)
+  optimize=-O2
+  ;;
+solaris)
+  optimize=-O3
+  ;;
+esac
+
+exec ./configure --enable-crypto --disable-debug --enable-optimize=$optimize
