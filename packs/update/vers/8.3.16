@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "/etc/lpd.conf"					>> "$CONFCHG"
+echo "/etc/athena/athinfo.defs"				>> "$CONFCHG"
