@@ -1,6 +1,6 @@
-This is TeX, Version 3.14159 (Web2C 7.2) (format=tex 1999.6.14)  23 SEP 1999 18:47
-**\input /tmp/txi2d.22830/user-guide.texi
-(/tmp/txi2d.22830/user-guide.texi (texinfo.tex
+This is TeX, Version 3.14159 (Web2C 7.2) (format=tex 1999.6.14)  17 DEC 1999 15:52
+**\input /tmp/txi2d.5989/user-guide.texi
+(/tmp/txi2d.5989/user-guide.texi (texinfo.tex
 Loading texinfo package [Version 1.3]: Basics,
 \bindingoffset=\dimen16
 \normaloffset=\dimen17
@@ -120,11 +120,11 @@ and turning on texinfo input format.
 Appendix @char 65 [54] [55] [56] (user-guide.toc) [-1] [-2] ) 
 Here is how much of TeX's memory you used:
  1018 strings out of 13020
- 11675 string characters out of 97268
- 32583 words of memory out of 263001
+ 11673 string characters out of 97268
+ 32582 words of memory out of 263001
  1908 multiletter control sequences out of 10000+0
  26608 words of font info for 90 fonts, out of 200000 for 1000
  18 hyphenation exceptions out of 1000
- 13i,6n,10p,235b,175s stack positions out of 300i,100n,500p,30000b,4000s
+ 13i,6n,10p,234b,175s stack positions out of 300i,100n,500p,30000b,4000s
 
-Output written on user-guide.dvi (62 pages, 79952 bytes).
+Output written on user-guide.dvi (62 pages, 79948 bytes).

@@ -61,9 +61,26 @@ extern krb5_error_code krb5_vercheck();
 extern void krb5_win_ccdll_load(krb5_context context);
 #endif
 
+static krb5_error_code init_common ();
+
 KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_init_context(context)
 	krb5_context *context;
+{
+	return init_common (context, FALSE);
+}
+
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
+krb5_init_secure_context(context)
+	krb5_context *context;
+{
+	return init_common (context, TRUE);
+}
+
+static krb5_error_code
+init_common (context, secure)
+	krb5_context *context;
+	krb5_boolean secure;
 {
 	krb5_context ctx = 0;
 	krb5_error_code retval;
@@ -98,6 +115,8 @@ krb5_init_context(context)
 		return ENOMEM;
 	memset(ctx, 0, sizeof(struct _krb5_context));
 	ctx->magic = KV5M_CONTEXT;
+
+	ctx->profile_secure = secure;
 
 	/* Set the default encryption types, possible defined in krb5/conf */
 	if ((retval = krb5_set_default_in_tkt_ktypes(ctx, NULL)))
@@ -343,6 +362,12 @@ get_profile_etype_list(context, ktypes, profstr, ctx_count, ctx_list, desonly)
 
 	old_ktypes[j] = (krb5_enctype) 0;
 	profile_release_string(retval);
+    }
+
+    if (old_ktypes[0] == 0) {
+	free (old_ktypes);
+	*ktypes = 0;
+	return KRB5_CONFIG_ETYPE_NOSUPP;
     }
 
     *ktypes = old_ktypes;

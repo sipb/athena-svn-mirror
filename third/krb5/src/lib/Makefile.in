@@ -3,9 +3,6 @@ myfulldir=lib
 mydir=lib
 MY_SUBDIRS=crypto krb5 des425 @KRB4@ krb5util kdb gssapi rpc kadm5
 BUILDTOP=$(REL)$(U)
-CFLAGS = $(CCOPTS) $(DEFS)
-
-##DOS##BUILDTOP = ..
 
 MAC_SUBDIRS = crypto krb5 gssapi
 
@@ -56,7 +53,7 @@ VERSIONRC = $(BUILDTOP)\windows\version.rc
 
 WINLIBS = kernel32.lib wsock32.lib user32.lib shell32.lib oldnames.lib \
 	version.lib advapi32.lib gdi32.lib
-WINDLLFLAGS = $(LINKOPTS) -base:0x1c000000
+WINDLLFLAGS = $(DLL_LINKOPTS) -base:0x1c000000
 
 NO_GLUE=$(OUTPRE)no_glue.obj
 K5_GLUE=$(OUTPRE)k5_glue.obj
@@ -110,13 +107,13 @@ RCFLAGS=$(CPPFLAGS) -D_WIN32 -D_MSDOS_ -DRES_ONLY
 ##WIN32##	  $(K4LIBS) $(K4GLUE) $(K4RES) $(KLIB) $(CLIB) $(PLIB) $(WINLIBS)
 
 $(K5_GLUE): win_glue.c
-	$(CC) $(CFLAGS) $(MITFLAGS) /c /DKRB5=1 /Fo$@ $**
+	$(CC) $(ALL_CFLAGS) $(MITFLAGS) /c /DKRB5=1 /Fo$@ $**
 $(K4_GLUE): win_glue.c
-	$(CC) $(CFLAGS) /c /DKRB4=1 /Fo$@ $**
+	$(CC) $(ALL_CFLAGS) /c /DKRB4=1 /Fo$@ $**
 $(GSS_GLUE): win_glue.c
-	$(CC) $(CFLAGS) /c /DGSSAPI=1 /Fo$@ $**
+	$(CC) $(ALL_CFLAGS) /c /DGSSAPI=1 /Fo$@ $**
 $(NO_GLUE): win_glue.c
-	$(CC) $(CFLAGS) /c /Fo$@ $**
+	$(CC) $(ALL_CFLAGS) /c /Fo$@ $**
 
 # Build Convenience
 comerr.lib: $(CLIB)

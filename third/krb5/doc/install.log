@@ -1,6 +1,6 @@
-This is TeX, Version 3.14159 (Web2C 7.2) (format=tex 1999.6.14)  23 SEP 1999 18:47
-**\input /tmp/txi2d.22776/install.texi
-(/tmp/txi2d.22776/install.texi (texinfo-suppl.tex) (texinfo.tex
+This is TeX, Version 3.14159 (Web2C 7.2) (format=tex 1999.6.14)  17 DEC 1999 15:52
+**\input /tmp/txi2d.5935/install.texi
+(/tmp/txi2d.5935/install.texi (texinfo-suppl.tex) (texinfo.tex
 Loading texinfo package [Version 1.3]: Basics,
 \bindingoffset=\dimen16
 \normaloffset=\dimen17
@@ -157,11 +157,11 @@ ent DNSAgent[]
 Appendix @char 65 [37] [38] [39] [40] (install.toc [-1]) [-2] [-3] [-4] ) 
 Here is how much of TeX's memory you used:
  1139 strings out of 13020
- 15767 string characters out of 97268
- 36805 words of memory out of 263001
+ 15765 string characters out of 97268
+ 36804 words of memory out of 263001
  2027 multiletter control sequences out of 10000+0
  26608 words of font info for 90 fonts, out of 200000 for 1000
  18 hyphenation exceptions out of 1000
- 15i,6n,10p,236b,188s stack positions out of 300i,100n,500p,30000b,4000s
+ 15i,6n,10p,235b,188s stack positions out of 300i,100n,500p,30000b,4000s
 
 Output written on install.dvi (48 pages, 117588 bytes).

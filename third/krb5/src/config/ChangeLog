@@ -1,3 +1,17 @@
+1999-12-03  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win-pre.in: Update Windows build to work with 10/26/99 change.
+	The only difference between EXE and DLL builds are the
+	DLL_LINKOPTS and EXE_LINKOPTS linker options.  All C flags are the
+	same.
+
+1999-10-26  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
+	LOCAL_INCLUDES such that one can override CFLAGS from the command
+	line without losing CPP search patchs and defines. Some associated
+	Makefile cleanup. [from wsanchez@apple.com]
+
 1999-09-14  Danilo Almeida  <dalmeida@mit.edu>
 
 	* win-pre.in: Fix DNS error messages to wshelper instead of

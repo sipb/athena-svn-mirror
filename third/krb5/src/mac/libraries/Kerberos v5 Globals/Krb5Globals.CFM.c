@@ -20,7 +20,7 @@
 /*
  * Definitions for globally shared data used by the Kerberos v5 library
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/mac/libraries/Kerberos v5 Globals/Krb5Globals.CFM.c,v 1.1.1.1 1999-10-05 16:15:53 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/mac/libraries/Kerberos v5 Globals/Krb5Globals.CFM.c,v 1.1.1.2 1999-12-26 03:33:46 ghudson Exp $
  */
 
 #include <Types.h>
@@ -34,7 +34,7 @@
 
 apiCB*	gCCContext = nil;
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/mac/libraries/Kerberos v5 Globals/Krb5Globals.CFM.c,v 1.1.1.1 1999-10-05 16:15:53 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/mac/libraries/Kerberos v5 Globals/Krb5Globals.CFM.c,v 1.1.1.2 1999-12-26 03:33:46 ghudson Exp $ */
 
 /*	Include MITAthenaCore for:
 	 - prototypes for __initialize and __terminate
