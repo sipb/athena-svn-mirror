@@ -3,7 +3,7 @@
 
 # Initialize/Shutdown the standard and optional network software.
 #
-# $Revision: 1.1 $
+# $Revision: 1.2 $
 #
 # If the IP address for this host is the default 192.0.2.1 Internet test
 # address, the software is configured for loopback (standalone) mode.
@@ -317,8 +317,8 @@ case "$1" in
     #
     # Note: If this host has more than 2 interfaces, you must edit
     # /etc/config/netif.options to set the ifXname and ifXaddr variables
-    # as appropriate, and set if_num to the number of interfaces if
-    # there are more than 9.
+    # as appropriate, and if this host has more than 8 interfaces, you must
+    # also set if_num to the number of interfaces.
     #
     # Suggested addresses for the primary and gateway interfaces.
     if1addr=$HOSTNAME
@@ -536,7 +536,7 @@ case "$1" in
 
 	if $IS_ON mrouted && test -x /usr/etc/mrouted; then
 	    MROUTED_OPTS="`cat $CONFIG/mrouted.options 2> /dev/null`"
-	    $CAP_PORT "/usr/etc/mrouted $MROUTED_OPTS" &
+	    $CAP_NET "/usr/etc/mrouted $MROUTED_OPTS" &
 						    $ECHO " mrouted\c"
 	fi
     fi
@@ -821,7 +821,8 @@ case "$1" in
 	    if test ! -d /var/spool/rwho; then
 		mkdir /var/spool/rwho
 	    fi
-	    /usr/etc/rwhod `cat $CONFIG/rwhod.options 2> /dev/null`
+		RWHOD_OPTS="`cat $CONFIG/rwhod.options 2> /dev/null`"
+		$CAP_DEMON "/usr/etc/rwhod $RWHOD_OPTS"
 						$ECHO " rwhod\c"
 	fi
 
