@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -68,8 +68,6 @@ AS = @AS@
 CC = @CC@
 CPP = @CPP@
 DLLTOOL = @DLLTOOL@
-ECHO = @ECHO@
-EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -94,10 +92,8 @@ LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
-OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
-STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 
@@ -151,10 +147,9 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 libIDL_la_LIBADD = 
 libIDL_la_OBJECTS =  parser.lo lexer.lo ns.lo util.lo
-noinst_PROGRAMS =  tstidl$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
-tstidl_OBJECTS =  tstidl.$(OBJEXT)
+tstidl_OBJECTS =  tstidl.o
 tstidl_DEPENDENCIES =  libIDL.la
 tstidl_LDFLAGS = 
 SCRIPTS =  $(bin_SCRIPTS)
@@ -175,8 +170,8 @@ HEADERS =  $(libidlinclude_HEADERS)
 DIST_COMMON =  README AUTHORS COPYING ChangeLog IDL.h.new.in INSTALL \
 Makefile.am Makefile.in Makefile.msc.in NEWS acinclude.m4 aclocal.m4 \
 config.guess config.sub configure configure.in install-sh \
-libIDL-config.in libIDL.m4.in libIDL.pc.in libIDL.spec.in ltmain.sh \
-missing mkinstalldirs texinfo.tex
+libIDL-config.in libIDL.m4.in libIDL.pc.in libIDL.spec.in ltconfig \
+ltmain.sh missing mkinstalldirs texinfo.tex
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -188,7 +183,7 @@ OBJECTS = $(libIDL_la_OBJECTS) $(tstidl_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .dvi .info .lo .o .obj .ps .s .texi .texinfo .txi
+.SUFFIXES: .S .c .dvi .info .lo .o .ps .s .texi .texinfo .txi
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps Makefile
 
@@ -244,11 +239,6 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
-# FIXME: We should only use cygpath when building on Windows,
-# and only if it is available.
-.c.obj:
-	$(COMPILE) -c `cygpath -w $<`
-
 .s.o:
 	$(COMPILE) -c $<
 
@@ -257,7 +247,6 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
-	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -297,8 +286,8 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-tstidl$(EXEEXT): $(tstidl_OBJECTS) $(tstidl_DEPENDENCIES)
-	@rm -f tstidl$(EXEEXT)
+tstidl: $(tstidl_OBJECTS) $(tstidl_DEPENDENCIES)
+	@rm -f tstidl
 	$(LINK) $(tstidl_LDFLAGS) $(tstidl_OBJECTS) $(tstidl_LDADD) $(LIBS)
 
 install-binSCRIPTS: $(bin_SCRIPTS)
@@ -399,7 +388,7 @@ uninstall-info:
 	else ii=; fi; \
 	list='$(INFO_DEPS)'; \
 	for file in $$list; do \
-	  test -z "$$ii" \
+	  test -z "$ii" \
 	    || install-info --info-dir=$(DESTDIR)$(infodir) --remove $$file; \
 	done
 	@$(NORMAL_UNINSTALL)
@@ -693,6 +682,10 @@ install-am install uninstall-am uninstall all-redirect all-am all \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+lexer.c: $(srcdir)/lexer.l parser.h
+	@rm -f $@
+	$(LEX) $(LFLAGS) -t $(srcdir)/lexer.l | sed -e 's/yy/__IDL_/g' >$@
 
 stamp-parser: $(srcdir)/parser.y
 	$(YACC) $(YFLAGS) $(srcdir)/parser.y

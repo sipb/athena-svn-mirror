@@ -189,7 +189,7 @@ ORBit_marshal_value(GIOPSendBuffer *buf,
 /*	    *val = ALIGN_ADDRESS(*val, ALIGNOF_CORBA_UNION); */
 
 	    *val = ALIGN_ADDRESS(*val, ORBit_find_alignment(tc));
-	    max_size = ORBit_gather_alloc_info(tc) - (*val - newval);
+	    max_size = ORBit_gather_alloc_info(tc) - ((guchar *)*val - (guchar *)newval);
 
 	    newval = ((char *)*val) + max_size;
 	    ORBit_marshal_value(buf, val, utc, mi);
