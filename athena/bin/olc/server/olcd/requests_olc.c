@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.40 1991-02-01 15:52:46 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.41 1991-03-07 13:32:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.40 1991-02-01 15:52:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.41 1991-03-07 13:32:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -141,7 +141,7 @@ olc_on(fd, request)
       return(send_response(fd, ALREADY_SIGNED_ON));
     }
 
-  strcpy(target->title, target->user->title2);
+  target->title = target->user->title2;
   sign_on(target,request->options);
   OGetStatusString(request->options,st);
   sprintf(msgbuf,"%s %s (%s [%d]) signed on (%s).",cap(target->title),
@@ -240,55 +240,6 @@ olc_create_instance(fd,request)
   write_int_to_fd(fd,knuckle->instance);
   return(SUCCESS);
 }
-
-
-
-ERRCODE
-olc_get_connected_info(fd,request)
-     int fd;
-     REQUEST *request;
-{
-  KNUCKLE *requester;
-  KNUCKLE *target;
-  USER    *u;
-  PERSON   p;
-  int      status;
-
-  status = find_knuckle(&(request->requester), &requester);
-  if(status != SUCCESS)
-    return(send_response(fd,status));
-        
-  if(!isme(request))
-    {
-      status = match_knuckle(request->target.username, 
-			     request->target.instance,
-			     &target);
-      if(status != SUCCESS)
-	return(send_response(fd,status));
-    }
-  else
-    target = requester;
-
-  if(!(is_me(target,requester)))
-    return(send_response(fd,PERMISSION_DENIED));
-  
-  if(!is_connected(target))
-    return(send_response(fd,NOT_CONNECTED));
-
-  u = target->connected->user;
-
-  send_response(fd,SUCCESS);
-  strcpy(p.username, u->username);
-  strcpy(p.realname, u->realname);
-  strcpy(p.nickname, u->nickname);
-  strcpy(p.machine, u->machine);
-  p.uid = u->uid;
-  p.instance = target->connected->instance;
-  
-  send_person(fd,&p);
-  return(SUCCESS);
-}
-
 
 ERRCODE
 olc_verify_instance(fd,request)
@@ -947,7 +898,7 @@ olc_ask(fd, request)
   if (request->version >= VERSION_5)
     free(question);
   set_status(target, NOT_SEEN);
-  strcpy(target->title,target->user->title1); 
+  target->title = target->user->title1;
 
   if (!isme(request)) {
     sprintf(msgbuf,"Question asked on users behalf by %s@%s [%d].",
@@ -1555,6 +1506,7 @@ olc_describe(fd, request)
 	target->question->comment[0] = '\0';
     }
 
+  write_question_info(target->question);
   return(send_response(fd,SUCCESS));
 }
 	
