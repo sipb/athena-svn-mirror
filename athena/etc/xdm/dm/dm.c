@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.59 1998-02-20 21:01:29 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.60 1998-02-27 02:00:33 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -37,7 +37,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.59 1998-02-20 21:01:29 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.60 1998-02-27 02:00:33 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -825,13 +825,12 @@ static void shutdown(int signo)
 
 static void cleanup(char *tty)
 {
-    int found;
+    int file, found;
     struct utmp utmp;    
 #ifdef SOLARIS
     struct utmpx utmpx;    
     struct utmpx *utx_tmp;
     char new_id[20];
-    register int f;
     char *p;
 #endif
     char login[9];
@@ -894,9 +893,9 @@ static void cleanup(char *tty)
       getutmp(&utmpx, &utmp);
       setutent();
       pututline(&utmp);
-      if ((f = open("/usr/adm/wtmp",O_WRONLY|O_APPEND)) >= 0) {
-              write(f, (char *)&utmp, sizeof(utmp));
-              close(f);
+      if ((file = open(wtmpf,O_WRONLY|O_APPEND)) >= 0) {
+              write(file, (char *)&utmp, sizeof(utmp));
+              close(file);
       }
 #ifdef TRACE
       trace("Just closed wtmp\n");
