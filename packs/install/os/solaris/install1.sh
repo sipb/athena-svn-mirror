@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.4 2000-08-22 03:45:00 jweiss Exp $
+### $Id: install1.sh,v 1.5 2000-08-24 23:44:01 jweiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -316,6 +316,9 @@ cd etc
 cp -p CellServDB CellServDB.public
 cp -p SuidCells SuidCells.public
 chown root:root CellServDB CellServDB.public SuidCells Suidcells.public ThisCell
+chown root:root cacheinfo
+chmod a+r CellServDB CellServDB.public SuidCells Suidcells.public ThisCell
+chmod a+r cacheinfo
 # !!
 echo "Making an /afs repository"
 mkdir /tmp/afs

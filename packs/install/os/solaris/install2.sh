@@ -176,7 +176,11 @@ cp /dev/null etc/named.local
 
 cd /var/usr/vice
 for i in  CellServDB SuidCells 
-        do cp -p /afs/athena/service/$i etc/ ; done
+	do
+	cp -p /afs/athena/service/$i etc/
+	chown root:root etc/$i
+	chmod a+r etc/$i
+done
 echo "Copied afs service files into var/usr/vice/etc"
 
 echo "turn fs slow"
