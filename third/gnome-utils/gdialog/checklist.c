@@ -179,6 +179,18 @@ int dialog_checklist(const char *title, const char *prompt, int height, int widt
 		sw = gtk_scrolled_window_new (NULL, NULL);
  		gtk_box_pack_start_defaults (
  			GTK_BOX (GTK_DIALOG (dialog)->vbox), sw);
+		
+		/*
+		 * Athena hack: Disable vertical scrolling if the caller
+		 * specified that all of the entries should be displayed,
+		 * to avoid gtk sizing the scrolled window too small.
+		 * We set horizontal scroll policy to be automatic in
+		 * that case.
+		 */
+		if (list_height >= item_no)
+			gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
+							GTK_POLICY_AUTOMATIC,
+							GTK_POLICY_NEVER);
 		gtk_widget_show (sw);
 
  		vbox = gtk_vbox_new (FALSE, 0);
