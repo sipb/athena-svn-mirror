@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.16 1989-10-23 13:10:32 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.17 1989-11-06 19:54:08 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -35,7 +35,6 @@ extern char *malloc(), *realloc();
 extern int errno;
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
-
 
 
 main(argc, argv)
@@ -155,55 +154,43 @@ usage()
      fprintf(stderr, "-r and -D are mutually exclusive\n");
 }
 
-undelete(file_exp)
-char *file_exp;
+undelete(name)
+char *name;
 {
-     char *file_re;
      char **found_files;
      int num_found;
-     char *startdir;
      int status = 0;
      filerec *current;
      int retval;
      
-     if (*file_exp == '/') {
-	  startdir = "/";
-	  file_re = file_exp + 1;
-     }
-     else {
-	  startdir = "";
-	  file_re = file_exp;
-     }
-
-     if (retval =  get_the_files(startdir, file_re, &num_found,
-				 &found_files)) {
-	  error(file_exp);
+     if (retval =  get_the_files(name, &num_found, &found_files)) {
+	  error(name);
 	  return retval;
      }
      
      if (num_found) {
 	  if (retval = process_files(found_files, num_found)) {
-	       error(file_exp);
+	       error(name);
 	       return retval;
 	  }
-	  if (*file_exp == '/')
+	  if (*name == '/')
 	       current = get_root_tree();
 	  else
 	       current = get_cwd_tree();
 
 	  status = recurs_and_undelete(current);
 	  if (status) {
-	       error(file_exp);
+	       error(name);
 	       return status;
 	  }
      }
      else {
-	  if (no_wildcards(file_exp)) {
+	  if (no_wildcards(name)) {
 	       set_error(ENOENT)
 	  }
 	  else
 	       set_error(ENOMATCH);
-	  error(file_exp);
+	  error(name);
 	  return error_code;
      }
 
@@ -252,10 +239,7 @@ filerec *leaf;
 	  }
      }
      
-     if (retval = free_leaf(leaf)) {
-	  error("free_leaf");
-	  status = retval;
-     }
+     free_leaf(leaf);
 
      return status;
 }
@@ -295,7 +279,7 @@ int num;
 	       error("process_files");
 	       return error_code;
 	  }
- 	  convert_to_user_name(files[i], filelist[i].user_name);
+ 	  (void) convert_to_user_name(files[i], filelist[i].user_name);
 	  free(files[i]);
      }
      free((char *) files);
@@ -348,7 +332,7 @@ filerec *file_ent;
 	  return retval;
      }
      
-     convert_to_user_name(real_name, user_name);
+     (void) convert_to_user_name(real_name, user_name);
 
      if (interactive) {
 	  if ((file_ent->specs.st_mode & S_IFMT) == S_IFDIR)
@@ -404,7 +388,7 @@ char *real_name, *user_name;
      (void) strcpy(new_name, real_name);
 
      while (ptr = strrindex(new_name, ".#")) {
-	  convert_to_user_name(ptr, ptr);
+	  (void) convert_to_user_name(ptr, ptr);
 	  (void) strcpy(ptr, firstpart(ptr, buf));
 	  (void) strcpy(&old_name[ptr - new_name],
 			firstpart(&old_name[ptr - new_name], buf));
@@ -584,82 +568,25 @@ char *filename;
 
 
 
-int get_the_files(base, reg_exp, num_found, found)
-char *base, *reg_exp;
+int get_the_files(name, num_found, found)
+char *name;
 int *num_found;
 char ***found;
 {
-     char **matches;
-     int num_matches;
-     int num;
-     int i;
      int retval;
+     int options;
      
-     *found = (char **) malloc(0);
-     num = 0;
-     
-     if (retval = find_matches(base, reg_exp, &num_matches, &matches)) {
+     options = FIND_DELETED;
+     if (recursive)
+	  options |= RECURS_DELETED;
+     if (! directoriesonly)
+	  options |= FIND_CONTENTS;
+
+     retval = find_matches(name, num_found, found, options);
+     if (retval) {
 	  error("find_matches");
 	  return retval;
      }
-     if (recursive) {
-	  char **recurs_found;
-	  int recurs_num;
-	  
-	  for (i = 0; i < num_matches; free(matches[i]), i++) {
-	       if (is_deleted(lastpart(matches[i]))) {
-		    if (retval = add_str(found, num, matches[i])) {
-			 error("add_str");
-			 return retval;
-		    }
-		    num++;
-	       }
-	       if (retval = find_deleted_recurses(matches[i], &recurs_num,
-						  &recurs_found)) {
-		    error(matches[i]);
-		    return retval;
-	       }
-	       if (retval = add_arrays(found, &num, &recurs_found,
-				       &recurs_num)) {
-		    error("add_arrays");
-		    return retval;
-	       }
-	  }
-     }
-     else {
-	  struct stat stat_buf;
-	  char **contents_found;
-	  int num_contents;
-	  
-	  for (i = 0; i < num_matches; free(matches[i]), i++) {
-	       if (is_deleted(lastpart(matches[i]))) {
-		    if (retval = add_str(found, num, matches[i])) {
-			 error("add_str");
-			 return retval;
-		    }
-		    num++;
-	       }
-	       else if (! directoriesonly) {
-		    if (lstat(matches[i], &stat_buf))
-			 continue;
-		    if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-			 if (retval =
-			     find_deleted_contents(matches[i], &num_contents,
-						   &contents_found)) {
-			      error(matches[i]);
-			      return retval;
-			 }
-			 if (retval = add_arrays(found, &num, &contents_found,
-						 &num_contents)) {
-			      error("add_arrays");
-			      return retval;
-			 }
-		    }
-	       }
-	  }
-	  
-     }
-     free((char *) matches);
-     *num_found = num;
+
      return 0;
 }

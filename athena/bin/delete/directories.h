@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.7 1989-10-23 13:39:54 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.8 1989-11-06 19:54:20 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -57,3 +57,5 @@ filerec *next_specified_leaf();
 
 int get_leaf_path();
 int accumulate_names();
+
+void free_leaf();

@@ -5,49 +5,57 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.11 1989-10-23 13:46:21 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.12 1989-11-06 19:52:37 jik Exp $
 #
 
-MACHINE= vax
-DESTDIR =
-TARGETS = delete undelete expunge purge lsdel
-INSTALLDIR = /mit/jik/${MACHINE}bin
-CC = cc
-COMPILE_ET = compile_et
-LINT = lint
-LINTFLAGS =
-LINTLIBS =
-CFLAGS = -O
-LIBS = -lcom_err
-SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c \
-	lsdel.c col.c shell_regexp.c delete_errs.c errors.c
-INCS = col.h delete.h directories.h expunge.h lsdel.h mit-copyright.h\
-	pattern.h undelete.h util.h shell_regexp.h delete_errs.h errors.h
-MANS = man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
-	man1/undelete.1
-ARCHIVE = README Makefile MANIFEST PATCHLEVEL $(SRCS) $(INCS) $(MANS)
-ARCHIVEDIRS = man1
+DESTDIR=
+TARGETS= 	delete undelete expunge purge lsdel
+INSTALLDIR= 	/bin/athena
+CC= 		cc
+COMPILE_ET= 	compile_et
+LINT= 		lint
+DEFINES=	-DAFS_MOUNTPOINTS
+INCLUDES=	-I/afs/athena.mit.edu/astaff/project/afsdev/$(MACHINE)
+CFLAGS= 	-O $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
+LDFLAGS=	-L/usr/athena/lib\
+		-L/afs/athena.mit.edu/astaff/project/afsdev/build/rt/lib/afs
+LIBS= 		-lcom_err -lsys
+LINTFLAGS=	$(DEFINES) $(INCLUDES) $(CDEBUGFLAGS) -u
+LINTLIBS=	
+SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
+		expunge.c lsdel.c col.c shell_regexp.c delete_errs.c\
+		errors.c stack.c
+INCS= 		col.h delete.h directories.h expunge.h lsdel.h\
+		mit-copyright.h pattern.h undelete.h util.h\
+		shell_regexp.h delete_errs.h errors.h stack.h
+MANS= 		man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
+		man1/undelete.1
+ARCHIVE=	README Makefile MANIFEST PATCHLEVEL $(SRCS) $(INCS)\
+		$(MANS) 
+ARCHIVEDIRS= 	man1
 
-DELETEOBJS= delete.o util.o delete_errs.o errors.o
-UNDELETEOBJS= undelete.o directories.o util.o pattern.o\
-	shell_regexp.o delete_errs.o errors.o
-EXPUNGEOBJS= expunge.o directories.o pattern.o util.o col.o\
-	shell_regexp.o delete_errs.o errors.o
-LSDELOBJS= lsdel.o util.o directories.o pattern.o col.o\
-	shell_regexp.o delete_errs.o errors.o
+DELETEOBJS= 	delete.o util.o delete_errs.o errors.o
+UNDELETEOBJS= 	undelete.o directories.o util.o pattern.o\
+		shell_regexp.o delete_errs.o errors.o stack.o
+EXPUNGEOBJS= 	expunge.o directories.o pattern.o util.o col.o\
+		shell_regexp.o delete_errs.o errors.o stack.o
+LSDELOBJS= 	lsdel.o util.o directories.o pattern.o col.o\
+		shell_regexp.o delete_errs.o errors.o stack.o
 
-DELETESRC= delete.c util.c delete_errs.c errors.o
-UNDELETESRC= undelete.c directories.c util.c pattern.c\
-	shell_regexp.c delete_errs.c errors.o
-EXPUNGESRC= expunge.c directories.c pattern.c util.c col.c\
-	shell_regexp.c delete_errs.c errors.o
-LSDELSRC= lsdel.c util.c directories.c pattern.c col.c\
-	shell_regexp.c delete_errs.c errors.o
+DELETESRC= 	delete.c util.c delete_errs.c errors.c
+UNDELETESRC= 	undelete.c directories.c util.c pattern.c\
+		shell_regexp.c delete_errs.c errors.c stack.c
+EXPUNGESRC= 	expunge.c directories.c pattern.c util.c col.c\
+		shell_regexp.c delete_errs.c errors.c stack.c
+LSDELSRC= 	lsdel.c util.c directories.c pattern.c col.c\
+		shell_regexp.c delete_errs.c errors.c stack.c
 
 .SUFFIXES: .c .h .et
 
-.et.h: ; ${COMPILE_ET} $*.et
-.et.c: ; ${COMPILE_ET} $*.et
+.et.h: $*.et
+	${COMPILE_ET} $*.et
+.et.c: $*.et
+	${COMPILE_ET} $*.et
 
 all: $(TARGETS)
 
@@ -69,37 +77,31 @@ bin_install: $(TARGETS)
         done
 
 delete: $(DELETEOBJS)
-	$(CC) $(CFLAGS) -o delete $(DELETEOBJS) $(LIBS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o delete $(DELETEOBJS) $(LIBS)
 
 saber_delete:
-	#alias s step
-	#alias n next
 	#setopt program_name delete
-	#load $(CFLAGS) $(DELETESRC) $(LIBS)
+	#load $(LDFLAGS) $(CFLAGS) $(DELETESRC) $(LIBS)
 
 lint_delete: $(DELETESRC)
 	$(LINT) $(LINTFLAGS) $(DELETESRC) $(LINTLIBS)
 
 undelete: $(UNDELETEOBJS)
-	$(CC) $(CFLAGS) -o undelete $(UNDELETEOBJS) $(LIBS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o undelete $(UNDELETEOBJS) $(LIBS)
 
 saber_undelete:
-	#alias s step
-	#alias n next
 	#setopt program_name undelete
-	#load $(CFLAGS) $(UNDELETESRC) $(LIBS)
+	#load $(LDFLAGS) $(CFLAGS) $(UNDELETESRC) $(LIBS)
 
 lint_undelete: $(UNDELETESRC)
 	$(LINT) $(LINTFLAGS) $(UNDELETESRC) $(LINTLIBS)
 
 expunge: $(EXPUNGEOBJS)
-	$(CC) $(CFLAGS) -o expunge $(EXPUNGEOBJS) $(LIBS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o expunge $(EXPUNGEOBJS) $(LIBS)
 
 saber_expunge:
-	#alias s step
-	#alias n next
 	#setopt program_name expunge
-	#load $(CFLAGS) $(EXPUNGESRC) $(LIBS)
+	#load $(LDFLAGS) $(CFLAGS) $(EXPUNGESRC) $(LIBS)
 
 lint_expunge: $(EXPUNGESRC)
 	$(LINT) $(LINTFLAGS) $(EXPUNGESRC) $(LINTLIBS)
@@ -108,16 +110,14 @@ purge: expunge
 	ln -s expunge purge
 
 lsdel: $(LSDELOBJS)
-	$(CC) $(CFLAGS) -o lsdel $(LSDELOBJS) $(LIBS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o lsdel $(LSDELOBJS) $(LIBS)
 
 lint_lsdel: $(LSDELSRC)
 	$(LINT) $(LINTFLAGS) $(LSDELSRC) $(LINTLIBS)
 
 saber_lsdel:
-	#alias s step
-	#alias n next
 	#setopt program_name lsdel
-	#load $(CFLAGS) $(LSDELSRC) $(LIBS)
+	#load $(LDFLAGS) $(CFLAGS) $(LSDELSRC) $(LIBS)
 
 tar: $(ARCHIVE)
 	@echo "Checking to see if everything's checked in...."
@@ -166,5 +166,10 @@ clean:
 
 depend: $(SRCS) $(INCS)
 	/usr/athena/makedepend -v $(CFLAGS) -s'# DO NOT DELETE' $(SRCS)
+
+$(DELETESRC): delete_errs.h
+$(EXPUNGESRC): delete_errs.h
+$(UNDELETESRC): delete_errs.h
+$(LSDELSRC): delete_errs.h
 
 # DO NOT DELETE THIS LINE -- makedepend depends on it

@@ -11,9 +11,17 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.9 1989-10-23 13:08:27 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.10 1989-11-06 19:54:14 jik Exp $";
 #endif
 
+#ifdef AFS_MOUNTPOINTS
+/*
+ * I assume there's a "right" header file to include to get the symbol
+ * VICE defined, but I can't find it, and if VICE isn't defined then
+ * certain header files don't load properly, so I'm doing it by hand.
+ */
+#define VICE
+#endif
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
@@ -22,6 +30,16 @@
 #include <strings.h>
 #include <pwd.h>
 #include <errno.h>
+#ifdef AFS_MOUNTPOINTS
+#include <sys/ioctl.h>
+#include <sys/vice.h>
+/*
+ * there has to be a global header file that contains this
+ * information, but once again, I can't find it, so this is the best I
+ * can do.  Sigh.
+ */
+#include "/afs/athena.mit.edu/astaff/project/afsdev/src/venus/uvenus.h"
+#endif
 #include "delete_errs.h"
 #include "directories.h"
 #include "util.h"
@@ -30,6 +48,7 @@
 
 extern char *getenv();
 extern uid_t getuid();
+extern int errno;
 
 char *convert_to_user_name(real_name, user_name)
 char real_name[];
@@ -222,7 +241,7 @@ char *buf;
 
 timed_out(file_ent, current_time, min_days)
 filerec *file_ent;
-int current_time, min_days;
+time_t current_time, min_days;
 {
      if ((current_time - file_ent->specs.st_mtime) / 86400 >= min_days)
 	  return(1);
@@ -245,4 +264,122 @@ char *dirname;
 	  return(0);
 }
 
-	       
+
+
+is_link(name, oldbuf)
+char *name;
+struct stat *oldbuf;
+{
+     struct stat statbuf;
+
+     if (oldbuf)
+	  statbuf = *oldbuf;
+     else if (lstat(name, &statbuf) < 0) {
+	  set_error(errno);
+	  error("is_link");
+	  return(0);
+     }
+
+     if ((statbuf.st_mode & S_IFMT) == S_IFLNK)
+	  return 1;
+     else
+	  return 0;
+}
+
+
+
+/*
+ * This is one of the few procedures that is allowed to break the
+ * rule of always returning an error value if an error occurs.  That's
+ * because it's stupid to expect a boolean function to do that, and
+ * because defaulting to not being a mountpoint if there is an error
+ * is a reasonable thing to do.
+ */
+/*
+ * The second parameter is optional -- if it is non-NULL< it is
+ * presumed to be a stat structure fo the file being passed in.
+ */
+int is_mountpoint(name, oldbuf)
+char *name;
+struct stat *oldbuf;
+{
+     struct stat statbuf;
+     dev_t device;
+     char buf[MAXPATHLEN];
+#ifdef AFS_MOUNTPOINTS
+     struct ViceIoctl blob;
+     char retbuf[MAXPATHLEN];
+     int retval;
+     char *shortname;
+#endif
+
+     /* First way to check for a mount point -- if the device number */
+     /* of name is different from the device number of name/..       */
+     if (oldbuf)
+	  statbuf = *oldbuf;
+     else if (lstat(name, &statbuf) < 0) {
+	  set_error(errno);
+	  error("is_mountpoint");
+	  return 0;
+     }
+
+     device = statbuf.st_dev;
+
+     if (strlen(name) + 4 /* length of "/.." + a NULL */ > MAXPATHLEN) {
+	  set_error(ENAMETOOLONG);
+	  error("is_mountpoint");
+	  return 0;
+     }
+
+     strcpy(buf, name);
+     strcat(buf, "/..");
+     if (lstat(buf, &statbuf) < 0) {
+	  set_error(errno);
+	  error("is_mountpoint");
+	  return 0;
+     }
+
+     if (statbuf.st_dev != device)
+	  return 1;
+
+#ifdef AFS_MOUNTPOINTS
+     /* Check for AFS mountpoint using the AFS pioctl call. */
+     if ((shortname = lastpart(name)) == name) {
+	  strcpy(buf, ".");
+	  blob.in = name;
+	  blob.in_size = strlen(name) + 1;
+	  blob.out = retbuf;
+	  blob.out_size = MAXPATHLEN;
+	  bzero(retbuf, MAXPATHLEN);
+     }
+     else {
+	  strncpy(buf, name, shortname - name - 1);
+	  buf[shortname - name - 1] = '\0';
+	  if (*buf == '\0')
+	       strcpy(buf, "/");
+	  blob.in = shortname;
+	  blob.in_size = strlen(shortname) + 1;
+	  blob.out = retbuf;
+	  blob.out_size = MAXPATHLEN;
+	  bzero(retbuf, MAXPATHLEN);
+     }
+
+     retval = pioctl(buf, VIOC_AFS_STAT_MT_PT, &blob, 0);
+
+     if (retval == 0) {
+#ifdef DEBUG
+	  printf("%s is an AFS mountpoint, is_mountpoint returning true.\n",
+		 name);
+#endif
+	  return 1;
+     }
+     else {
+	  if (errno != EINVAL) {
+	       set_error(errno);
+	       error("is_mountpoint");
+	  }
+     }
+#endif /* AFS_MOUNTPOINTS */
+
+     return 0;
+}

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.18 1989-10-23 13:44:19 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.19 1989-11-06 19:52:51 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -27,7 +27,6 @@
 #include "util.h"
 #include "delete.h"
 #include "mit-copyright.h"
-
 
 
 
@@ -288,6 +287,7 @@ int recursed;
 	       }
 	  }
      }
+     return 0;
 }
 	  
 
@@ -539,4 +539,5 @@ char *filename;
 	  else
 	       return 0;
      }
+     return 0;
 }

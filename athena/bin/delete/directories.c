@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.13 1989-10-23 13:40:43 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.14 1989-11-06 19:53:01 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -35,9 +35,11 @@ extern int errno;
 static filerec root_tree;
 static filerec cwd_tree;
 
- /* these are not static because external routines need to be able to */
- /* access them. */
-long current_time;
+void free_leaf();
+
+ /* These are not static because external routines need to be able to */
+ /* access them. 						      */
+time_t current_time;
 
 
 static filerec default_cwd = {
@@ -345,7 +347,7 @@ filerec *leaf;
 }
 
 
-print_paths_from(leaf)
+void print_paths_from(leaf)
 filerec *leaf;
 {
      char buf[MAXPATHLEN];
@@ -357,11 +359,10 @@ filerec *leaf;
 	  print_paths_from(leaf->files);
      if (leaf->next)
 	  print_paths_from(leaf->next);
-     return(0);
 }
 
 
-print_specified_paths_from(leaf)
+void print_specified_paths_from(leaf)
 filerec *leaf;
 {
      char buf[MAXPATHLEN];
@@ -374,7 +375,6 @@ filerec *leaf;
 	  print_specified_paths_from(leaf->files);
      if (leaf->next)
 	  print_specified_paths_from(leaf->next);
-     return(0);
 }
      
 
@@ -484,11 +484,9 @@ Boolean specified;
 
 
 
-int free_leaf(leaf)
+void free_leaf(leaf)
 filerec *leaf;
 {
-     int retval;
-     
      leaf->freed = True;
      if (! (leaf->dirs || leaf->files)) {
 	  if (leaf->previous)
@@ -500,22 +498,19 @@ filerec *leaf;
 		    if (leaf->parent->dirs == leaf) {
 			 leaf->parent->dirs = leaf->next;
 			 if (leaf->parent->freed)
-			      if (retval = free_leaf(leaf->parent))
-				   return retval;
+			      free_leaf(leaf->parent);
 		    }
 	       }
 	       else {
 		    if (leaf->parent->files == leaf) {
 			 leaf->parent->files = leaf->next;
 			 if (leaf->parent->freed)
-			      if (retval = free_leaf(leaf->parent))
-				   return retval;
+			      free_leaf(leaf->parent);
 		    }
 	       }
 	       free((char *) leaf);
 	  }
      }
-     return 0;
 }     
 
 
@@ -667,7 +662,7 @@ int *num;
 	       error("get_leaf_path");
 	       return retval;
 	  }
-	  convert_to_user_name(newname, newname);
+	  (void) convert_to_user_name(newname, newname);
 	  strings[*num - 1] = malloc((unsigned) (strlen(newname) + 1));
 	  if (! strings[*num - 1]) {
 	       set_error(errno);

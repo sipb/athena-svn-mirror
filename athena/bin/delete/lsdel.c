@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.7 1989-10-23 13:35:27 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.8 1989-11-06 19:53:16 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -33,11 +33,12 @@
 #include "errors.h"
 
 char *malloc(), *realloc();
-extern int current_time;
+extern time_t current_time;
 extern int errno;
 
 int block_total = 0;
-int dirsonly, recursive, timev, yield;
+int dirsonly, recursive, yield, f_links, f_mounts;
+time_t timev;
 
 main(argc, argv)
 int argc;
@@ -49,8 +50,8 @@ char *argv[];
      
      whoami = lastpart(argv[0]);
 
-     dirsonly = recursive = timev = yield = 0;
-     while ((arg = getopt(argc, argv, "drt:y")) != -1) {
+     dirsonly = recursive = timev = yield = f_links = f_mounts = 0;
+     while ((arg = getopt(argc, argv, "drt:ysm")) != -1) {
 	  switch (arg) {
 	  case 'd':
 	       dirsonly++;
@@ -63,6 +64,12 @@ char *argv[];
 	       break;
 	  case 'y':
 	       yield++;
+	       break;
+	  case 's':
+	       f_links++;
+	       break;
+	  case 'm':
+	       f_mounts++;
 	       break;
 	  default:
 	       usage();
@@ -77,7 +84,7 @@ char *argv[];
 	  if (ls(&cwd, 1))
 	       error("ls of .");
      }
-     if (ls(&argv[optind], argc - optind))
+     else if (ls(&argv[optind], argc - optind))
 	  error ("ls");
 
      exit (error_occurred ? 1 : 0);
@@ -90,12 +97,14 @@ char *argv[];
 
 usage()
 {
-     printf("Usage: %s [ options ] [ filename [ ...]]\n", whoami);
-     printf("Options are:\n");
-     printf("     -d     list directory names, not contents\n");
-     printf("     -r     recursive\n");
-     printf("     -t n   list n-day-or-older files only\n");
-     printf("     -y     report total space taken up by files\n");
+     fprintf(stderr, "Usage: %s [ options ] [ filename [ ...]]\n", whoami);
+     fprintf(stderr, "Options are:\n");
+     fprintf(stderr, "     -d     list directory names, not contents\n");
+     fprintf(stderr, "     -r     recursive\n");
+     fprintf(stderr, "     -t n   list n-day-or-older files only\n");
+     fprintf(stderr, "     -y     report total space taken up by files\n");
+     fprintf(stderr, "     -s     follow symbolic links to directories\n");
+     fprintf(stderr, "     -m     follow mount points\n");
 }
 
 
@@ -105,10 +114,8 @@ ls(args, num)
 char **args;
 int num;
 {
-     char *start_dir;
      char **found_files;
-     int num_found, total = 0;
-     char *file_re;
+     int num_found = 0, total = 0;
      int status = 0;
      int retval;
 
@@ -120,16 +127,7 @@ int num;
      }
      
      for ( ; num; num--) {
-	  if (*args[num - 1] == '/') {
-	       start_dir = "/";
-	       file_re = args[num - 1] + 1;
-	  }
-	  else {
-	       start_dir = "";
-	       file_re = args[num - 1];
-	  }
-
-	  if (retval = get_the_files(start_dir, file_re, &num_found,
+	  if (retval = get_the_files(args[num - 1], &num_found,
 				     &found_files)) {
 	       error(args[num - 1]);
 	       status = retval;
@@ -147,18 +145,18 @@ int num;
 	  }
 	  else {
 	       /* What we do at this point depends on exactly what the
-	        * file_re is.  There are several possible conditions:
-		* 1. file_re has no wildcards in it, which means that
+	        * filename is.  There are several possible conditions:
+		* 1. The filename has no wildcards in it, which means that
 		*    if we couldn't find it, that means it doesn't
 		*    exist.  Print a not found error.
-		* 2. file_re is an existing directory, with no deleted
+		* 2. Filename is an existing directory, with no deleted
 		*    files in it.  Print nothing.
-		* 3. file_re doesn't exist, and there are wildcards in
+		* 3. Filename doesn't exist, and there are wildcards in
 		*    it.  Print "no match".
 		* None of these are considered error conditions, so we
 		* don't set the error flag.
 		*/
-	       if (no_wildcards(file_re)) {
+	       if (no_wildcards(args[num - 1])) {
 		    if (! directory_exists(args[num - 1])) {
 			 set_error(ENOENT);
 			 error(args[num - 1]);
@@ -190,88 +188,31 @@ int num;
 
 
 
-int get_the_files(start_dir, file_re, number_found, found)
-char *start_dir, *file_re;
+int get_the_files(name, number_found, found)
+char *name;
 int *number_found;
 char ***found;
 {
-     char **matches;
-     int num_matches;
-     int num;
-     int i;
      int retval;
-     int status = 0;
+     int options;
      
-     *found = (char **) malloc(0);
-     num = 0;
-
-     if (retval = find_matches(start_dir, file_re, &num_matches, &matches)) {
+     options = FIND_DELETED | FIND_CONTENTS;
+     if (recursive)
+	  options |= RECURS_FIND_DELETED;
+     if (! dirsonly)
+	  options |= RECURS_DELETED;
+     if (f_mounts)
+	  options |= FOLLW_MOUNTPOINTS;
+     if (f_links)
+	  options |= FOLLW_LINKS;
+     
+     retval = find_matches(name, number_found, found, options);
+     if (retval) {
 	  error("find_matches");
 	  return retval;
      }
-     
-     if (recursive) {
-	  char **recurs_found;
-	  int recurs_num;
 
-	  for (i = 0; i < num_matches; free(matches[i]), i++) {
-	       if (is_deleted(lastpart(matches[i]))) {
-		    if (retval = add_str(found, num, matches[i])) {
-			 error("add_str");
-			 return retval;
-		    }
-		    num++;
-	       }
-	       if (retval = find_deleted_recurses(matches[i], &recurs_num,
-						  &recurs_found)) {
-		    error("find_deleted_recurses");
-		    return retval;
-	       }
-	       if (retval = add_arrays(found, &num, &recurs_found,
-				       &recurs_num)) {
-		    error("add_arrays");
-		    return retval;
-	       }
-	  }
-     }
-     else {
-	  struct stat stat_buf;
-	  char **contents_found;
-	  int num_contents;
-	  
-	  for (i = 0; i < num_matches; free(matches[i]), i++) {
-	       if (is_deleted(lastpart(matches[i]))) {
-		    if (retval = add_str(found, num, matches[i])) {
-			 error("add_str");
-			 return retval;
-		    }
-		    num++;
-	       }
-	       if (dirsonly)
-		    continue;
-	       if (lstat(matches[i], &stat_buf)) {
-		    set_error(errno);
-		    error(matches[i]);
-		    status = error_code;
-		    continue;
-	       }
-	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-		    if (retval = find_deleted_contents_recurs(matches[i],
-				      &num_contents, &contents_found)) {
-			 error("find_deleted_contents_recurs");
-			 return retval;
-		    }
-		    if (retval = add_arrays(found, &num, &contents_found,
-					    &num_contents)) {
-			 error("add_arrays");
-			 return retval;
-		    }
-	       }
-	  }
-     }
-     free(matches);
-     *number_found = num;
-     return status;
+     return 0;
 }
 
 
@@ -299,7 +240,7 @@ int num;
 	  }
 	  block_total += leaf->specs.st_blocks;
      }
-     free(files);
+     free((char *) files);
      return(num);
 }
 
@@ -314,7 +255,7 @@ list_files()
      int num;
      int retval;
      
-     strings = (char **) malloc(sizeof(char *));
+     strings = (char **) malloc((unsigned) sizeof(char *));
      num = 0;
      if (! strings) {
 	  set_error(errno);
@@ -350,7 +291,7 @@ list_files()
      
      for ( ; num; num--)
 	  free(strings[num - 1]);
-     free(strings);
+     free((char *) strings);
      return 0;
 }
 

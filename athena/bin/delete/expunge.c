@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.10 1989-10-23 13:37:44 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.11 1989-11-06 19:53:08 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -34,19 +34,22 @@
 #include "errors.h"
 
 extern char *malloc(), *realloc();
-extern long current_time;
+extern time_t current_time;
 extern int errno;
 
 char *whoami;
 
-int  timev,		/* minimum mod time before undeletion */
-     interactive,	/* query before each expunge */
+time_t timev; 		/* minimum mod time before undeletion */
+
+int  interactive,	/* query before each expunge */
      recursive,		/* expunge undeleted directories recursively */
      noop,		/* print what would be done instead of doing it */
      verbose,		/* print a line as each file is deleted */
      force,		/* do not ask for any confirmation */
      listfiles,		/* list files at toplevel */
-     yield;		/* print yield of expunge at end */
+     yield,		/* print yield of expunge at end */
+     f_links,		/* follow symbolic links */
+     f_mounts;		/* follow mount points */
 
 int blocks_removed = 0;
 
@@ -71,7 +74,7 @@ char *argv[];
      }
      timev = 0;
      yield = interactive = recursive = noop = verbose = listfiles = force = 0;
-     while ((arg = getopt(argc, argv, "t:irfnvly")) != EOF) {
+     while ((arg = getopt(argc, argv, "t:irfnvlysm")) != EOF) {
 	  switch (arg) {
 	  case 't':
 	       timev = atoi(optarg);
@@ -97,11 +100,19 @@ char *argv[];
 	  case 'y':
 	       yield++;
 	       break;
+	  case 's':
+	       f_links++;
+	       break;
+	  case 'm':
+	       f_mounts++;
+	       break;
 	  default:
 	       usage();
 	       exit(1);
 	  }
      }
+     report_errors = ! force;
+     
      if (optind == argc) {
 	  char *dir;
 	  dir = "."; /* current working directory */
@@ -123,7 +134,7 @@ purge()
      char *home;
      int retval;
      
-     home = malloc(MAXPATHLEN);
+     home = malloc((unsigned) MAXPATHLEN);
      if (! home) {
 	  set_error(errno);
 	  error("purge");
@@ -142,6 +153,7 @@ purge()
 	  error("expunge");
 	  return retval;
      }
+     return 0;
 }
 
 
@@ -149,17 +161,19 @@ purge()
 
 usage()
 {
-     printf("Usage: %s [ options ] [ filename [ ... ]]\n", whoami);
-     printf("Options are:\n");
-     printf("     -r     recursive\n");
-     printf("     -i     interactive\n");
-     printf("     -f     force\n");
-     printf("     -t n   n-day-or-older expunge\n");
-     printf("     -n     noop\n");
-     printf("     -v     verbose\n");
-     printf("     -l     list files before expunging\n");
-     printf("     -y     print yield of expunge\n");
-     printf("     --     end options and start filenames\n");
+     fprintf(stderr, "Usage: %s [ options ] [ filename [ ... ]]\n", whoami);
+     fprintf(stderr, "Options are:\n");
+     fprintf(stderr, "     -r     recursive\n");
+     fprintf(stderr, "     -i     interactive\n");
+     fprintf(stderr, "     -f     force\n");
+     fprintf(stderr, "     -t n   n-day-or-older expunge\n");
+     fprintf(stderr, "     -n     noop\n");
+     fprintf(stderr, "     -v     verbose\n");
+     fprintf(stderr, "     -l     list files before expunging\n");
+     fprintf(stderr, "     -s     follow symbolic links to directories\n");
+     fprintf(stderr, "     -m     follow mount points\n");
+     fprintf(stderr, "     -y     print yield of expunge\n");
+     fprintf(stderr, "     --     end options and start filenames\n");
 }
 
 
@@ -170,10 +184,8 @@ int expunge(files, num)
 char **files;
 int num;
 {
-     char *file_re;
      char **found_files;
      int num_found;
-     char *start_dir;
      int status = 0;
      int total = 0;
      filerec *current;
@@ -183,16 +195,7 @@ int num;
 	  exit(1);
 
      for ( ; num ; num--) {
-	  if (*files[num - 1] == '/') {
-	       start_dir = "/";
-	       file_re = files[num - 1] + 1;
-	  }
-	  else {
-	       start_dir = "";
-	       file_re = files[num - 1];
-	  }
-	  
-	  retval = get_the_files(start_dir, file_re, &num_found, &found_files);
+	  retval = get_the_files(files[num - 1], &num_found, &found_files);
 	  if (retval) {
 	       error(files[num - 1]);
 	       return retval;
@@ -218,7 +221,7 @@ int num;
 	        * in the latter cases we print either "no match" or
 	        * "not found" respectively
 		*/
-	       if (no_wildcards(file_re)) {
+	       if (no_wildcards(files[num - 1])) {
 		    if (! directory_exists(files[num - 1])) {
 			 set_error(ENOENT);
 			 error(files[num - 1]);
@@ -280,7 +283,7 @@ filerec *leaf;
 	       error("get_leaf_path");
 	       return retval;
 	  }
-	  convert_to_user_name(buf, buf);
+	  (void) convert_to_user_name(buf, buf);
 
 	  if (interactive) {
 	       printf("%s: Expunge directory %s? ", whoami, buf);
@@ -360,7 +363,7 @@ filerec *file_ent;
 	  error("get_leaf_path");
 	  return retval;
      }
-     convert_to_user_name(real, user);
+     (void) convert_to_user_name(real, user);
 
      if (interactive) {
 	  printf ("%s: Expunge %s (%dk)? ", whoami, user,
@@ -466,80 +469,27 @@ list_files()
 
 
 
-int get_the_files(base, reg_exp, num_found, found)
-char *base, *reg_exp;
+int get_the_files(name, num_found, found)
+char *name;
 int *num_found;
 char ***found;
 {
-     char **matches;
-     int num_matches;
-     int num;
-     int i;
      int retval;
+     int options;
      
-     *found = (char **) malloc(0);
-     num = 0;
+     options = FIND_DELETED | FIND_CONTENTS | RECURS_DELETED;
+     if (recursive)
+	  options |= RECURS_FIND_DELETED;
+     if (f_mounts)
+	  options |= FOLLW_MOUNTPOINTS;
+     if (f_links)
+	  options |= FOLLW_LINKS;
      
-     if (retval = find_matches(base, reg_exp, &num_matches, &matches)) {
+     retval = find_matches(name, num_found, found, options);
+     if (retval) {
 	  error("find_matches");
 	  return retval;
      }
-	       
-     if (recursive) {
-	  char **recurs_found;
-	  int recurs_num;
-	  
-	  for (i = 0; i < num_matches; free(matches[i]), i++) {
-	       if (is_deleted(lastpart(matches[i]))) {
-		    if (retval = add_str(found, num, matches[i])) {
-			 error("add_str");
-			 return retval;
-		    }
-		    num++;
-	       }
-	       if (retval = find_deleted_recurses(matches[i], &recurs_num,
-						  &recurs_found)) {
-		    error("find_deleted_recurses");
-		    return retval;
-	       }
-	       if (retval = add_arrays(found, &num, &recurs_found,
-				       &recurs_num)) {
-		    error("add_arrays");
-		    return retval;
-	       }
-	  }
-     }	
-     else {
-	  struct stat stat_buf;
-	  char **contents_found;
-	  int num_contents;
-	  
-	  for (i = 0; i < num_matches; free(matches[i]), i++) {
-	       if (is_deleted(lastpart(matches[i]))) {
-		    if (retval = add_str(found, num, matches[i])) {
-			 error("add_str");
-			 return retval;
-		    }
-		    num++;
-	       }
-	       if (lstat(matches[i], &stat_buf))
-		    continue;
-	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-		    if (retval =
-			find_deleted_contents_recurs(matches[i], &num_contents,
-						     &contents_found)) {
-			 error("find_deleted_contents_recurs");
-			 return retval;
-		    }
-		    if (retval = add_arrays(found, &num, &contents_found,
-					    &num_contents)) {
-			 error("add_arrays");
-			 return retval;
-		    }
-	       }
-	  }
-     }
-     free((char *) matches);
-     *num_found = num;
+
      return 0;
 }
