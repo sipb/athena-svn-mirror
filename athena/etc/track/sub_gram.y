@@ -4,7 +4,7 @@
 #include "mit-copyright.h"
 #include "track.h"
 extern FILE *yyin, *yyout;
-char linebuf[1024];
+char linebuf[2048];
 char wordbuf[256];
 char *wordp;
 int wordcnt = 0;
@@ -176,7 +176,7 @@ opt_ele : NEWLINE | WHITESPACE
 
 #include "lex.yy.c"
 
-void
+int
 yyerror(s)
 char *s;
 {

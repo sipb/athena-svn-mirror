@@ -44,7 +44,7 @@ without express or implied warranty.
 #define		CACHE_DIR_PREF          4
 
 
-static char rcsid[] = "";
+static char rcsid[] = "$Id: cache.c,v 1.13 1999-12-16 01:58:23 danw Exp $";
 
 extern char	*RunCommand();
 extern EntryRec		toplevelbuttons[2][MAX_BUTTONS];

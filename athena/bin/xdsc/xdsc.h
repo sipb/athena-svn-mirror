@@ -54,5 +54,3 @@ typedef struct entryrec {
         Widget          button;
         struct entryrec *nextrec;
 } EntryRec;
-
-static char rcsidh[] = "";

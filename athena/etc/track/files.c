@@ -1,9 +1,9 @@
 /*
- *	$Id: files.c,v 4.13 1999-08-13 00:15:12 danw Exp $
+ *	$Id: files.c,v 4.14 1999-12-16 01:58:10 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: files.c,v 4.13 1999-08-13 00:15:12 danw Exp $";
+static char *rcsid_header_h = "$Id: files.c,v 4.14 1999-12-16 01:58:10 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -129,11 +129,7 @@ removeit(name, type)
 char *name;
 unsigned int type;
 {
-#ifdef POSIX
 	struct dirent *next;
-#else
-	struct direct *next;
-#endif
 	DIR *dirp;
 	char *leaf, *type_str = "";
 	struct stat sbuf;

@@ -14,9 +14,7 @@ this software for any purpose.  It is provided "as is"
 without express or implied warranty.
 */
 
-#ifdef POSIX
 #include	<unistd.h>
-#endif
 #include	<stdio.h>
 #include	<string.h>
 #include	<fcntl.h>
@@ -44,10 +42,8 @@ without express or implied warranty.
 #include	<X11/Xaw/Label.h>
 
 #include	"xdsc.h"
-#ifdef sgi
-#define vfork fork
-#endif
-static char rcsid[] = "";
+
+static char rcsid[] = "$Id: xdsc.c,v 1.35 1999-12-16 01:58:24 danw Exp $";
 
 /*
 ** Globals
@@ -178,24 +174,6 @@ static char * submenu_names1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { "replybutton", "newbutton", NULL },
         { "writebutton", "mailbutton", NULL }};
 
-#if 0
-typedef struct{
-	Boolean logging_on;
-	String	log_file;
-} defaults;
-
-static defaults	defs;
-
-static XtResource app_resources[] = {
-	{ "loggingOn", "LoggingOn",
-		XtRBoolean, sizeof (Boolean), XtOffset (defaults *, logging_on),
-		XtRString, "true" },
-	{ "logfile", "Logfile",
-		XtRString, sizeof (String), XtOffset (defaults *, log_file),
-		XtRString, "/afs/athena.mit.edu/user/s/sao/scores/xdsc.log"},
-};
-#endif
-
 
 EntryRec        toplevelbuttons[2][MAX_BUTTONS];
 
@@ -267,7 +245,7 @@ mdb 7/26/96
 	pipe (filedesparent);
 	pipe (filedeschild);
 
-	pid = vfork();
+	pid = fork();
 
 	if (pid == 0)
 		SetUpEdsc();
@@ -282,51 +260,6 @@ mdb 7/26/96
 	ParseMeetingsFile();
 
 	oldpath = getenv("XFILESEARCHPATH");
-
-
-
-#define	AppdefaultsInStafftools	0
-
-#if AppdefaultsInStafftools
-#if defined(mips) || defined(_AIX)
-	if (!oldpath) {
-		newpath = (char *) malloc (100);
-		strcpy (newpath, "XFILESEARCHPATH=/mit/StaffTools/lib/X11/app-defaults/%N");
-	}
-	else {
-		newpath = (char *) malloc (100 + strlen (oldpath));
-		sprintf (newpath, "XFILESEARCHPATH=%s:/mit/StaffTools/lib/X11/app-defaults/%%N",oldpath);
-	}
-	putenv (newpath);
-#else
-	if (!oldpath) {
-		newpath = (char *) malloc (50);
-		strcpy (newpath, "/mit/StaffTools/lib/X11/app-defaults/%N");
-	}
-	else {
-		newpath = (char *) malloc (50 + strlen (oldpath));
-		sprintf (newpath, "%s:/mit/StaffTools/lib/X11/app-defaults/%%N",oldpath);
-	}
-	setenv ("XFILESEARCHPATH",newpath,1);
-
-#endif
-	myfree (newpath);
-#endif
-
-#if 0
-	XtGetApplicationResources(	topW, (XtPointer) &defs,
-					app_resources, XtNumber (app_resources),
-					NULL, 0);
-
-	if (defs.logging_on) {
-		sprintf (commandline, "machtype >> %s", defs.log_file);
-		system (commandline);
-
-		sprintf (commandline, "date >> %s", defs.log_file);
-		system (commandline);
-	}
-#endif
-
 
 	BuildUserInterface();
 	XtRealizeWidget(topW);

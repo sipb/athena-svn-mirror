@@ -28,7 +28,7 @@ without express or implied warranty.
 #include	<X11/Xaw/TextP.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "";
+static char rcsid[] = "$Id: headers.c,v 1.5 1999-12-16 01:58:23 danw Exp $";
 
 extern char	*RunCommand();
 extern EntryRec		toplevelbuttons[2][MAX_BUTTONS];

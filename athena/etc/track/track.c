@@ -1,18 +1,15 @@
 /*
- *	$Id: track.c,v 4.24 1999-08-13 00:15:12 danw Exp $
+ *	$Id: track.c,v 4.25 1999-12-16 01:58:11 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: track.c,v 4.24 1999-08-13 00:15:12 danw Exp $";
+static char *rcsid_header_h = "$Id: track.c,v 4.25 1999-12-16 01:58:11 danw Exp $";
 #endif
 
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
 
 #include "track.h"
-#ifdef ultrix
-#include <sys/mount.h>
-#endif
 
 char admin[WORDLEN] = DEF_ADM;		/* track administrator */
 char workdir[LINELEN];			/* working directory under src/dest
@@ -73,21 +70,20 @@ char **argv;
 {
 	char	scratch[LINELEN];
 	int	i;
+	struct sigaction sa;
 
 	strcpy(prgname,argv[0]);
 	strcpy(errmsg,"");
 
 	umask(022);	/* set default umask for daemons */
 
-#ifdef SYSV
-	sigset( SIGINT, cleanup);
-	sigset( SIGHUP, cleanup);
-	sigset( SIGPIPE, cleanup);
-#else
-	signal( SIGINT, cleanup);
-	signal( SIGHUP, cleanup);
-	signal( SIGPIPE, cleanup);
-#endif
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = cleanup;
+
+	sigaction( SIGINT, &sa, NULL);
+	sigaction( SIGHUP, &sa, NULL);
+	sigaction( SIGPIPE, &sa, NULL);
 
 	for(i=1;i<argc;i++) {
 		if (argv[i][0] != '-') {
@@ -385,18 +381,7 @@ readstat( types) char *types; {
 		poppath( to);
 		poppath( from);
 	}
-	/* track is often used just before a reboot;
-	 * flush the kernel's text-table,
-	 * to ensure that the vnodes we've freed get scavenged,
-	 */
-#ifdef ultrix
-        {
-		dev_t dev;
-		struct fs_data fsd;
-		if(statfs("/",&fsd) == 1) umount(fsd.fd_dev);
-	}
-#endif
-	/* then make sure that the file-systems' superblocks are up-to-date.
+	/* make sure that the file-systems' superblocks are up-to-date.
 	 */
 	sync();
 	sleep(2);
@@ -515,11 +500,7 @@ char *f[], *c[];
 struct currentness *currency;
 {
 	DIR *dirp;
-#ifdef POSIX
 	struct dirent *dp;
-#else
-	struct direct *dp;
-#endif
 	char *tail;
 
 	dirp = opendir( f[ ROOT]);
