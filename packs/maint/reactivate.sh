@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.68 2002-01-09 23:26:07 jweiss Exp $
+# $Id: reactivate.sh,v 1.69 2002-02-15 19:40:46 zacheiss Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -255,25 +255,12 @@ if [ "$full" = true ]; then
 		/etc/athena/config_afs > /dev/null 2>&1 &
 	fi
 	# If the encrypt file doesn't exist, disable AFS encryption.
-	# Only do this on Linux for now, since other platforms aren't
-	# running a client that supports encryption.
-	if [ linux = "$HOSTTYPE" ]; then
+	# Don't do this on Irix because we're not running OpenAFS there.
+	if [ sgi != "$HOSTTYPE" ]; then
 		if  [ -f $afsconfig/encrypt ]; then
 			/bin/athena/fs setcrypt on
 		else
 			/bin/athena/fs setcrypt off
-		fi
-		# Work around an OpenAFS bug: if a Linux client boots
-		# while its root.afs is unavailable, it will get into
-		# a broken state that can only be fixed by rebooting.
-		# Check for this state and reboot here.
-		if [ "$PUBLIC" = "true" -a "$AFSCLIENT" = "true" ]; then
-			module=`lsmod | grep afs`
-			mounted=`mount | grep afs`
-			if [ -n "$module" -a -z "$mounted" ]; then
-				logger -p user.notice "AFS loaded in kernel but not mounted.  Rebooting."
-				reboot
-			fi
 		fi
 	fi
 fi
