@@ -28,6 +28,7 @@
 #include <libgnomeui/gnome-window-icon.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libart_lgpl/libart.h>
+#include <egg-screen-exec.h>
 
 #include "global.h"
 
@@ -56,6 +57,8 @@ about_cb (BonoboUIComponent *uic,
     const gchar *translator_credits = _("translator_credits");
 
     if (about) {
+	gtk_window_set_screen (GTK_WINDOW (about),
+			       gtk_widget_get_screen (GTK_WIDGET (ma->applet)));
 	gtk_window_present (GTK_WINDOW (about));
 	return;
     }
@@ -83,7 +86,9 @@ about_cb (BonoboUIComponent *uic,
 
     if (pixbuf) 
    	gdk_pixbuf_unref (pixbuf);
-   
+  
+    gtk_window_set_screen (GTK_WINDOW (about),
+   			   gtk_widget_get_screen (GTK_WIDGET (ma->applet)));
     gtk_window_set_wmclass (GTK_WINDOW (about), "system monitor", "System Monitor");
     g_signal_connect (G_OBJECT (about), "destroy",
 			G_CALLBACK (gtk_widget_destroyed), &about);
@@ -100,7 +105,9 @@ start_procman_cb (BonoboUIComponent *uic,
 {
 	GError *error = NULL;
 
-	g_spawn_command_line_async ("gnome-system-monitor", &error);
+	egg_screen_execute_command_line_async (
+			gtk_widget_get_screen (GTK_WIDGET (ma->applet)),
+			"gnome-system-monitor", &error);
 	if (error) {
 		GtkWidget *dialog;
 
@@ -117,6 +124,8 @@ start_procman_cb (BonoboUIComponent *uic,
 				  NULL);
 
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (ma->applet)));
 
 		gtk_widget_show (dialog);
 

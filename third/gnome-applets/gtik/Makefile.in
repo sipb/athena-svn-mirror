@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -140,7 +144,12 @@ gnomelocaledir = @gnomelocaledir@
 
 SUBDIRS = access help
 
-INCLUDES = -I$(srcdir)  -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"  		 $(GNOME_APPLETS_CFLAGS) $(GNOME_VFS_APPLETS_CFLAGS) 		 -DGTIK_APPLET_NAME=\"gtik2_applet\" 		 -I access/
+INCLUDES = \
+	-I$(srcdir) \
+	-I$(top_srcdir)/gtik/access \
+	-I$(top_srcdir)/screen-exec \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"  \
+	$(GNOME_APPLETS_CFLAGS)
 
 
 libexec_PROGRAMS = gtik2_applet2
@@ -149,7 +158,11 @@ gtik2_applet2_SOURCES = gtik.c
 
 ACCESS_LT_LIB = $(top_builddir)/gtik/access/libgnomedrawareaaccess.la
 
-gtik2_applet2_LDADD = $(GNOME_APPLETS_LIBS) 			$(GNOME_VFS_APPLETS_LIBS) 			$(ACCESS_LT_LIB) 			$(GAILUTIL_LIBS)
+gtik2_applet2_LDADD = $(top_builddir)/screen-exec/libscreen-exec.la \
+			$(GNOME_APPLETS_LIBS) \
+			$(GNOME_VFS_APPLETS_LIBS) \
+			$(ACCESS_LT_LIB) \
+			$(GAILUTIL_LIBS)
 
 
 serverdir = $(libdir)/bonobo/servers
@@ -162,7 +175,11 @@ ui_DATA = GNOME_GtikApplet.xml
 schemadir = @GCONF_SCHEMA_FILE_DIR@
 schema_DATA = gtik.schemas
 
-EXTRA_DIST =  	README AUTHORS ChangeLog 	GNOME_GtikApplet.server.in.in 	$(ui_DATA)			$(schema_DATA)
+EXTRA_DIST = \
+	README AUTHORS ChangeLog \
+	GNOME_GtikApplet.server.in.in \
+	$(ui_DATA)		\
+	$(schema_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -180,6 +197,7 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 gtik2_applet2_OBJECTS =  gtik.$(OBJEXT)
 gtik2_applet2_DEPENDENCIES =  \
+$(top_builddir)/screen-exec/libscreen-exec.la \
 $(top_builddir)/gtik/access/libgnomedrawareaaccess.la
 gtik2_applet2_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -194,7 +212,7 @@ DIST_COMMON =  README AUTHORS ChangeLog Makefile.am Makefile.in NEWS
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gtik2_applet2_SOURCES)
 OBJECTS = $(gtik2_applet2_OBJECTS)
@@ -418,7 +436,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -454,6 +472,8 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+gtik.o: gtik.c ../config.h ../screen-exec/egg-screen-help.h \
+	access/customdrawingarea.h
 
 info-am:
 info: info-recursive
@@ -541,6 +561,8 @@ install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+	$(GNOME_VFS_APPLETS_CFLAGS) \
+	-DGTIK_APPLET_NAME=\"gtik2_applet\"
 
 $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@

@@ -1,9 +1,13 @@
 SUBDIRS = access help
 
-INCLUDES =  -I$(srcdir)  -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"  \
-		 $(GNOME_APPLETS_CFLAGS) $(GNOME_VFS_APPLETS_CFLAGS) \
-		 -DGTIK_APPLET_NAME=\"gtik2_applet\" \
-		 -I access/
+INCLUDES = \
+	-I$(srcdir) \
+	-I$(top_srcdir)/gtik/access \
+	-I$(top_srcdir)/screen-exec \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"  \
+	$(GNOME_APPLETS_CFLAGS)
+	$(GNOME_VFS_APPLETS_CFLAGS) \
+	-DGTIK_APPLET_NAME=\"gtik2_applet\"
 
 libexec_PROGRAMS = gtik2_applet2
 
@@ -11,7 +15,8 @@ gtik2_applet2_SOURCES = gtik.c
 
 ACCESS_LT_LIB = $(top_builddir)/gtik/access/libgnomedrawareaaccess.la
 
-gtik2_applet2_LDADD = 	$(GNOME_APPLETS_LIBS) \
+gtik2_applet2_LDADD =   $(top_builddir)/screen-exec/libscreen-exec.la \
+			$(GNOME_APPLETS_LIBS) \
 			$(GNOME_VFS_APPLETS_LIBS) \
 			$(ACCESS_LT_LIB) \
 			$(GAILUTIL_LIBS)

@@ -1,4 +1,4 @@
-/* $Id: gweather-dialog.c,v 1.1.1.1 2003-01-04 21:18:18 ghudson Exp $ */
+/* $Id: gweather-dialog.c,v 1.1.1.2 2003-01-29 20:36:58 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -80,10 +80,12 @@ void gweather_dialog_create (GWeatherApplet *gw_applet)
   				   GTK_RESPONSE_CLOSE);
 
   if (gw_applet->gweather_pref.radar_enabled)
-      gtk_widget_set_usize (gw_applet->gweather_dialog, 570, 440);
+      gtk_window_set_default_size (GTK_WINDOW(gw_applet->gweather_dialog), 570,440);
   else
-      gtk_widget_set_usize (gw_applet->gweather_dialog, 590, 340);
+      gtk_window_set_default_size (GTK_WINDOW(gw_applet->gweather_dialog), 590, 340);
 
+  gtk_window_set_screen (GTK_WINDOW (gw_applet->gweather_dialog),
+			 gtk_widget_get_screen (GTK_WIDGET (gw_applet->applet)));
   gtk_window_set_policy (GTK_WINDOW (gw_applet->gweather_dialog), FALSE, FALSE, FALSE);
   
   weather_vbox = GTK_DIALOG (gw_applet->gweather_dialog)->vbox;

@@ -20,6 +20,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 
 #include <libgnomeui/gnome-about.h>
 
@@ -36,6 +37,7 @@ void about_box (BonoboUIComponent *uic,
 	
 	static const gchar *authors[] = {
 		"Oliver Maruhn <oliver@maruhn.com>",
+		"Mark McLoughlin <mark@skynet.ie>",
 		NULL
 	};
 
@@ -46,6 +48,8 @@ void about_box (BonoboUIComponent *uic,
 	const gchar *translator_credits = _("translator_credits");
 
 	if (about_box) {
+		gtk_window_set_screen (GTK_WINDOW (about_box),
+				       gtk_widget_get_screen (GTK_WIDGET (mcdata->applet)));
 		gtk_window_present (GTK_WINDOW (about_box));
 		return;
 	}
@@ -70,7 +74,9 @@ This program is free software; you can redistribute it and/or modify it under th
 				     pixbuf);
         if (pixbuf) 
    		gdk_pixbuf_unref (pixbuf);
-   
+
+	gtk_window_set_screen (GTK_WINDOW (about_box),
+			       gtk_widget_get_screen (GTK_WIDGET (mcdata->applet)));
    	gtk_window_set_wmclass (GTK_WINDOW (about_box), "command line", "Command Line");
    	g_signal_connect (about_box, "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),

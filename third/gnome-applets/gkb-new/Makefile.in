@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -138,20 +142,37 @@ X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"      	$(GNOME_APPLETS_CFLAGS)                                                            
+INCLUDES = \
+	-I$(top_srcdir)/screen-exec			\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"      \
+	$(GNOME_APPLETS_CFLAGS)                                                            
 
 
 libexec_PROGRAMS = gkb-applet-2
 
 bin_SCRIPTS = gkb_xmmap
 
-gkb_applet_2_SOURCES =  		gkb.c 				gkb.h				keygrab.c			keymap.c			prop.c 				prop-list.c			prop-map.c			preset.c			prop-add.c			system.c			util.c				gconf.c
+gkb_applet_2_SOURCES = \
+		gkb.c 		\
+		gkb.h		\
+		keygrab.c	\
+		keymap.c	\
+		prop.c 		\
+		prop-list.c	\
+		prop-map.c	\
+		preset.c	\
+		prop-add.c	\
+		system.c	\
+		util.c		\
+		gconf.c
 
 
-gkb_applet_2_LDADD =  	$(GNOME_APPLETS_LIBS) $(X_LIBS) $(INTLLIBS)
+gkb_applet_2_LDADD = \
+	$(top_builddir)/screen-exec/libscreen-exec.la \
+	$(GNOME_APPLETS_LIBS) $(X_LIBS) $(INTLLIBS)
 
-@GKB_SUN_TRUE@gkb_DDIRS = xmodmap.sun descs.sun
-@GKB_SUN_FALSE@gkb_DDIRS = xmodmap descs
+@GKB_SUN_TRUE@gkb_DDIRS = @GKB_SUN_TRUE@xmodmap.sun descs.sun
+@GKB_SUN_FALSE@gkb_DDIRS = @GKB_SUN_FALSE@xmodmap descs
 
 SUBDIRS = gkb help $(gkb_DDIRS)
 
@@ -170,7 +191,11 @@ server_DATA = $(server_in_files:.server.in=.server)
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = GNOME_KeyboardApplet.xml
 
-EXTRA_DIST =  	GNOME_KeyboardApplet_Factory.server.in.in		$(GKB_ICON)						$(schema_DATA)						$(ui_DATA)
+EXTRA_DIST = \
+	GNOME_KeyboardApplet_Factory.server.in.in	\
+	$(GKB_ICON)					\
+	$(schema_DATA)					\
+	$(ui_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -189,7 +214,8 @@ X_PRE_LIBS = @X_PRE_LIBS@
 gkb_applet_2_OBJECTS =  gkb.$(OBJEXT) keygrab.$(OBJEXT) keymap.$(OBJEXT) \
 prop.$(OBJEXT) prop-list.$(OBJEXT) prop-map.$(OBJEXT) preset.$(OBJEXT) \
 prop-add.$(OBJEXT) system.$(OBJEXT) util.$(OBJEXT) gconf.$(OBJEXT)
-gkb_applet_2_DEPENDENCIES = 
+gkb_applet_2_DEPENDENCIES =  \
+$(top_builddir)/screen-exec/libscreen-exec.la
 gkb_applet_2_LDFLAGS = 
 SCRIPTS =  $(bin_SCRIPTS)
 
@@ -206,7 +232,7 @@ gkb_xmmap.in.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 DIST_SUBDIRS =  gkb help xmodmap.sun descs.sun xmodmap descs
 SOURCES = $(gkb_applet_2_SOURCES)
@@ -471,7 +497,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -507,6 +533,19 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+gconf.o: gconf.c ../config.h gkb.h
+gkb.o: gkb.c ../config.h ../screen-exec/egg-screen-help.h gkb.h
+keygrab.o: keygrab.c ../config.h gkb.h
+keymap.o: keymap.c gkb.h
+preset.o: preset.c gkb.h
+prop-add.o: prop-add.c ../config.h gkb.h \
+	../screen-exec/egg-screen-help.h
+prop-list.o: prop-list.c ../config.h gkb.h
+prop-map.o: prop-map.c ../config.h gkb.h \
+	../screen-exec/egg-screen-help.h
+prop.o: prop.c ../config.h ../screen-exec/egg-screen-help.h gkb.h
+system.o: system.c gkb.h
+util.o: util.c ../config.h gkb.h
 
 info-am:
 info: info-recursive

@@ -1,12 +1,88 @@
+2003-01-23  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gtik2_applet2.xml: updated help for GNOME 2.2
+	* help/C/gtik2_applet2-C.omf: updated for GNOME 2.2
+	
+2003-01-21  Arvind Samptur <arvind.samptur@wipro.com>
+	* gtik.c (destroy_applet) Destroy the preferences dialog
+	when destroying the applet.
+
+2002-12-14  Fernando Herrera <fherrera@onirica.com>
+
+	* GNOME_GtikApplet.server.in.in: added bugzilla attributtes
+
+2002-12-02  Christian Neumair  <chris@gnome-de.org>
+
+	* gtik.c: Made tabs HIG compliant (removed mnemonics).
+
+2002-11-27  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gtik.c: realize drawing widget on startup since sometimes it doesn't seem
+	to be realized and the gc created at startup is therefore NULL
+
+2002-11-27  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gtik.c: some changes from the stable branch. Make the scroll speed slower by
+	default. Make the skip-forward/backword buttons scroll a shorter distance.
+
+2002-11-27  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gtik.c: don't create a new gc on every repaint. Performance improvement
+	from bug #99696
+
+2002-09-15  Juan Salaverria <rael@vectorstar.net>
+
+	* GNOME_GtikApplet.xml: Added a separator in the
+	menu and ordered the menu items. May fix bug #89864
+
+2002-10-29  Rajkumar Sivasamy  <rajkumar.siva@wipro.com>
+
+	* gtik.c: Add colons to the labels in the preferences dialog.
+	Fixes #81136
+
+2002-09-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* gtik.c: (about_cb), (help_cb), (phelp_cb), (properties_cb):
+	kill the HAVE_GTK_MULTIHEAD conditionals. We require gtk+ HEAD now.
+
 2002-08-31  Glynn Foster  <glynn.foster@sun.com>
 
-	* help/C/gtik2_applet2.xml: Fix up docs s/Refresh/Update.
+	* help/C/gtik2_applet2.xml: Update docs for s/Refresh/Update.
 	Fixes #86756.
+
+2002-08-24  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gtik.c: fix bug in saving scroll speed
 
 2002-08-22  Kevin Vandersloot <kfv101@psu.edu>
 
-	* gtik.c: speedups from HEAD. Cache string widths and only 
-	display stocks if they are visible
+	* gtik.c: add ability to change scroll speed and width of
+	the applet. Also size the height based on the panel height.
+	Fixes bug #84612 and #83701. I know... the prefs dialog is really
+	ass ugly right now ;)
+
+2002-08-22  Kevin Vandersloot <kfv101@psu.edu>
+	
+	* gtik.c: fix small bug in display logic
+
+2002-08-22  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gtik.c: another massive speedup. Don't paint strings that
+	lie outside the display area. Makes the applet usable with
+	lots of stocks
+
+2002-08-21  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gtik.c: greatly speed up the display of the quotes. Cache
+	the string widths so we don't have to keep recaculating on
+	each update. Simplify things by only having one font now.
+
+2002-08-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: link against libscreen-exec.la
+
+	* gtik.c: (help_cb), (phelp_cb): use the multiscreen
+	gnome_help variants.
 
 2002-07-18  Mark McLoughlin  <mark@skynet.ie>
 
@@ -14,6 +90,11 @@
 
 	* GNOME_GtikApplet.server.in: move .server.in to
 	.server.in.in to allow for libexec dir substitution.
+
+2002-07-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* gtik.c: (about_cb), (properties_cb): realise
+	dialogs on the same screen as the applet.
 
 2002-07-10  Mark McLoughlin  <mark@skynet.ie>
 

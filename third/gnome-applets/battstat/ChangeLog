@@ -1,8 +1,47 @@
+2003-01-25 John Fleck <jfleck@inkstain.net>
+
+	* docs/C/battstat.xml
+	fixing typo, bug #104340
+
+2003-01-21  Arvind Samptur <arvind.samptur@wipro.com>
+	* battstat_applet.c (destroy_applet): Destroy the
+	preferences dialog when destroying the applet.
+
+2002-12-14  Fernando Herrera <fherrera@onirica.com>
+
+	* GNOME_BattstatApplet.server.in.in: added bugzilla attributtes
+
+2002-12-08  Kevin Vandersloot <kfv101@psu.edu>
+
+        * battstat_applet.c, Makefile.am: hook up help menu. Fixes bug #91297
+
+2002-09-15  Juan Salaverria <rael@vectorstar.net>
+	
+	* GNOME_BattstatApplet.xml: Added a separator in the
+	menu and ordered the menu items. May fix bug #89864
+
+2002-11-22  Kevin Vandersloot <kfv101@psu.edu>
+
+	* acpi-linux.c: don't hardcode battery directory names and allow for multiple
+	batteries. Patch from Hanno BÃ¶ck <hanno@gmx.de>. Fixes bugs 89681 and
+	90122.
+
 2002-10-25  Kevin Vandersloot <kfv101@psu.edu>
 
-	* battstat_applet.c: realize the applet widget on startup
-	so applet->window is not NULL. Fixes the oft duped crash
-	on startup bug #86458
+        * battstat_applet.c: realize the applet widget on startup
+        so applet->window is not NULL. Fixes the oft duped crash
+        on startup bug #86458
+
+2002-09-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* battstat_applet.c: (battstat_error_dialog), (about_cb):
+	* properties.c: (prop_cb): kill the HAVE_GTK_MULTIHEAD
+	conditionals - we require gtk HEAD now.
+
+2002-08-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* battstat_applet.c: (help_cb), (helppref_cb):
+	add a couple of FIXMEs.
 
 2002-07-18  Mark McLoughlin  <mark@skynet.ie>
 
@@ -13,8 +52,15 @@
 
 2002-07-11  Kevin Vandersloot <kfv101@psu.edu>
 
-        * *.glade: Fix misspelling. Patch by Heath Harrelson. 
-        Fixes bug #87010
+	* *.glade: Fix misspelling. Patch by Heath Harrelson. 
+	Fixes bug #87010
+
+2002-07-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* battstat_applet.c: (battstat_error_dialog), (about_cb):
+	realise dialogs on the same screen as the applet.
+
+	* properties.c: (prop_cb): ditto.
 
 2002-07-10  Mark McLoughlin  <mark@skynet.ie>
 
@@ -323,7 +369,7 @@
 	*configure.in: Added Malay (ms) in ALL_LINGUAS.
 	*po/ms.po: Added Malay Translation.
 
-2001-12-28  Jörgen Pehrson  <jp@spektr.eu.org>
+2001-12-28  JÃ¶rgen Pehrson  <jp@spektr.eu.org>
 
 	* configure.in: Changed the version numbering for
 	GNOME 2.x to 2.1.x
@@ -533,7 +579,7 @@
 	it said EXTRADIST. That meant that the libglade file wasn't included
 	in the distribution when doing a "make dist". 
 
-2001-12-10 Jörgen Pehrson <jpehrson@cvs.gnome.org>
+2001-12-10 JÃ¶rgen Pehrson <jpehrson@cvs.gnome.org>
 	To celebrate the fact that Battstat moved into the GNOME CVS the
 	format of this changelog has changed. A lot of changes (by others)
 	took place between the previous entry in the ChangeLog and this

@@ -289,7 +289,7 @@ static GtkWidget *color_frame_new(GtkWidget *vbox, const gchar *text)
 static void
 phelp_cb (GtkWidget *w, gint tab, gpointer data)
 {
-#ifdef FIXME
+#ifdef FIXME /* use (egg|gnome)_screen_help_display */
 	GnomeHelpMenuEntry help_entry = { "modemlights_applet",
 					  "index.html#MODEMLIGHTS-PREFS" };
 	gnome_help_display(NULL, &help_entry);
@@ -319,6 +319,8 @@ void property_show (BonoboUIComponent *uic,
 	GtkWidget *button;
 
 	if (propwindow) {
+		gtk_window_set_screen (GTK_WINDOW (propwindow),
+				       gtk_widget_get_screen (GTK_WIDGET (applet)));
 		gtk_window_present (GTK_WINDOW (propwindow));
 		return;
 	}
@@ -327,7 +329,9 @@ void property_show (BonoboUIComponent *uic,
 						  GTK_DIALOG_DESTROY_WITH_PARENT,
 						  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 						  NULL);
-						  
+	gtk_window_set_screen (GTK_WINDOW (propwindow),
+			       gtk_widget_get_screen (GTK_WIDGET (applet)));
+
 	notebook = gtk_notebook_new ();
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (propwindow)->vbox), notebook,
 			    TRUE, TRUE, 0);
@@ -421,7 +425,7 @@ void property_show (BonoboUIComponent *uic,
         gtk_box_pack_start(GTK_BOX(vbox1), checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox);
 
-        label = gtk_label_new_with_mnemonic (_("_General"));
+        label = gtk_label_new(_("General"));
         gtk_widget_show(vbox);
         /*gnome_property_box_append_page( GNOME_PROPERTY_BOX(propwindow), vbox, label);*/
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook), vbox, label);
@@ -461,7 +465,7 @@ void property_show (BonoboUIComponent *uic,
 	box_add_color(applet, hbox, _("Bac_kground"), COLOR_TEXT_BG);
 	box_add_color(applet, hbox, _("O_utline"), COLOR_TEXT_MID);
 
-	label = gtk_label_new_with_mnemonic(_("C_olors"));
+	label = gtk_label_new(_("Colors"));
 	gtk_widget_show(vbox);
 	gtk_notebook_append_page( GTK_NOTEBOOK(notebook), vbox, label);
 
@@ -547,7 +551,7 @@ void property_show (BonoboUIComponent *uic,
 	gtk_box_pack_end(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);
 #endif
-        label = gtk_label_new_with_mnemonic(_("_Advanced"));
+        label = gtk_label_new(_("Advanced"));
         gtk_widget_show(vbox);
         gtk_notebook_append_page( GTK_NOTEBOOK(notebook), vbox, label);
 

@@ -36,7 +36,9 @@
 
 #include "gkb.h"
 
-static void addhelp_cb (PanelApplet * widget, gpointer data);
+#include <egg-screen-help.h>
+
+static void addhelp_cb (GtkDialog *dialog, gpointer data);
 
 typedef struct _LangData LangData;
 struct _LangData
@@ -322,7 +324,7 @@ static gboolean
 row_activated_cb (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
   GkbPropertyBoxInfo * pbi = data;
-  
+
   if (event->type == GDK_2BUTTON_PRESS) {
   	addwadd_cb (NULL, pbi);
   	return TRUE;
@@ -330,6 +332,21 @@ row_activated_cb (GtkWidget *widget, GdkEventButton *event, gpointer data)
   
   return FALSE;
   
+}
+
+static void
+addbutton_sensitive_cb (GtkTreeView * treeview, gpointer data)
+{
+  GkbPropertyBoxInfo * pbi = data;
+  GKB * gkb = pbi->gkb;
+  GtkWidget * addbutton = gtk_object_get_data (GTK_OBJECT (gkb->addwindow), "addbutton");
+
+  if (pbi->keymap_for_add->command != NULL) {
+    gtk_widget_set_sensitive (addbutton, TRUE);
+  } else {
+    gtk_widget_set_sensitive (addbutton, FALSE);
+  }
+
 }
 
 static void
@@ -343,7 +360,7 @@ response_cb (GtkDialog *dialog, gint id, gpointer data)
     addwadd_cb (NULL, pbi);
     break;
   case GTK_RESPONSE_HELP:
-    addhelp_cb (NULL, NULL);
+    addhelp_cb (dialog, NULL);
     break;
   default:
     gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -359,12 +376,15 @@ gkb_prop_map_add (GkbPropertyBoxInfo * pbi)
 {
   GtkWidget *vbox1;
   GtkWidget *tree1;
+  GtkWidget *button;
   GtkWidget *scrolled1;
   GtkTreeSelection *selection;
   GKB *gkb = pbi->gkb;
  
   if (gkb->addwindow)
     {
+      gtk_window_set_screen (GTK_WINDOW (gkb->addwindow),
+			     gtk_widget_get_screen (gkb->applet));
       gtk_window_present (GTK_WINDOW (gkb->addwindow));
       return;
     }
@@ -373,11 +393,18 @@ gkb_prop_map_add (GkbPropertyBoxInfo * pbi)
 						GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 						GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
-						GTK_STOCK_ADD, 100,
 						NULL);
+
+  button = gtk_dialog_add_button (GTK_DIALOG (gkb->addwindow), GTK_STOCK_ADD, 100);
+  gtk_widget_set_sensitive (button, FALSE);
+  
   gtk_dialog_set_default_response (GTK_DIALOG (gkb->addwindow), 100);
+  gtk_window_set_screen (GTK_WINDOW (gkb->addwindow),
+			 gtk_widget_get_screen (gkb->applet));
   gtk_object_set_data (GTK_OBJECT (gkb->addwindow), "addwindow",
 		       gkb->addwindow);
+  gtk_object_set_data (GTK_OBJECT (gkb->addwindow), "addbutton",
+		       button);
   
   vbox1 = GTK_DIALOG (gkb->addwindow)->vbox;
   gtk_widget_show (vbox1);
@@ -409,6 +436,8 @@ gkb_prop_map_add (GkbPropertyBoxInfo * pbi)
   /* Signal for double clicks or user pressing space */
   g_signal_connect (G_OBJECT (tree1), "button_press_event",
                     G_CALLBACK (row_activated_cb), pbi);
+  g_signal_connect (G_OBJECT (tree1), "cursor_changed",
+                    G_CALLBACK (addbutton_sensitive_cb), pbi);
        
   g_signal_connect (G_OBJECT (gkb->addwindow), "response",
   		    G_CALLBACK (response_cb), pbi);
@@ -419,8 +448,13 @@ gkb_prop_map_add (GkbPropertyBoxInfo * pbi)
 }
 
 static void
-addhelp_cb (PanelApplet * applet, gpointer data)
+addhelp_cb (GtkDialog *dialog, gpointer data)
 {
         GError *error = NULL;
-        gnome_help_display("gkb","gkb-modify-list",&error);
+
+        egg_screen_help_display (
+		gtk_window_get_screen (GTK_WINDOW (dialog)),
+		"gkb", "gkb-modify-list", &error);
+
+	/* FIXME: display error to the user */
 }

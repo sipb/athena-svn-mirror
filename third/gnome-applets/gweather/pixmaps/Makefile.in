@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -138,7 +142,23 @@ X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-EXTRA_DIST =  	cloud-mini.xpm		cloud.xpm		fog-mini.xpm		fog.xpm			rain-mini.xpm		rain.xpm		snow-mini.xpm		snow.xpm		sun-mini.xpm		sun.xpm			suncloud-mini.xpm		suncloud.xpm		tstorm-mini.xpm		tstorm.xpm		unknown-mini.xpm		unknown.xpm
+EXTRA_DIST = \
+	cloud-mini.xpm	\
+	cloud.xpm	\
+	fog-mini.xpm	\
+	fog.xpm		\
+	rain-mini.xpm	\
+	rain.xpm	\
+	snow-mini.xpm	\
+	snow.xpm	\
+	sun-mini.xpm	\
+	sun.xpm		\
+	suncloud-mini.xpm	\
+	suncloud.xpm	\
+	tstorm-mini.xpm	\
+	tstorm.xpm	\
+	unknown-mini.xpm	\
+	unknown.xpm
 
 
 gweather_iconsdir = $(datadir)/pixmaps/gweather
@@ -153,7 +173,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

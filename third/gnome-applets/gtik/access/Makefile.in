@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -138,12 +142,25 @@ X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-INCLUDES = -I$(srcdir)  -DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		$(GNOME_APPLETS_CFLAGS) $(GNOME_VFS_APPLETS_CFLAGS) 		-I$(top_srcdir) 		-I$(includedir) 		$(GAILUTIL_CFLAGS)
+INCLUDES = -I$(srcdir)  -DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+		$(GNOME_APPLETS_CFLAGS) $(GNOME_VFS_APPLETS_CFLAGS) \
+		-I$(top_srcdir) \
+		-I$(includedir) \
+		$(GAILUTIL_CFLAGS)
 
 
 noinst_LTLIBRARIES = libgnomedrawareaaccess.la
 
-libgnomedrawareaaccess_la_SOURCES =  	accessibledrawingarea.c			accessibledrawingarea.h			accessibledrawingareafactory.c			accessibledrawingareafactory.h			customdrawingarea.c			customdrawingarea.h			relate.c			factory.c			factory.h
+libgnomedrawareaaccess_la_SOURCES = \
+	accessibledrawingarea.c		\
+	accessibledrawingarea.h		\
+	accessibledrawingareafactory.c		\
+	accessibledrawingareafactory.h		\
+	customdrawingarea.c		\
+	customdrawingarea.h		\
+	relate.c		\
+	factory.c		\
+	factory.h
 
 
 libgnomedrawareaaccess_la_LIBADD = $(INTLLIBS)
@@ -175,7 +192,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libgnomedrawareaaccess_la_SOURCES)
 OBJECTS = $(libgnomedrawareaaccess_la_OBJECTS)
@@ -265,7 +282,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -291,6 +308,17 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+accessibledrawingarea.lo accessibledrawingarea.o : \
+	accessibledrawingarea.c accessibledrawingarea.h \
+	customdrawingarea.h
+accessibledrawingareafactory.lo accessibledrawingareafactory.o : \
+	accessibledrawingareafactory.c accessibledrawingareafactory.h \
+	customdrawingarea.h accessibledrawingarea.h
+customdrawingarea.lo customdrawingarea.o : customdrawingarea.c \
+	customdrawingarea.h
+factory.lo factory.o : factory.c factory.h \
+	accessibledrawingareafactory.h customdrawingarea.h
+relate.lo relate.o : relate.c
 
 info-am:
 info: info-am

@@ -1,7 +1,7 @@
 #ifndef __GWEATHER_ABOUT_H_
 #define __GWEATHER_ABOUT_H_
 
-/* $Id: gweather-about.h,v 1.1.1.1 2003-01-04 21:19:22 ghudson Exp $ */
+/* $Id: gweather-about.h,v 1.1.1.2 2003-01-29 20:36:58 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>

@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -143,7 +147,64 @@ EXTRA_DIST = $(GKB_MAPS)
 gkbmapsdir = $(datadir)/xmodmap
 gkbmaps_DATA = $(GKB_MAPS)
 
-GKB_MAPS =  		xmodmap.am 		xmodmap.az 		xmodmap.be 		xmodmap.bg 		xmodmap.br 		xmodmap.by 		xmodmap.ca 		xmodmap.cz 		xmodmap.de 		xmodmap.de_CH 		xmodmap.dk 		xmodmap.ee 		xmodmap.es 		xmodmap.fi 		xmodmap.fr 		xmodmap.gb 		xmodmap.hu 		xmodmap.hu-lat1 		xmodmap.il 		xmodmap.is 		xmodmap.it 		xmodmap.jp 		xmodmap.lt 		xmodmap.lv 		xmodmap.mk 		xmodmap.no 		xmodmap.pl 		xmodmap.pt 		xmodmap.ro 		xmodmap.ru 		xmodmap.se 		xmodmap.si 		xmodmap.sk 		xmodmap.sr 		xmodmap.th 		xmodmap.tr 		xmodmap.ua 		xmodmap.us 		xmodmap.vn 		xmodmap.br-usb 		xmodmap.de-usb 		xmodmap.dk-usb 		xmodmap.es-usb 		xmodmap.fr-usb 		xmodmap.gb-usb 		xmodmap.it-usb 		xmodmap.se-usb 		xmodmap.us-usb
+GKB_MAPS = \
+		xmodmap.am \
+		xmodmap.az \
+		xmodmap.be \
+		xmodmap.bg \
+		xmodmap.br \
+		xmodmap.by \
+		xmodmap.ca \
+		xmodmap.cz \
+		xmodmap.de \
+		xmodmap.de_CH \
+		xmodmap.dk \
+		xmodmap.ee \
+		xmodmap.es \
+		xmodmap.fi \
+		xmodmap.fr \
+		xmodmap.gb \
+		xmodmap.hu \
+		xmodmap.hu-lat1 \
+		xmodmap.il \
+		xmodmap.is \
+		xmodmap.it \
+		xmodmap.jp \
+		xmodmap.lt \
+		xmodmap.lv \
+		xmodmap.mk \
+		xmodmap.no \
+		xmodmap.pl \
+		xmodmap.pt \
+		xmodmap.ro \
+		xmodmap.ru \
+		xmodmap.se \
+		xmodmap.si \
+		xmodmap.sk \
+		xmodmap.sr \
+		xmodmap.th \
+		xmodmap.tr \
+		xmodmap.ua \
+		xmodmap.us \
+		xmodmap.vn \
+		xmodmap.br-usb \
+		xmodmap.de-usb \
+		xmodmap.dk-usb \
+		xmodmap.es-usb \
+		xmodmap.fr-usb \
+		xmodmap.gb-usb \
+		xmodmap.it-usb \
+		xmodmap.se-usb \
+		xmodmap.us-usb \
+		xmodmap.de-type4 \
+		xmodmap.dk-type4 \
+		xmodmap.es-type4 \
+		xmodmap.gb-type4 \
+		xmodmap.it-type4 \
+		xmodmap.jp-type4 \
+		xmodmap.pt-type4 \
+		xmodmap.se-type4 \
+		xmodmap.us-type4
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -155,7 +216,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

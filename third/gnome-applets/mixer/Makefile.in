@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -141,18 +145,32 @@ gnomelocaledir = @gnomelocaledir@
 SUBDIRS = docs
 
 pixmapsdir = $(datadir)/pixmaps/mixer
-pixmaps_DATA = gnome-mixer-applet.png 		volume-max.png 		volume-medium.png 		volume-min.png 		volume-mute.png 		volume-zero.png
+pixmaps_DATA = gnome-mixer-applet.png		\
+ 		volume-max.png			\
+ 		volume-medium.png		\
+ 		volume-min.png			\
+ 		volume-mute.png			\
+ 		volume-zero.png
 
 
-INCLUDES = -I. -I$(srcdir) 					-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 		-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED 	-DGNOME_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED 	$(GNOME_APPLETS_CFLAGS)				
+INCLUDES = -I. -I$(srcdir) 				\
+	-I$(top_srcdir)/screen-exec			\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
+	-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED \
+	-DGNOME_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED \
+	$(GNOME_APPLETS_CFLAGS)				
 
 
 libexec_PROGRAMS = mixer_applet2
 
-mixer_applet2_SOURCES =  	mixer.c
+mixer_applet2_SOURCES = \
+	mixer.c
 
 
-mixer_applet2_LDADD =  	$(MIXER_LIBS) 						$(GNOME_APPLETS_LIBS)
+mixer_applet2_LDADD = \
+	$(MIXER_LIBS) 					\
+	$(GNOME_APPLETS_LIBS)				\
+	$(top_builddir)/screen-exec/libscreen-exec.la
 
 
 serverdir = $(libdir)/bonobo/servers
@@ -162,7 +180,10 @@ server_DATA = $(server_in_files:.server.in=.server)
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = GNOME_MixerApplet.xml
 
-EXTRA_DIST =  	GNOME_MixerApplet.server.in.in				$(ui_DATA) 						$(pixmaps_DATA)
+EXTRA_DIST = \
+	GNOME_MixerApplet.server.in.in			\
+	$(ui_DATA) 					\
+	$(pixmaps_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -179,7 +200,8 @@ X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 mixer_applet2_OBJECTS =  mixer.$(OBJEXT)
-mixer_applet2_DEPENDENCIES = 
+mixer_applet2_DEPENDENCIES =  \
+$(top_builddir)/screen-exec/libscreen-exec.la
 mixer_applet2_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -193,7 +215,7 @@ DIST_COMMON =  AUTHORS ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(mixer_applet2_SOURCES)
 OBJECTS = $(mixer_applet2_OBJECTS)
@@ -417,7 +439,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -453,6 +475,8 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+mixer.o: mixer.c ../config.h ../screen-exec/egg-screen-exec.h \
+	../screen-exec/egg-screen-help.h
 
 info-am:
 info: info-recursive

@@ -27,6 +27,7 @@
 
 #include "modemlights.h"
 #include <panel-applet.h>
+#include <egg-screen-help.h>
 #include "digits.xpm"
 
 #include <stdlib.h>
@@ -208,6 +209,8 @@ static void about_cb (BonoboUIComponent *uic,
 	const gchar *translator_credits = _("translator_credits");
 
 	if (about) {
+		gtk_window_set_screen (GTK_WINDOW (about),
+				       gtk_widget_get_screen (GTK_WIDGET (applet)));
 		gtk_window_present (GTK_WINDOW (about));
 		return;
 	}
@@ -234,6 +237,8 @@ static void about_cb (BonoboUIComponent *uic,
 	if (pixbuf)
 		gdk_pixbuf_unref (pixbuf);
 
+	gtk_window_set_screen (GTK_WINDOW (about),
+			       gtk_widget_get_screen (GTK_WIDGET (applet)));
 	gtk_window_set_wmclass (GTK_WINDOW (about), "modem lights", "Modem Lights");
 	gtk_signal_connect( GTK_OBJECT(about), "destroy",
 			    GTK_SIGNAL_FUNC(gtk_widget_destroyed), &about );
@@ -1413,9 +1418,13 @@ button_press_hack (GtkWidget      *widget,
 }
 
 
-static void show_help_cb(BonoboUIComponent *uic, gpointer data, const gchar *verbname)
+static void show_help_cb (BonoboUIComponent *uic,
+			  PanelApplet       *applet,
+			  const char        *verbname)
 {
-	gnome_help_display ("modemlights_applet", NULL, NULL);
+	egg_screen_help_display (
+		gtk_widget_get_screen (GTK_WIDGET (applet)),
+		"modemlights_applet", NULL, NULL);
 }
 
 static const BonoboUIVerb modem_applet_menu_verbs [] = {

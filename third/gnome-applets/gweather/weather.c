@@ -1,4 +1,4 @@
-/* $Id: weather.c,v 1.1.1.1 2003-01-04 21:19:16 ghudson Exp $ */
+/* $Id: weather.c,v 1.1.1.2 2003-01-29 20:36:58 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -1423,12 +1423,13 @@ static void wx_finish_read(GnomeVFSAsyncHandle *handle, GnomeVFSResult result,
     	
         gdk_pixbuf_loader_close (info->radar_loader, NULL);
         pixbuf = gdk_pixbuf_loader_get_pixbuf (info->radar_loader);
-
-        if (pixbuf != NULL) {
+	if (pixbuf != NULL) {
             if (info->radar)
                 g_object_unref (info->radar);
 	    gdk_pixbuf_render_pixmap_and_mask (pixbuf, &info->radar, NULL, 127);
         }
+	g_object_unref (G_OBJECT (info->radar_loader));
+        
     }
     else
     {
@@ -1436,6 +1437,7 @@ static void wx_finish_read(GnomeVFSAsyncHandle *handle, GnomeVFSResult result,
         g_warning(_("Failed to get METAR data.\n"));
         info->wx_handle = NULL;
         requests_done_check (info);
+	if(info->radar_loader)  g_object_unref (G_OBJECT (info->radar_loader));
     }
     
     request_done(info->wx_handle, info);

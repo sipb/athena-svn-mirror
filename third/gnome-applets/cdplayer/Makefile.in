@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -139,22 +143,46 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
 SUBDIRS = docs
-INCLUDES = -I. $(GNOME_APPLETS_CFLAGS) -I$(srcdir) -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"  $(CDROM_CFLAGS)
+INCLUDES = -I. \
+$(GNOME_APPLETS_CFLAGS) \
+-I$(srcdir) \
+-I$(top_srcdir)/screen-exec \
+-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"  \
+$(CDROM_CFLAGS)
 
 
-@CDDA_SOLARIS_TRUE@CDROM_CDDA_SRCS = 	reader-solaris.c 	writer-solaris.c 
+@CDDA_SOLARIS_TRUE@CDROM_CDDA_SRCS = @CDDA_SOLARIS_TRUE@\
+@CDDA_SOLARIS_TRUE@	reader-solaris.c \
+@CDDA_SOLARIS_TRUE@	writer-solaris.c 
 
-@CDDA_SOLARIS_TRUE@CDROM_CDDA_DEPS = 	reader-solaris.c 	writer-solaris.c
+@CDDA_SOLARIS_TRUE@CDROM_CDDA_DEPS = @CDDA_SOLARIS_TRUE@\
+@CDDA_SOLARIS_TRUE@	reader-solaris.c \
+@CDDA_SOLARIS_TRUE@	writer-solaris.c
 
 libexec_PROGRAMS = cdplayer_applet2
 
-cdplayer_applet2_SOURCES =  cdplayer.c cdplayer.h cdrom-interface.h led.c led.h reader-solaris.h writer-solaris.h cdda-solaris.h cdrom-@CDROM_HOST@.c $(CDROM_CDDA_SRCS)
+cdplayer_applet2_SOURCES = \
+cdplayer.c \
+cdplayer.h \
+cdrom-interface.h \
+led.c \
+led.h \
+reader-solaris.h \
+writer-solaris.h \
+cdda-solaris.h \
+cdrom-@CDROM_HOST@.c \
+$(CDROM_CDDA_SRCS)
 
 
-cdplayer_applet2_DEPENDS =  cdrom-@CDROM_HOST@.c $(CDROM_CDDA_DEPS)
+cdplayer_applet2_DEPENDS = \
+cdrom-@CDROM_HOST@.c \
+$(CDROM_CDDA_DEPS)
 
 
-cdplayer_applet2_LDADD =  $(GNOME_APPLETS_LIBS) $(CDROM_LIBS)
+cdplayer_applet2_LDADD = \
+$(GNOME_APPLETS_LIBS) \
+$(CDROM_LIBS) \
+$(top_builddir)/screen-exec/libscreen-exec.la
 
 
 icondir = $(datadir)/pixmaps
@@ -170,7 +198,39 @@ schema_DATA = cdplayer.schemas
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = GNOME_CDPlayerApplet.xml
 
-EXTRA_DIST =  images/cdplayer-backward.xpm images/cdplayer-eject.xpm images/cdplayer-forward.xpm images/cdplayer-next.xpm images/cdplayer-play-pause.xpm images/cdplayer-prev.xpm images/cdplayer-prev.xpm images/cdplayer-stop.xpm cdrom-irix.c cdrom-linux.c cdrom-solaris.c reader-solaris.c writer-solaris.c $(icon_DATA) GNOME_CDPlayerApplet.server.in.in $(schema_DATA)	$(ui_DATA)
+IMAGES = images/cdplayer-backward.png images/cdplayer-eject.png images/cdplayer-forward.png images/cdplayer-next.png images/cdplayer-play.png images/cdplayer-pause.png images/cdplayer-prev.png images/cdplayer-prev.png images/cdplayer-stop.png
+
+VARIABLES = cdplayer_stop_data $(srcdir)/images/cdplayer-stop.png \
+	  cdplayer_play_data $(srcdir)/images/cdplayer-play.png \
+	  cdplayer_pause_data $(srcdir)/images/cdplayer-pause.png \
+	  cdplayer_prev_data $(srcdir)/images/cdplayer-prev.png \
+	  cdplayer_next_data $(srcdir)/images/cdplayer-next.png \
+	  cdplayer_eject_data $(srcdir)/images/cdplayer-eject.png
+
+
+BUILT_SOURCES = inlinepixbufs.h
+CLEANFILES = inlinepixbufs.h
+
+EXTRA_DIST = \
+images/cdplayer-backward.png \
+images/cdplayer-eject.png \
+images/cdplayer-forward.png \
+images/cdplayer-next.png \
+images/cdplayer-play.png \
+images/cdplayer-pause.png \
+images/cdplayer-prev.png \
+images/cdplayer-prev.png \
+images/cdplayer-stop.png \
+cdrom-irix.c \
+cdrom-linux.c \
+cdrom-solaris.c \
+reader-solaris.c \
+writer-solaris.c \
+$(icon_DATA) \
+GNOME_CDPlayerApplet.server.in.in \
+$(schema_DATA)	\
+$(ui_DATA) \
+$(IMAGES)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -191,7 +251,8 @@ X_PRE_LIBS = @X_PRE_LIBS@
 @CDDA_SOLARIS_TRUE@cdplayer_applet2_OBJECTS =  cdplayer.$(OBJEXT) \
 @CDDA_SOLARIS_TRUE@led.$(OBJEXT) cdrom-@CDROM_HOST@.$(OBJEXT) \
 @CDDA_SOLARIS_TRUE@reader-solaris.$(OBJEXT) writer-solaris.$(OBJEXT)
-cdplayer_applet2_DEPENDENCIES = 
+cdplayer_applet2_DEPENDENCIES =  \
+$(top_builddir)/screen-exec/libscreen-exec.la
 cdplayer_applet2_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -205,7 +266,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(cdplayer_applet2_SOURCES)
 OBJECTS = $(cdplayer_applet2_OBJECTS)
@@ -448,7 +509,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -485,6 +546,11 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+cdplayer.o: cdplayer.c ../config.h ../screen-exec/egg-screen-exec.h \
+	../screen-exec/egg-screen-help.h led.h cdrom-interface.h \
+	cdplayer.h inlinepixbufs.h
+cdrom-linux.o: cdrom-linux.c cdrom-interface.h
+led.o: led.c ../config.h cdplayer.h cdrom-interface.h led.h
 
 info-am:
 info: info-recursive
@@ -522,12 +588,14 @@ installdirs-am:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-libexecPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
@@ -581,8 +649,13 @@ $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 
 @INTLTOOL_SERVER_RULE@
 
+inlinepixbufs.h: $(IMAGES)
+	$(GDK_PIXBUF_CSOURCE) --raw --build-list $(VARIABLES) >$(srcdir)/inlinepixbufs.h
+
+$(OBJECTS): inlinepixbufs.h
+
 install-data-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA) ;
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA);
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

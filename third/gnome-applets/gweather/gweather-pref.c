@@ -1,4 +1,4 @@
-/* $Id: gweather-pref.c,v 1.1.1.1 2003-01-04 21:19:32 ghudson Exp $ */
+/* $Id: gweather-pref.c,v 1.1.1.2 2003-01-29 20:36:58 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -25,6 +25,7 @@
 #include <gnome.h>
 #include <panel-applet.h>
 #include <gconf/gconf-client.h>
+#include <egg-screen-help.h>
 
 #include "gweather.h"
 #include "gweather-pref.h"
@@ -39,7 +40,7 @@ enum
 
 
 static void gweather_pref_set_accessibility (GWeatherApplet *gw_applet);
-static void help_cb (void);
+static void help_cb (GtkDialog *dialog);
 
 
 /* sets up ATK Relation between the widgets */
@@ -517,7 +518,7 @@ response_cb (GtkDialog *dialog, gint id, gpointer data)
     GWeatherApplet *gw_applet = data;
   
     if(id == GTK_RESPONSE_HELP){
-        help_cb ();
+        help_cb (dialog);
 	return;
     }
     free_tree (gw_applet);
@@ -563,52 +564,17 @@ static void gweather_pref_create (GWeatherApplet *gw_applet)
 				      		   GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 				      		   NULL);
     gtk_dialog_set_default_response (GTK_DIALOG (gw_applet->pref), GTK_RESPONSE_CLOSE);
-    gtk_widget_set_usize (gw_applet->pref, -2, 280);
+    gtk_window_set_default_size(GTK_WINDOW (gw_applet->pref), -1, 280);
     gtk_window_set_policy (GTK_WINDOW (gw_applet->pref), TRUE, TRUE, FALSE);
-    
+    gtk_window_set_screen (GTK_WINDOW (gw_applet->pref),
+			   gtk_widget_get_screen (GTK_WIDGET (gw_applet->applet)));
+
     pref_vbox = GTK_DIALOG (gw_applet->pref)->vbox;
     gtk_widget_show (pref_vbox);
 
     pref_notebook = gtk_notebook_new ();
     gtk_widget_show (pref_notebook);
     gtk_box_pack_start (GTK_BOX (pref_vbox), pref_notebook, TRUE, TRUE, 0);
-
-  /*
-   * Location page.
-   */
-    pref_loc_hbox = gtk_hbox_new (FALSE, 2);
-    gtk_widget_show (pref_loc_hbox);
-    gtk_container_add (GTK_CONTAINER (pref_notebook), pref_loc_hbox);
-
-    scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-    gtk_container_set_border_width (GTK_CONTAINER (scrolled_window), GNOME_PAD_SMALL);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-				    GTK_POLICY_AUTOMATIC,
-				    GTK_POLICY_AUTOMATIC);
-
-    model = gtk_tree_store_new (NUM_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER);
-    gw_applet->pref_tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
-    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (gw_applet->pref_tree), FALSE);
-    g_object_unref (G_OBJECT (model));
-    
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_applet->pref_tree));
-    g_signal_connect (G_OBJECT (selection), "changed",
-    		      G_CALLBACK (row_selected_cb), gw_applet);
-    /* Update applet when user double clicks */
-    g_signal_connect (G_OBJECT (gw_applet->pref_tree), "row_activated",
-    		      G_CALLBACK (row_activated_cb), gw_applet);
-    
-    gtk_container_add (GTK_CONTAINER (scrolled_window), gw_applet->pref_tree);
-    gtk_widget_show (gw_applet->pref_tree);
-    gtk_widget_show (scrolled_window);
-    gtk_box_pack_start (GTK_BOX (pref_loc_hbox), scrolled_window, TRUE, TRUE, 0);
-    load_locations(gw_applet);
-
-    pref_loc_note_lbl = gtk_label_new_with_mnemonic (_("_Location"));
-    gtk_widget_show (pref_loc_note_lbl);
-    gtk_notebook_set_tab_label (GTK_NOTEBOOK (pref_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (pref_notebook), 0), pref_loc_note_lbl);
-
-   
 
   /*
    * General settings page.
@@ -738,21 +704,54 @@ static void gweather_pref_create (GWeatherApplet *gw_applet)
     gtk_container_add (GTK_CONTAINER (frame), vbox);
     gtk_box_pack_start (GTK_BOX (pref_basic_vbox), frame, FALSE, TRUE, 0);
 
-    pref_basic_note_lbl = gtk_label_new_with_mnemonic (_("_General"));
+    pref_basic_note_lbl = gtk_label_new (_("General"));
     gtk_widget_show (pref_basic_note_lbl);
     gtk_notebook_set_tab_label (GTK_NOTEBOOK (pref_notebook), 
-    				gtk_notebook_get_nth_page (GTK_NOTEBOOK (pref_notebook), 1),
+    				gtk_notebook_get_nth_page (GTK_NOTEBOOK (pref_notebook), 0),
     				pref_basic_note_lbl);
+
+  /*
+   * Location page.
+   */
+    pref_loc_hbox = gtk_hbox_new (FALSE, 2);
+    gtk_container_add (GTK_CONTAINER (pref_notebook), pref_loc_hbox);
+
+    scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+    gtk_container_set_border_width (GTK_CONTAINER (scrolled_window), GNOME_PAD_SMALL);
+    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+				    GTK_POLICY_AUTOMATIC,
+				    GTK_POLICY_AUTOMATIC);
+
+    model = gtk_tree_store_new (NUM_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER);
+    gw_applet->pref_tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
+    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (gw_applet->pref_tree), FALSE);
+    g_object_unref (G_OBJECT (model));
+    
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (gw_applet->pref_tree));
+    g_signal_connect (G_OBJECT (selection), "changed",
+    		      G_CALLBACK (row_selected_cb), gw_applet);
+    /* Update applet when user double clicks */
+    g_signal_connect (G_OBJECT (gw_applet->pref_tree), "row_activated",
+    		      G_CALLBACK (row_activated_cb), gw_applet);
+    
+    gtk_container_add (GTK_CONTAINER (scrolled_window), gw_applet->pref_tree);
+    gtk_widget_show (gw_applet->pref_tree);
+    gtk_widget_show (scrolled_window);
+    gtk_box_pack_start (GTK_BOX (pref_loc_hbox), scrolled_window, TRUE, TRUE, 0);
+    load_locations(gw_applet);
+
+    pref_loc_note_lbl = gtk_label_new (_("Location"));
+    gtk_widget_show (pref_loc_note_lbl);
+    gtk_notebook_set_tab_label (GTK_NOTEBOOK (pref_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (pref_notebook), 1), pref_loc_note_lbl);
 
 
     g_signal_connect (G_OBJECT (gw_applet->pref), "response",
     		      G_CALLBACK (response_cb), gw_applet);
    
     gweather_pref_set_accessibility (gw_applet); 
-    add_atk_relation (gw_applet->pref_basic_update_spin, pref_basic_update_sec_lbl,        
+    add_atk_relation (gw_applet->pref_basic_update_spin, pref_basic_update_sec_lbl,
                                             ATK_RELATION_LABELLED_BY);
-    add_atk_relation (gw_applet->pref_basic_radar_url_entry, label, ATK_RELATION_LABELLED_BY
-);
+    add_atk_relation (gw_applet->pref_basic_radar_url_entry, label, ATK_RELATION_LABELLED_BY);
  
 
 
@@ -789,12 +788,15 @@ void gweather_pref_load (GWeatherApplet *gw_applet)
     return;
 }
 
-static void help_cb (void)
+static void help_cb (GtkDialog *dialog)
 {
     GError *error = NULL;
-    gnome_help_display("gweather","gweather-prefs",&error);
 
-    if (error) {
+    egg_screen_help_display (
+		gtk_window_get_screen (GTK_WINDOW (dialog)),
+		"gweather", "gweather-prefs", &error);
+
+    if (error) { /* FIXME: the user needs to see this error */
         g_warning ("help error: %s\n", error->message);
         g_error_free (error);
         error = NULL;

@@ -17,7 +17,7 @@
  *
  * May, 2000. Implemented on FreeBSD 4.0R (Compaq Armada M700)
  *
-$Id: battstat.h,v 1.1.1.1 2003-01-04 21:19:17 ghudson Exp $
+$Id: battstat.h,v 1.1.1.2 2003-01-29 20:36:46 ghudson Exp $
  */
 
 #define DEBUG 0

@@ -1,65 +1,83 @@
-2002-11-18  Bastien Nocera  <hadess@hadess.net>
+2003-01-26  Kevin Vandersloot <kfv101@psu.edu>
 
-	* configure.in: release 2.0.4
+	* configure.in: release 2.2.0
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2002-01-07  Naba Kumar  <naba@gnome.org>
+
+	* configure.in: Added hi (hindi) in ALL_LINGUAS
+	
+2003-01-04 John Fleck <jfleck@inkstain.net>
+
+	* configure.in
+	add drivemount help files
+
+2002-12-16  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 2.1.3
+
+2002-12-15  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 2.1.2
+
+2002-12-09  Artis Trops  <hornet@navigator.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS.
+
+2002-11-03  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: pump up for 2.1.1 release
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-09-13  Kevin Vandersloot <kfv101@psu.edu>
+2002-10-29  Rajkumar Sivasamy <rajkumar.siva@wipro.com>
 
-	* configure.in: release 2.0.3
+	* configure.in: Check for GDK_PIXBUF_CSOURCE
+	* cdplayer/Makefile.am,
+	  cdplayer/cdplayer.c,
+	  cdplayer/cdplayer.h,
+	  cdplayer/cdprom-interface.h: Register the cdplayer button images
+	  as stock icons. Added the feature to play-pause button to have a
+	  a seperate image for play and pause conditions. Also the position
+	  of stop button is swapped with play/pause button.
+	* cdplayer/images/*: Redrawn the existing xpm files to have a
+	  white border in PNG format. Also replaced play-pause-image 
+	  with two seperate files one for play and other for pause image.
+	  (Thanks Suzanna for redrawing the image files)
+	  Fixes bug 87232
 
-2002-08-26  Kevin Vandersloot <kfv101@psu.edu>
+2002-10-04  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: release 2.0.2
+	* configure.in: Version 2.1.0.
 
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
+2002-10-04  Mark McLoughlin  <mark@skynet.ie>
 
-	* mixer/docs/C/mixer_applet2-C.omf,
-	  mixer/docs/C/mixer_applet2.xml
+	* configure.in: kill the HAVE_GTK_MULTIHEAD
+	check from here ...
 
-	  update volume control applet docs from HEAD
+	* acconfig.h: ... just define it here.
 
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
-	* mini-commander/help/C/command-line-C.omf,
-	  mini-commander/help/C/command-line.xml,
-	  mini-commander/help/C/figures/command-line.png
+2002-09-20  James Willcox  <jwillcox@gnome.org>
 
-	  update minicommander docs from HEAD
+	* configure.in: Look for gtk-2.1, and define * HAVE_GTK_MULTIHEAD for
+	egg-screen-exec to work properly.
 
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
-	* char-palette-C.omf, char-palette.xml
+2002-09-19  Mark McLoughlin  <mark@skynet.ie>
 
-	update character platete docs from HEAD
+	* configure.in: require gtk 2.1.0 for the multihead
+	stuff.
 
-2002-08-19  Sander vesik <sander.vesik@sun.com>
+2002-08-14  Mark McLoughlin  <mark@skynet.ie>
 
-	* cdplayer/docs/C/cdplayer-C.omf,
-	  cdplayer/docs/C/cdplayer.xml
+	* Makefile.am, configure.in: build screen-exec/
 
-	update cdplayer docs from HEAD
-
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
-
-	* geyes/docs/C/geyes-C.omf, geyes/docs/C/geyes.xml:
-
-	  update geyes docs from HEAD
-
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
-
-	* gtik/help/C/gtik2_applet2-C.omf,
-	  gtik/help/C/gtik2_applet2.xml,
-	  gtik/help/C/figures/gtik_applet.png
-
-	  update stock ticker docs from HEAD
-
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
-
-	* gweather/docs/C/gweather-C.omf,
-	  gweather/docs/C/gweather.xml:
-
-	 merge updates from HEAD to gnome-2-0
+	* screen-exec/*: stuck all the egg-screen-exec stuff
+	into a convenience lib here.
 
 2002-08-12  Mark McLoughlin  <mark@skynet.ie>
 
@@ -71,18 +89,19 @@
 
 	* configure.in: enable compile warnings by default.
 
-2002-08-05  Peteris Krisjanis <peteris.krisjanis@os.lv>
-
-    * configure.in (ALL_LINGUAS): added Latvian (lv) language support.
-
-2002-07-21  Kevin Vandersloot <kfv101@psu.edu>
-
-	* configure.in: release 2.0.1
-
 2002-07-11  Kevin Vandersloot <kfv101@psu.edu>
 
-        * configure.in: some Solaris cdplayer applet checks from
-        patch by Darragh O'Brien <Darragh.Obrien@sun.com>
+	* configure.in: some Solaris cdplayer applet checks from
+	patch by Darragh O'Brien <Darragh.Obrien@sun.com>
+
+2002-07-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add check for gtk with multihead
+	support.
+
+2002-07-10  jacob berkman  <jacob@localhost>
+
+	* Makefile.am (DIST_SUBDIRS): add wireless
 
 2002-06-10  Kevin Vandersloot <kfv101@psu.edu>
 
@@ -1428,7 +1447,7 @@ Tue Feb 27 05:19:36 2001  George Lebl <jirka@5z.com>
 	* gkb-new/descs/Basque.keyprop.in: added Basque keyprop files
 	* gkb-new/xmodmap/xmodmap.eu: added xmodmap
 	* gkb-new/gkb/eu.png: added few flag
-	from Iñigo Serna <inigoserna@terra.es>
+	from IÃ±igo Serna <inigoserna@terra.es>
 
 2001-02-26  Dan Mueth <dan@eazel.com>
 

@@ -42,6 +42,7 @@
 #include <libgnomeui/libgnomeui.h>
 #include <libgnome/libgnome.h>
 #include <panel-applet-gconf.h>
+#include <egg-screen-help.h>
 #include "gkb.h"
 
 int NumLockMask, CapsLockMask, ScrollLockMask;
@@ -93,8 +94,8 @@ gkb_draw (GKB * gkb)
       g_return_if_fail (gkb->keymap != NULL);
       g_return_if_fail (gkb->keymap->pixbuf != NULL);
       
-      tmp = gdk_pixbuf_scale_simple (gkb->keymap->pixbuf, gkb->w, 
-      				     gkb->h, GDK_INTERP_HYPER); 
+      tmp = gdk_pixbuf_scale_simple (gkb->keymap->pixbuf, gkb->w * 0.9, 
+      				     gkb->h * 0.9, GDK_INTERP_HYPER); 
       if (tmp) {     
         gtk_image_set_from_pixbuf (GTK_IMAGE (gkb->image), tmp);
         g_object_unref (tmp);
@@ -205,9 +206,9 @@ gkb_count_sizes (GKB * gkb)
 	applet_width += label_width;
     }
 
-  gkb->w = flag_width;
-  /* FIXME the applet is just a little bigger than panel, so I add the -1 here*/
-  gkb->h = flag_height - 1; 
+  gkb->w = flag_width - 1;
+  /* FIXME the applet is just a little bigger than panel, so I add the -2 here*/
+  gkb->h = flag_height - 1;
   gtk_widget_set_size_request (gkb->label_frame1, gkb->w, gkb->h);
   gtk_widget_set_size_request (gkb->label_frame2, gkb->w, gkb->h);
   gtk_widget_set_size_request (gkb->darea_frame, gkb->w, gkb->h);
@@ -539,7 +540,7 @@ create_gkb_widget (GKB *gkb)
                     G_CALLBACK (gkb_button_press_event_cb), gkb);
 
   gkb->darea_frame = gtk_frame_new (NULL);
-  gtk_frame_set_shadow_type (GTK_FRAME (gkb->darea_frame), GTK_SHADOW_IN);
+  gtk_frame_set_shadow_type (GTK_FRAME (gkb->darea_frame), GTK_SHADOW_OUT);
   gtk_container_add (GTK_CONTAINER (gkb->darea_frame), gkb->image);
   gtk_box_pack_start (GTK_BOX (gkb->vbox), gkb->darea_frame, TRUE, TRUE, 0);
 #if 0
@@ -630,6 +631,7 @@ about_cb (BonoboUIComponent *uic,
   	g_object_unref (pixbuf);
 
   gtk_window_set_wmclass (GTK_WINDOW (about), "keyboard layout switcher", "Keyboard Layout Switcher");
+  gtk_window_set_screen (GTK_WINDOW (about), gtk_widget_get_screen (gkb->applet));
   g_signal_connect (G_OBJECT(about), "destroy",
                           (GCallback)gtk_widget_destroyed, &about);
 
@@ -644,13 +646,21 @@ help_cb (BonoboUIComponent *uic,
          const gchar	 *verbname)
 {
 	GError *error = NULL;
-        gnome_help_display("gkb",NULL,&error);
+
+	egg_screen_help_display (
+			gtk_widget_get_screen (gkb->applet),
+			"gkb", NULL, &error);
+
+	/* FIXME: display error to the user */
 }
 
 static GdkFilterReturn
 global_key_filter (GKB *gkb, GdkXEvent * gdk_xevent, GdkEvent * event)
 {
-  if (event->key.keyval == gkb->keysym && event->key.state == gkb->state)
+  XKeyEvent * xkevent = (XKeyEvent *) gdk_xevent;
+  gint keysym = XKeycodeToKeysym(GDK_DISPLAY(), xkevent->keycode,0);
+
+  if (keysym == gkb->keysym && xkevent->state == gkb->state)
     {
       if (gkb->cur + 1 < gkb->n)
 	gkb->keymap = g_list_nth_data (gkb->maps, ++gkb->cur);
@@ -675,7 +685,7 @@ event_filter (GdkXEvent * gdk_xevent, GdkEvent * event, gpointer data)
 
   xevent = (XEvent *) gdk_xevent;
 
-  if (xevent->type == KeyRelease)
+  if (xevent->type == KeyPress)
     {
       return global_key_filter (gkb, gdk_xevent, event);
     }
@@ -797,6 +807,7 @@ gboolean fill_gkb_applet(PanelApplet *applet)
 
   gtk_widget_show (gkb->darea_frame);
   gtk_container_add (GTK_CONTAINER (gkb->applet), gkb->eventbox);
+
 
   keycode = XKeysymToKeycode(GDK_DISPLAY(), gkb->keysym);
 

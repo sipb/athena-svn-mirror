@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -138,16 +142,62 @@ X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
-INCLUDES =  	 $(GNOME_APPLETS_CFLAGS)				-I.							-I$(srcdir)						-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		$(GNOME_INCLUDEDIR)
+INCLUDES = \
+	 $(GNOME_APPLETS_CFLAGS)			\
+	 $(LIBGLADE_CFLAGS)				\
+	$(WARN_CFLAGS)					\
+	-I.						\
+	-I$(srcdir)					\
+	-I$(top_srcdir)/screen-exec			\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
+	-DMC_GLADEDIR=\""$(gladedir)"\"			\
+	$(GNOME_INCLUDEDIR)
 
 
 libexec_PROGRAMS = mini_commander_applet
 
-mini_commander_applet_SOURCES =  	about.c						about.h						cmd_completion.c				cmd_completion.h				command_line.c					command_line.h					exec.c						exec.h						message.c					message.h					mini-commander_applet.c				mini-commander_applet.h				help.c						help.h						history.c					history.h					macro.c						macro.h						preferences.c					preferences.h
+tooldir = $(libexecdir)/gnome-applets
+tool_PROGRAMS = mc-install-default-macros
+
+mini_commander_applet_SOURCES = \
+	about.c					\
+	about.h					\
+	cmd_completion.c			\
+	cmd_completion.h			\
+	command_line.c				\
+	command_line.h				\
+	exec.c					\
+	exec.h					\
+	mini-commander_applet.c			\
+	mini-commander_applet.h			\
+	help.c					\
+	help.h					\
+	history.c				\
+	history.h				\
+	macro.c					\
+	macro.h					\
+	preferences.c				\
+	preferences.h				\
+	mc-default-macros.h
 
 
-mini_commander_applet_LDADD =  	$(GNOME_APPLETS_LIBS)
+mini_commander_applet_LDADD = \
+	$(top_builddir)/screen-exec/libscreen-exec.la	\
+	$(GNOME_APPLETS_LIBS)				\
+	$(LIBGLADE_LIBS)
 
+
+mc_install_default_macros_SOURCES = \
+	mc-install-default-macros.c	\
+	mc-default-macros.h
+
+
+mc_install_default_macros_LDADD = \
+	$(GNOME_APPLETS_LIBS)
+
+
+gladedir = $(datadir)/gen_util
+glade_DATA = mini-commander.glade
 
 # currently the installation of these bitmaps wouldn't be necessary
 bitmapsdir = $(datadir)/pixmaps/mini-commander
@@ -166,13 +216,20 @@ schema_DATA = mini-commander.schemas
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = GNOME_MiniCommanderApplet.xml
 
-EXTRA_DIST =  	GNOME_MiniCommanderApplet.server.in.in		$(pixmap_DATA)					$(bitmaps_DATA)					$(ui_DATA)					$(schema_DATA)
+EXTRA_DIST = \
+	GNOME_MiniCommanderApplet.server.in.in	\
+	$(pixmap_DATA)				\
+	$(bitmaps_DATA)				\
+	$(ui_DATA)				\
+	$(glade_DATA)				\
+	$(schema_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
 libexec_PROGRAMS =  mini_commander_applet$(EXEEXT)
-PROGRAMS =  $(libexec_PROGRAMS)
+tool_PROGRAMS =  mc-install-default-macros$(EXEEXT)
+PROGRAMS =  $(libexec_PROGRAMS) $(tool_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
@@ -184,27 +241,31 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 mini_commander_applet_OBJECTS =  about.$(OBJEXT) \
 cmd_completion.$(OBJEXT) command_line.$(OBJEXT) exec.$(OBJEXT) \
-message.$(OBJEXT) mini-commander_applet.$(OBJEXT) help.$(OBJEXT) \
-history.$(OBJEXT) macro.$(OBJEXT) preferences.$(OBJEXT)
-mini_commander_applet_DEPENDENCIES = 
+mini-commander_applet.$(OBJEXT) help.$(OBJEXT) history.$(OBJEXT) \
+macro.$(OBJEXT) preferences.$(OBJEXT)
+mini_commander_applet_DEPENDENCIES =  \
+$(top_builddir)/screen-exec/libscreen-exec.la
 mini_commander_applet_LDFLAGS = 
+mc_install_default_macros_OBJECTS =  mc-install-default-macros.$(OBJEXT)
+mc_install_default_macros_DEPENDENCIES = 
+mc_install_default_macros_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(bitmaps_DATA) $(pixmap_DATA) $(schema_DATA) $(server_DATA) \
-$(ui_DATA)
+DATA =  $(bitmaps_DATA) $(glade_DATA) $(pixmap_DATA) $(schema_DATA) \
+$(server_DATA) $(ui_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(mini_commander_applet_SOURCES)
-OBJECTS = $(mini_commander_applet_OBJECTS)
+SOURCES = $(mini_commander_applet_SOURCES) $(mc_install_default_macros_SOURCES)
+OBJECTS = $(mini_commander_applet_OBJECTS) $(mc_install_default_macros_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -240,6 +301,31 @@ uninstall-libexecPROGRAMS:
 	@$(NORMAL_UNINSTALL)
 	list='$(libexec_PROGRAMS)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+mostlyclean-toolPROGRAMS:
+
+clean-toolPROGRAMS:
+	-test -z "$(tool_PROGRAMS)" || rm -f $(tool_PROGRAMS)
+
+distclean-toolPROGRAMS:
+
+maintainer-clean-toolPROGRAMS:
+
+install-toolPROGRAMS: $(tool_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(tooldir)
+	@list='$(tool_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(tooldir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(tooldir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-toolPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(tool_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(tooldir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
 .c.o:
@@ -290,6 +376,10 @@ mini_commander_applet$(EXEEXT): $(mini_commander_applet_OBJECTS) $(mini_commande
 	@rm -f mini_commander_applet$(EXEEXT)
 	$(LINK) $(mini_commander_applet_LDFLAGS) $(mini_commander_applet_OBJECTS) $(mini_commander_applet_LDADD) $(LIBS)
 
+mc-install-default-macros$(EXEEXT): $(mc_install_default_macros_OBJECTS) $(mc_install_default_macros_DEPENDENCIES)
+	@rm -f mc-install-default-macros$(EXEEXT)
+	$(LINK) $(mc_install_default_macros_LDFLAGS) $(mc_install_default_macros_OBJECTS) $(mc_install_default_macros_LDADD) $(LIBS)
+
 install-bitmapsDATA: $(bitmaps_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(bitmapsdir)
@@ -307,6 +397,25 @@ uninstall-bitmapsDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(bitmaps_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(bitmapsdir)/$$p; \
+	done
+
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gladedir)/$$p; \
 	done
 
 install-pixmapDATA: $(pixmap_DATA)
@@ -403,7 +512,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -429,6 +538,28 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+about.o: about.c ../../config.h about.h mini-commander_applet.h \
+	preferences.h
+cmd_completion.o: cmd_completion.c ../../config.h cmd_completion.h \
+	mini-commander_applet.h preferences.h macro.h
+command_line.o: command_line.c ../../config.h mini-commander_applet.h \
+	preferences.h command_line.h exec.h cmd_completion.h history.h
+exec.o: exec.c ../../config.h ../../screen-exec/egg-screen-exec.h exec.h \
+	mini-commander_applet.h preferences.h macro.h
+help.o: help.c ../../config.h ../../screen-exec/egg-screen-help.h help.h \
+	mini-commander_applet.h preferences.h
+history.o: history.c ../../config.h history.h mini-commander_applet.h \
+	preferences.h
+macro.o: macro.c ../../config.h macro.h mini-commander_applet.h \
+	preferences.h
+mc-install-default-macros.o: mc-install-default-macros.c ../../config.h \
+	mc-default-macros.h
+mini-commander_applet.o: mini-commander_applet.c ../../config.h \
+	mini-commander_applet.h preferences.h command_line.h about.h \
+	help.h browser-mini.xpm history-mini.xpm
+preferences.o: preferences.c ../../config.h preferences.h \
+	mini-commander_applet.h command_line.h history.h \
+	mc-default-macros.h
 
 info-am:
 info: info-am
@@ -441,15 +572,16 @@ installcheck: installcheck-am
 install-exec-am: install-libexecPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-bitmapsDATA install-pixmapDATA \
-		install-schemaDATA install-serverDATA install-uiDATA \
-		install-data-local
+install-data-am: install-toolPROGRAMS install-bitmapsDATA \
+		install-gladeDATA install-pixmapDATA install-schemaDATA \
+		install-serverDATA install-uiDATA install-data-local
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libexecPROGRAMS uninstall-bitmapsDATA \
+uninstall-am: uninstall-libexecPROGRAMS uninstall-toolPROGRAMS \
+		uninstall-bitmapsDATA uninstall-gladeDATA \
 		uninstall-pixmapDATA uninstall-schemaDATA \
 		uninstall-serverDATA uninstall-uiDATA
 uninstall: uninstall-am
@@ -458,7 +590,8 @@ all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libexecdir) $(DESTDIR)$(bitmapsdir) \
+	$(mkinstalldirs)  $(DESTDIR)$(libexecdir) $(DESTDIR)$(tooldir) \
+		$(DESTDIR)$(bitmapsdir) $(DESTDIR)$(gladedir) \
 		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(schemadir) \
 		$(DESTDIR)$(serverdir) $(DESTDIR)$(uidir)
 
@@ -472,28 +605,28 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libexecPROGRAMS mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
-		mostlyclean-generic
+mostlyclean-am:  mostlyclean-libexecPROGRAMS mostlyclean-toolPROGRAMS \
+		mostlyclean-compile mostlyclean-libtool \
+		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libexecPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-libexecPROGRAMS clean-toolPROGRAMS clean-compile \
+		clean-libtool clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libexecPROGRAMS distclean-compile \
-		distclean-libtool distclean-tags distclean-generic \
-		clean-am
+distclean-am:  distclean-libexecPROGRAMS distclean-toolPROGRAMS \
+		distclean-compile distclean-libtool distclean-tags \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-libexecPROGRAMS \
-		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean-am
+		maintainer-clean-toolPROGRAMS maintainer-clean-compile \
+		maintainer-clean-libtool maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -501,19 +634,23 @@ maintainer-clean: maintainer-clean-am
 
 .PHONY: mostlyclean-libexecPROGRAMS distclean-libexecPROGRAMS \
 clean-libexecPROGRAMS maintainer-clean-libexecPROGRAMS \
-uninstall-libexecPROGRAMS install-libexecPROGRAMS mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-bitmapsDATA install-bitmapsDATA \
-uninstall-pixmapDATA install-pixmapDATA uninstall-schemaDATA \
-install-schemaDATA uninstall-serverDATA install-serverDATA \
-uninstall-uiDATA install-uiDATA tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-local install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+uninstall-libexecPROGRAMS install-libexecPROGRAMS \
+mostlyclean-toolPROGRAMS distclean-toolPROGRAMS clean-toolPROGRAMS \
+maintainer-clean-toolPROGRAMS uninstall-toolPROGRAMS \
+install-toolPROGRAMS mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-libtool \
+distclean-libtool clean-libtool maintainer-clean-libtool \
+uninstall-bitmapsDATA install-bitmapsDATA uninstall-gladeDATA \
+install-gladeDATA uninstall-pixmapDATA install-pixmapDATA \
+uninstall-schemaDATA install-schemaDATA uninstall-serverDATA \
+install-serverDATA uninstall-uiDATA install-uiDATA tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-local \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 $(server_in_files): $(server_in_files:.server.in=.server.in.in)
@@ -521,6 +658,7 @@ $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 
 install-data-local:
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA) ;
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(top_builddir)/mini-commander/src/mc-install-default-macros
 
 @INTLTOOL_SERVER_RULE@
 

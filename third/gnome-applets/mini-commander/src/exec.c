@@ -23,24 +23,24 @@
 #include <string.h>
 
 #include <libgnome/gnome-exec.h>
+#include <egg-screen-exec.h>
 
 #include "exec.h"
 #include "macro.h"
 #include "preferences.h"
 
 void
-exec_command (const char  *cmd,
-	      PanelApplet *applet)
+mc_exec_command (MCData     *mc,
+		 const char *cmd)
 {
-	char        command [1000];
-	properties *prop;
+	char command [1000];
 
 	strncpy (command, cmd, sizeof (command));
 	command [sizeof (command) - 1] = '\0';
 
-	prop = g_object_get_data (G_OBJECT (applet), "prop");
+	mc_macro_expand_command (mc, command);
 
-	expand_command (command, prop);
-
-	gnome_execute_shell (g_get_home_dir (), command);
+	egg_screen_execute_shell (
+			gtk_widget_get_screen (GTK_WIDGET (mc->applet)),
+			g_get_home_dir (), command);
 }

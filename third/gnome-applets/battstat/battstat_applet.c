@@ -18,7 +18,7 @@
  *
  * May, 2000. Implemented on FreeBSD 4.0-RELEASE (Compaq Armada M700)
  *
- $Id: battstat_applet.c,v 1.1.1.1 2003-01-04 21:20:16 ghudson Exp $
+ $Id: battstat_applet.c,v 1.1.1.2 2003-01-29 20:36:46 ghudson Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -53,6 +53,8 @@
 
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
+
+#include <egg-screen-help.h>
 
 /*#include <status-docklet.h>*/
 
@@ -666,7 +668,10 @@ destroy_applet (GtkWidget *widget, gpointer data)
    ProgressData *pdata = data;
    
    if (DEBUG) g_print("destroy_applet()\n");
-   
+
+   if (pdata->prop_win)
+	gtk_widget_destroy (GTK_WIDGET (pdata->prop_win));
+
    gtk_timeout_remove (pdata->pixtimer);
    pdata->pixtimer = 0;
    pdata->applet = NULL;
@@ -696,6 +701,8 @@ battstat_error_dialog (PanelApplet *applet,
 			GTK_MESSAGE_ERROR,
 			GTK_BUTTONS_OK,
 			msg);
+	gtk_window_set_screen (GTK_WINDOW (dialog),
+			       gtk_widget_get_screen (GTK_WIDGET (applet)));
 
 	gtk_dialog_run (GTK_DIALOG(dialog));
 	gtk_widget_destroy (dialog);
@@ -734,18 +741,23 @@ help_cb (BonoboUIComponent *uic,
 	 ProgressData      *battstat,
 	 const char        *verb)
 {
-  /* FIXME
-   GnomeHelpMenuEntry help_entry = {
-      "battstat_applet", "index.html"
-   };
-   gnome_help_display (NULL, &help_entry);
-  */
+    GError *error = NULL;
+
+    egg_screen_help_display (
+		gtk_widget_get_screen (battstat->applet),
+		"battstat", NULL, &error);
+
+    if (error) { /* FIXME: the user needs to see this */
+        g_warning ("help error: %s\n", error->message);
+        g_error_free (error);
+        error = NULL;
+    }
 }
 
 void
 helppref_cb (PanelApplet *applet, gpointer data)
 {
-  /* FIXME
+  /* FIXME: use (egg|gnome)_screen_help_display
        GnomeHelpMenuEntry help_entry = {
       "battstat_applet", "index.html#BATTSTAT_PREFS"
    };
@@ -849,6 +861,8 @@ about_cb (BonoboUIComponent *uic,
    	gdk_pixbuf_unref (pixbuf);
 
    gtk_window_set_wmclass (GTK_WINDOW (about_box), "battery charge monitor", "Batter Charge Monitor");
+   gtk_window_set_screen (GTK_WINDOW (about_box),
+			  gtk_widget_get_screen (battstat->applet));
    gtk_widget_show (about_box);
 }
 
@@ -1518,7 +1532,7 @@ battstat_applet_factory (PanelApplet *applet,
 
 PANEL_APPLET_BONOBO_FACTORY ("OAFIID:GNOME_BattstatApplet_Factory",
 			     PANEL_TYPE_APPLET,
-                             "Battstat",
+                             "battstat",
                              "0",
                              battstat_applet_factory,
                              NULL)

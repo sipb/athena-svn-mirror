@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appletversion "1.101.0">
-  <!ENTITY manrevision "2.0">
-  <!ENTITY date "May 2002">
+  <!ENTITY appletversion "2.1.3">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "January 2003">
   <!ENTITY applet "Keyboard Layout Switcher">
 ]>
 
@@ -14,6 +14,7 @@
   http://developer.gnome.org/projects/gdp
   Template version: 2.0 beta
   Template last modified Apr 11, 2002
+  
 -->
 <!-- =============Document Header ============================= -->
 <article id="index" lang="en">
@@ -22,7 +23,7 @@
   <articleinfo> 
 	 <title>&applet; Applet Manual V&manrevision;</title> 
 	 <copyright> 
-		<year>2002</year>  
+		<year>2003</year>  
 		<holder>Sun Microsystems</holder> 
 	 </copyright> 
 	 <copyright> 
@@ -105,6 +106,24 @@
 		  </revdescription>   
 		</revision> 
 		<revision> 
+		  <revnumber>Keyboard Layout Switcher Applet Manual V2.1</revnumber> 
+		  <date>August 2002</date> 
+		<revdescription> 
+			 <para role="author">Sun GNOME Documentation Team
+				<email>gdocteam@sun.com</email></para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription>   
+		</revision> 
+		<revision> 
+		  <revnumber>Keyboard Layout Switcher Applet Manual V2.0</revnumber> 
+		  <date>May 2002</date> 
+		<revdescription> 
+			 <para role="author">Sun GNOME Documentation Team
+				<email>gdocteam@sun.com</email></para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription>   
+		</revision> 
+		<revision> 
 		  <revnumber>GNOME Keyboard Applet</revnumber> 
 		  <date>January 2002</date>
 		  <revdescription> 
@@ -165,8 +184,7 @@
 	 <para>The <application>&applet;</application> applet enables you to assign different layouts to
 	 your keyboard to suit different locales. The applet displays the flag and label associated with
 	 the current keyboard layout.</para> 
-	 <para>To add <application>&applet;</application> to a panel, right-click on the panel to open the 
-		panel popup menu, then choose 
+	 <para>To add <application>&applet;</application> to a panel, right-click on the panel, then choose 
 		<menuchoice> 
 		  <guimenu>Add to Panel</guimenu> 
 		  <guisubmenu>Utility</guisubmenu> 
@@ -187,10 +205,9 @@
 
 
   <sect1 id="gkb-prefs"> 
-	 <title>Settings</title> 
+	 <title>Preferences</title> 
 	 <para>To configure <application>&applet;</application>, right-click on the
-	 applet, then choose <guimenuitem>Preferences</guimenuitem> from the applet 
-	 popup menu.</para> 
+	 applet, then choose <guimenuitem>Preferences</guimenuitem>.</para> 
 
 	 <sect2 id="gkb-keymaps"> 
 		
@@ -228,7 +245,7 @@
 		
 		<title>To Edit a Keyboard Layout</title>
 		<para>To edit a keyboard layout, select the keyboard layout, then click 
-		<guibutton>Edit</guibutton>. The <guilabel>Edit Keyboard</guilabel> dialog
+		<guibutton>Properties</guibutton>. The <guilabel>Edit Keyboard</guilabel> dialog
 		contains the following elements:</para>
 		
 		<table frame="topbot" id="tbl-edit-layout">
@@ -260,6 +277,8 @@
 		  layout is <guilabel>us</guilabel>. By default, the applet displays the flag and label of
 		  the current keyboard layout in the applet display. </para></entry>  
 		 </row>
+		 
+		 <!--
 		 <row valign="top"> 
 		  <entry> 
 		  <para><guilabel>Language</guilabel></para></entry> 
@@ -272,14 +291,18 @@
 		  <entry> 
 		  <para>The country where the keyboard layout is used.</para></entry>  
 		 </row>
+		 -->
+		 
 		 <row valign="top"> 
 		  <entry> 
-		  <para><guilabel>Flag Pixmap</guilabel></para></entry> 
+		  <para><guilabel>Flag</guilabel></para></entry> 
 		  <entry> 
 		  <para>The flag that represents the country in which the keyboard layout is used. By default, the applet 
 		  displays the flag and label of the current keyboard layout in the applet display. Click on the flag
 		  to display a flag selector dialog. </para></entry>  
 		 </row>
+		 
+		 <!--
 		 <row valign="top"> 
 		  <entry> 
 		  <para><guilabel>Architecture</guilabel></para></entry> 
@@ -299,6 +322,8 @@
 		  <para>The codeset that the language of the keyboard uses. For example, by default United States English uses the 
 		  Western European ISO-8859-1 codeset.</para></entry>  
 		 </row>
+		 -->
+		 
 		 <row valign="top"> 
 		  <entry> 
 		  <para><guilabel>Command</guilabel></para></entry> 
@@ -331,12 +356,14 @@
 			 <para>Select one of the following options from the drop-down list box to
 			 specify what the applet displays in the panel:</para> 
 			 <itemizedlist>
-			 	<listitem><para><guilabel>Flag</guilabel>: display a flag only.</para></listitem>
-			 	<listitem><para><guilabel>Label</guilabel>: display a label only.</para></listitem>
-			 	<listitem><para><guilabel>Flag and Label</guilabel>: display a flag and label.</para></listitem>
+			 	<listitem><para><guilabel>Flag</guilabel></para>
+			 	<para>Display a flag only.</para></listitem>
+			 	<listitem><para><guilabel>Label</guilabel></para>
+			 	<para>Display a label only.</para></listitem>
+			 	<listitem><para><guilabel>Flag and Label</guilabel></para>
+			 	<para>Display a flag and label.</para></listitem>
 			 </itemizedlist>
 			 <para>You must reboot your machine to effect a change to this setting.</para>
-			 <para>Default: <guilabel>Flag and Label</guilabel></para>
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
@@ -349,7 +376,6 @@
 			 	<listitem><para><guilabel>Big</guilabel></para></listitem>
 			 </itemizedlist>
 			 <para>You must reboot your machine to effect a change to this setting.</para>
-			 <para>Default: <guilabel>Big</guilabel></para>
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
@@ -360,7 +386,6 @@
 			 want to use. The applet displays the shortcut key in the text box. The default shortcut
 			 key is <keycombo><keycap>Alt</keycap><keycap>Shift</keycap></keycombo> which the applet displays
 			 in the text box as Mod1-Shift_L.</para> 
-			 <para>Default: Mod1-Shift_L</para>
 			 </listitem> 
 		  </varlistentry> 
 		</variablelist> 

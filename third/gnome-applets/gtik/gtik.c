@@ -25,6 +25,7 @@
 #include <libgnomeui/libgnomeui.h>
 #include <panel-applet.h>
 #include <panel-applet-gconf.h> 
+#include <egg-screen-help.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
 #include <time.h>
@@ -59,13 +60,14 @@
 		gboolean output;
 		gboolean scroll;
 		gint timeout;
+		gint scroll_speed;
 		gchar *dcolor;
 		gchar *ucolor;
 		gchar *bgcolor;
 		gchar *fgcolor;
 		gchar *font;
-		gchar *font2;
 		gboolean buttons;
+		gint width;
 
 	} gtik_properties;
 
@@ -110,7 +112,6 @@
 		gint drawTimeID, updateTimeID;
 		/* For fonts */
 		PangoFontDescription * my_font;
-		PangoFontDescription * small_font;
 		gchar * new_font;
 		PangoLayout *layout;
 		GtkTooltips * tooltips;
@@ -170,22 +171,17 @@
 		if (stockdata->my_font)
 			pango_font_description_free (stockdata->my_font);
 		stockdata->my_font = pango_font_description_from_string (stockdata->props.font);	
-		if (stockdata->small_font)
-			pango_font_description_free (stockdata->small_font);
-		stockdata->small_font = pango_font_description_from_string (stockdata->props.font2);
 		
-		if (!stockdata->my_font) 
+		if (!stockdata->my_font) {
 			stockdata->my_font = pango_font_description_from_string ("fixed 12");
-		if (!stockdata->small_font) 
-			stockdata->small_font = pango_font_description_from_string ("fixed 12");
+		}
+		pango_layout_set_font_description (stockdata->layout, stockdata->my_font);
 		/* make sure the cached strings widths are updated */
 		for (i=0; i< stockdata->setCounter; i++) {
-			pango_layout_set_font_description (stockdata->layout, stockdata->my_font);
 			pango_layout_set_text (stockdata->layout, 
 					       STOCK_QUOTE(quotes->data)[i].price, -1);
 			pango_layout_get_pixel_extents (stockdata->layout, NULL, &rect);
 			STOCK_QUOTE(quotes->data)[i].pricelen = rect.width;
-			pango_layout_set_font_description (stockdata->layout, stockdata->small_font);
 			pango_layout_set_text (stockdata->layout, 
 					       STOCK_QUOTE(quotes->data)[i].change, -1);
 			pango_layout_get_pixel_extents (stockdata->layout, NULL, &rect);
@@ -315,16 +311,20 @@ static gint updateOutput(gpointer data)
 								       NULL);
 		if (!stockdata->props.font)
 			stockdata->props.font = g_strdup ("fixed 12");
-		
-		stockdata->props.font2 = panel_applet_gconf_get_string (applet,
-									"font2",
-									NULL);
-		if (!stockdata->props.font2)
-			stockdata->props.font2 = g_strdup ("fixed 12");	
 				
 		stockdata->props.buttons = panel_applet_gconf_get_bool(applet,
 									  "buttons",
 									  NULL);
+									  
+		stockdata->props.scroll_speed = panel_applet_gconf_get_int (applet,
+									    "scroll_speed",
+									    NULL);
+		stockdata->props.scroll_speed = MAX (stockdata->props.scroll_speed, 5);
+		
+		stockdata->props.width = panel_applet_gconf_get_int (applet,
+							 	     "width",
+								     NULL);
+		stockdata->props.width = MAX (stockdata->props.width, 20);
 									
 	}
 
@@ -554,9 +554,7 @@ static gint updateOutput(gpointer data)
 		GtkWidget* drawing_area = stockdata->drawing_area;
 		GArray *quotes = stockdata->quotes;
 		PangoFontDescription *my_font = stockdata->my_font;
-		PangoFontDescription *small_font = stockdata->small_font;
 		GdkGC *gc = stockdata->gc;
-		GdkGC *bg;
 		GdkRectangle update_rect;
 		PangoLayout *layout;
 		PangoRectangle logical_rect;
@@ -572,15 +570,12 @@ static gint updateOutput(gpointer data)
 		totalLoc = 0;
 		totalLen = 0;
 	
-		bg = gdk_gc_new (stockdata->pixmap);
-		gdk_gc_set_foreground( bg, &stockdata->gdkBGcolor );
+		gdk_gc_set_foreground( gc, &stockdata->gdkBGcolor );
 		gdk_draw_rectangle (stockdata->pixmap,
-				    bg, TRUE, 0,0,
+				    gc, TRUE, 0,0,
 				    drawing_area->allocation.width,
 				    drawing_area->allocation.height);
-		g_object_unref (bg);
-
-
+		
 		layout = stockdata->layout;
 		
 		for (i=0; i< stockdata->setCounter; i++) {
@@ -640,25 +635,22 @@ static gint updateOutput(gpointer data)
 			else {
 				gdk_gc_set_foreground( gc, &stockdata->gdkFGcolor );
 			}
-			pango_layout_set_font_description (layout, my_font);
+
 			start = stockdata->location + totalLoc;
 			end = stockdata->location + totalLoc +
 			      STOCK_QUOTE(quotes->data)[i].pricelen + 10;
 			width = drawing_area->allocation.width;
 			if (is_visible (start, end, width)) {
-				pango_layout_set_text (layout,	
-					STOCK_QUOTE(quotes->data)[i].price,
- 					       -1);
+				pango_layout_set_text (layout,
+					       STOCK_QUOTE(quotes->data)[i].price,
+					       -1);	
 				gdk_draw_layout (stockdata->pixmap, gc,
 					 start , 3,
- 					 layout);
+					 layout);
 			}
 			totalLoc += STOCK_QUOTE(quotes->data)[i].pricelen + 10;
-
-
+			
 			if (stockdata->props.output == FALSE) {
-				pango_layout_set_font_description (layout,
-								   small_font);
 				start = stockdata->location + totalLoc;
 				end = stockdata->location + totalLoc +
 				      STOCK_QUOTE(quotes->data)[i].changelen + 10;
@@ -666,8 +658,8 @@ static gint updateOutput(gpointer data)
 					pango_layout_set_text (layout, 
 						STOCK_QUOTE(quotes->data)[i].change, -1);
 					gdk_draw_layout (stockdata->pixmap,
- 					     		gc, stockdata->location + totalLoc,
- 					     		3, layout);
+					     		gc, stockdata->location + totalLoc,
+					     		3, layout);
 				}
 				totalLoc += STOCK_QUOTE(quotes->data)[i].changelen + 10;
 			}
@@ -741,17 +733,22 @@ static gint updateOutput(gpointer data)
 		if (pixbuf)
 			gdk_pixbuf_unref (pixbuf);
 
+		gtk_window_set_screen (GTK_WINDOW (about),
+				       gtk_widget_get_screen (stockdata->applet));
 		gtk_widget_show (about);
 
 		return;
 	}
 
-	static void help_cb (BonoboUIComponent *uic, gpointer data, 
-			     const gchar *verbname) 
+	static void help_cb (BonoboUIComponent *uic,
+			     StockData         *stockdata, 
+			     const char        *verbname) 
 	{
-		gnome_help_display ("gtik2_applet2", NULL, NULL);
-		
-	
+		egg_screen_help_display (
+				gtk_widget_get_screen (stockdata->applet),
+				"gtik2_applet2", NULL, NULL);
+
+	/* FIXME: display error to the user */
 	}
 
 	/*-----------------------------------------------------------------*/
@@ -766,17 +763,15 @@ static gint updateOutput(gpointer data)
 	static void zipLeft(GtkWidget *widget, gpointer data) {
 		StockData *stockdata = data;
 		gboolean current;
-		gint i;
+		gint i, temp;
 
 		current = stockdata->props.scroll;
 		stockdata->props.scroll = TRUE;
-		stockdata->delta = 150;
+		temp = stockdata->delta;
+		stockdata->delta = 50;
 		stockdata->MOVE = 0;
-		/*for (i=0;i<151;i++) {
-			Repaint(stockdata);
-		}*/
 		Repaint(stockdata);
-		stockdata->delta = 1;
+		stockdata->delta = temp;
 		stockdata->props.scroll = current;
 	}
 
@@ -784,18 +779,15 @@ static gint updateOutput(gpointer data)
 	static void zipRight(GtkWidget *widget, gpointer data) {
 		StockData *stockdata = data;
 		gboolean current;
-		gint i;
+		gint i, temp;
 
 		current = stockdata->props.scroll;
 		stockdata->props.scroll = FALSE;
-		stockdata->delta = 150;
+		temp = stockdata->delta;
+		stockdata->delta = 50;
 		stockdata->MOVE = 0;
-		/*
-		for (i=0;i<151;i++) {
-			Repaint(stockdata);
-		}*/
 		Repaint(stockdata);
-		stockdata->delta = 1;
+		stockdata->delta = temp;
 		stockdata->props.scroll = current;
 	}
 
@@ -826,6 +818,42 @@ static gint updateOutput(gpointer data)
 		stockdata->updateTimeID = gtk_timeout_add(stockdata->props.timeout * 60000,
 				                          updateOutput, stockdata);
 		
+	}
+	
+	static void scroll_timeout_cb(GtkSpinButton *spin, gpointer data ) {
+		StockData *stockdata = data;
+		PanelApplet *applet = PANEL_APPLET (stockdata->applet);
+		gint timeout;
+		
+		timeout=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
+		if (timeout < 1)
+			return;
+
+		stockdata->props.scroll_speed = timeout;
+		panel_applet_gconf_set_int (applet, "scroll_speed", 
+					    stockdata->props.scroll_speed, NULL);
+		gtk_timeout_remove(stockdata->drawTimeID);
+		stockdata->drawTimeID = gtk_timeout_add(stockdata->props.scroll_speed,
+						        Repaint,stockdata);
+		
+	}
+	
+	static void width_changed (GtkSpinButton *spin, StockData *stockdata) {
+		PanelApplet *applet = PANEL_APPLET (stockdata->applet);
+		gint width, height;
+		
+		width=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
+		if (width < 1)
+			return;
+			
+		stockdata->props.width = width;
+		panel_applet_gconf_set_int (applet, "width", 
+					    stockdata->props.width, NULL);
+		height = panel_applet_get_size (applet) - 4;			    
+		gtk_drawing_area_size(GTK_DRAWING_AREA (stockdata->drawing_area),
+						stockdata->props.width,height);
+	
+	
 	}
 	
 	static void
@@ -1026,10 +1054,6 @@ static gint updateOutput(gpointer data)
 		if (!font_name)
 			return;
 			
-		stockdata->props.font2 = g_strdup (font_name);
-		load_fonts (stockdata);
-		panel_applet_gconf_set_string (applet,"font2",
-					       stockdata->props.font2, NULL);	
 
 	}
 
@@ -1162,17 +1186,21 @@ static gint updateOutput(gpointer data)
 	
 	
 	static void
-	phelp_cb (void)
+	phelp_cb (GtkDialog *dialog)
 	{
   		GError *error = NULL;
-  		gnome_help_display("gtik2_applet2","gtik-settings",&error);
+
+  		egg_screen_help_display (
+			gtk_window_get_screen (GTK_WINDOW (dialog)),
+			"gtik2_applet2", "gtik-settings", &error);
 
   		if (error) {
      			g_warning ("help error: %s\n", error->message);
      			g_error_free (error);
      			error = NULL;
   		}
-	
+
+		/* FIXME: display error to the user */
 	}
 	
 	static void
@@ -1180,7 +1208,7 @@ static gint updateOutput(gpointer data)
 	{
 		StockData *stockdata = data;
 			if(id == GTK_RESPONSE_HELP){
-			phelp_cb ();
+			phelp_cb (dialog);
 			return;
 		}
 
@@ -1199,11 +1227,11 @@ static gint updateOutput(gpointer data)
 		GtkWidget * vbox3, * vbox4;
 		GtkWidget * hbox3;
 		GtkWidget *hbox;
-		GtkWidget * label;
+		GtkWidget * label, *spin;
 		GtkWidget *table;
 		GtkWidget *panela, *panel1 ,*panel2;
 		GtkWidget *label1, *label5;
-		GtkWidget *timeout_label,*timeout_c;
+		GtkWidget *timeout_label,*timeout_c, *scroll_label;
 		GtkObject *timeout_a;
 		GtkWidget *upColor, *downColor, *upLabel, *downLabel;
 		GtkWidget *fgColor, *fgLabel;
@@ -1214,6 +1242,8 @@ static gint updateOutput(gpointer data)
 		int ur,ug,ub, dr,dg,db; 
 		
 		if (stockdata->pb) {
+			gtk_window_set_screen (GTK_WINDOW (stockdata->pb),
+					       gtk_widget_get_screen (stockdata->applet));
 			gtk_window_present (GTK_WINDOW (stockdata->pb));
 			return;
 		}
@@ -1226,7 +1256,8 @@ static gint updateOutput(gpointer data)
 						             GTK_STOCK_HELP, 
 						             GTK_RESPONSE_HELP,
 						  	     NULL);
-
+		gtk_window_set_screen (GTK_WINDOW (stockdata->pb),
+				       gtk_widget_get_screen (stockdata->applet));
 		notebook = gtk_notebook_new ();
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (stockdata->pb)->vbox), notebook,
 				    TRUE, TRUE, 0);
@@ -1241,7 +1272,7 @@ static gint updateOutput(gpointer data)
 		gtk_container_set_border_width(GTK_CONTAINER(vbox), GNOME_PAD);
 		gtk_container_set_border_width(GTK_CONTAINER(vbox2), GNOME_PAD);
 
-		timeout_label = gtk_label_new_with_mnemonic(_("Update Fre_quency in minutes:"));
+		timeout_label = gtk_label_new_with_mnemonic(_("Stock update Fre_quency in minutes:"));
 		timeout_a = gtk_adjustment_new( stockdata->props.timeout, 1, 128, 
 					       1, 8, 8 );
 		timeout_c  = gtk_spin_button_new( GTK_ADJUSTMENT(timeout_a), 1, 0 );
@@ -1258,13 +1289,39 @@ static gint updateOutput(gpointer data)
 				  G_CALLBACK (timeout_cb), stockdata);
 		gtk_spin_button_set_update_policy( GTK_SPIN_BUTTON(timeout_c),
 						   GTK_UPDATE_ALWAYS );
-						   
-		label1 = gtk_label_new(_("Enter symbols delimited with \"+\" in the box below."));
+		
+		panel2 = gtk_hbox_new(FALSE, 0);				   
+		scroll_label = gtk_label_new_with_mnemonic (_("Scroll Speed :"));
+		timeout_a = gtk_adjustment_new( stockdata->props.scroll_speed, 1, 128, 
+					       1, 8, 8 );
+		timeout_c  = gtk_spin_button_new( GTK_ADJUSTMENT(timeout_a), 1, 0 );
+		gtk_widget_set_usize(timeout_c,60,-1);
 
-		stockdata->tik_syms_entry = gtk_entry_new_with_max_length(60);
+		set_relation(timeout_c, GTK_LABEL(scroll_label));
 
-		gtk_entry_set_text(GTK_ENTRY(stockdata->tik_syms_entry), 
-			stockdata->props.tik_syms ? stockdata->props.tik_syms : "");
+		gtk_box_pack_start_defaults( GTK_BOX(panel2), scroll_label );
+		gtk_box_pack_start_defaults( GTK_BOX(panel2), timeout_c );
+		gtk_box_pack_start(GTK_BOX(vbox), panel2, FALSE,
+				    FALSE, 0);
+				    
+		g_signal_connect (G_OBJECT (timeout_c), "value_changed",
+				  G_CALLBACK (scroll_timeout_cb), stockdata);
+		gtk_spin_button_set_update_policy( GTK_SPIN_BUTTON(timeout_c),
+						   GTK_UPDATE_ALWAYS );
+				    
+		hbox = gtk_hbox_new (FALSE, 0);
+		
+		label = gtk_label_new_with_mnemonic (_("_Width :"));
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, GNOME_PAD_SMALL);
+		
+		spin = gtk_spin_button_new_with_range (20, 500, 10);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), spin);
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), stockdata->props.width);
+		g_signal_connect (G_OBJECT (spin), "value_changed",
+				  G_CALLBACK (width_changed), stockdata);
+		gtk_box_pack_start (GTK_BOX (hbox), spin, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+		set_relation(spin, GTK_LABEL(label));
 		
 		check = gtk_check_button_new_with_mnemonic(_("Displa_y only symbols and price"));
 		g_signal_connect (G_OBJECT (check), "toggled",
@@ -1296,7 +1353,7 @@ static gint updateOutput(gpointer data)
 		/* COLOR */
 		table = gtk_table_new (4, 2, FALSE);
 		
-		upLabel = gtk_label_new_with_mnemonic(_("+ C_olor"));
+		upLabel = gtk_label_new_with_mnemonic(_("+ C_olor:"));
 		upColor = gnome_color_picker_new();
 		gtk_table_attach (GTK_TABLE (table), upLabel, 0, 1, 0, 1,
 				  GTK_SHRINK, 0, 2, 0);
@@ -1316,7 +1373,7 @@ static gint updateOutput(gpointer data)
 		vbox3 = gtk_vbox_new(FALSE, 0); 
 		gtk_box_pack_start_defaults(GTK_BOX(vbox3),table);
 
-		downLabel = gtk_label_new_with_mnemonic(_("- Colo_r"));
+		downLabel = gtk_label_new_with_mnemonic(_("- Colo_r:"));
 		downColor = gnome_color_picker_new();
 		gtk_table_attach (GTK_TABLE (table), downLabel, 0, 1, 1, 2,
 				  0, 0, 2, 0);
@@ -1333,7 +1390,7 @@ static gint updateOutput(gpointer data)
 		gtk_signal_connect(GTK_OBJECT(downColor), "color_set",
 				GTK_SIGNAL_FUNC(dcolor_set_cb), stockdata);
 				
-		fgLabel = gtk_label_new_with_mnemonic(_("_Unchanged Color"));
+		fgLabel = gtk_label_new_with_mnemonic(_("_Unchanged Color:"));
 		fgColor = gnome_color_picker_new();
 		gtk_table_attach (GTK_TABLE (table), fgLabel, 0, 1, 2, 3,
 				  0, 0, 2, 0);
@@ -1350,7 +1407,7 @@ static gint updateOutput(gpointer data)
 		gtk_signal_connect(GTK_OBJECT(fgColor), "color_set",
 				GTK_SIGNAL_FUNC(fgcolor_set_cb), stockdata);
 
-		bgLabel = gtk_label_new_with_mnemonic(_("Back_ground Color"));
+		bgLabel = gtk_label_new_with_mnemonic(_("Back_ground Color:"));
 		bgColor = gnome_color_picker_new();
 		gtk_table_attach (GTK_TABLE (table), bgLabel, 0, 1, 3, 4,
 				  0, 0, 2, 0);
@@ -1372,7 +1429,7 @@ static gint updateOutput(gpointer data)
                 /* For FONTS */
 		vbox3 = gtk_vbox_new(FALSE, 0); 
 		hbox3 = gtk_hbox_new(FALSE, 0);
-		label5 = gtk_label_new_with_mnemonic(_("Stock Sy_mbol:"));
+		label5 = gtk_label_new_with_mnemonic(_("_Font:"));
 
 		font_picker = gnome_font_picker_new ();
 		gnome_font_picker_set_font_name (GNOME_FONT_PICKER (font_picker),
@@ -1384,37 +1441,19 @@ static gint updateOutput(gpointer data)
                 		  G_CALLBACK (font_cb), stockdata);
 
 		set_relation(font_picker, GTK_LABEL(label5));
-		
-		hbox3 = gtk_hbox_new(FALSE, 0);
-		label5 = gtk_label_new_with_mnemonic(_("Stock C_hange:"));
-                font_picker = gnome_font_picker_new ();
-                gnome_font_picker_set_font_name (GNOME_FONT_PICKER (font_picker),
-						 stockdata->props.font2);
-                gtk_box_pack_start_defaults(GTK_BOX(hbox3),label5);
-                gtk_box_pack_start_defaults(GTK_BOX(hbox3),font_picker);
-                gtk_box_pack_start_defaults(GTK_BOX(vbox3),hbox3);
-                g_signal_connect (G_OBJECT(font_picker),"font_set",
-                                  G_CALLBACK(font2_cb),stockdata);
-                
-		set_relation(font_picker, GTK_LABEL(label5));
                                  
 		gtk_box_pack_start_defaults(GTK_BOX(panela),vbox3);
-
-
-
-		gtk_box_pack_start(GTK_BOX(panel1), label1, FALSE, 
-				   FALSE, 0);
 
 		gtk_box_pack_start(GTK_BOX(vbox2), panela, FALSE,
 				    FALSE, 0);
 
 		hbox = symbolManager(stockdata);
 
-		label = gtk_label_new_with_mnemonic (_("_Symbols"));
+		label = gtk_label_new (_("Symbols"));
 		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), hbox, label);
-		label = gtk_label_new_with_mnemonic (_("_Behavior"));
+		label = gtk_label_new (_("Behavior"));
 		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), vbox, label);
-		label = gtk_label_new_with_mnemonic (_("_Appearance"));
+		label = gtk_label_new (_("Appearance"));
 		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), vbox2, label);
 		
 		gtk_widget_show_all(stockdata->pb);
@@ -1441,6 +1480,15 @@ static gint updateOutput(gpointer data)
 		}
 		return FALSE;
     	}
+    	
+    	static void
+    	applet_change_size (PanelApplet *applet, guint size, StockData *stockdata)
+    	{
+    	
+    		gtk_drawing_area_size(GTK_DRAWING_AREA (stockdata->drawing_area),
+				      stockdata->props.width,size-4);
+    	
+    	}
     
 	static const BonoboUIVerb gtik_applet_menu_verbs [] = {
         	BONOBO_UI_UNSAFE_VERB ("Props", properties_cb),
@@ -1456,6 +1504,7 @@ static gint updateOutput(gpointer data)
 		StockData *stockdata;
 		GtkWidget * vbox;
 		GtkWidget * frame;
+		gint height;
 
 		gnome_vfs_init();
 		
@@ -1470,7 +1519,8 @@ static gint updateOutput(gpointer data)
 		stockdata->configFileName = g_strconcat (g_getenv ("HOME"), 
 						         "/.gtik.conf", NULL);
 
-		stockdata->quotes = g_array_new(FALSE, FALSE, sizeof(StockQuote));	
+		stockdata->quotes = g_array_new(FALSE, FALSE, sizeof(StockQuote));
+		properties_load(stockdata);	
 
 		vbox = gtk_hbox_new (FALSE,0);
 		stockdata->leftButton = gtk_button_new_with_label("<<");
@@ -1497,7 +1547,9 @@ static gint updateOutput(gpointer data)
 		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 
 		access_drawing_area = stockdata->drawing_area = GTK_WIDGET (custom_drawing_area_new());
-		gtk_drawing_area_size(GTK_DRAWING_AREA (stockdata->drawing_area),200,20);
+		height = panel_applet_get_size (applet) - 4;
+		gtk_drawing_area_size(GTK_DRAWING_AREA (stockdata->drawing_area),
+						stockdata->props.width,height);
 
 		gtk_widget_show(stockdata->drawing_area);
 
@@ -1526,13 +1578,14 @@ static gint updateOutput(gpointer data)
 		gtk_signal_connect(GTK_OBJECT(applet), "destroy",
 			GTK_SIGNAL_FUNC(destroy_applet), stockdata);
 
-
+		g_signal_connect (G_OBJECT (applet), "change_size",
+				  G_CALLBACK (applet_change_size), stockdata);
 
 		gtk_widget_show (GTK_WIDGET (applet));
 		
+		gtk_widget_realize (stockdata->drawing_area);
 		create_gc(stockdata);
 
-		properties_load(stockdata);
 		properties_set(stockdata,FALSE);
 		
 		panel_applet_setup_menu_from_file (PANEL_APPLET (applet),
@@ -1543,7 +1596,8 @@ static gint updateOutput(gpointer data)
 				                   stockdata);
 
 		/* KEEPING TIMER ID FOR CLEANUP IN DESTROY */
-		stockdata->drawTimeID = gtk_timeout_add(10,Repaint,stockdata);
+		stockdata->drawTimeID = gtk_timeout_add(stockdata->props.scroll_speed,
+						        Repaint,stockdata);
 		stockdata->updateTimeID = gtk_timeout_add(stockdata->props.timeout * 60000,
 				                          updateOutput,stockdata);
 
@@ -1602,9 +1656,9 @@ static gint updateOutput(gpointer data)
 			g_free (stockdata->configFileName);
 		if (stockdata->my_font)
 			pango_font_description_free (stockdata->my_font);
-		if (stockdata->small_font)
-			pango_font_description_free (stockdata->small_font);
 		
+		if (stockdata->pb)
+			gtk_widget_destroy (stockdata->pb);
 	}
 
 
@@ -1696,13 +1750,10 @@ static gint updateOutput(gpointer data)
 		change = splitChange(stockdata, param1, &quote);
 
 		quote.price = g_strdup(price);
-		pango_layout_set_font_description (stockdata->layout, stockdata->my_font);
 		pango_layout_set_text (stockdata->layout, price, -1);
 		pango_layout_get_pixel_extents (stockdata->layout, NULL, &rect);
 		quote.pricelen = rect.width;
 		quote.change = g_strdup(change);
-		pango_layout_set_font_description (stockdata->layout, 
-						   stockdata->small_font);
 		pango_layout_set_text (stockdata->layout, change, -1);
 		pango_layout_get_pixel_extents (stockdata->layout, NULL, &rect);
 		quote.changelen = rect.width;

@@ -5,6 +5,11 @@
 #include <errno.h>
 
 enum {
+	PLAY_IMAGE,	
+	PAUSE_IMAGE
+};
+
+enum {
 	DISC_NO_ERROR = 0,
 	DISC_IO_ERROR,
 	DISC_INDEX_OUT_OF_RANGE,
@@ -56,6 +61,8 @@ typedef struct cdrom_device {
 
 	void *cdda;
 	int my_errno;
+	int use_count;
+	char *device_name;
 } *cdrom_device_t;
 
 cdrom_device_t cdrom_open(char *path, /* out */ int *errcode);

@@ -1,0 +1,3351 @@
+<keymaps>
+    <keymap>
+        <name>Armenian xkb keymap</name>
+        <command>setxkbmap am</command>
+        <language>Armenian</language>
+        <language xml:lang="ar">Ø£Ø±ÙÙÙÙØ©</language>
+        <language xml:lang="az">ErmÉnicÉ</language>
+        <language xml:lang="be">ÐÑÐ¼ÑÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Armeenia</language>
+        <language xml:lang="gl">Armenio</language>
+        <language xml:lang="ja">ã¢ã«ã¡ãã¢</language>
+        <language xml:lang="nn">Armensk</language>
+        <language xml:lang="pt">ArmÃ©nio</language>
+        <language xml:lang="ta">Â«Ã·Â§ÃÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Armenyin</language>
+        <language xml:lang="zh_CN">äºç¾å°¼äºè¯­</language>
+        <country>
+            <flag>am.png</flag>
+            <name>Armenia</name>
+            <name xml:lang="ar">Ø£Ø±ÙÙÙÙØ§</name>
+            <name xml:lang="az">ErmÉnistan</name>
+            <name xml:lang="be">ÐÑÐ¼ÐµÐ½ÑÑ</name>
+            <name xml:lang="et">Armeenia</name>
+            <name xml:lang="gl">Armenia</name>
+            <name xml:lang="ja">ã¢ã«ã¡ãã¢</name>
+            <name xml:lang="nn">Armenia</name>
+            <name xml:lang="pt">ArmÃ©nia</name>
+            <name xml:lang="ta">Â«Ã·Â§ÃÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Ãrmeneye</name>
+            <name xml:lang="zh_CN">äºç¾å°¼äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Arabic xkb keymap</name>
+        <command>setxkbmap ar</command>
+        <language>Arabic</language>
+        <country>
+            <flag>dz.png</flag>
+            <name>Algeria</name>
+        </country>
+        <country>
+            <flag>bh.png</flag>
+            <name>Bahrain</name>
+        </country>
+        <country>
+            <flag>dj.png</flag>
+            <name>Djibouti</name>
+        </country>
+        <country>
+            <flag>km.png</flag>
+            <name>Comoros</name>
+        </country>
+        <country>
+            <flag>eg.png</flag>
+            <name>Egypt</name>
+        </country>
+        <country>
+            <flag>iq.png</flag>
+            <name>Iraq</name>
+        </country>
+        <country>
+            <flag>jo.png</flag>
+            <name>Jordan</name>
+        </country>
+        <country>
+            <flag>kw.png</flag>
+            <name>Kuwait</name>
+        </country>
+        <country>
+            <flag>lb.png</flag>
+            <name>Lebanon</name>
+        </country>
+        <country>
+            <flag>ly.png</flag>
+            <name>Libyan Arab Jamahiriya</name>
+        </country>
+        <country>
+            <flag>ma.png</flag>
+            <name>Marocco</name>
+        </country>
+        <country>
+            <flag>om.png</flag>
+            <name>Oman</name>
+        </country>
+        <country>
+            <flag>ps.png</flag>
+            <name>Palestinian Territory</name>
+        </country>
+        <country>
+            <flag>qa.png</flag>
+            <name>Qatar</name>
+        </country>
+        <country>
+            <flag>sa.png</flag>
+            <name>Saudi Arabia</name>
+        </country>
+        <country>
+            <flag>so.png</flag>
+            <name>Somalia</name>
+        </country>
+        <country>
+            <flag>su.png</flag>
+            <name>Sudan</name>
+        </country>
+        <country>
+            <flag>sy.png</flag>
+            <name>Syria</name>
+        </country>
+        <country>
+            <flag>tn.png</flag>
+            <name>Tunisia</name>
+        </country>
+        <country>
+            <flag>ae.png</flag>
+            <name>United Arab Emirates</name>
+        </country>
+        <country>
+            <flag>ye.png</flag>
+            <name>Yemen</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Arabic keymap</name>
+        <command>gkb_xmmap ar</command>
+        <language>Arabic</language>
+        <country>
+            <flag>dz.png</flag>
+            <name>Algeria</name>
+        </country>
+        <country>
+            <flag>bh.png</flag>
+            <name>Bahrain</name>
+        </country>
+        <country>
+            <flag>dj.png</flag>
+            <name>Djibouti</name>
+        </country>
+        <country>
+            <flag>km.png</flag>
+            <name>Comoros</name>
+        </country>
+        <country>
+            <flag>eg.png</flag>
+            <name>Egypt</name>
+        </country>
+        <country>
+            <flag>iq.png</flag>
+            <name>Iraq</name>
+        </country>
+        <country>
+            <flag>jo.png</flag>
+            <name>Jordan</name>
+        </country>
+        <country>
+            <flag>kw.png</flag>
+            <name>Kuwait</name>
+        </country>
+        <country>
+            <flag>lb.png</flag>
+            <name>Lebanon</name>
+        </country>
+        <country>
+            <flag>ly.png</flag>
+            <name>Libyan Arab Jamahiriya</name>
+        </country>
+        <country>
+            <flag>ma.png</flag>
+            <name>Marocco</name>
+        </country>
+        <country>
+            <flag>om.png</flag>
+            <name>Oman</name>
+        </country>
+        <country>
+            <flag>ps.png</flag>
+            <name>Palestinian Territory</name>
+        </country>
+        <country>
+            <flag>qa.png</flag>
+            <name>Qatar</name>
+        </country>
+        <country>
+            <flag>sa.png</flag>
+            <name>Saudi Arabia</name>
+        </country>
+        <country>
+            <flag>so.png</flag>
+            <name>Somalia</name>
+        </country>
+        <country>
+            <flag>su.png</flag>
+            <name>Sudan</name>
+        </country>
+        <country>
+            <flag>sy.png</flag>
+            <name>Syria</name>
+        </country>
+        <country>
+            <flag>tn.png</flag>
+            <name>Tunisia</name>
+        </country>
+        <country>
+            <flag>ae.png</flag>
+            <name>United Arab Emirates</name>
+        </country>
+        <country>
+            <flag>ye.png</flag>
+            <name>Yemen</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Armenian</name>
+        <name xml:lang="ar">Ø£Ø±ÙÙÙÙØ©</name>
+        <name xml:lang="az">ErmÉnicÉ</name>
+        <name xml:lang="be">ÐÑÐ¼ÑÐ½ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Armeenia</name>
+        <name xml:lang="gl">Armenio</name>
+        <name xml:lang="ja">ã¢ã«ã¡ãã¢</name>
+        <name xml:lang="nn">Armensk</name>
+        <name xml:lang="pt">ArmÃ©nio</name>
+        <name xml:lang="ta">Â«Ã·Â§ÃÃÂ¢ÃÃ½</name>
+        <name xml:lang="wa">Armenyin</name>
+        <name xml:lang="zh_CN">äºç¾å°¼äºè¯­</name>
+        <command>gkb_xmmap am</command>
+        <language>Armenian</language>
+        <language xml:lang="ar">Ø£Ø±ÙÙÙÙØ©</language>
+        <language xml:lang="az">ErmÉnicÉ</language>
+        <language xml:lang="be">ÐÑÐ¼ÑÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Armeenia</language>
+        <language xml:lang="gl">Armenio</language>
+        <language xml:lang="ja">ã¢ã«ã¡ãã¢</language>
+        <language xml:lang="nn">Armensk</language>
+        <language xml:lang="pt">ArmÃ©nio</language>
+        <language xml:lang="ta">Â«Ã·Â§ÃÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Armenyin</language>
+        <language xml:lang="zh_CN">äºç¾å°¼äºè¯­</language>
+        <country>
+            <flag>am.png</flag>
+            <name>Armenia</name>
+            <name xml:lang="ar">Ø£Ø±ÙÙÙÙØ§</name>
+            <name xml:lang="az">ErmÉnistan</name>
+            <name xml:lang="be">ÐÑÐ¼ÐµÐ½ÑÑ</name>
+            <name xml:lang="et">Armeenia</name>
+            <name xml:lang="gl">Armenia</name>
+            <name xml:lang="ja">ã¢ã«ã¡ãã¢</name>
+            <name xml:lang="nn">Armenia</name>
+            <name xml:lang="pt">ArmÃ©nia</name>
+            <name xml:lang="ta">Â«Ã·Â§ÃÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Ãrmeneye</name>
+            <name xml:lang="zh_CN">äºç¾å°¼äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Azerbaidjani Turkic xkb keymap</name>
+        <command>setxkbmap az</command>
+        <language>Azerbaidjani Turkic</language>
+        <country>
+            <flag>az.png</flag>
+            <name>Azerbaidjan</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Basque</name>
+        <name xml:lang="az">Bask</name>
+        <name xml:lang="be">ÐÐ°ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Baski</name>
+        <name xml:lang="gl">Basco</name>
+        <name xml:lang="ja">ãã¹ã¯</name>
+        <name xml:lang="nn">Baskisk</name>
+        <name xml:lang="pt">Basco</name>
+        <name xml:lang="ta">ÃÂ¡ÂÃ¬</name>
+        <name xml:lang="wa">Basse</name>
+        <name xml:lang="zh_CN">å·´æ¯åè¯­</name>
+        <command>gkb_xmmap es</command>
+        <language>Basque</language>
+        <language xml:lang="az">Bask</language>
+        <language xml:lang="be">ÐÐ°ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Baski</language>
+        <language xml:lang="gl">Basco</language>
+        <language xml:lang="ja">ãã¹ã¯</language>
+        <language xml:lang="nn">Baskisk</language>
+        <language xml:lang="pt">Basco</language>
+        <language xml:lang="ta">ÃÂ¡ÂÃ¬</language>
+        <language xml:lang="wa">Basse</language>
+        <language xml:lang="zh_CN">å·´æ¯åè¯­</language>
+        <country>
+            <flag>eu.png</flag>
+            <name>Euskadi</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Dutch xkb keymap</name>
+        <command>setxkbmap be</command>
+        <language>Dutch</language>
+        <language xml:lang="ar">ÙÙÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">FlemenkcÉ</language>
+        <language xml:lang="be">ÐÐ°Ð»ÑÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Saksa</language>
+        <language xml:lang="gl">HolandÃ©s</language>
+        <language xml:lang="ja">ãªã©ã³ã</language>
+        <language xml:lang="nn">Nederlandsk</language>
+        <language xml:lang="pt">HolandÃªs</language>
+        <language xml:lang="ta">Â¼Ã®Ã</language>
+        <language xml:lang="wa">NeyerlandÃ¨s</language>
+        <language xml:lang="zh_CN">è·å°è¯­</language>
+        <country>
+            <flag>be.png</flag>
+            <name>Belgium</name>
+            <name xml:lang="ar">Ø¨ÙØ¬ÙÙØ§</name>
+            <name xml:lang="az">BelÃ§ika</name>
+            <name xml:lang="be">ÐÐµÐ»ÑÐ³ÑÑ</name>
+            <name xml:lang="et">Belgia</name>
+            <name xml:lang="gl">BÃ©lxica</name>
+            <name xml:lang="ja">ãã«ã®ã¼</name>
+            <name xml:lang="nn">Belgia</name>
+            <name xml:lang="pt">BÃ©lgica</name>
+            <name xml:lang="ta">Â¦ÃÃ¸ÂÂ¢ÃÃµ</name>
+            <name xml:lang="wa">Beljike</name>
+            <name xml:lang="zh_CN">æ¯å©æ¶</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Belgian</name>
+        <command>gkb_xmmap be</command>
+        <language>French</language>
+        <language xml:lang="ar">ÙØ±ÙØ³ÙØ©</language>
+        <language xml:lang="az">FransÄ±zca</language>
+        <language xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÐ·ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Prantsuse</language>
+        <language xml:lang="gl">FrancÃ©s</language>
+        <language xml:lang="ja">ãã©ã³ã¹èª</language>
+        <language xml:lang="nn">Fransk</language>
+        <language xml:lang="pt">FrancÃªs</language>
+        <language xml:lang="ta">ÃÂ¢Â¦ÃÃ¯Ã</language>
+        <language xml:lang="wa">FrancÃ¨s</language>
+        <language xml:lang="zh_CN">æ³è¯­</language>
+        <country>
+            <flag>be.png</flag>
+            <name>Belgium</name>
+            <name xml:lang="ar">Ø¨ÙØ¬ÙÙØ§</name>
+            <name xml:lang="az">BelÃ§ika</name>
+            <name xml:lang="be">ÐÐµÐ»ÑÐ³ÑÑ</name>
+            <name xml:lang="et">Belgia</name>
+            <name xml:lang="gl">BÃ©lxica</name>
+            <name xml:lang="ja">ãã«ã®ã¼</name>
+            <name xml:lang="nn">Belgia</name>
+            <name xml:lang="pt">BÃ©lgica</name>
+            <name xml:lang="ta">Â¦ÃÃ¸ÂÂ¢ÃÃµ</name>
+            <name xml:lang="wa">Beljike</name>
+            <name xml:lang="zh_CN">æ¯å©æ¶</name>
+        </country>
+        <country>
+            <flag>be.png</flag>
+            <name>Belgium</name>
+            <name xml:lang="ar">Ø¨ÙØ¬ÙÙØ§</name>
+            <name xml:lang="az">BelÃ§ika</name>
+            <name xml:lang="be">ÐÐµÐ»ÑÐ³ÑÑ</name>
+            <name xml:lang="et">Belgia</name>
+            <name xml:lang="gl">BÃ©lxica</name>
+            <name xml:lang="ja">ãã«ã®ã¼</name>
+            <name xml:lang="nn">Belgia</name>
+            <name xml:lang="pt">BÃ©lgica</name>
+            <name xml:lang="ta">Â¦ÃÃ¸ÂÂ¢ÃÃµ</name>
+            <name xml:lang="wa">Beljike</name>
+            <name xml:lang="zh_CN">æ¯å©æ¶</name>
+        </country>
+        <country>
+            <flag>be.png</flag>
+            <name>Belgium</name>
+            <name xml:lang="ar">Ø¨ÙØ¬ÙÙØ§</name>
+            <name xml:lang="az">BelÃ§ika</name>
+            <name xml:lang="be">ÐÐµÐ»ÑÐ³ÑÑ</name>
+            <name xml:lang="et">Belgia</name>
+            <name xml:lang="gl">BÃ©lxica</name>
+            <name xml:lang="ja">ãã«ã®ã¼</name>
+            <name xml:lang="nn">Belgia</name>
+            <name xml:lang="pt">BÃ©lgica</name>
+            <name xml:lang="ta">Â¦ÃÃ¸ÂÂ¢ÃÃµ</name>
+            <name xml:lang="wa">Beljike</name>
+            <name xml:lang="zh_CN">æ¯å©æ¶</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Bulgarian xkb keymap</name>
+        <command>setxkbmap bg</command>
+        <language>Bulgarian</language>
+        <language xml:lang="ar">Ø¨ÙØºØ§Ø±ÙØ©</language>
+        <language xml:lang="az">Bolqarca</language>
+        <language xml:lang="be">ÐÐ°ÑÐ³Ð°ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Bulgaaria</language>
+        <language xml:lang="gl">BÃºlgaro</language>
+        <language xml:lang="ja">ãã«ã¬ãªã¢</language>
+        <language xml:lang="nn">Bulgarsk</language>
+        <language xml:lang="pt">BÃºlgaro</language>
+        <language xml:lang="ta">ÃÃ¸Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">BulgÃ¥re</language>
+        <language xml:lang="zh_CN">ä¿å å©äºè¯­</language>
+        <country>
+            <flag>bg.png</flag>
+            <name>Bulgaria</name>
+            <name xml:lang="ar">Ø¨ÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Bolqariya</name>
+            <name xml:lang="be">ÐÐ°ÑÐ³Ð°ÑÑÑ</name>
+            <name xml:lang="et">Bulgaaria</name>
+            <name xml:lang="gl">Bulgaria</name>
+            <name xml:lang="ja">ãã«ã¬ãªã¢</name>
+            <name xml:lang="nn">Bulgaria</name>
+            <name xml:lang="pt">BulgÃ¡ria</name>
+            <name xml:lang="ta">ÃÃ¸Â§Â¸ÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">BulgÃ¥reye</name>
+            <name xml:lang="zh_CN">ä¿å å©äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Bulgarian keymap</name>
+        <command>gkb_xmmap bg</command>
+        <language>Bulgarian</language>
+        <language xml:lang="ar">Ø¨ÙØºØ§Ø±ÙØ©</language>
+        <language xml:lang="az">Bolqarca</language>
+        <language xml:lang="be">ÐÐ°ÑÐ³Ð°ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Bulgaaria</language>
+        <language xml:lang="gl">BÃºlgaro</language>
+        <language xml:lang="ja">ãã«ã¬ãªã¢</language>
+        <language xml:lang="nn">Bulgarsk</language>
+        <language xml:lang="pt">BÃºlgaro</language>
+        <language xml:lang="ta">ÃÃ¸Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">BulgÃ¥re</language>
+        <language xml:lang="zh_CN">ä¿å å©äºè¯­</language>
+        <country>
+            <flag>bg.png</flag>
+            <name>Bulgaria</name>
+            <name xml:lang="ar">Ø¨ÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Bolqariya</name>
+            <name xml:lang="be">ÐÐ°ÑÐ³Ð°ÑÑÑ</name>
+            <name xml:lang="et">Bulgaaria</name>
+            <name xml:lang="gl">Bulgaria</name>
+            <name xml:lang="ja">ãã«ã¬ãªã¢</name>
+            <name xml:lang="nn">Bulgaria</name>
+            <name xml:lang="pt">BulgÃ¡ria</name>
+            <name xml:lang="ta">ÃÃ¸Â§Â¸ÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">BulgÃ¥reye</name>
+            <name xml:lang="zh_CN">ä¿å å©äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Brazil Portuguese xkb keymap</name>
+        <command>setxkbmap br</command>
+        <language>Portuguese</language>
+        <language xml:lang="ar">Ø¨Ø±ØªØºØ§ÙÙØ©</language>
+        <language xml:lang="az">Portuqalca</language>
+        <language xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Portugali</language>
+        <language xml:lang="gl">PortuguÃ©s</language>
+        <language xml:lang="ja">ãã«ãã¬ã«èª</language>
+        <language xml:lang="nn">Portugisisk</language>
+        <language xml:lang="pt">ProtuguÃªs</language>
+        <language xml:lang="ta">Â§ÃÂ¡Ã·Ã²ÃÂ¸Â£Â</language>
+        <language xml:lang="wa">PortuguÃ¨s</language>
+        <language xml:lang="zh_CN">è¡èçè¯­</language>
+        <country>
+            <flag>br.png</flag>
+            <name>Brazil</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±Ø§Ø²ÙÙ</name>
+            <name xml:lang="az">Braziliya</name>
+            <name xml:lang="be">ÐÑÐ°Ð·ÑÐ»ÑÑ</name>
+            <name xml:lang="et">Brasiilia</name>
+            <name xml:lang="gl">Brasil</name>
+            <name xml:lang="ja">ãã©ã¸ã«</name>
+            <name xml:lang="nn">Brasil</name>
+            <name xml:lang="pt">Brasil</name>
+            <name xml:lang="ta">ÃÂ¢Â§ÃÂºÂ¢Ã¸</name>
+            <name xml:lang="wa">Braezi</name>
+            <name xml:lang="zh_CN">å·´è¥¿</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Brazil Portuguese keymap</name>
+        <command>gkb_xmmap br</command>
+        <language>Portuguese</language>
+        <language xml:lang="ar">Ø¨Ø±ØªØºØ§ÙÙØ©</language>
+        <language xml:lang="az">Portuqalca</language>
+        <language xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Portugali</language>
+        <language xml:lang="gl">PortuguÃ©s</language>
+        <language xml:lang="ja">ãã«ãã¬ã«èª</language>
+        <language xml:lang="nn">Portugisisk</language>
+        <language xml:lang="pt">ProtuguÃªs</language>
+        <language xml:lang="ta">Â§ÃÂ¡Ã·Ã²ÃÂ¸Â£Â</language>
+        <language xml:lang="wa">PortuguÃ¨s</language>
+        <language xml:lang="zh_CN">è¡èçè¯­</language>
+        <country>
+            <flag>br.png</flag>
+            <name>Brazil</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±Ø§Ø²ÙÙ</name>
+            <name xml:lang="az">Braziliya</name>
+            <name xml:lang="be">ÐÑÐ°Ð·ÑÐ»ÑÑ</name>
+            <name xml:lang="et">Brasiilia</name>
+            <name xml:lang="gl">Brasil</name>
+            <name xml:lang="ja">ãã©ã¸ã«</name>
+            <name xml:lang="nn">Brasil</name>
+            <name xml:lang="pt">Brasil</name>
+            <name xml:lang="ta">ÃÂ¢Â§ÃÂºÂ¢Ã¸</name>
+            <name xml:lang="wa">Braezi</name>
+            <name xml:lang="zh_CN">å·´è¥¿</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Bulgarian Cyrillic</name>
+        <command>gkb_xmmap ru_yawerty</command>
+        <language>Bulgarian</language>
+        <language xml:lang="ar">Ø¨ÙØºØ§Ø±ÙØ©</language>
+        <language xml:lang="az">Bolqarca</language>
+        <language xml:lang="be">ÐÐ°ÑÐ³Ð°ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Bulgaaria</language>
+        <language xml:lang="gl">BÃºlgaro</language>
+        <language xml:lang="ja">ãã«ã¬ãªã¢</language>
+        <language xml:lang="nn">Bulgarsk</language>
+        <language xml:lang="pt">BÃºlgaro</language>
+        <language xml:lang="ta">ÃÃ¸Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">BulgÃ¥re</language>
+        <language xml:lang="zh_CN">ä¿å å©äºè¯­</language>
+        <country>
+            <flag>bg.png</flag>
+            <name>Bulgaria</name>
+            <name xml:lang="ar">Ø¨ÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Bolqariya</name>
+            <name xml:lang="be">ÐÐ°ÑÐ³Ð°ÑÑÑ</name>
+            <name xml:lang="et">Bulgaaria</name>
+            <name xml:lang="gl">Bulgaria</name>
+            <name xml:lang="ja">ãã«ã¬ãªã¢</name>
+            <name xml:lang="nn">Bulgaria</name>
+            <name xml:lang="pt">BulgÃ¡ria</name>
+            <name xml:lang="ta">ÃÃ¸Â§Â¸ÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">BulgÃ¥reye</name>
+            <name xml:lang="zh_CN">ä¿å å©äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Belarussian xkb keymap</name>
+        <command>setxkbmap by</command>
+        <language>Belarussian</language>
+        <country>
+            <flag>by.png</flag>
+            <name>Belarus</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Canadian xkb keymap</name>
+        <command>setxkbmap ca</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>ca.png</flag>
+            <name>Canada</name>
+            <name xml:lang="ar">ÙÙØ¯Ø§</name>
+            <name xml:lang="az">Kanada</name>
+            <name xml:lang="be">ÐÐ°Ð½Ð°Ð´Ð°</name>
+            <name xml:lang="et">Kanada</name>
+            <name xml:lang="gl">CanadÃ¡</name>
+            <name xml:lang="ja">ã«ãã</name>
+            <name xml:lang="nn">Canada</name>
+            <name xml:lang="pt">CanadÃ¡</name>
+            <name xml:lang="ta">Â¸ÃÂ¼Â¡</name>
+            <name xml:lang="wa">Canada</name>
+            <name xml:lang="zh_CN">å æ¿å¤§</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Swiss keymap</name>
+        <command>gkb_xmmap ch</command>
+        <language>German</language>
+        <language xml:lang="ar">Ø£ÙÙØ§ÙÙØ©</language>
+        <language xml:lang="az">Almanca</language>
+        <language xml:lang="be">ÐÑÐ¼ÐµÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Saksa</language>
+        <language xml:lang="gl">AlemÃ¡n</language>
+        <language xml:lang="ja">ãã¤ãèª</language>
+        <language xml:lang="nn">Tysk</language>
+        <language xml:lang="pt">AlemÃ£o</language>
+        <language xml:lang="ta">Â¦ÂÃ·ÃÃ½</language>
+        <language xml:lang="wa">Almand</language>
+        <language xml:lang="zh_CN">å¾·è¯­</language>
+        <country>
+            <flag>ch.png</flag>
+            <name>Switzerland</name>
+            <name xml:lang="ar">Ø³ÙÙØ³Ø±Ø§</name>
+            <name xml:lang="az">Ä°sveÃ§rÉ</name>
+            <name xml:lang="be">Ð©Ð²ÑÐ¹ÑÐ°ÑÑÑ</name>
+            <name xml:lang="et">Å veits</name>
+            <name xml:lang="gl">SuÃ­za</name>
+            <name xml:lang="ja">ã¹ã¤ã¹</name>
+            <name xml:lang="nn">Sveits</name>
+            <name xml:lang="pt">SuiÃ§a</name>
+            <name xml:lang="ta">ÃÃÂ¢Ã°ÂºÃ·ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Swisse</name>
+            <name xml:lang="zh_CN">çå£«</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Czech and Slovak xkb keymap</name>
+        <command>setxkbmap czsk</command>
+        <language>Czech</language>
+        <country>
+            <flag>cz.png</flag>
+            <name>Czech Republic</name>
+        </country>
+        <country>
+            <flag>sk.png</flag>
+            <name>Slovak Republic</name>
+            <name xml:lang="ar">Ø¬ÙÙÙØ±ÙØ© Ø³ÙÙÙØ§ÙÙØ§</name>
+            <name xml:lang="az">Slovak RespublikasÄ±</name>
+            <name xml:lang="be">Ð¡Ð»Ð°Ð²Ð°ÑÐºÐ°Ñ Ð ÑÑÐ¿ÑÐ±Ð»ÑÐºÐ°</name>
+            <name xml:lang="et">Slovakkia</name>
+            <name xml:lang="gl">RepÃºblica eslovaca</name>
+            <name xml:lang="ja">ã¹ã­ãã­ã¢å±åå½</name>
+            <name xml:lang="nn">Slovakia</name>
+            <name xml:lang="pt">RepÃºblica Eslovaca</name>
+            <name xml:lang="ta">ÂÂ§ÃÂ¡ÃÃ¬ ÃÃÃÃÃ</name>
+            <name xml:lang="wa">Slovakeye</name>
+            <name xml:lang="zh_CN">æ¯æ´ä¼å</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Czech keymap</name>
+        <command>gkb_xmmap cz</command>
+        <language>Czech</language>
+        <country>
+            <flag>cz.png</flag>
+            <name>Czech Republic</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Czech qwertz xkb keymap</name>
+        <command>setxkbmap cs</command>
+        <language>Czech</language>
+        <country>
+            <flag>cs.png</flag>
+            <name>Former Czechoslovakia</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Gnome Keyboard default</name>
+        <command>xmodmap $HOME/.gkb_default.xmm</command>
+        <language>International</language>
+        <country>
+            <flag>gkb.png</flag>
+            <name>International</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>German xkb keymap</name>
+        <command>setxkbmap de</command>
+        <language>German</language>
+        <language xml:lang="ar">Ø£ÙÙØ§ÙÙØ©</language>
+        <language xml:lang="az">Almanca</language>
+        <language xml:lang="be">ÐÑÐ¼ÐµÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Saksa</language>
+        <language xml:lang="gl">AlemÃ¡n</language>
+        <language xml:lang="ja">ãã¤ãèª</language>
+        <language xml:lang="nn">Tysk</language>
+        <language xml:lang="pt">AlemÃ£o</language>
+        <language xml:lang="ta">Â¦ÂÃ·ÃÃ½</language>
+        <language xml:lang="wa">Almand</language>
+        <language xml:lang="zh_CN">å¾·è¯­</language>
+        <country>
+            <flag>de.png</flag>
+            <name>Germany</name>
+            <name xml:lang="ar">Ø£ÙÙØ§ÙÙØ§</name>
+            <name xml:lang="az">Almanya</name>
+            <name xml:lang="be">ÐÐµÑÐ¼Ð°Ð½ÑÑ</name>
+            <name xml:lang="et">Saksamaa</name>
+            <name xml:lang="gl">AlemaÃ±a</name>
+            <name xml:lang="ja">ãã¤ã</name>
+            <name xml:lang="nn">Tyskland</name>
+            <name xml:lang="pt">Alemanha</name>
+            <name xml:lang="ta">Â¦ÂÃ·ÃÃÂ¢</name>
+            <name xml:lang="wa">Almagne</name>
+            <name xml:lang="zh_CN">å¾·å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>German keymap</name>
+        <command>gkb_xmmap de</command>
+        <language>German</language>
+        <language xml:lang="ar">Ø£ÙÙØ§ÙÙØ©</language>
+        <language xml:lang="az">Almanca</language>
+        <language xml:lang="be">ÐÑÐ¼ÐµÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Saksa</language>
+        <language xml:lang="gl">AlemÃ¡n</language>
+        <language xml:lang="ja">ãã¤ãèª</language>
+        <language xml:lang="nn">Tysk</language>
+        <language xml:lang="pt">AlemÃ£o</language>
+        <language xml:lang="ta">Â¦ÂÃ·ÃÃ½</language>
+        <language xml:lang="wa">Almand</language>
+        <language xml:lang="zh_CN">å¾·è¯­</language>
+        <country>
+            <flag>de.png</flag>
+            <name>Germany</name>
+            <name xml:lang="ar">Ø£ÙÙØ§ÙÙØ§</name>
+            <name xml:lang="az">Almanya</name>
+            <name xml:lang="be">ÐÐµÑÐ¼Ð°Ð½ÑÑ</name>
+            <name xml:lang="et">Saksamaa</name>
+            <name xml:lang="gl">AlemaÃ±a</name>
+            <name xml:lang="ja">ãã¤ã</name>
+            <name xml:lang="nn">Tyskland</name>
+            <name xml:lang="pt">Alemanha</name>
+            <name xml:lang="ta">Â¦ÂÃ·ÃÃÂ¢</name>
+            <name xml:lang="wa">Almagne</name>
+            <name xml:lang="zh_CN">å¾·å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Danish xkb keymap</name>
+        <command>setxkbmap dk</command>
+        <language>Danish</language>
+        <country>
+            <flag>dk.png</flag>
+            <name>Denmark</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Danish keymap</name>
+        <command>gkb_xmmap dk</command>
+        <language>Danish</language>
+        <country>
+            <flag>dk.png</flag>
+            <name>Denmark</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Dvorak xkb keymap</name>
+        <command>setxkbmap dvorak</command>
+        <language>International</language>
+        <country>
+            <flag>gkb.png</flag>
+            <name>International</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Estonian xkb keymap</name>
+        <command>setxkbmap ee</command>
+        <language>Estonian</language>
+        <country>
+            <flag>ee.png</flag>
+            <name>Estonia</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Estonian keymap</name>
+        <command>gkb_xmmap ee</command>
+        <language>Estonian</language>
+        <country>
+            <flag>ee.png</flag>
+            <name>Estonia</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Spanish xkb keymap</name>
+        <command>setxkbmap es</command>
+        <language>Spanish</language>
+        <country>
+            <flag>es.png</flag>
+            <name>Spain</name>
+            <name xml:lang="ar">Ø¥Ø³Ø¨Ø§ÙÙØ§</name>
+            <name xml:lang="az">Ä°spaniya</name>
+            <name xml:lang="be">ÐÑÑÐ¿Ð°Ð½ÑÑ</name>
+            <name xml:lang="et">Hispaania</name>
+            <name xml:lang="gl">EspaÃ±a</name>
+            <name xml:lang="ja">ã¹ãã¤ã³</name>
+            <name xml:lang="nn">Spania</name>
+            <name xml:lang="pt">Espanha</name>
+            <name xml:lang="ta">ÂÂ¦ÃÃÂ¢Ã½</name>
+            <name xml:lang="wa">Espagne</name>
+            <name xml:lang="zh_CN">è¥¿ç­ç</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Spanish PC/AT 101 keyboard</name>
+        <command>setxkbmap es_x86</command>
+        <language>Spanish</language>
+        <country>
+            <flag>es.png</flag>
+            <name>Spain</name>
+            <name xml:lang="ar">Ø¥Ø³Ø¨Ø§ÙÙØ§</name>
+            <name xml:lang="az">Ä°spaniya</name>
+            <name xml:lang="be">ÐÑÑÐ¿Ð°Ð½ÑÑ</name>
+            <name xml:lang="et">Hispaania</name>
+            <name xml:lang="gl">EspaÃ±a</name>
+            <name xml:lang="ja">ã¹ãã¤ã³</name>
+            <name xml:lang="nn">Spania</name>
+            <name xml:lang="pt">Espanha</name>
+            <name xml:lang="ta">ÂÂ¦ÃÃÂ¢Ã½</name>
+            <name xml:lang="wa">Espagne</name>
+            <name xml:lang="zh_CN">è¥¿ç­ç</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Spanish keymap</name>
+        <command>gkb_xmmap es</command>
+        <language>Spanish</language>
+        <country>
+            <flag>es.png</flag>
+            <name>Spain</name>
+            <name xml:lang="ar">Ø¥Ø³Ø¨Ø§ÙÙØ§</name>
+            <name xml:lang="az">Ä°spaniya</name>
+            <name xml:lang="be">ÐÑÑÐ¿Ð°Ð½ÑÑ</name>
+            <name xml:lang="et">Hispaania</name>
+            <name xml:lang="gl">EspaÃ±a</name>
+            <name xml:lang="ja">ã¹ãã¤ã³</name>
+            <name xml:lang="nn">Spania</name>
+            <name xml:lang="pt">Espanha</name>
+            <name xml:lang="ta">ÂÂ¦ÃÃÂ¢Ã½</name>
+            <name xml:lang="wa">Espagne</name>
+            <name xml:lang="zh_CN">è¥¿ç­ç</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Finnish xkb keymap</name>
+        <command>setxkbmap fi</command>
+        <language>Finnish</language>
+        <country>
+            <flag>fi.png</flag>
+            <name>Finland</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Finnish keymap</name>
+        <command>gkb_xmmap fi</command>
+        <language>Finnish</language>
+        <country>
+            <flag>fi.png</flag>
+            <name>Finland</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>French Swiss</name>
+        <command>gkb_xmmap sf</command>
+        <language>French</language>
+        <language xml:lang="ar">ÙØ±ÙØ³ÙØ©</language>
+        <language xml:lang="az">FransÄ±zca</language>
+        <language xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÐ·ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Prantsuse</language>
+        <language xml:lang="gl">FrancÃ©s</language>
+        <language xml:lang="ja">ãã©ã³ã¹èª</language>
+        <language xml:lang="nn">Fransk</language>
+        <language xml:lang="pt">FrancÃªs</language>
+        <language xml:lang="ta">ÃÂ¢Â¦ÃÃ¯Ã</language>
+        <language xml:lang="wa">FrancÃ¨s</language>
+        <language xml:lang="zh_CN">æ³è¯­</language>
+        <country>
+            <flag>ch.png</flag>
+            <name>Switzerland</name>
+            <name xml:lang="ar">Ø³ÙÙØ³Ø±Ø§</name>
+            <name xml:lang="az">Ä°sveÃ§rÉ</name>
+            <name xml:lang="be">Ð©Ð²ÑÐ¹ÑÐ°ÑÑÑ</name>
+            <name xml:lang="et">Å veits</name>
+            <name xml:lang="gl">SuÃ­za</name>
+            <name xml:lang="ja">ã¹ã¤ã¹</name>
+            <name xml:lang="nn">Sveits</name>
+            <name xml:lang="pt">SuiÃ§a</name>
+            <name xml:lang="ta">ÃÃÂ¢Ã°ÂºÃ·ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Swisse</name>
+            <name xml:lang="zh_CN">çå£«</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>French-Canadian 105-key</name>
+        <command>gkb_xmmap qc-2</command>
+        <language>French</language>
+        <language xml:lang="ar">ÙØ±ÙØ³ÙØ©</language>
+        <language xml:lang="az">FransÄ±zca</language>
+        <language xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÐ·ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Prantsuse</language>
+        <language xml:lang="gl">FrancÃ©s</language>
+        <language xml:lang="ja">ãã©ã³ã¹èª</language>
+        <language xml:lang="nn">Fransk</language>
+        <language xml:lang="pt">FrancÃªs</language>
+        <language xml:lang="ta">ÃÂ¢Â¦ÃÃ¯Ã</language>
+        <language xml:lang="wa">FrancÃ¨s</language>
+        <language xml:lang="zh_CN">æ³è¯­</language>
+        <country>
+            <flag>qc.png</flag>
+            <name>Canada</name>
+            <name xml:lang="ar">ÙÙØ¯Ø§</name>
+            <name xml:lang="az">Kanada</name>
+            <name xml:lang="be">ÐÐ°Ð½Ð°Ð´Ð°</name>
+            <name xml:lang="et">Kanada</name>
+            <name xml:lang="gl">CanadÃ¡</name>
+            <name xml:lang="ja">ã«ãã</name>
+            <name xml:lang="nn">Canada</name>
+            <name xml:lang="pt">CanadÃ¡</name>
+            <name xml:lang="ta">Â¸ÃÂ¼Â¡</name>
+            <name xml:lang="wa">Canada</name>
+            <name xml:lang="zh_CN">å æ¿å¤§</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>French Swiss keymap</name>
+        <command>gkb_xmmap sf</command>
+        <language>French</language>
+        <language xml:lang="ar">ÙØ±ÙØ³ÙØ©</language>
+        <language xml:lang="az">FransÄ±zca</language>
+        <language xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÐ·ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Prantsuse</language>
+        <language xml:lang="gl">FrancÃ©s</language>
+        <language xml:lang="ja">ãã©ã³ã¹èª</language>
+        <language xml:lang="nn">Fransk</language>
+        <language xml:lang="pt">FrancÃªs</language>
+        <language xml:lang="ta">ÃÂ¢Â¦ÃÃ¯Ã</language>
+        <language xml:lang="wa">FrancÃ¨s</language>
+        <language xml:lang="zh_CN">æ³è¯­</language>
+        <country>
+            <flag>ch.png</flag>
+            <name>Switzerland</name>
+            <name xml:lang="ar">Ø³ÙÙØ³Ø±Ø§</name>
+            <name xml:lang="az">Ä°sveÃ§rÉ</name>
+            <name xml:lang="be">Ð©Ð²ÑÐ¹ÑÐ°ÑÑÑ</name>
+            <name xml:lang="et">Å veits</name>
+            <name xml:lang="gl">SuÃ­za</name>
+            <name xml:lang="ja">ã¹ã¤ã¹</name>
+            <name xml:lang="nn">Sveits</name>
+            <name xml:lang="pt">SuiÃ§a</name>
+            <name xml:lang="ta">ÃÃÂ¢Ã°ÂºÃ·ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Swisse</name>
+            <name xml:lang="zh_CN">çå£«</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>French xkb keymap</name>
+        <command>setxkbmap fr</command>
+        <language>French</language>
+        <language xml:lang="ar">ÙØ±ÙØ³ÙØ©</language>
+        <language xml:lang="az">FransÄ±zca</language>
+        <language xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÐ·ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Prantsuse</language>
+        <language xml:lang="gl">FrancÃ©s</language>
+        <language xml:lang="ja">ãã©ã³ã¹èª</language>
+        <language xml:lang="nn">Fransk</language>
+        <language xml:lang="pt">FrancÃªs</language>
+        <language xml:lang="ta">ÃÂ¢Â¦ÃÃ¯Ã</language>
+        <language xml:lang="wa">FrancÃ¨s</language>
+        <language xml:lang="zh_CN">æ³è¯­</language>
+        <country>
+            <flag>fr.png</flag>
+            <name>France</name>
+            <name xml:lang="ar">ÙØ±ÙØ³Ø§</name>
+            <name xml:lang="az">Fransa</name>
+            <name xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÑ</name>
+            <name xml:lang="et">Prantsuse</name>
+            <name xml:lang="gl">Francia</name>
+            <name xml:lang="ja">ãã©ã³ã¹</name>
+            <name xml:lang="nn">Frankrike</name>
+            <name xml:lang="pt">FranÃ§a</name>
+            <name xml:lang="ta">ÃÂ¢ÃÂ¡Ã½Â</name>
+            <name xml:lang="wa">France</name>
+            <name xml:lang="zh_CN">æ³å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>French PC/AT 101 keyboard</name>
+        <command>setxkbmap fr_x86</command>
+        <language>French</language>
+        <language xml:lang="ar">ÙØ±ÙØ³ÙØ©</language>
+        <language xml:lang="az">FransÄ±zca</language>
+        <language xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÐ·ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Prantsuse</language>
+        <language xml:lang="gl">FrancÃ©s</language>
+        <language xml:lang="ja">ãã©ã³ã¹èª</language>
+        <language xml:lang="nn">Fransk</language>
+        <language xml:lang="pt">FrancÃªs</language>
+        <language xml:lang="ta">ÃÂ¢Â¦ÃÃ¯Ã</language>
+        <language xml:lang="wa">FrancÃ¨s</language>
+        <language xml:lang="zh_CN">æ³è¯­</language>
+        <country>
+            <flag>fr.png</flag>
+            <name>France</name>
+            <name xml:lang="ar">ÙØ±ÙØ³Ø§</name>
+            <name xml:lang="az">Fransa</name>
+            <name xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÑ</name>
+            <name xml:lang="et">Prantsuse</name>
+            <name xml:lang="gl">Francia</name>
+            <name xml:lang="ja">ãã©ã³ã¹</name>
+            <name xml:lang="nn">Frankrike</name>
+            <name xml:lang="pt">FranÃ§a</name>
+            <name xml:lang="ta">ÃÂ¢ÃÂ¡Ã½Â</name>
+            <name xml:lang="wa">France</name>
+            <name xml:lang="zh_CN">æ³å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>French keymap</name>
+        <command>gkb_xmmap fr</command>
+        <language>French</language>
+        <language xml:lang="ar">ÙØ±ÙØ³ÙØ©</language>
+        <language xml:lang="az">FransÄ±zca</language>
+        <language xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÐ·ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Prantsuse</language>
+        <language xml:lang="gl">FrancÃ©s</language>
+        <language xml:lang="ja">ãã©ã³ã¹èª</language>
+        <language xml:lang="nn">Fransk</language>
+        <language xml:lang="pt">FrancÃªs</language>
+        <language xml:lang="ta">ÃÂ¢Â¦ÃÃ¯Ã</language>
+        <language xml:lang="wa">FrancÃ¨s</language>
+        <language xml:lang="zh_CN">æ³è¯­</language>
+        <country>
+            <flag>fr.png</flag>
+            <name>France</name>
+            <name xml:lang="ar">ÙØ±ÙØ³Ø§</name>
+            <name xml:lang="az">Fransa</name>
+            <name xml:lang="be">Ð¤ÑÐ°Ð½ÑÑÑ</name>
+            <name xml:lang="et">Prantsuse</name>
+            <name xml:lang="gl">Francia</name>
+            <name xml:lang="ja">ãã©ã³ã¹</name>
+            <name xml:lang="nn">Frankrike</name>
+            <name xml:lang="pt">FranÃ§a</name>
+            <name xml:lang="ta">ÃÂ¢ÃÂ¡Ã½Â</name>
+            <name xml:lang="wa">France</name>
+            <name xml:lang="zh_CN">æ³å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>GB 102-key</name>
+        <command>gkb_xmmap gb-102</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>gb.png</flag>
+            <name>Great Britain</name>
+            <name xml:lang="ar">Ø¨Ø±ÙØ·Ø§ÙÙØ§ Ø§ÙØ¹Ø¸ÙÙ</name>
+            <name xml:lang="az">BÃ¶yÃ¼k Britaniya</name>
+            <name xml:lang="be">ÐÑÐ»ÑÐºÐ°Ñ ÐÑÑÑÐ°Ð½ÑÑ</name>
+            <name xml:lang="et">Suurbritannia</name>
+            <name xml:lang="gl">Gran BretaÃ±a</name>
+            <name xml:lang="ja">ã°ã¬ã¼ãããªãã³</name>
+            <name xml:lang="nn">Storbritannia</name>
+            <name xml:lang="pt">GrÃ£-Bretanha</name>
+            <name xml:lang="ta">Â­Ã­Â¸Â¢ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Grande Burtaegne</name>
+            <name xml:lang="zh_CN">å¤§ä¸åé¢ </name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>United Kingdom xkb keymap</name>
+        <command>setxkbmap gb</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>gb.png</flag>
+            <name>United Kingdom</name>
+            <name xml:lang="ar">Ø§ÙÙÙÙÙØ© Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ KrallÄ±q</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½Ð°Ðµ ÐÐ°ÑÐ°Ð»ÐµÑÑÑÐ²Ð°</name>
+            <name xml:lang="et">Ãhendkuningriik</name>
+            <name xml:lang="gl">Reino Unido</name>
+            <name xml:lang="ja">ã¤ã®ãªã¹</name>
+            <name xml:lang="nn">Storbritannia</name>
+            <name xml:lang="pt">Reino Unido</name>
+            <name xml:lang="ta">ÃÂ¨ÃÂ¼Ã° Â¸Â¢Ã­Â¼Ãµ</name>
+            <name xml:lang="wa">RweyÃ¥me Uni</name>
+            <name xml:lang="zh_CN">è±å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>English keymap</name>
+        <command>gkb_xmmap gb</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>gb.png</flag>
+            <name>United Kingdom</name>
+            <name xml:lang="ar">Ø§ÙÙÙÙÙØ© Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ KrallÄ±q</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½Ð°Ðµ ÐÐ°ÑÐ°Ð»ÐµÑÑÑÐ²Ð°</name>
+            <name xml:lang="et">Ãhendkuningriik</name>
+            <name xml:lang="gl">Reino Unido</name>
+            <name xml:lang="ja">ã¤ã®ãªã¹</name>
+            <name xml:lang="nn">Storbritannia</name>
+            <name xml:lang="pt">Reino Unido</name>
+            <name xml:lang="ta">ÃÂ¨ÃÂ¼Ã° Â¸Â¢Ã­Â¼Ãµ</name>
+            <name xml:lang="wa">RweyÃ¥me Uni</name>
+            <name xml:lang="zh_CN">è±å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>GB 105-key</name>
+        <command>gkb_xmmap gb-105</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>gb.png</flag>
+            <name>Great Britain</name>
+            <name xml:lang="ar">Ø¨Ø±ÙØ·Ø§ÙÙØ§ Ø§ÙØ¹Ø¸ÙÙ</name>
+            <name xml:lang="az">BÃ¶yÃ¼k Britaniya</name>
+            <name xml:lang="be">ÐÑÐ»ÑÐºÐ°Ñ ÐÑÑÑÐ°Ð½ÑÑ</name>
+            <name xml:lang="et">Suurbritannia</name>
+            <name xml:lang="gl">Gran BretaÃ±a</name>
+            <name xml:lang="ja">ã°ã¬ã¼ãããªãã³</name>
+            <name xml:lang="nn">Storbritannia</name>
+            <name xml:lang="pt">GrÃ£-Bretanha</name>
+            <name xml:lang="ta">Â­Ã­Â¸Â¢ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Grande Burtaegne</name>
+            <name xml:lang="zh_CN">å¤§ä¸åé¢ </name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Georgian keymap</name>
+        <command>gkb_xmmap ge</command>
+        <language>Georgian</language>
+        <language xml:lang="ar">Ø¬ÙØ±Ø¬ÙØ©</language>
+        <language xml:lang="az">GÃ¼rcÃ¼cÉ</language>
+        <language xml:lang="be">ÐÑÑÐ·ÑÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Gruusia</language>
+        <language xml:lang="gl">Xeorxiano</language>
+        <language xml:lang="ja">ã°ã«ã¸ã¢èª</language>
+        <language xml:lang="nn">Georgisk</language>
+        <language xml:lang="pt">GeÃ³rgio</language>
+        <language xml:lang="ta">ÂÂ¢ÃÂ¡Ã·ÂÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Djeordjyin</language>
+        <language xml:lang="zh_CN">æ ¼é²åäºè¯­</language>
+        <country>
+            <flag>ge.png</flag>
+            <name>Georgia</name>
+            <name xml:lang="ar">Ø¬ÙØ±Ø¬ÙØ§</name>
+            <name xml:lang="az">GÃ¼rcÃ¼stan</name>
+            <name xml:lang="be">ÐÑÑÐ·ÑÑ</name>
+            <name xml:lang="et">Gruusia</name>
+            <name xml:lang="gl">Xeorxia</name>
+            <name xml:lang="ja">ã°ã«ã¸ã¢</name>
+            <name xml:lang="nn">Georgia</name>
+            <name xml:lang="pt">GeÃ³rgia</name>
+            <name xml:lang="ta">ÂÂ¡Ã·ÂÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Djeordjeye</name>
+            <name xml:lang="zh_CN">æ ¼é²åäº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Georgian Latin</name>
+        <command>gkb_xmmap ge_la</command>
+        <language>Georgian</language>
+        <language xml:lang="ar">Ø¬ÙØ±Ø¬ÙØ©</language>
+        <language xml:lang="az">GÃ¼rcÃ¼cÉ</language>
+        <language xml:lang="be">ÐÑÑÐ·ÑÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Gruusia</language>
+        <language xml:lang="gl">Xeorxiano</language>
+        <language xml:lang="ja">ã°ã«ã¸ã¢èª</language>
+        <language xml:lang="nn">Georgisk</language>
+        <language xml:lang="pt">GeÃ³rgio</language>
+        <language xml:lang="ta">ÂÂ¢ÃÂ¡Ã·ÂÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Djeordjyin</language>
+        <language xml:lang="zh_CN">æ ¼é²åäºè¯­</language>
+        <country>
+            <flag>ge.png</flag>
+            <name>Georgia</name>
+            <name xml:lang="ar">Ø¬ÙØ±Ø¬ÙØ§</name>
+            <name xml:lang="az">GÃ¼rcÃ¼stan</name>
+            <name xml:lang="be">ÐÑÑÐ·ÑÑ</name>
+            <name xml:lang="et">Gruusia</name>
+            <name xml:lang="gl">Xeorxia</name>
+            <name xml:lang="ja">ã°ã«ã¸ã¢</name>
+            <name xml:lang="nn">Georgia</name>
+            <name xml:lang="pt">GeÃ³rgia</name>
+            <name xml:lang="ta">ÂÂ¡Ã·ÂÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Djeordjeye</name>
+            <name xml:lang="zh_CN">æ ¼é²åäº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Georgian Russian layout</name>
+        <command>gkb_xmmap ge_ru</command>
+        <language>Georgian</language>
+        <language xml:lang="ar">Ø¬ÙØ±Ø¬ÙØ©</language>
+        <language xml:lang="az">GÃ¼rcÃ¼cÉ</language>
+        <language xml:lang="be">ÐÑÑÐ·ÑÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Gruusia</language>
+        <language xml:lang="gl">Xeorxiano</language>
+        <language xml:lang="ja">ã°ã«ã¸ã¢èª</language>
+        <language xml:lang="nn">Georgisk</language>
+        <language xml:lang="pt">GeÃ³rgio</language>
+        <language xml:lang="ta">ÂÂ¢ÃÂ¡Ã·ÂÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Djeordjyin</language>
+        <language xml:lang="zh_CN">æ ¼é²åäºè¯­</language>
+        <country>
+            <flag>ge.png</flag>
+            <name>Georgia</name>
+            <name xml:lang="ar">Ø¬ÙØ±Ø¬ÙØ§</name>
+            <name xml:lang="az">GÃ¼rcÃ¼stan</name>
+            <name xml:lang="be">ÐÑÑÐ·ÑÑ</name>
+            <name xml:lang="et">Gruusia</name>
+            <name xml:lang="gl">Xeorxia</name>
+            <name xml:lang="ja">ã°ã«ã¸ã¢</name>
+            <name xml:lang="nn">Georgia</name>
+            <name xml:lang="pt">GeÃ³rgia</name>
+            <name xml:lang="ta">ÂÂ¡Ã·ÂÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Djeordjeye</name>
+            <name xml:lang="zh_CN">æ ¼é²åäº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>German</name>
+        <name xml:lang="ar">Ø£ÙÙØ§ÙÙØ©</name>
+        <name xml:lang="az">Almanca</name>
+        <name xml:lang="be">ÐÑÐ¼ÐµÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Saksa</name>
+        <name xml:lang="gl">AlemÃ¡n</name>
+        <name xml:lang="ja">ãã¤ãèª</name>
+        <name xml:lang="nn">Tysk</name>
+        <name xml:lang="pt">AlemÃ£o</name>
+        <name xml:lang="ta">Â¦ÂÃ·ÃÃ½</name>
+        <name xml:lang="wa">Almand</name>
+        <name xml:lang="zh_CN">å¾·è¯­</name>
+        <command>gkb_xmmap sg</command>
+        <language>German</language>
+        <language xml:lang="ar">Ø£ÙÙØ§ÙÙØ©</language>
+        <language xml:lang="az">Almanca</language>
+        <language xml:lang="be">ÐÑÐ¼ÐµÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Saksa</language>
+        <language xml:lang="gl">AlemÃ¡n</language>
+        <language xml:lang="ja">ãã¤ãèª</language>
+        <language xml:lang="nn">Tysk</language>
+        <language xml:lang="pt">AlemÃ£o</language>
+        <language xml:lang="ta">Â¦ÂÃ·ÃÃ½</language>
+        <language xml:lang="wa">Almand</language>
+        <language xml:lang="zh_CN">å¾·è¯­</language>
+        <country>
+            <flag>de.png</flag>
+            <name>Germany</name>
+            <name xml:lang="ar">Ø£ÙÙØ§ÙÙØ§</name>
+            <name xml:lang="az">Almanya</name>
+            <name xml:lang="be">ÐÐµÑÐ¼Ð°Ð½ÑÑ</name>
+            <name xml:lang="et">Saksamaa</name>
+            <name xml:lang="gl">AlemaÃ±a</name>
+            <name xml:lang="ja">ãã¤ã</name>
+            <name xml:lang="nn">Tyskland</name>
+            <name xml:lang="pt">Alemanha</name>
+            <name xml:lang="ta">Â¦ÂÃ·ÃÃÂ¢</name>
+            <name xml:lang="wa">Almagne</name>
+            <name xml:lang="zh_CN">å¾·å½</name>
+        </country>
+        <country>
+            <flag>at.png</flag>
+            <name>Austria</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ³Ø§</name>
+            <name xml:lang="az">Avstriya</name>
+            <name xml:lang="be">ÐÑÑÑÑÑÑ</name>
+            <name xml:lang="et">Austria</name>
+            <name xml:lang="gl">Austria</name>
+            <name xml:lang="ja">ãªã¼ã¹ããªã¢</name>
+            <name xml:lang="nn">Austerrike</name>
+            <name xml:lang="pt">Ãustria</name>
+            <name xml:lang="ta">Â¬ÂÂ¾Â¢ÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Ãtriche</name>
+            <name xml:lang="zh_CN">å¥¥å°å©</name>
+        </country>
+        <country>
+            <flag>ch.png</flag>
+            <name>Switzerland</name>
+            <name xml:lang="ar">Ø³ÙÙØ³Ø±Ø§</name>
+            <name xml:lang="az">Ä°sveÃ§rÉ</name>
+            <name xml:lang="be">Ð©Ð²ÑÐ¹ÑÐ°ÑÑÑ</name>
+            <name xml:lang="et">Å veits</name>
+            <name xml:lang="gl">SuÃ­za</name>
+            <name xml:lang="ja">ã¹ã¤ã¹</name>
+            <name xml:lang="nn">Sveits</name>
+            <name xml:lang="pt">SuiÃ§a</name>
+            <name xml:lang="ta">ÃÃÂ¢Ã°ÂºÃ·ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Swisse</name>
+            <name xml:lang="zh_CN">çå£«</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>German Swiss with Euro</name>
+        <command>gkb_xmmap sg</command>
+        <language>German</language>
+        <language xml:lang="ar">Ø£ÙÙØ§ÙÙØ©</language>
+        <language xml:lang="az">Almanca</language>
+        <language xml:lang="be">ÐÑÐ¼ÐµÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Saksa</language>
+        <language xml:lang="gl">AlemÃ¡n</language>
+        <language xml:lang="ja">ãã¤ãèª</language>
+        <language xml:lang="nn">Tysk</language>
+        <language xml:lang="pt">AlemÃ£o</language>
+        <language xml:lang="ta">Â¦ÂÃ·ÃÃ½</language>
+        <language xml:lang="wa">Almand</language>
+        <language xml:lang="zh_CN">å¾·è¯­</language>
+        <country>
+            <flag>ch.png</flag>
+            <name>Switzerland</name>
+            <name xml:lang="ar">Ø³ÙÙØ³Ø±Ø§</name>
+            <name xml:lang="az">Ä°sveÃ§rÉ</name>
+            <name xml:lang="be">Ð©Ð²ÑÐ¹ÑÐ°ÑÑÑ</name>
+            <name xml:lang="et">Å veits</name>
+            <name xml:lang="gl">SuÃ­za</name>
+            <name xml:lang="ja">ã¹ã¤ã¹</name>
+            <name xml:lang="nn">Sveits</name>
+            <name xml:lang="pt">SuiÃ§a</name>
+            <name xml:lang="ta">ÃÃÂ¢Ã°ÂºÃ·ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Swisse</name>
+            <name xml:lang="zh_CN">çå£«</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Greek xkb keymap</name>
+        <command>setxkbmap el</command>
+        <language>Greek</language>
+        <language xml:lang="ar">ÙÙÙØ§ÙÙØ©</language>
+        <language xml:lang="be">ÐÑÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Kreeka</language>
+        <language xml:lang="gl">Grego</language>
+        <language xml:lang="ja">ã®ãªã·ã£èª</language>
+        <language xml:lang="pt">Grego</language>
+        <language xml:lang="wa">Grek</language>
+        <language xml:lang="zh_CN">å¸èè¯­</language>
+        <country>
+            <flag>gr.png</flag>
+            <name>Greece</name>
+            <name xml:lang="ar">Ø§ÙÙÙÙØ§Ù</name>
+            <name xml:lang="be">ÐÑÑÑÑÑ</name>
+            <name xml:lang="et">Kreeka</name>
+            <name xml:lang="gl">Grecia</name>
+            <name xml:lang="ja">ã®ãªã·ã¢</name>
+            <name xml:lang="pt">GrÃ©cia</name>
+            <name xml:lang="ta">Â¸Â¢ÃÂ£Â</name>
+            <name xml:lang="wa">Grece</name>
+            <name xml:lang="zh_CN">å¸è</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Greek keymap</name>
+        <command>gkb_xmmap gr</command>
+        <language>Greek</language>
+        <language xml:lang="ar">ÙÙÙØ§ÙÙØ©</language>
+        <language xml:lang="be">ÐÑÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Kreeka</language>
+        <language xml:lang="gl">Grego</language>
+        <language xml:lang="ja">ã®ãªã·ã£èª</language>
+        <language xml:lang="pt">Grego</language>
+        <language xml:lang="wa">Grek</language>
+        <language xml:lang="zh_CN">å¸èè¯­</language>
+        <country>
+            <flag>gr.png</flag>
+            <name>Greece</name>
+            <name xml:lang="ar">Ø§ÙÙÙÙØ§Ù</name>
+            <name xml:lang="be">ÐÑÑÑÑÑ</name>
+            <name xml:lang="et">Kreeka</name>
+            <name xml:lang="gl">Grecia</name>
+            <name xml:lang="ja">ã®ãªã·ã¢</name>
+            <name xml:lang="pt">GrÃ©cia</name>
+            <name xml:lang="ta">Â¸Â¢ÃÂ£Â</name>
+            <name xml:lang="wa">Grece</name>
+            <name xml:lang="zh_CN">å¸è</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Croatian keymap</name>
+        <command>setxkbmap hr</command>
+        <language>Croatian</language>
+        <country>
+            <flag>hr.png</flag>
+            <name>Croatia</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hungarian latin2 xkb keymap</name>
+        <command>setxkbmap hu</command>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hungarian 101-key latin 1</name>
+        <command>gkb_xmmap hu-101-lat1</command>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hungarian latin1</name>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+        <command>gkb_xmmap hu-lat1</command>
+    </keymap>
+    <keymap>
+        <name>Hungarian 101-key latin 2</name>
+        <command>gkb_xmmap hu-101-lat2</command>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hungarian 105-key latin 2</name>
+        <command>gkb_xmmap hu</command>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hungarian 105-key latin 1</name>
+        <command>gkb_xmmap hu-lat1</command>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Sun (!not PC!) type5 Hungarian latin 2</name>
+        <command>gkb_xmmap hu-sun-lat2</command>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hungarian PC/AT 101 keyboard</name>
+        <command>gkb_xmmap hu_x86</command>
+        <language>Hungarian</language>
+        <language xml:lang="ar">ÙØ¬Ø±ÙØ© (ÙÙØºØ§Ø±ÙØ©)</language>
+        <language xml:lang="az">Macarca</language>
+        <language xml:lang="be">ÐÑÐ½Ð³ÐµÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Ungari</language>
+        <language xml:lang="gl">HÃºngaro</language>
+        <language xml:lang="ja">ãã³ã¬ãªã¼èª</language>
+        <language xml:lang="nn">Ungarsk</language>
+        <language xml:lang="pt">HÃºngaro</language>
+        <language xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">HongrwÃ¨s</language>
+        <language xml:lang="zh_CN">åçå©è¯­</language>
+        <country>
+            <flag>hu.png</flag>
+            <name>Hungary</name>
+            <name xml:lang="ar">ÙÙØºØ§Ø±ÙØ§</name>
+            <name xml:lang="az">Macarstan</name>
+            <name xml:lang="be">ÐÐµÐ½Ð³ÑÑÑ</name>
+            <name xml:lang="et">Ungari</name>
+            <name xml:lang="gl">HungrÃ­a</name>
+            <name xml:lang="ja">ãã³ã¬ãªã¼</name>
+            <name xml:lang="nn">Ungarn</name>
+            <name xml:lang="pt">Hungria</name>
+            <name xml:lang="ta">ÂÃ­Â§Â¸ÃÂ¢</name>
+            <name xml:lang="wa">Hongreye</name>
+            <name xml:lang="zh_CN">åçå©</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hebrew xkb keymap</name>
+        <command>setxkbmap il</command>
+        <language>Hebrew</language>
+        <country>
+            <flag>il.png</flag>
+            <name>Israel</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Hebrew keymap</name>
+        <command>gkb_xmmap il</command>
+        <language>Hebrew</language>
+        <country>
+            <flag>il.png</flag>
+            <name>Israel</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Icelandic xkb keymap</name>
+        <command>setxkbmap is</command>
+        <language>Icelandic</language>
+        <country>
+            <flag>is.png</flag>
+            <name>Iceland</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Icelandic keymap</name>
+        <command>gkb_xmmap is</command>
+        <language>Icelandic</language>
+        <country>
+            <flag>is.png</flag>
+            <name>Iceland</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Italian xkb keymap</name>
+        <command>setxkbmap it</command>
+        <language>Italian</language>
+        <country>
+            <flag>it.png</flag>
+            <name>Italy</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Italian keymap</name>
+        <command>gkb_xmmap it</command>
+        <language>Italian</language>
+        <country>
+            <flag>it.png</flag>
+            <name>Italy</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Japanese xkb keymap</name>
+        <command>setxkbmap jp</command>
+        <language>Japanese</language>
+        <country>
+            <flag>jp.png</flag>
+            <name>Japan</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Japanese keymap</name>
+        <command>gkb_xmmap jp</command>
+        <language>Japanese</language>
+        <country>
+            <flag>jp.png</flag>
+            <name>Japan</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Lao keymap</name>
+        <command>gkb_xmmap la</command>
+        <language>Lao</language>
+        <country>
+            <flag>la.png</flag>
+            <name>Laos</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Lithuanian qwerty xkb keymap</name>
+        <command>setxkbmap lt</command>
+        <language>Lithuanian</language>
+        <country>
+            <flag>lt.png</flag>
+            <name>Lithuania</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Lithuanian keymap</name>
+        <command>gkb_xmmap lt</command>
+        <language>Lithuanian</language>
+        <country>
+            <flag>lt.png</flag>
+            <name>Lithuania</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Lithuanian programmers xkb keymap</name>
+        <command>setxkbmap lt_p</command>
+        <language>Lithuanian</language>
+        <country>
+            <flag>lt.png</flag>
+            <name>Lithuania</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Lithuanian standard xkb keymap</name>
+        <command>setxkbmap lt_std</command>
+        <language>Lithuanian</language>
+        <country>
+            <flag>lt.png</flag>
+            <name>Lithuania</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Macedonian</name>
+        <command>gkb_xmmap mk</command>
+        <language>Macedonian</language>
+        <country>
+            <flag>mk.png</flag>
+            <name>Macedonia</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Macedonian xkb keymap</name>
+        <command>setxkbmap mk</command>
+        <language>Macedonian</language>
+        <country>
+            <flag>mk.png</flag>
+            <name>Macedonia</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Dutch keymap</name>
+        <command>gkb_xmmap nl</command>
+        <language>Dutch</language>
+        <language xml:lang="ar">ÙÙÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">FlemenkcÉ</language>
+        <language xml:lang="be">ÐÐ°Ð»ÑÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Saksa</language>
+        <language xml:lang="gl">HolandÃ©s</language>
+        <language xml:lang="ja">ãªã©ã³ã</language>
+        <language xml:lang="nn">Nederlandsk</language>
+        <language xml:lang="pt">HolandÃªs</language>
+        <language xml:lang="ta">Â¼Ã®Ã</language>
+        <language xml:lang="wa">NeyerlandÃ¨s</language>
+        <language xml:lang="zh_CN">è·å°è¯­</language>
+        <country>
+            <flag>nl.png</flag>
+            <name>Netherlands</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Norwegian xkb keymap</name>
+        <command>setxkbmap no</command>
+        <language>Norwegian</language>
+        <language xml:lang="ar">ÙØ±ÙÙØ¬ÙØ©</language>
+        <language xml:lang="az">NorveÃ§cÉ</language>
+        <language xml:lang="be">ÐÐ°ÑÐ²ÑÐ¶ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Norra</language>
+        <language xml:lang="gl">NorueguÃ©s</language>
+        <language xml:lang="ja">ãã«ã¦ã§ã¼èª</language>
+        <language xml:lang="nn">Norsk</language>
+        <language xml:lang="pt">NorueguÃªs</language>
+        <language xml:lang="ta">Â¿Â¡Ã·Â§ÃÂÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Norvedjyin</language>
+        <language xml:lang="zh_CN">æªå¨è¯­</language>
+        <country>
+            <flag>no.png</flag>
+            <name>Norway</name>
+            <name xml:lang="ar">Ø§ÙÙØ±ÙÙØ¬</name>
+            <name xml:lang="az">NorveÃ§</name>
+            <name xml:lang="be">ÐÐ°ÑÐ²ÑÐ³ÑÑ</name>
+            <name xml:lang="et">Norra</name>
+            <name xml:lang="gl">Noruega</name>
+            <name xml:lang="ja">ãã«ã¦ã§ã¼</name>
+            <name xml:lang="nn">Noreg</name>
+            <name xml:lang="pt">Noruega</name>
+            <name xml:lang="ta">Â¿Â¡Ã·Â§Ã</name>
+            <name xml:lang="wa">Norvedje</name>
+            <name xml:lang="zh_CN">æªå¨</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Norwegian</name>
+        <name xml:lang="ar">ÙØ±ÙÙØ¬ÙØ©</name>
+        <name xml:lang="az">NorveÃ§cÉ</name>
+        <name xml:lang="be">ÐÐ°ÑÐ²ÑÐ¶ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Norra</name>
+        <name xml:lang="gl">NorueguÃ©s</name>
+        <name xml:lang="ja">ãã«ã¦ã§ã¼èª</name>
+        <name xml:lang="nn">Norsk</name>
+        <name xml:lang="pt">NorueguÃªs</name>
+        <name xml:lang="ta">Â¿Â¡Ã·Â§ÃÂÂ¢ÃÃ½</name>
+        <name xml:lang="wa">Norvedjyin</name>
+        <name xml:lang="zh_CN">æªå¨è¯­</name>
+        <command>gkb_xmmap no</command>
+        <language>Norwegian</language>
+        <language xml:lang="ar">ÙØ±ÙÙØ¬ÙØ©</language>
+        <language xml:lang="az">NorveÃ§cÉ</language>
+        <language xml:lang="be">ÐÐ°ÑÐ²ÑÐ¶ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Norra</language>
+        <language xml:lang="gl">NorueguÃ©s</language>
+        <language xml:lang="ja">ãã«ã¦ã§ã¼èª</language>
+        <language xml:lang="nn">Norsk</language>
+        <language xml:lang="pt">NorueguÃªs</language>
+        <language xml:lang="ta">Â¿Â¡Ã·Â§ÃÂÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Norvedjyin</language>
+        <language xml:lang="zh_CN">æªå¨è¯­</language>
+        <country>
+            <flag>no.png</flag>
+            <name>Norway</name>
+            <name xml:lang="ar">Ø§ÙÙØ±ÙÙØ¬</name>
+            <name xml:lang="az">NorveÃ§</name>
+            <name xml:lang="be">ÐÐ°ÑÐ²ÑÐ³ÑÑ</name>
+            <name xml:lang="et">Norra</name>
+            <name xml:lang="gl">Noruega</name>
+            <name xml:lang="ja">ãã«ã¦ã§ã¼</name>
+            <name xml:lang="nn">Noreg</name>
+            <name xml:lang="pt">Noruega</name>
+            <name xml:lang="ta">Â¿Â¡Ã·Â§Ã</name>
+            <name xml:lang="wa">Norvedje</name>
+            <name xml:lang="zh_CN">æªå¨</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Polish xkb keymap</name>
+        <command>setxkbmap pl</command>
+        <language>Polish</language>
+        <language xml:lang="ar">Ø¨ÙÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">Polyakca</language>
+        <language xml:lang="be">ÐÐ¾Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Poola</language>
+        <language xml:lang="gl">Polaco</language>
+        <language xml:lang="ja">ãã¼ã©ã³ãèª</language>
+        <language xml:lang="nn">Polsk</language>
+        <language xml:lang="pt">Polaco</language>
+        <language xml:lang="ta">ÃÂ¡ÃÂ¢Â</language>
+        <language xml:lang="wa">PolonÃ¨s</language>
+        <language xml:lang="zh_CN">æ³¢å°è¯­</language>
+        <country>
+            <flag>pl.png</flag>
+            <name>Poland</name>
+            <name xml:lang="ar">Ø¨ÙÙÙØ¯Ø§</name>
+            <name xml:lang="az">PolÅa</name>
+            <name xml:lang="be">ÐÐ¾Ð»ÑÑÑÐ°</name>
+            <name xml:lang="et">Poola</name>
+            <name xml:lang="gl">Polonia</name>
+            <name xml:lang="ja">ãã¼ã©ã³ã</name>
+            <name xml:lang="nn">Polen</name>
+            <name xml:lang="pt">PolÃ³nia</name>
+            <name xml:lang="ta">Â§ÃÂ¡ÃÃ³Ã</name>
+            <name xml:lang="wa">Pologne</name>
+            <name xml:lang="zh_CN">æ³¢å°</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Polish deadkeys</name>
+        <command>gkb_xmmap pl2</command>
+        <language>Polish</language>
+        <language xml:lang="ar">Ø¨ÙÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">Polyakca</language>
+        <language xml:lang="be">ÐÐ¾Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Poola</language>
+        <language xml:lang="gl">Polaco</language>
+        <language xml:lang="ja">ãã¼ã©ã³ãèª</language>
+        <language xml:lang="nn">Polsk</language>
+        <language xml:lang="pt">Polaco</language>
+        <language xml:lang="ta">ÃÂ¡ÃÂ¢Â</language>
+        <language xml:lang="wa">PolonÃ¨s</language>
+        <language xml:lang="zh_CN">æ³¢å°è¯­</language>
+        <country>
+            <flag>pl.png</flag>
+            <name>Poland</name>
+            <name xml:lang="ar">Ø¨ÙÙÙØ¯Ø§</name>
+            <name xml:lang="az">PolÅa</name>
+            <name xml:lang="be">ÐÐ¾Ð»ÑÑÑÐ°</name>
+            <name xml:lang="et">Poola</name>
+            <name xml:lang="gl">Polonia</name>
+            <name xml:lang="ja">ãã¼ã©ã³ã</name>
+            <name xml:lang="nn">Polen</name>
+            <name xml:lang="pt">PolÃ³nia</name>
+            <name xml:lang="ta">Â§ÃÂ¡ÃÃ³Ã</name>
+            <name xml:lang="wa">Pologne</name>
+            <name xml:lang="zh_CN">æ³¢å°</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Polish</name>
+        <name xml:lang="ar">Ø¨ÙÙÙØ¯ÙØ©</name>
+        <name xml:lang="az">Polyakca</name>
+        <name xml:lang="be">ÐÐ¾Ð»ÑÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Poola</name>
+        <name xml:lang="gl">Polaco</name>
+        <name xml:lang="ja">ãã¼ã©ã³ãèª</name>
+        <name xml:lang="nn">Polsk</name>
+        <name xml:lang="pt">Polaco</name>
+        <name xml:lang="ta">ÃÂ¡ÃÂ¢Â</name>
+        <name xml:lang="wa">PolonÃ¨s</name>
+        <name xml:lang="zh_CN">æ³¢å°è¯­</name>
+        <command>gkb_xmmap pl</command>
+        <language>Polish</language>
+        <language xml:lang="ar">Ø¨ÙÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">Polyakca</language>
+        <language xml:lang="be">ÐÐ¾Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Poola</language>
+        <language xml:lang="gl">Polaco</language>
+        <language xml:lang="ja">ãã¼ã©ã³ãèª</language>
+        <language xml:lang="nn">Polsk</language>
+        <language xml:lang="pt">Polaco</language>
+        <language xml:lang="ta">ÃÂ¡ÃÂ¢Â</language>
+        <language xml:lang="wa">PolonÃ¨s</language>
+        <language xml:lang="zh_CN">æ³¢å°è¯­</language>
+        <country>
+            <flag>pl.png</flag>
+            <name>Poland</name>
+            <name xml:lang="ar">Ø¨ÙÙÙØ¯Ø§</name>
+            <name xml:lang="az">PolÅa</name>
+            <name xml:lang="be">ÐÐ¾Ð»ÑÑÑÐ°</name>
+            <name xml:lang="et">Poola</name>
+            <name xml:lang="gl">Polonia</name>
+            <name xml:lang="ja">ãã¼ã©ã³ã</name>
+            <name xml:lang="nn">Polen</name>
+            <name xml:lang="pt">PolÃ³nia</name>
+            <name xml:lang="ta">Â§ÃÂ¡ÃÃ³Ã</name>
+            <name xml:lang="wa">Pologne</name>
+            <name xml:lang="zh_CN">æ³¢å°</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Portugal Deadkeys</name>
+        <command>gkb_xmmap pt-dead</command>
+        <language>Portuglese</language>
+        <country>
+            <flag>pt.png</flag>
+            <name>Portugal</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±ØªØºØ§Ù</name>
+            <name xml:lang="az">Portuqaliya</name>
+            <name xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑ</name>
+            <name xml:lang="et">Portugal</name>
+            <name xml:lang="gl">Portugal</name>
+            <name xml:lang="ja">ãã«ãã¬ã«</name>
+            <name xml:lang="nn">Portugal</name>
+            <name xml:lang="pt">Portugal</name>
+            <name xml:lang="ta">Â§ÃÂ¡Ã·Ã®ÃÂ¸Ã¸</name>
+            <name xml:lang="wa">Portugal</name>
+            <name xml:lang="zh_CN">è¡èç</name>
+        </country>
+        <country>
+            <flag>pt.png</flag>
+            <name>Brazil</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±Ø§Ø²ÙÙ</name>
+            <name xml:lang="az">Braziliya</name>
+            <name xml:lang="be">ÐÑÐ°Ð·ÑÐ»ÑÑ</name>
+            <name xml:lang="et">Brasiilia</name>
+            <name xml:lang="gl">Brasil</name>
+            <name xml:lang="ja">ãã©ã¸ã«</name>
+            <name xml:lang="nn">Brasil</name>
+            <name xml:lang="pt">Brasil</name>
+            <name xml:lang="ta">ÃÂ¢Â§ÃÂºÂ¢Ã¸</name>
+            <name xml:lang="wa">Braezi</name>
+            <name xml:lang="zh_CN">å·´è¥¿</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Portugal</name>
+        <name xml:lang="ar">Ø§ÙØ¨Ø±ØªØºØ§Ù</name>
+        <name xml:lang="az">Portuqaliya</name>
+        <name xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑ</name>
+        <name xml:lang="et">Portugal</name>
+        <name xml:lang="gl">Portugal</name>
+        <name xml:lang="ja">ãã«ãã¬ã«</name>
+        <name xml:lang="nn">Portugal</name>
+        <name xml:lang="pt">Portugal</name>
+        <name xml:lang="ta">Â§ÃÂ¡Ã·Ã®ÃÂ¸Ã¸</name>
+        <name xml:lang="wa">Portugal</name>
+        <name xml:lang="zh_CN">è¡èç</name>
+        <command>gkb_xmmap pt</command>
+        <language>Portuguese</language>
+        <language xml:lang="ar">Ø¨Ø±ØªØºØ§ÙÙØ©</language>
+        <language xml:lang="az">Portuqalca</language>
+        <language xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Portugali</language>
+        <language xml:lang="gl">PortuguÃ©s</language>
+        <language xml:lang="ja">ãã«ãã¬ã«èª</language>
+        <language xml:lang="nn">Portugisisk</language>
+        <language xml:lang="pt">ProtuguÃªs</language>
+        <language xml:lang="ta">Â§ÃÂ¡Ã·Ã²ÃÂ¸Â£Â</language>
+        <language xml:lang="wa">PortuguÃ¨s</language>
+        <language xml:lang="zh_CN">è¡èçè¯­</language>
+        <country>
+            <flag>pt.png</flag>
+            <name>Portugal</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±ØªØºØ§Ù</name>
+            <name xml:lang="az">Portuqaliya</name>
+            <name xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑ</name>
+            <name xml:lang="et">Portugal</name>
+            <name xml:lang="gl">Portugal</name>
+            <name xml:lang="ja">ãã«ãã¬ã«</name>
+            <name xml:lang="nn">Portugal</name>
+            <name xml:lang="pt">Portugal</name>
+            <name xml:lang="ta">Â§ÃÂ¡Ã·Ã®ÃÂ¸Ã¸</name>
+            <name xml:lang="wa">Portugal</name>
+            <name xml:lang="zh_CN">è¡èç</name>
+        </country>
+        <country>
+            <flag>pt.png</flag>
+            <name>Brazil</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±Ø§Ø²ÙÙ</name>
+            <name xml:lang="az">Braziliya</name>
+            <name xml:lang="be">ÐÑÐ°Ð·ÑÐ»ÑÑ</name>
+            <name xml:lang="et">Brasiilia</name>
+            <name xml:lang="gl">Brasil</name>
+            <name xml:lang="ja">ãã©ã¸ã«</name>
+            <name xml:lang="nn">Brasil</name>
+            <name xml:lang="pt">Brasil</name>
+            <name xml:lang="ta">ÃÂ¢Â§ÃÂºÂ¢Ã¸</name>
+            <name xml:lang="wa">Braezi</name>
+            <name xml:lang="zh_CN">å·´è¥¿</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Portuguese xkb keymap</name>
+        <command>setxkbmap pt</command>
+        <language>Portuguese</language>
+        <language xml:lang="ar">Ø¨Ø±ØªØºØ§ÙÙØ©</language>
+        <language xml:lang="az">Portuqalca</language>
+        <language xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Portugali</language>
+        <language xml:lang="gl">PortuguÃ©s</language>
+        <language xml:lang="ja">ãã«ãã¬ã«èª</language>
+        <language xml:lang="nn">Portugisisk</language>
+        <language xml:lang="pt">ProtuguÃªs</language>
+        <language xml:lang="ta">Â§ÃÂ¡Ã·Ã²ÃÂ¸Â£Â</language>
+        <language xml:lang="wa">PortuguÃ¨s</language>
+        <language xml:lang="zh_CN">è¡èçè¯­</language>
+        <country>
+            <flag>pt.png</flag>
+            <name>Portugal</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±ØªØºØ§Ù</name>
+            <name xml:lang="az">Portuqaliya</name>
+            <name xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑ</name>
+            <name xml:lang="et">Portugal</name>
+            <name xml:lang="gl">Portugal</name>
+            <name xml:lang="ja">ãã«ãã¬ã«</name>
+            <name xml:lang="nn">Portugal</name>
+            <name xml:lang="pt">Portugal</name>
+            <name xml:lang="ta">Â§ÃÂ¡Ã·Ã®ÃÂ¸Ã¸</name>
+            <name xml:lang="wa">Portugal</name>
+            <name xml:lang="zh_CN">è¡èç</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Portuguese keymap</name>
+        <command>gkb_xmmap pt</command>
+        <language>Portuguese</language>
+        <language xml:lang="ar">Ø¨Ø±ØªØºØ§ÙÙØ©</language>
+        <language xml:lang="az">Portuqalca</language>
+        <language xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Portugali</language>
+        <language xml:lang="gl">PortuguÃ©s</language>
+        <language xml:lang="ja">ãã«ãã¬ã«èª</language>
+        <language xml:lang="nn">Portugisisk</language>
+        <language xml:lang="pt">ProtuguÃªs</language>
+        <language xml:lang="ta">Â§ÃÂ¡Ã·Ã²ÃÂ¸Â£Â</language>
+        <language xml:lang="wa">PortuguÃ¨s</language>
+        <language xml:lang="zh_CN">è¡èçè¯­</language>
+        <country>
+            <flag>pt.png</flag>
+            <name>Portugal</name>
+            <name xml:lang="ar">Ø§ÙØ¨Ø±ØªØºØ§Ù</name>
+            <name xml:lang="az">Portuqaliya</name>
+            <name xml:lang="be">ÐÐ°ÑÑÑÐ³Ð°Ð»ÑÑ</name>
+            <name xml:lang="et">Portugal</name>
+            <name xml:lang="gl">Portugal</name>
+            <name xml:lang="ja">ãã«ãã¬ã«</name>
+            <name xml:lang="nn">Portugal</name>
+            <name xml:lang="pt">Portugal</name>
+            <name xml:lang="ta">Â§ÃÂ¡Ã·Ã®ÃÂ¸Ã¸</name>
+            <name xml:lang="wa">Portugal</name>
+            <name xml:lang="zh_CN">è¡èç</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Romanian xkb keymap</name>
+        <command>setxkbmap ro</command>
+        <language>Romanian</language>
+        <country>
+            <flag>ro.png</flag>
+            <name>Romania</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Russian xkb keymap</name>
+        <command>setxkbmap ru</command>
+        <language>Russian</language>
+        <language xml:lang="ar">Ø±ÙØ³ÙØ©</language>
+        <language xml:lang="az">Rusca</language>
+        <language xml:lang="be">Ð Ð°ÑÐµÐ¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Vene</language>
+        <language xml:lang="gl">Ruso</language>
+        <language xml:lang="ja">ã­ã·ã¢èª</language>
+        <language xml:lang="nn">Russisk</language>
+        <language xml:lang="pt">Russo</language>
+        <language xml:lang="ta">ÃÂÃÃ½</language>
+        <language xml:lang="wa">Russe</language>
+        <language xml:lang="zh_CN">ä¿è¯­</language>
+        <country>
+            <flag>ru.png</flag>
+            <name>Russia</name>
+            <name xml:lang="ar">Ø±ÙØ³ÙØ§</name>
+            <name xml:lang="az">Rusiya</name>
+            <name xml:lang="be">Ð Ð°ÑÐµÑ</name>
+            <name xml:lang="et">Venemaa</name>
+            <name xml:lang="gl">Rusia</name>
+            <name xml:lang="ja">ã­ã·ã¢</name>
+            <name xml:lang="nn">Russland</name>
+            <name xml:lang="pt">RÃºssia</name>
+            <name xml:lang="ta">ÃÂÃÂ¡</name>
+            <name xml:lang="wa">Russeye</name>
+            <name xml:lang="zh_CN">ä¿ç½æ¯</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Russian keymap</name>
+        <command>gkb_xmmap ru</command>
+        <language>Russian</language>
+        <language xml:lang="ar">Ø±ÙØ³ÙØ©</language>
+        <language xml:lang="az">Rusca</language>
+        <language xml:lang="be">Ð Ð°ÑÐµÐ¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Vene</language>
+        <language xml:lang="gl">Ruso</language>
+        <language xml:lang="ja">ã­ã·ã¢èª</language>
+        <language xml:lang="nn">Russisk</language>
+        <language xml:lang="pt">Russo</language>
+        <language xml:lang="ta">ÃÂÃÃ½</language>
+        <language xml:lang="wa">Russe</language>
+        <language xml:lang="zh_CN">ä¿è¯­</language>
+        <country>
+            <flag>ru.png</flag>
+            <name>Russia</name>
+            <name xml:lang="ar">Ø±ÙØ³ÙØ§</name>
+            <name xml:lang="az">Rusiya</name>
+            <name xml:lang="be">Ð Ð°ÑÐµÑ</name>
+            <name xml:lang="et">Venemaa</name>
+            <name xml:lang="gl">Rusia</name>
+            <name xml:lang="ja">ã­ã·ã¢</name>
+            <name xml:lang="nn">Russland</name>
+            <name xml:lang="pt">RÃºssia</name>
+            <name xml:lang="ta">ÃÂÃÂ¡</name>
+            <name xml:lang="wa">Russeye</name>
+            <name xml:lang="zh_CN">ä¿ç½æ¯</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Plain Russian keymap</name>
+        <command>gkb_xmmap ru-rev</command>
+        <language>Russian</language>
+        <language xml:lang="ar">Ø±ÙØ³ÙØ©</language>
+        <language xml:lang="az">Rusca</language>
+        <language xml:lang="be">Ð Ð°ÑÐµÐ¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Vene</language>
+        <language xml:lang="gl">Ruso</language>
+        <language xml:lang="ja">ã­ã·ã¢èª</language>
+        <language xml:lang="nn">Russisk</language>
+        <language xml:lang="pt">Russo</language>
+        <language xml:lang="ta">ÃÂÃÃ½</language>
+        <language xml:lang="wa">Russe</language>
+        <language xml:lang="zh_CN">ä¿è¯­</language>
+        <country>
+            <flag>ru.png</flag>
+            <name>Russia</name>
+            <name xml:lang="ar">Ø±ÙØ³ÙØ§</name>
+            <name xml:lang="az">Rusiya</name>
+            <name xml:lang="be">Ð Ð°ÑÐµÑ</name>
+            <name xml:lang="et">Venemaa</name>
+            <name xml:lang="gl">Rusia</name>
+            <name xml:lang="ja">ã­ã·ã¢</name>
+            <name xml:lang="nn">Russland</name>
+            <name xml:lang="pt">RÃºssia</name>
+            <name xml:lang="ta">ÃÂÃÂ¡</name>
+            <name xml:lang="wa">Russeye</name>
+            <name xml:lang="zh_CN">ä¿ç½æ¯</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Russian Cyrillic</name>
+        <command>gkb_xmmap ru</command>
+        <language>Russian</language>
+        <language xml:lang="ar">Ø±ÙØ³ÙØ©</language>
+        <language xml:lang="az">Rusca</language>
+        <language xml:lang="be">Ð Ð°ÑÐµÐ¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Vene</language>
+        <language xml:lang="gl">Ruso</language>
+        <language xml:lang="ja">ã­ã·ã¢èª</language>
+        <language xml:lang="nn">Russisk</language>
+        <language xml:lang="pt">Russo</language>
+        <language xml:lang="ta">ÃÂÃÃ½</language>
+        <language xml:lang="wa">Russe</language>
+        <language xml:lang="zh_CN">ä¿è¯­</language>
+        <country>
+            <flag>ru.png</flag>
+            <name>Russia</name>
+            <name xml:lang="ar">Ø±ÙØ³ÙØ§</name>
+            <name xml:lang="az">Rusiya</name>
+            <name xml:lang="be">Ð Ð°ÑÐµÑ</name>
+            <name xml:lang="et">Venemaa</name>
+            <name xml:lang="gl">Rusia</name>
+            <name xml:lang="ja">ã­ã·ã¢</name>
+            <name xml:lang="nn">Russland</name>
+            <name xml:lang="pt">RÃºssia</name>
+            <name xml:lang="ta">ÃÂÃÂ¡</name>
+            <name xml:lang="wa">Russeye</name>
+            <name xml:lang="zh_CN">ä¿ç½æ¯</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Swedish xkb keymap</name>
+        <command>setxkbmap se</command>
+        <language>Swedish</language>
+        <language xml:lang="ar">Ø³ÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">Ä°sveÃ§cÉ</language>
+        <language xml:lang="be">Ð¨Ð²ÑÐ´ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Rootsi</language>
+        <language xml:lang="gl">Sueco</language>
+        <language xml:lang="ja">ã¹ã¦ã§ã¼ãã³èª</language>
+        <language xml:lang="nn">Svensk</language>
+        <language xml:lang="pt">Sueco</language>
+        <language xml:lang="ta">ÃÃÂ£ÃÂ</language>
+        <language xml:lang="wa">SuwedwÃ¨s</language>
+        <language xml:lang="zh_CN">çå¸è¯­</language>
+        <country>
+            <flag>se.png</flag>
+            <name>Sweden</name>
+            <name xml:lang="ar">Ø§ÙØ³ÙÙØ¯</name>
+            <name xml:lang="az">Ä°sveÃ§</name>
+            <name xml:lang="be">Ð¨Ð²ÑÑÑÑ</name>
+            <name xml:lang="et">Rootsi</name>
+            <name xml:lang="gl">Suecia</name>
+            <name xml:lang="ja">ã¹ã¦ã§ã¼ãã³</name>
+            <name xml:lang="nn">Sverige</name>
+            <name xml:lang="pt">SuÃ©cia</name>
+            <name xml:lang="ta">ÃÃÂ£Â¼Ã½</name>
+            <name xml:lang="wa">Suwede</name>
+            <name xml:lang="zh_CN">çå¸</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Swedish keymap</name>
+        <command>gkb_xmmap se</command>
+        <language>Swedish</language>
+        <language xml:lang="ar">Ø³ÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">Ä°sveÃ§cÉ</language>
+        <language xml:lang="be">Ð¨Ð²ÑÐ´ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Rootsi</language>
+        <language xml:lang="gl">Sueco</language>
+        <language xml:lang="ja">ã¹ã¦ã§ã¼ãã³èª</language>
+        <language xml:lang="nn">Svensk</language>
+        <language xml:lang="pt">Sueco</language>
+        <language xml:lang="ta">ÃÃÂ£ÃÂ</language>
+        <language xml:lang="wa">SuwedwÃ¨s</language>
+        <language xml:lang="zh_CN">çå¸è¯­</language>
+        <country>
+            <flag>se.png</flag>
+            <name>Sweden</name>
+            <name xml:lang="ar">Ø§ÙØ³ÙÙØ¯</name>
+            <name xml:lang="az">Ä°sveÃ§</name>
+            <name xml:lang="be">Ð¨Ð²ÑÑÑÑ</name>
+            <name xml:lang="et">Rootsi</name>
+            <name xml:lang="gl">Suecia</name>
+            <name xml:lang="ja">ã¹ã¦ã§ã¼ãã³</name>
+            <name xml:lang="nn">Sverige</name>
+            <name xml:lang="pt">SuÃ©cia</name>
+            <name xml:lang="ta">ÃÃÂ£Â¼Ã½</name>
+            <name xml:lang="wa">Suwede</name>
+            <name xml:lang="zh_CN">çå¸</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Slovenian xkb keymap</name>
+        <command>setxkbmap si</command>
+        <language>Slovenian</language>
+        <language xml:lang="ar">Ø³ÙÙÙÙÙÙØ©</language>
+        <language xml:lang="az">SlovencÉ</language>
+        <language xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Sloveenia</language>
+        <language xml:lang="gl">Esloveno</language>
+        <language xml:lang="ja">ã¹ã­ããã¢èª</language>
+        <language xml:lang="nn">Slovensk</language>
+        <language xml:lang="pt">Esloveno</language>
+        <language xml:lang="ta">ÂÂ§ÃÂ¡Â¦ÃÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Slovenyin</language>
+        <language xml:lang="zh_CN">æ¯æ´æå°¼äºè¯­</language>
+        <country>
+            <flag>si.png</flag>
+            <name>Slovenia</name>
+            <name xml:lang="ar">Ø³ÙÙÙÙÙÙØ§</name>
+            <name xml:lang="az">Sloveniya</name>
+            <name xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÑ</name>
+            <name xml:lang="et">Sloveenia</name>
+            <name xml:lang="gl">Eslovenia</name>
+            <name xml:lang="ja">ã¹ã­ããã¢</name>
+            <name xml:lang="nn">Slovenia</name>
+            <name xml:lang="pt">EslovÃ©nia</name>
+            <name xml:lang="ta">ÂÂ§ÃÂ¡Â§ÃÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Sloveneye</name>
+            <name xml:lang="zh_CN">æ¯æ´æå°¼äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Slovenian keymap</name>
+        <command>gkb_xmmap si</command>
+        <language>Slovenian</language>
+        <language xml:lang="ar">Ø³ÙÙÙÙÙÙØ©</language>
+        <language xml:lang="az">SlovencÉ</language>
+        <language xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Sloveenia</language>
+        <language xml:lang="gl">Esloveno</language>
+        <language xml:lang="ja">ã¹ã­ããã¢èª</language>
+        <language xml:lang="nn">Slovensk</language>
+        <language xml:lang="pt">Esloveno</language>
+        <language xml:lang="ta">ÂÂ§ÃÂ¡Â¦ÃÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Slovenyin</language>
+        <language xml:lang="zh_CN">æ¯æ´æå°¼äºè¯­</language>
+        <country>
+            <flag>si.png</flag>
+            <name>Slovenia</name>
+            <name xml:lang="ar">Ø³ÙÙÙÙÙÙØ§</name>
+            <name xml:lang="az">Sloveniya</name>
+            <name xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÑ</name>
+            <name xml:lang="et">Sloveenia</name>
+            <name xml:lang="gl">Eslovenia</name>
+            <name xml:lang="ja">ã¹ã­ããã¢</name>
+            <name xml:lang="nn">Slovenia</name>
+            <name xml:lang="pt">EslovÃ©nia</name>
+            <name xml:lang="ta">ÂÂ§ÃÂ¡Â§ÃÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Sloveneye</name>
+            <name xml:lang="zh_CN">æ¯æ´æå°¼äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name> keymap</name>
+        <command>gkb_xmmap sk</command>
+        <language>Slovak</language>
+        <language xml:lang="ar">Ø³ÙÙÙØ§ÙÙØ©</language>
+        <language xml:lang="az">Slovakca</language>
+        <language xml:lang="be">Ð¡Ð»Ð°Ð²Ð°ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Slovakkia</language>
+        <language xml:lang="gl">Eslovaco</language>
+        <language xml:lang="ja">ã¹ã­ãã­ã¢èª</language>
+        <language xml:lang="nn">Slovakisk</language>
+        <language xml:lang="pt">Eslovaco</language>
+        <language xml:lang="ta">ÂÂ§ÃÂ¡ÃÃ¬</language>
+        <language xml:lang="wa">Slovake</language>
+        <language xml:lang="zh_CN">æ¯æ´ä¼åè¯­</language>
+        <country>
+            <flag>sk.png</flag>
+            <name>Slovak Republic</name>
+            <name xml:lang="ar">Ø¬ÙÙÙØ±ÙØ© Ø³ÙÙÙØ§ÙÙØ§</name>
+            <name xml:lang="az">Slovak RespublikasÄ±</name>
+            <name xml:lang="be">Ð¡Ð»Ð°Ð²Ð°ÑÐºÐ°Ñ Ð ÑÑÐ¿ÑÐ±Ð»ÑÐºÐ°</name>
+            <name xml:lang="et">Slovakkia</name>
+            <name xml:lang="gl">RepÃºblica eslovaca</name>
+            <name xml:lang="ja">ã¹ã­ãã­ã¢å±åå½</name>
+            <name xml:lang="nn">Slovakia</name>
+            <name xml:lang="pt">RepÃºblica Eslovaca</name>
+            <name xml:lang="ta">ÂÂ§ÃÂ¡ÃÃ¬ ÃÃÃÃÃ</name>
+            <name xml:lang="wa">Slovakeye</name>
+            <name xml:lang="zh_CN">æ¯æ´ä¼å</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Slovak</name>
+        <name xml:lang="ar">Ø³ÙÙÙØ§ÙÙØ©</name>
+        <name xml:lang="az">Slovakca</name>
+        <name xml:lang="be">Ð¡Ð»Ð°Ð²Ð°ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Slovakkia</name>
+        <name xml:lang="gl">Eslovaco</name>
+        <name xml:lang="ja">ã¹ã­ãã­ã¢èª</name>
+        <name xml:lang="nn">Slovakisk</name>
+        <name xml:lang="pt">Eslovaco</name>
+        <name xml:lang="ta">ÂÂ§ÃÂ¡ÃÃ¬</name>
+        <name xml:lang="wa">Slovake</name>
+        <name xml:lang="zh_CN">æ¯æ´ä¼åè¯­</name>
+        <command>gkb_xmmap sk</command>
+        <language>Slovak</language>
+        <language xml:lang="ar">Ø³ÙÙÙØ§ÙÙØ©</language>
+        <language xml:lang="az">Slovakca</language>
+        <language xml:lang="be">Ð¡Ð»Ð°Ð²Ð°ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Slovakkia</language>
+        <language xml:lang="gl">Eslovaco</language>
+        <language xml:lang="ja">ã¹ã­ãã­ã¢èª</language>
+        <language xml:lang="nn">Slovakisk</language>
+        <language xml:lang="pt">Eslovaco</language>
+        <language xml:lang="ta">ÂÂ§ÃÂ¡ÃÃ¬</language>
+        <language xml:lang="wa">Slovake</language>
+        <language xml:lang="zh_CN">æ¯æ´ä¼åè¯­</language>
+        <country>
+            <flag>sk.png</flag>
+            <name>Slovak Republic</name>
+            <name xml:lang="ar">Ø¬ÙÙÙØ±ÙØ© Ø³ÙÙÙØ§ÙÙØ§</name>
+            <name xml:lang="az">Slovak RespublikasÄ±</name>
+            <name xml:lang="be">Ð¡Ð»Ð°Ð²Ð°ÑÐºÐ°Ñ Ð ÑÑÐ¿ÑÐ±Ð»ÑÐºÐ°</name>
+            <name xml:lang="et">Slovakkia</name>
+            <name xml:lang="gl">RepÃºblica eslovaca</name>
+            <name xml:lang="ja">ã¹ã­ãã­ã¢å±åå½</name>
+            <name xml:lang="nn">Slovakia</name>
+            <name xml:lang="pt">RepÃºblica Eslovaca</name>
+            <name xml:lang="ta">ÂÂ§ÃÂ¡ÃÃ¬ ÃÃÃÃÃ</name>
+            <name xml:lang="wa">Slovakeye</name>
+            <name xml:lang="zh_CN">æ¯æ´ä¼å</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Slovenian</name>
+        <name xml:lang="ar">Ø³ÙÙÙÙÙÙØ©</name>
+        <name xml:lang="az">SlovencÉ</name>
+        <name xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Sloveenia</name>
+        <name xml:lang="gl">Esloveno</name>
+        <name xml:lang="ja">ã¹ã­ããã¢èª</name>
+        <name xml:lang="nn">Slovensk</name>
+        <name xml:lang="pt">Esloveno</name>
+        <name xml:lang="ta">ÂÂ§ÃÂ¡Â¦ÃÃÂ¢ÃÃ½</name>
+        <name xml:lang="wa">Slovenyin</name>
+        <name xml:lang="zh_CN">æ¯æ´æå°¼äºè¯­</name>
+        <command>gkb_xmmap si</command>
+        <language>Slovenian</language>
+        <language xml:lang="ar">Ø³ÙÙÙÙÙÙØ©</language>
+        <language xml:lang="az">SlovencÉ</language>
+        <language xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Sloveenia</language>
+        <language xml:lang="gl">Esloveno</language>
+        <language xml:lang="ja">ã¹ã­ããã¢èª</language>
+        <language xml:lang="nn">Slovensk</language>
+        <language xml:lang="pt">Esloveno</language>
+        <language xml:lang="ta">ÂÂ§ÃÂ¡Â¦ÃÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Slovenyin</language>
+        <language xml:lang="zh_CN">æ¯æ´æå°¼äºè¯­</language>
+        <country>
+            <flag>si.png</flag>
+            <name>Slovenia</name>
+            <name xml:lang="ar">Ø³ÙÙÙÙÙÙØ§</name>
+            <name xml:lang="az">Sloveniya</name>
+            <name xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÑ</name>
+            <name xml:lang="et">Sloveenia</name>
+            <name xml:lang="gl">Eslovenia</name>
+            <name xml:lang="ja">ã¹ã­ããã¢</name>
+            <name xml:lang="nn">Slovenia</name>
+            <name xml:lang="pt">EslovÃ©nia</name>
+            <name xml:lang="ta">ÂÂ§ÃÂ¡Â§ÃÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Sloveneye</name>
+            <name xml:lang="zh_CN">æ¯æ´æå°¼äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Slovenian</name>
+        <name xml:lang="ar">Ø³ÙÙÙÙÙÙØ©</name>
+        <name xml:lang="az">SlovencÉ</name>
+        <name xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Sloveenia</name>
+        <name xml:lang="gl">Esloveno</name>
+        <name xml:lang="ja">ã¹ã­ããã¢èª</name>
+        <name xml:lang="nn">Slovensk</name>
+        <name xml:lang="pt">Esloveno</name>
+        <name xml:lang="ta">ÂÂ§ÃÂ¡Â¦ÃÃÂ¢ÃÃ½</name>
+        <name xml:lang="wa">Slovenyin</name>
+        <name xml:lang="zh_CN">æ¯æ´æå°¼äºè¯­</name>
+        <command>gkb_xmmap si</command>
+        <language>Slovenian</language>
+        <language xml:lang="ar">Ø³ÙÙÙÙÙÙØ©</language>
+        <language xml:lang="az">SlovencÉ</language>
+        <language xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Sloveenia</language>
+        <language xml:lang="gl">Esloveno</language>
+        <language xml:lang="ja">ã¹ã­ããã¢èª</language>
+        <language xml:lang="nn">Slovensk</language>
+        <language xml:lang="pt">Esloveno</language>
+        <language xml:lang="ta">ÂÂ§ÃÂ¡Â¦ÃÃÂ¢ÃÃ½</language>
+        <language xml:lang="wa">Slovenyin</language>
+        <language xml:lang="zh_CN">æ¯æ´æå°¼äºè¯­</language>
+        <country>
+            <flag>si.png</flag>
+            <name>Slovenia</name>
+            <name xml:lang="ar">Ø³ÙÙÙÙÙÙØ§</name>
+            <name xml:lang="az">Sloveniya</name>
+            <name xml:lang="be">Ð¡Ð»Ð°Ð²ÐµÐ½ÑÑ</name>
+            <name xml:lang="et">Sloveenia</name>
+            <name xml:lang="gl">Eslovenia</name>
+            <name xml:lang="ja">ã¹ã­ããã¢</name>
+            <name xml:lang="nn">Slovenia</name>
+            <name xml:lang="pt">EslovÃ©nia</name>
+            <name xml:lang="ta">ÂÂ§ÃÂ¡Â§ÃÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Sloveneye</name>
+            <name xml:lang="zh_CN">æ¯æ´æå°¼äº</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Serbian standard xkb keymap</name>
+        <command>setxkbmap sr</command>
+        <language>Serb</language>
+        <country>
+            <flag>yu.png</flag>
+            <name>Yugoslavia</name>
+            <name xml:lang="ar">ÙÙØºÙØ³ÙØ§ÙÙØ§</name>
+            <name xml:lang="az">Yuqoslaviya</name>
+            <name xml:lang="be">Ð®Ð³Ð°ÑÐ»Ð°Ð²ÑÑ</name>
+            <name xml:lang="et">Jugoslaavia</name>
+            <name xml:lang="gl">Iugoslavia</name>
+            <name xml:lang="ja">ã¦ã¼ã´ã¹ã©ãã¢</name>
+            <name xml:lang="nn">Jugoslavia</name>
+            <name xml:lang="pt">JugoslÃ¡via</name>
+            <name xml:lang="ta">ÃÂ§Â¸Â¡ÂÃÂ¡ÃÂ¢ÃÂ¡</name>
+            <name xml:lang="wa">Yugoslaveye</name>
+            <name xml:lang="zh_CN">åæ¯æå¤«</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Swedish</name>
+        <name xml:lang="ar">Ø³ÙÙØ¯ÙØ©</name>
+        <name xml:lang="az">Ä°sveÃ§cÉ</name>
+        <name xml:lang="be">Ð¨Ð²ÑÐ´ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Rootsi</name>
+        <name xml:lang="gl">Sueco</name>
+        <name xml:lang="ja">ã¹ã¦ã§ã¼ãã³èª</name>
+        <name xml:lang="nn">Svensk</name>
+        <name xml:lang="pt">Sueco</name>
+        <name xml:lang="ta">ÃÃÂ£ÃÂ</name>
+        <name xml:lang="wa">SuwedwÃ¨s</name>
+        <name xml:lang="zh_CN">çå¸è¯­</name>
+        <command>gkb_xmmap se</command>
+        <language>Swedish</language>
+        <language xml:lang="ar">Ø³ÙÙØ¯ÙØ©</language>
+        <language xml:lang="az">Ä°sveÃ§cÉ</language>
+        <language xml:lang="be">Ð¨Ð²ÑÐ´ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Rootsi</language>
+        <language xml:lang="gl">Sueco</language>
+        <language xml:lang="ja">ã¹ã¦ã§ã¼ãã³èª</language>
+        <language xml:lang="nn">Svensk</language>
+        <language xml:lang="pt">Sueco</language>
+        <language xml:lang="ta">ÃÃÂ£ÃÂ</language>
+        <language xml:lang="wa">SuwedwÃ¨s</language>
+        <language xml:lang="zh_CN">çå¸è¯­</language>
+        <country>
+            <flag>sv.png</flag>
+            <name>Sweden</name>
+            <name xml:lang="ar">Ø§ÙØ³ÙÙØ¯</name>
+            <name xml:lang="az">Ä°sveÃ§</name>
+            <name xml:lang="be">Ð¨Ð²ÑÑÑÑ</name>
+            <name xml:lang="et">Rootsi</name>
+            <name xml:lang="gl">Suecia</name>
+            <name xml:lang="ja">ã¹ã¦ã§ã¼ãã³</name>
+            <name xml:lang="nn">Sverige</name>
+            <name xml:lang="pt">SuÃ©cia</name>
+            <name xml:lang="ta">ÃÃÂ£Â¼Ã½</name>
+            <name xml:lang="wa">Suwede</name>
+            <name xml:lang="zh_CN">çå¸</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Thai</name>
+        <name xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯ÙØ©</name>
+        <name xml:lang="az">Taylandca</name>
+        <name xml:lang="be">Ð¢Ð°Ð¹ÑÐºÐ°Ñ</name>
+        <name xml:lang="et">Tai</name>
+        <name xml:lang="gl">TailandÃ©s</name>
+        <name xml:lang="ja">ã¿ã¤èª</name>
+        <name xml:lang="nn">Thailandsk</name>
+        <name xml:lang="pt">TailandÃªs</name>
+        <name xml:lang="ta">Â¾Â¡Ã¶</name>
+        <name xml:lang="wa">Tai</name>
+        <name xml:lang="zh_CN">æ³°è¯­</name>
+        <command>gkb_xmmap th2</command>
+        <language>Thai</language>
+        <language xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯ÙØ©</language>
+        <language xml:lang="az">Taylandca</language>
+        <language xml:lang="be">Ð¢Ð°Ð¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Tai</language>
+        <language xml:lang="gl">TailandÃ©s</language>
+        <language xml:lang="ja">ã¿ã¤èª</language>
+        <language xml:lang="nn">Thailandsk</language>
+        <language xml:lang="pt">TailandÃªs</language>
+        <language xml:lang="ta">Â¾Â¡Ã¶</language>
+        <language xml:lang="wa">Tai</language>
+        <language xml:lang="zh_CN">æ³°è¯­</language>
+        <country>
+            <flag>th.png</flag>
+            <name>Thailand</name>
+            <name xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯</name>
+            <name xml:lang="az">Tayland</name>
+            <name xml:lang="be">Ð¢Ð°Ð¹Ð»Ð°Ð½Ð´</name>
+            <name xml:lang="et">Tai</name>
+            <name xml:lang="gl">Tailandia</name>
+            <name xml:lang="ja">ã¿ã¤</name>
+            <name xml:lang="nn">Thailand</name>
+            <name xml:lang="pt">TailÃ¢ndia</name>
+            <name xml:lang="ta">Â¾Â¡Ã¶ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Tailande</name>
+            <name xml:lang="zh_CN">æ³°å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Thai Kedmanee</name>
+        <command>gkb_xmmap th</command>
+        <language>Thai</language>
+        <language xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯ÙØ©</language>
+        <language xml:lang="az">Taylandca</language>
+        <language xml:lang="be">Ð¢Ð°Ð¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Tai</language>
+        <language xml:lang="gl">TailandÃ©s</language>
+        <language xml:lang="ja">ã¿ã¤èª</language>
+        <language xml:lang="nn">Thailandsk</language>
+        <language xml:lang="pt">TailandÃªs</language>
+        <language xml:lang="ta">Â¾Â¡Ã¶</language>
+        <language xml:lang="wa">Tai</language>
+        <language xml:lang="zh_CN">æ³°è¯­</language>
+        <country>
+            <flag>th.png</flag>
+            <name>Thailand</name>
+            <name xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯</name>
+            <name xml:lang="az">Tayland</name>
+            <name xml:lang="be">Ð¢Ð°Ð¹Ð»Ð°Ð½Ð´</name>
+            <name xml:lang="et">Tai</name>
+            <name xml:lang="gl">Tailandia</name>
+            <name xml:lang="ja">ã¿ã¤</name>
+            <name xml:lang="nn">Thailand</name>
+            <name xml:lang="pt">TailÃ¢ndia</name>
+            <name xml:lang="ta">Â¾Â¡Ã¶ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Tailande</name>
+            <name xml:lang="zh_CN">æ³°å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Thai xkb keymap</name>
+        <command>setxkbmap th</command>
+        <language>Thai</language>
+        <language xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯ÙØ©</language>
+        <language xml:lang="az">Taylandca</language>
+        <language xml:lang="be">Ð¢Ð°Ð¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Tai</language>
+        <language xml:lang="gl">TailandÃ©s</language>
+        <language xml:lang="ja">ã¿ã¤èª</language>
+        <language xml:lang="nn">Thailandsk</language>
+        <language xml:lang="pt">TailandÃªs</language>
+        <language xml:lang="ta">Â¾Â¡Ã¶</language>
+        <language xml:lang="wa">Tai</language>
+        <language xml:lang="zh_CN">æ³°è¯­</language>
+        <country>
+            <flag>th.png</flag>
+            <name>Thailand</name>
+            <name xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯</name>
+            <name xml:lang="az">Tayland</name>
+            <name xml:lang="be">Ð¢Ð°Ð¹Ð»Ð°Ð½Ð´</name>
+            <name xml:lang="et">Tai</name>
+            <name xml:lang="gl">Tailandia</name>
+            <name xml:lang="ja">ã¿ã¤</name>
+            <name xml:lang="nn">Thailand</name>
+            <name xml:lang="pt">TailÃ¢ndia</name>
+            <name xml:lang="ta">Â¾Â¡Ã¶ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Tailande</name>
+            <name xml:lang="zh_CN">æ³°å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Thai keymap</name>
+        <command>gkb_xmmap th</command>
+        <language>Thai</language>
+        <language xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯ÙØ©</language>
+        <language xml:lang="az">Taylandca</language>
+        <language xml:lang="be">Ð¢Ð°Ð¹ÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Tai</language>
+        <language xml:lang="gl">TailandÃ©s</language>
+        <language xml:lang="ja">ã¿ã¤èª</language>
+        <language xml:lang="nn">Thailandsk</language>
+        <language xml:lang="pt">TailandÃªs</language>
+        <language xml:lang="ta">Â¾Â¡Ã¶</language>
+        <language xml:lang="wa">Tai</language>
+        <language xml:lang="zh_CN">æ³°è¯­</language>
+        <country>
+            <flag>th.png</flag>
+            <name>Thailand</name>
+            <name xml:lang="ar">ØªØ§ÙÙØ§ÙØ¯</name>
+            <name xml:lang="az">Tayland</name>
+            <name xml:lang="be">Ð¢Ð°Ð¹Ð»Ð°Ð½Ð´</name>
+            <name xml:lang="et">Tai</name>
+            <name xml:lang="gl">Tailandia</name>
+            <name xml:lang="ja">ã¿ã¤</name>
+            <name xml:lang="nn">Thailand</name>
+            <name xml:lang="pt">TailÃ¢ndia</name>
+            <name xml:lang="ta">Â¾Â¡Ã¶ÃÂ¡Ã³Ã</name>
+            <name xml:lang="wa">Tailande</name>
+            <name xml:lang="zh_CN">æ³°å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Turkish "F" keyboard</name>
+        <command>gkb_xmmap tr_f</command>
+        <language>Turkish</language>
+        <language xml:lang="ar">ØªØ±ÙÙØ©</language>
+        <language xml:lang="az">TÃ¼rkcÉ</language>
+        <language xml:lang="be">Ð¢ÑÑÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">TÃ¼rgi</language>
+        <language xml:lang="gl">Turco</language>
+        <language xml:lang="ja">ãã«ã³èª</language>
+        <language xml:lang="nn">Tyrkisk</language>
+        <language xml:lang="pt">Turco</language>
+        <language xml:lang="ta">ÃÃÃ¬Â¸Â¢Â</language>
+        <language xml:lang="wa">Turk</language>
+        <language xml:lang="zh_CN">åè³å¶è¯­</language>
+        <country>
+            <flag>tr.png</flag>
+            <name>Turkey</name>
+            <name xml:lang="ar">ØªØ±ÙÙØ§</name>
+            <name xml:lang="az">TÃ¼rkiyÉ</name>
+            <name xml:lang="be">Ð¢ÑÑÑÑÑ</name>
+            <name xml:lang="et">TÃ¼rgi</name>
+            <name xml:lang="gl">TurquÃ­a</name>
+            <name xml:lang="ja">ãã«ã³</name>
+            <name xml:lang="nn">Tyrkia</name>
+            <name xml:lang="pt">Turquia</name>
+            <name xml:lang="ta">ÃÃÃ¬Â¸Â¢</name>
+            <name xml:lang="wa">Turkeye</name>
+            <name xml:lang="zh_CN">åè³å¶</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Turkish "Q" keyboard</name>
+        <command>gkb_xmmap tr_q</command>
+        <language>Turkish</language>
+        <language xml:lang="ar">ØªØ±ÙÙØ©</language>
+        <language xml:lang="az">TÃ¼rkcÉ</language>
+        <language xml:lang="be">Ð¢ÑÑÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">TÃ¼rgi</language>
+        <language xml:lang="gl">Turco</language>
+        <language xml:lang="ja">ãã«ã³èª</language>
+        <language xml:lang="nn">Tyrkisk</language>
+        <language xml:lang="pt">Turco</language>
+        <language xml:lang="ta">ÃÃÃ¬Â¸Â¢Â</language>
+        <language xml:lang="wa">Turk</language>
+        <language xml:lang="zh_CN">åè³å¶è¯­</language>
+        <country>
+            <flag>tr.png</flag>
+            <name>Turkey</name>
+            <name xml:lang="ar">ØªØ±ÙÙØ§</name>
+            <name xml:lang="az">TÃ¼rkiyÉ</name>
+            <name xml:lang="be">Ð¢ÑÑÑÑÑ</name>
+            <name xml:lang="et">TÃ¼rgi</name>
+            <name xml:lang="gl">TurquÃ­a</name>
+            <name xml:lang="ja">ãã«ã³</name>
+            <name xml:lang="nn">Tyrkia</name>
+            <name xml:lang="pt">Turquia</name>
+            <name xml:lang="ta">ÃÃÃ¬Â¸Â¢</name>
+            <name xml:lang="wa">Turkeye</name>
+            <name xml:lang="zh_CN">åè³å¶</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Turkish xkb keymap</name>
+        <command>setxkbmap tr</command>
+        <language>Turkish</language>
+        <language xml:lang="ar">ØªØ±ÙÙØ©</language>
+        <language xml:lang="az">TÃ¼rkcÉ</language>
+        <language xml:lang="be">Ð¢ÑÑÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">TÃ¼rgi</language>
+        <language xml:lang="gl">Turco</language>
+        <language xml:lang="ja">ãã«ã³èª</language>
+        <language xml:lang="nn">Tyrkisk</language>
+        <language xml:lang="pt">Turco</language>
+        <language xml:lang="ta">ÃÃÃ¬Â¸Â¢Â</language>
+        <language xml:lang="wa">Turk</language>
+        <language xml:lang="zh_CN">åè³å¶è¯­</language>
+        <country>
+            <flag>tr.png</flag>
+            <name>Turkey</name>
+            <name xml:lang="ar">ØªØ±ÙÙØ§</name>
+            <name xml:lang="az">TÃ¼rkiyÉ</name>
+            <name xml:lang="be">Ð¢ÑÑÑÑÑ</name>
+            <name xml:lang="et">TÃ¼rgi</name>
+            <name xml:lang="gl">TurquÃ­a</name>
+            <name xml:lang="ja">ãã«ã³</name>
+            <name xml:lang="nn">Tyrkia</name>
+            <name xml:lang="pt">Turquia</name>
+            <name xml:lang="ta">ÃÃÃ¬Â¸Â¢</name>
+            <name xml:lang="wa">Turkeye</name>
+            <name xml:lang="zh_CN">åè³å¶</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Turkish keymap</name>
+        <command>gkb_xmmap tr</command>
+        <language>Turkish</language>
+        <language xml:lang="ar">ØªØ±ÙÙØ©</language>
+        <language xml:lang="az">TÃ¼rkcÉ</language>
+        <language xml:lang="be">Ð¢ÑÑÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">TÃ¼rgi</language>
+        <language xml:lang="gl">Turco</language>
+        <language xml:lang="ja">ãã«ã³èª</language>
+        <language xml:lang="nn">Tyrkisk</language>
+        <language xml:lang="pt">Turco</language>
+        <language xml:lang="ta">ÃÃÃ¬Â¸Â¢Â</language>
+        <language xml:lang="wa">Turk</language>
+        <language xml:lang="zh_CN">åè³å¶è¯­</language>
+        <country>
+            <flag>tr.png</flag>
+            <name>Turkey</name>
+            <name xml:lang="ar">ØªØ±ÙÙØ§</name>
+            <name xml:lang="az">TÃ¼rkiyÉ</name>
+            <name xml:lang="be">Ð¢ÑÑÑÑÑ</name>
+            <name xml:lang="et">TÃ¼rgi</name>
+            <name xml:lang="gl">TurquÃ­a</name>
+            <name xml:lang="ja">ãã«ã³</name>
+            <name xml:lang="nn">Tyrkia</name>
+            <name xml:lang="pt">Turquia</name>
+            <name xml:lang="ta">ÃÃÃ¬Â¸Â¢</name>
+            <name xml:lang="wa">Turkeye</name>
+            <name xml:lang="zh_CN">åè³å¶</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Ukrainian xkb keymap</name>
+        <command>setxkbmap ua</command>
+        <language>Ukrainian</language>
+        <country>
+            <flag>ua.png</flag>
+            <name>Ukraine</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>UK 105-key</name>
+        <command>gkb_xmmap uk</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>gb.png</flag>
+            <name>United Kingdom</name>
+            <name xml:lang="ar">Ø§ÙÙÙÙÙØ© Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ KrallÄ±q</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½Ð°Ðµ ÐÐ°ÑÐ°Ð»ÐµÑÑÑÐ²Ð°</name>
+            <name xml:lang="et">Ãhendkuningriik</name>
+            <name xml:lang="gl">Reino Unido</name>
+            <name xml:lang="ja">ã¤ã®ãªã¹</name>
+            <name xml:lang="nn">Storbritannia</name>
+            <name xml:lang="pt">Reino Unido</name>
+            <name xml:lang="ta">ÃÂ¨ÃÂ¼Ã° Â¸Â¢Ã­Â¼Ãµ</name>
+            <name xml:lang="wa">RweyÃ¥me Uni</name>
+            <name xml:lang="zh_CN">è±å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>UK PC/AT keyboard</name>
+        <command>gkb_xmmap uk_x86</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>gb.png</flag>
+            <name>United Kingdom</name>
+            <name xml:lang="ar">Ø§ÙÙÙÙÙØ© Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ KrallÄ±q</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½Ð°Ðµ ÐÐ°ÑÐ°Ð»ÐµÑÑÑÐ²Ð°</name>
+            <name xml:lang="et">Ãhendkuningriik</name>
+            <name xml:lang="gl">Reino Unido</name>
+            <name xml:lang="ja">ã¤ã®ãªã¹</name>
+            <name xml:lang="nn">Storbritannia</name>
+            <name xml:lang="pt">Reino Unido</name>
+            <name xml:lang="ta">ÃÂ¨ÃÂ¼Ã° Â¸Â¢Ã­Â¼Ãµ</name>
+            <name xml:lang="wa">RweyÃ¥me Uni</name>
+            <name xml:lang="zh_CN">è±å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US PC/AT 101 keyboard</name>
+        <command>gkb_xmmap us101A_x86</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US 101-key keyboard</name>
+        <command>gkb_xmmap us-101</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US 84-key</name>
+        <command>gkb_xmmap us-84</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US DEC 450</name>
+        <command>gkb_xmmap us-dec</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US xkb keymap</name>
+        <command>setxkbmap us</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US IBM RS/6000</name>
+        <command>gkb_xmmap us-ibm</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US International xkb keymap</name>
+        <command>setxkbmap us_intl</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US International</name>
+        <command>gkb_xmmap us-int</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US 105-key keyboard (with windows keys)</name>
+        <command>gkb_xmmap us</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US Macintosh</name>
+        <command>gkb_xmmap us-mac</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US Silicon Graphics 101-key</name>
+        <command>gkb_xmmap us-sgi-101</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>US Sun type5</name>
+        <command>gkb_xmmap us-sun</command>
+        <language>English</language>
+        <language xml:lang="ar">Ø£ÙØ¬ÙÙØ²ÙØ©</language>
+        <language xml:lang="az">Ä°ngiliscÉ</language>
+        <language xml:lang="be">ÐÐ½Ð³ÐµÐ»ÑÑÐºÐ°Ñ</language>
+        <language xml:lang="et">Inglise</language>
+        <language xml:lang="gl">InglÃ©s</language>
+        <language xml:lang="ja">è±èª</language>
+        <language xml:lang="nn">Engelsk</language>
+        <language xml:lang="pt">InglÃªs</language>
+        <language xml:lang="ta">Â¬Ã­Â¸Â¢ÃÃµ</language>
+        <language xml:lang="wa">InglÃ¨s</language>
+        <language xml:lang="zh_CN">è±è¯­</language>
+        <country>
+            <flag>us.png</flag>
+            <name>United States</name>
+            <name xml:lang="ar">Ø§ÙÙÙØ§ÙØ§Øª Ø§ÙÙØªØ­Ø¯Ø©</name>
+            <name xml:lang="az">BirlÉÅmiÅ Åtatlar</name>
+            <name xml:lang="be">ÐÐ»ÑÑÐ°Ð½ÑÑ Ð¨ÑÐ°ÑÑ</name>
+            <name xml:lang="et">Ãhendriigid</name>
+            <name xml:lang="gl">Estados Unidos</name>
+            <name xml:lang="ja">ã¢ã¡ãªã«</name>
+            <name xml:lang="nn">USA</name>
+            <name xml:lang="pt">Estados Unidos</name>
+            <name xml:lang="ta">ÃÃÂ¢Â¼Ã° ÂÂ§Â¼Ã°Â</name>
+            <name xml:lang="wa">Etats Unis</name>
+            <name xml:lang="zh_CN">ç¾å½</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Viet_namese xkb keymap</name>
+        <command>setxkbmap vn</command>
+        <language>Viet_namese</language>
+        <country>
+            <flag>vn.png</flag>
+            <name>Vietnam</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Serb keymap</name>
+        <command>gkb_xmmap yu</command>
+        <language>Serb</language>
+        <country>
+            <flag>yu.png</flag>
+            <name>Serbia and Montenegro</name>
+        </country>
+    </keymap>
+    <keymap>
+        <name>Serb keymap</name>
+        <command>gkb_xmmap yu</command>
+        <language>Serb</language>
+        <country>
+            <flag>yu.png</flag>
+            <name>Serbia and Montenegro</name>
+        </country>
+    </keymap>
+</keymaps>

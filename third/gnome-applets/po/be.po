@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets-2.0\n"
-"POT-Creation-Date: 2002-11-18 23:05+0000\n"
+"POT-Creation-Date: 2002-11-04 09:26+0100\n"
 "PO-Revision-Date: 2002-11-05 10:12+0200\n"
 "Last-Translator: Vital Khilko <dojlid@mova.org>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -3627,3 +3627,4 @@ msgstr "(c) 2001 Chris Phelps"
 #: panel-menu/panel-menu.c:693
 msgid "The Menu Bar allows you to display customized menubars on your panels."
 msgstr "Панэль мэню заўсёды адлюстроўвае вашае мэню у панэлі GNOME."
+

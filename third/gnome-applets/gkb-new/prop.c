@@ -38,6 +38,7 @@
 #include <sys/stat.h>
 #include <X11/Xlib.h>
 #include <panel-applet-gconf.h>
+#include <egg-screen-help.h>
 #include "gkb.h"
 
 
@@ -378,7 +379,12 @@ static void
 prophelp_cb (GtkWidget *widget, gpointer data)
 {
 	GError *error = NULL;
-        gnome_help_display("gkb","gkb-prefs",&error);
+
+        egg_screen_help_display (
+		gtk_widget_get_screen (widget),
+		"gkb", "gkb-prefs", &error);
+
+	/* FIXME: display error to the user */
 }
 
 static void
@@ -419,6 +425,8 @@ gkb_prop_create_property_box (GkbPropertyBoxInfo * pbi)
                                             GTK_STOCK_HELP, GTK_RESPONSE_HELP,
                                             GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
                                             NULL);
+  gtk_window_set_screen (GTK_WINDOW (propwindow),
+			 gtk_widget_get_screen (pbi->gkb->applet));
 
   propnotebook =  gtk_notebook_new ();
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (propwindow)->vbox), propnotebook,
@@ -429,7 +437,7 @@ gkb_prop_create_property_box (GkbPropertyBoxInfo * pbi)
   /* Add page 1 */
   page_1_hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (page_1_hbox);
-  page_1_label = gtk_label_new_with_mnemonic (_("_Keymaps"));
+  page_1_label = gtk_label_new (_("Keymaps"));
   gtk_notebook_append_page (GTK_NOTEBOOK (propnotebook), page_1_hbox, page_1_label);
 
   /* Page 1 Frame */
@@ -441,7 +449,7 @@ gkb_prop_create_property_box (GkbPropertyBoxInfo * pbi)
   /* Add page 2 */
   page_2_vbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (page_2_vbox);
-  page_2_label = gtk_label_new_with_mnemonic (_("_Options"));
+  page_2_label = gtk_label_new (_("Options"));
   gtk_notebook_append_page (GTK_NOTEBOOK (propnotebook), page_2_vbox, page_2_label);
  
 
@@ -467,6 +475,8 @@ properties_dialog (BonoboUIComponent *uic,
   GkbPropertyBoxInfo *pbi;
   
   if (propwindow) {
+	gtk_window_set_screen (GTK_WINDOW (propwindow),
+			       gtk_widget_get_screen (gkb->applet));
   	gtk_window_present (GTK_WINDOW (propwindow));
   	return;
   }
