@@ -36,7 +36,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.14 1990-01-16 04:47:07 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.15 1990-01-16 11:35:34 raeburn Exp $";
 #endif
 
 #if __STDC__
@@ -105,7 +105,7 @@ format_line_to_user_log (log, line) FILE *log; char *line;
  *	structure.
  */
 
-ERRCODE
+static ERRCODE
 #if __STDC__
 log_log(const KNUCKLE *knuckle, const char *message, const char *header)
 #else
@@ -115,9 +115,19 @@ log_log (knuckle, message, header)
      char *header;
 #endif
 {
-  FILE *log;		
+  FILE *log;
+  char *log_path;
   char error[DB_LINE];
 
+  log_path = knuckle->question->logfile;
+  {
+      /* verify that the file exists */
+      if (access (log_path, R_OK|W_OK) < 0) {
+	  log_error (fmt ("Can't access log file %s: %s",
+			  log_path, error_message (errno)));
+	  return ERROR;
+      }
+  }
   if ((log = fopen(knuckle->question->logfile, "a")) == (FILE *)NULL) 
     {
       (void) sprintf(error, "log_log: can't open log %s\n",
@@ -133,24 +143,17 @@ log_log (knuckle, message, header)
 }
 
 
+char *
 #if __STDC__
-char * fmt (const char * format, ...)
+vfmt (const char *format, va_list pvar)
 #else
-char * fmt (va_alist) va_dcl
+vfmt (format, pvar) char *format; va_list pvar;
 #endif
 {
-    va_list pvar;
     static char buf[BUFSIZ];
     FILE strbuf;
     int len;
 
-#if __STDC__
-    va_start (pvar, format);
-#else
-    char *format;
-    va_start (pvar);
-    format = va_arg (pvar, char *);
-#endif
     /* copied from sprintf.c, BSD */
     strbuf._flag = _IOWRT + _IOSTRG;
     strbuf._ptr = buf;
@@ -160,8 +163,28 @@ char * fmt (va_alist) va_dcl
 #if 0
     buf[len] = '\0';
 #endif
-    va_end (pvar);
     return buf;
+}
+
+#if __STDC__
+char * fmt (const char * format, ...)
+#else
+char * fmt (va_alist) va_dcl
+#endif
+{
+    va_list pvar;
+    char *result;
+
+#if __STDC__
+    va_start (pvar, format);
+#else
+    char *format;
+    va_start (pvar);
+    format = va_arg (pvar, char *);
+#endif
+    result = vfmt (format, pvar);
+    va_end (pvar);
+    return result;
 }
     
 
