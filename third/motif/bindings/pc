@@ -1,0 +1,37 @@
+! (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
+! ALL RIGHTS RESERVED 
+! 
+! Motif Release 1.2.3
+
+! Generic OSF/Motif Style Guide bindings for PC keyboards
+
+osfActivate	:		<Key>KP_Enter
+osfCancel	:		<Key>Escape
+osfMenuBar	:		<Key>F10
+osfMenu		:	Shift	<Key>F10
+osfHelp		:		<Key>F1
+
+osfBackSpace	:		<Key>BackSpace
+osfInsert	:		<Key>Insert
+osfDelete	:		<Key>Delete
+
+osfPageUp	:		<Key>Prior
+osfPageDown	:		<Key>Next
+osfPageLeft	:	Ctrl	<Key>Prior
+osfPageRight	:	Ctrl	<Key>Next
+osfEndLine	:		<Key>End
+osfBeginLine	:		<Key>Home
+
+osfLeft		:		<Key>Left
+osfRight	:		<Key>Right
+osfUp		:		<Key>Up
+osfDown		:		<Key>Down
+
+osfAddMode	:	Shift	<Key>F8
+
+osfCut		:	Shift	<Key>Delete
+osfCopy		:	Ctrl	<Key>Insert
+osfPaste	:	Shift	<Key>Insert
+
+osfPrimaryPaste	:Meta	Ctrl	<Key>Insert
+
