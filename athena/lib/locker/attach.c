@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.5 1999-10-15 21:22:42 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.6 1999-12-02 20:16:29 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -168,6 +168,7 @@ static int attach_attachent(locker_context context, locker_attachent *at,
 			    int authmode, int options, char *mountoptions)
 {
   int status;
+  char *origmountoptions = mountoptions;
 
   if (!(options & LOCKER_ATTACH_OPT_OVERRIDE))
     {
@@ -223,27 +224,24 @@ static int attach_attachent(locker_context context, locker_attachent *at,
 
       /* Attach the locker. */
       status = at->fs->attach(context, at, mountoptions);
+      free(mountoptions);
       if (status == LOCKER_EALREADY)
 	{
 	  if (context->keep_mount)
 	    at->flags |= LOCKER_FLAG_KEEP;
 	}
       else if (status != LOCKER_SUCCESS)
-	{
-	  free(mountoptions);
-	  return status;
-	}
+	return status;
     }
   else
       status = LOCKER_EALREADY;
 
-  if (mountoptions && status == LOCKER_EALREADY)
+  if (origmountoptions && status == LOCKER_EALREADY)
     {
       locker__error(context, "Warning: %s is already attached. "
 		    "Ignoring mountoptions '%s'\n", at->name,
-		    mountoptions);
+		    origmountoptions);
     }
-  free(mountoptions);
 
   /* Update attachent on disk. */
   at->attached = 1;
