@@ -5,7 +5,7 @@ AM_CONFIG_HEADER(config.h)
 
 LIBXML_MAJOR_VERSION=1
 LIBXML_MINOR_VERSION=8
-LIBXML_MICRO_VERSION=9
+LIBXML_MICRO_VERSION=11
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
 
@@ -111,6 +111,14 @@ XML_LIBDIR='-L$$ATHTOOLROOT${libdir}'
 XML_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}/gnome-xml'
 XML_LIBS="-lxml $Z_LIBS $M_LIBS $LIBS"
 
+AC_CANONICAL_HOST
+
+case $host in
+*-*-solaris*)
+        XML_LIBDIR="${XML_LIBDIR} -R${libdir}"
+        ;;
+esac
+
 dnl
 dnl Extra flags
 dnl
@@ -159,5 +167,5 @@ AC_SUBST(HAVE_ISINF)
 
 AC_SUBST(M_LIBS)
 AC_SUBST(RDL_LIBS)
-AC_OUTPUT(libxml.spec Makefile doc/Makefile example/Makefile xml-config win32config.h)
+AC_OUTPUT(libxml.spec Makefile doc/Makefile example/Makefile xml-config win32config.h libxml.pc)
 
