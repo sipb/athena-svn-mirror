@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.15 1998-04-11 15:37:55 ghudson Exp $
+## $Id: os_rvd,v 1.16 1998-05-05 20:31:27 miki Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -25,6 +25,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> asppp.cf
 		-> auto_*
 		driver_aliases
+		driver_classes
 		dumpdates
 		device.tab
 		dgroup.tab
@@ -99,6 +100,9 @@ GLOBAL : *.CKP *.local *.pid :
 		:
 	/etc/rc3.d:::
 		S*
+		:
+	/etc/rcS.d:::
+		S10*
 		:
 	/etc/init.d:::
 		*.old
