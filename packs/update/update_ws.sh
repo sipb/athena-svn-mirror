@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.15 1997-03-14 21:30:22 ghudson Exp $
+# $Id: update_ws.sh,v 1.16 1997-03-26 21:03:35 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -246,8 +246,15 @@ if [ "$AUTO" = true ]; then
 	echo
 fi
 
+# Make sure /var/athena exists (it was introduced in 8.1.0) so we have a
+# place to put the update log.
+if [ ! -d /var/athena ]; then
+	mkdir -m 755 /var/athena
+fi
+
 # Everything is all set; do the actual update.
-sh "$LIBDIR/do-update" "$AUTO" < /dev/null
+rm -f /var/athena/update.log
+sh "$LIBDIR/do-update" "$AUTO" < /dev/null 2>&1 | tee /var/athena/update.log
 echo "Update partially completed, system will reboot in 15 seconds."
 sync
 sleep 15
