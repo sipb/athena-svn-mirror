@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.46 2004-05-25 17:22:55 rbasch Exp $
+# $Id: do-update.sh,v 1.47 2005-03-31 16:40:38 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -52,6 +52,7 @@ echo "Beginning update from $version to $newvers at `date`."
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
 rm -f "$OSCONFCHG" "$PACKAGES" "$PATCHES" "$OLDPKGS" "$OLDPTCHS"
+rm -f "$OSPRESERVE"
 if [ -n "$PACKAGES" ]; then
       rm -f "$PACKAGES".*
 fi
@@ -108,6 +109,7 @@ if [ "$version" != "$newvers" ]; then
 	echo "Version-specific updating.."
 	cp /dev/null "$CONFCHG"
 	cp /dev/null "$OSCONFCHG"
+	cp /dev/null "$OSPRESERVE"
 	cp /dev/null "$CONFVARS"
 	cp /dev/null "$OLDBINS"
 	cp /dev/null "$OLDLIBS"
@@ -129,6 +131,8 @@ fi
 #	$PACKAGES	A list of OS packages to be de/installed
 #	$OSCONFCHG	A list of config files to save/restore around
 #			an update to the OS
+#	$OSPRESERVE	A list of config files to save/restore around
+#			the removal of OS packages
 #	$CONFVARS	Can set variables to "true", including:
 #		NEWUNIX		Update kernel
 #		NEWBOOT		Boot blocks have changed

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.23 2004-11-30 20:00:25 rbasch Exp $
+# $Id: finish-update.sh,v 1.24 2005-03-31 16:40:38 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -58,6 +58,7 @@ fi
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
 rm -f "$OSCONFCHG" "$PACKAGES" "$PATCHES" "$OLDPKGS" "$OLDPTCHS"
+rm -f "$OSPRESERVE"
 rm -f "$MIT_CORE_PACKAGES" "$MIT_NONCORE_PACKAGES" "$MIT_OLD_PACKAGES"
 if [ -n "$PACKAGES" ]; then
 	rm -f "$PACKAGES".*

@@ -1,6 +1,6 @@
 export CONFCHG CONFVARS AUXDEVS OLDBINS OLDLIBS DEADFILES PACKAGES
 export CONFDIR LIBDIR SERVERDIR PATH HOSTTYPE CPUTYPE OSCONFCHG
-export PATCHES OLDPKGS OLDPTCHS
+export PATCHES OLDPKGS OLDPTCHS OSPRESERVE
 export MIT_CORE_PACKAGES MIT_NONCORE_PACKAGES MIT_OLD_PACKAGES
 
 CONFCHG=$UPDATE_ROOT/var/athena/update.confchg
@@ -23,3 +23,4 @@ PATH=/bin:/etc:/usr/sbin:/sbin:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/
 HOSTTYPE=`$UPDATE_ROOT/bin/athena/machtype`
 CPUTYPE=`$UPDATE_ROOT/bin/athena/machtype -c`
 OSCONFCHG=$UPDATE_ROOT/var/athena/update.osconfchg
+OSPRESERVE=$UPDATE_ROOT/var/athena/update.preserve
