@@ -1,93 +1,92 @@
-# Swedish messages for the GNOME Applications Library (GAL).
-# Copyright (C) 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
-# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
-# Richard Hult <rhult@codefactory.se>, 2000.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# $Id: sv.po,v 1.1.1.3 2004-02-15 23:53:54 ghudson Exp $
-#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gal\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2003-09-11 17:09-0500\n"
-"PO-Revision-Date: 2003-05-20 00:51+0200\n"
-"Last-Translator: Christian Rose <menthos@menthos.com>\n"
-"Language-Team: Swedish <sv@li.org>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
-msgstr "Handtagsstorlek"
+msgstr ""
 
 #: gal/e-paned/e-paned.c:148
 msgid "Quantum"
-msgstr "Quantum"
+msgstr ""
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
-msgstr "?"
+msgstr ""
 
 #: gal/e-table/e-cell-date.c:58
 msgid "%l:%M %p"
-msgstr "%H.%M"
+msgstr ""
 
 #: gal/e-table/e-cell-date.c:66
 msgid "Today %l:%M %p"
-msgstr "Idag %H.%M"
+msgstr ""
 
 #: gal/e-table/e-cell-date.c:76
 msgid "Yesterday %l:%M %p"
-msgstr "Igår %H.%M"
+msgstr ""
 
 #: gal/e-table/e-cell-date.c:88
 msgid "%a %l:%M %p"
-msgstr "%a %H.%M"
+msgstr ""
 
 #: gal/e-table/e-cell-date.c:96
 msgid "%b %d %l:%M %p"
-msgstr "%d %b %H.%M"
+msgstr ""
 
 #: gal/e-table/e-cell-date.c:98
 msgid "%b %d %Y"
-msgstr "%d %b %Y"
+msgstr ""
 
 #: gal/e-table/e-cell-pixbuf.c:392
 msgid "Selected Column"
-msgstr "Markerad kolumn"
+msgstr ""
 
 #: gal/e-table/e-cell-pixbuf.c:399
 msgid "Focused Column"
-msgstr "Fokuserad kolumn"
+msgstr ""
 
 #: gal/e-table/e-cell-pixbuf.c:406
 msgid "Unselected Column"
-msgstr "Omarkerad kolumn"
+msgstr ""
 
 #: gal/e-table/e-cell-text.c:1516
 msgid "Strikeout Column"
-msgstr "Genomstryk kolumn"
+msgstr ""
 
 #: gal/e-table/e-cell-text.c:1523
 msgid "Underline Column"
-msgstr "Understryk kolumn"
+msgstr ""
 
 #: gal/e-table/e-cell-text.c:1530
 msgid "Bold Column"
-msgstr "Gör kolumn fet"
+msgstr ""
 
 #: gal/e-table/e-cell-text.c:1537
 msgid "Color Column"
-msgstr "Färglägg kolumn"
+msgstr ""
 
 #: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
 #: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
 msgid "Editable"
-msgstr "Redigerbar"
+msgstr ""
 
 #: gal/e-table/e-cell-text.c:1551
 msgid "BG Color Column"
-msgstr "Bakgrundsfärga kolumn"
+msgstr ""
 
 #: gal/e-table/e-table-click-to-add.c:456
 #: gal/e-table/e-table-field-chooser-dialog.c:88
@@ -97,18 +96,18 @@ msgstr "Bakgrundsfärga kolumn"
 #: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
 #: gal/widgets/e-categories.c:123
 msgid "Header"
-msgstr "Huvud"
+msgstr ""
 
 #: gal/e-table/e-table-click-to-add.c:463
 #: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
 #: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
 #: gal/e-text/e-text.c:3357
 msgid "Model"
-msgstr "Modell"
+msgstr ""
 
 #: gal/e-table/e-table-click-to-add.c:470
 msgid "Message"
-msgstr "Meddelande"
+msgstr ""
 
 #: gal/e-table/e-table-click-to-add.c:477
 #: gal/e-table/e-table-field-chooser-item.c:667
@@ -116,7 +115,7 @@ msgstr "Meddelande"
 #: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
 #: gal/e-text/e-text.c:3535
 msgid "Width"
-msgstr "Bredd"
+msgstr ""
 
 #: gal/e-table/e-table-click-to-add.c:484
 #: gal/e-table/e-table-field-chooser-item.c:674
@@ -124,1028 +123,889 @@ msgstr "Bredd"
 #: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
 #: gal/e-text/e-text.c:3543
 msgid "Height"
-msgstr "Höjd"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
-msgstr "<- _Ta bort"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:2
 #: gal/e-table/e-table-config.glade.h:2
 msgid "A_vailable Fields:"
-msgstr "Till_gängliga fält:"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:3
 #: gal/e-table/e-table-config.glade.h:3
 msgid "Ascending"
-msgstr "Stigande"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:4
 #: gal/e-table/e-table-config.glade.h:4
 msgid "Clear All"
-msgstr "Töm alla"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:5
 #: gal/e-table/e-table-config.glade.h:5
 msgid "Descending"
-msgstr "Fallande"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
 #: gal/e-table/e-table-config.glade.h:6
 msgid "Description"
-msgstr "Beskrivning"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:7
 #: gal/e-table/e-table-config.glade.h:7
 msgid "Group"
-msgstr "Gruppera"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:8
 #: gal/e-table/e-table-config.glade.h:8
 msgid "Group Items By"
-msgstr "Gruppera objekt efter"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:9
 #: gal/e-table/e-table-config.glade.h:9
 msgid "Move _Down"
-msgstr "Flytta _ned"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:10
 #: gal/e-table/e-table-config.glade.h:10
 msgid "Move _Up"
-msgstr "Flytta _upp"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
 #: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
-msgstr "Visa dessa fält i denna _ordning:"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
 #: gal/e-table/e-table-config.glade.h:12
 msgid "Show Fields"
-msgstr "Visa fält"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
 #: gal/e-table/e-table-config.glade.h:13
 msgid "Show field in View"
-msgstr "Visa fält i vy"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
 #: gal/e-table/e-table-config.glade.h:14
 msgid "Sort"
-msgstr "Sortera"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:15
 #: gal/e-table/e-table-config.glade.h:15
 msgid "Sort Items By"
-msgstr "Sortera objekt efter"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
 #: gal/e-table/e-table-config.glade.h:16
 msgid "Then By"
-msgstr "Sedan efter"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
 #: gal/e-table/e-table-config.glade.h:17
 msgid "_Add ->"
-msgstr "_Lägg till ->"
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
 #: gal/e-table/e-table-config.glade.h:18
 msgid "_Fields Shown..."
-msgstr "_Fält som visas..."
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:19
 #: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
-msgstr "_Sortera..."
+msgstr ""
 
 #: gal/e-table/e-table-config-no-group.glade.h:20
 #: gal/e-table/e-table-config.glade.h:21
 msgid "dialog1"
-msgstr "dialog1"
+msgstr ""
 
 #: gal/e-table/e-table-config.c:152
 msgid "State"
-msgstr "Tillstånd"
+msgstr ""
 
 #: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Ascending)"
-msgstr "(Stigande)"
+msgstr ""
 
 #: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Descending)"
-msgstr "(Fallande)"
+msgstr ""
 
 #: gal/e-table/e-table-config.c:316
 msgid "Not sorted"
-msgstr "Inte sorterad"
+msgstr ""
 
 #: gal/e-table/e-table-config.c:357
 msgid "No grouping"
-msgstr "Ingen gruppering"
+msgstr ""
 
 #: gal/e-table/e-table-config.glade.h:19
 msgid "_Group By..."
-msgstr "_Gruppera efter..."
+msgstr ""
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
-msgstr "Fältväljare"
+msgstr ""
 
 #: gal/e-table/e-table-field-chooser.glade.h:2
 msgid ""
 "To add a column to your table, drag it into\n"
 "the location in which you want it to appear."
 msgstr ""
-"För att lägga till en kolumn till din tabell\n"
-"drar du den till platsen där du vill att den\n"
-"ska hamna."
 
 #: gal/e-table/e-table-field-chooser-dialog.c:74
 #: gal/e-table/e-table-field-chooser-item.c:646
 #: gal/e-table/e-table-field-chooser.c:77
 #: gal/e-table/e-table-header-item.c:1738
 msgid "DnD code"
-msgstr "Drag- och släppkod"
+msgstr ""
 
 #: gal/e-table/e-table-field-chooser-dialog.c:81
 #: gal/e-table/e-table-field-chooser-item.c:653
 #: gal/e-table/e-table-field-chooser.c:84
 #: gal/e-table/e-table-header-item.c:1752
 msgid "Full Header"
-msgstr "Fullständigt huvud"
+msgstr ""
 
 #: gal/e-table/e-table-field-chooser-dialog.c:123
 msgid "Add a column..."
-msgstr "Lägg till en kolumn..."
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
 msgid "%s : %s (%d item)"
-msgstr "%s: %s (%d objekt)"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:356
 #, c-format
 msgid "%s : %s (%d items)"
-msgstr "%s: %s (%d objekt)"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:361
 #, c-format
 msgid "%s (%d item)"
-msgstr "%s (%d objekt)"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:362
 #, c-format
 msgid "%s (%d items)"
-msgstr "%s (%d objekt)"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:906
 #: gal/e-table/e-table-group-container.c:907
 msgid "Alternating Row Colors"
-msgstr "Färger för alternerande rader"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:913
 #: gal/e-table/e-table-group-container.c:914
 msgid "Horizontal Draw Grid"
-msgstr "Rutnät för horisontell ritning"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:920
 #: gal/e-table/e-table-group-container.c:921
 msgid "Vertical Draw Grid"
-msgstr "Rutnät för vertikal ritning"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:927
 #: gal/e-table/e-table-group-container.c:928
 msgid "Draw focus"
-msgstr "Rita fokus"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:934
 #: gal/e-table/e-table-group-container.c:935
 msgid "Cursor mode"
-msgstr "Markörläge"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:941
 #: gal/e-table/e-table-group-container.c:942
 msgid "Selection model"
-msgstr "Markeringsmodell"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:948
 #: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
 msgid "Length Threshold"
-msgstr "Längdtröskelvärde"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:955
 #: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
 msgid "Uniform row height"
-msgstr "Identisk radhöjd"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:962
 #: gal/e-table/e-table-group-container.c:963
 msgid "Frozen"
-msgstr "Fryst"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:983
 msgid "Minimum width"
-msgstr "Minsta bredd"
+msgstr ""
 
 #: gal/e-table/e-table-group-container.c:984
 msgid "Minimum Width"
-msgstr "Minsta bredd"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1451
 msgid "Customize Current View"
-msgstr "Anpassa aktuell vy"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1471
 msgid "Sort Ascending"
-msgstr "Sortera stigande"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1472
 msgid "Sort Descending"
-msgstr "Sortera fallande"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1473
 msgid "Unsort"
-msgstr "Osortera"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1475
 msgid "Group By This Field"
-msgstr "Gruppera efter detta fält"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1476
 msgid "Group By Box"
-msgstr "Gruppera efter box"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1478
 msgid "Remove This Column"
-msgstr "Ta bort denna kolumn"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1479
 msgid "Add a Column..."
-msgstr "Lägg till en kolumn..."
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1481
 msgid "Alignment"
-msgstr "Justering"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1482
 msgid "Best Fit"
-msgstr "Bästa passning"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1483
 msgid "Format Columns..."
-msgstr "Formatera kolumner..."
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1485
 msgid "Customize Current View..."
-msgstr "Anpassa aktuell vy..."
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1745
 msgid "Fontset"
-msgstr "Typsnittssamling"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
-msgstr "Sorteringsinformation"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1773
 #: gal/menus/gal-view-factory-etable.c:37
 msgid "Table"
-msgstr "Tabell"
+msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1780
 msgid "Tree"
-msgstr "Träd"
+msgstr ""
 
 #: gal/e-table/e-table.c:3244
 msgid "Always Search"
-msgstr "Sök alltid"
+msgstr ""
 
 #: gal/e-table/e-table.c:3251
 msgid "Use click to add"
-msgstr "Använd klick för att lägga till"
+msgstr ""
 
 #: gal/e-table/e-tree-selection-model.c:767
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
-msgstr "Markörrad"
+msgstr ""
 
 #: gal/e-table/e-tree-selection-model.c:774
 #: gal/widgets/e-selection-model-array.c:550
 msgid "Cursor Column"
-msgstr "Markörkolumn"
+msgstr ""
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
 msgid "Collection"
-msgstr "Samling"
+msgstr ""
 
 #: gal/menus/gal-define-views-dialog.c:284
 #: gal/menus/gal-define-views.glade.h:4
 #, no-c-format
 msgid "Define Views for %s"
-msgstr "Definiera vyer för %s"
+msgstr ""
 
 #: gal/menus/gal-define-views-dialog.c:292
 #: gal/menus/gal-define-views-dialog.c:294
 msgid "Define Views"
-msgstr "Definiera vyer"
+msgstr ""
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
-msgstr "Definiera vyer för \"%s\""
+msgstr ""
 
 #: gal/menus/gal-define-views.glade.h:5
 msgid "_Edit..."
-msgstr "_Redigera..."
+msgstr ""
 
 #: gal/menus/gal-view-instance.c:575
 msgid "Custom View"
-msgstr "Anpassad vy"
+msgstr ""
 
 #: gal/menus/gal-view-instance.c:576
 msgid "Save Custom View"
-msgstr "Spara anpassad vy"
+msgstr ""
 
 #: gal/menus/gal-view-instance.c:580
 msgid "Define Views..."
-msgstr "Definiera vyer..."
+msgstr ""
 
 #: gal/menus/gal-view-instance-save-as-dialog.c:179
 msgid "Instance"
-msgstr "Instans"
+msgstr ""
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
 msgid "Create New View Named"
-msgstr "Skapa ny vy med namnet"
+msgstr ""
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
 msgid "Replace Existing View"
-msgstr "Ersätt befintlig vy"
+msgstr ""
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
 msgid ""
 "The current view will replace the given view.  Any folders\n"
 "set to this view wil be replaced with the current view."
 msgstr ""
-"Den aktuella vyn kommer att ersätta den angivna vyn. Alla\n"
-"mappar som är satta till denna vy kommer att ersättas med\n"
-"den angivna vyn."
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
 msgid "This will create a new View."
-msgstr "Detta kommer att skapa en ny vy."
+msgstr ""
 
 #: gal/menus/gal-view-new-dialog.glade.h:1
 #: gal/widgets/gal-categories.glade.h:1
 #: gal/widgets/e-categories-master-list-dialog.glade.h:1
 msgid "*"
-msgstr "*"
+msgstr ""
 
 #: gal/menus/gal-view-new-dialog.glade.h:2
 msgid "Name of new view:"
-msgstr "Namn på ny vy:"
+msgstr ""
 
 #: gal/menus/gal-view-new-dialog.glade.h:3
 msgid "Type of view:"
-msgstr "Typ av vy:"
+msgstr ""
 
 #: gal/menus/gal-view-new-dialog.c:70
 msgid "Name"
-msgstr "Namn"
+msgstr ""
 
 #: gal/menus/gal-view-new-dialog.c:77
 msgid "Factory"
-msgstr "Fabrik"
+msgstr ""
 
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
 msgid "Group %i"
-msgstr "Grupp %i"
+msgstr ""
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:393
 msgid "custom"
-msgstr "anpassad"
+msgstr ""
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
 #: gal/widgets/color-palette.c:435
 msgid "Custom Color:"
-msgstr "Anpassad färg:"
+msgstr ""
 
 #: gal/widgets/color-palette.c:443
 msgid "Choose Custom Color"
-msgstr "Välj anpassad färg"
+msgstr ""
 
 #: gal/widgets/color-palette.c:576
 msgid "black"
-msgstr "svart"
+msgstr ""
 
 #: gal/widgets/color-palette.c:577
 msgid "light brown"
-msgstr "ljusbrun"
+msgstr ""
 
 #: gal/widgets/color-palette.c:578
 msgid "brown gold"
-msgstr "brungul"
+msgstr ""
 
 #: gal/widgets/color-palette.c:579
 msgid "dark green #2"
-msgstr "mörkgrön 2"
+msgstr ""
 
 #: gal/widgets/color-palette.c:580
 msgid "navy"
-msgstr "marin"
+msgstr ""
 
 #: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
 msgid "dark blue"
-msgstr "mörkblå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:582
 msgid "purple #2"
-msgstr "lila 2"
+msgstr ""
 
 #: gal/widgets/color-palette.c:583
 msgid "very dark gray"
-msgstr "mycket mörkt grå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
 msgid "dark red"
-msgstr "mörkröd"
+msgstr ""
 
 #: gal/widgets/color-palette.c:587
 msgid "red-orange"
-msgstr "rödorange"
+msgstr ""
 
 #: gal/widgets/color-palette.c:588
 msgid "gold"
-msgstr "guld"
+msgstr ""
 
 #: gal/widgets/color-palette.c:589
 msgid "dark green"
-msgstr "mörkgrön"
+msgstr ""
 
 #: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
 msgid "dull blue"
-msgstr "mattblå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
 msgid "blue"
-msgstr "blå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:592
 msgid "dull purple"
-msgstr "mattlila"
+msgstr ""
 
 #: gal/widgets/color-palette.c:593
 msgid "dark grey"
-msgstr "mörkgrå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:596
 msgid "red"
-msgstr "röd"
+msgstr ""
 
 #: gal/widgets/color-palette.c:597
 msgid "orange"
-msgstr "orange"
+msgstr ""
 
 #: gal/widgets/color-palette.c:598
 msgid "lime"
-msgstr "lime"
+msgstr ""
 
 #: gal/widgets/color-palette.c:599
 msgid "dull green"
-msgstr "mattgrön"
+msgstr ""
 
 #: gal/widgets/color-palette.c:600
 msgid "dull blue #2"
-msgstr "mattblå 2"
+msgstr ""
 
 #: gal/widgets/color-palette.c:601
 msgid "sky blue #2"
-msgstr "himmelsblå 2"
+msgstr ""
 
 #: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
 msgid "purple"
-msgstr "lila"
+msgstr ""
 
 #: gal/widgets/color-palette.c:603
 msgid "gray"
-msgstr "grå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
 msgid "magenta"
-msgstr "magenta"
+msgstr ""
 
 #: gal/widgets/color-palette.c:607
 msgid "bright orange"
-msgstr "ljusorange"
+msgstr ""
 
 #: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
 msgid "yellow"
-msgstr "gul"
+msgstr ""
 
 #: gal/widgets/color-palette.c:609
 msgid "green"
-msgstr "grön"
+msgstr ""
 
 #: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
 msgid "cyan"
-msgstr "cyan"
+msgstr ""
 
 #: gal/widgets/color-palette.c:611
 msgid "bright blue"
-msgstr "ljusblå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
 msgid "red purple"
-msgstr "rödlila"
+msgstr ""
 
 #: gal/widgets/color-palette.c:613
 msgid "light grey"
-msgstr "ljusgrå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
 msgid "pink"
-msgstr "rosa"
+msgstr ""
 
 #: gal/widgets/color-palette.c:617
 msgid "light orange"
-msgstr "ljusorange"
+msgstr ""
 
 #: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
 msgid "light yellow"
-msgstr "ljusgul"
+msgstr ""
 
 #: gal/widgets/color-palette.c:619
 msgid "light green"
-msgstr "ljusgrön"
+msgstr ""
 
 #: gal/widgets/color-palette.c:620
 msgid "light cyan"
-msgstr "ljus cyan"
+msgstr ""
 
 #: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
 msgid "light blue"
-msgstr "ljusblå"
+msgstr ""
 
 #: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
 msgid "light purple"
-msgstr "ljuslila"
+msgstr ""
 
 #: gal/widgets/color-palette.c:623
 msgid "white"
-msgstr "vit"
+msgstr ""
 
 #: gal/widgets/color-palette.c:628
 msgid "purplish blue"
-msgstr "blålila"
+msgstr ""
 
 #: gal/widgets/color-palette.c:632
 msgid "dark purple"
-msgstr "mörklila"
+msgstr ""
 
 #: gal/widgets/color-palette.c:634
 msgid "sky blue"
-msgstr "himmelsblå"
+msgstr ""
 
 #: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
 msgid "Categories"
-msgstr "Kategorier"
+msgstr ""
 
 #: gal/widgets/e-categories.c:393
 msgid "Add to global category list"
-msgstr "Lägg till i globala kategorilistan"
+msgstr ""
 
 #: gal/widgets/e-categories.c:394
 msgid "Add all to global category list"
-msgstr "Lägg till alla i globala kategorilistan"
+msgstr ""
 
 #: gal/widgets/e-categories.c:395
 msgid "Remove from global category list"
-msgstr "Ta bort från globala kategorilistan"
+msgstr ""
 
 #: gal/widgets/e-categories.c:396
 msgid "Remove all from global category list"
-msgstr "Ta bort alla från globala kategorilistan"
+msgstr ""
 
 #: gal/widgets/e-categories.c:540
 msgid "Edit Categories"
-msgstr "Redigera kategorier"
+msgstr ""
 
 #: gal/widgets/gal-categories.glade.h:2
 msgid "Edit Master Category List..."
-msgstr "Redigera huvudkategorilistan..."
+msgstr ""
 
 #: gal/widgets/gal-categories.glade.h:3
 msgid "Item(s) belong to these _categories:"
-msgstr "Objekt tillhör dessa _kategorier:"
+msgstr ""
 
 #: gal/widgets/gal-categories.glade.h:4
 msgid "_Available Categories:"
-msgstr "_Tillgängliga kategorier:"
+msgstr ""
 
 #: gal/widgets/gal-categories.glade.h:5
 msgid "categories"
-msgstr "kategorier"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:67
 msgid "Birthday"
-msgstr "Födelsedag"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:68
 msgid "Business"
-msgstr "Företag"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:69
 msgid "Competition"
-msgstr "Konkurrenter"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:70
 msgid "Favorites"
-msgstr "Favoriter"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:71
 msgid "Gifts"
-msgstr "Presenter"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:72
 msgid "Goals/Objectives"
-msgstr "Mål"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday"
-msgstr "Helg"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:74
 msgid "Holiday Cards"
-msgstr "Helgkort"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:75
 msgid "Hot Contacts"
-msgstr "Heta kontakter"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:76
 msgid "Ideas"
-msgstr "Idéer"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:77
 msgid "International"
-msgstr "Internationellt"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:78
 msgid "Key Customer"
-msgstr "Nyckelkund"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:79
 msgid "Miscellaneous"
-msgstr "Diverse"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:80
 msgid "Personal"
-msgstr "Personligt"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:81
 msgid "Phone Calls"
-msgstr "Telefonsamtal"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:82
 msgid "Status"
-msgstr "Status"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:83
 msgid "Strategies"
-msgstr "Strategier"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:84
 msgid "Suppliers"
-msgstr "Leverantörer"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:85
 msgid "Time & Expenses"
-msgstr "Tid och utgifter"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:86
 msgid "VIP"
-msgstr "VIP"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-array.c:87
 msgid "Waiting"
-msgstr "Väntande"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-dialog-model.c:192
 #: gal/widgets/e-categories-master-list-option-menu.c:168
 msgid "ECML"
-msgstr "ECML"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
-msgstr "ECategoriesMasterListCombo"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.c:198
 msgid "* Click here to add a category *"
-msgstr "* Klicka här för att lägga till en kategori *"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.c:199
 msgid "Category"
-msgstr "Kategori"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
 msgid "Add Category"
-msgstr "Lägg till kategori"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Edit Category"
-msgstr "Redigera kategori"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Edit Global Category List"
-msgstr "Redigera globala kategorilistan"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Edit category:"
-msgstr "_Redigera kategori:"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_New category:"
-msgstr "_Ny kategori:"
+msgstr ""
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
 msgid "All Categories"
-msgstr "Alla kategorier"
+msgstr ""
 
 #: gal/widgets/e-selection-model.c:210
 msgid "Sorter"
-msgstr "Sorterare"
+msgstr ""
 
 #: gal/widgets/e-selection-model.c:217
 msgid "Selection Mode"
-msgstr "Markeringsläge"
+msgstr ""
 
 #: gal/widgets/e-selection-model.c:225
 msgid "Cursor Mode"
-msgstr "Markörläge"
+msgstr ""
 
 #: gal/e-text/e-text.c:2598
 msgid "Select All"
-msgstr "Markera alla"
+msgstr ""
 
 #: gal/e-text/e-text.c:2610
 msgid "Input Methods"
-msgstr "Inmatningsmetoder"
+msgstr ""
 
 #: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
 msgid "Event Processor"
-msgstr "Händelsebehandlare"
+msgstr ""
 
 #: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
 msgid "Text"
-msgstr "Text"
+msgstr ""
 
 #: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
 msgid "Bold"
-msgstr "Fet"
+msgstr ""
 
 #: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
 msgid "Strikeout"
-msgstr "Genomstruken"
+msgstr ""
 
 #: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
 msgid "Anchor"
-msgstr "Ankare"
+msgstr ""
 
 #: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
 msgid "Justification"
-msgstr "Justering"
+msgstr ""
 
 #: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
 msgid "Clip Width"
-msgstr "Klippbredd"
+msgstr ""
 
 #: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
 msgid "Clip Height"
-msgstr "Klipphöjd"
+msgstr ""
 
 #: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
 msgid "Clip"
-msgstr "Klipp"
+msgstr ""
 
 #: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
 msgid "Fill clip rectangle"
-msgstr "Fyll klipprektangel"
+msgstr ""
 
 #: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
 msgid "X Offset"
-msgstr "X-avstånd"
+msgstr ""
 
 #: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
 msgid "Y Offset"
-msgstr "Y-avstånd"
+msgstr ""
 
 #: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
 msgid "Fill color"
-msgstr "Fyllningsfärg"
+msgstr ""
 
 #: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
 #: gal/e-text/e-text.c:3464
 msgid "GDK fill color"
-msgstr "GDK-fyllningsfärg"
+msgstr ""
 
-# Osäker
 #: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
 msgid "Fill stipple"
-msgstr "Fyll stöppling"
+msgstr ""
 
 #: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
 msgid "Text width"
-msgstr "Textbredd"
+msgstr ""
 
 #: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
 msgid "Text height"
-msgstr "Texthöjd"
+msgstr ""
 
 #: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
 msgid "Use ellipsis"
-msgstr "Använd ellips"
+msgstr ""
 
 #: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
 msgid "Ellipsis"
-msgstr "Ellips"
+msgstr ""
 
 #: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
 msgid "Line wrap"
-msgstr "Radbrytning"
+msgstr ""
 
 #: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
 msgid "Break characters"
-msgstr "Brytningstecken"
+msgstr ""
 
 #: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
 msgid "Max lines"
-msgstr "Max rader"
+msgstr ""
 
 #: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
 msgid "Draw borders"
-msgstr "Rita ramar"
+msgstr ""
 
 #: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
 msgid "Allow newlines"
-msgstr "Tillåt nyrader"
+msgstr ""
 
 #: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
 msgid "Draw background"
-msgstr "Rita bakgrund"
+msgstr ""
 
 #: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
 msgid "Draw button"
-msgstr "Rita knapp"
+msgstr ""
 
 #: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
 msgid "Cursor position"
-msgstr "Markörposition"
+msgstr ""
 
 #: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
 msgid "IM Context"
-msgstr "IM-sammanhang"
+msgstr ""
 
 #: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
 msgid "Handle Popup"
-msgstr "Handtagspopupfönster"
-
-#~ msgid "Late Yesterday %l:%M %p"
-#~ msgstr "Sent igår %H.%M"
-
-#~ msgid "Add a Category"
-#~ msgstr "Lägg till en kategori"
-
-#~ msgid "_Edit category"
-#~ msgstr "_Redigera kategori"
-
-#~ msgid "_New category"
-#~ msgstr "_Ny kategori"
-
-#~ msgid "Modify a Category"
-#~ msgstr "Ändra en kategori"
-
-#~ msgid "Remove"
-#~ msgstr "Ta bort"
-
-#~ msgid "_Category to Add:"
-#~ msgstr "_Kategori att lägga till:"
-
-#~ msgid "_Category to Modify:"
-#~ msgstr "_Kategori att ändra:"
-
-# Osäker
-#~ msgid "FIll stipple"
-#~ msgstr "FYll stöppling"
-
-#~ msgid "Input Method"
-#~ msgstr "Inmatningsmetod"
-
-#~ msgid "Re_set to Factory Defaults..."
-#~ msgstr "Åter_ställ till standardinställningar..."
-
-#~ msgid "_Copy..."
-#~ msgstr "_Kopiera..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Ta bort..."
-
-#~ msgid "_New..."
-#~ msgstr "_Ny..."
-
-#~ msgid "ETTA"
-#~ msgstr "ETTA"
-
-#~ msgid "ETS"
-#~ msgstr "ETS"
-
-#~ msgid "Character out of range for UTF-8"
-#~ msgstr "Tecknet är utanför intervallet för UTF-8"
-
-#~ msgid ""
-#~ "The current view will replace the given view.  Any folders\n"
-#~ "set to this view will be replaced with the current view."
-#~ msgstr ""
-#~ "Den aktuella vyn kommer att ersätta den angivna vyn. Alla\n"
-#~ "mappar som är satta till denna vy kommer att ersättas med\n"
-#~ "den angivna vyn."
-
-#~ msgid "<< Remove"
-#~ msgstr "<< Ta bort"
-
-#~ msgid "Add >>"
-#~ msgstr "Lägg till >>"
-
-#~ msgid "Available fields"
-#~ msgstr "Tillgängliga fält"
-
-#~ msgid "Show in this order"
-#~ msgstr "Visa i denna ordning"
-
-#~ msgid "Views for \"%s\""
-#~ msgstr "Vyer för \"%s\""
-
-#~ msgid "Add..."
-#~ msgstr "Lägg till..."
-
-#~ msgid "Modify..."
-#~ msgstr "Ändra..."
-
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "Konfigurerar vy: FIXME"
-
-#~ msgid "Unknown"
-#~ msgstr "Okänd"
-
-#~ msgid "Baltic"
-#~ msgstr "Baltisk"
-
-#~ msgid "Central European"
-#~ msgstr "Centraleuropeisk"
-
-#~ msgid "Chinese"
-#~ msgstr "Kinesisk"
-
-#~ msgid "Cyrillic"
-#~ msgstr "Kyrillisk"
-
-#~ msgid "Japanese"
-#~ msgstr "Japansk"
-
-#~ msgid "Korean"
-#~ msgstr "Koreansk"
-
-#~ msgid "Turkish"
-#~ msgstr "Turkisk"
-
-#~ msgid "Western European"
-#~ msgstr "Västeuropeisk"
-
-#~ msgid "Traditional"
-#~ msgstr "Traditionell"
-
-#~ msgid "Simplified"
-#~ msgstr "Förenklad"
-
-#~ msgid "Ukrainian"
-#~ msgstr "Ukrainsk"
-
-#~ msgid "New"
-#~ msgstr "Ny"
-
-#~ msgid "Unknown character set: %s"
-#~ msgstr "Okänd teckentabell: %s"
-
-#~ msgid "Enter the character set to use"
-#~ msgstr "Ange teckentabellen som ska användas"
-
-#~ msgid "Other..."
-#~ msgstr "Annan..."
+msgstr ""

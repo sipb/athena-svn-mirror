@@ -1,3 +1,56 @@
+2003-09-12  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in : releasing 1.99.10
+
+2003-09-03  Dan Winship  <danw@ximian.com>
+
+	* gal/Makefile.am (libgal_2_0_la_LDFLAGS): Remove -no-undefined
+	here too.
+
+2003-08-20  Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
+
+	* gal/util/e-util.c (e_filename_make_safe): Fix for 47474
+	e_filename_make_safe routine not utf8 friendly.
+
+2003-08-16  Maxx Cao  <maxx.cao@sun.com>
+
+	* gal/e-text/e-text.c (e_text_event): filter S-F10 key binding, and
+	show popup menu.
+	(popup_menu_placement_cb): function added to adjust popup menu position.
+	(popup_targets_received): show popup menu in different ways, according
+	to whether it's invoked by mouse click or key binding.
+
+2003-08-12  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in : branched and reverted the previous intltool change
+
+2003-08-12  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Fix GETTEXT_PACKAGE (ximian #37784), and make sure
+	newest intltool is used.
+
+2003-08-11  Rodney Dawes  <dobey@ximian.com>
+
+	* gal/a11y/Makefile.am: Replace -avoid-version with proper
+	libtool versioning info and remove @LDFLAGS@ expansion
+	
+2003-08-05  Gilbert Fang  <gilbert.fang@sun.com>
+
+	* gal/a11y/Makefile.am: eliminate -no-undefined option.(#47322)
+
+2003-07-31  Gilbert Fang  <gilbert.fang@sun.com>
+
+	* gal-2.0.pc.in: add libgal-a11y-2.0.so dependency
+	* gal/Makefile.am: change the build sequence for a11y part
+	* gal/a11y/Makefile.am: change a11y to build as normal so instead of 
+	 gtk module.
+	* gal/a11y/gal-a11y-factory.h: marcos for a11y factory generation.
+
+2003-07-11  Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
+
+	* gal/util/e-iconv.c : Fix for #46168 some additional locale aliases 
+	required for chinese support
+
 2003-07-28  Mike Kestner  <mkestner@ximian.com>
 
 	* configure.in : bump the so versioning for api removal

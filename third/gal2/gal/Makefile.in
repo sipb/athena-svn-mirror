@@ -139,14 +139,13 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 install_sh = @install_sh@
 nonui_subdirs = util
-ui_subdirs = widgets e-table e-text menus shortcut-bar . a11y
+ui_subdirs = widgets e-table e-text menus shortcut-bar a11y
 
 SUBDIRS = $(nonui_subdirs) $(ui_subdirs) 
 
 lib_LTLIBRARIES = libgal-2.0.la
 
 libgal_2_0_la_LDFLAGS = -version-info $(GAL_CURRENT):$(GAL_REVISION):$(GAL_AGE) \
-		    -no-undefined \
 		    $(ICONV_LIBS)
 
 libgal_2_0_la_SOURCES = bogus_automake_hack.c
@@ -157,6 +156,7 @@ libgal_2_0_la_LIBADD = util/libutil.la \
 		   e-text/libetext.la \
 		   menus/libgalmenus.la \
 		   shortcut-bar/libshortcut-bar.la \
+		   a11y/libgal-a11y-2.0.la		\
 		   $(EXTRA_GNOME_LIBS)
 
 subdir = gal
@@ -167,7 +167,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libgal_2_0_la_DEPENDENCIES = util/libutil.la widgets/libwidgets.la \
 	e-table/libetable.la e-text/libetext.la menus/libgalmenus.la \
-	shortcut-bar/libshortcut-bar.la
+	shortcut-bar/libshortcut-bar.la a11y/libgal-a11y-2.0.la
 am_libgal_2_0_la_OBJECTS = bogus_automake_hack.lo
 libgal_2_0_la_OBJECTS = $(am_libgal_2_0_la_OBJECTS)
 

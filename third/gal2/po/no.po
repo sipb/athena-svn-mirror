@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.2.2\n"
-"POT-Creation-Date: 2003-07-28 11:55-0500\n"
+"POT-Creation-Date: 2003-09-11 17:09-0500\n"
 "PO-Revision-Date: 2003-06-18 10:04+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -79,7 +79,7 @@ msgid "Color Column"
 msgstr "Farget kolonne"
 
 #: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3447 gal/e-text/e-text.c:3448
+#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
 msgid "Editable"
 msgstr "Redigerbar"
 
@@ -99,8 +99,8 @@ msgstr "Header"
 
 #: gal/e-table/e-table-click-to-add.c:463
 #: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
-#: gal/e-text/e-text.c:3312
+#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
+#: gal/e-text/e-text.c:3357
 msgid "Model"
 msgstr "Modell"
 
@@ -111,16 +111,16 @@ msgstr "Melding"
 #: gal/e-table/e-table-click-to-add.c:477
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3489
-#: gal/e-text/e-text.c:3490
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
+#: gal/e-text/e-text.c:3535
 msgid "Width"
 msgstr "Bredde"
 
 #: gal/e-table/e-table-click-to-add.c:484
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3497
-#: gal/e-text/e-text.c:3498
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
+#: gal/e-text/e-text.c:3543
 msgid "Height"
 msgstr "Høyde"
 
@@ -224,23 +224,23 @@ msgstr "_Sorter..."
 msgid "dialog1"
 msgstr "dialog1"
 
-#: gal/e-table/e-table-config.c:154
+#: gal/e-table/e-table-config.c:152
 msgid "State"
 msgstr "Tilstand"
 
-#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Ascending)"
 msgstr "(Stigende)"
 
-#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Descending)"
 msgstr "(Synkende)"
 
-#: gal/e-table/e-table-config.c:318
+#: gal/e-table/e-table-config.c:316
 msgid "Not sorted"
 msgstr "Ikke sortert"
 
-#: gal/e-table/e-table-config.c:359
+#: gal/e-table/e-table-config.c:357
 msgid "No grouping"
 msgstr "Ingen gruppering"
 
@@ -888,127 +888,127 @@ msgstr "Utvalgsmodus"
 msgid "Cursor Mode"
 msgstr "Markørmodus"
 
-#: gal/e-text/e-text.c:2561
+#: gal/e-text/e-text.c:2598
 msgid "Select All"
 msgstr "Velg alt"
 
-#: gal/e-text/e-text.c:2573
+#: gal/e-text/e-text.c:2610
 msgid "Input Methods"
 msgstr "Inndatametoder"
 
-#: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
+#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
 msgid "Event Processor"
 msgstr "Hendelsesprosessor"
 
-#: gal/e-text/e-text.c:3325 gal/e-text/e-text.c:3326
+#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
 msgid "Text"
 msgstr "Tekst"
 
-#: gal/e-text/e-text.c:3332 gal/e-text/e-text.c:3333
+#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
 msgid "Bold"
 msgstr "Fet"
 
-#: gal/e-text/e-text.c:3339 gal/e-text/e-text.c:3340
+#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
 msgid "Strikeout"
 msgstr "Uthevet"
 
-#: gal/e-text/e-text.c:3346 gal/e-text/e-text.c:3347
+#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
 msgid "Anchor"
 msgstr "Anker"
 
-#: gal/e-text/e-text.c:3354 gal/e-text/e-text.c:3355
+#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
 msgid "Justification"
 msgstr "Justering"
 
-#: gal/e-text/e-text.c:3361 gal/e-text/e-text.c:3362
+#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
 msgid "Clip Width"
 msgstr "Bredde på utklipp"
 
-#: gal/e-text/e-text.c:3368 gal/e-text/e-text.c:3369
+#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
 msgid "Clip Height"
 msgstr "Høyde på utklipp"
 
-#: gal/e-text/e-text.c:3375 gal/e-text/e-text.c:3376
+#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
 msgid "Clip"
 msgstr "Utklipp"
 
-#: gal/e-text/e-text.c:3382 gal/e-text/e-text.c:3383
+#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
 msgid "Fill clip rectangle"
 msgstr "Fyll utklippsrektangel"
 
-#: gal/e-text/e-text.c:3389 gal/e-text/e-text.c:3390
+#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
 msgid "X Offset"
 msgstr "X-avstand"
 
-#: gal/e-text/e-text.c:3396 gal/e-text/e-text.c:3397
+#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
 msgid "Y Offset"
 msgstr "Y-avstand"
 
-#: gal/e-text/e-text.c:3403 gal/e-text/e-text.c:3404
+#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
 msgid "Fill color"
 msgstr "Fyllfarge"
 
-#: gal/e-text/e-text.c:3410 gal/e-text/e-text.c:3411 gal/e-text/e-text.c:3418
-#: gal/e-text/e-text.c:3419
+#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
+#: gal/e-text/e-text.c:3464
 msgid "GDK fill color"
 msgstr "Fyllfarge for GDK"
 
-#: gal/e-text/e-text.c:3425 gal/e-text/e-text.c:3426
+#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
 msgid "Fill stipple"
 msgstr "Fyll stiplet"
 
-#: gal/e-text/e-text.c:3432 gal/e-text/e-text.c:3433
+#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
 msgid "Text width"
 msgstr "Tekstbredde"
 
-#: gal/e-text/e-text.c:3439 gal/e-text/e-text.c:3440
+#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
 msgid "Text height"
 msgstr "Teksthøyde"
 
-#: gal/e-text/e-text.c:3454 gal/e-text/e-text.c:3455
+#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
 msgid "Use ellipsis"
 msgstr "Bruk ellipse"
 
-#: gal/e-text/e-text.c:3461 gal/e-text/e-text.c:3462
+#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
 msgid "Ellipsis"
 msgstr "Ellipse"
 
-#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
+#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
 msgid "Line wrap"
 msgstr "Linjebryting"
 
-#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
+#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
 msgid "Break characters"
 msgstr "Brytingstegn"
 
-#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
+#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
 msgid "Max lines"
 msgstr "Maks antall linjer"
 
-#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
+#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
 msgid "Draw borders"
 msgstr "Tegn kanter"
 
-#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
+#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
 msgid "Allow newlines"
 msgstr "Tillat linjeskift"
 
-#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
+#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
 msgid "Draw background"
 msgstr "Tegn bakgrunn"
 
-#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
+#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
 msgid "Draw button"
 msgstr "Tegn knapp"
 
-#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
+#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
 msgid "Cursor position"
 msgstr "Markørposisjon"
 
-#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
+#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
 msgid "IM Context"
 msgstr "IM-kontekst"
 
-#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
+#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
 msgid "Handle Popup"
 msgstr "Håndter popup"

@@ -159,4 +159,4 @@ icons = 			\
 EXTRA_DIST =			\
 	 $(icons)		\
 	 $(glade_DATA)
-#	 sample.table		\
+#	 sample.table
