@@ -10,6 +10,7 @@ sun4)
 	echo "/etc/mail/sendmail.fc"		>> "$DEADFILES"
 
 	echo "/etc/mail/sendmail.cf"		>> "$CONFCHG"
+	echo "/etc/inet/inetd.conf"		>> "$CONFCHG"
 	echo "/etc/inet/services"		>> "$CONFCHG"
 
 	echo "TRACKOS=true"			>> "$CONFVARS"
@@ -55,6 +56,7 @@ sgi)
 	echo "/etc/sendmail.cf"			>> "$CONFCHG"
 	echo "/etc/services"			>> "$CONFCHG"
 	echo "/etc/aliases"			>> "$CONFCHG"
+	echo "/etc/printcap"			>> "$CONFCHG"
 	echo "/usr/etc/resolv.conf"		>> "$DEADFILES"
 	echo "/etc/athena/.rc.conf.sync"	>> "$DEADFILES"
 	;;
