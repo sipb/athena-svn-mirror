@@ -1,14 +1,14 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.3 1991-07-09 15:10:09 lwvanels Exp $";
-#endif lint
+static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.4 1992-01-06 15:57:54 probe Exp $";
+#endif
 
 #include "attach.h"
 #ifdef RVD
