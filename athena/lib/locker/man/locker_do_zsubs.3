@@ -1,4 +1,4 @@
-.\" $Id: locker_zsubs.3,v 1.3 1999-03-29 17:34:17 danw Exp $
+.\" $Id: locker_do_zsubs.3,v 1.1 1999-03-29 17:34:17 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -14,51 +14,35 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH LOCKER_ZSUBS 3
+.TH LOCKER_DO_ZSUBS 3
 .SH NAME
-locker_zsubs \- Deal with zephyr subscriptions for a locker
+locker_do_zsubs \- Process locker-related Zephyr subscriptions/unsubscriptions
 .SH SYNOPSIS
 .nf
 .B #include <locker.h>
 .PP
 .B
-void locker_zsubs(locker_context \fIcontext\fP, char *\fIfilesystem\fP)
+int locker_do_zsubs(locker_context \fIcontext\fP, int \fIop\fP)
 .PP
 .B cc file.c -llocker ...
 .fi
 .SH DESCRIPTION
-This function records the zephyr subscriptions associated with a
-locker for later processing with
-.BR locker_do_zsubs (3).
-.I filesystem
-should be the name of an attached filesystem.
+This function processes the pending Zephyr subscription or
+unsubscription requests queued up by earlier liblocker operations.
+\fIcontext\fP should be a valid locker context, and \fIop\fP should be
+one of the two constants \fILOCKER_ZEPHYR_SUBSCRIBE\fP or
+\fILOCKER_ZEPHYR_UNSUBSCRIBE\fP.
 .SH RETURN VALUES
-.B locker_zsubs
-can return the following values:
+.I locker_do_zsubs
+may return the following values:
 .TP 15
 .I LOCKER_SUCCESS
-The operation was succesfully performed.
+The operations succeeded.
 .TP 15
-.I LOCKER_EUNKNOWN
-No such filesystem.
-.TP 15
-.I LOCKER_EHESIOD
-Error looking up locker in Hesiod.
-.TP 15
-.I LOCKER_EPARSE
-Unable to parse filesystem description.
-.TP 15
-.I LOCKER_EPERM
-Untrusted user attempted privileged operation.
-.TP 15
-.I LOCKER_EATTACHTAB
-Error creating or reading the attachtab entry corresponding to this
-locker.
-.TP 15
-.I LOCKER_ENOMEM
-Memory was exhausted.
+.I LOCKER_EZEPHYR
+An error occurred in the Zephyr library.
 .SH SEE ALSO
-locker_init(3), locker_attach(3), locker_do_zsubs(3), zephyr(1)
+locker_init(3)
 .SH AUTHOR
 Dan Winship, MIT Information Systems
 .br
