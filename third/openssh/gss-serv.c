@@ -223,6 +223,8 @@ ssh_gssapi_krb5_storecreds(Authctxt *authctxt) {
 	
 #ifdef USE_PAM
 	do_pam_putenv("KRB5CCNAME",name);
+#else
+	setenv("KRB5CCNAME", name, 1);
 #endif
 
 	gssapi_cred_store.filename=strdup(ccname);

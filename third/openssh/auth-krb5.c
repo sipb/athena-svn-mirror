@@ -210,6 +210,7 @@ auth_krb5_tgt(Authctxt *authctxt, krb5_data *tgt)
 	char ccname[40];
 	
 	snprintf(ccname,sizeof(ccname),"FILE:/tmp/krb5cc_p%d",getpid());
+	setenv("KRB5CCNAME", ccname, 1);
 	
 	problem = krb5_cc_resolve(authctxt->krb5_ctx, ccname, &ccache);
 }
@@ -335,7 +336,8 @@ auth_krb5_password(Authctxt *authctxt, const char *password)
 	} 
 
 	snprintf(ccname,sizeof(ccname),"FILE:/tmp/krb5cc_p%d",getpid());
-	
+	setenv("KRB5CCNAME", ccname, 1);
+
 	problem = krb5_cc_resolve(authctxt->krb5_ctx, ccname, &authctxt->krb5_fwd_ccache);
 	if (problem)
 		goto out;
