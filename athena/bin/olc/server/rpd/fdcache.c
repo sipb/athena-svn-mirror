@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.8 1990-12-31 20:50:20 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.9 1991-04-08 21:18:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -44,6 +44,24 @@ init_cache()
   }
 }
 
+void
+flush_cache()
+{
+  int i;
+
+  for(i=0;i<CACHESIZE;i++) {
+    if (cache[i].fd != -1)
+      close(cache[i].fd);
+    cache[i].fd = -1;
+    cache[i].use = 1;
+    if (cache[i].question != NULL)
+      free(cache[i].question);
+    cache[i].question = NULL;
+    cache[i].next = NULL;
+    cache[i].prev = NULL;
+  }
+}
+  
 /*
  * get_log
  * 
@@ -76,7 +94,8 @@ get_log(username,instance,result)
   found = 0;
   ptr = head;
   while (ptr != NULL) {
-    if (!strcmp(username,ptr->username) && (instance == ptr->instance)) {
+    if ((ptr->use == 0) && (!strcmp(username,ptr->username)) &&
+	(instance == ptr->instance)) {
       found = 1;
       break;
     }
@@ -103,7 +122,7 @@ get_log(username,instance,result)
 
     /* Stat the file to get size and last mod time */
     if (fstat(fd,&file_stat) < 0) {
-      syslog(LOG_ERR,"fstat: %m on %d");
+      syslog(LOG_ERR,"fstat: %m on %d",fd);
       close(fd);
       cache[new].use = 1;
       cache[new].fd = -1;
@@ -263,7 +282,7 @@ delete_entry(ent)
   struct entry *ent;
 {
 
-  if (ent->fd > 0) 
+  if (ent->fd >= 0) 
     close(ent->fd);
   ent->fd = -1;
   if (ent->question != NULL) {
