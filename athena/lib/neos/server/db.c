@@ -1,7 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Id: db.c,v 1.5 1999-01-22 23:18:14 ghudson Exp $
+ * $Id: db.c,v 1.6 1999-08-13 00:17:16 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Id: db.c,v 1.5 1999-01-22 23:18:14 ghudson Exp $";
+static char rcsid_commands_c[] = "$Id: db.c,v 1.6 1999-08-13 00:17:16 danw Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -27,6 +27,7 @@ static char rcsid_commands_c[] = "$Id: db.c,v 1.5 1999-01-22 23:18:14 ghudson Ex
 
 datum *make_dbm_key(), *make_dbm_contents();
 time_t time();
+int _db_strcmp(const void *, const void *);
 
 #define MAX_NUM_DBS 64		/* strict maximum on open databases */
 #define DB_HOLDTIME 300		/* hold db open at least 5 min... */
@@ -59,7 +60,7 @@ int database_uptodate;
  * Initialize the db library.  Called once at startup.
  */
 
-db_init()
+void db_init()
 {
   char pathspec[MAXPATHLEN];
   int i;
@@ -101,7 +102,7 @@ db_init()
  * the reference count and return the appropriate index.
  */
 
-db_open(name)
+int db_open(name)
      char *name;
 {
   int idx;
@@ -138,11 +139,35 @@ db_open(name)
 }
 
 /*
+ * Close a database file.
+ */
+
+void _db_close(idx)
+     int idx;
+{
+  int i;
+
+  DebugDB(("_db_close %d %s\n", idx, dblist[idx].path));
+
+  idx--;
+  dbm_close(dblist[idx].dbm);
+  dblist[idx].dbm = NULL;
+  xfree(dblist[idx].path);
+  dblist[idx].path = "";
+  if (dblist[idx].keylist) {
+    for (i=0; i < dblist[idx].nkeys; i++)
+      xfree(dblist[idx].keylist[i]);
+    xfree(dblist[idx].keylist);
+  }
+  return;
+}
+
+/*
  * Flush a database file from the cache if it's there
  * XXX What if a connection has this db open?
  */
 
-db_flush(name)
+void db_flush(name)
      char *name;
 {
   int i;
@@ -154,12 +179,12 @@ db_flush(name)
   }
   return;
 }
-    
+
 /*
  * Close a database file.  Handle reference counts properly.
  */
 
-db_close(idx)
+void db_close(idx)
      int idx;
 {
   int i, n=0, oldest= -1;	/* n = number of open databases */
@@ -185,42 +210,18 @@ db_close(idx)
 }
 
 /*
- * Close a database file.
- */
-
-_db_close(idx)
-     int idx;
-{
-  int i;
-
-  DebugDB(("_db_close %d %s\n", idx, dblist[idx].path));
-
-  idx--;
-  dbm_close(dblist[idx].dbm);
-  dblist[idx].dbm = NULL;
-  xfree(dblist[idx].path);
-  dblist[idx].path = "";
-  if (dblist[idx].keylist) {
-    for (i=0; i < dblist[idx].nkeys; i++)
-      xfree(dblist[idx].keylist[i]);
-    xfree(dblist[idx].keylist);
-  }
-  return;
-}
-
-/*
  * Read in and sort the key database if necessary.
  * XXX More efficient!
  */
 
-_db_strcmp(ptr1, ptr2)
-     char **ptr1;
-     char **ptr2;
+int _db_strcmp(ptr1, ptr2)
+     const void *ptr1;
+     const void *ptr2;
 {
-  return strcmp(*ptr1, *ptr2);
+  return strcmp(*(const char **)ptr1, *(const char **)ptr2);
 }
 
-_db_read_and_sort()
+void _db_read_and_sort()
 {
   datum key;
 
@@ -249,7 +250,7 @@ _db_read_and_sort()
  * Add a key to the key list and keep it sorted.
  */
 
-_db_add_key(key)
+void _db_add_key(key)
      char *key;
 {
   int i=0;
@@ -433,7 +434,7 @@ Contents *db_fullcontents()
  * or to the position where such a key should appear if created.
  */
 
-db_key_position(key)
+int db_key_position(key)
      char *key;
 {
   int hi, lo=0, med, i;
@@ -467,7 +468,7 @@ db_key_position(key)
  * key if necessary.
  */
 
-db_store(contents)
+int db_store(contents)
      Contents *contents;
 {
   datum key, data;
@@ -517,7 +518,7 @@ db_store(contents)
  * if the fetch was successful.
  */
 
-db_fetch(contents)
+int db_fetch(contents)
      Contents *contents;
 {
   char keybfr[1024];
@@ -543,7 +544,7 @@ db_fetch(contents)
  * Delete a "contents" from the database.
  */
 
-db_delete(contents)
+void db_delete(contents)
      Contents *contents;
 {
   char keybfr[1024];
@@ -586,13 +587,7 @@ db_delete(contents)
 #endif /* MULTI */
 }
 
-db_inc_vers()
-{
-  db_vers.commit++;
-  db_set_vers();
-}
-
-db_set_vers()
+void db_set_vers()
 {
   char pathspec[MAXPATHLEN];
   FILE *fp;
@@ -608,4 +603,10 @@ db_set_vers()
   DebugMulti(("Updated version to synctime %ld, commit %ld\n",
 	      db_vers.synctime, db_vers.commit));
   database_uptodate = 1; /* XXX Only 'til downloading is written */
+}
+
+void db_inc_vers()
+{
+  db_vers.commit++;
+  db_set_vers();
 }

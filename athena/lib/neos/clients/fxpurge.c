@@ -1,7 +1,7 @@
 /**********************************************************************
  * File Exchange purge client
  *
- * $Id: fxpurge.c,v 1.3 1999-01-22 23:17:32 ghudson Exp $
+ * $Id: fxpurge.c,v 1.4 1999-08-13 00:17:02 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxpurge_c[] = "$Id: fxpurge.c,v 1.3 1999-01-22 23:17:32 ghudson Exp $";
+static char rcsid_fxpurge_c[] = "$Id: fxpurge.c,v 1.4 1999-08-13 00:17:02 danw Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -66,6 +66,7 @@ prep_paper(p, flags)
   return(0L);
 }
 
+void
 empty_list(criterion)
      Paper *criterion;
 {

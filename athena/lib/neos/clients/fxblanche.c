@@ -1,7 +1,7 @@
 /**********************************************************************
  * File Exchange access control list client
  *
- * $Id: fxblanche.c,v 1.3 1999-01-22 23:17:28 ghudson Exp $
+ * $Id: fxblanche.c,v 1.4 1999-08-13 00:17:02 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxblanche_c[] = "$Id: fxblanche.c,v 1.3 1999-01-22 23:17:28 ghudson Exp $";
+static char rcsid_fxblanche_c[] = "$Id: fxblanche.c,v 1.4 1999-08-13 00:17:02 danw Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -37,6 +37,7 @@ open_course(course, module)
   return(fxp);
 }
 
+void
 show_list(fxp, course, module, acl, verbose)
      FX *fxp;
      char *course, *module, *acl;

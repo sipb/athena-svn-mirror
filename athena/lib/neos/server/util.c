@@ -1,7 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Id: util.c,v 1.5 1999-01-22 23:18:18 ghudson Exp $
+ * $Id: util.c,v 1.6 1999-08-13 00:17:16 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -16,13 +16,15 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Id: util.c,v 1.5 1999-01-22 23:18:18 ghudson Exp $";
+static char rcsid_util_c[] = "$Id: util.c,v 1.6 1999-08-13 00:17:16 danw Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
 #include <ctype.h>
 #include <sys/file.h>
 #include <syslog.h>
+
+void xfree();
 
 /*
  * Check a string to see if it is a valid course name.  This means
@@ -132,7 +134,7 @@ contains_wildcard(paper)
  * Copy a Paper into another Paper, and malloc new strings for it.
  */
 
-copy_paper(src, dest)
+void copy_paper(src, dest)
     Paper *src;
     Paper *dest;
 {
@@ -148,7 +150,7 @@ copy_paper(src, dest)
  * Free the malloc'ed portions of a Paper.
  */
 
-free_paper(p)
+void free_paper(p)
     Paper *p;
 {
     xfree(p->author);
@@ -212,7 +214,7 @@ copy_file(src, dest)
  * Count the number of chars, words, and lines in a buffer.
  */
 
-do_wc(bfr, size, token, words, lines)
+void do_wc(bfr, size, token, words, lines)
     char *bfr;
     int size;
     int *token;
@@ -256,7 +258,7 @@ fatal(s, a, b, c, d, e)
  * Log a warning message.
  */
 
-do_log(type, s, a, b, c, d, e)
+void do_log(type, s, a, b, c, d, e)
     int type;
     char *s;
     int a, b, c, d, e;
@@ -275,14 +277,14 @@ do_log(type, s, a, b, c, d, e)
     syslog(type, s, a, b, c, d, e);
 }
 
-log_warning(s, a, b, c, d, e)
+void log_warning(s, a, b, c, d, e)
     char *s;
     int a, b, c, d, e;
 {
     do_log(LOG_WARNING, s, a, b, c, d, e);
 }
 
-log_info(s, a, b, c, d, e)
+void log_info(s, a, b, c, d, e)
     char *s;
     int a, b, c, d, e;
 {
@@ -325,7 +327,7 @@ char *xrealloc(s, n)
  * Free memory allocated by xmalloc or xrealloc.
  */
 
-xfree(s)
+void xfree(s)
     char *s;
 {
     free(s);

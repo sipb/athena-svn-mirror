@@ -1,7 +1,7 @@
 /***********************************************************************
  * to be included by all fx library clients
  *
- * $Id: fxcl.h,v 1.6 1999-01-22 23:17:45 ghudson Exp $
+ * $Id: fxcl.h,v 1.7 1999-08-13 00:17:14 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -13,7 +13,7 @@
 #define _fxcl_h_
 
 #ifndef lint
-static char rcsid_fxcl_h[] = "$Id: fxcl.h,v 1.6 1999-01-22 23:17:45 ghudson Exp $";
+static char rcsid_fxcl_h[] = "$Id: fxcl.h,v 1.7 1999-08-13 00:17:14 danw Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -76,6 +76,7 @@ long fx_move(FX *, Paper *, Paper *);
 long fx_copy(FX *, Paper *, Paper *);
 long fx_delete(FX *, Paper *);
 long fx_init(FX *, init_res **);
+char *full_name(char *);
 
 /* Clients are discouraged from using the following routines */
 long _fx_get_auth(FX *, KTEXT_ST *);
@@ -97,6 +98,7 @@ stringlist _fx_host_list();
 void fx_host_list_destroy();
 void fx_list_destroy(), fx_acl_list_destroy();
 long fx_init();
+char *full_name();
 
 /* Clients are discouraged from using the following routines */
 long _fx_get_auth(), _fx_rpc_errno();

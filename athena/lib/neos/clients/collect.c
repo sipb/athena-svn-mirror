@@ -1,7 +1,7 @@
 /**********************************************************************
  * File Exchange collect client
  *
- * $Id: collect.c,v 1.7 1999-01-22 23:17:25 ghudson Exp $
+ * $Id: collect.c,v 1.8 1999-08-13 00:17:02 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Id: collect.c,v 1.7 1999-01-22 23:17:25 ghudson Exp $";
+static char rcsid_collect_c[] = "$Id: collect.c,v 1.8 1999-08-13 00:17:02 danw Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -124,6 +124,7 @@ prep_paper(p, f, flags)
   return(0L);
 }
 
+void
 empty_list(criterion)
      Paper *criterion;
 {
@@ -132,6 +133,7 @@ empty_list(criterion)
   printf("No papers turned in\n");
 }
 
+void
 mark_retrieved(fxp, p)
      FX *fxp;
      Paper *p;

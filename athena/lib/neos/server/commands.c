@@ -1,7 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Id: commands.c,v 1.8 1999-01-22 23:18:13 ghudson Exp $
+ * $Id: commands.c,v 1.9 1999-08-13 00:17:16 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Id: commands.c,v 1.8 1999-01-22 23:18:13 ghudson Exp $";
+static char rcsid_commands_c[] = "$Id: commands.c,v 1.9 1999-08-13 00:17:16 danw Exp $";
 #endif /* lint */
 
 #include <com_err.h>
@@ -672,6 +672,7 @@ long *send_file_1_svc(paper, rqstp)
      struct svc_req *rqstp;
 {
   char filepath[MAXPATHLEN];
+  struct timeval tv;
   
   Debug(("send_file_1: %s", print_paper(paper)));
 
@@ -713,7 +714,9 @@ long *send_file_1_svc(paper, rqstp)
   curconn->sendcont.p.owner = xsave_string(curconn->authname);
   xfree(curconn->sendcont.p.location.host);
   curconn->sendcont.p.location.host = xsave_string(my_canonhostname);
-  gettimeofday(&curconn->sendcont.p.location.time, (struct timezone *)NULL);
+  gettimeofday(&tv, (struct timezone *)NULL);
+  curconn->sendcont.p.location.time.tv_sec = tv.tv_sec;
+  curconn->sendcont.p.location.time.tv_usec = tv.tv_usec;
   paper = &curconn->sendcont.p;
   paper->created = paper->location.time;
   paper->modified = paper->location.time;
@@ -1053,6 +1056,7 @@ long *do_copy_move(params, rqstp, move)
 {
   Contents src, dest;
   char filepathsrc[MAXPATHLEN], filepathdest[MAXPATHLEN];
+  struct timeval tv;
   
   Debug(("do_copy_move: %s ", print_paper(&params->src)));
   Debug(("to %s\n", print_paper(&params->dest)));
@@ -1090,7 +1094,9 @@ long *do_copy_move(params, rqstp, move)
     return &rpc_ret_int;
   }
   /* XXX Should we allow creation time to be changed? */
-  gettimeofday(&dest.p.modified, (struct timezone *)NULL);
+  gettimeofday(&tv, (struct timezone *)NULL);
+  dest.p.modified.tv_sec = tv.tv_sec;
+  dest.p.modified.tv_usec = tv.tv_usec;
   dest.p.location.host = my_canonhostname;
   dest.p.location.time = dest.p.modified;
   dest.p.owner = curconn->authname;
