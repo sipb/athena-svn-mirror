@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.10 1991-06-24 15:15:50 epeisach Exp $
+ *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.11 1991-08-15 16:37:37 probe Exp $
  */
 
 /*
@@ -49,7 +49,6 @@
 #define AKLOG_SHORTNAME	"aklog"
 #define RVDGETM_FULLNAME "/etc/athena/rvdgetm"
 #define RVDGETM_SHORTNAME "rvdgetm"
-#define NOSUID_FILENAME	"/etc/nosuid"
 
 #if defined(_AIX) && defined(i386)
 #define MTAB		"/local/mtab"

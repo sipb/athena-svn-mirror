@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.26 1991-08-13 23:03:02 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.27 1991-08-15 16:37:28 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -476,7 +476,7 @@ attachcmd(argc, argv)
     read_config_file(ATTACHCONFFILE);
 
     check_root_privs(progname);
-    default_suid = (access(NOSUID_FILENAME, 0) == 0);
+    default_suid = 1;
     
     gotname = 0;
 
