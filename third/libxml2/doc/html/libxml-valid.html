@@ -4,7 +4,7 @@
 >valid</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-VALID"
->valid</A
-></H1
+NAME="LIBXML-VALID">valid</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN8330"
+NAME="AEN8587"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN8330"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN8333"
-></A
-><H2
+NAME="AEN8590"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -682,6 +678,33 @@ HREF="libxml-tree.html#XMLCHAR"
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *value);
+<A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    <A
+HREF="libxml-valid.html#XMLVALIDCTXTNORMALIZEATTRIBUTEVALUE"
+>xmlValidCtxtNormalizeAttributeValue</A
+>
+                                            (<A
+HREF="libxml-valid.html#XMLVALIDCTXTPTR"
+>xmlValidCtxtPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> doc,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> elem,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);
 int         <A
 HREF="libxml-valid.html#XMLVALIDATEATTRIBUTEDECL"
 >xmlValidateAttributeDecl</A
@@ -809,6 +832,33 @@ HREF="libxml-tree.html#XMLNODEPTR"
 HREF="libxml-tree.html#XMLATTRPTR"
 >xmlAttrPtr</A
 > attr,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);
+int         <A
+HREF="libxml-valid.html#XMLVALIDATEONENAMESPACE"
+>xmlValidateOneNamespace</A
+>         (<A
+HREF="libxml-valid.html#XMLVALIDCTXTPTR"
+>xmlValidCtxtPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> doc,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> elem,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *prefix,
+                                             <A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
                                              const <A
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
@@ -964,7 +1014,46 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > **list,
                                              int *len,
-                                             int max);</PRE
+                                             int max);
+int         <A
+HREF="libxml-valid.html#XMLVALIDATENAMEVALUE"
+>xmlValidateNameValue</A
+>            (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);
+int         <A
+HREF="libxml-valid.html#XMLVALIDATENAMESVALUE"
+>xmlValidateNamesValue</A
+>           (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);
+int         <A
+HREF="libxml-valid.html#XMLVALIDATENMTOKENVALUE"
+>xmlValidateNmtokenValue</A
+>         (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);
+int         <A
+HREF="libxml-valid.html#XMLVALIDATENMTOKENSVALUE"
+>xmlValidateNmtokensValue</A
+>        (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);
+int         <A
+HREF="libxml-valid.html#XMLVALIDBUILDCONTENTMODEL"
+>xmlValidBuildContentModel</A
+>       (<A
+HREF="libxml-valid.html#XMLVALIDCTXTPTR"
+>xmlValidCtxtPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLELEMENTPTR"
+>xmlElementPtr</A
+> elem);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -972,7 +1061,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN8557"
+NAME="AEN8839"
 ></A
 ><H2
 >Description</H2
@@ -982,20 +1071,20 @@ NAME="AEN8557"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN8560"
+NAME="AEN8842"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8562"
+NAME="AEN8844"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDSTATE"
 ></A
->&#62;struct xmlValidState</H3
+>struct xmlValidState</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1015,13 +1104,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8567"
+NAME="AEN8849"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDSTATEPTR"
 ></A
->&#62;xmlValidStatePtr</H3
+>xmlValidStatePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1041,13 +1130,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8572"
+NAME="AEN8854"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDITYERRORFUNC"
 ></A
->&#62;xmlValidityErrorFunc ()</H3
+>xmlValidityErrorFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1064,13 +1153,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Callback called when a validity error is found. This is a message
+oriented function similar to an *printf function.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8577"
-></A
-><P
+NAME="AEN8860"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1095,7 +1185,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an xmlValidCtxtPtr validity error context</TD
 ></TR
 ><TR
 ><TD
@@ -1112,7 +1202,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the string to format *printf like vararg</TD
 ></TR
 ><TR
 ><TD
@@ -1129,7 +1219,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  remaining arguments to the format</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1140,13 +1230,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8594"
+NAME="AEN8877"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDITYWARNINGFUNC"
 ></A
->&#62;xmlValidityWarningFunc ()</H3
+>xmlValidityWarningFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1163,13 +1253,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Callback called when a validity warning is found. This is a message
+oriented function similar to an *printf function.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8599"
-></A
-><P
+NAME="AEN8883"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1194,7 +1285,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an xmlValidCtxtPtr validity error context</TD
 ></TR
 ><TR
 ><TD
@@ -1211,7 +1302,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the string to format *printf like vararg</TD
 ></TR
 ><TR
 ><TD
@@ -1228,7 +1319,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  remaining arguments to the format</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1239,13 +1330,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8616"
+NAME="AEN8900"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDCTXT"
 ></A
->&#62;struct xmlValidCtxt</H3
+>struct xmlValidCtxt</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1275,23 +1366,33 @@ CLASS="PROGRAMLISTING"
     int                vstateNr;      /* Depth of the validation stack */
     int                vstateMax;     /* Max depth of the validation stack */
     xmlValidState     *vstateTab;     /* array of validation states */
+
+#ifdef LIBXML_REGEXP_ENABLED
+    xmlAutomataPtr            am;     /* the automata */
+    xmlAutomataStatePtr    state;     /* used to build the automata */
+#else
+    void                     *am;
+    void                  *state;
+#endif
 };</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
 ></P
+><P
+></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8621"
+NAME="AEN8906"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDCTXTPTR"
 ></A
->&#62;xmlValidCtxtPtr</H3
+>xmlValidCtxtPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1311,13 +1412,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8626"
+NAME="AEN8911"
 ></A
 ><H3
 ><A
 NAME="XMLNOTATIONTABLEPTR"
 ></A
->&#62;xmlNotationTablePtr</H3
+>xmlNotationTablePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1337,13 +1438,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8631"
+NAME="AEN8916"
 ></A
 ><H3
 ><A
 NAME="XMLELEMENTTABLEPTR"
 ></A
->&#62;xmlElementTablePtr</H3
+>xmlElementTablePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1363,13 +1464,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8636"
+NAME="AEN8921"
 ></A
 ><H3
 ><A
 NAME="XMLATTRIBUTETABLEPTR"
 ></A
->&#62;xmlAttributeTablePtr</H3
+>xmlAttributeTablePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1389,13 +1490,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8641"
+NAME="AEN8926"
 ></A
 ><H3
 ><A
 NAME="XMLIDTABLEPTR"
 ></A
->&#62;xmlIDTablePtr</H3
+>xmlIDTablePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1415,13 +1516,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8646"
+NAME="AEN8931"
 ></A
 ><H3
 ><A
 NAME="XMLREFTABLEPTR"
 ></A
->&#62;xmlRefTablePtr</H3
+>xmlRefTablePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1441,13 +1542,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8651"
+NAME="AEN8936"
 ></A
 ><H3
 ><A
 NAME="XMLSPLITQNAME2"
 ></A
->&#62;xmlSplitQName2 ()</H3
+>xmlSplitQName2 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1484,9 +1585,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8663"
-></A
-><P
+NAME="AEN8948"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1535,16 +1634,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >NULL if not a QName, otherwise the local part, and prefix
-  is updated to get the Prefix if any.</TD
+is updated to get the Prefix if any.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1555,13 +1657,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8680"
+NAME="AEN8965"
 ></A
 ><H3
 ><A
 NAME="XMLADDNOTATIONDECL"
 ></A
->&#62;xmlAddNotationDecl ()</H3
+>xmlAddNotationDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1604,9 +1706,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8692"
-></A
-><P
+NAME="AEN8977"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1706,9 +1806,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1725,13 +1828,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8721"
+NAME="AEN9006"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYNOTATIONTABLE"
 ></A
->&#62;xmlCopyNotationTable ()</H3
+>xmlCopyNotationTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1758,9 +1861,7 @@ HREF="libxml-valid.html#XMLNOTATIONTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8729"
-></A
-><P
+NAME="AEN9014"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1792,9 +1893,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1811,13 +1915,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8742"
+NAME="AEN9027"
 ></A
 ><H3
 ><A
 NAME="XMLFREENOTATIONTABLE"
 ></A
->&#62;xmlFreeNotationTable ()</H3
+>xmlFreeNotationTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1841,9 +1945,7 @@ HREF="libxml-valid.html#XMLNOTATIONTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8749"
-></A
-><P
+NAME="AEN9034"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1879,13 +1981,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8758"
+NAME="AEN9043"
 ></A
 ><H3
 ><A
 NAME="XMLDUMPNOTATIONDECL"
 ></A
->&#62;xmlDumpNotationDecl ()</H3
+>xmlDumpNotationDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1913,9 +2015,7 @@ HREF="libxml-tree.html#XMLNOTATIONPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8766"
-></A
-><P
+NAME="AEN9051"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1968,13 +2068,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8779"
+NAME="AEN9064"
 ></A
 ><H3
 ><A
 NAME="XMLDUMPNOTATIONTABLE"
 ></A
->&#62;xmlDumpNotationTable ()</H3
+>xmlDumpNotationTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2002,9 +2102,7 @@ HREF="libxml-valid.html#XMLNOTATIONTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8787"
-></A
-><P
+NAME="AEN9072"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2057,13 +2155,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8800"
+NAME="AEN9085"
 ></A
 ><H3
 ><A
 NAME="XMLNEWELEMENTCONTENT"
 ></A
->&#62;xmlNewElementContent ()</H3
+>xmlNewElementContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2094,9 +2192,7 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTTYPE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8809"
-></A
-><P
+NAME="AEN9094"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2145,9 +2241,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2164,13 +2263,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8826"
+NAME="AEN9111"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYELEMENTCONTENT"
 ></A
->&#62;xmlCopyElementContent ()</H3
+>xmlCopyElementContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2197,9 +2296,7 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8834"
-></A
-><P
+NAME="AEN9119"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2231,9 +2328,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2250,13 +2350,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8847"
+NAME="AEN9132"
 ></A
 ><H3
 ><A
 NAME="XMLFREEELEMENTCONTENT"
 ></A
->&#62;xmlFreeElementContent ()</H3
+>xmlFreeElementContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2280,9 +2380,7 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8854"
-></A
-><P
+NAME="AEN9139"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2318,13 +2416,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8863"
+NAME="AEN9148"
 ></A
 ><H3
 ><A
 NAME="XMLSNPRINTFELEMENTCONTENT"
 ></A
->&#62;xmlSnprintfElementContent ()</H3
+>xmlSnprintfElementContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2352,9 +2450,7 @@ Intended just for the debug routine</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8870"
-></A
-><P
+NAME="AEN9155"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2441,13 +2537,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8891"
+NAME="AEN9176"
 ></A
 ><H3
 ><A
 NAME="XMLSPRINTFELEMENTCONTENT"
 ></A
->&#62;xmlSprintfElementContent ()</H3
+>xmlSprintfElementContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2473,9 +2569,7 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8898"
-></A
-><P
+NAME="AEN9183"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2545,13 +2639,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8915"
+NAME="AEN9200"
 ></A
 ><H3
 ><A
 NAME="XMLADDELEMENTDECL"
 ></A
->&#62;xmlAddElementDecl ()</H3
+>xmlAddElementDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2594,9 +2688,7 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8927"
-></A
-><P
+NAME="AEN9212"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2696,9 +2788,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2715,13 +2810,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8956"
+NAME="AEN9241"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYELEMENTTABLE"
 ></A
->&#62;xmlCopyElementTable ()</H3
+>xmlCopyElementTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2748,9 +2843,7 @@ HREF="libxml-valid.html#XMLELEMENTTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8964"
-></A
-><P
+NAME="AEN9249"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2782,9 +2875,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2801,13 +2897,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8977"
+NAME="AEN9262"
 ></A
 ><H3
 ><A
 NAME="XMLFREEELEMENTTABLE"
 ></A
->&#62;xmlFreeElementTable ()</H3
+>xmlFreeElementTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2831,9 +2927,7 @@ HREF="libxml-valid.html#XMLELEMENTTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8984"
-></A
-><P
+NAME="AEN9269"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2869,13 +2963,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8993"
+NAME="AEN9278"
 ></A
 ><H3
 ><A
 NAME="XMLDUMPELEMENTTABLE"
 ></A
->&#62;xmlDumpElementTable ()</H3
+>xmlDumpElementTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2903,9 +2997,7 @@ HREF="libxml-valid.html#XMLELEMENTTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9001"
-></A
-><P
+NAME="AEN9286"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2958,13 +3050,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9014"
+NAME="AEN9299"
 ></A
 ><H3
 ><A
 NAME="XMLDUMPELEMENTDECL"
 ></A
->&#62;xmlDumpElementDecl ()</H3
+>xmlDumpElementDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2993,9 +3085,7 @@ DTD definition</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9022"
-></A
-><P
+NAME="AEN9307"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3048,13 +3138,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9035"
+NAME="AEN9320"
 ></A
 ><H3
 ><A
 NAME="XMLCREATEENUMERATION"
 ></A
->&#62;xmlCreateEnumeration ()</H3
+>xmlCreateEnumeration ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3081,9 +3171,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9043"
-></A
-><P
+NAME="AEN9328"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3115,16 +3203,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlEnumerationPtr just created or NULL in case
-               of error.</TD
+of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -3135,13 +3226,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9056"
+NAME="AEN9341"
 ></A
 ><H3
 ><A
 NAME="XMLFREEENUMERATION"
 ></A
->&#62;xmlFreeEnumeration ()</H3
+>xmlFreeEnumeration ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3165,9 +3256,7 @@ HREF="libxml-tree.html#XMLENUMERATIONPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9063"
-></A
-><P
+NAME="AEN9348"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3203,13 +3292,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9072"
+NAME="AEN9357"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYENUMERATION"
 ></A
->&#62;xmlCopyEnumeration ()</H3
+>xmlCopyEnumeration ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3236,9 +3325,7 @@ HREF="libxml-tree.html#XMLENUMERATIONPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9080"
-></A
-><P
+NAME="AEN9365"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3270,16 +3357,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlEnumerationPtr just created or NULL in case
-               of error.</TD
+of error.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -3290,13 +3380,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9093"
+NAME="AEN9378"
 ></A
 ><H3
 ><A
 NAME="XMLADDATTRIBUTEDECL"
 ></A
->&#62;xmlAddAttributeDecl ()</H3
+>xmlAddAttributeDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3361,9 +3451,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9110"
-></A
-><P
+NAME="AEN9395"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3531,9 +3619,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3550,13 +3641,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9155"
+NAME="AEN9440"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYATTRIBUTETABLE"
 ></A
->&#62;xmlCopyAttributeTable ()</H3
+>xmlCopyAttributeTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3583,9 +3674,7 @@ HREF="libxml-valid.html#XMLATTRIBUTETABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9163"
-></A
-><P
+NAME="AEN9448"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3617,9 +3706,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3636,13 +3728,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9176"
+NAME="AEN9461"
 ></A
 ><H3
 ><A
 NAME="XMLFREEATTRIBUTETABLE"
 ></A
->&#62;xmlFreeAttributeTable ()</H3
+>xmlFreeAttributeTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3666,9 +3758,7 @@ HREF="libxml-valid.html#XMLATTRIBUTETABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9183"
-></A
-><P
+NAME="AEN9468"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3704,13 +3794,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9192"
+NAME="AEN9477"
 ></A
 ><H3
 ><A
 NAME="XMLDUMPATTRIBUTETABLE"
 ></A
->&#62;xmlDumpAttributeTable ()</H3
+>xmlDumpAttributeTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3738,9 +3828,7 @@ HREF="libxml-valid.html#XMLATTRIBUTETABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9200"
-></A
-><P
+NAME="AEN9485"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3793,13 +3881,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9213"
+NAME="AEN9498"
 ></A
 ><H3
 ><A
 NAME="XMLDUMPATTRIBUTEDECL"
 ></A
->&#62;xmlDumpAttributeDecl ()</H3
+>xmlDumpAttributeDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3828,9 +3916,7 @@ DTD definition</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9221"
-></A
-><P
+NAME="AEN9506"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3883,13 +3969,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9234"
+NAME="AEN9519"
 ></A
 ><H3
 ><A
 NAME="XMLADDID"
 ></A
->&#62;xmlAddID ()</H3
+>xmlAddID ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3928,9 +4014,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9245"
-></A
-><P
+NAME="AEN9530"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4013,9 +4097,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4032,13 +4119,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9270"
+NAME="AEN9555"
 ></A
 ><H3
 ><A
 NAME="XMLFREEIDTABLE"
 ></A
->&#62;xmlFreeIDTable ()</H3
+>xmlFreeIDTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4062,9 +4149,7 @@ HREF="libxml-valid.html#XMLIDTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9277"
-></A
-><P
+NAME="AEN9562"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4100,13 +4185,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9286"
+NAME="AEN9571"
 ></A
 ><H3
 ><A
 NAME="XMLGETID"
 ></A
->&#62;xmlGetID ()</H3
+>xmlGetID ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4137,9 +4222,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9295"
-></A
-><P
+NAME="AEN9580"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4188,9 +4271,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4207,13 +4293,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9312"
+NAME="AEN9597"
 ></A
 ><H3
 ><A
 NAME="XMLISID"
 ></A
->&#62;xmlIsID ()</H3
+>xmlIsID ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4240,16 +4326,15 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ></TABLE
 ><P
 >Determine whether an attribute is of type ID. In case we have DTD(s)
-then this is simple, otherwise we use an heuristic: name ID (upper
-or lowercase).</P
+then this is done if DTD loading has been requested. In the case
+of HTML documents parsed with the HTML parser, then ID detection is
+done systematically.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9321"
-></A
-><P
+NAME="AEN9606"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4315,9 +4400,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4334,13 +4422,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9342"
+NAME="AEN9627"
 ></A
 ><H3
 ><A
 NAME="XMLREMOVEID"
 ></A
->&#62;xmlRemoveID ()</H3
+>xmlRemoveID ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4368,9 +4456,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9350"
-></A
-><P
+NAME="AEN9635"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4419,9 +4505,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4438,13 +4527,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9367"
+NAME="AEN9652"
 ></A
 ><H3
 ><A
 NAME="XMLADDREF"
 ></A
->&#62;xmlAddRef ()</H3
+>xmlAddRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4483,9 +4572,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9378"
-></A
-><P
+NAME="AEN9663"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4568,9 +4655,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4587,13 +4677,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9403"
+NAME="AEN9688"
 ></A
 ><H3
 ><A
 NAME="XMLFREEREFTABLE"
 ></A
->&#62;xmlFreeRefTable ()</H3
+>xmlFreeRefTable ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4617,9 +4707,7 @@ HREF="libxml-valid.html#XMLREFTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9410"
-></A
-><P
+NAME="AEN9695"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4655,13 +4743,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9419"
+NAME="AEN9704"
 ></A
 ><H3
 ><A
 NAME="XMLISREF"
 ></A
->&#62;xmlIsRef ()</H3
+>xmlIsRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4695,9 +4783,7 @@ or lowercase).</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9428"
-></A
-><P
+NAME="AEN9713"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4763,9 +4849,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4782,13 +4871,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9449"
+NAME="AEN9734"
 ></A
 ><H3
 ><A
 NAME="XMLREMOVEREF"
 ></A
->&#62;xmlRemoveRef ()</H3
+>xmlRemoveRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4816,9 +4905,7 @@ HREF="libxml-tree.html#XMLATTRPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9457"
-></A
-><P
+NAME="AEN9742"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4867,9 +4954,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4886,13 +4976,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9474"
+NAME="AEN9759"
 ></A
 ><H3
 ><A
 NAME="XMLGETREFS"
 ></A
->&#62;xmlGetRefs ()</H3
+>xmlGetRefs ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4923,9 +5013,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9483"
-></A
-><P
+NAME="AEN9768"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4974,9 +5062,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4993,13 +5084,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9500"
+NAME="AEN9785"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEROOT"
 ></A
->&#62;xmlValidateRoot ()</H3
+>xmlValidateRoot ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5024,16 +5115,14 @@ HREF="libxml-tree.html#XMLDOCPTR"
 >Try to validate a the root element
 basically it does the following check as described by the
 XML-1.0 recommendation:
- - [ VC: Root Element Type ]
+- [ VC: Root Element Type ]
 it doesn't try to recurse or apply other check to the element</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9508"
-></A
-><P
+NAME="AEN9793"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5082,9 +5171,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5101,13 +5193,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9525"
+NAME="AEN9810"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEELEMENTDECL"
 ></A
->&#62;xmlValidateElementDecl ()</H3
+>xmlValidateElementDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5136,17 +5228,15 @@ HREF="libxml-tree.html#XMLELEMENTPTR"
 >Try to validate a single element definition
 basically it does the following checks as described by the
 XML-1.0 recommendation:
- - [ VC: One ID per Element Type ]
- - [ VC: No Duplicate Types ]
- - [ VC: Unique Element Type Declaration ]</P
+- [ VC: One ID per Element Type ]
+- [ VC: No Duplicate Types ]
+- [ VC: Unique Element Type Declaration ]</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9534"
-></A
-><P
+NAME="AEN9819"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5212,9 +5302,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5231,13 +5324,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9555"
+NAME="AEN9840"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDNORMALIZEATTRIBUTEVALUE"
 ></A
->&#62;xmlValidNormalizeAttributeValue ()</H3
+>xmlValidNormalizeAttributeValue ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5291,9 +5384,7 @@ HREF="X20"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9570"
-></A
-><P
+NAME="AEN9855"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5376,16 +5467,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >a new normalized string if normalization is needed, NULL otherwise
-     the caller must free the returned value.</TD
+the caller must free the returned value.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -5396,13 +5490,204 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9595"
+NAME="AEN9880"
+></A
+><H3
+><A
+NAME="XMLVALIDCTXTNORMALIZEATTRIBUTEVALUE"
+></A
+>xmlValidCtxtNormalizeAttributeValue ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    xmlValidCtxtNormalizeAttributeValue
+                                            (<A
+HREF="libxml-valid.html#XMLVALIDCTXTPTR"
+>xmlValidCtxtPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> doc,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> elem,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Does the validation related extra step of the normalization of attribute
+values:</P
+><P
+>If the declared value is not CDATA, then the XML processor must further
+process the normalized attribute value by discarding any leading and
+trailing space (<GTKDOCLINK
+HREF="X20"
+>x20</GTKDOCLINK
+>) characters, and by replacing sequences of space
+(<GTKDOCLINK
+HREF="X20"
+>x20</GTKDOCLINK
+>) characters by single space (<GTKDOCLINK
+HREF="X20"
+>x20</GTKDOCLINK
+>) character.</P
+><P
+>Also  check VC: Standalone Document Declaration in P32, and update
+ctxt-&gt;valid accordingly</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN9897"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the validation context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>doc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the document</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>elem</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the parent</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the attribute name</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the attribute value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a new normalized string if normalization is needed, NULL otherwise
+the caller must free the returned value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN9926"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEATTRIBUTEDECL"
 ></A
->&#62;xmlValidateAttributeDecl ()</H3
+>xmlValidateAttributeDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5431,9 +5716,9 @@ HREF="libxml-tree.html#XMLATTRIBUTEPTR"
 >Try to validate a single attribute definition
 basically it does the following checks as described by the
 XML-1.0 recommendation:
- - [ VC: Attribute Default Legal ]
- - [ VC: Enumeration ]
- - [ VC: ID Attribute Default ]</P
+- [ VC: Attribute Default Legal ]
+- [ VC: Enumeration ]
+- [ VC: ID Attribute Default ]</P
 ><P
 >The ID/IDREF uniqueness and matching are done separately</P
 ><P
@@ -5441,9 +5726,7 @@ XML-1.0 recommendation:
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9605"
-></A
-><P
+NAME="AEN9936"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5509,9 +5792,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5528,13 +5814,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9626"
+NAME="AEN9957"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEATTRIBUTEVALUE"
 ></A
->&#62;xmlValidateAttributeValue ()</H3
+>xmlValidateAttributeValue ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5577,9 +5863,7 @@ of type NMTOKENS must match Nmtokens.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9638"
-></A
-><P
+NAME="AEN9969"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5628,9 +5912,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5647,13 +5934,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9655"
+NAME="AEN9986"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATENOTATIONDECL"
 ></A
->&#62;xmlValidateNotationDecl ()</H3
+>xmlValidateNotationDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5682,16 +5969,14 @@ HREF="libxml-tree.html#XMLNOTATIONPTR"
 >Try to validate a single notation definition
 basically it does the following checks as described by the
 XML-1.0 recommendation:
- - it seems that no validity constraint exists on notation declarations
+- it seems that no validity constraint exists on notation declarations
 But this function get called anyway ...</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9664"
-></A
-><P
+NAME="AEN9995"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5757,9 +6042,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5776,13 +6064,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9685"
+NAME="AEN10016"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEDTD"
 ></A
->&#62;xmlValidateDtd ()</H3
+>xmlValidateDtd ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5816,9 +6104,7 @@ HREF="libxml-tree.html#XMLDTDPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9695"
-></A
-><P
+NAME="AEN10026"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5884,9 +6170,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5903,13 +6192,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9716"
+NAME="AEN10047"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEDTDFINAL"
 ></A
->&#62;xmlValidateDtdFinal ()</H3
+>xmlValidateDtdFinal ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5936,17 +6225,15 @@ subsets have been parsed</P
 ><P
 >basically it does the following checks described by the XML Rec
 - check that ENTITY and ENTITIES type attributes default or 
-  possible values matches one of the defined entities.
+possible values matches one of the defined entities.
 - check that NOTATION type attributes default or 
-  possible values matches one of the defined notations.</P
+possible values matches one of the defined notations.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9725"
-></A
-><P
+NAME="AEN10056"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5995,15 +6282,18 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->1 if valid or 0 otherwise</TD
+>1 if valid or 0 if invalid and -1 if not well-formed</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -6014,13 +6304,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9742"
+NAME="AEN10073"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEDOCUMENT"
 ></A
->&#62;xmlValidateDocument ()</H3
+>xmlValidateDocument ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6052,9 +6342,7 @@ and validate the document tree.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9751"
-></A
-><P
+NAME="AEN10082"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6103,9 +6391,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6122,13 +6413,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9768"
+NAME="AEN10099"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEELEMENT"
 ></A
->&#62;xmlValidateElement ()</H3
+>xmlValidateElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6160,9 +6451,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9777"
-></A
-><P
+NAME="AEN10108"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6228,9 +6517,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6247,13 +6539,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9798"
+NAME="AEN10129"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEONEELEMENT"
 ></A
->&#62;xmlValidateOneElement ()</H3
+>xmlValidateOneElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6282,8 +6574,8 @@ HREF="libxml-tree.html#XMLNODEPTR"
 >Try to validate a single element and it's attributes,
 basically it does the following checks as described by the
 XML-1.0 recommendation:
- - [ VC: Element Valid ]
- - [ VC: Required Attribute ]
+- [ VC: Element Valid ]
+- [ VC: Required Attribute ]
 Then call <A
 HREF="libxml-valid.html#XMLVALIDATEONEATTRIBUTE"
 >xmlValidateOneAttribute</A
@@ -6295,9 +6587,7 @@ HREF="libxml-valid.html#XMLVALIDATEONEATTRIBUTE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9809"
-></A
-><P
+NAME="AEN10140"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6363,9 +6653,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6382,13 +6675,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9830"
+NAME="AEN10161"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATEONEATTRIBUTE"
 ></A
->&#62;xmlValidateOneAttribute ()</H3
+>xmlValidateOneAttribute ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6425,14 +6718,14 @@ HREF="libxml-tree.html#XMLCHAR"
 >Try to validate a single attribute for an element
 basically it does the following checks as described by the
 XML-1.0 recommendation:
- - [ VC: Attribute Value Type ]
- - [ VC: Fixed Attribute Default ]
- - [ VC: Entity Name ]
- - [ VC: Name Token ]
- - [ VC: ID ]
- - [ VC: IDREF ]
- - [ VC: Entity Name ]
- - [ VC: Notation Attributes ]</P
+- [ VC: Attribute Value Type ]
+- [ VC: Fixed Attribute Default ]
+- [ VC: Entity Name ]
+- [ VC: Name Token ]
+- [ VC: ID ]
+- [ VC: IDREF ]
+- [ VC: Entity Name ]
+- [ VC: Notation Attributes ]</P
 ><P
 >The ID/IDREF uniqueness and matching are done separately</P
 ><P
@@ -6440,9 +6733,7 @@ XML-1.0 recommendation:
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9842"
-></A
-><P
+NAME="AEN10173"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6542,9 +6833,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6561,13 +6855,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9871"
+NAME="AEN10202"
 ></A
 ><H3
 ><A
-NAME="XMLVALIDATEDOCUMENTFINAL"
+NAME="XMLVALIDATEONENAMESPACE"
 ></A
->&#62;xmlValidateDocumentFinal ()</H3
+>xmlValidateOneNamespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6577,30 +6871,53 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         xmlValidateDocumentFinal        (<A
+>int         xmlValidateOneNamespace         (<A
 HREF="libxml-valid.html#XMLVALIDCTXTPTR"
 >xmlValidCtxtPtr</A
 > ctxt,
                                              <A
 HREF="libxml-tree.html#XMLDOCPTR"
 >xmlDocPtr</A
-> doc);</PRE
+> doc,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> elem,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *prefix,
+                                             <A
+HREF="libxml-tree.html#XMLNSPTR"
+>xmlNsPtr</A
+> ns,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Does the final step for the document validation once all the
-incremental validation steps have been completed</P
+>Try to validate a single namespace declaration for an element
+basically it does the following checks as described by the
+XML-1.0 recommendation:
+- [ VC: Attribute Value Type ]
+- [ VC: Fixed Attribute Default ]
+- [ VC: Entity Name ]
+- [ VC: Name Token ]
+- [ VC: ID ]
+- [ VC: IDREF ]
+- [ VC: Entity Name ]
+- [ VC: Notation Attributes ]</P
 ><P
->basically it does the following checks described by the XML Rec</P
+>The ID/IDREF uniqueness and matching are done separately</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9880"
-></A
-><P
+NAME="AEN10215"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6649,9 +6966,80 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>elem</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an element instance</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>prefix</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an namespace declaration instance</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the attribute value (without entities processing)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6668,13 +7056,121 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9897"
+NAME="AEN10248"
+></A
+><H3
+><A
+NAME="XMLVALIDATEDOCUMENTFINAL"
+></A
+>xmlValidateDocumentFinal ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlValidateDocumentFinal        (<A
+HREF="libxml-valid.html#XMLVALIDCTXTPTR"
+>xmlValidCtxtPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> doc);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Does the final step for the document validation once all the
+incremental validation steps have been completed</P
+><P
+>basically it does the following checks described by the XML Rec</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN10257"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the validation context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>doc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a document instance</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if valid or 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10274"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDATENOTATIONUSE"
 ></A
->&#62;xmlValidateNotationUse ()</H3
+>xmlValidateNotationUse ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6707,9 +7203,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9906"
-></A
-><P
+NAME="AEN10283"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6775,9 +7269,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6794,13 +7291,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9927"
+NAME="AEN10304"
 ></A
 ><H3
 ><A
 NAME="XMLISMIXEDELEMENT"
 ></A
->&#62;xmlIsMixedElement ()</H3
+>xmlIsMixedElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6829,9 +7326,7 @@ basically if it is supposed to accept text childs</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9935"
-></A
-><P
+NAME="AEN10312"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6880,9 +7375,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6899,13 +7397,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9952"
+NAME="AEN10329"
 ></A
 ><H3
 ><A
 NAME="XMLGETDTDATTRDESC"
 ></A
->&#62;xmlGetDtdAttrDesc ()</H3
+>xmlGetDtdAttrDesc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6941,9 +7439,7 @@ this element.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9962"
-></A
-><P
+NAME="AEN10339"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7009,9 +7505,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7028,13 +7527,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9983"
+NAME="AEN10360"
 ></A
 ><H3
 ><A
 NAME="XMLGETDTDQATTRDESC"
 ></A
->&#62;xmlGetDtdQAttrDesc ()</H3
+>xmlGetDtdQAttrDesc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7074,9 +7573,7 @@ this element.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9994"
-></A
-><P
+NAME="AEN10371"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7159,9 +7656,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7178,13 +7678,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10019"
+NAME="AEN10396"
 ></A
 ><H3
 ><A
 NAME="XMLGETDTDNOTATIONDESC"
 ></A
->&#62;xmlGetDtdNotationDesc ()</H3
+>xmlGetDtdNotationDesc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7215,9 +7715,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10028"
-></A
-><P
+NAME="AEN10405"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7266,9 +7764,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7285,13 +7786,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10045"
+NAME="AEN10422"
 ></A
 ><H3
 ><A
 NAME="XMLGETDTDQELEMENTDESC"
 ></A
->&#62;xmlGetDtdQElementDesc ()</H3
+>xmlGetDtdQElementDesc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7326,9 +7827,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10055"
-></A
-><P
+NAME="AEN10432"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7394,9 +7893,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7413,13 +7915,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10076"
+NAME="AEN10453"
 ></A
 ><H3
 ><A
 NAME="XMLGETDTDELEMENTDESC"
 ></A
->&#62;xmlGetDtdElementDesc ()</H3
+>xmlGetDtdElementDesc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7450,9 +7952,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10085"
-></A
-><P
+NAME="AEN10462"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7501,9 +8001,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7520,13 +8023,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10102"
+NAME="AEN10479"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDGETVALIDELEMENTS"
 ></A
->&#62;xmlValidGetValidElements ()</H3
+>xmlValidGetValidElements ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7567,11 +8070,11 @@ CLASS="PARAMETER"
 >next</I
 ></TT
 > in the following ways:
- to insert before 'node': xmlValidGetValidElements(node-&gt;prev, node, ...
- to insert next 'node': xmlValidGetValidElements(node, node-&gt;next, ...
- to replace 'node': xmlValidGetValidElements(node-&gt;prev, node-&gt;next, ...
- to prepend a child to 'node': xmlValidGetValidElements(NULL, node-&gt;childs,
- to append a child to 'node': xmlValidGetValidElements(node-&gt;last, NULL, ...</P
+to insert before 'node': xmlValidGetValidElements(node-&gt;prev, node, ...
+to insert next 'node': xmlValidGetValidElements(node, node-&gt;next, ...
+to replace 'node': xmlValidGetValidElements(node-&gt;prev, node-&gt;next, ...
+to prepend a child to 'node': xmlValidGetValidElements(NULL, node-&gt;childs,
+to append a child to 'node': xmlValidGetValidElements(node-&gt;last, NULL, ...</P
 ><P
 >pointers to the element names are inserted at the beginning of the array
 and do not need to be freed.</P
@@ -7580,9 +8083,7 @@ and do not need to be freed.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10114"
-></A
-><P
+NAME="AEN10491"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7665,22 +8166,25 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of element in the list, or -1 in case of error. If
-   the function returns the value <TT
+the function returns the value <TT
 CLASS="PARAMETER"
 ><I
 >max</I
 ></TT
 > the caller is invited to grow the
-   receiving array and retry.</TD
+receiving array and retry.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -7691,13 +8195,13 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10140"
+NAME="AEN10517"
 ></A
 ><H3
 ><A
 NAME="XMLVALIDGETPOTENTIALCHILDREN"
 ></A
->&#62;xmlValidGetPotentialChildren ()</H3
+>xmlValidGetPotentialChildren ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7727,9 +8231,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN10148"
-></A
-><P
+NAME="AEN10525"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7812,15 +8314,464 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the number of element in the list, or -1 in case of error.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10550"
+></A
+><H3
+><A
+NAME="XMLVALIDATENAMEVALUE"
+></A
+>xmlValidateNameValue ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlValidateNameValue            (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Validate that the given value match Name production</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN10557"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an Name value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if valid or 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10570"
+></A
+><H3
+><A
+NAME="XMLVALIDATENAMESVALUE"
+></A
+>xmlValidateNamesValue ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlValidateNamesValue           (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Validate that the given value match Names production</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN10577"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an Names value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if valid or 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10590"
+></A
+><H3
+><A
+NAME="XMLVALIDATENMTOKENVALUE"
+></A
+>xmlValidateNmtokenValue ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlValidateNmtokenValue         (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Validate that the given value match Nmtoken production</P
+><P
+>[ VC: Name Token ]</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN10598"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an Nmtoken value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if valid or 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10611"
+></A
+><H3
+><A
+NAME="XMLVALIDATENMTOKENSVALUE"
+></A
+>xmlValidateNmtokensValue ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlValidateNmtokensValue        (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Validate that the given value match Nmtokens production</P
+><P
+>[ VC: Name Token ]</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN10619"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an Nmtokens value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 if valid or 0 otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10632"
+></A
+><H3
+><A
+NAME="XMLVALIDBUILDCONTENTMODEL"
+></A
+>xmlValidBuildContentModel ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlValidBuildContentModel       (<A
+HREF="libxml-valid.html#XMLVALIDCTXTPTR"
+>xmlValidCtxtPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLELEMENTPTR"
+>xmlElementPtr</A
+> elem);</PRE
+></TD
+></TR
+></TABLE
+><P
+>(Re)Build the automata associated to the content model of this
+element</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN10640"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a validation context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>elem</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an element declaration node</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>1 in case of success, 0 in case of error</TD
 ></TR
 ></TBODY
 ></TABLE

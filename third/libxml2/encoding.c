@@ -23,6 +23,7 @@
  * Original code for IsoLatin1 and UTF-16 by "Martin J. Duerst" <duerst@w3.org>
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #include <string.h>
@@ -38,8 +39,8 @@
 #include <errno.h>
 #endif
 #endif
-#include <libxml/xmlmemory.h>
 #include <libxml/encoding.h>
+#include <libxml/xmlmemory.h>
 #ifdef LIBXML_HTML_ENABLED
 #include <libxml/HTMLparser.h>
 #endif
@@ -134,7 +135,7 @@ xmlUTF8Strlen(const xmlChar *utf) {
  * Returns the char value or -1 in case of error and update @len with the
  *        number of bytes used
  */
-static int
+int
 xmlGetUTF8Char(const unsigned char *utf, int *len) {
     unsigned int c;
 
@@ -192,7 +193,7 @@ error:
 }
 
 /**
- * xmlCheckUTF8: Check utf-8 string for legality.
+ * xmlCheckUTF8:
  * @utf: Pointer to putative utf-8 encoded string.
  *
  * Checks @utf for being valid utf-8. @utf is assumed to be
@@ -559,34 +560,37 @@ isolat1ToUTF8(unsigned char* out, int *outlen,
               const unsigned char* in, int *inlen) {
     unsigned char* outstart = out;
     const unsigned char* base = in;
-    const unsigned char* processed = in;
     unsigned char* outend = out + *outlen;
     const unsigned char* inend;
-    unsigned int c;
+    const unsigned char* instop;
+    xmlChar c = *in;
 
     inend = in + (*inlen);
-    while (in < inend) {
-	c = *in++;
-
-        if (out >= outend)
-	    break;
-
-        if (c < 0x80) {
-	    *out++ =  c;
-	    processed++;
-	    continue;
-	} else {
+    instop = inend;
+    
+    while (in < inend && out < outend - 1) {
+    	if (c >= 0x80) {
 	    *out++= ((c >>  6) & 0x1F) | 0xC0;
-            if (out >= outend)
-		break;
             *out++= (c & 0x3F) | 0x80;
-	    processed++;
-        }
+	    ++in;
+	    c = *in;
+	}
+	if (instop - in > outend - out) instop = in + (outend - out); 
+	while (c < 0x80 && in < instop) {
+	    *out++ =  c;
+	    ++in;
+	    c = *in;
+	}
+    }	
+    if (in < inend && out < outend && c < 0x80) {
+        *out++ =  c;
+	++in;
     }
     *outlen = out - outstart;
-    *inlen = processed - base;
+    *inlen = in - base;
     return(0);
 }
+
 
 /**
  * UTF8Toisolat1:
@@ -1477,9 +1481,10 @@ static xmlCharEncodingHandlerPtr xmlDefaultCharEncodingHandler = NULL;
  * @output:  the xmlCharEncodingOutputFunc to write that encoding
  *
  * Create and registers an xmlCharEncodingHandler.
+ *
  * Returns the xmlCharEncodingHandlerPtr created (or NULL in case of error).
  */
-static xmlCharEncodingHandlerPtr
+xmlCharEncodingHandlerPtr
 xmlNewCharEncodingHandler(const char *name, 
                           xmlCharEncodingInputFunc input,
                           xmlCharEncodingOutputFunc output) {
@@ -2115,7 +2120,7 @@ xmlCharEncInFunc(xmlCharEncodingHandler * handler, xmlBufferPtr out,
      */
     if (ret == -3)
         ret = 0;
-    return (ret);
+    return (written);
 }
 
 /**
@@ -2266,7 +2271,7 @@ retry:
 		 * and continue the transcoding phase, hoping the error
 		 * did not mangle the encoder state.
 		 */
-		sprintf((char *) charref, "&#%d;", cur);
+		snprintf((char *) charref, sizeof(charref), "&#%d;", cur);
 		xmlBufferShrink(in, len);
 		xmlBufferAddHead(in, charref, -1);
 

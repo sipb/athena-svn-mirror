@@ -4,7 +4,7 @@
 >hash</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-HASH"
->hash</A
-></H1
+NAME="LIBXML-HASH">hash</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN24413"
+NAME="AEN25507"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN24413"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN24416"
-></A
-><H2
+NAME="AEN25510"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -170,7 +166,7 @@ HREF="libxml-hash.html#XMLHASHCOPIER"
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *name);
-void*       (<A
+void        (<A
 HREF="libxml-hash.html#XMLHASHSCANNER"
 >*xmlHashScanner</A
 >)               (void *payload,
@@ -524,7 +520,7 @@ HREF="libxml-hash.html#XMLHASHSCANNERFULL"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN24514"
+NAME="AEN25608"
 ></A
 ><H2
 >Description</H2
@@ -534,20 +530,20 @@ NAME="AEN24514"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN24517"
+NAME="AEN25611"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24519"
+NAME="AEN25613"
 ></A
 ><H3
 ><A
 NAME="XMLHASHTABLE"
 ></A
->&#62;struct xmlHashTable</H3
+>struct xmlHashTable</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -567,13 +563,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24524"
+NAME="AEN25618"
 ></A
 ><H3
 ><A
 NAME="XMLHASHTABLEPTR"
 ></A
->&#62;xmlHashTablePtr</H3
+>xmlHashTablePtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -593,13 +589,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24529"
+NAME="AEN25623"
 ></A
 ><H3
 ><A
 NAME="XMLHASHDEALLOCATOR"
 ></A
->&#62;xmlHashDeallocator ()</H3
+>xmlHashDeallocator ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -618,13 +614,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TR
 ></TABLE
 ><P
+>Callback to free data from a hash.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24535"
-></A
-><P
+NAME="AEN25630"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -649,7 +645,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the data in the hash</TD
 ></TR
 ><TR
 ><TD
@@ -666,7 +662,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the name associated</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -677,13 +673,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24548"
+NAME="AEN25643"
 ></A
 ><H3
 ><A
 NAME="XMLHASHCOPIER"
 ></A
->&#62;xmlHashCopier ()</H3
+>xmlHashCopier ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -702,13 +698,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TR
 ></TABLE
 ><P
+>Callback to copy data from a hash.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24554"
-></A
-><P
+NAME="AEN25650"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -733,7 +729,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the data in the hash</TD
 ></TR
 ><TR
 ><TD
@@ -750,7 +746,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the name associated</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -761,13 +757,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24567"
+NAME="AEN25663"
 ></A
 ><H3
 ><A
 NAME="XMLHASHSCANNER"
 ></A
->&#62;xmlHashScanner ()</H3
+>xmlHashScanner ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -777,7 +773,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void*       (*xmlHashScanner)               (void *payload,
+>void        (*xmlHashScanner)               (void *payload,
                                              void *data,
                                              <A
 HREF="libxml-tree.html#XMLCHAR"
@@ -787,13 +783,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TR
 ></TABLE
 ><P
+>Callback when scanning data in a hash with the simple scanner.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24573"
-></A
-><P
+NAME="AEN25670"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -818,7 +814,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the data in the hash</TD
 ></TR
 ><TR
 ><TD
@@ -835,7 +831,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  extra scannner data</TD
 ></TR
 ><TR
 ><TD
@@ -852,7 +848,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the name associated</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -863,13 +859,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24590"
+NAME="AEN25687"
 ></A
 ><H3
 ><A
 NAME="XMLHASHSCANNERFULL"
 ></A
->&#62;xmlHashScannerFull ()</H3
+>xmlHashScannerFull ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -897,13 +893,13 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TR
 ></TABLE
 ><P
+>Callback when scanning data in a hash with the full scanner.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24598"
-></A
-><P
+NAME="AEN25696"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -928,7 +924,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the data in the hash</TD
 ></TR
 ><TR
 ><TD
@@ -945,7 +941,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  extra scannner data</TD
 ></TR
 ><TR
 ><TD
@@ -962,7 +958,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the name associated</TD
 ></TR
 ><TR
 ><TD
@@ -979,7 +975,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the second name associated</TD
 ></TR
 ><TR
 ><TD
@@ -996,7 +992,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the third name associated</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1007,13 +1003,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24623"
+NAME="AEN25721"
 ></A
 ><H3
 ><A
 NAME="XMLHASHCREATE"
 ></A
->&#62;xmlHashCreate ()</H3
+>xmlHashCreate ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1037,9 +1033,7 @@ HREF="libxml-hash.html#XMLHASHTABLEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24630"
-></A
-><P
+NAME="AEN25728"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1071,9 +1065,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1090,13 +1087,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24643"
+NAME="AEN25741"
 ></A
 ><H3
 ><A
 NAME="XMLHASHFREE"
 ></A
->&#62;xmlHashFree ()</H3
+>xmlHashFree ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1135,9 +1132,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24653"
-></A
-><P
+NAME="AEN25751"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1190,13 +1185,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24666"
+NAME="AEN25764"
 ></A
 ><H3
 ><A
 NAME="XMLHASHADDENTRY"
 ></A
->&#62;xmlHashAddEntry ()</H3
+>xmlHashAddEntry ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1241,9 +1236,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24677"
-></A
-><P
+NAME="AEN25775"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1309,9 +1302,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1328,13 +1324,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24698"
+NAME="AEN25796"
 ></A
 ><H3
 ><A
 NAME="XMLHASHUPDATEENTRY"
 ></A
->&#62;xmlHashUpdateEntry ()</H3
+>xmlHashUpdateEntry ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1394,9 +1390,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24712"
-></A
-><P
+NAME="AEN25810"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1479,9 +1473,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1498,13 +1495,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24737"
+NAME="AEN25835"
 ></A
 ><H3
 ><A
 NAME="XMLHASHADDENTRY2"
 ></A
->&#62;xmlHashAddEntry2 ()</H3
+>xmlHashAddEntry2 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1558,9 +1555,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24750"
-></A
-><P
+NAME="AEN25848"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1643,9 +1638,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1662,13 +1660,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24775"
+NAME="AEN25873"
 ></A
 ><H3
 ><A
 NAME="XMLHASHUPDATEENTRY2"
 ></A
->&#62;xmlHashUpdateEntry2 ()</H3
+>xmlHashUpdateEntry2 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1732,9 +1730,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24790"
-></A
-><P
+NAME="AEN25888"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1834,9 +1830,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1853,13 +1852,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24819"
+NAME="AEN25917"
 ></A
 ><H3
 ><A
 NAME="XMLHASHADDENTRY3"
 ></A
->&#62;xmlHashAddEntry3 ()</H3
+>xmlHashAddEntry3 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1923,9 +1922,7 @@ errors.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24834"
-></A
-><P
+NAME="AEN25932"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2025,9 +2022,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2044,13 +2044,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24863"
+NAME="AEN25961"
 ></A
 ><H3
 ><A
 NAME="XMLHASHUPDATEENTRY3"
 ></A
->&#62;xmlHashUpdateEntry3 ()</H3
+>xmlHashUpdateEntry3 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2123,9 +2123,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24880"
-></A
-><P
+NAME="AEN25978"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2242,9 +2240,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2261,13 +2262,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24913"
+NAME="AEN26011"
 ></A
 ><H3
 ><A
 NAME="XMLHASHREMOVEENTRY"
 ></A
->&#62;xmlHashRemoveEntry ()</H3
+>xmlHashRemoveEntry ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2316,9 +2317,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24925"
-></A
-><P
+NAME="AEN26023"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2384,9 +2383,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2403,13 +2405,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24946"
+NAME="AEN26044"
 ></A
 ><H3
 ><A
 NAME="XMLHASHREMOVEENTRY2"
 ></A
->&#62;xmlHashRemoveEntry2 ()</H3
+>xmlHashRemoveEntry2 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2467,9 +2469,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN24960"
-></A
-><P
+NAME="AEN26058"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2552,9 +2552,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2571,13 +2574,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN24985"
+NAME="AEN26083"
 ></A
 ><H3
 ><A
 NAME="XMLHASHREMOVEENTRY3"
 ></A
->&#62;xmlHashRemoveEntry3 ()</H3
+>xmlHashRemoveEntry3 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2644,9 +2647,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25001"
-></A
-><P
+NAME="AEN26099"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2746,9 +2747,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2765,13 +2769,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25030"
+NAME="AEN26128"
 ></A
 ><H3
 ><A
 NAME="XMLHASHLOOKUP"
 ></A
->&#62;xmlHashLookup ()</H3
+>xmlHashLookup ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2804,9 +2808,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25039"
-></A
-><P
+NAME="AEN26137"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2859,13 +2861,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25052"
+NAME="AEN26150"
 ></A
 ><H3
 ><A
 NAME="XMLHASHLOOKUP2"
 ></A
->&#62;xmlHashLookup2 ()</H3
+>xmlHashLookup2 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2907,9 +2909,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25063"
-></A
-><P
+NAME="AEN26161"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2979,13 +2979,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25080"
+NAME="AEN26178"
 ></A
 ><H3
 ><A
 NAME="XMLHASHLOOKUP3"
 ></A
->&#62;xmlHashLookup3 ()</H3
+>xmlHashLookup3 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3036,9 +3036,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25093"
-></A
-><P
+NAME="AEN26191"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3125,13 +3123,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25114"
+NAME="AEN26212"
 ></A
 ><H3
 ><A
 NAME="XMLHASHCOPY"
 ></A
->&#62;xmlHashCopy ()</H3
+>xmlHashCopy ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3172,9 +3170,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25125"
-></A
-><P
+NAME="AEN26223"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3223,9 +3219,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3242,13 +3241,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25142"
+NAME="AEN26240"
 ></A
 ><H3
 ><A
 NAME="XMLHASHSIZE"
 ></A
->&#62;xmlHashSize ()</H3
+>xmlHashSize ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3277,9 +3276,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25150"
-></A
-><P
+NAME="AEN26248"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3311,9 +3308,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3331,13 +3331,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25163"
+NAME="AEN26261"
 ></A
 ><H3
 ><A
 NAME="XMLHASHSCAN"
 ></A
->&#62;xmlHashScan ()</H3
+>xmlHashScan ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3376,9 +3376,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25173"
-></A
-><P
+NAME="AEN26271"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3448,13 +3446,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25190"
+NAME="AEN26288"
 ></A
 ><H3
 ><A
 NAME="XMLHASHSCAN3"
 ></A
->&#62;xmlHashScan3 ()</H3
+>xmlHashScan3 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3522,9 +3520,7 @@ the comparison is considered to match.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25206"
-></A
-><P
+NAME="AEN26304"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3645,13 +3641,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25235"
+NAME="AEN26333"
 ></A
 ><H3
 ><A
 NAME="XMLHASHSCANFULL"
 ></A
->&#62;xmlHashScanFull ()</H3
+>xmlHashScanFull ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3690,9 +3686,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25245"
-></A
-><P
+NAME="AEN26343"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3762,13 +3756,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN25262"
+NAME="AEN26360"
 ></A
 ><H3
 ><A
 NAME="XMLHASHSCANFULL3"
 ></A
->&#62;xmlHashScanFull3 ()</H3
+>xmlHashScanFull3 ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3836,9 +3830,7 @@ the comparison is considered to match.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN25278"
-></A
-><P
+NAME="AEN26376"><P
 ></P
 ><TABLE
 BORDER="0"

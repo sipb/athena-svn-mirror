@@ -10,6 +10,7 @@
  * daniel@veillard.com
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 #ifdef LIBXML_DOCB_ENABLED
 
@@ -67,18 +68,6 @@ struct _docbEntityDesc {
     const char *desc;   /* the description */
 };
 
-#if 0
-docbElemDescPtr        docbTagLookup   (const xmlChar *tag); 
-docbEntityDescPtr      docbEntityLookup(const xmlChar *name);
-docbEntityDescPtr      docbEntityValueLookup(int value);
-
-int                    docbIsAutoClosed(docbDocPtr doc,
-                                        docbNodePtr elem);
-int                    docbAutoCloseTag(docbDocPtr doc,
-                                        const xmlChar *name,
-                                        docbNodePtr elem);
-
-#endif
 static int             docbParseCharRef(docbParserCtxtPtr ctxt);
 static xmlEntityPtr    docbParseEntityRef(docbParserCtxtPtr ctxt,
                                         xmlChar **str);
@@ -114,41 +103,59 @@ struct _docbElemDesc {
  *                                                                     *
  ************************************************************************/
 
-/*
- * Generic function for accessing stacks in the Parser Context
+/**
+ * docbnamePush:
+ * @ctxt:  a DocBook SGML parser context
+ * @value:  the element name
+ *
+ * Pushes a new element name on top of the name stack
+ *
+ * Returns 0 in case of error, the index in the stack otherwise
  */
+static int
+docbnamePush(docbParserCtxtPtr ctxt, xmlChar * value)
+{
+    if (ctxt->nameNr >= ctxt->nameMax) {
+        ctxt->nameMax *= 2;
+        ctxt->nameTab =
+            (xmlChar * *)xmlRealloc(ctxt->nameTab,
+                                    ctxt->nameMax *
+                                    sizeof(ctxt->nameTab[0]));
+        if (ctxt->nameTab == NULL) {
+            xmlGenericError(xmlGenericErrorContext, "realloc failed !\n");
+            return (0);
+        }
+    }
+    ctxt->nameTab[ctxt->nameNr] = value;
+    ctxt->name = value;
+    return (ctxt->nameNr++);
+}
+/**
+ * docbnamePop:
+ * @ctxt: a DocBook SGML parser context
+ *
+ * Pops the top element name from the name stack
+ *
+ * Returns the name just removed
+ */
+static xmlChar *
+docbnamePop(docbParserCtxtPtr ctxt)
+{
+    xmlChar *ret;
 
-#define PUSH_AND_POP(scope, type, name)                                        \
-scope int docb##name##Push(docbParserCtxtPtr ctxt, type value) {       \
-    if (ctxt->name##Nr >= ctxt->name##Max) {                           \
-       ctxt->name##Max *= 2;                                           \
-        ctxt->name##Tab = (type *) xmlRealloc(ctxt->name##Tab,         \
-                    ctxt->name##Max * sizeof(ctxt->name##Tab[0]));     \
-        if (ctxt->name##Tab == NULL) {                                 \
-           xmlGenericError(xmlGenericErrorContext, "realloc failed !\n");                      \
-           return(0);                                                  \
-       }                                                               \
-    }                                                                  \
-    ctxt->name##Tab[ctxt->name##Nr] = value;                           \
-    ctxt->name = value;                                                        \
-    return(ctxt->name##Nr++);                                          \
-}                                                                      \
-scope type docb##name##Pop(docbParserCtxtPtr ctxt) {                   \
-    type ret;                                                          \
-    if (ctxt->name##Nr < 0) return(0);                                 \
-    ctxt->name##Nr--;                                                  \
-    if (ctxt->name##Nr < 0) return(0);                                 \
-    if (ctxt->name##Nr > 0)                                            \
-       ctxt->name = ctxt->name##Tab[ctxt->name##Nr - 1];               \
-    else                                                               \
-        ctxt->name = NULL;                                             \
-    ret = ctxt->name##Tab[ctxt->name##Nr];                             \
-    ctxt->name##Tab[ctxt->name##Nr] = 0;                               \
-    return(ret);                                                       \
-}                                                                      \
-
-/* PUSH_AND_POP(static, xmlNodePtr, node) */
-PUSH_AND_POP(static, xmlChar*, name)
+    if (ctxt->nameNr < 0)
+        return (0);
+    ctxt->nameNr--;
+    if (ctxt->nameNr < 0)
+        return (0);
+    if (ctxt->nameNr > 0)
+        ctxt->name = ctxt->nameTab[ctxt->nameNr - 1];
+    else
+        ctxt->name = NULL;
+    ret = ctxt->nameTab[ctxt->nameNr];
+    ctxt->nameTab[ctxt->nameNr] = 0;
+    return (ret);
+}
 
 /*
  * Macros for accessing the content. Those should be used only by the parser,
@@ -310,7 +317,7 @@ docbCurrentChar(xmlParserCtxtPtr ctxt, int *len) {
                    ctxt->sax->error(ctxt->userData, 
                                     "Char 0x%X out of allowed range\n", val);
                ctxt->wellFormed = 0;
-               ctxt->disableSAX = 1;
+               if (ctxt->recovery == 0) ctxt->disableSAX = 1;
            }    
            return(val);
        } else {
@@ -2048,10 +2055,10 @@ docbookEntitiesTable[] = {
  * Macro used to grow the current buffer.
  */
 #define growBuffer(buffer) {                                           \
-    buffer##_size *= 2;                                                        \
-    buffer = (xmlChar *) xmlRealloc(buffer, buffer##_size * sizeof(xmlChar));  \
+    buffer##_size *= 2;                                                \
+    buffer = (xmlChar *) xmlRealloc(buffer, buffer##_size * sizeof(xmlChar)); \
     if (buffer == NULL) {                                              \
-       perror("realloc failed");                                       \
+       xmlGenericError(xmlGenericErrorContext, "realloc failed");      \
        return(NULL);                                                   \
     }                                                                  \
 }
@@ -2297,7 +2304,7 @@ docbEncodeEntities(unsigned char* out, int *outlen,
             */
            ent = docbEntityValueLookup(c);
            if (ent == NULL) {
-               sprintf(nbuf, "#%u", c);
+               snprintf(nbuf, sizeof(nbuf), "#%u", c);
                cp = nbuf;
            }
            else
@@ -2518,14 +2525,14 @@ docbParseCtxtExternalEntity(xmlParserCtxtPtr ctx, const xmlChar *URL,
 	    ctxt->sax->error(ctxt->userData,
 		"chunk is not well balanced\n");
 	ctxt->wellFormed = 0;
-	ctxt->disableSAX = 1;
+	if (ctxt->recovery == 0) ctxt->disableSAX = 1;
     } else if (RAW != 0) {
 	ctxt->errNo = XML_ERR_EXTRA_CONTENT;
 	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
 	    ctxt->sax->error(ctxt->userData,
 		"extra content at the end of well balanced chunk\n");
 	ctxt->wellFormed = 0;
-	ctxt->disableSAX = 1;
+	if (ctxt->recovery == 0) ctxt->disableSAX = 1;
     }
     if (ctxt->node != newDoc->children) {
 	ctxt->errNo = XML_ERR_NOT_WELL_BALANCED;
@@ -2533,7 +2540,7 @@ docbParseCtxtExternalEntity(xmlParserCtxtPtr ctx, const xmlChar *URL,
 	    ctxt->sax->error(ctxt->userData,
 		"chunk is not well balanced\n");
 	ctxt->wellFormed = 0;
-	ctxt->disableSAX = 1;
+	if (ctxt->recovery == 0) ctxt->disableSAX = 1;
     }
 
     if (!ctxt->wellFormed) {
@@ -2677,7 +2684,8 @@ docbParseSGMLAttribute(docbParserCtxtPtr ctxt, const xmlChar stop) {
     buffer_size = DOCB_PARSER_BIG_BUFFER_SIZE;
     buffer = (xmlChar *) xmlMalloc(buffer_size * sizeof(xmlChar));
     if (buffer == NULL) {
-       perror("docbParseSGMLAttribute: malloc failed");
+       xmlGenericError(xmlGenericErrorContext,
+	               "docbParseSGMLAttribute: malloc failed");
        return(NULL);
     }
     out = buffer;
@@ -3158,7 +3166,7 @@ docbParsePI(xmlParserCtxtPtr ctxt) {
 			ctxt->sax->error(ctxt->userData, 
     "PI declaration doesn't start and stop in the same entity\n");
 		    ctxt->wellFormed = 0;
-		    ctxt->disableSAX = 1;
+		    if (ctxt->recovery == 0) ctxt->disableSAX = 1;
 		}
 		SKIP(2);
 
@@ -3207,7 +3215,7 @@ docbParsePI(xmlParserCtxtPtr ctxt) {
 			ctxt->sax->error(ctxt->userData,
 			  "docbParsePI: PI %s space expected\n", target);
 		    ctxt->wellFormed = 0;
-		    ctxt->disableSAX = 1;
+		    if (ctxt->recovery == 0) ctxt->disableSAX = 1;
 		}
 		SKIP_BLANKS;
 	    }
@@ -3245,7 +3253,7 @@ docbParsePI(xmlParserCtxtPtr ctxt) {
 		    ctxt->sax->error(ctxt->userData,
 		      "docbParsePI: PI %s never end ...\n", target);
 		ctxt->wellFormed = 0;
-		ctxt->disableSAX = 1;
+		if (ctxt->recovery == 0) ctxt->disableSAX = 1;
 	    } else {
 		if (input != ctxt->input) {
 		    ctxt->errNo = XML_ERR_ENTITY_BOUNDARY;
@@ -3253,7 +3261,7 @@ docbParsePI(xmlParserCtxtPtr ctxt) {
 			ctxt->sax->error(ctxt->userData, 
     "PI declaration doesn't start and stop in the same entity\n");
 		    ctxt->wellFormed = 0;
-		    ctxt->disableSAX = 1;
+		    if (ctxt->recovery == 0) ctxt->disableSAX = 1;
 		}
 		SKIP(2);
 
@@ -3273,7 +3281,7 @@ docbParsePI(xmlParserCtxtPtr ctxt) {
 	        ctxt->sax->error(ctxt->userData,
 		       "docbParsePI : no target name\n");
 	    ctxt->wellFormed = 0;
-	    ctxt->disableSAX = 1;
+	    if (ctxt->recovery == 0) ctxt->disableSAX = 1;
 	}
 	ctxt->instate = state;
     }
@@ -3439,7 +3447,7 @@ docbParseCharRef(docbParserCtxtPtr ctxt) {
 
 
 /**
- * docbParseDocTypeDecl :
+ * docbParseDocTypeDecl:
  * @ctxt:  an SGML parser context
  *
  * parse a DOCTYPE declaration
@@ -3613,7 +3621,7 @@ docbCheckEncoding(docbParserCtxtPtr ctxt, const xmlChar *attvalue) {
                     "Unsupported encoding %s\n", encoding);
            /* xmlFree(encoding); */
            ctxt->wellFormed = 0;
-           ctxt->disableSAX = 1;
+           if (ctxt->recovery == 0) ctxt->disableSAX = 1;
            ctxt->errNo = XML_ERR_UNSUPPORTED_ENCODING;
        }
     }
@@ -4389,7 +4397,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                ctxt->sax->error(ctxt->userData,
                                 "Space required after '<!ENTITY'\n");
            ctxt->wellFormed = 0;
-           ctxt->disableSAX = 1;
+           if (ctxt->recovery == 0) ctxt->disableSAX = 1;
        }
        SKIP_BLANKS;
 
@@ -4401,7 +4409,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                    ctxt->sax->error(ctxt->userData,
                                     "Space required after '%'\n");
                ctxt->wellFormed = 0;
-               ctxt->disableSAX = 1;
+               if (ctxt->recovery == 0) ctxt->disableSAX = 1;
            }
            SKIP_BLANKS;
            isParameter = 1;
@@ -4413,7 +4421,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
            if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
                ctxt->sax->error(ctxt->userData, "sgmlarseEntityDecl: no name\n");
            ctxt->wellFormed = 0;
-           ctxt->disableSAX = 1;
+           if (ctxt->recovery == 0) ctxt->disableSAX = 1;
             return;
        }
        if (!IS_BLANK(CUR)) {
@@ -4422,7 +4430,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                ctxt->sax->error(ctxt->userData,
                     "Space required after the entity name\n");
            ctxt->wellFormed = 0;
-           ctxt->disableSAX = 1;
+           if (ctxt->recovery == 0) ctxt->disableSAX = 1;
        }
         SKIP_BLANKS;
 
@@ -4447,7 +4455,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                        ctxt->sax->error(ctxt->userData,
                            "Entity value required\n");
                    ctxt->wellFormed = 0;
-                   ctxt->disableSAX = 1;
+                   if (ctxt->recovery == 0) ctxt->disableSAX = 1;
                }
                if (URI) {
                    xmlURIPtr uri;
@@ -4498,7 +4506,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                        ctxt->sax->error(ctxt->userData,
                            "Entity value required\n");
                    ctxt->wellFormed = 0;
-                   ctxt->disableSAX = 1;
+                   if (ctxt->recovery == 0) ctxt->disableSAX = 1;
                }
                if (URI) {
                    xmlURIPtr uri;
@@ -4531,7 +4539,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                        ctxt->sax->error(ctxt->userData,
                            "Space required before content model\n");
                    ctxt->wellFormed = 0;
-                   ctxt->disableSAX = 1;
+                   if (ctxt->recovery == 0) ctxt->disableSAX = 1;
                }
                SKIP_BLANKS;
 
@@ -4549,7 +4557,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                            ctxt->sax->error(ctxt->userData,
                                "Could not parse entity content model\n");
                        ctxt->wellFormed = 0;
-                       ctxt->disableSAX = 1;
+                       if (ctxt->recovery == 0) ctxt->disableSAX = 1;
                    } else {
                        if (xmlStrEqual(contmod, BAD_CAST"NDATA")) {
                            if (!IS_BLANK(CUR)) {
@@ -4559,7 +4567,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                                    ctxt->sax->error(ctxt->userData,
                                        "Space required after 'NDATA'\n");
                                ctxt->wellFormed = 0;
-                               ctxt->disableSAX = 1;
+                               if (ctxt->recovery == 0) ctxt->disableSAX = 1;
                            }
                            SKIP_BLANKS;
                            ndata = xmlParseName(ctxt);
@@ -4611,7 +4619,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                ctxt->sax->error(ctxt->userData, 
                    "docbParseEntityDecl: entity %s not terminated\n", name);
            ctxt->wellFormed = 0;
-           ctxt->disableSAX = 1;
+           if (ctxt->recovery == 0) ctxt->disableSAX = 1;
        } else {
            if (input != ctxt->input) {
                ctxt->errNo = XML_ERR_ENTITY_BOUNDARY;
@@ -4619,7 +4627,7 @@ docbParseEntityDecl(xmlParserCtxtPtr ctxt) {
                    ctxt->sax->error(ctxt->userData, 
 "Entity declaration doesn't start and stop in the same entity\n");
                ctxt->wellFormed = 0;
-               ctxt->disableSAX = 1;
+               if (ctxt->recovery == 0) ctxt->disableSAX = 1;
            }
            NEXT;
        }
@@ -4723,7 +4731,7 @@ docbParseInternalSubset(xmlParserCtxtPtr ctxt) {
                    ctxt->sax->error(ctxt->userData, 
             "docbParseInternalSubset: error detected in Markup declaration\n");
                ctxt->wellFormed = 0;
-               ctxt->disableSAX = 1;
+               if (ctxt->recovery == 0) ctxt->disableSAX = 1;
                break;
            }
        }
@@ -4741,7 +4749,7 @@ docbParseInternalSubset(xmlParserCtxtPtr ctxt) {
        if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
            ctxt->sax->error(ctxt->userData, "DOCTYPE improperly terminated\n");
        ctxt->wellFormed = 0;
-       ctxt->disableSAX = 1;
+       if (ctxt->recovery == 0) ctxt->disableSAX = 1;
     }
     NEXT;
 }
@@ -4771,7 +4779,7 @@ docbParseMisc(xmlParserCtxtPtr ctxt) {
 }
 
 /**
- * docbParseDocument :
+ * docbParseDocument:
  * @ctxt:  an SGML parser context
  * 
  * parse an SGML document (and build a tree if using the standard SAX
@@ -4984,7 +4992,7 @@ docbFreeParserCtxt(docbParserCtxtPtr ctxt)
 }
 
 /**
- * docbCreateDocParserCtxt :
+ * docbCreateDocParserCtxt:
  * @cur:  a pointer to an array of xmlChar
  * @encoding: the SGML document encoding, or NULL
  *
@@ -5000,15 +5008,15 @@ docbCreateDocParserCtxt(xmlChar *cur, const char *encoding ATTRIBUTE_UNUSED) {
 
     ctxt = (docbParserCtxtPtr) xmlMalloc(sizeof(docbParserCtxt));
     if (ctxt == NULL) {
-        perror("malloc");
-       return(NULL);
+        xmlGenericError(xmlGenericErrorContext, "malloc failed");
+        return(NULL);
     }
     docbInitParserCtxt(ctxt);
     input = (docbParserInputPtr) xmlMalloc(sizeof(docbParserInput));
     if (input == NULL) {
-        perror("malloc");
-       xmlFree(ctxt);
-       return(NULL);
+        xmlGenericError(xmlGenericErrorContext, "malloc failed");
+        xmlFree(ctxt);
+        return(NULL);
     }
     memset(input, 0, sizeof(docbParserInput));
 
@@ -5611,7 +5619,7 @@ docbParseTryOrFinish(docbParserCtxtPtr ctxt, int terminate) {
                } else {
                    /* TODO Avoid the extra copy, handle directly !!!!!! */
                    /*
-                    * Goal of the following test is :
+                    * Goal of the following test is:
                     *  - minimize calls to the SAX 'character' callback
                     *    when they are mergeable
                     */
@@ -5750,6 +5758,16 @@ docbParseTryOrFinish(docbParserCtxtPtr ctxt, int terminate) {
                        "HPP: entering CONTENT\n");
 #endif
                break;
+	    case XML_PARSER_PUBLIC_LITERAL:
+		xmlGenericError(xmlGenericErrorContext,
+			"HPP: internal error, state == XML_PARSER_LITERAL\n");
+		ctxt->instate = XML_PARSER_CONTENT;
+		ctxt->checkIndex = 0;
+#ifdef DEBUG_PUSH
+		xmlGenericError(xmlGenericErrorContext,
+			"HPP: entering CONTENT\n");
+#endif
+		break;
        }
     }
 done:    
@@ -5839,7 +5857,7 @@ docbParseChunk(docbParserCtxtPtr ctxt, const char *chunk, int size,
  ************************************************************************/
 
 /**
- * docbCreatePushParserCtxt :
+ * docbCreatePushParserCtxt:
  * @sax:  a SAX handler
  * @user_data:  The user data returned on SAX callbacks
  * @chunk:  a pointer to an array of chars
@@ -5919,7 +5937,7 @@ docbCreatePushParserCtxt(docbSAXHandlerPtr sax, void *user_data,
 }
 
 /**
- * docbSAXParseDoc :
+ * docbSAXParseDoc:
  * @cur:  a pointer to an array of xmlChar
  * @encoding:  a free form C string describing the SGML document encoding, or NULL
  * @sax:  the SAX handler block
@@ -5959,7 +5977,7 @@ docbSAXParseDoc(xmlChar *cur, const char *encoding, docbSAXHandlerPtr sax, void 
 }
 
 /**
- * docbParseDoc :
+ * docbParseDoc:
  * @cur:  a pointer to an array of xmlChar
  * @encoding:  a free form C string describing the SGML document encoding, or NULL
  *
@@ -5975,7 +5993,7 @@ docbParseDoc(xmlChar *cur, const char *encoding) {
 
 
 /**
- * docbCreateFileParserCtxt :
+ * docbCreateFileParserCtxt:
  * @filename:  the filename
  * @encoding:  the SGML document encoding, or NULL
  *
@@ -5999,20 +6017,21 @@ docbCreateFileParserCtxt(const char *filename,
 
     ctxt = (docbParserCtxtPtr) xmlMalloc(sizeof(docbParserCtxt));
     if (ctxt == NULL) {
-        perror("malloc");
-       return(NULL);
+        xmlGenericError(xmlGenericErrorContext, "malloc failed");
+        return(NULL);
     }
     memset(ctxt, 0, sizeof(docbParserCtxt));
     docbInitParserCtxt(ctxt);
     inputStream = (docbParserInputPtr) xmlMalloc(sizeof(docbParserInput));
     if (inputStream == NULL) {
-        perror("malloc");
-       xmlFree(ctxt);
-       return(NULL);
+        xmlGenericError(xmlGenericErrorContext, "malloc failed");
+        xmlFree(ctxt);
+        return(NULL);
     }
     memset(inputStream, 0, sizeof(docbParserInput));
 
-    inputStream->filename = xmlMemStrdup(filename);
+    inputStream->filename = (char *)
+	xmlNormalizeWindowsPath((const xmlChar *)filename);
     inputStream->line = 1;
     inputStream->col = 1;
     inputStream->buf = buf;
@@ -6027,7 +6046,7 @@ docbCreateFileParserCtxt(const char *filename,
 }
 
 /**
- * docbSAXParseFile :
+ * docbSAXParseFile:
  * @filename:  the filename
  * @encoding:  a free form C string describing the SGML document encoding, or NULL
  * @sax:  the SAX handler block
@@ -6069,7 +6088,7 @@ docbSAXParseFile(const char *filename, const char *encoding, docbSAXHandlerPtr s
 }
 
 /**
- * docbParseFile :
+ * docbParseFile:
  * @filename:  the filename
  * @encoding:  a free form C string describing document encoding, or NULL
  *

@@ -92,6 +92,9 @@
       <xsl:when test="$name = '#FAQ'">
         <xsl:text>FAQ.html</xsl:text>
       </xsl:when>
+      <xsl:when test="$name = '#Python'">
+        <xsl:text>python.html</xsl:text>
+      </xsl:when>
       <xsl:when test="$name = ''">
         <xsl:text>unknown.html</xsl:text>
       </xsl:when>
@@ -125,10 +128,16 @@
           </xsl:element>
         </li>
       </xsl:for-each>
+      <li><a href="tutorial/index.html">Tutorial</a></li>
       <li><a href="xml.html">flat page</a>, <a href="site.xsl">stylesheet</a></li>
     </ul>
   </xsl:variable>
   <xsl:variable name="api">
+    <form action="search.php"
+          enctype="application/x-www-form-urlencoded" method="GET">
+      <input name="query" type="TEXT" size="20" value=""/>
+      <input name="submit" type="submit" value="Search ..."/>
+    </form>
     <ul><!-- style="margin-left: -1em" -->
       <li><a href="APIchunk0.html">Alphabetic</a></li>
       <li><a href="APIconstructors.html">Constructors</a></li>
@@ -142,10 +151,13 @@
       <li><a href="http://mail.gnome.org/archives/xml/">Mail archive</a></li>
       <li><a href="http://xmlsoft.org/XSLT/">XSLT libxslt</a></li>
       <li><a href="http://phd.cs.unibo.it/gdome2/">DOM gdome2</a></li>
+      <li><a href="http://www.aleksey.com/xmlsec/">XML-DSig xmlsec</a></li>
       <li><a href="ftp://xmlsoft.org/">FTP</a></li>
       <li><a href="http://www.fh-frankfurt.de/~igor/projects/libxml/">Windows binaries</a></li>
       <li><a href="http://garypennington.net/libxml2/">Solaris binaries</a></li>
-      <li><a href="http://bugzilla.gnome.org/buglist.cgi?product=libxml">Bug Tracker</a></li>
+      <li><a href="http://www.zveno.com/open_source/libxml2xslt.html">MacOsX binaries</a></li>
+      <li><a href="http://sourceforge.net/projects/libxml2-pas/">Pascal bindings</a></li>
+      <li><a href="http://bugzilla.gnome.org/buglist.cgi?product=libxml&amp;product=libxml2">Bug Tracker</a></li>
     </ul>
   </xsl:variable>
   <xsl:template name="toc">
@@ -209,12 +221,13 @@
  - Write the styles in the head
  -->
   <xsl:template name="style">
+    <link rel="SHORTCUT ICON" href="/favicon.ico"/> 
     <style type="text/css"><xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-TD {font-size: 14pt; font-family: Verdana,Arial,Helvetica}
-BODY {font-size: 14pt; font-family: Verdana,Arial,Helvetica; margin-top: 2em; margin-left: 0em; margin-right: 0em}
-H1 {font-size: 20pt; font-family: Verdana,Arial,Helvetica}
-H2 {font-size: 18pt; font-family: Verdana,Arial,Helvetica}
-H3 {font-size: 16pt; font-family: Verdana,Arial,Helvetica}
+TD {font-family: Verdana,Arial,Helvetica}
+BODY {font-family: Verdana,Arial,Helvetica; margin-top: 2em; margin-left: 0em; margin-right: 0em}
+H1 {font-family: Verdana,Arial,Helvetica}
+H2 {font-family: Verdana,Arial,Helvetica}
+H3 {font-family: Verdana,Arial,Helvetica}
 A:link, A:visited, A:active { text-decoration: underline }
 <xsl:text disable-output-escaping="yes">--&gt;</xsl:text></style>
   </xsl:template>
@@ -226,9 +239,12 @@ A:link, A:visited, A:active { text-decoration: underline }
     <table border="0" width="100%" cellpadding="5" cellspacing="0" align="center">
     <tr>
     <td width="180">
-    <a href="http://www.gnome.org/"><img src="smallfootonly.gif" alt="Gnome Logo"/></a>
+    <a href="http://www.gnome.org/"><img src="gnome2.png" alt="Gnome2 Logo"/></a>
     <a href="http://www.w3.org/Status"><img src="w3c.png" alt="W3C Logo"/></a>
     <a href="http://www.redhat.com/"><img src="redhat.gif" alt="Red Hat Logo"/></a>
+    <div align="left">
+    <a href="http://xmlsoft.org/"><img src="Libxml2-Logo-180x168.gif" alt="Made with Libxml2 Logo"/></a>
+    </div>
     </td>
     <td>
     <table border="0" width="90%" cellpadding="2" cellspacing="0" align="center" bgcolor="#000000">
@@ -328,7 +344,7 @@ A:link, A:visited, A:active { text-decoration: underline }
                                     <tr>
                                       <td bgcolor="#fffacd">
                                         <xsl:apply-templates mode="subfile" select="$header/following-sibling::*[preceding-sibling::h2[1] = $header         and name() != 'h2' ]"/>
-					<p><a href="mailto:daniel@veillard.com">Daniel Veillard</a></p>
+					<p><a href="bugs.html">Daniel Veillard</a></p>
                                       </td>
                                     </tr>
                                   </table>
@@ -387,7 +403,7 @@ A:link, A:visited, A:active { text-decoration: underline }
                                         <xsl:with-param name="header" select="."/>
                                       </xsl:call-template>
                                     </xsl:for-each>
-				    <p><a href="mailto:daniel@veillard.com">Daniel Veillard</a></p>
+				    <p><a href="bugs.html">Daniel Veillard</a></p>
                                   </td>
                                 </tr>
                               </table>

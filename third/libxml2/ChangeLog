@@ -1,3 +1,2062 @@
+Thu Dec 12 10:59:11 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing release of 2.4.30
+	* doc/apibuild.py doc/libxml2-api.xml: fixups to the api builder,
+	  gives enum values, fix functype return type, put back fields in
+	  structs 
+	* doc/*: updated the docs rebuilt
+
+Thu Dec 12 01:09:34 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c include/libxml/HTMLtree.h: patch from Mark Vadok
+	  about htmlNodeDumpOutput location.
+	* xpath.c: removed an undefined function signature
+	* doc/apibuild.py doc/libxml2-api.xml: the script was exporting
+	  too many symbols in the API breaking the python bindings.
+	  Updated with the libxslt/libexslt changes.
+
+Wed Dec 11 20:26:15 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing release of 2.4.29
+	* doc/*: rebuilt the docs and API
+	* xmlreader.c: a few more fixes for the XmlTextReader API
+
+Wed Dec 11 18:01:15 CET 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* include/win32config.h: applied mingw patch from Magnus Henoch
+
+Wed Dec 11 16:58:48 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* catalog.c doc/libxml2-api.xml: a bit more cleanup
+
+Wed Dec 11 14:54:47 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/apibuild.py doc/libxml2-api.xml doc/Makefile.am: new API
+	  building Python script, does the C parsing directly, generates
+	  a better API description including structure fieds defs and
+	  enums. Still a couple of bugs, but good enough for the python
+	  wrappers now.
+	* DOCBparser.c SAX.c nanohttp.c parser.c parserInternals.c tree.c
+	  valid.c xmlIO.c xmlmemory.c xmlreader.c xmlregexp.c xmlschemas.c
+	  include/libxml/schemasInternals.h include/libxml/tree.h: more
+	  cleanup based on the python analysis script reports.
+	* libxml.spec.in: make sure the API XML description is part of the
+	  devel package.
+
+Tue Dec 10 16:16:34 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* DOCBparser.c HTMLparser.c c14n.c debugXML.c encoding.c hash.c
+	  nanoftp.c nanohttp.c parser.c parserInternals.c testC14N.c
+	  testDocbook.c threads.c tree.c valid.c xmlIO.c xmllint.c xmlmemory.c
+	  xmlreader.c xmlregexp.c xmlschemas.c xmlschemastypes.c xpath.c:
+	  code cleanup, especially the function comments.
+	* tree.c: fixed a small bug when freeing nodes which are XInclude ones.
+
+Mon Dec  9 15:08:17 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am xmlreader.c include/libxml/Makefile.am
+	  include/libxml/xmlreader.h:  Adding a new set of APIs based on
+	  the C# TextXmlReader API but converted to C. Allow to parse
+	  in constant memory usage, far simpler to program and explain
+	  than the SAX like APIs, unfinished but working.
+	* testReader.c: test program
+
+Sun Dec  8 18:36:01 CET 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/libxml2.def.src: applied YALDSP from Mark Vakoc
+
+Wed Dec  4 16:08:49 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: Chip turner indicated that XHTML1 serialization
+	  rule for style actually break on both IE and Mozilla, 
+	  try to avoid the rule if escaping ain't necessary
+
+Wed Dec  4 12:43:28 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* nanhttp.c: handle HTTP URL escaping, problem reported by
+	  Glen Nakamura and Stefano Zacchiroli
+
+Sat Nov 30 12:19:17 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* DOCBparser.c HTMLparser.c parser.c valid.c xpath.c: code cleanup
+
+Thu Nov 28 12:53:22 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* uri.c: Johann Richard pointed out some XPointer problems for
+	  URN based URI references in XInclude. Modified the URI parsing
+	  and saving routines to allow correct parsing and saving of 
+	  XPointers, especially when attached to "opaque" scheme accordingly
+	  to RFC 2396
+
+Wed Nov 27 20:36:08 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c include/libxml/HTMLtree.h: applied the same kind
+	  of refactoring to the HTML saving code.
+	* doc/libxml2-*.xml doc/API*.html: slight API changes got reflected
+	  in the doc.
+
+Wed Nov 27 12:40:16 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c include/libxml/tree.h: refactored the XML dump of a node
+	  to a buffer API to reuse the generic dump to an OutputIO layer,
+	  this reduces code, fixes xmlNodeDump() for XHTML, also made
+	  xmlNodeDump() now return the number of byte written.
+
+Wed Nov 27 09:00:00 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/setup.py.in: another patch from Stéphane Bidoul for 
+	  Python bindings on Windows
+	* doc/parsedecl.py: small cleanup
+
+Mon Nov 25 17:28:53 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.spec.in configure.in: add a line in %changelog for releases
+
+Mon Nov 25 14:18:27 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: patch from Marcus Clarke fixing a problem in entities
+	  parsing that was detected in KDe documentations environment.
+
+Mon Nov 24 14:13:21 CET 2002 ERDI Gergo <cactus@cactus.rulez.org>
+
+	* python/libxml.c (libxml_prev): Return the previous as opposed to
+	the next node (I guess this is the result of some cut & paste programming:)
+
+Sat Nov 23 17:22:22 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/Makefile.am: Jan Rafaj pointed a bug in the Makefile.
+
+Sat Nov 23 12:21:24 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py python/libxml.c python/setup.py.in: trying
+	  to fix the Python bindings build on Windows (Stéphane Bidoul)
+
+Fri Nov 22 22:41:34 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/configure.js: added option for python bindings
+	* win32/libxml2.def.src: added more exports
+
+Fri Nov 22 18:50:34 CET 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/Makefile.mingw: fixed unresolved symbols when linking with
+	  pthreads
+	* win32/wince/*: applied updates to Windows CE port from Javier
+
+Fri Nov 22 15:51:22 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing 2.4.28
+	* libxml.spec.in doc/Makefile.am: some cleanup
+	* doc/*: updated the news and regenerated.
+
+Fri Nov 22 14:15:14 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: final touch at closing #87235 </p> end tags
+	  need to be generated.
+	* result/HTML/cf_128.html result/HTML/test2.html result/HTML/test3.html:
+	  this change slightly the output of a few tests
+	* doc/*: regenerated
+
+Fri Nov 22 13:26:19 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parserInternals.c: fixing bug #99190 when UTF8 document are
+	  parsed using the progressive parser and the end of the chunk
+	  is in the middle of an UTF8 multibyte character.
+
+Fri Nov 22 13:13:00 HKT 2002 William Brack <wbrack@mmm.com.hk>
+
+	* threads.c: fixed initialization problem in xmlNewGlobalState
+	  which was causing crash.
+	* globals.c: removed duplicate call to initxmlDefaultSAXHandler
+	  in xmlInitializeGlobalState.
+	* parserInternals.c: cleaned up ctxt->sax initialisation.
+	
+Thu Nov 21 15:05:45 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c include/libxml/tree.h: modified the existing APIs
+	  to handle XHTML1 serialization rules automatically, also add
+	  xmlIsXHTML() to libxml2 API. Some tweaking to make sure
+	  libxslt serialization uses it when needed without changing
+	  the library API.
+	* test/xhtml1 result/noent/xhtml1 result/valid/xhtml1.xhtml
+	  result/xhtml1: added a new test specifically for xhtml1 output
+	  and updated the result of one XHTML1 test
+
+Wed Nov 20 14:24:56 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c parserInternals.c encoding.c: fixed #99082
+	  for xi:include encoding="..." support on text includes.
+	* result/XInclude/tstencoding.xml test/XInclude/docs/tstencoding.xml
+	  test/XInclude/ents/isolatin.txt : added a specific regression test
+	* python/generator.py python/libxml2class.txt: fixed the generator
+	  the new set of comments generated for doc/libxml2-api.xml were
+	  breaking the python generation.
+
+Tue Nov 19 23:25:47 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/Makefile.am: repair some problem if gtk-doc fail or such
+	* configure.in: patch for Solaris on new autoconf closes #98880 
+	* doc/parsedecl.py: repair the frigging API building script,
+	  did I say that python xmllib sucks ?
+	* doc/libxml2-api.xml doc/libxml2-refs.xml: regenerated, reordering
+	  and some comment are no more truncated.
+
+Tue Nov 19 09:09:04 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: Martin Stoilov pointed out a potential leak in
+	  xmlCreateMemoryParserCtxt
+
+Mon Nov 18 16:05:51 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: fixed bug #98879 a corner case when 0 is
+	  included in HTML documents and using the push parser.
+
+Mon Nov 18 00:11:24 CET 2002 ERDI Gergo <cactus@cactus.rulez.org>
+
+	* configure.in (PYTHON_SITE_PACKAGES): If --with-python is
+	  specified, look for the Python interpreter not just in the
+	  specified root but also in the specified location. Fixes #98825
+
+Sun Nov 17 23:36:06 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxml.c: fixing bug #98792 , node may have no doc
+	  and dereferencing without checking ain't good ...
+
+Sun Nov 17 10:25:43 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing release 2.4.27
+	* doc/* : updated and rebuilt the docs
+	* doc/Makefile.am libxml.spec.in: try to make sure the tutorial
+	  and all the docs are actually packaged and in the final RPMs
+	* parser.c parserInternals.c include/libxml/parser.h: restore
+	  xmllint --recover feature.
+
+Sat Nov 16 16:30:25 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c xpath.c: fixing #96925 wich was also dependant on the
+	  processing of parsed entities, and XPath computation on sustitued
+	  entities.
+	* testXPath.c: make sure entities are substitued.
+
+Fri Nov 15 16:22:54 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixed #96594, which was totally dependant on the 
+	  processing of internal parsed entities, which had to be changed.
+
+Fri Nov 15 12:16:07 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am python/Makefile.am python/tests/Makefile.am:
+	  trying to fix bug #98517 about building outside the source tree
+	* doc/xml.html doc/FAQ.html: fixed the link to libiconv #94585
+
+Thu Nov 14 18:41:55 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* include/win32config.h: cleanup
+	* win32/Makefile.mingw: integrated mingw in JScript configure
+	* win32/Makefile.msvc: modified to allow mingw coexistence
+	* win32/configure.js: integrated mingw
+	* win32/Readme.txt: cleanup
+
+Tue Nov 12 22:06:45 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: strengthen the guard in the Pop macros,
+	  like in the XML parser, closes bug #97315
+
+Tue Nov 12 21:56:39 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/parser.h: fixed bug #98338 , fatalError SAX
+	  callback is never used.
+
+Tue Nov 12 13:32:50 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parserInternals.c: fixed the initialization of the SAX structure
+	  which was breaking xsltproc
+	* xpath.c: patch from Petr Pajas for CDATA nodes
+	* tree.c: patch from Petr Pajas improving xmlGetNodePath()
+	* parser.c include/libxml/parser.h: patch from Peter Jones
+	  removing a leak in xmlSAXParseMemory() and adding the
+	  function xmlSAXParseMemoryWithData()
+
+Mon Nov 11 20:47:03 MST 2002 John Fleck <jfleck@inkstain.net>
+
+	adding pdf of tutorial, changing web page to link to it
+	* doc/tutorial/xmltutorial.pdf
+	* doc/xml.html
+	* doc/docs.html
+
+Sun Nov 10 20:48:57 MST 2002 John Fleck <jfleck@inkstain.net>
+
+	* doc/tutorial/ar01s08.html
+	adding file what I forgot for tutorial
+
+
+Sun Nov 10 20:33:13 MST 2002 John Fleck  <jfleck@inkstain.net>
+
+	Adding encoding discussion to tutorial
+	Added:
+	* doc/tutorial/images/*.png: DocBook admonition image files
+	* doc/tutorial/apf.html, apg.html: new generated html
+	* doc/tutorial/includeconvert.c: conversion code entity file
+	changed:
+	* doc/tutorial/xmltutorial.xml: DocBook original
+	* doc/tutorial/*.html: generated html
+
+Fri Nov  8 17:59:32 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* include/libxml/*.h: retired xmlwin32version.h
+	* doc/Makefile.am: retired xmlwin32version.h
+	* win32/configure.js: retired xmlwin32version.h
+
+Fri Nov  8 16:55:47 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/libxml2.def.src: exported additional symbols
+	* include/libxml/xmlmemory.h: exported the rest of the xmlMem* 
+	  sisterhood
+
+Fri Nov  8 16:08:13 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* globals.c: fixed a typo pointed out by Igor
+	* xpath.c: try to speed up node compare using line numbers
+	  if available.
+
+Thu Nov  7 15:16:02 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: make xmlFreeNode() handle attributes correctly.
+
+Wed Nov  6 23:51:11 CET 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* catalog.c: completed the #96963 fix, as reported by Karl
+	  Eichwalder
+
+Wed Nov  6 16:48:44 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpointer.c: tried to fix bug #97852 reported by Nicolas Noffke
+
+Sun Nov  3 10:43:44 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am: switched the order of a couple of includes
+	  to fix bugs #97100
+
+Thu Oct 31 17:11:46 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* catalog.c: fixed bug #96963, reverted to the old behaviour of
+	  xmlLoadCatalogs that used to separate directories with a ':'.
+
+Thu Oct 31 16:55:21 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* threads.c: improvements to the Windows-side of thread handling
+	* testThreads.c: conditionally excluded unistd.h
+	* testThradsWin32.c: broke overlong lines
+	* include/win32config.h: adapted thread-related macros to the new
+	  scheme and for pthreads on Windows
+	* win32/Makefile.msvc: introduced a more flexible thread build, 
+	  added testThreads[Win32].c to the build
+	* win32/configure.js: introduced a more flexible thread config
+
+2002-10-31  John Fleck  <jfleck@inkstain.net>
+
+	* doc/xml.html (and, by implication, FAQ.html)
+	added UTF-8 conversaion FAQ from Marcus Labib Iskander
+
+Tue Oct 29 18:32:33 CET 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* configure.in: removed xmlwin32version.h
+	* include/libxml/Makefile.am: removed xmlwin32version.h
+
+Mon Oct 28 14:01:29 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: applied patch from Brian Stafford to fix a bug
+	  in xmlReconciliateNs()
+
+Mon Oct 28 13:51:55 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: applied patch from Christian Glahn to allow
+	  xmlNewChild() on document fragment nodes
+
+Sat Oct 26 15:27:00 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: Christian Glahn found a problem with a recent
+	  patch to xmlParseBalancedChunkMemoryRecover()
+	* xmlschemas.c: Charles Bozeman fixed some Schemas validation
+	  problems
+	* result/schemas/elem* result/schemas/seq* test/schemas.elem*
+	  test/schemas/seq*: added the test cases from Charles
+
+Wed Oct 23 16:42:29 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am config.h.in libxml.spec.in doc/Makefile.am:
+	  serious cleanup of the spec file and associated changes
+	  in the Makefiles.
+	* valid.c: try to remove some warnings on x86_64
+
+Wed Oct 23 10:53:42 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/Makefile.am: added winsockcompat.h to EXTRA_DIST to
+	  fix bug #96586
+
+Tue Oct 22 21:13:06 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: Mikhail Sogrine pointed out a bug in HTML
+	  parsing, applied his patch
+	* result/HTML/attrents.html result/HTML/attrents.html.err
+	  result/HTML/attrents.html.sax test/HTML/attrents.html:
+	  added the test and result case provided by Mikhail Sogrine
+
+Tue Oct 22 19:33:20 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* vms/build_libxml.com vms/config.vms vms/readme.vms
+	  include/libxml/parser.h include/libxml/parserInternals.h
+	  include/libxml/tree.h include/libxml/xmlIO.h
+	  HTMLparser.c catalog.c debugXML.c parser.c parserInternals.c
+	  tree.c triodef.h trionan.c uri.c xmlIO.c xpath.c:
+	  Applied the VMS update patch from Craig A. Berry
+	* doc/*.html: update
+
+Tue Oct 22 16:27:31 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/encoding.h encoding.c: made xmlGetUTF8Char public
+
+Tue Oct 22 16:25:18 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* debugXML.c: adding a grep command to --shell in xmllint
+	  for T.V. Raman
+
+Tue Oct 22 16:23:57 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlcatalog.c: tried to fix some of the problem with --sgml
+
+Mon Oct 21 09:57:10 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: tried to fix bug #91500 where doc->children may
+	  be overriden by a call to xmlParseBalancedChunkMemory()
+
+Mon Oct 21 09:04:32 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* catalog.c: tried to fix bug #90945 w.r.t. parsing of system
+	  identifiers in SGML catalogs containing '&'
+
+Sun Oct 20 23:31:47 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/types.c: fixed bugs when passing result value tree
+	  to Python functions.
+
+Fri Oct 18 13:18:53 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing the release of 2.4.26
+	* doc/*: updated and rebuilt the documentation
+
+Wed Oct 16 20:01:46 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixed a XML Namespace compliance bug reported by
+	  Alexander Grimalovsky
+
+Wed Oct 16 17:18:42 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c: fixed serialization of script and style when
+	  they are not lowercase (i.e. added using the API to the tree).
+
+Wed Oct 16 16:31:05 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: make xmlValidateDocument emit a warning msg if there
+	  is no DTD, pointed by Christian Glahn
+
+Wed Oct 16 16:05:38 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlregexp.c xmlschemas.c: fixed the validation of sequences
+	  content model when some of the blocks have min or max, and a couple
+	  of bugs found in the process.
+	* result/schemas/list0* test/schemas/list0*: added some specific
+	  regression tests
+
+Tue Oct 15 12:41:01 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* README: updated the contact informations
+
+Tue Oct 15 10:35:57 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am: use test -f instead of test -e since Solaris /bin/sh
+	  misses it, reported by Peter Bray.
+
+Mon Oct 14 17:37:32 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: investigating xmlNodeGetContent() on namespace nodes
+	  and removed a few warnings
+
+Mon Oct 14 13:12:55 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: Christian Glahn found a small bug in the push parser.
+	* xmlIO.c include/libxml/xmlIO.h: cleaned up and made xmlCheckFilename
+	  public
+
+Wed Oct  9 23:11:02 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemas.c include/libxml/xmlschemas.h: added
+	  xmlSchemaNewMemParserCtxt to parse a schemas from a memory area
+	* testSchemas.c: added --memory to test the new interface
+
+Wed Oct  9 16:22:54 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/index.py doc/search.php: integrated the XSLT indexing,
+	  a few fixed in the indexer, added a scope selection at the
+	  search level.
+
+Wed Oct  9 12:18:37 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: Joe Marcus Clarke reported a segfault on FBsd 
+	  this was due to uninitialized parts of the validation context
+
+Tue Oct  8 23:24:20 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* debugXML.c: applied patch from Mark Vakoc except the API
+	  change, preserved it.
+	* doc/*: updated the docs to point to the search engine for
+	  information lookup or before bug/help reports.
+
+Tue Oct  8 18:53:31 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/index.py doc/search.php: added mailing-list archives
+	  indexing and lookup
+
+Tue Oct  8 10:25:07 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: patch from Mark Vakoc to fix xmlNodeGetPath()
+
+Mon Oct  7 13:12:03 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/index.py: improved HTML indexing
+	* doc/search.php: make the queries also lookup the HTML based indexes
+
+Sun Oct  6 23:50:29 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/index.py: added HTML page indexing 
+
+Fri Oct  4 15:33:55 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* xmlIO.c: extended Windows path normalisation to fix the base
+	  problem in libxslt.
+	* catalog.c: fixed list handling in XML_CATALOG_FILES
+
+Fri Oct  4 13:43:02 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: typo/bug found by Christian Glahn
+
+Sun Sep 29 19:44:10 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* xmlIO.c: applied Windows CE patch from Javier.
+	* win32/wince: new directory, contains support for the PocketPC
+	  with Windows CE from Javier.
+	* include/win32config.h: reorganised, removed duplicate 
+	  definitions and applied WinCE patch from Javier.
+	* include/wsockcompat.h: new file, now contains WinSock
+	  compatibility macros.
+	* win32/Makefile.msvc: introduced double-run compilation.
+
+Thu Sep 26 19:48:06 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in include/libxml/xmlwin32version.h: preparing release
+	  of 2.4.25
+	* doc/*: updated and regenerated teh docs and web pages.
+
+Thu Sep 26 17:33:46 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c valid.c include/libxml/valid.h: fixed bug #92518 validation
+	  error were not covering namespace declarations.
+	* result/valid/dia.xml test/valid/dia.xml: the test wasn't valid,
+	  it was missing the attribute declaration for the namespace
+	* result/VC/NS3: the fix now report breakages in that test
+
+Thu Sep 26 14:39:07 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c: fixing bug #94241 on HTML boolean attributes
+
+Thu Sep 26 14:25:33 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/*: added the 3 new modules xmlregexp xmlautomata and xmlunicode
+	  and regenerated the docs and web site
+
+Thu Sep 26 11:45:42 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c xmlschemas.c xmlschemastypes.c xpath.c: make sure
+	  ATTRIBUTE_UNUSED is always put after the attribute declaration,
+	  not before
+
+Thu Sep 26 11:33:28 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py python/libxml2class.txt: fixed a stupid error
+	  breaking the python API
+
+Thu Sep 26 00:31:46 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* trio.c trio.h triodef.h trionan.c trionan.h triop.h
+	  triostr.c triostr.h: applied a trio update patch from 
+	  Bjorn Reese which should work with MinGW
+
+Thu Sep 26 00:21:18 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: improving some documentation comments
+	* xmlregexp.c: found and fixed a mem leak with python regression tests
+	* doc/*: rebuilt the doc and the API XML file including the 
+	  xmlregexp.h xmlautomata.h and xmlunicode.h headers
+	* python/generator.py python/libxml2class.txt python/libxml_wrap.h
+	  python/types.c: added access to the XML Schemas regexps from
+	  python
+	* python/tests/Makefile.am python/tests/regexp.py: added a 
+	  simple regexp bindings test
+
+Tue Sep 24 08:10:48 MDT 2002 John Fleck <jfleck@inkstain.net>
+
+	* doc/xml.html:
+	  fixing ftp links - thanks to Vitaly Ostanin
+
+Tue Sep 24 16:08:17 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlregexp.c: fixed the data callback on transition functionality
+	  which was broken when using the compact form
+	* result/schemas/*: updated the results, less verbose, all tests
+	  pass like before
+	* DOCBparser.c testAutomata.c testC14N.c testSchemas.c testThreads.c
+	  testXPath.c valid.c xinclude.c xmllint.c xmlregexp.c xmlschemas.c
+	  xmlschemastypes.c xpath.c python/libxml.c: removed a bunch of
+	  annoying warnings
+	* xpath.c: try to provide better error report when possible
+
+Sat Sep 21 14:56:37 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am: fixed a breakage raised by Jacob
+
+Fri Sep 20 20:08:18 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* include/win32config.h: added HAVE_ERRNO_H definition for parts
+	  which don't use sockets
+
+Fri Sep 20 18:40:50 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/Makefile.msvc: applied zlib patch from Daniel Gehriger
+	* win32/configure.js: applied zlib patch from Daniel Gehriger
+
+Fri Sep 20 15:40:14 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/configure.js: applied the patch from Mark Vakoc for 
+	  regexp support
+	* win32/libxml2.def.src: applied the patch from Mark Vakoc
+	  for regexp support
+	
+Fri Sep 20 15:35:33 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemastypes.c: as pointed by Igor Float and Double
+	  parsing ain't finished yet
+
+Fri Sep 20 14:00:16 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am configure.in: trying to fix #88412 by bypassing
+	  all the python subdir if python ain't detected
+
+Thu Sep 19 21:46:53 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am configure.in include/libxml/xmlversion.h.in:
+	  made configuring with regexps/automata/unicode the default
+	  but without schemas ATM
+	* testRegexp.c valid.c xmlregexp.c include/libxml/xmlregexp.h:
+	  fixed the regexp based DTD validation performance and memory
+	  problem by switching to a compact form for determinist regexps
+	  and detecting the determinism property in the process. Seems
+	  as fast as the old DTD validation specific engine :-) despite
+	  the regexp built and compaction process.
+
+Wed Sep 18 18:27:26 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: determinism is debugged, new DTD checking code now works
+	  but xmlFAComputesDeterminism takes far too much CPU and the whole
+	  set usues too much memory to be really usable as-is
+
+Wed Sep 18 00:54:30 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: fixed another stupid bug in xmlGetNodePath()
+	* xmllint.c: --version now report the options compiled in
+
+Tue Sep 17 23:48:07 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: small cleanup
+	* valid.c xmlregexp.c: switched DTD validation to use only regexp
+	  when configured with them. A bit of debugging around the determinism
+	  checks is still needed
+
+Tue Sep 17 21:22:25 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxml_wrap.h: stupid bug found by mattam@netcourrier.com
+
+Tue Sep 17 19:58:26 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlIO.c: small portability glitch fixed.
+
+Mon Sep 17 12:38:08 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemastypes.c: incomplete steps for real/double support
+	* testAutomata.c include/libxml/xmlautomata.h
+	  include/libxml/xmlregexp.h: avoiding a compilation problem
+	* valid.c include/libxml/valid.h: starting the work toward using
+	  the regexps for actual DTD validation
+
+Fri Sep 13 16:46:14 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* hash.c: cosmetic cleanup
+	* valid.c include/libxml/tree.h include/libxml/valid.h: started 
+	  integrating a DTD validation layer based on the regexps
+
+Thu Sep 12 18:01:29 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlregexp.c xmlschemas.c: fixed a bug reported by Jeff Goff,
+	  the determinism was tested before eliminating the epsilon
+	  transitions :-(
+
+Thu Sep 12 16:57:45 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py python/libxml.c python/libxml.py
+	  python/libxml2-python-api.xml python/libxml2class.txt
+	  python/libxml_wrap.h python/types.c: updated the python
+	  bindings, added code for easier File I/O, and the ability to
+	  define a resolver from Python fixing bug #91635
+	* python/tests/Makefile.am python/tests/inbuf.py
+	  python/tests/outbuf.py python/tests/pushSAXhtml.py
+	  python/tests/resolver.py python/tests/serialize.py: updated
+	  and augmented the set of Python tests.
+
+Tue Sep 10 21:05:28 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/configure.js: added more readme info for the binary
+	  package.
+	
+Tue Sep 10 14:15:18 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlIO.c: fixed a stupid out of bound array error
+
+Tue Sep 10 13:09:14 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/xmlIO.h xmlIO.c parser.c HTMLparser.c DOCBparser.c:
+	  messing around with support for Windows path, cleanups,
+	  trying to identify and fix the various code path to the
+	  filename access. Added xmlNormalizeWindowsPath()
+
+Thu Sep  5 16:19:18 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* error.c valid.c: working on better error reporting of validity
+	  errors, especially providing an accurate context.
+	* result/valid/xlink.xml.err result/valid/rss.xml.err: better
+	  error reports in those cases.
+
+Thu Sep  5 13:29:47 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* DOCBparser.c HTMLparser.c c14n.c entities.c list.c
+	  parser.c parserInternals.c xmlIO.c: get rid of all the 
+	  perror() calls made in the library execution paths. This
+	  should fix both #92059 and #92385
+
+Thu Sep  5 13:13:17 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmllint.c: memory leak reporting was broken after a change
+	  of the preprocessor symbol used to activate it.
+
+Thu Sep  5 13:10:57 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: try to make the copy function work for node of
+	  type XML_DOCUMENT_FRAG_NODE, they are only created by the
+	  DOM layers though, not libxml2 itself.
+
+Thu Sep  5 12:57:38 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: try to provide file and line informations, not all
+	  messages are covered, but it's a (good) start
+
+Thu Sep  5 12:49:35 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c: reimplemented a large part of the XInclude
+	  processor, trying to minimize resources used, James Henstridge
+	  provided a huge test case which was exhibiting severe memory
+	  consumption problems.
+
+Thu Sep  5 10:07:13 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/Makefile.am: applied patch from Christophe Merlet to
+	  reestablish DESTDIR
+
+Wed Sep  4 14:13:34 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.spec.in: fixes libary path for x86_64 AMD
+
+Tue Sep  3 21:14:19 MDT 2002 John Fleck <jfleck@inkstain.net>
+
+	* doc/tutorial/includekeyword.c
+	* doc/tutorial/xmltutorial.xml:
+	(plus resulting generated html files)
+	fixing one spot I missed in the tutorial where I hadn't freed
+	memory properly
+
+Sat Aug 31 19:31:17 MDT 2002 John Fleck <jfleck@inkstain.net>
+
+	* doc/tutorial/includeaddattribute.c
+	* doc/tutorial/includeaddkeyword.c
+	* doc/tutorial/includegetattribute.c
+	* doc/tutorial/includekeyword.c
+	* doc/tutorial/xmltutorial.xml
+	* doc/tutorial/*.html:
+	update tutorial to properly free memory (thanks to Christopher
+	R. Harris for pointing out that this needs to be done)
+	* doc/tutorial/images/callouts/*.png:
+	added image files so the callouts are graphical, making it
+	easier to read ( use "--param callout.graphics 1" to generate
+	html with graphical callouts)
+	
+Wed Aug 28 13:44:54 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/Libxml2-Logo-180x168.gif doc/Libxml2-Logo-90x34.gif:
+	  nice logos generated by Marc Liyanage
+	* doc/site.xsl *.html: changed the stylesheet to show the new
+	  logo and regenerated the pages
+
+Sun Aug 25 16:38:05 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlIO.c: handle Windows sepecific file://localhost/ semantic ...
+
+Thu Aug 22 22:03:19 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: possible mem leak patch from Jason Adams
+
+Thu Aug 22 17:27:30 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: integrated xf:escape-uri() from Wesley Terpstra
+	  in the XQuery namespace
+	* configure.in: preparing 2.4.24
+	* doc/*.html: updated the web pages
+
+Thu Aug 22 16:19:42 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py: closing bug #85258 by generating conditional
+	  compile check to avoid linking to routines not configured in.
+
+2002-08-22  Havoc Pennington  <hp@pobox.com>
+
+	* autogen.sh: update error message for missing automake
+
+Thu Aug 22 11:45:50 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/Makefile.am: typo in target name resulted in libxml2.py
+	  to not be rebuilt. fixed DESTDIR similary to the libxslt one.
+
+Thu Aug 22 09:15:00 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* win32/win32/Makefile.mingw: updated with version from 
+	  Elizabeth Barham at http://soggytrousers.net/repository/
+
+Tue Aug 20 16:40:48 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/Makefile.msvc: added the prefix location to the include
+	and lib search path.
+	
+2002-08-18  Havoc Pennington  <hp@pobox.com>
+
+	* autogen.sh: hardcode aclocal-1.4/automake-1.4 so that users with
+	both automake 1.6 and 1.4 installed get the right automake. Means
+	compilation from CVS will now require the latest automake 1.4
+	release, or manually creating symlinks called "automake-1.4" and
+	"aclocal-1.4"
+
+Wed Aug 14 18:54:19 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in python/Makefile.am: more AMD 64 induced changes from
+	  Frederic Crozat
+
+Wed Aug 14 16:43:53 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c: oops I was missing the xml:base fixup too
+	* result/XInclude/*.xml: this adds xml:base attributes to most
+	  results of the tests
+
+Wed Aug 14 16:05:37 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xinclude.c: quick but apparently working implementation of
+	  xi:fallback, should close bug #89684
+	* Makefile.am test/XInclude/docs/fallback.xml 
+	  result/XInclude/fallback.xml: added a basic test for fallback,
+	  and run with --nowarning to avoid a spurious warning
+	* configure.in: applied patch from Frederic Crozat for python
+	  bindings on AMD 64bits machines.
+
+Wed Aug 14 10:47:46 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: xmlSAXUserParseMemory() really ought to fail if
+	  the caller don't pass a SAX callback block.
+
+Wed Aug 14 10:29:02 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: applied the same fix for the XML-1.0 namespace to
+	  xmlSearchNsByHref() as was done for xmlSearchNs()
+
+Mon Aug 12 16:52:08 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.3: small cleanup of the man page
+	* HTMLtree.c: fixed a potential problem raised by Petr Vandrovec
+	  when serializing HREF attributes generated by XSLT.
+
+Mon Aug 12 15:24:05 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c include/libxml/HTMLtree.h: integrated a cleaned up
+	  version of Marc Liyanage' patch for boolean attributes in HTML
+	  output
+
+Mon Aug 12 14:11:59 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/tests/serialize.py: fixed the test results, indenting
+	  behaviour changed slightly
+
+Thu Aug  8 11:00:26 2002  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* win32/dsp/libxml2.def.src win32/libxml2.def.src: added
+	new c14n function to Windows def files
+	
+Fri Aug  2 16:46:46 2002  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* c14n.c: fixed a memory leak in c14n code
+
+Sat Aug  3 00:15:06 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c include/libxml/parser.h: adding a new API for Christian
+	  Glahn: xmlParseBalancedChunkMemoryRecover
+	* valid.c: patch from Rick Jones for some grammar cleanup in
+	  validation messages
+	* result/VC/* result/valid/*: this slightly change some of the
+	  regression tests outputs
+
+Thu Aug  1 14:50:28 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: trying to fix a problem in namespaced attribute handling
+	  raised by Christian Glahn
+
+Thu Aug  1 12:17:30 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* encoding.c include/libxml/encoding.h: Opening the interface
+	  xmlNewCharEncodingHandler as requested in #89415
+	* python/generator.py python/setup.py.in: applied cleanup
+	  patches from Marc-Andre Lemburg
+	* tree.c: fixing bug #89332 on a specific case of loosing 
+	  the XML-1.0 namespace on xml:xxx attributes
+
+Wed Jul 31 23:27:42 2002  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* c14n.c include/libxml/c14n.h: fixed one more c14n + namespaces
+	corner case from new Merlin's test suite and added a callback
+	that will be used to improve xmlsec performance
+	
+
+Mon Jul 29 18:22:00 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c: trying to fix the <style> escaping problem in
+	  HTML serialization bug #89342
+
+Thu Jul 25 01:33:47 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/xml.html doc/*.html: applied syntax patch from Rick Jones
+	  and rebuilt the web site.
+
+Mon Jul 22 11:04:48 PDT 2002  Aleksey Sanin <aleksey@aleksey.com>
+
+	* include/libxml/tree.h: added _private member to xmlNs struct
+
+Sun Jul 21 17:48:47 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: fixing bug #84876 based on the xml working
+	  code.
+
+Sun Jul 21 19:15:00 HKT 2002 William Brack <wbrack@mmm.com.hk>
+
+	* python/Makefile.am: enhanced to fix bug 72012 (errors
+	  when using '-jX' make parameter)
+
+Fri Jul 19 16:35:00 HKT 2002 William Brack <wbrack@mmm.com.hk>
+
+	* xpath.c: small additional enhancement for booleans
+	  compared to nodesets
+
+Wed Jul 17 19:48:14 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c: changed the order of the encoding declaration
+	  attributes in the meta tags due to a bug in IE/Mac
+
+Fri Jul 12 08:45:00 HKT 2002 William Brack <wbrack@mmm.com.hk>
+
+	* xpath.c: enhanced handling of booleans (especially '='
+	  and '!=' for nodesets) - fixes bug 85256.  Added new
+	  routine xmlXPathNotEqualValues for more proper handling
+	  of '!=' when nodesets are involved.
+
+Thu Jul 11 21:45:52 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/Makefile.am: fixing Red Hat bug #68614 by adding the
+	  doc/xmlcatalog_man.xml to the source distribution
+
+Wed Jul 10 21:26:13 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+	
+	* win32/Makefile.msvc: Added a copy *.pdb to install, few have
+	  asked for this.
+	
+Sat Jul  6 21:55:59 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing 2.4.23
+	* doc/*: rebuilt the docs
+
+Sat Jul  6 21:11:20 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixing bug #84169 by fixing the
+	  comment of xmlCreatePushParserCtxt to describe the 
+	  encoding detection parameters better.
+
+Sat Jul  6 19:44:56 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: fixing bug #79331 in one path the lookup for
+	  ID attributes on a namespaced node wasn't handled correctly :-\
+
+Fri Jul  5 20:07:43 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c: trying to fix 87235 about discarded white
+	  spaces in the HTML parser.
+	* result/HTML/*: this changes the output of a number of HTML
+	  regression tests
+
+Mon Jul  1 23:23:41 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: applied patch from Richard Jinks for the namespace
+	  axis + fixed a memory error.
+	* parser.c parserInternals.c: applied patches from Peter Jacobi
+	  removing ctxt->token for good.
+	* xmlschemas.c xmlschemastypes.c: fixed a few memory leaks
+	  popped out by the regression tests.
+	* Makefile.am: patch for threads makefile from Gary Pennington
+
+Fri Jun 28 19:38:00 HKT 2002 William Brack <wbrack@mmm.com.hk>
+
+	* xpath.c: enhanced behaviour of position() after usage of
+	  expressions involving preceding-sibling (et al).
+
+Tue Jun 18 09:58:48 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* hash.c: applied a patch from Peter Jacobi to solve a problem
+	  when compiling with the Watcom C on Win32 
+	* result/schemas/*.err: the change of hashing algo generated
+	  permutations in the output
+
+Mon Jun 17 19:02:49 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* hash.c: applied patch from Sander Vesik improving the quality of
+	  the hash function.
+
+2002-06-14  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* DOCBparser.c HTMLparser.c debugXML.c encoding.c
+	nanoftp.c nanohttp.c parser.c tree.c uri.c xmlIO.c
+	xmllint.c xpath.c: replaced sprintf() with snprintf()
+	to prevent possible buffer overflow (the bug was pointed
+	out by Anju Premachandran) 
+
+Thu Jun 13 17:30:25 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: removed an uninitialized data error popped by valgrind
+	  on PE references
+
+Wed Jun 12 21:38:46 MDT 2002 John Fleck <jfleck@inkstain.net>
+
+	* doc/xml.html
+	adding tutorial reference to the web page
+
+Wed Jun 12 21:26:08 MDT 2002 John Fleck <jfleck@inkstain.net>
+
+	* doc/tutorial/xmltutorial.xml
+	* doc/tutorial/ar01s07.html
+	* doc/tutorial/ape.html
+	* doc/tutorial/includegetattribute.c
+	adding section to tutorial about retrieving an attribute
+	value
+
+Tue Jun 11 12:07:04 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: applied a couple of patches from Peter Jacobi to start
+	  to get rid of ctxt->token, with a possible significant speed
+	  improvement to be gained once done. Better compliance with PE
+	  references constructs in DTDs too.
+	* test/valid/t[0-9]* result/valid/t[0-9]*: added a set of tests
+	  from Peter too
+
+Tue Jun 11 09:25:12 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: Babak Vahedipour-Kunze reported that openTag in 
+	  xmlParseElement was likely to have been deallocated at the
+	  time of the report, possibly leading to segfault. Just report
+	  the tag name now.
+
+Mon Jun 10 18:00:02 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: patch from Richard Jinks for XPath substring() function
+	* result/XPath/expr/strings test/XPath/expr/strings: new set of tests
+
+2002-06-06  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* xmlIO.c: patch from Rachel Hestilow to fix bug #84340
+
+Wed Jun  5 19:14:49 MDT 2002 John Fleck <jfleck@inkstain.net>
+
+	*doc/FAQ.html
+	fixing typos in FAQ, thanks to Robert Funnell for the
+	editing help
+
+Wed Jun  5 14:50:24 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* NEWS: got complaints from rpmlint that it was empty
+
+Tue Jun  4 09:09:18 MDT 2002 John Fleck <jfleck@inkstain.net>
+
+	* added doc/tutorial, including:
+	apa.html
+	apb.html
+	apc.html
+	apd.html
+	ar01s02.html
+	ar01s03.html
+	ar01s04.html
+	ar01s05.html
+	ar01s06.html
+	includeaddattribute.c
+	includeaddkeyword.c
+	includekeyword.c
+	includestory.xml
+	index.html
+	xmltutorial.xml
+	libxml tutorial, including generated html
+
+Mon Jun  3 21:21:26 2002  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* result/c14n/exc-without-comments/merlin-c14n-two-*
+	  result/c14n/without-comments/merlin-c14n-two-*
+	  test/c14n/exc-without-comments/merlin-c14n-two-*
+	  test/c14n/without-comments/merlin-c14n-two-*
+	  testC14N.c Makefile.am: added merlin-c14n-two.tar.gz tests for 
+	c14n/exc-c14n and slightly modified test script to handle
+	these test cases
+	* c14n.c: fixed bugs for complicated nodes set (namespace
+	without node and others from merlin-c14n-two.tar.gz)
+	* include/libxml/xpathInternals.h win32/dsp/libxml2.def.src
+	win32/libxml2.def.src: "opened" xmlXPathNodeSetFreeNs() function
+	for xmlsec performance patch
+	* xpath.c: fixed self::node() for namespaces and attributes
+
+Mon Jun 03 00:04:21 2002 Chema Celorio <chema@ximian.com>
+
+	* tree.h: added xmlDocFormatDump which is just as xmlDocDump
+	  but with the format parameter
+	* tree.c: made xmlDocDump a wrapper arround xmlDocFormatDump
+
+Fri May 31 12:16:48 2002  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* Makefile.am: updated c14n tests suite
+	* c14n.c: performance improvement for previous c14n patch
+
+Fri May 31 11:47:12 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: another peroformance patch from Peter Jacobi, that
+	  time on parsing attribute values.
+
+Thu May 30 23:34:27 2002  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* Makefile.am result/c14n/* test/c14n/*: C14N tests integrated
+	into LibXML2 test suite
+
+Thu May 30 21:23:06 2002  Aleksey Sanin  <aleksey@aleksey.com>
+
+	* c14n.c: propagating xpath ancesstors node fix to c14n
+	plus small performance improvement to reduce number of
+	mallocs
+	* xpath.c: fixed ancestors axis processing for namespace nodes
+
+Wed May 29 10:21:39 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c parser.c tree.c include/libxml/tree.h: performance patch from
+	  Peter Jacobi
+
+Mon May 27 23:18:33 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing 2.4.22
+
+Mon May 27 16:44:04 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c win32/libxml2.def.src win32/dsp/libxml2.def.src
+	  include/libxml/HTMLparser.h: fixing #79334 making htmlParseDocument
+	  a public entry point.
+	* doc/*: rebuilt the API and docs
+
+Mon May 27 14:16:28 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: patch from Richard Jinks to fix a problem introduced
+	  in the previous patch and pointed by Norm
+
+Fri May 24 13:10:22 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.spec.in: fixing bug #81112
+
+Fri May 24 13:03:24 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* uri.c: fixing bug #82848
+
+Fri May 24 09:54:49 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* result/catalogs/mycatalog.full: Aleksey's commit changed the
+	  output of one catalog test
+
+Fri 24 May 2002 12:17:45 AM PDT Aleksey Sanin <aleksey@aleksey.com>
+
+	* global.data globals.c tree.c include/libxml/globals.h 
+	win32/libxml2.def.src win32/dsp/libxml2.def.src: changed
+	default value for global parameter xmlIndentTreeOutput to 1 and
+	introduced new global parameter xmlTreeIndentString (the string
+	used to do one-level indent) with default value "  " (as it was
+	in tree.c)
+
+Thu May 23 13:55:57 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am: Merijn Broeren pointed out a problem when compiling
+	  with trio and schemas.
+
+Wed May 22 11:57:49 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: patch from Richard Jinks to fix the problem raised in
+	  http://mail.gnome.org/archives/xml/2002-April/msg00246.htm
+
+Wed May 22 08:38:19 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemas.c: a bit of work on import.
+	* xmlschemastypes.c: Charles Bozeman provided a compare function
+	  for date/time types so min/max facet restrictions should work,
+	  indeterminate comparisons return an error instead of equal.
+	* test/schemas/date_0* result/schemas/date_0_0: specific test
+	  from Charles Bozeman too
+
+Sat May 18 09:54:12 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.3 doc/buildDocBookCatalog: apply a couple of patches
+	  from Christian Cornelssen fixing the man pages and the Catalog
+	  building script.
+	* xmlschemas.c include/libxml/schemasInternals.h: nothing new yet
+	  next step is <xs:import> I now have a reasonable understanding
+	  of how it works.
+
+Thu May 16 10:43:26 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlIO.c: applied a small buffer performance patch from Gary Pennington
+
+Wed May 15 00:25:34 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/libxml2.def.src: exported xmlXPathNodeSetAddNs()
+
+Tue May 14 13:00:48 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: fixing an XPath function evalutation bug pointed out
+	  by Alexey Efimov where the context was lost when evaluating
+	  the function arguments
+
+Mon 13 May 2002 11:37:39 PM PDT Aleksey Sanin <aleksey@aleksey.com>
+
+	* xpath.c include/libxml/xpathInternals.h: maked xmlXPathNodeSetAddNs() 
+	  function public for XMLSec performance optimizations
+
+Mon May 13 12:32:22 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py python/libxml2class.txt : fixed a problem
+	  with the HTML parser pointed by Gary Benson
+	* python/tests/Makefile.am python/tests/pushSAXhtml.py: sdding the
+	  example
+
+Thu 09 May 2002 11:19:00 AM PDT Aleksey Sanin <aleksey@aleksey.com>
+	* parser.c: fixed bug #81159 (memory growth in SAX)
+	
+Tue 07 May 2002 09:20:21 AM PDT Aleksey Sanin <aleksey@aleksey.com>
+	* xpath.c: fixed bug #78858 (the real fix)
+
+Sat 04 May 2002 11:56:31 PM PDT Aleksey Sanin <aleksey@aleksey.com>
+	* xpath.c: fixed bug #78858 (quick and durty fix to hide the problem)
+	
+Sun May  5 08:57:08 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: modified xmlNodeSetBase to allow changing the
+	  base of a document.
+
+Fri May  3 09:20:41 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemastypes.c: patch Charles Bozeman for validation of
+	  all the date, time, and duration types
+	* test/schemas/dur_0* result/schemas/dur_0*: associated tests
+	* configure.in: fixed an error pointed by an user
+	* xml2-config.in: fixed an error pointed by an user
+
+Wed 01 May 2002 11:29:27 AM PDT Aleksey Sanin <aleksey@aleksey.com>
+
+	* include/libxml/xmlIO.h win32/dsp/libxml2.def.src
+	win32/libxml2.def.src xmlIO.c: exported default
+	'file:', 'http:' and 'ftp:' protocols input handlers 
+	and maked protocols comparisson case insensitive
+
+Tue Apr 30 16:29:05 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: Neven Has detected a typo
+
+Tue Apr 30 08:48:11 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* AUTHORS HACKING: added Aleksey Sanin <aleksey@aleksey.com>
+	  as one of the persons allowed to commit directly to the
+	  module.
+
+Mon Apr 29 17:48:26 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in include/libxml/xmlwin32version.h: preparing 2.4.21
+	* valid.c: raised a too low limit
+	* doc/*: rebuilt the docs 
+
+Wed Apr 24 13:41:03 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* test/XPath/expr/floats test/XPath/expr/functions
+	  result/XPath/expr/floats result/XPath/expr/functions
+	  xpath.c: another XPath conformance patch from Richard Jinks
+
+Tue Apr 23 19:50:40 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemas.c: fixed validation of attribute groups.
+	* test/schemas result/schemas: added an example from the primer
+
+Tue Apr 23 09:11:37 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am xmlschemas.c xmlschemastypes.c: more work on Schemas
+	* test/schemas result/schemas: updated the test list
+
+Mon Apr 22 17:59:14 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* TODO: updated a bit
+	* parser.c: made a comment more specific
+	* xmlregexp.c xmlschemas.c xmlschemastypes.c: more work on the
+	  Schemas conformance.
+	* test/schemas result/schemas: updated the test list
+
+Sat Apr 20 19:36:39 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlregexp.c xmlschemas.c include/libxml/xmlautomata.h:
+	  implementing xs:all with minOccurs = 0
+	* tes/schemas/* result/schemas/*: added more tests covering
+	  xs:all
+
+Sat Apr 20 09:22:50 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlregexp.c: first implementation of the all particle, this
+	  may need to be revisited for case where not all transitions
+	  must be crossed.
+
+Fri Apr 19 18:26:04 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: another entity processing update from Markus Henke
+
+Fri Apr 19 17:14:24 CEST 2002 Bjorn Reese <breese@users.sourceforge.net>
+
+	* trionan.c: fixed crash on OSF/1
+
+Fri Apr 19 09:00:56 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemas.c: more Schemas work
+	* test/schemas/* result/schemas/*: added more tests coming
+	  from the spec.
+
+Thu Apr 18 23:00:02 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* c14n.c: patch from Aleksey Sanin reflecting a change in the
+	  ExcC14N specification
+
+Thu Apr 18 18:38:30 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: patch from Markus Henke, fix for recursive entities.
+
+Thu Apr 18 17:49:24 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: fix a problem with string() on a document node.
+
+Thu Apr 18 16:40:42 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am xmlschemas.c: more Schemas work
+	* test/schemas/* result/schemas/*: added more tests coming
+	  from the spec.
+
+Thu Apr 18 13:52:52 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c: fixed & serialization bug introduced in 2.4.20
+	* result/HTML/*: this changes a few things in the results
+
+Wed Apr 17 20:34:37 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* include/libxml/tree.h: eliminated 'declaration different than
+	 prototype' warning
+	* include/win32config.h: "resolved" conflicts with errno.h
+
+Wed Apr 17 18:26:07 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlregexp.c xmlschemas.c include/libxml/xmlautomata.h: more work
+	  on the automata interfaces and debug of counted choices
+	* test/schemas/* result/schemas/*: added a number of tests
+
+Wed Apr 17 11:03:03 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlschemas.c xmlschemastypes.c include/libxml/xmlschemas.h:
+	  a bit of work on Schemas
+	* testSchemas.c: try to make it more useful
+	* test/schemas/* result/schemas/* Makefile.am: changed the
+	  Schemas regression test procedure, started adding a few samples
+
+Tue Apr 16 19:52:01 CEST 2002 Igor Zlatkovic <izlatkovic@stud.fh-frankfurt.de>
+
+	* include/libxml/encoding.h: Patch for the Borland C++ builder
+	* include/libxml/tree.h: Patch for the Borland C++ builder
+	* threads.c: Patch for the Borland C++ builder
+	* win32/bcb5: New directory for the Borland C++ builder
+	 project files       
+
+Tue Apr 16 19:46:55 CEST 2002 Igor Zlatkovic <izlatkovic@stud.fh-frankfurt.de>
+
+	* win32/Makefile.msvc: Update for XML Schema support
+	* win32/configure.js: Update for XML Schema support
+	* win32/libxml2.def.src: Update for XML Schema support
+
+Tue Apr 16 17:46:43 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am TODO_SCHEMAS configure.in genUnicode.py testAutomata.c
+	 testRegexp.c testSchemas.c xmlregexp.c xmlschemas.c xmlschemastypes.c
+	 xmlunicode.c include/libxml/Makefile.am
+	 include/libxml/schemasInternals.h include/libxml/xmlautomata.h
+	 include/libxml/xmlregexp.h include/libxml/xmlschemas.h
+	 include/libxml/xmlschemastypes.h include/libxml/xmlunicode.h
+	 include/libxml/xmlversion.h.in : merged the current state of
+	 XML Schemas implementation, it is not configured in by default,
+	 a specific --schemas configure option has been added.
+	* test/automata test/regexp test/schemas Makefile.am
+	  result/automata result/regexp result/schemas:
+	  merged automata/regexp/schemas regression tests
+
+Tue Apr 16 09:48:44 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: Gary found a compile time problem, fixes #78823
+
+Mon Apr 15 19:11:36 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: release of 2.4.20
+	* doc/*: updated and rebuilt the docs
+
+Mon Apr 15 14:55:53 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/Makefile.am: patch from Cristian Gafton to build on
+	  Red Hat 6.2, should also fix #75779
+
+Mon Apr 15 12:14:49 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: first part of fixing #78729
+
+Sun Apr 14 23:44:58 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c uri.c: fixing bug #78662 i.e. add proper
+	  escaping of URI when saving HTML files.
+	* result/HTML/*: this impacted some tests
+
+Sun Apr 14 14:55:15 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: trying to fix #77441
+
+Fri Apr 12 23:02:16 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/xmlIO.h: Hallski complained it could not be
+	  included by itself.
+
+Thu Apr 11 10:23:36 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: applied an IEEE flag patch for OSF/1 #77825
+
+Wed Apr 10 23:31:34 CEST 2002 Igor Zlatkovic <igor@stud.fh-frankfurt.de>
+
+	* win32/configure.js: patch from Nilo for the c14n option
+	* win32/Makefile.msvc: fixed libxml2.def generation with threads
+
+Wed Apr 10 21:24:16 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c include/libxml/xmlwin32version.h.in: Silvan Minghetti
+	  pointed erroneous use of LIBXML_THREADS_ENABLED instead of
+	   LIBXML_THREAD_ENABLED
+
+Wed Apr 10 18:12:52 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: another patch from Richard Jinks for substring conformance
+	* test/XPath/expr/floats test/XPath/expr/strings
+	  result/XPath/expr/floats result/XPath/expr/strings: update of the
+	  test suite to check those.
+
+Wed Apr 10 13:29:49 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: patch from Richard Jinks for .x float parsing.
+
+Tue Apr  9 18:09:31 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: patch from Markus Henke when an encoding ain't recognized
+
+Tue Apr  9 15:47:14 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.m4: got a report that #include <string.h> was needed
+
+Tue Apr  9 11:51:25 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmllint.c: applied a fix from Anthony Jones for -o /--output
+
+Tue Apr  2 20:27:11 MST 2002 John Fleck <jfleck@inkstain.net>
+
+	* doc/example.html: fixing typo
+
+Mon Apr  1 10:02:57 CEST 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: fixed a bug in the nodeset to boolean comparison code
+	  pointed out by Melvyn Sopacua.
+
+Fri Mar 29 23:41:53 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.m4: Frédéric Crozat gave a patch related to the change
+	  of Include paths breaking the libxml.m4
+
+Fri Mar 29 18:25:54 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: Fix bug #76927 forgot to save some context
+	  when evaluating binary expressions
+
+Thu Mar 28 19:22:48 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: fixed configure for MPE/iX from Markus Henke
+	* xmlmemory.c: fixed initialization problems
+	* xpath.c: another set of patches from Richard Jinks this
+	  fixes "make XPathtests" on linux
+
+Wed Mar 27 17:09:43 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* trionan.c trionan.h xpath.c: more patches from Richard Jinks
+	* test/XPath/expr/compare test/XPath/expr/equality
+	  test/XPath/expr/floats test/XPath/expr/functions
+	  test/XPath/expr/strings result/XPath/expr/compare
+	  result/XPath/expr/equality result/XPath/expr/floats
+	  result/XPath/expr/functions result/XPath/expr/strings: Updated
+	  tests though they show a divergence on Linux
+
+Wed Mar 27 10:06:53 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c trionan.c: previous commit also included patches
+	  from Richard Jinks on some IEEE support corner case
+
+Wed Mar 27 10:03:11 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* AUTHORS HACKING: Added Igor Zlatkovic as official maintainer
+	* python/Makefile.am python/tests/Makefile.am: Albert Chin pointed
+	  that $(datadir) should be used for docs
+
+Tue Mar 26 13:43:16 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlIO.c: Thomas Steinborn pointed out #76404 that libxml2
+	  could leak filedescriptors
+
+Tue Mar 26 08:55:53 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in nanohttp.c: applied patch from Allan Clark for
+	  UnixWare/OpenServer
+
+Mon Mar 25 17:45:44 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing 2.4.19
+	* doc/*: rebuilt the docs
+
+Mon Mar 25 17:34:06 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* nanohttp.c: fixing #76043, got fed up with non-portability
+	  of that piece of code.
+
+Mon Mar 25 13:08:21 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c SAX.c: Never commit without running "make tests" :-(
+	  fix a couple of stupidities in the previous commit
+	* result/*: a few changes in some attribute order result of previous
+	  commit.
+
+Mon Mar 25 11:46:05 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c SAX.c: fixed bug #76168, attribute redeclared in
+	  the internal subset should not raise duplicate ID errors,
+	  also there was a small bug in conjunction to namespace
+	  declarations defaulted and xml:xxx attributes DTD definitions.
+	  
+Fri Mar 22 15:13:49 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: Richard Jinks also raised some rounding problems
+	  this tries to fix them
+
+Fri Mar 22 13:22:09 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: Richard Jinks spotted an incoherent memory allocation
+	  behaviour in xmlXPathCastToString()
+
+Thu Mar 21 14:25:29 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* encoding.c: fixed a bug in the ISO-Latin 1 to UTF8 encoder
+	  raised by Morus Walter
+
+Thu Mar 21 14:07:13 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlcatalog.c include/libxml/xmlversion.h.in: applied 2 fixups
+	  from Igor
+
+Thu Mar 21 13:30:06 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: fixing #75619, related to a problem when trying
+	  to evaluate condition when the current node set resulting
+	  from that sub-step evaluation is empty. Also fixes 2 potential
+	  problem with previous-sibling and next-siblings axis.
+
+Thu Mar 21 09:03:59 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* c14n.c: patch from Mark Vakoc to build C14N if DocBook and
+	  HTML support is not configured in.
+
+Wed Mar 20 22:42:42 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLparser.c error.c parser.c parserInternals.c tree.c xmlIO.c
+	  include/libxml/tree.h: dohh I really didn't intended to commit
+	  this test version :-(
+
+Wed Mar 20 20:20:57 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* testSAX.c: I wanted to see the real speed at the SAX interface
+	  after a little too many Ximianer started complaining about the
+	  parser speed.
+	  added a --quiet option:
+	  paphio:~/XML -> ls -l db100000.xml 
+	  -rw-rw-r--    1 veillard www      20182040 Mar 20 10:30 db100000.xml
+	  paphio:~/XML -> time ./testSAX --quiet db100000.xml 
+	  3200006 callbacks generated
+	  real	0m1.270s
+	  Which means 16MBytes/s and 3Mcallback/s
+
+Tue Mar 19 19:33:57 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: valgrind spotted another error that time when running
+	  on libxslt regression tests
+
+Tue Mar 19 15:24:49 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am: adding "make valgrind" running the full regression
+	  tests (except python ones) under Valgrind (using valgrind -q
+	  which was kindly added by the author).
+	* valid.c: stupid bug pinpointed by Valgrind, the regression tests
+	  passes cleanly now except an obcure floating point initialization
+	  raised in log10() in one XPath regression test ???
+	* tree.c: edited some comments to close #75244
+
+Tue Mar 19 12:15:20 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: pretty insane thing, the xmlXPathFormatNumber()
+	  was not serializing 1 as "1" if LC_ALL=sv_SE :-( and in the
+	  context of ScrollKeeper, made sure that if the number is
+	  an integer, the serialization follows the description at
+	  http://www.w3.org/TR/xpath#section-String-Functions
+
+Mon Mar 18 19:18:13 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing 2.4.18
+	* doc/*: updated and rebuilt the web site
+	* *.c libxml.h: implement the new IN_LIBXML scheme discussed with
+	  the Windows and Cygwin maintainers.
+	* parser.c: humm, changed the way the SAX parser work when
+	  xmlSubstituteEntitiesDefault(1) is set, it will then 
+	  do the entity registration and loading by itself in case the
+	  user provided SAX getEntity() returns NULL.
+	* testSAX.c: added --noent to test the behaviour.
+
+Mon Mar 18 12:44:23 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: Wilfried Teiken provided a hackish but working
+	  way to get context reported back on entities when parsing
+	  with SAX and without breaking the DOM build.
+
+Sun Mar 17 11:31:55 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* c14n.c: applied a new patch from Aleksey Sanin
+	* doc/site.xsl doc/xml.html doc/*.html: updated the documentation
+	  to reference Aleksey implementation of XML digital Signatures
+
+Sat Mar 16 23:01:42 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: small fix to avoid potential problem due to
+	  ordering of freeing data
+	* python/Makefile.am: people were complaining about 
+	  the generated file in python dir not being built
+
+Fri Mar 15 23:21:40 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.spec.in python/Makefile.am python/tests/Makefile.am
+	  python/generator.py python/libxml.c python/types.c: Cleanup
+	  of the python Makefiles based on Jacob and James feedback,
+	  fixed the spec file accordingly, fixed the number of warning
+	  that passing my pedantic CFLAGS was generating. Conclusion
+	  is that Python includes are real crap.
+
+Fri Mar 15 19:41:25 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure,in: it was reported quite a few times that
+	  xml2-config --cflags should not output
+	  -I$includeprefix/libxml2/libxml because libxml2 header names
+	  clashes with existing names like list.h from C++ stl.
+	  Includes should be #include<libxml/xxx.h> so ...
+
+Fri Mar 15 10:41:50 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* c14n.c: another patch from Aleksey Sanin
+
+Fri Mar 15 08:55:55 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* c14n.c: applied patch from Aleksey Sanin fixing a problem in the
+	  canonicalization algorithm
+	* doc/xml.html doc/index.html: added the C14N references on the 
+	  index page.
+
+2002-03-13  jacob berkman  <jacob@ximian.com>
+
+	* python/Makefile.am: remove LDADD and CFLAGS as this is broken
+	usage, redundant, and gcc specific
+
+Wed Mar 13 11:00:59 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: speedup some node selection operations, this can
+	  have a significant impact on DocBook Norm's stylesheets
+	* nanohttp.c: someone reported that SOCKLEN_T may not be defined
+	  make sure it's always the case
+	* debugXML.c: distinguish CDATA and comments in ls operations
+
+Tue Mar 12 19:45:24 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/*.h: Heiko W. Rupp fixed a lot of comments
+	  to generate better API descriptions etc...
+
+Mon Mar 11 10:10:30 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* c14n.c: Fixing #74186, made sure all boolean expressions
+	  get fully parenthesized, ran indent on the output
+	* configure.in HTMLtree.c SAX.c c14n.c debugXML.c tree.c xpointer.c
+	  include/libxml/tree.h: also #74186 related, removed the
+	  --with-buffers option, and all the preprocessor conditional
+	  sections that were resulting from it.
+
+Sun Mar 10 17:47:58 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: applied patch from Dodji Seketeli fixing an
+	  uninitailized variable in xmlValidGetValidElements()
+
+Sat Mar  9 15:10:49 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* c14n.c: fixed a few comments
+	* doc/*.html doc/*/*.html: regenerated the docs and added
+	  the C14N API
+	* doc/api.xsl doc/gnome-xml.sgml: fixups and added IDs
+
+Sat Mar  9 11:16:11 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* check-xml-test-suite.py: fix to adapt varaiations in the
+	  bindings
+	* configure.in python/setup.py python/setup.py.in: fixed to
+	  have the version of the python scripts automatically updated
+
+Fri Mar  8 16:45:55 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: fixed a bug newly introduced and pointed by Uwe Fechner
+	  in xmlCopyProp()
+
+Fri Mar  8 15:49:10 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing 2.4.17 release
+	* doc/*: updated and rebuilt the docs
+	* xpath.c: fixed a comment
+	* python/libxml.c: fixed a possible reentrancy problem
+
+Thu Mar  7 23:19:28 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c python/tests/Makefile.am python/tests/attribs.py:
+	  fixed xmlHasNsProp() bugs for defaulted from DTD attribs,
+	  added a specific regression test
+	* python/generator.py: xmlHasNsProp() and xmlHasProp() shall
+	  not raise exceptions when failing to find the attribute.
+
+Thu Mar  7 16:11:35 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in xmllint.c: owen pointed out a problem with the
+	  ftme fix, gettimeofday() was not detected by configure and
+	  the ftime header wasn't included, dohhh
+
+Thu Mar  7 12:19:36 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in xmllint.c: trying to fix #71457 for timing
+	  precision when gettimeofday() is not availble but ftime() is
+
+Thu Mar  7 11:24:02 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* libxml.spec.in doc/Makefile.am: Fixed #73408 missing images
+	  are now copied on install and part of the -devel RPM
+
+Thu Mar  7 09:34:16 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: trying to avoid bug #72150 which was apparently
+	  caused by a gcc bug (or a processor problem) as detailed
+	  at http://veillard.com/gcc.bug
+
+Thu Mar  7 01:02:37 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c python/tests/Makefile.am python/tests/cutnpaste.py:
+	  fixed xmlReconciliateNs(), added a Python test/example for
+	  inter-document cut'n paste
+	* python/libxml.py: fixed node.doc on document nodes and added
+	  xpathEval() onto node objects
+
+Wed Mar  6 22:38:03 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* HTMLtree.c: fixed some htmlSetMetaEncoding() problems
+	* python/libxml.c python/tests/Makefile.am python/tests/serialize.py:
+	  fixup and integrated tests for the serialization stuff
+
+Wed Mar  6 19:40:57 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am libxml.3 libxml.4 libxml.spec.in: Fixed bug #72570
+	  moved the libxml man page to section 3
+
+Wed Mar  6 18:34:07 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: fix bug #72490
+	* python/libxml.c python/libxml.py: added methods serialize()
+	  and saveTo() to all node elements.
+
+Tue Mar  5 21:27:03 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlIO.c: closed #73430, don't read from an input source
+	  which indicated an end-of-file or an error.
+
+Tue Mar  5 16:33:42 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: make sure SAX endDocument is always called as
+	  this could result in a Python memory leak otherwise (it's
+	  used to decrement ref-counting)
+	* python/generator.py python/libxml.c python/libxml.py
+	  python/libxml2-python-api.xml python/libxml2class.txt
+	  python/tests/error.py python/tests/xpath.py: implemented
+	  the suggestions made by Gary Benson and extended the tests
+	  to match it.
+
+Tue Mar  5 10:35:24 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py: applied patch fixing #73450
+
+Mon Mar  4 17:59:29 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xpath.c: fixing #61290 "namespace nodes have no parent"
+	  long standing divergence from the XPath REC. NodeSets
+	  simply hold a copy of namespace nodes and those node ->next
+	  points to the parent (which may not be the node carrying the
+	  definition).
+	* include/libxml/xpath.h: flagged but didn't added a possible
+	  speedup
+	* DOCBparser.c HTMLparser.c: removed some warnings from push
+	  parser due to new state being added.
+	* tree.c: new fix from Boris Erdmann
+	* configure.in c14n.c include/libxml/c14n.h testC14N.c: added
+	  the XML Canonalization support from Aleksey Sanin
+
+Sun Mar  3 15:12:42 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: patch from Boris Erdmann fixing some namespace odities
+	  with xmlCopyNode()
+
+Sat Mar  2 10:33:04 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlIO.c: fix bug #72706 when loading a NULL entity
+
+Fri Mar  1 17:14:42 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c: Fixed #72346, about handling of xmlns:foo="", this could
+	  actually change in a future XML Namespace revision.
+
+Fri Mar  1 17:12:15 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/types.c python/tests/Makefile.am python/tests/xpathret.py:
+	  added the possibility of returning nodesets from XPath extension
+	  functions written in Python
+
+Fri Mar  1 13:56:12 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/*: commiting some Python bindings work done while travelling
+
+Fri Mar  1 10:11:15 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmllint.c: close #72663 and #72658, don't memdump unless compiled
+	  explicitely with memory debugging switched on
+
+Sat Feb 23 11:08:09 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/generator.py python/libxml.c python/libxml2-python-api.xml
+	  python/libxml2class.txt python/libxml_wrap.h python/types.c:
+	  Added wrapper for the xmlURIPtr type, provided accessors, fixed
+	  the accessor generator for strings
+	* python/tests/Makefile.am python/tests/tstURI.py: added a specific
+	  regression test.
+
+Fri Feb 22 23:44:57 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/README python/generator.py python/libxml.c python/setup.py:
+	  added the 'usual' setup.py to allow building a libxml2-python
+	  module based on the same code. The initialization is however
+	  different the 2 .so files fo libxml2 and libxslt are identical and
+	  they entry point initialize both libraries. this is done to avoid
+	  some possible nasty problem since the Python don't merge the maps
+	  of all shared modules.
+
+Wed Feb 20 23:16:08 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixed a push/encoding bug reported by Michael
+	  on librsvg
+
+Wed Feb 20 19:54:05 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/parserInternals.h: fixes a misplaced #endif
+
+Wed Feb 20 17:47:55 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c valid.c: found and fixed a couple of allocation bugs
+
+Wed Feb 20 15:36:03 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* doc/xml.html doc/python.html doc/*: added a Python and binding
+	  page describing the current state of the Python bindings and 
+	  giving pointers to the other languages wrappers.
+
+Wed Feb 20 11:16:15 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in include/libxml/xmlwin32version.h: preparing 2.4.16
+	* doc/* python/libxml2class.txt: updated and rebuilt the docs,
+	  rebuilt the API and web site
+	* xpath.c: fixed #71978 portability bugs
+
+Tue Feb 19 22:49:36 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c: oops broke automatic defaulting of namespaces attributes.
+
+Tue Feb 19 22:01:35 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/parserInternals.h parser.c: had to change
+	  2 internal parsing API when processing document content
+	  to check the start and end of element content are defined
+	  in the same entity
+	* valid.c include/libxml/valid.h: attribute normalization can
+	  generate a validity error added xmlValidCtxtNormalizeAttributeValue()
+	  with the context to report it.
+	* SAX.c: fixed the last known bugs, crazy validation constraints
+	  when a document is standalone seems correctly handled. There
+	  is a couple of open issues left which need consideration especially
+	  PE93 on external unparsed entities and standalone status. 
+	  Ran 1819 tests: 1817 suceeded, 2 failed and 0 generated an error in 8.26 s.
+	  The 2 tests left failing are actually in error. Cleanup done.
+
+Tue Feb 19 15:17:02 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c: implemented E59 spaces in CDATA does not match the
+	  nonterminal S
+
+Tue Feb 19 14:44:53 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c parser.c valid.c: more validation test fixups
+	* check-xml-test-suite.py: added duration info for the tests
+
+Mon Feb 18 23:25:08 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c valid.c: a couple of errors were reported but not
+	  saved back as such in the parsing context. Down to 1% failure rate
+	  Ran 1819 tests: 1801 suceeded, 18 failed and 0 generated an error
+
+Mon Feb 18 20:16:15 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlInternald.c: isExtender was missing a char 
+	* parser.c include/libxml/parser.h: % are acceptable in the
+	  internal subset if within a PUBLIC ID
+
+Mon Feb 18 19:27:32 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c parserInternals.c valid.c: more work on the conformance
+	  suite. Took the step to finally block documents with encoding
+	  errors. It's a fatal error per the spec, people should have fixed
+	  their documents by now.
+
+Mon Feb 18 15:30:14 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* check-xml-test-suite.py: fixed the test script after some discussion
+	  on the semantic of TYPE="error"
+	* Makefile.am: added the script to the distrib
+
+Mon Feb 18 12:17:41 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* SAX.c entities.c: fixed a couple of conformances issues deep
+	  into the validation code (standalone and undeclared Notations)
+
+Mon Feb 18 00:17:24 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: fixed #71741 supid typo an a bug about encoding parsing
+	  stayed there for years !
+
+Mon Feb 18 00:06:42 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* valid.c SAX.c: fixed #71740 NotationDecl with a required field
+	  missing
+
+Sun Feb 17 23:45:40 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* check-xml-test-suite.py: improved the behaviour a bit as
+	  well as the logs
+	* parser.c valid.c SAX.c: fixed a few more bugs 
+	  "Ran 1819 tests: 1778 suceeded, 41 failed, and 0 generated an error"
+
+Sun Feb 17 20:41:37 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* check-xml-test-suite.py: python script to run regression tests
+	  against the XML Test suite of W3C/OASis
+	* SAX.c: fixed a validation bug
+	* parser.c: fixed 3 errors pointed by the test suite
+	* doc/buildDocBookCatalog: fixed a typo pointed by drake
+	* python/Makefile.am: fixed a dependendy
+
+Fri Feb 15 21:47:13 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlmemory.c: avoid a warning bug #71594
+
+Wed Feb 13 22:13:33 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* xmlmemory.c: Jesse Perry provided a patch to remove a few
+	  warning on alpha/Tru64
+
+Wed Feb 13 14:30:49 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* include/libxml/entities.h: fixing a comment
+	* valid.c: fixing some troubles with validity check on namespaces
+	* result/VC/NS3 test/VC/NS3: added a specific regression test
+
+Wed Feb 13 14:05:24 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: Fixing #71342 serializing '\n' in attribute values
+	* result/noent/att3 result/att3 test/att3: added a specific
+	  test.
+
+Tue Feb 12 14:45:32 CET 2002 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxml.c: couple of bug fixes
+
 Mon Feb 11 19:41:29 CET 2002 Daniel Veillard <daniel@veillard.com>
 
 	* python/*.py: removed tabs and used spaces.

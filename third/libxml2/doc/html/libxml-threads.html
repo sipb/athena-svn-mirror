@@ -4,7 +4,7 @@
 >threads</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -13,8 +13,8 @@ REL="UP"
 TITLE="Libxml Library Reference"
 HREF="libxml-lib.html"><LINK
 REL="PREVIOUS"
-TITLE="catalog"
-HREF="libxml-catalog.html"><LINK
+TITLE="c14n"
+HREF="libxml-c14n.html"><LINK
 REL="NEXT"
 TITLE="globals"
 HREF="libxml-globals.html"></HEAD
@@ -49,7 +49,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="left"
 ><A
-HREF="libxml-catalog.html"
+HREF="libxml-c14n.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-THREADS"
->threads</A
-></H1
+NAME="LIBXML-THREADS">threads</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN19944"
+NAME="AEN20981"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN19944"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN19947"
-></A
-><H2
+NAME="AEN20984"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -153,6 +149,14 @@ HREF="libxml-threads.html#XMLMUTEX"
 typedef     <A
 HREF="libxml-threads.html#XMLMUTEXPTR"
 >xmlMutexPtr</A
+>;
+struct      <A
+HREF="libxml-threads.html#XMLRMUTEX"
+>xmlRMutex</A
+>;
+typedef     <A
+HREF="libxml-threads.html#XMLRMUTEXPTR"
+>xmlRMutexPtr</A
 >;
 <A
 HREF="libxml-threads.html#XMLMUTEXPTR"
@@ -182,14 +186,6 @@ HREF="libxml-threads.html#XMLFREEMUTEX"
 HREF="libxml-threads.html#XMLMUTEXPTR"
 >xmlMutexPtr</A
 > tok);
-struct      <A
-HREF="libxml-threads.html#XMLRMUTEX"
->xmlRMutex</A
->;
-typedef     <A
-HREF="libxml-threads.html#XMLRMUTEXPTR"
->xmlRMutexPtr</A
->;
 <A
 HREF="libxml-threads.html#XMLRMUTEXPTR"
 >xmlRMutexPtr</A
@@ -256,7 +252,7 @@ HREF="libxml-threads.html#XMLGETGLOBALSTATE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN19978"
+NAME="AEN21015"
 ></A
 ><H2
 >Description</H2
@@ -266,20 +262,20 @@ NAME="AEN19978"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN19981"
+NAME="AEN21018"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19983"
+NAME="AEN21020"
 ></A
 ><H3
 ><A
 NAME="XMLMUTEX"
 ></A
->&#62;struct xmlMutex</H3
+>struct xmlMutex</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -299,13 +295,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19988"
+NAME="AEN21025"
 ></A
 ><H3
 ><A
 NAME="XMLMUTEXPTR"
 ></A
->&#62;xmlMutexPtr</H3
+>xmlMutexPtr</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -331,13 +327,65 @@ synchronizing access to data.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN19995"
+NAME="AEN21032"
+></A
+><H3
+><A
+NAME="XMLRMUTEX"
+></A
+>struct xmlRMutex</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct xmlRMutex;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN21037"
+></A
+><H3
+><A
+NAME="XMLRMUTEXPTR"
+></A
+>xmlRMutexPtr</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef xmlRMutex *xmlRMutexPtr;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN21042"
 ></A
 ><H3
 ><A
 NAME="XMLNEWMUTEX"
 ></A
->&#62;xmlNewMutex ()</H3
+>xmlNewMutex ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -359,9 +407,7 @@ HREF="libxml-threads.html#XMLMUTEXPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20001"
-></A
-><P
+NAME="AEN21048"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -376,9 +422,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -395,13 +444,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20010"
+NAME="AEN21057"
 ></A
 ><H3
 ><A
 NAME="XMLMUTEXLOCK"
 ></A
->&#62;xmlMutexLock ()</H3
+>xmlMutexLock ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -428,9 +477,7 @@ HREF="libxml-threads.html#XMLMUTEXLOCK"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20018"
-></A
-><P
+NAME="AEN21065"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -466,13 +513,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20027"
+NAME="AEN21074"
 ></A
 ><H3
 ><A
 NAME="XMLMUTEXUNLOCK"
 ></A
->&#62;xmlMutexUnlock ()</H3
+>xmlMutexUnlock ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -499,9 +546,7 @@ HREF="libxml-threads.html#XMLMUTEXUNLOCK"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20035"
-></A
-><P
+NAME="AEN21082"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -537,13 +582,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20044"
+NAME="AEN21091"
 ></A
 ><H3
 ><A
 NAME="XMLFREEMUTEX"
 ></A
->&#62;xmlFreeMutex ()</H3
+>xmlFreeMutex ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -571,9 +616,7 @@ struct.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20052"
-></A
-><P
+NAME="AEN21099"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -609,65 +652,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20061"
-></A
-><H3
-><A
-NAME="XMLRMUTEX"
-></A
->&#62;struct xmlRMutex</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct xmlRMutex;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN20066"
-></A
-><H3
-><A
-NAME="XMLRMUTEXPTR"
-></A
->&#62;xmlRMutexPtr</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->typedef xmlRMutex *xmlRMutexPtr;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN20071"
+NAME="AEN21108"
 ></A
 ><H3
 ><A
 NAME="XMLNEWRMUTEX"
 ></A
->&#62;xmlNewRMutex ()</H3
+>xmlNewRMutex ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -689,9 +680,7 @@ HREF="libxml-threads.html#XMLRMUTEXPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20077"
-></A
-><P
+NAME="AEN21114"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -706,9 +695,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -725,13 +717,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20086"
+NAME="AEN21123"
 ></A
 ><H3
 ><A
 NAME="XMLRMUTEXLOCK"
 ></A
->&#62;xmlRMutexLock ()</H3
+>xmlRMutexLock ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -758,9 +750,7 @@ HREF="libxml-threads.html#XMLRMUTEXLOCK"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20094"
-></A
-><P
+NAME="AEN21131"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -796,13 +786,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20103"
+NAME="AEN21140"
 ></A
 ><H3
 ><A
 NAME="XMLRMUTEXUNLOCK"
 ></A
->&#62;xmlRMutexUnlock ()</H3
+>xmlRMutexUnlock ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -829,9 +819,7 @@ HREF="libxml-threads.html#XMLRMUTEXUNLOCK"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20111"
-></A
-><P
+NAME="AEN21148"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -867,13 +855,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20120"
+NAME="AEN21157"
 ></A
 ><H3
 ><A
 NAME="XMLFREERMUTEX"
 ></A
->&#62;xmlFreeRMutex ()</H3
+>xmlFreeRMutex ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -895,9 +883,7 @@ HREF="libxml-threads.html#XMLRMUTEXPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20126"
-></A
-><P
+NAME="AEN21163"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -933,13 +919,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20135"
+NAME="AEN21172"
 ></A
 ><H3
 ><A
 NAME="XMLINITTHREADS"
 ></A
->&#62;xmlInitThreads ()</H3
+>xmlInitThreads ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -965,13 +951,13 @@ data of the libxml2 library.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20142"
+NAME="AEN21179"
 ></A
 ><H3
 ><A
 NAME="XMLLOCKLIBRARY"
 ></A
->&#62;xmlLockLibrary ()</H3
+>xmlLockLibrary ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -997,13 +983,13 @@ library.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20149"
+NAME="AEN21186"
 ></A
 ><H3
 ><A
 NAME="XMLUNLOCKLIBRARY"
 ></A
->&#62;xmlUnlockLibrary ()</H3
+>xmlUnlockLibrary ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1029,13 +1015,13 @@ library.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20156"
+NAME="AEN21193"
 ></A
 ><H3
 ><A
 NAME="XMLGETTHREADID"
 ></A
->&#62;xmlGetThreadId ()</H3
+>xmlGetThreadId ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1059,9 +1045,7 @@ HREF="libxml-threads.html#XMLGETTHREADID"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20163"
-></A
-><P
+NAME="AEN21200"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1076,9 +1060,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1095,13 +1082,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20172"
+NAME="AEN21209"
 ></A
 ><H3
 ><A
 NAME="XMLISMAINTHREAD"
 ></A
->&#62;xmlIsMainThread ()</H3
+>xmlIsMainThread ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1125,9 +1112,7 @@ HREF="libxml-threads.html#XMLISMAINTHREAD"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20179"
-></A
-><P
+NAME="AEN21216"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1142,9 +1127,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1161,13 +1149,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20188"
+NAME="AEN21225"
 ></A
 ><H3
 ><A
 NAME="XMLCLEANUPTHREADS"
 ></A
->&#62;xmlCleanupThreads ()</H3
+>xmlCleanupThreads ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1193,13 +1181,13 @@ data of the libxml2 library once processing has ended.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN20195"
+NAME="AEN21232"
 ></A
 ><H3
 ><A
 NAME="XMLGETGLOBALSTATE"
 ></A
->&#62;xmlGetGlobalState ()</H3
+>xmlGetGlobalState ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1226,9 +1214,7 @@ HREF="libxml-threads.html#XMLGETGLOBALSTATE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN20203"
-></A
-><P
+NAME="AEN21240"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1243,9 +1229,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1275,7 +1264,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="left"
 ><A
-HREF="libxml-catalog.html"
+HREF="libxml-c14n.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -1347,7 +1336,7 @@ ALIGN="left"
 COLOR="#FFFFFF"
 SIZE="3"
 ><B
->catalog</B
+>c14n</B
 ></FONT
 ></TD
 ><TD

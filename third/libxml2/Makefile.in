@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,6 +9,8 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+# AUTOMAKE_ OPTIONS=no-dependencies
 
 
 SHELL = @SHELL@
@@ -60,6 +62,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+C14N_OBJ = @C14N_OBJ@
 CATALOG_OBJ = @CATALOG_OBJ@
 CC = @CC@
 CFLAGS = @CFLAGS@
@@ -94,17 +97,22 @@ PACKAGE = @PACKAGE@
 PYTHON = @PYTHON@
 PYTHON_INCLUDES = @PYTHON_INCLUDES@
 PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
+PYTHON_SUBDIR = @PYTHON_SUBDIR@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
+RELDATE = @RELDATE@
 RM = @RM@
 STRIP = @STRIP@
 TAR = @TAR@
+TEST_REGEXPS = @TEST_REGEXPS@
+TEST_SCHEMAS = @TEST_SCHEMAS@
 TEST_THREADS = @TEST_THREADS@
 THREAD_CFLAGS = @THREAD_CFLAGS@
 THREAD_LIBS = @THREAD_LIBS@
 U = @U@
 VERSION = @VERSION@
+WITH_C14N = @WITH_C14N@
 WITH_CATALOG = @WITH_CATALOG@
 WITH_DEBUG = @WITH_DEBUG@
 WITH_DOCB = @WITH_DOCB@
@@ -113,6 +121,8 @@ WITH_HTML = @WITH_HTML@
 WITH_HTTP = @WITH_HTTP@
 WITH_ICONV = @WITH_ICONV@
 WITH_MEM_DEBUG = @WITH_MEM_DEBUG@
+WITH_REGEXPS = @WITH_REGEXPS@
+WITH_SCHEMAS = @WITH_SCHEMAS@
 WITH_THREADS = @WITH_THREADS@
 WITH_TRIO = @WITH_TRIO@
 WITH_XINCLUDE = @WITH_XINCLUDE@
@@ -128,38 +138,43 @@ XPTR_OBJ = @XPTR_OBJ@
 Z_CFLAGS = @Z_CFLAGS@
 Z_LIBS = @Z_LIBS@
 
-AUTOMAKE_OPTIONS = no-dependencies
+SUBDIRS = include . doc example @PYTHON_SUBDIR@
 
-SUBDIRS = include . doc example python
+DIST_SUBDIRS = include . doc example python
 
-INCLUDES = -I@srcdir@/include -I$(top_builddir)/include @THREAD_CFLAGS@ @Z_CFLAGS@ 
+INCLUDES = -I$(top_builddir)/include -I@srcdir@/include @THREAD_CFLAGS@ @Z_CFLAGS@ 
 
-noinst_PROGRAMS = testSAX testHTML testXPath testURI testDocbook testThreads
+noinst_PROGRAMS = testSchemas testSAX testHTML testXPath testURI testDocbook \
+                testThreads testC14N testAutomata testRegexp testReader
+
 
 bin_PROGRAMS = xmllint xmlcatalog
 
 bin_SCRIPTS = xml2-config
 
 lib_LTLIBRARIES = libxml2.la
-libxml2_la_LIBADD = @Z_LIBS@ $(ICONV_LIBS) -lm
+libxml2_la_LIBADD = @THREAD_LIBS@ @Z_LIBS@ $(ICONV_LIBS) -lm
 
 libxml2_la_LDFLAGS = -version-info @LIBXML_VERSION_INFO@
-
 @WITH_TRIO_SOURCES_TRUE@libxml2_la_SOURCES = @WITH_TRIO_SOURCES_TRUE@SAX.c entities.c encoding.c error.c parserInternals.c  \
 @WITH_TRIO_SOURCES_TRUE@		parser.c tree.c hash.c list.c xmlIO.c xmlmemory.c uri.c  \
 @WITH_TRIO_SOURCES_TRUE@		valid.c xlink.c HTMLparser.c HTMLtree.c debugXML.c xpath.c  \
 @WITH_TRIO_SOURCES_TRUE@		xpointer.c xinclude.c nanohttp.c nanoftp.c DOCBparser.c \
-@WITH_TRIO_SOURCES_TRUE@		catalog.c globals.c threads.c triostr.c trio.c
+@WITH_TRIO_SOURCES_TRUE@		catalog.c globals.c threads.c c14n.c \
+@WITH_TRIO_SOURCES_TRUE@		xmlregexp.c xmlschemas.c xmlschemastypes.c xmlunicode.c \
+@WITH_TRIO_SOURCES_TRUE@		triostr.c trio.c xmlreader.c
 @WITH_TRIO_SOURCES_FALSE@libxml2_la_SOURCES = @WITH_TRIO_SOURCES_FALSE@SAX.c entities.c encoding.c error.c parserInternals.c  \
 @WITH_TRIO_SOURCES_FALSE@		parser.c tree.c hash.c list.c xmlIO.c xmlmemory.c uri.c  \
 @WITH_TRIO_SOURCES_FALSE@		valid.c xlink.c HTMLparser.c HTMLtree.c debugXML.c xpath.c  \
 @WITH_TRIO_SOURCES_FALSE@		xpointer.c xinclude.c nanohttp.c nanoftp.c DOCBparser.c \
-@WITH_TRIO_SOURCES_FALSE@		catalog.c globals.c threads.c
+@WITH_TRIO_SOURCES_FALSE@		catalog.c globals.c threads.c c14n.c \
+@WITH_TRIO_SOURCES_FALSE@		xmlregexp.c xmlschemas.c xmlschemastypes.c xmlunicode.c \
+@WITH_TRIO_SOURCES_FALSE@		xmlreader.c
 
 DEPS = $(top_builddir)/libxml2.la
 LDADDS = $(top_builddir)/libxml2.la @THREAD_LIBS@ @Z_LIBS@ $(ICONV_LIBS) -lm
 
-man_MANS = xml2-config.1 libxml.4
+man_MANS = xml2-config.1 libxml.3
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = libxml.m4
@@ -194,6 +209,11 @@ testXPath_LDFLAGS =
 testXPath_DEPENDENCIES = $(DEPS)
 testXPath_LDADD = $(LDADDS)
 
+testC14N_SOURCES = testC14N.c
+testC14N_LDFLAGS = 
+testC14N_DEPENDENCIES = $(DEPS)
+testC14N_LDADD = $(LDADDS)
+
 testThreads_SOURCES = testThreads.c
 testThreads_LDFLAGS = 
 testThreads_DEPENDENCIES = $(DEPS)
@@ -204,17 +224,37 @@ testURI_LDFLAGS =
 testURI_DEPENDENCIES = $(DEPS)
 testURI_LDADD = $(LDADDS)
 
+testRegexp_SOURCES = testRegexp.c
+testRegexp_LDFLAGS = 
+testRegexp_DEPENDENCIES = $(DEPS)
+testRegexp_LDADD = $(LDADDS)
+
+testAutomata_SOURCES = testAutomata.c
+testAutomata_LDFLAGS = 
+testAutomata_DEPENDENCIES = $(DEPS)
+testAutomata_LDADD = $(LDADDS)
+
+testSchemas_SOURCES = testSchemas.c
+testSchemas_LDFLAGS = 
+testSchemas_DEPENDENCIES = $(DEPS)
+testSchemas_LDADD = $(LDADDS)
+
+testReader_SOURCES = testReader.c
+testReader_LDFLAGS = 
+testReader_DEPENDENCIES = $(DEPS)
+testReader_LDADD = $(LDADDS)
+
 CLEANFILES = xml2Conf.sh
 
 confexecdir = $(libdir)
 confexec_DATA = xml2Conf.sh
 EXTRA_DIST = xml2-config.in xml2Conf.sh.in libxml.spec.in libxml.spec \
-             libxml.m4 Copyright \
+             libxml.m4 Copyright check-xml-test-suite.py \
              example/Makefile.am example/gjobread.c example/gjobs.xml \
 	     $(man_MANS) libxml-2.0.pc.in \
 	     trionan.c trionan.h triostr.c triostr.h trio.c trio.h \
 	     triop.h triodef.h libxml.h \
-	     testThreadsWin32.c
+	     testThreadsWin32.c genUnicode.py TODO_SCHEMAS
 
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -223,7 +263,7 @@ pkgconfig_DATA = libxml-2.0.pc
 #
 # Instll the tests program sources as examples 
 #
-BASE_DIR = @HTML_DIR@
+BASE_DIR = $(datadir)/doc
 DOC_MODULE = libxml2-$(VERSION)
 EXAMPLES_DIR = $(BASE_DIR)/$(DOC_MODULE)/examples
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -244,7 +284,9 @@ libxml2_la_DEPENDENCIES =
 @WITH_TRIO_SOURCES_FALSE@xmlmemory.lo uri.lo valid.lo xlink.lo \
 @WITH_TRIO_SOURCES_FALSE@HTMLparser.lo HTMLtree.lo debugXML.lo xpath.lo \
 @WITH_TRIO_SOURCES_FALSE@xpointer.lo xinclude.lo nanohttp.lo nanoftp.lo \
-@WITH_TRIO_SOURCES_FALSE@DOCBparser.lo catalog.lo globals.lo threads.lo
+@WITH_TRIO_SOURCES_FALSE@DOCBparser.lo catalog.lo globals.lo threads.lo \
+@WITH_TRIO_SOURCES_FALSE@c14n.lo xmlregexp.lo xmlschemas.lo \
+@WITH_TRIO_SOURCES_FALSE@xmlschemastypes.lo xmlunicode.lo xmlreader.lo
 @WITH_TRIO_SOURCES_TRUE@libxml2_la_OBJECTS =  SAX.lo entities.lo \
 @WITH_TRIO_SOURCES_TRUE@encoding.lo error.lo parserInternals.lo \
 @WITH_TRIO_SOURCES_TRUE@parser.lo tree.lo hash.lo list.lo xmlIO.lo \
@@ -252,20 +294,29 @@ libxml2_la_DEPENDENCIES =
 @WITH_TRIO_SOURCES_TRUE@HTMLparser.lo HTMLtree.lo debugXML.lo xpath.lo \
 @WITH_TRIO_SOURCES_TRUE@xpointer.lo xinclude.lo nanohttp.lo nanoftp.lo \
 @WITH_TRIO_SOURCES_TRUE@DOCBparser.lo catalog.lo globals.lo threads.lo \
-@WITH_TRIO_SOURCES_TRUE@triostr.lo trio.lo
+@WITH_TRIO_SOURCES_TRUE@c14n.lo xmlregexp.lo xmlschemas.lo \
+@WITH_TRIO_SOURCES_TRUE@xmlschemastypes.lo xmlunicode.lo triostr.lo \
+@WITH_TRIO_SOURCES_TRUE@trio.lo xmlreader.lo
 bin_PROGRAMS =  xmllint$(EXEEXT) xmlcatalog$(EXEEXT)
-noinst_PROGRAMS =  testSAX$(EXEEXT) testHTML$(EXEEXT) testXPath$(EXEEXT) \
-testURI$(EXEEXT) testDocbook$(EXEEXT) testThreads$(EXEEXT)
+noinst_PROGRAMS =  testSchemas$(EXEEXT) testSAX$(EXEEXT) \
+testHTML$(EXEEXT) testXPath$(EXEEXT) testURI$(EXEEXT) \
+testDocbook$(EXEEXT) testThreads$(EXEEXT) testC14N$(EXEEXT) \
+testAutomata$(EXEEXT) testRegexp$(EXEEXT) testReader$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 xmllint_OBJECTS =  xmllint.$(OBJEXT)
 xmlcatalog_OBJECTS =  xmlcatalog.$(OBJEXT)
+testSchemas_OBJECTS =  testSchemas.$(OBJEXT)
 testSAX_OBJECTS =  testSAX.$(OBJEXT)
 testHTML_OBJECTS =  testHTML.$(OBJEXT)
 testXPath_OBJECTS =  testXPath.$(OBJEXT)
 testURI_OBJECTS =  testURI.$(OBJEXT)
 testDocbook_OBJECTS =  testDocbook.$(OBJEXT)
 testThreads_OBJECTS =  testThreads.$(OBJEXT)
+testC14N_OBJECTS =  testC14N.$(OBJEXT)
+testAutomata_OBJECTS =  testAutomata.$(OBJEXT)
+testRegexp_OBJECTS =  testRegexp.$(OBJEXT)
+testReader_OBJECTS =  testReader.$(OBJEXT)
 SCRIPTS =  $(bin_SCRIPTS)
 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -273,7 +324,7 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 man1dir = $(mandir)/man1
-man4dir = $(mandir)/man4
+man3dir = $(mandir)/man3
 MANS = $(man_MANS)
 
 NROFF = nroff
@@ -282,21 +333,21 @@ DATA =  $(confexec_DATA) $(m4data_DATA) $(pkgconfig_DATA)
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
 Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 aclocal.m4 \
 config.guess config.h.in config.sub configure configure.in install-sh \
-libxml-2.0.pc.in libxml.spec.in ltmain.sh missing mkinstalldirs \
-xml2-config.in xml2Conf.sh.in
+libxml-2.0.pc.in libxml.spec.in ltconfig ltmain.sh missing \
+mkinstalldirs xml2-config.in xml2Conf.sh.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-SOURCES = $(libxml2_la_SOURCES) $(xmllint_SOURCES) $(xmlcatalog_SOURCES) $(testSAX_SOURCES) $(testHTML_SOURCES) $(testXPath_SOURCES) $(testURI_SOURCES) $(testDocbook_SOURCES) $(testThreads_SOURCES)
-OBJECTS = $(libxml2_la_OBJECTS) $(xmllint_OBJECTS) $(xmlcatalog_OBJECTS) $(testSAX_OBJECTS) $(testHTML_OBJECTS) $(testXPath_OBJECTS) $(testURI_OBJECTS) $(testDocbook_OBJECTS) $(testThreads_OBJECTS)
+SOURCES = $(libxml2_la_SOURCES) $(xmllint_SOURCES) $(xmlcatalog_SOURCES) $(testSchemas_SOURCES) $(testSAX_SOURCES) $(testHTML_SOURCES) $(testXPath_SOURCES) $(testURI_SOURCES) $(testDocbook_SOURCES) $(testThreads_SOURCES) $(testC14N_SOURCES) $(testAutomata_SOURCES) $(testRegexp_SOURCES) $(testReader_SOURCES)
+OBJECTS = $(libxml2_la_OBJECTS) $(xmllint_OBJECTS) $(xmlcatalog_OBJECTS) $(testSchemas_OBJECTS) $(testSAX_OBJECTS) $(testHTML_OBJECTS) $(testXPath_OBJECTS) $(testURI_OBJECTS) $(testDocbook_OBJECTS) $(testThreads_OBJECTS) $(testC14N_OBJECTS) $(testAutomata_OBJECTS) $(testRegexp_OBJECTS) $(testReader_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
@@ -460,6 +511,10 @@ xmlcatalog$(EXEEXT): $(xmlcatalog_OBJECTS) $(xmlcatalog_DEPENDENCIES)
 	@rm -f xmlcatalog$(EXEEXT)
 	$(LINK) $(xmlcatalog_LDFLAGS) $(xmlcatalog_OBJECTS) $(xmlcatalog_LDADD) $(LIBS)
 
+testSchemas$(EXEEXT): $(testSchemas_OBJECTS) $(testSchemas_DEPENDENCIES)
+	@rm -f testSchemas$(EXEEXT)
+	$(LINK) $(testSchemas_LDFLAGS) $(testSchemas_OBJECTS) $(testSchemas_LDADD) $(LIBS)
+
 testSAX$(EXEEXT): $(testSAX_OBJECTS) $(testSAX_DEPENDENCIES)
 	@rm -f testSAX$(EXEEXT)
 	$(LINK) $(testSAX_LDFLAGS) $(testSAX_OBJECTS) $(testSAX_LDADD) $(LIBS)
@@ -483,6 +538,22 @@ testDocbook$(EXEEXT): $(testDocbook_OBJECTS) $(testDocbook_DEPENDENCIES)
 testThreads$(EXEEXT): $(testThreads_OBJECTS) $(testThreads_DEPENDENCIES)
 	@rm -f testThreads$(EXEEXT)
 	$(LINK) $(testThreads_LDFLAGS) $(testThreads_OBJECTS) $(testThreads_LDADD) $(LIBS)
+
+testC14N$(EXEEXT): $(testC14N_OBJECTS) $(testC14N_DEPENDENCIES)
+	@rm -f testC14N$(EXEEXT)
+	$(LINK) $(testC14N_LDFLAGS) $(testC14N_OBJECTS) $(testC14N_LDADD) $(LIBS)
+
+testAutomata$(EXEEXT): $(testAutomata_OBJECTS) $(testAutomata_DEPENDENCIES)
+	@rm -f testAutomata$(EXEEXT)
+	$(LINK) $(testAutomata_LDFLAGS) $(testAutomata_OBJECTS) $(testAutomata_LDADD) $(LIBS)
+
+testRegexp$(EXEEXT): $(testRegexp_OBJECTS) $(testRegexp_DEPENDENCIES)
+	@rm -f testRegexp$(EXEEXT)
+	$(LINK) $(testRegexp_LDFLAGS) $(testRegexp_OBJECTS) $(testRegexp_LDADD) $(LIBS)
+
+testReader$(EXEEXT): $(testReader_OBJECTS) $(testReader_DEPENDENCIES)
+	@rm -f testReader$(EXEEXT)
+	$(LINK) $(testReader_LDFLAGS) $(testReader_OBJECTS) $(testReader_LDADD) $(LIBS)
 
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -536,12 +607,12 @@ uninstall-man1:
 	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
 	done
 
-install-man4:
-	$(mkinstalldirs) $(DESTDIR)$(man4dir)
-	@list='$(man4_MANS)'; \
+install-man3:
+	$(mkinstalldirs) $(DESTDIR)$(man3dir)
+	@list='$(man3_MANS)'; \
 	l2='$(man_MANS)'; for i in $$l2; do \
 	  case "$$i" in \
-	    *.4*) list="$$list $$i" ;; \
+	    *.3*) list="$$list $$i" ;; \
 	  esac; \
 	done; \
 	for i in $$list; do \
@@ -550,30 +621,30 @@ install-man4:
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man4dir)/$$inst"; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(man4dir)/$$inst; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man3dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man3dir)/$$inst; \
 	done
 
-uninstall-man4:
-	@list='$(man4_MANS)'; \
+uninstall-man3:
+	@list='$(man3_MANS)'; \
 	l2='$(man_MANS)'; for i in $$l2; do \
 	  case "$$i" in \
-	    *.4*) list="$$list $$i" ;; \
+	    *.3*) list="$$list $$i" ;; \
 	  esac; \
 	done; \
 	for i in $$list; do \
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " rm -f $(DESTDIR)$(man4dir)/$$inst"; \
-	  rm -f $(DESTDIR)$(man4dir)/$$inst; \
+	  echo " rm -f $(DESTDIR)$(man3dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man3dir)/$$inst; \
 	done
 install-man: $(MANS)
 	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-man1 install-man4
+	$(MAKE) $(AM_MAKEFLAGS) install-man1 install-man3
 uninstall-man:
 	@$(NORMAL_UNINSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) uninstall-man1 uninstall-man4
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-man1 uninstall-man3
 
 install-confexecDATA: $(confexec_DATA)
 	@$(NORMAL_INSTALL)
@@ -770,7 +841,7 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	for subdir in $(SUBDIRS); do \
+	for subdir in $(DIST_SUBDIRS); do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \
@@ -781,6 +852,511 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+c14n.lo c14n.o : c14n.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/uri.h \
+	include/libxml/xpathInternals.h include/libxml/xpath.h \
+	include/libxml/hash.h include/libxml/c14n.h
+catalog.lo catalog.o : catalog.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/hash.h include/libxml/uri.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/catalog.h
+debugXML.lo debugXML.o : debugXML.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/debugXML.h include/libxml/xpath.h \
+	include/libxml/hash.h include/libxml/HTMLtree.h \
+	include/libxml/xpathInternals.h
+DOCBparser.lo DOCBparser.o : DOCBparser.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/DOCBparser.h include/libxml/uri.h
+encoding.lo encoding.o : encoding.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/encoding.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/HTMLparser.h
+entities.lo entities.o : entities.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/hash.h
+error.lo error.o : error.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/globals.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h
+globals.lo globals.o : globals.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h
+hash.lo hash.o : hash.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/hash.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/globals.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h
+HTMLparser.lo HTMLparser.o : HTMLparser.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/HTMLtree.h
+HTMLtree.lo HTMLtree.o : HTMLtree.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/HTMLparser.h include/libxml/HTMLtree.h \
+	include/libxml/parserInternals.h include/libxml/uri.h
+list.lo list.o : list.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h
+nanoftp.lo nanoftp.o : nanoftp.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/nanoftp.h
+nanohttp.lo nanohttp.o : nanohttp.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/nanohttp.h include/libxml/uri.h
+parser.lo parser.o : parser.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/uri.h include/libxml/catalog.h \
+	include/libxml/xpath.h include/libxml/hash.h
+parserInternals.lo parserInternals.o : parserInternals.c libxml.h \
+	config.h include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/uri.h include/libxml/catalog.h
+regexp.lo regexp.o : regexp.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/tree.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/regexp.h include/libxml/automata.h \
+	include/libxml/unicode.h
+SAX.lo SAX.o : SAX.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/parserInternals.h \
+	include/libxml/HTMLparser.h include/libxml/debugXML.h \
+	include/libxml/xpath.h include/libxml/hash.h \
+	include/libxml/uri.h include/libxml/HTMLtree.h
+schemas.lo schemas.o : schemas.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/hash.h include/libxml/schemas.h \
+	include/libxml/schemasInternals.h include/libxml/regexp.h \
+	include/libxml/schemastypes.h include/libxml/automata.h
+schemastypes.lo schemastypes.o : schemastypes.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/hash.h include/libxml/schemas.h \
+	include/libxml/schemasInternals.h include/libxml/regexp.h \
+	include/libxml/schemastypes.h
+testAutomata.o: testAutomata.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h
+testC14N.o: testC14N.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/xpath.h \
+	include/libxml/hash.h include/libxml/xpathInternals.h \
+	include/libxml/c14n.h
+testDocbook.o: testDocbook.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/DOCBparser.h include/libxml/debugXML.h \
+	include/libxml/xpath.h include/libxml/hash.h
+testHTML.o: testHTML.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/HTMLparser.h \
+	include/libxml/HTMLtree.h include/libxml/debugXML.h \
+	include/libxml/xpath.h include/libxml/hash.h
+testReader.o: testReader.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlreader.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h
+testRegexp.o: testRegexp.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h
+testSAX.o: testSAX.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/parserInternals.h \
+	include/libxml/HTMLparser.h include/libxml/debugXML.h \
+	include/libxml/xpath.h include/libxml/hash.h
+testSchemas.o: testSchemas.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/globals.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/debugXML.h include/libxml/xpath.h \
+	include/libxml/hash.h include/libxml/xmlschemas.h \
+	include/libxml/xmlschemastypes.h \
+	include/libxml/schemasInternals.h
+testThreads.o: testThreads.c libxml.h config.h \
+	include/libxml/xmlversion.h
+testURI.o: testURI.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/uri.h
+testXPath.o: testXPath.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xpath.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/hash.h include/libxml/debugXML.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/xpathInternals.h include/libxml/xpointer.h
+threads.lo threads.o : threads.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/xmlmemory.h
+tree.lo tree.o : tree.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/uri.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/HTMLtree.h include/libxml/hash.h
+unicode.lo unicode.o : unicode.c libxml.h config.h \
+	include/libxml/xmlversion.h unicode.h
+uri.lo uri.o : uri.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/uri.h
+valid.lo valid.o : valid.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/hash.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h
+xinclude.lo xinclude.o : xinclude.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/uri.h include/libxml/xpointer.h \
+	include/libxml/xpath.h include/libxml/hash.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/xinclude.h
+xlink.lo xlink.o : xlink.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h
+xmlcatalog.o: xmlcatalog.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/uri.h \
+	include/libxml/catalog.h
+xmlIO.lo xmlIO.o : xmlIO.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/parserInternals.h \
+	include/libxml/HTMLparser.h include/libxml/uri.h \
+	include/libxml/nanohttp.h include/libxml/nanoftp.h \
+	include/libxml/catalog.h
+xmllint.o: xmllint.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/parserInternals.h \
+	include/libxml/HTMLparser.h include/libxml/HTMLtree.h \
+	include/libxml/xpath.h include/libxml/hash.h \
+	include/libxml/debugXML.h include/libxml/xinclude.h \
+	include/libxml/catalog.h include/libxml/DOCBparser.h
+xmlmemory.lo xmlmemory.o : xmlmemory.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h
+xmlreader.lo xmlreader.o : xmlreader.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/xmlreader.h
+xmlregexp.lo xmlregexp.o : xmlregexp.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/xmlunicode.h
+xmlschemas.lo xmlschemas.o : xmlschemas.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/hash.h include/libxml/uri.h \
+	include/libxml/xmlschemas.h include/libxml/schemasInternals.h \
+	include/libxml/xmlschemastypes.h
+xmlschemastypes.lo xmlschemastypes.o : xmlschemastypes.c libxml.h \
+	config.h include/libxml/xmlversion.h include/libxml/xmlmemory.h \
+	include/libxml/threads.h include/libxml/globals.h \
+	include/libxml/parser.h include/libxml/tree.h \
+	include/libxml/xmlregexp.h include/libxml/valid.h \
+	include/libxml/list.h include/libxml/xmlautomata.h \
+	include/libxml/entities.h include/libxml/encoding.h \
+	include/libxml/xmlIO.h include/libxml/xmlerror.h \
+	include/libxml/SAX.h include/libxml/xlink.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/hash.h include/libxml/xmlschemas.h \
+	include/libxml/schemasInternals.h \
+	include/libxml/xmlschemastypes.h
+xmlunicode.lo xmlunicode.o : xmlunicode.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xmlunicode.h
+xpath.lo xpath.o : xpath.c libxml.h config.h include/libxml/xmlversion.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/xpath.h \
+	include/libxml/hash.h include/libxml/xpathInternals.h \
+	include/libxml/parserInternals.h include/libxml/HTMLparser.h \
+	include/libxml/xpointer.h include/libxml/debugXML.h trionan.c \
+	triodef.h trionan.h
+xpointer.lo xpointer.o : xpointer.c libxml.h config.h \
+	include/libxml/xmlversion.h include/libxml/xpointer.h \
+	include/libxml/tree.h include/libxml/xmlregexp.h \
+	include/libxml/xmlmemory.h include/libxml/threads.h \
+	include/libxml/globals.h include/libxml/parser.h \
+	include/libxml/valid.h include/libxml/list.h \
+	include/libxml/xmlautomata.h include/libxml/entities.h \
+	include/libxml/encoding.h include/libxml/xmlIO.h \
+	include/libxml/xmlerror.h include/libxml/SAX.h \
+	include/libxml/xlink.h include/libxml/xpath.h \
+	include/libxml/hash.h include/libxml/parserInternals.h \
+	include/libxml/HTMLparser.h include/libxml/uri.h \
+	include/libxml/xpathInternals.h
+
 info-am:
 info: info-recursive
 dvi-am:
@@ -818,7 +1394,7 @@ installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 \
-		$(DESTDIR)$(mandir)/man4 $(DESTDIR)$(confexecdir) \
+		$(DESTDIR)$(mandir)/man3 $(DESTDIR)$(confexecdir) \
 		$(DESTDIR)$(m4datadir) $(DESTDIR)$(pkgconfigdir)
 
 
@@ -877,7 +1453,7 @@ clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
 uninstall-binSCRIPTS install-binSCRIPTS install-man1 uninstall-man1 \
-install-man4 uninstall-man4 install-man uninstall-man \
+install-man3 uninstall-man3 install-man uninstall-man \
 uninstall-confexecDATA install-confexecDATA uninstall-m4dataDATA \
 install-m4dataDATA uninstall-pkgconfigDATA install-pkgconfigDATA \
 install-data-recursive uninstall-data-recursive install-exec-recursive \
@@ -898,8 +1474,13 @@ check-local: tests
 
 testall : tests SVGtests SAXtests
 
-tests: XMLtests XMLenttests HTMLtests Validtests URItests XPathtests XPtrtests XIncludetests Scripttests Catatests @TEST_THREADS@
-	@(cd python ; $(MAKE) tests)
+tests: XMLtests XMLenttests HTMLtests Validtests URItests XPathtests XPtrtests XIncludetests C14Ntests Scripttests Catatests @TEST_REGEXPS@ @TEST_SCHEMAS@ @TEST_THREADS@
+	@(if [ "@PYTHON_SUBDIR@" != "" ] ; then cd python ; $(MAKE) tests ; fi)
+
+valgrind:
+	@echo '## Running the regression tests under Valgrind'
+	@echo '## Go get a cup of coffee it is gonna take a while ...'
+	$(MAKE) CHECKER='valgrind -q' tests
 
 HTMLtests : testHTML$(EXEEXT)
 	@(echo > .memdump)
@@ -911,14 +1492,14 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	      $(CHECKER) $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML $$i > result.$$name 2> error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML $$i > result.$$name 2> error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
 	      diff -b $(srcdir)/result/HTML/$$name.err error.$$name ; \
-	      $(top_builddir)/testHTML result.$$name > result2.$$name 2>error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML result.$$name > result2.$$name 2>error.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name error.$$name ; \
 	  fi ; fi ; done)
@@ -930,16 +1511,16 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	      $(CHECKER) $(top_builddir)/testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML --push $$i > result.$$name 2> error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML --push $$i > result.$$name 2> error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
 	      cut -b 1-15 $(srcdir)/result/HTML/$$name.err > errorcut.$$name; \
 	      cut -b 1-15 error.$$name > errorcut2.$$name; \
 	      diff -b errorcut.$$name errorcut2.$$name ; \
-	      $(top_builddir)/testHTML --push result.$$name > result2.$$name 2>error.$$name ; \
+	      $(CHECKER) $(top_builddir)/testHTML --push result.$$name > result2.$$name 2>error.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name error.$$name errorcut.$$name errorcut2.$$name ; \
 	  fi ; fi ; done)
@@ -951,10 +1532,10 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name.sax ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML --sax $$i > result.$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --sax $$i > result.$$name.sax ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name.sax result.$$name.sax ; \
 	      rm result.$$name.sax ; \
@@ -967,10 +1548,10 @@ HTMLtests : testHTML$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --sax $$i > $(srcdir)/result/HTML/$$name.sax ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testHTML --push --sax $$i > result.$$name.sax ; \
+	      $(CHECKER) $(top_builddir)/testHTML --push --sax $$i > result.$$name.sax ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/HTML/$$name.sax result.$$name.sax ; \
 	      rm result.$$name.sax ; \
@@ -988,12 +1569,12 @@ XMLtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint $$i > $(srcdir)/result/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > $(srcdir)/result/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > result.$$name ; \
 	      diff $(srcdir)/result/$$name result.$$name ; \
-	      $(top_builddir)/xmllint result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -1008,12 +1589,12 @@ XMLtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --push $$i > $(srcdir)/result/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --push $$i > $(srcdir)/result/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --push $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --push $$i > result.$$name ; \
 	      diff $(srcdir)/result/$$name result.$$name ; \
-	      $(top_builddir)/xmllint --push result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --push result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -1027,13 +1608,13 @@ XMLtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --memory $$i > $(srcdir)/result/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --memory $$i > $(srcdir)/result/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --memory $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --memory $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/$$name result.$$name ; \
-	      $(top_builddir)/xmllint --memory result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --memory result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -1048,13 +1629,13 @@ Docbtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/DocBook/$$name.xml ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --sgml $$i > $(srcdir)/result/DocBook/$$name.xml ; \
-	      $(top_builddir)/xmllint --valid --noout $(srcdir)/result/DocBook/$$name.xml ; \
+	      $(CHECKER) $(top_builddir)/xmllint --sgml $$i > $(srcdir)/result/DocBook/$$name.xml ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid --noout $(srcdir)/result/DocBook/$$name.xml ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --sgml $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --sgml $$i > result.$$name ; \
 	      diff $(srcdir)/result/DocBook/$$name.xml result.$$name ; \
-	      $(top_builddir)/xmllint --valid --noout result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid --noout result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
 
@@ -1068,12 +1649,12 @@ XMLenttests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/noent/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --noent $$i > $(srcdir)/result/noent/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noent $$i > $(srcdir)/result/noent/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --noent $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noent $$i > result.$$name ; \
 	      diff $(srcdir)/result/noent/$$name result.$$name ; \
-	      $(top_builddir)/xmllint --noent result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noent result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -1088,10 +1669,10 @@ URItests : testURI$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/URI/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > $(srcdir)/result/URI/$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > $(srcdir)/result/URI/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI -base 'http://foo.com/path/to/index.html?orig#help' < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/URI/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1101,10 +1682,10 @@ URItests : testURI$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/URI/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testURI < $$i > $(srcdir)/result/URI/$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI < $$i > $(srcdir)/result/URI/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testURI < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testURI < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/URI/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1122,11 +1703,11 @@ XPathtests : testXPath$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/XPath/expr/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testXPath -f --expr $$i > $(srcdir)/result/XPath/expr/$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f --expr $$i > $(srcdir)/result/XPath/expr/$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testXPath -f --expr $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f --expr $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XPath/expr/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1140,11 +1721,11 @@ XPathtests : testXPath$(EXEEXT)
 	  if [ ! -d $$j ] ; then \
 	  if [ ! -f $(srcdir)/result/XPath/tests/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testXPath -f -i $$i $$j > $(srcdir)/result/XPath/tests/$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f -i $$i $$j > $(srcdir)/result/XPath/tests/$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testXPath -f -i $$i $$j > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testXPath -f -i $$i $$j > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XPath/tests/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1185,10 +1766,10 @@ XIncludetests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/XInclude/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --xinclude $$i > $(srcdir)/result/XInclude/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --nowarning --xinclude $$i > $(srcdir)/result/XInclude/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --xinclude $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --nowarning --xinclude $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/XInclude/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1206,10 +1787,10 @@ Scripttests : xmllint$(EXEEXT)
 	  if [ -f $$xml ] ; then \
 	  if [ ! -f $(srcdir)/result/scripts/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --shell $$xml < $$i > $(srcdir)/result/scripts/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --shell $$xml < $$i > $(srcdir)/result/scripts/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --shell $$xml < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --shell $$xml < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/scripts/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1226,10 +1807,10 @@ Catatests : xmlcatalog$(EXEEXT)
 	  if [ -f $$xml ] ; then \
 	  if [ ! -f $(srcdir)/result/catalogs/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$xml < $$i > $(srcdir)/result/catalogs/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$xml < $$i > $(srcdir)/result/catalogs/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$xml < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$xml < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/catalogs/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1240,34 +1821,34 @@ Catatests : xmlcatalog$(EXEEXT)
 	  if [ -f $$sgml ] ; then \
 	  if [ ! -f $(srcdir)/result/catalogs/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$sgml < $$i > $(srcdir)/result/catalogs/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$sgml < $$i > $(srcdir)/result/catalogs/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmlcatalog --shell $$sgml < $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmlcatalog --shell $$sgml < $$i > result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/catalogs/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
 	@echo "Add and del operations on XML Catalogs"
-	-@($(top_builddir)/xmlcatalog --create --noout result/catalogs/mycatalog; \
+	-@($(CHECKER) $(top_builddir)/xmlcatalog --create --noout $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --add public Pubid sysid result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --add public Pubid sysid $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --add public Pubid2 sysid2 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --add public Pubid2 sysid2 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --add public Pubid3 sysid3 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --add public Pubid3 sysid3 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	diff result/catalogs/mycatalog.full result/catalogs/mycatalog; \
+	diff result/catalogs/mycatalog.full $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --del sysid result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --del sysid $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --del sysid3 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --del sysid3 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	$(top_builddir)/xmlcatalog --noout --del sysid2 result/catalogs/mycatalog; \
+	$(CHECKER) $(top_builddir)/xmlcatalog --noout --del sysid2 $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	diff result/catalogs/mycatalog.empty result/catalogs/mycatalog; \
+	diff result/catalogs/mycatalog.empty $(srcdir)/result/catalogs/mycatalog; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0"; \
-	rm -f result/catalogs/mycatalog)
+	rm -f $(srcdir)/result/catalogs/mycatalog)
 
 SVGtests : xmllint$(EXEEXT)
 	@echo "##"
@@ -1278,12 +1859,12 @@ SVGtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/SVG/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint $$i > $(srcdir)/result/SVG/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > $(srcdir)/result/SVG/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint $$i > result.$$name ; \
 	      diff $(srcdir)/result/SVG/$$name result.$$name ; \
-	      $(top_builddir)/xmllint result.$$name > result2.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)
@@ -1292,7 +1873,7 @@ Threadtests : testThreads$(EXEEXT)
 	@echo "##"
 	@echo "## Threaded regression tests"
 	@echo "##"
-	$(top_builddir)/testThreads
+	$(CHECKER) $(top_builddir)/testThreads
 
 SAXtests : testSAX$(EXEEXT)
 	@(echo > .memdump)
@@ -1304,10 +1885,10 @@ SAXtests : testSAX$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/SAXresult/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/testSAX $$i > $(srcdir)/SAXresult/$$name ; \
+	      $(CHECKER) $(top_builddir)/testSAX $$i > $(srcdir)/SAXresult/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/testSAX $$i > result.$$name ; \
+	      $(CHECKER) $(top_builddir)/testSAX $$i > result.$$name ; \
 	      diff $(srcdir)/SAXresult/$$name result.$$name ; \
 	      rm result.$$name ; \
 	  fi ; fi ; done)
@@ -1321,7 +1902,7 @@ Validtests : xmllint$(EXEEXT)
 	  name=`basename $$i`; \
 	  if [ ! -d $$i ] ; then \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --valid --noout --nowarning $$i ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid --noout --nowarning $$i ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	  fi ; done ; exit 0)
 	@echo "##"
@@ -1332,10 +1913,10 @@ Validtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/VC/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --noout --valid $$i 2> $(srcdir)/result/VC/$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noout --valid $$i 2> $(srcdir)/result/VC/$$name ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --noout --valid $$i 2> result.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --noout --valid $$i 2> result.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/VC/$$name result.$$name ; \
 	      rm result.$$name ; \
@@ -1348,25 +1929,124 @@ Validtests : xmllint$(EXEEXT)
 	  if [ ! -d $$i ] ; then \
 	  if [ ! -f $(srcdir)/result/valid/$$name ] ; then \
 	      echo New test file $$name ; \
-	      $(top_builddir)/xmllint --valid $$i > $(srcdir)/result/valid/$$name 2>$(srcdir)/result/valid/$$name.err ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid $$i > $(srcdir)/result/valid/$$name 2>$(srcdir)/result/valid/$$name.err ; \
 	  else \
 	      echo Testing $$name ; \
-	      $(top_builddir)/xmllint --valid $$i > result.$$name 2>error.$$name ; \
+	      $(CHECKER) $(top_builddir)/xmllint --valid $$i > result.$$name 2>error.$$name ; \
 	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
 	      diff $(srcdir)/result/valid/$$name result.$$name ; \
 	      diff $(srcdir)/result/valid/$$name.err error.$$name ; \
 	      rm result.$$name error.$$name ; \
 	  fi ; fi ; done)
 
+Regexptests: testRegexp$(EXEEXT)
+	@(echo > .memdump)
+	@echo "##"
+	@echo "## Regexp regression tests"
+	@echo "##"
+	-@(for i in $(srcdir)/test/regexp/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/regexp/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(CHECKER) $(top_builddir)/testRegexp -i $$i > $(srcdir)/result/regexp/$$name; \
+	  else \
+	      echo Testing $$name ; \
+	      $(CHECKER) $(top_builddir)/testRegexp -i $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/regexp/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+
+Automatatests: testAutomata$(EXEEXT)
+	@(echo > .memdump)
+	@echo "##"
+	@echo "## Automata regression tests"
+	@echo "##"
+	-@(for i in $(srcdir)/test/automata/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/automata/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(CHECKER) $(top_builddir)/testAutomata $$i > $(srcdir)/result/automata/$$name; \
+	  else \
+	      echo Testing $$name ; \
+	      $(CHECKER) $(top_builddir)/testAutomata $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/automata/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+
+C14Ntests : testC14N$(EXEEXT)
+	@echo "##"
+	@echo "## C14N and XPath regression tests"
+	@echo "##"
+	-@(for m in with-comments without-comments exc-without-comments ; do \
+	    for i in $(srcdir)/test/c14n/$$m/*.xml ; do  \
+		if [ ! -d $$i ] ; then \
+		    name=`basename $$i .xml`; \
+		    echo Testing $$m/$$name; \
+		    cmdline="$(CHECKER) $(top_builddir)/testC14N --$$m $$i"; \
+		    if [ -f $(srcdir)/test/c14n/$$m/$$name.xpath ] ; then \
+			cmdline="$$cmdline $(srcdir)/test/c14n/$$m/$$name.xpath"; \
+			if [ -f $(srcdir)/test/c14n/$$m/$$name.ns ] ; then \
+			    cmdline="$$cmdline '`cat $(srcdir)/test/c14n/$$m/$$name.ns`'"; \
+			fi; \
+		    fi; \
+		    $$cmdline > $(srcdir)/test/c14n/test.tmp; \
+		    if [ $$? -eq 0 ]; then \
+			diff  $(srcdir)/result/c14n/$$m/$$name $(srcdir)/test/c14n/test.tmp; \
+			if [ $$? -ne 0 ]; then \
+			    echo "Test failed"; \
+			    cat $(srcdir)/test/c14n/test.tmp; \
+			fi; \
+		    else \
+			echo "C14N failed"; \
+		    fi; \
+		fi; \
+		rm -f $(srcdir)/test/c14n/test.tmp; \
+	    done; \
+	done)
+
+Schemastests: testSchemas$(EXEEXT)
+	@(echo > .memdump)
+	@echo "##"
+	@echo "## Schemas regression tests"
+	@echo "##"
+	-@(for i in $(srcdir)/test/schemas/*_*.xsd ; do \
+	  name=`basename $$i | sed 's+_.*++'`; \
+	  sno=`basename $$i | sed 's+.*_\(.*\).xsd+\1+'`; \
+	  for j in $(srcdir)/test/schemas/"$$name"_*.xml ; do \
+	      xno=`basename $$j | sed 's+.*_\(.*\).xml+\1+'`; \
+	      if [ ! -f $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno" ]; \
+	      then \
+		  echo New test file "$$name"_"$$sno"_"$$xno" ; \
+		  $(CHECKER) $(top_builddir)/testSchemas $$i $$j \
+		    > $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno" \
+		    2> $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno".err; \
+	      else \
+		  echo Testing "$$name"_"$$sno"_"$$xno" ; \
+	          $(CHECKER) $(top_builddir)/testSchemas $$i $$j \
+		    > res.$$name 2> err.$$name;\
+	          grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	          diff $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno" \
+		       res.$$name;\
+	          diff $(srcdir)/result/schemas/"$$name"_"$$sno"_"$$xno".err \
+		       err.$$name;\
+		  grep Unimplemented err.$$name; \
+	          rm res.$$name err.$$name ; \
+	       fi ; \
+	  done; done)
+
 dist-hook: libxml.spec
 	-cp libxml.spec $(distdir)
 	(cd $(srcdir) ; tar -cf - --exclude CVS win32 macos vms test result SAXresult ) | (cd $(distdir); tar xf -)
 
 cleantar:
-	@(rm -f libxslt*.tar.gz COPYING.LIB)
+	@(rm -f libxml*.tar.gz COPYING.LIB)
 
 rpm: cleantar
-	@(unset CDPATH ; $(MAKE) dist && rpm -ta $(distdir).tar.gz)
+	@(unset CDPATH ; $(MAKE) dist && rpmbuild -ta $(distdir).tar.gz)
 
 install-data-local: 
 	$(mkinstalldirs) $(DESTDIR)$(BASE_DIR)/$(DOC_MODULE)

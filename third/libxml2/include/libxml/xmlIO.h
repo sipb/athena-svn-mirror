@@ -5,21 +5,13 @@
  *
  * daniel@veillard.com
  *
- * 15 Nov 2000 ht - modified for VMS
  */
 
 #ifndef __XML_IO_H__
 #define __XML_IO_H__
 
 #include <stdio.h>
-#if defined(WIN32) && defined(_MSC_VER)
-#include <libxml/xmlwin32version.h>
-#else
 #include <libxml/xmlversion.h>
-#endif
-#include <libxml/tree.h>
-#include <libxml/parser.h>
-#include <libxml/encoding.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,18 +62,6 @@ typedef int (*xmlInputReadCallback) (void * context, char * buffer, int len);
  */
 typedef int (*xmlInputCloseCallback) (void * context);
 
-struct _xmlParserInputBuffer {
-    void*                  context;
-    xmlInputReadCallback   readcallback;
-    xmlInputCloseCallback  closecallback;
-    
-    xmlCharEncodingHandlerPtr encoder; /* I18N conversions to UTF-8 */
-    
-    xmlBufferPtr buffer;    /* Local buffer encoded in UTF-8 */
-    xmlBufferPtr raw;       /* if encoder != NULL buffer for raw input */
-};
-
-
 /*
  * Those are the functions and datatypes for the library output
  * I/O structures.
@@ -128,6 +108,30 @@ typedef int (*xmlOutputWriteCallback) (void * context, const char * buffer,
  */
 typedef int (*xmlOutputCloseCallback) (void * context);
 
+#ifdef __cplusplus
+}
+#endif
+
+#include <libxml/globals.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/encoding.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+struct _xmlParserInputBuffer {
+    void*                  context;
+    xmlInputReadCallback   readcallback;
+    xmlInputCloseCallback  closecallback;
+    
+    xmlCharEncodingHandlerPtr encoder; /* I18N conversions to UTF-8 */
+    
+    xmlBufferPtr buffer;    /* Local buffer encoded in UTF-8 */
+    xmlBufferPtr raw;       /* if encoder != NULL buffer for raw input */
+};
+
+
 struct _xmlOutputBuffer {
     void*                   context;
     xmlOutputWriteCallback  writecallback;
@@ -150,17 +154,9 @@ void	xmlRegisterDefaultInputCallbacks	(void);
 xmlParserInputBufferPtr
 	xmlAllocParserInputBuffer		(xmlCharEncoding enc);
 
-#ifdef VMS
-xmlParserInputBufferPtr
-	xmlParserInputBufferCreateFname		(const char *URI,
-                                                 xmlCharEncoding enc);
-#define xmlParserInputBufferCreateFilename xmlParserInputBufferCreateFname
-#else
 xmlParserInputBufferPtr
 	xmlParserInputBufferCreateFilename	(const char *URI,
                                                  xmlCharEncoding enc);
-#endif
-
 xmlParserInputBufferPtr
 	xmlParserInputBufferCreateFile		(FILE *file,
                                                  xmlCharEncoding enc);
@@ -242,6 +238,43 @@ void	xmlRegisterHTTPPostCallbacks	(void );
 xmlParserInputPtr xmlNoNetExternalEntityLoader(const char *URL,
 					 const char *ID,
 					 xmlParserCtxtPtr ctxt);
+
+xmlChar *xmlNormalizeWindowsPath	(const xmlChar *path);
+
+int	xmlCheckFilename		(const char *path);
+/**
+ * Default 'file://' protocol callbacks 
+ */
+int	xmlFileMatch 			(const char *filename);
+void *	xmlFileOpen 			(const char *filename);
+int	xmlFileRead 			(void * context, 
+					 char * buffer, 
+					 int len);
+int	xmlFileClose 			(void * context);
+
+/**
+ * Default 'http://' protocol callbacks 
+ */
+#ifdef LIBXML_HTTP_ENABLED
+int	xmlIOHTTPMatch 			(const char *filename);
+void *	xmlIOHTTPOpen 			(const char *filename);
+int 	xmlIOHTTPRead			(void * context, 
+					 char * buffer, 
+					 int len);
+int	xmlIOHTTPClose 			(void * context);
+#endif /* LIBXML_HTTP_ENABLED */
+
+/**
+ * Default 'ftp://' protocol callbacks 
+ */
+#ifdef LIBXML_FTP_ENABLED 
+int	xmlIOFTPMatch 			(const char *filename);
+void *	xmlIOFTPOpen 			(const char *filename);
+int 	xmlIOFTPRead			(void * context, 
+					 char * buffer, 
+					 int len);
+int 	xmlIOFTPClose 			(void * context);
+#endif /* LIBXML_FTP_ENABLED */
 
 #ifdef __cplusplus
 }

@@ -9,7 +9,9 @@
 #include <libxml/catalog.h>
 #include <pthread.h>
 #include <string.h>
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 #include <assert.h>
 
 #define	MAX_ARGC	20
@@ -126,7 +128,7 @@ main()
 
 #else /* !LIBXML_THREADS_ENABLED */
 int
-main()
+main(void)
 {
     fprintf(stderr, "libxml was not compiled with thread or catalog support\n");
     return (0);

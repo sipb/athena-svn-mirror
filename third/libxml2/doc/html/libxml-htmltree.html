@@ -4,7 +4,7 @@
 >HTMLtree</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-HTMLTREE"
->HTMLtree</A
-></H1
+NAME="LIBXML-HTMLTREE">HTMLtree</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN11348"
+NAME="AEN11856"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN11348"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN11351"
-></A
-><H2
+NAME="AEN11859"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -353,7 +349,14 @@ HREF="libxml-tree.html#XMLDOCPTR"
 >xmlDocPtr</A
 > cur,
                                              const char *encoding,
-                                             int format);</PRE
+                                             int format);
+int         <A
+HREF="libxml-htmltree.html#HTMLISBOOLEANATTR"
+>htmlIsBooleanAttr</A
+>               (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -361,7 +364,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11407"
+NAME="AEN11917"
 ></A
 ><H2
 >Description</H2
@@ -371,20 +374,20 @@ NAME="AEN11407"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11410"
+NAME="AEN11920"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11412"
+NAME="AEN11922"
 ></A
 ><H3
 ><A
 NAME="HTML-TEXT-NODE-CAPS"
 ></A
->&#62;HTML_TEXT_NODE</H3
+>HTML_TEXT_NODE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -399,7 +402,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro, a text node in a HTML document is really implemented
+>Macro. A text node in a HTML document is really implemented
 the same way as a text node in an XML document.</P
 ><P
 ></P
@@ -407,13 +410,13 @@ the same way as a text node in an XML document.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11418"
+NAME="AEN11928"
 ></A
 ><H3
 ><A
 NAME="HTML-ENTITY-REF-NODE-CAPS"
 ></A
->&#62;HTML_ENTITY_REF_NODE</H3
+>HTML_ENTITY_REF_NODE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -428,7 +431,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro, an entity reference in a HTML document is really implemented
+>Macro. An entity reference in a HTML document is really implemented
 the same way as an entity reference in an XML document.</P
 ><P
 ></P
@@ -436,13 +439,13 @@ the same way as an entity reference in an XML document.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11424"
+NAME="AEN11934"
 ></A
 ><H3
 ><A
 NAME="HTML-COMMENT-NODE-CAPS"
 ></A
->&#62;HTML_COMMENT_NODE</H3
+>HTML_COMMENT_NODE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -457,7 +460,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro, a comment in a HTML document is really implemented
+>Macro. A comment in a HTML document is really implemented
 the same way as a comment in an XML document.</P
 ><P
 ></P
@@ -465,13 +468,13 @@ the same way as a comment in an XML document.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11430"
+NAME="AEN11940"
 ></A
 ><H3
 ><A
 NAME="HTML-PRESERVE-NODE-CAPS"
 ></A
->&#62;HTML_PRESERVE_NODE</H3
+>HTML_PRESERVE_NODE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -486,7 +489,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro, a preserved node in a HTML document is really implemented
+>Macro. A preserved node in a HTML document is really implemented
 the same way as a CDATA section in an XML document.</P
 ><P
 ></P
@@ -494,13 +497,13 @@ the same way as a CDATA section in an XML document.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11436"
+NAME="AEN11946"
 ></A
 ><H3
 ><A
 NAME="HTML-PI-NODE-CAPS"
 ></A
->&#62;HTML_PI_NODE</H3
+>HTML_PI_NODE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -515,7 +518,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro, a processing instruction in a HTML document is really implemented
+>Macro. A processing instruction in a HTML document is really implemented
 the same way as a processing instruction in an XML document.</P
 ><P
 ></P
@@ -523,13 +526,13 @@ the same way as a processing instruction in an XML document.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11442"
+NAME="AEN11952"
 ></A
 ><H3
 ><A
 NAME="HTMLNEWDOC"
 ></A
->&#62;htmlNewDoc ()</H3
+>htmlNewDoc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -560,9 +563,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11451"
-></A
-><P
+NAME="AEN11961"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -611,9 +612,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -630,13 +634,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11468"
+NAME="AEN11978"
 ></A
 ><H3
 ><A
 NAME="HTMLNEWDOCNODTD"
 ></A
->&#62;htmlNewDocNoDtD ()</H3
+>htmlNewDocNoDtD ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -678,9 +682,7 @@ are NULL</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11479"
-></A
-><P
+NAME="AEN11989"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -729,9 +731,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -748,13 +753,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11496"
+NAME="AEN12006"
 ></A
 ><H3
 ><A
 NAME="HTMLGETMETAENCODING"
 ></A
->&#62;htmlGetMetaEncoding ()</H3
+>htmlGetMetaEncoding ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -781,9 +786,7 @@ HREF="libxml-htmlparser.html#HTMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11504"
-></A
-><P
+NAME="AEN12014"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -815,9 +818,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -834,13 +840,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11517"
+NAME="AEN12027"
 ></A
 ><H3
 ><A
 NAME="HTMLSETMETAENCODING"
 ></A
->&#62;htmlSetMetaEncoding ()</H3
+>htmlSetMetaEncoding ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -870,9 +876,7 @@ the META flag associated.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11525"
-></A
-><P
+NAME="AEN12035"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -921,9 +925,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -940,13 +947,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11542"
+NAME="AEN12052"
 ></A
 ><H3
 ><A
 NAME="HTMLDOCDUMPMEMORY"
 ></A
->&#62;htmlDocDumpMemory ()</H3
+>htmlDocDumpMemory ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -976,9 +983,7 @@ It's up to the caller to free the memory.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11550"
-></A
-><P
+NAME="AEN12060"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1048,13 +1053,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11567"
+NAME="AEN12077"
 ></A
 ><H3
 ><A
 NAME="HTMLDOCDUMP"
 ></A
->&#62;htmlDocDump ()</H3
+>htmlDocDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1082,9 +1087,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11575"
-></A
-><P
+NAME="AEN12085"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1133,9 +1136,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1152,13 +1158,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11592"
+NAME="AEN12102"
 ></A
 ><H3
 ><A
 NAME="HTMLSAVEFILE"
 ></A
->&#62;htmlSaveFile ()</H3
+>htmlSaveFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1189,9 +1195,7 @@ used.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11600"
-></A
-><P
+NAME="AEN12110"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1240,9 +1244,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1259,13 +1266,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11617"
+NAME="AEN12127"
 ></A
 ><H3
 ><A
 NAME="HTMLNODEDUMP"
 ></A
->&#62;htmlNodeDump ()</H3
+>htmlNodeDump ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1298,9 +1305,7 @@ and formatting returns are added.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11626"
-></A
-><P
+NAME="AEN12136"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1370,13 +1375,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11643"
+NAME="AEN12153"
 ></A
 ><H3
 ><A
 NAME="HTMLNODEDUMPFILE"
 ></A
->&#62;htmlNodeDumpFile ()</H3
+>htmlNodeDumpFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1409,9 +1414,7 @@ and formatting returns are added.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11652"
-></A
-><P
+NAME="AEN12162"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1481,13 +1484,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11669"
+NAME="AEN12179"
 ></A
 ><H3
 ><A
 NAME="HTMLNODEDUMPFILEFORMAT"
 ></A
->&#62;htmlNodeDumpFileFormat ()</H3
+>htmlNodeDumpFileFormat ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1523,9 +1526,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11679"
-></A
-><P
+NAME="AEN12189"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1625,9 +1626,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1644,13 +1648,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11708"
+NAME="AEN12218"
 ></A
 ><H3
 ><A
 NAME="HTMLSAVEFILEENC"
 ></A
->&#62;htmlSaveFileEnc ()</H3
+>htmlSaveFileEnc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1677,9 +1681,7 @@ and formatting returns/spaces are added.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11715"
-></A
-><P
+NAME="AEN12225"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1745,9 +1747,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1764,13 +1769,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11736"
+NAME="AEN12246"
 ></A
 ><H3
 ><A
 NAME="HTMLSAVEFILEFORMAT"
 ></A
->&#62;htmlSaveFileFormat ()</H3
+>htmlSaveFileFormat ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1797,9 +1802,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11743"
-></A
-><P
+NAME="AEN12253"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1882,9 +1885,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1901,13 +1907,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11768"
+NAME="AEN12278"
 ></A
 ><H3
 ><A
 NAME="HTMLNODEDUMPFORMATOUTPUT"
 ></A
->&#62;htmlNodeDumpFormatOutput ()</H3
+>htmlNodeDumpFormatOutput ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1941,9 +1947,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11777"
-></A
-><P
+NAME="AEN12287"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2047,13 +2051,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11802"
+NAME="AEN12312"
 ></A
 ><H3
 ><A
 NAME="HTMLDOCCONTENTDUMPOUTPUT"
 ></A
->&#62;htmlDocContentDumpOutput ()</H3
+>htmlDocContentDumpOutput ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2082,9 +2086,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11810"
-></A
-><P
+NAME="AEN12320"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2154,13 +2156,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11827"
+NAME="AEN12337"
 ></A
 ><H3
 ><A
 NAME="HTMLDOCCONTENTDUMPFORMATOUTPUT"
 ></A
->&#62;htmlDocContentDumpFormatOutput ()</H3
+>htmlDocContentDumpFormatOutput ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2190,9 +2192,7 @@ HREF="libxml-tree.html#XMLDOCPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN11835"
-></A
-><P
+NAME="AEN12345"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2268,7 +2268,91 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  should formatting spaces been added</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12366"
+></A
+><H3
+><A
+NAME="HTMLISBOOLEANATTR"
+></A
+>htmlIsBooleanAttr ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         htmlIsBooleanAttr               (const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Determine if a given attribute is a boolean attribute.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN12373"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the name of the attribute to check</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> false if the attribute is not boolean, true otherwise.</TD
 ></TR
 ></TBODY
 ></TABLE

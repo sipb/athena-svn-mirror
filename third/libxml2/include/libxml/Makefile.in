@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -60,6 +60,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+C14N_OBJ = @C14N_OBJ@
 CATALOG_OBJ = @CATALOG_OBJ@
 CC = @CC@
 CFLAGS = @CFLAGS@
@@ -94,17 +95,22 @@ PACKAGE = @PACKAGE@
 PYTHON = @PYTHON@
 PYTHON_INCLUDES = @PYTHON_INCLUDES@
 PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
+PYTHON_SUBDIR = @PYTHON_SUBDIR@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
+RELDATE = @RELDATE@
 RM = @RM@
 STRIP = @STRIP@
 TAR = @TAR@
+TEST_REGEXPS = @TEST_REGEXPS@
+TEST_SCHEMAS = @TEST_SCHEMAS@
 TEST_THREADS = @TEST_THREADS@
 THREAD_CFLAGS = @THREAD_CFLAGS@
 THREAD_LIBS = @THREAD_LIBS@
 U = @U@
 VERSION = @VERSION@
+WITH_C14N = @WITH_C14N@
 WITH_CATALOG = @WITH_CATALOG@
 WITH_DEBUG = @WITH_DEBUG@
 WITH_DOCB = @WITH_DOCB@
@@ -113,6 +119,8 @@ WITH_HTML = @WITH_HTML@
 WITH_HTTP = @WITH_HTTP@
 WITH_ICONV = @WITH_ICONV@
 WITH_MEM_DEBUG = @WITH_MEM_DEBUG@
+WITH_REGEXPS = @WITH_REGEXPS@
+WITH_SCHEMAS = @WITH_SCHEMAS@
 WITH_THREADS = @WITH_THREADS@
 WITH_TRIO = @WITH_TRIO@
 WITH_XINCLUDE = @WITH_XINCLUDE@
@@ -155,21 +163,27 @@ xmlinc_HEADERS = \
 		valid.h \
 		xlink.h \
 		xmlversion.h \
-		xmlwin32version.h \
 		DOCBparser.h \
 		catalog.h \
 		threads.h \
-		globals.h
+		globals.h \
+		c14n.h \
+		xmlautomata.h \
+		xmlregexp.h \
+		xmlschemas.h \
+		schemasInternals.h \
+		xmlschemastypes.h \
+		xmlunicode.h \
+		xmlreader.h
 
 
-EXTRA_DIST = xmlversion.h.in xmlwin32version.h.in
+EXTRA_DIST = xmlversion.h.in
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
-CONFIG_CLEAN_FILES =  xmlversion.h xmlwin32version.h
+CONFIG_CLEAN_FILES =  xmlversion.h
 HEADERS =  $(xmlinc_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in xmlversion.h.in \
-xmlwin32version.h.in
+DIST_COMMON =  Makefile.am Makefile.in xmlversion.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -185,8 +199,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 xmlversion.h: $(top_builddir)/config.status xmlversion.h.in
-	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-xmlwin32version.h: $(top_builddir)/config.status xmlwin32version.h.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 install-xmlincHEADERS: $(xmlinc_HEADERS)

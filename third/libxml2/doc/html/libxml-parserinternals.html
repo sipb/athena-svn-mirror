@@ -4,7 +4,7 @@
 >parserInternals</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
@@ -117,13 +117,11 @@ SIZE="3"
 ></DIV
 ><H1
 ><A
-NAME="LIBXML-PARSERINTERNALS"
->parserInternals</A
-></H1
+NAME="LIBXML-PARSERINTERNALS">parserInternals</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN20833"
+NAME="AEN21898"
 ></A
 ><H2
 >Name</H2
@@ -131,9 +129,7 @@ NAME="AEN20833"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN20836"
-></A
-><H2
+NAME="AEN21901"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -227,13 +223,13 @@ HREF="libxml-parserinternals.html#XMLISIDEOGRAPHIC"
 >xmlIsIdeographic</A
 >                (int c);
 int         <A
-HREF="libxml-parserinternals.html#XMLISCOMBINING"
->xmlIsCombining</A
->                  (int c);
-int         <A
 HREF="libxml-parserinternals.html#XMLISEXTENDER"
 >xmlIsExtender</A
 >                   (int c);
+int         <A
+HREF="libxml-parserinternals.html#XMLISCOMBINING"
+>xmlIsCombining</A
+>                  (int c);
 int         <A
 HREF="libxml-parserinternals.html#XMLISCHAR"
 >xmlIsChar</A
@@ -301,13 +297,6 @@ HREF="libxml-encoding.html#XMLCHARENCODINGHANDLERPTR"
 >xmlCharEncodingHandlerPtr</A
 > handler);
 void        <A
-HREF="libxml-parser.html#XMLFREEPARSERCTXT"
->xmlFreeParserCtxt</A
->               (<A
-HREF="libxml-tree.html#XMLPARSERCTXTPTR"
->xmlParserCtxtPtr</A
-> ctxt);
-void        <A
 HREF="libxml-parserinternals.html#XMLHANDLEENTITY"
 >xmlHandleEntity</A
 >                 (<A
@@ -315,7 +304,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
 > ctxt,
                                              <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > entity);
 <A
@@ -343,7 +332,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
 > ctxt,
                                              <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > entity);
 void        <A
@@ -669,7 +658,11 @@ HREF="libxml-parserinternals.html#XMLPARSEELEMENTMIXEDCONTENTDECL"
                                             (<A
 HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
-> ctxt);
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLPARSERINPUTPTR"
+>xmlParserInputPtr</A
+> inputchk);
 <A
 HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
 >xmlElementContentPtr</A
@@ -691,7 +684,11 @@ HREF="libxml-parserinternals.html#XMLPARSEELEMENTCHILDRENCONTENTDECL"
                                             (<A
 HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
-> ctxt);
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLPARSERINPUTPTR"
+>xmlParserInputPtr</A
+> inputchk);
 int         <A
 HREF="libxml-parserinternals.html#XMLPARSEELEMENTCONTENTDECL"
 >xmlParseElementContentDecl</A
@@ -729,7 +726,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
 > ctxt);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-parserinternals.html#XMLPARSEENTITYREF"
@@ -1119,7 +1116,7 @@ void        (<A
 HREF="libxml-parserinternals.html#XMLENTITYREFERENCEFUNC"
 >*xmlEntityReferenceFunc</A
 >)       (<A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > ent,
                                              <A
@@ -1144,7 +1141,7 @@ HREF="libxml-parserinternals.html#XMLENTITYREFERENCEFUNC"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN21114"
+NAME="AEN22179"
 ></A
 ><H2
 >Description</H2
@@ -1154,20 +1151,20 @@ NAME="AEN21114"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN21117"
+NAME="AEN22182"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21119"
+NAME="AEN22184"
 ></A
 ><H3
 ><A
 NAME="XML-MAX-NAMELEN-CAPS"
 ></A
->&#62;XML_MAX_NAMELEN</H3
+>XML_MAX_NAMELEN</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1190,13 +1187,13 @@ at runtime.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21125"
+NAME="AEN22190"
 ></A
 ><H3
 ><A
 NAME="INPUT-CHUNK-CAPS"
 ></A
->&#62;INPUT_CHUNK</H3
+>INPUT_CHUNK</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1211,21 +1208,21 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->The parser tries to always have that amount of input ready
-one of the point is providing context when reporting errors</P
+>The parser tries to always have that amount of input ready.
+One of the point is providing context when reporting errors.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21131"
+NAME="AEN22196"
 ></A
 ><H3
 ><A
 NAME="IS-CHAR-CAPS"
 ></A
->&#62;IS_CHAR()</H3
+>IS_CHAR()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1240,7 +1237,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[2] Char ::= <GTKDOCLINK
 HREF="X9"
@@ -1264,7 +1261,7 @@ HREF="XE000-"
 HREF="XFFFD"
 >xFFFD</GTKDOCLINK
 >]
-                 | [<GTKDOCLINK
+| [<GTKDOCLINK
 HREF="X10000-"
 >x10000-</GTKDOCLINK
 ><GTKDOCLINK
@@ -1277,9 +1274,7 @@ any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21147"
-></A
-><P
+NAME="AEN22212"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1315,13 +1310,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21156"
+NAME="AEN22221"
 ></A
 ><H3
 ><A
 NAME="IS-BLANK-CAPS"
 ></A
->&#62;IS_BLANK()</H3
+>IS_BLANK()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1336,7 +1331,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[3] S ::= (<GTKDOCLINK
 HREF="X20"
@@ -1356,9 +1351,7 @@ HREF="XA"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21167"
-></A
-><P
+NAME="AEN22232"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1394,13 +1387,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21176"
+NAME="AEN22241"
 ></A
 ><H3
 ><A
 NAME="IS-BASECHAR-CAPS"
 ></A
->&#62;IS_BASECHAR()</H3
+>IS_BASECHAR()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1415,7 +1408,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[85] BaseChar ::= ... long list see REC ...</P
 ><P
@@ -1423,9 +1416,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21183"
-></A
-><P
+NAME="AEN22248"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1461,13 +1452,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21192"
+NAME="AEN22257"
 ></A
 ><H3
 ><A
 NAME="IS-DIGIT-CAPS"
 ></A
->&#62;IS_DIGIT()</H3
+>IS_DIGIT()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1482,7 +1473,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[88] Digit ::= ... long list see REC ...</P
 ><P
@@ -1490,9 +1481,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21199"
-></A
-><P
+NAME="AEN22264"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1528,13 +1517,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21208"
+NAME="AEN22273"
 ></A
 ><H3
 ><A
 NAME="IS-COMBINING-CAPS"
 ></A
->&#62;IS_COMBINING()</H3
+>IS_COMBINING()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1549,7 +1538,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[87] CombiningChar ::= ... long list see REC ...</P
 ><P
@@ -1557,9 +1546,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21215"
-></A
-><P
+NAME="AEN22280"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1595,13 +1582,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21224"
+NAME="AEN22289"
 ></A
 ><H3
 ><A
 NAME="IS-EXTENDER-CAPS"
 ></A
->&#62;IS_EXTENDER()</H3
+>IS_EXTENDER()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1616,7 +1603,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[89] Extender ::= <GTKDOCLINK
 HREF="X00B7"
@@ -1634,7 +1621,7 @@ HREF="X0387"
 HREF="X0640"
 >x0640</GTKDOCLINK
 > |
-                  <GTKDOCLINK
+<GTKDOCLINK
 HREF="X0E46"
 >x0E46</GTKDOCLINK
 > | <GTKDOCLINK
@@ -1650,7 +1637,7 @@ HREF="X3031-"
 HREF="X3035"
 >x3035</GTKDOCLINK
 >] |
-                  [<GTKDOCLINK
+[<GTKDOCLINK
 HREF="X309D-"
 >x309D-</GTKDOCLINK
 ><GTKDOCLINK
@@ -1668,9 +1655,7 @@ HREF="X30FE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21245"
-></A
-><P
+NAME="AEN22310"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1706,13 +1691,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21254"
+NAME="AEN22319"
 ></A
 ><H3
 ><A
 NAME="IS-IDEOGRAPHIC-CAPS"
 ></A
->&#62;IS_IDEOGRAPHIC()</H3
+>IS_IDEOGRAPHIC()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1727,7 +1712,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[86] Ideographic ::= [<GTKDOCLINK
 HREF="X4E00-"
@@ -1750,9 +1735,7 @@ HREF="X3029"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21266"
-></A
-><P
+NAME="AEN22331"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1788,13 +1771,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21275"
+NAME="AEN22340"
 ></A
 ><H3
 ><A
 NAME="IS-LETTER-CAPS"
 ></A
->&#62;IS_LETTER()</H3
+>IS_LETTER()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1809,7 +1792,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[84] Letter ::= BaseChar | Ideographic</P
 ><P
@@ -1817,9 +1800,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21282"
-></A
-><P
+NAME="AEN22347"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1855,13 +1836,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21291"
+NAME="AEN22356"
 ></A
 ><H3
 ><A
 NAME="IS-PUBIDCHAR-CAPS"
 ></A
->&#62;IS_PUBIDCHAR()</H3
+>IS_PUBIDCHAR()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1876,7 +1857,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Macro to check the following production in the XML spec</P
+>Macro to check the following production in the XML spec:</P
 ><P
 >[13] PubidChar ::= <GTKDOCLINK
 HREF="X20"
@@ -1893,9 +1874,7 @@ HREF="XA"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21301"
-></A
-><P
+NAME="AEN22366"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1931,13 +1910,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21310"
+NAME="AEN22375"
 ></A
 ><H3
 ><A
 NAME="SKIP-EOL-CAPS"
 ></A
->&#62;SKIP_EOL()</H3
+>SKIP_EOL()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1952,15 +1931,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Skips the end of line chars</P
+>Skips the end of line chars.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21316"
-></A
-><P
+NAME="AEN22381"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1996,13 +1973,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21325"
+NAME="AEN22390"
 ></A
 ><H3
 ><A
 NAME="MOVETO-ENDTAG-CAPS"
 ></A
->&#62;MOVETO_ENDTAG()</H3
+>MOVETO_ENDTAG()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2017,15 +1994,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Skips to the next '&gt;' char</P
+>Skips to the next '&gt;' char.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21331"
-></A
-><P
+NAME="AEN22396"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2061,13 +2036,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21340"
+NAME="AEN22405"
 ></A
 ><H3
 ><A
 NAME="MOVETO-STARTTAG-CAPS"
 ></A
->&#62;MOVETO_STARTTAG()</H3
+>MOVETO_STARTTAG()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2082,15 +2057,13 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Skips to the next '&lt;' char</P
+>Skips to the next '&lt;' char.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21346"
-></A
-><P
+NAME="AEN22411"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2126,13 +2099,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21355"
+NAME="AEN22420"
 ></A
 ><H3
 ><A
 NAME="XMLISBASECHAR"
 ></A
->&#62;xmlIsBaseChar ()</H3
+>xmlIsBaseChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2168,9 +2141,7 @@ HREF="X"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21365"
-></A
-><P
+NAME="AEN22430"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2202,9 +2173,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2221,13 +2195,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21378"
+NAME="AEN22443"
 ></A
 ><H3
 ><A
 NAME="XMLISBLANK"
 ></A
->&#62;xmlIsBlank ()</H3
+>xmlIsBlank ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2265,9 +2239,7 @@ HREF="libxml-parserinternals.html#IS-BLANK-CAPS"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21389"
-></A
-><P
+NAME="AEN22454"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2299,9 +2271,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2318,13 +2293,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21402"
+NAME="AEN22467"
 ></A
 ><H3
 ><A
 NAME="XMLISPUBIDCHAR"
 ></A
->&#62;xmlIsPubidChar ()</H3
+>xmlIsPubidChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2355,9 +2330,7 @@ HREF="XA"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21411"
-></A
-><P
+NAME="AEN22476"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2389,9 +2362,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2408,13 +2384,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21424"
+NAME="AEN22489"
 ></A
 ><H3
 ><A
 NAME="XMLISLETTER"
 ></A
->&#62;xmlIsLetter ()</H3
+>xmlIsLetter ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2436,9 +2412,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21430"
-></A
-><P
+NAME="AEN22495"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2470,9 +2444,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2489,13 +2466,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21443"
+NAME="AEN22508"
 ></A
 ><H3
 ><A
 NAME="XMLISDIGIT"
 ></A
->&#62;xmlIsDigit ()</H3
+>xmlIsDigit ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2517,9 +2494,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21449"
-></A
-><P
+NAME="AEN22514"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2551,9 +2526,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2570,13 +2548,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21462"
+NAME="AEN22527"
 ></A
 ><H3
 ><A
 NAME="XMLISIDEOGRAPHIC"
 ></A
->&#62;xmlIsIdeographic ()</H3
+>xmlIsIdeographic ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2613,9 +2591,7 @@ HREF="X3029"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21473"
-></A
-><P
+NAME="AEN22538"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2647,9 +2623,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2666,94 +2645,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21486"
-></A
-><H3
-><A
-NAME="XMLISCOMBINING"
-></A
->&#62;xmlIsCombining ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->int         xmlIsCombining                  (int c);</PRE
-></TD
-></TR
-></TABLE
-><P
->Check whether the character is allowed by the production
-[87] CombiningChar ::= ... long list see REC ...</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN21492"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->c</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->  an unicode character (int)</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><I
-CLASS="EMPHASIS"
->Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->0 if not, non-zero otherwise</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN21505"
+NAME="AEN22551"
 ></A
 ><H3
 ><A
 NAME="XMLISEXTENDER"
 ></A
->&#62;xmlIsExtender ()</H3
+>xmlIsExtender ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2785,7 +2683,7 @@ HREF="X0387"
 HREF="X0640"
 >x0640</GTKDOCLINK
 > |
-                  <GTKDOCLINK
+<GTKDOCLINK
 HREF="X0E46"
 >x0E46</GTKDOCLINK
 > | <GTKDOCLINK
@@ -2801,7 +2699,7 @@ HREF="X3031-"
 HREF="X3035"
 >x3035</GTKDOCLINK
 >] |
-                  [<GTKDOCLINK
+[<GTKDOCLINK
 HREF="X309D-"
 >x309D-</GTKDOCLINK
 ><GTKDOCLINK
@@ -2819,9 +2717,7 @@ HREF="X30FE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21525"
-></A
-><P
+NAME="AEN22571"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2853,9 +2749,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2872,13 +2771,95 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21538"
+NAME="AEN22584"
+></A
+><H3
+><A
+NAME="XMLISCOMBINING"
+></A
+>xmlIsCombining ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlIsCombining                  (int c);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check whether the character is allowed by the production
+[87] CombiningChar ::= ... long list see REC ...</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN22590"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>c</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an unicode character (int)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>0 if not, non-zero otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN22603"
 ></A
 ><H3
 ><A
 NAME="XMLISCHAR"
 ></A
->&#62;xmlIsChar ()</H3
+>xmlIsChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -2916,7 +2897,7 @@ HREF="XE000-"
 HREF="XFFFD"
 >xFFFD</GTKDOCLINK
 >]
-                 | [<GTKDOCLINK
+| [<GTKDOCLINK
 HREF="X10000-"
 >x10000-</GTKDOCLINK
 ><GTKDOCLINK
@@ -2933,9 +2914,7 @@ HREF="libxml-parserinternals.html#IS-CHAR-CAPS"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21554"
-></A
-><P
+NAME="AEN22619"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2967,9 +2946,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -2986,13 +2968,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21567"
+NAME="AEN22632"
 ></A
 ><H3
 ><A
 NAME="XMLCREATEFILEPARSERCTXT"
 ></A
->&#62;xmlCreateFileParserCtxt ()</H3
+>xmlCreateFileParserCtxt ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3018,9 +3000,7 @@ by default if found at compile-time.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21574"
-></A
-><P
+NAME="AEN22639"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3052,9 +3032,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3071,13 +3054,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21587"
+NAME="AEN22652"
 ></A
 ><H3
 ><A
 NAME="XMLCREATEMEMORYPARSERCTXT"
 ></A
->&#62;xmlCreateMemoryParserCtxt ()</H3
+>xmlCreateMemoryParserCtxt ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3102,9 +3085,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21594"
-></A
-><P
+NAME="AEN22659"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3153,9 +3134,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3172,13 +3156,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21611"
+NAME="AEN22676"
 ></A
 ><H3
 ><A
 NAME="XMLNEWPARSERCTXT"
 ></A
->&#62;xmlNewParserCtxt ()</H3
+>xmlNewParserCtxt ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3202,9 +3186,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21618"
-></A
-><P
+NAME="AEN22683"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3219,9 +3201,12 @@ CLASS="CALSTABLE"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3238,13 +3223,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21627"
+NAME="AEN22692"
 ></A
 ><H3
 ><A
 NAME="XMLCREATEENTITYPARSERCTXT"
 ></A
->&#62;xmlCreateEntityParserCtxt ()</H3
+>xmlCreateEntityParserCtxt ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3281,9 +3266,7 @@ by default if found at compile-time.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21637"
-></A
-><P
+NAME="AEN22702"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3349,9 +3332,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3368,13 +3354,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21658"
+NAME="AEN22723"
 ></A
 ><H3
 ><A
 NAME="XMLSWITCHENCODING"
 ></A
->&#62;xmlSwitchEncoding ()</H3
+>xmlSwitchEncoding ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3403,9 +3389,7 @@ of a given entity.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21666"
-></A
-><P
+NAME="AEN22731"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3454,9 +3438,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3473,13 +3460,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21683"
+NAME="AEN22748"
 ></A
 ><H3
 ><A
 NAME="XMLSWITCHTOENCODING"
 ></A
->&#62;xmlSwitchToEncoding ()</H3
+>xmlSwitchToEncoding ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3508,9 +3495,7 @@ of a given entity.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21691"
-></A
-><P
+NAME="AEN22756"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3559,9 +3544,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3578,82 +3566,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21708"
-></A
-><H3
-><A
-NAME="XMLFREEPARSERCTXT"
-></A
->&#62;xmlFreeParserCtxt ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        xmlFreeParserCtxt               (<A
-HREF="libxml-tree.html#XMLPARSERCTXTPTR"
->xmlParserCtxtPtr</A
-> ctxt);</PRE
-></TD
-></TR
-></TABLE
-><P
->Free all the memory used by a parser context. However the parsed
-document in ctxt-&gt;myDoc is not freed.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN21715"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->ctxt</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN21724"
+NAME="AEN22773"
 ></A
 ><H3
 ><A
 NAME="XMLHANDLEENTITY"
 ></A
->&#62;xmlHandleEntity ()</H3
+>xmlHandleEntity ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3668,7 +3587,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
 > ctxt,
                                              <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > entity);</PRE
 ></TD
@@ -3684,9 +3603,7 @@ stream ? When do we just handle that as a set of chars ?</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21733"
-></A
-><P
+NAME="AEN22782"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3739,13 +3656,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21746"
+NAME="AEN22795"
 ></A
 ><H3
 ><A
 NAME="XMLNEWSTRINGINPUTSTREAM"
 ></A
->&#62;xmlNewStringInputStream ()</H3
+>xmlNewStringInputStream ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3776,9 +3693,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21755"
-></A
-><P
+NAME="AEN22804"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3827,9 +3742,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3846,13 +3764,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21772"
+NAME="AEN22821"
 ></A
 ><H3
 ><A
 NAME="XMLNEWENTITYINPUTSTREAM"
 ></A
->&#62;xmlNewEntityInputStream ()</H3
+>xmlNewEntityInputStream ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3870,7 +3788,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
 > ctxt,
                                              <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > entity);</PRE
 ></TD
@@ -3883,9 +3801,7 @@ HREF="libxml-entities.html#XMLENTITYPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21781"
-></A
-><P
+NAME="AEN22830"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -3934,9 +3850,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -3953,13 +3872,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21798"
+NAME="AEN22847"
 ></A
 ><H3
 ><A
 NAME="XMLPUSHINPUT"
 ></A
->&#62;xmlPushInput ()</H3
+>xmlPushInput ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -3982,15 +3901,13 @@ HREF="libxml-tree.html#XMLPARSERINPUTPTR"
 ></TABLE
 ><P
 >xmlPushInput: switch to a new input stream which is stacked on top
-              of the previous one(s).</P
+of the previous one(s).</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21806"
-></A
-><P
+NAME="AEN22855"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4043,13 +3960,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21819"
+NAME="AEN22868"
 ></A
 ><H3
 ><A
 NAME="XMLPOPINPUT"
 ></A
->&#62;xmlPopInput ()</H3
+>xmlPopInput ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4071,15 +3988,13 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ></TABLE
 ><P
 >xmlPopInput: the current input pointed by ctxt-&gt;input came to an end
-         pop it and return the next char.</P
+pop it and return the next char.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21827"
-></A
-><P
+NAME="AEN22876"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4111,9 +4026,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4130,13 +4048,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21840"
+NAME="AEN22889"
 ></A
 ><H3
 ><A
 NAME="XMLFREEINPUTSTREAM"
 ></A
->&#62;xmlFreeInputStream ()</H3
+>xmlFreeInputStream ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4160,9 +4078,7 @@ HREF="libxml-tree.html#XMLPARSERINPUTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21847"
-></A
-><P
+NAME="AEN22896"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4198,13 +4114,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21856"
+NAME="AEN22905"
 ></A
 ><H3
 ><A
 NAME="XMLNEWINPUTFROMFILE"
 ></A
->&#62;xmlNewInputFromFile ()</H3
+>xmlNewInputFromFile ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4232,9 +4148,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21864"
-></A
-><P
+NAME="AEN22913"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4283,9 +4197,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4302,13 +4219,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21881"
+NAME="AEN22930"
 ></A
 ><H3
 ><A
 NAME="XMLNEWINPUTSTREAM"
 ></A
->&#62;xmlNewInputStream ()</H3
+>xmlNewInputStream ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4335,9 +4252,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21889"
-></A
-><P
+NAME="AEN22938"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4369,9 +4284,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4388,13 +4306,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21902"
+NAME="AEN22951"
 ></A
 ><H3
 ><A
 NAME="XMLSPLITQNAME"
 ></A
->&#62;xmlSplitQName ()</H3
+>xmlSplitQName ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4435,9 +4353,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21915"
-></A
-><P
+NAME="AEN22964"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4503,16 +4419,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the local part, and prefix is updated
-  to get the Prefix if any.</TD
+to get the Prefix if any.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4523,13 +4442,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21936"
+NAME="AEN22985"
 ></A
 ><H3
 ><A
 NAME="XMLNAMESPACEPARSENCNAME"
 ></A
->&#62;xmlNamespaceParseNCName ()</H3
+>xmlNamespaceParseNCName ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4553,20 +4472,18 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >parse an XML namespace name.</P
 ><P
 >TODO: this seems not in use anymore, the namespace handling is done on
-      top of the SAX interfaces, i.e. not on raw input.</P
+top of the SAX interfaces, i.e. not on raw input.</P
 ><P
 >[NS 3] NCName ::= (Letter | '_') (NCNameChar)*</P
 ><P
 >[NS 4] NCNameChar ::= Letter | Digit | '.' | '-' | '_' |
-                      CombiningChar | Extender</P
+CombiningChar | Extender</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21947"
-></A
-><P
+NAME="AEN22996"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4598,9 +4515,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4617,13 +4537,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21960"
+NAME="AEN23009"
 ></A
 ><H3
 ><A
 NAME="XMLNAMESPACEPARSEQNAME"
 ></A
->&#62;xmlNamespaceParseQName ()</H3
+>xmlNamespaceParseQName ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4649,7 +4569,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TABLE
 ><P
 >TODO: this seems not in use anymore, the namespace handling is done on
-      top of the SAX interfaces, i.e. not on raw input.</P
+top of the SAX interfaces, i.e. not on raw input.</P
 ><P
 >parse an XML qualified name</P
 ><P
@@ -4663,9 +4583,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN21973"
-></A
-><P
+NAME="AEN23022"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4714,16 +4632,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the local part, and prefix is updated
-  to get the Prefix if any.</TD
+to get the Prefix if any.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4734,13 +4655,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN21990"
+NAME="AEN23039"
 ></A
 ><H3
 ><A
 NAME="XMLNAMESPACEPARSENSDEF"
 ></A
->&#62;xmlNamespaceParseNSDef ()</H3
+>xmlNamespaceParseNSDef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4764,7 +4685,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >parse a namespace prefix declaration</P
 ><P
 >TODO: this seems not in use anymore, the namespace handling is done on
-      top of the SAX interfaces, i.e. not on raw input.</P
+top of the SAX interfaces, i.e. not on raw input.</P
 ><P
 >[NS 1] NSDef ::= PrefixDef Eq SystemLiteral</P
 ><P
@@ -4774,9 +4695,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22001"
-></A
-><P
+NAME="AEN23050"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4808,9 +4727,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4827,13 +4749,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22014"
+NAME="AEN23063"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEQUOTEDSTRING"
 ></A
->&#62;xmlParseQuotedString ()</H3
+>xmlParseQuotedString ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4862,9 +4784,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22023"
-></A
-><P
+NAME="AEN23072"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4896,9 +4816,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -4915,13 +4838,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22036"
+NAME="AEN23085"
 ></A
 ><H3
 ><A
 NAME="XMLPARSENAMESPACE"
 ></A
->&#62;xmlParseNamespace ()</H3
+>xmlParseNamespace ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -4953,9 +4876,7 @@ if it was declared on the root of the Tree:-(</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22046"
-></A
-><P
+NAME="AEN23095"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -4991,13 +4912,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22055"
+NAME="AEN23104"
 ></A
 ><H3
 ><A
 NAME="XMLSCANNAME"
 ></A
->&#62;xmlScanName ()</H3
+>xmlScanName ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5022,10 +4943,10 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 Needed for rollback cases. Used only when parsing entities references.</P
 ><P
 >TODO: seems deprecated now, only used in the default part of
-      xmlParserHandleReference</P
+xmlParserHandleReference</P
 ><P
 >[4] NameChar ::= Letter | Digit | '.' | '-' | '_' | ':' |
-                 CombiningChar | Extender</P
+CombiningChar | Extender</P
 ><P
 >[5] Name ::= (Letter | '_' | ':') (NameChar)*</P
 ><P
@@ -5035,9 +4956,7 @@ Needed for rollback cases. Used only when parsing entities references.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22067"
-></A
-><P
+NAME="AEN23116"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5069,9 +4988,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5088,13 +5010,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22080"
+NAME="AEN23129"
 ></A
 ><H3
 ><A
 NAME="XMLPARSENAME"
 ></A
->&#62;xmlParseName ()</H3
+>xmlParseName ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5118,7 +5040,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >parse an XML name.</P
 ><P
 >[4] NameChar ::= Letter | Digit | '.' | '-' | '_' | ':' |
-                 CombiningChar | Extender</P
+CombiningChar | Extender</P
 ><P
 >[5] Name ::= (Letter | '_' | ':') (NameChar)*</P
 ><P
@@ -5128,9 +5050,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22091"
-></A
-><P
+NAME="AEN23140"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5162,9 +5082,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5181,13 +5104,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22104"
+NAME="AEN23153"
 ></A
 ><H3
 ><A
 NAME="XMLPARSENMTOKEN"
 ></A
->&#62;xmlParseNmtoken ()</H3
+>xmlParseNmtoken ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5218,9 +5141,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22114"
-></A
-><P
+NAME="AEN23163"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5252,9 +5173,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5271,13 +5195,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22127"
+NAME="AEN23176"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENTITYVALUE"
 ></A
->&#62;xmlParseEntityValue ()</H3
+>xmlParseEntityValue ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5305,15 +5229,13 @@ HREF="libxml-tree.html#XMLCHAR"
 >parse a value for ENTITY declarations</P
 ><P
 >[9] EntityValue ::= '"' ([^%&amp;"] | PEReference | Reference)* '"' |
-               "'" ([^%&amp;'] | PEReference | Reference)* "'"</P
+"'" ([^%&amp;'] | PEReference | Reference)* "'"</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22137"
-></A
-><P
+NAME="AEN23186"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5362,9 +5284,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5381,13 +5306,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22154"
+NAME="AEN23203"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEATTVALUE"
 ></A
->&#62;xmlParseAttValue ()</H3
+>xmlParseAttValue ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5413,15 +5338,15 @@ Note: the parser won't do substitution of entities here, this
 will be handled later in xmlStringGetNodeList</P
 ><P
 >[10] AttValue ::= '"' ([^&lt;&amp;"] | Reference)* '"' |
-                  "'" ([^&lt;&amp;'] | Reference)* "'"</P
+"'" ([^&lt;&amp;'] | Reference)* "'"</P
 ><P
 >3.3.3 Attribute-Value Normalization:
 Before the value of an attribute is passed to the application or
 checked for validity, the XML processor must normalize it as follows: 
 - a character reference is processed by appending the referenced
-  character to the attribute value
+character to the attribute value
 - an entity reference is processed by recursively processing the
-  replacement text of the entity 
+replacement text of the entity 
 - a whitespace character (<GTKDOCLINK
 HREF="X20"
 >x20</GTKDOCLINK
@@ -5435,11 +5360,11 @@ HREF="XA"
 HREF="X9"
 >x9</GTKDOCLINK
 >) is processed by
-  appending <GTKDOCLINK
+appending <GTKDOCLINK
 HREF="X20"
 >x20</GTKDOCLINK
 > to the normalized value, except that only a single
-  <GTKDOCLINK
+<GTKDOCLINK
 HREF="X20"
 >x20</GTKDOCLINK
 > is appended for a "<GTKDOCLINK
@@ -5449,7 +5374,7 @@ HREF="XD"
 HREF="XA"
 >xA</GTKDOCLINK
 >" sequence that is part of an external
-  parsed entity or the literal entity value of an internal parsed entity 
+parsed entity or the literal entity value of an internal parsed entity 
 - other characters are processed by appending them to the normalized value 
 If the declared value is not CDATA, then the XML processor must further
 process the normalized attribute value by discarding any leading and
@@ -5471,9 +5396,7 @@ by a non-validating parser as if declared CDATA.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22175"
-></A
-><P
+NAME="AEN23224"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5505,9 +5428,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5524,13 +5450,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22188"
+NAME="AEN23237"
 ></A
 ><H3
 ><A
 NAME="XMLPARSESYSTEMLITERAL"
 ></A
->&#62;xmlParseSystemLiteral ()</H3
+>xmlParseSystemLiteral ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5559,9 +5485,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22197"
-></A
-><P
+NAME="AEN23246"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5593,9 +5517,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5612,13 +5539,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22210"
+NAME="AEN23259"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEPUBIDLITERAL"
 ></A
->&#62;xmlParsePubidLiteral ()</H3
+>xmlParsePubidLiteral ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5647,9 +5574,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22219"
-></A
-><P
+NAME="AEN23268"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5681,9 +5606,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -5700,13 +5628,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22232"
+NAME="AEN23281"
 ></A
 ><H3
 ><A
 NAME="XMLPARSECHARDATA"
 ></A
->&#62;xmlParseCharData ()</H3
+>xmlParseCharData ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5739,9 +5667,7 @@ string is not marking the end of a CDATA section. </P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22241"
-></A
-><P
+NAME="AEN23290"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5794,13 +5720,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22254"
+NAME="AEN23303"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEEXTERNALID"
 ></A
->&#62;xmlParseExternalID ()</H3
+>xmlParseExternalID ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5829,10 +5755,10 @@ HREF="libxml-tree.html#XMLCHAR"
 >Parse an External ID or a Public ID</P
 ><P
 >NOTE: Productions [75] and [83] interact badly since [75] can generate
-      'PUBLIC' S PubidLiteral S SystemLiteral</P
+'PUBLIC' S PubidLiteral S SystemLiteral</P
 ><P
 >[75] ExternalID ::= 'SYSTEM' S SystemLiteral
-                  | 'PUBLIC' S PubidLiteral S SystemLiteral</P
+| 'PUBLIC' S PubidLiteral S SystemLiteral</P
 ><P
 >[83] PublicID ::= 'PUBLIC' S PubidLiteral</P
 ><P
@@ -5840,9 +5766,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22266"
-></A
-><P
+NAME="AEN23315"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -5902,24 +5826,27 @@ WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 > indicate whether we should restrict parsing to only
-         production [75], see NOTE below</TD
+production [75], see NOTE below</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the function returns SystemLiteral and in the second
-               case publicID receives PubidLiteral, is strict is off
-               it is possible to return NULL and have publicID set.</TD
+case publicID receives PubidLiteral, is strict is off
+it is possible to return NULL and have publicID set.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -5930,13 +5857,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22287"
+NAME="AEN23336"
 ></A
 ><H3
 ><A
 NAME="XMLPARSECOMMENT"
 ></A
->&#62;xmlParseComment ()</H3
+>xmlParseComment ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5955,8 +5882,8 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ></TABLE
 ><P
 >Skip an XML (SGML) comment &lt;!-- .... --&gt;
- The spec says that "For compatibility, the string "--" (double-hyphen)
- must not occur within comments. "</P
+The spec says that "For compatibility, the string "--" (double-hyphen)
+must not occur within comments. "</P
 ><P
 >[15] Comment ::= '&lt;!--' ((Char - '-') | ('-' (Char - '-')))* '--&gt;'</P
 ><P
@@ -5964,9 +5891,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22295"
-></A
-><P
+NAME="AEN23344"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6002,13 +5927,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22304"
+NAME="AEN23353"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEPITARGET"
 ></A
->&#62;xmlParsePITarget ()</H3
+>xmlParsePITarget ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6037,9 +5962,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22313"
-></A
-><P
+NAME="AEN23362"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6071,9 +5994,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6090,13 +6016,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22326"
+NAME="AEN23375"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEPI"
 ></A
->&#62;xmlParsePI ()</H3
+>xmlParsePI ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6124,9 +6050,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22335"
-></A
-><P
+NAME="AEN23384"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6162,13 +6086,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22344"
+NAME="AEN23393"
 ></A
 ><H3
 ><A
 NAME="XMLPARSENOTATIONDECL"
 ></A
->&#62;xmlParseNotationDecl ()</H3
+>xmlParseNotationDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6191,8 +6115,8 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >[82] NotationDecl ::= '&lt;!NOTATION' S Name S (ExternalID |  PublicID) S? '&gt;'</P
 ><P
 >Hence there is actually 3 choices:
-    'PUBLIC' S PubidLiteral
-    'PUBLIC' S PubidLiteral S SystemLiteral
+'PUBLIC' S PubidLiteral
+'PUBLIC' S PubidLiteral S SystemLiteral
 and 'SYSTEM' S SystemLiteral</P
 ><P
 >See the NOTE on <A
@@ -6204,9 +6128,7 @@ HREF="libxml-parserinternals.html#XMLPARSEEXTERNALID"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22355"
-></A
-><P
+NAME="AEN23404"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6242,13 +6164,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22364"
+NAME="AEN23413"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENTITYDECL"
 ></A
->&#62;xmlParseEntityDecl ()</H3
+>xmlParseEntityDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6287,9 +6209,7 @@ The Name must match the declared name of a notation.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22378"
-></A
-><P
+NAME="AEN23427"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6325,13 +6245,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22387"
+NAME="AEN23436"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEDEFAULTDECL"
 ></A
->&#62;xmlParseDefaultDecl ()</H3
+>xmlParseDefaultDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6398,9 +6318,7 @@ HREF="libxml-parserinternals.html#XMLPARSEATTVALUE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22407"
-></A
-><P
+NAME="AEN23456"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6449,16 +6367,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 > XML_ATTRIBUTE_NONE, XML_ATTRIBUTE_REQUIRED, XML_ATTRIBUTE_IMPLIED
-         or XML_ATTRIBUTE_FIXED. </TD
+or XML_ATTRIBUTE_FIXED. </TD
 ></TR
 ></TBODY
 ></TABLE
@@ -6469,13 +6390,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22424"
+NAME="AEN23473"
 ></A
 ><H3
 ><A
 NAME="XMLPARSENOTATIONTYPE"
 ></A
->&#62;xmlParseNotationType ()</H3
+>xmlParseNotationType ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6510,9 +6431,7 @@ in the declaration; all notation names in the declaration must be declared.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22435"
-></A
-><P
+NAME="AEN23484"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6544,9 +6463,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6563,13 +6485,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22448"
+NAME="AEN23497"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENUMERATIONTYPE"
 ></A
->&#62;xmlParseEnumerationType ()</H3
+>xmlParseEnumerationType ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6602,9 +6524,7 @@ the declaration</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22458"
-></A
-><P
+NAME="AEN23507"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6636,9 +6556,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6655,13 +6578,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22471"
+NAME="AEN23520"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENUMERATEDTYPE"
 ></A
->&#62;xmlParseEnumeratedType ()</H3
+>xmlParseEnumeratedType ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6693,9 +6616,7 @@ HREF="libxml-tree.html#XMLENUMERATIONPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22481"
-></A
-><P
+NAME="AEN23530"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6744,9 +6665,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6763,13 +6687,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22498"
+NAME="AEN23547"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEATTRIBUTETYPE"
 ></A
->&#62;xmlParseAttributeType ()</H3
+>xmlParseAttributeType ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6798,7 +6722,7 @@ HREF="libxml-tree.html#XMLENUMERATIONPTR"
 >[55] StringType ::= 'CDATA'</P
 ><P
 >[56] TokenizedType ::= 'ID' | 'IDREF' | 'IDREFS' | 'ENTITY' |
-                       'ENTITIES' | 'NMTOKEN' | 'NMTOKENS'</P
+'ENTITIES' | 'NMTOKEN' | 'NMTOKENS'</P
 ><P
 >Validity constraints for attribute values syntax are checked in
 <A
@@ -6842,9 +6766,7 @@ of type NMTOKENS must match Nmtokens.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22519"
-></A
-><P
+NAME="AEN23568"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6893,9 +6815,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -6912,13 +6837,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22536"
+NAME="AEN23585"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEATTRIBUTELISTDECL"
 ></A
->&#62;xmlParseAttributeListDecl ()</H3
+>xmlParseAttributeListDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -6946,9 +6871,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22545"
-></A
-><P
+NAME="AEN23594"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -6984,13 +6907,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22554"
+NAME="AEN23603"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEELEMENTMIXEDCONTENTDECL"
 ></A
->&#62;xmlParseElementMixedContentDecl ()</H3
+>xmlParseElementMixedContentDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7007,7 +6930,11 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
                                             (<A
 HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
-> ctxt);</PRE
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLPARSERINPUTPTR"
+>xmlParserInputPtr</A
+> inputchk);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -7019,7 +6946,7 @@ The leading '(' and spaces have been skipped in xmlParseElementContentDecl</P
 HREF="PCDATA-CAPS"
 >PCDATA</GTKDOCLINK
 >' (S? '|' S? Name)* S? ')*' |
-               '(' S? '<GTKDOCLINK
+'(' S? '<GTKDOCLINK
 HREF="PCDATA-CAPS"
 >PCDATA</GTKDOCLINK
 >' S? ')'</P
@@ -7034,9 +6961,7 @@ mixed-content declaration.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22567"
-></A
-><P
+NAME="AEN23617"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7068,9 +6993,29 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>inputchk</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7087,13 +7032,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22580"
+NAME="AEN23634"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEELEMENTCHILDRENCONTENTD"
 ></A
->&#62;xmlParseElementChildrenContentD ()</H3
+>xmlParseElementChildrenContentD ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7124,9 +7069,7 @@ HREF="libxml-parserinternals.html#XMLPARSEELEMENTCHILDRENCONTENTDECL"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22589"
-></A
-><P
+NAME="AEN23643"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7158,16 +7101,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the tree of xmlElementContentPtr describing the element 
-         hierarchy.</TD
+hierarchy.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -7178,13 +7124,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22602"
+NAME="AEN23656"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEELEMENTCHILDRENCONTENTDECL"
 ></A
->&#62;xmlParseElementChildrenContentDecl ()</H3
+>xmlParseElementChildrenContentDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7201,7 +7147,11 @@ HREF="libxml-tree.html#XMLELEMENTCONTENTPTR"
                                             (<A
 HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >xmlParserCtxtPtr</A
-> ctxt);</PRE
+> ctxt,
+                                             <A
+HREF="libxml-tree.html#XMLPARSERINPUTPTR"
+>xmlParserInputPtr</A
+> inputchk);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -7232,9 +7182,7 @@ the replacement text should be a connector (| or ,).</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22615"
-></A
-><P
+NAME="AEN23670"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7266,16 +7214,36 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>inputchk</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >the tree of xmlElementContentPtr describing the element 
-         hierarchy.</TD
+hierarchy.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -7286,13 +7254,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22628"
+NAME="AEN23687"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEELEMENTCONTENTDECL"
 ></A
->&#62;xmlParseElementContentDecl ()</H3
+>xmlParseElementContentDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7327,9 +7295,7 @@ the cases EMPTY and ANY are handled directly in xmlParseElementDecl</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22638"
-></A
-><P
+NAME="AEN23697"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7395,9 +7361,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7414,13 +7383,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22659"
+NAME="AEN23718"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEELEMENTDECL"
 ></A
->&#62;xmlParseElementDecl ()</H3
+>xmlParseElementDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7449,9 +7418,7 @@ No element type may be declared more than once</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22668"
-></A
-><P
+NAME="AEN23727"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7483,9 +7450,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7502,13 +7472,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22681"
+NAME="AEN23740"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEMARKUPDECL"
 ></A
->&#62;xmlParseMarkupDecl ()</H3
+>xmlParseMarkupDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7529,7 +7499,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >parse Markup declarations</P
 ><P
 >[29] markupdecl ::= elementdecl | AttlistDecl | EntityDecl |
-                    NotationDecl | PI | Comment</P
+NotationDecl | PI | Comment</P
 ><P
 >[ VC: Proper Declaration/PE Nesting ]
 Parameter-entity replacement text must be properly nested with
@@ -7548,9 +7518,7 @@ entities or to the external subset.)</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22691"
-></A
-><P
+NAME="AEN23750"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7586,13 +7554,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22700"
+NAME="AEN23759"
 ></A
 ><H3
 ><A
 NAME="XMLPARSECHARREF"
 ></A
->&#62;xmlParseCharRef ()</H3
+>xmlParseCharRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7613,7 +7581,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >parse Reference declarations</P
 ><P
 >[66] CharRef ::= '&amp;#' [0-9]+ ';' |
-                 '&amp;<GTKDOCLINK
+'&amp;<GTKDOCLINK
 HREF="X"
 >x</GTKDOCLINK
 >' [0-9a-fA-F]+ ';'</P
@@ -7626,9 +7594,7 @@ production for Char.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22710"
-></A
-><P
+NAME="AEN23769"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7660,9 +7626,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7679,13 +7648,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22723"
+NAME="AEN23782"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENTITYREF"
 ></A
->&#62;xmlParseEntityRef ()</H3
+>xmlParseEntityRef ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7696,7 +7665,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > xmlParseEntityRef              (<A
 HREF="libxml-tree.html#XMLPARSERCTXTPTR"
@@ -7732,9 +7701,7 @@ An entity reference must not contain the name of an unparsed entity</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22734"
-></A
-><P
+NAME="AEN23793"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7766,9 +7733,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -7785,13 +7755,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22747"
+NAME="AEN23806"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEREFERENCE"
 ></A
->&#62;xmlParseReference ()</H3
+>xmlParseReference ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7826,9 +7796,7 @@ or if the parser was asked to switch to that mode.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22757"
-></A
-><P
+NAME="AEN23816"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7864,13 +7832,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22766"
+NAME="AEN23825"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEPEREFERENCE"
 ></A
->&#62;xmlParsePEReference ()</H3
+>xmlParsePEReference ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7917,9 +7885,7 @@ NOTE: misleading but this is handled.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22778"
-></A
-><P
+NAME="AEN23837"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -7955,13 +7921,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22787"
+NAME="AEN23846"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEDOCTYPEDECL"
 ></A
->&#62;xmlParseDocTypeDecl ()</H3
+>xmlParseDocTypeDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -7982,7 +7948,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >parse a DOCTYPE declaration</P
 ><P
 >[28] doctypedecl ::= '&lt;!DOCTYPE' S Name (S ExternalID)? S? 
-                     ('[' (markupdecl | PEReference | S)* ']' S?)? '&gt;'</P
+('[' (markupdecl | PEReference | S)* ']' S?)? '&gt;'</P
 ><P
 >[ VC: Root Element Type ]
 The Name in the document type declaration must match the element
@@ -7992,9 +7958,7 @@ type of the root element.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22796"
-></A
-><P
+NAME="AEN23855"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8030,13 +7994,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22805"
+NAME="AEN23864"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEATTRIBUTE"
 ></A
->&#62;xmlParseAttribute ()</H3
+>xmlParseAttribute ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8090,9 +8054,7 @@ definition.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22822"
-></A
-><P
+NAME="AEN23881"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8141,9 +8103,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8160,13 +8125,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22839"
+NAME="AEN23898"
 ></A
 ><H3
 ><A
 NAME="XMLPARSESTARTTAG"
 ></A
->&#62;xmlParseStartTag ()</H3
+>xmlParseStartTag ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8212,9 +8177,7 @@ empty-element tag. </P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22854"
-></A
-><P
+NAME="AEN23913"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8246,9 +8209,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8265,13 +8231,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22867"
+NAME="AEN23926"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENDTAG"
 ></A
->&#62;xmlParseEndTag ()</H3
+>xmlParseEndTag ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8301,9 +8267,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22877"
-></A
-><P
+NAME="AEN23936"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8339,13 +8303,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22886"
+NAME="AEN23945"
 ></A
 ><H3
 ><A
 NAME="XMLPARSECDSECT"
 ></A
->&#62;xmlParseCDSect ()</H3
+>xmlParseCDSect ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8377,9 +8341,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22897"
-></A
-><P
+NAME="AEN23956"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8415,13 +8377,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22906"
+NAME="AEN23965"
 ></A
 ><H3
 ><A
 NAME="XMLPARSECONTENT"
 ></A
->&#62;xmlParseContent ()</H3
+>xmlParseContent ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8447,9 +8409,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22914"
-></A
-><P
+NAME="AEN23973"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8485,13 +8445,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22923"
+NAME="AEN23982"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEELEMENT"
 ></A
->&#62;xmlParseElement ()</H3
+>xmlParseElement ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8520,23 +8480,21 @@ start-tag. </P
 >[ VC: Element Valid ]
 An element is valid if there is a declaration matching elementdecl
 where the Name matches the element type and one of the following holds:
- - The declaration matches EMPTY and the element has no content.
- - The declaration matches children and the sequence of child elements
-   belongs to the language generated by the regular expression in the
-   content model, with optional white space (characters matching the
-   nonterminal S) between each pair of child elements. 
- - The declaration matches Mixed and the content consists of character
-   data and child elements whose types match names in the content model. 
- - The declaration matches ANY, and the types of any child elements have
-   been declared.</P
+- The declaration matches EMPTY and the element has no content.
+- The declaration matches children and the sequence of child elements
+belongs to the language generated by the regular expression in the
+content model, with optional white space (characters matching the
+nonterminal S) between each pair of child elements. 
+- The declaration matches Mixed and the content consists of character
+data and child elements whose types match names in the content model. 
+- The declaration matches ANY, and the types of any child elements have
+been declared.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22933"
-></A
-><P
+NAME="AEN23992"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8572,13 +8530,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22942"
+NAME="AEN24001"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEVERSIONNUM"
 ></A
->&#62;xmlParseVersionNum ()</H3
+>xmlParseVersionNum ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8607,9 +8565,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22951"
-></A
-><P
+NAME="AEN24010"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8641,9 +8597,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8660,13 +8619,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22964"
+NAME="AEN24023"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEVERSIONINFO"
 ></A
->&#62;xmlParseVersionInfo ()</H3
+>xmlParseVersionInfo ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8697,9 +8656,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22974"
-></A
-><P
+NAME="AEN24033"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8731,9 +8688,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8750,13 +8710,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN22987"
+NAME="AEN24046"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENCNAME"
 ></A
->&#62;xmlParseEncName ()</H3
+>xmlParseEncName ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8785,9 +8745,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN22996"
-></A
-><P
+NAME="AEN24055"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8819,9 +8777,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8838,13 +8799,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23009"
+NAME="AEN24068"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEENCODINGDECL"
 ></A
->&#62;xmlParseEncodingDecl ()</H3
+>xmlParseEncodingDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8875,9 +8836,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23019"
-></A
-><P
+NAME="AEN24078"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -8909,9 +8868,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -8928,13 +8890,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23032"
+NAME="AEN24091"
 ></A
 ><H3
 ><A
 NAME="XMLPARSESDDECL"
 ></A
->&#62;xmlParseSDDecl ()</H3
+>xmlParseSDDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -8955,29 +8917,27 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 >parse the XML standalone declaration</P
 ><P
 >[32] SDDecl ::= S 'standalone' Eq
-                (("'" ('yes' | 'no') "'") | ('"' ('yes' | 'no')'"')) </P
+(("'" ('yes' | 'no') "'") | ('"' ('yes' | 'no')'"')) </P
 ><P
 >[ VC: Standalone Document Declaration ]
 TODO The standalone document declaration must have the value "no"
 if any external markup declarations contain declarations of:
- - attributes with default values, if elements to which these
-   attributes apply appear in the document without specifications
-   of values for these attributes, or
- - entities (other than amp, lt, gt, apos, quot), if references
-   to those entities appear in the document, or
- - attributes with values subject to normalization, where the
-   attribute appears in the document with a value which will change
-   as a result of normalization, or
- - element types with element content, if white space occurs directly
-   within any instance of those types.</P
+- attributes with default values, if elements to which these
+attributes apply appear in the document without specifications
+of values for these attributes, or
+- entities (other than amp, lt, gt, apos, quot), if references
+to those entities appear in the document, or
+- attributes with values subject to normalization, where the
+attribute appears in the document with a value which will change
+as a result of normalization, or
+- element types with element content, if white space occurs directly
+within any instance of those types.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23041"
-></A
-><P
+NAME="AEN24100"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9009,9 +8969,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -9028,13 +8991,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23054"
+NAME="AEN24113"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEXMLDECL"
 ></A
->&#62;xmlParseXMLDecl ()</H3
+>xmlParseXMLDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9060,9 +9023,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23062"
-></A
-><P
+NAME="AEN24121"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9098,13 +9059,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23071"
+NAME="AEN24130"
 ></A
 ><H3
 ><A
 NAME="XMLPARSETEXTDECL"
 ></A
->&#62;xmlParseTextDecl ()</H3
+>xmlParseTextDecl ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9132,9 +9093,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23080"
-></A
-><P
+NAME="AEN24139"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9170,13 +9129,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23089"
+NAME="AEN24148"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEMISC"
 ></A
->&#62;xmlParseMisc ()</H3
+>xmlParseMisc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9202,9 +9161,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23097"
-></A
-><P
+NAME="AEN24156"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9240,13 +9197,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23106"
+NAME="AEN24165"
 ></A
 ><H3
 ><A
 NAME="XMLPARSEEXTERNALSUBSET"
 ></A
->&#62;xmlParseExternalSubset ()</H3
+>xmlParseExternalSubset ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9282,9 +9239,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23117"
-></A
-><P
+NAME="AEN24176"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9354,13 +9309,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23134"
+NAME="AEN24193"
 ></A
 ><H3
 ><A
 NAME="XML-SUBSTITUTE-NONE-CAPS"
 ></A
->&#62;XML_SUBSTITUTE_NONE</H3
+>XML_SUBSTITUTE_NONE</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9375,20 +9330,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->If no entities need to be substituted</P
+>If no entities need to be substituted.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23140"
+NAME="AEN24199"
 ></A
 ><H3
 ><A
 NAME="XML-SUBSTITUTE-REF-CAPS"
 ></A
->&#62;XML_SUBSTITUTE_REF</H3
+>XML_SUBSTITUTE_REF</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9403,20 +9358,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Whether general entities need to be substituted</P
+>Whether general entities need to be substituted.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23146"
+NAME="AEN24205"
 ></A
 ><H3
 ><A
 NAME="XML-SUBSTITUTE-PEREF-CAPS"
 ></A
->&#62;XML_SUBSTITUTE_PEREF</H3
+>XML_SUBSTITUTE_PEREF</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9431,20 +9386,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Whether parameter entities need to be substituted</P
+>Whether parameter entities need to be substituted.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23152"
+NAME="AEN24211"
 ></A
 ><H3
 ><A
 NAME="XML-SUBSTITUTE-BOTH-CAPS"
 ></A
->&#62;XML_SUBSTITUTE_BOTH</H3
+>XML_SUBSTITUTE_BOTH</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9459,20 +9414,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->Both general and parameter entities need to be substituted</P
+>Both general and parameter entities need to be substituted.</P
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23158"
+NAME="AEN24217"
 ></A
 ><H3
 ><A
 NAME="XMLDECODEENTITIES"
 ></A
->&#62;xmlDecodeEntities ()</H3
+>xmlDecodeEntities ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9520,9 +9475,7 @@ through xmlStringDecodeEntities</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23172"
-></A
-><P
+NAME="AEN24231"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9639,16 +9592,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >A newly allocated string with the substitution done. The caller
-     must deallocate it !</TD
+must deallocate it !</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -9659,13 +9615,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23205"
+NAME="AEN24264"
 ></A
 ><H3
 ><A
 NAME="XMLSTRINGDECODEENTITIES"
 ></A
->&#62;xmlStringDecodeEntities ()</H3
+>xmlStringDecodeEntities ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9713,9 +9669,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23219"
-></A
-><P
+NAME="AEN24278"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9832,16 +9786,19 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >A newly allocated string with the substitution done. The caller
-     must deallocate it !</TD
+must deallocate it !</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -9852,13 +9809,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23252"
+NAME="AEN24311"
 ></A
 ><H3
 ><A
 NAME="NODEPUSH"
 ></A
->&#62;nodePush ()</H3
+>nodePush ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9886,9 +9843,7 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23260"
-></A
-><P
+NAME="AEN24319"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -9930,22 +9885,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the element node</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>0 in case of error, the index in the stack otherwise</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -9956,13 +9914,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23277"
+NAME="AEN24336"
 ></A
 ><H3
 ><A
 NAME="NODEPOP"
 ></A
->&#62;nodePop ()</H3
+>nodePop ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -9989,9 +9947,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23285"
-></A
-><P
+NAME="AEN24344"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10023,9 +9979,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10042,13 +10001,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23298"
+NAME="AEN24357"
 ></A
 ><H3
 ><A
 NAME="INPUTPUSH"
 ></A
->&#62;inputPush ()</H3
+>inputPush ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10076,9 +10035,7 @@ HREF="libxml-tree.html#XMLPARSERINPUTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23306"
-></A
-><P
+NAME="AEN24365"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10120,22 +10077,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the parser input</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>0 in case of error, the index in the stack otherwise</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -10146,13 +10106,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23323"
+NAME="AEN24382"
 ></A
 ><H3
 ><A
 NAME="INPUTPOP"
 ></A
->&#62;inputPop ()</H3
+>inputPop ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10179,9 +10139,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23331"
-></A
-><P
+NAME="AEN24390"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10213,9 +10171,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10232,13 +10193,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23344"
+NAME="AEN24403"
 ></A
 ><H3
 ><A
 NAME="NAMEPOP"
 ></A
->&#62;namePop ()</H3
+>namePop ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10265,9 +10226,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23352"
-></A
-><P
+NAME="AEN24411"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10299,9 +10258,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10318,13 +10280,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23365"
+NAME="AEN24424"
 ></A
 ><H3
 ><A
 NAME="NAMEPUSH"
 ></A
->&#62;namePush ()</H3
+>namePush ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10352,9 +10314,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23373"
-></A
-><P
+NAME="AEN24432"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10396,22 +10356,25 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the element name</TD
 ></TR
 ><TR
 ><TD
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>0 in case of error, the index in the stack otherwise</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -10422,13 +10385,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23390"
+NAME="AEN24449"
 ></A
 ><H3
 ><A
 NAME="XMLSKIPBLANKCHARS"
 ></A
->&#62;xmlSkipBlankChars ()</H3
+>xmlSkipBlankChars ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10453,9 +10416,7 @@ It pops up finished entities in the process if allowable at that point.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23397"
-></A
-><P
+NAME="AEN24456"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10487,9 +10448,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10506,13 +10470,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23410"
+NAME="AEN24469"
 ></A
 ><H3
 ><A
 NAME="XMLSTRINGCURRENTCHAR"
 ></A
->&#62;xmlStringCurrentChar ()</H3
+>xmlStringCurrentChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10542,9 +10506,7 @@ bytes in the input buffer.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23418"
-></A
-><P
+NAME="AEN24477"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10610,9 +10572,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10629,13 +10594,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23439"
+NAME="AEN24498"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERHANDLEPEREFERENCE"
 ></A
->&#62;xmlParserHandlePEReference ()</H3
+>xmlParserHandlePEReference ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10676,21 +10641,19 @@ NOTE: misleading but this is handled.</P
 ><P
 >A PEReference may have been detected in the current input stream
 the handling is done accordingly to 
-     http://www.w3.org/TR/REC-xml<GTKDOCLINK
+http://www.w3.org/TR/REC-xml<GTKDOCLINK
 HREF="ENTPROC"
 >entproc</GTKDOCLINK
 >
 i.e. 
-  - Included in literal in entity values
-  - Included as Parameter Entity reference within DTDs</P
+- Included in literal in entity values
+- Included as Parameter Entity reference within DTDs</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23452"
-></A
-><P
+NAME="AEN24511"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10726,13 +10689,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23461"
+NAME="AEN24520"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERHANDLEREFERENCE"
 ></A
->&#62;xmlParserHandleReference ()</H3
+>xmlParserHandleReference ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10751,7 +10714,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ></TABLE
 ><P
 >TODO: Remove, now deprecated ... the test is done directly in the
-      content parsing
+content parsing
 routines.</P
 ><P
 >[67] Reference ::= EntityRef | CharRef</P
@@ -10767,14 +10730,14 @@ of the following entities: amp, lt, gt, apos, quot. </P
 An entity reference must not contain the name of an unparsed entity</P
 ><P
 >[66] CharRef ::= '&amp;#' [0-9]+ ';' |
-                 '&amp;<GTKDOCLINK
+'&amp;<GTKDOCLINK
 HREF="X"
 >x</GTKDOCLINK
 >' [0-9a-fA-F]+ ';'</P
 ><P
 >A PEReference may have been detected in the current input stream
 the handling is done accordingly to 
-     http://www.w3.org/TR/REC-xml<GTKDOCLINK
+http://www.w3.org/TR/REC-xml<GTKDOCLINK
 HREF="ENTPROC"
 >entproc</GTKDOCLINK
 ></P
@@ -10783,9 +10746,7 @@ HREF="ENTPROC"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23476"
-></A
-><P
+NAME="AEN24535"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10821,13 +10782,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23485"
+NAME="AEN24544"
 ></A
 ><H3
 ><A
 NAME="XMLCHECKLANGUAGEID"
 ></A
->&#62;xmlCheckLanguageID ()</H3
+>xmlCheckLanguageID ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10848,7 +10809,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >Checks that the value conforms to the LanguageID production:</P
 ><P
 >NOTE: this is somewhat deprecated, those productions were removed from
-      the XML Second edition.</P
+the XML Second edition.</P
 ><P
 >[33] LanguageID ::= Langcode ('-' Subcode)*
 [34] Langcode ::= ISO639Code |  IanaCode |  UserCode
@@ -10861,9 +10822,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23494"
-></A
-><P
+NAME="AEN24553"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -10895,9 +10854,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -10914,13 +10876,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23507"
+NAME="AEN24566"
 ></A
 ><H3
 ><A
 NAME="XMLCURRENTCHAR"
 ></A
->&#62;xmlCurrentChar ()</H3
+>xmlCurrentChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -10968,9 +10930,7 @@ HREF="XA"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23519"
-></A
-><P
+NAME="AEN24578"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11019,9 +10979,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11038,13 +11001,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23536"
+NAME="AEN24595"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYCHARMULTIBYTE"
 ></A
->&#62;xmlCopyCharMultiByte ()</H3
+>xmlCopyCharMultiByte ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11069,9 +11032,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23543"
-></A
-><P
+NAME="AEN24602"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11120,9 +11081,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11139,13 +11103,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23560"
+NAME="AEN24619"
 ></A
 ><H3
 ><A
 NAME="XMLCOPYCHAR"
 ></A
->&#62;xmlCopyChar ()</H3
+>xmlCopyChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11171,9 +11135,7 @@ HREF="libxml-tree.html#XMLCHAR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23567"
-></A
-><P
+NAME="AEN24626"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11239,9 +11201,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11258,13 +11223,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23588"
+NAME="AEN24647"
 ></A
 ><H3
 ><A
 NAME="XMLNEXTCHAR"
 ></A
->&#62;xmlNextChar ()</H3
+>xmlNextChar ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11288,9 +11253,7 @@ HREF="libxml-tree.html#XMLPARSERCTXTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23595"
-></A
-><P
+NAME="AEN24654"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11326,13 +11289,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23604"
+NAME="AEN24663"
 ></A
 ><H3
 ><A
 NAME="XMLPARSERINPUTSHRINK"
 ></A
->&#62;xmlParserInputShrink ()</H3
+>xmlParserInputShrink ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11356,9 +11319,7 @@ HREF="libxml-tree.html#XMLPARSERINPUTPTR"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23611"
-></A
-><P
+NAME="AEN24670"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11394,13 +11355,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23620"
+NAME="AEN24679"
 ></A
 ><H3
 ><A
 NAME="HTMLINITAUTOCLOSE"
 ></A
->&#62;htmlInitAutoClose ()</H3
+>htmlInitAutoClose ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11427,13 +11388,13 @@ case of use in multithreaded programs.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23627"
+NAME="AEN24686"
 ></A
 ><H3
 ><A
 NAME="HTMLCREATEFILEPARSERCTXT"
 ></A
->&#62;htmlCreateFileParserCtxt ()</H3
+>htmlCreateFileParserCtxt ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11460,9 +11421,7 @@ by default if found at compile-time.</P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23634"
-></A
-><P
+NAME="AEN24693"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11511,9 +11470,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -11530,13 +11492,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23651"
+NAME="AEN24710"
 ></A
 ><H3
 ><A
 NAME="XMLENTITYREFERENCEFUNC"
 ></A
->&#62;xmlEntityReferenceFunc ()</H3
+>xmlEntityReferenceFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11547,7 +11509,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        (*xmlEntityReferenceFunc)       (<A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > ent,
                                              <A
@@ -11562,13 +11524,14 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
+>Callback function used when one needs to be able to track back the
+provenance of a chunk of nodes inherited from an entity replacement.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23659"
-></A
-><P
+NAME="AEN24719"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -11593,7 +11556,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> the entity</TD
 ></TR
 ><TR
 ><TD
@@ -11610,7 +11573,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the fist node in the chunk</TD
 ></TR
 ><TR
 ><TD
@@ -11627,7 +11590,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the last nod in the chunk</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -11638,13 +11601,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN23676"
+NAME="AEN24736"
 ></A
 ><H3
 ><A
 NAME="XMLSETENTITYREFERENCEFUNC"
 ></A
->&#62;xmlSetEntityReferenceFunc ()</H3
+>xmlSetEntityReferenceFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -11668,9 +11631,7 @@ HREF="libxml-parserinternals.html#XMLENTITYREFERENCEFUNC"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN23683"
-></A
-><P
+NAME="AEN24743"><P
 ></P
 ><TABLE
 BORDER="0"

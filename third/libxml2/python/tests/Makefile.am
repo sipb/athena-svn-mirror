@@ -1,15 +1,25 @@
-EXAMPLE_DIR = $(prefix)/share/doc/libxml2-python-$(LIBXML_VERSION)/examples
+EXAMPLE_DIR = $(datadir)/doc/libxml2-python-$(LIBXML_VERSION)/examples
 
 PYTESTS=	\
     build.py	\
+    attribs.py	\
     tst.py	\
     tstxpath.py	\
     xpathext.py	\
     push.py	\
     pushSAX.py	\
+    pushSAXhtml.py \
     error.py	\
+    serialize.py\
     validate.py	\
-    xpath.py
+    tstURI.py	\
+    cutnpaste.py\
+    xpathret.py	\
+    xpath.py	\
+    outbuf.py	\
+    inbuf.py	\
+    resolver.py \
+    regexp.py
 
 XMLS=		\
     tst.xml	\
@@ -20,8 +30,8 @@ EXTRA_DIST = $(PYTESTS) $(XMLS)
 
 if WITH_PYTHON
 tests: $(PYTESTS)
-	-@(PYTHONPATH=".." ; export PYTHONPATH; \
-	   for test in $(PYTESTS) ; do echo "-- $$test" ; $(PYTHON) $$test ; done)
+	-@(PYTHONPATH="..:../.libs:$(srcdir)/.." ; export PYTHONPATH; \
+	   for test in $(PYTESTS) ; do echo "-- $$test" ; $(PYTHON) $(srcdir)/$$test ; done)
 else
 tests:
 endif

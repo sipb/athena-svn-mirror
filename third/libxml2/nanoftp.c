@@ -16,6 +16,7 @@
 #define NEED_SOCKETS
 #endif /* TESTING */
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #ifdef LIBXML_FTP_ENABLED
@@ -779,7 +780,7 @@ xmlNanoFTPSendUser(void *ctx) {
     int res;
 
     if (ctxt->user == NULL)
-	sprintf(buf, "USER anonymous\r\n");
+	snprintf(buf, sizeof(buf), "USER anonymous\r\n");
     else
 	snprintf(buf, sizeof(buf), "USER %s\r\n", ctxt->user);
     buf[sizeof(buf) - 1] = 0;
@@ -834,7 +835,7 @@ xmlNanoFTPQuit(void *ctx) {
     int len;
     int res;
 
-    sprintf(buf, "QUIT\r\n");
+    snprintf(buf, sizeof(buf), "QUIT\r\n");
     len = strlen(buf);
 #ifdef DEBUG_FTP
     xmlGenericError(xmlGenericErrorContext, "%s", buf); /* Just to be consistent, even though we know it can't have a % in it */
@@ -1256,7 +1257,7 @@ xmlNanoFTPGetConnection(void *ctx) {
     dataAddr.sin_family = AF_INET;
 
     if (ctxt->passive) {
-	sprintf(buf, "PASV\r\n");
+	snprintf(buf, sizeof(buf), "PASV\r\n");
         len = strlen(buf);
 #ifdef DEBUG_FTP
 	xmlGenericError(xmlGenericErrorContext, "%s", buf);
@@ -1545,7 +1546,7 @@ xmlNanoFTPList(void *ctx, ftpListCallback callback, void *userData,
 	ctxt->dataFd = xmlNanoFTPGetConnection(ctxt);
 	if (ctxt->dataFd == -1)
 	    return(-1);
-	sprintf(buf, "LIST -L\r\n");
+	snprintf(buf, sizeof(buf), "LIST -L\r\n");
     } else {
 	if (filename[0] != '/') {
 	    if (xmlNanoFTPCwd(ctxt, ctxt->path) < 1)
@@ -1650,7 +1651,7 @@ xmlNanoFTPGetSocket(void *ctx, const char *filename) {
     if (ctxt->dataFd == -1)
 	return(-1);
 
-    sprintf(buf, "TYPE I\r\n");
+    snprintf(buf, sizeof(buf), "TYPE I\r\n");
     len = strlen(buf);
 #ifdef DEBUG_FTP
     xmlGenericError(xmlGenericErrorContext, "%s", buf);
@@ -1852,12 +1853,14 @@ xmlNanoFTPClose(void *ctx) {
  * 			Basic test in Standalone mode			*
  * 									*
  ************************************************************************/
+static
 void ftpList(void *userData, const char *filename, const char* attrib,
 	     const char *owner, const char *group, unsigned long size, int links,
 	     int year, const char *month, int day, int hour, int minute) {
     xmlGenericError(xmlGenericErrorContext,
 	    "%s %s %s %ld %s\n", attrib, owner, group, size, filename);
 }
+static
 void ftpData(void *userData, const char *data, int len) {
     if (userData == NULL) return;
     if (len <= 0) {

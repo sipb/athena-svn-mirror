@@ -15,6 +15,7 @@
         fly with ZLIB if found at compile-time */
 
 #define NEED_SOCKETS
+#define IN_LIBXML
 #include "libxml.h"
 
 #ifdef LIBXML_HTTP_ENABLED
@@ -37,6 +38,12 @@
 #endif
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
+#ifdef HAVE_RESOLV_H
+#ifdef HAVE_ARPA_NAMESER_H
+#include <arpa/nameser.h>
+#endif
+#include <resolv.h>
 #endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h> 
@@ -69,6 +76,7 @@
 #include <libxml/parser.h> /* for xmlStr(n)casecmp() */
 #include <libxml/nanohttp.h>
 #include <libxml/globals.h>
+#include <libxml/uri.h>
 
 /**
  * A couple portability macros
@@ -78,6 +86,12 @@
 #define SOCKET int
 #endif
 
+#ifndef SOCKLEN_T
+#define SOCKLEN_T unsigned int
+#endif
+#ifndef SOCKET
+#define SOCKET int
+#endif
 
 #ifdef STANDALONE
 #define DEBUG_HTTP
@@ -358,6 +372,7 @@ xmlNanoHTTPScanProxy(const char *URL) {
 static xmlNanoHTTPCtxtPtr
 xmlNanoHTTPNewCtxt(const char *URL) {
     xmlNanoHTTPCtxtPtr ret;
+    xmlChar *escaped;
 
     ret = (xmlNanoHTTPCtxtPtr) xmlMalloc(sizeof(xmlNanoHTTPCtxt));
     if (ret == NULL) return(NULL);
@@ -368,7 +383,13 @@ xmlNanoHTTPNewCtxt(const char *URL) {
     ret->fd = -1;
     ret->ContentLength = -1;
 
-    xmlNanoHTTPScanURL(ret, URL);
+    escaped = xmlURIEscapeStr(BAD_CAST URL, BAD_CAST"@/:=?;#%&");
+    if (escaped != NULL) {
+	xmlNanoHTTPScanURL(ret, (const char *) escaped);
+	xmlFree(escaped);
+    } else {
+	xmlNanoHTTPScanURL(ret, URL);
+    }
 
     return(ret);
 }
@@ -840,83 +861,96 @@ xmlNanoHTTPConnectHost(const char *host, int port)
     struct sockaddr *addr;
     struct in_addr ia;
     struct sockaddr_in sockin;
+
 #ifdef SUPPORT_IP6
     struct in6_addr ia6;
     struct sockaddr_in6 sockin6;
 #endif
     int i;
     int s;
-    
+
 #if defined(SUPPORT_IP6) && defined(RES_USE_INET6)
     if (!(_res.options & RES_INIT))
-	res_init();
+        res_init();
     _res.options |= RES_USE_INET6;
 #endif
-    h=gethostbyname(host);
-    if (h==NULL)
-    {
-        const char *	h_err_txt = "";
-	switch ( h_errno )
-	{
-	    case HOST_NOT_FOUND:
-	        h_err_txt = "Authoritive host not found";
-		break;
-	    
-	    case TRY_AGAIN:
-		h_err_txt =
-			"Non-authoritive host not found or server failure.";
-		break;
+    h = gethostbyname(host);
+    if (h == NULL) {
 
-	    case NO_RECOVERY:
-		h_err_txt =
-		    "Non-recoverable errors:  FORMERR, REFUSED, or NOTIMP.";
-		break;
+/*
+ * Okay, I got fed up by the non-portability of this error message
+ * extraction code. it work on Linux, if it work on your platform
+ * and one want to enable it, send me the defined(foobar) needed
+ */
+#if defined(HAVE_NETDB_H) && defined(HOST_NOT_FOUND) && defined(linux)
+        const char *h_err_txt = "";
 
-	    case NO_ADDRESS:
-		h_err_txt = "Valid name, no data record of requested type.";
-		break;
+        switch (h_errno) {
+            case HOST_NOT_FOUND:
+                h_err_txt = "Authoritive host not found";
+                break;
 
-	    default:
-	        h_err_txt = "No error text defined.";
-	        break;
-	}
-	xmlGenericError( xmlGenericErrorContext,
-			"xmlNanoHTTPConnectHost:  %s '%s' - %s",
-			"Failed to resolve host", host, h_err_txt );
-	return(-1);
-    }
-    
-    for(i=0; h->h_addr_list[i]; i++)
-    {
-	if (h->h_addrtype == AF_INET) {
-	    /* A records (IPv4) */
-	    memcpy(&ia, h->h_addr_list[i], h->h_length);
-	    sockin.sin_family = h->h_addrtype;
-	    sockin.sin_addr   = ia;
-	    sockin.sin_port   = htons(port);
-	    addr = (struct sockaddr *)&sockin;
-#ifdef SUPPORT_IP6
-	} else if (h->h_addrtype == AF_INET6) {
-	    /* AAAA records (IPv6) */
-	    memcpy(&ia6, h->h_addr_list[i], h->h_length);
-	    sockin6.sin_family = h->h_addrtype;
-	    sockin6.sin_addr   = ia6;
-	    sockin6.sin_port   = htons(port);
-	    addr = (struct sockaddr *)&sockin6;
+            case TRY_AGAIN:
+                h_err_txt =
+                    "Non-authoritive host not found or server failure.";
+                break;
+
+            case NO_RECOVERY:
+                h_err_txt =
+                    "Non-recoverable errors:  FORMERR, REFUSED, or NOTIMP.";
+                break;
+
+            case NO_ADDRESS:
+                h_err_txt =
+                    "Valid name, no data record of requested type.";
+                break;
+
+            default:
+                h_err_txt = "No error text defined.";
+                break;
+        }
+        xmlGenericError(xmlGenericErrorContext,
+                        "xmlNanoHTTPConnectHost:  %s '%s' - %s",
+                        "Failed to resolve host", host, h_err_txt);
+#else
+        xmlGenericError(xmlGenericErrorContext,
+                        "xmlNanoHTTPConnectHost:  %s '%s'",
+                        "Failed to resolve host", host);
 #endif
-	} else
-	    break; /* for */
-	
-	s = xmlNanoHTTPConnectAttempt(addr);
-	if (s != -1)
-	    return(s);
+        return (-1);
+    }
+
+    for (i = 0; h->h_addr_list[i]; i++) {
+        if (h->h_addrtype == AF_INET) {
+            /* A records (IPv4) */
+            memcpy(&ia, h->h_addr_list[i], h->h_length);
+            sockin.sin_family = h->h_addrtype;
+            sockin.sin_addr = ia;
+            sockin.sin_port = htons(port);
+            addr = (struct sockaddr *) &sockin;
+#ifdef SUPPORT_IP6
+        } else if (h->h_addrtype == AF_INET6) {
+            /* AAAA records (IPv6) */
+            memcpy(&ia6, h->h_addr_list[i], h->h_length);
+            sockin6.sin_family = h->h_addrtype;
+            sockin6.sin_addr = ia6;
+            sockin6.sin_port = htons(port);
+            addr = (struct sockaddr *) &sockin6;
+#endif
+        } else
+            break;              /* for */
+
+        s = xmlNanoHTTPConnectAttempt(addr);
+        if (s != -1)
+            return (s);
     }
 
 #ifdef DEBUG_HTTP
     xmlGenericError(xmlGenericErrorContext,
-	    "xmlNanoHTTPConnectHost:  unable to connect to '%s'.\n", host);
+                    "xmlNanoHTTPConnectHost:  unable to connect to '%s'.\n",
+                    host);
 #endif
-    return(-1);
+    return (-1);
 }
 
 
@@ -1111,28 +1145,30 @@ retry:
 
     if (proxy) {
 	if (ctxt->port != 80) {
-	    p += sprintf( p, "%s http://%s:%d%s", method, ctxt->hostname,
+	    p += snprintf( p, blen - (p - bp), "%s http://%s:%d%s", 
+			method, ctxt->hostname,
 		 	ctxt->port, ctxt->path );
 	}
-	else
-	    p += sprintf( p, "%s http://%s%s", method,
+	else 
+	    p += snprintf( p, blen - (p - bp), "%s http://%s%s", method,
 	    		ctxt->hostname, ctxt->path);
     }
     else
-	p += sprintf( p, "%s %s", method, ctxt->path);
+	p += snprintf( p, blen - (p - bp), "%s %s", method, ctxt->path);
 
-    p += sprintf(p, " HTTP/1.0\r\nHost: %s\r\n", ctxt->hostname);
+    p += snprintf( p, blen - (p - bp), " HTTP/1.0\r\nHost: %s\r\n", 
+		    ctxt->hostname);
 
     if (contentType != NULL && *contentType) 
-	p += sprintf(p, "Content-Type: %s\r\n", *contentType);
+	p += snprintf(p, blen - (p - bp), "Content-Type: %s\r\n", *contentType);
 
     if (headers != NULL)
-	p += sprintf( p, "%s", headers );
+	p += snprintf( p, blen - (p - bp), "%s", headers );
 
     if (input != NULL)
-	sprintf(p, "Content-Length: %d\r\n\r\n", ilen );
+	snprintf(p, blen - (p - bp), "Content-Length: %d\r\n\r\n", ilen );
     else
-	strcpy(p, "\r\n");
+	snprintf(p, blen - (p - bp), "\r\n");
 
 #ifdef DEBUG_HTTP
     xmlGenericError(xmlGenericErrorContext,
@@ -1383,8 +1419,10 @@ xmlNanoHTTPAuthHeader(void *ctx) {
 }
 
 /**
- * xmlNanoHTTPContentLength
+ * xmlNanoHTTPContentLength:
  * @ctx:  the HTTP context
+ *
+ * Provides the specified content length from the HTTP header.
  *
  * Return the specified content length from the HTTP header.  Note that
  * a value of -1 indicates that the content length element was not included in
@@ -1398,10 +1436,12 @@ xmlNanoHTTPContentLength( void * ctx ) {
 }
 
 /**
- * xmlNanoHTTPFetchContent
+ * xmlNanoHTTPFetchContent:
  * @ctx:  the HTTP context
  * @ptr:  pointer to set to the content buffer.
  * @len:  integer pointer to hold the length of the content
+ *
+ * Check if all the content was read
  *
  * Returns 0 if all the content was read and available, returns
  * -1 if received content length was less than specified or an error 

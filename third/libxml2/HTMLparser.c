@@ -6,6 +6,7 @@
  * daniel@veillard.com
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 #ifdef LIBXML_HTML_ENABLED
 
@@ -61,42 +62,59 @@ static void htmlParseComment(htmlParserCtxtPtr ctxt);
  *									*
  ************************************************************************/
 
-/*
- * Generic function for accessing stacks in the Parser Context
+/**
+ * htmlnamePush:
+ * @ctxt:  an HTML parser context
+ * @value:  the element name
+ *
+ * Pushes a new element name on top of the name stack
+ *
+ * Returns 0 in case of error, the index in the stack otherwise
  */
+static int
+htmlnamePush(htmlParserCtxtPtr ctxt, xmlChar * value)
+{
+    if (ctxt->nameNr >= ctxt->nameMax) {
+        ctxt->nameMax *= 2;
+        ctxt->nameTab =
+            (xmlChar * *)xmlRealloc(ctxt->nameTab,
+                                    ctxt->nameMax *
+                                    sizeof(ctxt->nameTab[0]));
+        if (ctxt->nameTab == NULL) {
+            xmlGenericError(xmlGenericErrorContext, "realloc failed !\n");
+            return (0);
+        }
+    }
+    ctxt->nameTab[ctxt->nameNr] = value;
+    ctxt->name = value;
+    return (ctxt->nameNr++);
+}
+/**
+ * htmlnamePop:
+ * @ctxt: an HTML parser context
+ *
+ * Pops the top element name from the name stack
+ *
+ * Returns the name just removed
+ */
+static xmlChar *
+htmlnamePop(htmlParserCtxtPtr ctxt)
+{
+    xmlChar *ret;
 
-#define PUSH_AND_POP(scope, type, name)					\
-scope int html##name##Push(htmlParserCtxtPtr ctxt, type value) {	\
-    if (ctxt->name##Nr >= ctxt->name##Max) {				\
-	ctxt->name##Max *= 2;						\
-        ctxt->name##Tab = (type *) xmlRealloc(ctxt->name##Tab,		\
-	             ctxt->name##Max * sizeof(ctxt->name##Tab[0]));	\
-        if (ctxt->name##Tab == NULL) {					\
-	    xmlGenericError(xmlGenericErrorContext,			\
-		    		"realloc failed !\n");			\
-	    return(0);							\
-	}								\
-    }									\
-    ctxt->name##Tab[ctxt->name##Nr] = value;				\
-    ctxt->name = value;							\
-    return(ctxt->name##Nr++);						\
-}									\
-scope type html##name##Pop(htmlParserCtxtPtr ctxt) {			\
-    type ret;								\
-    if (ctxt->name##Nr < 0) return(0);					\
-    ctxt->name##Nr--;							\
-    if (ctxt->name##Nr < 0) return(0);					\
-    if (ctxt->name##Nr > 0)						\
-	ctxt->name = ctxt->name##Tab[ctxt->name##Nr - 1];		\
-    else								\
-        ctxt->name = NULL;						\
-    ret = ctxt->name##Tab[ctxt->name##Nr];				\
-    ctxt->name##Tab[ctxt->name##Nr] = 0;				\
-    return(ret);							\
-}									\
-
-/* PUSH_AND_POP(static, xmlNodePtr, node) */
-PUSH_AND_POP(static, xmlChar*, name)
+    if (ctxt->nameNr <= 0)
+        return (0);
+    ctxt->nameNr--;
+    if (ctxt->nameNr < 0)
+        return (0);
+    if (ctxt->nameNr > 0)
+        ctxt->name = ctxt->nameTab[ctxt->nameNr - 1];
+    else
+        ctxt->name = NULL;
+    ret = ctxt->nameTab[ctxt->nameNr];
+    ctxt->nameTab[ctxt->nameNr] = 0;
+    return (ret);
+}
 
 /*
  * Macros for accessing the content. Those should be used only by the parser,
@@ -258,7 +276,7 @@ htmlCurrentChar(xmlParserCtxtPtr ctxt, int *len) {
 		    ctxt->sax->error(ctxt->userData, 
 				     "Char 0x%X out of allowed range\n", val);
 		ctxt->wellFormed = 0;
-		ctxt->disableSAX = 1;
+		if (ctxt->recovery == 0) ctxt->disableSAX = 1;
 	    }    
 	    return(val);
 	} else {
@@ -420,7 +438,7 @@ html40ElementTable[] = {
 { "ol",		0, 0, 0, 0, 0, 0, 0, "ordered list " },
 { "optgroup",	0, 0, 0, 0, 0, 0, 0, "option group " },
 { "option",	0, 1, 0, 0, 0, 0, 0, "selectable choice " },
-{ "p",		0, 1, 1, 0, 0, 0, 0, "paragraph " },
+{ "p",		0, 1, 0, 0, 0, 0, 0, "paragraph " },
 { "param",	0, 2, 2, 1, 0, 0, 0, "named property value " },
 { "pre",	0, 0, 0, 0, 0, 0, 0, "preformatted text " },
 { "q",		0, 0, 0, 0, 0, 0, 1, "short inline quotation " },
@@ -1324,9 +1342,9 @@ static const htmlEntityDesc  html40EntitiesTable[] = {
  */
 #define growBuffer(buffer) {						\
     buffer##_size *= 2;							\
-    buffer = (xmlChar *) xmlRealloc(buffer, buffer##_size * sizeof(xmlChar));	\
+    buffer = (xmlChar *) xmlRealloc(buffer, buffer##_size * sizeof(xmlChar)); \
     if (buffer == NULL) {						\
-	perror("realloc failed");					\
+	xmlGenericError(xmlGenericErrorContext, "realloc failed\n");	\
 	return(NULL);							\
     }									\
 }
@@ -1571,7 +1589,7 @@ htmlEncodeEntities(unsigned char* out, int *outlen,
 	     */
 	    ent = htmlEntityValueLookup(c);
 	    if (ent == NULL) {
-		sprintf(nbuf, "#%u", c);
+		snprintf(nbuf, sizeof(nbuf), "#%u", c);
 		cp = nbuf;
 	    }
 	    else
@@ -1616,79 +1634,6 @@ htmlDecodeEntities(htmlParserCtxtPtr ctxt ATTRIBUTE_UNUSED, int len ATTRIBUTE_UN
 	deprecated = 1;
     }
     return(NULL);
-#if 0
-    xmlChar *name = NULL;
-    xmlChar *buffer = NULL;
-    unsigned int buffer_size = 0;
-    unsigned int nbchars = 0;
-    htmlEntityDescPtr ent;
-    unsigned int max = (unsigned int) len;
-    int c,l;
-
-    if (ctxt->depth > 40) {
-	ctxt->errNo = XML_ERR_ENTITY_LOOP;
-	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
-	    ctxt->sax->error(ctxt->userData,
-		"Detected entity reference loop\n");
-	ctxt->wellFormed = 0;
-	ctxt->disableSAX = 1;
-	return(NULL);
-    }
-
-    /*
-     * allocate a translation buffer.
-     */
-    buffer_size = HTML_PARSER_BIG_BUFFER_SIZE;
-    buffer = (xmlChar *) xmlMalloc(buffer_size * sizeof(xmlChar));
-    if (buffer == NULL) {
-	perror("xmlDecodeEntities: malloc failed");
-	return(NULL);
-    }
-
-    /*
-     * Ok loop until we reach one of the ending char or a size limit.
-     */
-    c = CUR_CHAR(l);
-    while ((nbchars < max) && (c != end) &&
-           (c != end2) && (c != end3)) {
-
-	if (c == 0) break;
-        if (((c == '&') && (ctxt->token != '&')) && (NXT(1) == '#')) {
-	    int val = htmlParseCharRef(ctxt);
-	    COPY_BUF(0,buffer,nbchars,val);
-	    NEXTL(l);
-	} else if ((c == '&') && (ctxt->token != '&')) {
-	    ent = htmlParseEntityRef(ctxt, &name);
-	    if (name != NULL) {
-		if (ent != NULL) {
-		    int val = ent->value;
-		    COPY_BUF(0,buffer,nbchars,val);
-		    NEXTL(l);
-		} else {
-		    const xmlChar *cur = name;
-
-		    buffer[nbchars++] = '&';
-		    if (nbchars > buffer_size - HTML_PARSER_BUFFER_SIZE) {
-			growBuffer(buffer);
-		    }
-		    while (*cur != 0) {
-			buffer[nbchars++] = *cur++;
-		    }
-		    buffer[nbchars++] = ';';
-		}
-	    }
-	} else {
-	    COPY_BUF(l,buffer,nbchars,c);
-	    NEXTL(l);
-	    if (nbchars > buffer_size - HTML_PARSER_BUFFER_SIZE) {
-	      growBuffer(buffer);
-	    }
-	}
-	c = CUR_CHAR(l);
-    }
-    buffer[nbchars++] = 0;
-    return(buffer);
-#endif
 }
 
 /************************************************************************
@@ -1738,6 +1683,20 @@ htmlNewInputStream(htmlParserCtxtPtr ctxt) {
  *		Commodity functions, cleanup needed ?			*
  *									*
  ************************************************************************/
+/*
+ * all tags allowing pc data from the html 4.01 loose dtd 
+ * NOTE: it might be more apropriate to integrate this information
+ * into the html40ElementTable array but I don't want to risk any
+ * binary incomptibility
+ */
+static const char *allowPCData[] = {
+    "a", "abbr", "acronym", "address", "applet", "b", "bdo", "big",
+    "blockquote", "body", "button", "caption", "center", "cite", "code",
+    "dd", "del", "dfn", "div", "dt", "em", "font", "form", "h1", "h2",
+    "h3", "h4", "h5", "h6", "i", "iframe", "ins", "kbd", "label", "legend",
+    "li", "noframes", "noscript", "object", "p", "pre", "q", "s", "samp",
+    "small", "span", "strike", "strong", "td", "th", "tt", "u", "var"
+};
 
 /**
  * areBlanks:
@@ -1751,11 +1710,12 @@ htmlNewInputStream(htmlParserCtxtPtr ctxt) {
  */
 
 static int areBlanks(htmlParserCtxtPtr ctxt, const xmlChar *str, int len) {
-    int i;
+    unsigned int i;
+    int j;
     xmlNodePtr lastChild;
 
-    for (i = 0;i < len;i++)
-        if (!(IS_BLANK(str[i]))) return(0);
+    for (j = 0;j < len;j++)
+        if (!(IS_BLANK(str[j]))) return(0);
 
     if (CUR == 0) return(1);
     if (CUR != '<') return(0);
@@ -1772,14 +1732,23 @@ static int areBlanks(htmlParserCtxtPtr ctxt, const xmlChar *str, int len) {
     if (lastChild == NULL) {
         if ((ctxt->node->type != XML_ELEMENT_NODE) &&
             (ctxt->node->content != NULL)) return(0);
+	/* keep ws in constructs like ...<b> </b>... 
+	   for all tags "b" allowing PCDATA */
+	for ( i = 0; i < sizeof(allowPCData)/sizeof(allowPCData[0]); i++ ) {
+	    if ( xmlStrEqual(ctxt->name, BAD_CAST allowPCData[i]) ) {
+		return(0);
+	    }
+	}
     } else if (xmlNodeIsText(lastChild)) {
         return(0);
-    } else if (xmlStrEqual(lastChild->name, BAD_CAST"b")) {
-        return(0);
-    } else if (xmlStrEqual(lastChild->name, BAD_CAST"bold")) {
-        return(0);
-    } else if (xmlStrEqual(lastChild->name, BAD_CAST"em")) {
-        return(0);
+    } else {
+	/* keep ws in constructs like <p><b>xy</b> <i>z</i><p> 
+	   for all tags "p" allowing PCDATA */
+	for ( i = 0; i < sizeof(allowPCData)/sizeof(allowPCData[0]); i++ ) {
+	    if ( xmlStrEqual(lastChild->name, BAD_CAST allowPCData[i]) ) {
+		return(0);
+	    }
+	}
     }
     return(1);
 }
@@ -1964,7 +1933,8 @@ htmlParseHTMLAttribute(htmlParserCtxtPtr ctxt, const xmlChar stop) {
     buffer_size = HTML_PARSER_BUFFER_SIZE;
     buffer = (xmlChar *) xmlMalloc(buffer_size * sizeof(xmlChar));
     if (buffer == NULL) {
-	perror("htmlParseHTMLAttribute: malloc failed");
+	xmlGenericError(xmlGenericErrorContext,
+		        "htmlParseHTMLAttribute: malloc failed\n");
 	return(NULL);
     }
     out = buffer;
@@ -1992,6 +1962,13 @@ htmlParseHTMLAttribute(htmlParserCtxtPtr ctxt, const xmlChar stop) {
 	 
 		for ( ; bits >= 0; bits-= 6) {
 		    *out++  = ((c >> bits) & 0x3F) | 0x80;
+		}
+		
+		if (out - buffer > buffer_size - 100) {
+			int indx = out - buffer;
+
+			growBuffer(buffer);
+			out = &buffer[indx];
 		}
 	    } else {
 		ent = htmlParseEntityRef(ctxt, &name);
@@ -2646,7 +2623,7 @@ htmlParseCharRef(htmlParserCtxtPtr ctxt) {
 
 
 /**
- * htmlParseDocTypeDecl :
+ * htmlParseDocTypeDecl:
  * @ctxt:  an HTML parser context
  *
  * parse a DOCTYPE declaration
@@ -3247,7 +3224,7 @@ htmlParseReference(htmlParserCtxtPtr ctxt) {
 	        ctxt->sax->characters(ctxt->userData, BAD_CAST "&", 1);
 	    return;
 	}
-	if ((ent == NULL) || (ent->value <= 0)) {
+	if ((ent == NULL) || !(ent->value > 0)) {
 	    htmlCheckParagraph(ctxt);
 	    if ((ctxt->sax != NULL) && (ctxt->sax->characters != NULL)) {
 		ctxt->sax->characters(ctxt->userData, BAD_CAST "&", 1);
@@ -3567,7 +3544,7 @@ htmlParseElement(htmlParserCtxtPtr ctxt) {
 }
 
 /**
- * htmlParseDocument :
+ * htmlParseDocument:
  * @ctxt:  an HTML parser context
  * 
  * parse an HTML document (and build a tree if using the standard SAX
@@ -3577,7 +3554,7 @@ htmlParseElement(htmlParserCtxtPtr ctxt) {
  *                as a result of the parsing.
  */
 
-static int
+int
 htmlParseDocument(htmlParserCtxtPtr ctxt) {
     xmlDtdPtr dtd;
 
@@ -3789,7 +3766,74 @@ htmlFreeParserCtxt(htmlParserCtxtPtr ctxt)
 }
 
 /**
- * htmlCreateDocParserCtxt :
+ * htmlNewParserCtxt:
+ *
+ * Allocate and initialize a new parser context.
+ *
+ * Returns the xmlParserCtxtPtr or NULL
+ */
+
+static htmlParserCtxtPtr
+htmlNewParserCtxt(void)
+{
+    xmlParserCtxtPtr ctxt;
+
+    ctxt = (xmlParserCtxtPtr) xmlMalloc(sizeof(xmlParserCtxt));
+    if (ctxt == NULL) {
+        xmlGenericError(xmlGenericErrorContext,
+		"xmlNewParserCtxt : cannot allocate context\n");
+	return(NULL);
+    }
+    memset(ctxt, 0, sizeof(xmlParserCtxt));
+    htmlInitParserCtxt(ctxt);
+    return(ctxt);
+}
+
+/**
+ * htmlCreateMemoryParserCtxt:
+ * @buffer:  a pointer to a char array
+ * @size:  the size of the array
+ *
+ * Create a parser context for an HTML in-memory document.
+ *
+ * Returns the new parser context or NULL
+ */
+static htmlParserCtxtPtr
+htmlCreateMemoryParserCtxt(const char *buffer, int size) {
+    xmlParserCtxtPtr ctxt;
+    xmlParserInputPtr input;
+    xmlParserInputBufferPtr buf;
+
+    if (buffer == NULL)
+	return(NULL);
+    if (size <= 0)
+	return(NULL);
+
+    ctxt = htmlNewParserCtxt();
+    if (ctxt == NULL)
+	return(NULL);
+
+    buf = xmlParserInputBufferCreateMem(buffer, size, XML_CHAR_ENCODING_NONE);
+    if (buf == NULL) return(NULL);
+
+    input = xmlNewInputStream(ctxt);
+    if (input == NULL) {
+	xmlFreeParserCtxt(ctxt);
+	return(NULL);
+    }
+
+    input->filename = NULL;
+    input->buf = buf;
+    input->base = input->buf->buffer->content;
+    input->cur = input->buf->buffer->content;
+    input->end = &input->buf->buffer->content[input->buf->buffer->use];
+
+    inputPush(ctxt, input);
+    return(ctxt);
+}
+
+/**
+ * htmlCreateDocParserCtxt:
  * @cur:  a pointer to an array of xmlChar
  * @encoding:  a free form C string describing the HTML document encoding, or NULL
  *
@@ -3801,31 +3845,12 @@ htmlFreeParserCtxt(htmlParserCtxtPtr ctxt)
  */
 static htmlParserCtxtPtr
 htmlCreateDocParserCtxt(xmlChar *cur, const char *encoding ATTRIBUTE_UNUSED) {
-    htmlParserCtxtPtr ctxt;
-    htmlParserInputPtr input;
-    /* htmlCharEncoding enc; */
+    int len;
 
-    ctxt = (htmlParserCtxtPtr) xmlMalloc(sizeof(htmlParserCtxt));
-    if (ctxt == NULL) {
-        perror("malloc");
+    if (cur == NULL)
 	return(NULL);
-    }
-    htmlInitParserCtxt(ctxt);
-    input = (htmlParserInputPtr) xmlMalloc(sizeof(htmlParserInput));
-    if (input == NULL) {
-        perror("malloc");
-	xmlFree(ctxt);
-	return(NULL);
-    }
-    memset(input, 0, sizeof(htmlParserInput));
-
-    input->line = 1;
-    input->col = 1;
-    input->base = cur;
-    input->cur = cur;
-
-    inputPush(ctxt, input);
-    return(ctxt);
+    len = xmlStrlen(cur);
+    return(htmlCreateMemoryParserCtxt((char *)cur, len));
 }
 
 /************************************************************************
@@ -4380,7 +4405,7 @@ htmlParseTryOrFinish(htmlParserCtxtPtr ctxt, int terminate) {
 			}
 			ctxt->token = 0;
 			ctxt->checkIndex = 0;
-			NEXT;
+			in->cur++;
 			break;
 		    }
 		}
@@ -4466,7 +4491,7 @@ htmlParseTryOrFinish(htmlParserCtxtPtr ctxt, int terminate) {
 		    } else {
 			/* TODO Avoid the extra copy, handle directly !!!!!! */
 			/*
-			 * Goal of the following test is :
+			 * Goal of the following test is:
 			 *  - minimize calls to the SAX 'character' callback
 			 *    when they are mergeable
 			 */
@@ -4605,6 +4630,17 @@ htmlParseTryOrFinish(htmlParserCtxtPtr ctxt, int terminate) {
 			"HPP: entering CONTENT\n");
 #endif
 		break;
+	    case XML_PARSER_PUBLIC_LITERAL:
+		xmlGenericError(xmlGenericErrorContext,
+			"HPP: internal error, state == XML_PARSER_LITERAL\n");
+		ctxt->instate = XML_PARSER_CONTENT;
+		ctxt->checkIndex = 0;
+#ifdef DEBUG_PUSH
+		xmlGenericError(xmlGenericErrorContext,
+			"HPP: entering CONTENT\n");
+#endif
+		break;
+
 	}
     }
 done:    
@@ -4691,7 +4727,7 @@ htmlParseChunk(htmlParserCtxtPtr ctxt, const char *chunk, int size,
  ************************************************************************/
 
 /**
- * htmlCreatePushParserCtxt :
+ * htmlCreatePushParserCtxt:
  * @sax:  a SAX handler
  * @user_data:  The user data returned on SAX callbacks
  * @chunk:  a pointer to an array of chars
@@ -4773,7 +4809,7 @@ htmlCreatePushParserCtxt(htmlSAXHandlerPtr sax, void *user_data,
 }
 
 /**
- * htmlSAXParseDoc :
+ * htmlSAXParseDoc:
  * @cur:  a pointer to an array of xmlChar
  * @encoding:  a free form C string describing the HTML document encoding, or NULL
  * @sax:  the SAX handler block
@@ -4816,7 +4852,7 @@ htmlSAXParseDoc(xmlChar *cur, const char *encoding, htmlSAXHandlerPtr sax, void 
 }
 
 /**
- * htmlParseDoc :
+ * htmlParseDoc:
  * @cur:  a pointer to an array of xmlChar
  * @encoding:  a free form C string describing the HTML document encoding, or NULL
  *
@@ -4832,7 +4868,7 @@ htmlParseDoc(xmlChar *cur, const char *encoding) {
 
 
 /**
- * htmlCreateFileParserCtxt :
+ * htmlCreateFileParserCtxt:
  * @filename:  the filename
  * @encoding:  a free form C string describing the HTML document encoding, or NULL
  *
@@ -4856,20 +4892,21 @@ htmlCreateFileParserCtxt(const char *filename, const char *encoding)
 
     ctxt = (htmlParserCtxtPtr) xmlMalloc(sizeof(htmlParserCtxt));
     if (ctxt == NULL) {
-        perror("malloc");
+        xmlGenericError(xmlGenericErrorContext, "malloc failed\n");
 	return(NULL);
     }
     memset(ctxt, 0, sizeof(htmlParserCtxt));
     htmlInitParserCtxt(ctxt);
     inputStream = (htmlParserInputPtr) xmlMalloc(sizeof(htmlParserInput));
     if (inputStream == NULL) {
-        perror("malloc");
+        xmlGenericError(xmlGenericErrorContext, "malloc failed\n");
 	xmlFree(ctxt);
 	return(NULL);
     }
     memset(inputStream, 0, sizeof(htmlParserInput));
 
-    inputStream->filename = xmlMemStrdup(filename);
+    inputStream->filename = (char *)
+	xmlNormalizeWindowsPath((xmlChar *)filename);
     inputStream->line = 1;
     inputStream->col = 1;
     inputStream->buf = buf;
@@ -4896,7 +4933,7 @@ htmlCreateFileParserCtxt(const char *filename, const char *encoding)
 }
 
 /**
- * htmlSAXParseFile :
+ * htmlSAXParseFile:
  * @filename:  the filename
  * @encoding:  a free form C string describing the HTML document encoding, or NULL
  * @sax:  the SAX handler block
@@ -4941,7 +4978,7 @@ htmlSAXParseFile(const char *filename, const char *encoding, htmlSAXHandlerPtr s
 }
 
 /**
- * htmlParseFile :
+ * htmlParseFile:
  * @filename:  the filename
  * @encoding:  a free form C string describing the HTML document encoding, or NULL
  *
