@@ -13,11 +13,12 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: larv__compose_packet.c,v 1.2 1998-09-14 03:36:50 ghudson Exp $";
+static const char rcsid[] = "$Id: larv__compose_packet.c,v 1.3 1999-10-23 19:29:04 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -52,7 +53,7 @@ int larv__compose_packet(char *buf)
 	    continue;
 	  arch = line + 8;
 	  p = arch;
-	  while (*p && !isspace(*p) && *p != ';')
+	  while (*p && !isspace((unsigned char)*p) && *p != ';')
 	    p++;
 	  *p = 0;
 	  break;
