@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_rcvjob.c,v 1.1.1.1 1999-05-04 18:07:01 danw Exp $";
+"$Id: lpd_rcvjob.c,v 1.1.1.2 1999-05-24 18:29:33 danw Exp $";
 
 
 #include "lp.h"
@@ -346,9 +346,9 @@ int Receive_job( int *sock, char *input )
 		Link_close( sock );
 		Remove_tempfiles();
 		if( Server_queue_name_DYN ){
-			Do_queue_jobs( Server_queue_name_DYN, 0 );
+			Do_queue_jobs( Server_queue_name_DYN, 0, 0 );
 		} else {
-			Do_queue_jobs( Printer_DYN, 0 );
+			Do_queue_jobs( Printer_DYN, 0, 0 );
 		}
 	}
 	cleanup( 0 );
@@ -524,9 +524,9 @@ int Receive_block_job( int *sock, char *input )
 		Link_close( sock );
 		Remove_tempfiles();
 		if( Server_queue_name_DYN ){
-			Do_queue_jobs( Server_queue_name_DYN, 0 );
+			Do_queue_jobs( Server_queue_name_DYN, 0, 0 );
 		} else {
-			Do_queue_jobs( Printer_DYN, 0 );
+			Do_queue_jobs( Printer_DYN, 0, 0 );
 		}
 	}
 	return( error[0] != 0 );
@@ -742,7 +742,7 @@ int Do_perm_check( struct job *job, char *error, int errlen )
 	}
 	Perm_check.user = 0;
 	Perm_check.remoteuser = 0;
-	DEBUG1("Perm_check: permission '%s'", perm_str(permission) );
+	DEBUGF(DRECV1)("Perm_check: permission '%s'", perm_str(permission) );
 	return( permission );
 }
 

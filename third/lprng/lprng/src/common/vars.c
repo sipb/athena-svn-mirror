@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.1.1.2 1999-05-04 18:06:47 danw Exp $";
+"$Id: vars.c,v 1.1.1.3 1999-05-24 18:29:16 danw Exp $";
 
 
 /* force local definitions */
@@ -156,6 +156,8 @@ struct keywords Pc_var_list[] = {
 { "default_permission", STRING_K, &Default_permission_DYN,0,0,"=ACCEPT"},
    /* default printer */
 { "default_printer", STRING_K, &Default_printer_DYN,0,0,"=missingprinter"},
+   /* printer for lpd to use when not in printcap */
+{ "default_printer_when_unknown", STRING_K, &Default_printer_when_unknown,0,0},
    /* default job priority */
 { "default_priority", STRING_K, &Default_priority_DYN,0,0,"=A"},
    /* default remote host */

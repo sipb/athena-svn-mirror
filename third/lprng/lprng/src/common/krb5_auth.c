@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.1.1.2 1999-05-04 18:06:49 danw Exp $";
+"$Id: krb5_auth.c,v 1.1.1.3 1999-05-24 18:29:20 danw Exp $";
 
 
 #include "lp.h"
@@ -820,7 +820,7 @@ int remote_principal_krb5( char *service, char *host, char *err, int errlen )
 	int fd, char *buf, int len,
 	char *err, int errlen )
 {
-	unsigned char len_buf[4];
+	char len_buf[4];
 	int cc;
 
 	if( len <= 0 ) return( len );

@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: getqueue.h,v 1.1.1.2 1999-05-04 18:07:13 danw Exp $
+ * $Id: getqueue.h,v 1.1.1.3 1999-05-24 18:29:09 danw Exp $
  ***************************************************************************/
 
 
@@ -58,6 +58,7 @@ EXTERN const char * HOLD_CLASS		DEFINE( = "hold_class" );
 EXTERN const char * HOLD_TIME		DEFINE( = "hold_time" );
 EXTERN const char * HOST			DEFINE( = "host" );
 EXTERN const char * IDENTIFIER		DEFINE( = "identifier" );
+EXTERN const char * IDLE			DEFINE( = "idle" );
 EXTERN const char * INPUT			DEFINE( = "input" );
 EXTERN const char * JOBNAME			DEFINE( = "jobname" );
 EXTERN const char * JOBSEQ			DEFINE( = "jobseq" );
@@ -97,6 +98,7 @@ EXTERN const char * QUEUENAME		DEFINE( = "queuename" );
 EXTERN const char * REDIRECT		DEFINE( = "redirect" );
 EXTERN const char * REMOVE_TIME		DEFINE( = "remove_time" );
 EXTERN const char * SEQUENCE		DEFINE( = "sequence" );
+EXTERN const char * SD				DEFINE( = "sd" );
 EXTERN const char * SERVER			DEFINE( = "server" );
 EXTERN const char * SERVER_ORDER	DEFINE( = "server_order" );
 EXTERN const char * SIZE			DEFINE( = "size" );

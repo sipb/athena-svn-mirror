@@ -93,7 +93,7 @@ function pcl_banner(){
 	# line is broken up at word:
 	line = $0;
 	# print "BANNER" $0 >/dev/stderr
-	/* skip blank or bad formatted lines */
+	# skip blank or bad formatted lines
 	firstentry = 0;
 	while( line != "" ){
 		#printf "Line \"%s\"\n",line

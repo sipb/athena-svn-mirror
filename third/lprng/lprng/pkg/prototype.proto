@@ -24,8 +24,8 @@ d none /etc/rc1.d ? ? ?
 s none /etc/rc1.d/K20LPRng=../init.d/LPRng
 d none /etc/rc2.d ? ? ?
 s none /etc/rc2.d/S20LPRng=../init.d/LPRng
-e none /etc/lpd.conf=../lpd.conf 775 root sys
-e none /etc/lpd.perms=../lpd.perms 775 root sys
+e none /etc/lpd.conf.sample=../lpd.conf 775 root sys
+e none /etc/lpd.perms.sample=../lpd.perms 775 root sys
 #d none /opt/LPRng 2775 root bin
 d none /usr/local 2775 root bin
 #d none /opt/LPRng/bin 2775 root bin
@@ -50,6 +50,10 @@ f none /usr/local/bin/lpbanner=../src/lpbanner 0755 root bin
 f none /usr/local/bin/checkpc=../src/checkpc 0755 root bin
 #f none /opt/LPRng/bin/lpraccnt=../src/lpraccnt 0755 root bin
 f none /usr/local/bin/lpraccnt=../src/lpraccnt 0755 root bin
+#f none /opt/LPRng/bin/pclbanner=../src/pclbanner 0755 root bin
+f none /usr/local/bin/pclbanner=../src/pclbanner 0755 root bin
+#f none /opt/LPRng/bin/psbanner=../src/psbanner 0755 root bin
+f none /usr/local/bin/psbanner=../src/psbanner 0755 root bin
 #s none /opt/LPRng/bin/lp=lpr 0755 root bin
 s none /usr/local/bin/lp=lpr 0755 root bin
 #s none /opt/LPRng/bin/cancel=lprm 0755 root bin

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getprinter.c,v 1.1.1.2 1999-05-04 18:06:51 danw Exp $";
+"$Id: getprinter.c,v 1.1.1.3 1999-05-24 18:29:19 danw Exp $";
 
 
 #include "lp.h"
@@ -126,8 +126,12 @@ void Fix_Rm_Rp_info(void)
 	} else {
 		/* we search for the values in the printcap */
 		Set_DYN(&Queue_name_DYN, Printer_DYN );
-		if((s = Find_pc_entry(Printer_DYN, &PC_alias_line_list,
-			&PC_entry_line_list )) ){
+		if( (s = Find_pc_entry(Printer_DYN, &PC_alias_line_list,
+			&PC_entry_line_list ))
+			||
+			(Is_server && Default_printer_when_unknown
+				&& (s = Find_pc_entry(Default_printer_when_unknown,
+					&PC_alias_line_list, &PC_entry_line_list )) ) ){
 
 			Set_DYN(&Printer_DYN,s);
 
@@ -138,8 +142,13 @@ void Fix_Rm_Rp_info(void)
 				&PC_entry_line_list );
 			Set_var_list( Pc_var_list, &PC_entry_line_list);
 		}
-
-		if( Lp_device_DYN && (s = strchr( Lp_device_DYN, '@' )) ){
+		if( !Is_server && Force_localhost_DYN ){
+			/* we force a connection to the localhost using
+			 * the print queue primary name
+			 */
+			Set_DYN( &RemoteHost_DYN, LOCALHOST );
+			Set_DYN( &RemotePrinter_DYN, Printer_DYN );
+		} else if( Lp_device_DYN && (s = strchr( Lp_device_DYN, '@' )) ){
 			Set_DYN(&RemotePrinter_DYN, Lp_device_DYN );
 			s = strchr( RemotePrinter_DYN, '@');
 			if( s ) *s++ = 0;
@@ -165,18 +174,7 @@ void Fix_Rm_Rp_info(void)
 				Set_DYN( &RemotePrinter_DYN, Printer_DYN );
 			}
 		}
-		if( !Is_server && Force_localhost_DYN ){
-			Set_DYN( &RemoteHost_DYN, LOCALHOST );
-		}
 	}
-
-	/* do not lowercase names
-	lowercase( Printer_DYN );
-	lowercase( Queue_name_DYN );
-	lowercase( RemoteHost_DYN );
-	lowercase( RemotePrinter_DYN );
-	lowercase( Bounce_queue_dest_DYN );
-	*/
 
 	Expand_vars();
 	DEBUG1("Fix_Rm_Rp_info: Printer '%s', Queue '%s', Lp '%s', Rp '%s', Rh '%s'",

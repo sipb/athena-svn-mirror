@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_jobs.c,v 1.1.1.1 1999-05-04 18:06:49 danw Exp $";
+"$Id: lpd_jobs.c,v 1.1.1.2 1999-05-24 18:29:24 danw Exp $";
 
 #include "lp.h"
 #include "lpd.h"
@@ -189,19 +189,20 @@ int cmp_server( const void *left, const void *right )
 
 int Get_subserver_pc( char *printer, struct line_list *l, int done_time )
 {
-	char *pr, *sd;
+	char *pr, *sd, *s;
 	struct stat statb;
 	struct line_list entry, alias;
-	int printable, held, move, status = 0;
+	int printable, held, move, status, idle;
 
 	pr = sd = 0;
+	printable = held = move = status = idle = 0;
 	Init_line_list(&entry);
 	Init_line_list(&alias);
 
 	DEBUG1("Get_subserver_pc: '%s'", printer );
 	if( !(pr = Find_pc_entry(printer,&alias,&entry))
 		|| strcasecmp(pr,printer) ){
-		logmsg(LOG_ERR,"Get_subserver_info: lookup of '%s' resulted in '%s'",
+		logmsg(LOG_ERR,"Get_subserver_pc: lookup of '%s' resulted in '%s'",
 			printer, pr );
 		status = 1;
 		goto error;
@@ -211,10 +212,15 @@ int Get_subserver_pc( char *printer, struct line_list *l, int done_time )
 		done_time = time((void *)0);
 	}
 	Set_flag_value(l,DONE_TIME,done_time);
+	if( (s = Find_str_value(&entry,"check_idle",Value_sep))
+    	|| (s = Find_str_value(&Config_line_list,"check_idle",Value_sep)) ){
+		idle = 1;
+		DEBUG1("Get_subserver_pc: check_idle '%s'", s);
+	}
 
 	/* get Spool_dir */
-	sd = Find_str_value(&entry,"sd",Value_sep);
-	if( !sd ) sd = Find_str_value(&Config_line_list,"sd",Value_sep);
+	sd = Find_str_value(&entry,SD,Value_sep);
+	if( !sd ) sd = Find_str_value(&Config_line_list,SD,Value_sep);
 
 	/* expand the spool queue string */
 	sd = safestrdup(sd,__FILE__,__LINE__);
@@ -226,7 +232,7 @@ int Get_subserver_pc( char *printer, struct line_list *l, int done_time )
 	/* get the spool queue */
 	if( sd == 0 || stat(sd,&statb) == -1 || !S_ISDIR(statb.st_mode) ){
 		status = 1;
-		logmsg(LOG_ERR,"Get_subserver_info: no spool queue for '%s'", sd );
+		logmsg(LOG_ERR,"Get_subserver_pc: no spool queue for '%s'", sd );
 		goto error;
 	}
 	Set_str_value(l,SPOOLDIR,sd);
@@ -240,8 +246,10 @@ int Get_subserver_pc( char *printer, struct line_list *l, int done_time )
 	Set_flag_value(l,PRINTABLE,printable);
 	Set_flag_value(l,HELD,held);
 	Set_flag_value(l,MOVE,move);
+	Set_flag_value(l,IDLE,idle);
 	DEBUG1("Get_subserver_pc: printable %d, held %d, move %d",
 		printable, held, move );
+
 
  error:
 
@@ -368,7 +376,7 @@ int Copy_or_link( char *srcfile, char *destfile )
  * Do_queue_jobs: process the job queue
  ***************************************************************************/
 
-int Do_queue_jobs( char *name, int subserver )
+int Do_queue_jobs( char *name, int subserver, int idle_check )
 {
 	int master = 0;		/* this is the master */
 	int lock_fd;	/* fd for files */
@@ -378,7 +386,7 @@ int Do_queue_jobs( char *name, int subserver )
 	struct stat statb;
 	int i, j, mod, fd, pid, printable, held, move, destinations,
 		destination, use_subserver, job_to_do, working, printing_enabled,
-		all_done, fail;
+		all_done, fail, idle;
 	struct line_list servers, tinfo, *sp, *datafile;
 	plp_block_mask oblock, tblock;
 	struct job job;
@@ -398,8 +406,8 @@ int Do_queue_jobs( char *name, int subserver )
 
 	Name = "(Server)";
 	Set_DYN(&Printer_DYN,name);
-	DEBUG1("Do_queue_jobs: called with name '%s', subserver %d",
-		Printer_DYN, subserver );
+	DEBUG1("Do_queue_jobs: called with name '%s', subserver %d, idle_check %d",
+		Printer_DYN, subserver, idle_check );
 	name = Printer_DYN;
 
 	if(DEBUGL4){ int fdx; fdx = dup(0); logDebug("Do_queue_jobs: start next fd %d",fdx); close(fdx); };
@@ -454,6 +462,7 @@ int Do_queue_jobs( char *name, int subserver )
 	if(DEBUGL4){ int fdx; fdx = dup(0);
 		logDebug("Do_queue_jobs: after logfile next fd %d",fdx); close(fdx); };
 
+
 	if( Server_queue_name_DYN ){
 		if( subserver == 0 ){
 			/* you really need to start up the master queue */
@@ -465,14 +474,26 @@ int Do_queue_jobs( char *name, int subserver )
 	}
 
 	pid = getpid();
-	DEBUG1( "Do_queue_jobs: writing lockfile '%s' with pid '%d'",
-		path,pid );
+	DEBUG1( "Do_queue_jobs: writing lockfile with pid '%d'", pid );
 	Write_pid( lock_fd, pid, (char *)0 );
 
 	DEBUG1("Do_queue_jobs: lock_fd fd %d", lock_fd );
 
 	if(DEBUGL4){ int fdx; fdx = dup(0);
 		logDebug("Do_queue_jobs: after unspooler next fd %d",fdx); close(fdx); };
+
+	/* we now do our idle check */
+	idle = 0;
+	DEBUG1("Do_queue_jobs: Check_idle_DYN '%s', idle_check %d",
+		Check_idle_DYN, idle_check );
+	if( Check_idle_DYN || idle_check ){
+		idle = Do_check_idle();
+		/* exit if not idle */
+		if( idle_check || idle ){
+			Errorcode = idle;
+			cleanup(0);
+		}
+	}
 
 	/* set up the server name information */
 	Check_max(&servers,1);
@@ -501,13 +522,14 @@ int Do_queue_jobs( char *name, int subserver )
 	for( i = 1; i < servers.count; ++i ){
 		sp = (void *)servers.list[i];
 		pr = Find_str_value(sp,PRINTER,Value_sep);
+		idle = Find_flag_value(sp,IDLE,Value_sep);
 		DEBUG1("Do_queue_jobs: subserver '%s' checking for independent action", pr );
 		printable = (!(Pr_disabled(sp) || Pr_aborted(sp) )
 			&& Find_flag_value(sp,PRINTABLE,Value_sep));
 		move = Find_flag_value(sp,MOVE,Value_sep);
-		DEBUG1("Do_queue_jobs: subserver '%s', printable %d, move %d",
+		DEBUG1("Do_queue_jobs: subserver '%s', printable %d, move %d, idle %d",
 			pr, printable, move );
-		if( printable || move ){
+		if( printable || move || idle ){
 			pid = Fork_subserver( &servers, i, 0 );
 		}
 	}
@@ -664,7 +686,7 @@ int Do_queue_jobs( char *name, int subserver )
 			/* get printable status */
 			Job_printable(&job,&Spool_control,&printable,&held,&move);
 
-			if( !printable || held ){
+			if( (!printable && !move) || held ){
 				free( Sort_order.list[i] ); Sort_order.list[i] = 0;
 				continue;
 			}
@@ -815,24 +837,24 @@ int Do_queue_jobs( char *name, int subserver )
 			name = Find_str_value(sp,PRINTER,Value_sep);
 			id = Find_str_value(&job.info,IDENTIFIER,Value_sep);
 			if(!id) id = Find_str_value(&job.info,TRANSFERNAME,Value_sep);
-			DEBUG1("Service_worker: subserver '%s', spool dir '%s' for job '%s'",
+			DEBUG1("Do_queue_jobs: subserver '%s', spool dir '%s' for job '%s'",
 				name, sd, id );
 			setstatus(&job, "transferring '%s' to subserver '%s'", id, name );
 			fail = 0;
 			for( i = 0; i < job.datafiles.count; ++i ){
 				datafile = (void *)job.datafiles.list[i];
-				if(DEBUGL3)Dump_line_list("Service_worker - copying datafiles",
+				if(DEBUGL3)Dump_line_list("Do_queue_jobs - copying datafiles",
 					datafile);
 				from = Find_str_value(datafile,TRANSFERNAME,Value_sep);
 				path = Make_pathname(sd,from);
-				DEBUG3("Service_worker: sd '%s', from '%s', path '%s'",
+				DEBUG3("Do_queue_jobs: sd '%s', from '%s', path '%s'",
 					sd, from, path );
 				fail |= Copy_or_link( from, path );
 				if(path) free(path); path = 0;
 			}
 			from = Find_str_value(&job.info,TRANSFERNAME,Value_sep);
 			path = Make_pathname(sd,from);
-			DEBUG3("Service_worker: sd '%s', from '%s', path '%s'",
+			DEBUG3("Do_queue_jobs: sd '%s', from '%s', path '%s'",
 				sd, from, path );
 			fail |= Copy_or_link( from, path );
 			if(path) free(path); path = 0;
@@ -890,7 +912,7 @@ int Do_queue_jobs( char *name, int subserver )
 	Errorcode = 0;
 	if( Server_names_DYN ){
 		Free_line_list(&tinfo);
-		for( i = 0; i < servers.count; ++i ){
+		for( i = 1; i < servers.count; ++i ){
 			sp = (void *)servers.list[i];
 			s = Find_str_value(sp,PRINTER,Value_sep);
 			Add_line_list(&tinfo,s,0,0,0);
@@ -1165,6 +1187,7 @@ int Fork_subserver( struct line_list *server_info, int use_subserver,
 	pr = Find_str_value(sp,PRINTER,Value_sep);
 	Set_str_value(parms,PRINTER,pr);
 	Set_flag_value(parms,SUBSERVER,use_subserver);
+	Set_flag_value(parms,IDLE,Find_flag_value(sp,IDLE,Value_sep) );
 	if( use_subserver > 0 ){
 		Set_str_value(parms,CALL,QUEUE);
 	} else {
@@ -1718,8 +1741,6 @@ void Setup_user_reporting( struct job *job )
 
 
 
-#if 0
-
 /***************************************************************************
  * Do_check_idle()
  *  execute the idle check of the printer indicated by the
@@ -1727,27 +1748,38 @@ void Setup_user_reporting( struct job *job )
  *   check_idle=/script
  ***************************************************************************/
 
- int Do_check_idle(struct printcap_entry *pc)
+int Do_check_idle(void)
 {
-	struct job job;
-	int status;
-	
-	DEBUG1( "Do_check_idle: Check_idle_DYN '%s'", Check_idle_DYN );
+	int status, n, pid;
+	struct line_list fd;
+	plp_status_t procstatus;
 
-	memset( &job, 0, sizeof(job) );
+	Init_line_list(&fd);
+
+	DEBUG1( "Do_check_idle: Check_idle_DYN '%s'", Check_idle_DYN );
 	setstatus(0,_("checking for idle using %s"), Check_idle_DYN );
-	if( Make_filter( 'f', &job, &XF_fd_info, Check_idle_DYN,
-		0, /* no extra */
-		0,	/* RW pipe */
-		1, /* dup to fd 1 */
-		pc, /* printcap information */
-		0, 0, Logger_destination_DYN != 0, 0 ) ){
+
+	Init_line_list(&fd);
+	Check_max(&fd,10);
+
+	fd.list[fd.count++] = Cast_int_to_voidstar(0);
+	fd.list[fd.count++] = Cast_int_to_voidstar(1);
+	fd.list[fd.count++] = Cast_int_to_voidstar(2);
+	pid = Make_passthrough(Check_idle_DYN, 0, &fd, 0, 0 );
+	fd.count = 0;
+	Free_line_list(&fd);
+	while( (n = plp_waitpid(pid,&procstatus,0)) != pid );
+	DEBUG1("Do_check_idle: pid %d, status '%s'", pid,
+		Decode_status(&procstatus));
+	if( WIFSIGNALED(procstatus) ){
 		Errorcode = JABORT;
-		fatal( LOG_ERR, "Do_check_idle: failed '%s'", job.error );
+		n = WTERMSIG(status);
+		fatal(LOG_INFO,"Do_check_idle: process died with signal %d, '%s'",
+			n, Sigstr(n));
 	}
-	status = Close_filter( 0, &XF_fd_info, 0, "check idle" );
-	DEBUG1("Do_check_idle: exit status '%s'",
-		Server_status(status) );
+	status = WEXITSTATUS(procstatus);
+
+	DEBUG1("Do_check_idle: exit status '%d'", status );
 	switch( status ){
 	case JSUCC:
 	case JNOSPOOL:
@@ -1760,9 +1792,8 @@ void Setup_user_reporting( struct job *job )
 	DEBUG1("Do_check_idle: returning status '%s'",
 		Server_status(status) );
 	setstatus(0,_("idle status %s"), Server_status(status));
-	return( status );
+	return(status);
 }
-#endif
 
 void Service_worker( struct line_list *args )
 {

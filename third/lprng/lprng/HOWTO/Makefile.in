@@ -22,10 +22,11 @@ SHELL =		@SHELL@
 
 DOC=LPRng-HOWTO
 
-all: license.txt $(DOC).html $(DOC).ps purge
+all: license.txt $(DOC).html $(DOC).ps purge LPRng.html
 
-license.txt: ../LICENSE
-	cp ../LICENSE license.txt
+
+license.txt: $(SRC)/../LICENSE
+	cp $^ $@
 
 $(DOC).html: $(DOC).sgml Makefile
 	sgml2html $(DOC).sgml
@@ -43,6 +44,8 @@ $(DOC).ps: $(DOC).tex Makefile
 	- TEXINPUTS=:/usr/local/lib/sgml-tools latex \
 		'\nonstopmode\input{$(DOC).tex}'
 	dvips -q -t a4 -o $(DOC).ps $(DOC).dvi
+LPRng.html: $(SRC)/LPRng.html.orig
+	cp $^ $@
 purge:
 	rm -f *.Bex *.aux *.log *.toc
 fixman:
@@ -54,7 +57,7 @@ $(DOC).info: $(DOC).sgml
 	sgml2info $^
 
 clean:
-	rm -f *.Bex *.aux *.dvi LPRng-*.html *.log *.ps *.tex *.toc
+	rm -f *.Bex *.aux *.dvi LPRng-HOWTO*.html *.log *.ps *.tex *.toc
 
 .PHONY: all clean install ci install.zman update purge
 

@@ -491,6 +491,9 @@
 /* Define if you have the sysinfo function.  */
 #undef HAVE_SYSINFO
 
+/* Define if you have the tcdrain function.  */
+#undef HAVE_TCDRAIN
+
 /* Define if you have the tcflush function.  */
 #undef HAVE_TCFLUSH
 

@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lp.h,v 1.1.1.2 1999-05-04 18:07:03 danw Exp $
+ * $Id: lp.h,v 1.1.1.3 1999-05-24 18:29:00 danw Exp $
  ***************************************************************************/
 
 
@@ -286,6 +286,7 @@ EXTERN char* Daemon_user_DYN;
 EXTERN char* Default_format_DYN;	/* default format */
 EXTERN char* Default_permission_DYN;	/* default permission */
 EXTERN char* Default_printer_DYN;	/* default printer */
+EXTERN char* Default_printer_when_unknown; /* use this when unknown printer */
 EXTERN char* Default_priority_DYN;	/* default priority */
 EXTERN char* Default_remote_host_DYN;
 EXTERN char* Default_tmp_dir_DYN;	/* default temporary file directory */
