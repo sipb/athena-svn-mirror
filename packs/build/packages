@@ -1,4 +1,4 @@
-# $Id: packages,v 1.125 2001-03-23 20:08:27 ghudson Exp $
+# $Id: packages,v 1.126 2001-03-26 17:15:07 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -136,7 +136,7 @@ third/glib
 third/gmp			except linux
 third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm
-third/gnome-vfs			requires gnome-libs,control-center,oaf,GConf,bzip2
+third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2
 third/gtk			requires glib
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
