@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.38 1998-06-08 14:12:04 ghudson Exp $
+# $Id: update_ws.sh,v 1.38.2.1 1998-07-27 22:39:42 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -259,6 +259,20 @@ sgi)
 		echo "performing update.  Please add more memory"
 		echo "or reinstall."
 		exit 1
+	fi
+
+	# Booting the 6.2 miniroot to perform the update from 5.3
+	# requires an up-to-date sash in the volume header.  Try to
+	# update the volume header here, in case it fails due to
+	# lack of space.
+	if [ "`uname -r`" = 5.3 -a -f /install/lib/sash ]; then
+		echo "Updating sash volume directory entry..."
+		dvhtool -v creat /install/lib/sash sash
+		if [ $? -ne 0 ]; then
+			echo "Failed to update sash volume directory entry."
+			echo "Update cannot be performed; please reinstall."
+			exit 1
+		fi
 	fi
 	;;
 esac
