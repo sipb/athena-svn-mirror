@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15 1999-11-10 03:49:52 kcr Exp $
+# $Id: Makefile,v 1.16 2000-01-11 19:10:30 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -42,7 +42,6 @@ install:
 	install -c -m 0644 4DWm ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Console ${DESTDIR}${ATHLOGINDIR}
-	install -c -m 0644 config ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0444 DefaultIconList ${DESTDIR}${XDMDIR}
 	install -c -m 0644 Mwm ${DESTDIR}${X11APPDEFS}
@@ -52,11 +51,13 @@ install:
 	install -c -m 0644 array ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 athinfo.defs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 autofs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 autoconfig_ipaddress ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 autoemail ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 autoemail.list ${DESTDIR}${AMCONFIGDIR}
 	install -c -m 0644 bsdlpr ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 compiler.defaults ${DESTDIR}${ETCDIR}
+	install -c -m 0644 config ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}/root
 	install -c -m 0644 fixed.pcf ${DESTDIR}${FONTS}
 	install -c -m 0644 fonts.alias ${DESTDIR}${FONTS}
