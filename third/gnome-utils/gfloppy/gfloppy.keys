@@ -1,5 +1,0 @@
-x-device/floppy:
-	open.format.Format floppy=gfloppy %f
-	[az]open.format.Disketini şəkilləndir=gfloppy %f
-	[pl]open.format.Sformatuj dyskietk�=gfloppy %f
-	[sl]open.format.Formatiraj disketo=gfloppy %f
