@@ -1418,7 +1418,7 @@ dataconn(name, size, mode)
 {
 	char sizebuf[32];
 	FILE *file;
-	int retry = 0, tos;
+	int retry = 0, tos, on = 1;
 
 	file_size = size;
 	byte_count = 0;
@@ -1446,6 +1446,9 @@ dataconn(name, size, mode)
 		    sizeof(int));
 #endif
 #endif
+		setsockopt(pdata, SOL_SOCKET, SO_KEEPALIVE,
+			   (void *)&on, sizeof(on));
+
 		reply(150, "Opening %s mode data connection for %s%s.",
 		     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
 		return(fdopen(pdata, mode));
@@ -1479,6 +1482,7 @@ dataconn(name, size, mode)
 		data = -1;
 		return (NULL);
 	}
+	setsockopt(data, SOL_SOCKET, SO_KEEPALIVE, (void *)&on, sizeof(on));
 	reply(150, "Opening %s mode data connection for %s%s.",
 	     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
 	return (file);
