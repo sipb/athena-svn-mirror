@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.6 1999-10-20 02:00:50 kcr Exp $
+/* $Id: dm.c,v 1.7 1999-10-28 14:16:16 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -41,7 +41,7 @@
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.6 1999-10-20 02:00:50 kcr Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.7 1999-10-28 14:16:16 kcr Exp $";
 #endif
 
 /* Process states */
@@ -103,7 +103,7 @@ static pid_t fork_and_store(pid_t *var);
 static void x_stop_wait(void);
 static void writepid(char *file, pid_t pid);
 
-#ifndef HAVE_LIBUTIL
+#ifndef HAVE_LOGOUT
 void logout(const char *line);
 #endif
 /* the console process will run as daemon */
@@ -138,6 +138,7 @@ int main(int argc, char **argv)
 #if defined(SRIOCSREDIR) || defined(TIOCCONS)
   int on;
 #endif
+  int fd;
 
   sigemptyset(&sigact.sa_mask);
   sigact.sa_flags = 0;
@@ -258,7 +259,8 @@ int main(int argc, char **argv)
   sigaction(SIGTSTP, &sigact, NULL);
   sigaction(SIGTTIN, &sigact, NULL);
   sigaction(SIGTTOU, &sigact, NULL);
-  sigaction(SIGPIPE, &sigact, NULL);	/* so that X pipe errors don't nuke us */
+  /* so that X pipe errors don't nuke us */
+  sigaction(SIGPIPE, &sigact, NULL);
   sigact.sa_handler = shutdown;
   sigaction(SIGFPE, &sigact, NULL);
   sigact.sa_handler = die;
@@ -269,15 +271,20 @@ int main(int argc, char **argv)
   sigaction(SIGCHLD, &sigact, NULL);
   sigact.sa_handler = catchalarm;
   sigaction(SIGALRM, &sigact, NULL);
-  close(0);
-  close(1);
-  close(2);
-  setsid();
+
   strcpy(line, "/dev/");
   strcat(line, consoletty);
-  open(line, O_RDWR, 0622);
-  dup2(0, 1);
-  dup2(1, 2);
+
+  fd=open(line, O_RDWR);
+  if (fd == -1)
+    {
+      syslog(LOG_ERR, "Cannot open %s: %m", line);
+      /* This probably won't work, but it seems to be the appropriate
+	 punt location. */
+      console_login(conf, "Cannot open tty.\n");
+    }
+
+  login_tty(fd);
 
   /* Set the console characteristics so we don't lose later */
   setpgid(0, pgrp = getpid());	/* Reset the tty pgrp  */
@@ -422,13 +429,21 @@ int main(int argc, char **argv)
 	  max_fd = sysconf(_SC_OPEN_MAX);
 	  for (file = 0; file < max_fd; file++)
 	    close(file);
+
 	  /* setup new tty */
 	  strcpy(line, "/dev/");
 	  strcat(line, logintty);
-	  open("/dev/null", O_RDONLY, 0);
-	  (void) setsid();
-	  open(line, O_RDWR, 0);
-	  dup2(1, 2);
+	  file=open(line, O_RDWR);
+	  login_tty(file);
+	  
+	  file=open("/dev/null", O_RDONLY);
+	  if (file >= 0)
+	    {
+	      dup2(file, 0);
+	      if (file != 0)
+		close(file);
+	    }
+	  
 	  if (redir)
 	    {
 	      /* really ought to check the return status of these */
@@ -566,6 +581,7 @@ static void console_login(char *conf, char *msg)
   char *nl = "\r\n";
   struct termios ttybuf;
   char *p, **cargv;
+  int fd;
 
   syslog(LOG_DEBUG, "Performing console login: %s", msg);
   sigemptyset(&sig_zero);
@@ -610,16 +626,9 @@ static void console_login(char *conf, char *msg)
   else
     fprintf(stderr, "%s", nl);
 
-  /* The next five lines used to be #ifdef SOLARIS.  I'm not
-   * convinced that they aren't a good idea regardless.
-   */
-  close(0);
-  close(1);
-  close(2);
-  setsid();
-  open("/dev/console", O_RDWR, 0);
-  dup2(0, 1);
-  dup2(0, 2);
+  fd=open("/dev/console", O_RDWR);
+  if (fd >= 0)
+    login_tty(fd);
 
   execv(p, cargv);
 
@@ -702,7 +711,6 @@ static void start_console(char *line, char **argv, int redir)
       writepid(consolepidf, consolepid);
     }
 }
-
 
 /* Kill children and hang around forever */
 
@@ -1013,7 +1021,7 @@ static void writepid(char *file, pid_t pid)
   fclose(fp);
 }
 
-#ifndef HAVE_LIBUTIL
+#ifndef HAVE_LOGOUT
 #ifdef HAVE_PUTUTLINE
 void logout(const char *line)
 {
@@ -1050,4 +1058,38 @@ void logout(const char *line)
   endutent();
 }
 #endif
+#endif
+
+#ifndef HAVE_LOGIN_TTY
+int login_tty(int fd)
+{
+#ifndef TIOCSCTTY
+  char *name;
+#endif
+  int ttyfd;
+
+  setsid();
+
+#ifdef TIOCSCTTY
+  if (ioctl(fd, TIOCSCTTY, NULL) == -1)
+    return(-1);
+  ttyfd=fd;
+#else
+  name=ttyname(fd);
+  if (ttyname == NULL)
+    return(-1);
+  close(fd);
+  ttyfd=open(name, O_RDWR);
+#endif
+
+  if (ttyfd == -1)
+    return(-1);
+
+  dup2(ttyfd, STDIN_FILENO);
+  dup2(ttyfd, STDOUT_FILENO);
+  dup2(ttyfd, STDERR_FILENO);
+
+  if (ttyfd > STDERR_FILENO)
+    close(ttyfd);
+}
 #endif
