@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.77 1997-02-05 00:05:20 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.78 1997-02-06 18:09:38 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -122,7 +122,7 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/n
 extern FILE *xdmstream;
 #endif
 
-extern pid_t fork_and_store(pid_t *var);
+pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
 char *get_tickets(), *attachhomedir(), *strsave(), *add_to_group();
@@ -1707,6 +1707,20 @@ char *glist;
     return("Failed to update your access control groups");
 }
 #endif /* _IBMR2 */
+
+/* Fork, storing the pid in a variable var and returning the pid.  Make sure
+ * that the pid is stored before any SIGCHLD can be delivered. */
+pid_t fork_and_store(pid_t *var)
+{
+    sigset_t mask, omask;
+
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGCHLD);
+    sigprocmask(SIG_BLOCK, &mask, &omask);
+    *var = fork();
+    sigprocmask(SIG_SETMASK, &omask, NULL);
+    return *var;
+}
 
 #ifdef KRB5
 /*
