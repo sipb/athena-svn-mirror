@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.31 2002-11-11 22:18:29 ghudson Exp $
+# $Id: Makefile,v 1.32 2003-07-25 05:21:15 zacheiss Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
+ETCMAILDIR=/etc/mail
 ATHETCDIR=/usr/athena/etc
 ATHRETCDIR=/etc/athena
 ATHLIBDIR=/usr/athena/lib
@@ -17,6 +18,7 @@ check:
 
 install:
 	mkdir -p ${DESTDIR}${ETCDIR}
+	mkdir -p ${DESTDIR}${ETCMAILDIR}
 	mkdir -p ${DESTDIR}${ATHETCDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHLIBDIR}
@@ -24,6 +26,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHMANDIR}
 	install -c -m 0644 Dash.fallback ${DESTDIR}${ATHLIBDIR}
 	install -c -m 0644 athinfo.access ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 authinfo ${DESTDIR}${ETCMAILDIR}
 	install -c -m 0644 ftpusers ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ifhp.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 krb.conf ${DESTDIR}${ATHRETCDIR}
