@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-lpd.rc,v 1.1 2002-08-27 17:33:13 zacheiss Exp $
+# $Id: athena-lpd.rc,v 1.2 2003-10-02 22:39:39 jweiss Exp $
 #
 # athena-lpd: Stop/Start the Athena lpd
 #
@@ -22,7 +22,7 @@ start)
   /usr/athena/etc/lpd &
   ;;
 stop)
-  pkill -x /usr/athena/etc/lpd
+  pkill -x lpd
   ;;
 restart)
   $0 stop
