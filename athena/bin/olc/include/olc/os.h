@@ -7,11 +7,10 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.6 1991-04-08 21:01:33 lwvanels Exp $
+ *	$Id: os.h,v 1.7 1991-05-08 20:52:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
-#ifndef HAS_ANSI_INCLUDES
 #include <mit-copyright.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -21,6 +20,7 @@
 #endif
 #include <sys/resource.h>
 
+#ifndef HAS_ANSI_INCLUDES
 #ifndef __olc_os_h
 #define __olc_os_h
 
