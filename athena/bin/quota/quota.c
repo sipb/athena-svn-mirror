@@ -548,7 +548,7 @@ getnfsquota(mntp, uid, qvp)
 		break;
 
 	case Q_EPERM:
-		fprintf(stderr, "quota permission error, host: %s\n", hostp);
+		fprintf(stderr, "Warning: no NFS mapping on host: %s\n", hostp);
 		break;
 
 	default:
