@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.1 2000-02-23 21:32:08 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.2 2000-04-24 19:10:47 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -608,7 +608,7 @@ static void *erealloc(void *ptr, size_t size)
 {
   ptr = realloc(ptr, size);
   if (!ptr)
-    die("erealloc size %lu failed", (unsigned long) size);
+    die("realloc size %lu failed", (unsigned long) size);
   return ptr;
 }
 
