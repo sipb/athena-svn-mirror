@@ -39,24 +39,9 @@ AC_ARG_WITH(gcc,
 AC_ARG_WITH(pop,
 [  --with-pop              support POP for mail retrieval],
 [AC_DEFINE(MAIL_USE_POP)])
-AC_ARG_WITH(kerberos,
-[  --with-kerberos         support Kerberos-authenticated POP],
-[AC_DEFINE(KERBEROS)])
-AC_ARG_WITH(kerberos5,
-[  --with-kerberos5         support Kerberos version 5 authenticated POP],
-[if test "${with_kerberos5+set}" = set; then
-  if test "${with_kerberos+set}" != set; then
-    with_kerberos=yes
-    AC_DEFINE(KERBEROS)
-  fi
-fi
-AC_DEFINE(KERBEROS5)])
 AC_ARG_WITH(hesiod,
 [  --with-hesiod           support Hesiod to get the POP server host],
 [AC_DEFINE(HESIOD)])
-AC_ARG_WITH(gssapi,
-[  --with-gssapi           support GSSAPI-authenticated POP],
-[AC_DEFINE(GSSAPI)])
 dnl This should be the last --with option, because --with-x is
 dnl added later on when we find the path of X, and it's best to
 dnl keep them together visually.
@@ -171,6 +156,7 @@ case "${canonical}" in
       m68k-*-netbsd*)
 			# This is somewhat bogus.
 			machine=hp9000s300 ;;
+      powerpc-apple-netbsd*) machine=macppc ;;
       mips-*-netbsd*)	machine=pmax ;;
       ns32k-*-netbsd*)	machine=ns32000 ;;
       sparc-*-netbsd*)	machine=sparc ;;
@@ -188,7 +174,7 @@ case "${canonical}" in
       mipsel-*-openbsd*) machine=pmax ;;
       ns32k-*-openbsd*)	machine=ns32000 ;;
       sparc-*-openbsd*)	machine=sparc ;;
-      vax-*-netbsd*)	machine=vax ;;
+      vax-*-openbsd*)	machine=vax ;;
     esac
   ;;
 
@@ -215,6 +201,7 @@ case "${canonical}" in
       *-*-bsdi2.0* )		opsys=bsdos2 ;;
       *-*-bsdi2* )		opsys=bsdos2-1 ;;
       *-*-bsdi3* )		opsys=bsdos3 ;;
+      *-*-bsdi4* )		opsys=bsdos4 ;;
     esac
   ;;
 
@@ -237,10 +224,20 @@ case "${canonical}" in
     # This is needed to find X11R6.1 libraries for certain tests.
     NON_GCC_LINK_TEST_OPTIONS=-Wl,-rpath,/usr/X11R6/lib
     GCC_LINK_TEST_OPTIONS=-Wl,-rpath,/usr/X11R6/lib
+    case "${canonical}" in
+    # This is necessary on 5.0 to avoid mangling src/Makefile.
+    # Separated out in case it causes problems on earlier versions.
+    alpha*-dec-osf[5-9]*)
+      NON_GNU_CPP='cc -E -std0' ;;
+    esac
   ;;
 
   alpha*-*-linux-gnu* )
     machine=alpha opsys=gnu-linux
+  ;;
+
+  arm*-*-linux-gnu* )
+    machine=arm opsys=gnu-linux       
   ;;
 
   ## Altos 3068
@@ -325,7 +322,7 @@ case "${canonical}" in
   ## R this shouldn't conflict with older versions of the OS (which I
   ## think were named like dgux4.*). In addition, DG new AViiONs series
   ## uses either Motorola M88k or Intel Pentium CPUs.
-  i586-dg-dguxR4.* | m88k-dg-dguxR4.* | m88k-dg-dgux4* )
+  m88k-dg-dguxR4.* | m88k-dg-dgux4* )
     machine=aviion opsys=dgux4
   ;;
   m88k-dg-dgux5.4R3* | m88k-dg-dgux5.4.3* )
@@ -338,6 +335,13 @@ case "${canonical}" in
   ;;
   m88k-dg-dgux* )
     machine=aviion opsys=dgux
+  ;;
+
+  ## Data General AViiON Intel (x86) Machines
+  ## Exists from 5.4.3 (current i586-dg-dguxR4.11)
+  ## Ehud Karni, 1998-may-30, ehud@unix.simonwiesel.co.il
+  i[345]86-dg-dguxR4* )
+    machine=aviion-intel opsys=dgux4
   ;;
 
   ## DECstations
@@ -613,6 +617,11 @@ case "${canonical}" in
     NON_GNU_CPP="/usr/ccs/lib/cpp" # cc -E tokenizes macro expansion.
   ;;
 
+  ## Macintosh PowerPC
+  powerpc*-*-linux-gnu* )
+    machine=macppc opsys=gnu-linux
+  ;;
+
   ## Masscomp machines
   m68*-masscomp-rtu* )
     machine=masscomp opsys=rtu
@@ -671,6 +680,11 @@ case "${canonical}" in
   ;;
   m68*-ncr-sysv3* | m68*-ncr-sysvr3* )
     machine=tower32v3 opsys=usg5-3
+  ;;
+
+  ## NEC EWS4800
+  mips-nec-sysv4*)
+  machine=ews4800 opsys=ux4800
   ;;
 
   ## Nixdorf Targon 31
@@ -734,6 +748,7 @@ case "${canonical}" in
   mips-sgi-irix6.5 )
     machine=iris4d opsys=irix6-5
     NON_GNU_CPP=/lib/cpp
+    NON_GCC_TEST_OPTIONS="-n32 -G0"
   ;;
   mips-sgi-irix6* )
     machine=iris4d opsys=irix6-0
@@ -773,7 +788,7 @@ case "${canonical}" in
   ;;
 
   ## Suns
-  sparc-*-linux-gnu* )
+  sparc-*-linux-gnu* | sparc64-*-linux-gnu* )
     machine=sparc opsys=gnu-linux
   ;;
 
@@ -964,6 +979,11 @@ case "${canonical}" in
     machine=sparc opsys=uxpds
     NON_GNU_CPP=/usr/ccs/lib/cpp
     RANLIB="ar -ts"
+  ;;
+
+  ## UXP/V
+  f301-fujitsu-uxpv4.1)
+    machine=f301 opsys=uxpv
   ;;
 
   * )
@@ -1195,7 +1215,8 @@ else
   for bmd in `echo ${x_includes} | sed -e "s/:/ /g"`; do
     if test -d "${bmd}/X11/bitmaps"; then
       bmd_acc="${bmd_acc}:${bmd}/X11/bitmaps"
-    elif test -d "${bmd}/bitmaps"; then
+    fi
+    if test -d "${bmd}/bitmaps"; then
       bmd_acc="${bmd_acc}:${bmd}/bitmaps"
     fi
   done
@@ -1429,7 +1450,7 @@ AC_CHECK_LIB(Xbsd, main, LD_SWITCH_X_SITE="$LD_SWITCH_X_SITE -lXbsd")
 
 AC_CHECK_LIB(pthreads, cma_open)
 
-AC_MSG_CHECKING(for XFree86)
+AC_MSG_CHECKING(for XFree86 in /usr/X386)
 if test -d /usr/X386/include; then
   HAVE_XFREE386=yes
   : ${C_SWITCH_X_SITE="-I/usr/X386/include"}
@@ -1595,6 +1616,7 @@ Motif version prior to 2.1.
   HAVE_MOTIF_2_1=$emacs_cv_motif_version_2_1
   if test $emacs_cv_motif_version_2_1 = yes; then
     AC_DEFINE(HAVE_MOTIF_2_1)
+    AC_CHECK_LIB(Xp, XpCreateContext)
   fi
 fi
 
@@ -1626,12 +1648,11 @@ random lrand48 bcopy bcmp logb frexp fmod rint cbrt ftime res_init setsid \
 strerror fpathconf select mktime euidaccess getpagesize tzset setlocale \
 utimes setrlimit setpgid getcwd shutdown strftime)
 
-
 # UNIX98 PTYs.
 AC_CHECK_FUNCS(grantpt)
+
 # PTY-related GNU extensions.
 AC_CHECK_FUNCS(getpt)
-
 
 # Check this now, so that we will NOT find the above functions in ncurses.
 # That is because we have not set up to link ncurses in lib-src.
@@ -1885,7 +1906,7 @@ AC_OUTPUT(Makefile lib-src/Makefile.c:lib-src/Makefile.in oldXMenu/Makefile \
 	leim/Makefile, [
 
 ### Make the necessary directories, if they don't exist.
-for dir in cpp etc lisp ; do
+for dir in etc lisp ; do
   test -d ${dir} || mkdir ${dir}
 done
 
@@ -1906,8 +1927,8 @@ sed -e 's/[^a-zA-Z0-9_]/ /g' -e 's/^/ /' -e 's/  *$//' \
 `"
 changequote([, ])dnl
 
-echo creating src/paths.h
-make paths-force
+echo creating src/epaths.h
+make epaths-force
 
 echo creating lib-src/Makefile
 ( cd lib-src

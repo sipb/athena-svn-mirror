@@ -131,7 +131,15 @@ Boston, MA 02111-1307, USA.  */
 
 #undef LIBS_MACHINE
 /* -lsun in case using Yellow Pages for passwords.  */
+#if defined(__GNUC__) && defined(_ABIN32)
 #define LIBS_MACHINE
+#else
+#ifndef IRIX6_5
+#define LIBS_MACHINE -lmld
+#else
+#define LIBS_MACHINE
+#endif
+#endif
 #define LIBS_DEBUG
 
 /* Define this if you have a fairly recent system,
@@ -183,8 +191,10 @@ Boston, MA 02111-1307, USA.  */
    that we can't fix without breaking other machines.  */
 #ifdef IRIX_FORCE_32_BITS
 #ifdef THIS_IS_MAKEFILE
-#ifdef THIS_IS_EMACS
+#ifndef IRIX6_5
 #define C_SWITCH_MACHINE -32
+#else
+#define C_SWITCH_MACHINE -n32
 #endif
 #endif
 #endif

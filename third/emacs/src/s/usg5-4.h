@@ -137,7 +137,7 @@ Boston, MA 02111-1307, USA.  */
    subprocesses the usual way.  But TIOCSIGNAL does work for PTYs, and
    this is all we need.  */
 
-#ifdef TIOCSIGNAL
+#ifndef IRIX6
 #define TIOCSIGSEND TIOCSIGNAL
 #endif
 
@@ -200,8 +200,13 @@ Boston, MA 02111-1307, USA.  */
    So give it a try.  */
 #define HAVE_SOCKETS
 
-#ifndef HAVE_BCOPY
+#ifndef IRIX6
 #define bcopy(src,dst,n)	memmove (dst,src,n)
 #define bcmp(src,dst,n)		memcmp (src,dst,n)
 #define bzero(s,n)		memset (s,0,n)
 #endif
+
+/* Markus Weiand <weiand@khof.com> says this is needed for Motif on
+   SINIX.  */
+#undef LIBS_SYSTEM
+#define LIBS_SYSTEM -lgen
