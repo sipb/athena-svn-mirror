@@ -1,0 +1,37 @@
+                  Licenses
+
+You may use the LPRng software under the provisions of one
+of the three licenses:
+
+ 1. GNU.license - this license can be used by anybody who
+    wishes to adhere to its terms and conditions.  These may
+    be overly restrictive for a commercial vendor.
+
+    Under the terms of this license,  there is NO WARANTEE,
+    or other statement of suitable use.
+
+
+ 2. Artistic.license - this license is suitable for commercial
+    users or other system distribution developers who wish to
+    incorporate LPRng or its derivative products into their
+    software.
+
+    Under the terms of this license,  there is NO WARANTEE,
+    or other statement of suitable use.
+
+ 3. Commercial.license - this license is suitable for users which
+    require support and/or explicit product performance warrantees.
+    Under the terms of this license you may obtain software support
+    and other assistance.
+
+
+This software incorporates code from other sources;  see the file
+copyright.c in this distribution for general copyright information.
+Individual source files have their copyrights as well, where
+applicable.
+
+Patrick Powell                 Astart Technologies,
+papowell@astart.com            9475 Chesapeake Drive, Suite D,
+Network and System             San Diego, CA 92123
+  Consulting                   619-874-6543 FAX 619-279-8424 
+LPRng - Print Spooler (http:www.astart.com/LPRng)

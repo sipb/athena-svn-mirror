@@ -1,0 +1,38 @@
+#!/usr/local/bin/perl
+
+use strict;
+use LPRng;
+use Sys::Hostname;
+
+# working values
+my($pc_path,$file);
+
+$| = 1;
+
+
+Set_Debug(5);
+Setup_LPRng( "P:");
+
+if( $Debug > 0 ){
+	my($name);
+	Dump_index( "Main:", %Pc_index );
+	foreach $name (sort keys %Pc_hash){
+		Dump_pc( "Main:", %{$Pc_hash{$name}} );
+	}
+}
+
+# get the printer name
+$Printer = Get_printer_name( %Args, %Pc_index, %Init_hash );
+if( not $Printer ){
+	die "missing printer name";
+}
+$Pc_value = Setup_pc_entry( $Printer, %Pc_hash, %Pc_index, %Init_hash );
+
+print "DONE\n";
+exit 0;
+%Pc_hash=();
+%Pc_index=();
+Read_printcap_file("/tmp/printcap", %Pc_hash, %Pc_index, 1, 0, @Hostname);
+
+
+print "DONE\n";
