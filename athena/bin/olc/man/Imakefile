@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.4 1991-04-18 21:58:18 lwvanels Exp $
+# $Id: Imakefile,v 1.5 1991-08-12 13:49:56 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/man/Imakefile,v $
 #
 # Imakefile for man directory.
@@ -9,7 +9,7 @@
 #
 #
 
-PAGES = olc.1 olcr.1 olc_answers.1 cref.1
+PAGES = olc.1 olcr.1 olc_answers.1 cref.1 olist.1 oreplay.1 oshow.1
 
 InstallMultipleDestFlags(install,$(PAGES),$(DESTDIR)/usr/man/man1,$(INSTMANFLAGS))
 
