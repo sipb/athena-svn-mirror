@@ -1,4 +1,4 @@
-# $Id: packages,v 1.79 1999-06-17 21:02:00 danw Exp $
+# $Id: packages,v 1.80 1999-07-20 13:41:36 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -10,10 +10,12 @@
 # with '#' are ignored.
 
 # These tools are critical to the build process and need to be built
-# first, even before the packs are set up.  They have Makefile.athena
-# files which don't assume that much of anything is ready.
+# first, even before the packs are set up.  They have build systems
+# which don't assume that much of anything is ready.
 third/gcc			solaris
 third/gmake
+third/m4
+third/autoconf
 athena/bin/install		solaris,irix
 athena/bin/imake		solaris
 
