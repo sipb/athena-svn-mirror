@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
  *	$Author: ambar $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.1 1987-08-18 14:16:49 ambar Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.2 1987-08-18 14:29:50 ambar Exp $
  */
 
-#ifdef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.1 1987-08-18 14:16:49 ambar Exp $";
+#ifndef lint
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.2 1987-08-18 14:29:50 ambar Exp $";
 #endif lint
 
 /*
@@ -145,14 +145,18 @@ long logouts[MAXTTYS];			/* Logout times */
 
 struct passwd *pwdcopy();
 char *strcpy();
+char *strcat();
+char *strncpy();
 char *malloc();
 char *ctime();
 
+long time();
+
+/*ARGSUSED*/
 main(argc, argv)
 	int argc;
 	register char **argv;
 {
-	FILE *fp;
 	register char *s;
 
 	/* parse command line for (optional) arguments */
@@ -195,9 +199,13 @@ main(argc, argv)
 				exit(1);
 			}
 	if (unquick || idle)
-		time(&tloc);
+		(void) time(&tloc);
 	/*
 	 * *argv == 0 means no names given
+	 */
+	/*
+	 * athenafinger shouldn't use this at all, since athenafinger
+	 * [no args] should NOT give you every logged-in person...
 	 */
 	if (*argv == 0)
 		doall();
@@ -251,13 +259,14 @@ doall()
 			decode(p);
 			p->name = p->pwd->pw_name;
 		} else
-			p->name = strcpy(malloc(strlen(name) + 1), name);
-	}
+			p->name = strcpy(malloc((unsigned)(strlen(name) + 1)),
+					 name);
+	} 
 	if (unquick) {
 		fwclose();
 		endpwent();
 	}
-	close(uf);
+	(void) close(uf);
 	if (person1 == 0) {
 		printf("\nNo one logged on\n");
 		return;
@@ -377,7 +386,7 @@ donames(argv)
 			}
 		}
 	}
-	close(uf);
+	(void) close(uf);
 	if (unquick) {
 		fwopen();
 		for (p = person1; p != 0; p = p->link)
@@ -407,7 +416,7 @@ print()
 			printf("Login      TTY            When");
 			if (idle)
 				printf("             Idle");
-			putchar('\n');
+			(void) putchar('\n');
 		}
 	}
 	for (p = person1; p != 0; p = p->link) {
@@ -423,21 +432,21 @@ print()
 		if (p->pwd != 0) {
 			if (hack) {
 				s = malloc(strlen(p->pwd->pw_dir) +
-					sizeof PROJ);
-				strcpy(s, p->pwd->pw_dir);
-				strcat(s, PROJ);
+					(unsigned) sizeof PROJ);
+				(void) strcpy(s, p->pwd->pw_dir);
+				(void) strcat(s, PROJ);
 				if ((fp = fopen(s, "r")) != 0) {
 					printf("Project: ");
 					while ((c = getc(fp)) != EOF) {
 						if (c == '\n')
 							break;
 						if (isprint(c) || isspace(c))
-							putchar(c);
+							(void) putchar(c);
 						else
-							putchar(c ^ 100);
+							(void) putchar(c ^ 100);
 					}
-					fclose(fp);
-					putchar('\n');
+					(void) fclose(fp);
+					(void) putchar('\n');
 				}
 				free(s);
 			}
@@ -446,9 +455,9 @@ print()
 				register int okay = 1;
 				char mailbox[100];      /* mailbox name */
 				s = malloc(strlen(p->pwd->pw_dir) +
-					sizeof PLAN);
-				strcpy(s, p->pwd->pw_dir);
-				strcat(s, PLAN);
+					(unsigned) sizeof PLAN);
+				(void) strcpy(s, p->pwd->pw_dir);
+				(void) strcat(s, PLAN);
 				if ((fp = fopen(s, "r")) == 0)
 					printf("No Plan.\n");
 				else {
@@ -458,29 +467,31 @@ print()
 						if (c != MM[i]) {
 							if (okay) {
 								for (j=0;j<i;j++) {
-									putchar(MM[j]);
+									(void) putchar(MM[j]);
 								}
 							}
 							if (isprint(c) || isspace(c))
-							  putchar(c);
+							  (void) putchar(c);
 							else
-							  putchar(c ^ 100);
+							  (void) putchar(c ^ 100);
 							okay = 0;
 						}
 					}
 					else if (isprint(c) || isspace(c))
-							putchar(c);
+							(void) putchar(c);
 						else
-							putchar(c ^ 100);
+							(void) putchar(c ^ 100);
 					i++;
 				}
-				fclose(fp);
+				(void) fclose(fp);
 				if (okay) {
-					strcpy (mailbox, MAILDIR);      /* start with the directory */
-					strcat (mailbox, (p->pwd)->pw_name);
+					(void) strcpy (mailbox, MAILDIR);
+					/* start with the directory */
+					(void) strcat (mailbox,
+						       (p->pwd)->pw_name);
 					if (access(mailbox, F_OK) == 0) {
 						struct stat statb;
-						stat(mailbox, &statb);
+						(void) stat(mailbox, &statb);
 						if (statb.st_size) {
 							printf("User %s has new mail.\n", (p->pwd)->pw_name);
 						};
@@ -491,7 +502,7 @@ print()
 			}
 		}
 		if (p->link != 0)
-			putchar('\n');
+			(void) putchar('\n');
 	}
 }
 
@@ -505,8 +516,8 @@ pwdcopy(pfrom)
 {
 	register struct passwd *pto;
 
-	pto = (struct passwd *) malloc(sizeof *pto);
-#define savestr(s) strcpy(malloc(strlen(s) + 1), s)
+	pto = (struct passwd *) malloc((unsigned)(sizeof *pto));
+#define savestr(s) (void) strcpy(malloc((unsigned)(strlen(s) + 1)), s)
 	pto->pw_name = savestr(pfrom->pw_name);
 	pto->pw_uid = pfrom->pw_uid;
 	pto->pw_gecos = savestr(pfrom->pw_gecos);
@@ -529,11 +540,11 @@ quickprint(pers)
 			findidle(pers);
 			printf("%c%-*s %-16.16s", pers->writable ? ' ' : '*',
 				LMAX, pers->tty, ctime(&pers->loginat));
-			ltimeprint("   ", &pers->idletime, "");
+			(void) ltimeprint("   ", &pers->idletime, "");
 		} else
 			printf(" %-*s %-16.16s", LMAX,
 				pers->tty, ctime(&pers->loginat));
-		putchar('\n');
+		(void) putchar('\n');
 	} else
 		printf("          Not Logged In\n");
 }
@@ -560,11 +571,11 @@ shortprint(pers)
 		else
 			printf("        ???          ");
 	}
-	putchar(' ');
+	(void) putchar(' ');
 	if (pers->loggedin && !pers->writable)
-		putchar('*');
+		(void) putchar('*');
 	else
-		putchar(' ');
+		(void) putchar(' ');
 	if (*pers->tty) {
 		if (pers->tty[0] == 't' && pers->tty[1] == 't' &&
 		    pers->tty[2] == 'y') {
@@ -597,7 +608,7 @@ shortprint(pers)
 		else if (pers->homephone)
 			printf(" %s", pers->homephone);
 	}
-	putchar('\n');
+	(void) putchar('\n');
 }
 
 /*
@@ -656,11 +667,11 @@ personprint(pers)
 		if (*pers->host) {
 			printf("\nOn since %15.15s on %s from %s",
 				&ep[4], pers->tty, pers->host);
-			ltimeprint("\n", &pers->idletime, " Idle Time");
+			(void) ltimeprint("\n", &pers->idletime, " Idle Time");
 		} else {
 			printf("\nOn since %15.15s on %-*s",
 				&ep[4], LMAX, pers->tty);
-			ltimeprint("\t", &pers->idletime, " Idle Time");
+			(void) ltimeprint("\t", &pers->idletime, " Idle Time");
 		}
 	} else if (pers->loginat == 0)
 		printf("\nNever logged in.");
@@ -679,7 +690,7 @@ personprint(pers)
 		if (*pers->host)
 			printf(" from %s", pers->host);
 	}
-	putchar('\n');
+	(void) putchar('\n');
 }
 
 /*
@@ -697,7 +708,7 @@ phone(s, len, alldigits)
 	register i;
 
 	if (!alldigits)
-		return (strcpy(malloc(len + 1), s));
+		return (strcpy(malloc((unsigned)(len + 1)), s));
 	switch (len) {
 	case 4:
 		*p++ = ' ';
@@ -735,10 +746,10 @@ phone(s, len, alldigits)
 	case 0:
 		return 0;
 	default:
-		return (strcpy(malloc(len + 1), s));
+		return (strcpy(malloc((unsigned)(len + 1)), s));
 	}
 	*p++ = 0;
-	return (strcpy(malloc(p - fonebuf), fonebuf));
+	return (strcpy(malloc((unsigned)(p - fonebuf)), fonebuf));
 }
 
 /*
@@ -778,7 +789,7 @@ decode(pers)
 			*bp++ = *gp++;
 	*bp++ = 0;
 	if ((len = bp - buffer) > 1)
-		pers->realname = strcpy(malloc(len), buffer);
+		pers->realname = strcpy(malloc((unsigned)len), buffer);
 	if ( *gp == COMMA ) {             /* nickname */
 		gp++;
 		bp = buffer;
@@ -797,8 +808,9 @@ decode(pers)
 		}
 		*bp = NULL;
 		if (strlen(buffer) > 0) {
-			pers->nickname = malloc( strlen( &buffer[0] ) + 1 );
-			strcpy( pers->nickname, &buffer[0] );
+			pers->nickname = malloc((unsigned)(strlen(&buffer[0])
+							   + 1));
+			(void) strcpy( pers->nickname, &buffer[0] );
 		}
 	}
 	if( *gp == COMMA )  {             /* office, supposedly */
@@ -819,15 +831,15 @@ decode(pers)
 		if (hasspace || len == 0)
 		len++;
 		else if (*bp == TECHSQ) {
-			strcpy(bp, " Tech Sq.");
+			(void) strcpy(bp, " Tech Sq.");
 			len += 9;
 		} else if (*bp == MIT) {
-			strcpy(bp, " MIT");
+			(void) strcpy(bp, " MIT");
 			len += 4;
 		} else
 			len++;
 		if (len > 1)
-			pers->office = strcpy(malloc(len), buffer);
+			pers->office = strcpy(malloc((unsigned)len), buffer);
 	}
 	if (*gp == COMMA) {				/* office phone */
 		gp++;
@@ -885,22 +897,24 @@ findwhen(pers)
 	struct utmp *bp;
 	struct utmp buf[128];
 	int i,bl,count;
+	off_t lseek();
 
 	if (lw >= 0) {
-		fstat(lw, &stb);
+		(void) fstat(lw, &stb);
 		bl = (stb.st_size + sizeof(buf)-1)/sizeof(buf);
 		count = 0;
 		for (bl--; bl >= 0; bl--) {
-			lseek(lw, bl*sizeof(buf), 0);
-			bp = &buf[read(lw,buf,sizeof(buf))/sizeof(buf[0])-1];
+			(void) lseek(lw, (off_t)(bl*sizeof(buf)), 0);
+			bp = &buf[read(lw,(char *)buf,sizeof(buf))
+				  / sizeof(buf[0])-1];
 			for (; bp>=buf;bp--) {
 				if (count++ == MAXSEARCH)
 					goto fudged;
 				if (!strncmp(bp->ut_name,pers->name,
 					     strlen(pers->name))) {
-						     strncpy(pers->tty,
+						     (void) strncpy(pers->tty,
 							    bp->ut_line,LMAX);
-						     strncpy(pers->host,
+						     (void) strncpy(pers->host,
 							    bp->ut_host,HMAX);
 						     pers->loginout = 1;
 						     for (i=0;i<MAXTTYS;i++) {
@@ -916,7 +930,7 @@ findwhen(pers)
 				else {
 					for (i = 0; i < MAXTTYS; i++) {
 						if (ttnames[i][0] == 0) {
-							strncpy(ttnames[i],
+							(void) strncpy(ttnames[i],
 								bp->ut_line,
 								sizeof(bp->ut_line));
 							logouts[i] = bp->ut_time;
@@ -935,7 +949,7 @@ findwhen(pers)
 	}
  fudged:
 	if (lf >= 0) {
-		lseek(lf, (long)pers->pwd->pw_uid * sizeof ll, 0);
+		(void) lseek(lf, (long)pers->pwd->pw_uid * sizeof ll, 0);
 		if ((i = read(lf, (char *)&ll, sizeof ll)) == sizeof ll) {
 			bcopy(ll.ll_line, pers->tty, LMAX);
 			pers->tty[LMAX] = 0;
@@ -961,9 +975,9 @@ findwhen(pers)
 fwclose()
 {
 	if (lf >= 0)
-		close(lf);
+		(void) close(lf);
 	if (lw >= 0)
-		close(lw);
+		(void) close(lw);
 }
 
 /*
@@ -978,13 +992,13 @@ findidle(pers)
 	long t;
 #define TTYLEN 5
 
-	strcpy(buffer + TTYLEN, pers->tty);
+	(void) strcpy(buffer + TTYLEN, pers->tty);
 	buffer[TTYLEN+LMAX] = 0;
 	if (stat(buffer, &ttystatus) < 0) {
 		fprintf(stderr, "finger: Can't stat %s\n", buffer);
 		exit(4);
 	}
-	time(&t);
+	(void) time(&t);
 	if (t < ttystatus.st_atime)
 		pers->idletime = 0L;
 	else
@@ -1134,7 +1148,6 @@ netfinger(name)
 	char *name;
 {
 	char *host;
-	char fname[100];
 	struct hostent *hp;
 	struct servent *sp;
 	struct sockaddr_in sin;
@@ -1161,14 +1174,14 @@ netfinger(name)
 		static struct in_addr defaddr;
 		static char *alist[1];
 		static char namebuf[128];
-		int inet_addr();
+		u_long inet_addr();
 
 		defaddr.s_addr = inet_addr(host);
 		if (defaddr.s_addr == -1) {
 			printf("unknown host: %s\n", host);
 			return (1);
 		}
-		strcpy(namebuf, host);
+		(void) strcpy(namebuf, host);
 		def.h_name = namebuf;
 		def.h_addr_list = alist, def.h_addr = (char *)&defaddr;
 		def.h_length = sizeof (struct in_addr);
@@ -1176,7 +1189,7 @@ netfinger(name)
 		def.h_aliases = 0;
 		hp = &def;
 	}
-	printf("[%s]", hp->h_name); fflush(stdout);
+	printf("[%s]", hp->h_name); (void) fflush(stdout);
 	sp = getservbyname("finger", "tcp");
 	if (sp == 0) {
 		printf("tcp/finger: unknown service\n");
@@ -1187,20 +1200,20 @@ netfinger(name)
 	sin.sin_port = sp->s_port;
 	s = socket(hp->h_addrtype, SOCK_STREAM, 0);
 	if (s < 0) {
-		fflush(stdout);
+		(void) fflush(stdout);
 		perror("socket");
 		return (1);
 	}
-	if (connect(s, (char *)&sin, sizeof (sin)) < 0) {
-		fflush(stdout);
+	if (connect(s, (struct sockaddr *)&sin, sizeof (sin)) < 0) {
+		(void) fflush(stdout);
 		perror("connect");
-		close(s);
+		(void) close(s);
 		return (1);
 	}
 	printf("\n");
-	if (large) write(s, "/W ", 3);
-	write(s, name, strlen(name));
-	write(s, "\r\n", 2);
+	if (large) (void) write(s, "/W ", 3);
+	(void) write(s, name, strlen(name));
+	(void) write(s, "\r\n", 2);
 	f = fdopen(s, "r");
 	while ((c = getc(f)) != EOF) {
 		switch(c) {
@@ -1216,12 +1229,12 @@ netfinger(name)
 		}
 		lastc = c;
 		if (isprint(c) || isspace(c))
-			putchar(c);
+			(void) putchar(c);
 		else
-			putchar(c ^ 100);
+			(void) putchar(c ^ 100);
 	}
 	if (lastc != '\n')
-		putchar('\n');
-	(void)fclose(f);
+		(void) putchar('\n');
+	(void) fclose(f);
 	return (1);
 }
