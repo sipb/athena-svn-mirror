@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: epeisach $
+ *	$Author: lwvanels $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.7 1992-05-03 19:00:14 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.8 1992-07-13 16:45:27 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.7 1992-05-03 19:00:14 epeisach Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.8 1992-07-13 16:45:27 lwvanels Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -51,7 +51,8 @@ main(argc, argv)
 	long hosttime;
 	register int *nettime;
 	char hostname[64];
-	int cc;
+	int cc, host_retry;
+	extern int h_errno;
 #if !defined(ultrix) && defined(vax)
 	int attempts = 0;
 #else
@@ -76,11 +77,18 @@ main(argc, argv)
 			argv[0]);
 		exit (1);
 	}
-	host = gethostbyname(hostname);
+	host_retry = 0;
+	while (host_retry < 5) {
+	  host = gethostbyname(hostname);
+	  if ((host == NULL) && h_errno != TRY_AGAIN) {
+	    host_retry = 5;
+	  }
+	  host_retry++;
+	}
 	if (host == NULL) {
-		fprintf (stderr, "%s: The timeserver host %s is unknown\n",
-			 argv[0], hostname);
-		exit (2);
+	  fprintf (stderr, "%s: The timeserver host %s is unknown\n",
+		   argv[0], hostname);
+	  exit (2);
 	}
 	sin.sin_family = host->h_addrtype;
 	bcopy (host->h_addr, (caddr_t)&sin.sin_addr,
