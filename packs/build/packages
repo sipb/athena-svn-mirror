@@ -1,4 +1,4 @@
-# $Id: packages,v 1.123 2001-03-19 21:06:16 ghudson Exp $
+# $Id: packages,v 1.124 2001-03-20 17:08:05 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -123,7 +123,6 @@ third/afsbin			package afs
 third/audiofile			except linux
 third/bash
 third/bind
-third/bzip2			except linux
 third/db			except linux
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf
 third/emacs			requires hesiod,krb5
@@ -135,7 +134,6 @@ third/glib
 third/gmp			except linux
 third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm
-third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf
 third/gtk			requires glib
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
@@ -163,7 +161,6 @@ third/motif			on linux
 third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
-third/openssl
 third/ORBit			requires glib,gettext
 third/patch			on solaris
 third/perl
