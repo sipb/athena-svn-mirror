@@ -27,8 +27,8 @@
 
 Widget create_menu(Widget toplevel);
 static Pixmap get_pixmap(Widget toplevel);
-void stop_ss();
-void die();
+void stop_ss(void);
+void die(void);
 void split_and_exec(char *cmd, pid_t *pid);
 
 void callback_activate(Widget w, XtPointer client_data, XtPointer call_data);
@@ -37,13 +37,13 @@ void callback_quit(Widget w, XtPointer client_data, XtPointer call_data);
 void action_activate(Widget w, XEvent *event,
                      String *params, Cardinal *num_params);
 
-void sig_chld();
-void sig_int();
-void sig_term();
+void sig_chld(int sig);
+void die_on_signal(int sig);
 
 typedef struct _AppData
 {
   char *xscreensaver;
+  char *check_command;
   char *activate_command;
   char *prefs_command;
   int xroger_width;
@@ -53,6 +53,7 @@ typedef struct _AppData
 } AppData;
 
 #define XtNxscreensaver "xscreensaver"
+#define XtNcheckCommand "activateCommand"
 #define XtNactivateCommand "activateCommand"
 #define XtNprefsCommand "prefsCommand"
 #define XtNxrogerWidth "xrogerWidth"
@@ -73,6 +74,15 @@ static XtResource resources[] =
     XtOffsetOf(AppData, xscreensaver),
     XtRString,
     BINDIR "xss -no-splash -no-start-locked"
+  },
+  {
+    XtNcheckCommand,
+    XtCCommand,
+    XtRString,
+    sizeof(String),
+    XtOffsetOf(AppData, check_command),
+    XtRString,
+    BINDIR "xss-command -version"
   },
   {
     XtNactivateCommand,
@@ -133,6 +143,7 @@ static XtResource resources[] =
 static XrmOptionDescRec options[] =
 {
   { "-xss",        "*xscreensaver",    XrmoptionSepArg, NULL	},
+  { "-check",      "*checkCommand",    XrmoptionSepArg, NULL	},
   { "-activate",   "*activateCommand", XrmoptionSepArg, NULL	},
   { "-prefs",      "*prefsCommand",    XrmoptionSepArg, NULL	},
   { "-logoWidth",  "*xrogerWidth",     XrmoptionSepArg, NULL	},
@@ -159,7 +170,7 @@ static char *fallbacks[] =
 static AppData app_data;
 static Widget toplevel;
 static XtAppContext context;
-static pid_t child;
+static pid_t child = -2;
 static Pixmap pixmap;
 static int fdRedirect;
 static char *progname;
@@ -168,21 +179,11 @@ int main(int argc, char **argv)
 {
   Widget button;
   struct sigaction sa;
+  int existing_server, status;
+  pid_t check_pid;
 
   progname = strrchr(argv[0], '/');
   progname = (progname) ? progname + 1 : argv[0];
-
-  /* Catch some signals. */
-  sa.sa_handler = sig_chld;
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = 0;
-  sigaction(SIGCHLD, &sa, NULL);
-  
-  sa.sa_handler = sig_int;
-  sigaction(SIGINT, &sa, NULL);
-  
-  sa.sa_handler = sig_term;
-  sigaction(SIGTERM, &sa, NULL);
 
   toplevel = XtVaAppInitialize(&context, "XScreenSaverButton",
 			       options, XtNumber(options),
@@ -203,8 +204,30 @@ int main(int argc, char **argv)
       fprintf(stderr, "%s: stdout/stderr redirect disabled\n", progname);
     }
   }
+
+  /* Run check_command to see if there is an existing server process. */
+  split_and_exec(app_data.check_command, &check_pid);
+  existing_server = (waitpid(check_pid, &status, 0) == check_pid
+		     && WIFEXITED(status) && WEXITSTATUS(status) == 0);
+
+  /* Catch some signals. */
+  sa.sa_handler = sig_chld;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sigaction(SIGCHLD, &sa, NULL);
   
-  split_and_exec(app_data.xscreensaver, &child);
+  sa.sa_handler = die_on_signal;
+  sigaction(SIGHUP, &sa, NULL);
+  sigaction(SIGINT, &sa, NULL);
+  sigaction(SIGQUIT, &sa, NULL);
+  sigaction(SIGTERM, &sa, NULL);
+
+  /* If there is no existing server process, start one, and arrange to
+   * exit if it dies.  If there is an existing server process, set child
+   * to a dummy value so sig_chld won't match it.
+   */
+  if (!existing_server)
+    split_and_exec(app_data.xscreensaver, &child);
 
   pixmap = get_pixmap(toplevel);
   button = XtVaCreateManagedWidget("xss", menuButtonWidgetClass, toplevel,
@@ -252,18 +275,19 @@ static Pixmap get_pixmap(Widget toplevel)
 
 void stop_ss()
 {
-  kill(child, SIGTERM);
+  if (child > 0)
+    kill(child, SIGTERM);
 }
 
 void die()
 {
   Display *dpy = XtDisplay(toplevel);
   
-  stop_ss();
   XtUnrealizeWidget(toplevel);
   XtDestroyWidget(toplevel);
   XtDestroyApplicationContext(context);
   XFreePixmap(dpy, pixmap);
+  stop_ss();
   exit(0);
 }
 
@@ -307,7 +331,7 @@ void callback_quit(Widget w, XtPointer client_data, XtPointer call_data)
   die();
 }
 
-void sig_chld()
+void sig_chld(int sig)
 {
   pid_t pid = waitpid(-1, NULL, WNOHANG);
   if (pid == child)
@@ -316,14 +340,10 @@ void sig_chld()
   }
 }
 
-void sig_int()
+void die_on_signal(int sig)
 {
   stop_ss();
-}
-
-void sig_term()
-{
-  stop_ss();
+  exit(1);
 }
 
 void action_activate(Widget w, XEvent *event,

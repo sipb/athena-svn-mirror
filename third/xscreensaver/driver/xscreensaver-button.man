@@ -7,6 +7,9 @@ xss-button \- display a button to run xss
 .B \-xss
 .I command
 ] [
+.B \-check
+.I command
+] [
 .B \-activate
 .I command
 ] [
@@ -53,6 +56,17 @@ Runs
 .I command
 as the screen saver driver.  Defaults to running the installed
 .BR xss (1) with the -no-splash option.
+.TP 8
+\fB\-check\fP \fIcommand\fP
+Runs
+.I command
+as the command to check whether a screen saver is already running.
+The command should exit with status 0 if a screen saver is already
+running, nonzero if not.  Defaults to running the installed
+.BR xss-command (1)
+with the
+.B \-version
+switch.
 .TP 8
 \fB\-activate\fP \fIcommand\fP
 Runs
@@ -107,6 +121,12 @@ The program's useful resources are:
 .B xscreensaver (\fPclass\fB Command)
 Specifies the screen saver driver to run.  Same as the
 .B \-xss
+option.
+.TP 8
+.B checkCommand (\fPclass\fB Command)
+Specifies the command to run to check for an existing screen saver.
+Same as the
+.B \-check
 option.
 .TP 8
 .B activateCommand (\fPclass\fB Command)
