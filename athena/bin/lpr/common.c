@@ -58,6 +58,11 @@ int	FS;		/* flags to set if lp is a tty */
 int	XC;		/* flags to clear for local mode */
 int	XS;		/* flags to set for local mode */
 short	RS;		/* restricted to those with local accounts */
+#ifdef PQUOTA
+char     *RQ; 	        /* Name of remote quota server */
+int      CP; 	  	/* Cost per page */
+char	 *QS;		/* Quota service for printer */
+#endif PQUOTA
 #endif SERVER
 
 char	line[BUFSIZ];
@@ -217,7 +222,6 @@ errdone:
 	closedir(dirp);
 	return(-1);
 }
-#endif SERVER
 
 /*
  * Compare modification times.
@@ -232,6 +236,7 @@ compar(p1, p2)
 		return(1);
 	return(0);
 }
+#endif SERVER
 
 /*VARARGS1*/
 fatal(msg, a1, a2, a3)
@@ -243,6 +248,30 @@ fatal(msg, a1, a2, a3)
 	if (printer)
 		printf("%s: ", printer);
 	printf(msg, a1, a2, a3);
+	syslog(LOG_ERR, msg, a1, a2, a3);
 	putchar('\n');
 	exit(1);
 }
+
+#ifdef KERBEROS
+/* Form a complete string name consisting of principal, 
+ * instance and realm 
+ */
+make_kname(principal, instance, realm, out_name)
+char *principal, *instance, *realm, *out_name;
+{
+	if ((instance[0] == '\0') && (realm[0] == '\0'))
+		strcpy(out_name, principal);
+	else {
+		if (realm[0] == '\0')
+			sprintf(out_name, "%s.%s", principal, instance);
+		else {
+			if (instance[0] == '\0')
+				sprintf(out_name, "%s@%s", principal, realm);
+			else
+				sprintf(out_name, "%s.%s@%s", principal, 
+					instance, realm);
+		}
+	}
+}
+#endif KERBEROS
