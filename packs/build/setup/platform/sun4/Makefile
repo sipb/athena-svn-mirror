@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.3 1996-10-02 07:10:43 ghudson Exp $
+# $Id: Makefile,v 1.4 1996-12-11 22:05:28 ghudson Exp $
 
 ATHINCDIR=/usr/athena/include
 ATHLIBDIR=/usr/athena/lib
 BSDOBJS=bcmp.o bcopy.o bzero.o flock.o ftime.o getdtblsize.o \
 	gethostid.o getpagesize.o getrusage.o getwd.o index.o killpg.o \
-	mctl.o nlist.o random.o reboot.o regex.o rindex.o scandir.o \
-	setbuffer.o setpriority.o setreid.o siglist.o signal.o times.o \
+	mctl.o nlist.o reboot.o regex.o rindex.o scandir.o \
+	setbuffer.o setpriority.o siglist.o signal.o times.o \
 	ualarm.o usleep.o wait3.o wait4.o
 
 all: libbsd.a
