@@ -12,6 +12,8 @@
  *   this is found prior to the minimal one in the global templates.
  */
 
+#define ATHENA_RULES
+
 /* 
  * WARNING - HACK HACK HACK
  * To allow xmkmf to work with our setup: set CONFDIR to be TOPDIR/config.
@@ -148,14 +150,19 @@ DESTDIR=
 
 IRULESRC = $(CONFIGSRC)		
 
+#ifdef ProjectTop
+PTOP = ProjectTop
+PIFLAGS = -I$(PTOP)
+#endif
+
 #ifdef UseInstalled
 IMAKE= imake
-IFLAGS= -I$(IRULESRC) -DTOPDIR=TOPDIR
+IFLAGS= -I$(IRULESRC) $(PIFLAGS) $(OTHER_IFLAGS) -DTOPDIR=TOPDIR
 XIFLAGS= -I$(ATHXLIBDIR)/X11/config -DUseInstalled
 #else
 UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
-IFLAGS= -I$(IRULESRC)
+IFLAGS= -I$(IRULESRC) $(PIFLAGS) $(OTHER_IFLAGS)
 XTOP=$(TOP)/third/common/X11R4
 XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CWD)
 #endif
@@ -239,16 +246,32 @@ FRC::
 
 #include INCLUDE_IMAKEFILE
 
-/* Allow for project re-configuration (THIS FORMAT WILL CHANGE)
- * At the top of a project directory, the file should read:
- *   #undef ProjectDir
- *   #define ProjectDir .
- *   #define ProjectRules foo.rules
- *   #include "foo.rules"
+/*
+ * PROJECT DECLARATION
+ *
+ * At the top of the project directory, simply include the following:
+ *
+ * 	#define Project
+ *
+ * This will declare that directory to be the top of the project tree.
+ * The top of the project tree will be in the include path, so if there
+ * are additional rules files that are being used by the Imakefiles, you
+ * can simply do something like:
+ *
+ * 	#include "config/extra.rules"
+ *
+ * from any Imakefile in the tree.
+ *
+ * The Make variable $(PTOP) is also set to the top of the project tree,
+ * so you can declare dependencies such as $(PTOP)/lib/libfoo.a.
  */
-#ifdef ProjectRules
-IPROJ= -DProjectRuleFile=\"ProjectRules\" -DProjectRules=ProjectRules \
-	-I../ProjectDir -DProjectDir=../ProjectDir
+
+#ifdef Project
+#ifndef ProjectTop
+#define ProjectTop NEWCWD
+#endif
+PTOP = $(TOP)/ProjectTop
+IPROJ = -DProject -DProjectTop=ProjectTop -I$(PTOP)
 #endif
 
 
