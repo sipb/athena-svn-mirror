@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.11 1990-01-30 03:24:10 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.12 1990-02-08 12:51:37 vanharen Exp $";
 #endif
 
 
@@ -533,7 +533,6 @@ deactivate_knuckle(knuckle)
     delete_knuckle(knuckle, /*???*/0);
   else
     knuckle->status = 0;
-  
   return(SUCCESS);
 }
 
@@ -608,11 +607,6 @@ init_question(k,topic,text)
   (void) strcpy(k->title,k->user->title1);
   (void) strcpy(k->question->topic,topic);
   init_log(k,text);
-  if(k->new_messages != (char *) NULL)
-    {
-      free(k->new_messages);
-      k->new_messages = (char *) NULL;
-    }
   return(SUCCESS);
 }
 
@@ -973,6 +967,8 @@ connect_knuckles(a,b)
 #endif /* STDC */
 {
   char msg[BUFSIZ];
+  KNUCKLE *owner, *consultant;
+  int ret;
 
   if(is_connected(a) || is_connected(b))
     {
@@ -984,12 +980,19 @@ connect_knuckles(a,b)
     {
       if(b->question == (QUESTION *) NULL)
 	{
-	  log_error("connect: connectee has no question");
+	  log_error("connect: neither knuckle has a question");
 	  return(ERROR);
 	}
-      a->question = b->question;
-      strcpy(a->title,a->user->title2);
-      strcpy(b->title,b->user->title1);
+      if (owns_question(b))
+	{
+	  owner = b;
+	  consultant = a;
+	}
+      else
+	{
+	  log_error("connect: connectee already connected");
+	  return(ERROR);
+	}
     }
   else
     {
@@ -998,50 +1001,69 @@ connect_knuckles(a,b)
 	  log_error("connect: connectee already has question");
 	  return(ERROR);
 	}
-      b->question = a->question;
-      strcpy(a->title,a->user->title1);
-      strcpy(b->title,b->user->title2);
+      if (owns_question(a))
+	{
+	  owner = a;
+	  consultant = b;
+	}
+      else
+	{
+	  log_error("connect: connectee already connected");
+	  return(ERROR);
+	}
     }
   
+  consultant->question = owner->question;
+  (void) strcpy(owner->title, owner->user->title1);
+  (void) strcpy(consultant->title, consultant->user->title2);
+
   a->connected = b;
   (void) strcpy(a->cusername,b->user->username);
   a->cinstance = b->instance;
+
   b->connected = a;
   (void) strcpy(b->cusername,a->user->username);
   b->cinstance = a->instance;
 
   (void) sprintf(msg,"You are connected to %s %s (%s@%s [%d]).\n",
-		 a->title, a->user->realname, a->user->username,
-		 a->user->machine, a->instance);
-  if(write_message_to_user(b,msg,0)!=SUCCESS)
+		 owner->title, owner->user->realname, owner->user->username,
+		 owner->user->machine, owner->instance);
+  if(write_message_to_user(consultant,msg,0)!=SUCCESS)
     {
-      disconnect_knuckles(a, b);
+      free_new_messages(consultant);
+      deactivate(consultant);
+      disconnect_knuckles(owner, consultant);
       return(FAILURE);
     }
       
   (void) sprintf(msg,"You are connected to %s %s (%s@%s [%d]).\n",
-		 b->title, b->user->realname, b->user->username,
-		 b->user->machine, b->instance);
-  if((write_message_to_user(a,msg,0) != SUCCESS) &&  (!is_signed_on(b)))
-    {
- /***  I'm not sure that we want to do this...  this may make it so that */
- /***  you cannot grab logged out users... ??? */
-/*      sprintf(msg,"Oops, he just logged out. Will try to find another...");
-	write_message_to_user(b,msg,0);
-	a->connected = (KNUCKLE *) NULL;
-	b->connected = (KNUCKLE *) NULL;
-	return(FAILURE);
-*/
-    }
+		 consultant->title, consultant->user->realname,
+		 consultant->user->username,
+		 consultant->user->machine, consultant->instance);
+  ret = write_message_to_user(owner,msg,0);
 
-  if (!was_connected(a,b))
+  if (!was_connected(owner, consultant))
     {
-      a->question->seen[a->question->nseen] = b->user->uid;
-      a->question->nseen++;
-      a->question->seen[a->question->nseen] = -1;
+      owner->question->seen[owner->question->nseen] = consultant->user->uid;
+      owner->question->nseen++;
+      owner->question->seen[owner->question->nseen] = -1;
     }
 
   return(SUCCESS);
+/*
+ *  It would be nice to be able to return "ret", since that way the
+ *  consultant could be informed that the user has logged out when trying
+ *  to grab a user, and then the consultant could back out or something.
+ *  This, however, would require a protocol change...
+ *
+ *  It would also mean that the match_maker could abort from connecting
+ *  somebody to a logged out user...  actually, this could be done
+ *  without a protocol change, but there isn't time right now to implement
+ *  it.
+ *
+ *  return(ret);
+ *
+ */
 }
 
 
@@ -1053,14 +1075,31 @@ disconnect_knuckles(a, b)
      KNUCKLE *a, *b;
 #endif /* STDC */
 {
-  b->question = (QUESTION *) NULL;
   b->connected = (KNUCKLE *) NULL;
-  b->cusername[0] = NULL;
-  deactivate_knuckle(b);
+  b->cusername[0] = (char) NULL;
+  if (owns_question(a))
+    b->question = (QUESTION *) NULL;
+
   a->connected = (KNUCKLE *) NULL;
-  a->cusername[0] = NULL;
+  a->cusername[0] = (char) NULL;
+  if (owns_question(b))
+    a->question = (QUESTION *) NULL;
 }
 
+
+#ifdef __STDC__
+free_new_messages(KNUCKLE *knuckle)
+#else
+free_new_messages(knuckle)
+     KNUCKLE *knuckle;
+#endif /* STDC */
+{
+  if(knuckle->new_messages != (char *) NULL)
+    {
+      free((char *) knuckle->new_messages);
+      knuckle->new_messages = (char *) NULL;
+    }
+}
 
 
 /*
