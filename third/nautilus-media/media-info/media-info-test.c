@@ -5,52 +5,29 @@
 #include "media-info.h"
 
 static void
-caps_print (GstCaps *caps)
+print_tag (const GstTagList *list, const gchar *tag, gpointer unused)
 {
-  if (caps == NULL) return;
-  /*
-  if (!strcmp (gst_caps_get_mime (caps), "application/x-gst-metadata") ||
-      !strcmp (gst_caps_get_mime (caps), "application/x-gst-streaminfo"))
-      */
-  if (TRUE)
-  {
-    GstProps *props = caps->properties;
-    GList *walk;
+  gint i, count;
 
-    if (props == NULL)
-    {
-      g_print ("    none\n");
-      return;
+  count = gst_tag_list_get_tag_size (list, tag);
+
+  for (i = 0; i < count; i++) {
+    gchar *str;
+
+    if (gst_tag_get_type (tag) == G_TYPE_STRING) {
+      g_assert (gst_tag_list_get_string_index (list, tag, i, &str));
+    } else {
+      str = g_strdup_value_contents (
+              gst_tag_list_get_value_index (list, tag, i));
     }
-    walk = props->properties;
 
-    while (walk) {
-      GstPropsEntry *entry = (GstPropsEntry *) walk->data;
-      const gchar *name;
-      const gchar *str_val;
-      gint int_val;
-      GstPropsType type;
-
-      name = gst_props_entry_get_name (entry);
-      type = gst_props_entry_get_type (entry);
-      switch (type) {
-        case GST_PROPS_STRING_TYPE:
-          gst_props_entry_get_string (entry, &str_val);
-          g_print ("      %s='%s'\n", name, str_val);
-          break;
-        case GST_PROPS_INT_TYPE:
-          gst_props_entry_get_int (entry, &int_val);
-          g_print ("      %s=%d\n", name, int_val);
-          break;
-        default:
-          break;
-      }
-
-      walk = g_list_next (walk);
+    if (i == 0) {
+      g_print ("%15s: %s\n", gst_tag_get_nick (tag), str);
+    } else {
+      g_print ("               : %s\n", str);
     }
-  }
-  else {
-    g_print (" unkown caps type\n");
+
+    g_free (str);
   }
 }
 
@@ -77,11 +54,14 @@ info_print (GstMediaInfoStream *stream)
     g_print ("- track %d\n", i);
     track = (GstMediaInfoTrack *) p->data;
     g_print ("  - metadata:\n");
-    caps_print (track->metadata);
+    if (track->metadata)
+      gst_tag_list_foreach (track->metadata, print_tag, NULL);
+    else
+      g_print ("  (none found)\n");
     g_print ("  - streaminfo:\n");
-    caps_print (track->streaminfo);
+    gst_tag_list_foreach (track->streaminfo, print_tag, NULL);
     g_print ("  - format:\n");
-    caps_print (track->format);
+    g_print ("%s\n", gst_caps_to_string (track->format));
     p = p->next;
   }
 }
@@ -91,13 +71,31 @@ main (int argc, char *argv[])
 {
   GstMediaInfo *info;
   GstMediaInfoStream *stream = NULL;
+  GError *error = NULL;
   gint i;
 
   g_assert (argc > 1);
 
+  gst_media_info_init ();
   gst_init (&argc, &argv);
 
-  info = g_object_new (GST_MEDIA_INFO_TYPE, NULL);
+  info = gst_media_info_new (&error);
+  if (error != NULL)
+  {
+    g_print ("Error creating media-info object: %s\n", error->message);
+    g_error_free (error);
+    return -1;
+  }
+
+  g_assert (G_IS_OBJECT (info));
+  if (!gst_media_info_set_source (info, "gnomevfssrc", &error))
+  {
+    g_print ("Could not set gnomevfssrc as a source\n");
+    g_print ("reason: %s\n", error->message);
+    g_error_free (error);
+    return -1;
+  }
+
   g_print ("stream: %p, &stream: %p\n", stream, &stream);
   for (i = 1; i < argc; ++i)
   {
@@ -105,11 +103,16 @@ main (int argc, char *argv[])
     /*
     stream = gst_media_info_read (info, argv[i], GST_MEDIA_INFO_ALL);
     */
-    gst_media_info_read_with_idler (info, argv[i], GST_MEDIA_INFO_ALL);
-    while (gst_media_info_read_idler (info, &stream) && stream == NULL)
+    gst_media_info_read_with_idler (info, argv[i], GST_MEDIA_INFO_ALL, &error);
+    while (gst_media_info_read_idler (info, &stream, &error) && stream == NULL)
       /* keep idling */ g_print ("+");
     g_print ("\nFILE: %s\n", argv[i]);
     g_print ("stream: %p, &stream: %p\n", stream, &stream);
+    if (error)
+    {
+      g_print ("Error reading media info: %s\n", error->message);
+      g_error_free (error);
+    }
     if (stream)
       info_print (stream);
     else

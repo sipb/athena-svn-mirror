@@ -93,7 +93,6 @@ struct AudioView {
 	gulong seek_changed_id;
 	gdouble last_seek_value; /* so we can see if we changed the slider
 				    or the user */
-	GList *audio_list;
 	AudioPlay *audio_play;
 	gboolean scanning;
 	guint scan_timeout;
@@ -108,6 +107,7 @@ struct AudioView {
 	GstMediaInfoStream *stream;	/* set by idler read */
 	GList *audio_item;	/* pointer to current audio_list item under
 				   inspection */
+        GList *audio_list;
 	GtkTreeIter *iterp;
 };
 
@@ -147,6 +147,19 @@ audio_view_tree_model_dump (AudioView *view)
 #endif
 
 /* helper functions */
+static void
+show_error_dialog (AudioView *view, const gchar *message)
+{
+  GtkWidget *parent, *dialog;
+
+  parent = gtk_widget_get_toplevel (view->widget);
+  dialog = gtk_message_dialog_new (GTK_WINDOW (parent), GTK_DIALOG_MODAL,
+					GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+					"%s", message);
+  gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_widget_destroy (dialog);
+}
+
 static GtkWidget *
 control_box_add_labeled_button (GtkWidget *control,
 		                const gchar *label, const gchar *file,
@@ -155,8 +168,11 @@ control_box_add_labeled_button (GtkWidget *control,
 	GtkWidget *button;
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
+	GtkTooltips *button_bar_tips;
 	gchar *location;
-
+	
+	button_bar_tips = gtk_tooltips_new ();
+	
 	if (toggle)
 	{
 		button = gtk_toggle_button_new ();
@@ -178,35 +194,49 @@ control_box_add_labeled_button (GtkWidget *control,
 		gtk_container_add (GTK_CONTAINER (button),
 				   gtk_label_new (label));
 	gtk_box_pack_start (GTK_BOX (control), button, FALSE, FALSE, 0);
-
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (button_bar_tips), button,
+				 label,
+				 label);
+	
 	return button;
 }
 
-/* check if the uri is playable and return the mime type if it is, NULL
- * if not */
-char *
+/* check if the uri is playable
+ * return TRUE if it is, FALSE if not
+ */
+gboolean
 audio_view_is_playable (const char *uri)
 {
         char *type = NULL;
 
+        /* we get a newly allocated type with this function */
+        /* FIXME: why do we need this cast ? it ought to return char * ! */
         type = (char *) gnome_vfs_get_mime_type (uri);
-        /* FIXME: assuming we get an allocated copy and have ownership */
-        if (!type) return NULL;
+	NM_DEBUG("audio_view_is_playable: gnome vfs type %s\n", type);
+        if (!type) return FALSE;
+        /* We also check for "old" mime types to catch everything */
         if (
-            (strcmp (type, "application/x-ogg") != 0) &&
+            /* gnome-vfs mime types */
+            (strcmp (type, "application/ogg") != 0) &&
+            (strcmp (type, "application/x-flac") != 0) &&
             (strcmp (type, "audio/x-flac") != 0) &&
+            (strcmp (type, "audio/mpeg") != 0) &&
             (strcmp (type, "audio/x-mp3") != 0) &&
+            (strcmp (type, "audio/mpeg") != 0) &&
             (strcmp (type, "audio/x-wav") != 0) &&
 	    (strcmp (type, "audio/x-mod") != 0) &&
 	    (strcmp (type, "audio/x-s3m") != 0) &&
 	    (strcmp (type, "audio/x-xm") != 0) &&
-	    (strcmp (type, "audio/x-it") != 0)
+	    (strcmp (type, "audio/x-it") != 0) &&
+            /* legacy mime types */
+            (strcmp (type, "application/x-ogg") != 0)
 	   )
         {
                 g_free (type);
-                return NULL;
+                return FALSE;
         }
-        return type;
+        g_free (type);
+        return TRUE;
 }
 
 /* extract GList of string properties to a string of different lines
@@ -220,6 +250,7 @@ audio_view_props_to_string (GList *list, const gchar *prepend)
 	gchar *temp;
 	gchar *result = NULL;
 
+#if 0
 	p = list;
 	while (p)
 	{
@@ -243,17 +274,24 @@ audio_view_props_to_string (GList *list, const gchar *prepend)
 		p = g_list_next (p);
 	}
 	return result;
+#endif
 }
 /* returns a newly allocated human-readable type for the given mime type */
 static gchar *
 audio_view_mime_to_type (const gchar *mime)
 {
 	gchar *result;
-        if (strcmp (mime, "application/x-ogg") == 0)
+        if ((strcmp (mime, "application/x-ogg") == 0) ||
+            (strcmp (mime, "application/ogg") == 0))
 		return g_strdup (_("Ogg/Vorbis"));
-        if (strcmp (mime, "application/x-flac") == 0)
+        if ((strcmp (mime, "application/x-flac") == 0) ||
+            (strcmp (mime, "audio/x-flac") == 0))
 		return g_strdup (_("FLAC"));
-        if (strcmp (mime, "audio/x-mp3") == 0)
+        else if ((strcmp (mime, "audio/mpeg") == 0) ||
+                 (strcmp (mime, "audio/x-mp3") == 0) ||
+                 (strcmp (mime, "audio/mp3") == 0) ||
+                 (strcmp (mime, "application/x-id3") == 0) ||
+                 (strcmp (mime, "audio/x-id3") == 0))
 		return g_strdup (_("MPEG"));
         if (strcmp (mime, "audio/x-wav") == 0)
 		return g_strdup (_("WAVE"));
@@ -276,67 +314,86 @@ audio_view_mime_to_type (const gchar *mime)
 	return g_strdup (_("Unknown"));
 }
 
-/* extract the useful metadata to an allocated string */
+static void
+print_tag (const GstTagList *list, const gchar *tag, gpointer unused)
+{
+  gint i, count;
+
+  count = gst_tag_list_get_tag_size (list, tag);
+
+  for (i = 0; i < count; i++) {
+    gchar *str;
+
+    if (gst_tag_get_type (tag) == G_TYPE_STRING) {
+      g_assert (gst_tag_list_get_string_index (list, tag, i, &str));
+    } else {
+      str = g_strdup_value_contents (
+              gst_tag_list_get_value_index (list, tag, i));
+    }
+
+   if (i == 0) {
+      g_print ("%15s: %s\n", gst_tag_get_nick (tag), str);
+    } else {
+      g_print ("               : %s\n", str);
+    }
+
+    g_free (str);
+  }
+}
+
+/* extract the useful metadata to an allocated string
+   returns Unknown if no useful metadata could be found */
 static gchar *
 audio_view_media_get_metadata (GstMediaInfoStream *info)
 {
 	gchar *metadata = NULL;
-	GList *artist = NULL;
-	GList *title = NULL;
-	gchar *artists;
-	gchar *titles;
+	gchar *artist;
+	gchar *title;
 
-	GList *p;
+	GList *p = NULL;
 	GstMediaInfoTrack *track;
 
 	NM_DEBUG("getting metadata\n");
-	if (info->length_tracks < 1) return NULL;
-	if (info->tracks == NULL) return NULL;
+	if (info->length_tracks < 1)
+        {
+		NM_DEBUG("number of tracks < 1, returning\n");
+		return NULL;
+	}
+	if (info->tracks == NULL)
+        {
+		NM_DEBUG("no tracks, returning\n");
+		return NULL;
+	}
 
 	track = info->tracks->data;
-	if (track == NULL) return NULL;
-	if (track->metadata == NULL) return NULL;
-	if (track->metadata->properties == NULL) return NULL;
-
-	p = track->metadata->properties->properties;
-
-	/* construct GLists of GstPropsEntries to artist and title */
-	while (p)
-	{
-		GstPropsEntry *entry = (GstPropsEntry *) p->data;
-		const gchar *name;
-		const gchar *val;
-		GstPropsType type;
-
-		name = gst_props_entry_get_name (entry);
-		type = gst_props_entry_get_type (entry);
-		if (g_ascii_strncasecmp (name, "artist", 6) == 0 &&
-		    type == GST_PROPS_STRING_TYPE)
-			artist = g_list_append (artist, entry);
-		if (g_ascii_strncasecmp (name, "title", 6) == 0 &&
-		    type == GST_PROPS_STRING_TYPE)
-			title = g_list_append (title, entry);
-		p = g_list_next (p);
+	if (track == NULL)
+        {
+		NM_DEBUG("first track NULL, returning\n");
+		return NULL;
 	}
-
-	/* now construct a string out of it */
-	artists = audio_view_props_to_string (artist, _("Artist: "));
-	titles = audio_view_props_to_string (title, _("Title: "));
-	if (artists && titles)
-	{
-		metadata = g_strconcat (artists, titles, NULL);
-		g_free (artists);
-		g_free (titles);
+	if (track->metadata == NULL)
+        {
+		NM_DEBUG("first track's metadata NULL, returning\n");
+		return NULL;
 	}
-	else if (artists) metadata = artists;
-	else metadata = titles;
+	gst_tag_list_get_string (track->metadata, "artist", &artist);
+	gst_tag_list_get_string (track->metadata, "title", &title);
+	NM_DEBUG("Got artists %s, title %s\n", artist, title);
 
-	/* we chomp because it looks better in the list view */
-	return g_strchomp (metadata);
+	if (!artist && !title)
+                return g_strdup (_("Unknown"));
+	if (artist && title)
+		return g_strdup_printf ("%s%s\n%s%s",
+			_("Artist: "), artist,
+			_("Title: "), title);
+	if (artist)
+		return g_strdup_printf ("%s%s", _("Artist: "), artist);
+	return g_strdup_printf ("%s%s", _("Title: "), title);
 }
 
 /* set next track to play
- * return FALSE if this is the last track */
+ * return FALSE if this is the last track or if the next track is not
+ * playable */
 static gboolean
 audio_view_play_next (AudioView *view)
 {
@@ -346,6 +403,7 @@ audio_view_play_next (AudioView *view)
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GstMediaInfoStream *info;
+	gchar *message;
 
 	g_assert (IS_AUDIO_PLAY (play));
 	NM_DEBUG("play_next: start\n");
@@ -371,10 +429,23 @@ audio_view_play_next (AudioView *view)
 				    AUDIO_INFO_COLUMN, &info,
 				    -1);
 		NM_DEBUG("play_next: track to play is %s\n", info->path);
+
+		if (!audio_view_is_playable (info->path))
+		{
+			NM_DEBUG("play_next: %s is not playable\n", info->path);
+			return FALSE;
+		}
+		audio_view_set_playing (view, info, path);
+		gtk_tree_path_free (path);
+		return TRUE;
 	}
-	audio_view_set_playing (view, info, path);
-	gtk_tree_path_free (path);
-	return TRUE;
+	else
+	{
+		message = g_strdup_printf (_("Make a selection first !"));
+		gtk_label_set_text (GTK_LABEL (view->status), message);
+		g_free (message);
+		return FALSE;
+	}
 }
 
 /* timeout for scanner */
@@ -410,6 +481,7 @@ audio_view_load_location (AudioView *view, const char *location)
   g_free (view->location);
   view->location = g_strdup (location);
   view->selection = NULL;
+  NM_DEBUG("loading location %s and updating view\n", location);
 
   audio_view_update (view);
 }
@@ -516,29 +588,13 @@ audio_view_set_playing (AudioView *view, GstMediaInfoStream *info,
 }
 
 /* ui callbacks */
-void
-audio_view_error_handler (const gchar *message, gpointer data)
+static void
+audio_view_error_handler (const gchar *message, gpointer *data)
 {
-	GtkWindow *parent = GTK_WINDOW (data);
-	GtkWidget *dialog;
+  AudioView *view;
+  view = (AudioView *) data;
 
-	if (parent == NULL || !GTK_IS_WINDOW (parent))
-	{
-		/* no parent window, so not sure if ui windows will be shown */
-		g_warning (message);
-		/* save it for possible later display */
-		/* FIXME: remove this, we don't get at the view anyway */
-		/*
-		if (view->error_message) g_free (view->error_message);
-		view->error_message = g_strdup (message);
-		*/
-	}
-	dialog = gtk_message_dialog_new (parent, GTK_DIALOG_DESTROY_WITH_PARENT,
-			                 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-					 message);
-	/* destroy it if the dialog is run */
-	if (gtk_dialog_run (GTK_DIALOG (dialog)) != GTK_RESPONSE_NONE)
-		gtk_widget_destroy (dialog);
+  show_error_dialog (view, message);
 }
 
 /* FIXME */
@@ -560,6 +616,11 @@ row_activated_callback (GtkTreeView *tree_view, GtkTreePath *path,
 	gtk_tree_model_get (model, &iter,
 			    AUDIO_INFO_COLUMN, &info,
 			    -1);
+	if (!info)
+	{
+		show_error_dialog (view, "No information on file.");
+		return;
+	}
 	NM_DEBUG("callback: get info %p (%s) playing (iterp %)\n",
 		 info, info->path, &iter);
 	audio_view_set_playing (view, info, NULL);
@@ -574,6 +635,7 @@ prev_activate (GtkButton *prev_button, AudioView *view)
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GstMediaInfoStream *info;
+	gchar *message;
 
 	play = view->audio_play;
 	g_assert (IS_AUDIO_PLAY (play));
@@ -591,8 +653,14 @@ prev_activate (GtkButton *prev_button, AudioView *view)
 		gtk_tree_model_get (model, &iter,
 				    AUDIO_INFO_COLUMN, &info,
 				    -1);
+		audio_view_set_playing (view, info, path);
 	}
-	audio_view_set_playing (view, info, path);
+	else
+	{
+		message = g_strdup_printf (_("Make a selection first !"));
+		gtk_label_set_text (GTK_LABEL (view->status), message);
+		g_free (message);
+	}
 }
 
 static void
@@ -755,6 +823,19 @@ audio_view_media_info_next (AudioView *view)
 	return FALSE;
 }
 
+static void
+free_iter_list (GList *list)
+{
+	GList *l;
+
+	for (l = list; l != NULL; l = l->next) {
+		gtk_tree_iter_free (l->data);
+	}
+
+	g_list_free (list);
+}
+
+/* FIXME: split this up for better legibility */
 static gboolean
 audio_view_get_media_info_idler (AudioView *view)
 {
@@ -762,6 +843,7 @@ audio_view_get_media_info_idler (AudioView *view)
 	GtkTreeIter iter;
 	GstMediaInfoStream *info = NULL;
 	gchar *metadata;
+	GError *error = NULL;
 
 	if (view->audio_list == NULL)
 	{
@@ -795,9 +877,11 @@ audio_view_get_media_info_idler (AudioView *view)
 			g_free (escaped_name);
 			NM_DEBUG("getting media-info for path uri %s\n",
 			         path_uri);
+                        if (view->media_info == NULL)
+				return FALSE;
 			gst_media_info_read_with_idler (view->media_info,
 							path_uri,
-							GST_MEDIA_INFO_ALL);
+							GST_MEDIA_INFO_ALL, &error);
 			view->stream = NULL;
 			view->state = AUDIO_VIEW_INFO_STATE_IDLER;
 			return TRUE;
@@ -813,11 +897,17 @@ audio_view_get_media_info_idler (AudioView *view)
 			if ((view->stream) == NULL)
 			{
 				if (!gst_media_info_read_idler (view->media_info,
-								&(view->stream)))
+								&(view->stream), &error))
 				{
-						g_warning ("error on media info idler !");
+						if (error)
+						{
+							show_error_dialog (view, error->message);
+							g_error_free (error);
+						}
+
 						/* FIXME: better cleanup here */
-						audio_view_media_info_next (view);
+						//audio_view_media_info_next (view);
+						return FALSE;
 				}
 				return TRUE;
 			}
@@ -893,6 +983,7 @@ audio_view_update (AudioView *view)
 	char *path;
         gchar *message;
 	GtkTreeIter iter;
+	GError *error = NULL;
 
 	int file_index;
 	int image_count;
@@ -904,8 +995,7 @@ audio_view_update (AudioView *view)
 	if (result != GNOME_VFS_OK) {
 		path = (char *) gnome_vfs_get_local_path_from_uri (view->location);
 		message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
-		eel_show_error_dialog (message, _("Can't read folder"),
-				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view->event_box))));
+		show_error_dialog (view, message);
 		g_free (path);
 		g_free (message);
 
@@ -916,6 +1006,8 @@ audio_view_update (AudioView *view)
 	 * and FIXME: extracting media-info data if present */
         /* populate the list with filenames */
         gtk_list_store_clear (view->list_store);
+        free_iter_list (view->audio_list);
+        view->audio_list = NULL;
 	for (node = list; node != NULL; node = node->next) {
 		current_file_info = node->data;
 
@@ -928,6 +1020,7 @@ audio_view_update (AudioView *view)
                 g_free (escaped_name);
 
 		/* FIXME: check if the mime type is playable */
+                NM_DEBUG("checking if %s is playable\n", current_file_info->name);
 		/* we will get NULL if it's not playable */
 		if (audio_view_is_playable (path_uri))
 		{
@@ -953,8 +1046,21 @@ audio_view_update (AudioView *view)
 	*/
 	gtk_widget_show (view->widget);
 	/* create a media info object */
-	view->media_info = gst_media_info_new (NULL);
-	NM_DEBUG("adding idler");
+	view->media_info = gst_media_info_new (&error);
+	if (error)
+        {
+		show_error_dialog (view, error->message);
+		g_error_free (error);
+		return;
+        }
+	gst_media_info_set_source (view->media_info, "gnomevfssrc", &error);
+	if (error)
+        {
+		show_error_dialog (view, error->message);
+		g_error_free (error);
+		return;
+        }
+	NM_DEBUG("adding idler\n");
 	view->media_info_idler_id = g_idle_add ((GSourceFunc) audio_view_get_media_info_idler, view);
 }
 
@@ -1167,7 +1273,7 @@ audio_view_new ()
 	if (error)
 	{
 		/* no window yet, so no parent */
-		audio_view_error_handler (error->message, NULL);
+		show_error_dialog (NULL, error->message);
 		g_error_free (error);
 	}
 	if (!IS_AUDIO_PLAY (view->audio_play))
@@ -1179,7 +1285,7 @@ audio_view_new ()
 	/* install the error handler */
 	audio_play_set_error_handler (view->audio_play,
 			              (AudioPlayErrorHandler) audio_view_error_handler,
-				      NULL);
+				      view);
 	audio_sink = gst_gconf_get_default_audio_sink ();
 	/* FIXME: do fallback instead of assert */
 	g_assert (GST_IS_ELEMENT (audio_sink));
@@ -1213,9 +1319,12 @@ audio_view_dispose (AudioView *view)
 	}
 
 	if (view->media_info_idler_id) {
+                g_print("removing media info idler");
 		g_source_remove (view->media_info_idler_id);
 		view->media_info_idler_id = 0;
 	}
+        else
+                g_print("media info idler already removed");
 
 	if (view->scan_timeout) {
 		g_source_remove (view->scan_timeout);
@@ -1231,18 +1340,6 @@ audio_view_dispose (AudioView *view)
 		g_object_unref (view->stream);
 		view->stream = NULL;
 	}
-}
-
-static void
-free_iter_list (GList *list)
-{
-	GList *l;
-	
-	for (l = list; l != NULL; l = l->next) {
-		gtk_tree_iter_free (l->data);
-	}
-
-	g_list_free (list);
 }
 
 void

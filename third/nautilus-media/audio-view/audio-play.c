@@ -39,7 +39,6 @@ struct AudioPlayPriv {
 
 	GstCaps *caps;			/* FIXME: why ? */
 
-	GstClock *clock;
 	gboolean have_type;
 	gboolean have_eos;		/* dispatcher booleans from idler */
 	gboolean have_cache_empty;
@@ -143,19 +142,27 @@ audio_play_error (AudioPlay *play, const gchar *message)
 		g_warning ("No play object passed.");
 		return;
 	}
-	g_print ("audio-play error: %s\n", message);
 	if (play->priv->error_handler)
 		play->priv->error_handler (message, play->priv->error_data);
+	else
+		g_print ("audio-play error: %s\n", message);
 }
 /* handler functions dispatched from iterator */
 
 static void
 handle_have_type (AudioPlay *play)
 {
-	AudioPlayPriv *priv = play->priv;
-	GstCaps *caps = priv->caps;
-	gchar *mime = g_strdup_printf (gst_caps_get_mime (caps));
+	AudioPlayPriv *priv;
+	GstCaps *caps;
+	GstStructure *str;
 	GstElement *decoder = NULL;
+	gchar *mime;
+
+	priv = play->priv;
+	caps = priv->caps;
+	str = gst_caps_get_structure (caps, 0);
+	mime = g_strdup_printf (gst_structure_get_name (str));
+	gst_caps_free (priv->caps);
 
 #ifdef DEBUG
 	fprintf (stderr, "handle_have_type\n");
@@ -176,20 +183,26 @@ handle_have_type (AudioPlay *play)
 	NM_DEBUG("removing typefind\n");
 	gst_bin_remove (GST_BIN (priv->pipeline), priv->typefind);
 
-	/* gst_scheduler_show (GST_ELEMENT_SCHED (priv->pipeline)); */
-
+#ifdef STATICDECODER
 	/* now based on the mime type set up the pipeline properly */
 	NM_DEBUG("deciding on decoder\n");
-	if (strstr (mime, "mp3"))
-		decoder = gst_element_factory_make ("mad", "decoder");
-	else if (strstr (mime, "x-ogg"))
+	if ((strcmp (mime, "application/x-ogg") == 0) ||
+            (strcmp (mime, "application/ogg") == 0))
 		decoder = gst_element_factory_make ("vorbisfile", "decoder");
-	else if (strstr (mime, "x-wav"))
-		decoder = gst_element_factory_make ("wavparse", "decoder");
-	else if (strstr (mime, "x-flac"))
+	else if ((strcmp (mime, "audio/mpeg") == 0) ||
+		 (strcmp (mime, "audio/x-mp3") == 0) ||
+		 (strcmp (mime, "audio/mp3") == 0) ||
+		 (strcmp (mime, "application/x-id3") == 0) ||
+		 (strcmp (mime, "audio/x-id3") == 0))
+		decoder = gst_element_factory_make ("mad", "decoder");
+	else if (strcmp (mime, "application/x-flac") == 0)
 		decoder = gst_element_factory_make ("flacdec", "decoder");
-	else if (strstr (mime, "x-mod") || strstr (mime, "x-s3m") || 
-	         strstr (mime, "x-xm") || strstr (mime, "x-it"))
+	else if (strcmp (mime, "audio/x-wav") == 0)
+		decoder = gst_element_factory_make ("wavparse", "decoder");
+	else if (strcmp (mime, "audio/x-mod") == 0 ||
+		 strcmp (mime, "audio/x-s3m") == 0 ||
+		 strcmp (mime, "audio/x-xm") == 0 ||
+		 strcmp (mime, "audio/x-it") == 0)
 		decoder = gst_element_factory_make ("modplug", "decoder");
 	else
 	{
@@ -198,14 +211,12 @@ handle_have_type (AudioPlay *play)
 		return;
 	}
 	g_free (mime);
+#else
+	decoder = gst_element_factory_make ("spider", "spider");
+#endif
 	priv->decoder = decoder;
 
 	/* set it to null */
-	/* somewhere between 0.4.2 and 0.5.0, setting this to NULL
-	 * broke threads completely because of the cothread freeing
-	 * or something to that effect
-	 * FIXME: figure out why that happened so we can set it to NULL
-	 * again */
 	gst_element_set_state (priv->pipeline, GST_STATE_NULL);
 
 	/* now put playback pipe in place of where typefind was  */
@@ -223,6 +234,7 @@ handle_have_type (AudioPlay *play)
 	if (gst_element_set_state (priv->pipeline, GST_STATE_PAUSED)
 			== GST_STATE_FAILURE)
 		g_print ("pipelien could not be paused !\n");
+	NM_DEBUG("handle_have_type: DONE\n");
 }
 
 /* callbacks & idlers */
@@ -234,7 +246,9 @@ iterator (AudioPlay *play)
 	g_print ("+");
 #endif
 	if (gst_bin_iterate (GST_BIN (play->priv->pipeline)))
+	{
 		return TRUE;
+	}
 	else
 	{
 		NM_DEBUG("iterator: couldn't iterate\n");
@@ -269,7 +283,7 @@ idler (AudioPlay *play)
 	else
 	{
 		NM_DEBUG("idler returning false, not playing\n");
-		//return FALSE;
+		return FALSE;
 	}
 }
 
@@ -279,10 +293,14 @@ tick_timeout (AudioPlay *play)
 {
 	gint secs;
 	guint64 nanosecs;
-	GstClock *clock = play->priv->clock;
+	GstElement *sink = play->priv->sink;
+	GstFormat format = GST_FORMAT_TIME;
+	gboolean q = FALSE;
 	AudioPlayPriv *priv = play->priv;
 
-	nanosecs = gst_clock_get_time (clock);
+	q = gst_element_query (sink, GST_QUERY_POSITION, &format, &nanosecs);
+	if (!q) return;
+
 	secs = (gint) (nanosecs / GST_SECOND);
 	if (secs != priv->seconds)
 	{
@@ -324,6 +342,7 @@ error_callback (GObject *object, GstObject *origin, gchar *error,
 }
 
 /* callback used by query of length of track to know when caps are there */
+/* FIXME: we moved this */
 static void
 deep_notify (GObject *object, GstObject *origin,
 	     GParamSpec *pspec, AudioPlay *play)
@@ -331,46 +350,76 @@ deep_notify (GObject *object, GstObject *origin,
 	GValue value = { 0 };
 	gint rate = 0;
 
-	/* don't care about file offsets */
-	if (strcmp (pspec->name, "offset") == 0) return;
+	NM_DEBUG("deep_notify: of %s\n", pspec->name);
 	if (strcmp (pspec->name, "caps") == 0)
 	{
-		NM_DEBUG("got caps\n");
+		GstElement *element;
+
+		element = GST_ELEMENT (gst_object_get_parent (origin));
 		/* FIXME: we should check if the caps are sufficient
 		 * for length calculation */
 		g_value_init (&value, pspec->value_type);
 		g_object_get_property (G_OBJECT (origin), pspec->name, &value);
 		play->priv->caps = g_value_peek_pointer (&value);
-		if (gst_caps_get_props (play->priv->caps) == NULL)
+		NM_DEBUG("deep_notify: got caps %" GST_PTR_FORMAT " from %s\n",
+			play->priv->caps, gst_element_get_name (element));
+		NM_DEBUG("deep_notify: element %p, sink %p\n", element, play->priv->sink);
+		NM_DEBUG("deep_notify: sink %s\n", gst_element_get_name (play->priv->sink));
+		if (element == play->priv->sink)
 		{
-			NM_DEBUG("no caps yet, returning\n");
-		}
-		else
+			NM_DEBUG("deep_notify: caps coming from sink\n");
 			play->priv->have_caps = TRUE;
+		}
 	}
 	if (strcmp (pspec->name, "channels") == 0)
 	{
 		/* good enough to have_caps on */
 		play->priv->have_caps = TRUE;
 	}
-	NM_DEBUG("deep_notify: %s\n", pspec->name);
 }
+/* callback used by query of length of track to know when caps are present
+   on the audio sink bin */
+static void
+deep_notify_sink (GObject *object, GstObject *origin,
+	          GParamSpec *pspec, AudioPlay *play)
+{
+	GValue value = { 0 };
+	gint rate = 0;
+
+	NM_DEBUG("deep_notify_sink: of %s\n", pspec->name);
+	if (strcmp (pspec->name, "caps") == 0)
+	{
+		GstElement *element;
+
+		element = GST_ELEMENT (gst_object_get_parent (origin));
+		/* FIXME: we should check if the caps are sufficient
+		 * for length calculation */
+		g_value_init (&value, pspec->value_type);
+		g_object_get_property (G_OBJECT (origin), pspec->name, &value);
+		play->priv->caps = g_value_peek_pointer (&value);
+		play->priv->have_caps = TRUE;
+		NM_DEBUG("deep_notify: got caps %" GST_PTR_FORMAT " from %s\n",
+			play->priv->caps, gst_element_get_name (element));
+	}
+}
+
 /* callback for when we have the type of the file
  * set the boolean and handle it in the iterator
  * we set up a decoder based on the mime type
  */
 static void
-have_type (GstElement *element, GstCaps *caps, AudioPlay *play)
+have_type_callback (GstElement *element, guint probability, GstCaps *caps, AudioPlay *play)
 {
 	AudioPlayPriv *priv = play->priv;
 
+	g_assert (priv);
 #ifdef DEBUG
-	NM_DEBUG("have_type callback called.\n");
+	NM_DEBUG("have_type callback called, caps %" GST_PTR_FORMAT ".\n", caps);
 #endif
 
 	g_assert (GST_IS_ELEMENT (priv->pipeline));
 	priv->have_type = TRUE;
-	priv->caps = caps;
+	priv->caps = gst_caps_copy (caps);
 }
 
 /* object functions */
@@ -452,6 +501,7 @@ audio_play_new (GError **error)
 	AudioPlay *play = g_object_new (AUDIO_PLAY_TYPE, NULL);
 	AudioPlayPriv *priv = play->priv;
 
+	g_assert (priv);
 	priv->pipeline = gst_pipeline_new ("pipeline");
 	g_assert (priv->pipeline);
 
@@ -485,12 +535,13 @@ audio_play_new (GError **error)
 
 	/* execute the callback when we find the type */
 	g_signal_connect (priv->typefind, "have_type",
-		          G_CALLBACK (have_type), play);
+		          G_CALLBACK (have_type_callback), play);
 
 	/* catch deep notifies */
+/*
 	g_signal_connect (priv->pipeline, "deep_notify",
 		          G_CALLBACK (deep_notify), play);
-
+*/
 	/* catch errors, they're fun ! */
 	g_signal_connect (priv->pipeline, "error",
 			  G_CALLBACK (error_callback), play);
@@ -617,7 +668,7 @@ audio_play_autoplug (AudioPlay *play, GError **error)
 	g_assert (play->priv->decoder == NULL);
 
 	/* put in typefind */
-	g_print ("putting in typefind\n");
+	NM_DEBUG ("putting in typefind\n");
 	gst_bin_add (GST_BIN (priv->pipeline), priv->typefind);
 	gst_element_connect (priv->src, priv->typefind);
 
@@ -629,9 +680,9 @@ audio_play_autoplug (AudioPlay *play, GError **error)
 	g_assert (gst_element_get_state (play->priv->pipeline) == GST_STATE_PLAYING);
 	while (play->priv->have_type == FALSE)
 	{
-		g_print ("*");
-	       if (!gst_bin_iterate (GST_BIN (play->priv->pipeline)))
-	       {
+		NM_DEBUG ("*");
+		if (!gst_bin_iterate (GST_BIN (play->priv->pipeline)))
+		{
 		       /* clean up typefind */
 			gst_element_disconnect (priv->src, priv->typefind);
 			g_object_ref (priv->typefind);
@@ -692,13 +743,17 @@ audio_play_update_length (AudioPlay *play)
 	const GstFormatDefinition *definition = gst_format_get_details (format);
 
 	g_assert (IS_AUDIO_PLAY (play));
-	
+	NM_DEBUG("audio_play_update_length: START\n");
+
 	while (gst_bin_iterate (GST_BIN (play->priv->pipeline)) &&
 	       play->priv->have_caps == FALSE)
-		g_print ("?");
+		NM_DEBUG ("?");
 	g_print ("\n");
 
-	pad = gst_element_get_pad (play->priv->decoder, "src");
+	/* since the decoder is spider, we don't know the srcpad name.
+	   so instead we get the sink's ghost pad, and get that one's peer */
+	pad = gst_element_get_pad (play->priv->sink, "sink");
+	pad = gst_pad_get_peer (pad);
 	if (pad == NULL)
 	{
 		g_print ("WARNING: could not get sink pad of decoder !\n");
@@ -706,7 +761,6 @@ audio_play_update_length (AudioPlay *play)
 	}
 	caps = gst_pad_get_caps (pad);
 	if (caps == NULL) g_print ("WARNING: caps are NULL\n");
-	gst_caps_debug (caps, "caps of decoder src pad");
 
 	res = gst_pad_query (pad, GST_QUERY_TOTAL, &format, &value);
 	if (!res) 
@@ -775,9 +829,7 @@ static gboolean
 audio_play_set_state_playing (AudioPlay *play, GstElementState state,
 		              GError **error)
 {
-	NM_DEBUG("playing audio play\n");
-	/* FIXME: somewhere else ? update clock */
-	play->priv->clock = gst_bin_get_clock (GST_BIN (play->priv->pipeline));
+	NM_DEBUG("audio_play_set_state_playing: START\n");
 	if (play->priv->decoder == NULL)
 	{
 		audio_play_error (play, "no decoder found yet");
@@ -804,6 +856,7 @@ audio_play_set_state_playing (AudioPlay *play, GstElementState state,
 	g_assert (play->priv->idler_id > 0);
 	/* set handler for playback; it will unregister
 	 * when iterate fails */
+	NM_DEBUG("adding iterator\n");
 	play->priv->iterator_id =
 		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE - 10,
 				 (GSourceFunc) iterator,
@@ -811,7 +864,9 @@ audio_play_set_state_playing (AudioPlay *play, GstElementState state,
 	g_assert (play->priv->iterator_id > 0);
 	/* set tick timeout */
 	play->priv->tick_timeout_id = g_timeout_add (200, (GSourceFunc) tick_timeout, play);
+	NM_DEBUG("audio_play_set_state_playing: DONE\n");
 }
+
 gboolean
 audio_play_set_state (AudioPlay *play, GstElementState state, GError **error)
 {
@@ -872,6 +927,8 @@ audio_play_set_audio_sink (AudioPlay *play, GstElement *element)
 		return;
 	}
 	play->priv->sink = element;
+	g_signal_connect (play->priv->sink, "deep_notify",
+		          G_CALLBACK (deep_notify_sink), play);
 	g_signal_connect (G_OBJECT (play->priv->sink), "eos",
 			  G_CALLBACK (callback_sink_eos), play);
 }

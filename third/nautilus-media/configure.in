@@ -1,7 +1,7 @@
 AC_INIT
 
 PACKAGE=nautilus-media
-VERSION=0.2.1
+VERSION=0.8.1
 dnl RELEASE=0.`date +%Y%m%d_%H%M%S`
 RELEASE=1
 
@@ -32,19 +32,24 @@ dnl Now we're ready to ask for gstreamer libs and cflags
 dnl And we can also ask for the right version of gstreamer
 HAVE_GST=no
 
-dnl start with 0.6
-GST_MAJORMINOR=0.6
+GST_REQ=0.8.0
+dnl start with 0.8
+GST_MAJORMINOR=0.8
 PKG_CHECK_MODULES(GST, \
-  gstreamer-$GST_MAJORMINOR >= 0.5.2 gstreamer-libs-$GST_MAJORMINOR >= 0.5.2,
-                  HAVE_GST=yes,HAVE_GST=no)
+  gstreamer-$GST_MAJORMINOR >= $GST_REQ \
+  gstreamer-gconf-$GST_MAJORMINOR >= $GST_REQ \
+  gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
+  HAVE_GST=yes,HAVE_GST=no)
 
-dnl fail back to 0.5
-if test "x$HAVE_GST" = "xno"; then
-  GST_MAJORMINOR=0.5
-  PKG_CHECK_MODULES(GST, \
-    gstreamer-$GST_MAJORMINOR >= 0.5.2 gstreamer-libs-$GST_MAJORMINOR >= 0.5.2,
-                    HAVE_GST=yes,HAVE_GST=no)
-fi
+dnl fall back to 0.7
+dnl if test "x$HAVE_GST" = "xno"; then
+dnl   GST_MAJORMINOR=0.7
+dnl   PKG_CHECK_MODULES(GST, \
+dnl     gstreamer-$GST_MAJORMINOR >= $GST_REQ \
+dnl     gstreamer-gconf-$GST_MAJORMINOR >= $GST_REQ \
+dnl     gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
+dnl   HAVE_GST=yes,HAVE_GST=no)
+dnl fi
 
 dnl Give error and exit if we don't have gstreamer
 if test "x$HAVE_GST" = "xno"; then
@@ -54,10 +59,6 @@ fi
 dnl make GST_CFLAGS and GST_LIBS available
 AC_SUBST(GST_CFLAGS)
 AC_SUBST(GST_LIBS)
-
-dnl additional gstcontrol libs
-GST_GCONF_LIBS=-lgstgconf-$GST_MAJORMINOR
-AC_SUBST(GST_GCONF_LIBS)
 
 dnl for test apps we want gnome stuff
 PKG_CHECK_MODULES(GNOME, libgnome-2.0 libgnomeui-2.0 eel-2.0,
@@ -92,7 +93,7 @@ dnl AM_WITH_NLS
 GETTEXT_PACKAGE=nautilus-media
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package])
-ALL_LINGUAS="am bg ca cs da de el es et fi fr he hu it ko lv mk mn ms nl no pl pt pt_BR ro ru sq sk sl sv tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gu he hi hr hu id is it ja ko li lt lv mi mk ml mn ms nb nl nn no or pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tk tr uk vi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 dnl get a good @LIBEXECDIR@ translation
@@ -130,10 +131,19 @@ if test x$GCONFTOOL = xno; then
 fi
 AM_GCONF_SOURCE_2()
 
+dnl do we build with deprecation on ?
+dnl FIXME: put this into a flag depending on the nano version
+#DEPRECATE="-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED"
+DEPRECATE=""
+AC_SUBST(DEPRECATE)
+
+dnl check for da man
 AC_MSG_CHECKING([for da man])
 AC_MSG_RESULT([campd])
+
 AC_OUTPUT([
   Makefile 
+  m4/Makefile
   media-info/Makefile
   audio-properties-view/Makefile
   audio-properties-view/Nautilus_View_audio_properties.server.in

@@ -19,15 +19,17 @@
 
 #include <gst/gst.h>
 
-#define FRAME	150		/* which frame to snapshot */
-#define TIMEOUT	9999		/* how long before we give up, msec */
+#define FRAME	200		/* which frame to snapshot */
+#define TIMEOUT	3000		/* how long before we give up, msec */
 
 gboolean finished = FALSE;
+gboolean can_finish = FALSE;
 
 void end_of_snap (GstElement *pipeline)
 {
 	g_print ("Snapped.\n");
-	gst_element_set_state (pipeline, GST_STATE_READY);
+	gst_element_set_state (pipeline, GST_STATE_NULL);
+	while (!can_finish) ;
 	gst_main_quit ();
 	finished = TRUE;
 }
@@ -52,7 +54,7 @@ gboolean iterator (GstPipeline *pipeline)
 static void
 gst_thumbnail_pngenc_get (const char *media, const char *thumbnail)
 {
-	GstBin *pipeline;
+	GstElement *pipeline;
 	GstElement *gnomevfssrc;
 	GstElement *snapshot;
 	GstElement *sink;
@@ -72,17 +74,17 @@ gst_thumbnail_pngenc_get (const char *media, const char *thumbnail)
 		g_print ("Parse error: %s\n", error->message);
 		exit (1);
 	}
-	gnomevfssrc = gst_bin_get_by_name (pipeline, "gnomevfssrc");
-	snapshot = gst_bin_get_by_name (pipeline, "snapshot");
+	gnomevfssrc = gst_bin_get_by_name (GST_BIN (pipeline), "gnomevfssrc");
+	snapshot = gst_bin_get_by_name (GST_BIN (pipeline), "snapshot");
 	g_assert (GST_IS_ELEMENT (snapshot));
 	g_assert (GST_IS_ELEMENT (gnomevfssrc));
 	g_object_set (G_OBJECT (gnomevfssrc), "location", media, NULL);
 
-	gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PLAYING);
+	gst_element_set_state (pipeline, GST_STATE_PLAYING);
 	/* FIXME: do an actual seek here instead */
 	for (i = 0; i < FRAME; ++i)
 		gst_bin_iterate (GST_BIN (pipeline));
-	gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PAUSED);
+	gst_element_set_state (pipeline, GST_STATE_PAUSED);
 
 	sink = gst_element_factory_make ("filesink", "sink");
 	g_assert (GST_IS_ELEMENT (sink));
@@ -92,14 +94,14 @@ gst_thumbnail_pngenc_get (const char *media, const char *thumbnail)
 	g_signal_connect (G_OBJECT (sink), "handoff",
 			  G_CALLBACK (end_of_snap), pipeline);
 
-	gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PLAYING);
+	gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
 	/* commit suicide in due time if necessary */
 	g_timeout_add (TIMEOUT, (GSourceFunc) timeout, pipeline);
 	g_idle_add ((GSourceFunc) iterator, pipeline);
-	gst_main ();
 
-	gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
+	can_finish = TRUE;
+	gst_main ();
 }
 int
 main (int argc, char *argv[])

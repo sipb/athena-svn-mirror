@@ -5,13 +5,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-media\n"
-"POT-Creation-Date: 2003-02-04 13:03+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:37+0200\n"
 "PO-Revision-Date: 2003-01-20 11:29--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <linux@linux.org.ua>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:1
 #: audio-view/Nautilus_View_audio.server.in.in.h:1
@@ -78,42 +81,65 @@ msgstr "завантаження..."
 msgid "URI currently displayed"
 msgstr "Поточний відображений ідентифікатор (URI)"
 
-#: audio-properties-view/audio-properties-view.c:222
-#: audio-properties-view/audio-properties-view.c:227
-#: audio-properties-view/audio-properties-view.c:232
+#: audio-properties-view/audio-properties-view.c:152
+#: audio-properties-view/audio-properties-view.c:156
+#: audio-properties-view/audio-properties-view.c:160
+#: audio-properties-view/audio-properties-view.c:161
 msgid "None"
 msgstr "Немає"
 
-#: audio-properties-view/audio-properties-view.c:238
+#: audio-properties-view/audio-properties-view.c:170
 msgid "mono"
 msgstr "моно"
 
-#: audio-properties-view/audio-properties-view.c:239
+#: audio-properties-view/audio-properties-view.c:171
 msgid "stereo"
 msgstr "стерео"
 
-#: audio-properties-view/audio-properties-view.c:240
+#: audio-properties-view/audio-properties-view.c:172
 msgid "unknown"
 msgstr "невідомо"
 
-#: audio-properties-view/audio-properties-view.c:241
+#: audio-properties-view/audio-properties-view.c:173
 #, c-format
-msgid "%d channels"
-msgstr "%d каналів"
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] "%d канал"
+msgstr[1] "%d канали"
+msgstr[2] "%d каналів"
 
-#: audio-properties-view/audio-properties-view.c:256
+#: audio-properties-view/audio-properties-view.c:185
 #, c-format
-msgid "%d minutes %02d.%03d seconds"
-msgstr "%d хв %02d.%03d с"
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d хвилина"
+msgstr[1] "%d хвилини"
+msgstr[2] "%d хвилин"
 
-#: audio-properties-view/audio-properties-view.c:319
-#: audio-properties-view/audio-properties-view.c:320
-#: audio-properties-view/audio-properties-view.c:321
-#: audio-properties-view/audio-properties-view.c:323
-#: audio-properties-view/audio-properties-view.c:324
-#: audio-properties-view/audio-properties-view.c:325
-#: audio-view/audio-view.c:276 audio-view/audio-view.c:838
-#: audio-view/audio-view.c:842 audio-view/audio-view.c:843
+#. Translators: plural form depends on the decimal part
+#: audio-properties-view/audio-properties-view.c:187
+#, c-format
+msgid "%02d.%03d seconds"
+msgid_plural "%02d.%03d seconds"
+msgstr[0] "%02d.%03d секунда"
+msgstr[1] "%02d.%03d секунди"
+msgstr[2] "%02d.%03d секунд"
+
+#. Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#: audio-properties-view/audio-properties-view.c:189
+#, c-format
+msgid "%1$s %2$s"
+msgstr "%1$s %2$s"
+
+#: audio-properties-view/audio-properties-view.c:259
+#: audio-properties-view/audio-properties-view.c:260
+#: audio-properties-view/audio-properties-view.c:261
+#: audio-properties-view/audio-properties-view.c:263
+#: audio-properties-view/audio-properties-view.c:264
+#: audio-properties-view/audio-properties-view.c:265
+#: audio-view/audio-view.c:314 audio-view/audio-view.c:384
+#: audio-view/audio-view.c:928 audio-view/audio-view.c:932
+#: audio-view/audio-view.c:933
 msgid "Unknown"
 msgstr "Невідомо"
 
@@ -141,108 +167,104 @@ msgstr "Перегляд аудіо для \"Наутілуса\""
 msgid "View as Audio"
 msgstr "Показати як аудіо"
 
-#: audio-view/audio-view.c:253
+#: audio-view/audio-view.c:286
 msgid "Ogg/Vorbis"
 msgstr "формат Ogg/Vorbi"
 
-#: audio-view/audio-view.c:255
+#: audio-view/audio-view.c:289
 msgid "FLAC"
 msgstr "формат FLAC"
 
-#: audio-view/audio-view.c:257
+#: audio-view/audio-view.c:295
 msgid "MPEG"
 msgstr "формат MPEG"
 
-#: audio-view/audio-view.c:259
+#: audio-view/audio-view.c:297
 msgid "WAVE"
 msgstr "формат WAVE"
 
-#: audio-view/audio-view.c:263 audio-view/audio-view.c:265
-#: audio-view/audio-view.c:267 audio-view/audio-view.c:269
+#: audio-view/audio-view.c:301 audio-view/audio-view.c:303
+#: audio-view/audio-view.c:305 audio-view/audio-view.c:307
 msgid "Amiga mod"
 msgstr "формат Amiga mod"
 
-#: audio-view/audio-view.c:271
+#: audio-view/audio-view.c:309
 msgid "Apple AIFF"
 msgstr "формат Apple AIFF "
 
-#: audio-view/audio-view.c:273
+#: audio-view/audio-view.c:311
 msgid "MIDI"
 msgstr "формат MIDI"
 
-#: audio-view/audio-view.c:275
+#: audio-view/audio-view.c:313
 msgid "ulaw audio"
 msgstr "формат ulaw audio"
 
-#. now construct a string out of it
-#: audio-view/audio-view.c:323
+#: audio-view/audio-view.c:387 audio-view/audio-view.c:390
 msgid "Artist: "
 msgstr "Виконавець:"
 
-#: audio-view/audio-view.c:324
+#: audio-view/audio-view.c:388 audio-view/audio-view.c:391
 msgid "Title: "
 msgstr "Заголовок:"
 
-#: audio-view/audio-view.c:394
+#: audio-view/audio-view.c:444 audio-view/audio-view.c:660
+#: audio-view/audio-view.c:693
+msgid "Make a selection first !"
+msgstr "Спуршу зробіть вибір!"
+
+#: audio-view/audio-view.c:465
 msgid "<span size=\"larger\">Unknown</span>"
 msgstr "<span size=\"larger\">Невідомо</span>"
 
-#: audio-view/audio-view.c:436
+#: audio-view/audio-view.c:508
 msgid "ERROR: no information yet"
 msgstr "Помилка: інформація ще відсутня"
 
 #. FIXME: handleme
-#: audio-view/audio-view.c:478
+#: audio-view/audio-view.c:550
 #, c-format
 msgid "ERROR: %s"
 msgstr "Помилка:%s "
 
 #. status update
-#: audio-view/audio-view.c:486 audio-view/audio-view.c:508
+#: audio-view/audio-view.c:558 audio-view/audio-view.c:580
 #, c-format
 msgid "Playing %s"
 msgstr "Відтворення \"%s\""
 
-#: audio-view/audio-view.c:625
-msgid "Make a selection first !"
-msgstr "Спуршу зробіть вибір!"
-
-#: audio-view/audio-view.c:653 audio-view/audio-view.c:721
+#: audio-view/audio-view.c:721 audio-view/audio-view.c:789
 msgid "Stopped."
 msgstr "Зупинено."
 
-#: audio-view/audio-view.c:906
+#: audio-view/audio-view.c:997
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Сталася помилка на зчитуванні \"%s\""
 
-#: audio-view/audio-view.c:907
-msgid "Can't read folder"
-msgstr "Не вдалося зчитати теку"
-
-#: audio-view/audio-view.c:976
+#: audio-view/audio-view.c:1082
 msgid "File"
 msgstr "Файл"
 
-#: audio-view/audio-view.c:988
+#: audio-view/audio-view.c:1094
 msgid "Type"
 msgstr "Тип"
 
-#: audio-view/audio-view.c:1000
+#: audio-view/audio-view.c:1106
 msgid "Length"
 msgstr "Довжина"
 
-#: audio-view/audio-view.c:1012
+#: audio-view/audio-view.c:1118
 msgid "Bitrate"
 msgstr "Частота"
 
 #. The metadata column
-#: audio-view/audio-view.c:1022
+#: audio-view/audio-view.c:1128
 msgid "Metadata"
 msgstr "Метадані"
 
 #. get a status area
-#: audio-view/audio-view.c:1157
+#: audio-view/audio-view.c:1263
 msgid "Not playing"
 msgstr "Не відтворюється"
 

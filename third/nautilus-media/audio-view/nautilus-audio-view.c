@@ -91,7 +91,6 @@ sample_load_location_callback (NautilusView *nautilus_view,
 	nautilus_view_report_load_underway (nautilus_view);
 
 	/* Do the actual load. */
-	g_print ("DEBUG: doing load on location %s\n", location);
 	audio_view_load_location (view->details->audio_view, location);
 
 	/* It's mandatory to call report_load_complete once the
@@ -124,7 +123,6 @@ nautilus_audio_view_class_init (NautilusAudioViewClass *class)
 	
 	G_OBJECT_CLASS (class)->finalize = nautilus_audio_view_finalize;
 	G_OBJECT_CLASS (class)->dispose = nautilus_audio_view_dispose;
-	g_print ("DEBUG: class_init\n");
 }
 
 static void

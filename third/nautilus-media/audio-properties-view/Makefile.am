@@ -3,14 +3,12 @@
 # and change the G_LOG_DOMAIN.
 
 INCLUDES =						\
-	-DG_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			\
+	$(DEPRECATE)					\
 	-DG_LOG_DOMAIN=\"Nautilus-Audio-Properties\"	\
 	-DDATADIR=\"$(datadir)\"			\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(NAUTILUS_CFLAGS)				\
 	$(GST_CFLAGS)
 
@@ -24,7 +22,7 @@ gnome_test_SOURCES =					\
 	gnome-test.c
 
 gnome_test_LDADD = ../media-info/libgstmedia-info.la \
-		   $(GST_GCONF_LIBS) $(GNOME_LIBS) $(GST_LIBS)
+		   $(GNOME_LIBS) $(GST_LIBS)
 
 # works around .o files being created with and without libtool
 gnome_test_CFLAGS = $(AM_CFLAGS)
@@ -40,7 +38,7 @@ libnautilus_audio_properties_view_la_SOURCES =		\
 
 libnautilus_audio_properties_view_la_LIBADD =		\
 	$(NAUTILUS_LIBS) 				\
-	$(GST_LIBS) $(GST_GCONF_LIBS) 				\
+	$(GST_LIBS)	 				\
 	../media-info/libgstmedia-info.la
 
 libnautilus_audio_properties_view_la_LDFLAGS = -module -avoid-version

@@ -1,0 +1,369 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-media\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:37+0200\n"
+"PO-Revision-Date: 2004-03-13 06:34-0000\n"
+"Last-Translator: helgi <helgi@trance.is>\n"
+"Language-Team: Icelandic <gnome@techattack.nu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:1
+#: audio-view/Nautilus_View_audio.server.in.in.h:1
+msgid "Audio"
+msgstr "Hljóð"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:2
+msgid "Audio Properties content view component"
+msgstr "Innihaldssýn hljóðeiginda íhlutur"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:3
+msgid "Nautilus Audio Properties view"
+msgstr "Innihaldssýn hljóðeiginda fyrir Nautilus"
+
+#: audio-properties-view/audio-properties-view.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: audio-properties-view/audio-properties-view.glade.h:2
+msgid "<span weight=\"bold\">Album:</span>"
+msgstr "<span weight=\"bold\">Albúm:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:3
+msgid "<span weight=\"bold\">Artist:</span>"
+msgstr "<span weight=\"bold\">Höfundur:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:4
+msgid "<span weight=\"bold\">Bit rate:</span>"
+msgstr "<span weight=\"bold\">Bita tíðni:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:5
+msgid "<span weight=\"bold\">Comments:</span>"
+msgstr "<span weight=\"bold\">Athugasemd:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:6
+msgid "<span weight=\"bold\">Format:</span>"
+msgstr "<span weight=\"bold\">Gerð:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:7
+msgid "<span weight=\"bold\">Length:</span>"
+msgstr "<span weight=\"bold\">Lengd:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:8
+msgid "<span weight=\"bold\">Title:</span>"
+msgstr "<span weight=\"bold\">Titill:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:9
+msgid "<span weight=\"bold\">Track:</span>"
+msgstr "<span weight=\"bold\">Rás:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:10
+msgid "<span weight=\"bold\">_Artist:</span>"
+msgstr "<span weight=\"bold\">_Höfundur:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:11
+msgid "Audio Properties"
+msgstr "Hljóð stillingar"
+
+#: audio-properties-view/nautilus-audio-properties-view.c:284
+msgid "loading..."
+msgstr "Hleð..."
+
+#: audio-properties-view/nautilus-audio-properties-view.c:297
+msgid "URI currently displayed"
+msgstr "URI núverandi í sýn"
+
+#: audio-properties-view/audio-properties-view.c:152
+#: audio-properties-view/audio-properties-view.c:156
+#: audio-properties-view/audio-properties-view.c:160
+#: audio-properties-view/audio-properties-view.c:161
+msgid "None"
+msgstr "Engin"
+
+#: audio-properties-view/audio-properties-view.c:170
+msgid "mono"
+msgstr "mónó"
+
+#: audio-properties-view/audio-properties-view.c:171
+msgid "stereo"
+msgstr "steríó"
+
+#: audio-properties-view/audio-properties-view.c:172
+msgid "unknown"
+msgstr "óþekkt"
+
+#: audio-properties-view/audio-properties-view.c:173
+#, c-format
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] ""
+msgstr[1] ""
+
+#: audio-properties-view/audio-properties-view.c:185
+#, c-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#. Translators: plural form depends on the decimal part
+#: audio-properties-view/audio-properties-view.c:187
+#, c-format
+msgid "%02d.%03d seconds"
+msgid_plural "%02d.%03d seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#  Translators: plural form depends on the decimal part
+#  Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#. Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#: audio-properties-view/audio-properties-view.c:189
+#, c-format
+msgid "%1$s %2$s"
+msgstr ""
+
+#: audio-properties-view/audio-properties-view.c:259
+#: audio-properties-view/audio-properties-view.c:260
+#: audio-properties-view/audio-properties-view.c:261
+#: audio-properties-view/audio-properties-view.c:263
+#: audio-properties-view/audio-properties-view.c:264
+#: audio-properties-view/audio-properties-view.c:265
+#: audio-view/audio-view.c:314 audio-view/audio-view.c:384
+#: audio-view/audio-view.c:928 audio-view/audio-view.c:932
+#: audio-view/audio-view.c:933
+msgid "Unknown"
+msgstr "Óþekkt"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:2
+msgid "Audio Viewer"
+msgstr "Hljóðrýnir"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:3
+msgid "Audio view component"
+msgstr "Hljóðrýni íhlutur"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:4
+msgid "Audio view component's factory"
+msgstr "Íhlutaverksmiðja hljóð rýnis"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:5
+msgid "Audio view factory"
+msgstr "Hljóð rýnir verksmiðjan"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:6
+msgid "Nautilus Audio view"
+msgstr "Nautilus hljóð sýn"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:7
+msgid "View as Audio"
+msgstr "Skoða sem hljóð"
+
+#: audio-view/audio-view.c:286
+msgid "Ogg/Vorbis"
+msgstr "Ogg/Vorbis"
+
+#: audio-view/audio-view.c:289
+msgid "FLAC"
+msgstr "FLAC"
+
+#: audio-view/audio-view.c:295
+msgid "MPEG"
+msgstr "MPEG"
+
+#: audio-view/audio-view.c:297
+msgid "WAVE"
+msgstr "WAVE"
+
+#: audio-view/audio-view.c:301 audio-view/audio-view.c:303
+#: audio-view/audio-view.c:305 audio-view/audio-view.c:307
+msgid "Amiga mod"
+msgstr "Amiga mod"
+
+#: audio-view/audio-view.c:309
+msgid "Apple AIFF"
+msgstr "Apple AIFF"
+
+#: audio-view/audio-view.c:311
+msgid "MIDI"
+msgstr "MIDI"
+
+#: audio-view/audio-view.c:313
+msgid "ulaw audio"
+msgstr "ulaw audio"
+
+#  now construct a string out of it
+#: audio-view/audio-view.c:387 audio-view/audio-view.c:390
+msgid "Artist: "
+msgstr "Höfundur: "
+
+#: audio-view/audio-view.c:388 audio-view/audio-view.c:391
+msgid "Title: "
+msgstr "Titill:"
+
+#: audio-view/audio-view.c:444 audio-view/audio-view.c:660
+#: audio-view/audio-view.c:693
+msgid "Make a selection first !"
+msgstr "Vinsamlegast framkvÃ¦mdu val fyrst !"
+
+#: audio-view/audio-view.c:465
+msgid "<span size=\"larger\">Unknown</span>"
+msgstr "<span size=\"larger\">Óþekkt</span>"
+
+#: audio-view/audio-view.c:508
+msgid "ERROR: no information yet"
+msgstr "VILLA: ennþá engar upplýsingar"
+
+#. FIXME: handleme
+#: audio-view/audio-view.c:550
+#, c-format
+msgid "ERROR: %s"
+msgstr "VILLA: %s"
+
+#  status update
+#. status update
+#: audio-view/audio-view.c:558 audio-view/audio-view.c:580
+#, c-format
+msgid "Playing %s"
+msgstr "Spila %s"
+
+#: audio-view/audio-view.c:721 audio-view/audio-view.c:789
+msgid "Stopped."
+msgstr "Stöðvað."
+
+#: audio-view/audio-view.c:997
+#, c-format
+msgid "Sorry, but there was an error reading %s."
+msgstr "Því miður, en villa kom upp við lestur á %s."
+
+#: audio-view/audio-view.c:1082
+msgid "File"
+msgstr "Skrá"
+
+#: audio-view/audio-view.c:1094
+msgid "Type"
+msgstr "Gerð"
+
+#: audio-view/audio-view.c:1106
+msgid "Length"
+msgstr "Lengd"
+
+#: audio-view/audio-view.c:1118
+msgid "Bitrate"
+msgstr "Bitatíðni"
+
+#. The metadata column
+#: audio-view/audio-view.c:1128
+msgid "Metadata"
+msgstr "Metagögn"
+
+#  get a status area
+#. get a status area
+#: audio-view/audio-view.c:1263
+msgid "Not playing"
+msgstr "Engin afspilun"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:1
+msgid "Sample"
+msgstr "Sýni"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "Þetta sýni er samfléttaður hlutur fyrir valmynd"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:3
+msgid "This is a sample merged toolbar button"
+msgstr "Þetta er sýni samfléttað takka á tólstiku"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:4
+#: test-view/nautilus-test-view-ui.xml.h:4
+msgid "_File"
+msgstr "_Skrá"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "_Sýni"
+
+#: test-view/Nautilus_View_test.server.in.in.h:1
+msgid "Nautilus Test view"
+msgstr "Nautilus Prufu rýnir"
+
+#: test-view/Nautilus_View_test.server.in.in.h:2
+msgid "Nautilus Test view factory"
+msgstr "Nautilust Prufu rýnir verksmiðjan"
+
+#: test-view/Nautilus_View_test.server.in.in.h:3
+#: test-view/nautilus-test-view-ui.xml.h:1
+msgid "Test"
+msgstr "Prufa"
+
+#: test-view/Nautilus_View_test.server.in.in.h:4
+msgid "Test Viewer"
+msgstr "Prufu rýnir"
+
+#: test-view/Nautilus_View_test.server.in.in.h:5
+msgid "Test view component"
+msgstr "Íhlutur prufurýnis"
+
+#: test-view/Nautilus_View_test.server.in.in.h:6
+msgid "Test view component's factory"
+msgstr "Prufusýn íhlutaverksmiðjunar"
+
+#: test-view/Nautilus_View_test.server.in.in.h:7
+msgid "View as Test"
+msgstr "Skoða sem prufu"
+
+#: test-view/nautilus-test-view-ui.xml.h:2
+msgid "This is a test merged menu item"
+msgstr "Þetta er  prufa samfléttuð valmyndaeiningu"
+
+#: test-view/nautilus-test-view-ui.xml.h:3
+msgid "This is a test merged toolbar button"
+msgstr "Þetta er prufa samfléttuð með takka á tólstiku"
+
+#: test-view/nautilus-test-view-ui.xml.h:5
+msgid "_Test"
+msgstr "_Prufa"
+
+#: test-view/nautilus-test-view.c:80
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This is a test Nautilus content view component."
+msgstr ""
+"%s\n"
+"\n"
+"Þetta er prufa fyrir Nautilus innihaldsíhlut."
+
+#: test-view/nautilus-test-view.c:146
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You selected the Test menu item."
+msgstr ""
+"%s\n"
+"\n"
+"Þú valdir Prufu valmyndarhlut."
+
+#: test-view/nautilus-test-view.c:150
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You clicked the Test toolbar button."
+msgstr ""
+"%s\n"
+"\n"
+"Þú klikkaðir á Prufu tólstiku takkann."
+
+#: test-view/nautilus-test-view.c:206
+msgid "(none)"
+msgstr "(ekkert)"

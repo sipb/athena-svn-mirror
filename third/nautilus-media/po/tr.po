@@ -1,18 +1,24 @@
+# translation of nautilus-media.HEAD.tr.po to Turkish
 # Turkish translation of nautilus-media.
 # Copyright (C) 2003 nautilus-media's COPYRIGHT HOLDER
 # This file is distributed under the same license as the nautilus-media package.
-# Görkem �~Getin <gorkem@gelecek.com.tr>, 2003.
+# Görkem �Getin <gorkem@gelecek.com.tr>, 2003.
+# Arman Aksoy <armish@linux-sevenler.e>, 2003.
+# Baris Cicek <baris@teamforce.name.tr>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-media\n"
-"POT-Creation-Date: 2003-02-04 13:03+0100\n"
-"PO-Revision-Date: 2003-01-30 19:15+0000\n"
-"Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
+"Project-Id-Version: nautilus-media.HEAD.tr\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:37+0200\n"
+"PO-Revision-Date: 2004-02-26 13:39+0200\n"
+"Last-Translator: Baris Cicek <baris@teamforce.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.0.2\n"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:1
 #: audio-view/Nautilus_View_audio.server.in.in.h:1
@@ -21,11 +27,11 @@ msgstr "Ses"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:2
 msgid "Audio Properties content view component"
-msgstr ""
+msgstr "Ses Özellikleri içerik görünüm bileşeni"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:3
 msgid "Nautilus Audio Properties view"
-msgstr ""
+msgstr "Nautilus Ses Özellikleri görünümü"
 
 #: audio-properties-view/audio-properties-view.glade.h:1
 msgid "*"
@@ -61,7 +67,7 @@ msgstr "<span weight=\"bold\">Başlık:</span>"
 
 #: audio-properties-view/audio-properties-view.glade.h:9
 msgid "<span weight=\"bold\">Track:</span>"
-msgstr "<span weight=\"bold\">İz:</span>"
+msgstr "<span weight=\"bold\">Parça:</span>"
 
 #: audio-properties-view/audio-properties-view.glade.h:10
 msgid "<span weight=\"bold\">_Artist:</span>"
@@ -77,44 +83,64 @@ msgstr "yükleniyor..."
 
 #: audio-properties-view/nautilus-audio-properties-view.c:297
 msgid "URI currently displayed"
-msgstr "URI görüntüleniyor"
+msgstr "Şu anda gösterilen URI"
 
-#: audio-properties-view/audio-properties-view.c:222
-#: audio-properties-view/audio-properties-view.c:227
-#: audio-properties-view/audio-properties-view.c:232
+#: audio-properties-view/audio-properties-view.c:152
+#: audio-properties-view/audio-properties-view.c:156
+#: audio-properties-view/audio-properties-view.c:160
+#: audio-properties-view/audio-properties-view.c:161
 msgid "None"
 msgstr "Hiçbiri"
 
-#: audio-properties-view/audio-properties-view.c:238
+#: audio-properties-view/audio-properties-view.c:170
 msgid "mono"
 msgstr "mono"
 
-#: audio-properties-view/audio-properties-view.c:239
+#: audio-properties-view/audio-properties-view.c:171
 msgid "stereo"
 msgstr "stereo"
 
-#: audio-properties-view/audio-properties-view.c:240
+#: audio-properties-view/audio-properties-view.c:172
 msgid "unknown"
 msgstr "bilinmiyor"
 
-#: audio-properties-view/audio-properties-view.c:241
+#: audio-properties-view/audio-properties-view.c:173
 #, c-format
-msgid "%d channels"
-msgstr "%d kanal"
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] "%d kanal"
+msgstr[1] "%d kanal"
 
-#: audio-properties-view/audio-properties-view.c:256
+#: audio-properties-view/audio-properties-view.c:185
 #, c-format
-msgid "%d minutes %02d.%03d seconds"
-msgstr "%d dakika %02d.%03d saniye"
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d dakika"
+msgstr[1] "%d dakika"
 
-#: audio-properties-view/audio-properties-view.c:319
-#: audio-properties-view/audio-properties-view.c:320
-#: audio-properties-view/audio-properties-view.c:321
-#: audio-properties-view/audio-properties-view.c:323
-#: audio-properties-view/audio-properties-view.c:324
-#: audio-properties-view/audio-properties-view.c:325
-#: audio-view/audio-view.c:276 audio-view/audio-view.c:838
-#: audio-view/audio-view.c:842 audio-view/audio-view.c:843
+#. Translators: plural form depends on the decimal part
+#: audio-properties-view/audio-properties-view.c:187
+#, c-format
+msgid "%02d.%03d seconds"
+msgid_plural "%02d.%03d seconds"
+msgstr[0] "%02d.%03d saniye"
+msgstr[1] "%02d.%03d saniye"
+
+#. Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#: audio-properties-view/audio-properties-view.c:189
+#, c-format
+msgid "%1$s %2$s"
+msgstr "%1$s %2$s"
+
+#: audio-properties-view/audio-properties-view.c:259
+#: audio-properties-view/audio-properties-view.c:260
+#: audio-properties-view/audio-properties-view.c:261
+#: audio-properties-view/audio-properties-view.c:263
+#: audio-properties-view/audio-properties-view.c:264
+#: audio-properties-view/audio-properties-view.c:265
+#: audio-view/audio-view.c:314 audio-view/audio-view.c:384
+#: audio-view/audio-view.c:928 audio-view/audio-view.c:932
+#: audio-view/audio-view.c:933
 msgid "Unknown"
 msgstr "Bilinmiyor"
 
@@ -128,122 +154,118 @@ msgstr "Ses izleme bileşeni"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:4
 msgid "Audio view component's factory"
-msgstr "Ses izleme bileşen mimarisi"
+msgstr "Ses izleme bileşen üreticisi"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:5
 msgid "Audio view factory"
-msgstr "Ses izleme mimarisi"
+msgstr "Ses izleme üreticisi"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:6
 msgid "Nautilus Audio view"
-msgstr "Nautilus Ses izleyici"
+msgstr "Nautilus Ses izleyicisi"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:7
 msgid "View as Audio"
-msgstr "Müzik Görüntüle"
+msgstr "Ses Olarak Göster"
 
-#: audio-view/audio-view.c:253
+#: audio-view/audio-view.c:286
 msgid "Ogg/Vorbis"
 msgstr "Ogg/Vorbis"
 
-#: audio-view/audio-view.c:255
+#: audio-view/audio-view.c:289
 msgid "FLAC"
 msgstr "FLAC"
 
-#: audio-view/audio-view.c:257
+#: audio-view/audio-view.c:295
 msgid "MPEG"
 msgstr "MPEG"
 
-#: audio-view/audio-view.c:259
+#: audio-view/audio-view.c:297
 msgid "WAVE"
 msgstr "WAVE"
 
-#: audio-view/audio-view.c:263 audio-view/audio-view.c:265
-#: audio-view/audio-view.c:267 audio-view/audio-view.c:269
+#: audio-view/audio-view.c:301 audio-view/audio-view.c:303
+#: audio-view/audio-view.c:305 audio-view/audio-view.c:307
 msgid "Amiga mod"
 msgstr "Amiga mod"
 
-#: audio-view/audio-view.c:271
+#: audio-view/audio-view.c:309
 msgid "Apple AIFF"
 msgstr "Apple AIFF"
 
-#: audio-view/audio-view.c:273
+#: audio-view/audio-view.c:311
 msgid "MIDI"
 msgstr "MIDI"
 
-#: audio-view/audio-view.c:275
+#: audio-view/audio-view.c:313
 msgid "ulaw audio"
 msgstr "ulaw sesi"
 
-#. now construct a string out of it
-#: audio-view/audio-view.c:323
+#: audio-view/audio-view.c:387 audio-view/audio-view.c:390
 msgid "Artist: "
-msgstr "Sanatçı "
+msgstr "Sanatçı: "
 
-#: audio-view/audio-view.c:324
+#: audio-view/audio-view.c:388 audio-view/audio-view.c:391
 msgid "Title: "
-msgstr "Başlık "
+msgstr "Başlık: "
 
-#: audio-view/audio-view.c:394
+#: audio-view/audio-view.c:444 audio-view/audio-view.c:660
+#: audio-view/audio-view.c:693
+msgid "Make a selection first !"
+msgstr "Önce bir seçim yapın !"
+
+#: audio-view/audio-view.c:465
 msgid "<span size=\"larger\">Unknown</span>"
 msgstr "<span size=\"larger\">Bilinmiyor</span>"
 
-#: audio-view/audio-view.c:436
+#: audio-view/audio-view.c:508
 msgid "ERROR: no information yet"
-msgstr "HATA: bilgi yok"
+msgstr "HATA: henüz bilgi yok"
 
 #. FIXME: handleme
-#: audio-view/audio-view.c:478
+#: audio-view/audio-view.c:550
 #, c-format
 msgid "ERROR: %s"
 msgstr "HATA: %s"
 
 #. status update
-#: audio-view/audio-view.c:486 audio-view/audio-view.c:508
+#: audio-view/audio-view.c:558 audio-view/audio-view.c:580
 #, c-format
 msgid "Playing %s"
-msgstr "%s .çalıyor"
+msgstr "%s çalıyor"
 
-#: audio-view/audio-view.c:625
-msgid "Make a selection first !"
-msgstr "Önce bir seçim yapın!"
-
-#: audio-view/audio-view.c:653 audio-view/audio-view.c:721
+#: audio-view/audio-view.c:721 audio-view/audio-view.c:789
 msgid "Stopped."
 msgstr "Durdu."
 
-#: audio-view/audio-view.c:906
+#: audio-view/audio-view.c:997
 #, c-format
 msgid "Sorry, but there was an error reading %s."
-msgstr "Okuma sırasında bir hata oluştu: %s"
+msgstr "Üzgünüm, ama %s okunurken bir hata oluştu."
 
-#: audio-view/audio-view.c:907
-msgid "Can't read folder"
-msgstr "Dizin okunamıyor"
-
-#: audio-view/audio-view.c:976
+#: audio-view/audio-view.c:1082
 msgid "File"
 msgstr "Dosya"
 
-#: audio-view/audio-view.c:988
+#: audio-view/audio-view.c:1094
 msgid "Type"
 msgstr "Tür"
 
-#: audio-view/audio-view.c:1000
+#: audio-view/audio-view.c:1106
 msgid "Length"
 msgstr "Uzunluk"
 
-#: audio-view/audio-view.c:1012
+#: audio-view/audio-view.c:1118
 msgid "Bitrate"
 msgstr "Örnekleme hızı"
 
 #. The metadata column
-#: audio-view/audio-view.c:1022
+#: audio-view/audio-view.c:1128
 msgid "Metadata"
 msgstr "Meta bilgi"
 
 #. get a status area
-#: audio-view/audio-view.c:1157
+#: audio-view/audio-view.c:1263
 msgid "Not playing"
 msgstr "Çalmıyor"
 
@@ -274,7 +296,7 @@ msgstr "Nautilus Deneme Görünümü"
 
 #: test-view/Nautilus_View_test.server.in.in.h:2
 msgid "Nautilus Test view factory"
-msgstr "Nautilus deneme görünüm mimarisi"
+msgstr "Nautilus deneme görünümü üreticisi"
 
 #: test-view/Nautilus_View_test.server.in.in.h:3
 #: test-view/nautilus-test-view-ui.xml.h:1
@@ -291,11 +313,11 @@ msgstr "Deneme görünüm bileşeni"
 
 #: test-view/Nautilus_View_test.server.in.in.h:6
 msgid "Test view component's factory"
-msgstr "Deneme görünüm bileşen mimarisi"
+msgstr "Deneme görünüm bileşen üreticisi"
 
 #: test-view/Nautilus_View_test.server.in.in.h:7
 msgid "View as Test"
-msgstr "Deneme Görüntüle"
+msgstr "Deneme Olarak Görüntüle"
 
 #: test-view/nautilus-test-view-ui.xml.h:2
 msgid "This is a test merged menu item"
@@ -316,6 +338,9 @@ msgid ""
 "\n"
 "This is a test Nautilus content view component."
 msgstr ""
+"%s\n"
+"\n"
+"Bu Nautilus içerik görünüm bileşeni için bir denemedir."
 
 #: test-view/nautilus-test-view.c:146
 #, c-format
@@ -324,6 +349,9 @@ msgid ""
 "\n"
 "You selected the Test menu item."
 msgstr ""
+"%s\n"
+"\n"
+"Test menü öğesini seçtiniz."
 
 #: test-view/nautilus-test-view.c:150
 #, c-format
@@ -332,7 +360,13 @@ msgid ""
 "\n"
 "You clicked the Test toolbar button."
 msgstr ""
+"%s\n"
+"\n"
+"Test araç çubuğu düğmesine tıkladınız."
 
 #: test-view/nautilus-test-view.c:206
 msgid "(none)"
 msgstr "(hiçbiri)"
+
+#~ msgid "Can't read folder"
+#~ msgstr "Klasör okunamıyor"

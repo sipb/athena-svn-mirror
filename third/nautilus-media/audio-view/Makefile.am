@@ -3,14 +3,12 @@
 # and change the G_LOG_DOMAIN.
 
 INCLUDES =						\
-	-DG_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			\
+	$(DEPRECATE)					\
 	-DG_LOG_DOMAIN=\"Nautilus-Audio\"		\
 	-DDATADIR=\"$(datadir)\"			\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(NAUTILUS_CFLAGS)				\
 	$(GST_CFLAGS)
 
@@ -33,14 +31,12 @@ gnome_test_SOURCES =					\
 	gnome-test.c
 
 gnome_test_LDADD = ../media-info/libgstmedia-info.la \
-		   $(GST_GCONF_LIBS) $(GNOME_LIBS)
+		   $(GNOME_LIBS)
 
 audio_play_test_SOURCES =				\
 	audio-play.h          				\
 	audio-play.c          				\
 	audio-play-test.c
-
-audio_play_test_LDADD =	$(GST_GCONF_LIBS)
 
 libexec_PROGRAMS = nautilus-audio-view
 
@@ -54,7 +50,7 @@ nautilus_audio_view_SOURCES =				\
 	nautilus-audio-view.c          			\
 	main.c
 
-nautilus_audio_view_LDADD = $(GST_GCONF_LIBS) $(NAUTILUS_LIBS) \
+nautilus_audio_view_LDADD = $(NAUTILUS_LIBS) \
                    ../media-info/libgstmedia-info.la
 
 uidir = $(datadir)/gnome-2.0/ui

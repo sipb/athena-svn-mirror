@@ -42,8 +42,8 @@ main (int argc, char *argv[])
 {
 	return nautilus_view_standard_main (EXECUTABLE_NAME,
 					    VERSION,
-					    NULL,	/* Could be PACKAGE */
-					    NULL,	/* Could be GNOMELOCALEDIR */
+					    GETTEXT_PACKAGE,
+					    GNOMELOCALEDIR,
 					    argc,
 					    argv,
 					    FACTORY_IID,

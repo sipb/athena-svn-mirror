@@ -1,3 +1,514 @@
+=== release 0.8.1 ===
+
+2004-09-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+	* NEWS:
+	  Ready for release
+
+2004-08-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added «nb» to ALL_LINGUAS.
+
+2004-08-17  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-02  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "or" to ALL_LINGUAS.
+
+2004-06-26  Iain <iain@prettypeople.org>
+
+	* media-info/media-info-priv.c (gmi_set_mime): Add name=source for the
+	wavparse pipeline
+
+2004-06-21  Colin Walters  <walters@redhat.com>
+
+	* audio-view/gnome-test.c (quit): Fix too many arguments for
+	format.
+
+2004-06-01  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* media-info/media-info-priv.c: (gmi_set_mime):
+          change an assert to a more descriptive error
+
+2004-05-29  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "tk" to ALL_LINGUAS.
+
+2004-04-30  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	Reviewed by: Thomas
+
+        * nautilus-media/audio-view/audio-view.c (audio_view_play_next):
+	  Removed the duplicate call to audio_view_set_playing.
+          Fix bug #136279.
+
+2004-04-10  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-30  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+=== release 0.8.0 ===
+
+2004-03-30  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* Makefile.am:
+	* NEWS:
+	* TODO:
+	* configure.in:
+	* nautilus-media.spec.in:
+	* thumbnail/gst-thumbnail.schemas:
+          getting ready for release
+
+2004-03-30  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* thumbnail/gst-thumbnail.c: (end_of_snap),
+	(gst_thumbnail_pngenc_get):
+          patch from Joe Marcus Clarke for proper pipeline cleanup
+          tweak defines for better results
+
+2004-03-24  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-22  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-16  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* autogen.sh:
+	* gst-autogen.sh:
+          sync with gst's gst-autogen.sh script
+
+=== release 0.7.0 ===
+
+2004-03-08  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-properties-view/Nautilus_View_audio_properties.server.in.in
+	:
+	* audio-view/Nautilus_View_audio.server.in.in:
+          add mime types to recognize
+	* audio-properties-view/audio-properties-view.c:
+	(audio_properties_view_load_location):
+          use new API
+	* audio-view/audio-view.c: (audio_view_mime_to_type):
+	* media-info/media-info-priv.c: (gmi_set_mime):
+	* media-info/media-info.c: (gst_media_info_read):
+          flac and assorted fixes
+
+2004-03-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-properties-view/audio-properties-view.c:
+	(audio_properties_view_load_location), (audio_properties_view_new):
+	* audio-view/audio-play.c: (audio_play_error), (handle_have_type),
+	(iterator), (idler), (tick_timeout), (deep_notify),
+	(deep_notify_sink), (have_type_callback), (audio_play_new),
+	(audio_play_autoplug), (audio_play_update_length),
+	(audio_play_set_state_playing), (audio_play_set_audio_sink):
+	* audio-view/audio-play.h:
+	* audio-view/audio-view.c: (show_error_dialog),
+	(audio_view_is_playable), (audio_view_mime_to_type), (print_tag),
+	(audio_view_media_get_metadata), (audio_view_load_location),
+	(audio_view_error_handler), (row_activated_callback),
+	(prev_activate), (audio_view_get_media_info_idler),
+	(audio_view_update), (audio_view_new):
+	  new API fixes
+	* media-info/media-info-priv.c: (have_type_callback),
+	(deep_notify_callback), (tag_flag_score), (found_tag_callback),
+	(error_callback), (gst_media_info_error_create),
+	(gst_media_info_error_element), (gmip_init), (gmip_reset),
+	(gmi_seek_to_track), (gmi_set_mime), (gmi_clear_decoder),
+	(gmip_find_type_pre), (gmip_find_type_post), (gmip_find_type),
+	(gmip_find_stream_post), (gmip_find_stream),
+	(gmip_find_track_metadata), (gmip_find_track_streaminfo_post),
+	(gmip_find_track_streaminfo), (gmip_find_track_format):
+	* media-info/media-info-priv.h:
+	* media-info/media-info-test.c: (print_tag), (info_print), (main):
+	* media-info/media-info.c: (gst_media_info_init),
+	(gst_media_info_class_init), (gst_media_info_instance_init),
+	(gst_media_info_get_property), (gst_media_info_new),
+	(gst_media_info_set_source), (gst_media_info_read_with_idler),
+	(gst_media_info_read_idler), (gst_media_info_read):
+	* media-info/media-info.h:
+	  sync with upstream media-info library
+	* configure.in:
+	  check for GStreamer 0.8 and 0.7
+	* m4/as-ac-expand.m4:
+	  fix underquotedness
+
+2004-02-29  Christian Schaller <Uraeus@gnome.org>
+	* Update SPEC to handle versioned GStreamer
+
+2004-02-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-properties-view/audio-properties-view.c:
+	(audio_properties_view_load_location):
+          Fix #106703, use plurals
+	* po/am.po:
+	* po/ar.po:
+	* po/az.po:
+	* po/be.po:
+	* po/bg.po:
+	* po/bn.po:
+	* po/ca.po:
+	* po/cs.po:
+	* po/cy.po:
+	* po/da.po:
+	* po/de.po:
+	* po/el.po:
+	* po/es.po:
+	* po/et.po:
+	* po/eu.po:
+	* po/fa.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/ga.po:
+	* po/he.po:
+	* po/hi.po:
+	* po/hr.po:
+	* po/hu.po:
+	* po/id.po:
+	* po/is.po:
+	* po/it.po:
+	* po/ja.po:
+	* po/ko.po:
+	* po/li.po:
+	* po/lt.po:
+	* po/lv.po:
+	* po/mk.po:
+	* po/ml.po:
+	* po/mn.po:
+	* po/ms.po:
+	* po/nl.po:
+	* po/nn.po:
+	* po/no.po:
+	* po/pl.po:
+	* po/pt.po:
+	* po/pt_BR.po:
+	* po/ro.po:
+	* po/ru.po:
+	* po/sk.po:
+	* po/sl.po:
+	* po/sq.po:
+	* po/sr.po:
+	* po/sr@Latn.po:
+	* po/sv.po:
+	* po/ta.po:
+	* po/th.po:
+	* po/tr.po:
+	* po/uk.po:
+	* po/vi.po:
+	* po/zh_CN.po:
+	* po/zh_TW.po:
+          updated
+
+2004-02-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-properties-view/Makefile.am:
+	* audio-view/Makefile.am:
+	* configure.in:
+          use gstreamer-gconf-(x.y) pkg-config
+	* gst-autogen.sh:
+          fix sed warning
+	* m4/as-ac-expand.m4:
+          fix underquotedness (#133227) by syncing with upstream .m4
+	* po/am.po:
+	* po/ar.po:
+	* po/az.po:
+	* po/be.po:
+	* po/bg.po:
+	* po/bn.po:
+	* po/ca.po:
+	* po/cs.po:
+	* po/cy.po:
+	* po/da.po:
+	* po/de.po:
+	* po/el.po:
+	* po/es.po:
+	* po/et.po:
+	* po/eu.po:
+	* po/fa.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/ga.po:
+	* po/he.po:
+	* po/hi.po:
+	* po/hr.po:
+	* po/hu.po:
+	* po/id.po:
+	* po/is.po:
+	* po/it.po:
+	* po/ja.po:
+	* po/ko.po:
+	* po/li.po:
+	* po/lt.po:
+	* po/lv.po:
+	* po/mk.po:
+	* po/ml.po:
+	* po/mn.po:
+	* po/ms.po:
+	* po/nl.po:
+	* po/nn.po:
+	* po/no.po:
+	* po/pl.po:
+	* po/pt.po:
+	* po/pt_BR.po:
+	* po/ro.po:
+	* po/ru.po:
+	* po/sk.po:
+	* po/sl.po:
+	* po/sq.po:
+	* po/sr.po:
+	* po/sr@Latn.po:
+	* po/sv.po:
+	* po/ta.po:
+	* po/th.po:
+	* po/tr.po:
+	* po/uk.po:
+	* po/vi.po:
+	* po/zh_CN.po:
+	* po/zh_TW.po:
+          updated translations.
+
+2004-02-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* thumbnail/Makefile.am: install schemas conditionally (#134024)
+
+2004-02-07  Robert Sedak  <robert.sedak@sk.htnet.hr>
+ 
+         * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-01-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-view/audio-play.c: (handle_have_type), (deep_notify),
+	(audio_play_update_length):
+	* audio-view/audio-view.c: (audio_view_props_to_string),
+	(audio_view_media_get_metadata):
+        fix compilation.  Still needs work.
+
+2004-01-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* media-info/media-info-priv.c: (deep_notify_callback),
+	(gmi_reset), (gmi_seek_to_track), (gmip_find_type_pre),
+	(gmip_find_track_streaminfo_post):
+	* media-info/media-info-test.c: (info_print):
+	* media-info/media-info.c: (gst_media_info_read_idler),
+	(gst_media_info_read):
+	* media-info/media-info.h:
+	sync with gst-plugins media-info copy.  Unfortunately it needs work.
+
+2004-01-01  Åsmund Skjæveland  <aasmunds@fys.uio.no>
+
+	* configure.in: Added 'nn' to ALL_LINGUAS.
+	* po/nn.po: Added Norwegian Nynorsk translation.
+	
+2003-12-20  Arafat Medini <lumina@silverpen.de>
+
+	* configure.in: Added Arabic Locale "ar" to ALL_LINGUAS
+
+2003-12-15  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * configure.in: release 0.5.2
+	* define GST_PADDING when not defined in core
+
+2003-12-12  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * configure.in: release 0.5.1
+
+2003-12-12  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	* audio-view/audio-view.c (audio_view_play_next): 
+	Check if reload corrupted the info, before passing it on.
+	Fixes bug #127460.
+
+2003-12-12  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * configure.in: bump the required GStreamer version
+
+2003-12-12  Sivaiah  <snallagatla@novell.com>
+
+reviewed by: Thomas Vander Stichele
+
+* audio-view/audio-view.c: (audio_view_play_next), (prev_activate):
+	- don't try to go to next or previous song when there isn't
+	  one
+
+2003-12-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* media-info/media-info.h: fix compile problem after recent GStreamer
+	  API change
+
+2003-11-25  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+		- bumped version
+		- add DEPRECATE automake variable
+	* audio-properties-view/Makefile.am:
+	* audio-view/Makefile.am:
+	* test-view/Makefile.am:
+		- use DEPRECATE automake variable for deprecate flags
+	* media-info/media-info-priv.c: (gmi_seek_to_track),
+	(gmi_set_decoder), (gmi_clear_decoder), (gmip_find_type_pre),
+	(gmip_find_type_post), (gmip_find_stream_post),
+	(gmip_find_track_metadata), (gmip_find_track_streaminfo_post),
+	(gmip_find_track_streaminfo), (gmip_find_track_format):
+	* media-info/media-info-priv.h:
+	* media-info/media-info-test.c: (caps_print):
+	* media-info/media-info.c:
+	* media-info/media-info.h:
+		- synced with 0.7 gst-plugins code, thanks iain
+
+2003-11-21  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in: disable 0.7 checking until it works with 0.7
+
+2003-09-30  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "eu" to ALL_LINGUAS.
+
+2003-09-17  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" (Tamil) to the languages' list.
+
+2003-09-14  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * media-info/media-info.c: fix gcc 2.9x compiler warning
+
+2003-09-10  Andrew Sobala  <aes@gnome.org>
+
+	* configure.in: release 0.3.3.1
+
+2003-09-02  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* configure.in: Added lt to ALL_LINGUAS.
+
+2003-08-27  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * release 0.3.2
+	* commit patch from Red Hat for property view
+
+2003-08-14  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" to ALL_LINGUAS.
+
+2003-08-12  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * release 0.3.1
+
+2003-08-12  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-view/audio-view.c: (free_iter_list),
+	(audio_view_get_media_info_idler), (audio_view_update),
+	(audio_view_dispose):
+          apply patch from Kaushal Kumar for #118846
+	* media-info/media-info.c: (gst_media_info_read_idler):
+          do extra checking to not unref NULL pointers
+
+2003-08-12  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-view/audio-view.c: (control_box_add_labeled_button):
+          patch from Alex Duggan for tooltips, closes #104538
+
+2003-08-12  Thomas Vander Stichele <thomas at apestaart dot org>
+
+	* HACKING:
+	* audio-view/Nautilus_View_audio.server.in.in:
+	* audio-view/audio-view.c: (audio_view_is_playable):
+          add/fix mime types for flac, mpeg and ogg
+
+2003-07-16  Dafydd Haries  <daf@parnassus.ath.cx>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS.
+
+2003-06-28  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* audio-view/Nautilus_View_audio.server.in.in:
+	* audio-view/audio-view.c: (audio_view_is_playable),
+	(audio_view_mime_to_type), (audio_view_media_get_metadata),
+	(audio_view_get_media_info_idler):
+	* media-info/media-info-priv.c: (gmi_reset), (gmi_seek_to_track),
+	(gmi_get_decoder), (gmip_find_type_pre):
+	* media-info/media-info-priv.h:
+	* media-info/media-info.c: (gst_media_info_read_idler),
+	(gst_media_info_read):
+          - adding mime types
+          - doing better error handling
+          - removing inappropriate g_warnings
+
+2003-06-11  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Add "li" to ALL_LINGUAS.
+
+2003-06-10  Kjartan Maraas  <kmaraas@gnome.org>
+                                                                                
+        * audio-view/audio-view.c: (play_activate): Remove whitespace
+        in string. Christian Rose. Fixes bug #102368.
+        * configure.in: Bump version.
+                                                                                
+2003-06-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* audio-properties-view/Makefile.am: Add GNOMELOCALEDIR
+	* audio-properties-view/main.c: (main): Fix i18n.
+	* audio-view/Makefile.am: Same here
+	* audio-view/main.c: (main): And here.
+	* autogen.sh: add --copy to intltoolize
+	* po/Makefile.in.in: This was changed by the build.
+	* thumbnail/Makefile.am: s/LDFLAGS/AM_LDFLAGS
+
+2003-05-24  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in: bumped to gst 0.6 and 0.7
+
+2003-05-04  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-08  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added 'ja' into ALL_LINGUAS.
+
+2003-03-01  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* is.po: Added "is" to ALL_LINGUAS
+
+2003-02-21  Metin Amiroff  <metin@karegen.com>
+
+	* configure.in:  Added "az" to ALL_LINGUAS.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-20  Paisa Seeluangsawat  <paisa@colorado.edu>
+
+	* configure.in (ALL_LINGUAS): Added "th".
+
+2003-02-19  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
+2003-02-18  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-02-11  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
 2003-02-04  Thomas Vander Stichele <thomas at apestaart dot org>
 
         * released 0.2.1, a translation-driven release.  Thank you
