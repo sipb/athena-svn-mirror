@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_structs.c,v $
- *	$Id: data_structs.c,v 1.1 1994-09-18 05:07:55 cfields Exp $
- *	$Author: cfields $
+ *	$Id: data_structs.c,v 1.2 1996-09-20 02:34:39 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_structs.c,v 1.1 1994-09-18 05:07:55 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_structs.c,v 1.2 1996-09-20 02:34:39 ghudson Exp $";
 #endif
 #endif
 
@@ -188,7 +188,7 @@ dealloc_user(u)
     u->next->prev = u->prev;
 
   /* Clear data, just in case */
-  bzero((char *) u, sizeof(USER));
+  memset(u, 0, sizeof(USER));
 
   /* Add to free list. */
   if (User_free != NULL)
@@ -369,7 +369,7 @@ dealloc_knuc(u)
     u->next->prev = u->prev;
 
   /* Clear data, just in case */
-  bzero((char *) u, sizeof(KNUCKLE));
+  memset(u, 0, sizeof(KNUCKLE));
 
   /* Add to free list. */
   if (Knuckle_free != NULL)

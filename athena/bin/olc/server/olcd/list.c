@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.23 1993-08-09 11:27:03 thorne Exp $
- *	$Author: thorne $
+ *	$Id: list.c,v 1.24 1996-09-20 02:34:43 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.23 1993-08-09 11:27:03 thorne Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.24 1996-09-20 02:34:43 ghudson Exp $";
 #endif
 #endif
 
@@ -343,7 +343,7 @@ KNUCKLE *k;
     item->n_consult = k->question->nseen;
     item->topic = k->question->topic;
     item->note = k->question->note;
-    while ((p = index(item->note,'\n')) != NULL) {
+    while ((p = strchr(item->note,'\n')) != NULL) {
       *p = ' ';
     }
   }

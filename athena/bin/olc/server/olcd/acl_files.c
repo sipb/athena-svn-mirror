@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.14 1995-05-14 01:03:54 cfields Exp $
- *	$Author: cfields $
+ *	$Id: acl_files.c,v 1.15 1996-09-20 02:34:36 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.14 1995-05-14 01:03:54 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.15 1996-09-20 02:34:36 ghudson Exp $";
 #endif
 #endif
 
@@ -26,7 +26,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 /*** Routines for manipulating access control list files ***/
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -121,8 +121,8 @@ char *canon;
   char *dot, *atsign, *end;
   int len;
   
-  dot = index(principal, INST_SEP);
-  atsign = index(principal, REALM_SEP);
+  dot = strchr(principal, INST_SEP);
+  atsign = strchr(principal, REALM_SEP);
   
   /* Maybe we're done already */
   if(dot != NULL && atsign != NULL) {
@@ -293,7 +293,7 @@ FILE *f;
 
       /* strip off everything after the last slash */
       strcpy(buf, acl_file);
-      if ((ptr = rindex(buf, '/')) != NULL)
+      if ((ptr = strrchr(buf, '/')) != NULL)
 	*(ptr+1) = '\0';
 
       /* read in the link name */
@@ -576,8 +576,8 @@ char *principal;
   if(acl_exact_match(acl, canon)) return(1);
   
   /* Try the wildcards */
-  realm = index(canon, REALM_SEP);
-  *index(canon, INST_SEP) = '\0';	/* Chuck the instance */
+  realm = strchr(canon, REALM_SEP);
+  *strchr(canon, INST_SEP) = '\0';	/* Chuck the instance */
   
   sprintf(buf, "%s.*%s", canon, realm);
   if(acl_exact_match(acl, buf)) return(1);

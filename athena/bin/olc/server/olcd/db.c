@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.20 1993-08-05 19:07:37 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: db.c,v 1.21 1996-09-20 02:34:42 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.20 1993-08-05 19:07:37 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.21 1996-09-20 02:34:42 ghudson Exp $";
 #endif
 #endif
 
@@ -197,7 +197,7 @@ get_user_info(user)
 #endif
   if (pwd != (struct passwd *) NULL) {
     strncpy(user->realname,pwd->pw_gecos,NAME_SIZE);
-    p = index(user->realname,',');
+    p = strchr(user->realname,',');
     if (p != NULL)
       *p = '\0';
   }

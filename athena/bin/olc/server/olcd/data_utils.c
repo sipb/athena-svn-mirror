@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.43 1993-08-09 19:39:59 cfields Exp $
- *	$Author: cfields $
+ *	$Id: data_utils.c,v 1.44 1996-09-20 02:34:40 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.43 1993-08-09 19:39:59 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.44 1996-09-20 02:34:40 ghudson Exp $";
 #endif
 #endif
 
@@ -33,7 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 #include <syslog.h>
 #include <sys/errno.h>
 #include <sys/types.h>    
@@ -104,7 +104,7 @@ create_user(person)
       log_error("create_user: out of memory");
       return((KNUCKLE *) NULL);
     }
-  bzero((char *) user, sizeof(USER));
+  memset(user, 0, sizeof(USER));
 
   user->knuckles = (KNUCKLE **) NULL;
 
@@ -174,7 +174,7 @@ create_knuckle(user)
       log_error("create_knuckle: out of memory");
       return((KNUCKLE *) NULL);
     }  
-  bzero((char *) k, sizeof(KNUCKLE));
+  memset(k, 0, sizeof(KNUCKLE));
 
   /*
    * insert knuckle in Knuckle List
@@ -563,7 +563,7 @@ init_user(knuckle,person)
   if (pw != NULL) {
     user->uid = pw->pw_uid;
     (void) strncpy(user->realname,pw->pw_gecos,NAME_SIZE);
-    p = index(user->realname,',');
+    p = strchr(user->realname,',');
     if (p != NULL) *p = '\0';
   }
   else {

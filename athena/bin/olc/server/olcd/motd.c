@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.14 1995-05-14 01:07:49 cfields Exp $
- *	$Author: cfields $
+ *	$Id: motd.c,v 1.15 1996-09-20 02:34:46 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.14 1995-05-14 01:07:49 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.15 1996-09-20 02:34:46 ghudson Exp $";
 #endif
 #endif
 
@@ -24,7 +24,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <sys/time.h>
 #include <sys/file.h>
@@ -76,7 +76,7 @@ void
     close(fd);
     expire_time = atol(buf);
 
-    p = index(buf,'\n');
+    p = strchr(buf,'\n');
     if (p == NULL) {
       log_error("check_motd_timeout: improperly formatted timeout file");
       in_time = 0;
@@ -258,7 +258,7 @@ char *buf;
   gettimeofday(&tv,0);
   now = localtime((time_t *)&tv.tv_sec);
   
-  p = index(buf,'\n');
+  p = strchr(buf,'\n');
   if (p != NULL) *p = '\0';
 
   while (*buf == ' ')

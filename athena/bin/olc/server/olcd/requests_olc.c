@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.56 1995-05-14 01:11:29 cfields Exp $
- *	$Author: cfields $
+ *	$Id: requests_olc.c,v 1.57 1996-09-20 02:34:49 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.56 1995-05-14 01:11:29 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.57 1996-09-20 02:34:49 ghudson Exp $";
 #endif
 #endif
 
@@ -1509,7 +1509,7 @@ olc_describe(fd, request)
       if(mesg != (char *) NULL)
 	{
 	  char *p;
-	  while((p = index(mesg,'\n')) != NULL)
+	  while((p = strchr(mesg,'\n')) != NULL)
 	    *p = ' ';
 	  strncpy(target->question->note,mesg,NOTE_SIZE-1);
           target->question->note[NOTE_SIZE-1] = '\0';

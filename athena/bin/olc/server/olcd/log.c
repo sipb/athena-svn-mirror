@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.45 1993-08-05 19:09:24 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: log.c,v 1.46 1996-09-20 02:34:44 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.45 1993-08-05 19:09:24 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.46 1996-09-20 02:34:44 ghudson Exp $";
 #endif
 #endif
 
@@ -35,7 +35,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/stat.h>		/* File status definitions. */
 #include <sys/file.h>
-#include <strings.h>		/* Defs. for string functions. */
+#include <string.h>		/* Defs. for string functions. */
 #ifdef DISCUSS
 #include <lumberjack.h>
 #endif
@@ -462,7 +462,7 @@ terminate_log_crash(knuckle)
     }
   time_now(current_time);
   fprintf(logfile, "\n--- Log file '%s' saved after daemon crash.\n[%s]",
-	  index(question->logfile, '/')+1, current_time);
+	  strchr(question->logfile, '/')+1, current_time);
   (void) fclose(logfile);
   if (dispose_of_log(knuckle) == ERROR)
     return(ERROR);
@@ -530,7 +530,7 @@ dispose_of_log(knuckle)
   
 /* Make sure there's no newlines in the title */
 
-  while ((p = index(question->title,'\n')) != NULL)
+  while ((p = strchr(question->title,'\n')) != NULL)
     *p = ' ';
 
   fprintf(fp, "%s\n%s\n%s\n%s\n", newfile, question->title,
@@ -624,7 +624,7 @@ char *os;
   /* assumption, I hope... */
 
   /* look for processor field */
-  p = index(os,',');
+  p = strchr(os,',');
   if (p == NULL)
     return(stuff);
   *p = '\0';
@@ -635,7 +635,7 @@ char *os;
      processor, display, xxxxxx K
    */
   if (strcmp(o_mach,"POWER") == 0) {
-    memory = rindex(p,',');
+    memory = strrchr(p,',');
     if (memory == NULL)
       return(stuff);
     *memory = '\0';
@@ -643,11 +643,11 @@ char *os;
     o_disp = p+1;
   } else {
     /* Look backwards for second comma to get memory */
-    memory = rindex(p,',');
+    memory = strrchr(p,',');
     if (memory==NULL)
       return(stuff);
     *memory = ';';
-    memory = rindex(p,',');
+    memory = strrchr(p,',');
     if (memory==NULL) {
       memory = p;
       o_disp = "none";
@@ -671,14 +671,14 @@ char *os;
   sprintf(stuff,"\nProcessor: %s\n",o_mach);
   
   while (o_disp != NULL) {
-    p = index(o_disp,',');
+    p = strchr(o_disp,',');
     if (p != NULL) {
       *p = '\0';
       p++;
     }
     while (*o_disp == ' ')
       o_disp++;
-    q = index(o_disp,' ');
+    q = strchr(o_disp,' ');
     if (q != NULL)
       *q = '\0';
 

@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.25 1993-08-12 17:27:48 cfields Exp $
- *	$Author: cfields $
+ *	$Id: backup.c,v 1.26 1996-09-20 02:34:37 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.25 1993-08-12 17:27:48 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.26 1996-09-20 02:34:37 ghudson Exp $";
 #endif
 #endif
 
@@ -426,7 +426,7 @@ void
 	}
       else
 	{
-	  bcopy(type_buf,type,STRING_SIZE);
+	  memcpy(type,type_buf,STRING_SIZE);
 	  skip = FALSE;
 	}
       
@@ -524,7 +524,7 @@ char *string;
   char buf2[BUF_SIZE];
   int cc;
   
-  bcopy(string,my_buf,STRING_SIZE);
+  memcpy(my_buf,string,STRING_SIZE);
   skip = TRUE;
   
   while(TRUE)
@@ -533,22 +533,22 @@ char *string;
 	      write(1,"\n",1);*/
       if(!strncmp(my_buf,USER_SEP,STRING_SIZE))
 	{
-	  bcopy(my_buf,type_buf,STRING_SIZE);
+	  memcpy(type_buf,my_buf,STRING_SIZE);
 	  log_error("type_error: recovered\n");
 	  return;
 	}
-      bcopy(my_buf,buf2,STRING_SIZE);
-      bcopy(&buf2[1],my_buf, STRING_SIZE-1);
+      memcpy(buf2,my_buf,STRING_SIZE);
+      memcpy(my_buf,&buf2[1], STRING_SIZE-1);
       if((cc = read(fd,buf2,sizeof(char))) != sizeof(char))
 	{
-	  bcopy(my_buf,type_buf,STRING_SIZE);
+	  memcpy(type_buf,my_buf,STRING_SIZE);
 	  if(cc == 0)
 	    skip = FALSE;
 	  log_error("type_error: brain damage");
 	  return;
 	}
       my_buf[STRING_SIZE-1] = buf2[0];
-      bcopy(my_buf,type_buf,STRING_SIZE);
+      memcpy(type_buf,my_buf,STRING_SIZE);
     }
 }
 

@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.27 1993-08-05 19:28:43 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: s_io.c,v 1.28 1996-09-20 02:34:51 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.27 1993-08-05 19:28:43 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.28 1996-09-20 02:34:51 ghudson Exp $";
 #endif
 #endif
 
@@ -173,43 +173,43 @@ send_list(fd, request, list)
   int len,size;
   long i;
 
-  bzero((char *) &net_req, sizeof(IO_LIST));
+  memset(&net_req, 0, sizeof(IO_LIST));
 
   i = htonl((u_long) list->ustatus);
-  bcopy((char *) &i, (char *) net_req.data, sizeof(i));
+  memcpy(net_req.data, &i, sizeof(i));
 
   i = htonl((u_long) list->cstatus);
-  bcopy((char *) &i, (char *) (net_req.data+4), sizeof(i));
+  memcpy(net_req.data+4, &i, sizeof(i));
 
   i = htonl((u_long) list->ukstatus);
-  bcopy((char *) &i, (char *) (net_req.data+8), sizeof(i));
+  memcpy(net_req.data+8, &i, sizeof(i));
 
   i = htonl((u_long) list->ckstatus);
-  bcopy((char *) &i, (char *) (net_req.data+12), sizeof(i));
+  memcpy(net_req.data+12, &i, sizeof(i));
 
   i = htonl((u_long) list->utime);
-  bcopy((char *) &i, (char *) (net_req.data+16), sizeof(i));
+  memcpy(net_req.data+16, &i, sizeof(i));
 
   i = htonl((u_long) list->ctime);
-  bcopy((char *) &i, (char *) (net_req.data+20), sizeof(i));
+  memcpy(net_req.data+20, &i, sizeof(i));
 
   i = htonl((u_long) list->umessage);
-  bcopy((char *) &i, (char *) (net_req.data+24), sizeof(i));
+  memcpy(net_req.data+24, &i, sizeof(i));
 
   i = htonl((u_long) list->cmessage);
-  bcopy((char *) &i, (char *) (net_req.data+28), sizeof(i));
+  memcpy(net_req.data+28, &i, sizeof(i));
 
   i = htonl((u_long) list->nseen);
-  bcopy((char *) &i, (char *) (net_req.data+32), sizeof(i));
+  memcpy(net_req.data+32, &i, sizeof(i));
 
   strncpy((char *)(net_req.data+36),list->topic, TOPIC_SIZE);
   strncpy((char *)(net_req.data+60), list->note, NOTE_SIZE);
 
   i = htonl((u_long) list->user.uid);
-  bcopy((char *) &i, (char *) (net_req.data+124), sizeof(i));
+  memcpy(net_req.data+124, &i, sizeof(i));
 
   i = htonl((u_long) list->user.instance);
-  bcopy((char *) &i, (char *) (net_req.data+128), sizeof(i));
+  memcpy(net_req.data+128, &i, sizeof(i));
   
   strncpy((char *)(net_req.data+132), list->user.username, LOGIN_SIZE+1);
   strncpy((char *)(net_req.data+142), list->user.realname, TITLE_SIZE);
@@ -222,10 +222,10 @@ send_list(fd, request, list)
   strncpy((char *)(net_req.data+302), list->user.machine, TITLE_SIZE);
 
   i = htonl((u_long) list->connected.uid);
-  bcopy((char *) &i, (char *) (net_req.data+336), sizeof(i));
+  memcpy(net_req.data+336, &i, sizeof(i));
 
   i = htonl((u_long) list->connected.instance);
-  bcopy((char *) &i, (char *) (net_req.data+340), sizeof(i));
+  memcpy(net_req.data+340, &i, sizeof(i));
   
   strncpy((char *)(net_req.data+344), list->connected.username, LOGIN_SIZE+1);
   strncpy((char *)(net_req.data+354), list->connected.realname, TITLE_SIZE);
