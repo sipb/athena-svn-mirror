@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.4 1993-07-02 04:30:54 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.5 1993-07-17 01:22:30 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -665,10 +665,17 @@ main(argc, argv)
   for (i = 0; i < NUMSIGS; i++)
     sigflags[i] = 0;
 
+#ifdef SOLARIS
+  (void) sigset(SIGHUP, sighandler);
+  (void) sigset(SIGFPE, sighandler);
+  (void) sigset(SIGUSR1, sighandler);
+  (void) sigset(SIGUSR2, sighandler);
+#else
   (void) signal(SIGHUP, sighandler);
   (void) signal(SIGFPE, sighandler);
   (void) signal(SIGUSR1, sighandler);
   (void) signal(SIGUSR2, sighandler);
+#endif
 
 #if defined(HAS_PUTENV)
 /*
