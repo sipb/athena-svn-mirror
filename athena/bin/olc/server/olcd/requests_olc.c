@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.48 1991-11-05 13:47:35 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.48.1.1 1992-01-07 15:52:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.48 1991-11-05 13:47:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.48.1.1 1992-01-07 15:52:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -58,7 +58,7 @@ olc_on(fd, request)
 {
   KNUCKLE *requester;
   KNUCKLE *target;
-  KNUCKLE **k_ptr;
+  KNUCKLE *k_ptr;
   int qcount = 0;
   char msgbuf[BUF_SIZE];
   int status;
@@ -83,21 +83,19 @@ olc_on(fd, request)
 	is_allowed(requester->user,ON_ACL)))
     return(send_response(fd,PERMISSION_DENIED));
 
-  if(has_question(target) && !(is_option(request->options,SPLIT_OPT)))
-    {
-      for (k_ptr = target->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-	{
-	  if(is_signed_on((*k_ptr)))
-	    return(send_response(fd, ALREADY_SIGNED_ON));
-	  if((*k_ptr)->question != NULL)
-	    if((*k_ptr)->question-> owner != (*k_ptr))
-	      ++qcount;
-	}
-      if(qcount < target->user->max_answer)
-	return(send_response(fd,HAS_QUESTION));
-      else
-	return(send_response(fd,MAX_ANSWER));
+  if(has_question(target) && !(is_option(request->options,SPLIT_OPT))) {
+    for (k_ptr = target->user->knuckles; k_ptr != (KNUCKLE *) NULL; k_ptr = k_ptr->next_k) {
+      if(is_signed_on(k_ptr))
+	return(send_response(fd, ALREADY_SIGNED_ON));
+      if (k_ptr->question != NULL)
+	if (k_ptr->question->owner != k_ptr)
+	  ++qcount;
     }
+    if(qcount < target->user->max_answer)
+      return(send_response(fd,HAS_QUESTION));
+    else
+      return(send_response(fd,MAX_ANSWER));
+  }
   else
     if(is_option(request->options,SPLIT_OPT))
     {
@@ -107,14 +105,14 @@ olc_on(fd, request)
       log_status(msgbuf);
 #endif /* LOG */
 
-      for (k_ptr = target->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-	{
-	  if(is_signed_on((*k_ptr)))
-	    return(send_response(fd, ALREADY_SIGNED_ON));
-	  if((*k_ptr)->question != NULL)
-	    if((*k_ptr)->question-> owner != (*k_ptr))
-	      ++qcount;
-	}
+      for (k_ptr = target->user->knuckles; k_ptr != (KNUCKLE *) NULL; k_ptr
+	   = k_ptr->next_k) {
+	if(is_signed_on(k_ptr))
+	  return(send_response(fd, ALREADY_SIGNED_ON));
+	if(k_ptr->question != NULL)
+	  if(k_ptr->question-> owner != k_ptr)
+	    ++qcount;
+      }
 
       if(qcount >= target->user->max_answer)
 	return(send_response(fd,MAX_ANSWER));
@@ -397,8 +395,8 @@ olc_who(fd,request)
 		  && (owns_question(requester)))
 		{
 		  free_new_messages(requester->connected);
-		  deactivate(requester->connected);
 		  disconnect_knuckles(requester, requester->connected);
+		  dealloc_knuc(requester->connected);
 		  if (!(requester->status & REFERRED))
 		    set_status(requester, PENDING);
 		  olc_broadcast_message("resurrection",message, 
@@ -497,7 +495,7 @@ olc_done(fd, request)
 	  free((char *) target->question);
 	  target->question = (QUESTION *) NULL;
 	  free_new_messages(target);
-	  deactivate(target);
+	  dealloc_knuc(target);
           needs_backup = TRUE;
 	  return(send_response(fd, SUCCESS));
 	}
@@ -525,9 +523,10 @@ olc_done(fd, request)
 	      terminate_log_answered(target);
 	      free_new_messages(target);
 	      free_new_messages(target->connected);
-	      deactivate(target);
-	      deactivate(target->connected);
-	      disconnect_knuckles(target, target->connected);
+	      consultant = target->connected;
+	      disconnect_knuckles(target, consultant);
+	      dealloc_knuc(consultant);
+	      dealloc_knuc(target);
 	      free((char *) target->question);
 	      target->question = (QUESTION *) NULL;
 	    }
@@ -569,16 +568,16 @@ olc_done(fd, request)
   terminate_log_answered(target);
   
   if (is_option(request->options, OFF_OPT))
-    deactivate(target->connected);
+    dealloc_knuc(target->connected);
 
 /*  if(requester->instance > 0 && target->connected == requester)
-    deactivate(requester);*/
+    dealloc_knuc(requester);*/
   
   consultant = target->connected;
   free_new_messages(target);
   if (target->connected != NULL)
     free_new_messages(target->connected);
-  deactivate(target);
+  dealloc_knuc(target);
   disconnect_knuckles(target, target->connected);
   free((char *) target->question);
   target->question = (QUESTION *) NULL;
@@ -595,7 +594,7 @@ olc_done(fd, request)
       }
       else {
 	  send_response(fd, SIGNED_OFF);
-	  deactivate(consultant);
+	  dealloc_knuc(consultant);
       }
   }
   else
@@ -669,7 +668,7 @@ olc_cancel(fd, request)
 	  free((char *) target->question);
 	  target->question = (QUESTION *) NULL;
 	  free_new_messages(target);
-	  deactivate(target);
+	  dealloc_knuc(target);
           needs_backup = TRUE;
 	  return(send_response(fd, OK));
 	}
@@ -698,8 +697,8 @@ olc_cancel(fd, request)
 	      terminate_log_answered(target);
 	      free_new_messages(target);
 	      free_new_messages(consultant);
-	      deactivate(target);
-	      deactivate(consultant);
+	      dealloc_knuc(target);
+	      dealloc_knuc(consultant);
 	      disconnect_knuckles(target, consultant);
 	      free((char *) target->question);
 	      target->question = (QUESTION *) NULL;
@@ -743,15 +742,15 @@ olc_cancel(fd, request)
   terminate_log_answered(target);
   
   if (is_option(request->options, OFF_OPT))
-    deactivate(target->connected);
+    dealloc_knuc(target->connected);
 
 /*  if(requester->instance > 0 && target->connected == requester)
-    deactivate(requester);*/
+    dealloc_knuc(requester);*/
 
   if (target->connected != NULL)
     free_new_messages(target->connected);
   free_new_messages(target);
-  deactivate(target);
+  dealloc_knuc(target);
   if (consultant != NULL)
     disconnect_knuckles(target, consultant);
   free((char *) target->question);
@@ -771,7 +770,7 @@ olc_cancel(fd, request)
     else
       {
 	send_response(fd, SIGNED_OFF);
-	deactivate(consultant);
+	dealloc_knuc(consultant);
       }
 
   needs_backup = TRUE;
@@ -790,7 +789,7 @@ olc_ask(fd, request)
 {
   KNUCKLE *target;
   KNUCKLE *requester;
-  KNUCKLE **k_ptr;
+  KNUCKLE *k_ptr;
   char msgbuf[BUF_SIZE];	      /* Message buffer. */
   char *question, *machinfo;
   int status;
@@ -824,9 +823,10 @@ olc_ask(fd, request)
   if((has_question(target) || is_signed_on(target)) && 
      !(is_option(request->options,SPLIT_OPT)))
     {
-      for (k_ptr = target->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-	if((*k_ptr)->question != NULL)
-	  if((*k_ptr)->question-> owner == (*k_ptr))
+      for (k_ptr = target->user->knuckles; k_ptr != (KNUCKLE *) NULL; k_ptr
+	   = k_ptr->next_k)
+	if(k_ptr->question != NULL)
+	  if(k_ptr->question->owner == k_ptr)
 	    ++qcount;
 
       if(qcount < requester->user->max_ask)
@@ -842,9 +842,10 @@ olc_ask(fd, request)
               target->user->username);
       log_status(msgbuf);
 #endif /* LOG */
-      for (k_ptr = target->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-        if((*k_ptr)->question != NULL)
-          if((*k_ptr)->question-> owner == (*k_ptr))
+      for (k_ptr = target->user->knuckles; k_ptr != (KNUCKLE *) NULL; k_ptr
+	   = k_ptr->next_k)
+        if(k_ptr->question != NULL)
+          if(k_ptr->question-> owner == k_ptr)
             ++qcount;
 
       if(qcount >= target->user->max_ask)
@@ -1034,7 +1035,7 @@ olc_forward(fd, request)
 	terminate_log_unanswered(target);
 	free_new_messages(target);
 	free_new_messages(consultant);
-	deactivate(target);
+	dealloc_knuc(target);
 	disconnect_knuckles(target, consultant);
 	free((char *) target->question);
 	target->question = (QUESTION *) NULL;
@@ -1181,7 +1182,7 @@ olc_off(fd, request)
     if(!is_connected(target))
       {
 	send_response(fd,NOT_CONNECTED);
-	deactivate(target);
+	dealloc_knuc(target);
       }
     else
       send_response(fd,SUCCESS);
@@ -1555,8 +1556,8 @@ olc_replay(fd, request)
 {
   KNUCKLE *requester;	       /* Current user  making request */
   KNUCKLE *target;             /* target user */
+  KNUCKLE *k;
   int status;
-  int instance;
   int can_monitor;
   char censored_filename[NAME_SIZE];
 
@@ -1585,9 +1586,9 @@ olc_replay(fd, request)
     status = SUCCESS;
   else {
     status = NO_QUESTION;
-    for(instance=0;instance<target->user->no_knuckles;instance++)
-      if (has_question(target->user->knuckles[instance])) {
-	target = target->user->knuckles[instance];
+    for(k = target->user->knuckles;k != (KNUCKLE *) NULL; k = k->next_k)
+      if (has_question(k)) {
+	target = k;
 	status = SUCCESS;
 	break;
       }
@@ -2188,9 +2189,9 @@ olc_startup(fd, request)
      int fd;			/* File descriptor for socket. */
      REQUEST *request;	        /* Request structure from olc. */
 {
-  KNUCKLE *requester;
+  KNUCKLE *requester,*k;
   char msgbuf[BUF_SIZE];	
-  int status,i,entries=0;
+  int status,entries=0;
     
   status = find_knuckle(&(request->requester), &requester);
 
@@ -2219,8 +2220,8 @@ olc_startup(fd, request)
 	 }
       else
 	{
-	  for(i=0;i<requester->user->no_knuckles;i++)
-	    if(is_active(requester->user->knuckles[i]))
+	  for(k=requester->user->knuckles;k != (KNUCKLE *) NULL;k = k->next_k)
+	    if(is_active(k))
 	      entries++;
 	  if(entries > 0) 
 	    {
@@ -2249,7 +2250,7 @@ olc_grab(fd, request)
 {
   KNUCKLE    *target;            /* User being grabbed. */
   KNUCKLE    *requester;	 
-  KNUCKLE    **k_ptr;
+  KNUCKLE    *k_ptr;
   char msgbuf[BUF_SIZE];	         /* Message buffer. */
   int status; 
   int qcount = 0;
@@ -2282,13 +2283,14 @@ olc_grab(fd, request)
   
   if(has_question(requester) && !(is_option(request->options,SPLIT_OPT)))
     {
-      for (k_ptr = requester->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
+      for (k_ptr = requester->user->knuckles; k_ptr != (KNUCKLE *) NULL;
+	   k_ptr = k_ptr->next_k)
 	{
-	  if((*k_ptr)->question != NULL)
-	    if((*k_ptr)->question->owner != (*k_ptr))
+	  if(k_ptr->question != NULL)
+	    if(k_ptr->question->owner != k_ptr)
 	      ++qcount;
 	  else
-	    if(is_signed_on((*k_ptr)))
+	    if(is_signed_on(k_ptr))
 	      ++qcount;
 	}
 
@@ -2306,9 +2308,10 @@ olc_grab(fd, request)
       log_status(msgbuf);
 #endif /* LOG */
 
-      for (k_ptr = requester->user->knuckles; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-	if((*k_ptr)->question != NULL)
-	  if((*k_ptr)->question->owner != (*k_ptr))
+      for (k_ptr = requester->user->knuckles; k_ptr != (KNUCKLE *) NULL;
+	   k_ptr = k_ptr->next_k)
+	if(k_ptr->question != NULL)
+	  if(k_ptr->question->owner != k_ptr)
 	    ++qcount;
 
       if(qcount >= requester->user->max_answer)
