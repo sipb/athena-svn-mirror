@@ -101,8 +101,6 @@
 *******************************************************************************
 */
 
-static char msg[1024];
-
 /*
 *******************************************************************************
 * Private_function_declarations.
@@ -114,7 +112,7 @@ static char msg[1024];
 
 static char* AllocAndBuildString( params, num_params, commas )
     char *params[];
-    int  *num_params;
+    Cardinal  *num_params;
     int   commas;
 {
     char *data;
@@ -141,7 +139,7 @@ static void SendToCallback( callback, w, params, num_params, min_reqd, commas )
     XtCallbackProc callback;
     Widget         w;
     char          *params[];
-    int           *num_params;
+    Cardinal      *num_params;
     int            min_reqd;
     int            commas;
 {
