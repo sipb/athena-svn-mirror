@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <sys/param.h>
 #include <rpc/rpc.h>
-#ifndef ultrix
+#if !defined(ultrix) && !defined(_I386)
 #include <ufs/quota.h>
 #endif
 #include <rpcsvc/rcquota.h>
