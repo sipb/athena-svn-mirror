@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.13 1989-03-23 09:30:08 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.14 1989-03-24 14:17:38 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.13 1989-03-23 09:30:08 jtkohl Exp $";
+static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.14 1989-03-24 14:17:38 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -74,7 +74,7 @@ int ZCheckAuthentication(notice, from)
 #ifdef NOENCRYPTION
     our_checksum = 0;
 #else
-    our_checksum = (ZChecksum_t)quad_cksum(notice->z_packet, NULL, 
+    our_checksum = (ZChecksum_t)des_quad_cksum(notice->z_packet, NULL, 
 					   notice->z_default_format+
 					   strlen(notice->z_default_format)+1-
 					   notice->z_packet, 0, cred.session);
