@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.14 1991-02-01 23:21:00 lwvanels Exp $
+ * $Id: Imakefile,v 1.15 1991-03-06 16:00:15 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -11,11 +11,11 @@ EXTRA_LOAD_FLAGS=-pg
 #endif
 
 
-SRCS=	backup.c data_utils.c db.c io.c log.c olcd.c \
+SRCS=	backup.c data_utils.c db.c s_io.c log.c olcd.c \
 	data.c notify.c utils.c list.c acl_files.c \
 	requests_olc.c requests_admin.c syslog.c statistics.c motd.c
 
-OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
+OBJS=	backup.o data_utils.o db.o s_io.o log.o olcd.o \
 	data.o notify.o utils.o list.o acl_files.o \
 	requests_olc.o requests_admin.o syslog.o statistics.o motd.o
 
