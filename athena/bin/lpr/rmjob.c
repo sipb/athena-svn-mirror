@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.6 1992-11-09 00:49:36 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.7 1993-02-25 13:47:46 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.6 1992-11-09 00:49:36 probe Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.7 1993-02-25 13:47:46 probe Exp $";
 #endif lint
 
 /*
@@ -351,7 +351,8 @@ chkremote()
 	}
 
 	/* if printer is not on local machine, ignore LP */
-	if (strcasecmp (name, hp->h_name) != 0) *LP = '\0';
+	if (strcasecmp (name, hp->h_name) != 0)
+	    LP = "";
 	else return;	/* local machine */
 
 	/*
