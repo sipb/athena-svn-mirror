@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.13 1988-06-29 16:51:43 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.14 1988-07-10 19:06:13 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.13 1988-06-29 16:51:43 jtkohl Exp $";
+static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.14 1988-07-10 19:06:13 jtkohl Exp $";
 static char copyright[] = "Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.";
 #endif lint
 
@@ -201,13 +201,18 @@ Code_t Z_ReadWait()
 	if (notice.z_kind != HMACK && notice.z_kind != SERVACK &&
 	    notice.z_kind != SERVNAK) {
 	    ZNotice_t tmpnotice;
+	    ZPacket_t packet;
+	    int len;
 
 	    tmpnotice = notice;
 	    tmpnotice.z_kind = CLIENTACK;
 	    tmpnotice.z_message_len = 0;
 	    olddest = __HM_addr;
 	    __HM_addr = from;
-	    if ((retval = ZSendRawNotice(&tmpnotice)) != ZERR_NONE)
+	    if ((retval = ZFormatSmallRawNotice(&tmpnotice, packet, &len))
+		!= ZERR_NONE)
+		return(retval);
+	    if ((retval = ZSendPacket(packet, len, 0)) != ZERR_NONE)
 		return (retval);
 	    __HM_addr = olddest;
 	}
