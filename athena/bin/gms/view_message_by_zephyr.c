@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.5 1996-10-04 03:59:32 ghudson Exp $";
+static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.6 1996-10-04 04:01:08 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -26,7 +26,7 @@ void view_message_by_zephyr(message)
   
   whoami = getenv("USER");
   
-  if (!whoami)
+  if(!whoami)
     whoami = getlogin();
   
   if(!whoami) {

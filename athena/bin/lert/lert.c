@@ -552,7 +552,7 @@ int type;
 
   whoami = getenv("USER");
   
-  if (!whoami)
+  if(!whoami)
     whoami = getlogin();
 
   if(!whoami) {
