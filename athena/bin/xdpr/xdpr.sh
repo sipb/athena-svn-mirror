@@ -28,11 +28,11 @@ usage="Usage: xdpr [filename] [-out filename ] \
 
 # Guess if we are BSD or System V
 
-if [ -x /usr/ucb/lpr -o -x /usr/bin/lpr -o -x /bin/lpr -o -x /usr/bsd/lpr ]
+if [ -r /usr/ucb/lpr -o -r /usr/bin/lpr -o -r /bin/lpr -o -r /usr/bsd/lpr ]
 then
 	LP=lpr
 	BSD=1
-elif [ -x /usr/bin/lp -o -x /bin/lp ]
+elif [ -r /usr/bin/lp -o -r /bin/lp ]
 then
 	LP=lp
 	BSD=0
