@@ -190,8 +190,8 @@ account(acct)
 			;
 		ic = atoi(cp2);
 		*cp2 = '\0';
-		if (mflag && index(cp, ':'))
-		    cp = index(cp, ':') + 1;
+		if (mflag && strchr(cp, ':'))
+		    cp = strchr(cp, ':') + 1;
 		hp = lookup(cp);
 		if (hp == NIL) {
 			if (!allflag)

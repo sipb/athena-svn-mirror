@@ -96,7 +96,7 @@ int pralias(buf, name)
 
 #ifdef OLD_DEFAULT_ALIAS
 	/* if not in "printer.cluster" format, look up cluster and append */
-	if (index(name, '.') == NULL)
+	if (strchr(name, '.') == NULL)
 		if ((e = getenv("LPR")) != NULL) {
 			strcat(temp, ".");
 			strcat(temp, e);
