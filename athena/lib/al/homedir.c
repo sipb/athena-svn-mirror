@@ -17,7 +17,7 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.12 1999-03-30 18:40:50 danw Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.13 1999-04-17 02:29:04 ghudson Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
@@ -41,40 +41,50 @@ int al__setup_homedir(const char *username, struct al_record *record,
   pid_t pid, rpid;
   int status, fd;
   char *tmpdir, *tmpfile, *saved_homedir;
+  const char *hes_homedir;
   void *hescontext;
   DIR *dir;
   struct dirent *entry;
 
-  /* If there's an existing session using a tmp homedir, we'll use that. */
-  if (record->old_homedir)
-    return AL_WXTMPDIR;
-
-  /* Get local password entry. User should already have been added to
-   * passwd database, so if this fails, we've already lost, so punt. */
+  /* Get local password entry.  User should already have been added to
+   * passwd database, so if this fails, we've already lost, so punt.
+   */
   local_pwd = al__getpwnam(username);
   if (!local_pwd)
     return AL_WNOHOMEDIR;
 
-  /* Get hesiod password entry. If the user has no hesiod passwd
-   * entry or the listed homedir differs from the local passwd entry,
-   * return AL_SUCCESS (and use the local homedir). */
-  if (hesiod_init(&hescontext) != 0)
+  if (record->old_homedir)
     {
-      al__free_passwd(local_pwd);
-      return AL_WNOHOMEDIR;
+      /* We previously used a temporary homedir for this user; we will
+       * retry the attach this time.
+       */
+      hes_homedir = record->old_homedir;
     }
-  hes_pwd = hesiod_getpwnam(hescontext, username);
-  if (!hes_pwd || strcmp(local_pwd->pw_dir, hes_pwd->pw_dir))
+  else
     {
+      /* Get hesiod password entry. If the user has no hesiod passwd
+       * entry or the listed homedir differs from the local passwd entry,
+       * return AL_SUCCESS (and use the local homedir).
+       */
+      if (hesiod_init(&hescontext) != 0)
+	{
+	  al__free_passwd(local_pwd);
+	  return AL_WNOHOMEDIR;
+	}
+      hes_pwd = hesiod_getpwnam(hescontext, username);
+      if (!hes_pwd || strcmp(local_pwd->pw_dir, hes_pwd->pw_dir))
+	{
+	  if (hes_pwd)
+	    hesiod_free_passwd(hescontext, hes_pwd);
+	  hesiod_end(hescontext);
+	  al__free_passwd(local_pwd);
+	  return AL_SUCCESS;
+	}
       if (hes_pwd)
 	hesiod_free_passwd(hescontext, hes_pwd);
       hesiod_end(hescontext);
-      al__free_passwd(local_pwd);
-      return AL_SUCCESS;
+      hes_homedir = local_pwd->pw_dir;
     }
-  if (hes_pwd)
-    hesiod_free_passwd(hescontext, hes_pwd);
-  hesiod_end(hescontext);
 
   /* We want to attach a remote home directory. Make sure this is OK. */
   if (access(PATH_NOATTACH, F_OK) == 0)
@@ -117,17 +127,32 @@ int al__setup_homedir(const char *username, struct al_record *record,
 	;
 
       if (rpid == pid && WIFEXITED(status) && WEXITSTATUS(status) == 0 &&
-	  access(local_pwd->pw_dir, F_OK) == 0)
+	  access(hes_homedir, F_OK) == 0)
 	{
 	  record->attached = 1;
 	  al__free_passwd(local_pwd);
+	  if (record->old_homedir)
+	    {
+	      if (al__change_passwd_homedir(username,
+					    record->old_homedir) != AL_SUCCESS)
+		return AL_WXTMPDIR;
+	      free(record->old_homedir);
+	      record->old_homedir = NULL;
+	    }
 	  return AL_SUCCESS;
 	}
       break;
     }
 
-  /* attach failed somehow. Try to make a local homedir now, unless
-   * the caller doesn't want that. */
+  /* attach failed somehow.  If we already had a local homedir, we're
+   * done.
+   */
+  if (record->old_homedir)
+    return AL_WXTMPDIR;
+
+  /* Try to make a local homedir now, unless the caller doesn't want
+   * that.
+   */
   if (!tmphomedir)
     {
       al__free_passwd(local_pwd);
@@ -146,7 +171,8 @@ int al__setup_homedir(const char *username, struct al_record *record,
    * it.  PATH_TMPDIRS is not world-writable, so we don't have to be
    * paranoid about the creation of the user home directory, but we do
    * have to be careful about doing anything as root in a diretory which
-   * we've already chowned to the user. */
+   * we've already chowned to the user.
+   */
   sprintf(tmpdir, "%s/%s", PATH_TMPDIRS, username);
   if (access(tmpdir, F_OK) == -1)
     {
@@ -227,27 +253,25 @@ int al__setup_homedir(const char *username, struct al_record *record,
       closedir(dir);
     }
 
-  /* Update session records.  (malloc first so we will never have
-   * to back out after calling al__change_passwd_homedir). */
-  if (!record->passwd_added)
-    {
-      saved_homedir = malloc(strlen(local_pwd->pw_dir) + 1);
-      if (!saved_homedir)
-	{
-	  free(tmpdir);
-	  al__free_passwd(local_pwd);
-	  return AL_ENOMEM;
-	}
-      strcpy(saved_homedir, local_pwd->pw_dir);
-    }
-  if (al__change_passwd_homedir(username, tmpdir) != AL_SUCCESS)
+  /* Update the session record.  malloc first so we will never have to
+   * back out after calling al__change_passwd_homedir.
+   */
+  saved_homedir = malloc(strlen(local_pwd->pw_dir) + 1);
+  if (!saved_homedir)
     {
       free(tmpdir);
       al__free_passwd(local_pwd);
+      return AL_ENOMEM;
+    }
+  strcpy(saved_homedir, local_pwd->pw_dir);
+  if (al__change_passwd_homedir(username, tmpdir) != AL_SUCCESS)
+    {
+      free(tmpdir);
+      free(saved_homedir);
+      al__free_passwd(local_pwd);
       return AL_WNOHOMEDIR;
     }
-  if (!record->passwd_added)
-    record->old_homedir = saved_homedir;
+  record->old_homedir = saved_homedir;
 
   free(tmpdir);
   al__free_passwd(local_pwd);
