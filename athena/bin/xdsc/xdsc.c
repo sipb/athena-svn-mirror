@@ -156,7 +156,7 @@ static char * submenu_labels1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
-        { "number", "first", "last", NULL },
+        { "number", "first", "last", "start of chain", "end of chain", NULL },
         { "reply", "new transaction", NULL },
         { "write to file", "mail to someone", NULL }};
 
@@ -165,7 +165,7 @@ static char * submenu_names1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
         { NULL, NULL, NULL, NULL },
-        { "numberbutton", "firstbutton", "lastbutton", NULL },
+        { "numberbutton", "firstbutton", "lastbutton", "frefbutton", "lrefbutton",NULL },
         { "replybutton", "newbutton", NULL },
         { "writebutton", "mailbutton", NULL }};
 
@@ -228,8 +228,10 @@ char *argv[];
 	XtSetArg(args[0], XtNwidth, width < 500 ? 500 : width);
 	XtSetValues(topW, args, 1);
 
+/*
 	XtRealizeWidget(topW);
 	XSync(XtDisplay(topW), False);
+*/
 
 	if (debug)
 		fprintf (stderr, "Debugging is on\n");
@@ -302,7 +304,10 @@ char *argv[];
 		system (commandline);
 	}
 
+
 	BuildUserInterface();
+	XtRealizeWidget(topW);
+
 	dpy = XtDisplay(topW);
 	root_window = XtWindow(topW);
 
@@ -844,6 +849,12 @@ XtPointer	call_data;
 			break;
 		case 2:
 			GoToTransaction(LAST, True);
+			break;
+		case 3:
+			GoToTransaction(FREF, True);
+			break;
+		case 4:
+			GoToTransaction(LREF, True);
 			break;
 		}
 		break;
