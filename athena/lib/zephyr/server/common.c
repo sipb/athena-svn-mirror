@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_common_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.7 1990-11-13 17:05:11 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.8 1991-01-28 15:06:40 raeburn Exp $";
 #endif SABER
 #endif lint
 
@@ -47,7 +47,7 @@ strsave (const char *sp)
 unsigned long
 hash (const char *string)
 {
-	register int hval = 0;
+	register unsigned long hval = 0;
 	register char cp;
 
 	while (1) {
@@ -59,25 +59,25 @@ hash (const char *string)
 	    cp = *string++;
 	    if (!cp)
 		break;
-	    hval += cp * 9;
+	    hval += cp * (3 + (1 << 16));
 
 	    cp = *string++;
 	    if (!cp)
 		break;
-	    hval += cp * 17;
+	    hval += cp * (1 + (1 << 8));
 
 	    cp = *string++;
 	    if (!cp)
 		break;
-	    hval += cp * 65;
+	    hval += cp * (1 + (1 << 12));
 
 	    cp = *string++;
 	    if (!cp)
 		break;
-	    hval += cp * 129;
+	    hval += cp * (1 + (1 << 4));
 
-	    hval += (hval & 0x7fffff) * 256;
-	    hval &= 0x7fffffff;
+	    hval += ((long) hval) >> 18;
 	}
+	hval &= 0x7fffffff;
 	return hval;
 }
