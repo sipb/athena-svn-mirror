@@ -210,23 +210,51 @@
 	<include ignore_missing="yes">local.conf</include>
 
 <!--
-  Alias well known font names to available TrueType fonts
--->
+  Aliases to try to find the "best" standard document fonts the user has
+ -->
+	<alias>
+		<family>Times New Roman</family>
+		<accept>
+			<family>Thorndale AMT</family>
+			<family>Nimbus Roman No9 L</family>
+		</accept>
+	</alias>
 	<alias>
 		<family>Times</family>
-		<accept><family>Times New Roman</family></accept>
+		<accept>
+			<family>Nimbus Roman No9 L</family>
+			<family>Thorndale AMT</family>
+			<family>Times New Roman</family>
+		</accept>
 	</alias>
 	<alias>
 		<family>Helvetica</family>
-		<accept><family>Verdana</family></accept>
+		<accept>
+			<family>Nimbus Sans L</family>
+			<family>Albany AMT</family>
+			<family>Arial</family>
+		</accept>
 	</alias>
 	<alias>
 		<family>Arial</family>
-		<accept><family>Verdana</family></accept>
+		<accept>
+			<family>Albany AMT</family>
+			<family>Nimbus Sans L</family>
+			<family>Arial</family>
+		</accept>
 	</alias>
 	<alias>
 		<family>Courier</family>
-		<accept><family>Courier New</family></accept>
+		<accept>
+			<family>Cumberland AMT</family>
+			<family>Courier New</family>
+		</accept>
+	</alias>
+	<alias>
+		<family>Courier New</family>
+		<accept>
+			<family>Cumberland AMT</family>
+		</accept>
 	</alias>
 
 <!--
@@ -263,12 +291,15 @@
 	<alias>
 		<family>serif</family>
 		<prefer>
+			<family>Nimbus Roman No9 L</family>
+			<family>Thorndale AMT</family>
 			<family>Bitstream Vera Serif</family>
 			<family>Times New Roman</family>
-			<family>Nimbus Roman No9 L</family>
 			<family>Luxi Serif</family>
 			<family>Times</family>
+			<family>FrankRuehl</family>
 			<family>Kochi Mincho</family>
+ 			<family>ZYSong18030</family>
 			<family>AR PL SungtiL GB</family>
 			<family>AR PL Mingti2L Big5</family>
 			<family>Baekmuk Batang</family>			
@@ -277,30 +308,37 @@
 	<alias>
 		<family>sans-serif</family>
 		<prefer>
+			<family>Luxi Sans</family>
+			<family>Albany AMT</family>
 			<family>Bitstream Vera Sans</family>
 			<family>Verdana</family>
 			<family>Nimbus Sans L</family>
-			<family>Luxi Sans</family>
 			<family>Arial</family>
 			<family>Helvetica</family>
+			<family>Nachlieli</family>
 			<family>Kochi Gothic</family>
-			<family>AR PL KaitiM GB</family>
-			<family>AR PL KaitiM Big5</family>
-			<family>Baekmuk Dotum</family>
+ 			<family>ZYSong18030</family>
+ 			<family>AR PL SungtiL GB</family>
+ 			<family>AR PL Mingti2L Big5</family>
+ 			<family>Baekmuk Gulim</family>
 			<family>SimSun</family>
 		</prefer>
 	</alias>
 	<alias>
 		<family>monospace</family>
 		<prefer>
+			<family>Luxi Mono</family>
 			<family>Bitstream Vera Sans Mono</family>
 			<family>Andale Mono</family>
+			<family>Cumberland AMT</family>
 			<family>Courier New</family>
-			<family>Luxi Mono</family>
+			<family>Miriam Mono</family>
 			<family>Nimbus Mono L</family>
 			<family>Kochi Gothic</family>
-			<family>AR PL KaitiM GB</family>
-			<family>Baekmuk Dotum</family>
+ 			<family>ZYSong18030</family>
+ 			<family>AR PL SungtiL GB</family>
+ 			<family>AR PL Mingti2L Big5</family>
+ 			<family>Baekmuk Gulim</family>
 		</prefer>
 	</alias>
 
