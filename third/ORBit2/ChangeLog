@@ -1,3 +1,211 @@
+2005-02-04  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* NEWS: Update.
+
+	* configure.in: Bump version to 2.12.1.
+
+2005-02-02  Hans Petter Jansson  <hpj@novell.com>
+
+	* configure.in: Check for res_9_init() in -lresolv. This will pull in
+	libresolv on Darwin, where the actual symbol's name is different from
+	the one used by programs.
+
+2005-01-28  Tor Lillqvist  <tml@novell.com>
+
+	* src/orb/orbit-init.c
+	* src/orb/orb-core/orbit-trace.c: Use g_get_current_time() instead
+	of gettimeofday().
+
+	* src/orb/GIOP/giop.c
+	* src/orb/GIOP/giop-send-buffer.c
+	* src/orb/orb-core/orbhttp.c: Conditionalize includes as
+	necessary.
+
+	* src/orb/GIOP/giop.c: Don't check owner on Win32 either. Add
+	newline to dprintf() calls. Use socket API for wakeup pipe on
+	Win32. Create it using link_pipe().
+
+	* src/orb/orb-core/corba-orb.c: Use IPv4 and not Unix domain
+	sockets on Win32.
+
+	* src/orb/orb-core/corba-typecode.c: Drop the const from the
+	typecode struct definitions, for Win32 DLL import/export reasons
+	(see yesterday's ChangeLog entries).
+
+	* src/orb/orb-core/orbhttp.c (orbHTTPConnectAttempt): Drop an
+	unused variable in the WinSock part.
+
+	* src/orb/orb-core/orbit-typelib.c: Use G_SEARCHPATH_SEPARATOR_S.
+
+	* src/orb/util/genrand.c: No getuid() on Win32.
+
+	* src/services/name/Makefile.am: No -lm on Win32.
+
+	* src/services/name/boot.c: Conditionalize use of syslog and
+	sigaction.
+
+	* src/services/name/orbit-name-server.c: Remove a couple of
+	unneeded includes.
+
+	* test/echo-client.c: Make debugging easier: If argv[1] starts
+	with a dollar, fetch it with getenv().
+
+	* test/echo-server.c
+	* test/empty-server.c
+	* test/any-server.c: Output the IOR: string to a file, too, to
+	avoid having to copy-paste long strings when runnning these tests.
+
+	* test/typelib-dump.c: Small workaround for Win32 DLL variable
+	import restriction.
+
+	* test/everything/test.sh: Don't run the Unix domain socket tests
+	on Windows. Don't exit after a failed test if $DONT_EXIT is set.
+
+	* test/everything/client.c (main)
+	* test/everything/server.c (main): Small const correctness fix.
+
+2005-01-27  Tor Lillqvist  <tml@novell.com>
+
+	* src/idl-compiler/Makefile.am
+	* test/Makefile.am: No separate -lm on Win32.
+
+	* src/idl-compiler/orbit-idl-c-backend.c: mkdir() has different
+	prototype in Microsoft's C library.
+
+	Below changes from Cygwin port of ORBit2 by Gerrit P. Haase, see
+	www.cygwin.com/ml/cygwin-apps/2004-10/msg00030.html. They also
+	apply to native Win32.
+
+	* include/orbit/orb-core/corba-orb-type.h
+	* include/orbit/orb-core/corba-typecode.h: Drop the constness of
+	extern structs as it causes problems when building libORBit-2 as a
+	DLL on Win32 and Cygwin. 
+
+	* src/idl-compiler/orbit-idl-c-headers.c (ch_type_alloc_and_tc)
+	* src/idl-compiler/orbit-idl-c-typecode.c
+	(orbit_output_tcstruct_anon_subtypes_array,
+	orbit_output_tcstruct_anon_sublabels_array, cbe_tc_generate): Drop
+	constness from generated code, for Win32 DLL reasons as above.
+
+	* src/idl-compiler/orbit-idl-c-skels.c (cbe_skel_interface_print_relayers):
+	Workaround Win32 restriction, use a temporary variable. (See ld
+	documentation for --enable-auto-import, and for instance
+	http://sources.redhat.com/ml/binutils/2001-09/msg00130.html)
+
+	* src/idl-compiler/orbit-idl-main.c: Drop constness from
+	a poptOption array, for obscure Win32 DLL reasons.
+	
+2005-01-26  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Check also for utime.h, and sys/utime.h (where
+	MSVC keeps it, in case we some day want to be compileable by it).
+
+2005-01-26  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Changes for Win32: Set automake conditional
+	OS_WIN32. Check for more headers and functions. Add WinSock
+	library to LIBS.
+
+	* include/orbit/GIOP/giop-connection.h: Don't include netdb.h on
+	Win32. Is it even needed on Unix?
+
+2005-01-13  Jules Colding  <colding@omesc.com>
+
+	* src/idl-compiler/orbit-idl-c-skelimpl.c (prev_char_is_nl): New function
+	that implements check of previously written character to the output file.
+	Excessive output of newline characters are fixed by checking the last
+	character written: If it is '\n' then do not write another '\n'.
+	(cbe_ski_do_list): The correct fix for exessive newline output.
+	
+	Generation of skelimpl files has been fixed by protecting definitions and
+	declarations with #ifdef blocks. This is *not* the right fix. The right fix 
+	would be to generate header files with the proper extern declarations. The
+	current "fix" has the drawback of forcing the developer to include the 
+	skelimpl files in inheritance order: Most common ancestor first, then 
+	progressively later descendants. The right fix requires more redesign of 
+	the code than I would like to do now, so this hack must suffice for the time 
+	being. 
+
+	* src/idl-compiler/orbit-idl-c-backend.c (out_for_pass): Change the opening
+	mode of output files to "w+". This is needed to support the correct fix for 
+	excessive newline output in skelimpl files.
+
+	* src/idl-compiler/orbit-idl-c-skelimpl.c: I had a really hard time parsing 
+	the code with the former indentation level of 2, so I changed it to a more
+	reasonable 8.
+
+2005-01-12  Jules Colding  <colding@omesc.com>
+
+	* src/idl-compiler/orbit-idl-main.c (main): Fix print of passes.
+
+2005-01-01  Jules Colding  <colding@omesc.com>
+
+	* src/idl-compiler/orbit-idl-c-skelimpl.c (cbe_ski_do_list): Fix the former 
+	fix for excessive newline output (integer overflow bug fixed).
+
+2004-12-28  Jules Colding  <colding@omesc.com>
+
+	* src/idl-compiler/orbit-idl-c-skelimpl.c (cbe_ski_do_list): Prevent excessive 
+	output of newlines for skelimpl files.
+
+2004-12-27  Jules Colding  <colding@omesc.com>
+
+	* configure.in: Remove support for external indentation command.
+
+	* src/idl-compiler/orbit-idl-main.c: Removed all traces of the output formatter 
+	command line option but leave a warning.
+
+	* src/idl-compiler/orbit-idl-c-backend.c (out_for_pass): "popen ==> fopen" for 
+	all output files. The reason is to avoid opening a pipe as we don't want to use
+	an externally invoked indentation process.
+
+	* src/idl-compiler/orbit-idl3-types.h: Removed output_formatter.
+
+2004-12-22  Jules Colding  <colding@omesc.com>
+
+	* test/everything/everything.idl: Added test for bug#161879.
+
+	* src/idl-compiler/orbit-idl-c-utils.c (orbit_cbe_get_const): Fix IDL compilation 
+	of "const char N = '\x0A';" definitions (bug#161879).
+
+	* src/idl-compiler/orbit-idl3-types.h: Added output_directory to OIDL_Run_Info.
+
+	* src/idl-compiler/orbit-idl-c-backend.c: Prefixed output file with output directory.
+
+	* src/idl-compiler/orbit-idl-main.c: Added 'output-dir' command line option.
+
+2004-12-17  Michael Meeks  <michael.meeks@novell.com>
+
+	* src/orb/orb-core/corba-any.c (ORBit_demarshal_value):
+	don't fail de-marshalling null & void - just do nothing.
+	(ORBit_copy_value_core): just copy nothing for void & null
+	- instead of breaking the val pointer.
+
+2004-10-02  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* test/everything/client.c (testAnySequence),
+	* test/everything/server.c (SequenceServer_opAnySeq):
+	implement test for TC_void bug.
+	
+2004-12-13  Joe McCann  <joem@gentoo.org>
+
+	* configure.in: bump libIDL dep to 0.8.2.
+
+2004-11-12  Sandie Vanderme  <sandie.vanderme@bull.net>
+
+	* include/orbit/orb-core/Makefile.am
+	(IDL_FLAGS_NO_DEFS): add src/orb/orb-core.
+
+2004-10-19  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/idl-compiler/Makefile.am: fix linking, patch by Jimmy Do.
+
+2004-10-02  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* src/orb/orb-core/corba-env.c (CORBA_exception_set): Before
+	overwriting an exception, free any previous value contained by it.
+	Patch by Michael Meeks.  Fixes #153299.
+
 2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 2.12.0.

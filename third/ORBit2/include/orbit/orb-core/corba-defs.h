@@ -9,17 +9,17 @@
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
-extern "C"
-{
-#endif				/* __cplusplus */
+extern "C" {
+#endif /* __cplusplus */
+
 
 /** typedefs **/
 #if !defined(ORBIT_DECL_CORBA_ConstructionPolicy) && !defined(_CORBA_ConstructionPolicy_defined)
 #define ORBIT_DECL_CORBA_ConstructionPolicy 1
 #define _CORBA_ConstructionPolicy_defined 1
 #define CORBA_ConstructionPolicy__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ConstructionPolicy;
-   extern CORBA_unsigned_long CORBA_ConstructionPolicy__classid;
+typedef CORBA_Object CORBA_ConstructionPolicy;
+extern CORBA_unsigned_long CORBA_ConstructionPolicy__classid;
 #if !defined(TC_IMPL_TC_CORBA_ConstructionPolicy_0)
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_0 'c'
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_1 'o'
@@ -32,11 +32,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_8 'f'
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ConstructionPolicy_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ConstructionPolicy_struct;
 #define TC_CORBA_ConstructionPolicy ((CORBA_TypeCode)&TC_CORBA_ConstructionPolicy_struct)
 #endif
 #endif
@@ -44,8 +44,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Current 1
 #define _CORBA_Current_defined 1
 #define CORBA_Current__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Current;
-   extern CORBA_unsigned_long CORBA_Current__classid;
+typedef CORBA_Object CORBA_Current;
+extern CORBA_unsigned_long CORBA_Current__classid;
 #if !defined(TC_IMPL_TC_CORBA_Current_0)
 #define TC_IMPL_TC_CORBA_Current_0 'c'
 #define TC_IMPL_TC_CORBA_Current_1 'o'
@@ -58,11 +58,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Current_8 'f'
 #define TC_IMPL_TC_CORBA_Current_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Current_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Current_struct;
 #define TC_CORBA_Current ((CORBA_TypeCode)&TC_CORBA_Current_struct)
 #endif
 #endif
@@ -70,8 +70,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_DomainManager 1
 #define _CORBA_DomainManager_defined 1
 #define CORBA_DomainManager__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_DomainManager;
-   extern CORBA_unsigned_long CORBA_DomainManager__classid;
+typedef CORBA_Object CORBA_DomainManager;
+extern CORBA_unsigned_long CORBA_DomainManager__classid;
 #if !defined(TC_IMPL_TC_CORBA_DomainManager_0)
 #define TC_IMPL_TC_CORBA_DomainManager_0 'c'
 #define TC_IMPL_TC_CORBA_DomainManager_1 'o'
@@ -84,11 +84,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_DomainManager_8 'f'
 #define TC_IMPL_TC_CORBA_DomainManager_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_DomainManager_struct;
+struct CORBA_TypeCode_struct TC_CORBA_DomainManager_struct;
 #define TC_CORBA_DomainManager ((CORBA_TypeCode)&TC_CORBA_DomainManager_struct)
 #endif
 #endif
@@ -96,8 +96,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Policy 1
 #define _CORBA_Policy_defined 1
 #define CORBA_Policy__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Policy;
-   extern CORBA_unsigned_long CORBA_Policy__classid;
+typedef CORBA_Object CORBA_Policy;
+extern CORBA_unsigned_long CORBA_Policy__classid;
 #if !defined(TC_IMPL_TC_CORBA_Policy_0)
 #define TC_IMPL_TC_CORBA_Policy_0 'c'
 #define TC_IMPL_TC_CORBA_Policy_1 'o'
@@ -110,11 +110,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Policy_8 'f'
 #define TC_IMPL_TC_CORBA_Policy_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Policy_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Policy_struct;
 #define TC_CORBA_Policy ((CORBA_TypeCode)&TC_CORBA_Policy_struct)
 #endif
 #endif
@@ -122,8 +122,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AbstractInterfaceDef 1
 #define _CORBA_AbstractInterfaceDef_defined 1
 #define CORBA_AbstractInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AbstractInterfaceDef;
-   extern CORBA_unsigned_long CORBA_AbstractInterfaceDef__classid;
+typedef CORBA_Object CORBA_AbstractInterfaceDef;
+extern CORBA_unsigned_long CORBA_AbstractInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_1 'o'
@@ -136,11 +136,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDef_struct;
 #define TC_CORBA_AbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_AbstractInterfaceDef_struct)
 #endif
 #endif
@@ -148,8 +148,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AliasDef 1
 #define _CORBA_AliasDef_defined 1
 #define CORBA_AliasDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AliasDef;
-   extern CORBA_unsigned_long CORBA_AliasDef__classid;
+typedef CORBA_Object CORBA_AliasDef;
+extern CORBA_unsigned_long CORBA_AliasDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AliasDef_0)
 #define TC_IMPL_TC_CORBA_AliasDef_0 'c'
 #define TC_IMPL_TC_CORBA_AliasDef_1 'o'
@@ -162,11 +162,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AliasDef_8 'f'
 #define TC_IMPL_TC_CORBA_AliasDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AliasDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AliasDef_struct;
 #define TC_CORBA_AliasDef ((CORBA_TypeCode)&TC_CORBA_AliasDef_struct)
 #endif
 #endif
@@ -174,8 +174,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ArrayDef 1
 #define _CORBA_ArrayDef_defined 1
 #define CORBA_ArrayDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ArrayDef;
-   extern CORBA_unsigned_long CORBA_ArrayDef__classid;
+typedef CORBA_Object CORBA_ArrayDef;
+extern CORBA_unsigned_long CORBA_ArrayDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ArrayDef_0)
 #define TC_IMPL_TC_CORBA_ArrayDef_0 'c'
 #define TC_IMPL_TC_CORBA_ArrayDef_1 'o'
@@ -188,11 +188,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ArrayDef_8 'f'
 #define TC_IMPL_TC_CORBA_ArrayDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ArrayDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ArrayDef_struct;
 #define TC_CORBA_ArrayDef ((CORBA_TypeCode)&TC_CORBA_ArrayDef_struct)
 #endif
 #endif
@@ -200,8 +200,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AttributeDef 1
 #define _CORBA_AttributeDef_defined 1
 #define CORBA_AttributeDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AttributeDef;
-   extern CORBA_unsigned_long CORBA_AttributeDef__classid;
+typedef CORBA_Object CORBA_AttributeDef;
+extern CORBA_unsigned_long CORBA_AttributeDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AttributeDef_0)
 #define TC_IMPL_TC_CORBA_AttributeDef_0 'c'
 #define TC_IMPL_TC_CORBA_AttributeDef_1 'o'
@@ -214,11 +214,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AttributeDef_8 'f'
 #define TC_IMPL_TC_CORBA_AttributeDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AttributeDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AttributeDef_struct;
 #define TC_CORBA_AttributeDef ((CORBA_TypeCode)&TC_CORBA_AttributeDef_struct)
 #endif
 #endif
@@ -226,8 +226,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ConstantDef 1
 #define _CORBA_ConstantDef_defined 1
 #define CORBA_ConstantDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ConstantDef;
-   extern CORBA_unsigned_long CORBA_ConstantDef__classid;
+typedef CORBA_Object CORBA_ConstantDef;
+extern CORBA_unsigned_long CORBA_ConstantDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ConstantDef_0)
 #define TC_IMPL_TC_CORBA_ConstantDef_0 'c'
 #define TC_IMPL_TC_CORBA_ConstantDef_1 'o'
@@ -240,11 +240,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ConstantDef_8 'f'
 #define TC_IMPL_TC_CORBA_ConstantDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ConstantDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ConstantDef_struct;
 #define TC_CORBA_ConstantDef ((CORBA_TypeCode)&TC_CORBA_ConstantDef_struct)
 #endif
 #endif
@@ -252,8 +252,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Contained 1
 #define _CORBA_Contained_defined 1
 #define CORBA_Contained__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Contained;
-   extern CORBA_unsigned_long CORBA_Contained__classid;
+typedef CORBA_Object CORBA_Contained;
+extern CORBA_unsigned_long CORBA_Contained__classid;
 #if !defined(TC_IMPL_TC_CORBA_Contained_0)
 #define TC_IMPL_TC_CORBA_Contained_0 'c'
 #define TC_IMPL_TC_CORBA_Contained_1 'o'
@@ -266,11 +266,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Contained_8 'f'
 #define TC_IMPL_TC_CORBA_Contained_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Contained_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Contained_struct;
 #define TC_CORBA_Contained ((CORBA_TypeCode)&TC_CORBA_Contained_struct)
 #endif
 #endif
@@ -278,8 +278,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Container 1
 #define _CORBA_Container_defined 1
 #define CORBA_Container__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Container;
-   extern CORBA_unsigned_long CORBA_Container__classid;
+typedef CORBA_Object CORBA_Container;
+extern CORBA_unsigned_long CORBA_Container__classid;
 #if !defined(TC_IMPL_TC_CORBA_Container_0)
 #define TC_IMPL_TC_CORBA_Container_0 'c'
 #define TC_IMPL_TC_CORBA_Container_1 'o'
@@ -292,11 +292,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Container_8 'f'
 #define TC_IMPL_TC_CORBA_Container_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Container_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Container_struct;
 #define TC_CORBA_Container ((CORBA_TypeCode)&TC_CORBA_Container_struct)
 #endif
 #endif
@@ -304,8 +304,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_EnumDef 1
 #define _CORBA_EnumDef_defined 1
 #define CORBA_EnumDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_EnumDef;
-   extern CORBA_unsigned_long CORBA_EnumDef__classid;
+typedef CORBA_Object CORBA_EnumDef;
+extern CORBA_unsigned_long CORBA_EnumDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_EnumDef_0)
 #define TC_IMPL_TC_CORBA_EnumDef_0 'c'
 #define TC_IMPL_TC_CORBA_EnumDef_1 'o'
@@ -318,11 +318,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_EnumDef_8 'f'
 #define TC_IMPL_TC_CORBA_EnumDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_EnumDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_EnumDef_struct;
 #define TC_CORBA_EnumDef ((CORBA_TypeCode)&TC_CORBA_EnumDef_struct)
 #endif
 #endif
@@ -330,8 +330,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExceptionDef 1
 #define _CORBA_ExceptionDef_defined 1
 #define CORBA_ExceptionDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExceptionDef;
-   extern CORBA_unsigned_long CORBA_ExceptionDef__classid;
+typedef CORBA_Object CORBA_ExceptionDef;
+extern CORBA_unsigned_long CORBA_ExceptionDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExceptionDef_0)
 #define TC_IMPL_TC_CORBA_ExceptionDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExceptionDef_1 'o'
@@ -344,11 +344,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExceptionDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExceptionDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExceptionDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExceptionDef_struct;
 #define TC_CORBA_ExceptionDef ((CORBA_TypeCode)&TC_CORBA_ExceptionDef_struct)
 #endif
 #endif
@@ -356,8 +356,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtInterfaceDef 1
 #define _CORBA_ExtInterfaceDef_defined 1
 #define CORBA_ExtInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_1 'o'
@@ -370,11 +370,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDef_struct;
 #define TC_CORBA_ExtInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtInterfaceDef_struct)
 #endif
 #endif
@@ -382,8 +382,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtValueDef 1
 #define _CORBA_ExtValueDef_defined 1
 #define CORBA_ExtValueDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtValueDef;
-   extern CORBA_unsigned_long CORBA_ExtValueDef__classid;
+typedef CORBA_Object CORBA_ExtValueDef;
+extern CORBA_unsigned_long CORBA_ExtValueDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtValueDef_0)
 #define TC_IMPL_TC_CORBA_ExtValueDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtValueDef_1 'o'
@@ -396,11 +396,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtValueDef_struct;
 #define TC_CORBA_ExtValueDef ((CORBA_TypeCode)&TC_CORBA_ExtValueDef_struct)
 #endif
 #endif
@@ -408,8 +408,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtAbstractInterfaceDef 1
 #define _CORBA_ExtAbstractInterfaceDef_defined 1
 #define CORBA_ExtAbstractInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtAbstractInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtAbstractInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtAbstractInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtAbstractInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_1 'o'
@@ -422,11 +422,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtAbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtAbstractInterfaceDef_struct;
 #define TC_CORBA_ExtAbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtAbstractInterfaceDef_struct)
 #endif
 #endif
@@ -434,8 +434,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtLocalInterfaceDef 1
 #define _CORBA_ExtLocalInterfaceDef_defined 1
 #define CORBA_ExtLocalInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtLocalInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtLocalInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtLocalInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtLocalInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_1 'o'
@@ -448,11 +448,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDef_struct;
 #define TC_CORBA_ExtLocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtLocalInterfaceDef_struct)
 #endif
 #endif
@@ -460,8 +460,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_FixedDef 1
 #define _CORBA_FixedDef_defined 1
 #define CORBA_FixedDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_FixedDef;
-   extern CORBA_unsigned_long CORBA_FixedDef__classid;
+typedef CORBA_Object CORBA_FixedDef;
+extern CORBA_unsigned_long CORBA_FixedDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_FixedDef_0)
 #define TC_IMPL_TC_CORBA_FixedDef_0 'c'
 #define TC_IMPL_TC_CORBA_FixedDef_1 'o'
@@ -474,11 +474,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_FixedDef_8 'f'
 #define TC_IMPL_TC_CORBA_FixedDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_FixedDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_FixedDef_struct;
 #define TC_CORBA_FixedDef ((CORBA_TypeCode)&TC_CORBA_FixedDef_struct)
 #endif
 #endif
@@ -486,8 +486,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_IDLType 1
 #define _CORBA_IDLType_defined 1
 #define CORBA_IDLType__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_IDLType;
-   extern CORBA_unsigned_long CORBA_IDLType__classid;
+typedef CORBA_Object CORBA_IDLType;
+extern CORBA_unsigned_long CORBA_IDLType__classid;
 #if !defined(TC_IMPL_TC_CORBA_IDLType_0)
 #define TC_IMPL_TC_CORBA_IDLType_0 'c'
 #define TC_IMPL_TC_CORBA_IDLType_1 'o'
@@ -500,11 +500,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_IDLType_8 'f'
 #define TC_IMPL_TC_CORBA_IDLType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_IDLType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_IDLType_struct;
 #define TC_CORBA_IDLType ((CORBA_TypeCode)&TC_CORBA_IDLType_struct)
 #endif
 #endif
@@ -512,8 +512,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_InterfaceDef 1
 #define _CORBA_InterfaceDef_defined 1
 #define CORBA_InterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_InterfaceDef;
-   extern CORBA_unsigned_long CORBA_InterfaceDef__classid;
+typedef CORBA_Object CORBA_InterfaceDef;
+extern CORBA_unsigned_long CORBA_InterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_InterfaceDef_0)
 #define TC_IMPL_TC_CORBA_InterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_InterfaceDef_1 'o'
@@ -526,11 +526,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceDef_struct;
 #define TC_CORBA_InterfaceDef ((CORBA_TypeCode)&TC_CORBA_InterfaceDef_struct)
 #endif
 #endif
@@ -538,8 +538,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_IRObject 1
 #define _CORBA_IRObject_defined 1
 #define CORBA_IRObject__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_IRObject;
-   extern CORBA_unsigned_long CORBA_IRObject__classid;
+typedef CORBA_Object CORBA_IRObject;
+extern CORBA_unsigned_long CORBA_IRObject__classid;
 #if !defined(TC_IMPL_TC_CORBA_IRObject_0)
 #define TC_IMPL_TC_CORBA_IRObject_0 'c'
 #define TC_IMPL_TC_CORBA_IRObject_1 'o'
@@ -552,11 +552,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_IRObject_8 'f'
 #define TC_IMPL_TC_CORBA_IRObject_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_IRObject_struct;
+struct CORBA_TypeCode_struct TC_CORBA_IRObject_struct;
 #define TC_CORBA_IRObject ((CORBA_TypeCode)&TC_CORBA_IRObject_struct)
 #endif
 #endif
@@ -564,8 +564,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_LocalInterfaceDef 1
 #define _CORBA_LocalInterfaceDef_defined 1
 #define CORBA_LocalInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_LocalInterfaceDef;
-   extern CORBA_unsigned_long CORBA_LocalInterfaceDef__classid;
+typedef CORBA_Object CORBA_LocalInterfaceDef;
+extern CORBA_unsigned_long CORBA_LocalInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_LocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_1 'o'
@@ -578,11 +578,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDef_struct;
 #define TC_CORBA_LocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_LocalInterfaceDef_struct)
 #endif
 #endif
@@ -590,8 +590,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ModuleDef 1
 #define _CORBA_ModuleDef_defined 1
 #define CORBA_ModuleDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ModuleDef;
-   extern CORBA_unsigned_long CORBA_ModuleDef__classid;
+typedef CORBA_Object CORBA_ModuleDef;
+extern CORBA_unsigned_long CORBA_ModuleDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ModuleDef_0)
 #define TC_IMPL_TC_CORBA_ModuleDef_0 'c'
 #define TC_IMPL_TC_CORBA_ModuleDef_1 'o'
@@ -604,11 +604,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ModuleDef_8 'f'
 #define TC_IMPL_TC_CORBA_ModuleDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ModuleDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ModuleDef_struct;
 #define TC_CORBA_ModuleDef ((CORBA_TypeCode)&TC_CORBA_ModuleDef_struct)
 #endif
 #endif
@@ -616,8 +616,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_NativeDef 1
 #define _CORBA_NativeDef_defined 1
 #define CORBA_NativeDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_NativeDef;
-   extern CORBA_unsigned_long CORBA_NativeDef__classid;
+typedef CORBA_Object CORBA_NativeDef;
+extern CORBA_unsigned_long CORBA_NativeDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_NativeDef_0)
 #define TC_IMPL_TC_CORBA_NativeDef_0 'c'
 #define TC_IMPL_TC_CORBA_NativeDef_1 'o'
@@ -630,11 +630,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NativeDef_8 'f'
 #define TC_IMPL_TC_CORBA_NativeDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NativeDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NativeDef_struct;
 #define TC_CORBA_NativeDef ((CORBA_TypeCode)&TC_CORBA_NativeDef_struct)
 #endif
 #endif
@@ -642,8 +642,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_OperationDef 1
 #define _CORBA_OperationDef_defined 1
 #define CORBA_OperationDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_OperationDef;
-   extern CORBA_unsigned_long CORBA_OperationDef__classid;
+typedef CORBA_Object CORBA_OperationDef;
+extern CORBA_unsigned_long CORBA_OperationDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_OperationDef_0)
 #define TC_IMPL_TC_CORBA_OperationDef_0 'c'
 #define TC_IMPL_TC_CORBA_OperationDef_1 'o'
@@ -656,11 +656,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OperationDef_8 'f'
 #define TC_IMPL_TC_CORBA_OperationDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OperationDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OperationDef_struct;
 #define TC_CORBA_OperationDef ((CORBA_TypeCode)&TC_CORBA_OperationDef_struct)
 #endif
 #endif
@@ -668,8 +668,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_PrimitiveDef 1
 #define _CORBA_PrimitiveDef_defined 1
 #define CORBA_PrimitiveDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_PrimitiveDef;
-   extern CORBA_unsigned_long CORBA_PrimitiveDef__classid;
+typedef CORBA_Object CORBA_PrimitiveDef;
+extern CORBA_unsigned_long CORBA_PrimitiveDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_PrimitiveDef_0)
 #define TC_IMPL_TC_CORBA_PrimitiveDef_0 'c'
 #define TC_IMPL_TC_CORBA_PrimitiveDef_1 'o'
@@ -682,11 +682,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PrimitiveDef_8 'f'
 #define TC_IMPL_TC_CORBA_PrimitiveDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PrimitiveDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PrimitiveDef_struct;
 #define TC_CORBA_PrimitiveDef ((CORBA_TypeCode)&TC_CORBA_PrimitiveDef_struct)
 #endif
 #endif
@@ -694,8 +694,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Repository 1
 #define _CORBA_Repository_defined 1
 #define CORBA_Repository__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Repository;
-   extern CORBA_unsigned_long CORBA_Repository__classid;
+typedef CORBA_Object CORBA_Repository;
+extern CORBA_unsigned_long CORBA_Repository__classid;
 #if !defined(TC_IMPL_TC_CORBA_Repository_0)
 #define TC_IMPL_TC_CORBA_Repository_0 'c'
 #define TC_IMPL_TC_CORBA_Repository_1 'o'
@@ -708,11 +708,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Repository_8 'f'
 #define TC_IMPL_TC_CORBA_Repository_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Repository_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Repository_struct;
 #define TC_CORBA_Repository ((CORBA_TypeCode)&TC_CORBA_Repository_struct)
 #endif
 #endif
@@ -720,8 +720,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_SequenceDef 1
 #define _CORBA_SequenceDef_defined 1
 #define CORBA_SequenceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_SequenceDef;
-   extern CORBA_unsigned_long CORBA_SequenceDef__classid;
+typedef CORBA_Object CORBA_SequenceDef;
+extern CORBA_unsigned_long CORBA_SequenceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_SequenceDef_0)
 #define TC_IMPL_TC_CORBA_SequenceDef_0 'c'
 #define TC_IMPL_TC_CORBA_SequenceDef_1 'o'
@@ -734,11 +734,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_SequenceDef_8 'f'
 #define TC_IMPL_TC_CORBA_SequenceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_SequenceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_SequenceDef_struct;
 #define TC_CORBA_SequenceDef ((CORBA_TypeCode)&TC_CORBA_SequenceDef_struct)
 #endif
 #endif
@@ -746,8 +746,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_StringDef 1
 #define _CORBA_StringDef_defined 1
 #define CORBA_StringDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_StringDef;
-   extern CORBA_unsigned_long CORBA_StringDef__classid;
+typedef CORBA_Object CORBA_StringDef;
+extern CORBA_unsigned_long CORBA_StringDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_StringDef_0)
 #define TC_IMPL_TC_CORBA_StringDef_0 'c'
 #define TC_IMPL_TC_CORBA_StringDef_1 'o'
@@ -760,11 +760,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StringDef_8 'f'
 #define TC_IMPL_TC_CORBA_StringDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StringDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StringDef_struct;
 #define TC_CORBA_StringDef ((CORBA_TypeCode)&TC_CORBA_StringDef_struct)
 #endif
 #endif
@@ -772,8 +772,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_StructDef 1
 #define _CORBA_StructDef_defined 1
 #define CORBA_StructDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_StructDef;
-   extern CORBA_unsigned_long CORBA_StructDef__classid;
+typedef CORBA_Object CORBA_StructDef;
+extern CORBA_unsigned_long CORBA_StructDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_StructDef_0)
 #define TC_IMPL_TC_CORBA_StructDef_0 'c'
 #define TC_IMPL_TC_CORBA_StructDef_1 'o'
@@ -786,11 +786,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StructDef_8 'f'
 #define TC_IMPL_TC_CORBA_StructDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StructDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StructDef_struct;
 #define TC_CORBA_StructDef ((CORBA_TypeCode)&TC_CORBA_StructDef_struct)
 #endif
 #endif
@@ -798,8 +798,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_TypeCode 1
 #define _CORBA_TypeCode_defined 1
 #define CORBA_TypeCode__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_TypeCode;
-   extern CORBA_unsigned_long CORBA_TypeCode__classid;
+typedef CORBA_Object CORBA_TypeCode;
+extern CORBA_unsigned_long CORBA_TypeCode__classid;
 #if !defined(TC_IMPL_TC_CORBA_TypeCode_0)
 #define TC_IMPL_TC_CORBA_TypeCode_0 'c'
 #define TC_IMPL_TC_CORBA_TypeCode_1 'o'
@@ -812,11 +812,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TypeCode_8 'f'
 #define TC_IMPL_TC_CORBA_TypeCode_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TypeCode_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TypeCode_struct;
 #define TC_CORBA_TypeCode ((CORBA_TypeCode)&TC_CORBA_TypeCode_struct)
 #endif
 #endif
@@ -824,8 +824,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_TypedefDef 1
 #define _CORBA_TypedefDef_defined 1
 #define CORBA_TypedefDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_TypedefDef;
-   extern CORBA_unsigned_long CORBA_TypedefDef__classid;
+typedef CORBA_Object CORBA_TypedefDef;
+extern CORBA_unsigned_long CORBA_TypedefDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_TypedefDef_0)
 #define TC_IMPL_TC_CORBA_TypedefDef_0 'c'
 #define TC_IMPL_TC_CORBA_TypedefDef_1 'o'
@@ -838,11 +838,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TypedefDef_8 'f'
 #define TC_IMPL_TC_CORBA_TypedefDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TypedefDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TypedefDef_struct;
 #define TC_CORBA_TypedefDef ((CORBA_TypeCode)&TC_CORBA_TypedefDef_struct)
 #endif
 #endif
@@ -850,8 +850,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_UnionDef 1
 #define _CORBA_UnionDef_defined 1
 #define CORBA_UnionDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_UnionDef;
-   extern CORBA_unsigned_long CORBA_UnionDef__classid;
+typedef CORBA_Object CORBA_UnionDef;
+extern CORBA_unsigned_long CORBA_UnionDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_UnionDef_0)
 #define TC_IMPL_TC_CORBA_UnionDef_0 'c'
 #define TC_IMPL_TC_CORBA_UnionDef_1 'o'
@@ -864,11 +864,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_UnionDef_8 'f'
 #define TC_IMPL_TC_CORBA_UnionDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_UnionDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_UnionDef_struct;
 #define TC_CORBA_UnionDef ((CORBA_TypeCode)&TC_CORBA_UnionDef_struct)
 #endif
 #endif
@@ -876,8 +876,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueDef 1
 #define _CORBA_ValueDef_defined 1
 #define CORBA_ValueDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueDef;
-   extern CORBA_unsigned_long CORBA_ValueDef__classid;
+typedef CORBA_Object CORBA_ValueDef;
+extern CORBA_unsigned_long CORBA_ValueDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueDef_0)
 #define TC_IMPL_TC_CORBA_ValueDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueDef_1 'o'
@@ -890,11 +890,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueDef_struct;
 #define TC_CORBA_ValueDef ((CORBA_TypeCode)&TC_CORBA_ValueDef_struct)
 #endif
 #endif
@@ -902,8 +902,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueBoxDef 1
 #define _CORBA_ValueBoxDef_defined 1
 #define CORBA_ValueBoxDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueBoxDef;
-   extern CORBA_unsigned_long CORBA_ValueBoxDef__classid;
+typedef CORBA_Object CORBA_ValueBoxDef;
+extern CORBA_unsigned_long CORBA_ValueBoxDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueBoxDef_0)
 #define TC_IMPL_TC_CORBA_ValueBoxDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueBoxDef_1 'o'
@@ -916,11 +916,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueBoxDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueBoxDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueBoxDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueBoxDef_struct;
 #define TC_CORBA_ValueBoxDef ((CORBA_TypeCode)&TC_CORBA_ValueBoxDef_struct)
 #endif
 #endif
@@ -928,8 +928,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueMemberDef 1
 #define _CORBA_ValueMemberDef_defined 1
 #define CORBA_ValueMemberDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueMemberDef;
-   extern CORBA_unsigned_long CORBA_ValueMemberDef__classid;
+typedef CORBA_Object CORBA_ValueMemberDef;
+extern CORBA_unsigned_long CORBA_ValueMemberDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueMemberDef_0)
 #define TC_IMPL_TC_CORBA_ValueMemberDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueMemberDef_1 'o'
@@ -942,11 +942,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueMemberDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueMemberDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueMemberDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueMemberDef_struct;
 #define TC_CORBA_ValueMemberDef ((CORBA_TypeCode)&TC_CORBA_ValueMemberDef_struct)
 #endif
 #endif
@@ -954,8 +954,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_WstringDef 1
 #define _CORBA_WstringDef_defined 1
 #define CORBA_WstringDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_WstringDef;
-   extern CORBA_unsigned_long CORBA_WstringDef__classid;
+typedef CORBA_Object CORBA_WstringDef;
+extern CORBA_unsigned_long CORBA_WstringDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_WstringDef_0)
 #define TC_IMPL_TC_CORBA_WstringDef_0 'c'
 #define TC_IMPL_TC_CORBA_WstringDef_1 'o'
@@ -968,17 +968,17 @@ extern "C"
 #define TC_IMPL_TC_CORBA_WstringDef_8 'f'
 #define TC_IMPL_TC_CORBA_WstringDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_WstringDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_WstringDef_struct;
 #define TC_CORBA_WstringDef ((CORBA_TypeCode)&TC_CORBA_WstringDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_Identifier_defined)
 #define _CORBA_Identifier_defined 1
-   typedef CORBA_string CORBA_Identifier;
+typedef CORBA_string CORBA_Identifier;
 #define CORBA_Identifier_marshal(x,y,z) CORBA_string_marshal((x),(y),(z))
 #define CORBA_Identifier_demarshal(x,y,z,i) CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_Identifier_0)
@@ -993,11 +993,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Identifier_8 'f'
 #define TC_IMPL_TC_CORBA_Identifier_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Identifier_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Identifier_struct;
 #define TC_CORBA_Identifier ((CORBA_TypeCode)&TC_CORBA_Identifier_struct)
 #endif
 #define CORBA_Identifier__alloc() ((CORBA_Identifier *)ORBit_small_alloc (TC_CORBA_string))
@@ -1005,16 +1005,15 @@ extern "C"
 #endif
 #ifndef CORBA_OMGVMCID
 #define CORBA_OMGVMCID 1330446336U
-#endif				/* !CORBA_OMGVMCID */
+#endif /* !CORBA_OMGVMCID */
 
 #if !defined(_CORBA_completion_status_defined)
 #define _CORBA_completion_status_defined 1
-   typedef enum
-   {
-      CORBA_COMPLETED_YES,
-      CORBA_COMPLETED_NO,
-      CORBA_COMPLETED_MAYBE
-   } CORBA_completion_status;
+typedef enum {
+  CORBA_COMPLETED_YES,
+  CORBA_COMPLETED_NO,
+  CORBA_COMPLETED_MAYBE
+} CORBA_completion_status;
 #if !defined(TC_IMPL_TC_CORBA_completion_status_0)
 #define TC_IMPL_TC_CORBA_completion_status_0 'c'
 #define TC_IMPL_TC_CORBA_completion_status_1 'o'
@@ -1027,22 +1026,21 @@ extern "C"
 #define TC_IMPL_TC_CORBA_completion_status_8 'f'
 #define TC_IMPL_TC_CORBA_completion_status_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_completion_status_struct;
+struct CORBA_TypeCode_struct TC_CORBA_completion_status_struct;
 #define TC_CORBA_completion_status ((CORBA_TypeCode)&TC_CORBA_completion_status_struct)
 #endif
 #endif
 #if !defined(_CORBA_exception_type_defined)
 #define _CORBA_exception_type_defined 1
-   typedef enum
-   {
-      CORBA_NO_EXCEPTION,
-      CORBA_USER_EXCEPTION,
-      CORBA_SYSTEM_EXCEPTION
-   } CORBA_exception_type;
+typedef enum {
+  CORBA_NO_EXCEPTION,
+  CORBA_USER_EXCEPTION,
+  CORBA_SYSTEM_EXCEPTION
+} CORBA_exception_type;
 #if !defined(TC_IMPL_TC_CORBA_exception_type_0)
 #define TC_IMPL_TC_CORBA_exception_type_0 'c'
 #define TC_IMPL_TC_CORBA_exception_type_1 'o'
@@ -1055,11 +1053,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_exception_type_8 'f'
 #define TC_IMPL_TC_CORBA_exception_type_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_exception_type_struct;
+struct CORBA_TypeCode_struct TC_CORBA_exception_type_struct;
 #define TC_CORBA_exception_type ((CORBA_TypeCode)&TC_CORBA_exception_type_struct)
 #endif
 #endif
@@ -1067,12 +1065,11 @@ extern "C"
 #define ex_CORBA_UNKNOWN "IDL:omg.org/CORBA/UNKNOWN:1.0"
 #if !defined(_CORBA_UNKNOWN_defined)
 #define _CORBA_UNKNOWN_defined 1
-   typedef struct CORBA_UNKNOWN_type CORBA_UNKNOWN;
-   struct CORBA_UNKNOWN_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_UNKNOWN_type CORBA_UNKNOWN;
+struct CORBA_UNKNOWN_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_UNKNOWN_0)
 #define TC_IMPL_TC_CORBA_UNKNOWN_0 'c'
@@ -1086,11 +1083,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_UNKNOWN_8 'f'
 #define TC_IMPL_TC_CORBA_UNKNOWN_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_UNKNOWN_struct;
+struct CORBA_TypeCode_struct TC_CORBA_UNKNOWN_struct;
 #define TC_CORBA_UNKNOWN ((CORBA_TypeCode)&TC_CORBA_UNKNOWN_struct)
 #endif
 #define CORBA_UNKNOWN__alloc() ((CORBA_UNKNOWN *)ORBit_small_alloc (TC_CORBA_UNKNOWN))
@@ -1100,12 +1097,11 @@ extern "C"
 #define ex_CORBA_BAD_PARAM "IDL:omg.org/CORBA/BAD_PARAM:1.0"
 #if !defined(_CORBA_BAD_PARAM_defined)
 #define _CORBA_BAD_PARAM_defined 1
-   typedef struct CORBA_BAD_PARAM_type CORBA_BAD_PARAM;
-   struct CORBA_BAD_PARAM_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_BAD_PARAM_type CORBA_BAD_PARAM;
+struct CORBA_BAD_PARAM_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_BAD_PARAM_0)
 #define TC_IMPL_TC_CORBA_BAD_PARAM_0 'c'
@@ -1119,11 +1115,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BAD_PARAM_8 'f'
 #define TC_IMPL_TC_CORBA_BAD_PARAM_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BAD_PARAM_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BAD_PARAM_struct;
 #define TC_CORBA_BAD_PARAM ((CORBA_TypeCode)&TC_CORBA_BAD_PARAM_struct)
 #endif
 #define CORBA_BAD_PARAM__alloc() ((CORBA_BAD_PARAM *)ORBit_small_alloc (TC_CORBA_BAD_PARAM))
@@ -1133,12 +1129,11 @@ extern "C"
 #define ex_CORBA_NO_MEMORY "IDL:omg.org/CORBA/NO_MEMORY:1.0"
 #if !defined(_CORBA_NO_MEMORY_defined)
 #define _CORBA_NO_MEMORY_defined 1
-   typedef struct CORBA_NO_MEMORY_type CORBA_NO_MEMORY;
-   struct CORBA_NO_MEMORY_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_NO_MEMORY_type CORBA_NO_MEMORY;
+struct CORBA_NO_MEMORY_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_NO_MEMORY_0)
 #define TC_IMPL_TC_CORBA_NO_MEMORY_0 'c'
@@ -1152,11 +1147,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NO_MEMORY_8 'f'
 #define TC_IMPL_TC_CORBA_NO_MEMORY_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NO_MEMORY_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NO_MEMORY_struct;
 #define TC_CORBA_NO_MEMORY ((CORBA_TypeCode)&TC_CORBA_NO_MEMORY_struct)
 #endif
 #define CORBA_NO_MEMORY__alloc() ((CORBA_NO_MEMORY *)ORBit_small_alloc (TC_CORBA_NO_MEMORY))
@@ -1166,12 +1161,11 @@ extern "C"
 #define ex_CORBA_IMP_LIMIT "IDL:omg.org/CORBA/IMP_LIMIT:1.0"
 #if !defined(_CORBA_IMP_LIMIT_defined)
 #define _CORBA_IMP_LIMIT_defined 1
-   typedef struct CORBA_IMP_LIMIT_type CORBA_IMP_LIMIT;
-   struct CORBA_IMP_LIMIT_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_IMP_LIMIT_type CORBA_IMP_LIMIT;
+struct CORBA_IMP_LIMIT_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_IMP_LIMIT_0)
 #define TC_IMPL_TC_CORBA_IMP_LIMIT_0 'c'
@@ -1185,11 +1179,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_IMP_LIMIT_8 'f'
 #define TC_IMPL_TC_CORBA_IMP_LIMIT_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_IMP_LIMIT_struct;
+struct CORBA_TypeCode_struct TC_CORBA_IMP_LIMIT_struct;
 #define TC_CORBA_IMP_LIMIT ((CORBA_TypeCode)&TC_CORBA_IMP_LIMIT_struct)
 #endif
 #define CORBA_IMP_LIMIT__alloc() ((CORBA_IMP_LIMIT *)ORBit_small_alloc (TC_CORBA_IMP_LIMIT))
@@ -1199,12 +1193,11 @@ extern "C"
 #define ex_CORBA_COMM_FAILURE "IDL:omg.org/CORBA/COMM_FAILURE:1.0"
 #if !defined(_CORBA_COMM_FAILURE_defined)
 #define _CORBA_COMM_FAILURE_defined 1
-   typedef struct CORBA_COMM_FAILURE_type CORBA_COMM_FAILURE;
-   struct CORBA_COMM_FAILURE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_COMM_FAILURE_type CORBA_COMM_FAILURE;
+struct CORBA_COMM_FAILURE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_COMM_FAILURE_0)
 #define TC_IMPL_TC_CORBA_COMM_FAILURE_0 'c'
@@ -1218,11 +1211,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_COMM_FAILURE_8 'f'
 #define TC_IMPL_TC_CORBA_COMM_FAILURE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_COMM_FAILURE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_COMM_FAILURE_struct;
 #define TC_CORBA_COMM_FAILURE ((CORBA_TypeCode)&TC_CORBA_COMM_FAILURE_struct)
 #endif
 #define CORBA_COMM_FAILURE__alloc() ((CORBA_COMM_FAILURE *)ORBit_small_alloc (TC_CORBA_COMM_FAILURE))
@@ -1232,12 +1225,11 @@ extern "C"
 #define ex_CORBA_INV_OBJREF "IDL:omg.org/CORBA/INV_OBJREF:1.0"
 #if !defined(_CORBA_INV_OBJREF_defined)
 #define _CORBA_INV_OBJREF_defined 1
-   typedef struct CORBA_INV_OBJREF_type CORBA_INV_OBJREF;
-   struct CORBA_INV_OBJREF_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INV_OBJREF_type CORBA_INV_OBJREF;
+struct CORBA_INV_OBJREF_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INV_OBJREF_0)
 #define TC_IMPL_TC_CORBA_INV_OBJREF_0 'c'
@@ -1251,11 +1243,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INV_OBJREF_8 'f'
 #define TC_IMPL_TC_CORBA_INV_OBJREF_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INV_OBJREF_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INV_OBJREF_struct;
 #define TC_CORBA_INV_OBJREF ((CORBA_TypeCode)&TC_CORBA_INV_OBJREF_struct)
 #endif
 #define CORBA_INV_OBJREF__alloc() ((CORBA_INV_OBJREF *)ORBit_small_alloc (TC_CORBA_INV_OBJREF))
@@ -1265,12 +1257,11 @@ extern "C"
 #define ex_CORBA_NO_PERMISSION "IDL:omg.org/CORBA/NO_PERMISSION:1.0"
 #if !defined(_CORBA_NO_PERMISSION_defined)
 #define _CORBA_NO_PERMISSION_defined 1
-   typedef struct CORBA_NO_PERMISSION_type CORBA_NO_PERMISSION;
-   struct CORBA_NO_PERMISSION_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_NO_PERMISSION_type CORBA_NO_PERMISSION;
+struct CORBA_NO_PERMISSION_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_NO_PERMISSION_0)
 #define TC_IMPL_TC_CORBA_NO_PERMISSION_0 'c'
@@ -1284,11 +1275,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NO_PERMISSION_8 'f'
 #define TC_IMPL_TC_CORBA_NO_PERMISSION_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NO_PERMISSION_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NO_PERMISSION_struct;
 #define TC_CORBA_NO_PERMISSION ((CORBA_TypeCode)&TC_CORBA_NO_PERMISSION_struct)
 #endif
 #define CORBA_NO_PERMISSION__alloc() ((CORBA_NO_PERMISSION *)ORBit_small_alloc (TC_CORBA_NO_PERMISSION))
@@ -1298,12 +1289,11 @@ extern "C"
 #define ex_CORBA_INTERNAL "IDL:omg.org/CORBA/INTERNAL:1.0"
 #if !defined(_CORBA_INTERNAL_defined)
 #define _CORBA_INTERNAL_defined 1
-   typedef struct CORBA_INTERNAL_type CORBA_INTERNAL;
-   struct CORBA_INTERNAL_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INTERNAL_type CORBA_INTERNAL;
+struct CORBA_INTERNAL_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INTERNAL_0)
 #define TC_IMPL_TC_CORBA_INTERNAL_0 'c'
@@ -1317,11 +1307,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INTERNAL_8 'f'
 #define TC_IMPL_TC_CORBA_INTERNAL_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INTERNAL_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INTERNAL_struct;
 #define TC_CORBA_INTERNAL ((CORBA_TypeCode)&TC_CORBA_INTERNAL_struct)
 #endif
 #define CORBA_INTERNAL__alloc() ((CORBA_INTERNAL *)ORBit_small_alloc (TC_CORBA_INTERNAL))
@@ -1331,12 +1321,11 @@ extern "C"
 #define ex_CORBA_MARSHAL "IDL:omg.org/CORBA/MARSHAL:1.0"
 #if !defined(_CORBA_MARSHAL_defined)
 #define _CORBA_MARSHAL_defined 1
-   typedef struct CORBA_MARSHAL_type CORBA_MARSHAL;
-   struct CORBA_MARSHAL_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_MARSHAL_type CORBA_MARSHAL;
+struct CORBA_MARSHAL_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_MARSHAL_0)
 #define TC_IMPL_TC_CORBA_MARSHAL_0 'c'
@@ -1350,11 +1339,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_MARSHAL_8 'f'
 #define TC_IMPL_TC_CORBA_MARSHAL_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_MARSHAL_struct;
+struct CORBA_TypeCode_struct TC_CORBA_MARSHAL_struct;
 #define TC_CORBA_MARSHAL ((CORBA_TypeCode)&TC_CORBA_MARSHAL_struct)
 #endif
 #define CORBA_MARSHAL__alloc() ((CORBA_MARSHAL *)ORBit_small_alloc (TC_CORBA_MARSHAL))
@@ -1364,12 +1353,11 @@ extern "C"
 #define ex_CORBA_INITIALIZE "IDL:omg.org/CORBA/INITIALIZE:1.0"
 #if !defined(_CORBA_INITIALIZE_defined)
 #define _CORBA_INITIALIZE_defined 1
-   typedef struct CORBA_INITIALIZE_type CORBA_INITIALIZE;
-   struct CORBA_INITIALIZE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INITIALIZE_type CORBA_INITIALIZE;
+struct CORBA_INITIALIZE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INITIALIZE_0)
 #define TC_IMPL_TC_CORBA_INITIALIZE_0 'c'
@@ -1383,11 +1371,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INITIALIZE_8 'f'
 #define TC_IMPL_TC_CORBA_INITIALIZE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INITIALIZE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INITIALIZE_struct;
 #define TC_CORBA_INITIALIZE ((CORBA_TypeCode)&TC_CORBA_INITIALIZE_struct)
 #endif
 #define CORBA_INITIALIZE__alloc() ((CORBA_INITIALIZE *)ORBit_small_alloc (TC_CORBA_INITIALIZE))
@@ -1397,12 +1385,11 @@ extern "C"
 #define ex_CORBA_NO_IMPLEMENT "IDL:omg.org/CORBA/NO_IMPLEMENT:1.0"
 #if !defined(_CORBA_NO_IMPLEMENT_defined)
 #define _CORBA_NO_IMPLEMENT_defined 1
-   typedef struct CORBA_NO_IMPLEMENT_type CORBA_NO_IMPLEMENT;
-   struct CORBA_NO_IMPLEMENT_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_NO_IMPLEMENT_type CORBA_NO_IMPLEMENT;
+struct CORBA_NO_IMPLEMENT_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_NO_IMPLEMENT_0)
 #define TC_IMPL_TC_CORBA_NO_IMPLEMENT_0 'c'
@@ -1416,11 +1403,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NO_IMPLEMENT_8 'f'
 #define TC_IMPL_TC_CORBA_NO_IMPLEMENT_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NO_IMPLEMENT_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NO_IMPLEMENT_struct;
 #define TC_CORBA_NO_IMPLEMENT ((CORBA_TypeCode)&TC_CORBA_NO_IMPLEMENT_struct)
 #endif
 #define CORBA_NO_IMPLEMENT__alloc() ((CORBA_NO_IMPLEMENT *)ORBit_small_alloc (TC_CORBA_NO_IMPLEMENT))
@@ -1430,12 +1417,11 @@ extern "C"
 #define ex_CORBA_BAD_TYPECODE "IDL:omg.org/CORBA/BAD_TYPECODE:1.0"
 #if !defined(_CORBA_BAD_TYPECODE_defined)
 #define _CORBA_BAD_TYPECODE_defined 1
-   typedef struct CORBA_BAD_TYPECODE_type CORBA_BAD_TYPECODE;
-   struct CORBA_BAD_TYPECODE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_BAD_TYPECODE_type CORBA_BAD_TYPECODE;
+struct CORBA_BAD_TYPECODE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_BAD_TYPECODE_0)
 #define TC_IMPL_TC_CORBA_BAD_TYPECODE_0 'c'
@@ -1449,11 +1435,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BAD_TYPECODE_8 'f'
 #define TC_IMPL_TC_CORBA_BAD_TYPECODE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BAD_TYPECODE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BAD_TYPECODE_struct;
 #define TC_CORBA_BAD_TYPECODE ((CORBA_TypeCode)&TC_CORBA_BAD_TYPECODE_struct)
 #endif
 #define CORBA_BAD_TYPECODE__alloc() ((CORBA_BAD_TYPECODE *)ORBit_small_alloc (TC_CORBA_BAD_TYPECODE))
@@ -1463,12 +1449,11 @@ extern "C"
 #define ex_CORBA_BAD_OPERATION "IDL:omg.org/CORBA/BAD_OPERATION:1.0"
 #if !defined(_CORBA_BAD_OPERATION_defined)
 #define _CORBA_BAD_OPERATION_defined 1
-   typedef struct CORBA_BAD_OPERATION_type CORBA_BAD_OPERATION;
-   struct CORBA_BAD_OPERATION_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_BAD_OPERATION_type CORBA_BAD_OPERATION;
+struct CORBA_BAD_OPERATION_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_BAD_OPERATION_0)
 #define TC_IMPL_TC_CORBA_BAD_OPERATION_0 'c'
@@ -1482,11 +1467,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BAD_OPERATION_8 'f'
 #define TC_IMPL_TC_CORBA_BAD_OPERATION_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BAD_OPERATION_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BAD_OPERATION_struct;
 #define TC_CORBA_BAD_OPERATION ((CORBA_TypeCode)&TC_CORBA_BAD_OPERATION_struct)
 #endif
 #define CORBA_BAD_OPERATION__alloc() ((CORBA_BAD_OPERATION *)ORBit_small_alloc (TC_CORBA_BAD_OPERATION))
@@ -1496,12 +1481,11 @@ extern "C"
 #define ex_CORBA_NO_RESOURCES "IDL:omg.org/CORBA/NO_RESOURCES:1.0"
 #if !defined(_CORBA_NO_RESOURCES_defined)
 #define _CORBA_NO_RESOURCES_defined 1
-   typedef struct CORBA_NO_RESOURCES_type CORBA_NO_RESOURCES;
-   struct CORBA_NO_RESOURCES_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_NO_RESOURCES_type CORBA_NO_RESOURCES;
+struct CORBA_NO_RESOURCES_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_NO_RESOURCES_0)
 #define TC_IMPL_TC_CORBA_NO_RESOURCES_0 'c'
@@ -1515,11 +1499,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NO_RESOURCES_8 'f'
 #define TC_IMPL_TC_CORBA_NO_RESOURCES_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NO_RESOURCES_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NO_RESOURCES_struct;
 #define TC_CORBA_NO_RESOURCES ((CORBA_TypeCode)&TC_CORBA_NO_RESOURCES_struct)
 #endif
 #define CORBA_NO_RESOURCES__alloc() ((CORBA_NO_RESOURCES *)ORBit_small_alloc (TC_CORBA_NO_RESOURCES))
@@ -1529,12 +1513,11 @@ extern "C"
 #define ex_CORBA_NO_RESPONSE "IDL:omg.org/CORBA/NO_RESPONSE:1.0"
 #if !defined(_CORBA_NO_RESPONSE_defined)
 #define _CORBA_NO_RESPONSE_defined 1
-   typedef struct CORBA_NO_RESPONSE_type CORBA_NO_RESPONSE;
-   struct CORBA_NO_RESPONSE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_NO_RESPONSE_type CORBA_NO_RESPONSE;
+struct CORBA_NO_RESPONSE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_NO_RESPONSE_0)
 #define TC_IMPL_TC_CORBA_NO_RESPONSE_0 'c'
@@ -1548,11 +1531,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NO_RESPONSE_8 'f'
 #define TC_IMPL_TC_CORBA_NO_RESPONSE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NO_RESPONSE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NO_RESPONSE_struct;
 #define TC_CORBA_NO_RESPONSE ((CORBA_TypeCode)&TC_CORBA_NO_RESPONSE_struct)
 #endif
 #define CORBA_NO_RESPONSE__alloc() ((CORBA_NO_RESPONSE *)ORBit_small_alloc (TC_CORBA_NO_RESPONSE))
@@ -1562,12 +1545,11 @@ extern "C"
 #define ex_CORBA_PERSIST_STORE "IDL:omg.org/CORBA/PERSIST_STORE:1.0"
 #if !defined(_CORBA_PERSIST_STORE_defined)
 #define _CORBA_PERSIST_STORE_defined 1
-   typedef struct CORBA_PERSIST_STORE_type CORBA_PERSIST_STORE;
-   struct CORBA_PERSIST_STORE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_PERSIST_STORE_type CORBA_PERSIST_STORE;
+struct CORBA_PERSIST_STORE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_PERSIST_STORE_0)
 #define TC_IMPL_TC_CORBA_PERSIST_STORE_0 'c'
@@ -1581,11 +1563,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PERSIST_STORE_8 'f'
 #define TC_IMPL_TC_CORBA_PERSIST_STORE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PERSIST_STORE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PERSIST_STORE_struct;
 #define TC_CORBA_PERSIST_STORE ((CORBA_TypeCode)&TC_CORBA_PERSIST_STORE_struct)
 #endif
 #define CORBA_PERSIST_STORE__alloc() ((CORBA_PERSIST_STORE *)ORBit_small_alloc (TC_CORBA_PERSIST_STORE))
@@ -1595,12 +1577,11 @@ extern "C"
 #define ex_CORBA_BAD_INV_ORDER "IDL:omg.org/CORBA/BAD_INV_ORDER:1.0"
 #if !defined(_CORBA_BAD_INV_ORDER_defined)
 #define _CORBA_BAD_INV_ORDER_defined 1
-   typedef struct CORBA_BAD_INV_ORDER_type CORBA_BAD_INV_ORDER;
-   struct CORBA_BAD_INV_ORDER_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_BAD_INV_ORDER_type CORBA_BAD_INV_ORDER;
+struct CORBA_BAD_INV_ORDER_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_BAD_INV_ORDER_0)
 #define TC_IMPL_TC_CORBA_BAD_INV_ORDER_0 'c'
@@ -1614,11 +1595,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BAD_INV_ORDER_8 'f'
 #define TC_IMPL_TC_CORBA_BAD_INV_ORDER_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BAD_INV_ORDER_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BAD_INV_ORDER_struct;
 #define TC_CORBA_BAD_INV_ORDER ((CORBA_TypeCode)&TC_CORBA_BAD_INV_ORDER_struct)
 #endif
 #define CORBA_BAD_INV_ORDER__alloc() ((CORBA_BAD_INV_ORDER *)ORBit_small_alloc (TC_CORBA_BAD_INV_ORDER))
@@ -1628,12 +1609,11 @@ extern "C"
 #define ex_CORBA_TRANSIENT "IDL:omg.org/CORBA/TRANSIENT:1.0"
 #if !defined(_CORBA_TRANSIENT_defined)
 #define _CORBA_TRANSIENT_defined 1
-   typedef struct CORBA_TRANSIENT_type CORBA_TRANSIENT;
-   struct CORBA_TRANSIENT_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_TRANSIENT_type CORBA_TRANSIENT;
+struct CORBA_TRANSIENT_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TRANSIENT_0)
 #define TC_IMPL_TC_CORBA_TRANSIENT_0 'c'
@@ -1647,11 +1627,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TRANSIENT_8 'f'
 #define TC_IMPL_TC_CORBA_TRANSIENT_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TRANSIENT_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TRANSIENT_struct;
 #define TC_CORBA_TRANSIENT ((CORBA_TypeCode)&TC_CORBA_TRANSIENT_struct)
 #endif
 #define CORBA_TRANSIENT__alloc() ((CORBA_TRANSIENT *)ORBit_small_alloc (TC_CORBA_TRANSIENT))
@@ -1661,12 +1641,11 @@ extern "C"
 #define ex_CORBA_FREE_MEM "IDL:omg.org/CORBA/FREE_MEM:1.0"
 #if !defined(_CORBA_FREE_MEM_defined)
 #define _CORBA_FREE_MEM_defined 1
-   typedef struct CORBA_FREE_MEM_type CORBA_FREE_MEM;
-   struct CORBA_FREE_MEM_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_FREE_MEM_type CORBA_FREE_MEM;
+struct CORBA_FREE_MEM_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_FREE_MEM_0)
 #define TC_IMPL_TC_CORBA_FREE_MEM_0 'c'
@@ -1680,11 +1659,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_FREE_MEM_8 'f'
 #define TC_IMPL_TC_CORBA_FREE_MEM_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_FREE_MEM_struct;
+struct CORBA_TypeCode_struct TC_CORBA_FREE_MEM_struct;
 #define TC_CORBA_FREE_MEM ((CORBA_TypeCode)&TC_CORBA_FREE_MEM_struct)
 #endif
 #define CORBA_FREE_MEM__alloc() ((CORBA_FREE_MEM *)ORBit_small_alloc (TC_CORBA_FREE_MEM))
@@ -1694,12 +1673,11 @@ extern "C"
 #define ex_CORBA_INV_IDENT "IDL:omg.org/CORBA/INV_IDENT:1.0"
 #if !defined(_CORBA_INV_IDENT_defined)
 #define _CORBA_INV_IDENT_defined 1
-   typedef struct CORBA_INV_IDENT_type CORBA_INV_IDENT;
-   struct CORBA_INV_IDENT_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INV_IDENT_type CORBA_INV_IDENT;
+struct CORBA_INV_IDENT_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INV_IDENT_0)
 #define TC_IMPL_TC_CORBA_INV_IDENT_0 'c'
@@ -1713,11 +1691,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INV_IDENT_8 'f'
 #define TC_IMPL_TC_CORBA_INV_IDENT_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INV_IDENT_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INV_IDENT_struct;
 #define TC_CORBA_INV_IDENT ((CORBA_TypeCode)&TC_CORBA_INV_IDENT_struct)
 #endif
 #define CORBA_INV_IDENT__alloc() ((CORBA_INV_IDENT *)ORBit_small_alloc (TC_CORBA_INV_IDENT))
@@ -1727,12 +1705,11 @@ extern "C"
 #define ex_CORBA_INV_FLAG "IDL:omg.org/CORBA/INV_FLAG:1.0"
 #if !defined(_CORBA_INV_FLAG_defined)
 #define _CORBA_INV_FLAG_defined 1
-   typedef struct CORBA_INV_FLAG_type CORBA_INV_FLAG;
-   struct CORBA_INV_FLAG_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INV_FLAG_type CORBA_INV_FLAG;
+struct CORBA_INV_FLAG_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INV_FLAG_0)
 #define TC_IMPL_TC_CORBA_INV_FLAG_0 'c'
@@ -1746,11 +1723,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INV_FLAG_8 'f'
 #define TC_IMPL_TC_CORBA_INV_FLAG_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INV_FLAG_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INV_FLAG_struct;
 #define TC_CORBA_INV_FLAG ((CORBA_TypeCode)&TC_CORBA_INV_FLAG_struct)
 #endif
 #define CORBA_INV_FLAG__alloc() ((CORBA_INV_FLAG *)ORBit_small_alloc (TC_CORBA_INV_FLAG))
@@ -1760,12 +1737,11 @@ extern "C"
 #define ex_CORBA_INTF_REPOS "IDL:omg.org/CORBA/INTF_REPOS:1.0"
 #if !defined(_CORBA_INTF_REPOS_defined)
 #define _CORBA_INTF_REPOS_defined 1
-   typedef struct CORBA_INTF_REPOS_type CORBA_INTF_REPOS;
-   struct CORBA_INTF_REPOS_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INTF_REPOS_type CORBA_INTF_REPOS;
+struct CORBA_INTF_REPOS_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INTF_REPOS_0)
 #define TC_IMPL_TC_CORBA_INTF_REPOS_0 'c'
@@ -1779,11 +1755,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INTF_REPOS_8 'f'
 #define TC_IMPL_TC_CORBA_INTF_REPOS_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INTF_REPOS_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INTF_REPOS_struct;
 #define TC_CORBA_INTF_REPOS ((CORBA_TypeCode)&TC_CORBA_INTF_REPOS_struct)
 #endif
 #define CORBA_INTF_REPOS__alloc() ((CORBA_INTF_REPOS *)ORBit_small_alloc (TC_CORBA_INTF_REPOS))
@@ -1793,12 +1769,11 @@ extern "C"
 #define ex_CORBA_BAD_CONTEXT "IDL:omg.org/CORBA/BAD_CONTEXT:1.0"
 #if !defined(_CORBA_BAD_CONTEXT_defined)
 #define _CORBA_BAD_CONTEXT_defined 1
-   typedef struct CORBA_BAD_CONTEXT_type CORBA_BAD_CONTEXT;
-   struct CORBA_BAD_CONTEXT_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_BAD_CONTEXT_type CORBA_BAD_CONTEXT;
+struct CORBA_BAD_CONTEXT_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_BAD_CONTEXT_0)
 #define TC_IMPL_TC_CORBA_BAD_CONTEXT_0 'c'
@@ -1812,11 +1787,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BAD_CONTEXT_8 'f'
 #define TC_IMPL_TC_CORBA_BAD_CONTEXT_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BAD_CONTEXT_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BAD_CONTEXT_struct;
 #define TC_CORBA_BAD_CONTEXT ((CORBA_TypeCode)&TC_CORBA_BAD_CONTEXT_struct)
 #endif
 #define CORBA_BAD_CONTEXT__alloc() ((CORBA_BAD_CONTEXT *)ORBit_small_alloc (TC_CORBA_BAD_CONTEXT))
@@ -1826,12 +1801,11 @@ extern "C"
 #define ex_CORBA_OBJ_ADAPTER "IDL:omg.org/CORBA/OBJ_ADAPTER:1.0"
 #if !defined(_CORBA_OBJ_ADAPTER_defined)
 #define _CORBA_OBJ_ADAPTER_defined 1
-   typedef struct CORBA_OBJ_ADAPTER_type CORBA_OBJ_ADAPTER;
-   struct CORBA_OBJ_ADAPTER_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_OBJ_ADAPTER_type CORBA_OBJ_ADAPTER;
+struct CORBA_OBJ_ADAPTER_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_OBJ_ADAPTER_0)
 #define TC_IMPL_TC_CORBA_OBJ_ADAPTER_0 'c'
@@ -1845,11 +1819,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OBJ_ADAPTER_8 'f'
 #define TC_IMPL_TC_CORBA_OBJ_ADAPTER_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OBJ_ADAPTER_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OBJ_ADAPTER_struct;
 #define TC_CORBA_OBJ_ADAPTER ((CORBA_TypeCode)&TC_CORBA_OBJ_ADAPTER_struct)
 #endif
 #define CORBA_OBJ_ADAPTER__alloc() ((CORBA_OBJ_ADAPTER *)ORBit_small_alloc (TC_CORBA_OBJ_ADAPTER))
@@ -1859,12 +1833,11 @@ extern "C"
 #define ex_CORBA_DATA_CONVERSION "IDL:omg.org/CORBA/DATA_CONVERSION:1.0"
 #if !defined(_CORBA_DATA_CONVERSION_defined)
 #define _CORBA_DATA_CONVERSION_defined 1
-   typedef struct CORBA_DATA_CONVERSION_type CORBA_DATA_CONVERSION;
-   struct CORBA_DATA_CONVERSION_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_DATA_CONVERSION_type CORBA_DATA_CONVERSION;
+struct CORBA_DATA_CONVERSION_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_DATA_CONVERSION_0)
 #define TC_IMPL_TC_CORBA_DATA_CONVERSION_0 'c'
@@ -1878,11 +1851,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_DATA_CONVERSION_8 'f'
 #define TC_IMPL_TC_CORBA_DATA_CONVERSION_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_DATA_CONVERSION_struct;
+struct CORBA_TypeCode_struct TC_CORBA_DATA_CONVERSION_struct;
 #define TC_CORBA_DATA_CONVERSION ((CORBA_TypeCode)&TC_CORBA_DATA_CONVERSION_struct)
 #endif
 #define CORBA_DATA_CONVERSION__alloc() ((CORBA_DATA_CONVERSION *)ORBit_small_alloc (TC_CORBA_DATA_CONVERSION))
@@ -1892,12 +1865,11 @@ extern "C"
 #define ex_CORBA_OBJECT_NOT_EXIST "IDL:omg.org/CORBA/OBJECT_NOT_EXIST:1.0"
 #if !defined(_CORBA_OBJECT_NOT_EXIST_defined)
 #define _CORBA_OBJECT_NOT_EXIST_defined 1
-   typedef struct CORBA_OBJECT_NOT_EXIST_type CORBA_OBJECT_NOT_EXIST;
-   struct CORBA_OBJECT_NOT_EXIST_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_OBJECT_NOT_EXIST_type CORBA_OBJECT_NOT_EXIST;
+struct CORBA_OBJECT_NOT_EXIST_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_OBJECT_NOT_EXIST_0)
 #define TC_IMPL_TC_CORBA_OBJECT_NOT_EXIST_0 'c'
@@ -1911,11 +1883,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OBJECT_NOT_EXIST_8 'f'
 #define TC_IMPL_TC_CORBA_OBJECT_NOT_EXIST_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OBJECT_NOT_EXIST_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OBJECT_NOT_EXIST_struct;
 #define TC_CORBA_OBJECT_NOT_EXIST ((CORBA_TypeCode)&TC_CORBA_OBJECT_NOT_EXIST_struct)
 #endif
 #define CORBA_OBJECT_NOT_EXIST__alloc() ((CORBA_OBJECT_NOT_EXIST *)ORBit_small_alloc (TC_CORBA_OBJECT_NOT_EXIST))
@@ -1925,12 +1897,11 @@ extern "C"
 #define ex_CORBA_TRANSACTION_REQUIRED "IDL:omg.org/CORBA/TRANSACTION_REQUIRED:1.0"
 #if !defined(_CORBA_TRANSACTION_REQUIRED_defined)
 #define _CORBA_TRANSACTION_REQUIRED_defined 1
-   typedef struct CORBA_TRANSACTION_REQUIRED_type CORBA_TRANSACTION_REQUIRED;
-   struct CORBA_TRANSACTION_REQUIRED_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_TRANSACTION_REQUIRED_type CORBA_TRANSACTION_REQUIRED;
+struct CORBA_TRANSACTION_REQUIRED_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TRANSACTION_REQUIRED_0)
 #define TC_IMPL_TC_CORBA_TRANSACTION_REQUIRED_0 'c'
@@ -1944,11 +1915,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TRANSACTION_REQUIRED_8 'f'
 #define TC_IMPL_TC_CORBA_TRANSACTION_REQUIRED_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_REQUIRED_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_REQUIRED_struct;
 #define TC_CORBA_TRANSACTION_REQUIRED ((CORBA_TypeCode)&TC_CORBA_TRANSACTION_REQUIRED_struct)
 #endif
 #define CORBA_TRANSACTION_REQUIRED__alloc() ((CORBA_TRANSACTION_REQUIRED *)ORBit_small_alloc (TC_CORBA_TRANSACTION_REQUIRED))
@@ -1958,13 +1929,11 @@ extern "C"
 #define ex_CORBA_TRANSACTION_ROLLEDBACK "IDL:omg.org/CORBA/TRANSACTION_ROLLEDBACK:1.0"
 #if !defined(_CORBA_TRANSACTION_ROLLEDBACK_defined)
 #define _CORBA_TRANSACTION_ROLLEDBACK_defined 1
-   typedef struct CORBA_TRANSACTION_ROLLEDBACK_type
-      CORBA_TRANSACTION_ROLLEDBACK;
-   struct CORBA_TRANSACTION_ROLLEDBACK_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_TRANSACTION_ROLLEDBACK_type CORBA_TRANSACTION_ROLLEDBACK;
+struct CORBA_TRANSACTION_ROLLEDBACK_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TRANSACTION_ROLLEDBACK_0)
 #define TC_IMPL_TC_CORBA_TRANSACTION_ROLLEDBACK_0 'c'
@@ -1978,11 +1947,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TRANSACTION_ROLLEDBACK_8 'f'
 #define TC_IMPL_TC_CORBA_TRANSACTION_ROLLEDBACK_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_ROLLEDBACK_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_ROLLEDBACK_struct;
 #define TC_CORBA_TRANSACTION_ROLLEDBACK ((CORBA_TypeCode)&TC_CORBA_TRANSACTION_ROLLEDBACK_struct)
 #endif
 #define CORBA_TRANSACTION_ROLLEDBACK__alloc() ((CORBA_TRANSACTION_ROLLEDBACK *)ORBit_small_alloc (TC_CORBA_TRANSACTION_ROLLEDBACK))
@@ -1992,12 +1961,11 @@ extern "C"
 #define ex_CORBA_INVALID_TRANSACTION "IDL:omg.org/CORBA/INVALID_TRANSACTION:1.0"
 #if !defined(_CORBA_INVALID_TRANSACTION_defined)
 #define _CORBA_INVALID_TRANSACTION_defined 1
-   typedef struct CORBA_INVALID_TRANSACTION_type CORBA_INVALID_TRANSACTION;
-   struct CORBA_INVALID_TRANSACTION_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INVALID_TRANSACTION_type CORBA_INVALID_TRANSACTION;
+struct CORBA_INVALID_TRANSACTION_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INVALID_TRANSACTION_0)
 #define TC_IMPL_TC_CORBA_INVALID_TRANSACTION_0 'c'
@@ -2011,11 +1979,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INVALID_TRANSACTION_8 'f'
 #define TC_IMPL_TC_CORBA_INVALID_TRANSACTION_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INVALID_TRANSACTION_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INVALID_TRANSACTION_struct;
 #define TC_CORBA_INVALID_TRANSACTION ((CORBA_TypeCode)&TC_CORBA_INVALID_TRANSACTION_struct)
 #endif
 #define CORBA_INVALID_TRANSACTION__alloc() ((CORBA_INVALID_TRANSACTION *)ORBit_small_alloc (TC_CORBA_INVALID_TRANSACTION))
@@ -2025,12 +1993,11 @@ extern "C"
 #define ex_CORBA_INV_POLICY "IDL:omg.org/CORBA/INV_POLICY:1.0"
 #if !defined(_CORBA_INV_POLICY_defined)
 #define _CORBA_INV_POLICY_defined 1
-   typedef struct CORBA_INV_POLICY_type CORBA_INV_POLICY;
-   struct CORBA_INV_POLICY_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_INV_POLICY_type CORBA_INV_POLICY;
+struct CORBA_INV_POLICY_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_INV_POLICY_0)
 #define TC_IMPL_TC_CORBA_INV_POLICY_0 'c'
@@ -2044,11 +2011,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_INV_POLICY_8 'f'
 #define TC_IMPL_TC_CORBA_INV_POLICY_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_INV_POLICY_struct;
+struct CORBA_TypeCode_struct TC_CORBA_INV_POLICY_struct;
 #define TC_CORBA_INV_POLICY ((CORBA_TypeCode)&TC_CORBA_INV_POLICY_struct)
 #endif
 #define CORBA_INV_POLICY__alloc() ((CORBA_INV_POLICY *)ORBit_small_alloc (TC_CORBA_INV_POLICY))
@@ -2058,12 +2025,11 @@ extern "C"
 #define ex_CORBA_CODESET_INCOMPATIBLE "IDL:omg.org/CORBA/CODESET_INCOMPATIBLE:1.0"
 #if !defined(_CORBA_CODESET_INCOMPATIBLE_defined)
 #define _CORBA_CODESET_INCOMPATIBLE_defined 1
-   typedef struct CORBA_CODESET_INCOMPATIBLE_type CORBA_CODESET_INCOMPATIBLE;
-   struct CORBA_CODESET_INCOMPATIBLE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_CODESET_INCOMPATIBLE_type CORBA_CODESET_INCOMPATIBLE;
+struct CORBA_CODESET_INCOMPATIBLE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_CODESET_INCOMPATIBLE_0)
 #define TC_IMPL_TC_CORBA_CODESET_INCOMPATIBLE_0 'c'
@@ -2077,11 +2043,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_CODESET_INCOMPATIBLE_8 'f'
 #define TC_IMPL_TC_CORBA_CODESET_INCOMPATIBLE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_CODESET_INCOMPATIBLE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_CODESET_INCOMPATIBLE_struct;
 #define TC_CORBA_CODESET_INCOMPATIBLE ((CORBA_TypeCode)&TC_CORBA_CODESET_INCOMPATIBLE_struct)
 #endif
 #define CORBA_CODESET_INCOMPATIBLE__alloc() ((CORBA_CODESET_INCOMPATIBLE *)ORBit_small_alloc (TC_CORBA_CODESET_INCOMPATIBLE))
@@ -2091,12 +2057,11 @@ extern "C"
 #define ex_CORBA_REBIND "IDL:omg.org/CORBA/REBIND:1.0"
 #if !defined(_CORBA_REBIND_defined)
 #define _CORBA_REBIND_defined 1
-   typedef struct CORBA_REBIND_type CORBA_REBIND;
-   struct CORBA_REBIND_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_REBIND_type CORBA_REBIND;
+struct CORBA_REBIND_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_REBIND_0)
 #define TC_IMPL_TC_CORBA_REBIND_0 'c'
@@ -2110,11 +2075,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_REBIND_8 'f'
 #define TC_IMPL_TC_CORBA_REBIND_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_REBIND_struct;
+struct CORBA_TypeCode_struct TC_CORBA_REBIND_struct;
 #define TC_CORBA_REBIND ((CORBA_TypeCode)&TC_CORBA_REBIND_struct)
 #endif
 #define CORBA_REBIND__alloc() ((CORBA_REBIND *)ORBit_small_alloc (TC_CORBA_REBIND))
@@ -2124,12 +2089,11 @@ extern "C"
 #define ex_CORBA_TIMEOUT "IDL:omg.org/CORBA/TIMEOUT:1.0"
 #if !defined(_CORBA_TIMEOUT_defined)
 #define _CORBA_TIMEOUT_defined 1
-   typedef struct CORBA_TIMEOUT_type CORBA_TIMEOUT;
-   struct CORBA_TIMEOUT_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_TIMEOUT_type CORBA_TIMEOUT;
+struct CORBA_TIMEOUT_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TIMEOUT_0)
 #define TC_IMPL_TC_CORBA_TIMEOUT_0 'c'
@@ -2143,11 +2107,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TIMEOUT_8 'f'
 #define TC_IMPL_TC_CORBA_TIMEOUT_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TIMEOUT_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TIMEOUT_struct;
 #define TC_CORBA_TIMEOUT ((CORBA_TypeCode)&TC_CORBA_TIMEOUT_struct)
 #endif
 #define CORBA_TIMEOUT__alloc() ((CORBA_TIMEOUT *)ORBit_small_alloc (TC_CORBA_TIMEOUT))
@@ -2157,13 +2121,11 @@ extern "C"
 #define ex_CORBA_TRANSACTION_UNAVAILABLE "IDL:omg.org/CORBA/TRANSACTION_UNAVAILABLE:1.0"
 #if !defined(_CORBA_TRANSACTION_UNAVAILABLE_defined)
 #define _CORBA_TRANSACTION_UNAVAILABLE_defined 1
-   typedef struct CORBA_TRANSACTION_UNAVAILABLE_type
-      CORBA_TRANSACTION_UNAVAILABLE;
-   struct CORBA_TRANSACTION_UNAVAILABLE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_TRANSACTION_UNAVAILABLE_type CORBA_TRANSACTION_UNAVAILABLE;
+struct CORBA_TRANSACTION_UNAVAILABLE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TRANSACTION_UNAVAILABLE_0)
 #define TC_IMPL_TC_CORBA_TRANSACTION_UNAVAILABLE_0 'c'
@@ -2177,11 +2139,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TRANSACTION_UNAVAILABLE_8 'f'
 #define TC_IMPL_TC_CORBA_TRANSACTION_UNAVAILABLE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_UNAVAILABLE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_UNAVAILABLE_struct;
 #define TC_CORBA_TRANSACTION_UNAVAILABLE ((CORBA_TypeCode)&TC_CORBA_TRANSACTION_UNAVAILABLE_struct)
 #endif
 #define CORBA_TRANSACTION_UNAVAILABLE__alloc() ((CORBA_TRANSACTION_UNAVAILABLE *)ORBit_small_alloc (TC_CORBA_TRANSACTION_UNAVAILABLE))
@@ -2191,12 +2153,11 @@ extern "C"
 #define ex_CORBA_TRANSACTION_MODE "IDL:omg.org/CORBA/TRANSACTION_MODE:1.0"
 #if !defined(_CORBA_TRANSACTION_MODE_defined)
 #define _CORBA_TRANSACTION_MODE_defined 1
-   typedef struct CORBA_TRANSACTION_MODE_type CORBA_TRANSACTION_MODE;
-   struct CORBA_TRANSACTION_MODE_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_TRANSACTION_MODE_type CORBA_TRANSACTION_MODE;
+struct CORBA_TRANSACTION_MODE_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TRANSACTION_MODE_0)
 #define TC_IMPL_TC_CORBA_TRANSACTION_MODE_0 'c'
@@ -2210,11 +2171,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TRANSACTION_MODE_8 'f'
 #define TC_IMPL_TC_CORBA_TRANSACTION_MODE_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_MODE_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TRANSACTION_MODE_struct;
 #define TC_CORBA_TRANSACTION_MODE ((CORBA_TypeCode)&TC_CORBA_TRANSACTION_MODE_struct)
 #endif
 #define CORBA_TRANSACTION_MODE__alloc() ((CORBA_TRANSACTION_MODE *)ORBit_small_alloc (TC_CORBA_TRANSACTION_MODE))
@@ -2224,12 +2185,11 @@ extern "C"
 #define ex_CORBA_BAD_QOS "IDL:omg.org/CORBA/BAD_QOS:1.0"
 #if !defined(_CORBA_BAD_QOS_defined)
 #define _CORBA_BAD_QOS_defined 1
-   typedef struct CORBA_BAD_QOS_type CORBA_BAD_QOS;
-   struct CORBA_BAD_QOS_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_BAD_QOS_type CORBA_BAD_QOS;
+struct CORBA_BAD_QOS_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_BAD_QOS_0)
 #define TC_IMPL_TC_CORBA_BAD_QOS_0 'c'
@@ -2243,11 +2203,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BAD_QOS_8 'f'
 #define TC_IMPL_TC_CORBA_BAD_QOS_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BAD_QOS_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BAD_QOS_struct;
 #define TC_CORBA_BAD_QOS ((CORBA_TypeCode)&TC_CORBA_BAD_QOS_struct)
 #endif
 #define CORBA_BAD_QOS__alloc() ((CORBA_BAD_QOS *)ORBit_small_alloc (TC_CORBA_BAD_QOS))
@@ -2257,8 +2217,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Current 1
 #define _CORBA_Current_defined 1
 #define CORBA_Current__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Current;
-   extern CORBA_unsigned_long CORBA_Current__classid;
+typedef CORBA_Object CORBA_Current;
+extern CORBA_unsigned_long CORBA_Current__classid;
 #if !defined(TC_IMPL_TC_CORBA_Current_0)
 #define TC_IMPL_TC_CORBA_Current_0 'c'
 #define TC_IMPL_TC_CORBA_Current_1 'o'
@@ -2271,17 +2231,17 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Current_8 'f'
 #define TC_IMPL_TC_CORBA_Current_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Current_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Current_struct;
 #define TC_CORBA_Current ((CORBA_TypeCode)&TC_CORBA_Current_struct)
 #endif
 #endif
 #if !defined(_CORBA_PolicyType_defined)
 #define _CORBA_PolicyType_defined 1
-   typedef CORBA_unsigned_long CORBA_PolicyType;
+typedef CORBA_unsigned_long CORBA_PolicyType;
 #define CORBA_PolicyType_marshal(x,y,z) CORBA_unsigned_long_marshal((x),(y),(z))
 #define CORBA_PolicyType_demarshal(x,y,z,i) CORBA_unsigned_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_PolicyType_0)
@@ -2296,11 +2256,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PolicyType_8 'f'
 #define TC_IMPL_TC_CORBA_PolicyType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PolicyType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PolicyType_struct;
 #define TC_CORBA_PolicyType ((CORBA_TypeCode)&TC_CORBA_PolicyType_struct)
 #endif
 #define CORBA_PolicyType__alloc() ((CORBA_PolicyType *)ORBit_small_alloc (TC_CORBA_unsigned_long))
@@ -2310,8 +2270,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Policy 1
 #define _CORBA_Policy_defined 1
 #define CORBA_Policy__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Policy;
-   extern CORBA_unsigned_long CORBA_Policy__classid;
+typedef CORBA_Object CORBA_Policy;
+extern CORBA_unsigned_long CORBA_Policy__classid;
 #if !defined(TC_IMPL_TC_CORBA_Policy_0)
 #define TC_IMPL_TC_CORBA_Policy_0 'c'
 #define TC_IMPL_TC_CORBA_Policy_1 'o'
@@ -2324,11 +2284,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Policy_8 'f'
 #define TC_IMPL_TC_CORBA_Policy_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Policy_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Policy_struct;
 #define TC_CORBA_Policy ((CORBA_TypeCode)&TC_CORBA_Policy_struct)
 #endif
 #endif
@@ -2346,13 +2306,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -2366,11 +2320,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -2392,7 +2346,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Policy_9 's'
 #if !defined(_CORBA_sequence_CORBA_Policy_defined)
 #define _CORBA_sequence_CORBA_Policy_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_Policy;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_Policy;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Policy_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Policy_0 'c'
@@ -2406,11 +2360,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Policy_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Policy_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Policy_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Policy_struct;
 #define TC_CORBA_sequence_CORBA_Policy ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Policy_struct)
 #endif
 #define CORBA_sequence_CORBA_Policy__alloc CORBA_sequence_CORBA_Object__alloc
@@ -2421,7 +2375,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_PolicyList_defined)
 #define _CORBA_PolicyList_defined 1
-   typedef CORBA_sequence_CORBA_Policy CORBA_PolicyList;
+typedef CORBA_sequence_CORBA_Policy CORBA_PolicyList;
 #define CORBA_PolicyList_marshal(x,y,z) CORBA_sequence_CORBA_Policy_marshal((x),(y),(z))
 #define CORBA_PolicyList_demarshal(x,y,z,i) CORBA_sequence_CORBA_Policy_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_PolicyList_0)
@@ -2436,11 +2390,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PolicyList_8 'f'
 #define TC_IMPL_TC_CORBA_PolicyList_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PolicyList_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PolicyList_struct;
 #define TC_CORBA_PolicyList ((CORBA_TypeCode)&TC_CORBA_PolicyList_struct)
 #endif
 #define CORBA_PolicyList__alloc() ((CORBA_PolicyList *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Policy))
@@ -2461,13 +2415,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_long_9 's'
 #if !defined(_CORBA_sequence_CORBA_unsigned_long_defined)
 #define _CORBA_sequence_CORBA_unsigned_long_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_unsigned_long *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_unsigned_long;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_unsigned_long* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_unsigned_long;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0 'c'
@@ -2481,12 +2429,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_unsigned_long_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_unsigned_long_struct;
 #define TC_CORBA_sequence_CORBA_unsigned_long ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_unsigned_long_struct)
 #endif
 #define CORBA_sequence_CORBA_unsigned_long__alloc() ((CORBA_sequence_CORBA_unsigned_long *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_long))
@@ -2508,7 +2455,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_PolicyType_9 's'
 #if !defined(_CORBA_sequence_CORBA_PolicyType_defined)
 #define _CORBA_sequence_CORBA_PolicyType_defined 1
-   typedef CORBA_sequence_CORBA_unsigned_long CORBA_sequence_CORBA_PolicyType;
+typedef CORBA_sequence_CORBA_unsigned_long CORBA_sequence_CORBA_PolicyType;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_PolicyType_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_PolicyType_0 'c'
@@ -2522,12 +2469,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_PolicyType_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_PolicyType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_PolicyType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_PolicyType_struct;
 #define TC_CORBA_sequence_CORBA_PolicyType ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_PolicyType_struct)
 #endif
 #define CORBA_sequence_CORBA_PolicyType__alloc CORBA_sequence_CORBA_unsigned_long__alloc
@@ -2538,7 +2484,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_PolicyTypeSeq_defined)
 #define _CORBA_PolicyTypeSeq_defined 1
-   typedef CORBA_sequence_CORBA_PolicyType CORBA_PolicyTypeSeq;
+typedef CORBA_sequence_CORBA_PolicyType CORBA_PolicyTypeSeq;
 #define CORBA_PolicyTypeSeq_marshal(x,y,z) CORBA_sequence_CORBA_PolicyType_marshal((x),(y),(z))
 #define CORBA_PolicyTypeSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_PolicyType_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_PolicyTypeSeq_0)
@@ -2553,11 +2499,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PolicyTypeSeq_8 'f'
 #define TC_IMPL_TC_CORBA_PolicyTypeSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PolicyTypeSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PolicyTypeSeq_struct;
 #define TC_CORBA_PolicyTypeSeq ((CORBA_TypeCode)&TC_CORBA_PolicyTypeSeq_struct)
 #endif
 #define CORBA_PolicyTypeSeq__alloc() ((CORBA_PolicyTypeSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_PolicyType))
@@ -2568,7 +2514,7 @@ extern "C"
 #define ex_CORBA_InvalidPolicies "IDL:omg.org/CORBA/InvalidPolicies:1.0"
 #if !defined(_CORBA_InvalidPolicies_defined)
 #define _CORBA_InvalidPolicies_defined 1
-   typedef struct CORBA_InvalidPolicies_type CORBA_InvalidPolicies;
+typedef struct CORBA_InvalidPolicies_type CORBA_InvalidPolicies;
 #if !defined(ORBIT_DECL_CORBA_sequence_CORBA_unsigned_short)
 #define ORBIT_DECL_CORBA_sequence_CORBA_unsigned_short 1
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_short_0 'c'
@@ -2583,13 +2529,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_short_9 's'
 #if !defined(_CORBA_sequence_CORBA_unsigned_short_defined)
 #define _CORBA_sequence_CORBA_unsigned_short_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_unsigned_short *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_unsigned_short;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_unsigned_short* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_unsigned_short;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_0 'c'
@@ -2603,12 +2543,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_unsigned_short_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_unsigned_short_struct;
 #define TC_CORBA_sequence_CORBA_unsigned_short ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_unsigned_short_struct)
 #endif
 #define CORBA_sequence_CORBA_unsigned_short__alloc() ((CORBA_sequence_CORBA_unsigned_short *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_short))
@@ -2616,10 +2555,9 @@ extern "C"
 #define CORBA_sequence_CORBA_unsigned_short_allocbuf(l) ((CORBA_unsigned_short*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_unsigned_short, (l)))
 #define CORBA_sequence_CORBA_unsigned_short_allocbuf(l) ((CORBA_unsigned_short*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_unsigned_short, (l)))
 #endif
-   struct CORBA_InvalidPolicies_type
-   {
-      CORBA_sequence_CORBA_unsigned_short indices;
-   };
+struct CORBA_InvalidPolicies_type {
+CORBA_sequence_CORBA_unsigned_short indices;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_InvalidPolicies_0)
 #define TC_IMPL_TC_CORBA_InvalidPolicies_0 'c'
@@ -2633,11 +2571,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InvalidPolicies_8 'f'
 #define TC_IMPL_TC_CORBA_InvalidPolicies_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InvalidPolicies_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InvalidPolicies_struct;
 #define TC_CORBA_InvalidPolicies ((CORBA_TypeCode)&TC_CORBA_InvalidPolicies_struct)
 #endif
 #define CORBA_InvalidPolicies__alloc() ((CORBA_InvalidPolicies *)ORBit_small_alloc (TC_CORBA_InvalidPolicies))
@@ -2645,7 +2583,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_PolicyErrorCode_defined)
 #define _CORBA_PolicyErrorCode_defined 1
-   typedef CORBA_short CORBA_PolicyErrorCode;
+typedef CORBA_short CORBA_PolicyErrorCode;
 #define CORBA_PolicyErrorCode_marshal(x,y,z) CORBA_short_marshal((x),(y),(z))
 #define CORBA_PolicyErrorCode_demarshal(x,y,z,i) CORBA_short_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_PolicyErrorCode_0)
@@ -2660,11 +2598,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PolicyErrorCode_8 'f'
 #define TC_IMPL_TC_CORBA_PolicyErrorCode_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PolicyErrorCode_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PolicyErrorCode_struct;
 #define TC_CORBA_PolicyErrorCode ((CORBA_TypeCode)&TC_CORBA_PolicyErrorCode_struct)
 #endif
 #define CORBA_PolicyErrorCode__alloc() ((CORBA_PolicyErrorCode *)ORBit_small_alloc (TC_CORBA_short))
@@ -2674,11 +2612,10 @@ extern "C"
 #define ex_CORBA_PolicyError "IDL:omg.org/CORBA/PolicyError:1.0"
 #if !defined(_CORBA_PolicyError_defined)
 #define _CORBA_PolicyError_defined 1
-   typedef struct CORBA_PolicyError_type CORBA_PolicyError;
-   struct CORBA_PolicyError_type
-   {
-      CORBA_PolicyErrorCode reason;
-   };
+typedef struct CORBA_PolicyError_type CORBA_PolicyError;
+struct CORBA_PolicyError_type {
+CORBA_PolicyErrorCode reason;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_PolicyError_0)
 #define TC_IMPL_TC_CORBA_PolicyError_0 'c'
@@ -2692,11 +2629,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PolicyError_8 'f'
 #define TC_IMPL_TC_CORBA_PolicyError_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PolicyError_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PolicyError_struct;
 #define TC_CORBA_PolicyError ((CORBA_TypeCode)&TC_CORBA_PolicyError_struct)
 #endif
 #define CORBA_PolicyError__alloc() ((CORBA_PolicyError *)ORBit_small_alloc (TC_CORBA_PolicyError))
@@ -2704,30 +2641,30 @@ extern "C"
 #endif
 #ifndef CORBA_BAD_POLICY
 #define CORBA_BAD_POLICY 0
-#endif				/* !CORBA_BAD_POLICY */
+#endif /* !CORBA_BAD_POLICY */
 
 #ifndef CORBA_UNSUPPORTED_POLICY
 #define CORBA_UNSUPPORTED_POLICY 1
-#endif				/* !CORBA_UNSUPPORTED_POLICY */
+#endif /* !CORBA_UNSUPPORTED_POLICY */
 
 #ifndef CORBA_BAD_POLICY_TYPE
 #define CORBA_BAD_POLICY_TYPE 2
-#endif				/* !CORBA_BAD_POLICY_TYPE */
+#endif /* !CORBA_BAD_POLICY_TYPE */
 
 #ifndef CORBA_BAD_POLICY_VALUE
 #define CORBA_BAD_POLICY_VALUE 3
-#endif				/* !CORBA_BAD_POLICY_VALUE */
+#endif /* !CORBA_BAD_POLICY_VALUE */
 
 #ifndef CORBA_UNSUPPORTED_POLICY_VALUE
 #define CORBA_UNSUPPORTED_POLICY_VALUE 4
-#endif				/* !CORBA_UNSUPPORTED_POLICY_VALUE */
+#endif /* !CORBA_UNSUPPORTED_POLICY_VALUE */
 
 #if !defined(ORBIT_DECL_CORBA_DomainManager) && !defined(_CORBA_DomainManager_defined)
 #define ORBIT_DECL_CORBA_DomainManager 1
 #define _CORBA_DomainManager_defined 1
 #define CORBA_DomainManager__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_DomainManager;
-   extern CORBA_unsigned_long CORBA_DomainManager__classid;
+typedef CORBA_Object CORBA_DomainManager;
+extern CORBA_unsigned_long CORBA_DomainManager__classid;
 #if !defined(TC_IMPL_TC_CORBA_DomainManager_0)
 #define TC_IMPL_TC_CORBA_DomainManager_0 'c'
 #define TC_IMPL_TC_CORBA_DomainManager_1 'o'
@@ -2740,24 +2677,24 @@ extern "C"
 #define TC_IMPL_TC_CORBA_DomainManager_8 'f'
 #define TC_IMPL_TC_CORBA_DomainManager_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_DomainManager_struct;
+struct CORBA_TypeCode_struct TC_CORBA_DomainManager_struct;
 #define TC_CORBA_DomainManager ((CORBA_TypeCode)&TC_CORBA_DomainManager_struct)
 #endif
 #endif
 #ifndef CORBA_SecConstruction
 #define CORBA_SecConstruction 11U
-#endif				/* !CORBA_SecConstruction */
+#endif /* !CORBA_SecConstruction */
 
 #if !defined(ORBIT_DECL_CORBA_ConstructionPolicy) && !defined(_CORBA_ConstructionPolicy_defined)
 #define ORBIT_DECL_CORBA_ConstructionPolicy 1
 #define _CORBA_ConstructionPolicy_defined 1
 #define CORBA_ConstructionPolicy__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ConstructionPolicy;
-   extern CORBA_unsigned_long CORBA_ConstructionPolicy__classid;
+typedef CORBA_Object CORBA_ConstructionPolicy;
+extern CORBA_unsigned_long CORBA_ConstructionPolicy__classid;
 #if !defined(TC_IMPL_TC_CORBA_ConstructionPolicy_0)
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_0 'c'
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_1 'o'
@@ -2770,11 +2707,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_8 'f'
 #define TC_IMPL_TC_CORBA_ConstructionPolicy_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ConstructionPolicy_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ConstructionPolicy_struct;
 #define TC_CORBA_ConstructionPolicy ((CORBA_TypeCode)&TC_CORBA_ConstructionPolicy_struct)
 #endif
 #endif
@@ -2792,13 +2729,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -2812,11 +2743,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -2838,7 +2769,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_DomainManager_9 's'
 #if !defined(_CORBA_sequence_CORBA_DomainManager_defined)
 #define _CORBA_sequence_CORBA_DomainManager_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_DomainManager;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_DomainManager;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_DomainManager_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_DomainManager_0 'c'
@@ -2852,12 +2783,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_DomainManager_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_DomainManager_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_DomainManager_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_DomainManager_struct;
 #define TC_CORBA_sequence_CORBA_DomainManager ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_DomainManager_struct)
 #endif
 #define CORBA_sequence_CORBA_DomainManager__alloc CORBA_sequence_CORBA_Object__alloc
@@ -2868,7 +2798,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_DomainManagersList_defined)
 #define _CORBA_DomainManagersList_defined 1
-   typedef CORBA_sequence_CORBA_DomainManager CORBA_DomainManagersList;
+typedef CORBA_sequence_CORBA_DomainManager CORBA_DomainManagersList;
 #define CORBA_DomainManagersList_marshal(x,y,z) CORBA_sequence_CORBA_DomainManager_marshal((x),(y),(z))
 #define CORBA_DomainManagersList_demarshal(x,y,z,i) CORBA_sequence_CORBA_DomainManager_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_DomainManagersList_0)
@@ -2883,11 +2813,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_DomainManagersList_8 'f'
 #define TC_IMPL_TC_CORBA_DomainManagersList_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_DomainManagersList_struct;
+struct CORBA_TypeCode_struct TC_CORBA_DomainManagersList_struct;
 #define TC_CORBA_DomainManagersList ((CORBA_TypeCode)&TC_CORBA_DomainManagersList_struct)
 #endif
 #define CORBA_DomainManagersList__alloc() ((CORBA_DomainManagersList *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_DomainManager))
@@ -2896,7 +2826,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ScopedName_defined)
 #define _CORBA_ScopedName_defined 1
-   typedef CORBA_string CORBA_ScopedName;
+typedef CORBA_string CORBA_ScopedName;
 #define CORBA_ScopedName_marshal(x,y,z) CORBA_string_marshal((x),(y),(z))
 #define CORBA_ScopedName_demarshal(x,y,z,i) CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ScopedName_0)
@@ -2911,11 +2841,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ScopedName_8 'f'
 #define TC_IMPL_TC_CORBA_ScopedName_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ScopedName_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ScopedName_struct;
 #define TC_CORBA_ScopedName ((CORBA_TypeCode)&TC_CORBA_ScopedName_struct)
 #endif
 #define CORBA_ScopedName__alloc() ((CORBA_ScopedName *)ORBit_small_alloc (TC_CORBA_string))
@@ -2923,7 +2853,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_RepositoryId_defined)
 #define _CORBA_RepositoryId_defined 1
-   typedef CORBA_string CORBA_RepositoryId;
+typedef CORBA_string CORBA_RepositoryId;
 #define CORBA_RepositoryId_marshal(x,y,z) CORBA_string_marshal((x),(y),(z))
 #define CORBA_RepositoryId_demarshal(x,y,z,i) CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_RepositoryId_0)
@@ -2938,11 +2868,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_RepositoryId_8 'f'
 #define TC_IMPL_TC_CORBA_RepositoryId_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_RepositoryId_struct;
+struct CORBA_TypeCode_struct TC_CORBA_RepositoryId_struct;
 #define TC_CORBA_RepositoryId ((CORBA_TypeCode)&TC_CORBA_RepositoryId_struct)
 #endif
 #define CORBA_RepositoryId__alloc() ((CORBA_RepositoryId *)ORBit_small_alloc (TC_CORBA_string))
@@ -2950,45 +2880,44 @@ extern "C"
 #endif
 #if !defined(_CORBA_DefinitionKind_defined)
 #define _CORBA_DefinitionKind_defined 1
-   typedef enum
-   {
-      CORBA_dk_none,
-      CORBA_dk_all,
-      CORBA_dk_Attribute,
-      CORBA_dk_Constant,
-      CORBA_dk_Exception,
-      CORBA_dk_Interface,
-      CORBA_dk_Module,
-      CORBA_dk_Operation,
-      CORBA_dk_Typedef,
-      CORBA_dk_Alias,
-      CORBA_dk_Struct,
-      CORBA_dk_Union,
-      CORBA_dk_Enum,
-      CORBA_dk_Primitive,
-      CORBA_dk_String,
-      CORBA_dk_Sequence,
-      CORBA_dk_Array,
-      CORBA_dk_Repository,
-      CORBA_dk_Wstring,
-      CORBA_dk_Fixed,
-      CORBA_dk_Value,
-      CORBA_dk_ValueBox,
-      CORBA_dk_ValueMember,
-      CORBA_dk_Native,
-      CORBA_dk_AbstractInterface,
-      CORBA_dk_LocalInterface,
-      CORBA_dk_Component,
-      CORBA_dk_Home,
-      CORBA_dk_Factory,
-      CORBA_dk_Finder,
-      CORBA_dk_Emits,
-      CORBA_dk_Publishes,
-      CORBA_dk_Consumes,
-      CORBA_dk_Provides,
-      CORBA_dk_Uses,
-      CORBA_dk_Event
-   } CORBA_DefinitionKind;
+typedef enum {
+  CORBA_dk_none,
+  CORBA_dk_all,
+  CORBA_dk_Attribute,
+  CORBA_dk_Constant,
+  CORBA_dk_Exception,
+  CORBA_dk_Interface,
+  CORBA_dk_Module,
+  CORBA_dk_Operation,
+  CORBA_dk_Typedef,
+  CORBA_dk_Alias,
+  CORBA_dk_Struct,
+  CORBA_dk_Union,
+  CORBA_dk_Enum,
+  CORBA_dk_Primitive,
+  CORBA_dk_String,
+  CORBA_dk_Sequence,
+  CORBA_dk_Array,
+  CORBA_dk_Repository,
+  CORBA_dk_Wstring,
+  CORBA_dk_Fixed,
+  CORBA_dk_Value,
+  CORBA_dk_ValueBox,
+  CORBA_dk_ValueMember,
+  CORBA_dk_Native,
+  CORBA_dk_AbstractInterface,
+  CORBA_dk_LocalInterface,
+  CORBA_dk_Component,
+  CORBA_dk_Home,
+  CORBA_dk_Factory,
+  CORBA_dk_Finder,
+  CORBA_dk_Emits,
+  CORBA_dk_Publishes,
+  CORBA_dk_Consumes,
+  CORBA_dk_Provides,
+  CORBA_dk_Uses,
+  CORBA_dk_Event
+} CORBA_DefinitionKind;
 #if !defined(TC_IMPL_TC_CORBA_DefinitionKind_0)
 #define TC_IMPL_TC_CORBA_DefinitionKind_0 'c'
 #define TC_IMPL_TC_CORBA_DefinitionKind_1 'o'
@@ -3001,11 +2930,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_DefinitionKind_8 'f'
 #define TC_IMPL_TC_CORBA_DefinitionKind_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_DefinitionKind_struct;
+struct CORBA_TypeCode_struct TC_CORBA_DefinitionKind_struct;
 #define TC_CORBA_DefinitionKind ((CORBA_TypeCode)&TC_CORBA_DefinitionKind_struct)
 #endif
 #endif
@@ -3013,8 +2942,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_IRObject 1
 #define _CORBA_IRObject_defined 1
 #define CORBA_IRObject__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_IRObject;
-   extern CORBA_unsigned_long CORBA_IRObject__classid;
+typedef CORBA_Object CORBA_IRObject;
+extern CORBA_unsigned_long CORBA_IRObject__classid;
 #if !defined(TC_IMPL_TC_CORBA_IRObject_0)
 #define TC_IMPL_TC_CORBA_IRObject_0 'c'
 #define TC_IMPL_TC_CORBA_IRObject_1 'o'
@@ -3027,17 +2956,17 @@ extern "C"
 #define TC_IMPL_TC_CORBA_IRObject_8 'f'
 #define TC_IMPL_TC_CORBA_IRObject_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_IRObject_struct;
+struct CORBA_TypeCode_struct TC_CORBA_IRObject_struct;
 #define TC_CORBA_IRObject ((CORBA_TypeCode)&TC_CORBA_IRObject_struct)
 #endif
 #endif
 #if !defined(_CORBA_VersionSpec_defined)
 #define _CORBA_VersionSpec_defined 1
-   typedef CORBA_string CORBA_VersionSpec;
+typedef CORBA_string CORBA_VersionSpec;
 #define CORBA_VersionSpec_marshal(x,y,z) CORBA_string_marshal((x),(y),(z))
 #define CORBA_VersionSpec_demarshal(x,y,z,i) CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_VersionSpec_0)
@@ -3052,11 +2981,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_VersionSpec_8 'f'
 #define TC_IMPL_TC_CORBA_VersionSpec_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_VersionSpec_struct;
+struct CORBA_TypeCode_struct TC_CORBA_VersionSpec_struct;
 #define TC_CORBA_VersionSpec ((CORBA_TypeCode)&TC_CORBA_VersionSpec_struct)
 #endif
 #define CORBA_VersionSpec__alloc() ((CORBA_VersionSpec *)ORBit_small_alloc (TC_CORBA_string))
@@ -3066,8 +2995,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Contained 1
 #define _CORBA_Contained_defined 1
 #define CORBA_Contained__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Contained;
-   extern CORBA_unsigned_long CORBA_Contained__classid;
+typedef CORBA_Object CORBA_Contained;
+extern CORBA_unsigned_long CORBA_Contained__classid;
 #if !defined(TC_IMPL_TC_CORBA_Contained_0)
 #define TC_IMPL_TC_CORBA_Contained_0 'c'
 #define TC_IMPL_TC_CORBA_Contained_1 'o'
@@ -3080,23 +3009,21 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Contained_8 'f'
 #define TC_IMPL_TC_CORBA_Contained_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Contained_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Contained_struct;
 #define TC_CORBA_Contained ((CORBA_TypeCode)&TC_CORBA_Contained_struct)
 #endif
 #endif
 #if !defined(_CORBA_Contained_Description_defined)
 #define _CORBA_Contained_Description_defined 1
-   typedef struct CORBA_Contained_Description_type
-      CORBA_Contained_Description;
-   struct CORBA_Contained_Description_type
-   {
-      CORBA_DefinitionKind kind;
-      CORBA_any value;
-   };
+typedef struct CORBA_Contained_Description_type CORBA_Contained_Description;
+struct CORBA_Contained_Description_type {
+CORBA_DefinitionKind kind;
+CORBA_any value;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_Contained_Description_0)
 #define TC_IMPL_TC_CORBA_Contained_Description_0 'c'
@@ -3110,11 +3037,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Contained_Description_8 'f'
 #define TC_IMPL_TC_CORBA_Contained_Description_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Contained_Description_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Contained_Description_struct;
 #define TC_CORBA_Contained_Description ((CORBA_TypeCode)&TC_CORBA_Contained_Description_struct)
 #endif
 #define CORBA_Contained_Description__alloc() ((CORBA_Contained_Description *)ORBit_small_alloc (TC_CORBA_Contained_Description))
@@ -3124,8 +3051,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ModuleDef 1
 #define _CORBA_ModuleDef_defined 1
 #define CORBA_ModuleDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ModuleDef;
-   extern CORBA_unsigned_long CORBA_ModuleDef__classid;
+typedef CORBA_Object CORBA_ModuleDef;
+extern CORBA_unsigned_long CORBA_ModuleDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ModuleDef_0)
 #define TC_IMPL_TC_CORBA_ModuleDef_0 'c'
 #define TC_IMPL_TC_CORBA_ModuleDef_1 'o'
@@ -3138,11 +3065,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ModuleDef_8 'f'
 #define TC_IMPL_TC_CORBA_ModuleDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ModuleDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ModuleDef_struct;
 #define TC_CORBA_ModuleDef ((CORBA_TypeCode)&TC_CORBA_ModuleDef_struct)
 #endif
 #endif
@@ -3150,8 +3077,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ConstantDef 1
 #define _CORBA_ConstantDef_defined 1
 #define CORBA_ConstantDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ConstantDef;
-   extern CORBA_unsigned_long CORBA_ConstantDef__classid;
+typedef CORBA_Object CORBA_ConstantDef;
+extern CORBA_unsigned_long CORBA_ConstantDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ConstantDef_0)
 #define TC_IMPL_TC_CORBA_ConstantDef_0 'c'
 #define TC_IMPL_TC_CORBA_ConstantDef_1 'o'
@@ -3164,11 +3091,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ConstantDef_8 'f'
 #define TC_IMPL_TC_CORBA_ConstantDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ConstantDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ConstantDef_struct;
 #define TC_CORBA_ConstantDef ((CORBA_TypeCode)&TC_CORBA_ConstantDef_struct)
 #endif
 #endif
@@ -3176,8 +3103,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_IDLType 1
 #define _CORBA_IDLType_defined 1
 #define CORBA_IDLType__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_IDLType;
-   extern CORBA_unsigned_long CORBA_IDLType__classid;
+typedef CORBA_Object CORBA_IDLType;
+extern CORBA_unsigned_long CORBA_IDLType__classid;
 #if !defined(TC_IMPL_TC_CORBA_IDLType_0)
 #define TC_IMPL_TC_CORBA_IDLType_0 'c'
 #define TC_IMPL_TC_CORBA_IDLType_1 'o'
@@ -3190,11 +3117,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_IDLType_8 'f'
 #define TC_IMPL_TC_CORBA_IDLType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_IDLType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_IDLType_struct;
 #define TC_CORBA_IDLType ((CORBA_TypeCode)&TC_CORBA_IDLType_struct)
 #endif
 #endif
@@ -3202,8 +3129,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_StructDef 1
 #define _CORBA_StructDef_defined 1
 #define CORBA_StructDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_StructDef;
-   extern CORBA_unsigned_long CORBA_StructDef__classid;
+typedef CORBA_Object CORBA_StructDef;
+extern CORBA_unsigned_long CORBA_StructDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_StructDef_0)
 #define TC_IMPL_TC_CORBA_StructDef_0 'c'
 #define TC_IMPL_TC_CORBA_StructDef_1 'o'
@@ -3216,11 +3143,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StructDef_8 'f'
 #define TC_IMPL_TC_CORBA_StructDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StructDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StructDef_struct;
 #define TC_CORBA_StructDef ((CORBA_TypeCode)&TC_CORBA_StructDef_struct)
 #endif
 #endif
@@ -3228,8 +3155,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_UnionDef 1
 #define _CORBA_UnionDef_defined 1
 #define CORBA_UnionDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_UnionDef;
-   extern CORBA_unsigned_long CORBA_UnionDef__classid;
+typedef CORBA_Object CORBA_UnionDef;
+extern CORBA_unsigned_long CORBA_UnionDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_UnionDef_0)
 #define TC_IMPL_TC_CORBA_UnionDef_0 'c'
 #define TC_IMPL_TC_CORBA_UnionDef_1 'o'
@@ -3242,11 +3169,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_UnionDef_8 'f'
 #define TC_IMPL_TC_CORBA_UnionDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_UnionDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_UnionDef_struct;
 #define TC_CORBA_UnionDef ((CORBA_TypeCode)&TC_CORBA_UnionDef_struct)
 #endif
 #endif
@@ -3254,8 +3181,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_EnumDef 1
 #define _CORBA_EnumDef_defined 1
 #define CORBA_EnumDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_EnumDef;
-   extern CORBA_unsigned_long CORBA_EnumDef__classid;
+typedef CORBA_Object CORBA_EnumDef;
+extern CORBA_unsigned_long CORBA_EnumDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_EnumDef_0)
 #define TC_IMPL_TC_CORBA_EnumDef_0 'c'
 #define TC_IMPL_TC_CORBA_EnumDef_1 'o'
@@ -3268,11 +3195,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_EnumDef_8 'f'
 #define TC_IMPL_TC_CORBA_EnumDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_EnumDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_EnumDef_struct;
 #define TC_CORBA_EnumDef ((CORBA_TypeCode)&TC_CORBA_EnumDef_struct)
 #endif
 #endif
@@ -3280,8 +3207,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AliasDef 1
 #define _CORBA_AliasDef_defined 1
 #define CORBA_AliasDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AliasDef;
-   extern CORBA_unsigned_long CORBA_AliasDef__classid;
+typedef CORBA_Object CORBA_AliasDef;
+extern CORBA_unsigned_long CORBA_AliasDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AliasDef_0)
 #define TC_IMPL_TC_CORBA_AliasDef_0 'c'
 #define TC_IMPL_TC_CORBA_AliasDef_1 'o'
@@ -3294,11 +3221,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AliasDef_8 'f'
 #define TC_IMPL_TC_CORBA_AliasDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AliasDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AliasDef_struct;
 #define TC_CORBA_AliasDef ((CORBA_TypeCode)&TC_CORBA_AliasDef_struct)
 #endif
 #endif
@@ -3306,8 +3233,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExceptionDef 1
 #define _CORBA_ExceptionDef_defined 1
 #define CORBA_ExceptionDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExceptionDef;
-   extern CORBA_unsigned_long CORBA_ExceptionDef__classid;
+typedef CORBA_Object CORBA_ExceptionDef;
+extern CORBA_unsigned_long CORBA_ExceptionDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExceptionDef_0)
 #define TC_IMPL_TC_CORBA_ExceptionDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExceptionDef_1 'o'
@@ -3320,11 +3247,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExceptionDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExceptionDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExceptionDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExceptionDef_struct;
 #define TC_CORBA_ExceptionDef ((CORBA_TypeCode)&TC_CORBA_ExceptionDef_struct)
 #endif
 #endif
@@ -3332,8 +3259,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_NativeDef 1
 #define _CORBA_NativeDef_defined 1
 #define CORBA_NativeDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_NativeDef;
-   extern CORBA_unsigned_long CORBA_NativeDef__classid;
+typedef CORBA_Object CORBA_NativeDef;
+extern CORBA_unsigned_long CORBA_NativeDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_NativeDef_0)
 #define TC_IMPL_TC_CORBA_NativeDef_0 'c'
 #define TC_IMPL_TC_CORBA_NativeDef_1 'o'
@@ -3346,11 +3273,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NativeDef_8 'f'
 #define TC_IMPL_TC_CORBA_NativeDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NativeDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NativeDef_struct;
 #define TC_CORBA_NativeDef ((CORBA_TypeCode)&TC_CORBA_NativeDef_struct)
 #endif
 #endif
@@ -3358,8 +3285,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_InterfaceDef 1
 #define _CORBA_InterfaceDef_defined 1
 #define CORBA_InterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_InterfaceDef;
-   extern CORBA_unsigned_long CORBA_InterfaceDef__classid;
+typedef CORBA_Object CORBA_InterfaceDef;
+extern CORBA_unsigned_long CORBA_InterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_InterfaceDef_0)
 #define TC_IMPL_TC_CORBA_InterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_InterfaceDef_1 'o'
@@ -3372,11 +3299,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceDef_struct;
 #define TC_CORBA_InterfaceDef ((CORBA_TypeCode)&TC_CORBA_InterfaceDef_struct)
 #endif
 #endif
@@ -3394,13 +3321,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -3414,11 +3335,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -3440,7 +3361,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_InterfaceDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_InterfaceDef_defined)
 #define _CORBA_sequence_CORBA_InterfaceDef_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_InterfaceDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_InterfaceDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_InterfaceDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_InterfaceDef_0 'c'
@@ -3454,12 +3375,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_InterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_InterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_InterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_InterfaceDef_struct;
 #define TC_CORBA_sequence_CORBA_InterfaceDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_InterfaceDef_struct)
 #endif
 #define CORBA_sequence_CORBA_InterfaceDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -3470,7 +3390,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_InterfaceDefSeq_defined)
 #define _CORBA_InterfaceDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_InterfaceDef CORBA_InterfaceDefSeq;
+typedef CORBA_sequence_CORBA_InterfaceDef CORBA_InterfaceDefSeq;
 #define CORBA_InterfaceDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_InterfaceDef_marshal((x),(y),(z))
 #define CORBA_InterfaceDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_InterfaceDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_InterfaceDefSeq_0)
@@ -3485,11 +3405,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InterfaceDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceDefSeq_struct;
 #define TC_CORBA_InterfaceDefSeq ((CORBA_TypeCode)&TC_CORBA_InterfaceDefSeq_struct)
 #endif
 #define CORBA_InterfaceDefSeq__alloc() ((CORBA_InterfaceDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_InterfaceDef))
@@ -3500,8 +3420,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueDef 1
 #define _CORBA_ValueDef_defined 1
 #define CORBA_ValueDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueDef;
-   extern CORBA_unsigned_long CORBA_ValueDef__classid;
+typedef CORBA_Object CORBA_ValueDef;
+extern CORBA_unsigned_long CORBA_ValueDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueDef_0)
 #define TC_IMPL_TC_CORBA_ValueDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueDef_1 'o'
@@ -3514,11 +3434,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueDef_struct;
 #define TC_CORBA_ValueDef ((CORBA_TypeCode)&TC_CORBA_ValueDef_struct)
 #endif
 #endif
@@ -3536,13 +3456,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -3556,11 +3470,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -3582,7 +3496,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ValueDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_ValueDef_defined)
 #define _CORBA_sequence_CORBA_ValueDef_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ValueDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ValueDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ValueDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ValueDef_0 'c'
@@ -3596,11 +3510,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ValueDef_struct;
 #define TC_CORBA_sequence_CORBA_ValueDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ValueDef_struct)
 #endif
 #define CORBA_sequence_CORBA_ValueDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -3611,7 +3525,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ValueDefSeq_defined)
 #define _CORBA_ValueDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_ValueDef CORBA_ValueDefSeq;
+typedef CORBA_sequence_CORBA_ValueDef CORBA_ValueDefSeq;
 #define CORBA_ValueDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_ValueDef_marshal((x),(y),(z))
 #define CORBA_ValueDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ValueDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ValueDefSeq_0)
@@ -3626,11 +3540,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ValueDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueDefSeq_struct;
 #define TC_CORBA_ValueDefSeq ((CORBA_TypeCode)&TC_CORBA_ValueDefSeq_struct)
 #endif
 #define CORBA_ValueDefSeq__alloc() ((CORBA_ValueDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ValueDef))
@@ -3641,8 +3555,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueBoxDef 1
 #define _CORBA_ValueBoxDef_defined 1
 #define CORBA_ValueBoxDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueBoxDef;
-   extern CORBA_unsigned_long CORBA_ValueBoxDef__classid;
+typedef CORBA_Object CORBA_ValueBoxDef;
+extern CORBA_unsigned_long CORBA_ValueBoxDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueBoxDef_0)
 #define TC_IMPL_TC_CORBA_ValueBoxDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueBoxDef_1 'o'
@@ -3655,11 +3569,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueBoxDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueBoxDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueBoxDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueBoxDef_struct;
 #define TC_CORBA_ValueBoxDef ((CORBA_TypeCode)&TC_CORBA_ValueBoxDef_struct)
 #endif
 #endif
@@ -3667,8 +3581,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AbstractInterfaceDef 1
 #define _CORBA_AbstractInterfaceDef_defined 1
 #define CORBA_AbstractInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AbstractInterfaceDef;
-   extern CORBA_unsigned_long CORBA_AbstractInterfaceDef__classid;
+typedef CORBA_Object CORBA_AbstractInterfaceDef;
+extern CORBA_unsigned_long CORBA_AbstractInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_1 'o'
@@ -3681,11 +3595,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDef_struct;
 #define TC_CORBA_AbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_AbstractInterfaceDef_struct)
 #endif
 #endif
@@ -3703,13 +3617,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -3723,11 +3631,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -3749,8 +3657,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_AbstractInterfaceDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_AbstractInterfaceDef_defined)
 #define _CORBA_sequence_CORBA_AbstractInterfaceDef_defined 1
-   typedef CORBA_sequence_CORBA_Object
-      CORBA_sequence_CORBA_AbstractInterfaceDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_AbstractInterfaceDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_AbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_AbstractInterfaceDef_0 'c'
@@ -3764,12 +3671,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_AbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_AbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_AbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_AbstractInterfaceDef_struct;
 #define TC_CORBA_sequence_CORBA_AbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_AbstractInterfaceDef_struct)
 #endif
 #define CORBA_sequence_CORBA_AbstractInterfaceDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -3780,8 +3686,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_AbstractInterfaceDefSeq_defined)
 #define _CORBA_AbstractInterfaceDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_AbstractInterfaceDef
-      CORBA_AbstractInterfaceDefSeq;
+typedef CORBA_sequence_CORBA_AbstractInterfaceDef CORBA_AbstractInterfaceDefSeq;
 #define CORBA_AbstractInterfaceDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_AbstractInterfaceDef_marshal((x),(y),(z))
 #define CORBA_AbstractInterfaceDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_AbstractInterfaceDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_AbstractInterfaceDefSeq_0)
@@ -3796,11 +3701,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDefSeq_struct;
 #define TC_CORBA_AbstractInterfaceDefSeq ((CORBA_TypeCode)&TC_CORBA_AbstractInterfaceDefSeq_struct)
 #endif
 #define CORBA_AbstractInterfaceDefSeq__alloc() ((CORBA_AbstractInterfaceDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_AbstractInterfaceDef))
@@ -3811,8 +3716,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_LocalInterfaceDef 1
 #define _CORBA_LocalInterfaceDef_defined 1
 #define CORBA_LocalInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_LocalInterfaceDef;
-   extern CORBA_unsigned_long CORBA_LocalInterfaceDef__classid;
+typedef CORBA_Object CORBA_LocalInterfaceDef;
+extern CORBA_unsigned_long CORBA_LocalInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_LocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_1 'o'
@@ -3825,11 +3730,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDef_struct;
 #define TC_CORBA_LocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_LocalInterfaceDef_struct)
 #endif
 #endif
@@ -3847,13 +3752,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -3867,11 +3766,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -3893,7 +3792,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_LocalInterfaceDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_LocalInterfaceDef_defined)
 #define _CORBA_sequence_CORBA_LocalInterfaceDef_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_LocalInterfaceDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_LocalInterfaceDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_LocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_LocalInterfaceDef_0 'c'
@@ -3907,12 +3806,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_LocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_LocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_LocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_LocalInterfaceDef_struct;
 #define TC_CORBA_sequence_CORBA_LocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_LocalInterfaceDef_struct)
 #endif
 #define CORBA_sequence_CORBA_LocalInterfaceDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -3923,7 +3821,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_LocalInterfaceDefSeq_defined)
 #define _CORBA_LocalInterfaceDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_LocalInterfaceDef CORBA_LocalInterfaceDefSeq;
+typedef CORBA_sequence_CORBA_LocalInterfaceDef CORBA_LocalInterfaceDefSeq;
 #define CORBA_LocalInterfaceDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_LocalInterfaceDef_marshal((x),(y),(z))
 #define CORBA_LocalInterfaceDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_LocalInterfaceDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_LocalInterfaceDefSeq_0)
@@ -3938,11 +3836,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_LocalInterfaceDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_LocalInterfaceDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDefSeq_struct;
 #define TC_CORBA_LocalInterfaceDefSeq ((CORBA_TypeCode)&TC_CORBA_LocalInterfaceDefSeq_struct)
 #endif
 #define CORBA_LocalInterfaceDefSeq__alloc() ((CORBA_LocalInterfaceDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_LocalInterfaceDef))
@@ -3953,8 +3851,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtInterfaceDef 1
 #define _CORBA_ExtInterfaceDef_defined 1
 #define CORBA_ExtInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_1 'o'
@@ -3967,11 +3865,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDef_struct;
 #define TC_CORBA_ExtInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtInterfaceDef_struct)
 #endif
 #endif
@@ -3989,13 +3887,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -4009,11 +3901,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -4035,7 +3927,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExtInterfaceDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExtInterfaceDef_defined)
 #define _CORBA_sequence_CORBA_ExtInterfaceDef_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExtInterfaceDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExtInterfaceDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExtInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtInterfaceDef_0 'c'
@@ -4049,12 +3941,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExtInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExtInterfaceDef_struct;
 #define TC_CORBA_sequence_CORBA_ExtInterfaceDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExtInterfaceDef_struct)
 #endif
 #define CORBA_sequence_CORBA_ExtInterfaceDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -4065,7 +3956,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtInterfaceDefSeq_defined)
 #define _CORBA_ExtInterfaceDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExtInterfaceDef CORBA_ExtInterfaceDefSeq;
+typedef CORBA_sequence_CORBA_ExtInterfaceDef CORBA_ExtInterfaceDefSeq;
 #define CORBA_ExtInterfaceDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExtInterfaceDef_marshal((x),(y),(z))
 #define CORBA_ExtInterfaceDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExtInterfaceDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExtInterfaceDefSeq_0)
@@ -4080,11 +3971,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtInterfaceDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExtInterfaceDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDefSeq_struct;
 #define TC_CORBA_ExtInterfaceDefSeq ((CORBA_TypeCode)&TC_CORBA_ExtInterfaceDefSeq_struct)
 #endif
 #define CORBA_ExtInterfaceDefSeq__alloc() ((CORBA_ExtInterfaceDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtInterfaceDef))
@@ -4095,8 +3986,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtValueDef 1
 #define _CORBA_ExtValueDef_defined 1
 #define CORBA_ExtValueDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtValueDef;
-   extern CORBA_unsigned_long CORBA_ExtValueDef__classid;
+typedef CORBA_Object CORBA_ExtValueDef;
+extern CORBA_unsigned_long CORBA_ExtValueDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtValueDef_0)
 #define TC_IMPL_TC_CORBA_ExtValueDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtValueDef_1 'o'
@@ -4109,11 +4000,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtValueDef_struct;
 #define TC_CORBA_ExtValueDef ((CORBA_TypeCode)&TC_CORBA_ExtValueDef_struct)
 #endif
 #endif
@@ -4131,13 +4022,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -4151,11 +4036,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -4177,7 +4062,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExtValueDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExtValueDef_defined)
 #define _CORBA_sequence_CORBA_ExtValueDef_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExtValueDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExtValueDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExtValueDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtValueDef_0 'c'
@@ -4191,12 +4076,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExtValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExtValueDef_struct;
 #define TC_CORBA_sequence_CORBA_ExtValueDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExtValueDef_struct)
 #endif
 #define CORBA_sequence_CORBA_ExtValueDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -4207,7 +4091,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtValueDefSeq_defined)
 #define _CORBA_ExtValueDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExtValueDef CORBA_ExtValueDefSeq;
+typedef CORBA_sequence_CORBA_ExtValueDef CORBA_ExtValueDefSeq;
 #define CORBA_ExtValueDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExtValueDef_marshal((x),(y),(z))
 #define CORBA_ExtValueDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExtValueDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExtValueDefSeq_0)
@@ -4222,11 +4106,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtValueDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExtValueDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtValueDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtValueDefSeq_struct;
 #define TC_CORBA_ExtValueDefSeq ((CORBA_TypeCode)&TC_CORBA_ExtValueDefSeq_struct)
 #endif
 #define CORBA_ExtValueDefSeq__alloc() ((CORBA_ExtValueDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtValueDef))
@@ -4237,8 +4121,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtAbstractInterfaceDef 1
 #define _CORBA_ExtAbstractInterfaceDef_defined 1
 #define CORBA_ExtAbstractInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtAbstractInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtAbstractInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtAbstractInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtAbstractInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_1 'o'
@@ -4251,11 +4135,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtAbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtAbstractInterfaceDef_struct;
 #define TC_CORBA_ExtAbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtAbstractInterfaceDef_struct)
 #endif
 #endif
@@ -4273,13 +4157,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -4293,11 +4171,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -4319,8 +4197,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_defined)
 #define _CORBA_sequence_CORBA_ExtAbstractInterfaceDef_defined 1
-   typedef CORBA_sequence_CORBA_Object
-      CORBA_sequence_CORBA_ExtAbstractInterfaceDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExtAbstractInterfaceDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_0 'c'
@@ -4334,12 +4211,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_struct;
 #define TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef_struct)
 #endif
 #define CORBA_sequence_CORBA_ExtAbstractInterfaceDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -4350,8 +4226,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtAbstractInterfaceDefSeq_defined)
 #define _CORBA_ExtAbstractInterfaceDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExtAbstractInterfaceDef
-      CORBA_ExtAbstractInterfaceDefSeq;
+typedef CORBA_sequence_CORBA_ExtAbstractInterfaceDef CORBA_ExtAbstractInterfaceDefSeq;
 #define CORBA_ExtAbstractInterfaceDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExtAbstractInterfaceDef_marshal((x),(y),(z))
 #define CORBA_ExtAbstractInterfaceDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExtAbstractInterfaceDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExtAbstractInterfaceDefSeq_0)
@@ -4366,12 +4241,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_ExtAbstractInterfaceDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtAbstractInterfaceDefSeq_struct;
 #define TC_CORBA_ExtAbstractInterfaceDefSeq ((CORBA_TypeCode)&TC_CORBA_ExtAbstractInterfaceDefSeq_struct)
 #endif
 #define CORBA_ExtAbstractInterfaceDefSeq__alloc() ((CORBA_ExtAbstractInterfaceDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtAbstractInterfaceDef))
@@ -4382,8 +4256,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtLocalInterfaceDef 1
 #define _CORBA_ExtLocalInterfaceDef_defined 1
 #define CORBA_ExtLocalInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtLocalInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtLocalInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtLocalInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtLocalInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_1 'o'
@@ -4396,11 +4270,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDef_struct;
 #define TC_CORBA_ExtLocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtLocalInterfaceDef_struct)
 #endif
 #endif
@@ -4418,13 +4292,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -4438,11 +4306,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -4464,8 +4332,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExtLocalInterfaceDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExtLocalInterfaceDef_defined)
 #define _CORBA_sequence_CORBA_ExtLocalInterfaceDef_defined 1
-   typedef CORBA_sequence_CORBA_Object
-      CORBA_sequence_CORBA_ExtLocalInterfaceDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExtLocalInterfaceDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef_0 'c'
@@ -4479,12 +4346,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef_struct;
 #define TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef_struct)
 #endif
 #define CORBA_sequence_CORBA_ExtLocalInterfaceDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -4495,8 +4361,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtLocalInterfaceDefSeq_defined)
 #define _CORBA_ExtLocalInterfaceDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExtLocalInterfaceDef
-      CORBA_ExtLocalInterfaceDefSeq;
+typedef CORBA_sequence_CORBA_ExtLocalInterfaceDef CORBA_ExtLocalInterfaceDefSeq;
 #define CORBA_ExtLocalInterfaceDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExtLocalInterfaceDef_marshal((x),(y),(z))
 #define CORBA_ExtLocalInterfaceDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExtLocalInterfaceDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExtLocalInterfaceDefSeq_0)
@@ -4511,11 +4376,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDefSeq_struct;
 #define TC_CORBA_ExtLocalInterfaceDefSeq ((CORBA_TypeCode)&TC_CORBA_ExtLocalInterfaceDefSeq_struct)
 #endif
 #define CORBA_ExtLocalInterfaceDefSeq__alloc() ((CORBA_ExtLocalInterfaceDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtLocalInterfaceDef))
@@ -4536,13 +4401,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -4556,11 +4415,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -4582,7 +4441,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Contained_9 's'
 #if !defined(_CORBA_sequence_CORBA_Contained_defined)
 #define _CORBA_sequence_CORBA_Contained_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_Contained;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_Contained;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Contained_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Contained_0 'c'
@@ -4596,12 +4455,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Contained_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Contained_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_Contained_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Contained_struct;
 #define TC_CORBA_sequence_CORBA_Contained ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Contained_struct)
 #endif
 #define CORBA_sequence_CORBA_Contained__alloc CORBA_sequence_CORBA_Object__alloc
@@ -4612,7 +4470,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ContainedSeq_defined)
 #define _CORBA_ContainedSeq_defined 1
-   typedef CORBA_sequence_CORBA_Contained CORBA_ContainedSeq;
+typedef CORBA_sequence_CORBA_Contained CORBA_ContainedSeq;
 #define CORBA_ContainedSeq_marshal(x,y,z) CORBA_sequence_CORBA_Contained_marshal((x),(y),(z))
 #define CORBA_ContainedSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_Contained_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ContainedSeq_0)
@@ -4627,11 +4485,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ContainedSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ContainedSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ContainedSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ContainedSeq_struct;
 #define TC_CORBA_ContainedSeq ((CORBA_TypeCode)&TC_CORBA_ContainedSeq_struct)
 #endif
 #define CORBA_ContainedSeq__alloc() ((CORBA_ContainedSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Contained))
@@ -4640,13 +4498,12 @@ extern "C"
 #endif
 #if !defined(_CORBA_StructMember_defined)
 #define _CORBA_StructMember_defined 1
-   typedef struct CORBA_StructMember_type CORBA_StructMember;
-   struct CORBA_StructMember_type
-   {
-      CORBA_Identifier name;
-      CORBA_TypeCode type;
-      CORBA_IDLType type_def;
-   };
+typedef struct CORBA_StructMember_type CORBA_StructMember;
+struct CORBA_StructMember_type {
+CORBA_Identifier name;
+CORBA_TypeCode type;
+CORBA_IDLType type_def;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_StructMember_0)
 #define TC_IMPL_TC_CORBA_StructMember_0 'c'
@@ -4660,11 +4517,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StructMember_8 'f'
 #define TC_IMPL_TC_CORBA_StructMember_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StructMember_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StructMember_struct;
 #define TC_CORBA_StructMember ((CORBA_TypeCode)&TC_CORBA_StructMember_struct)
 #endif
 #define CORBA_StructMember__alloc() ((CORBA_StructMember *)ORBit_small_alloc (TC_CORBA_StructMember))
@@ -4684,13 +4541,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_StructMember_9 's'
 #if !defined(_CORBA_sequence_CORBA_StructMember_defined)
 #define _CORBA_sequence_CORBA_StructMember_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_StructMember *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_StructMember;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_StructMember* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_StructMember;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_StructMember_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_StructMember_0 'c'
@@ -4704,12 +4555,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_StructMember_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_StructMember_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_StructMember_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_StructMember_struct;
 #define TC_CORBA_sequence_CORBA_StructMember ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_StructMember_struct)
 #endif
 #define CORBA_sequence_CORBA_StructMember__alloc() ((CORBA_sequence_CORBA_StructMember *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_StructMember))
@@ -4719,7 +4569,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_StructMemberSeq_defined)
 #define _CORBA_StructMemberSeq_defined 1
-   typedef CORBA_sequence_CORBA_StructMember CORBA_StructMemberSeq;
+typedef CORBA_sequence_CORBA_StructMember CORBA_StructMemberSeq;
 #define CORBA_StructMemberSeq_marshal(x,y,z) CORBA_sequence_CORBA_StructMember_marshal((x),(y),(z))
 #define CORBA_StructMemberSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_StructMember_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_StructMemberSeq_0)
@@ -4734,11 +4584,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StructMemberSeq_8 'f'
 #define TC_IMPL_TC_CORBA_StructMemberSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StructMemberSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StructMemberSeq_struct;
 #define TC_CORBA_StructMemberSeq ((CORBA_TypeCode)&TC_CORBA_StructMemberSeq_struct)
 #endif
 #define CORBA_StructMemberSeq__alloc() ((CORBA_StructMemberSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_StructMember))
@@ -4747,12 +4597,11 @@ extern "C"
 #endif
 #if !defined(_CORBA_Initializer_defined)
 #define _CORBA_Initializer_defined 1
-   typedef struct CORBA_Initializer_type CORBA_Initializer;
-   struct CORBA_Initializer_type
-   {
-      CORBA_StructMemberSeq members;
-      CORBA_Identifier name;
-   };
+typedef struct CORBA_Initializer_type CORBA_Initializer;
+struct CORBA_Initializer_type {
+CORBA_StructMemberSeq members;
+CORBA_Identifier name;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_Initializer_0)
 #define TC_IMPL_TC_CORBA_Initializer_0 'c'
@@ -4766,11 +4615,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Initializer_8 'f'
 #define TC_IMPL_TC_CORBA_Initializer_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Initializer_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Initializer_struct;
 #define TC_CORBA_Initializer ((CORBA_TypeCode)&TC_CORBA_Initializer_struct)
 #endif
 #define CORBA_Initializer__alloc() ((CORBA_Initializer *)ORBit_small_alloc (TC_CORBA_Initializer))
@@ -4790,13 +4639,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Initializer_9 's'
 #if !defined(_CORBA_sequence_CORBA_Initializer_defined)
 #define _CORBA_sequence_CORBA_Initializer_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Initializer *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Initializer;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Initializer* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Initializer;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Initializer_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Initializer_0 'c'
@@ -4810,12 +4653,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Initializer_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Initializer_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_Initializer_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Initializer_struct;
 #define TC_CORBA_sequence_CORBA_Initializer ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Initializer_struct)
 #endif
 #define CORBA_sequence_CORBA_Initializer__alloc() ((CORBA_sequence_CORBA_Initializer *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Initializer))
@@ -4825,7 +4667,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_InitializerSeq_defined)
 #define _CORBA_InitializerSeq_defined 1
-   typedef CORBA_sequence_CORBA_Initializer CORBA_InitializerSeq;
+typedef CORBA_sequence_CORBA_Initializer CORBA_InitializerSeq;
 #define CORBA_InitializerSeq_marshal(x,y,z) CORBA_sequence_CORBA_Initializer_marshal((x),(y),(z))
 #define CORBA_InitializerSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_Initializer_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_InitializerSeq_0)
@@ -4840,11 +4682,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InitializerSeq_8 'f'
 #define TC_IMPL_TC_CORBA_InitializerSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InitializerSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InitializerSeq_struct;
 #define TC_CORBA_InitializerSeq ((CORBA_TypeCode)&TC_CORBA_InitializerSeq_struct)
 #endif
 #define CORBA_InitializerSeq__alloc() ((CORBA_InitializerSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Initializer))
@@ -4853,14 +4695,13 @@ extern "C"
 #endif
 #if !defined(_CORBA_UnionMember_defined)
 #define _CORBA_UnionMember_defined 1
-   typedef struct CORBA_UnionMember_type CORBA_UnionMember;
-   struct CORBA_UnionMember_type
-   {
-      CORBA_Identifier name;
-      CORBA_any label;
-      CORBA_TypeCode type;
-      CORBA_IDLType type_def;
-   };
+typedef struct CORBA_UnionMember_type CORBA_UnionMember;
+struct CORBA_UnionMember_type {
+CORBA_Identifier name;
+CORBA_any label;
+CORBA_TypeCode type;
+CORBA_IDLType type_def;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_UnionMember_0)
 #define TC_IMPL_TC_CORBA_UnionMember_0 'c'
@@ -4874,11 +4715,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_UnionMember_8 'f'
 #define TC_IMPL_TC_CORBA_UnionMember_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_UnionMember_struct;
+struct CORBA_TypeCode_struct TC_CORBA_UnionMember_struct;
 #define TC_CORBA_UnionMember ((CORBA_TypeCode)&TC_CORBA_UnionMember_struct)
 #endif
 #define CORBA_UnionMember__alloc() ((CORBA_UnionMember *)ORBit_small_alloc (TC_CORBA_UnionMember))
@@ -4886,15 +4727,14 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExceptionDescription_defined)
 #define _CORBA_ExceptionDescription_defined 1
-   typedef struct CORBA_ExceptionDescription_type CORBA_ExceptionDescription;
-   struct CORBA_ExceptionDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_TypeCode type;
-   };
+typedef struct CORBA_ExceptionDescription_type CORBA_ExceptionDescription;
+struct CORBA_ExceptionDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_TypeCode type;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ExceptionDescription_0)
 #define TC_IMPL_TC_CORBA_ExceptionDescription_0 'c'
@@ -4908,11 +4748,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExceptionDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ExceptionDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExceptionDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExceptionDescription_struct;
 #define TC_CORBA_ExceptionDescription ((CORBA_TypeCode)&TC_CORBA_ExceptionDescription_struct)
 #endif
 #define CORBA_ExceptionDescription__alloc() ((CORBA_ExceptionDescription *)ORBit_small_alloc (TC_CORBA_ExceptionDescription))
@@ -4932,13 +4772,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExceptionDescription_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExceptionDescription_defined)
 #define _CORBA_sequence_CORBA_ExceptionDescription_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_ExceptionDescription *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_ExceptionDescription;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_ExceptionDescription* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_ExceptionDescription;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDescription_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDescription_0 'c'
@@ -4952,12 +4786,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDescription_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExceptionDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExceptionDescription_struct;
 #define TC_CORBA_sequence_CORBA_ExceptionDescription ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExceptionDescription_struct)
 #endif
 #define CORBA_sequence_CORBA_ExceptionDescription__alloc() ((CORBA_sequence_CORBA_ExceptionDescription *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExceptionDescription))
@@ -4967,7 +4800,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExcDescriptionSeq_defined)
 #define _CORBA_ExcDescriptionSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExceptionDescription CORBA_ExcDescriptionSeq;
+typedef CORBA_sequence_CORBA_ExceptionDescription CORBA_ExcDescriptionSeq;
 #define CORBA_ExcDescriptionSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExceptionDescription_marshal((x),(y),(z))
 #define CORBA_ExcDescriptionSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExceptionDescription_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExcDescriptionSeq_0)
@@ -4982,11 +4815,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExcDescriptionSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExcDescriptionSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExcDescriptionSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExcDescriptionSeq_struct;
 #define TC_CORBA_ExcDescriptionSeq ((CORBA_TypeCode)&TC_CORBA_ExcDescriptionSeq_struct)
 #endif
 #define CORBA_ExcDescriptionSeq__alloc() ((CORBA_ExcDescriptionSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExceptionDescription))
@@ -4995,13 +4828,12 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtInitializer_defined)
 #define _CORBA_ExtInitializer_defined 1
-   typedef struct CORBA_ExtInitializer_type CORBA_ExtInitializer;
-   struct CORBA_ExtInitializer_type
-   {
-      CORBA_StructMemberSeq members;
-      CORBA_ExcDescriptionSeq exceptions;
-      CORBA_Identifier name;
-   };
+typedef struct CORBA_ExtInitializer_type CORBA_ExtInitializer;
+struct CORBA_ExtInitializer_type {
+CORBA_StructMemberSeq members;
+CORBA_ExcDescriptionSeq exceptions;
+CORBA_Identifier name;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ExtInitializer_0)
 #define TC_IMPL_TC_CORBA_ExtInitializer_0 'c'
@@ -5015,11 +4847,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtInitializer_8 'f'
 #define TC_IMPL_TC_CORBA_ExtInitializer_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtInitializer_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtInitializer_struct;
 #define TC_CORBA_ExtInitializer ((CORBA_TypeCode)&TC_CORBA_ExtInitializer_struct)
 #endif
 #define CORBA_ExtInitializer__alloc() ((CORBA_ExtInitializer *)ORBit_small_alloc (TC_CORBA_ExtInitializer))
@@ -5039,13 +4871,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExtInitializer_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExtInitializer_defined)
 #define _CORBA_sequence_CORBA_ExtInitializer_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_ExtInitializer *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_ExtInitializer;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_ExtInitializer* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_ExtInitializer;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExtInitializer_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtInitializer_0 'c'
@@ -5059,12 +4885,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtInitializer_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtInitializer_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExtInitializer_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExtInitializer_struct;
 #define TC_CORBA_sequence_CORBA_ExtInitializer ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExtInitializer_struct)
 #endif
 #define CORBA_sequence_CORBA_ExtInitializer__alloc() ((CORBA_sequence_CORBA_ExtInitializer *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtInitializer))
@@ -5074,7 +4899,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtInitializerSeq_defined)
 #define _CORBA_ExtInitializerSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExtInitializer CORBA_ExtInitializerSeq;
+typedef CORBA_sequence_CORBA_ExtInitializer CORBA_ExtInitializerSeq;
 #define CORBA_ExtInitializerSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExtInitializer_marshal((x),(y),(z))
 #define CORBA_ExtInitializerSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExtInitializer_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExtInitializerSeq_0)
@@ -5089,11 +4914,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtInitializerSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExtInitializerSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtInitializerSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtInitializerSeq_struct;
 #define TC_CORBA_ExtInitializerSeq ((CORBA_TypeCode)&TC_CORBA_ExtInitializerSeq_struct)
 #endif
 #define CORBA_ExtInitializerSeq__alloc() ((CORBA_ExtInitializerSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtInitializer))
@@ -5114,13 +4939,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_UnionMember_9 's'
 #if !defined(_CORBA_sequence_CORBA_UnionMember_defined)
 #define _CORBA_sequence_CORBA_UnionMember_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_UnionMember *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_UnionMember;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_UnionMember* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_UnionMember;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_UnionMember_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_UnionMember_0 'c'
@@ -5134,12 +4953,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_UnionMember_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_UnionMember_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_UnionMember_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_UnionMember_struct;
 #define TC_CORBA_sequence_CORBA_UnionMember ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_UnionMember_struct)
 #endif
 #define CORBA_sequence_CORBA_UnionMember__alloc() ((CORBA_sequence_CORBA_UnionMember *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_UnionMember))
@@ -5149,7 +4967,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_UnionMemberSeq_defined)
 #define _CORBA_UnionMemberSeq_defined 1
-   typedef CORBA_sequence_CORBA_UnionMember CORBA_UnionMemberSeq;
+typedef CORBA_sequence_CORBA_UnionMember CORBA_UnionMemberSeq;
 #define CORBA_UnionMemberSeq_marshal(x,y,z) CORBA_sequence_CORBA_UnionMember_marshal((x),(y),(z))
 #define CORBA_UnionMemberSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_UnionMember_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_UnionMemberSeq_0)
@@ -5164,11 +4982,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_UnionMemberSeq_8 'f'
 #define TC_IMPL_TC_CORBA_UnionMemberSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_UnionMemberSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_UnionMemberSeq_struct;
 #define TC_CORBA_UnionMemberSeq ((CORBA_TypeCode)&TC_CORBA_UnionMemberSeq_struct)
 #endif
 #define CORBA_UnionMemberSeq__alloc() ((CORBA_UnionMemberSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_UnionMember))
@@ -5189,13 +5007,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 's'
 #if !defined(_CORBA_sequence_CORBA_string_defined)
 #define _CORBA_sequence_CORBA_string_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_string *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_string;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_string* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'c'
@@ -5209,11 +5021,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -5235,7 +5047,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Identifier_9 's'
 #if !defined(_CORBA_sequence_CORBA_Identifier_defined)
 #define _CORBA_sequence_CORBA_Identifier_defined 1
-   typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_Identifier;
+typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_Identifier;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Identifier_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Identifier_0 'c'
@@ -5249,12 +5061,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Identifier_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Identifier_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_Identifier_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Identifier_struct;
 #define TC_CORBA_sequence_CORBA_Identifier ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Identifier_struct)
 #endif
 #define CORBA_sequence_CORBA_Identifier__alloc CORBA_sequence_CORBA_string__alloc
@@ -5265,7 +5076,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_EnumMemberSeq_defined)
 #define _CORBA_EnumMemberSeq_defined 1
-   typedef CORBA_sequence_CORBA_Identifier CORBA_EnumMemberSeq;
+typedef CORBA_sequence_CORBA_Identifier CORBA_EnumMemberSeq;
 #define CORBA_EnumMemberSeq_marshal(x,y,z) CORBA_sequence_CORBA_Identifier_marshal((x),(y),(z))
 #define CORBA_EnumMemberSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_Identifier_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_EnumMemberSeq_0)
@@ -5280,11 +5091,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_EnumMemberSeq_8 'f'
 #define TC_IMPL_TC_CORBA_EnumMemberSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_EnumMemberSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_EnumMemberSeq_struct;
 #define TC_CORBA_EnumMemberSeq ((CORBA_TypeCode)&TC_CORBA_EnumMemberSeq_struct)
 #endif
 #define CORBA_EnumMemberSeq__alloc() ((CORBA_EnumMemberSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Identifier))
@@ -5295,8 +5106,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Container 1
 #define _CORBA_Container_defined 1
 #define CORBA_Container__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Container;
-   extern CORBA_unsigned_long CORBA_Container__classid;
+typedef CORBA_Object CORBA_Container;
+extern CORBA_unsigned_long CORBA_Container__classid;
 #if !defined(TC_IMPL_TC_CORBA_Container_0)
 #define TC_IMPL_TC_CORBA_Container_0 'c'
 #define TC_IMPL_TC_CORBA_Container_1 'o'
@@ -5309,24 +5120,22 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Container_8 'f'
 #define TC_IMPL_TC_CORBA_Container_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Container_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Container_struct;
 #define TC_CORBA_Container ((CORBA_TypeCode)&TC_CORBA_Container_struct)
 #endif
 #endif
 #if !defined(_CORBA_Container_Description_defined)
 #define _CORBA_Container_Description_defined 1
-   typedef struct CORBA_Container_Description_type
-      CORBA_Container_Description;
-   struct CORBA_Container_Description_type
-   {
-      CORBA_Contained contained_object;
-      CORBA_DefinitionKind kind;
-      CORBA_any value;
-   };
+typedef struct CORBA_Container_Description_type CORBA_Container_Description;
+struct CORBA_Container_Description_type {
+CORBA_Contained contained_object;
+CORBA_DefinitionKind kind;
+CORBA_any value;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_Container_Description_0)
 #define TC_IMPL_TC_CORBA_Container_Description_0 'c'
@@ -5340,11 +5149,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Container_Description_8 'f'
 #define TC_IMPL_TC_CORBA_Container_Description_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Container_Description_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Container_Description_struct;
 #define TC_CORBA_Container_Description ((CORBA_TypeCode)&TC_CORBA_Container_Description_struct)
 #endif
 #define CORBA_Container_Description__alloc() ((CORBA_Container_Description *)ORBit_small_alloc (TC_CORBA_Container_Description))
@@ -5364,13 +5173,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Container_Description_9 's'
 #if !defined(_CORBA_sequence_CORBA_Container_Description_defined)
 #define _CORBA_sequence_CORBA_Container_Description_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Container_Description *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Container_Description;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Container_Description* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Container_Description;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Container_Description_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Container_Description_0 'c'
@@ -5384,12 +5187,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Container_Description_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Container_Description_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_Container_Description_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Container_Description_struct;
 #define TC_CORBA_sequence_CORBA_Container_Description ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Container_Description_struct)
 #endif
 #define CORBA_sequence_CORBA_Container_Description__alloc() ((CORBA_sequence_CORBA_Container_Description *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Container_Description))
@@ -5399,8 +5201,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_Container_DescriptionSeq_defined)
 #define _CORBA_Container_DescriptionSeq_defined 1
-   typedef CORBA_sequence_CORBA_Container_Description
-      CORBA_Container_DescriptionSeq;
+typedef CORBA_sequence_CORBA_Container_Description CORBA_Container_DescriptionSeq;
 #define CORBA_Container_DescriptionSeq_marshal(x,y,z) CORBA_sequence_CORBA_Container_Description_marshal((x),(y),(z))
 #define CORBA_Container_DescriptionSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_Container_Description_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_Container_DescriptionSeq_0)
@@ -5415,12 +5216,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Container_DescriptionSeq_8 'f'
 #define TC_IMPL_TC_CORBA_Container_DescriptionSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_Container_DescriptionSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Container_DescriptionSeq_struct;
 #define TC_CORBA_Container_DescriptionSeq ((CORBA_TypeCode)&TC_CORBA_Container_DescriptionSeq_struct)
 #endif
 #define CORBA_Container_DescriptionSeq__alloc() ((CORBA_Container_DescriptionSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Container_Description))
@@ -5431,8 +5231,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_IDLType 1
 #define _CORBA_IDLType_defined 1
 #define CORBA_IDLType__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_IDLType;
-   extern CORBA_unsigned_long CORBA_IDLType__classid;
+typedef CORBA_Object CORBA_IDLType;
+extern CORBA_unsigned_long CORBA_IDLType__classid;
 #if !defined(TC_IMPL_TC_CORBA_IDLType_0)
 #define TC_IMPL_TC_CORBA_IDLType_0 'c'
 #define TC_IMPL_TC_CORBA_IDLType_1 'o'
@@ -5445,41 +5245,40 @@ extern "C"
 #define TC_IMPL_TC_CORBA_IDLType_8 'f'
 #define TC_IMPL_TC_CORBA_IDLType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_IDLType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_IDLType_struct;
 #define TC_CORBA_IDLType ((CORBA_TypeCode)&TC_CORBA_IDLType_struct)
 #endif
 #endif
 #if !defined(_CORBA_PrimitiveKind_defined)
 #define _CORBA_PrimitiveKind_defined 1
-   typedef enum
-   {
-      CORBA_pk_null,
-      CORBA_pk_void,
-      CORBA_pk_short,
-      CORBA_pk_long,
-      CORBA_pk_ushort,
-      CORBA_pk_ulong,
-      CORBA_pk_float,
-      CORBA_pk_double,
-      CORBA_pk_boolean,
-      CORBA_pk_char,
-      CORBA_pk_octet,
-      CORBA_pk_any,
-      CORBA_pk_TypeCode,
-      CORBA_pk_Principal,
-      CORBA_pk_string,
-      CORBA_pk_objref,
-      CORBA_pk_longlong,
-      CORBA_pk_ulonglong,
-      CORBA_pk_longdouble,
-      CORBA_pk_wchar,
-      CORBA_pk_wstring,
-      CORBA_pk_value_base
-   } CORBA_PrimitiveKind;
+typedef enum {
+  CORBA_pk_null,
+  CORBA_pk_void,
+  CORBA_pk_short,
+  CORBA_pk_long,
+  CORBA_pk_ushort,
+  CORBA_pk_ulong,
+  CORBA_pk_float,
+  CORBA_pk_double,
+  CORBA_pk_boolean,
+  CORBA_pk_char,
+  CORBA_pk_octet,
+  CORBA_pk_any,
+  CORBA_pk_TypeCode,
+  CORBA_pk_Principal,
+  CORBA_pk_string,
+  CORBA_pk_objref,
+  CORBA_pk_longlong,
+  CORBA_pk_ulonglong,
+  CORBA_pk_longdouble,
+  CORBA_pk_wchar,
+  CORBA_pk_wstring,
+  CORBA_pk_value_base
+} CORBA_PrimitiveKind;
 #if !defined(TC_IMPL_TC_CORBA_PrimitiveKind_0)
 #define TC_IMPL_TC_CORBA_PrimitiveKind_0 'c'
 #define TC_IMPL_TC_CORBA_PrimitiveKind_1 'o'
@@ -5492,11 +5291,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PrimitiveKind_8 'f'
 #define TC_IMPL_TC_CORBA_PrimitiveKind_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PrimitiveKind_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PrimitiveKind_struct;
 #define TC_CORBA_PrimitiveKind ((CORBA_TypeCode)&TC_CORBA_PrimitiveKind_struct)
 #endif
 #endif
@@ -5504,8 +5303,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_Repository 1
 #define _CORBA_Repository_defined 1
 #define CORBA_Repository__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_Repository;
-   extern CORBA_unsigned_long CORBA_Repository__classid;
+typedef CORBA_Object CORBA_Repository;
+extern CORBA_unsigned_long CORBA_Repository__classid;
 #if !defined(TC_IMPL_TC_CORBA_Repository_0)
 #define TC_IMPL_TC_CORBA_Repository_0 'c'
 #define TC_IMPL_TC_CORBA_Repository_1 'o'
@@ -5518,11 +5317,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Repository_8 'f'
 #define TC_IMPL_TC_CORBA_Repository_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Repository_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Repository_struct;
 #define TC_CORBA_Repository ((CORBA_TypeCode)&TC_CORBA_Repository_struct)
 #endif
 #endif
@@ -5530,8 +5329,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ModuleDef 1
 #define _CORBA_ModuleDef_defined 1
 #define CORBA_ModuleDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ModuleDef;
-   extern CORBA_unsigned_long CORBA_ModuleDef__classid;
+typedef CORBA_Object CORBA_ModuleDef;
+extern CORBA_unsigned_long CORBA_ModuleDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ModuleDef_0)
 #define TC_IMPL_TC_CORBA_ModuleDef_0 'c'
 #define TC_IMPL_TC_CORBA_ModuleDef_1 'o'
@@ -5544,24 +5343,23 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ModuleDef_8 'f'
 #define TC_IMPL_TC_CORBA_ModuleDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ModuleDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ModuleDef_struct;
 #define TC_CORBA_ModuleDef ((CORBA_TypeCode)&TC_CORBA_ModuleDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_ModuleDescription_defined)
 #define _CORBA_ModuleDescription_defined 1
-   typedef struct CORBA_ModuleDescription_type CORBA_ModuleDescription;
-   struct CORBA_ModuleDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-   };
+typedef struct CORBA_ModuleDescription_type CORBA_ModuleDescription;
+struct CORBA_ModuleDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ModuleDescription_0)
 #define TC_IMPL_TC_CORBA_ModuleDescription_0 'c'
@@ -5575,11 +5373,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ModuleDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ModuleDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ModuleDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ModuleDescription_struct;
 #define TC_CORBA_ModuleDescription ((CORBA_TypeCode)&TC_CORBA_ModuleDescription_struct)
 #endif
 #define CORBA_ModuleDescription__alloc() ((CORBA_ModuleDescription *)ORBit_small_alloc (TC_CORBA_ModuleDescription))
@@ -5589,8 +5387,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ConstantDef 1
 #define _CORBA_ConstantDef_defined 1
 #define CORBA_ConstantDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ConstantDef;
-   extern CORBA_unsigned_long CORBA_ConstantDef__classid;
+typedef CORBA_Object CORBA_ConstantDef;
+extern CORBA_unsigned_long CORBA_ConstantDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ConstantDef_0)
 #define TC_IMPL_TC_CORBA_ConstantDef_0 'c'
 #define TC_IMPL_TC_CORBA_ConstantDef_1 'o'
@@ -5603,26 +5401,25 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ConstantDef_8 'f'
 #define TC_IMPL_TC_CORBA_ConstantDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ConstantDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ConstantDef_struct;
 #define TC_CORBA_ConstantDef ((CORBA_TypeCode)&TC_CORBA_ConstantDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_ConstantDescription_defined)
 #define _CORBA_ConstantDescription_defined 1
-   typedef struct CORBA_ConstantDescription_type CORBA_ConstantDescription;
-   struct CORBA_ConstantDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_TypeCode type;
-      CORBA_any value;
-   };
+typedef struct CORBA_ConstantDescription_type CORBA_ConstantDescription;
+struct CORBA_ConstantDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_TypeCode type;
+CORBA_any value;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ConstantDescription_0)
 #define TC_IMPL_TC_CORBA_ConstantDescription_0 'c'
@@ -5636,11 +5433,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ConstantDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ConstantDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ConstantDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ConstantDescription_struct;
 #define TC_CORBA_ConstantDescription ((CORBA_TypeCode)&TC_CORBA_ConstantDescription_struct)
 #endif
 #define CORBA_ConstantDescription__alloc() ((CORBA_ConstantDescription *)ORBit_small_alloc (TC_CORBA_ConstantDescription))
@@ -5650,8 +5447,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_TypedefDef 1
 #define _CORBA_TypedefDef_defined 1
 #define CORBA_TypedefDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_TypedefDef;
-   extern CORBA_unsigned_long CORBA_TypedefDef__classid;
+typedef CORBA_Object CORBA_TypedefDef;
+extern CORBA_unsigned_long CORBA_TypedefDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_TypedefDef_0)
 #define TC_IMPL_TC_CORBA_TypedefDef_0 'c'
 #define TC_IMPL_TC_CORBA_TypedefDef_1 'o'
@@ -5664,25 +5461,24 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TypedefDef_8 'f'
 #define TC_IMPL_TC_CORBA_TypedefDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TypedefDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TypedefDef_struct;
 #define TC_CORBA_TypedefDef ((CORBA_TypeCode)&TC_CORBA_TypedefDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_TypeDescription_defined)
 #define _CORBA_TypeDescription_defined 1
-   typedef struct CORBA_TypeDescription_type CORBA_TypeDescription;
-   struct CORBA_TypeDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_TypeCode type;
-   };
+typedef struct CORBA_TypeDescription_type CORBA_TypeDescription;
+struct CORBA_TypeDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_TypeCode type;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TypeDescription_0)
 #define TC_IMPL_TC_CORBA_TypeDescription_0 'c'
@@ -5696,11 +5492,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TypeDescription_8 'f'
 #define TC_IMPL_TC_CORBA_TypeDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TypeDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TypeDescription_struct;
 #define TC_CORBA_TypeDescription ((CORBA_TypeCode)&TC_CORBA_TypeDescription_struct)
 #endif
 #define CORBA_TypeDescription__alloc() ((CORBA_TypeDescription *)ORBit_small_alloc (TC_CORBA_TypeDescription))
@@ -5710,8 +5506,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_StructDef 1
 #define _CORBA_StructDef_defined 1
 #define CORBA_StructDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_StructDef;
-   extern CORBA_unsigned_long CORBA_StructDef__classid;
+typedef CORBA_Object CORBA_StructDef;
+extern CORBA_unsigned_long CORBA_StructDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_StructDef_0)
 #define TC_IMPL_TC_CORBA_StructDef_0 'c'
 #define TC_IMPL_TC_CORBA_StructDef_1 'o'
@@ -5724,11 +5520,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StructDef_8 'f'
 #define TC_IMPL_TC_CORBA_StructDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StructDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StructDef_struct;
 #define TC_CORBA_StructDef ((CORBA_TypeCode)&TC_CORBA_StructDef_struct)
 #endif
 #endif
@@ -5736,8 +5532,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_UnionDef 1
 #define _CORBA_UnionDef_defined 1
 #define CORBA_UnionDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_UnionDef;
-   extern CORBA_unsigned_long CORBA_UnionDef__classid;
+typedef CORBA_Object CORBA_UnionDef;
+extern CORBA_unsigned_long CORBA_UnionDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_UnionDef_0)
 #define TC_IMPL_TC_CORBA_UnionDef_0 'c'
 #define TC_IMPL_TC_CORBA_UnionDef_1 'o'
@@ -5750,11 +5546,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_UnionDef_8 'f'
 #define TC_IMPL_TC_CORBA_UnionDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_UnionDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_UnionDef_struct;
 #define TC_CORBA_UnionDef ((CORBA_TypeCode)&TC_CORBA_UnionDef_struct)
 #endif
 #endif
@@ -5762,8 +5558,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_EnumDef 1
 #define _CORBA_EnumDef_defined 1
 #define CORBA_EnumDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_EnumDef;
-   extern CORBA_unsigned_long CORBA_EnumDef__classid;
+typedef CORBA_Object CORBA_EnumDef;
+extern CORBA_unsigned_long CORBA_EnumDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_EnumDef_0)
 #define TC_IMPL_TC_CORBA_EnumDef_0 'c'
 #define TC_IMPL_TC_CORBA_EnumDef_1 'o'
@@ -5776,11 +5572,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_EnumDef_8 'f'
 #define TC_IMPL_TC_CORBA_EnumDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_EnumDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_EnumDef_struct;
 #define TC_CORBA_EnumDef ((CORBA_TypeCode)&TC_CORBA_EnumDef_struct)
 #endif
 #endif
@@ -5788,8 +5584,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AliasDef 1
 #define _CORBA_AliasDef_defined 1
 #define CORBA_AliasDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AliasDef;
-   extern CORBA_unsigned_long CORBA_AliasDef__classid;
+typedef CORBA_Object CORBA_AliasDef;
+extern CORBA_unsigned_long CORBA_AliasDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AliasDef_0)
 #define TC_IMPL_TC_CORBA_AliasDef_0 'c'
 #define TC_IMPL_TC_CORBA_AliasDef_1 'o'
@@ -5802,11 +5598,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AliasDef_8 'f'
 #define TC_IMPL_TC_CORBA_AliasDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AliasDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AliasDef_struct;
 #define TC_CORBA_AliasDef ((CORBA_TypeCode)&TC_CORBA_AliasDef_struct)
 #endif
 #endif
@@ -5814,8 +5610,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_NativeDef 1
 #define _CORBA_NativeDef_defined 1
 #define CORBA_NativeDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_NativeDef;
-   extern CORBA_unsigned_long CORBA_NativeDef__classid;
+typedef CORBA_Object CORBA_NativeDef;
+extern CORBA_unsigned_long CORBA_NativeDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_NativeDef_0)
 #define TC_IMPL_TC_CORBA_NativeDef_0 'c'
 #define TC_IMPL_TC_CORBA_NativeDef_1 'o'
@@ -5828,11 +5624,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NativeDef_8 'f'
 #define TC_IMPL_TC_CORBA_NativeDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NativeDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NativeDef_struct;
 #define TC_CORBA_NativeDef ((CORBA_TypeCode)&TC_CORBA_NativeDef_struct)
 #endif
 #endif
@@ -5840,8 +5636,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_PrimitiveDef 1
 #define _CORBA_PrimitiveDef_defined 1
 #define CORBA_PrimitiveDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_PrimitiveDef;
-   extern CORBA_unsigned_long CORBA_PrimitiveDef__classid;
+typedef CORBA_Object CORBA_PrimitiveDef;
+extern CORBA_unsigned_long CORBA_PrimitiveDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_PrimitiveDef_0)
 #define TC_IMPL_TC_CORBA_PrimitiveDef_0 'c'
 #define TC_IMPL_TC_CORBA_PrimitiveDef_1 'o'
@@ -5854,11 +5650,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_PrimitiveDef_8 'f'
 #define TC_IMPL_TC_CORBA_PrimitiveDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_PrimitiveDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_PrimitiveDef_struct;
 #define TC_CORBA_PrimitiveDef ((CORBA_TypeCode)&TC_CORBA_PrimitiveDef_struct)
 #endif
 #endif
@@ -5866,8 +5662,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_StringDef 1
 #define _CORBA_StringDef_defined 1
 #define CORBA_StringDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_StringDef;
-   extern CORBA_unsigned_long CORBA_StringDef__classid;
+typedef CORBA_Object CORBA_StringDef;
+extern CORBA_unsigned_long CORBA_StringDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_StringDef_0)
 #define TC_IMPL_TC_CORBA_StringDef_0 'c'
 #define TC_IMPL_TC_CORBA_StringDef_1 'o'
@@ -5880,11 +5676,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StringDef_8 'f'
 #define TC_IMPL_TC_CORBA_StringDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StringDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StringDef_struct;
 #define TC_CORBA_StringDef ((CORBA_TypeCode)&TC_CORBA_StringDef_struct)
 #endif
 #endif
@@ -5892,8 +5688,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_WstringDef 1
 #define _CORBA_WstringDef_defined 1
 #define CORBA_WstringDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_WstringDef;
-   extern CORBA_unsigned_long CORBA_WstringDef__classid;
+typedef CORBA_Object CORBA_WstringDef;
+extern CORBA_unsigned_long CORBA_WstringDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_WstringDef_0)
 #define TC_IMPL_TC_CORBA_WstringDef_0 'c'
 #define TC_IMPL_TC_CORBA_WstringDef_1 'o'
@@ -5906,11 +5702,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_WstringDef_8 'f'
 #define TC_IMPL_TC_CORBA_WstringDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_WstringDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_WstringDef_struct;
 #define TC_CORBA_WstringDef ((CORBA_TypeCode)&TC_CORBA_WstringDef_struct)
 #endif
 #endif
@@ -5918,8 +5714,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_FixedDef 1
 #define _CORBA_FixedDef_defined 1
 #define CORBA_FixedDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_FixedDef;
-   extern CORBA_unsigned_long CORBA_FixedDef__classid;
+typedef CORBA_Object CORBA_FixedDef;
+extern CORBA_unsigned_long CORBA_FixedDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_FixedDef_0)
 #define TC_IMPL_TC_CORBA_FixedDef_0 'c'
 #define TC_IMPL_TC_CORBA_FixedDef_1 'o'
@@ -5932,11 +5728,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_FixedDef_8 'f'
 #define TC_IMPL_TC_CORBA_FixedDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_FixedDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_FixedDef_struct;
 #define TC_CORBA_FixedDef ((CORBA_TypeCode)&TC_CORBA_FixedDef_struct)
 #endif
 #endif
@@ -5944,8 +5740,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_SequenceDef 1
 #define _CORBA_SequenceDef_defined 1
 #define CORBA_SequenceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_SequenceDef;
-   extern CORBA_unsigned_long CORBA_SequenceDef__classid;
+typedef CORBA_Object CORBA_SequenceDef;
+extern CORBA_unsigned_long CORBA_SequenceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_SequenceDef_0)
 #define TC_IMPL_TC_CORBA_SequenceDef_0 'c'
 #define TC_IMPL_TC_CORBA_SequenceDef_1 'o'
@@ -5958,11 +5754,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_SequenceDef_8 'f'
 #define TC_IMPL_TC_CORBA_SequenceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_SequenceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_SequenceDef_struct;
 #define TC_CORBA_SequenceDef ((CORBA_TypeCode)&TC_CORBA_SequenceDef_struct)
 #endif
 #endif
@@ -5970,8 +5766,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ArrayDef 1
 #define _CORBA_ArrayDef_defined 1
 #define CORBA_ArrayDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ArrayDef;
-   extern CORBA_unsigned_long CORBA_ArrayDef__classid;
+typedef CORBA_Object CORBA_ArrayDef;
+extern CORBA_unsigned_long CORBA_ArrayDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ArrayDef_0)
 #define TC_IMPL_TC_CORBA_ArrayDef_0 'c'
 #define TC_IMPL_TC_CORBA_ArrayDef_1 'o'
@@ -5984,11 +5780,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ArrayDef_8 'f'
 #define TC_IMPL_TC_CORBA_ArrayDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ArrayDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ArrayDef_struct;
 #define TC_CORBA_ArrayDef ((CORBA_TypeCode)&TC_CORBA_ArrayDef_struct)
 #endif
 #endif
@@ -5996,8 +5792,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExceptionDef 1
 #define _CORBA_ExceptionDef_defined 1
 #define CORBA_ExceptionDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExceptionDef;
-   extern CORBA_unsigned_long CORBA_ExceptionDef__classid;
+typedef CORBA_Object CORBA_ExceptionDef;
+extern CORBA_unsigned_long CORBA_ExceptionDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExceptionDef_0)
 #define TC_IMPL_TC_CORBA_ExceptionDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExceptionDef_1 'o'
@@ -6010,21 +5806,20 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExceptionDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExceptionDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExceptionDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExceptionDef_struct;
 #define TC_CORBA_ExceptionDef ((CORBA_TypeCode)&TC_CORBA_ExceptionDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_AttributeMode_defined)
 #define _CORBA_AttributeMode_defined 1
-   typedef enum
-   {
-      CORBA_ATTR_NORMAL,
-      CORBA_ATTR_READONLY
-   } CORBA_AttributeMode;
+typedef enum {
+  CORBA_ATTR_NORMAL,
+  CORBA_ATTR_READONLY
+} CORBA_AttributeMode;
 #if !defined(TC_IMPL_TC_CORBA_AttributeMode_0)
 #define TC_IMPL_TC_CORBA_AttributeMode_0 'c'
 #define TC_IMPL_TC_CORBA_AttributeMode_1 'o'
@@ -6037,11 +5832,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AttributeMode_8 'f'
 #define TC_IMPL_TC_CORBA_AttributeMode_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AttributeMode_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AttributeMode_struct;
 #define TC_CORBA_AttributeMode ((CORBA_TypeCode)&TC_CORBA_AttributeMode_struct)
 #endif
 #endif
@@ -6049,8 +5844,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AttributeDef 1
 #define _CORBA_AttributeDef_defined 1
 #define CORBA_AttributeDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AttributeDef;
-   extern CORBA_unsigned_long CORBA_AttributeDef__classid;
+typedef CORBA_Object CORBA_AttributeDef;
+extern CORBA_unsigned_long CORBA_AttributeDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AttributeDef_0)
 #define TC_IMPL_TC_CORBA_AttributeDef_0 'c'
 #define TC_IMPL_TC_CORBA_AttributeDef_1 'o'
@@ -6063,26 +5858,25 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AttributeDef_8 'f'
 #define TC_IMPL_TC_CORBA_AttributeDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AttributeDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AttributeDef_struct;
 #define TC_CORBA_AttributeDef ((CORBA_TypeCode)&TC_CORBA_AttributeDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_AttributeDescription_defined)
 #define _CORBA_AttributeDescription_defined 1
-   typedef struct CORBA_AttributeDescription_type CORBA_AttributeDescription;
-   struct CORBA_AttributeDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_TypeCode type;
-      CORBA_AttributeMode mode;
-   };
+typedef struct CORBA_AttributeDescription_type CORBA_AttributeDescription;
+struct CORBA_AttributeDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_TypeCode type;
+CORBA_AttributeMode mode;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_AttributeDescription_0)
 #define TC_IMPL_TC_CORBA_AttributeDescription_0 'c'
@@ -6096,11 +5890,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AttributeDescription_8 'f'
 #define TC_IMPL_TC_CORBA_AttributeDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AttributeDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AttributeDescription_struct;
 #define TC_CORBA_AttributeDescription ((CORBA_TypeCode)&TC_CORBA_AttributeDescription_struct)
 #endif
 #define CORBA_AttributeDescription__alloc() ((CORBA_AttributeDescription *)ORBit_small_alloc (TC_CORBA_AttributeDescription))
@@ -6108,19 +5902,17 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtAttributeDescription_defined)
 #define _CORBA_ExtAttributeDescription_defined 1
-   typedef struct CORBA_ExtAttributeDescription_type
-      CORBA_ExtAttributeDescription;
-   struct CORBA_ExtAttributeDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_TypeCode type;
-      CORBA_AttributeMode mode;
-      CORBA_ExcDescriptionSeq get_exceptions;
-      CORBA_ExcDescriptionSeq put_exceptions;
-   };
+typedef struct CORBA_ExtAttributeDescription_type CORBA_ExtAttributeDescription;
+struct CORBA_ExtAttributeDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_TypeCode type;
+CORBA_AttributeMode mode;
+CORBA_ExcDescriptionSeq get_exceptions;
+CORBA_ExcDescriptionSeq put_exceptions;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ExtAttributeDescription_0)
 #define TC_IMPL_TC_CORBA_ExtAttributeDescription_0 'c'
@@ -6134,11 +5926,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtAttributeDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ExtAttributeDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtAttributeDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtAttributeDescription_struct;
 #define TC_CORBA_ExtAttributeDescription ((CORBA_TypeCode)&TC_CORBA_ExtAttributeDescription_struct)
 #endif
 #define CORBA_ExtAttributeDescription__alloc() ((CORBA_ExtAttributeDescription *)ORBit_small_alloc (TC_CORBA_ExtAttributeDescription))
@@ -6148,8 +5940,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtAttributeDef 1
 #define _CORBA_ExtAttributeDef_defined 1
 #define CORBA_ExtAttributeDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtAttributeDef;
-   extern CORBA_unsigned_long CORBA_ExtAttributeDef__classid;
+typedef CORBA_Object CORBA_ExtAttributeDef;
+extern CORBA_unsigned_long CORBA_ExtAttributeDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtAttributeDef_0)
 #define TC_IMPL_TC_CORBA_ExtAttributeDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtAttributeDef_1 'o'
@@ -6162,21 +5954,20 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtAttributeDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtAttributeDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtAttributeDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtAttributeDef_struct;
 #define TC_CORBA_ExtAttributeDef ((CORBA_TypeCode)&TC_CORBA_ExtAttributeDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_OperationMode_defined)
 #define _CORBA_OperationMode_defined 1
-   typedef enum
-   {
-      CORBA_OP_NORMAL,
-      CORBA_OP_ONEWAY
-   } CORBA_OperationMode;
+typedef enum {
+  CORBA_OP_NORMAL,
+  CORBA_OP_ONEWAY
+} CORBA_OperationMode;
 #if !defined(TC_IMPL_TC_CORBA_OperationMode_0)
 #define TC_IMPL_TC_CORBA_OperationMode_0 'c'
 #define TC_IMPL_TC_CORBA_OperationMode_1 'o'
@@ -6189,22 +5980,21 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OperationMode_8 'f'
 #define TC_IMPL_TC_CORBA_OperationMode_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OperationMode_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OperationMode_struct;
 #define TC_CORBA_OperationMode ((CORBA_TypeCode)&TC_CORBA_OperationMode_struct)
 #endif
 #endif
 #if !defined(_CORBA_ParameterMode_defined)
 #define _CORBA_ParameterMode_defined 1
-   typedef enum
-   {
-      CORBA_PARAM_IN,
-      CORBA_PARAM_OUT,
-      CORBA_PARAM_INOUT
-   } CORBA_ParameterMode;
+typedef enum {
+  CORBA_PARAM_IN,
+  CORBA_PARAM_OUT,
+  CORBA_PARAM_INOUT
+} CORBA_ParameterMode;
 #if !defined(TC_IMPL_TC_CORBA_ParameterMode_0)
 #define TC_IMPL_TC_CORBA_ParameterMode_0 'c'
 #define TC_IMPL_TC_CORBA_ParameterMode_1 'o'
@@ -6217,24 +6007,23 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ParameterMode_8 'f'
 #define TC_IMPL_TC_CORBA_ParameterMode_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ParameterMode_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ParameterMode_struct;
 #define TC_CORBA_ParameterMode ((CORBA_TypeCode)&TC_CORBA_ParameterMode_struct)
 #endif
 #endif
 #if !defined(_CORBA_ParameterDescription_defined)
 #define _CORBA_ParameterDescription_defined 1
-   typedef struct CORBA_ParameterDescription_type CORBA_ParameterDescription;
-   struct CORBA_ParameterDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_TypeCode type;
-      CORBA_IDLType type_def;
-      CORBA_ParameterMode mode;
-   };
+typedef struct CORBA_ParameterDescription_type CORBA_ParameterDescription;
+struct CORBA_ParameterDescription_type {
+CORBA_Identifier name;
+CORBA_TypeCode type;
+CORBA_IDLType type_def;
+CORBA_ParameterMode mode;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ParameterDescription_0)
 #define TC_IMPL_TC_CORBA_ParameterDescription_0 'c'
@@ -6248,11 +6037,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ParameterDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ParameterDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ParameterDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ParameterDescription_struct;
 #define TC_CORBA_ParameterDescription ((CORBA_TypeCode)&TC_CORBA_ParameterDescription_struct)
 #endif
 #define CORBA_ParameterDescription__alloc() ((CORBA_ParameterDescription *)ORBit_small_alloc (TC_CORBA_ParameterDescription))
@@ -6272,13 +6061,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ParameterDescription_9 's'
 #if !defined(_CORBA_sequence_CORBA_ParameterDescription_defined)
 #define _CORBA_sequence_CORBA_ParameterDescription_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_ParameterDescription *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_ParameterDescription;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_ParameterDescription* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_ParameterDescription;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ParameterDescription_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ParameterDescription_0 'c'
@@ -6292,12 +6075,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ParameterDescription_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ParameterDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ParameterDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ParameterDescription_struct;
 #define TC_CORBA_sequence_CORBA_ParameterDescription ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ParameterDescription_struct)
 #endif
 #define CORBA_sequence_CORBA_ParameterDescription__alloc() ((CORBA_sequence_CORBA_ParameterDescription *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ParameterDescription))
@@ -6307,7 +6089,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ParDescriptionSeq_defined)
 #define _CORBA_ParDescriptionSeq_defined 1
-   typedef CORBA_sequence_CORBA_ParameterDescription CORBA_ParDescriptionSeq;
+typedef CORBA_sequence_CORBA_ParameterDescription CORBA_ParDescriptionSeq;
 #define CORBA_ParDescriptionSeq_marshal(x,y,z) CORBA_sequence_CORBA_ParameterDescription_marshal((x),(y),(z))
 #define CORBA_ParDescriptionSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ParameterDescription_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ParDescriptionSeq_0)
@@ -6322,11 +6104,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ParDescriptionSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ParDescriptionSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ParDescriptionSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ParDescriptionSeq_struct;
 #define TC_CORBA_ParDescriptionSeq ((CORBA_TypeCode)&TC_CORBA_ParDescriptionSeq_struct)
 #endif
 #define CORBA_ParDescriptionSeq__alloc() ((CORBA_ParDescriptionSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ParameterDescription))
@@ -6335,7 +6117,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ContextIdentifier_defined)
 #define _CORBA_ContextIdentifier_defined 1
-   typedef CORBA_Identifier CORBA_ContextIdentifier;
+typedef CORBA_Identifier CORBA_ContextIdentifier;
 #define CORBA_ContextIdentifier_marshal(x,y,z) CORBA_Identifier_marshal((x),(y),(z))
 #define CORBA_ContextIdentifier_demarshal(x,y,z,i) CORBA_Identifier_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ContextIdentifier_0)
@@ -6350,11 +6132,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ContextIdentifier_8 'f'
 #define TC_IMPL_TC_CORBA_ContextIdentifier_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ContextIdentifier_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ContextIdentifier_struct;
 #define TC_CORBA_ContextIdentifier ((CORBA_TypeCode)&TC_CORBA_ContextIdentifier_struct)
 #endif
 #define CORBA_ContextIdentifier__alloc() ((CORBA_ContextIdentifier *)ORBit_small_alloc (TC_CORBA_string))
@@ -6374,13 +6156,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 's'
 #if !defined(_CORBA_sequence_CORBA_string_defined)
 #define _CORBA_sequence_CORBA_string_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_string *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_string;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_string* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'c'
@@ -6394,11 +6170,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -6420,7 +6196,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ContextIdentifier_9 's'
 #if !defined(_CORBA_sequence_CORBA_ContextIdentifier_defined)
 #define _CORBA_sequence_CORBA_ContextIdentifier_defined 1
-   typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_ContextIdentifier;
+typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_ContextIdentifier;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ContextIdentifier_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ContextIdentifier_0 'c'
@@ -6434,12 +6210,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ContextIdentifier_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ContextIdentifier_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ContextIdentifier_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ContextIdentifier_struct;
 #define TC_CORBA_sequence_CORBA_ContextIdentifier ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ContextIdentifier_struct)
 #endif
 #define CORBA_sequence_CORBA_ContextIdentifier__alloc CORBA_sequence_CORBA_string__alloc
@@ -6450,7 +6225,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ContextIdSeq_defined)
 #define _CORBA_ContextIdSeq_defined 1
-   typedef CORBA_sequence_CORBA_ContextIdentifier CORBA_ContextIdSeq;
+typedef CORBA_sequence_CORBA_ContextIdentifier CORBA_ContextIdSeq;
 #define CORBA_ContextIdSeq_marshal(x,y,z) CORBA_sequence_CORBA_ContextIdentifier_marshal((x),(y),(z))
 #define CORBA_ContextIdSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ContextIdentifier_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ContextIdSeq_0)
@@ -6465,11 +6240,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ContextIdSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ContextIdSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ContextIdSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ContextIdSeq_struct;
 #define TC_CORBA_ContextIdSeq ((CORBA_TypeCode)&TC_CORBA_ContextIdSeq_struct)
 #endif
 #define CORBA_ContextIdSeq__alloc() ((CORBA_ContextIdSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ContextIdentifier))
@@ -6490,13 +6265,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -6510,11 +6279,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -6536,7 +6305,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExceptionDef_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExceptionDef_defined)
 #define _CORBA_sequence_CORBA_ExceptionDef_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExceptionDef;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_ExceptionDef;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDef_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDef_0 'c'
@@ -6550,12 +6319,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDef_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExceptionDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExceptionDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExceptionDef_struct;
 #define TC_CORBA_sequence_CORBA_ExceptionDef ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExceptionDef_struct)
 #endif
 #define CORBA_sequence_CORBA_ExceptionDef__alloc CORBA_sequence_CORBA_Object__alloc
@@ -6566,7 +6334,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExceptionDefSeq_defined)
 #define _CORBA_ExceptionDefSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExceptionDef CORBA_ExceptionDefSeq;
+typedef CORBA_sequence_CORBA_ExceptionDef CORBA_ExceptionDefSeq;
 #define CORBA_ExceptionDefSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExceptionDef_marshal((x),(y),(z))
 #define CORBA_ExceptionDefSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExceptionDef_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExceptionDefSeq_0)
@@ -6581,11 +6349,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExceptionDefSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExceptionDefSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExceptionDefSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExceptionDefSeq_struct;
 #define TC_CORBA_ExceptionDefSeq ((CORBA_TypeCode)&TC_CORBA_ExceptionDefSeq_struct)
 #endif
 #define CORBA_ExceptionDefSeq__alloc() ((CORBA_ExceptionDefSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExceptionDef))
@@ -6596,8 +6364,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_OperationDef 1
 #define _CORBA_OperationDef_defined 1
 #define CORBA_OperationDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_OperationDef;
-   extern CORBA_unsigned_long CORBA_OperationDef__classid;
+typedef CORBA_Object CORBA_OperationDef;
+extern CORBA_unsigned_long CORBA_OperationDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_OperationDef_0)
 #define TC_IMPL_TC_CORBA_OperationDef_0 'c'
 #define TC_IMPL_TC_CORBA_OperationDef_1 'o'
@@ -6610,29 +6378,28 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OperationDef_8 'f'
 #define TC_IMPL_TC_CORBA_OperationDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OperationDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OperationDef_struct;
 #define TC_CORBA_OperationDef ((CORBA_TypeCode)&TC_CORBA_OperationDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_OperationDescription_defined)
 #define _CORBA_OperationDescription_defined 1
-   typedef struct CORBA_OperationDescription_type CORBA_OperationDescription;
-   struct CORBA_OperationDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_TypeCode result;
-      CORBA_OperationMode mode;
-      CORBA_ContextIdSeq contexts;
-      CORBA_ParDescriptionSeq parameters;
-      CORBA_ExcDescriptionSeq exceptions;
-   };
+typedef struct CORBA_OperationDescription_type CORBA_OperationDescription;
+struct CORBA_OperationDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_TypeCode result;
+CORBA_OperationMode mode;
+CORBA_ContextIdSeq contexts;
+CORBA_ParDescriptionSeq parameters;
+CORBA_ExcDescriptionSeq exceptions;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_OperationDescription_0)
 #define TC_IMPL_TC_CORBA_OperationDescription_0 'c'
@@ -6646,11 +6413,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OperationDescription_8 'f'
 #define TC_IMPL_TC_CORBA_OperationDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OperationDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OperationDescription_struct;
 #define TC_CORBA_OperationDescription ((CORBA_TypeCode)&TC_CORBA_OperationDescription_struct)
 #endif
 #define CORBA_OperationDescription__alloc() ((CORBA_OperationDescription *)ORBit_small_alloc (TC_CORBA_OperationDescription))
@@ -6670,13 +6437,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 's'
 #if !defined(_CORBA_sequence_CORBA_string_defined)
 #define _CORBA_sequence_CORBA_string_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_string *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_string;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_string* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'c'
@@ -6690,11 +6451,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -6717,7 +6478,7 @@ extern "C"
 #if !defined(_CORBA_sequence_CORBA_RepositoryId_defined)
 #define _CORBA_sequence_CORBA_RepositoryId_defined 1
 /* CRACKHEADS */
-   typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_RepositoryId;
+typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_RepositoryId;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_RepositoryId_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_RepositoryId_0 'c'
@@ -6731,12 +6492,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_RepositoryId_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_RepositoryId_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_RepositoryId_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_RepositoryId_struct;
 #define TC_CORBA_sequence_CORBA_RepositoryId ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_RepositoryId_struct)
 #endif
 #define CORBA_sequence_CORBA_RepositoryId__alloc CORBA_sequence_CORBA_string__alloc
@@ -6747,7 +6507,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_RepositoryIdSeq_defined)
 #define _CORBA_RepositoryIdSeq_defined 1
-   typedef CORBA_sequence_CORBA_RepositoryId CORBA_RepositoryIdSeq;
+typedef CORBA_sequence_CORBA_RepositoryId CORBA_RepositoryIdSeq;
 #define CORBA_RepositoryIdSeq_marshal(x,y,z) CORBA_sequence_CORBA_RepositoryId_marshal((x),(y),(z))
 #define CORBA_RepositoryIdSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_RepositoryId_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_RepositoryIdSeq_0)
@@ -6762,11 +6522,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_RepositoryIdSeq_8 'f'
 #define TC_IMPL_TC_CORBA_RepositoryIdSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_RepositoryIdSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_RepositoryIdSeq_struct;
 #define TC_CORBA_RepositoryIdSeq ((CORBA_TypeCode)&TC_CORBA_RepositoryIdSeq_struct)
 #endif
 #define CORBA_RepositoryIdSeq__alloc() ((CORBA_RepositoryIdSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_RepositoryId))
@@ -6787,13 +6547,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_OperationDescription_9 's'
 #if !defined(_CORBA_sequence_CORBA_OperationDescription_defined)
 #define _CORBA_sequence_CORBA_OperationDescription_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_OperationDescription *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_OperationDescription;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_OperationDescription* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_OperationDescription;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_OperationDescription_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_OperationDescription_0 'c'
@@ -6807,12 +6561,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_OperationDescription_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_OperationDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_OperationDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_OperationDescription_struct;
 #define TC_CORBA_sequence_CORBA_OperationDescription ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_OperationDescription_struct)
 #endif
 #define CORBA_sequence_CORBA_OperationDescription__alloc() ((CORBA_sequence_CORBA_OperationDescription *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_OperationDescription))
@@ -6822,7 +6575,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_OpDescriptionSeq_defined)
 #define _CORBA_OpDescriptionSeq_defined 1
-   typedef CORBA_sequence_CORBA_OperationDescription CORBA_OpDescriptionSeq;
+typedef CORBA_sequence_CORBA_OperationDescription CORBA_OpDescriptionSeq;
 #define CORBA_OpDescriptionSeq_marshal(x,y,z) CORBA_sequence_CORBA_OperationDescription_marshal((x),(y),(z))
 #define CORBA_OpDescriptionSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_OperationDescription_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_OpDescriptionSeq_0)
@@ -6837,11 +6590,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OpDescriptionSeq_8 'f'
 #define TC_IMPL_TC_CORBA_OpDescriptionSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OpDescriptionSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OpDescriptionSeq_struct;
 #define TC_CORBA_OpDescriptionSeq ((CORBA_TypeCode)&TC_CORBA_OpDescriptionSeq_struct)
 #endif
 #define CORBA_OpDescriptionSeq__alloc() ((CORBA_OpDescriptionSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_OperationDescription))
@@ -6862,13 +6615,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_AttributeDescription_9 's'
 #if !defined(_CORBA_sequence_CORBA_AttributeDescription_defined)
 #define _CORBA_sequence_CORBA_AttributeDescription_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_AttributeDescription *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_AttributeDescription;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_AttributeDescription* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_AttributeDescription;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_AttributeDescription_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_AttributeDescription_0 'c'
@@ -6882,12 +6629,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_AttributeDescription_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_AttributeDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_AttributeDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_AttributeDescription_struct;
 #define TC_CORBA_sequence_CORBA_AttributeDescription ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_AttributeDescription_struct)
 #endif
 #define CORBA_sequence_CORBA_AttributeDescription__alloc() ((CORBA_sequence_CORBA_AttributeDescription *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_AttributeDescription))
@@ -6897,7 +6643,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_AttrDescriptionSeq_defined)
 #define _CORBA_AttrDescriptionSeq_defined 1
-   typedef CORBA_sequence_CORBA_AttributeDescription CORBA_AttrDescriptionSeq;
+typedef CORBA_sequence_CORBA_AttributeDescription CORBA_AttrDescriptionSeq;
 #define CORBA_AttrDescriptionSeq_marshal(x,y,z) CORBA_sequence_CORBA_AttributeDescription_marshal((x),(y),(z))
 #define CORBA_AttrDescriptionSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_AttributeDescription_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_AttrDescriptionSeq_0)
@@ -6912,11 +6658,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AttrDescriptionSeq_8 'f'
 #define TC_IMPL_TC_CORBA_AttrDescriptionSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AttrDescriptionSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AttrDescriptionSeq_struct;
 #define TC_CORBA_AttrDescriptionSeq ((CORBA_TypeCode)&TC_CORBA_AttrDescriptionSeq_struct)
 #endif
 #define CORBA_AttrDescriptionSeq__alloc() ((CORBA_AttrDescriptionSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_AttributeDescription))
@@ -6937,13 +6683,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ExtAttributeDescription_9 's'
 #if !defined(_CORBA_sequence_CORBA_ExtAttributeDescription_defined)
 #define _CORBA_sequence_CORBA_ExtAttributeDescription_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_ExtAttributeDescription *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_ExtAttributeDescription;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_ExtAttributeDescription* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_ExtAttributeDescription;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ExtAttributeDescription_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtAttributeDescription_0 'c'
@@ -6957,12 +6697,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtAttributeDescription_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ExtAttributeDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ExtAttributeDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ExtAttributeDescription_struct;
 #define TC_CORBA_sequence_CORBA_ExtAttributeDescription ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ExtAttributeDescription_struct)
 #endif
 #define CORBA_sequence_CORBA_ExtAttributeDescription__alloc() ((CORBA_sequence_CORBA_ExtAttributeDescription *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtAttributeDescription))
@@ -6972,8 +6711,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ExtAttrDescriptionSeq_defined)
 #define _CORBA_ExtAttrDescriptionSeq_defined 1
-   typedef CORBA_sequence_CORBA_ExtAttributeDescription
-      CORBA_ExtAttrDescriptionSeq;
+typedef CORBA_sequence_CORBA_ExtAttributeDescription CORBA_ExtAttrDescriptionSeq;
 #define CORBA_ExtAttrDescriptionSeq_marshal(x,y,z) CORBA_sequence_CORBA_ExtAttributeDescription_marshal((x),(y),(z))
 #define CORBA_ExtAttrDescriptionSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ExtAttributeDescription_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ExtAttrDescriptionSeq_0)
@@ -6988,11 +6726,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtAttrDescriptionSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ExtAttrDescriptionSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtAttrDescriptionSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtAttrDescriptionSeq_struct;
 #define TC_CORBA_ExtAttrDescriptionSeq ((CORBA_TypeCode)&TC_CORBA_ExtAttrDescriptionSeq_struct)
 #endif
 #define CORBA_ExtAttrDescriptionSeq__alloc() ((CORBA_ExtAttrDescriptionSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ExtAttributeDescription))
@@ -7003,8 +6741,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_InterfaceDef 1
 #define _CORBA_InterfaceDef_defined 1
 #define CORBA_InterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_InterfaceDef;
-   extern CORBA_unsigned_long CORBA_InterfaceDef__classid;
+typedef CORBA_Object CORBA_InterfaceDef;
+extern CORBA_unsigned_long CORBA_InterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_InterfaceDef_0)
 #define TC_IMPL_TC_CORBA_InterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_InterfaceDef_1 'o'
@@ -7017,30 +6755,28 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceDef_struct;
 #define TC_CORBA_InterfaceDef ((CORBA_TypeCode)&TC_CORBA_InterfaceDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_InterfaceDef_FullInterfaceDescription_defined)
 #define _CORBA_InterfaceDef_FullInterfaceDescription_defined 1
-   typedef struct CORBA_InterfaceDef_FullInterfaceDescription_type
-      CORBA_InterfaceDef_FullInterfaceDescription;
-   struct CORBA_InterfaceDef_FullInterfaceDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_OpDescriptionSeq operations;
-      CORBA_AttrDescriptionSeq attributes;
-      CORBA_RepositoryIdSeq base_interfaces;
-      CORBA_TypeCode type;
-      CORBA_boolean is_abstract;
-   };
+typedef struct CORBA_InterfaceDef_FullInterfaceDescription_type CORBA_InterfaceDef_FullInterfaceDescription;
+struct CORBA_InterfaceDef_FullInterfaceDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_OpDescriptionSeq operations;
+CORBA_AttrDescriptionSeq attributes;
+CORBA_RepositoryIdSeq base_interfaces;
+CORBA_TypeCode type;
+CORBA_boolean is_abstract;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_InterfaceDef_FullInterfaceDescription_0)
 #define TC_IMPL_TC_CORBA_InterfaceDef_FullInterfaceDescription_0 'c'
@@ -7054,12 +6790,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceDef_FullInterfaceDescription_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceDef_FullInterfaceDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_InterfaceDef_FullInterfaceDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceDef_FullInterfaceDescription_struct;
 #define TC_CORBA_InterfaceDef_FullInterfaceDescription ((CORBA_TypeCode)&TC_CORBA_InterfaceDef_FullInterfaceDescription_struct)
 #endif
 #define CORBA_InterfaceDef_FullInterfaceDescription__alloc() ((CORBA_InterfaceDef_FullInterfaceDescription *)ORBit_small_alloc (TC_CORBA_InterfaceDef_FullInterfaceDescription))
@@ -7067,16 +6802,15 @@ extern "C"
 #endif
 #if !defined(_CORBA_InterfaceDescription_defined)
 #define _CORBA_InterfaceDescription_defined 1
-   typedef struct CORBA_InterfaceDescription_type CORBA_InterfaceDescription;
-   struct CORBA_InterfaceDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_RepositoryIdSeq base_interfaces;
-      CORBA_boolean is_abstract;
-   };
+typedef struct CORBA_InterfaceDescription_type CORBA_InterfaceDescription;
+struct CORBA_InterfaceDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_RepositoryIdSeq base_interfaces;
+CORBA_boolean is_abstract;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_InterfaceDescription_0)
 #define TC_IMPL_TC_CORBA_InterfaceDescription_0 'c'
@@ -7090,11 +6824,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceDescription_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InterfaceDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceDescription_struct;
 #define TC_CORBA_InterfaceDescription ((CORBA_TypeCode)&TC_CORBA_InterfaceDescription_struct)
 #endif
 #define CORBA_InterfaceDescription__alloc() ((CORBA_InterfaceDescription *)ORBit_small_alloc (TC_CORBA_InterfaceDescription))
@@ -7104,8 +6838,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_InterfaceAttrExtension 1
 #define _CORBA_InterfaceAttrExtension_defined 1
 #define CORBA_InterfaceAttrExtension__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_InterfaceAttrExtension;
-   extern CORBA_unsigned_long CORBA_InterfaceAttrExtension__classid;
+typedef CORBA_Object CORBA_InterfaceAttrExtension;
+extern CORBA_unsigned_long CORBA_InterfaceAttrExtension__classid;
 #if !defined(TC_IMPL_TC_CORBA_InterfaceAttrExtension_0)
 #define TC_IMPL_TC_CORBA_InterfaceAttrExtension_0 'c'
 #define TC_IMPL_TC_CORBA_InterfaceAttrExtension_1 'o'
@@ -7118,30 +6852,27 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceAttrExtension_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceAttrExtension_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_InterfaceAttrExtension_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceAttrExtension_struct;
 #define TC_CORBA_InterfaceAttrExtension ((CORBA_TypeCode)&TC_CORBA_InterfaceAttrExtension_struct)
 #endif
 #endif
 #if !defined(_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_defined)
 #define _CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_defined 1
-   typedef struct
-      CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_type
-      CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription;
-   struct CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_OpDescriptionSeq operations;
-      CORBA_ExtAttrDescriptionSeq attributes;
-      CORBA_RepositoryIdSeq base_interfaces;
-      CORBA_TypeCode type;
-   };
+typedef struct CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_type CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription;
+struct CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_OpDescriptionSeq operations;
+CORBA_ExtAttrDescriptionSeq attributes;
+CORBA_RepositoryIdSeq base_interfaces;
+CORBA_TypeCode type;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_0)
 #define TC_IMPL_TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_0 'c'
@@ -7155,12 +6886,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_8 'f'
 #define TC_IMPL_TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_struct;
 #define TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription ((CORBA_TypeCode)&TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription_struct)
 #endif
 #define CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription__alloc() ((CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription *)ORBit_small_alloc (TC_CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription))
@@ -7170,8 +6900,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtInterfaceDef 1
 #define _CORBA_ExtInterfaceDef_defined 1
 #define CORBA_ExtInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_1 'o'
@@ -7184,17 +6914,17 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtInterfaceDef_struct;
 #define TC_CORBA_ExtInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtInterfaceDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_Visibility_defined)
 #define _CORBA_Visibility_defined 1
-   typedef CORBA_short CORBA_Visibility;
+typedef CORBA_short CORBA_Visibility;
 #define CORBA_Visibility_marshal(x,y,z) CORBA_short_marshal((x),(y),(z))
 #define CORBA_Visibility_demarshal(x,y,z,i) CORBA_short_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_Visibility_0)
@@ -7209,11 +6939,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Visibility_8 'f'
 #define TC_IMPL_TC_CORBA_Visibility_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Visibility_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Visibility_struct;
 #define TC_CORBA_Visibility ((CORBA_TypeCode)&TC_CORBA_Visibility_struct)
 #endif
 #define CORBA_Visibility__alloc() ((CORBA_Visibility *)ORBit_small_alloc (TC_CORBA_short))
@@ -7221,25 +6951,24 @@ extern "C"
 #endif
 #ifndef CORBA_PRIVATE_MEMBER
 #define CORBA_PRIVATE_MEMBER 0
-#endif				/* !CORBA_PRIVATE_MEMBER */
+#endif /* !CORBA_PRIVATE_MEMBER */
 
 #ifndef CORBA_PUBLIC_MEMBER
 #define CORBA_PUBLIC_MEMBER 1
-#endif				/* !CORBA_PUBLIC_MEMBER */
+#endif /* !CORBA_PUBLIC_MEMBER */
 
 #if !defined(_CORBA_ValueMember_defined)
 #define _CORBA_ValueMember_defined 1
-   typedef struct CORBA_ValueMember_type CORBA_ValueMember;
-   struct CORBA_ValueMember_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_TypeCode type;
-      CORBA_IDLType type_def;
-      CORBA_Visibility access;
-   };
+typedef struct CORBA_ValueMember_type CORBA_ValueMember;
+struct CORBA_ValueMember_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_TypeCode type;
+CORBA_IDLType type_def;
+CORBA_Visibility access;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ValueMember_0)
 #define TC_IMPL_TC_CORBA_ValueMember_0 'c'
@@ -7253,11 +6982,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueMember_8 'f'
 #define TC_IMPL_TC_CORBA_ValueMember_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueMember_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueMember_struct;
 #define TC_CORBA_ValueMember ((CORBA_TypeCode)&TC_CORBA_ValueMember_struct)
 #endif
 #define CORBA_ValueMember__alloc() ((CORBA_ValueMember *)ORBit_small_alloc (TC_CORBA_ValueMember))
@@ -7277,13 +7006,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ValueMember_9 's'
 #if !defined(_CORBA_sequence_CORBA_ValueMember_defined)
 #define _CORBA_sequence_CORBA_ValueMember_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_ValueMember *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_ValueMember;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_ValueMember* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_ValueMember;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ValueMember_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ValueMember_0 'c'
@@ -7297,12 +7020,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ValueMember_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ValueMember_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ValueMember_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ValueMember_struct;
 #define TC_CORBA_sequence_CORBA_ValueMember ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ValueMember_struct)
 #endif
 #define CORBA_sequence_CORBA_ValueMember__alloc() ((CORBA_sequence_CORBA_ValueMember *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ValueMember))
@@ -7312,7 +7034,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ValueMemberSeq_defined)
 #define _CORBA_ValueMemberSeq_defined 1
-   typedef CORBA_sequence_CORBA_ValueMember CORBA_ValueMemberSeq;
+typedef CORBA_sequence_CORBA_ValueMember CORBA_ValueMemberSeq;
 #define CORBA_ValueMemberSeq_marshal(x,y,z) CORBA_sequence_CORBA_ValueMember_marshal((x),(y),(z))
 #define CORBA_ValueMemberSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_ValueMember_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ValueMemberSeq_0)
@@ -7327,11 +7049,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueMemberSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ValueMemberSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueMemberSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueMemberSeq_struct;
 #define TC_CORBA_ValueMemberSeq ((CORBA_TypeCode)&TC_CORBA_ValueMemberSeq_struct)
 #endif
 #define CORBA_ValueMemberSeq__alloc() ((CORBA_ValueMemberSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ValueMember))
@@ -7342,8 +7064,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueMemberDef 1
 #define _CORBA_ValueMemberDef_defined 1
 #define CORBA_ValueMemberDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueMemberDef;
-   extern CORBA_unsigned_long CORBA_ValueMemberDef__classid;
+typedef CORBA_Object CORBA_ValueMemberDef;
+extern CORBA_unsigned_long CORBA_ValueMemberDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueMemberDef_0)
 #define TC_IMPL_TC_CORBA_ValueMemberDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueMemberDef_1 'o'
@@ -7356,11 +7078,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueMemberDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueMemberDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueMemberDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueMemberDef_struct;
 #define TC_CORBA_ValueMemberDef ((CORBA_TypeCode)&TC_CORBA_ValueMemberDef_struct)
 #endif
 #endif
@@ -7368,8 +7090,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueDef 1
 #define _CORBA_ValueDef_defined 1
 #define CORBA_ValueDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueDef;
-   extern CORBA_unsigned_long CORBA_ValueDef__classid;
+typedef CORBA_Object CORBA_ValueDef;
+extern CORBA_unsigned_long CORBA_ValueDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueDef_0)
 #define TC_IMPL_TC_CORBA_ValueDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueDef_1 'o'
@@ -7382,36 +7104,34 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueDef_struct;
 #define TC_CORBA_ValueDef ((CORBA_TypeCode)&TC_CORBA_ValueDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_ValueDef_FullValueDescription_defined)
 #define _CORBA_ValueDef_FullValueDescription_defined 1
-   typedef struct CORBA_ValueDef_FullValueDescription_type
-      CORBA_ValueDef_FullValueDescription;
-   struct CORBA_ValueDef_FullValueDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_boolean is_abstract;
-      CORBA_boolean is_custom;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_OpDescriptionSeq operations;
-      CORBA_AttrDescriptionSeq attributes;
-      CORBA_ValueMemberSeq members;
-      CORBA_InitializerSeq initializers;
-      CORBA_RepositoryIdSeq supported_interfaces;
-      CORBA_RepositoryIdSeq abstract_base_values;
-      CORBA_boolean is_truncatable;
-      CORBA_RepositoryId base_value;
-      CORBA_TypeCode type;
-   };
+typedef struct CORBA_ValueDef_FullValueDescription_type CORBA_ValueDef_FullValueDescription;
+struct CORBA_ValueDef_FullValueDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_boolean is_abstract;
+CORBA_boolean is_custom;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_OpDescriptionSeq operations;
+CORBA_AttrDescriptionSeq attributes;
+CORBA_ValueMemberSeq members;
+CORBA_InitializerSeq initializers;
+CORBA_RepositoryIdSeq supported_interfaces;
+CORBA_RepositoryIdSeq abstract_base_values;
+CORBA_boolean is_truncatable;
+CORBA_RepositoryId base_value;
+CORBA_TypeCode type;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ValueDef_FullValueDescription_0)
 #define TC_IMPL_TC_CORBA_ValueDef_FullValueDescription_0 'c'
@@ -7425,12 +7145,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueDef_FullValueDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ValueDef_FullValueDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_ValueDef_FullValueDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueDef_FullValueDescription_struct;
 #define TC_CORBA_ValueDef_FullValueDescription ((CORBA_TypeCode)&TC_CORBA_ValueDef_FullValueDescription_struct)
 #endif
 #define CORBA_ValueDef_FullValueDescription__alloc() ((CORBA_ValueDef_FullValueDescription *)ORBit_small_alloc (TC_CORBA_ValueDef_FullValueDescription))
@@ -7438,20 +7157,19 @@ extern "C"
 #endif
 #if !defined(_CORBA_ValueDescription_defined)
 #define _CORBA_ValueDescription_defined 1
-   typedef struct CORBA_ValueDescription_type CORBA_ValueDescription;
-   struct CORBA_ValueDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_boolean is_abstract;
-      CORBA_boolean is_custom;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_RepositoryIdSeq supported_interfaces;
-      CORBA_RepositoryIdSeq abstract_base_values;
-      CORBA_boolean is_truncatable;
-      CORBA_RepositoryId base_value;
-   };
+typedef struct CORBA_ValueDescription_type CORBA_ValueDescription;
+struct CORBA_ValueDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_boolean is_abstract;
+CORBA_boolean is_custom;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_RepositoryIdSeq supported_interfaces;
+CORBA_RepositoryIdSeq abstract_base_values;
+CORBA_boolean is_truncatable;
+CORBA_RepositoryId base_value;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ValueDescription_0)
 #define TC_IMPL_TC_CORBA_ValueDescription_0 'c'
@@ -7465,11 +7183,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ValueDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueDescription_struct;
 #define TC_CORBA_ValueDescription ((CORBA_TypeCode)&TC_CORBA_ValueDescription_struct)
 #endif
 #define CORBA_ValueDescription__alloc() ((CORBA_ValueDescription *)ORBit_small_alloc (TC_CORBA_ValueDescription))
@@ -7479,8 +7197,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtValueDef 1
 #define _CORBA_ExtValueDef_defined 1
 #define CORBA_ExtValueDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtValueDef;
-   extern CORBA_unsigned_long CORBA_ExtValueDef__classid;
+typedef CORBA_Object CORBA_ExtValueDef;
+extern CORBA_unsigned_long CORBA_ExtValueDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtValueDef_0)
 #define TC_IMPL_TC_CORBA_ExtValueDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtValueDef_1 'o'
@@ -7493,36 +7211,34 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtValueDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtValueDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtValueDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtValueDef_struct;
 #define TC_CORBA_ExtValueDef ((CORBA_TypeCode)&TC_CORBA_ExtValueDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_ExtValueDef_ExtFullValueDescription_defined)
 #define _CORBA_ExtValueDef_ExtFullValueDescription_defined 1
-   typedef struct CORBA_ExtValueDef_ExtFullValueDescription_type
-      CORBA_ExtValueDef_ExtFullValueDescription;
-   struct CORBA_ExtValueDef_ExtFullValueDescription_type
-   {
-      CORBA_Identifier name;
-      CORBA_RepositoryId id;
-      CORBA_boolean is_abstract;
-      CORBA_boolean is_custom;
-      CORBA_RepositoryId defined_in;
-      CORBA_VersionSpec version;
-      CORBA_OpDescriptionSeq operations;
-      CORBA_ExtAttrDescriptionSeq attributes;
-      CORBA_ValueMemberSeq members;
-      CORBA_ExtInitializerSeq initializers;
-      CORBA_RepositoryIdSeq supported_interfaces;
-      CORBA_RepositoryIdSeq abstract_base_values;
-      CORBA_boolean is_truncatable;
-      CORBA_RepositoryId base_value;
-      CORBA_TypeCode type;
-   };
+typedef struct CORBA_ExtValueDef_ExtFullValueDescription_type CORBA_ExtValueDef_ExtFullValueDescription;
+struct CORBA_ExtValueDef_ExtFullValueDescription_type {
+CORBA_Identifier name;
+CORBA_RepositoryId id;
+CORBA_boolean is_abstract;
+CORBA_boolean is_custom;
+CORBA_RepositoryId defined_in;
+CORBA_VersionSpec version;
+CORBA_OpDescriptionSeq operations;
+CORBA_ExtAttrDescriptionSeq attributes;
+CORBA_ValueMemberSeq members;
+CORBA_ExtInitializerSeq initializers;
+CORBA_RepositoryIdSeq supported_interfaces;
+CORBA_RepositoryIdSeq abstract_base_values;
+CORBA_boolean is_truncatable;
+CORBA_RepositoryId base_value;
+CORBA_TypeCode type;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ExtValueDef_ExtFullValueDescription_0)
 #define TC_IMPL_TC_CORBA_ExtValueDef_ExtFullValueDescription_0 'c'
@@ -7536,12 +7252,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtValueDef_ExtFullValueDescription_8 'f'
 #define TC_IMPL_TC_CORBA_ExtValueDef_ExtFullValueDescription_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_ExtValueDef_ExtFullValueDescription_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtValueDef_ExtFullValueDescription_struct;
 #define TC_CORBA_ExtValueDef_ExtFullValueDescription ((CORBA_TypeCode)&TC_CORBA_ExtValueDef_ExtFullValueDescription_struct)
 #endif
 #define CORBA_ExtValueDef_ExtFullValueDescription__alloc() ((CORBA_ExtValueDef_ExtFullValueDescription *)ORBit_small_alloc (TC_CORBA_ExtValueDef_ExtFullValueDescription))
@@ -7551,8 +7266,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ValueBoxDef 1
 #define _CORBA_ValueBoxDef_defined 1
 #define CORBA_ValueBoxDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ValueBoxDef;
-   extern CORBA_unsigned_long CORBA_ValueBoxDef__classid;
+typedef CORBA_Object CORBA_ValueBoxDef;
+extern CORBA_unsigned_long CORBA_ValueBoxDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ValueBoxDef_0)
 #define TC_IMPL_TC_CORBA_ValueBoxDef_0 'c'
 #define TC_IMPL_TC_CORBA_ValueBoxDef_1 'o'
@@ -7565,11 +7280,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueBoxDef_8 'f'
 #define TC_IMPL_TC_CORBA_ValueBoxDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueBoxDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueBoxDef_struct;
 #define TC_CORBA_ValueBoxDef ((CORBA_TypeCode)&TC_CORBA_ValueBoxDef_struct)
 #endif
 #endif
@@ -7577,8 +7292,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_AbstractInterfaceDef 1
 #define _CORBA_AbstractInterfaceDef_defined 1
 #define CORBA_AbstractInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_AbstractInterfaceDef;
-   extern CORBA_unsigned_long CORBA_AbstractInterfaceDef__classid;
+typedef CORBA_Object CORBA_AbstractInterfaceDef;
+extern CORBA_unsigned_long CORBA_AbstractInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_AbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_1 'o'
@@ -7591,11 +7306,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_AbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AbstractInterfaceDef_struct;
 #define TC_CORBA_AbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_AbstractInterfaceDef_struct)
 #endif
 #endif
@@ -7603,8 +7318,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtAbstractInterfaceDef 1
 #define _CORBA_ExtAbstractInterfaceDef_defined 1
 #define CORBA_ExtAbstractInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtAbstractInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtAbstractInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtAbstractInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtAbstractInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_1 'o'
@@ -7617,11 +7332,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtAbstractInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtAbstractInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtAbstractInterfaceDef_struct;
 #define TC_CORBA_ExtAbstractInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtAbstractInterfaceDef_struct)
 #endif
 #endif
@@ -7629,8 +7344,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_LocalInterfaceDef 1
 #define _CORBA_LocalInterfaceDef_defined 1
 #define CORBA_LocalInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_LocalInterfaceDef;
-   extern CORBA_unsigned_long CORBA_LocalInterfaceDef__classid;
+typedef CORBA_Object CORBA_LocalInterfaceDef;
+extern CORBA_unsigned_long CORBA_LocalInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_LocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_1 'o'
@@ -7643,11 +7358,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_LocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_LocalInterfaceDef_struct;
 #define TC_CORBA_LocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_LocalInterfaceDef_struct)
 #endif
 #endif
@@ -7655,8 +7370,8 @@ extern "C"
 #define ORBIT_DECL_CORBA_ExtLocalInterfaceDef 1
 #define _CORBA_ExtLocalInterfaceDef_defined 1
 #define CORBA_ExtLocalInterfaceDef__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_ExtLocalInterfaceDef;
-   extern CORBA_unsigned_long CORBA_ExtLocalInterfaceDef__classid;
+typedef CORBA_Object CORBA_ExtLocalInterfaceDef;
+extern CORBA_unsigned_long CORBA_ExtLocalInterfaceDef__classid;
 #if !defined(TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_0)
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_0 'c'
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_1 'o'
@@ -7669,56 +7384,55 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_8 'f'
 #define TC_IMPL_TC_CORBA_ExtLocalInterfaceDef_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDef_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ExtLocalInterfaceDef_struct;
 #define TC_CORBA_ExtLocalInterfaceDef ((CORBA_TypeCode)&TC_CORBA_ExtLocalInterfaceDef_struct)
 #endif
 #endif
 #if !defined(_CORBA_TCKind_defined)
 #define _CORBA_TCKind_defined 1
-   typedef enum
-   {
-      CORBA_tk_null,
-      CORBA_tk_void,
-      CORBA_tk_short,
-      CORBA_tk_long,
-      CORBA_tk_ushort,
-      CORBA_tk_ulong,
-      CORBA_tk_float,
-      CORBA_tk_double,
-      CORBA_tk_boolean,
-      CORBA_tk_char,
-      CORBA_tk_octet,
-      CORBA_tk_any,
-      CORBA_tk_TypeCode,
-      CORBA_tk_Principal,
-      CORBA_tk_objref,
-      CORBA_tk_struct,
-      CORBA_tk_union,
-      CORBA_tk_enum,
-      CORBA_tk_string,
-      CORBA_tk_sequence,
-      CORBA_tk_array,
-      CORBA_tk_alias,
-      CORBA_tk_except,
-      CORBA_tk_longlong,
-      CORBA_tk_ulonglong,
-      CORBA_tk_longdouble,
-      CORBA_tk_wchar,
-      CORBA_tk_wstring,
-      CORBA_tk_fixed,
-      CORBA_tk_value,
-      CORBA_tk_value_box,
-      CORBA_tk_native,
-      CORBA_tk_abstract_interface,
-      CORBA_tk_local_interface,
-      CORBA_tk_component,
-      CORBA_tk_home,
-      CORBA_tk_event
-   } CORBA_TCKind;
+typedef enum {
+  CORBA_tk_null,
+  CORBA_tk_void,
+  CORBA_tk_short,
+  CORBA_tk_long,
+  CORBA_tk_ushort,
+  CORBA_tk_ulong,
+  CORBA_tk_float,
+  CORBA_tk_double,
+  CORBA_tk_boolean,
+  CORBA_tk_char,
+  CORBA_tk_octet,
+  CORBA_tk_any,
+  CORBA_tk_TypeCode,
+  CORBA_tk_Principal,
+  CORBA_tk_objref,
+  CORBA_tk_struct,
+  CORBA_tk_union,
+  CORBA_tk_enum,
+  CORBA_tk_string,
+  CORBA_tk_sequence,
+  CORBA_tk_array,
+  CORBA_tk_alias,
+  CORBA_tk_except,
+  CORBA_tk_longlong,
+  CORBA_tk_ulonglong,
+  CORBA_tk_longdouble,
+  CORBA_tk_wchar,
+  CORBA_tk_wstring,
+  CORBA_tk_fixed,
+  CORBA_tk_value,
+  CORBA_tk_value_box,
+  CORBA_tk_native,
+  CORBA_tk_abstract_interface,
+  CORBA_tk_local_interface,
+  CORBA_tk_component,
+  CORBA_tk_home,
+  CORBA_tk_event
+} CORBA_TCKind;
 #if !defined(TC_IMPL_TC_CORBA_TCKind_0)
 #define TC_IMPL_TC_CORBA_TCKind_0 'c'
 #define TC_IMPL_TC_CORBA_TCKind_1 'o'
@@ -7731,17 +7445,17 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TCKind_8 'f'
 #define TC_IMPL_TC_CORBA_TCKind_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TCKind_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TCKind_struct;
 #define TC_CORBA_TCKind ((CORBA_TypeCode)&TC_CORBA_TCKind_struct)
 #endif
 #endif
 #if !defined(_CORBA_ValueModifier_defined)
 #define _CORBA_ValueModifier_defined 1
-   typedef CORBA_short CORBA_ValueModifier;
+typedef CORBA_short CORBA_ValueModifier;
 #define CORBA_ValueModifier_marshal(x,y,z) CORBA_short_marshal((x),(y),(z))
 #define CORBA_ValueModifier_demarshal(x,y,z,i) CORBA_short_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ValueModifier_0)
@@ -7756,11 +7470,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ValueModifier_8 'f'
 #define TC_IMPL_TC_CORBA_ValueModifier_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ValueModifier_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ValueModifier_struct;
 #define TC_CORBA_ValueModifier ((CORBA_TypeCode)&TC_CORBA_ValueModifier_struct)
 #endif
 #define CORBA_ValueModifier__alloc() ((CORBA_ValueModifier *)ORBit_small_alloc (TC_CORBA_short))
@@ -7768,26 +7482,26 @@ extern "C"
 #endif
 #ifndef CORBA_VM_NONE
 #define CORBA_VM_NONE 0
-#endif				/* !CORBA_VM_NONE */
+#endif /* !CORBA_VM_NONE */
 
 #ifndef CORBA_VM_CUSTOM
 #define CORBA_VM_CUSTOM 1
-#endif				/* !CORBA_VM_CUSTOM */
+#endif /* !CORBA_VM_CUSTOM */
 
 #ifndef CORBA_VM_ABSTRACT
 #define CORBA_VM_ABSTRACT 2
-#endif				/* !CORBA_VM_ABSTRACT */
+#endif /* !CORBA_VM_ABSTRACT */
 
 #ifndef CORBA_VM_TRUNCATABLE
 #define CORBA_VM_TRUNCATABLE 3
-#endif				/* !CORBA_VM_TRUNCATABLE */
+#endif /* !CORBA_VM_TRUNCATABLE */
 
 #if !defined(ORBIT_DECL_CORBA_TypeCode) && !defined(_CORBA_TypeCode_defined)
 #define ORBIT_DECL_CORBA_TypeCode 1
 #define _CORBA_TypeCode_defined 1
 #define CORBA_TypeCode__freekids CORBA_Object__freekids
-   typedef CORBA_Object CORBA_TypeCode;
-   extern CORBA_unsigned_long CORBA_TypeCode__classid;
+typedef CORBA_Object CORBA_TypeCode;
+extern CORBA_unsigned_long CORBA_TypeCode__classid;
 #if !defined(TC_IMPL_TC_CORBA_TypeCode_0)
 #define TC_IMPL_TC_CORBA_TypeCode_0 'c'
 #define TC_IMPL_TC_CORBA_TypeCode_1 'o'
@@ -7800,11 +7514,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TypeCode_8 'f'
 #define TC_IMPL_TC_CORBA_TypeCode_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TypeCode_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TypeCode_struct;
 #define TC_CORBA_TypeCode ((CORBA_TypeCode)&TC_CORBA_TypeCode_struct)
 #endif
 #endif
@@ -7812,11 +7526,10 @@ extern "C"
 #define ex_CORBA_TypeCode_Bounds "IDL:omg.org/CORBA/TypeCode/Bounds:1.0"
 #if !defined(_CORBA_TypeCode_Bounds_defined)
 #define _CORBA_TypeCode_Bounds_defined 1
-   typedef struct CORBA_TypeCode_Bounds_type CORBA_TypeCode_Bounds;
-   struct CORBA_TypeCode_Bounds_type
-   {
-      int dummy;
-   };
+typedef struct CORBA_TypeCode_Bounds_type CORBA_TypeCode_Bounds;
+struct CORBA_TypeCode_Bounds_type {
+int dummy;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TypeCode_Bounds_0)
 #define TC_IMPL_TC_CORBA_TypeCode_Bounds_0 'c'
@@ -7830,11 +7543,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TypeCode_Bounds_8 'f'
 #define TC_IMPL_TC_CORBA_TypeCode_Bounds_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TypeCode_Bounds_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TypeCode_Bounds_struct;
 #define TC_CORBA_TypeCode_Bounds ((CORBA_TypeCode)&TC_CORBA_TypeCode_Bounds_struct)
 #endif
 #define CORBA_TypeCode_Bounds__alloc() ((CORBA_TypeCode_Bounds *)ORBit_small_alloc (TC_CORBA_TypeCode_Bounds))
@@ -7844,11 +7557,10 @@ extern "C"
 #define ex_CORBA_TypeCode_BadKind "IDL:omg.org/CORBA/TypeCode/BadKind:1.0"
 #if !defined(_CORBA_TypeCode_BadKind_defined)
 #define _CORBA_TypeCode_BadKind_defined 1
-   typedef struct CORBA_TypeCode_BadKind_type CORBA_TypeCode_BadKind;
-   struct CORBA_TypeCode_BadKind_type
-   {
-      int dummy;
-   };
+typedef struct CORBA_TypeCode_BadKind_type CORBA_TypeCode_BadKind;
+struct CORBA_TypeCode_BadKind_type {
+int dummy;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_TypeCode_BadKind_0)
 #define TC_IMPL_TC_CORBA_TypeCode_BadKind_0 'c'
@@ -7862,11 +7574,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_TypeCode_BadKind_8 'f'
 #define TC_IMPL_TC_CORBA_TypeCode_BadKind_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_TypeCode_BadKind_struct;
+struct CORBA_TypeCode_struct TC_CORBA_TypeCode_BadKind_struct;
 #define TC_CORBA_TypeCode_BadKind ((CORBA_TypeCode)&TC_CORBA_TypeCode_BadKind_struct)
 #endif
 #define CORBA_TypeCode_BadKind__alloc() ((CORBA_TypeCode_BadKind *)ORBit_small_alloc (TC_CORBA_TypeCode_BadKind))
@@ -7886,13 +7598,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_any_9 's'
 #if !defined(_CORBA_sequence_CORBA_any_defined)
 #define _CORBA_sequence_CORBA_any_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_any *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_any;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_any* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_any;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_any_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_any_0 'c'
@@ -7906,11 +7612,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_any_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_any_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_any_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_any_struct;
 #define TC_CORBA_sequence_CORBA_any ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_any_struct)
 #endif
 #define CORBA_sequence_CORBA_any__alloc() ((CORBA_sequence_CORBA_any *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_any))
@@ -7920,7 +7626,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_AnySeq_defined)
 #define _CORBA_AnySeq_defined 1
-   typedef CORBA_sequence_CORBA_any CORBA_AnySeq;
+typedef CORBA_sequence_CORBA_any CORBA_AnySeq;
 #define CORBA_AnySeq_marshal(x,y,z) CORBA_sequence_CORBA_any_marshal((x),(y),(z))
 #define CORBA_AnySeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_any_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_AnySeq_0)
@@ -7935,11 +7641,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_AnySeq_8 'f'
 #define TC_IMPL_TC_CORBA_AnySeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_AnySeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_AnySeq_struct;
 #define TC_CORBA_AnySeq ((CORBA_TypeCode)&TC_CORBA_AnySeq_struct)
 #endif
 #define CORBA_AnySeq__alloc() ((CORBA_AnySeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_any))
@@ -7960,13 +7666,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_boolean_9 's'
 #if !defined(_CORBA_sequence_CORBA_boolean_defined)
 #define _CORBA_sequence_CORBA_boolean_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_boolean *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_boolean;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_boolean* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_boolean;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_boolean_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_boolean_0 'c'
@@ -7980,11 +7680,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_boolean_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_boolean_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_boolean_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_boolean_struct;
 #define TC_CORBA_sequence_CORBA_boolean ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_boolean_struct)
 #endif
 #define CORBA_sequence_CORBA_boolean__alloc() ((CORBA_sequence_CORBA_boolean *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_boolean))
@@ -7994,7 +7694,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_BooleanSeq_defined)
 #define _CORBA_BooleanSeq_defined 1
-   typedef CORBA_sequence_CORBA_boolean CORBA_BooleanSeq;
+typedef CORBA_sequence_CORBA_boolean CORBA_BooleanSeq;
 #define CORBA_BooleanSeq_marshal(x,y,z) CORBA_sequence_CORBA_boolean_marshal((x),(y),(z))
 #define CORBA_BooleanSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_boolean_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_BooleanSeq_0)
@@ -8009,11 +7709,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BooleanSeq_8 'f'
 #define TC_IMPL_TC_CORBA_BooleanSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BooleanSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BooleanSeq_struct;
 #define TC_CORBA_BooleanSeq ((CORBA_TypeCode)&TC_CORBA_BooleanSeq_struct)
 #endif
 #define CORBA_BooleanSeq__alloc() ((CORBA_BooleanSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_boolean))
@@ -8034,13 +7734,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_char_9 's'
 #if !defined(_CORBA_sequence_CORBA_char_defined)
 #define _CORBA_sequence_CORBA_char_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_char *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_char;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_char* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_char;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_char_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_char_0 'c'
@@ -8054,11 +7748,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_char_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_char_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_char_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_char_struct;
 #define TC_CORBA_sequence_CORBA_char ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_char_struct)
 #endif
 #define CORBA_sequence_CORBA_char__alloc() ((CORBA_sequence_CORBA_char *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_char))
@@ -8068,7 +7762,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_CharSeq_defined)
 #define _CORBA_CharSeq_defined 1
-   typedef CORBA_sequence_CORBA_char CORBA_CharSeq;
+typedef CORBA_sequence_CORBA_char CORBA_CharSeq;
 #define CORBA_CharSeq_marshal(x,y,z) CORBA_sequence_CORBA_char_marshal((x),(y),(z))
 #define CORBA_CharSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_char_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_CharSeq_0)
@@ -8083,11 +7777,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_CharSeq_8 'f'
 #define TC_IMPL_TC_CORBA_CharSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_CharSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_CharSeq_struct;
 #define TC_CORBA_CharSeq ((CORBA_TypeCode)&TC_CORBA_CharSeq_struct)
 #endif
 #define CORBA_CharSeq__alloc() ((CORBA_CharSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_char))
@@ -8108,13 +7802,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_wchar_9 's'
 #if !defined(_CORBA_sequence_CORBA_wchar_defined)
 #define _CORBA_sequence_CORBA_wchar_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_wchar *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_wchar;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_wchar* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_wchar;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_wchar_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_wchar_0 'c'
@@ -8128,11 +7816,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_wchar_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_wchar_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_wchar_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_wchar_struct;
 #define TC_CORBA_sequence_CORBA_wchar ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_wchar_struct)
 #endif
 #define CORBA_sequence_CORBA_wchar__alloc() ((CORBA_sequence_CORBA_wchar *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_wchar))
@@ -8142,7 +7830,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_WCharSeq_defined)
 #define _CORBA_WCharSeq_defined 1
-   typedef CORBA_sequence_CORBA_wchar CORBA_WCharSeq;
+typedef CORBA_sequence_CORBA_wchar CORBA_WCharSeq;
 #define CORBA_WCharSeq_marshal(x,y,z) CORBA_sequence_CORBA_wchar_marshal((x),(y),(z))
 #define CORBA_WCharSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_wchar_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_WCharSeq_0)
@@ -8157,11 +7845,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_WCharSeq_8 'f'
 #define TC_IMPL_TC_CORBA_WCharSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_WCharSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_WCharSeq_struct;
 #define TC_CORBA_WCharSeq ((CORBA_TypeCode)&TC_CORBA_WCharSeq_struct)
 #endif
 #define CORBA_WCharSeq__alloc() ((CORBA_WCharSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_wchar))
@@ -8182,13 +7870,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_octet_9 's'
 #if !defined(_CORBA_sequence_CORBA_octet_defined)
 #define _CORBA_sequence_CORBA_octet_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_octet *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_octet;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_octet* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'c'
@@ -8202,11 +7884,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
 #define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
 #endif
 #define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
@@ -8216,7 +7898,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_OctetSeq_defined)
 #define _CORBA_OctetSeq_defined 1
-   typedef CORBA_sequence_CORBA_octet CORBA_OctetSeq;
+typedef CORBA_sequence_CORBA_octet CORBA_OctetSeq;
 #define CORBA_OctetSeq_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
 #define CORBA_OctetSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_OctetSeq_0)
@@ -8231,11 +7913,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_OctetSeq_8 'f'
 #define TC_IMPL_TC_CORBA_OctetSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_OctetSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_OctetSeq_struct;
 #define TC_CORBA_OctetSeq ((CORBA_TypeCode)&TC_CORBA_OctetSeq_struct)
 #endif
 #define CORBA_OctetSeq__alloc() ((CORBA_OctetSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
@@ -8256,13 +7938,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_short_9 's'
 #if !defined(_CORBA_sequence_CORBA_short_defined)
 #define _CORBA_sequence_CORBA_short_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_short *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_short;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_short* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_short;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_short_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_short_0 'c'
@@ -8276,11 +7952,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_short_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_short_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_short_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_short_struct;
 #define TC_CORBA_sequence_CORBA_short ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_short_struct)
 #endif
 #define CORBA_sequence_CORBA_short__alloc() ((CORBA_sequence_CORBA_short *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_short))
@@ -8290,7 +7966,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ShortSeq_defined)
 #define _CORBA_ShortSeq_defined 1
-   typedef CORBA_sequence_CORBA_short CORBA_ShortSeq;
+typedef CORBA_sequence_CORBA_short CORBA_ShortSeq;
 #define CORBA_ShortSeq_marshal(x,y,z) CORBA_sequence_CORBA_short_marshal((x),(y),(z))
 #define CORBA_ShortSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_short_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ShortSeq_0)
@@ -8305,11 +7981,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ShortSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ShortSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ShortSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ShortSeq_struct;
 #define TC_CORBA_ShortSeq ((CORBA_TypeCode)&TC_CORBA_ShortSeq_struct)
 #endif
 #define CORBA_ShortSeq__alloc() ((CORBA_ShortSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_short))
@@ -8330,13 +8006,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_short_9 's'
 #if !defined(_CORBA_sequence_CORBA_unsigned_short_defined)
 #define _CORBA_sequence_CORBA_unsigned_short_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_unsigned_short *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_unsigned_short;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_unsigned_short* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_unsigned_short;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_0 'c'
@@ -8350,12 +8020,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_short_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_unsigned_short_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_unsigned_short_struct;
 #define TC_CORBA_sequence_CORBA_unsigned_short ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_unsigned_short_struct)
 #endif
 #define CORBA_sequence_CORBA_unsigned_short__alloc() ((CORBA_sequence_CORBA_unsigned_short *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_short))
@@ -8365,7 +8034,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_UShortSeq_defined)
 #define _CORBA_UShortSeq_defined 1
-   typedef CORBA_sequence_CORBA_unsigned_short CORBA_UShortSeq;
+typedef CORBA_sequence_CORBA_unsigned_short CORBA_UShortSeq;
 #define CORBA_UShortSeq_marshal(x,y,z) CORBA_sequence_CORBA_unsigned_short_marshal((x),(y),(z))
 #define CORBA_UShortSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_unsigned_short_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_UShortSeq_0)
@@ -8380,11 +8049,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_UShortSeq_8 'f'
 #define TC_IMPL_TC_CORBA_UShortSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_UShortSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_UShortSeq_struct;
 #define TC_CORBA_UShortSeq ((CORBA_TypeCode)&TC_CORBA_UShortSeq_struct)
 #endif
 #define CORBA_UShortSeq__alloc() ((CORBA_UShortSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_short))
@@ -8405,13 +8074,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_long_9 's'
 #if !defined(_CORBA_sequence_CORBA_long_defined)
 #define _CORBA_sequence_CORBA_long_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_long *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_long;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_long* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_long;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_long_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_0 'c'
@@ -8425,11 +8088,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_long_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_long_struct;
 #define TC_CORBA_sequence_CORBA_long ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_long_struct)
 #endif
 #define CORBA_sequence_CORBA_long__alloc() ((CORBA_sequence_CORBA_long *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_long))
@@ -8439,7 +8102,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_LongSeq_defined)
 #define _CORBA_LongSeq_defined 1
-   typedef CORBA_sequence_CORBA_long CORBA_LongSeq;
+typedef CORBA_sequence_CORBA_long CORBA_LongSeq;
 #define CORBA_LongSeq_marshal(x,y,z) CORBA_sequence_CORBA_long_marshal((x),(y),(z))
 #define CORBA_LongSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_LongSeq_0)
@@ -8454,11 +8117,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_LongSeq_8 'f'
 #define TC_IMPL_TC_CORBA_LongSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_LongSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_LongSeq_struct;
 #define TC_CORBA_LongSeq ((CORBA_TypeCode)&TC_CORBA_LongSeq_struct)
 #endif
 #define CORBA_LongSeq__alloc() ((CORBA_LongSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_long))
@@ -8479,13 +8142,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_long_9 's'
 #if !defined(_CORBA_sequence_CORBA_unsigned_long_defined)
 #define _CORBA_sequence_CORBA_unsigned_long_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_unsigned_long *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_unsigned_long;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_unsigned_long* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_unsigned_long;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0 'c'
@@ -8499,12 +8156,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_unsigned_long_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_unsigned_long_struct;
 #define TC_CORBA_sequence_CORBA_unsigned_long ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_unsigned_long_struct)
 #endif
 #define CORBA_sequence_CORBA_unsigned_long__alloc() ((CORBA_sequence_CORBA_unsigned_long *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_long))
@@ -8514,7 +8170,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ULongSeq_defined)
 #define _CORBA_ULongSeq_defined 1
-   typedef CORBA_sequence_CORBA_unsigned_long CORBA_ULongSeq;
+typedef CORBA_sequence_CORBA_unsigned_long CORBA_ULongSeq;
 #define CORBA_ULongSeq_marshal(x,y,z) CORBA_sequence_CORBA_unsigned_long_marshal((x),(y),(z))
 #define CORBA_ULongSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_unsigned_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ULongSeq_0)
@@ -8529,11 +8185,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ULongSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ULongSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ULongSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ULongSeq_struct;
 #define TC_CORBA_ULongSeq ((CORBA_TypeCode)&TC_CORBA_ULongSeq_struct)
 #endif
 #define CORBA_ULongSeq__alloc() ((CORBA_ULongSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_long))
@@ -8554,13 +8210,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_long_long_9 's'
 #if !defined(_CORBA_sequence_CORBA_long_long_defined)
 #define _CORBA_sequence_CORBA_long_long_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_long_long *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_long_long;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_long_long* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_long_long;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_long_long_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_long_0 'c'
@@ -8574,12 +8224,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_long_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_long_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_long_long_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_long_long_struct;
 #define TC_CORBA_sequence_CORBA_long_long ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_long_long_struct)
 #endif
 #define CORBA_sequence_CORBA_long_long__alloc() ((CORBA_sequence_CORBA_long_long *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_long_long))
@@ -8589,7 +8238,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_LongLongSeq_defined)
 #define _CORBA_LongLongSeq_defined 1
-   typedef CORBA_sequence_CORBA_long_long CORBA_LongLongSeq;
+typedef CORBA_sequence_CORBA_long_long CORBA_LongLongSeq;
 #define CORBA_LongLongSeq_marshal(x,y,z) CORBA_sequence_CORBA_long_long_marshal((x),(y),(z))
 #define CORBA_LongLongSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_long_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_LongLongSeq_0)
@@ -8604,11 +8253,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_LongLongSeq_8 'f'
 #define TC_IMPL_TC_CORBA_LongLongSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_LongLongSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_LongLongSeq_struct;
 #define TC_CORBA_LongLongSeq ((CORBA_TypeCode)&TC_CORBA_LongLongSeq_struct)
 #endif
 #define CORBA_LongLongSeq__alloc() ((CORBA_LongLongSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_long_long))
@@ -8629,13 +8278,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_long_long_9 's'
 #if !defined(_CORBA_sequence_CORBA_unsigned_long_long_defined)
 #define _CORBA_sequence_CORBA_unsigned_long_long_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_unsigned_long_long *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_unsigned_long_long;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_unsigned_long_long* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_unsigned_long_long;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_long_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_long_0 'c'
@@ -8649,12 +8292,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_long_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_long_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_unsigned_long_long_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_unsigned_long_long_struct;
 #define TC_CORBA_sequence_CORBA_unsigned_long_long ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_unsigned_long_long_struct)
 #endif
 #define CORBA_sequence_CORBA_unsigned_long_long__alloc() ((CORBA_sequence_CORBA_unsigned_long_long *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_long_long))
@@ -8664,7 +8306,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ULongLongSeq_defined)
 #define _CORBA_ULongLongSeq_defined 1
-   typedef CORBA_sequence_CORBA_unsigned_long_long CORBA_ULongLongSeq;
+typedef CORBA_sequence_CORBA_unsigned_long_long CORBA_ULongLongSeq;
 #define CORBA_ULongLongSeq_marshal(x,y,z) CORBA_sequence_CORBA_unsigned_long_long_marshal((x),(y),(z))
 #define CORBA_ULongLongSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_unsigned_long_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ULongLongSeq_0)
@@ -8679,11 +8321,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ULongLongSeq_8 'f'
 #define TC_IMPL_TC_CORBA_ULongLongSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ULongLongSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ULongLongSeq_struct;
 #define TC_CORBA_ULongLongSeq ((CORBA_TypeCode)&TC_CORBA_ULongLongSeq_struct)
 #endif
 #define CORBA_ULongLongSeq__alloc() ((CORBA_ULongLongSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_long_long))
@@ -8704,13 +8346,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_float_9 's'
 #if !defined(_CORBA_sequence_CORBA_float_defined)
 #define _CORBA_sequence_CORBA_float_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_float *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_float;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_float* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_float;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_float_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_float_0 'c'
@@ -8724,11 +8360,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_float_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_float_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_float_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_float_struct;
 #define TC_CORBA_sequence_CORBA_float ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_float_struct)
 #endif
 #define CORBA_sequence_CORBA_float__alloc() ((CORBA_sequence_CORBA_float *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_float))
@@ -8738,7 +8374,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_FloatSeq_defined)
 #define _CORBA_FloatSeq_defined 1
-   typedef CORBA_sequence_CORBA_float CORBA_FloatSeq;
+typedef CORBA_sequence_CORBA_float CORBA_FloatSeq;
 #define CORBA_FloatSeq_marshal(x,y,z) CORBA_sequence_CORBA_float_marshal((x),(y),(z))
 #define CORBA_FloatSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_float_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_FloatSeq_0)
@@ -8753,11 +8389,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_FloatSeq_8 'f'
 #define TC_IMPL_TC_CORBA_FloatSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_FloatSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_FloatSeq_struct;
 #define TC_CORBA_FloatSeq ((CORBA_TypeCode)&TC_CORBA_FloatSeq_struct)
 #endif
 #define CORBA_FloatSeq__alloc() ((CORBA_FloatSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_float))
@@ -8778,13 +8414,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_double_9 's'
 #if !defined(_CORBA_sequence_CORBA_double_defined)
 #define _CORBA_sequence_CORBA_double_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_double *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_double;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_double* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_double;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_double_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_double_0 'c'
@@ -8798,11 +8428,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_double_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_double_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_double_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_double_struct;
 #define TC_CORBA_sequence_CORBA_double ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_double_struct)
 #endif
 #define CORBA_sequence_CORBA_double__alloc() ((CORBA_sequence_CORBA_double *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_double))
@@ -8812,7 +8442,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_DoubleSeq_defined)
 #define _CORBA_DoubleSeq_defined 1
-   typedef CORBA_sequence_CORBA_double CORBA_DoubleSeq;
+typedef CORBA_sequence_CORBA_double CORBA_DoubleSeq;
 #define CORBA_DoubleSeq_marshal(x,y,z) CORBA_sequence_CORBA_double_marshal((x),(y),(z))
 #define CORBA_DoubleSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_double_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_DoubleSeq_0)
@@ -8827,11 +8457,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_DoubleSeq_8 'f'
 #define TC_IMPL_TC_CORBA_DoubleSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_DoubleSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_DoubleSeq_struct;
 #define TC_CORBA_DoubleSeq ((CORBA_TypeCode)&TC_CORBA_DoubleSeq_struct)
 #endif
 #define CORBA_DoubleSeq__alloc() ((CORBA_DoubleSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_double))
@@ -8852,13 +8482,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_long_double_9 's'
 #if !defined(_CORBA_sequence_CORBA_long_double_defined)
 #define _CORBA_sequence_CORBA_long_double_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_long_double *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_long_double;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_long_double* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_long_double;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_long_double_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_double_0 'c'
@@ -8872,12 +8496,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_double_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_long_double_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_long_double_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_long_double_struct;
 #define TC_CORBA_sequence_CORBA_long_double ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_long_double_struct)
 #endif
 #define CORBA_sequence_CORBA_long_double__alloc() ((CORBA_sequence_CORBA_long_double *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_long_double))
@@ -8887,7 +8510,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_LongDoubleSeq_defined)
 #define _CORBA_LongDoubleSeq_defined 1
-   typedef CORBA_sequence_CORBA_long_double CORBA_LongDoubleSeq;
+typedef CORBA_sequence_CORBA_long_double CORBA_LongDoubleSeq;
 #define CORBA_LongDoubleSeq_marshal(x,y,z) CORBA_sequence_CORBA_long_double_marshal((x),(y),(z))
 #define CORBA_LongDoubleSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_long_double_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_LongDoubleSeq_0)
@@ -8902,11 +8525,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_LongDoubleSeq_8 'f'
 #define TC_IMPL_TC_CORBA_LongDoubleSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_LongDoubleSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_LongDoubleSeq_struct;
 #define TC_CORBA_LongDoubleSeq ((CORBA_TypeCode)&TC_CORBA_LongDoubleSeq_struct)
 #endif
 #define CORBA_LongDoubleSeq__alloc() ((CORBA_LongDoubleSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_long_double))
@@ -8927,13 +8550,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 's'
 #if !defined(_CORBA_sequence_CORBA_string_defined)
 #define _CORBA_sequence_CORBA_string_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_string *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_string;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_string* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'c'
@@ -8947,11 +8564,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -8961,7 +8578,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_StringSeq_defined)
 #define _CORBA_StringSeq_defined 1
-   typedef CORBA_sequence_CORBA_string CORBA_StringSeq;
+typedef CORBA_sequence_CORBA_string CORBA_StringSeq;
 #define CORBA_StringSeq_marshal(x,y,z) CORBA_sequence_CORBA_string_marshal((x),(y),(z))
 #define CORBA_StringSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_StringSeq_0)
@@ -8976,11 +8593,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_StringSeq_8 'f'
 #define TC_IMPL_TC_CORBA_StringSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_StringSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_StringSeq_struct;
 #define TC_CORBA_StringSeq ((CORBA_TypeCode)&TC_CORBA_StringSeq_struct)
 #endif
 #define CORBA_StringSeq__alloc() ((CORBA_StringSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -9001,13 +8618,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_wstring_9 's'
 #if !defined(_CORBA_sequence_CORBA_wstring_defined)
 #define _CORBA_sequence_CORBA_wstring_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_wstring *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_wstring;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_wstring* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_wstring;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_wstring_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_wstring_0 'c'
@@ -9021,11 +8632,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_wstring_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_wstring_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_wstring_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_wstring_struct;
 #define TC_CORBA_sequence_CORBA_wstring ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_wstring_struct)
 #endif
 #define CORBA_sequence_CORBA_wstring__alloc() ((CORBA_sequence_CORBA_wstring *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_wstring))
@@ -9035,7 +8646,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_WStringSeq_defined)
 #define _CORBA_WStringSeq_defined 1
-   typedef CORBA_sequence_CORBA_wstring CORBA_WStringSeq;
+typedef CORBA_sequence_CORBA_wstring CORBA_WStringSeq;
 #define CORBA_WStringSeq_marshal(x,y,z) CORBA_sequence_CORBA_wstring_marshal((x),(y),(z))
 #define CORBA_WStringSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_wstring_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_WStringSeq_0)
@@ -9050,11 +8661,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_WStringSeq_8 'f'
 #define TC_IMPL_TC_CORBA_WStringSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_WStringSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_WStringSeq_struct;
 #define TC_CORBA_WStringSeq ((CORBA_TypeCode)&TC_CORBA_WStringSeq_struct)
 #endif
 #define CORBA_WStringSeq__alloc() ((CORBA_WStringSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_wstring))
@@ -9065,11 +8676,10 @@ extern "C"
 #define ex_CORBA_BadFixedValue "IDL:omg.org/CORBA/BadFixedValue:1.0"
 #if !defined(_CORBA_BadFixedValue_defined)
 #define _CORBA_BadFixedValue_defined 1
-   typedef struct CORBA_BadFixedValue_type CORBA_BadFixedValue;
-   struct CORBA_BadFixedValue_type
-   {
-      CORBA_unsigned_long offset;
-   };
+typedef struct CORBA_BadFixedValue_type CORBA_BadFixedValue;
+struct CORBA_BadFixedValue_type {
+CORBA_unsigned_long offset;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_BadFixedValue_0)
 #define TC_IMPL_TC_CORBA_BadFixedValue_0 'c'
@@ -9083,11 +8693,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_BadFixedValue_8 'f'
 #define TC_IMPL_TC_CORBA_BadFixedValue_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_BadFixedValue_struct;
+struct CORBA_TypeCode_struct TC_CORBA_BadFixedValue_struct;
 #define TC_CORBA_BadFixedValue ((CORBA_TypeCode)&TC_CORBA_BadFixedValue_struct)
 #endif
 #define CORBA_BadFixedValue__alloc() ((CORBA_BadFixedValue *)ORBit_small_alloc (TC_CORBA_BadFixedValue))
@@ -9095,28 +8705,27 @@ extern "C"
 #endif
 #ifndef CORBA_VMCID_OMG
 #define CORBA_VMCID_OMG 1330446336U
-#endif				/* !CORBA_VMCID_OMG */
+#endif /* !CORBA_VMCID_OMG */
 
 #ifndef CORBA_VMCID_ORBit0
 #define CORBA_VMCID_ORBit0 1330905088U
-#endif				/* !CORBA_VMCID_ORBit0 */
+#endif /* !CORBA_VMCID_ORBit0 */
 
 #ifndef CORBA_VPVID_OMG
 #define CORBA_VPVID_OMG 1330446336U
-#endif				/* !CORBA_VPVID_OMG */
+#endif /* !CORBA_VPVID_OMG */
 
 #ifndef CORBA_VPVID_ORBit0
 #define CORBA_VPVID_ORBit0 1330905088U
-#endif				/* !CORBA_VPVID_ORBit0 */
+#endif /* !CORBA_VPVID_ORBit0 */
 
 #if !defined(_CORBA_SystemException_defined)
 #define _CORBA_SystemException_defined 1
-   typedef struct CORBA_SystemException_type CORBA_SystemException;
-   struct CORBA_SystemException_type
-   {
-      CORBA_unsigned_long minor;
-      CORBA_completion_status completed;
-   };
+typedef struct CORBA_SystemException_type CORBA_SystemException;
+struct CORBA_SystemException_type {
+CORBA_unsigned_long minor;
+CORBA_completion_status completed;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_SystemException_0)
 #define TC_IMPL_TC_CORBA_SystemException_0 'c'
@@ -9130,11 +8739,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_SystemException_8 'f'
 #define TC_IMPL_TC_CORBA_SystemException_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_SystemException_struct;
+struct CORBA_TypeCode_struct TC_CORBA_SystemException_struct;
 #define TC_CORBA_SystemException ((CORBA_TypeCode)&TC_CORBA_SystemException_struct)
 #endif
 #define CORBA_SystemException__alloc() ((CORBA_SystemException *)ORBit_small_alloc (TC_CORBA_SystemException))
@@ -9143,7 +8752,7 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_Context) && !defined(_CORBA_Context_defined)
 #define ORBIT_DECL_CORBA_Context 1
 #define _CORBA_Context_defined 1
-   typedef struct CORBA_Context_type *CORBA_Context;
+typedef struct CORBA_Context_type *CORBA_Context;
 #ifndef TC_CORBA_Context
 #  define TC_CORBA_Context TC_CORBA_Object
 #endif
@@ -9151,7 +8760,7 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_NVList) && !defined(_CORBA_NVList_defined)
 #define ORBIT_DECL_CORBA_NVList 1
 #define _CORBA_NVList_defined 1
-   typedef struct CORBA_NVList_type *CORBA_NVList;
+typedef struct CORBA_NVList_type *CORBA_NVList;
 #ifndef TC_CORBA_NVList
 #  define TC_CORBA_NVList TC_CORBA_Object
 #endif
@@ -9159,7 +8768,7 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_Object) && !defined(_CORBA_Object_defined)
 #define ORBIT_DECL_CORBA_Object 1
 #define _CORBA_Object_defined 1
-   typedef struct CORBA_Object_type *CORBA_Object;
+typedef struct CORBA_Object_type *CORBA_Object;
 #ifndef TC_CORBA_Object
 #  define TC_CORBA_Object TC_CORBA_Object
 #endif
@@ -9167,7 +8776,7 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_ORB) && !defined(_CORBA_ORB_defined)
 #define ORBIT_DECL_CORBA_ORB 1
 #define _CORBA_ORB_defined 1
-   typedef struct CORBA_ORB_type *CORBA_ORB;
+typedef struct CORBA_ORB_type *CORBA_ORB;
 #ifndef TC_CORBA_ORB
 #  define TC_CORBA_ORB TC_CORBA_Object
 #endif
@@ -9175,7 +8784,7 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_Request) && !defined(_CORBA_Request_defined)
 #define ORBIT_DECL_CORBA_Request 1
 #define _CORBA_Request_defined 1
-   typedef struct CORBA_Request_type *CORBA_Request;
+typedef struct CORBA_Request_type *CORBA_Request;
 #ifndef TC_CORBA_Request
 #  define TC_CORBA_Request TC_CORBA_Object
 #endif
@@ -9183,14 +8792,14 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_ServerRequest) && !defined(_CORBA_ServerRequest_defined)
 #define ORBIT_DECL_CORBA_ServerRequest 1
 #define _CORBA_ServerRequest_defined 1
-   typedef struct CORBA_ServerRequest_type *CORBA_ServerRequest;
+typedef struct CORBA_ServerRequest_type *CORBA_ServerRequest;
 #ifndef TC_CORBA_ServerRequest
 #  define TC_CORBA_ServerRequest TC_CORBA_Object
 #endif
 #endif
 #if !defined(_CORBA_Flags_defined)
 #define _CORBA_Flags_defined 1
-   typedef CORBA_unsigned_long CORBA_Flags;
+typedef CORBA_unsigned_long CORBA_Flags;
 #define CORBA_Flags_marshal(x,y,z) CORBA_unsigned_long_marshal((x),(y),(z))
 #define CORBA_Flags_demarshal(x,y,z,i) CORBA_unsigned_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_Flags_0)
@@ -9205,11 +8814,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_Flags_8 'f'
 #define TC_IMPL_TC_CORBA_Flags_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_Flags_struct;
+struct CORBA_TypeCode_struct TC_CORBA_Flags_struct;
 #define TC_CORBA_Flags ((CORBA_TypeCode)&TC_CORBA_Flags_struct)
 #endif
 #define CORBA_Flags__alloc() ((CORBA_Flags *)ORBit_small_alloc (TC_CORBA_unsigned_long))
@@ -9217,14 +8826,13 @@ extern "C"
 #endif
 #if !defined(_CORBA_NamedValue_defined)
 #define _CORBA_NamedValue_defined 1
-   typedef struct CORBA_NamedValue_type CORBA_NamedValue;
-   struct CORBA_NamedValue_type
-   {
-      CORBA_Identifier name;
-      CORBA_any argument;
-      CORBA_long len;
-      CORBA_Flags arg_modes;
-   };
+typedef struct CORBA_NamedValue_type CORBA_NamedValue;
+struct CORBA_NamedValue_type {
+CORBA_Identifier name;
+CORBA_any argument;
+CORBA_long len;
+CORBA_Flags arg_modes;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_NamedValue_0)
 #define TC_IMPL_TC_CORBA_NamedValue_0 'c'
@@ -9238,11 +8846,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_NamedValue_8 'f'
 #define TC_IMPL_TC_CORBA_NamedValue_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_NamedValue_struct;
+struct CORBA_TypeCode_struct TC_CORBA_NamedValue_struct;
 #define TC_CORBA_NamedValue ((CORBA_TypeCode)&TC_CORBA_NamedValue_struct)
 #endif
 #define CORBA_NamedValue__alloc() ((CORBA_NamedValue *)ORBit_small_alloc (TC_CORBA_NamedValue))
@@ -9250,11 +8858,10 @@ extern "C"
 #endif
 #if !defined(_CORBA_SetOverrideType_defined)
 #define _CORBA_SetOverrideType_defined 1
-   typedef enum
-   {
-      CORBA_SET_OVERRIDE,
-      CORBA_ADD_OVERRIDE
-   } CORBA_SetOverrideType;
+typedef enum {
+  CORBA_SET_OVERRIDE,
+  CORBA_ADD_OVERRIDE
+} CORBA_SetOverrideType;
 #if !defined(TC_IMPL_TC_CORBA_SetOverrideType_0)
 #define TC_IMPL_TC_CORBA_SetOverrideType_0 'c'
 #define TC_IMPL_TC_CORBA_SetOverrideType_1 'o'
@@ -9267,18 +8874,18 @@ extern "C"
 #define TC_IMPL_TC_CORBA_SetOverrideType_8 'f'
 #define TC_IMPL_TC_CORBA_SetOverrideType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_SetOverrideType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_SetOverrideType_struct;
 #define TC_CORBA_SetOverrideType ((CORBA_TypeCode)&TC_CORBA_SetOverrideType_struct)
 #endif
 #endif
 #if !defined(ORBIT_DECL_CORBA_Object) && !defined(_CORBA_Object_defined)
 #define ORBIT_DECL_CORBA_Object 1
 #define _CORBA_Object_defined 1
-   typedef struct CORBA_Object_type *CORBA_Object;
+typedef struct CORBA_Object_type *CORBA_Object;
 #ifndef TC_CORBA_Object
 #  define TC_CORBA_Object TC_CORBA_Object
 #endif
@@ -9297,13 +8904,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Object_9 's'
 #if !defined(_CORBA_sequence_CORBA_Object_defined)
 #define _CORBA_sequence_CORBA_Object_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_Object *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_Object;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_Object* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_Object;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Object_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_0 'c'
@@ -9317,11 +8918,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Object_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Object_struct;
 #define TC_CORBA_sequence_CORBA_Object ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Object_struct)
 #endif
 #define CORBA_sequence_CORBA_Object__alloc() ((CORBA_sequence_CORBA_Object *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Object))
@@ -9343,7 +8944,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_Request_9 's'
 #if !defined(_CORBA_sequence_CORBA_Request_defined)
 #define _CORBA_sequence_CORBA_Request_defined 1
-   typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_Request;
+typedef CORBA_sequence_CORBA_Object CORBA_sequence_CORBA_Request;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_Request_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Request_0 'c'
@@ -9357,11 +8958,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Request_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_Request_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Request_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_Request_struct;
 #define TC_CORBA_sequence_CORBA_Request ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_Request_struct)
 #endif
 #define CORBA_sequence_CORBA_Request__alloc CORBA_sequence_CORBA_Object__alloc
@@ -9372,7 +8973,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_RequestSeq_defined)
 #define _CORBA_RequestSeq_defined 1
-   typedef CORBA_sequence_CORBA_Request CORBA_RequestSeq;
+typedef CORBA_sequence_CORBA_Request CORBA_RequestSeq;
 #define CORBA_RequestSeq_marshal(x,y,z) CORBA_sequence_CORBA_Request_marshal((x),(y),(z))
 #define CORBA_RequestSeq_demarshal(x,y,z,i) CORBA_sequence_CORBA_Request_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_RequestSeq_0)
@@ -9387,11 +8988,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_RequestSeq_8 'f'
 #define TC_IMPL_TC_CORBA_RequestSeq_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_RequestSeq_struct;
+struct CORBA_TypeCode_struct TC_CORBA_RequestSeq_struct;
 #define TC_CORBA_RequestSeq ((CORBA_TypeCode)&TC_CORBA_RequestSeq_struct)
 #endif
 #define CORBA_RequestSeq__alloc() ((CORBA_RequestSeq *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_Request))
@@ -9400,11 +9001,11 @@ extern "C"
 #endif
 #if !defined(_CORBA_AbstractBase_defined)
 #define _CORBA_AbstractBase_defined 1
-   typedef struct CORBA_AbstractBase_type *CORBA_AbstractBase;
+typedef struct CORBA_AbstractBase_type *CORBA_AbstractBase;
 #endif
 #if !defined(_CORBA_ServiceType_defined)
 #define _CORBA_ServiceType_defined 1
-   typedef CORBA_unsigned_short CORBA_ServiceType;
+typedef CORBA_unsigned_short CORBA_ServiceType;
 #define CORBA_ServiceType_marshal(x,y,z) CORBA_unsigned_short_marshal((x),(y),(z))
 #define CORBA_ServiceType_demarshal(x,y,z,i) CORBA_unsigned_short_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ServiceType_0)
@@ -9419,11 +9020,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ServiceType_8 'f'
 #define TC_IMPL_TC_CORBA_ServiceType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ServiceType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ServiceType_struct;
 #define TC_CORBA_ServiceType ((CORBA_TypeCode)&TC_CORBA_ServiceType_struct)
 #endif
 #define CORBA_ServiceType__alloc() ((CORBA_ServiceType *)ORBit_small_alloc (TC_CORBA_unsigned_short))
@@ -9431,7 +9032,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ServiceOption_defined)
 #define _CORBA_ServiceOption_defined 1
-   typedef CORBA_unsigned_long CORBA_ServiceOption;
+typedef CORBA_unsigned_long CORBA_ServiceOption;
 #define CORBA_ServiceOption_marshal(x,y,z) CORBA_unsigned_long_marshal((x),(y),(z))
 #define CORBA_ServiceOption_demarshal(x,y,z,i) CORBA_unsigned_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ServiceOption_0)
@@ -9446,11 +9047,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ServiceOption_8 'f'
 #define TC_IMPL_TC_CORBA_ServiceOption_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ServiceOption_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ServiceOption_struct;
 #define TC_CORBA_ServiceOption ((CORBA_TypeCode)&TC_CORBA_ServiceOption_struct)
 #endif
 #define CORBA_ServiceOption__alloc() ((CORBA_ServiceOption *)ORBit_small_alloc (TC_CORBA_unsigned_long))
@@ -9458,7 +9059,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ServiceDetailType_defined)
 #define _CORBA_ServiceDetailType_defined 1
-   typedef CORBA_unsigned_long CORBA_ServiceDetailType;
+typedef CORBA_unsigned_long CORBA_ServiceDetailType;
 #define CORBA_ServiceDetailType_marshal(x,y,z) CORBA_unsigned_long_marshal((x),(y),(z))
 #define CORBA_ServiceDetailType_demarshal(x,y,z,i) CORBA_unsigned_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ServiceDetailType_0)
@@ -9473,11 +9074,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ServiceDetailType_8 'f'
 #define TC_IMPL_TC_CORBA_ServiceDetailType_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ServiceDetailType_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ServiceDetailType_struct;
 #define TC_CORBA_ServiceDetailType ((CORBA_TypeCode)&TC_CORBA_ServiceDetailType_struct)
 #endif
 #define CORBA_ServiceDetailType__alloc() ((CORBA_ServiceDetailType *)ORBit_small_alloc (TC_CORBA_unsigned_long))
@@ -9485,11 +9086,11 @@ extern "C"
 #endif
 #ifndef CORBA_Security
 #define CORBA_Security 1U
-#endif				/* !CORBA_Security */
+#endif /* !CORBA_Security */
 
 #if !defined(_CORBA_ServiceDetail_defined)
 #define _CORBA_ServiceDetail_defined 1
-   typedef struct CORBA_ServiceDetail_type CORBA_ServiceDetail;
+typedef struct CORBA_ServiceDetail_type CORBA_ServiceDetail;
 #if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
 #define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
 #define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'c'
@@ -9504,13 +9105,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_octet_9 's'
 #if !defined(_CORBA_sequence_CORBA_octet_defined)
 #define _CORBA_sequence_CORBA_octet_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_octet *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_octet;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_octet* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'c'
@@ -9524,11 +9119,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
 #define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
 #endif
 #define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
@@ -9536,11 +9131,10 @@ extern "C"
 #define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
 #define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
 #endif
-   struct CORBA_ServiceDetail_type
-   {
-      CORBA_ServiceDetailType service_detail_type;
-      CORBA_sequence_CORBA_octet service_detail;
-   };
+struct CORBA_ServiceDetail_type {
+CORBA_ServiceDetailType service_detail_type;
+CORBA_sequence_CORBA_octet service_detail;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ServiceDetail_0)
 #define TC_IMPL_TC_CORBA_ServiceDetail_0 'c'
@@ -9554,11 +9148,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ServiceDetail_8 'f'
 #define TC_IMPL_TC_CORBA_ServiceDetail_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ServiceDetail_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ServiceDetail_struct;
 #define TC_CORBA_ServiceDetail ((CORBA_TypeCode)&TC_CORBA_ServiceDetail_struct)
 #endif
 #define CORBA_ServiceDetail__alloc() ((CORBA_ServiceDetail *)ORBit_small_alloc (TC_CORBA_ServiceDetail))
@@ -9566,7 +9160,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ServiceInformation_defined)
 #define _CORBA_ServiceInformation_defined 1
-   typedef struct CORBA_ServiceInformation_type CORBA_ServiceInformation;
+typedef struct CORBA_ServiceInformation_type CORBA_ServiceInformation;
 #if !defined(ORBIT_DECL_CORBA_sequence_CORBA_unsigned_long)
 #define ORBIT_DECL_CORBA_sequence_CORBA_unsigned_long 1
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_long_0 'c'
@@ -9581,13 +9175,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_unsigned_long_9 's'
 #if !defined(_CORBA_sequence_CORBA_unsigned_long_defined)
 #define _CORBA_sequence_CORBA_unsigned_long_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_unsigned_long *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_unsigned_long;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_unsigned_long* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_unsigned_long;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0 'c'
@@ -9601,12 +9189,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_unsigned_long_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_unsigned_long_struct;
 #define TC_CORBA_sequence_CORBA_unsigned_long ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_unsigned_long_struct)
 #endif
 #define CORBA_sequence_CORBA_unsigned_long__alloc() ((CORBA_sequence_CORBA_unsigned_long *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_unsigned_long))
@@ -9628,8 +9215,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ServiceOption_9 's'
 #if !defined(_CORBA_sequence_CORBA_ServiceOption_defined)
 #define _CORBA_sequence_CORBA_ServiceOption_defined 1
-   typedef CORBA_sequence_CORBA_unsigned_long
-      CORBA_sequence_CORBA_ServiceOption;
+typedef CORBA_sequence_CORBA_unsigned_long CORBA_sequence_CORBA_ServiceOption;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ServiceOption_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ServiceOption_0 'c'
@@ -9643,12 +9229,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ServiceOption_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ServiceOption_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ServiceOption_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ServiceOption_struct;
 #define TC_CORBA_sequence_CORBA_ServiceOption ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ServiceOption_struct)
 #endif
 #define CORBA_sequence_CORBA_ServiceOption__alloc CORBA_sequence_CORBA_unsigned_long__alloc
@@ -9671,13 +9256,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ServiceDetail_9 's'
 #if !defined(_CORBA_sequence_CORBA_ServiceDetail_defined)
 #define _CORBA_sequence_CORBA_ServiceDetail_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_ServiceDetail *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_ServiceDetail;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_ServiceDetail* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_ServiceDetail;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ServiceDetail_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ServiceDetail_0 'c'
@@ -9691,12 +9270,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ServiceDetail_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ServiceDetail_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ServiceDetail_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ServiceDetail_struct;
 #define TC_CORBA_sequence_CORBA_ServiceDetail ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ServiceDetail_struct)
 #endif
 #define CORBA_sequence_CORBA_ServiceDetail__alloc() ((CORBA_sequence_CORBA_ServiceDetail *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ServiceDetail))
@@ -9704,11 +9282,10 @@ extern "C"
 #define CORBA_sequence_CORBA_ServiceDetail_allocbuf(l) ((CORBA_ServiceDetail*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_ServiceDetail, (l)))
 #define CORBA_sequence_CORBA_ServiceDetail_allocbuf(l) ((CORBA_ServiceDetail*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_ServiceDetail, (l)))
 #endif
-   struct CORBA_ServiceInformation_type
-   {
-      CORBA_sequence_CORBA_ServiceOption service_options;
-      CORBA_sequence_CORBA_ServiceDetail service_details;
-   };
+struct CORBA_ServiceInformation_type {
+CORBA_sequence_CORBA_ServiceOption service_options;
+CORBA_sequence_CORBA_ServiceDetail service_details;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ServiceInformation_0)
 #define TC_IMPL_TC_CORBA_ServiceInformation_0 'c'
@@ -9722,11 +9299,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ServiceInformation_8 'f'
 #define TC_IMPL_TC_CORBA_ServiceInformation_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ServiceInformation_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ServiceInformation_struct;
 #define TC_CORBA_ServiceInformation ((CORBA_TypeCode)&TC_CORBA_ServiceInformation_struct)
 #endif
 #define CORBA_ServiceInformation__alloc() ((CORBA_ServiceInformation *)ORBit_small_alloc (TC_CORBA_ServiceInformation))
@@ -9734,11 +9311,11 @@ extern "C"
 #endif
 #if !defined(_CORBA_ValueFactory_defined)
 #define _CORBA_ValueFactory_defined 1
-   typedef struct CORBA_ValueFactory_type *CORBA_ValueFactory;
+typedef struct CORBA_ValueFactory_type *CORBA_ValueFactory;
 #endif
 #if !defined(_CORBA_ORBid_defined)
 #define _CORBA_ORBid_defined 1
-   typedef CORBA_string CORBA_ORBid;
+typedef CORBA_string CORBA_ORBid;
 #define CORBA_ORBid_marshal(x,y,z) CORBA_string_marshal((x),(y),(z))
 #define CORBA_ORBid_demarshal(x,y,z,i) CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ORBid_0)
@@ -9753,11 +9330,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ORBid_8 'f'
 #define TC_IMPL_TC_CORBA_ORBid_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ORBid_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ORBid_struct;
 #define TC_CORBA_ORBid ((CORBA_TypeCode)&TC_CORBA_ORBid_struct)
 #endif
 #define CORBA_ORBid__alloc() ((CORBA_ORBid *)ORBit_small_alloc (TC_CORBA_string))
@@ -9767,11 +9344,10 @@ extern "C"
 #define ex_CORBA_WrongTransaction "IDL:omg.org/CORBA/WrongTransaction:1.0"
 #if !defined(_CORBA_WrongTransaction_defined)
 #define _CORBA_WrongTransaction_defined 1
-   typedef struct CORBA_WrongTransaction_type CORBA_WrongTransaction;
-   struct CORBA_WrongTransaction_type
-   {
-      int dummy;
-   };
+typedef struct CORBA_WrongTransaction_type CORBA_WrongTransaction;
+struct CORBA_WrongTransaction_type {
+int dummy;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_WrongTransaction_0)
 #define TC_IMPL_TC_CORBA_WrongTransaction_0 'c'
@@ -9785,11 +9361,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_WrongTransaction_8 'f'
 #define TC_IMPL_TC_CORBA_WrongTransaction_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_WrongTransaction_struct;
+struct CORBA_TypeCode_struct TC_CORBA_WrongTransaction_struct;
 #define TC_CORBA_WrongTransaction ((CORBA_TypeCode)&TC_CORBA_WrongTransaction_struct)
 #endif
 #define CORBA_WrongTransaction__alloc() ((CORBA_WrongTransaction *)ORBit_small_alloc (TC_CORBA_WrongTransaction))
@@ -9798,14 +9374,14 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_ORB) && !defined(_CORBA_ORB_defined)
 #define ORBIT_DECL_CORBA_ORB 1
 #define _CORBA_ORB_defined 1
-   typedef struct CORBA_ORB_type *CORBA_ORB;
+typedef struct CORBA_ORB_type *CORBA_ORB;
 #ifndef TC_CORBA_ORB
 #  define TC_CORBA_ORB TC_CORBA_Object
 #endif
 #endif
 #if !defined(_CORBA_ORB_ObjectId_defined)
 #define _CORBA_ORB_ObjectId_defined 1
-   typedef CORBA_string CORBA_ORB_ObjectId;
+typedef CORBA_string CORBA_ORB_ObjectId;
 #define CORBA_ORB_ObjectId_marshal(x,y,z) CORBA_string_marshal((x),(y),(z))
 #define CORBA_ORB_ObjectId_demarshal(x,y,z,i) CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ORB_ObjectId_0)
@@ -9820,11 +9396,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ORB_ObjectId_8 'f'
 #define TC_IMPL_TC_CORBA_ORB_ObjectId_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ORB_ObjectId_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ORB_ObjectId_struct;
 #define TC_CORBA_ORB_ObjectId ((CORBA_TypeCode)&TC_CORBA_ORB_ObjectId_struct)
 #endif
 #define CORBA_ORB_ObjectId__alloc() ((CORBA_ORB_ObjectId *)ORBit_small_alloc (TC_CORBA_string))
@@ -9844,13 +9420,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 's'
 #if !defined(_CORBA_sequence_CORBA_string_defined)
 #define _CORBA_sequence_CORBA_string_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_string *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_string;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_string* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'c'
@@ -9864,11 +9434,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -9890,7 +9460,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_ORB_ObjectId_9 's'
 #if !defined(_CORBA_sequence_CORBA_ORB_ObjectId_defined)
 #define _CORBA_sequence_CORBA_ORB_ObjectId_defined 1
-   typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_ORB_ObjectId;
+typedef CORBA_sequence_CORBA_string CORBA_sequence_CORBA_ORB_ObjectId;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_ORB_ObjectId_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ORB_ObjectId_0 'c'
@@ -9904,12 +9474,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ORB_ObjectId_8 'f'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_ORB_ObjectId_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_CORBA_ORB_ObjectId_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_ORB_ObjectId_struct;
 #define TC_CORBA_sequence_CORBA_ORB_ObjectId ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_ORB_ObjectId_struct)
 #endif
 #define CORBA_sequence_CORBA_ORB_ObjectId__alloc CORBA_sequence_CORBA_string__alloc
@@ -9920,7 +9489,7 @@ extern "C"
 #endif
 #if !defined(_CORBA_ORB_ObjectIdList_defined)
 #define _CORBA_ORB_ObjectIdList_defined 1
-   typedef CORBA_sequence_CORBA_ORB_ObjectId CORBA_ORB_ObjectIdList;
+typedef CORBA_sequence_CORBA_ORB_ObjectId CORBA_ORB_ObjectIdList;
 #define CORBA_ORB_ObjectIdList_marshal(x,y,z) CORBA_sequence_CORBA_ORB_ObjectId_marshal((x),(y),(z))
 #define CORBA_ORB_ObjectIdList_demarshal(x,y,z,i) CORBA_sequence_CORBA_ORB_ObjectId_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_CORBA_ORB_ObjectIdList_0)
@@ -9935,11 +9504,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ORB_ObjectIdList_8 'f'
 #define TC_IMPL_TC_CORBA_ORB_ObjectIdList_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ORB_ObjectIdList_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ORB_ObjectIdList_struct;
 #define TC_CORBA_ORB_ObjectIdList ((CORBA_TypeCode)&TC_CORBA_ORB_ObjectIdList_struct)
 #endif
 #define CORBA_ORB_ObjectIdList__alloc() ((CORBA_ORB_ObjectIdList *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_ORB_ObjectId))
@@ -9950,11 +9519,10 @@ extern "C"
 #define ex_CORBA_ORB_InvalidName "IDL:omg.org/CORBA/ORB/InvalidName:1.0"
 #if !defined(_CORBA_ORB_InvalidName_defined)
 #define _CORBA_ORB_InvalidName_defined 1
-   typedef struct CORBA_ORB_InvalidName_type CORBA_ORB_InvalidName;
-   struct CORBA_ORB_InvalidName_type
-   {
-      int dummy;
-   };
+typedef struct CORBA_ORB_InvalidName_type CORBA_ORB_InvalidName;
+struct CORBA_ORB_InvalidName_type {
+int dummy;
+};
 
 #if !defined(TC_IMPL_TC_CORBA_ORB_InvalidName_0)
 #define TC_IMPL_TC_CORBA_ORB_InvalidName_0 'c'
@@ -9968,11 +9536,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_ORB_InvalidName_8 'f'
 #define TC_IMPL_TC_CORBA_ORB_InvalidName_9 's'
 #ifdef ORBIT_IDL_C_IMODULE_corba_defs
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_ORB_InvalidName_struct;
+struct CORBA_TypeCode_struct TC_CORBA_ORB_InvalidName_struct;
 #define TC_CORBA_ORB_InvalidName ((CORBA_TypeCode)&TC_CORBA_ORB_InvalidName_struct)
 #endif
 #define CORBA_ORB_InvalidName__alloc() ((CORBA_ORB_InvalidName *)ORBit_small_alloc (TC_CORBA_ORB_InvalidName))
@@ -9980,12 +9548,12 @@ extern "C"
 #endif
 #if !defined(_CORBA_OpaqueValue_defined)
 #define _CORBA_OpaqueValue_defined 1
-   typedef struct CORBA_OpaqueValue_type *CORBA_OpaqueValue;
+typedef struct CORBA_OpaqueValue_type *CORBA_OpaqueValue;
 #endif
 #if !defined(ORBIT_DECL_CORBA_Request) && !defined(_CORBA_Request_defined)
 #define ORBIT_DECL_CORBA_Request 1
 #define _CORBA_Request_defined 1
-   typedef struct CORBA_Request_type *CORBA_Request;
+typedef struct CORBA_Request_type *CORBA_Request;
 #ifndef TC_CORBA_Request
 #  define TC_CORBA_Request TC_CORBA_Object
 #endif
@@ -9993,7 +9561,7 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_Context) && !defined(_CORBA_Context_defined)
 #define ORBIT_DECL_CORBA_Context 1
 #define _CORBA_Context_defined 1
-   typedef struct CORBA_Context_type *CORBA_Context;
+typedef struct CORBA_Context_type *CORBA_Context;
 #ifndef TC_CORBA_Context
 #  define TC_CORBA_Context TC_CORBA_Object
 #endif
@@ -10001,7 +9569,7 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_NVList) && !defined(_CORBA_NVList_defined)
 #define ORBIT_DECL_CORBA_NVList 1
 #define _CORBA_NVList_defined 1
-   typedef struct CORBA_NVList_type *CORBA_NVList;
+typedef struct CORBA_NVList_type *CORBA_NVList;
 #ifndef TC_CORBA_NVList
 #  define TC_CORBA_NVList TC_CORBA_Object
 #endif
@@ -10009,238 +9577,59 @@ extern "C"
 #if !defined(ORBIT_DECL_CORBA_ServerRequest) && !defined(_CORBA_ServerRequest_defined)
 #define ORBIT_DECL_CORBA_ServerRequest 1
 #define _CORBA_ServerRequest_defined 1
-   typedef struct CORBA_ServerRequest_type *CORBA_ServerRequest;
+typedef struct CORBA_ServerRequest_type *CORBA_ServerRequest;
 #ifndef TC_CORBA_ServerRequest
 #  define TC_CORBA_ServerRequest TC_CORBA_Object
 #endif
 #endif
 
 /** stub prototypes **/
-   CORBA_PolicyType CORBA_Policy__get_policy_type(CORBA_Policy _obj,
-						  CORBA_Environment * ev);
-   CORBA_Policy CORBA_Policy_copy(CORBA_Policy _obj, CORBA_Environment * ev);
-   void CORBA_Policy_destroy(CORBA_Policy _obj, CORBA_Environment * ev);
-   CORBA_Policy CORBA_DomainManager_get_domain_policy(CORBA_DomainManager
-						      _obj,
-						      const CORBA_PolicyType
-						      policy_type,
-						      CORBA_Environment * ev);
+CORBA_PolicyType CORBA_Policy__get_policy_type(CORBA_Policy _obj, CORBA_Environment *ev);
+CORBA_Policy CORBA_Policy_copy(CORBA_Policy _obj, CORBA_Environment *ev);
+void CORBA_Policy_destroy(CORBA_Policy _obj, CORBA_Environment *ev);
+CORBA_Policy CORBA_DomainManager_get_domain_policy(CORBA_DomainManager _obj, const CORBA_PolicyType policy_type, CORBA_Environment *ev);
 #define CORBA_ConstructionPolicy__get_policy_type CORBA_Policy__get_policy_type
 #define CORBA_ConstructionPolicy_copy CORBA_Policy_copy
 #define CORBA_ConstructionPolicy_destroy CORBA_Policy_destroy
-   void CORBA_ConstructionPolicy_make_domain_manager(CORBA_ConstructionPolicy
-						     _obj,
-						     const CORBA_InterfaceDef
-						     object_type,
-						     const CORBA_boolean
-						     constr_policy,
-						     CORBA_Environment * ev);
-   CORBA_DefinitionKind CORBA_IRObject__get_def_kind(CORBA_IRObject _obj,
-						     CORBA_Environment * ev);
-   void CORBA_IRObject_destroy(CORBA_IRObject _obj, CORBA_Environment * ev);
+void CORBA_ConstructionPolicy_make_domain_manager(CORBA_ConstructionPolicy _obj, const CORBA_InterfaceDef object_type, const CORBA_boolean constr_policy, CORBA_Environment *ev);
+CORBA_DefinitionKind CORBA_IRObject__get_def_kind(CORBA_IRObject _obj, CORBA_Environment *ev);
+void CORBA_IRObject_destroy(CORBA_IRObject _obj, CORBA_Environment *ev);
 #define CORBA_Contained__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_Contained_destroy CORBA_IRObject_destroy
-   CORBA_RepositoryId CORBA_Contained__get_id(CORBA_Contained _obj,
-					      CORBA_Environment * ev);
-   void CORBA_Contained__set_id(CORBA_Contained _obj,
-				const CORBA_char * value,
-				CORBA_Environment * ev);
-   CORBA_Identifier CORBA_Contained__get_name(CORBA_Contained _obj,
-					      CORBA_Environment * ev);
-   void CORBA_Contained__set_name(CORBA_Contained _obj,
-				  const CORBA_char * value,
-				  CORBA_Environment * ev);
-   CORBA_VersionSpec CORBA_Contained__get_version(CORBA_Contained _obj,
-						  CORBA_Environment * ev);
-   void CORBA_Contained__set_version(CORBA_Contained _obj,
-				     const CORBA_char * value,
-				     CORBA_Environment * ev);
-   CORBA_Container CORBA_Contained__get_defined_in(CORBA_Contained _obj,
-						   CORBA_Environment * ev);
-   CORBA_ScopedName CORBA_Contained__get_absolute_name(CORBA_Contained _obj,
-						       CORBA_Environment *
-						       ev);
-   CORBA_Repository CORBA_Contained__get_containing_repository(CORBA_Contained
-							       _obj,
-							       CORBA_Environment
-							       * ev);
-   CORBA_Contained_Description *CORBA_Contained_describe(CORBA_Contained _obj,
-							 CORBA_Environment *
-							 ev);
-   void CORBA_Contained_move(CORBA_Contained _obj,
-			     const CORBA_Container new_container,
-			     const CORBA_char * new_name,
-			     const CORBA_char * new_version,
-			     CORBA_Environment * ev);
+CORBA_RepositoryId CORBA_Contained__get_id(CORBA_Contained _obj, CORBA_Environment *ev);
+void CORBA_Contained__set_id(CORBA_Contained _obj, const CORBA_char * value, CORBA_Environment *ev);
+CORBA_Identifier CORBA_Contained__get_name(CORBA_Contained _obj, CORBA_Environment *ev);
+void CORBA_Contained__set_name(CORBA_Contained _obj, const CORBA_char * value, CORBA_Environment *ev);
+CORBA_VersionSpec CORBA_Contained__get_version(CORBA_Contained _obj, CORBA_Environment *ev);
+void CORBA_Contained__set_version(CORBA_Contained _obj, const CORBA_char * value, CORBA_Environment *ev);
+CORBA_Container CORBA_Contained__get_defined_in(CORBA_Contained _obj, CORBA_Environment *ev);
+CORBA_ScopedName CORBA_Contained__get_absolute_name(CORBA_Contained _obj, CORBA_Environment *ev);
+CORBA_Repository CORBA_Contained__get_containing_repository(CORBA_Contained _obj, CORBA_Environment *ev);
+CORBA_Contained_Description* CORBA_Contained_describe(CORBA_Contained _obj, CORBA_Environment *ev);
+void CORBA_Contained_move(CORBA_Contained _obj, const CORBA_Container new_container, const CORBA_char * new_name, const CORBA_char * new_version, CORBA_Environment *ev);
 #define CORBA_Container__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_Container_destroy CORBA_IRObject_destroy
-   CORBA_Contained CORBA_Container_lookup(CORBA_Container _obj,
-					  const CORBA_char * search_name,
-					  CORBA_Environment * ev);
-   CORBA_ContainedSeq *CORBA_Container_contents(CORBA_Container _obj,
-						const CORBA_DefinitionKind
-						limit_type,
-						const CORBA_boolean
-						exclude_inherited,
-						CORBA_Environment * ev);
-   CORBA_ContainedSeq *CORBA_Container_lookup_name(CORBA_Container _obj,
-						   const CORBA_char *
-						   search_name,
-						   const CORBA_long
-						   levels_to_search,
-						   const CORBA_DefinitionKind
-						   limit_type,
-						   const CORBA_boolean
-						   exclude_inherited,
-						   CORBA_Environment * ev);
-   CORBA_Container_DescriptionSeq
-      *CORBA_Container_describe_contents(CORBA_Container _obj,
-					 const CORBA_DefinitionKind
-					 limit_type,
-					 const CORBA_boolean
-					 exclude_inherited,
-					 const CORBA_long max_returned_objs,
-					 CORBA_Environment * ev);
-   CORBA_ModuleDef CORBA_Container_create_module(CORBA_Container _obj,
-						 const CORBA_char * id,
-						 const CORBA_char * name,
-						 const CORBA_char * version,
-						 CORBA_Environment * ev);
-   CORBA_ConstantDef CORBA_Container_create_constant(CORBA_Container _obj,
-						     const CORBA_char * id,
-						     const CORBA_char * name,
-						     const CORBA_char *
-						     version,
-						     const CORBA_IDLType type,
-						     const CORBA_any * value,
-						     CORBA_Environment * ev);
-   CORBA_StructDef CORBA_Container_create_struct(CORBA_Container _obj,
-						 const CORBA_char * id,
-						 const CORBA_char * name,
-						 const CORBA_char * version,
-						 const CORBA_StructMemberSeq *
-						 members,
-						 CORBA_Environment * ev);
-   CORBA_UnionDef CORBA_Container_create_union(CORBA_Container _obj,
-					       const CORBA_char * id,
-					       const CORBA_char * name,
-					       const CORBA_char * version,
-					       const CORBA_IDLType
-					       discriminator_type,
-					       const CORBA_UnionMemberSeq *
-					       members,
-					       CORBA_Environment * ev);
-   CORBA_EnumDef CORBA_Container_create_enum(CORBA_Container _obj,
-					     const CORBA_char * id,
-					     const CORBA_char * name,
-					     const CORBA_char * version,
-					     const CORBA_EnumMemberSeq *
-					     members, CORBA_Environment * ev);
-   CORBA_AliasDef CORBA_Container_create_alias(CORBA_Container _obj,
-					       const CORBA_char * id,
-					       const CORBA_char * name,
-					       const CORBA_char * version,
-					       const CORBA_IDLType
-					       original_type,
-					       CORBA_Environment * ev);
-   CORBA_InterfaceDef CORBA_Container_create_interface(CORBA_Container _obj,
-						       const CORBA_char * id,
-						       const CORBA_char *
-						       name,
-						       const CORBA_char *
-						       version,
-						       const
-						       CORBA_InterfaceDefSeq *
-						       base_interfaces,
-						       const CORBA_boolean
-						       is_abstract,
-						       CORBA_Environment *
-						       ev);
-   CORBA_ValueDef CORBA_Container_create_value(CORBA_Container _obj,
-					       const CORBA_char * id,
-					       const CORBA_char * name,
-					       const CORBA_char * version,
-					       const CORBA_boolean is_custom,
-					       const CORBA_boolean
-					       is_abstract,
-					       const CORBA_ValueDef
-					       base_value,
-					       const CORBA_boolean
-					       is_truncatable,
-					       const CORBA_ValueDefSeq *
-					       abstract_base_values,
-					       const CORBA_InterfaceDefSeq *
-					       supported_interfaces,
-					       const CORBA_InitializerSeq *
-					       initializers,
-					       CORBA_Environment * ev);
-   CORBA_ValueBoxDef CORBA_Container_create_value_box(CORBA_Container _obj,
-						      const CORBA_char * id,
-						      const CORBA_char * name,
-						      const CORBA_char *
-						      version,
-						      const CORBA_IDLType
-						      original_type_def,
-						      CORBA_Environment * ev);
-   CORBA_ExceptionDef CORBA_Container_create_exception(CORBA_Container _obj,
-						       const CORBA_char * id,
-						       const CORBA_char *
-						       name,
-						       const CORBA_char *
-						       version,
-						       const
-						       CORBA_StructMemberSeq *
-						       members,
-						       CORBA_Environment *
-						       ev);
-   CORBA_NativeDef CORBA_Container_create_native(CORBA_Container _obj,
-						 const CORBA_char * id,
-						 const CORBA_char * name,
-						 const CORBA_char * version,
-						 CORBA_Environment * ev);
-   CORBA_AbstractInterfaceDef
-      CORBA_Container_create_abstract_interface(CORBA_Container _obj,
-						const CORBA_char * id,
-						const CORBA_char * name,
-						const CORBA_char * version,
-						const
-						CORBA_AbstractInterfaceDefSeq
-						* base_interfaces,
-						CORBA_Environment * ev);
-   CORBA_LocalInterfaceDef
-      CORBA_Container_create_local_interface(CORBA_Container _obj,
-					     const CORBA_char * id,
-					     const CORBA_char * name,
-					     const CORBA_char * version,
-					     const CORBA_InterfaceDefSeq *
-					     base_interfaces,
-					     CORBA_Environment * ev);
-   CORBA_ExtValueDef CORBA_Container_create_ext_value(CORBA_Container _obj,
-						      const CORBA_char * id,
-						      const CORBA_char * name,
-						      const CORBA_char *
-						      version,
-						      const CORBA_boolean
-						      is_custom,
-						      const CORBA_boolean
-						      is_abstract,
-						      const CORBA_ValueDef
-						      base_value,
-						      const CORBA_boolean
-						      is_truncatable,
-						      const CORBA_ValueDefSeq
-						      * abstract_base_values,
-						      const
-						      CORBA_InterfaceDefSeq *
-						      supported_interfaces,
-						      const
-						      CORBA_ExtInitializerSeq
-						      * initializers,
-						      CORBA_Environment * ev);
+CORBA_Contained CORBA_Container_lookup(CORBA_Container _obj, const CORBA_char * search_name, CORBA_Environment *ev);
+CORBA_ContainedSeq* CORBA_Container_contents(CORBA_Container _obj, const CORBA_DefinitionKind limit_type, const CORBA_boolean exclude_inherited, CORBA_Environment *ev);
+CORBA_ContainedSeq* CORBA_Container_lookup_name(CORBA_Container _obj, const CORBA_char * search_name, const CORBA_long levels_to_search, const CORBA_DefinitionKind limit_type, const CORBA_boolean exclude_inherited, CORBA_Environment *ev);
+CORBA_Container_DescriptionSeq* CORBA_Container_describe_contents(CORBA_Container _obj, const CORBA_DefinitionKind limit_type, const CORBA_boolean exclude_inherited, const CORBA_long max_returned_objs, CORBA_Environment *ev);
+CORBA_ModuleDef CORBA_Container_create_module(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, CORBA_Environment *ev);
+CORBA_ConstantDef CORBA_Container_create_constant(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType type, const CORBA_any* value, CORBA_Environment *ev);
+CORBA_StructDef CORBA_Container_create_struct(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_StructMemberSeq* members, CORBA_Environment *ev);
+CORBA_UnionDef CORBA_Container_create_union(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType discriminator_type, const CORBA_UnionMemberSeq* members, CORBA_Environment *ev);
+CORBA_EnumDef CORBA_Container_create_enum(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_EnumMemberSeq* members, CORBA_Environment *ev);
+CORBA_AliasDef CORBA_Container_create_alias(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType original_type, CORBA_Environment *ev);
+CORBA_InterfaceDef CORBA_Container_create_interface(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_InterfaceDefSeq* base_interfaces, const CORBA_boolean is_abstract, CORBA_Environment *ev);
+CORBA_ValueDef CORBA_Container_create_value(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_boolean is_custom, const CORBA_boolean is_abstract, const CORBA_ValueDef base_value, const CORBA_boolean is_truncatable, const CORBA_ValueDefSeq* abstract_base_values, const CORBA_InterfaceDefSeq* supported_interfaces, const CORBA_InitializerSeq* initializers, CORBA_Environment *ev);
+CORBA_ValueBoxDef CORBA_Container_create_value_box(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType original_type_def, CORBA_Environment *ev);
+CORBA_ExceptionDef CORBA_Container_create_exception(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_StructMemberSeq* members, CORBA_Environment *ev);
+CORBA_NativeDef CORBA_Container_create_native(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, CORBA_Environment *ev);
+CORBA_AbstractInterfaceDef CORBA_Container_create_abstract_interface(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_AbstractInterfaceDefSeq* base_interfaces, CORBA_Environment *ev);
+CORBA_LocalInterfaceDef CORBA_Container_create_local_interface(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_InterfaceDefSeq* base_interfaces, CORBA_Environment *ev);
+CORBA_ExtValueDef CORBA_Container_create_ext_value(CORBA_Container _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_boolean is_custom, const CORBA_boolean is_abstract, const CORBA_ValueDef base_value, const CORBA_boolean is_truncatable, const CORBA_ValueDefSeq* abstract_base_values, const CORBA_InterfaceDefSeq* supported_interfaces, const CORBA_ExtInitializerSeq* initializers, CORBA_Environment *ev);
 #define CORBA_IDLType__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_IDLType_destroy CORBA_IRObject_destroy
-   CORBA_TypeCode CORBA_IDLType__get_type(CORBA_IDLType _obj,
-					   CORBA_Environment * ev);
+CORBA_TypeCode CORBA_IDLType__get_type(CORBA_IDLType _obj, CORBA_Environment *ev);
 #define CORBA_Repository__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_Repository_destroy CORBA_IRObject_destroy
 #define CORBA_Repository_lookup CORBA_Container_lookup
@@ -10261,45 +9650,14 @@ extern "C"
 #define CORBA_Repository_create_abstract_interface CORBA_Container_create_abstract_interface
 #define CORBA_Repository_create_local_interface CORBA_Container_create_local_interface
 #define CORBA_Repository_create_ext_value CORBA_Container_create_ext_value
-   CORBA_Contained CORBA_Repository_lookup_id(CORBA_Repository _obj,
-					      const CORBA_char * search_id,
-					      CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_Repository_get_canonical_typecode(CORBA_Repository
-							   _obj,
-							   const
-							   CORBA_TypeCode tc,
-							   CORBA_Environment *
-							   ev);
-   CORBA_PrimitiveDef CORBA_Repository_get_primitive(CORBA_Repository _obj,
-						     const CORBA_PrimitiveKind
-						     kind,
-						     CORBA_Environment * ev);
-   CORBA_StringDef CORBA_Repository_create_string(CORBA_Repository _obj,
-						  const CORBA_unsigned_long
-						  bound,
-						  CORBA_Environment * ev);
-   CORBA_WstringDef CORBA_Repository_create_wstring(CORBA_Repository _obj,
-						    const CORBA_unsigned_long
-						    bound,
-						    CORBA_Environment * ev);
-   CORBA_SequenceDef CORBA_Repository_create_sequence(CORBA_Repository _obj,
-						      const
-						      CORBA_unsigned_long
-						      bound,
-						      const CORBA_IDLType
-						      element_type,
-						      CORBA_Environment * ev);
-   CORBA_ArrayDef CORBA_Repository_create_array(CORBA_Repository _obj,
-						const CORBA_unsigned_long
-						length,
-						const CORBA_IDLType
-						element_type,
-						CORBA_Environment * ev);
-   CORBA_FixedDef CORBA_Repository_create_fixed(CORBA_Repository _obj,
-						const CORBA_unsigned_short
-						digits,
-						const CORBA_short scale,
-						CORBA_Environment * ev);
+CORBA_Contained CORBA_Repository_lookup_id(CORBA_Repository _obj, const CORBA_char * search_id, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_Repository_get_canonical_typecode(CORBA_Repository _obj, const CORBA_TypeCode tc, CORBA_Environment *ev);
+CORBA_PrimitiveDef CORBA_Repository_get_primitive(CORBA_Repository _obj, const CORBA_PrimitiveKind kind, CORBA_Environment *ev);
+CORBA_StringDef CORBA_Repository_create_string(CORBA_Repository _obj, const CORBA_unsigned_long bound, CORBA_Environment *ev);
+CORBA_WstringDef CORBA_Repository_create_wstring(CORBA_Repository _obj, const CORBA_unsigned_long bound, CORBA_Environment *ev);
+CORBA_SequenceDef CORBA_Repository_create_sequence(CORBA_Repository _obj, const CORBA_unsigned_long bound, const CORBA_IDLType element_type, CORBA_Environment *ev);
+CORBA_ArrayDef CORBA_Repository_create_array(CORBA_Repository _obj, const CORBA_unsigned_long length, const CORBA_IDLType element_type, CORBA_Environment *ev);
+CORBA_FixedDef CORBA_Repository_create_fixed(CORBA_Repository _obj, const CORBA_unsigned_short digits, const CORBA_short scale, CORBA_Environment *ev);
 #define CORBA_ModuleDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ModuleDef_destroy CORBA_IRObject_destroy
 #define CORBA_ModuleDef_lookup CORBA_Container_lookup
@@ -10344,18 +9702,11 @@ extern "C"
 #define CORBA_ConstantDef__get_containing_repository CORBA_Contained__get_containing_repository
 #define CORBA_ConstantDef_describe CORBA_Contained_describe
 #define CORBA_ConstantDef_move CORBA_Contained_move
-   CORBA_TypeCode CORBA_ConstantDef__get_type(CORBA_ConstantDef _obj,
-					       CORBA_Environment * ev);
-   CORBA_IDLType CORBA_ConstantDef__get_type_def(CORBA_ConstantDef _obj,
-						 CORBA_Environment * ev);
-   void CORBA_ConstantDef__set_type_def(CORBA_ConstantDef _obj,
-					const CORBA_IDLType value,
-					CORBA_Environment * ev);
-   CORBA_any *CORBA_ConstantDef__get_value(CORBA_ConstantDef _obj,
-					   CORBA_Environment * ev);
-   void CORBA_ConstantDef__set_value(CORBA_ConstantDef _obj,
-				     const CORBA_any * value,
-				     CORBA_Environment * ev);
+CORBA_TypeCode CORBA_ConstantDef__get_type(CORBA_ConstantDef _obj, CORBA_Environment *ev);
+CORBA_IDLType CORBA_ConstantDef__get_type_def(CORBA_ConstantDef _obj, CORBA_Environment *ev);
+void CORBA_ConstantDef__set_type_def(CORBA_ConstantDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
+CORBA_any* CORBA_ConstantDef__get_value(CORBA_ConstantDef _obj, CORBA_Environment *ev);
+void CORBA_ConstantDef__set_value(CORBA_ConstantDef _obj, const CORBA_any* value, CORBA_Environment *ev);
 #define CORBA_TypedefDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_TypedefDef_destroy CORBA_IRObject_destroy
 #define CORBA_TypedefDef__get_id CORBA_Contained__get_id
@@ -10402,12 +9753,8 @@ extern "C"
 #define CORBA_StructDef_create_abstract_interface CORBA_Container_create_abstract_interface
 #define CORBA_StructDef_create_local_interface CORBA_Container_create_local_interface
 #define CORBA_StructDef_create_ext_value CORBA_Container_create_ext_value
-   CORBA_StructMemberSeq *CORBA_StructDef__get_members(CORBA_StructDef _obj,
-						       CORBA_Environment *
-						       ev);
-   void CORBA_StructDef__set_members(CORBA_StructDef _obj,
-				     const CORBA_StructMemberSeq * value,
-				     CORBA_Environment * ev);
+CORBA_StructMemberSeq* CORBA_StructDef__get_members(CORBA_StructDef _obj, CORBA_Environment *ev);
+void CORBA_StructDef__set_members(CORBA_StructDef _obj, const CORBA_StructMemberSeq* value, CORBA_Environment *ev);
 #define CORBA_UnionDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_UnionDef_destroy CORBA_IRObject_destroy
 #define CORBA_UnionDef__get_id CORBA_Contained__get_id
@@ -10440,21 +9787,11 @@ extern "C"
 #define CORBA_UnionDef_create_abstract_interface CORBA_Container_create_abstract_interface
 #define CORBA_UnionDef_create_local_interface CORBA_Container_create_local_interface
 #define CORBA_UnionDef_create_ext_value CORBA_Container_create_ext_value
-   CORBA_TypeCode CORBA_UnionDef__get_discriminator_type(CORBA_UnionDef _obj,
-							  CORBA_Environment *
-							  ev);
-   CORBA_IDLType CORBA_UnionDef__get_discriminator_type_def(CORBA_UnionDef
-							    _obj,
-							    CORBA_Environment
-							    * ev);
-   void CORBA_UnionDef__set_discriminator_type_def(CORBA_UnionDef _obj,
-						   const CORBA_IDLType value,
-						   CORBA_Environment * ev);
-   CORBA_UnionMemberSeq *CORBA_UnionDef__get_members(CORBA_UnionDef _obj,
-						     CORBA_Environment * ev);
-   void CORBA_UnionDef__set_members(CORBA_UnionDef _obj,
-				    const CORBA_UnionMemberSeq * value,
-				    CORBA_Environment * ev);
+CORBA_TypeCode CORBA_UnionDef__get_discriminator_type(CORBA_UnionDef _obj, CORBA_Environment *ev);
+CORBA_IDLType CORBA_UnionDef__get_discriminator_type_def(CORBA_UnionDef _obj, CORBA_Environment *ev);
+void CORBA_UnionDef__set_discriminator_type_def(CORBA_UnionDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
+CORBA_UnionMemberSeq* CORBA_UnionDef__get_members(CORBA_UnionDef _obj, CORBA_Environment *ev);
+void CORBA_UnionDef__set_members(CORBA_UnionDef _obj, const CORBA_UnionMemberSeq* value, CORBA_Environment *ev);
 #define CORBA_EnumDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_EnumDef_destroy CORBA_IRObject_destroy
 #define CORBA_EnumDef__get_id CORBA_Contained__get_id
@@ -10469,11 +9806,8 @@ extern "C"
 #define CORBA_EnumDef_describe CORBA_Contained_describe
 #define CORBA_EnumDef_move CORBA_Contained_move
 #define CORBA_EnumDef__get_type CORBA_IDLType__get_type
-   CORBA_EnumMemberSeq *CORBA_EnumDef__get_members(CORBA_EnumDef _obj,
-						   CORBA_Environment * ev);
-   void CORBA_EnumDef__set_members(CORBA_EnumDef _obj,
-				   const CORBA_EnumMemberSeq * value,
-				   CORBA_Environment * ev);
+CORBA_EnumMemberSeq* CORBA_EnumDef__get_members(CORBA_EnumDef _obj, CORBA_Environment *ev);
+void CORBA_EnumDef__set_members(CORBA_EnumDef _obj, const CORBA_EnumMemberSeq* value, CORBA_Environment *ev);
 #define CORBA_AliasDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_AliasDef_destroy CORBA_IRObject_destroy
 #define CORBA_AliasDef__get_id CORBA_Contained__get_id
@@ -10488,12 +9822,8 @@ extern "C"
 #define CORBA_AliasDef_describe CORBA_Contained_describe
 #define CORBA_AliasDef_move CORBA_Contained_move
 #define CORBA_AliasDef__get_type CORBA_IDLType__get_type
-   CORBA_IDLType CORBA_AliasDef__get_original_type_def(CORBA_AliasDef _obj,
-						       CORBA_Environment *
-						       ev);
-   void CORBA_AliasDef__set_original_type_def(CORBA_AliasDef _obj,
-					      const CORBA_IDLType value,
-					      CORBA_Environment * ev);
+CORBA_IDLType CORBA_AliasDef__get_original_type_def(CORBA_AliasDef _obj, CORBA_Environment *ev);
+void CORBA_AliasDef__set_original_type_def(CORBA_AliasDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
 #define CORBA_NativeDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_NativeDef_destroy CORBA_IRObject_destroy
 #define CORBA_NativeDef__get_id CORBA_Contained__get_id
@@ -10511,70 +9841,40 @@ extern "C"
 #define CORBA_PrimitiveDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_PrimitiveDef_destroy CORBA_IRObject_destroy
 #define CORBA_PrimitiveDef__get_type CORBA_IDLType__get_type
-   CORBA_PrimitiveKind CORBA_PrimitiveDef__get_kind(CORBA_PrimitiveDef _obj,
-						    CORBA_Environment * ev);
+CORBA_PrimitiveKind CORBA_PrimitiveDef__get_kind(CORBA_PrimitiveDef _obj, CORBA_Environment *ev);
 #define CORBA_StringDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_StringDef_destroy CORBA_IRObject_destroy
 #define CORBA_StringDef__get_type CORBA_IDLType__get_type
-   CORBA_unsigned_long CORBA_StringDef__get_bound(CORBA_StringDef _obj,
-						  CORBA_Environment * ev);
-   void CORBA_StringDef__set_bound(CORBA_StringDef _obj,
-				   const CORBA_unsigned_long value,
-				   CORBA_Environment * ev);
+CORBA_unsigned_long CORBA_StringDef__get_bound(CORBA_StringDef _obj, CORBA_Environment *ev);
+void CORBA_StringDef__set_bound(CORBA_StringDef _obj, const CORBA_unsigned_long value, CORBA_Environment *ev);
 #define CORBA_WstringDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_WstringDef_destroy CORBA_IRObject_destroy
 #define CORBA_WstringDef__get_type CORBA_IDLType__get_type
-   CORBA_unsigned_long CORBA_WstringDef__get_bound(CORBA_WstringDef _obj,
-						   CORBA_Environment * ev);
-   void CORBA_WstringDef__set_bound(CORBA_WstringDef _obj,
-				    const CORBA_unsigned_long value,
-				    CORBA_Environment * ev);
+CORBA_unsigned_long CORBA_WstringDef__get_bound(CORBA_WstringDef _obj, CORBA_Environment *ev);
+void CORBA_WstringDef__set_bound(CORBA_WstringDef _obj, const CORBA_unsigned_long value, CORBA_Environment *ev);
 #define CORBA_FixedDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_FixedDef_destroy CORBA_IRObject_destroy
 #define CORBA_FixedDef__get_type CORBA_IDLType__get_type
-   CORBA_unsigned_short CORBA_FixedDef__get_digits(CORBA_FixedDef _obj,
-						   CORBA_Environment * ev);
-   void CORBA_FixedDef__set_digits(CORBA_FixedDef _obj,
-				   const CORBA_unsigned_short value,
-				   CORBA_Environment * ev);
-   CORBA_short CORBA_FixedDef__get_scale(CORBA_FixedDef _obj,
-					 CORBA_Environment * ev);
-   void CORBA_FixedDef__set_scale(CORBA_FixedDef _obj,
-				  const CORBA_short value,
-				  CORBA_Environment * ev);
+CORBA_unsigned_short CORBA_FixedDef__get_digits(CORBA_FixedDef _obj, CORBA_Environment *ev);
+void CORBA_FixedDef__set_digits(CORBA_FixedDef _obj, const CORBA_unsigned_short value, CORBA_Environment *ev);
+CORBA_short CORBA_FixedDef__get_scale(CORBA_FixedDef _obj, CORBA_Environment *ev);
+void CORBA_FixedDef__set_scale(CORBA_FixedDef _obj, const CORBA_short value, CORBA_Environment *ev);
 #define CORBA_SequenceDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_SequenceDef_destroy CORBA_IRObject_destroy
 #define CORBA_SequenceDef__get_type CORBA_IDLType__get_type
-   CORBA_unsigned_long CORBA_SequenceDef__get_bound(CORBA_SequenceDef _obj,
-						    CORBA_Environment * ev);
-   void CORBA_SequenceDef__set_bound(CORBA_SequenceDef _obj,
-				     const CORBA_unsigned_long value,
-				     CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_SequenceDef__get_element_type(CORBA_SequenceDef _obj,
-						       CORBA_Environment *
-						       ev);
-   CORBA_IDLType CORBA_SequenceDef__get_element_type_def(CORBA_SequenceDef
-							 _obj,
-							 CORBA_Environment *
-							 ev);
-   void CORBA_SequenceDef__set_element_type_def(CORBA_SequenceDef _obj,
-						const CORBA_IDLType value,
-						CORBA_Environment * ev);
+CORBA_unsigned_long CORBA_SequenceDef__get_bound(CORBA_SequenceDef _obj, CORBA_Environment *ev);
+void CORBA_SequenceDef__set_bound(CORBA_SequenceDef _obj, const CORBA_unsigned_long value, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_SequenceDef__get_element_type(CORBA_SequenceDef _obj, CORBA_Environment *ev);
+CORBA_IDLType CORBA_SequenceDef__get_element_type_def(CORBA_SequenceDef _obj, CORBA_Environment *ev);
+void CORBA_SequenceDef__set_element_type_def(CORBA_SequenceDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
 #define CORBA_ArrayDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ArrayDef_destroy CORBA_IRObject_destroy
 #define CORBA_ArrayDef__get_type CORBA_IDLType__get_type
-   CORBA_unsigned_long CORBA_ArrayDef__get_length(CORBA_ArrayDef _obj,
-						  CORBA_Environment * ev);
-   void CORBA_ArrayDef__set_length(CORBA_ArrayDef _obj,
-				   const CORBA_unsigned_long value,
-				   CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ArrayDef__get_element_type(CORBA_ArrayDef _obj,
-						    CORBA_Environment * ev);
-   CORBA_IDLType CORBA_ArrayDef__get_element_type_def(CORBA_ArrayDef _obj,
-						      CORBA_Environment * ev);
-   void CORBA_ArrayDef__set_element_type_def(CORBA_ArrayDef _obj,
-					     const CORBA_IDLType value,
-					     CORBA_Environment * ev);
+CORBA_unsigned_long CORBA_ArrayDef__get_length(CORBA_ArrayDef _obj, CORBA_Environment *ev);
+void CORBA_ArrayDef__set_length(CORBA_ArrayDef _obj, const CORBA_unsigned_long value, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ArrayDef__get_element_type(CORBA_ArrayDef _obj, CORBA_Environment *ev);
+CORBA_IDLType CORBA_ArrayDef__get_element_type_def(CORBA_ArrayDef _obj, CORBA_Environment *ev);
+void CORBA_ArrayDef__set_element_type_def(CORBA_ArrayDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
 #define CORBA_ExceptionDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ExceptionDef_destroy CORBA_IRObject_destroy
 #define CORBA_ExceptionDef__get_id CORBA_Contained__get_id
@@ -10606,15 +9906,9 @@ extern "C"
 #define CORBA_ExceptionDef_create_abstract_interface CORBA_Container_create_abstract_interface
 #define CORBA_ExceptionDef_create_local_interface CORBA_Container_create_local_interface
 #define CORBA_ExceptionDef_create_ext_value CORBA_Container_create_ext_value
-   CORBA_TypeCode CORBA_ExceptionDef__get_type(CORBA_ExceptionDef _obj,
-						CORBA_Environment * ev);
-   CORBA_StructMemberSeq *CORBA_ExceptionDef__get_members(CORBA_ExceptionDef
-							  _obj,
-							  CORBA_Environment *
-							  ev);
-   void CORBA_ExceptionDef__set_members(CORBA_ExceptionDef _obj,
-					const CORBA_StructMemberSeq * value,
-					CORBA_Environment * ev);
+CORBA_TypeCode CORBA_ExceptionDef__get_type(CORBA_ExceptionDef _obj, CORBA_Environment *ev);
+CORBA_StructMemberSeq* CORBA_ExceptionDef__get_members(CORBA_ExceptionDef _obj, CORBA_Environment *ev);
+void CORBA_ExceptionDef__set_members(CORBA_ExceptionDef _obj, const CORBA_StructMemberSeq* value, CORBA_Environment *ev);
 #define CORBA_AttributeDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_AttributeDef_destroy CORBA_IRObject_destroy
 #define CORBA_AttributeDef__get_id CORBA_Contained__get_id
@@ -10628,18 +9922,11 @@ extern "C"
 #define CORBA_AttributeDef__get_containing_repository CORBA_Contained__get_containing_repository
 #define CORBA_AttributeDef_describe CORBA_Contained_describe
 #define CORBA_AttributeDef_move CORBA_Contained_move
-   CORBA_TypeCode CORBA_AttributeDef__get_type(CORBA_AttributeDef _obj,
-						CORBA_Environment * ev);
-   CORBA_IDLType CORBA_AttributeDef__get_type_def(CORBA_AttributeDef _obj,
-						  CORBA_Environment * ev);
-   void CORBA_AttributeDef__set_type_def(CORBA_AttributeDef _obj,
-					 const CORBA_IDLType value,
-					 CORBA_Environment * ev);
-   CORBA_AttributeMode CORBA_AttributeDef__get_mode(CORBA_AttributeDef _obj,
-						    CORBA_Environment * ev);
-   void CORBA_AttributeDef__set_mode(CORBA_AttributeDef _obj,
-				     const CORBA_AttributeMode value,
-				     CORBA_Environment * ev);
+CORBA_TypeCode CORBA_AttributeDef__get_type(CORBA_AttributeDef _obj, CORBA_Environment *ev);
+CORBA_IDLType CORBA_AttributeDef__get_type_def(CORBA_AttributeDef _obj, CORBA_Environment *ev);
+void CORBA_AttributeDef__set_type_def(CORBA_AttributeDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
+CORBA_AttributeMode CORBA_AttributeDef__get_mode(CORBA_AttributeDef _obj, CORBA_Environment *ev);
+void CORBA_AttributeDef__set_mode(CORBA_AttributeDef _obj, const CORBA_AttributeMode value, CORBA_Environment *ev);
 #define CORBA_ExtAttributeDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ExtAttributeDef_destroy CORBA_IRObject_destroy
 #define CORBA_ExtAttributeDef__get_id CORBA_Contained__get_id
@@ -10658,25 +9945,11 @@ extern "C"
 #define CORBA_ExtAttributeDef__set_type_def CORBA_AttributeDef__set_type_def
 #define CORBA_ExtAttributeDef__get_mode CORBA_AttributeDef__get_mode
 #define CORBA_ExtAttributeDef__set_mode CORBA_AttributeDef__set_mode
-   CORBA_ExcDescriptionSeq
-      *CORBA_ExtAttributeDef__get_get_exceptions(CORBA_ExtAttributeDef _obj,
-						 CORBA_Environment * ev);
-   void CORBA_ExtAttributeDef__set_get_exceptions(CORBA_ExtAttributeDef _obj,
-						  const
-						  CORBA_ExcDescriptionSeq *
-						  value,
-						  CORBA_Environment * ev);
-   CORBA_ExcDescriptionSeq
-      *CORBA_ExtAttributeDef__get_set_exceptions(CORBA_ExtAttributeDef _obj,
-						 CORBA_Environment * ev);
-   void CORBA_ExtAttributeDef__set_set_exceptions(CORBA_ExtAttributeDef _obj,
-						  const
-						  CORBA_ExcDescriptionSeq *
-						  value,
-						  CORBA_Environment * ev);
-   CORBA_ExtAttributeDescription
-      *CORBA_ExtAttributeDef_describe_attribute(CORBA_ExtAttributeDef _obj,
-						CORBA_Environment * ev);
+CORBA_ExcDescriptionSeq* CORBA_ExtAttributeDef__get_get_exceptions(CORBA_ExtAttributeDef _obj, CORBA_Environment *ev);
+void CORBA_ExtAttributeDef__set_get_exceptions(CORBA_ExtAttributeDef _obj, const CORBA_ExcDescriptionSeq* value, CORBA_Environment *ev);
+CORBA_ExcDescriptionSeq* CORBA_ExtAttributeDef__get_set_exceptions(CORBA_ExtAttributeDef _obj, CORBA_Environment *ev);
+void CORBA_ExtAttributeDef__set_set_exceptions(CORBA_ExtAttributeDef _obj, const CORBA_ExcDescriptionSeq* value, CORBA_Environment *ev);
+CORBA_ExtAttributeDescription* CORBA_ExtAttributeDef_describe_attribute(CORBA_ExtAttributeDef _obj, CORBA_Environment *ev);
 #define CORBA_OperationDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_OperationDef_destroy CORBA_IRObject_destroy
 #define CORBA_OperationDef__get_id CORBA_Contained__get_id
@@ -10690,38 +9963,17 @@ extern "C"
 #define CORBA_OperationDef__get_containing_repository CORBA_Contained__get_containing_repository
 #define CORBA_OperationDef_describe CORBA_Contained_describe
 #define CORBA_OperationDef_move CORBA_Contained_move
-   CORBA_TypeCode CORBA_OperationDef__get_result(CORBA_OperationDef _obj,
-						  CORBA_Environment * ev);
-   CORBA_IDLType CORBA_OperationDef__get_result_def(CORBA_OperationDef _obj,
-						    CORBA_Environment * ev);
-   void CORBA_OperationDef__set_result_def(CORBA_OperationDef _obj,
-					   const CORBA_IDLType value,
-					   CORBA_Environment * ev);
-   CORBA_ParDescriptionSeq *CORBA_OperationDef__get_params(CORBA_OperationDef
-							   _obj,
-							   CORBA_Environment *
-							   ev);
-   void CORBA_OperationDef__set_params(CORBA_OperationDef _obj,
-				       const CORBA_ParDescriptionSeq * value,
-				       CORBA_Environment * ev);
-   CORBA_OperationMode CORBA_OperationDef__get_mode(CORBA_OperationDef _obj,
-						    CORBA_Environment * ev);
-   void CORBA_OperationDef__set_mode(CORBA_OperationDef _obj,
-				     const CORBA_OperationMode value,
-				     CORBA_Environment * ev);
-   CORBA_ContextIdSeq *CORBA_OperationDef__get_contexts(CORBA_OperationDef
-							_obj,
-							CORBA_Environment *
-							ev);
-   void CORBA_OperationDef__set_contexts(CORBA_OperationDef _obj,
-					 const CORBA_ContextIdSeq * value,
-					 CORBA_Environment * ev);
-   CORBA_ExceptionDefSeq
-      *CORBA_OperationDef__get_exceptions(CORBA_OperationDef _obj,
-					  CORBA_Environment * ev);
-   void CORBA_OperationDef__set_exceptions(CORBA_OperationDef _obj,
-					   const CORBA_ExceptionDefSeq *
-					   value, CORBA_Environment * ev);
+CORBA_TypeCode CORBA_OperationDef__get_result(CORBA_OperationDef _obj, CORBA_Environment *ev);
+CORBA_IDLType CORBA_OperationDef__get_result_def(CORBA_OperationDef _obj, CORBA_Environment *ev);
+void CORBA_OperationDef__set_result_def(CORBA_OperationDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
+CORBA_ParDescriptionSeq* CORBA_OperationDef__get_params(CORBA_OperationDef _obj, CORBA_Environment *ev);
+void CORBA_OperationDef__set_params(CORBA_OperationDef _obj, const CORBA_ParDescriptionSeq* value, CORBA_Environment *ev);
+CORBA_OperationMode CORBA_OperationDef__get_mode(CORBA_OperationDef _obj, CORBA_Environment *ev);
+void CORBA_OperationDef__set_mode(CORBA_OperationDef _obj, const CORBA_OperationMode value, CORBA_Environment *ev);
+CORBA_ContextIdSeq* CORBA_OperationDef__get_contexts(CORBA_OperationDef _obj, CORBA_Environment *ev);
+void CORBA_OperationDef__set_contexts(CORBA_OperationDef _obj, const CORBA_ContextIdSeq* value, CORBA_Environment *ev);
+CORBA_ExceptionDefSeq* CORBA_OperationDef__get_exceptions(CORBA_OperationDef _obj, CORBA_Environment *ev);
+void CORBA_OperationDef__set_exceptions(CORBA_OperationDef _obj, const CORBA_ExceptionDefSeq* value, CORBA_Environment *ev);
 #define CORBA_InterfaceDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_InterfaceDef_destroy CORBA_IRObject_destroy
 #define CORBA_InterfaceDef_lookup CORBA_Container_lookup
@@ -10754,73 +10006,16 @@ extern "C"
 #define CORBA_InterfaceDef_describe CORBA_Contained_describe
 #define CORBA_InterfaceDef_move CORBA_Contained_move
 #define CORBA_InterfaceDef__get_type CORBA_IDLType__get_type
-   CORBA_InterfaceDefSeq
-      *CORBA_InterfaceDef__get_base_interfaces(CORBA_InterfaceDef _obj,
-					       CORBA_Environment * ev);
-   void CORBA_InterfaceDef__set_base_interfaces(CORBA_InterfaceDef _obj,
-						const CORBA_InterfaceDefSeq *
-						value,
-						CORBA_Environment * ev);
-   CORBA_boolean CORBA_InterfaceDef__get_is_abstract(CORBA_InterfaceDef _obj,
-						     CORBA_Environment * ev);
-   void CORBA_InterfaceDef__set_is_abstract(CORBA_InterfaceDef _obj,
-					    const CORBA_boolean value,
-					    CORBA_Environment * ev);
-   CORBA_boolean CORBA_InterfaceDef_is_a(CORBA_InterfaceDef _obj,
-					 const CORBA_char * interface_id,
-					 CORBA_Environment * ev);
-   CORBA_InterfaceDef_FullInterfaceDescription
-      *CORBA_InterfaceDef_describe_interface(CORBA_InterfaceDef _obj,
-					     CORBA_Environment * ev);
-   CORBA_AttributeDef CORBA_InterfaceDef_create_attribute(CORBA_InterfaceDef
-							  _obj,
-							  const CORBA_char *
-							  id,
-							  const CORBA_char *
-							  name,
-							  const CORBA_char *
-							  version,
-							  const CORBA_IDLType
-							  type,
-							  const
-							  CORBA_AttributeMode
-							  mode,
-							  CORBA_Environment *
-							  ev);
-   CORBA_OperationDef CORBA_InterfaceDef_create_operation(CORBA_InterfaceDef
-							  _obj,
-							  const CORBA_char *
-							  id,
-							  const CORBA_char *
-							  name,
-							  const CORBA_char *
-							  version,
-							  const CORBA_IDLType
-							  result,
-							  const
-							  CORBA_OperationMode
-							  mode,
-							  const
-							  CORBA_ParDescriptionSeq
-							  * params,
-							  const
-							  CORBA_ExceptionDefSeq
-							  * exceptions,
-							  const
-							  CORBA_ContextIdSeq *
-							  contexts,
-							  CORBA_Environment *
-							  ev);
-   CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription
-      *CORBA_InterfaceAttrExtension_describe_ext_interface
-      (CORBA_InterfaceAttrExtension _obj, CORBA_Environment * ev);
-   CORBA_ExtAttributeDef
-      CORBA_InterfaceAttrExtension_create_ext_attribute
-      (CORBA_InterfaceAttrExtension _obj, const CORBA_char * id,
-       const CORBA_char * name, const CORBA_char * version,
-       const CORBA_IDLType type, const CORBA_AttributeMode mode,
-       const CORBA_ExceptionDefSeq * get_exceptions,
-       const CORBA_ExceptionDefSeq * set_exceptions, CORBA_Environment * ev);
+CORBA_InterfaceDefSeq* CORBA_InterfaceDef__get_base_interfaces(CORBA_InterfaceDef _obj, CORBA_Environment *ev);
+void CORBA_InterfaceDef__set_base_interfaces(CORBA_InterfaceDef _obj, const CORBA_InterfaceDefSeq* value, CORBA_Environment *ev);
+CORBA_boolean CORBA_InterfaceDef__get_is_abstract(CORBA_InterfaceDef _obj, CORBA_Environment *ev);
+void CORBA_InterfaceDef__set_is_abstract(CORBA_InterfaceDef _obj, const CORBA_boolean value, CORBA_Environment *ev);
+CORBA_boolean CORBA_InterfaceDef_is_a(CORBA_InterfaceDef _obj, const CORBA_char * interface_id, CORBA_Environment *ev);
+CORBA_InterfaceDef_FullInterfaceDescription* CORBA_InterfaceDef_describe_interface(CORBA_InterfaceDef _obj, CORBA_Environment *ev);
+CORBA_AttributeDef CORBA_InterfaceDef_create_attribute(CORBA_InterfaceDef _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType type, const CORBA_AttributeMode mode, CORBA_Environment *ev);
+CORBA_OperationDef CORBA_InterfaceDef_create_operation(CORBA_InterfaceDef _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType result, const CORBA_OperationMode mode, const CORBA_ParDescriptionSeq* params, const CORBA_ExceptionDefSeq* exceptions, const CORBA_ContextIdSeq* contexts, CORBA_Environment *ev);
+CORBA_InterfaceAttrExtension_ExtFullInterfaceDescription* CORBA_InterfaceAttrExtension_describe_ext_interface(CORBA_InterfaceAttrExtension _obj, CORBA_Environment *ev);
+CORBA_ExtAttributeDef CORBA_InterfaceAttrExtension_create_ext_attribute(CORBA_InterfaceAttrExtension _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType type, const CORBA_AttributeMode mode, const CORBA_ExceptionDefSeq* get_exceptions, const CORBA_ExceptionDefSeq* set_exceptions, CORBA_Environment *ev);
 #define CORBA_ExtInterfaceDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ExtInterfaceDef_destroy CORBA_IRObject_destroy
 #define CORBA_ExtInterfaceDef_lookup CORBA_Container_lookup
@@ -10876,19 +10071,11 @@ extern "C"
 #define CORBA_ValueMemberDef__get_containing_repository CORBA_Contained__get_containing_repository
 #define CORBA_ValueMemberDef_describe CORBA_Contained_describe
 #define CORBA_ValueMemberDef_move CORBA_Contained_move
-   CORBA_TypeCode CORBA_ValueMemberDef__get_type(CORBA_ValueMemberDef _obj,
-						  CORBA_Environment * ev);
-   CORBA_IDLType CORBA_ValueMemberDef__get_type_def(CORBA_ValueMemberDef _obj,
-						    CORBA_Environment * ev);
-   void CORBA_ValueMemberDef__set_type_def(CORBA_ValueMemberDef _obj,
-					   const CORBA_IDLType value,
-					   CORBA_Environment * ev);
-   CORBA_Visibility CORBA_ValueMemberDef__get_access(CORBA_ValueMemberDef
-						     _obj,
-						     CORBA_Environment * ev);
-   void CORBA_ValueMemberDef__set_access(CORBA_ValueMemberDef _obj,
-					 const CORBA_Visibility value,
-					 CORBA_Environment * ev);
+CORBA_TypeCode CORBA_ValueMemberDef__get_type(CORBA_ValueMemberDef _obj, CORBA_Environment *ev);
+CORBA_IDLType CORBA_ValueMemberDef__get_type_def(CORBA_ValueMemberDef _obj, CORBA_Environment *ev);
+void CORBA_ValueMemberDef__set_type_def(CORBA_ValueMemberDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
+CORBA_Visibility CORBA_ValueMemberDef__get_access(CORBA_ValueMemberDef _obj, CORBA_Environment *ev);
+void CORBA_ValueMemberDef__set_access(CORBA_ValueMemberDef _obj, const CORBA_Visibility value, CORBA_Environment *ev);
 #define CORBA_ValueDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ValueDef_destroy CORBA_IRObject_destroy
 #define CORBA_ValueDef_lookup CORBA_Container_lookup
@@ -10921,98 +10108,25 @@ extern "C"
 #define CORBA_ValueDef_describe CORBA_Contained_describe
 #define CORBA_ValueDef_move CORBA_Contained_move
 #define CORBA_ValueDef__get_type CORBA_IDLType__get_type
-   CORBA_InterfaceDefSeq
-      *CORBA_ValueDef__get_supported_interfaces(CORBA_ValueDef _obj,
-						CORBA_Environment * ev);
-   void CORBA_ValueDef__set_supported_interfaces(CORBA_ValueDef _obj,
-						 const CORBA_InterfaceDefSeq *
-						 value,
-						 CORBA_Environment * ev);
-   CORBA_InitializerSeq *CORBA_ValueDef__get_initializers(CORBA_ValueDef _obj,
-							  CORBA_Environment *
-							  ev);
-   void CORBA_ValueDef__set_initializers(CORBA_ValueDef _obj,
-					 const CORBA_InitializerSeq * value,
-					 CORBA_Environment * ev);
-   CORBA_ValueDef CORBA_ValueDef__get_base_value(CORBA_ValueDef _obj,
-						 CORBA_Environment * ev);
-   void CORBA_ValueDef__set_base_value(CORBA_ValueDef _obj,
-				       const CORBA_ValueDef value,
-				       CORBA_Environment * ev);
-   CORBA_ValueDefSeq *CORBA_ValueDef__get_abstract_base_values(CORBA_ValueDef
-							       _obj,
-							       CORBA_Environment
-							       * ev);
-   void CORBA_ValueDef__set_abstract_base_values(CORBA_ValueDef _obj,
-						 const CORBA_ValueDefSeq *
-						 value,
-						 CORBA_Environment * ev);
-   CORBA_boolean CORBA_ValueDef__get_is_abstract(CORBA_ValueDef _obj,
-						 CORBA_Environment * ev);
-   void CORBA_ValueDef__set_is_abstract(CORBA_ValueDef _obj,
-					const CORBA_boolean value,
-					CORBA_Environment * ev);
-   CORBA_boolean CORBA_ValueDef__get_is_custom(CORBA_ValueDef _obj,
-					       CORBA_Environment * ev);
-   void CORBA_ValueDef__set_is_custom(CORBA_ValueDef _obj,
-				      const CORBA_boolean value,
-				      CORBA_Environment * ev);
-   CORBA_boolean CORBA_ValueDef__get_is_truncatable(CORBA_ValueDef _obj,
-						    CORBA_Environment * ev);
-   void CORBA_ValueDef__set_is_truncatable(CORBA_ValueDef _obj,
-					   const CORBA_boolean value,
-					   CORBA_Environment * ev);
-   CORBA_boolean CORBA_ValueDef_is_a(CORBA_ValueDef _obj,
-				     const CORBA_char * id,
-				     CORBA_Environment * ev);
-   CORBA_ValueDef_FullValueDescription
-      *CORBA_ValueDef_describe_value(CORBA_ValueDef _obj,
-				     CORBA_Environment * ev);
-   CORBA_ValueMemberDef CORBA_ValueDef_create_value_member(CORBA_ValueDef
-							   _obj,
-							   const CORBA_char *
-							   id,
-							   const CORBA_char *
-							   name,
-							   const CORBA_char *
-							   version,
-							   const CORBA_IDLType
-							   type,
-							   const
-							   CORBA_Visibility
-							   access,
-							   CORBA_Environment *
-							   ev);
-   CORBA_AttributeDef CORBA_ValueDef_create_attribute(CORBA_ValueDef _obj,
-						      const CORBA_char * id,
-						      const CORBA_char * name,
-						      const CORBA_char *
-						      version,
-						      const CORBA_IDLType
-						      type,
-						      const
-						      CORBA_AttributeMode
-						      mode,
-						      CORBA_Environment * ev);
-   CORBA_OperationDef CORBA_ValueDef_create_operation(CORBA_ValueDef _obj,
-						      const CORBA_char * id,
-						      const CORBA_char * name,
-						      const CORBA_char *
-						      version,
-						      const CORBA_IDLType
-						      result,
-						      const
-						      CORBA_OperationMode
-						      mode,
-						      const
-						      CORBA_ParDescriptionSeq
-						      * params,
-						      const
-						      CORBA_ExceptionDefSeq *
-						      exceptions,
-						      const CORBA_ContextIdSeq
-						      * contexts,
-						      CORBA_Environment * ev);
+CORBA_InterfaceDefSeq* CORBA_ValueDef__get_supported_interfaces(CORBA_ValueDef _obj, CORBA_Environment *ev);
+void CORBA_ValueDef__set_supported_interfaces(CORBA_ValueDef _obj, const CORBA_InterfaceDefSeq* value, CORBA_Environment *ev);
+CORBA_InitializerSeq* CORBA_ValueDef__get_initializers(CORBA_ValueDef _obj, CORBA_Environment *ev);
+void CORBA_ValueDef__set_initializers(CORBA_ValueDef _obj, const CORBA_InitializerSeq* value, CORBA_Environment *ev);
+CORBA_ValueDef CORBA_ValueDef__get_base_value(CORBA_ValueDef _obj, CORBA_Environment *ev);
+void CORBA_ValueDef__set_base_value(CORBA_ValueDef _obj, const CORBA_ValueDef value, CORBA_Environment *ev);
+CORBA_ValueDefSeq* CORBA_ValueDef__get_abstract_base_values(CORBA_ValueDef _obj, CORBA_Environment *ev);
+void CORBA_ValueDef__set_abstract_base_values(CORBA_ValueDef _obj, const CORBA_ValueDefSeq* value, CORBA_Environment *ev);
+CORBA_boolean CORBA_ValueDef__get_is_abstract(CORBA_ValueDef _obj, CORBA_Environment *ev);
+void CORBA_ValueDef__set_is_abstract(CORBA_ValueDef _obj, const CORBA_boolean value, CORBA_Environment *ev);
+CORBA_boolean CORBA_ValueDef__get_is_custom(CORBA_ValueDef _obj, CORBA_Environment *ev);
+void CORBA_ValueDef__set_is_custom(CORBA_ValueDef _obj, const CORBA_boolean value, CORBA_Environment *ev);
+CORBA_boolean CORBA_ValueDef__get_is_truncatable(CORBA_ValueDef _obj, CORBA_Environment *ev);
+void CORBA_ValueDef__set_is_truncatable(CORBA_ValueDef _obj, const CORBA_boolean value, CORBA_Environment *ev);
+CORBA_boolean CORBA_ValueDef_is_a(CORBA_ValueDef _obj, const CORBA_char * id, CORBA_Environment *ev);
+CORBA_ValueDef_FullValueDescription* CORBA_ValueDef_describe_value(CORBA_ValueDef _obj, CORBA_Environment *ev);
+CORBA_ValueMemberDef CORBA_ValueDef_create_value_member(CORBA_ValueDef _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType type, const CORBA_Visibility access, CORBA_Environment *ev);
+CORBA_AttributeDef CORBA_ValueDef_create_attribute(CORBA_ValueDef _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType type, const CORBA_AttributeMode mode, CORBA_Environment *ev);
+CORBA_OperationDef CORBA_ValueDef_create_operation(CORBA_ValueDef _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType result, const CORBA_OperationMode mode, const CORBA_ParDescriptionSeq* params, const CORBA_ExceptionDefSeq* exceptions, const CORBA_ContextIdSeq* contexts, CORBA_Environment *ev);
 #define CORBA_ExtValueDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ExtValueDef_destroy CORBA_IRObject_destroy
 #define CORBA_ExtValueDef_lookup CORBA_Container_lookup
@@ -11064,28 +10178,10 @@ extern "C"
 #define CORBA_ExtValueDef_create_value_member CORBA_ValueDef_create_value_member
 #define CORBA_ExtValueDef_create_attribute CORBA_ValueDef_create_attribute
 #define CORBA_ExtValueDef_create_operation CORBA_ValueDef_create_operation
-   CORBA_ExtInitializerSeq
-      *CORBA_ExtValueDef__get_ext_initializers(CORBA_ExtValueDef _obj,
-					       CORBA_Environment * ev);
-   void CORBA_ExtValueDef__set_ext_initializers(CORBA_ExtValueDef _obj,
-						const CORBA_ExtInitializerSeq
-						* value,
-						CORBA_Environment * ev);
-   CORBA_ExtValueDef_ExtFullValueDescription
-      *CORBA_ExtValueDef_describe_ext_value(CORBA_ExtValueDef _obj,
-					    CORBA_Environment * ev);
-   CORBA_ExtAttributeDef
-      CORBA_ExtValueDef_create_ext_attribute(CORBA_ExtValueDef _obj,
-					     const CORBA_char * id,
-					     const CORBA_char * name,
-					     const CORBA_char * version,
-					     const CORBA_IDLType type,
-					     const CORBA_AttributeMode mode,
-					     const CORBA_ExceptionDefSeq *
-					     get_exceptions,
-					     const CORBA_ExceptionDefSeq *
-					     set_exceptions,
-					     CORBA_Environment * ev);
+CORBA_ExtInitializerSeq* CORBA_ExtValueDef__get_ext_initializers(CORBA_ExtValueDef _obj, CORBA_Environment *ev);
+void CORBA_ExtValueDef__set_ext_initializers(CORBA_ExtValueDef _obj, const CORBA_ExtInitializerSeq* value, CORBA_Environment *ev);
+CORBA_ExtValueDef_ExtFullValueDescription* CORBA_ExtValueDef_describe_ext_value(CORBA_ExtValueDef _obj, CORBA_Environment *ev);
+CORBA_ExtAttributeDef CORBA_ExtValueDef_create_ext_attribute(CORBA_ExtValueDef _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_char * version, const CORBA_IDLType type, const CORBA_AttributeMode mode, const CORBA_ExceptionDefSeq* get_exceptions, const CORBA_ExceptionDefSeq* set_exceptions, CORBA_Environment *ev);
 #define CORBA_ValueBoxDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_ValueBoxDef_destroy CORBA_IRObject_destroy
 #define CORBA_ValueBoxDef__get_id CORBA_Contained__get_id
@@ -11100,13 +10196,8 @@ extern "C"
 #define CORBA_ValueBoxDef_describe CORBA_Contained_describe
 #define CORBA_ValueBoxDef_move CORBA_Contained_move
 #define CORBA_ValueBoxDef__get_type CORBA_IDLType__get_type
-   CORBA_IDLType CORBA_ValueBoxDef__get_original_type_def(CORBA_ValueBoxDef
-							  _obj,
-							  CORBA_Environment *
-							  ev);
-   void CORBA_ValueBoxDef__set_original_type_def(CORBA_ValueBoxDef _obj,
-						 const CORBA_IDLType value,
-						 CORBA_Environment * ev);
+CORBA_IDLType CORBA_ValueBoxDef__get_original_type_def(CORBA_ValueBoxDef _obj, CORBA_Environment *ev);
+void CORBA_ValueBoxDef__set_original_type_def(CORBA_ValueBoxDef _obj, const CORBA_IDLType value, CORBA_Environment *ev);
 #define CORBA_AbstractInterfaceDef__get_def_kind CORBA_IRObject__get_def_kind
 #define CORBA_AbstractInterfaceDef_destroy CORBA_IRObject_destroy
 #define CORBA_AbstractInterfaceDef_lookup CORBA_Container_lookup
@@ -11271,370 +10362,116 @@ extern "C"
 #define CORBA_ExtLocalInterfaceDef_create_operation CORBA_InterfaceDef_create_operation
 #define CORBA_ExtLocalInterfaceDef_describe_ext_interface CORBA_InterfaceAttrExtension_describe_ext_interface
 #define CORBA_ExtLocalInterfaceDef_create_ext_attribute CORBA_InterfaceAttrExtension_create_ext_attribute
-   CORBA_boolean CORBA_TypeCode_equal(CORBA_TypeCode _obj,
-				       const CORBA_TypeCode tc,
-				       CORBA_Environment * ev);
-   CORBA_boolean CORBA_TypeCode_equivalent(CORBA_TypeCode _obj,
-					    const CORBA_TypeCode tc,
-					    CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_TypeCode_get_compact_typecode(CORBA_TypeCode _obj,
-							CORBA_Environment *
-							ev);
-   CORBA_TCKind CORBA_TypeCode_kind(CORBA_TypeCode _obj,
-				     CORBA_Environment * ev);
-   CORBA_RepositoryId CORBA_TypeCode_id(CORBA_TypeCode _obj,
-					 CORBA_Environment * ev);
-   CORBA_Identifier CORBA_TypeCode_name(CORBA_TypeCode _obj,
-					 CORBA_Environment * ev);
-   CORBA_unsigned_long CORBA_TypeCode_member_count(CORBA_TypeCode _obj,
-						    CORBA_Environment * ev);
-   CORBA_Identifier CORBA_TypeCode_member_name(CORBA_TypeCode _obj,
-						const CORBA_unsigned_long
-						index,
-						CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_TypeCode_member_type(CORBA_TypeCode _obj,
-					       const CORBA_unsigned_long
-					       index, CORBA_Environment * ev);
-   CORBA_any *CORBA_TypeCode_member_label(CORBA_TypeCode _obj,
-					   const CORBA_unsigned_long index,
-					   CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_TypeCode_discriminator_type(CORBA_TypeCode _obj,
-						      CORBA_Environment * ev);
-   CORBA_long CORBA_TypeCode_default_index(CORBA_TypeCode _obj,
-					    CORBA_Environment * ev);
-   CORBA_unsigned_long CORBA_TypeCode_length(CORBA_TypeCode _obj,
-					      CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_TypeCode_content_type(CORBA_TypeCode _obj,
-						CORBA_Environment * ev);
-   CORBA_unsigned_short CORBA_TypeCode_fixed_digits(CORBA_TypeCode _obj,
-						     CORBA_Environment * ev);
-   CORBA_short CORBA_TypeCode_fixed_scale(CORBA_TypeCode _obj,
-					   CORBA_Environment * ev);
-   CORBA_Visibility CORBA_TypeCode_member_visibility(CORBA_TypeCode _obj,
-						      const
-						      CORBA_unsigned_long
-						      index,
-						      CORBA_Environment * ev);
-   CORBA_ValueModifier CORBA_TypeCode_type_modifier(CORBA_TypeCode _obj,
-						     CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_TypeCode_concrete_base_type(CORBA_TypeCode _obj,
-						      CORBA_Environment * ev);
-   CORBA_InterfaceDef CORBA_Object_get_interface(CORBA_Object _obj,
-						  CORBA_Environment * ev);
-   CORBA_boolean CORBA_Object_is_nil(CORBA_Object _obj,
-				      CORBA_Environment * ev);
-   CORBA_Object CORBA_Object_duplicate(CORBA_Object _obj,
-					 CORBA_Environment * ev);
-   void CORBA_Object_release(CORBA_Object _obj, CORBA_Environment * ev);
-   CORBA_boolean CORBA_Object_is_a(CORBA_Object _obj,
-				    const CORBA_char * logical_type_id,
-				    CORBA_Environment * ev);
-   CORBA_boolean CORBA_Object_non_existent(CORBA_Object _obj,
-					    CORBA_Environment * ev);
-   CORBA_boolean CORBA_Object_is_equivalent(CORBA_Object _obj,
-					     const CORBA_Object other_object,
-					     CORBA_Environment * ev);
-   CORBA_unsigned_long CORBA_Object_hash(CORBA_Object _obj,
-					  const CORBA_unsigned_long maximum,
-					  CORBA_Environment * ev);
-   void CORBA_Object_create_request(CORBA_Object _obj,
-				     const CORBA_Context ctx,
-				     const CORBA_char * operation,
-				     const CORBA_NVList arg_list,
-				     CORBA_NamedValue * result,
-				     CORBA_Request * request,
-				     const CORBA_Flags req_flag,
-				     CORBA_Environment * ev);
-   CORBA_Policy CORBA_Object_get_policy(CORBA_Object _obj,
-					 const CORBA_PolicyType policy_type,
-					 CORBA_Environment * ev);
-   CORBA_DomainManagersList *CORBA_Object_get_domain_managers(CORBA_Object
-							       _obj,
-							       CORBA_Environment
-							       * ev);
-   CORBA_Object CORBA_Object_set_policy_overrides(CORBA_Object _obj,
-						    const CORBA_PolicyList *
-						    policies,
-						    const
-						    CORBA_SetOverrideType
-						    set_add,
-						    CORBA_Environment * ev);
-   CORBA_Policy CORBA_Object_get_client_policy(CORBA_Object _obj,
-						const CORBA_PolicyType type,
-						CORBA_Environment * ev);
-   CORBA_PolicyList *CORBA_Object_get_policy_overrides(CORBA_Object _obj,
-							const
-							CORBA_PolicyTypeSeq *
-							types,
-							CORBA_Environment *
-							ev);
-   CORBA_boolean CORBA_Object_validate_connection(CORBA_Object _obj,
-						   CORBA_PolicyList **
-						   inconsistent_policies,
-						   CORBA_Environment * ev);
-   CORBA_Object CORBA_Object_get_component(CORBA_Object _obj,
-					     CORBA_Environment * ev);
-   CORBA_ORBid CORBA_ORB_id(CORBA_ORB _obj, CORBA_Environment * ev);
-   CORBA_string CORBA_ORB_object_to_string(CORBA_ORB _obj,
-					   const CORBA_Object obj,
-					   CORBA_Environment * ev);
-   CORBA_Object CORBA_ORB_string_to_object(CORBA_ORB _obj,
-					    const CORBA_char * str,
-					    CORBA_Environment * ev);
-   void CORBA_ORB_create_list(CORBA_ORB _obj, const CORBA_long count,
-			      CORBA_NVList * new_list,
-			      CORBA_Environment * ev);
-   void CORBA_ORB_create_operation_list(CORBA_ORB _obj,
-					const CORBA_OperationDef oper,
-					CORBA_NVList * new_list,
-					CORBA_Environment * ev);
-   void CORBA_ORB_get_default_context(CORBA_ORB _obj, CORBA_Context * ctx,
-				      CORBA_Environment * ev);
-   void CORBA_ORB_send_multiple_requests_oneway(CORBA_ORB _obj,
-						const CORBA_RequestSeq * req,
-						CORBA_Environment * ev);
-   void CORBA_ORB_send_multiple_requests_deferred(CORBA_ORB _obj,
-						  const CORBA_RequestSeq *
-						  req,
-						  CORBA_Environment * ev);
-   CORBA_boolean CORBA_ORB_poll_next_response(CORBA_ORB _obj,
-					      CORBA_Environment * ev);
-   void CORBA_ORB_get_next_response(CORBA_ORB _obj, CORBA_Request * req,
-				    CORBA_Environment * ev);
-   CORBA_boolean CORBA_ORB_get_service_information(CORBA_ORB _obj,
-						   const CORBA_ServiceType
-						   service_type,
-						   CORBA_ServiceInformation **
-						   service_information,
-						   CORBA_Environment * ev);
-   CORBA_ORB_ObjectIdList *CORBA_ORB_list_initial_services(CORBA_ORB _obj,
-							   CORBA_Environment *
-							   ev);
-   CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB _obj,
-						      const CORBA_char *
-						      identifier,
-						      CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_struct_tc(CORBA_ORB _obj,
-					      const CORBA_char * id,
-					      const CORBA_char * name,
-					      const CORBA_StructMemberSeq *
-					      members,
-					      CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_union_tc(CORBA_ORB _obj,
-					     const CORBA_char * id,
-					     const CORBA_char * name,
-					     const CORBA_TypeCode
-					     discriminator_type,
-					     const CORBA_UnionMemberSeq *
-					     members, CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_enum_tc(CORBA_ORB _obj,
-					    const CORBA_char * id,
-					    const CORBA_char * name,
-					    const CORBA_EnumMemberSeq *
-					    members, CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_alias_tc(CORBA_ORB _obj,
-					     const CORBA_char * id,
-					     const CORBA_char * name,
-					     const CORBA_TypeCode
-					     original_type,
-					     CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_exception_tc(CORBA_ORB _obj,
-						 const CORBA_char * id,
-						 const CORBA_char * name,
-						 const CORBA_StructMemberSeq *
-						 members,
-						 CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_interface_tc(CORBA_ORB _obj,
-						 const CORBA_char * id,
-						 const CORBA_char * name,
-						 CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_string_tc(CORBA_ORB _obj,
-					      const CORBA_unsigned_long bound,
-					      CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_wstring_tc(CORBA_ORB _obj,
-					       const CORBA_unsigned_long
-					       bound, CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_fixed_tc(CORBA_ORB _obj,
-					     const CORBA_unsigned_short
-					     digits, const CORBA_short scale,
-					     CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_sequence_tc(CORBA_ORB _obj,
-						const CORBA_unsigned_long
-						bound,
-						const CORBA_TypeCode
-						element_type,
-						CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_recursive_sequence_tc(CORBA_ORB _obj,
-							  const
-							  CORBA_unsigned_long
-							  bound,
-							  const
-							  CORBA_unsigned_long
-							  offset,
-							  CORBA_Environment *
-							  ev);
-   CORBA_TypeCode CORBA_ORB_create_array_tc(CORBA_ORB _obj,
-					     const CORBA_unsigned_long length,
-					     const CORBA_TypeCode
-					     element_type,
-					     CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_value_tc(CORBA_ORB _obj,
-					     const CORBA_char * id,
-					     const CORBA_char * name,
-					     const CORBA_ValueModifier
-					     type_modifier,
-					     const CORBA_TypeCode
-					     concrete_base,
-					     const CORBA_ValueMemberSeq *
-					     members, CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_value_box_tc(CORBA_ORB _obj,
-						 const CORBA_char * id,
-						 const CORBA_char * name,
-						 const CORBA_TypeCode
-						 boxed_type,
-						 CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_native_tc(CORBA_ORB _obj,
-					      const CORBA_char * id,
-					      const CORBA_char * name,
-					      CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_recursive_tc(CORBA_ORB _obj,
-						 const CORBA_char * id,
-						 CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_abstract_interface_tc(CORBA_ORB _obj,
-							  const CORBA_char *
-							  id,
-							  const CORBA_char *
-							  name,
-							  CORBA_Environment *
-							  ev);
-   CORBA_TypeCode CORBA_ORB_create_local_interface_tc(CORBA_ORB _obj,
-						       const CORBA_char * id,
-						       const CORBA_char *
-						       name,
-						       CORBA_Environment *
-						       ev);
-   CORBA_TypeCode CORBA_ORB_create_component_tc(CORBA_ORB _obj,
-						 const CORBA_char * id,
-						 const CORBA_char * name,
-						 CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_home_tc(CORBA_ORB _obj,
-					    const CORBA_char * id,
-					    const CORBA_char * name,
-					    CORBA_Environment * ev);
-   CORBA_TypeCode CORBA_ORB_create_event_tc(CORBA_ORB _obj,
-					     const CORBA_char * id,
-					     const CORBA_char * name,
-					     const CORBA_ValueModifier
-					     type_modifier,
-					     const CORBA_TypeCode
-					     concrete_base,
-					     const CORBA_ValueMemberSeq *
-					     members, CORBA_Environment * ev);
-   CORBA_boolean CORBA_ORB_work_pending(CORBA_ORB _obj,
-					CORBA_Environment * ev);
-   void CORBA_ORB_perform_work(CORBA_ORB _obj, CORBA_Environment * ev);
-   void CORBA_ORB_run(CORBA_ORB _obj, CORBA_Environment * ev);
-   void CORBA_ORB_shutdown(CORBA_ORB _obj,
-			   const CORBA_boolean wait_for_completion,
-			   CORBA_Environment * ev);
-   void CORBA_ORB_destroy(CORBA_ORB _obj, CORBA_Environment * ev);
-   CORBA_Policy CORBA_ORB_create_policy(CORBA_ORB _obj,
-					const CORBA_PolicyType type,
-					const CORBA_any * val,
-					CORBA_Environment * ev);
-   CORBA_ValueFactory CORBA_ORB_register_value_factory(CORBA_ORB _obj,
-						       const CORBA_char * id,
-						       const
-						       CORBA_ValueFactory
-						       factory,
-						       CORBA_Environment *
-						       ev);
-   void CORBA_ORB_unregister_value_factory(CORBA_ORB _obj,
-					   const CORBA_char * id,
-					   CORBA_Environment * ev);
-   CORBA_ValueFactory CORBA_ORB_lookup_value_factory(CORBA_ORB _obj,
-						     const CORBA_char * id,
-						     CORBA_Environment * ev);
-   void CORBA_ORB_register_initial_reference(CORBA_ORB _obj,
-					     const CORBA_char * id,
-					     const CORBA_Object obj,
-					     CORBA_Environment * ev);
-   void CORBA_Request_add_arg(CORBA_Request _obj, const CORBA_char * name,
-			      const CORBA_TypeCode arg_type,
-			      const CORBA_OpaqueValue value,
-			      const CORBA_long len,
-			      const CORBA_Flags arg_flags,
-			      CORBA_Environment * ev);
-   void CORBA_Request_invoke(CORBA_Request _obj,
-			     const CORBA_Flags invoke_flags,
-			     CORBA_Environment * ev);
-   void CORBA_Request_delete(CORBA_Request _obj, CORBA_Environment * ev);
-   void CORBA_Request_send(CORBA_Request _obj, const CORBA_Flags invoke_flags,
-			   CORBA_Environment * ev);
-   void CORBA_Request_get_response(CORBA_Request _obj,
-				   CORBA_Environment * ev);
-   CORBA_boolean CORBA_Request_poll_response(CORBA_Request _obj,
-					     CORBA_Environment * ev);
-   CORBA_Object CORBA_Request_sendp(CORBA_Request _obj,
-				     CORBA_Environment * ev);
-   void CORBA_Request_prepare(CORBA_Request _obj, const CORBA_Object p,
-			      CORBA_Environment * ev);
-   void CORBA_Request_sendc(CORBA_Request _obj, const CORBA_Object handler,
-			    CORBA_Environment * ev);
-   void CORBA_Context_set_one_value(CORBA_Context _obj,
-				    const CORBA_char * prop_name,
-				    const CORBA_char * value,
-				    CORBA_Environment * ev);
-   void CORBA_Context_set_values(CORBA_Context _obj,
-				 const CORBA_NVList values,
-				 CORBA_Environment * ev);
-   void CORBA_Context_get_values(CORBA_Context _obj,
-				 const CORBA_char * start_scope,
-				 const CORBA_Flags op_flags,
-				 const CORBA_char * prop_name,
-				 CORBA_NVList * values,
-				 CORBA_Environment * ev);
-   void CORBA_Context_delete_values(CORBA_Context _obj,
-				    const CORBA_char * prop_name,
-				    CORBA_Environment * ev);
-   void CORBA_Context_create_child(CORBA_Context _obj,
-				   const CORBA_char * ctx_name,
-				   CORBA_Context * child_ctx,
-				   CORBA_Environment * ev);
-   void CORBA_Context_delete(CORBA_Context _obj, const CORBA_Flags del_flags,
-			     CORBA_Environment * ev);
-   void CORBA_NVList_add_item(CORBA_NVList _obj, const CORBA_char * item_name,
-			      const CORBA_TypeCode item_type,
-			      const CORBA_OpaqueValue value,
-			      const CORBA_long value_len,
-			      const CORBA_Flags item_flags,
-			      CORBA_Environment * ev);
-   void CORBA_NVList_free(CORBA_NVList _obj, CORBA_Environment * ev);
-   void CORBA_NVList_free_memory(CORBA_NVList _obj, CORBA_Environment * ev);
-   void CORBA_NVList_get_count(CORBA_NVList _obj, CORBA_long * count,
-			       CORBA_Environment * ev);
-   CORBA_Identifier CORBA_ServerRequest__get_operation(CORBA_ServerRequest
-						       _obj,
-						       CORBA_Environment *
-						       ev);
-   void CORBA_ServerRequest_arguments(CORBA_ServerRequest _obj,
-				      CORBA_NVList * nv,
-				      CORBA_Environment * ev);
-   CORBA_Context CORBA_ServerRequest_ctx(CORBA_ServerRequest _obj,
-					 CORBA_Environment * ev);
-   void CORBA_ServerRequest_set_result(CORBA_ServerRequest _obj,
-				       const CORBA_any * val,
-				       CORBA_Environment * ev);
-   void CORBA_ServerRequest_set_exception(CORBA_ServerRequest _obj,
-					  const CORBA_any * val,
-					  CORBA_Environment * ev);
+CORBA_boolean CORBA_TypeCode_equal(CORBA_TypeCode _obj, const CORBA_TypeCode tc, CORBA_Environment *ev);
+CORBA_boolean CORBA_TypeCode_equivalent(CORBA_TypeCode _obj, const CORBA_TypeCode tc, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_TypeCode_get_compact_typecode(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_TCKind CORBA_TypeCode_kind(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_RepositoryId CORBA_TypeCode_id(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_Identifier CORBA_TypeCode_name(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_unsigned_long CORBA_TypeCode_member_count(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_Identifier CORBA_TypeCode_member_name(CORBA_TypeCode _obj, const CORBA_unsigned_long index, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_TypeCode_member_type(CORBA_TypeCode _obj, const CORBA_unsigned_long index, CORBA_Environment *ev);
+CORBA_any* CORBA_TypeCode_member_label(CORBA_TypeCode _obj, const CORBA_unsigned_long index, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_TypeCode_discriminator_type(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_long CORBA_TypeCode_default_index(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_unsigned_long CORBA_TypeCode_length(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_TypeCode_content_type(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_unsigned_short CORBA_TypeCode_fixed_digits(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_short CORBA_TypeCode_fixed_scale(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_Visibility CORBA_TypeCode_member_visibility(CORBA_TypeCode _obj, const CORBA_unsigned_long index, CORBA_Environment *ev);
+CORBA_ValueModifier CORBA_TypeCode_type_modifier(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_TypeCode_concrete_base_type(CORBA_TypeCode _obj, CORBA_Environment *ev);
+CORBA_InterfaceDef CORBA_Object_get_interface(CORBA_Object _obj, CORBA_Environment *ev);
+CORBA_boolean CORBA_Object_is_nil(CORBA_Object _obj, CORBA_Environment *ev);
+CORBA_Object CORBA_Object_duplicate(CORBA_Object _obj, CORBA_Environment *ev);
+void CORBA_Object_release(CORBA_Object _obj, CORBA_Environment *ev);
+CORBA_boolean CORBA_Object_is_a(CORBA_Object _obj, const CORBA_char * logical_type_id, CORBA_Environment *ev);
+CORBA_boolean CORBA_Object_non_existent(CORBA_Object _obj, CORBA_Environment *ev);
+CORBA_boolean CORBA_Object_is_equivalent(CORBA_Object _obj, const CORBA_Object other_object, CORBA_Environment *ev);
+CORBA_unsigned_long CORBA_Object_hash(CORBA_Object _obj, const CORBA_unsigned_long maximum, CORBA_Environment *ev);
+void CORBA_Object_create_request(CORBA_Object _obj, const CORBA_Context ctx, const CORBA_char * operation, const CORBA_NVList arg_list, CORBA_NamedValue* result, CORBA_Request* request, const CORBA_Flags req_flag, CORBA_Environment *ev);
+CORBA_Policy CORBA_Object_get_policy(CORBA_Object _obj, const CORBA_PolicyType policy_type, CORBA_Environment *ev);
+CORBA_DomainManagersList* CORBA_Object_get_domain_managers(CORBA_Object _obj, CORBA_Environment *ev);
+CORBA_Object CORBA_Object_set_policy_overrides(CORBA_Object _obj, const CORBA_PolicyList* policies, const CORBA_SetOverrideType set_add, CORBA_Environment *ev);
+CORBA_Policy CORBA_Object_get_client_policy(CORBA_Object _obj, const CORBA_PolicyType type, CORBA_Environment *ev);
+CORBA_PolicyList* CORBA_Object_get_policy_overrides(CORBA_Object _obj, const CORBA_PolicyTypeSeq* types, CORBA_Environment *ev);
+CORBA_boolean CORBA_Object_validate_connection(CORBA_Object _obj, CORBA_PolicyList** inconsistent_policies, CORBA_Environment *ev);
+CORBA_Object CORBA_Object_get_component(CORBA_Object _obj, CORBA_Environment *ev);
+CORBA_ORBid CORBA_ORB_id(CORBA_ORB _obj, CORBA_Environment *ev);
+CORBA_string CORBA_ORB_object_to_string(CORBA_ORB _obj, const CORBA_Object obj, CORBA_Environment *ev);
+CORBA_Object CORBA_ORB_string_to_object(CORBA_ORB _obj, const CORBA_char * str, CORBA_Environment *ev);
+void CORBA_ORB_create_list(CORBA_ORB _obj, const CORBA_long count, CORBA_NVList* new_list, CORBA_Environment *ev);
+void CORBA_ORB_create_operation_list(CORBA_ORB _obj, const CORBA_OperationDef oper, CORBA_NVList* new_list, CORBA_Environment *ev);
+void CORBA_ORB_get_default_context(CORBA_ORB _obj, CORBA_Context* ctx, CORBA_Environment *ev);
+void CORBA_ORB_send_multiple_requests_oneway(CORBA_ORB _obj, const CORBA_RequestSeq* req, CORBA_Environment *ev);
+void CORBA_ORB_send_multiple_requests_deferred(CORBA_ORB _obj, const CORBA_RequestSeq* req, CORBA_Environment *ev);
+CORBA_boolean CORBA_ORB_poll_next_response(CORBA_ORB _obj, CORBA_Environment *ev);
+void CORBA_ORB_get_next_response(CORBA_ORB _obj, CORBA_Request* req, CORBA_Environment *ev);
+CORBA_boolean CORBA_ORB_get_service_information(CORBA_ORB _obj, const CORBA_ServiceType service_type, CORBA_ServiceInformation** service_information, CORBA_Environment *ev);
+CORBA_ORB_ObjectIdList* CORBA_ORB_list_initial_services(CORBA_ORB _obj, CORBA_Environment *ev);
+CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB _obj, const CORBA_char * identifier, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_struct_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_StructMemberSeq* members, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_union_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_TypeCode discriminator_type, const CORBA_UnionMemberSeq* members, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_enum_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_EnumMemberSeq* members, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_alias_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_TypeCode original_type, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_exception_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_StructMemberSeq* members, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_interface_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_string_tc(CORBA_ORB _obj, const CORBA_unsigned_long bound, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_wstring_tc(CORBA_ORB _obj, const CORBA_unsigned_long bound, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_fixed_tc(CORBA_ORB _obj, const CORBA_unsigned_short digits, const CORBA_short scale, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_sequence_tc(CORBA_ORB _obj, const CORBA_unsigned_long bound, const CORBA_TypeCode element_type, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_recursive_sequence_tc(CORBA_ORB _obj, const CORBA_unsigned_long bound, const CORBA_unsigned_long offset, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_array_tc(CORBA_ORB _obj, const CORBA_unsigned_long length, const CORBA_TypeCode element_type, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_value_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_ValueModifier type_modifier, const CORBA_TypeCode concrete_base, const CORBA_ValueMemberSeq* members, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_value_box_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_TypeCode boxed_type, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_native_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_recursive_tc(CORBA_ORB _obj, const CORBA_char * id, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_abstract_interface_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_local_interface_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_component_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_home_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, CORBA_Environment *ev);
+CORBA_TypeCode CORBA_ORB_create_event_tc(CORBA_ORB _obj, const CORBA_char * id, const CORBA_char * name, const CORBA_ValueModifier type_modifier, const CORBA_TypeCode concrete_base, const CORBA_ValueMemberSeq* members, CORBA_Environment *ev);
+CORBA_boolean CORBA_ORB_work_pending(CORBA_ORB _obj, CORBA_Environment *ev);
+void CORBA_ORB_perform_work(CORBA_ORB _obj, CORBA_Environment *ev);
+void CORBA_ORB_run(CORBA_ORB _obj, CORBA_Environment *ev);
+void CORBA_ORB_shutdown(CORBA_ORB _obj, const CORBA_boolean wait_for_completion, CORBA_Environment *ev);
+void CORBA_ORB_destroy(CORBA_ORB _obj, CORBA_Environment *ev);
+CORBA_Policy CORBA_ORB_create_policy(CORBA_ORB _obj, const CORBA_PolicyType type, const CORBA_any* val, CORBA_Environment *ev);
+CORBA_ValueFactory CORBA_ORB_register_value_factory(CORBA_ORB _obj, const CORBA_char * id, const CORBA_ValueFactory factory, CORBA_Environment *ev);
+void CORBA_ORB_unregister_value_factory(CORBA_ORB _obj, const CORBA_char * id, CORBA_Environment *ev);
+CORBA_ValueFactory CORBA_ORB_lookup_value_factory(CORBA_ORB _obj, const CORBA_char * id, CORBA_Environment *ev);
+void CORBA_ORB_register_initial_reference(CORBA_ORB _obj, const CORBA_char * id, const CORBA_Object obj, CORBA_Environment *ev);
+void CORBA_Request_add_arg(CORBA_Request _obj, const CORBA_char * name, const CORBA_TypeCode arg_type, const CORBA_OpaqueValue value, const CORBA_long len, const CORBA_Flags arg_flags, CORBA_Environment *ev);
+void CORBA_Request_invoke(CORBA_Request _obj, const CORBA_Flags invoke_flags, CORBA_Environment *ev);
+void CORBA_Request_delete(CORBA_Request _obj, CORBA_Environment *ev);
+void CORBA_Request_send(CORBA_Request _obj, const CORBA_Flags invoke_flags, CORBA_Environment *ev);
+void CORBA_Request_get_response(CORBA_Request _obj, CORBA_Environment *ev);
+CORBA_boolean CORBA_Request_poll_response(CORBA_Request _obj, CORBA_Environment *ev);
+CORBA_Object CORBA_Request_sendp(CORBA_Request _obj, CORBA_Environment *ev);
+void CORBA_Request_prepare(CORBA_Request _obj, const CORBA_Object p, CORBA_Environment *ev);
+void CORBA_Request_sendc(CORBA_Request _obj, const CORBA_Object handler, CORBA_Environment *ev);
+void CORBA_Context_set_one_value(CORBA_Context _obj, const CORBA_char * prop_name, const CORBA_char * value, CORBA_Environment *ev);
+void CORBA_Context_set_values(CORBA_Context _obj, const CORBA_NVList values, CORBA_Environment *ev);
+void CORBA_Context_get_values(CORBA_Context _obj, const CORBA_char * start_scope, const CORBA_Flags op_flags, const CORBA_char * prop_name, CORBA_NVList* values, CORBA_Environment *ev);
+void CORBA_Context_delete_values(CORBA_Context _obj, const CORBA_char * prop_name, CORBA_Environment *ev);
+void CORBA_Context_create_child(CORBA_Context _obj, const CORBA_char * ctx_name, CORBA_Context* child_ctx, CORBA_Environment *ev);
+void CORBA_Context_delete(CORBA_Context _obj, const CORBA_Flags del_flags, CORBA_Environment *ev);
+void CORBA_NVList_add_item(CORBA_NVList _obj, const CORBA_char * item_name, const CORBA_TypeCode item_type, const CORBA_OpaqueValue value, const CORBA_long value_len, const CORBA_Flags item_flags, CORBA_Environment *ev);
+void CORBA_NVList_free(CORBA_NVList _obj, CORBA_Environment *ev);
+void CORBA_NVList_free_memory(CORBA_NVList _obj, CORBA_Environment *ev);
+void CORBA_NVList_get_count(CORBA_NVList _obj, CORBA_long* count, CORBA_Environment *ev);
+CORBA_Identifier CORBA_ServerRequest__get_operation(CORBA_ServerRequest _obj, CORBA_Environment *ev);
+void CORBA_ServerRequest_arguments(CORBA_ServerRequest _obj, CORBA_NVList* nv, CORBA_Environment *ev);
+CORBA_Context CORBA_ServerRequest_ctx(CORBA_ServerRequest _obj, CORBA_Environment *ev);
+void CORBA_ServerRequest_set_result(CORBA_ServerRequest _obj, const CORBA_any* val, CORBA_Environment *ev);
+void CORBA_ServerRequest_set_exception(CORBA_ServerRequest _obj, const CORBA_any* val, CORBA_Environment *ev);
 #ifdef __cplusplus
 }
-#endif				/* __cplusplus */
+#endif /* __cplusplus */
 
 #ifndef EXCLUDE_ORBIT_H
 #include <orbit/orbit.h>
 
-#endif				/* EXCLUDE_ORBIT_H */
+#endif /* EXCLUDE_ORBIT_H */
 #endif
 #undef ORBIT_IDL_SERIAL

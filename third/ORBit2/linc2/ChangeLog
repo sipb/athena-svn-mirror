@@ -1,3 +1,100 @@
+2005-02-02  Hans Petter Jansson  <hpj@novell.com>
+
+	* src/linc-compat.h: Include <sys/types.h> before the optional stuff.
+	Some platforms don't pull it in automatically when needed.
+
+2005-01-28  Tor Lillqvist  <tml@novell.com>
+
+	* src/linc-compat.c: Rename link_socketpair() to link_pipe(), and
+	make it cross-platform, just encapsulating pipe() on Unix.
+
+	* src/linc.c: Change accordingly.
+
+	* src/linc/linc-compat.h
+	* include/linc/linc.h: Move declarations of
+	link_map_winsock_error_to_errno() and link_pipe() to linc.h, as
+	they are used also in GIOP.
+
+2005-01-27  Tor Lillqvist  <tml@novell.com>
+
+	* src/linc-compat.h: Include <sys/utime.h> if that's where utime.h
+	is.
+
+	* src/linc-private.h (LinxUnixWatch): On Win32, the GPollFD::fd is
+	actually a HANDLE, so keep also the original SOCKET around, and
+	the desired socket event mask.
+	(LINK_TEMP_FAILURE_RETRY): Split into separate macros for retrying
+	"normal" system call API and socket API. They're different on
+	Win32.
+	(LINK_CLOSE_SOCKET): New macro. On Win32 uses closesocket().
+
+	* src/*.c: Adapt to above changes. Include linc-compat.h. Add more
+	d_printf() debugging output (which normally expands to
+	nothing). Add WinSock code. Bypass Unix-only stuff on Win32.
+
+	* src/linc-debug.h: Always define CONNECTION_DEBUG on Win32 (for
+	now while working on Win32 port).
+
+	* src/linc-protocols.c: Use LINK_PROTOCOL_NEEDS_BIND for IPv4 on
+	Win32.
+
+	* src/linc-source.c: The core machinery for interfacing to the
+	GLib main loop on Win32 is here.
+	(link_source_prepare): Call WSAEventSelect() if the event mask
+	(i.e., condition) has changed.
+	(link_source_dispatch): Call WSAEnumNetworkEvents() to find out
+	what socket event actually fired.
+	(link_source_create_watch): Create an event to poll on in the GLib
+	main loop. Store that in the GPollFD::fd.
+	(link_watch_unlisten): Close the events.
+
+	* src/linc.c: On Win32, instead of a pipe, use a connected TCP
+	socket pair as the wakeup pipe.
+	(link_init): Start WinSock.
+
+	* test/test-linc.c (init_tmp): Use g_build_filename().
+	(create_server, create_client): On Win32 use IPv4 not UNIX
+	sockets.
+	(test_broken): Only if HAVE_SYS_WAIT_H.
+	(knobble_watch): Don't use a pointer before asserting it's
+	non-NULL. Don't g_assert() an expression with side-effects,
+	g_assert expands to empty when compiled with G_DISABLE_ASSERT.
+	(test_local): Don't test UNIX sockets on Win32.
+	(test_blocking, main): For some reason the "blocking" test doesn't
+	work on Win32, bypass for now.
+
+2005-01-26  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* src/linc-protocols.c: Add missing #include <utime.h>.
+
+2005-01-26  Tor Lillqvist  <tml@novell.com>
+
+	* include/linc/linc-connection.h
+	* include/linc/linc-protocol.h: Restructure includes for Win32.
+
+	* src/linc-compat.c: New file, Win32 portability functions.
+
+	* src/linc-compat.h: Win32 additions, restructuring.
+
+	* src/Makefile.am (bin_PROGRAMS): Don't build linc-cleanup-sockets
+	on Win32, where there are no Unix domain sockets to clean up. Add
+	linc-compat.c
+
+2004-09-27  Michael Meeks  <michael@ximian.com>
+
+	* src/linc-connection.c
+	(link_connection_try_reconnect): actually
+	unset inhibit reconnect having emitted callbacks.
+
+2004-09-16  Michael Meeks  <michael@ximian.com>
+
+	* src/linc-connection.c
+	(dispatch_callbacks_drop_lock): split out.
+	(link_connection_state_changed_T_R): upd.
+	(link_connection_try_reconnect): dispatch callbacks
+	immediately if we own the default mainloop, so we don't
+	deadlock vs. the idle handler.
+
 2004-05-26  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* src/linc-private.c (LINC_TEMP_FAILURE_RETRY): Change macro to

@@ -9,14 +9,14 @@
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
-extern "C"
-{
-#endif				/* __cplusplus */
+extern "C" {
+#endif /* __cplusplus */
+
 
 /** typedefs **/
 #if !defined(_ORBit_IArgFlag_defined)
 #define _ORBit_IArgFlag_defined 1
-   typedef CORBA_long ORBit_IArgFlag;
+typedef CORBA_long ORBit_IArgFlag;
 #define ORBit_IArgFlag_marshal(x,y,z) CORBA_long_marshal((x),(y),(z))
 #define ORBit_IArgFlag_demarshal(x,y,z,i) CORBA_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_ORBit_IArgFlag_0)
@@ -36,11 +36,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IArgFlag_13 'c'
 #define TC_IMPL_TC_ORBit_IArgFlag_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IArgFlag_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IArgFlag_struct;
 #define TC_ORBit_IArgFlag ((CORBA_TypeCode)&TC_ORBit_IArgFlag_struct)
 #endif
 #define ORBit_IArgFlag__alloc() ((ORBit_IArgFlag *)ORBit_small_alloc (TC_CORBA_long))
@@ -48,29 +48,28 @@ extern "C"
 #endif
 #ifndef ORBit_I_COMMON_FIXED_SIZE
 #define ORBit_I_COMMON_FIXED_SIZE 1
-#endif				/* !ORBit_I_COMMON_FIXED_SIZE */
+#endif /* !ORBit_I_COMMON_FIXED_SIZE */
 
 #ifndef ORBit_I_ARG_IN
 #define ORBit_I_ARG_IN 32
-#endif				/* !ORBit_I_ARG_IN */
+#endif /* !ORBit_I_ARG_IN */
 
 #ifndef ORBit_I_ARG_OUT
 #define ORBit_I_ARG_OUT 64
-#endif				/* !ORBit_I_ARG_OUT */
+#endif /* !ORBit_I_ARG_OUT */
 
 #ifndef ORBit_I_ARG_INOUT
 #define ORBit_I_ARG_INOUT 128
-#endif				/* !ORBit_I_ARG_INOUT */
+#endif /* !ORBit_I_ARG_INOUT */
 
 #if !defined(_ORBit_IArg_defined)
 #define _ORBit_IArg_defined 1
-   typedef struct ORBit_IArg_type ORBit_IArg;
-   struct ORBit_IArg_type
-   {
-      CORBA_TypeCode tc;
-      ORBit_IArgFlag flags;
-      CORBA_string name;
-   };
+typedef struct ORBit_IArg_type ORBit_IArg;
+struct ORBit_IArg_type {
+CORBA_TypeCode tc;
+ORBit_IArgFlag flags;
+CORBA_string name;
+};
 
 #if !defined(TC_IMPL_TC_ORBit_IArg_0)
 #define TC_IMPL_TC_ORBit_IArg_0 'o'
@@ -89,11 +88,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IArg_13 'c'
 #define TC_IMPL_TC_ORBit_IArg_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IArg_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IArg_struct;
 #define TC_ORBit_IArg ((CORBA_TypeCode)&TC_ORBit_IArg_struct)
 #endif
 #define ORBit_IArg__alloc() ((ORBit_IArg *)ORBit_small_alloc (TC_ORBit_IArg))
@@ -118,13 +117,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_ORBit_IArg_14 'e'
 #if !defined(_CORBA_sequence_ORBit_IArg_defined)
 #define _CORBA_sequence_ORBit_IArg_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      ORBit_IArg *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_ORBit_IArg;
+typedef struct { CORBA_unsigned_long _maximum, _length; ORBit_IArg* _buffer; CORBA_boolean _release; } CORBA_sequence_ORBit_IArg;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_ORBit_IArg_0)
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IArg_0 'o'
@@ -143,11 +136,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IArg_13 'c'
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IArg_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_ORBit_IArg_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_ORBit_IArg_struct;
 #define TC_CORBA_sequence_ORBit_IArg ((CORBA_TypeCode)&TC_CORBA_sequence_ORBit_IArg_struct)
 #endif
 #define CORBA_sequence_ORBit_IArg__alloc() ((CORBA_sequence_ORBit_IArg *)ORBit_small_alloc (TC_CORBA_sequence_ORBit_IArg))
@@ -157,7 +150,7 @@ extern "C"
 #endif
 #if !defined(_ORBit_IArgs_defined)
 #define _ORBit_IArgs_defined 1
-   typedef CORBA_sequence_ORBit_IArg ORBit_IArgs;
+typedef CORBA_sequence_ORBit_IArg ORBit_IArgs;
 #define ORBit_IArgs_marshal(x,y,z) CORBA_sequence_ORBit_IArg_marshal((x),(y),(z))
 #define ORBit_IArgs_demarshal(x,y,z,i) CORBA_sequence_ORBit_IArg_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_ORBit_IArgs_0)
@@ -177,11 +170,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IArgs_13 'c'
 #define TC_IMPL_TC_ORBit_IArgs_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IArgs_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IArgs_struct;
 #define TC_ORBit_IArgs ((CORBA_TypeCode)&TC_ORBit_IArgs_struct)
 #endif
 #define ORBit_IArgs__alloc() ((ORBit_IArgs *)ORBit_small_alloc (TC_CORBA_sequence_ORBit_IArg))
@@ -207,13 +200,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_TypeCode_14 'e'
 #if !defined(_CORBA_sequence_CORBA_TypeCode_defined)
 #define _CORBA_sequence_CORBA_TypeCode_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_TypeCode *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_TypeCode;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_TypeCode* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_TypeCode;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_TypeCode_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_TypeCode_0 'o'
@@ -232,11 +219,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_TypeCode_13 'c'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_TypeCode_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_TypeCode_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_TypeCode_struct;
 #define TC_CORBA_sequence_CORBA_TypeCode ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_TypeCode_struct)
 #endif
 #define CORBA_sequence_CORBA_TypeCode__alloc() ((CORBA_sequence_CORBA_TypeCode *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_TypeCode))
@@ -246,7 +233,7 @@ extern "C"
 #endif
 #if !defined(_ORBit_ITypes_defined)
 #define _ORBit_ITypes_defined 1
-   typedef CORBA_sequence_CORBA_TypeCode ORBit_ITypes;
+typedef CORBA_sequence_CORBA_TypeCode ORBit_ITypes;
 #define ORBit_ITypes_marshal(x,y,z) CORBA_sequence_CORBA_TypeCode_marshal((x),(y),(z))
 #define ORBit_ITypes_demarshal(x,y,z,i) CORBA_sequence_CORBA_TypeCode_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_ORBit_ITypes_0)
@@ -266,11 +253,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_ITypes_13 'c'
 #define TC_IMPL_TC_ORBit_ITypes_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_ITypes_struct;
+struct CORBA_TypeCode_struct TC_ORBit_ITypes_struct;
 #define TC_ORBit_ITypes ((CORBA_TypeCode)&TC_ORBit_ITypes_struct)
 #endif
 #define ORBit_ITypes__alloc() ((ORBit_ITypes *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_TypeCode))
@@ -296,13 +283,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_14 'e'
 #if !defined(_CORBA_sequence_CORBA_string_defined)
 #define _CORBA_sequence_CORBA_string_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_string *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_string;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_string* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'o'
@@ -321,11 +302,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_13 'c'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -335,7 +316,7 @@ extern "C"
 #endif
 #if !defined(_ORBit_IContexts_defined)
 #define _ORBit_IContexts_defined 1
-   typedef CORBA_sequence_CORBA_string ORBit_IContexts;
+typedef CORBA_sequence_CORBA_string ORBit_IContexts;
 #define ORBit_IContexts_marshal(x,y,z) CORBA_sequence_CORBA_string_marshal((x),(y),(z))
 #define ORBit_IContexts_demarshal(x,y,z,i) CORBA_sequence_CORBA_string_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_ORBit_IContexts_0)
@@ -355,11 +336,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IContexts_13 'c'
 #define TC_IMPL_TC_ORBit_IContexts_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IContexts_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IContexts_struct;
 #define TC_ORBit_IContexts ((CORBA_TypeCode)&TC_ORBit_IContexts_struct)
 #endif
 #define ORBit_IContexts__alloc() ((ORBit_IContexts *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -368,7 +349,7 @@ extern "C"
 #endif
 #if !defined(_ORBit_IMethodFlag_defined)
 #define _ORBit_IMethodFlag_defined 1
-   typedef CORBA_long ORBit_IMethodFlag;
+typedef CORBA_long ORBit_IMethodFlag;
 #define ORBit_IMethodFlag_marshal(x,y,z) CORBA_long_marshal((x),(y),(z))
 #define ORBit_IMethodFlag_demarshal(x,y,z,i) CORBA_long_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_ORBit_IMethodFlag_0)
@@ -388,11 +369,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IMethodFlag_13 'c'
 #define TC_IMPL_TC_ORBit_IMethodFlag_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IMethodFlag_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IMethodFlag_struct;
 #define TC_ORBit_IMethodFlag ((CORBA_TypeCode)&TC_ORBit_IMethodFlag_struct)
 #endif
 #define ORBit_IMethodFlag__alloc() ((ORBit_IMethodFlag *)ORBit_small_alloc (TC_CORBA_long))
@@ -400,33 +381,32 @@ extern "C"
 #endif
 #ifndef ORBit_I_METHOD_1_WAY
 #define ORBit_I_METHOD_1_WAY 32
-#endif				/* !ORBit_I_METHOD_1_WAY */
+#endif /* !ORBit_I_METHOD_1_WAY */
 
 #ifndef ORBit_I_METHOD_ALL_BASE
 #define ORBit_I_METHOD_ALL_BASE 64
-#endif				/* !ORBit_I_METHOD_ALL_BASE */
+#endif /* !ORBit_I_METHOD_ALL_BASE */
 
 #ifndef ORBit_I_METHOD_NO_OUT
 #define ORBit_I_METHOD_NO_OUT 128
-#endif				/* !ORBit_I_METHOD_NO_OUT */
+#endif /* !ORBit_I_METHOD_NO_OUT */
 
 #ifndef ORBit_I_METHOD_HAS_CONTEXT
 #define ORBit_I_METHOD_HAS_CONTEXT 256
-#endif				/* !ORBit_I_METHOD_HAS_CONTEXT */
+#endif /* !ORBit_I_METHOD_HAS_CONTEXT */
 
 #if !defined(_ORBit_IMethod_defined)
 #define _ORBit_IMethod_defined 1
-   typedef struct ORBit_IMethod_type ORBit_IMethod;
-   struct ORBit_IMethod_type
-   {
-      ORBit_IArgs arguments;
-      ORBit_IContexts contexts;
-      ORBit_ITypes exceptions;
-      CORBA_TypeCode ret;
-      CORBA_string name;
-      CORBA_long name_len;
-      ORBit_IMethodFlag flags;
-   };
+typedef struct ORBit_IMethod_type ORBit_IMethod;
+struct ORBit_IMethod_type {
+ORBit_IArgs arguments;
+ORBit_IContexts contexts;
+ORBit_ITypes exceptions;
+CORBA_TypeCode ret;
+CORBA_string name;
+CORBA_long name_len;
+ORBit_IMethodFlag flags;
+};
 
 #if !defined(TC_IMPL_TC_ORBit_IMethod_0)
 #define TC_IMPL_TC_ORBit_IMethod_0 'o'
@@ -445,11 +425,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IMethod_13 'c'
 #define TC_IMPL_TC_ORBit_IMethod_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IMethod_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IMethod_struct;
 #define TC_ORBit_IMethod ((CORBA_TypeCode)&TC_ORBit_IMethod_struct)
 #endif
 #define ORBit_IMethod__alloc() ((ORBit_IMethod *)ORBit_small_alloc (TC_ORBit_IMethod))
@@ -474,13 +454,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_ORBit_IMethod_14 'e'
 #if !defined(_CORBA_sequence_ORBit_IMethod_defined)
 #define _CORBA_sequence_ORBit_IMethod_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      ORBit_IMethod *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_ORBit_IMethod;
+typedef struct { CORBA_unsigned_long _maximum, _length; ORBit_IMethod* _buffer; CORBA_boolean _release; } CORBA_sequence_ORBit_IMethod;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_ORBit_IMethod_0)
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IMethod_0 'o'
@@ -499,11 +473,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IMethod_13 'c'
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IMethod_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_ORBit_IMethod_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_ORBit_IMethod_struct;
 #define TC_CORBA_sequence_ORBit_IMethod ((CORBA_TypeCode)&TC_CORBA_sequence_ORBit_IMethod_struct)
 #endif
 #define CORBA_sequence_ORBit_IMethod__alloc() ((CORBA_sequence_ORBit_IMethod *)ORBit_small_alloc (TC_CORBA_sequence_ORBit_IMethod))
@@ -513,7 +487,7 @@ extern "C"
 #endif
 #if !defined(_ORBit_IMethods_defined)
 #define _ORBit_IMethods_defined 1
-   typedef CORBA_sequence_ORBit_IMethod ORBit_IMethods;
+typedef CORBA_sequence_ORBit_IMethod ORBit_IMethods;
 #define ORBit_IMethods_marshal(x,y,z) CORBA_sequence_ORBit_IMethod_marshal((x),(y),(z))
 #define ORBit_IMethods_demarshal(x,y,z,i) CORBA_sequence_ORBit_IMethod_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_ORBit_IMethods_0)
@@ -533,11 +507,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IMethods_13 'c'
 #define TC_IMPL_TC_ORBit_IMethods_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IMethods_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IMethods_struct;
 #define TC_ORBit_IMethods ((CORBA_TypeCode)&TC_ORBit_IMethods_struct)
 #endif
 #define ORBit_IMethods__alloc() ((ORBit_IMethods *)ORBit_small_alloc (TC_CORBA_sequence_ORBit_IMethod))
@@ -546,7 +520,7 @@ extern "C"
 #endif
 #if !defined(_ORBit_IInterface_defined)
 #define _ORBit_IInterface_defined 1
-   typedef struct ORBit_IInterface_type ORBit_IInterface;
+typedef struct ORBit_IInterface_type ORBit_IInterface;
 #if !defined(ORBIT_DECL_CORBA_sequence_CORBA_string)
 #define ORBIT_DECL_CORBA_sequence_CORBA_string 1
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_0 'o'
@@ -566,13 +540,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_CORBA_string_14 'e'
 #if !defined(_CORBA_sequence_CORBA_string_defined)
 #define _CORBA_sequence_CORBA_string_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      CORBA_string *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_CORBA_string;
+typedef struct { CORBA_unsigned_long _maximum, _length; CORBA_string* _buffer; CORBA_boolean _release; } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'o'
@@ -591,11 +559,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_13 'c'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct;
 #define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
 #endif
 #define CORBA_sequence_CORBA_string__alloc() ((CORBA_sequence_CORBA_string *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_string))
@@ -603,12 +571,11 @@ extern "C"
 #define CORBA_sequence_CORBA_string_allocbuf(l) ((CORBA_string*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_string, (l)))
 #define CORBA_sequence_CORBA_string_allocbuf(l) ((CORBA_string*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_string, (l)))
 #endif
-   struct ORBit_IInterface_type
-   {
-      CORBA_TypeCode tc;
-      ORBit_IMethods methods;
-      CORBA_sequence_CORBA_string base_interfaces;
-   };
+struct ORBit_IInterface_type {
+CORBA_TypeCode tc;
+ORBit_IMethods methods;
+CORBA_sequence_CORBA_string base_interfaces;
+};
 
 #if !defined(TC_IMPL_TC_ORBit_IInterface_0)
 #define TC_IMPL_TC_ORBit_IInterface_0 'o'
@@ -627,11 +594,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IInterface_13 'c'
 #define TC_IMPL_TC_ORBit_IInterface_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IInterface_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IInterface_struct;
 #define TC_ORBit_IInterface ((CORBA_TypeCode)&TC_ORBit_IInterface_struct)
 #endif
 #define ORBit_IInterface__alloc() ((ORBit_IInterface *)ORBit_small_alloc (TC_ORBit_IInterface))
@@ -656,13 +623,7 @@ extern "C"
 #define ORBIT_IMPL_CORBA_sequence_ORBit_IInterface_14 'e'
 #if !defined(_CORBA_sequence_ORBit_IInterface_defined)
 #define _CORBA_sequence_ORBit_IInterface_defined 1
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      ORBit_IInterface *_buffer;
-      CORBA_boolean _release;
-   } CORBA_sequence_ORBit_IInterface;
+typedef struct { CORBA_unsigned_long _maximum, _length; ORBit_IInterface* _buffer; CORBA_boolean _release; } CORBA_sequence_ORBit_IInterface;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_ORBit_IInterface_0)
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IInterface_0 'o'
@@ -681,12 +642,11 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IInterface_13 'c'
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IInterface_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_ORBit_IInterface_struct;
+struct CORBA_TypeCode_struct TC_CORBA_sequence_ORBit_IInterface_struct;
 #define TC_CORBA_sequence_ORBit_IInterface ((CORBA_TypeCode)&TC_CORBA_sequence_ORBit_IInterface_struct)
 #endif
 #define CORBA_sequence_ORBit_IInterface__alloc() ((CORBA_sequence_ORBit_IInterface *)ORBit_small_alloc (TC_CORBA_sequence_ORBit_IInterface))
@@ -696,7 +656,7 @@ extern "C"
 #endif
 #if !defined(_ORBit_IInterfaces_defined)
 #define _ORBit_IInterfaces_defined 1
-   typedef CORBA_sequence_ORBit_IInterface ORBit_IInterfaces;
+typedef CORBA_sequence_ORBit_IInterface ORBit_IInterfaces;
 #define ORBit_IInterfaces_marshal(x,y,z) CORBA_sequence_ORBit_IInterface_marshal((x),(y),(z))
 #define ORBit_IInterfaces_demarshal(x,y,z,i) CORBA_sequence_ORBit_IInterface_demarshal((x),(y),(z),(i))
 #if !defined(TC_IMPL_TC_ORBit_IInterfaces_0)
@@ -716,11 +676,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_IInterfaces_13 'c'
 #define TC_IMPL_TC_ORBit_IInterfaces_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_IInterfaces_struct;
+struct CORBA_TypeCode_struct TC_ORBit_IInterfaces_struct;
 #define TC_ORBit_IInterfaces ((CORBA_TypeCode)&TC_ORBit_IInterfaces_struct)
 #endif
 #define ORBit_IInterfaces__alloc() ((ORBit_IInterfaces *)ORBit_small_alloc (TC_CORBA_sequence_ORBit_IInterface))
@@ -731,11 +691,10 @@ extern "C"
 #define ex_ORBit_NoIInterface "IDL:ORBit/NoIInterface:1.0"
 #if !defined(_ORBit_NoIInterface_defined)
 #define _ORBit_NoIInterface_defined 1
-   typedef struct ORBit_NoIInterface_type ORBit_NoIInterface;
-   struct ORBit_NoIInterface_type
-   {
-      int dummy;
-   };
+typedef struct ORBit_NoIInterface_type ORBit_NoIInterface;
+struct ORBit_NoIInterface_type {
+int dummy;
+};
 
 #if !defined(TC_IMPL_TC_ORBit_NoIInterface_0)
 #define TC_IMPL_TC_ORBit_NoIInterface_0 'o'
@@ -754,11 +713,11 @@ extern "C"
 #define TC_IMPL_TC_ORBit_NoIInterface_13 'c'
 #define TC_IMPL_TC_ORBit_NoIInterface_14 'e'
 #ifdef ORBIT_IDL_C_IMODULE_orbit_interface
-   static
+static
 #else
-   extern
+extern
 #endif
-   const struct CORBA_TypeCode_struct TC_ORBit_NoIInterface_struct;
+struct CORBA_TypeCode_struct TC_ORBit_NoIInterface_struct;
 #define TC_ORBit_NoIInterface ((CORBA_TypeCode)&TC_ORBit_NoIInterface_struct)
 #endif
 #define ORBit_NoIInterface__alloc() ((ORBit_NoIInterface *)ORBit_small_alloc (TC_ORBit_NoIInterface))
@@ -768,11 +727,11 @@ extern "C"
 /** stub prototypes **/
 #ifdef __cplusplus
 }
-#endif				/* __cplusplus */
+#endif /* __cplusplus */
 
 #ifndef EXCLUDE_ORBIT_H
 #include <orbit/orbit.h>
 
-#endif				/* EXCLUDE_ORBIT_H */
+#endif /* EXCLUDE_ORBIT_H */
 #endif
 #undef ORBIT_IDL_SERIAL
