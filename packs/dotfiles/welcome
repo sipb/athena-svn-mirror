@@ -1,0 +1,23 @@
+Welcome to Project Athena
+--------------------------
+- Project Athena is a five-year experiment to explore the use of
+  computers in university educational programs.  Initiated in May 1983,
+  the project develops computers useful as tools, rather than objects of
+  study, in the education of students at MIT. 
+
+- Project Athena seeks to support as much of the MIT student and faculty
+  population as possible in a campus-wide network.
+
+- If you have trouble, talk to a student consultant in the nearest
+  terminal room.  Consultants wear visors labeled with "Athena
+  Consultant" and Athena's symbol, the owl.
+
+- You can find documentation in the terminal rooms or at the IPS
+  Publications Office (11-209).  Start with the "Essential" series, the
+  quick reference cards, and a documentation catalog.  
+
+- Type:  man <program name>  followed by a carriage return to view
+  online manual pages for commands.  For example, type:  man passwd
+  to find out how to change your password.  Use man to see the manual
+  pages for other useful commands like:  msgs, apropos, more, and ls.
+
