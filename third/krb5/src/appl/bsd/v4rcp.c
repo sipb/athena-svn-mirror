@@ -37,6 +37,7 @@ static char sccsid[] = "@(#)rcp.c	5.10 (Berkeley) 9/20/88";
  */
 #ifdef KERBEROS
 #include "krb5.h"
+#include "com_err.h"
 #endif
 
 #include <sys/types.h>
@@ -310,10 +311,6 @@ void	lostconn();
 int	lostconn();
 #endif
 int	errno;
-/* Kludge!!!! */
-#if (!defined(__NetBSD__) && !defined(__FreeBSD__))
-extern char	*sys_errlist[];
-#endif
 int	iamremote, targetshouldbedirectory;
 int	iamrecursive;
 int	pflag;
@@ -463,7 +460,7 @@ verifydir(cp)
 			return;
 		errno = ENOTDIR;
 	}
-	error("rcp: %s: %s.\n", cp, sys_errlist[errno]);
+	error("rcp: %s: %s.\n", cp, error_message(errno));
 	exit(1);
 }
 
@@ -482,7 +479,7 @@ source(argc, argv)
 	for (x = 0; x < argc; x++) {
 		name = argv[x];
 		if ((f = open(name, 0)) < 0) {
-			error("rcp: %s: %s\n", name, sys_errlist[errno]);
+			error("rcp: %s: %s\n", name, error_message(errno));
 			continue;
 		}
 		if (fstat(f, &stb) < 0)
@@ -547,7 +544,7 @@ notreg:
 		if (readerr == 0)
 			ga();
 		else
-			error("rcp: %s: %s\n", name, sys_errlist[readerr]);
+			error("rcp: %s: %s\n", name, error_message(readerr));
 		(void) response();
 	}
 }
@@ -573,7 +570,7 @@ rsource(name, statp)
 #endif
 
 	if (d == 0) {
-		error("rcp: %s: %s\n", name, sys_errlist[errno]);
+		error("rcp: %s: %s\n", name, error_message(errno));
 		return;
 	}
 	last = strrchr(name, '/');
@@ -808,13 +805,13 @@ sink(argc, argv)
 				setimes = 0;
 				if (utimes(nambuf, tv) < 0)
 					error("rcp: can't set times on %s: %s\n",
-					    nambuf, sys_errlist[errno]);
+					    nambuf, error_message(errno));
 			}
 			continue;
 		}
 		if ((of = open(nambuf, O_WRONLY|O_CREAT|O_TRUNC, mode)) < 0) {
 	bad:
-			error("rcp: %s: %s\n", nambuf, sys_errlist[errno]);
+			error("rcp: %s: %s\n", nambuf, error_message(errno));
 			continue;
 		}
 #ifdef NO_FCHMOD
@@ -844,7 +841,7 @@ sink(argc, argv)
 					    error("rcp: dropped connection");
 					else
 					    error("rcp: %s\n",
-						sys_errlist[errno]);
+						error_message(errno));
 					exit(1);
 				}
 				amt -= j;
@@ -864,7 +861,7 @@ sink(argc, argv)
 #ifndef __SCO__
 		if (ftruncate(of, size))
 			error("rcp: can't truncate %s: %s\n",
-			    nambuf, sys_errlist[errno]);
+			    nambuf, error_message(errno));
 #endif
 		(void) close(of);
 		(void) response();
@@ -872,10 +869,10 @@ sink(argc, argv)
 			setimes = 0;
 			if (utimes(nambuf, tv) < 0)
 				error("rcp: can't set times on %s: %s\n",
-				    nambuf, sys_errlist[errno]);
+				    nambuf, error_message(errno));
 		}				   
 		if (wrerr)
-			error("rcp: %s: %s\n", nambuf, sys_errlist[errno]);
+			error("rcp: %s: %s\n", nambuf, error_message(errno));
 		else
 			ga();
 	}
@@ -894,7 +891,7 @@ allocbuf(bp, fd, blksize)
 	struct stat stb;
 
 	if (fstat(fd, &stb) < 0) {
-		error("rcp: fstat: %s\n", sys_errlist[errno]);
+		error("rcp: fstat: %s\n", error_message(errno));
 		return (NULLBUF);
 	}
 	size = roundup(stb.st_blksize, blksize);
