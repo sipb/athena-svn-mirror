@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: larv__compose_packet.c,v 1.3 1999-10-23 19:29:04 danw Exp $";
+static const char rcsid[] = "$Id: larv__compose_packet.c,v 1.4 2000-05-18 15:55:18 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,6 +44,7 @@ int larv__compose_packet(char *buf)
   name[sizeof(name) - 1] = 0;
 
   /* Determine the machine type. */
+  arch = NULL;
   fp = fopen(PATH_CONFIG, "r");
   if (fp)
     {
@@ -60,7 +61,7 @@ int larv__compose_packet(char *buf)
 	}
       fclose(fp);
     }
-  else
+  if (arch == NULL)
     arch = "";
 
   /* Compute the length of the status packet and make sure we have space. */
