@@ -1,0 +1,25 @@
+#!/sbin/sh
+#
+# Start X Display Manager via nanny
+#
+
+IS_ON=/sbin/chkconfig
+XSGI=/usr/bin/X11/Xsgi
+
+case "$1" in
+  'start')
+		if $IS_ON windowsystem && test -x $XSGI || $IS_ON xdm; then
+			/etc/athena/nanny DEBUG=5 MODE=X
+		fi
+	fi
+        ;;
+
+  'stop')
+	/etc/athena/nanny die
+        ;;
+
+  *)
+        echo "usage: /etc/init.d/xdm {start|stop}"
+        ;;
+esac
+
