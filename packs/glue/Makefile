@@ -1,16 +1,60 @@
-# $Id: Makefile,v 1.8 1997-02-25 19:05:48 ghudson Exp $
+# $Id: Makefile,v 1.9 1997-03-06 00:53:30 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
 ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
-ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint kermit klog listmaint \
-	mkserv mailmaint moira mrcheck namespace olc_answers olh olh_ascii \
-	olh_motif pts sis techinfo usermaint userreg vos xinfo xtechinfo
+ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help kermit klog \
+	listmaint mkserv mailmaint moira mrcheck namespace olc_answers olh \
+	olh_ascii olh_motif pts sis techinfo usermaint userreg vos xinfo \
+	xtechinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
+HELP=/afs/athena.mit.edu/system/help
+MKSERV=/afs/athena.mit.edu/system/mkserv
+MODEM=/afs/athena.mit.edu/system/modem
 TELLME=/afs/athena.mit.edu/system/config/tellme
+
+# We make a lot of symlinks here, so we're going to make a hack to make it
+# a little more readable.
+SYMLINKS=	/mit/sipb			/usr/sipb \
+		kpasswd				${ATHBINDIR}/passwd \
+		/usr/bin/passwd			${ATHBINDIR}/passwd.real \
+		${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
+		${MOIRA}/man/cat1/addusr.1	${ATHMANDIR}/cat1/addusr.1 \
+		${MOIRA}/man/man1/blanche.1	${ATHMANDIR}/man1/blanche.1 \
+		${MOIRA}/man/cat1/blanche.1	${ATHMANDIR}/cat1/blanche.1 \
+		${MOIRA}/man/man1/chfn.1	${ATHMANDIR}/man1/chfn.1 \
+		${MOIRA}/man/cat1/chfn.1	${ATHMANDIR}/cat1/chfn.1 \
+		${MOIRA}/man/man1/chpobox.1	${ATHMANDIR}/man1/chpobox.1 \
+		${MOIRA}/man/cat1/chpobox.1	${ATHMANDIR}/cat1/chpobox.1 \
+		${MOIRA}/man/man1/chsh.1	${ATHMANDIR}/man1/chsh.1 \
+		${MOIRA}/man/cat1/chsh.1	${ATHMANDIR}/cat1/chsh.1 \
+		${MOIRA}/man/man1/dcmmaint.1	${ATHMANDIR}/man1/dcmmaint.1 \
+		${MOIRA}/man/cat1/dcmmaint.1	${ATHMANDIR}/cat1/dcmmaint.1 \
+		${HELP}/man/man1/help.1		${ATHMANDIR}/man1/help.1 \
+		${HELP}/man/cat1/help.1		${ATHMANDIR}/cat1/help.1 \
+		${MOIRA}/man/man1/listmaint.1	${ATHMANDIR}/man1/listmaint.1 \
+		${MOIRA}/man/cat1/listmaint.1	${ATHMANDIR}/cat1/listmaint.1 \
+		${MOIRA}/man/man1/mailmaint.1	${ATHMANDIR}/man1/mailmaint.1 \
+		${MOIRA}/man/cat1/mailmaint.1	${ATHMANDIR}/cat1/mailmaint.1 \
+		${MKSERV}/man/man1/mkserv.1	${ATHMANDIR}/man1/mkserv.1 \
+		${MKSERV}/man/cat1/mkserv.1	${ATHMANDIR}/cat1/mkserv.1 \
+		${MODEM}/man/man1/kermit.1	${ATHMANDIR}/man1/kermit.1 \
+		${MODEM}/man/cat1/kermit.1	${ATHMANDIR}/cat1/kermit.1 \
+		${MOIRA}/man/man1/moira.1	${ATHMANDIR}/man1/moira.1 \
+		${MOIRA}/man/cat1/moira.1	${ATHMANDIR}/cat1/moira.1 \
+		${MOIRA}/man/man1/mrcheck.1	${ATHMANDIR}/man1/mrcheck.1 \
+		${MOIRA}/man/cat1/mrcheck.1	${ATHMANDIR}/cat1/mrcheck.1 \
+		${MOIRA}/man/man1/namespace.1	${ATHMANDIR}/man1/namespace.1 \
+		${MOIRA}/man/cat1/namespace.1	${ATHMANDIR}/cat1/namespace.1 \
+		${HELP}/man/man1/olh.1		${ATHMANDIR}/man1/olh.1 \
+		${HELP}/man/cat1/olh.1		${ATHMANDIR}/cat1/olh.1 \
+		${MOIRA}/man/man1/usermaint.1	${ATHMANDIR}/man1/usermaint.1 \
+		${MOIRA}/man/cat1/usermaint.1	${ATHMANDIR}/cat1/usermaint.1 \
+		${MOIRA}/man/man1/userreg.1	${ATHMANDIR}/man1/userreg.1 \
+		${MOIRA}/man/cat1/userreg.1	${ATHMANDIR}/cat1/userreg.1
 
 all: ${ATTACHRUN} verify-message
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -34,6 +78,7 @@ install:
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
 	-mkdir -p ${DESTDIR}${ATHETCDIR}
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 blanche ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 bos ${DESTDIR}${ATHRBINDIR}
@@ -67,20 +112,19 @@ install:
 	install -c -m 444 sis.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 444 xinfo.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 444 xtechinfo.1 ${DESTDIR}${ATHMANDIR}/man1
+	@set ${SYMLINKS}; while [ $$# -ne 0 ]; do \
+		echo rm -f ${DESTDIR}$$2; \
+		rm -f ${DESTDIR}$$2; \
+		echo ln -s $$1 ${DESTDIR}$$2; \
+		ln -s $$1 ${DESTDIR}$$2; \
+		shift 2; \
+	done
 	rm -f ${DESTDIR}${ATHETCDIR}/update_server
 	ln -s `athdir -c -p ${MOIRA} -t bin`/update_server \
 		${DESTDIR}${ATHETCDIR}/update_server
 	rm -f ${DESTDIR}${ATHBINDIR}/tellme
 	ln -s `athdir -c -p ${TELLME} -t bin`/tellme \
 		${DESTDIR}${ATHBINDIR}/tellme
-	rm -f ${DESTDIR}${ATHBINDIR}/help
-	ln -s olh ${DESTDIR}${ATHBINDIR}/help
-	rm -f ${DESTDIR}${ATHBINDIR}/passwd
-	ln -s kpasswd ${DESTDIR}${ATHBINDIR}/passwd
-	rm -f ${DESTDIR}${ATHBINDIR}/passwd.real
-	ln -s /usr/bin/passwd ${DESTDIR}${ATHBINDIR}/passwd.real
-	rm -f ${DESTDIR}/usr/sipb
-	ln -s /mit/sipb ${DESTDIR}/usr/sipb
 	rm -f ${DESTDIR}/usr/andrew
 	. ../build/version; \
 		vers=$$major.$$minor; \
