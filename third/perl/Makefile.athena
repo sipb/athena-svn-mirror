@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.19 2003-05-20 23:33:46 rbasch Exp $
+# $Id: Makefile.athena,v 1.20 2004-04-13 19:05:29 zacheiss Exp $
 
 SHELL=/bin/sh
 
@@ -8,7 +8,7 @@ prepare:
 	rm -f config.sh
 	./Configure -d -s -e -Dprefix=/usr/athena -Dcc="$$COMPILER" \
 		-Dlocincpth=/usr/athena/include -Dloclibpth=/usr/athena/lib \
-		-Doptimize='-g' -Dperladmin=bugs@mit.edu
+		-Doptimize='-g' -Dusethreads -Dperladmin=bugs@mit.edu
 
 clean:
 	${MAKE} clean
