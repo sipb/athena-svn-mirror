@@ -4,7 +4,7 @@
  **************************************************************************/
 /**** HEADER *****/
 #include "patchlevel.h"
- static char *const _id = "$Id: ifhp.c,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $"
+ static char *const _id = "$Id: ifhp.c,v 1.2 1999-03-11 22:18:24 mwhitson Exp $"
  " VERSION " PATCHLEVEL;
 
 #include "ifhp.h"
@@ -2604,8 +2604,6 @@ void Send_job()
 	if( len < 0 ){
 		Errorcode = JFAIL;
 		logerr_die( "Send_job: read error on stdin" );
-	} else if( len == 0 ){
-		done = 1;
 	}
 	if( Outlen == 0 ){
 		log( "Send_job: zero length job file" );
