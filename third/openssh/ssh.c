@@ -167,7 +167,7 @@ usage(void)
 	     _PATH_SSH_USER_CONFFILE);
 	fprintf(stderr, "  -A          Enable authentication agent forwarding.\n");
 	fprintf(stderr, "  -a          Disable authentication agent forwarding (default).\n");
-#ifdef AFS
+#if defined(AFS) || defined(KRB5)
 	fprintf(stderr, "  -k          Disable Kerberos ticket and AFS token forwarding.\n");
 #endif				/* AFS */
 	fprintf(stderr, "  -X          Enable X11 connection forwarding.\n");
@@ -359,10 +359,14 @@ again:
 		case 'A':
 			options.forward_agent = 1;
 			break;
-#ifdef AFS
+#if defined(AFS) || defined(KRB5)
 		case 'k':
+#ifdef KRB5
 			options.kerberos_tgt_passing = 0;
+#endif
+#ifdef AFS
 			options.afs_token_passing = 0;
+#endif
 			break;
 #endif
 		case 'i':
