@@ -27,6 +27,20 @@
 #define RanLibCmd \:
 #endif
 
+#ifdef linux
+#define NOLINT
+#define LintFlags -DPOSIX -I/usr/X11R6/include
+#define ProfCcFlags -pg
+#define CcFlags LintFlags
+#define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR) -L/usr/X11R6/lib
+#define LdLibs -lresolv
+#define CcCmd cc
+#define LdCmd cc
+#define AnsiCcCmd cc
+#define AnsiLdCmd cc
+#define RanLibCmd ranlib
+#endif
+
 #ifndef NoAFS
 #define AfsDir $(ATHTOOLROOT)/usr/afsws
 #endif
