@@ -1,0 +1,374 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>BonoboPropertyBag</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="previous" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="next" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-property-bag.html#id2812834" title="Description"><link rel="section" href="libbonobo-bonobo-property-bag.html#id2812971" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-listener.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="property-bags.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-arg.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-property-bag"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">BonoboPropertyBag</span></h2><p>BonoboPropertyBag &#8212; Implements a generic property storage interface</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBagClass">BonoboPropertyBagClass</a>;
+struct      <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>;
+#define     <a href="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-READABLE-CAPS">BONOBO_PROPERTY_READABLE</a>
+#define     <a href="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-WRITEABLE-CAPS">BONOBO_PROPERTY_WRITEABLE</a>
+#define     <a href="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-WRITABLE-CAPS">BONOBO_PROPERTY_WRITABLE</a>
+#define     <a href="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-NO-LISTENING-CAPS">BONOBO_PROPERTY_NO_LISTENING</a>
+#define     <a href="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-NO-AUTONOTIFY-CAPS">BONOBO_PROPERTY_NO_AUTONOTIFY</a>
+struct      <a href="libbonobo-bonobo-property-bag.html#BonoboProperty">BonoboProperty</a>;
+void        (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyGetFn">*BonoboPropertyGetFn</a>)          (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *bag,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *arg,
+                                             guint arg_id,
+                                             CORBA_Environment *ev,
+                                             gpointer user_data);
+void        (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertySetFn">*BonoboPropertySetFn</a>)          (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *bag,
+                                             const <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *arg,
+                                             guint arg_id,
+                                             CORBA_Environment *ev,
+                                             gpointer user_data);
+<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new">bonobo_property_bag_new</a>  (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyGetFn">BonoboPropertyGetFn</a> get_prop_cb,
+                                             <a href="libbonobo-bonobo-property-bag.html#BonoboPropertySetFn">BonoboPropertySetFn</a> set_prop_cb,
+                                             gpointer user_data);
+<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new-closure">bonobo_property_bag_new_closure</a>
+                                            (GClosure *get_prop,
+                                             GClosure *set_prop);
+<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new-full">bonobo_property_bag_new_full</a>
+                                            (GClosure *get_prop,
+                                             GClosure *set_prop,
+                                             BonoboEventSource *es);
+<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-construct">bonobo_property_bag_construct</a>
+                                            (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             GClosure *get_prop,
+                                             GClosure *set_prop,
+                                             BonoboEventSource *es);
+void        <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-add">bonobo_property_bag_add</a>         (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             const char *name,
+                                             int idx,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArgType">BonoboArgType</a> type,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *default_value,
+                                             const char *doctitle,
+                                             Bonobo_PropertyFlags flags);
+void        <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-add-full">bonobo_property_bag_add_full</a>    (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             const char *name,
+                                             int idx,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArgType">BonoboArgType</a> type,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *default_value,
+                                             const char *doctitle,
+                                             const char *docstring,
+                                             Bonobo_PropertyFlags flags,
+                                             GClosure *get_prop,
+                                             GClosure *set_prop);
+void        <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-remove">bonobo_property_bag_remove</a>      (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             const char *name);
+void        <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-map-params">bonobo_property_bag_map_params</a>  (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             GObject *on_instance,
+                                             const GParamSpec **pspecs,
+                                             guint n_params);
+GList*      <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-get-prop-list">bonobo_property_bag_get_prop_list</a>
+                                            (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2812834"></a><h2>Description</h2><p>
+The PropertyBag is used for many things, particularly for
+the customization of controls. The important thing to
+remember about the BonoboPropertyBag implementation is that
+no live data is stored in the bag. ie. the Model for the 
+properties is your code.
+</p><p>
+Consequently when someone requests a properties value,
+or sets a property the callbacks you supply at bag
+construction time are called, and the code therein must
+supply the property. Similarly, when a property changes
+value inside your object you need to notify the property
+bag's listeners that it has changed with a call to
+<tt class="function">bonobo_event_source_notify_listeners_full</tt>.
+</p><p>
+Here is a simple example use of the property bag:
+  </p><div class="example"><a name="id2812865"></a><p class="title"><b>Example 3. PropertyBag Callbacks</b></p><pre class="programlisting">
+enum {
+	PROP_RUNNING,
+	PROP_COLOUR
+} MyArgs;
+
+static void
+get_prop (BonoboPropertyBag *bag,
+	  BonoboArg         *arg,
+	  guint              arg_id,
+	  CORBA_Environment *ev,
+	  gpointer           user_data)
+{
+	GtkObject *clock = user_data;
+
+	switch (arg_id) {
+
+	case PROP_RUNNING:
+		BONOBO_ARG_SET_BOOLEAN (arg, clock-&gt;is_running);
+		break;
+
+	case PROP_COLOUR:
+		BONOBO_ARG_SET_STRING (arg, clock-&gt;color);
+		break;
+
+	default:
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
+		break;
+	}
+}
+
+static void
+set_prop (BonoboPropertyBag *bag,
+	  const BonoboArg   *arg,
+	  guint              arg_id,
+	  CORBA_Environment *ev,
+	  gpointer           user_data)
+{
+	GtkClock *clock = user_data;
+
+	switch (arg_id) {
+
+	case PROP_RUNNING: {
+		guint i = BONOBO_ARG_GET_BOOLEAN (arg);
+
+		if (i)
+			gtk_clock_start (clock);
+		else
+			gtk_clock_stop (clock);
+		break;
+	}
+
+	case PROP_COLOUR:
+		gtk_clock_set_color (clock, BONOBO_ARG_GET_STRING (arg));
+
+	default:
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
+		break;
+	}
+}
+     </pre></div><p>
+</p><p>
+Then to instantiate the property bag interface and associate it with
+a control perhaps we do:
+  </p><div class="example"><a name="id2812917"></a><p class="title"><b>Example 4. Adding a PropertyBag to a control</b></p><pre class="programlisting">
+	BonoboPropertyBag *pb;
+
+	pb = bonobo_property_bag_new (get_prop, set_prop, clock);
+	bonobo_control_set_properties (control, pb);
+
+	bonobo_property_bag_add (pb, "running", PROP_RUNNING,
+				 BONOBO_ARG_BOOLEAN, NULL,
+				 _("Whether or not the clock is running"),
+				 0);
+
+	bonobo_property_bag_add (pb, "colour", PROP_COLOUR,
+				 BONOBO_ARG_STRING, NULL,
+				 _("The colour of the clock face"),
+				 0);
+
+	bonobo_object_unref (BONOBO_OBJECT (pb));
+     </pre></div><p>
+And finally we need to notify listeners of changes in various properties
+so we could perhaps do:
+  </p><div class="example"><a name="id2812940"></a><p class="title"><b>Example 5. Notifying proterty bag listeners</b></p><pre class="programlisting">
+static void
+signal_handler (GtkClock *clock, BonoboPropertyBag *pb)
+{
+	BonoboArg *arg = bonobo_arg_new (TC_string);
+
+	BONOBO_ARG_SET_STRING (arg, gtk_clock_get_color (clock));
+
+	bonobo_event_source_notify_listeners_full (pb-&gt;es, 
+					           "Bonobo/Property",
+					           "change",
+						   "colour",
+					           arg, NULL);
+	bonobo_arg_release (arg);
+}
+...
+	gtk_signal_connect (GTK_OBJECT (clock), "color_changed",
+			    GTK_SIGNAL_FUNC (signal_handler), pb);
+     </pre></div><p>
+  See also <a href="libbonobo-bonobo-arg.html#BonoboArg"><span class="type">BonoboArg</span></a>.
+</p></div><div class="refsect1" lang="en"><a name="id2812971"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2812976"></a><h3><a name="BonoboPropertyBagClass"></a>struct BonoboPropertyBagClass</h3><a class="indexterm" name="id2812988"></a><pre class="programlisting">struct BonoboPropertyBagClass {
+
+	BonoboObjectClass        parent;
+
+	POA_Bonobo_PropertyBag__epv epv;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2813005"></a><h3><a name="BonoboPropertyBag"></a>struct BonoboPropertyBag</h3><a class="indexterm" name="id2813016"></a><pre class="programlisting">struct BonoboPropertyBag {
+
+	BonoboObject             parent;
+	BonoboPropertyBagPrivate *priv;
+	BonoboEventSource        *es;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2813032"></a><h3><a name="BONOBO-PROPERTY-READABLE-CAPS"></a>BONOBO_PROPERTY_READABLE</h3><a class="indexterm" name="id2813044"></a><pre class="programlisting">#define BONOBO_PROPERTY_READABLE      Bonobo_PROPERTY_READABLE
+</pre><p>
+    If this flag is set, the property allows consulting its value.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2813062"></a><h3><a name="BONOBO-PROPERTY-WRITEABLE-CAPS"></a>BONOBO_PROPERTY_WRITEABLE</h3><a class="indexterm" name="id2813073"></a><pre class="programlisting">#define BONOBO_PROPERTY_WRITEABLE     Bonobo_PROPERTY_WRITEABLE
+</pre><p>
+    If this flag is set, the property supports modification of its value.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2813090"></a><h3><a name="BONOBO-PROPERTY-WRITABLE-CAPS"></a>BONOBO_PROPERTY_WRITABLE</h3><a class="indexterm" name="id2813102"></a><pre class="programlisting">#define BONOBO_PROPERTY_WRITABLE      Bonobo_PROPERTY_WRITEABLE
+</pre><p>
+    Misspelling of <a href="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-WRITEABLE-CAPS"><span class="type">BONOBO_PROPERTY_WRITEABLE</span></a>.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2813128"></a><h3><a name="BONOBO-PROPERTY-NO-LISTENING-CAPS"></a>BONOBO_PROPERTY_NO_LISTENING</h3><a class="indexterm" name="id2813139"></a><pre class="programlisting">#define BONOBO_PROPERTY_NO_LISTENING  Bonobo_PROPERTY_NO_LISTENING 
+</pre><p>
+    If this flag set, when the property changes its value its
+    listeners will *not* be notified.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2813157"></a><h3><a name="BONOBO-PROPERTY-NO-AUTONOTIFY-CAPS"></a>BONOBO_PROPERTY_NO_AUTONOTIFY</h3><a class="indexterm" name="id2813170"></a><pre class="programlisting">#define BONOBO_PROPERTY_NO_AUTONOTIFY Bonobo_PROPERTY_NO_AUTONOTIFY 
+</pre><p>
+    If this flag set, when the property changes its value its
+    listeners will *not* be notified.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2813188"></a><h3><a name="BonoboProperty"></a>struct BonoboProperty</h3><a class="indexterm" name="id2813199"></a><pre class="programlisting">struct BonoboProperty {
+
+	char		      *name;
+	int                    idx;
+	BonoboArgType          type;
+	BonoboArg             *default_value;
+	char		      *doctitle;
+	char		      *docstring;
+	Bonobo_PropertyFlags   flags;
+
+	BonoboPropertyPrivate *priv;
+};
+</pre><p>
+Structure that holds information about a property in a <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term">char *<i class="structfield"><tt>name</tt></i></span></td><td>the canonic name of the property
+</td></tr><tr><td><span class="term">int <i class="structfield"><tt>idx</tt></i></span></td><td>unique numeric identifier of the property within the property bag
+</td></tr><tr><td><span class="term"><a href="libbonobo-bonobo-arg.html#BonoboArgType">BonoboArgType</a> <i class="structfield"><tt>type</tt></i></span></td><td>type of value contained by this property
+</td></tr><tr><td><span class="term"><a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *<i class="structfield"><tt>default_value</tt></i></span></td><td>the default value
+</td></tr><tr><td><span class="term">char *<i class="structfield"><tt>doctitle</tt></i></span></td><td>documentation string title
+</td></tr><tr><td><span class="term">char *<i class="structfield"><tt>docstring</tt></i></span></td><td>documentation string
+</td></tr><tr><td><span class="term">Bonobo_PropertyFlags <i class="structfield"><tt>flags</tt></i></span></td><td>property flags (read/write, etc.)
+</td></tr><tr><td><span class="term">BonoboPropertyPrivate *<i class="structfield"><tt>priv</tt></i></span></td><td>implementation private data
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813389"></a><h3><a name="BonoboPropertyGetFn"></a>BonoboPropertyGetFn ()</h3><a class="indexterm" name="id2813400"></a><pre class="programlisting">void        (*BonoboPropertyGetFn)          (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *bag,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *arg,
+                                             guint arg_id,
+                                             CORBA_Environment *ev,
+                                             gpointer user_data);</pre><p>
+Property getter function.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>the property bag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg</tt></i> :</span></td><td>output parameter; the caller must place here the property value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg_id</tt></i> :</span></td><td>unique numeric identifier of the property within the property bag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>the relevant CORBA environment
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813535"></a><h3><a name="BonoboPropertySetFn"></a>BonoboPropertySetFn ()</h3><a class="indexterm" name="id2813546"></a><pre class="programlisting">void        (*BonoboPropertySetFn)          (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *bag,
+                                             const <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *arg,
+                                             guint arg_id,
+                                             CORBA_Environment *ev,
+                                             gpointer user_data);</pre><p>
+Property setter function.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>the property bag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg</tt></i> :</span></td><td>the new property value to be set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg_id</tt></i> :</span></td><td>unique numeric identifier of the property within the property bag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>the relevant CORBA environment
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813681"></a><h3><a name="bonobo-property-bag-new"></a>bonobo_property_bag_new ()</h3><a class="indexterm" name="id2813692"></a><pre class="programlisting"><a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* bonobo_property_bag_new  (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyGetFn">BonoboPropertyGetFn</a> get_prop_cb,
+                                             <a href="libbonobo-bonobo-property-bag.html#BonoboPropertySetFn">BonoboPropertySetFn</a> set_prop_cb,
+                                             gpointer user_data);</pre><p>
+Creates a new property bag with the specified callbacks.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>get_prop_cb</tt></i> :</span></td><td> the property get callback
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>set_prop_cb</tt></i> :</span></td><td> the property set callback
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> user data for the callbacks
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a> object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813806"></a><h3><a name="bonobo-property-bag-new-closure"></a>bonobo_property_bag_new_closure ()</h3><a class="indexterm" name="id2813818"></a><pre class="programlisting"><a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* bonobo_property_bag_new_closure
+                                            (GClosure *get_prop,
+                                             GClosure *set_prop);</pre><p>
+Creates a new property bag with the specified callbacks.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>get_prop</tt></i> :</span></td><td> the property get closure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>set_prop</tt></i> :</span></td><td> the property set closure
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a> object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813911"></a><h3><a name="bonobo-property-bag-new-full"></a>bonobo_property_bag_new_full ()</h3><a class="indexterm" name="id2813923"></a><pre class="programlisting"><a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* bonobo_property_bag_new_full
+                                            (GClosure *get_prop,
+                                             GClosure *set_prop,
+                                             BonoboEventSource *es);</pre><p>
+Creates a new property bag with the specified callbacks.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>get_prop</tt></i> :</span></td><td> the property get closure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>set_prop</tt></i> :</span></td><td> the property set closure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>es</tt></i> :</span></td><td> an event source to aggregate
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a> object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814037"></a><h3><a name="bonobo-property-bag-construct"></a>bonobo_property_bag_construct ()</h3><a class="indexterm" name="id2814049"></a><pre class="programlisting"><a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>* bonobo_property_bag_construct
+                                            (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             GClosure *get_prop,
+                                             GClosure *set_prop,
+                                             BonoboEventSource *es);</pre><p>
+Constructor, only for use in wrappers and object derivation, please
+refer to the <a href="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new"><span class="type">bonobo_property_bag_new</span></a> for normal use.
+</p><p>
+This function returns <i class="parameter"><tt>pb</tt></i>, or <tt class="literal">NULL</tt> in case of error.  If it returns <tt class="literal">NULL</tt>,
+the passed in <i class="parameter"><tt>pb</tt></i> is unrefed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td> <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a> to construct
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>get_prop</tt></i> :</span></td><td> the property get closure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>set_prop</tt></i> :</span></td><td> the property set closure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>es</tt></i> :</span></td><td> an event source to aggregate
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a> pointer or <tt class="literal">NULL</tt>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814236"></a><h3><a name="bonobo-property-bag-add"></a>bonobo_property_bag_add ()</h3><a class="indexterm" name="id2814248"></a><pre class="programlisting">void        bonobo_property_bag_add         (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             const char *name,
+                                             int idx,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArgType">BonoboArgType</a> type,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *default_value,
+                                             const char *doctitle,
+                                             Bonobo_PropertyFlags flags);</pre><p>
+Adds a property to the property bag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td> property bag to add to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of new property
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>idx</tt></i> :</span></td><td> integer index for fast callback switch statement
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the CORBA type eg. TC_long
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>default_value</tt></i> :</span></td><td> the default value or NULL
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>doctitle</tt></i> :</span></td><td> the translated documentation string
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> various flags
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814430"></a><h3><a name="bonobo-property-bag-add-full"></a>bonobo_property_bag_add_full ()</h3><a class="indexterm" name="id2814442"></a><pre class="programlisting">void        bonobo_property_bag_add_full    (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             const char *name,
+                                             int idx,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArgType">BonoboArgType</a> type,
+                                             <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a> *default_value,
+                                             const char *doctitle,
+                                             const char *docstring,
+                                             Bonobo_PropertyFlags flags,
+                                             GClosure *get_prop,
+                                             GClosure *set_prop);</pre><p>
+This adds a property to <i class="parameter"><tt>pb</tt></i> at the full tilt of complexity.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td> property bag to add to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of new property
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>idx</tt></i> :</span></td><td> integer index for fast callback switch statement
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the CORBA type eg. TC_long
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>default_value</tt></i> :</span></td><td> the default value or NULL
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>doctitle</tt></i> :</span></td><td> the translated documentation title
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>docstring</tt></i> :</span></td><td> the translated documentation string
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> various flags
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>get_prop</tt></i> :</span></td><td> a per property get callback
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>set_prop</tt></i> :</span></td><td> a per property set callback
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814697"></a><h3><a name="bonobo-property-bag-remove"></a>bonobo_property_bag_remove ()</h3><a class="indexterm" name="id2814708"></a><pre class="programlisting">void        bonobo_property_bag_remove      (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             const char *name);</pre><p>
+removes the property with <i class="parameter"><tt>name</tt></i> from <i class="parameter"><tt>b</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td> the property bag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of property to remove.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814792"></a><h3><a name="bonobo-property-bag-map-params"></a>bonobo_property_bag_map_params ()</h3><a class="indexterm" name="id2814803"></a><pre class="programlisting">void        bonobo_property_bag_map_params  (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb,
+                                             GObject *on_instance,
+                                             const GParamSpec **pspecs,
+                                             guint n_params);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>on_instance</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pspecs</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>n_params</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814913"></a><h3><a name="bonobo-property-bag-get-prop-list"></a>bonobo_property_bag_get_prop_list ()</h3><a class="indexterm" name="id2814926"></a><pre class="programlisting">GList*      bonobo_property_bag_get_prop_list
+                                            (<a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a> *pb);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td> A <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a <span class="type">GList</span> of <a href="libbonobo-bonobo-property-bag.html#BonoboProperty"><span class="type">BonoboProperty</span></a> structures.  This function is
+private and should only be used internally, or in a PropertyBag
+persistence implementation.  You should not touch the
+<a href="libbonobo-bonobo-property-bag.html#BonoboProperty"><span class="type">BonoboProperty</span></a> structure unless you know what you're doing.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-listener.html"><b>&lt;&lt; bonobo-listener</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-arg.html"><b>bonobo-arg &gt;&gt;</b></a></td></tr></table></body></html>

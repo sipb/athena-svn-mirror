@@ -92,30 +92,19 @@ bonobo_item_option_free (x);
    A simplistic implementation exists in #BonoboItemContainer.
 </para>
 
-<!-- ##### MACRO BONOBO_ITEM_HANDLER_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboItemHandlerPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT BonoboItemHandler ##### -->
 <para>
-
+Bonobo::ItemHandler implementation
 </para>
 
 
-<!-- ##### TYPEDEF BonoboItemHandlerClass ##### -->
+<!-- ##### STRUCT BonoboItemHandlerClass ##### -->
 <para>
-
+BonoboItemHandler class
 </para>
 
+@parent_class: 
+@epv: 
 
 <!-- ##### FUNCTION bonobo_item_handler_new ##### -->
 <para>
@@ -152,11 +141,13 @@ bonobo_item_option_free (x);
 @corba_handler: 
 
 
-<!-- ##### TYPEDEF BonoboItemOption ##### -->
+<!-- ##### STRUCT BonoboItemOption ##### -->
 <para>
-
+A key-value pair.
 </para>
 
+@key: 
+@value: 
 
 <!-- ##### FUNCTION bonobo_item_option_parse ##### -->
 <para>

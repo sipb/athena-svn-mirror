@@ -16,30 +16,20 @@ use by the derived #BonoboPersistStream interface.
 #BonoboPersistStream, #BonoboPersistFile
 </para>
 
-<!-- ##### MACRO BONOBO_PERSIST_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboPersistPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT BonoboPersist ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### TYPEDEF BonoboPersistClass ##### -->
+<!-- ##### STRUCT BonoboPersistClass ##### -->
 <para>
 
 </para>
 
+@parent_class: 
+@epv: 
+@get_content_types: 
 
 <!-- ##### FUNCTION bonobo_persist_generate_content_types ##### -->
 <para>

@@ -1,44 +1,69 @@
 <!-- ##### SECTION Title ##### -->
-bonobo-running-context
+BonoboRunningContext
 
 <!-- ##### SECTION Short_Description ##### -->
-
+a live object tracker
 
 <!-- ##### SECTION Long_Description ##### -->
-<para>
 
+<para>
+    #BonoboRunningContext implements the
+    <classname>Bonobo::RunningContext</classname> IDL interface,
+    depicted in <xref linkend="running-context-img"/>.
+</para>
+
+<figure id="running-context-img">
+    <title>The Bonobo::RunningContext interface</title>
+    <mediaobject>
+	<imageobject>
+	    <imagedata fileref="running-context.png" format="PNG"/>
+	</imageobject>
+    </mediaobject>
+</figure>
+
+<para>
+    The purpose of this object is to keep track of currently running
+    objects.  This is useful in, for example, exe type factories, in
+    order to know when it is safe to quit from the main loop.
+</para>
+
+<para>
+    #BonoboRunningContext is a singleton.  There is at most one
+    instance running at all times.  All #BonoboObject's are
+    automatically registered with the running context as part of their
+    normal initialization procedure.
+</para>
+<para>
+    To find out when all objects have been destroyed, just connect a
+    handler to the "last-unref" signal.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+    <xref linkend="libbonobo-bonobo-generic-factory"/>
 </para>
-
-<!-- ##### STRUCT BonoboRunningContextPrivate ##### -->
-<para>
-
-</para>
-
 
 <!-- ##### STRUCT BonoboRunningContext ##### -->
 <para>
-
+the running context data
 </para>
 
 
-<!-- ##### TYPEDEF BonoboRunningContextClass ##### -->
+<!-- ##### SIGNAL BonoboRunningContext::last-unref ##### -->
 <para>
 
 </para>
 
+@bonoborunningcontext: the object which received the signal.
 
-<!-- ##### FUNCTION bonobo_running_context_get_type ##### -->
+<!-- ##### STRUCT BonoboRunningContextClass ##### -->
 <para>
-
+the running context class
 </para>
 
-@Returns: 
-
+@parent: 
+@epv: 
+@last_unref: 
 
 <!-- ##### FUNCTION bonobo_running_context_new ##### -->
 <para>
@@ -48,39 +73,12 @@ bonobo-running-context
 @Returns: 
 
 
-<!-- ##### FUNCTION bonobo_running_context_add_object ##### -->
-<para>
-
-</para>
-
-@object: 
-
-
-<!-- ##### FUNCTION bonobo_running_context_remove_object ##### -->
-<para>
-
-</para>
-
-@object: 
-
-
 <!-- ##### FUNCTION bonobo_running_context_ignore_object ##### -->
 <para>
 
 </para>
 
 @object: 
-
-
-<!-- ##### FUNCTION bonobo_running_context_trace_objects ##### -->
-<para>
-
-</para>
-
-@object: 
-@fn: 
-@line: 
-@mode: 
 
 
 <!-- ##### FUNCTION bonobo_running_context_at_exit_unref ##### -->

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * bonobo-persist-stream.c: PersistStream implementation.  Can be used as a
  * base class, or directly for implementing objects that use PersistStream.
  *

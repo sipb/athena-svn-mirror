@@ -1,0 +1,154 @@
+<refentry id="libbonobo-bonobo-persist">
+<refmeta>
+<refentrytitle>BonoboPersist</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboPersist</refname><refpurpose>Interface for anything that can save / load itself.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="BonoboPersist"/>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboPersist-struct">BonoboPersist</link>;
+struct      <link linkend="BonoboPersistClass">BonoboPersistClass</link>;
+<link linkend="Bonobo-Persist-ContentTypeList">Bonobo_Persist_ContentTypeList</link>* <link linkend="bonobo-persist-generate-content-types">bonobo_persist_generate_content_types</link>
+                                            (<link linkend="int">int</link> num,
+                                             ...);
+<link linkend="BonoboPersist">BonoboPersist</link>* <link linkend="bonobo-persist-construct">bonobo_persist_construct</link>     (<link linkend="BonoboPersist">BonoboPersist</link> *persist,
+                                             const <link linkend="gchar">gchar</link> *iid);
+<link linkend="void">void</link>        <link linkend="bonobo-persist-set-dirty">bonobo_persist_set_dirty</link>        (<link linkend="BonoboPersist">BonoboPersist</link> *persist,
+                                             <link linkend="gboolean">gboolean</link> dirty);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="BonoboObject">BonoboObject</link>
+         +----BonoboPersist
+               +----<link linkend="BonoboPersistStream">BonoboPersistStream</link>
+               +----<link linkend="BonoboPersistFile">BonoboPersistFile</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+BonoboPersist is an abstract base class that is useless by itself.
+It implements some methods to handle content type querying for
+use by the derived <link linkend="BonoboPersistStream"><type>BonoboPersistStream</type></link> interface.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboPersist-struct"/>struct BonoboPersist</title>
+<indexterm><primary>BonoboPersist</primary></indexterm><programlisting>struct BonoboPersist;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistClass"/>struct BonoboPersistClass</title>
+<indexterm><primary>BonoboPersistClass</primary></indexterm><programlisting>struct BonoboPersistClass {
+
+	BonoboObjectClass      parent_class;
+
+	POA_Bonobo_Persist__epv epv;
+
+	Bonobo_Persist_ContentTypeList *
+	                      (*get_content_types) (BonoboPersist     *persist,
+						    CORBA_Environment *ev);
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-generate-content-types"/>bonobo_persist_generate_content_types ()</title>
+<indexterm><primary>bonobo_persist_generate_content_types</primary></indexterm><programlisting><link linkend="Bonobo-Persist-ContentTypeList">Bonobo_Persist_ContentTypeList</link>* bonobo_persist_generate_content_types
+                                            (<link linkend="int">int</link> num,
+                                             ...);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>num</parameter>&nbsp;:</term>
+<listitem><simpara> the number of content types specified
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> the content types (as strings)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a ContentTypeList containing the given ContentTypes
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-construct"/>bonobo_persist_construct ()</title>
+<indexterm><primary>bonobo_persist_construct</primary></indexterm><programlisting><link linkend="BonoboPersist">BonoboPersist</link>* bonobo_persist_construct     (<link linkend="BonoboPersist">BonoboPersist</link> *persist,
+                                             const <link linkend="gchar">gchar</link> *iid);</programlisting>
+<para>
+Initializes the BonoboPersist object. You should only use this
+method in derived implementations, because a BonoboPersist instance
+doesn't make a lot of sense, but the iid private field has to be
+set at construction time.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>persist</parameter>&nbsp;:</term>
+<listitem><simpara> A BonoboPersist
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
+<listitem><simpara> OAF IID of the object this interface is aggregated to
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="BonoboPersist"><type>BonoboPersist</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-set-dirty"/>bonobo_persist_set_dirty ()</title>
+<indexterm><primary>bonobo_persist_set_dirty</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_persist_set_dirty        (<link linkend="BonoboPersist">BonoboPersist</link> *persist,
+                                             <link linkend="gboolean">gboolean</link> dirty);</programlisting>
+<para>
+Sets the dirty status of the interface which is reported via
+the isDirty method.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>persist</parameter>&nbsp;:</term>
+<listitem><simpara> A BonoboPersist
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dirty</parameter>&nbsp;:</term>
+<listitem><simpara> A flag indicating the dirty status of this object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="BonoboPersistStream"><type>BonoboPersistStream</type></link>, <link linkend="BonoboPersistFile"><type>BonoboPersistFile</type></link>
+</para>
+</refsect1>
+
+</refentry>

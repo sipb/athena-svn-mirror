@@ -49,6 +49,8 @@
 /* Clipboard */
 #include <Bonobo_Clipboard.idl>
 
+#include <Bonobo_Application.idl>
+
 #ifndef __Bonobo_COMPILATION
 #ifdef __ORBIT_IDL__
 #pragma inhibit pop

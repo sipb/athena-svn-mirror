@@ -30,30 +30,23 @@ powerful feature set. Most people use #BonoboMonikerSimple.
 #bonobo-moniker-util #BonoboMonikerSimple
 </para>
 
-<!-- ##### STRUCT BonoboMonikerPrivate ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO BONOBO_MONIKER_TYPE ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### STRUCT BonoboMoniker ##### -->
 <para>
-
+Implements Bonobo::Moniker
 </para>
 
 
-<!-- ##### TYPEDEF BonoboMonikerClass ##### -->
+<!-- ##### STRUCT BonoboMonikerClass ##### -->
 <para>
-
+BonoboMoniker's class
 </para>
 
+@parent_class: 
+@epv: 
+@resolve: 
+@set_internal_name: 
+@get_internal_name: 
+@dummy: 
 
 <!-- ##### FUNCTION bonobo_moniker_construct ##### -->
 <para>
@@ -122,8 +115,9 @@ powerful feature set. Most people use #BonoboMonikerSimple.
 </para>
 
 @moniker: 
-@unescaped_name: 
+@name: 
 <!-- # Unused Parameters # -->
+@unescaped_name: 
 @num_chars: 
 
 

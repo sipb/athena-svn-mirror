@@ -175,7 +175,7 @@ bonobo_item_container_init (BonoboItemContainer *container)
 BONOBO_TYPE_FUNC_FULL (BonoboItemContainer, 
 		       Bonobo_ItemContainer,
 		       PARENT_TYPE,
-		       bonobo_item_container);
+		       bonobo_item_container)
 
 /**
  * bonobo_item_container_new:

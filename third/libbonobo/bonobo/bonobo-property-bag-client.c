@@ -12,7 +12,7 @@
 #include <config.h>
 #include <string.h>
 #include <bonobo/bonobo-arg.h>
-#include <bonobo/bonobo-shutdown.h>
+#include <bonobo/bonobo-private.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-property-bag-client.h>
@@ -696,16 +696,6 @@ MAKE_SET_SIMPLE (gfloat, float, TC_CORBA_float)
  */
 MAKE_SET_SIMPLE (gdouble, double, TC_CORBA_double)
 /**
- * bonobo_pbclient_set_boolean:
- * @bag: a reference to the PropertyBag
- * @key: key of the value to set
- * @value: the new value
- * @opt_ev: an optional CORBA_Environment to return failure codes
- *
- * Set a boolean value in the PropertyBag.
- */
-MAKE_SET_SIMPLE (CORBA_boolean, boolean, TC_CORBA_boolean)
-/**
  * bonobo_pbclient_set_char:
  * @bag: a reference to the PropertyBag
  * @key: key of the value to set
@@ -740,6 +730,29 @@ bonobo_pbclient_set_string (Bonobo_PropertyBag  bag,
 
 	bonobo_pbclient_set_value (bag, key, any, opt_ev);
 
+	bonobo_arg_release (any);
+}
+
+/**
+ * bonobo_pbclient_set_boolean:
+ * @bag: a reference to the PropertyBag
+ * @key: key of the value to set
+ * @value: the new value
+ * @opt_ev: an optional CORBA_Environment to return failure codes
+ *
+ * Set a boolean value in the PropertyBag.
+ */
+void
+bonobo_pbclient_set_boolean (Bonobo_PropertyBag  bag,
+			     const char         *key,
+			     gboolean            value,
+			     CORBA_Environment  *opt_ev)
+{
+	CORBA_any *any;
+	CORBA_boolean val = value ? 1 : 0;
+
+	any = bonobo_arg_new_from (TC_CORBA_boolean, &val);
+	bonobo_pbclient_set_value (bag, key, any, opt_ev);
 	bonobo_arg_release (any);
 }
 

@@ -14,7 +14,7 @@ INCLUDES = \
 	-DG_LOG_DOMAIN=\"Bonobo\"			\
 	-DVERSION=\"$(VERSION)\"
 
-LDFLAGS=@LT_VERSION_INFO@
+AM_LDFLAGS=$(LIBBONOBO_LT_VERSION_INFO)
 
 CORBA_SOURCE =			\
 	Bonobo.h		\
@@ -39,9 +39,10 @@ idls =							\
 	$(top_srcdir)/idl/Bonobo_UI.idl			\
 	$(top_srcdir)/idl/Bonobo_Zoomable.idl		\
 	$(top_srcdir)/idl/Bonobo_Exception.idl		\
+	$(top_srcdir)/idl/Bonobo_Application.idl	\
 	$(top_srcdir)/idl/Bonobo_Clipboard.idl
 
-idl_flags = -I$(top_srcdir)/idl -I $(BONOBO_ACTIVATION_IDL_DIR) -D__Bonobo_COMPILATION
+idl_flags = -I$(top_srcdir)/idl -D__Bonobo_COMPILATION
 
 $(CORBA_SOURCE): $(idls) $(ORBIT_IDL)
 	$(ORBIT_IDL) $(idl_flags) $(top_srcdir)/idl/Bonobo.idl
@@ -49,7 +50,10 @@ $(CORBA_SOURCE): $(idls) $(ORBIT_IDL)
 lib_LTLIBRARIES = libbonobo-2.la
 
 libbonobo_2_la_LIBADD = \
-	$(LIBBONOBO_LIBS)
+	$(LIBBONOBO_LIBS) \
+	../bonobo-activation/libbonobo-activation.la
+
+libbonobo_2_la_LDFLAGS = -no-undefined
 
 libbonoboincludedir = $(includedir)/libbonobo-2.0/bonobo
 
@@ -70,6 +74,7 @@ libbonoboinclude_HEADERS =		\
 	bonobo-moniker-util.h		\
 	bonobo-moniker.h		\
 	bonobo-object.h			\
+	bonobo-foreign-object.h		\
 	bonobo-persist-file.h		\
 	bonobo-persist-stream.h		\
 	bonobo-persist.h		\
@@ -84,12 +89,14 @@ libbonoboinclude_HEADERS =		\
 	bonobo-storage-memory.h		\
 	bonobo-xobject.h		\
 	bonobo-i18n.h			\
+	bonobo-application.h		\
+	bonobo-app-client.h		\
 	bonobo-types.h
 
 noinst_HEADERS =			\
 	bonobo-moniker-context.h	\
 	bonobo-running-context.h	\
-	bonobo-shutdown.h		\
+	bonobo-private.h		\
 	bonobo-marshal.h
 
 libbonobo_src =				\
@@ -108,6 +115,7 @@ libbonobo_src =				\
 	bonobo-moniker-simple.c		\
 	bonobo-moniker-util.c		\
 	bonobo-object.c			\
+	bonobo-foreign-object.c		\
 	bonobo-persist-file.c		\
 	bonobo-persist-stream.c		\
 	bonobo-persist.c		\
@@ -120,6 +128,8 @@ libbonobo_src =				\
 	bonobo-stream-memory.c		\
 	bonobo-storage-memory.c		\
 	bonobo-running-context.c	\
+	bonobo-application.c		\
+	bonobo-app-client.c		\
 	bonobo-types.c			\
 	bonobo-debug.c			\
 	bonobo-debug.h
@@ -140,16 +150,14 @@ bonobo-marshal.h: bonobo-marshal.list $(GLIB_GENMARSHAL)
 bonobo-marshal.c: bonobo-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --body --prefix=bonobo_marshal > $@
 
-EXTRA_DIST = libbonobo-2.0.pc.in bonobo-marshal.list
-CLEANFILES = $(marshal_sources)
+EXTRA_DIST = libbonobo-2.0.pc.in libbonobo-2.0-uninstalled.pc.in bonobo-marshal.list
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libbonobo-2.0.pc
 
-DONT_DIST_SOURCE = $(CORBA_SOURCE) $(marshal_sources)
+BUILT_SOURCES = $(CORBA_SOURCE) $(marshal_sources)
+CLEANFILES = $(BUILT_SOURCES)
 
 dist-hook:
-	for file in $(DONT_DIST_SOURCE) ; do \
-	    rm -f $(distdir)/$$file ; \
-	done
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 

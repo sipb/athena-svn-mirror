@@ -1,0 +1,30 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Checklist</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Bonobo Activation API Reference Manual"><link rel="up" href="tutorial.html" title="Bonobo Activation tutorial"><link rel="previous" href="tutorial.html" title="Bonobo Activation tutorial"><link rel="next" href="configuring.html" title="Configuring Bonobo Activation"><link rel="chapter" href="tutorial.html" title="Bonobo Activation tutorial"><link rel="chapter" href="configuring.html" title="Configuring Bonobo Activation"><link rel="chapter" href="architecture.html" title="Bonobo Activation Architecture"><link rel="chapter" href="query-langage.html" title="Bonobo Activation Query Langage"><link rel="chapter" href="server-xml-reference.html" title=".server file format reference"><link rel="chapter" href="migrating.html" title="Migrating from gnorba to Bonobo-activation"><link rel="chapter" href="api-reference.html" title="API Reference"><link rel="refentry" href="bonobo-activation-Initialization.html" title="Initialization"><link rel="refentry" href="bonobo-activation-Query-and-Activation.html" title="Query and Activation"><link rel="refentry" href="bonobo-activation-Utilities.html" title="Utilities"><link rel="refentry" href="bonobo-activation-Registration.html" title="Registration"><link rel="refentry" href="bonobo-activation-Debugging.html" title="Debugging"><link rel="article" href="lgpl.html" title="GNU Lesser General Public License"><link rel="subsection" href="checklist.html#id2693803" title="The non-local case"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="tutorial.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="tutorial.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Bonobo Activation API Reference Manual</th><td><a accesskey="n" href="configuring.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="checklist"></a>Checklist</h2></div></div><div></div></div><p>
+   If you plan to use Bonobo Activation for your own CORBA servers, you should use the following simple 
+   checklist.
+   </p><div class="itemizedlist"><ul type="disc"><li><p>
+   Create a unique UUID for your CORBA server by using libuuid and uuidgen
+   (both are available by anonymous ftp from tsx-11.mit.edu in 
+   <tt class="filename">/pub/linux/packages/ext2fs</tt>. These are part of the 
+   <tt class="filename">e2fsprogs</tt> package.
+   </p></li><li><p>
+   Create a proper <tt class="filename">.server</tt> file for your server describing its
+   IDL interfaces, its main properties and the way it is to be activated.
+   </p></li><li><p>
+   Call <tt class="function">bonobo_activation_init</tt> (make sure you do not initialize twice by calling 
+   <tt class="function">bonobo_activation_is_initialized</tt>). Then, call
+   <tt class="function">bonobo_activation_active_server_register</tt>
+   to register yourself as running to the Bonobo Activation daemon.
+   </p></li></ul></div><p>
+
+   If you are a client willing to activate a few servers, it is a little simpler: you 
+   just must make sure you call the <tt class="function">bonobo_activation_init</tt> function and you can then
+   call <tt class="function">bonobo_activation_query</tt> or <tt class="function">bonobo_activation_activate</tt> or 
+   <tt class="function">bonobo_activation_activate_from_id</tt>.
+   </p><p>
+   Here, put a real-life example of a client and a server.
+   </p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2693803"></a>The non-local case</h3></div></div><div></div></div><p>
+   Here, present how to use setup the system for the non-local case.
+   If anyone is willing to write this part, mail gnome-components-list@gnome.org.
+   in the meantime, you can have a look at the code in gnome-libs HEAD from cvs.
+   (I never had time to go look at it)
+   </p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="tutorial.html"><b>&lt;&lt; Bonobo Activation tutorial</b></a></td><td align="right"><a accesskey="n" href="configuring.html"><b>Configuring Bonobo Activation &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,184 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Query and Activation</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Bonobo Activation API Reference Manual"><link rel="up" href="api-reference.html" title="API Reference"><link rel="previous" href="bonobo-activation-Initialization.html" title="Initialization"><link rel="next" href="bonobo-activation-Utilities.html" title="Utilities"><link rel="chapter" href="tutorial.html" title="Bonobo Activation tutorial"><link rel="chapter" href="configuring.html" title="Configuring Bonobo Activation"><link rel="chapter" href="architecture.html" title="Bonobo Activation Architecture"><link rel="chapter" href="query-langage.html" title="Bonobo Activation Query Langage"><link rel="chapter" href="server-xml-reference.html" title=".server file format reference"><link rel="chapter" href="migrating.html" title="Migrating from gnorba to Bonobo-activation"><link rel="chapter" href="api-reference.html" title="API Reference"><link rel="refentry" href="bonobo-activation-Initialization.html" title="Initialization"><link rel="refentry" href="bonobo-activation-Query-and-Activation.html" title="Query and Activation"><link rel="refentry" href="bonobo-activation-Utilities.html" title="Utilities"><link rel="refentry" href="bonobo-activation-Registration.html" title="Registration"><link rel="refentry" href="bonobo-activation-Debugging.html" title="Debugging"><link rel="article" href="lgpl.html" title="GNU Lesser General Public License"><link rel="section" href="bonobo-activation-Query-and-Activation.html#id2700504" title="Description"><link rel="section" href="bonobo-activation-Query-and-Activation.html#id2700522" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="bonobo-activation-Initialization.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="api-reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Bonobo Activation API Reference Manual</th><td><a accesskey="n" href="bonobo-activation-Utilities.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="bonobo-activation-Query-and-Activation"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Query and Activation</span></h2><p>Query and Activation &#8212; Querying for components and Activating them</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;bonobo-activation/bonobo-activation.h&gt;
+
+
+typedef     <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ImplementationID">Bonobo_ImplementationID</a>;
+typedef     <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a>;
+typedef     <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a>;
+enum        <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationResultType">Bonobo_ActivationResultType</a>;
+<a href="bonobo-activation-Utilities.html#Bonobo-ServerInfoList">Bonobo_ServerInfoList</a>* <a href="bonobo-activation-Query-and-Activation.html#bonobo-activation-query">bonobo_activation_query</a>
+                                            (const char *requirements,
+                                             char *const *selection_order,
+                                             CORBA_Environment *ev);
+CORBA_Object <a href="bonobo-activation-Query-and-Activation.html#bonobo-activation-activate">bonobo_activation_activate</a>     (const char *requirements,
+                                             char *const *selection_order,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> *ret_aid,
+                                             CORBA_Environment *ev);
+CORBA_Object <a href="bonobo-activation-Query-and-Activation.html#bonobo-activation-activate-from-id">bonobo_activation_activate_from_id</a>
+                                            (const <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> aid,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> *ret_aid,
+                                             CORBA_Environment *ev);
+void        (<a href="bonobo-activation-Query-and-Activation.html#BonoboActivationCallback">*BonoboActivationCallback</a>)     (CORBA_Object activated_object,
+                                             const char *error_reason,
+                                             gpointer user_data);
+void        <a href="bonobo-activation-Query-and-Activation.html#bonobo-activation-activate-async">bonobo_activation_activate_async</a>
+                                            (const char *requirements,
+                                             char *const *selection_order,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#BonoboActivationCallback">BonoboActivationCallback</a> callback,
+                                             gpointer user_data,
+                                             CORBA_Environment *ev);
+void        <a href="bonobo-activation-Query-and-Activation.html#bonobo-activation-activate-from-id-async">bonobo_activation_activate_from_id_async</a>
+                                            (const <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> aid,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#BonoboActivationCallback">BonoboActivationCallback</a> callback,
+                                             gpointer user_data,
+                                             CORBA_Environment *ev);
+void        <a href="bonobo-activation-Query-and-Activation.html#bonobo-activation-set-activation-env-value">bonobo_activation_set_activation_env_value</a>
+                                            (const char *name,
+                                             const char *value);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2700504"></a><h2>Description</h2><p>
+This section describes how you can query for components
+and activate them.
+</p><p>
+Two set of functions are described: synchronous and 
+asynchronous ones. The asynchronous version of the functions
+allow you to avoid blocking your application while the CORBA
+servers are started.
+</p></div><div class="refsect1" lang="en"><a name="id2700522"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2700527"></a><h3><a name="Bonobo-ImplementationID"></a>Bonobo_ImplementationID</h3><a class="indexterm" name="id2700538"></a><pre class="programlisting">   typedef CORBA_string Bonobo_ImplementationID;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2700554"></a><h3><a name="Bonobo-ActivationID"></a>Bonobo_ActivationID</h3><a class="indexterm" name="id2700565"></a><pre class="programlisting">   typedef CORBA_string Bonobo_ActivationID;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2700581"></a><h3><a name="Bonobo-ActivationFlags"></a>Bonobo_ActivationFlags</h3><a class="indexterm" name="id2700592"></a><pre class="programlisting">   typedef CORBA_long Bonobo_ActivationFlags;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2700608"></a><h3><a name="Bonobo-ActivationResultType"></a>enum Bonobo_ActivationResultType</h3><a class="indexterm" name="id2700619"></a><pre class="programlisting">   typedef enum
+   {
+      Bonobo_ACTIVATION_RESULT_OBJECT,
+      Bonobo_ACTIVATION_RESULT_SHLIB,
+      Bonobo_ACTIVATION_RESULT_NONE
+   } Bonobo_ActivationResultType;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2700637"></a><h3><a name="bonobo-activation-query"></a>bonobo_activation_query ()</h3><a class="indexterm" name="id2700648"></a><pre class="programlisting"><a href="bonobo-activation-Utilities.html#Bonobo-ServerInfoList">Bonobo_ServerInfoList</a>* bonobo_activation_query
+                                            (const char *requirements,
+                                             char *const *selection_order,
+                                             CORBA_Environment *ev);</pre><p>
+Executes the <i class="parameter"><tt>requirements</tt></i> query on the bonobo-activation-server.
+The result is sorted according to <i class="parameter"><tt>selection_order</tt></i>. 
+<i class="parameter"><tt>selection_order</tt></i> can safely be NULL as well as <i class="parameter"><tt>ev</tt></i>.
+The returned list has to be freed with CORBA_free.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>requirements</tt></i> :</span></td><td> query string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>selection_order</tt></i> :</span></td><td> sort criterion for returned list.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> a <tt class="literal">CORBA_Environment</tt> structure which will contain 
+     the CORBA exception status of the operation, or NULL
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the list of servers matching the requirements.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2700787"></a><h3><a name="bonobo-activation-activate"></a>bonobo_activation_activate ()</h3><a class="indexterm" name="id2700799"></a><pre class="programlisting">CORBA_Object bonobo_activation_activate     (const char *requirements,
+                                             char *const *selection_order,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> *ret_aid,
+                                             CORBA_Environment *ev);</pre><p>
+Activates a given object. <i class="parameter"><tt>ret_aid</tt></i> can be safely NULLed as well
+as <i class="parameter"><tt>ev</tt></i> and <i class="parameter"><tt>selection_order</tt></i>. <i class="parameter"><tt>flags</tt></i> can be set to zero if you do 
+not what to use.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>requirements</tt></i> :</span></td><td> query string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>selection_order</tt></i> :</span></td><td> sort criterion for returned list.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> how to activate the object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ret_aid</tt></i> :</span></td><td> AID of the activated object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> <tt class="literal">CORBA_Environment</tt> structure which will contain 
+     the CORBA exception status of the operation. 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the CORBA object reference of the activated object.
+              This value can be CORBA_OBJECT_NIL: you are supposed 
+              to check <i class="parameter"><tt>ev</tt></i> for success.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2700989"></a><h3><a name="bonobo-activation-activate-from-id"></a>bonobo_activation_activate_from_id ()</h3><a class="indexterm" name="id2701002"></a><pre class="programlisting">CORBA_Object bonobo_activation_activate_from_id
+                                            (const <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> aid,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> *ret_aid,
+                                             CORBA_Environment *ev);</pre><p>
+Activates the server corresponding to <i class="parameter"><tt>aid</tt></i>. <i class="parameter"><tt>ret_aid</tt></i> can be safely 
+NULLed as well as <i class="parameter"><tt>ev</tt></i>. <i class="parameter"><tt>flags</tt></i> can be zero if you do not know what 
+to do.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>aid</tt></i> :</span></td><td> AID or IID of the object to activate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> activation flag.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ret_aid</tt></i> :</span></td><td> AID of the activated server.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> <tt class="literal">CORBA_Environment</tt> structure which will contain 
+     the CORBA exception status of the operation. 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a CORBA object reference to the newly activated 
+              server. Do not forget to check <i class="parameter"><tt>ev</tt></i> for failure!!
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701168"></a><h3><a name="BonoboActivationCallback"></a>BonoboActivationCallback ()</h3><a class="indexterm" name="id2701179"></a><pre class="programlisting">void        (*BonoboActivationCallback)     (CORBA_Object activated_object,
+                                             const char *error_reason,
+                                             gpointer user_data);</pre><p>
+This is the signature of the function which you must pass
+as a callback to the asynchrounous activation functions.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>activated_object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error_reason</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701271"></a><h3><a name="bonobo-activation-activate-async"></a>bonobo_activation_activate_async ()</h3><a class="indexterm" name="id2701282"></a><pre class="programlisting">void        bonobo_activation_activate_async
+                                            (const char *requirements,
+                                             char *const *selection_order,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#BonoboActivationCallback">BonoboActivationCallback</a> callback,
+                                             gpointer user_data,
+                                             CORBA_Environment *ev);</pre><p>
+This function will asynchronously try to activate a component
+given the <i class="parameter"><tt>requirements</tt></i> query string. When the component is
+activated or when the activation fails, it will call <i class="parameter"><tt>callback</tt></i>
+with the given <i class="parameter"><tt>user_data</tt></i> data as parameter.
+callback will be called with a CORBA_OBJECT_NIL object if the
+activation fails. If the activation fails, the callback will be
+given a human-readable string containing a description of the
+error. In case of sucess, the error string value is undefined.
+</p><p>
+<i class="parameter"><tt>selection_order</tt></i> can be safely NULLed as well as <i class="parameter"><tt>ev</tt></i> and
+<i class="parameter"><tt>user_data</tt></i>. <i class="parameter"><tt>flags</tt></i> can be set to 0 if you do not know what to
+use.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>requirements</tt></i> :</span></td><td> the bonobo-activation query string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>selection_order</tt></i> :</span></td><td> preference array.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> activation flags.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> callback function.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> data to be poassed to the callback function.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> exception structure.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701498"></a><h3><a name="bonobo-activation-activate-from-id-async"></a>bonobo_activation_activate_from_id_async ()</h3><a class="indexterm" name="id2701510"></a><pre class="programlisting">void        bonobo_activation_activate_from_id_async
+                                            (const <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> aid,
+                                             <a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationFlags">Bonobo_ActivationFlags</a> flags,
+                                             <a href="bonobo-activation-Query-and-Activation.html#BonoboActivationCallback">BonoboActivationCallback</a> callback,
+                                             gpointer user_data,
+                                             CORBA_Environment *ev);</pre><p>
+This function will asynchronously try to activate a component
+with the given <i class="parameter"><tt>aid</tt></i>. When the component is
+activated or when the activation fails, it will call <i class="parameter"><tt>callback</tt></i>
+with the given <i class="parameter"><tt>user_data</tt></i> data as parameter.
+callback will be called with a CORBA_OBJECT_NIL object if the
+activation fails. If the activation fails, the callback will be
+given a human-readable string containing a description of the
+error. In case of sucess, the error string value is undefined.
+</p><p>
+<i class="parameter"><tt>flags</tt></i> can be 0 if you do not know what to set it to and
+<i class="parameter"><tt>ev</tt></i> can be safely set to NULL.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>aid</tt></i> :</span></td><td> the AID or IID of the component to activate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> activation flags.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> callback function.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> data to be poassed to the callback function.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> exception structure.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2701691"></a><h3><a name="bonobo-activation-set-activation-env-value"></a>bonobo_activation_set_activation_env_value ()</h3><a class="indexterm" name="id2701704"></a><pre class="programlisting">void        bonobo_activation_set_activation_env_value
+                                            (const char *name,
+                                             const char *value);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="bonobo-activation-Initialization.html"><b>&lt;&lt; Initialization</b></a></td><td align="right"><a accesskey="n" href="bonobo-activation-Utilities.html"><b>Utilities &gt;&gt;</b></a></td></tr></table></body></html>

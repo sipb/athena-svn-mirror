@@ -1,14 +1,11 @@
 <SECTION>
 <FILE>bonobo-event-source</FILE>
-BONOBO_EVENT_SOURCE_TYPE
-BonoboEventSourcePrivate
-BonoboEventSource
-BonoboEventSourceClass
 bonobo_event_source_new
 bonobo_event_source_notify_listeners
 bonobo_event_source_notify_listeners_full
 bonobo_event_source_client_remove_listener
 bonobo_event_source_client_add_listener
+bonobo_event_source_has_listener
 bonobo_event_source_client_add_listener_closure
 bonobo_event_source_client_add_listener_full
 bonobo_event_source_ignore_listeners
@@ -16,27 +13,30 @@ bonobo_event_source_ignore_listeners
 BONOBO_EVENT_SOURCE
 BONOBO_IS_EVENT_SOURCE
 BONOBO_TYPE_EVENT_SOURCE
+BONOBO_EVENT_SOURCE_TYPE
 bonobo_event_source_get_type
 BONOBO_EVENT_SOURCE_CLASS
 BONOBO_IS_EVENT_SOURCE_CLASS
+<SUBSECTION Private>
+BonoboEventSourcePrivate
+BonoboEventSource
+BonoboEventSourceClass
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-generic-factory</FILE>
-BONOBO_GENERIC_FACTORY_TYPE
-BonoboGenericFactoryPrivate
-BonoboGenericFactory
 BonoboFactoryCallback
-BonoboGenericFactoryClass
 bonobo_generic_factory_new
 bonobo_generic_factory_new_closure
 bonobo_generic_factory_construct
 bonobo_generic_factory_construct_noreg
 bonobo_generic_factory_main
+bonobo_generic_factory_main_timeout
 BONOBO_FACTORY_INIT
 BONOBO_OAF_FACTORY
 BONOBO_OAF_FACTORY_MULTI
 BONOBO_ACTIVATION_FACTORY
+BONOBO_ACTIVATION_FACTORY_TIMEOUT
 <SUBSECTION Standard>
 BONOBO_GENERIC_FACTORY
 BONOBO_IS_GENERIC_FACTORY
@@ -44,13 +44,14 @@ BONOBO_TYPE_GENERIC_FACTORY
 bonobo_generic_factory_get_type
 BONOBO_GENERIC_FACTORY_CLASS
 BONOBO_IS_GENERIC_FACTORY_CLASS
+
+<SUBSECTION Private>
+BonoboGenericFactoryPrivate
+BonoboGenericFactory
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-item-container</FILE>
-BONOBO_ITEM_CONTAINER_TYPE
-BonoboClientSiteList
-BonoboItemContainerPrivate
 BonoboItemContainer
 BonoboItemContainerClass
 bonobo_item_container_new
@@ -60,15 +61,16 @@ bonobo_item_container_remove_by_name
 BONOBO_ITEM_CONTAINER
 BONOBO_IS_ITEM_CONTAINER
 BONOBO_TYPE_ITEM_CONTAINER
+BONOBO_ITEM_CONTAINER_TYPE
 bonobo_item_container_get_type
 BONOBO_ITEM_CONTAINER_CLASS
 BONOBO_IS_ITEM_CONTAINER_CLASS
+<SUBSECTION Private>
+BonoboItemContainerPrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-item-handler</FILE>
-BONOBO_ITEM_HANDLER_TYPE
-BonoboItemHandlerPrivate
 BonoboItemHandler
 BonoboItemHandlerClass
 bonobo_item_handler_new
@@ -78,18 +80,19 @@ BonoboItemOption
 bonobo_item_option_parse
 bonobo_item_options_free
 <SUBSECTION Standard>
+BONOBO_ITEM_HANDLER_TYPE
 BONOBO_ITEM_HANDLER
 BONOBO_IS_ITEM_HANDLER
 BONOBO_TYPE_ITEM_HANDLER
 bonobo_item_handler_get_type
 BONOBO_ITEM_HANDLER_CLASS
 BONOBO_IS_ITEM_HANDLER_CLASS
+<SUBSECTION Private>
+BonoboItemHandlerPrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-listener</FILE>
-BONOBO_LISTENER_TYPE
-BonoboListenerPrivate
 BonoboListener
 BonoboListenerClass
 BonoboListenerCallbackFn
@@ -104,17 +107,19 @@ bonobo_event_idl_path
 BONOBO_LISTENER
 BONOBO_IS_LISTENER
 BONOBO_TYPE_LISTENER
+BONOBO_LISTENER_TYPE
 bonobo_listener_get_type
 BONOBO_LISTENER_CLASS
 BONOBO_IS_LISTENER_CLASS
+<SUBSECTION Private>
+BonoboListenerPrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-moniker-extender</FILE>
-BONOBO_MONIKER_EXTENDER_TYPE
 BonoboMonikerExtender
-BonoboMonikerExtenderFn
 BonoboMonikerExtenderClass
+BonoboMonikerExtenderFn
 bonobo_moniker_extender_new
 bonobo_moniker_find_extender
 bonobo_moniker_use_extender
@@ -122,6 +127,7 @@ bonobo_moniker_use_extender
 BONOBO_MONIKER_EXTENDER
 BONOBO_IS_MONIKER_EXTENDER
 BONOBO_TYPE_MONIKER_EXTENDER
+BONOBO_MONIKER_EXTENDER_TYPE
 bonobo_moniker_extender_get_type
 BONOBO_MONIKER_EXTENDER_CLASS
 BONOBO_IS_MONIKER_EXTENDER_CLASS
@@ -129,30 +135,29 @@ BONOBO_IS_MONIKER_EXTENDER_CLASS
 
 <SECTION>
 <FILE>bonobo-moniker-simple</FILE>
-BONOBO_MONIKER_SIMPLE_TYPE
-BONOBO_TYPE_RESOLVE_FLAG
-BONOBO_RESOLVE_FLAG_TYPE
 BonoboMonikerSimple
-BonoboMonikerSimplePrivate
-BonoboMonikerSimpleResolveFn
 BonoboMonikerSimpleClass
-bonobo_moniker_simple_get_type
+BonoboMonikerSimpleResolveFn
 bonobo_moniker_simple_construct
 bonobo_moniker_simple_new
 bonobo_moniker_simple_new_closure
 <SUBSECTION Standard>
+BONOBO_TYPE_RESOLVE_FLAG
+BONOBO_RESOLVE_FLAG_TYPE
 BONOBO_MONIKER_SIMPLE
 BONOBO_IS_MONIKER_SIMPLE
 BONOBO_TYPE_MONIKER_SIMPLE
+BONOBO_MONIKER_SIMPLE_TYPE
 bonobo_resolve_flag_get_type
+bonobo_moniker_simple_get_type
 BONOBO_MONIKER_SIMPLE_CLASS
 BONOBO_IS_MONIKER_SIMPLE_CLASS
+<SUBSECTION Private>
+BonoboMonikerSimplePrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-moniker</FILE>
-BonoboMonikerPrivate
-BONOBO_MONIKER_TYPE
 BonoboMoniker
 BonoboMonikerClass
 bonobo_moniker_construct
@@ -169,9 +174,12 @@ bonobo_moniker_get_case_sensitive
 BONOBO_MONIKER
 BONOBO_IS_MONIKER
 BONOBO_TYPE_MONIKER
+BONOBO_MONIKER_TYPE
 bonobo_moniker_get_type
 BONOBO_MONIKER_CLASS
 BONOBO_IS_MONIKER_CLASS
+<SUBSECTION Private>
+BonoboMonikerPrivate
 </SECTION>
 
 <SECTION>
@@ -179,16 +187,12 @@ BONOBO_IS_MONIKER_CLASS
 BONOBO_OBJECT_TYPE
 BONOBO_OBJREF
 BonoboObjectPOAFn
-BonoboObjectPrivate
-BonoboObjectHeader
-BONOBO_OBJECT_HEADER_SIZE
-BONOBO_OBJECT_SIGNATURE
-BONOBO_SERVANT_SIGNATURE
 BonoboObject
 BonoboObjectClass
 bonobo_object_add_interface
 bonobo_object_query_local_interface
 bonobo_object_query_interface
+bonobo_object_query_remote
 bonobo_object_corba_objref
 bonobo_object_dup_ref
 bonobo_object_release_unref
@@ -207,6 +211,7 @@ bonobo_object
 bonobo_object_fast
 bonobo_object_from_servant
 bonobo_object_get_servant
+bonobo_object_get_poa
 bonobo_type_unique
 bonobo_type_setup
 BONOBO_TYPE_FUNC_FULL
@@ -219,12 +224,30 @@ bonobo_object_get_type
 BONOBO_OBJECT_CLASS
 BONOBO_IS_OBJECT_CLASS
 BONOBO_OBJECT_GET_CLASS
+
+
+<SUBSECTION Private>
+BONOBO_FOREIGN_OBJECT_GET_CLASS
+bonobo_foreign_object_new
+BONOBO_IS_FOREIGN_OBJECT
+BonoboForeignObject
+BonoboForeignObjectClass
+BONOBO_FOREIGN_OBJECT
+BONOBO_TYPE_FOREIGN_OBJECT
+bonobo_foreign_object_get_type
+BONOBO_IS_FOREIGN_OBJECT_CLASS
+BONOBO_FOREIGN_OBJECT_CLASS
+BonoboObjectPrivate
+BonoboObjectHeader
+BONOBO_OBJECT_HEADER_SIZE
+BONOBO_OBJECT_SIGNATURE
+BONOBO_SERVANT_SIGNATURE
+
 </SECTION>
+
 
 <SECTION>
 <FILE>bonobo-persist-file</FILE>
-BONOBO_PERSIST_FILE_TYPE
-BonoboPersistFilePrivate
 BonoboPersistFile
 BonoboPersistFileIOFn
 BonoboPersistFileClass
@@ -234,34 +257,36 @@ bonobo_persist_file_construct
 BONOBO_PERSIST_FILE
 BONOBO_IS_PERSIST_FILE
 BONOBO_TYPE_PERSIST_FILE
+BONOBO_PERSIST_FILE_TYPE
 bonobo_persist_file_get_type
 BONOBO_PERSIST_FILE_CLASS
 BONOBO_IS_PERSIST_FILE_CLASS
+<SUBSECTION Private>
+BonoboPersistFilePrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-persist-stream</FILE>
-BONOBO_PERSIST_STREAM_TYPE
-BonoboPersistStreamPrivate
 BonoboPersistStream
+BonoboPersistStreamClass
 BonoboPersistStreamIOFn
 BonoboPersistStreamTypesFn
-BonoboPersistStreamClass
 bonobo_persist_stream_new
 bonobo_persist_stream_construct
 <SUBSECTION Standard>
 BONOBO_PERSIST_STREAM
 BONOBO_IS_PERSIST_STREAM
 BONOBO_TYPE_PERSIST_STREAM
+BONOBO_PERSIST_STREAM_TYPE
 bonobo_persist_stream_get_type
 BONOBO_PERSIST_STREAM_CLASS
 BONOBO_IS_PERSIST_STREAM_CLASS
+<SUBSECTION Private>
+BonoboPersistStreamPrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-persist</FILE>
-BONOBO_PERSIST_TYPE
-BonoboPersistPrivate
 BonoboPersist
 BonoboPersistClass
 bonobo_persist_generate_content_types
@@ -271,25 +296,26 @@ bonobo_persist_set_dirty
 BONOBO_PERSIST
 BONOBO_IS_PERSIST
 BONOBO_TYPE_PERSIST
+BONOBO_PERSIST_TYPE
 bonobo_persist_get_type
 BONOBO_PERSIST_CLASS
 BONOBO_IS_PERSIST_CLASS
+<SUBSECTION Private>
+BonoboPersistPrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-property-bag</FILE>
+BonoboPropertyBagClass
+BonoboPropertyBag
 BONOBO_PROPERTY_READABLE
 BONOBO_PROPERTY_WRITEABLE
+BONOBO_PROPERTY_WRITABLE
 BONOBO_PROPERTY_NO_LISTENING
 BONOBO_PROPERTY_NO_AUTONOTIFY
-BonoboPropertyBagPrivate
-BonoboPropertyBag
 BonoboProperty
-BonoboPropertyPrivate
 BonoboPropertyGetFn
 BonoboPropertySetFn
-BonoboPropertyBagClass
-BONOBO_PROPERTY_BAG_TYPE
 bonobo_property_bag_new
 bonobo_property_bag_new_closure
 bonobo_property_bag_new_full
@@ -303,15 +329,17 @@ bonobo_property_bag_get_prop_list
 BONOBO_PROPERTY_BAG
 BONOBO_IS_PROPERTY_BAG
 BONOBO_TYPE_PROPERTY_BAG
+BONOBO_PROPERTY_BAG_TYPE
 bonobo_property_bag_get_type
 BONOBO_PROPERTY_BAG_CLASS
 BONOBO_IS_PROPERTY_BAG_CLASS
+<SUBSECTION Private>
+BonoboPropertyBagPrivate
+BonoboPropertyPrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-shlib-factory</FILE>
-BONOBO_SHLIB_FACTORY_TYPE
-BonoboShlibFactoryPrivate
 BonoboShlibFactory
 BonoboShlibFactoryClass
 bonobo_shlib_factory_construct
@@ -325,32 +353,34 @@ BONOBO_ACTIVATION_SHLIB_FACTORY
 BONOBO_SHLIB_FACTORY
 BONOBO_IS_SHLIB_FACTORY
 BONOBO_TYPE_SHLIB_FACTORY
+BONOBO_SHLIB_FACTORY_TYPE
 bonobo_shlib_factory_get_type
 BONOBO_SHLIB_FACTORY_CLASS
 BONOBO_IS_SHLIB_FACTORY_CLASS
+<SUBSECTION Private>
+BonoboShlibFactoryPrivate
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-storage-memory</FILE>
-BONOBO_STORAGE_MEM_TYPE
-BonoboStorageMemPriv
-BonoboStorageMem
-BonoboStorageMemClass
 bonobo_storage_mem_create
 <SUBSECTION Standard>
 BONOBO_STORAGE_MEM
+BONOBO_STORAGE_MEM_TYPE
 BONOBO_IS_STORAGE_MEM
 BONOBO_TYPE_STORAGE_MEM
 bonobo_storage_mem_get_type
 BONOBO_STORAGE_MEM_CLASS
 BONOBO_IS_STORAGE_MEM_CLASS
+BonoboStorageMem
+BonoboStorageMemClass
+<SUBSECTION Private>
+BonoboStorageMemPriv
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-stream-memory</FILE>
 BonoboStreamMem
-BonoboStreamMemPrivate
-BONOBO_STREAM_MEM_TYPE
 BonoboStreamMemClass
 bonobo_stream_mem_construct
 bonobo_stream_mem_create
@@ -360,32 +390,12 @@ bonobo_stream_mem_get_size
 BONOBO_STREAM_MEM
 BONOBO_IS_STREAM_MEM
 BONOBO_TYPE_STREAM_MEM
+BONOBO_STREAM_MEM_TYPE
 bonobo_stream_mem_get_type
 BONOBO_STREAM_MEM_CLASS
 BONOBO_IS_STREAM_MEM_CLASS
-</SECTION>
-
-<SECTION>
-<FILE>bonobo-xobject</FILE>
-BONOBO_X_OBJECT_TYPE
-BONOBO_X_OBJECT_HEADER_SIZE
-BONOBO_X_OBJECT_GET_SERVANT
-BONOBO_X_SERVANT_GET_OBJECT
-BonoboXObject
-BonoboXObjectClass
-bonobo_x_object
-BonoboXObjectPOAFn
-bonobo_x_type_unique
-bonobo_x_type_setup
-BONOBO_X_TYPE_FUNC_FULL
-BONOBO_X_TYPE_FUNC
-<SUBSECTION Standard>
-BONOBO_X_OBJECT
-BONOBO_IS_X_OBJECT
-BONOBO_TYPE_X_OBJECT
-bonobo_x_object_get_type
-BONOBO_X_OBJECT_CLASS
-BONOBO_IS_X_OBJECT_CLASS
+<SUBSECTION Private>
+BonoboStreamMemPrivate
 </SECTION>
 
 <SECTION>
@@ -503,40 +513,39 @@ gettext
 dgettext
 dcgettext
 bindtextdomain
-</SECTION>
-
-<SECTION>
-<FILE>bonobo-macros</FILE>
-BONOBO_BOILERPLATE
-BONOBO_CALL_PARENT
-BONOBO_CALL_PARENT_WITH_DEFAULT
-BONOBO_CLASS_BOILERPLATE
-BONOBO_REGISTER_TYPE
-BONOBO_CLASS_BOILERPLATE_FULL
-BONOBO_REGISTER_TYPE_FULL
+bind_textdomain_codeset
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-main</FILE>
+BonoboThreadHint
 bonobo_is_initialized
 bonobo_init
 bonobo_init_full
+bonobo_debug_init
+bonobo_debug_print
 bonobo_debug_shutdown
 bonobo_main
 bonobo_main_quit
+bonobo_main_level
 bonobo_activate
 bonobo_setup_x_error_handler
 bonobo_orb
 bonobo_poa
 bonobo_poa_manager
+bonobo_poa_get_threaded
+<SUBSECTION Private>
+BonoboDebugFlags
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-moniker-context</FILE>
-BonoboMonikerContextPrivate
 BonoboMonikerContext
 BonoboMonikerContextClass
 bonobo_moniker_context_new
+<SUBSECTION Standard>
+<SUBSECTION Private>
+BonoboMonikerContextPrivate
 </SECTION>
 
 <SECTION>
@@ -570,7 +579,6 @@ bonobo_object_from_stream
 
 <SECTION>
 <FILE>bonobo-property-bag-client</FILE>
-bonobo_pbclient_get_type
 bonobo_pbclient_get_string
 bonobo_pbclient_get_default_string
 bonobo_pbclient_get_string_with_default
@@ -610,6 +618,7 @@ bonobo_pbclient_set_double
 bonobo_pbclient_set_boolean
 bonobo_pbclient_set_char
 bonobo_pbclient_set_value
+bonobo_pbclient_set_value_async
 bonobo_pbclient_get_doc_title
 bonobo_pbclient_get_doc
 bonobo_pbclient_get_keys
@@ -645,20 +654,24 @@ bonobo_property_bag_client_set_value_string
 bonobo_property_bag_client_set_value_any
 bonobo_property_bag_client_get_docstring
 bonobo_property_bag_client_get_flags
+<SUBSECTION Standard>
+bonobo_pbclient_get_type
 </SECTION>
 
 <SECTION>
 <FILE>bonobo-running-context</FILE>
-BonoboRunningContextPrivate
 BonoboRunningContext
 BonoboRunningContextClass
-bonobo_running_context_get_type
 bonobo_running_context_new
 bonobo_running_context_add_object
 bonobo_running_context_remove_object
 bonobo_running_context_ignore_object
 bonobo_running_context_trace_objects
 bonobo_running_context_at_exit_unref
+<SUBSECTION Standard>
+bonobo_running_context_get_type
+<SUBSECTION Private>
+BonoboRunningContextPrivate
 </SECTION>
 
 <SECTION>
@@ -674,13 +687,14 @@ bonobo_running_context_shutdown
 
 <SECTION>
 <FILE>bonobo-storage</FILE>
+bonobo_storage_copy_to
+<SUBSECTION Standard>
 BonoboStream
 BONOBO_STREAM
 BONOBO_STREAM_CLASS
 BonoboStorage
 BONOBO_STORAGE
 BONOBO_STORAGE_CLASS
-bonobo_storage_copy_to
 </SECTION>
 
 <SECTION>
@@ -700,22 +714,16 @@ bonobo_stream_client_get_length
 <SECTION>
 <FILE>bonobo-types</FILE>
 bonobo_corba_object_type_register_static
-bonobo_unknown_get_type
-bonobo_corba_any_get_type
-bonobo_corba_object_get_type
-bonobo_corba_typecode_get_type
-bonobo_corba_exception_get_type
 BONOBO_TYPE_UNKNOWN
 BONOBO_TYPE_CORBA_ANY
 BONOBO_TYPE_CORBA_OBJECT
 BONOBO_TYPE_CORBA_TYPECODE
 BONOBO_TYPE_CORBA_EXCEPTION
-BONOBO_TYPE_STRING
-BONOBO_TYPE_NONSTATIC_UNKNOWN
-BONOBO_TYPE_NONSTATIC_CORBA_ANY
-BONOBO_TYPE_NONSTATIC_CORBA_OBJECT
-BONOBO_TYPE_NONSTATIC_CORBA_TYPECODE
-BONOBO_TYPE_NONSTATIC_CORBA_EXCEPTION
+BONOBO_TYPE_STATIC_CORBA_EXCEPTION
+BONOBO_TYPE_STATIC_UNKNOWN
+BONOBO_TYPE_STATIC_CORBA_ANY
+BONOBO_TYPE_STATIC_CORBA_OBJECT
+BONOBO_TYPE_STATIC_CORBA_TYPECODE
 BONOBO_VALUE_HOLDS_UNKNOWN
 BONOBO_VALUE_HOLDS_CORBA_ANY
 BONOBO_VALUE_HOLDS_CORBA_OBJECT
@@ -728,10 +736,68 @@ bonobo_value_get_corba_typecode
 bonobo_value_get_corba_exception
 bonobo_value_set_unknown
 bonobo_value_set_corba_any
+bonobo_value_set_corba_object
 bonobo_value_set_corba_typecode
 bonobo_value_set_corba_environment
 bonobo_closure_invoke_va_list
 bonobo_closure_invoke
 bonobo_closure_store
+<SUBSECTION Standard>
+bonobo_unknown_get_type
+bonobo_corba_any_get_type
+bonobo_corba_object_get_type
+bonobo_corba_typecode_get_type
+bonobo_corba_exception_get_type
 </SECTION>
 
+<SECTION>
+<FILE>bonobo-application</FILE>
+BonoboAppHookFunc
+bonobo_application_new
+bonobo_application_register_message
+bonobo_application_register_message_v
+bonobo_application_register_message_va
+bonobo_application_new_instance
+bonobo_application_create_serverinfo
+bonobo_application_register_unique
+bonobo_application_add_hook
+bonobo_application_remove_hook
+
+<SUBSECTION Standard>
+
+bonobo_application_get_type
+BONOBO_APPLICATION
+BONOBO_IS_APPLICATION
+BONOBO_TYPE_APPLICATION
+BONOBO_APPLICATION_CLASS
+BONOBO_IS_APPLICATION_CLASS
+BONOBO_APPLICATION_GET_CLASS
+BonoboApplicationClass
+BonoboApplication
+
+
+</SECTION>
+
+
+<SECTION>
+<FILE>bonobo-app-client</FILE>
+BonoboAppClientMsgDesc
+
+bonobo_app_client_new
+bonobo_app_client_new_instance
+bonobo_app_client_msg_send_valist
+bonobo_app_client_msg_send_argv
+bonobo_app_client_msg_send
+
+<SUBSECTION Standard>
+BonoboAppClient
+BonoboAppClientClass
+bonobo_app_client_get_type
+BONOBO_IS_APP_CLIENT
+BONOBO_TYPE_APP_CLIENT
+BONOBO_IS_APP_CLIENT_CLASS
+BONOBO_APP_CLIENT_GET_CLASS
+BONOBO_APP_CLIENT_CLASS
+BONOBO_APP_CLIENT
+
+</SECTION>

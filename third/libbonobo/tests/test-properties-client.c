@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <libbonobo.h>
 
-CORBA_ORB		 orb;
 Bonobo_PropertyBag	 pb;
 CORBA_Environment	 ev;
 Bonobo_PropertyBag       pb;
@@ -195,10 +194,13 @@ create_bag_client (void)
 int
 main (int argc, char **argv)
 {
+	CORBA_ORB orb;
 	CORBA_exception_init (&ev);
 
 	if (!bonobo_init (&argc, argv))
 		g_error ("Could not initialize Bonobo");
+
+	orb = bonobo_orb ();
 
 	{
 		int   size;

@@ -228,7 +228,7 @@ interface PropertyControl : Bonobo::Unknown {
 	 * Tell the client what it should do with the settings in the
 	 * PropertyControl.
 	 */
-	void notifyAction (in long pagenumber, in Action action)
+	void notifyAction (in long pagenumber, in Action _action)
 		raises (NoPage);
 
 	void unImplemented  ();

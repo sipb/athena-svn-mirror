@@ -1,0 +1,128 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-stream-client</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="streams.html" title="Storages and Streams"><link rel="previous" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="next" href="persist.html" title="Persistency"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-stream-client.html#id2869466" title="Description"><link rel="section" href="libbonobo-bonobo-stream-client.html#id2869508" title="Details"><link rel="section" href="libbonobo-bonobo-stream-client.html#id2870439" title="See Also"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-storage.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="streams.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="persist.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-stream-client"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-stream-client</span></h2><p>bonobo-stream-client &#8212; Simplified client wrapper functions for the Stream interface</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write">bonobo_stream_client_write</a>      (const Bonobo_Stream stream,
+                                             const void *buffer,
+                                             const size_t size,
+                                             CORBA_Environment *ev);
+guint8*     <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read">bonobo_stream_client_read</a>       (const Bonobo_Stream stream,
+                                             const size_t size,
+                                             CORBA_long *length_read,
+                                             CORBA_Environment *ev);
+void        <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write-string">bonobo_stream_client_write_string</a>
+                                            (const Bonobo_Stream stream,
+                                             const char *str,
+                                             const gboolean terminate,
+                                             CORBA_Environment *ev);
+void        <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-printf">bonobo_stream_client_printf</a>     (const Bonobo_Stream stream,
+                                             const gboolean terminate,
+                                             CORBA_Environment *ev,
+                                             const char *fmt,
+                                             ...);
+CORBA_long  <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read-string">bonobo_stream_client_read_string</a>
+                                            (const Bonobo_Stream stream,
+                                             char **str,
+                                             CORBA_Environment *ev);
+CORBA_long  <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-get-length">bonobo_stream_client_get_length</a> (const Bonobo_Stream stream,
+                                             CORBA_Environment *ev);
+</pre></div><div class="refsect1" lang="en"><a name="id2869466"></a><h2>Description</h2><p>
+These interfaces are designed to make the stream interface
+slightly easier to use from client code. This is done 2 ways,
+first by make the exception environments optiional, and secondly
+by providing slightly nicer semantics.
+</p><p>
+  </p><div class="example"><a name="id2869480"></a><p class="title"><b>Example 3. Writing some simple data to a stream</b></p><pre class="programlisting">
+bonobo_stream_client_printf (stream, TRUE, ev, "Hello World: <tt class="literal">d</tt>", 5);
+     </pre></div><p>
+  It is well worth using the bonobo_stream_client_write function
+for any potentialy large writes, since this blocks the data into
+sensible chunks. This is important, otherwise a single transfer is
+attempted that will cause hassles in the CORBA stubs. [ NB. ORBit
+tries to alloca a huge chunk of memory and SEGVs ].
+</p></div><div class="refsect1" lang="en"><a name="id2869508"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2869514"></a><h3><a name="bonobo-stream-client-write"></a>bonobo_stream_client_write ()</h3><a class="indexterm" name="id2869526"></a><pre class="programlisting">void        bonobo_stream_client_write      (const Bonobo_Stream stream,
+                                             const void *buffer,
+                                             const size_t size,
+                                             CORBA_Environment *ev);</pre><p>
+This is a helper routine to write <i class="parameter"><tt>size</tt></i> bytes from <i class="parameter"><tt>buffer</tt></i> to the
+<i class="parameter"><tt>stream</tt></i>.  It will continue to write bytes until a fatal error
+occurs. It works around serious problems in ORBit's handling of
+sequences, and makes for nicer, saner protocol usage for
+transfering huge chunks of data.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td> A CORBA Object reference to a Bonobo_Stream
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> the buffer to write
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td> number of bytes to write
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> a CORBA environment to return status information.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2869664"></a><h3><a name="bonobo-stream-client-read"></a>bonobo_stream_client_read ()</h3><a class="indexterm" name="id2869676"></a><pre class="programlisting">guint8*     bonobo_stream_client_read       (const Bonobo_Stream stream,
+                                             const size_t size,
+                                             CORBA_long *length_read,
+                                             CORBA_Environment *ev);</pre><p>
+This is a helper routine to read <i class="parameter"><tt>size</tt></i> bytes from the <i class="parameter"><tt>stream</tt></i> into
+a freshly g_ allocated buffer which is returned. Whilst this
+routine may seem pointless; it reads the stream in small chunks
+avoiding possibly massive alloca's inside ORBit's stub/skel code.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td> A CORBA Object reference to a Bonobo_Stream
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td> number of bytes to read or -1 for whole stream.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>length_read</tt></i> :</span></td><td> if non NULL will be set to the length read
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> a CORBA environment to return status information.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>NULL on any sort of failure &amp; 0 size read.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2869820"></a><h3><a name="bonobo-stream-client-write-string"></a>bonobo_stream_client_write_string ()</h3><a class="indexterm" name="id2869833"></a><pre class="programlisting">void        bonobo_stream_client_write_string
+                                            (const Bonobo_Stream stream,
+                                             const char *str,
+                                             const gboolean terminate,
+                                             CORBA_Environment *ev);</pre><p>
+This is a helper routine to write the string in <i class="parameter"><tt>str</tt></i> to <i class="parameter"><tt>stream</tt></i>.
+If <i class="parameter"><tt>terminate</tt></i> is TRUE, a NULL character will be written out at the
+end of the string.  This function will not return until the entire
+string has been written out, unless an exception is raised.  See
+also <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write"><tt class="function">bonobo_stream_client_write()</tt></a>. Continues writing until finished
+or a fatal exception occurs.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td> A CORBA object reference to a <span class="type">Bonobo_Stream</span>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>str</tt></i> :</span></td><td> A string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>terminate</tt></i> :</span></td><td> Whether or not to write the \0 at the end of the
+string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> A pointer to a <span class="type">CORBA_Environment</span>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2870000"></a><h3><a name="bonobo-stream-client-printf"></a>bonobo_stream_client_printf ()</h3><a class="indexterm" name="id2870011"></a><pre class="programlisting">void        bonobo_stream_client_printf     (const Bonobo_Stream stream,
+                                             const gboolean terminate,
+                                             CORBA_Environment *ev,
+                                             const char *fmt,
+                                             ...);</pre><p>
+Processes <i class="parameter"><tt>fmt</tt></i> and the arguments which follow it to produce a
+string.  Writes this string out to <i class="parameter"><tt>stream</tt></i>.  This function will not
+return until the entire string is written out, unless an exception
+is raised.  See also <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write-string"><tt class="function">bonobo_stream_client_write_string()</tt></a> and
+<a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write"><tt class="function">bonobo_stream_client_write()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td> A CORBA object reference to a <span class="type">Bonobo_Stream</span>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>terminate</tt></i> :</span></td><td> Whether or not to null-terminate the string when it is
+written out to the stream.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> A CORBA_Environment pointer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>fmt</tt></i> :</span></td><td> The printf format string.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> format arguments
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2870187"></a><h3><a name="bonobo-stream-client-read-string"></a>bonobo_stream_client_read_string ()</h3><a class="indexterm" name="id2870199"></a><pre class="programlisting">CORBA_long  bonobo_stream_client_read_string
+                                            (const Bonobo_Stream stream,
+                                             char **str,
+                                             CORBA_Environment *ev);</pre><p>
+Reads a NULL-terminated string from <i class="parameter"><tt>stream</tt></i> and stores it in a
+newly-allocated string in <i class="parameter"><tt>str</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td> The <span class="type">Bonobo_Stream</span> from which the string will be read.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>str</tt></i> :</span></td><td> The string pointer in which the string will be stored.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> A pointer to a <span class="type">CORBA_Environment</span>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The number of bytes read, or -1 if an error occurs.
+If an exception occurs, <i class="parameter"><tt>ev</tt></i> will contain the exception.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2870341"></a><h3><a name="bonobo-stream-client-get-length"></a>bonobo_stream_client_get_length ()</h3><a class="indexterm" name="id2870353"></a><pre class="programlisting">CORBA_long  bonobo_stream_client_get_length (const Bonobo_Stream stream,
+                                             CORBA_Environment *ev);</pre><p>
+Does the grunt work to get the length of a stream,
+returns -1 if the length is not available. Returns -1
+on exception.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream</tt></i> :</span></td><td> The stream.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> Exception environment
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Length or -1
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2870439"></a><h2>See Also</h2><p>
+<span class="type">BonoboStream</span>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-storage.html"><b>&lt;&lt; bonobo-storage</b></a></td><td align="right"><a accesskey="n" href="persist.html"><b>Persistency &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,18 +1,224 @@
 # Romanian translation for libbonobo
-# Copyright (C) 2003 Free Software Foundation, Inc.
-# Mişu Moldovan <dumol@go.ro>, 2003.
+# Copyright (C) 2001 - 2004 Free Software Foundation, Inc.
+# Marius Andreiana <mandreiana@yahoo.com>, 2001.
+# Dan Damian <dand@dnttm.ro>, 2001.
+# Mişu Moldovan <dumol@go.ro>, 2003, 2004.
 # OBS. Nu sunt programator, m-am inspirat din celelalte localizări 
-# libbonobo, orice sugestie sau corectură este binevenită.
+# libbonobo, orice sugestie sau corectură este binevenită. M.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonobo 2.1.1\n"
-"POT-Creation-Date: 2003-06-12 18:00+0100\n"
-"PO-Revision-Date: 2003-01-20 20:19+0200\n"
+"Project-Id-Version: libbonobo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"PO-Revision-Date: 2004-03-18 15:21+0200\n"
 "Last-Translator: Mişu Moldovan <dumol@go.ro>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: activation-server/activation-context-corba.c:470
+msgid "Couldn't find which child the server was listed in"
+msgstr "Nu s-a putut găsi în care copil era listat serverul"
+
+#: activation-server/activation-context-corba.c:748
+msgid "Not a valid Activation ID"
+msgstr "Nu e un ID de activare valid"
+
+#: activation-server/activation-server-main.c:68
+msgid "Directory to read .server files from"
+msgstr "Directorul de unde se vor citi fişiere .server"
+
+#: activation-server/activation-server-main.c:68
+msgid "DIRECTORY"
+msgstr "DIRECTORY"
+
+#: activation-server/activation-server-main.c:71
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr "Serveşte ca ActivationContext (implicit este numai ObjectDirectory)"
+
+#: activation-server/activation-server-main.c:75
+msgid "File descriptor to write IOR to"
+msgstr "Descriptor fişier pentru scrierea IOR"
+
+#: activation-server/activation-server-main.c:75
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "FD"
+msgstr "FD"
+
+#: activation-server/activation-server-main.c:83
+msgid "Query expression to evaluate"
+msgstr "Interoghează expresia pentru evaluare"
+
+#: activation-server/activation-server-main.c:83
+msgid "EXPRESSION"
+msgstr "EXPRESSION"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Serviciu CORBA CosNaming."
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "Serviciu de nume"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:3
+msgid "Notification service"
+msgstr "Serviciu de notificare"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:4
+msgid "Notification service for activation"
+msgstr "Serviciu de notificare pentru activare"
+
+#: activation-server/object-directory-activate.c:187
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr "Nu gestionăm încă obiecte shlib activante într-un proces la distanţă"
+
+#: activation-server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"Fişierul de configurare bonobo-activation nu a fost citit cu succes. "
+"Verificaţi dacă este valid la: %s"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: activation-server/object-directory-corba.c:1149
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "„Race condition” la activarea „%s”"
+
+#: activation-server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "un iid NULL nu este valid"
+
+#: activation-server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "iid-ul %s are un tip NULL"
+
+#: activation-server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "iid-ul %s are o locaţie NULL"
+
+#: activation-server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "caracter invalid „%c” în iid-ul „%s”"
+
+#: activation-server/object-directory-load.c:305
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "Proprietatea „%s” nu are nici o valoare"
+
+#: activation-server/object-directory-load.c:588
+#, c-format
+msgid "Could not parse badly formed XML document %s"
+msgstr "Nu am reuşit procesarea documentului XML malformat %s"
+
+#: activation-server/object-directory-load.c:641
+#, c-format
+msgid "Trying dir %s"
+msgstr "Încerc directorul %s"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Procesul copil nu a dat un mesaj de eroare, eroare necunoscută"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Nu am reuşit să citesc de la procesul copil: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:297
+msgid "Couldn't fork a new process"
+msgstr "Nu s-a putut clona un nou proces"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:318
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "Copilul a primit semnalul %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:323
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Eroare necunoscută (starea este %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:404
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr "bonobo-activation a eşuat la setarea grupului de procese %s: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:416
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Nu am reuşit să execut %s: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:133
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Prea multe niveluri de alias pentru un „locale”, poate fi o buclă"
+
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "File descriptor to print IOR on"
+msgstr "Descriptor fişier în care se va lista IOR"
+
+#: bonobo-activation/bonobo-activation-init.c:202
+msgid "IID to activate"
+msgstr "IID de activat"
+
+#: bonobo-activation/bonobo-activation-init.c:204
+msgid "Prevent registering of server with OAF"
+msgstr "Previne înregistrarea serverului cu OAF"
+
+#: bonobo-activation/bonobo-activation-init.c:290
+msgid "Bonobo activation options"
+msgstr "Opţiuni de activare Bonobo"
+
+#: bonobo-activation/bonobo-activation-shlib.c:107
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "g_module_open pentru „%s” a eşuat cu „%s”"
+
+#: bonobo-activation/bonobo-activation-shlib.c:126
+#: bonobo-activation/bonobo-activation-shlib.c:163
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "Nu am putut găsi simbolul Bonobo_Plugin_info în „%s”"
+
+#: bonobo-activation/bonobo-activation-shlib.c:212
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "Fabrica „%s” a returnat NIL pentru „%s”"
+
+#: bonobo-activation/bonobo-activation-shlib.c:229
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Shlib „%s” nu a conţinut „%s”"
+
+#: bonobo/bonobo-application.c:352
+msgid "Name"
+msgstr "Nume"
+
+#: bonobo/bonobo-application.c:352
+msgid "Application unique name"
+msgstr "Nume unic al aplicaţiei"
+
+#: bonobo/bonobo-object.c:925
+msgid "POA"
+msgstr "POA"
+
+#: bonobo/bonobo-object.c:925
+msgid "Custom CORBA POA"
+msgstr "POA CORBA personalizat"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -36,19 +242,19 @@ msgstr "Eroare de sintaxă în descrierea obiectului"
 
 #: bonobo/bonobo-exception.c:172
 msgid "Cannot activate object from factory"
-msgstr "Nu pot activa obiectul din fabrică"
+msgstr "Nu pot activa obiectul fabricii"
 
 #: bonobo/bonobo-exception.c:177
 msgid "No permission to access stream"
-msgstr "Accesul la flux nu este permis"
+msgstr "Accesul la fluxul de date nu este permis"
 
 #: bonobo/bonobo-exception.c:180
 msgid "An unsupported stream action was attempted"
-msgstr "S-a încercat o acţiune nepermisă asupra fluxului"
+msgstr "S-a încercat o acţiune nepermisă asupra fluxului de date"
 
 #: bonobo/bonobo-exception.c:183
 msgid "IO Error on stream"
-msgstr "Eroare I/O în flux"
+msgstr "Eroare I/O în fluxul de date"
 
 #: bonobo/bonobo-exception.c:187
 msgid "IO Error on storage"
@@ -64,15 +270,15 @@ msgstr "Obiectul nu a fost găsit în stoc"
 
 #: bonobo/bonobo-exception.c:196
 msgid "No permission to do operation on storage"
-msgstr "Operaţia de stocare nu este permisă"
+msgstr "Operaţiunea nu este permisă la stocare"
 
 #: bonobo/bonobo-exception.c:198
 msgid "An unsupported storage action was attempted"
-msgstr "S-a încercat o operaţie nepermisă de stocare"
+msgstr "S-a încercat o operaţiune nepermisă la stocare"
 
 #: bonobo/bonobo-exception.c:200
 msgid "Object is not a stream"
-msgstr "Obiectul nu este un flux"
+msgstr "Obiectul nu este un flux de date"
 
 #: bonobo/bonobo-exception.c:203
 msgid "Object is not a storage"
@@ -100,7 +306,7 @@ msgstr "Comandă necunoscută sau verb necunoscut"
 
 #: bonobo/bonobo-exception.c:222
 msgid "Command is insensitive"
-msgstr "Comanda este insenzitivă"
+msgstr "Comanda nu face diferenţa între literele mari şi mici"
 
 #: bonobo/bonobo-exception.c:226
 msgid "incorrect data type"
@@ -108,7 +314,7 @@ msgstr "tip incorect de date"
 
 #: bonobo/bonobo-exception.c:229
 msgid "stream not found"
-msgstr "fluxul lipseşte"
+msgstr "fluxul de date lipseşte"
 
 #: bonobo/bonobo-exception.c:233
 msgid "property not found"
@@ -120,106 +326,106 @@ msgstr "proprietatea are un tip invalid"
 
 #: bonobo/bonobo-exception.c:239
 msgid "property is read only"
-msgstr "proprietatea nu poate fi schimbată"
+msgstr "proprietatea poate fi doar citită"
 
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
-msgstr "baza de date a configuraţiei a eşuat"
+msgstr "Motorul bazei de date de configurare a eşuat"
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
-msgstr "Interfaţa moniker nu a putut fi găsită"
+msgstr "Interfaţa „moniker” nu a putut fi găsită"
 
 #: bonobo/bonobo-exception.c:249
 msgid "Moniker activation timed out"
-msgstr "Timpul de activare a acestui moniker a expirat"
+msgstr "Timpul de activare a acestui „moniker” a expirat"
 
 #: bonobo/bonobo-exception.c:252
 msgid "Syntax error within moniker"
-msgstr "Eroare de sintază înăuntrul acestui moniker"
+msgstr "Eroare de sintaxă în cadrul acestui „moniker”"
 
 #: bonobo/bonobo-exception.c:255
 msgid "Moniker has an unknown moniker prefix"
-msgstr "Acest moniker are un prefix moniker necunoscut"
+msgstr "Acest „moniker” are un prefix „moniker” necunoscut"
 
 #: bonobo/bonobo-exception.c:279
 msgid "Error checking error; no exception"
-msgstr "Eroare la verificarea erorii; nici o excepţie"
+msgstr "Eroare la verificarea erorii, nici o excepţie"
 
 #: bonobo/bonobo-exception.c:288
 msgid "General activation error with no description"
 msgstr "Eroare generală de activare fără descriere"
 
-#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+#: bonobo/bonobo-generic-factory.h:79 bonobo/bonobo-generic-factory.h:83
 msgid "Could not initialize Bonobo"
 msgstr "Nu am putut iniţializa Bonobo"
 
-#: bonobo/bonobo-moniker.c:353
+#: bonobo/bonobo-moniker.c:352
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "Nu am putut rezolva ori extinde '%s'"
+msgstr "Nu am putut rezolva ori extinde „%s”"
 
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
 msgstr "Nu am putut activa obiectul"
 
-#: monikers/Bonobo_Moniker_std.server.in.in.h:1
-msgid "HTTP Moniker"
-msgstr "Moniker HTTP"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:2
-msgid "ORB IOR handling moniker"
-msgstr "moniker de gestiune ORB IOR"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:3
-msgid "Standard Moniker factory"
-msgstr "Fabrică Moniker standard"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:4
-msgid "generic Oaf activation moniker"
-msgstr "moniker de activare generică Oaf"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:5
-msgid "generic Oaf query moniker"
-msgstr "moniker de interogare generică Oaf"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:6
-msgid "generic factory 'new' moniker"
-msgstr "\"nou\" moniker de fabrică generică"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:7
-msgid "generic item moniker"
-msgstr "moniker de item generic"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:8
-msgid "stream MonikerExtender"
-msgstr "flux MonikerExtender"
-
 #: monikers/bonobo-moniker-oaf.c:53
 #, c-format
 msgid "Exception activating '%s'"
-msgstr "Excepţie la activarea '%s'"
+msgstr "Excepţie la activarea „%s”"
 
 #: monikers/bonobo-moniker-oaf.c:62
 #, c-format
 msgid "Failed to activate '%s'"
-msgstr "Nu am reuşit să activez '%s'"
+msgstr "Nu am reuşit să activez „%s”"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:1
+msgid "HTTP Moniker"
+msgstr "„Moniker” HTTP"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:2
+msgid "ORB IOR handling moniker"
+msgstr "„Moniker” de gestiune ORB IOR"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:3
+msgid "Standard Moniker factory"
+msgstr "Fabrică „moniker” standard"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:4
+msgid "generic Oaf activation moniker"
+msgstr "„moniker” de activare Oaf generic"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:5
+msgid "generic Oaf query moniker"
+msgstr "„moniker” de interogare Oaf generic"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:6
+msgid "generic factory 'new' moniker"
+msgstr "nou „moniker” de fabrică generic"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:7
+msgid "generic item moniker"
+msgstr "„moniker” de item generic"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:8
+msgid "stream MonikerExtender"
+msgstr "flux de date „MonikerExtender”"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr "Fabrica server Echo Bonobo"
+msgstr "Fabrică server „Echo Bonobo”"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr "Programul eşantion Bonobo Echo server"
+msgstr "Programul eşantion server „Bonobo Echo”"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:3
 msgid "Echo component"
-msgstr "Componentă Echo"
+msgstr "Componentă „Echo”"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
 msgid "Echo component factory"
-msgstr "Fabrica componentei Echo"
+msgstr "Fabrica componentei „Echo”"
 
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
@@ -227,9 +433,64 @@ msgstr "Nu am putut iniţializa Bonobo"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr "Nu am putut crea o instanţă a componentei eşantion Echo"
+msgstr "Nu am putut crea o instanţă a componentei eşantion „Echo”"
 
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
-msgstr "A apărut excepţia '%s'"
+msgstr "A apărut excepţia „%s”"
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "Nu s-a putut salva fişierul de configurare.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "Asiguraţi-vă că aveţi drepturi de scriere în „%s”.\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "S-a scris cu succes fişierul de configurare.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"fişierul de configurare este:\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s deja în fişierul de configurare\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "nu există un fişier de configurare corect structurat\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "Fişierul de configurare bonobo-activation conţine:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Director de eliminat din fişierul de configurare"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "cale director"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Director de adăugat la fişierul de configurare"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Arată directoarele în fişierul de configurare"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Arată calea către fişierul de configurare"

@@ -186,7 +186,7 @@ bonobo_pbclient_set_double               (Bonobo_PropertyBag  bag,
 void
 bonobo_pbclient_set_boolean              (Bonobo_PropertyBag  bag,
 					  const char         *key,
-					  CORBA_boolean       value,
+					  gboolean            value,
 					  CORBA_Environment  *opt_ev);
 void
 bonobo_pbclient_set_char                 (Bonobo_PropertyBag  bag,
@@ -229,12 +229,12 @@ bonobo_pbclient_get                      (Bonobo_PropertyBag  bag,
 char *
 bonobo_pbclient_setv                     (Bonobo_PropertyBag  bag,
 					  CORBA_Environment  *ev,
-					  const char         *first_prop,
+					  const char         *first_arg,
 					  va_list             var_args);
 char *
 bonobo_pbclient_getv                     (Bonobo_PropertyBag  bag,
 					  CORBA_Environment  *ev,
-					  const char         *first_prop,
+					  const char         *first_arg,
 					  va_list             var_args);
 
 void

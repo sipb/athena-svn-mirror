@@ -1,0 +1,201 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Registration</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Bonobo Activation API Reference Manual"><link rel="up" href="api-reference.html" title="API Reference"><link rel="previous" href="bonobo-activation-Utilities.html" title="Utilities"><link rel="next" href="bonobo-activation-Debugging.html" title="Debugging"><link rel="chapter" href="tutorial.html" title="Bonobo Activation tutorial"><link rel="chapter" href="configuring.html" title="Configuring Bonobo Activation"><link rel="chapter" href="architecture.html" title="Bonobo Activation Architecture"><link rel="chapter" href="query-langage.html" title="Bonobo Activation Query Langage"><link rel="chapter" href="server-xml-reference.html" title=".server file format reference"><link rel="chapter" href="migrating.html" title="Migrating from gnorba to Bonobo-activation"><link rel="chapter" href="api-reference.html" title="API Reference"><link rel="refentry" href="bonobo-activation-Initialization.html" title="Initialization"><link rel="refentry" href="bonobo-activation-Query-and-Activation.html" title="Query and Activation"><link rel="refentry" href="bonobo-activation-Utilities.html" title="Utilities"><link rel="refentry" href="bonobo-activation-Registration.html" title="Registration"><link rel="refentry" href="bonobo-activation-Debugging.html" title="Debugging"><link rel="article" href="lgpl.html" title="GNU Lesser General Public License"><link rel="section" href="bonobo-activation-Registration.html#id2706025" title="Description"><link rel="section" href="bonobo-activation-Registration.html#id2706038" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="bonobo-activation-Utilities.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="api-reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Bonobo Activation API Reference Manual</th><td><a accesskey="n" href="bonobo-activation-Debugging.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="bonobo-activation-Registration"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Registration</span></h2><p>Registration &#8212; Registering CORBA objects to Bonobo Activation.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;bonobo-activation/bonobo-activation.h&gt;
+
+
+enum        <a href="bonobo-activation-Registration.html#Bonobo-RegistrationResult">Bonobo_RegistrationResult</a>;
+void        <a href="bonobo-activation-Registration.html#bonobo-activation-unregister-active-server">bonobo_activation_unregister_active_server</a>
+                                            (const char *iid,
+                                             CORBA_Object obj);
+void        <a href="bonobo-activation-Registration.html#bonobo-activation-registration-env-free">bonobo_activation_registration_env_free</a>
+                                            (GSList *reg_env);
+GSList*     <a href="bonobo-activation-Registration.html#bonobo-activation-registration-env-set">bonobo_activation_registration_env_set</a>
+                                            (GSList *reg_env,
+                                             const char *name,
+                                             const char *value);
+void        <a href="bonobo-activation-Registration.html#bonobo-activation-registration-env-set-global">bonobo_activation_registration_env_set_global</a>
+                                            (GSList *reg_env,
+                                             gboolean append_if_existing);
+<a href="bonobo-activation-Registration.html#Bonobo-RegistrationResult">Bonobo_RegistrationResult</a> <a href="bonobo-activation-Registration.html#bonobo-activation-register-active-server">bonobo_activation_register_active_server</a>
+                                            (const char *iid,
+                                             CORBA_Object obj,
+                                             GSList *reg_env);
+const char* <a href="bonobo-activation-Registration.html#bonobo-activation-iid-get">bonobo_activation_iid_get</a>       (void);
+struct      <a href="bonobo-activation-Registration.html#BonoboActivationPlugin">BonoboActivationPlugin</a>;
+struct      <a href="bonobo-activation-Registration.html#BonoboActivationPluginObject">BonoboActivationPluginObject</a>;
+void        <a href="bonobo-activation-Registration.html#bonobo-activation-plugin-use">bonobo_activation_plugin_use</a>    (PortableServer_Servant servant,
+                                             gpointer impl_ptr);
+void        <a href="bonobo-activation-Registration.html#bonobo-activation-plugin-unuse">bonobo_activation_plugin_unuse</a>  (gpointer impl_ptr);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2706025"></a><h2>Description</h2><p>
+When writing a component which can be activated through
+Bonobo Activation by clients, you need to be register your component
+to Bonobo Activation once it is created.
+</p></div><div class="refsect1" lang="en"><a name="id2706038"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2706044"></a><h3><a name="Bonobo-RegistrationResult"></a>enum Bonobo_RegistrationResult</h3><a class="indexterm" name="id2706056"></a><pre class="programlisting">   typedef enum
+   {
+      Bonobo_ACTIVATION_REG_SUCCESS,
+      Bonobo_ACTIVATION_REG_NOT_LISTED,
+      Bonobo_ACTIVATION_REG_ALREADY_ACTIVE,
+      Bonobo_ACTIVATION_REG_ERROR
+   } Bonobo_RegistrationResult;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2706073"></a><h3><a name="bonobo-activation-unregister-active-server"></a>bonobo_activation_unregister_active_server ()</h3><a class="indexterm" name="id2706086"></a><pre class="programlisting">void        bonobo_activation_unregister_active_server
+                                            (const char *iid,
+                                             CORBA_Object obj);</pre><p>
+Unregisters <i class="parameter"><tt>obj</tt></i> with <i class="parameter"><tt>iid</tt></i> with the local bonobo-activation-server
+daemon.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td> IID of the server to unregister.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> CORBA::Object to unregister.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2706171"></a><h3><a name="bonobo-activation-registration-env-free"></a>bonobo_activation_registration_env_free ()</h3><a class="indexterm" name="id2706184"></a><pre class="programlisting">void        bonobo_activation_registration_env_free
+                                            (GSList *reg_env);</pre><p>
+Frees the registration environment list, <i class="parameter"><tt>reg_env</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>reg_env</tt></i> :</span></td><td> a GSList pointer.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2706241"></a><h3><a name="bonobo-activation-registration-env-set"></a>bonobo_activation_registration_env_set ()</h3><a class="indexterm" name="id2706253"></a><pre class="programlisting">GSList*     bonobo_activation_registration_env_set
+                                            (GSList *reg_env,
+                                             const char *name,
+                                             const char *value);</pre><p>
+Sets the environment variable <i class="parameter"><tt>name</tt></i> to <i class="parameter"><tt>value</tt></i> in the
+registration environment list <i class="parameter"><tt>reg_env</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>reg_env</tt></i> :</span></td><td> a GSList pointer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the env variable (must not be <tt class="literal">NULL</tt>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the value of the env variable (may be <tt class="literal">NULL</tt>).
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new start of <i class="parameter"><tt>reg_env</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2706394"></a><h3><a name="bonobo-activation-registration-env-set-global"></a>bonobo_activation_registration_env_set_global ()</h3><a class="indexterm" name="id2706407"></a><pre class="programlisting">void        bonobo_activation_registration_env_set_global
+                                            (GSList *reg_env,
+                                             gboolean append_if_existing);</pre><p>
+Sets the global registration environment list with the
+contents of <i class="parameter"><tt>reg_env</tt></i>. If <i class="parameter"><tt>append_if_existing</tt></i> is set to
+<tt class="literal">FALSE</tt>, the an existing global list will be overwritten.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>reg_env</tt></i> :</span></td><td> a GSList pointer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>append_if_existing</tt></i> :</span></td><td> whether or not to append to the global list.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2706501"></a><h3><a name="bonobo-activation-register-active-server"></a>bonobo_activation_register_active_server ()</h3><a class="indexterm" name="id2706513"></a><pre class="programlisting"><a href="bonobo-activation-Registration.html#Bonobo-RegistrationResult">Bonobo_RegistrationResult</a> bonobo_activation_register_active_server
+                                            (const char *iid,
+                                             CORBA_Object obj,
+                                             GSList *reg_env);</pre><p>
+Registers <i class="parameter"><tt>obj</tt></i> with <i class="parameter"><tt>iid</tt></i> with the local bonobo-activation-server
+daemon.
+</p><p>
+If <i class="parameter"><tt>reg_env</tt></i> is not <tt class="literal">NULL</tt>, <i class="parameter"><tt>obj</tt></i> will be registered in such a
+way that if a client who's environment differs from the
+environment specified in <i class="parameter"><tt>reg_env</tt></i>, then another attempt
+to activate <i class="parameter"><tt>iid</tt></i> will not result in a reference to <i class="parameter"><tt>obj</tt></i>
+being returned, but rather another instance of <i class="parameter"><tt>iid</tt></i> being
+activated.
+</p><p>
+So, for example, you can ensure that a seperate instance
+of the component is activated for each distinct X display
+(and screen) by:
+</p><p>
+</p><div class="informalexample"><pre class="programlisting">
+  display_name = gdk_display_get_name (<tt class="function">gdk_display_get_default()</tt>);
+  reg_env = bonobo_activation_registration_env_set (
+                             reg_env, "DISPLAY", display_name);
+  bonobo_activation_register_active_server (iid, active_server, reg_env);
+  bonobo_activation_registration_env_free (reg_env);
+</pre></div><p>
+</p><p>
+If <i class="parameter"><tt>reg_env</tt></i> is <tt class="literal">NULL</tt>, the global registration environment
+list will be used if it is set. See
+<a href="bonobo-activation-Registration.html#bonobo-activation-registration-env-set-global"><tt class="function">bonobo_activation_registration_env_set_global()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iid</tt></i> :</span></td><td> IID of the server to register.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> CORBA::Object to register.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>reg_env</tt></i> :</span></td><td> the registration environment.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> status of the registration.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2706740"></a><h3><a name="bonobo-activation-iid-get"></a>bonobo_activation_iid_get ()</h3><a class="indexterm" name="id2706751"></a><pre class="programlisting">const char* bonobo_activation_iid_get       (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2706788"></a><h3><a name="BonoboActivationPlugin"></a>struct BonoboActivationPlugin</h3><a class="indexterm" name="id2706799"></a><pre class="programlisting">struct BonoboActivationPlugin {
+
+	const BonoboActivationPluginObject *plugin_object_list;
+	const char *description;
+        gpointer dummy[8];
+};
+</pre><p>
+Components which want to be activated as 
+shared libraries must export an BonoboActivationPlugin
+structure of name <span class="structname">Bonobo_Plugin_info</span>.
+An exmaple of how to use it folows:
+</p><pre class="programlisting">
+static CORBA_Object
+hi_shlib_make_object (PortableServer_POA poa,
+                      const char *iid,
+                      gpointer impl_ptr,
+                      CORBA_Environment *ev)
+{
+        CORBA_Object object_ref;
+
+        object_ref = impl_Hi__create (poa, ev);
+        if (object_ref == CORBA_OBJECT_NIL 
+            || ev-&gt;_major != CORBA_NO_EXCEPTION) {
+                printf ("Server cannot get objref\n");
+                return CORBA_OBJECT_NIL;
+        }
+
+        bonobo_activation_plugin_use (poa, impl_ptr);
+
+        return object_ref;
+}
+
+static const BonoboActivationPluginObject hi_plugin_list[] = {
+        {
+                "OAFIID:Hi:20000923",
+                hi_shlib_make_object
+        },
+        {
+                NULL
+  	}
+};
+
+const BonoboActivationPlugin Bonobo_Plugin_info = {
+        hi_plugin_list,
+        "Hi example"
+};
+</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2706843"></a><h3><a name="BonoboActivationPluginObject"></a>struct BonoboActivationPluginObject</h3><a class="indexterm" name="id2706854"></a><pre class="programlisting">struct BonoboActivationPluginObject {
+
+	const char *iid;
+
+	/* This routine should call bonobo_activation_plugin_use(servant, impl_ptr), 
+         * as should all routines which activate CORBA objects
+	 * implemented by this shared library. This needs to be done 
+         * before making any CORBA calls on the object, or
+	 * passing that object around. First thing after servant creation 
+         * always works. :) 
+         */
+
+        CORBA_Object (*activate) (PortableServer_POA poa,
+                                  const char *iid, 
+                                  gpointer impl_ptr,	/* This pointer should be stored by the implementation
+                                                         * to be passed to bonobo_activation_plugin_unuse() in the 
+                                                         * implementation's destruction routine. */
+				  CORBA_Environment *ev);
+        gpointer dummy[4];
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2706885"></a><h3><a name="bonobo-activation-plugin-use"></a>bonobo_activation_plugin_use ()</h3><a class="indexterm" name="id2706897"></a><pre class="programlisting">void        bonobo_activation_plugin_use    (PortableServer_Servant servant,
+                                             gpointer impl_ptr);</pre><p>
+You should call this routine to activate a shared library-based 
+CORBA Object. It will be called by OAF if the component exports 
+correctly an <tt class="literal">BonoboActivationPlugin</tt> structure named "Bonobo_Plugin_info".</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>servant</tt></i> :</span></td><td> The servant that was created
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>impl_ptr</tt></i> :</span></td><td> The impl_ptr that was passed to the original activation routine
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2706980"></a><h3><a name="bonobo-activation-plugin-unuse"></a>bonobo_activation_plugin_unuse ()</h3><a class="indexterm" name="id2706991"></a><pre class="programlisting">void        bonobo_activation_plugin_unuse  (gpointer impl_ptr);</pre><p>
+Side effects: May arrange for the shared library that the
+implementation is in to be unloaded.
+</p><p>
+When a shlib plugin for a CORBA object is destroying an
+implementation, it should call this function to make sure that the
+shared library is unloaded as needed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>impl_ptr</tt></i> :</span></td><td> The impl_ptr that was passed to the activation routine
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="bonobo-activation-Utilities.html"><b>&lt;&lt; Utilities</b></a></td><td align="right"><a accesskey="n" href="bonobo-activation-Debugging.html"><b>Debugging &gt;&gt;</b></a></td></tr></table></body></html>

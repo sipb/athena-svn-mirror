@@ -184,7 +184,8 @@
 		<answer> <para> CORBA is a standard published by the Object Management
 		    Group, you can download various of their specifications from their
 		    <ulink url="http://www.omg.org"> web site </ulink> </para>
-		    <para>FIXME: include pointers to relevant documents.</para>
+		    <para>See, for example, the <ulink url="http://www.omg.org/technology/documents/formal/c_language_mapping.htm">C Language Mapping</ulink>.</para>
+		    <para>FIXME: include pointers to more relevant documents.</para>
 		</answer>
 	    </qandaentry>
 

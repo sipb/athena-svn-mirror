@@ -1,18 +1,232 @@
 # Dutch translation of libbonobo.
 # Nederlandse vertalings van libbonobo
 # Copyright (C) 2003 Free Software Foundation, Inc.
-# Huib Kleinhout <huib@stack.nl>, 2002, 2003.
+# Dennis Smit <synap@area101.penguin.nl>, 2000.
+# Almer S. Tigelaar <almer1@dds.nl>, 2000.
+# Tino Meinen <a.t.meinen@chello.nl>, 2003.
+# Huib Kleinhout <huib@stack.nl>, 2002, 2004.
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo 1.110.0\n"
-"POT-Creation-Date: 2003-06-12 18:00+0100\n"
-"PO-Revision-Date: 2003-01-13 14:37+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"PO-Revision-Date: 2004-03-03 16:46+0100\n"
 "Last-Translator: Huib Kleinhout <huib@stack.nl>\n"
 "Language-Team: Dutch <NL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: activation-server/activation-context-corba.c:470
+msgid "Couldn't find which child the server was listed in"
+msgstr "Kon niet vinden in welke dochter de server werd genoemd"
+
+#: activation-server/activation-context-corba.c:748
+msgid "Not a valid Activation ID"
+msgstr "Geen geldige Activation-ID"
+
+#: activation-server/activation-server-main.c:68
+msgid "Directory to read .server files from"
+msgstr "Map om .server bestanden uit te lezen"
+
+#: activation-server/activation-server-main.c:68
+msgid "DIRECTORY"
+msgstr "DIRECTORY"
+
+#: activation-server/activation-server-main.c:71
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr ""
+"Doe dienst als een ActivationContext (standaardwaarde is alleen als "
+"ObjectDirectory)"
+
+#: activation-server/activation-server-main.c:75
+msgid "File descriptor to write IOR to"
+msgstr "File descriptor om IOR naar te schrijven"
+
+#: activation-server/activation-server-main.c:75
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "FD"
+msgstr "FD"
+
+#: activation-server/activation-server-main.c:83
+msgid "Query expression to evaluate"
+msgstr "Te evalueren query-expressie"
+
+#: activation-server/activation-server-main.c:83
+msgid "EXPRESSION"
+msgstr "EXPRESSIE"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "CORBA CosNaming service"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "Naam service"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:3
+msgid "Notification service"
+msgstr "Aankondigingsservice"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:4
+msgid "Notification service for activation"
+msgstr "Aankondigingsservice voor activering"
+
+#: activation-server/object-directory-activate.c:187
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr ""
+"We ondersteunen het activeren van bibliotheekobjecten in een ander proces "
+"nog niet"
+
+#: activation-server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"Het Bonobo Activation configuratiebestand kon niet worden ingelezen. "
+"Controleer of het in orde is in: %s"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: activation-server/object-directory-corba.c:1149
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "Race-conditie bij activeren van server '%s'"
+
+#: activation-server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "een NULL-iid is ongeldig"
+
+#: activation-server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "iid %s heeft een NULL-type"
+
+#: activation-server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "iid %s heeft een NULL locatie"
+
+#: activation-server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "ongeldig teken '%c' in iid '%s'"
+
+#: activation-server/object-directory-load.c:305
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "Eigenschap '%s' heeft geen waarde"
+
+#: activation-server/object-directory-load.c:588
+#, c-format
+msgid "Could not parse badly formed XML document %s"
+msgstr "Het foutief opgetelde XML-document %s kon niet worden ingelezen"
+
+#: activation-server/object-directory-load.c:641
+#, c-format
+msgid "Trying dir %s"
+msgstr "De map %s wordt geprobeerd"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+"Dochterproces gaf geen foutmelding, er is een onbekende fout opgetreden"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Lezen van dochterproces is mislukt: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:297
+msgid "Couldn't fork a new process"
+msgstr "Kon geen nieuw proces afsplitsen"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:318
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "Dochter ontving signaal %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:323
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Onbekende, non-exit gerelateerde, fout (status is %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:404
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr "bonobo-activation kon de procesgroep van %s niet instellen: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:416
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Uitvoeren van %s mislukt: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:133
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+"Te veel alias-niveaus voor een locale, mogelijk een aanwijzing voor een lus"
+
+# File descriptor om de afkorting duidelijk te laten. Normale gebruikers weten waarschijnlijk niet wat een bestandsbeschrijver is.
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "File descriptor to print IOR on"
+msgstr "File descriptor voor afdrukken van de IOR"
+
+#: bonobo-activation/bonobo-activation-init.c:202
+msgid "IID to activate"
+msgstr "Te activeren IID"
+
+#: bonobo-activation/bonobo-activation-init.c:204
+msgid "Prevent registering of server with OAF"
+msgstr "Voorkom het registreren van de server met OAF"
+
+#: bonobo-activation/bonobo-activation-init.c:290
+msgid "Bonobo activation options"
+msgstr "bonobo-activation opties"
+
+#: bonobo-activation/bonobo-activation-shlib.c:107
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "g_module_open van '%s' mislukt: '%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:126
+#: bonobo-activation/bonobo-activation-shlib.c:163
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "Kan symbool 'Bonobo_Plugin_info' niet vinden in '%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:212
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "Fabriek '%s' retourneerde NIL voor '%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:229
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Bibliotheek '%s' bevatte geen '%s'"
+
+#: bonobo/bonobo-application.c:352
+msgid "Name"
+msgstr "Naam"
+
+#: bonobo/bonobo-application.c:352
+msgid "Application unique name"
+msgstr "Toepassingsunieke naam"
+
+#: bonobo/bonobo-object.c:925
+msgid "POA"
+msgstr "POA"
+
+#: bonobo/bonobo-object.c:925
+msgid "Custom CORBA POA"
+msgstr "Aangepaste CORBA POA"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -150,11 +364,11 @@ msgstr "Fout bij het nakijken van fout; geen uitzondering"
 msgid "General activation error with no description"
 msgstr "Algemene activeringsfout zonder omschrijving"
 
-#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+#: bonobo/bonobo-generic-factory.h:79 bonobo/bonobo-generic-factory.h:83
 msgid "Could not initialize Bonobo"
 msgstr "Bonobo kon niet geinitialiseerd worden"
 
-#: bonobo/bonobo-moniker.c:353
+#: bonobo/bonobo-moniker.c:352
 #, c-format
 msgid "Failed to resolve, or extend '%s"
 msgstr "'%s kon niet gevonden worden of het uitbreiden hiervan is mislukt"
@@ -162,6 +376,16 @@ msgstr "'%s kon niet gevonden worden of het uitbreiden hiervan is mislukt"
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
 msgstr "Kan object niet activeren"
+
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
+msgid "Exception activating '%s'"
+msgstr "Uitzondering bij activeren '%s'"
+
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
+msgid "Failed to activate '%s'"
+msgstr "Het activeren van '%s' is mislukt"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -195,16 +419,6 @@ msgstr "generieke itemmoniker"
 msgid "stream MonikerExtender"
 msgstr "stream MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:53
-#, c-format
-msgid "Exception activating '%s'"
-msgstr "Uitzondering bij activeren '%s'"
-
-#: monikers/bonobo-moniker-oaf.c:62
-#, c-format
-msgid "Failed to activate '%s'"
-msgstr "Het activeren van '%s' is mislukt"
-
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
 msgstr "Bonobo Echo-server factory"
@@ -234,3 +448,58 @@ msgstr ""
 #, c-format
 msgid "An exception occured '%s'"
 msgstr "Er is een uitzondering opgetreden '%s'"
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "Opslaan OAF-configuratiebestand is mislukt.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "Controleer de schrijfrechten voor '%s'.\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "Opslaan OAF-configuratiebestand is geslaagd.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"configuratiebestand is:\n"
+"   %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s is al in het OAF-configuratiebestand\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "er is geen correct gestructureerde configuratiebestand\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "bonobo-activation configuratiebestand bevat:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Map om uit het configuratiebestand te verwijderen"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "Map-pad"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Map om toe te voegen aan het configuratiebestand"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Mappen tonen in het configuratiebestand"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Pad tonen naar het configuratiebestand"

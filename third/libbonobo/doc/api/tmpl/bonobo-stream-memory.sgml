@@ -52,24 +52,15 @@ BonoboStream *make_bonobo_stream_on_string (char *string)
 </para>
 
 
-<!-- ##### STRUCT BonoboStreamMemPrivate ##### -->
+<!-- ##### STRUCT BonoboStreamMemClass ##### -->
 <para>
 
 </para>
 
-
-<!-- ##### MACRO BONOBO_STREAM_MEM_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### TYPEDEF BonoboStreamMemClass ##### -->
-<para>
-
-</para>
-
+@parent_class: 
+@epv: 
+@get_buffer: 
+@get_size: 
 
 <!-- ##### FUNCTION bonobo_stream_mem_construct ##### -->
 <para>

@@ -10,23 +10,13 @@ void
 Bonobo_Sample_Echo_echo(Bonobo_Sample_Echo _obj, const CORBA_char * message,
 			CORBA_Environment * ev)
 {
-   POA_Bonobo_Sample_Echo__epv *_ORBIT_epv;
+   gpointer _args[1];
 
-   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
-       ORBIT_STUB_IsBypass(_obj, Bonobo_Sample_Echo__classid) &&
-       (_ORBIT_epv =
-	(POA_Bonobo_Sample_Echo__epv *) ORBIT_STUB_GetEpv(_obj,
-							  Bonobo_Sample_Echo__classid))->
-       echo) {
-      ORBIT_STUB_PreCall(_obj);
-      _ORBIT_epv->echo(ORBIT_STUB_GetServant(_obj), message, ev);
-      ORBIT_STUB_PostCall(_obj);
-   } else {			/* remote marshal */
-      gpointer _args[1];
+   _args[0] = (gpointer) & message;
+   ORBit_c_stub_invoke(_obj, &Bonobo_Sample_Echo__iinterface.methods, 0, NULL,
+		       _args, NULL, ev, Bonobo_Sample_Echo__classid,
+		       G_STRUCT_OFFSET(POA_Bonobo_Sample_Echo__epv, echo),
+		       (ORBitSmallSkeleton)
+		       _ORBIT_skel_small_Bonobo_Sample_Echo_echo);
 
-      _args[0] = (gpointer) & message;
-      ORBit_small_invoke_stub_n(_obj, &Bonobo_Sample_Echo__iinterface.methods,
-				0, NULL, _args, NULL, ev);
-
-   }
 }

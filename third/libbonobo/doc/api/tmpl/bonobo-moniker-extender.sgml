@@ -30,7 +30,7 @@ example_moniker_resolve (BonoboMoniker               *moniker,
      </programlisting>
   </example>
   The moniker extender essentialy resolves 'moniker' against stream
-and my some means ( not known when the moniker was written ) converts
+and by some means ( not known when the moniker was written ) converts
 this to a new exotic interface - via. the PersistStream interface.
 </para>
 
@@ -96,37 +96,33 @@ bonobo_std_moniker_factory (BonoboGenericFactory *this,
 
 </para>
 
-<!-- ##### MACRO BONOBO_MONIKER_EXTENDER_TYPE ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### STRUCT BonoboMonikerExtender ##### -->
 <para>
-
+Implements a moniker extender: Bonobo::MonikerExtender.
 </para>
 
+
+<!-- ##### STRUCT BonoboMonikerExtenderClass ##### -->
+<para>
+BonoboMonikerExtender's class.
+</para>
+
+@parent_class: 
+@epv: 
+@resolve: 
 
 <!-- ##### USER_FUNCTION BonoboMonikerExtenderFn ##### -->
 <para>
-
+Moniker resolution callback function.
 </para>
 
-@extender: 
-@parent: 
-@options: 
-@display_name: 
-@requested_interface: 
+@extender: extender (self)
+@parent: parent moniker
+@options: resolve options
+@display_name: ? FIXME
+@requested_interface: ? FIXME
 @ev: 
-@Returns: 
-
-
-<!-- ##### TYPEDEF BonoboMonikerExtenderClass ##### -->
-<para>
-
-</para>
+@Returns: the resolution resulting object
 
 
 <!-- ##### FUNCTION bonobo_moniker_extender_new ##### -->

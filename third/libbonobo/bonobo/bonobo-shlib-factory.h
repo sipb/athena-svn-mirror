@@ -42,7 +42,7 @@ typedef struct {
 GType               bonobo_shlib_factory_get_type     (void) G_GNUC_CONST;
 
 BonoboShlibFactory *bonobo_shlib_factory_construct    (BonoboShlibFactory    *factory,
-						       const char            *component_id,
+						       const char            *act_iid,
 						       PortableServer_POA     poa,
 						       gpointer               act_impl_ptr,
 						       GClosure              *closure);
@@ -53,7 +53,7 @@ BonoboShlibFactory *bonobo_shlib_factory_new          (const char            *co
 						       BonoboFactoryCallback  factory_cb,
 						       gpointer               user_data);
 
-BonoboShlibFactory *bonobo_shlib_factory_new_closure  (const char            *component_id,
+BonoboShlibFactory *bonobo_shlib_factory_new_closure  (const char            *act_iid,
 						       PortableServer_POA     poa,
 						       gpointer               act_impl_ptr,
 						       GClosure              *factory_closure);

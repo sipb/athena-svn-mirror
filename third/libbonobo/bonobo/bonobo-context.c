@@ -11,7 +11,7 @@
 
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-context.h>
-#include <bonobo/bonobo-shutdown.h>
+#include <bonobo/bonobo-private.h>
 #include <bonobo/bonobo-running-context.h>
 #include <bonobo/bonobo-moniker-context.h>
 
@@ -109,8 +109,16 @@ context_destroy (char *key, Bonobo_Unknown handle, gpointer dummy)
 void
 bonobo_context_shutdown (void)
 {
+	Bonobo_Unknown m_context;
+
 	if (!bonobo_contexts)
 		return;
+
+	m_context = g_hash_table_lookup (bonobo_contexts, "Moniker");
+	if (!ORBit_small_get_servant (m_context))
+		g_error ("In-proc object has no servant association\n"
+			 "this probably means you shutdown the ORB before "
+			 "you shutdown libbonobo\n");
 
 	g_hash_table_foreach_remove (
 		bonobo_contexts, (GHRFunc) context_destroy, NULL);

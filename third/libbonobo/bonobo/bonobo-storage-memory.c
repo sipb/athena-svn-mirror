@@ -742,10 +742,10 @@ bonobo_storage_mem_class_init (BonoboStorageMemClass *klass)
 BONOBO_TYPE_FUNC_FULL (BonoboStorageMem, 
 		       Bonobo_Storage,
 		       BONOBO_TYPE_OBJECT,
-		       bonobo_storage_mem);
+		       bonobo_storage_mem)
 
 BonoboObject *
-bonobo_storage_mem_create ()
+bonobo_storage_mem_create (void)
 {
 	BonoboStorageMem *smem;
 

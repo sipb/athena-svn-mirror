@@ -21,6 +21,13 @@ G_BEGIN_DECLS
 typedef CORBA_any      BonoboArg;
 typedef CORBA_TypeCode BonoboArgType;
 
+typedef void (*BonoboArgToGValueFn)   (BonoboArg const *arg,
+				       GValue          *out_value);
+
+typedef void (*BonoboArgFromGValueFn) (BonoboArg       *out_arg,
+				       GValue const    *value);
+
+
 #define BONOBO_ARG_NULL     TC_null
 #define BONOBO_ARG_BOOLEAN  TC_CORBA_boolean
 #define BONOBO_ARG_SHORT    TC_CORBA_short
@@ -51,6 +58,8 @@ typedef CORBA_TypeCode BonoboArgType;
 #define BONOBO_ARG_SET_INT(a,v)     (BONOBO_ARG_SET_GENERAL (a, v, TC_CORBA_long, CORBA_long, NULL))
 #define BONOBO_ARG_GET_LONG(a)      (BONOBO_ARG_GET_GENERAL (a, TC_CORBA_long, CORBA_long, NULL))
 #define BONOBO_ARG_SET_LONG(a,v)    (BONOBO_ARG_SET_GENERAL (a, v, TC_CORBA_long, CORBA_long, NULL))
+#define BONOBO_ARG_GET_ULONG(a)     (BONOBO_ARG_GET_GENERAL (a, TC_CORBA_unsigned_long, CORBA_unsigned_long, NULL))
+#define BONOBO_ARG_SET_ULONG(a,v)   (BONOBO_ARG_SET_GENERAL (a, v, TC_CORBA_unsigned_long, CORBA_unsigned_long, NULL))
 #define BONOBO_ARG_GET_LONGLONG(a)  (BONOBO_ARG_GET_GENERAL (a, TC_CORBA_long_long, CORBA_long_long, NULL))
 #define BONOBO_ARG_SET_LONGLONG(a,v) (BONOBO_ARG_SET_GENERAL (a, v, TC_CORBA_long_long, CORBA_long_long, NULL))
 
@@ -99,6 +108,18 @@ gboolean      bonobo_arg_is_equal        (const BonoboArg   *a,
 gboolean      bonobo_arg_type_is_equal   (BonoboArgType      a, 
 					  BonoboArgType      b,
 					  CORBA_Environment *opt_ev);
+
+gboolean bonobo_arg_to_gvalue_alloc                (BonoboArg const       *arg,
+						    GValue                *value);
+gboolean bonobo_arg_from_gvalue_alloc              (BonoboArg             *arg,
+						    GValue const          *value);
+void     bonobo_arg_register_to_gvalue_converter   (BonoboArgType          arg_type,
+						    BonoboArgToGValueFn    converter);
+void     bonobo_arg_register_from_gvalue_converter (GType                  gtype,
+						    BonoboArgFromGValueFn  converter);
+  /* private */
+void     bonobo_arg_init                           (void);
+
 
 G_END_DECLS
 

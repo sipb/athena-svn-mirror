@@ -35,6 +35,7 @@ typedef void  (*BonoboObjectPOAFn) (PortableServer_Servant servant,
 				    CORBA_Environment     *ev);
 
 typedef struct _BonoboObjectPrivate BonoboObjectPrivate;
+typedef struct _BonoboObjectBag     BonoboObjectBag;
 typedef struct _BonoboObject        BonoboObject;
 
 typedef struct {
@@ -95,6 +96,8 @@ Bonobo_Unknown           bonobo_object_query_interface        (BonoboObject     
 							       const char             *repo_id,
 							       CORBA_Environment      *opt_ev);
 Bonobo_Unknown           bonobo_object_corba_objref           (BonoboObject           *object);
+void                     bonobo_object_set_poa                (BonoboObject           *object,
+							       PortableServer_POA      poa);
 
 /*
  * Gnome Object Life Cycle
@@ -141,6 +144,28 @@ gboolean  bonobo_unknown_ping           (Bonobo_Unknown     object,
 void      bonobo_object_list_unref_all  (GList            **list);
 void      bonobo_object_slist_unref_all (GSList           **list);
 
+/*
+ * A weak-ref cache scheme
+ */
+
+#define BONOBO_COPY_FUNC(fn) ((BonoboCopyFunc)(fn))
+
+typedef gpointer (*BonoboCopyFunc) (gconstpointer key);
+
+BonoboObjectBag *bonobo_object_bag_new      (GHashFunc       hash_func,
+					     GEqualFunc      key_equal_func,
+					     BonoboCopyFunc  key_copy_func,
+					     GDestroyNotify  key_destroy_func);
+BonoboObject    *bonobo_object_bag_get_ref  (BonoboObjectBag *bag,
+					     gconstpointer    key);
+gboolean         bonobo_object_bag_add_ref  (BonoboObjectBag *bag,
+					     gconstpointer    key,
+					     BonoboObject    *object);
+void             bonobo_object_bag_remove   (BonoboObjectBag *bag,
+					     gconstpointer    key);
+void             bonobo_object_bag_destroy  (BonoboObjectBag *bag);
+GPtrArray       *bonobo_object_bag_list_ref (BonoboObjectBag *bag);
+
 
 /* Detects the pointer type and returns the object reference - magic. */
 BonoboObject *bonobo_object (gpointer p);
@@ -153,6 +178,8 @@ BonoboObject *bonobo_object (gpointer p);
 #define       bonobo_object_from_servant(s) ((BonoboObject *)(((guchar *) (s)) - BONOBO_OBJECT_HEADER_SIZE))
 #define       bonobo_object_get_servant(o)  ((PortableServer_Servant)((guchar *)(o) + BONOBO_OBJECT_HEADER_SIZE))
 
+
+PortableServer_POA bonobo_object_get_poa (BonoboObject *object);
 
 /* Use G_STRUCT_OFFSET to calc. epv_struct_offset */
 GType          bonobo_type_unique (GType             parent_type,

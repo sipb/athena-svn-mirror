@@ -1,0 +1,432 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-config-database</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="misc.html" title="Miscellaneous"><link rel="previous" href="libbonobo-faq.html" title="Common Questions"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-config-database.html#id2883750" title="Description"><link rel="section" href="libbonobo-bonobo-config-database.html#id2883760" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-faq.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="misc.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-config-database"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-config-database</span></h2><p>bonobo-config-database &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+gchar*      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-string">bonobo_config_get_string</a>        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gchar*      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-string-with-default">bonobo_config_get_string_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gchar *defval,
+                                             gboolean *def);
+gint16      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-short">bonobo_config_get_short</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gint16      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-short-with-default">bonobo_config_get_short_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint16 defval,
+                                             gboolean *def);
+guint16     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort">bonobo_config_get_ushort</a>        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+guint16     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort-with-default">bonobo_config_get_ushort_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint16 defval,
+                                             gboolean *def);
+gint32      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-long">bonobo_config_get_long</a>          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gint32      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-long-with-default">bonobo_config_get_long_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint32 defval,
+                                             gboolean *def);
+guint32     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong">bonobo_config_get_ulong</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+guint32     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong-with-default">bonobo_config_get_ulong_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint32 defval,
+                                             gboolean *def);
+gfloat      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-float">bonobo_config_get_float</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gfloat      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-float-with-default">bonobo_config_get_float_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gfloat defval,
+                                             gboolean *def);
+gdouble     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-double">bonobo_config_get_double</a>        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gdouble     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-double-with-default">bonobo_config_get_double_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gdouble defval,
+                                             gboolean *def);
+gboolean    <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean">bonobo_config_get_boolean</a>       (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gboolean    <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean-with-default">bonobo_config_get_boolean_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gboolean defval,
+                                             gboolean *def);
+gchar       <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-char">bonobo_config_get_char</a>          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gchar       <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-char-with-default">bonobo_config_get_char_with_default</a>
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gchar defval,
+                                             gboolean *def);
+CORBA_any*  <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-value">bonobo_config_get_value</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_TypeCode opt_tc,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-string">bonobo_config_set_string</a>        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             const char *value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-short">bonobo_config_set_short</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint16 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-ushort">bonobo_config_set_ushort</a>        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint16 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-long">bonobo_config_set_long</a>          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint32 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-ulong">bonobo_config_set_ulong</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint32 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-float">bonobo_config_set_float</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gfloat value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-double">bonobo_config_set_double</a>        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gdouble value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-boolean">bonobo_config_set_boolean</a>       (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gboolean value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-char">bonobo_config_set_char</a>          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gchar value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-value">bonobo_config_set_value</a>         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_any *value,
+                                             CORBA_Environment *opt_ev);
+</pre></div><div class="refsect1" lang="en"><a name="id2883750"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2883760"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2883765"></a><h3><a name="bonobo-config-get-string"></a>bonobo_config_get_string ()</h3><a class="indexterm" name="id2883777"></a><pre class="programlisting">gchar*      bonobo_config_get_string        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a string from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database, or zero on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2883883"></a><h3><a name="bonobo-config-get-string-with-default"></a>bonobo_config_get_string_with_default ()</h3><a class="indexterm" name="id2883896"></a><pre class="programlisting">gchar*      bonobo_config_get_string_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gchar *defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884017"></a><h3><a name="bonobo-config-get-short"></a>bonobo_config_get_short ()</h3><a class="indexterm" name="id2884028"></a><pre class="programlisting">gint16      bonobo_config_get_short         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 16 bit integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884135"></a><h3><a name="bonobo-config-get-short-with-default"></a>bonobo_config_get_short_with_default ()</h3><a class="indexterm" name="id2884147"></a><pre class="programlisting">gint16      bonobo_config_get_short_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint16 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884268"></a><h3><a name="bonobo-config-get-ushort"></a>bonobo_config_get_ushort ()</h3><a class="indexterm" name="id2884279"></a><pre class="programlisting">guint16     bonobo_config_get_ushort        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 16 bit unsigned integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884386"></a><h3><a name="bonobo-config-get-ushort-with-default"></a>bonobo_config_get_ushort_with_default ()</h3><a class="indexterm" name="id2884399"></a><pre class="programlisting">guint16     bonobo_config_get_ushort_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint16 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884519"></a><h3><a name="bonobo-config-get-long"></a>bonobo_config_get_long ()</h3><a class="indexterm" name="id2884531"></a><pre class="programlisting">gint32      bonobo_config_get_long          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 32 bit integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884637"></a><h3><a name="bonobo-config-get-long-with-default"></a>bonobo_config_get_long_with_default ()</h3><a class="indexterm" name="id2884650"></a><pre class="programlisting">gint32      bonobo_config_get_long_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint32 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884770"></a><h3><a name="bonobo-config-get-ulong"></a>bonobo_config_get_ulong ()</h3><a class="indexterm" name="id2884781"></a><pre class="programlisting">guint32     bonobo_config_get_ulong         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 32 bit unsigned integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2884888"></a><h3><a name="bonobo-config-get-ulong-with-default"></a>bonobo_config_get_ulong_with_default ()</h3><a class="indexterm" name="id2884901"></a><pre class="programlisting">guint32     bonobo_config_get_ulong_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint32 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885021"></a><h3><a name="bonobo-config-get-float"></a>bonobo_config_get_float ()</h3><a class="indexterm" name="id2885033"></a><pre class="programlisting">gfloat      bonobo_config_get_float         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a single precision floating point value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885140"></a><h3><a name="bonobo-config-get-float-with-default"></a>bonobo_config_get_float_with_default ()</h3><a class="indexterm" name="id2885152"></a><pre class="programlisting">gfloat      bonobo_config_get_float_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gfloat defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885273"></a><h3><a name="bonobo-config-get-double"></a>bonobo_config_get_double ()</h3><a class="indexterm" name="id2885284"></a><pre class="programlisting">gdouble     bonobo_config_get_double        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a double precision floating point value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885391"></a><h3><a name="bonobo-config-get-double-with-default"></a>bonobo_config_get_double_with_default ()</h3><a class="indexterm" name="id2885404"></a><pre class="programlisting">gdouble     bonobo_config_get_double_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gdouble defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885524"></a><h3><a name="bonobo-config-get-boolean"></a>bonobo_config_get_boolean ()</h3><a class="indexterm" name="id2885537"></a><pre class="programlisting">gboolean    bonobo_config_get_boolean       (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a boolean value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885642"></a><h3><a name="bonobo-config-get-boolean-with-default"></a>bonobo_config_get_boolean_with_default ()</h3><a class="indexterm" name="id2885655"></a><pre class="programlisting">gboolean    bonobo_config_get_boolean_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gboolean defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885776"></a><h3><a name="bonobo-config-get-char"></a>bonobo_config_get_char ()</h3><a class="indexterm" name="id2885787"></a><pre class="programlisting">gchar       bonobo_config_get_char          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 8 bit character value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2885894"></a><h3><a name="bonobo-config-get-char-with-default"></a>bonobo_config_get_char_with_default ()</h3><a class="indexterm" name="id2885907"></a><pre class="programlisting">gchar       bonobo_config_get_char_with_default
+                                            (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gchar defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886026"></a><h3><a name="bonobo-config-get-value"></a>bonobo_config_get_value ()</h3><a class="indexterm" name="id2886038"></a><pre class="programlisting">CORBA_any*  bonobo_config_get_value         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_TypeCode opt_tc,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_tc</tt></i> :</span></td><td> the type of the value, optional
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database, or zero on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886167"></a><h3><a name="bonobo-config-set-string"></a>bonobo_config_set_string ()</h3><a class="indexterm" name="id2886178"></a><pre class="programlisting">void        bonobo_config_set_string        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             const char *value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a string value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886296"></a><h3><a name="bonobo-config-set-short"></a>bonobo_config_set_short ()</h3><a class="indexterm" name="id2886307"></a><pre class="programlisting">void        bonobo_config_set_short         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint16 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 16 bit integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886425"></a><h3><a name="bonobo-config-set-ushort"></a>bonobo_config_set_ushort ()</h3><a class="indexterm" name="id2886436"></a><pre class="programlisting">void        bonobo_config_set_ushort        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint16 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 16 bit unsigned integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886554"></a><h3><a name="bonobo-config-set-long"></a>bonobo_config_set_long ()</h3><a class="indexterm" name="id2886565"></a><pre class="programlisting">void        bonobo_config_set_long          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gint32 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 32 bit integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886682"></a><h3><a name="bonobo-config-set-ulong"></a>bonobo_config_set_ulong ()</h3><a class="indexterm" name="id2886694"></a><pre class="programlisting">void        bonobo_config_set_ulong         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             guint32 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 32 bit unsigned integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886811"></a><h3><a name="bonobo-config-set-float"></a>bonobo_config_set_float ()</h3><a class="indexterm" name="id2886822"></a><pre class="programlisting">void        bonobo_config_set_float         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gfloat value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a single precision floating point value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2886940"></a><h3><a name="bonobo-config-set-double"></a>bonobo_config_set_double ()</h3><a class="indexterm" name="id2886951"></a><pre class="programlisting">void        bonobo_config_set_double        (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gdouble value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a double precision floating point value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2887069"></a><h3><a name="bonobo-config-set-boolean"></a>bonobo_config_set_boolean ()</h3><a class="indexterm" name="id2887081"></a><pre class="programlisting">void        bonobo_config_set_boolean       (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gboolean value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a boolean value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2887198"></a><h3><a name="bonobo-config-set-char"></a>bonobo_config_set_char ()</h3><a class="indexterm" name="id2887209"></a><pre class="programlisting">void        bonobo_config_set_char          (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             gchar value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 8 bit characte value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2887326"></a><h3><a name="bonobo-config-set-value"></a>bonobo_config_set_value ()</h3><a class="indexterm" name="id2887338"></a><pre class="programlisting">void        bonobo_config_set_value         (Bonobo_ConfigDatabase db,
+                                             const char *key,
+                                             CORBA_any *value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-faq.html"><b>&lt;&lt; Common Questions</b></a></td><td align="right"></td></tr></table></body></html>

@@ -1,0 +1,66 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-i18n</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="general.html" title="General"><link rel="previous" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="next" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-i18n.html#id2770441" title="Description"><link rel="section" href="libbonobo-bonobo-i18n.html#id2770451" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-shutdown.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="general.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-types.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-i18n"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-i18n</span></h2><p>bonobo-i18n &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-i18n.html#gettext-macro">_</a>                               (String)
+#define     <a href="libbonobo-bonobo-i18n.html#N--CAPS">N_</a>                              (String)
+#define     <a href="libbonobo-bonobo-i18n.html#textdomain">textdomain</a>                      (String)
+#define     <a href="libbonobo-bonobo-i18n.html#gettext">gettext</a>                         (String)
+#define     <a href="libbonobo-bonobo-i18n.html#dgettext">dgettext</a>                        (Domain,Message)
+#define     <a href="libbonobo-bonobo-i18n.html#dcgettext">dcgettext</a>                       (Domain,Message,Type)
+#define     <a href="libbonobo-bonobo-i18n.html#bindtextdomain">bindtextdomain</a>                  (Domain,Directory)
+#define     <a href="libbonobo-bonobo-i18n.html#bind-textdomain-codeset">bind_textdomain_codeset</a>         (Domain,CodeSet)
+</pre></div><div class="refsect1" lang="en"><a name="id2770441"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2770451"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2770457"></a><h3><a name="gettext-macro"></a>_()</h3><a class="indexterm" name="id2770467"></a><pre class="programlisting">#define     _(String)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>String</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2770500"></a><h3><a name="N--CAPS"></a>N_()</h3><a class="indexterm" name="id2770510"></a><pre class="programlisting">#define     N_(String)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>String</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2770543"></a><h3><a name="textdomain"></a>textdomain()</h3><a class="indexterm" name="id2770553"></a><pre class="programlisting">#    define textdomain(String) (String)
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>String</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2770586"></a><h3><a name="gettext"></a>gettext()</h3><a class="indexterm" name="id2770596"></a><pre class="programlisting">#    define gettext(String) (String)
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>String</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2770629"></a><h3><a name="dgettext"></a>dgettext()</h3><a class="indexterm" name="id2770639"></a><pre class="programlisting">#    define dgettext(Domain,Message) (Message)
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>Domain</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>Message</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2770686"></a><h3><a name="dcgettext"></a>dcgettext()</h3><a class="indexterm" name="id2770696"></a><pre class="programlisting">#    define dcgettext(Domain,Message,Type) (Message)
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>Domain</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>Message</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>Type</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2770757"></a><h3><a name="bindtextdomain"></a>bindtextdomain()</h3><a class="indexterm" name="id2770768"></a><pre class="programlisting">#    define bindtextdomain(Domain,Directory) (Domain)
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>Domain</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>Directory</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2770815"></a><h3><a name="bind-textdomain-codeset"></a>bind_textdomain_codeset()</h3><a class="indexterm" name="id2770826"></a><pre class="programlisting">#    define bind_textdomain_codeset(Domain,CodeSet) (Domain)
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>Domain</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>CodeSet</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-shutdown.html"><b>&lt;&lt; bonobo-shutdown</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-types.html"><b>bonobo-types &gt;&gt;</b></a></td></tr></table></body></html>

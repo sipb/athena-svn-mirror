@@ -6,21 +6,24 @@
  *    Miguel de Icaza  (miguel@gnu.org)
  *    Nat Friedman     (nat@nat.org)
  *    Peter Wainwright (prw@wainpr.demo.co.uk)
+ *    Michael Meeks    (michael@ximian.com)
  *
- * Copyright 1999,2001 Ximian, Inc.
+ * Copyright 1999,2003 Ximian, Inc.
  */
 #include <config.h>
-
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-context.h>
-#include <bonobo/bonobo-shutdown.h>
+#include <bonobo/bonobo-private.h>
+#include <bonobo/bonobo-arg.h>
 
 #include <libintl.h>
+#include <string.h>
 
 #include <glib/gmain.h>
 
+GMutex                   *_bonobo_lock;
 CORBA_ORB                 __bonobo_orb = CORBA_OBJECT_NIL;
 PortableServer_POA        __bonobo_poa = CORBA_OBJECT_NIL;
 PortableServer_POAManager __bonobo_poa_manager = CORBA_OBJECT_NIL;
@@ -69,7 +72,6 @@ static gint bonobo_inited = 0;
 
 /**
  * bonobo_is_initialized:
- * @void: 
  * 
  *   This allows you to protect against double
  * initialization in your code.
@@ -84,7 +86,6 @@ bonobo_is_initialized (void)
 
 /**
  * bonobo_shutdown:
- * @void: 
  * 
  *   This shuts down the ORB and any other bonobo related
  * resources.
@@ -161,6 +162,8 @@ bonobo_init_full (int *argc, char **argv,
 	/* Init neccessary bits */
 	g_type_init_with_debug_flags (0);
 
+	bonobo_arg_init ();
+
 	if (!bonobo_activation_is_initialized ())
 		bonobo_activation_init (argc ? *argc : 0, argv);
 
@@ -212,7 +215,8 @@ bonobo_init_full (int *argc, char **argv,
 
 	CORBA_exception_free (&ev);
 
-	bonobo_object_init ();
+	_bonobo_lock = g_mutex_new ();
+
 	bonobo_context_init ();
 
 	bindtextdomain (GETTEXT_PACKAGE, BONOBO_LOCALEDIR);
@@ -300,6 +304,21 @@ bonobo_main (void)
 }
 
 /**
+ * bonobo_main_level:
+ *
+ * Determines the number of times the bonobo main loop has been entered (minus
+ * the number of exits from the main loop).
+ *
+ * Returns: The number of main loops currently running (0 if no main loops are
+ * running).
+ */
+guint
+bonobo_main_level (void)
+{
+	return bonobo_main_loop_level;
+}
+
+/**
  * bonobo_main_quit:
  * 
  * Quits the main event loop.
@@ -310,4 +329,127 @@ bonobo_main_quit (void)
 	g_return_if_fail (bonobo_main_loops != NULL);
 
 	g_main_loop_quit (bonobo_main_loops->data);
+}
+
+/**
+ * bonobo_poa_get_threadedv:
+ * @hint: the desired thread hint
+ * @args: va_args related to that hint
+ * 
+ * Get a predefined POA for a given threading policy/hint.  The
+ * returned POA can be passed as the "poa" constructor property of a
+ * #BonoboOject.
+ * 
+ * Return value: the requested POA.
+ **/
+PortableServer_POA
+bonobo_poa_get_threadedv (ORBitThreadHint hint,
+			  va_list         args)
+{
+	PortableServer_POA  poa;
+	CORBA_Environment   ev[1];
+	CORBA_PolicyList    policies;
+	CORBA_Object        policy_vals[1];
+	const char         *poa_name = NULL;
+
+#define MAP(a,b) \
+	case ORBIT_THREAD_HINT_##a: \
+		poa_name = b; \
+		break
+
+	switch (hint) {
+		MAP (NONE,           "BonoboPOAHintNone");
+		MAP (PER_OBJECT,     "BonoboPOAHintPerObject");
+		MAP (PER_REQUEST,    "BonoboPOAHintPerRequest");
+		MAP (PER_POA,        "BonoboPOAHintPerPOA");
+		MAP (PER_CONNECTION, "BonoboPOAHintPerConnection");
+		MAP (ONEWAY_AT_IDLE, "BonoboPOAHintOnewayAtIdle");
+		MAP (ALL_AT_IDLE,    "BonoboPOAHintAllAtIdle");
+		MAP (ON_CONTEXT,     "BonoboPOAHintOnContext");
+#undef MAP
+	default:
+		g_assert_not_reached();
+	}
+
+	CORBA_exception_init (ev);
+
+	/* (Copy-paste from ORBit2/test/poa/poatest-basic08.c) */
+
+	policies._length = 1;
+	policies._buffer = policy_vals;
+	policies._buffer[0] = (CORBA_Object)
+		PortableServer_POA_create_thread_policy
+			(bonobo_poa (),
+			 PortableServer_ORB_CTRL_MODEL,
+			 ev);
+
+	poa = bonobo_poa_new_from (__bonobo_poa,
+				   poa_name, &policies, ev);
+
+	CORBA_Object_release (policies._buffer[0], NULL);
+
+	if (ev->_major == CORBA_NO_EXCEPTION)
+		ORBit_ObjectAdaptor_set_thread_hintv
+			((ORBit_ObjectAdaptor) poa, hint, args);
+
+	else {
+		if (strcmp (CORBA_exception_id (ev),
+			    ex_PortableServer_POA_AdapterAlreadyExists) == 0) {
+			CORBA_exception_free (ev);
+			poa = PortableServer_POA_find_POA (bonobo_poa (),
+							   poa_name,
+							   CORBA_FALSE, ev);
+		}
+	}
+	CORBA_exception_free (ev);
+	if (!poa)
+		g_warning ("Could not create/get poa '%s'", poa_name);
+
+	return poa;
+}
+
+/**
+ * bonobo_poa_get_threaded:
+ * @hint: the desired thread hint
+ * 
+ * Get a predefined POA for a given threading policy/hint.  The
+ * returned POA can be passed as the "poa" constructor property of a
+ * #BonoboOject.
+ * 
+ * Return value: the requested POA.
+ **/
+PortableServer_POA
+bonobo_poa_get_threaded (ORBitThreadHint hint, ...)
+{
+	va_list args;
+	PortableServer_POA poa;
+
+	va_start (args, hint);
+	poa = bonobo_poa_get_threadedv (hint, args);
+	va_end (args);
+
+	return poa;
+}
+
+PortableServer_POA
+bonobo_poa_new_from (PortableServer_POA      tmpl,
+		     const char             *name,
+		     const CORBA_PolicyList *opt_policies,
+		     CORBA_Environment      *opt_ev)
+{
+	PortableServer_POA poa;
+	CORBA_Environment real_ev[1], *ev;
+
+	if (!opt_ev)
+		CORBA_exception_init ((ev = real_ev));
+	else
+		ev = opt_ev;
+
+	poa = ORBit_POA_new_from (bonobo_orb(),
+				  tmpl, name, opt_policies, ev);
+
+	if (!opt_ev)
+		CORBA_exception_free (real_ev);
+
+	return poa;
 }

@@ -141,7 +141,7 @@ bonobo_persist_file_init (GObject *object)
 BONOBO_TYPE_FUNC_FULL (BonoboPersistFile, 
 		       Bonobo_PersistFile,
 		       PARENT_TYPE,
-		       bonobo_persist_file);
+		       bonobo_persist_file)
 
 /**
  * bonobo_persist_file_construct:
@@ -154,6 +154,8 @@ BONOBO_TYPE_FUNC_FULL (BonoboPersistFile,
  * Initializes the BonoboPersistFile object.  The @load_fn and @save_fn
  * parameters might be NULL.  If this is the case, the load and save 
  * operations are performed by the class load and save methods
+ *
+ * Returns: the #BonoboPersistFile.
  */
 BonoboPersistFile *
 bonobo_persist_file_construct (BonoboPersistFile    *pf,
@@ -184,6 +186,8 @@ bonobo_persist_file_construct (BonoboPersistFile    *pf,
  * Creates a BonoboPersistFile object.  The @load_fn and @save_fn
  * parameters might be NULL.  If this is the case, the load and save 
  * operations are performed by the class load and save methods
+ *
+ * Returns: the #BonoboPersistFile.
  */
 BonoboPersistFile *
 bonobo_persist_file_new (BonoboPersistFileIOFn  load_fn,

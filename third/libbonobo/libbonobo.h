@@ -44,6 +44,8 @@ G_BEGIN_DECLS
 
 #include <bonobo/bonobo-storage.h>
 #include <bonobo/bonobo-storage-memory.h>
+#include <bonobo/bonobo-application.h>
+#include <bonobo/bonobo-app-client.h>
 
 G_END_DECLS
 

@@ -74,3 +74,12 @@ bonobo-i18n
 @Directory: 
 
 
+<!-- ##### MACRO bind_textdomain_codeset ##### -->
+<para>
+
+</para>
+
+@Domain: 
+@CodeSet: 
+
+

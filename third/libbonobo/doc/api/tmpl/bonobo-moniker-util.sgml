@@ -131,12 +131,12 @@ prefix and / or the ':0' suffix.
 
 <!-- ##### USER_FUNCTION BonoboMonikerAsyncFn ##### -->
 <para>
-
+Callback function, invoked when bonobo_get_object_async() completes its work.
 </para>
 
-@object: 
-@ev: 
-@user_data: 
+@object: the newly-activated object, or %CORBA_OBJECT_NIL if an exception occurred
+@ev: CORBA environment that may contain an exception if an activation error occurred
+@user_data: user data
 
 
 <!-- ##### FUNCTION bonobo_get_object_async ##### -->

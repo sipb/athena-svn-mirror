@@ -103,10 +103,10 @@ of type @id.
 
 <!-- ##### MACRO BONOBO_EX_REPOID ##### -->
 <para>
-
+Returns the repoid string of exception @ev.
 </para>
 
-@ev: 
+@ev: a CORBA exception
 
 
 <!-- ##### MACRO BONOBO_RET_EX ##### -->

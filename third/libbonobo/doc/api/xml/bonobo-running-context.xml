@@ -1,0 +1,180 @@
+<refentry id="libbonobo-bonobo-running-context">
+<refmeta>
+<refentrytitle>BonoboRunningContext</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboRunningContext</refname><refpurpose>a live object tracker</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="BonoboRunningContext"/>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboRunningContext-struct">BonoboRunningContext</link>;
+struct      <link linkend="BonoboRunningContextClass">BonoboRunningContextClass</link>;
+<link linkend="BonoboObject">BonoboObject</link>* <link linkend="bonobo-running-context-new">bonobo_running_context_new</link>    (void);
+<link linkend="void">void</link>        <link linkend="bonobo-running-context-ignore-object">bonobo_running_context_ignore_object</link>
+                                            (<link linkend="CORBA-Object">CORBA_Object</link> object);
+<link linkend="void">void</link>        <link linkend="bonobo-running-context-at-exit-unref">bonobo_running_context_at_exit_unref</link>
+                                            (<link linkend="CORBA-Object">CORBA_Object</link> object);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="BonoboObject">BonoboObject</link>
+         +----BonoboRunningContext
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="BonoboRunningContext-last-unref">last-unref</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="BonoboRunningContext">BonoboRunningContext</link> *bonoborunningcontext,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+
+<para>
+    <link linkend="BonoboRunningContext"><type>BonoboRunningContext</type></link> implements the
+    <classname>Bonobo::RunningContext</classname> IDL interface,
+    depicted in <xref linkend="running-context-img"/>.
+</para>
+
+<figure id="running-context-img">
+    <title>The Bonobo::RunningContext interface</title>
+    <mediaobject>
+	<imageobject>
+	    <imagedata fileref="running-context.png" format="PNG"/>
+	</imageobject>
+    </mediaobject>
+</figure>
+
+<para>
+    The purpose of this object is to keep track of currently running
+    objects.  This is useful in, for example, exe type factories, in
+    order to know when it is safe to quit from the main loop.
+</para>
+
+<para>
+    <link linkend="BonoboRunningContext"><type>BonoboRunningContext</type></link> is a singleton.  There is at most one
+    instance running at all times.  All <link linkend="BonoboObject"><type>BonoboObject</type></link>'s are
+    automatically registered with the running context as part of their
+    normal initialization procedure.
+</para>
+<para>
+    To find out when all objects have been destroyed, just connect a
+    handler to the "last-unref" signal.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboRunningContext-struct"/>struct BonoboRunningContext</title>
+<indexterm><primary>BonoboRunningContext</primary></indexterm><programlisting>struct BonoboRunningContext;</programlisting>
+<para>
+the running context data
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboRunningContextClass"/>struct BonoboRunningContextClass</title>
+<indexterm><primary>BonoboRunningContextClass</primary></indexterm><programlisting>struct BonoboRunningContextClass {
+
+	BonoboObjectClass parent;
+
+	POA_Bonobo_RunningContext__epv epv;
+
+	void (*last_unref) (void);
+};
+</programlisting>
+<para>
+the running context class
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-running-context-new"/>bonobo_running_context_new ()</title>
+<indexterm><primary>bonobo_running_context_new</primary></indexterm><programlisting><link linkend="BonoboObject">BonoboObject</link>* bonobo_running_context_new    (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-running-context-ignore-object"/>bonobo_running_context_ignore_object ()</title>
+<indexterm><primary>bonobo_running_context_ignore_object</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_running_context_ignore_object
+                                            (<link linkend="CORBA-Object">CORBA_Object</link> object);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>object</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-running-context-at-exit-unref"/>bonobo_running_context_at_exit_unref ()</title>
+<indexterm><primary>bonobo_running_context_at_exit_unref</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_running_context_at_exit_unref
+                                            (<link linkend="CORBA-Object">CORBA_Object</link> object);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>object</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="BonoboRunningContext-last-unref"/>The &quot;last-unref&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="BonoboRunningContext">BonoboRunningContext</link> *bonoborunningcontext,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bonoborunningcontext</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+    <xref linkend="libbonobo-bonobo-generic-factory"/>
+</para>
+</refsect1>
+
+</refentry>

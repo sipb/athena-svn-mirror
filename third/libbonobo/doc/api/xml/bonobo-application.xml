@@ -1,0 +1,408 @@
+<refentry id="libbonobo-bonobo-application">
+<refmeta>
+<refentrytitle>bonobo-application</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-application</refname><refpurpose>a framework for unique application instance and automation</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="void">void</link>        (<link linkend="BonoboAppHookFunc">*BonoboAppHookFunc</link>)            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="BonoboApplication">BonoboApplication</link>* <link linkend="bonobo-application-new">bonobo_application_new</link>   (const <link linkend="char">char</link> *name);
+<link linkend="void">void</link>        <link linkend="bonobo-application-register-message">bonobo_application_register_message</link>
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *description,
+                                             <link linkend="GClosure">GClosure</link> *opt_closure,
+                                             <link linkend="GType">GType</link> return_type,
+                                             <link linkend="GType">GType</link> first_arg_type,
+                                             ...);
+<link linkend="void">void</link>        <link linkend="bonobo-application-register-message-v">bonobo_application_register_message_v</link>
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *description,
+                                             <link linkend="GClosure">GClosure</link> *opt_closure,
+                                             <link linkend="GType">GType</link> return_type,
+                                             <link linkend="GType">GType</link> const         arg_types[]);
+<link linkend="void">void</link>        <link linkend="bonobo-application-register-message-va">bonobo_application_register_message_va</link>
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *description,
+                                             <link linkend="GClosure">GClosure</link> *opt_closure,
+                                             <link linkend="GType">GType</link> return_type,
+                                             <link linkend="GType">GType</link> first_arg_type,
+                                             <link linkend="va-list">va_list</link> var_args);
+<link linkend="gint">gint</link>        <link linkend="bonobo-application-new-instance">bonobo_application_new_instance</link> (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);
+<link linkend="gchar">gchar</link>*      <link linkend="bonobo-application-create-serverinfo">bonobo_application_create_serverinfo</link>
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gchar">gchar</link> const        *envp[]);
+<link linkend="Bonobo-RegistrationResult">Bonobo_RegistrationResult</link> <link linkend="bonobo-application-register-unique">bonobo_application_register_unique</link>
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gchar">gchar</link> const        *serverinfo,
+                                             <link linkend="BonoboAppClient">BonoboAppClient</link> **client);
+<link linkend="void">void</link>        <link linkend="bonobo-application-add-hook">bonobo_application_add_hook</link>     (<link linkend="BonoboAppHookFunc">BonoboAppHookFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="void">void</link>        <link linkend="bonobo-application-remove-hook">bonobo_application_remove_hook</link>  (<link linkend="BonoboAppHookFunc">BonoboAppHookFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> data);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboAppHookFunc"/>BonoboAppHookFunc ()</title>
+<indexterm><primary>BonoboAppHookFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*BonoboAppHookFunc)            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-new"/>bonobo_application_new ()</title>
+<indexterm><primary>bonobo_application_new</primary></indexterm><programlisting><link linkend="BonoboApplication">BonoboApplication</link>* bonobo_application_new   (const <link linkend="char">char</link> *name);</programlisting>
+<para>
+Creates a new <link linkend="BonoboApplication"><type>BonoboApplication</type></link> object.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> application name
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="BonoboApplication"><type>BonoboApplication</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-register-message"/>bonobo_application_register_message ()</title>
+<indexterm><primary>bonobo_application_register_message</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_application_register_message
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *description,
+                                             <link linkend="GClosure">GClosure</link> *opt_closure,
+                                             <link linkend="GType">GType</link> return_type,
+                                             <link linkend="GType">GType</link> first_arg_type,
+                                             ...);</programlisting>
+<para>
+Registers a new message type that the application supports.</para>
+<para>
+When <parameter>opt_closure</parameter> is provided (and is non-<literal>NULL</literal>) it takes care of calling the
+callback function with the same arguments as registered for the message.  On
+the other hand if <parameter>opt_closure</parameter> is <literal>NULL</literal>, the function arguments are provided in
+a <link linkend="GValueArray"><type>GValueArray</type></link>.  This enables defining functions that accept variable number of
+arguments, but is perhaps a little more tedious to implement.
+</para>
+
+<para>
+<example>
+<title>Function with a closure</title>
+<programlisting>
+static void
+message_open_url_cb (BonoboApplication *app, const char *url, gboolean new_win)
+{
+	...
+}
+...
+closure = g_cclosure_new (G_CALLBACK (message_open_url_cb), NULL, NULL);
+g_closure_set_marshal (closure, my_marshal_VOID__STRING_BOOLEAN);
+bonobo_application_register_message (app, "open-url", "Opens a new URL in the browser."
+                                     " Parameters: url(string), open-in-new-window(boolean)",
+                                     closure, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_NONE);
+</programlisting>
+</example>
+</para>
+
+<para>
+<example>
+<title>Function accepting variable number of arguments</title>
+<programlisting>
+static GValue *
+message_open_url_cb (BonoboApplication *app, const char *message, GValueArray *args)
+{
+	const char *url;
+	gboolean    new_win = TRUE;
+
+	g_return_val_if_fail (strcmp (message, "open-url") == 0, NULL);
+	g_return_val_if_fail (args->n_values > 0, NULL);
+	g_return_val_if_fail (G_VALUE_HOLDS_STRING (&amp;args->values[0]), NULL);
+
+	url = g_value_get_string (&amp;args->values[0]);
+	if (args->n_values > 1)
+	{
+		g_return_val_if_fail (G_VALUE_HOLDS_BOOLEAN (&amp;args->values[1]), NULL);
+		new_win = g_value_get_boolean (&amp;args->values[1]);
+	}
+
+	...
+
+	return NULL;
+}
+...
+bonobo_application_register_message (app, "open-url", "Opens a new URL in the browser."
+                                     " Parameters: url(string) [, open-in-new-window(boolean)]",
+                                     NULL, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_NONE);
+
+g_signal_connect (app, "message::open-url", G_CALLBACK (message_open_url_cb), NULL);
+</programlisting>
+</example>
+</para>
+
+<para>
+<note>You are not required to register any messages for your application.
+However, only registered functions are included in the list returned by
+<link linkend="bonobo-app-client-msg-list"><function>bonobo_app_client_msg_list()</function></link></note>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="BonoboApplication"><type>BonoboApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> message string identifier
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>description</parameter>&nbsp;:</term>
+<listitem><simpara> a string containing a human readable description of the message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_closure</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GClosure"><type>GClosure</type></link> that will be called for this message, or
+<literal>NULL</literal>; Function takes ownership of this closure.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_type</parameter>&nbsp;:</term>
+<listitem><simpara> Message return <link linkend="GType"><type>GType</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>first_arg_type</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GType"><type>GType</type></link> of first argument of message, or <literal>G_TYPE_NONE</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>G_TYPE_NONE</literal> -terminated list of argument <link linkend="GType"><type>GType</type></link>'s
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-register-message-v"/>bonobo_application_register_message_v ()</title>
+<indexterm><primary>bonobo_application_register_message_v</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_application_register_message_v
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *description,
+                                             <link linkend="GClosure">GClosure</link> *opt_closure,
+                                             <link linkend="GType">GType</link> return_type,
+                                             <link linkend="GType">GType</link> const         arg_types[]);</programlisting>
+<para>
+See <link linkend="bonobo-application-register-message"><function>bonobo_application_register_message()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="BonoboApplication"><type>BonoboApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> message string identifier
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>description</parameter>&nbsp;:</term>
+<listitem><simpara> a string containing a human readable description of the message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_closure</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GClosure"><type>GClosure</type></link> that will be called for this message, or <literal>NULL</literal>;
+Function takes ownership of this closure.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_type</parameter>&nbsp;:</term>
+<listitem><simpara> Message return <link linkend="GType"><type>GType</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg_types</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>G_TYPE_NONE</literal> -terminated vector of argument <link linkend="GType"><type>GType</type></link>'s
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-register-message-va"/>bonobo_application_register_message_va ()</title>
+<indexterm><primary>bonobo_application_register_message_va</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_application_register_message_va
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *description,
+                                             <link linkend="GClosure">GClosure</link> *opt_closure,
+                                             <link linkend="GType">GType</link> return_type,
+                                             <link linkend="GType">GType</link> first_arg_type,
+                                             <link linkend="va-list">va_list</link> var_args);</programlisting>
+<para>
+See <link linkend="bonobo-application-register-message"><function>bonobo_application_register_message()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="BonoboApplication"><type>BonoboApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> message string identifier
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>description</parameter>&nbsp;:</term>
+<listitem><simpara> a string containing a human readable description of the message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_closure</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GClosure"><type>GClosure</type></link> that will be called for this message, or
+<literal>NULL</literal>; Function takes ownership of this closure.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_type</parameter>&nbsp;:</term>
+<listitem><simpara> Message return <link linkend="GType"><type>GType</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>first_arg_type</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GType"><type>GType</type></link> of first argument of message, or <literal>G_TYPE_NONE</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>var_args</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>G_TYPE_NONE</literal> -terminated valist of argument <link linkend="GType"><type>GType</type></link>'s
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-new-instance"/>bonobo_application_new_instance ()</title>
+<indexterm><primary>bonobo_application_new_instance</primary></indexterm><programlisting><link linkend="gint">gint</link>        bonobo_application_new_instance (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);</programlisting>
+<para>
+Emit the "new-instance" signal of the <link linkend="BonoboApplication"><type>BonoboApplication</type></link> with the
+given arguments.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="BonoboApplication"><type>BonoboApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> number of elements in <parameter>argv</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> array of strings (command-line arguments)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> signal return value
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-create-serverinfo"/>bonobo_application_create_serverinfo ()</title>
+<indexterm><primary>bonobo_application_create_serverinfo</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      bonobo_application_create_serverinfo
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gchar">gchar</link> const        *envp[]);</programlisting>
+<para>
+This utility function provides a simple way to contruct a valid
+serverinfo XML string.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="BonoboApplication"><type>BonoboApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envp</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>NULL</literal>-terminated string vector, containing the enviroment
+variables we wish to include in the server description.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated string; caller must <link linkend="g-free"><function>g_free()</function></link> it.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-register-unique"/>bonobo_application_register_unique ()</title>
+<indexterm><primary>bonobo_application_register_unique</primary></indexterm><programlisting><link linkend="Bonobo-RegistrationResult">Bonobo_RegistrationResult</link> bonobo_application_register_unique
+                                            (<link linkend="BonoboApplication">BonoboApplication</link> *app,
+                                             <link linkend="gchar">gchar</link> const        *serverinfo,
+                                             <link linkend="BonoboAppClient">BonoboAppClient</link> **client);</programlisting>
+<para>
+Try to register the running application, or check for an existing
+application already registered and get a reference to it.
+Applications already running but on different environments (as
+defined by the bonobo:environenment server property) than this one
+are ignored and do not interfere.
+</para>
+<para>
+If the registration attempt indicates that another instance of this
+application is already running, then the output variable
+<parameter>client</parameter> will receive a newly created <link linkend="BonoboAppClient"><type>BonoboAppClient</type></link>
+associated with the running application.  Otherwise, *<parameter>client</parameter> is
+set to <literal>NULL</literal>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="BonoboApplication"><type>BonoboApplication</type></link> instance
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>serverinfo</parameter>&nbsp;:</term>
+<listitem><simpara> the XML server
+description. <link linkend="bonobo-application-create-server-description"><function>bonobo_application_create_server_description()</function></link> may be
+used to easily create such description.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> output parameter that will contain a client object, in
+case another instance has already running, or <literal>NULL</literal> if we are the
+first to register.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the registration result.
+<literal>Bonobo_ACTIVATION_REG_SUCCESS</literal> means the application was registered,
+since no other running instance was detected.  If, however, a
+running application is detected,
+<literal>Bonobo_ACTIVATION_REG_ALREADY_ACTIVE</literal> is returned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-add-hook"/>bonobo_application_add_hook ()</title>
+<indexterm><primary>bonobo_application_add_hook</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_application_add_hook     (<link linkend="BonoboAppHookFunc">BonoboAppHookFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Add a hook function to be called whenever a new <link linkend="BonoboApplication"><type>BonoboApplication</type></link>
+instance is created.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara> hook function
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> user data
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-application-remove-hook"/>bonobo_application_remove_hook ()</title>
+<indexterm><primary>bonobo_application_remove_hook</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_application_remove_hook  (<link linkend="BonoboAppHookFunc">BonoboAppHookFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Removes a hook function previously set with <link linkend="bonobo-application-add-hook"><function>bonobo_application_add_hook()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara> hook function
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> user data
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

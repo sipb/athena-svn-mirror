@@ -1,18 +1,226 @@
-# Albanian translation for libbonobo2
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
-# Laurent Dhima <laurenti@alblinux.net>, 2002.
+# Albanian translation for libbonobo
+# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# Laurent Dhima <laurenti@alblinux.net>, 2003, 2004.
+#
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonobo2\n"
-"POT-Creation-Date: 2003-06-12 18:00+0100\n"
-"PO-Revision-Date: 2003-01-09 23:07+0100\n"
+"Project-Id-Version: libbonobo.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"PO-Revision-Date: 2004-02-20 12:10+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
-"Language-Team: albanian < gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
+"Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+
+#: activation-server/activation-context-corba.c:470
+msgid "Couldn't find which child the server was listed in"
+msgstr "E pamundur të gjesh në çfarë proçesi bir ishte rreshtuar serveri"
+
+#: activation-server/activation-context-corba.c:748
+msgid "Not a valid Activation ID"
+msgstr "ID aktivimi e pavlefshme"
+
+#: activation-server/activation-server-main.c:68
+msgid "Directory to read .server files from"
+msgstr "Directory nga e cila duhet të lexohen files .server"
+
+#: activation-server/activation-server-main.c:68
+msgid "DIRECTORY"
+msgstr "DIRECTORY"
+
+#: activation-server/activation-server-main.c:71
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr ""
+"Sjellje si ActivationContext (e prezgjedhur është vetëm ObjectDirectory)"
+
+#: activation-server/activation-server-main.c:75
+msgid "File descriptor to write IOR to"
+msgstr "Përshkruesi i file ku do të shkruhet IOR"
+
+#: activation-server/activation-server-main.c:75
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "FD"
+msgstr "FD"
+
+#: activation-server/activation-server-main.c:83
+msgid "Query expression to evaluate"
+msgstr "Ekspresioni i kërkesës që duhet vlerësuar"
+
+#: activation-server/activation-server-main.c:83
+msgid "EXPRESSION"
+msgstr "EKSPRESION"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Shërbimi CORBA CosNaming."
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "Shërbimi i emrave"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:3
+msgid "Notification service"
+msgstr "Shërbimi i njoftimeve"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:4
+msgid "Notification service for activation"
+msgstr "Shërbimi i njoftimeve për aktivimin"
+
+#: activation-server/object-directory-activate.c:187
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr ""
+"Aktivimi i objekteve shlib në një proçes remot nuk mund të kryhet akoma"
+
+#: activation-server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"File i konfigurimit të Bonobo Activation nuk është lexuar me korrektësi. "
+"Verifiko që është i vlefshëm: %s"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: activation-server/object-directory-corba.c:1149
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "Race condition gjatë aktivimit të server '%s'"
+
+#: activation-server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "një iid NULL nuk është i vlefshëm"
+
+#: activation-server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "iid %s ka një tip NULL"
+
+#: activation-server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "iid %s ka një pozicion NULL"
+
+#: activation-server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "simbol i pavlefshëm '%c' tek iid '%s'"
+
+#: activation-server/object-directory-load.c:305
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "Pronësia '%s' nuk ka një vlerë"
+
+#: activation-server/object-directory-load.c:588
+#, c-format
+msgid "Could not parse badly formed XML document %s"
+msgstr "I pamundur analizimi i dokumentit XML të keqformuar %s"
+
+#: activation-server/object-directory-load.c:641
+#, c-format
+msgid "Trying dir %s"
+msgstr "Duke provuar dir %s"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+"Proçesi bir nuk ka dhënë asnjë mesazh gabimi, është verifikuar një difekt i "
+"panjohur"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "E pamundur të lexosh nga proçesi bir: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:297
+msgid "Couldn't fork a new process"
+msgstr "Nuk mund të kryhet fork i një proçesi të ri"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:318
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "Proçesi bir ka marrë sinjalin %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:323
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Gabim i jo-daljes i panjohur (gjëndja është %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:404
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr ""
+"bonobo-activation dështoi gjatë caktimit të grupit të proçesit %s: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:416
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "I pamundur ekzekutimi i %s: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:133
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Tepër nivele alias për një lokale, mund të tregojë një loop"
+
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "File descriptor to print IOR on"
+msgstr "Përshkruesi i file ku të stampohet IOR"
+
+#: bonobo-activation/bonobo-activation-init.c:202
+msgid "IID to activate"
+msgstr "IID për t'u aktivuar"
+
+#: bonobo-activation/bonobo-activation-init.c:204
+msgid "Prevent registering of server with OAF"
+msgstr "Ndalo regjistrimin e server me OAF"
+
+#: bonobo-activation/bonobo-activation-init.c:290
+msgid "Bonobo activation options"
+msgstr "Opcione për Bonobo activation"
+
+#: bonobo-activation/bonobo-activation-shlib.c:107
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "g_module_open për `%s' dështoi me `%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:126
+#: bonobo-activation/bonobo-activation-shlib.c:163
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "E pamundur gjetja e simbolit Bonobo_Plugin_info në `%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:212
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "Fabrika `%s' ka kthyer NIL për `%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:229
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Shlib `%s' nuk përmban `%s'"
+
+#: bonobo/bonobo-application.c:352
+msgid "Name"
+msgstr "Emri"
+
+#: bonobo/bonobo-application.c:352
+msgid "Application unique name"
+msgstr "Emri i dallueshëm i programit"
+
+#: bonobo/bonobo-object.c:925
+msgid "POA"
+msgstr "POA"
+
+#: bonobo/bonobo-object.c:925
+msgid "Custom CORBA POA"
+msgstr "CORBA POA e personalizuar"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -32,15 +240,15 @@ msgstr "Objekti nuk u gjet"
 
 #: bonobo/bonobo-exception.c:167
 msgid "Syntax error in object description"
-msgstr "Gabim sintakse në përshkrimin e objektit "
+msgstr "Gabim sintaksor në përshkrimin e objektit "
 
 #: bonobo/bonobo-exception.c:172
 msgid "Cannot activate object from factory"
-msgstr "I pamundur aktivimi i objektit nga factory"
+msgstr "I pamundur aktivimi i objektit nga fabrika"
 
 #: bonobo/bonobo-exception.c:177
 msgid "No permission to access stream"
-msgstr "Mungojnë lejet për tu futur në stream"
+msgstr "Mungojnë lejet për t'u futur në stream"
 
 #: bonobo/bonobo-exception.c:180
 msgid "An unsupported stream action was attempted"
@@ -125,7 +333,7 @@ msgstr "pronësia është vetëm për lexim"
 
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
-msgstr "backend databaze e konfigurimit dështoi "
+msgstr "backend i databazës së konfigurimit dështoi "
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
@@ -137,7 +345,7 @@ msgstr "Aktivimi i Moniker skadoi"
 
 #: bonobo/bonobo-exception.c:252
 msgid "Syntax error within moniker"
-msgstr "Gabim sintakse në moniker"
+msgstr "Gabim sintaksor në moniker"
 
 #: bonobo/bonobo-exception.c:255
 msgid "Moniker has an unknown moniker prefix"
@@ -151,18 +359,28 @@ msgstr "Gabim gjatë kontrollit të gabimit; asnjë përjashtim"
 msgid "General activation error with no description"
 msgstr "Difekt në aktivimin e përgjithshëm, pa përshkrim të hollësishëm "
 
-#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+#: bonobo/bonobo-generic-factory.h:79 bonobo/bonobo-generic-factory.h:83
 msgid "Could not initialize Bonobo"
 msgstr "E pamundur nisja e Bonobo"
 
-#: bonobo/bonobo-moniker.c:353
+#: bonobo/bonobo-moniker.c:352
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "E pamundur zgjidhja apo zgjerimi i '%s"
+msgstr "E pamundur zgjidhja, apo zgjerimi i '%s"
 
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
 msgstr "Aktivimi i objektit dështoi"
+
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
+msgid "Exception activating '%s'"
+msgstr "Përjashtim gjatë aktivimit të '%s'"
+
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
+msgid "Failed to activate '%s'"
+msgstr "I pamundur aktivimi i '%s'"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -170,11 +388,11 @@ msgstr "Moniker HTTP"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:2
 msgid "ORB IOR handling moniker"
-msgstr "moniker manazhimi IOR ORB"
+msgstr "moniker i trajtuesit IOR ORB"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:3
 msgid "Standard Moniker factory"
-msgstr "Factory standart për Moniker"
+msgstr "Fabrikë për Moniker standart"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:4
 msgid "generic Oaf activation moniker"
@@ -196,19 +414,9 @@ msgstr "moniker i përgjithshëm për objektet"
 msgid "stream MonikerExtender"
 msgstr "MonikerExtender stream"
 
-#: monikers/bonobo-moniker-oaf.c:53
-#, c-format
-msgid "Exception activating '%s'"
-msgstr "Exception activating '%s'"
-
-#: monikers/bonobo-moniker-oaf.c:62
-#, c-format
-msgid "Failed to activate '%s'"
-msgstr "I pamundur aktivimi i '%s'"
-
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr "Factory për server-in Bonobo Echo"
+msgstr "Fabrikë për server-in Bonobo Echo"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
 msgid "Bonobo Echo server sample program"
@@ -220,7 +428,7 @@ msgstr "Përbërës Echo"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
 msgid "Echo component factory"
-msgstr "Fabrika përbërësit Echo"
+msgstr "Fabrika e përbërësit Echo"
 
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
@@ -228,9 +436,64 @@ msgstr "E pamundur nisja e Bonobo"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr "I pamundur krijimi i një instance për përbërësin e shembullit Echo "
+msgstr "I pamundur krijimi i një instance për përbërësin e shembullit echo "
 
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
 msgstr "U verifikua një përjashtim '%s'"
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "E pamundur ruajtja e file të konfigurimit.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "Ju lutem, sigurohuni që keni të drejtën e shkrimit tek '%s'.\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "File i konfigurimit u shkrua me sukses.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"File i konfigurimit është:\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s ekziston tek file i konfigurimit\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "nuk ekziston një file konfigurimi korrekt\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "File i konfigurimit të Bonobo-activation përmban:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Directory që duhet hequr nga file i konfigurimit"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "pozicioni i directory"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Directory për t'u shtuar tek file i konfigurimit"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Shfaq directories tek file i konfigurimit"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Shfaq pozicionin e file të konfigurimit"

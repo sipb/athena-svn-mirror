@@ -89,7 +89,7 @@ bonobo_moniker_extender_init (GObject *object)
 BONOBO_TYPE_FUNC_FULL (BonoboMonikerExtender, 
 		       Bonobo_MonikerExtender,
 		       PARENT_TYPE,
-		       bonobo_moniker_extender);
+		       bonobo_moniker_extender)
 
 /**
  * bonobo_moniker_extender_new:

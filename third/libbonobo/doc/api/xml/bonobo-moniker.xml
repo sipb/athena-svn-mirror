@@ -1,0 +1,297 @@
+<refentry id="libbonobo-bonobo-moniker">
+<refmeta>
+<refentrytitle>BonoboMoniker</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboMoniker</refname><refpurpose>The base implementation of our abstract object naming space</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="BonoboMoniker"/>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboMoniker-struct">BonoboMoniker</link>;
+struct      <link linkend="BonoboMonikerClass">BonoboMonikerClass</link>;
+<link linkend="BonoboMoniker">BonoboMoniker</link>* <link linkend="bonobo-moniker-construct">bonobo_moniker_construct</link>     (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             const <link linkend="char">char</link> *prefix);
+<link linkend="Bonobo-Moniker">Bonobo_Moniker</link> <link linkend="bonobo-moniker-get-parent">bonobo_moniker_get_parent</link>    (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+<link linkend="void">void</link>        <link linkend="bonobo-moniker-set-parent">bonobo_moniker_set_parent</link>       (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             <link linkend="Bonobo-Moniker">Bonobo_Moniker</link> parent,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+const <link linkend="char">char</link>* <link linkend="bonobo-moniker-get-name">bonobo_moniker_get_name</link>         (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);
+const <link linkend="char">char</link>* <link linkend="bonobo-moniker-get-name-full">bonobo_moniker_get_name_full</link>    (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);
+<link linkend="char">char</link>*       <link linkend="bonobo-moniker-get-name-escaped">bonobo_moniker_get_name_escaped</link> (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);
+<link linkend="void">void</link>        <link linkend="bonobo-moniker-set-name">bonobo_moniker_set_name</link>         (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             const <link linkend="char">char</link> *name);
+const <link linkend="char">char</link>* <link linkend="bonobo-moniker-get-prefix">bonobo_moniker_get_prefix</link>       (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);
+<link linkend="void">void</link>        <link linkend="bonobo-moniker-set-case-sensitive">bonobo_moniker_set_case_sensitive</link>
+                                            (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             <link linkend="gboolean">gboolean</link> sensitive);
+<link linkend="gboolean">gboolean</link>    <link linkend="bonobo-moniker-get-case-sensitive">bonobo_moniker_get_case_sensitive</link>
+                                            (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="BonoboObject">BonoboObject</link>
+         +----BonoboMoniker
+               +----<link linkend="BonoboMonikerSimple">BonoboMonikerSimple</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Monikers are used to name objects, they effectively implement
+an object naming space.   You can obtain monikers either because
+you created the moniker manually, or from a stringified
+representation of a moniker.
+</para>
+
+<para>
+For more information see bonobo/doc/Monikers, relatively few
+people want to implement monikers, mostly they just want to
+use them. To do this you need the <link linkend="bonobo-moniker-util"><type>bonobo-moniker-util</type></link> API.
+</para>
+
+<para>
+To implement your own moniker, it is most likely that you want
+to use <link linkend="BonoboMonikerSimple"><type>BonoboMonikerSimple</type></link>, BonoboMoniker is a mostly abstract
+base class that in some obscure cases might provide a more
+powerful feature set. Most people use <link linkend="BonoboMonikerSimple"><type>BonoboMonikerSimple</type></link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboMoniker-struct"/>struct BonoboMoniker</title>
+<indexterm><primary>BonoboMoniker</primary></indexterm><programlisting>struct BonoboMoniker;</programlisting>
+<para>
+Implements Bonobo::Moniker
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboMonikerClass"/>struct BonoboMonikerClass</title>
+<indexterm><primary>BonoboMonikerClass</primary></indexterm><programlisting>struct BonoboMonikerClass {
+
+	BonoboObjectClass      parent_class;
+
+	POA_Bonobo_Moniker__epv epv;
+
+	/* virtual methods */
+	Bonobo_Unknown (*resolve)            (BonoboMoniker               *moniker,
+					      const Bonobo_ResolveOptions *options,
+					      const CORBA_char            *requested_interface,
+					      CORBA_Environment           *ev);
+
+	void           (*set_internal_name)  (BonoboMoniker               *moniker,
+					      const char                  *unescaped_name);
+	const char    *(*get_internal_name)  (BonoboMoniker               *moniker);
+
+	gpointer        dummy;
+};
+</programlisting>
+<para>
+BonoboMoniker's class
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-construct"/>bonobo_moniker_construct ()</title>
+<indexterm><primary>bonobo_moniker_construct</primary></indexterm><programlisting><link linkend="BonoboMoniker">BonoboMoniker</link>* bonobo_moniker_construct     (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             const <link linkend="char">char</link> *prefix);</programlisting>
+<para>
+Constructs a newly created bonobo moniker with the given arguments.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> an un-constructed moniker object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara> the prefix name of the moniker eg. 'file:', '!' or 'tar:' or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the constructed moniker or NULL on failure.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-get-parent"/>bonobo_moniker_get_parent ()</title>
+<indexterm><primary>bonobo_moniker_get_parent</primary></indexterm><programlisting><link linkend="Bonobo-Moniker">Bonobo_Moniker</link> bonobo_moniker_get_parent    (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+See bonobo_moniker_set_parent;</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> the moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
+<listitem><simpara> an optional corba exception environment
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the parent of this moniker
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-set-parent"/>bonobo_moniker_set_parent ()</title>
+<indexterm><primary>bonobo_moniker_set_parent</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_moniker_set_parent       (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             <link linkend="Bonobo-Moniker">Bonobo_Moniker</link> parent,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+This sets the monikers parent; a moniker is really a long chain
+of hierarchical monikers; referenced by the most local moniker.
+This sets the parent pointer.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> the moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> the parent
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
+<listitem><simpara> an optional corba exception environment
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-get-name"/>bonobo_moniker_get_name ()</title>
+<indexterm><primary>bonobo_moniker_get_name</primary></indexterm><programlisting>const <link linkend="char">char</link>* bonobo_moniker_get_name         (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);</programlisting>
+<para>
+gets the unescaped name of the moniker less the prefix eg
+file:/tmp/hash\#.gz returns /tmp/hash#.gz</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> the moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the string or NULL in case of failure
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-get-name-full"/>bonobo_moniker_get_name_full ()</title>
+<indexterm><primary>bonobo_moniker_get_name_full</primary></indexterm><programlisting>const <link linkend="char">char</link>* bonobo_moniker_get_name_full    (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);</programlisting>
+<para>
+gets the full unescaped name of the moniker eg.
+file:/tmp/hash\#.gz returns file:/tmp/hash#.gz</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> the moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the string in case of failure
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-get-name-escaped"/>bonobo_moniker_get_name_escaped ()</title>
+<indexterm><primary>bonobo_moniker_get_name_escaped</primary></indexterm><programlisting><link linkend="char">char</link>*       bonobo_moniker_get_name_escaped (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);</programlisting>
+<para>
+Get the full, escaped name of the moniker eg.
+file:/tmp/hash\#.gz returns file:/tmp/hash\#.gz</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> a moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the dynamically allocated string,
+or NULL in case of failure.
+Must release with <link linkend="g-free"><function>g_free()</function></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-set-name"/>bonobo_moniker_set_name ()</title>
+<indexterm><primary>bonobo_moniker_set_name</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_moniker_set_name         (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             const <link linkend="char">char</link> *name);</programlisting>
+<para>
+This functions sets the moniker name in <parameter>moniker</parameter> to be <parameter>name</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> the BonoboMoniker to configure.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> new, unescaped, name for this moniker.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-get-prefix"/>bonobo_moniker_get_prefix ()</title>
+<indexterm><primary>bonobo_moniker_get_prefix</primary></indexterm><programlisting>const <link linkend="char">char</link>* bonobo_moniker_get_prefix       (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> a moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the registered prefix for this moniker or
+NULL if there isn't one. eg "file:", or in case of failure
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-set-case-sensitive"/>bonobo_moniker_set_case_sensitive ()</title>
+<indexterm><primary>bonobo_moniker_set_case_sensitive</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_moniker_set_case_sensitive
+                                            (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker,
+                                             <link linkend="gboolean">gboolean</link> sensitive);</programlisting>
+<para>
+Sets up whether we use case sensitivity for the default equal impl.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> the moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sensitive</parameter>&nbsp;:</term>
+<listitem><simpara> whether to see case on equality compare
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-moniker-get-case-sensitive"/>bonobo_moniker_get_case_sensitive ()</title>
+<indexterm><primary>bonobo_moniker_get_case_sensitive</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    bonobo_moniker_get_case_sensitive
+                                            (<link linkend="BonoboMoniker">BonoboMoniker</link> *moniker);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>moniker</parameter>&nbsp;:</term>
+<listitem><simpara> the moniker
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> whether we use case sensitivity for the default equal impl.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="bonobo-moniker-util"><type>bonobo-moniker-util</type></link> <link linkend="BonoboMonikerSimple"><type>BonoboMonikerSimple</type></link>
+</para>
+</refsect1>
+
+</refentry>

@@ -19,7 +19,7 @@ bonobo_object_save_to_stream (Bonobo_Unknown     object,
 			      Bonobo_Stream      stream,
 			      CORBA_Environment *opt_ev)
 {
-	char                           *iid = 0;
+	char                           *iid = NULL;
 	CORBA_Environment               my_ev;
 	Bonobo_PersistStream            pstream = CORBA_OBJECT_NIL;
 
@@ -63,7 +63,7 @@ Bonobo_Unknown
 bonobo_object_from_stream (Bonobo_Stream      stream,
 			   CORBA_Environment *opt_ev)
 {
-	char                 *iid = 0;
+	char                 *iid = NULL;
 	CORBA_Environment     my_ev, *ev;
 	Bonobo_PersistStream  pstream = CORBA_OBJECT_NIL;
 

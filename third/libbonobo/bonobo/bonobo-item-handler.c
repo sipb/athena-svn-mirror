@@ -165,11 +165,11 @@ bonobo_item_handler_finalize (GObject *object)
 		if (handler->priv->enum_objects)
 			g_closure_unref (handler->priv->enum_objects);
 
-		if (handler->priv->enum_objects)
+		if (handler->priv->get_object)
 			g_closure_unref (handler->priv->get_object);
 
 		g_free (handler->priv);
-		handler->priv = 0;
+		handler->priv = NULL;
 	}
 
 	bonobo_item_handler_parent_class->finalize (object);
@@ -202,11 +202,11 @@ bonobo_item_handler_class_init (BonoboItemHandlerClass *klass)
 BONOBO_TYPE_FUNC_FULL (BonoboItemHandler, 
 		       Bonobo_ItemContainer,
 		       PARENT_TYPE,
-		       bonobo_item_handler);
+		       bonobo_item_handler)
 
 /**
  * bonobo_item_handler_construct:
- * @container: The handler object to construct
+ * @handler: The handler object to construct
  * @enum_objects: The closure implementing enumObjects
  * @get_object: The closure implementing getObject
  *
@@ -235,6 +235,9 @@ bonobo_item_handler_construct (BonoboItemHandler *handler,
 
 /**
  * bonobo_item_handler_new:
+ * @enum_objects: callback invoked for Bonobo::ItemContainer::enum_objects
+ * @get_object: callback invoked for Bonobo::ItemContainer::get_objects
+ * @user_data: extra data passed on the callbacks
  *
  * Creates a new BonoboItemHandler object.  These are used to hold
  * client sites.
@@ -262,6 +265,8 @@ bonobo_item_handler_new (BonoboItemHandlerEnumObjectsFn enum_objects,
 
 /**
  * bonobo_item_handler_new_closure:
+ * @enum_objects: closure invoked for Bonobo::ItemContainer::enum_objects
+ * @get_object: closure invoked for Bonobo::ItemContainer::get_objects
  *
  * Creates a new BonoboItemHandler object.  These are used to hold
  * client sites.
@@ -338,7 +343,7 @@ bonobo_item_option_parse (const char *option_string)
 			if (!key || value)
 				goto parse_error_free;
 
-			value = g_string_new ("");
+			value = g_string_new (NULL);
 			break;
 		case ';':
 			if (!key)
@@ -354,7 +359,7 @@ bonobo_item_option_parse (const char *option_string)
 			/* drop through */
 		default:
 			if (!key)
-				key = g_string_new ("");
+				key = g_string_new (NULL);
 
 			if (value)
 				g_string_append_c (value, *p);
