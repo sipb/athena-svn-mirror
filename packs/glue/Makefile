@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 1997-01-29 20:26:30 ghudson Exp $
+# $Id: Makefile,v 1.7 1997-02-19 18:14:18 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -63,6 +63,8 @@ install:
 		${DESTDIR}${ATHETCDIR}/update_server
 	rm -f ${DESTDIR}${ATHBINDIR}/help
 	ln -s olh ${DESTDIR}${ATHBINDIR}/help
+	rm -f ${DESTDIR}${ATHBINDIR}/passwd.real
+	ln -s /usr/bin/passwd ${DESTDIR}${ATHBINDIR}/passwd.real
 	rm -f ${DESTDIR}/usr/andrew
 	. ../build/version; \
 		vers=$$major.$$minor; \
