@@ -4,17 +4,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.7 1991-06-29 23:50:18 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.8 1992-08-10 19:13:15 lwvanels Exp $ */
 
 #ifndef lint
 static char rcsid_ZNewLocateUser_c[] =
-    "$Id: ZNewLocU.c,v 1.7 1991-06-29 23:50:18 jfc Exp $";
+    "$Id: ZNewLocU.c,v 1.8 1992-08-10 19:13:15 lwvanels Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -47,5 +47,6 @@ Code_t ZLocateUser(user, nlocs, auth)
     }
 
     ZFreeNotice(&notice);
+    ZFreeALD(&zald);
     return(ZERR_NONE);
 }
