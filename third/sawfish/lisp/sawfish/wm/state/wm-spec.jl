@@ -1,6 +1,6 @@
 ;; wm-spec.jl -- implement the new (GNOME/KDE) wm hints spec
 
-;; $Id: wm-spec.jl,v 1.2 2003-05-03 15:25:36 ghudson Exp $
+;; $Id: wm-spec.jl,v 1.3 2003-05-20 18:27:54 ghudson Exp $
 
 ;; Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -85,6 +85,7 @@
      _NET_SUPPORTED
      _NET_SUPPORTING_WM_CHECK
      _NET_WORKAREA
+     _NET_WM_DESKTOP
      _NET_WM_ICON_GEOMETRY
      _NET_WM_MOVERESIZE
      _NET_WM_MOVERESIZE_MOVE
@@ -110,6 +111,7 @@
      _NET_WM_STATE_REMOVE
      _NET_WM_STATE_SHADED
      _NET_WM_STATE_SKIP_PAGER
+     _NET_WM_STATE_SKIP_TASKBAR
      _NET_WM_STATE_STICKY
      _NET_WM_STATE_TOGGLE
      _NET_WM_STRUT
@@ -255,15 +257,13 @@
 ;;; setting the window state hints
 
   (define (update-client-state w)
-    (let ((state (filter (lambda (x) (not (supported-state-p x)))
-			 (window-get w 'wm-spec-last-states))))
+    (let ((state '()))
       (mapc (lambda (x)
 	      (when (and (not (pseudo-state-p x))
 			 (call-state-fun w x 'get))
 		(setq state (cons x state))))
 	    supported-states)
-      (set-x-property w '_NET_WM_STATE (apply vector state) 'ATOM 32)
-      (window-put w 'wm-spec-last-states state)))
+      (set-x-property w '_NET_WM_STATE (apply vector state) 'ATOM 32)))
 
 
 ;;; honouring the initially set window state hints
@@ -304,8 +304,7 @@
 	(setq state (nth 2 state))
 	(do ((i 0 (1+ i)))
 	    ((= i (length state)))
-	  (call-state-fun w (aref state i) 'init))
-	(window-put w 'wm-spec-last-states (vector->list state))))
+	  (call-state-fun w (aref state i) 'init))))
 
     (update-strut w)
 
@@ -424,6 +423,15 @@
        ((toggle)   (window-put w 'window-list-skip
 			       (not (window-get w 'window-list-skip))))
        ((get)      (window-get w 'window-list-skip)))))
+
+  (define-wm-spec-window-state '_NET_WM_STATE_SKIP_TASKBAR
+   (lambda (w mode)
+     (case mode
+       ((init add) (window-put w 'task-list-skip t))
+       ((remove)   (window-put w 'task-list-skip nil))
+       ((toggle)   (window-put w 'task-list-skip
+			       (not (window-get w 'task-list-skip))))
+       ((get)      (window-get w 'task-list-skip)))))
 
   (define-wm-spec-window-state '_NET_WM_STATE_FULLSCREEN
    (lambda (w mode)
@@ -603,7 +611,8 @@
 
     (add-hook 'before-add-window-hook honour-client-state)
     (add-hook 'add-window-hook update-client-state)
-    (call-after-state-changed '(sticky shaded maximized stacking)
+    (call-after-state-changed '(sticky shaded maximized stacking
+				window-list-skip task-list-skip)
 			      update-client-state)
 
     (add-hook 'focus-in-hook update-focus-state)
