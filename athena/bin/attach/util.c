@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.2 1990-04-19 12:18:09 jfc Exp $";
+static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.3 1990-04-19 12:53:48 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -947,10 +947,10 @@ char *ownerlist(atp)
 
 
 int parse_username(s)
-	char	*s;
+	const char *s;
 {
-	struct	passwd	*pw;
-	char	*os = s;
+	struct passwd	*pw;
+	const char	*os = s;
        
 	pw = getpwnam(s);
 	if (pw)
