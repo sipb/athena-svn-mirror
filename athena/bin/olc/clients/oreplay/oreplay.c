@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: oreplay.c,v 1.28 1999-01-22 23:12:35 ghudson Exp $";
+static char *RCSid = "$Id: oreplay.c,v 1.29 1999-03-03 07:09:22 ghudson Exp $";
 #endif
 #endif
 
@@ -93,7 +93,7 @@ main(argc,argv)
   if (! config)
     config = OLC_CONFIG_PATH;
 
-  while ((c = getopt(argc, argv, "C:f:s:rnlp")) != EOF)
+  while ((c = getopt(argc, argv, "C:f:i:s:rnlp")) != EOF)
     switch(c) {
     case 'C':	/* -C path: set path for the configuration file */
       config = optarg;
