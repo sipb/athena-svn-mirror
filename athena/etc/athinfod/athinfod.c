@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: athinfod.c,v 1.1 1998-11-03 17:57:43 ghudson Exp $";
+static const char rcsid[] = "$Id: athinfod.c,v 1.2 1999-08-07 17:51:27 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -61,7 +61,7 @@ static const char *read_query(void)
 
   if (read_line(stdin, &line, &linesize) != 0)
     {
-      fprintf(stderr, "athinfod: ouldn't read query.\n");
+      fprintf(stderr, "athinfod: couldn't read query.\n");
       exit(0);
     }
 
