@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.21 2004-05-06 20:10:32 rbasch Exp $
+# $Id: finish-update.sh,v 1.22 2004-07-30 20:52:55 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -37,8 +37,7 @@ if [ -s "$MIT_NONCORE_PACKAGES" ]; then
   echo "Installing new Athena non-core packages."
   for i in `cat "$MIT_NONCORE_PACKAGES"`; do
     echo "$i"
-    pkgadd -a $LIBDIR/admin-update -n -R "${UPDATE_ROOT:-/}" \
-      -d "/srvd/pkg/$newvers" "$i"
+    $LIBDIR/pkg-update -R "${UPDATE_ROOT:-/}" -d "/srvd/pkg/$newvers" "$i"
   done
   echo "Finished installing Athena packages."
 fi

@@ -119,8 +119,7 @@ if [ -s "$MIT_CORE_PACKAGES" ]; then
   echo "Installing new Athena core packages"
   for i in `cat "$MIT_CORE_PACKAGES"`; do
     echo "$i"
-    pkgadd -a $LIBDIR/admin-update -n -R "${UPDATE_ROOT:-/}" \
-      -d /srvd/pkg/$newvers "$i"
+    $LIBDIR/pkg-update -R "${UPDATE_ROOT:-/}" -d /srvd/pkg/$newvers "$i"
   done
   echo "Finished installing Athena core packages."
 fi
