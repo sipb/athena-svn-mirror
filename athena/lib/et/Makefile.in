@@ -1,10 +1,12 @@
-# $Id: Makefile.in,v 1.3 1999-11-23 20:27:10 danw Exp $
+# $Id: Makefile.in,v 1.4 2002-02-04 17:08:12 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 RANLIB=@RANLIB@
+LIBTOOL=@LIBTOOL@
+top_builddir=.
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
@@ -23,22 +25,26 @@ LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
 
-LIBOBJS=com_err.o error_message.o et_name.o init_et.o add_to_error_table.o
+LIBOBJS=com_err.lo error_message.lo et_name.lo init_et.lo add_to_error_table.lo
 BINOBJS=compile_et.o error_table.o
 
-all: libcom_err.a compile_et
+.SUFFIXES: .lo
 
-libcom_err.a: ${LIBOBJS}
-	ar cru $@ ${LIBOBJS}
-	${RANLIB} $@
+all: libcom_err.la compile_et
+
+libcom_err.la: ${LIBOBJS}
+	${LIBTOOL} ${CC} -rpath ${libdir} -version-info 1:0:0 -o $@ ${LIBOBJS}
 
 compile_et: ${BINOBJS}
-	${CC} ${LDFLAGS} -o compile_et ${BINOBJS} ${LIBS}
+	${LIBTOOL} ${CC} ${LDFLAGS} -o compile_et ${BINOBJS} ${LIBS}
 
 error_table.o: et_lex.lex.c
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
+
+.c.lo:
+	${LIBTOOL} ${CC} -c ${ALL_CFLAGS} $<
 
 check:
 
@@ -49,14 +55,15 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
 	${INSTALL_PROGRAM} -m 555 compile_et ${DESTDIR}${bindir}
-	${INSTALL} -m 444 libcom_err.a ${DESTDIR}${libdir}
+	${LIBTOOL} ${INSTALL} -m 444 libcom_err.la ${DESTDIR}${libdir}
 	${INSTALL} -m 444 com_err.h ${DESTDIR}${includedir}
 	${INSTALL} -m 444 mit-sipb-copyright.h ${DESTDIR}${includedir}
 	${INSTALL} -m 444 ${srcdir}/compile_et.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 444 ${srcdir}/com_err.3 ${DESTDIR}${mandir}/man3
 
 clean:
-	rm -f ${LIBOBJS} ${BINOBJS} compile_et libcom_err.a et_lex.lex.c
+	${LIBTOOL} rm -f ${LIBOBJS}
+	rm -f ${BINOBJS} compile_et libcom_err.a et_lex.lex.c
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile
