@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
- *	$Author: cfields $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.9 1998-04-08 21:56:20 cfields Exp $
+ *	$Author: ghudson $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.10 1998-12-27 15:43:02 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.9 1998-04-08 21:56:20 cfields Exp $";
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.10 1998-12-27 15:43:02 ghudson Exp $";
 #endif
 
 #include "attach.h"
@@ -108,9 +108,9 @@ read_config_file(config_file_name)
 	if (debug_flag)
 		printf("Reading configuration file: %s\n", config_file_name);
 	if (!(f = fopen(config_file_name, "r"))) {
-		if (debug_flag)
-			printf("Couldn't read conf file, continuing...\n");
-		return(SUCCESS);
+		fprintf(stderr, "Can't read configuration file %s.\n",
+			config_file_name);
+		config_abort();
 	}
 	while (fgets(buff, sizeof(buff), f)) {
 		cp = buff+strlen(buff)-1;
