@@ -1,0 +1,70 @@
+
+				 GPdf
+				 ====
+
+This is GPdf, a viewer for Portable Document Format (PDF) files for
+GNOME. GPdf is based on the Xpdf program and uses additional GNOME
+libraries for better desktop integration.
+
+GPdf includes the gpdf application, a Bonobo control for PDF display
+which can be embedded in Nautilus, and a Nautilus property page for
+PDF files.
+
+Requirements
+------------
+
+A GNOME 2.2 (or higher) environment. Later versions are required of
+these libraries:
+
+ * gtk+ 2.3.0
+
+ * libbonobo 2.2.1
+
+ * libgnomecanvas 2.3.6 (compiling with older versions is possible,
+   clipping was improved in 2.3.6)
+
+ * libgnomeprint 2.5.1 or later
+
+You can get these packages from your favourite GNOME FTP mirror or at
+http://ftp.gnome.org/GNOME/sources or from other sources where GNOME
+packages are distributed.
+
+
+Installation
+------------
+
+See the file 'INSTALL'
+
+Known Limitations
+-----------------
+
+Fonts.
+
+GPdf can use embedded PostScript Type 1 and Truetype fonts with
+libgnomeprint 2.3.1 or higher. Type 3 fonts are not supported. Fonts
+from fontconfig are substituted for those. As a result, the font
+spacing doesn't look optimal.
+
+Homepage
+--------
+
+  http://www.purl.org/NET/gpdf
+
+Availability
+------------
+
+The bleeding-edge version of this package is always available from the
+GNOME CVS repository (instructions at
+http://developer.gnome.org/tools/cvs.html). The CVS module is gpdf.
+Released versions are available at
+
+  http://ftp.gnome.org/pub/GNOME/sources/gpdf/.
+
+How to report bugs
+------------------
+
+We use GNOME Bugzilla for bug-tracking. Go to
+
+  http://bugzilla.gnome.org/enter_bug.cgi?product=gpdf
+
+to report new bugs or find out about the status of known bugs.

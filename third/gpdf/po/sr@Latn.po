@@ -1,0 +1,800 @@
+# Serbian translation of gpdf
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
+#
+# This file is distributed under the same license as the gpdf package.
+#
+# Maintainer: Branko Ivanović <popeye@one.ekof.bg.ac.yu>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gpdf\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"PO-Revision-Date: 2004-08-27 14:24+0200\n"
+"Last-Translator: Branko Ivanović <popeye@one.ekof.bg.ac.yu>\n"
+"Language-Team: Serbian (sr) <gnom@prevod.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+msgid "PDF Viewer"
+msgstr "Pregledač PDF-a"
+
+#: gpdf.desktop.in.h:2
+msgid "View PDF files"
+msgstr "Pregledajte PDF datoteke"
+
+#: gpdf.schemas.in.h:1
+msgid "Default sidebar page"
+msgstr "Podrazumevana stranica u okviru postrance"
+
+#: gpdf.schemas.in.h:2
+msgid "Default sidebar size"
+msgstr "Podrazumevana veličina okvira postrance"
+
+#: gpdf.schemas.in.h:3
+msgid "Show sidebar by default"
+msgstr "Uobičajeno prikaži okvir postrance"
+
+#: shell/eel-vfs-extensions.c:691
+msgid " (invalid Unicode)"
+msgstr " (neispravan Unikod)"
+
+#: shell/gpdf-recent-view-toolitem.c:195
+msgid "Open a recently used file"
+msgstr "Otvori nedavno korišćenu datoteku"
+
+#: shell/gpdf-recent-view-toolitem.c:199
+msgid "Recent"
+msgstr "Skorašnje"
+
+#: shell/gpdf-window-ui.xml.h:1
+msgid "About this application"
+msgstr "O programu"
+
+#: shell/gpdf-window-ui.xml.h:2
+msgid "Close window"
+msgstr "Zatvori prozor"
+
+#: shell/gpdf-window-ui.xml.h:3
+msgid "Online manual for this application"
+msgstr "Uputstvo za ovaj program"
+
+#: shell/gpdf-window-ui.xml.h:4
+msgid "Open"
+msgstr "Otvori"
+
+#: shell/gpdf-window-ui.xml.h:5
+msgid "Open a file"
+msgstr "Otvori datoteku"
+
+#: shell/gpdf-window-ui.xml.h:6
+msgid "Toggle fullscreen mode"
+msgstr "Preko celog ekrana"
+
+#: shell/gpdf-window-ui.xml.h:7
+msgid "_About"
+msgstr "_O programu"
+
+#: shell/gpdf-window-ui.xml.h:8
+msgid "_Close"
+msgstr "_Zatvori"
+
+#: shell/gpdf-window-ui.xml.h:9
+msgid "_Contents"
+msgstr "_Sadržaj"
+
+#: shell/gpdf-window-ui.xml.h:10 xpdf/gpdf-control-ui.xml.h:34
+msgid "_File"
+msgstr "_Datoteka"
+
+#: shell/gpdf-window-ui.xml.h:11
+msgid "_Full Screen"
+msgstr "_Ceo ekran"
+
+#: shell/gpdf-window-ui.xml.h:12
+msgid "_Help"
+msgstr "_Pomoć"
+
+#: shell/gpdf-window-ui.xml.h:13
+msgid "_Open..."
+msgstr "_Otvori..."
+
+#: shell/gpdf-window-ui.xml.h:14 xpdf/gpdf-control-ui.xml.h:43
+msgid "_View"
+msgstr "P_regled"
+
+#: shell/gpdf.c:142
+msgid "Could not initialize Bonobo!\n"
+msgstr "Nisam mogao da inicijalizujem Bonobo!\n"
+
+#: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
+#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
+#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+msgid "PDF Document"
+msgstr "PDF dokument"
+
+#: shell/gpdf.c:457
+msgid "Exit Full Screen"
+msgstr "Napusti prikaz preko celog ekrana"
+
+#: shell/gpdf.c:530
+msgid "Load file"
+msgstr "Učitaj datoteku"
+
+#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+msgid "PDF Documents"
+msgstr "PDF dokument"
+
+#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+msgid "All Files"
+msgstr "Sve datoteke"
+
+#: shell/gpdf.c:671
+msgid "Derek B. Noonburg, Xpdf author."
+msgstr "Derek B. Nunburg, Xpdf autor."
+
+#: shell/gpdf.c:672
+msgid "Martin Kretzschmar, GNOME port maintainer."
+msgstr "Martin Krečmar, administrator Gnom verzije"
+
+#: shell/gpdf.c:673
+msgid "Michael Meeks, GNOME port creator."
+msgstr "Majkl Miks, tvorac Gnom verzije."
+
+#. please localize as R&eacute;mi (R\303\251mi)
+#: shell/gpdf.c:675
+msgid "Remi Cohen-Scali."
+msgstr "Remi Koen-Skali."
+
+#: shell/gpdf.c:676
+msgid "Miguel de Icaza."
+msgstr "Miguel de Ikaza"
+
+#: shell/gpdf.c:677
+msgid "Nat Friedman."
+msgstr "Nat Fridman"
+
+#: shell/gpdf.c:678
+msgid "Ravi Pratap."
+msgstr "Ravi Pratap"
+
+#: shell/gpdf.c:683
+msgid "Chee Bin HOH <cbhoh@mimos.my>"
+msgstr "Či Bin Ho <cbhoh@mimos.my>"
+
+#: shell/gpdf.c:684
+msgid "Breda McColgan <BredaMcColgan@sun.com>"
+msgstr "Breda MekKolgan <BredaMcColgan@sun.com>"
+
+#: shell/gpdf.c:698
+msgid "translator-credits"
+msgstr ""
+"Branko Ivanović\n"
+"Danilo Šegan\n"
+"\n"
+"Prevod.org — prevod na srpski jezik"
+
+#: shell/gpdf.c:701
+msgid "Glyph & Cog, LLC and authors"
+msgstr " Glyph & Cog, LLC i autori"
+
+#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+msgid "GNOME PDF Viewer"
+msgstr "Gnomov preglednik PDF-a"
+
+#: shell/gpdf.c:708
+msgid "A PDF viewer based on Xpdf"
+msgstr "Preglednik PDF-a zasnovan na programu Xpdf"
+
+#: xpdf/GNOME_PDF.server.in.in.h:2
+msgid "GNOME PDF viewer factory"
+msgstr "Fabrika za Gnomov preglednik PDF-a"
+
+#: xpdf/GNOME_PDF.server.in.in.h:3
+msgid "Nautilus PDF Property Page"
+msgstr "Nautilus strana za osobine PDF-a"
+
+#: xpdf/GNOME_PDF.server.in.in.h:6
+msgid "PDF document viewer factory"
+msgstr "Fabrika preglednika PDF dokumenata"
+
+#: xpdf/GNOME_PDF.server.in.in.h:7
+msgid "View as PDF Document"
+msgstr "Gledaj kao PDF dokument"
+
+#: xpdf/eel-gconf-extensions.c:74
+msgid ""
+"Cannot find a schema for gpdf preferences. \n"
+"Check your gconf setup, look at gpdf FAQ for \n"
+"more info"
+msgstr ""
+"Ne mogu da nađem šemu za gpdf postavke.\n"
+"Proverite vaša podešavanja GKonfa, i pogledajte\n"
+"gpdf pitanja i odgovore za više podataka"
+
+#: xpdf/eel-gconf-extensions.c:101
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GKonf greška:\n"
+"  %s"
+
+#: xpdf/gpdf-annots-view.cc:288 xpdf/gpdf-annots-view.cc:289
+msgid "Parent control"
+msgstr "Roditeljska kontrola"
+
+#: xpdf/gpdf-annots-view.cc:916
+msgid "Owner/Title"
+msgstr "Vlasnik/naslov"
+
+#: xpdf/gpdf-annots-view.cc:925
+msgid "Opened"
+msgstr "Otvorena"
+
+#: xpdf/gpdf-annots-view.cc:1070 xpdf/gpdf-annots-view.cc:1086
+#: xpdf/gpdf-thumbnails-view.cc:1466 xpdf/gpdf-thumbnails-view.cc:1482
+msgid "Not yet implemented!"
+msgstr "Još uvek nije napravljeno!"
+
+#: xpdf/gpdf-annots-view.cc:1071
+msgid "Annotations Filter feature not yet implemented... Sorry."
+msgstr "Mogućnost filtriranja beleški još uvek nije podržana... Žao mi je."
+
+#: xpdf/gpdf-annots-view.cc:1087
+msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
+msgstr ""
+"Mogućnost upravljanja dodacima beleški još uvek nije podržana... Žao mi je."
+
+#: xpdf/gpdf-bookmarks-view.cc:924
+#, c-format
+msgid "** Unknown %s **"
+msgstr "** Nepoznato %s **"
+
+#: xpdf/gpdf-bookmarks-view.cc:1061
+msgid "Title"
+msgstr "Naslov"
+
+#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+msgid "Page"
+msgstr "Strana"
+
+#: xpdf/gpdf-control-ui.xml.h:1
+msgid "Back"
+msgstr "Nazad"
+
+#: xpdf/gpdf-control-ui.xml.h:2
+msgid "Best Fit"
+msgstr "Najpreglednije uvećanje"
+
+#: xpdf/gpdf-control-ui.xml.h:3
+msgid "Best _Fit"
+msgstr "Najpreglednije _uvećanje"
+
+#: xpdf/gpdf-control-ui.xml.h:4
+msgid "Change the visibility of the sidebar"
+msgstr "Izmeni vidljivost površi postrance"
+
+#: xpdf/gpdf-control-ui.xml.h:5
+msgid "Expand to a larger size"
+msgstr "Proširi na veću veličinu"
+
+#: xpdf/gpdf-control-ui.xml.h:6
+msgid "First"
+msgstr "Prva"
+
+#: xpdf/gpdf-control-ui.xml.h:7
+msgid "Fit Width"
+msgstr "Po širini"
+
+#: xpdf/gpdf-control-ui.xml.h:8
+msgid "Fit page _width"
+msgstr "Po širini strane"
+
+#: xpdf/gpdf-control-ui.xml.h:9
+msgid "Fo_rward"
+msgstr "Nap_red"
+
+#: xpdf/gpdf-control-ui.xml.h:10
+msgid "Forward"
+msgstr "Napred"
+
+#: xpdf/gpdf-control-ui.xml.h:11
+msgid "Go backward in history"
+msgstr "Idi nazad u istorijatu"
+
+#: xpdf/gpdf-control-ui.xml.h:12
+msgid "Go forward in history"
+msgstr "Idi napred u istorijatu"
+
+#: xpdf/gpdf-control-ui.xml.h:13
+msgid "In"
+msgstr "Uvećaj"
+
+#: xpdf/gpdf-control-ui.xml.h:14
+msgid "Last"
+msgstr "Poslednja"
+
+#: xpdf/gpdf-control-ui.xml.h:15
+msgid "Next"
+msgstr "Sledeća"
+
+#: xpdf/gpdf-control-ui.xml.h:16
+msgid "Out"
+msgstr "Umanji"
+
+#: xpdf/gpdf-control-ui.xml.h:17
+msgid "Previous"
+msgstr "Prethodna"
+
+#: xpdf/gpdf-control-ui.xml.h:18 xpdf/gpdf-control.cc:934
+msgid "Print"
+msgstr "Štampaj"
+
+#: xpdf/gpdf-control-ui.xml.h:19
+msgid "Print the current file"
+msgstr "Štampaj tekuću datoteku"
+
+#: xpdf/gpdf-control-ui.xml.h:20
+msgid "Proper_ties"
+msgstr "Svoj_stva"
+
+#: xpdf/gpdf-control-ui.xml.h:21 xpdf/gpdf-control.cc:1109
+msgid "Save a Copy"
+msgstr "Sačuvaj umnožak"
+
+#: xpdf/gpdf-control-ui.xml.h:22
+msgid "Save the current PDF document with a new filename"
+msgstr "Sačuvaj tekući PDF dokument sa novim imenom"
+
+#: xpdf/gpdf-control-ui.xml.h:23
+msgid "Shrink to a smaller size"
+msgstr "Smanji veličinu"
+
+#: xpdf/gpdf-control-ui.xml.h:24
+msgid "Size to fit the page"
+msgstr "Veličina po meri strane"
+
+#: xpdf/gpdf-control-ui.xml.h:25
+msgid "Size to fit the page width"
+msgstr "Veličina po meri širine strane"
+
+#: xpdf/gpdf-control-ui.xml.h:26
+msgid "View properties of the displayed document"
+msgstr "Pogled na svojstva prikazanog dokumenta"
+
+#: xpdf/gpdf-control-ui.xml.h:27
+msgid "View the first page"
+msgstr "Pogled na prvu stranu"
+
+#: xpdf/gpdf-control-ui.xml.h:28
+msgid "View the last page"
+msgstr "Pogled na poslednju stranu"
+
+#: xpdf/gpdf-control-ui.xml.h:29
+msgid "View the next page"
+msgstr "Pogled na sledeću stranu"
+
+#: xpdf/gpdf-control-ui.xml.h:30
+msgid "View the previous page"
+msgstr "Pogled na prethodnu stranu"
+
+#: xpdf/gpdf-control-ui.xml.h:31
+msgid "Zoom _In"
+msgstr "_Uvećaj"
+
+#: xpdf/gpdf-control-ui.xml.h:32
+msgid "Zoom _Out"
+msgstr "S_manji"
+
+#: xpdf/gpdf-control-ui.xml.h:33
+msgid "_Back"
+msgstr "_Nazad"
+
+#: xpdf/gpdf-control-ui.xml.h:35
+msgid "_First Page"
+msgstr "_Prva Strana"
+
+#: xpdf/gpdf-control-ui.xml.h:36
+msgid "_Go"
+msgstr "_Kreni"
+
+#: xpdf/gpdf-control-ui.xml.h:37
+msgid "_Last Page"
+msgstr "_Poslednja Strana"
+
+#: xpdf/gpdf-control-ui.xml.h:38
+msgid "_Next Page"
+msgstr "_Sledeća Strana"
+
+#: xpdf/gpdf-control-ui.xml.h:39
+msgid "_Previous Page"
+msgstr "_Prethodna Strana"
+
+#: xpdf/gpdf-control-ui.xml.h:40
+msgid "_Print..."
+msgstr "Štampa_j"
+
+#: xpdf/gpdf-control-ui.xml.h:41
+msgid "_Save a Copy..."
+msgstr "_Sačuvaj umnožak..."
+
+#: xpdf/gpdf-control-ui.xml.h:42
+msgid "_Sidebar"
+msgstr "_Površ postrance"
+
+#: xpdf/gpdf-control.cc:559
+msgid "Documentation Error"
+msgstr "Greška kod dokumentacije"
+
+#: xpdf/gpdf-control.cc:763
+#, c-format
+msgid "Printing: Page %d."
+msgstr "Štampam %d. stranu."
+
+#: xpdf/gpdf-control.cc:891
+#, c-format
+msgid ""
+"You were trying to print to a printer using the \"%s\" driver. This program "
+"requires a PostScript printer driver."
+msgstr ""
+"Pokušali ste da štampate koristeći „%s“ drajver. Ovaj program zahteva "
+"PostSkript drajver za štampač."
+
+#: xpdf/gpdf-control.cc:894
+msgid ""
+"You were trying to print to a printer that does not use PostScript. This "
+"program requires a PostScript printer driver."
+msgstr ""
+"Pokušali ste da štampate na štampaču koji ne podržava PostSkript. Ovaj "
+"program zahteva PostSkript drajver za štampač."
+
+#: xpdf/gpdf-control.cc:898
+msgid "Printing is not supported on this printer."
+msgstr "Štampanje nije podržano za ovaj štampač."
+
+#: xpdf/gpdf-control.cc:937
+msgid "_Pages"
+msgstr "_Stranice"
+
+#: xpdf/gpdf-control.cc:1043
+#, c-format
+msgid "A file named \"%s\" already exists."
+msgstr "Datoteka sa imenom „%s“ već postoji."
+
+#: xpdf/gpdf-control.cc:1049
+msgid "Do you want to replace it with the one you are saving?"
+msgstr "Želite li da je zamenite sa ovom koju čuvate?"
+
+#: xpdf/gpdf-control.cc:1058
+msgid "_Replace"
+msgstr "_Zameni"
+
+#: xpdf/gpdf-control.cc:1068
+msgid "Question"
+msgstr "Pitanje"
+
+#: xpdf/gpdf-control.cc:1082
+#, c-format
+msgid "The file could not be saved as \"%s\"."
+msgstr "Datoteka se ne može sačuvati kao „%s“."
+
+#: xpdf/gpdf-control.cc:1195
+msgid "PDF Properties"
+msgstr "Svojstva PDF-a"
+
+#: xpdf/gpdf-control.cc:2034
+#, c-format
+msgid "Loading of %s failed."
+msgstr "Neuspešno učitavanje %s."
+
+#: xpdf/gpdf-control.cc:2373
+msgid "Bookmarks"
+msgstr "Obeleživači"
+
+#: xpdf/gpdf-control.cc:2377
+msgid "Pages"
+msgstr "Stranice"
+
+#: xpdf/gpdf-control.cc:2382
+msgid "Annotations"
+msgstr "Objašnjenja"
+
+#: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
+msgid "Link"
+msgstr "Veza"
+
+#: xpdf/gpdf-link-canvas-item.cc:265 xpdf/gpdf-link-canvas-item.cc:266
+msgid "UsingHandCursor"
+msgstr "Koristi kurzor „ručica“"
+
+#: xpdf/gpdf-links-canvas-layer.cc:219 xpdf/gpdf-links-canvas-layer.cc:220
+msgid "Links"
+msgstr "Veze"
+
+#: xpdf/gpdf-persist-file.cc:224 xpdf/gpdf-persist-stream.cc:213
+msgid "_Open Document"
+msgstr "_Otvori dokument"
+
+#: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
+msgid "Enter document password:"
+msgstr "Unesite lozinku dokumenta:"
+
+#: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
+msgid ""
+"This document is encrypted and this operation requires the document's "
+"password"
+msgstr "Ovaj dokument je šifrovan a ova operacija zahteva lozinku dokumenta"
+
+#. translators: page catalog is a part of the PDF file
+#. The last period (.) is missing on purpose
+#: xpdf/gpdf-persist-file.cc:337
+msgid "The PDF file is damaged. Its page catalog could not be read"
+msgstr "PDF datoteka je oštećena. Ne mogu da učitam njen katalog strana"
+
+#: xpdf/gpdf-persist-file.cc:341
+msgid ""
+"The PDF file is damaged or it is not a PDF file. It could not be repaired"
+msgstr "PDF datoteka je oštećena ili nije PDF datoteka. Ne mogu da je popravim"
+
+#: xpdf/gpdf-persist-file.cc:345
+msgid "The PDF document is encrypted and you didn't enter the correct password"
+msgstr "PDF dokument je šifrovan, a niste uneli ispravnu lozinku"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:1
+msgid "Printing"
+msgstr "Štampam"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:2
+msgid "Printing: Preparing."
+msgstr "Štampam: Pripremam."
+
+#: xpdf/gpdf-properties-dialog.glade.h:1
+msgid "Author:"
+msgstr "Autor:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:2
+msgid "Created:"
+msgstr "Napravljeno:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:3
+msgid "Creator:"
+msgstr "Tvorac:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:4
+msgid "Keywords:"
+msgstr "Ključne reči:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:5
+msgid "Modified:"
+msgstr "Menjano:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:6
+msgid "Number of Pages:"
+msgstr "Broj strana:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:7
+msgid "Optimized:"
+msgstr "Optimizovano:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:8
+msgid "PDF Version:"
+msgstr "Verzija PDF-a:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:9
+msgid "Producer:"
+msgstr "Producent:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:10
+msgid "Security:"
+msgstr "Sigurnost:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:11
+msgid "Subject:"
+msgstr "Tema:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:12
+msgid "Title:"
+msgstr "Naslov:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:13 xpdf/pdf-info-dict-util.cc:49
+#: xpdf/pdf-properties-display.c:225 xpdf/pdf-properties-display.c:233
+#: xpdf/pdf-properties-display.c:241 xpdf/pdf-properties-display.c:249
+#: xpdf/pdf-properties-display.c:258 xpdf/pdf-properties-display.c:267
+#: xpdf/pdf-properties-display.c:275 xpdf/pdf-properties-display.c:284
+#: xpdf/pdf-properties-display.c:292 xpdf/pdf-properties-display.c:301
+#: xpdf/pdf-properties-display.c:309 xpdf/pdf-properties-display.c:317
+msgid "Unknown"
+msgstr "Nepoznato"
+
+# bug: what?
+#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+msgid "Select sidebar page by title for displaying it"
+msgstr "Izaberite stranicu postrance prema naslovu radi prikaza"
+
+#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+msgid "Click to open page tools menu"
+msgstr "Kliknite da otvorite meni sa alatima za stranice"
+
+#: xpdf/gpdf-sidebar.c:407
+msgid "Remove page if it is removeable"
+msgstr "Ukloni stranicu ako je uklonjiva"
+
+#: xpdf/gpdf-sidebar.c:434
+msgid "Close sidebar"
+msgstr "Zatvori okvir postrance"
+
+#: xpdf/gpdf-thumbnails-view.cc:1467
+msgid "Thumbnail Generation feature not yet implemented... Sorry."
+msgstr "Izrada manjih slika za pregled i dalje nije završena... Žao mi je."
+
+#: xpdf/gpdf-thumbnails-view.cc:1483
+msgid "All Thumbnails Generation feature not yet implemented... Sorry."
+msgstr ""
+"Izrada svih manjih slika za pregled i dalje nije završena... Žao mi je."
+
+#: xpdf/gpdf-view.cc:378
+#, c-format
+msgid "No application was found to open the URI: %s"
+msgstr "Nije nađen program za otvaranje adrese: %s"
+
+#: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
+msgid "Application Launch Failure!"
+msgstr "Neuspeh pokretanja programa!"
+
+#: xpdf/gpdf-view.cc:388
+#, c-format
+msgid "Failed to launch %s for URI: %s"
+msgstr "Neuspešno pokretanje %s za adresu: %s"
+
+#: xpdf/gpdf-view.cc:404
+msgid "Application Launch notification!"
+msgstr "Obaveštenje o pokretanju programa!"
+
+#: xpdf/gpdf-view.cc:514
+#, c-format
+msgid "Go to page #%d"
+msgstr "Idi na stranu #%d"
+
+#: xpdf/gpdf-view.cc:547
+#, c-format
+msgid "Go to file %s:#%d"
+msgstr "Idi u datoteku %s:#%d"
+
+#: xpdf/gpdf-view.cc:555
+#, c-format
+msgid "Launch: %s %s"
+msgstr "Pokreni: %s %s"
+
+#: xpdf/gpdf-view.cc:565
+#, c-format
+msgid "Browse %s"
+msgstr "Razgledaj %s"
+
+#: xpdf/gpdf-view.cc:573
+#, c-format
+msgid "Action: %s"
+msgstr "Akcija: %s"
+
+#: xpdf/gpdf-view.cc:581
+#, c-format
+msgid "Movie: %s"
+msgstr "Film: %s"
+
+#: xpdf/gpdf-view.cc:592
+#, c-format
+msgid "Unknown action: %s !"
+msgstr "Nepoznata akcija: %s!"
+
+#: xpdf/gpdf-view.cc:1623
+msgid "Document View"
+msgstr "Pregled dokumenta"
+
+#: xpdf/nautilus-pdf-property-page.cc:146
+msgid "URI currently displayed"
+msgstr "Trenutno prikazana adresa"
+
+#: xpdf/page-control.c:101
+#, c-format
+msgid " of %d"
+msgstr " od %d"
+
+#: xpdf/page-control.c:219 xpdf/page-control.c:233
+msgid "Current page"
+msgstr "Trenutna strana"
+
+#: xpdf/page-control.c:220
+msgid ""
+"This shows the current page number. To jump to another page, enter its "
+"number."
+msgstr ""
+"Ovo pokazuje broj trenutne strane. Za prelazak na drugu stranu, unesite njen "
+"broj."
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "Encrypted"
+msgstr "Šifrovano"
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "None"
+msgstr "Ništa"
+
+#. Yes/No will be displayed in the pdf properties dialog
+#. in a table as "Optimized: No"
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "Yes"
+msgstr "Da"
+
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "No"
+msgstr "Ne"
+
+#~ msgid "Quit the program"
+#~ msgstr "Izlaz iz programa"
+
+#~ msgid "_Quit"
+#~ msgstr "_Izađi"
+
+#~ msgid "Print preview is not available in this program."
+#~ msgstr "Pregled pre štampe nije dostupan u ovom programu."
+
+#~ msgid "Thumbnails"
+#~ msgstr "Mali prikazi"
+
+#~ msgid "PDF file viewer"
+#~ msgstr "Preglednik PDF datoteka"
+
+#~ msgid "Default sidebar page."
+#~ msgstr "Podrazumevana stranica u okviru postrance."
+
+#~ msgid "Default sidebar size."
+#~ msgstr "Podrazumevana veličina okvira postrance."
+
+#~ msgid "Show sidebar by default."
+#~ msgstr "Uobičajeno prikaži okvir postrance."
+
+#~ msgid "Ok"
+#~ msgstr "U redu"
+
+#~ msgid "Enter document owner password:"
+#~ msgstr "Unesite lozinku vlasnika dokumenta:"
+
+#~ msgid ""
+#~ "This document is password protected and this operation requires the "
+#~ "document's owner password"
+#~ msgstr ""
+#~ "Ovaj dokument je zaštićen lozinkom a ova operacija zahteva lozinku "
+#~ "vlasnika dokumenta"
+
+#~ msgid "Please enter owner password ..."
+#~ msgstr "Unesite lozinku vlasnika..."
+
+#~ msgid "Please enter user password ..."
+#~ msgstr "Unesite lozinku korisnika..."
+
+#~ msgid "Save Document as ..."
+#~ msgstr "Sačuvaj dokument kao..."
+
+#~ msgid "_Save document as"
+#~ msgstr "_Sačuvaj dokument kao"
+
+#~ msgid "Select a text file"
+#~ msgstr "Izaberite tekstualnu datoteku"
+
+#~ msgid ""
+#~ "The PDF file is encrypted and requires a password. This program does not "
+#~ "support password-protected files"
+#~ msgstr ""
+#~ "PDF datoteka je šifrovana i zahteva lozinku. Ovaj program ne podržava "
+#~ "lozinkom zaštićene datoteke"
+
+#~ msgid "Could not open %s"
+#~ msgstr "Nisam mogao da otvorim %s"
+
+#~ msgid "dialog1"
+#~ msgstr "dijalog1"

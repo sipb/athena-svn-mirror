@@ -1,0 +1,29 @@
+# Add files with translateable strings here.
+# Please keep this file sorted alphabetically.
+gpdf.desktop.in
+gpdf.keys.in
+gpdf.schemas.in
+shell/eel-vfs-extensions.c
+shell/gpdf-recent-view-toolitem.c
+shell/gpdf-window-ui.xml
+shell/gpdf.c
+xpdf/GNOME_PDF.server.in.in
+xpdf/bonobo-application-x-pdf.cc
+xpdf/eel-gconf-extensions.c
+xpdf/gpdf-annots-view.cc
+xpdf/gpdf-bookmarks-view.cc
+xpdf/gpdf-control-ui.xml
+xpdf/gpdf-control.cc
+xpdf/gpdf-link-canvas-item.cc
+xpdf/gpdf-links-canvas-layer.cc
+xpdf/gpdf-persist-file.cc
+xpdf/gpdf-persist-stream.cc
+xpdf/gpdf-print-progress-dialog.glade
+xpdf/gpdf-properties-dialog.glade
+xpdf/gpdf-sidebar.c
+xpdf/gpdf-thumbnails-view.cc
+xpdf/gpdf-view.cc
+xpdf/nautilus-pdf-property-page.cc
+xpdf/page-control.c
+xpdf/pdf-info-dict-util.cc
+xpdf/pdf-properties-display.c
