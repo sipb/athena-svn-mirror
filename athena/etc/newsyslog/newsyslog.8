@@ -1,107 +1,47 @@
-.TH NEWSYSLOG 8 "January 12, 1989" "Project Athena"
+.TH NEWSYSLOG 8 "November 30, 1995" "MIT Athena"
 .SH NAME
 newsyslog \- maintain system log files to manageable sizes
 .SH SYNOPSIS
 .B /etc/athena/newsyslog
-[
-.B \-vnr
-] [
-.B \-f
-.I configuration file
-]
+.RB [ \-vnr ]
+[\fB\-f \fIconfig-file\fR] [\fB\-t \fIsleep\fR]
 .SH DESCRIPTION
 .I Newsyslog
 is a program that should be scheduled to run periodically by
 .IR crontab .
-When it is executed it archives log files if necessary.  If a log file
-is determined to require archiving, 
-.I newsyslog
-rearranges the files so that ``logfile'' is empty, ``logfile.0'' has
-the last period's logs in it, ``logfile.1'' has the next to last
-period's logs in it, and so on, up to a user-specified number of
-archived logs.  Optionally the archived logs can be compressed to save
-space. 
+When it is executed, it archives and processes log files if necessary.
+Processes writing to the log file (usually
+.IR syslogd )
+are signalled so they can start using the new log file.
 .PP
-A log can be archived because of two reasons.  The log file can have
-grown bigger than a preset size in kilobytes, or a preset number of
-hours may have elapsed since the last log archive.  The granularity of
+There are two possible conditions for
+.I newsyslog
+to turn over the log file: the file may have grown bigger than a
+preset size in kilobytes, or a preset number of hours may have elapsed
+since the last log archive.  The granularity of
 .I newsyslog
 is dependent on how often it is scheduled to run in crontab.  Since
 the program is quite fast, it may be scheduled to run every hour
 without any ill effects.
+.PP
+If a log file is determined to require archiving,
+.I newsyslog
+usually rearranges the files so that ``logfile'' is empty,
+``logfile.0'' has the last period's logs in it, ``logfile.1'' has the
+next to last period's logs in it, and so on, up to a user-specified
+number of archived logs.
+If the log files are to be archived indefinitely, it is sometimes more
+convenient to label the filenames with the date when the file was
+turned over.  In this case, the files will be named
+``logfile.YYYYMMDD'' instead of ``logfile.N'', but the number of
+log files stored can still be specified by the user.
 .PP
 When starting up, 
 .I newsyslog
 reads in a configuration file to determine which logs should be looked
 at.  By default, this configuration file is 
 .IR /etc/athena/newsyslog.conf .
-Each line of the file contains information about a particular log file
-that should be handled by
-.IR newsyslog .
-Each line has five mandatory fields and two optional fields, with a
-whitespace separating each field.  Blank lines or lines beginning with
-``#'' are ignored.  The fields of the configuration file are as
-follows: 
-.br
-	logfile name
-.br
-	owner.group of archives (optional)
-.br
-	mode of logfile & archives
-.br
-	number of archives
-.br
-	size of archives
-.br
-	archive interval
-.br
-	flags (optional)
-.PP
-The
-.I logfile name
-entry is the name of the system log file to be archived.
-.PP
-The optional
-.I owner.group
-entry specifies an ownership and group for the archive file.
-The "." is essential, even if the 
-.I owner
-or
-.I group
-field is left blank. The
-fields may be numeric, or a name which is looked up in 
-.I /etc/passwd
-or 
-.IR /etc/group .
-.PP
-The
-.I number of archives
-entry specifies the number of archives to be kept besides the log file
-itself.  
-.PP
-When the size of the logfile reaches 
-.I size of 
-.IR archives ,
-the logfile becomes trimmed as described above.  If this field is
-replaced by a ``*'', then the size of the logfile is not taken into
-account when determining when to trim the log file.
-.PP
-The
-.I number of hours
-entry specifies the time separation between the trimming of the log
-file.  If this field is replaced by a ``*'', the the number of hours
-since the last time the log was trimmed will not be taken into
-consideration.
-.PP
-The
-.I flags
-field specifies if the archives should have any special processing
-done to the archived log files.  The ``Z'' flag will make the archive
-files compressed to save space using /usr/ucb/compress.  The ``B'' flag
-means that the file is a binary file, and so the ascii message which
-.I newsyslog
-inserts to indicate the fact that the logs have been turned over
-should not be included.
+The syntax of this file is described in a separate manpage.
 .PP
 .SH OPTIONS
 The following options can be used with newsyslog:
@@ -110,6 +50,11 @@ The following options can be used with newsyslog:
 instructs newsyslog to use 
 .I config-file
 instead of /etc/athena/newsyslog.conf for its configuration file.
+.TP
+.B \-t \fIsleep
+tells newsyslog to sleep for the specified number of seconds after
+sending a signal to a process, in order to give it time to clean up.
+(The default is 1.)
 .TP
 .B \-v
 places 
@@ -128,16 +73,20 @@ removes the restriction that
 .I newsyslog 
 must be running as root.  Of course, 
 .I newsyslog
-will not be able to send a HUP signal to
-.IR syslogd ,
-so this option should only be used in debugging.
+will not be able to send a signal to the processes controlling
+the log files (such as
+.IR syslogd )
+if they were started by a different user, so this option is probably
+most useful in debugging.
 .SH FILES
 /etc/athena/newsyslog.conf
 .SH BUGS
 Doesn't yet automatically read the logs to find security breaches.
-.SH AUTHOR
-Theodore Ts'o, MIT Project Athena
+.SH AUTHORS
+Newsyslog was written by Theodore Ts'o, MIT Project Athena.
 .br
-Copyright 1987, Massachusetts Institute of Technology
+bert Dvornik, MIT IS/DCNS-Dev, added some new features.
+.br
+Copyright 1987,1995 Massachusetts Institute of Technology
 .SH "SEE ALSO"
-syslogd(8), syslog(3), compress(1)
+newsyslog.conf(5), syslogd(8), compress(1)
