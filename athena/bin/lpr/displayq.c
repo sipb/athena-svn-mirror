@@ -56,7 +56,9 @@ displayq(format)
 	int rem_fils;
 	char *tmpptr;
 	FILE *fp;
-
+#ifdef KERBEROS
+	short KA;
+#endif
 	lflag = format;
 	totsize = 0;
 	rank = -1;
@@ -86,6 +88,12 @@ displayq(format)
 	if ((ST = pgetstr("st", &bp)) == NULL)
 		ST = DEFSTAT;
 	RM = pgetstr("rm", &bp);
+#ifdef KERBEROS
+	KA = pgetnum("ka");
+#endif
+#ifdef PQUOTA
+	RQ = pgetstr("rq", &bp);
+#endif PQUOTA
 
 	/*
 	 * Figure out whether the local machine is the same as the remote 
@@ -101,7 +109,6 @@ displayq(format)
 			/* get the name of the local host */
 		gethostname (name, sizeof(name) - 1);
 		name[sizeof(name)-1] = '\0';
-
 			/* get the network standard name of the local host */
 		hp = gethostbyname (name);
 		if (hp == (struct hostent *) NULL) {
@@ -128,7 +135,6 @@ displayq(format)
 	 */
 	if (*LP == '\0') {
 		register char *cp;
-		char c;
 
 		sendtorem++;
 		(void) sprintf(line, "%c%s", format + '\3', RP);
@@ -164,6 +170,27 @@ displayq(format)
 			}
 			(void) close(fd);
 		}
+	}
+	/*
+	 * Allow lpq -l info about printing
+	 */
+	if(lflag) {
+#ifdef KERBEROS
+	    if(KA > 0) {
+		printf("\nKerberos authenticated");
+#ifndef PQUOTA
+		putchar('\n');
+#endif PQUOTA	
+	    }    
+#endif KERBEROS
+
+#ifdef PQUOTA
+	    if((RQ != (char *) NULL)) 
+		printf("\nQuota server: %s\n", RQ);
+#ifdef KERBEROS
+	    else putchar('\n');
+#endif KERBEROS
+#endif
 	}
 	/*
 	 * Find all the control files in the spooling directory
@@ -263,6 +290,7 @@ displayq(format)
 	 */
 	if (!lflag)
 		header();
+
 	for (i = 0; i < nitems; i++) {
 		q = queue[i];
 		inform(q->q_name);
@@ -298,8 +326,7 @@ header()
 inform(cf)
 	char *cf;
 {
-	register int j, k;
-	register char *cp;
+	register int j;
 	FILE *cfp;
 	char jobnum[4];
 
