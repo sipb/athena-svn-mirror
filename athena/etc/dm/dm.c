@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.14 2000-07-31 18:08:37 ghudson Exp $
+/* $Id: dm.c,v 1.15 2000-08-21 11:02:37 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.14 2000-07-31 18:08:37 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.15 2000-08-21 11:02:37 kcr Exp $";
 #endif
 
 /* Process states */
@@ -756,9 +756,10 @@ static void shutdown(int signo)
 
 static void cleanup(char *tty)
 {
-  int file;
+  int file, ret;
   struct utmp utmp;
   char login[sizeof(utmp.ut_name) + 1];
+  char *errr;
 
   if (login_running == RUNNING)
     kill(loginpid, SIGHUP);
@@ -785,7 +786,12 @@ static void cleanup(char *tty)
 
   logout(tty);
   
-  al_acct_revert(login, loginpid);
+  ret = al_acct_revert(login, loginpid);
+  if (ret != AL_SUCCESS)
+    syslog(LOG_ERR, "al_acct_revert(%s, %d): %s", login, loginpid,
+	   al_strerror(ret, &errr));
+    al_free_errmem(errr);
+  }
 
   tcflush(0, TCIOFLUSH);
 }
