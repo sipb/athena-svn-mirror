@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
- *	$Author: probe $
+ *	$Author: vrt $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.8 1991-06-10 03:09:39 probe Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.9 1993-04-28 09:33:16 vrt Exp $";
 #endif lint
 
 /*
@@ -21,6 +21,12 @@ All Rights Reserved.
 #include <strings.h>
 #include <sys/types.h>
 #include <sys/file.h>
+#ifdef POSIX
+#include <fcntl.h>
+#endif /* SOLARIS */
+#ifdef SOLARIS
+#include <netdb.h>
+#endif /* SOLARIS */
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <ctype.h>
@@ -473,7 +479,11 @@ char *principal;
 
     /* Try the wildcards */
     realm = index(canon, REALM_SEP);
+#ifndef SOLARIS
     *index(canon, INST_SEP) = '\0';	/* Chuck the instance */
+#else
+    *strchr(canon, INST_SEP) = '\0';	/* Chuck the instance */
+#endif /* SOLARIS */
 
     sprintf(buf, "%s.*%s", canon, realm);
     if(acl_exact_match(acl, buf)) return(1);
