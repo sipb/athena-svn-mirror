@@ -1,0 +1,10 @@
+Name: athena-eel
+Summary: Eazel Extensions Library, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+
+Requires: athena-librsvg
+
+%description 
+Eazel Extensions Library is a collection of widgets and functions for
+use with GNOME.
