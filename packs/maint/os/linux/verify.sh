@@ -64,7 +64,14 @@ exec 3<&-
 # that we assume that the relevant rpm databases have not gotten
 # corrupted somehow.
 
-failures=`rpm -V -a | awk '{print $NF}'`
+total=`rpm -qa | wc -l`
+n=0
+for rpm in `rpm -qa`; do
+  failures="$failures `rpm -V $rpm | awk '{print $NF}'`"
+  n=$[$n+1]
+  printf "\rVerifying: %3d%% of packages" $[$n*100/$total]
+done
+echo
 
 # For each failing file, see if it's an exception.  If it's not, then
 # find out its package, and make sure the package file is on the
