@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
  *	$Author: jfc $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.1 1990-04-19 12:01:11 jfc Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.2 1990-04-19 12:01:15 jfc Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.1 1990-04-19 12:01:11 jfc Exp $";
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.2 1990-04-19 12:01:15 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -38,13 +38,13 @@ struct uid_tab {
 /*
  * Define the keyword table
  */
-static int parse_boolean(), parse_string(), parse_uidlist(), parse_fslist();
-static int parse_fslista();
+static void parse_boolean(), parse_string(), parse_uidlist(), parse_fslist();
+static void parse_fslista();
 static int get_fstype();
 
 struct key_def {
 	char	*key;
-	int	(*proc)();
+	void	(*proc)();
 	caddr_t	variable;
 	int	arg;
 } keyword_list[] = {
@@ -84,7 +84,7 @@ struct key_def {
 
 static void config_abort()
 {
-	fprintf(stderr, "Aborting...\n");
+	fprintf(stderr, " Aborting...\n");
 	exit(ERR_BADCONF);
 }
 
@@ -136,7 +136,7 @@ read_config_file(config_file_name)
 	return(SUCCESS);
 }
 
-static int parse_boolean(keyword, argument, buff, variable, arg)
+static void parse_boolean(keyword, argument, buff, variable, arg)
 	char	*keyword, *argument, *buff;
 	caddr_t	variable;
 	int	arg;
@@ -155,7 +155,7 @@ static int parse_boolean(keyword, argument, buff, variable, arg)
 	}
 }
 
-static int parse_string(keyword, argument, buff, variable, arg)
+static void parse_string(keyword, argument, buff, variable, arg)
 	char	*keyword, *argument, *buff;
 	caddr_t	variable;
 	int	arg;
@@ -171,7 +171,7 @@ static int parse_string(keyword, argument, buff, variable, arg)
 	* (char **) variable = strdup(argument);
 }
 
-static int parse_fslist(keyword, argument, buff, variable, set_sw)
+static void parse_fslist(keyword, argument, buff, variable, set_sw)
 	char	*keyword, *argument, *buff;
 	caddr_t	variable;
 	int	set_sw;
@@ -196,7 +196,7 @@ static int parse_fslist(keyword, argument, buff, variable, set_sw)
 	fslist->tab[fslist->idx].tab_data = NULL;
 }
 
-static int parse_fslista(keyword, argument, buff, variable, dummy)
+static void parse_fslista(keyword, argument, buff, variable, dummy)
 	char	*keyword, *argument, *buff;
 	caddr_t	variable;
 	int	dummy;
@@ -299,7 +299,7 @@ static int get_fstype(cpp, explicit)
 	return(type);
 }
 
-static int parse_uidlist(keyword, argument, buff, variable, arg)
+static void parse_uidlist(keyword, argument, buff, variable, arg)
 	char	*keyword, *argument, *buff;
 	caddr_t	variable;
 	int	arg;
