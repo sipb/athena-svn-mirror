@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.18 1993-04-07 06:25:04 probe Exp $
+ * $Id: finger.c,v 1.19 1993-05-05 10:57:19 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.18 1993-04-07 06:25:04 probe Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.19 1993-05-05 10:57:19 vrt Exp $";
 #endif lint
 
 /*
@@ -68,9 +68,15 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
  * option turns off plans for long format outputs.
  */
 
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#ifdef SOLARIS
+#include <utmpx.h>
+#endif
 #include <utmp.h>
 #include <sys/signal.h>
 #include <pwd.h>
@@ -107,7 +113,11 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #define TALKABLE	0220	/* tty is writable if 220 mode */
 #define MAILDIR 	"/usr/spool/mail/"	/* default mail directory */
 
+#ifdef SOLARIS
+struct utmpx user;
+#else
 struct utmp user;
+#endif
 
 #define NMAX sizeof(user.ut_name)
 #define LMAX sizeof(user.ut_line)
@@ -140,7 +150,11 @@ struct person {			/* one for each person fingered */
 };
 
 char LASTLOG[] = "/usr/adm/lastlog";	/* last login info */
+#ifdef SOLARIS
+char USERLOG[] = "/etc/utmpx";	/* who is logged in */
+#else
 char USERLOG[] = "/etc/utmp";	/* who is logged in */
+#endif
 char ACCTLOG[] = "/usr/adm/wtmp";	/* Accounting file */
 char PLAN[] = "/.plan";		/* what plan file is */
 char PROJ[] = "/.project";	/* what project file */
@@ -265,7 +279,7 @@ doall()
 		exit(2);
 	}
 	if (unquick) {
-#if defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE)
+#if defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE) || defined(SOLARIS)
 		setpwent();
 #else
 		extern _pw_stayopen;
@@ -295,7 +309,9 @@ doall()
 		bcopy(user.ut_host, p->host, HMAX);
 		p->host[HMAX] = 0;
 		p->loginout = 0;
+#ifndef SOLARIS
 		p->loginat = user.ut_time;
+#endif
 		p->pwd = 0;
 		p->loggedin = 1;
 		p->zlocation = 0;
@@ -352,7 +368,9 @@ donames(argv)
 		p->tty[0] = q->tty[0] = '\0';
 		p->host[0] = q->host[0] = '\0';
 		p->loginout = q->loginout = 0;
+#ifndef SOLARIS
 		p->loginat = q->loginat = 0;
+#endif
 		p->logintime = q->logintime = (char *) NULL;
 		p->idletime = q->idletime = 0;
 		p->realname = q->realname = (char *) NULL;
@@ -377,7 +395,7 @@ donames(argv)
 	if (unquick) {
 		setpwent();
 		if (!match) {
-#if !defined(ultrix) && !defined(_AIX) || defined(_AUX_SOURCE)
+#if !defined(ultrix) && !defined(_AIX) && !defined(SOLARIS) || defined(_AUX_SOURCE) 
 			extern _pw_stayopen;
 
 			_pw_stayopen = 1;
@@ -448,7 +466,9 @@ donames(argv)
 				p->tty[LMAX] = 0;
 				bcopy(user.ut_host, p->host, HMAX);
 				p->host[HMAX] = 0;
+#ifndef SOLARIS
 				p->loginat = user.ut_time;
+#endif
 				p->loggedin = 1;
 			}
 			else {	/* p->loggedin == 1 */
@@ -460,7 +480,9 @@ donames(argv)
 				new->tty[LMAX] = 0;
 				bcopy(user.ut_host, new->host, HMAX);
 				new->host[HMAX] = 0;
+#ifndef SOLARIS
 				new->loginat = user.ut_time;
+#endif
 				new->pwd = p->pwd;
 				new->loggedin = 1;
 				new->original = 0;
@@ -671,8 +693,13 @@ quickprint(pers)
 	if (pers->loggedin) {
 		if (idle) {
 			findidle(pers);
+#ifndef SOLARIS
 			printf("%c%-*s %-16.16s", pers->writable ? ' ' : '*',
 			       LMAX, pers->tty, ctime(&pers->loginat));
+#else
+			printf("%c%-*s", pers->writable ? ' ' : '*',
+			       LMAX, pers->tty);
+#endif
 			(void) ltimeprint("   ", &pers->idletime, "");
 		}
 		else
@@ -1066,8 +1093,13 @@ findwhen(pers)
 	struct lastlog ll;
 #endif
 	struct stat stb;
+#ifndef SOLARIS
 	struct utmp *bp;
 	struct utmp buf[128];
+#else
+	struct utmpx *bp;
+	struct utmpx buf[128];
+#endif
 	int i, bl, count;
 	off_t lseek();
 
@@ -1105,13 +1137,17 @@ findwhen(pers)
 							(void) strncpy(ttnames[i],
 								bp->ut_line,
 							sizeof(bp->ut_line));
+#ifndef SOLARIS
 							logouts[i] = bp->ut_time;
+#endif
 							break;
 						}
 						if (!strncmp(ttnames[i],
 							     bp->ut_line,
 						     sizeof(bp->ut_line))) {
+#ifndef SOLARIS
 							logouts[i] = bp->ut_time;
+#endif
 							break;
 						}
 					}
