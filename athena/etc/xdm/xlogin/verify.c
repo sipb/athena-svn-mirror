@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.18 1991-08-18 19:27:52 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.19 1992-01-27 07:12:30 probe Exp $
  */
 
 #include <stdio.h>
@@ -17,9 +17,11 @@
 #include <hesiod.h>
 #include <errno.h>
 #include <syslog.h>
+
 #ifdef _IBMR2
 #include <userpw.h>
 #include <usersec.h>
+#include <sys/id.h>
 #endif
 
 
@@ -56,7 +58,7 @@
 #define WTMP "/usr/adm/wtmp"
 #define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 
-char *defaultpath = "/srvd/patch:/usr/athena:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
+char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 
 #define file_exists(f) (access((f), F_OK) == 0)
 
@@ -362,13 +364,23 @@ char *display;
     times[1].tv_usec = times[0].tv_usec;
     utimes(errbuf, times);
 
-    if (setgid(pwd->pw_gid))
+#if defined(_AIX) && defined(_IBMR2)
+    i = setgidx(ID_SAVED|ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
+#else
+    i = setgid(pwd->pw_gid);
+#endif
+    if (i)
       return(lose("Unable to set your primary GID.\n"));
 
     if (initgroups(user, pwd->pw_gid) < 0)
       prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
-    if (setreuid(pwd->pw_uid, pwd->pw_uid))
+#if defined(_AIX) && defined(_IBMR2)
+    i = setuidx(ID_LOGIN|ID_SAVED|ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
+#else
+    i = setreuid(pwd->pw_uid, pwd->pw_uid);
+#endif
+    if (i)
       return(lose("Unable to set your user ID.\n"));
 
     if (chdir(pwd->pw_dir))
@@ -540,6 +552,7 @@ struct passwd *p;
     putuserattr(p->pw_name,S_SUCHK,1,SEC_BOOL);
     putuserattr(p->pw_name,S_RLOGINCHK,1,SEC_BOOL);
     putuserattr(p->pw_name,S_ADMIN,0,SEC_BOOL);
+    putuserattr(p->pw_name,"athena_temp",1,SEC_INT);
     putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_COMMIT);
     enduserdb();
 
@@ -608,17 +621,23 @@ struct passwd *p;
 remove_from_passwd(p)
 struct passwd *p;
 {
-  char buf[1024];
+    char buf[1024];
 
-  switch (quota_pid = fork()) {
-  case -1:
-      fprintf(stderr, "Unable to fork to edit password file.\n");
-      break;
-  case 0:
-      execl("/bin/rmuser", "rmuser", "-p", p->pw_name, NULL);
-      fprintf(stderr, "Unable to exec rmuser to edit passwd file.\n");
-      _exit(-1);
-  }
+    switch (quota_pid = fork()) {
+    case -1:
+	fprintf(stderr, "Unable to fork to edit password file.\n");
+	break;
+    case 0:
+	execl("/bin/rmuser", "rmuser", "-p", p->pw_name, NULL);
+	fprintf(stderr, "Unable to exec rmuser to edit passwd file.\n");
+	_exit(-1);
+    }
+
+    /* Wait for rmuser to complete */
+    while (quota_pid > 0)
+	sigpause(0);
+
+    return(0);
 }
 #else /* RIOS */
 remove_from_passwd(p)
@@ -813,25 +832,33 @@ struct passwd *pwd;
 IsRemoteDir(dir)
 char *dir;
 {
-  int f;
-  char c;
-  struct stat stbuf;
+#if !defined(_AIX)
+    int f;
+    char c;
+    struct stat stbuf;
   
-  if (lstat(dir, &stbuf))
+    if (lstat(dir, &stbuf))
+	return(FALSE);
+    if (!(stbuf.st_mode & S_IFDIR))
+	return(TRUE);
+
+    if ((f = open(dir, O_RDONLY, 0)) < 0)
+	return(FALSE);
+
+    if (read(f, &c, 1) < 0) {
+	close(f);
+	return(TRUE);
+    }
+
+    close(f);
     return(FALSE);
-  if (!(stbuf.st_mode & S_IFDIR))
-    return(TRUE);
+#else /* AIX */
+    struct stat stbuf;
 
-  if ((f = open(dir, O_RDONLY, 0)) < 0)
-    return(FALSE);
-
-  if (read(f, &c, 1) < 0) {
-      close(f);
-      return(TRUE);
-  }
-
-  close(f);
-  return(FALSE);
+    if (statx(dir, &stbuf, 0, STX_NORMAL))
+	return(FALSE);
+    return((stbuf.st_flag & FS_REMOTE) ? TRUE : FALSE);
+#endif
 }
 
 
@@ -989,6 +1016,7 @@ char *glist;
 	}
 	putgroupattr(gname,S_ID,gid,SEC_INT);
 	putgroupattr(gname,S_ADMIN,0,SEC_BOOL);
+	putgroupattr(gname,"athena_temp",1,SEC_BOOL);
 	putgroupattr(gname,(char *)NULL,((void *) 0),SEC_COMMIT);
       }
     }
@@ -1201,7 +1229,6 @@ char *glist;
 
 
 #if defined(_AIX) && defined(_IBMR2)
-#include <sys/id.h>
 
 /*
  * AIX 3.1 has bizzarre ideas about changing uids and gids around.  They are

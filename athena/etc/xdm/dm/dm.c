@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.18 1991-07-30 16:56:30 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.19 1992-01-27 07:09:08 probe Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -19,7 +19,15 @@
 #include <utmp.h>
 #include <ctype.h>
 #include <strings.h>
+
+#ifdef POSIX
+#include <termios.h>
+#else
+#include <sgtty.h>
+#endif
+
 #ifdef _IBMR2
+#include <termio.h>
 #include <grp.h>
 #include <usersec.h>
 #include <sys/select.h>
@@ -30,7 +38,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.18 1991-07-30 16:56:30 epeisach Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.19 1992-01-27 07:09:08 probe Exp $";
 #endif
 
 #ifndef NULL
@@ -131,6 +139,7 @@ char **argv;
     int pp[2], nfd, nfound;
     struct timeval timeout;
     char pathenv[1024];
+    static char displayenv[256] = "DISPLAY=";
 #endif
 
     if (argc != 4 &&
@@ -183,6 +192,8 @@ char **argv;
     open(line, O_RDWR, 0622);
     dup2(0, 1);
     dup2(1, 2);
+
+#if !defined(_AIX)
 #ifndef BROKEN_CONSOLE_DRIVER
     /* Set the console characteristics so we don't lose later */
 #ifdef TIOCCONS
@@ -191,6 +202,7 @@ char **argv;
 #endif  /* TIOCCONS */
     setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
     ioctl (0, TIOCSPGRP, &pgrp);
+#endif
 #endif
 
     /* save our pid file */
@@ -227,7 +239,6 @@ char **argv;
 	switch (xpid) {
 	case 0:
 #ifdef _IBMR2
-	    close(1);
 	    close(pp[0]);
 	    dup2(pp[1],1);
 #endif
@@ -274,39 +285,48 @@ char **argv;
 	    }
 	    signal(SIGUSR1, SIG_IGN);
 #else /* _IBMR2 */
-     /* have to do it this way, since the Rios X server doesn't send signals */
-     /* back when it starts up.  It does, however, write the name of the */
-     /* display it started up on to stdout when it's ready */
-	  close(pp[1]);
-	  timeout.tv_sec = X_START_WAIT;
-	  timeout.tv_usec = 0;
-	  nfd = pp[0];
-	  FD_ZERO(&rdlist);
-	  FD_SET(pp[0],&rdlist);
-	  if ((nfound = select(nfd+1,&rdlist,NULL,NULL,&timeout)) < 0) {
-	      perror("select");
-	      exit(1);
-	  }
-	  if (nfound == 0) {
-	      message("dm: X failed to become ready\n");
-	  } else {
-	      char buf[BUFSIZ];
+	    /* have to do it this way, since the Rios X server doesn't
+	     * send signals back when it starts up.  It does, however,
+	     * write the name of the display it started up on to stdout
+	     * when it's ready */
+	    close(pp[1]);
+	    timeout.tv_sec = X_START_WAIT;
+	    timeout.tv_usec = 0;
+	    nfd = pp[0];
+	    FD_ZERO(&rdlist);
+	    FD_SET(pp[0],&rdlist);
+	    if ((nfound = select(nfd+1,&rdlist,NULL,NULL,&timeout)) < 0) {
+		perror("select");
+		exit(1);
+	    }
+	    if (nfound == 0 || x_running == NONEXISTANT) {
+		message("dm: X failed to become ready\n");
+	    } else {
+		char buf[64];
+		(void) read(pp[0], buf, sizeof(buf));	/* flush the pipe */
+		/* Do not close the pipe otherwise the X server will not
+		 * allow remote connections.  Let the shutdown close the
+		 * pipe (an explicit close is not used as dm exits).
+		 */
 #ifdef DEBUG
-	      message("dm: X started\n");
+		message("X server wrote to pipe: ");
+		message(buf);
+		message("\n");
 #endif
-	      x_running = RUNNING;
-	      (void) read(pp[0], buf, BUFSIZ);	/* flush the pipe */
-	      /* Do not close the pipe otherwise the X server will not
-	       * allow remote connections.  Let the shutdown close the
-	       * pipe (an explicit close is not used as dm exits).
-	       */
+		if (buf[0]) {
 #ifdef DEBUG
-	      message("X server wrote to pipe: ");
-	      message(buf);
-	      message("\n");
+		    message("dm: X started\n");
 #endif
-	  }
-	  close(pp[0]);
+		    strncat(displayenv, buf, sizeof(buf));
+		    putenv(displayenv);
+		    x_running = RUNNING;
+		} else {
+#ifdef DEBUG
+		    message("dm: nothing was on the pipe\n");
+#endif
+		}
+	    }
+	    close(pp[0]);
 #endif /* _IBMR2 */
 	}
 	if (x_running == RUNNING) break;
@@ -351,9 +371,11 @@ char **argv;
 #endif
 	    open(line, O_RDWR, 0);
 	    dup2(1, 2);
+#ifndef POSIX
 	    /* make sure we own the tty */
 	    setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
 	    ioctl(1, TIOCSPGRP, &pgrp);
+#endif
 	    sigsetmask(0);
 	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	     * when it is ready
@@ -460,12 +482,22 @@ char **argv;
 console_login(msg)
 char *msg;
 {
+#if defined(_AIX)
+
+#ifdef DEBUG
+    message("console login is not supported; exiting\n");
+#endif
+    _exit(1);
+
+#else /* supports console login */
+
     int pgrp, i, gracefull = FALSE, xfirst = TRUE, cfirst = TRUE;
     struct sgttyb mode;
     char *nl = "\r\n";
 
 #ifdef DEBUG
     message("starting console login\n");
+    message(msg);
 #endif
 
     for (i = 0; i < X_STOP_WAIT; i++) {
@@ -525,7 +557,7 @@ char *msg;
 	    close(i);
 	}
     }
-#endif
+#endif /* vax */
 
     ioctl(0, TIOCGETP, &mode);
     mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
@@ -541,6 +573,7 @@ char *msg;
     execl(login_prog, login_prog, 0);
     message("dm: Unable to start console login\n");
     _exit(1);
+#endif /* supports console login */
 }
 
 
@@ -557,6 +590,11 @@ char **argv;
     struct timeval now;
     int file, pgrp, i;
     char *number(), c;
+#ifdef POSIX
+    struct termios tc;
+#else
+    struct sgttyb mode;
+#endif
 
 #ifdef DEBUG
     message("Starting Console\n");
@@ -593,7 +631,7 @@ char **argv;
     }
 #ifdef _IBMR2
     /* Work around, for now- should be fixed to use appropriate ioctl or */
-    /* whatever it takes */
+    /* whatever it takes (there is no simple call, however) */
     strcpy(line,ttyname(console_tty));
     switch (swconspid = fork()) {
     case -1:
@@ -619,7 +657,6 @@ char **argv;
 #ifdef DEBUG
 	message("Giving up on console\n");
 #endif
-#ifndef BROKEN_CONSOLE_DRIVER
 	/* Set the console characteristics so we don't lose later */
 #ifdef _IBMR2
     /* Work around, for now- should be fixed to use appropriate ioctl or */
@@ -627,7 +664,7 @@ char **argv;
     strcpy(line,ttyname(console_tty));
     switch (swconspid = fork()) {
     case -1:
-	message("Unable to setup console for system messages.\n");
+	message("Unable to fork to setup console for system messages.\n");
 	break;
     case 0:
 	close(1);
@@ -637,6 +674,7 @@ char **argv;
 	_exit(-1);
     }
 #else /* _IBMR2 */
+#ifndef BROKEN_CONSOLE_DRIVER
 #ifdef TIOCCONS
 	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
 #endif /* TIOCCONS */
@@ -666,6 +704,56 @@ char **argv;
 	}
 	dup2(console_tty, 0);
 	close(console_tty);
+
+	/* Since we are the session leader, we must initialize the tty */
+#ifdef POSIX
+	(void) tcgetattr(0, &tc);
+	tc.c_iflag = ICRNL|BRKINT|ISTRIP|ICRNL|IXON|IXANY|IMAXBEL;
+	tc.c_oflag = OPOST|ONLCR|TAB3;
+	tc.c_lflag = ISIG|ICANON|IEXTEN|ECHO|ECHOE|ECHOK|ECHOCTL;
+	tc.c_cc[VMIN] = 1;
+	tc.c_cc[VTIME] = 0;
+	tc.c_cc[VERASE] = CERASE;
+	tc.c_cc[VKILL] = CKILL;
+	tc.c_cc[VEOF] = CEOF;
+	tc.c_cc[VINTR] = CINTR;
+	tc.c_cc[VQUIT] = CQUIT;
+	tc.c_cc[VSTART] = CSTART;
+	tc.c_cc[VSTOP] = CSTOP;
+	tc.c_cc[VEOL] = CNUL;
+	/* The following are common extensions to POSIX */
+#ifdef VEOL2
+	tc.c_cc[VEOL2] = CNUL;
+#endif
+#ifdef VSUSP
+	tc.c_cc[VSUSP] = CSUSP;
+#endif
+#ifdef VDSUSP
+	tc.c_cc[VDSUSP] = CDSUSP;
+#endif
+#ifdef VLNEXT
+	tc.c_cc[VLNEXT] = CLNEXT;
+#endif
+#ifdef VREPRINT
+	tc.c_cc[VREPRINT] = CRPRNT;
+#endif
+#ifdef VDISCRD
+	tc.c_cc[VDISCRD] = CFLUSH;
+#endif
+#ifdef VWERSE
+	tc.c_cc[VWERSE] = CWERASE;
+#endif
+	tcsetattr(0, TCSANOW, &tc);
+
+#else /* ! POSIX */
+	/* BSD seems to handle the initialization by itself; we might
+	 * as well make sure that we have cooked/cbreak with echo.
+	 * Extend as REQUIRED (but avoid any numeric constants) */
+	ioctl(0, TIOCGETP, &mode);
+	mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
+	ioctl(0, TIOCSETP, &mode);
+#endif /* ! POSIX */
+	
 #ifdef DEBUG
 	close(1);
 	close(2);
@@ -785,11 +873,12 @@ char *tty;
     }
 
     if (clflag) {
-	/* Clean up password file */
-	removepwent(login);
 #ifdef _IBMR2
+	/* Clean groups file - must be before the password file cleanup */
 	clean_groups(login);
 #endif
+	/* Clean up password file */
+	removepwent(login);
     }
 
     file = 0;
@@ -846,6 +935,10 @@ void child()
 	  login_running = NONEXISTANT;
 #ifdef _IBMR2
     } else if (pid == swconspid) {
+#ifdef TRACE
+	trace("swcons/rmuser exited status ");
+	trace(number(status.w_retcode));
+#endif
 	swconspid = 0;
 #endif
     } else {
@@ -909,15 +1002,17 @@ char *login;
     if ((login != NULL) && (*login != '\0')) {
 	switch (swconspid = fork()) {
 	case -1:
-	    message("Unable to setup console for system messages.\n");
+	    message("Unable to fork to run rmuser.\n");
 	    break;
 	case 0:
-	    close(1);
-	    open("/dev/null", O_RDWR);
 	    execl("/bin/rmuser", "rmuser", "-p", login, NULL);
-	    message("Unable to setup console for system messages.\n");
+	    message("Unable to run rmuser.\n");
 	    _exit(-1);
 	}
+
+	/* Wait for rmuser to complete */
+	while (swconspid > 0)
+	    sigpause(0);
     }
 }
 
@@ -1107,75 +1202,75 @@ void
 clean_groups(user)
      char *user;
 {
-  int i,found,nempty;
-  char *empty_groups[NGROUPS]; /* Can't be more new empty groups created */
-			       /* than the user was in */
-  struct group *grp;
-  char *glist,*p;
-  char *glista[NGROUPS];
-  char *pgroup;
-  char *empty;
-  FILE *f;
+#define MAXGROUPS (2*NGROUPS)
 
-  found = 0;
-  for (i = 0; i < 10; i++)
-    if (setuserdb(S_WRITE) == -1) {
-      alarm(1);
-      sigpause(0);
-    } else {
-      found = 1;
-      break;
-    }
+    int i,found,nempty;
+    char *empty_groups[MAXGROUPS];	/* Can't be more new empty groups
+					 * created than the user was in */
+    char *grp;
+    int grp_status;
+    char *glist,*p;
+    char *glista[NGROUPS];
+    char *empty;
 
-  if (found == 0)
-    /* Couldn't get the lock- oh well, maybe next time */
-    return;
-
-  if (getuserattr(user,S_PGRP,(void *)&pgroup,SEC_CHAR) == -1)
-    pgroup = "mit";
-
-  if (getuserattr(user,S_GROUPS,&glist,SEC_LIST) == -1)
-    glist = "\0";
-
-  /* Convert list to array of char *'s */
-
-  i = 0;
-  p = glist;
-  while (*p != '\0') {
-    glista[i] = (char *)malloc(strlen(p) + 1);
-    strcpy(glista[i++],p);
-    p = index(p,'\0') +1;
-  }
-  glista[i] = NULL;
-  
-  empty = "\0";
-  putuserattr(user,S_GROUPS,&empty,SEC_LIST);
-  putuserattr(user,(char *)NULL,((void *) 0),SEC_COMMIT);
-  
-  nempty = 0;
-  while((grp = getgrent()) != NULL) {
-    if (grp->gr_mem[0] == NULL) { /* Group empty */
-      found = 0;
-      for(i=0;glista[i] != NULL;i++) {
-	if (strcmp(grp->gr_name,glista[i]) == 0) {
-	  found = 1;
-	  break;
+    found = 0;
+    for (i = 0; i < 10; i++)
+	if (setuserdb(S_READ|S_WRITE) == -1) {
+	    alarm(1);
+	    sigpause(0);
+	} else {
+	    found = 1;
+	    break;
 	}
-      }
-      if (!found)
-	continue;
-      empty_groups[nempty] = (char *)malloc(strlen(grp->gr_name)+1);
-      strcpy(empty_groups[nempty],grp->gr_name);
-      nempty++;
-    }
-  }
-  for (i=0;i<nempty;i++) {
-#ifdef DEBUG
-    printf("Removing %s\n",empty_groups[i]);
+
+    if (found == 0)
+	/* Couldn't get the lock- oh well, maybe next time */
+	return;
+
+#ifdef TRACE
+    trace("Cleaning groups of user ");
+    trace(user);
+    trace("\n");
 #endif
-    rmufile(empty_groups[i],0,GROUP_TABLE);
-  }
-  enduserdb();
+
+    if (getuserattr(user,S_GROUPS,&glist,SEC_LIST) == -1)
+	glist = "\0";
+
+    /* Convert list to array of char *'s */
+    i = 0;
+    p = glist;
+    while (*p != '\0') {
+	glista[i] = (char *)malloc(strlen(p) + 1);
+	strcpy(glista[i++],p);
+	p = index(p,'\0') +1;
+    }
+    glista[i] = NULL;
+    
+    empty = "\0";
+    putuserattr(user,S_GROUPS,&empty,SEC_LIST);
+    putuserattr(user,(char *)NULL,((void *) 0),SEC_COMMIT);
+
+    nempty = 0;
+    grp = nextgroup(S_LOCAL, NULL);
+    while (grp && nempty < MAXGROUPS) {
+	if (getgroupattr(grp, "athena_temp", &grp_status, SEC_BOOL) == 0) {
+	    if ((getgroupattr(grp, S_USERS, &glist, SEC_LIST) == -1) ||
+		*glist=='\0') {
+#ifdef TRACE
+		trace("Removing group ");
+		trace(grp);
+		trace("\n");
+#endif
+		rmufile(grp, 0, GROUP_TABLE);
+#if 0
+		grp = nextgroup(S_LOCAL, NULL);	/* Re-scan */
+		continue;
+#endif
+	    }
+	}
+	grp = nextgroup(NULL, NULL);
+    }
+    enduserdb();
 }
 #endif
 
