@@ -3,6 +3,31 @@ Summary: Various small attach-and-run scripts and other such things
 Copyright: MIT
 Group: System Environment/Base
 
+%description
+The attach-and-run scripts for the moira clients, andrew, mkserv,
+tellme, and the help system.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp athena-update_server.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-update_server
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-update_server
+
+find $RPM_BUILD_ROOT -type f -or -type l | 
+    sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
+
 %triggerin -- setup
 ( grep -s -q ^moira_db /etc/services \
 	|| echo "moira_db	775/tcp		# Moira database"
@@ -19,8 +44,9 @@ Group: System Environment/Base
 	|| echo "sms_ureg	779/udp		# Moira user registration"
 ) >> /etc/services
 
+%post
+grep -q MRUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+MRUPDATE=false;		export MRUPDATE		# Moira update daemon
+EOF
 
-%description
-The attach-and-run scripts for the moira clients, andrew, mkserv,
-tellme, and the help system.
-
+chkconfig --add athena-update_server
