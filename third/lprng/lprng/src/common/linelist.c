@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linelist.c,v 1.1.1.3 1999-10-27 20:09:54 mwhitson Exp $";
+"$Id: linelist.c,v 1.1.1.4 1999-10-28 17:12:25 mwhitson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -2503,7 +2503,8 @@ int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 		close_on_exec(passfd->count);
 		execve(cmd.list[0],cmd.list,env.list);
 		plp_snprintf(error,sizeof(error),
-			"Make_passthrough: pid %d, execve '%s' failed\n", getpid(), cmd.list[0] );
+			"Make_passthrough: pid %d, execve '%s' failed - '%s'\n", getpid(),
+			cmd.list[0], Errormsg(errno) );
 		Write_fd_str(2,error);
 		exit(JABORT);
 	}
