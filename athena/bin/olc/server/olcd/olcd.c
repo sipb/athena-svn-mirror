@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.40 1991-03-28 23:25:34 lwvanels Exp $
+ *	$Id: olcd.c,v 1.41 1991-04-08 21:13:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.40 1991-03-28 23:25:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.41 1991-04-08 21:13:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -216,7 +216,7 @@ main (argc, argv)
 	case 0:				/* child */
 	    break;
 	case -1:			/* error */
-	    perror ("Can't fork");
+	    log_error ("Can't fork: %m");
 	    exit(-1);
 	default:			/* parent */
 	    exit(0);
@@ -226,7 +226,7 @@ main (argc, argv)
 	    (void) close (fd);
 	fd = open ("/", O_RDONLY);
 	if (fd < 0) {
-	    perror ("Can't open /");
+	    log_error("Can't open /");
 	    return 1;
 	}
 	if (fd != 0)
@@ -264,7 +264,6 @@ main (argc, argv)
     Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
     if (Knuckle_List == (KNUCKLE **) NULL)
     {
-	perror("malloc");
 	log_error("olcd: can't allocate Knuckle List");
 	exit(ERROR);
     }
@@ -273,7 +272,6 @@ main (argc, argv)
     Topic_List = (TOPIC **) malloc(sizeof(TOPIC *));
     if (Topic_List == (TOPIC **) NULL)
     {
-	perror("malloc");
 	log_error("olcd: can't allocate Topic List");
 	exit(ERROR);
     }
@@ -285,15 +283,13 @@ main (argc, argv)
 
     if (gethostname(hostname, LINE_SIZE) != 0)
     {
-	perror("gethostname");
-	log_error("olcd: can't get hostname");
+	log_error("olcd: can't get hostname: %m");
 	exit(ERROR);
     }
 
     if ((this_host_entry = gethostbyname(hostname)) == (struct hostent *)NULL)
     {
-	perror("gethostbyname");
-	log_error("olcd: Unable to get host entry for this host.\n");
+	log_error("olcd: Unable to get host entry for this host: %m");
 	exit(ERROR);
     }
     (void) strcpy(hostname, this_host_entry->h_name);
@@ -336,8 +332,7 @@ main (argc, argv)
 restart:
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
-	perror("olcd");
-	log_error("olcd: can't create a socket.");
+	log_error("olcd: can't create a socket: %m");
 	exit(ERROR);
     }
     listening_fd = fd;
@@ -351,8 +346,7 @@ restart:
 	onoff = 0;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &onoff , 0) < 0)
 	{
-	    perror("setsockopt");
-	    log_error("Can't set socket options.");
+	    log_error("Can't set socket options: %m");
 	    exit(ERROR);
 	}
     }
@@ -363,7 +357,7 @@ restart:
 
     if (bind(fd, (struct sockaddr *) &sin, sizeof(struct sockaddr_in)) < 0)
     {
-	perror("Can't bind socket");
+	log_error("bind: %m");
 	exit(ERROR);
     }
 
@@ -373,24 +367,18 @@ restart:
 
     if (chdir(LOG_DIR) == -1)
     {
-	perror(LOG_DIR);
-	log_error("Can't change wdir.");
+	log_error("Can't change wdir: %m");
     }
 
     uncase(hostname);
     uncase(daemon_host_entry->h_name);
 
     if (!string_eq(hostname, daemon_host_entry->h_name)) {
-#ifdef TEST
-	log_error("warning: host must be here, not %s (hesiod probs?)", DaemonHost);
-	strcpy (DaemonHost, hostname);
-#else
-	/* format message first, because h_name is static buffer */
-	char *msg = fmt("%s != %s", hostname, daemon_host_entry->h_name);
-	log_error("error: host information doesn't point here; exiting");
-	log_error(msg);
-	return 1;
-#endif
+      /* format message first, because h_name is static buffer */
+      char *msg = fmt("%s != %s", hostname, daemon_host_entry->h_name);
+      log_error("error: host information doesn't point here; exiting");
+      log_error(msg);
+      return 1;
     }
 
     log_status (fmt ("%s Daemon startup....", DaemonInst));
@@ -406,8 +394,7 @@ restart:
     if (listen(fd, SOMAXCONN))
     {
 	fflush(stderr);
-	perror("listen");
-	log_error("aborting from listen...");
+	log_error("aborting from listen: %m");
 	exit(1);
     }
 
@@ -489,9 +476,7 @@ restart:
 	if (s < 0) {
 	    if (errno == EINTR)
 		continue;
-	    perror("accept");
-	    fflush(stderr);
-	    log_error("Error accepting connection.");
+	    log_error("Error accepting connection: %m");
 	    n_errs++;
 	    if (n_errs < 3)
 		continue;
@@ -553,7 +538,7 @@ process_request (fd, from)
     index = 0;
     processing_request = 1;
     if(read_request(fd, &request) != SUCCESS) {
-	perror ("Error in reading request");
+	log_error ("Error in reading request");
 	return;
     }
     type = request.request_type;
@@ -607,12 +592,7 @@ process_request (fd, from)
     }
     else
     {
-	send_response(fd, UNKNOWN_REQUEST);
-#ifdef TEST
-	printf("Got unknown request from '%s' (#%d)\n",
-	       request.requester.username, type);
-#endif /* TEST */
-
+      send_response(fd, UNKNOWN_REQUEST);
     }
 
 
@@ -645,7 +625,6 @@ flush_olc_userlogs()
 
     if (dirp == (DIR *)NULL)
     {
-	perror(LOG_DIR);
 	log_error("Can't flush lost userlogs");
 	return;
     }
@@ -776,10 +755,6 @@ authenticate(request, addr)
 
     result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCEbuf,
 			addr,&data,SRVTAB_FILE);
-
-#if 0
-    printf("kerberos result: %d\n",result);
-#endif /* TEST */
 
     strcpy(request->requester.username,data.pname);
     strcpy(request->requester.realm,data.prealm);
