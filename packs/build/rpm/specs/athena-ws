@@ -75,6 +75,7 @@ chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
 
 %post
 chkconfig --add athena-ws
+chkconfig --add athena-verify
 chkconfig --add syncconf
 
 # Turn on the sound card for the cluster workstations.  Unfortunately,
