@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v $
- *	$Id: p_motd.c,v 1.16 1992-01-10 20:00:23 lwvanels Exp $
+ *	$Id: p_motd.c,v 1.17 1992-01-13 18:58:14 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.16 1992-01-10 20:00:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.17 1992-01-13 18:58:14 lwvanels Exp $";
 #endif
 #endif
 
@@ -45,6 +45,7 @@ do_olc_motd(arguments)
   int save_file = 0;
   int type=0;
   int change_flag = 0;
+  int clear_flag = 0;
   char editor[NAME_SIZE];
 
   strcpy(file, "");
@@ -97,6 +98,11 @@ do_olc_motd(arguments)
 	  continue;
 	}
 
+      if (string_equiv(*arguments,"-clear", max(strlen(*arguments),2))) {
+	++arguments;
+	clear_flag = TRUE;
+	continue;
+      }
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
@@ -106,19 +112,19 @@ do_olc_motd(arguments)
       if(arguments == (char **) NULL)   /* error */
 	{
 	  printf("Usage is: \tmotd  [-file <filename>] [-change] ");
-	  printf("[-editor <editor>]\n");
+	  printf("[-editor <editor>] [-clear]\n");
 	  return(ERROR);
 	}
     }
 
-  if(!change_flag) {
+  if(!(change_flag || clear_flag)) {
     Request.request_type = OLC_MOTD;
     status = t_get_file(&Request,type,file,!save_file);
   }
   else {
     Request.request_type = OLC_CHANGE_MOTD;
     status = t_change_file(&Request,type,file,editor,
-			   (!save_file ? OLC_MOTD : 0)); 
+			   (!save_file ? OLC_MOTD : 0), clear_flag); 
   }
   if(!save_file)
     (void) unlink(file);
@@ -208,7 +214,7 @@ do_olc_hours(arguments)
   else {
     Request.request_type = OLC_CHANGE_HOURS;
     status = t_change_file(&Request,type,file,editor,
-			   (!save_file ? OLC_GET_HOURS : 0));
+			   (!save_file ? OLC_GET_HOURS : 0),0);
   }
   if(!save_file)
     (void) unlink(file);
