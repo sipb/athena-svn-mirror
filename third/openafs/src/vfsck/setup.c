@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/setup.c,v 1.4 2003-03-20 07:39:24 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/setup.c,v 1.5 2004-01-07 14:04:05 zacheiss Exp $");
 
 #include <stdio.h>
 #define VICE
@@ -687,7 +687,9 @@ readsb(listerr)
 		return (1);
 	}
 	altsblock.fs_link = sblock.fs_link;
-#if !defined(AFS_SUN59_ENV)
+#ifdef STRUCT_FS_HAS_FS_ROLLED
+	altsblock.fs_rolled = sblock.fs_rolled;
+#else
 	altsblock.fs_rlink = sblock.fs_rlink;
 #endif
 	altsblock.fs_time = sblock.fs_time;

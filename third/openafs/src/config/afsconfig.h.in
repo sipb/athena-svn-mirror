@@ -251,6 +251,9 @@
 /* define if struct proc has p_corefile */
 #undef HAVE_P_COREFILE
 
+/* define if struct fs has fs_rolled */
+#undef STRUCT_FS_HAS_FS_ROLLED
+
 /* define if you struct sockaddr sa_len */
 #undef STRUCT_SOCKADDR_HAS_SA_LEN
 
@@ -325,6 +328,7 @@ static /**/const char *const rcsid[] = { (char *)rcsid, "\100(#)" msg }
 #undef RECALC_SIGPENDING_TAKES_VOID
 #undef STRUCT_ADDRESS_SPACE_HAS_GFP_MASK
 #undef STRUCT_ADDRESS_SPACE_HAS_PAGE_LOCK
+#undef STRUCT_FS_HAS_FS_ROLLED
 #undef STRUCT_INODE_HAS_I_DEVICES
 #undef STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS
 #undef STRUCT_INODE_HAS_I_TRUNCATE_SEM
