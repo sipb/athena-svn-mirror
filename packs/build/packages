@@ -1,4 +1,4 @@
-# $Id: packages,v 1.229 2003-04-09 21:22:18 ghudson Exp $
+# $Id: packages,v 1.230 2003-04-17 15:36:31 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -62,7 +62,7 @@ athena/bin/dent
 athena/bin/discuss		requires krb5,zephyr,ss,et
 athena/bin/dustbuster
 athena/bin/finger		requires hesiod,zephyr
-athena/bin/from			requires hesiod,krb5
+athena/bin/from			requires cyrus-imap-client,perl
 athena/bin/gathlogout		requires gtk2
 athena/bin/gathrun
 athena/bin/get_message		requires gms,hesiod
@@ -141,6 +141,8 @@ third/bonobo-activation		except linux requires gettext,glib2,ORBit2,linc,libxml2
 third/bonobo-conf		requires bonobo
 third/bug-buddy			except linux requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgnomecanvas,libgnomeui,libglade2,libxml2
 third/bzip2			except linux
+third/cyrus-imapd		requires cyrus-sasl,perl package cyrus-imap-client
+third/cyrus-sasl		requires krb5
 third/control-center		except linux requires gettext,intltool,gtk2,GConf2,libgnomeui,libglade2,libbonobo,libbonoboui,bonobo-activation,libglade2,gnome-desktop,libxml2,gnome-vfs2,esound,metacity,Xft
 third/db
 third/diffutils			on solaris
