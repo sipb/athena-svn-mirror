@@ -1,4 +1,4 @@
-# $Id: packages,v 1.304 2005-03-07 21:17:41 ghudson Exp $
+# $Id: packages,v 1.305 2005-03-17 20:21:53 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -171,7 +171,7 @@ third/gal			requires gnome-vfs,libglade,gdk-pixbuf
 third/gal2			requires gettext,intltool,libiconv,libgnomeprint,libgnomeprintui,libglade2,libgnomeui,libgnomecanvas,libxml2
 third/gcalctool			requires gettext,intltool,libgnome,libgnomeui,GConf2,scrollkeeper
 third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
-third/GConf2			requires gettext,glib2,libxml2,gtk2,ORBit2,linc
+third/GConf2			requires gettext,glib2,libxml2,gtk2,ORBit2
 third/gconf-editor		requires gettext,intltool,GConf2,gtk2
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk,gnome-libs
@@ -254,7 +254,6 @@ third/libxklavier
 third/libxml
 third/libxml2
 third/libxslt			requires libxml2
-third/linc			except linux requires glib2,openssl
 third/lprng/athena		package lprng-misc
 third/lprng/ifhp		requires athena/lib/zephyr
 third/lprng/lprng		requires krb5,zephyr,hesiod
@@ -274,7 +273,7 @@ third/openldap			requires openssl,cyrus-sasl
 third/openssh			requires krb5,tcp_wrappers,openssl,al,hesiod
 third/openssl			requires perl
 third/ORBit			requires glib,gettext
-third/ORBit2			requires glib2,linc,libIDL,popt
+third/ORBit2			requires glib2,libIDL,popt
 third/pango			requires freetype,glib2,Xft
 third/patch			on solaris
 third/pcre			on solaris
