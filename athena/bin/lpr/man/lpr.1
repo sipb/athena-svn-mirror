@@ -4,8 +4,8 @@
 .\"
 .\"	@(#)lpr.1	6.1 (Berkeley) 4/29/85
 .\"
-.TH LPR 1 "April 29, 1985"
-.UC 4
+.TH LPR 1 "February 7, 1986"
+.FM mit
 .SH NAME
 lpr \- off line print
 .SH SYNOPSIS
@@ -45,7 +45,9 @@ The
 .B \-P
 option may be used to force output to a specific printer.  Normally,
 the default printer is used (site dependent), or the value of the
-environment variable PRINTER is used.
+environment variable APRINTER is used. (See
+.IR printers (7)
+for more information on printer use, names, etc.)
 .PP
 The following single letter options are used to notify the line printer
 spooler that the files are not standard text files. The spooling daemon will
@@ -80,8 +82,14 @@ for the filters used by the printer spooler).
 The files are assumed to contain a raster image for devices like the
 Benson Varian.
 .IP \fB\-c\fP 5
-The files are assumed to contain data produced by
-.IR cifplot (l).
+This option is currently disabled.
+Previously,
+this option activated landscape mode for LN01 printers.
+(When an LN01 printer is in landscape mode,
+it prints horizontally along the long dimension as opposed to
+the short dimension of the paper.)
+This option will be enabled when
+the landscape mode software has been fixed.
 .IP \fB\-f\fP 5
 Use a filter which interprets the first character of each line as a
 standard FORTRAN carriage control character.
@@ -181,6 +189,7 @@ lprm(1),
 pr(1),
 symlink(2),
 printcap(5),
+printers(7),
 lpc(8),
 lpd(8)
 .SH DIAGNOSTICS
