@@ -1,6 +1,8 @@
 #define APP_DEF_DIR	"/afs/athena/astaff/project/motifdev/projects/olc/"
 
 #define ICON_FILENAME	"/afs/athena/astaff/project/motifdev/projects/olc/olc.icon"
+#define ICON_PATH	"/afs/athena/astaff/project/motifdev/projects/olc/"
+#define ICON_FILE	"olc.icon"
 
 #define HELP_DIR	"/afs/athena/astaff/project/motifdev/projects/olc/help"
 #define HELP_INIT_NEWQ	"olc.init.newq"
@@ -8,6 +10,7 @@
 #define HELP_ASK	"olc.ask"
 #define HELP_REPLAY	"olc.replay"
 #define HELP_UNKNOWN	"olc.unknown"
+#define HELP_NEWQ_BTN	"olc.newq_btn"
 
 /*
  *  Messages used in various dialog boxes.
