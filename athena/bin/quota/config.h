@@ -1,6 +1,6 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
- *	$Id: config.h,v 1.2 1997-04-01 01:02:29 ghudson Exp $
+ *	$Id: config.h,v 1.3 1998-01-03 03:38:03 ghudson Exp $
  *
  * Configuration defines
  *
@@ -21,7 +21,7 @@
 #define NFS
 #define AFS
 
-#if (defined(vax) && !defined(ultrix)) || defined(ibm032) || defined(i386)
+#if (defined(vax) && !defined(ultrix)) || defined(ibm032)
 #define	RVD
 #endif
 #if defined(sun)

@@ -22,15 +22,11 @@ MACHDEFS= -DUW
 MACHLIBS= -lrpcsvc
 #endif
 
-#if defined(i386)
-MACHLIBS= -lrpclib
-#endif
-
 #if defined(_IBMR2) || defined(SOLARIS) || defined(sgi)
 MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
 #endif
 
-#if defined(ultrix) || defined(i386)
+#if defined(ultrix)
 MACHOBJS=rcquotaxdr.o
 #endif
 

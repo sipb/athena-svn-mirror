@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.4 1996-09-20 03:12:29 ghudson Exp $
+ * $Id: attach.h,v 1.5 1998-01-03 03:38:03 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -190,8 +190,3 @@ extern struct _attachtab
     *attachtab_first,
     *attachtab_lookup(),
     *attachtab_lookup_mntpt();
-    
-
-#if !defined(__STDC__) && !(defined(AIX) && defined(i386))
-#define	const
-#endif
