@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: desync.c,v 1.7 1999-10-21 04:28:47 ghudson Exp $";
+static const char rcsid[] = "$Id: desync.c,v 1.8 2000-09-21 14:22:14 ghudson Exp $";
 
 /*
  * desync - desynchronize cron jobs on networks
@@ -29,32 +29,24 @@ static const char rcsid[] = "$Id: desync.c,v 1.7 1999-10-21 04:28:47 ghudson Exp
 #include <fcntl.h>
 #include <ctype.h>
 #include <string.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
 #include <time.h>
 
-#ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned long) -1)
-#endif
-
-#define CONF SYSCONFDIR "/rc.conf"
-
 extern int optind;
 extern char *optarg;
 
 static char *progname;
 
-static unsigned long get_addr(void);
+static unsigned long get_hostname_hash(void);
 
 int main(int argc, char **argv)
 {
   const char *timefile = NULL;
   int range, interval, c;
-  unsigned long tval, ip;
+  unsigned long tval, seed;
   FILE *fp;
 
   /* Save the program name. */
@@ -78,11 +70,11 @@ int main(int argc, char **argv)
   argv += optind;
   range = (argc == 1) ? atoi(argv[0]) : 3600;
 
-  ip = get_addr();
-  if (ip == INADDR_NONE)
+  seed = get_hostname_hash();
+  if (seed == 0)
     return 2;
 
-  srand(ntohl(ip));
+  srand(seed);
   interval = rand() % range;
 
   if (timefile)
@@ -127,54 +119,31 @@ int main(int argc, char **argv)
   return 0;
 }
 
-static unsigned long get_addr(void)
+static unsigned long get_hostname_hash(void)
 {
-  FILE *fp;
-  char buf[128], *p, *q;
-  unsigned long ip;
+  char buf[128], *p;
+  unsigned long g, hashval = 0;
 
-  /* Open rc.conf for reading. */
-  fp = fopen(CONF, "r");
-  if (!fp)
+  if (gethostname(buf, sizeof(buf)) < 0)
     {
-      fprintf(stderr, "%s: Can't open %s for reading: %s\n", progname, CONF,
-	      strerror(errno));
-      return INADDR_NONE;
+      fprintf(stderr, "%s: Unable to obtain hostname: %s\n",
+	      progname, strerror(errno));
+      return 0;
+    }
+  buf[sizeof(buf) - 1] = '\0';
+
+  for (p = buf; *p; p++)
+    {
+      hashval = (hashval << 4) + *p;
+      g = hashval & 0xf0000000;
+      if (g != 0) {
+	hashval ^= g >> 24;
+	hashval ^= g;
+      }
     }
 
-  /* Look for the line setting ADDR. */
-  while (fgets(buf, sizeof(buf), fp) != NULL)
-    {
-      if (strncmp(buf, "ADDR", 4) == 0)
-	{
-	  /* Find the value (or go on if ADDR isn't followed by '='). */
-	  p = buf + 4;
-	  while (isspace((unsigned char)*p))
-	    p++;
-	  if (*p != '=')
-	    continue;
-	  p++;
-	  while (isspace((unsigned char)*p))
-	    p++;
+  if (hashval == 0)
+    hashval = 1;
 
-	  /* Truncate after the address. */
-	  q = p;
-	  while (isdigit((unsigned char)*q) || *q == '.')
-	    q++;
-	  *q = 0;
-
-	  /* Parse the value into an IP address and test its validity. */
-	  ip = inet_addr(p);
-	  if (ip == INADDR_NONE)
-	    fprintf(stderr, "%s: Invalid address: %s\n", progname, p);
-
-	  fclose(fp);
-	  return ip;
-	}
-    }
-
-  /* We didn't find it. */
-  fclose(fp);
-  fprintf(stderr, "%s: Can't find ADDR line in %s\n", progname, CONF);
-  return INADDR_NONE;
+  return hashval;
 }
