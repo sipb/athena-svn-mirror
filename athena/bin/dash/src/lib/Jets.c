@@ -11,11 +11,12 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.3 1993-07-02 01:22:13 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.4 1993-07-02 17:18:12 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
+#include <X11/Xos.h>
 #include <ctype.h>
 #include <varargs.h>
 #include <errno.h>
@@ -23,6 +24,9 @@ static char *rcsid =
 #include <sys/types.h>
 #include <sys/resource.h>
 #include <sys/ioctl.h>
+#ifdef SOLARIS
+#include <sys/filio.h>
+#endif
 #include "Jets.h"
 #include "fd.h"
 #include "hash.h"
@@ -1274,8 +1278,8 @@ void XjRealizeJet(jet)
   jet->core.sibling = siblingJet;
 }
 
-#define MAXNAMELEN 500
-static char resClass[MAXNAMELEN], resInstance[MAXNAMELEN];
+#define MAX_NAME_LEN 500
+static char resClass[MAX_NAME_LEN], resInstance[MAX_NAME_LEN];
 
 Jet XjFindJet(name, parent)
 char *name;
