@@ -1,10 +1,10 @@
-# $Id: Makefile.athena,v 1.5 1997-12-05 21:20:23 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 1998-01-03 03:36:02 ghudson Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f config.sh
-	./Configure -ds -E -Dprefix=/usr/athena -Dcc=/usr/gcc/bin/gcc \
+	./Configure -ds -E -Dprefix=/usr/athena -Dcc="$$COMPILER" \
 		-Dperladmin=bugs@mit.edu
 	sed -e "s,^install\(.*\)=',install\1='$$SRVD," \
 		config.sh > config.sh.new
