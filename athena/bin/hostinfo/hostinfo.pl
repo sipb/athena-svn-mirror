@@ -1,5 +1,5 @@
 #!/usr/athena/bin/perl
-# $Id: hostinfo.pl,v 1.3 1999-10-18 18:43:10 danw Exp $
+# $Id: hostinfo.pl,v 1.4 2000-12-18 08:45:13 ghudson Exp $
 
 # Copyright 1998 by the Massachusetts Institute of Technology.
 #
@@ -82,8 +82,8 @@ while (@ARGV) {
 	next;
     }
 
-    $host = $mx = $hinfo = "";
-    @addr = ();
+    $host = $hinfo = "";
+    @addr = @mx = ();
 
     if (!$show_mx) {
 	$flags = "-t a";
@@ -100,7 +100,7 @@ while (@ARGV) {
 	    $host = $1;
 	    push(@addr, $arg);
 	} elsif (/mail is handled \(pri=\d+\) by (.*)$/) {
-	    $mx = $1;
+	    push(@mx, $1);
 	} else {
 	    $error = $error . $_;
 	}
@@ -112,7 +112,7 @@ while (@ARGV) {
 	    print STDERR "No such host '$arg'.\n";
 	} elsif ($error =~ /try again|No recovery/) {
 	    print STDERR "Cannot resolve name '$arg' due to network difficulties.\n";
-	} elsif (!$mx) {
+	} elsif (!@mx) {
 	    print STDERR "No such host '$arg'.\n";
 	} else {
 	    print STDERR "No address for '$arg'.\n";
@@ -135,15 +135,15 @@ while (@ARGV) {
 	print "Official name:\t$host\n";
 	foreach (@addr) { print "Host address:\t$_\n"; }
 	print "Host info:\t$hinfo\n" if $show_hinfo && $hinfo;
-	print "MX address:\t$mx\n" if $show_mx && $mx;
+	foreach (@mx) { print "MX address:\t$_\n" if $show_mx; }
     } elsif ($show_host && $host) {
 	print "$host\n";
     } elsif ($show_addr && @addr) {
 	foreach (@addr) { print "$_\n"; }
     } elsif ($show_hinfo && $hinfo) {
 	print "$hinfo\n";
-    } elsif ($show_mx && $mx) {
-	print "$mx\n";
+    } elsif ($show_mx && @mx) {
+	foreach (@mx) { print "$_\n"; }
     }
 
     print "\n" if $long_output && @ARGV;
