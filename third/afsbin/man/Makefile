@@ -1,7 +1,7 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:38:35 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-12-18 16:58:05 ghudson Exp $
 
 SHELL=/bin/sh
-ATHMANDIR=/usr/athena/lib
+ATHMANDIR=/usr/athena/man
 
 all:
 
