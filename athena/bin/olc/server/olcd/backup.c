@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.21 1991-04-08 21:09:17 lwvanels Exp $
+ *	$Id: backup.c,v 1.22 1992-01-30 15:02:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.21 1991-04-08 21:09:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.22 1992-01-30 15:02:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -524,7 +524,7 @@ char *string;
 	  bcopy(buf,type_buf,STRING_SIZE);
 	  if(cc == 0)
 	    skip = FALSE;
-	  log_error("type_error: brain damage: %m");
+	  log_error("type_error: brain damage");
 	  return;
 	}
       buf[STRING_SIZE-1] = buf2[0];
