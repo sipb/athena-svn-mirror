@@ -17,7 +17,7 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_server_c[] = "$Id: server.c,v 1.63 1998-07-16 14:55:08 ghudson Exp $";
+static const char rcsid_server_c[] = "$Id: server.c,v 1.64 1998-09-03 01:37:53 ghudson Exp $";
 #endif
 #endif
 
@@ -1419,6 +1419,7 @@ server_forw_reliable(server, pack, packlen, notice)
 	return;
     }
 
+    nacked->client = NULL;
     nacked->rexmits = 0;
     nacked->packet = pack;
     nacked->dest.srv_idx = server - otherservers;

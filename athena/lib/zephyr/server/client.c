@@ -17,7 +17,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_client_c[] =
-"$Id: client.c,v 1.31 1998-07-16 14:55:05 ghudson Exp $";
+"$Id: client.c,v 1.32 1998-09-03 01:37:33 ghudson Exp $";
 #endif
 
 /*
@@ -89,6 +89,7 @@ client_register(notice, host, client_p, wantdefaults)
 	memset(&client->session_key, 0, sizeof(client->session_key));
 #endif
 	client->last_send = 0;
+	client->last_ack = NOW;
 	client->addr.sin_family = AF_INET;
 	client->addr.sin_addr.s_addr = host->s_addr;
 	client->addr.sin_port = notice->z_port;
