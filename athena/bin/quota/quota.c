@@ -1,7 +1,11 @@
 /*
- * Disk quota reporting program.
- *    This version handles groups quotas and version 2 of the quota rpc.
- *      (-JR)
+ *   Disk quota reporting program.
+ *
+ *   $Author jnrees $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.4 1990-05-17 15:04:02 jnrees Exp $
+ *   $Log: not supported by cvs2svn $
+ *   
+ *   Uses the rcquota rpc call for group and user quotas
  */
 #include <stdio.h>
 #include <mntent.h>
@@ -364,7 +368,7 @@ prquota(mntp, qvp)
 	register struct getcquota_rslt *qvp;
 {
   struct timeval tv;
-  char ftimeleft[80], btimeleft[80];
+  char ftimeleft[80], btimeleft[80], idbuf[20];
   char *cp;
   int i;
   char *id_name, *id_type;
@@ -389,10 +393,24 @@ prquota(mntp, qvp)
 	&& !rqp->rq_curblocks && !rqp->rq_fsoftlimit
 	&& !rqp->rq_fhardlimit && !rqp->rq_curfiles) continue;
 
-    if (!localflag)
-      id_name = (qvp->rq_group ?
-	       getgrgid(qvp->gqr_rcquota[i].rq_id)->gr_name :
-	       getpwuid(qvp->gqr_rcquota[i].rq_id)->pw_name);
+    if (!localflag){
+      if (qvp->rq_group){
+	if (getgrgid(qvp->gqr_rcquota[i].rq_id))
+	  id_name = getgrgid(qvp->gqr_rcquota[i].rq_id)->gr_name;
+	else{
+	  sprintf(idbuf, "#%d", qvp->gqr_rcquota[i].rq_id);
+	  id_name = idbuf;
+	}
+      }
+      else{
+	if (getpwuid(qvp->gqr_rcquota[i].rq_id))
+	  id_name = getpwuid(qvp->gqr_rcquota[i].rq_id)->pw_name;
+	else{
+	  sprintf(idbuf, "#%d", qvp->gqr_rcquota[i].rq_id);
+	  id_name = idbuf;
+	}
+      }
+    }
     
     /* Correct for zero quotas... */
     if(!rqp->rq_bsoftlimit)
