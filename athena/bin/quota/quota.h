@@ -1,4 +1,4 @@
-/* $Id: quota.h,v 1.4 1999-08-09 19:49:07 mwhitson Exp $ */
+/* $Id: quota.h,v 1.5 2001-04-26 16:44:58 ghudson Exp $ */
 
 /* Copyright 1999 by the Massachusetts Institute of Technology.
  *
@@ -29,8 +29,8 @@
 #endif
 
 #ifdef LINUX
-#include <linux/types.h>
-#include <linux/quota.h>
+#include <sys/types.h>
+#include <sys/quota.h>
 #endif
 
 #ifdef NETBSD
