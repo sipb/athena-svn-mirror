@@ -10,8 +10,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/xolc.h,v $
- *      $Id: xolc.h,v 1.10 1991-03-24 14:31:46 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: xolc.h,v 1.11 1991-08-23 13:56:33 raek Exp $
+ *      $Author: raek $
  */
 
 #include <mit-copyright.h>
@@ -26,7 +26,7 @@
 /*  All the widget pointers that have been created  */
 
 extern Widget			/* Widget ID's */
-  toplevel,
+  xolc,
   main_form,
   w,
 
@@ -45,6 +45,7 @@ extern Widget			/* Widget ID's */
   w_list_frame,
   w_list,
   w_bottom_form,
+  w_bottom_lbl,
   w_newq_rowcol,
   w_send_newq_btn,
   w_clear_btn,
@@ -160,7 +161,7 @@ void MakeDialogs P_((void));
 ERRCODE x_ask P_((REQUEST *Request, char *topic, char *question));
 
 /* x_instance.c */
-int t_set_default_instance P_((REQUEST *Request));
+ERRCODE t_set_default_instance P_((REQUEST *Request));
 
 /* x_motd.c */
 ERRCODE x_get_motd P_((REQUEST *Request, int type, char *file, int dialog));
