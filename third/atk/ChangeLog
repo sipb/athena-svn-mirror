@@ -1,4 +1,860 @@
-003-01-20  Padraig O'Briain  <padraig.obriain@sun.com>
+2004-09-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.8.0=====
+
+	* configure.in: Version 1.8.0, interface age 0, binary age 800
+
+	* NEWS: Updated.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-13  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* *atk/atkdocument.c atk/atkeditabletext.c atk/atkhypertext.c
+	atk/atkimage.c atk/atknoopobjectfactory.c atkobject.c 
+	atk/atkstreamablecontent.c atk/atktext.c attk/atkvalue.c:
+	Fix for bug #149990; patch from Kjartan Maraas.
+
+2004-08-12  Kjartan Maraas  <kmaraas@gnome.org>
+ 
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-08-09  Ankit Patel <ankit@redhat.com>
+
+	* configure.in: Added "gu" to ALL_LINGUAS.
+
+2004-07-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Increment version to 1.7.3 and interface age to 3.
+
+	* ===== Released Version 1.7.3, interface age 3, binary age 703 ====
+
+	* NEWS: Updated.
+	
+2004-07-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* docs/atk-sections.txt: Add entries to fix warning when generating
+	documentation.
+
+	* docs/tmpl/atkcomponent.sgml docs/tmpl/atkhyperlink.sgml 
+	docs/tmpl/atkhypertext.sgml docs/tmpl/atkobject.sgml 
+	docs/tmpl/atkrelation.sgml docs/tmpl/atkselection.sgml 
+	docs/tmpl/atktable.sgml docs/tmpl/atktext.sgml: Changes to generated
+	files.
+
+2004-07-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released Version 1.7.2, interface age 2, binary age 702 ====
+
+	* NEWS: Updated.
+	
+2004-07-20  Bill Haneman <bill.haneman@sun.com>
+
+	* atk/atkobject.h, atkobject.c, atk-object-enum.c:
+	Added ATK_ROLE_EMBEDDED, "embedded component", which is a 
+	context hint for assistive technologies that the contained
+	children share a context which differs from the embedding
+	container.  Fixes bug #147989.
+
+	* configure.in: Revved to 1.7.2.
+	
+2004-06-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkcomponent.h: Add definition for atk_rectangle_get_type
+	and ATK_TYPE_RECTANGLE.
+	* atk/atkcomponent.c (atk_component_base_init): Correct definition
+	of "bounds-changed" signal.
+	(atk_rectangle_copy): New function.
+	(atk_rectangle_get_type): New function.
+
+2004-06-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Increment version to 1.7.2 and interface age to 2.
+
+2004-06-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released Version 1.7.1, interface age 1, binary age 701 ====
+
+	* NEWS: Updated.
+	
+2004-06-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* docs/atk-sections.txt: Add AtkRectangle.
+
+	* docs/tmpl/atkcomponent.sgml: Add description for bounds-changed
+	signal.
+
+2004-05-29  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "tk" to ALL_LINGUAS.
+
+2004-05-18  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: Allow locale dir not to be harcoded into binary.
+	Fixes bug #128906.
+
+2004-05-11  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: Make extra_roles static.
+
+	* atk/atkrelation.c: Make extra_names static.
+
+	Fixes bug #142234.
+
+	* atk/atkstate.h: Add clarification of state ATK_STATE_ENABLED to
+	documentation.
+
+2004-04-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Increment version to 1.7.1 and interface age to 1.
+
+2004-04-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released Version 1.7.0, interface age 0, binary age 700 ====
+
+	* NEWS: Updated.
+
+2004-04-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Increment version to 1.7.0.
+
+	* atk/atkcomponent.[ch]: Add new signal "bounds_changed". 
+	* docs/tmpl/atkcomponent.sgml: Add new signal "bounds_changed".
+
+	Fixes bug #140476.
+
+	* atk/atkrelationtype.h: Add new relation ATK_RELATION_PARENT_WINDOW_OF.
+	* atk/atkstate.h: Add new state ATK_STATE_TRUNCATED.
+	* docs/tmpl/atkrelation.sgml: Add new relation 
+	* docs/tmpl/atkstate.sgml: Add new state ATK_STATE_TRUNCATED 
+	 
+	Fixes bug #133375.
+
+	* atk/atktext.c: Make extra_attributes static.
+
+2004-04-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.6.1=====
+
+	* configure.in: Version 1.6.1, interface age 1, binary age 601
+
+	* NEWS: Updated.
+
+	* README: Fix typo.
+
+2004-04-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004.04.02  IÃ±aki LarraÃ±aga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-03-29  Manish Singh  <yosh@gimp.org>
+
+	* autogen.sh: use $ACLOCAL instead of aclocal-1.4 for --print-ac-dir.
+
+2004-03-23  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-23  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Walloon (wa) to ALL_LINGUAS
+
+2004-03-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	* atk/Makefile.am: Update to build on Cygwin. Fixes bug #137666.
+	 Patch from Roger Leigh.
+	
+2004-03-18  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "mr" for Marathi to ALL_LINGUAS.
+
+2004-03-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.6.0=====
+
+	* configure.in: Version 1.6.0, interface age 0, binary age 600
+
+	* NEWS: Updated.
+
+2004-03-07  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr@ije" to ALL_LINGAUS.
+
+Mon Mar  1 20:32:06 2004  Tim Janik  <timj@gtk.org>
+
+        * autogen.sh:
+        - exit with $? instead of 1 in case of failure
+        - exit with $? if ./configure failed
+          (that's so autogen.sh && make lines work)
+        - removed --enable-gtk-doc option
+        - added $AUTOGEN_CONFIGURE_ARGS
+
+2004-03-01  Tor Lillqvist  <tml@iki.fi>
+
+	* atk/atk.def: Add some missing entries.
+
+2004-02-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.5.5=====
+	
+	* configure.in: Version 1.5.5, interface age 4, binary age 505
+
+	* NEWS: Updated.
+
+2004-02-20  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.5.4=====
+	
+	* configure.in: Version 1.5.4, interface age 3, binary age 504
+
+	* NEWS: Updated.
+
+2004-02-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.5.3=====
+	
+	* configure.in: Version 1.5.3, interface age 2, binary age 503
+
+	* NEWS: Updated.
+
+2004-02-01  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-01-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: Revise property name. Fixes bug #130022 from
+	Christian - Manny Calavera - Neumair.
+
+2004-01-23  Manish Singh  <yosh@gimp.org>
+
+	* Makefile.am: remove trailing backslash from last line of
+	DISTCLEANFILES. 
+
+2004-01-23  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk-uninstalled.pc.in: Correct library name. Fixes bug #132283,
+	from laszlo.peter@ireland.sun.com.
+
+	* Makefile.am: Add DISTCLEANFILES.
+
+2004-01-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.5.2=====
+	
+	* configure.in: Version 1.5.2, interface age 1, binary age 502
+
+	* NEWS: Updated.
+
+2004-01-05  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Move specification of ALL_LINGUAS to later in file
+	so that CATOBJEXT is defined correctly.
+	Use ATK_LOCALEDIR instead of atklocaledir.
+
+	* atk/Makefile.am: Remove definition of ATKLOCALEDIR.
+
+	* atk/atkobject.c: Use ATK_LOCALEDIR instead of ATKLOCALEDIR.
+
+	* docs/tmpl/atkhyperlink.sgml: Add text for link-activated signal.
+
+2004-01-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atktext.c (atk_text_free_ranges): Fix segfault (bug #129837)
+	Patch provided by Jeff Franks.
+
+2003-12-17  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: Change "accel label" to "accelerator label".
+	Fixes bug #129499.
+
+2003-12-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.5.1=====
+	
+	* configure.in: Version 1.5.1, interface age 0, binary age 501
+
+	* NEWS: Updated.
+
+2003-12-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.[ch]: Add new role ATK_ROLE_EDITBAR. Fixes bug #116007.
+
+	* atk/docs/tmpl/atkhyperlink.sgml: Add references to new signals and 
+	properties
+
+	* atk/docs/tmpl/atkobject.sgml: Add references to new property and role
+
+2003-12-01  Michael Natterer  <mitch@gimp.org>
+
+	* atk/atkobject.c (atk_object_real_get_property): fix typo:
+	s/g_value_set_set/g_value_set_int/.
+
+2003-12-01  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: (atk_object_class_init): Make nicks and blurbs of
+	properties translatable. Add new property "accessible-hypertext-nlinks".
+	(atk_object_real_get_property): Add support for new property
+	"accessible-hypertext-nlinks".
+
+	* atk/atkhyperlink.h: Remove unnecessary comments. Add signal
+	link_activated.
+
+	* atk/atkhyperlink.c: Add signals link_activated and new properties
+	"number-of-anchors", "end-index" and "start-index".
+
+	This fixes bug #112390.
+
+2003-11-29  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2003-11-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * atk/atkobject.c (atk_object_real_ref_state_set): Add state FOCUSED
+        if object is focus object.
+
+        * atk/atkutil.[ch] (atk_get_focus_object): New function which returns
+        the last object reported by the application as focused.
+
+        * docs/atk-sections.txt, docs/tmpl/atkutil.sgml:
+        Add atk_get_focus_object.
+
+	Fixes bug #127400.
+
+2003-11-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: Change role names so that the unlocalized names
+	do not contain hyphens and match the Java role names. Fixes bug #125024.
+
+2003-11-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	*  docs/tmpl/atkhyperlink.sgml, docs/tmp/atkhypertext.sgml,
+	docs/tmpl/atkobject.sgml, docs/tmpl/atkrelatiom.sgml,
+	docs/tmpl/atkselection.sgml, docs/tmpl/atktable.sgml,
+	docs/tmpl/atktext.sgml: Regenerate these files. The location of
+	signal information has changed.
+
+2003-11-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.5.0=====
+	
+	* configure.in: Version 1.5.0, interface age 0, binary age 500
+
+	* NEWS: Updated.
+
+2003-11-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkrelation.c: Use weak references for objects in a relation
+	instead of object references so that objects are not leaked when
+	corresponding widgets are destroyed.
+
+	This fixes bug #125725.
+	
+2003-10-31  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Add reference to docs/version.xml
+
+	Should have been done in previous commit but was omitted.
+	Fixes build break reported in bugs #1258548 and #125902.
+
+2003-10-29  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Add reference to docs/version.xml
+
+	* docs/Makefile.am: Add references to version.xml.in and version.xml
+
+	* docs/atk-docs.sgml: Add reference to version.xml
+
+	* docs/version.xml.in: New file.
+
+	This fixes bug #125758.
+	
+2003-10-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkrelation.c (atk_relation_new): Fix memory leak. (bug #124877)
+
+2003-10-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.4.1=====
+	
+	* configure.in: Version 1.4.1, interface age 1, binary age 401
+
+	* NEWS: Updated.
+
+2003-09-28  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* configure.in: Added lt to ALL_LINGUAS.
+
+2003-09-23  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk.spec.in: Correct typo. Fix provided by Scott Kennedy.
+	This fixes bug #121990.
+
+2003-09-21  Ãsmund SkjÃ¦veland  <aasmunds@fys.uio.no>
+ 
+        * configure.in: Added Norwegian (nynorsk) code
+        nn to ALL_LINGUAS.
+
+2003-09-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: Remove comments about signals. The description
+	should be in files in docs/tmpl directory.
+
+	* docs/tmpl/atkhypertext.sgml: Add description for link-selected signal.
+	* docs/tmpl/atkobject.sgml:  Add descriptions for 
+	active-descendant-changed, children-changed, focus-event, 
+	property-change, state-change and visible-data-changed signals.
+	* docs/tmpl/atkselection.sgml: Add description for selection-changed
+	signal.
+	* docs/tmpl/atktable.sgml: Add descriptions for column-deleted,
+	columnn-inserted, column-reordered, model-changed, row-deleted, 
+	row-inserted and  row-reordered signals.
+	* docs/tmpl/atktext.sgml: Add description for text-attributes-changed,
+	text-caret-moved, text-changed and text-selection-changed signals.
+
+	This fixes bug #121163.
+
+2003-09-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.4.0=====
+
+	* configure.in: Version 1.4.0, interface age 0, binary age 400
+
+	* NEWS: Updated.
+
+2003-08-28  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ne" to ALL_LINGUAS.
+
+2003-08-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.3.6=====
+
+	* configure.in: Version 1.3.6, interface age 2, binary age 306
+
+	* NEWS: Updated.
+
+2003-08-08  Malcolm Tredinnick <malcolm@commsecure.com.au>
+	
+	* autogen.sh: Clarify an error message.
+
+2003-08-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" in ALL_LINGUAS.
+
+2003-08-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.3.5=====
+
+	* configure.in: Version 1.3.5, interface age 1, binary age 305
+
+	* NEWS: Updated.
+
+2003-08-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Remove po/Makefile.in.in. This fixes bug #119053.
+
+2003-07-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atktable.c (atk_table_ref_at): Ensure that row and column values 
+	are non-negative.
+
+	This is a partial fix for bug #116712.
+
+2003-07-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkstateset.c (atk_state_set_is_empty): Correct return value.
+	Fixes bug #116621. Problem reported by Mario Lang.
+
+2003-06-25  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: (Re-?)added "ta" (Tamil) to languages' list.
+
+2003-06-23  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk.spec.in:
+	Added locale directory to spec file. Fix provided by
+	James T. Richardson, Jr.
+
+2003-06-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.3.4=====
+
+	* NEWS: Updated.
+
+2003-06-13  Tor Lillqvist  <tml@iki.fi>
+
+	* atk/atkobject.c (atk_role_get_localized_name): Set
+	gettext_initialized.
+
+	* atk-zip.sh.in (DEVZIP): libtool 1.5 installs DLLs in the bin
+	directory, so look there, too. Include the message catalogs.
+
+2003-06-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Version 1.3.4, interface age 0, binary age 304
+
+	* atkrelationtype.h, docs/tmpl/atkrelation.sgml: Add new relation
+	ATK_RELATION_POPUP.
+
+2003-06-05  Paul Duffy <dubhthach@frink.nuigalway.ie>
+
+        * configure.in: Added ga (irish) to ALL_LINGUAS
+	 
+2003-06-05  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added li to ALL_LINGUAS.
+
+2003-05-30  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.3.3=====
+
+	* configure.in: Version 1.3.3, interface age 3, binary age 303
+
+	* NEWS: Updated.
+
+2003-05-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.h docs/tmpl/atkobject.sgml: Add new role
+	ATK_ROLE_AUTOCOMPLETE.
+
+2003-05-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkstate.h, docs/tmpl/atkstate.sgml: Add state 
+	ATK_STATE_INDETERMINATE. This state is used by Oo for check buttons
+	which can have a value other than on or off.
+
+2003-05-19 Arafat Medini <lumina@silverpen.de>
+
+	*configure.in: Added "ar" (Arabic) to ALL_LINGUAS
+
+2003-05-16  Telsa Gwymme  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS
+
+2003-05-15  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.3.2=====
+
+	* configure.in: Version 1.3.2, interface age 2, binary age 302
+
+	* NEWS: Updated.
+
+2003-05-09  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* is.po: Added "is" into ALL_LINGUAS.
+
+2003-05-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Make message when pkg-config fails to find glib-2.0.pc
+	less cryptic.
+
+	* po/pl.po: Updated Polish translation from Artur Flinta.
+
+2003-05-05  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added Portuguese (pt) to ALL_LINGUAS.
+
+2003-05-05  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
+
+2003-05-01  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.3.1=====
+
+	* configure.in: Version 1.3.1, interface age 1, binary age 301
+
+	* NEWS: Updated.
+
+	* po/yi.po: Update line numbers.
+
+2003-04-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/stateset.h: Fix typo in documentation.
+
+	* autogen.sh (have_libtool): Accept libtool-1.5. (#111481)
+	Patch provided by Ali Akcaagac.
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yi" to ALL_LINGUAS.
+
+2003-03-21  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added Japanese 'ja' into ALL_LINGUAS.
+
+2003-03-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.3.0=====
+
+	* configure.in: Version 1.3.0, interface age 0, binary age 300
+
+	* NEWS: Updated.
+
+2003-03-20  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added Malayalam (ml) in ALL_LINGUAS
+
+2003-03-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* docs/atk-sections.txt: Add 11 unused declarations.
+
+2003-03-20  James Henstridge  <james@daa.com.au>
+ 
+ 	* autogen.sh: update to call automake-1.7, libtoolize, gtkdocize
+ 	and glib-gettextize.
+ 
+ 	* configure.in: cleanup to make use of newer autoconf/automake
+ 	features.
+ 
+ 	* Makefile.am: get rid of custom distcheck rule, which is no
+ 	longer necessary.
+ 
+ 	* atk/Makefile.am: cleanup makefile.  Use BUILT_SOURCES for built
+ 	sources.
+ 
+ 	* docs/Makefile.am: use common gtk-doc.make.
+ 
+ 	* docs/atk-docs.sgml: update to use gtk-doc's XML mode.
+ 
+2003-03-16  Joel Brich <joel.brich@laposte.net>
+
+	* configure.in: Added "eo" to ALL_LINGUAS
+	* po/eo.po: Added Esperanto translation
+	from Charles Voelger <cvoelger@dweasel.com>
+
+2003-03-12  Tor Lillqvist  <tml@iki.fi>
+
+	* atk/atk.def: Add one more missing export, thanks to Cedric
+	Gustin.
+
+2003-03-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c (atk_object_set_role): Add check that role is
+	actually being changed. Do not emit notification for initial
+	role setting. (bug #107710)
+
+2003-03-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkrelationset.c: Current returning of FALSE to 0 in function 
+	which returns integer; (bug #107661) reported by Morten Welinder.
+
+2003-03-05  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atk-relation.c
+	atk/atkrelationset.c
+	atk/atkstatset.c: Correct returning of FALSE to NULL in functions
+	which return pointer; (bug #107650) reported by Morten Welinder.
+
+2003-02-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* test/Makefile.am: Update to produce .so files
+	(Problem reported and solution reported by Michael.Wilson@bull.net)
+
+2003-02-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkgobjectaccessible.c (atk_gobject_accessible_from_object):
+	Correct creation of non-AtkGObjectAccessible (bug #107124)
+
+	* atk/atkobject.c (atk_object_class_init): Set default initialize 
+	function so that code which does not check for existence of parent 
+	class's initialize function will work.
+
+	* atk/atkvalue.c: (atk_value_get_minimum_value, 
+	atk_value_get_maximum_value, atk_value_get_current_value):
+	Reset Value argument if it is a valid GValue otherwise zeroise it.
+
+	docs/tmpl/atkhypertext.sgml: Add link-selected signal.
+
+2003-02-25  Tor Lillqvist  <tml@iki.fi>
+
+	* Makefile.am (EXTRA_DIST): Dist atk-zip.sh.in, not atk-zip.sh.
+
+	* atk/atk.def: Add a couple of missing entries, thanks to Cedric
+	Gustin.
+
+	* atk/atk.rc.in: New file, for version info in the DLL on
+	Windows. Similar as in GLib, GTK, etc.
+
+	* configure.in: Generate atk/atk.rc.
+	
+	* atk/Makefile.am: Use atk.rc on Windows.
+	(EXTRA_DIST): Distribute atk.rc(.in).
+
+	* atk/atkobject.c: On Windows, don't use hardcoded ATKLOCALEDIR,
+	but deduce it from DLL location, like GLib, GTK etc do.
+
+2003-02-23  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "mk" to ALL_LINGUAS.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-21  Metin Amiroff  <metin@karegen.com>
+
+	* configure.in: Added Azerbaijanian to ALL_LINGUAS.
+
+2003-02-19  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
+2003-02-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atknoopobject.c: Add AtkHypertext interface as this object should
+	claim to implement all interfaces.
+
+2003-02-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkhyperlink.c (atk_hyperlink_class_init): Correct typo in blurb
+
+	* atk/atkhypertext.c
+	(atk_hypertext_get_link): Add check on link_index value
+	(atk_hypertext_get_link_index): Add check on char_index value
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-07  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
+2003-02-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkgobjectaccessible.c (atk_gobject_accessible_for_object):
+	Add weak reference so we do not leak the accessible when the object
+	dies. Problem reported by Alex Larsson.
+
+2003-02-02  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "tr" (Turkish) to the languages' list.
+
+2003-01-30  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkhyperlink.[ch]
+	New property selected-link defined.
+	Function pointer is_selected_link added to interface
+	(atk_hyperlink_is_selected_link: New functions which checks
+	whether the specified AtkHyperlink is selected
+	
+	* atk/atkhypertext.[ch]
+	New signal link-selected added.
+
+	* docs/atk-sections.txt: Add atk_hyperlink_is_selected_link
+
+	* docs/tmpl/atkhyperlink.sgml: Add reference to property selected-link
+	and function atk_hyperlink_is_selected_link.
+
+	This fixes bug #104621.
+	
+Tue Jan 28 13:52:20 2003  Manish Singh  <yosh@gimp.org>
+
+	* autogen.sh (have_automake): call the versioned automake when
+	checking the version itself.
+
+Tue Jan 28 15:18:24 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* autogen.sh (have_automake): Fix version in complaint
+	message about automake. (#104366, Rich Burridge)
+
+2003-01-26  Daniel Yacob <locales@geez.org>
+
+	* configure.in: Added am to ALL_LINGUAS.
+
+2003-01-23  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added "sk" to ALL_LINGUAS.
+
+2003-01-23  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "zh_TW" (traditional Chinese) to ALL_LINGUAS.
+
+2003-01-23  Evandro Fernandes Giovanini <evandrofg@ig.com.br>
+
+	* configure.in: Added "pt_BR" to ALL_LINGUAS.
+
+2003-01-22  Marius Andreiana <marius galuna.ro>
+
+	* configure.in: added 'ro' to ALL_LINGUAS
+
+2003-01-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atktext.c
+	(atk_text_base_init): Set vtable entry for default implementations
+	(atk_text_get_range_extents): Omit calling default implementation
+	(atk_text_get_bounded_ranges): Omit calling default implementation
+
+	* atk/atkcomponent.c
+	(atk_component_base_init): New function to set vtable entry for 
+	default implementations
+	(atk_component_ref_accessible_at_point): Omit calling default 
+	implementation
+	(atk_component_contains): Omit calling default implementation
+	(atk_component_get_position): Omit calling default implementation
+	(atk_component_get_size): Omit calling default implementation
+
+2003-01-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c 
+	(atk_object_real_set_property): Add support for PROP_TABLE_SUMMARY 
+	and PROP_TABLE_CAPTION_OBJECT.
+	(atk_object_real_get_property): Add support for PROP_TABLE_SUMMARY 
+	and PROP_TABLE_CAPTION_OBJECT.
+
+	This completes ATK changes for bug #74814.
+
+2003-01-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk/atkobject.c: Add property accessible-table-caption-object.
+	This addresses bug #74814.
+
+	* atk/atkobject.h: Move some documentation from template file to
+	avoid warnings when building.
+
+	* atk/atkrelation.c: Add new properties relation and target.
+	This addresses bug #72426.
+
+	* atktext.[ch]: Add new functions atk_text_get_range_extents and
+	atk_text_get_bounded_ranges.
+	Also added data structures AtkTextRectangle and AtkTextRange, enum
+	AtkTextClipType and helper function  atk_text_free_ranges.
+	This addresses bug #100943.
+	(atk_text_get_character_extents): Ensure that the reported width is 
+	not negative. This fixes bug #102954)
+
+	* docs/atk-sections.txt: Add new functions and data items.
+
+	* docs/tmpl/atk-object.sgml: Remove some documentation and put in 
+	atkobject.h. Add reference to accessible-table-caption-object.
+
+	* docs/tmpl/atk-relation.sgml: Add new properties
+
+	* docs/tmpl/atktext.sgml: Add new functions and data items.
+
+
+2003-01-20  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* ===== Released 1.2.2=====
 
@@ -321,7 +1177,7 @@ Fri Nov  8 19:55:25 2002  Soeren Sandmann  <sandmann@daimi.au.dk>
 	increment version to 1.1.0, in view of the fact that we've 
 	branched for GNOME-2 and GTK+-2.0, and this is HEAD.
 	Also reset INTERFACE_AGE to zero, since an enum was added.
-	Use similar librray numbering as GTK.
+	Use similar library numbering as GTK.
 
 	* docs/tmpl/atkobject.sgml: Add ATK_LAYER_WINDOW
 

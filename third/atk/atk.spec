@@ -1,6 +1,6 @@
 Name:		atk
 Summary:	Accessability Toolkit
-Version:	1.2.2
+Version:	1.8.0
 Release:	1
 License:	LGPL
 Group:		Development/Libraries
@@ -65,8 +65,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*.pc
 %{_includedir}/atk-1.0
 %{_datadir}/gtk-doc/html/atk
+%{_datadir}/locale/*/*
 
 %changelog
+* Fri Jun 20 2003 James T. Richardson, Jr. <james@richardsons.us>
+- Updated for atk-1.3.2
+  added: {_datadir}/locale/*/*
+
 * Mon Aug 27 2001 Jens Finke <jens@gnome.org>
 - glib2 package now required
 - updated source url

@@ -39,6 +39,9 @@ GType atk_text_attribute_get_type (void);
 GType atk_text_boundary_get_type (void);
 #define ATK_TYPE_TEXT_BOUNDARY (atk_text_boundary_get_type())
 
+GType atk_text_clip_type_get_type (void);
+#define ATK_TYPE_TEXT_CLIP_TYPE (atk_text_clip_type_get_type())
+
 /* enumerations from "atkutil.h" */
 
 GType atk_key_event_type_get_type (void);

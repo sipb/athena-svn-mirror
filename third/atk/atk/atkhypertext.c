@@ -1,5 +1,5 @@
 /* ATK - The Accessibility Toolkit for GTK+
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,8 +19,18 @@
 
 #include "atkhypertext.h"
 
+enum {
+  LINK_SELECTED,
+  LAST_SIGNAL
+};
+
+static void atk_hypertext_base_init (AtkHypertextIface *class);
+
+static guint atk_hypertext_signals[LAST_SIGNAL] = { 0 };
+
+
 GType
-atk_hypertext_get_type ()
+atk_hypertext_get_type (void)
 {
   static GType type = 0;
 
@@ -28,7 +38,7 @@ atk_hypertext_get_type ()
     static const GTypeInfo tinfo =
     {
       sizeof (AtkHypertextIface),
-      (GBaseInitFunc) NULL,
+      (GBaseInitFunc) atk_hypertext_base_init,
       (GBaseFinalizeFunc) NULL,
 
     };
@@ -37,6 +47,27 @@ atk_hypertext_get_type ()
   }
 
   return type;
+}
+
+static void
+atk_hypertext_base_init (AtkHypertextIface *class)
+{
+  static gboolean initialized = FALSE;
+
+  if (!initialized)
+    {
+      atk_hypertext_signals[LINK_SELECTED] =
+        g_signal_new ("link_selected",
+                      ATK_TYPE_HYPERTEXT,
+                      G_SIGNAL_RUN_LAST,
+                      G_STRUCT_OFFSET (AtkHypertextIface, link_selected),
+                      (GSignalAccumulator) NULL, NULL,
+                      g_cclosure_marshal_VOID__INT,
+                      G_TYPE_NONE,
+                      1, G_TYPE_INT);
+
+      initialized = TRUE;
+    }
 }
 
 /**
@@ -57,6 +88,9 @@ atk_hypertext_get_link (AtkHypertext  *hypertext,
   AtkHypertextIface *iface;
 
   g_return_val_if_fail (ATK_IS_HYPERTEXT (hypertext), NULL);
+
+  if (link_index < 0)
+    return NULL;
 
   iface = ATK_HYPERTEXT_GET_IFACE (hypertext);
 
@@ -107,6 +141,9 @@ atk_hypertext_get_link_index (AtkHypertext  *hypertext,
   AtkHypertextIface *iface;
 
   g_return_val_if_fail (ATK_IS_HYPERTEXT (hypertext), -1);
+
+  if (char_index < 0)
+    return -1;
 
   iface = ATK_HYPERTEXT_GET_IFACE (hypertext);
 

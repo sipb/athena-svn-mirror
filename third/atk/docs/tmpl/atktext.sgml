@@ -51,6 +51,36 @@ The AtkText structure does not contain any fields.
 @ATK_TEXT_BOUNDARY_LINE_START: 
 @ATK_TEXT_BOUNDARY_LINE_END: 
 
+<!-- ##### ENUM AtkTextClipType ##### -->
+<para>
+
+</para>
+
+@ATK_TEXT_CLIP_NONE: 
+@ATK_TEXT_CLIP_MIN: 
+@ATK_TEXT_CLIP_MAX: 
+@ATK_TEXT_CLIP_BOTH: 
+
+<!-- ##### STRUCT AtkTextRange ##### -->
+<para>
+
+</para>
+
+@bounds: 
+@start_offset: 
+@end_offset: 
+@content: 
+
+<!-- ##### STRUCT AtkTextRectangle ##### -->
+<para>
+
+</para>
+
+@x: 
+@y: 
+@width: 
+@height: 
+
 <!-- ##### STRUCT AtkAttribute ##### -->
 <para>
 
@@ -225,6 +255,39 @@ The AtkText structure does not contain any fields.
 @Returns: 
 
 
+<!-- ##### FUNCTION atk_text_get_bounded_ranges ##### -->
+<para>
+
+</para>
+
+@text: 
+@rect: 
+@coord_type: 
+@x_clip_type: 
+@y_clip_type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_text_get_range_extents ##### -->
+<para>
+
+</para>
+
+@text: 
+@start_offset: 
+@end_offset: 
+@coord_type: 
+@rect: 
+
+
+<!-- ##### FUNCTION atk_text_free_ranges ##### -->
+<para>
+
+</para>
+
+@ranges: 
+
+
 <!-- ##### FUNCTION atk_text_get_n_selections ##### -->
 <para>
 
@@ -336,14 +399,16 @@ The AtkText structure does not contain any fields.
 
 <!-- ##### SIGNAL AtkText::text-attributes-changed ##### -->
 <para>
-
+The "text-attributes-changed" signal is emitted when the text attributes of 
+the text of an object which implements AtkText changes.
 </para>
 
 @atktext: the object which received the signal.
 
 <!-- ##### SIGNAL AtkText::text-caret-moved ##### -->
 <para>
-
+The "text-caret-moved" signal is emitted when the caret position of 
+the text of an object which implements AtkText changes.
 </para>
 
 @atktext: the object which received the signal.
@@ -351,8 +416,10 @@ The AtkText structure does not contain any fields.
 
 <!-- ##### SIGNAL AtkText::text-changed ##### -->
 <para>
-This signal will have a detail which is either "insert" or "delete"
-which identifies whether the text change was an insertion or a deletion
+The "text-changed" signal is emitted when the text of the object which 
+implements the AtkText interface changes, This signal will have a detail 
+which is either "insert" or "delete" which identifies whether the text 
+change was an insertion or a deletion
 </para>
 
 @atktext: the object which received the signal.
@@ -361,6 +428,8 @@ which identifies whether the text change was an insertion or a deletion
 
 <!-- ##### SIGNAL AtkText::text-selection-changed ##### -->
 <para>
+The "text-selection-changed" signal is emitted when the selected text of 
+an object which implements AtkText changes.
 
 </para>
 

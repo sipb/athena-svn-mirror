@@ -20,6 +20,13 @@
 
 #include "atkcomponent.h"
 
+enum {
+  BOUNDS_CHANGED,
+  LAST_SIGNAL
+};
+
+static void       atk_component_base_init (AtkComponentIface *class);
+
 static gboolean   atk_component_real_contains                (AtkComponent *component,
                                                               gint         x,
                                                               gint         y,
@@ -39,6 +46,8 @@ static void      atk_component_real_get_size                 (AtkComponent *comp
                                                               gint         *width,
                                                               gint         *height);
 
+static guint atk_component_signals[LAST_SIGNAL] = { 0 };
+
 GType
 atk_component_get_type (void)
 {
@@ -48,7 +57,7 @@ atk_component_get_type (void)
     static const GTypeInfo tinfo =
     {
       sizeof (AtkComponentIface),
-      (GBaseInitFunc) NULL,
+      (GBaseInitFunc) atk_component_base_init,
       (GBaseFinalizeFunc) NULL,
 
     };
@@ -58,6 +67,33 @@ atk_component_get_type (void)
 
   return type;
 }
+
+static void
+atk_component_base_init (AtkComponentIface *class)
+{
+  static gboolean initialized = FALSE;
+
+  if (! initialized)
+    {
+      class->ref_accessible_at_point = atk_component_real_ref_accessible_at_point;
+      class->contains = atk_component_real_contains;
+      class->get_position = atk_component_real_get_position;
+      class->get_size = atk_component_real_get_size;
+
+      atk_component_signals[BOUNDS_CHANGED] =
+        g_signal_new ("bounds_changed",
+                      ATK_TYPE_COMPONENT,
+                      G_SIGNAL_RUN_LAST,
+                      G_STRUCT_OFFSET (AtkComponentIface, bounds_changed),
+                      (GSignalAccumulator) NULL, NULL,
+                      g_cclosure_marshal_VOID__BOXED,
+                      G_TYPE_NONE, 1,
+                      ATK_TYPE_RECTANGLE | G_SIGNAL_TYPE_STATIC_SCOPE);
+
+      initialized = TRUE;
+    }
+}
+
 
 /**
  * atk_component_add_focus_handler:
@@ -136,12 +172,7 @@ atk_component_contains (AtkComponent    *component,
   if (iface->contains)
     return (iface->contains) (component, x, y, coord_type);
   else
-  {
-    /*
-     * if this method is not overridden use the default implementation.
-     */
-    return atk_component_real_contains (component, x, y, coord_type);
-  }
+    return FALSE;
 }
 
 /**
@@ -171,12 +202,7 @@ atk_component_ref_accessible_at_point (AtkComponent    *component,
   if (iface->ref_accessible_at_point)
     return (iface->ref_accessible_at_point) (component, x, y, coord_type);
   else
-  {
-    /*
-     * if this method is not overridden use the default implementation.
-     */
-    return atk_component_real_ref_accessible_at_point (component, x, y, coord_type);
-  }
+    return NULL;
 }
 
 /**
@@ -265,13 +291,6 @@ atk_component_get_position   (AtkComponent    *component,
 
   if (iface->get_position)
     (iface->get_position) (component, real_x, real_y, coord_type);
-  else
-  {
-    /*
-     * if this method is not overridden use the default implementation.
-     */
-    atk_component_real_get_position (component, real_x, real_y, coord_type);
-  }
 }
 
 /**
@@ -308,13 +327,6 @@ atk_component_get_size       (AtkComponent    *component,
 
   if (iface->get_size)
     (iface->get_size) (component, real_width, real_height);
-  else
-  {
-    /*
-     * if this method is not overridden use the default implementation.
-     */
-    atk_component_real_get_size (component, real_width, real_height);
-  }
 }
 
 /**
@@ -553,5 +565,24 @@ atk_component_real_get_size (AtkComponent *component,
   atk_component_get_extents (component, &x, &y, width, height, coord_type);
 }
 
+static AtkRectangle *
+atk_rectangle_copy (const AtkRectangle *rectangle)
+{
+  AtkRectangle *result = g_new (AtkRectangle, 1);
+  *result = *rectangle;
 
+  return result;
+}
+
+GType
+atk_rectangle_get_type (void)
+{
+  static GType our_type = 0;
+
+  if (our_type == 0)
+    our_type = g_boxed_type_register_static ("AtkRectangle",
+                                             (GBoxedCopyFunc)atk_rectangle_copy,
+                                             (GBoxedFreeFunc)g_free);
+  return our_type;
+}
 

@@ -100,6 +100,9 @@ atk_role_get_type (void)
       { ATK_ROLE_PARAGRAPH, "ATK_ROLE_PARAGRAPH", "paragraph" },
       { ATK_ROLE_RULER, "ATK_ROLE_RULER", "ruler" },
       { ATK_ROLE_APPLICATION, "ATK_ROLE_APPLICATION", "application" },
+      { ATK_ROLE_AUTOCOMPLETE, "ATK_ROLE_AUTOCOMPLETE", "autocomplete" },
+      { ATK_ROLE_EDITBAR, "ATK_ROLE_EDITBAR", "editbar" },
+      { ATK_ROLE_EMBEDDED, "ATK_ROLE_EMBEDDED", "embedded" },
       { ATK_ROLE_LAST_DEFINED, "ATK_ROLE_LAST_DEFINED", "last-defined" },
       { 0, NULL, NULL }
     };
@@ -149,6 +152,8 @@ atk_relation_type_get_type (void)
       { ATK_RELATION_SUBWINDOW_OF, "ATK_RELATION_SUBWINDOW_OF", "subwindow-of" },
       { ATK_RELATION_EMBEDS, "ATK_RELATION_EMBEDS", "embeds" },
       { ATK_RELATION_EMBEDDED_BY, "ATK_RELATION_EMBEDDED_BY", "embedded-by" },
+      { ATK_RELATION_POPUP_FOR, "ATK_RELATION_POPUP_FOR", "popup-for" },
+      { ATK_RELATION_PARENT_WINDOW_OF, "ATK_RELATION_PARENT_WINDOW_OF", "parent-window-of" },
       { ATK_RELATION_LAST_DEFINED, "ATK_RELATION_LAST_DEFINED", "last-defined" },
       { 0, NULL, NULL }
     };
@@ -195,6 +200,8 @@ atk_state_type_get_type (void)
       { ATK_STATE_VERTICAL, "ATK_STATE_VERTICAL", "vertical" },
       { ATK_STATE_VISIBLE, "ATK_STATE_VISIBLE", "visible" },
       { ATK_STATE_MANAGES_DESCENDANTS, "ATK_STATE_MANAGES_DESCENDANTS", "manages-descendants" },
+      { ATK_STATE_INDETERMINATE, "ATK_STATE_INDETERMINATE", "indeterminate" },
+      { ATK_STATE_TRUNCATED, "ATK_STATE_TRUNCATED", "truncated" },
       { ATK_STATE_LAST_DEFINED, "ATK_STATE_LAST_DEFINED", "last-defined" },
       { 0, NULL, NULL }
     };
@@ -263,6 +270,23 @@ atk_text_boundary_get_type (void)
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("AtkTextBoundary", values);
+  }
+  return etype;
+}
+
+GType
+atk_text_clip_type_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { ATK_TEXT_CLIP_NONE, "ATK_TEXT_CLIP_NONE", "none" },
+      { ATK_TEXT_CLIP_MIN, "ATK_TEXT_CLIP_MIN", "min" },
+      { ATK_TEXT_CLIP_MAX, "ATK_TEXT_CLIP_MAX", "max" },
+      { ATK_TEXT_CLIP_BOTH, "ATK_TEXT_CLIP_BOTH", "both" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("AtkTextClipType", values);
   }
   return etype;
 }

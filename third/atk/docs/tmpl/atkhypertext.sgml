@@ -49,3 +49,12 @@ The AtkHypertext structure does not contain any fields.
 @Returns: 
 
 
+<!-- ##### SIGNAL AtkHypertext::link-selected ##### -->
+<para>
+The "link-selected" signal is emitted by an AtkHyperText object when one of
+the hyperlinks associated with the object is selected.
+</para>
+
+@atkhypertext: the object which received the signal.
+@arg1: the index of the hyperlink which is selected
+
