@@ -2,6 +2,7 @@ Name: athena-nautilus
 Summary: A file manager and graphical shell, for Athena
 Copyright: GPL
 Group: User Interface/Desktop
+Provides: nautilus = 1.0.6
 
 Requires: athena-freetype athena-bonobo athena-gnome-vfs
 

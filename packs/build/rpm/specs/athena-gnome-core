@@ -2,6 +2,7 @@ Name: athena-gnome-core
 Summary: The core programs for the GNOME GUI desktop environment, for Athena
 Copyright: GPL
 Group: User Interface/Desktops
+Provides: gnome-core = 1.4.0.6
 
 Requires: athena-gnome-libs, athena-control-center, athena-gdk-pixbuf
 

@@ -2,6 +2,7 @@ Name: athena-x3270
 Summary: Emulate an IBM 3270 terminal under X
 Copyright: Paul Mattes
 Group: Applications/Emulators
+Provides: x3270 = 3.1.1.6
 
 %description
 Emulate an IBM 3270 terminal under X

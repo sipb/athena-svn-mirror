@@ -2,6 +2,7 @@ Name: athena-kermit
 Summary: The ubiquitous Kermit file transfer implementation
 Copyright: Columbia University
 Group: Applications/Communications
+Provides: kermit = 6.0
 
 %description
 Kermit is a ubiquitous and convenient interface for simple file
