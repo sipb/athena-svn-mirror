@@ -5,7 +5,7 @@ long
 ALinitUtmp(ALsession session)
 {
   ALutFlagClear(session, ALflagAll);
-  memset(session->ut, 0, sizeof(session->ut));
+  memset(&(session->ut), 0, sizeof(session->ut));
   return 0L;
 }
 
