@@ -1,9 +1,9 @@
 /* 
  * Imakefile for the FX (file exchange) intermediate level
  *
- * $Author: miki $
+ * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.4 1992-08-19 17:33:25 miki Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.5 1993-02-07 03:23:11 probe Exp $
  *
  * Copyright (c) 1989, Massachusetts Institute of Technology
  *
@@ -53,6 +53,7 @@ LIBS = -L../rpc3.9/usr/lib -L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err -lfx
 DEFINES = ${INCLUDES} -DKERBEROS -DHESIOD
 
 build_library(fxcl,${FXCLOBJ})
+build_library(acl,libacl.o)
 
 llib-lfxcl.ln: ${FXCLSRC}
 	lint ${CFLAGS} -Cfxcl ${FXCLSRC}
