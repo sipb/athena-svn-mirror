@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.7 1990-07-12 14:45:15 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.8 1991-03-14 13:28:36 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.7  90/07/12  14:45:15  epeisach
+ * Don't umount / under ultrix.
+ * 
  * Revision 1.2  90/06/22  15:17:28  dschmidt
  * don't unmount on ultrix
  * 
@@ -137,7 +140,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.7 1990-07-12 14:45:15 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.8 1991-03-14 13:28:36 epeisach Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -514,7 +517,7 @@ readstat( types) char *types; {
 	 * flush the kernel's text-table,
 	 * to ensure that the vnodes we've freed get scavenged,
 	 */
-#ifndef ultrix
+#if !defined(ultrix) && !defined(_AIX)
 	unmount("/");		/* XXX */
 #endif
 	/* then make sure that the file-systems' superblocks are up-to-date.
