@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.5 1989-08-09 22:32:34 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.6 1989-08-10 00:49:10 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -270,7 +270,7 @@ handle_response(response, req)
     case NO_QUESTION:
       if(isme(req))
 	{
-	  fprintf(stderr,"You no longer have a question in OLC.\n");
+	  fprintf(stderr,"You do not have a question in OLC.\n");
 	  if(OLC)
 	    {
 	      printf("If you wish to ask another question, use 'olc' again.\n");
