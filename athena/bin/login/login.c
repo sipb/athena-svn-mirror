@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.4 1987-08-04 16:17:07 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.5 1987-08-06 16:31:20 rfrench Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.4 1987-08-04 16:17:07 rfrench Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.5 1987-08-06 16:31:20 rfrench Exp $";
 #endif	lint
 
 /*
@@ -151,6 +151,7 @@ int	tmpdirflag = FALSE;	/* True if home directory is temporary */
 int	inhibitflag = FALSE;	/* inhibit account creation on the fly */
 int	attachable = FALSE;	/* True if /etc/noattach doesn't exist */
 int	attachedflag = FALSE;	/* True if homedir attached */
+int	errorprtflag = FALSE;	/* True if login error already printed */
 char	rusername[NMAX+1], lusername[NMAX+1];
 char	rpassword[NMAX+1];
 char	name[NMAX+1];
@@ -294,7 +295,8 @@ main(argc, argv)
     inhibitflag = !access(inhibit,F_OK);
     attachable = access(noattach, F_OK);
     do {
-	ldisc = 0;
+	    errorprtflag = 0;
+	    ldisc = 0;
 	found = 0;
 	ioctl(0, TIOCSETD, &ldisc);
 	SCPYN(utmp.ut_name, "");
@@ -471,32 +473,35 @@ main(argc, argv)
 		case INTK_BADPW:
 		case KDC_PR_N_UNIQUE:
 			invalid = TRUE;
-			fprintf(stderr, "Kerberos error: %s\n",
+			errorprtflag = TRUE;
+			fprintf(stderr, "%s\n",
 				krb_err_txt[krbval]);
-			 break;
+			goto leavethis;
 		    /* These should be printed but are not fatal */
 		  case INTK_W_NOTALL:
 		    invalid = FALSE;
 		    krbflag = TRUE;
 		    fprintf(stderr, "Kerberos error: %s\n",
 			    krb_err_txt[krbval]);
-		    break;
+			goto leavethis;
 		  default:
 		    fprintf(stderr, "Kerberos error: %s\n",
 			    krb_err_txt[krbval]);
 		    invalid = TRUE;
-		    break;
+			errorprtflag = TRUE;
+			goto leavethis;
 		}
 	} else { /* root logging in or inhibited; check password */
 		bzero(pp2, MAXPWSIZE+1); /* Yes, he's senile.  He doesn't know
 					  * what his administration is doing */
 		invalid = TRUE;
-	    }
+	} 
 	    /* if password is good, user is good */
 	    invalid = invalid && strcmp(namep, pwd->pw_passwd);
     } 
 
-
+leavethis:
+	
 	/*
 	 * If our uid < 0, we must be a bogus user.
 	 */
@@ -529,7 +534,8 @@ main(argc, argv)
 	    invalid = TRUE;
 	}
 	if (invalid) {
-	    printf("Login incorrect\n");
+		if (!errorprtflag)
+			printf("Login incorrect\n");
 	    if (++t >= 5) {
 		if (utmp.ut_host[0])
 		    syslog(LOG_CRIT,
@@ -574,6 +580,7 @@ main(argc, argv)
     } 
 
     if (!krbflag) puts("Warning: no Kerberos tickets obtained.");
+    get_groups();
 #ifndef VFS
     if (quota(Q_SETUID, pwd->pw_uid, 0, 0) < 0 && errno != EINVAL) {
 	if (errno == EUSERS)
@@ -632,6 +639,8 @@ main(argc, argv)
 	ioctl(0, TIOCSWINSZ, &win);
     chmod(ttyn, 0620);
 
+    init_wgfile();
+    
     /* Fork so that we can call kdestroy, notification server */
     dofork();
 	
@@ -1019,8 +1028,15 @@ dofork()
 	    exit (1);
     }
 
+    if (krbflag && !fork()) {
+	    setuid(pwd->pw_uid);
+	    execl("/usr/athena/zinit","zinit",0);
+	    exit (1);
+    }
+    
     /* If we're the parent, watch the child until it dies */
-    while(wait(0) != child);
+    while(wait(0) != child)
+	    ;
 
     /* Cleanup stuff */
 
@@ -1290,12 +1306,15 @@ insert_pwent(pwd)
 struct passwd *pwd;
 {
     FILE *pfile;
+    int cnt;
 
     while (getpwuid(pwd->pw_uid))
       (pwd->pw_uid)++;
 
-    while (!access("/etc/ptmp",0))
+    cnt = 10;
+    while (!access("/etc/ptmp",0) && --cnt)
 	    sleep(1);
+    unlink("/etc/ptmp");
     
     if((pfile=fopen("/etc/passwd", "a")) != NULL) {
 	fprintf(pfile, "%s:%s:%d:%d:%s:%s:%s\n",
@@ -1315,9 +1334,12 @@ struct passwd *pwd;
 {
     FILE *newfile;
     struct passwd *copypw;
+    int cnt;
 
-    while (!access("/etc/ptmp",0))
+    cnt = 10;
+    while (!access("/etc/ptmp",0) && --cnt)
 	    sleep(1);
+    unlink("/etc/ptmp");
     
     if ((newfile = fopen("/etc/ptmp", "w")) != NULL) {
 	setpwent();
@@ -1336,4 +1358,149 @@ struct passwd *pwd;
 	rename("/etc/ptmp", "/etc/passwd");
 	return(0);
     } else return(1);
+}
+
+get_groups()
+{
+	FILE *grin,*grout;
+	char **cp,grbuf[4096],*ptr,*pwptr,*numptr,*lstptr,**grname,**grnum;
+	char grlst[4096],grtmp[4096],*tmpptr;
+	int ngroups,i,cnt;
+	
+	if (!attachable)
+		return;
+	
+	cp = (char **)hes_resolve(pwd->pw_name,"grplist");
+	if (!cp || !*cp)
+		return;
+
+	cnt = 10;
+	while (!access("/etc/gtmp",0) && --cnt)
+		sleep(1);
+	unlink("/etc/gtmp");
+	
+	grin = fopen("/etc/group","r");
+	if (!grin) {
+		fprintf(stderr,"Can't open /etc/group!\n");
+		return;
+	}
+	grout = fopen("/etc/gtmp","w");
+	if (!grout) {
+		fprintf(stderr,"Can't open /etc/gtmp!\n");
+		fclose(grin);
+		return;
+	}
+
+	ngroups = 0;
+	for (ptr=cp[0];*ptr;ptr++)
+		if (*ptr == ':')
+			ngroups++;
+
+	ngroups = (ngroups+1)/2;
+
+	if (ngroups > NGROUPS-1)
+		ngroups = NGROUPS-1;
+
+	grname = (char **)malloc(ngroups * sizeof(char *));
+	if (!grname) {
+		fprintf(stderr,"Out of memory!\n");
+		fclose(grin);
+		fclose(grout);
+		unlink("/etc/gtmp");
+		return;
+	}
+
+	grnum = (char **)malloc(ngroups * sizeof(char *));
+	if (!grnum) {
+		fprintf(stderr,"Out of memory!\n");
+		fclose(grin);
+		fclose(grout);
+		unlink("/etc/gtmp");
+		return;
+	}
+
+	for (i=0,ptr=cp[0];i<ngroups;i++) {
+		grname[i] = ptr;
+		ptr = (char *)index(ptr,':');
+		if (!ptr) {
+			fprintf(stderr,"Internal failure while initializing groups\n");
+			fclose(grin);
+			fclose(grout);
+			free(grname);
+			free(grnum);
+			unlink("/etc/gtmp");
+			return;
+		}
+		*ptr++ = '\0';
+		grnum[i] = ptr;
+		ptr = (char *)index(ptr,':');
+		if (!ptr)
+			ptr = grnum[i]+strlen(grnum[i]);
+		*ptr++ = '\0';
+	}
+
+	while (fgets(grbuf,sizeof grbuf,grin) > 0) {
+		if (!*grbuf)
+			break;
+		grbuf[strlen(grbuf)-1] = '\0';
+		pwptr = (char *)index(grbuf,':');
+		if (!pwptr)
+			continue;
+		*pwptr++ = '\0';
+		numptr = (char *)index(pwptr,':');
+		if (!numptr)
+			continue;
+		*numptr++ = '\0';
+		lstptr = (char *)index(numptr,':');
+		if (!lstptr)
+			continue;
+		*lstptr++ = '\0';
+		strcpy(grlst,lstptr);
+		for (i=0;i<ngroups;i++) {
+			if (strcmp(grname[i],grbuf))
+				continue;
+			lstptr = grlst;
+			while (lstptr) {
+				strcpy(grtmp,lstptr);
+				tmpptr = (char *)index(grtmp,',');
+				if (tmpptr)
+					*tmpptr = '\0';
+				if (!strcmp(grtmp,pwd->pw_name))
+					break;
+				lstptr = (char *)index(lstptr,',');
+				if (lstptr)
+					lstptr++;
+			}
+			if (lstptr)
+				break;
+			strcat(grlst,",");
+			strcat(grlst,pwd->pw_name);
+			grname[i] = "*";
+			break;
+		}
+		fprintf(grout,"%s:%s:%s:%s\n",grbuf,pwptr,numptr,grlst);
+	}
+
+	for (i=0;i<ngroups;i++)
+		if (strcmp(grname[i],"*"))
+			fprintf(grout,"%s:%s:%s:%s\n",grname[i],"*",
+				grnum[i],pwd->pw_name);
+
+	fclose(grin);
+	fclose(grout);
+	rename("/etc/gtmp","/etc/group");
+	unlink("/etc/gtmp");
+	free(grname);
+	free(grnum);
+}
+
+init_wgfile()
+{
+	char *wgfile;
+
+	wgfile = "/tmp/wg.XXXXXX";
+
+	mktemp(wgfile);
+
+	setenv("WGFILE",wgfile,1);
 }
