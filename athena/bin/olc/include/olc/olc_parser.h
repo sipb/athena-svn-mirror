@@ -17,7 +17,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *	$Id: olc_parser.h,v 1.11 1991-11-05 14:01:37 lwvanels Exp $
+ *	$Id: olc_parser.h,v 1.12 1992-02-05 02:56:12 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -88,7 +88,6 @@ ERRCODE do_olc_show P((char **arguments ));
 
 /* p_misc.c */
 ERRCODE do_olc_load_user P((char **arguments ));
-ERRCODE do_olc_dump P((char **arguments ));
 ERRCODE do_olc_dbinfo P((char **arguments ));
 
 /* p_motd.c */
