@@ -13,12 +13,13 @@
 /* voldump: Dump a volume by volume name/ID, server, and partition, without
  *	    using the VLDB.
  *
- * $Id: voldump.c,v 1.5 1999-01-22 23:15:30 ghudson Exp $
+ * $Id: voldump.c,v 1.6 1999-04-23 08:06:06 tb Exp $
  */
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/select.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -36,13 +37,24 @@
 #include <afs/volint.h>
 #include <afs/ktime.h>
 
+/* Cheesy test for determining AFS 3.5 */
+#ifndef AFSCONF_CLIENTNAME
+#define AFS35
+#endif
+
+#ifdef AFS35
+#include <afs/dirpath.h>
+#else
+#define AFSDIR_CLIENT_ETC_DIRPATH AFSCONF_CLIENTNAME
+#endif
+
 extern int verbose;
 extern int UV_SetSecurity();
 extern struct rx_connection *UV_Bind();
 extern struct ubik_client *cstruct;
 extern jmp_buf env;
 static int rxInitDone = 0;
-static char confdir[] = AFSCONF_CLIENTNAME;
+static const char *confdir;
 
 static int32 before(struct cmd_syndesc *as, char *arock);
 static int32 dump_volume(struct cmd_syndesc *as);
@@ -53,13 +65,15 @@ static int receive_file(int fd, struct rx_call *call, struct stat *status);
 static void print_diagnostics(const char *astring, int32 acode);
 static int UV_DumpVolume(int32 afromvol, int32 afromserver, int32 afrompart,
 			 int32 fromdate, int32 (*dumpfunc)(), char *rock);
-static void dump_sig_handler(void);
+static void dump_sig_handler(int);
 static u_int32 get_volume_id(const char *name, int32 server, int32 part);
 
 int main(int argc, char **argv)
 {
     int32 code;
     struct cmd_syndesc *ts;
+
+    confdir = AFSDIR_CLIENT_ETC_DIRPATH;
 
     cmd_SetBeforeProc(before, NULL);
 
@@ -68,7 +82,7 @@ int main(int argc, char **argv)
     cmd_AddParm(ts, "-time", CMD_SINGLE, 0, "dump from time");
     cmd_AddParm(ts, "-server", CMD_SINGLE, 0, "machine name");
     cmd_AddParm(ts, "-partition", CMD_SINGLE, 0, "partition name");
-    cmd_AddParm(ts, "-file", CMD_SINGLE, CMD_OPTIONAL, 0, "dump file");
+    cmd_AddParm(ts, "-file", CMD_SINGLE, CMD_OPTIONAL, "dump file");
     cmd_Seek(ts, 12);
     cmd_AddParm(ts, "-cell", CMD_SINGLE, CMD_OPTIONAL, "cell name");
     cmd_AddParm(ts, "-noauth", CMD_FLAG, CMD_OPTIONAL, "don't authenticate");
@@ -249,8 +263,10 @@ static int32 dump(struct rx_call *call, char *rock)
 static int receive_file(int fd, struct rx_call *call, struct stat *status)
 {
     char *buffer = NULL;
-    int32 bytesread, nbytes, bytesleft, w, out, error = 0;
+    int32 bytesread, nbytes, bytesleft, w, error = 0;
+    fd_set out;
 
+    FD_ZERO (&out);
     nbytes = (fd == 1) ? 4096 : status->st_blksize;
     buffer = (char *) malloc(nbytes);
     if (!buffer) {
@@ -258,7 +274,7 @@ static int receive_file(int fd, struct rx_call *call, struct stat *status)
 	return -1;
     }
     bytesread = 1;
-    out = 1 << fd;
+    FD_SET (fd, &out);
     while (!error && (bytesread > 0)) {
 	bytesread = rx_Read(call, buffer, nbytes);
 	bytesleft = bytesread;
@@ -403,7 +419,7 @@ dufail:
     return error;
 }
 
-static void dump_sig_handler()
+static void dump_sig_handler(int signo)
 {
    fprintf(STDERR,"\nSignal handler: vos dump operation\n");
    longjmp(env,0);
