@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.8 1990-08-25 15:09:15 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.9 1990-11-07 13:48:38 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.8 1990-08-25 15:09:15 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.9 1990-11-07 13:48:38 epeisach Exp $";
 #endif lint
 
 /*
@@ -613,7 +613,7 @@ chkhost(f)
 				baselen = sp - fromb;
 			*cp++ = *sp++;
 		} else {
-			*cp++ = islower(*sp) ? toupper(*sp++) : *sp++;
+			*cp++ = isupper(*sp) ? tolower(*sp++) : *sp++;
 		}
 	}
 	*cp = '\0';
@@ -675,7 +675,7 @@ perr(msg)
 	putchar('\n');
 }
 
-#if defined(_AUX_SOURCE)
+#if defined(_AUX_SOURCE) || (defined(ultrix) && defined(ULTRIX40))
 _validuser(hostf, rhost, luser, ruser, baselen)
 char *rhost, *luser, *ruser;
 FILE *hostf;
@@ -688,7 +688,7 @@ int baselen;
 	while (fgets(ahost, sizeof (ahost), hostf)) {
 		p = ahost;
 		while (*p != '\n' && *p != ' ' && *p != '\t' && *p != '\0') {
-			*p = islower(*p) ? toupper(*p) : *p;
+			*p = isupper(*p) ? tolower(*p) : *p;
 			p++;
 		}
 		if (*p == ' ' || *p == '\t') {
