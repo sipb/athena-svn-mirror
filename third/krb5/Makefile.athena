@@ -1,10 +1,12 @@
-# $Id: Makefile.athena,v 1.19 1999-12-26 05:16:21 ghudson Exp $
+# $Id: Makefile.athena,v 1.20 1999-12-26 15:44:35 ghudson Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f src/config.cache
-	cd src && ./configure --without-hesiod
+	cd src && CPPFLAGS=" " ./configure --without-hesiod \
+		--with-ccopts=-I${ATHTOOLROOT}/usr/athena/include \
+		--with-ldopts=-L${ATHTOOLROOT}/usr/athena/lib
 
 clean:
 	cd src && ${MAKE} clean
