@@ -1,0 +1,8 @@
+#!/bin/sh
+
+PATH=/etc:/usr/ucb:/bin:/usr/bin:.:/etc/athena:/bin/athena:/usr/athena/bin:/usr/bin/X11
+export PATH
+SHELL=/bin/echo
+export SHELL
+/usr/athena/bin/x3270 mitvma
+exit 0
