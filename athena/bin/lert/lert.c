@@ -15,7 +15,7 @@
 
 /* This is the client for the lert system. */
 
-static const char rcsid[] = "$Id: lert.c,v 1.10 2000-06-19 17:41:48 zacheiss Exp $";
+static const char rcsid[] = "$Id: lert.c,v 1.11 2001-03-19 16:52:44 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -177,7 +177,7 @@ static char *lert_says(int no_more, char *server)
       gotit = select(s + 1, &readfds, NULL, NULL, &timeout) == 1;
     }
   free(packet);
-  if (tries == 0)
+  if (tries == RETRIES)
     bombout(ERR_TIMEOUT);
 
   /* Read the response. */
