@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.41 1996-09-20 02:18:09 ghudson Exp $
+ *	$Id: t_utils.c,v 1.42 1997-04-30 18:08:32 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.41 1996-09-20 02:18:09 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.42 1997-04-30 18:08:32 ghudson Exp $";
 #endif
 #endif
 
@@ -33,10 +33,8 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
-#if defined(_POSIX_SOURCE)
 #include <unistd.h>
-#endif
-#include <sys/time.h>		
+#include <time.h>
 #include <sys/file.h>		
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -68,7 +66,8 @@ display_file(filename)
   char line[LINE_SIZE];      /* Input line buffer. */
   char *pager;
 	
-  if ((file = fopen(filename, "r")) == (FILE *)NULL) 
+  file = fopen(filename, "r");
+  if (file == NULL) 
     {
       fprintf(stderr, "display_file: Unable to open file %s\n",
 	      filename);
@@ -205,7 +204,8 @@ verify_terminal()
   char *tty;
   struct stat statbuf;
 
-  if ((tty = (char *)ttyname(fileno(stdin))) == (char *) NULL)
+  tty = (char *)ttyname(fileno(stdin));
+  if (tty == NULL)
     return(FAILURE);
 
   if (stat(tty, &statbuf) < 0)
@@ -288,35 +288,35 @@ handle_response(response, req)
     {
     case UNKNOWN_REQUEST:
       fprintf(stderr,"This function cannot be performed by the %s server.\n",
-	      OLC_SERVICE_NAME); 
+	      client_service_name()); 
       fprintf(stderr, "What you want is down the hall to the left.\n");
       return(NO_ACTION);   
 
     case SIGNED_OFF:
       if(isme(req))
-	printf("You have signed off of %s.\n", OLC_SERVICE_NAME);
+	printf("You have signed off of %s.\n", client_service_name());
       else
 	printf("%s is singed off of %s.\n",req->target.username,
-	       OLC_SERVICE_NAME);
+	       client_service_name());
       return(SUCCESS);
 
     case NOT_SIGNED_ON:
       if(isme(req))
-	fprintf(stderr, "You are not signed on to %s.\n", OLC_SERVICE_NAME);
+	fprintf(stderr, "You are not signed on to %s.\n", client_service_name());
       else
 	fprintf(stderr, "%s [%d] is not signed on to %s.\n",
-		req->target.username,req->target.instance, OLC_SERVICE_NAME);
+		req->target.username,req->target.instance, client_service_name());
       return(NO_ACTION);   
 
     case NO_QUESTION:
       if(isme(req))
 	{
 	  fprintf(stderr,"You do not have a question in %s.\n",
-		  OLC_SERVICE_NAME);
-	  if(OLC)
+		  client_service_name());
+	  if(client_is_user_client())
 	    {
 	      printf("If you wish to ask another question, use %s again.\n",
-		     OLC_SERVICE_NAME);
+		     client_service_name());
 	      exit(1);
 	    }
 	}
@@ -336,7 +336,7 @@ handle_response(response, req)
     case NOT_CONNECTED:
       if(isme(req))
 	fprintf(stderr,"You are not connected to a %s.\n", 
-		OLC? DEFAULT_CONSULTANT_TITLE : "user");	  
+		client_is_user_client() ? client_default_consultant_title() : "user");	  
       else
 	fprintf(stderr,"%s [%d] is not connected nor is asking a question.\n",
 		req->target.username,req->target.instance);
@@ -379,18 +379,19 @@ handle_response(response, req)
     case ERROR_NAME_RESOLVE:
       fprintf(stderr, 
 	      "Unable to resolve name of %s daemon host. Seek help.\n",
-	      OLC_SERVICE_NAME);
-      if(OLC)
+	      client_service_name());
+      if(client_is_user_client())
 	exit(ERROR);
       else
 	return(ERROR);
       break;
 
     case ERROR_SLOC:
-      fprintf(stderr,"Unable to locate OLC service. The /etc/services file\n");
-      fprintf(stderr,"may be corrupt on this workstation; try another\n");
-      fprintf(stderr,"workstation.  If the error persists, seek help.\n");
-      if(OLC)
+      fprintf(stderr,
+"Unable to locate %s service. This may be caused by a network problem\n\
+or a configuration problem on this workstation.  Try another workstation.\n\
+If the error persists, seek help.\n", client_service_name());
+      if(client_is_user_client())
 	exit(ERROR);
       else
 	return(ERROR);
@@ -398,9 +399,9 @@ handle_response(response, req)
 
     case ERROR_CONNECT:
       fprintf(stderr,"Unable to connect to the %s daemon.  Please try ",
-	      OLC_SERVICE_NAME);
+	      client_service_name());
       fprintf(stderr,"again later.\n");
-      if(OLC)
+      if(client_is_user_client())
 	exit(ERROR);
       else
 	return(ERROR);
@@ -412,8 +413,8 @@ handle_response(response, req)
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("Your Kerberos tickets have expired. ");
       printf(" To renew your Kerberos tickets,\n");
-      printf("type:    kinit\n");
-      if(OLC) {
+      printf("type:    renew\n");
+      if(client_is_user_client()) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
       }
@@ -421,8 +422,8 @@ handle_response(response, req)
     case NO_TKT_FIL: 
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("You do not have a Kerberos ticket file.  To ");
-      printf("get one, \ntype:    kinit\n");
-      if(OLC) {
+      printf("get one, \ntype:    renew\n");
+      if(client_is_user_client()) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
       }
@@ -431,8 +432,8 @@ handle_response(response, req)
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("Cannot access your Kerberos ticket file.\n");
       printf("Try:              setenv   KRBTKFILE  /tmp/random\n");
-      printf("                  kinit\n");
-      if(OLC) {
+      printf("                  renew\n");
+      if(client_is_user_client()) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
       }
@@ -445,7 +446,7 @@ handle_response(response, req)
       printf("Please contact Athena operations and move to ");
       printf("another workstation.\n");
 #endif
-      if(OLC) {
+      if(client_is_user_client()) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
       }
@@ -554,7 +555,8 @@ what_now(file, edit_first, editor)
   char inbuf[LINE_SIZE];      /* Input buffer. */
   int fd;			/* File descriptor. */
 
-  if ((fd = open(file, O_RDWR | O_CREAT, 0644)) < 0) 
+  fd = open(file, O_RDWR | O_CREAT, 0644);
+  if (fd < 0) 
     {
       olc_perror("whatnow: unable to create temp file");
       return(ERROR);
@@ -600,7 +602,7 @@ what_now(file, edit_first, editor)
  * Function:	edit() invokes an editor on the specified file.
  * Arguments:	file:	name of file to be edited
  *		editor:	name of editor
- * Returns:	nothing.
+ * Returns:     passes back return from call_program
  * Notes:
  *	If argument 'editor' is NULL, then try getenv("EDITOR"), and
  *	finally default to DFLT_EDITOR.
@@ -608,6 +610,7 @@ what_now(file, edit_first, editor)
 
 static char *editor_name = (char *)NULL;
 
+ERRCODE
 edit_message(file, editor)
      char *file;
      char *editor;
@@ -620,12 +623,13 @@ edit_message(file, editor)
     {
       if (editor_name == (char *) NULL) 
 	{
-	  if ((editor_name = (char *) getenv("EDITOR")) == (char *)NULL)
+	  editor_name = getenv("EDITOR");
+	  if (editor_name == NULL)
 	    editor_name = DEFAULT_EDITOR;
 	}
       editor = editor_name;
     }
-  return(call_program(editor, file));
+  return (call_program(editor, file));
 }
 
 
@@ -651,7 +655,8 @@ mail_message(user, consultant, msgfile, args)
   int nbytes;		        /* Number of bytes in message. */
   char *msgbuf;		        /* Ptr. to mail message buffer. */
 
-  if ((nbytes = file_length(msgfile)) == ERROR)
+  nbytes = file_length(msgfile);
+  if (nbytes == ERROR)
     {
       olc_perror("mail");
       printf("Unable to get message file.\n");
@@ -659,7 +664,8 @@ mail_message(user, consultant, msgfile, args)
     }
 
   msgbuf = (char *)malloc((unsigned) nbytes);
-  if ((filedes = open(msgfile, O_RDONLY, 0)) <= 0) 
+  filedes = open(msgfile, O_RDONLY, 0);
+  if (filedes <= 0) 
     {
       olc_perror("mail");
       printf("Error opening mail file.\n");
@@ -674,7 +680,8 @@ mail_message(user, consultant, msgfile, args)
       (void) close(filedes);
       return(ERROR);
     }
-  if ((fd = sendmail(args)) < 0) 
+  fd = sendmail(args);
+  if (fd < 0) 
     {
       printf("Error sending mail.\n");
       free(msgbuf);
@@ -707,6 +714,13 @@ happy_message()
 #define random lrand48
 #define srandom srand48
 #endif
+  static char do_init = 1;
+
+  if (do_init) {
+    srandom( time(NULL) + getuid() + getpid() );
+    do_init = 0;
+  }
+
   if(random()%3 == 1)
     {
       switch(random()%12)
