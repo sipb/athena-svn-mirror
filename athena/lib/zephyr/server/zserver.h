@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.20 1987-12-18 11:46:49 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.21 1987-12-18 15:29:57 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -255,8 +255,6 @@ extern char *pktypes[];			/* names of the packet types */
 #define	ADMIN_LIMBO	"LIMBO"		/* Class inst: please send limbo info*/
 #define	ADMIN_YOU	"YOUR_STATE"	/* Class inst: please send your state*/
 #define	ADMIN_ME	"MY_STATE"	/* Class inst: please send my info */
-
-#define	LOGIN_USER_LOGIN "USER_LOGIN"	/* Opcode: a user login */
 
 #define	NULLZCT		((ZClass_t *) 0)
 #define	NULLZCNT	((ZClient_t *) 0)
