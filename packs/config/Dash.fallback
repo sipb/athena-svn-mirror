@@ -1,36 +1,38 @@
-!    name		title			contains		contained in                   callback					;
+!    name	    title		contains	    contained in    callback	;
 
-menu up:		"up"			{up}			[NULL]									;
-menu root:	+h	"Dash"			{root}			[NULL]									;
-menu Dash:		"Dash"			{dash}			[root]						                        ;
-menu help:		"Help"			{help}			[root/20]								;
-menu courseware:	"Courseware"		{courseware}		[root/30]								;
-menu communication: 	"Communication"		{communication}		[root/40]								;
-menu writeedit: 	"Text/Graphics"		{editing}		[root/50]								;
-menu nummath:		"Numerical/Math"	{numeric,math}		[root/60]								;
-menu programming:	"Programming"		{programming}		[root/70]								;
-menu special:		"Special"		{misc}			[root/80]								;
+menu up:	    "up"		{up}                [NULL]          ;
+menu root:	+h  "Dash"		{root}              [NULL]          ;	
+menu Dash:	    "Dash"		{dash}              [root]          ;	
+menu help:	    "Help"		{help}              [root/20]       ;	
+menu courseware:    "Courseware"	{courseware}        [root/30]       ;	
+menu communication: "Communication"	{communication}     [root/40]       ;	
+menu writeedit:     "Text/Graphics"	{editing}           [root/50]       ;	
+menu nummath:	    "Numerical/Math"	{numeric,math}	    [root/60]       ;	
+menu programming:   "Programming"	{programming}       [root/70]       ;	
+menu special:	    "Special"		{misc}		    [root/80]       ;	
 
-item yhelp:		"About Dash" 					[dash/01]								;
-item qhelp:		"How to use Dash menus" 			[dash/02]								;
-menu screenaccs:	"Screen Accessories"	{screenaccs}		[dash/03]								;
-item lower:		"Lower menu bar" 				[dash/10]	-verify		lowerMenu()				;
-item hidemenus:		"Hide menus - read help first! ->"		[dash/20]	-verify		unmapTree("menuTree")                   ;
-item verify: 	 	"Confirmation Off" 				[dash/20]	-verify		toggleVerify("* Confirmation On")	;
-item helptoggle:	"Hide `?' Buttons"				[dash/100]	-verify		toggleHelp("* Show `?' Buttons")	;
-item restart: 	 	"Restart Dash" 					[dash/500]	-verify		restart()				;
-item quitopt:		"Quit Dash"					[dash/1000]	-verify		quit()					;
+  item yhelp:	    "About Dash" 			    [dash/01]	    ;
+  item qhelp:	    "How to use Dash menus" 		    [dash/02]	    ;
+  menu screenaccs:  "Screen Accessories" {screenaccs}	    [dash/03]	    ;
+  item lower:	    "Lower menu bar"    -verify		    [dash/10]	    lowerMenu();
+  item hidemenus:   "Hide menus - read help first! ->"	    [dash/20]	    unmapTree("menuTree");
+  item verify: 	    "Confirmation Off" 	-verify		    [dash/20]	    toggleVerify("* Confirmation On");
+  item helptoggle:  "Hide `?' Buttons"	-verify		    [dash/100]	    toggleHelp("* Show `?' Buttons");
+  item restart:     "Restart Dash" 	-verify		    [dash/500]	    restart();
+  item quitopt:	    "Quit Dash"				    [dash/1000]	    -verify createMapTree("quitDialog"),mapTree("quitDialog"),warpTree("quitDialog") ;
+  item logoutopt:	    "Logout of Athena" [dash/1100]  -verify createMapTree("logoutDialog"),mapTree("logoutDialog"),warpTree("logoutDialog") ;  
 
-item xterm:		"New xterm window"				[screenaccs][misc]		exec("xterm")				;
-item analogclock:	"Analog Clock"					[screenaccs/10]			createTree("clockTree")			;
-item digitalclock:	"Digital Clock"					[screenaccs/10]			exec("xclock -digital")			;
-item load:		"Workstation Load Gauge"			[screenaccs/10]			exec("xload")				;
-item xcalcti:		"Calculator (TI style)"				[screenaccs/10][analysis/100]	exec("xcalc")				;
-item xcalchp:		"Calculator (HP style)"				[screenaccs/10][analysis/100]	exec("xcalc -rpn")			;
-item calendar:		"Calendar"					[screenaccs/10]	 		add("calendar"),exec("/mit/calendar/%B/xcal");
-item screensaver:	"Screen saver"					[screenaccs/10]			add("sipb"),exec("xscreensaver")	;
-item logoutbutton:	"Logout Button"					[screenaccs/100]		createMapTree("logoutButton"),mapTree("logoutButton");
-
+  item xterm:	    "New xterm window"			    [screenaccs][misc]	exec("xterm");
+  item analogclock:  "Analog Clock"			    [screenaccs/10]	createTree("clockTree");
+  item xmcd:	     "Audio CD Player"	-sgi		    [screenaccs/10]	add("sipb"),exec("xmcd");
+  item digitalclock: "Digital Clock"			    [screenaccs/10]	exec("xclock -digital");
+  item load:	    "Workstation Load Gauge"		    [screenaccs/10]	exec("xload");
+  item xcalcti:	    "Calculator (TI style)"		    [screenaccs/10][analysis/100]	exec("xcalc");
+  item xcalchp:	    "Calculator (HP style)"		    [screenaccs/10][analysis/100]	exec("xcalc -rpn");
+  item calendar:    "Calendar"				    [screenaccs/10]	add("calendar"),exec("/mit/calendar/%B/xcal");
+  item screensaver:  "Screen saver"			    [screenaccs/10]	add("sipb"),exec("xscreensaver");
+  item logoutbutton: "Logout Button"			    [screenaccs/100]	createMapTree("logoutButton"),mapTree("logoutButton");
+  
 menu ehelp:		"Emergency help"		{ehelp}		[help/01]					                        ;
 menu mhelp:		"Help on MIT"			{mhelp}		[help/10]					                        ;
 menu ahelp:		"Help on Athena"		{ahelp}		[help/20]					                        ;
@@ -43,27 +45,21 @@ item nightline:		"Nightline"					[ehelp/40]								;
 item contactline:	"Contact Line"					[ehelp/50]								;
 item psych:		"Psychiatric services"				[ehelp/60]								;
 
-item xinfo:		"Campus Map"					[mhelp/60] 			exec("xinfo") ;
-item techinfo:		"TechInfo"					[mhelp/50][misc]		exec("xtechinfo") ;
 ! item lucy:		"Advice from Lucy"				[mhelp/40]								;
-item mitdir:		"MIT Directory"					[mhelp/100]			add("mitdir"),exec("xmitdir")           ;
+item mitdir:		"MIT Directory"					[mhelp/50]			add("infoagents"),exec("htmlview http://web.mit.edu/search.html")           ;
+item map:		"Campus Map"					[mhelp/100]			add("infoagents"),exec("htmlview http://web.mit.edu/map.html")           ; 
 
 item olh:		"On Line Help"					[ahelp/10]			exec("help")				;
-item olcstock:		"OLC Answers"					[ahelp/20]			exec("xterm -e olc_answers")		;
+item olcstock:		"OLC Answers"					[ahelp/20]			exec("xterm -e olc answers")		;
 item olc:		"On Line Consulting"				[ahelp/30]			exec("xterm -e olc")		        ;
 item xman:		"Manual Pages"			-rsaix		[ahelp/40] 			exec("xman")				;
-menu minic_m:		"Athena Minicourses"	{minic}			[ahelp/42]								;
+item minic:		"Athena Minicourses"				[ahelp/42]			add("infoagents"),exec("htmlview http://web.mit.edu//minidev/www/")					;
 item hotline:		"Hardware Hotline"				[ahelp/45][ehelp/70][misc/90]						;
 item separator:		"___________________"				[ahelp/50][misc/900][graphicsediting/10]	                        ;
 item xcluster:		"Athena Cluster Map"				[ahelp/70]			exec("xcluster")			;
-item adir:		"Athena Directory"				[ahelp/100]					                        ;
-
-item minidesc:		"Minicourse Descriptions" -rsaix -decmips	[minic/5]   add("infoagents"),exec("htmlview http://web.mit.edu//minidev/Public/Misc/mini_desc.asc");
-item minicur:		"Current Schedule" -rsaix -decmips		[minic/10]  add("infoagents"),exec("htmlview http://web.mit.edu/minidev/Public/Misc/mini_curr.asc");
-item mininext:		"Next Session Schedule" -rsaix -decmips		[minic/20]  add("infoagents"),exec("htmlview http://web.mit.edu/minidev/Public/Misc/mini_next.asc");
 
 item ishelp:		"I/S Computing Help Desk" 			[chelp]									;
-item mcsales:		"Microcomputer sales"				[chelp]									;
+item mcc:		"MIT Computer Connection"			[chelp]									;
 item sipb:		"Student Information Processing Board"		[chelp]									;
 
 menu mail:		"Mail"			{email}			[communication]								;
@@ -75,7 +71,8 @@ menu www_m:		"WorldWideWeb"		{www}            	[communication/1]				            
 
 item aboutmh:		"About MH (Mail Handler)"			[email]									;
 item mh:		"Text-based MH programs"			[email]									;
-item xmh:		"X Mail Handler"				[email/10]			exec("xmh")				;
+item xmh:		"XMH (X Mail Handler)"				[email/10]			exec("xmh")				;
+item exmh:		"EXMH"						[email/15]			add("sipb"),exec("exmh")                ;
 item mh-rmail:		"Emacs Mail Handler"				[email/20]			exec("emacs -f mh-rmail")		;
 item mailmaint:		"Mailmaint"					[email/30]			exec("xterm -e mailmaint")		;
 item listmaint:		"Listmaint"					[email/40]			exec("xterm -e listmaint")		;
@@ -102,29 +99,23 @@ item xdsc:		"X Discuss Reader"				[discuss/10]			exec("xdsc")				;
 item discuss:		"Text-based Discuss Reader"			[discuss/15]			exec("xterm -e discuss")		;
 item edsc:		"Emacs Discuss Reader"				[discuss/20]			exec("emacs -f discuss") 		;
 
-item aboutwww:		"About WorldWideWeb"				[www/0]		;
+item wwwcert:		"Certificates at MIT"				[www/0]				add("infoagents"),exec("htmlview http://web.mit.edu/is/help/cert/") ;
 menu wwwlynx:		"Lynx"		{lynx}				[www/1]	;
-menu wwwmosaic:		"Mosaic"	{mosaic}			[www/2]	;
-menu wwwnetscape:	"Netscape"	{netscape}			[www/3]	;
+menu wwwnetscape:	"Netscape 4 (default)"	{netscape}		[www/2]	;
+menu wwwnetscape3:	"Netscape 3"	        {netscape3}		[www/3]	;
 
 item lynxmit:		"Lynx - MIT Home Page"				[lynx/10]			add("infoagents"),exec("xterm -e lynx http://web.mit.edu/") ;
 item lynxsipb:		"Lynx - SIPB Home Page"				[lynx/20]			add("infoagents"),exec("xterm -e lynx http://www.mit.edu/") ;
 item lynxdefault:	"Lynx - default Home Page"			[lynx/30]			add("infoagents"),exec("xterm -e lynx") ;
 
-item mosaicmit:		"Mosaic - MIT Home Page"			[mosaic/10]			add("infoagents"),exec("Mosaic http://web.mit.edu/") ;
-item mosaicsipb:	"Mosaic - SIPB Home Page"			[mosaic/20]			add("infoagents"),exec("Mosaic http://www.mit.edu/") ;
-item mosaicdefault:	"Mosaic - default Home Page"			[mosaic/30]			add("infoagents"),exec("Mosaic") ;
+item netscapemit:	"Netscape 4 - MIT Home Page"	-decmips	[netscape/10]			add("infoagents"),exec("netscape http://web.mit.edu/");
+item netscapesipb:	"Netscape 4 - SIPB Home Page"	-decmips	[netscape/20]			add("infoagents"),exec("netscape http://www.mit.edu/");
+item netscapedefault:	"Netscape 4 - default Home Page"	-decmips	[netscape/30]			add("infoagents"),exec("netscape") ;
 
-item netscapemit:	"Netscape - MIT Home Page"	-decmips	[netscape/10]			add("infoagents"),exec("netscape http://web.mit.edu/");
-item netscapesipb:	"Netscape - SIPB Home Page"	-decmips	[netscape/20]			add("infoagents"),exec("netscape http://www.mit.edu/");
-item netscapedefault:	"Netscape - default Home Page"	-decmips	[netscape/30]			add("infoagents"),exec("netscape") ;
+item netscape3mit:	"Netscape 3 - MIT Home Page"	-decmips	[netscape3/10]			add("infoagents"),exec("netscape-3.01 http://web.mit.edu/");
+item netscape3sipb:	"Netscape 3 - SIPB Home Page"	-decmips	[netscape3/20]			add("infoagents"),exec("netscape-3.01 http://www.mit.edu/");
+item netscape3default:	"Netscape 3 - default Home Page"	-decmips	[netscape3/30]			add("infoagents"),exec("netscape-3.01") ;
 
-
-
-!item aboutgopher:	"About Gopher"					[gopher/0]					                        ;
-!item xgopher:		"X Gopher"					[gopher/15]			add("gopher"),exec("xgopher")           ;
-!item gopher:		"Gopher"					[gopher/15]			add("gopher"),exec("xterm -e gopher")   ;
-	       
 menu textediting:	"Text"		{textediting}			[editing/1]								;
 menu graphicsediting:	"Graphics"	{graphicsediting}		[editing/2]								;
 menu cad:		"CAD"		{cad}				[editing/3]                                                         	;
@@ -132,27 +123,17 @@ menu cad:		"CAD"		{cad}				[editing/3]                                          
 item emacs:		"Emacs"						[textediting/1]			exec("emacs")				;
 item ez:		"EZ"						[textediting/2]			exec("ez -d")				;
 item latex:		"LaTeX"						[textediting/3]								;
-menu framestuff5:	"FrameMaker V5 Products"	{framestuff5}	[textediting/4]								;
-menu framestuff4:	"FrameMaker V4 Products"	{framestuff4}	[textediting/5]								;
-
-item frame5:		"Maker"		     -decmips -rsaix		[framestuff5/1]  	add("frame"),exec("maker -ver 5.1")		;
-item imaker5:		"Imaker"	     -decmips -rsaix		[framestuff5/2]		add("frame"),exec("imaker -ver 5.1")		;
-item imakergerman5:	"German Imaker"	     -decmips -rsaix		[framestuff5/3]		add("frame"),exec("imaker -ver 5.1 -lang deutsch")	;
-item imakerfrench5:	"French Imaker"      -decmips -rsaix		[framestuff5/4]		add("frame"),exec("imaker -ver 5.1 -lang francais")	;
-item framereader5:	"Reader (Viewer)"    -decmips -rsaix		[framestuff5/5]		add("frame"),exec("reader -ver 5.1")		;
-
-
-item frame4:		"Maker"					[framestuff4/1]  		add("frame"),exec("maker -ver 4.0")		;
-item imaker4:		"Imaker"				[framestuff4/2]			add("frame"),exec("imaker -ver 4.0")		;
-item imakergerman4:	"German Imaker"				[framestuff4/3]			add("frame"),exec("imaker -lang deutsch -ver 4.0")	;
-item imakerfrench4:	"French Imaker"  			[framestuff4/4]			add("frame"),exec("imaker -lang francais -ver 4.0")	;
-item frameviewer4:	"Viewer"				[framestuff4/5]			add("frame"),exec("viewer -ver 4.0")		;
+menu framestuff:	"FrameMaker"	{framestuff}		[textediting/4]
+ ; 
+item frame:		"Maker"		     -decmips -rsaix		[framestuff/1]  	add("frame"),exec("maker")		;
+item imaker:		"Imaker"	-sun4 -sgi -decmips -rsaix	[framestuff/2]				;
+item framereader:	"Reader (Acrobat)"	-decmips		[framestuff/3]		add("acro"),exec("acroread")		;
 
 item aboutpictures:	"About picture editors"				[graphicsediting/0]							;
-item idraw:		"Idraw"				-rsaix -sun4	[graphicsediting/1] 			add("sipb"),exec("idraw")	;
-item xpaint:		"Xpaint"					[graphicsediting/4]			add("graphics"),exec("xpaint")	;
-item xfig:		"Xfig"						[graphicsediting/3]			add("sipb"),exec("xfig")	;
-item tgif:		"Tgif"						[graphicsediting/2]			add("sipb"),exec("tgif")	;
+item coreldraw:		"CorelDraw"					[graphicsediting/1]			add("corel"),exec("coreldraw")	;
+item xpaint:		"Xpaint"					[graphicsediting/5]			add("graphics"),exec("xpaint")	;
+item xfig:		"Xfig"						[graphicsediting/4]			add("sipb"),exec("xfig")	;
+item tgif:		"Tgif"						[graphicsediting/3]			add("sipb"),exec("tgif")	;
 item xv:		"XV"						[graphicsediting/6]			add("graphics"),exec("xv")	;
 item graphother:	"Other"						[graphicsediting/7]							;
 ! item with weight 10 in this menu is a separator.												;
@@ -172,16 +153,17 @@ menu toolslibs:		"Toolkits and Libraries" {toolkits,libraries}	[programming/10]	
 
 item clang:		"C/C++"						[complanguages]								;
 item fortranlang:	"FORTRAN"					[complanguages]								;
-
+item javalang:		"Java (no OLC support)"				[complanguages]								;
 
 item pascal:		"Pascal"					[otherlanguages]				                        ;
 item perl:		"Perl"						[otherlanguages]				                        ;
 item ct:		"cT"						[otherlanguages]				                        ;
-item lucid:		"Lucid Lisp"					[otherlanguages]				                        ;
+item lisp:		"Allegro Common Lisp"				[otherlanguages]				                        ;
 item schemelang:	"Scheme"					[otherlanguages]							;
 item multi:		"Multi"						[otherlanguages]				                        ;
 
-item saber:		"Saber/Codecenter"		 -rsaix		[debuggers] 								;
+item codecenter:	"Codecenter"			 		[debuggers/10] 								;
+item multi:		"Multi"						[debuggers/20]					                        ;
 item xlibs:		"X Libraries"					[libraries/5]					                        ;
 item mathlib:		"Math Libraries"				[libraries/7][analysis]				                        ;
 item numrecipes:	"Numerical Recipes"				[libraries/10]								;
@@ -194,61 +176,59 @@ menu analyplot:		"Analysis and Plotting"  {analysis,plotting}	[numeric]								;
 
 item aboutspreadsheets:	"About spreadsheets"				[spreadsheets/1]					                ;
 item sc:		"SC"						[spreadsheets/10] 		add("sipb"),exec("xterm -e sc")		;
-item xess:		"Xess"			 			[spreadsheets/10][201/40]	add("xess"),exec("xess")		;
+item xess:		"Xess"			 			[spreadsheets/10][104/50]	add("xess"),exec("xess")		;
 
-item splus:		"S-PLUS"  	 -vax 			[analysis]			add("splus"),exec("xterm -e splus")	;
-item sas:		"SAS"		-vax -sgi 			[analysis,plotting]		add("sas"),exec("sas") 			;
-item xmath:		"Xmath"		-sun4				[plotting/5,math/3] 		add("xmath"),exec("xterm -e xmath")	;
-item prochart:		"ProChart"	-sun4				[plotting]			add("prochart"),exec("prochart")	;
-!item maple:		"Maple"		-sun4				[plotting]  			add("maple"),exec("/afs/athena/system/config/dash/maple");
-item maple:		"Maple V Release 3"	 -vax		[plotting]  			add("maple"),exec("maple")              ;
-item tecplot:		"Tecplot"		-vax		[plotting]			add("tecplot"),exec("tecplot")		;
-item matlab:		"MATLAB"					[201/30][course6/5][course16][analysis,plotting]		add("matlab"),exec("matlab") 	;
-! item mathlib:		"Math Libraries"				[analysis]					                        ;
+item splus:		"S-PLUS"  	 			[analysis]			add("splus"),exec("xterm -e splus")	;
+item sas:		"SAS"		-sgi 			[analysis,plotting]		add("sas"),exec("sas") 			;
+item maple:		"Maple V"			[plotting] add("maple"),exec("maple");
+item tecplot:		"Tecplot"			[plotting] add("tecplot"),exec("tecplot");
+item matlab:	"MATLAB"		[104/40][course6/5][course16][analysis,plotting]	add("matlab"),exec("matlab") 	; 
 
-item rights:		"Rights of Use"					[misc]									;
-item sendbug:		"Send a bug report"				[misc][ahelp/49]			exec("xterm -e sendbug")	;
+item rules:		"Athena Rules of Use"					[misc/10]	add("infoagents"),exec("htmlview http://web.mit.edu/olh/Welcome/rules.html");
+item licenses:		"Software licenses"				[misc/20]									;
+item sendbug:		"Send a bug report"				[misc/30][ahelp/49]			exec("xterm -e sendbug")	;
 item library:		"MIT Libraries"					[misc/100]				add("library"),exec("library");
-item sis:		"Student Info Svcs"				[misc]					add("sis"),exec("xterm -e sis")	;
+
+item websis:		"WebSIS"					[misc/40]		add("infoagents"),exec("htmlview -c  http://student.mit.edu");
 item logout:		"Logout of Athena"				[misc/1000]  -verify	createMapTree("logoutDialog"),mapTree("logoutDialog"),warpTree("logoutDialog") ;
 
 !item lucyann:		"Lucy is available"				[announce]								;
 
 
-item aboutcw:		"About Courseware"						[courseware/1]								;
-item olta:		"On Line TA"							[courseware/5] 			add("olta"),exec("xterm -e olta")	;
-menu neos:		"NEOS"						{neos}		[courseware/7]								;
-menu esg:		"Experimental Study Group   (ESG)"		{esg}		[courseware/8]								;
-menu frosh:		"Freshman Seminars"				{frosh}		[courseware/9]								;
-menu course1:		"1 Civil Engineering"				{course1}	[courseware/10]								;
-menu course2:		"2 Mechanical Engineering"			{course2}	[courseware/10]								;
-menu course3:		"3 Materials Science and Engineering" 		{course3}	[courseware/10]								;
-menu course4:		"4 Architecture"				{course4}	[courseware/10]								;
-menu course5:		"5 Chemistry"					{course5}	[courseware/10]								;
-menu course6:		"6 Electrical Engineering and Computer Science" {course6} 	[courseware/10]								;
-menu course7:		"7 Biology"					{course7}	[courseware/10]								;
-menu course8:		"8 Physics"					{course8}	[courseware/10]								;
-menu course9:		"9 Brain and Cognitive Sciences" 		{course9}	[courseware/10]								;
-menu course10:		"10 Chemical Engineering"			{course10}	[courseware/20]								;
-menu course11:		"11 Urban Studies and Planning" 		{course11}	[courseware/20]								;
-menu course12:		"12 Earth, Atmospheric and Planetary Science" 	{course12} 	[courseware/20]								;
-menu course13:		"13 Ocean Engineering"				{course13}	[courseware/20]								;
-menu course14:		"14 Economics" 					{course14}	[courseware/20]								;
-menu course16:		"16 Aeronautical and Astronautical Engineering" {course16} 	[courseware/20]								;
-menu course17:		"17 Political Science"				{course17}	[courseware/20]								;
-menu course18:		"18 Mathematics"				{course18}	[courseware/20]								;
-menu course21:		"21 Humanities"					{course21}	[courseware/30]								;
-menu course22:		"22 Nuclear Engineering" 			{course22}	[courseware/30]								;
-menu course24:		"24 Linguistics and Philosophy" 		{course24}	[courseware/30]								;
-menu courseHST:		"HST Health Sciences and Technology" 		{courseHST} 	[courseware/40]								;
-item northware:		"Dartmouth Northware"						[courseware/50] 	setup("northware"),exec("xterm -n northware")	;
+item aboutcw:		"About Courseware"				[courseware/10]		;
+item olta:		"OLTA (On Line TA)"					[courseware/20]		add("olta"),exec("xterm -e olta")  	        ;
+menu neos:		"NEOS"				{neos}		[courseware/30]		;
+menu esg:		"Experimental Study Group (ESG)" {esg}		[courseware/40]		;
+menu frosh:		"Freshman Seminars"		{frosh}		[courseware/50]		;
+menu course1:		"1 Civil Engineering"		{course1}	[courseware/60]		;
+menu course2:		"2 Mechanical Engineering"	{course2}	[courseware/70]		;
+menu course3:		"3 Materials Science and Engineering" {course3}	[courseware/80]		;
+menu course4:		"4 Architecture"		{course4}	[courseware/90]		;
+menu course5:		"5 Chemistry"			{course5}	[courseware/100]	;
+menu course6:		"6 Electrical Engineering and Computer Science" {course6} 	[courseware/110] ;
+menu course7:		"7 Biology"			{course7}	[courseware/120]	;
+menu course8:		"8 Physics"			{course8}	[courseware/130]	;
+menu course9:		"9 Brain and Cognitive Sciences" {course9}	[courseware/140]	;
+menu course10:		"10 Chemical Engineering"	 {course10}	[courseware/150]	;
+menu course11:		"11 Urban Studies and Planning"  {course11}	[courseware/160]	;
+menu course12:		"12 Earth, Atmospheric and Planetary Science" 	{course12} 	[courseware/170]	;
+menu course13:		"13 Ocean Engineering"		{course13}	[courseware/180]	;
+menu course14:		"14 Economics" 			{course14}	[courseware/190]	;
+menu course16:		"16 Aeronautical and Astronautical Engineering" {course16} 	[courseware/200]	;
+menu course17:		"17 Political Science"		{course17}	[courseware/210]	;
+menu course18:		"18 Mathematics"		{course18}	[courseware/220]	;
+menu course21:		"21 Humanities"			{course21}	[courseware/230]	;
+menu course22:		"22 Nuclear Engineering"	{course22}	[courseware/240]	;
+menu course24:		"24 Linguistics and Philosophy"	{course24}	[courseware/250]	;
+menu courseHST:		"HST Health Sciences and Technology"	{courseHST} 	[courseware/260]		;
+menu courseSTS:		"STS Science, Technology, and Society"    {courseSTS} 	[courseware/270]		;
 
-item aboutneos:		"About NEOS"					[neos] ;
-item eos:		"Eos"						[neos/10]								exec("eos")	;
-item grade:		"Grade"						[neos/10]								exec("grade")	;
+  item aboutneos:	"About NEOS"			    [neos]	    ;
+  item eos:		"Eos"				    [neos/10]	    exec("eos");
+  item grade:		"Grade"				    [neos/10]	    exec("grade");
 
-item fishwrap:		"Fishwrap"	-decmips				[frosh/10][misc/90]			add("infoagents"),exec("htmlview http://fishwrap.mit.edu/") ;
-help fishwrap:
+  item fishwrap:	"Fishwrap"	-decmips	    [frosh/10][misc/90]	add("infoagents"),exec("htmlview http://fishwrap.mit.edu/") ;
+  help fishwrap:
 "This brings up the  Fishwrap home page in an existing web browser,
 or starts a new browser if one is not running.  Fishwrap is the MIT Media 
 Laboratory's experimental interactive newspaper project.  The project
@@ -256,74 +236,73 @@ tailors the content of your paper based on regional or topical interest from
 news wires like the AP, Reuters and Knight-Ridder. 
 ";
 
-item esg7.01:		"ESG 7.01 Hyper Textbook"			[esg/1]			add("infoagents"),exec("htmlview http://esg-www.mit.edu:8001/esgbio/7001main.html") ;
+  item esg7.01:		"7.01-ESG Hyper Textbook"	    [esg/10]	    add("infoagents"),exec("htmlview http://esg-www.mit.edu:8001/esgbio/7001main.html") ;
 
-menu 100:		"1.00"				{100}		[course1]	;
- item 100homepage:	"1.00 Homepage"					[100/05]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/1/1.00/www/100.html") ;
+  item esg18.01a:	"18.01A-ESG"	    [esg/12]	    add("infoagents"),exec("htmlview http://web.mit.edu/18.01-esg/18.01A/home.html");
 
-menu 1124:		"1.124"				{1124}		[course1]	;
- item 1124homepage:	"1.124 Homepage"				[1124/05]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/1/1.124/www/home.html") ;
+  item esg18.02:	"18.02/18.02A-ESG"  [esg/14]	    add("infoagents"),exec("htmlview  http://web.mit.edu/18.02-esg/18.02A/home.html");
 
-menu 1125:		"1.125"				{1125}		[course1]	;
- item 1125homepage:	"1.125 Homepage"				[1125/05]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/1/1.125/www/overview.html") ;
+  item esg18.02_is:	"18.02-ESG Independent Study"  [esg/16]	    add("infoagents"),exec("htmlview  http://web.mit.edu/18.02-esg/18.02IS/main.html");
 
-item tunsim:		"Tunnel Simulator"	-rsaix  -sgi		[course1]		add("simsuper"),exec("xterm -title Tunnel_Simulator -e menu")	;
-item assess:		"Assess"	-rsaix -sun4			[course1] 				add("1.101"),exec("xterm -n Assess -e assess")	;
-item growltiger:	"Growltiger"	  				[course1] 				add("growltiger"),exec("growltiger")            ;
+  item esg18.023:	"18.023-ESG"	    [esg/18]	    add("infoagents"),exec("htmlview http://web.mit.edu/18.02-esg/www/18.023/home.html");
 
-!item geologytutor:	"Geology Tutor"	-rsaix	-sun4			[course1] 			attach("1.38"),exec("xterm -e /mit/1.38/STARTUP")	;
+  item esg18.03_is:	"18.03-ESG Independent Study"  [esg/20]	    add("infoagents"),exec("htmlview  http://web.mit.edu/18.03-esg/www/home.html");
 
-item meweb:		"me.mit.edu ME Homepage"			[course2/02]		add("infoagents"),exec("htmlview http://me.mit.edu/") ;
- help meweb:
+  item esg_robotics:	"ESG Robotics Seminar Home Page"    [esg/30]	    add("infoagents"),exec("htmlview http://web.mit.edu/esg/proj/ic/www");
+
+  item esg_sp281:	"SP281: Hands-on Engineering Projects"    [esg/40]	    add("infoagents"),exec("htmlview http://web.mit.edu/esg/sp281/www/home.html");
+
+  item 100web:		"1.00 Home Page"		    [course1/10]    add("infoagents"),exec("htmlview http://monett.mit.edu/100/home.nsf") ;
+
+ 
+  menu 104:		"1.050/1.105"			{104}	    [course1/20]    ;
+
+! a MATLAB menu item appears here at [104/40].  (from analysis,plotting);
+! an Xess menu item also appears here at [104/50]. (from spreadsheets);
+
+  item 104setup:	"1.050/1.105 Setup"		     -sgi   [104/5]  add("1.04"),exec("config_pdf");
+  item 104book:		"1.050/1.105 Electronic Textbook"   -sgi   [104/10] add("1.04"),exec("launch_book") ;
+  item 104frame2d:	"Matrix Methods - Frame2d"    -sgi  [104/20]	    add("1.04"),exec("frame2d.sh");
+  item 104truss2d:	"Matrix Methods - Truss2d"    -sgi  [104/30]	    add("1.04"),exec("truss2d.sh");
+  item 104taxonomy:	"Taxonomy of Materials"	      -sgi  [104/40]	    add("1.04"),exec("Taxonomy.sh");
+
+  help 104setup:
+"Run this once to configure your .mailcap and
+.mime.types files to be able to run the
+1.050/1.105 Electronic Textbook.
+";
+  item 1124web:		"1.124 Home Page"		    [course1/25]    add("infoagents"),exec("htmlview http://web.mit.edu//1.124/www/home.html") ;
+
+  item 1.130web:	"1.130 Home Page"		   [course1/26]	add("infoagents"),exec("htmlview http://web.mit.edu/1.130");
+
+  item tunsim:		"Tunnel Simulator"	-sgi	    [course1/30]    add("simsuper"),exec("xterm -title Tunnel_Simulator -e menu");
+  item assess:		"Assess"		-sun4	    [course1/40]    add("1.101"),exec("xterm -n Assess -e assess");
+  item growltiger:	"Growltiger"	  		    [course1/50]    add("growltiger"),exec("growltiger");
+
+   item meweb:		"me.mit.edu ME Home Page"	    [course2/02]    add("infoagents"),exec("htmlview http://me.mit.edu/");
+  help meweb:
 "The WWW server for the Mechanical 
 Engineering Department.
 ";
+ 
+  menu 2001:		"2.001"			{2001}	    [course2/10]    ;
 
-menu 2001:		"2.001"				{2001}		[course2/05]										;
-item 2001web:		"2.001 Home Page"				[2001/10]		add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/2/2.001/www/home.html") ;
+    item 2001web:	"2.001 Home Page"		    [2001/10]	    add("infoagents"),exec("htmlview http://web.mit.edu//2.001/www/home.html");
+    item 2001frame2d:	"Matrix Methods - Frame2d"	    [2001/15]       add("2.01"),exec("frame2d");
+    item 2001truss2d:	"Matrix Methods - Truss2d"	    [2001/20]       add("2.01"),exec("truss2d");
 
- item 2001frame2d:	"Matrix Methods - Frame2d"	-rsaix -vax 	[2001/15]			     add("2.01"),exec("frame2d");
- item 2001truss2d:	"Matrix Methods - Truss2d"	-rsaix -vax 	[2001/20]			     add("2.01"),exec("truss2d");
+  item 2002web:		"2.002 Home Page"		    [course2/20]    add("infoagents"),exec("htmlview http://web.mit.edu/2.002/www/index.html");
 
+  item 2004web:		"2.004 Home Page"		    [course2/20]    add("infoagents"),exec("htmlview http://web.mit.edu/2.004/www/index.html");
 
-menu 2004:		"2.004"				{2004}		[course2/10]	;
- item 2004homepage:	"2.004 Homepage"				[2004/05]	add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/2/2.004/www/home.html") ;
+  item 2010web:		"2.010 Home Page"		    [course2/30]    add("infoagents"),exec("htmlview http://web.mit.edu/2.010/www/index.html");
 
-menu 2010:		"2.010"				{2010}		[course2/12]	;
- item 2010homepage:	"2.010 Homepage"				[2010/05]	add("infoagents"),exec("htmlview http://web.mit.edu/afs/athena.mit.edu/course/2/2.010/www/index.html") ;
+  item 2032web:		"2.032 Home Page"		    [course2/50]    add("infoagents"),exec("htmlview http://web.mit.edu/2.032/www/home.html") ;
 
-menu 201:		"2.01"				{201}		[course2/15]										;
+  item 2670web:		"2.670 Home Page"		    [course2/60]    add("infoagents"),exec("htmlview http://me.mit.edu/2.670");
 
-! a MATLAB menu item appears here.  (from analysis,plotting);
-! an Xess menu item also appears here. (from spreadsheets);
-
- item 201frame2d:	"Matrix Methods - Frame2d"	-rsaix -vax -sgi [201/10]			     add("2.01"),exec("frame2d");
- item 201truss2d:	"Matrix Methods - Truss2d"	-rsaix -vax -sgi [201/20]			     add("2.01"),exec("truss2d");
- item 201taxonomy:	"Matrix Methods - Taxonomy"	-rsaix -vax -sgi [201/20]			     add("2.01"),exec("Taxonomy");
-
-menu 2032:		"2.032"				{2032}		[course2/17]	;
- item 2032homepage:	"2.032 Homepage"			[2032/05]	add("infoagents"),exec("htmlview http://web.mit.edu/2.032/www/home.html") ;
-
-menu 206J:		"2.06J Mechanical Vibration"	{206J}		[course2/20]										;
-
-item dorunp1:		"do_runp1"	 -sun4				[206J][1380J]					add("13.80"),exec("xterm -e do_runp1")	;
-item dorunp2:		"do_runp2"	 -sun4				[206J][1380J]					add("13.80"),exec("xterm -e do_runp2")	;
-item dorunp3:		"do_runp3"	 -sun4				[206J][1380J]					add("13.80"),exec("xterm -e do_runp3")	;
-item dorunp4:		"do_runp4"	 -sun4				[206J][1380J]					add("13.80"),exec("xterm -e do_runp4")	;
-item Norplot:		"Norplot"	 -sun4				[206J][1380J]					add("13.80"),exec("xterm -e Norplot")	;
-
-menu 220:		"2.20 Fluid Mechanics"		{220}		[course2/25]										;
-
-item 220info:		"Course Information"				[220/10]	add("2.20"),sh("/mit/2.20/scripts/count_info") ;
-item 220help:		"Finding Help"					[220/20]	add("2.20"),sh("/mit/2.20/scripts/count_help") ;
-item 220news:		"New News"					[220/30] 	add("2.20"),sh("/mit/2.20/scripts/count_news") ;
-
-menu 2660:		"2.670"			 	{2670}		[course2/30]							;
- item 2670page:		"2.670 Homepage"				[2670/10]	add("infoagents"),exec("htmlview http://me.mit.edu/2.670");
-
-
-item adina:		"ADINA"			 -vax			[course2/35]						add("adina"),exec("runaui");
- help adina:
+  item adina:		"ADINA"			 	    [course2/70]    add("adina"),exec("runaui");
+  help adina:
 "ADINA is a finite-element analysis package used in
 Mechanical Engineering graduate courses.  No support
 or assistance is available outside of those courses.
@@ -331,10 +310,8 @@ Please direct all questions to your instructor or TA
 if appropriate.
 ";
 
-item cat:		"CAT"		-rsaix	-sun4			[course2/40] 							add("2.40"),exec("CAT")	;
-
-item mematlab:		"MATLAB"					[course2/45]	add("matlab"),exec("matlab");
- help mematlab:
+  item mematlab:	"MATLAB"	[course2/80]    add("matlab"),exec("matlab");
+  help mematlab:
 "An interactive 'matrix laboratory' for manipulating 
 matrices, plotting data sets, and general numerical
 computation.
@@ -342,8 +319,8 @@ computation.
 To run:  add matlab; matlab
 ";
 
-item proeng:		"Pro/ENGINEER"	 		-vax -decmips	[course2/50]	add("parametric"),exec("proeng");
- help proeng:
+  item proeng:		"Pro/ENGINEER" 		-decmips    [course2/90]    add("parametric"),exec("proeng");
+  help proeng:
 "Solid modelling software from Parametric 
 Technologies, Inc.  For support/assistance 
 contact your TA or advisor.
@@ -351,40 +328,36 @@ contact your TA or advisor.
 To run:  add parametric; proeng
 ";
 
-menu visdycon:		"Visdycon"		{visd}			[course2/60] 							;
- item sysresp:		"System Response"				[visd/05]				add("visdycon"),exec("sysresp");
- item rlocus:		"Root Locus"					[visd/10]				add("visdycon"),exec("rlocus");
- item lingraph:		"Linear Graph" -rsaix -sun4 -dec -sgi		[visd/15]				add("visdycon");
- item bodiag:		"Bode Diagrams" -rsaix -sun4 -dec -sgi		[visd/20]				add("visdycon");
- item visinfo:		"Information"					[visd/25]				setup("visdycon"),exec("xterm -n Visdycon");
- item vihelp:		"Visdycon Help"					[visd/30]							;
+  menu visdycon:	"Visdycon"		{visd}	    [course2/100]    ;
+   item sysresp:	"System Response"		    [visd/05]	    add("visdycon"),exec("sysresp");
+   item rlocus:		"Root Locus"			    [visd/10]	    add("visdycon"),exec("rlocus");
+!   item lingraph:	"Linear Graph"  -sun4 -dec -sgi	    [visd/15]	    add("visdycon");
+!   item bodiag:	"Bode Diagrams" -sun4 -dec -sgi	    [visd/20]	    add("visdycon");
+   item visinfo:	"Information"			    [visd/25]	    setup("visdycon"),exec("xterm -n Visdycon");
+   item vihelp:		"Visdycon Help"			    [visd/30]	    ;
 
 
-menu 300:		"3.00"			{300}			[course3/10]                                                       ;
-  item 300phase:	"Phase"			-vax  -sgi              [300]	   add("3.00"),exec("phase")                            ;
+  menu 300:		"3.00"			{300}       [course3/10]    ;
+    item 300phase:	"Phase"	  -sgi			    [300]	    add("3.00"),exec("phase");
 
-  help 300phase:
+    help 300phase:
 "From a workstation type:
 
     add 3.00
     phase
 ";
 
-menu 3041:		"3.041"			{3041}			[course3/20]					                ;
-  item 3041www:		"3.041 WWW Page"	[3041]   add("infoagents"),exec("htmlview http://web.mit.edu/course/3/3.041/html/homepage.html")	;
+  item 3091:		"3.091"		 		    [course3/30]    setup("3.091"),exec("xterm -n 3.091");
+  item 311:		"3.11 Home Page"	  	    [course3/40]    add("infoagents"),exec("htmlview http://web.mit.edu/course/3/3.11/www/home.html");
 
-item 3091:		"3.091"		 				[course3/30]	 			setup("3.091"),exec("xterm -n 3.091")	;
+  menu 3185:		"3.185"			{3185}	    [course3/60]    ;
 
-item 311:		"3.11 WWW Page"					[course3/50]  add("infoagents"),exec("htmlview http://web.mit.edu/course/3/3.11/www/home.html")  ;
+   item 3185gas:	"Gas Properties"	-sun4	    [3185/10]	    add("3.185"),exec("Propgas");
+   item 3185heat:	"Heat Transfer"		-sun4 	    [3185/20]	    add("3.185"),exec("Heattrans");
+   item 3185fluid:	"Fluid Flow"		-sun4	    [3185/30]	    add("3.185"),exec("Fluidflow");
+   item 3185web:	"3.185 Home Page"		    [3185/40]       add("infoagents"),exec("htmlview http://web.mit.edu/3.185/www/");
 
-menu 3185:		"3.185"			{3185}			[course3/60]										;
-
- item 3185gas:		"Gas Properties"	-sun4			[3185/10]  add("3.185"),exec("Propgas")							;
- item 3185heat:		"Heat Transfer"		-sun4			[3185/20]  add("3.185"),exec("Heattrans")						;
- item 3185fluid:	"Fluid Flow"		-sun4			[3185/30]  add("3.185"),exec("Fluidflow")						;
- item 3185home:		"3.185 Homepage"				[3185/40]  add("infoagents"),exec("htmlview http://web.mit.edu/3.185/www/")   ;
-
- help 3185home:
+   help 3185web:
 "This brings up the 3.185 World Wide
  Web home page in an existing browser,
  or starts a new browser if one is 
@@ -392,105 +365,92 @@ menu 3185:		"3.185"			{3185}			[course3/60]										;
 
 ";
 
-item 3s32:		"3-S32 WWW Page"				[course3/80]	add("infoagents"),exec("htmlview http://web.mit.edu/3s32/www/index.html") ;
+  item 3a16web:		"3-A16 Home Page"		    [course3/70]    add("infoagents"),exec("htmlview http://web.mit.edu/3a16/www/home.html");
+  item 3s32web:		"3-S32 Home Page"		    [course3/80]    add("infoagents"),exec("htmlview http://web.mit.edu/3s32/www/index.html");
 
-item 353:		"3.53 WWW Page"					[course3/70]  add("infoagents"),exec("htmlview http://web.mit.edu/3.53/www/index.html")  ;
+  item 353web:		"3.53 Home Page"		    [course3/90]    add("infoagents"),exec("htmlview http://web.mit.edu/3.53/www/index.html");
 
-menu 4.203:		"4.203"			{4203}			[course4/1]                                                                               ;
-  item 4023Manual:	"AutoCAD Manual"	-decmips		[4203/5]		add("autocad"),exec("/mit/autocad/bin/dtext");
+  menu 4.203:		"4.203"			{4203}	    [course4/1]     ;
+    item 4023Manual:	"AutoCAD Manual"	-decmips    [4203/5]	    add("autocad"),exec("/mit/autocad/bin/dtext");
+    item 4203acad12:	"AutoCAD 12"		-sgi	    [4203/25]	    add("4.203"),exec("/mit/4.203/bin/autocad -version 12");
+    item 4203acad13:	"AutoCAD 13"		-decmips    [4203/20]	    add("4.203"),exec("/mit/4.203/bin/autocad -version 13");
 
- item 4203tips:		"Helpful Tips"    -decmips -rsaix		[4203/10]		attach("4.203"),add("frame"),exec("reader +viewerIsServer -file /mit/4.203/Help/tips");
- item 4203acad12:	"AutoCAD 12"	-sgi 			[4203/25]		add("4.203"),exec("/mit/4.203/bin/autocad -version 12")                     ;
- item 4203acad13:	"AutoCAD 13"	-decmips -rsaix		[4203/20]		add("4.203"),exec("/mit/4.203/bin/autocad -version 13")                     ;
-
- menu 4203Assign:	"Assignments"		{4203assign}		[4203/30]                                                                                 ;
-  item 4203Assign1:	"Assignment 1"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment1.ez");
-  item 4203Assign2:	"Assignment 2"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment2.ez");
-  item 4203Assign3:	"Assignment 3"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment3.ez");
-  item 4203Assign4:	"Assignment 4"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment4.ez");
-  item 4203Assign5:	"Assignment 5"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment5.ez");
-  item 4203Assign6:	"Assignment 6"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment6.ez");
-  item 4203Assign7:	"Assignment 7"	-rsaix -decmips -sun4	[4203assign]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Assignments/assignment7.ez");
-
- menu 4203Handouts:	"Handouts"		{4203hand}		[4203/40]                                                                                 ;
-  item 4203Hand1:	"Handout 1"	-rsaix -decmips -sun4	[4203hand/1]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout1.ez");
-  item 4203Hand2:	"Handout 2"	-rsaix -decmips -sun4	[4203hand/2]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout2.ez");
-  item 4203Hand3:	"Handout 3"	-rsaix -decmips -sun4	[4203hand/3]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout3.ez");
-  item 4203Hand4:	"Handout 4"	-rsaix -decmips -sun4	[4203hand/4]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout4.ez");
-  item 4203Hand5:	"Handout 5"	-rsaix -decmips -sun4	[4203hand/5]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout5.ez");
-  item 4203Hand6:	"Handout 6"	-rsaix -decmips -sun4	[4203hand/6]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout6.ez");
-  item 4203Hand7:	"Handout 7"	-rsaix -decmips -sun4	[4203hand/7]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout7.ez");
-  item 4203Hand8:	"Handout 8"	-rsaix -decmips -sun4	[4203hand/8]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout8.ez");
-  item 4203Hand9:	"Handout 9"	-rsaix -decmips -sun4	[4203hand/9]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout9.ez");
-  item 4203Hand10:	"Handout 10"	-rsaix -decmips -sun4	[4203hand/10]		attach("4.203"),exec("ez -geometry 580x600 /mit/4.203/Handouts/handout10.ez");
-
-menu aboutcrl:		"About the CRL"		{aboutcrl}		[course4/2]                                                                 	;
-menu aboutcrl2:		"About the CRL"		{aboutcrl2}		[course11/2]                                                                 	;
- item askcrl:		"Ask the Staff"					[aboutcrl/1][aboutcrl2/1]							;
- help askcrl:
+  menu aboutcrl:	"About the CRL"		{aboutcrl}  [course4/2]     ;
+  menu aboutcrl2:	"About the CRL"		{aboutcrl2} [course11/2]    ;
+    item askcrl:	"Ask the Staff"			    [aboutcrl/1][aboutcrl2/1];
+    help askcrl:
 "To get more help from CRL on any topic, send email
 to <crlhelp@mit.edu> and someone from the Lab Staff 
 will get back to you as soon as possible." ;
 
- item crlolh:		"Answers"	-rsaix -decmips			[aboutcrl/2][aboutcrl2/2]	attach("crl"),add("frame"),exec("reader +viewerIsServer -file /mit/crl/Help/help/about-crl.doc")	;
+    item crlolh:	"Answers"	 -decmips	    [aboutcrl/2][aboutcrl2/2] attach("crl"),add("frame"),exec("reader +viewerIsServer -file /mit/crl/Help/help/about-crl.doc")	;
 
-item 511:		"5.11 Home Page"				[course5/10]      add("infoagents"),exec("htmlview http://web.mit.edu/5.11/www/") ;
+  item 507web:		"5.07 Home Page"		    [course5/10]    add("infoagents"),exec("htmlview http://web.mit.edu/5.07/www/course.html") ;
+  item 511web:		"5.11 Home Page"		    [course5/20]    add("infoagents"),exec("htmlview http://web.mit.edu/5.11/www/") ;
 
-item emf:		"6.013 Electromagnetic Fields and Energy"	[course6/10] -rsaix -decmips -sun4	attach("6.013"),exec("xterm -title 6.013 -e /mit/6.013/.attachrc");
-item 6012homepage:	"6.012 Homepage"	-decmips		[course6/20]		add("infoagents"),exec("htmlview http://web.mit.edu/6.012/www/home.html") ;
-item quantphys:		"6.021J Quantitative Physiology"		[course6/30] 				setup("6.021J"),exec("xterm -n qp")		;
-! cvsim is placed onto the 6.022J menu further down in this file;
-menu 6022jcvsim:	"6.022J"		 {6022j}		[course6/40]					                         ;
-  item 6022cvsim:	"CVSIM"						[6022j] -rsaix -sgi		add("hst"),exec("xterm -e cvsim")	;
+  menu 6003:		"6.003 Signals & Systems" {6003}    [course6/10]    ;
+    item 6003matlab:	"6.003 MATLAB"			    [6003/10]       add("6.003"),exec("6003matlab");
+ 
+  item 6012web:		"6.012 Home Page"	-decmips    [course6/20]    add("infoagents"),exec("htmlview http://web.mit.edu/6.012/www/home.html") ;
 
-item 6041:		"6.041/6.431 Probabilistic Systems Analysis"    [course6/50] -rsaix          		    setup("6.041"),exec("xterm -n 6.041/6.431") ;
-item 6070homepage:	"6.070 Homepage"				[course6/60]		add("infoagents"),exec("htmlview http://web.mit.edu/6.070/index.html") ;
-item 6071homepage:	"6.071 Homepage"				[course6/70]		add("infoagents"),exec("htmlview http://web.mit.edu/6.071/www/home.html") ;
-item 6111:		"6.111 Digital Design Tools"			[course6/80] -rsaix -sun4				 setup("6.111"),exec("xterm -n 6.111")  ;
+  menu quantphys:	"6.021J/6.521J Quantitative Physiology"  {6021j}  [course6/30]  ;
+    item quantphysx11:	"X11 Software"			    [6021j/10]	    setup("6.021J"),exec("xterm -n qp");
+    item quantphysmat4:	"MATLAB v4 Software"		    [6021j/20]      add("6.021J"),exec("6021matlab4");
+    item quantphysdef:	"MATLAB v5 Software"		    [6021j/30]      add("6.021J"),exec("6021matlab"); 
 
-item 6270:		"6.270 Robot Design"				[course6/90] -rsaix -sun4			setup("6.270"),exec("xterm -n 6.270")           ;
-item 6728:		"6.728 Home Page"				[course6/100]  add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
-item 6730:		"6.730 Home Page"				[course6/110]  add("infoagents"),exec("htmlview http://web.mit.edu/6.730/www/home.html");
-item 6965:		"6.965 Home Page"				[course6/120]  add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
-item 701:		"7.01x Home Page"				[course7]	add("infoagents"),exec("htmlview http://web.mit.edu/7.01x/www");
-item 801:		"8.01 Home Page"				[course8/05]	add("infoagents"),exec("htmlview http://web.mit.edu/8.01/www")	;
-item 803:		"8.03 Home Page"				[course8/10]	add("infoagents"),exec("htmlview http://web.mit.edu/8.03/Spring/Homepage.html");
+  menu 6022jcvsim:	"6.022J"		 {6022j}    [course6/40]    ;
+    item 6022cvsim:	"CVSIM"			 -sgi	    [6022j] 	    add("hst"),exec("xterm -e cvsim");
 
- item 804:		"8.04 Home Page"				[course8/20]	add("infoagents"),exec("htmlview http://web.mit.edu/8.04/www/8.04.html");
+  item 6041:		"6.041/6.431 Probabilistic Systems Analysis"    [course6/50]    setup("6.041"),exec("xterm -n 6.041/6.431");
+  item 6070web	:	"6.070 Home Page"		    [course6/60]    add("infoagents"),exec("htmlview http://web.mit.edu/6.070/index.html") ;
+  item 6071web:		"6.071 Home Page"		    [course6/70]    add("infoagents"),exec("htmlview http://web.mit.edu/6.071/www/home.html") ;
+  item 6111:		"6.111 Digital Design Tools"  	    [course6/80]    setup("6.111"),exec("xterm -n 6.111");
 
+  item 6270:		"6.270 Robot Design"     -sun4	    [course6/90]    setup("6.270"),exec("xterm -n 6.270");
+  item 6728web:		"6.728 Home Page"		    [course6/100]   add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
+  item 6730web:		"6.730 Home Page"		    [course6/110]   add("infoagents"),exec("htmlview http://web.mit.edu/6.730/www/info.html");
+  item 6965web:		"6.965 Home Page"		    [course6/120]   add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
 
-item pplot:		"Pplot"	 	-rsaix -decmips -sun4		[course10/40]		attach("10.001"),exec("xterm -e /mit/10.001/pplot/%M.bin/pplot");
+  item 701web:		"7.01x Home Page"		    [course7/10]       add("infoagents"),exec("htmlview http://web.mit.edu/7.01x/www");
+  item 702web:		"7.02 Home Page"		    [course7/20]       add("infoagents"),exec("htmlview http://web.mit.edu/7.02/www");
 
-menu 10001:		"10.001"		{10001}			[course10/10]										;
- item 10001web:		"10.001 Home Page"				[10001/05]      add("infoagents"),exec("htmlview http://web.mit.edu/10.001/Web/10_001homepage.html") ;
+  item 801web:		"8.01 Home Page"		    [course8/05]    add("infoagents"),exec("htmlview http://web.mit.edu/8.01/www");
 
+  item 802web:		"8.02 Home Page"		    [course8/06]    add("infoagents"),exec("htmlview http://web.mit.edu/8.02/www");
 
-menu 10213web:		"10.213"		{10213}			[course10/20]	;
- item 10213:		"10.213 Home Page"				[course10/25]      add("infoagents"),exec("htmlview http://web.mit.edu/10.213/www/10213hp.html") ;
+  item 803web:		"8.03 Home Page"		    [course8/10]    add("infoagents"),exec("htmlview http://web.mit.edu/8.03/Kaspi/");
+  item 804web:		"8.04 Home Page"		    [course8/20]    add("infoagents"),exec("htmlview http://web.mit.edu/8.04/www/8.04.html");
 
-menu 10490web:		"10.490"		{10490}			[course10/28]										;
- item 10490:		"10.490 Home Page"				[course10/29]      add("infoagents"),exec("htmlview http://web.mit.edu/10.490/Web/index.html") ;
+  item 10001web:	"10.001 Home Page"		    [course10/10]   add("infoagents"),exec("htmlview http://web.mit.edu/10.001/Web/index.html");
 
- item 10491:		"10.491 Home Page"				[course10/30]      add("infoagents"),exec("htmlview http://web.mit.edu/10.491/Web/index.html") ;
+  item 10213web:	"10.213 Home Page"		    [course10/20]   add("infoagents"),exec("htmlview http://web.mit.edu/10.213/www/10213hp.html") ;
 
-menu 10550:		"10.550"		{10550}			[course10/31]	;
- item 10550control:	"10.550 Control Modules"			[10550/10]	attach("10.550"),add("matlab"),exec("matlab /mit/10.550/Courseware/PCM")	;
+  item 10490web:	"10.490 Home Page"		    [course10/30]   add("infoagents"),exec("htmlview http://web.mit.edu/10.490/Web/index.html");
 
- item xmap:		"MITMapper"	-sun4				[course11/10]				attach("crldata"),add("crlbin"),exec("mitmap")	;
- menu 11227:		"11.227"			{11227}		[course11/20]										;
-  item 11227tips:	"Helpful Tips"	-decmips -rsaix		[11227/10]   	attach("crl"),add("frame"),exec("reader +viewerIsServer -file /mit/crl/Help/tips")	;
- menu 11520:		"11.520"			{11520}		[course11/30]   									;
-  item 11520tips:	"Helpful Tips"	-decmips -rsaix			[11520/10]	attach("11.520"),add("frame"),exec("reader +viewerIsServer -file /mit/11.520/Help/tips");
- menu 11521:		"11.521"			{11521}		[course11/40]										;
-  item 11521tips:	"Helpful Tips"	-decmips -rsaix			[11521/10]	attach("11.521"),add("frame"),exec("reader +viewerIsServer -file /mit/11.521/Help/tips");
+  item 10491web:	"10.491 Home Page"		    [course10/40]   add("infoagents"),exec("htmlview http://web.mit.edu/10.491/Web/index.html");
 
-item mathematica:	"Mathematica"		 -sun4			[course12]                      add("math"),exec("mathematica");
- help mathematica:
+  menu 10550:		"10.550"		{10550}	    [course10/50]    ;	
+    item 10550control:	"10.550 Control Modules"	    [10550/10]	    attach("10.550"),add("matlab"),exec("matlab /mit/10.550/Courseware/PCM");
+  item 10551web:	"10.551 Home Page"		    [course10/60]   add("infoagents"),exec("htmlview http://web.mit.edu/10.551/www/index.html");
+
+  item xmap:		"MITMapper"		-sgi	    [course11/10]   attach("crldata"),add("crlbin"),exec("mitmap");
+
+  menu 11227:		"11.227"		{11227}	    [course11/20]   ;
+    item 11227tips:	"Helpful Tips"		-decmips    [11227/10] 	    attach("crl"),add("frame"),exec("reader +viewerIsServer -file /mit/crl/Help/tips")	;
+
+  menu 11520:		"11.520"		{11520}	    [course11/30]   ;
+    item 11520tips:	"Helpful Tips"		-decmips    [11520/10]	    attach("11.520"),add("frame"),exec("reader +viewerIsServer -file /mit/11.520/Help/tips");
+
+  menu 11521:		"11.521"		{11521}	    [course11/40]   ;
+    item 11521tips:	"Helpful Tips"		-decmips    [11521/10]	    attach("11.521"),add("frame"),exec("reader +viewerIsServer -file /mit/11.521/Help/tips");
+
+  item mathematica:	"Mathematica"		-sgi	    [course12]      add("math"),exec("mathematica");
+  help mathematica:
 "A limited number of Mathematica licenses are available on Athena.  
 The package is supported only on the context of a course; please
 contact your course TA for help.  
 
-Mathematica is ONLY available on Athena DECstations.
+Mathematica is ONLY available on Athena Suns.
 
 To run on a workstation:
 
@@ -507,99 +467,88 @@ Other help:  add math; mathbook
 Bug reports:  use sendbug
 ";
 
-menu 1300:		"13.00"			{1300}			[course13]										;
-menu 1304:		"13.04"			{1304}			[course13]										;
-menu 1380J:		"13.80J"		{1380J}			[course13]										;
-menu shipdesign:	"Ship Design"		{shipdesign}		[course13]										;
+! PROPHD only runs on DECstations
+  menu 1304:		"13.04"			{1304}	    [course13]	;
+    item prophd:	"PROP-HD"		-sgi  -sun4 [1304]	    add("13.04"),exec("xterm -e /mit/13.04/%Mbin/prophd");
 
-item ducksoup:		"Ducksoup"	-rsaix  -decmips -sun4	[1300] 		attach("13.00"),cd("/mit/13.00/%Mbin/ducksoup.d"),exec("DUCKSOUP")	;
+! SHCP, RUNSUB, NORPLOT,  VIEWDXF only run on DECstations
+  menu shipdesign:	"Ship Design"	{shipdesign}	    [course13]	    ;
 
-item prophd:		"PROP-HD"	 -rsaix  -sun4		[1304]				add("13.04"),exec("xterm -e /mit/13.04/%Mbin/prophd")	;
-
-item SHCP:		"SHCP"		-rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/shcp/%Mbin/runshcp")	;
-item ASSET:		"ASSET"		-rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/asset/runasset")	 	;
-item RUNSUB:		"Runsub"	-rsaix	-sun4			[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/subs/%Mbin/runsub")	;
-item PC01:		"PC01"		-rsaix -decmips -sun4	[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/pc01/pc01.e")             ;
-item SEAKEEP:		"Seakeep"	-rsaix -decmips	-sun4		[shipdesign] 	attach("13.ship"),exec("xterm -e /mit/13.ship/seakeep/seakeep/%Mbin/seakeep") ;
-item TSS86:		"TSS86"		-rsaix -decmips	-sun4		[shipdesign]	attach("13.ship"),exec("xterm -e /mit/13.ship/tss86/%Mbin/tss86")       ;
-item WIND:		"Wind"		-rsaix -decmips	-sun4		[shipdesign]	attach("13.ship"),exec("xterm -e /mit/13.ship/wind/%Mbin/wind")         ;
-item NORPLOT:		"Norplot"	-rsaix	-sun4			[shipdesign]	attach("13.ship"),exec("xterm -e /mit/13.ship/norplot/%Mbin/Norplot")   ;
-item VIEWDXF:		"Viewdxf"	-rsaix -decmips -sun4		[shipdesign]	attach("13.ship"),exec("xterm -e /mit/13.ship/autocad/%Mbin/viewdxf")   ;
-
-menu 1401:		"14.01"		{1401}				[course14]									;
-menu 1421j:		"14.21J"	{1421j}				[course14]									;
-menu 14a02:		"14a02"		{14a02}				[course14]									;
-
-item 14.01page:		"14.01 Home Page"				[1401/10]	add("infoagents"),exec("htmlview http://web.mit.edu/14.01/www/")	;
-item 1421jpage:		"14.21J Home Page"				[1421j/10]	add("infoagents"),exec("htmlview http://web.mit.edu/14.21j/www/index.html");
-
-item 14a02page:		"14a02 Home Page"				[14a02/10]	add("infoagents"),exec("htmlview http://web.mit.edu/14a02/www/index.html");
-
-item sst:		"SST"		-rsaix -decmips	-sun4		[course17] 			add("econsst"),exec("xterm -e /mit/econsst/bin/sst")	;
-
-menu 1803:		"18.03"		{1803}				[course18]						;
-! item ode:		"ODE"			-rsaix -sgi 		[1803]	 	add("18.03"),exec("ode")		;
- item 1803page:		"18.03 Home Page"				[1803]		add("infoagents"),exec("htmlview http://www-math.mit.edu/18.03/");
- item 1803maple:	"Maple"						[1803]		add("maple"),exec("maple")		;
- item 1803matlab:	"Matlab"					[1803]		add("matlab"),exec("matlab")		;
- item 1803x1:		"xphased 1"		-rsaix -decmips		[1803]		add("18.03"),exec("x1")		;
- item 1803x2:		"xphased 2"		-rsaix -decmips		[1803]		add("18.03"),exec("x2")		;
-
-menu 18385:		"18.385"	{18385}				[course18]										;
- item dstool:		"18.385 dstool" -rsaix  -sgi -decmips	[18385]		add("18.385"),exec("xterm -sb -e dstool")		;
-
- item xphased:		"18.385 xphased" -rsaix -decmips	[18385]		add("18.385"),exec("xphased")		;
-
-menu 1806:		"18.06"		{1806}				[course18]										;
-item 1806page:		"18.06 Home Page"				[1806]		add("infoagents"),exec("htmlview http://web.mit.edu/course/18/18.06/www/index.html");
-
-menu 1802s:		"18.02s"	 {1802s}			[course18]										;
- item 1802ssyll:	"Syllabus"					[1802s/10]  attach("18.02s"),exec("xdvi /mit/18.02s/syllabus.dvi")			;
- item 1802sgeninfo:	"General Information"				[1802s/20]  attach("18.02s"),exec("xdvi /mit/18.02s/general_info.dvi")			;
-
-menu french:		"French"	{french}			[course21/5]					                                        ;
-
-menu french2:		"French II"	{french2}			[french]					                                        ;
-
-item french2home:		"French II Home Page"			[french2]	add("infoagents"),exec("htmlview http://web.mit.edu/course/21/21.french/francaisII/")                   ;
-
-menu japanese:		"Japanese"	{japanese}			[course21/10]	;
-
-item jmaterials:	"Japanese 1-4 Materials  (WWW)"   		[japanese/10]	attach("infoagents"),exec("/mit/infoagents/bin/Mosaic http://www-japan.mit.edu/mit/mit-materials/");
-item kquiz:		"Kanji Drill Software"		-vax		[japanese/20]	attach("21.japan"),exec("/mit/21.japan/bin/kanjiquiz")					;
-item jutils:		"Utilization Q&A (JSL 1-24)"	-vax		[japanese/30]	attach("21.japan"),exec("/mit/21.japan/bin/jwork")					;
+    item SHCP:		"SHCP"			-sgi -sun4  [shipdesign]    attach("13.ship"),exec("xterm -e /mit/13.ship/shcp/%Mbin/runshcp");
+    item RUNSUB:	"Runsub"		-sgi -sun4  [shipdesign]    attach("13.ship"),exec("xterm -e /mit/13.ship/subs/%Mbin/runsub");
+    item NORPLOT:	"Norplot"		-sgi -sun4  [shipdesign]    attach("13.ship"),exec("xterm -e /mit/13.ship/norplot/%Mbin/Norplot");
+    item VIEWDXF:	"Viewdxf"		-sgi -sun4  [shipdesign]    attach("13.ship"),exec("xterm -e /mit/13.ship/autocad/%Mbin/viewdxf");
 
 
-menu 21254:		"Advanced Japanese Materials" {21254}		[japanese/40]									;
-item 21254syll:		"Advanced Japanese Syllabus"		[21254/10] attach("21.japan"),sh("ez 2>/dev/null -geometry 600x700 /mit/21.japan/class-materials/syllabi/SyllabusJ-Adv.ez");
-item 21254bull:		"Advanced Japanese Weekly Schedule"	[21254/20] attach("21.japan"),sh("ez 2>/dev/null -geometry 600x700 /mit/21.japan/class-materials/schedules/japanesea1/AdvancedWeekly.ez");
-menu 21254read:		"`Current Japanese' Texts" {21254read}	[21254/30]										;
+  item 14.01web:	"14.01 Home Page"		    [course14/10]   add("infoagents"),exec("htmlview http://web.mit.edu/14.01/www/");
+  item 14.02web:	"14.02 Home Page"		    [course14/12]   add("infoagents"),exec("htmlview http://web.mit.edu/14.02/www/");
+  item 1421jweb:	"14.21J Home Page"		    [course14/20]   add("infoagents"),exec("htmlview http://web.mit.edu/14.21j/www/index.html");
+  item 1431web:         "14.31 Home Page"                   [course14/23]   add("infoagents"),exec("htmlview http://web.mit.edu/14.31/www/");
+  item 1475jweb:	"14.75J Home Page"		    [course14/30]   add("infoagents"),exec("htmlview http://web.mit.edu/14.75j/www/");
+  item 14a02web:	"14a02 Home Page"		    [course14/40]   add("infoagents"),exec("htmlview http://web.mit.edu/14a02/www/index.html");
 
-item 21254read1:	"Lesson 1"  [21254read/10] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current1");
-item 21254read2:	"Lesson 2"  [21254read/20] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current2");
-item 21254read3:	"Lesson 3"  [21254read/30] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current3");
-item 21254read4:	"Lesson 4"  [21254read/40] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current4");
-item 21254read5:	"Lesson 5"  [21254read/50] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current5");
-item 21254read6:	"Lesson 6"  [21254read/60] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current6");
-item 21254read7:	"Lesson 7"  [21254read/70] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current7");
-item 21254read8:	"Lesson 8"  [21254read/80] attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current8");
+! Matlab appears here on the course 16 menu;
+
+  menu 1803:		"18.03"			{1803}	    [course18/10]   ;
+    item 1803web:	"18.03 Home Page"		    [1803/10]	    add("infoagents"),exec("htmlview http://www-math.mit.edu/18.03/");
+    item 1803maple:	"Maple"				    [1803/20]	    add("maple"),exec("maple");
+    item 1803matlab:	"MATLAB"			    [1803/30]	    add("matlab"),exec("matlab");
+    item 1803x1:	"xphased 1"			    [1803/40]	    add("18.03"),exec("x1");
+    item 1803x2:	"xphased 2"			    [1803/50]	    add("18.03"),exec("x2");
+
+  menu 1806:		"18.06"			{1806}	    [course18/15]   ;
+    item 1806web:	"18.06 Home Page"		    [1806/20]	add("infoagents"),exec("htmlview http://web.mit.edu/18.06/www/index.html");
+    item 1806matlab:	"18.06 MATLAB"			    [1806/30]	    add("18.06"),exec("1806matlab");
+
+  menu 18311:           "18.311"                {18311}     [course18/20]   ;
+    item 18311web:	"18.311 Home Page"                   [18311/05]	add("infoagents"),exec("htmlview http://www-math.mit.edu/18.311/");
+    item 18311matlab4:  "18.311 MATLAB 4"                   [18311/10]  add("18.311"),exec("18.311matlab4");
+    item 18311matlab5:  "18.311 MATLAB 5"                   [18311/20]  add("18.311"),exec("18.311matlab5");
 
 
-item separator:		"___________________"				[japanese/50]									;
-item kterm:		"Kterm" -vax					[japanese/60]	attach("nihongo"),exec("/mit/nihongo/bin/kterm")					;
-item bkterm:		"Kterm (large font)"		-vax		[japanese/70]	attach("nihongo"),exec("/mit/nihongo/bin/bigkterm")					;
-item mule:		"Mule (multi-language emacs)"	-vax		[japanese/80]	attach("babel"),exec("/mit/babel/bin/mule")					;
-item bmule:		"Mule (large font)"		-vax		[japanese/90]	attach("babel"),exec("/mit/babel/bin/bigmule")					;
-item jdict:		"J/E, E/J, Kanji Dictionary"	  -vax 		[japanese/100] 	attach("nihongo"),exec("/mit/nihongo/bin/kterm -e /mit/nihongo/bin/xjdic")				;
-item bjdict:		"Dictionary (large font)"	  -vax		[japanese/110] 	attach("nihongo"),exec("/mit/nihongo/bin/bigkterm -e /mit/nihongo/bin/xjdic")			;
+  item 18.327web:	"18.327 Home Page"		[course18/25]	add("infoagents"),exec("htmlview http://web.mit.edu/18.327");
+
+  menu 18385:		"18.385"		{18385}	    [course18/30]	;
+   item dstool:		"dstool"		-sgi	    [18385]	    add("18.385"),exec("xterm -sb -e dstool");
+   item xphased:	"xphased"		-sgi	    [18385]	    add("18.385"),exec("xphased");
 
 
-help jmaterials:
-"This menu item launches Mosaic, with the MIT Japanese Language Program
-materials page as its starting point.  You can start Mosaic yourself:
+  menu french:		"French"		{french}    [course21/10]   ;
+
+    item french2web:	"French II Home Page"		    [french]	    add("infoagents"),exec("htmlview http://web.mit.edu/21.french/francaisII/");
+
+! Should check the 21.254 items - they are probably out of date.;
+
+  menu japanese:	"Japanese"	{japanese}	    [course21/20]   ;
+    item jmaterials:	"Japanese 1-8 Materials (WWW)"      [japanese/10]   add("infoagents"),exec("htmlview http://www-japan.mit.edu/mit/mit-materials/");
+
+    menu 21254:		"Advanced Japanese (21F505)" {21254} [japanese/40]	;
+
+        item 21254head: "`Current Japanese' Texts"		[21254/5]	;
+
+        item 21254r1:	"Lesson 1"		-sgi	    [21254/10]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current1");
+        item 21254r2:	"Lesson 2"		-sgi	    [21254/20]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current2");
+              item 21254r3:	"Lesson 3"	-sgi	    [21254/30]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current3");
+        item 21254r4:	"Lesson 4"  		-sgi	    [21254/40]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current4");
+        item 21254r5:	"Lesson 5"  		-sgi	    [21254/50]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current5");
+        item 21254r6:	"Lesson 6"  		-sgi	    [21254/60]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current6");
+        item 21254r7:	"Lesson 7"  		-sgi	    [21254/70]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current7");
+        item 21254r8:	"Lesson 8"  		-sgi	    [21254/80]   attach("21.japan"),attach("babel"),exec("/mit/babel/bin/bigmule /mit/21.japan/class-materials/reading/current-japanese/current8");
+
+  item separator:	"___________________"		     [japanese/50]   ;
+  item kterm:		"Kterm"				-sgi [japanese/60]   attach("nihongo"),exec("/mit/nihongo/bin/kterm");
+  item bkterm:		"Kterm (large font)"		-sgi [japanese/70]   attach("nihongo"),exec("/mit/nihongo/bin/bigkterm");
+  item mule:		"Mule (multi-language emacs)"	-sgi [japanese/80]   attach("babel"),exec("/mit/babel/bin/mule");
+  item bmule:		"Mule (large font)"		-sgi [japanese/90]   attach("babel"),exec("/mit/babel/bin/bigmule");
+  item jdict:		"J/E, E/J, Kanji Dictionary"	-sgi [japanese/100]  attach("nihongo"),exec("/mit/nihongo/bin/kterm -e /mit/nihongo/bin/xjdic");
+  item bjdict:		"Dictionary (large font)"	-sgi [japanese/110]  attach("nihongo"),exec("/mit/nihongo/bin/bigkterm -e /mit/nihongo/bin/xjdic");
+
+  help jmaterials:
+"This menu item launches Netscape, with the MIT Japanese Language Program
+materials page as its starting point.  You can start Netscape yourself:
 
           add infoagents
-          /mit/infoagents/bin/Mosaic &
+          /mit/infoagents/bin/Netscape &
 
 and simply open the URL:
 
@@ -607,193 +556,139 @@ and simply open the URL:
 
 to get to the same page.
 
-NOTE:  You should not use Netscape, or the version of Mosaic in the 
-sipb locker  on Athena to browse the Japanese pages, as neither of
-them can display Japanese text.
+NOTE:  We can only guarantee results (proper display of Japanese text,
+and browser configuration) if you use this version of Netscape.  
 ";
 
-help kquiz:
-"This launches the Kanji Quiz software package, useful for drilling
-your Kanji recognition skills.
-
-To run:  add 21.japan; kanjiquiz
-
-Other help:  Mosaic http://www-japan.mit.edu/mit/mit-materials/help/ &
-
-Bug-reports:  email to <bug-nihongo@mit.edu>
-";
-
-help jutils:
-"This launches a viewer for the Utilization exercises for chapters
-1-24 of `Japanese, the Spoken Language.'  From this application you
-can view the Utilization exercise questions, and view and print out
-the answers.
-
-To run:  add 21.japan; jwork
-
-Other help:  Mosaic http://www-japan.mit.edu/mit/mit-materials/help/ &
-
-Bug-reports:  email to <bug-nihongo@mit.edu>
-";
-
-help 21254syll:	
-"This launches the Advanced Japanese course syllabus in an EZ window.
-
-To run:  attach 21.japan
-                 ez  /mit/21.japan/class-materials/syllabi/SyllabusJ-Adv.ez
-
-You can print the syllabus out from inside EZ by choosing the `Print'
-menu item from the `File' menu.
-
-Bug-reports:  email to <bug-nihongo@mit.edu>
-";
-
-help 21254bull:
-"This launches the Advanced Japanese weekly schedule in an EZ window.
-
-To run:  attach 21.japan
-                 ez  /mit/21.japan/class-materials/schedules/japanesea1/SyllabusJ-Adv.ez
-
-You can print the syllabus out from inside EZ by choosing the `Print'
-menu item from the `File' menu.
-
-Bug-reports:  email to <bug-nihongo@mit.edu>
-";
-
-
-help 21254read1:
+  help 21254r1:
 "This brings up a copy of Current Japanese, Lesson 1 in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current1 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current1
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help 21254read2:
-"This brings up a copy of Current Japanese, Lesson2  in a mule
+  help 21254r2:
+"This brings up a copy of Current Japanese, Lesson2 in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current2 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current2
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help 21254read3:
+  help 21254r3:
 "This brings up a copy of Current Japanese, Lesson 3 in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current3 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current3
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help 21254read4:
+  help 21254r4:
 "This brings up a copy of Current Japanese, Lesson4  in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current4 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current4
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help 21254read5:
+  help 21254r5:
 "This brings up a copy of Current Japanese, Lesson 5 in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current5 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current5
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help 21254read6:
+  help 21254r6:
 "This brings up a copy of Current Japanese, Lesson 6 in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current6 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current6
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help 21254read7:
+  help 21254r7:
 "This brings up a copy of Current Japanese, Lesson 7 in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current7 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current7
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help 21254read8:
+  help 21254r8:
 "This brings up a copy of Current Japanese, Lesson 8 in a mule
 window with a large, easy-to-read font.
 
 To run:  attach 21.japan
             add babel; mule /mit/21.japan/class-materials/reading/current-japanese/current8 &
 
-To print the file (PRINTING AVAILABLE ON DECstations and RS/6000s ONLY):
+To print the file:
 
 (inside mule while viewing the file) M-x print-mule-buffer
                    
-(outside of mule) add babel; m2ps < /mit/21.japan/class-materials/reading/current-japanese/current1 | lpr
+(outside of mule) add nihongo; attach 21.japan; jlpr /mit/21.japan/class-materials/reading/current-japanese/current8
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-
-
-
-
-help kterm:
+  help kterm:
 "Kterm is a kanji-capable variant of `xterm.'
 
 To run:  add nihongo; kterm &
@@ -803,7 +698,7 @@ Other help:  man kterm
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help bkterm:
+  help bkterm:
 "This launches a version of `kterm' with a large, 
 easy-to-read font.
 
@@ -814,7 +709,7 @@ Other help:  man kterm
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help mule:
+  help mule:
 "Mule is a multi-language version of the emacs 
 text editor.  When used with a special text-entry mode 
 called `skk' it can be used to type Japanese text.
@@ -824,12 +719,12 @@ To invoke skk inside of mule:  M-x skk-mode
 
 Other help:  man mule
 
-                         Mosaic http://www-japan.mit.edu/mit/mit-materials/help/ &
+                         Netscape http://www-japan.mit.edu/mit/mit-materials/help/ &
 
 Bug-reports:  email to <bug-babel@mit.edu>
 ";
 
-help bmule:
+  help bmule:
 "This invokes a version of Mule with an extra-large
 font, particularly well-suited for beginning learners
 of Japanese.  
@@ -839,12 +734,12 @@ To invoke skk inside of mule:  M-x skk-mode
 
 Other help:  man mule
 
-                         Mosaic http://www-japan.mit.edu/mit/mit-materials/help/ &
+                         Netscape http://www-japan.mit.edu/mit/mit-materials/help/ &
 
 Bug-reports:  email to <bug-babel@mit.edu>
 ";
 
-help jdict:
+  help jdict:
 "This launches `xjdic,' a freeware English/Japanese,
 Japanese/English and Kanji dictionary.  
 
@@ -853,12 +748,12 @@ To run:  add nihongo; kterm &
 
 Other help:  man xjdic
 
-                        Mosaic http://www-japan.mit.edu/mit/mit-materials/help/ &
+                        Netscape http://www-japan.mit.edu/mit/mit-materials/help/ &
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
-help bjdict:
+  help bjdict:
 "This launches `xjdic' in a large, easy-to-read font.
 
 To run:  add nihongo; bigkterm &
@@ -866,37 +761,22 @@ To run:  add nihongo; bigkterm &
 
 Other help:  man xjdic
 
-                        Mosaic http://www-japan.mit.edu/mit/mit-materials/help/ &
+                        Netscape http://www-japan.mit.edu/mit/mit-materials/help/ &
 
 Bug-reports:  email to <bug-nihongo@mit.edu>
 ";
 
 
+  menu filmstudies:	"Film and Media Studies" {filmstudies} [course21/30] ;
+    item flmstudweb:	"Film and Media Home Page"	    [filmstudies/10] add("infoagents"),exec("htmlview http://web.mit.edu/21fms/Program/home.html");
 
-menu filmstudies:	"Film and Media Studies"  {filmstudies} 	[course21/15]	;
-item flmstudpg:		"Film and Media Homepage"		[filmstudies/10]  add("infoagents"),exec("htmlview http://web.mit.edu/21fms/Program/home.html");
-menu flmcrs:		"Courses"		{flmcrs}	[filmstudies/20]	;
-item 21L907:		"21L907 Media, Culture and Society"    	[flmcrs/5]	add("infoagents"),exec("htmlview http://web.mit.edu/21fms/Courses/Theory/home.html")	;
+  menu humstudies:	"Writing and Humanistic Studies"  {humstudies}	[course21/40]  ;
+    item sciwriteweb:	"21W.783 Home Page"	    [humstudies/10] add("infoagents"),exec("htmlview http://web.mit.edu/21w783/www/home.html");
+    item techwriteweb:	"21W.794 Home Page"	    [humstudies/20] add("infoagents"),exec("htmlview http://web.mit.edu/21w794/www/home.html");
 
-menu humstudies:	"Writing and Humanistic Studies"  {humstudies}	[course21/20]  ;
-item 21w783page:	"21w.783 Homepage"			[humstudies/10]  add("infoagents"),exec("htmlview http://web.mit.edu/21w783/www/home.html");
-item 21w794page:	"21w.794 Homepage"			[humstudies/15]  add("infoagents"),exec("htmlview http://web.mit.edu/21w794/www/home.htm"l);
+  item cvsim:		"CVSIM"		-sgi		    [courseHST]     add("hst"),exec("xterm -e cvsim");
 
-item cvsim:		"CVSIM"						[courseHST] -rsaix -sgi		add("hst"),exec("xterm -e cvsim")	;
-
-
-!these next 6 items dont do anything- they have no menus to be contained in.  Hmm.
-
-item xprint:		"Print file"					[printing]				exec("xprint")			;
-item printpolicy:	"Athena printing policy"			[printing,policy]							;
-
-item filequota:		"File Quota"					[quotas]								;
-item printquota:	"Printing Quota"				[quotas]								;
-
-item fileprotections:	"File Protections"				[privacy]								;
-item privacypolicy:	"Athena privacy policy"				[privacy,policy]							;
-
-
+  item sts001:	"STS001 Home Page"	    [courseSTS/10] add("infoagents"),exec("htmlview http://web.mit.edu/sts001/www/index.html");
 
 help yhelp:
 "Dash is the Athena Dashboard.  In addition to 
@@ -913,7 +793,7 @@ under the Dash `Special' menu.
 
 Mail comments and questions to:
 
-              <software-suggestions@mit.edu>
+              <dash-changes@mit.edu>
 
 To run on a workstation:   dash &
 Other help:  man dash 
@@ -938,23 +818,6 @@ Other menu items are informational only - clicking on the
   `?' will give help, but clicking on the item itself will
   do nothing but close the menu.";
 
-help techinfo:
-"TechInfo is MIT's public information system, with information
-on course schedules and descriptions, Institute policies,
-activities, _Tech Talk_, network resources, and more.
-
-To run on a workstation:   xtechinfo &
-To run on dialup:   techinfo
-
-Other help: man techinfo
-                         man xtechinfo
-                         type `help' in techinfo
-                         `About TechInfo' menu within techinfo
-                         `Help' button in xtechinfo
-
-Bug reports: use sendbug
-";
-
 help xcluster:
 "Xcluster brings up a map of MIT showing the location
 of all public Athena clusters.  Users can click on a particular
@@ -971,19 +834,6 @@ Other help:  man xcluster
 Bug reports:  use sendbug
 ";
 
-help xinfo:
-"The xinfo program displays a map of the MIT campus and
-will display the location and important information
-for a large number of on-campus offices, services, and sites.
-
-To run on a workstation:   xinfo &
-
-Other help:  man xinfo
-                         `Help on XINFO' menu under `Help' in xinfo
-
-Bug reports:  use sendbug
-";
- 
 help olta:
 "The On-Line TA system works just like the OLC (Athena's On-line
 Consulting system) except for the fact that the `consultants' are the
@@ -995,11 +845,10 @@ but must contact the Faculty Liaison Office to set it up.
 To run:    add olta ; olta
 
 Other help: man olta
-                         OLTA on Athena Student Guide (AC-93) from the Faculty Liaisons
-                         OLTA on Athena TA Guide (AC-94) from the Faculty Liaisons
-                           (both the above are available in OLH under the
-                            Using Athena for Courses menu.)
                          type `help' within olta
+                         OLTA on Athena Student Guide (AC-93) and TA Guide (AC-94), from CopyTech
+                             and in OLH under `Using Athena for Courses' (http://web.mit.edu/olh/)
+
 
 Bug reports:  use sendbug
 ";
@@ -1009,12 +858,11 @@ help olcstock:
 answers prepared for the questions most commonly asked of
 On Line Consulting.
 
-To run:    olc_answers     or,
-                     type `answers' at the olc> prompt
-                     type `help @olc:answers_menu' at the athena% prompt
+To run:    olc answers    
+    or:           type `answers' at the olc> prompt   
+    or:           go to http://web.mit.edu/answers/	
 
-Other help: man olc_answers
-                         type `h' within olc_answers
+Other help: type `?' within olc
 
 Bug reports:  use sendbug
 ";
@@ -1028,10 +876,6 @@ specific keywords.
 To run:    help
 To start the text-based version on a workstation:    help -tty
 
-Other help: man olh
-                         `Help' button in X version 
-                         type `h' in tty version
-
 Bug reports:  use sendbug
 ";
 
@@ -1042,14 +886,16 @@ If no one is available immediately, your question will
 be held until someone can help.  If you logout, you
 may receive an answer by electronic mail.
 
-You can also contact the consultants by calling
-x3-4435 or stopping by 11-115.
+You can also contact the consultants by calling x3-4435, 
+stopping by N42-105, or filling out the web form at
+http://web.mit.edu/consult/www/ask.html
 
 To run:    olc
 
 Other help: man olc
                          type `?' inside olc for a list of commands
                          type `help' inside olc 
+                         see http://web.mit.edu/consult/www/
 
 Bug reports:  use sendbug
 ";
@@ -1078,59 +924,11 @@ problem as you can (location of equipment, type of machine,
 exact nature of the problem, any error messages you may 
 see, and your name and phone number if applicable.)";
 
-help minicur:
-"Bring up a window displaying the schedule for the 
-current Athena minicourses.
-
-To view on a workstation:   
-
-    add infoagents
-    Netscape http://web.mit.edu/minidev/Public/Misc/mini_curr.asc &
-
-To view as plain text (e.g. over dialup):
-
-    add infoagents
-    lynx http://web.mit.edu/minidev/Public/Misc/mini_curr.asc &
-
-Other help: send email to <training@mit.edu>
-
-";
-
-
-help mininext:
-"Bring up a window displaying the schedule for the 
-next set of Athena minicourses.
-
-To run on a workstation:  
-
-    add infoagents
-    Netscape http://web.mit.edu/minidev/Public/Misc/mini_next.asc &
-
-To view as plain text (e.g. over dialup):
-
-    add infoagents
-    lynx http://web.mit.edu/minidev/Public/Misc/mini_next.asc &
-
-Other help: send email to <training@mit.edu>
-
-";
-
-help minidesc:
-"Bring up a window displaying the descriptions of
-all of the Athena minicourses.
-
-To run on a workstation:   
-
-    add infoagents
-    Netscape http://web.mit.edu/minidev/Public/Misc/mini_desc.asc &
-
-To view as plain text (e.g. over dialup):
-
-    add infoagents
-    lynx http://web.mit.edu/minidev/Public/Misc/mini_desc.asc &
-
-Other help: send email to <training@mit.edu>
-
+help minic:
+"Athena minicourses are free one-hour lectures intended to show
+you how to use Athena and MITnet services and facilities.
+For yearly and upcoming schedules, and topics covered, point
+your web browser to http://web.mit.edu/minidev/
 ";
 
 help helptoggle:
@@ -1159,14 +957,13 @@ and needs of people doing statistics research, and
 is used extensively by statisticians.  S-PLUS is an 
 extended version of the product, S.
 
-S-PLUS is available on Athena on the DECstation,
-Sun, SGI and RS/6000 platforms.
-
 To run:  add splus; splus
+
+For online help within S-PLUS, type: help.start()
 
 Other help:  man Splus
                          more /mit/splus/README.athena
-                         manuals available for browsing in 11-115
+                         manuals available for browsing in N42-105
      
                          The NEW S Language, A Programming 
                          Environment for Data Analysis and 
@@ -1174,20 +971,6 @@ Other help:  man Splus
                          John M. Chambers and Allan R. Wilks
                          (available at the MIT Coop)
 	
-Bug reports:  use sendbug
-";
-
-
-help prochart:
-"ProChart is a menu-driven graphics presentation
-program that lets you make x-y line charts,
-bar charts, and pie charts, and easily modify
-the chart's appearance.
-
-To run on a workstation:   add prochart ;  prochart &
-
-Other help:  man prochart
-
 Bug reports:  use sendbug
 ";
 
@@ -1203,10 +986,10 @@ To run on workstation:   ez
 
 Other help: man ez
                          ahelp ez
-                         On-Line Help (under `Text and Graphics Software')
+                         OLH under `Text and Graphics Software' (http://web.mit.edu/olh/)
                          OLC stock answers 
                          choose `Help' from the `ez' menu inside EZ
-                         EZ on Athena (AC-46) from Graphic Arts
+                         EZ on Athena (AC-46) at CopyTech or http://web.mit.edu/is/pubs/
 
 Bug reports:  use sendbug
 ";
@@ -1222,9 +1005,9 @@ To run on a workstation:   emacs &
 To run on dialup:                  emacs
 
 Other help:  man emacs
-                         On-Line Help (under `Text and Graphics Software')
+                         OLH under `Text and Graphics Software' (http://web.mit.edu/olh/)
                          OLC stock answers
-                         `Emacs on Athena' (AC-41) from Graphic Arts
+                         `Emacs on Athena' (AC-41) at CopyTech or http://web.mit.edu/is/pubs/
                          emacs manuals in clusters and libraries
 
                          Type Ctrl-h in an emacs window to get help inside emacs
@@ -1243,165 +1026,53 @@ complex mathematical text.
 To run: latex filename.tex
 
 Other help:  man latex
-                         `Essential LaTeX on Athena' (AC-50) from Graphic Arts
+                         `Essential LaTeX on Athena' (AC-50) at CopyTech or http://web.mit.edu/is/pubs/
                          `More LaTeX on Athena:  Reports and Advanced Topics' (AC-51)
-                                  from Graphic Arts
-                         `More LaTeX on Athena: MIT Thesis' (AC-52) from Graphic Arts
+                                  at CopyTech or http://web.mit.edu/is/pubs/
+                         `More LaTeX on Athena: MIT Thesis' (AC-52) at CopyTech or http://web.mit.edu/is/pubs/
                          `Inessential LaTeX' from the SIPB
                          LaTeX User's Guide in clusters and libraries
-                         On-Line Help (under `Text and Graphics Software')
+                         OLH under `Text and Graphics Software' (http://web.mit.edu/olh/)
                          OLC stock answers
 
 Bug reports:  use sendbug";
 
-help frame5:
-"FrameMaker  5.1 is a full-featured and very powerful
-document preparation system, suitable for creating 
-complex documents.  Because of its complexity, it 
-is not well-suited for writing simple documents 
-such as letters and memos, or non-formatted documents
-such as email and dotfiles.
+help frame:
+"FrameMaker is a full-featured and very powerful document preparation
+system, suitable for creating complex documents.  Because of its
+complexity, it is not well-suited for writing simple documents such as
+letters and memos, or non-formatted documents such as email and
+dotfiles.
 
-FrameMaker 5.1 is available on Suns and SGIs.
-
-To run on a workstation: add frame; maker
+To run on a workstation: add frame; maker 
 
 Other help: click on `Help' from the Frame startup menubar
                          choose the `Help' menu inside the Frame window
-                         `FrameMaker on Athena' (AC-56) from Graphic Arts
+                         `FrameMaker on Athena' (AC-56) at CopyTech or http://web.mit.edu/is/pubs/
                          FrameMaker manuals in clusters and libraries
-                         On-Line Help (under `Text and Graphics Software')
+                         OLH under `Text and Graphics Software' (http://web.mit.edu/olh/)
                          OLC stock answers
 
 Bug reports:  use sendbug";
 
-help imaker5:
-"Imaker 5.1 is the international version of the FrameMaker
-document preparation system. Imaker provides access to
-foreign language dictionaries.
-
-To run on a workstation: add frame; imaker
+help imaker:
+"International interfaces are no longer available, but access
+to foreign language dictionaries is provided within FrameMaker.
 
 Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
 ";
 
-help imakergerman5:
-"German Imaker 5.1 is a version of Imaker with the user
-interface (menus and dialog boxes) in German.
+help framereader:
+"FrameReader was discontinued with Frame 5.5.  Adobe's Acrobat Reader
+is now their freely distributable viewing program for Frame documents.
 
-To run on a workstation:   add frame; imakergerman
+In order to use Acrobat Reader as a viewing program, it is necessary
+to convert Frame documents to Acrobat PDF format; see the online help
+in FrameMaker 5.5 for information.
+
+To run Acrobat Reader on a workstation: add acro; acroread
 
 Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
-";
-
-help imakerfrench5:
-"French Imaker 5.1 is a version of Imaker with the user
-interface (menus and dialog boxes) in French.
-
-To run on a workstation:   add frame; imaker -lang francais
-
-Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
-";
-
-help framereader5:
-"FrameReader is a stripped down version of FrameMaker
-which allows the user to preview Frame documents but
-not make any changes to them.
-
-FrameReader has replaced FrameViewer as of release 5.0.
-
-To run on a workstation:   add frame; reader -f <filename>
-
-Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
-";
-
-help frame4:
-"FrameMaker 4.0 is a full-featured and very powerful
-document preparation system, suitable for creating 
-complex documents.  Because of its complexity, it 
-is not well-suited for writing simple documents 
-such as letters and memos, or non-formatted documents
-such as email and dotfiles.
-
-To run on a workstation: add frame; maker -ver 4.0
-
-Other help: click on `Help' from the Frame startup menubar
-                         choose the `Help' menu inside the Frame window
-                         `FrameMaker on Athena' (AC-56) from Graphic Arts
-                         FrameMaker manuals in clusters and libraries
-                         On-Line Help (under `Text and Graphics Software')
-                         OLC stock answers
-
-Bug reports:  use sendbug
-";
-
-help imaker4:
-"Imaker version 4 is the international version of the 
-FrameMaker document preparation system. Imaker provides 
-access to foreign language dictionaries.
-
-Version 4.0 is available on all platforms but the 
-default is now version 5.1 on the Suns and SGIs.
-
-To run on a workstation: add frame; imaker -ver 4.0
-
-Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
-";
-
-help imakergerman4:
-"German Imaker version 4 is a version of Imaker with the 
-user interface (menus and dialog boxes) in German.
-
-Version 4.0 is available on all platforms but the 
-default is now version 5.1 on the Suns and SGIs.
-
-To run on a workstation:   add frame
-			   imaker -lang deutsch -ver 4.0
-
-Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
-";
-
-help imakerfrench4:
-"French Imaker version 4.0 is a version of Imaker with 
-the user interface (menus and dialog boxes) in French.
-
-Version 4.0 is available on all platforms but the 
-default is now version 5.1 on the Suns and SGIs.
-
-To run on a workstation:   add frame
-			   imaker -lang francais -ver 4.0
-
-Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
-";
-
-help frameviewer4:
-"FrameViewer version 4.0 is a stripped down version of 
-FrameMaker which allows the user to preview Frame documents 
-but not make any changes to them.
-
-Version 4.0 is available on all platforms but the default 
-is now version 5.1 on the Suns and SGIs.
-
-To run on a workstation:   add frame
-			   viewer -f <filename> -ver 4.0
-
-Other help: see help for the `Maker' item
-
-Bug reports:  use sendbug
 ";
 
 help graphother:
@@ -1415,13 +1086,20 @@ help xfig:
 provides much of the same functionality as MacDraw,
 and can write output files in several formats, including
 LaTeX, PostScript, and troff, for inclusion into other
-documents.  Many people prefer Idraw (see Idraw menu item.)
+documents.  
 
 To run on a workstation:   add sipb ; xfig &
 
 Other help: man xfig
 
 Bug reports: send email to <bug-sipb@mit.edu>
+";
+
+help coreldraw:
+"CorelDRAW is a drawing and illustration package, and is part 
+of a suite of graphics and presentation applications. See
+http://web.mit.edu/acs/www/whererunsa.html#CorelDRAW
+for more information on Corel products available on Athena.
 ";
 
 help tgif:
@@ -1448,21 +1126,6 @@ Other help: man xpaint
                          click on `Help' button inside xpaint
 
 Bug reports: send email to <graphics@mit.edu>
-";
-
-help idraw:
-"Idraw is a popular drawing program on Athena.  It
-provides much of the same functionality as MacDraw,
-and writes output files in PostScript format.
-Idraw drawings can be included in documents.
-
-Idraw is not available on Sun workstations.
-
-To run on a workstation:   add sipb ; idraw &
-
-Other help: man idraw
-
-Bug reports: send email to <bug-sipb@mit.edu>
 ";
 
 help xv:
@@ -1497,27 +1160,26 @@ Bug reports:  use sendbug
 ";
 
 help autocad12:
-"AutoCAD is a Computer-Aided Design
-package from AutoDesk, Inc.
+"AutoCAD is a Computer-Aided Design package from AutoDesk, Inc.
 
-To run on a workstation: add autocad; autocad -version 12&
+To run on a workstation: add autocad; autocad -version 12 &
 
-Other help:  AutoCAD Reference Manual in the libraries and 11-115
-                         AutoCAD Tutorial in the libraries and 11-115
-                         AutoCAD Extras Manual in the libraries and 11-115
+Other help:  AutoCAD Reference Manual in the libraries and N42-105
+                         AutoCAD Tutorial in the libraries and N42-105
+                         AutoCAD Extras Manual in the libraries and N42-105
 
 Bug reports:  use sendbug
 ";
 
 help autocad13:
-"AutoCAD is a Computer-Aided Design
-package from AutoDesk, Inc.
+"AutoCAD is a Computer-Aided Design package from AutoDesk, Inc.  There
+will be no further UNIX AutoCAD releases beyond R13.
 
-To run on a workstation: add autocad; autocad -version 13&
+To run on a workstation: add autocad; autocad &
 
-Other help:  AutoCAD Reference Manual in the libraries and 11-115
-                         AutoCAD Tutorial in the libraries and 11-115
-                         AutoCAD Extras Manual in the libraries and 11-115
+Other help:  AutoCAD Reference Manual in the libraries and N42-105
+                         AutoCAD Tutorial in the libraries and N42-105
+                         AutoCAD Extras Manual in the libraries and N42-105
 
 Bug reports:  use sendbug
 ";
@@ -1552,32 +1214,27 @@ help xlibs:
 "Xlib, Xt, Xaw, and Motif are layered libraries that supply
 X window programming functionality and widget sets for
 building graphical objects in X. Libraries and other
-resources are available in various lockers, including:
-x11, x11r5, motif1.1 and motif1.2. Man pages exist for
-various features (man X, man 3Xt <function> etc.). See the
-document `Summary of Available Athena Software' (AC-13),
-available from Graphic Arts, and the PostScript file 
-SunCompiling.ps in the info locker.";
+resources are available in the Athena release, and in various
+lockers, including: x11, x11r5, motif1.1 and motif1.2. Man pages 
+exist for various features (man X, man 3Xt <function> etc.). 
 
-help saber:
-"Codecenter (formerly Saber C) is an integrated C interpreter/debugger 
-which comes in window and command-line versions.  It has an on-line
+Other help:  http://web.mit.edu/acs/www/whererunsa.html#Motif
+                           http://web.mit.edu/acs/www/whererunsa.html#Xaw
+
+Bug reports:  use sendbug
+";
+
+help codecenter:
+"Codecenter is an integrated C interpreter/debugger which comes in
+windowing and command-line versions.  It has an on-line 
 help system that is fairly complete, and also has an on-line
 tutorial available.
 
-To run on a DECstation (version 3.1.1): 
-
-                         add saber; xcodecenter (X version), 
-                         add saber; codecenter (command-line version)
-
-To run on a Sun (version 4.0.2):
-
+To run (Sun only):
                          add codecenter; xcodecenter (X version), 
                          add codecenter; codecenter (command-line version)
 
 Other help: help inside program
-                         man saber
-                         man xcodecenter
                          man codecenter
 
 Bug reports:  use sendbug
@@ -1585,77 +1242,94 @@ Bug reports:  use sendbug
 
 help clang:
 "There are a number of C and C++ compilers on Athena, some of which
-require attaching lockers to access. The standard name for the C
-compiler under UNIX is `cc', but there are a number of exceptions to
-this that are explained in the various documents listed below.
+require attaching lockers to access.  The standard name for the C
+compiler under UNIX is `cc' (and for the C++ compiler, `CC'), 
+but there are a number of exceptions to this that are explained in the
+references listed below. 
 
-Which implementation  of a C compiler you use depends on a variety of 
+Which implementation of a C compiler you use depends on a variety of
 considerations which are too complicated to go into here.  We suggest
-starting with the compilers in the `cygnus' locker:
+starting with the default cc and CC compilers (on Linux machines,
+these are symlinks to gcc and g++ respectively).  An overview of
+compiling on Sun workstations is available in the info locker:
 
-	add cygnus
-	/mit/cygnus/`machtype`bin/gcc      (C compiler)
-	/mit/cygnus/`machtype`bin/g++      (C++ compiler)
+                          attach info
+                          add frame
+                          maker -f  /mit/info/SunCompiling.doc
 
-Other help: add cygnus; man gcc
-                         add cygnus; info
+Other help: http://web.mit.edu/acs/www/whererunsa.html#cc  (C compilers)
+                          http://web.mit.edu/acs/www/whererunsa.html#CC  (C++ compilers)
+                          OLC stock answers 
+See also:
 
-                         `Summary of Available Athena Software' (AC-13), sec. 6.1, 
-                                   from Graphic Arts
+The multi locker (add multi) for the C and C++ compilers (ghcc and
+gcx respectively) from Green Hills Software supplied with the Multi
+debugger on the Sun.
 
-                         OLH subtopics under `Programmingon Athena', and 
-                                   `Documentation Archives' 
-                                                  -> `Archive of Athena Documents...' 
-                                                                           -> `C Programming on Athena' 
-                                                                           -> `C Programming Tools on Athena'. 
-
-                         For C and C++ on Suns, see the PostScript file SunCompiling.ps:
-
-                                                  attach info
-                                                  add frame
-                                                  reader -f  /mit/info/SunCompiling.doc
-
-                         OLH topics `Answers to Commonly Asked Questions' -> `C Answers'.
-
-
-See also the Multi locker (add multi; cd /mit/multi) for C and C++ compilers
-from Green Hills Software (DECstation, Sun) supplied with the Multi debugger.
+The gnu locker (add gnu) for current versions of the GNU C and C++
+compilers (gcc and g++ respectively).
 
 Bug reports:  use sendbug
 ";
 
 help fortranlang:
 "There are a number of different FORTRAN compilers on Athena.  The standard name
-for the FORTRAN compiler under UNIX is f77, but there are exceptions to this
-that are explained in the documents below.
+for the FORTRAN compiler under UNIX is f77 (or the newer f90), but
+there are exceptions to this that are explained in the references
+below.  An overview of compiling on Sun workstations is available in
+the info locker: 
 
-Other help:  `Summary of Available Athena Software' (AC-13), sec. 6.1, 
-                                   from Graphics Arts (11-004 or E52-045)
+                          attach info
+                          add frame
+                          maker -f  /mit/info/SunCompiling.doc
 
-                         OLH topics `Answers to Commonly Asked Questions' 
-                                                  -> `FORTRAN  Answers'.
 
-                         For FORTRAN on Suns, see the PostScript file SunCompiling.ps:
+Other help:  http://web.mit.edu/acs/www/whererunsa.html#f77  (f77 compilers)
+                           http://web.mit.edu/acs/www/whererunsa.html#f90  (f90 compilers)
+                           OLC stock answers
 
-                                                  attach info  
-                                                  add frame
-                                                  reader -f /mit/info/SunCompiling.doc
-
-See also the Multi locker (add multi; cd /mit/multi) for the Green Hills
-Software FORTRAN compiler (DECstation, Sun) supplied with the Multi debugger.
+See also the multi locker (add multi) for a FORTRAN 77 compiler (gfc)
+from Green Hills Software (Sun only) supplied with the Multi debugger.
+There currently is no GNU FORTRAN available, although one is under
+development.
 
 Bug reports:  use sendbug
 ";
 
+help javalang: 
+
+"Java is available on all supported Athena platforms in the form of the
+Java Development Kit (JDK).  At present, Java is supported by Academic
+Computing in the context of courses, but OLC support is not available.
+
+To use, first:  add java  (SGI, Linux)  or  add -f  java  (Sun)
+   to compile:  javac myfile.java     (compile source file myfile.java -> myfile.class)
+   to run:           java myfile                  (run myfile.class)
+
+The Java Studio and Java Workshop development environments are also
+available on the Sun.
+
+To run:  add studio ; js &     (Java Studio)
+                  add workshop ; jws &   (Java Workshop)
+
+Other help:  see /mit/java/README.athena      
+                           man pages
+                           http://web.mit.edu/java/www/home.html  (general resources)
+                           http://web.mit.edu/acs/www/whererunsa.html#Java  (JDK)
+                           http://web.mit.edu/acs/www/whererunsa.html#javas (Java Studio)
+                           http://web.mit.edu/acs/www/whererunsa.html#javaw (Java Workshop)
+
+
+Bug reports:  use sendbug";
+
 help schemelang:
 "Scheme is a dialect of Lisp taught in 6.001 at MIT.  
 
-Other help:  Scheme on Athena (AC-84) from Graphic Arts
-                           Revised^3 Report on the Algorithmic Language Scheme, available
-                                     from MIT AI Lab Publications office
-                           C-Scheme Reference Manual, available from MIT AI Lab Publications office
-                           Structure and Interpretation of Computer Programs at the Coop, MIT Press
-                           OLC stock answers
+To run:  add scheme; scheme
+
+Other help:        Revised Report on the Algorithmic Language Scheme, available from
+                                     MIT AI Lab Publications office
+                                 Structure and Interpretation of Computer Programs at the Coop, MIT Press
 
 Bug reports: use sendbug";
 
@@ -1669,6 +1343,30 @@ To run on a workstation:   xclock -analog &
 Other help: man xclock
 
 Bug reports:  use sendbug
+";
+
+help xmcd:
+
+"On Athena Sun workstations, audio CDs can be played using xmcd. 
+Insert the CD first and wait for the status light on the CD drive to
+settle down before starting the program.  
+
+  To run on a workstation (non-SGI):  add sipb; xmcd &
+
+  Other help:  click on the `?' button in the application
+                            man xmcd
+
+  Bug reports on xmcd:  send mail to bug-sipb
+
+To play an audio CD on an SGI, insert the CD and double-click on the
+screen icon once it has changed to a musical note symbol.  
+
+  To run from the command line:  cdman 
+	
+  Other help:  man cdman
+                            OLC stock answers (SGI Answers)
+
+  Bug reports on SGI:   use sendbug
 ";
 
 help digitalclock: "The `Digital Clock' is simply the X clock with a 24-hour
@@ -1734,11 +1432,20 @@ Control, Signal Processing, Optimization, and Splines.
 
 To run:    add matlab ; matlab
 
-Other help:  MATLAB on Athena (AC-71) from Graphic Arts
+Other help: `MATLAB on Athena' (AC-71) at CopyTech or http://web.mit.edu/is/pubs/
+                         `Inessential MATLAB' from the SIPB
                          MATLAB User's Guide in libraries
-                         man matlab
-                         type help at the MATLAB `>>' prompt
+                         OLH under `Numerical and Math Software' (http://web.mit.edu/olh/)
+                         OLC stock answers
+                         type `help' at the MATLAB >> prompt
 
+Links to information on new features and M-file conversion are available from
+the local web page: http://web.mit.edu/matlab/www/
+
+For online help including full doc. set, type `helpdesk' in MATLAB or do:
+
+                     add matlab ; matlabdoc 
+      
 Bug reports:  use sendbug
 ";
 
@@ -1760,21 +1467,14 @@ of mesh, light-source and surface shading, contour, vector, and scatter plots.
 You can also use it to fit your data to curves of various types, including
 polynomial, exponential, and spline curves.
 
-To run on a workstation:      add tecplot; tecplot
+To run on a workstation:      add tecplot; tecplot &
 
-Other help:  add tecplot; tecdemo    to run the tutorial program
-                         `Tecplot on Athena' (AC-75) from Graphic Arts
+Other help:  add tecplot; rundemo    to run the tutorial program
                          OLH under `Numerical and Math Software'
-                         vendor documentation in libraries and 11-115
+                         vendor documentation in libraries and N42-105
 
 Bug reports:  use sendbug
-
-NOTE: When Tecplot starts up, your mouse cursor will become invisible.  You can
-still use it to select among the Tecplot menu items (the menu items will
-highlight as you move the now invisible mouse across them.)  To get your cursor
-back, and temporarily freeze Tecplot, just click the middle mouse button.  To go
-back to Tecplot, move the mouse over the window and click the middle button
-again.";
+";
 
 help numrecipes:
  "The Numerical Recipes library is a collection of about 200 numerical routines
@@ -1783,16 +1483,21 @@ cluster documentation racks and at the Coop. Binary libraries are available for
 all Athena platforms.
 
 Other help:  attach recipes; more /mit/recipes/README
+                          http://web.mit.edu/acs/www/whererunsa.html#Numerical
+
 
 Bug reports:  use sendbug
 ";
 
 help lapack:
-"LAPACK is a library of FORTRAN 77 subroutines for solving the most commonly
+"LAPACK is a library of FORTRAN 77 and C subroutines for solving the most commonly
 occurring problems in numerical linear algebra.  It is public-domain software,
 and can be used freely. The libraries are available for all Athena platforms.
 
 Other help:  attach lapack;  more /mit/lapack/README
+                          attach lapack;  more /mit/lapack/README.to_use_clapack (C usage)
+                          http://web.mitedu/acs/www/whererunsa.html#Lapack
+
 
 Bug reports:  use sendbug
 ";
@@ -1809,13 +1514,17 @@ window which says `Start Program?' and has `Yes' and `No' buttons.
 off' with `Confirmation on' in this menu.";
 
 help quitopt:
-"This option causes dash to exit.
+"This option causes Dash to exit.  To restart, type dash at the athena% prompt. 
 
                    ***     BE CAREFUL   ***
 
-if you use this option - if you are running xlogout, it will exit as well since
-it is really just part of dash.  If all you want to do is hide the Dash menus,
-select `Hide menus' above, instead.";
+If all you want to do is hide the Dash menus, select `Hide menus' instead;
+if you really want to logout, select `Logout of Athena' or type logout
+at the athena% prompt.   
+
+Quitting Dash does not log you out (but will cause the logout button
+to disappear, if you're using xlogout).";
+ 
 
 help hidemenus:
 "This option hides the Dash menu bar. 
@@ -1826,22 +1535,22 @@ To restore menubar:               dash -show  menubar";
 help mitdir:
 "The MIT Directory lists current employees and students.  To change your own
 information, contact the registrar (students) or personnel office (MIT staff and
-faculty.)
+faculty).
 
-To run on a workstation:     add mitdir; xmitdir
-To look someone up via dialup, type:     finger  fname_lname@mit
-     or:                                                                       finger username@mit
+On the web:   http://web.mit.edu/search.html
+
+Command line:     finger  fname_lname@mit
+     or:                            finger username@mit
 
 Bug reports:  use sendbug
 ";
 
-help adir:
-"The Athena directory lists all Athena users.
+help map:
+"This item brings up the MIT campus map suite in your current web browser:
 
-To look someone up, type:                         finger  fname_lname@athena
-          or:                                                                finger username@athena
+               http://web.mit.edu/map.html
 
-To change your own information, type:   chfn
+(if you don't have a browser running, it will start one up)
 
 Bug reports:  use sendbug
 ";
@@ -1891,8 +1600,7 @@ Phone x3-6460.
 ";
 
 help deans:
-"Dean's office, Undergraduate Education and 
-Student Affairs. 
+"Office of the Dean of Students and Undergraduate Education.
 
 Phone x3-6776.
 ";
@@ -1900,15 +1608,19 @@ Phone x3-6776.
 help psych:
 "Phone x3-2916.";
 
-help mcsales:
-"MIT Computer Connection -- sales and service 
-of Apple, DEC, IBM, NeXT and SUN computers.  
-Dial x3-7686 or stop by W20-021.";
+help mcc:
+
+"MIT Computer Connection -- consulting support for purchasing
+supported hardware, software, and peripherals.  Dial x3-7686, stop by
+W20-021, or see http://web.mit.edu/mcc/www/";
 
 help ishelp:
-"Macintosh questions	-- x3-1101
-DOS/Windows/PC questions	-- x3-1102
-Network/other questions	-- x3-1104";
+"Macintosh questions	-- x3-1101, email mac-help@mit.edu
+DOS/Windows/PC questions	-- x3-1102, email pc-help@mit.edu
+UNIX/VMS questions (subscribers only)	-- x3-1103, email unix-vms-help@mit.edu
+
+http://web.mit.edu/helpdesk/
+";
 
 help sipb:
 "Student-staffed group that provides help
@@ -1916,7 +1628,9 @@ with SIPB-sponsored and other software
 on Athena and other computers.  Open
 most of the day and night.  Phone x3-7788
 or stop by the office on the fifth floor
-of the Student Center.";
+of the Student Center.
+
+http://www.mit.edu/";
 
 help aboutcw:
 "Courseware is, for the most part, only supported by
@@ -1929,8 +1643,7 @@ instead of reporting it to Athena.
 Consulting and OLC will probably not be able to 
 provide any detailed assistance.  Some courses 
 are registered to use the OLTA (On Line TA) system, 
-and may provide assistance there.  
-(see On Line TA in this menu).
+and may provide assistance there (see OLTA in this menu).
 
 Any problems with starting courseware from dash
 should be directed via email to <f_l@mit.edu>";
@@ -1978,44 +1691,47 @@ help logout:
 You will be asked to verify that
 you really want to logout.";
 
-help sis:
-"The Student Information Services system lets you
-see your financial and academic information, including
-grades and registration information, your financial 
-aid information, and your student account statement.
-You can also change your MIT directory information, 
-or link to the course catalog and lotteries.
+help logoutopt:
+"This option will log you off of Athena.
+You will be asked to verify that
+you really want to logout.";
 
-You must register for and use a special password 
-(separate from your login password) in order to view 
-any confidential information.  It will become 
-operational the day after you have registered.
+help websis:
+"WebSIS is the web-based student information system
+that allows you to look up your academic and financial
+records, update your address information, pre-register, 
+view the course catalog, and print forms.
+ 
+To access WebSIS, you must have an Athena account and
+your MIT ID# (not your social security number).  
+ 
+To run WebSIS go to http://student.mit.edu/  or click on
+*WebSIS  at left.
+Send bugs to:  <websis@mit.edu>";
 
-To register for your 'extra' password, type:
-          add register; reg_extra
+help rules:
+"This item opens the Athena Rules of Use:
 
-To run on a workstation:  sis
+        http://web.mit.edu/olh/Welcome/rules.html
 
-Send bugs to:  <sis@mit.edu>";
+in your web browser.  All Athena users are responsible for
+knowing and following the complete set of rules.
 
-help rights:
-"Use of Athena facilities is restricted to authorized holders
+Use of Athena facilities is restricted to authorized holders
 of Athena accounts (MIT students, faculty, staff, and other 
-authorized guests.)  Questions on eligibility for account on 
-Athena should be directed via email to <accounts@mit.edu>.
+authorized guests).  Questions on account eligibility should be
+directed to <accounts@mit.edu>.";
 
-A set of files informing Athena end users of license 
-obligations has been installed in most Athena 
-third-party software lockers. To see these, 
-type (in most cases): 
+help licenses:
+"A set of files informing users of license obligations 
+(and some basic additional information) can be found 
+in most third-party software lockers maintained by IS.  
+To see this information, type:
 
-            attach lockername
-            more /mit/lockername/README.license
+            attach <lockername>
+            more /mit/<lockername>/README.athena
 
-or, for CodeCenter (saber) and Transcript (enscript):
-
-            man saber
-            man enscript";
+";
 
 help aboutpictures:
 "Athena currently does not have a fully-supported drawing program like
@@ -2026,17 +1742,8 @@ able to answer your questions, but we cannot guarantee it.";
 help aboutspreadsheets:
 
 "Athena has several spreadsheet programs available.  Xess is the currently
-supported product, but only runs on workstations.  "sc" which is supported
+supported product; Applix Spreadsheets is also available.  `sc' which is supported
 by the SIPB, runs over dialup.";
-
-help xmath:
-"The xmath program creates x-y plots either from x-y data 
-or from functions.  xmath has its own help command.
-
-To run on a workstation:   add xmath ; xmath
-
-Bug reports:  use sendbug
-";
 
 help aboutneos:
 
@@ -2057,6 +1764,8 @@ To run on a workstation:   eos
 Other help: man eos
                          ahelp eos
                          click on the `Help' button in the application
+                         NEOS on Athena Student Guide (AC-91) and TA Guide (AC-92), from CopyTech
+                            and in OLH under `Using Athena for Courses' (http://web.mit.edu/olh/)
 
 Bug reports:  use sendbug
 ";
@@ -2071,6 +1780,8 @@ To run on a workstation:   grade
 Other help: man grade
                          ahelp grade
                          click on the `Help' button in the application
+                         NEOS on Athena Student Guide (AC-91) and TA Guide (AC-92), from CopyTech
+                            and in OLH under `Using Athena for Courses' (http://web.mit.edu/olh/)
 
 Bug reports:  use sendbug
 ";
@@ -2103,9 +1814,8 @@ To run one of the programs listed above, simply type the
 
 Other help:  man mh
                           also man pages for each command, i.e. type `man comp' etc.
-                          Electronic Mail on Athena (AC-31) from Graphic Arts
-                          OLH under `Communicating With Other Users' ->
-                                                   `Electronic Mail'
+                          Electronic Mail on Athena (AC-31) at CopyTech or http://web.mit.edu/is/pubs/
+                          OLH under `Communicating With Other Users' -> `Electronic Mail' (http://web.mit.edu/olh/)
                     
 Bug reports:  use sendbug
 ";
@@ -2119,12 +1829,31 @@ to the text-based versions of the same programs.
 To run on a workstation:   xmh &
 
 Other help:  man xmh
-                          Electronic Mail on Athena (AC-31) from Graphic Arts
+                          Electronic Mail on Athena (AC-31) at CopyTech or http://web.mit.edu/is/pubs/
                           OLH under `Communicating With Other Users' ->
-                                                  `Electronic Mail'
+                                                  `Electronic Mail' (http://web.mit.edu/olh/)
 
 Bug reports:  use sendbug
 ";
+
+help exmh:
+
+"EXMH is a more advanced graphical interface to MH.  Unlike XMH, it
+provides MIME support: with the click of a button, EXMH will bring up
+an appropriate viewing application for most types of email enclosures.
+(MIME stands for Multipurpose Internet Mail Extensions, a standard for
+transmission of images, audio, enriched text, FTP pointers, etc. via
+email.)
+
+To run on a workstation:   add sipb; exmh &
+
+Other help:  man exmh
+                          Help button within EXMH
+                          Manual and FAQ at http://www.beedub.com/exmh/ 
+
+Bug reports:  send email to <bug-sipb@mit.edu>
+";
+
 
 help mh-rmail:
 "Emacs has a built-in mode for reading mail called
@@ -2141,9 +1870,9 @@ Or to start up a new emacs running only mh-rmail:
    on dialup:                    emacs -f mh-rmail
 
 Other help:  type `Ctrl-h m' while in mh-rmail mode
-                          Electronic Mail on Athena (AC-31) from Graphic Arts
+                          Electronic Mail on Athena (AC-31) at CopyTech or http://web.mit.edu/is/pubs/
                           OLH under `Communicating With Other Users' ->
-                                              `Electronic Mail'
+                                              `Electronic Mail' (http://web.mit.edu/olh/)
 
 Bug reports:  use sendbug
 ";
@@ -2178,8 +1907,9 @@ help aboutnews:
 thousands of users post and read articles about
 hundreds of topics.
 
-Help on netnews is available in On-Line Help.  All
-three news readers on this menu are documented
+Help on netnews is available in On-Line Help
+(http://web.mit.edu/olh/).  All three news 
+readers on this menu are documented
 there.  There is also a document on netnews
 available from the SIPB.";
 
@@ -2191,8 +1921,8 @@ To run on a workstation:   add sipb ; xrn &
 
 Other help: Some help is available in the program - moving the mouse over 
                                a button will give a short help message about that button. 
-                          Netnews on Athena (AC-33)
-                          OLH under `Communicating with Other Users'
+                          Netnews on Athena (AC-33) from at CopyTech or http://web.mit.edu/is/pubs/
+                          OLH under `Communicating with Other Users' (http://web.mit.edu/olh/)
                           Netnews: A One-Page Guide to the Usenet (SIPB)
                           man rn
 
@@ -2205,8 +1935,8 @@ help rrn:
 To run:    add sipb ; rrn
 
 Other help:  Type `h' at any time for help. 
-                          Netnews on Athena (AC-33)
-                          OLH under `Communicatin with Other Users'
+                          Netnews on Athena (AC-33) from at CopyTech or http://web.mit.edu/is/pubs/
+                          OLH under `Communicating with Other Users' (http://web.mit.edu/olh/)
                           Netnews: A One-Page Guide to the Usenet (SIPB)
                           man rn
 
@@ -2242,8 +1972,8 @@ help xdsc:
 To run on a workstation:   xdsc &
 
 Other help: man xdsc
-                          Discuss on Athena (AC-32) from Graphic Arts
-                          OLH under `Communicatin with Other Users'
+                          Discuss on Athena (AC-32) at CopyTech or http://web.mit.edu/is/pubs/
+                          OLH under `Communicatin with Other Users' (http://web.mit.edu/olh/)
                           click on the `HELP' button within the application
 
 Bug reports:  use sendbug
@@ -2256,8 +1986,8 @@ help discuss:
 To run:    discuss
 
 Other help:  man discuss
-                          Discuss on Athena (AC-32) from Graphic Arts
-                          OLH under `Communicatin with Other Users'
+                          Discuss on Athena (AC-32) at CopyTech or http://web.mit.edu/is/pubs/
+                          OLH under `Communicatin with Other Users' (http://web.mit.edu/olh/)
                           type `help' or `?' within the application
 
 Bug reports:  use sendbug
@@ -2295,8 +2025,8 @@ simply type:
                           zwrite username
 
 Other help: man zwrite
-                      Zephyr on Athena (AC-34) from Graphic Arts
-                      OLH under `Communicating with Other Users'
+                      Zephyr on Athena (AC-34) at CopyTech or http://web.mit.edu/is/pubs/
+                      OLH under `Communicating with Other Users' (http://web.mit.edu/olh/)
     
 Bug reports: use sendbug";
 
@@ -2326,8 +2056,8 @@ type:
                       zlocate username
 
 Other help: man zlocate
-                      Zephyr on Athena (AC-34) from Graphic Arts
-                      OLH under `Communicating with Other Users'
+                      Zephyr on Athena (AC-34) at CopyTech or http://web.mit.edu/is/pubs/
+                      OLH under `Communicating with Other Users' (http://web.mit.edu/olh/)
 
 Bug reports: use sendbug
 ";
@@ -2383,62 +2113,22 @@ you use this setting.
 
 To run:    zctl set exposure none";
 
-help aboutwww:
-"The WorldWideWeb (WWW) is the `universe 
-of network-accessible information'. With
-the client programs below, the Web is 
-easy to roam, browse, and contribute to.
-There are also Mac and PC clients for
-the Web.";
+help wwwcert:
+"Certificates are used to authenticate access to MIT's secure web services
+including WebSIS (MIT Student Information System), SAPweb, and MCC/Online.
+This item opens the Certificates at MIT web page: 
 
-help mosaicmit:
-"Mosaic is a graphical WWW browser on
-Athena. Starting this version will 
-connect you the the MIT Home Page.  
-
-To run on a workstation: add infoagents; Mosaic http://web.mit.edu &
-
-Other help: man Mosaic
-                          click on the `Help' menu item in the application
-
-Bug reports: use sendbug
+           http://web.mit.edu/is/help/cert/
 ";
 
-help mosaicsipb:
-"Mosaic is a graphical WWW browser on
-Athena. Starting this version will 
-connect you the the SIPB Home Page.  
-
-To run on a workstation: add infoagents; Mosaic http://www.mit.edu &
-
-Other help: man Mosaic
-                          click on the `Help' menu item in the application
-
-Bug reports: use sendbug
-";
-
-help mosaicdefault:
-"Mosaic is a graphical WWW browser on
-Athena. Starting this version will, by default, 
-connect you the the MIT Home Page.  
-(If you have set another page as your startup default, 
-it will start on that instead.)
-
-To run on a workstation: add infoagents; Mosaic &
-
-Other help: man Mosaic
-                          click on the `Help' menu item in the application
-
-Bug reports: use sendbug
-";
 
 help lynxmit:
-"Lynx is the text-only version of Mosaic. 
-It can be run in an xterm or over dialup.
-This version connects you to the MIT
+"Lynx is a text-only web browser which
+can be run in an xterm or over dialup.
+This item connects you to the MIT
 Home Page.
 
-To run: add infoagents; lynx http://web.mit.edu/ &
+To run: add infoagents; lynx http://web.mit.edu/ 
 
 Other help: man lynx
                           type `h' in the application
@@ -2447,12 +2137,12 @@ Bug reports: use sendbug
 ";
 
 help lynxsipb:
-"Lynx is the text-only version of Mosaic. 
-It can be run in an xterm or over dialup.
-This version will connect you to the SIPB 
+"Lynx is a text-only web browser which
+can be run in an xterm or over dialup.
+This item will connect you to the SIPB 
 Home Page.
 
-To run: add infoagents; lynx http://www.mit.edu &
+To run: add infoagents; lynx http://www.mit.edu 
 
 Other help: man lynx
                           type `h' in the application
@@ -2462,14 +2152,14 @@ Bug reports: use sendbug
 
 
 help lynxdefault:
-"Lynx is the text-only version of Mosaic. 
-It can be run in an xterm or over dialup.
-This version will, by default, connect you to
+"Lynx is a text-only web browser which
+can be run in an xterm or over dialup.
+This item will, by default, connect you to
 the MIT Home Page.  (If you have set another 
 page as your startup default, it will start on 
 that instead.)
 
-To run: add infoagents; lynx &
+To run: add infoagents; lynx 
 
 Other help: man lynx
                           type `h' in the application
@@ -2479,45 +2169,79 @@ Bug reports: use sendbug
 
 
 help netscapemit:
-"Netscape is a graphical WWW browser on
-Athena. This version connects 
+"Netscape is a graphical WWW browser.  This item connects  
 you to the MIT Home Page.
 
 To run: add infoagents; netscape http://web.mit.edu/ &
 
-Other help: man netscape
-  			  click on the `Help' menu item in the application 
+Other help: See http://web.mit.edu/infoagents/www/netscape/
+                          Click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
 
 help netscapesipb:
-"Netscape is a graphical WWW browser on
-Athena. This version connects 
+"Netscape is a graphical WWW browser.  This item connects 
 you to the SIPB Home Page.
 
 To run: add infoagents; netscape http://www.mit.edu/ &
 
-Other help: man netscape
-  			  click on the `Help' menu item in the application 
+Other help: See http://web.mit.edu/infoagents/www/netscape/
+                          Click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
 
 help netscapedefault:
-"Netscape is a graphical WWW browser on
-Athena. By default, this version 
-connects you to the MIT Home Page. 
-(If you have set another page as your startup default, 
-it will start on that instead.)
+"Netscape is a graphical WWW browser.  By default, this item
+connects you to the MIT Home Page.  (If you have set another page as
+your startup default,  it will start on that instead.)
 
 To run: add infoagents; netscape &
+
+Other help: See http://web.mit.edu/infoagents/www/netscape/
+                          Click on the `Help' menu item in the application 
+
+Bug reports: use sendbug
+";
+
+help netscape3mit:
+"Netscape is a graphical WWW browser.  This item connects  
+you to the MIT Home Page.
+
+To run: add infoagents; netscape-3.01 http://web.mit.edu/ &
 
 Other help: man netscape
   			  click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
+
+help netscape3sipb:
+"Netscape is a graphical WWW browser.  This item connects 
+you to the SIPB Home Page.
+
+To run: add infoagents; netscape-3.01 http://www.mit.edu/ &
+
+Other help: man netscape
+  			  click on the `Help' menu item in the application 
+
+Bug reports: use sendbug
+";
+
+help netscape3default:
+"Netscape is a graphical WWW browser.  By default, this item 
+connects you to the MIT Home Page.  (If you have set another page as
+your startup default,  it will start on that instead.)
+
+To run: add infoagents; netscape-3.01 &
+
+Other help: man netscape
+  			  click on the `Help' menu item in the application 
+
+Bug reports: use sendbug
+";
+
 
 !help aboutgopher:
 "Gopher assists in retrieving information
@@ -2552,24 +2276,29 @@ Athena.  See also `Logout' on the
 `Special' menu.";
 
 help pascal:
-"The multi locker contains a Pascal compiler
-supplied by Green Hills Software for use with
-the Multi debugger. It is available for
-DECstations and Suns. To run:
+"The standard name for the Pascal compiler
+under UNIX is `pc'; this available on Athena
+Suns and SGIs.
 
-add multi; gpc
+Other help:  man pc
+                           http://web.mit.edu/acs/www/whererunsa.html#pc
 
 Bug reports:  use sendbug
 ";
 
 help perl:
-"Perl is available on Athena in the
-perl locker.  To read the man
-page for perl, type:
+"Perl 5 is available as part of the Athena release; there is also a perl
+locker which may contain other versions.  To run the default version,
+currently perl 5:
 
-     add perl ;  man perl
+  perl <filename>	  or   !#/usr/athena/bin/perl   in a script
 
-To run:   add perl ;  perl filename
+To run from the perl locker, currently perl 4:
+
+  add -f perl; perl <filename>	  or   !#/afs/athena/contrib/perl/perl   in a script
+
+Other help:  man perl
+                           http://web.mit.edu/acs/www/whererunsa.html#perl
 
 Bug reports:  use sendbug
 ";
@@ -2585,41 +2314,34 @@ prototyping of applications, and for
 building simple applications.  On-line
 help is available.  To start it up, type:
 
-      add ct ;  runctb filename
+      add ct ;  cT demos/samples/GettingStarted.t
 
-Some sample files may be found in
+Some sample files may be found in 
 the /mit/ct/demos directory.
 
 Bug reports:  use sendbug
 ";
 
-help lucid:
-"Lucid Common Lisp is available on Athena
-DECstations (version 4.0), RS/6000s (version 4.01)
-and Suns (version 4.1.1). To run:
+help lisp:
+"Allegro Common Lisp is available on Athena Suns and SGIs. To run:
 
-add lucidcl; lisp
+  add acl
+  cl                        for Lisp-only TTY interface; to exit, type: (exit)
+  cl-xemacs    for xemacs interface, connects to Composer Development Environment
 
-Lisp images with the Common Lisp Interface 
-manager (CLIM) are also available on the RS/6000 
-and DECstation. To run:
-
-add lucidcl; climlisp
-
-There is documentation available for
-browsing by contacting the faculty
-liaisons <f_l@mit.edu>.
+Other help:  http://web.mit.edu/acs/www/whererunsa.html#lisp
 
 Bug reports:  use sendbug";
 
 help multi:
 "Multi is an integrated debugging environment coupled
-to a set of compilers (C, C++, Pascal, FORTRAN) from
-Green Hills Software. It is unsupported and use is on
-an `as is' basis. It is available on Athena Suns and
-DECstations. To run:
+to a set of C, C++, and FORTRAN compilers (ghcc, gcx, and gfc
+respectively) from Green Hills Software. It is unsupported and use is
+on an `as is' basis.  It is available on Athena Suns only. To run:
 
-add multi; multi
+   add multi
+
+and see the file /mit/multi/README.to_run for usage info.
 
 Bug reports:  use sendbug
 ";
@@ -2630,16 +2352,20 @@ performs numerical and symbolic computations
 in addition to having extensive graphics
 capabilities.
 
-It can manpulate real numbers and integers of
+It can manipulate real numbers and integers of
 up to 10,000 digits, do formal and numerical
 integration, solve algebraic or transcendental
 systems and differential equations, and perform
 series expansions and matrix manipulations.
 
-Help is available by typing `help();' while
-inside maple.
+To run on a workstation:    add maple ; maple
+For TTY interface:                 add maple ; maple.tty
 
-To run:    add maple ; maple
+Other help: `Maple on Athena' (AC-72) at CopyTech or http://web.mit.edu/is/pubs/
+                         manuals in libraries and N42-105
+                         OLH under `Numerical and Math Software' (http://web.mit.edu/olh/)
+                         OLC stock answers
+                         type `?help' inside Maple or use the Help menu
 
 Bug reports:  use sendbug
 ";
@@ -2666,8 +2392,6 @@ help sas:
 "SAS is a system for controlling data.  It allows you to take
 data in any form and access, manage, analyze, and present 
 according to your needs and level of computer expertise.
-
-SAS is available on Athena DECstations, RS/6000s and Suns.
 
 To run on a workstation:   add sas ; sas &
 
@@ -2721,22 +2445,16 @@ the roots of your system in the s-plane and watching the root locus
 change in real time.  Rlocus also offers a step-by-step tutorial for 
 interactively explaining how to derive a root locus.";
 
-help lingraph:
-"coming soon";
+!help lingraph:
+!"coming soon";
 
-help bodiag:
-"coming soon"
+!help bodiag:
+! "coming soon"
 help cat:
 "CAT (Computer Aided Thermodynamics) is a modelling
 package for use in gas-phase chemical kinetics calculations.
 
 To run on a workstation:   add 2.40 ; CAT";
-
-help emf:
-"This will start up a set of programs that is used in
-6.013 (Electromagnetic Fields and Energy).
-
-To run:    setup 6.013";
 
 help 6111:
 "This will set up your environment to run the software
@@ -2750,13 +2468,6 @@ for the 6.270 LEGO Robot Competition.
 
 To run: setup 6.270";
 
-help pplot:
-"Pplot is a plotting package which includes curve fitting and axis
-labelling routines.
-
-To run on a workstation:   attach 10.001
-                                                        /mit/10.001/pplot/${hosttype}.bin/pplot";
-
 help xmap:
 "MITMap is an X based thematic mapping program that will draw
 and graphically overlay boundary, image, point and attribute
@@ -2766,43 +2477,17 @@ To run on a workstation:   attach crldata
                                                         add crlbin
                                                         mitmap";
 
-help ducksoup:
-"Ducksoup is an interactive graphics program which explores
-the characteristics of various methods of planar curve fitting.
-
-To run on a workstation:   attach 13.00
-                                                        cd /mit/13.00/${hosttype}bin/ducksoup.d
-                                                        DUCKSOUP";
-
-help sst:
-"SST (Statistical Software Tools) performs a large variety of
-statistical functions.  It has its own tutorial.
-
-To run:     attach econsst ;  /mit/econsst/bin/sst";
-
 help cvsim:
 "The Cardiovascular Simulator (CVSIM) is a realtime physiological
 simulation of cardiovascular hemodynamics and control.
 
 To run on a workstation:   add hst ;  cvsim";
 
-help quantphys:
+help quantphysx11:
 "The Quantitative Physiology suite of programs
 simulates different cell and tissue functions.
 
 To run on a workstation:   setup 6.021J";
-
-help northware:
-"Northware is a suite of engineering applications developed by
-Project Northstar at Dartmouth College, covering topics from 
-linear resistors to crystal lattices modelers to finite elements.
-
-PLEASE NOTE:  The Northware suite of software is unsupporetd!  
-Athena Consulting may not be able to help with any questions.
-
-Send bug reports to: <bug-northware@mit.edu>
-
-To run on a workstation:   setup northware";
 
 !help ode:
 !"ODE is a program built using cT which graphically depicts
@@ -2821,18 +2506,6 @@ To run on a workstation:   setup northware";
 !
 !to view the page.
 !";
-
-help 311:
-"This launches the Mosaic interface to the 3.11 
-World Wide Web home page.  
-
-If you're already running Mosaic, you can simply open 
-the following URL:
-
-              http://web.mit.edu/course/3/3.11/www/home.html
-
-to view the page.
-";
 
 help 3091:
 "The 3.091 Courseware includes programs for modelling 3-D cubic
@@ -2853,51 +2526,8 @@ help crlolh:
 "On-Line Help for the CRL displays a window with
 information about the CRL.";
 
-help prophd:
-"A collection of Propeller and Hydrofoil design and analysis
-programs.
+help 1803x1:
+"To run on a workstation:   add 18.03 ;  x1";
 
-Manuals for the various programs within PROP-HD can be
-obtained through Prof. Kerwin or the propeller tunnel.
-
-PROP-HD runs on VAX and DECstations.
-
-To run on a workstation:   add 13.04 ; prophd &";
-
-help SHCP:
-"Ship Hull Characteristics Program (SHCP) allows
-one to conduct a study of the hydrostatic and
-stability properties of a hull form.
-
-There are numerous help files within the system.
-For further assistance, consult the SHCP users'
-manual available in 7-321.
-
-SHCP runs only on VAXstations.
-
-To run:    attach 13.ship ;
-                    /mit/13.ship/shcp/vaxbin/runshcp";
-
-help ASSET:
-"ASSET is a ship synthesis model for performing
-feasibility type designs using parametric
-analysis.
-
-The ASSET manuals can be checked out from 5-317.
-
-ASSET runs only on VAXstations.
-
-To run:    attach 13.ship ;
-                    /mit/13.ship/asset/runasset";
-
-help RUNSUB:
-"Runsub is a program for executing a number of
-submarine design programs.
-
-To run:    attach 13.ship ;
-                    /mit/13.ship/subs/${hosttype}bin/runsub";
-
-help PC01:
-"PC01 is a ship synthesis model for small surf";
-
-
+help 1803x2:
+"To run on a workstation:   add 18.03 ;  x2";
