@@ -5,8 +5,8 @@
 #include <sys/file.h>
 #include <fcntl.h>
 #include <sys/param.h>
-#ifdef SOLARIS
-#include "dirent.h"
+#ifdef POSIX
+#include <dirent.h>
 #else
 #include <sys/dir.h>
 #endif
