@@ -210,6 +210,7 @@ install : afm2tfm dvips MakeTeXPK \
 	$(INSTALL) -c -m 644 color.pro ${DESTDIR}$(HEADERDIR)
 	$(INSTALL) -c -m 644 crop.pro ${DESTDIR}$(HEADERDIR)
 	$(INSTALL) -c -m 644 hps.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 ad.enc ${DESTDIR}$(HEADERDIR)
 	$(INSTALL) -c -m 644 config.ps ${DESTDIR}$(CONFIGDIR)/$(CONFIGFILE)
 	$(INSTALL) -c -m 644 psfonts.map ${DESTDIR}$(CONFIGDIR)
 	$(INSTALL) -c -m 644 epsf.tex ${DESTDIR}$(TEXMACRODIR)
