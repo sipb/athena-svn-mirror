@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.3 1990-11-27 11:49:51 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.4 1990-11-28 22:24:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -101,6 +101,7 @@ get_log(username,instance,result)
     strcpy(cache[new].username,username);
     strcpy(cache[new].filename,filename);
     cache[new].instance = instance;
+    
 
     /* Stat the file to get size and last mod time */
     if (fstat(fd,&file_stat) < 0) {
@@ -111,8 +112,11 @@ get_log(username,instance,result)
       *result = errno;
       return(NULL);
     }
+
+    /* Copy information into cache */
     cache[new].last_mod = file_stat.st_mtime;
     cache[new].length = file_stat.st_size;
+    cache[new].inode = file_stat.st_ino;
 
     /* Malloc buffer big enough for the file */
     if ((cache[new].question = malloc(file_stat.st_size)) == NULL) {
@@ -161,6 +165,16 @@ get_log(username,instance,result)
 	*result = errno;
       }
 	return(NULL);
+    }
+
+    /* Check to see it's the same file
+       (thanks Dave!) */
+
+    if (file_stat.st_ino != ptr->inode) {
+      /* Nope, it's an imposter.  Close the current one, and treat as a new */
+      /* question */
+      delete_entry(ptr);
+      return(get_log(username,instance,result));
     }
 
     /* Check to see if the cache is current */
