@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.1 1989-01-26 10:47:24 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.2 1989-01-26 12:02:23 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -19,8 +19,10 @@
 #include <sys/types.h>
 #include <sys/dir.h>
 #include <strings.h>
+#include <pwd.h>
 #include "util.h"
 
+char *getenv();
 
 
 char *convert_to_user_name(real_name, user_name)
@@ -183,4 +185,36 @@ char *rest; /* RETURN */
      strcpy(rest, part + 1);
      *part = '\0';
      return(buf);
+}
+
+
+
+
+
+get_home(buf)
+char *buf;
+{
+     char *user;
+     
+     strcpy(buf, getenv("HOME"));
+     struct passwd *psw;
+     
+     if (*buf)
+	  return(0);
+
+     user = getenv("USER");
+     psw = getpwnam(user);
+
+     if (psw) {
+	  strcpy(buf, psw->pw_dir);
+	  return(0);
+     }
+     
+     psw = getpwuid(getuid());
+
+     if (psw) {
+	  strcpy(buf, psw->pw_dir);
+	  return(0);
+     }  
+     return(1);
 }
