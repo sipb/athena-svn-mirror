@@ -18,16 +18,17 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_send.c,v $
- *	$Id: x_send.c,v 1.3 1991-03-24 14:35:24 lwvanels Exp $
- *      $Author: lwvanels $
+ *	$Id: x_send.c,v 1.4 1997-04-30 17:38:55 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_send.c,v 1.3 1991-03-24 14:35:24 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_send.c,v 1.4 1997-04-30 17:38:55 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
 
+#include <fcntl.h>
 #include <sys/param.h>
 #include "xolc.h"
 
@@ -48,7 +49,8 @@ x_reply(Request, message)
     }
 
   make_temp_name(file);
-  if ((fd = open(file, O_CREAT | O_WRONLY, 0644)) < 0)
+  fd = open(file, O_CREAT | O_WRONLY, 0644);
+  if (fd < 0)
     {
       MuError("Unable to open temporary file for writing.");
       return(ERROR);

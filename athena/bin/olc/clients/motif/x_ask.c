@@ -18,16 +18,17 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v $
- *      $Id: x_ask.c,v 1.5 1992-06-11 17:14:21 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: x_ask.c,v 1.6 1997-04-30 17:38:54 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.5 1992-06-11 17:14:21 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.6 1997-04-30 17:38:54 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
 
+#include <fcntl.h>
 #include <sys/param.h>
 #include "xolc.h"
 
@@ -104,7 +105,8 @@ x_ask(Request, topic, question)
     return(status);
 
   make_temp_name(file);
-  if ((fd = open(file, O_CREAT | O_WRONLY, 0644)) < 0)
+  fd = open(file, O_CREAT | O_WRONLY, 0644);
+  if (fd < 0)
     {
       MuError("Unable to open temporary file for writing.");
       return(ERROR);
