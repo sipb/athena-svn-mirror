@@ -1,5 +1,5 @@
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/restore_db.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -19,11 +19,16 @@ char *argv[];
   quota_rec qrec;
   char temp[20], temp2[3];
 
+  if (argc != 3) {
+      fprintf(stderr, "Usage: restore_db dump_file quota_db\n");
+      exit(1);
+  }
+
   fp = fopen(argv[1], "r");
-  if (quota_db_create(argv[1]))
-    printf("error in creating db %s\n", argv[1]);
-  else if (quota_db_set_name(argv[1]))
-      printf("error in setting db name %s\n", argv[1]);
+  if (quota_db_create(argv[2]))
+    printf("error in creating db %s\n", argv[2]);
+  else if (quota_db_set_name(argv[2]))
+      printf("error in setting db name %s\n", argv[2]);
   else {
     fscanf(fp, "%s %s\n", temp, temp2);
     if (strcmp(temp2, "1.1"))
