@@ -1,4 +1,4 @@
-# $Id: packages,v 1.244.2.3 2003-08-20 18:17:14 ghudson Exp $
+# $Id: packages,v 1.244.2.4 2003-09-15 19:51:21 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -142,7 +142,7 @@ third/audiofile			except linux
 third/bash
 third/bind
 third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
-third/bonobo-activation		except linux requires gettext,glib2,ORBit2,linc,libxml2
+third/bonobo-activation		requires gettext,glib2,ORBit2,linc,libxml2
 third/bonobo-conf		requires bonobo
 third/bug-buddy			except linux requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgnomecanvas,libgnomeui,libglade2,libxml2,gnome-desktop
 third/bzip2			except linux
@@ -191,7 +191,7 @@ third/gnome-terminal		except linux requires gettext,gtk2,GConf2,libglade2,libgno
 third/gnome-themes		except linux requires gettext,intltool,gtk2,gtk-engines,gtk-thinice-engine
 third/gnome-utils		except linux requires gettext,intltool,libgnome,libgnomeui,libglade2,libbonoboui,gnome-vfs2,gnome-panel,popt,pango,scrollkeeper
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2,gnome-mime-data
-third/gnome-vfs2		except linux requires gettext,glib2,libxml2,GConf2,libbonobo,bonobo-activation,ORBit2,gnome-mime-data,bzip2,openssl,openafs,popt
+third/gnome-vfs2		requires gettext,glib2,libxml2,GConf2,libbonobo,bonobo-activation,ORBit2,gnome-mime-data,bzip2,openssl,openafs,popt
 third/gst-plugins		except linux requires GConf2,gstreamer,glib2,gnome-vfs2,jpeg,libpng,freetype
 third/gstreamer			except linux requires glib2,libxml2,popt
 third/gtk-engines		except linux requires gtk2
