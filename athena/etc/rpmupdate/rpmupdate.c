@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.5 2001-04-05 00:30:01 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.6 2001-04-06 17:16:25 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -60,6 +60,7 @@ struct notify_data {
   int total;
   int hashmarks_flag;
   int hashmarks_printed;
+  struct package **pkgtab;
 };
 
 enum act { UPDATE, ERASE, NONE };
@@ -330,8 +331,12 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
       exit(1);
     }
 
+  /* Attempt to order the packages. */
+  rpmdepOrder(rpmdep);
+
   ndata.hashmarks_flag = hashmarks;
   ndata.hashmarks_printed = 0;
+  ndata.pkgtab = pkgtab;
   r = rpmRunTransactions(rpmdep, notify, &ndata, NULL, &probs, 0,
 			 RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
   if (r < 0)
@@ -355,6 +360,18 @@ static void *notify(const void *arg, rpmCallbackType what,
   const char *filename = pkgKey;
   struct notify_data *ndata = data;
   int n;
+  struct package *pkg;
+
+  /* Filter out uninst callbacks for old versions of packages we're
+   * upgrading.
+   */
+  if (what == RPMCALLBACK_UNINST_START || what == RPMCALLBACK_UNINST_PROGRESS)
+    {
+      pkg = get_package(ndata->pkgtab, headerSprintf(h, "%{NAME}", rpmTagTable,
+						     rpmHeaderFormats, NULL));
+      if (pkg && pkg->newlistrev.present)
+	return NULL;
+    }
 
   switch (what)
     {
