@@ -1,0 +1,36 @@
+#define XSUBDIRS src
+
+DASH_MENUS = ${ATHLIBDIR}/Dash.menus
+DASH_FALLBACK = ${ATHLIBDIR}/Dash.fallback
+
+#define LDEF src/Xj_local.defs
+
+Makefiles::
+	-@if [ -f LDEF ]; then \
+	echo "  $(RM) LDEF.bak; mv LDEF LDEF.bak"; \
+	$(RM) LDEF.bak; mv LDEF LDEF.bak; \
+	else exit 0; fi
+	@echo "/* This file automatically generated." > LDEF
+	@echo " * See ../Imakefile for details." >> LDEF
+	@echo " */" >> LDEF
+	@echo MAN_DIR = ${ATHMANDIR} >> LDEF
+	@echo DASH_BIN_DIR = ${ATHBINDIR} >> LDEF
+	@echo DASH_XBM_DIR = ${ATHXBITDIR} >> LDEF
+	@echo DASH_APP_DIR = ${ATHXAPPDIR} >> LDEF
+	@echo CONSOLE_BIN_DIR = ${ATHRETCDIR} >> LDEF
+	@echo CONSOLE_XBM_DIR = ${ATHRETCDIR}/login/bitmaps >> LDEF
+	@echo CONSOLE_APP_DIR = ${ATHRETCDIR}/login >> LDEF
+	@echo XJ_XBM_DIR = ${ATHXBITDIR} >> LDEF
+	@echo XJ_APP_DIR = ${ATHXAPPDIR} >> LDEF
+	@echo XJ_LIB_DIR = ${ATHLIBDIR} >> LDEF
+	@echo XJ_INC_DIR = ${ATHINCDIR} >> LDEF
+	@echo DASH_MENUS = ${DASH_MENUS} >> LDEF
+	@echo DASH_FALLBACK = ${DASH_FALLBACK} >> LDEF
+
+install::
+	${RM} $(DESTDIR)$(DASH_MENUS)
+	. $(ATHVERS); \
+	$(INSTALL) -m 0444 /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)$(DASH_FALLBACK); \
+	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)$(DASH_MENUS); \
+	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV.cmp $(DESTDIR)$(DASH_MENUS).cmp
+
