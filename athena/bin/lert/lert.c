@@ -15,7 +15,7 @@
 
 /* This is the client for the lert system. */
 
-static const char rcsid[] = "$Id: lert.c,v 1.9 1999-12-14 16:03:59 danw Exp $";
+static const char rcsid[] = "$Id: lert.c,v 1.10 2000-06-19 17:41:48 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -38,19 +38,20 @@ static const char rcsid[] = "$Id: lert.c,v 1.9 1999-12-14 16:03:59 danw Exp $";
 
 #include "lert.h"
 
+#define argis(a, b) (!strcmp(*arg + 1, a) || !strcmp(*arg + 1, b))
+
 static struct timeval timeout = { LERT_TIMEOUT, 0 };
 static int error_messages = TRUE;
 
 static void bombout(int mess);
 
-static void usage(char *pname, char *errname)
+static void usage(char *pname)
 {
   fprintf(stderr,
-	  "%s <%s>: usage: %s [-zephyr|-z] [-mail|-m] [-no|-n] [-quiet|-q]\n",
-	  pname, errname, pname);
+	  "Usage: %s [-zephyr|-z] [-mail|-m] [-no|-n] [-quiet|-q] [-server|-s server]\n", pname);
 }
 
-static char *lert_says(int no_more)
+static char *lert_says(int no_more, char *server)
 {
   void *hes_context = NULL;
   char *lert_host, *message;
@@ -70,7 +71,9 @@ static char *lert_says(int no_more)
    * only one lert!)
    */
   lert_host = NULL;
-  if (hesiod_init(&hes_context) == 0)
+  if (server)
+    lert_host = server;
+  else if (hesiod_init(&hes_context) == 0)
     {
       char **slocs = hesiod_resolve(hes_context, LERT_SERVER, LERT_TYPE);
       if (slocs)
@@ -123,7 +126,6 @@ static char *lert_says(int no_more)
 
   /* Resolve hostname for service principal. */
   cp = krb_get_phost(lert_host);
-  free(lert_host);
   if (cp == NULL)
     bombout(ERR_KERB_PHOST);
   sinst = strdup(cp);
@@ -430,8 +432,9 @@ static void view_message(char *msgs, int type, int no_more)
 
 int main(int argc, char **argv)
 {
-  char *whoami, *message;
+  char *whoami, *message, *server = NULL;
   int method = LERT_CAT, no_more = FALSE;
+  char **arg = argv;
 
   whoami = strrchr(argv[0], '/');
   if (whoami)
@@ -445,33 +448,37 @@ int main(int argc, char **argv)
    * 	-n or -no: no more messages!
    */
 
-  if (argc > 3)
+  while (++arg - argv < argc)
     {
-      usage(whoami, "too many arguments");
-      exit(1);
-    }
-
-  /* Note: argc/argv initialized in declaration. */
-  while (--argc)
-    {
-      argv++;
-      if (!strcmp(argv[0],"-zephyr") || !strcmp(argv[0],"-z"))
-	method = LERT_Z;
-      else if (!strcmp(argv[0],"-mail") || !strcmp(argv[0],"-m"))
-	method = LERT_MAIL;
-      else if (!strcmp(argv[0],"-no") || !strcmp(argv[0],"-n"))
-	no_more = TRUE;
-      else if (!strcmp(argv[0],"-quiet") || !strcmp(argv[0],"-q"))
-	error_messages = FALSE;
-      else
+      if (**arg == '-')
 	{
-	  usage(whoami, argv[0]);
-	  exit(1);
+	  if (argis("zephyr", "z"))
+	    method = LERT_Z;
+	  else if (argis("mail","m"))
+	    method = LERT_MAIL;
+	  else if (argis("no", "n"))
+	    no_more = TRUE;
+	  else if (argis("quiet", "q"))
+	    error_messages = FALSE;
+	  else if (argis("server", "s"))
+	    {
+	      if (arg - argv < argc - 1)
+		{
+		  ++arg;
+		  server = *arg;
+		}
+	      else
+		usage(whoami);
+	    }
+	  else
+	    {
+	      usage(whoami);
+	      exit(1);
+	    }
 	}
     }
-
   /* Get the server's string for this user. */
-  message = lert_says(no_more);
+  message = lert_says(no_more, server);
   if (message)
     {
       view_message(message, method, no_more);
