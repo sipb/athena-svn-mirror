@@ -28,7 +28,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/un.h>
-#include <spi.h>
+#include <cspi/spi.h>
 
 static SPIBoolean report_command_key_event  (const AccessibleKeystroke *stroke, void *user_data);
 static SPIBoolean report_ordinary_key_event (const AccessibleKeystroke *stroke, void *user_data);
@@ -94,7 +94,7 @@ main (int argc, char **argv)
 
   retval = SPI_registerAccessibleKeystrokeListener(all_key_listener,
 					  SPI_KEYSET_ALL_KEYS,
-					  SPI_KEYMASK_CONTROL,
+					  SPI_KEYMASK_CONTROL | SPI_KEYMASK_SHIFT,
 					  (unsigned long) ( SPI_KEY_PRESSED | SPI_KEY_RELEASED ),
 					  SPI_KEYLISTENER_ALL_WINDOWS);
 	
@@ -195,7 +195,7 @@ report_tab_key_event (const AccessibleKeystroke *key, void *user_data)
 static SPIBoolean
 report_all_key_event (const AccessibleKeystroke *key, void *user_data)
 {
-  g_print("(%d)", key->keyID);
+  fprintf(stderr, "(%d)", key->keyID);
   return FALSE;
 }
 

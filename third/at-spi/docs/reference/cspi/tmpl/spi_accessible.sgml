@@ -16,7 +16,8 @@ Accessible Objects
 
 <!-- ##### STRUCT Accessible ##### -->
 <para>
-
+An Accessible object is an opaque object used to refer to an accessible
+object corresponding to an user interface element.
 </para>
 
 @objref: 
@@ -422,6 +423,9 @@ Accessible Objects
 @SPI_ROLE_PARAGRAPH: 
 @SPI_ROLE_RULER: 
 @SPI_ROLE_APPLICATION: 
+@SPI_ROLE_AUTOCOMPLETE: 
+@SPI_ROLE_EDITBAR: 
+@SPI_ROLE_EMBEDDED: 
 @SPI_ROLE_LAST_DEFINED: 
 
 <!-- ##### FUNCTION AccessibleRole_getName ##### -->

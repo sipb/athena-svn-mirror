@@ -57,9 +57,10 @@ get_accessible_text_boundary_type (AccessibleTextBoundaryType type)
       /* Fixme */
       return Accessibility_TEXT_BOUNDARY_CHAR;
       break;
+    default:
+      /* FIXME */
+      return Accessibility_TEXT_BOUNDARY_CHAR;
     }
-  /* FIXME */
-  return Accessibility_TEXT_BOUNDARY_CHAR;
 }
 
 static Accessibility_TEXT_CLIP_TYPE
@@ -73,11 +74,12 @@ get_accessible_text_clip_type (AccessibleTextClipType type)
     case SPI_TEXT_CLIP_MIN:
       return Accessibility_TEXT_CLIP_MIN;
       break;
-    case SPI_TEXT_CLIP_MAX:
+    case SPI_TEXT_CLIP_MAX:      
       return Accessibility_TEXT_CLIP_MAX;
       break;
+    default:
+      return Accessibility_TEXT_CLIP_BOTH;
     }
-  return Accessibility_TEXT_CLIP_BOTH;
 }
 
 static AccessibleTextRange **
@@ -259,6 +261,45 @@ AccessibleText_getAttributes (AccessibleText *obj,
     {
       *startOffset = retStartOffset;
       *endOffset   = retEndOffset;
+    }
+
+  return retval;
+}
+
+/**
+ * AccessibleText_getDefaultAttributes:
+ * @obj: a pointer to the #AccessibleText object to query.
+ *
+ * Get the default attributes applied to an #AccessibleText
+ *          object.
+ *          The text attributes correspond to CSS attributes where possible,
+ *          keys and values are delimited from one another via ":", and
+ *          the delimiter between key/value pairs is ";". Thus 
+ *          "font-size:10;foreground-color:0,0,0" would be a valid
+ *          return string.  The combination of this attribute set and
+ *          the attributes reported by #AccessibleText_getAttributes
+ *          describes the entire set of text attributes over a range.
+ *
+ * Returns: a text string describing the default attributes 
+ *          applied to a text object, (exclusive of explicitly-set
+ *          attributes), encoded as UTF-8.
+ **/
+char *
+AccessibleText_getDefaultAttributes (AccessibleText *obj)
+{
+  char *retval;	
+
+  if (obj == NULL)
+    {
+      return NULL;
+    }
+
+  retval = Accessibility_Text_getDefaultAttributes (CSPI_OBJREF (obj),
+						    cspi_ev ());
+
+  if (!cspi_check_ev ("getAttributes"))
+    {
+      retval = NULL;
     }
 
   return retval;
@@ -601,9 +642,6 @@ AccessibleText_getOffsetAtPoint (AccessibleText *obj,
  *        for the returned values.
  *
  * Get the bounding box for text within a range in an  #AccessibleText object.
- *
- * Returns: the bounding-box extents of the specified text range,
- *       in the specified coordinate system.
  *
  **/
 void

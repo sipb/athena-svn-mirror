@@ -1,0 +1,460 @@
+<refentry id="at-spi-cspi-Event-Listener-Support">
+<refmeta>
+<refentrytitle>Event Listener Support</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>AT-SPI-CSPI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Event Listener Support</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+typedef     <link linkend="AccessibleEvent">AccessibleEvent</link>;
+void        (<link linkend="AccessibleEventListenerCB">*AccessibleEventListenerCB</link>)    (const <link linkend="AccessibleEvent">AccessibleEvent</link> *event,
+                                             void *user_data);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="AccessibleEvent-ref">AccessibleEvent_ref</link>             (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+void        <link linkend="AccessibleEvent-unref">AccessibleEvent_unref</link>           (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+<link linkend="AccessibleEventListener">AccessibleEventListener</link>* <link linkend="SPI-createAccessibleEventListener">SPI_createAccessibleEventListener</link>
+                                            (<link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback,
+                                             void *user_data);
+void        <link linkend="AccessibleEventListener-unref">AccessibleEventListener_unref</link>   (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="AccessibleEventListener-addCallback">AccessibleEventListener_addCallback</link>
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback,
+                                             void *user_data);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="AccessibleEventListener-removeCallback">AccessibleEventListener_removeCallback</link>
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback);
+
+<link linkend="Accessible">Accessible</link>* <link linkend="AccessibleActiveDescendantChangedEvent-getActiveDescendant">AccessibleActiveDescendantChangedEvent_getActiveDescendant</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+<link linkend="Accessible">Accessible</link>* <link linkend="AccessibleChildChangedEvent-getChildAccessible">AccessibleChildChangedEvent_getChildAccessible</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleDescriptionChangedEvent-getDescriptionString">AccessibleDescriptionChangedEvent_getDescriptionString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleNameChangedEvent-getNameString">AccessibleNameChangedEvent_getNameString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+<link linkend="Accessible">Accessible</link>* <link linkend="AccessibleParentChangedEvent-getParentAccessible">AccessibleParentChangedEvent_getParentAccessible</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleTableCaptionChangedEvent-getCaptionString">AccessibleTableCaptionChangedEvent_getCaptionString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleTableColumnDescriptionChangedEvent-getDescriptionString">AccessibleTableColumnDescriptionChangedEvent_getDescriptionString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+<link linkend="Accessible">Accessible</link>* <link linkend="AccessibleTableHeaderChangedEvent-getHeaderAccessible">AccessibleTableHeaderChangedEvent_getHeaderAccessible</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleTableRowDescriptionChangedEvent-getDescriptionString">AccessibleTableRowDescriptionChangedEvent_getDescriptionString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+<link linkend="Accessible">Accessible</link>* <link linkend="AccessibleTableSummaryChangedEvent-getSummaryAccessible">AccessibleTableSummaryChangedEvent_getSummaryAccessible</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleTextChangedEvent-getChangeString">AccessibleTextChangedEvent_getChangeString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleTextSelectionChangedEvent-getSelectionString">AccessibleTextSelectionChangedEvent_getSelectionString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+char*       <link linkend="AccessibleWindowEvent-getTitleString">AccessibleWindowEvent_getTitleString</link>
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="AccessibleEvent"/>AccessibleEvent</title>
+<programlisting>typedef struct {
+  const char  *type;
+  Accessible  *source;
+  long         detail1;
+  long         detail2;
+} AccessibleEvent;
+</programlisting>
+<para>
+AccessibleEvent is a struct used to encapsulate event information.
+</para></refsect2>
+<refsect2>
+<title><anchor id="AccessibleEventListenerCB"/>AccessibleEventListenerCB ()</title>
+<programlisting>void        (*AccessibleEventListenerCB)    (const <link linkend="AccessibleEvent">AccessibleEvent</link> *event,
+                                             void *user_data);</programlisting>
+<para>
+This is a function which is specified when creating a EventListener.
+It is called when an event being listened for occurs.
+</para><variablelist role="params">
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleEvent-ref"/>AccessibleEvent_ref ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEvent_ref             (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Increments by 1 the reference count of the event</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being referenced.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if the function succeeded; FALSE if the pointer is not a
+        valid event.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleEvent-unref"/>AccessibleEvent_unref ()</title>
+<programlisting>void        AccessibleEvent_unref           (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Decrements by 1 the reference count of the event. The event is destroyed
+when the reference count recahes zero.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being referenced.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SPI-createAccessibleEventListener"/>SPI_createAccessibleEventListener ()</title>
+<programlisting><link linkend="AccessibleEventListener">AccessibleEventListener</link>* SPI_createAccessibleEventListener
+                                            (<link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback,
+                                             void *user_data);</programlisting>
+<para>
+Create a new <link linkend="AccessibleEventListener">AccessibleEventListener</link> with a specified (in-process) callback function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback function, or NULL.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to data which will be passed to the callback when invoked.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to a newly-created <link linkend="AccessibleEventListener">AccessibleEventListener</link>.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleEventListener-unref"/>AccessibleEventListener_unref ()</title>
+<programlisting>void        AccessibleEventListener_unref   (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener);</programlisting>
+<para>
+Decrements an <link linkend="AccessibleEventListener">AccessibleEventListener</link>'s reference count.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEventListener">AccessibleEventListener</link> being operated on.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleEventListener-addCallback"/>AccessibleEventListener_addCallback ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEventListener_addCallback
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback,
+                                             void *user_data);</programlisting>
+<para>
+Add an in-process callback function to an existing AccessibleEventListener.
+Note that the callback function must live in the same address
+space as the AccessibleEventListener implementation code, thus one should not
+use this function to attach callbacks to a 'remote' event listener
+(that is, one that was not created by a client call to
+<link linkend="createAccessibleEventListener">createAccessibleEventListener</link>();</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> instance to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> function pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to data which will be passed to the callback when invoked.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleEventListener-removeCallback"/>AccessibleEventListener_removeCallback ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEventListener_removeCallback
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> callback);</programlisting>
+<para>
+Remove an in-process callback function from an existing AccessibleEventListener.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> instance to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="AccessibleEventListenerCB">AccessibleEventListenerCB</link> function pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleActiveDescendantChangedEvent-getActiveDescendant"/>AccessibleActiveDescendantChangedEvent_getActiveDescendant ()</title>
+<programlisting><link linkend="Accessible">Accessible</link>* AccessibleActiveDescendantChangedEvent_getActiveDescendant
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "object:active-descendant-changed"
+        to get a reference to the changed <link linkend="Accessible">Accessible</link>.
+        Note that context <link linkend="Accessibles">Accessibles</link> are not guaranteed to outlive
+        event delivery, in which case this call may return <literal>NULL</literal>
+        even if the object existed at the time of dispatch.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="Accessible">Accessible</link> pointer representing the new active descendant.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleChildChangedEvent-getChildAccessible"/>AccessibleChildChangedEvent_getChildAccessible ()</title>
+<programlisting><link linkend="Accessible">Accessible</link>* AccessibleChildChangedEvent_getChildAccessible
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "object:children_changed"
+        to get a reference to the changed <link linkend="Accessible">Accessible</link>.
+        Note that context <link linkend="Accessibles">Accessibles</link> are not guaranteed to outlive
+        event delivery, in which case this call may return <literal>NULL</literal>
+        even if the object existed at the time of dispatch.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the context <link linkend="Accessible">Accessible</link> for the event, or <literal>NULL</literal> if
+         there is no longer a valid context <link linkend="Accessible">Accessible</link> 
+         object for the event.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleDescriptionChangedEvent-getDescriptionString"/>AccessibleDescriptionChangedEvent_getDescriptionString ()</title>
+<programlisting>char*       AccessibleDescriptionChangedEvent_getDescriptionString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type 
+        "object:property-changed:accessible-description" 
+        returning the new description.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string representing the recently changed
+        description 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleNameChangedEvent-getNameString"/>AccessibleNameChangedEvent_getNameString ()</title>
+<programlisting>char*       AccessibleNameChangedEvent_getNameString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "object:property-change:accessible_name:", 
+        returning the name.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string representing the name of the 
+        object which recently changed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleParentChangedEvent-getParentAccessible"/>AccessibleParentChangedEvent_getParentAccessible ()</title>
+<programlisting><link linkend="Accessible">Accessible</link>* AccessibleParentChangedEvent_getParentAccessible
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "object:property-change:accessible-parent"
+        to get a reference to the changed <link linkend="Accessible">Accessible</link>.
+        Note that context <link linkend="Accessibles">Accessibles</link> are not guaranteed to outlive
+        event delivery, in which case this call may return <literal>NULL</literal>
+        even if the object existed at the time of dispatch.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="Accessible">Accessible</link> pointer representing the new parent object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleTableCaptionChangedEvent-getCaptionString"/>AccessibleTableCaptionChangedEvent_getCaptionString ()</title>
+<programlisting>char*       AccessibleTableCaptionChangedEvent_getCaptionString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type 
+        "object:property-changed:accessible-table-caption-object" 
+        returning the text in the caption, if present.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string indicating the text in the caption.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleTableColumnDescriptionChangedEvent-getDescriptionString"/>AccessibleTableColumnDescriptionChangedEvent_getDescriptionString ()</title>
+<programlisting>char*       AccessibleTableColumnDescriptionChangedEvent_getDescriptionString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type 
+        "object:property-changed:accessible-table-column-description" 
+        returning the new table column description.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string representing the recently changed
+        table column description 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleTableHeaderChangedEvent-getHeaderAccessible"/>AccessibleTableHeaderChangedEvent_getHeaderAccessible ()</title>
+<programlisting><link linkend="Accessible">Accessible</link>* AccessibleTableHeaderChangedEvent_getHeaderAccessible
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type 
+        "object:property-changed:accessible-table-row-header" or
+        "object:property-changed:accessible-table-column-header"
+        to get a reference to the changed <link linkend="Accessible">Accessible</link>.
+        Note that context <link linkend="Accessibles">Accessibles</link> are not guaranteed to outlive
+        event delivery, in which case this call may return <literal>NULL</literal>
+        even if the object existed at the time of dispatch.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="Accessible">Accessible</link> pointer representing the new table header.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleTableRowDescriptionChangedEvent-getDescriptionString"/>AccessibleTableRowDescriptionChangedEvent_getDescriptionString ()</title>
+<programlisting>char*       AccessibleTableRowDescriptionChangedEvent_getDescriptionString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type 
+        "object:property-changed:accessible-table-row-description" 
+        returning the new table row description.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string representing the recently changed
+        table row description 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleTableSummaryChangedEvent-getSummaryAccessible"/>AccessibleTableSummaryChangedEvent_getSummaryAccessible ()</title>
+<programlisting><link linkend="Accessible">Accessible</link>* AccessibleTableSummaryChangedEvent_getSummaryAccessible
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "object:property-changed:accessible-table-summary"
+        to get a reference to the changed <link linkend="Accessible">Accessible</link>.
+        Note that context <link linkend="Accessibles">Accessibles</link> are not guaranteed to outlive
+        event delivery, in which case this call may return <literal>NULL</literal>
+        even if the object existed at the time of dispatch.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="Accessible">Accessible</link> pointer representing the new table summary.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleTextChangedEvent-getChangeString"/>AccessibleTextChangedEvent_getChangeString ()</title>
+<programlisting>char*       AccessibleTextChangedEvent_getChangeString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "object:text-changed", 
+        returning the text inserted or deleted.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string indicating the text inserted,
+         deleted, or substituted by this event.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleTextSelectionChangedEvent-getSelectionString"/>AccessibleTextSelectionChangedEvent_getSelectionString ()</title>
+<programlisting>char*       AccessibleTextSelectionChangedEvent_getSelectionString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "object:text-selection-changed", 
+        returning the newly added, removed, or modified selection string.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string indicating the recently changed selection.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="AccessibleWindowEvent-getTitleString"/>AccessibleWindowEvent_getTitleString ()</title>
+<programlisting>char*       AccessibleWindowEvent_getTitleString
+                                            (const <link linkend="AccessibleEvent">AccessibleEvent</link> *e);</programlisting>
+<para>
+Queries an <link linkend="AccessibleEvent">AccessibleEvent</link> of type "window:", 
+        returning the window title.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>e</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEvent">AccessibleEvent</link> being queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 text string representing the title of the 
+        recently changed window.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,533 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Accessible Objects</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-accessible.html" title="Basic Accessible Object Methods and Interface Query"><link rel="previous" href="spi-accessible.html" title="Basic Accessible Object Methods and Interface Query"><link rel="next" href="at-spi-cspi-AccessibleRelations-and-RelationSets.html" title="AccessibleRelations and RelationSets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="spi-accessible.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-accessible.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-AccessibleRelations-and-RelationSets.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-Accessible-Objects"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Accessible Objects</span></h2><p>Accessible Objects &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>;
+void        <a href="at-spi-cspi-Accessible-Objects.html#Accessible-ref">Accessible_ref</a>                  (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+void        <a href="at-spi-cspi-Accessible-Objects.html#Accessible-unref">Accessible_unref</a>                (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+char*       <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getName">Accessible_getName</a>              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+char*       <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getDescription">Accessible_getDescription</a>       (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getParent">Accessible_getParent</a>            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+long        <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getChildCount">Accessible_getChildCount</a>        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getChildAtIndex">Accessible_getChildAtIndex</a>      (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj,
+                                             long int childIndex);
+long        <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getIndexInParent">Accessible_getIndexInParent</a>     (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleRelation** <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getRelationSet">Accessible_getRelationSet</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+<a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a> <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getRole">Accessible_getRole</a>           (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+char*       <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getRoleName">Accessible_getRoleName</a>          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+<a href="at-spi-cspi-State-and-StateSets.html#AccessibleStateSet">AccessibleStateSet</a>* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getStateSet">Accessible_getStateSet</a>  (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isAction">Accessible_isAction</a>             (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isApplication">Accessible_isApplication</a>        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isComponent">Accessible_isComponent</a>          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isEditableText">Accessible_isEditableText</a>       (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isHypertext">Accessible_isHypertext</a>          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isImage">Accessible_isImage</a>              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isSelection">Accessible_isSelection</a>          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isStreamableContent">Accessible_isStreamableContent</a>  (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isTable">Accessible_isTable</a>              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isText">Accessible_isText</a>               (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+SPIBoolean  <a href="at-spi-cspi-Accessible-Objects.html#Accessible-isValue">Accessible_isValue</a>              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleAction* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getAction">Accessible_getAction</a>      (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleApplication* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getApplication">Accessible_getApplication</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleComponent* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getComponent">Accessible_getComponent</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleEditableText* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getEditableText">Accessible_getEditableText</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleHypertext* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getHypertext">Accessible_getHypertext</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleImage* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getImage">Accessible_getImage</a>        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleSelection* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getSelection">Accessible_getSelection</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleStreamableContent* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getStreamableContent">Accessible_getStreamableContent</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleTable* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getTable">Accessible_getTable</a>        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleText* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getText">Accessible_getText</a>          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleValue* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getValue">Accessible_getValue</a>        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);
+AccessibleUnknown* <a href="at-spi-cspi-Accessible-Objects.html#Accessible-queryInterface">Accessible_queryInterface</a>
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj,
+                                             const char *interface_name);
+
+enum        <a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a>;
+char*       <a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole-getName">AccessibleRole_getName</a>          (<a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a> role);
+
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="Accessible"></a>struct Accessible</h3><pre class="programlisting">struct Accessible {
+
+	CORBA_Object objref;
+	/* And some other bits */
+	guint        on_loan : 1;
+	guint        ref_count : 30;
+};
+</pre><p>
+An Accessible object is an opaque object used to refer to an accessible
+object corresponding to an user interface element.
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-ref"></a>Accessible_ref ()</h3><pre class="programlisting">void        Accessible_ref                  (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Increment the reference count for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-unref"></a>Accessible_unref ()</h3><pre class="programlisting">void        Accessible_unref                (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Decrement the reference count for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getName"></a>Accessible_getName ()</h3><pre class="programlisting">char*       Accessible_getName              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the name of an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string indicating the name of the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.
+or NULL on exception
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getDescription"></a>Accessible_getDescription ()</h3><pre class="programlisting">char*       Accessible_getDescription       (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the description of an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string describing the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.
+or NULL on exception
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getParent"></a>Accessible_getParent ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* Accessible_getParent            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object's parent container.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer tothe <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object which contains the given
+         <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance, or NULL if the <i class="parameter"><tt>obj</tt></i> has no parent container.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getChildCount"></a>Accessible_getChildCount ()</h3><pre class="programlisting">long        Accessible_getChildCount        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the number of children contained by an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long indicating the number of <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> children
+         contained by an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object. or -1 on exception
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getChildAtIndex"></a>Accessible_getChildAtIndex ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* Accessible_getChildAtIndex      (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj,
+                                             long int childIndex);</pre><p>
+Get the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> child of an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object at a given index.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>childIndex</tt></i> :</span></td><td> a long indicating which child is specified.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> child object at index
+         <i class="parameter"><tt>childIndex</tt></i>. or NULL on exception
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getIndexInParent"></a>Accessible_getIndexInParent ()</h3><pre class="programlisting">long        Accessible_getIndexInParent     (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the index of an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object in its containing <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long indicating the index of the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object
+         in its parent (i.e. containing) <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance,
+         or -1 if <i class="parameter"><tt>obj</tt></i> has no containing parent or on exception.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getRelationSet"></a>Accessible_getRelationSet ()</h3><pre class="programlisting">AccessibleRelation** Accessible_getRelationSet
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the set of AccessibleRelation objects which describe this <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object's
+      relationships with other <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> objects.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an array of AccessibleRelation pointers. or NULL on exception
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getRole"></a>Accessible_getRole ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a> Accessible_getRole           (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the UI role of an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.
+A UTF-8 string describing this role can be obtained via <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getRoleName">Accessible_getRoleName</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a> of the object.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getRoleName"></a>Accessible_getRoleName ()</h3><pre class="programlisting">char*       Accessible_getRoleName          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get a UTF-8 string describing the role this object plays in the UI.
+This method will return useful values for roles that fall outside the
+enumeration used in <a href="at-spi-cspi-Accessible-Objects.html#Accessible-getRole">Accessible_getRole</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string specifying the role of this <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getStateSet"></a>Accessible_getStateSet ()</h3><pre class="programlisting"><a href="at-spi-cspi-State-and-StateSets.html#AccessibleStateSet">AccessibleStateSet</a>* Accessible_getStateSet  (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object on which to operate.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an <a href="at-spi-cspi-State-and-StateSets.html#AccessibleStateSet">AccessibleStateSet</a> representing the object's current state.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isAction"></a>Accessible_isAction ()</h3><pre class="programlisting">SPIBoolean  Accessible_isAction             (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleAction.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleAction interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isApplication"></a>Accessible_isApplication ()</h3><pre class="programlisting">SPIBoolean  Accessible_isApplication        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleApplication.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleApplication interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isComponent"></a>Accessible_isComponent ()</h3><pre class="programlisting">SPIBoolean  Accessible_isComponent          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleComponent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleComponent interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isEditableText"></a>Accessible_isEditableText ()</h3><pre class="programlisting">SPIBoolean  Accessible_isEditableText       (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleEditableText.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleEditableText interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isHypertext"></a>Accessible_isHypertext ()</h3><pre class="programlisting">SPIBoolean  Accessible_isHypertext          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleHypertext.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleHypertext interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isImage"></a>Accessible_isImage ()</h3><pre class="programlisting">SPIBoolean  Accessible_isImage              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleImage.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleImage interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isSelection"></a>Accessible_isSelection ()</h3><pre class="programlisting">SPIBoolean  Accessible_isSelection          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleSelection.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleSelection interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isStreamableContent"></a>Accessible_isStreamableContent ()</h3><pre class="programlisting">SPIBoolean  Accessible_isStreamableContent  (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements
+         AccessibleStreamableContent.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleStreamableContent interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isTable"></a>Accessible_isTable ()</h3><pre class="programlisting">SPIBoolean  Accessible_isTable              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleTable.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleTable interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isText"></a>Accessible_isText ()</h3><pre class="programlisting">SPIBoolean  Accessible_isText               (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleText.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleText interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-isValue"></a>Accessible_isValue ()</h3><pre class="programlisting">SPIBoolean  Accessible_isValue              (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Query whether the specified <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> implements AccessibleValue.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i class="parameter"><tt>obj</tt></i> implements the AccessibleValue interface,
+         FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getAction"></a>Accessible_getAction ()</h3><pre class="programlisting">AccessibleAction* Accessible_getAction      (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleAction interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleAction interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleAction.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getApplication"></a>Accessible_getApplication ()</h3><pre class="programlisting">AccessibleApplication* Accessible_getApplication
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleApplication interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleApplication interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleApplication.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getComponent"></a>Accessible_getComponent ()</h3><pre class="programlisting">AccessibleComponent* Accessible_getComponent
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleComponent interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleComponent interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleComponent.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getEditableText"></a>Accessible_getEditableText ()</h3><pre class="programlisting">AccessibleEditableText* Accessible_getEditableText
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleEditableText interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleEditableText interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleEditableText.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getHypertext"></a>Accessible_getHypertext ()</h3><pre class="programlisting">AccessibleHypertext* Accessible_getHypertext
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleHypertext interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleHypertext interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleHypertext.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getImage"></a>Accessible_getImage ()</h3><pre class="programlisting">AccessibleImage* Accessible_getImage        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleImage interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleImage interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleImage.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getSelection"></a>Accessible_getSelection ()</h3><pre class="programlisting">AccessibleSelection* Accessible_getSelection
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleSelection interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleSelection interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleSelection.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getStreamableContent"></a>Accessible_getStreamableContent ()</h3><pre class="programlisting">AccessibleStreamableContent* Accessible_getStreamableContent
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleStreamableContent interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleStreamableContent interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleStreamableContent.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getTable"></a>Accessible_getTable ()</h3><pre class="programlisting">AccessibleTable* Accessible_getTable        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleTable interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleTable interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleTable.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getText"></a>Accessible_getText ()</h3><pre class="programlisting">AccessibleText* Accessible_getText          (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleText interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleText interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleText.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-getValue"></a>Accessible_getValue ()</h3><pre class="programlisting">AccessibleValue* Accessible_getValue        (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj);</pre><p>
+Get the AccessibleValue interface for an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to an AccessibleValue interface instance, or
+         NULL if <i class="parameter"><tt>obj</tt></i> does not implement AccessibleValue.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="Accessible-queryInterface"></a>Accessible_queryInterface ()</h3><pre class="programlisting">AccessibleUnknown* Accessible_queryInterface
+                                            (<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> *obj,
+                                             const char *interface_name);</pre><p>
+Query an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object to for a named interface.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> instance to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>interface_name</tt></i> :</span></td><td> a UTF-8 character string specifiying the requested interface.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an instance of the named interface object, if it is implemented
+         by <i class="parameter"><tt>obj</tt></i>, or NULL otherwise.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleRole"></a>enum AccessibleRole</h3><pre class="programlisting">typedef enum
+{
+  SPI_ROLE_INVALID,
+  SPI_ROLE_ACCEL_LABEL,
+  SPI_ROLE_ALERT,
+  SPI_ROLE_ANIMATION,
+  SPI_ROLE_ARROW,
+  SPI_ROLE_CALENDAR,
+  SPI_ROLE_CANVAS,
+  SPI_ROLE_CHECK_BOX,
+  SPI_ROLE_CHECK_MENU_ITEM,
+  SPI_ROLE_COLOR_CHOOSER,
+  SPI_ROLE_COLUMN_HEADER,
+  SPI_ROLE_COMBO_BOX,
+  SPI_ROLE_DATE_EDITOR,
+  SPI_ROLE_DESKTOP_ICON,
+  SPI_ROLE_DESKTOP_FRAME,
+  SPI_ROLE_DIAL,
+  SPI_ROLE_DIALOG,
+  SPI_ROLE_DIRECTORY_PANE,
+  SPI_ROLE_DRAWING_AREA,
+  SPI_ROLE_FILE_CHOOSER,
+  SPI_ROLE_FILLER,
+  SPI_ROLE_FONT_CHOOSER,
+  SPI_ROLE_FRAME,
+  SPI_ROLE_GLASS_PANE,
+  SPI_ROLE_HTML_CONTAINER,
+  SPI_ROLE_ICON,
+  SPI_ROLE_IMAGE,
+  SPI_ROLE_INTERNAL_FRAME,
+  SPI_ROLE_LABEL,
+  SPI_ROLE_LAYERED_PANE,
+  SPI_ROLE_LIST,
+  SPI_ROLE_LIST_ITEM,
+  SPI_ROLE_MENU,
+  SPI_ROLE_MENU_BAR,
+  SPI_ROLE_MENU_ITEM,
+  SPI_ROLE_OPTION_PANE,
+  SPI_ROLE_PAGE_TAB,
+  SPI_ROLE_PAGE_TAB_LIST,
+  SPI_ROLE_PANEL,
+  SPI_ROLE_PASSWORD_TEXT,
+  SPI_ROLE_POPUP_MENU,
+  SPI_ROLE_PROGRESS_BAR,
+  SPI_ROLE_PUSH_BUTTON,
+  SPI_ROLE_RADIO_BUTTON,
+  SPI_ROLE_RADIO_MENU_ITEM,
+  SPI_ROLE_ROOT_PANE,
+  SPI_ROLE_ROW_HEADER,
+  SPI_ROLE_SCROLL_BAR,
+  SPI_ROLE_SCROLL_PANE,
+  SPI_ROLE_SEPARATOR,
+  SPI_ROLE_SLIDER,
+  SPI_ROLE_SPIN_BUTTON,
+  SPI_ROLE_SPLIT_PANE,
+  SPI_ROLE_STATUS_BAR,
+  SPI_ROLE_TABLE,
+  SPI_ROLE_TABLE_CELL,
+  SPI_ROLE_TABLE_COLUMN_HEADER,
+  SPI_ROLE_TABLE_ROW_HEADER,
+  SPI_ROLE_TEAROFF_MENU_ITEM,
+  SPI_ROLE_TERMINAL,
+  SPI_ROLE_TEXT,
+  SPI_ROLE_TOGGLE_BUTTON,
+  SPI_ROLE_TOOL_BAR,
+  SPI_ROLE_TOOL_TIP,
+  SPI_ROLE_TREE,
+  SPI_ROLE_TREE_TABLE,
+  SPI_ROLE_UNKNOWN,
+  SPI_ROLE_VIEWPORT,
+  SPI_ROLE_WINDOW,
+  SPI_ROLE_EXTENDED,
+  SPI_ROLE_HEADER,
+  SPI_ROLE_FOOTER,
+  SPI_ROLE_PARAGRAPH,
+  SPI_ROLE_RULER,
+  SPI_ROLE_APPLICATION,
+  SPI_ROLE_AUTOCOMPLETE,
+  SPI_ROLE_EDITBAR,
+  SPI_ROLE_LAST_DEFINED
+} AccessibleRole;
+</pre><p>
+<i class="parameter"><tt>SPI_ROLE_LAST_DEFINED</tt></i>: Used to determine the end of the role enumeration.
+</p><p>
+Describes the role of an object
+</p><p>
+These are the built-in enumerated roles that UI components can have.
+Other roles may be added at runtime, so an AccessibleRole &gt;=
+SPI_ROLE_LAST_DEFINED is not necessarily an error.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SPI_ROLE_INVALID</tt></span></td><td> role is not legal, something is wrong with this object
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_ACCEL_LABEL</tt></span></td><td> object is a label indicating keyboard
+                             accelerators for the parent
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_ALERT</tt></span></td><td> Object is used to alert the user about something
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_ANIMATION</tt></span></td><td> Object contains a dynamic or moving image
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_ARROW</tt></span></td><td> Object is a 2d directional indicator
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_CALENDAR</tt></span></td><td> Object contains one or more dates, usually arranged into
+                    a 2d list
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_CANVAS</tt></span></td><td> Object that can be drawn into and is used to trap events
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_CHECK_BOX</tt></span></td><td> Object representd a choice that can be checked or unchecked
+                   and provides a separate indicator for the current state.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_CHECK_MENU_ITEM</tt></span></td><td> Object is a menu item that behaves like a CHECK_BOX
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_COLOR_CHOOSER</tt></span></td><td> A specialized dialog that lets the user choose a color.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_COLUMN_HEADER</tt></span></td><td> The header for a column of data 
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_COMBO_BOX</tt></span></td><td> A list of choices the user can select from
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_DATE_EDITOR</tt></span></td><td> Allows entry of a date
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_DESKTOP_ICON</tt></span></td><td> An inconifed internal frame within a DESKTOP_PANE
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_DESKTOP_FRAME</tt></span></td><td> A pane that supports internal frames and
+             iconified versions of those internal frames.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_DIAL</tt></span></td><td> A rotating/rotatable valuator
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_DIALOG</tt></span></td><td> A top level window with title bar and a border
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_DIRECTORY_PANE</tt></span></td><td> A pane that allows the user to navigate
+             through and select the contents of a directory.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_DRAWING_AREA</tt></span></td><td> An object used for drawing custom user interface elements
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_FILE_CHOOSER</tt></span></td><td> A specialized dialog that displays the files in the
+              directory and lets the user select a file, browse a different
+ 	 directory, or specify a filename.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_FILLER</tt></span></td><td> A object that fills up space in a user interface
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_FONT_CHOOSER</tt></span></td><td> Allows selection of a display font
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_FRAME</tt></span></td><td> A top level window with a title bar, border, menubar, etc.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_GLASS_PANE</tt></span></td><td> A pane that is guaranteed to be painted on top of all
+              panes beneath it
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_HTML_CONTAINER</tt></span></td><td> A document container for HTML, whose children
+              represent the document content.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_ICON</tt></span></td><td> A small fixed size picture, typically used to decorate components.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_IMAGE</tt></span></td><td> An image, typically static
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_INTERNAL_FRAME</tt></span></td><td> A frame-like object that is clipped by a desktop pane.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_LABEL</tt></span></td><td> An object used to present an icon or short string in an interface
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_LAYERED_PANE</tt></span></td><td> A specialized pane that allows its children to be drawn in layers
+                        providing a  form of stacking order.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_LIST</tt></span></td><td> An object that presents a list of objects to the user and allows the
+                        user to select one or more of them.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_LIST_ITEM</tt></span></td><td> An object that represents an element of a list.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_MENU</tt></span></td><td> An object usually found inside a menu bar that contains a list of
+                actions the user can choose from.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_MENU_BAR</tt></span></td><td> An object usually drawn at the top of the primary dialog box of an
+                application that contains a list of menus the user can choose from.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_MENU_ITEM</tt></span></td><td> An object usually contained in a menu that presents an
+           action the user can choose.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_OPTION_PANE</tt></span></td><td> A specialized pane whose primary use is inside a DIALOG 
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_PAGE_TAB</tt></span></td><td> An object that is a child of a page tab list
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_PAGE_TAB_LIST</tt></span></td><td> An object that presents a series of panels (or page tabs),
+  one at a time, through some mechanism provided by the object.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_PANEL</tt></span></td><td> A generic container that is often used to group objects.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_PASSWORD_TEXT</tt></span></td><td> A text object uses for passwords, or other places where
+       the text content is not shown visibly to the user.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_POPUP_MENU</tt></span></td><td> A temporary window that is usually used to offer the user a
+       list of choices, and then hides when the user selects one of those choices.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_PROGRESS_BAR</tt></span></td><td> An object used to indicate how much of a task has been completed.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_PUSH_BUTTON</tt></span></td><td> A specialized object which the user can interact with to tell
+       the application to do something.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_RADIO_BUTTON</tt></span></td><td> A specialized check box that will cause other radio buttons in the
+       same group to become uncghecked when this one is checked.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_RADIO_MENU_ITEM</tt></span></td><td> A specialized menu item that behaves like a 
+       radio button.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_ROOT_PANE</tt></span></td><td> A specialized pane that has a glass pane and a layered pane as its
+       children.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_ROW_HEADER</tt></span></td><td> The header for a row of data
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_SCROLL_BAR</tt></span></td><td> An object usually used to allow a user to incrementally
+       view a large amount of data.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_SCROLL_PANE</tt></span></td><td> An object that allows a user to incrementally view a large amount
+        of information.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_SEPARATOR</tt></span></td><td> An object usually contained in a menu to provide a visible and
+       logical separation of the contents in a menu.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_SLIDER</tt></span></td><td> An object that allows the user to select from a bounded range.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_SPIN_BUTTON</tt></span></td><td> An object which allows selection from a set of choices and
+                       displays the current choice.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_SPLIT_PANE</tt></span></td><td> A specialized panel that presents two other panels at the same time.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_STATUS_BAR</tt></span></td><td> An object the display qualitative status information. c.f. PROGRESS_BAR
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TABLE</tt></span></td><td> An object used to rpesent information in terms of rows and columns.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TABLE_CELL</tt></span></td><td> An object which is a descendant of a table,
+       with a row/column location.  A cell may span multiple rows and columns.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TABLE_COLUMN_HEADER</tt></span></td><td> An object which serves to describe a column in a table.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TABLE_ROW_HEADER</tt></span></td><td> An object which serves to label or describe a row in a table.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TEAROFF_MENU_ITEM</tt></span></td><td> A menu item which allows the menu to be removed from
+                             a menubar and placed in its own window
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TERMINAL</tt></span></td><td> An object that emulates a teletype or terminal
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TEXT</tt></span></td><td> An object that presents text to the user
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TOGGLE_BUTTON</tt></span></td><td> A specialized push button that can be checked or unchecked,
+  but does not provide a separate indicator for the current state.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TOOL_BAR</tt></span></td><td> A bar or palette usually composed of push buttons or toggle buttons
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TOOL_TIP</tt></span></td><td> An object that provides information about another object
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TREE</tt></span></td><td> An object used to represent hierarchical information to the user
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_TREE_TABLE</tt></span></td><td> An object which represents both hierarchical and tabular information
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_UNKNOWN</tt></span></td><td> The object contains some SpiAccessible information, but its role is
+                   not known.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_VIEWPORT</tt></span></td><td> An object usually used in a scroll pane, which restricts the visual
+                   area into which its contents are presented.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_WINDOW</tt></span></td><td> A top level window with no title or border.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_EXTENDED</tt></span></td><td> This object's role is not included in the standard role list and
+                    should be queried by name.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_HEADER</tt></span></td><td> An object that serves as a document header.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_FOOTER</tt></span></td><td> An object that serves as a document footer.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_PARAGRAPH</tt></span></td><td> An object which is contains a paragraph of text content.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_RULER</tt></span></td><td> An object which describes margins and tab stops, etc.  for text objects 
+                 which it controls (should have CONTROLLER_FOR relation to such). 
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_APPLICATION</tt></span></td><td> An object which corresponds to a desktop application,
+                 which may have children of <i class="parameter"><tt>SPI_ROLE_FRAME</tt></i> or other type.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_AUTOCOMPLETE</tt></span></td><td> The object is a dialog or list containing items for 
+                        insertion into an entry widget, for instance a list 
+                         of words for completion of a text entry.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_EDITBAR</tt></span></td><td> The object is an editable text object in a toolbar
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_ROLE_LAST_DEFINED</tt></span></td><td>
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleRole-getName"></a>AccessibleRole_getName ()</h3><pre class="programlisting">char*       AccessibleRole_getName          (<a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a> role);</pre><p>
+Get a localizeable string that indicates the name of an <a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a>.
+&lt;em&gt;DEPRECATED.&lt;/em&gt;</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>role</tt></i> :</span></td><td> an <a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a> object to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a localizable string name for an <a href="at-spi-cspi-Accessible-Objects.html#AccessibleRole">AccessibleRole</a> enumerated type.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="spi-accessible.html"><b>&lt;&lt; Basic Accessible Object Methods and Interface Query</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-AccessibleRelations-and-RelationSets.html"><b>AccessibleRelations and RelationSets &gt;&gt;</b></a></td></tr></table></body></html>

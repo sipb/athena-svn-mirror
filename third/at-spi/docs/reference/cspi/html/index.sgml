@@ -1,217 +1,247 @@
-<ANCHOR id ="AT-SPI-CSPI-SPI-MAIN-LOOP-AND-INITIALIZATION" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html">
-<ANCHOR id ="SPI-INIT" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html#SPI-INIT">
-<ANCHOR id ="SPI-EVENT-MAIN" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html#SPI-EVENT-MAIN">
-<ANCHOR id ="SPI-EVENT-QUIT" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html#SPI-EVENT-QUIT">
-<ANCHOR id ="SPI-EVENTISREADY" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html#SPI-EVENTISREADY">
-<ANCHOR id ="SPI-NEXTEVENT" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html#SPI-NEXTEVENT">
-<ANCHOR id ="SPI-EXIT" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html#SPI-EXIT">
-<ANCHOR id ="SPI-FREESTRING" href="at-spi-cspi/at-spi-cspi-spi-main-loop-and-initialization.html#SPI-FREESTRING">
-<ANCHOR id ="AT-SPI-CSPI-EVENT-LISTENER-SUPPORT" href="at-spi-cspi/at-spi-cspi-event-listener-support.html">
-<ANCHOR id ="ACCESSIBLEEVENT" href="at-spi-cspi/at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENT">
-<ANCHOR id ="ACCESSIBLEEVENTLISTENERCB" href="at-spi-cspi/at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB">
-<ANCHOR id ="SPI-CREATEACCESSIBLEEVENTLISTENER" href="at-spi-cspi/at-spi-cspi-event-listener-support.html#SPI-CREATEACCESSIBLEEVENTLISTENER">
-<ANCHOR id ="ACCESSIBLEEVENTLISTENER-UNREF" href="at-spi-cspi/at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENER-UNREF">
-<ANCHOR id ="ACCESSIBLEEVENTLISTENER-ADDCALLBACK" href="at-spi-cspi/at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENER-ADDCALLBACK">
-<ANCHOR id ="ACCESSIBLEEVENTLISTENER-REMOVECALLBACK" href="at-spi-cspi/at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENER-REMOVECALLBACK">
-<ANCHOR id ="AT-SPI-CSPI-REGISTRY-QUERIES" href="at-spi-cspi/at-spi-cspi-registry-queries.html">
-<ANCHOR id ="ACCESSIBLEKEYSYNTHTYPE" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSYNTHTYPE">
-<ANCHOR id ="SPI-GETDESKTOPCOUNT" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-GETDESKTOPCOUNT">
-<ANCHOR id ="SPI-GETDESKTOP" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-GETDESKTOP">
-<ANCHOR id ="SPI-GETDESKTOPLIST" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-GETDESKTOPLIST">
-<ANCHOR id ="SPI-FREEDESKTOPLIST" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-FREEDESKTOPLIST">
-<ANCHOR id ="ACCESSIBLEKEYSTROKELISTENERCB" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENERCB">
-<ANCHOR id ="ACCESSIBLEKEYEVENTMASK" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYEVENTMASK">
-<ANCHOR id ="ACCESSIBLEKEYMASKTYPE" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYMASKTYPE">
-<ANCHOR id ="ACCESSIBLEKEYEVENTTYPE" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYEVENTTYPE">
-<ANCHOR id ="ACCESSIBLEKEYLISTENERSYNCTYPE" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYLISTENERSYNCTYPE">
-<ANCHOR id ="ACCESSIBLEKEYSTROKE" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKE">
-<ANCHOR id ="SPI-KEYSET-ALL-KEYS-CAPS" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-KEYSET-ALL-KEYS-CAPS">
-<ANCHOR id ="SPI-CREATEACCESSIBLEKEYSET" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-CREATEACCESSIBLEKEYSET">
-<ANCHOR id ="SPI-FREEACCESSIBLEKEYSET" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-FREEACCESSIBLEKEYSET">
-<ANCHOR id ="SPI-CREATEACCESSIBLEKEYSTROKELISTENER" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-CREATEACCESSIBLEKEYSTROKELISTENER">
-<ANCHOR id ="SPI-REGISTERGLOBALEVENTLISTENER" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-REGISTERGLOBALEVENTLISTENER">
-<ANCHOR id ="SPI-DEREGISTERGLOBALEVENTLISTENER" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-DEREGISTERGLOBALEVENTLISTENER">
-<ANCHOR id ="SPI-DEREGISTERGLOBALEVENTLISTENERALL" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-DEREGISTERGLOBALEVENTLISTENERALL">
-<ANCHOR id ="SPI-REGISTERACCESSIBLEKEYSTROKELISTENER" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-REGISTERACCESSIBLEKEYSTROKELISTENER">
-<ANCHOR id ="SPI-DEREGISTERACCESSIBLEKEYSTROKELISTENER" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-DEREGISTERACCESSIBLEKEYSTROKELISTENER">
-<ANCHOR id ="ACCESSIBLEKEYSTROKELISTENER-UNREF" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENER-UNREF">
-<ANCHOR id ="ACCESSIBLEKEYSTROKELISTENER-REMOVECALLBACK" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENER-REMOVECALLBACK">
-<ANCHOR id ="ACCESSIBLEKEYSTROKELISTENER-ADDCALLBACK" href="at-spi-cspi/at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENER-ADDCALLBACK">
-<ANCHOR id ="SPI-GENERATEKEYBOARDEVENT" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-GENERATEKEYBOARDEVENT">
-<ANCHOR id ="SPI-GENERATEMOUSEEVENT" href="at-spi-cspi/at-spi-cspi-registry-queries.html#SPI-GENERATEMOUSEEVENT">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLEAPPLICATION-API" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html">
-<ANCHOR id ="ACCESSIBLEAPPLICATION-REF" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html#ACCESSIBLEAPPLICATION-REF">
-<ANCHOR id ="ACCESSIBLEAPPLICATION-UNREF" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html#ACCESSIBLEAPPLICATION-UNREF">
-<ANCHOR id ="ACCESSIBLEAPPLICATION-GETTOOLKITNAME" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html#ACCESSIBLEAPPLICATION-GETTOOLKITNAME">
-<ANCHOR id ="ACCESSIBLEAPPLICATION-GETVERSION" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html#ACCESSIBLEAPPLICATION-GETVERSION">
-<ANCHOR id ="ACCESSIBLEAPPLICATION-GETID" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html#ACCESSIBLEAPPLICATION-GETID">
-<ANCHOR id ="ACCESSIBLEAPPLICATION-PAUSE" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html#ACCESSIBLEAPPLICATION-PAUSE">
-<ANCHOR id ="ACCESSIBLEAPPLICATION-RESUME" href="at-spi-cspi/at-spi-cspi-accessibleapplication-api.html#ACCESSIBLEAPPLICATION-RESUME">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLE-OBJECTS" href="at-spi-cspi/at-spi-cspi-accessible-objects.html">
-<ANCHOR id ="ACCESSIBLE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE">
-<ANCHOR id ="ACCESSIBLE-REF" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-REF">
-<ANCHOR id ="ACCESSIBLE-UNREF" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-UNREF">
-<ANCHOR id ="ACCESSIBLE-GETNAME" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETNAME">
-<ANCHOR id ="ACCESSIBLE-GETDESCRIPTION" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETDESCRIPTION">
-<ANCHOR id ="ACCESSIBLE-GETPARENT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETPARENT">
-<ANCHOR id ="ACCESSIBLE-GETCHILDCOUNT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETCHILDCOUNT">
-<ANCHOR id ="ACCESSIBLE-GETCHILDATINDEX" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETCHILDATINDEX">
-<ANCHOR id ="ACCESSIBLE-GETINDEXINPARENT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETINDEXINPARENT">
-<ANCHOR id ="ACCESSIBLE-GETRELATIONSET" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETRELATIONSET">
-<ANCHOR id ="ACCESSIBLE-GETROLE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETROLE">
-<ANCHOR id ="ACCESSIBLE-GETROLENAME" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETROLENAME">
-<ANCHOR id ="ACCESSIBLE-GETSTATESET" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETSTATESET">
-<ANCHOR id ="ACCESSIBLE-ISACTION" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISACTION">
-<ANCHOR id ="ACCESSIBLE-ISAPPLICATION" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISAPPLICATION">
-<ANCHOR id ="ACCESSIBLE-ISCOMPONENT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISCOMPONENT">
-<ANCHOR id ="ACCESSIBLE-ISEDITABLETEXT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISEDITABLETEXT">
-<ANCHOR id ="ACCESSIBLE-ISHYPERTEXT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISHYPERTEXT">
-<ANCHOR id ="ACCESSIBLE-ISIMAGE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISIMAGE">
-<ANCHOR id ="ACCESSIBLE-ISSELECTION" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISSELECTION">
-<ANCHOR id ="ACCESSIBLE-ISSTREAMABLECONTENT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISSTREAMABLECONTENT">
-<ANCHOR id ="ACCESSIBLE-ISTABLE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISTABLE">
-<ANCHOR id ="ACCESSIBLE-ISTEXT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISTEXT">
-<ANCHOR id ="ACCESSIBLE-ISVALUE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISVALUE">
-<ANCHOR id ="ACCESSIBLE-GETACTION" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETACTION">
-<ANCHOR id ="ACCESSIBLE-GETAPPLICATION" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETAPPLICATION">
-<ANCHOR id ="ACCESSIBLE-GETCOMPONENT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETCOMPONENT">
-<ANCHOR id ="ACCESSIBLE-GETEDITABLETEXT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETEDITABLETEXT">
-<ANCHOR id ="ACCESSIBLE-GETHYPERTEXT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETHYPERTEXT">
-<ANCHOR id ="ACCESSIBLE-GETIMAGE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETIMAGE">
-<ANCHOR id ="ACCESSIBLE-GETSELECTION" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETSELECTION">
-<ANCHOR id ="ACCESSIBLE-GETSTREAMABLECONTENT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETSTREAMABLECONTENT">
-<ANCHOR id ="ACCESSIBLE-GETTABLE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETTABLE">
-<ANCHOR id ="ACCESSIBLE-GETTEXT" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETTEXT">
-<ANCHOR id ="ACCESSIBLE-GETVALUE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETVALUE">
-<ANCHOR id ="ACCESSIBLE-QUERYINTERFACE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLE-QUERYINTERFACE">
-<ANCHOR id ="ACCESSIBLEROLE" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE">
-<ANCHOR id ="ACCESSIBLEROLE-GETNAME" href="at-spi-cspi/at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE-GETNAME">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLERELATIONS-AND-RELATIONSETS" href="at-spi-cspi/at-spi-cspi-accessiblerelations-and-relationsets.html">
-<ANCHOR id ="ACCESSIBLERELATIONTYPE" href="at-spi-cspi/at-spi-cspi-accessiblerelations-and-relationsets.html#ACCESSIBLERELATIONTYPE">
-<ANCHOR id ="ACCESSIBLERELATION-REF" href="at-spi-cspi/at-spi-cspi-accessiblerelations-and-relationsets.html#ACCESSIBLERELATION-REF">
-<ANCHOR id ="ACCESSIBLERELATION-UNREF" href="at-spi-cspi/at-spi-cspi-accessiblerelations-and-relationsets.html#ACCESSIBLERELATION-UNREF">
-<ANCHOR id ="ACCESSIBLERELATION-GETNTARGETS" href="at-spi-cspi/at-spi-cspi-accessiblerelations-and-relationsets.html#ACCESSIBLERELATION-GETNTARGETS">
-<ANCHOR id ="ACCESSIBLERELATION-GETTARGET" href="at-spi-cspi/at-spi-cspi-accessiblerelations-and-relationsets.html#ACCESSIBLERELATION-GETTARGET">
-<ANCHOR id ="ACCESSIBLERELATION-GETRELATIONTYPE" href="at-spi-cspi/at-spi-cspi-accessiblerelations-and-relationsets.html#ACCESSIBLERELATION-GETRELATIONTYPE">
-<ANCHOR id ="AT-SPI-CSPI-STATE-AND-STATESETS" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html">
-<ANCHOR id ="ACCESSIBLESTATE" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE">
-<ANCHOR id ="ACCESSIBLESTATESET-REF" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-REF">
-<ANCHOR id ="ACCESSIBLESTATESET-UNREF" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-UNREF">
-<ANCHOR id ="ACCESSIBLESTATESET-ADD" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-ADD">
-<ANCHOR id ="ACCESSIBLESTATESET-COMPARE" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-COMPARE">
-<ANCHOR id ="ACCESSIBLESTATESET-CONTAINS" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-CONTAINS">
-<ANCHOR id ="ACCESSIBLESTATESET-EQUALS" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-EQUALS">
-<ANCHOR id ="ACCESSIBLESTATESET-ISEMPTY" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-ISEMPTY">
-<ANCHOR id ="ACCESSIBLESTATESET-REMOVE" href="at-spi-cspi/at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-REMOVE">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLEACTION-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html">
-<ANCHOR id ="ACCESSIBLEACTION-REF" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html#ACCESSIBLEACTION-REF">
-<ANCHOR id ="ACCESSIBLEACTION-UNREF" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html#ACCESSIBLEACTION-UNREF">
-<ANCHOR id ="ACCESSIBLEACTION-GETNACTIONS" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html#ACCESSIBLEACTION-GETNACTIONS">
-<ANCHOR id ="ACCESSIBLEACTION-DOACTION" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html#ACCESSIBLEACTION-DOACTION">
-<ANCHOR id ="ACCESSIBLEACTION-GETKEYBINDING" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html#ACCESSIBLEACTION-GETKEYBINDING">
-<ANCHOR id ="ACCESSIBLEACTION-GETNAME" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html#ACCESSIBLEACTION-GETNAME">
-<ANCHOR id ="ACCESSIBLEACTION-GETDESCRIPTION" href="at-spi-cspi/at-spi-cspi-accessibleaction-interface.html#ACCESSIBLEACTION-GETDESCRIPTION">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLECOMPONENT-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html">
-<ANCHOR id ="ACCESSIBLECOORDTYPE" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOORDTYPE">
-<ANCHOR id ="ACCESSIBLECOMPONENTLAYER" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENTLAYER">
-<ANCHOR id ="ACCESSIBLECOMPONENT-REF" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-REF">
-<ANCHOR id ="ACCESSIBLECOMPONENT-UNREF" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-UNREF">
-<ANCHOR id ="ACCESSIBLECOMPONENT-CONTAINS" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-CONTAINS">
-<ANCHOR id ="ACCESSIBLECOMPONENT-GETACCESSIBLEATPOINT" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-GETACCESSIBLEATPOINT">
-<ANCHOR id ="ACCESSIBLECOMPONENT-GETEXTENTS" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-GETEXTENTS">
-<ANCHOR id ="ACCESSIBLECOMPONENT-GETPOSITION" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-GETPOSITION">
-<ANCHOR id ="ACCESSIBLECOMPONENT-GETSIZE" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-GETSIZE">
-<ANCHOR id ="ACCESSIBLECOMPONENT-GETLAYER" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-GETLAYER">
-<ANCHOR id ="ACCESSIBLECOMPONENT-GETMDIZORDER" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-GETMDIZORDER">
-<ANCHOR id ="ACCESSIBLECOMPONENT-GRABFOCUS" href="at-spi-cspi/at-spi-cspi-accessiblecomponent-interface.html#ACCESSIBLECOMPONENT-GRABFOCUS">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLEEDITABLETEXT-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-REF" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-REF">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-UNREF" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-UNREF">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-COPYTEXT" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-COPYTEXT">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-DELETETEXT" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-DELETETEXT">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-INSERTTEXT" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-INSERTTEXT">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-CUTTEXT" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-CUTTEXT">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-PASTETEXT" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-PASTETEXT">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-SETTEXTCONTENTS" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-SETTEXTCONTENTS">
-<ANCHOR id ="ACCESSIBLEEDITABLETEXT-SETATTRIBUTES" href="at-spi-cspi/at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-SETATTRIBUTES">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLEHYPERTEXT-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessiblehypertext-interface.html">
-<ANCHOR id ="ACCESSIBLEHYPERTEXT-REF" href="at-spi-cspi/at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-REF">
-<ANCHOR id ="ACCESSIBLEHYPERTEXT-UNREF" href="at-spi-cspi/at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-UNREF">
-<ANCHOR id ="ACCESSIBLEHYPERTEXT-GETNLINKS" href="at-spi-cspi/at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-GETNLINKS">
-<ANCHOR id ="ACCESSIBLEHYPERTEXT-GETLINK" href="at-spi-cspi/at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-GETLINK">
-<ANCHOR id ="ACCESSIBLEHYPERTEXT-GETLINKINDEX" href="at-spi-cspi/at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-GETLINKINDEX">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLEIMAGE-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessibleimage-interface.html">
-<ANCHOR id ="ACCESSIBLEIMAGE-REF" href="at-spi-cspi/at-spi-cspi-accessibleimage-interface.html#ACCESSIBLEIMAGE-REF">
-<ANCHOR id ="ACCESSIBLEIMAGE-UNREF" href="at-spi-cspi/at-spi-cspi-accessibleimage-interface.html#ACCESSIBLEIMAGE-UNREF">
-<ANCHOR id ="ACCESSIBLEIMAGE-GETIMAGEDESCRIPTION" href="at-spi-cspi/at-spi-cspi-accessibleimage-interface.html#ACCESSIBLEIMAGE-GETIMAGEDESCRIPTION">
-<ANCHOR id ="ACCESSIBLEIMAGE-GETIMAGESIZE" href="at-spi-cspi/at-spi-cspi-accessibleimage-interface.html#ACCESSIBLEIMAGE-GETIMAGESIZE">
-<ANCHOR id ="ACCESSIBLEIMAGE-GETIMAGEPOSITION" href="at-spi-cspi/at-spi-cspi-accessibleimage-interface.html#ACCESSIBLEIMAGE-GETIMAGEPOSITION">
-<ANCHOR id ="ACCESSIBLEIMAGE-GETIMAGEEXTENTS" href="at-spi-cspi/at-spi-cspi-accessibleimage-interface.html#ACCESSIBLEIMAGE-GETIMAGEEXTENTS">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLESELECTION-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html">
-<ANCHOR id ="ACCESSIBLESELECTION-REF" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-REF">
-<ANCHOR id ="ACCESSIBLESELECTION-UNREF" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-UNREF">
-<ANCHOR id ="ACCESSIBLESELECTION-GETNSELECTEDCHILDREN" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-GETNSELECTEDCHILDREN">
-<ANCHOR id ="ACCESSIBLESELECTION-GETSELECTEDCHILD" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-GETSELECTEDCHILD">
-<ANCHOR id ="ACCESSIBLESELECTION-SELECTCHILD" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-SELECTCHILD">
-<ANCHOR id ="ACCESSIBLESELECTION-ISCHILDSELECTED" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-ISCHILDSELECTED">
-<ANCHOR id ="ACCESSIBLESELECTION-DESELECTSELECTEDCHILD" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-DESELECTSELECTEDCHILD">
-<ANCHOR id ="ACCESSIBLESELECTION-CLEARSELECTION" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-CLEARSELECTION">
-<ANCHOR id ="ACCESSIBLESELECTION-SELECTALL" href="at-spi-cspi/at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-SELECTALL">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLETABLE-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html">
-<ANCHOR id ="ACCESSIBLETABLE-REF" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-REF">
-<ANCHOR id ="ACCESSIBLETABLE-UNREF" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-UNREF">
-<ANCHOR id ="ACCESSIBLETABLE-GETACCESSIBLEAT" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETACCESSIBLEAT">
-<ANCHOR id ="ACCESSIBLETABLE-GETCAPTION" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETCAPTION">
-<ANCHOR id ="ACCESSIBLETABLE-GETCOLUMNATINDEX" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETCOLUMNATINDEX">
-<ANCHOR id ="ACCESSIBLETABLE-GETCOLUMNDESCRIPTION" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETCOLUMNDESCRIPTION">
-<ANCHOR id ="ACCESSIBLETABLE-GETCOLUMNEXTENTAT" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETCOLUMNEXTENTAT">
-<ANCHOR id ="ACCESSIBLETABLE-GETCOLUMNHEADER" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETCOLUMNHEADER">
-<ANCHOR id ="ACCESSIBLETABLE-GETINDEXAT" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETINDEXAT">
-<ANCHOR id ="ACCESSIBLETABLE-GETNCOLUMNS" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETNCOLUMNS">
-<ANCHOR id ="ACCESSIBLETABLE-GETNROWS" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETNROWS">
-<ANCHOR id ="ACCESSIBLETABLE-GETNSELECTEDCOLUMNS" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETNSELECTEDCOLUMNS">
-<ANCHOR id ="ACCESSIBLETABLE-GETNSELECTEDROWS" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETNSELECTEDROWS">
-<ANCHOR id ="ACCESSIBLETABLE-GETROWATINDEX" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETROWATINDEX">
-<ANCHOR id ="ACCESSIBLETABLE-GETROWDESCRIPTION" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETROWDESCRIPTION">
-<ANCHOR id ="ACCESSIBLETABLE-GETROWEXTENTAT" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETROWEXTENTAT">
-<ANCHOR id ="ACCESSIBLETABLE-GETROWHEADER" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETROWHEADER">
-<ANCHOR id ="ACCESSIBLETABLE-GETSELECTEDROWS" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETSELECTEDROWS">
-<ANCHOR id ="ACCESSIBLETABLE-GETSELECTEDCOLUMNS" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETSELECTEDCOLUMNS">
-<ANCHOR id ="ACCESSIBLETABLE-GETSUMMARY" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-GETSUMMARY">
-<ANCHOR id ="ACCESSIBLETABLE-ISCOLUMNSELECTED" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-ISCOLUMNSELECTED">
-<ANCHOR id ="ACCESSIBLETABLE-ISROWSELECTED" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-ISROWSELECTED">
-<ANCHOR id ="ACCESSIBLETABLE-ISSELECTED" href="at-spi-cspi/at-spi-cspi-accessibletable-interface.html#ACCESSIBLETABLE-ISSELECTED">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLETEXT-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html">
-<ANCHOR id ="ACCESSIBLETEXTBOUNDARYTYPE" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXTBOUNDARYTYPE">
-<ANCHOR id ="ACCESSIBLETEXT-REF" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-REF">
-<ANCHOR id ="ACCESSIBLETEXT-UNREF" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-UNREF">
-<ANCHOR id ="ACCESSIBLETEXT-ADDSELECTION" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-ADDSELECTION">
-<ANCHOR id ="ACCESSIBLETEXT-GETATTRIBUTES" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETATTRIBUTES">
-<ANCHOR id ="ACCESSIBLETEXT-GETCARETOFFSET" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETCARETOFFSET">
-<ANCHOR id ="ACCESSIBLETEXT-GETCHARACTERCOUNT" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETCHARACTERCOUNT">
-<ANCHOR id ="ACCESSIBLETEXT-GETCHARACTEREXTENTS" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETCHARACTEREXTENTS">
-<ANCHOR id ="ACCESSIBLETEXT-GETNSELECTIONS" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETNSELECTIONS">
-<ANCHOR id ="ACCESSIBLETEXT-GETOFFSETATPOINT" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETOFFSETATPOINT">
-<ANCHOR id ="ACCESSIBLETEXT-GETSELECTION" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETSELECTION">
-<ANCHOR id ="ACCESSIBLETEXT-GETTEXT" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETTEXT">
-<ANCHOR id ="ACCESSIBLETEXT-GETTEXTBEFOREOFFSET" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETTEXTBEFOREOFFSET">
-<ANCHOR id ="ACCESSIBLETEXT-GETTEXTAFTEROFFSET" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETTEXTAFTEROFFSET">
-<ANCHOR id ="ACCESSIBLETEXT-GETTEXTATOFFSET" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-GETTEXTATOFFSET">
-<ANCHOR id ="ACCESSIBLETEXT-REMOVESELECTION" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-REMOVESELECTION">
-<ANCHOR id ="ACCESSIBLETEXT-SETCARETOFFSET" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-SETCARETOFFSET">
-<ANCHOR id ="ACCESSIBLETEXT-SETSELECTION" href="at-spi-cspi/at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-SETSELECTION">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLEVALUE-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessiblevalue-interface.html">
-<ANCHOR id ="ACCESSIBLEVALUE-REF" href="at-spi-cspi/at-spi-cspi-accessiblevalue-interface.html#ACCESSIBLEVALUE-REF">
-<ANCHOR id ="ACCESSIBLEVALUE-UNREF" href="at-spi-cspi/at-spi-cspi-accessiblevalue-interface.html#ACCESSIBLEVALUE-UNREF">
-<ANCHOR id ="ACCESSIBLEVALUE-GETCURRENTVALUE" href="at-spi-cspi/at-spi-cspi-accessiblevalue-interface.html#ACCESSIBLEVALUE-GETCURRENTVALUE">
-<ANCHOR id ="ACCESSIBLEVALUE-GETMAXIMUMVALUE" href="at-spi-cspi/at-spi-cspi-accessiblevalue-interface.html#ACCESSIBLEVALUE-GETMAXIMUMVALUE">
-<ANCHOR id ="ACCESSIBLEVALUE-GETMINIMUMVALUE" href="at-spi-cspi/at-spi-cspi-accessiblevalue-interface.html#ACCESSIBLEVALUE-GETMINIMUMVALUE">
-<ANCHOR id ="ACCESSIBLEVALUE-SETCURRENTVALUE" href="at-spi-cspi/at-spi-cspi-accessiblevalue-interface.html#ACCESSIBLEVALUE-SETCURRENTVALUE">
-<ANCHOR id ="AT-SPI-CSPI-ACCESSIBLEHYPERLINK-INTERFACE" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html">
-<ANCHOR id ="ACCESSIBLEHYPERLINK-REF" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html#ACCESSIBLEHYPERLINK-REF">
-<ANCHOR id ="ACCESSIBLEHYPERLINK-UNREF" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html#ACCESSIBLEHYPERLINK-UNREF">
-<ANCHOR id ="ACCESSIBLEHYPERLINK-GETNANCHORS" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html#ACCESSIBLEHYPERLINK-GETNANCHORS">
-<ANCHOR id ="ACCESSIBLEHYPERLINK-GETINDEXRANGE" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html#ACCESSIBLEHYPERLINK-GETINDEXRANGE">
-<ANCHOR id ="ACCESSIBLEHYPERLINK-GETOBJECT" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html#ACCESSIBLEHYPERLINK-GETOBJECT">
-<ANCHOR id ="ACCESSIBLEHYPERLINK-GETURI" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html#ACCESSIBLEHYPERLINK-GETURI">
-<ANCHOR id ="ACCESSIBLEHYPERLINK-ISVALID" href="at-spi-cspi/at-spi-cspi-accessiblehyperlink-interface.html#ACCESSIBLEHYPERLINK-ISVALID">
+<ANCHOR id="at-spi-cspi-SPI-main-loop-and-initialization" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html">
+<ANCHOR id="SPI-init" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-init">
+<ANCHOR id="SPI-event-main" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-event-main">
+<ANCHOR id="SPI-event-quit" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-event-quit">
+<ANCHOR id="SPI-eventIsReady" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-eventIsReady">
+<ANCHOR id="SPI-nextEvent" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-nextEvent">
+<ANCHOR id="SPI-exit" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-exit">
+<ANCHOR id="SPI-freeString" href="at-spi-cspi/at-spi-cspi-SPI-main-loop-and-initialization.html#SPI-freeString">
+<ANCHOR id="at-spi-cspi-Event-Listener-Support" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html">
+<ANCHOR id="AccessibleEvent" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">
+<ANCHOR id="AccessibleEventListenerCB" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">
+<ANCHOR id="AccessibleEvent-ref" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleEvent-ref">
+<ANCHOR id="AccessibleEvent-unref" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleEvent-unref">
+<ANCHOR id="SPI-createAccessibleEventListener" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#SPI-createAccessibleEventListener">
+<ANCHOR id="AccessibleEventListener-unref" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleEventListener-unref">
+<ANCHOR id="AccessibleEventListener-addCallback" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleEventListener-addCallback">
+<ANCHOR id="AccessibleEventListener-removeCallback" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleEventListener-removeCallback">
+<ANCHOR id="AccessibleActiveDescendantChangedEvent-getActiveDescendant" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleActiveDescendantChangedEvent-getActiveDescendant">
+<ANCHOR id="AccessibleChildChangedEvent-getChildAccessible" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleChildChangedEvent-getChildAccessible">
+<ANCHOR id="AccessibleDescriptionChangedEvent-getDescriptionString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleDescriptionChangedEvent-getDescriptionString">
+<ANCHOR id="AccessibleNameChangedEvent-getNameString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleNameChangedEvent-getNameString">
+<ANCHOR id="AccessibleParentChangedEvent-getParentAccessible" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleParentChangedEvent-getParentAccessible">
+<ANCHOR id="AccessibleTableCaptionChangedEvent-getCaptionString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleTableCaptionChangedEvent-getCaptionString">
+<ANCHOR id="AccessibleTableColumnDescriptionChangedEvent-getDescriptionString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleTableColumnDescriptionChangedEvent-getDescriptionString">
+<ANCHOR id="AccessibleTableHeaderChangedEvent-getHeaderAccessible" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleTableHeaderChangedEvent-getHeaderAccessible">
+<ANCHOR id="AccessibleTableRowDescriptionChangedEvent-getDescriptionString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleTableRowDescriptionChangedEvent-getDescriptionString">
+<ANCHOR id="AccessibleTableSummaryChangedEvent-getSummaryAccessible" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleTableSummaryChangedEvent-getSummaryAccessible">
+<ANCHOR id="AccessibleTextChangedEvent-getChangeString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleTextChangedEvent-getChangeString">
+<ANCHOR id="AccessibleTextSelectionChangedEvent-getSelectionString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleTextSelectionChangedEvent-getSelectionString">
+<ANCHOR id="AccessibleWindowEvent-getTitleString" href="at-spi-cspi/at-spi-cspi-Event-Listener-Support.html#AccessibleWindowEvent-getTitleString">
+<ANCHOR id="at-spi-cspi-Registry-queries" href="at-spi-cspi/at-spi-cspi-Registry-queries.html">
+<ANCHOR id="AccessibleKeySynthType" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeySynthType">
+<ANCHOR id="SPI-getDesktopCount" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-getDesktopCount">
+<ANCHOR id="SPI-getDesktop" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-getDesktop">
+<ANCHOR id="SPI-getDesktopList" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-getDesktopList">
+<ANCHOR id="SPI-freeDesktopList" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-freeDesktopList">
+<ANCHOR id="AccessibleKeystrokeListenerCB" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeystrokeListenerCB">
+<ANCHOR id="AccessibleKeyEventMask" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeyEventMask">
+<ANCHOR id="AccessibleModifierMaskType" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleModifierMaskType">
+<ANCHOR id="AccessibleKeyMaskType" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeyMaskType">
+<ANCHOR id="AccessibleKeyEventType" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeyEventType">
+<ANCHOR id="AccessibleKeyListenerSyncType" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeyListenerSyncType">
+<ANCHOR id="AccessibleKeystroke" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeystroke">
+<ANCHOR id="SPI-createAccessibleKeySet" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-createAccessibleKeySet">
+<ANCHOR id="SPI-freeAccessibleKeySet" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-freeAccessibleKeySet">
+<ANCHOR id="SPI-createAccessibleKeystrokeListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-createAccessibleKeystrokeListener">
+<ANCHOR id="SPI-registerGlobalEventListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-registerGlobalEventListener">
+<ANCHOR id="SPI-deregisterGlobalEventListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-deregisterGlobalEventListener">
+<ANCHOR id="SPI-deregisterGlobalEventListenerAll" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-deregisterGlobalEventListenerAll">
+<ANCHOR id="SPI-registerAccessibleKeystrokeListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-registerAccessibleKeystrokeListener">
+<ANCHOR id="SPI-deregisterAccessibleKeystrokeListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-deregisterAccessibleKeystrokeListener">
+<ANCHOR id="AccessibleKeystrokeListener-unref" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeystrokeListener-unref">
+<ANCHOR id="AccessibleKeystrokeListener-removeCallback" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeystrokeListener-removeCallback">
+<ANCHOR id="AccessibleKeystrokeListener-addCallback" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleKeystrokeListener-addCallback">
+<ANCHOR id="SPI-generateKeyboardEvent" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-generateKeyboardEvent">
+<ANCHOR id="SPI-generateMouseEvent" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-generateMouseEvent">
+<ANCHOR id="AccessibleDeviceEvent" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleDeviceEvent">
+<ANCHOR id="AccessibleDeviceEventMask" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleDeviceEventMask">
+<ANCHOR id="AccessibleDeviceEventType" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleDeviceEventType">
+<ANCHOR id="AccessibleDeviceListenerCB" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleDeviceListenerCB">
+<ANCHOR id="SPI-createAccessibleDeviceListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-createAccessibleDeviceListener">
+<ANCHOR id="SPI-registerDeviceEventListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-registerDeviceEventListener">
+<ANCHOR id="SPI-deregisterDeviceEventListener" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#SPI-deregisterDeviceEventListener">
+<ANCHOR id="AccessibleDeviceListener-addCallback" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleDeviceListener-addCallback">
+<ANCHOR id="AccessibleDeviceListener-removeCallback" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleDeviceListener-removeCallback">
+<ANCHOR id="AccessibleDeviceListener-unref" href="at-spi-cspi/at-spi-cspi-Registry-queries.html#AccessibleDeviceListener-unref">
+<ANCHOR id="at-spi-cspi-AccessibleApplication-API" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html">
+<ANCHOR id="AccessibleApplication-ref" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html#AccessibleApplication-ref">
+<ANCHOR id="AccessibleApplication-unref" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html#AccessibleApplication-unref">
+<ANCHOR id="AccessibleApplication-getToolkitName" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html#AccessibleApplication-getToolkitName">
+<ANCHOR id="AccessibleApplication-getVersion" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html#AccessibleApplication-getVersion">
+<ANCHOR id="AccessibleApplication-getID" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html#AccessibleApplication-getID">
+<ANCHOR id="AccessibleApplication-pause" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html#AccessibleApplication-pause">
+<ANCHOR id="AccessibleApplication-resume" href="at-spi-cspi/at-spi-cspi-AccessibleApplication-API.html#AccessibleApplication-resume">
+<ANCHOR id="at-spi-cspi-Accessible-Objects" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html">
+<ANCHOR id="Accessible" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible">
+<ANCHOR id="Accessible-ref" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-ref">
+<ANCHOR id="Accessible-unref" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-unref">
+<ANCHOR id="Accessible-getName" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getName">
+<ANCHOR id="Accessible-getDescription" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getDescription">
+<ANCHOR id="Accessible-getParent" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getParent">
+<ANCHOR id="Accessible-getChildCount" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getChildCount">
+<ANCHOR id="Accessible-getChildAtIndex" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getChildAtIndex">
+<ANCHOR id="Accessible-getIndexInParent" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getIndexInParent">
+<ANCHOR id="Accessible-getRelationSet" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getRelationSet">
+<ANCHOR id="Accessible-getRole" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getRole">
+<ANCHOR id="Accessible-getRoleName" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getRoleName">
+<ANCHOR id="Accessible-getStateSet" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getStateSet">
+<ANCHOR id="Accessible-isAction" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isAction">
+<ANCHOR id="Accessible-isApplication" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isApplication">
+<ANCHOR id="Accessible-isComponent" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isComponent">
+<ANCHOR id="Accessible-isEditableText" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isEditableText">
+<ANCHOR id="Accessible-isHypertext" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isHypertext">
+<ANCHOR id="Accessible-isImage" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isImage">
+<ANCHOR id="Accessible-isSelection" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isSelection">
+<ANCHOR id="Accessible-isStreamableContent" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isStreamableContent">
+<ANCHOR id="Accessible-isTable" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isTable">
+<ANCHOR id="Accessible-isText" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isText">
+<ANCHOR id="Accessible-isValue" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-isValue">
+<ANCHOR id="Accessible-getAction" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getAction">
+<ANCHOR id="Accessible-getApplication" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getApplication">
+<ANCHOR id="Accessible-getComponent" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getComponent">
+<ANCHOR id="Accessible-getEditableText" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getEditableText">
+<ANCHOR id="Accessible-getHypertext" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getHypertext">
+<ANCHOR id="Accessible-getImage" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getImage">
+<ANCHOR id="Accessible-getSelection" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getSelection">
+<ANCHOR id="Accessible-getStreamableContent" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getStreamableContent">
+<ANCHOR id="Accessible-getTable" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getTable">
+<ANCHOR id="Accessible-getText" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getText">
+<ANCHOR id="Accessible-getValue" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-getValue">
+<ANCHOR id="Accessible-queryInterface" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#Accessible-queryInterface">
+<ANCHOR id="AccessibleRole" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#AccessibleRole">
+<ANCHOR id="AccessibleRole-getName" href="at-spi-cspi/at-spi-cspi-Accessible-Objects.html#AccessibleRole-getName">
+<ANCHOR id="at-spi-cspi-AccessibleRelations-and-RelationSets" href="at-spi-cspi/at-spi-cspi-AccessibleRelations-and-RelationSets.html">
+<ANCHOR id="AccessibleRelationType" href="at-spi-cspi/at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelationType">
+<ANCHOR id="AccessibleRelation-ref" href="at-spi-cspi/at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-ref">
+<ANCHOR id="AccessibleRelation-unref" href="at-spi-cspi/at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-unref">
+<ANCHOR id="AccessibleRelation-getNTargets" href="at-spi-cspi/at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-getNTargets">
+<ANCHOR id="AccessibleRelation-getTarget" href="at-spi-cspi/at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-getTarget">
+<ANCHOR id="AccessibleRelation-getRelationType" href="at-spi-cspi/at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-getRelationType">
+<ANCHOR id="at-spi-cspi-State-and-StateSets" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html">
+<ANCHOR id="AccessibleState" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleState">
+<ANCHOR id="AccessibleStateSet" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet">
+<ANCHOR id="AccessibleStateSet-ref" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-ref">
+<ANCHOR id="AccessibleStateSet-unref" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-unref">
+<ANCHOR id="AccessibleStateSet-add" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-add">
+<ANCHOR id="AccessibleStateSet-compare" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-compare">
+<ANCHOR id="AccessibleStateSet-contains" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-contains">
+<ANCHOR id="AccessibleStateSet-equals" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-equals">
+<ANCHOR id="AccessibleStateSet-isEmpty" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-isEmpty">
+<ANCHOR id="AccessibleStateSet-remove" href="at-spi-cspi/at-spi-cspi-State-and-StateSets.html#AccessibleStateSet-remove">
+<ANCHOR id="at-spi-cspi-AccessibleAction-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html">
+<ANCHOR id="AccessibleAction-ref" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-ref">
+<ANCHOR id="AccessibleAction-unref" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-unref">
+<ANCHOR id="AccessibleAction-getNActions" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getNActions">
+<ANCHOR id="AccessibleAction-doAction" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-doAction">
+<ANCHOR id="AccessibleAction-getKeyBinding" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getKeyBinding">
+<ANCHOR id="AccessibleAction-getName" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getName">
+<ANCHOR id="AccessibleAction-getDescription" href="at-spi-cspi/at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getDescription">
+<ANCHOR id="at-spi-cspi-AccessibleComponent-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html">
+<ANCHOR id="AccessibleCoordType" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleCoordType">
+<ANCHOR id="AccessibleComponentLayer" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponentLayer">
+<ANCHOR id="AccessibleComponent-ref" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-ref">
+<ANCHOR id="AccessibleComponent-unref" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-unref">
+<ANCHOR id="AccessibleComponent-contains" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-contains">
+<ANCHOR id="AccessibleComponent-getAccessibleAtPoint" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getAccessibleAtPoint">
+<ANCHOR id="AccessibleComponent-getExtents" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getExtents">
+<ANCHOR id="AccessibleComponent-getPosition" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getPosition">
+<ANCHOR id="AccessibleComponent-getSize" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getSize">
+<ANCHOR id="AccessibleComponent-getLayer" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getLayer">
+<ANCHOR id="AccessibleComponent-getMDIZOrder" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-getMDIZOrder">
+<ANCHOR id="AccessibleComponent-grabFocus" href="at-spi-cspi/at-spi-cspi-AccessibleComponent-Interface.html#AccessibleComponent-grabFocus">
+<ANCHOR id="at-spi-cspi-AccessibleEditableText-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html">
+<ANCHOR id="AccessibleEditableText-ref" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-ref">
+<ANCHOR id="AccessibleEditableText-unref" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-unref">
+<ANCHOR id="AccessibleEditableText-copyText" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-copyText">
+<ANCHOR id="AccessibleEditableText-deleteText" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-deleteText">
+<ANCHOR id="AccessibleEditableText-insertText" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-insertText">
+<ANCHOR id="AccessibleEditableText-cutText" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-cutText">
+<ANCHOR id="AccessibleEditableText-pasteText" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-pasteText">
+<ANCHOR id="AccessibleEditableText-setTextContents" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-setTextContents">
+<ANCHOR id="AccessibleEditableText-setAttributes" href="at-spi-cspi/at-spi-cspi-AccessibleEditableText-Interface.html#AccessibleEditableText-setAttributes">
+<ANCHOR id="at-spi-cspi-AccessibleHypertext-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleHypertext-Interface.html">
+<ANCHOR id="AccessibleHypertext-ref" href="at-spi-cspi/at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-ref">
+<ANCHOR id="AccessibleHypertext-unref" href="at-spi-cspi/at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-unref">
+<ANCHOR id="AccessibleHypertext-getNLinks" href="at-spi-cspi/at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-getNLinks">
+<ANCHOR id="AccessibleHypertext-getLink" href="at-spi-cspi/at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-getLink">
+<ANCHOR id="AccessibleHypertext-getLinkIndex" href="at-spi-cspi/at-spi-cspi-AccessibleHypertext-Interface.html#AccessibleHypertext-getLinkIndex">
+<ANCHOR id="at-spi-cspi-AccessibleImage-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleImage-Interface.html">
+<ANCHOR id="AccessibleImage-ref" href="at-spi-cspi/at-spi-cspi-AccessibleImage-Interface.html#AccessibleImage-ref">
+<ANCHOR id="AccessibleImage-unref" href="at-spi-cspi/at-spi-cspi-AccessibleImage-Interface.html#AccessibleImage-unref">
+<ANCHOR id="AccessibleImage-getImageDescription" href="at-spi-cspi/at-spi-cspi-AccessibleImage-Interface.html#AccessibleImage-getImageDescription">
+<ANCHOR id="AccessibleImage-getImageSize" href="at-spi-cspi/at-spi-cspi-AccessibleImage-Interface.html#AccessibleImage-getImageSize">
+<ANCHOR id="AccessibleImage-getImagePosition" href="at-spi-cspi/at-spi-cspi-AccessibleImage-Interface.html#AccessibleImage-getImagePosition">
+<ANCHOR id="AccessibleImage-getImageExtents" href="at-spi-cspi/at-spi-cspi-AccessibleImage-Interface.html#AccessibleImage-getImageExtents">
+<ANCHOR id="at-spi-cspi-AccessibleSelection-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html">
+<ANCHOR id="AccessibleSelection-ref" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-ref">
+<ANCHOR id="AccessibleSelection-unref" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-unref">
+<ANCHOR id="AccessibleSelection-getNSelectedChildren" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-getNSelectedChildren">
+<ANCHOR id="AccessibleSelection-getSelectedChild" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-getSelectedChild">
+<ANCHOR id="AccessibleSelection-selectChild" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-selectChild">
+<ANCHOR id="AccessibleSelection-isChildSelected" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-isChildSelected">
+<ANCHOR id="AccessibleSelection-deselectSelectedChild" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-deselectSelectedChild">
+<ANCHOR id="AccessibleSelection-clearSelection" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-clearSelection">
+<ANCHOR id="AccessibleSelection-selectAll" href="at-spi-cspi/at-spi-cspi-AccessibleSelection-Interface.html#AccessibleSelection-selectAll">
+<ANCHOR id="at-spi-cspi-AccessibleTable-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html">
+<ANCHOR id="AccessibleTable-ref" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-ref">
+<ANCHOR id="AccessibleTable-unref" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-unref">
+<ANCHOR id="AccessibleTable-getAccessibleAt" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getAccessibleAt">
+<ANCHOR id="AccessibleTable-getCaption" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getCaption">
+<ANCHOR id="AccessibleTable-getColumnAtIndex" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getColumnAtIndex">
+<ANCHOR id="AccessibleTable-getColumnDescription" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getColumnDescription">
+<ANCHOR id="AccessibleTable-getColumnExtentAt" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getColumnExtentAt">
+<ANCHOR id="AccessibleTable-getColumnHeader" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getColumnHeader">
+<ANCHOR id="AccessibleTable-getIndexAt" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getIndexAt">
+<ANCHOR id="AccessibleTable-getNColumns" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getNColumns">
+<ANCHOR id="AccessibleTable-getNRows" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getNRows">
+<ANCHOR id="AccessibleTable-getNSelectedColumns" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getNSelectedColumns">
+<ANCHOR id="AccessibleTable-getNSelectedRows" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getNSelectedRows">
+<ANCHOR id="AccessibleTable-getRowAtIndex" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getRowAtIndex">
+<ANCHOR id="AccessibleTable-getRowDescription" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getRowDescription">
+<ANCHOR id="AccessibleTable-getRowExtentAt" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getRowExtentAt">
+<ANCHOR id="AccessibleTable-getRowHeader" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getRowHeader">
+<ANCHOR id="AccessibleTable-getSelectedRows" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getSelectedRows">
+<ANCHOR id="AccessibleTable-getSelectedColumns" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getSelectedColumns">
+<ANCHOR id="AccessibleTable-getSummary" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-getSummary">
+<ANCHOR id="AccessibleTable-isColumnSelected" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-isColumnSelected">
+<ANCHOR id="AccessibleTable-isRowSelected" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-isRowSelected">
+<ANCHOR id="AccessibleTable-isSelected" href="at-spi-cspi/at-spi-cspi-AccessibleTable-Interface.html#AccessibleTable-isSelected">
+<ANCHOR id="at-spi-cspi-AccessibleText-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html">
+<ANCHOR id="AccessibleTextBoundaryType" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleTextBoundaryType">
+<ANCHOR id="AccessibleTextClipType" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleTextClipType">
+<ANCHOR id="AccessibleText-ref" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-ref">
+<ANCHOR id="AccessibleText-unref" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-unref">
+<ANCHOR id="AccessibleText-addSelection" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-addSelection">
+<ANCHOR id="AccessibleText-getAttributes" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getAttributes">
+<ANCHOR id="AccessibleText-getBoundedRanges" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getBoundedRanges">
+<ANCHOR id="AccessibleText-getCaretOffset" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getCaretOffset">
+<ANCHOR id="AccessibleText-getCharacterCount" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getCharacterCount">
+<ANCHOR id="AccessibleText-getCharacterExtents" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getCharacterExtents">
+<ANCHOR id="AccessibleText-getNSelections" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getNSelections">
+<ANCHOR id="AccessibleText-getOffsetAtPoint" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getOffsetAtPoint">
+<ANCHOR id="AccessibleText-getRangeExtents" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getRangeExtents">
+<ANCHOR id="AccessibleText-getSelection" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getSelection">
+<ANCHOR id="AccessibleText-getText" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getText">
+<ANCHOR id="AccessibleText-getTextBeforeOffset" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getTextBeforeOffset">
+<ANCHOR id="AccessibleText-getTextAfterOffset" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getTextAfterOffset">
+<ANCHOR id="AccessibleText-getTextAtOffset" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-getTextAtOffset">
+<ANCHOR id="AccessibleText-removeSelection" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-removeSelection">
+<ANCHOR id="AccessibleText-setCaretOffset" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-setCaretOffset">
+<ANCHOR id="AccessibleText-setSelection" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleText-setSelection">
+<ANCHOR id="AccessibleTextRange-freeRanges" href="at-spi-cspi/at-spi-cspi-AccessibleText-Interface.html#AccessibleTextRange-freeRanges">
+<ANCHOR id="at-spi-cspi-AccessibleValue-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleValue-Interface.html">
+<ANCHOR id="AccessibleValue-ref" href="at-spi-cspi/at-spi-cspi-AccessibleValue-Interface.html#AccessibleValue-ref">
+<ANCHOR id="AccessibleValue-unref" href="at-spi-cspi/at-spi-cspi-AccessibleValue-Interface.html#AccessibleValue-unref">
+<ANCHOR id="AccessibleValue-getCurrentValue" href="at-spi-cspi/at-spi-cspi-AccessibleValue-Interface.html#AccessibleValue-getCurrentValue">
+<ANCHOR id="AccessibleValue-getMaximumValue" href="at-spi-cspi/at-spi-cspi-AccessibleValue-Interface.html#AccessibleValue-getMaximumValue">
+<ANCHOR id="AccessibleValue-getMinimumValue" href="at-spi-cspi/at-spi-cspi-AccessibleValue-Interface.html#AccessibleValue-getMinimumValue">
+<ANCHOR id="AccessibleValue-setCurrentValue" href="at-spi-cspi/at-spi-cspi-AccessibleValue-Interface.html#AccessibleValue-setCurrentValue">
+<ANCHOR id="at-spi-cspi-AccessibleHyperlink-Interface" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html">
+<ANCHOR id="AccessibleHyperlink-ref" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-ref">
+<ANCHOR id="AccessibleHyperlink-unref" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-unref">
+<ANCHOR id="AccessibleHyperlink-getNAnchors" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getNAnchors">
+<ANCHOR id="AccessibleHyperlink-getIndexRange" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getIndexRange">
+<ANCHOR id="AccessibleHyperlink-getObject" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getObject">
+<ANCHOR id="AccessibleHyperlink-getURI" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-getURI">
+<ANCHOR id="AccessibleHyperlink-isValid" href="at-spi-cspi/at-spi-cspi-AccessibleHyperlink-Interface.html#AccessibleHyperlink-isValid">

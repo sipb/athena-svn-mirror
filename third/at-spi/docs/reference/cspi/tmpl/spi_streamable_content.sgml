@@ -9,12 +9,10 @@ AccessibleStreamableContent Interface
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### FUNCTION AccessibleStreamableContent_ref ##### -->
 <para>
@@ -48,17 +46,6 @@ AccessibleStreamableContent Interface
 
 @obj: 
 @content_type: 
-@Returns: 
-
-
-<!-- ##### FUNCTION AccessibleStreamableContent_seek ##### -->
-<para>
-
-</para>
-
-@obj: 
-@offset: 
-@seek_type: 
 @Returns: 
 
 

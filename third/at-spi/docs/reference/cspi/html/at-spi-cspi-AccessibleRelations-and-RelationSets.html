@@ -1,0 +1,123 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>AccessibleRelations and RelationSets</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-accessible.html" title="Basic Accessible Object Methods and Interface Query"><link rel="previous" href="at-spi-cspi-Accessible-Objects.html" title="Accessible Objects"><link rel="next" href="at-spi-cspi-State-and-StateSets.html" title="State and StateSets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="at-spi-cspi-Accessible-Objects.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-accessible.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-State-and-StateSets.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-AccessibleRelations-and-RelationSets"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">AccessibleRelations and RelationSets</span></h2><p>AccessibleRelations and RelationSets &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelationType">AccessibleRelationType</a>;
+void        <a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-ref">AccessibleRelation_ref</a>          (AccessibleRelation *obj);
+void        <a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-unref">AccessibleRelation_unref</a>        (AccessibleRelation *obj);
+int         <a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-getNTargets">AccessibleRelation_getNTargets</a>  (AccessibleRelation *obj);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-getTarget">AccessibleRelation_getTarget</a>    (AccessibleRelation *obj,
+                                             int i);
+<a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelationType">AccessibleRelationType</a> <a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelation-getRelationType">AccessibleRelation_getRelationType</a>
+                                            (AccessibleRelation *obj);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="AccessibleRelationType"></a>enum AccessibleRelationType</h3><pre class="programlisting">typedef enum
+{
+  SPI_RELATION_NULL,
+  SPI_RELATION_LABEL_FOR,
+  SPI_RELATION_LABELED_BY,
+  SPI_RELATION_CONTROLLER_FOR,
+  SPI_RELATION_CONTROLLED_BY,
+  SPI_RELATION_MEMBER_OF,
+  SPI_RELATION_NODE_CHILD_OF,
+  SPI_RELATION_EXTENDED,
+  SPI_RELATION_FLOWS_TO,
+  SPI_RELATION_FLOWS_FROM,
+  SPI_RELATION_SUBWINDOW_OF,
+  SPI_RELATION_EMBEDS,
+  SPI_RELATION_EMBEDDED_BY,
+  SPI_RELATION_POPUP_FOR,
+  SPI_RELATION_LAST_DEFINED
+} AccessibleRelationType;
+</pre><p>
+Describes the type of the relation</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SPI_RELATION_NULL</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_LABEL_FOR</tt></span></td><td> Indicates an object is a label for one or more target objects.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_LABELED_BY</tt></span></td><td> Indicates an object is labelled by one or more target objects.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_CONTROLLER_FOR</tt></span></td><td> Indicates an object is an controller for one or more target objects.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_CONTROLLED_BY</tt></span></td><td> Indicates an object controlled by one or more target objects.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_MEMBER_OF</tt></span></td><td> Indicates an object is a member of a group of one or
+more target objects.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_NODE_CHILD_OF</tt></span></td><td> Indicates an object is a cell in a treetable which is displayed because a cell in the same column is expanded and identifies that cell.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_EXTENDED</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_FLOWS_TO</tt></span></td><td> Indicates that the object has content that flows logically to another
+ AtkObject in a sequential way, (for instance text-flow).
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_FLOWS_FROM</tt></span></td><td> Indicates that the object has content that flows logically from
+ another AtkObject in a sequential way, (for instance text-flow).
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_SUBWINDOW_OF</tt></span></td><td> 
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_EMBEDS</tt></span></td><td> Indicates that the object visually embeds
+ another object's content, i.e. this object's content flows around
+ another's content.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_EMBEDDED_BY</tt></span></td><td> Inverse of <tt class="literal">SPI_RELATION_EMBEDS</tt>, indicates that
+ this object's content is visualy embedded in another object.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_POPUP_FOR</tt></span></td><td> Indicates that an object is a popup for another objec
+t.
+</td></tr><tr><td><span class="term"><tt class="literal">SPI_RELATION_LAST_DEFINED</tt></span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleRelation-ref"></a>AccessibleRelation_ref ()</h3><pre class="programlisting">void        AccessibleRelation_ref          (AccessibleRelation *obj);</pre><p>
+Increment the reference count for an AccessibleRelation object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleRelation object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleRelation-unref"></a>AccessibleRelation_unref ()</h3><pre class="programlisting">void        AccessibleRelation_unref        (AccessibleRelation *obj);</pre><p>
+Decrement the reference count for an AccessibleRelation object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleRelation object on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleRelation-getNTargets"></a>AccessibleRelation_getNTargets ()</h3><pre class="programlisting">int         AccessibleRelation_getNTargets  (AccessibleRelation *obj);</pre><p>
+Get the number of objects which this relationship has as its
+      target objects (the subject is the <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> from which this
+      AccessibleRelation originated).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleRelation object to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a short integer indicating how many target objects which the
+      originating <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> object has the AccessibleRelation
+      relationship with.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleRelation-getTarget"></a>AccessibleRelation_getTarget ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleRelation_getTarget    (AccessibleRelation *obj,
+                                             int i);</pre><p>
+Get the <i class="parameter"><tt>i</tt></i>-th target of a specified AccessibleRelation relationship.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleRelation object to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> a (zero-index) integer indicating which (of possibly several) target is requested.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> which is the <i class="parameter"><tt>i</tt></i>-th object with which the
+     originating <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> has relationship specified in the
+     AccessibleRelation object.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleRelation-getRelationType"></a>AccessibleRelation_getRelationType ()</h3><pre class="programlisting"><a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelationType">AccessibleRelationType</a> AccessibleRelation_getRelationType
+                                            (AccessibleRelation *obj);</pre><p>
+Get the type of relationship represented by an AccessibleRelation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleRelation object to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an <a href="at-spi-cspi-AccessibleRelations-and-RelationSets.html#AccessibleRelationType">AccessibleRelationType</a> indicating the type of relation
+        encapsulated in this AccessibleRelation object.
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="at-spi-cspi-Accessible-Objects.html"><b>&lt;&lt; Accessible Objects</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-State-and-StateSets.html"><b>State and StateSets &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,265 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Event Listener Support</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-main.html" title="SPI Main Event Loop and Registry"><link rel="previous" href="at-spi-cspi-SPI-main-loop-and-initialization.html" title="SPI main loop and initialization"><link rel="next" href="at-spi-cspi-Registry-queries.html" title="Registry queries"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="at-spi-cspi-SPI-main-loop-and-initialization.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-main.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-Registry-queries.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-Event-Listener-Support"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Event Listener Support</span></h2><p>Event Listener Support &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+typedef     <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a>;
+void        (<a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">*AccessibleEventListenerCB</a>)    (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *event,
+                                             void *user_data);
+SPIBoolean  <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent-ref">AccessibleEvent_ref</a>             (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+void        <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent-unref">AccessibleEvent_unref</a>           (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+AccessibleEventListener* <a href="at-spi-cspi-Event-Listener-Support.html#SPI-createAccessibleEventListener">SPI_createAccessibleEventListener</a>
+                                            (<a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> callback,
+                                             void *user_data);
+void        <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListener-unref">AccessibleEventListener_unref</a>   (AccessibleEventListener *listener);
+SPIBoolean  <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListener-addCallback">AccessibleEventListener_addCallback</a>
+                                            (AccessibleEventListener *listener,
+                                             <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> callback,
+                                             void *user_data);
+SPIBoolean  <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListener-removeCallback">AccessibleEventListener_removeCallback</a>
+                                            (AccessibleEventListener *listener,
+                                             <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> callback);
+
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleActiveDescendantChangedEvent-getActiveDescendant">AccessibleActiveDescendantChangedEvent_getActiveDescendant</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleChildChangedEvent-getChildAccessible">AccessibleChildChangedEvent_getChildAccessible</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleDescriptionChangedEvent-getDescriptionString">AccessibleDescriptionChangedEvent_getDescriptionString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleNameChangedEvent-getNameString">AccessibleNameChangedEvent_getNameString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleParentChangedEvent-getParentAccessible">AccessibleParentChangedEvent_getParentAccessible</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleTableCaptionChangedEvent-getCaptionString">AccessibleTableCaptionChangedEvent_getCaptionString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleTableColumnDescriptionChangedEvent-getDescriptionString">AccessibleTableColumnDescriptionChangedEvent_getDescriptionString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleTableHeaderChangedEvent-getHeaderAccessible">AccessibleTableHeaderChangedEvent_getHeaderAccessible</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleTableRowDescriptionChangedEvent-getDescriptionString">AccessibleTableRowDescriptionChangedEvent_getDescriptionString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+<a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleTableSummaryChangedEvent-getSummaryAccessible">AccessibleTableSummaryChangedEvent_getSummaryAccessible</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleTextChangedEvent-getChangeString">AccessibleTextChangedEvent_getChangeString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleTextSelectionChangedEvent-getSelectionString">AccessibleTextSelectionChangedEvent_getSelectionString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+char*       <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleWindowEvent-getTitleString">AccessibleWindowEvent_getTitleString</a>
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="AccessibleEvent"></a>AccessibleEvent</h3><pre class="programlisting">typedef struct {
+  const char  *type;
+  Accessible  *source;
+  long         detail1;
+  long         detail2;
+} AccessibleEvent;
+</pre><p>
+AccessibleEvent is a struct used to encapsulate event information.
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleEventListenerCB"></a>AccessibleEventListenerCB ()</h3><pre class="programlisting">void        (*AccessibleEventListenerCB)    (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *event,
+                                             void *user_data);</pre><p>
+This is a function which is specified when creating a EventListener.
+It is called when an event being listened for occurs.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleEvent-ref"></a>AccessibleEvent_ref ()</h3><pre class="programlisting">SPIBoolean  AccessibleEvent_ref             (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Increments by 1 the reference count of the event</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being referenced.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the function succeeded; FALSE if the pointer is not a
+        valid event.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleEvent-unref"></a>AccessibleEvent_unref ()</h3><pre class="programlisting">void        AccessibleEvent_unref           (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Decrements by 1 the reference count of the event. The event is destroyed
+when the reference count recahes zero.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being referenced.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="SPI-createAccessibleEventListener"></a>SPI_createAccessibleEventListener ()</h3><pre class="programlisting">AccessibleEventListener* SPI_createAccessibleEventListener
+                                            (<a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> callback,
+                                             void *user_data);</pre><p>
+Create a new AccessibleEventListener with a specified (in-process) callback function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> callback function, or NULL.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> a pointer to data which will be passed to the callback when invoked.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to a newly-created AccessibleEventListener.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleEventListener-unref"></a>AccessibleEventListener_unref ()</h3><pre class="programlisting">void        AccessibleEventListener_unref   (AccessibleEventListener *listener);</pre><p>
+Decrements an AccessibleEventListener's reference count.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>listener</tt></i> :</span></td><td> a pointer to the AccessibleEventListener being operated on.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleEventListener-addCallback"></a>AccessibleEventListener_addCallback ()</h3><pre class="programlisting">SPIBoolean  AccessibleEventListener_addCallback
+                                            (AccessibleEventListener *listener,
+                                             <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> callback,
+                                             void *user_data);</pre><p>
+Add an in-process callback function to an existing AccessibleEventListener.
+Note that the callback function must live in the same address
+space as the AccessibleEventListener implementation code, thus one should not
+use this function to attach callbacks to a 'remote' event listener
+(that is, one that was not created by a client call to
+createAccessibleEventListener();</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>listener</tt></i> :</span></td><td> the AccessibleEventListener instance to modify.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> function pointer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> a pointer to data which will be passed to the callback when invoked.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if successful, otherwise FALSE.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleEventListener-removeCallback"></a>AccessibleEventListener_removeCallback ()</h3><pre class="programlisting">SPIBoolean  AccessibleEventListener_removeCallback
+                                            (AccessibleEventListener *listener,
+                                             <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> callback);</pre><p>
+Remove an in-process callback function from an existing AccessibleEventListener.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>listener</tt></i> :</span></td><td> the AccessibleEventListener instance to modify.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEventListenerCB">AccessibleEventListenerCB</a> function pointer.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if successful, otherwise FALSE.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleActiveDescendantChangedEvent-getActiveDescendant"></a>AccessibleActiveDescendantChangedEvent_getActiveDescendant ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleActiveDescendantChangedEvent_getActiveDescendant
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "object:active-descendant-changed"
+        to get a reference to the changed <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.
+        Note that context Accessibles are not guaranteed to outlive
+        event delivery, in which case this call may return <tt class="literal">NULL</tt>
+        even if the object existed at the time of dispatch.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> pointer representing the new active descendant.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleChildChangedEvent-getChildAccessible"></a>AccessibleChildChangedEvent_getChildAccessible ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleChildChangedEvent_getChildAccessible
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "object:children_changed"
+        to get a reference to the changed <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.
+        Note that context Accessibles are not guaranteed to outlive
+        event delivery, in which case this call may return <tt class="literal">NULL</tt>
+        even if the object existed at the time of dispatch.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the context <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> for the event, or <tt class="literal">NULL</tt> if
+         there is no longer a valid context <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> 
+         object for the event.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleDescriptionChangedEvent-getDescriptionString"></a>AccessibleDescriptionChangedEvent_getDescriptionString ()</h3><pre class="programlisting">char*       AccessibleDescriptionChangedEvent_getDescriptionString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type 
+        "object:property-changed:accessible-description" 
+        returning the new description.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string representing the recently changed
+        description 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleNameChangedEvent-getNameString"></a>AccessibleNameChangedEvent_getNameString ()</h3><pre class="programlisting">char*       AccessibleNameChangedEvent_getNameString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "object:property-change:accessible_name:", 
+        returning the name.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string representing the name of the 
+        object which recently changed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleParentChangedEvent-getParentAccessible"></a>AccessibleParentChangedEvent_getParentAccessible ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleParentChangedEvent_getParentAccessible
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "object:property-change:accessible-parent"
+        to get a reference to the changed <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.
+        Note that context Accessibles are not guaranteed to outlive
+        event delivery, in which case this call may return <tt class="literal">NULL</tt>
+        even if the object existed at the time of dispatch.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> pointer representing the new parent object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTableCaptionChangedEvent-getCaptionString"></a>AccessibleTableCaptionChangedEvent_getCaptionString ()</h3><pre class="programlisting">char*       AccessibleTableCaptionChangedEvent_getCaptionString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type 
+        "object:property-changed:accessible-table-caption-object" 
+        returning the text in the caption, if present.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string indicating the text in the caption.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTableColumnDescriptionChangedEvent-getDescriptionString"></a>AccessibleTableColumnDescriptionChangedEvent_getDescriptionString ()</h3><pre class="programlisting">char*       AccessibleTableColumnDescriptionChangedEvent_getDescriptionString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type 
+        "object:property-changed:accessible-table-column-description" 
+        returning the new table column description.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string representing the recently changed
+        table column description 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTableHeaderChangedEvent-getHeaderAccessible"></a>AccessibleTableHeaderChangedEvent_getHeaderAccessible ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleTableHeaderChangedEvent_getHeaderAccessible
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type 
+        "object:property-changed:accessible-table-row-header" or
+        "object:property-changed:accessible-table-column-header"
+        to get a reference to the changed <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.
+        Note that context Accessibles are not guaranteed to outlive
+        event delivery, in which case this call may return <tt class="literal">NULL</tt>
+        even if the object existed at the time of dispatch.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> pointer representing the new table header.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTableRowDescriptionChangedEvent-getDescriptionString"></a>AccessibleTableRowDescriptionChangedEvent_getDescriptionString ()</h3><pre class="programlisting">char*       AccessibleTableRowDescriptionChangedEvent_getDescriptionString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type 
+        "object:property-changed:accessible-table-row-description" 
+        returning the new table row description.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string representing the recently changed
+        table row description 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTableSummaryChangedEvent-getSummaryAccessible"></a>AccessibleTableSummaryChangedEvent_getSummaryAccessible ()</h3><pre class="programlisting"><a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>* AccessibleTableSummaryChangedEvent_getSummaryAccessible
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "object:property-changed:accessible-table-summary"
+        to get a reference to the changed <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a>.
+        Note that context Accessibles are not guaranteed to outlive
+        event delivery, in which case this call may return <tt class="literal">NULL</tt>
+        even if the object existed at the time of dispatch.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an <a href="at-spi-cspi-Accessible-Objects.html#Accessible">Accessible</a> pointer representing the new table summary.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTextChangedEvent-getChangeString"></a>AccessibleTextChangedEvent_getChangeString ()</h3><pre class="programlisting">char*       AccessibleTextChangedEvent_getChangeString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "object:text-changed", 
+        returning the text inserted or deleted.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string indicating the text inserted,
+         deleted, or substituted by this event.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleTextSelectionChangedEvent-getSelectionString"></a>AccessibleTextSelectionChangedEvent_getSelectionString ()</h3><pre class="programlisting">char*       AccessibleTextSelectionChangedEvent_getSelectionString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "object:text-selection-changed", 
+        returning the newly added, removed, or modified selection string.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string indicating the recently changed selection.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleWindowEvent-getTitleString"></a>AccessibleWindowEvent_getTitleString ()</h3><pre class="programlisting">char*       AccessibleWindowEvent_getTitleString
+                                            (const <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> *e);</pre><p>
+Queries an <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> of type "window:", 
+        returning the window title.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>e</tt></i> :</span></td><td> a pointer to the <a href="at-spi-cspi-Event-Listener-Support.html#AccessibleEvent">AccessibleEvent</a> being queried.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 text string representing the title of the 
+        recently changed window.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="at-spi-cspi-SPI-main-loop-and-initialization.html"><b>&lt;&lt; SPI main loop and initialization</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-Registry-queries.html"><b>Registry queries &gt;&gt;</b></a></td></tr></table></body></html>

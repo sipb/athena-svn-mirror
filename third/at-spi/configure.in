@@ -1,10 +1,10 @@
 AC_INIT(idl/Accessibility.idl)
 
 AT_SPI_MAJOR_VERSION=1
-AT_SPI_MINOR_VERSION=1
-AT_SPI_MICRO_VERSION=8
+AT_SPI_MINOR_VERSION=6
+AT_SPI_MICRO_VERSION=0
 AT_SPI_INTERFACE_AGE=0
-AT_SPI_BINARY_AGE=8
+AT_SPI_BINARY_AGE=5
 AT_SPI_VERSION="$AT_SPI_MAJOR_VERSION.$AT_SPI_MINOR_VERSION.$AT_SPI_MICRO_VERSION"
 AM_INIT_AUTOMAKE(at-spi, $AT_SPI_VERSION)
 AC_SUBST(AT_SPI_MAJOR_VERSION)
@@ -15,15 +15,21 @@ AC_SUBST(AT_SPI_BINARY_AGE)
 
 # libtool versioning
 LT_RELEASE=$AT_SPI_MAJOR_VERSION.$AT_SPI_MINOR_VERSION
-LT_CURRENT=`expr $AT_SPI_MICRO_VERSION - $AT_SPI_INTERFACE_AGE`
-LT_REVISION=$AT_SPI_INTERFACE_AGE
-LT_AGE=`expr $AT_SPI_BINARY_AGE - $AT_SPI_INTERFACE_AGE`
+LT_CURRENT=10
+LT_REVISION=4
+LT_AGE=10
 LT_VERSION_INFO='-version-info ${LT_CURRENT}:${LT_REVISION}:${LT_AGE}'
 AC_SUBST(LT_VERSION_INFO)
 AC_SUBST(LT_RELEASE)
 AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
+
+dnl required versions of other tools.
+m4_define([req_ver_atk],	[1.7.2])
+m4_define([req_ver_libbonobo],	[1.107.0])
+m4_define([req_ver_gail],	[1.3.0])
+m4_define([req_ver_gtk],	[2.0.0])
 
 dnl Specify a header configuration file
 AM_CONFIG_HEADER(config.h)
@@ -39,100 +45,72 @@ AC_PROG_INSTALL
 AC_ISC_POSIX
 
 GNOME_COMMON_INIT
-GNOME_PLATFORM_GNOME_2(yes, force)
 GNOME_COMPILE_WARNINGS(maximum)
 
 dnl Initialize libtool
 AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
-dnl internationalization support
-dnl ALL_LINGUAS=""
+dnl internationalization support; uncomment if translatable strings are reintroduced
+dnl ALL_LINGUAS="ar az be bg bn bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr gu he hi hr id is it ja ko lt mn ms nb ne nl nn no or pa pl pt_BR pt ro ru sk sl sq sr@ije sr@Latn sr sv uk vi wa zh_CN"
 dnl AM_GLIB_GNU_GETTEXT
 
-AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-
-gtk_doc_min_version=0.6
-if $GTKDOC ; then
-    gtk_doc_version=`gtkdoc-mkdb --version`
-    AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
-    if perl <<EOF ; then
-my @installed = split /\./, "$gtk_doc_version";
-my @required = split /\./, "$gtk_doc_min_version";
-
-while (scalar @required) {
-    my \$installed_ver = (shift @installed || 0);
-    my \$required_ver = shift @required;
-    exit 1 if (\$installed_ver < \$required_ver);
-    exit 0 if (\$installed_ver > \$required_ver);
-}
-exit 0;
-EOF
-      AC_MSG_RESULT(yes)
-   else
-      AC_MSG_RESULT(no)
-	GTKDOC=false
-   fi
-fi
-
-dnl Let people disable the gtk-doc stuff.
-AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc  Use gtk-doc to build documentation [default=auto]], enable_gtk_doc="$enableval", enable_gtk_doc=auto)
-
-if test x$enable_gtk_doc = xauto ; then
-  if test x$GTKDOC = xtrue ; then
-    enable_gtk_doc=yes
-  else
-    enable_gtk_doc=no
-  fi
-fi
-
-dnl NOTE: We need to use a separate automake conditional for this
-dnl   	  to make this work with the tarballs.
-AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+GTK_DOC_CHECK([1.0])
 
 AC_PATH_XTRA
 
 if test x$no_x = xyes ; then
-  AC_MSG_ERROR([X development libraries not found])
+	AC_MSG_ERROR([X development libraries not found])
 else
-  X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
+	X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 fi
 
 AC_SUBST(X_LIBS)
 
+dnl Check for obsolete (mis-numbered) versions of at-spi
+dnl oldlibs=`echo $(libdir)/libspi.so.1.*`
+dnl if test $$oldlibs != "$(libdir)/libspi.so.1.*" ; then
+dnl   AC_MSG_ERROR(Old libspi.1.x library found in $libdir. Please remove $(libdir)/libspi.so.1 and $$oldlibs)
+dnl fi
+
 dnl Checks for libraries
-PKG_CHECK_MODULES(LIBSPI, \
-	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.1.0 \
-	gtk+-2.0 > 2.0.0 \
-	gail >= 0.16)
+PKG_CHECK_MODULES(LIBSPI, [
+	libbonobo-2.0	>= req_ver_libbonobo
+	atk		>= req_ver_atk
+	gtk+-2.0	>= req_ver_gtk
+	gail		>= req_ver_gail
+])
 AC_SUBST(LIBSPI_LIBS)
 AC_SUBST(LIBSPI_CFLAGS)
 
-PKG_CHECK_MODULES(REGISTRYD, \
-	libbonobo-2.0 >= 1.107.0 \
-	gtk+-2.0 > 2.0.0 \
-	atk >= 1.1.0)
+PKG_CHECK_MODULES(REGISTRYD, [
+	libbonobo-2.0	>= req_ver_libbonobo
+	atk		>= req_ver_atk
+	gtk+-2.0	>= req_ver_gtk
+])
 AC_SUBST(REGISTRYD_LIBS)
 AC_SUBST(REGISTRYD_CFLAGS)
 
-PKG_CHECK_MODULES(TESTS, \
-	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.1.0 \
-	gtk+-2.0 > 2.0.0 \
-	gail >= 0.16)
+PKG_CHECK_MODULES(TESTS, [
+	libbonobo-2.0	>= req_ver_libbonobo
+	atk		>= req_ver_atk
+	gtk+-2.0	>= req_ver_gtk
+	gail		>= req_ver_gail
+])
 AC_SUBST(TESTS_LIBS)
 AC_SUBST(TESTS_CFLAGS)
 
-PKG_CHECK_MODULES(ATK_BRIDGE, \
-	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.1.0)
+PKG_CHECK_MODULES(ATK_BRIDGE, [
+	libbonobo-2.0	>= req_ver_libbonobo
+	atk		>= req_ver_atk
+])
 AC_SUBST(ATK_BRIDGE_LIBS)
 AC_SUBST(ATK_BRIDGE_CFLAGS)
 
-PKG_CHECK_MODULES(LIBCSPI, \
-	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.1.0)
+PKG_CHECK_MODULES(LIBCSPI, [
+	libbonobo-2.0	>= req_ver_libbonobo
+	atk		>= req_ver_atk
+])
 AC_SUBST(LIBCSPI_LIBS)
 AC_SUBST(LIBCSPI_CFLAGS)
 
@@ -146,61 +124,46 @@ LIBBONOBO_IDL_DIR="`$PKG_CONFIG --variable=idldir libbonobo-2.0`"
 AC_SUBST(BONOBO_ACTIVATION_IDL_DIR)
 AC_SUBST(LIBBONOBO_IDL_DIR)
 
+LIBS="$LIBS $X_LIBS"
 dnl path to Xtst
-AC_CHECK_LIB(Xtst, XTestFakeKeyEvent, XTST_LIBS=-lXtst)
-if test "x$XTST_LIBS" = x; then
-  save_LIBS="$LIBS"
-  for xtstpath in /usr/X11R6/lib /usr/openwin/lib; do
-    LIBS="-L$xtstpath -lXtst"
-    case "$host" in
-    *solaris*) XTST_RPATH_FLAGS="-R$xtstpath" ;;
-    esac
-    AC_MSG_CHECKING(for -lXtst in $xtstpath)
-    AC_TRY_LINK([], [XTestFakeKeyEvent()], [
-	AC_MSG_RESULT(yes)
-	XTST_LIBS="$XTST_RPATH_FLAGS -L$xtstpath -lXtst"
-        LIBS="$save_LIBS"
-	break],[AC_MSG_RESULT(no)])
-  done
-  if test "x$XTST_LIBS" = x; then
-    AC_MSG_ERROR(Couldn't find the Xtst library. Check config.log for details)
-  fi
-fi
+AC_CHECK_LIB(Xtst, XTestFakeKeyEvent, XTST_LIBS=-lXtst,[
+	AC_MSG_ERROR([Couldn't find the Xtst library. Check config.log])],
+	-lX11 -lXext)
 AC_SUBST(XTST_LIBS)
 
 have_xkb=
-AC_CHECK_LIB(X11, XkbQueryExtension, have_xkb="maybe",,$X_LIBS)
+AC_CHECK_LIB(X11, XkbQueryExtension, have_xkb="maybe")
 if test "x$have_xkb" = "xmaybe"; then 
-  AC_CHECK_HEADER(X11/XKBlib.h, have_xkb=yes)
+	AC_CHECK_HEADER(X11/XKBlib.h, have_xkb=yes)
 fi
 if test "x$have_xkb" = "xyes"; then
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_XKB)
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(HAVE_XKB)
 fi
 
 have_xinput=
-AC_CHECK_LIB(Xi, XOpenDevice, XINPUT_LIBS=-lXi)
+AC_CHECK_LIB(Xi, XOpenDevice, XINPUT_LIBS=-lXi,,-lXext)
 if test "x$XINPUT_LIBS" = x; then
-  save_LIBS="$LIBS"
-  for xinputpath in /usr/X11R6/lib /usr/openwin/lib; do
-    LIBS="-L$xinputpath -lXi"
-    case "$host" in
-    *solaris*) XINPUT_RPATH_FLAGS="-R$xinputpath" ;;
-    esac
-    AC_MSG_CHECKING(for -lXi in $xinputpath)
-    AC_TRY_LINK([], [XOpenDisplay()], [
-	AC_MSG_RESULT(yes)
-	XINPUT_LIBS="$XINPUT_RPATH_FLAGS -L$xinputpath -lXi"
-        LIBS="$save_LIBS"
-	break],[AC_MSG_RESULT(no)])
-  done
-  if test "x$XINPUT_LIBS" = x; then
-    AC_MSG_ERROR(Couldn't find the XInput library. Check config.log for details)
-  fi			       
-    AC_CHECK_HEADER(X11/extensions/XInput.h, have_xinput=yes)
-fi
+	AC_MSG_ERROR(Couldn't find the XInput library. Check config.log for details)
+fi			       
+AC_CHECK_HEADER(X11/extensions/XInput.h, have_xinput=yes)
 AC_SUBST(XINPUT_LIBS)
 
+dnl Allow disabling XEViE.
+AC_ARG_ENABLE(xevie, [  --enable-xevie  Build with XEViE support [default=yes]], enable_xevie="$enableval", enable_xevie=yes)
+
+if test x$enable_xevie = xyes ; then
+	have_xevie=
+	AC_CHECK_LIB(Xext, XevieQueryVersion, have_xevie="yes")
+
+	if test "x$have_xevie" = "xyes"; then
+		XEVIE_LIBS=-lXext
+		AC_DEFINE(HAVE_XEVIE)
+	fi
+	AC_SUBST(XEVIE_LIBS)
+fi
+
+dnl CFLAGS="$CFLAGS -Wall"
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
@@ -214,8 +177,8 @@ AC_TRY_CPP([#include <popt.h>
 #ifndef POPT_ARG_FLOAT
 #error popt too old
 #endif], AC_MSG_RESULT(yes), [
-  AC_MSG_RESULT(no)
-  AC_MSG_ERROR([A newer version of popt is required to build at-spi.
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR([A newer version of popt is required to build at-spi.
 You can download the latest version from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/])
 ])
 
@@ -223,15 +186,18 @@ REBUILD=\#
 if test "x$enable_rebuilds" = "xyes" && \
 	test -n "$PERL" && \
 	$PERL -e 'exit !($] >= 5.002)' > /dev/null 2>&1 && \
-     test -n "$AWK" ; then
-  REBUILD=
+	test -n "$AWK" ; then
+		REBUILD=
 fi
 AC_SUBST(REBUILD)
 
 AC_OUTPUT([
 Makefile
 libspi-1.0.pc
+libspi-1.0-uninstalled.pc
+libloginhelper-1.0.pc
 cspi-1.0.pc
+cspi-1.0-uninstalled.pc
 docs/Makefile
 docs/reference/Makefile
 docs/reference/cspi/Makefile
@@ -239,6 +205,7 @@ idl/Makefile
 libspi/Makefile
 registryd/Makefile
 atk-bridge/Makefile
+login-helper/Makefile
 test/Makefile
 cspi/Makefile
 cspi/bonobo/Makefile

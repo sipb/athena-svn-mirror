@@ -2,8 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001, 2002 Sun Microsystems Inc.,
- * Copyright 2001, 2002 Ximian, Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.,
+ * Copyright 2001, 2002, 2003 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "../cspi/spi-private.h" /* A hack for now */
@@ -28,15 +29,43 @@
 static void traverse_accessible_tree (Accessible *accessible);
 
 static void report_event  (const AccessibleEvent *event, void *user_data);
+static void report_bounds_event  (const AccessibleEvent *event, void *user_data);
 static void report_detail_event  (const AccessibleEvent *event, void *user_data);
+static void report_detail1_event  (const AccessibleEvent *event, void *user_data);
 static void report_text_event  (const AccessibleEvent *event, void *user_data);
+static void report_text_selection_event  (const AccessibleEvent *event, void *user_data);
+static void report_active_descendant_changed_event  (const AccessibleEvent *event, void *user_data);
+static void report_children_changed_event (const AccessibleEvent *event, void *user_data);
+static void report_name_changed_event (const AccessibleEvent *event, void *user_data);
+static void report_description_changed_event (const AccessibleEvent *event, void *user_data);
+static void report_parent_changed_event (const AccessibleEvent *event, void *user_data);
+static void report_window_event  (const AccessibleEvent *event, void *user_data);
+static void report_table_summary_event  (const AccessibleEvent *event, void *user_data);
+static void report_table_header_event  (const AccessibleEvent *event, void *user_data);
+static void report_table_caption_event  (const AccessibleEvent *event, void *user_data);
+static void report_table_row_description_event  (const AccessibleEvent *event, void *user_data);
+static void report_table_column_description_event  (const AccessibleEvent *event, void *user_data);
 static void timing_test_event (const AccessibleEvent *event, void *user_data);
 static SPIBoolean report_mouse_event  (const AccessibleDeviceEvent *event, void *user_data);
 
 static AccessibleEventListener *generic_listener;
 static AccessibleEventListener *specific_listener;
+static AccessibleEventListener *bounds_listener;
+static AccessibleEventListener *detail1_listener;
 static AccessibleEventListener *test_listener;
 static AccessibleEventListener *text_listener;
+static AccessibleEventListener *text_selection_listener;
+static AccessibleEventListener *active_descendant_changed_listener;
+static AccessibleEventListener *children_changed_listener;
+static AccessibleEventListener *name_changed_listener;
+static AccessibleEventListener *description_changed_listener;
+static AccessibleEventListener *parent_changed_listener;
+static AccessibleEventListener *window_listener;
+static AccessibleEventListener *table_summary_listener;
+static AccessibleEventListener *table_header_listener;
+static AccessibleEventListener *table_caption_listener;
+static AccessibleEventListener *table_row_description_listener;
+static AccessibleEventListener *table_column_description_listener;
 static AccessibleDeviceListener *mouse_device_listener;
 static gint n_elements_traversed = 0;
 static GTimer *timer;
@@ -90,12 +119,40 @@ main (int argc, char **argv)
 	  report_event, NULL); 
   specific_listener = SPI_createAccessibleEventListener (
 	  report_detail_event, NULL); 
+  bounds_listener = SPI_createAccessibleEventListener (
+	  report_bounds_event, NULL);
   text_listener = SPI_createAccessibleEventListener (
 	  report_text_event, NULL);
+  text_selection_listener = SPI_createAccessibleEventListener (
+	  report_text_selection_event, NULL);
+  active_descendant_changed_listener = SPI_createAccessibleEventListener (
+	  report_active_descendant_changed_event, NULL);
+  children_changed_listener = SPI_createAccessibleEventListener (
+	  report_children_changed_event, NULL);
+  name_changed_listener = SPI_createAccessibleEventListener (
+	  report_name_changed_event, NULL);
+  description_changed_listener = SPI_createAccessibleEventListener (
+	  report_description_changed_event, NULL);
+  parent_changed_listener = SPI_createAccessibleEventListener (
+	  report_parent_changed_event, NULL);
+  window_listener = SPI_createAccessibleEventListener (
+	  report_window_event, NULL);
+  table_summary_listener = SPI_createAccessibleEventListener (
+	  report_table_summary_event, NULL);
+  table_header_listener = SPI_createAccessibleEventListener (
+	  report_table_header_event, NULL);
+  table_caption_listener = SPI_createAccessibleEventListener (
+	  report_table_caption_event, NULL);
+  table_row_description_listener = SPI_createAccessibleEventListener (
+	  report_table_row_description_event, NULL);
+  table_column_description_listener = SPI_createAccessibleEventListener (
+	  report_table_column_description_event, NULL);
   test_listener = SPI_createAccessibleEventListener (
 	  timing_test_event, NULL);
   mouse_device_listener = SPI_createAccessibleDeviceListener (
           report_mouse_event, NULL);
+  detail1_listener = SPI_createAccessibleEventListener (
+	  report_detail1_event, NULL); 
 
   SPI_registerGlobalEventListener (generic_listener,
 				   "focus:");
@@ -114,23 +171,25 @@ main (int argc, char **argv)
 				   "keyboard:modifiers");
   SPI_registerGlobalEventListener (generic_listener,
 				   "object:property-change");
-/*  SPI_registerGlobalEventListener (specific_listener,
-    "object:property-change:accessible-name");*/
+  SPI_registerGlobalEventListener (name_changed_listener,
+				   "object:property-change:accessible-name");
+  SPI_registerGlobalEventListener (description_changed_listener,
+				   "object:property-change:accessible-description");
+  SPI_registerGlobalEventListener (parent_changed_listener,
+				   "object:property-change:accessible-parent");
   SPI_registerGlobalEventListener (generic_listener,
 				   "object:state-changed"); 
 /*  SPI_registerGlobalEventListener (specific_listener,
     "object:state-changed:focused"); */
   SPI_registerGlobalEventListener (generic_listener,
 				   "object:selection-changed"); 
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (children_changed_listener,
 				   "object:children-changed"); 
-/*  SPI_registerGlobalEventListener (specific_listener,
-    "object:children-changed:add"); */
-  SPI_registerGlobalEventListener (generic_listener,
-				   "object:active-descendant"); 
+  SPI_registerGlobalEventListener (active_descendant_changed_listener,
+				   "object:active-descendant-changed"); 
   SPI_registerGlobalEventListener (generic_listener,
 				   "object:visible-data-changed"); 
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (text_selection_listener,
 				   "object:text-selection-changed"); 
 
   SPI_registerGlobalEventListener (generic_listener,
@@ -151,28 +210,44 @@ main (int argc, char **argv)
 				   "object:row-deleted"); 
   SPI_registerGlobalEventListener (generic_listener,
 				   "object:model-changed"); 
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (detail1_listener,
+				   "object:link-selected"); 
+  SPI_registerGlobalEventListener (bounds_listener,
+				   "object:bounds-changed");
+  SPI_registerGlobalEventListener (window_listener,
 				   "window:minimize");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 				   "window:maximize");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:restore");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:activate");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:deactivate");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:close");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:lower");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:raise");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:resize");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:shade");
-  SPI_registerGlobalEventListener (generic_listener,
+  SPI_registerGlobalEventListener (window_listener,
 	                           "window:unshade");
+  SPI_registerGlobalEventListener (table_summary_listener,
+				   "object:property-change:accessible-table-summary");
+  SPI_registerGlobalEventListener (table_header_listener,
+				   "object:property-change:accessible-table-row-header");
+  SPI_registerGlobalEventListener (table_header_listener,
+				   "object:property-change:accessible-table-column-header");
+  SPI_registerGlobalEventListener (table_summary_listener,
+				   "object:property-change:accessible-table-summary");
+  SPI_registerGlobalEventListener (table_row_description_listener,
+				   "object:property-change:accessible-table-row-description");
+  SPI_registerGlobalEventListener (table_column_description_listener,
+				   "object:property-change:accessible-table-column-description");
   SPI_registerGlobalEventListener (test_listener,
 				   "object:test");
 #ifdef NOT_YET_IMPLEMENTED
@@ -269,14 +344,204 @@ report_detail_event (const AccessibleEvent *event, void *user_data)
 }
 
 void
+report_detail1_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d\n", event->type, s,
+	   event->detail1);
+  if (s) SPI_freeString (s);
+}
+
+void
+report_bounds_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  SPIRect *bounds = AccessibleBoundsChangedEvent_getNewBounds (event);
+  if (!bounds) fprintf (stderr, "bounds-changed event with no bounds?\n");
+  fprintf (stderr, "(bounds-changed) %s %s %d,%d - %d,%d\n", event->type, s,
+	   bounds->x, bounds->y, bounds->x + bounds->width, bounds->y + bounds->height);
+  SPI_freeRect (bounds);
+  if (s) SPI_freeString (s);
+}
+
+void
 report_text_event (const AccessibleEvent *event, void *user_data)
 {
   char *s = Accessible_getName (event->source);
   fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
 	   event->detail1, event->detail2);
-  if (s) SPI_freeString (s);
+  SPI_freeString (s);
   s = AccessibleTextChangedEvent_getChangeString (event);
   fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
+}
+
+void
+report_text_selection_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  s = AccessibleTextSelectionChangedEvent_getSelectionString (event);
+  fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
+}
+
+void
+report_active_descendant_changed_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  char *s1;
+  Accessible *ao;
+
+  ao = AccessibleActiveDescendantChangedEvent_getActiveDescendant (event);
+  s1 = Accessible_getName (ao);
+  fprintf (stderr, "(detail) %s parent: %s child: %s %d %d\n", event->type, 
+           s ? s : "<null>", s1 ? s1 : "<null>",
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  SPI_freeString (s1);
+  Accessible_unref (ao);
+}
+void
+report_children_changed_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  char *s1;
+  Accessible *ao;
+
+  ao = AccessibleChildChangedEvent_getChildAccessible (event);
+  s1 = Accessible_getName (ao);
+  fprintf (stderr, "(detail) %s parent: %s child: %s %d %d\n", event->type, 
+           s ? s : "<null>", s1 ? s1 : "<null>",
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  SPI_freeString (s1);
+  Accessible_unref (ao);
+}
+
+void
+report_name_changed_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  s = AccessibleNameChangedEvent_getNameString (event);
+  fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
+}
+
+void
+report_description_changed_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  s = AccessibleDescriptionChangedEvent_getDescriptionString (event);
+  fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
+}
+
+void
+report_parent_changed_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  char *s1;
+  Accessible *ao;
+
+  ao = AccessibleParentChangedEvent_getParentAccessible (event);
+  s1 = Accessible_getName (ao);
+  fprintf (stderr, "(detail) %s parent: %s child: %s %d %d\n", event->type, 
+           s ? s : "<null>", s1 ? s1 : "<null>",
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  SPI_freeString (s1);
+  Accessible_unref (ao);
+}
+
+void
+report_window_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  s = AccessibleWindowEvent_getTitleString (event);
+  fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
+}
+
+void
+report_table_summary_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  char *s1;
+  Accessible *ao;
+
+  ao = AccessibleTableSummaryChangedEvent_getSummaryAccessible (event);
+  s1 = Accessible_getName (ao);
+  fprintf (stderr, "(detail) %s parent: %s child: %s %d %d\n", event->type, 
+           s ? s : "<null>", s1 ? s1 : "<null>",
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  SPI_freeString (s1);
+  Accessible_unref (ao);
+}
+
+void
+report_table_header_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  char *s1;
+  Accessible *ao;
+
+  ao = AccessibleTableHeaderChangedEvent_getHeaderAccessible (event);
+  s1 = Accessible_getName (ao);
+  fprintf (stderr, "(detail) %s parent: %s child: %s %d %d\n", event->type, 
+           s ? s : "<null>", s1 ? s1 : "<null>",
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  SPI_freeString (s1);
+  Accessible_unref (ao);
+}
+
+void
+report_table_caption_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  s = AccessibleTableCaptionChangedEvent_getCaptionString (event);
+  fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
+}
+
+void
+report_table_row_description_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  s = AccessibleTableRowDescriptionChangedEvent_getDescriptionString (event);
+  fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
+}
+
+void
+report_table_column_description_event (const AccessibleEvent *event, void *user_data)
+{
+  char *s = Accessible_getName (event->source);
+  fprintf (stderr, "(detail) %s %s %d %d\n", event->type, s,
+	   event->detail1, event->detail2);
+  SPI_freeString (s);
+  s = AccessibleTableColumnDescriptionChangedEvent_getDescriptionString (event);
+  fprintf (stderr, "context string %s\n", (s) ? s : "<nil>");
+  SPI_freeString (s);
 }
 
 SPIBoolean

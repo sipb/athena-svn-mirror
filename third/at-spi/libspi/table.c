@@ -197,7 +197,7 @@ impl_getColumnDescription (PortableServer_Servant servant,
 
   g_return_val_if_fail (table != NULL, CORBA_string_dup (""));
   
-  rv = atk_table_get_row_description (table, column);
+  rv = atk_table_get_column_description (table, column);
 
   if (rv)
     {
@@ -462,4 +462,4 @@ spi_table_init (SpiTable *table)
 BONOBO_TYPE_FUNC_FULL (SpiTable,
 		       Accessibility_Table,
 		       SPI_TYPE_BASE,
-		       spi_table);
+		       spi_table)

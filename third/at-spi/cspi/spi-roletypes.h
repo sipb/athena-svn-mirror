@@ -138,7 +138,22 @@ extern "C" {
  *                  which it controls (should have CONTROLLER_FOR relation to such). 
  * @SPI_ROLE_APPLICATION: An object which corresponds to a desktop application,
  *                  which may have children of @SPI_ROLE_FRAME or other type.
+ * @SPI_ROLE_AUTOCOMPLETE: The object is a dialog or list containing items for 
+ *                         insertion into an entry widget, for instance a list 
+ *                          of words for completion of a text entry.
+ * @SPI_ROLE_EDITBAR: The object is an editable text object in a toolbar
+ * @SPI_ROLE_EMBEDDED: The object is an embedded component container.  
+ *                     This role is a  "grouping" hint that the contained 
+ *                     objects share a context which is different from the 
+ *                     container in which this accessible is embedded.
+ *                     Uses: document embedding, "panel applets", etc.
  * @SPI_ROLE_LAST_DEFINED: Used to determine the end of the role enumeration.
+ *
+ * Describes the role of an object
+ *
+ * These are the built-in enumerated roles that UI components can have.
+ * Other roles may be added at runtime, so an AccessibleRole >=
+ * SPI_ROLE_LAST_DEFINED is not necessarily an error.
  **/
 typedef enum
 {
@@ -217,6 +232,9 @@ typedef enum
   SPI_ROLE_PARAGRAPH,
   SPI_ROLE_RULER,
   SPI_ROLE_APPLICATION,
+  SPI_ROLE_AUTOCOMPLETE,
+  SPI_ROLE_EDITBAR,
+  SPI_ROLE_EMBEDDED,
   SPI_ROLE_LAST_DEFINED
 } AccessibleRole;
 

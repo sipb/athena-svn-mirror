@@ -20,7 +20,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+#include <stdio.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
@@ -113,6 +114,7 @@ main (int argc, char **argv)
   SPI_registerGlobalEventListener (text_listener, "object:text-changed"); 
   SPI_registerGlobalEventListener (button_listener, "Gtk:GtkWidget:button-press-event");
   SPI_registerGlobalEventListener (window_listener, "window:minimize");
+  SPI_registerGlobalEventListener (window_listener, "window:activate");
   n_desktops = SPI_getDesktopCount ();
 
   for (i=0; i<n_desktops; ++i)
@@ -126,7 +128,7 @@ main (int argc, char **argv)
         {
           application = Accessible_getChildAtIndex (desktop, j);
 	  s = Accessible_getName (application);
-          fprintf (stderr, "app %d name: %s\n", j, s);
+          fprintf (stderr, "app %d name: %s\n", j, s ? s : "(nil)");
 #ifdef PRINT_TREE
 	  print_accessible_tree (application, "*");
 #endif
@@ -221,7 +223,9 @@ print_accessible_tree (Accessible *accessible, char *prefix)
 	name = Accessible_getName (accessible);
 	role_name = Accessible_getRoleName (accessible);
 	fprintf (stdout, "%sAccessible [%s] \"%s\"; parent [%s] %s.\n",
-		 prefix, role_name, name, parent_role, parent_name);
+		 prefix, role_name, name ? name : "(nil)",
+		 parent_role ? parent_role : "(nil)",
+		 parent_name ? parent_name : "(nil)");
 	SPI_freeString (name);
 	SPI_freeString (role_name);
 	SPI_freeString (parent_name);
@@ -349,6 +353,10 @@ void
 report_window_event (const AccessibleEvent *event, void *user_data)
 {
   fprintf (stderr, "%s event received\n", event->type);
+  if (!strcmp (event->type, "window:activate"))
+  {
+      print_accessible_tree (event->source, "window");
+  }
 }
 
 void

@@ -42,9 +42,20 @@
 extern "C" {
 #endif
 
-/*
- * Enumerated type for text boundary types
- */
+/**
+ *AccessibleTextBoundaryType:
+ *@SPI_TEXT_BOUNDARY_CHAR:
+ *@SPI_TEXT_BOUNDARY_CURSOR_POS:
+ *@SPI_TEXT_BOUNDARY_WORD_START:
+ *@SPI_TEXT_BOUNDARY_WORD_END:
+ *@SPI_TEXT_BOUNDARY_SENTENCE_START:
+ *@SPI_TEXT_BOUNDARY_SENTENCE_END:
+ *@SPI_TEXT_BOUNDARY_LINE_START:
+ *@SPI_TEXT_BOUNDARY_LINE_END:
+ *@SPI_TEXT_BOUNDARY_ATTRIBUTE_RANGE:
+ *
+ *Text boundary types used for specifying boundaries for regions of text
+ **/
 typedef enum
 {
   SPI_TEXT_BOUNDARY_CHAR,
@@ -58,9 +69,15 @@ typedef enum
   SPI_TEXT_BOUNDARY_ATTRIBUTE_RANGE
 } AccessibleTextBoundaryType;
 
-/*
- * Enumerated type for text bounds clipping types
- */
+/**
+ *AccessibleTextClipType
+ *@SPI_TEXT_CLIP_NONE: No clipping to be done
+ *@SPI_TEXT_CLIP_MIN: Text clipped by min coordinate is omitted
+ *@SPI_TEXT_CLIP_MAX: Text clipped by max coordinate is omitted
+ *@SPI_TEXT_CLIP_BOTH: Only text fully within mix/max bound is retained
+ *
+ *Describes the type of clipping required.
+ **/
 typedef enum
 {
   SPI_TEXT_CLIP_NONE,
@@ -69,12 +86,33 @@ typedef enum
   SPI_TEXT_CLIP_BOTH
 } AccessibleTextClipType;
 
-/*
+/**
+ *AccessibleRelationType:
+ *@SPI_RELATION_NULL:
+ *@SPI_RELATION_LABEL_FOR: Indicates an object is a label for one or more target objects.
+ *@SPI_RELATION_LABELED_BY: Indicates an object is labelled by one or more target objects.
+ *@SPI_RELATION_CONTROLLED_BY: Indicates an object controlled by one or more target objects.
+ *@SPI_RELATION_CONTROLLER_FOR: Indicates an object is an controller for one or more target objects.
+ *@SPI_RELATION_MEMBER_OF: Indicates an object is a member of a group of one or
+more target objects.
+ *@SPI_RELATION_NODE_CHILD_OF: Indicates an object is a cell in a treetable which is displayed because a cell in the same column is expanded and identifies that cell.
+ *@SPI_RELATION_EXTENDED:
+ *@SPI_RELATION_FLOWS_TO: Indicates that the object has content that flows logically to another
+ *  AtkObject in a sequential way, (for instance text-flow).
+ *@SPI_RELATION_FLOWS_FROM: Indicates that the object has content that flows logically from
+ *  another AtkObject in a sequential way, (for instance text-flow).
+ *@SPI_RELATION_SUBWINDOW_OF: 
+ *@SPI_RELATION_EMBEDS: Indicates that the object visually embeds
+ *  another object's content, i.e. this object's content flows around
+ *  another's content.
+ *@SPI_RELATION_EMBEDDED_BY: Inverse of %SPI_RELATION_EMBEDS, indicates that
+ *  this object's content is visualy embedded in another object.
+ *@SPI_RELATION_POPUP_FOR: Indicates that an object is a popup for another objec
+t.
+ *@SPI_RELATION_LAST_DEFINED:
  *
- * Enumerated type for relation types
- *
- */
-
+ *Describes the type of the relation
+ **/
 typedef enum
 {
   SPI_RELATION_NULL,
@@ -90,16 +128,36 @@ typedef enum
   SPI_RELATION_SUBWINDOW_OF,
   SPI_RELATION_EMBEDS,
   SPI_RELATION_EMBEDDED_BY,
+  SPI_RELATION_POPUP_FOR,
   SPI_RELATION_LAST_DEFINED
 } AccessibleRelationType;
 
 
 /* don't change the order of these ! */
+/**
+ *AccessibleCoordType:
+ *@SPI_COORD_TYPE_SCREEN: specifies xy coordinates relative to the screen
+ *@SPI_COORD_TYPE_WINDOW: specifies xy coordinates relative to an object's
+ * top-level window
+ *
+ *Specifies how xy coordinates are to be interpreted. Used by functions such
+ *as AccessibleComponent_getPosition() and AccessibleText_getCharacterExtents()
+ **/
 typedef enum {
   SPI_COORD_TYPE_SCREEN,
   SPI_COORD_TYPE_WINDOW
 } AccessibleCoordType;
 
+/**
+ *AccessibleKeySynthType:
+ *@SPI_KEY_PRESS:
+ *@SPI_KEY_RELEASE:
+ *@SPI_KEY_PRESSRELEASE:
+ *@SPI_KEY_SYM:
+ *@SPI_KEY_STRING:
+ *
+ *Specified the type of a generated event.
+ **/
 typedef enum {
   SPI_KEY_PRESS,
   SPI_KEY_RELEASE, 
@@ -108,6 +166,15 @@ typedef enum {
   SPI_KEY_STRING
 } AccessibleKeySynthType;
 
+/**
+ *AccessibleKeyListenerSyncType:
+ *@SPI_KEYLISTENER_NOSYNC:
+ *@SPI_KEYLISTENER_SYNCHRONOUS:
+ *@SPI_KEYLISTENER_CANCONSUME:
+ *@SPI_KEYLISTENER_ALL_WINDOWS:
+ *
+ *Specified the tyupe of a key listener event.
+ **/
 typedef enum {
   SPI_KEYLISTENER_NOSYNC = 0,
   SPI_KEYLISTENER_SYNCHRONOUS = 1,
@@ -115,25 +182,74 @@ typedef enum {
   SPI_KEYLISTENER_ALL_WINDOWS = 4
 } AccessibleKeyListenerSyncType;
 
+
+/**
+ *AccessibleStreamableContentSeekType
+ *@SPI_STREAM_SEEK_SET: seek from the 'top' of the streamable
+ *@SPI_STREAM_SEEK_CUR: seek from the current position in the stream
+ *@SPI_STREAM_SEEK_END: seek from the end of the stream (if known)
+ *
+ *The seek type for a specified offset in AccessibleStreamableContent_seek.
+ **/
+typedef enum
+{
+  SPI_STREAM_SEEK_SET,
+  SPI_STREAM_SEEK_CUR,
+  SPI_STREAM_SEEK_END
+} AccessibleStreamableContentSeekType;
+
+typedef struct _SPIException SPIException;
+
+typedef SPIBoolean 
+(* SPIExceptionHandler) (SPIException *err, SPIBoolean is_fatal);
+
+typedef enum {
+	SPI_EXCEPTION_UNSPECIFIED,
+	SPI_EXCEPTION_DISCONNECT,
+	SPI_EXCEPTION_NO_IMPL,
+	SPI_EXCEPTION_IO,
+	SPI_EXCEPTION_BAD_DATA
+} SPIExceptionCode;
+
+typedef enum {
+	SPI_EXCEPTION_SOURCE_UNSPECIFIED,
+	SPI_EXCEPTION_SOURCE_ACCESSIBLE,
+	SPI_EXCEPTION_SOURCE_REGISTRY,
+	SPI_EXCEPTION_SOURCE_DEVICE
+} SPIExceptionType;
+
 typedef unsigned long AccessibleKeyEventMask;
 typedef unsigned long AccessibleDeviceEventMask;
 
+typedef struct {
+	long x;
+	long y;
+	long width;
+	long height;
+} SPIRect;
+
 /**
- * AccessibleComponentLayer:
- * @SPI_LAYER_INVALID: The layer cannot be determined or is somehow undefined.
- * @SPI_LAYER_BACKGROUND: Component belongs to the destop background.
- * @SPI_LAYER_CANVAS: Component is a canvas backdrop or drawing area.
- * @SPI_LAYER_WIDGET: Component is a 'normal' widget.
- * @SPI_LAYER_MDI: Component is drawn in the MDI layer and may have valid
- *                          Z-information relative to other MDI-layer components.
- * @SPI_LAYER_POPUP: Component is in the popup layer, above other widgets and
- *                          MDI components.
- * @SPI_LAYER_OVERLAY: Component is in the overlay plane - this value is reserved
- *                          for future use.
- * @SPI_LAYER_WINDOW: Component is in the window layer and have valid Z-information
- *                    relative to other window-layer components.
- * @SPI_LAYER_LAST_DEFINED: Used to determine the last valid value in the enum,
- *                          should not be encountered.	
+ *AccessibleComponentLayer:
+ *@SPI_LAYER_INVALID: The layer cannot be determined or is somehow undefined.
+ *@SPI_LAYER_BACKGROUND: Component belongs to the destop background.
+ *@SPI_LAYER_CANVAS: Component is a canvas backdrop or drawing area.
+ *@SPI_LAYER_WIDGET: Component is a 'normal' widget.
+ *@SPI_LAYER_MDI: Component is drawn in the MDI layer and may have valid
+ *                         Z-information relative to other MDI-layer components.
+ *@SPI_LAYER_POPUP: Component is in the popup layer, above other widgets and
+ *                         MDI components.
+ *@SPI_LAYER_OVERLAY: Component is in the overlay plane - this value is reserved
+ *                         for future use.
+ *@SPI_LAYER_WINDOW: Component is in the window layer and have valid Z-information
+ *                   relative to other window-layer components.
+ *@SPI_LAYER_LAST_DEFINED: Used to determine the last valid value in the enum,
+ *                         should not be encountered.	
+ *
+ * Describes the layer of a component.
+ *
+ * These enumerated "layer values" are used when determining which UI
+ * rendering layer a component is drawn into, which can help in making
+ * determinations of when components occlude one another.
  **/
 typedef enum {
     SPI_LAYER_INVALID,
@@ -181,14 +297,20 @@ typedef struct _AccessibleKeySet
   short           len;
 } AccessibleKeySet;
 
-/**
- * SPI_KEYSET_ALL_KEYS:
- * @SPI_KEYSET_ALL_KEYS: A special value for an AccessibleKeySet type, which tacitly
- *                       includes all keycodes and keyvals for the specified modifier set.
- **/
+/*
+ * A special value for an AccessibleKeySet type, which tacitly
+ * includes all keycodes and keyvals for the specified modifier set.
+ */
 #define SPI_KEYSET_ALL_KEYS NULL
 
 typedef unsigned long AccessibleModifierMaskType;
+/**
+ *AccessibleKeyMaskType:
+ *
+ *AccessibleKeyMaskType is a mask which is a set of key event modifiers
+ *which is specified in SPI_registerAccessibleKeystrokeListener.
+ **/
+
 typedef AccessibleModifierMaskType AccessibleKeyMaskType;
 
 /* Basic SPI initialization and event loop function prototypes */
@@ -305,6 +427,7 @@ long                 Accessible_getIndexInParent (Accessible *obj);
 AccessibleRelation **Accessible_getRelationSet   (Accessible *obj);
 AccessibleRole       Accessible_getRole          (Accessible *obj);
 char *               Accessible_getRoleName      (Accessible *obj);
+char *               Accessible_getLocalizedRoleName (Accessible *obj);
 AccessibleStateSet * Accessible_getStateSet      (Accessible *obj);
 
 /* Interface query methods */
@@ -356,6 +479,7 @@ void       AccessibleApplication_unref          (AccessibleApplication *obj);
 char      *AccessibleApplication_getToolkitName (AccessibleApplication *obj);
 char      *AccessibleApplication_getVersion     (AccessibleApplication *obj);
 long       AccessibleApplication_getID          (AccessibleApplication *obj);
+char      *AccessibleApplication_getLocale      (AccessibleApplication *obj, int lc_category);
 SPIBoolean AccessibleApplication_pause          (AccessibleApplication *obj);
 SPIBoolean AccessibleApplication_resume         (AccessibleApplication *obj);
 
@@ -610,13 +734,19 @@ void
 AccessibleStreamableContent_unref (AccessibleStreamableContent *obj);
 char **
 AccessibleStreamableContent_getContentTypes (AccessibleStreamableContent *obj);
+void
+AccessibleStreamableContent_freeContentTypeList (AccessibleStreamableContent *obj,
+						 char **list);
 SPIBoolean
 AccessibleStreamableContent_open (AccessibleStreamableContent *obj,
 				  const char *content_type);
 SPIBoolean
+AccessibleStreamableContent_close (AccessibleStreamableContent *obj);
+
+long int
 AccessibleStreamableContent_seek (AccessibleStreamableContent *obj,
 				  long int offset,
-				  unsigned int seek_type);
+				  AccessibleStreamableContentSeekType seek_type);
 SPIBoolean
 AccessibleStreamableContent_read (AccessibleStreamableContent *obj,
 				  void *buff,
@@ -714,6 +844,20 @@ AccessibleTable_isSelected (AccessibleTable *obj,
                             long int row,
                             long int column);
 
+SPIBoolean
+AccessibleTable_addRowSelection (AccessibleTable *obj,
+				 long int row);
+SPIBoolean
+AccessibleTable_addColumnSelection (AccessibleTable *obj,
+				    long int column);
+
+SPIBoolean
+AccessibleTable_removeRowSelection (AccessibleTable *obj,
+				    long int row);
+SPIBoolean
+AccessibleTable_removeColumnSelection (AccessibleTable *obj,
+				       long int column);
+
 /*
  *
  * AccessibleText function prototypes
@@ -740,6 +884,8 @@ AccessibleText_getAttributes (AccessibleText *obj,
 				 long int *startOffset,
 				 long int *endOffset);
 
+char *
+AccessibleText_getDefaultAttributes (AccessibleText *obj);
 
 SPIBoolean
 AccessibleText_setCaretOffset (AccessibleText *obj,
@@ -876,9 +1022,26 @@ char *       AccessibleTableColumnDescriptionChangedEvent_getDescriptionString (
 char *       AccessibleDescriptionChangedEvent_getDescriptionString (const AccessibleEvent *e);
 
 char *       AccessibleNameChangedEvent_getNameString (const AccessibleEvent *e);
+SPIRect *    AccessibleBoundsChangedEvent_getNewBounds (const AccessibleEvent *e);
 
-/* Misc methods */
+/* Misc methods and error handling */
 void SPI_freeString (char *s);
+
+char* SPI_dupString (char *s);
+
+void SPI_freeRect (SPIRect *rect);
+
+SPIBoolean SPI_exceptionHandlerPush (SPIExceptionHandler *handler);
+
+SPIExceptionHandler* SPI_exceptionHandlerPop (void);
+
+SPIExceptionType SPIException_getSourceType (SPIException *err);
+
+SPIExceptionCode SPIException_getExceptionCode (SPIException *err);
+
+Accessible* SPIAccessibleException_getSource (SPIException *err);
+
+char* SPIException_getDescription (SPIException *err);
 
 #ifdef  __cplusplus
 }

@@ -1,0 +1,112 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>AccessibleAction Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><meta name="generator" content="GTK-Doc V1.1 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="AT-SPI C Bindings Reference Manual"><link rel="up" href="spi-component.html" title="Subinterface Methods"><link rel="previous" href="spi-component.html" title="Subinterface Methods"><link rel="next" href="at-spi-cspi-AccessibleComponent-Interface.html" title="AccessibleComponent Interface"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="spi-component.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="spi-component.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">AT-SPI C Bindings Reference Manual</th><td><a accesskey="n" href="at-spi-cspi-AccessibleComponent-Interface.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="at-spi-cspi-AccessibleAction-Interface"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">AccessibleAction Interface</span></h2><p>AccessibleAction Interface &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-ref">AccessibleAction_ref</a>            (AccessibleAction *obj);
+void        <a href="at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-unref">AccessibleAction_unref</a>          (AccessibleAction *obj);
+long        <a href="at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getNActions">AccessibleAction_getNActions</a>    (AccessibleAction *obj);
+SPIBoolean  <a href="at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-doAction">AccessibleAction_doAction</a>       (AccessibleAction *obj,
+                                             long int i);
+char*       <a href="at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getKeyBinding">AccessibleAction_getKeyBinding</a>  (AccessibleAction *obj,
+                                             long int i);
+char*       <a href="at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getName">AccessibleAction_getName</a>        (AccessibleAction *obj,
+                                             long int i);
+char*       <a href="at-spi-cspi-AccessibleAction-Interface.html#AccessibleAction-getDescription">AccessibleAction_getDescription</a> (AccessibleAction *obj,
+                                             long int i);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="AccessibleAction-ref"></a>AccessibleAction_ref ()</h3><pre class="programlisting">void        AccessibleAction_ref            (AccessibleAction *obj);</pre><p>
+Increment the reference count for an AccessibleAction.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleAction on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleAction-unref"></a>AccessibleAction_unref ()</h3><pre class="programlisting">void        AccessibleAction_unref          (AccessibleAction *obj);</pre><p>
+Decrement the reference count for an AccessibleAction.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleAction on which to operate.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleAction-getNActions"></a>AccessibleAction_getNActions ()</h3><pre class="programlisting">long        AccessibleAction_getNActions    (AccessibleAction *obj);</pre><p>
+Get the number of actions invokable on an AccessibleAction implementor.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleAction to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a long integer indicatin the number of invokable actions.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleAction-doAction"></a>AccessibleAction_doAction ()</h3><pre class="programlisting">SPIBoolean  AccessibleAction_doAction       (AccessibleAction *obj,
+                                             long int i);</pre><p>
+Invoke the action indicated by index.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleAction to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> an integer specifying which action to invoke.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the action is successfully invoked, otherwise FALSE.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleAction-getKeyBinding"></a>AccessibleAction_getKeyBinding ()</h3><pre class="programlisting">char*       AccessibleAction_getKeyBinding  (AccessibleAction *obj,
+                                             long int i);</pre><p>
+Get the keybindings for the <i class="parameter"><tt>i</tt></i>-th action invokable on an
+     object implementing AccessibleAction, if any are defined.
+     The keybindings string format is as follows:
+       there are multiple parts to a keybinding string (typically 3).
+       They are delimited with ";".  The first is the action's
+       keybinding which is usable if the object implementing the action
+       is currently posted to the screen, e.g. if a menu is posted 
+       then these keybindings for the corresponding menu-items are
+       available.  The second keybinding substring is the full key sequence
+       necessary to post the action's widget and activate it, e.g. for
+       a menu item such as "File-&gt;Open" it would both post the menu and
+       activate the item.  Thus the second keybinding string is available
+       during the lifetime of the containing toplevel window as a whole,
+       whereas the first keybinding string only works while the object
+       implementing AtkAction is posted.  The third (and optional)
+       keybinding string is the "keyboard shortcut" which invokes the 
+       action without posting any menus. 
+       Meta-keys are indicated by the conventional strings
+       "&lt;Control&gt;", "&lt;Alt&gt;", "&lt;Shift&gt;", "&lt;Mod2&gt;",
+       etc. (we use the same string as gtk_accelerator_name() in 
+       gtk+-2.X.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleAction implementor to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> a long integer indicating which action to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string which can be parsed to determine the <i class="parameter"><tt>i</tt></i>-th
+      invokable action's keybindings.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleAction-getName"></a>AccessibleAction_getName ()</h3><pre class="programlisting">char*       AccessibleAction_getName        (AccessibleAction *obj,
+                                             long int i);</pre><p>
+Get the name of the '<i class="parameter"><tt>i</tt></i>-th' action invokable on an
+     object implementing AccessibleAction.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleAction implementor to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> a long integer indicating which action to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the 'event type' name of the action, as a UTF-8 string.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="AccessibleAction-getDescription"></a>AccessibleAction_getDescription ()</h3><pre class="programlisting">char*       AccessibleAction_getDescription (AccessibleAction *obj,
+                                             long int i);</pre><p>
+Get the description of '<i class="parameter"><tt>i</tt></i>-th' action invokable on an
+     object implementing AccessibleAction.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> a pointer to the AccessibleAction implementor to query.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> a long integer indicating which action to query.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a UTF-8 string describing the '<i class="parameter"><tt>i</tt></i>-th' invokable action.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="spi-component.html"><b>&lt;&lt; Subinterface Methods</b></a></td><td align="right"><a accesskey="n" href="at-spi-cspi-AccessibleComponent-Interface.html"><b>AccessibleComponent Interface &gt;&gt;</b></a></td></tr></table></body></html>

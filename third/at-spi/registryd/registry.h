@@ -25,6 +25,7 @@
 #define SPI_REGISTRY_H_
 
 #include <glib/gmain.h>
+#include <gdk/gdk.h>
 #include <libspi/listener.h>
 
 typedef struct _SpiRegistry SpiRegistry;
@@ -46,6 +47,11 @@ struct _SpiRegistry {
   GList           *object_listeners;
   GList           *window_listeners;
   GList           *toolkit_listeners;
+  GQueue          *deferred_event_queue;
+  gboolean         is_queueing;
+  guint            exit_notify_timeout;
+  guint            queue_handler_id;
+  Bonobo_Unknown    focus_object;
   SpiDEController *de_controller;
   SpiDesktop      *desktop;
 };

@@ -23,6 +23,7 @@
 
 /* value.c : implements the Value interface */
 #include <config.h>
+#include <math.h>
 #include <stdio.h>
 #include <libspi/value.h>
 
@@ -56,7 +57,7 @@ impl__set_currentValue (PortableServer_Servant _servant,
 BONOBO_TYPE_FUNC_FULL (SpiValue,
 		       Accessibility_Value,
 		       PARENT_TYPE,
-		       spi_value);
+		       spi_value)
 
 
 static void

@@ -18,9 +18,10 @@ at_spi_registryd_SOURCES =		\
 	deviceeventcontroller.h	\
 	registry-main.c		\
 	registry.c		\
-	registry.h
+	registry.h		\
+	ucs2keysym.c
 
-LDADD = ../libspi/libspi.la $(X_LIBS) $(XTST_LIBS) $(REGISTRYD_LIBS) 
+LDADD = $(top_builddir)/libspi/libspi.la $(X_LIBS) $(XTST_LIBS) $(XEVIE_LIBS) $(REGISTRYD_LIBS) 
 
 serverinfodir = $(libdir)/bonobo/servers
 serverinfo_DATA = Accessibility_Registry.server
