@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ -d /var/sadm/pkg/SUNWmdu ]; then
+  pkgrm -n -a $LIBDIR/noask SUNWmdu
+  echo "SUNWmdu"					>> $PACKAGES
+fi
