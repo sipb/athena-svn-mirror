@@ -1,0 +1,693 @@
+# gnome-vfs ja.po
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Akira TAGOH <at@ff.iij4u.or.jp>, 2000.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-vfs CVS-20000722\n"
+"POT-Creation-Date: 2000-11-06 23:37-0800\n"
+"PO-Revision-Date: 2000-07-22 03:07+0900\n"
+"Last-Translator: Akira TAGOH <at@ff.iij4u.or.jp>\n"
+"Language-Team: Japanese <translation@gnome.gr.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=euc-jp\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libgnomevfs/gnome-vfs-configuration.c:187
+#, c-format
+msgid "%s:%d contains NUL characters."
+msgstr "%s:%d NUL キャラクタを含んでいます"
+
+#: libgnomevfs/gnome-vfs-configuration.c:204
+#, c-format
+msgid "%s:%d contains no method name."
+msgstr "%s:%d メソッド名がありません"
+
+#: libgnomevfs/gnome-vfs-configuration.c:233
+#, c-format
+msgid "%s:%d contains no module name."
+msgstr "%s:%d モジュール名がありません"
+
+#: libgnomevfs/gnome-vfs-configuration.c:286
+#, c-format
+msgid "Configuration file `%s' was not found: %s"
+msgstr "コンフィグファイル '%s' は見つかりません: %s"
+
+#: libgnomevfs/gnome-vfs-file-info.c:342
+#, c-format
+msgid "Unknown sort rule %d"
+msgstr "未知のソートルール %d"
+
+#: libgnomevfs/gnome-vfs-init.c:69
+msgid "GNOME VFS already initialized."
+msgstr "GNOME VFS は既に初期化されています"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:656
+#, c-format
+msgid "Could not parse: %s"
+msgstr "構文解析できませんでした: %s"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:658
+msgid "More parsing errors will be ignored."
+msgstr "これ以上の構文解析エラーは無視するでしょう"
+
+#. GNOME_VFS_OK
+#: libgnomevfs/gnome-vfs-result.c:39
+msgid "No error"
+msgstr "エラーはありません"
+
+#. GNOME_VFS_ERROR_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:40
+msgid "File not found"
+msgstr "ファイルがありません"
+
+#. GNOME_VFS_ERROR_GENERIC
+#: libgnomevfs/gnome-vfs-result.c:41
+msgid "Generic error"
+msgstr "一般的なエラー"
+
+#. GNOME_VFS_ERROR_INTERNAL
+#: libgnomevfs/gnome-vfs-result.c:42
+msgid "Internal error"
+msgstr "内部的なエラー"
+
+#. GNOME_VFS_ERROR_BAD_PARAMETERS
+#: libgnomevfs/gnome-vfs-result.c:43
+msgid "Invalid parameters"
+msgstr "無効なパラメータ"
+
+#. GNOME_VFS_ERROR_NOT_SUPPORTED
+#: libgnomevfs/gnome-vfs-result.c:44
+msgid "Unsupported operation"
+msgstr "サポート外の動作"
+
+#. GNOME_VFS_ERROR_IO
+#: libgnomevfs/gnome-vfs-result.c:45
+msgid "I/O error"
+msgstr "入出力エラー"
+
+#. GNOME_VFS_ERROR_CORRUPTED_DATA
+#: libgnomevfs/gnome-vfs-result.c:46
+msgid "Data corrupted"
+msgstr "データが壊れている"
+
+#. GNOME_VFS_ERROR_WRONG_FORMAT
+#: libgnomevfs/gnome-vfs-result.c:47
+msgid "Format not valid"
+msgstr "フォーマットは無効"
+
+#. GNOME_VFS_ERROR_BAD_FILE
+#: libgnomevfs/gnome-vfs-result.c:48
+msgid "Bad file handle"
+msgstr "おかしなファイルハンドル"
+
+#. GNOME_VFS_ERROR_TOO_BIG
+#: libgnomevfs/gnome-vfs-result.c:49
+msgid "File too big"
+msgstr "ファイルは大きすぎる"
+
+#. GNOME_VFS_ERROR_NO_SPACE
+#: libgnomevfs/gnome-vfs-result.c:50
+msgid "No space left on device"
+msgstr "デバイスに空きが無い"
+
+#. GNOME_VFS_ERROR_READ_ONLY
+#: libgnomevfs/gnome-vfs-result.c:51
+msgid "Read-only file system"
+msgstr "読み取り専用のファイルシステム"
+
+#. GNOME_VFS_ERROR_INVALID_URI
+#: libgnomevfs/gnome-vfs-result.c:52
+msgid "Invalid URI"
+msgstr "無効な URI"
+
+#. GNOME_VFS_ERROR_NOT_OPEN
+#: libgnomevfs/gnome-vfs-result.c:53
+msgid "File not open"
+msgstr "ファイルが開けない"
+
+#. GNOME_VFS_ERROR_INVALID_OPEN_MODE
+#: libgnomevfs/gnome-vfs-result.c:54
+msgid "Open mode not valid"
+msgstr "オープンモードは無効"
+
+#. GNOME_VFS_ERROR_ACCESS_DENIED
+#: libgnomevfs/gnome-vfs-result.c:55
+msgid "Access denied"
+msgstr "アクセスは拒否された"
+
+#. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
+#: libgnomevfs/gnome-vfs-result.c:56
+msgid "Too many open files"
+msgstr "開いているファイルが多すぎる"
+
+#. GNOME_VFS_ERROR_EOF
+#: libgnomevfs/gnome-vfs-result.c:57
+msgid "End of file"
+msgstr "ファイルの終端"
+
+#. GNOME_VFS_ERROR_NOT_A_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:58
+msgid "Not a directory"
+msgstr "ディレクトリではない"
+
+#. GNOME_VFS_ERROR_IN_PROGRESS
+#: libgnomevfs/gnome-vfs-result.c:59
+msgid "Operation in progress"
+msgstr "操作進行中"
+
+#. GNOME_VFS_ERROR_INTERRUPTED
+#: libgnomevfs/gnome-vfs-result.c:60
+msgid "Operation interrupted"
+msgstr "操作中断"
+
+#. GNOME_VFS_ERROR_FILE_EXISTS
+#: libgnomevfs/gnome-vfs-result.c:61
+msgid "File exists"
+msgstr "ファイルは存在している"
+
+#. GNOME_VFS_ERROR_LOOP
+#: libgnomevfs/gnome-vfs-result.c:62
+msgid "Looping links encountered"
+msgstr "ループしているリンクに遭遇"
+
+#. GNOME_VFS_ERROR_NOT_PERMITTED
+#: libgnomevfs/gnome-vfs-result.c:63
+msgid "Operation not permitted"
+msgstr "許可されていない操作"
+
+#. GNOME_VFS_ERROR_IS_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:64
+msgid "Is a directory"
+msgstr "これはディレクトリ"
+
+#. GNOME_VFS_ERROR_NO_MEMMORY
+#: libgnomevfs/gnome-vfs-result.c:65
+msgid "Not enough memory"
+msgstr "十分なメモリが無い"
+
+#. GNOME_VFS_ERROR_HOST_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:66
+msgid "Host not found"
+msgstr "ホストが見つからない"
+
+#. GNOME_VFS_ERROR_INVALID_HOST_NAME
+#: libgnomevfs/gnome-vfs-result.c:67
+msgid "Host name not valid"
+msgstr "ホスト名が無効"
+
+#. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
+#: libgnomevfs/gnome-vfs-result.c:68
+msgid "Host has no address"
+msgstr "ホストはアドレスを持っていない"
+
+#. GNOME_VFS_ERROR_LOGIN_FAILED
+#: libgnomevfs/gnome-vfs-result.c:69
+msgid "Login failed"
+msgstr "ログインに失敗"
+
+#. GNOME_VFS_ERROR_CANCELLED
+#: libgnomevfs/gnome-vfs-result.c:70
+msgid "Operation cancelled"
+msgstr "操作はキャンセルされた"
+
+#. GNOME_VFS_ERROR_DIRECTORY_BUSY
+#: libgnomevfs/gnome-vfs-result.c:71
+msgid "Directory busy"
+msgstr "ディレクトリビジー"
+
+#. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
+#: libgnomevfs/gnome-vfs-result.c:72
+msgid "Directory not empty"
+msgstr "ディレクトリは空ではない"
+
+#. GNOME_VFS_ERROR_TOO_MANY_LINKS
+#: libgnomevfs/gnome-vfs-result.c:73
+msgid "Too many links"
+msgstr "リンクが多すぎる"
+
+#. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:74
+msgid "Read only file system"
+msgstr "読み取り専用のファイルシステム"
+
+#. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:75
+msgid "Not on the same file system"
+msgstr "同一のファイルシステムではない"
+
+#. GNOME_VFS_ERROR_NAME_TOO_LONG
+#: libgnomevfs/gnome-vfs-result.c:76
+msgid "Name too long"
+msgstr "名前が長すぎる"
+
+#. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
+#: libgnomevfs/gnome-vfs-result.c:77
+msgid "Service not available"
+msgstr "サービスがありません"
+
+#: libgnomevfs/gnome-vfs-result.c:140
+msgid "Unknown error"
+msgstr "未知のエラー"
+
+#: libgnomevfs/gnome-vfs-utils.c:58
+msgid "1 byte"
+msgstr "1 バイト"
+
+#: libgnomevfs/gnome-vfs-utils.c:60
+#, c-format
+msgid "%u bytes"
+msgstr "%u バイト"
+
+#: libgnomevfs/gnome-vfs-utils.c:67
+#, c-format
+msgid "%.1fK"
+msgstr "%.1fK"
+
+#: libgnomevfs/gnome-vfs-utils.c:71
+#, c-format
+msgid "%.1fM"
+msgstr "%.1fM"
+
+#: libgnomevfs/gnome-vfs-utils.c:75
+#, c-format
+msgid "%.1fG"
+msgstr "%.1fG"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:336
+msgid "Dying."
+msgstr "死にかけている"
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:501
+#, c-format
+msgid "Error reading: %s"
+msgstr "読み込み中のエラー: %s"
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:523
+#, c-format
+msgid "Error writing: %s"
+msgstr "書き込み中のエラー: %s"
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:572
+#, c-format
+msgid "Cannot write: %s"
+msgstr "書き込む個とが出来ません: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:600
+#, c-format
+msgid "Cannot create temporary file name `%s'"
+msgstr "テンポラリファイル '%s' を作成できません"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:192
+#: libgnomevfs-corba/gnome-vfs-slave.c:614
+#, c-format
+msgid "Cannot create socket: %s"
+msgstr "ソケットが作成出来ません: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:632
+#, c-format
+msgid "Cannot bind `%s': %s"
+msgstr "'%s' をバインド出来ません: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:639
+#, c-format
+msgid "Cannot listen on `%s': %s"
+msgstr "'%s' でリッスン出来ません: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:661
+#, c-format
+msgid "Cannot accept connections on `%s': %s"
+msgstr "'%s' で接続が受け付けられません: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1278
+msgid "Cannot initialize CORBA."
+msgstr "CORBA が初期化出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1285
+msgid "Cannot resolve initial reference to RootPOA."
+msgstr "RootPOA への初期参照が解決出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1292
+msgid "Cannot activate POA manager."
+msgstr "POA マネージャが活動出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1317
+#, c-format
+msgid "Usage: %s <ior> [<ior_fd>]\n"
+msgstr "使い方: %s <ior> [<ior_fd>]\n"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1328
+#, c-format
+msgid "Cannot open file descriptor %d."
+msgstr "ファイルディスクリプタ %d がオープン出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1351
+#, c-format
+msgid "Notify interface for `%s' not found."
+msgstr "'%s' のための通知インターフェースが見つかりませんでした"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1361
+msgid "Cannot setup Request object."
+msgstr "要求オブジェクトを構成することが出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1368
+msgid "Cannot extract IOR."
+msgstr "IOR を抽出出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave-launch.c:174
+#, c-format
+msgid "Got weird string from the slave process: `%s'"
+msgstr "スレーブプロセスから奇妙な文字列を受け取りました: '%s'"
+
+#: libgnomevfs-corba/gnome-vfs-slave-launch.c:181
+#, c-format
+msgid "Cannot get object for `%s'"
+msgstr "'%s' のためのオブジェクトを得ることが出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:125
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave::Notify -- exception %s"
+msgstr "GNOME::VFS::Slave::Notify を殺すことが出来ません -- 例外 %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:204
+#, c-format
+msgid "Cannot connect socket `%s': %s"
+msgstr "ソケット '%s' に接続することが出来ません: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:750
+msgid "Cannot initialize GNOME::VFS:Slave::Notify"
+msgstr "GNOME::VFS::Slave::Notify を初期化することが出来ません"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:120
+#, c-format
+msgid "Cannot reset GNOME::VFS::Slave %s -- exception %s"
+msgstr "GNOME::VFS::Slave %s をリセットすることが出来ません -- 例外 %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:123
+#, c-format
+msgid "Cannot reset GNOME::VFS::Slave (IOR unknown) -- exception %s"
+msgstr ""
+"GNOME::VFS::Slave (未知の IOR) をリセットすることが出来ません -- 例外 %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:154
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave %s -- exception %s"
+msgstr "GNOME::VFS::Slave %s を殺すことが出来ません -- 例外 %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:157
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave (IOR unknown) -- exception %s"
+msgstr "GNOME::VFS::Slave (未知の IOR) を殺すことが出来ません -- 例外 %s"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:157
+msgid "Error writing to the wakeup GnomeVFSJob channel."
+msgstr "GnomeVFSJob チャネルを起こすための書き込みエラーです"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:762
+#: libgnomevfs-pthread/gnome-vfs-job.c:1672
+#, c-format
+msgid "Unknown job ID %d"
+msgstr "未知のジョブ ID %d"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:1061
+#: libgnomevfs-pthread/gnome-vfs-job.c:1189
+#, c-format
+msgid "Cannot create pipe for open GIOChannel: %s"
+msgstr "GIOChannel を開くためのパイプを作成することが出来ません: %s"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:1705
+msgid "Operation stopped"
+msgstr "操作を停止しました"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:333
+msgid "Edit Applications List"
+msgstr "アプリケーションリストの編集"
+
+#. Add label
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:353
+#, c-format
+msgid "Select applications to appear in menu for mime type \"%s\""
+msgstr ""
+"メニューに現れる MIME タイプ \"%s\" のためのアプリケーションを選択して下さい"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:377
+msgid "Add Application..."
+msgstr "アプリケーションの追加..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:384
+msgid "Edit Application..."
+msgstr "アプリケーションの編集..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:390
+msgid "Delete Application"
+msgstr "アプリケーションの削除"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:423
+msgid "Edit Components List"
+msgstr "コンポーネントリストの編集"
+
+#. Add label
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:443
+#, c-format
+msgid "Select views to appear in menu for mime type \"%s\""
+msgstr "メニューに現れる MIME タイプ \"%s\" のためのビューアを選択して下さい"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:620
+msgid "Add Mime Type"
+msgstr "MIME タイプの追加"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:621
+msgid ""
+"Add a new Mime Type\n"
+"For example:  image/tiff; text/x-scheme"
+msgstr ""
+"新規 MIME タイプを追加します\n"
+"例:  image/tiff; text/x-scheme"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:626
+msgid "Mime Type:"
+msgstr "MIME タイプ:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:638
+msgid "Type in a description for this mime-type."
+msgstr "この MIME タイプのための説明を入力して下さい"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:644
+msgid "Description:"
+msgstr "説明:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:683
+msgid "Add New Extension"
+msgstr "新規拡張子を追加"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:684
+msgid ""
+"Type in the extensions for this mime-type.\n"
+"For example:  .html, .htm"
+msgstr ""
+"この MIME タイプのための拡張子を入力して下さい\n"
+"例:  .html, .htm"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:689
+msgid "Extension:"
+msgstr "拡張子:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:848
+msgid "New Application"
+msgstr "新規アプリケーション"
+
+#. Application Name label and entry
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:857
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:961
+msgid "Application Name:"
+msgstr "アプリケーション名:"
+
+#. Application Command label and entry
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:865
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:970
+msgid "Application Command:"
+msgstr "アプリケーションのコマンド:"
+
+#. Open Behavior frame
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:873
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:979
+msgid "Open Behavior"
+msgstr "動作を開く"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:879
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:985
+msgid "Can open multiple files"
+msgstr "複数のファイルを開くことが出来ません"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:882
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:989
+msgid "Can open from URI"
+msgstr "URI から開くことが出来ません"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:952
+#, fuzzy
+msgid "Edit Application"
+msgstr "アプリケーションの編集..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:349
+msgid "Change Icon"
+msgstr "アイコンの変更"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:361
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1216
+msgid "Mime Type"
+msgstr "MIME タイプ"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:382
+msgid "Add new Mime type..."
+msgstr "新規 MIME タイプを追加..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:389
+msgid "Delete this Mime type..."
+msgstr "この MIME タイプを削除..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:404
+msgid "Use Viewer"
+msgstr "ビューアを使う"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:410
+msgid "Open With Application"
+msgstr "アプリケーションで開く"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:422
+msgid "Edit List"
+msgstr "リストの編集"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:451
+msgid "Add"
+msgstr "追加"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:454
+msgid "Remove"
+msgstr "削除"
+
+#. Add default action to fourth column
+#: mime-type-capplet/nautilus-mime-type-capplet.c:640
+#: mime-type-capplet/nautilus-mime-type-capplet.c:784
+#: mime-type-capplet/nautilus-mime-type-capplet.c:919
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1108
+msgid "None"
+msgstr "なし"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1215
+msgid "Description"
+msgstr "説明"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1217
+msgid "Extension"
+msgstr "拡張子"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1218
+msgid "Action"
+msgstr "動作"
+
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:267
+msgid "Can't find an hbox, using a normal file selection"
+msgstr "hbox が見つかりません、通常のファイルセレクタを使用します"
+
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:273
+msgid "Preview"
+msgstr "プレビュー"
+
+#: modules/efs-method.c:493 modules/file-method.c:367
+#, c-format
+msgid "Unknown GnomeVFSSeekPosition %d"
+msgstr "未知の GnomeVFSSeekPosition %d です"
+
+#: modules/http-method.c:1149
+#, c-format
+msgid "%s to retrieve"
+msgstr "%s 回収"
+
+#: modules/http-method.c:1514
+#, c-format
+msgid "Closing connection to %s"
+msgstr "%s への接続を閉じています"
+
+#: modules/http-method.c:1726
+#, c-format
+msgid "%s of %s read"
+msgstr "%s / %s 読み込み"
+
+#: modules/http-method.c:1729
+#, c-format
+msgid "%s read"
+msgstr "%s 読み込み"
+
+#: test/gnome-file-selection/gnome-file-selection.c:671
+msgid "Back"
+msgstr "戻る"
+
+#: test/gnome-file-selection/gnome-file-selection.c:672
+msgid "Go to the previously visited directory"
+msgstr "前に訪れたディレクトリへ移動"
+
+#: test/gnome-file-selection/gnome-file-selection.c:680
+msgid "Up"
+msgstr "上へ"
+
+#: test/gnome-file-selection/gnome-file-selection.c:681
+msgid "Go to the parent directory"
+msgstr "親ディレクトリへ移動"
+
+#: test/gnome-file-selection/gnome-file-selection.c:689
+msgid "Forward"
+msgstr "進む"
+
+#: test/gnome-file-selection/gnome-file-selection.c:690
+msgid "Go to the next visited directory"
+msgstr "次の訪問済みディレクトリへ移動"
+
+#: test/gnome-file-selection/gnome-file-selection.c:699
+msgid "Rescan"
+msgstr "再走査"
+
+#: test/gnome-file-selection/gnome-file-selection.c:700
+msgid "Rescan the current directory"
+msgstr "現在のディレクトリを再走査"
+
+#: test/gnome-file-selection/gnome-file-selection.c:709
+msgid "Home"
+msgstr "ホーム"
+
+#: test/gnome-file-selection/gnome-file-selection.c:710
+msgid "Go to the home directory"
+msgstr "ホームディレクトリへ移動"
+
+#: test/gnome-file-selection/gnome-file-selection.c:806
+msgid "Name"
+msgstr "名前"
+
+#: test/gnome-file-selection/gnome-file-selection.c:807
+msgid "Size"
+msgstr "サイズ"
+
+#: test/gnome-file-selection/gnome-file-selection.c:808
+msgid "Date"
+msgstr "日付"
+
+#: test/gnome-file-selection/gnome-file-selection.c:837
+msgid "Enter name:"
+msgstr "名前を入力:"
+
+#: test/gnome-file-selection/gnome-file-selection.c:860
+msgid "Show:"
+msgstr "表示:"
+
+#: test/gnome-file-selection/gnome-file-selection.c:887
+msgid "Show dotfiles"
+msgstr "ドットファイルを表示"
+
+#~ msgid "Invalid header `%s'"
+#~ msgstr "ヘッダ '%s' は無効です"
+
+#~ msgid "HTTP server returned an invalid PROPFIND response"
+#~ msgstr "HTTP サーバは無効な PROPFIND 応答を返しました"

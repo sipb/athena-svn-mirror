@@ -1,0 +1,780 @@
+# gnome-vfsr translation to Catalan.
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Softcatalà <info@softcatala.org>, 2000.
+#
+# Traducció per Softcatalà <info@softcatala.org>
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-vfs 0.2.0\n"
+"POT-Creation-Date: 2000-11-06 23:37-0800\n"
+"PO-Revision-Date: 2000-08-02 18:45+0200\n"
+"Last-Translator: Quico Llach <quico@softcatala.org>\n"
+"Language-Team: Catalan <info@softcatala.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libgnomevfs/gnome-vfs-configuration.c:187
+#, c-format
+msgid "%s:%d contains NUL characters."
+msgstr "%s:%d conté caràcters NULS."
+
+#: libgnomevfs/gnome-vfs-configuration.c:204
+#, c-format
+msgid "%s:%d contains no method name."
+msgstr "%s:%d no conté cap nom de mètode."
+
+#: libgnomevfs/gnome-vfs-configuration.c:233
+#, c-format
+msgid "%s:%d contains no module name."
+msgstr "%s:%d no conté cap nom de mòdul."
+
+#: libgnomevfs/gnome-vfs-configuration.c:286
+#, c-format
+msgid "Configuration file `%s' was not found: %s"
+msgstr "El fitxer de configuració `%s' no ha estat trobat: %s"
+
+#: libgnomevfs/gnome-vfs-file-info.c:342
+#, c-format
+msgid "Unknown sort rule %d"
+msgstr "Regla d'ordenació desconeguda %d"
+
+#: libgnomevfs/gnome-vfs-init.c:69
+msgid "GNOME VFS already initialized."
+msgstr "GNOME VFS ja està inicialitzat."
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:656
+#, c-format
+msgid "Could not parse: %s"
+msgstr "No s'ha pogut analitzar: %s"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:658
+msgid "More parsing errors will be ignored."
+msgstr "Els següent errors d'anàlisi seran ignorats"
+
+#. GNOME_VFS_OK
+#: libgnomevfs/gnome-vfs-result.c:39
+msgid "No error"
+msgstr "Cap error"
+
+#. GNOME_VFS_ERROR_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:40
+msgid "File not found"
+msgstr "Fitxer no trobat"
+
+#. GNOME_VFS_ERROR_GENERIC
+#: libgnomevfs/gnome-vfs-result.c:41
+msgid "Generic error"
+msgstr "Error genèric"
+
+#. GNOME_VFS_ERROR_INTERNAL
+#: libgnomevfs/gnome-vfs-result.c:42
+msgid "Internal error"
+msgstr "Error intern"
+
+#. GNOME_VFS_ERROR_BAD_PARAMETERS
+#: libgnomevfs/gnome-vfs-result.c:43
+msgid "Invalid parameters"
+msgstr "Paràmetres no vàlids"
+
+#. GNOME_VFS_ERROR_NOT_SUPPORTED
+#: libgnomevfs/gnome-vfs-result.c:44
+msgid "Unsupported operation"
+msgstr "Operació no suportada"
+
+#. GNOME_VFS_ERROR_IO
+#: libgnomevfs/gnome-vfs-result.c:45
+msgid "I/O error"
+msgstr "Error E/S"
+
+#. GNOME_VFS_ERROR_CORRUPTED_DATA
+#: libgnomevfs/gnome-vfs-result.c:46
+msgid "Data corrupted"
+msgstr "Dades corruptes"
+
+#. GNOME_VFS_ERROR_WRONG_FORMAT
+#: libgnomevfs/gnome-vfs-result.c:47
+msgid "Format not valid"
+msgstr "Format no vàlid"
+
+#. GNOME_VFS_ERROR_BAD_FILE
+#: libgnomevfs/gnome-vfs-result.c:48
+msgid "Bad file handle"
+msgstr "Fitxer associat incorrecte"
+
+#. GNOME_VFS_ERROR_TOO_BIG
+#: libgnomevfs/gnome-vfs-result.c:49
+msgid "File too big"
+msgstr "Fitxer massa gran"
+
+#. GNOME_VFS_ERROR_NO_SPACE
+#: libgnomevfs/gnome-vfs-result.c:50
+msgid "No space left on device"
+msgstr "No hi ha prou espai en el dispositiu"
+
+#. GNOME_VFS_ERROR_READ_ONLY
+#: libgnomevfs/gnome-vfs-result.c:51
+msgid "Read-only file system"
+msgstr "Sistema de fitxers de només lectura"
+
+#. GNOME_VFS_ERROR_INVALID_URI
+#: libgnomevfs/gnome-vfs-result.c:52
+msgid "Invalid URI"
+msgstr "URI no vàlid"
+
+#. GNOME_VFS_ERROR_NOT_OPEN
+#: libgnomevfs/gnome-vfs-result.c:53
+msgid "File not open"
+msgstr "Fitxer no obert"
+
+#. GNOME_VFS_ERROR_INVALID_OPEN_MODE
+#: libgnomevfs/gnome-vfs-result.c:54
+msgid "Open mode not valid"
+msgstr "Mode d'obertura no vàlid"
+
+#. GNOME_VFS_ERROR_ACCESS_DENIED
+#: libgnomevfs/gnome-vfs-result.c:55
+msgid "Access denied"
+msgstr "Accés denegat"
+
+#. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
+#: libgnomevfs/gnome-vfs-result.c:56
+msgid "Too many open files"
+msgstr "Massa fitxers oberts"
+
+#. GNOME_VFS_ERROR_EOF
+#: libgnomevfs/gnome-vfs-result.c:57
+msgid "End of file"
+msgstr "Fi del fitxer"
+
+#. GNOME_VFS_ERROR_NOT_A_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:58
+msgid "Not a directory"
+msgstr "No és un directori"
+
+#. GNOME_VFS_ERROR_IN_PROGRESS
+#: libgnomevfs/gnome-vfs-result.c:59
+msgid "Operation in progress"
+msgstr "Operació en progrés"
+
+#. GNOME_VFS_ERROR_INTERRUPTED
+#: libgnomevfs/gnome-vfs-result.c:60
+msgid "Operation interrupted"
+msgstr "Operació interrompuda"
+
+#. GNOME_VFS_ERROR_FILE_EXISTS
+#: libgnomevfs/gnome-vfs-result.c:61
+msgid "File exists"
+msgstr "Fitxer ja existent"
+
+#. GNOME_VFS_ERROR_LOOP
+#: libgnomevfs/gnome-vfs-result.c:62
+msgid "Looping links encountered"
+msgstr "Enllaços amb bucles trobats"
+
+#. GNOME_VFS_ERROR_NOT_PERMITTED
+#: libgnomevfs/gnome-vfs-result.c:63
+msgid "Operation not permitted"
+msgstr "Operació no permesa"
+
+#. GNOME_VFS_ERROR_IS_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:64
+msgid "Is a directory"
+msgstr "És un directori"
+
+#. GNOME_VFS_ERROR_NO_MEMMORY
+#: libgnomevfs/gnome-vfs-result.c:65
+msgid "Not enough memory"
+msgstr "No hi ha prou memòria"
+
+#. GNOME_VFS_ERROR_HOST_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:66
+msgid "Host not found"
+msgstr "Servidor no trobat"
+
+#. GNOME_VFS_ERROR_INVALID_HOST_NAME
+#: libgnomevfs/gnome-vfs-result.c:67
+msgid "Host name not valid"
+msgstr "Nom de servidor no vàlid"
+
+#. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
+#: libgnomevfs/gnome-vfs-result.c:68
+msgid "Host has no address"
+msgstr "Servidor sense adreça"
+
+#. GNOME_VFS_ERROR_LOGIN_FAILED
+#: libgnomevfs/gnome-vfs-result.c:69
+msgid "Login failed"
+msgstr "Entrada fallida"
+
+#. GNOME_VFS_ERROR_CANCELLED
+#: libgnomevfs/gnome-vfs-result.c:70
+msgid "Operation cancelled"
+msgstr "Operació cancel·lada"
+
+#. GNOME_VFS_ERROR_DIRECTORY_BUSY
+#: libgnomevfs/gnome-vfs-result.c:71
+msgid "Directory busy"
+msgstr "Directori ocupat"
+
+#. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
+#: libgnomevfs/gnome-vfs-result.c:72
+msgid "Directory not empty"
+msgstr "Directori no buit"
+
+#. GNOME_VFS_ERROR_TOO_MANY_LINKS
+#: libgnomevfs/gnome-vfs-result.c:73
+msgid "Too many links"
+msgstr "Massa enllaços"
+
+#. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:74
+msgid "Read only file system"
+msgstr "Sistema de fitxers de només lectura"
+
+#. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:75
+msgid "Not on the same file system"
+msgstr "No és del mateix sistema de fitxers"
+
+#. GNOME_VFS_ERROR_NAME_TOO_LONG
+#: libgnomevfs/gnome-vfs-result.c:76
+msgid "Name too long"
+msgstr "Nom massa llarg"
+
+#. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
+#: libgnomevfs/gnome-vfs-result.c:77
+msgid "Service not available"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-result.c:140
+msgid "Unknown error"
+msgstr "Error desconegut"
+
+#: libgnomevfs/gnome-vfs-utils.c:58
+msgid "1 byte"
+msgstr "1 byte"
+
+#: libgnomevfs/gnome-vfs-utils.c:60
+#, c-format
+msgid "%u bytes"
+msgstr "%u bytes"
+
+#: libgnomevfs/gnome-vfs-utils.c:67
+#, c-format
+msgid "%.1fK"
+msgstr "%.1fK"
+
+#: libgnomevfs/gnome-vfs-utils.c:71
+#, c-format
+msgid "%.1fM"
+msgstr "%.1fM"
+
+#: libgnomevfs/gnome-vfs-utils.c:75
+#, c-format
+msgid "%.1fG"
+msgstr "%.1fG"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:336
+msgid "Dying."
+msgstr "S'està morint."
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:501
+#, c-format
+msgid "Error reading: %s"
+msgstr "Error en llegir: %s"
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:523
+#, c-format
+msgid "Error writing: %s"
+msgstr "Error en escriure: %s"
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:572
+#, c-format
+msgid "Cannot write: %s"
+msgstr "No es pot escriure: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:600
+#, c-format
+msgid "Cannot create temporary file name `%s'"
+msgstr "No es pot crear el fitxer temporal de nom `%s'"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:192
+#: libgnomevfs-corba/gnome-vfs-slave.c:614
+#, c-format
+msgid "Cannot create socket: %s"
+msgstr "No es pot crear l'enllaç: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:632
+#, c-format
+msgid "Cannot bind `%s': %s"
+msgstr "No es pot vincular `%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:639
+#, c-format
+msgid "Cannot listen on `%s': %s"
+msgstr "No es pot atendre a `%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:661
+#, c-format
+msgid "Cannot accept connections on `%s': %s"
+msgstr "No es poden acceptar connexions en `%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1278
+msgid "Cannot initialize CORBA."
+msgstr "No es pot inicialitzar CORBA."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1285
+msgid "Cannot resolve initial reference to RootPOA."
+msgstr "No es pot resoldre la referència inicial al RootPOA."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1292
+msgid "Cannot activate POA manager."
+msgstr "No es pot activar el gestor POA."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1317
+#, c-format
+msgid "Usage: %s <ior> [<ior_fd>]\n"
+msgstr "Utilització: %s <ior> [<ior_fd>]\n"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1328
+#, c-format
+msgid "Cannot open file descriptor %d."
+msgstr "No es pot obrir el descriptor de fitxers %d."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1351
+#, c-format
+msgid "Notify interface for `%s' not found."
+msgstr "No s'ha trobat la interfície de notificació per a `%s'."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1361
+msgid "Cannot setup Request object."
+msgstr "No es pot configurar l'objecte demanat."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1368
+msgid "Cannot extract IOR."
+msgstr "No es pot extreure l'IOR."
+
+#: libgnomevfs-corba/gnome-vfs-slave-launch.c:174
+#, c-format
+msgid "Got weird string from the slave process: `%s'"
+msgstr "S'ha obtingut una cadena estranya del procés esclau: `%s' "
+
+#: libgnomevfs-corba/gnome-vfs-slave-launch.c:181
+#, c-format
+msgid "Cannot get object for `%s'"
+msgstr "No es pot obtenir l'objecte per a `%s'"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:125
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave::Notify -- exception %s"
+msgstr "No es pot matar GNOME::VFS::Esclau::Notifica -- excepció %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:204
+#, c-format
+msgid "Cannot connect socket `%s': %s"
+msgstr "No es pot connectar l'enllaç `%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:750
+msgid "Cannot initialize GNOME::VFS:Slave::Notify"
+msgstr "No es pot inicialitzar GNOME::VFS:Esclau::Notifica"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:120
+#, c-format
+msgid "Cannot reset GNOME::VFS::Slave %s -- exception %s"
+msgstr "No es pot reinicialitzar GNOME::VFS::Esclau %s -- excepció %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:123
+#, c-format
+msgid "Cannot reset GNOME::VFS::Slave (IOR unknown) -- exception %s"
+msgstr ""
+"No es pot reinicialitzar GNOME::VFS::Esclau (IOR unknown) -- excepció %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:154
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave %s -- exception %s"
+msgstr "No es pot matar GNOME::VFS::Esclau %s -- excepció %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:157
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave (IOR unknown) -- exception %s"
+msgstr "No es pot matar GNOME::VFS::Esclau (IOR unknown) -- excepció %s"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:157
+msgid "Error writing to the wakeup GnomeVFSJob channel."
+msgstr "Error en escriure en el canal d'avís GnomeVFSJob"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:762
+#: libgnomevfs-pthread/gnome-vfs-job.c:1672
+#, c-format
+msgid "Unknown job ID %d"
+msgstr "Treball desconegut amb ID %d"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:1061
+#: libgnomevfs-pthread/gnome-vfs-job.c:1189
+#, c-format
+msgid "Cannot create pipe for open GIOChannel: %s"
+msgstr "No es pot crear la connexió per obrir GIOChannel: %s"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:1705
+msgid "Operation stopped"
+msgstr "Operació aturada"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:333
+msgid "Edit Applications List"
+msgstr "Edita la llista d'aplicacions"
+
+#. Add label
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:353
+#, c-format
+msgid "Select applications to appear in menu for mime type \"%s\""
+msgstr ""
+"Seleccioneu les aplicacions que han d'aparèixer al menú per al tipus de MIME "
+"\"%s\""
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:377
+msgid "Add Application..."
+msgstr "Afegeix una aplicació..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:384
+msgid "Edit Application..."
+msgstr "Edita una aplicació..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:390
+msgid "Delete Application"
+msgstr "Suprimeix una aplicació"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:423
+msgid "Edit Components List"
+msgstr "Edita la llista de components"
+
+#. Add label
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:443
+#, c-format
+msgid "Select views to appear in menu for mime type \"%s\""
+msgstr ""
+"Seleccioneu les vistes que han d'aparèixer al menú per al tipus de MIME "
+"\"%s\""
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:620
+msgid "Add Mime Type"
+msgstr "Afegeix un tipus de MIME"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:621
+msgid ""
+"Add a new Mime Type\n"
+"For example:  image/tiff; text/x-scheme"
+msgstr ""
+"Afegiu un nou tipus de MIME\n"
+"Per exemple:  image/tiff; text/x-scheme"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:626
+msgid "Mime Type:"
+msgstr "Tipus de MIME:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:638
+msgid "Type in a description for this mime-type."
+msgstr "Escriviu una desripció per a aquest tips de MIME."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:644
+msgid "Description:"
+msgstr "Descripció:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:683
+msgid "Add New Extension"
+msgstr "Afegeix una nova extensió"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:684
+msgid ""
+"Type in the extensions for this mime-type.\n"
+"For example:  .html, .htm"
+msgstr ""
+"Escriviu les extensions per a aquest tipus de MIME.\n"
+"Per exemple:  .html, .htm"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:689
+msgid "Extension:"
+msgstr "Extensió:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:848
+msgid "New Application"
+msgstr "Nova aplicació"
+
+#. Application Name label and entry
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:857
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:961
+msgid "Application Name:"
+msgstr "Nom de l'aplicació:"
+
+#. Application Command label and entry
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:865
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:970
+msgid "Application Command:"
+msgstr "Ordre de l'aplicació:"
+
+#. Open Behavior frame
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:873
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:979
+msgid "Open Behavior"
+msgstr "Obre el comportament"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:879
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:985
+msgid "Can open multiple files"
+msgstr "Es poden obrir diversos fitxers"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:882
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:989
+msgid "Can open from URI"
+msgstr "Es pot obrir des de l'URI"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:952
+#, fuzzy
+msgid "Edit Application"
+msgstr "Edita una aplicació..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:349
+msgid "Change Icon"
+msgstr "Canvia la icona"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:361
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1216
+msgid "Mime Type"
+msgstr "Tipus de MIME"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:382
+msgid "Add new Mime type..."
+msgstr "Afegeix un nou tipus de MIME..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:389
+msgid "Delete this Mime type..."
+msgstr "Suprimeix aquest tipus de MIME..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:404
+msgid "Use Viewer"
+msgstr "Utilitza el visualitzador"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:410
+msgid "Open With Application"
+msgstr "Obre amb l'aplicació"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:422
+msgid "Edit List"
+msgstr "Edita la llista"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:451
+msgid "Add"
+msgstr "Afegeix"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:454
+msgid "Remove"
+msgstr "Elimina"
+
+#. Add default action to fourth column
+#: mime-type-capplet/nautilus-mime-type-capplet.c:640
+#: mime-type-capplet/nautilus-mime-type-capplet.c:784
+#: mime-type-capplet/nautilus-mime-type-capplet.c:919
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1108
+msgid "None"
+msgstr "Cap"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1215
+msgid "Description"
+msgstr "Descripció"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1217
+msgid "Extension"
+msgstr "Extensió"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1218
+msgid "Action"
+msgstr "Acció"
+
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:267
+msgid "Can't find an hbox, using a normal file selection"
+msgstr ""
+
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:273
+msgid "Preview"
+msgstr ""
+
+#: modules/efs-method.c:493 modules/file-method.c:367
+#, c-format
+msgid "Unknown GnomeVFSSeekPosition %d"
+msgstr "Desconeguda GnomeVFSSeekPosition %d"
+
+#: modules/http-method.c:1149
+#, c-format
+msgid "%s to retrieve"
+msgstr "%s per recuperar"
+
+#: modules/http-method.c:1514
+#, c-format
+msgid "Closing connection to %s"
+msgstr "S'està tancant la connexió a %s"
+
+#: modules/http-method.c:1726
+#, c-format
+msgid "%s of %s read"
+msgstr "%s de %s llegit"
+
+#: modules/http-method.c:1729
+#, c-format
+msgid "%s read"
+msgstr "%s llegit"
+
+#: test/gnome-file-selection/gnome-file-selection.c:671
+msgid "Back"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:672
+msgid "Go to the previously visited directory"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:680
+msgid "Up"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:681
+#, fuzzy
+msgid "Go to the parent directory"
+msgstr "No és un directori"
+
+#: test/gnome-file-selection/gnome-file-selection.c:689
+msgid "Forward"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:690
+msgid "Go to the next visited directory"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:699
+msgid "Rescan"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:700
+msgid "Rescan the current directory"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:709
+msgid "Home"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:710
+#, fuzzy
+msgid "Go to the home directory"
+msgstr "No és un directori"
+
+#: test/gnome-file-selection/gnome-file-selection.c:806
+msgid "Name"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:807
+msgid "Size"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:808
+msgid "Date"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:837
+msgid "Enter name:"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:860
+msgid "Show:"
+msgstr ""
+
+#: test/gnome-file-selection/gnome-file-selection.c:887
+msgid "Show dotfiles"
+msgstr ""
+
+#~ msgid "Invalid header `%s'"
+#~ msgstr "Encapçalament no vàlid `%s'"
+
+#~ msgid "HTTP server returned an invalid PROPFIND response"
+#~ msgstr "El servidor HTTP ha retornat una resposta PROPFIND no vàlida"
+
+#~ msgid "ftpfs: Invalid host name."
+#~ msgstr "ftpfs: Nom de servidor no vàlid."
+
+#~ msgid "ftpfs: Invalid host address."
+#~ msgstr "ftpfs: Adreça de servidor no vàlida."
+
+#~ msgid "ftpfs: making connection to %s"
+#~ msgstr "ftpfs: connectant-se a %s"
+
+#~ msgid "ftpfs: connection interrupted by user"
+#~ msgstr "ftpfs: connexió interrompuda per l'usuari"
+
+#~ msgid "ftpfs: connection to server failed: %s"
+#~ msgstr "ftpfs: connexió al servidor fallida: %s"
+
+#~ msgid "Waiting to retry... %d (Control-C to cancel)"
+#~ msgstr ""
+#~ "S'està esperant per reintentar-ho... %d (Control-C per cancel·lar-ho)"
+
+#~ msgid " FTP: Password required for "
+#~ msgstr " FTP: Contrasenya requerida per "
+
+#~ msgid "ftpfs: sending login name"
+#~ msgstr "ftpfs: s'està enviant el nom d'entrada"
+
+#~ msgid "ftpfs: sending user password"
+#~ msgstr "ftpfs: s'està enviant la contrasenya de l'usuari"
+
+#~ msgid "ftpfs: logged in"
+#~ msgstr "ftpfs: connectat"
+
+#~ msgid "ftpfs: Login incorrect for user %s "
+#~ msgstr "ftpfs: Entrada incorrecta per a l'usuari %s "
+
+#~ msgid "ftpfs: aborting transfer."
+#~ msgstr "ftpfs: s'està avortant la transferència."
+
+#~ msgid "ftpfs: abort error: %s"
+#~ msgstr "ftpfs: error en avortar: %s"
+
+#~ msgid "ftpfs: abort failed"
+#~ msgstr "ftpfs: avortament fallit"
+
+#~ msgid "ftpfs: could not setup passive mode"
+#~ msgstr "ftpfs: no s'ha pogut configurar el mode passiu"
+
+#~ msgid "ftpfs: storing file %d (%d)"
+#~ msgstr "ftpfs: s'està emmagatzemant el fitxer %d (%d)"
+
+#~ msgid "ftpfs: CWD failed."
+#~ msgstr "ftpfs: CWD fallit."
+
+#~ msgid "ftpfs: couldn't resolve symlink"
+#~ msgstr "ftpfs: No s'ha pogut resoldre l'enllaç simbòlic"
+
+#~ msgid "Resolving symlink..."
+#~ msgstr "S'està resolent l'enllaç simbòlic..."
+
+#~ msgid "ftpfs: Reading FTP directory %s... (don't use UNIX ls options)"
+#~ msgstr ""
+#~ "ftpfs: S'està llegint el directori FTP %s... (no utilitzeu les opcions ls de "
+#~ "UNIX)"
+
+#~ msgid "ftpfs: Reading FTP directory %s..."
+#~ msgstr "ftpfs: S'està llegint el directori FTP %s..."
+
+#~ msgid "ftpfs: reading FTP directory interrupt by user"
+#~ msgstr "ftpfs: lectura del directori FTP interrompuda per l'usuari"
+
+#~ msgid "ftpfs: got listing"
+#~ msgstr "ftpfs: llistat rebut"
+
+#~ msgid "ftpfs: failed; nowhere to fallback to"
+#~ msgstr "ftpfs: fallit; enlloc per anar"
+
+#~ msgid "Starting linear transfer..."
+#~ msgstr "S'està iniciant transferència lineal..."
+
+#~ msgid "Preparing reget..."
+#~ msgstr "S'està preparant la recuperació..."

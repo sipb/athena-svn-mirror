@@ -1,0 +1,279 @@
+emacs
+	command=emacs
+	name=GNU Emacs
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=text/*,text/html,text/plain,text/x-c,text/x-c++,text/x-perl
+
+nedit
+	command=nedit
+	name=NEdit
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=text/*,text/html,text/plain
+
+gedit
+	command=gedit
+	name=gedit
+	can_open_multiple_files=false
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=text/*,text/html,text/plain
+
+netscape
+	command=netscape
+	name=Netscape
+	can_open_multiple_files=true
+	can_open_uris=true
+	requires_terminal=false
+	mime_types=text/html,x-directory/webdav,image/gif,image/jpeg
+
+#lynx
+#	command=lynx
+#	name=Lynx
+#	can_open_multiple_files=false
+#	can_open_uris=true
+#	requires_terminal=true
+	mime_types=text/html,x-directory/webdav
+
+mozilla
+	command=mozilla
+	name=Mozilla
+	can_open_multiple_files=true
+	can_open_uris=true
+	requires_terminal=false
+	mime_types=text/html,x-directory/webdav,image/gif,image/jpeg,text/xml
+
+galeon 
+	command=galeon
+	name=Galeon
+	can_open_multiple_files=false
+	can_open_uris=true
+	requires_terminal=false
+	mime_types=text/html,x-directory/webdav,image/gif,image/jpeg
+
+gimp
+	command=gimp
+	name=The GIMP
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/x-xpixmap,image/x-bmp,image/x-png,image/x-portable-anymap,image/x-portable-bitmap,image/x-portable-graymap,image/x-portable-pixmap,image/x-psd,image/x-xbitmap,image/x-xcf
+
+eog
+	command=eog
+	name=Eye of Gnome
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/x-xpixmap,image/x-bmp,image/x-png,image/x-portable-anymap,image/x-portable-bitmap,image/x-portable-graymap,image/x-portable-pixmap
+
+electric_eyes
+	command=ee
+	name=Electric Eyes
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/x-xpixmap,image/x-bmp,image/x-png,image/x-portable-anymap,image/x-portable-bitmap,image/x-portable-graymap,image/x-portable-pixmap
+
+display
+	command=display
+	name=ImageMagick Display
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/x-xpixmap,image/x-bmp,image/x-png,image/x-portable-anymap,image/x-portable-bitmap,image/x-portable-graymap,image/x-portable-pixmap
+
+gnumeric
+	command=gnumeric
+	name=Gnumeric
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=application/x-gnumeric,application/vnd.ms-excel
+
+staroffice
+	command=soffice
+	name=StarOffice
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=application/x-staroffice-presentation,application/x-staroffice-spreadsheet,application/x-staroffice-words,text/abiword,application/vnd.ms-excel,application/rtf,application/msword,application/mspowerpoint
+
+abiword   
+	command=abiword
+	name=AbiWord
+	can_open_multiple_files=true
+	can_open_uris=false
+	requires_terminal=false
+	mime_types=text/*,text/abiword,application/rtf,application/msword
+
+xpdf
+	command=xpdf
+	name=xpdf
+        can_open_multiple_files=true
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=application/pdf
+
+gv
+	command=gv
+	name=gv
+        can_open_multiple_files=false
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=application/pdf,application/postscript
+
+ggv
+	command=ggv
+	name=ggv
+        can_open_multiple_files=false
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=application/pdf,application/postscript
+
+lpr
+	command=lpr
+	name=lpr
+        can_open_multiple_files=true
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=application/postscript
+
+#vi
+#	command=vi
+#	name=vi
+#       can_open_multiple_files=false
+#       can_open_uris=false
+#       requires_terminal=true
+#       mime_types=text/*,text/plain,text/x-c,text/x-c++,text/x-perl
+
+gvim
+	command=gvim
+	name=gvim
+        can_open_multiple_files=false
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=text/*,text/plain,text/x-c,text/x-c++,text/x-perl
+
+xfte
+	command=xfte
+	name=xfte
+        can_open_multiple_files=true
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=text/*,text/plain,text/x-c,text/x-c++,text/x-perl
+
+ogg123
+	command=ogg123
+	name=ogg123
+        can_open_multiple_files=true
+        can_open_uris=true
+        requires_terminal=false
+        mime_types=audio/x-ogg,application/x-ogg
+
+mpg123
+	command=mpg123
+	name=mpg123
+        can_open_multiple_files=true
+        can_open_uris=true
+        requires_terminal=false
+        mime_types=audio/x-mp3,audio/x-mpeg
+
+xmms
+	command=xmms
+	name=X Multimedia System
+        can_open_multiple_files=true
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-ogg,audio/x-mpegurl
+
+realplayer
+	command=realplayer
+	name=realplayer	
+        can_open_multiple_files=false
+        can_open_uris=true
+        requires_terminal=false
+        mime_types=audio/x-pn-realaudio,audio/x-real-audio,video/x-real-video
+
+soundtracker
+	command=soundtracker
+	name=soundtracker	
+        can_open_multiple_files=false
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=audio/x-mod
+
+mtv 
+	command=mtv 
+	name=mtv 
+        can_open_multiple_files=false
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=video/mpeg
+
+mtvp
+	command=mtvp
+	name=mtvp
+        can_open_multiple_files=false
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=video/mpeg
+
+mpeg_play
+	command=mpeg_play
+	name=mpeg_play
+        can_open_multiple_files=false
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=video/mpeg
+
+bplay
+	command=bplay
+	name=bplay
+        can_open_multiple_files=true
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=audio/x-wav
+
+xanim
+       command=xanim
+       name=xanim
+       can_open_multiple_files=true
+       can_open_uris=false
+       requires_terminal=false
+       mime_types=video/quicktime,video/x-anim,video/x-sgi-movie,video/x-avi,video/msvideo,video/x-msvideo
+
+xemacs
+        command=xemacs
+        name=XEmacs
+        can_open_multiple_files=true
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=text/*,text/html,text/plain,text/x-c,text/x-c++,text/x-perl
+
+jcc
+        command=jcc
+        name=Code Crusader
+        can_open_multiple_files=true
+        can_open_uris=false
+        requires_terminal=false
+        mime_types=text/*,text/html,text/plain,text/x-c,text/x-c++
+
+applix
+	command=applix
+	name=ApplixWare
+	can_open_multiple_files=true
+	can_open_urls=false
+	requires_terminal=false
+	mime_types=application/x-applix-spreadsheet,application/x-applix-word,image/x-applix-graphic,application/msword,application/rtf,application/vnd.ms-excel
+
+acrobat
+	command=acrobat
+	name=Adobe Acrobat
+	can_open_multiple_files=true
+	can_open_urls=false
+	requires_terminal=false
+	mime_types=application/pdf

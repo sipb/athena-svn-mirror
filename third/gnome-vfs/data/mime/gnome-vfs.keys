@@ -1,0 +1,1918 @@
+# This file contains human-readable descriptions of MIME types.
+# Please complain to aaron@eazel.com about mistakes or missing types,
+# if you don't want to fix them yourself.
+#
+# Translators: To add localizations, list them below the default translation,
+# preceded by the language code in square brackets. For example:
+#
+# application/mac-binhex40
+#	 description=Macintosh BinHex archive
+#	 [en_US]description=Macintosh BinHex archive
+#
+# (Note that my example is in en_US, which is silly since that's the
+#  default. But I don't know any other languages to use as an example!
+#  Please feel free to change this to any real example with another language.)
+#
+# Conventions used in this file:
+# ==============================
+# * MIME types are listed in alphabetical (case-insensitive) order
+# * Human language is preferable to acronyms.
+# * Short descriptions are necessary (so acronyms are often used anyway).
+# * Don't distinguish "file" from "document", call them both "document".
+# * It's undesirable to use the same description for multiple types, though
+#   sometimes unavoidable (e.g. "rich text" for both application/rtf and
+#   text/richtext).
+# * Programming source code is called "<language> source code", unless there's
+#   another standard usage for a given language (e.g. "Perl script")
+# * Use lowercase letters except for proper names
+
+application/andrew-inset
+	description=Andrew Toolkit inset
+	[no]description=Andrew verktøysett insett
+	[da]description=Andrew værktøjssæt indsæt
+	[sv]description=Andrew-verktygssamling insatt
+	
+application/mac-binhex40
+	description=Macintosh BinHex archive
+        [da]description=Macintosh BinHex-arkiv
+	[fr]description=Archive BinHex Macintosh
+	[no]description=Macintosh BinHex-arkiv
+	[sv]description=Macintosh BinHex-arkiv
+	
+# This is used by automated tests ("make check")
+application/mime-type-test
+	open=mime-type-test
+	description=mon test a moi
+	test=est-ce un test?
+	compose=eh?ah.
+	copiousoutput=
+
+application/mspowerpoint
+	description=Microsoft PowerPoint document
+	[da]description=Microsoft PowerPoint-dokument
+ 	[fr]description=Document Microsoft PowerPoint
+	[no]description=Microsoft PowerPoint dokument
+	[sv]description=Microsoft PowerPoint-dokument
+	default_action_type=application
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=staroffice
+	short_list_application_ids_for_intermediate_user_level=staroffice
+	short_list_application_ids_for_hacker_user_level=staroffice
+
+application/msword
+	description=Microsoft Word document
+	[da]description=Microsoft Word-dokument
+ 	[fr]description=Document Microsoft Word
+	[no]description=Microsoft Word dokument
+	[sv]description=Microsoft Word-dokument
+	default_action_type=application
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=staroffice,applix,abiword
+	short_list_application_ids_for_intermediate_user_level=staroffice,applix,abiword
+	short_list_application_ids_for_hacker_user_level=staroffice,applix,abiword
+
+application/octet-stream
+	description=unknown data
+	[da]description=data af ukendt type
+	[fr]description=Donnée inconnue
+	[no]description=data av ukjent type
+	[sv]description=data av okänd typ
+
+application/oda
+	description=ODA document
+	[da]description=ODA-dokument
+	[fr]description=Document ODA
+	[no]description=ODA-dokument
+	[sv]description=ODA-dokument
+
+application/pdf
+	description=PDF document
+	[da]description=PDF-dokument
+	[fr]description=Document PDF
+	[no]description=PDF-dokument
+	[sv]description=PDF-dokument
+	default_action_type=application
+	default_component_iid=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
+	short_list_component_iids_for_novice_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
+	short_list_component_iids_for_intermediate_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
+	short_list_component_iids_for_hacker_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
+	default_application_id=acrobat
+	short_list_application_ids_for_novice_user_level=acrobat,ggv,gv,xpdf
+	short_list_application_ids_for_intermediate_user_level=acrobat,ggv,gv,xpdf
+	short_list_application_ids_for_hacker_user_level=acrobat,ggv,gv,xpdf
+
+application/pgp
+	description=PGP message
+	[da]description=PGP-meddelelse
+	[fr]description=Message PGP
+	[no]description=PGP-melding
+	[sv]description=PGP-meddelande
+
+application/pgp-encrypted
+	description=PGP encrypted data
+	[da]description=Data krypteret med PGP
+	[fr]description=Donnée encryptée PGP
+	[no]description=Data kryptert med PGP
+	[sv]description=PGP-krypterad data
+
+application/pgp-keys
+	description=PGP keys
+	[da]description=PGP-nøgler 
+	[fr]description=Clés PGP
+	[no]description=PGP-nøkler
+	[sv]description=PGP-nycklar
+
+application/pgp-signature
+	description=PGP signature
+	[da]description=PGP-signatur
+	[fr]description=Signature PGP
+	[no]description=PGP-signatur
+	[sv]description=PGP-signatur
+	
+application/pkcs7-mime
+	description=S/MIME data
+	[da]description=S/MIME-data
+	[fr]description=Donnée S/MIME
+	[no]description=S/MIME-data
+	[sv]description=S/MIME-data
+
+application/pkcs7-signature
+	description=S/MIME signature
+	[da]description=S/MIME-signatur
+	[fr]description=Signature S/MIME
+	[no]description=S/MIME-signatur
+	[sv]description=S/MIME-signatur
+
+application/postscript
+	description=PostScript document
+	[da]description=PostScript-dokument
+	[fr]description=Document PostScript
+	[no]description=PostScript dokument
+	[sv]description=PostScript-dokument
+	default_action_type=application
+	default_application_id=ggv
+	short_list_application_ids_for_novice_user_level=ggv,gv,ghostview
+	short_list_application_ids_for_intermediate_user_level=ggv,gv,ghostview
+	short_list_application_ids_for_hacker_user_level=ggv,gv,ghostview
+
+application/rtf
+	description=rich text
+	[fr]description=Texte enrichi
+	[da]description=Rig tekst
+	[no]description=Rik tekst
+	[sv]description=rik text
+	default_action_type=application
+	default_application_id=abiword
+	short_list_application_ids_for_novice_user_level=staroffice,abiword,applix
+	short_list_application_ids_for_intermediate_user_level=staroffice,abiword,applix
+	short_list_application_ids_for_hacker_user_level=staroffice,abiword,applix
+	
+application/vnd.ms-excel
+	description=Microsoft Excel document
+	[da]description=Microsoft Excel-dokument
+	[fr]description=Document Microsoft Excel
+	[no]description=Microsoft Excel dokument
+	[sv]description=Microsoft Excel-dokument
+	default_action_type=application
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=staroffice,applix,gnumeric
+	short_list_application_ids_for_intermediate_user_level=staroffice,applix,gnumeric
+	short_list_application_ids_for_hacker_user_level=staroffice,applix,gnumeric
+	
+application/x-applix-spreadsheet
+	description=Applix spreadsheet
+	[da]description=Applix-regneark
+	[fr]description=Feuille de calcul Applix
+	[no]description=Applix regneark
+	[sv]description=Applix-kalkylblad
+	icon-filename=i-spreadsheet
+	default_action_type=application
+	default_application_id=applix
+	short_list_application_ids_for_novice_user_level=applix
+	short_list_application_ids_for_intermediate_user_level=applix
+	short_list_application_ids_for_hacker_user_level=applix
+
+application/x-applix-word
+	description=Applix Word document
+	[da]description=Applix Word-dokument
+	[fr]description=Document Applix Word
+	[no]description=Applix Word dokument
+	[sv]description=Applix Word-dokument
+	default_action_type=application
+	default_application_id=applix
+	short_list_application_ids_for_novice_user_level=applix
+	short_list_application_ids_for_intermediate_user_level=applix
+	short_list_application_ids_for_hacker_user_level=applix
+
+application/x-arj
+	description=arj archive
+	[fr]description=Archive ARJ
+	[no]description=ARJ-arkiv
+	[sv]description=ARJ-arkiv
+
+application/x-asp
+	description=active server page
+	[da]description=Active Server Page
+	[fr]description=Active Server Page
+	[no]description=Active Server Page
+	[sv]description=Active Server Page
+
+application/x-backup
+	description=backup document
+	[da]description=Sikkerhedskopi
+	[fr]description=Document de sauvegarde
+	[no]description=Sikkerhetskopi
+	[sv]description=säkerhetskopia
+
+application/x-bcpio
+	description=BCPIO document
+	[da]description=BCPIO-dokument
+	[fr]description=Document BCPIO
+	[no]description=BCPIO-dokument
+	[sv]description=BCPIO-dokument
+
+application/x-bzip
+	description=bzip archive
+	[da]description=bzip-arkiv
+	[fr]description=Archive bzip
+	[no]description=bzip-arkiv
+	[sv]description=bzip-arkiv
+	vfs-method=bzip2
+
+application/x-bzip-compressed-tar
+	description=bzip archive
+	[da]description=bzip-arkiv
+	[fr]description=Archive bzip
+	[no]description=bzip-arkiv
+	[sv]description=bzip-arkiv
+	icon-filename=gnome-compressed.png
+	vfs-method=bzip2
+
+application/x-cgi
+	description=CGI program
+	[da]description=CGI-program
+	[fr]description=Programme CGI
+	[no]description=CGI-program
+	[sv]description=CGI-program
+
+application/x-chess-pgn
+	description=PGN chess game
+	[no]description=PGN skakspil
+	[fr]description=Partie d'échec PGN
+	[no]description=PGN sjakkspill
+	[sv]description=PGN-schackparti
+
+application/x-class-file
+	description=class code
+	[da]description=Klassekode
+	[fr]description=Code classe
+	[no]description=Klassekode
+	[sv]description=klasskod
+
+application/x-compress
+	description=archive
+	[da]description=Arkiv
+	[fr]description=Archive
+	[no]description=Arkiv
+	[sv]description=arkiv
+
+application/x-compressed-tar
+	description=tar archive
+	[fr]description=Archive tar
+	[da]description=tar-arkiv
+	[no]description=tar-arkiv
+	[sv]description=tar-arkiv
+	icon-filename=gnome-package.png
+
+application/x-core-file
+	description=memory dump
+	[da]description=Hukommelsesstump
+	[fr]description=Sortie mémoire
+	[no]description=Minnedump
+	[sv]description=minnesdump
+	icon-filename=i-core.png
+
+application/x-cpio
+	description=CPIO document
+	[da]description=CPIO-dokument
+	[fr]description=Document CPIO
+	[no]description=CPIO-dokument
+	[sv]description=CPIO-dokument
+
+application/x-cpio-compressed
+	description=CPIO archive
+	[fr]description=Archive CPIO
+	[no]description=CPIO-arkiv
+	[sv]description=CPIO-arkiv
+	icon-filename=gnome-compressed.png
+
+# also text/x-csh
+application/x-csh
+	description=C-Shell script
+	[da]description=C-skalsskript
+	[fr]description=Script C-Shell
+	[no]description=C-skall skript
+	[sv]description=C-skalsskript
+
+application/x-deb
+	description=Debian package
+	[da]description=Debian pakke
+	[fr]description=Paquetage Debian
+	[no]description=Debian pakke
+	[sv]description=Debianpaket
+	icon-filename=gnome-pack-deb.png
+
+application/x-dia-diagram
+	description=Dia diagram
+	[da]description=Dia-diagram
+	[fr]description=Diagramme Dia
+	[no]description=Dia-diagram
+	[sv]description=Dia-diagram
+
+application/x-dvi
+	description=TeX dvi document
+	[da]description=TeX dvi-dokument
+	[fr]description=Document TeX dvi
+	[no]description=TeX dvi dokument
+	[sv]description=TeX dvi-dokument
+
+application/x-e-theme
+	description=Enlightenment theme
+	[da]description=Enlightenment-tema
+	[fr]description=Theme Enlightenment
+	[no]description=Enlightenment tema
+	[sv]description=Enlightenment-tema
+
+application/x-executable-file
+	description=binary program
+	[da]description=Binærprogram
+	[fr]description=Programme binaire
+	[no]description=Binærprogram
+	[sv]description=binärprogram
+
+application/x-font-afm
+	description=Adobe font metrics
+	[da]description=Adobe skrifttypefil
+	[fr]description=Métrique de fonte Adobe
+	[no]description=Adobe skrifttypefil
+	[sv]description=Adobe-typsnittsmetrik
+
+application/x-font-bdf
+	description=BDF font
+	[da]description=BDF-skrifttype
+	[fr]description=Police BDF
+	[sv]description=BDF-typsnitt
+
+application/x-font-dos
+	description=DOS font
+	[da]description=DOS-skrifttype
+	[fr]description=Police DOS
+	[sv]description=DOS-typsnitt
+
+application/x-font-framemaker
+	description=FrameMaker font
+	[da]description=FrameMaker-skrifttype
+	[fr]description=Police FrameMaker
+	[sv]description=FrameMaker-typsnitt
+
+application/x-font-libgrx
+	description=LIBGRX font
+	[da]description=LIBGRX-skrifttype
+	[fr]description=Police LIBGRX
+	[sv]description=LIBGRX-typsnitt
+
+application/x-font-linux-psf
+	description=Linux psf console font
+	[da]description=Linux PSF-konsolskrift
+	[fr]description=Police Linux console psf
+	[sv]description=Linux psf-konsolltypsnitt
+
+application/x-font-pcf
+	description=PCF font
+	[da]description=PCF-skrifttype
+	[fr]description=Police PCF
+	[sv]description=PCF-typsnitt
+
+application/x-font-speedo
+	description=Speedo font
+	[da]description=Speedo-skrifttype
+	[fr]description=Police Speedo
+	[sv]description=Speedo-typsnitt
+
+application/x-font-sunos-news
+	description=SunOS News font
+	[da]description=SunOS News-skrifttype
+	[fr]description=Police SunOS News
+	[sv]description=SunOS News-typsnitt
+
+application/x-font-tex
+	description=TeX font
+	[da]description=TeX-skrifttype
+	[fr]description=Police TeX
+	[sv]description=TeX-typsnitt
+
+application/x-font-tex-tfm
+	description=TeX font metrics
+	[sv]description=TeX-skriftmatricer
+	[fr]description=Métriques de fontes TeX
+	[sv]description=TeX-typsnittsmetrik
+
+application/x-font-ttf
+	description=TrueType font
+	[da]description=TrueType-skrifttype
+	[fr]description=Police TrueType
+	[sv]description=TrueType-typsnitt
+
+application/x-font-type1
+	description=PostScript Type 1 font
+	[da]description=PostScript Type 1-skrifttype
+	[fr]description=Police PostScript Type 1
+	[sv]description=PostScript Type 1-typsnitt
+
+application/x-font-vfont
+	description=V font
+	[da]description=V-skrifttype
+	[fr]description=Police V
+	[sv]description=V-typsnitt
+
+application/x-gmc-link
+	description=GMC link
+	[da]description=GMC-lænke
+	[fr]description=Lien GMC
+	[sv]description=GMC-länk
+
+application/x-gnome-app-info
+	description=GNOME application information
+	[da]description=Gnome-programinfo
+	[fr]description=Information d'application GNOME
+	[sv]description=GNOME-programinformation
+
+application/x-gnumeric
+	description=Gnumeric spreadsheet
+	[da]description=Gnumeric-regneark
+	[fr]description=Feuille de calcul Gnumeric
+	[sv]description=Gnumeric-kalkylblad
+	default_action_type=application
+	default_application_id=gnumeric
+	short_list_application_ids_for_novice_user_level=gnumeric
+	short_list_application_ids_for_intermediate_user_level=gnumeric
+	short_list_application_ids_for_hacker_user_level=gnumeric
+	icon-filename=i-spreadsheet
+
+application/x-gtar
+	description=gtar archive
+	[da]description=gtar-arkiv
+	[fr]description=Archive gtar
+	[sv]description=gtar-arkiv
+	icon-filename=gnome-package.png
+
+application/x-gzip
+	description=gzip archive
+	[da]description=gzip-arkiv
+	[fr]description=Archive gzip
+	[sv]description=gzip-arkiv
+	icon-filename=gnome-compressed.png
+	vfs-method=gzip
+
+application/x-hdf
+	description=HDF document
+	[fr]description=Document HDF
+	[sv]description=HDF-dokument
+
+application/x-java-byte-code
+	description=Java byte code
+	[da]description=Java-bytekode
+	[fr]description=Byte code Java
+	[sv]description=Java-bytekod
+
+application/x-kde-app-info
+	description=KDE application information
+	[da]description=KDE-programinfo
+	[fr]description=Information d'application KDE
+	[sv]description=KDE-programinformation
+
+application/x-lha
+	description=LHARC archive
+	[da]description=LHARC-arkiv
+	[fr]description=Archive LHARC
+	[sv]description=LHARC-arkiv
+
+application/x-lhz
+	description=LHA archive
+	[da]description=LHA-arkiv
+	[fr]description=Archive LHA
+	[sv]description=LHA-arkiv
+
+application/x-mif
+	description=FrameMaker interchange document
+	[da]description=FrameMaker-udbytningsdokument
+	[fr]description=Document d'échange FrameMaker
+	[sv]description=FrameMaker-utbytesdokument
+
+application/x-ms-dos-executable
+	description=DOS/Windows program
+	[da]description=DOS/Windows-program
+	[fr]description=Programme DOS/Windows
+	[sv]description=DOS/Windows-program
+
+application/x-nautilus-link
+	description=Nautilus link
+	[da]description=Nautilus-lænke
+	[fr]description=Lien Nautilus
+	[sv]description=Nautiluslänk
+
+application/x-netcdf
+	description=Unidata netCDF document
+	[da]description=Unidata netCDF-dokument
+	[fr]description=Document Unidata netCDF
+	[sv]description=Unidata netCDF-dokument
+
+application/x-object-file
+	description=object code
+	[da]description=objektkode
+	[fr]description=Code objet
+	[sv]description=objektkod
+	icon-filename=gnome-objectfile.png
+
+# also audio/x-ogg
+application/x-ogg
+	description=ogg file
+	[da]description=OOG-lydfil
+	[fr]description=Audio ogg
+	default_action_type=application
+	default_application_id=ogg123
+	short_list_application_ids_for_novice_user_level=ogg123,xmms
+	short_list_application_ids_for_intermediate_user_level=ogg123,xmms
+	short_list_application_ids_for_hacker_user_level=ogg123,xmms
+
+application/x-palm-database
+	description=Palm OS database
+	[da]description=Palm OS-database
+	[fr]description=Base de données Palm OS
+	[sv]description=Palm OS-databas
+
+application/x-pef-executable
+	description=PEF document
+	[da]description=PEF-dokument
+	[fr]description=Document PEF
+	[sv]description=PEF-dokument
+
+# also text/x-perl
+application/x-perl
+	description=Perl script
+	[da]description=Perlskript
+	[fr]description=Script Perl
+	[sv]description=Perlskript
+
+application/x-php
+	description=PHP script
+	[da]description=PHP-skript
+	[fr]description=Script PHP
+	[sv]description=PHP-skript
+
+application/x-profile
+	description=profiler results
+	[da]description=profilererresultat
+	[fr]description=Résultats du profileur
+	[sv]description=profilerarresultat
+
+application/x-rar
+	description=RAR archive
+	[da]description=RAR-arkiv
+	[fr]description=Archive RAR
+	[sv]description=RAR-arkiv
+
+application/x-reject
+	description=rejected patch file
+	[da]description=afvist kildekodelap
+	[fr]description=Fichier patch rejeté
+	[sv]description=avvisad patchfil
+
+application/x-rpm
+	description=RPM package
+	[da]description=RPM-pakke
+	[fr]description=Paquetage RPM
+	[sv]description=RPM-paket
+	icon-filename=gnome-pack-rpm.png
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70
+
+application/x-shar
+	description=shell archive
+	[da]description=skalarkiv
+	[fr]description=Archive shell
+	[sv]description=skalarkiv
+
+application/x-shared-library
+	description=shared library
+	[da]description=delt bibliotek
+	[fr]description=Bibliothèque partagée
+	[sv]description=delat bibliotek
+	icon-filename=gnome-library.png
+
+application/x-shared-library-la
+	description=shared library
+	[da]description=delt bibliotek
+	[fr]description=Bibliothèque partagée
+	[sv]description=delat bibliotek
+	icon-filename=gnome-library.png
+
+application/x-smil
+	description=SMIL script
+	[da]description=SMIL-skript
+	[fr]description=Script SMIL
+	[sv]description=SMIL-skript
+
+application/x-staroffice-presentation
+	description=StarOffice presentation
+	[da]description=StarOffice-præsentation
+	[sv]description=StarOffice-presentation
+	default_action_type=application
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=staroffice
+	short_list_application_ids_for_intermediate_user_level=staroffice
+	short_list_application_ids_for_hacker_user_level=staroffice
+
+application/x-staroffice-spreadsheet
+	description=StarOffice spreadsheet
+	[da]description=StarOffice-regneark
+	[fr]description=Feuille de calcul StarOffice
+	[sv]description=StarOffice-kalkylblad
+	icon-filename=i-spreadsheet
+	default_action_type=application
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=staroffice
+	short_list_application_ids_for_intermediate_user_level=staroffice
+	short_list_application_ids_for_hacker_user_level=staroffice
+
+application/x-staroffice-words
+	description=StarOffice word processing document
+	[da]description=StarOffice-tekstbehandlingsdokument
+	[fr]description=Document traitement de texte StarOffice
+	[sv]description=StarOffice-ordbehandlingsdokument
+	default_action_type=application
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=staroffice
+	short_list_application_ids_for_intermediate_user_level=staroffice
+	short_list_application_ids_for_hacker_user_level=staroffice
+
+application/x-stuffit
+	description=Macintosh StuffIt! archive 
+	[da]description=Macintosh StuffIt!-arkiv
+	[fr]description=Archive StuffIt! Macintosh
+	[sv]description=Macintosh StuffIt!-arkiv
+
+application/x-sv4cpio
+	description=SV4Cpio document 
+	[da]description=SV4CPIO-dokument
+	[fr]description=Document SV4Cpio
+	[sv]description=SV4CPIO-dokument
+
+application/x-sv4crc
+	description=SV4Crc document 
+	[da]description=SV4Crc-dokument
+	[fr]description=Document SV4Crc
+	[sv]description=SV4Crc-dokument
+
+application/x-tar
+	description=tar archive
+	[da]description=tar-arkiv
+	[fr]description=Archive tar
+	[sv]description=tar-arkiv
+	icon-filename=gnome-package.png
+	vfs-method=tar
+
+application/x-theme
+	description=theme
+	[da]description=tema
+	[fr]description=Thème
+	[sv]description=tema
+
+application/x-toutdoux
+	description=ToutDoux document
+	[da]description=ToutDoux-dokument
+	[fr]description=Document ToutDoux
+	[sv]description=ToutDoux-dokument
+
+application/x-troff-man-compressed
+	description=manual page archive
+	[da]description=arkiv med manualsider
+	[fr]description=Archive page de manuel
+	[sv]description=manualsidearkiv
+	icon-filename=gnome-manpage.png
+
+application/x-unix-archive
+	description=archive
+	[da]description=arkiv
+	[fr]description=Archive
+	[sv]description=arkiv
+
+application/x-ustar
+	description=UStar archive
+	[da]description=UStar-arkiv
+	[fr]description=Archive UStar
+	[sv]description=UStar-arkiv
+
+application/x-wais-source
+	description=WAIS source code
+	[da]description=WAIS-kildekode
+	[fr]description=Code source WAIS
+	[sv]description=WAIS-källkod
+
+application/x-wordperfect
+	description=WordPerfect document
+	[da]description=WordPerfect-dokument
+	[fr]description=Document WordPerfect
+	[sv]description=WordPerfect-dokument
+
+application/x-zoo
+	description=zoo archive
+	[da]description=zoo-arkiv
+	[fr]description=Archive zoo
+	[sv]description=zoo-arkiv
+
+application/zip
+	description=zip archive
+	[da]description=zip-arkiv
+	[fr]description=Archive zip
+	[sv]description=zip-arkiv
+	vfs-method=zip
+
+audio/basic
+	description=basic audio
+	[da]description=grundlæggende lyd
+	[fr]description=Audio basic
+	[sv]description=grundläggande ljud
+	icon-filename=gnome-audio.png
+
+audio/x-aifc
+	description=AIFC audio
+	[da]description=AIFC-lyd
+	[fr]description=Audio AIFC
+	[sv]description=AIFC-ljud
+
+audio/x-aiff
+	description=AIFF audio
+	[da]description=AIFC-lyd
+	[fr]description=Audio AIFF
+	[sv]description=AIFF-ljud
+	icon-filename=gnome-audio-x-aiff.png
+
+audio/x-it
+	description=Impulse Tracker audio
+	[da]description=Impulse Tracker-lyd
+	[fr]description=Audio Impulse Tracker
+	[sv]description=Impulse Tracker-ljud
+
+audio/x-midi
+	description=MIDI audio
+	[da]description=MIDI-musik
+	[fr]description=Audio Midi
+	[sv]description=MIDI-ljud
+	icon-filename=gnome-audio-midi.png
+
+audio/x-mod
+	description=MOD audio
+	[da]description=MOD-lyd
+	[fr]description=Audio MOD
+	[sv]description=MOD-ljud
+	icon-filename=gnome-audio-x-mod.png
+	default_action_type=application
+	default_application_id=soundtracker
+	short_list_application_ids_for_novice_user_level=soundtracker
+	short_list_application_ids_for_intermediate_user_level=soundtracker
+	short_list_application_ids_for_hacker_user_level=soundtracker
+
+# also audio/x-mpeg
+audio/x-mp3
+	description=MP3 audio
+	[da]description=MP3-lyd
+	[fr]description=Audio MP3
+	[sv]description=MP3-ljud
+	icon-filename=i-music
+	default_action_type=application
+	default_application_id=xmms
+	short_list_application_ids_for_novice_user_level=xmms,mpg123
+	short_list_application_ids_for_intermediate_user_level=xmms,mpg123
+	short_list_application_ids_for_hacker_user_level=xmms,mpg123
+	
+audio/x-mp3-playlist
+	description=MP3 audio playlist
+	[da]description=MP3-spilleliste
+	[fr]description=Audio liste de lecture MP3
+	[sv]description=MP3-ljudspellista
+
+# also audio/x-mp3
+audio/x-mpeg
+        description=MP3 audio
+	[da]description=MP3-lyd
+        [fr]description=Audio MP3
+        [sv]description=MP3-ljud
+        icon-filename=i-music 
+	default_action_type=application
+	default_application_id=xmms
+	short_list_application_ids_for_novice_user_level=xmms,mpg123
+	short_list_application_ids_for_intermediate_user_level=xmms,mpg123
+	short_list_application_ids_for_hacker_user_level=xmms,mpg123
+
+audio/x-mpegurl
+        description=MPEG URL
+	[da]description=MPEG-adresse
+        default_action_type=application
+        default_application_id=xmms
+	short_list_application_ids_for_novice_user_level=xmms
+	short_list_application_ids_for_intermediate_user_level=xmms
+	short_list_application_ids_for_hacker_user_level=xmms
+
+# also application/x-ogg
+audio/x-ogg
+	description=OGG Audio
+	[da]description=OGG-lyd
+	[fr]description=Audio OGG
+	icon-filename=i-music
+	default_action_type=application
+	default_application_id=ogg123
+	short_list_application_ids_for_novice_user_level=ogg123,xmms
+	short_list_application_ids_for_intermediate_user_level=ogg123,xmms
+	short_list_application_ids_for_hacker_user_level=ogg123,xmms
+
+audio/x-pn-realaudio
+	description=PN RealAudio document
+	[da]description=PN RealAudio-dokument
+	[fr]description=Document RealAudio PN
+	[sv]description=PN RealAudio-dokument
+	icon-filename=gnome-audio-x-pn-realaudio.png
+        default_action_type=application
+        default_application_id=realplayer
+        short_list_application_ids_for_novice_user_level=realplayer
+        short_list_application_ids_for_intermediate_user_level=realplayer
+        short_list_application_ids_for_hacker_user_level=realplayer
+
+audio/x-real-audio
+	description=RealAudio document
+	[da]description=RealAudio-dokument
+	[fr]description=Document RealAudio
+	[sv]description=RealAudio-dokument
+	icon-filename=gnome-audio-x-pn-realaudio.png
+        default_action_type=application
+        default_application_id=realplayer
+        short_list_application_ids_for_novice_user_level=realplayer
+        short_list_application_ids_for_intermediate_user_level=realplayer
+        short_list_application_ids_for_hacker_user_level=realplayer
+
+audio/x-riff
+	description=RIFF audio
+	[da]description=RIFF-lyd
+	[fr]description=Audio RIFF
+	[sv]description=RIFF-ljud
+	icon-filename=i-music
+        default_action_type=application
+        default_application_id=xmms
+	short_list_application_ids_for_novice_user_level=xmms
+	short_list_application_ids_for_intermediate_user_level=xmms
+	short_list_application_ids_for_hacker_user_level=xmms
+
+audio/x-s3m
+	description=Scream Tracker 3 audio
+	[da]description=Scream Tracker 3-lyd
+	[fr]description=Audio Scream Tracker 3
+	[sv]description=Scream Tracker 3-ljud
+
+audio/x-stm
+	description=Scream Tracker audio
+	[da]description=Scream Tracker-lyd
+	[fr]description=Audio Stream Tracker
+	[sv]description=Scream Tracker-ljud
+
+audio/x-ulaw
+	description=audio
+	[da]description=lyd
+	[fr]description=Audio
+	[sv]description=ljud
+	icon-filename=gnome-audio-ulaw.png
+
+audio/x-voc
+	description=VOC audio
+	[da]description=VOC-lyd
+	[fr]description=Audio VOC
+	[sv]description=VOC-ljud
+
+audio/x-wav
+	description=Wave audio
+	[da]description=Wave-lyd
+	[fr]description=Audio Wave
+	[sv]description=Wave-ljud
+	icon-filename=gnome-audio-x-wav.png
+        default_action_type=application
+        default_application_id=xmms
+	short_list_application_ids_for_novice_user_level=xmms
+	short_list_application_ids_for_intermediate_user_level=xmms
+	short_list_application_ids_for_hacker_user_level=xmms
+
+audio/x-xi
+	description=Scream Tracker instrument
+	[da]description=Scream Tracker-instrument
+	[fr]description=Instrument Scream Tracker
+	[sv]description=Scream Tracker-instrument
+
+audio/x-xm
+	description=FastTracker II audio
+	[da]description=FastTracker II-lyd
+	[fr]description=Audio FastTracker
+	[sv]description=FastTracker II-ljud
+
+# also image/x-bmp
+image/bmp
+	description=Windows bitmap image
+	[da]description=Windows-bitkortbillede
+	[fr]description=Image bitmap Windows
+	[sv]description=Windows-bitmappbild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-bmp.png
+
+image/cgm
+	description=CGM image
+	[da]description=CGM-billede
+	[fr]description=Image CGM
+	[sv]description=CGM-bild
+
+image/g3fax
+	description=G3 fax image
+	[da]description=G#-faxbillede
+	[fr]description=Image fax G3
+	[sv]description=G3-faxbild
+
+image/gif
+	description=GIF image
+	[da]description=GIF-billede
+	[fr]description=Image GIF
+	[sv]description=GIF-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-gif.png
+
+image/ief
+	description=IEF image
+	[da]description=IEF-billede
+	[fr]description=Image IEF
+	[sv]description=IEF-bild
+	icon-filename=gnome-image-ief.png
+
+image/jpeg
+	description=JPEG image
+	[da]description=JPEG-billede
+	[fr]description=Image JPEG
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-jpeg.png
+
+# also image/x-png
+image/png
+	description=PNG image
+	[da]description=PNG-billede
+	[fr]description=Image PNG
+	[sv]description=PNG-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-png.png
+
+image/svg
+	description=SVG art
+	[da]description=SVG-kunst
+	[fr]description=Art SVG
+	[sv]description=SVG-konst
+
+image/tiff
+	description=TIFF image
+	[da]description=TIFF-billede
+	[fr]description=Image TIFF
+	[sv]description=TIFF-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-tiff.png
+
+image/vnd.dwg
+	description=AutoCAD image
+	[da]description=AutoCAD-billede
+	[fr]description=Image AutoCAD
+	[sv]description=AutoCAD-bild
+
+image/vnd.dxf
+	description=DXF vector graphic
+	[da]description=DXF-vektorgrafik
+	[fr]description=Graphique vectoriel DXF
+	[sv]description=DXF-vektorgrafik
+
+image/x-3ds
+	description=3D Studio image
+	[da]description=3D Studio-billede
+	[fr]description=Image 3D Studio
+	[sv]description=3D Studio-bild
+
+image/x-applix-graphic
+	description=Applix image
+	[da]description=Applix-billede
+	[fr]description=Image Applix
+	[sv]description=Applix-bild
+	default_action_type=application
+	default_application_id=applix
+	short_list_application_ids_for_novice_user_level=applix
+	short_list_application_ids_for_intermediate_user_level=applix
+	short_list_application_ids_for_hacker_user_level=applix
+
+# also image/bmp
+image/x-bmp
+	description=Windows bitmap image
+	[da]description=Windows-bitkortbillede	
+	[fr]description=Image bitmap Windows
+	[sv]description=Windows-bitmappbild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-bmp.png
+
+image/x-cmu-raster
+	description=CMU raster image
+	[da]description=CMU-rasterbillede
+	[fr]description=Image raster CMU
+	[sv]description=CMU-rasterbild
+
+image/x-compressed-xcf
+	description=GIMP image archive
+	[da]description=Gimp-billedarkiv
+	[fr]description=Image archive GIMP
+	[sv]description=GIMP-bildarkiv
+
+image/x-ico
+	description=Windows icon image
+	[da]description=Windows-ikonbillede
+	[fr]description=Image icone Windows
+	[sv]description=Windows-ikonbild
+
+image/x-iff
+	description=IFF image
+	[da]description=IFF-billede
+	[fr]description=Image IFF
+	[sv]description=IFF-bild
+
+image/x-ilbm
+	description=ILBM image
+	[da]description=ILBM-billede
+	[fr]description=Image ILBM
+	[sv]description=ILBM-bild
+
+image/x-lwo
+	description=LightWave object
+	[da]description=LightWave-objekt
+	[fr]description=Objet LightWave
+	[sv]description=LightWave-objekt
+
+image/x-lws
+	description=LightWave scene
+	[da]description=LightWave-scene
+	[fr]description=Scène LightWave
+	[sv]description=LightWave-scen
+
+# also image/png
+image/x-png
+	description=PNG image	
+	[da]description=PNG-billede
+	[fr]description=Image PNG
+	[sv]description=PNG-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-png.png
+
+image/x-portable-anymap
+	description=PNM image
+	[da]description=PNM-billede
+	[fr]description=Image PNM
+	[sv]description=PNM-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	
+image/x-portable-bitmap
+	description=PBM image
+	[da]description=PBM-billede
+	[fr]description=Image PBM
+	[sv]description=PBM-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-pbm.png
+	
+image/x-portable-graymap
+	description=PGM image
+	[fr]description=Image PGM
+	[sv]description=PGM-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	
+image/x-portable-pixmap
+	description=PPM image
+	[da]description=PPM-billede
+	[fr]description=Image PPM
+	[sv]description=PPM-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+	icon-filename=gnome-image-ppm.png
+
+image/x-psd
+	description=Photoshop document
+	[da]description=PhotoShop-dokument
+	[sv]description=Photoshopdokument
+	default_action_type=application
+	default_application_id=eog
+	short_list_application_ids_for_novice_user_level=gimp
+	short_list_application_ids_for_intermediate_user_level=gimp
+	short_list_application_ids_for_hacker_user_level=gimp
+	icon-filename=gnome-image-psd.png
+
+image/x-rgb
+	description=RGB image
+	[da]description=RGB-billede
+	[fr]description=Image RGB
+	[sv]description=RGB-bild
+	icon-filename=gnome-image-rgb.png
+	
+image/x-tga
+	description=TarGA image
+	[da]description=TarGA-billede
+	[fr]description=Image TarGA
+	[sv]description=TarGA-bild
+	icon-filename=gnome-image-tga.png
+
+image/x-xbitmap
+	description=X bitmap image
+	[da]description=X-bitkortbillede
+	[fr]description=Image X bitmap
+	[sv]description=X-bitmappbild
+	default_action_type=application
+	default_application_id=eog
+	short_list_application_ids_for_novice_user_level=gimp
+	short_list_application_ids_for_intermediate_user_level=gimp
+	short_list_application_ids_for_hacker_user_level=gimp
+	icon-filename=gnome-image-xbm.png
+
+image/x-xcf
+	description=GIMP image
+	[da]description=Gimp-billede
+	[fr]description=Image GIMP
+	[sv]description=GIMP-bild
+	default_action_type=application
+	default_application_id=gimp
+	short_list_application_ids_for_novice_user_level=gimp
+	short_list_application_ids_for_intermediate_user_level=gimp
+	short_list_application_ids_for_hacker_user_level=gimp
+	icon-filename=gnome-image-xcf.png
+
+image/x-xfig
+	description=xfig image
+	[da]description=XFig-billede
+	[fr]description=Image xfig
+	[sv]description=xfig-bild
+	icon-filename=gnome-image-x-xfig.png
+
+image/x-xpixmap
+	description=XPM image	
+	[da]description=XPM-billede
+	[fr]description=Image XPM
+	[sv]description=XPM-bild
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
+	#default_application_id=eog
+	short_list_application_ids_for_novice_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_intermediate_user_level=electric_eyes,eog,gimp
+	short_list_application_ids_for_hacker_user_level=electric_eyes,eog,gimp
+
+image/x-xwindowdump
+	description=X window image
+	[da]description=X-vinduebillede
+	[sv]description=X-fönsterbild
+	icon-filename=gnome-image-xwd.png
+
+message/delivery-status
+	description=mail delivery report
+	[da]description=leverancerapport over epost
+	[fr]description=Rapport de livraison de courrier
+	[sv]description=e-postleveransrapport
+
+message/disposition-notification
+	description=mail disposition report
+	[da]description=disponeringsrapport over epost
+	[fr]description=Rapport de mise à disposition de courrier
+	[sv]description=e-postdispositionsrapport
+
+message/external-body
+	description=pointer to remote data
+	[da]description=hæfter til fjerndata
+	[fr]description=Pointeur vers des données distantes
+	[sv]description=pekare till fjärrdata
+
+message/news
+	description=USENET news message
+	[da]description=USENET nyhedsmeddelelse
+	[fr]description=Message de nouvelle USENET
+	[sv]description=diskussionsgruppsmeddelande
+
+message/partial
+	description=partial email message
+	[da]description=del af elektronisk brev
+	[fr]description=Message de courrier électronique partiel
+	[sv]description=del av e-postmeddelande
+
+message/rfc822
+	description=email message
+	[da]description=elektronisk brev
+	[fr]description=Message de courrier électronique
+	[sv]description=e-postmeddelande
+
+message/x-gnu-rmail
+	description=GNU mail message
+	[da]description=Gnu-postmeddelelse
+	[fr]description=Message de courrier GNU
+	[sv]description=GNU-epostmeddelande
+
+model/vrml
+	description=VRML data
+	[da]description=VRML-data
+	[fr]description=Donnée VRML
+	[sv]description=VRML-data
+
+multipart/alternative
+	description=message in several formats
+	[da]description=meddelelse i flere formater
+	[fr]description=Message dans différents formats
+	[sv]description=meddelande i flera format
+
+multipart/appledouble
+	description=Macintosh AppleDouble-encoded document
+	[da]description=dokument kodet med Macintosh AppleDouble
+	[fr]description=Document encodé AppleDouble Macintosh
+	[sv]description=dokument kodat med Macintosh AppleDouble
+
+multipart/digest
+	description=message digest
+	[da]description=meddelelsessamling
+	[fr]description=Message digest
+	[sv]description=meddelandesamling
+
+multipart/encrypted
+	description=encrypted message
+	[da]description=krypteret meddelelse
+	[fr]description=Message encrypté
+	[sv]description=krypterat meddelande
+
+multipart/mixed
+	description=multi-part message
+	[da]description=meddelelse i flere dele
+	[fr]description=Message multi-part
+	[sv]description=meddelande i flera delar
+
+multipart/related
+	description=compound document
+	[da]description=sammensat dokument
+	[fr]description=Message composé
+	[sv]description=sammansatt dokument
+
+multipart/report
+	description=mail system report
+	[da]description=epost-systemrapport
+	[fr]description=Rapport de système de courrier
+	[sv]description=e-postsystemrapport
+
+multipart/signed
+	description=signed message
+	[da]description=signeret meddelelse
+	[fr]description=Message signé
+	[sv]description=signerat meddelande
+
+text/*
+	default_action_type=component
+	default_component_iid=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_novice_user_level=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_intermediate_user_level=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_hacker_user_level=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	#default_application_id=gedit
+	short_list_application_ids_for_novice_user_level=gedit,xfte
+	short_list_application_ids_for_intermediate_user_level=xemacs,emacs,nedit,gedit,xfte
+	short_list_application_ids_for_hacker_user_level=xemacs,gvim,emacs,vi,nedit,gedit,xfte
+
+text/abiword
+	description=AbiWord document
+	[da]description=AbiWord-dokument
+	[fr]description=Document AbiWord
+	[sv]description=AbiWord-dokument
+	default_action_type=application
+	default_application_id=abiword
+	short_list_application_ids_for_novice_user_level=staroffice,abiword
+	short_list_application_ids_for_intermediate_user_level=staroffice,abiword
+	short_list_application_ids_for_hacker_user_level=staroffice,abiword
+
+text/bib
+	description=bibliography record
+	[fr]description=Enregistrement bibliographique
+	[sv]description=bibliografipost
+
+text/calendar
+	description=calendar information
+	[da]description=kalenderinformation
+	[fr]description=Information de calendrier
+	[sv]description=kalenderinformation
+
+text/css
+	description=style sheet
+	[da]description=stilark
+	[fr]description=Feuille de style
+	[sv]description=stilmall
+
+text/directory
+	description=directory information
+	[da]description=kataloginformation
+	[fr]description=Information de répertoire
+	[sv]description=kataloginformation
+
+text/enriched
+	description=enriched text
+	[da]description=beriget tekst
+	[fr]description=Text enrichi
+	[sv]description=enriched text
+
+text/html
+	description=HTML document
+	[da]description=HTML-dokument
+	[fr]description=Document HTML
+	[sv]description=HTML-dokument
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	#default_application_id=mozilla
+	short_list_application_ids_for_novice_user_level=mozilla,netscape,galeon
+	short_list_application_ids_for_intermediate_user_level=mozilla,netscape,galeon
+	short_list_application_ids_for_hacker_user_level=mozilla,netscape,lynx,galeon
+
+text/htmlh
+	description=Help page
+	[da]description=Hjælpeside
+	[sv]description=Hjälpsida
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1
+
+text/mathml
+	description=MathML document
+	[da]description=MathML-dokument
+	[fr]description=Document MathML
+	[sv]description=MathML-dokument
+
+text/plain
+	description=plain text
+	[da]description=ren tekst
+	[fr]description=Texte plein
+	[sv]description=vanlig text
+	default_action_type=component
+	default_component_iid=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_novice_user_level=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_intermediate_user_level=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_hacker_user_level=OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	#default_application_id=gedit
+	short_list_application_ids_for_novice_user_level=gedit
+	short_list_application_ids_for_intermediate_user_level=xemacs,emacs,nedit,gedit,xfte
+	short_list_application_ids_for_hacker_user_level=xemacs,gvim,emacs,vi,nedit,gedit,xfte
+
+text/rfc822-headers
+	description=email headers
+	[da]description=Elektronisk brevhoved
+	[fr]description=En-tête de courrier électronique
+	[sv]description=e-posthuvuden
+
+text/richtext
+	description=rich text
+	[da]description=rigtekst
+	[fr]description=Texte riche
+	[sv]description=rik text
+
+text/sgml
+	description=SGML document
+	[da]description=SGML-dokument
+	[fr]description=Document SGML
+	[sv]description=SGML-dokument
+
+text/tab-separated-values
+	description=tab-separated text
+	[da]description=tabulatorsepareret tekst
+	[fr]description=Texte séparé par des tabulations
+	[sv]description=tabbseparerad text
+
+# Note that text/tex should be text/x-tex, but a user reported
+# a complaint about text/tex in Nautilus, so some non-gnome-vfs
+# mechanism must be returning it (probably a web server)
+text/tex
+	description=TeX document
+	[da]description=TeX-dokument
+	[fr]description=Document TeX
+	[sv]description=TeX-dokument
+
+text/x-authors
+	description=authors list
+	[da]description=forfatterliste
+	[fr]description=Liste d'auteurs
+	[sv]description=författarlista
+
+text/x-c
+	description=C source code
+	[da]description=C-kildekode
+	[fr]description=Code source C
+	[sv]description=C-källkod
+
+text/x-c++
+	description=C++ source code
+	[da]description=C++-kildekode
+	[fr]description=Code source C++
+	[sv]description=C++-källkod
+
+text/x-comma-separated-values
+	description=comma-separated text
+	[da]description=kommasepareret tekst
+	[fr]description=Texte séparé par des virgules
+	[sv]description=kommaseparerad text
+
+text/x-copying
+	description=GNU license
+	[da]description=Gnu-licens
+	[fr]description=Licence GNU
+	[sv]description=GNU-licens
+
+text/x-credits
+	description=author credits
+	[da]description=forfatterliste
+	[fr]description=Crédits d'auteur
+	[sv]description=författarlista
+
+# also application/x-csh
+text/x-csh
+	description=C-Shell script
+	[da]description=C-skalskript
+	[fr]description=Script C-Shell
+	[sv]description=C-skalskript
+
+text/x-dcl
+	description=DCL script
+	[da]description=DCL-skript
+	[fr]description=Script DCL
+	[sv]description=DCL-skript
+
+text/x-dsl
+	description=DSSSL document
+	[da]description=DSSSL-dokument
+	[fr]description=Document DSSSL
+	[sv]description=DSSSL-dokument
+
+text/x-dtd
+	description=document type definition
+	[da]description=dokumenttypedefination
+	[fr]description=Définition de type de document
+	[sv]description=dokumenttypdefinition
+
+text/x-emacs-lisp
+	description=Emacs Lisp source code
+	[da]description=Emacs Lisp-kildekode
+	[fr]description=Code source Emacs Lisp
+	[sv]description=Emacs Lisp-källkod
+
+text/x-fortran
+	description=Fortran source code
+	[da]description=Fortran-kildekode
+	[fr]description=Code source Fortran
+	[sv]description=Fortran-källkod
+
+text/x-gtkrc
+	description=GTK configuration
+	[da]description=Gtk-konfiguration
+	[fr]description=Configuration GTK
+	[sv]description=GTK-konfiguration
+
+text/x-idl
+	description=IDL document
+	[da]description=IDL-dokument
+	[fr]description=Document IDL
+	[sv]description=IDL-dokument
+
+text/x-install
+	description=installation instructions
+	[da]description=Installationsinstruktioner
+	[fr]description=Instructions d'installation
+	[sv]description=installationsinstruktioner
+
+text/x-java
+	description=Java source code
+	[da]description=Java-kildekode
+	[fr]description=Code source Java
+	[sv]description=Java-källkod
+
+text/x-ksh
+	description=Korn shell script
+	[da]description=Korn-skalskript
+	[fr]description=Script Korn Shell
+	[sv]description=Korn-skalskript
+
+text/x-makefile
+	description=Makefile
+	[da]description=Makefil
+	[fr]description=Makefile
+	[sv]description=Makefil
+
+text/x-patch
+	description=source code patch
+	[da]description=kildekodelap
+	[fr]description=Code source patch
+	[sv]description=källkodspatch
+
+# also application/x-perl
+text/x-perl
+	description=Perl script
+	[da]description=Perlskript
+	[fr]description=Script Perl
+	[sv]description=Perlskript
+
+text/x-python
+	description=Python script
+	[da]description=Pythonskript
+	[fr]description=Script Python
+	[sv]description=Pythonskript
+
+text/x-readme
+	description=README file
+	[da]description=README-fil (læs mig)
+	[fr]description=Fichier README
+	[sv]description=README-fil
+
+text/x-scheme
+	description=Scheme source code
+	[fr]description=Code source Scheme
+	[sv]description=Scheme-källkod
+
+text/x-setext
+	description=Setext document
+	[da]description=Setext-dokument
+	[fr]description=Document Setext
+	[sv]description=Setext-dokument
+
+text/x-sh
+	description=shell script
+	[da]description=skalskript
+	[fr]description=Script shell
+	[sv]description=skalskript
+
+text/x-speech
+	description=Speech document
+	[da]description=Speech-dokument
+	[fr]description=Document Speech
+	[sv]description=Speech-dokument
+
+text/x-sql
+	description=SQL source code
+	[da]description=SQL-kildekode
+	[fr]description=Code source SQL
+	[sv]description=SQL-källkod
+
+text/x-tcl
+	description=Tcl script
+	[da]description=Tcl-skript
+	[fr]description=Script Tcl
+	[sv]description=Tcl-skript
+
+# also text/tex
+text/x-tex
+	description=TeX document
+	[da]description=TeX-dokument
+	[fr]description=Document TeX
+	[sv]description=TeX-dokument
+
+text/x-texinfo
+	description=TeXInfo document
+	[da]description=TeXInfo-dokument
+	[fr]description=Document TeXInfo
+	[sv]description=TeXInfo-dokument
+
+text/x-troff
+	description=Troff document
+	[da]description=Troff-dokument
+	[fr]description=Document Trof
+	[sv]description=Troff-dokument
+
+text/x-troff-man
+	description=manual page
+	[da]description=manualside
+	[fr]description=Page de manuel
+	[sv]description=manualsida
+	icon-filename=gnome-manpage.png
+
+text/x-troff-me
+	description=Troff ME-macros document
+	[da]description=Troff ME-makrodokument
+	[fr]description=Document ME-macros Troff
+	[sv]description=Troff ME-makrodokument
+
+text/x-troff-ms
+	description=Troff MS-macros document
+	[da]description=Troff MS-makrodokument
+	[fr]description=Document MS-macros Troff
+	[sv]description=Troff MS-makrodokument
+
+text/x-vcalendar
+	description=calendar or event information
+	[da]description=kalender eller evenementsinformation
+	[fr]description=Information de calendrier ou d'événement
+	[sv]description=kalender eller evenemangsinformation
+
+text/x-vcard
+	description=address card
+	[da]description=adressekort
+	[fr]description=Carte d'adresse
+	[sv]description=adresskort
+
+text/xml
+	description=XML document
+	[da]description=XML-dokument
+	[fr]description=Document XML
+	[sv]description=XML-dokument
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	#default_application_id=mozilla
+	short_list_application_ids_for_novice_user_level=mozilla
+	short_list_application_ids_for_intermediate_user_level=mozilla
+	short_list_application_ids_for_hacker_user_level=mozilla
+
+video/isivideo
+	description=ISI video
+	[da]description=ISI-film
+	[fr]description=Vidéo ISI
+	[sv]description=ISI-video
+
+video/mpeg
+	description=MPEG movie
+	[da]description=MPEG-film
+	[fr]description=Vidéo MPEG
+	[sv]description=MPEG-film
+	default_action_type=application
+	default_application_id=mtvp
+	short_list_application_ids_for_novice_user_level=mtvp,mtv,mpeg_play
+	short_list_application_ids_for_intermediate_user_level=mtvp,mtv,mpeg_play
+	short_list_application_ids_for_hacker_user_level=mtvp,mtv,mpeg_play
+       
+video/msvideo
+	description=MS video
+	[da]description=Microsoft Video-film
+	[fr]description=Vidéo MS
+	[sv]description=MS-video
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+video/quicktime
+	description=QuickTime movie
+	[da]description=QuickTime-film
+	[fr]description=Vidéo QuickTime
+	[sv]description=QuickTime-film
+	default_action_type=application
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+video/vivo
+	description=Vivo video
+	[da]description=Vivo-film
+	[fr]description=Vidéo Vivo
+	[sv]description=Vivo-video
+
+video/wavelet
+	description=Wavelet video
+	[da]description=Wavelet-film
+	[fr]description=Vidéo Wavelet
+	[sv]description=Wavelet-video
+
+video/x-anim
+	description=animation
+	[da]description=animation
+	[fr]description=Animation
+	[sv]description=animation
+	default_action_type=application
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+video/x-avi
+	description=Audio-Video Interleave
+	default_action_type=application
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+video/x-flc
+	description=FLC video animation
+	[da]description=FLC-animation
+	[fr]description=Vidéo d'animation FLC
+	[sv]description=FLC-videoanimation
+	default_action_type=application
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+video/x-fli
+	description=FLI video animation
+	[da]description=FLI-animation
+	[fr]description=Vidéo d'animation FLI
+	[sv]description=FLI-videoanimation
+	default_action_type=application
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+video/x-msvideo
+	description=MS video
+	[da]description=Microsoft Video
+	[fr]description=Vidéo MS
+	[sv]description=MS-video
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+video/x-real-video
+	description=RealVideo document
+	[da]description=RealVideo-dokument
+	[fr]description=Document RealVideo
+        default_action_type=application
+        default_application_id=realplayer
+        short_list_application_ids_for_novice_user_level=realplayer
+        short_list_application_ids_for_intermediate_user_level=realplayer
+        short_list_application_ids_for_hacker_user_level=realplayer
+
+video/x-sgi-movie
+	description=SGI movie
+	[da]description=SGI-film
+	[fr]description=Vidéo SGI
+	[sv]description=SGI-film
+	default_action_type=application
+	default_application_id=xanim
+	short_list_application_ids_for_novice_user_level=xanim
+	short_list_application_ids_for_intermediate_user_level=xanim
+	short_list_application_ids_for_hacker_user_level=xanim
+
+x-directory/normal
+	description=folder
+	[da]description=mappe
+	[fr]description=Répertoire
+	[sv]description=mapp
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391
+
+x-directory/search
+	description=search results
+	[da]description=søgeresultat
+	[fr]description=Résultats de recherche
+	[sv]description=sökresultat
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
+
+x-directory/webdav
+	description=web folder
+	[da]description=webmappe
+	[fr]description=Dossier Web
+	[sv]description=webbmapp
+	default_action_type=component
+	default_component_iid=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	short_list_component_iids_for_hacker_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b,OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391,OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821
+	#default_application_id=mozilla
+
+x-special/device-block
+	description=block device
+	[da]description=blokenhed
+	[fr]description=Périphérique bloc
+	[sv]description=blockenhet
+
+x-special/device-char
+	description=character device
+	[da]description=tegnenhed
+	[fr]description=Périphérique caractère
+	[sv]description=teckenenhet
+
+x-special/fifo
+	description=named pipe
+	[da]description=navngivet rør
+	[fr]description=Conduit nommé
+	[sv]description=namngivet rör
+
+x-special/socket
+	description=socket
+	[da]description=sokkel
+	[fr]description=Socket
+	[sv]description=uttag
+
+x-special/symlink
+	description=link
+	[da]description=lænke
+	[fr]description=Lien
+	[sv]description=länk
+

@@ -1,0 +1,686 @@
+# gnome-vfs sk.po
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2000.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2000-11-06 23:37-0800\n"
+"PO-Revision-Date: 2000-11-03 09:24CET\n"
+"Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
+"Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO 8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.6\n"
+
+#: libgnomevfs/gnome-vfs-configuration.c:187
+#, c-format
+msgid "%s:%d contains NUL characters."
+msgstr "%s:%d obsahuje znaky NUL."
+
+#: libgnomevfs/gnome-vfs-configuration.c:204
+#, c-format
+msgid "%s:%d contains no method name."
+msgstr "%s:%d neobsahuje meno metódy."
+
+#: libgnomevfs/gnome-vfs-configuration.c:233
+#, c-format
+msgid "%s:%d contains no module name."
+msgstr "%s:%d neobsahuje meno modulu."
+
+#: libgnomevfs/gnome-vfs-configuration.c:286
+#, c-format
+msgid "Configuration file `%s' was not found: %s"
+msgstr "Konfiguraèný súbor '%s' nebol nájdený: %s"
+
+#: libgnomevfs/gnome-vfs-file-info.c:342
+#, c-format
+msgid "Unknown sort rule %d"
+msgstr "Neznáme pravidlo triedenia %d"
+
+#: libgnomevfs/gnome-vfs-init.c:69
+msgid "GNOME VFS already initialized."
+msgstr "GNOME VFS u¾ bolo inicializované."
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:656
+#, c-format
+msgid "Could not parse: %s"
+msgstr "Nemô¾em rozlo¾i»: %s"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:658
+msgid "More parsing errors will be ignored."
+msgstr "Ïal¹ie chyby budú ignorované."
+
+#. GNOME_VFS_OK
+#: libgnomevfs/gnome-vfs-result.c:39
+msgid "No error"
+msgstr "Bez chyby"
+
+#. GNOME_VFS_ERROR_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:40
+msgid "File not found"
+msgstr "Súbor nenájdený"
+
+#. GNOME_VFS_ERROR_GENERIC
+#: libgnomevfs/gnome-vfs-result.c:41
+msgid "Generic error"
+msgstr "Chyba"
+
+#. GNOME_VFS_ERROR_INTERNAL
+#: libgnomevfs/gnome-vfs-result.c:42
+msgid "Internal error"
+msgstr "Interná chyba"
+
+#. GNOME_VFS_ERROR_BAD_PARAMETERS
+#: libgnomevfs/gnome-vfs-result.c:43
+msgid "Invalid parameters"
+msgstr "Neplatné parametre"
+
+#. GNOME_VFS_ERROR_NOT_SUPPORTED
+#: libgnomevfs/gnome-vfs-result.c:44
+msgid "Unsupported operation"
+msgstr "Nepodporovaná operácia"
+
+#. GNOME_VFS_ERROR_IO
+#: libgnomevfs/gnome-vfs-result.c:45
+msgid "I/O error"
+msgstr "V/V chyba"
+
+#. GNOME_VFS_ERROR_CORRUPTED_DATA
+#: libgnomevfs/gnome-vfs-result.c:46
+msgid "Data corrupted"
+msgstr "Po¹kodené dáta"
+
+#. GNOME_VFS_ERROR_WRONG_FORMAT
+#: libgnomevfs/gnome-vfs-result.c:47
+msgid "Format not valid"
+msgstr "Neplatný formát"
+
+#. GNOME_VFS_ERROR_BAD_FILE
+#: libgnomevfs/gnome-vfs-result.c:48
+msgid "Bad file handle"
+msgstr "Chybný handle súboru"
+
+#. GNOME_VFS_ERROR_TOO_BIG
+#: libgnomevfs/gnome-vfs-result.c:49
+msgid "File too big"
+msgstr "Príli¹ veµký súbor"
+
+#. GNOME_VFS_ERROR_NO_SPACE
+#: libgnomevfs/gnome-vfs-result.c:50
+msgid "No space left on device"
+msgstr "Nedostatok miesta na zariadení"
+
+#. GNOME_VFS_ERROR_READ_ONLY
+#: libgnomevfs/gnome-vfs-result.c:51
+msgid "Read-only file system"
+msgstr "Súborový systém len pre èítanie"
+
+#. GNOME_VFS_ERROR_INVALID_URI
+#: libgnomevfs/gnome-vfs-result.c:52
+msgid "Invalid URI"
+msgstr "Neplatné URI"
+
+#. GNOME_VFS_ERROR_NOT_OPEN
+#: libgnomevfs/gnome-vfs-result.c:53
+msgid "File not open"
+msgstr "Neotvorený súbor"
+
+#. GNOME_VFS_ERROR_INVALID_OPEN_MODE
+#: libgnomevfs/gnome-vfs-result.c:54
+msgid "Open mode not valid"
+msgstr "Mód otvorenia neplatný"
+
+#. GNOME_VFS_ERROR_ACCESS_DENIED
+#: libgnomevfs/gnome-vfs-result.c:55
+msgid "Access denied"
+msgstr "Prístup odmietnutý"
+
+#. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
+#: libgnomevfs/gnome-vfs-result.c:56
+msgid "Too many open files"
+msgstr "Príli¹ veµa otvorených súborov"
+
+#. GNOME_VFS_ERROR_EOF
+#: libgnomevfs/gnome-vfs-result.c:57
+msgid "End of file"
+msgstr "Koniec súboru"
+
+#. GNOME_VFS_ERROR_NOT_A_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:58
+msgid "Not a directory"
+msgstr "Nie je prieèinok"
+
+#. GNOME_VFS_ERROR_IN_PROGRESS
+#: libgnomevfs/gnome-vfs-result.c:59
+msgid "Operation in progress"
+msgstr "Operácia prebieha"
+
+#. GNOME_VFS_ERROR_INTERRUPTED
+#: libgnomevfs/gnome-vfs-result.c:60
+msgid "Operation interrupted"
+msgstr "Operácia preru¹ená"
+
+#. GNOME_VFS_ERROR_FILE_EXISTS
+#: libgnomevfs/gnome-vfs-result.c:61
+msgid "File exists"
+msgstr "Súbor existuje"
+
+#. GNOME_VFS_ERROR_LOOP
+#: libgnomevfs/gnome-vfs-result.c:62
+msgid "Looping links encountered"
+msgstr "Zaznamenaný cyklické odkazy"
+
+#. GNOME_VFS_ERROR_NOT_PERMITTED
+#: libgnomevfs/gnome-vfs-result.c:63
+msgid "Operation not permitted"
+msgstr "Nedovolená operácia"
+
+#. GNOME_VFS_ERROR_IS_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:64
+msgid "Is a directory"
+msgstr "Je prieèinok"
+
+#. GNOME_VFS_ERROR_NO_MEMMORY
+#: libgnomevfs/gnome-vfs-result.c:65
+msgid "Not enough memory"
+msgstr "Nedostatok pamäte"
+
+#. GNOME_VFS_ERROR_HOST_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:66
+msgid "Host not found"
+msgstr "Hostiteµ nenájdený"
+
+#. GNOME_VFS_ERROR_INVALID_HOST_NAME
+#: libgnomevfs/gnome-vfs-result.c:67
+msgid "Host name not valid"
+msgstr "Neplatné meno hostiteµa"
+
+#. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
+#: libgnomevfs/gnome-vfs-result.c:68
+msgid "Host has no address"
+msgstr "Hostiteµ nemá adresu"
+
+#. GNOME_VFS_ERROR_LOGIN_FAILED
+#: libgnomevfs/gnome-vfs-result.c:69
+msgid "Login failed"
+msgstr "Zlyhalo prihlásenie"
+
+#. GNOME_VFS_ERROR_CANCELLED
+#: libgnomevfs/gnome-vfs-result.c:70
+msgid "Operation cancelled"
+msgstr "Operácia zru¹ená"
+
+#. GNOME_VFS_ERROR_DIRECTORY_BUSY
+#: libgnomevfs/gnome-vfs-result.c:71
+msgid "Directory busy"
+msgstr "Prieèinok zaneprázdnený"
+
+#. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
+#: libgnomevfs/gnome-vfs-result.c:72
+msgid "Directory not empty"
+msgstr "Prieèinok nie je prázdny"
+
+#. GNOME_VFS_ERROR_TOO_MANY_LINKS
+#: libgnomevfs/gnome-vfs-result.c:73
+msgid "Too many links"
+msgstr "Príli¹ veµa odkazov"
+
+#. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:74
+msgid "Read only file system"
+msgstr "Súborový systém len pre èítanie"
+
+#. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:75
+msgid "Not on the same file system"
+msgstr "Nie je na rovnakom súborovom systéme"
+
+#. GNOME_VFS_ERROR_NAME_TOO_LONG
+#: libgnomevfs/gnome-vfs-result.c:76
+msgid "Name too long"
+msgstr "Meno príli¹ dlhé"
+
+#. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
+#: libgnomevfs/gnome-vfs-result.c:77
+msgid "Service not available"
+msgstr "Slu¾ba nie je k dispozícii"
+
+#: libgnomevfs/gnome-vfs-result.c:140
+msgid "Unknown error"
+msgstr "Neznáma chyba"
+
+#: libgnomevfs/gnome-vfs-utils.c:58
+msgid "1 byte"
+msgstr "1 bajt"
+
+#: libgnomevfs/gnome-vfs-utils.c:60
+#, c-format
+msgid "%u bytes"
+msgstr "%u bajtov"
+
+#: libgnomevfs/gnome-vfs-utils.c:67
+#, c-format
+msgid "%.1fK"
+msgstr "%.1fK"
+
+#: libgnomevfs/gnome-vfs-utils.c:71
+#, c-format
+msgid "%.1fM"
+msgstr "%.1fM"
+
+#: libgnomevfs/gnome-vfs-utils.c:75
+#, c-format
+msgid "%.1fG"
+msgstr "%.1fG"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:336
+msgid "Dying."
+msgstr "Umieram."
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:501
+#, c-format
+msgid "Error reading: %s"
+msgstr "Chyba pri èítaní: %s"
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:523
+#, c-format
+msgid "Error writing: %s"
+msgstr "Chyba pri zápise: %s"
+
+#. FIXME bugzilla.eazel.com 1226:
+#: libgnomevfs-corba/gnome-vfs-slave.c:572
+#, c-format
+msgid "Cannot write: %s"
+msgstr "Nemô¾em zapisova»: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:600
+#, c-format
+msgid "Cannot create temporary file name `%s'"
+msgstr "Nemô¾em vytvori» meno doèasného súboru '%s'"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:192
+#: libgnomevfs-corba/gnome-vfs-slave.c:614
+#, c-format
+msgid "Cannot create socket: %s"
+msgstr "Nemô¾em vytvori» soket: %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:632
+#, c-format
+msgid "Cannot bind `%s': %s"
+msgstr "Nemô¾em sa pripoji» '%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:639
+#, c-format
+msgid "Cannot listen on `%s': %s"
+msgstr "Nemô¾em poèúva» na '%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:661
+#, c-format
+msgid "Cannot accept connections on `%s': %s"
+msgstr "Nemô¾em prijíma» spojenia na '%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1278
+msgid "Cannot initialize CORBA."
+msgstr "Nemô¾em inicializova» CORBu."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1285
+msgid "Cannot resolve initial reference to RootPOA."
+msgstr "Nemô¾em získa» poèiatoènú referenciu na RootPOA."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1292
+msgid "Cannot activate POA manager."
+msgstr "Nemô¾em aktivova» správcu POA."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1317
+#, c-format
+msgid "Usage: %s <ior> [<ior_fd>]\n"
+msgstr "Pou¾itie: %s <ior> [<ior_fd>]\n"
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1328
+#, c-format
+msgid "Cannot open file descriptor %d."
+msgstr "Nemô¾em otvori» popisovaè súboru: %d."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1351
+#, c-format
+msgid "Notify interface for `%s' not found."
+msgstr "Nebolo nájdené rozhranie pre upozornenia pre '%s'."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1361
+msgid "Cannot setup Request object."
+msgstr "Nemô¾em zostavi» objekt po¾iadavky."
+
+#: libgnomevfs-corba/gnome-vfs-slave.c:1368
+msgid "Cannot extract IOR."
+msgstr "Nemô¾em získa» IOR."
+
+#: libgnomevfs-corba/gnome-vfs-slave-launch.c:174
+#, c-format
+msgid "Got weird string from the slave process: `%s'"
+msgstr "Prijatý divný re»azec od potomka: '%s'"
+
+#: libgnomevfs-corba/gnome-vfs-slave-launch.c:181
+#, c-format
+msgid "Cannot get object for `%s'"
+msgstr "Nemô¾em získa» objekt od '%s'"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:125
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave::Notify -- exception %s"
+msgstr "Nemô¾em zabi» GNOME::VFS::Slave::Notify -- výnimka %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:204
+#, c-format
+msgid "Cannot connect socket `%s': %s"
+msgstr "Nemô¾em sa pripoji» na soket '%s': %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-notify.c:750
+msgid "Cannot initialize GNOME::VFS:Slave::Notify"
+msgstr "Nemô¾em inicializova» GNOME::VFS::Slave::Notify"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:120
+#, c-format
+msgid "Cannot reset GNOME::VFS::Slave %s -- exception %s"
+msgstr "Nemô¾em re¹tartova» GNOME::VFS::Slave %s -- výnimka %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:123
+#, c-format
+msgid "Cannot reset GNOME::VFS::Slave (IOR unknown) -- exception %s"
+msgstr "Nemô¾em re¹tartova» GNOME::VFS::Slave (IOR neznáme) -- výnimka %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:154
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave %s -- exception %s"
+msgstr "Nemô¾em zabi» GNOME::VFS::Slave %s -- výnimka %s"
+
+#: libgnomevfs-corba/gnome-vfs-slave-process.c:157
+#, c-format
+msgid "Cannot kill GNOME::VFS::Slave (IOR unknown) -- exception %s"
+msgstr "Nemô¾em zabi» GNOME::VFS::Slave (IOR neznáme) -- výnimka %s"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:157
+msgid "Error writing to the wakeup GnomeVFSJob channel."
+msgstr "Chyba pri zápise do zobúdzacieho kanálu  GnomeVFSJob."
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:762
+#: libgnomevfs-pthread/gnome-vfs-job.c:1672
+#, c-format
+msgid "Unknown job ID %d"
+msgstr "Neznáme ID úlohy %d"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:1061
+#: libgnomevfs-pthread/gnome-vfs-job.c:1189
+#, c-format
+msgid "Cannot create pipe for open GIOChannel: %s"
+msgstr "Nemô¾em vytvori» rúru pre otvorenie GIOChannel: %s"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:1705
+msgid "Operation stopped"
+msgstr "Operácia zastavená"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:333
+msgid "Edit Applications List"
+msgstr "Upravi» zoznam aplikácií"
+
+#. Add label
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:353
+#, c-format
+msgid "Select applications to appear in menu for mime type \"%s\""
+msgstr "Vyberte aplikácie, ktoré budú v menu pre typ mime \"%s\""
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:377
+msgid "Add Application..."
+msgstr "Prida» aplikáciu..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:384
+msgid "Edit Application..."
+msgstr "Upravi» aplikáciu..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:390
+msgid "Delete Application"
+msgstr "Zmaza» aplikáciu"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:423
+msgid "Edit Components List"
+msgstr "Upravi» zoznam komponent"
+
+#. Add label
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:443
+#, c-format
+msgid "Select views to appear in menu for mime type \"%s\""
+msgstr "Vyberte pohµady, ktoré budú v menu pre typ mime \"%s\""
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:620
+msgid "Add Mime Type"
+msgstr "Prida» typ mime"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:621
+msgid ""
+"Add a new Mime Type\n"
+"For example:  image/tiff; text/x-scheme"
+msgstr ""
+"Pridá nový typ Mime\n"
+"Napríklad:  image/tiff, text/x-scheme"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:626
+msgid "Mime Type:"
+msgstr "Typ mime:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:638
+msgid "Type in a description for this mime-type."
+msgstr "Zadajte popis tohoto typu mime."
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:644
+msgid "Description:"
+msgstr "Popis:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:683
+msgid "Add New Extension"
+msgstr "Prida» novú príponu"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:684
+msgid ""
+"Type in the extensions for this mime-type.\n"
+"For example:  .html, .htm"
+msgstr ""
+"Zadajte prípony pre tento typ mime.\n"
+"Napríklad: .html, .htm"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:689
+msgid "Extension:"
+msgstr "Prípona:"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:848
+msgid "New Application"
+msgstr "Nová aplikácia"
+
+#. Application Name label and entry
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:857
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:961
+msgid "Application Name:"
+msgstr "Meno aplikácie:"
+
+#. Application Command label and entry
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:865
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:970
+msgid "Application Command:"
+msgstr "Príkaz aplikácie:"
+
+#. Open Behavior frame
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:873
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:979
+msgid "Open Behavior"
+msgstr "Chovanie otvorenia"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:879
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:985
+msgid "Can open multiple files"
+msgstr "Mô¾e otvori» viacero súborov"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:882
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:989
+msgid "Can open from URI"
+msgstr "Mô¾e otvori» URI"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:952
+#, fuzzy
+msgid "Edit Application"
+msgstr "Upravi» aplikáciu..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:349
+msgid "Change Icon"
+msgstr "Zmeni» ikonu"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:361
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1216
+msgid "Mime Type"
+msgstr "Typ mime"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:382
+msgid "Add new Mime type..."
+msgstr "Pridá nový typ mime..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:389
+msgid "Delete this Mime type..."
+msgstr "Vyma¾e tento typ mime..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:404
+msgid "Use Viewer"
+msgstr "Pou¾i» zobrazovaè"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:410
+msgid "Open With Application"
+msgstr "Otvori» aplikáciou"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:422
+msgid "Edit List"
+msgstr "Upravi» zoznam"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:451
+msgid "Add"
+msgstr "Prida»"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:454
+msgid "Remove"
+msgstr "Odstráni»"
+
+#. Add default action to fourth column
+#: mime-type-capplet/nautilus-mime-type-capplet.c:640
+#: mime-type-capplet/nautilus-mime-type-capplet.c:784
+#: mime-type-capplet/nautilus-mime-type-capplet.c:919
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1108
+msgid "None"
+msgstr "®iadna"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1215
+msgid "Description"
+msgstr "Popis"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1217
+msgid "Extension"
+msgstr "Prípona"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1218
+msgid "Action"
+msgstr "Akcia"
+
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:267
+msgid "Can't find an hbox, using a normal file selection"
+msgstr "Nemô¾em nájs» hbox, pou¾ijem normálny výber súboru"
+
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:273
+msgid "Preview"
+msgstr "Uká¾ka"
+
+#: modules/efs-method.c:493 modules/file-method.c:367
+#, c-format
+msgid "Unknown GnomeVFSSeekPosition %d"
+msgstr "Neznáma GnomeVFSSeekPosition %d"
+
+#: modules/http-method.c:1149
+#, c-format
+msgid "%s to retrieve"
+msgstr "%s e¹te prija»"
+
+#: modules/http-method.c:1514
+#, c-format
+msgid "Closing connection to %s"
+msgstr "Zatváram spojenie na %s"
+
+#: modules/http-method.c:1726
+#, c-format
+msgid "%s of %s read"
+msgstr "%s z %s preèítané"
+
+#: modules/http-method.c:1729
+#, c-format
+msgid "%s read"
+msgstr "%s preèítané"
+
+#: test/gnome-file-selection/gnome-file-selection.c:671
+msgid "Back"
+msgstr "Dozadu"
+
+#: test/gnome-file-selection/gnome-file-selection.c:672
+msgid "Go to the previously visited directory"
+msgstr "Prejde do predchádzajúceho nav¹tíveného prieèinku"
+
+#: test/gnome-file-selection/gnome-file-selection.c:680
+msgid "Up"
+msgstr "Hore"
+
+#: test/gnome-file-selection/gnome-file-selection.c:681
+msgid "Go to the parent directory"
+msgstr "Prejde do rodièovského prieèinku"
+
+#: test/gnome-file-selection/gnome-file-selection.c:689
+msgid "Forward"
+msgstr "Dopredu"
+
+#: test/gnome-file-selection/gnome-file-selection.c:690
+msgid "Go to the next visited directory"
+msgstr "Prejde do následujúceho nav¹tíveného prieèinku"
+
+#: test/gnome-file-selection/gnome-file-selection.c:699
+msgid "Rescan"
+msgstr "Znovunaèíta»"
+
+#: test/gnome-file-selection/gnome-file-selection.c:700
+msgid "Rescan the current directory"
+msgstr "Znovunaèíta aktuálny prieèinok"
+
+#: test/gnome-file-selection/gnome-file-selection.c:709
+msgid "Home"
+msgstr "Domov"
+
+#: test/gnome-file-selection/gnome-file-selection.c:710
+msgid "Go to the home directory"
+msgstr "Prejde do domovského prieèinku"
+
+#: test/gnome-file-selection/gnome-file-selection.c:806
+msgid "Name"
+msgstr "Meno"
+
+#: test/gnome-file-selection/gnome-file-selection.c:807
+msgid "Size"
+msgstr "Veµkos»"
+
+#: test/gnome-file-selection/gnome-file-selection.c:808
+msgid "Date"
+msgstr "Dátum"
+
+#: test/gnome-file-selection/gnome-file-selection.c:837
+msgid "Enter name:"
+msgstr "Zadajte meno:"
+
+#: test/gnome-file-selection/gnome-file-selection.c:860
+msgid "Show:"
+msgstr "Zobrazi»:"
+
+#: test/gnome-file-selection/gnome-file-selection.c:887
+msgid "Show dotfiles"
+msgstr "Zobrazi» bodkové súbory"
