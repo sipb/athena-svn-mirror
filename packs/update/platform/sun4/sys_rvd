@@ -1,13 +1,13 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.33 1998-08-18 17:31:32 ghudson Exp $
+## $Id: sys_rvd,v 1.34 1998-09-29 20:17:01 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
 	/core::::
 	/etc:::			# These are specific to each machine.
 		crontab.root.add
-		default/su
+		default/sulogin
 		driver_aliases.*
 		driver_classes.*
 		ftpusers
