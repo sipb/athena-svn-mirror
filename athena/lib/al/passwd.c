@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.10 1998-01-21 22:01:01 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.11 1998-05-31 15:32:31 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -210,9 +210,11 @@ int al__add_to_passwd(const char *username, struct al_record *record,
       return (errno == ENOMEM) ? AL_ENOMEM : AL_ENOUSER;
     }
 
-  /* uid must not conflict with one already in passwd file. */
+  /* uid must not conflict with one already in passwd file.  gid
+   * must not be in the range of reserved gids.
+   */
   tmppwd = al__getpwuid(pwd->pw_uid);
-  if (tmppwd)
+  if (tmppwd || pwd->pw_gid < MIN_HES_GROUP)
     {
       al__free_passwd(tmppwd);
       hesiod_free_passwd(hescontext, pwd);
