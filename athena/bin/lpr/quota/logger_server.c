@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.6 1990-11-16 15:34:20 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.7 1990-12-06 12:53:33 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.6 1990-11-16 15:34:20 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.7 1990-12-06 12:53:33 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -253,7 +253,9 @@ quota_currency currency;
 	/* Ok boys, package it up !!! */
 	lent->time = ent->time;
 
-	make_kname(ent->user.name, ent->user.instance, ent->user.realm,
+	make_kname(logger_num_to_string(ent->user.name), 
+		   logger_num_to_string(ent->user.instance), 
+		   logger_num_to_string(ent->user.realm),
 		   lent->name);
 
 	if (is_group)
