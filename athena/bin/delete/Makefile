@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.17 1989-12-20 15:14:34 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.18 1990-06-05 22:03:31 jik Exp $
 #
 
 DESTDIR=
@@ -17,12 +17,17 @@ CC= 		cc
 COMPILE_ET= 	compile_et
 LINT= 		lint
 DEFINES=	-DAFS_MOUNTPOINTS
+# Use AFSBLD=bld.beta for the mips as of 6/5/90
+AFSBLD=		bld
+AFSINC=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/include
+AFSLIB=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/lib
 INCLUDES=	-I/usr/include\
-		-I/afs/athena.mit.edu/astaff/project/afsdev/build/$(MACHINE)/include
+		-I$(AFSINC)
 CFLAGS= 	-O $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LDFLAGS=	-L/usr/athena/lib\
-		-L/afs/athena.mit.edu/astaff/project/afsdev/build/$(MACHINE)/lib/afs
-LIBS= 		-lcom_err -lsys
+		-L$(AFSLIB)\
+		-L$(AFSLIB)/afs
+LIBS= 		-lcom_err -lsys -lrx -llwp $(AFSLIB)/afs/util.a
 LINTFLAGS=	$(DEFINES) $(INCLUDES) $(CDEBUGFLAGS) -u
 LINTLIBS=	
 SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
