@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.10 1988-06-29 16:40:32 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.11 1988-07-10 12:52:16 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.10 1988-06-29 16:40:32 jtkohl Exp $";
+static char rcsid_ZSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.11 1988-07-10 12:52:16 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -102,5 +102,6 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
 	ZFreeNotice(&retnotice);
 	return (ZERR_INTERNAL);
     }
+    ZFreeNotice(&retnotice);
     return (ZERR_NONE);
 }
