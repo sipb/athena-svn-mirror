@@ -19,19 +19,31 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v $
- *	$Id: sort.c,v 1.11 1991-01-23 12:12:54 lwvanels Exp $
+ *	$Id: sort.c,v 1.12 1991-04-08 20:49:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.11 1991-01-23 12:12:54 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.12 1991-04-08 20:49:28 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/sort.h>
+
+#if defined(__STDC__)
+# define P_(s) s
+#else
+# define P_(s) ()
+#endif
+
+static int foo P_((int status));
+static int bar P_((int status));
+static int kstatusp P_((int status));
+static int compare P_((LIST *first, LIST *second));
+#undef P_
 
 static int foo (status)
      int status;
@@ -84,36 +96,18 @@ static int kstatusp(status) int status; {
   }
 }
 
-#if 0
-#if __STDC__
-static void dump (LIST *person) {
-#else
-static void dump (person) LIST *person; {
-#endif
-  printf ("<%s,%s,u=%x,uk=%x,ck=%x>\n",
-	  person->user.username, person->connected.username,
-	  person->ustatus, person->ukstatus, person->ckstatus);
-}
-#endif
-
 #define cmp(a,b) ((a)<(b)?-1:((a)==(b)?0:1))
 #define sgn(n) ((n)<0?-1:((n)>0?1:0))
 /* qsort should be persuaded to pass this */
 static sort_keys *keys;
 
-#if __STDC__
-static int compare (LIST *first, LIST *second) {
-#else
-static int compare (first, second) LIST *first, *second; {
-#endif
+static int
+compare (first, second)
+  LIST *first, *second;
+ {
     sort_keys *k;
     int order = 0;
-#if 0
-    printf ("compare:\n1: ");
-    dump (first);
-    printf ("2: ");
-    dump (second);
-#endif
+
     for (k = keys; !order; k++) {
 	switch (k->key) {
 	case sort_key__none:
