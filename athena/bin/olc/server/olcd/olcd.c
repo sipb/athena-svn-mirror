@@ -20,7 +20,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 
@@ -44,7 +44,7 @@
 #endif SYSLOG
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.6 1989-12-21 16:52:59 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.7 1989-12-22 16:26:52 vanharen Exp $";
 
 /* Global variables. */
 
@@ -232,7 +232,11 @@ main(argc, argv)
   if (!hostset)  
     {
 #ifdef HESIOD
+#ifdef OLZ
+      if ((hp = hes_resolve("olz",OLC_SERV_NAME)) == NULL)
+#else
       if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL)
+#endif
 	{	  
 	  log_error("Unable to get name of OLC server host from nameserver.");
 	  log_error("Exiting..");
