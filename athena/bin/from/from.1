@@ -1,5 +1,5 @@
 .\" 
-.\" $Id: from.1,v 1.7 2003-04-17 15:19:35 rbasch Exp $
+.\" $Id: from.1,v 1.8 2003-10-06 21:09:56 rbasch Exp $
 .\"
 .TH FROM 1 
 .DA June 30, 1991
@@ -63,7 +63,8 @@ should be consulted instead of your default post office server.
 .B \-m \fImailbox\fR
 specifies that the IMAP folder named
 .I mailbox
-should be checked.  If this option is not specified,
+should be checked.  For example, to check your MIT spam screening folder,
+specify \fI-m INBOX.Spamscreen\fR.  If this option is not specified,
 .I from
 checks the INBOX folder.
 .TP
