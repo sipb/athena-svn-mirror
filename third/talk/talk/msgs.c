@@ -63,10 +63,14 @@ disp_msg()
 
 start_msgs()
 {
+	struct sigaction action;
 	struct itimerval itimer;
 
 	message(current_state);
-	signal(SIGALRM, disp_msg);
+	sigemptyset(&action.sa_mask);
+	action.sa_handler = disp_msg;
+	action.sa_flags = 0;
+	sigaction(SIGALRM, &action, NULL);
 	itimer.it_value.tv_sec = itimer.it_interval.tv_sec = MSG_INTERVAL;
 	itimer.it_value.tv_usec = itimer.it_interval.tv_usec = 0;
 	setitimer(ITIMER_REAL, &itimer, (struct itimerval *)0);
@@ -74,10 +78,14 @@ start_msgs()
 
 end_msgs()
 {
+	struct sigaction action;
 	struct itimerval itimer;
 
 	timerclear(&itimer.it_value);
 	timerclear(&itimer.it_interval);
 	setitimer(ITIMER_REAL, &itimer, (struct itimerval *)0);
-	signal(SIGALRM, SIG_DFL);
+	sigemptyset(&action.sa_mask);
+	action.sa_handler = SIG_DFL;
+	action.sa_flags = 0;
+	sigaction(SIGALRM, &action, NULL);
 }
