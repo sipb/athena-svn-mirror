@@ -16,6 +16,9 @@
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetEmacsBindings.c,v $
  * $Author: djf $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  89/12/09  15:14:49  djf
+ * Initial revision
+ * 
  *
  * These functions add emacs key bindings to multiple line or single
  * line text widgets when they are passed as arguments.
@@ -83,7 +86,7 @@ Widget w;
     }
     
     XtSetArg(arg, XmNeditMode, &editmode);
-    XtGetValues(w,arg,1);
+    XtGetValues(w,&arg,1);
 
     if (editmode == XmMULTI_LINE_EDIT) {
 	if (EmacsBindings == NULL) 
@@ -97,3 +100,4 @@ Widget w;
 	XtOverrideTranslations(w,SingleLineEmacsBindings);
     }
 }
+
