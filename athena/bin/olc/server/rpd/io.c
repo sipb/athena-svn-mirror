@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.7 1991-04-08 21:19:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.8 1991-04-11 09:46:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -32,6 +32,16 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 extern int      errno;
 extern char     *sys_errlist[];
 extern int      sys_nerr;
+#endif
+
+#ifdef NEEDS_SELECT_MACROS
+#define NBBY    8 /* number of bits in a byte */
+#define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
+
+#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
+#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
+#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
+
 #endif
 
 int
