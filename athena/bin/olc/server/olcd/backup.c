@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.2 1989-08-08 14:39:54 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.3 1989-08-22 14:01:04 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,10 +30,23 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <sys/file.h>           /* System file defs. */
 #include <setjmp.h>             /* For string validation kludge */
 
+/* 
+ * Strings used to separate data chunks in the backup file.
+ * Plain text is used so the file can be debugged easily.
+ */
+
+static char *DATA_SEP      = "  new data:    \0";
+static char *USER_SEP      = "  new user:    \0";
+static char *KNUCKLE_SEP   = "  new knuckle: \0";
+static char *TEXT_SEP      = "  new text:    \0";
+static char *BLANK_SEP     = "  a blank:     \0";
+static char *TRANS_SEP     = "  new train:   \0";
+
+
 
 static char *
 read_msgs(fd)
-     int fd;			/* file descriptor */
+     int fd;			
 {
   int length;
   char *return_value = (char *)NULL;
@@ -61,6 +74,13 @@ write_msgs(fd, msg)
   length = strlen(msg);
   if (write_int_to_fd(fd, length) != SUCCESS)
     return(ERROR);
+
+  if(write(fd,TEXT_SEP,sizeof(char) * STRING_LENGTH) != 
+     sizeof(char) * STRING_LENGTH)
+    {
+      perror("write_msgs");
+      return(ERROR);
+    }
   return(write(fd, msg, length) != length);
 }
 
@@ -72,27 +92,51 @@ write_knuckle_info(fd, knuckle)
   int size;
   QUESTION q;
 
-  q.owner = (KNUCKLE *) 0;
+  if(write(fd,KNUCKLE_SEP,sizeof(char) * STRING_LENGTH) != 
+     sizeof(char) * STRING_LENGTH)
+    {
+      perror("write_knuckle_info");
+      return(ERROR);
+    }
+
   size = write(fd, (char *) knuckle, sizeof(KNUCKLE));
   if (size != sizeof(KNUCKLE))
     return(ERROR);
 
   if(knuckle->question != (QUESTION *) NULL && 
-     knuckle->question->owner == knuckle)
+     knuckle->question->owner == knuckle) 
     {
+       if(write(fd,TRANS_SEP,sizeof(char) * STRING_LENGTH) != 
+	  sizeof(char) * STRING_LENGTH)
+	 {
+	   perror("write_knuckle_info");
+	   return(ERROR);
+	 }
       size = write(fd, (char *) knuckle->question, sizeof(QUESTION));
       if(size != sizeof(QUESTION))
-	return(ERROR);
+	{
+	  perror("write_knuckle_info");
+	  return(ERROR);
+	}
     }
   else
-    size = write(fd, (char *) &q, sizeof(QUESTION));
-
-  if(size != sizeof(QUESTION))
-    return(ERROR);
+    if(write(fd,BLANK_SEP,sizeof(char) * STRING_LENGTH) !=  
+       sizeof(char) * STRING_LENGTH)
+      {
+	perror("write_knuckle_info");
+	return(ERROR);
+      }
 
   if (knuckle->new_messages != (char *) NULL)
     return(write_msgs(fd, knuckle->new_messages));
-  
+  else
+    if(write(fd,BLANK_SEP,sizeof(char) * STRING_LENGTH) != 
+       sizeof(char) * STRING_LENGTH)
+      {
+	perror("write_knuckle_info");
+	return(ERROR);
+      }
+
   return(SUCCESS);
 }
 
@@ -101,22 +145,32 @@ read_knuckle_info(fd, knuckle)
      int fd;
      KNUCKLE *knuckle;
 {
-  int size;
   QUESTION q;
+  int size;
+  char type[STRING_LENGTH];
 
   size = read(fd, (char *) knuckle, sizeof(KNUCKLE));
   if (size != sizeof(KNUCKLE))
     {
-      log_error("cannot read knuckle");
+      log_error("read_knuckle_info: cannot read knuckle");
       return(ERROR);
     }
 
-  size = read(fd, (char *) &q, sizeof(QUESTION));
-  if(size != sizeof(QUESTION))
-    return(ERROR);
-
-  if(q.owner != (KNUCKLE *) 0)
+  if(read(fd, (char *) type, sizeof(char) * STRING_LENGTH) != 
+     sizeof(char) * STRING_LENGTH)
     {
+      log_error("read_kncukle_info: cannot read type");
+      return(ERROR);
+    }
+
+  if(string_eq(type,TRANS_SEP))
+    {
+      size = read(fd,(char *) &q, sizeof(QUESTION));
+      if(size != sizeof(QUESTION))
+	{
+	  log_error("read_knuckle_info: cannot read transaction");
+	  return(ERROR);
+	}	  
       knuckle->question = (QUESTION *) malloc(sizeof(QUESTION));
       if(knuckle->question == (QUESTION *) NULL)
 	{
@@ -126,12 +180,23 @@ read_knuckle_info(fd, knuckle)
       bcopy((char *) &q, (char *) knuckle->question, sizeof(QUESTION));
       knuckle->question->owner = knuckle;
     }
+  else
+    knuckle->question == (QUESTION *) NULL;
 
-  if (knuckle->new_messages != (char *) NULL) 
+  if(read(fd, (char *) type, sizeof(char) * STRING_LENGTH) != 
+     sizeof(char) * STRING_LENGTH)
+    {
+      log_error("read_kncukle_info: cannot read second type");
+      return(ERROR);
+    }
+
+  if (string_eq(type,TEXT_SEP))
     {
       knuckle->new_messages = read_msgs(fd);
       return(knuckle->new_messages == (char *) NULL);
     }
+  else
+    knuckle->new_messages = (char *) NULL;
 
   return(SUCCESS);
 }
@@ -143,6 +208,10 @@ write_user_info(fd, user)
      USER *user;
 {
   int size;
+
+  if(write(fd,USER_SEP,sizeof(char) * STRING_LENGTH) 
+     != sizeof(char) * STRING_LENGTH)
+    return(ERROR);
 
   size = write(fd, (char *) user, sizeof(USER));
   if (size != sizeof(USER))
@@ -175,6 +244,7 @@ read_user_info(fd, user)
 
   return(SUCCESS);
 }
+
 
 static jmp_buf trap;
 
@@ -214,7 +284,6 @@ ensure_consistent_state()
   KNUCKLE *foo;
   char msgbuf[BUFSIZ];
      
-  return;     
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
     {
       k = *k_ptr;
@@ -259,6 +328,7 @@ ensure_consistent_state()
     }
 }
 
+
 reconnect_knuckles()
 {
   KNUCKLE **k_ptr;
@@ -300,49 +370,49 @@ backup_data()
   int i;
 
   ensure_consistent_state();
-  return;
 
-  if ((fd = open(BACKUP_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0600)) < 0) 
+  if ((fd = open(BACKUP_TEMP, O_CREAT | O_WRONLY | O_TRUNC, 0600)) < 0) 
     {
       perror("backup_data");
-      log_error("backup_data: Unable to open backup file.");
-      goto PUNT;
-    }
-	
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-     no_knuckles++;
-
-/*  if (write(fd, (char *) & no_knuckles, sizeof (int)) != sizeof (int)) 
-    {
-      perror("backup_data");
-      log_error("backup_data: Unable to write knuckle length.");
+      log_error("backup_data: unable to open backup file.");
       goto PUNT;
     }
 	
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
     {
-      if((*k_ptr)->instance == 0)
+      if(((*k_ptr)->instance == 0) && ((*k_ptr)->user->no_knuckles > 1) ||
+	 is_active((*k_ptr)))
 	{
 	  if (write_user_info(fd, (*k_ptr)->user) != SUCCESS) 
 	    {
-	      perror("backup_data: write_user");
+	      log_error("backup_data: unable to write_user");
 	      goto PUNT;
 	    }
 	  k_again = (*k_ptr)->user->knuckles;
 	  for(i=0; i< (*k_ptr)->user->no_knuckles; i++)
 	    if (write_knuckle_info(fd, *(k_again+i)) != SUCCESS) 
 	      {
-		perror("backup_data: write_knuckle");
+		log_error("backup_data: unable to write_knuckle");
 		goto PUNT;
 	      }
 	}
     }
+  if(write(fd,DATA_SEP,sizeof(char) * STRING_LENGTH) != 
+     sizeof(char) * STRING_LENGTH)
+    {
+      log_error("backup_data: unable to write data sep");
+      goto PUNT;
+    }
   needs_backup = 0;
-  */
+
+  (void) rename(BACKUP_TEMP, BACKUP_FILE);
+
  PUNT:
   (void) close(fd); 
   log_status("Backup completed.");
 }
+
+
 
 /*
  * Function:	load_data() loads an OLC backup data file.  It is called
@@ -359,50 +429,59 @@ load_data()
   int status;
   int successful = 0;
   KNUCKLE *kptr;
-  USER *uptr;
-
+  USER *uptr = (USER *) NULL;
+  char type[STRING_LENGTH];
+  
   i = j = 0;
 
-  log_status("Loading....\n");
-  return(SUCCESS);
+  log_status("Loading....(wish me luck)\n");
 
   if ((fd = open(BACKUP_FILE, O_RDONLY, 0)) < 0) 
     {
       perror("load_data");
-      log_error("load_data: Unable to open backup file.");
+      log_error("load_data: unable to open backup file");
       return;
     }
   
-/*
-  if (read(fd, (char *) &no_knuckles, sizeof (int)) != sizeof (int)) 
+  while (TRUE)
     {
-      perror("load_data");
-      log_error("load_data: Unable to read status information.");
-      goto PUNT;
-    }
-	
-#ifdef TEST
-  printf("number of knuckles: %d\n",no_knuckles);
-#endif TEST
-
-  i=0;
-  while (i < no_knuckles)
-    {
-
-#ifdef TEST
-      printf("reading user: %d\n",i);
-#endif TEST
-
-      uptr = (USER *) malloc(sizeof(USER));
-      status = read_user_info(fd,uptr);
-      if(status != SUCCESS)
-	goto PUNT;
-      nk = uptr->no_knuckles;
-      uptr->no_knuckles = 0;
-      uptr->knuckles = (KNUCKLE **) NULL;
-      for(j=0; j < nk; j++)
+      if(read(fd,type, sizeof(char) * STRING_LENGTH) != 
+	 sizeof(char) * STRING_LENGTH)
 	{
-	  ++i;
+	  log_error("load_data: unable to read type");
+	  goto PUNT;
+	}
+      
+      if(string_eq(type,USER_SEP))
+	{
+#ifdef TEST
+	  log_status("load_data: reading user data\n");
+#endif TEST
+
+	  if(uptr != (USER *) NULL)
+	    if(nk != uptr->no_knuckles)
+	      log_error("load_data: incorrect no. knuckles");
+
+	  uptr = (USER *) malloc(sizeof(USER));
+	  if(uptr == (USER *) NULL)
+	    {
+	      perror("load_data (failed malloc)");
+	      goto PUNT;
+	    }
+	  status = read_user_info(fd,uptr);
+	  if(status != SUCCESS)
+	    goto PUNT;
+	  nk = uptr->no_knuckles;
+	  uptr->no_knuckles = 0;
+	  uptr->knuckles = (KNUCKLE **) NULL;
+	  continue;
+	}
+
+      if(string_eq(type,KNUCKLE_SEP))
+	{
+#ifdef TEST
+	  log_status("load_data: reading user data\n");
+#endif TEST
 	  kptr = (KNUCKLE *) malloc(sizeof(KNUCKLE));
 	  status = read_knuckle_info(fd,kptr);
 	  if(status != SUCCESS)
@@ -411,7 +490,24 @@ load_data()
 	  kptr->user = uptr;
 	  insert_knuckle_in_user(kptr,uptr);
 	  kptr->user->no_knuckles++;
+	  continue;
 	}
+      
+      if(string_eq(type,TEXT_SEP))
+	{
+	  log_error("load_data: text found in data");
+	  read_msgs(fd);
+	  continue;
+	}
+      
+      if(string_eq(type,BLANK_SEP))
+	{
+	  log_error("load_data: blank in data");
+	  continue;
+	}
+
+      if(string_eq(type,DATA_SEP))
+	break;
     }
   
   successful = 1;
@@ -430,8 +526,9 @@ load_data()
       ensure_consistent_state();
       log_status("Loading complete.\n");
     }
+
   (void) close(fd);
-  needs_backup = 0; */
+  needs_backup = 0; 
 }
 
 
