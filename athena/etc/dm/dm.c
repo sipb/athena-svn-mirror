@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.13 2000-03-01 16:04:22 tb Exp $
+/* $Id: dm.c,v 1.14 2000-07-31 18:08:37 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.13 2000-03-01 16:04:22 tb Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.14 2000-07-31 18:08:37 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -744,7 +744,7 @@ static void shutdown(int signo)
   while (1)
     {
       i = read(console_tty, buf, sizeof(buf));
-      if (i == -1)
+      if (i == -1 && errno != EINTR)
 	perror("console pty");
       else
 	write(1, buf, i);
