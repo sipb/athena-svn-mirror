@@ -1,8 +1,8 @@
-# The symlink to this file is typically broken in the build tree to allow
-# patch release numbers to be out of step between platforms.  The source
-# tree file simply provides a reasonable default.  This file should only
-# be updated in the source tree for major and minor version updates, not
-# patch releases, to avoid having lots of revisions.
+# The patch version specified in this file is generally overridden by
+# environment variables ("release" on rhlinux, "ATHENA_PATCH_VERSION"
+# on other platforms).  This file should only be updated in the source
+# tree for major and minor version updates, not patch releases, to
+# avoid having lots of revisions.
 
 # This file is sourced by the Bourne shell.
 
