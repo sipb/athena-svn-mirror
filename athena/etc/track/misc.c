@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.1 1988-05-17 18:59:17 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.2 1988-09-19 20:25:17 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.1  88/05/17  18:59:17  don
+ * fixed another bug in GLOBAL handling, by simplifying pattern-list
+ * traversal. now, global-list is chained onto end of each entry's list.
+ * 
  * Revision 4.0  88/04/14  16:42:53  don
  * this version is not compatible with prior versions.
  * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
@@ -48,9 +52,10 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.1 1988-05-17 18:59:17 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.2 1988-09-19 20:25:17 don Exp $";
 #endif lint
 
+#include "bellcore-copyright.h"
 #include "mit-copyright.h"
 
 #include "track.h"

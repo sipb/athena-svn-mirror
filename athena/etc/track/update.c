@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.4 1988-06-13 16:27:24 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.5 1988-09-19 20:27:49 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.4  88/06/13  16:27:24  don
+ * fixed a bug in device-handling: if device major/minor #'s are wrong,
+ * have to delete the node & call mknode().
+ * 
  * Revision 4.3  88/06/10  15:55:29  don
  * fixed a bug in device-handling: update  was triggered by differences in
  * st_dev, rather than st_rdev.
@@ -60,9 +64,10 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.4 1988-06-13 16:27:24 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.5 1988-09-19 20:27:49 don Exp $";
 #endif lint
 
+#include "bellcore-copyright.h"
 #include "mit-copyright.h"
 
 #include "track.h"

@@ -1,10 +1,12 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/nullmail.c,v 3.0 1988-03-09 13:53:36 don Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/nullmail.c,v 3.1 1988-09-19 20:25:30 don Exp $";
 #endif
 
 #include <stdio.h>
+#include "bellcore-copyright.h"
+#include "mit-copyright.h"
 
 #define	LINELN	256
 

@@ -1,3 +1,4 @@
+#include "mit-copyright.h"
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -6,7 +7,7 @@
 /*			I N _ C K S U M
  *
  * Checksum routine for Internet Protocol family headers (C Version).
- * NOTE: this code is taken from ping, and modified to read a file.
+ * NOTE: this code is taken from 4.3bsd ping, and modified to read a file.
  *
  */
 unsigned

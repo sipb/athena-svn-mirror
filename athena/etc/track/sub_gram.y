@@ -1,5 +1,7 @@
 %{
-# include "track.h"
+#include "bellcore-copyright.h"
+#include "mit-copyright.h"
+#include "track.h"
 extern FILE *yyin, *yyout;
 char linebuf[1024];
 char wordbuf[256];

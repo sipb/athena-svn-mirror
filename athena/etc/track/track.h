@@ -1,12 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.3 1988-06-10 15:54:39 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.4 1988-09-19 20:27:40 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.3 1988-06-10 15:54:39 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.4 1988-09-19 20:27:40 don Exp $";
 #endif lint
 
+#include "bellcore-copyright.h"
 #include "mit-copyright.h"
 
 #include <sys/types.h>

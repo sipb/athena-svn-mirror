@@ -1,8 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.5 1988-06-21 19:38:41 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.6 1988-09-19 20:26:34 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.5  88/06/21  19:38:41  don
+ * finished changes for link-first updating, and undid writestat's
+ * memory-saving entry-wise sorting.
+ * added amusing hack suggested by jis: at end of each readstat()
+ * call, we flush the kernel's text-table by calling 'unmount("/")'.
+ * this fails, but not before causing the file-system to scavenge
+ * whatever vnodes have been freed recently. probably only works
+ * when the root is being updated, but that's when we're about to
+ * reboot, anyway, and that's  what tends to ovefill.
+ * 
  * Revision 4.4  88/06/20  18:53:42  don
  * changed updating traversal to invoke readstat() twice:
  * first pass updates only the dir's & symlinks in the statfile,
@@ -118,9 +128,10 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.5 1988-06-21 19:38:41 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.6 1988-09-19 20:26:34 don Exp $";
 #endif lint
 
+#include "bellcore-copyright.h"
 #include "mit-copyright.h"
 
 #include "track.h"
