@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.44 2000-09-04 15:42:33 ghudson Exp $
+# $Id: Makefile,v 1.45 2000-09-21 19:13:12 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -7,7 +7,7 @@ ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint gs help klog \
-	listmaint mailmaint moira mrcheck namespace olh olh_ascii \
+	lastlog listmaint mailmaint moira mrcheck namespace olh olh_ascii \
 	olh_motif pts stella usermaint vos xinfo \
 	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
@@ -85,6 +85,7 @@ install:
 	install -c -m 555 htmlview.sh ${DESTDIR}${ATHBINDIR}/htmlview
 	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 mkserv.sh ${DESTDIR}${ATHBINDIR}/mkserv
+	install -c -m 555 lastlog ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 mh.1 ${DESTDIR}${ATHMANDIR}/man1

@@ -8,6 +8,7 @@ dcmmaint	moira
 gs		ghostscript
 help		help
 klog		afsuser
+lastlog		consult
 listmaint	moira
 mailmaint	moira
 moira		moira
