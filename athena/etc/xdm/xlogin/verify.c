@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.93.2.3 1998-10-02 17:55:45 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.93.2.4 1998-10-30 19:54:15 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -438,7 +438,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
       int f, count;
 
       f = open(MOTD, O_RDONLY, 0);
-      if (f > 0)
+      if (f >= 0)
 	{
 	  count = read(f, errbuf, sizeof(errbuf) - 1);
 	  write(1, errbuf, count);
@@ -851,14 +851,16 @@ add_utmp(user, tty, display)
  */
 pid_t fork_and_store(pid_t *var)
 {
+  pid_t pid;
   sigset_t mask, omask;
 
   sigemptyset(&mask);
   sigaddset(&mask, SIGCHLD);
   sigprocmask(SIG_BLOCK, &mask, &omask);
-  *var = fork();
+  pid = fork();
+  *var = pid;
   sigprocmask(SIG_SETMASK, &omask, NULL);
-  return *var;
+  return pid;
 }
 
 /* Emulate setenv() with the more portable (these days) putenv(). */
