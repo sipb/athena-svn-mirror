@@ -101,7 +101,7 @@ X3270.ad: X3270.xad
 install:: $(DESTDIR)$(FONTINSTDIR)/fonts.dir
 $(DESTDIR)$(FONTINSTDIR)/fonts.dir::
 	-chmod u+w $(DESTDIR)$(FONTINSTDIR) $(DESTDIR)$(FONTINSTDIR)/fonts.dir
-	$(BINDIR)/$(MKFONTDIR) $(DESTDIR)$(FONTINSTDIR)
+	$(MKFONTDIR) $(DESTDIR)$(FONTINSTDIR)
 	chmod u=rwx,go=rx $(DESTDIR)$(FONTINSTDIR)
 	chmod a=r $(DESTDIR)$(FONTINSTDIR)/fonts.dir
 
