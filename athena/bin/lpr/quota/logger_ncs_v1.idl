@@ -17,16 +17,12 @@ interface print_logger {
     import "base.idl";
 
 #include "quota_limits.h"
+    %import "nidl_structs.idl";
 
-    /* For LoggerJournal */
-    typedef long startingpoint;
-    typedef long maxtotransfer;
-    typedef char loggerflags;
-    typedef long recordtime;
-    typedef long recordptr;
 
-    typedef enum { LO_ADD, LO_SET, LO_SUBTRACT, LO_DELETEUSER, LO_ALLOW,
-		   LO_CHARGE, LO_DISALLOW, LO_ADJUST } logfunc;
+    typedef enum { LO_ADD_V1, LO_SET_V1, LO_SUBTRACT_V1, LO_DELETEUSER_V1,
+		       LO_ALLOW_V1, LO_CHARGE_V1, LO_DISALLOW_V1, 
+		       LO_ADJUST_V1 } logfunc_v1;
 
     typedef struct {
 	recordtime time;
@@ -34,19 +30,19 @@ interface print_logger {
 	quota_service 	service;
 	recordptr	next;
 	recordptr	prev;
-	union switch (logfunc func) 
-		{ case LO_ADD		:
-		  case LO_SET		:
-		  case LO_SUBTRACT	:
-		  case LO_DELETEUSER	:
-		  case LO_ALLOW		:	
-		  case LO_DISALLOW	:	
-		  case LO_ADJUST	:	
+	union switch (logfunc_v1 func) 
+		{ case LO_ADD_V1	:
+		  case LO_SET_V1	:
+		  case LO_SUBTRACT_V1	:
+		  case LO_DELETEUSER_V1	:
+		  case LO_ALLOW_V1	:	
+		  case LO_DISALLOW_V1	:	
+		  case LO_ADJUST_V1	:	
 		      struct {
 			  quota_value amount;
 			  quota_username wname;
 		      } offset;
-		  case LO_CHARGE	:
+		  case LO_CHARGE_V1	:
 		      struct {
 			  print_time ptime;
 			  printed_pages npages;
@@ -54,7 +50,7 @@ interface print_logger {
 			  printer_name 	where;
 		      } charge;
 		  } func_union;
-    } LogEnt;
+    } LogEnt_v1;
 
     
     /* LoggerJournal
@@ -72,7 +68,7 @@ interface print_logger {
 				    loggerflags [in] flags,
 				    int [out] *numtrans,
 				    [last_is(numtrans)] 
-				       LogEnt [out] LogEnts[LOGMAXRETURN],
+				       LogEnt_v1 [out] LogEnts[LOGMAXRETURN],
 				    quota_currency [out] currency
 				    );
 }
