@@ -284,6 +284,7 @@ extern int errno;
 #endif
 
 #ifdef sgi
+#define NO_MOTD
 #define NO_MAILCHECK
 #endif
 
