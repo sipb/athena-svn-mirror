@@ -222,6 +222,11 @@ if [ "${MRUPDATE}" = "true" ]; then
 	/usr/athena/etc/update_server &
 fi
 
+if [ "${SSHD}" = "true" ]; then
+	$ECHO "sshd... \c"
+	/etc/athena/sshd &
+fi
+
 $ECHO "done."
 $ECHO ""
 
