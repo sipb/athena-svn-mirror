@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.67 1997-12-31 23:42:33 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.68 1998-01-31 23:47:05 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -418,8 +418,12 @@ void main(argc, argv)
   initOwl(appShell);		/* widget tree MUST be realized... */
   adjustOwl(appShell);
 
-  /* Put the hostname in the label of the host widget. */
+  /* Put the first component of the hostname in the label of the host
+   * widget. */
   gethostname(hname, sizeof(hname));
+  c = strchr(hname, '.');
+  if (c)
+      *c = 0;
   XtSetArg(args[0], XtNlabel, hname);
   namew = WcFullNameToWidget(appShell, "*login*host");
   XtSetValues(namew, args, 1);
