@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 1999-06-11 15:28:07 tb Exp $
+# $Id: Makefile,v 1.10 2001-07-09 13:04:46 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -27,7 +27,9 @@ install:
 	install -c -m 0644 dot.logout ${DESTDIR}${PROTOTYPE}/.logout
 	install -c -m 0644 dot.mh_profile ${DESTDIR}${PROTOTYPE}/.mh_profile
 	install -c -m 0644 dot.bash_login ${DESTDIR}${PROTOTYPE}/.bash_login
+	install -c -m 0644 dot.bash_login ${DESTDIR}${PROTOTMP}/.bash_login
 	install -c -m 0644 dot.bashrc ${DESTDIR}${PROTOTYPE}/.bashrc
+	install -c -m 0644 dot.bashrc ${DESTDIR}${PROTOTMP}/.bashrc
 	install -c -m 0644 env_remove ${DESTDIR}${SYSTEM}
 	install -c -m 0644 env_setup ${DESTDIR}${SYSTEM}
 	install -c -m 0444 lockers.7 ${DESTDIR}${ATHMANDIR}/man7

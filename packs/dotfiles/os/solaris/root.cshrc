@@ -1,8 +1,8 @@
-# $Id: root.cshrc,v 1.3 2001-06-04 04:37:55 jweiss Exp $
+# $Id: root.cshrc,v 1.4 2001-07-09 13:04:52 ghudson Exp $
 
-set path=( /srvd/patch /usr/athena/bin /etc/athena /usr/sbin /sbin \
-	   /bin/athena /usr/bin /usr/ccs/bin /usr/athena/etc /usr/ucb \
-	   /usr/openwin/bin /etc)
+set path=( /srvd/patch /usr/athena/bin /usr/athena/etc /etc/athena /usr/sbin \
+	   /sbin /bin/athena /usr/bin /usr/ccs/bin /usr/ucb /usr/openwin/bin \
+	   /etc)
 setenv MANPATH /usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
 if ($?prompt) then
 	set prompt="`uname -n`# "
