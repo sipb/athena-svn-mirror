@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.34 1991-01-03 16:30:17 lwvanels Exp $
+ *	$Id: olcd.c,v 1.35 1991-01-15 17:59:31 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.34 1991-01-03 16:30:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.35 1991-01-15 17:59:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -455,13 +455,28 @@ restart:
 	/* come in for > 15 minutes */
 
 	nfound = select(fd+1,&readfds,NULL,NULL,&tval);
-	if (nfound < 0)
+	if (nfound < 0) {
 	  if (errno == EINTR)
 	    continue;
-	  else {
-	    log_error("Error in select: %m");
+
+	  n_errs++;
+	  if (n_errs < 3)
 	    continue;
+	  else if (n_errs > 10) { 
+	    log_error("Too many errors accepting connections; exit");
+	    abort();
 	  }
+	  else if (errno == ECONNABORTED)
+	    {
+	      log_error("Restarting...(error reading request)");
+	      close(fd);
+	      goto restart;
+	    }
+	  else {
+	    log_error("Unexpected error from accept; exiting");
+	    abort();
+	  }
+	}
 
 	if (nfound == 0) {
 	  get_kerberos_ticket();
