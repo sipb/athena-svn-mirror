@@ -1,9 +1,0 @@
-Here are patches contributed by users of the Cygnus Network Security
-Free Network Release. They have not been evaluated and are not part of
-the product itself, but are supplied as-is.
-
-m68k-next-nextstep3.0 -- patches for nextstep 
-		      from michael shiplett <michael.shiplett@umich.edu>
-snk4-jumbo -- patches for added snk4 support, some alpha fixes that were
-	      already integrated directly, other things.
-	   from Dave Morrison <dmorriso@us.oracle.com>
