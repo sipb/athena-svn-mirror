@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.19 1992-03-31 15:39:50 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: db.c,v 1.20 1993-08-05 19:07:37 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.19 1992-03-31 15:39:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.20 1993-08-05 19:07:37 vanharen Exp $";
 #endif
 #endif
 
@@ -117,7 +117,7 @@ load_db()
 
   if((fp = fopen(TOPIC_FILE,"r")) == (FILE *) NULL)
     {
-      (void) sprintf(msgbuf, "load_db: can't open OLC database %s", 
+      (void) sprintf(msgbuf, "load_db: can't open OLC database %s: %%m", 
 		     TOPIC_FILE);
       log_error(msgbuf);
       return(ERROR);
@@ -204,10 +204,9 @@ get_user_info(user)
 
   if((fp = fopen(DATABASE_FILE,"r")) == (FILE *) NULL)
     {
-      (void) sprintf(msgbuf, "load_user: can't open OLC database %s", 
+      (void) sprintf(msgbuf, "load_user: can't open OLC database %s: %%m",
 		     DATABASE_FILE);
       log_error(msgbuf);
-      log_error("load_user: %m");
       return(ERROR);
     }
 
