@@ -4,7 +4,7 @@
 # for profit or used for commercial gain and the author is credited 
 # appropriately.
 #
-# $Revision: 1.6 $
+# $Revision: 1.7 $
 #
 # Sysinfo Makefile
 #
@@ -42,7 +42,7 @@ CONFDIR		= ${PREFIX}/lib/${PROG}
 # The LIBDIR directory is where all the sysinfo binary executables
 # will be installed.
 #
-LIBDIR		= ${PREFIX}/${PROG}/lib
+LIBDIR		= ${PREFIX}/lib/${PROG}
 
 #
 # Man sections and directories
@@ -266,7 +266,7 @@ metasysinfo: metasysinfo.sh
 	sed -e "s;#LIBDIR#;$(LIBDIR);" < metasysinfo.sh > $@
 	chmod 555 $@
 
-install.man: ${DESTDIR}$(MANFILES) ${DESTDIR}$(ManDir1) ${DESTDIR}$(ManDir5)
+install.man: $(MANFILES) ${DESTDIR}$(ManDir1) ${DESTDIR}$(ManDir5)
 	$(INSTALLPROG) -c -m 444 -o bin -g bin sysinfo.man \
 		${DESTDIR}${ManDir1}/${PROG}.${ManSect1}
 	$(INSTALLPROG) -c -m 444 -o bin -g bin sysinfo.cf.man \
