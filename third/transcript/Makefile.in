@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/third/transcript/Makefile.in,v 1.1 1996-10-14 04:30:07 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/transcript/Makefile.in,v 1.2 1996-11-21 00:50:35 ghudson Exp $
 #
 # This is the global Makefile template for TranScript on Athena.
 # It does, roughly, the same things as the original build scripts, but
@@ -103,8 +103,8 @@ instlprogs:
 	$(top_srcdir)/mkinstalldirs ${DESTDIR}${PSLIBDIR}
 	cd src; ${MAKE} ${MFLAGS} DBINDIR=${DESTDIR}${bindir} \
 			DLIBDIR=${DESTDIR}${PSLIBDIR} install
-	$(INSTALL_EXEC) sh/psroff ${DESTDIR}${BINDIR}
-	$(INSTALL_EXEC) sh/psrev  ${DESTDIR}${BINDIR}
+	$(INSTALL_EXEC) sh/psroff ${DESTDIR}${bindir}
+	$(INSTALL_EXEC) sh/psrev  ${DESTDIR}${bindir}
 cleanprogs:
 	cd src; ${MAKE} ${MFLAGS} clean
 
@@ -118,7 +118,7 @@ lib/psint.sh: lib/psint.bsd Makefile
 		-e s,XBANNERLASTX,${BANNERLAST},g \
 		-e s,XREVERSEX,${REVERSE},g \
 		-e s,XVERBOSELOGX,${VERBOSELOG},g \
-		-e s,XBINDIRX,${BINDIR},g \
+		-e s,XBINDIRX,${bindir},g \
 		lib/psint.bsd > lib/psint.sh
 lib/afmfiles.upr.out lib/afminstall.sh: lib/afmfiles.upr.in Makefile
 	$(RM) lib/afmfiles.upr.out lib/afminstall.sh
@@ -193,15 +193,15 @@ buildman:
 	done
 
 instlman:
-	$(top_srcdir)/mkinstalldirs ${DESTDIR}${MANDIR}/man1
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${mandir}/man1
 	for i in ${MAN1}; do \
-		$(INSTALL_DATA) man/$$i ${DESTDIR}${MANDIR}/man1; done
-	$(top_srcdir)/mkinstalldirs ${DESTDIR}${MANDIR}/man7
+		$(INSTALL_DATA) man/$$i ${DESTDIR}${mandir}/man1; done
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${mandir}/man7
 	for i in ${MAN7}; do \
-		$(INSTALL_DATA) man/$$i ${DESTDIR}${MANDIR}/man7; done
-	$(top_srcdir)/mkinstalldirs ${DESTDIR}${MANDIR}/man8
+		$(INSTALL_DATA) man/$$i ${DESTDIR}${mandir}/man7; done
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${mandir}/man8
 	for i in ${MAN8}; do \
-		$(INSTALL_DATA) man/$$i ${DESTDIR}${MANDIR}/man8; done
+		$(INSTALL_DATA) man/$$i ${DESTDIR}${mandir}/man8; done
 
 cleanman:
 	cd man; $(RM) ${MAN1} ${MAN7} ${MAN8}
