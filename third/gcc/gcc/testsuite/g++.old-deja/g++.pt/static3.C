@@ -1,6 +1,7 @@
+// { dg-do run }
 // On targets that don't support weak symbols, we require an explicit
 // instantiation of arr.
-// excess errors test - XFAIL *-*-aout *-*-coff *-*-hpux* *-*-hms
+// { dg-require-weak "" }
 
 template<class T>
 struct A {

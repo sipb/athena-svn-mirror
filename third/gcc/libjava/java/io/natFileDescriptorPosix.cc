@@ -18,10 +18,6 @@ details.  */
 #include <sys/stat.h>
 #include <sys/param.h>
 
-#ifndef MAXPATHLEN
-# define MAXPATHLEN 1024
-#endif
-
 #ifdef HAVE_SYS_IOCTL_H
 #define BSD_COMP /* Get FIONREAD on Solaris2. */
 #include <sys/ioctl.h>
@@ -109,6 +105,12 @@ java::io::FileDescriptor::open (jstring path, jint jflags)
 	}
     }
 
+  if ((jflags & SYNC))
+    flags |= O_SYNC;
+
+  if ((jflags & DSYNC))
+    flags |= O_DSYNC;
+
   int fd = ::open (buf, flags, mode);
   if (fd == -1 && errno == EMFILE)
     {
@@ -148,7 +150,8 @@ java::io::FileDescriptor::write (jint b)
 	      iioe->bytesTransferred = r == -1 ? 0 : r;
 	      throw iioe;
 	    }	    
-	  throw new IOException (JvNewStringLatin1 (strerror (errno)));
+	  if (errno != EINTR)
+	    throw new IOException (JvNewStringLatin1 (strerror (errno)));
 	}
     }
   position++;
@@ -176,7 +179,8 @@ java::io::FileDescriptor::write (jbyteArray b, jint offset, jint len)
 	      iioe->bytesTransferred = written;
 	      throw iioe;
 	    }
-	  throw new IOException (JvNewStringLatin1 (strerror (errno)));
+	  if (errno != EINTR)
+	    throw new IOException (JvNewStringLatin1 (strerror (errno)));
 	}
 
       written += r;
@@ -237,7 +241,7 @@ java::io::FileDescriptor::seek (jlong pos, jint whence, jboolean eof_trunc)
 
   if (eof_trunc)
     {
-      jlong len = length ();
+      jlong len = getLength ();
       if (whence == SET)
 	{
 	  if (pos > len)
@@ -262,7 +266,7 @@ java::io::FileDescriptor::seek (jlong pos, jint whence, jboolean eof_trunc)
 }
 
 jlong
-java::io::FileDescriptor::length (void)
+java::io::FileDescriptor::getLength (void)
 {
   struct stat sb;
   if (::fstat (fd, &sb))
@@ -280,20 +284,26 @@ jint
 java::io::FileDescriptor::read (void)
 {
   jbyte b;
-  int r = ::read (fd, &b, 1);
-  if (r == 0)
-    return -1;
-  if (r == -1)
+  int r;
+  do
     {
-      if (java::lang::Thread::interrupted())
+      r = ::read (fd, &b, 1);
+      if (r == 0)
+	return -1;
+      if (r == -1)
 	{
-	  InterruptedIOException *iioe
-	    = new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
-	  iioe->bytesTransferred = r == -1 ? 0 : r;
-	  throw iioe;
+	  if (java::lang::Thread::interrupted())
+	    {
+	      InterruptedIOException *iioe
+		= new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
+	      iioe->bytesTransferred = r == -1 ? 0 : r;
+	      throw iioe;
+	    }
+	  if (errno != EINTR)
+	    throw new IOException (JvNewStringLatin1 (strerror (errno)));
 	}
-      throw new IOException (JvNewStringLatin1 (strerror (errno)));
     }
+  while (r != 1);
   position++;
   return b & 0xFF;
 }
@@ -312,20 +322,26 @@ java::io::FileDescriptor::read (jbyteArray buffer, jint offset, jint count)
     return 0;
 
   jbyte *bytes = elements (buffer) + offset;
-  int r = ::read (fd, bytes, count);
-  if (r == 0)
-    return -1;
-  if (r == -1)
-    {    
-      if (java::lang::Thread::interrupted())
+  int r;
+  do
+    {
+      r = ::read (fd, bytes, count);
+      if (r == 0)
+	return -1;
+      if (r == -1)
 	{
-	  InterruptedIOException *iioe
-	    = new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
-	  iioe->bytesTransferred = r == -1 ? 0 : r;
-	  throw iioe;
+	  if (java::lang::Thread::interrupted())
+	    {
+	      InterruptedIOException *iioe
+		= new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
+	      iioe->bytesTransferred = r == -1 ? 0 : r;
+	      throw iioe;
+	    }
+	  if (errno != EINTR)
+	    throw new IOException (JvNewStringLatin1 (strerror (errno)));
 	}
-      throw new IOException (JvNewStringLatin1 (strerror (errno)));
     }
+  while (r <= 0);
   position += r;
   return r;
 }

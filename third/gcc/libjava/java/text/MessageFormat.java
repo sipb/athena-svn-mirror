@@ -143,6 +143,8 @@ final class MessageFormatElement
 
 public class MessageFormat extends Format
 {
+  private static final long serialVersionUID = 6479157306784022952L;
+
   // Helper that returns the text up to the next format opener.  The
   // text is put into BUFFER.  Returns index of character after end of
   // string.  Throws IllegalArgumentException on error.
@@ -168,7 +170,7 @@ public class MessageFormat extends Format
 	else if (c == '{')
 	  break;
 	else if (c == '}')
-	  throw new IllegalArgumentException ();
+	  throw new IllegalArgumentException("Found '}' without '{'");
 	else
 	  buffer.append(c);
       }
@@ -243,7 +245,7 @@ public class MessageFormat extends Format
       }
     catch (NumberFormatException nfx)
       {
-	throw new IllegalArgumentException ();
+	throw new IllegalArgumentException("Failed to parse integer string");
       }
 
     // Extract the element format.
@@ -262,7 +264,7 @@ public class MessageFormat extends Format
 
     // Advance past the last terminator.
     if (index >= max || pat.charAt(index) != '}')
-      throw new IllegalArgumentException ();
+      throw new IllegalArgumentException("Missing '}' at end of message format");
     ++index;
 
     // Now fetch trailing string.
@@ -347,7 +349,8 @@ public class MessageFormat extends Format
     for (int i = 0; i < elements.length; ++i)
       {
 	if (elements[i].argNumber >= arguments.length)
-	  throw new IllegalArgumentException ();
+	  throw new IllegalArgumentException("Not enough arguments given");
+
 	Object thisArg = arguments[elements[i].argNumber];
 
 	Format formatter = null;
@@ -357,7 +360,8 @@ public class MessageFormat extends Format
 	  {
 	    if (elements[i].formatClass != null
 		&& ! elements[i].formatClass.isInstance(thisArg))
-	      throw new IllegalArgumentException ();
+	      throw new IllegalArgumentException("Wrong format class");
+	    
 	    formatter = elements[i].format;
 	  }
 	else if (thisArg instanceof Number)
@@ -452,11 +456,25 @@ public class MessageFormat extends Format
    * Creates a new MessageFormat object with
    * the specified pattern
    *
-   * @param aPattern The Pattern
+   * @param pattern The Pattern
    */
-  public MessageFormat (String pattern)
+  public MessageFormat(String pattern)
   {
-    locale = Locale.getDefault();
+    this(pattern, Locale.getDefault());
+  }
+
+  /**
+   * Creates a new MessageFormat object with
+   * the specified pattern
+   *
+   * @param pattern The Pattern
+   * @param locale The Locale to use
+   *
+   * @since 1.4
+   */
+  public MessageFormat(String pattern, Locale locale)
+  {
+    this.locale = locale;
     applyPattern (pattern);
   }
 
@@ -580,7 +598,8 @@ public class MessageFormat extends Format
   public void setFormats (Format[] newFormats)
   {
     if (newFormats.length < elements.length)
-      throw new IllegalArgumentException ();
+      throw new IllegalArgumentException("Not enough format objects");
+
     int len = Math.min(newFormats.length, elements.length);
     for (int i = 0; i < len; ++i)
       elements[i].setFormat = newFormats[i];

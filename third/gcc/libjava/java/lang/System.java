@@ -38,7 +38,13 @@ exception statement from your version. */
 
 package java.lang;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Properties;
 import java.util.PropertyPermission;
 import gnu.classpath.Configuration;
@@ -93,6 +99,11 @@ public final class System
 
     defaultProperties.put("gnu.cpu.endian",
 			  isWordsBigEndian() ? "big" : "little");
+
+    // GCJ LOCAL: Classpath sets common encoding aliases here.
+    // Since we don't (yet) have gnu.java.io.EncodingManager, these
+    // are a waste of time and just slow down system startup.
+
     // XXX FIXME - Temp hack for old systems that set the wrong property
     if (defaultProperties.get("java.io.tmpdir") == null)
       defaultProperties.put("java.io.tmpdir",
@@ -184,6 +195,7 @@ public final class System
     SecurityManager sm = Runtime.securityManager; // Be thread-safe.
     if (sm != null)
       sm.checkPermission(new RuntimePermission("setIO"));
+    
     setOut0(out);
   }
 

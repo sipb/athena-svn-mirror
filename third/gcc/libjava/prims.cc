@@ -1,6 +1,6 @@
 // prims.cc - Code for core of runtime environment.
 
-/* Copyright (C) 1998, 1999, 2000, 2001, 2002  Free Software Foundation
+/* Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004  Free Software Foundation
 
    This file is part of libgcj.
 
@@ -25,6 +25,7 @@ details.  */
 #include <jvm.h>
 #include <java-signal.h>
 #include <java-threads.h>
+#include <java-interp.h>
 
 #ifdef ENABLE_JVMPI
 #include <jvmpi.h>
@@ -70,8 +71,10 @@ details.  */
 // around for use if we run out of memory.
 static java::lang::OutOfMemoryError *no_memory;
 
-// Largest representable size_t.
-#define SIZE_T_MAX ((size_t) (~ (size_t) 0))
+// Number of bytes in largest array object we create.  This could be
+// increased to the largest size_t value, so long as the appropriate
+// functions are changed to take a size_t argument instead of jint.
+#define MAX_OBJECT_SIZE ((1<<31) - 1)
 
 static const char *no_properties[] = { NULL };
 
@@ -136,51 +139,39 @@ unblock_signal (int signum)
 #endif
 }
 
-extern "C" void _Jv_ThrowSignal (jthrowable) __attribute ((noreturn));
-
-// Just like _Jv_Throw, but fill in the stack trace first.  Although
-// this is declared extern in order that its name not be mangled, it
-// is not intended to be used outside this file.
-void 
-_Jv_ThrowSignal (jthrowable throwable)
-{
-  throwable->fillInStackTrace ();
-  throw throwable;
-}
- 
 #ifdef HANDLE_SEGV
-static java::lang::NullPointerException *nullp;
-
 SIGNAL_HANDLER (catch_segv)
 {
-  unblock_signal (SIGFPE);
+  java::lang::NullPointerException *nullp 
+    = new java::lang::NullPointerException;
+  unblock_signal (SIGSEGV);
   MAKE_THROW_FRAME (nullp);
-  _Jv_ThrowSignal (nullp);
+  throw nullp;
 }
 #endif
-
-static java::lang::ArithmeticException *arithexception;
 
 #ifdef HANDLE_FPE
 SIGNAL_HANDLER (catch_fpe)
 {
-  unblock_signal (SIGSEGV);
+  java::lang::ArithmeticException *arithexception 
+    = new java::lang::ArithmeticException (JvNewStringLatin1 ("/ by zero"));
+  unblock_signal (SIGFPE);
 #ifdef HANDLE_DIVIDE_OVERFLOW
   HANDLE_DIVIDE_OVERFLOW;
 #else
   MAKE_THROW_FRAME (arithexception);
 #endif
-  _Jv_ThrowSignal (arithexception);
+  throw arithexception;
 }
 #endif
 
 
 
 jboolean
-_Jv_equalUtf8Consts (Utf8Const* a, Utf8Const *b)
+_Jv_equalUtf8Consts (const Utf8Const* a, const Utf8Const *b)
 {
   int len;
-  _Jv_ushort *aptr, *bptr;
+  const _Jv_ushort *aptr, *bptr;
   if (a == b)
     return true;
   if (a->hash != b->hash)
@@ -188,8 +179,8 @@ _Jv_equalUtf8Consts (Utf8Const* a, Utf8Const *b)
   len = a->length;
   if (b->length != len)
     return false;
-  aptr = (_Jv_ushort *)a->data;
-  bptr = (_Jv_ushort *)b->data;
+  aptr = (const _Jv_ushort *)a->data;
+  bptr = (const _Jv_ushort *)b->data;
   len = (len + 1) >> 1;
   while (--len >= 0)
     if (*aptr++ != *bptr++)
@@ -493,6 +484,11 @@ _Jv_NewObjectArray (jsize count, jclass elementClass, jobject init)
   // Ensure that elements pointer is properly aligned.
   jobjectArray obj = NULL;
   size_t size = (size_t) elements (obj);
+  // Check for overflow.
+  if (__builtin_expect ((size_t) count > 
+			(MAX_OBJECT_SIZE - 1 - size) / sizeof (jobject), false))
+    throw no_memory;
+
   size += count * sizeof (jobject);
 
   jclass klass = _Jv_GetArrayClass (elementClass,
@@ -528,7 +524,7 @@ _Jv_NewPrimArray (jclass eltype, jint count)
 
   // Check for overflow.
   if (__builtin_expect ((size_t) count > 
-			(SIZE_T_MAX - size) / elsize, false))
+			(MAX_OBJECT_SIZE - size) / elsize, false))
     throw no_memory;
 
   jclass klass = _Jv_GetArrayClass (eltype, 0);
@@ -629,23 +625,21 @@ _Jv_NewMultiArray (jclass array_type, jint dimensions, ...)
   _Jv_ArrayVTable _Jv_##NAME##VTable;		\
   java::lang::Class _Jv_##NAME##Class __attribute__ ((aligned (8)));
 
-DECLARE_PRIM_TYPE(byte);
-DECLARE_PRIM_TYPE(short);
-DECLARE_PRIM_TYPE(int);
-DECLARE_PRIM_TYPE(long);
-DECLARE_PRIM_TYPE(boolean);
-DECLARE_PRIM_TYPE(char);
-DECLARE_PRIM_TYPE(float);
-DECLARE_PRIM_TYPE(double);
-DECLARE_PRIM_TYPE(void);
+DECLARE_PRIM_TYPE(byte)
+DECLARE_PRIM_TYPE(short)
+DECLARE_PRIM_TYPE(int)
+DECLARE_PRIM_TYPE(long)
+DECLARE_PRIM_TYPE(boolean)
+DECLARE_PRIM_TYPE(char)
+DECLARE_PRIM_TYPE(float)
+DECLARE_PRIM_TYPE(double)
+DECLARE_PRIM_TYPE(void)
 
 void
 _Jv_InitPrimClass (jclass cl, char *cname, char sig, int len, 
                    _Jv_ArrayVTable *array_vtable)
 {    
   using namespace java::lang::reflect;
-
-  _Jv_InitNewClassFields (cl);
 
   // We must set the vtable for the class; the Java constructor
   // doesn't do this.
@@ -912,6 +906,10 @@ _Jv_CreateJavaVM (void* /*vm_args*/)
   _Jv_InitThreads ();
   _Jv_InitGC ();
   _Jv_InitializeSyncMutex ();
+  
+#ifdef INTERPRETER
+  _Jv_InitInterpreter ();
+#endif  
 
   /* Initialize Utf8 constants declared in jvm.h. */
   void_signature = _Jv_makeUtf8Const ("()V", 3);
@@ -934,18 +932,24 @@ _Jv_CreateJavaVM (void* /*vm_args*/)
   _Jv_InitClass (&java::lang::VMThrowable::class$);
   java::lang::VMThrowable::trace_enabled = 0;
   
+  // We have to initialize this fairly early, to avoid circular class
+  // initialization.  In particular we want to start the
+  // initialization of ClassLoader before we start the initialization
+  // of VMClassLoader.
+  _Jv_InitClass (&java::lang::ClassLoader::class$);
+  // Once the bootstrap loader is in place, change it into a kind of
+  // system loader, by having it read the class path.
+  gnu::gcj::runtime::VMClassLoader::initialize();
+
   INIT_SEGV;
 #ifdef HANDLE_FPE
   INIT_FPE;
-#else
-  arithexception = new java::lang::ArithmeticException
-    (JvNewStringLatin1 ("/ by zero"));
 #endif
   
   no_memory = new java::lang::OutOfMemoryError;
-  
+
   java::lang::VMThrowable::trace_enabled = 1;
-  
+
 #ifdef USE_LTDL
   LTDL_SET_PRELOADED_SYMBOLS ();
 #endif
@@ -957,8 +961,7 @@ _Jv_CreateJavaVM (void* /*vm_args*/)
   _Jv_GCInitializeFinalizers (&::gnu::gcj::runtime::FinalizerThread::finalizerReady);
 
   // Start the GC finalizer thread.  A VirtualMachineError can be
-  // thrown by the runtime if, say, threads aren't available.  In this
-  // case finalizers simply won't run.
+  // thrown by the runtime if, say, threads aren't available.
   try
     {
       using namespace gnu::gcj::runtime;
@@ -1109,7 +1112,11 @@ jint
 _Jv_divI (jint dividend, jint divisor)
 {
   if (__builtin_expect (divisor == 0, false))
-    _Jv_ThrowSignal (arithexception);
+    {
+      java::lang::ArithmeticException *arithexception 
+	= new java::lang::ArithmeticException (JvNewStringLatin1 ("/ by zero"));      
+      throw arithexception;
+    }
   
   if (dividend == (jint) 0x80000000L && divisor == -1)
     return dividend;
@@ -1121,11 +1128,15 @@ jint
 _Jv_remI (jint dividend, jint divisor)
 {
   if (__builtin_expect (divisor == 0, false))
-    _Jv_ThrowSignal (arithexception);
+    {
+      java::lang::ArithmeticException *arithexception 
+	= new java::lang::ArithmeticException (JvNewStringLatin1 ("/ by zero"));      
+      throw arithexception;
+    }
   
   if (dividend == (jint) 0x80000000L && divisor == -1)
     return 0;
-
+  
   return dividend % divisor;
 }
 
@@ -1133,8 +1144,12 @@ jlong
 _Jv_divJ (jlong dividend, jlong divisor)
 {
   if (__builtin_expect (divisor == 0, false))
-    _Jv_ThrowSignal (arithexception);
-  
+    {
+      java::lang::ArithmeticException *arithexception 
+	= new java::lang::ArithmeticException (JvNewStringLatin1 ("/ by zero"));      
+      throw arithexception;
+    }
+
   if (dividend == (jlong) 0x8000000000000000LL && divisor == -1)
     return dividend;
 
@@ -1145,10 +1160,32 @@ jlong
 _Jv_remJ (jlong dividend, jlong divisor)
 {
   if (__builtin_expect (divisor == 0, false))
-    _Jv_ThrowSignal (arithexception);
-  
+    {
+      java::lang::ArithmeticException *arithexception 
+	= new java::lang::ArithmeticException (JvNewStringLatin1 ("/ by zero"));      
+      throw arithexception;
+    }
+
   if (dividend == (jlong) 0x8000000000000000LL && divisor == -1)
     return 0;
 
   return dividend % divisor;
+}
+
+
+
+// Return true if SELF_KLASS can access a field or method in
+// OTHER_KLASS.  The field or method's access flags are specified in
+// FLAGS.
+jboolean
+_Jv_CheckAccess (jclass self_klass, jclass other_klass, jint flags)
+{
+  using namespace java::lang::reflect;
+  return ((self_klass == other_klass)
+	  || ((flags & Modifier::PUBLIC) != 0)
+	  || (((flags & Modifier::PROTECTED) != 0)
+	      && other_klass->isAssignableFrom (self_klass))
+	  || (((flags & Modifier::PRIVATE) == 0)
+	      && _Jv_ClassNameSamePackage (self_klass->name,
+					   other_klass->name)));
 }

@@ -1,6 +1,6 @@
 /* HashMap.java -- a class providing a basic hashtable data structure,
    mapping Object --> Object
-   Copyright (C) 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 
 This file is part of GNU Classpath.
 
@@ -223,7 +223,7 @@ public class HashMap extends AbstractMap
   public HashMap(Map m)
   {
     this(Math.max(m.size() * 2, DEFAULT_CAPACITY), DEFAULT_LOAD_FACTOR);
-    putAllInternal(m);
+    putAll(m);
   }
 
   /**
@@ -381,8 +381,7 @@ public class HashMap extends AbstractMap
   public void putAll(Map m)
   {
     Iterator itr = m.entrySet().iterator();
-    int msize = m.size();
-    while (msize-- > 0)
+    while (itr.hasNext())
       {
         Map.Entry e = (Map.Entry) itr.next();
         // Optimize in case the Entry is one of our own.
@@ -700,19 +699,19 @@ public class HashMap extends AbstractMap
   }
 
   /**
-   * A simplified, more efficient internal implementation of putAll(). The 
-   * Map constructor and clone() should not call putAll or put, in order to 
-   * be compatible with the JDK implementation with respect to subclasses.
+   * A simplified, more efficient internal implementation of putAll(). clone() 
+   * should not call putAll or put, in order to be compatible with the JDK 
+   * implementation with respect to subclasses.
    *
    * @param m the map to initialize this from
    */
   void putAllInternal(Map m)
   {
     Iterator itr = m.entrySet().iterator();
-    int msize = m.size();
-    size = msize;
-    while (msize-- > 0)
+    size = 0;
+    while (itr.hasNext())
       {
+        size++;
 	Map.Entry e = (Map.Entry) itr.next();
 	Object key = e.getKey();
 	int idx = hash(key);
@@ -808,6 +807,7 @@ public class HashMap extends AbstractMap
     // Read and use capacity, followed by key/value pairs.
     buckets = new HashEntry[s.readInt()];
     int len = s.readInt();
+    size = len;
     while (len-- > 0)
       {
         Object key = s.readObject();

@@ -1,11 +1,11 @@
-// Build don't link:
+// { dg-do assemble  }
+// { dg-options "-Wconversion" }
 // 
 // Copyright (C) 2001 Free Software Foundation, Inc.
 // Contributed by Nathan Sidwell 5 May 2001 <nathan@codesourcery.com>
 
 // Bug 2726. We ICE'd trying to say something about possibly confusing
 // conversion overload resolution.
-// Special Options: -Wconversion
 
 class foo
 {
@@ -41,6 +41,6 @@ yyparse()
 {
 
   iterator_template<IdlDeclarator_bar,IdlDeclarator_bar&,foo*,foo*> declIter;
-  const IdlDeclarator& declarator = *declIter; // WARNING - choosing
+  const IdlDeclarator& declarator = *declIter;
   return 1;
 }

@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "CPP 1"
-.TH CPP 1 "2003-10-16" "gcc-3.3.2" "GNU"
+.TH CPP 1 "2004-11-05" "gcc-3.4.3" "GNU"
 .SH "NAME"
 cpp \- The C Preprocessor
 .SH "SYNOPSIS"
@@ -137,7 +137,9 @@ cpp \- The C Preprocessor
 cpp [\fB\-D\fR\fImacro\fR[=\fIdefn\fR]...] [\fB\-U\fR\fImacro\fR]
     [\fB\-I\fR\fIdir\fR...] [\fB\-W\fR\fIwarn\fR...]
     [\fB\-M\fR|\fB\-MM\fR] [\fB\-MG\fR] [\fB\-MF\fR \fIfilename\fR]
-    [\fB\-MP\fR] [\fB\-MQ\fR \fItarget\fR...] [\fB\-MT\fR \fItarget\fR...]
+    [\fB\-MP\fR] [\fB\-MQ\fR \fItarget\fR...]
+    [\fB\-MT\fR \fItarget\fR...]
+    [\fB\-P\fR] [\fB\-fno\-working\-directory\fR]
     [\fB\-x\fR \fIlanguage\fR] [\fB\-std=\fR\fIstandard\fR]
     \fIinfile\fR \fIoutfile\fR
 .PP
@@ -186,8 +188,8 @@ This manual describes the behavior of the \s-1ISO\s0 preprocessor.  To
 minimize gratuitous differences, where the \s-1ISO\s0 preprocessor's
 behavior does not conflict with traditional semantics, the
 traditional preprocessor should behave the same way.  The various
-differences that do exist are detailed in the section \f(CW@ref\fR{Traditional
-Mode}.
+differences that do exist are detailed in the section \fBTraditional
+Mode\fR.
 .PP
 For clarity, unless noted otherwise, references to \fB\s-1CPP\s0\fR in this
 manual refer to \s-1GNU\s0 \s-1CPP\s0.
@@ -217,10 +219,14 @@ Predefine \fIname\fR as a macro, with definition \f(CW1\fR.
 .IP "\fB\-D\fR \fIname\fR\fB=\fR\fIdefinition\fR" 4
 .IX Item "-D name=definition"
 Predefine \fIname\fR as a macro, with definition \fIdefinition\fR.
-There are no restrictions on the contents of \fIdefinition\fR, but if
-you are invoking the preprocessor from a shell or shell-like program you
-may need to use the shell's quoting syntax to protect characters such as
-spaces that have a meaning in the shell syntax.
+The contents of \fIdefinition\fR are tokenized and processed as if
+they appeared during translation phase three in a \fB#define\fR
+directive.  In particular, the definition will be truncated by
+embedded newline characters.
+.Sp
+If you are invoking the preprocessor from a shell or shell-like
+program you may need to use the shell's quoting syntax to protect
+characters such as spaces that have a meaning in the shell syntax.
 .Sp
 If you wish to define a function-like macro on the command line, write
 its argument list with surrounding parentheses before the equals sign
@@ -259,10 +265,12 @@ different interpretation of a second non-option argument, so you must
 use \fB\-o\fR to specify the output file.
 .IP "\fB\-Wall\fR" 4
 .IX Item "-Wall"
-Turns on all optional warnings which are desirable for normal code.  At
-present this is \fB\-Wcomment\fR and \fB\-Wtrigraphs\fR.  Note that
-many of the preprocessor's warnings are on by default and have no
-options to control them.
+Turns on all optional warnings which are desirable for normal code.
+At present this is \fB\-Wcomment\fR, \fB\-Wtrigraphs\fR,
+\&\fB\-Wmultichar\fR and a warning about integer promotion causing a
+change of sign in \f(CW\*(C`#if\*(C'\fR expressions.  Note that many of the
+preprocessor's warnings are on by default and have no options to
+control them.
 .IP "\fB\-Wcomment\fR" 4
 .IX Item "-Wcomment"
 .PD 0
@@ -274,10 +282,17 @@ comment, or whenever a backslash-newline appears in a \fB//\fR comment.
 (Both forms have the same effect.)
 .IP "\fB\-Wtrigraphs\fR" 4
 .IX Item "-Wtrigraphs"
-Warn if any trigraphs are encountered.  This option used to take effect
-only if \fB\-trigraphs\fR was also specified, but now works
-independently.  Warnings are not given for trigraphs within comments, as
-they do not affect the meaning of the program.
+@anchor{Wtrigraphs}
+Most trigraphs in comments cannot affect the meaning of the program.
+However, a trigraph that would form an escaped newline (\fB??/\fR at
+the end of a line) can, by changing where the comment begins or ends.
+Therefore, only trigraphs that would form escaped newlines produce
+warnings inside a comment.
+.Sp
+This option is implied by \fB\-Wall\fR.  If \fB\-Wall\fR is not
+given, this option is still enabled unless trigraphs are enabled.  To
+get trigraph conversion without warnings, but get the other
+\&\fB\-Wall\fR warnings, use \fB\-trigraphs \-Wall \-Wno\-trigraphs\fR.
 .IP "\fB\-Wtraditional\fR" 4
 .IX Item "-Wtraditional"
 Warn about certain constructs that behave differently in traditional and
@@ -382,9 +397,10 @@ This implies that the choice of angle brackets or double quotes in an
 \&\fB#include\fR directive does not in itself determine whether that
 header will appear in \fB\-MM\fR dependency output.  This is a
 slight change in semantics from \s-1GCC\s0 versions 3.0 and earlier.
+.Sp
+@anchor{dashMF}
 .IP "\fB\-MF\fR \fIfile\fR" 4
 .IX Item "-MF file"
-@anchor{\-MF}
 When used with \fB\-M\fR or \fB\-MM\fR, specifies a
 file to write the dependencies to.  If no \fB\-MF\fR switch is given
 the preprocessor sends the rules to the same place it would have sent
@@ -456,7 +472,7 @@ basename of the input file and applies a \fI.d\fR suffix.
 .Sp
 If \fB\-MD\fR is used in conjunction with \fB\-E\fR, any
 \&\fB\-o\fR switch is understood to specify the dependency output file
-(but \f(CW@pxref\fR{\-MF}), but if used without \fB\-E\fR, each \fB\-o\fR
+(but \f(CW@pxref\fR{dashMF,,\-MF}), but if used without \fB\-E\fR, each \fB\-o\fR
 is understood to specify a target object file.
 .Sp
 Since \fB\-E\fR is not implied, \fB\-MD\fR can be used to generate
@@ -618,14 +634,16 @@ Append \fIdir\fR to the prefix specified previously with
 \&\fB\-iprefix\fR, and add the resulting directory to the include search
 path.  \fB\-iwithprefixbefore\fR puts it in the same place \fB\-I\fR
 would; \fB\-iwithprefix\fR puts it where \fB\-idirafter\fR would.
-.Sp
-Use of these options is discouraged.
 .IP "\fB\-isystem\fR \fIdir\fR" 4
 .IX Item "-isystem dir"
 Search \fIdir\fR for header files, after all directories specified by
 \&\fB\-I\fR but before the standard system directories.  Mark it
 as a system directory, so that it gets the same special treatment as
 is applied to the standard system directories.
+.IP "\fB\-fdollars\-in\-identifiers\fR" 4
+.IX Item "-fdollars-in-identifiers"
+@anchor{fdollars\-in\-identifiers}
+Accept \fB$\fR in identifiers.
 .IP "\fB\-fpreprocessed\fR" 4
 .IX Item "-fpreprocessed"
 Indicate to the preprocessor that the input file has already been
@@ -646,6 +664,42 @@ Set the distance between tab stops.  This helps the preprocessor report
 correct column numbers in warnings or errors, even if tabs appear on the
 line.  If the value is less than 1 or greater than 100, the option is
 ignored.  The default is 8.
+.IP "\fB\-fexec\-charset=\fR\fIcharset\fR" 4
+.IX Item "-fexec-charset=charset"
+Set the execution character set, used for string and character
+constants.  The default is \s-1UTF\-8\s0.  \fIcharset\fR can be any encoding
+supported by the system's \f(CW\*(C`iconv\*(C'\fR library routine.
+.IP "\fB\-fwide\-exec\-charset=\fR\fIcharset\fR" 4
+.IX Item "-fwide-exec-charset=charset"
+Set the wide execution character set, used for wide string and
+character constants.  The default is \s-1UTF\-32\s0 or \s-1UTF\-16\s0, whichever
+corresponds to the width of \f(CW\*(C`wchar_t\*(C'\fR.  As with
+\&\fB\-ftarget\-charset\fR, \fIcharset\fR can be any encoding supported
+by the system's \f(CW\*(C`iconv\*(C'\fR library routine; however, you will have
+problems with encodings that do not fit exactly in \f(CW\*(C`wchar_t\*(C'\fR.
+.IP "\fB\-finput\-charset=\fR\fIcharset\fR" 4
+.IX Item "-finput-charset=charset"
+Set the input character set, used for translation from the character
+set of the input file to the source character set used by \s-1GCC\s0. If the
+locale does not specify, or \s-1GCC\s0 cannot get this information from the
+locale, the default is \s-1UTF\-8\s0. This can be overridden by either the locale
+or this command line option. Currently the command line option takes
+precedence if there's a conflict. \fIcharset\fR can be any encoding
+supported by the system's \f(CW\*(C`iconv\*(C'\fR library routine.
+.IP "\fB\-fworking\-directory\fR" 4
+.IX Item "-fworking-directory"
+Enable generation of linemarkers in the preprocessor output that will
+let the compiler know the current working directory at the time of
+preprocessing.  When this option is enabled, the preprocessor will
+emit, after the initial linemarker, a second linemarker with the
+current working directory followed by two slashes.  \s-1GCC\s0 will use this
+directory, when it's present in the preprocessed input, as the
+directory emitted as the current working directory in some debugging
+information formats.  This option is implicitly enabled if debugging
+information is enabled, but this can be inhibited with the negated
+form \fB\-fno\-working\-directory\fR.  If the \fB\-P\fR flag is
+present in the command line, this option has no effect, since no
+\&\f(CW\*(C`#line\*(C'\fR directives are emitted whatsoever.
 .IP "\fB\-fno\-show\-column\fR" 4
 .IX Item "-fno-show-column"
 Do not print column numbers in diagnostics.  This may be necessary if
@@ -755,7 +809,9 @@ execution, and report the final form of the include path.
 .IX Item "-H"
 Print the name of each header file used, in addition to other normal
 activities.  Each name is indented to show how deep in the
-\&\fB#include\fR stack it is.
+\&\fB#include\fR stack it is.  Precompiled header files are also
+printed, even if they are found to be invalid; an invalid precompiled
+header file is printed with \fB...x\fR and a valid one with \fB...!\fR .
 .IP "\fB\-version\fR" 4
 .IX Item "-version"
 .PD 0
@@ -788,7 +844,7 @@ configuration of \s-1GCC\s0.
 Each variable's value is a list of directories separated by a special
 character, much like \fB\s-1PATH\s0\fR, in which to look for header files.
 The special character, \f(CW\*(C`PATH_SEPARATOR\*(C'\fR, is target-dependent and
-determined at \s-1GCC\s0 build time.  For Windows-based targets it is a
+determined at \s-1GCC\s0 build time.  For Microsoft Windows-based targets it is a
 semicolon, and for almost all other targets it is a colon.
 .Sp
 \&\fB\s-1CPATH\s0\fR specifies a list of directories to be searched as if
@@ -836,7 +892,7 @@ main input file is omitted.
 .SH "COPYRIGHT"
 .IX Header "COPYRIGHT"
 Copyright (c) 1987, 1989, 1991, 1992, 1993, 1994, 1995, 1996,
-1997, 1998, 1999, 2000, 2001, 2002, 2003
+1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004
 Free Software Foundation, Inc.
 .PP
 Permission is granted to copy, distribute and/or modify this document

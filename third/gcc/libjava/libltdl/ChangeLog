@@ -1,26 +1,28 @@
-2003-10-16  Release Manager
+2004-11-04  Release Manager
 
-	* GCC 3.3.2 Released.
+	* GCC 3.4.3 released.
 
-2003-08-04  Release Manager
+2004-09-06  Release Manager
 
-	* GCC 3.3.1 Released.
+	* GCC 3.4.2 released.
 
-2003-08-04  Release Manager
+2004-07-01  Release Manager
 
-	* GCC 3.3.1 Released.
+	* GCC 3.4.1 released.
 
-2003-05-13  Release Manager
+2004-04-18  Release Manager
 
-	* GCC 3.3 Released.
+	* GCC 3.4.0 released.
 
-2003-05-13  Release Manager
+2004-02-22  Matthias Klose  <doko@debian.org>
 
-	* GCC 3.3 Released.
+	* config.guess: Update from version 2003-10-07 to 2004-02-16.
+	* config.sub: Update from version 2003-10-07 to 2004-02-16.
 
-2003-05-13  Release Manager
+2003-08-07  Rainer Orth  <ro@TechFak.Uni-Bielefeld.DE>
 
-	* GCC 3.3 Released.
+	* configure.in: Don't initialize GCINCS to boehm-gc/include.
+	* Regenerate.	
 
 2002-04-28  Mark Mitchell  <mark@codesourcery.com>
 

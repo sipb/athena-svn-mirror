@@ -6,8 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---                                                                          --
---          Copyright (C) 1991-2001 Free Software Foundation, Inc.          --
+--          Copyright (C) 1992-2003 Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -28,7 +27,7 @@
 -- covered by the  GNU Public License.                                      --
 --                                                                          --
 -- GNARL was developed by the GNARL team at Florida State University.       --
--- Extensive contributions were provided by Ada Core Technologies Inc.      --
+-- Extensive contributions were provided by Ada Core Technologies, Inc.     --
 --                                                                          --
 ------------------------------------------------------------------------------
 
@@ -197,6 +196,8 @@ package System.OS_Interface is
    end record;
    type Machine_State_Ptr is access all Machine_State;
 
+   SA_SIGINFO  : constant := 16#04#;
+
    SIG_BLOCK   : constant := 0;
    SIG_UNBLOCK : constant := 1;
    SIG_SETMASK : constant := 2;
@@ -234,6 +235,11 @@ package System.OS_Interface is
      (tv : access struct_timeval;
       tz : System.Address := System.Null_Address) return int;
    pragma Import (C, gettimeofday, "gettimeofday");
+
+   function sysconf (name : int) return long;
+   pragma Import (C, sysconf);
+
+   SC_CLK_TCK : constant := 2;
 
    -------------------------
    -- Priority Scheduling --
@@ -503,14 +509,7 @@ private
    end record;
    pragma Convention (C, pthread_mutex_t);
 
-   type pthread_cond_padding_t is array (0 .. 35) of unsigned_char;
-   pragma Convention (C, pthread_cond_padding_t);
-
-   type pthread_cond_t is record
-      c_lock     : struct_pthread_fast_lock;
-      c_waiting  : System.Address;
-      c_padding  : pthread_cond_padding_t;
-   end record;
+   type pthread_cond_t is array (0 .. 47) of unsigned_char;
    pragma Convention (C, pthread_cond_t);
 
    type pthread_key_t is new unsigned;

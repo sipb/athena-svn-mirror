@@ -1,20 +1,20 @@
 /* Definitions of target machine for GNU compiler, for HP PA-RISC
-   Copyright (C) 1998, 1999, 2000, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2000, 2002, 2003 Free Software Foundation, Inc.
 
-This file is part of GNU CC.
+This file is part of GCC.
 
-GNU CC is free software; you can redistribute it and/or modify
+GCC is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2, or (at your option)
 any later version.
 
-GNU CC is distributed in the hope that it will be useful,
+GCC is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with GNU CC; see the file COPYING.  If not, write to
+along with GCC; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
@@ -23,7 +23,8 @@ Boston, MA 02111-1307, USA.  */
    we define __STDC_EXT__.  A similar situation exists with respect to
    the definition of __cplusplus.  We define _INCLUDE_LONGLONG
    to prevent nlist.h from defining __STDC_32_MODE__ (no longlong
-   support).  */
+   support).  We define __STDCPP__ to get certain system headers
+   (notably assert.h) to assume standard preprocessor behavior in C++.  */
 #undef TARGET_OS_CPP_BUILTINS
 #define TARGET_OS_CPP_BUILTINS()				\
   do								\
@@ -36,11 +37,12 @@ Boston, MA 02111-1307, USA.  */
 	builtin_define ("__hpux__");				\
 	builtin_define ("__unix");				\
 	builtin_define ("__unix__");				\
-	if (c_language == clk_cplusplus)			\
+	if (c_dialect_cxx ())					\
 	  {							\
 	    builtin_define ("_HPUX_SOURCE");			\
 	    builtin_define ("_INCLUDE_LONGLONG");		\
 	    builtin_define ("__STDC_EXT__");			\
+	    builtin_define ("__STDCPP__");			\
 	  }							\
 	else							\
 	  {							\
@@ -84,14 +86,26 @@ Boston, MA 02111-1307, USA.  */
 /* We can debug dynamically linked executables on hpux11; we also
    want dereferencing of a NULL pointer to cause a SEGV.  */
 #undef LINK_SPEC
-#if ((TARGET_DEFAULT | TARGET_CPU_DEFAULT) & 1)
+#if ((TARGET_DEFAULT | TARGET_CPU_DEFAULT) & MASK_PA_11)
 #define LINK_SPEC \
-  "%{!mpa-risc-1-0:%{!shared:-L/lib/pa1.1 -L/usr/lib/pa1.1 }} -z\
-   %{mlinker-opt:-O} %{!shared:-u main -u __gcc_plt_call}\
+  "%{!mpa-risc-1-0:%{!shared:-L/lib/pa1.1 -L/usr/lib/pa1.1 }}\
+   %{!shared:%{p:-L/lib/libp -L/usr/lib/libp %{!static:\
+     %nWarning: consider linking with `-static' as system libraries with\n\
+     %n  profiling support are only provided in archive format}}}\
+   %{!shared:%{pg:-L/lib/libp -L/usr/lib/libp %{!static:\
+     %nWarning: consider linking with `-static' as system libraries with\n\
+     %n  profiling support are only provided in archive format}}}\
+   -z %{mlinker-opt:-O} %{!shared:-u main -u __gcc_plt_call}\
    %{static:-a archive} %{shared:-b}"
 #else
 #define LINK_SPEC \
-  "-z %{mlinker-opt:-O} %{!shared:-u main -u __gcc_plt_call}\
+  "%{!shared:%{p:-L/lib/libp -L/usr/lib/libp %{!static:\
+     %nWarning: consider linking with `-static' as system libraries with\n\
+     %n  profiling support are only provided in archive format}}}\
+   %{!shared:%{pg:-L/lib/libp -L/usr/lib/libp %{!static:\
+     %nWarning: consider linking with `-static' as system libraries with\n\
+     %n  profiling support are only provided in archive format}}}\
+   -z %{mlinker-opt:-O} %{!shared:-u main -u __gcc_plt_call}\
    %{static:-a archive} %{shared:-b}"
 #endif
 
@@ -99,8 +113,7 @@ Boston, MA 02111-1307, USA.  */
 #undef LIB_SPEC
 #define LIB_SPEC \
   "%{!shared:\
-     %{mt|pthread:-lpthread}     \
-     %{p|pg:-L/usr/lib/libp} -lc \
+     %{mt|pthread:-lpthread} -lc \
      %{static:%{!nolibdld:-a shared -ldld -a archive -lc}}}"
 
 /* Under hpux11, the normal location of the `ld' and `as' programs is the

@@ -1,4 +1,4 @@
-/* A Bison parser, made from gengtype-yacc.y
+/* A Bison parser, made from /home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y
    by GNU bison 1.35.  */
 
 #define YYBISON 1  /* Identify Bison output.  */
@@ -22,14 +22,16 @@
 # define	PERCENT_ID	273
 # define	CHAR	274
 
-#line 22 "gengtype-yacc.y"
+#line 22 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 
-#include "hconfig.h"
+#include "bconfig.h"
 #include "system.h"
+#include "coretypes.h"
+#include "tm.h"
 #include "gengtype.h"
 #define YYERROR_VERBOSE
 
-#line 29 "gengtype-yacc.y"
+#line 31 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 #ifndef YYSTYPE
 typedef union {
   type_p t;
@@ -126,12 +128,12 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    62,    63,    64,    65,    68,    68,    77,    77,    87,
-      92,    97,   105,   112,   113,   116,   123,   125,   138,   156,
-     158,   169,   182,   183,   193,   203,   215,   216,   217,   220,
-     222,   224,   226,   231,   233,   238,   240,   242,   246,   247,
-     249,   251,   255,   256,   259,   263,   265,   269,   276,   285,
-     290,   297,   298
+       0,    64,    65,    66,    67,    70,    70,    79,    79,    89,
+      94,    99,   107,   114,   115,   118,   125,   127,   140,   158,
+     160,   171,   184,   185,   195,   205,   217,   218,   219,   222,
+     224,   226,   228,   233,   235,   240,   242,   244,   248,   249,
+     251,   253,   257,   258,   261,   265,   267,   271,   278,   287,
+     292,   299,   300
 };
 #endif
 
@@ -967,7 +969,7 @@ yyreduce:
   switch (yyn) {
 
 case 5:
-#line 69 "gengtype-yacc.y"
+#line 71 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 		     new_structure (yyvsp[-5].t->u.s.tag, UNION_P (yyvsp[-5].t), &lexer_line,
 				    yyvsp[-2].p, yyvsp[-4].o);
@@ -976,11 +978,11 @@ case 5:
 		   ;
     break;}
 case 6:
-#line 76 "gengtype-yacc.y"
+#line 78 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {;
     break;}
 case 7:
-#line 78 "gengtype-yacc.y"
+#line 80 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 		     new_structure (yyvsp[-4].t->u.s.tag, UNION_P (yyvsp[-4].t), &lexer_line,
 				    yyvsp[-1].p, yyvsp[-3].o);
@@ -988,25 +990,25 @@ case 7:
 		   ;
     break;}
 case 8:
-#line 84 "gengtype-yacc.y"
+#line 86 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {;
     break;}
 case 9:
-#line 88 "gengtype-yacc.y"
+#line 90 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	           note_variable (yyvsp[-1].s, adjust_field_type (yyvsp[-2].t, yyvsp[-3].o), yyvsp[-3].o,
 				  &lexer_line);
 	         ;
     break;}
 case 10:
-#line 93 "gengtype-yacc.y"
+#line 95 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	           note_variable (yyvsp[-2].s, create_array (yyvsp[-3].t, yyvsp[-1].s),
 	      		    yyvsp[-4].o, &lexer_line);
 	         ;
     break;}
 case 11:
-#line 98 "gengtype-yacc.y"
+#line 100 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	           note_variable (yyvsp[-3].s, create_array (create_array (yyvsp[-4].t, yyvsp[-1].s),
 	      				      yyvsp[-2].s),
@@ -1014,24 +1016,24 @@ case 11:
 	         ;
     break;}
 case 12:
-#line 106 "gengtype-yacc.y"
+#line 108 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	      lexer_toplevel_done = 1;
 	      yyval.t = yyvsp[0].t;
 	    ;
     break;}
 case 15:
-#line 118 "gengtype-yacc.y"
+#line 120 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	        note_yacc_type (yyvsp[-4].o, yyvsp[-3].p, yyvsp[-1].p, &lexer_line);
 	      ;
     break;}
 case 16:
-#line 124 "gengtype-yacc.y"
+#line 126 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.p = NULL; ;
     break;}
 case 17:
-#line 126 "gengtype-yacc.y"
+#line 128 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 		     pair_p p;
 		     for (p = yyvsp[0].p; p->next != NULL; p = p->next)
@@ -1046,7 +1048,7 @@ case 17:
 		   ;
     break;}
 case 18:
-#line 139 "gengtype-yacc.y"
+#line 141 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 		     pair_p p;
 		     type_p newtype = NULL;
@@ -1064,11 +1066,11 @@ case 18:
 		   ;
     break;}
 case 19:
-#line 157 "gengtype-yacc.y"
+#line 159 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.p = NULL; ;
     break;}
 case 20:
-#line 159 "gengtype-yacc.y"
+#line 161 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	  pair_p p = xcalloc (1, sizeof (*p));
 	  p->next = yyvsp[-1].p;
@@ -1081,7 +1083,7 @@ case 20:
 	;
     break;}
 case 21:
-#line 170 "gengtype-yacc.y"
+#line 172 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	  pair_p p = xcalloc (1, sizeof (*p));
 	  p->next = yyvsp[-1].p;
@@ -1094,11 +1096,11 @@ case 21:
 	;
     break;}
 case 22:
-#line 182 "gengtype-yacc.y"
+#line 184 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.p = NULL; ;
     break;}
 case 23:
-#line 184 "gengtype-yacc.y"
+#line 186 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	            pair_p p = xmalloc (sizeof (*p));
 		    p->type = adjust_field_type (yyvsp[-5].t, yyvsp[-4].o);
@@ -1110,7 +1112,7 @@ case 23:
 		  ;
     break;}
 case 24:
-#line 194 "gengtype-yacc.y"
+#line 196 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	            pair_p p = xmalloc (sizeof (*p));
 		    p->type = adjust_field_type (create_array (yyvsp[-5].t, yyvsp[-2].s), yyvsp[-4].o);
@@ -1122,7 +1124,7 @@ case 24:
 		  ;
     break;}
 case 25:
-#line 204 "gengtype-yacc.y"
+#line 206 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	            pair_p p = xmalloc (sizeof (*p));
 		    p->type = create_array (create_array (yyvsp[-6].t, yyvsp[-2].s), yyvsp[-3].s);
@@ -1134,81 +1136,81 @@ case 25:
 		  ;
     break;}
 case 29:
-#line 221 "gengtype-yacc.y"
+#line 223 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.t = yyvsp[0].t; ;
     break;}
 case 30:
-#line 223 "gengtype-yacc.y"
+#line 225 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.t = resolve_typedef (yyvsp[0].s, &lexer_line); ;
     break;}
 case 31:
-#line 225 "gengtype-yacc.y"
+#line 227 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.t = create_pointer (yyvsp[-1].t); ;
     break;}
 case 32:
-#line 227 "gengtype-yacc.y"
+#line 229 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	   new_structure (yyvsp[-3].s, 0, &lexer_line, yyvsp[-1].p, NULL);
            yyval.t = find_structure (yyvsp[-3].s, 0);
 	 ;
     break;}
 case 33:
-#line 232 "gengtype-yacc.y"
+#line 234 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.t = find_structure (yyvsp[0].s, 0); ;
     break;}
 case 34:
-#line 234 "gengtype-yacc.y"
+#line 236 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	   new_structure (yyvsp[-3].s, 1, &lexer_line, yyvsp[-1].p, NULL);
            yyval.t = find_structure (yyvsp[-3].s, 1);
 	 ;
     break;}
 case 35:
-#line 239 "gengtype-yacc.y"
+#line 241 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.t = find_structure (yyvsp[0].s, 1); ;
     break;}
 case 36:
-#line 241 "gengtype-yacc.y"
+#line 243 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.t = create_scalar_type (yyvsp[0].s, strlen (yyvsp[0].s)); ;
     break;}
 case 37:
-#line 243 "gengtype-yacc.y"
+#line 245 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.t = create_scalar_type (yyvsp[-3].s, strlen (yyvsp[-3].s)); ;
     break;}
 case 39:
-#line 248 "gengtype-yacc.y"
+#line 250 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { ;
     break;}
 case 40:
-#line 250 "gengtype-yacc.y"
+#line 252 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { ;
     break;}
 case 41:
-#line 252 "gengtype-yacc.y"
+#line 254 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { ;
     break;}
 case 42:
-#line 255 "gengtype-yacc.y"
+#line 257 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.o = NULL; ;
     break;}
 case 43:
-#line 256 "gengtype-yacc.y"
+#line 258 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.o = yyvsp[0].o; ;
     break;}
 case 44:
-#line 260 "gengtype-yacc.y"
+#line 262 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.o = yyvsp[-2].o; ;
     break;}
 case 45:
-#line 264 "gengtype-yacc.y"
+#line 266 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.s = "ptr_alias"; ;
     break;}
 case 46:
-#line 266 "gengtype-yacc.y"
+#line 268 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.s = yyvsp[0].s; ;
     break;}
 case 47:
-#line 270 "gengtype-yacc.y"
+#line 272 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	     options_p o = xmalloc (sizeof (*o));
 	     o->name = yyvsp[-3].s;
@@ -1217,7 +1219,7 @@ case 47:
 	   ;
     break;}
 case 48:
-#line 277 "gengtype-yacc.y"
+#line 279 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	     options_p o = xmalloc (sizeof (*o));
 	     o->name = yyvsp[-3].s;
@@ -1226,25 +1228,25 @@ case 48:
 	   ;
     break;}
 case 49:
-#line 286 "gengtype-yacc.y"
+#line 288 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	        yyvsp[0].o->next = NULL;
 		yyval.o = yyvsp[0].o;
 	      ;
     break;}
 case 50:
-#line 291 "gengtype-yacc.y"
+#line 293 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 {
 	        yyvsp[0].o->next = yyvsp[-2].o;
 		yyval.o = yyvsp[0].o;
 	      ;
     break;}
 case 51:
-#line 297 "gengtype-yacc.y"
+#line 299 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.o = NULL; ;
     break;}
 case 52:
-#line 298 "gengtype-yacc.y"
+#line 300 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 { yyval.o = yyvsp[0].o; ;
     break;}
 }
@@ -1480,5 +1482,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 300 "gengtype-yacc.y"
+#line 302 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/gengtype-yacc.y"
 

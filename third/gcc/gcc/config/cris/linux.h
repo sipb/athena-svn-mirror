@@ -48,9 +48,7 @@ Boston, MA 02111-1307, USA.  */
 #undef CRIS_CPP_SUBTARGET_SPEC
 #define CRIS_CPP_SUBTARGET_SPEC \
   "%{pthread:-D_REENTRANT}\
-   %{!march=*:%{!cpu=*:-D__arch_v10 -D__CRIS_arch_version=10}}\
-   %{!ansi:%{!std=*:%{!undef:-Dlinux -Dunix}\
-     -Asystem(unix) -Asystem(posix) -Acpu(cris) -Amachine(cris)}}"
+   %{!march=*:%{!cpu=*:-D__arch_v10 -D__CRIS_arch_version=10}}"
 
 #undef CRIS_CC1_SUBTARGET_SPEC
 #define CRIS_CC1_SUBTARGET_SPEC \
@@ -60,7 +58,7 @@ Boston, MA 02111-1307, USA.  */
 #define CRIS_ASM_SUBTARGET_SPEC \
  "--em=criself\
   %{!fleading-underscore:--no-underscore}\
-  %{fPIC|fpic: --pic}"
+  %{fPIC|fpic|fPIE|fpie: --pic}"
 
 /* Provide a legacy -mlinux option.  */
 #undef CRIS_SUBTARGET_SWITCHES
@@ -103,11 +101,7 @@ Boston, MA 02111-1307, USA.  */
 #define TARGET_OS_CPP_BUILTINS()		\
   do						\
     {						\
-      extern int flag_leading_underscore;	\
-      builtin_define ("__gnu_linux__");		\
-      builtin_define ("__linux__");		\
-      builtin_define ("__unix__");		\
-      builtin_define ("__ELF__");		\
+      LINUX_TARGET_OS_CPP_BUILTINS();		\
       if (flag_pic)				\
 	{					\
 	  builtin_define ("__PIC__");		\

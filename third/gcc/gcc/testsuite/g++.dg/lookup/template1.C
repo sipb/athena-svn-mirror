@@ -1,31 +1,23 @@
-// { dg-do compile }
-
-// Copyright (C) 2003 Free Software Foundation, Inc.
-// Contributed by Nathan Sidwell 24 Mar 2003 <nathan@codesourcery.com>
-
-// PR 10199. Lookup problems
-
-class X {
+/* PR c++/3009 */
+/* { dg-do run } */
+// According to 14.6.2.4 of C++ Standard:
+// "If a base class is a dependent type, a member of that
+// class cannot hide a name declared within a template, or a
+// name from the template's enclosing scopes."
+ 
+class B {
 public:
-  template<int d>
-  int bar ();
+  int foo() { return 1; }
+};
+ 
+int foo() { return 0; }
+ 
+template <class T> class C : public T {
+public:
+  int caller() { return foo(); } // This must be ::foo, not B::foo.
 };
 
-template<int x>
-int fooo ();
-
-template<class T>
-void bar (T& g)
-{
-  int kk = fooo<17>();  // OK
-  X x;
-  int k = x.bar<17>();  // Not OK
-}
-
-int main ()
-{
-  X x;
-  int k=x.bar<17>();    // OK
-  int n;
-  bar(n);
+int main() {
+  C<B> c;
+  return c.caller(); // Returns 1 if we got the wrong one.
 }

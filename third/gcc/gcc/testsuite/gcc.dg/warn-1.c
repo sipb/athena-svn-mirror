@@ -5,10 +5,10 @@
 
 static void foo (p)
      int p;
-{	/* { dg-warning "passing arg of" } */
+{	/* { dg-warning "passing arg 1 of" } */
 }
 
-static void bar (void)
+void bar (void)
 {
   void *vp;
 
