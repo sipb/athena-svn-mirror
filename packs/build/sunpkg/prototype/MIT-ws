@@ -2,6 +2,7 @@
 
 # Change /etc/athena/local-lockers.conf to class confignoreplace.
 # Change several other files to class config.
+# Change the root crontab to class crontab.
 sed -e 's|^f none \(etc/athena/local-lockers\.conf\) |e confignoreplace \1 |' \
     -e 's|^f none \(etc/athena/newsyslog\.conf\) |e config \1 |' \
     -e 's|^f none \(etc/default/sulogin\) |e config \1 |' \
@@ -11,4 +12,4 @@ sed -e 's|^f none \(etc/athena/local-lockers\.conf\) |e confignoreplace \1 |' \
     -e 's|^f none \(etc/shells\) |e config \1 |' \
     -e 's|^f none \(etc/syslog\.conf\) |e config \1 |' \
     -e 's|^f none \(etc/system\) |e config \1 |' \
-    -e 's|^f none \(var/spool/cron/crontabs/root\) |e config \1 |'
+    -e 's|^f none \(var/spool/cron/crontabs/root\) |e crontab \1 |'
