@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.29 2000-12-18 08:44:50 ghudson Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.30 2001-11-14 15:04:41 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -97,7 +97,6 @@ struct process {
 static struct process *get_processes(int *nprocs);
 static void check_plist(int n, struct process **plist, int *psize);
 static uid_t *get_passwd_uids(int *nuids);
-static void cleanup_sessions(void);
 static uid_t *get_logged_in_uids(int *nuids,
 				 struct process *plist, int nprocs);
 static void kill_processes(struct process *plist, int nprocs,
@@ -128,10 +127,7 @@ int main(int argc, char **argv)
   if (passwd)
     approved = get_passwd_uids(&nuids);
   else
-    {
-      cleanup_sessions();
       approved = get_logged_in_uids(&nuids, plist, nprocs);
-    }
 
   /* Sort the approved uid list for fast search. */
   qsort(approved, nuids, sizeof(uid_t), uidcomp);
@@ -399,40 +395,15 @@ static uid_t *get_passwd_uids(int *nuids)
 }
 
 /* Clean up sessions and return a list of uids of users logged in. */
-static void cleanup_sessions(void)
-{
-  DIR *dir;
-  struct dirent *entry;
-
-  dir = opendir(AL_PATH_SESSIONS);
-  if (!dir)
-    {
-      fprintf(stderr, "Can't open directory %s: %s\n", AL_PATH_SESSIONS,
-	      strerror(errno));
-      exit(1);
-    }
-
-  /* Iterate over the files in the session directory. */
-  while ((entry = readdir(dir)) != NULL)
-    {
-      /* If it's the current or parent directory, punt. */
-      if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-	continue;
-
-      /* Punt any defunct login processes for this user and revert the
-       * account if there are any. */
-      al_acct_cleanup(entry->d_name);
-    }
-
-  closedir(dir);
-}
-
 static uid_t *get_logged_in_uids(int *nuids, struct process *plist, int nprocs)
 {
   uid_t *uids = emalloc(256 * sizeof(uid_t));
   int n = 0, uids_size = 256;
+  DIR *dir;
+  struct dirent *entry;
+  struct stat statbuf;
   struct passwd *pwd;
-  FILE *fp;
+  char *filename;
 
   /* Add an entry to uids for everyone in the utmp/utmpx file. Don't
    * worry about duplicates; that would make us O(n^2) unless we used
@@ -485,34 +456,45 @@ static uid_t *get_logged_in_uids(int *nuids, struct process *plist, int nprocs)
 
 #endif /* HAVE_GETUTXENT */
 
-  /* Now get uids of everyone who has a process that is a child of inetd. */
-  fp = fopen(PATH_INETD_PID, "r");
-  if (fp)
+  dir = opendir(AL_PATH_SESSIONS);
+  if (!dir)
     {
-      pid_t inetd_pid;
-      char *buf = NULL;
-      int bufsize, i;
-
-      if (read_line(fp, &buf, &bufsize) == 0)
-	{
-	  inetd_pid = atoi(buf);
-	  free(buf);
-
-	  for (i = 0; i < nprocs; i++)
-	    {
-	      if (plist[i].ppid == inetd_pid)
-		{
-		  if (n == uids_size)
-		    {
-		      uids_size *= 2;
-		      uids = erealloc(uids, uids_size * sizeof(uid_t));
-		    }
-		  uids[n++] = plist[i].ruid;
-		}
-	    }
-	}
-      fclose(fp);
+      fprintf(stderr, "Can't open directory %s: %s\n", AL_PATH_SESSIONS,
+	      strerror(errno));
+      exit(1);
     }
+
+  /* Iterate over the files in the session directory. */
+  while ((entry = readdir(dir)) != NULL)
+    {
+      /* If it's the current or parent directory, punt. */
+      if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+	continue;
+
+      /* Punt any defunct login processes for this user and revert the
+       * account if there are any. */
+      al_acct_cleanup(entry->d_name);
+
+      /* Construct the filename for the session record and stat it. */
+      filename = emalloc(strlen(AL_PATH_SESSIONS) + strlen(entry->d_name) + 2);
+      sprintf(filename, "%s/%s", AL_PATH_SESSIONS, entry->d_name);
+      if (stat(filename, &statbuf) == 0 && statbuf.st_size > 0)
+        {
+          /* Looks like the user is logged in.  Get the uid and record it. */
+          pwd = getpwnam(entry->d_name);
+          if (pwd)
+            {
+              if (n == uids_size)
+                {
+                  uids_size *= 2;
+                  uids = erealloc(uids, uids_size * sizeof(uid_t));
+                }
+              uids[n++] = pwd->pw_uid;
+            }
+        }
+      free(filename);
+    }
+  closedir(dir);
 
   *nuids = n;
   return uids;
