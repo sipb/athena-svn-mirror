@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.26 1999-10-27 20:42:00 tb Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.27 2000-01-14 22:36:44 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -85,8 +85,10 @@ static const char rcsid[] = "$Id: cleanup.c,v 2.26 1999-10-27 20:42:00 tb Exp $"
 #define PATH_PASSWD "/etc/passwd"
 #endif
 
+#define PATH_INETD_PID "/var/athena/inetd.pid"
+
 struct process {
-  pid_t pid;
+  pid_t pid, ppid;
   uid_t uid;
 };
 
@@ -94,7 +96,8 @@ static struct process *get_processes(int *nprocs);
 static void check_plist(int n, struct process **plist, int *psize);
 static uid_t *get_passwd_uids(int *nuids);
 static void cleanup_sessions(void);
-static uid_t *get_utmp_uids(int *nuids);
+static uid_t *get_logged_in_uids(int *nuids,
+				 struct process *plist, int nprocs);
 static void kill_processes(struct process *plist, int nprocs,
 			   uid_t *approved, int nuids);
 static int uid_okay(uid_t uid, uid_t *approved, int nuids);
@@ -125,7 +128,7 @@ int main(int argc, char **argv)
   else
     {
       cleanup_sessions();
-      approved = get_utmp_uids(&nuids);
+      approved = get_logged_in_uids(&nuids, plist, nprocs);
     }
 
   /* Sort the approved uid list for fast search. */
@@ -170,6 +173,7 @@ static struct process *get_processes(int *nprocs)
 	{
 	  check_plist(n, &plist, &psize);
 	  plist[n].pid = pid_buf.pid_id;
+	  plist[n].ppid = p->p_ppid;
 	  plist[n].uid = cred_buf.cr_uid;
 	  n++;
 	}
@@ -213,6 +217,7 @@ static struct process *get_processes(int *nprocs)
 	{
 	  check_plist(n, &plist, &psize);
 	  plist[n].pid = pbuf.pr_pid;
+	  plist[n].ppid = pbuf.pr_ppid;
 	  plist[n].uid = pbuf.pr_uid;
 	  n++;
 	}
@@ -244,6 +249,7 @@ static struct process *get_processes(int *nprocs)
 	{
 	  check_plist(n, &plist, &psize);
 	  plist[n].pid = kprocs[i].kp_proc.p_pid;
+	  plist[n].ppid = kprocs[i].kp_eproc.e_ppid;
 	  plist[n].uid = kprocs[i].kp_eproc.e_pcred.p_ruid;
 	}
     }
@@ -256,7 +262,9 @@ static struct process *get_processes(int *nprocs)
   struct dirent *entry;
   char *filename;
   struct stat statbuf;
-  int result;
+  int result, bufsize;
+  char *buf = NULL, *p;
+  FILE *f;
 
   /* Open the procfs directory. */
   dir = opendir("/proc");
@@ -266,26 +274,54 @@ static struct process *get_processes(int *nprocs)
       exit(1);
     }
 
-  /* Read through the directory and stat /proc/<number>/cmdline files. */
+  /* Read through the directory and read /proc/<number>/status files.
+   * (We can't read the simpler "stat" files, because they can be
+   * spoofed with clever process names like "foo) S 100 ".)
+   */
   while ((entry = readdir(dir)) != NULL)
     {
-      /* Skip non-numeric entries. */
-      if (!isdigit(*entry->d_name))
+      /* Skip non-numeric entries, and pid 0. */
+      if (atoi(entry->d_name) == 0)
 	continue;
 
       /* Stat the process file. */
-      filename = emalloc(strlen(entry->d_name) + 15);
-      sprintf(filename, "/proc/%s/cmdline", entry->d_name);
+      filename = emalloc(strlen(entry->d_name) + 14);
+      sprintf(filename, "/proc/%s/status", entry->d_name);
       result = stat(filename, &statbuf);
-      free(filename);
-      if (result == 0 && atoi(entry->d_name) != 0)
+
+      if (result == 0)
 	{
-	  check_plist(n, &plist, &psize);
-	  plist[n].pid = atoi(entry->d_name);
-	  plist[n].uid = statbuf.st_uid;
-	  n++;
+	  /* Parse out the ppid. */
+	  f = fopen(filename, "r");
+	  if (f)
+	    {
+	      p = NULL;
+	      while (read_line(f, &buf, &bufsize) == 0)
+		{
+		  if (strncmp(buf, "PPid:", 5))
+		    continue;
+		  p = buf + 5;
+		  while (isspace((unsigned char)*p))
+		    p++;
+		  break;
+		}
+	      fclose(f);
+
+	      if (p)
+		{
+		  check_plist(n, &plist, &psize);
+		  plist[n].pid = atoi(entry->d_name);
+		  plist[n].ppid = atoi(p);
+		  plist[n].uid = statbuf.st_uid;
+		  n++;
+		}
+	    }
 	}
+
+      free(filename);
     }
+
+  free(buf);
 #endif
 
   *nprocs = n;
@@ -304,8 +340,8 @@ static void check_plist(int n, struct process **plist, int *psize)
 static uid_t *get_passwd_uids(int *nuids)
 {
   FILE *fp;
-  char *line;
-  int linesize = 0, lines, n;
+  char *line = NULL;
+  int linesize, lines, n;
   const char *p;
   uid_t *uids;
 
@@ -378,18 +414,21 @@ static void cleanup_sessions(void)
   closedir(dir);
 }
 
-#ifdef HAVE_GETUTXENT
-
-static uid_t *get_utmp_uids(int *nuids)
+static uid_t *get_logged_in_uids(int *nuids, struct process *plist, int nprocs)
 {
   uid_t *uids = emalloc(256 * sizeof(uid_t));
   int n = 0, uids_size = 256;
-  struct utmpx *utx;
   struct passwd *pwd;
+  FILE *fp;
 
-  /* Add an entry to uids for everyone in the utmpx file.  Don't worry
-   * about duplicates; that would make us O(n^2) unless we used a more
-   * complicated data structure. */
+  /* Add an entry to uids for everyone in the utmp/utmpx file. Don't
+   * worry about duplicates; that would make us O(n^2) unless we used
+   * a more complicated data structure.
+   */
+
+#ifdef HAVE_GETUTXENT
+  struct utmpx *utx;
+
   while ((utx = getutxent()) != NULL)
     {
       if (utx->ut_type != USER_PROCESS || utx->ut_user[0] == 0)
@@ -405,24 +444,12 @@ static uid_t *get_utmp_uids(int *nuids)
       uids[n++] = pwd->pw_uid;
     }
   endutxent();
-  *nuids = n;
-  return uids;
-}
 
 #else /* HAVE_GETUTXENT */
 
-static uid_t *get_utmp_uids(int *nuids)
-{
-  uid_t *uids = emalloc(256 * sizeof(uid_t));
-  int n = 0, uids_size = 256;
-  FILE *fp;
   struct utmp ut;
-  struct passwd *pwd;
   char login[UT_NAMESIZE + 1];
 
-  /* Add an entry to uids for everyone in the utmpx file.  Don't worry
-   * about duplicates; that would make us O(n^2) unless we used a more
-   * complicated data structure. */
   fp = fopen(UTFILE, "r");
   if (fp)
     {
@@ -442,11 +469,41 @@ static uid_t *get_utmp_uids(int *nuids)
 	}
       fclose(fp);
     }
+
+#endif /* HAVE_GETUTXENT */
+
+  /* Now get uids of everyone who has a process that is a child of inetd. */
+  fp = fopen(PATH_INETD_PID, "r");
+  if (fp)
+    {
+      pid_t inetd_pid;
+      char *buf = NULL;
+      int bufsize, i;
+
+      if (read_line(fp, &buf, &bufsize) == 0)
+	{
+	  inetd_pid = atoi(buf);
+	  free(buf);
+
+	  for (i = 0; i < nprocs; i++)
+	    {
+	      if (plist[i].ppid == inetd_pid)
+		{
+		  if (n == uids_size)
+		    {
+		      uids_size *= 2;
+		      uids = erealloc(uids, uids_size * sizeof(uid_t));
+		    }
+		  uids[n++] = plist[i].uid;
+		}
+	    }
+	}
+      fclose(fp);
+    }
+
   *nuids = n;
   return uids;
 }
-
-#endif /* HAVE_GETUTXENT */
 
 /* Kill unapproved processes. */
 static void kill_processes(struct process *plist, int nprocs,
@@ -501,7 +558,7 @@ static int read_line(FILE *fp, char **buf, int *bufsize)
   char *newbuf;
   int offset = 0, len;
 
-  if (*bufsize == 0)
+  if (*buf == NULL)
     {
       *buf = emalloc(128);
       *bufsize = 128;
