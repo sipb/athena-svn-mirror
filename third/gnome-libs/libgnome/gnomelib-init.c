@@ -41,7 +41,7 @@ create_user_gnome_directories (void)
 	   mkdir(gnome_user_dir, 0700) /* This is per-user info
 					   - no need for others to see it */
 	   && errno != EEXIST)
-	  g_error("Could not create per-user Gnome directory <%s> - aborting\n",
+	  g_warning("Could not create per-user Gnome directory <%s> - aborting\n",
 		  gnome_user_dir);
 
 	if(
@@ -50,13 +50,13 @@ create_user_gnome_directories (void)
 						  maybe even other security
 						  meassures will be taken */
 	   && errno != EEXIST)
-		g_error("Could not create private per-user Gnome directory <%s> - aborting\n",
+		g_warning("Could not create private per-user Gnome directory <%s> - aborting\n",
 			gnome_user_private_dir);
 	if(
 	   mkdir(gnome_user_accels_dir, 0700) /* This is per-user info
 					   - no need for others to see it */
 	   && errno != EEXIST)
-	  g_error("Could not create per-user Gnome directory <%s> - aborting\n",
+	  g_warning("Could not create per-user Gnome directory <%s> - aborting\n",
 		  gnome_user_accels_dir);
 
 	/* change mode to 0700 on the private directory */
