@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.26 1991-07-14 00:52:47 lwvanels Exp $
+# $Id: xsession,v 1.27 1991-07-18 15:24:12 epeisach Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -111,6 +111,19 @@ if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time
 # Run standard system/user startup activities
 
 
+# Run the Athena Dashboard by default.
+# To skip this, put the command "set skip_dash" in
+# your ~/.environment file.
+
+# We run this first, before the initial xterm, to give dash a chance to
+# start up and be ready to put up the logout button later (below).
+
+if (! $?skip_dash) then
+	if ($?verbose_login) echo "Starting the Athena Dashboard..."
+	(dash &)
+	sleep $sleep_time
+endif
+
 # Start default initial xterm window.  To skip this, put the command
 # "set skip_initial_xterm" in your ~/.environment file.
 
@@ -132,7 +145,6 @@ endif
 if (! $?skip_xlogout) then
 	if ($?verbose_login) echo "Creating logout button..."
 	(dash -logout &)
-	sleep $sleep_time
 	sleep $sleep_time
 endif
 
