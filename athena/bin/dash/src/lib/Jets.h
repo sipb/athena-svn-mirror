@@ -322,27 +322,27 @@ typedef struct _RootClassRec *RootJetClass;
 #define SUN4NUM 1<<5
 #define UNKNOWNNUM 1<<15
 
-#if defined(VaxArchitecture)
+#if defined(VAX_ARCH)
 #define MACHTYPE VAX
 #define MACHNUM VAXNUM
 #else
-#if defined(RtArchitecture)
+#if defined(RT_ARCH)
 #define MACHTYPE RT
 #define MACHNUM RTNUM
 #else
-#if defined(UltrixArchitecture) && defined(MipsArchitecture)
+#if defined(ULTRIX_ARCH) && defined(MIPS_ARCH)
 #define MACHTYPE DECMIPS
 #define MACHNUM DECMIPSNUM
 #else
-#if defined(PS2Architecture)
+#if defined(PS2_ARCH)
 #define MACHTYPE PS2
 #define MACHNUM PS2NUM
 #else
-#if defined(RsArchitecture)
+#if defined(RS_ARCH)
 #define MACHTYPE RSAIX
 #define MACHNUM RSAIXNUM
 #else
-#if defined(SunArchitecture)
+#if defined(SUN_ARCH)
 #define MACHTYPE SUN4
 #define MACHNUM SUN4NUM
 #else
