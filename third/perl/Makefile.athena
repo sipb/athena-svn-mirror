@@ -1,14 +1,27 @@
-# $Id: Makefile.athena,v 1.20 2004-04-13 19:05:29 zacheiss Exp $
+# $Id: Makefile.athena,v 1.21 2005-01-06 18:03:56 ghudson Exp $
 
 SHELL=/bin/sh
 
 dist:
 
+# Perl's Solaris hints file doesn't correctly detect that we are using
+# gnu ld, so we have to tell it to use -Wl,-E at link time.  (See
+# README.solaris.)
 prepare:
 	rm -f config.sh
-	./Configure -d -s -e -Dprefix=/usr/athena -Dcc="$$COMPILER" \
-		-Dlocincpth=/usr/athena/include -Dloclibpth=/usr/athena/lib \
-		-Doptimize='-g' -Dusethreads -Dperladmin=bugs@mit.edu
+	case $$OS in \
+	linux) \
+	  ./Configure -d -s -e -Dprefix=/usr/athena -Dcc="$$COMPILER" \
+	    -Dlocincpth=/usr/athena/include -Dloclibpth=/usr/athena/lib \
+	    -Doptimize='-g' -Dusethreads -Dperladmin=bugs@mit.edu \
+	  ;; \
+	solaris) \
+	  ./Configure -d -s -e -Dprefix=/usr/athena -Dcc="$$COMPILER" \
+	    -Dlocincpth=/usr/athena/include -Dloclibpth=/usr/athena/lib \
+	    -Doptimize='-g' -Dusethreads -Dperladmin=bugs@mit.edu \
+	    -Dlddlflags='-Wl,-E -G' -Dccdlflags='-Wl,-E'; \
+	  ;; \
+	esac
 
 clean:
 	${MAKE} clean
