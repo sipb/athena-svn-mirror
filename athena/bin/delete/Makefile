@@ -5,14 +5,15 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.3 1989-01-27 03:13:45 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.4 1989-01-27 10:31:11 jik Exp $
 #
 
 TARGETS = delete undelete expunge purge lsdel
 DESTDIR =
 CC = cc
 CFLAGS = -O
-SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c
+SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c \
+	lsdel.c col.c
 
 all: $(TARGETS)
 
@@ -44,6 +45,14 @@ saber_expunge:
 
 purge: expunge
 	ln -s expunge purge
+
+lsdel: lsdel.o util.o directories.o pattern.o col.o
+	cc $(CFLAGS) -o lsdel lsdel.o util.o directories.o pattern.o col.o
+
+saber_lsdel:
+	#alias s step
+	#alias n next
+	#load lsdel.c util.c directories.c pattern.c col.c
 
 clean:
 	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge
@@ -89,3 +98,8 @@ expunge.o: /usr/include/sys/time.h /usr/include/sys/dir.h
 expunge.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
 expunge.o: /usr/include/sys/signal.h /usr/include/strings.h
 expunge.o: /usr/include/sys/stat.h directories.h util.h pattern.h expunge.h
+lsdel.o: /usr/include/stdio.h /usr/include/sys/types.h /usr/include/sys/dir.h
+lsdel.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
+lsdel.o: /usr/include/sys/signal.h /usr/include/sys/stat.h lsdel.h util.h
+lsdel.o: directories.h pattern.h
+col.o: /usr/include/stdio.h /usr/include/strings.h col.h
