@@ -193,7 +193,6 @@ install-data: texmf.cnf kpathsea.info install-man
 	else true; fi
 	test -r kpathsea.info || cd $(srcdir) && for i in kpathsea.i*; do \
 	  $(INSTALL_DATA) $$i ${DESTDIR}$(infodir)/$$i; done
-	test -r ${DESTDIR}$(infodir)/dir || $(INSTALL_DATA) $(top_srcdir)/../dir ${DESTDIR}$(infodir)
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
 	  install-info --info-dir=${DESTDIR}$(infodir) ${DESTDIR}$(infodir)/kpathsea.info; \
 	else true; fi
