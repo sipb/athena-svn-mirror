@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: access_off.c,v 1.9 1998-04-25 23:31:52 danw Exp $";
+static const char rcsid[] = "$Id: access_off.c,v 1.10 1998-07-23 16:30:53 danw Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -95,6 +95,7 @@ int main(int argc, char **argv)
 	    }
 	  else if (pid == 0)
 	    {
+	      fclose(rcfile);
 	      /* Make ruid and saved uid equal to effective uid before exec,
 	       * or sshd might notice and get confused. Clear the environment
 	       * to prevent evil ldd tricks. */
