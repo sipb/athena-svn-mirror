@@ -124,9 +124,8 @@ except  : opt_space
 		}
 	;
 wordlist: WORD
-	| wordlist opt_space WORD
-	;
-shellcmd: nullcmd
+	| wordlist opt_space WORD ;
+shellcmd: | WHITESPACE
 		{
 			savestr(&entries[entrycnt].cmdbuf,"");
 			doreset();
@@ -137,23 +136,14 @@ shellcmd: nullcmd
 			doreset();
 		}
 	;
-nullcmd: | whitebacknew
-	;
 shline:   black
-	| whitebacknew black
 	| shline black
-	| shline WHITESPACE
 	| shline BACKNEW
 	;
 black:	  WORD
 	| COLON
 	| BANG
 	| BACKSLASH
-	;
-whitebacknew: 	WHITESPACE whitebacknew
-	|	BACKNEW    whitebacknew
-	|	BACKNEW
-	|	WHITESPACE
 	;
 opt_word: opt_space WORD opt_space
 	;
