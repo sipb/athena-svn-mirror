@@ -14,6 +14,8 @@
 #define HAVE_CHROOT
 #define CAN_CHANGE_ID
 
+#define HAS_INET6_STRUCTS
+
 #if __GLIBC__ >= 2
 #  define dprintf bind_dprintf
 #  if __GLIBC_MINOR__ < 1
@@ -39,6 +41,9 @@ int daemon(int nochdir, int noclose);
 #if (!defined(BSD)) || (BSD < 199306)
 #include <sys/bitypes.h>
 #endif
+
+/* What utter grot. --tb */
+#define fds_bits __fds_bits
 
 #ifndef MIN
 # define MIN(x, y)	((x > y) ?y :x)
