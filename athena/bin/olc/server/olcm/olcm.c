@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.2 1991-04-08 21:21:48 lwvanels Exp $
+ *      $Id: olcm.c,v 1.3 1991-04-10 00:13:48 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.2 1991-04-08 21:21:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.3 1991-04-10 00:13:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -156,14 +156,28 @@ main(argc,argv)
     /* Output to new file */
     fputs(buf,f);
     
-    /* find the username */
+    /* find the username 
+     * Handles usernames of the form    user@foo.bar.baz
+     * or				"John Q. User" <user@foo.bar.baz>
+     * This is a gross hack, but to do it right would involve writing a real
+     * parser...
+     */
+
     if ((username[0] == '\0') && (strncmp(buf,"From:",5) == 0)) {
       /* Found from line, get username */
 
       p = &buf[5];
       while(isascii(*p) && isspace(*p))
 	p++;
-      end = p;
+
+      end = index(p,'<');
+      if (end == NULL)
+	end = p;
+      else {
+	end++;
+	p = end;
+      }
+
       while(isascii(*end) && isalnum(*end))
 	end++;
 
