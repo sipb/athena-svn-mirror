@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.7 1999-12-27 14:13:08 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.8 1999-12-28 14:54:24 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -121,12 +121,13 @@ extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
 extern sigset_t sig_zero;
 
-#if defined(HAVE_AFS) && !defined(NANNY) && defined(SIGSYS)
+#if defined(HAVE_AFS) && !defined(NANNY)
 /* If we call setpag() when AFS is not loaded, we will get a SIGSYS,
  * at least on systems which have SIGSYS.
  */
 static void try_setpag()
 {
+#ifdef SIGSYS
   struct sigaction sa, osa;
 
   sigemptyset(&sa.sa_mask);
@@ -135,6 +136,9 @@ static void try_setpag()
   sigaction(SIGSYS, &sa, &osa);
   setpag();
   sigaction(SIGSYS, &osa, NULL);
+#else
+  setpag();
+#endif
 }
 #endif
 
