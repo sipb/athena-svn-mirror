@@ -1,21 +1,40 @@
+/* Copyright 1996 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+static const char rcsid[] = "$Id: newpag.c,v 1.4 1997-01-11 19:24:00 ghudson Exp $";
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(argc, argv)
-	int argc;
-	char **argv;
+int main(int argc, char **argv)
 {
-	char *shell = getenv("SHELL");
-	int code = setpag();
+  char *shell;
+  int code;
 
-	if (code != 0) {
-		perror("setpag");
-		exit(1);
-	}
-	if (argc == 1)
-		execl(shell != NULL ? shell : "/bin/sh", "sh", 0);
-	else 
-		execvp(argv[1], argv + 1);
-	exit(1);
+  code = setpag();
+  if (code != 0)
+    {
+      perror("setpag");
+      exit(1);
+    }
+
+  shell = getenv("SHELL");
+  if (argc == 1)
+    execl(shell != NULL ? shell : "/bin/sh", "sh", 0);
+  else 
+    execvp(argv[1], argv + 1);
+  exit(1);
 }
