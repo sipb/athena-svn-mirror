@@ -17,7 +17,7 @@
  * pertaining to lockers.
  */
 
-static const char rcsid[] = "$Id: zephyr.c,v 1.2 1999-03-29 17:33:25 danw Exp $";
+static const char rcsid[] = "$Id: zephyr.c,v 1.3 1999-04-06 21:56:07 danw Exp $";
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -133,4 +133,7 @@ void locker__free_zsubs(locker_context context)
   for (i = 0; i < context->nzsubs; i++)
     free(context->zsubs[i]);
   free(context->zsubs);
+
+  context->nzsubs = 0;
+  context->zsubs = NULL;
 }
