@@ -26,9 +26,12 @@ esac
 echo "Extracting Makefile (with variable substitutions)"
 rm -f Makefile
 cat >Makefile <<!GROK!THIS!
-# $RCSfile: Makefile.SH,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:39:56 $
+# $RCSfile: Makefile.SH,v $$Revision: 1.2 $$Date: 1996-10-05 18:28:05 $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1996/10/02 06:39:56  ghudson
+# Import of perl 4.036
+#
 # Revision 4.0.1.4  92/06/08  11:40:43  lwall
 # patch20: cray didn't give enough memory to /bin/sh
 # patch20: various and sundry fixes
@@ -320,7 +323,7 @@ perly.o: perly.c perly.h $(h)
 	$(CCCMD) perly.c
 
 install: all
-	./perl installperl
+	DESTDIR=${DESTDIR} ./perl installperl
 
 clean:
 	rm -f *.o all perl taintperl suidperl perly.c
