@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14.2.3 1997-06-28 18:40:50 ghudson Exp $
+# $Id: Makefile,v 1.14.2.4 1997-10-13 15:57:53 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -70,7 +70,7 @@ sis: sis.in
 
 verify-message: verify-message.in
 	path=`athdir -c -p /mit/pgp -t bin`; \
-		sed -e 's|@PATH@|$$path|g' verify-message.in > $@
+		sed -e "s|@PATH@|$$path|g" verify-message.in > $@
 
 check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
