@@ -10,16 +10,13 @@
  */
 
 #if  (!defined(lint))  &&  (!defined(SABER))
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.3 1991-12-17 10:26:54 vanharen Exp $";
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.4 1993-07-02 01:27:19 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
-#if defined(ultrix) || defined(_AIX)  ||  defined(_AUX_SOURCE)
-#include <time.h>
-#endif
-#include <sys/time.h>
+#include <X11/Xos.h>		/* needed for <time.h> or <sys/time.h> */
 #include <ctype.h>
 #include "Jets.h"
 #include "DClock.h"
@@ -75,25 +72,27 @@ static XjResource resources[] = {
 #undef offset
 
 static void wakeup(), expose(), initialize(), realize(), querySize(),
-  move(), /*resize(),*/  destroy(), parse_formats();
+  move(), resize(), destroy(), parse_formats();
 static char *get_label();
 static Boolean event_handler();
 
 DClockClassRec dClockClassRec = {
   {
-    /* class name */	"DigitalClock",
-    /* jet size   */	sizeof(DClockRec),
-    /* initialize */	initialize,
-    /* prerealize */    NULL,
-    /* realize */	realize,
-    /* event */		event_handler,
-    /* expose */	expose,
-    /* querySize */     querySize,
-    /* move */		move,
-    /* resize */        NULL /*resize*/,
-    /* destroy */       destroy,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"DigitalClock",
+    /* jet size   */		sizeof(DClockRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	NULL,
+    /* realize */		realize,
+    /* event */			event_handler,
+    /* expose */		expose,
+    /* querySize */     	querySize,
+    /* move */			move,
+    /* resize */        	resize,
+    /* destroy */       	destroy,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
@@ -180,11 +179,10 @@ static void realize(me)
 
   me->dClock.timerid = XjAddWakeup(wakeup, me, 1000 * me->dClock.update);
 
-/*
   XjRegisterWindow(me->core.window, (Jet) me);
   XjSelectInput(me->core.display, me->core.window, ButtonPressMask);
-*/
 }
+
 
 static void querySize(me, size)
      DClockJet me;
@@ -198,6 +196,7 @@ static void querySize(me, size)
   size->height = me->dClock.font->ascent + me->dClock.font->descent;
 }
 
+
 static void move(me, x, y)
      DClockJet me;
      int x, y;
@@ -205,6 +204,26 @@ static void move(me, x, y)
   me->core.x = x;
   me->core.y = y;
 }
+
+
+static void resize(me, size)
+     DClockJet me;
+     XjSize *size;
+{
+  if (me->core.width == size->width
+      && me->core.height == size->height)
+    return;
+
+  if (me->dClock.gc_bkgnd != NULL)
+    XFillRectangle(me->core.display, me->core.window,
+		   me->dClock.gc_bkgnd,
+		   me->core.x, me->core.y,
+		   me->core.width, me->core.height);
+
+  me->core.width = size->width;
+  me->core.height = size->height;
+}
+
 
 static void destroy(me)
      DClockJet me;
@@ -215,13 +234,14 @@ static void destroy(me)
   (void)XjRemoveWakeup(me->dClock.timerid);
 }
 
+
 static int draw(me)
      DClockJet me;
 {
-  struct timeval now;
+/*   struct timeval now; */
   char *label;
   int len, w, max_w;
-  int x=0, y;
+  int x, y;
   static int old_w = 0;
   int start = 0;
 
@@ -238,14 +258,14 @@ static int draw(me)
       x = me->core.x + me->dClock.padding;
       break;
 
-    case Center:
-      start = (MAX(0, old_w - w))/2;
-      x = me->core.x + (me->core.width - max_w) / 2;
-      break;
-
     case Right:
       start = MAX(0, old_w - w);
       x = me->core.x + (me->core.width - max_w - me->dClock.padding);
+      break;
+
+    default:				/* Center, default */
+      start = (MAX(0, old_w - w))/2;
+      x = me->core.x + (me->core.width - max_w) / 2;
       break;
     }
 
@@ -347,7 +367,7 @@ static char *get_label(me)
   caddr_t f[MAX_FMTS];
 
   gettimeofday(&tv, &tz);
-  tp = localtime(&tv.tv_sec);	/* don't cast to time_t... (ultrix lossage) */
+  tp = localtime((time_t *) &tv.tv_sec);
 
   for (i=0; i < MAX_FMTS; i++)
     {
@@ -529,12 +549,47 @@ static Boolean event_handler(me, event)
   switch(event->type)
     {
     case ButtonPress:
-      me->dClock.current_fmt = !me->dClock.current_fmt;
-      (void) draw(me);
-      break;
+      {
+	int x, y, w, h, len;
+	char *label;
+
+	label = get_label(me);
+	len = strlen(label);
+	w = XTextWidth(me->dClock.font, label, len);
+	h = me->dClock.pmap_ht;
+	switch(me->dClock.justify)
+	  {
+	  case Left:
+	    x = me->core.x + me->dClock.padding;
+	    break;
+	  case Right:
+	    x = me->core.x + (me->core.width - w - me->dClock.padding);
+	    break;
+	  default:			/* Center, default */
+	    x = me->core.x + (me->core.width - w) / 2;
+	    break;
+	  }
+	y = me->core.y;
+	if (me->dClock.centerY)
+	  y += (me->core.height -
+		(me->dClock.font->ascent + me->dClock.font->descent)) / 2;
+
+	if (event->xbutton.x > x
+	    && event->xbutton.x < x+w
+	    && event->xbutton.y > y
+	    && event->xbutton.y < y+h)
+	  {
+	    me->dClock.current_fmt = !me->dClock.current_fmt;
+	    (void) draw(me);
+	    return True;
+	  }
+	else
+	  return False;
+	break;
+      }
+
 
     default:
       return False;
     }
-  return True;
 }
