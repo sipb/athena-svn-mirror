@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.5 1997-11-13 21:57:51 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.6 1997-11-17 22:06:19 danw Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -112,6 +112,8 @@ static int update_passwd(FILE *fp)
   pid = fork();
   if (pid == 0)
     {
+      close(STDOUT_FILENO);
+      close(STDERR_FILENO);
       execl(_PATH_PWD_MKDB, "pwd_mkdb", "-p", PATH_PASSWD_TMP, NULL);
       _exit(1);
     }
