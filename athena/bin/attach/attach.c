@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.10 1990-11-16 13:34:53 probe Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.11 1990-11-16 16:15:36 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -367,14 +367,10 @@ int errorout;
 	while (mp = cp) {
 		cp = index(mp, ',');
 		if (cp)
-			*cp++ = '\0';
-		if (mp > mul_buf)
-			*(mp-1) = ',';
-		if (attach(mp) != SUCCESS && cp) {
-			strcpy(mp,cp);
-			cp = mp;
-		}
+			*cp = '\0';
+		attach(mp);
+		if (cp)
+			cp++;
 	}
-	strcpy(atp->hostdir, mul_buf);
 	return SUCCESS;
 }
