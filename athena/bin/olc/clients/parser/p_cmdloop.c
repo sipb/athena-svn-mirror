@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.10 1990-07-16 08:19:15 lwvanels Exp $
+ *	$Id: p_cmdloop.c,v 1.11 1990-10-18 06:24:25 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.10 1990-07-16 08:19:15 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.11 1990-10-18 06:24:25 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -64,8 +64,7 @@ command_loop(Command_Table, prompt)
   char *comm_ptr;		
   char *arguments[MAX_ARGS];
   char arglist[MAX_ARGS][MAX_ARG_LENGTH];	
-  int i,pid,ls=0;
-  int (*func)();
+  int i,ls=0;
   char buf[BUF_SIZE];
 #ifdef CSH
   struct stat statbuf;
