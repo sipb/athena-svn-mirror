@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.3 1990-11-16 16:06:17 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.4 1990-11-18 17:39:16 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -282,10 +282,12 @@ move_instructions(data, timerid)
   x = random() % x_max;
   y = random() % y_max;
   XtMoveWidget(ins, x, y);
-  XRaiseWindow(XtDisplay(ins), XtWindow(ins));
-  wins[0] = XtWindow(ins);
-  wins[1] = XtWindow(saver);
-  XRestackWindows(XtDisplay(ins), wins, 2);
+  if (activation_state != REACTIVATING) {
+      XRaiseWindow(XtDisplay(ins), XtWindow(ins));
+      wins[0] = XtWindow(ins);
+      wins[1] = XtWindow(saver);
+      XRestackWindows(XtDisplay(ins), wins, 2);
+  }
 
   curr_timerid = XtAddTimeOut(resources.move_timeout * 1000,
 			      move_instructions, NULL);
