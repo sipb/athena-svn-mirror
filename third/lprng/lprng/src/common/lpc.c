@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpc.c,v 1.2 1999-07-01 22:15:07 mwhitson Exp $";
+"$Id: lpc.c,v 1.3 1999-09-10 17:49:55 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -289,6 +289,12 @@ void doaction( struct line_list *args )
 			result, Decode_status( &status ) );
 	} else {
 		Add_line_list(&l, Logname_DYN, Value_sep, 0, 0 );
+		Add_line_list(&l, args->list[0], Value_sep, 0, 0);
+		Remove_line_list(args, 0);
+		if( args->count > 0 ) {
+			Add_line_list(&l, RemotePrinter_DYN, Value_sep, 0, 0 );
+			Remove_line_list(args, 0);
+		}
 		Merge_line_list(&l, args, 0, 0, 0 );
 		Check_max(&l, 1 );
 		l.list[l.count] = 0;
