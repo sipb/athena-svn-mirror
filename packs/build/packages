@@ -1,4 +1,4 @@
-# $Id: packages,v 1.127 2001-03-26 17:42:44 ghudson Exp $
+# $Id: packages,v 1.128 2001-03-31 05:09:21 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -70,6 +70,7 @@ athena/bin/machtype
 athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires afsbin
 athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
+athena/bin/panel-wrapper	requires gnome-libs
 athena/bin/passwd		requires krb5,al
 athena/bin/quota		requires locker,afsbin
 athena/bin/rkinit		requires krb5,athena/lib/rkinit
