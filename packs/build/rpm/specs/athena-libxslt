@@ -2,7 +2,7 @@ Name: athena-libxslt
 Summary: Library providing the Gnome XSLT engine, for Athena
 License: MIT
 Group: Development/Libraries
-Provides: libxslt = 1.0.24
+Provides: libxslt = 1.0.27
 
 %description
 This C library allows to transform XML files into other XML files
