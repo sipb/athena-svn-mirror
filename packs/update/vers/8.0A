@@ -38,13 +38,27 @@ SUN*)
 	touch /var/log/authlog /var/log/syslog
 	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
 
+	cronentry="45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB"
+
 	echo "NEWUNIX=true"                     >> ${CONFVARS}
 	echo "NEWBOOT=true"                     >> ${CONFVARS}
 	echo "NEWOS=true"                       >> ${CONFVARS}
 	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
+	;;
+
+SGI*)
+	cronentry="45	0,12	*	*	*	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB"
 esac
 
-# Fix /etc/hosts if it's broken
+# Add gettime entry to root crontab.
+if [ `grep -ic "gettime" /var/cron/crontabs/root` = 0 ]; then
+	echo "/var/cron/crontabs/root renamed to root.old"
+	mv /var/cron/crontabs/root /var/cron/crontabs/root.old
+	cp -p /var/cron/crontabs/root.old /var/cron/crontabs/root
+	echo "$cronentry" >> /var/cron/crontabs/root
+fi
+
+# Fix /etc/hosts if it's broken.
 if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
 	echo "/etc/hosts was moved to /etc/hosts.old"
 	rm -f /etc/hosts.old
