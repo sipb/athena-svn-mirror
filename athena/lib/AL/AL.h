@@ -7,6 +7,9 @@
  **********************************************************************/
 #include <mit-copyright.h>
 
+#ifndef _AL_AL_H
+#define _AL_AL_H
+
 #include <krb.h>	
 #include <pwd.h>
 #include <sys/types.h>
@@ -65,13 +68,6 @@ typedef struct _ALsession
 #define ALisTrue(session, flag)		((session)->flags & (flag))
 #define ALflagNone	((ALflag_t)0)
 
-/* flags pertaining to the existence of files */
-
-#define ALhaveNOLOGIN	((ALflag_t)(1<<0))
-#define ALhaveNOCREATE	((ALflag_t)(1<<1))
-#define ALhaveNOREMOTE	((ALflag_t)(1<<2))
-#define ALhaveNOATTACH	((ALflag_t)(1<<3))
-
 #define ALfileNOLOGIN	"/etc/nologin"
 #define ALfileNOCREATE	"/etc/nocreate"
 #define ALfileNOREMOTE	"/etc/noremote"
@@ -79,15 +75,26 @@ typedef struct _ALsession
 
 #define ALfileExists(f) (access((f), F_OK) == 0)
 
-/* flags saying what we've done */
+/* flags - may be reordered after the list is more complete */
+
+#define ALhaveNOLOGIN	((ALflag_t)(1<<0))
+#define ALhaveNOCREATE	((ALflag_t)(1<<1))
+#define ALhaveNOREMOTE	((ALflag_t)(1<<2))
+#define ALhaveNOATTACH	((ALflag_t)(1<<3))
 
 #define ALdidGetHesiodPasswd	((ALflag_t)(1<<4))
 #define ALdidAttachHomedir	((ALflag_t)(1<<5))
 #define ALdidCreateHomedir	((ALflag_t)(1<<6))
 
+#define ALisRemoteSession	((ALflag_t)(1<<7))
+#define ALhaveAuthentication	((ALflag_t)(1<<8)) /* if we have krb tkts */
+
 /* how library functions return an error */
 
 #define ALreturnError(session, code, string) { strncpy((session)->context, string, ALlengthErrContext-1); (session)->context[ALlengthErrContext-1]='\0'; return(code); }
+
+#define ALisWarning(code)	((code) >= ALwarnOK && (code) <= ALwarnMax)
+#define ALisError(code)		((code) && !ALisWarning((code)))
 
 /* for ALmodifyLinesOfFile() */
 #define ALmodifyNOT ((long (*)(ALsession, char[]))0)
@@ -95,3 +102,5 @@ typedef struct _ALsession
 
 /* function prototypes */
 #include <AL/ptypes.h>
+
+#endif /* _AL_AL_H */
