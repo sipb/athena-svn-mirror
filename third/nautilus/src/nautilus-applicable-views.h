@@ -54,7 +54,7 @@ typedef enum {
 	NAUTILUS_DETERMINE_VIEW_ACCESS_DENIED,
 	NAUTILUS_DETERMINE_VIEW_HOST_NOT_FOUND,
 	NAUTILUS_DETERMINE_VIEW_HOST_HAS_NO_ADDRESS,
-	NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER,
+	NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER
 } NautilusDetermineViewResult;
 
 typedef void (* NautilusDetermineViewCallback) (NautilusDetermineViewHandle  *handle,
@@ -63,6 +63,7 @@ typedef void (* NautilusDetermineViewCallback) (NautilusDetermineViewHandle  *ha
                                                 gpointer                      callback_data);
 
 NautilusDetermineViewHandle *nautilus_determine_initial_view        (const char                    *location,
+                                                                     gboolean                       fallback,
                                                                      NautilusDetermineViewCallback  callback,
                                                                      gpointer                       callback_data);
 void                         nautilus_determine_initial_view_cancel (NautilusDetermineViewHandle   *handle);

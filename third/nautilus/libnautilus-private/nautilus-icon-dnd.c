@@ -28,6 +28,7 @@
 
 
 #include <config.h>
+#include <math.h>
 #include "nautilus-icon-dnd.h"
 
 #include "nautilus-file-dnd.h"
@@ -56,7 +57,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
-#include <math.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -513,6 +514,8 @@ nautilus_icon_container_selection_items_local (NautilusIconContainer *container,
 		 * would not work for it.
 		 */
 		result = nautilus_drag_items_in_trash (items);
+	} else if (eel_uri_is_desktop (container_uri_string)) {
+		result = nautilus_drag_items_on_desktop (items);
 	} else {
 		result = nautilus_drag_items_local (container_uri_string, items);
 	}
@@ -530,7 +533,7 @@ get_background_drag_action (NautilusIconContainer *container,
 	GdkDragAction valid_actions;
 
 	if (action == GDK_ACTION_ASK) {
-		valid_actions = NAUTILUS_DND_ACTION_SET_AS_BACKGROUND;
+		valid_actions = NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND;
 		if (g_object_get_data (G_OBJECT (eel_get_widget_background (GTK_WIDGET (container))), "is_desktop") == 0) {
 			valid_actions |= NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
 		}
@@ -715,6 +718,7 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
 #if 0
 	const char *message;
+	const char *detail;
 	GtkDialog *dialog;
 	int response;
 
@@ -725,25 +729,26 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	 */
 	if (nautilus_icon_container_has_stored_icon_positions (container)) {
 		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave this item where you dropped it? "
+			message = _("Do you want to switch to manual layout and leave this item where you dropped it? "
 			"This will clobber the stored manual layout.");
+			detail = _("This folder uses automatic layout.");
 		} else {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave these items where you dropped them? "
+			message = _("Do you want to switch to manual layout and leave these items where you dropped them? "
 			"This will clobber the stored manual layout.");
+			detail = _("This folder uses automatic layout.");
 		}
 	} else {
 		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave this item where you dropped it?");
+			message = _("Do you want to switch to manual layout and leave this item where you dropped it?");
+			detail = _("This folder uses automatic layout.");
 		} else {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave these items where you dropped them?");
+			message = _("Do you want to switch to manual layout and leave these items where you dropped them?");
+			detail = _("This folder uses automatic layout.");
+
 		}
 	}
 
-	dialog = eel_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
+	dialog = eel_show_yes_no_dialog (message, detail, _("Switch to Manual Layout?"),
 					 _("Switch"), GTK_STOCK_CANCEL,
 					 GTK_WINDOW (gtk_widget_get_toplevel(GTK_WIDGET(container))));
 
@@ -811,7 +816,7 @@ handle_local_move (NautilusIconContainer *container,
 				(container, icon,
 				 world_x + item->icon_x, world_y + item->icon_y,
 				 icon->scale_x, icon->scale_y,
-				 TRUE, TRUE);
+				 TRUE, TRUE, TRUE);
 		}
 		moved_icons = g_list_prepend (moved_icons, icon);
 	}		
@@ -831,6 +836,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 {
 	GList *source_uris, *p;
 	GArray *source_item_locations;
+	gboolean free_target_uri;
 	int index;
 
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
@@ -860,7 +866,14 @@ handle_nonlocal_move (NautilusIconContainer *container,
 				((NautilusDragSelectionItem *)p->data)->icon_y;
 		}
 	}
-		
+
+	free_target_uri = FALSE;
+ 	/* Rewrite internal desktop URIs to the normal target uri */
+	if (eel_uri_is_desktop (target_uri)) {
+		target_uri = nautilus_get_desktop_directory_uri ();
+		free_target_uri = TRUE;
+	}
+	
 	/* start the copy */
 	g_signal_emit_by_name (container, "move_copy_items",
 				 source_uris,
@@ -868,6 +881,10 @@ handle_nonlocal_move (NautilusIconContainer *container,
 				 target_uri,
 				 context->action,
 				 x, y);
+
+	if (free_target_uri) {
+		g_free ((char *)target_uri);
+	}
 
 	g_list_free (source_uris);
 	g_array_free (source_item_locations, TRUE);
@@ -943,8 +960,7 @@ selection_is_image_file (GList *selection_list)
 
 	mime_type = gnome_vfs_get_mime_type (selected_item->uri);
 
-	result = (g_ascii_strcasecmp (mime_type, "image/svg") != 0 &&
-		  eel_istr_has_prefix (mime_type, "image/"));
+	result = eel_istr_has_prefix (mime_type, "image/");
 	
 	g_free (mime_type);
 	
@@ -1122,6 +1138,7 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	NautilusIcon *icon;
 	NautilusFile *file;
 	double world_x, world_y;
+	char *uri;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	if ((container->details->dnd_info->drag_info.selection_list == NULL) 
@@ -1142,8 +1159,10 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 
 	/* Find if target icon accepts our drop. */
 	if (icon != NULL && (container->details->dnd_info->drag_info.data_type != NAUTILUS_ICON_DND_KEYWORD)) {
-		    file = nautilus_file_get (nautilus_icon_container_get_icon_uri (container, icon));
-
+		    uri = nautilus_icon_container_get_icon_uri (container, icon);
+		    file = nautilus_file_get (uri);
+		    g_free (uri);
+		
 		    if (!nautilus_drag_can_accept_items (file,
 							 container->details->dnd_info->drag_info.selection_list)) {
 			    icon = NULL;
@@ -1197,7 +1216,9 @@ void
 nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 			      GdkDragAction actions,
 			      int button,
-			      GdkEventMotion *event)
+			      GdkEventMotion *event,
+			      int                    start_x,
+			      int                    start_y)
 {
 	NautilusIconDndInfo *dnd_info;
 	EelCanvas *canvas;
@@ -1218,8 +1239,8 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
            the way the canvas handles events.
 	*/
 	canvas = EEL_CANVAS (container);
-	dnd_info->drag_info.start_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
-	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
+	dnd_info->drag_info.start_x = start_x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
+	dnd_info->drag_info.start_y = start_y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
 
         /* create a pixmap and mask to drag with */
         pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask);

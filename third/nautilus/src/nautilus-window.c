@@ -44,10 +44,11 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -75,6 +76,7 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-sidebar-functions.h>
+#include <libnautilus-private/nautilus-view-query.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-undo.h>
@@ -114,11 +116,9 @@ enum {
 	ARG_APP
 };
 
-static GList *history_list;
-static int side_pane_width_auto_value = SIDE_PANE_MINIMUM_WIDTH;
-
-static void add_sidebar_panels                  (NautilusWindow *window);
 static void cancel_view_as_callback             (NautilusWindow *window);
+
+static GList *history_list;
 
 GNOME_CLASS_BOILERPLATE (NautilusWindow, nautilus_window,
 			 BonoboWindow, BONOBO_TYPE_WINDOW)
@@ -166,16 +166,11 @@ nautilus_window_instance_init (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
+	window->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_DEFAULT;
+	
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_window_get_ui_container (BONOBO_WINDOW (window));
 	bonobo_object_ref (window->details->ui_container);
-
-	window->details->tooltips = gtk_tooltips_new ();
-	g_object_ref (G_OBJECT (window->details->tooltips));
-	gtk_object_sink (GTK_OBJECT (window->details->tooltips));
-
-	/* Set last geometry to NULL */
-	window->last_geometry = NULL;
 
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
@@ -229,8 +224,8 @@ ui_idle_handler (gpointer data)
 	old_updating_bonobo_state = window->details->updating_bonobo_state;
 
 	if (window->details->ui_pending_initialize_menus_part_2) {
-		nautilus_window_initialize_menus_part_2 (window);
-		window->details->ui_pending_initialize_menus_part_2 = FALSE;
+		EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+				 merge_menus_2, (window));
 	}
 
 	if (window->details->ui_is_frozen) {
@@ -272,6 +267,8 @@ ui_remove_idle_handler (NautilusWindow *window)
 void
 nautilus_window_ui_freeze (NautilusWindow *window)
 {
+	g_object_ref (window);
+
 	if (window->details->ui_change_depth == 0) {
 		ui_remove_idle_handler (window);
 	}
@@ -300,6 +297,8 @@ nautilus_window_ui_thaw (NautilusWindow *window)
 		|| window->details->ui_pending_initialize_menus_part_2)) {
 		ui_install_idle_handler (window);
 	}
+
+	g_object_unref (window);
 }
 
 /* Unconditionally synchronize the BonoboUI of WINDOW. */
@@ -354,7 +353,114 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 void
 nautilus_window_go_to (NautilusWindow *window, const char *uri)
 {
-	nautilus_window_open_location (window, uri);
+	nautilus_window_open_location (window, uri, FALSE);
+}
+
+void
+nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
+{
+	GnomeVFSURI *current_uri;
+	GnomeVFSURI *parent_uri;
+	GList *selection;
+	char *parent_uri_string;
+	
+	if (window->details->location == NULL) {
+		return;
+	}
+	
+	current_uri = gnome_vfs_uri_new (window->details->location);
+	parent_uri = gnome_vfs_uri_get_parent (current_uri);
+	gnome_vfs_uri_unref (current_uri);
+
+	if (parent_uri == NULL) {
+		g_warning ("Can't go Up from here. The UI should have prevented us from getting this far.");
+		return;
+	}
+	
+	parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
+	gnome_vfs_uri_unref (parent_uri);
+
+	selection = g_list_prepend (NULL, g_strdup (window->details->location));
+	
+	nautilus_window_open_location_with_selection (window, parent_uri_string, selection, close_behind);
+	
+	g_free (parent_uri_string);
+	eel_g_list_free_deep (selection);
+}
+
+void
+nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
+{
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_ui_freeze (window);
+
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       NAUTILUS_COMMAND_UP, allow);
+
+	nautilus_window_ui_thaw (window);
+}
+
+void
+nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
+{
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_ui_freeze (window);
+
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       NAUTILUS_COMMAND_STOP, allow);
+
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 set_throbber_active, (window, allow));
+
+	nautilus_window_ui_thaw (window);
+}
+
+void
+nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
+{
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_ui_freeze (window);
+
+        nautilus_bonobo_set_sensitive (window->details->shell_ui,
+                                       NAUTILUS_COMMAND_RELOAD, allow);
+
+	nautilus_window_ui_thaw (window);
+}
+
+void
+nautilus_window_go_home (NautilusWindow *window)
+{
+	char *home_uri;
+
+#if !NEW_UI_COMPLETE
+	/* Hrm, this probably belongs in any location switch, not 
+	 * just when going home. */
+	if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+		nautilus_navigation_window_set_search_mode (NAUTILUS_NAVIGATION_WINDOW (window), FALSE);
+	}
+#endif
+
+#ifdef WEB_NAVIGATION_ENABLED
+	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
+	
+	g_assert (home_uri != NULL);
+	nautilus_window_go_to (window, home_uri);
+	g_free (home_uri);
+}
+
+void
+nautilus_window_prompt_for_location (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+                         prompt_for_location, (window));
 }
 
 char *
@@ -363,54 +469,6 @@ nautilus_window_get_location (NautilusWindow *window)
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
 	return g_strdup (window->details->location);
-}
-
-static void
-go_to_callback (GtkWidget *widget,
-		const char *uri,
-		NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_go_to (window, uri);
-}
-
-static void
-navigation_bar_location_changed_callback (GtkWidget *widget,
-					  const char *uri,
-					  NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	if (window->details->temporary_navigation_bar) {
-		if (nautilus_window_location_bar_showing (window)) {
-			nautilus_window_hide_location_bar (window, FALSE);
-		}
-		window->details->temporary_navigation_bar = FALSE;
-	}
-
-	nautilus_window_go_to (window, uri);
-}
-
-static void
-navigation_bar_mode_changed_callback (GtkWidget *widget,
-				      NautilusSwitchableNavigationBarMode mode,
-				      NautilusWindow *window)
-{
-	window->details->updating_bonobo_state = TRUE;
-
-	g_assert (mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION 
-		  || mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
-
-	nautilus_window_ui_freeze (window);
-
-	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
-					  NAUTILUS_COMMAND_TOGGLE_FIND_MODE,
-					  mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
-	
-	window->details->updating_bonobo_state = FALSE;
-
-	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -467,8 +525,9 @@ static void
 set_initial_window_geometry (NautilusWindow *window)
 {
 	GdkScreen *screen;
-	guint max_width_for_screen, max_height_for_screen;
-
+	guint max_width_for_screen, max_height_for_screen, min_width, min_height;
+	guint default_width, default_height;
+	
 	screen = gtk_window_get_screen (GTK_WINDOW (window));
 	
 	/* Don't let GTK determine the minimum size
@@ -490,335 +549,67 @@ set_initial_window_geometry (NautilusWindow *window)
 	max_width_for_screen = get_max_forced_width (screen);
 	max_height_for_screen = get_max_forced_height (screen);
 
+	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+		min_width = NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH;
+		min_height = NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT;
+	} else {
+		min_width = NAUTILUS_WINDOW_MIN_WIDTH;
+		min_height = NAUTILUS_WINDOW_MIN_HEIGHT;
+	}
+		
 	gtk_widget_set_size_request (GTK_WIDGET (window), 
-				     MIN (NAUTILUS_WINDOW_MIN_WIDTH, 
+				     MIN (min_width, 
 					  max_width_for_screen),
-				     MIN (NAUTILUS_WINDOW_MIN_HEIGHT, 
+				     MIN (min_height, 
 					  max_height_for_screen));
-
+					  
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 get_default_size, (window, &default_width, &default_height));
+			 
 	gtk_window_set_default_size (GTK_WINDOW (window), 
-				     MIN (NAUTILUS_WINDOW_DEFAULT_WIDTH, 
+				     MIN (default_width, 
 				          max_width_for_screen), 
-				     MIN (NAUTILUS_WINDOW_DEFAULT_HEIGHT, 
+				     MIN (default_height, 
 				          max_height_for_screen));
 }
 
-/* Add a dummy menu with a "View as ..." item when we first create the
- * view_as_option_menu -- without this the menu draws empty and shrunk,
- * once we populate it it grows and forces the toolbar and all the other
- * views to re-layout.
- */
 static void
-set_dummy_initial_view_as_menu (NautilusWindow *window)
+real_merge_menus (NautilusWindow *window)
 {
-	GtkWidget *new_menu;
-	GtkWidget *menu_item;
-
-	new_menu = gtk_menu_new ();
-	menu_item = gtk_menu_item_new_with_label (_("View as..."));
-       	gtk_widget_show (menu_item);
-       	gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
-
-        gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),
-                                  new_menu);
-}
-
-static void
-side_pane_close_requested_callback (GtkWidget *widget,
-				    gpointer user_data)
-{
-	NautilusWindow *window;
-	
-	window = NAUTILUS_WINDOW (user_data);
-
-	nautilus_window_hide_sidebar (window);
-}
-
-static void
-side_pane_size_allocate_callback (GtkWidget *widget,
-				  GtkAllocation *allocation,
-				  gpointer user_data)
-{
-	NautilusWindow *window;
-	
-	window = NAUTILUS_WINDOW (user_data);
-	
-	if (allocation->width != window->details->side_pane_width) {
-		window->details->side_pane_width = allocation->width;
-		eel_preferences_set_integer
-			(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 
-			 allocation->width);
-	}
-}
-
-static void
-setup_side_pane_width (NautilusWindow *window)
-{
-	static gboolean setup_auto_value= TRUE;
-
-	g_return_if_fail (window->sidebar != NULL);
-	
-	if (setup_auto_value) {
-		setup_auto_value = FALSE;
-		eel_preferences_add_auto_integer 
-			(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
-			 &side_pane_width_auto_value);
-	}
-
-	window->details->side_pane_width = side_pane_width_auto_value;
-
-	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
-        /* FIXME bugzilla.gnome.org 41245: No reality check on the value? */
-	
-	gtk_paned_set_position (GTK_PANED (window->content_hbox), 
-				side_pane_width_auto_value);
-}
-
-static void
-side_panel_set_open (GtkWidget *view,
-		     gboolean open)
-{
-	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
-	Bonobo_Control control;
-	
-	if (!view || !NAUTILUS_IS_VIEW_FRAME (view)) {
-		return;
-	}
-
-	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (view));
-	
-	if (control != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (control, &ev);
-		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-			/* For some reason this was implemented as 'close'
-			 * before, but open seems more natural */
-			bonobo_property_bag_client_set_value_gboolean
-				(property_bag, "close", !open, &ev);
-			bonobo_object_release_unref (property_bag, NULL);
-		}
-	}
-}
-
-static void
-set_current_side_panel (NautilusWindow *window,
-			GtkWidget *panel)
-{
-	if (window->details->current_side_panel) {
-		side_panel_set_open (window->details->current_side_panel, 
-				     FALSE);
-		eel_remove_weak_pointer (&window->details->current_side_panel);
-	}
-
-	side_panel_set_open (panel, TRUE);	
-	window->details->current_side_panel = panel;
-	eel_add_weak_pointer (&window->details->current_side_panel);
-}
-
-static void
-side_pane_switch_page_callback (NautilusSidePane *side_pane,
-				GtkWidget *panel,
-				NautilusWindow *window)
-{
-	const char *view_iid;
-
-	set_current_side_panel (window, panel);
-
-	if (NAUTILUS_IS_VIEW_FRAME (panel)) {
-		view_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (panel));
-		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW,
-				     view_iid);
-		
-	} else {
-		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW, "");
-	}
-}
-
-static void
-nautilus_window_set_up_sidebar (NautilusWindow *window)
-{
-	window->sidebar = nautilus_side_pane_new ();
-
-	gtk_paned_pack1 (GTK_PANED (window->content_hbox),
-			 GTK_WIDGET (window->sidebar),
-			 FALSE, TRUE);
-
-	setup_side_pane_width (window);
-	g_signal_connect (window->sidebar, 
-			  "size_allocate",
-			  G_CALLBACK (side_pane_size_allocate_callback),
-			  window);
-	
-	window->information_panel = nautilus_information_panel_new ();
-	
-	if (window->details->location != NULL &&
-	    window->details->title != NULL) {
-		nautilus_information_panel_set_uri (window->information_panel,
-						    window->details->location,
-						    window->details->title);
-	}
-
-	g_signal_connect_object (window->information_panel, "location_changed",
-				 G_CALLBACK (go_to_callback), window, 0);
-
-	/* Set up the sidebar panels. */
-	nautilus_side_pane_add_panel (NAUTILUS_SIDE_PANE (window->sidebar), 
-				      GTK_WIDGET (window->information_panel),
-				      _("Information"));
-
-	add_sidebar_panels (window);
-
-	g_signal_connect (window->sidebar,
-			  "close_requested",
-			  G_CALLBACK (side_pane_close_requested_callback),
-			  window);
-
-	g_signal_connect (window->sidebar,
-			  "switch_page",
-			  G_CALLBACK (side_pane_switch_page_callback),
-			  window);
-	
-	gtk_widget_show (GTK_WIDGET (window->information_panel));
-	
-	gtk_widget_show (GTK_WIDGET (window->sidebar));
-}
-
-static void
-nautilus_window_tear_down_sidebar (NautilusWindow *window)
-{
-	g_signal_handlers_disconnect_by_func (window->sidebar,
-					      side_pane_switch_page_callback,
-					      window);
-
-	nautilus_window_set_sidebar_panels (window, NULL);
-	gtk_widget_destroy (GTK_WIDGET (window->sidebar));
-	window->sidebar = NULL;
-	window->information_panel = NULL;
-}
-
-static void
-nautilus_window_constructed (NautilusWindow *window)
-{
-	GtkWidget *location_bar_box;
-	GtkWidget *view_as_menu_vbox;
-	BonoboControl *location_bar_wrapper;
-	
-	nautilus_window_ui_freeze (window);
-
 	/* Load the user interface from the XML file. */
 	bonobo_ui_util_set_ui (window->details->shell_ui,
 			       DATADIR,
 			       "nautilus-shell-ui.xml",
 			       "nautilus", NULL);
-	
-	/* set up location bar */
-	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);
-	gtk_container_set_border_width (GTK_CONTAINER (location_bar_box), GNOME_PAD_SMALL);
-	
-	window->navigation_bar = nautilus_switchable_navigation_bar_new (window);
-	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
-	g_signal_connect_object (window->navigation_bar, "location_changed",
-				 G_CALLBACK (navigation_bar_location_changed_callback), window, 0);
-	g_signal_connect_object (window->navigation_bar, "mode_changed",
-				 G_CALLBACK (navigation_bar_mode_changed_callback), window, 0);
-
-	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
-			    TRUE, TRUE, GNOME_PAD_SMALL);
-
-	/* Option menu for content view types; it's empty here, filled in when a uri is set.
-	 * Pack it into vbox so it doesn't grow vertically when location bar does. 
-	 */
-	view_as_menu_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
-	gtk_widget_show (view_as_menu_vbox);
-	gtk_box_pack_end (GTK_BOX (location_bar_box), view_as_menu_vbox, FALSE, FALSE, 0);
-	
-	window->view_as_option_menu = gtk_option_menu_new ();
-	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_option_menu, TRUE, FALSE, 0);
-	gtk_widget_show (window->view_as_option_menu);
- 	/* Make sure there is something in the option menu to prevent it from
- 	 * growing later.
- 	 */
-	set_dummy_initial_view_as_menu (window);
-	
-	/* Allocate the zoom control and place on the right next to the menu.
-	 * It gets shown later, if the view-frame contains something zoomable.
-	 */
-	window->zoom_control = nautilus_zoom_control_new ();
-	g_signal_connect_object (window->zoom_control, "zoom_in",
-				 G_CALLBACK (nautilus_window_zoom_in),
-				 window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (window->zoom_control, "zoom_out",
-				 G_CALLBACK (nautilus_window_zoom_out),
-				 window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (window->zoom_control, "zoom_to_level",
-				 G_CALLBACK (nautilus_window_zoom_to_level),
-				 window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (window->zoom_control, "zoom_to_fit",
-				 G_CALLBACK (nautilus_window_zoom_to_fit),
-				 window, G_CONNECT_SWAPPED);
-	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
-	
-	gtk_widget_show (location_bar_box);
-	
-	/* FIXME bugzilla.gnome.org 41243: 
-	 * We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-        if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		window->content_hbox = gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
-	} else {
-		set_initial_window_geometry (window);
-	
-		window->content_hbox = nautilus_horizontal_splitter_new ();
-
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
-			nautilus_window_set_up_sidebar (window);
-		}
-	}
-
-	gtk_widget_show (window->content_hbox);
-	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
-	/* FIXME bugzilla.gnome.org 41243: 
-	 * We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		nautilus_bonobo_set_hidden (window->details->shell_ui,
-					    LOCATION_BAR_PATH, TRUE);
-		nautilus_bonobo_set_hidden (window->details->shell_ui,
-					    TOOLBAR_PATH, TRUE);
-		nautilus_bonobo_set_hidden (window->details->shell_ui,
-					    STATUS_BAR_PATH, TRUE);
-		nautilus_bonobo_set_hidden (window->details->shell_ui,
-					    MENU_BAR_PATH, TRUE);
-	}
-
-	/* Wrap the location bar in a control and set it up. */
-	location_bar_wrapper = bonobo_control_new (location_bar_box);
-	bonobo_ui_component_object_set (window->details->shell_ui,
-					"/Location Bar/Wrapper",
-					BONOBO_OBJREF (location_bar_wrapper),
-					NULL);
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
-	bonobo_object_unref (location_bar_wrapper);
 
 	/* initalize the menus and toolbars */
 	nautilus_window_initialize_menus_part_1 (window);
-	nautilus_window_initialize_toolbars (window);
 
 	/* We'll do the second part later (bookmarks and go menus) */
 	window->details->ui_pending_initialize_menus_part_2 = TRUE;
+}
+
+static void
+real_merge_menus_2 (NautilusWindow *window)
+{
+	window->details->ui_pending_initialize_menus_part_2 = FALSE;
+}
+
+static void
+nautilus_window_constructed (NautilusWindow *window)
+{
+	nautilus_window_ui_freeze (window);
+
+	set_initial_window_geometry (window);
 	
-	/* Set initial sensitivity of some buttons & menu items 
-	 * now that they're all created.
-	 */
-	nautilus_window_allow_back (window, FALSE);
-	nautilus_window_allow_forward (window, FALSE);
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 merge_menus, (window));
+
 	nautilus_window_allow_stop (window, FALSE);
 
 	/* Set up undo manager */
@@ -894,21 +685,6 @@ free_stored_viewers (NautilusWindow *window)
 }
 
 static void
-nautilus_window_unrealize (GtkWidget *widget)
-{
-	NautilusWindow *window;
-	
-	window = NAUTILUS_WINDOW (widget);
-
-	if (window->details->throbber_property_bag != CORBA_OBJECT_NIL) {
-		bonobo_object_release_unref (window->details->throbber_property_bag, NULL);
-		window->details->throbber_property_bag = CORBA_OBJECT_NIL;
-	}
-
-	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
-}
-
-static void
 nautilus_window_destroy (GtkObject *object)
 {
 	NautilusWindow *window;
@@ -917,23 +693,9 @@ nautilus_window_destroy (GtkObject *object)
 
 	nautilus_window_manage_views_destroy (window);
 
-	window->sidebar = NULL;
-	eel_g_object_list_free (window->sidebar_panels);
-	window->sidebar_panels = NULL;
-
-	window->view_as_option_menu = NULL;
-	window->navigation_bar = NULL;
-	window->content_hbox = NULL;
-	window->zoom_control = NULL;
-
 	if (window->content_view) {
 		gtk_object_destroy (GTK_OBJECT (window->content_view));
 		window->content_view = NULL;
-	}
-
-	if (window->details->tooltips) {
-		g_object_unref (G_OBJECT (window->details->tooltips));
-		window->details->tooltips = NULL;
 	}
 
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
@@ -949,7 +711,6 @@ nautilus_window_finalize (GObject *object)
 	nautilus_window_manage_views_finalize (window);
 
 	nautilus_window_set_viewed_file (window, NULL);
-	nautilus_window_remove_bookmarks_menu_callback (window);
 	nautilus_window_remove_go_menu_callback (window);
 
 	if (window->details->ui_idle_id != 0) {
@@ -959,11 +720,13 @@ nautilus_window_finalize (GObject *object)
 	if (window->details->shell_ui != NULL) {
 		bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
 		bonobo_object_unref (window->details->shell_ui);
+		window->details->shell_ui = NULL;
 	}
 
 	if (window->details->status_ui != NULL) {
 		bonobo_ui_component_unset_container (window->details->status_ui, NULL);
 		bonobo_object_unref (window->details->status_ui);
+		window->details->status_ui = NULL;
 	}
 
 	nautilus_file_unref (window->details->viewed_file);
@@ -973,9 +736,6 @@ nautilus_window_finalize (GObject *object)
 	g_free (window->details->location);
 	eel_g_list_free_deep (window->details->selection);
 	eel_g_list_free_deep (window->details->pending_selection);
-
-	nautilus_window_clear_back_list (window);
-	nautilus_window_clear_forward_list (window);
 
 	if (window->current_location_bookmark != NULL) {
 		g_object_unref (window->current_location_bookmark);
@@ -994,29 +754,7 @@ nautilus_window_finalize (GObject *object)
 	
 	g_free (window->details);
 	
-	g_free (window->last_geometry);
-
 	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-void
-nautilus_window_save_geometry (NautilusWindow *window)
-{
-	char *geometry_string;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	if (GTK_WIDGET(window)->window &&
-	    !(gdk_window_get_state (GTK_WIDGET(window)->window) & GDK_WINDOW_STATE_MAXIMIZED)) {
-		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
-		
-		nautilus_file_set_metadata (window->details->viewed_file,
-					    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
-					    NULL,
-					    geometry_string);
-		
-		g_free (geometry_string);
-	}
 }
 
 void
@@ -1024,6 +762,9 @@ nautilus_window_close (NautilusWindow *window)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 close, (window));
+	
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 
@@ -1126,60 +867,6 @@ nautilus_window_handle_ui_event_callback (BonoboUIComponent *ui,
 }		 
 
 static void
-view_as_menu_switch_views_callback (GtkWidget *widget, gpointer data)
-{
-        NautilusWindow *window;
-        int viewer_index;
-        
-        g_assert (GTK_IS_MENU_ITEM (widget));
-        g_assert (NAUTILUS_IS_WINDOW (data));
-
-        window = NAUTILUS_WINDOW (data);
-
-        if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "extra viewer")) == TRUE) {
-        	activate_extra_viewer (window);
-        } else {
-		viewer_index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "viewer index"));
-		activate_nth_short_list_item (window, viewer_index);
-        }
-}
-
-static GtkWidget *
-create_view_as_menu_item (NautilusWindow *window, 
-			  NautilusViewIdentifier *identifier,
-			  guint index)
-{
-	GtkWidget *menu_item;
-        char *menu_label;
-
-	menu_label = g_strdup (_(identifier->view_as_label));
-	menu_item = gtk_menu_item_new_with_mnemonic (menu_label);
-	g_free (menu_label);
-
-	g_signal_connect_object (menu_item, "activate",
-				 G_CALLBACK (view_as_menu_switch_views_callback),
-				 window, 0);
-
-	g_object_set_data (G_OBJECT (menu_item), "viewer index", GINT_TO_POINTER (index));
-
-	gtk_widget_show (menu_item);
-
-	return menu_item;
-}
-
-static GtkWidget *
-new_gtk_separator (void)
-{
-	GtkWidget *result;
-	
-	result = gtk_menu_item_new ();
-	gtk_widget_show (result);
-	gtk_widget_set_sensitive (result, FALSE);
-
-	return result;
-}
-
-static void
 add_view_as_bonobo_menu_item (NautilusWindow *window,
 			      const char *placeholder_path,
 			      NautilusViewIdentifier *identifier,
@@ -1206,13 +893,6 @@ add_view_as_bonobo_menu_item (NautilusWindow *window,
 	g_free (tip);
 }
 
-static void
-remove_first_child (GtkContainer *container)
-{
-	gtk_container_remove (container,
-			      eel_gtk_container_get_first_child (container));
-}
-
 /* Make a special first item in the "View as" option menu that represents
  * the current content view. This should only be called if the current
  * content view isn't already in the "View as" option menu.
@@ -1221,8 +901,6 @@ static void
 update_extra_viewer_in_view_as_menus (NautilusWindow *window,
 				      const NautilusViewIdentifier *id)
 {
-	GtkWidget *menu;
-	GtkWidget *new_menu_item;
 	gboolean had_extra_viewer;
 
 	had_extra_viewer = window->details->extra_viewer != NULL;
@@ -1239,37 +917,6 @@ update_extra_viewer_in_view_as_menus (NautilusWindow *window,
 	}
 	nautilus_view_identifier_free (window->details->extra_viewer);
 	window->details->extra_viewer = nautilus_view_identifier_copy (id);
-
-	/* Update the View As option menu */	
-	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (window->view_as_option_menu));
-
-	/* Remove menu before changing contents so it is resized properly
-	 * when reattached later in this function.
-	 */
-	g_object_ref (menu);
-	gtk_option_menu_remove_menu (GTK_OPTION_MENU (window->view_as_option_menu));
-
-	/* Remove old menu item, and either remove or add separator. */
-	if (had_extra_viewer) {
-		remove_first_child (GTK_CONTAINER (menu));
-		if (id == NULL) {
-			remove_first_child (GTK_CONTAINER (menu));
-		}
-	} else {
-		if (id != NULL) {
-			gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), new_gtk_separator ());
-		}
-	}
-
-	/* Add new menu item. */
-	if (id != NULL) {
-		new_menu_item = create_view_as_menu_item (window, window->details->extra_viewer, 0);
-		g_object_set_data (G_OBJECT (new_menu_item), "extra viewer", GINT_TO_POINTER (TRUE));
-		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), new_menu_item);
-	}
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu), menu);
-	g_object_unref (menu);
 
 	/* Also update the Bonobo View menu item */
 	if (id == NULL) {
@@ -1308,7 +955,7 @@ replace_extra_viewer_in_view_as_menus (NautilusWindow *window)
  * 
  * @window: The NautilusWindow whose "View as" option menu should be synched.
  */
-void
+static void
 nautilus_window_synch_view_as_menus (NautilusWindow *window)
 {
 	int index;
@@ -1340,9 +987,6 @@ nautilus_window_synch_view_as_menus (NautilusWindow *window)
 
 	g_assert (numbered_menu_item_container_path != NULL);
 
-	/* Make option menu show the right item */
-	gtk_option_menu_set_history (GTK_OPTION_MENU (window->view_as_option_menu), index);
-
 	/* Make View menu in menu bar mark the right item */
 	verb_name = nautilus_bonobo_get_numbered_menu_item_command
 		(window->details->shell_ui, 
@@ -1354,77 +998,12 @@ nautilus_window_synch_view_as_menus (NautilusWindow *window)
 }
 
 static void
-chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_data)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (callback_data);
-	if (identifier != NULL) {
-		nautilus_window_set_content_view (window, identifier);
-	}
-	
-	/* FIXME bugzilla.gnome.org 41334: There should be some global
-	 * way to signal that the file type associations have changed,
-	 * so that the places that display these lists can react. For
-	 * now, hardwire this case, which is the most obvious one by
-	 * far.
-	 */
-	nautilus_window_load_view_as_menus (window);
-}
-
-static void
-cancel_chose_component_callback (NautilusWindow *window)
-{
-	if (window->details->viewed_file != NULL) {
-		nautilus_cancel_choose_component_for_file (window->details->viewed_file,
-							   chose_component_callback, 
-							   window);
-	}
-}
-
-void
-nautilus_window_show_view_as_dialog (NautilusWindow *window)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	/* Call back when the user chose the component. */
-	cancel_chose_component_callback (window);
-	nautilus_choose_component_for_file (window->details->viewed_file,
-					    GTK_WINDOW (window), 
-					    chose_component_callback, 
-					    window);
-}
-
-static void
-view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
-{
-        NautilusWindow *window;
-        
-        g_assert (GTK_IS_MENU_ITEM (widget));
-        g_assert (NAUTILUS_IS_WINDOW (data));
-        
-        window = NAUTILUS_WINDOW (data);
-
-	/* Set the option menu back to its previous setting (Don't
-	 * leave it on this dialog-producing "View as..."
-	 * setting). If the menu choice causes a content view change,
-	 * this will be updated again later, in
-	 * nautilus_window_load_view_as_menus. Do this right away so
-	 * the user never sees the option menu set to "View as
-	 * Other...".
-	 */
-	nautilus_window_synch_view_as_menus (window);
-
-	nautilus_window_show_view_as_dialog (window);
-}
-
-static void
 refresh_stored_viewers (NautilusWindow *window)
 {
 	GList *components, *node, *viewers;
 	NautilusViewIdentifier *identifier;
 
-        components = nautilus_mime_get_short_list_components_for_file (window->details->viewed_file);
+        components = nautilus_view_query_get_components_for_file (window->details->viewed_file);
 	viewers = NULL;
         for (node = components; node != NULL; node = node->next) {
         	identifier = nautilus_view_identifier_new_from_content_view (node->data);
@@ -1437,18 +1016,10 @@ refresh_stored_viewers (NautilusWindow *window)
 }
 
 static void
-load_view_as_menus_callback (NautilusFile *file, 
-			    gpointer callback_data)
-{	
-        GtkWidget *new_menu;
-        GtkWidget *menu_item;
-        GList *node;
-	NautilusWindow *window;
+real_load_view_as_menu (NautilusWindow *window)
+{
+	GList *node;
 	int index;
-
-	window = NAUTILUS_WINDOW (callback_data);
-
-        g_assert (GTK_IS_OPTION_MENU (window->view_as_option_menu));
 
         /* Clear out the menu items created last time. For the option menu, we need do
          * nothing since we replace the entire menu. For the View menu, we have
@@ -1461,18 +1032,11 @@ load_view_as_menus_callback (NautilusFile *file,
 
 	refresh_stored_viewers (window);
 
-        new_menu = gtk_menu_new ();
-	
+
         /* Add a menu item for each view in the preferred list for this location. */
         for (node = window->details->short_list_viewers, index = 0; 
              node != NULL; 
              node = node->next, ++index) {
-        	/* Menu item in option menu. This doesn't use Bonobo, for various
-        	 * historical and technical reasons.
-        	 */
-                menu_item = create_view_as_menu_item (window, node->data, index);
-                gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
-
 		/* Menu item in View menu. */
                 add_view_as_bonobo_menu_item (window, 
                 			      NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER, 
@@ -1480,28 +1044,23 @@ load_view_as_menus_callback (NautilusFile *file,
                 			      index);
         }
 
-        /* Add/Show separator before "View as..." if there are any other viewers in menu. */
-        if (window->details->short_list_viewers != NULL) {
-	        gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), new_gtk_separator ());
-        }
         nautilus_bonobo_set_hidden (window->details->shell_ui,
         			    NAUTILUS_MENU_PATH_AFTER_SHORT_LIST_SEPARATOR, 
         			    window->details->short_list_viewers == NULL);
 
-	/* Add "View as..." extra bonus choice. */
-       	menu_item = gtk_menu_item_new_with_label (_("View as..."));
-        g_signal_connect_object (menu_item, "activate",
-				 G_CALLBACK (view_as_menu_choose_view_callback), window, 0);
-       	gtk_widget_show (menu_item);
-       	gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
-
-        /* We create and attach a new menu here because adding/removing
-         * items from existing menu screws up the size of the option menu.
-         */
-        gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),
-                                  new_menu);
-
 	nautilus_window_synch_view_as_menus (window);
+}
+
+static void
+load_view_as_menus_callback (NautilusFile *file, 
+			    gpointer callback_data)
+{
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (callback_data);
+	
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+                         load_view_as_menu, (window));
 }
 
 static void
@@ -1515,7 +1074,7 @@ cancel_view_as_callback (NautilusWindow *window)
 void
 nautilus_window_load_view_as_menus (NautilusWindow *window)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -1526,201 +1085,299 @@ nautilus_window_load_view_as_menus (NautilusWindow *window)
 				       attributes, 
 				       load_view_as_menus_callback,
 				       window);
-
-	g_list_free (attributes);
 }
 
 void
-nautilus_window_add_sidebar_panel (NautilusWindow *window,
-				   NautilusViewFrame *sidebar_panel)
+nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 {
-	char *label;
-	const char *view_iid;
-	char *default_iid;
+	GtkWidget *dialog;
+	
+	dialog = gtk_message_dialog_new (GTK_WINDOW (window), 0, GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK, error_msg, NULL);
+	gtk_widget_show (dialog);
+}
 
+static char *
+compute_default_title (const char *text_uri)
+{
+	NautilusFile *file;
+	GnomeVFSURI *uri;
+	char *title, *displayname;
+	const char *hostname;
+
+	hostname = NULL;
+
+	if (text_uri) {
+		file = nautilus_file_get (text_uri);
+		uri = gnome_vfs_uri_new (text_uri);
+		if (uri && !gnome_vfs_uri_is_local (uri)) {
+			hostname = gnome_vfs_uri_get_host_name (uri);
+		}
+		displayname = nautilus_file_get_display_name (file);
+		if (hostname) {
+			title = g_strdup_printf (_("%s on %s"), displayname, hostname);
+			g_free (displayname);
+		} else {
+			title = displayname;
+		}
+		if (uri) {
+			gnome_vfs_uri_unref (uri);
+		}
+		nautilus_file_unref (file);
+	} else {
+		title = g_strdup ("");
+	}
+	
+	return title;
+}
+
+static char *
+real_get_title (NautilusWindow *window)
+{
+	char *title;
+
+	title = NULL;
+	
+	if (window->new_content_view != NULL) {
+                title = nautilus_view_frame_get_title (window->new_content_view);
+        } else if (window->content_view != NULL) {
+                title = nautilus_view_frame_get_title (window->content_view);
+        }
+        
+	if (title == NULL) {
+                title = compute_default_title (window->details->location);
+        }
+
+	return title;
+}
+
+static char *
+nautilus_window_get_title (NautilusWindow *window)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
+						  get_title, (window));
+}
+
+static void
+real_set_title (NautilusWindow *window,
+		const char *title)
+{
+	g_free (window->details->title);
+        window->details->title = g_strdup (title);
+
+        if (window->details->title [0] != '\0' && window->current_location_bookmark &&
+            nautilus_bookmark_set_name (window->current_location_bookmark, window->details->title)) {
+                /* Name of item in history list changed, tell listeners. */
+                nautilus_send_history_list_changed ();
+        }
+	
+	/* warn all views and sidebar panels of the potential title change */
+        if (window->content_view != NULL) {
+                nautilus_view_frame_title_changed (window->content_view, title);
+        }
+}
+
+static void
+nautilus_window_set_title (NautilusWindow *window, 
+			   const char *title)
+{
+	if (window->details->title != NULL
+	    && strcmp (title, window->details->title) == 0) {
+		return;
+	}
+	
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+                         set_title, (window, title));
+}
+
+void
+nautilus_window_update_title (NautilusWindow *window)
+{
+	char *title;
+	
+	title = nautilus_window_get_title (window);
+	nautilus_window_set_title (window, title);
+	
+	g_free (title);
+}
+
+static void
+real_set_content_view_widget (NautilusWindow *window,
+			      NautilusViewFrame *new_view)
+{
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
-	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (window->sidebar));
-	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);	
-
-	label = nautilus_view_frame_get_label (sidebar_panel);
+	g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW_FRAME (new_view));
 	
-	nautilus_side_pane_add_panel (window->sidebar, 
-				      GTK_WIDGET (sidebar_panel), 
-				      label);
-	g_free (label);
-
-	g_object_ref (sidebar_panel);
-	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
-
-	view_iid = nautilus_view_frame_get_view_iid (sidebar_panel);
-	default_iid = eel_preferences_get (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW);
-
-	if (view_iid && default_iid && !strcmp (view_iid, default_iid)) {
-		nautilus_side_pane_show_panel (window->sidebar,
-					       GTK_WIDGET (sidebar_panel));
-	}	
-
-	g_free (default_iid);
-}
-
-void
-nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame *sidebar_panel)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
-
-	if (g_list_find (window->sidebar_panels, sidebar_panel) == NULL) {
+	if (new_view == window->content_view) {
 		return;
 	}
 	
-	nautilus_side_pane_remove_panel (window->sidebar, 
-					 GTK_WIDGET (sidebar_panel));
-	window->sidebar_panels = g_list_remove (window->sidebar_panels, sidebar_panel);
-	g_object_unref (sidebar_panel);
+	if (window->content_view != NULL) {
+		gtk_object_destroy (GTK_OBJECT (window->content_view));
+		window->content_view = NULL;
+	}
+
+	if (new_view != NULL) {
+		gtk_widget_show (GTK_WIDGET (new_view));
+
+		/* When creating the desktop window the UI needs to
+		 * be in sync. Otherwise I get failed assertions in
+		 * bonobo while trying to reference something called
+		 * `/commands/Unmount Volume Conditional'
+		 */
+		nautilus_window_ui_update (window);
+	}
+
+	window->content_view = new_view;
+
+        /* Update displayed view in menu. Only do this if we're not switching
+         * locations though, because if we are switching locations we'll
+         * install a whole new set of views in the menu later (the current
+         * views in the menu are for the old location).
+         */
+	if (window->details->pending_location == NULL) {
+		nautilus_window_synch_view_as_menus (window);
+	}
 }
 
 void
-nautilus_window_go_back (NautilusWindow *window)
+nautilus_window_set_content_view_widget (NautilusWindow *window,
+					 NautilusViewFrame *frame)
 {
-	nautilus_window_back_or_forward (window, TRUE, 0);
-}
-
-void
-nautilus_window_go_forward (NautilusWindow *window)
-{
-	nautilus_window_back_or_forward (window, FALSE, 0);
-}
-
-void
-nautilus_window_go_up (NautilusWindow *window)
-{
-	GnomeVFSURI *current_uri;
-	GnomeVFSURI *parent_uri;
-	GList *selection;
-	char *parent_uri_string;
+	g_assert (NAUTILUS_IS_WINDOW (window));
 	
-	if (window->details->location == NULL) {
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+                         set_content_view_widget, (window, frame));
+}
+
+static void 
+show_dock_item (NautilusWindow *window, const char *dock_item_path)
+{
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		return;
 	}
-	
-	current_uri = gnome_vfs_uri_new (window->details->location);
-	parent_uri = gnome_vfs_uri_get_parent (current_uri);
-	gnome_vfs_uri_unref (current_uri);
 
-	if (parent_uri == NULL) {
-		g_warning ("Can't go Up from here. The UI should have prevented us from getting this far.");
-		return;
-	}
-	
-	parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (parent_uri);
+	nautilus_window_ui_freeze (window);
 
-	selection = g_list_prepend (NULL, g_strdup (window->details->location));
-	
-	nautilus_window_open_location_with_selection (window, parent_uri_string, selection);
-	
-	g_free (parent_uri_string);
-	eel_g_list_free_deep (selection);
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    dock_item_path,
+				    FALSE);
+	nautilus_window_update_show_hide_menu_items (window);
+
+	nautilus_window_ui_thaw (window);
 }
 
-void
-nautilus_window_set_search_mode (NautilusWindow *window,
-				 gboolean search_mode)
+static void 
+hide_dock_item (NautilusWindow *window, const char *dock_item_path)
 {
-	nautilus_switchable_navigation_bar_set_mode
-		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
-		 search_mode
-		 ? NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH
-		 : NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
+	nautilus_window_ui_freeze (window);
 
-	
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    dock_item_path,
+				    TRUE);
+	nautilus_window_update_show_hide_menu_items (window);
+
+	nautilus_window_ui_thaw (window);
+}
+
+static gboolean
+dock_item_showing (NautilusWindow *window, const char *dock_item_path)
+{
+	return !nautilus_bonobo_get_hidden (window->details->shell_ui,
+					    dock_item_path);
+}
+
+void 
+nautilus_window_hide_status_bar (NautilusWindow *window)
+{
+	hide_dock_item (window, STATUS_BAR_PATH);
+
+	nautilus_window_update_show_hide_menu_items (window);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR) &&
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, FALSE);
+	}
+}
+
+void 
+nautilus_window_show_status_bar (NautilusWindow *window)
+{
+	show_dock_item (window, STATUS_BAR_PATH);
+
+	nautilus_window_update_show_hide_menu_items (window);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR) &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE);
+	}
 }
 
 gboolean
-nautilus_window_get_search_mode (NautilusWindow *window)
+nautilus_window_status_bar_showing (NautilusWindow *window)
 {
-	return nautilus_switchable_navigation_bar_get_mode 
-		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar)) 
-	== NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH;
+	return dock_item_showing (window, STATUS_BAR_PATH);
 }
 
-void
-nautilus_window_go_home (NautilusWindow *window)
-{
-	char *home_uri;
+/**
+ * nautilus_window_show:
+ * @widget:	GtkWidget
+ *
+ * Call parent and then show/hide window items
+ * base on user prefs.
+ */
+static void
+nautilus_window_show (GtkWidget *widget)
+{	
+	NautilusWindow *window;
 
-	nautilus_window_set_search_mode (window, FALSE);
+	window = NAUTILUS_WINDOW (widget);
 
-#ifdef WEB_NAVIGATION_ENABLED
-	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-#else
-	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-#endif
+
+	GTK_WIDGET_CLASS (parent_class)->show (widget);
 	
-	g_assert (home_uri != NULL);
-	nautilus_window_go_to (window, home_uri);
-	g_free (home_uri);
+	nautilus_window_ui_update (window);
+}
+
+Bonobo_UIContainer 
+nautilus_window_get_ui_container (NautilusWindow *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), CORBA_OBJECT_NIL);
+
+	return BONOBO_OBJREF (window->details->ui_container);
 }
 
 void
-nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
+nautilus_window_set_viewed_file (NautilusWindow *window,
+				 NautilusFile *file)
 {
-	nautilus_window_ui_freeze (window);
+	NautilusFileAttributes attributes;
 
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_BACK, allow);
-	/* Have to handle non-standard Back button explicitly (it's
-	 * non-standard to support right-click menu).
-	 */
-	gtk_widget_set_sensitive 
-		(GTK_WIDGET (window->details->back_button_item), allow);
+	if (window->details->viewed_file == file) {
+		return;
+	}
 
-	nautilus_window_ui_thaw (window);
-}
+	nautilus_file_ref (file);
 
-void
-nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
-{
-	nautilus_window_ui_freeze (window);
+	cancel_view_as_callback (window);
 
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_FORWARD, allow);
-	/* Have to handle non-standard Forward button explicitly (it's
-	 * non-standard to support right-click menu).
-	 */
-	gtk_widget_set_sensitive 
-		(GTK_WIDGET (window->details->forward_button_item), allow);
+	if (window->details->viewed_file != NULL) {
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_file_set_has_open_window (window->details->viewed_file,
+							   FALSE);
+		}
+		nautilus_file_monitor_remove (window->details->viewed_file,
+					      window);
+	}
 
-	nautilus_window_ui_thaw (window);
-}
+	if (file != NULL) {
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_file_set_has_open_window (file, TRUE);
+		}
+		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME | NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE;
+		nautilus_file_monitor_add (file, window, attributes);
+	}
 
-void
-nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
-{
-	nautilus_window_ui_freeze (window);
-
-	/* Because of verbs, we set the sensitivity of the menu to
-	 * control both the menu and toolbar.
-	 */
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_UP, allow);
-
-	nautilus_window_ui_thaw (window);
-}
-
-void
-nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
-{
-	nautilus_window_ui_freeze (window);
-
-	/* Because of verbs, we set the sensitivity of the menu to
-	 * control both the menu and toolbar.
-	 */
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_RELOAD, allow);
-
-	nautilus_window_ui_thaw (window);
+	nautilus_file_unref (window->details->viewed_file);
+	window->details->viewed_file = file;
 }
 
 void
@@ -1766,7 +1423,7 @@ static void
 add_to_history_list (NautilusBookmark *bookmark)
 {
 	/* Note that the history is shared amongst all windows so
-	 * this is not a NautilusWindow function. Perhaps it belongs
+	 * this is not a NautilusNavigationWindow function. Perhaps it belongs
 	 * in its own file.
 	 */
 	int i;
@@ -1816,39 +1473,24 @@ nautilus_remove_from_history_list_no_notify (const char *uri)
 static void
 real_add_current_location_to_history_list (NautilusWindow *window)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	add_to_history_list (window->current_location_bookmark);
+        g_assert (NAUTILUS_IS_WINDOW (window));
+                
+        add_to_history_list (window->current_location_bookmark);
 }
 
 void
 nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
+        g_assert (NAUTILUS_IS_WINDOW (window));
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 add_current_location_to_history_list, (window));
-}
-
-void
-nautilus_window_clear_forward_list (NautilusWindow *window)
-{
-	eel_g_object_list_free (window->forward_list);
-	window->forward_list = NULL;
-}
-
-void
-nautilus_window_clear_back_list (NautilusWindow *window)
-{
-	eel_g_object_list_free (window->back_list);
-	window->back_list = NULL;
+                         add_current_location_to_history_list, (window));
 }
 
 void
 nautilus_forget_history (void) 
 {
 	GList *window_node;
-	NautilusWindow *window;
 
 	/* Clear out each window's back & forward lists. Also, remove 
 	 * each window's current location bookmark from history list 
@@ -1858,15 +1500,19 @@ nautilus_forget_history (void)
 	     window_node != NULL;
 	     window_node = window_node->next) {
 
-		window = NAUTILUS_WINDOW (window_node->data);
-
-		nautilus_window_clear_back_list (window);
-		nautilus_window_clear_forward_list (window);
-
-		nautilus_window_allow_back (window, FALSE);
-		nautilus_window_allow_forward (window, FALSE);
-
-		history_list = g_list_remove (history_list, window->current_location_bookmark);
+		if (NAUTILUS_IS_NAVIGATION_WINDOW (window_node->data)) {
+			NautilusNavigationWindow *window;
+			
+			window = NAUTILUS_NAVIGATION_WINDOW (window_node->data);
+			
+			nautilus_navigation_window_clear_back_list (window);
+			nautilus_navigation_window_clear_forward_list (window);
+			
+			nautilus_navigation_window_allow_back (window, FALSE);
+			nautilus_navigation_window_allow_forward (window, FALSE);
+		}
+			
+		history_list = g_list_remove (history_list, NAUTILUS_WINDOW (window_node->data)->current_location_bookmark);
 	}
 
 	/* Clobber history list. */
@@ -1876,9 +1522,10 @@ nautilus_forget_history (void)
 	for (window_node = nautilus_application_get_window_list ();
 	     window_node != NULL;
 	     window_node = window_node->next) {
-
+		NautilusWindow *window;
+		
 		window = NAUTILUS_WINDOW (window_node->data);
-		nautilus_window_add_current_location_to_history_list (window);
+		nautilus_window_add_current_location_to_history_list (NAUTILUS_WINDOW (window));
 	}
 }
 
@@ -1886,344 +1533,6 @@ GList *
 nautilus_get_history_list (void)
 {
 	return history_list;
-}
-
-void
-nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
-{
-	GtkWidget *dialog;
-	
-	dialog = gtk_message_dialog_new (GTK_WINDOW (window), 0, GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE, error_msg, NULL);
-	gtk_widget_show (dialog);
-}
-
-void
-nautilus_window_set_content_view_widget (NautilusWindow *window,
-					 NautilusViewFrame *new_view)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW_FRAME (new_view));
-	
-	if (new_view == window->content_view) {
-		return;
-	}
-	
-	if (window->content_view != NULL) {
-		gtk_object_destroy (GTK_OBJECT (window->content_view));
-		window->content_view = NULL;
-	}
-
-	if (new_view != NULL) {
-		gtk_widget_show (GTK_WIDGET (new_view));
-
-		/* When creating the desktop window the UI needs to
-		 * be in sync. Otherwise I get failed assertions in
-		 * bonobo while trying to reference something called
-		 * `/commands/Unmount Volume Conditional'
-		 */
-		nautilus_window_ui_update (window);
-
-		/* FIXME bugzilla.gnome.org 41243: 
-		 * We should use inheritance instead of these special cases
-		 * for the desktop window.
-		 */
-		if (!GTK_IS_PANED (window->content_hbox)) {
-			gtk_container_add (GTK_CONTAINER (window->content_hbox),
-					   GTK_WIDGET (new_view));
-		} else {
-			nautilus_horizontal_splitter_pack2 (
-				NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox),
-				GTK_WIDGET (new_view));
-		}
-	}
-
-	/* Display or hide zoom control */
-	if (new_view != NULL && nautilus_view_frame_get_is_zoomable (new_view)) {
-		gtk_widget_show (window->zoom_control);
-	} else {
-		gtk_widget_hide (window->zoom_control);
-	}
-
-	window->content_view = new_view;
-}
-
-/**
- * add_sidebar_panels:
- * @window:	A NautilusWindow
- *
- * Adds all sidebars available
- *
- */
-static void
-add_sidebar_panels (NautilusWindow *window)
-{
-	GList *identifier_list;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	if (window->sidebar == NULL) {
-		return;
-	}
-
-	identifier_list = nautilus_sidebar_get_all_sidebar_panel_view_identifiers ();
-	nautilus_window_set_sidebar_panels (window, identifier_list);
-	nautilus_view_identifier_list_free (identifier_list);
-
-	set_current_side_panel
-		(window, 
-		 nautilus_side_pane_get_current_panel (window->sidebar));
-}
-
-static void 
-show_dock_item (NautilusWindow *window, const char *dock_item_path)
-{
-	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		return;
-	}
-
-	nautilus_window_ui_freeze (window);
-
-	nautilus_bonobo_set_hidden (window->details->shell_ui,
-				    dock_item_path,
-				    FALSE);
-	nautilus_window_update_show_hide_menu_items (window);
-
-	nautilus_window_ui_thaw (window);
-}
-
-static void 
-hide_dock_item (NautilusWindow *window, const char *dock_item_path)
-{
-	nautilus_window_ui_freeze (window);
-
-	nautilus_bonobo_set_hidden (window->details->shell_ui,
-				    dock_item_path,
-				    TRUE);
-	nautilus_window_update_show_hide_menu_items (window);
-
-	nautilus_window_ui_thaw (window);
-}
-
-static gboolean
-dock_item_showing (NautilusWindow *window, const char *dock_item_path)
-{
-	return !nautilus_bonobo_get_hidden (window->details->shell_ui,
-					    dock_item_path);
-}
-
-void 
-nautilus_window_hide_location_bar (NautilusWindow *window, gboolean save_preference)
-{
-	window->details->temporary_navigation_bar = FALSE;
-	hide_dock_item (window, LOCATION_BAR_PATH);
-	if (save_preference) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, FALSE);
-	}
-}
-
-void 
-nautilus_window_show_location_bar (NautilusWindow *window, gboolean save_preference)
-{
-	show_dock_item (window, LOCATION_BAR_PATH);
-	if (save_preference) {
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE);
-	}
-}
-
-gboolean
-nautilus_window_location_bar_showing (NautilusWindow *window)
-{
-	return dock_item_showing (window, LOCATION_BAR_PATH);
-}
-
-void 
-nautilus_window_hide_toolbar (NautilusWindow *window)
-{
-	hide_dock_item (window, TOOLBAR_PATH);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, FALSE);
-}
-
-void 
-nautilus_window_show_toolbar (NautilusWindow *window)
-{
-	nautilus_window_activate_throbber (window);
-	show_dock_item (window, TOOLBAR_PATH);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, TRUE);
-}
-
-gboolean
-nautilus_window_toolbar_showing (NautilusWindow *window)
-{
-	return dock_item_showing (window, TOOLBAR_PATH);
-}
-
-void 
-nautilus_window_hide_sidebar (NautilusWindow *window)
-{
-	if (NAUTILUS_IS_DESKTOP_WINDOW (window) || window->sidebar == NULL) {
-		return;
-	}
-
-	nautilus_window_tear_down_sidebar (window);
-	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, FALSE);
-}
-
-void 
-nautilus_window_show_sidebar (NautilusWindow *window)
-{
-	if (NAUTILUS_IS_DESKTOP_WINDOW (window) || window->sidebar != NULL) {
-		return;
-	}
-
-	nautilus_window_set_up_sidebar (window);
-	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE);
-}
-
-gboolean
-nautilus_window_sidebar_showing (NautilusWindow *window)
-{
-	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), FALSE);
-
-	return (window->sidebar != NULL) && GTK_IS_PANED (window->content_hbox) 
-		&& nautilus_horizontal_splitter_is_hidden (NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
-}
-
-void 
-nautilus_window_hide_status_bar (NautilusWindow *window)
-{
-	hide_dock_item (window, STATUS_BAR_PATH);
-
-	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, FALSE);
-}
-
-void 
-nautilus_window_show_status_bar (NautilusWindow *window)
-{
-	show_dock_item (window, STATUS_BAR_PATH);
-
-	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE);
-}
-
-gboolean
-nautilus_window_status_bar_showing (NautilusWindow *window)
-{
-	return dock_item_showing (window, STATUS_BAR_PATH);
-}
-
-/**
- * nautilus_window_get_base_page_index:
- * @window:	Window to get index from
- *
- * Returns the index of the base page in the history list.
- * Base page is not the currently displayed page, but the page
- * that acts as the base from which the back and forward commands
- * navigate from.
- */
-gint 
-nautilus_window_get_base_page_index (NautilusWindow *window)
-{
-	gint forward_count;
-	
-	forward_count = g_list_length (window->forward_list); 
-
-	/* If forward is empty, the base it at the top of the list */
-	if (forward_count == 0) {
-		return 0;
-	}
-
-	/* The forward count indicate the relative postion of the base page
-	 * in the history list
-	 */ 
-	return forward_count;
-}
-
-/**
- * nautilus_window_show:
- * @widget:	GtkWidget
- *
- * Call parent and then show/hide window items
- * base on user prefs.
- */
-static void
-nautilus_window_show (GtkWidget *widget)
-{	
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (widget);
-
-	GTK_WIDGET_CLASS (parent_class)->show (widget);
-	
-	/* Initially show or hide views based on preferences; once the window is displayed
-	 * these can be controlled on a per-window basis from View menu items. 
-	 */
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
-		nautilus_window_show_toolbar (window);
-	} else {
-		nautilus_window_hide_toolbar (window);
-	}
-
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
-		nautilus_window_show_location_bar (window, FALSE);
-	} else {
-		nautilus_window_hide_location_bar (window, FALSE);
-	}
-
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
-		nautilus_window_show_status_bar (window);
-	} else {
-		nautilus_window_hide_status_bar (window);
-	}
-
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
-		nautilus_window_show_sidebar (window);
-	} else {
-		nautilus_window_hide_sidebar (window);
-	}
-
-	nautilus_window_ui_update (window);
-}
-
-Bonobo_UIContainer 
-nautilus_window_get_ui_container (NautilusWindow *window)
-{
-	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), CORBA_OBJECT_NIL);
-
-	return BONOBO_OBJREF (window->details->ui_container);
-}
-
-void
-nautilus_window_set_viewed_file (NautilusWindow *window,
-				 NautilusFile *file)
-{
-	GList *attributes;
-
-	if (window->details->viewed_file == file) {
-		return;
-	}
-
-	nautilus_file_ref (file);
-
-	cancel_view_as_callback (window);
-	cancel_chose_component_callback (window);
-
-	if (window->details->viewed_file != NULL) {
-		nautilus_file_monitor_remove (window->details->viewed_file,
-					      window);
-	}
-
-	if (file != NULL) {
-		attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
-		nautilus_file_monitor_add (file, window, attributes);
-		g_list_free (attributes);
-	}
-
-	nautilus_file_unref (window->details->viewed_file);
-	window->details->viewed_file = file;
 }
 
 static void
@@ -2234,9 +1543,14 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	G_OBJECT_CLASS (class)->set_property = nautilus_window_set_property;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
-	GTK_WIDGET_CLASS (class)->unrealize = nautilus_window_unrealize;
 	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
 	class->add_current_location_to_history_list = real_add_current_location_to_history_list;
+	class->get_title = real_get_title;
+	class->set_title = real_set_title;
+	class->merge_menus = real_merge_menus;
+	class->merge_menus_2 = real_merge_menus_2;
+	class->set_content_view_widget = real_set_content_view_widget;
+	class->load_view_as_menu = real_load_view_as_menu;
 	
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 ARG_APP_ID,

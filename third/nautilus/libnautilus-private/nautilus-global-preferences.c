@@ -53,8 +53,10 @@ static void     global_preferences_install_defaults      (void);
 static void     global_preferences_register_enumerations (void);
 static gpointer default_font_callback                    (void);
 static gpointer default_home_location_callback           (void);
-static gpointer default_default_folder_viewer_callback	 (void);
 static void     import_old_preferences_if_needed         (void);
+static gpointer default_home_link_name                   (void);
+static gpointer default_computer_link_name               (void);
+static gpointer default_trash_link_name                  (void);
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -188,15 +190,6 @@ static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
 	{ NULL }
 };
 
-static EelEnumerationEntry default_list_view_sort_order_enum_entries[] = {
-	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_DISPLAY_NAME },
-	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
-	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
-	{ "modification_date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
-	{ "emblems",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
-	{ NULL }
-};
-
 static EelEnumerationEntry standard_font_size_entries[] = {
 	{ "8",		   N_("8"),	8 },
 	{ "10",		   N_("10"),	10 },
@@ -210,18 +203,11 @@ static EelEnumerationEntry standard_font_size_entries[] = {
 	{ NULL }
 };
 
-static EelEnumerationEntry icon_captions_enum_entries[] = {
-	{ "size",	       N_("size"),		0 },
-	{ "type",	       N_("type"),		1 },
-	{ "date_modified",     N_("date modified"),	2 },
-	{ "date_changed",      N_("date changed"),	3 }, 
-	{ "date_accessed",     N_("date accessed"),	4 }, 
-	{ "owner",	       N_("owner"),		5 }, 
-	{ "group",	       N_("group"),		6 }, 
-	{ "permissions",       N_("permissions"),	7 }, 
-	{ "octal_permissions", N_("octal permissions"),	8 }, 
-	{ "mime_type",	       N_("MIME type"),		9 }, 
-	{ "none",	       N_("none"),		10 }, 
+/* These are not translated, because the text is not used in the ui */
+static EelEnumerationEntry date_format_entries[] = {
+	{ "locale",	   "Locale Default",	NAUTILUS_DATE_FORMAT_LOCALE },
+	{ "iso",	   "ISO Format",	NAUTILUS_DATE_FORMAT_ISO },
+	{ "informal",	   "Informal",		NAUTILUS_DATE_FORMAT_INFORMAL },
 	{ NULL }
 };
 
@@ -233,14 +219,13 @@ static EelEnumerationInfo enumerations[] = {
 	{ "click_policy",		   click_policy_enum_entries },
 	{ "default_folder_viewer",	   default_folder_viewer_enum_entries },
 	{ "default_icon_view_sort_order",  default_icon_view_sort_order_enum_entries },
-	{ "default_list_view_sort_order",  default_list_view_sort_order_enum_entries },
 	{ "default_zoom_level",		   default_zoom_level_enum_entries },
 	{ "executable_text_activation",	   executable_text_activation_enum_entries },
 	{ "file_size",			   file_size_enum_entries },
-	{ "icon_captions",		   icon_captions_enum_entries },
 	{ "search_bar_type",		   search_bar_type_enum_entries },
 	{ "speed_tradeoff",		   speed_tradeoff_enum_entries },
 	{ "standard_font_size",		   standard_font_size_entries },
+	{ "date_format",		   date_format_entries },
 	{ NULL }
 };
 
@@ -391,15 +376,11 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  "search_bar_type"
 	},
-	{ NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 	  PREFERENCE_STRING_LIST,
 	  "size,date_modified,type",
 	  NULL, NULL,
-	  "icon_captions"
+	  NULL
 	},
 	{ NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 	  PREFERENCE_BOOLEAN,
@@ -410,9 +391,9 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  GINT_TO_POINTER (148)
 	},
-	{ NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
+	{ NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
 	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
 	  PREFERENCE_BOOLEAN,
@@ -430,7 +411,18 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
 	},
-
+	{ NAUTILUS_PREFERENCES_DATE_FORMAT,
+	  PREFERENCE_STRING,
+	  "locale",
+	  NULL, NULL,
+	  "date_format"
+	},
+	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+	  PREFERENCE_INTEGER,
+	  GINT_TO_POINTER (NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW),
+	  NULL, NULL,
+	  "default_folder_viewer"
+	},
 	/* Home URI */
 	{ NAUTILUS_PREFERENCES_HOME_URI,
 	  PREFERENCE_STRING,
@@ -478,7 +470,7 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_STRING,
 	  "name",
 	  NULL, NULL,
-	  "default_list_view_sort_order"
+	  NULL,
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
@@ -491,14 +483,70 @@ static const PreferenceDefault preference_defaults[] = {
 	  "default_zoom_level"
 	},
 
-	/* non-visible preferences */
-	{ NAUTILUS_PREFERENCES_ADD_TO_SESSION,
+	/* Desktop Preferences */
+	{ NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (FALSE)
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
+	  PREFERENCE_STRING,
+	  NULL,
+	  default_home_link_name, g_free,
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
 	},
-
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
+	  PREFERENCE_STRING,
+	  NULL,
+	  default_computer_link_name, g_free,
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (TRUE)
+	},
+	
+	{ NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
+	  PREFERENCE_STRING,
+	  NULL,
+	  default_trash_link_name, g_free,
+	},
+	
 	{ NULL }
 };
+
+static gpointer
+default_home_link_name (void)
+{
+	/* Note to translators: If it's hard to compose a good home
+	 * icon name from the user name, you can use a string without
+	 * an "%s" here, in which case the home icon name will not
+	 * include the user's name, which should be fine. To avoid a
+	 * warning, put "%.0s" somewhere in the string, which will
+	 * match the user name string passed by the C code, but not
+	 * put the user name in the final string.
+	 */
+	return g_strdup_printf (_("%s's Home"), g_get_user_name ());
+}
+
+static gpointer
+default_computer_link_name (void)
+{
+	return g_strdup (_("Computer"));
+}
+
+static gpointer
+default_trash_link_name (void)
+{
+	return g_strdup (_("Trash"));
+}
+
+
 
 /**
  * global_preferences_register_enumerations
@@ -614,61 +662,20 @@ default_font_callback (void)
 	return g_strdup ("sans 12");
 }
 
-static int
-get_default_folder_viewer_preference_from_iid (const char *iid)
-{
-	g_return_val_if_fail (iid != NULL, NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
-
-	if (strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0) {
-		return NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW;
-	} else if (strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0) {
-		return NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
-	}
-
-	return NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER;
-}
-
-static gpointer
-default_default_folder_viewer_callback (void)
-{
-	Bonobo_ServerInfo *bonobo_activation_info;
-	int result;
-
-	bonobo_activation_info = gnome_vfs_mime_get_default_component ("x-directory/normal");
-	if (bonobo_activation_info == NULL) {
-		result = NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
-	} else {
-		result = get_default_folder_viewer_preference_from_iid (bonobo_activation_info->iid);
-		if (result == NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER) {
-			result = NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
-		}
-		CORBA_free (bonobo_activation_info);
-	}
-
-	return GINT_TO_POINTER (result);
-}
-
 static gpointer
 default_home_location_callback (void)
 {
 	return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 }
 
-static void
-set_default_folder_viewer_in_gnome_vfs (const char *iid)
-{
-	gnome_vfs_mime_set_default_action_type ("x-directory/normal", GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
-	gnome_vfs_mime_set_default_component ("x-directory/normal", iid);
-}
-
-/* Convert between gnome-vfs and gconf ways of storing this information. */
-static void
-default_folder_viewer_changed_callback (gpointer callback_data)
+/*
+ * Public functions
+ */
+char *
+nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
 {
 	int preference_value;
 	const char *viewer_iid;
-
-	g_assert (callback_data == NULL);
 
 	preference_value = 
 		eel_preferences_get_enum (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
@@ -676,35 +683,10 @@ default_folder_viewer_changed_callback (gpointer callback_data)
 	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
 		viewer_iid = NAUTILUS_LIST_VIEW_IID;
 	} else {
-		g_return_if_fail (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
 		viewer_iid = NAUTILUS_ICON_VIEW_IID;
 	}
 
-	set_default_folder_viewer_in_gnome_vfs (viewer_iid);
-}
-
-/*
- * Public functions
- */
-
-void
-nautilus_global_preferences_set_default_folder_viewer (const char *iid)
-{
-	int viewer_preference;
-
-	set_default_folder_viewer_in_gnome_vfs (iid);
-
-	viewer_preference = get_default_folder_viewer_preference_from_iid (iid);
-
-	/* If viewer is set to one that the Preferences dialog doesn't know about,
-	 * just change the underlying gnome-vfs setting but leave the Preferences dialog alone.
-	 */
-	if (viewer_preference == NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER) {
-		return;		
-	}
-	
-	eel_preferences_set_enum (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-				  viewer_preference);
+	return g_strdup (viewer_iid);
 }
 
 /* The icon view uses 2 variables to store the sort order and
@@ -762,14 +744,16 @@ import_old_preferences_if_needed (void)
 	for (i=0; OLD_PREFERENCES_TO_IMPORT[i].new_key != NULL; i++) {
 		to_import = & (OLD_PREFERENCES_TO_IMPORT[i]);
 
-		error = NULL;
-		value = gconf_client_get (client, to_import->old_key, &error);
+		if (gconf_client_key_is_writable (client, to_import->new_key, NULL)) {
+			error = NULL;
+			value = gconf_client_get (client, to_import->old_key, &error);
 
-		if ((error == NULL) && (value != NULL)) {
-			gconf_client_set (client, to_import->new_key, value, NULL);
-		} else {
-			if (error != NULL) {
-				g_error_free (error);
+			if ((error == NULL) && (value != NULL)) {
+				gconf_client_set (client, to_import->new_key, value, NULL);
+			} else {
+				if (error != NULL) {
+					g_error_free (error);
+				}
 			}
 		}
 	}
@@ -810,34 +794,4 @@ nautilus_global_preferences_init (void)
 	/* Preload everything in a big batch */
 	eel_gconf_preload_cache ("/apps/nautilus/preferences",
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
-}
-
-void
-nautilus_global_preferences_init_with_folder_browsing (void)
-{
-	static gboolean browse_initialized = FALSE;
-	static const PreferenceDefault browse_default = {
-		NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-		PREFERENCE_INTEGER,
-		NULL, default_default_folder_viewer_callback, NULL,
-		"default_folder_viewer"
-	};
-
-	nautilus_global_preferences_init ();
-
-	if (browse_initialized) {
-		return;
-	}
-	browse_initialized = TRUE;
-
-	eel_preferences_set_enumeration_id (browse_default.name,
-					    browse_default.enumeration_id);
-	
-	global_preferences_install_one_default (browse_default.name,
-						browse_default.type,
-						&browse_default);
-
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
-				      default_folder_viewer_changed_callback, 
-				      NULL);	
 }

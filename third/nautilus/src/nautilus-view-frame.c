@@ -63,15 +63,14 @@ enum {
 	LOAD_COMPLETE,
 	LOAD_PROGRESS_CHANGED,
 	LOAD_UNDERWAY,
-	OPEN_LOCATION_FORCE_NEW_WINDOW,
-	OPEN_LOCATION_IN_THIS_WINDOW,
-	OPEN_LOCATION_PREFER_EXISTING_WINDOW,
+	OPEN_LOCATION,
 	REPORT_LOCATION_CHANGE,
 	REPORT_REDIRECT,
 	TITLE_CHANGED,
 	VIEW_LOADED,
 	ZOOM_LEVEL_CHANGED,
 	ZOOM_PARAMETERS_CHANGED,
+	SHOW_HIDDEN_FILES_MODE_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -112,6 +111,17 @@ struct NautilusViewFrameDetails {
 
 	guint failed_idle_id;
 	guint socket_gone_idle_id;
+
+	/* zoom data */
+	float zoom_level;
+	float min_zoom_level;
+	float max_zoom_level;
+	gboolean has_min_zoom_level;
+	gboolean has_max_zoom_level;
+	GList *zoom_levels;
+
+	Nautilus_WindowType 	     window_type;
+	Nautilus_ShowHiddenFilesMode show_hidden_files_mode;
 };
 
 static void nautilus_view_frame_init       (NautilusViewFrame      *view);
@@ -122,7 +132,7 @@ static guint signals[LAST_SIGNAL];
 
 EEL_CLASS_BOILERPLATE (NautilusViewFrame,
 		       nautilus_view_frame,
-		       EEL_TYPE_GENEROUS_BIN)
+		       GTK_TYPE_HBOX)
 
 void
 nautilus_view_frame_queue_incoming_call (PortableServer_Servant servant,
@@ -265,9 +275,23 @@ nautilus_view_frame_finalize (GObject *object)
 
 static void
 emit_zoom_parameters_changed (NautilusViewFrame *view)
-{
-	if (view->details->zoomable_frame != NULL) {
+{	
+	eel_g_list_free_deep (view->details->zoom_levels);
+
+	if (view->details->zoomable_frame) {
+		view->details->min_zoom_level = bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
+		view->details->max_zoom_level = bonobo_zoomable_frame_get_max_zoom_level (view->details->zoomable_frame);
+		view->details->has_min_zoom_level = bonobo_zoomable_frame_has_min_zoom_level (view->details->zoomable_frame);
+		view->details->has_max_zoom_level = bonobo_zoomable_frame_has_max_zoom_level (view->details->zoomable_frame);
+		view->details->zoom_levels = bonobo_zoomable_frame_get_preferred_zoom_levels (view->details->zoomable_frame);
+		
 		g_signal_emit (view, signals[ZOOM_PARAMETERS_CHANGED], 0);
+	} else {
+		view->details->min_zoom_level = 0.0;
+		view->details->max_zoom_level = 0.0;
+		view->details->has_min_zoom_level = FALSE;
+		view->details->has_max_zoom_level = FALSE;
+		view->details->zoom_levels = NULL;
 	}
 }
 
@@ -349,7 +373,6 @@ view_frame_underway (NautilusViewFrame *view)
 
 /* stimulus 
    - open_location call from component
-   - open_location_in_new_window
    - report_selection_change
    - report_status
    - set_title 
@@ -432,7 +455,8 @@ view_frame_failed (NautilusViewFrame *view)
 
 NautilusViewFrame *
 nautilus_view_frame_new (BonoboUIContainer *ui_container,
-                         NautilusUndoManager *undo_manager)
+                         NautilusUndoManager *undo_manager,
+			 Nautilus_WindowType window_type)
 {
 	NautilusViewFrame *view_frame;
 	
@@ -441,7 +465,8 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	bonobo_object_ref (ui_container);
 	view_frame->details->ui_container = ui_container;
 	view_frame->details->undo_manager = undo_manager;
-	
+	view_frame->details->window_type = window_type;
+	view_frame->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_DEFAULT;
 	return view_frame;
 }
 
@@ -449,6 +474,8 @@ static void
 emit_zoom_parameters_changed_callback (gpointer data,
 				       gpointer callback_data)
 {
+	
+
 	emit_zoom_parameters_changed (NAUTILUS_VIEW_FRAME (data));
 }
 
@@ -469,7 +496,13 @@ static void
 emit_zoom_level_changed_callback (gpointer data,
 				  gpointer callback_data)
 {
-	g_signal_emit (data,
+	NautilusViewFrame *view;
+	
+	view = NAUTILUS_VIEW_FRAME (data);
+	
+	view->details->zoom_level = bonobo_zoomable_frame_get_zoom_level (view->details->zoomable_frame);
+
+	g_signal_emit (view,
 			 signals[ZOOM_LEVEL_CHANGED], 0,
 			 * (float *) callback_data);
 }
@@ -495,7 +528,9 @@ zoom_level_changed_callback (BonoboZoomableFrame *zframe,
 enum {
 	BONOBO_PROPERTY_TITLE,
 	BONOBO_PROPERTY_HISTORY,
-	BONOBO_PROPERTY_SELECTION
+	BONOBO_PROPERTY_SELECTION,
+	BONOBO_PROPERTY_WINDOW_TYPE,
+	BONOBO_PROPERTY_SHOW_HIDDEN_FILES_MODE
 };
 
 static Nautilus_History *
@@ -535,6 +570,19 @@ nautilus_view_frame_get_prop (BonoboPropertyBag *bag,
 		g_warning ("NautilusViewFrame: selection fetch not yet implemented");
 		break;
 
+	case BONOBO_PROPERTY_WINDOW_TYPE :
+		BONOBO_ARG_SET_GENERAL (arg, view->details->window_type,
+					TC_Nautilus_WindowType,
+					Nautilus_WindowType,
+					NULL);
+		break;
+
+	case BONOBO_PROPERTY_SHOW_HIDDEN_FILES_MODE :
+		BONOBO_ARG_SET_GENERAL (arg, view->details->show_hidden_files_mode,
+					TC_Nautilus_ShowHiddenFilesMode,
+					Nautilus_ShowHiddenFilesMode,
+					NULL);
+		break;
 	default:
 		g_warning ("NautilusViewFrame: Unknown property idx %d", arg_id);
 		break;
@@ -573,6 +621,24 @@ create_ambient_properties (NautilusViewFrame *view)
 		 TC_Nautilus_URIList,
 		 NULL,
 		 _("the current selection"),
+		 BONOBO_PROPERTY_READABLE);
+
+	bonobo_property_bag_add
+		(bag,
+		 "window-type",
+		 BONOBO_PROPERTY_WINDOW_TYPE,
+		 TC_Nautilus_WindowType,
+		 NULL,
+		 _("the type of window the view is embedded in"),
+		 BONOBO_PROPERTY_READABLE);
+
+	bonobo_property_bag_add
+		(bag,
+		 "show-hidden-files-mode",
+		 BONOBO_PROPERTY_SHOW_HIDDEN_FILES_MODE,
+		 TC_Nautilus_ShowHiddenFilesMode,
+		 NULL,
+		 _("whether to show hidden files in the view"),
 		 BONOBO_PROPERTY_READABLE);
 
 	view->details->event_source = bag->es;
@@ -959,7 +1025,7 @@ nautilus_view_frame_get_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return bonobo_zoomable_frame_get_zoom_level (view->details->zoomable_frame);
+	return view->details->zoom_level;
 }
 
 void
@@ -984,7 +1050,7 @@ nautilus_view_frame_get_min_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
+	return view->details->min_zoom_level;
 }
 
 float
@@ -996,7 +1062,7 @@ nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return bonobo_zoomable_frame_get_max_zoom_level (view->details->zoomable_frame);
+	return view->details->max_zoom_level;
 }
 
 gboolean
@@ -1008,7 +1074,7 @@ nautilus_view_frame_get_has_min_zoom_level (NautilusViewFrame *view)
 		return FALSE;
 	}
 
-	return bonobo_zoomable_frame_has_min_zoom_level (view->details->zoomable_frame);
+	return view->details->has_min_zoom_level;
 }
 
 gboolean
@@ -1020,7 +1086,7 @@ nautilus_view_frame_get_has_max_zoom_level (NautilusViewFrame *view)
 		return FALSE;
 	}
 
-	return bonobo_zoomable_frame_has_max_zoom_level (view->details->zoomable_frame);
+	return view->details->has_max_zoom_level;
 }
 
 gboolean
@@ -1034,6 +1100,24 @@ nautilus_view_frame_get_is_continuous (NautilusViewFrame *view)
 
 	return bonobo_zoomable_frame_is_continuous (view->details->zoomable_frame);
 }
+
+gboolean
+nautilus_view_frame_get_can_zoom_in (NautilusViewFrame *view)
+{       
+	return !view->details->has_max_zoom_level ||
+                (view->details->zoom_level
+                 < view->details->max_zoom_level);
+
+}
+
+gboolean
+nautilus_view_frame_get_can_zoom_out (NautilusViewFrame *view)
+{       
+	return !view->details->has_min_zoom_level ||
+                (view->details->zoom_level
+                 > view->details->min_zoom_level);
+}
+
 
 GList *
 nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame *view)
@@ -1089,12 +1173,19 @@ nautilus_view_frame_get_first_visible_file (NautilusViewFrame *view)
 	Nautilus_URI uri;
 	char *ret;
 
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
+
 	ret = NULL;
 	if (view->details->positionable) {
-		uri = Nautilus_ScrollPositionable_get_first_visible_file (view->details->positionable, NULL);
+		CORBA_Environment ev;
+		
+		CORBA_exception_init (&ev);
+		uri = Nautilus_ScrollPositionable_get_first_visible_file (view->details->positionable, &ev);
 		ret = g_strdup (uri);
 		CORBA_free (uri);
+		CORBA_exception_free (&ev);
 	}
+
 	return ret;
 }
 
@@ -1102,10 +1193,17 @@ void
 nautilus_view_frame_scroll_to_file (NautilusViewFrame *view,
 				    const char        *uri)
 {
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
 	if (view->details->positionable) {
+		CORBA_Environment ev;
+		
+		CORBA_exception_init (&ev);
+
 		Nautilus_ScrollPositionable_scroll_to_file (view->details->positionable,
 							    uri,
-							    NULL);
+							    &ev);
+		CORBA_exception_free (&ev);
 	}
 }
 
@@ -1119,37 +1217,11 @@ nautilus_view_frame_get_view_iid (NautilusViewFrame *view)
 }
 
 void
-nautilus_view_frame_open_location_in_this_window (NautilusViewFrame *view,
-						  const char *location)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
-	view_frame_wait_is_over (view);
-	g_signal_emit (view, signals[OPEN_LOCATION_IN_THIS_WINDOW], 0, location);
-}
-
-void
-nautilus_view_frame_open_location_prefer_existing_window (NautilusViewFrame *view,
-							  const char *location)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
-	view_frame_wait_is_over (view);
-	g_signal_emit (view, signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW], 0, location);
-}
-
-void
-nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
-						    const char *location,
-						    GList *selection)
+nautilus_view_frame_open_location (NautilusViewFrame *view,
+				   const char *location,
+				   Nautilus_ViewFrame_OpenMode mode,
+				   Nautilus_ViewFrame_OpenFlags flags,
+				   GList *selection)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
@@ -1159,8 +1231,8 @@ nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
 
 	view_frame_wait_is_over (view);
 	g_signal_emit (view,
-		       signals[OPEN_LOCATION_FORCE_NEW_WINDOW], 0,
-		       location, selection);
+		       signals[OPEN_LOCATION], 0,
+		       location, mode, flags, selection);
 }
 
 void
@@ -1299,6 +1371,43 @@ nautilus_view_frame_close_window (NautilusViewFrame *view)
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	g_signal_emit (view, signals[CLOSE_WINDOW], 0);
+}
+
+Nautilus_ShowHiddenFilesMode
+nautilus_view_frame_get_show_hidden_files_mode	(NautilusViewFrame   *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0);
+
+	return view->details->show_hidden_files_mode;
+}
+
+
+void
+nautilus_view_frame_set_show_hidden_files_mode (NautilusViewFrame *view,
+                                                Nautilus_ShowHiddenFilesMode mode,
+						gboolean from_view)
+{
+	CORBA_Environment ev;
+	
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+	view->details->show_hidden_files_mode = mode;
+	if (from_view) {
+		/* The call was from the the view, propagate to the window */
+		g_signal_emit (view, signals[SHOW_HIDDEN_FILES_MODE_CHANGED], 0);
+	} else if (view->details->event_source) {
+		/* The call was from the window, propagate to all views */
+		CORBA_exception_init (&ev);
+		
+		bonobo_event_source_notify_listeners
+			(view->details->event_source,
+			 "Bonobo/Property:change:show-hidden-files-mode", NULL, &ev);
+		
+		if (BONOBO_EX (&ev)) {
+			g_warning ("show hidden mode notification failed");
+		}
+
+		CORBA_exception_free (&ev);
+	}
 }
 
 void
@@ -1524,33 +1633,15 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
-	signals[OPEN_LOCATION_FORCE_NEW_WINDOW] = g_signal_new
-		("open_location_force_new_window",
+	signals[OPEN_LOCATION] = g_signal_new
+		("open_location",
 		 G_TYPE_FROM_CLASS (class),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
-				  open_location_force_new_window),
+				  open_location),
 		 NULL, NULL,
-		 eel_marshal_VOID__STRING_POINTER,
-		 G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_POINTER);
-	signals[OPEN_LOCATION_IN_THIS_WINDOW] = g_signal_new
-		("open_location_in_this_window",
-		 G_TYPE_FROM_CLASS (class),
-		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
-				  open_location_in_this_window),
-		 NULL, NULL,
-		 g_cclosure_marshal_VOID__STRING,
-		 G_TYPE_NONE, 1, G_TYPE_STRING);
-	signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW] = g_signal_new
-		("open_location_prefer_existing_window",
-		 G_TYPE_FROM_CLASS (class),
-		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
-				  open_location_prefer_existing_window),
-		 NULL, NULL,
-		 g_cclosure_marshal_VOID__STRING,
-		 G_TYPE_NONE, 1, G_TYPE_STRING);
+		 eel_marshal_VOID__STRING_LONG_LONG_POINTER,
+		 G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_LONG, G_TYPE_LONG, G_TYPE_POINTER);
 	signals[REPORT_LOCATION_CHANGE] = g_signal_new
 		("report_location_change",
 		 G_TYPE_FROM_CLASS (class),
@@ -1569,6 +1660,15 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 NULL, NULL,
 		 eel_marshal_VOID__STRING_STRING_POINTER_STRING,
 		 G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_STRING);
+	signals[SHOW_HIDDEN_FILES_MODE_CHANGED] = g_signal_new
+		("show_hidden_files_mode_changed",
+		 G_TYPE_FROM_CLASS (class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
+				  show_hidden_files_mode_changed),
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__VOID,
+		 G_TYPE_NONE, 0);
 	signals[TITLE_CHANGED] = g_signal_new
 		("title_changed",
 		 G_TYPE_FROM_CLASS (class),

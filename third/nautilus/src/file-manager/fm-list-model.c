@@ -2,7 +2,9 @@
 
 /* fm-list-model.h - a GtkTreeModel for file lists. 
 
-   Copyright (C) 2001, 2002 Anders Carlsson 
+   Copyright (C) 2001, 2002 Anders Carlsson
+   Copyright (C) 2003, Soeren Sandmann
+   Copyright (C) 2004, Novell, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -19,7 +21,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Anders Carlsson <andersca@gnu.org>
+   Authors: Anders Carlsson <andersca@gnu.org>, Soeren Sandmann (sandmann@daimi.au.dk), Dave Camp <dave@ximian.com>
 */
 
 #include <config.h>
@@ -28,23 +30,26 @@
 
 #include <string.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 #include <gtk/gtktreednd.h>
 #include <gtk/gtktreesortable.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-dnd.h>
+#include <gsequence/gsequence.h>
 
-#define G_SLIST(x) ((GSList *) x)
+static int fm_list_model_compare_func (gconstpointer a,
+				       gconstpointer b,
+				       gpointer      user_data);
 
 static GObjectClass *parent_class;
 
 struct FMListModelDetails {
-	GSList *files;
-	GSList *tail;
-	int length;
+	GSequence *files;
+	GHashTable *reverse_map;	/* map from files to GSequencePtr's */
 
 	int stamp;
 
-	int sort_column_id;
+	char *sort_attribute;
 	GtkSortType order;
 
 	gboolean sort_directories_first;
@@ -52,6 +57,8 @@ struct FMListModelDetails {
 	GtkTreeView *drag_view;
 	int drag_begin_x;
 	int drag_begin_y;
+
+	GPtrArray *columns;
 };
 
 typedef struct {
@@ -60,34 +67,11 @@ typedef struct {
 	GList *path_list;
 } DragDataGetInfo;
 
-typedef struct {
-	const char *attribute_name;
-	int sort_column_id;
-} AttributeEntry;
-
 static GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
-};
-
-/*
- * Do not change the order of the type and size attributes, they 
- * have to be in this order so that the column_id to attribute mapping
- * works. This is needed to store the sorting preferences. This duplicate
- * entry is here to allow the ordering by icon (i think...)
- */
-
-static const AttributeEntry attributes[] = {
-	{ "name", FM_LIST_MODEL_NAME_COLUMN },
-	{ "type", FM_LIST_MODEL_TYPE_COLUMN },
-#ifdef GNOME2_CONVERSION_COMPLETE
-	{ "emblems", FM_LIST_MODEL_EMBLEMS_COLUMN },
-#endif
-	{ "size", FM_LIST_MODEL_SIZE_COLUMN },
-	{ "icon", FM_LIST_MODEL_TYPE_COLUMN },
-	{ "date_modified", FM_LIST_MODEL_DATE_MODIFIED_COLUMN },
 };
 
 static GtkTargetList *drag_target_list = NULL;
@@ -101,7 +85,7 @@ fm_list_model_get_flags (GtkTreeModel *tree_model)
 static int
 fm_list_model_get_n_columns (GtkTreeModel *tree_model)
 {
-	return FM_LIST_MODEL_NUM_COLUMNS;
+	return FM_LIST_MODEL_NUM_COLUMNS + FM_LIST_MODEL (tree_model)->details->columns->len;
 }
 
 static GType
@@ -110,11 +94,6 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	switch (index) {
 	case FM_LIST_MODEL_FILE_COLUMN:
 		return NAUTILUS_TYPE_FILE;
-	case FM_LIST_MODEL_NAME_COLUMN:
-	case FM_LIST_MODEL_SIZE_COLUMN:
-	case FM_LIST_MODEL_TYPE_COLUMN:
-	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
-		return G_TYPE_STRING;
 	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALL_ICON_COLUMN:
@@ -122,11 +101,22 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	case FM_LIST_MODEL_LARGE_ICON_COLUMN:
 	case FM_LIST_MODEL_LARGER_ICON_COLUMN:
 	case FM_LIST_MODEL_LARGEST_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALL_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGE_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN:
 		return GDK_TYPE_PIXBUF;
 	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
 		return G_TYPE_BOOLEAN;
 	default:
-		return G_TYPE_INVALID;
+		if (index < FM_LIST_MODEL_NUM_COLUMNS + FM_LIST_MODEL (tree_model)->details->columns->len) {
+			return G_TYPE_STRING;
+		} else {
+			return G_TYPE_INVALID;
+		}
 	}
 }
 
@@ -134,22 +124,24 @@ static gboolean
 fm_list_model_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreePath *path)
 {
 	FMListModel *model;
-	GSList *list;
+	GSequencePtr ptr;
 	int i;
 	
 	model = (FMListModel *)tree_model;
 
 	i = gtk_tree_path_get_indices (path)[0];
 
-	if (i >= model->details->length) {
+	if (i >= g_sequence_get_length (model->details->files)) {
 		return FALSE;
 	}
 
-	list = g_slist_nth (model->details->files, i);
+	ptr = g_sequence_get_ptr_at_pos (model->details->files, i);
 
 	iter->stamp = model->details->stamp;
-	iter->user_data = list;
+	iter->user_data = ptr;
 
+	g_assert (!g_sequence_ptr_is_end (iter->user_data));
+	
 	return TRUE;
 }
 
@@ -158,30 +150,19 @@ fm_list_model_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
 	GtkTreePath *path;
 	FMListModel *model;
-	GSList *list;
-	int i;
 
 	model = (FMListModel *)tree_model;
 	
 	g_return_val_if_fail (iter->stamp == model->details->stamp, NULL);
-	
-	i = 0;
 
-	for (list = model->details->files; list; list = list->next) {
-		if (list == iter->user_data) {
-			break;
-		}
-
-		i++;
-	}
-
-	if (list == NULL) {
+	if (g_sequence_ptr_is_end (iter->user_data)) {
+		/* FIXME is this right? */
 		return NULL;
 	}
-
-	path = gtk_tree_path_new ();
-	gtk_tree_path_append_index (path, i);
 	
+	path = gtk_tree_path_new ();
+	gtk_tree_path_append_index (path, g_sequence_ptr_get_position (iter->user_data));
+
 	return path;
 }
 
@@ -191,28 +172,26 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	FMListModel *model;
 	NautilusFile *file;
 	char *str;
-	GdkPixbuf *icon, *tmp;
+	GdkPixbuf *icon;
 	int icon_size;
 	NautilusZoomLevel zoom_level;
-	int width, height;
+	char *modifier;
+	GList *emblem_icons;
+	NautilusFile *parent_file;
+	EelStringList *emblems_to_ignore;
 
 	model = (FMListModel *)tree_model;
 
 	g_return_if_fail (model->details->stamp == iter->stamp);
+	g_return_if_fail (!g_sequence_ptr_is_end (iter->user_data));
 
-	file = G_SLIST (iter->user_data)->data;
+	file = g_sequence_ptr_get_data (iter->user_data);
 	
 	switch (column) {
 	case FM_LIST_MODEL_FILE_COLUMN:
 		g_value_init (value, NAUTILUS_TYPE_FILE);
 
 		g_value_set_object (value, file);
-		break;
-	case FM_LIST_MODEL_NAME_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
-
-		str = nautilus_file_get_string_attribute_with_default (file, "name");
-		g_value_set_string_take_ownership (value, str);
 		break;
 	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
@@ -225,44 +204,92 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 
 		zoom_level = fm_list_model_get_zoom_level_from_column_id (column);
 		icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
-		icon = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, icon_size);
 
-		height = gdk_pixbuf_get_height (icon);
-		if (height > icon_size) {
-			width = gdk_pixbuf_get_width (icon) * icon_size / height;
-			height = icon_size;
-			tmp = gdk_pixbuf_scale_simple (icon, width, height, GDK_INTERP_BILINEAR);
-			g_object_unref (icon);
-			icon = tmp;
+		modifier = NULL;
+		if (model->details->drag_view != NULL) {
+			GtkTreePath *path_a, *path_b;
+			
+			gtk_tree_view_get_drag_dest_row (model->details->drag_view,
+							 &path_a,
+							 NULL);
+			if (path_a != NULL) {
+				path_b = gtk_tree_model_get_path (tree_model, iter);
+
+				if (gtk_tree_path_compare (path_a, path_b) == 0) {
+					modifier = "accept";
+				}
+					
+				gtk_tree_path_free (path_a);
+				gtk_tree_path_free (path_b);
+			}
 		}
+		
+		if (nautilus_file_has_open_window (file)) {
+			modifier = "visiting";
+		}
+		
+		icon = nautilus_icon_factory_get_pixbuf_for_file_force_size (file, modifier, icon_size);
+
 		g_value_set_object (value, icon);
 		g_object_unref (icon);
 		break;
-	case FM_LIST_MODEL_SIZE_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
+	case FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALL_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGE_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN:
+		g_value_init (value, GDK_TYPE_PIXBUF);
 
-		str = nautilus_file_get_string_attribute_with_default (file, "size");
-		g_value_set_string_take_ownership (value, str);
-		break;
-	case FM_LIST_MODEL_TYPE_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
+		parent_file = nautilus_file_get_parent (file);
+		emblems_to_ignore = eel_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH, TRUE);
+		if (parent_file) {
+			if (!nautilus_file_can_write (parent_file)) {
+				eel_string_list_prepend (emblems_to_ignore, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
+			}
+			nautilus_file_unref (parent_file);
+		}
+		emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, emblems_to_ignore);
+		eel_string_list_free (emblems_to_ignore);
 
-		str = nautilus_file_get_string_attribute_with_default (file, "type");
-		g_value_set_string_take_ownership (value, str);
-		break;
-	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
+		if (emblem_icons != NULL) {
+			zoom_level = fm_list_model_get_zoom_level_from_emblem_column_id (column);
+			icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
+			icon = nautilus_icon_factory_get_pixbuf_for_icon_force_size (
+				emblem_icons->data, NULL, icon_size,
+				NULL, NULL, FALSE, NULL);
+			eel_g_list_free_deep (emblem_icons);
+	
+			g_value_set_object (value, icon);
 
-		str = nautilus_file_get_string_attribute_with_default (file, "date_modified");
-		g_value_set_string_take_ownership (value, str);
+			if (icon != NULL) { 
+				g_object_unref (icon);
+			}
+		}
 		break;
 	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
 		g_value_init (value, G_TYPE_BOOLEAN);
-
-		g_value_set_boolean (value, nautilus_file_can_rename (file));
-		break;
-	default:
-		g_assert_not_reached ();
+		
+                g_value_set_boolean (value, nautilus_file_can_rename (file));
+                break;
+ 	default:
+		if (column >= FM_LIST_MODEL_NUM_COLUMNS || column < FM_LIST_MODEL_NUM_COLUMNS + model->details->columns->len) {
+			NautilusColumn *nautilus_column;
+			char *attribute;
+			nautilus_column = model->details->columns->pdata[column - FM_LIST_MODEL_NUM_COLUMNS];
+			
+			g_value_init (value, G_TYPE_STRING);
+			g_object_get (nautilus_column, 
+				      "attribute", &attribute, 
+				      NULL);
+			str = nautilus_file_get_string_attribute_with_default (file, 
+									       attribute);
+			g_value_set_string_take_ownership (value, str);
+			g_free (attribute);
+		} else {
+			g_assert_not_reached ();
+		}
 	}
 }
 
@@ -275,9 +302,9 @@ fm_list_model_iter_next (GtkTreeModel *tree_model, GtkTreeIter *iter)
 
 	g_return_val_if_fail (model->details->stamp == iter->stamp, FALSE);
 
-	iter->user_data = G_SLIST (iter->user_data)->next;
+	iter->user_data = g_sequence_ptr_next (iter->user_data);
 
-	return (iter->user_data != NULL);
+	return !g_sequence_ptr_is_end (iter->user_data);
 }
 
 static gboolean
@@ -291,15 +318,14 @@ fm_list_model_iter_children (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTre
 		return FALSE;
 	}
 
-	if (model->details->files != NULL) {
-		iter->stamp = model->details->stamp;
-		iter->user_data = model->details->files;
-
-		return TRUE;
-	}
-	else {
+	if (g_sequence_get_length (model->details->files) == 0) {
 		return FALSE;
 	}
+
+	iter->stamp = model->details->stamp;
+	iter->user_data = g_sequence_get_begin_ptr (model->details->files);
+
+	return TRUE;
 }
 
 static gboolean
@@ -316,7 +342,7 @@ fm_list_model_iter_n_children (GtkTreeModel *tree_model, GtkTreeIter *iter)
 	model = (FMListModel *)tree_model;
 
 	if (iter == NULL) {
-		return model->details->length;
+		return g_sequence_get_length (model->details->files);
 	}
 
 	g_return_val_if_fail (model->details->stamp == iter->stamp, -1);
@@ -328,7 +354,7 @@ static gboolean
 fm_list_model_iter_nth_child (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeIter *parent, int n)
 {
 	FMListModel *model;
-	GSList *child;
+	GSequencePtr child;
 
 	model = (FMListModel *)tree_model;
 	
@@ -336,17 +362,16 @@ fm_list_model_iter_nth_child (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTr
 		return FALSE;
 	}
 
-	child = g_slist_nth (model->details->files, n);
+	child = g_sequence_get_ptr_at_pos (model->details->files, n);
 
-	if (child != NULL) {
-		iter->stamp = model->details->stamp;
-		iter->user_data = child;
-
-		return TRUE;
-	}
-	else {
+	if (g_sequence_ptr_is_end (child)) {
 		return FALSE;
 	}
+
+	iter->stamp = model->details->stamp;
+	iter->user_data = child;
+
+	return TRUE;
 }
 
 static gboolean
@@ -358,32 +383,24 @@ fm_list_model_iter_parent (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeI
 gboolean
 fm_list_model_get_tree_iter_from_file (FMListModel *model, NautilusFile *file, GtkTreeIter *iter)
 {
-	GSList *list;
+	GSequencePtr ptr;
 
-	for (list = model->details->files; list; list = list->next) {
-		if (list->data == file) {
-			break;
-		}
-	}
+	ptr = g_hash_table_lookup (model->details->reverse_map, file);
 
-	if (list == NULL) {
+	if (!ptr) {
 		return FALSE;
 	}
 
+	g_assert (!g_sequence_ptr_is_end (ptr));
+	g_assert (g_sequence_ptr_get_data (ptr) == file);
+	
 	if (iter != NULL) {
 		iter->stamp = model->details->stamp;
-		iter->user_data = list;
+		iter->user_data = ptr;
 	}
 	
 	return TRUE;
 }
-
-/* Sorting */
-typedef struct _SortTuple
-{
-  gint offset;
-  GSList *el;
-} SortTuple;
 
 static int
 fm_list_model_compare_func (gconstpointer a,
@@ -394,16 +411,16 @@ fm_list_model_compare_func (gconstpointer a,
 	NautilusFile *file2;
 	FMListModel *model;
 	int result;
-	
+
 	model = (FMListModel *)user_data;
 
-	file1 = ((SortTuple *)a)->el->data;
-	file2 = ((SortTuple *)b)->el->data;
+	file1 = (NautilusFile *)a;
+	file2 = (NautilusFile *)b;
 
-	result = nautilus_file_compare_for_sort (file1, file2,
-						 fm_list_model_get_sort_type_from_sort_column_id (model->details->sort_column_id),
-						 model->details->sort_directories_first,
-						 (model->details->order == GTK_SORT_DESCENDING));
+	result = nautilus_file_compare_for_sort_by_attribute (file1, file2,
+							      model->details->sort_attribute,
+							      model->details->sort_directories_first,
+							      (model->details->order == GTK_SORT_DESCENDING));
 
 	return result;
 }
@@ -411,59 +428,49 @@ fm_list_model_compare_func (gconstpointer a,
 static void
 fm_list_model_sort (FMListModel *model)
 {
-	GtkTreeIter iter;
-	GArray *sort_array;
-	gint i;
-	gint *new_order;
-	GSList *list;
+	GSequence *files;
+	GSequencePtr *old_order;
 	GtkTreePath *path;
+	int *new_order;
+	int length;
+	int i;
 
-	if (model->details->length <= 1) {
+	files = model->details->files;
+	length = g_sequence_get_length (files);
+
+	if (length <= 1) {
 		return;
 	}
-
-	list = G_SLIST (model->details->files);
 	
-	sort_array = g_array_sized_new (FALSE, FALSE,
-					sizeof (SortTuple),
-					model->details->length);
+	/* generate old order of GSequencePtr's */
+	old_order = g_new (GSequencePtr, length);
+	for (i = 0; i < length; ++i) {
+		GSequencePtr ptr = g_sequence_get_ptr_at_pos (files, i);
 
-	for (i = 0; i < model->details->length; i++) {
-		SortTuple tuple;
-
-		/* If this fails, we are in an inconsistent state.  Bad */
-		g_return_if_fail (list != NULL);
-
-		tuple.offset = i;
-		tuple.el = list;
-		g_array_append_val (sort_array, tuple);
-
-		list = list->next;
+		old_order[i] = ptr;
 	}
 
-	g_array_sort_with_data (sort_array, fm_list_model_compare_func, model);
-	
-	for (i = 0; i < model->details->length - 1; i++) {
-		g_array_index (sort_array, SortTuple, i).el->next = g_array_index (sort_array, SortTuple, i + 1).el;
+	/* sort */
+	g_sequence_sort (files, fm_list_model_compare_func, model);
+
+	/* generate new order */
+	new_order = g_new (int, length);
+	for (i = 0; i < length; ++i) {
+		new_order[i] = g_sequence_ptr_get_position (old_order[i]);
 	}
-	g_array_index (sort_array, SortTuple, model->details->length - 1).el->next = NULL;
-	model->details->files = g_array_index (sort_array, SortTuple, 0).el;
 
 	/* Let the world know about our new order */
-	new_order = g_new (int, model->details->length);
-	for (i = 0; i < model->details->length; i++) {
-		new_order[i] = g_array_index (sort_array, SortTuple, i).offset;
-	}
 	path = gtk_tree_path_new ();
-	iter.stamp = model->details->stamp;
-	iter.user_data = NULL;
 
+	g_assert (new_order != NULL);
 	gtk_tree_model_rows_reordered (GTK_TREE_MODEL (model),
 				       path, NULL, new_order);
+
 	gtk_tree_path_free (path);
+	g_free (old_order);
 	g_free (new_order);
-	g_array_free (sort_array, TRUE);
 }
+
 
 static gboolean
 fm_list_model_get_sort_column_id (GtkTreeSortable *sortable,
@@ -471,15 +478,19 @@ fm_list_model_get_sort_column_id (GtkTreeSortable *sortable,
 				  GtkSortType     *order)
 {
 	FMListModel *model;
-
+	int id;
+	
 	model = (FMListModel *)sortable;
-
-	if (model->details->sort_column_id == -1) {
+	
+	id = fm_list_model_get_sort_column_id_from_attribute 
+		(model, model->details->sort_attribute);
+	
+	if (id == -1) {
 		return FALSE;
 	}
-
+	
 	if (sort_column_id != NULL) {
-		*sort_column_id = model->details->sort_column_id;
+		*sort_column_id = id;
 	}
 
 	if (order != NULL) {
@@ -496,18 +507,14 @@ fm_list_model_set_sort_column_id (GtkTreeSortable *sortable, gint sort_column_id
 
 	model = (FMListModel *)sortable;
 
-	if ((model->details->sort_column_id == sort_column_id) &&
-	    (model->details->order == order)) {
-		return;
-	}
+	g_free (model->details->sort_attribute);
+	model->details->sort_attribute = fm_list_model_get_attribute_from_sort_column_id (model, sort_column_id);
 
-	model->details->sort_column_id = sort_column_id;
 	model->details->order = order;
 
 	fm_list_model_sort (model);
 	gtk_tree_sortable_sort_column_changed (sortable);
 }
-
 
 static gboolean
 fm_list_model_has_default_sort_func (GtkTreeSortable *sortable)
@@ -564,7 +571,7 @@ each_path_get_data_binder (NautilusDragEachSelectedItemDataGet data_get,
 				uri = nautilus_file_get_uri (file);
 				
 				(*data_get) (uri, 
-					     cell_area.x - info->model->details->drag_begin_x,
+					     0,
 					     cell_area.y - info->model->details->drag_begin_y,
 					     cell_area.width, cell_area.height, 
 					     data);
@@ -624,65 +631,22 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	GSList *list, *tmp, *tmp_prev;
-	NautilusFile *file1;
-	int result;
+	GSequencePtr new_ptr;
 	
 	/* We may only add each file once. */
-	if (fm_list_model_get_tree_iter_from_file (model, file, NULL) == TRUE) {
+	if (fm_list_model_get_tree_iter_from_file (model, file, NULL)) {
 		return;
 	}
 
-	tmp_prev = NULL;
+	nautilus_file_ref (file);
 	
-	list = g_slist_alloc ();
-	list->data = nautilus_file_ref (file);
+	new_ptr = g_sequence_insert_sorted (model->details->files, file,
+					    fm_list_model_compare_func, model);
+
+	g_hash_table_insert (model->details->reverse_map, file, new_ptr);
 	
 	iter.stamp = model->details->stamp;
-	iter.user_data = list;
-
-	if (model->details->tail == NULL) {
-		model->details->files = iter.user_data;
-		model->details->tail = iter.user_data;
-	}
-	else {
-		for (tmp = model->details->files; tmp; tmp = tmp->next) {
-			file1 = tmp->data;
-
-			result = nautilus_file_compare_for_sort (file, file1,
-								 fm_list_model_get_sort_type_from_sort_column_id (model->details->sort_column_id),
-								 model->details->sort_directories_first,
-								 (model->details->order == GTK_SORT_DESCENDING));
-			if (result < 0) {
-				break;
-			}
-
-			tmp_prev = tmp;
-		}
-
-		if (tmp != NULL) {
-			if (tmp == model->details->files) {
-				list->next = model->details->files;
-				model->details->files = list;
-			}
-			else {
-				list->next = tmp;
-			}
-		}
-
-		if (tmp_prev != NULL) {
-			if (tmp_prev == model->details->tail) {
-				model->details->tail->next = list;
-				model->details->tail = list;
-			}
-			else {
-				tmp_prev->next = list;
-			}
-		}
-
-	}
-
-	model->details->length += 1;
+	iter.user_data = new_ptr;
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
 	gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, &iter);
@@ -694,21 +658,19 @@ fm_list_model_file_changed (FMListModel *model, NautilusFile *file)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	GSList *list;
+	GSequencePtr ptr;
 
-	for (list = model->details->files; list; list = list->next) {
-		if (list->data == file) {
-			break;
-		}
-	}
-
-	if (list == NULL) {
+	ptr = g_hash_table_lookup (model->details->reverse_map, file);
+	if (!ptr) {
 		return;
 	}
-	
-	iter.stamp = model->details->stamp;
-	iter.user_data = list;
-	
+
+	g_sequence_ptr_sort_changed (ptr, fm_list_model_compare_func, model);
+
+	if (!fm_list_model_get_tree_iter_from_file (model, file, &iter)) {
+		return;
+	}
+
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
 	gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
 	gtk_tree_path_free (path);
@@ -717,64 +679,32 @@ fm_list_model_file_changed (FMListModel *model, NautilusFile *file)
 gboolean
 fm_list_model_is_empty (FMListModel *model)
 {
-	return model->details->length == 0;
+	return (g_sequence_get_length (model->details->files) == 0);
 }
 
-static GSList *
-remove_link_saving_prev (GSList *list, GSList *link, GSList **prevp)
+guint
+fm_list_model_get_length (FMListModel *model)
 {
-	GSList *node;
-	GSList *prev;
-	
-	prev = NULL;
-
-	for (node = list; node; node = node->next) {
-		if (node == link) {
-			if (prev != NULL) {
-				prev->next = link->next;
-			}
-			
-			if (list == link) {
-				list = list->next;
-			}
-			
-			link->next = NULL;
-			break;
-		}
-
-		prev = node;
-	}
-
-	*prevp = prev;
-
-	return list;
+	return g_sequence_get_length (model->details->files);
 }
+
 
 static void
 fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 {
+	GSequencePtr ptr;
 	GtkTreePath *path;
-	GSList *prev;
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
-	nautilus_file_unref (NAUTILUS_FILE (G_SLIST (iter->user_data)->data));
-	
-	prev = NULL;
-	model->details->files = remove_link_saving_prev (model->details->files,
-							 iter->user_data,
-							 &prev);
-	model->details->length -= 1;
+	ptr = iter->user_data;
 
-	if (iter->user_data == model->details->tail) {
-		model->details->tail = prev;
-	}
+	g_hash_table_remove (model->details->reverse_map, g_sequence_ptr_get_data (ptr));
+	g_sequence_remove (ptr);
 
 	model->details->stamp++;
-
 	
 	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 	gtk_tree_path_free (path);
-
 }
 
 void
@@ -794,11 +724,28 @@ fm_list_model_clear (FMListModel *model)
 
 	g_return_if_fail (model != NULL);
 
-	while (model->details->files != NULL) {
+	while (g_sequence_get_length (model->details->files) > 0) {
 		iter.stamp = model->details->stamp;
-		iter.user_data = model->details->files;
+		iter.user_data = g_sequence_get_begin_ptr (model->details->files);
 		fm_list_model_remove (model, &iter);
 	}
+}
+
+NautilusFile *
+fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path)
+{
+	NautilusFile *file;
+	GtkTreeIter iter;
+
+	file = NULL;
+	if (gtk_tree_model_get_iter (GTK_TREE_MODEL (model), 
+				     &iter, path)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (model), 
+				    &iter, 
+				    FM_LIST_MODEL_FILE_COLUMN, &file,
+				    -1);
+	}
+	return file;
 }
 
 void
@@ -813,7 +760,8 @@ fm_list_model_set_should_sort_directories_first (FMListModel *model, gboolean so
 }
 
 int
-fm_list_model_get_sort_column_id_from_attribute (const char *attribute)
+fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
+						 const char *attribute)
 {
 	guint i;
 
@@ -821,67 +769,51 @@ fm_list_model_get_sort_column_id_from_attribute (const char *attribute)
 		return -1;
 	}
 
-	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
-		if (strcmp (attributes[i].attribute_name, attribute) == 0) {
-			return attributes[i].sort_column_id;
-		}
+	/* Hack - the preferences dialog sets modification_date for some 
+	 * rather than date_modified for some reason.  Make sure that 
+	 * works. */
+	if (!strcmp (attribute, "modification_date")) {
+		attribute = "date_modified";
 	}
 
+	for (i = 0; i < model->details->columns->len; i++) {
+		NautilusColumn *column;
+		char *column_attribute;
+		
+		column = 
+			NAUTILUS_COLUMN (model->details->columns->pdata[i]);
+		g_object_get (G_OBJECT (column), 
+			      "attribute", &column_attribute, 
+			      NULL);
+		if (!strcmp (column_attribute, attribute)) {
+			g_free (column_attribute);
+			return FM_LIST_MODEL_NUM_COLUMNS + i;
+		}
+		g_free (column_attribute);
+	}
+	
 	return -1;
 }
 
 char *
-fm_list_model_get_attribute_from_sort_column_id (int sort_column_id)
+fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
+						 int sort_column_id)
 {
-	guint i;
+	NautilusColumn *column;
+	int index;
+	char *attribute;
+	
+	index = sort_column_id - FM_LIST_MODEL_NUM_COLUMNS;
 
-	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
-		if (attributes[i].sort_column_id == sort_column_id) {
-			return g_strdup (attributes[i].attribute_name);
-		}
+	if (index < 0 || index >= model->details->columns->len) {
+		g_warning ("unknown sort column id: %d", sort_column_id);
+		return NULL;
 	}
 
-	g_warning ("unknown sort column id: %d", sort_column_id);
-	return g_strdup ("name");
-}
+	column = NAUTILUS_COLUMN (model->details->columns->pdata[index]);
+	g_object_get (G_OBJECT (column), "attribute", &attribute, NULL);
 
-int
-fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
-{
-	switch (sort_type) {
-	case NAUTILUS_FILE_SORT_NONE:
-		return -1;
-	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
-		return FM_LIST_MODEL_NAME_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_TYPE:
-		return FM_LIST_MODEL_TYPE_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_SIZE:
-		return FM_LIST_MODEL_SIZE_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_MTIME:
-		return FM_LIST_MODEL_DATE_MODIFIED_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
-	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
-		break;
-	}
-
-	g_return_val_if_reached (-1);
-}
-
-NautilusFileSortType
-fm_list_model_get_sort_type_from_sort_column_id (int sort_column_id)
-{
-	switch (sort_column_id) {
-	case FM_LIST_MODEL_NAME_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
-	case FM_LIST_MODEL_TYPE_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_TYPE;
-	case FM_LIST_MODEL_SIZE_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_SIZE;
-	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_MTIME;
-	}
-
-	g_return_val_if_reached (NAUTILUS_FILE_SORT_NONE);
+	return attribute;
 }
 
 NautilusZoomLevel
@@ -930,6 +862,52 @@ fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level)
 	g_return_val_if_reached (FM_LIST_MODEL_STANDARD_ICON_COLUMN);
 }
 
+NautilusZoomLevel
+fm_list_model_get_zoom_level_from_emblem_column_id (int column)
+{
+	switch (column) {
+	case FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	case FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALLER;
+	case FM_LIST_MODEL_SMALL_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALL;
+	case FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_STANDARD;
+	case FM_LIST_MODEL_LARGE_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGE;
+	case FM_LIST_MODEL_LARGER_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGER;
+	case FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGEST;
+	}
+
+	g_return_val_if_reached (NAUTILUS_ZOOM_LEVEL_STANDARD);
+}
+
+int
+fm_list_model_get_emblem_column_id_from_zoom_level (NautilusZoomLevel zoom_level)
+{
+	switch (zoom_level) {
+	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+		return FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_SMALLER:
+		return FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_SMALL:
+		return FM_LIST_MODEL_SMALL_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_STANDARD:
+		return FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGE:
+		return FM_LIST_MODEL_LARGE_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGER:
+		return FM_LIST_MODEL_LARGER_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGEST:
+		return FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN;
+	}
+
+	g_return_val_if_reached (FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN);
+}
+
 void
 fm_list_model_set_drag_view (FMListModel *model,
 			     GtkTreeView *view,
@@ -953,6 +931,69 @@ fm_list_model_get_drag_types (GtkTargetEntry **entries,
 	*num_entries = G_N_ELEMENTS (drag_types);
 }
 
+int               
+fm_list_model_add_column (FMListModel *model,
+			  NautilusColumn *column)
+{
+	g_ptr_array_add (model->details->columns, column);
+	g_object_ref (column);
+
+	return FM_LIST_MODEL_NUM_COLUMNS + (model->details->columns->len - 1);
+}
+
+int
+fm_list_model_get_column_number (FMListModel *model,
+				 const char *column_name)
+{
+	int i;
+
+	for (i = 0; i < model->details->columns->len; i++) {
+		NautilusColumn *column;
+		char *name;
+		
+		column = model->details->columns->pdata[i];
+
+		g_object_get (G_OBJECT (column), "name", &name, NULL);
+
+		if (!strcmp (name, column_name)) {
+			g_free (name);
+			return FM_LIST_MODEL_NUM_COLUMNS + i;
+		}
+		g_free (name);
+	}
+
+	return -1;
+}
+
+static void
+fm_list_model_dispose (GObject *object)
+{
+	FMListModel *model;
+	int i;
+
+	model = FM_LIST_MODEL (object);
+
+	if (model->details->columns) {
+		for (i = 0; i < model->details->columns->len; i++) {
+			g_object_unref (model->details->columns->pdata[i]);
+		}
+		g_ptr_array_free (model->details->columns, TRUE);
+		model->details->columns = NULL;
+	}
+
+	if (model->details->files) {
+		g_sequence_free (model->details->files);
+		model->details->files = NULL;
+	}
+	
+	if (model->details->reverse_map) {
+		g_hash_table_destroy (model->details->reverse_map);
+		model->details->reverse_map = NULL;
+	}
+	
+	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+}
+
 static void
 fm_list_model_finalize (GObject *object)
 {
@@ -960,6 +1001,7 @@ fm_list_model_finalize (GObject *object)
 
 	model = FM_LIST_MODEL (object);
 
+	g_free (model->details->sort_attribute);
 	g_free (model->details);
 	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -969,8 +1011,11 @@ static void
 fm_list_model_init (FMListModel *model)
 {
 	model->details = g_new0 (FMListModelDetails, 1);
+	model->details->files = g_sequence_new ((GDestroyNotify)nautilus_file_unref);
+	model->details->reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 	model->details->stamp = g_random_int ();
-	model->details->sort_column_id = -1;
+	model->details->sort_attribute = NULL;
+	model->details->columns = g_ptr_array_new ();
 }
 
 static void
@@ -982,6 +1027,7 @@ fm_list_model_class_init (FMListModelClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->finalize = fm_list_model_finalize;
+	object_class->dispose = fm_list_model_dispose;
 }
 
 static void

@@ -43,6 +43,7 @@
 #include <eel/eel-self-checks.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkiconfactory.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-init.h>
@@ -126,12 +127,50 @@ nautilus_main_event_loop_quit (void)
 	}
 }
 
+static void
+register_icons (void)
+{
+	GtkIconTheme *icon_theme;
+	GtkIconInfo *info;
+	const char *icon;
+	GtkIconSource *source;
+	GtkIconSet *set;
+	GtkIconFactory *factory;
+
+	icon_theme = nautilus_icon_factory_get_icon_theme ();
+	info = gtk_icon_theme_lookup_icon (icon_theme, "gnome-fs-client", 48,
+					   0);
+	if (info != NULL) {
+		icon = gtk_icon_info_get_filename (info);
+		factory = gtk_icon_factory_new ();
+		gtk_icon_factory_add_default (factory);
+		
+		source = gtk_icon_source_new ();
+		gtk_icon_source_set_filename (source, icon);
+		
+		set = gtk_icon_set_new ();
+		gtk_icon_set_add_source (set, source);
+
+		gtk_icon_factory_add (factory, "gnome-fs-client", set);
+		gtk_icon_set_unref (set);
+		
+		gtk_icon_source_free (source);
+
+		gtk_icon_info_free (info);
+		g_object_unref (factory);
+	}
+	
+	g_object_unref (icon_theme);
+	
+}
+
 int
 main (int argc, char *argv[])
 {
 	gboolean kill_shell;
 	gboolean restart_shell;
 	gboolean no_default_window;
+	gboolean browser_window;
 	gboolean no_desktop;
 	char *geometry;
 	gboolean perform_self_check;
@@ -154,6 +193,8 @@ main (int argc, char *argv[])
 		  N_("Only create windows for explicitly specified URIs."), NULL },
 		{ "no-desktop", '\0', POPT_ARG_NONE, NULL, 0,
 		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
+		{ "browser", '\0', POPT_ARG_NONE, NULL, 0,
+		  N_("open a browser window."), NULL },
 		{ "quit", 'q', POPT_ARG_NONE, NULL, 0,
 		  N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, NULL, 0,
@@ -168,6 +209,7 @@ main (int argc, char *argv[])
 	options[i++].arg = &geometry;
 	options[i++].arg = &no_default_window;
 	options[i++].arg = &no_desktop;
+	options[i++].arg = &browser_window;
 	options[i++].arg = &kill_shell;
 	options[i++].arg = &restart_shell;
 
@@ -187,6 +229,7 @@ main (int argc, char *argv[])
 	no_desktop = FALSE;
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
+	browser_window = FALSE;
 
 	g_set_application_name (_("File Manager"));
 	
@@ -196,6 +239,8 @@ main (int argc, char *argv[])
 				      GNOME_PARAM_POPT_TABLE, options,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
 				      NULL);
+
+	register_icons ();
 	
 	/* Need to set this to the canonical DISPLAY value, since
 	   thats where we're registering per-display components */
@@ -211,7 +256,9 @@ main (int argc, char *argv[])
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
 	if (perform_self_check && args != NULL) {
-		fprintf (stderr, _("nautilus: --check cannot be used with URIs.\n"));
+		/* translators: %s is an option (e.g. --check) */
+		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
+			"--check");
 		return EXIT_FAILURE;
 	}
 	if (perform_self_check && (kill_shell || restart_shell)) {
@@ -219,11 +266,13 @@ main (int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	if (kill_shell && args != NULL) {
-		fprintf (stderr, _("nautilus: --quit cannot be used with URIs.\n"));
+		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
+			"--quit");
 		return EXIT_FAILURE;
 	}
 	if (restart_shell && args != NULL) {
-		fprintf (stderr, _("nautilus: --restart cannot be used with URIs.\n"));
+		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
+			"--restart");
 		return EXIT_FAILURE;
 	}
 	if (geometry != NULL && args != NULL && args[0] != NULL && args[1] != NULL) {
@@ -242,7 +291,7 @@ main (int argc, char *argv[])
 	 * defaults are available before any preference peeking 
 	 * happens.
 	 */
-	nautilus_global_preferences_init_with_folder_browsing ();
+	nautilus_global_preferences_init ();
 	if (no_desktop) {
 		eel_preferences_set_is_invisible
 			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
@@ -252,6 +301,8 @@ main (int argc, char *argv[])
 	
 	bonobo_activate (); /* do now since we need it before main loop */
 
+	application = NULL;
+ 
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
@@ -274,17 +325,25 @@ main (int argc, char *argv[])
 			(application,
 			 kill_shell, restart_shell, no_default_window, no_desktop,
 			 !(kill_shell || restart_shell),
+			 browser_window,
 			 geometry,
 			 args);
 		if (is_event_loop_needed ()) {
 			gtk_main ();
 		}
-		bonobo_object_unref (application);
 	}
 
 	poptFreeContext (popt_context);
 
 	gnome_vfs_shutdown ();
+
+	/* This has to be done after gnome_vfs_shutdown, because shutdown
+	 * can call pending completion callbacks which reference application.
+	 */
+	if (application != NULL) {
+		bonobo_object_unref (application);
+	}
+
 	eel_debug_shut_down ();
 	bonobo_ui_debug_shutdown ();
 

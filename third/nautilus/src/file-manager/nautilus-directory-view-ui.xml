@@ -16,10 +16,13 @@
          _label="_Empty Trash"
 	 _tip="Delete all items in the Trash"/>
 	<cmd name="New Folder"
-         _label="_New Folder"
+         _label="Create _Folder"
 	 _tip="Create a new empty folder inside this folder"/>
+	<cmd name="New Empty File"
+         _label="_Empty File"
+	 _tip="Create a new empty file inside this folder"/>
         <cmd name="New Launcher"
-         _label="New L_auncher"
+         _label="Create L_auncher"
          _tip="Create a new launcher"/>
         <cmd name="Edit Launcher"
          _label="Edit Launcher"
@@ -28,17 +31,17 @@
          _label="_Open"
 	 _tip="Open the selected item in this window"/>
 	<cmd name="OpenAlternate"
-         _label="Open _in New Window"
-	 _tip="Open each selected item in a new window"/>
+         _label="Open in Navigation Window"
+	 _tip="Open each selected item in a navigation window"/>
 	<cmd name="Open Scripts Folder"
          _label="_Open Scripts Folder"
 	 _tip="Show the folder containing the scripts that appear in this menu"/>
 	<cmd name="OtherApplication"
-         _label="Other _Application..."
+         _label="Open with Other _Application..."
 	 _tip="Choose another application with which to open the selected item"/>
-	<cmd name="OtherViewer"
-         _label="Other _Viewer..."
-	 _tip="Choose another viewer with which to view the selected item"/>
+	<cmd name="Show Hidden Files"
+         _label="Show _Hidden Files"
+	 _tip="Toggles the display of hidden files in the current window"/>
 	<cmd name="Reset to Defaults"
          _label="Reset View to _Defaults"
 	 _tip="Reset sorting order and zoom level to match preferences for this view"/>
@@ -54,15 +57,39 @@
 	<cmd name="Paste Files"
          _label="_Paste Files"
 	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command"/>
+	<cmd name="Paste Files Into"
+         _label="_Paste Files Into Folder"
+	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command into the selected folder"/>
 	<cmd name="Select All"
          _label="Select _All Files"
 	 _tip="Select all items in this window"/>
+	<cmd name="Select Pattern"
+         _label="Select _Pattern"
+	 _tip="Select items in this window matching a given pattern"/>
 	<cmd name="Properties"
          _label="_Properties"
 	 _tip="View or modify the properties of each selected item"/>
 	<cmd name="Trash"
          _label="Mo_ve to Trash"
 	 _tip="Move each selected item to the Trash"/>
+	<cmd name="Unmount Volume Conditional"
+         _label="_Unmount Volume"
+         _tip="Unmount the selected volume"/>
+	<cmd name="Mount Volume Conditional"
+         _label="_Mount Volume"
+         _tip="Mount the selected volume"/>
+        <cmd name="Format Conditional"
+         _label="_Format"
+         _tip="Format the selected volume"/>
+        <cmd name="Protect Conditional"
+         _label="Prot_ect"
+         _tip="Protect the selected volume"/>
+        <cmd name="Media Properties Conditional"
+         _label="Medi_a Properties"
+         _tip="Show media properties for the selected volume"/>
+        <cmd name="Connect To Server Link Conditional"
+         _label="Connect To This Server"
+         _tip="Make a permanent connection to this server"/>
 </commands>
 <keybindings>
 	<accel name="*Control*BackSpace" verb="Trash"/>
@@ -71,6 +98,8 @@
 	<accel name="Delete" verb="Trash"/>
 	<accel name="*Shift*KP_Delete" verb="Delete"/>
         <accel name="*Alt*Down" verb="Open"/>
+        <accel name="*Alt**Shift*Down" verb="OpenCloseParent"/>
+	<accel name="*Control*i" verb="Properties"/>
 </keybindings>
 <menu>
 	<submenu name="File">
@@ -79,6 +108,16 @@
 			<menuitem name="New Folder"
 			  	  accel="*Shift**Control*n"
 				  verb="New Folder"/>
+			<submenu name="New Documents"
+				 _label="Create _Document">
+			         <menuitem name="No Templates"
+                                       _label="No templates Installed"
+                                       sensitive="0"/>
+				 <placeholder name="New Documents Placeholder" delimit="none"/>
+				 <separator name="After New Documents"/>
+				 <menuitem name="New Empty File" 
+				 	   verb="New Empty File"/>
+			</submenu>
 			<menuitem name="New Launcher"
 				  pixtype="stock" pixname="gtk-new"
 				  verb="New Launcher"/>
@@ -91,17 +130,19 @@
 			<menuitem name="OpenAlternate"
 				  accel="*Control**Shift*o"
 				  verb="OpenAlternate"/>
+			<placeholder name="Applications Placeholder" delimit="top"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 _tip="Choose a program with which to open the selected item">
 				<placeholder name="Applications Placeholder" delimit="none"/>
+				<separator/>
 				<menuitem name="OtherApplication"
 					  verb="OtherApplication"/>
-				<separator/>
-				<placeholder name="Viewers Placeholder" delimit="none"/>
-				<menuitem name="OtherViewer"
-					  verb="OtherViewer"/>
 			</submenu>
+			<placeholder name="OtherApplicationPlaceholder">
+				<menuitem name="OtherApplication"
+					  verb="OtherApplication"/>
+			</placeholder>
 			<menuitem name="Edit Launcher"
 				  verb="Edit Launcher"/>
 			<submenu name="Scripts"
@@ -117,7 +158,7 @@
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Properties"
                                   pixtype="stock" pixname="gtk-properties"
-				  accel="*Control*i"
+				  accel="*Alt*Return"
 				  verb="Properties"/>
 		</placeholder>
 		<placeholder name="Global File Items Placeholder">
@@ -139,9 +180,15 @@
 			  accel="*Control*v"
 			  pixtype="stock" pixname="gtk-paste"
 			  verb="Paste Files"/>
+
+		<placeholder name="Select Items">
 		<menuitem name="Select All"
 			  accel="*Control*a"
 			  verb="Select All"/>
+		<menuitem name="Select Pattern"
+			  accel="*Control*s"
+			  verb="Select Pattern"/>
+		</placeholder>
 
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Duplicate"
@@ -162,25 +209,41 @@
 				  accel="*Shift*Delete"
 				  verb="Delete"/>
 		</placeholder>
+
+		<placeholder name="Extension Actions"/>
 	</submenu>
 
 	<submenu name="View">
 		<placeholder name="View Preferences Placeholder">
 			<menuitem name="Reset to Defaults"
 				  verb="Reset to Defaults"/>
+			<menuitem name="Show Hidden Files"
+				  type="toggle"	
+				  accel="*Control*h"
+				  verb="Show Hidden Files"/>
 		</placeholder>
 	</submenu>
 </menu>
 <popups>
 	<popup name="background">
 		<placeholder name="Before Zoom Items">
-			<placeholder name="New Items">
+			<placeholder name="New Object Items">
 				<menuitem name="New Folder" 
 				 verb="New Folder"/>
 				<menuitem name="New Launcher"
 				 pixtype="stock" pixname="gtk-new"
 				 verb="New Launcher"/>
 			</placeholder>
+			<submenu name="New Documents"
+				 _label="Create _Document">
+			         <menuitem name="No Templates"
+                                       _label="No templates Installed"
+                                       sensitive="0"/>
+				 <placeholder name="New Documents Placeholder" delimit="none"/>
+				 <separator name="After New Documents"/>
+				 <menuitem name="New Empty File" 
+				 	   verb="New Empty File"/>
+			</submenu>
                         <submenu name="Scripts"
 				 _label="_Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts"
@@ -191,12 +254,6 @@
 			</submenu>
 			<placeholder name="View Items" delimit="top"/>
 			<placeholder name="File Clipboard Actions" delimit="top">
-				<menuitem name="Cut Files" 
-				 pixtype="stock" pixname="gtk-cut"
-				 verb="Cut Files"/>
-				<menuitem name="Copy Files" 
-				 pixtype="stock" pixname="gtk-copy"
-				 verb="Copy Files"/>
 				<menuitem name="Paste Files" 
 				 pixtype="stock" pixname="gtk-paste"
 				 verb="Paste Files"/>
@@ -215,17 +272,20 @@
 			 pixtype="stock" pixname="gtk-open"
 			 verb="Open"/>
 			<menuitem name="OpenAlternate" 
-			 verb="OpenAlternate"/>
+			        verb="OpenAlternate"/>
+			<placeholder name="Applications Placeholder" delimit="top"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 tearoff="0"
 				 _tip="Choose a program with which to open the selected item">
 				<placeholder name="Applications Placeholder" delimit="none"/>
-				<menuitem name="OtherApplication" verb="OtherApplication"/>
 				<separator/>
-				<placeholder name="Viewers Placeholder" delimit="none"/>
-				<menuitem name="OtherViewer" verb="OtherViewer"/>
+				<menuitem name="OtherApplication" verb="OtherApplication"/>
 			</submenu>
+			<placeholder name="OtherApplicationPlaceholder">
+			        <menuitem name="OtherApplication"
+					  verb="OtherApplication"/>
+			</placeholder>
 			<menuitem name="Edit Launcher"
 				  verb="Edit Launcher"/>
 			<submenu name="Scripts"
@@ -245,12 +305,11 @@
 			<menuitem name="Copy Files" 
 			 pixtype="stock" pixname="gtk-copy"
 			 verb="Copy Files"/>
-			<menuitem name="Paste Files" 
+			<menuitem name="Paste Files Into" 
 			 pixtype="stock" pixname="gtk-paste"
-			 verb="Paste Files"/>
+			 verb="Paste Files Into"/>
 		</placeholder>
 		<placeholder name="File Actions" delimit="top">
-			<menuitem name="Duplicate" verb="Duplicate"/>
 			<menuitem name="Create Link" verb="Create Link"/>
 			<menuitem name="Rename" verb="Rename"/>
 		</placeholder>
@@ -260,15 +319,24 @@
 			 verb="Trash"/>
 			<menuitem name="Delete" verb="Delete"/>
 		</placeholder>
+
 		<placeholder name="Icon Appearance Items" delimit="top">
 		</placeholder>
 
-		<placeholder name="Mime Actions" delimit="none"/>
+		<placeholder name="Extension Actions" delimit="top"/>
                 <separator/>
 
                 <menuitem name="Properties"
                           pixtype="stock" pixname="gtk-properties"
                           verb="Properties"/>
+                <placeholder name="Removabel Media Holder" delimit="top">
+                        <menuitem name="Mount Volume" verb="Mount Volume Conditional"/>
+                        <menuitem name="Unmount Volume" verb="Unmount Volume Conditional"/>
+                        <menuitem name="Protect Media" verb="Protect Conditional"/>
+                        <menuitem name="Format Media" verb="Format Conditional"/>
+                        <menuitem name="Media Properties" verb="Media Properties Conditional"/>
+                </placeholder>
+                <menuitem name="Connect To Server Link" verb="Connect To Server Link Conditional"/>
 	</popup>
 </popups>
 </Root>

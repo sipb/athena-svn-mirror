@@ -282,7 +282,7 @@ egg_recent_model_read_raw (EggRecentModel *model, FILE *file)
 
 	rewind (file);
 
-	string = g_string_new ("");
+	string = g_string_new (NULL);
 	while (fgets (buf, EGG_RECENT_MODEL_BUFFER_SIZE, file)) {
 		string = g_string_append (string, buf);
 	}
@@ -857,13 +857,16 @@ static FILE *
 egg_recent_model_open_file (EggRecentModel *model)
 {
 	FILE *file;
+	mode_t prev_umask;
 	
 	file = fopen (model->priv->path, "r+");
 	if (file == NULL) {
 		/* be paranoid */
-		umask (077);
+		prev_umask = umask (077);
 
 		file = fopen (model->priv->path, "w+");
+
+		umask (prev_umask);
 
 		g_return_val_if_fail (file != NULL, NULL);
 	}
@@ -875,11 +878,34 @@ static gboolean
 egg_recent_model_lock_file (FILE *file)
 {
 	int fd;
+	gint	try = 5;
 
 	rewind (file);
 	fd = fileno (file);
 
-	return lockf (fd, F_LOCK, 0) == 0 ? TRUE : FALSE;
+	/* Attempt to lock the file 5 times,
+	 * waiting a random interval (< 1 second) 
+	 * in between attempts.
+	 * We should really be doing asynchronous
+	 * locking, but requires substantially larger
+	 * changes.
+	 */
+	
+	while (try > 0)
+	{
+		int rand_interval;
+
+		if (lockf (fd, F_TLOCK, 0) == 0)
+			return TRUE;
+
+		rand_interval = 1 + (int) (10.0 * rand()/(RAND_MAX + 1.0));
+			 
+           	g_usleep (100000 * rand_interval);
+
+		--try;
+	}
+
+	return FALSE;
 }
 
 static gboolean
@@ -890,7 +916,7 @@ egg_recent_model_unlock_file (FILE *file)
 	rewind (file);
 	fd = fileno (file);
 
-	return lockf (fd, F_ULOCK, 0) < 0 ? FALSE : TRUE;
+	return (lockf (fd, F_ULOCK, 0) == 0) ? TRUE : FALSE;
 }
 
 static void

@@ -36,8 +36,20 @@ gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relati
  */
 char *   nautilus_get_user_directory                 (void);
 char *   nautilus_get_desktop_directory              (void);
+char *   nautilus_get_desktop_directory_uri          (void);
+gboolean nautilus_is_desktop_directory_file_escaped  (char *escaped_dirname,
+						      char *escaped_filename);
+gboolean nautilus_is_desktop_directory_escaped       (char *escaped_dir);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
+
+char *   nautilus_get_templates_directory            (void);
+char *   nautilus_get_templates_directory_uri        (void);
+void     nautilus_create_templates_directory         (void);
+
+/* This function returns something that needs to be freed with g_free,
+ * is not NULL, but is not garaunteed to exist */
+char *   nautilus_get_desktop_directory_uri_no_create (void);
 
 /* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
@@ -56,5 +68,9 @@ char *   nautilus_get_data_file_path                 (const char *partial_path);
 char *   nautilus_unique_temporary_file_name         (void);
 char *   nautilus_find_file_in_gnome_path            (char       *file);
 GList *  nautilus_find_all_files_in_gnome_path       (char       *file);
+
+const char *nautilus_get_vfs_method_display_name (char *method);
+gboolean    nautilus_have_broken_filenames (void);
+char *      nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

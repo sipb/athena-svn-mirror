@@ -44,15 +44,16 @@
 #define EMBLEM_NAME_NOREAD  "emblem-noread"
 #define EMBLEM_NAME_NOWRITE "emblem-nowrite"
 #define EMBLEM_NAME_NOTE    "emblem-note"
+#define EMBLEM_NAME_DESKTOP "emblem-desktop"
 
 GList *
 nautilus_emblem_list_availible (void)
 {
-	GnomeIconTheme *icon_theme;
+	GtkIconTheme *icon_theme;
 	GList *list;
 	
 	icon_theme = nautilus_icon_factory_get_icon_theme ();
-	list = gnome_icon_theme_list_icons (icon_theme, "Emblems");
+	list = gtk_icon_theme_list_icons (icon_theme, "Emblems");
 	g_object_unref (icon_theme);
 	return list;
 }
@@ -60,10 +61,10 @@ nautilus_emblem_list_availible (void)
 void
 nautilus_emblem_refresh_list (void)
 {
-	GnomeIconTheme *icon_theme;
+	GtkIconTheme *icon_theme;
 	
 	icon_theme = nautilus_icon_factory_get_icon_theme ();
-	gnome_icon_theme_rescan_if_needed (icon_theme);
+	gtk_icon_theme_rescan_if_needed (icon_theme);
 	g_object_unref (icon_theme);
 }
 
@@ -98,6 +99,9 @@ is_reserved_keyword (const char *keyword)
 	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_NOTE) == 0) {
 		return TRUE;
 	}
+	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_DESKTOP) == 0) {
+		return TRUE;
+	}
 
 	availible = nautilus_emblem_list_availible ();
 	icon_name = nautilus_emblem_get_icon_name_from_keyword (keyword);
@@ -126,6 +130,9 @@ nautilus_emblem_should_show_in_list (const char *emblem)
 		return FALSE;
 	}
 	if (strcmp (emblem, EMBLEM_NAME_NOTE) == 0) {
+		return FALSE;
+	}
+	if (strcmp (emblem, EMBLEM_NAME_DESKTOP) == 0) {
 		return FALSE;
 	}
 
@@ -181,6 +188,37 @@ emblem_keyword_valid (const char *keyword)
 	return TRUE;
 }
 
+gboolean
+nautilus_emblem_verify_keyword (GtkWindow *parent_window,
+				const char *keyword,
+				const char *display_name)
+{
+	if (keyword == NULL || strlen (keyword) == 0) {
+		eel_show_error_dialog (_("The emblem cannot be installed."),
+				       _("Sorry, but you must specify a non-blank keyword for the new emblem."), 
+				       _("Couldn't Install Emblem"), GTK_WINDOW (parent_window));
+		return FALSE;
+	} else if (!emblem_keyword_valid (keyword)) {
+		eel_show_error_dialog (_("The emblem cannot be installed."),
+				       _("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
+				       _("Couldn't Install Emblem"), GTK_WINDOW (parent_window));
+		return FALSE;
+	} else if (is_reserved_keyword (keyword)) {
+		char *error_string;
+
+		/* this really should never happen, as a user has no idea
+		 * what a keyword is, and people should be passing a unique
+		 * keyword to us anyway
+		 */
+		error_string = g_strdup_printf (_("Sorry, but there is already an emblem named \"%s\"."), display_name);
+		eel_show_error_dialog (_("Please choose a different emblem name."), error_string,
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		g_free (error_string);
+		return FALSE;
+	} 
+
+	return TRUE;
+}
 
 void
 nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
@@ -191,31 +229,14 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 	GnomeVFSURI *vfs_uri;
 	char *path, *dir, *stat_dir;
 	FILE *file;
-	char *error_string;
 	struct stat stat_buf;
 	struct utimbuf ubuf;
 	
 	g_return_if_fail (pixbuf != NULL);
 
-	if (keyword == NULL || strlen (keyword) == 0) {
-		eel_show_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
-				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+	if (!nautilus_emblem_verify_keyword (parent_window, keyword, display_name)) {
 		return;
-	} else if (!emblem_keyword_valid (keyword)) {
-		eel_show_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
-				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
-		return;
-	} else if (is_reserved_keyword (keyword)) {
-		/* this really should never happen, as a user has no idea
-		 * what a keyword is, and people should be passing a unique
-		 * keyword to us anyway
-		 */
-		error_string = g_strdup_printf (_("Sorry, but there is already an emblem named \"%s\".  Please choose a different name for it."), display_name);
-		eel_show_error_dialog (error_string, 
-				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
-		g_free (error_string);
-		return;
-	} 
+	}
 
 	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
 			       g_get_home_dir ());
@@ -233,8 +254,10 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 
 	/* save the image */
 	if (eel_gdk_pixbuf_save_to_file (pixbuf, path) != TRUE) {
-		eel_show_error_dialog (_("Sorry, unable to save custom emblem."), 
-				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		eel_show_error_dialog (_("The emblem cannot be installed."),
+				       _("Sorry, unable to save custom emblem."), 
+				       _("Couldn't Install Emblem"), 
+				       GTK_WINDOW (parent_window));
 		g_free (dir);
 		g_free (stat_dir);
 		g_free (path);
@@ -248,8 +271,9 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 		file = fopen (path, "w+");
 		
 		if (file == NULL) {
-			eel_show_error_dialog (_("Sorry, unable to save custom emblem name."), 
-					       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+			eel_show_error_dialog (_("The emblem cannot be installed."),
+					       _("Sorry, unable to save custom emblem name."), 
+					       _("Couldn't Install Emblem"), GTK_WINDOW (parent_window));
 			g_free (stat_dir);
 			g_free (dir);
 			return;

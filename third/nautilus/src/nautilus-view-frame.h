@@ -35,7 +35,7 @@
 
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-zoomable-frame.h>
-#include <eel/eel-generous-bin.h>
+#include <gtk/gtkhbox.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view-component.h>
 
@@ -48,12 +48,12 @@
 typedef struct NautilusViewFrameDetails NautilusViewFrameDetails;
 
 typedef struct {
-        EelGenerousBin parent;
+        GtkHBox parent;
         NautilusViewFrameDetails *details;
 } NautilusViewFrame;
 
 typedef struct {
-        EelGenerousBinClass parent_spot;
+        GtkHBoxClass parent_spot;
         
         /* These roughly correspond to CORBA calls, but in some cases they are higher level. */
 
@@ -65,12 +65,10 @@ typedef struct {
         void               (* failed)                               (NautilusViewFrame *view);
 
         /* These will only happen after load_underway (guaranteed). */
-        void               (* open_location_in_this_window)         (NautilusViewFrame *view,
-                                                                     const char        *location);
-        void               (* open_location_prefer_existing_window) (NautilusViewFrame *view,
-                                                                     const char        *location);
-        void               (* open_location_force_new_window)       (NautilusViewFrame *view,
+        void               (* open_location)                        (NautilusViewFrame *view,
                                                                      const char        *location,
+                                                                     Nautilus_ViewFrame_OpenMode mode,
+                                                                     Nautilus_ViewFrame_OpenFlags flags,
                                                                      GList             *selection); /* list of char * */
         void               (* report_location_change)               (NautilusViewFrame *view,
                                                                      const char        *location,
@@ -93,12 +91,14 @@ typedef struct {
 	Nautilus_History * (* get_history_list)                     (NautilusViewFrame *view);
         void               (* go_back)                              (NautilusViewFrame *view);
         void               (* close_window)                         (NautilusViewFrame *view);
+        void               (* show_hidden_files_mode_changed)       (NautilusViewFrame *view);
 } NautilusViewFrameClass;
 
 /* basic view management */
 GType              nautilus_view_frame_get_type                  (void);
 NautilusViewFrame *nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
-                                                                  NautilusUndoManager *undo_manager);
+                                                                  NautilusUndoManager *undo_manager,
+                                                                  Nautilus_WindowType  window_type);
 Bonobo_Control	   nautilus_view_frame_get_control		 (NautilusViewFrame   *view);
 
 /* connecting to a Nautilus:View */
@@ -123,6 +123,9 @@ float              nautilus_view_frame_get_max_zoom_level        (NautilusViewFr
 gboolean           nautilus_view_frame_get_has_min_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_has_max_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_is_continuous         (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_can_zoom_in           (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_can_zoom_out          (NautilusViewFrame   *view);
+
 GList *            nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_in                   (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_out                  (NautilusViewFrame   *view);
@@ -134,12 +137,16 @@ void               nautilus_view_frame_scroll_to_file            (NautilusViewFr
                                                                   const char          *uri);
 
 /* Other. */
-gboolean           nautilus_view_frame_get_is_view_loaded        (NautilusViewFrame   *view);
-const char *       nautilus_view_frame_get_view_iid              (NautilusViewFrame   *view);
-gboolean           nautilus_view_frame_get_is_zoomable           (NautilusViewFrame   *view);
-char *             nautilus_view_frame_get_title                 (NautilusViewFrame   *view);
-char *             nautilus_view_frame_get_label                 (NautilusViewFrame   *view);
-void               nautilus_view_frame_set_label                 (NautilusViewFrame   *view,
-                                                                  const char          *label);
+gboolean                        nautilus_view_frame_get_is_view_loaded                  (NautilusViewFrame   		*view);
+const char *                    nautilus_view_frame_get_view_iid                        (NautilusViewFrame   		*view);
+gboolean                        nautilus_view_frame_get_is_zoomable                     (NautilusViewFrame   		*view);
+Nautilus_ShowHiddenFilesMode    nautilus_view_frame_get_show_hidden_files_mode          (NautilusViewFrame   		*view);
+void                            nautilus_view_frame_set_show_hidden_files_mode          (NautilusViewFrame   		*viev,
+                                                                                         Nautilus_ShowHiddenFilesMode 	mode,
+                                                                                         gboolean                        signal);
+char *                          nautilus_view_frame_get_title                           (NautilusViewFrame   		*view);
+char *                          nautilus_view_frame_get_label                           (NautilusViewFrame   		*view);
+void                            nautilus_view_frame_set_label                           (NautilusViewFrame   		*view,
+                                                                                         const char          		*label);
 
 #endif /* NAUTILUS_VIEW_FRAME_H */

@@ -5,8 +5,8 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Emblem-Sidebar\"	\
 	-DDATADIR=\""$(datadir)"\" \
 	-I$(top_srcdir)					\
-	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(EMBLEM_COMPONENT_CFLAGS)			\
+	$(DISABLE_DEPRECATED_CFLAGS)                    \
 	$(NULL)
 
 EMBLEM_VIEW_COMMON_SOURCES =			\
@@ -21,7 +21,7 @@ bonobo_LTLIBRARIES = libnautilus-emblem-view.la
 libnautilus_emblem_view_la_SOURCES = $(EMBLEM_VIEW_COMMON_SOURCES) \
 					libmain.c 
 
-libnautilus_emblem_view_la_LDFLAGS = -module -avoid-version
+libnautilus_emblem_view_la_LDFLAGS = -module -avoid-version -no-undefined
 
 libnautilus_emblem_view_la_LIBADD =               \
 	$(top_builddir)/libnautilus/libnautilus.la	\
@@ -38,3 +38,4 @@ $(server_in_files:.server.in.in=.server.in): $(server_in_files)
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST = $(server_in_files)
+CLEANFILES = $(server_DATA) $(server_DATA).in

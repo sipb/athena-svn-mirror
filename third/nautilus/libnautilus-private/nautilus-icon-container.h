@@ -61,6 +61,13 @@ typedef enum {
 	NAUTILUS_ICON_LAYOUT_T_B_R_L
 } NautilusIconLayoutMode;
 
+typedef enum {
+	NAUTILUS_ICON_LABEL_POSITION_UNDER,
+	NAUTILUS_ICON_LABEL_POSITION_BESIDE
+} NautilusIconLabelPosition;
+
+#define	NAUTILUS_ICON_CONTAINER_TYPESELECT_FLUSH_DELAY 1000000
+
 typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
 
 typedef struct {
@@ -81,6 +88,8 @@ typedef struct {
 
 	/* Operations on icons. */
 	void         (* activate)	  	  (NautilusIconContainer *container,
+						   NautilusIconData *data);
+	void         (* activate_alternate)       (NautilusIconContainer *container,
 						   NautilusIconData *data);
 	void         (* context_click_selection)  (NautilusIconContainer *container,
 						   GdkEventButton *event);
@@ -109,11 +118,14 @@ typedef struct {
 						   NautilusIconData *data,
 						   GList **emblem_icons,
 						   char **embedded_text,
-						   gboolean *embedded_text_needs_loading);
+						   gboolean *embedded_text_needs_loading,
+						   gboolean *has_window_open);
 	void         (* get_icon_text)            (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   char **editable_text,
 						   char **additional_text);
+	char *       (* get_icon_description)     (NautilusIconContainer *container,
+						   NautilusIconData *data);
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
@@ -182,6 +194,7 @@ GtkWidget *       nautilus_icon_container_new                           (void);
 void              nautilus_icon_container_clear                         (NautilusIconContainer  *view);
 gboolean          nautilus_icon_container_add                           (NautilusIconContainer  *view,
 									 NautilusIconData       *data);
+void              nautilus_icon_container_layout_now                    (NautilusIconContainer *container);
 gboolean          nautilus_icon_container_remove                        (NautilusIconContainer  *view,
 									 NautilusIconData       *data);
 void              nautilus_icon_container_for_each                      (NautilusIconContainer  *view,
@@ -204,8 +217,14 @@ void              nautilus_icon_container_set_auto_layout               (Nautilu
 gboolean          nautilus_icon_container_is_tighter_layout             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_tighter_layout            (NautilusIconContainer  *container,
 									 gboolean                tighter_layout);
+
+gboolean          nautilus_icon_container_is_keep_aligned               (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_keep_aligned              (NautilusIconContainer  *container,
+									 gboolean                keep_aligned);
 void              nautilus_icon_container_set_layout_mode               (NautilusIconContainer  *container,
 									 NautilusIconLayoutMode  mode);
+void              nautilus_icon_container_set_label_position            (NautilusIconContainer  *container,
+									 NautilusIconLabelPosition pos);
 void              nautilus_icon_container_sort                          (NautilusIconContainer  *container);
 void              nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer  *container);
 
@@ -252,5 +271,7 @@ void              nautilus_icon_container_set_margins                   (Nautilu
 									 int                     bottom_margin);
 void              nautilus_icon_container_set_use_drop_shadows          (NautilusIconContainer  *container,
 									 gboolean                use_drop_shadows);
+char*             nautilus_icon_container_get_icon_description          (NautilusIconContainer  *container,
+                                                                         NautilusIconData       *data);
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

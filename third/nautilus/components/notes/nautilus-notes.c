@@ -46,6 +46,7 @@
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-view-standard-main.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
 
 /* FIXME bugzilla.gnome.org 44436: 
  * Undo not working in notes-view.
@@ -59,7 +60,7 @@
 /* property bag getting and setting routines */
 enum {
 	TAB_IMAGE,
-	NOTES_URI,
+	NOTES_URI
 };
 
 typedef struct {
@@ -117,8 +118,11 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 			gpointer callback_data)
 {
 	if (arg_id == NOTES_URI) {
+                CORBA_sequence_CORBA_string *uris;
+                
+                uris = arg->_value;
 		notes_load_location (NULL,
-				     BONOBO_ARG_GET_STRING (arg),
+				     uris->_buffer[0],
 				     (Notes *)callback_data);
 	}
 }
@@ -210,8 +214,8 @@ done_with_file (Notes *notes)
 static void
 notes_load_metainfo (Notes *notes)
 {
-        GList *attributes;
-
+        NautilusFileAttributes attributes;
+        
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
 
@@ -221,15 +225,13 @@ notes_load_metainfo (Notes *notes)
 		return;
         }
 
-        attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+        attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
         nautilus_file_monitor_add (notes->file, notes, attributes);
 
 	if (nautilus_file_check_if_ready (notes->file, attributes)) {
 		load_note_text_from_metadata (notes->file, notes);
 	}
 	
-        g_list_free (attributes);
-        
 	g_signal_connect (notes->file, "changed",
                           G_CALLBACK (load_note_text_from_metadata), notes);
 }
@@ -407,8 +409,8 @@ make_notes_view ()
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), BONOBO_OBJREF (notes->property_bag), NULL);
 	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 "image indicating that a note is present", 0);
-	bonobo_property_bag_add (notes->property_bag, "URI",
-				 NOTES_URI, BONOBO_ARG_STRING,
+	bonobo_property_bag_add (notes->property_bag, "uris",
+				 NOTES_URI, TC_CORBA_sequence_CORBA_string,
 				 NULL, "URI of selected file", 0);
         /* handle events */
         g_signal_connect (notes->view, "load_location",
@@ -433,6 +435,23 @@ make_notes_view ()
         return BONOBO_OBJECT (notes->view);
 }
 
+static gboolean shortcut_registered = FALSE;
+
+static CORBA_Object
+create_object (const char *iid,
+	       gpointer callback_data)
+{
+	BonoboObject *view;
+
+	if (strcmp (iid, VIEW_IID) != 0) {
+		return CORBA_OBJECT_NIL;
+	}
+
+	view = make_notes_view ();
+
+	return CORBA_Object_duplicate (BONOBO_OBJREF (view), NULL);
+}
+
 
 static CORBA_Object
 notes_shlib_make_object (PortableServer_POA poa,
@@ -442,6 +461,12 @@ notes_shlib_make_object (PortableServer_POA poa,
 {
 	BonoboObject *view;
 
+	if (!shortcut_registered) {
+		nautilus_bonobo_register_activation_shortcut (VIEW_IID,
+							      create_object, NULL);
+		shortcut_registered = TRUE;
+	}
+        
 	if (strcmp (iid, VIEW_IID) != 0) {
 		return CORBA_OBJECT_NIL;
 	}

@@ -26,10 +26,16 @@
 
 #include "nautilus-file-management-properties.h"
 
+#include <string.h>
+#include <time.h>
 #include <gtk/gtkdialog.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <gtk/gtkmessagedialog.h>
-#include <gtk/gtksizegroup.h>
 #include <gtk/gtknotebook.h>
+#include <gtk/gtkicontheme.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtksizegroup.h>
 
 #include <libgnome/gnome-help.h>
 #include <libgnome/gnome-i18n.h>
@@ -37,15 +43,20 @@
 #include <glade/glade.h>
 
 #include <eel/eel-gconf-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences-glade.h>
 
+#include <libnautilus-private/nautilus-column-chooser.h>
+#include <libnautilus-private/nautilus-column-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-module.h>
 
 /* string enum preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET "default_view_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "iconview_zoom_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET "listview_zoom_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET "sort_order_optionmenu"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET "date_format_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET "preview_text_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET "preview_image_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_SOUND_WIDGET "preview_sound_optionmenu"
@@ -54,13 +65,13 @@
 /* bool preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET "sort_folders_first_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_COMPACT_LAYOUT_WIDGET "compact_layout_checkbutton"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LABELS_BESIDE_ICONS_WIDGET "labels_beside_icons_checkbutton"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET "always_use_browser_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET "trash_confirm_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_DELETE_WIDGET "trash_delete_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_OPEN_NEW_WINDOW_WIDGET "new_window_checkbutton"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MANUAL_LAYOUT_WIDGET "manual_layout_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET "hidden_files_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET "treeview_folders_checkbutton"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET "sort_reverse_checkbutton"
 
 /* int enums */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_optionmenu"
@@ -88,6 +99,13 @@ static const char *sort_order_values[] = {
 	"type",
 	"modification_date",
 	"emblems",
+	NULL
+};
+
+static const char *date_format_values[] = {
+	"locale",
+	"iso",
+	"informal",
 	NULL
 };
 
@@ -143,20 +161,6 @@ static const char *icon_captions_components[] = {
 	NULL
 };
 
-static const char *icon_captions_values[] = {
-	"size",
-	"type",
-	"date_modified",
-	"date_accessed",
-	"owner",
-	"group",
-	"permissions",
-	"octal_permissions",
-	"mime_type",
-	"none",
-	NULL
-};
-
 static GladeXML *
 nautilus_file_management_properties_dialog_create (void)
 {
@@ -190,29 +194,16 @@ nautilus_file_management_properties_size_group_create (GladeXML *xml_dialog,
 static void
 nautilus_file_management_properties_dialog_set_icons (GtkWindow *window)
 {
-	GList *icon_list;
-	GList *l;
-	guint i;
-	GdkPixbuf *pixbuf;
-	char *path;
-	const char *icon_filenames[] = { "nautilus-file-management-properties.png" };
+	GtkIconTheme *icon_theme;
+	GdkPixbuf *icon;
 	
-	icon_list = NULL;
-	for (i = 0; i < G_N_ELEMENTS (icon_filenames); i++) {
-		path = g_build_filename (NAUTILUS_PIXMAPDIR, icon_filenames[i], NULL);
-		pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-		g_free (path);
-		if (pixbuf != NULL) {
-			icon_list = g_list_prepend (icon_list, pixbuf);
-		}
-	}
-
-	gtk_window_set_icon_list (window, icon_list);
+	icon_theme =  gtk_icon_theme_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (window)));
+	icon = gtk_icon_theme_load_icon (icon_theme, "file-manager", 48, 0, NULL);
 	
-	for (l = icon_list; l != NULL; l = l->next) {
-		g_object_unref (G_OBJECT (l->data));
+	if (icon != NULL) {
+		gtk_window_set_icon (window, icon);
+		g_object_unref (icon);
 	}
-	g_list_free (icon_list);
 }
 
 static void
@@ -234,7 +225,7 @@ preferences_show_help (GtkWindow *parent,
 		dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_CLOSE,
+						 GTK_BUTTONS_OK,
 						 _("There was an error displaying help: \n%s"),
 						 error->message);
 
@@ -262,16 +253,18 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 			section = "gosnautilus-438";
 			break;
 		case 1:
-			section = "gosnautilus-57";
+			section = "gosnautilus-56";
 			break;
 		case 2:
 			section = "gosnautilus-439";
 			break;
 		case 3:
-			section = "gosnautilus-60";
+			section = "gosnautilus-490";
 			break;
+		case 4:
+			section = "gosnautilus-60";
 		}
-		preferences_show_help (GTK_WINDOW (parent), "wgosnautilus.xml", section);
+		preferences_show_help (GTK_WINDOW (parent), "user-guide.xml", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
 		/* remove gconf monitors */
 		eel_gconf_monitor_remove ("/apps/nautilus/icon_view");
@@ -281,6 +274,276 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 
 		g_object_unref (xml_dialog);
 	}
+}
+
+static void
+columns_changed_callback (NautilusColumnChooser *chooser,
+			  gpointer callback_data)
+{
+	GList *visible_columns;
+	GList *column_order;
+	
+	nautilus_column_chooser_get_settings (NAUTILUS_COLUMN_CHOOSER (chooser),
+					      &visible_columns,
+					      &column_order);
+
+	eel_preferences_set_string_glist (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS, visible_columns);
+	eel_preferences_set_string_glist (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER, column_order);
+
+	eel_g_list_free_deep (visible_columns);
+	eel_g_list_free_deep (column_order);
+}
+
+static GtkWidget *
+create_icon_caption_menu (GladeXML *xml_dialog,
+			  GList *columns)
+{
+	GtkWidget *menu;
+	GList *l;
+	GtkWidget *menu_item;
+	
+	menu = gtk_menu_new ();
+
+	menu_item = gtk_menu_item_new_with_label (_("None"));
+	gtk_widget_show (menu_item);
+	g_object_set_data (G_OBJECT (menu_item), "column_name", "none");
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
+	for (l = columns; l != NULL; l = l->next) {
+		NautilusColumn *column;
+		char *name;
+		char *label;
+
+		column = NAUTILUS_COLUMN (l->data);
+		
+		g_object_get (G_OBJECT (column), 
+			      "name", &name, "label", &label, 
+			      NULL);
+
+		/* Don't show name here, it doesn't make sense */
+		if (!strcmp (name, "name")) {
+			g_free (name);
+			g_free (label);
+			continue;
+		}
+		
+		menu_item = gtk_menu_item_new_with_label (label);
+		gtk_widget_show (menu_item);
+		g_object_set_data_full 
+			(G_OBJECT (menu_item), "column_name",
+			 g_strdup (name),
+			 (GDestroyNotify)g_free);
+		g_free (name);
+		g_free (label);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	}
+	
+	gtk_widget_show (menu);
+	
+	return menu;
+}
+
+static void
+icon_captions_changed_callback (GtkOptionMenu *option_menu,
+				gpointer user_data)
+{
+	GList *captions;
+	GladeXML *xml;
+	int i;
+	
+	xml = GLADE_XML (user_data);
+
+	captions = NULL;
+
+	for (i = 0; icon_captions_components[i] != NULL; i++) {
+		GtkWidget *option_menu;
+		GtkWidget *menu;
+		GtkWidget *item;
+		char *name;
+		
+		option_menu = glade_xml_get_widget
+			(GLADE_XML (xml), icon_captions_components[i]);
+		menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (option_menu));
+		item = gtk_menu_get_active (GTK_MENU (menu));
+
+		name = g_object_get_data (G_OBJECT (item), "column_name");
+		captions = g_list_prepend (captions, g_strdup (name));
+	}
+	captions = g_list_reverse (captions);
+	eel_preferences_set_string_glist (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS, captions);
+	eel_g_list_free_deep (captions);
+}
+
+static void
+update_caption_option_menu (GladeXML *xml,
+			    const char *option_menu_name,
+			    const char *name)
+{
+	GtkWidget *option_menu;
+	GtkWidget *menu;
+	GList *l;
+	int i;
+	
+	option_menu = glade_xml_get_widget (xml, option_menu_name);
+
+	g_signal_handlers_block_by_func
+		(option_menu,
+		 G_CALLBACK (icon_captions_changed_callback),
+		 xml);
+	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (option_menu));
+	for (l = GTK_MENU_SHELL (menu)->children, i = 0; 
+	     l != NULL;
+	     l = l->next, i++) {
+		char *item_name;
+		item_name = g_object_get_data (G_OBJECT (l->data), 
+					       "column_name");
+		if (!strcmp (name, item_name)) {
+			gtk_option_menu_set_history (GTK_OPTION_MENU (option_menu), i);
+			break;
+		}
+	}
+
+	g_signal_handlers_unblock_by_func
+		(option_menu,
+		 G_CALLBACK (icon_captions_changed_callback),
+		 xml);
+}
+
+static void
+update_icon_captions_from_gconf (GladeXML *xml)
+{
+	GList *captions;
+	int i;
+	GList *l;
+	
+
+	captions = eel_preferences_get_string_glist (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
+
+	for (l = captions, i = 0; 
+	     captions != NULL && icon_captions_components[i] != NULL;
+	      l = l->next, i++) {
+		update_caption_option_menu (xml, 
+					    icon_captions_components[i],
+					    (char *)l->data);
+	}
+	eel_g_list_free_deep (captions);
+}
+
+static void
+nautilus_file_management_properties_dialog_setup_icon_caption_page (GladeXML *xml_dialog)
+{
+	GList *columns;
+	int i;
+	gboolean writable;
+	
+	writable = eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
+
+	columns = nautilus_get_all_columns ();
+	
+	for (i = 0; icon_captions_components[i] != NULL; i++) {
+		GtkWidget *menu;
+		GtkWidget *option_menu;
+		
+		option_menu = glade_xml_get_widget (xml_dialog, 
+						    icon_captions_components[i]);
+
+		menu = create_icon_caption_menu (xml_dialog, columns);
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
+
+		gtk_widget_set_sensitive (GTK_WIDGET (option_menu), writable);
+
+		g_signal_connect (option_menu, "changed", 
+				  G_CALLBACK (icon_captions_changed_callback),
+				  xml_dialog);
+	}
+
+	nautilus_column_list_free (columns);
+
+	update_icon_captions_from_gconf (xml_dialog);
+}
+
+static void
+create_date_format_menu (GladeXML *xml_dialog)
+{
+	GtkWidget *option_menu;
+	GtkWidget *menu;
+	GtkWidget *menu_item;
+	gchar *date_string;
+	time_t now_raw;
+	struct tm* now;
+	option_menu = glade_xml_get_widget (xml_dialog,
+					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET);
+	menu = gtk_menu_new ();
+
+	now_raw = time (NULL);
+	now = localtime (&now_raw);
+
+	date_string = eel_strdup_strftime ("%c", now);
+	menu_item = gtk_menu_item_new_with_label (date_string);
+	g_free (date_string);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
+	date_string = eel_strdup_strftime ("%Y-%m-%d %H:%M:%S", now);
+	menu_item = gtk_menu_item_new_with_label (date_string);
+	g_free (date_string);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
+	date_string = eel_strdup_strftime (_("today at %-I:%M:%S %p"), now);
+	menu_item = gtk_menu_item_new_with_label (date_string);
+	g_free (date_string);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
+}
+
+static void
+set_columns_from_gconf (NautilusColumnChooser *chooser)
+{
+	GList *visible_columns;
+	GList *column_order;
+	
+	visible_columns = eel_preferences_get_string_glist (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
+	column_order = eel_preferences_get_string_glist (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
+
+	nautilus_column_chooser_set_settings (NAUTILUS_COLUMN_CHOOSER (chooser), 
+					      visible_columns,
+					      column_order);
+
+
+	eel_g_list_free_deep (visible_columns);
+	eel_g_list_free_deep (column_order);
+}
+
+static void 
+use_default_callback (NautilusColumnChooser *chooser, 
+		      gpointer user_data)
+{
+	eel_preferences_unset (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
+	eel_preferences_unset (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
+	set_columns_from_gconf (chooser);
+}
+
+static void
+nautilus_file_management_properties_dialog_setup_list_column_page (GladeXML *xml_dialog)
+{
+	GtkWidget *chooser;
+	GtkWidget *box;
+	
+	chooser = nautilus_column_chooser_new ();
+	g_signal_connect (chooser, "changed", 
+			  G_CALLBACK (columns_changed_callback), chooser);
+	g_signal_connect (chooser, "use_default", 
+			  G_CALLBACK (use_default_callback), chooser);
+
+	set_columns_from_gconf (NAUTILUS_COLUMN_CHOOSER (chooser));
+
+	gtk_widget_show (chooser);
+	box = glade_xml_get_widget (xml_dialog, "list_columns_vbox");
+	
+	gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
 }
 
 static  void
@@ -308,26 +571,27 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	nautilus_file_management_properties_size_group_create (xml_dialog,
 							       "preview_label",
 							       5);
+	create_date_format_menu (xml_dialog);
 
 	/* setup preferences */
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_COMPACT_LAYOUT_WIDGET,
 					    NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT);
 	eel_preferences_glade_connect_bool (xml_dialog,
+					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LABELS_BESIDE_ICONS_WIDGET,
+					    NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS);
+	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET,
 					    NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST); 
+	eel_preferences_glade_connect_bool (xml_dialog,
+					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
+					    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
 					    NAUTILUS_PREFERENCES_CONFIRM_TRASH);
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_DELETE_WIDGET,
 					    NAUTILUS_PREFERENCES_ENABLE_DELETE);
-	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_OPEN_NEW_WINDOW_WIDGET,
-					    NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
-	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MANUAL_LAYOUT_WIDGET,
-					    NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT);
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
 					    NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
@@ -337,12 +601,6 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
 					    NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
-	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET,
-					    NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
-	eel_preferences_glade_connect_bool_slave (xml_dialog,
-						  NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET,
-						  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
 
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
@@ -379,6 +637,10 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 							       preview_values);
+	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
+							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET,
+							       NAUTILUS_PREFERENCES_DATE_FORMAT,
+							       date_format_values);
 
 	eel_preferences_glade_connect_string_enum_radio_button (xml_dialog,
 								click_behavior_components,
@@ -389,17 +651,15 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 								NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 								executable_text_values);
 
-	eel_preferences_glade_connect_list_enum (xml_dialog,
-						 icon_captions_components,
-						 NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-						 icon_captions_values);
-
-	
 	eel_preferences_glade_connect_int_enum (xml_dialog,
 						NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET,
 						NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 						thumbnail_limit_values);
 
+
+	nautilus_file_management_properties_dialog_setup_icon_caption_page (xml_dialog);
+	nautilus_file_management_properties_dialog_setup_list_column_page (xml_dialog);
+	
 	/* UI callbacks */
 	dialog = glade_xml_get_widget (xml_dialog, "file_management_dialog");
 	g_signal_connect (G_OBJECT (dialog), "response",

@@ -22,6 +22,8 @@
 #undef bzread
 #undef bzwrite
 #define HAVE_GTK_MULTIHEAD /* needed for egg-screen-exec functions */
+#undef HAVE_STARTUP_NOTIFICATION
+#undef HAVE_EXIF
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
@@ -43,6 +45,9 @@
 
 /* Define to 1 if you have the `endmntent' function. */
 #undef HAVE_ENDMNTENT
+
+/* Define to 1 if you have the <fstab.h> header file. */
+#undef HAVE_FSTAB_H
 
 /* Define to 1 if you have the `getmntinfo' function. */
 #undef HAVE_GETMNTINFO
@@ -92,6 +97,9 @@
 /* Define to 1 if you have the <sys/cdio.h> header file. */
 #undef HAVE_SYS_CDIO_H
 
+/* Define to 1 if you have the <sys/mntctl.h> header file. */
+#undef HAVE_SYS_MNTCTL_H
+
 /* Define to 1 if you have the <sys/mnttab.h> header file. */
 #undef HAVE_SYS_MNTTAB_H
 
@@ -106,6 +114,12 @@
 
 /* Define to 1 if you have the <sys/vfstab.h> header file. */
 #undef HAVE_SYS_VFSTAB_H
+
+/* Define to 1 if you have the <sys/vfs.h> header file. */
+#undef HAVE_SYS_VFS_H
+
+/* Define to 1 if you have the <sys/vmount.h> header file. */
+#undef HAVE_SYS_VMOUNT_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H

@@ -50,6 +50,7 @@ enum {
 	SELECTION_CHANGED,
 	STOP_LOADING,
 	TITLE_CHANGED,
+	SHOW_HIDDEN_FILES_MODE_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -66,6 +67,12 @@ struct NautilusViewDetails {
 
 	NautilusIdleQueue       *incoming_queue;
 	NautilusIdleQueue       *outgoing_queue;
+
+	gboolean have_window_type;
+	Nautilus_WindowType window_type;
+
+	gboolean have_show_hidden_files_mode;
+	Nautilus_ShowHiddenFilesMode show_hidden_files_mode;
 };
 
 typedef void (* ViewFunction) (NautilusView *view,
@@ -76,6 +83,8 @@ typedef struct {
 	char *location;
 	GList *selection;
 	char *title;
+	Nautilus_ViewFrame_OpenMode mode;
+	Nautilus_ViewFrame_OpenFlags flags;
 } LocationPlus;
 
 BONOBO_CLASS_BOILERPLATE_FULL (NautilusView, nautilus_view, Nautilus_View,
@@ -197,6 +206,17 @@ call_history_changed (NautilusView *view,
 }
 
 static void
+call_show_hidden_files_mode_changed (NautilusView *view,
+			       gpointer callback_data)
+{
+	view->details->have_show_hidden_files_mode = FALSE;
+	g_signal_emit (view,
+		       signals[SHOW_HIDDEN_FILES_MODE_CHANGED], 0,
+		       callback_data);
+}
+
+
+static void
 list_deep_free_cover (gpointer callback_data)
 {
 	gnome_vfs_list_deep_free (callback_data);
@@ -270,6 +290,10 @@ nautilus_view_frame_property_changed_callback (BonoboListener    *listener,
 		callback = call_selection_changed;
 		callback_data = nautilus_g_list_from_uri_list (any->_value);
 		destroy_callback_data = list_deep_free_cover;
+	} else if (strcmp (event_name, "Bonobo/Property:change:show-hidden-files-mode") == 0) {
+		callback = call_show_hidden_files_mode_changed;
+		callback_data = NULL;
+		destroy_callback_data = NULL;
 	} else {
 		g_warning ("Unknown event '%s'", event_name);
 		return;
@@ -362,6 +386,9 @@ update_listener (NautilusView *view)
 	}
 	if (view->details->listener_mask & NAUTILUS_VIEW_LISTEN_SELECTION) {
 		append_mask (mask, "Bonobo/Property:change:selection");
+	}
+	if (view->details->listener_mask & NAUTILUS_VIEW_LISTEN_SHOW_HIDDEN_FILES_MODE) {
+		append_mask (mask, "Bonobo/Property:change:show-hidden-files-mode");
 	}
 
 	Bonobo_EventSource_addListenerWithMask (es, BONOBO_OBJREF (listener), mask->str, &ev);
@@ -556,38 +583,8 @@ free_location_plus_callback (gpointer callback_data)
 }
 
 static void
-call_open_location_in_this_window (NautilusView *view,
-				   gpointer callback_data)
-{
-	CORBA_Environment ev;
-	Nautilus_ViewFrame view_frame;
-	
-	view_frame = view_frame_call_begin (view, &ev);
-	if (view_frame != CORBA_OBJECT_NIL) {
-		Nautilus_ViewFrame_open_location_in_this_window
-			(view_frame, callback_data, &ev);
-	}
-	view_frame_call_end (view_frame, &ev);
-}
-
-static void
-call_open_location_prefer_existing_window (NautilusView *view,
-					   gpointer callback_data)
-{
-	CORBA_Environment ev;
-	Nautilus_ViewFrame view_frame;
-	
-	view_frame = view_frame_call_begin (view, &ev);
-	if (view_frame != CORBA_OBJECT_NIL) {
-		Nautilus_ViewFrame_open_location_prefer_existing_window
-			(view_frame, callback_data, &ev);
-	}
-	view_frame_call_end (view_frame, &ev);
-}
-
-static void
-call_open_location_force_new_window (NautilusView *view,
-				     gpointer callback_data)
+call_open_location (NautilusView *view,
+		    gpointer callback_data)
 {
 	LocationPlus *location_plus;
 	CORBA_Environment ev;
@@ -599,12 +596,13 @@ call_open_location_force_new_window (NautilusView *view,
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
 		uri_list = nautilus_uri_list_from_g_list (location_plus->selection);
-		Nautilus_ViewFrame_open_location_force_new_window
-			(view_frame, location_plus->location, uri_list, &ev);
+		Nautilus_ViewFrame_open_location
+			(view_frame, location_plus->location, location_plus->mode, location_plus->flags, uri_list, &ev);
 		CORBA_free (uri_list);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
+
 
 static void
 call_report_location_change (NautilusView *view,
@@ -760,6 +758,20 @@ call_set_title (NautilusView *view,
 }
 
 static void
+call_set_show_hidden_files_mode (NautilusView *view,
+                                 gpointer callback_data)
+{
+	CORBA_Environment ev;
+	Nautilus_ViewFrame view_frame;
+	
+	view_frame = view_frame_call_begin (view, &ev);
+	if (view_frame != CORBA_OBJECT_NIL) {
+		Nautilus_ViewFrame_set_show_hidden_files_mode (view_frame, * (Nautilus_ShowHiddenFilesMode *) callback_data, &ev);
+	}
+	view_frame_call_end (view_frame, &ev);
+}
+
+static void
 call_go_back (NautilusView *view,
 	      gpointer callback_data)
 {
@@ -788,40 +800,23 @@ call_close_window (NautilusView *view,
 	view_frame_call_end (view_frame, &ev);
 }
 
-
 void
-nautilus_view_open_location_in_this_window (NautilusView *view,
-					    const char *location)
-{
-	queue_outgoing_call (view,
-			     call_open_location_in_this_window,
-			     g_strdup (location),
-			     g_free);
-}
-
-void
-nautilus_view_open_location_prefer_existing_window (NautilusView *view,
-						    const char *location)
-{
-	queue_outgoing_call (view,
-			     call_open_location_prefer_existing_window,
-			     g_strdup (location),
-			     g_free);
-}
-
-void
-nautilus_view_open_location_force_new_window (NautilusView *view,
-					      const char *location,
-					      GList *selection)
+nautilus_view_open_location (NautilusView *view,
+			     const char *location,
+			     Nautilus_ViewFrame_OpenMode mode,
+			     Nautilus_ViewFrame_OpenFlags flags,
+			     GList *selection)
 {
 	LocationPlus *location_plus;
-
+	
 	location_plus = g_new0 (LocationPlus, 1);
 	location_plus->location = g_strdup (location);
 	location_plus->selection = str_list_copy (selection);
-
+	location_plus->mode = mode;
+	location_plus->flags = flags;
+	
 	queue_outgoing_call (view,
-			     call_open_location_force_new_window,
+			     call_open_location,
 			     location_plus,
 			     free_location_plus_callback);
 }
@@ -934,6 +929,19 @@ nautilus_view_set_title (NautilusView *view,
 }
 
 void
+nautilus_view_set_show_hidden_files_mode (NautilusView *view, 
+                                          Nautilus_ShowHiddenFilesMode mode)
+{
+	view->details->have_show_hidden_files_mode = TRUE;
+	view->details->show_hidden_files_mode = mode;
+	
+	queue_outgoing_call (view,
+			     call_set_show_hidden_files_mode,
+			     g_memdup (&mode, sizeof (Nautilus_ShowHiddenFilesMode)),
+			     g_free);
+}
+
+void
 nautilus_view_go_back (NautilusView *view)
 {
 	queue_outgoing_call (view,
@@ -1028,6 +1036,14 @@ nautilus_view_class_init (NautilusViewClass *class)
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[SHOW_HIDDEN_FILES_MODE_CHANGED] =
+		g_signal_new ("show_hidden_files_mode_changed",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST,
+			      0, /* No offset to keep binary compat */
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 
 	class->epv.load_location = impl_Nautilus_View_load_location;
 	class->epv.stop_loading = impl_Nautilus_View_stop_loading;
@@ -1050,4 +1066,87 @@ nautilus_view_set_listener_mask (NautilusView *view,
 
 	view->details->listener_mask = mask;
 	update_listener (view);
+}
+
+Nautilus_WindowType
+nautilus_view_get_window_type (NautilusView *view)
+{
+        Bonobo_PropertyBag bag;
+        BonoboArg *arg;
+        CORBA_Environment ev;
+
+	if (view->details->have_window_type) {
+		return view->details->window_type;
+	}
+	
+	view->details->have_window_type = TRUE;
+
+        CORBA_exception_init (&ev);
+
+        bag = nautilus_view_get_ambient_properties (view, &ev);
+	
+	view->details->window_type = Nautilus_WINDOW_SPATIAL;
+
+	if (!BONOBO_EX (&ev)) {
+		arg = Bonobo_PropertyBag_getValue (bag, "window-type", &ev);
+		
+		if (!BONOBO_EX (&ev)) {
+			view->details->window_type = BONOBO_ARG_GET_GENERAL (arg, 
+									     TC_Nautilus_WindowType,
+									     Nautilus_WindowType,
+									     NULL);
+			CORBA_free (arg);
+		} else {
+			g_warning ("Window type not found in view frame properties.");
+		}
+
+		bonobo_object_release_unref (bag, &ev);
+	} else {
+		g_warning ("Couldn't get ambient properties for the view frame.");
+	}
+	CORBA_exception_free (&ev);
+
+	return view->details->window_type;
+}
+
+Nautilus_ShowHiddenFilesMode
+nautilus_view_get_show_hidden_files_mode (NautilusView *view)
+{
+	Bonobo_PropertyBag bag;	
+	BonoboArg *arg;
+	CORBA_Environment ev;
+
+	if (view->details->have_show_hidden_files_mode) {
+		return view->details->show_hidden_files_mode;
+	}
+
+
+	CORBA_exception_init (&ev);
+
+	bag = nautilus_view_get_ambient_properties (view, &ev);
+
+	view->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_DEFAULT;
+
+	if (!BONOBO_EX (&ev)) {
+		arg = Bonobo_PropertyBag_getValue (bag, "show-hidden-files-mode", &ev);
+		
+		if (!BONOBO_EX (&ev)) {
+			view->details->show_hidden_files_mode = BONOBO_ARG_GET_GENERAL 
+				(arg, 
+				 TC_Nautilus_ShowHiddenFilesMode,
+				 Nautilus_ShowHiddenFilesMode,
+				 NULL);
+			CORBA_free (arg);
+		} else {
+			g_warning ("Show Hidden Files Mode not found in view frame properties.");
+		}
+
+		bonobo_object_release_unref (bag, &ev);
+	} else {
+		g_warning ("Couldn't get ambient properties for the view frame.");
+	}
+	CORBA_exception_free (&ev);
+
+	view->details->have_show_hidden_files_mode = TRUE;
+	return view->details->show_hidden_files_mode;
 }

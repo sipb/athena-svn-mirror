@@ -26,10 +26,9 @@
 #ifndef FM_PROPERTIES_WINDOW_H
 #define FM_PROPERTIES_WINDOW_H
 
-#include "fm-directory-view.h"
-
 #include <gtk/gtkwindow.h>
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus/nautilus-view.h>
 
 typedef struct FMPropertiesWindow FMPropertiesWindow;
 
@@ -57,10 +56,9 @@ struct FMPropertiesWindowClass {
 
 typedef struct FMPropertiesWindowClass FMPropertiesWindowClass;
 
-
-
 GType   fm_properties_window_get_type   (void);
-void 	fm_properties_window_present 	(NautilusFile    *file, 
-					 FMDirectoryView *directory_view);
+
+void 	fm_properties_window_present 	(GList *files,
+					 GtkWidget *parent_widget);
 
 #endif /* FM_PROPERTIES_WINDOW_H */

@@ -97,6 +97,8 @@ struct FMDirectoryViewClass {
 	 */
 	void 	(* end_file_changes)    (FMDirectoryView *view);
 	
+	void    (* flush_added_files)	 (FMDirectoryView *view);
+	
 	/* The 'begin_loading' signal is emitted before any of the contents
 	 * of a directory are added to the view. It can be replaced by a 
 	 * subclass to do any necessary preparation to start dealing with a
@@ -149,6 +151,8 @@ struct FMDirectoryViewClass {
 
 	/* Return an array of locations of selected icons in their view. */
 	GArray * (* get_selected_icon_locations) (FMDirectoryView *view);
+
+	guint    (* get_item_count)             (FMDirectoryView *view);
 
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
@@ -290,12 +294,14 @@ NautilusView *      fm_directory_view_get_nautilus_view                (FMDirect
 
 /* Functions callable from the user interface and elsewhere. */
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
+char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_accept_item                  (NautilusFile     *target_item,
 									const char       *item_uri,
 									FMDirectoryView  *view);
 void                fm_directory_view_display_selection_info           (FMDirectoryView  *view);
 GList *             fm_directory_view_get_selection                    (FMDirectoryView  *view);
 void                fm_directory_view_stop                             (FMDirectoryView  *view);
+guint               fm_directory_view_get_item_count                   (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_zoom_in                      (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_zoom_out                     (FMDirectoryView  *view);
 GtkWidget *         fm_directory_view_get_background_widget            (FMDirectoryView  *view);
@@ -340,7 +346,9 @@ void                fm_directory_view_end_loading                      (FMDirect
  * FMDirectoryView and its subclasses 
  */
 void                fm_directory_view_activate_files                   (FMDirectoryView  *view,
-									GList            *files);
+									GList            *files,
+									Nautilus_ViewFrame_OpenMode mode,
+									Nautilus_ViewFrame_OpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
 gboolean            fm_directory_view_confirm_multiple_windows         (FMDirectoryView  *view,
@@ -365,6 +373,8 @@ gboolean            fm_directory_view_should_show_file                 (FMDirect
 gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
+void                fm_directory_view_new_file                         (FMDirectoryView  *view,
+									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

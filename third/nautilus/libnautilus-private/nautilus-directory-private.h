@@ -33,6 +33,7 @@
 #include <libnautilus-private/nautilus-metafile-server.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus/nautilus-idle-queue.h>
+#include <libnautilus-extension/nautilus-info-provider.h>
 #include <libxml/tree.h>
 
 typedef struct LinkInfoReadState LinkInfoReadState;
@@ -53,6 +54,7 @@ struct NautilusDirectoryDetails
 	/* Queues of files needing some I/O done. */
 	NautilusFileQueue *high_priority_queue;
 	NautilusFileQueue *low_priority_queue;
+	NautilusFileQueue *extension_queue;
 
 	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.
@@ -99,12 +101,22 @@ struct NautilusDirectoryDetails
 
 	NautilusFile *get_info_file;
 	GnomeVFSAsyncHandle *get_info_in_progress;
+	gboolean get_info_has_slow_mime_type;
+
+	NautilusFile *slow_mime_type_file;
+	GnomeVFSAsyncHandle *slow_mime_type_in_progress;
+
+	NautilusFile *extension_info_file;
+	NautilusInfoProvider *extension_info_provider;
+	NautilusOperationHandle *extension_info_in_progress;
 
 	TopLeftTextReadState *top_left_read_state;
 
 	LinkInfoReadState *link_info_read_state;
 
 	GList *file_operations_in_progress; /* list of FileOperation * */
+
+	GHashTable *hidden_file_hash;
 };
 
 /* A request for information about one or more files. */
@@ -117,6 +129,8 @@ typedef struct {
 	gboolean metafile;
 	gboolean mime_list;
 	gboolean top_left_text;
+	gboolean extension_info;
+	gboolean slow_mime_type;
 } Request;
 
 NautilusDirectory *nautilus_directory_get_existing                    (const char                *uri);
@@ -125,14 +139,14 @@ NautilusDirectory *nautilus_directory_get_existing                    (const cha
 void               nautilus_directory_async_state_changed             (NautilusDirectory         *directory);
 void               nautilus_directory_call_when_ready_internal        (NautilusDirectory         *directory,
 								       NautilusFile              *file,
-								       GList                     *file_attributes,
+								       NautilusFileAttributes     file_attributes,
 								       gboolean                   wait_for_file_list,
 								       NautilusDirectoryCallback  directory_callback,
 								       NautilusFileCallback       file_callback,
 								       gpointer                   callback_data);
 gboolean           nautilus_directory_check_if_ready_internal         (NautilusDirectory         *directory,
 								       NautilusFile              *file,
-								       GList                     *file_attributes);
+								       NautilusFileAttributes     file_attributes);
 void               nautilus_directory_cancel_callback_internal        (NautilusDirectory         *directory,
 								       NautilusFile              *file,
 								       NautilusDirectoryCallback  directory_callback,
@@ -143,7 +157,7 @@ void               nautilus_directory_monitor_add_internal            (NautilusD
 								       gconstpointer              client,
 								       gboolean                   monitor_hidden_files,
 								       gboolean                   monitor_backup_files,
-								       GList                     *attributes,
+								       NautilusFileAttributes     attributes,
 								       NautilusDirectoryCallback  callback,
 								       gpointer                   callback_data);
 void               nautilus_directory_monitor_remove_internal         (NautilusDirectory         *directory,
@@ -162,10 +176,10 @@ void               nautilus_directory_stop_monitoring_file_list       (NautilusD
 void               nautilus_directory_cancel                          (NautilusDirectory         *directory);
 void               nautilus_async_destroying_file                     (NautilusFile              *file);
 void               nautilus_directory_force_reload_internal           (NautilusDirectory         *directory,
-								       GList                     *file_attributes);
+								       NautilusFileAttributes     file_attributes);
 void               nautilus_directory_cancel_loading_file_attributes  (NautilusDirectory         *directory,
 								       NautilusFile              *file,
-								       GList                     *file_attributes);
+								       NautilusFileAttributes     file_attributes);
 
 /* Calls shared between directory, file, and async. code. */
 void               nautilus_directory_emit_files_added                (NautilusDirectory         *directory,
@@ -182,7 +196,7 @@ NautilusDirectory *nautilus_directory_get_internal                    (const cha
 								       gboolean                   create);
 char *             nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
 void               nautilus_directory_set_up_request                  (Request                   *request,
-								       GList                     *file_attributes);
+								       NautilusFileAttributes     file_attributes);
 
 /* Interface to the file list. */
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
@@ -216,6 +230,10 @@ void               nautilus_directory_add_file_to_work_queue          (NautilusD
 								       NautilusFile *file);
 void               nautilus_directory_remove_file_from_work_queue     (NautilusDirectory *directory,
 								       NautilusFile *file);
+
+/* KDE compatibility hacks */
+
+void               nautilus_set_kde_trash_name                        (const char *trash_dir);
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding              (void);

@@ -30,11 +30,13 @@
 
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"
+#include "nautilus-window-private.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -43,6 +45,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <stdlib.h>
@@ -61,9 +64,11 @@ static void     finalize                         (GObject              *shell);
 static void     corba_open_windows              (PortableServer_Servant  servant,
 						 const Nautilus_URIList *list,
 						 const CORBA_char       *geometry,
+						 CORBA_boolean           browser_window,
 						 CORBA_Environment      *ev);
 static void     corba_open_default_window       (PortableServer_Servant  servant,
 						 const CORBA_char       *geometry,
+						 CORBA_boolean           browser_window,
 						 CORBA_Environment      *ev);
 static void     corba_start_desktop             (PortableServer_Servant  servant,
 						 CORBA_Environment      *ev);
@@ -120,25 +125,45 @@ nautilus_shell_new (NautilusApplication *application)
 }
 
 static void
-open_window (NautilusShell *shell, const char *uri, const char *geometry)
+open_window (NautilusShell *shell, const char *uri, const char *geometry,
+	     gboolean browser_window)
 {
+	char *home_uri;
 	NautilusWindow *window;
 
-	window = nautilus_application_create_window (shell->details->application,
-						     gdk_screen_get_default ());
-
-	if (geometry != NULL) {
-		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
-								      geometry,
-								      APPLICATION_WINDOW_MIN_WIDTH,
-								      APPLICATION_WINDOW_MIN_HEIGHT,
-								      FALSE);
-	}
-
-	if (uri == NULL) {
-		nautilus_window_go_home (window);
+	if (browser_window ||
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		window = nautilus_application_create_navigation_window (shell->details->application,
+									gdk_screen_get_default ());
+		if (uri == NULL) {
+			nautilus_window_go_home (window);
+		} else {
+			nautilus_window_go_to (window, uri);
+		}
 	} else {
-		nautilus_window_go_to (window, uri);
+		home_uri = NULL;
+		if (uri == NULL) {
+#ifdef WEB_NAVIGATION_ENABLED
+			home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+			home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
+			uri = home_uri;
+		}
+		
+		window = nautilus_application_present_spatial_window (shell->details->application,
+								      NULL,
+								      uri,
+								      gdk_screen_get_default ());
+		g_free (home_uri);
+	}
+	
+	if (geometry != NULL && !GTK_WIDGET_VISIBLE (window)) {
+		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
+								 geometry,
+								 APPLICATION_WINDOW_MIN_WIDTH,
+								 APPLICATION_WINDOW_MIN_HEIGHT,
+								 FALSE);
 	}
 }
 
@@ -146,6 +171,7 @@ static void
 corba_open_windows (PortableServer_Servant servant,
 		    const Nautilus_URIList *list,
 		    const CORBA_char *geometry,
+		    CORBA_boolean browser_window,
 		    CORBA_Environment *ev)
 {
 	NautilusShell *shell;
@@ -156,13 +182,14 @@ corba_open_windows (PortableServer_Servant servant,
 	/* Open windows at each requested location. */
 	for (i = 0; i < list->_length; i++) {
 		g_assert (list->_buffer[i] != NULL);
-		open_window (shell, list->_buffer[i], geometry);
+		open_window (shell, list->_buffer[i], geometry, browser_window);
 	}
 }
 
 static void
 corba_open_default_window (PortableServer_Servant servant,
 			   const CORBA_char *geometry,
+			   CORBA_boolean browser_window,
 			   CORBA_Environment *ev)
 {
 	NautilusShell *shell;
@@ -171,7 +198,7 @@ corba_open_default_window (PortableServer_Servant servant,
 
 	if (!restore_window_states (shell)) {
 		/* Open a window pointing at the default location. */
-		open_window (shell, NULL, geometry);
+		open_window (shell, NULL, geometry, browser_window);
 	}
 }
 
@@ -267,7 +294,9 @@ save_window_states (void)
 		g_free (window_attributes);
 	}
 
-	eel_preferences_set_string_list (START_STATE_CONFIG, states);
+	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
+		eel_preferences_set_string_list (START_STATE_CONFIG, states);
+	}
 
 	eel_string_list_free (states);
 }
@@ -314,11 +343,17 @@ restore_one_window_callback (const char *attributes,
 		screen = gdk_screen_get_default ();
 	}
 
-	window = nautilus_application_create_window (shell->details->application, screen);
-	
+#if NEW_UI_COMPLETE 
+/* don't always create object windows here */
+#endif
 	if (eel_strlen (location) > 0) {
-		nautilus_window_go_to (window, location);
+		window = nautilus_application_present_spatial_window (shell->details->application, 
+								      NULL,
+								      location,
+								      screen);
 	} else {
+		window = nautilus_application_create_navigation_window (shell->details->application,
+									screen);
 		nautilus_window_go_home (window);
 	}
 
@@ -340,7 +375,9 @@ restore_window_states (NautilusShell *shell)
 	result = eel_string_list_get_length (states) > 0;
 	eel_string_list_for_each (states, restore_one_window_callback, shell);
 	eel_string_list_free (states);
-	eel_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
+		eel_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	}
 	return result;
 }
 

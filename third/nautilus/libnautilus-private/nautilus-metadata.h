@@ -53,12 +53,18 @@
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT      	"icon_view_tighter_layout"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY          	"icon_view_sort_by"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED    	"icon_view_sort_reversed"
+#define NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED            "icon_view_keep_aligned"
 
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL       	"list_view_zoom_level"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"list_view_sort_column"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"list_view_sort_reversed"
+#define NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS    	"list_view_visible_columns"
+#define NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER    	"list_view_column_order"
+#define NAUTILUS_METADATA_SUBKEY_COLUMNS                        "columns" 
 
 #define NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY			"window_geometry"
+#define NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION		"window_scroll_position"
+#define NAUTILUS_METADATA_KEY_WINDOW_SHOW_HIDDEN_FILES		"window_show_hidden_files"
 
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR   	"sidebar_background_color"
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE   	"sidebar_background_tile_image"
