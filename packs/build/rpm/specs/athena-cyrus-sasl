@@ -1,0 +1,10 @@
+Name: athena-cyrus-sasl
+Summary: The Cyrus SASL library, for Athena.
+License: CMU/Freely Distributable
+Group: System Environment/Libraries
+
+%description
+The cyrus-sasl package contains the Cyrus implementation of SASL,
+from Carnegie Mellon University.  SASL is the Simple Authentication
+and Security Layer, a method for adding authentication support to
+connection-based protocols.
