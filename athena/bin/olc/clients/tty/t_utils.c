@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.33 1992-01-28 17:57:17 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.34 1992-01-28 20:38:52 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.33 1992-01-28 17:57:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.34 1992-01-28 20:38:52 lwvanels Exp $";
 #endif
 #endif
 
@@ -450,7 +450,7 @@ handle_response(response, req)
       return(SUCCESS);     
 
     default:
-      if(response < 100)   /* this isn't so great */
+      if ((response < 100) && (response >0))   /* this isn't so great */
 #ifdef KERBEROS
 	fprintf(stderr,"%s\n",krb_err_txt[response]);
       else
