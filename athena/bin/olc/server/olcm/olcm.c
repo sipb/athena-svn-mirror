@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.3 1991-04-10 00:13:48 lwvanels Exp $
+ *      $Id: olcm.c,v 1.4 1991-04-10 00:43:09 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.3 1991-04-10 00:13:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.4 1991-04-10 00:43:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -122,7 +122,7 @@ main(argc,argv)
       break;
     case 't':
       strncpy(topic,optarg,BUFSIZ);
-      server[BUFSIZ-1] = '\0';
+      topic[BUFSIZ-1] = '\0';
       break;
 #ifdef KERBEROS
     case 'k':
