@@ -20,37 +20,46 @@
 .if t .ds ga \(ga
 .if t .tr *\(**
 .SH NAME
-hostinfo \- look up a host's real name and network address
+hostinfo \- ask internet nameserver for a host's real name and network address
 .SH SYNOPSIS
 .HP 5
 .B hostinfo
 [
-.I \-h |
+.I \-h
+] [
 .I \-a
 ]
-.IR hostname | address 
-.RI ...
+<
+.I hostname
+>
+<
+.I address
+>
 .PP
 .SH DESCRIPTION
 .br
 By default,
 this command displays
-the Internet
-name and network addresses for the
+the
+.I internet
+name and all network addresses for the
 host specified by
 .I hostname
 or
 .IR address.
-.PP
+
 The command accepts the following options:
 .IP \fB\-h\fP 5
-The command displays only the
-official hostname for the specified host(s).
+The command displays only the hostname.
 .IP \fB\-a\fP 5
-The command displays only the first available network address for the
-specified host(s).
-.SH DIAGNOSTICS
-Self-explanatory error messages.  If any host could not be found, the
-program exits with a non-zero exit status.
+The command displays only the address.
+.IP \fB\-n\fP 5
+The command suppresses hostinfo record lookup.
+.PP
+This 
+.I hostinfo 
+will also print all available aliases and ip
+addresses, as well as the HINFO record, if available.
+.PP
 .SH "SEE ALSO"
 hesinfo(1), named(8), resolver(3), resolver(5)
