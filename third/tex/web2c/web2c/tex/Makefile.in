@@ -183,7 +183,7 @@ clean-trip:
 	if grep 'memmax 2999' texd.h.bak >/dev/null 2>&1; then \
           rm -f texd.h*; else mv texd.h.bak texd.h; fi
 
-tex.p: tex.web ctex.ch
+tex.p tex.pool: tex.web ctex.ch
 	../web/tangle tex.web ctex.ch
 
 # If you're building mltex, reportedly have to add:
