@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.27 1998-01-06 21:35:43 jweiss Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.28 1998-01-12 19:02:10 danw Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -96,7 +96,7 @@ N)
 
 Y)
    echo "custom installation"
-   echo "Which rev do you want to install ? "
+   echo "Which Athena release do you want to install ? "
    read buff
    case "$buff" in
    7.7)
@@ -158,6 +158,7 @@ Y)
      partition 6 is /var and needs at least 120MB "
      sleep 10
      /usr/sbin/format
+     echo "Done asking questions for custom install."
      ;;
 *)
      case $DISK in
