@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sun4.presed,v 1.8 1998-03-13 16:13:10 mbarker Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sun4.presed,v 1.9 1998-09-12 00:16:17 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -187,7 +187,7 @@ xlogin.Geometry: 		580x325+288+180
 	Ctrl<Key>f:	forward-character() \n\
 	Ctrl<Key>h:	delete-previous-character() \n\
 	Ctrl<Key>k:	kill-to-end-of-line() \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	Ctrl<Key>t:	transpose-characters() \n\
 	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
 	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
@@ -266,7 +266,7 @@ xlogin.Geometry: 		580x325+288+180
 	Ctrl<Key>f:	forward-character() \n\
 	Ctrl<Key>h:	delete-previous-character() \n\
 	Ctrl<Key>k:	kill-to-end-of-line() \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	Ctrl<Key>t:	transpose-characters() \n\
 	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
 	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
@@ -462,7 +462,7 @@ xlogin.Geometry: 		580x325+288+180
 *omenuEntry10.label:		Display Console Window
 *omenuEntry10.callback:		signalConsoleCB(show)
 *omenuEntry11.label:		Shut Down Window System
-*omenuEntry11.callback:		WcExitCB(3)
+*omenuEntry11.callback:		windowShutdownCB()
 
 *omenuEntry3.rightBitmap:	Shift-F2
 *omenuEntry5.rightBitmap:	Shift-F4
@@ -507,7 +507,7 @@ xlogin.Geometry: 		580x325+288+180
 	Ctrl<Key>f:	forward-character() \n\
 	Ctrl<Key>h:	delete-previous-character() \n\
 	Ctrl<Key>k:	kill-to-end-of-line() \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	Ctrl<Key>t:	transpose-characters() \n\
 	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
 	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
@@ -608,7 +608,7 @@ xlogin.Geometry: 		580x325+288+180
 *warning*value.resize:		False
 *warning*value.displayCaret:	False
 *warning*value.translations:	#replace \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	<Key>Return:	WcPopdownACT(*warningShell) \
 			reset() \n\
 	<Key>KP_Enter:	WcPopdownACT(*warningShell) \
