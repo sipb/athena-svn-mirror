@@ -4,7 +4,7 @@
 # Copyright 1987, 1988 by the MIT Student Information Processing Board
 # For copyright info, see copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Imakefile,v 1.2 1990-05-03 15:33:14 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Imakefile,v 1.3 1990-07-12 11:56:54 epeisach Exp $
 #	$Locker:  $
 
 DESTDIR=
@@ -15,7 +15,11 @@ INCDIR=
 
 # flags
 
+#ifdef ultrix
+CFLAGS=	-O -I. -DPOSIX
+#else
 CFLAGS=	-O -I. 
+#endif
 
 LINTFLAGS= -uhv -I.
 
