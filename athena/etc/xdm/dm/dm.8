@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.8,v 1.6 1997-04-01 01:09:46 ghudson Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.8,v 1.7 1997-12-13 22:28:14 cfields Exp $
 .TH DM 8 "30 April 1994"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -8,7 +8,7 @@ dm \fIconfigfile logintty\fR [-noconsole] \fIconsoletty\fR
 .SH DESCRIPTION
 
 \fIDm\fR is intended to be run by \fIinit\fR to startup the X server,
-the X console, and X login.  If will read out of the specified config
+the X console, and X login.  It will read out of the specified config
 file the command lines for these three processes.  
 .PP
 This file consists of lines containing the program name, whitespace,
@@ -36,13 +36,12 @@ children or a signal to arrive.  If the display manager encounters
 errors while starting up, it will initiate a console login.
 .PP
 If the console exits, another one will be started.  If the X server or
-xlogin exit, the display manager will clean up and exit.  If xlogin
-exits with status 2, it is requesting that a raw console login be
-started.  If the display manager receives SIGFPE, it will kill its
-children and sleep forever (this is a way to shutdown the display
-during updates).  If it receives SIGUSR2, this means that xlogin added
-a user to /etc/passwd and the display manager should clean that up on
-exit.
+xlogin exit, the display manager will clean up and exit.  This
+includes a call to \fIal_acct_revert(3)\fR to clean up the user's login
+session if necessary.  If xlogin exits with status 2, it is requesting
+that a raw console login be started.  If the display manager receives
+SIGFPE, it will kill its children and sleep forever (this is a way to
+shutdown the display during updates).
 .PP
 If the \fB-noconsole\fR switch is given, it will not do the special
 console handling.  This is necessary if more than one display manager
@@ -53,7 +52,8 @@ is running on a machine.
 /dev/cons, /var/athena/console.log, /dev/console
 
 .SH "SEE ALSO"
-Xserver(1), console(8), xlogin(8), config_console(1), init(8)
+Xserver(1), console(8), xlogin(8), config_console(1), init(8),
+al_acct_revert(3)
 
 .SH AUTHOR
 Mark Rosenstein, MIT Project Athena
