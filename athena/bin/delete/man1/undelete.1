@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/undelete.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/undelete.1,v 1.3 1989-03-27 11:32:32 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/undelete.1,v 1.4 1989-09-14 03:42:14 jik Exp $
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
 .\" the terms and conditions for redistribution.
@@ -43,7 +43,8 @@ then the deleted files or directories in it will be restored; if the
 recursive option is specified, then all deleted files or directories
 in any of its children will be restored as well.
 .PP
-The shell wildcards \fI*\fR and \fI?\fR are interpreted correctly by
+The shell wildcards \fI*\fR and \fI?\fR, as well as shell brace
+notation using \fI[\fR and \fI]\fR, are interpreted correctly by
 .I undelete.
 It is possible to pass wildcards to the program without the wildcards
 being intercepted by the shell by setting
