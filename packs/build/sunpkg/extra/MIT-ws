@@ -94,6 +94,7 @@ chmod 644 $2$etcdir/system
 cp $1/packs/config/os/$OS/vfstab.std $2$etcdir
 chmod 644 $2$etcdir/vfstab.std
 
+TERMINFO=$2$terminfo tic $1/packs/config/os/$OS/screeninfo.src
 TERMINFO=$2$terminfo tic $1/packs/config/os/$OS/xterm-color
 
 rm -f $2$athretcdir/update_ws
