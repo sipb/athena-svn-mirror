@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.5 1990-02-14 13:05:16 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.6 1990-04-25 16:38:26 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -82,5 +82,13 @@ do_olc_ask(arguments)
     t_input_topic(&Request,topic,TRUE);
 
   status = t_ask(&Request,topic);
+  if(OLC)
+    {
+      printf("\nSome other useful OLC commands are: \n\n");
+      printf("\tsend  - send a message\n");
+      printf("\tshow  - show new messages\n");
+      printf("\tdone  - mark your question resolved\n");
+      printf("\t?     - see entire listing of commands\n");
+    }
   return(status);
 }
