@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.19 1991-05-08 10:57:27 lwvanels Exp $
+ *	$Id: requests.h,v 1.20 1991-11-05 14:00:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -200,9 +200,9 @@ offset(dec)	name		type		meaning
 #define OLC_DUMP_QUES_STATS  251      /* debug server */
 
 #define OLC_VERSION	     252
+#define OLC_TOGGLE_ZEPHYR    253
 
-
-#define OLC_NUM_REQUESTS     52      /* number of possible requests */
+#define OLC_NUM_REQUESTS     53      /* number of possible requests */
 
 /* Return values from daemon requests and functions. */
 
