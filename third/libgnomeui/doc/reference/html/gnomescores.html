@@ -1,0 +1,1750 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeScores</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="FIXME"
+HREF="x8080.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomePropertyBox"
+HREF="gnomepropertybox.html"><LINK
+REL="NEXT"
+TITLE="Miscellaneous utility functions and macros"
+HREF="x15980.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomepropertybox.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x8080.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x15980.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOMESCORES">GnomeScores</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN15595"
+></A
+><H2
+>Name</H2
+>GnomeScores&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN15598"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <A
+HREF="gnomescores.html#GNOMESCORES-STRUCT"
+>GnomeScores</A
+>;
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomescores.html#GNOME-SCORES-DISPLAY-WITH-PIXMAP"
+>gnome_scores_display_with_pixmap</A
+>
+                                            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *pixmap_logo,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *app_name,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *level,
+                                             int pos);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomescores.html#GNOME-SCORES-NEW"
+>gnome_scores_new</A
+>                (<A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> n_scores,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> **names,
+                                             <A
+HREF=../glib/glib-basic-types.html#GFLOAT
+>gfloat</A> *scores,
+                                             time_t *times,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> clear);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-CONSTRUCT"
+>gnome_scores_construct</A
+>          (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> n_scores,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> **names,
+                                             <A
+HREF=../glib/glib-basic-types.html#GFLOAT
+>gfloat</A> *scores,
+                                             time_t *times,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> clear);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-LOGO-LABEL"
+>gnome_scores_set_logo_label</A
+>     (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *txt,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *font,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-LOGO-PIXMAP"
+>gnome_scores_set_logo_pixmap</A
+>    (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *pix_name);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-LOGO-WIDGET"
+>gnome_scores_set_logo_widget</A
+>    (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *w);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-COLOR"
+>gnome_scores_set_color</A
+>          (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> n,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-DEF-COLOR"
+>gnome_scores_set_def_color</A
+>      (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-COLORS"
+>gnome_scores_set_colors</A
+>         (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-LOGO-LABEL-TITLE"
+>gnome_scores_set_logo_label_title</A
+>
+                                            (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *txt);
+void        <A
+HREF="gnomescores.html#GNOME-SCORES-SET-CURRENT-PLAYER"
+>gnome_scores_set_current_player</A
+> (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> i);
+&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN15648"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  <A
+HREF=../gobject/gobject-the-base-object-type.html#GOBJECT
+>GObject</A>
+   +----<A
+HREF=../gtk/gtkobject.html
+>GtkObject</A>
+         +----<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>
+               +----<A
+HREF=../gtk/gtkcontainer.html
+>GtkContainer</A>
+                     +----<A
+HREF=../gtk/gtkbin.html
+>GtkBin</A>
+                           +----<A
+HREF=../gtk/gtkwindow.html
+>GtkWindow</A>
+                                 +----<A
+HREF=../gtk/gtkdialog.html
+>GtkDialog</A>
+                                       +----GnomeScores</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN15658"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN15661"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15663"
+></A
+><H3
+><A
+NAME="GNOMESCORES-STRUCT"
+></A
+>struct GnomeScores</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeScores;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15668"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-DISPLAY-WITH-PIXMAP"
+></A
+>gnome_scores_display_with_pixmap ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_scores_display_with_pixmap
+                                            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *pixmap_logo,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *app_name,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *level,
+                                             int pos);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Does all the work of displaying the best scores.
+It calls gnome_score_get_notables to retrieve the info, creates the window,
+and show it.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15678"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>pixmap_logo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Filename of a logo pixmap to display</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Name of the application, as in gnome_score_init.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>level</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Level of the game or <TT
+CLASS="LITERAL"
+>NULL</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>pos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Position in the top ten of the current player, as returned by gnome_score_log.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  If a dialog is displayed return it's pointer.  It can also
+be <TT
+CLASS="LITERAL"
+>NULL</TT
+> if no dialog is displayed</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15705"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-NEW"
+></A
+>gnome_scores_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_scores_new                (<A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> n_scores,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> **names,
+                                             <A
+HREF=../glib/glib-basic-types.html#GFLOAT
+>gfloat</A> *scores,
+                                             time_t *times,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> clear);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates the high-scores window.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15717"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>n_scores</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Number of positions.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>names</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Names of the players.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>scores</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Scores</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>times</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Time in which the scores were done</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>clear</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Add a "Clear" Button?</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A new <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15747"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-CONSTRUCT"
+></A
+>gnome_scores_construct ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_construct          (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> n_scores,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> **names,
+                                             <A
+HREF=../glib/glib-basic-types.html#GFLOAT
+>gfloat</A> *scores,
+                                             time_t *times,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> clear);</PRE
+></TD
+></TR
+></TABLE
+><P
+>useful for language bindings and subclassing, not to be used by
+itself, see <A
+HREF="gnomescores.html#GNOME-SCORES-NEW"
+>gnome_scores_new</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15760"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>n_scores</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Number of positions.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>names</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Names of the players.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>scores</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Scores</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>times</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Time in which the scores were done</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>clear</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Add a "Clear" Button?</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15789"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-LOGO-LABEL"
+></A
+>gnome_scores_set_logo_label ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_logo_label     (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *txt,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *font,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a label to be the logo</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15799"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>txt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Text in the label.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>font</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Font to use in the label.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>col</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Color to use in the label.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15821"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-LOGO-PIXMAP"
+></A
+>gnome_scores_set_logo_pixmap ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_logo_pixmap    (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *pix_name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the logo on the scores dialog box to a pixmap</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15829"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>pix_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> filename of a pixmap</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15843"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-LOGO-WIDGET"
+></A
+>gnome_scores_set_logo_widget ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_logo_widget    (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> *w);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set an arbitrary widget to be the logo.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15851"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>w</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Widget to be used as logo.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15865"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-COLOR"
+></A
+>gnome_scores_set_color ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_color          (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> n,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the color of one entry.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15874"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>n</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Entry to be changed.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>col</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Color.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15892"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-DEF-COLOR"
+></A
+>gnome_scores_set_def_color ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_def_color      (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the default color of the entries.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15900"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>col</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Color</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15914"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-COLORS"
+></A
+>gnome_scores_set_colors ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_colors         (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *col);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the color of all the entries.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15922"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>col</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Array of colors.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15936"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-LOGO-LABEL-TITLE"
+></A
+>gnome_scores_set_logo_label_title ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_logo_label_title
+                                            (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *txt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a label to be the logo</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15944"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>txt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Name of the logo.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15958"
+></A
+><H3
+><A
+NAME="GNOME-SCORES-SET-CURRENT-PLAYER"
+></A
+>gnome_scores_set_current_player ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_scores_set_current_player (<A
+HREF="gnomescores.html"
+>GnomeScores</A
+> *gs,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> i);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the index of the current player in top ten.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15966"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomescores.html"
+>GnomeScores</A
+> widget</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>i</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Index of the current(from 0 to 9).</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomepropertybox.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x8080.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x15980.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomePropertyBox</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Miscellaneous utility functions and macros</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

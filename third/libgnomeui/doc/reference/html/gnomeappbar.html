@@ -1,0 +1,2323 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeAppBar</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Application management"
+HREF="x1495.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeApp"
+HREF="gnomeapp.html"><LINK
+REL="NEXT"
+TITLE="gnome-app-helper"
+HREF="libgnomeui-gnome-app-helper.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomeapp.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x1495.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnome-app-helper.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOMEAPPBAR">GnomeAppBar</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2036"
+></A
+><H2
+>Name</H2
+>GnomeAppBar&nbsp;--&nbsp;An application status and progress bar widget</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2039"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+#define     <A
+HREF="gnomeappbar.html#GNOME-APPBAR-HAS-STATUS-CAPS"
+>GNOME_APPBAR_HAS_STATUS</A
+>         (appbar)
+#define     <A
+HREF="gnomeappbar.html#GNOME-APPBAR-HAS-PROGRESS-CAPS"
+>GNOME_APPBAR_HAS_PROGRESS</A
+>       (appbar)
+#define     <A
+HREF="gnomeappbar.html#GNOME-APPBAR-INTERACTIVE-CAPS"
+>GNOME_APPBAR_INTERACTIVE</A
+>        (ab)
+struct      <A
+HREF="gnomeappbar.html#GNOMEAPPBAR-STRUCT"
+>GnomeAppBar</A
+>;
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomeappbar.html#GNOME-APPBAR-NEW"
+>gnome_appbar_new</A
+>                (<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> has_progress,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> has_status,
+                                             <A
+HREF="libgnomeui-gnome-types.html#GNOMEPREFERENCESTYPE"
+>GnomePreferencesType</A
+> interactivity);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-SET-STATUS"
+>gnome_appbar_set_status</A
+>         (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *status);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomeappbar.html#GNOME-APPBAR-GET-STATUS"
+>gnome_appbar_get_status</A
+>         (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-SET-DEFAULT"
+>gnome_appbar_set_default</A
+>        (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *default_status);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-PUSH"
+>gnome_appbar_push</A
+>               (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *status);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-POP"
+>gnome_appbar_pop</A
+>                (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-CLEAR-STACK"
+>gnome_appbar_clear_stack</A
+>        (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-SET-PROGRESS-PERCENTAGE"
+>gnome_appbar_set_progress_percentage</A
+>
+                                            (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             <A
+HREF=../glib/glib-basic-types.html#GFLOAT
+>gfloat</A> percentage);
+<A
+HREF=../gtk/gtkprogressbar.html
+>GtkProgressBar</A>* <A
+HREF="gnomeappbar.html#GNOME-APPBAR-GET-PROGRESS"
+>gnome_appbar_get_progress</A
+>   (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-REFRESH"
+>gnome_appbar_refresh</A
+>            (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-SET-PROMPT"
+>gnome_appbar_set_prompt</A
+>         (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *prompt,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> modal);
+void        <A
+HREF="gnomeappbar.html#GNOME-APPBAR-CLEAR-PROMPT"
+>gnome_appbar_clear_prompt</A
+>       (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gnomeappbar.html#GNOME-APPBAR-GET-RESPONSE"
+>gnome_appbar_get_response</A
+>       (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);
+&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2084"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  <A
+HREF=../gobject/gobject-the-base-object-type.html#GOBJECT
+>GObject</A>
+   +----<A
+HREF=../gtk/gtkobject.html
+>GtkObject</A>
+         +----<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>
+               +----<A
+HREF=../gtk/gtkcontainer.html
+>GtkContainer</A>
+                     +----<A
+HREF=../gtk/gtkbox.html
+>GtkBox</A>
+                           +----<A
+HREF=../gtk/gtkhbox.html
+>GtkHBox</A>
+                                 +----GnomeAppBar</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2093"
+></A
+><H2
+>Properties</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  &quot;<A
+HREF="gnomeappbar.html#GNOMEAPPBAR--HAS-PROGRESS"
+>has-progress</A
+>&quot;         <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>             : Read / Write / Construct
+  &quot;<A
+HREF="gnomeappbar.html#GNOMEAPPBAR--HAS-STATUS"
+>has-status</A
+>&quot;           <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>             : Read / Write / Construct
+  &quot;<A
+HREF="gnomeappbar.html#GNOMEAPPBAR--INTERACTIVITY"
+>interactivity</A
+>&quot;        <A
+HREF="libgnomeui-gnome-types.html#GNOMEPREFERENCESTYPE"
+>GnomePreferencesType</A
+> : Read / Write / Construct</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2102"
+></A
+><H2
+>Signal Prototypes</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;&quot;<A
+HREF="gnomeappbar.html#GNOMEAPPBAR-CLEAR-PROMPT"
+>clear-prompt</A
+>&quot;
+            void        user_function      (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);
+&quot;<A
+HREF="gnomeappbar.html#GNOMEAPPBAR-USER-RESPONSE"
+>user-response</A
+>&quot;
+            void        user_function      (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2111"
+></A
+><H2
+>Description</H2
+><P
+>A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> widget sits (usually) at the bottom of an application window and
+contains a progress bar (for indicating time consuming tasks and their
+completion status) and/or a status bar for sending short one-line message to
+the user. It is also possible (in theory) for the user to edit the contents of
+the status bar, should the application developer choose to allow that, however
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>note that this is not really working</I
+></SPAN
+> in the present
+implementation, so developers are recommended to avoid using interactive status
+bars and use proper editable widgets instead.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2116"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2118"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-HAS-STATUS-CAPS"
+></A
+>GNOME_APPBAR_HAS_STATUS()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_APPBAR_HAS_STATUS(appbar) (gnome_appbar_get_status(GNOME_APPBAR(appbar)) != NULL)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Whether or not the application bar contains a status box.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2123"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>TRUE</TT
+> is a status box is contained in the appbar.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2138"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-HAS-PROGRESS-CAPS"
+></A
+>GNOME_APPBAR_HAS_PROGRESS()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_APPBAR_HAS_PROGRESS(appbar) (gnome_appbar_get_progress(GNOME_APPBAR(appbar)) != NULL)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Whether or not the application bar contains a status box.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2143"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>TRUE</TT
+> is a status box is contained in the appbar.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2158"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-INTERACTIVE-CAPS"
+></A
+>GNOME_APPBAR_INTERACTIVE()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_APPBAR_INTERACTIVE(ab) ((ab) ? (ab)-&gt;interactive : FALSE)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Whether or not the user can edit the text in the statusbar portion of a
+<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2164"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ab</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>TRUE</TT
+> if the user can edit the statusbar text.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2179"
+></A
+><H3
+><A
+NAME="GNOMEAPPBAR-STRUCT"
+></A
+>struct GnomeAppBar</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeAppBar;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This widget contains the status bar and progress bar (if they are requested).
+After creating a <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> widget (via <A
+HREF="gnomeappbar.html#GNOME-APPBAR-NEW"
+>gnome_appbar_new</A
+>(), for example), it
+can then be passed to <A
+HREF="gnomeapp.html#GNOME-APP-SET-STATUSBAR"
+>gnome_app_set_statusbar</A
+>() to add it to the main
+application window.</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2187"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-NEW"
+></A
+>gnome_appbar_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_appbar_new                (<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> has_progress,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> has_status,
+                                             <A
+HREF="libgnomeui-gnome-types.html#GNOMEPREFERENCESTYPE"
+>GnomePreferencesType</A
+> interactivity);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new GNOME application status bar.  If <TT
+CLASS="PARAMETER"
+><I
+>has_progress</I
+></TT
+> is
+<TT
+CLASS="LITERAL"
+>TRUE</TT
+>, a small progress bar widget will be created, and placed on the
+left side of the appbar.  If <TT
+CLASS="PARAMETER"
+><I
+>has_status</I
+></TT
+> is <TT
+CLASS="LITERAL"
+>TRUE</TT
+>, a status bar,
+possibly an editable one, is created.</P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>interactivity</I
+></TT
+> parameter determines whether the appbar is an interactive
+"minibuffer" or just a status bar.  If it is set to
+GNOME_PREFERENCES_NEVER, it is never interactive.  If it is set to
+GNOME_PREFERENCES_USER we respect user preferences from
+ui-properties. If it's GNOME_PREFERENCES_ALWAYS we are interactive
+whether the user likes it or not. Basically, if your app supports
+both interactive and not (for example, if you use the
+gnome-app-util interfaces), you should use
+GNOME_PREFERENCES_USER. Otherwise, use the setting you
+support. Please note that "interactive" mode is not functional now;
+GtkEntry is inadequate and so a custom widget will be written
+eventually.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2207"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>has_progress</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if appbar needs progress bar widget, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> if not.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>has_status</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if appbar needs status bar widget, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> if not.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>interactivity</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Level of user activity required.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  Pointer to new <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> widget.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2233"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-SET-STATUS"
+></A
+>gnome_appbar_set_status ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_set_status         (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *status);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the status label without changing widget state; next call to
+<A
+HREF="gnomeappbar.html#GNOME-APPBAR-SET-STATUS"
+>gnome_appbar_set_status</A
+>() or <A
+HREF="gnomeappbar.html#GNOME-APPBAR-PUSH"
+>gnome_appbar_push</A
+>() will destroy this
+permanently.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2243"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>status</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Text to which status label will be set.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2257"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-GET-STATUS"
+></A
+>gnome_appbar_get_status ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_appbar_get_status         (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieves the statusbar widget.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2265"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A pointer to the statusbar widget.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2279"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-SET-DEFAULT"
+></A
+>gnome_appbar_set_default ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_set_default        (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *default_status);</PRE
+></TD
+></TR
+></TABLE
+><P
+>What to show when showing nothing else is on the stack; defaults to the
+empty string.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2287"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>default_status</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Text for status label.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2301"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-PUSH"
+></A
+>gnome_appbar_push ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_push               (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *status);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Push a new status message onto the status bar stack and display it.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2309"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>status</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Text of status message.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2323"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-POP"
+></A
+>gnome_appbar_pop ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_pop                (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove current status message, and display previous status
+message, if any.  It is fine to call this with an empty stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2330"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2340"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-CLEAR-STACK"
+></A
+>gnome_appbar_clear_stack ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_clear_stack        (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove all status messages from <TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>, and display default status
+message (if present).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2348"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2358"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-SET-PROGRESS-PERCENTAGE"
+></A
+>gnome_appbar_set_progress_percentage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_set_progress_percentage
+                                            (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             <A
+HREF=../glib/glib-basic-types.html#GFLOAT
+>gfloat</A> percentage);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets progress bar to <TT
+CLASS="PARAMETER"
+><I
+>percentage</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2367"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>percentage</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Percentage to which progress bar should be set.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2381"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-GET-PROGRESS"
+></A
+>gnome_appbar_get_progress ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkprogressbar.html
+>GtkProgressBar</A>* gnome_appbar_get_progress   (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieves the progress bar widget for further manipulation.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2389"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF=../gtk/gtkprogressbar.html
+>GtkProgressBar</A> widget which is <TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>'s progress bar, or <TT
+CLASS="LITERAL"
+>NULL</TT
+>
+if <TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+> has no progress bar.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2407"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-REFRESH"
+></A
+>gnome_appbar_refresh ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_refresh            (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Refresh the status message bar by redrawing the item on the top of the
+stack, or the default value if the stack is empty.. Useful to force the
+message from a previous call to <A
+HREF="gnomeappbar.html#GNOME-APPBAR-SET-STATUS"
+>gnome_appbar_set_status</A
+>() to disappear.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2415"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2425"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-SET-PROMPT"
+></A
+>gnome_appbar_set_prompt ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_set_prompt         (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *prompt,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> modal);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Put a prompt in the appbar and wait for a response. When the
+user responds or cancels, a 'user_response' signal is emitted.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2434"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>prompt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Text of the prompt message.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>modal</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> If <TT
+CLASS="LITERAL"
+>TRUE</TT
+>, grabs input.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2453"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-CLEAR-PROMPT"
+></A
+>gnome_appbar_clear_prompt ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_appbar_clear_prompt       (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove any prompt from the status message bar.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2460"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2470"
+></A
+><H3
+><A
+NAME="GNOME-APPBAR-GET-RESPONSE"
+></A
+>gnome_appbar_get_response ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gnome_appbar_get_response       (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the response to the prompt, if any.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2478"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Text from <TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+> entry widget, as entered by user. This string should be
+freed by the caller (using gfree()) when no longer required.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2494"
+></A
+><H2
+>Properties</H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GNOMEAPPBAR--HAS-PROGRESS"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>has-progress</TT
+>&quot; (<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> : Read / Write / Construct)</DT
+><DD
+><P
+>Create a progress widget.</P
+></DD
+><DT
+><A
+NAME="GNOMEAPPBAR--HAS-STATUS"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>has-status</TT
+>&quot; (<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> : Read / Write / Construct)</DT
+><DD
+><P
+>Create a status widget.</P
+></DD
+><DT
+><A
+NAME="GNOMEAPPBAR--INTERACTIVITY"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>interactivity</TT
+>&quot; (<A
+HREF="libgnomeui-gnome-types.html#GNOMEPREFERENCESTYPE"
+>GnomePreferencesType</A
+> : Read / Write / Construct)</DT
+><DD
+><P
+>Level of user activity required.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2518"
+></A
+><H2
+>Signals</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2520"
+></A
+><H3
+><A
+NAME="GNOMEAPPBAR-CLEAR-PROMPT"
+></A
+>The &quot;clear-prompt&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2527"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the object which received the signal.&#13;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>user data set when the signal handler was connected.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2540"
+></A
+><H3
+><A
+NAME="GNOMEAPPBAR-USER-RESPONSE"
+></A
+>The &quot;user-response&quot; signal</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="gnomeappbar.html"
+>GnomeAppBar</A
+> *appbar,
+                                            <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2547"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>appbar</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the object which received the signal.&#13;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>user data set when the signal handler was connected.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomeapp.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x1495.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnome-app-helper.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeApp</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>gnome-app-helper</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

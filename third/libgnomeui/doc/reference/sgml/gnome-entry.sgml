@@ -1,0 +1,347 @@
+<refentry id="GnomeEntry">
+<refmeta>
+<refentrytitle>GnomeEntry</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeEntry</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <link linkend="GnomeEntryPrivate">GnomeEntryPrivate</link>;
+struct      <link linkend="GnomeEntry-struct">GnomeEntry</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-entry-new">gnome_entry_new</link>                 (const <link linkend="gchar">gchar</link> *history_id);
+void        <link linkend="gnome-entry-construct">gnome_entry_construct</link>           (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             const <link linkend="gchar">gchar</link> *history_id);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-entry-gtk-entry">gnome_entry_gtk_entry</link>           (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-entry-get-history-id">gnome_entry_get_history_id</link>     (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);
+void        <link linkend="gnome-entry-set-history-id">gnome_entry_set_history_id</link>      (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             const <link linkend="gchar">gchar</link> *history_id);
+void        <link linkend="gnome-entry-set-max-saved">gnome_entry_set_max_saved</link>       (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             <link linkend="guint">guint</link> max_saved);
+<link linkend="guint">guint</link>       <link linkend="gnome-entry-get-max-saved">gnome_entry_get_max_saved</link>       (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);
+void        <link linkend="gnome-entry-prepend-history">gnome_entry_prepend_history</link>     (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             <link linkend="gboolean">gboolean</link> save,
+                                             const <link linkend="gchar">gchar</link> *text);
+void        <link linkend="gnome-entry-append-history">gnome_entry_append_history</link>      (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             <link linkend="gboolean">gboolean</link> save,
+                                             const <link linkend="gchar">gchar</link> *text);
+void        <link linkend="gnome-entry-clear-history">gnome_entry_clear_history</link>       (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBox">GtkBox</link>
+                           +----<link linkend="GtkHBox">GtkHBox</link>
+                                 +----<link linkend="GtkCombo">GtkCombo</link>
+                                       +----GnomeEntry
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeEntry--history-id">history-id</link>&quot;           <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeEntry--gtk-entry">gtk-entry</link>&quot;            <link linkend="GtkEntry">GtkEntry</link>             : Read
+</synopsis>
+</refsect1>
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GnomeEntry-activate">activate</link>&quot;  void        user_function      (<link linkend="GnomeEntry">GnomeEntry</link> *entry,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeEntryPrivate">struct GnomeEntryPrivate</title>
+<programlisting>struct GnomeEntryPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeEntry-struct">struct GnomeEntry</title>
+<programlisting>struct GnomeEntry;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-new">gnome_entry_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_entry_new                 (const <link linkend="gchar">gchar</link> *history_id);</programlisting>
+<para>
+Creates a new GnomeEntry widget.  If  <parameter>history_id</parameter> is
+not <literal>NULL</literal>, then the history list will be saved and restored between
+uses under the given id.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>history_id</parameter>&nbsp;:</entry>
+<entry> If not <literal>NULL</literal>, the text id under which history data is stored
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Newly-created GnomeEntry widget.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-construct">gnome_entry_construct ()</title>
+<programlisting>void        gnome_entry_construct           (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             const <link linkend="gchar">gchar</link> *history_id);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>history_id</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-gtk-entry">gnome_entry_gtk_entry ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_entry_gtk_entry           (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);</programlisting>
+<para>
+Obtain pointer to GnomeEntry's internal text entry</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry> Pointer to GnomeEntry object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Pointer to GtkEntry widget.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-get-history-id">gnome_entry_get_history_id ()</title>
+<programlisting>const <link linkend="gchar">gchar</link>* gnome_entry_get_history_id     (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);</programlisting>
+<para>
+Returns the current history id of the GnomeEntry widget.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry> Pointer to GnomeEntry object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The current history id.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-set-history-id">gnome_entry_set_history_id ()</title>
+<programlisting>void        gnome_entry_set_history_id      (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             const <link linkend="gchar">gchar</link> *history_id);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>history_id</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-set-max-saved">gnome_entry_set_max_saved ()</title>
+<programlisting>void        gnome_entry_set_max_saved       (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             <link linkend="guint">guint</link> max_saved);</programlisting>
+<para>
+Set internal limit on number of history items saved
+to the config file, when #<link linkend="gnome-entry-save-history">gnome_entry_save_history</link>() is called.
+Zero is an acceptable value for <parameter>max_saved</parameter>, but the same thing is
+accomplished by setting the history id of <parameter>gentry</parameter> to <literal>NULL</literal>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry> Pointer to GnomeEntry object.
+</entry></row>
+<row><entry align="right"><parameter>max_saved</parameter>&nbsp;:</entry>
+<entry> Maximum number of history items to save
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-get-max-saved">gnome_entry_get_max_saved ()</title>
+<programlisting><link linkend="guint">guint</link>       gnome_entry_get_max_saved       (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);</programlisting>
+<para>
+Get internal limit on number of history items saved
+to the config file, when #<link linkend="gnome-entry-save-history">gnome_entry_save_history</link>() is called.
+See #<link linkend="gnome-entry-set-max-saved">gnome_entry_set_max_saved</link>().</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry> Pointer to GnomeEntry object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An unsigned integer
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-prepend-history">gnome_entry_prepend_history ()</title>
+<programlisting>void        gnome_entry_prepend_history     (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             <link linkend="gboolean">gboolean</link> save,
+                                             const <link linkend="gchar">gchar</link> *text);</programlisting>
+<para>
+Adds a history item of the given <parameter>text</parameter> to the head of
+the history list inside <parameter>gentry</parameter>.  If <parameter>save</parameter> is <literal>TRUE</literal>, the history
+item will be saved in the config file (assuming that <parameter>gentry</parameter>'s
+history id is not <literal>NULL</literal>).</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry> Pointer to GnomeEntry object.
+</entry></row>
+<row><entry align="right"><parameter>save</parameter>&nbsp;:</entry>
+<entry> If <literal>TRUE</literal>, history entry will be saved to config file
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> Text to add
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-append-history">gnome_entry_append_history ()</title>
+<programlisting>void        gnome_entry_append_history      (<link linkend="GnomeEntry">GnomeEntry</link> *gentry,
+                                             <link linkend="gboolean">gboolean</link> save,
+                                             const <link linkend="gchar">gchar</link> *text);</programlisting>
+<para>
+Adds a history item of the given <parameter>text</parameter> to the tail
+of the history list inside <parameter>gentry</parameter>.  If <parameter>save</parameter> is <literal>TRUE</literal>, the
+history item will be saved in the config file (assuming that
+<parameter>gentry</parameter>'s history id is not <literal>NULL</literal>).</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry> Pointer to GnomeEntry object.
+</entry></row>
+<row><entry align="right"><parameter>save</parameter>&nbsp;:</entry>
+<entry> If <literal>TRUE</literal>, history entry will be saved to config file
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> Text to add
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-entry-clear-history">gnome_entry_clear_history ()</title>
+<programlisting>void        gnome_entry_clear_history       (<link linkend="GnomeEntry">GnomeEntry</link> *gentry);</programlisting>
+<para>
+Clears the history, you should call <link linkend="gnome-entry-save-history">gnome_entry_save_history</link>
+To make the change permanent.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gentry</parameter>&nbsp;:</entry>
+<entry> Pointer to GnomeEntry object.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<variablelist>
+<varlistentry><term><anchor id="GnomeEntry--history-id">&quot;<literal>history-id</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>History id.</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeEntry--gtk-entry">&quot;<literal>gtk-entry</literal>&quot; (<link linkend="GtkEntry">GtkEntry</link> : Read)</term>
+<listitem>
+<para>The GTK entry.</para>
+</listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GnomeEntry-activate">The &quot;activate&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="GnomeEntry">GnomeEntry</link> *entry,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>entry</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+</refsect1>
+
+
+
+</refentry>

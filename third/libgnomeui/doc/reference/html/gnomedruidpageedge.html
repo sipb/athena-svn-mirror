@@ -1,0 +1,2261 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeDruidPageEdge</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Druids"
+HREF="x6263.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeDruidPage"
+HREF="gnomedruidpage.html"><LINK
+REL="NEXT"
+TITLE="GnomeDruidPageStandard"
+HREF="gnomedruidpagestandard.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomedruidpage.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x6263.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnomedruidpagestandard.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOMEDRUIDPAGEEDGE">GnomeDruidPageEdge</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN7059"
+></A
+><H2
+>Name</H2
+>GnomeDruidPageEdge&nbsp;--&nbsp;A widget used to implement first and last pages in a druid's sequence.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN7062"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+enum        <A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+>;
+struct      <A
+HREF="gnomedruidpageedge.html#GNOMEDRUIDPAGEEDGE-STRUCT"
+>GnomeDruidPageEdge</A
+>;
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-NEW"
+>gnome_druid_page_edge_new</A
+>       (<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> position);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-NEW-AA"
+>gnome_druid_page_edge_new_aa</A
+>    (<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> position);
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-NEW-WITH-VALS"
+>gnome_druid_page_edge_new_with_vals</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> position,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> antialiased,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *logo,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *watermark,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *top_watermark);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-BG-COLOR"
+>gnome_druid_page_edge_set_bg_color</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-TEXTBOX-COLOR"
+>gnome_druid_page_edge_set_textbox_color</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-LOGO-BG-COLOR"
+>gnome_druid_page_edge_set_logo_bg_color</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-TITLE-COLOR"
+>gnome_druid_page_edge_set_title_color</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-TEXT-COLOR"
+>gnome_druid_page_edge_set_text_color</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-TEXT"
+>gnome_druid_page_edge_set_text</A
+>  (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-TITLE"
+>gnome_druid_page_edge_set_title</A
+> (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-LOGO"
+>gnome_druid_page_edge_set_logo</A
+>  (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *logo_image);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-WATERMARK"
+>gnome_druid_page_edge_set_watermark</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *watermark);
+void        <A
+HREF="gnomedruidpageedge.html#GNOME-DRUID-PAGE-EDGE-SET-TOP-WATERMARK"
+>gnome_druid_page_edge_set_top_watermark</A
+>
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *top_watermark_image);
+&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7112"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  <A
+HREF=../gobject/gobject-the-base-object-type.html#GOBJECT
+>GObject</A>
+   +----<A
+HREF=../gtk/gtkobject.html
+>GtkObject</A>
+         +----<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>
+               +----<A
+HREF=../gtk/gtkcontainer.html
+>GtkContainer</A>
+                     +----<A
+HREF=../gtk/gtkbin.html
+>GtkBin</A>
+                           +----<A
+HREF="gnomedruidpage.html"
+>GnomeDruidPage</A
+>
+                                 +----GnomeDruidPageEdge</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7121"
+></A
+><H2
+>Description</H2
+><P
+>A druid can be thought of as having a page that starts the sequence, one or
+more pages that end the sequences (there can be multiple end pages if the flow
+of pages diverges at some point) and some pages that are in between the start
+and end pages. </P
+><P
+>The <A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> widget is for the first and last pages in a druid's
+sequence of pages. Pages in the "middle" of a sequence should use
+<A
+HREF="gnomedruidpagestandard.html"
+>GnomeDruidPageStandard</A
+>.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7127"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7129"
+></A
+><H3
+><A
+NAME="GNOMEEDGEPOSITION"
+></A
+>enum GnomeEdgePosition</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+  /* update structure when adding enums */
+	GNOME_EDGE_START,
+	GNOME_EDGE_FINISH,
+	GNOME_EDGE_OTHER,
+	GNOME_EDGE_LAST /* for counting purposes */
+} GnomeEdgePosition;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Used to pass around information about the position of a <A
+HREF="gnomedruidpage.html"
+>GnomeDruidPage</A
+>
+within the overall <A
+HREF="gnomedruid.html"
+>GnomeDruid</A
+>. This enables the correct "surrounding"
+content for the page to be drawn.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7137"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#F0F0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GNOME_EDGE_START</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The current page is at the beginning of the druid.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GNOME_EDGE_FINISH</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The current page is at the end of the druid.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GNOME_EDGE_OTHER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The current page is neither the first nor the last page
+(usually not required).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GNOME_EDGE_LAST</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Used internally to indicate the last value of the
+enumeration. This should not be passed in to any function expecting a
+<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> value.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7159"
+></A
+><H3
+><A
+NAME="GNOMEDRUIDPAGEEDGE-STRUCT"
+></A
+>struct GnomeDruidPageEdge</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeDruidPageEdge {
+	gchar *title;
+	gchar *text;
+	GdkPixbuf *logo_image;
+	GdkPixbuf *watermark_image;
+	GdkPixbuf *top_watermark_image;
+
+	GdkColor background_color;
+	GdkColor textbox_color;
+	GdkColor logo_background_color;
+	GdkColor title_color;
+	GdkColor text_color;
+
+	GnomeEdgePosition position : 2;
+
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>A widget holding information about the overall look of the currently
+displaying druid page.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7165"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFF0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *<TT
+CLASS="STRUCTFIELD"
+><I
+>title</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The current title of the displayed page.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *<TT
+CLASS="STRUCTFIELD"
+><I
+>text</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The current text of the displayed page.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *<TT
+CLASS="STRUCTFIELD"
+><I
+>logo_image</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The logo of the displayed page.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *<TT
+CLASS="STRUCTFIELD"
+><I
+>watermark_image</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The watermark on the left side of the displayed page.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *<TT
+CLASS="STRUCTFIELD"
+><I
+>top_watermark_image</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The watermark on the top of the displayed page.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> <TT
+CLASS="STRUCTFIELD"
+><I
+>background_color</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The color of the edge of the current page (outside the
+text area).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> <TT
+CLASS="STRUCTFIELD"
+><I
+>textbox_color</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The color of the textbox area of the displayed page.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> <TT
+CLASS="STRUCTFIELD"
+><I
+>logo_background_color</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The background color of the displayed page's logo.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> <TT
+CLASS="STRUCTFIELD"
+><I
+>title_color</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The color of the title text.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> <TT
+CLASS="STRUCTFIELD"
+><I
+>text_color</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The color of the body text.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> <TT
+CLASS="STRUCTFIELD"
+><I
+>position</I
+></TT
+> : 2</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The position of the current page within the druid (a
+<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> value).</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7226"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-NEW"
+></A
+>gnome_druid_page_edge_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_druid_page_edge_new       (<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> position);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new GnomeDruidPageEdge widget.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7234"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>position</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Position in druid.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> pointer to a new <A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7249"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-NEW-AA"
+></A
+>gnome_druid_page_edge_new_aa ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_druid_page_edge_new_aa    (<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> position);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new GnomeDruidPageEdge widget.  The
+internal canvas is created in an antialiased mode.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7257"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>position</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Position in druid.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> pointer to a new <A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7272"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-NEW-WITH-VALS"
+></A
+>gnome_druid_page_edge_new_with_vals ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_druid_page_edge_new_with_vals
+                                            (<A
+HREF="gnomedruidpageedge.html#GNOMEEDGEPOSITION"
+>GnomeEdgePosition</A
+> position,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> antialiased,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *logo,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *watermark,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *top_watermark);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will create a new GNOME Druid Edge page, with the values given.  It is
+acceptable for any of them to be <TT
+CLASS="LITERAL"
+>NULL</TT
+>.  Position should be
+<TT
+CLASS="LITERAL"
+>GNOME_EDGE_START</TT
+>, <TT
+CLASS="LITERAL"
+>GNOME_EDGE_FINISH</TT
+> or <TT
+CLASS="LITERAL"
+>GNOME_EDGE_OTHER</TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7290"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>position</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Position in druid.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>antialiased</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Use an antialiased canvas</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>title</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The title.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The introduction text.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>logo</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The logo in the upper right corner.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>watermark</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The watermark on the left.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>top_watermark</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The watermark on the left.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A> pointer to a new <A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7329"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-BG-COLOR"
+></A
+>gnome_druid_page_edge_set_bg_color ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_bg_color
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will set the background color to be the <TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>.  You do
+not need to allocate the color, as the <TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+> will do it for you.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7339"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new background color.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7353"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-TEXTBOX-COLOR"
+></A
+>gnome_druid_page_edge_set_textbox_color ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_textbox_color
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the color of the background in the main text area of the page.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7361"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new textbox color.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7375"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-LOGO-BG-COLOR"
+></A
+>gnome_druid_page_edge_set_logo_bg_color ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_logo_bg_color
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the color behind the druid page's logo.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7383"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new color of the logo's background.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7397"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-TITLE-COLOR"
+></A
+>gnome_druid_page_edge_set_title_color ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_title_color
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the color of the title text on the current page.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7405"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The color of the title text.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7419"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-TEXT-COLOR"
+></A
+>gnome_druid_page_edge_set_text_color ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_text_color
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk/gdk-colormaps-and-colors.html#GDKCOLOR
+>GdkColor</A> *color);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the color of the text in the body of the druid page.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7427"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new test color.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7441"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-TEXT"
+></A
+>gnome_druid_page_edge_set_text ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_text  (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the contents of the text portion of the druid page.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7449"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The text contents.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7463"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-TITLE"
+></A
+>gnome_druid_page_edge_set_title ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_title (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the contents of the page's title text.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7471"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>title</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The title text</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7485"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-LOGO"
+></A
+>gnome_druid_page_edge_set_logo ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_logo  (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *logo_image);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets a <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> as the logo in the top right corner.
+If <TT
+CLASS="LITERAL"
+>NULL</TT
+>, then no logo will be displayed.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7495"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>logo_image</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> to use as a logo.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7510"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-WATERMARK"
+></A
+>gnome_druid_page_edge_set_watermark ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_watermark
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *watermark);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets a <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> as the watermark on the left strip on the
+druid. If <TT
+CLASS="PARAMETER"
+><I
+>watermark</I
+></TT
+> is <TT
+CLASS="LITERAL"
+>NULL</TT
+>, it is reset to the normal color.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7521"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <TT
+CLASS="PARAMETER"
+><I
+>GnomeDruidPageEdge</I
+></TT
+> instance.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>watermark</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> to use as a watermark.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7536"
+></A
+><H3
+><A
+NAME="GNOME-DRUID-PAGE-EDGE-SET-TOP-WATERMARK"
+></A
+>gnome_druid_page_edge_set_top_watermark ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_druid_page_edge_set_top_watermark
+                                            (<A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> *druid_page_edge,
+                                             <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> *top_watermark_image);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets a <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> as the watermark on top of the top
+strip on the druid.  If <TT
+CLASS="PARAMETER"
+><I
+>top_watermark_image</I
+></TT
+> is <TT
+CLASS="LITERAL"
+>NULL</TT
+>, it is reset
+to the normal color.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7547"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>druid_page_edge</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the <A
+HREF="gnomedruidpageedge.html"
+>GnomeDruidPageEdge</A
+> to work on</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>top_watermark_image</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The <A
+HREF=../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GDKPIXBUF
+>GdkPixbuf</A> to use as a top watermark</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnomedruidpage.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="x6263.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnomedruidpagestandard.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeDruidPage</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeDruidPageStandard</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
