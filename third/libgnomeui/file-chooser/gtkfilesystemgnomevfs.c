@@ -282,7 +282,8 @@ static FolderChild *lookup_folder_child_from_uri (GtkFileFolder     *folder,
 static GObjectClass *system_parent_class;
 static GObjectClass *folder_parent_class;
 
-#define ITEMS_PER_NOTIFICATION 100
+#define ITEMS_PER_LOCAL_NOTIFICATION 10000
+#define ITEMS_PER_REMOTE_NOTIFICATION 100
 
 /*
  * GtkFileSystemGnomeVFS
@@ -544,16 +545,24 @@ remove_all  (gpointer  key,
 static void
 load_dir (GtkFileFolderGnomeVFS *folder_vfs)
 {
+  int num_items;
+
   if (folder_vfs->async_handle)
     gnome_vfs_async_cancel (folder_vfs->async_handle);
 
   g_hash_table_foreach_remove (folder_vfs->children,
 			       remove_all, NULL);
   gnome_authentication_manager_push_async ();
+
+  if (g_str_has_prefix (folder_vfs->uri, "file:"))
+    num_items = ITEMS_PER_LOCAL_NOTIFICATION;
+  else
+    num_items = ITEMS_PER_REMOTE_NOTIFICATION;
+
   gnome_vfs_async_load_directory (&folder_vfs->async_handle,
 				  folder_vfs->uri,
 				  get_options (folder_vfs->types),
-				  ITEMS_PER_NOTIFICATION,
+				  num_items,
 				  GNOME_VFS_PRIORITY_DEFAULT,
 				  directory_load_callback, folder_vfs);
   gnome_authentication_manager_pop_async ();
@@ -1151,6 +1160,7 @@ gtk_file_system_gnome_vfs_parse (GtkFileSystem     *file_system,
       gchar *file;
       gchar *host_and_path;
       gchar *host_and_path_escaped;
+      gboolean complete_hostname = TRUE;
 
       gchar *colon = strchr (stripped, ':');
 
@@ -1162,6 +1172,9 @@ gtk_file_system_gnome_vfs_parse (GtkFileSystem     *file_system,
 	  gchar *first_slash = strchr (colon + 1, '/');
 
 	  host_name = g_strndup (colon + 1, first_slash - (colon + 1));
+
+	  if (first_slash == colon + 1)
+	    complete_hostname = FALSE;
 
 	  if (first_slash == last_slash)
 	    path = g_strdup ("/");
@@ -1180,8 +1193,9 @@ gtk_file_system_gnome_vfs_parse (GtkFileSystem     *file_system,
 	  gchar *first_slash = strchr (colon + 3, '/');
 	  if (!first_slash)
 	    {
+	      complete_hostname = FALSE;
 	      host_name = g_strdup (colon + 3);
-	      path = g_strdup ("/");
+	      path = g_strdup ("");
 	      file = g_strdup ("");
 	    }
 	  else
@@ -1199,17 +1213,29 @@ gtk_file_system_gnome_vfs_parse (GtkFileSystem     *file_system,
 
       host_and_path = g_strconcat (host_name, path, NULL);
       host_and_path_escaped = gnome_vfs_escape_host_and_path_string (host_and_path);
-      *folder = gtk_file_path_new_steal (g_strconcat (scheme, "//", host_and_path_escaped, NULL));
-      *file_part = file;
-      result = TRUE;
+
+      if (complete_hostname)
+	{
+	  *folder = gtk_file_path_new_steal (g_strconcat (scheme, "//", host_and_path_escaped, NULL));
+	  *file_part = file;
+	  result = TRUE;
+	}
+      else
+	{
+	  /* Don't switch the folder until we have seen the full hostname.
+           * Otherwise, the auth dialog will come up for every single character
+           * of the hostname being typed in. 
+           */
+	  *folder = gtk_file_path_copy (base_path);
+	  *file_part = g_strdup (stripped);
+	  result = TRUE;
+	}
 
       g_free (scheme);
       g_free (host_name);
       g_free (path);
       g_free (host_and_path);
       g_free (host_and_path_escaped);
-
-      result = TRUE;
     }
   else
     {
@@ -1407,6 +1433,9 @@ gtk_file_system_gnome_vfs_render_icon (GtkFileSystem     *file_system,
     }
   else
     pixbuf = NULL;
+
+  if (info)
+    gnome_vfs_file_info_unref (info);
 
   return pixbuf;
 }

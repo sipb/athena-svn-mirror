@@ -1,3 +1,77 @@
+2005-01-25  Federico Mena Quintero  <federico@ximian.com>
+
+	Merged from HEAD:
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(gtk_file_system_gnome_vfs_render_icon): Free the file info.
+	Fixes #147303; patch by Christian Persch <chpe@gnome.org>.
+
+2005-01-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-password-dialog.c: (gnome_password_dialog_new):
+	Merge compiler warning fixes too.
+
+2005-01-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-app.c: (gnome_app_instance_init):
+	Merge fix for bug #164948.
+
+2005-01-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	configure.in: Merge fix for bug #154969.
+
+2004-12-03  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c: (load_dir):
+	Really commit fix for file-chooser crasher.
+
+2004-12-02  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "zu" to ALL_LINGUAS.
+
+2004-12-01  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+2004-11-25  Federico Mena Quintero  <federico@ximian.com>
+
+	Merged from HEAD; fix by Alex Larsson:
+
+	* file-chooser/gtkfilesystemgnomevfs.c (load_dir):
+	Fix crasher. uri is a string, not a GnomeVFSUri.
+
+2004-11-18  Federico Mena Quintero  <federico@ximian.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c (load_dir): Use a different
+	number of items per notification depending on whether the folder
+	system is local or not.
+
+2004-09-22  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=153151
+	* libgnomeui/gnome-entry.h: Removed prototype for
+	gnome_entry_construct, as that function was removed in
+	libgnomeui/gnome-entry.c 1.68 (2001-09-04).
+	* libgnomeui/gnome-href.h: Removed prototype for gnome_href_construct
+	as that function was removed in libgnomeui/gnome-href.c 1.31.2.1
+	(2001-08-30).
+
+2004-09-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c (gtk_file_system_gnome_vfs_parse): 
+	Don't switch the folder until we have seen the full hostname.
+	Otherwise, the auth dialog will come up for every single character
+	of the hostname being typed in. (#151296, Rodney Dawes)
+
+2004-09-13  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in: Bumped the gnome-vfs version requirement to 2.7.1 as
+	that is the first release to have GNOME_VFS_MODULE_CALLBACK_QUESTION
+	which is used in libgnomeui/gnome-authentication-manager.c's
+	gnome_authentication_manager_init().
+
+==================== 2.8.0 ====================
+
 2004-09-13  Anders Carlsson  <andersca@gnome.org>
 
 	* configure.in: Release 2.8.0

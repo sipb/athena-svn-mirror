@@ -10,8 +10,8 @@ AC_PREREQ(2.54)
 #
 m4_define([libgnomeui_major_version], [2])
 m4_define([libgnomeui_minor_version], [8])
-m4_define([libgnomeui_micro_version], [0])
-m4_define([libgnomeui_interface_age], [0])
+m4_define([libgnomeui_micro_version], [1])
+m4_define([libgnomeui_interface_age], [1])
 # If you need a modifier for the version number. 
 # Normally empty, but can be used to make "fixup" releases.
 m4_define([libgnomeui_extraversion], [])
@@ -25,8 +25,9 @@ m4_define([libbonoboui_required_version],    [2.0.0])
 m4_define([gconf_required_version],          [1.1.11])
 m4_define([pango_required_version],          [1.1.2])
 m4_define([gtk_required_version],            [2.4.1])
-m4_define([gnomevfs_required_version],       [2.5.3])
+m4_define([gnomevfs_required_version],       [2.7.3])
 m4_define([libglade_required_version],       [2.0.0])
+m4_define([gnome_keyring_required_version],  [0.4])
 
 dnl libtool versioning from libgnome
 
@@ -75,7 +76,7 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
                    [Name of gettext translation domain for library])
 
-ALL_LINGUAS="af am ar az be bg bn br bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu id is it ja kn ko li lt lv mi mk ml mn mr ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta th tk tr uk vi wa yi zh_CN zh_TW"
+ALL_LINGUAS="af am ar az be bg bn br bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu id is it ja kn ko li lt lv mi mk ml mn mr ms nb ne nl nn no nso pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta th tk tr uk vi wa yi zh_CN zh_TW zu"
 AM_GLIB_GNU_GETTEXT
 AM_GLIB_DEFINE_LOCALEDIR([GNOMEUILOCALEDIR])
 
@@ -153,7 +154,7 @@ GNOMEUI_MODULES="dnl
   gconf-2.0 >= gconf_required_version dnl
   pango >= pango_required_version dnl
   gnome-vfs-2.0 >= gnomevfs_required_version dnl
-  gnome-keyring-1"
+  gnome-keyring-1 >= gnome_keyring_required_version"
 PKG_CHECK_MODULES(LIBGNOMEUI, [$GNOMEUI_MODULES])
 LIBGNOMEUI_LIBS="$LIBGNOMEUI_LIBS $LIBJPEG"
 
