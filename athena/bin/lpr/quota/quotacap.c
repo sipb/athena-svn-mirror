@@ -11,6 +11,7 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #define	BUFSIZ	1024
 #define MAXHOP	32	/* max number of tc= indirections */
 
+#include "config.h"
 #include <ctype.h>
 #include <stdio.h>
 #ifdef HESIOD
