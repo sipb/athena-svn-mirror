@@ -24,6 +24,8 @@
  *
  */
 
+#undef PROFILE_DEBUG
+
 #define o_return_val_if_fail(expr, val) if(!(expr)) { CORBA_exception_set_system(ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO); return (val); }
 #define o_return_if_fail(expr) if(!(expr)) { CORBA_exception_set_system(ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO); return; }
 
@@ -95,6 +97,7 @@ static void ORBit_rc_load(const char *rcfile, ORBit_orb_options *options)
 	FILE *fp;
 	GHashTable *read_options;
 	ORBit_orb_options *search;
+	char buf[1024];
 
 	fp=fopen(rcfile, "r");
 
@@ -103,37 +106,31 @@ static void ORBit_rc_load(const char *rcfile, ORBit_orb_options *options)
 
 	read_options=g_hash_table_new(g_str_hash, g_str_equal);
 
-	while(!feof(fp)) {
-		char buf[1024];
+	while(fgets(buf, 1024, fp)) {
+		guchar *bptr, *tmp, *key, *data;
+		size_t start, len;
+		if(buf[0]=='#')
+			continue;
+		
+		bptr=buf;
+		tmp=strpbrk(bptr, " \t\n=");
+		if(tmp==NULL) continue;
+		*tmp++='\0';
+		key=g_strdup(bptr);
+		bptr=tmp;
 
-		if(fgets(buf, 1024, fp)!=NULL) {
-			guchar *bptr, *tmp, *key, *data;
-			size_t start, len;
-
-			if(buf[0]=='#')
-				continue;
-			
-			bptr=buf;
-			tmp=strpbrk(bptr, " \t\n=");
-			if(tmp==NULL) continue;
-			*tmp++='\0';
-			key=g_strdup(bptr);
-			bptr=tmp;
-
-			start=0;
-			while(bptr+start != '\0' &&
-			     (isspace(bptr[start]) || bptr[start]=='='))
-				start++;
-			len=strcspn(bptr+start, " \t\n");
-			bptr[start+len]='\0';
-			if(len>0) {
-				data=g_strdup(bptr+start);
-			} else {
-				data=g_strdup("TRUE");
-			}
-
-			g_hash_table_insert(read_options, key, data);
+		start=0;
+		while(bptr+start != '\0' &&
+		     (isspace(bptr[start]) || bptr[start]=='='))
+			start++;
+		len=strcspn(bptr+start, " \t\n");
+		bptr[start+len]='\0';
+		if(len>0) {
+			data=g_strdup(bptr+start);
+		} else {
+			data=g_strdup("TRUE");
 		}
+		g_hash_table_insert(read_options, key, data);
 	}
 	fclose(fp);
 
@@ -407,12 +404,11 @@ CORBA_ORB CORBA_ORB_init(int *argc, char **argv, CORBA_ORBid orb_identifier, COR
 
 	ORBIT_ROOT_OBJECT(orb)->refs = 1;
 
-	if(orb_id_opt!=NULL) {
-		if(!ORBit_ORBid_setup(orb, orb_id_opt))
-			goto error;
-		g_free(orb_id_opt);
-	} else if(orb_identifier!=NULL) {
+	if(orb_identifier!=NULL && *orb_identifier!='\0') {
 		if(!ORBit_ORBid_setup(orb, orb_identifier))
+		goto error;
+	} else if(orb_id_opt!=NULL) {
+		if(!ORBit_ORBid_setup(orb, orb_id_opt))
 			goto error;
 	} else {
 		orb->orb_identifier=g_strdup("orbit-local-orb");
@@ -627,7 +623,9 @@ static void ORBit_emit_profile(gpointer item, gpointer userdata)
 		break;
 
 	default:
-		g_warning("Skipping tag %d", profile->profile_type);
+#ifdef PROFILE_DEBUG
+		g_warning("Unknown tag %d", profile->profile_type);
+#endif
 		break;
 	}
 }
@@ -934,7 +932,9 @@ CORBA_Object CORBA_ORB_string_to_object(CORBA_ORB orb, CORBA_char *str,
 			profiles=g_slist_append(profiles, object_info);
 			break;
 		default:
+#ifdef PROFILE_DEBUG
 			g_warning("Unknown tag 0x%x", tag);
+#endif
 
 			/* Skip it */
 			if(!CDR_get_ulong(codec, &misclen))
@@ -1026,6 +1026,8 @@ CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB orb, CORBA_ORB_Objec
 	g_return_val_if_fail(ev, CORBA_OBJECT_NIL);
 	o_return_val_if_fail(orb, CORBA_OBJECT_NIL);
 
+	CORBA_exception_free(ev);
+
 	if(!strcmp(identifier, "ImplementationRepository"))
 		return CORBA_Object_duplicate(orb->imr, ev);
 	else if(!strcmp(identifier, "InterfaceRepository"))
@@ -1039,10 +1041,10 @@ CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB orb, CORBA_ORB_Objec
 			PortableServer_POAManager poa_mgr;
 			policies._buffer = policybuf;
 			/* The only non-default policy used by the RootPOA is IMPLICIT ACTIVATION */ 
-			policies._buffer[0]=
+			policies._buffer[0]= (CORBA_Policy)
 				PortableServer_POA_create_implicit_activation_policy(NULL,
 										     PortableServer_IMPLICIT_ACTIVATION,
-										     ev);			
+										     ev);
 			/* Create a poa manager */
 			poa_mgr = ORBit_POAManager_new();
 			poa_mgr->orb = orb;
@@ -1055,7 +1057,7 @@ CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB orb, CORBA_ORB_Objec
 					      &policies,
 					      ev);
 			CORBA_Object_duplicate(orb->root_poa, ev);
-			CORBA_Object_release(policies._buffer[0],ev);
+			CORBA_Object_release((CORBA_Object)policies._buffer[0],ev);
 		}
 
 		return CORBA_Object_duplicate(orb->root_poa, ev);

@@ -11,6 +11,8 @@ x, ORBIT_ROOT_OBJECT(x)->refs); CORBA_Object_release(x, y); })
 x, ORBIT_ROOT_OBJECT(x)->refs); CORBA_Object_duplicate(x, y); })
 #endif
 
+#define FREE_MARKER_IS_ALLOCATED 0xfefefefe
+
 /* The memory chunk stuff */
 
 #define ALLOCATOR_DEFINITION
@@ -82,6 +84,7 @@ ORBit_alloc_2(size_t block_size,
 #endif
 	block->free = freefunc;
 	block->func_data = func_data;
+	block->u.free_marker= FREE_MARKER_IS_ALLOCATED;
 
 	return MEMINFO_TO_PTR(block);
 }
@@ -101,143 +104,139 @@ ORBit_alloc_2(size_t block_size,
  */
 
 void
-ORBit_free(gpointer mem, CORBA_boolean free_strings)
+ORBit_free(gpointer mem, CORBA_boolean ignore)
 {
 	ORBit_mem_info *block;
 
-	if(!mem)
+	if (!mem)
 		return;
 
-	block = PTR_TO_MEMINFO(mem);
+	block = PTR_TO_MEMINFO (mem);
+
+	/* This block has not been allocated by CORBA_alloc. Instead
+         * it is memory in the receive buffer, that has been used in
+         * demarshalling. Let's just return. */
+	if (block->u.free_marker != FREE_MARKER_IS_ALLOCATED)
+		return;
 
 #ifdef ORBIT_DEBUG
-	g_assert(block->magic == 0xdeadbeef);
+	g_assert (block->magic == 0xdeadbeef);
 #endif
 
-	if(block->free) {
-		int i;
+	if (block->free) {
+		int      i;
 		gpointer x;
 		gpointer my_data;
 
-		if((gpointer)block->free == (gpointer)ORBit_free_via_TypeCode)
-			my_data = ((guchar *)block) - sizeof(CORBA_TypeCode);
+		if ((gpointer) block->free == (gpointer) ORBit_free_via_TypeCode)
+			my_data = ((guchar *) block) - sizeof(CORBA_TypeCode);
 		else
 			my_data = NULL;
 
 #ifdef ORBIT_DEBUG
-		if(block->func_data == NULL)
+		if (block->func_data == NULL)
 			g_warning("block with freefunc %p has no items", block->free);
 #endif
 
-		for(i = 0, x = mem; i < (gulong)block->func_data; i++)
-			x = block->free(x, my_data, free_strings);
+		for (i = 0, x = mem; i < (gulong) block->func_data; i++)
+			x = block->free(x, my_data, CORBA_TRUE);
 
-		if((gpointer)block->free == (gpointer)ORBit_free_via_TypeCode)
-			/* ((guchar *)block) -= sizeof(CORBA_TypeCode); */
-			block = (ORBit_mem_info *)
-				(((guchar *)block) - sizeof(CORBA_TypeCode));
-		g_free(block);
-	} else
-		g_free(block);
+		if (my_data) {
+			CORBA_Object_release (*(CORBA_Object *)my_data, NULL);
+			block = my_data;
+		}
+	}
+	g_free (block);
 }
 
-/******************************************************************/
-/* These aren't currently used... */
-
 gpointer
-ORBit_free_via_TypeCode(gpointer mem, gpointer tcp, gboolean free_strings)
+ORBit_free_via_TypeCode (gpointer mem, gpointer tcp, gboolean ignore)
 {
-	CORBA_TypeCode tc = *(CORBA_TypeCode *)tcp, subtc;
 	int i;
 	guchar *retval = NULL;
+	CORBA_TypeCode tc = *(CORBA_TypeCode *) tcp;
 
 	switch(tc->kind) {
-	case CORBA_tk_any:
-		{
-			CORBA_any *anyval = mem;
-			if(anyval->_release)
-				CORBA_free(anyval->_value);
-			retval = (guchar *)(anyval + 1);
-		}
+	case CORBA_tk_any: {
+		CORBA_any *anyval = mem;
+		if (anyval->_release)
+			CORBA_free (anyval->_value);
+		retval = (guchar *)(anyval + 1);
 		break;
+	}
 	case CORBA_tk_TypeCode:
 	case CORBA_tk_objref:
-		{
-			CORBA_Object_release(*(CORBA_Object *)mem, NULL);
+		CORBA_Object_release (*(CORBA_Object *) mem, NULL);
 
-			retval = (guchar *)mem + sizeof(CORBA_Object);
-		}
+		retval = (guchar *) mem + sizeof(CORBA_Object);
 		break;
-	case CORBA_tk_Principal:
-		{
-			CORBA_Principal *pval = mem;
-			if(pval->_release)
-				CORBA_free(pval->_buffer);
-			retval = (guchar *)(pval + 1);
-		}
+	case CORBA_tk_Principal: {
+		CORBA_Principal *pval = mem;
+
+		if (pval->_release)
+			CORBA_free (pval->_buffer);
+
+		retval = (guchar *)(pval + 1);
 		break;
+	}
 	case CORBA_tk_except:
 	case CORBA_tk_struct:
-		mem = ALIGN_ADDRESS(mem, ORBit_find_alignment(tc));
-		for(i = 0; i < tc->sub_parts; i++) {
-			subtc = (CORBA_TypeCode)CORBA_Object_duplicate((CORBA_Object)tc->subtypes[i], NULL);
-			mem = ORBit_free_via_TypeCode(mem, &subtc,
-						      free_strings);
-		}
+		mem = ALIGN_ADDRESS (mem, ORBit_find_alignment (tc));
+		for (i = 0; i < tc->sub_parts; i++)
+			mem = ORBit_free_via_TypeCode (
+				mem, &tc->subtypes[i], CORBA_TRUE);
 		retval = mem;
 		break;
-	case CORBA_tk_union:
-		subtc = (CORBA_TypeCode)CORBA_Object_duplicate(
-		  (CORBA_Object)ORBit_get_union_tag(tc, &mem, TRUE), NULL);
-		{
-		    int sz = 0;
-		    int al = 1;
-		    for(i = 0; i < tc->sub_parts; i++) {
-		        al = MAX(al, ORBit_find_alignment(tc->subtypes[i]));
-		        sz = MAX(sz, ORBit_gather_alloc_info(tc->subtypes[i]));
-		    }
-		    mem = ALIGN_ADDRESS(mem, al);
-		    ORBit_free_via_TypeCode(mem, &subtc, free_strings);
-		    /* the end of the body (subtc) may not be the
-		     * same as the end of the union */
-		    retval = (guchar *)mem + sz;
+	case CORBA_tk_union: {
+		CORBA_TypeCode tag;
+		int sz = 0;
+		int al = 1;
+
+		tag = ORBit_get_union_tag (tc, &mem, TRUE);
+
+		for (i = 0; i < tc->sub_parts; i++) {
+			al = MAX (al, ORBit_find_alignment (tc->subtypes[i]));
+			sz = MAX (sz, ORBit_gather_alloc_info (tc->subtypes[i]));
 		}
+		mem = ALIGN_ADDRESS (mem, al);
+		ORBit_free_via_TypeCode (mem, &tag, CORBA_TRUE);
+		/* the end of the body (subtc) may not be the
+		 * same as the end of the union */
+		retval = (guchar *)mem + sz;
 		break;
+	}
 	case CORBA_tk_wstring:
 	case CORBA_tk_string:
-		if(free_strings)
-			CORBA_free(*(char **)mem);
-		retval = (guchar *)mem + sizeof(char *);
+		CORBA_free (*(char **) mem);
+		retval = (guchar *) mem + sizeof (char *);
 		break;
-	case CORBA_tk_sequence:
-		{
-			CORBA_sequence_octet *pval = mem;
-			if(pval->_release)
-				CORBA_free(pval->_buffer);
+	case CORBA_tk_sequence: {
+		CORBA_sequence_octet *pval = mem;
 
-			retval = (guchar *)mem + sizeof(CORBA_sequence_octet);
-		}
+		if (pval->_release)
+			CORBA_free (pval->_buffer);
+
+		retval = (guchar *)mem + sizeof (CORBA_sequence_octet);
 		break;
+	}
 	case CORBA_tk_array:
-		for(i = 0; i < tc->length; i++) {
-			subtc = (CORBA_TypeCode)CORBA_Object_duplicate((CORBA_Object)tc->subtypes[0], NULL);
-			mem = ORBit_free_via_TypeCode(mem, &subtc,
-						      free_strings);
-		}
+		for (i = 0; i < tc->length; i++)
+			mem = ORBit_free_via_TypeCode(
+				mem, &tc->subtypes[0], CORBA_TRUE);
 		retval = mem;
 		break;
 	case CORBA_tk_alias:
-		subtc = (CORBA_TypeCode)CORBA_Object_duplicate((CORBA_Object)tc->subtypes[0], NULL);
-		retval = ORBit_free_via_TypeCode(mem, &subtc, free_strings);
+		retval = ORBit_free_via_TypeCode (mem, &tc->subtypes[0], CORBA_TRUE);
 		break;
-	default:
-		/* NB. alignment != alloc size */
-		retval = (guchar *)ALIGN_ADDRESS (mem, ORBit_find_alignment (tc)) +
-			ORBit_gather_alloc_info (tc);
+	default: {
+		int sz = ORBit_gather_alloc_info (tc);
+		int al = ORBit_find_alignment (tc);
+		
+		/* NB. often alignment != alloc size */
+		retval = (guchar *) ALIGN_ADDRESS (mem, al) + sz;
 		break;
 	}
+	}
 
-	CORBA_Object_release((CORBA_Object)tc, NULL);
-
-	return (gpointer)retval;
+	return (gpointer) retval;
 }

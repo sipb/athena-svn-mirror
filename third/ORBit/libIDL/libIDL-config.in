@@ -1,6 +1,6 @@
 #! /bin/sh
 
-prefix=${ATHTOOLROOT}@prefix@
+prefix=@prefix@
 exec_prefix=@exec_prefix@
 exec_prefix_set=no
 
@@ -50,9 +50,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     --cflags)
-      if test "@includedir@" != /usr/include ; then
-        includes="-I@includedir@"
-      fi
+      includes="-I@includedir@/libIDL-1.0"
       echo_cflags=yes
       ;;
     --libs)

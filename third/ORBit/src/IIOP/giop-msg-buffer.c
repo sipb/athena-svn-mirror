@@ -813,6 +813,65 @@ giop_recv_buffer_use(GIOPConnection *connection)
   return retval;
 }
 
+#ifdef GIOP_INTERNAL_DEBUG
+static void
+dump (FILE *out, guint8 const *ptr, guint32 len, guint32 offset)
+{
+	guint32 lp,lp2;
+	guint32 off;
+
+	for (lp = 0;lp<(len+15)/16;lp++) {
+		fprintf (out, "0x%4x ", offset + lp * 16);
+		for (lp2=0;lp2<16;lp2++) {
+			off = lp2 + (lp<<4);
+			off<len?fprintf (out, "%2x ", ptr[off]):fprintf (out, "XX ");
+		}
+		fprintf (out, "| ");
+		for (lp2=0;lp2<16;lp2++) {
+			off = lp2 + (lp<<4);
+			fprintf (out, "%c", off<len?(ptr[off]>'!'&&ptr[off]<127?ptr[off]:'.'):'*');
+		}
+		if (lp == 0)
+			fprintf (out, " --- \n");
+		else
+			fprintf (out, "\n");
+	}
+}
+
+/*
+void
+giop_dump_send (GIOPSendBuffer *send_buffer)
+{
+	gulong nvecs;
+	struct iovec *curvec;
+	guint32 offset = 0;
+
+	g_return_if_fail (send_buffer != NULL);
+
+	nvecs = send_buffer->num_used;
+	curvec = (struct iovec *) send_buffer->iovecs;
+
+	fprintf (stderr, "Outgoing IIOP data:\n");
+	while (nvecs-- > 0) {
+		dump (stderr, curvec->iov_base, curvec->iov_len, offset);
+		offset += curvec->iov_len;
+		curvec++;
+	}
+} */
+
+void
+giop_dump_recv (GIOPRecvBuffer *recv_buffer)
+{
+	g_return_if_fail (recv_buffer != NULL);
+
+	fprintf (stderr, "Incoming IIOP data\n");
+
+	dump (stderr, recv_buffer->message_body,
+	      GIOP_MESSAGE_BUFFER (recv_buffer)->message_header.message_size +
+	      sizeof (GIOPMessageHeader), 0);
+}
+#endif /* GIOP_INTERNAL_DEBUG */
+
 GIOPRecvBuffer *
 giop_recv_message_buffer_use(GIOPConnection *connection)
 {
@@ -832,6 +891,10 @@ giop_recv_message_buffer_use(GIOPConnection *connection)
   }
 
   if(!retval) return NULL;
+
+#ifdef GIOP_INTERNAL_DEBUG
+  g_warning ("Recv message buffer use");
+#endif
 
   do {
     switch(retval->state) {
@@ -869,6 +932,7 @@ giop_recv_message_buffer_use(GIOPConnection *connection)
 	if(strncmp(GIOP_MESSAGE_BUFFER(retval)->message_header.magic, "GIOP", 4)
 	   || GIOP_MESSAGE_BUFFER(retval)->message_header.GIOP_version[0] != 1)
 	  goto errout;
+
 	if(GIOP_MESSAGE_BUFFER(retval)->message_header.message_size == 0
 	   && GIOP_MESSAGE_BUFFER(retval)->message_header.message_type != GIOP_CLOSECONNECTION) {
 	  g_warning("Unexpected 0-length IIOP message");
@@ -895,7 +959,7 @@ giop_recv_message_buffer_use(GIOPConnection *connection)
 	retval->message_body = g_malloc(message_size+sizeof(GIOPMessageHeader)+4);
 	/* XXX1 This is a lame hack to work with the fact that
 	   alignment is relative to the MessageHeader, not the RequestHeader */
-	retval->cur = (char *)retval->message_body + 12;
+	retval->cur = (gpointer)(((char *)retval->message_body) + 12);
 	retval->state = GIOP_MSG_READING_BODY;
 	retval->left_to_read = message_size;
 	break;
@@ -916,6 +980,11 @@ giop_recv_message_buffer_use(GIOPConnection *connection)
       retval = NULL;
     }
   } while(retval && retval->state != GIOP_MSG_READY);
+
+#ifdef GIOP_INTERNAL_DEBUG
+  g_warning ("Recv message buffer use");
+  giop_dump_recv (retval);
+#endif /* GIOP_INTERNAL_DEBUG */
   
   return retval;
 
@@ -1002,6 +1071,8 @@ giop_recv_reply_buffer_use_multiple_2(GIOPConnection *request_cnx,
   GSList *pushme = NULL;
 
   do {
+    if(request_cnx && !request_cnx->is_valid)
+      break;
     /*
      * We _do_ want to put this inside the loop,
      * because we may call ourselves recursively for different request_id's
@@ -1069,7 +1140,7 @@ giop_recv_locate_reply_buffer_use(GIOP_unsigned_long request_id,
 				  gboolean block_for_reply)
 {
   GIOPRecvBuffer *retval = NULL;
-
+  
   do {
     /*
      * We _do_ want to put this inside the loop,
@@ -1180,13 +1251,20 @@ giop_recv_reply_decode_message(GIOPRecvBuffer *buf)
   */
   int i;
 
+#ifdef GIOP_INTERNAL_DEBUG
+  g_warning ("recv_reply_decode_message");
+#endif
+
   buf->message.u.reply.service_context._maximum = 0;
   if(giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(buf))) 
     {
       GET_ULONG(buf->message.u.reply.service_context._length);
 /* XXX bad hardcoded hack until someone gives a "right answer" to how to
 solve this problem */
-      if(buf->message.u.reply.service_context._length > 128) return -1;
+      if(buf->message.u.reply.service_context._length > 128) {
+	      g_warning ("length '0x%x' > 128", buf->message.u.reply.service_context._length);
+	      return -1;
+      }
       buf->message.u.reply.service_context._buffer =
 	g_new(IOP_ServiceContext, buf->message.u.reply.service_context._length);
 
@@ -1209,7 +1287,10 @@ solve this problem */
       GET_ULONG_NC(&buf->message.u.reply.service_context._length);
 /* XXX bad hardcoded hack until someone gives a "right answer" to how to
 solve this problem */
-      if(buf->message.u.reply.service_context._length > 128) return -1;
+      if(buf->message.u.reply.service_context._length > 128) {
+	      g_warning ("length '0x%x' > 128", buf->message.u.reply.service_context._length);
+	      return -1;
+      }
       buf->message.u.reply.service_context._buffer =
 	g_new(IOP_ServiceContext, buf->message.u.reply.service_context._length);
 
@@ -1227,7 +1308,7 @@ solve this problem */
       GET_ULONG_NC(&buf->message.u.reply.reply_status);
     }
 
-#if 0
+#ifdef GIOP_INTERNAL_DEBUG
   g_message("[%d] Received reply %d size %d to request %d",
 	    getpid(),
 	    buf->message.u.reply.reply_status,
@@ -1358,7 +1439,7 @@ giop_recv_request_decode_message(GIOPRecvBuffer *buf)
       buf->cur = ((guchar *)buf->cur) + buf->message.u.request.requesting_principal._length;
     }
 
-#if 0
+#ifdef GIOP_INTERNAL_DEBUG
   g_message("[%d] Received request %s size %d ID %d",
 	    getpid(),
 	    buf->message.u.request.operation,

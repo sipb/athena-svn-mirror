@@ -419,7 +419,8 @@ cbe_skel_op_param_free(IDL_tree tree, OIDL_C_Info *ci, gboolean free_internal)
     case IDLN_TYPE_OBJECT:
     case IDLN_INTERFACE:
     case IDLN_FORWARD_DCL:
-      fprintf(ci->fh, "CORBA_Object_release(%s, ev);\n",
+    case IDLN_TYPE_TYPECODE:
+      fprintf(ci->fh, "CORBA_Object_release((CORBA_Object)%s, ev);\n",
 	      IDL_IDENT(IDL_PARAM_DCL(tree).simple_declarator).str);
       break;
     default:
