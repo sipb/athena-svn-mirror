@@ -358,7 +358,6 @@ BuildUserInterface()
 	XtGetValues (paneW, args, n);
 
 	if (foo) {
-		system ("whoami >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
 		system ("machtype >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
 		system ("date >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
 		n = 0;
