@@ -27,16 +27,12 @@ usage="Usage: xdpr [filename] [-out filename ] \
 [-slide] [-add value] [-help]"
 
 # Guess if we are BSD or System V
-# or Ultrix. Since Ultrix doesn't have -x, and sometimes lp{,r} is not
-# readable so that a -r substitution won't work, we - HEY! What's that
-# over there???
+# or Athena.
 
-if [ -r /ultrixboot ]
+if [ -r /ultrixboot -o -r /usr/athena/bin/lpr ]
 then
 	LP=lpr
 	BSD=1
-
-# You didn't see anything? Hmmmm. Maybe I was imagining it.
 
 elif [ -x /usr/ucb/lpr -o -x /usr/bin/lpr -o -x /bin/lpr -o -x /usr/bsd/lpr ]
 then
