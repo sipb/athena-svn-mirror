@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.12 1996-12-11 22:02:48 ghudson Exp $
+ * $Id: unmount.c,v 1.13 1996-12-18 15:00:58 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.12 1996-12-11 22:02:48 ghudson Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.13 1996-12-18 15:00:58 ghudson Exp $";
 
 #include "attach.h"
 
@@ -230,6 +230,13 @@ xdr_fhstatus(xdrs, fhsp)
                         return FALSE;
         }
 }
+
+/* XXX kludge: Solaris 2.4 doesn't have this function; Solaris 2.5.1 defines
+ * it in a conflicting fashion (using the "fhandle" type, which isn't in
+ * Solaris 2.4).  Until we stop building on Solaris 2.4, conditionalize
+ * this function on the lack of MOUNTVERS3, which distinguishes 2.4 from
+ * 2.5.1. */
+#ifndef MOUNTVERS3
 xdr_fhandle(xdrs, fhp)
         XDR *xdrs;
         fhandle_t *fhp;
@@ -239,6 +246,7 @@ xdr_fhandle(xdrs, fhp)
         }
         return (FALSE);
 }
+#endif
 
 #endif
 
