@@ -15,8 +15,16 @@ distclean:: clean
 
 RSH=	-DKRB_RLOGIN=\"$(PROGDIR)/rlogin\"
 
-DEFINES= $(RSH) $(RPROGS) \
- 	-DLOGIN_PROGRAM=\"$(DAEMDIR)/login.krb\" -DKPROGDIR=\"$(PROGDIR)\"
+# Kerberos 5 hackery.  Not the way it will be done in the future.
+KRB5DIR=/build/third/supported/kerberos5/src
+KRB5LIBS= -L$(KRB5DIR)/lib -L/usr/athena/lib -lkrb5 -lcrypto -lcom_err
+
+# AFS hackery.
+AFSDIR=/build/transarc
+AFSLIBS=-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -lsys -llwp
+
+DEFINES= $(RSH) $(RPROGS) -DKRB5 -I$(KRB5DIR)/include \
+	-DLOGIN_PROGRAM=\"$(DAEMDIR)/login.krb\" -DKPROGDIR=\"$(PROGDIR)\"
 
 
 #program(rsh,rsh.o kcmd.o,${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB},${PROGDIR})
@@ -41,7 +49,7 @@ klogind: rlogind.o logutil.o ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP} ${COM
 
 #program(login.krb,login.o logutil.o,${KRB_LIBDEP} ${DES_LIBDEP},${KRB_LIB} ${DES_LIB},${DAEMDIR})
 login.krb: login.o logutil.o ${KRB_LIBDEP} ${DES_LIBDEP}
-	$(CC) $(CFLAGS) -o $@ login.o logutil.o ${KRB_LIB} ${DES_LIB} ${LOGINLIBS}
+	$(CC) $(CFLAGS) -o $@ login.o logutil.o ${KRB_LIB} ${DES_LIB} ${LOGINLIBS} ${KRB5LIBS} ${AFSLIBS}
 
 memcache.o: $(SRCTOP)lib$(S)krb$(S)memcache.c
 	$(CC) -I$(SRCTOP)lib$(S)krb $(CFLAGS) -c $(SRCTOP)lib$(S)krb$(S)memcache.c
@@ -51,7 +59,7 @@ cygin: rlogin.o kcmd.o memcache.o ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
 
 install::
 	$(INSTALLPROG) rsh ${DESTDIR}$(PROGDIR)/rsh
-	$(INSTALLPROG) rcp ${DESTDIR}$(PROGDIR)/rcp
+	$(INSTALLPROG) -o root -m 4555 rcp ${DESTDIR}$(PROGDIR)/rcp
 	$(INSTALLPROG) rlogin ${DESTDIR}$(PROGDIR)/rlogin
 	$(INSTALLPROG) cygin ${DESTDIR}$(PROGDIR)/cygin
 	$(INSTALLPROG) kshd ${DESTDIR}$(DAEMDIR)/kshd
