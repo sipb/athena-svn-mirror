@@ -2,7 +2,7 @@
 #	Instructions to Make, for POP support processes
 #
 #	@(MHWARNING)
-# @(#)$Id: pop,v 1.1.1.1 1996-10-07 07:12:47 ghudson Exp $
+# @(#)$Id: pop,v 1.2 1996-10-13 18:44:28 ghudson Exp $
 ##############################################################################
 
 # The following entries were inserted during MH configuration
@@ -123,7 +123,7 @@ xpopd:		popd.o popser.o syslog.o \
 @BEGIN: MPOP
 			../../uip/scansbr.o \
 @END: MPOP
-			$(LDLIBS2) $(LDCURSES)
+			$(LDLIBS2) $(LDCURSES) -lkrb -ldes -lhesiod
 
 l-popd:;	$(LINT) $(LFLAGS) popd.c popser.c \
 			../../uip/dropsbr.c \
