@@ -50,6 +50,7 @@
   <title xml:lang="nl">Hulp Inhoudsopgave</title>
   <title xml:lang="nn">Hjelpinnhald</title>
   <title xml:lang="no">Hjelpinnhold</title>
+  <title xml:lang="nso">Dikagare tša Thušo</title>
   <title xml:lang="pa">ਸਹਾਇਤਾ ਦੇ ਹਿੱਸੇ</title>
   <title xml:lang="pl">Zawartość pomocy</title>
   <title xml:lang="pt">Conteúdo da Ajuda</title>
@@ -72,6 +73,7 @@
   <title xml:lang="wa">Ådvins di l' aidance</title>
   <title xml:lang="zh_CN">帮助目录</title>
   <title xml:lang="zh_TW">說明文件</title>
+  <title xml:lang="zu">Iingqikithi zosizo</title>
 
   <toc id="Desktop">
     <title>Desktop</title>
@@ -96,6 +98,7 @@
     <title xml:lang="fi">Työpöytä</title>
     <title xml:lang="fr">Bureau</title>
     <title xml:lang="ga">Deasc</title>
+    <title xml:lang="gl">Escritorio</title>
     <title xml:lang="gu">ડૅસ્કટોપ</title>
     <title xml:lang="hi">डेस्कटॉप</title>
     <title xml:lang="hr">Radna površina</title>
@@ -112,6 +115,7 @@
     <title xml:lang="nl">Desktop</title>
     <title xml:lang="nn">Skrivebord</title>
     <title xml:lang="no">Skrivebord</title>
+    <title xml:lang="nso">Teseke</title>
     <title xml:lang="pa">ਵਿਹੜਾ</title>
     <title xml:lang="pl">Pulpit</title>
     <title xml:lang="pt">Ambiente de Trabalho</title>
@@ -132,6 +136,7 @@
     <title xml:lang="vi">Desktop</title>
     <title xml:lang="zh_CN">桌面</title>
     <title xml:lang="zh_TW">桌面</title>
+    <title xml:lang="zu">Isiga-nyezi</title>
 
     <category>GNOME</category>
     <category>GNOME|Applications|Desktop Preferences</category>
@@ -167,6 +172,7 @@
       <title xml:lang="fi">KDE</title>
       <title xml:lang="fr">KDE</title>
       <title xml:lang="ga">KDE</title>
+      <title xml:lang="gl">KDE</title>
       <title xml:lang="gu">KDE</title>
       <title xml:lang="hi">केडीई</title>
       <title xml:lang="hr">KDE</title>
@@ -183,6 +189,7 @@
       <title xml:lang="nl">KDE</title>
       <title xml:lang="nn">KDE</title>
       <title xml:lang="no">KDE</title>
+      <title xml:lang="nso">KDE</title>
       <title xml:lang="pa">ਕੇਡੀਈ</title>
       <title xml:lang="pl">KDE</title>
       <title xml:lang="pt">KDE</title>
@@ -203,6 +210,7 @@
       <title xml:lang="vi">KDE</title>
       <title xml:lang="zh_CN">KDE</title>
       <title xml:lang="zh_TW">KDE</title>
+      <title xml:lang="zu">KDE</title>
 
       <category>KDE</category>
       <category>KDE|Applications</category>
@@ -271,6 +279,7 @@
     <title xml:lang="nl">Toepassingen</title>
     <title xml:lang="nn">Program</title>
     <title xml:lang="no">Programmer</title>
+    <title xml:lang="nso">Ditirišo</title>
     <title xml:lang="pa">ਕਾਰਜ</title>
     <title xml:lang="pl">Aplikacje</title>
     <title xml:lang="pt">Aplicações</title>
@@ -293,6 +302,7 @@
     <title xml:lang="wa">Programes</title>
     <title xml:lang="zh_CN">应用程序</title>
     <title xml:lang="zh_TW">應用程式</title>
+    <title xml:lang="zu">Izithobo</title>
 
     <category>Applications</category>
     <category>GNOME|Accessibility</category>
@@ -321,6 +331,7 @@
       <title xml:lang="eu">Applet-ak</title>
       <title xml:lang="fi">Sovelmat</title>
       <title xml:lang="fr">Applets</title>
+      <title xml:lang="gl">Applets</title>
       <title xml:lang="gu">એપ્લેટો</title>
       <title xml:lang="hi">एप्लेट्स</title>
       <title xml:lang="hr">Programi</title>
@@ -336,6 +347,7 @@
       <title xml:lang="nl">Applets</title>
       <title xml:lang="nn">Panelprogram</title>
       <title xml:lang="no">Panelprogrammer</title>
+      <title xml:lang="nso">Ditirišo tša khomphuthara</title>
       <title xml:lang="pa">ਐਪਲਿਟ</title>
       <title xml:lang="pl">Aplety</title>
       <title xml:lang="pt">Applets</title>
@@ -356,6 +368,7 @@
       <title xml:lang="vi">Applet</title>
       <title xml:lang="zh_CN">小程序</title>
       <title xml:lang="zh_TW">面板程式</title>
+      <title xml:lang="zu">Izithotyana</title>
 
       <category>GNOME|Applets</category>
       <category>GNOME|Applets|Accessories</category>
@@ -390,6 +403,7 @@
       <title xml:lang="eu">Jokuak eta denbora-pasak</title>
       <title xml:lang="fi">Pelit ja viihde</title>
       <title xml:lang="fr">Jeux et divertissements</title>
+      <title xml:lang="gl">Xogos e entretementos</title>
       <title xml:lang="gu">રમતો અને મનોરંજન</title>
       <title xml:lang="hi">खेल तथा मनोरंजन</title>
       <title xml:lang="hr">Igre i zabava</title>
@@ -406,6 +420,7 @@
       <title xml:lang="nl">Spellen en amuzement</title>
       <title xml:lang="nn">Spel og underhaldning</title>
       <title xml:lang="no">Spill og underholdning</title>
+      <title xml:lang="nso">Dipapadi le Boithabišo</title>
       <title xml:lang="pa">ਖੇਡਾਂ ਤੇ ਮਨੋਰੰਜਨ</title>
       <title xml:lang="pl">Gry i rozrywka</title>
       <title xml:lang="pt">Jogos e Entretenimento</title>
@@ -426,6 +441,7 @@
       <title xml:lang="vi">Trò chơi và Giải trí</title>
       <title xml:lang="zh_CN">游戏与娱乐</title>
       <title xml:lang="zh_TW">遊戲及娛樂</title>
+      <title xml:lang="zu">Imidlalo nokuzijabulisa</title>
 
       <category>Applications|Amusement</category>
       <category>Applications|Games</category>
@@ -464,6 +480,7 @@
       <title xml:lang="eu">Hezkuntzako aplikazioak</title>
       <title xml:lang="fi">Opetussovellukset</title>
       <title xml:lang="fr">Applications éducatives</title>
+      <title xml:lang="gl">Aplicacións educativas</title>
       <title xml:lang="gu">ભણતરના કાર્યક્રમો</title>
       <title xml:lang="hi">शिक्षाप्रद अनुप्रयोग</title>
       <title xml:lang="hr">Obrazovni programi</title>
@@ -479,6 +496,7 @@
       <title xml:lang="nl">Educatieve toepassingen</title>
       <title xml:lang="nn">Opplæringsprogram</title>
       <title xml:lang="no">Utdanningsprogrammer</title>
+      <title xml:lang="nso">Ditirišo tša Thuto</title>
       <title xml:lang="pa">ਵਿਦਿਅਕ ਕਾਰਜ</title>
       <title xml:lang="pl">Aplikacje edukacyjne</title>
       <title xml:lang="pt">Aplicações Educativas</title>
@@ -499,6 +517,7 @@
       <title xml:lang="vi">Ứng dụng Giáo dục</title>
       <title xml:lang="zh_CN">教育应用程序</title>
       <title xml:lang="zh_TW">教育程式</title>
+      <title xml:lang="zu">Amahlelo emfundo</title>
 
       <category>Applications|Education</category>
       <category>Applications|Education|Arts</category>
@@ -535,6 +554,7 @@
       <title xml:lang="eu">Interneteko aplikazioak</title>
       <title xml:lang="fi">Internet-sovellukset</title>
       <title xml:lang="fr">Applications internet</title>
+      <title xml:lang="gl">Aplicacións de Internet</title>
       <title xml:lang="gu">ઈન્ટરનેટ કાર્યક્રમો</title>
       <title xml:lang="hi">इंटरनेट अनुप्रयोग</title>
       <title xml:lang="hr">Programi za Internet</title>
@@ -550,6 +570,7 @@
       <title xml:lang="nl">Internettoepassingen</title>
       <title xml:lang="nn">Internettprogram</title>
       <title xml:lang="no">Internettprogrammer</title>
+      <title xml:lang="nso">Ditirišo tša Inthanete</title>
       <title xml:lang="pa">ਇੰਟਰਨੈੱਟ ਕਾਰਜ</title>
       <title xml:lang="pl">Aplikacje internetowe</title>
       <title xml:lang="pt">Aplicações de Internet</title>
@@ -570,6 +591,7 @@
       <title xml:lang="vi">Ứng dụng Internet</title>
       <title xml:lang="zh_CN">互联网应用程序</title>
       <title xml:lang="zh_TW">網際網路程式</title>
+      <title xml:lang="zu">Izithobo zolwembu</title>
 
       <category>Applications|Internet</category>
       <category>Applications|Internet|Chat</category>
@@ -609,6 +631,7 @@
       <title xml:lang="eu">Multimediako aplikazioak</title>
       <title xml:lang="fi">Multimediasovellukset</title>
       <title xml:lang="fr">Applications multimedia</title>
+      <title xml:lang="gl">Aplicacións multimedia</title>
       <title xml:lang="gu">મલ્ટીમિડીયા કાર્યક્રમો</title>
       <title xml:lang="hi">मल्टीमीडिया अनुप्रयोग</title>
       <title xml:lang="hr">Programi za multimediju</title>
@@ -625,6 +648,7 @@
       <title xml:lang="nl">Multimediatoepassingen</title>
       <title xml:lang="nn">Multimediaprogram</title>
       <title xml:lang="no">Multimedieprogrammer</title>
+      <title xml:lang="nso">Ditirišo tša Methopo e Fapa-fapanego ya Ditaba</title>
       <title xml:lang="pa">ਬਹੁਰੰਗ ਕਾਰਜ</title>
       <title xml:lang="pl">Aplikacje multimedialne</title>
       <title xml:lang="pt">Aplicações Multimédia</title>
@@ -644,6 +668,7 @@
       <title xml:lang="vi">Ứng dụng Đa phương tiện</title>
       <title xml:lang="zh_CN">多媒体应用程序</title>
       <title xml:lang="zh_TW">多媒體程式</title>
+      <title xml:lang="zu">Izithobo zomxhumanisi ngobuningi</title>
 
       <category>Applications|Multimedia</category>
       <category>Applications|Multimedia|Graphics</category>
@@ -702,6 +727,7 @@
       <title xml:lang="eu">Bulegoko eta ekoizpeneko aplikazioak</title>
       <title xml:lang="fi">Toimistosovellukset</title>
       <title xml:lang="fr">Applications de bureautique</title>
+      <title xml:lang="gl">Aplicacións de oficina e produtividade</title>
       <title xml:lang="gu">ઓફિસ અને ઉત્પાદક કાર્યક્રમો</title>
       <title xml:lang="hi">ऑफ़िस तथा उत्पादन अनुप्रयोग</title>
       <title xml:lang="hr">Ured i programi produktivnosti</title>
@@ -717,6 +743,7 @@
       <title xml:lang="nl">Kantoor- en productiviteitstoepassingen</title>
       <title xml:lang="nn">Kontor- og produktivitetsprogram</title>
       <title xml:lang="no">Kontorstøtteprogrammer</title>
+      <title xml:lang="nso">Ditirišo tša Ofising le tša Tšweletšo</title>
       <title xml:lang="pa">ਦਫਤਰੀ ਅਤੇ ਉਤਪਾਦਿਕ ਕਾਰਜ</title>
       <title xml:lang="pl">Aplikacje biurowe</title>
       <title xml:lang="pt">Aplicações de Escritório e Produtividade</title>
@@ -736,6 +763,7 @@
       <title xml:lang="vi">Ứng dụng Văn phòng và Productivity</title>
       <title xml:lang="zh_CN">办公和生产应用程序</title>
       <title xml:lang="zh_TW">辦公室應用程式</title>
+      <title xml:lang="zu">Isikhungathi kanye nezithobo zokukhiqiza</title>
 
       <category>Applications|Office</category>
       <category>Applications|Office|Calendar</category>
@@ -775,6 +803,7 @@
       <title xml:lang="eu">Aplikazio zientifikoak</title>
       <title xml:lang="fi">Tieteelliset sovellukset</title>
       <title xml:lang="fr">Applications scientifiques</title>
+      <title xml:lang="gl">Aplicacións científicas</title>
       <title xml:lang="gu">વૈજ્ઞાનિક કાર્યક્રમો</title>
       <title xml:lang="hi">वैज्ञानिक अनुप्रयोग</title>
       <title xml:lang="hr">Programi za znanost</title>
@@ -790,6 +819,7 @@
       <title xml:lang="nl">Wetenschappelijke toepassingen</title>
       <title xml:lang="nn">Vitskaplege program</title>
       <title xml:lang="no">Vitenskapelige programmer</title>
+      <title xml:lang="nso">Ditirišo tše di Raraganego</title>
       <title xml:lang="pa">ਵਿਗਿਆਨਕ ਕਾਰਜ</title>
       <title xml:lang="pl">Aplikacje naukowe</title>
       <title xml:lang="pt">Aplicações Científicas</title>
@@ -810,6 +840,7 @@
       <title xml:lang="vi">Ứng dụng Khoa học</title>
       <title xml:lang="zh_CN">科学应用程序</title>
       <title xml:lang="zh_TW">科研程式</title>
+      <title xml:lang="zu">Izithobo zesayensi</title>
 
       <category>Applications|Scientific</category>
       <category>Applications|Scientific|Astronomy</category>
@@ -846,6 +877,7 @@
       <title xml:lang="eu">Segurtasunak</title>
       <title xml:lang="fi">Turvallisuus</title>
       <title xml:lang="fr">Securitées</title>
+      <title xml:lang="gl">Seguranza</title>
       <title xml:lang="gu">સુરક્ષાઓ</title>
       <title xml:lang="hi">सुरक्षा</title>
       <title xml:lang="hr">Vrijednosnice</title>
@@ -861,6 +893,7 @@
       <title xml:lang="nl">Veiligheid</title>
       <title xml:lang="nn">Tryggleik</title>
       <title xml:lang="no">Sikkerhet</title>
+      <title xml:lang="nso">Dipolokego</title>
       <title xml:lang="pa">ਸੁਰਖਿਆ</title>
       <title xml:lang="pl">Bezpieczeństwo</title>
       <title xml:lang="pt">Segurança</title>
@@ -881,6 +914,7 @@
       <title xml:lang="vi">An ninh - Bảo mật</title>
       <title xml:lang="zh_CN">安全</title>
       <title xml:lang="zh_TW">保安</title>
+      <title xml:lang="zu">Abavikeli</title>
 
       <category>Applications|Security</category>
       <category>Applications|Security|Cryptography</category>
@@ -910,6 +944,7 @@
       <title xml:lang="fi">Muokkaimet</title>
       <title xml:lang="fr">Éditeurs</title>
       <title xml:lang="ga">Eagarthóirenna</title>
+      <title xml:lang="gl">Editores</title>
       <title xml:lang="gu">સંપાદકો</title>
       <title xml:lang="hi">संपादक</title>
       <title xml:lang="hr">Uređivali</title>
@@ -926,6 +961,7 @@
       <title xml:lang="nl">Editors</title>
       <title xml:lang="nn">Redigeringsprogram</title>
       <title xml:lang="no">Redigeringsprogram</title>
+      <title xml:lang="nso">Barulaganyi</title>
       <title xml:lang="pa">ਸੰਪਾਦਕ</title>
       <title xml:lang="pl">Edytory</title>
       <title xml:lang="pt">Editores</title>
@@ -937,7 +973,7 @@
       <title xml:lang="sr">Уређивачи</title>
       <title xml:lang="sr@Latn">Uređivači</title>
       <title xml:lang="sv">Redigerare</title>
-      <title xml:lang="ta">பதிப்பாலர்</title>
+      <title xml:lang="ta">பதிப்பாளர்</title>
       <title xml:lang="tg">Муҳаррирон</title>
       <title xml:lang="th">ตัวแก้ไข</title>
       <title xml:lang="tk">Editçiler</title>
@@ -946,6 +982,7 @@
       <title xml:lang="vi">Chủ bút</title>
       <title xml:lang="zh_CN">编辑器</title>
       <title xml:lang="zh_TW">編輯器</title>
+      <title xml:lang="zu">Abahleli</title>
 
       <category>Applications|Text Editors</category>
       <category>Applications|Text Editors|CLI</category>
@@ -975,6 +1012,7 @@
       <title xml:lang="eu">Tresneria</title>
       <title xml:lang="fi">Apuohjelmat</title>
       <title xml:lang="fr">utilitaires</title>
+      <title xml:lang="gl">Utilidades</title>
       <title xml:lang="gu">ઉપયોગિતાઓ</title>
       <title xml:lang="hi">यूटिलिटीज़</title>
       <title xml:lang="hr">Pomoćni programi</title>
@@ -991,6 +1029,7 @@
       <title xml:lang="nl">Hulpmiddelen</title>
       <title xml:lang="nn">Verktøy</title>
       <title xml:lang="no">Verktøy</title>
+      <title xml:lang="nso">Dithušo</title>
       <title xml:lang="pa">ਉਪਯੋਗਤਾਵਾਂ</title>
       <title xml:lang="pl">Narzędzia</title>
       <title xml:lang="pt">Utilitários</title>
@@ -1010,6 +1049,7 @@
       <title xml:lang="vi">Tiện ích</title>
       <title xml:lang="zh_CN">实用程序</title>
       <title xml:lang="zh_TW">公用程式</title>
+      <title xml:lang="zu">Izinto ezisizayo</title>
 
       <category>Applications|Utilities</category>
       <category>Applications|Utilities|Archiving</category>
@@ -1049,6 +1089,7 @@
       <title xml:lang="fi">X-sovellukset</title>
       <title xml:lang="fr">Applications X</title>
       <title xml:lang="ga">Feidhchláranna X</title>
+      <title xml:lang="gl">Aplicacións X</title>
       <title xml:lang="gu">X કાર્યક્રમો</title>
       <title xml:lang="hi">एक्स अनुप्रयोग</title>
       <title xml:lang="hr">Programi za X sustav</title>
@@ -1064,6 +1105,7 @@
       <title xml:lang="nl">X-toepassingen</title>
       <title xml:lang="nn">X-program</title>
       <title xml:lang="no">Programmer for X</title>
+      <title xml:lang="nso">Ditirišo tša X</title>
       <title xml:lang="pa">X ਕਾਰਜ</title>
       <title xml:lang="pl">Aplikacje X</title>
       <title xml:lang="pt">Aplicações X</title>
@@ -1084,6 +1126,7 @@
       <title xml:lang="vi">Ứng dụng X</title>
       <title xml:lang="zh_CN">X 应用程序</title>
       <title xml:lang="zh_TW">X 程式</title>
+      <title xml:lang="zu">X Izithoba</title>
 
       <category>Applications|X</category>
       <category>Applications|X|Configuration</category>
@@ -1148,6 +1191,7 @@
     <title xml:lang="nl">Development</title>
     <title xml:lang="nn">Utvikling</title>
     <title xml:lang="no">Utvikling</title>
+    <title xml:lang="nso">Tšwelopele</title>
     <title xml:lang="pa">ਵਿਕਾਸ</title>
     <title xml:lang="pl">Programowanie</title>
     <title xml:lang="pt">Desenvolvimento</title>
@@ -1170,6 +1214,7 @@
     <title xml:lang="wa">Programaedje</title>
     <title xml:lang="zh_CN">开发</title>
     <title xml:lang="zh_TW">開發</title>
+    <title xml:lang="zu">Intuthuko</title>
 
     <category>Development</category>
     <category>Development|Databases</category>
@@ -1203,6 +1248,7 @@
       <title xml:lang="fi">Ohjelmistokehitystyökalut</title>
       <title xml:lang="fr">Outils de développement</title>
       <title xml:lang="ga">Uirlísí Forbairt</title>
+      <title xml:lang="gl">Ferramentas de desenvolvemento</title>
       <title xml:lang="gu">વિકાસના સાધનો</title>
       <title xml:lang="hi">विकास उपकरण</title>
       <title xml:lang="hr">Razvojni alati</title>
@@ -1219,6 +1265,7 @@
       <title xml:lang="nl">Ontwikkelings-tools</title>
       <title xml:lang="nn">Utviklingsverktøy</title>
       <title xml:lang="no">Utviklingsverktøy</title>
+      <title xml:lang="nso">Didirišwa tša Tšwelopele</title>
       <title xml:lang="pa">ਵਿਕਾਸਕਾਰੀ ਸੰਦ</title>
       <title xml:lang="pl">Narzędzia programistyczne</title>
       <title xml:lang="pt">Ferramentas de Desenvolvimento</title>
@@ -1239,6 +1286,7 @@
       <title xml:lang="vi">Công cụ Phát triển</title>
       <title xml:lang="zh_CN">开发工具</title>
       <title xml:lang="zh_TW">開發工具</title>
+      <title xml:lang="zu">Amathulusi entuthuko</title>
 
       <category>Development|Development Tools</category>
       <category>Development|Development Tools|Build Tools</category>
@@ -1275,6 +1323,7 @@
       <title xml:lang="eu">Garapeneko inguruneak</title>
       <title xml:lang="fi">Ohjelmistokehitysympäristöt</title>
       <title xml:lang="fr">Environnements de développement</title>
+      <title xml:lang="gl">Ambientes de desenvolvemento</title>
       <title xml:lang="gu">વિકાસ પર્યાવરણો</title>
       <title xml:lang="hi">विकास वातावरण</title>
       <title xml:lang="hr">Razvojno okruženje</title>
@@ -1291,6 +1340,7 @@
       <title xml:lang="nl">Ontwikkelomgevingen</title>
       <title xml:lang="nn">Utviklingsmiljø</title>
       <title xml:lang="no">Utviklingsmiljøer</title>
+      <title xml:lang="nso">Ditikologo tša Tšwelopele</title>
       <title xml:lang="pa">ਵਿਕਾਸਕਾਰੀ ਵਾਤਾਵਰਣ</title>
       <title xml:lang="pl">Środowiska programistyczne</title>
       <title xml:lang="pt">Ambientes de Desenvolvimento</title>
@@ -1311,6 +1361,7 @@
       <title xml:lang="vi">Môi trường Phát triển</title>
       <title xml:lang="zh_CN">开发环境</title>
       <title xml:lang="zh_TW">開發環境</title>
+      <title xml:lang="zu">Indawo zentuthuko</title>
 
       <category>Development|Environments</category>
       <category>Development|Environments|ADA</category>
@@ -1351,6 +1402,7 @@
       <title xml:lang="eu">Nukleoak</title>
       <title xml:lang="fi">Ytimet</title>
       <title xml:lang="fr">Noyaux</title>
+      <title xml:lang="gl">Kernels</title>
       <title xml:lang="gu">કર્નલો</title>
       <title xml:lang="hi">कर्नेल्स</title>
       <title xml:lang="hr">Kerneli</title>
@@ -1366,6 +1418,7 @@
       <title xml:lang="nl">Kernels</title>
       <title xml:lang="nn">Kjerner</title>
       <title xml:lang="no">Kjerner</title>
+      <title xml:lang="nso">Dithapo</title>
       <title xml:lang="pa">ਕਰਨਲ</title>
       <title xml:lang="pl">Jądra</title>
       <title xml:lang="pt">Kernels</title>
@@ -1386,6 +1439,7 @@
       <title xml:lang="vi">Kernel</title>
       <title xml:lang="zh_CN">内核</title>
       <title xml:lang="zh_TW">內核</title>
+      <title xml:lang="zu">Iingqikithi zokusebenza kohlelo</title>
       <category>Development|Kernels</category>
       <category>Development|Kernels|FreeBSD</category>
       <category>Development|Kernels|Linux</category>
@@ -1420,6 +1474,7 @@
     <title xml:lang="fi">Yleiset</title>
     <title xml:lang="fr">Général</title>
     <title xml:lang="ga">Gineréal</title>
+    <title xml:lang="gl">Xeral</title>
     <title xml:lang="gu">સામાન્ય</title>
     <title xml:lang="hi">सामान्य</title>
     <title xml:lang="hr">Općenito</title>
@@ -1436,6 +1491,7 @@
     <title xml:lang="nl">Algemeen</title>
     <title xml:lang="nn">Allmennt</title>
     <title xml:lang="no">Generelt</title>
+    <title xml:lang="nso">Kakaretšo</title>
     <title xml:lang="pa">ਸਧਾਰਨ</title>
     <title xml:lang="pl">Ogólne</title>
     <title xml:lang="pt">Geral</title>
@@ -1447,7 +1503,7 @@
     <title xml:lang="sr">Опште</title>
     <title xml:lang="sr@Latn">Opšte</title>
     <title xml:lang="sv">Allmänt</title>
-    <title xml:lang="ta">¦À¡ÐÅ¡É¨Å</title>
+    <title xml:lang="ta">பொதுவான</title>
     <title xml:lang="tg">Умумӣ</title>
     <title xml:lang="th">ทั่วไป</title>
     <title xml:lang="tk">Umumy</title>
@@ -1456,6 +1512,7 @@
     <title xml:lang="vi">Chung</title>
     <title xml:lang="zh_CN">常规</title>
     <title xml:lang="zh_TW">一般</title>
+    <title xml:lang="zu">Jikelele</title>
 
     <category>General</category>
     <category>General|Licenses</category>
@@ -1497,6 +1554,7 @@
     <title xml:lang="fi">Järjestelmä</title>
     <title xml:lang="fr">Système</title>
     <title xml:lang="ga">Corás</title>
+    <title xml:lang="gl">Sistema</title>
     <title xml:lang="gu">સિસ્ટમ</title>
     <title xml:lang="hi">तंत्र</title>
     <title xml:lang="hr">Sustav</title>
@@ -1512,6 +1570,7 @@
     <title xml:lang="nl">Systeem</title>
     <title xml:lang="nn">System</title>
     <title xml:lang="no">System</title>
+    <title xml:lang="nso">Tshepedišo</title>
     <title xml:lang="pa">ਸਿਸਟਮ</title>
     <title xml:lang="pl">System</title>
     <title xml:lang="pt">Sistema</title>
@@ -1531,6 +1590,8 @@
     <title xml:lang="uk">Система</title>
     <title xml:lang="vi">Hệ thống</title>
     <title xml:lang="zh_CN">系统</title>
+    <title xml:lang="zh_TW">系統</title>
+    <title xml:lang="zu">Uhlelo</title>
 
     <category>System</category>
     <category>System|Administration</category>

@@ -54,6 +54,7 @@
     <oaf_attribute name="name-nl" type="string" value="Yelp-fabriek"/>
     <oaf_attribute name="name-nn" type="string" value="Yelp-fabrikk"/>
     <oaf_attribute name="name-no" type="string" value="Yelp factory"/>
+    <oaf_attribute name="name-nso" type="string" value="Feketori ya sedirišwa se bogale"/>
     <oaf_attribute name="name-pa" type="string" value="ਯੇਲਪ ਫੈਕਟਰੀ"/>
     <oaf_attribute name="name-pl" type="string" value="Generator Yelpa"/>
     <oaf_attribute name="name-pt" type="string" value="Fábrica Yelp"/>
@@ -75,6 +76,7 @@
     <oaf_attribute name="name-wa" type="string" value="Oujhene Yelp"/>
     <oaf_attribute name="name-zh_CN" type="string" value="Yelp 工厂"/>
     <oaf_attribute name="name-zh_TW" type="string" value="Yelp 工廠"/>
+    <oaf_attribute name="name-zu" type="string" value="Ifektri ye-Yelp"/>
   </oaf_server>
 
   <oaf_server iid="OAFIID:GNOME_Yelp" type="factory" location="OAFIID:GNOME_Yelp_Factory">
@@ -133,6 +135,7 @@
     <oaf_attribute name="name-nl" type="string" value="Yelp"/>
     <oaf_attribute name="name-nn" type="string" value="Yelp"/>
     <oaf_attribute name="name-no" type="string" value="Yelp"/>
+    <oaf_attribute name="name-nso" type="string" value="Sedirišwa se bogale"/>
     <oaf_attribute name="name-pa" type="string" value="ਯੇਲਪ"/>
     <oaf_attribute name="name-pl" type="string" value="Yelp"/>
     <oaf_attribute name="name-pt" type="string" value="Yelp"/>
@@ -155,5 +158,6 @@
     <oaf_attribute name="name-wa" type="string" value="Yelp"/>
     <oaf_attribute name="name-zh_CN" type="string" value="Yelp"/>
     <oaf_attribute name="name-zh_TW" type="string" value="Yelp"/>
+    <oaf_attribute name="name-zu" type="string" value="Yelp"/>
   </oaf_server>
 </oaf_info>
