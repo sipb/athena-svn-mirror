@@ -1,11 +1,11 @@
-#!/bin/csh -f
+#!/bin/athena/tcsh -f
 #
 # This script is intended to replace the following "finds" which were
 #	intended to clean up /tmp, /usr/tmp and some other areas.
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v $
-#	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.4 1991-07-22 13:55:04 epeisach Exp $
+#	$Author: cfields $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.5 1993-08-16 15:20:18 cfields Exp $
 #
 # 05 1 * * *	root	find /tmp -atime +1 -exec rm -f {} \;
 # 10 1 * * *	root	cd /tmp; find . ! -name . -type d -mtime +1 -exec rm -r {} \;
@@ -24,14 +24,24 @@ set dirs =    (	/tmp/		/usr/tmp/	/usr/spool/rwho/ \
 		/usr/preserve/)
 set timeout = (	"-atime +1"	"-atime +2"	"-mtime +3" \
 		"-mtime +3")
+
 set xdev = -xdev
-if ( -e /etc/svc.conf ) set xdev = -mount
+set exceptions = "! -type b ! -type c ! -type s"
+
+switch($hosttype)
+	case sun4:
+		set exceptions = "! -name ps_data ! -type b ! -type c ! -type p"
+	case decmips:
+		set xdev = -mount
+	breaksw
+	default:
+endsw
 
 set j = 1
 foreach i ($dirs)
 	if ( -d $i ) then
 		cd $i
-		find . $xdev $timeout[$j] ! -type b ! -type c ! -type s -exec rm -f {} \; -print
+		find . $xdev $timeout[$j] $exceptions -exec rm -f {} \; -print
 		find . $xdev ! -name . -type d -mtime +1 -exec rmdir {} \; -print
 	endif
 @ j++
