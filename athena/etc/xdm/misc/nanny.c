@@ -124,7 +124,10 @@ char *do_login(char *uname, disp_state *ds)
 
   /* Update owner and times on the tty. */
   gr = getgrnam("tty");
-  chown(tty, ALpw_uid(&ds->sess), gr ? gr->gr_gid : ALpw_gid(&ds->sess));
+  if (chown(tty, ALpw_uid(&ds->sess), gr ? gr->gr_gid : ALpw_gid(&ds->sess))
+      && debug > 3)
+    syslog(LOG_INFO, "chown of %s (%d %d) failed (%m)",
+	   tty, ALpw_uid(&ds->sess), gr ? gr->gr_gid : ALpw_gid(&ds->sess));
 
 #ifdef SYSV
   times.actime = times.modtime = time(NULL);
@@ -142,6 +145,7 @@ char *do_login(char *uname, disp_state *ds)
 char *do_logout(disp_state *ds)
 {
   char *value;
+
   /* utmp changed by setting LOGGED_IN=TRUE */
   var_getString(ds->vars, N_LOGGED_IN, &value);
   if (!strcmp(value, N_TRUE))
@@ -154,6 +158,14 @@ char *do_logout(disp_state *ds)
 
   /* socket changed by setting USER=something */
   pc_chprot(ds->listener, 0, 0, 0600);
+
+  /* Remove the user from the password file if xlogin added them. */
+  if (!var_getString(ds->vars, N_RMUSER, &value) && !strcmp(value, "1"))
+    {
+      /* AL isn't quite suitable for this yet. */
+      ALflagSet(&ds->sess, ALdidGetHesiodPasswd);
+      ALremovePasswdEntry(&ds->sess);
+    }
 
   ds->comSecNew = COM_SECURE;
   return "logged out";
@@ -384,8 +396,9 @@ int process(pc_message *input, disp_state *ds)
   pc_message output;
   buffer *buf = NULL;
 
-  if (debug)
-    syslog(LOG_INFO, "request: %s", input->data);
+  if (debug > 4)
+    syslog(LOG_INFO, "request: %s %s", input->data,
+	   strlen(input->data) + 1 < input->length ? "..." : "");
 
   reply = handleVars(input, ds, &buf);
 
@@ -399,14 +412,15 @@ int process(pc_message *input, disp_state *ds)
       else
 	{
 	  output.data = reply;
-	  output.length = strlen(reply);
+	  output.length = strlen(reply); /* ? + 1 */
 	}
 
       output.source = input->source;
       pc_send(&output);
 
-      if (debug)
-	syslog(LOG_INFO, "reply: %s", reply);
+      if (debug > 4)
+	syslog(LOG_INFO, "reply: %s %s", output.data,
+	       strlen(output.data) + 1 < output.length ? "..." : "");
 
     }
 
