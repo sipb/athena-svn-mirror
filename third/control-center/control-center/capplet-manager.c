@@ -323,7 +323,10 @@ capplet_close_callback (GtkWidget *widget, gpointer data)
                 close_capplet (TRUE, nd);
                 nd->state = CAPPLET_INACTIVE;
                 style = gtk_widget_get_style (GTK_WIDGET (nd->ctree));
-                gtk_ctree_node_set_foreground (nd->ctree, nd->node, &style->fg[GTK_STATE_NORMAL]);
+
+                if (style) {
+                        gtk_ctree_node_set_foreground (nd->ctree, nd->node, &style->fg[GTK_STATE_NORMAL]);
+                }
         }
 }
 static void

@@ -24,7 +24,7 @@ typedef struct {
     GtkWidget *capplet;
 
     /* General setup */
-    GtkWidget *enable_esd_startup, *enable_sound_events;
+    GtkWidget *enable_esd_startup, *enable_sound_events, *enable_restore_gmix;
 
     /* Sound events setup */
     GtkWidget *table, *ctree, *notebook;
@@ -158,6 +158,13 @@ main(int argc, char *argv[])
             if(gnome_sound_connection >= 0
                && gnome_config_get_bool("/sound/system/settings/event_sounds=true"))
                 reload_all_esd_samples();
+
+            if(gnome_config_get_bool("/sound/system/settings/restore_gmix=true")) {
+                static const char *gmix_cmdline[] = {"gmix", "-i", NULL};
+
+                (void) gnome_execute_async(NULL, 2, (char **)gmix_cmdline);
+            }
+
         }
 #endif
         break;
@@ -240,7 +247,7 @@ sound_properties_create(void)
             g_free (filename);
     }   
 
-    frame = gtk_frame_new (_("Enable"));
+    frame = gtk_frame_new (_("Sound server"));
     wtmp = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
     gtk_container_add (GTK_CONTAINER (frame), wtmp);
 
@@ -262,6 +269,20 @@ sound_properties_create(void)
     gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(retval->enable_sound_events),
                                 gnome_config_get_bool("/sound/system/settings/event_sounds=true"));
 
+    frame = gtk_frame_new (_("Audio mixer"));
+    wtmp = gtk_vbox_new(FALSE, GNOME_PAD_SMALL);
+    gtk_container_add (GTK_CONTAINER (frame), wtmp);
+
+    gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, FALSE, 0);
+
+    retval->enable_restore_gmix =
+        gtk_check_button_new_with_label(_("Restore mixer levels of Gnome Mixer"));
+    gtk_box_pack_start (GTK_BOX (wtmp), retval->enable_restore_gmix,
+                        FALSE, FALSE, 0);
+
+    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(retval->enable_restore_gmix),
+                                gnome_config_get_bool("/sound/system/settings/restore_gmix=false"));
+
     /* do signal connects _after_ setting state so that setting the state
        doesn't call sound_properties_set_sensitivity() and generate tons of
        warnings */
@@ -271,6 +292,11 @@ sound_properties_create(void)
                        retval);
 
     gtk_signal_connect(GTK_OBJECT(retval->enable_sound_events),
+                       "toggled",
+                       GTK_SIGNAL_FUNC(sound_properties_set_sensitivity),
+                       retval);
+
+    gtk_signal_connect(GTK_OBJECT(retval->enable_restore_gmix),
                        "toggled",
                        GTK_SIGNAL_FUNC(sound_properties_set_sensitivity),
                        retval);
@@ -625,16 +651,19 @@ sound_properties_event_apply(GtkCTree *ctree,
 static void
 sound_properties_apply(SoundProps *props)
 {
-    gboolean esd_startup, sound_events;
+    gboolean esd_startup, sound_events, restore_gmix;
     gtk_ctree_post_recursive(GTK_CTREE(props->ctree), NULL,
                              (GtkCTreeFunc)sound_properties_event_apply, props);
 
     esd_startup = GTK_TOGGLE_BUTTON(props->enable_esd_startup)->active;
     sound_events = GTK_TOGGLE_BUTTON(props->enable_sound_events)->active;
+    restore_gmix = GTK_TOGGLE_BUTTON(props->enable_restore_gmix)->active;
     gnome_config_set_bool("/sound/system/settings/start_esd",
                           esd_startup);
     gnome_config_set_bool("/sound/system/settings/event_sounds",
                           esd_startup && sound_events);
+    gnome_config_set_bool("/sound/system/settings/restore_gmix",
+                          restore_gmix);
     gnome_config_sync();
     reload_all_esd_samples();
 }
@@ -670,6 +699,9 @@ ui_do_revert(GtkWidget *w, SoundProps *props)
 
     gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(props->enable_sound_events),
                                 gnome_config_get_bool("/sound/system/settings/event_sounds=true"));
+
+    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(props->enable_restore_gmix),
+                                gnome_config_get_bool("/sound/system/settings/restore_gmix=false"));
 
     sound_properties_regenerate_ctree(props);
 

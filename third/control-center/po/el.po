@@ -18,7 +18,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.4.0\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
 "PO-Revision-Date: 2001-03-28 14:56:11+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -36,12 +36,12 @@ msgstr "ΑΡΧΕΙΟ-ΕΙΚΟΝΑΣ"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
-"σφάλμα αρχικοπόιησης κατά την εκκίνηση του εφαρμογιδίου "
-"'background-properties-capplet'.\n"
+"σφάλμα αρχικοπόιησης κατά την εκκίνηση του εφαρμογιδίου 'background-"
+"properties-capplet'.\n"
 "τερματισμός...\n"
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
@@ -52,151 +52,153 @@ msgstr ""
 msgid "Configuration of the desktop's background"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
 msgstr "Ανενεργό"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
 #, fuzzy
 msgid "Color"
 msgstr "Χρώματα"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 #, fuzzy
 msgid "Solid"
-msgstr "Περισσότερο Συμπαγές"
+msgstr "Λεπτό"
 
-#: capplets/background-properties/property-background.c:336
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
 msgstr "Οριζόντια Διαβάθμιση"
 
-#: capplets/background-properties/property-background.c:342
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
 msgstr "Κάθετη Διαβάθμιση"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 #, fuzzy
 msgid "Primary Color"
 msgstr "Πρωτεύων χρώμα"
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
 #, fuzzy
 msgid "Secondary Color"
 msgstr "Συγκεκριμένο Χρώμα"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
 msgstr "Επιλογή επένδυσης"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Δε βρέθηκε hbox, χρήση απλού επιλογέα αρχείων"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
 msgstr "Προεπισκόπηση"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
 msgstr "Επένδυση"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 #, fuzzy
 msgid " Browse... "
 msgstr "Εξερεύνηση..."
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 #, fuzzy
 msgid "none"
-msgstr "(Κενό)"
+msgstr "Μακρύτερα"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr ""
 
 # For lack of a better term...?  Anaklimakwsh ???
-#: capplets/background-properties/property-background.c:699
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
 msgstr "Νέα κλίμακα"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 #, fuzzy
 msgid "Scaled (keep aspect)"
 msgstr "Σε κλίμακα (διατήρηση αναλογιών)"
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
 msgstr "Κεντραρισμένο"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
 msgstr "Πλακόστρωτο"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 #, fuzzy
 msgid "Use GNOME to set background"
 msgstr "Χρήση του GNOME για την ρύθμιση του παρασκηνίου"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
 msgstr "Παράμετροι από αποθηκευμένη κατάσταση και έξοδος"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
 msgstr "ΕΙΚΟΝΑ"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
 msgstr "Χρήση επένδυσης βάσει καθορισμένων παραμέτρων"
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
 msgstr "ΧΡΩΜΑ"
 
-#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies the background color"
 msgstr "Καθορισμός χρώματος φόντου"
 
-#: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
 msgstr "Καθορισμός τελικού χρώματος διαβάθμισης για το φόντο"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "ORIENT"
 msgstr "ΠΡΟΣΑΝΑΤΟΛΙΣΜΟΣ"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Προσανατολισμός διαβάθμισης: κατακόρυφη ή οριζόντια"
 
-#: capplets/background-properties/property-background.c:1145
+#: capplets/background-properties/property-background.c:1146
 #, fuzzy
 msgid "Use a solid fill for the background"
 msgstr "Χρήση του GNOME για την ρύθμιση του παρασκηνίου"
 
-#: capplets/background-properties/property-background.c:1146
+#: capplets/background-properties/property-background.c:1147
 #, fuzzy
 msgid "Use a gradient fill for the background"
 msgstr "Χρήση διαβάθμισης χρωμάτων μεταξύ των κύκλων."
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
 msgstr "ΚΑΤΑΣΤΑΣΗ"
 
 # see prev comment about translation of scaled
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "Εμφάνιση επένδυσης: μωσαϊκό, κέντρο, νέα κλίμακα"
 
@@ -214,7 +216,7 @@ msgid "Document Handlers"
 msgstr ""
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
 msgid "Control Center"
 msgstr "Κέντρο Ελέγχου"
@@ -580,7 +582,7 @@ msgstr "Ένταση κλίκ"
 #: capplets/keyboard-properties/keyboard-properties.c:347
 #, fuzzy
 msgid "Test settings"
-msgstr "Ρυθμίσεις"
+msgstr "Ρυθμίσεις %s..."
 
 #: capplets/keyboard-properties/keyboard-properties.c:410
 msgid ""
@@ -592,15 +594,15 @@ msgstr ""
 "σας."
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
 msgstr "Κλείσιμο"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 "σφάλμα αρχικοποίησης κατά την εκκίνηση του 'keyboard-properties-capplet'.\n"
@@ -688,38 +690,38 @@ msgstr "Α μπε"
 msgid "Mouse Properties"
 msgstr "Γενικές Ιδιότητες"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 #, fuzzy
 msgid "Require Password"
 msgstr "Απαίτηση κωδικού για ξεκλείδωμα"
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 #, fuzzy
 msgid "Use power management."
 msgstr "Ενεργοποίηση διαχείρισης ενέργειας"
 
 # Haven't come up (yet) with a satisfactory xlation of screensaver...
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
 #, fuzzy
 msgid "No Screensaver"
 msgstr "Νέα προφυλ. οθόνης"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 #, fuzzy
 msgid "Random Screensaver"
-msgstr "Προσθήκη νέας προφύλ. οθόνης"
+msgstr "Screensaver"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
 msgstr "Ρυθμίσεις..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
 msgstr "Ρυθμίσεις τυχαίου"
 
-#: capplets/screensaver-properties/callbacks.c:501
+#: capplets/screensaver-properties/callbacks.c:510
 #, c-format
 msgid "%s Settings..."
 msgstr "Ρυθμίσεις %s..."
@@ -1010,7 +1012,7 @@ msgstr "Μετρητής:"
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:8
 #, fuzzy
 msgid "Delay"
-msgstr "Λιγότερη Καθυστέρηση"
+msgstr "Εκτέλεση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:13
 msgid "Distance of attraction."
@@ -2077,7 +2079,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:14
 #, fuzzy
 msgid "Forest"
-msgstr "Δοκιμή"
+msgstr "Περισσότερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:15
 msgid "Fractal draws a fractal forest."
@@ -2253,7 +2255,7 @@ msgstr "Αλλαγή ανάμεσα όλων των χρωμάτων."
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:2
 #, fuzzy
 msgid "Cycle"
-msgstr "Κλείσιμο"
+msgstr "Είδος"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:15
 msgid "Cycle through colormap."
@@ -2482,7 +2484,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:9
 #, fuzzy
 msgid "Duration"
-msgstr "Διάρκεια (ms)"
+msgstr "Διάρκεια Σκοτεινιάσματος"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:7
 msgid "Duration of laser burst."
@@ -2626,7 +2628,7 @@ msgstr "Σημεία:"
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:23
 #, fuzzy
 msgid "Steps"
-msgstr "Σπόρια"
+msgstr "Κατάσταση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:24
 msgid ""
@@ -2662,7 +2664,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:5
 #, fuzzy
 msgid "Color of path"
-msgstr "Αντίθεση Χρώματος"
+msgstr "Αντίθεση χρώματος"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:6
 msgid "Color of surrounded area"
@@ -2694,11 +2696,8 @@ msgid "Delay between finishing the maze and starting a new one."
 msgstr "Καθυστέρηση μεταξύ του τερματισμού ενός λαβυρίνθου και εκκίνησης νέου."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr ""
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
@@ -2742,7 +2741,7 @@ msgstr "Συγκεκριμένο Χρώμα"
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:23
 #, fuzzy
 msgid "Speed Delay"
-msgstr "Λιγότερη Καθυστέρηση"
+msgstr "Περισσότερη Καθυστέρηση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:24
 #, fuzzy
@@ -3049,7 +3048,7 @@ msgstr "Μήκος Ίχνους"
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:12
 #, fuzzy
 msgid "Number of Qix:"
-msgstr "Αριθμός σημείων:"
+msgstr "Αριθμός ίχνων:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:13
 msgid "Qix"
@@ -3326,7 +3325,7 @@ msgstr "Πλατύ"
 #: capplets/screensaver-properties/screensaver-desktops/Strange.desktop.in.h:1
 #, fuzzy
 msgid "Strange"
-msgstr "Κατάσταση"
+msgstr "Εκκινείται"
 
 #: capplets/screensaver-properties/screensaver-desktops/Superquadrics.desktop.in.h:1
 msgid "Superquadrics"
@@ -3418,12 +3417,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
 #, fuzzy
 msgid "Xroger"
-msgstr "Μακρύτερα"
+msgstr "Μεγαλύτερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:1
 #, fuzzy
 msgid "Bars"
-msgstr "Βασικό"
+msgstr "Σφαίρες"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:3
 msgid "Cycle modes."
@@ -3465,7 +3464,7 @@ msgstr "Κατάσταση"
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:11
 #, fuzzy
 msgid "Static."
-msgstr "Κατάσταση"
+msgstr "Εκκινείται"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:12
 #, fuzzy
@@ -3493,15 +3492,22 @@ msgstr "Συγγραφέας: ΑΓΝΩΣΤΟΣ"
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
 msgstr "ΤΥΧΑΙΟΣ SCREENSAVER"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
 msgstr "Screensaver"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+#, fuzzy
+msgid "Pressing this button will preview current screensaver."
+msgstr ""
+"Εάν πιέσετε το κουμπί θα εμφανιστεί πλαίσιο διαλόγου για τη ρύθμιση του "
+"παρόντος screensaver."
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
@@ -3510,45 +3516,45 @@ msgstr ""
 "παρόντος screensaver."
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 #, fuzzy
 msgid "Screen Saver Settings"
 msgstr "Επιλογή Προφύλαξης Οθόνης"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
 msgstr "Εκκίνηση μετά από"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 #, fuzzy
 msgid " Minutes."
 msgstr "λεπτά"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 #, fuzzy
 msgid "Priority:"
 msgstr "Προτεραιότητα"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 #, fuzzy
 msgid "Low "
 msgstr "Χαμηλή"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
 msgstr " Κανονική"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 #, fuzzy
 msgid "Shutdown monitor "
 msgstr "Σβήσιμο οθόνης μετά από"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 #, fuzzy
 msgid " minutes after screen saver has started."
 msgstr "Μόνο μετά την εκτέλεση της προφύλαξης οθόνης για"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 msgid "Screen Saver Demo"
 msgstr "Επίδειξη screensaver"
 
@@ -3567,52 +3573,61 @@ msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
 msgstr "σφάλμα αρχικοποίσης κατά την εκκίνηση του 'sound-properties-capplet'."
 
-#: capplets/sound-properties/sound-properties.c:188
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
 msgstr "Συμβάν"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
 msgstr "Αρχείο ήχου"
 
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr "Ενεργοποίηση"
-
 #: capplets/sound-properties/sound-properties.c:250
+#, fuzzy
+msgid "Sound server"
+msgstr "Συμβάντα"
+
+#: capplets/sound-properties/sound-properties.c:257
 msgid "Enable sound server startup"
 msgstr "Ενεργοποίηση εξυπηρέτη ήχων"
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
 msgstr "Ήχοι συμβάντων"
 
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr ""
+
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr ""
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr "Γενικά"
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
 msgstr "Επιλογή αρχείου ήχου"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
 msgstr "Εκτέλεση"
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
 msgstr "Συμβάντα"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr "Το παρόν κέντρο ελέγχου του GNOME δεν περιλαμβάνει υποστήριξη ήχου"
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
 msgstr "Το αρχείο ήχου για το παρόν συμβάν δεν υπάρχει."
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3712,7 +3727,7 @@ msgstr "Ραδιοπλήκτρο 1"
 msgid "Radio Button 2"
 msgstr "Ραδιοπλήκτρο 2"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, c-format
 msgid ""
 "Error installing theme:\n"
@@ -3723,15 +3738,15 @@ msgstr ""
 "'%s'\n"
 "%s"
 
-#: capplets/theme-switcher/gui.c:120
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
 msgstr "Επιλογή θέματος προς εγκατάσταση"
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
 msgstr "Διαθέσιμα θέματα"
 
-#: capplets/theme-switcher/gui.c:221
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
@@ -3739,7 +3754,7 @@ msgstr ""
 "Αυτόματη\n"
 "Επισκόπιση"
 
-#: capplets/theme-switcher/gui.c:233
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
@@ -3749,18 +3764,18 @@ msgstr ""
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
 msgstr "Γραμματοσειρά χρήστη"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 msgstr "-greek-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
 
 # TODO
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
 msgstr "Χρήση ειδικής γραμματοσειράς."
 
@@ -4286,56 +4301,56 @@ msgstr "Επαναφορά"
 msgid "Help with '%s' settings"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
 msgstr "id εφαρμογιδίου ελέγχου -- ανάθεση από το control-center"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr "ID"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "Multi-capplet id."
 msgstr "ID πολλαπλού εφαμογιδίου."
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "CAPID"
 msgstr "CAPID"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr "X ID της υποδοχής που το δέχεται"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
 msgstr "XID"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR of the control-center"
 msgstr "IOR του control-center"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR"
 msgstr "IOR"
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
 msgstr "Αρχικοποίηση ρυθμίσεων συνεδρίας"
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr ""
 "Αγνόηση εξ' ορισμού ενέργειών.  Χρήση σε ειδικές περιπτώσεις init-session"
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
 msgstr "Με συγχωρείτε, δεν υπάρχει βοήθεια για αυτές τις ρυθμίσεις."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
 msgstr "εντολή-capplet προς εκτέλεση."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
 msgstr "CAPPLET"
 
@@ -4343,39 +4358,39 @@ msgstr "CAPPLET"
 msgid "The GNOME configuration tool"
 msgstr ""
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 #, fuzzy
 msgid "Help on control-center"
 msgstr "Νέο-κέντρο-ελέγχου"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
 msgstr "Βοήθεια για το κέντρο ελέγχου του GNOME."
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 #, fuzzy
 msgid "Help with the current configuration page."
 msgstr "Βοήθεια για το κέντρο ελέγχου του GNOME."
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
 msgstr "Περί"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
 msgstr "Πέρι του κέντρου ελέγχου του GNOME."
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
 msgstr "Προειδοποίηση:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
 msgstr "Απόριψη όλων των αλλαγών"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
@@ -4577,6 +4592,9 @@ msgstr "Άγνωστο"
 #~ msgid "Adjust wallpaper's transparency"
 #~ msgstr "Ρύθμιση της διαφάνειας της επένδυσης"
 
+#~ msgid "More Solid"
+#~ msgstr "Περισσότερο Συμπαγές"
+
 #~ msgid "window1"
 #~ msgstr "window1"
 
@@ -4671,9 +4689,6 @@ msgstr "Άγνωστο"
 #~ msgid "Fade desktop back when deactivating screensaver"
 #~ msgstr "Επαναφορά οθόνης κατά την απενεργ. της προφυλ. οθόνης"
 
-#~ msgid "Fade Duration"
-#~ msgstr "Διάρκεια Σκοτεινιάσματος"
-
 #~ msgid "Fade Smoothness"
 #~ msgstr "Ομαλότητα Σκοτεινιάσματος"
 
@@ -4693,8 +4708,8 @@ msgstr "Άγνωστο"
 #~ msgstr "label1"
 
 #~ msgid ""
-#~ "Cannot find the data to configure this screensaver. Please edit the command "
-#~ "line below."
+#~ "Cannot find the data to configure this screensaver. Please edit the "
+#~ "command line below."
 #~ msgstr ""
 #~ "Δεν μπορούν να βρεθούν τα δεδομένα για να ρυθμιστεί η προφύλ. οθόνης. "
 #~ "Παρακαλώ τροποποιήστε την παρακάτω γραμμή εντολών κατάλληλα."
@@ -4750,14 +4765,14 @@ msgstr "Άγνωστο"
 #~ msgid "Full Color"
 #~ msgstr "Με Χρώμα"
 
-#~ msgid "Balls"
-#~ msgstr "Σφαίρες"
-
 #~ msgid "Polygons"
 #~ msgstr "Πολύγωνα"
 
 #~ msgid "Threshold of repulsion"
 #~ msgstr "Κατώφλι απώθησης"
+
+#~ msgid "Color Contrast"
+#~ msgstr "Αντίθεση Χρώματος"
 
 #~ msgid "Use double buffering"
 #~ msgstr "Χρήση διπλής ενταμίευσης"
@@ -4780,6 +4795,9 @@ msgstr "Άγνωστο"
 #~ msgid "Pixels per fractal."
 #~ msgstr "Εικονοστοιχεία ανά φράκταλ."
 
+#~ msgid "Number of points:"
+#~ msgstr "Αριθμός σημείων:"
+
 #~ msgid "Solid Trails"
 #~ msgstr "Διατηρούμενα Ίχνη"
 
@@ -4798,12 +4816,6 @@ msgstr "Άγνωστο"
 #~ msgid "Spread between lines"
 #~ msgstr "Διάχυση μεταξύ γραμμών"
 
-#~ msgid "Number of trails:"
-#~ msgstr "Αριθμός ίχνων:"
-
-#~ msgid "Color contrast"
-#~ msgstr "Αντίθεση χρώματος"
-
 #~ msgid "Number of Iterations"
 #~ msgstr "Αριθμός Επαναλήψεων"
 
@@ -4816,11 +4828,17 @@ msgstr "Άγνωστο"
 #~ msgid "Delay before next redraw"
 #~ msgstr "Υστέρηση μέχρι την επόμενη επανασχεδίαση"
 
+#~ msgid "Add a new screensaver"
+#~ msgstr "Προσθήκη νέας προφύλ. οθόνης"
+
 #~ msgid "Select the screensaver to run from the list below:"
 #~ msgstr "Επιλογή προφύλ. οθόνης προς εκτέλεση από την παρακάτω λίστα:"
 
 #~ msgid "Custom"
 #~ msgstr "Παραμετροποιημένο"
+
+#~ msgid "Enable"
+#~ msgstr "Ενεργοποίηση"
 
 #~ msgid "window4"
 #~ msgstr "window4"
@@ -4908,7 +4926,8 @@ msgstr "Άγνωστο"
 
 #~ msgid "This button sets the start order of the selected programs.\n"
 #~ msgstr ""
-#~ "Το κουμπί αυτό καθορίζει τη σειρά εκκίνησης των επιλεγμένων προγραμμάτων.\n"
+#~ "Το κουμπί αυτό καθορίζει τη σειρά εκκίνησης των επιλεγμένων "
+#~ "προγραμμάτων.\n"
 
 # Needs some improvement...
 #~ msgid ""
@@ -4945,9 +4964,6 @@ msgstr "Άγνωστο"
 
 #~ msgid "Order"
 #~ msgstr "Σειρά"
-
-#~ msgid "Style"
-#~ msgstr "Είδος"
 
 #~ msgid "Program"
 #~ msgstr "Πρόγραμμα"
@@ -5017,11 +5033,11 @@ msgstr "Άγνωστο"
 #~ msgstr "Εντολή εκκίνησης"
 
 #~ msgid ""
-#~ "Programs with smaller values are started before programs with higher values. "
-#~ "The default value should be OK"
+#~ "Programs with smaller values are started before programs with higher "
+#~ "values. The default value should be OK"
 #~ msgstr ""
-#~ "Τα προγράμματα με μικρότερες τιμές εκκινούνται πρίν απο αυτά με μεγαλύτερες "
-#~ "τιμές.. Η εξ' ορισμού τιμή πρέπει να είναι εντάξει"
+#~ "Τα προγράμματα με μικρότερες τιμές εκκινούνται πρίν απο αυτά με "
+#~ "μεγαλύτερες τιμές.. Η εξ' ορισμού τιμή πρέπει να είναι εντάξει"
 
 #~ msgid "The startup command cannot be empty"
 #~ msgstr "Η εντολή εκκίνησης δε μπορεί να είναι άδεια"
@@ -5276,7 +5292,8 @@ msgstr "Άγνωστο"
 
 #~ msgid "Read an XML description of the capplet's state and apply it"
 #~ msgstr ""
-#~ "Ανάγνωση περιγραφής XML από την κατάσταση του εφαρμογιδίου και εκτέλεσή της"
+#~ "Ανάγνωση περιγραφής XML από την κατάσταση του εφαρμογιδίου και εκτέλεσή "
+#~ "της"
 
 #~ msgid "DO_SET"
 #~ msgstr "DO_SET"
@@ -5294,7 +5311,8 @@ msgstr "Άγνωστο"
 #~ msgstr "Προτιμίσεις Κέντρου Ελέγχου"
 
 #~ msgid ""
-#~ "an initialization error occurred while starting 'bell-properties-capplet'.\n"
+#~ "an initialization error occurred while starting 'bell-properties-"
+#~ "capplet'.\n"
 #~ "aborting...\n"
 #~ msgstr ""
 #~ "σφάλμα αρχικοποίησης κατά την εκκίνηση του 'bell-properties-capplet'.\n"

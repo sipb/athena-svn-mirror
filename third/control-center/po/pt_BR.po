@@ -1,14 +1,14 @@
 # Brazilian Translation of Control Center.
-# Copyright (C) 1999-2000 Free Software Foundation, Inc.
+# Copyright (C) 1999-2001 Free Software Foundation, Inc.
 # Original Translator: Ivan Passos <ivan@cyclades.com>
 # Original Revision: Sandro Nunes Henrique <sandro@conectiva.com.br>
-# Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000.
+# Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: control-center 1.2.2\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
-"PO-Revision-Date: 2000-10-15 11:37-02:00\n"
+"Project-Id-Version: control-center 1.4\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
+"PO-Revision-Date: 2001-08-21 18:00-03:00\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
 "MIME-Version: 1.0\n"
@@ -25,8 +25,8 @@ msgstr "ARQUIVO-IMAGEM"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 "um erro ocorreu ao iniciar 'background-properties-capplet'.\n"
@@ -34,145 +34,147 @@ msgstr ""
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
 msgid "Background"
-msgstr "Propriedades do Fundo"
+msgstr "Fundo"
 
 #: capplets/background-properties/background-properties.desktop.in.h:2
 msgid "Configuration of the desktop's background"
 msgstr "Configuração do fundo da área de trabalho"
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
 msgstr "Desativado"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
 msgid "Color"
 msgstr "Cor"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 msgid "Solid"
 msgstr "Sólida"
 
-#: capplets/background-properties/property-background.c:336
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
 msgstr "Gradiente horizontal"
 
-#: capplets/background-properties/property-background.c:342
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
 msgstr "Gradiente vertical"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
 msgstr "Cor primária"
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
 msgid "Secondary Color"
 msgstr "Cor secundária"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
 msgstr "Seleção de papel de parede"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Não é possível achar um `hbox', usando o seletor normal de arquivos"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
-msgstr "Visualização prévia"
+msgstr "Prévia"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
 msgstr "Papel de parede"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
 msgstr " Procurar..."
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "nenhum"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr "Logotipo em alto relevo"
 
-#: capplets/background-properties/property-background.c:699
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
 msgstr "Ajustado à tela"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
 msgstr "Ajustado à tela (manter aspecto)"
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
 msgstr "Centralizado"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
 msgstr "Mosaico"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 msgid "Use GNOME to set background"
 msgstr "Usar o GNOME para configurar o fundo"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
 msgstr "Configurar parâmetros a partir do estado salvo e sair"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
 msgstr "IMAGEM"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
 msgstr "Configura o papel de parede para o valor especificado"
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
 msgstr "COR"
 
-#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies the background color"
 msgstr "Especifica a cor de fundo"
 
-#: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
 msgstr "Especifica a cor final do fundo para gradiente"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "ORIENT"
 msgstr "ORIENTAR"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Orientação do gradiente: vertical ou horizontal"
 
-#: capplets/background-properties/property-background.c:1145
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a solid fill for the background"
 msgstr "Usar preenchimento sólido para o fundo"
 
-#: capplets/background-properties/property-background.c:1146
+#: capplets/background-properties/property-background.c:1147
 msgid "Use a gradient fill for the background"
 msgstr "Usar preenchimento gradiente para o fundo"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
 msgstr "MODO"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr ""
 "Exibir papel de parede: mosaico, centralizado, ajustado ou dimensionado"
@@ -184,25 +186,25 @@ msgstr "Área de trabalho"
 
 #: capplets/desktop-links/Documents.directory.in.h:1
 msgid "Configure how document types are handled"
-msgstr "Configura como se meche com os documentos"
+msgstr "Configura como os tipos de documento são manuseados"
 
 #: capplets/desktop-links/Documents.directory.in.h:2
 msgid "Document Handlers"
-msgstr "Documentos"
+msgstr "Manipuladores de documentos"
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
 msgid "Control Center"
 msgstr "Central de Controle"
 
 #: capplets/desktop-links/Gnome.directory.in.h:2
 msgid "Control Center Menu"
-msgstr "Menu do Centro de Controle"
+msgstr "Menu da Central de Controle"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:1
 msgid "Configure the settings of your Multimedia devices"
-msgstr "Permite configurar os seus dispositivos multimídia"
+msgstr "Configura os parâmetros dos seus dispositivos multimídia"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:2
 msgid "Multimedia"
@@ -210,7 +212,7 @@ msgstr "Multimídia"
 
 #: capplets/desktop-links/Peripherals.directory.in.h:1
 msgid "Configure your external devices"
-msgstr "Configura os seus dispositivos externos."
+msgstr "Configura os seus dispositivos externos"
 
 #: capplets/desktop-links/Peripherals.directory.in.h:2
 msgid "Peripherals"
@@ -222,115 +224,110 @@ msgstr "Sessão"
 
 #: capplets/desktop-links/Session.directory.in.h:2
 msgid "Session Management Settings"
-msgstr "Configurador de Sessão"
+msgstr "Configurações de gerência de sessão"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:1
 msgid "Configure the global settings of your GNOME applications"
-msgstr "Configura as opções globais das aplicações GNOME."
+msgstr "Configura as opções globais das suas aplicações GNOME"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:2
 msgid "User Interface"
-msgstr "Opções da Interface do Usuário"
+msgstr "Interface do usuário"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:387
 msgid "Edit Applications List"
-msgstr ""
+msgstr "Editar lista de aplicativos"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:409
 #, c-format
 msgid "Select applications to appear in menu for MIME type \"%s\""
-msgstr ""
+msgstr "Selecionar aplicativos que aparecerão no menu para o tipo MIME \"%s\""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:433
 msgid "Add Application..."
-msgstr ""
+msgstr "Adicionar aplicativo..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:440
 msgid "Edit Application..."
-msgstr ""
+msgstr "Editar aplicativo..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:446
 msgid "Delete Application"
-msgstr ""
+msgstr "Excluir aplicativo"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:480
 msgid "Edit Components List"
-msgstr ""
+msgstr "Editar lista de componentes"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:500
 #, c-format
 msgid "Select views to appear in menu for MIME type \"%s\""
-msgstr ""
+msgstr "Selecionar visões que aparecerão no menu para o tipo MIME \"%s\""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:720
 msgid ""
 "The MIME type entered contained upper case characters. Upper case characters "
 "were changed to lower case for you."
 msgstr ""
+"O tipo MIME entrado continha caracteres maiúsculos. Caracteres maiúsculos "
+"foram alterados para minúsculos para você."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:723
-#, fuzzy
 msgid "Add New MIME Type"
-msgstr "Adicionar tipo MIME"
+msgstr "Adicionar novo tipo MIME"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:769
-#, fuzzy
 msgid "Add MIME Type"
 msgstr "Adicionar tipo MIME"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:773
 msgid "New MIME type (e.g. image/x-thumper):"
-msgstr ""
+msgstr "Novo tipo MIME (ex. image/x-thumper):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:780
 msgid "Description (e.g. Thumper image):"
-msgstr ""
+msgstr "Descrição (ex. imagem Thumper):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:947
-#, fuzzy
 msgid "File Extensions "
-msgstr "Extensões"
+msgstr "Extensões de arquivo"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
 #: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
-msgstr "Incluir..."
+msgstr "Adicionar..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:972
-#, fuzzy
 msgid "    Remove    "
-msgstr "Excluir"
+msgstr "    Remover   "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1041
-#, fuzzy
 msgid "Add New Extension"
-msgstr "Extensão"
+msgstr "Adicionar nova extensão"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1045
-#, fuzzy
 msgid ""
 "Type in the extensions for this mime-type (without dot).\n"
 "You can enter several extensions seperated by a space,\n"
 "for example: html htm"
 msgstr ""
-"Digite nas extensões para este tipo MIME\n"
-"Por exemplo: .html, .htm"
+"Digite as extensões para este tipo MIME (sem o ponto).\n"
+"Você pode entrar várias extensões separadas por um espaço,\n"
+"por exemplo: html htm"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1052
 msgid "Extension:"
 msgstr "Extensão:"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1194
-#, fuzzy
 msgid "You must enter a name."
-msgstr "Você deve digitar um tipo MIME"
+msgstr "Você deve entrar um nome."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1197
-#, fuzzy
 msgid "You must enter a command."
-msgstr "Você deve digitar um tipo MIME"
+msgstr "Você deve entrar um comando."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1207
 #, c-format
@@ -339,6 +336,9 @@ msgid ""
 "Check your spelling and make sure you have\n"
 "the right permissions to execute this file."
 msgstr ""
+"\"%s\" não existe ou não é executável. Verifique o\n"
+"nome digitado e tenha certeza que as permissões\n"
+"estão corretas para executar este arquivo."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1213
 #, c-format
@@ -346,101 +346,94 @@ msgid ""
 "The command \"%s\" cannot be found.\n"
 "You must use a command that can work from any command line."
 msgstr ""
+"O comando \"%s\" não pode ser encontrado.\n"
+"Você deve usar um comando que funcione de qualquer linha de comando."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1225
 msgid "Bad Application Name"
-msgstr ""
+msgstr "Nome de aplicativo inválido"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1226
-#, fuzzy
 msgid "Bad Application Command"
-msgstr "Comando de configuração:"
+msgstr "Comando de aplicativo inválido"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1258
 msgid "Add Application"
-msgstr ""
+msgstr "Adicionar aplicativo"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1259
 msgid "Edit Application"
-msgstr ""
+msgstr "Editar aplicativo"
 
 #. Application Name label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1271
 msgid "Application Name:"
-msgstr ""
+msgstr "Nome do aplicativo:"
 
 #. Application Command label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1282
-#, fuzzy
 msgid "Application Command:"
-msgstr "Comando de configuração:"
+msgstr "Comando do aplicativo:"
 
 #. Open Behavior frame
 #: capplets/file-types/file-types-capplet-dialogs.c:1293
-#, fuzzy
 msgid "Open Behavior"
-msgstr "Comportamento das caixas de diálogo"
+msgstr "Comportamento de abertura"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1299
 msgid "Can open multiple files"
-msgstr ""
+msgstr "Pode abrir vários arquivos"
 
 #. FIXME bugzilla.eazel.com 6066: This needs to be three options now: "yes", "no", and "use uris for non-file locations"
 #: capplets/file-types/file-types-capplet-dialogs.c:1307
 msgid "Can open from URI"
-msgstr ""
+msgstr "Pode abrir a partir de URI"
 
 #: capplets/file-types/file-types-capplet.c:745
 #: capplets/file-types/file-types-capplet.c:1890
-#, fuzzy
 msgid "MIME Type"
 msgstr "Tipo MIME"
 
 #: capplets/file-types/file-types-capplet.c:752
-#, fuzzy
 msgid "Change Icon"
-msgstr "Cancelar conexão"
+msgstr "Alterar ícone"
 
 #: capplets/file-types/file-types-capplet.c:759
-#, fuzzy
 msgid "Change File Extensions"
-msgstr "Extensões"
+msgstr "Alterar extensões de arquivo"
 
 #: capplets/file-types/file-types-capplet.c:767
 msgid "Default Action:"
-msgstr ""
+msgstr "Ação padrão:"
 
 #: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
-msgstr ""
+msgstr "Usar visualizador"
 
 #: capplets/file-types/file-types-capplet.c:785
 msgid "Open With Application"
-msgstr ""
+msgstr "Abrir com aplicativo"
 
 #: capplets/file-types/file-types-capplet.c:796
-#, fuzzy
 msgid "Edit List"
-msgstr "Editar"
+msgstr "Editar lista"
 
 #: capplets/file-types/file-types-capplet.c:821
-#, fuzzy
 msgid "Add New MIME Type..."
-msgstr "Adicionar tipo MIME"
+msgstr "Adicionar novo tipo MIME..."
 
 #: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
-msgstr ""
+msgstr "Excluir este tipo MIME"
 
 #: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
-msgstr ""
+msgstr "Reverter aos padrões do sistema"
 
 #: capplets/file-types/file-types-capplet.c:1082
 #: capplets/file-types/file-types-capplet.c:1226
-#, fuzzy
 msgid "None"
-msgstr "nenhum"
+msgstr "Nenhum"
 
 #: capplets/file-types/file-types-capplet.c:1331
 msgid ""
@@ -448,39 +441,41 @@ msgid ""
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
+"Reverter as configurações do sistema perderá quaisquer\n"
+"mudanças que você tenha feito a Tipos de arquivos e programas.\n"
+"Reverter de qualquer forma?"
 
 #: capplets/file-types/file-types-capplet.c:1441
 #: capplets/file-types/file-types-capplet.c:1627
 #: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
-msgstr ""
+msgstr "Ver como %s"
 
 #: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
-msgstr ""
+msgstr "Descrição"
 
 #: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
 msgstr "Extensão"
 
 #: capplets/file-types/file-types-capplet.c:1892
-#, fuzzy
 msgid "Default Action"
-msgstr "Modo MDI padrão"
+msgstr "Ação padrão"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
 msgid "File Types and Programs"
-msgstr ""
+msgstr "Tipos de arquivos e programas"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:2
 msgid "Specify which programs are used to open or view each file type"
 msgstr ""
+"Especifica quais programas são usados para abrir ou ver cada tipo de arquivo"
 
 #: capplets/file-types/file-types-icon-entry.c:381
-#, fuzzy
 msgid "Select an icon"
-msgstr "Selecionar um ícone..."
+msgstr "Selecionar um ícone"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
@@ -492,16 +487,15 @@ msgstr "Executar em um terminal"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:1
 msgid "Choose the editor that is invoked by gnome-edit"
-msgstr ""
+msgstr "Escolher um editor a ser invocado por gnome-edit"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:2
-#, fuzzy
 msgid "Default Editor"
-msgstr "Modo MDI padrão"
+msgstr "Editor padrão"
 
 #: capplets/keyboard-properties/keyboard-properties.c:250
 msgid "Keyboard bell"
-msgstr "Sinal sonoro do teclado"
+msgstr "Apito do teclado"
 
 #: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
@@ -560,15 +554,15 @@ msgstr ""
 "certeza que o Guia do Usuário Gnome está instalado no seu sistema."
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
 msgstr "Fechar"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 "um erro ocorreu ao iniciar 'keyboard-properties-capplet'.\n"
@@ -576,11 +570,11 @@ msgstr ""
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:1
 msgid "Keyboard"
-msgstr "Propriedades do Teclado"
+msgstr "Teclado"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:2
 msgid "Keyboard Properties"
-msgstr "Propriedades do Teclado"
+msgstr "Propriedades do teclado"
 
 #: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
@@ -646,39 +640,39 @@ msgstr ""
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:1
 msgid "Mouse"
-msgstr "Propriedades do Mouse"
+msgstr "Mouse"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:2
 msgid "Mouse Properties"
-msgstr "Modifica as propriedades do Mouse"
+msgstr "Propriedades do Mouse"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
 msgstr "Requer senha"
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 msgid "Use power management."
 msgstr "Usar gerenciamento de energia."
 
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
 msgid "No Screensaver"
 msgstr "Sem protetor de tela"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 msgid "Random Screensaver"
 msgstr "Protetor de tela aleatório"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
 msgstr "Configurações..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
 msgstr "Configurações aleatórias"
 
-#: capplets/screensaver-properties/callbacks.c:501
+#: capplets/screensaver-properties/callbacks.c:510
 #, c-format
 msgid "%s Settings..."
 msgstr "Configurações de %s..."
@@ -689,11 +683,11 @@ msgstr "Relógio 3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:2
 msgid "Bernd Paysan"
-msgstr ""
+msgstr "Bernd Paysan"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:3
 msgid "Changes the magnification of original picture."
-msgstr "Altera o zoom da figura original"
+msgstr "Altera a ampliação da figura original."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:5
 msgid "High"
@@ -705,16 +699,15 @@ msgstr "Baixo"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:8
 msgid "Modifies the direction move."
-msgstr "Modifica a direção do movimento"
+msgstr "Modifica a direção do movimento."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:9
-#, fuzzy
 msgid "Modifies the wobbling."
-msgstr "Modifica a direção do movimento"
+msgstr "Modifica a pulsação."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:10
 msgid "Sets the moving cycle time."
-msgstr "Configura o tempo de movimento"
+msgstr "Configura o tempo do ciclo de movimento."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:13
@@ -722,9 +715,8 @@ msgstr "Configura o tempo de movimento"
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:21
-#, fuzzy
 msgid "Size"
-msgstr "Tamanho:"
+msgstr "Tamanho"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:14
@@ -736,41 +728,44 @@ msgstr "Tamanho:"
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:24
 msgid "Speed"
-msgstr ""
+msgstr "Velocidade"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:16
 msgid ""
 "This draws a working analog clock composed of floating, throbbing bubbles."
-msgstr "Desenha um relógio analógico composto de bolhas flutuantes"
+msgstr ""
+"Desenha um relógio analógico funcional composto por bolhas flutuantes e "
+"pulsantes."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:17
 msgid ""
 "Time 3D is a clock.  It uses flying balls to display the time.  The balls "
 "move and wobble around to give you the impression your graphic workstation "
 "with its many XStone is doing something."
-msgstr "O `Time 3D' é um relógio. Ele usa bolas voadoras para mostrar a hora."
+msgstr ""
+"O Relógio 3D é um relógio. Ele usa bolas voadoras para mostrar a hora. As "
+"bolas movem e pulsam para dar a impressão que a sua estação de trabalho "
+"gráfica com todos seus XStone está fazendo algo."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:18
-#, fuzzy
 msgid "Twist"
-msgstr "Testar"
+msgstr "Torção"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:19
 msgid "Twist speed:"
-msgstr ""
+msgstr "Velocidade da torção:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:20
-#, fuzzy
 msgid "Twist:"
-msgstr "Testar"
+msgstr "Torção:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:21
 msgid "Wobble"
-msgstr ""
+msgstr "Pulsação"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:22
 msgid "Wobble:"
-msgstr ""
+msgstr "Pulsação:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:1
 msgid ""
@@ -778,25 +773,26 @@ msgid ""
 "heads (``ants'') walk along the screen, they change pixel values in their "
 "path. Then, as they pass over changed pixels, their behavior is influenced."
 msgstr ""
+"Um autômato celular que é na verdade uma máquina de Turing bi-dimensional: "
+"na medida que as cabeças (``formigas'') caminham pela tela elas mudam os "
+"valores dos pixels no seu caminho. Então, ao passar sobre os pixels mudados, "
+"seu comportamento é influenciado."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:2
 msgid "Ant"
-msgstr "Formigas"
+msgstr "Formiga"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:3
-#, fuzzy
 msgid "Ants:"
-msgstr "Formigas"
+msgstr "Formigas:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:4
-#, fuzzy
 msgid "Changes the number of ants marching across the screen."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Muda o número de formigas marchando através a tela."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:5
-#, fuzzy
 msgid "Changes the size of the ants."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Muda o tamanho das formigas."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:10
@@ -816,37 +812,36 @@ msgstr "Muda o número de bolhas a usar."
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:8
-#, fuzzy
 msgid "Count"
-msgstr "Bolhas:"
+msgstr "Contagem"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:7
 msgid "David Bagely"
-msgstr ""
+msgstr "David Bagely"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:8
 msgid ""
 "Determines whether or not the ant leaves a truchet in the path it leaves "
 "behind."
 msgstr ""
+"Determina se a formiga deixa um truchet no caminho que ela deixa para trás."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:10
 msgid "Little Ants walk around, leaving colored trails."
-msgstr "Pequenas formigas deixando um rastro colorido."
+msgstr "Pequenas formigas perambulam, deixando rastros coloridos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:11
-#, fuzzy
 msgid "Number of ants."
-msgstr "Número de bolhas."
+msgstr "Número de formigas."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:12
 msgid "Print the path that the ant took in the trail."
-msgstr ""
+msgstr "Imprimir o caminho que a formiga tomou na trilha."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Truchet.desktop.in.h:1
 msgid "Truchet"
-msgstr ""
+msgstr "Truchet"
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:1
 msgid "Atlantis"
@@ -857,9 +852,10 @@ msgid "Whales, dolphins and sharks swimming around, in 3D"
 msgstr "Baleias, golfinhos e tubarões nadando pelo mar, em 3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:1
-#, fuzzy
 msgid "A show of objects interacting through attractive and repulsive forces."
-msgstr "Diversos objetos interagindo através de forças atrativas e repulsivas."
+msgstr ""
+"Uma exibição de diversos objetos interagindo através de forças atrativas e "
+"repulsivas."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:2
 msgid "Attraction"
@@ -870,14 +866,16 @@ msgid ""
 "Attraction is based on interactions of points which attract each other up to "
 "a certain distance and then begin to repel each other."
 msgstr ""
+"Atração é baseado nas interações de pontos que se atraem até uma certa "
+"distância e então passam a se repelir."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:4
 msgid "Change distance at which attractive force becomes repulsive."
-msgstr ""
+msgstr "Mudar a distância na qual a força atrativa torna-se repulsiva."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:5
 msgid "Change size of points."
-msgstr ""
+msgstr "Mudar o tamanho dos pontos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:5
@@ -906,24 +904,21 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:1
 msgid "Change the delay in cycles."
-msgstr "Muda o atraso em ciclos."
+msgstr "Mudar a espera em ciclos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:4
-#, fuzzy
 msgid "Change the number of points to use."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Mudar o número de pontos a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:8
-#, fuzzy
 msgid "Change the spacing radius of the points."
-msgstr "Configura as opções da proteção de tela"
+msgstr "Mudar o raio de espaçamento dos pontos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:5
-#, fuzzy
 msgid "Closer"
-msgstr "Fechar"
+msgstr "Perto"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:12
@@ -941,7 +936,7 @@ msgstr "Fechar"
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:9
 msgid "Count:"
-msgstr "Bolhas:"
+msgstr "Contagem:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:6
@@ -968,19 +963,17 @@ msgstr "Bolhas:"
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:8
-#, fuzzy
 msgid "Delay"
-msgstr "Tocar"
+msgstr "Espera"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:13
 msgid "Distance of attraction."
-msgstr ""
+msgstr "Distância de atração."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:10
-#, fuzzy
 msgid "Farther"
-msgstr "Rápido"
+msgstr "Longe"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:9
@@ -1018,52 +1011,48 @@ msgid "Faster"
 msgstr "Rápido"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:16
-#, fuzzy
 msgid "Glow"
-msgstr "Lento"
+msgstr "Brilho"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:17
 msgid "Have initial forces on each point be tangential to original circle."
-msgstr ""
+msgstr "Forças iniciais em cada ponto são tangentes ao círculo original."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:18
 msgid "Have points glow vary with acceleration."
-msgstr ""
+msgstr "Brilho dos pontos varia com a aceleração."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:19
 msgid "Initial spacing radius of points."
-msgstr ""
+msgstr "Raio de espaçamento inicial dos pontos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:20
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:9
 msgid "Jamie Zawinski <jwz@netscape.com>"
-msgstr ""
+msgstr "Jamie Zawinski <jwz@netscape.com>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:11
-#, fuzzy
 msgid "Larger"
-msgstr "Grande"
+msgstr "Maior"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:22
-#, fuzzy
 msgid "Number of points to use."
-msgstr "Número de bolhas."
+msgstr "Número de pontos a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:23
 msgid "Orbit"
-msgstr ""
+msgstr "Órbita"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:24
 msgid "Radius"
-msgstr ""
+msgstr "Raio"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:26
-#, fuzzy
 msgid "Size of point."
-msgstr "Velocidade da animação"
+msgstr "Tamanho do ponto."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:27
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:13
@@ -1103,9 +1092,8 @@ msgstr "Lento"
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:28
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:24
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:19
-#, fuzzy
 msgid "Smaller"
-msgstr "Pequeno"
+msgstr "Menor"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:29
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:21
@@ -1132,7 +1120,7 @@ msgstr "Pequeno"
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:19
 msgid "Speed of Motion."
-msgstr "Velocidade da animação"
+msgstr "Velocidade de movimento."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:1
 msgid "Blitspin"
@@ -1143,16 +1131,16 @@ msgid ""
 "Blitspin takes a bitmap and repeatedly rotates it by 90 degrees using "
 "logical operations."
 msgstr ""
-"O Blitspin rotaciona um bitmap 90 graus repetidas vezes usando operações "
-"lógicas"
+"O Blitspin pega uma imagem e a rotaciona repetidamente em 90 graus usando "
+"operações lógicas."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:3
 msgid "Change the delay between each 90 degree rotation."
-msgstr "Muda a velocidade das rotações de 90°."
+msgstr "Mudar a espera entre cada rotação de 90 graus."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:4
 msgid "Change the delay between steps of rotation process."
-msgstr "Muda a velocidade entre as rotações"
+msgstr "Mudar a espera entre os passos do processo de rotação."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:8
@@ -1193,12 +1181,11 @@ msgstr "Muda a velocidade entre as rotações"
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:1
 msgid "Change to display in monochrome."
-msgstr "Mostra a proteção de tela em monocromo."
+msgstr "Alterar a exibição para monocromática."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:7
-#, fuzzy
 msgid "Delay2"
-msgstr "Tocar"
+msgstr "Espera2"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:14
@@ -1238,7 +1225,7 @@ msgstr "Tocar"
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:2
 msgid "Display screensaver in monochrome."
-msgstr "Proteção para monitor monocromático"
+msgstr "Exibir o protetor de tela no modo monocromático."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:17
@@ -1278,15 +1265,15 @@ msgstr "Proteção para monitor monocromático"
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:4
 msgid "Monochrome"
-msgstr ""
+msgstr "Monocromático"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:12
 msgid "Rotates a bitmap in an interesting way."
-msgstr "Rotaciona um bitmap de uma forma interessante."
+msgstr "Rotaciona uma imagem de uma forma interessante."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:14
 msgid "Speed of rotation"
-msgstr "Velocidade de rotação."
+msgstr "Velocidade de rotação"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:15
 msgid "Speed of the 90 degree rotation."
@@ -1295,26 +1282,25 @@ msgstr "Velocidade da rotação de 90 graus."
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:1
 msgid "3D"
-msgstr ""
+msgstr "3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:2
 msgid "A blob of bubbles spinning/moving around the screen."
-msgstr ""
+msgstr "Uma massa de bolhas girando e se movendo pela tela."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:3
-#, fuzzy
 msgid "Bouboule"
-msgstr "Bolhas3d"
+msgstr "Bouboule"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:4
 msgid "Bouboule changes shape and size in a blob like form."
-msgstr ""
+msgstr "Bouboule muda de forma e tamanho em uma massa como uma bolha."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:4
 msgid "Change the number of bubbles to use."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Mudar o número de bolhas a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:2
@@ -1338,9 +1324,8 @@ msgstr "Muda o número de bolhas a usar."
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:1
-#, fuzzy
 msgid "Change the number of colors to use."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Mudar o número de cores a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:4
@@ -1364,9 +1349,8 @@ msgstr "Muda o número de bolhas a usar."
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:3
-#, fuzzy
 msgid "Colors"
-msgstr "Cor"
+msgstr "Cores"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:5
@@ -1390,13 +1374,12 @@ msgstr "Cor"
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:4
-#, fuzzy
 msgid "Colors:"
-msgstr "Cor"
+msgstr "Cores:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:16
 msgid "Jeremie Petit <jpetit@essi.fr>"
-msgstr ""
+msgstr "Jeremie Petit <jpetit@essi.fr>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:18
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:10
@@ -1415,14 +1398,13 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:16
-#, fuzzy
 msgid "Number of Colors."
-msgstr "Número de bolhas."
+msgstr "Número de cores."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:16
 msgid "Number of bubbles to use."
-msgstr "Número de bolhas."
+msgstr "Número de bolhas a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:22
 msgid "Use red/blue 3d seperation."
@@ -1430,11 +1412,11 @@ msgstr "Usa separação 3D vermelho/azul."
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:1
 msgid "Braid"
-msgstr ""
+msgstr "Trança"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:7
 msgid "John Neil <neil@math.idbsu.edu>"
-msgstr ""
+msgstr "John Neil <neil@math.idbsu.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:21
@@ -1442,17 +1424,18 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:7
-#, fuzzy
 msgid "Number of Colors"
-msgstr "Número de bolhas."
+msgstr "Número de cores"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:11
 msgid "Random color-cycling braids in a circle."
-msgstr ""
+msgstr "Tranças que mudam de cor aleatoriamente em um círculo."
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:12
 msgid "The braid program draws random color-cycling braids around a circle."
 msgstr ""
+"O programa Trança desenha tranças que mudam de cor aleatoriamente ao redor "
+"de um círculo."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:1
 msgid "Blue Screen of Death"
@@ -1464,215 +1447,196 @@ msgstr "BSoD"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:3
 msgid "Bsod simulates crash screens from other operating systems."
-msgstr ""
-"O BSoD simula crashes de vários sistemas operacionais (Windows, Amiga, "
-"MacOS,... até mesmo o Linux 2.1.* :-) )."
+msgstr "O BSoD simula telas de travamento de outros sistemas operacionais."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:4
 msgid "Change the delay."
-msgstr "Modifica a velocidade da animação."
+msgstr "Alterar a espera."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubble3d.desktop.in.h:1
 msgid "Bubble3d"
-msgstr "Bolhas3d"
+msgstr "Bolha3d"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubble3d.desktop.in.h:2
 msgid "Lots of bubbles floating around, in 3d"
-msgstr "Bolhas em 3d flutuando"
+msgstr "Várias bolhas flutuando pela tela, em 3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:2
 msgid "Broken"
-msgstr ""
+msgstr "Quebrado"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:3
-#, fuzzy
 msgid "Bubbles"
-msgstr "Bolhas3d"
+msgstr "Bolhas"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:4
 msgid "Bubbles exist in three dimensions."
-msgstr ""
+msgstr "Bolhas existem em três dimensões."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:5
 msgid "Bubbles sprays tiny bubbles which grow until they go pop."
-msgstr ""
+msgstr "Bolhas esguicha pequenas bolhas que crescem até estourarem."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:10
 msgid "Don't hide bubbles when they pop."
-msgstr ""
+msgstr "Não esconder bolhas quando elas estourarem."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:11
 msgid "Draw circles instead of pixmap bubbles."
-msgstr ""
+msgstr "Desenhar círculos no lugar de imagens de bolhas."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:13
 msgid "James Macnicol <J.Macnicol@student.anu.edu.au>"
-msgstr ""
+msgstr "James Macnicol <J.Macnicol@student.anu.edu.au>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:14
 msgid "Lots of random bubbles grow until they pop."
-msgstr ""
+msgstr "Várias bolhas aleatórias crescem até estourarem."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:16
 msgid "Simple"
-msgstr ""
+msgstr "Simples"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:1
 msgid "Bumps"
-msgstr ""
+msgstr "Relevo"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Shadebobs.desktop.in.h:3
 msgid "Shane Smit"
-msgstr ""
+msgstr "Shane Smit"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:3
 msgid "Spotlights a bump map of your desktop."
-msgstr ""
+msgstr "Ilumina uma representação em relevo da sua área de trabalho."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cage.desktop.in.h:1
 msgid "Cage"
-msgstr "Caixa"
+msgstr "Jaula"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cage.desktop.in.h:2
 msgid "The famous, M.C. Escher, impossible cage"
-msgstr "A famosa caixa impossível de M.C. Escher"
+msgstr "A famosa jaula impossível de M.C. Escher"
 
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:1
 msgid "Compass"
-msgstr ""
+msgstr "Bússola"
 
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:2
 msgid "Display a spinning compass "
-msgstr ""
+msgstr "Exibe uma bússola giratória "
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:2
-#, fuzzy
 msgid "Change the density."
-msgstr "Modifica a velocidade da animação."
+msgstr "Mudar a densidade."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of seeds."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Mudar o número de sementes."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:4
-#, fuzzy
 msgid "Coral"
 msgstr "Coral"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:6
-#, fuzzy
 msgid "Denser"
-msgstr "Geral"
+msgstr "Denso"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:7
 msgid "Density"
-msgstr ""
+msgstr "Densidade"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:9
 msgid "Frederick Roeber"
-msgstr ""
+msgstr "Frederick Roeber"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:10
-#, fuzzy
 msgid "Number of seeds"
-msgstr "Número de bolhas."
+msgstr "Número de sementes"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:11
 msgid "Seeds"
-msgstr ""
+msgstr "Sementes"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:12
-#, fuzzy
 msgid "Simulates coral growth"
 msgstr "Simula o crescimento de corais"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:13
-#, fuzzy
 msgid "Simulates coral growth."
-msgstr "Simula o crescimento de corais"
+msgstr "Simula o crescimento de corais."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:16
-#, fuzzy
 msgid "Thinner"
-msgstr "VI"
+msgstr "Esparso"
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:1
 msgid "Critical"
-msgstr ""
+msgstr "Crítico"
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:2
 msgid "Display coloured polylines"
-msgstr ""
+msgstr "Exibe poli-linhas coloridas"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:1
 msgid "Cell"
-msgstr ""
+msgstr "Célula"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:2
-#, fuzzy
 msgid "Center image."
-msgstr "Centralizado"
+msgstr "Centrar imagem."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:3
-#, fuzzy
 msgid "Centre"
-msgstr "Centralizado"
+msgstr "Centrar"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:6
-#, fuzzy
 msgid "Change the number of polygons to use."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Mudar o número de polígonos a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:12
-#, fuzzy
 msgid "Crystal"
-msgstr "Coral"
+msgstr "Cristal"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:16
 msgid "Have at maximum size"
-msgstr ""
+msgstr "Têm no tamanho máximo"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:17
 msgid "Jouk Jansen"
-msgstr ""
+msgstr "Jouk Jansen"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:18
 msgid "Maxsize"
-msgstr ""
+msgstr "Tammax"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:20
 msgid "Moving polygons, similar to a kaleidescope."
-msgstr ""
+msgstr "Polígonos em movimento, semelhante a um caleidoscópio."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:22
-#, fuzzy
 msgid "Number of polygons to use."
-msgstr "Número de bolhas."
+msgstr "Número de polígonos a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of iterations."
-msgstr "Muda o número de bolhas a usar."
+msgstr "Mudar o número de iterações."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:7
-#, fuzzy
 msgid "Cynosure"
-msgstr "Fechar"
+msgstr "Cynosure"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:8
 msgid "Cynosure franticly displays colored rectangles."
-msgstr ""
+msgstr "Cynosure exibe freneticamente retângulos coloridos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:12
 msgid "Franticly displays colored rectangles."
-msgstr ""
+msgstr "Exibe freneticamente retângulos coloridos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:13
-#, fuzzy
 msgid "Iterations"
-msgstr "Atração"
+msgstr "Iterações"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:14
@@ -1681,7 +1645,7 @@ msgstr "Atração"
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:10
 msgid "Less"
-msgstr ""
+msgstr "Menos"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:19
@@ -1690,18 +1654,16 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:11
-#, fuzzy
 msgid "More"
-msgstr "IV"
+msgstr "Mais"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:18
-#, fuzzy
 msgid "Number of iterations."
-msgstr "Número de bolhas."
+msgstr "Número de iterações."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:21
 msgid "Stephen Linhart, Ozymandias Desiderata, Jamie Zawinski"
-msgstr ""
+msgstr "Stephen Linhart, Ozymandias Desiderata, Jamie Zawinski"
 
 #: capplets/screensaver-properties/screensaver-desktops/Decayscreen.desktop.in.h:3
 msgid "Decayscreen"
@@ -1775,9 +1737,8 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:23
-#, fuzzy
 msgid "delay"
-msgstr "Tocar"
+msgstr "espera"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:14
 msgid "seconds"
@@ -1937,9 +1898,8 @@ msgid "Bas van Gaalen and Charles Vidal"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:3
-#, fuzzy
 msgid "Change the delay in movement."
-msgstr "Muda o atraso em ciclos."
+msgstr "Mudar a espera no movimento."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:5
 #, fuzzy
@@ -1988,9 +1948,8 @@ msgstr "Velocidade da animação"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:1
-#, fuzzy
 msgid "Change the delay between changing modes."
-msgstr "Muda a velocidade entre as rotações"
+msgstr "Mudar a espera entre a troca de modos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:3
@@ -2005,7 +1964,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:9
 msgid "Delay between switches."
-msgstr ""
+msgstr "Espera entre trocas."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:11
@@ -2043,7 +2002,7 @@ msgstr "Muda o número de bolhas a usar."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:10
 msgid "Delay between redraws."
-msgstr ""
+msgstr "Espera entre desenhos."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:12
 msgid "Draws a fractal forest."
@@ -2668,11 +2627,8 @@ msgid "Delay between finishing the maze and starting a new one."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr ""
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
@@ -3453,15 +3409,22 @@ msgstr "Autor: DESCONHECIDO"
 msgid "Settings"
 msgstr "Configurações"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
 msgstr "PROTETOR DE TELA ALEATÓRIO"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
 msgstr "Protetor de tela"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+#, fuzzy
+msgid "Pressing this button will preview current screensaver."
+msgstr ""
+"O pressionamento deste botão irá acionar uma caixa de diálogo que o ajudará "
+"a configurar o protetor de tela."
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
@@ -3470,39 +3433,39 @@ msgstr ""
 "a configurar o protetor de tela."
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 msgid "Screen Saver Settings"
 msgstr "Configurações do protetor de tela"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
 msgstr "Iniciar depois de "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 msgid " Minutes."
 msgstr " minutos."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 msgid "Priority:"
 msgstr "Prioridade:"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 msgid "Low "
 msgstr "Baixa "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
 msgstr " Normal"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
 msgstr "Desligar monitor "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
 msgstr " minutos depois que o protetor de tela for iniciado."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 msgid "Screen Saver Demo"
 msgstr "Demonstração do protetor de tela"
 
@@ -3519,53 +3482,62 @@ msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
 msgstr "um erro ocorreu ao iniciar 'sound-properties-capplet'."
 
-#: capplets/sound-properties/sound-properties.c:188
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
 msgstr "Evento"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
 msgstr "Arquivo a tocar"
 
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr "Ativar"
-
 #: capplets/sound-properties/sound-properties.c:250
+#, fuzzy
+msgid "Sound server"
+msgstr "Eventos de som"
+
+#: capplets/sound-properties/sound-properties.c:257
 msgid "Enable sound server startup"
 msgstr "Ativar servidor de som ao entrar no sistema"
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
 msgstr "Sons para eventos"
 
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr ""
+
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr ""
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr "Geral"
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
 msgstr "Selecionar arquivo de som"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
 msgstr "Tocar"
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
 msgstr "Eventos de som"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr ""
 "Esta cópia da Central de Controle GNOME não foi compilada com suporte a som"
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
 msgstr "O arquivo de som para este evento não existe."
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3661,7 +3633,7 @@ msgstr "Botão de rádio 1"
 msgid "Radio Button 2"
 msgstr "Botão de rádio 2"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, c-format
 msgid ""
 "Error installing theme:\n"
@@ -3672,15 +3644,15 @@ msgstr ""
 "'%s'\n"
 "%s"
 
-#: capplets/theme-switcher/gui.c:120
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
 msgstr "Selecionar um tema para instalar"
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
 msgstr "Temas disponíveis"
 
-#: capplets/theme-switcher/gui.c:221
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
@@ -3688,7 +3660,7 @@ msgstr ""
 "Auto\n"
 "Visualizar"
 
-#: capplets/theme-switcher/gui.c:233
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
@@ -3698,17 +3670,17 @@ msgstr ""
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
 msgstr "Fonte do usuário"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
 msgstr "Fonte personalizada pelo usuário."
 
@@ -4218,56 +4190,56 @@ msgstr "Reverter"
 msgid "Help with '%s' settings"
 msgstr "Ajuda sobre a configuração de '%s'"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
 msgstr "identificação do capplet -- designada pela central de controle"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr "ID"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "Multi-capplet id."
 msgstr "Multi-capplet id."
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "CAPID"
 msgstr "CAPID"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr "Identificação X da conexão à qual se esteja conectada"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
 msgstr "XID"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR of the control-center"
 msgstr "IOR da central de controle"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR"
 msgstr "IOR"
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
 msgstr "Iniciar configurações da sessão"
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr ""
 "Ignorar ação padrão. Usado em casos de inicialização de sessão personalizada"
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
 msgstr "Desculpe, a ajuda não está disponível para estes configurações."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
 msgstr "Comando de capplet a ser executado."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
 msgstr "CAPPLET"
 
@@ -4275,37 +4247,37 @@ msgstr "CAPPLET"
 msgid "The GNOME configuration tool"
 msgstr "A ferramenta de configuração GNOME"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help on control-center"
 msgstr "Ajuda sobre a Central de Controle"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
 msgstr "Ajuda sobre a Central de Controle GNOME."
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
 msgstr "Ajuda sobre a página de configuração atual.."
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
 msgstr "Sobre"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
 msgstr "Sobre a Central de Controle GNOME."
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
 msgstr "Aviso:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
 msgstr "Descartar todas as mudanças"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
@@ -4338,259 +4310,3 @@ msgstr "Nome da máquina:"
 #: control-center/splash.c:178
 msgid "Unknown"
 msgstr "Desconhecido"
-
-#~ msgid "Mime Type: "
-#~ msgstr "Tipo MIME: "
-
-#~ msgid "Add"
-#~ msgstr "Incluir"
-
-#~ msgid "First Regular Expression: "
-#~ msgstr "Primeira expressão regular: "
-
-#~ msgid "Second Regular Expression: "
-#~ msgstr "Segunda expressão regular: "
-
-#~ msgid "Mime Type Actions"
-#~ msgstr "Ação dos tipos MIME"
-
-#~ msgid "Example: emacs %f"
-#~ msgstr "Exemplo: emacs %f"
-
-#~ msgid "Open"
-#~ msgstr "Abrir"
-
-#~ msgid "Select a file..."
-#~ msgstr "Selecione um arquivo..."
-
-#~ msgid "Set actions for %s"
-#~ msgstr "Configurar ações para %s"
-
-#~ msgid ""
-#~ "You must add either a regular-expression or\n"
-#~ "a file-name extension"
-#~ msgstr ""
-#~ "Você deve incluir uma expressão regular ou\n"
-#~ "uma extensão de nome de arquivo."
-
-#~ msgid ""
-#~ "Please put your mime-type in the format:\n"
-#~ "CATEGORY/TYPE\n"
-#~ "\n"
-#~ "For Example:\n"
-#~ "image/png"
-#~ msgstr ""
-#~ "Por favor coloque seu tipo MIME no formato:\n"
-#~ "CATEGORIA/TIPO\n"
-#~ "\n"
-#~ "Por Exemplo:\n"
-#~ "image/png"
-
-#~ msgid "This mime-type already exists"
-#~ msgstr "Este tipo MIME já existe"
-
-#~ msgid ""
-#~ "We are unable to create the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Impossível criar o diretório\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Não será possível salvar o estado atual."
-
-#~ msgid ""
-#~ "We are unable to access the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Não é possível acessar o diretório\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Não será possível salvar o estado atual."
-
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.mime\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "Não é possível criar o arquivo\n"
-#~ "~/.gnome/mime-info/user.mime\n"
-#~ "\n"
-#~ "Não será possível salvar o estado atual"
-
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.keys\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "Não é possível criar o arquivo\n"
-#~ "~/.gnome/mime-info/user.keys\n"
-#~ "\n"
-#~ "Não será possível salvar o estado atual"
-
-#~ msgid ""
-#~ "No help is available/installed for these settings. Please make sure you\n"
-#~ "have the Control Center documentation installed on your system."
-#~ msgstr ""
-#~ "Ajuda não disponível/instalada para esta configuração. Por favor, tenha "
-#~ "certeza\n"
-#~ "que a documentação da Central de Controle está instalada no seu sistema."
-
-#~ msgid ""
-#~ "Add a new Mime Type\n"
-#~ "For example:  image/tiff; text/x-scheme"
-#~ msgstr ""
-#~ "Adicionar um novo tipo MIME\n"
-#~ "Por exemplo:  image/tiff; text/x-scheme"
-
-#~ msgid "Mime Type:"
-#~ msgstr "Tipo MIME:"
-
-#~ msgid "Regular Expressions"
-#~ msgstr "Expressões regulares"
-
-#~ msgid ""
-#~ "You can set up two regular expressions here to identify the Mime Type\n"
-#~ "by.  These fields are optional."
-#~ msgstr ""
-#~ "Você pode configurar duas expressões regulares para identificar o tipo MIME\n"
-#~ "Estes campos são opcionais."
-
-#~ msgid "Session Chooser"
-#~ msgstr "Editor de sessão"
-
-#~ msgid "Start Session"
-#~ msgstr "Iniciar sessão"
-
-#~ msgid "Order: "
-#~ msgstr "Ordem: "
-
-#~ msgid "Style: "
-#~ msgstr "Estilo: "
-
-#~ msgid "This button sets the start order of the selected programs.\n"
-#~ msgstr "Este botão configura a ordem inicial dos programas selecionados.\n"
-
-#~ msgid ""
-#~ "This button sets the restart style of the selected programs:\n"
-#~ "Normal programs are unaffected by logouts but can die;\n"
-#~ "Respawn programs are never allowed to die;\n"
-#~ "Trash programs are discarded on logout and can die;\n"
-#~ "Settings programs are always started on every login."
-#~ msgstr ""
-#~ "Este botão configura o estilo de reinício dos programas selecionados:\n"
-#~ "Normal: os programas não são afetados por saídas mas podem morrer;\n"
-#~ "Recriar: os programas nunca podem morrer, sendo reiniciados;\n"
-#~ "Descartar: os programas são descartados na saída e podem morrer;\n"
-#~ "Configuração: os programas são sempre iniciados a cada entrada."
-
-#~ msgid ""
-#~ "This button produces a key to the program states below:\n"
-#~ "Inactive programs are waiting to start or have finished;\n"
-#~ "Starting programs are being given time to get running;\n"
-#~ "Running programs are normal members of the session;\n"
-#~ "Saving programs are saving their session details;\n"
-#~ "Programs which make no contact have Unknown states.\n"
-#~ msgstr ""
-#~ "Este botão produz uma chave para o estado dos programas abaixo:\n"
-#~ "Programas inativos estão aguardando para iniciar ou terminaram;\n"
-#~ "Programas em início tem um tempo para iniciar a executar;\n"
-#~ "Programas em execução são membros normais da sessão;\n"
-#~ "Programas salvando estão salvando detalhes de sua sessão;\n"
-#~ "Programas que não fazem contato tem estado Desconhecido.\n"
-
-#~ msgid "This column gives the command used to start a program."
-#~ msgstr "Esta coluna mostra o comando usado para iniciar um programa."
-
-#~ msgid "Order"
-#~ msgstr "Ordem"
-
-#~ msgid "Inactive"
-#~ msgstr "Inativo"
-
-#~ msgid "Waiting to start or already finished."
-#~ msgstr "Aguardando para iniciar ou já finalizado."
-
-#~ msgid "Started but has not yet reported state."
-#~ msgstr "Iniciado mas ainda não reportou seu estado."
-
-#~ msgid "Running"
-#~ msgstr "Rodando"
-
-#~ msgid "A normal member of the session."
-#~ msgstr "Membro normal da sessão."
-
-#~ msgid "Saving"
-#~ msgstr "Salvando"
-
-#~ msgid "Saving session details."
-#~ msgstr "Salvando detalhes da sessão."
-
-#~ msgid "State not reported within timeout."
-#~ msgstr "Estado não informado dentro do tempo esperado."
-
-#~ msgid "Unaffected by logouts but can die."
-#~ msgstr "Não é afetado por saídas mas pode morrer."
-
-#~ msgid "Respawn"
-#~ msgstr "Recriar"
-
-#~ msgid "Never allowed to die."
-#~ msgstr "Nunca poderá morrer."
-
-#~ msgid "Discarded on logout and can die."
-#~ msgstr "Descartado no saida e pode morrer."
-
-#~ msgid "Always started on every login."
-#~ msgstr "Sempre iniciado em cada entrada no sistema."
-
-#~ msgid "Remove Program"
-#~ msgstr "Remover Programa"
-
-#~ msgid "Show splash screen on login"
-#~ msgstr "Exibir tela de início ao entrar no sistema"
-
-#~ msgid "Prompt on logout"
-#~ msgstr "Pedir confirmação ao sair do sistema"
-
-#~ msgid "Automatically save changes to session"
-#~ msgstr "Salvar automaticamente mudanças para sessão"
-
-#~ msgid "Non-session-managed Startup Programs"
-#~ msgstr "Programas iniciados fora do gerenciador de sessões"
-
-#~ msgid "Priority"
-#~ msgstr "Prioridade"
-
-#~ msgid "Browse Currently Running Programs..."
-#~ msgstr "Ver programas rodando atualmente..."
-
-#~ msgid "Only display warnings."
-#~ msgstr "Mostrar somente avisos."
-
-#~ msgid "Startup Command"
-#~ msgstr "Comando de início"
-
-#~ msgid ""
-#~ "Programs with smaller values are started before programs with higher values. "
-#~ "The default value should be OK"
-#~ msgstr ""
-#~ "Programas com valores menores são iniciados antes de programas com valores "
-#~ "maiores. O valor padrão deve ser OK"
-
-#~ msgid "The startup command cannot be empty"
-#~ msgstr "O comando de início não pode ser vazio"
-
-#~ msgid "Add Startup Program"
-#~ msgstr "Incluir programa a ser iniciado"
-
-#~ msgid "Edit Startup Program"
-#~ msgstr "Editar programa a ser iniciado"
-
-#~ msgid "Screensaver Properties"
-#~ msgstr "Propriedades da proteção de tela"

@@ -1,329 +1,311 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
-# Joseba Bidaurrazaga van Dierdonck <gcpbivaj@lg.ehu.es>, 2000
+# Joseba Bidaurrazaga van Dierdonck <gcpbivaj@lg.ehu.es>, 2000-2001
 # Iñigo Salvador Azurmendi <xalba@euskalnet.net>, 2000
+# "mari susperregi" <mari@elhuyar.com>, 2002
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.0\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
 "PO-Revision-Date: 2001-03-11 13:07+0100\n"
-"Last-Translator: Joseba Bidaurrazaga van Dierdonck <gcpbivaj@lg.ehu.es>\n"
+"Last-Translator: mari susperregi <mari@elhuyar.com>\n"
 "Language-Team: EUSKARA <linux-eu@chanae.alphanet.ch>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: capplets/background-properties/app-background.c:15
-#, fuzzy
 msgid "Set background image."
-msgstr "Background-aren pixmap"
+msgstr "Atzeko planoko irudia ezartzen du."
 
 #: capplets/background-properties/app-background.c:15
 msgid "IMAGE-FILE"
-msgstr ""
+msgstr "IRUDI-FITXATEGIA"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
+"hasieratze-errorea gertatu da 'atzeko planoaren propietateen capplet-"
+"a'abiaraztean'.\n"
+"abortatzen...\n"
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
 msgid "Background"
-msgstr "Background"
+msgstr "Atzeko planoa"
 
 #: capplets/background-properties/background-properties.desktop.in.h:2
 msgid "Configuration of the desktop's background"
-msgstr ""
+msgstr "Mahaigaineko atzeko planoaren konfigurazioa"
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
-msgstr "Ezgaitua"
+msgstr "Desgaituta"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
 msgid "Color"
-msgstr "Margoa"
+msgstr "Kolorea"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
-#, fuzzy
 msgid "Solid"
-msgstr "iluna"
+msgstr "Solidoa"
 
-#: capplets/background-properties/property-background.c:336
-#, fuzzy
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
-msgstr "Itxura Horizontala"
+msgstr "Gradiente horizontala"
 
-#: capplets/background-properties/property-background.c:342
-#, fuzzy
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
-msgstr "Itxura bertikala"
+msgstr "Gradiente bertikala"
 
-#: capplets/background-properties/property-background.c:378
-#, fuzzy
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
-msgstr "Aukeratu kolorea"
+msgstr "Lehen mailako kolorea"
 
-#: capplets/background-properties/property-background.c:380
-#, fuzzy
+#: capplets/background-properties/property-background.c:381
 msgid "Secondary Color"
-msgstr "Kolorea Aukeratu"
+msgstr "Bigarren mailako kolorea"
 
-#: capplets/background-properties/property-background.c:568
-#, fuzzy
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
-msgstr "Pakete Taldearen aukeraketa"
+msgstr "Horma-paperaren hautapena"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "hbox-ik ezin aurkitu, fitxategi aukera arruntaz"
+msgstr "Ezin izan du hbox-a aurkitu fitxategi-hautapen normala erabiliz"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
-msgstr "Aurreikuspegia"
+msgstr "Aurrebista"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
-msgstr ""
+msgstr "Horma-papera"
 
-#: capplets/background-properties/property-background.c:638
-#, fuzzy
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
-msgstr "Aztertu..."
+msgstr " Arakatu..."
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
-msgstr "batez"
+msgstr "bat ere ez"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
-msgstr ""
+msgstr "Erliebedun Logotipoa"
 
-#: capplets/background-properties/property-background.c:699
-#, fuzzy
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
-msgstr "Eskalatzeko gai"
+msgstr "Eskaladuna"
 
-#: capplets/background-properties/property-background.c:709
-#, fuzzy
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
-msgstr "Egokitu imaginaren tamaina (gorde proportzioak)"
+msgstr "Eskaladuna (itxura gordeta)"
 
-#: capplets/background-properties/property-background.c:721
-#, fuzzy
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
-msgstr "Erdigunea"
+msgstr "Zentratua"
 
-#: capplets/background-properties/property-background.c:733
-#, fuzzy
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
-msgstr "Fitxategia"
+msgstr "Mosaikoan"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 msgid "Use GNOME to set background"
-msgstr ""
+msgstr "GNOME erabili atzeko planoa konfiguratzeko"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:1141
-msgid "IMAGE"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:1141
-msgid "Sets the wallpaper to the value specified"
-msgstr ""
+msgstr "Gordetako egoeraren parametroak ezarri eta irten"
 
 #: capplets/background-properties/property-background.c:1142
+msgid "IMAGE"
+msgstr "IRUDIA"
+
+#: capplets/background-properties/property-background.c:1142
+msgid "Sets the wallpaper to the value specified"
+msgstr "Horma-paperari zehaztutako balioak ezartzen dizkio"
+
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
 msgstr "KOLOREA"
 
-#: capplets/background-properties/property-background.c:1142
-#, fuzzy
-msgid "Specifies the background color"
-msgstr "Azpiko kolorea"
-
 #: capplets/background-properties/property-background.c:1143
+msgid "Specifies the background color"
+msgstr "Atzeko planoaren kolorea zehazten du"
+
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:1144
-#, fuzzy
-msgid "ORIENT"
-msgstr "FONT"
-
-#: capplets/background-properties/property-background.c:1144
-#, fuzzy
-msgid "Gradient orientation: vertical or horizontal"
-msgstr "Panela etzanda"
+msgstr "Atzeko planoaren gradiente-amaierako kolorea zehazten du"
 
 #: capplets/background-properties/property-background.c:1145
-msgid "Use a solid fill for the background"
-msgstr ""
+msgid "ORIENT"
+msgstr "ORIENTAZIOA"
+
+#: capplets/background-properties/property-background.c:1145
+msgid "Gradient orientation: vertical or horizontal"
+msgstr "Gradientearen orientazioa: bertikala edo horizontala"
 
 #: capplets/background-properties/property-background.c:1146
+msgid "Use a solid fill for the background"
+msgstr "Atzeko planoan kolore solidoa erabiltzen du"
+
+#: capplets/background-properties/property-background.c:1147
 msgid "Use a gradient fill for the background"
-msgstr ""
+msgstr "Atzeko planoan gradientedun kolorea erabiltzen du"
 
-#: capplets/background-properties/property-background.c:1147
-#, fuzzy
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
-msgstr "MODULU"
+msgstr "MODUA"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
-msgstr ""
+msgstr "Erakutsi horma-papera: mosaikoan, erdian, eskalan edo proportzioan"
 
 #: capplets/desktop-links/Desktop.directory.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:1
 msgid "Desktop"
-msgstr "Idazmahaia"
+msgstr "Mahaigaina"
 
 #: capplets/desktop-links/Documents.directory.in.h:1
 msgid "Configure how document types are handled"
-msgstr ""
+msgstr "Dokumentu-motak nola maneiatu konfiguratzen du"
 
 #: capplets/desktop-links/Documents.directory.in.h:2
-#, fuzzy
 msgid "Document Handlers"
-msgstr "Dokumentazioa"
+msgstr "Dokumentu-maneiatzaileak"
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
-#, fuzzy
 msgid "Control Center"
-msgstr "WebControl-aren Propietateak"
+msgstr "Kontrol Zentroa"
 
 #: capplets/desktop-links/Gnome.directory.in.h:2
 msgid "Control Center Menu"
-msgstr ""
+msgstr "Kontrol Zentroaren menua"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:1
 msgid "Configure the settings of your Multimedia devices"
-msgstr ""
+msgstr "Zure Multimediako gailuen ezarpenak konfiguratzen ditu"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:2
 msgid "Multimedia"
 msgstr "Multimedia"
 
 #: capplets/desktop-links/Peripherals.directory.in.h:1
-#, fuzzy
 msgid "Configure your external devices"
-msgstr "Konfiguratu zerbitzuak"
+msgstr "Kanpoko gailuak konfiguratzen ditu"
 
 #: capplets/desktop-links/Peripherals.directory.in.h:2
 msgid "Peripherals"
-msgstr ""
+msgstr "Periferikoak"
 
 #: capplets/desktop-links/Session.directory.in.h:1
 msgid "Session"
-msgstr "Sesio"
+msgstr "Saioa"
 
 #: capplets/desktop-links/Session.directory.in.h:2
-#, fuzzy
 msgid "Session Management Settings"
-msgstr "Sesioaren kudeaketa aukerak"
+msgstr "Saio-kudeatzailearen ezarpenak"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:1
-#, fuzzy
 msgid "Configure the global settings of your GNOME applications"
-msgstr "Aplikazioa konfiguratu"
+msgstr "Zure GNOME aplikazioen ezarpen orokorrak konfiguratzen ditu"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:2
-#, fuzzy
 msgid "User Interface"
-msgstr "Sarearen interfazea"
+msgstr "Erabiltzaile-interfazea"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:387
 msgid "Edit Applications List"
-msgstr ""
+msgstr "Editatu aplikazioen zerrenda"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:409
 #, c-format
 msgid "Select applications to appear in menu for MIME type \"%s\""
-msgstr ""
+msgstr "Hautatu menuan agertuko diren \"%s\" MIME motako aplikazioak"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:433
-#, fuzzy
 msgid "Add Application..."
-msgstr "Zita gehitu..."
+msgstr "Gehitu aplikazioa..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:440
 msgid "Edit Application..."
-msgstr ""
+msgstr "Editatu aplikazioa..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:446
-#, fuzzy
 msgid "Delete Application"
-msgstr "Aplikazioa konfiguratu"
+msgstr "Ezabatu aplikazioa"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:480
 msgid "Edit Components List"
-msgstr ""
+msgstr "Editatu osagaien zerrenda"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:500
 #, c-format
 msgid "Select views to appear in menu for MIME type \"%s\""
-msgstr ""
+msgstr "Hautatu menuan agertuko diren \"%s\" MIME motako ikuspegiak "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:720
 msgid ""
 "The MIME type entered contained upper case characters. Upper case characters "
 "were changed to lower case for you."
 msgstr ""
+"Idatzitako MIME motak maiuskuladun karaktereak zituen. Maiuskuladun "
+"karaktereen ordez minuskuladunak jarri zaizkizu."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:723
 msgid "Add New MIME Type"
-msgstr ""
+msgstr "MIME mota berria gehitzen du"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:769
 msgid "Add MIME Type"
-msgstr ""
+msgstr "Gehitu MIME mota"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:773
 msgid "New MIME type (e.g. image/x-thumper):"
-msgstr ""
+msgstr "MIME mota berria (adb. irudia/x-thumper):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:780
 msgid "Description (e.g. Thumper image):"
-msgstr ""
+msgstr "Azalpena (ad.Thumper irudia):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:947
 msgid "File Extensions "
-msgstr ""
+msgstr "Fitxategi-luzapenak "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
 #: capplets/wm-properties/wm-properties-capplet.c:1076
-#, fuzzy
 msgid "Add..."
-msgstr "..."
+msgstr "Gehitu..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:972
-#, fuzzy
 msgid "    Remove    "
-msgstr "Ezabatu"
+msgstr "   Kendu    "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1041
 msgid "Add New Extension"
-msgstr ""
+msgstr "Luzapen berria gehitzen du"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1045
 msgid ""
@@ -331,20 +313,21 @@ msgid ""
 "You can enter several extensions seperated by a space,\n"
 "for example: html htm"
 msgstr ""
+"MIME mota honetarako luzapenak idatzi (punturik gabe).\n"
+"Luzapen bat baino gehiago idatz ditzakezu zuriune batez bereizita,\n"
+"adibidez: html htm"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1052
-#, fuzzy
 msgid "Extension:"
-msgstr "Bertsioa:"
+msgstr "Luzapena:"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1194
 msgid "You must enter a name."
-msgstr ""
+msgstr "Izena idatzi behar duzu."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1197
-#, fuzzy
 msgid "You must enter a command."
-msgstr "%s komandoari erantzunik ez"
+msgstr "Komandoa idatzi behar duzu."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1207
 #, c-format
@@ -353,6 +336,9 @@ msgid ""
 "Check your spelling and make sure you have\n"
 "the right permissions to execute this file."
 msgstr ""
+"\"%s\" ez dago edo ez da exekutagarria.\n"
+"Ondo idatzita dagoela ziurtatu eta fitxategi\n"
+"hori exekutatzeko behar diren baimenak badituzula egiaztatu."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1213
 #, c-format
@@ -360,101 +346,89 @@ msgid ""
 "The command \"%s\" cannot be found.\n"
 "You must use a command that can work from any command line."
 msgstr ""
+"Ezin izan da \"%s\" komandoa aurkitu.\n"
+"Edozein komando-lerrotan balioko duen komandoa erabili behar duzu."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1225
 msgid "Bad Application Name"
-msgstr ""
+msgstr "Aplikazio-izena okerra da"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1226
 msgid "Bad Application Command"
-msgstr ""
+msgstr "Aplikazio-komandoa okerra da"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1258
-#, fuzzy
 msgid "Add Application"
-msgstr "Aplikazio honi buruz"
+msgstr "Gehitu aplikazioa"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1259
-#, fuzzy
 msgid "Edit Application"
-msgstr "Eguneratu kokapena"
+msgstr "Editatu aplikazioa"
 
 #. Application Name label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1271
-#, fuzzy
 msgid "Application Name:"
-msgstr "Oraingo Font-aren izena"
+msgstr "Aplikazioaren izena:"
 
 #. Application Command label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1282
-#, fuzzy
 msgid "Application Command:"
-msgstr "Deskonektatu komandoa:"
+msgstr "Aplikazioaren komandoa:"
 
 #. Open Behavior frame
 #: capplets/file-types/file-types-capplet-dialogs.c:1293
-#, fuzzy
 msgid "Open Behavior"
-msgstr "Portaera"
+msgstr "Irekitzeko portaera"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1299
-#, fuzzy
 msgid "Can open multiple files"
-msgstr "Gaitu multi profilak"
+msgstr "Fitxategi bat baino gehiago ireki ditzake"
 
 #. FIXME bugzilla.eazel.com 6066: This needs to be three options now: "yes", "no", and "use uris for non-file locations"
 #: capplets/file-types/file-types-capplet-dialogs.c:1307
-#, fuzzy
 msgid "Can open from URI"
-msgstr "RAIDtik ken"
+msgstr "URItik ireki dezake"
 
 #: capplets/file-types/file-types-capplet.c:745
 #: capplets/file-types/file-types-capplet.c:1890
-#, fuzzy
 msgid "MIME Type"
-msgstr "Moeta"
+msgstr "MIME mota"
 
 #: capplets/file-types/file-types-capplet.c:752
-#, fuzzy
 msgid "Change Icon"
-msgstr "Aldatu monitorea"
+msgstr "Aldatu ikonoa"
 
 #: capplets/file-types/file-types-capplet.c:759
-#, fuzzy
 msgid "Change File Extensions"
-msgstr "Aldatu zerbitzariaren aukerak"
+msgstr "Aldatu fitxategi-luzapenak"
 
 #: capplets/file-types/file-types-capplet.c:767
-#, fuzzy
 msgid "Default Action:"
-msgstr "Lanen jatorrizko tamaina:"
+msgstr "Ekintza lehenetsia:"
 
 #: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
-msgstr ""
+msgstr "Erabili ikustailea"
 
 #: capplets/file-types/file-types-capplet.c:785
-#, fuzzy
 msgid "Open With Application"
-msgstr "Aplikazioa konfiguratu"
+msgstr "Ireki aplikazioarekin"
 
 #: capplets/file-types/file-types-capplet.c:796
-#, fuzzy
 msgid "Edit List"
-msgstr "Instalaziotik irten"
+msgstr "Editatu zerrenda"
 
 #: capplets/file-types/file-types-capplet.c:821
 msgid "Add New MIME Type..."
-msgstr ""
+msgstr "Gehitu MIME mota berria..."
 
 #: capplets/file-types/file-types-capplet.c:827
-#, fuzzy
 msgid "Delete This MIME Type"
-msgstr "Menu item hau ezabatu?"
+msgstr "Ezabatu MIME mota hau"
 
 #: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
-msgstr ""
+msgstr "Itzuli sistema-lehenespenetara"
 
 #: capplets/file-types/file-types-capplet.c:1082
 #: capplets/file-types/file-types-capplet.c:1226
@@ -467,276 +441,256 @@ msgid ""
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
+"Sistemaren ezarpenetara itzultzean, fitxategi-motetan\n"
+"eta programetan egindako aldaketa guztiak galdu egingo dira.\n"
+"Itzuli hala ere?"
 
 #: capplets/file-types/file-types-capplet.c:1441
 #: capplets/file-types/file-types-capplet.c:1627
 #: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
-msgstr ""
+msgstr "Ikusi honela: %s"
 
 #: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
 msgstr "Azalpena"
 
 #: capplets/file-types/file-types-capplet.c:1891
-#, fuzzy
 msgid "Extension"
-msgstr "Sesio"
+msgstr "Luzapena"
 
 #: capplets/file-types/file-types-capplet.c:1892
-#, fuzzy
 msgid "Default Action"
-msgstr "Jatorrizkoa"
+msgstr "Ekintza lehenetsia"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
 msgid "File Types and Programs"
-msgstr ""
+msgstr "Fitxategi-motak eta programak"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:2
 msgid "Specify which programs are used to open or view each file type"
 msgstr ""
+"Fitxategi-mota bakoitza ireki edo ikusteko zein programa erabiliko diren "
+"zehazten du"
 
 #: capplets/file-types/file-types-icon-entry.c:381
-#, fuzzy
 msgid "Select an icon"
-msgstr "Aukeratu animazioa"
+msgstr "Hautatu Ikono bat"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.c:226
-#, fuzzy
 msgid "Gnome editor"
-msgstr "Gnome laguntza historia"
+msgstr "Gnome editorea"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.c:237
-#, fuzzy
 msgid "Run In Terminal"
-msgstr "Terminalean ekin"
+msgstr "Terminalean exekutatu"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:1
 msgid "Choose the editor that is invoked by gnome-edit"
-msgstr ""
+msgstr "Aukeratu Gnome edit-ek deitzen duen editorea"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:2
-#, fuzzy
 msgid "Default Editor"
-msgstr "Jatorrizkoa"
+msgstr "Editore lehenetsia"
 
 #: capplets/keyboard-properties/keyboard-properties.c:250
-#, fuzzy
 msgid "Keyboard bell"
-msgstr "Teklatua"
+msgstr "Teklatu-kanpaia"
 
 #: capplets/keyboard-properties/keyboard-properties.c:258
-#, fuzzy
 msgid "Volume"
-msgstr "Balioa:"
+msgstr "Bolumena"
 
 #: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
-msgstr ""
+msgstr "Intentsitatea (Hz)"
 
 #: capplets/keyboard-properties/keyboard-properties.c:264
-#, fuzzy
 msgid "Duration (ms)"
-msgstr "Atzerapena (ms)"
+msgstr "Iraupena (m)"
 
 #: capplets/keyboard-properties/keyboard-properties.c:276
-#, fuzzy
 msgid "Test"
-msgstr "Testua"
+msgstr "Probatu"
 
 #: capplets/keyboard-properties/keyboard-properties.c:294
-#, fuzzy
 msgid "Keyboard repeat rate"
-msgstr "Teklatuaren itxura: %s\n"
+msgstr "Teklatuaren errepikatze-abiadura"
 
 #: capplets/keyboard-properties/keyboard-properties.c:304
-#, fuzzy
 msgid "Enable auto-repeat"
-msgstr "Baimendu berez-eskutatzea"
+msgstr "Autoerrepikapena gaitzen du"
 
 #: capplets/keyboard-properties/keyboard-properties.c:313
-#, fuzzy
 msgid "Repeat rate"
-msgstr "Berrosatu iragazkia"
+msgstr "Errepikatze-abiadura"
 
 #: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
-msgstr ""
+msgstr "Errepikapenen arteko tartea"
 
 #: capplets/keyboard-properties/keyboard-properties.c:318
-#, fuzzy
 msgid "Keyboard click"
-msgstr "Teklatua"
+msgstr "Teklatu-klika"
 
 #: capplets/keyboard-properties/keyboard-properties.c:327
-#, fuzzy
 msgid "Click on keypress"
-msgstr "Erlojuaren ezaugarriak"
+msgstr "Klik tekla sakatzean"
 
 #: capplets/keyboard-properties/keyboard-properties.c:336
-#, fuzzy
 msgid "Click volume"
-msgstr "Gorbata klikatua"
+msgstr "Klik-bolumena"
 
 #: capplets/keyboard-properties/keyboard-properties.c:347
-#, fuzzy
 msgid "Test settings"
-msgstr "Sare ezarketak:"
+msgstr "Ezarpenak probatu"
 
 #: capplets/keyboard-properties/keyboard-properties.c:410
 msgid ""
 "No help is available/installed for these settings. Please make sure you\n"
 "have the GNOME User's Guide installed on your system."
 msgstr ""
+"Ezarpen horien laguntza ez dago erabilgarri/instalatuta. Egiaztatu \n"
+"GNOMEren Erabiltzailearen gida sisteman instalatuta duzula. "
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
 msgstr "Itxi"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
+"hasieratze-errorea gertatu da 'teklatuaren propietateen capplet-"
+"a'abiaraztean'.\n"
+"abortatzen...\n"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:1
 msgid "Keyboard"
 msgstr "Teklatua"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:2
-#, fuzzy
 msgid "Keyboard Properties"
-msgstr "WebControl-aren Propietateak"
+msgstr "Teklatuaren propietateak"
 
 #: capplets/mouse-properties/mouse-properties.c:254
-#, fuzzy
 msgid "Mouse buttons"
-msgstr "2 botoi"
+msgstr "Saguaren botoiak"
 
 #: capplets/mouse-properties/mouse-properties.c:263
-#, fuzzy
 msgid "Left handed"
-msgstr "orientatu. aldatua"
+msgstr "Ezkertientzat"
 
 #: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
-msgstr ""
+msgstr "Eskuintientzat"
 
 #. Mouse motion
 #: capplets/mouse-properties/mouse-properties.c:291
-#, fuzzy
 msgid "Mouse motion"
-msgstr "Muduluaren aukerak:"
+msgstr "Saguaren mugimendua"
 
 #: capplets/mouse-properties/mouse-properties.c:301
-#, fuzzy
 msgid "Acceleration"
-msgstr "Azkarrarazlea"
+msgstr "Azelerazioa"
 
 #: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
-msgstr "Arin"
+msgstr "Handia"
 
 #: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
 msgid "Slow"
-msgstr "Astiro"
+msgstr "Txikia"
 
 #: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
-#, fuzzy
 msgid "Threshold"
-msgstr "Karga bajuko muga:"
+msgstr "Muga"
 
 #: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
-#, fuzzy
 msgid "Large"
-msgstr "zarama"
+msgstr "Handia"
 
 #: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
-#, fuzzy
 msgid "Small"
-msgstr "Txikia (%dMB)"
+msgstr "Txikia"
 
 #: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
+"hasieratze-errorea gertatu da 'saguaren propietateen capplet- a' "
+"abiaraztean.\n"
+"abortatzen...\n"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:1
-#, fuzzy
 msgid "Mouse"
-msgstr "USB Mouse"
+msgstr "Sagua"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:2
-#, fuzzy
 msgid "Mouse Properties"
-msgstr "Menuaren propietateak"
+msgstr "Saguaren propietateak"
 
-#: capplets/screensaver-properties/callbacks.c:102
-#, fuzzy
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
-msgstr "Biaeztatu Pasahitza"
+msgstr "Eskatu pasahitza"
 
-#: capplets/screensaver-properties/callbacks.c:154
-#, fuzzy
+#: capplets/screensaver-properties/callbacks.c:157
 msgid "Use power management."
-msgstr "Erabiltzailearen izena"
+msgstr "Erabili energia-kudeaketa."
 
-#: capplets/screensaver-properties/callbacks.c:309
-#, fuzzy
+#: capplets/screensaver-properties/callbacks.c:317
 msgid "No Screensaver"
-msgstr "Pantaila zarratu"
+msgstr "Pantaila-babeslerik ez"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 msgid "Random Screensaver"
-msgstr ""
+msgstr "Ausazko pantaila-babeslea"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
-#, fuzzy
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
-msgstr "Konfigurazioa"
+msgstr "Ezarpenak..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
-#, fuzzy
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
-msgstr "Konfigurazioa"
+msgstr "Ausazko ezarpenak"
 
-#: capplets/screensaver-properties/callbacks.c:501
-#, fuzzy, c-format
+#: capplets/screensaver-properties/callbacks.c:510
+#, c-format
 msgid "%s Settings..."
-msgstr "Konfigurazioa"
+msgstr "%s ezarpenak..."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:1
-#, fuzzy
 msgid "3D Clock"
-msgstr "Erloju"
+msgstr "3Dko erlojua"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:2
 msgid "Bernd Paysan"
-msgstr ""
+msgstr "Bernd Paysan"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:3
 msgid "Changes the magnification of original picture."
-msgstr ""
+msgstr "Jatorrizko irudiaren tamaina aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:5
 msgid "High"
@@ -744,19 +698,19 @@ msgstr "Handia"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:7
 msgid "Low"
-msgstr "Gutxi"
+msgstr "Txikia"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:8
 msgid "Modifies the direction move."
-msgstr ""
+msgstr "Mugimenduaren noranzkoa aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:9
 msgid "Modifies the wobbling."
-msgstr ""
+msgstr "Zanbulua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:10
 msgid "Sets the moving cycle time."
-msgstr ""
+msgstr "Mugimenduaren ziklo-denbora ezartzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:13
@@ -765,14 +719,14 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:21
 msgid "Size"
-msgstr "Neurria"
+msgstr "Tamaina"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:19
 msgid "Size:"
-msgstr "Neurria:"
+msgstr "Tamaina:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:24
@@ -782,7 +736,7 @@ msgstr "Abiadura"
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:16
 msgid ""
 "This draws a working analog clock composed of floating, throbbing bubbles."
-msgstr ""
+msgstr "Ibili dabilen erloju analogiko eta taupadatsu bat irudikatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:17
 msgid ""
@@ -790,27 +744,29 @@ msgid ""
 "move and wobble around to give you the impression your graphic workstation "
 "with its many XStone is doing something."
 msgstr ""
+"3Dko erlojua da.   Bola hegalariak erabiltzen ditu ordua adierazteko.  Bolak "
+"mugitu eta kulunkatu egingo dira zure pantaila grafikoari, bere XStone "
+"guztiekin, lanean ari delako itxura emanez."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:18
 msgid "Twist"
-msgstr ""
+msgstr "Bihurtu"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:19
 msgid "Twist speed:"
-msgstr ""
+msgstr "Bihurtzeko abiadura:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:20
 msgid "Twist:"
-msgstr ""
+msgstr "Bihurdura:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:21
-#, fuzzy
 msgid "Wobble"
-msgstr "Burbuilak"
+msgstr "Zanbuluka"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:22
 msgid "Wobble:"
-msgstr ""
+msgstr "Zanbulua:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:1
 msgid ""
@@ -818,25 +774,25 @@ msgid ""
 "heads (``ants'') walk along the screen, they change pixel values in their "
 "path. Then, as they pass over changed pixels, their behavior is influenced."
 msgstr ""
+"Zelula-automata bat da; oinarrian bi dimentsioko Turing makina da: buruak "
+"(``inurriak'') pantailan zehar dabiltzala, pixelen balioak aldatzen dituzte."
+"Aldatutako pixeletatik berriz pasatzen direnean, portaera aldatu egiten zaie."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:2
 msgid "Ant"
-msgstr ""
+msgstr "Inurriak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:3
-#, fuzzy
 msgid "Ants:"
-msgstr "Egileak:"
+msgstr "Inurriak:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:4
-#, fuzzy
 msgid "Changes the number of ants marching across the screen."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Pantailan dabilen inurri-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:5
-#, fuzzy
 msgid "Changes the size of the ants."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Inurrien tamaina aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:10
@@ -857,67 +813,68 @@ msgstr "Erabili beharreko burbuila kopurua aldatu."
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:8
 msgid "Count"
-msgstr "Zenbatu"
+msgstr "Zenbat"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:7
 msgid "David Bagely"
-msgstr ""
+msgstr "David Bagely"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:8
 msgid ""
 "Determines whether or not the ant leaves a truchet in the path it leaves "
 "behind."
 msgstr ""
+"Inurria pasatzen den lekuan bere aztarna lagako duen edo ez erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:10
 msgid "Little Ants walk around, leaving colored trails."
-msgstr ""
+msgstr "Bueltaka dabiltzan inurriak dira, koloredun aztarnak lagatzen dituzte."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:11
-#, fuzzy
 msgid "Number of ants."
-msgstr "Kolore kopurua."
+msgstr "Inurri-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:12
 msgid "Print the path that the ant took in the trail."
-msgstr ""
+msgstr "Inurriak egindako ibilbidea markatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Truchet.desktop.in.h:1
 msgid "Truchet"
-msgstr ""
+msgstr "Truchet"
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:1
 msgid "Atlantis"
-msgstr ""
+msgstr "Atlantis"
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:2
 msgid "Whales, dolphins and sharks swimming around, in 3D"
-msgstr ""
+msgstr "3Dko baleak, izurdeak eta marrazoak igerian"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:1
 msgid "A show of objects interacting through attractive and repulsive forces."
 msgstr ""
+"Erakarpen- eta aldarapen-indarren menpean elkarri eragiten dioten objektuak."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:2
-#, fuzzy
 msgid "Attraction"
-msgstr "Akzioa"
+msgstr "Erakarpena"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:3
 msgid ""
 "Attraction is based on interactions of points which attract each other up to "
 "a certain distance and then begin to repel each other."
 msgstr ""
+"Puntuen arteko elkarreraginean dago oinarrituta; elkarrengana hurbiltzen "
+"dira distantzia jakin bateraino, eta gero elkarrengandik urrundu egiten dira."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:4
 msgid "Change distance at which attractive force becomes repulsive."
-msgstr ""
+msgstr "Erakarpen-indarra aldarapen-indar bihurtzeko distantzia aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:5
-#, fuzzy
 msgid "Change size of points."
-msgstr "Aldatu zerbitzariaren aukerak"
+msgstr "Puntuen tamaina aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:5
@@ -946,23 +903,21 @@ msgstr "Aldatu zerbitzariaren aukerak"
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:1
 msgid "Change the delay in cycles."
-msgstr "Animazio abiadura aldatu."
+msgstr "Zikloen denbora-tartea aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:4
-#, fuzzy
 msgid "Change the number of points to use."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Erabilitako puntu-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:8
 msgid "Change the spacing radius of the points."
-msgstr ""
+msgstr "Puntuen arteko hasierako distantzia aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:5
-#, fuzzy
 msgid "Closer"
-msgstr "Itxi"
+msgstr "Hurbilago"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:12
@@ -1007,19 +962,17 @@ msgstr "Zenbat:"
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:8
-#, fuzzy
 msgid "Delay"
-msgstr "Atzerapena (ms)"
+msgstr "Denbora-tartea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:13
 msgid "Distance of attraction."
-msgstr ""
+msgstr "Erakarpen-distantzia."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:10
-#, fuzzy
 msgid "Farther"
-msgstr "Arin"
+msgstr "Hurrunago"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:9
@@ -1054,55 +1007,53 @@ msgstr "Arin"
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:13
 msgid "Faster"
-msgstr "Arin"
+msgstr "Azkarrago"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:16
-#, fuzzy
 msgid "Glow"
-msgstr "Astiro"
+msgstr "Distira"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:17
 msgid "Have initial forces on each point be tangential to original circle."
 msgstr ""
+"Puntu bakoitzean dagoen indarra jatorrizko zirkuluarekiko tangentziala izan "
+"dadila."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:18
 msgid "Have points glow vary with acceleration."
-msgstr ""
+msgstr "Puntuen distira azelerazioarekin handitu dadila."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:19
 msgid "Initial spacing radius of points."
-msgstr ""
+msgstr "Puntuen arteko hasierako erradioa."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:20
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:9
 msgid "Jamie Zawinski <jwz@netscape.com>"
-msgstr ""
+msgstr "Jamie Zawinski <jwz@netscape.com>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:11
-#, fuzzy
 msgid "Larger"
-msgstr "Pager"
+msgstr "Handiagoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:22
-#, fuzzy
 msgid "Number of points to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko puntu-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:23
 msgid "Orbit"
-msgstr ""
+msgstr "Orbita"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:24
 msgid "Radius"
-msgstr ""
+msgstr "Erradioa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:26
-#, fuzzy
 msgid "Size of point."
-msgstr "Animazioaren abiadura"
+msgstr "Puntuaren tamaina"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:27
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:13
@@ -1137,14 +1088,13 @@ msgstr "Animazioaren abiadura"
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:18
 msgid "Slower"
-msgstr "Astiro"
+msgstr "Motelago"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:28
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:24
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:19
-#, fuzzy
 msgid "Smaller"
-msgstr "Eskalatzeko gai"
+msgstr "Txikiago"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:29
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:21
@@ -1175,22 +1125,23 @@ msgstr "Animazioaren abiadura"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:1
 msgid "Blitspin"
-msgstr ""
+msgstr "Blitspin"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:2
 msgid ""
 "Blitspin takes a bitmap and repeatedly rotates it by 90 degrees using "
 "logical operations."
 msgstr ""
+"Blitspin-ek bit-mapa hartu eta 90 gradutaraino biratzen du behin eta "
+"berriro, eragiketa logikoak erabiliz."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:3
 msgid "Change the delay between each 90 degree rotation."
-msgstr ""
+msgstr "90 graduko biraketen arteko denbora-tartea aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:4
-#, fuzzy
 msgid "Change the delay between steps of rotation process."
-msgstr "Animazio abiadura aldatu."
+msgstr "Biraketa-prozesuko urratsen arteko denbora-tartea aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:8
@@ -1231,12 +1182,11 @@ msgstr "Animazio abiadura aldatu."
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:1
 msgid "Change to display in monochrome."
-msgstr "Pantaila babesle monokromoa."
+msgstr "Kolore bakarrez ikusteko aukera ematen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:7
-#, fuzzy
 msgid "Delay2"
-msgstr "Atzerapena (ms)"
+msgstr "Denbora-tartea2"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:14
@@ -1276,7 +1226,7 @@ msgstr "Atzerapena (ms)"
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:2
 msgid "Display screensaver in monochrome."
-msgstr "Pantaila babesle monokromoa."
+msgstr "Pantaila-babeslea kolore bakarrez."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:17
@@ -1316,48 +1266,42 @@ msgstr "Pantaila babesle monokromoa."
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:4
 msgid "Monochrome"
-msgstr ""
+msgstr "Kolore bakarrez"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:12
 msgid "Rotates a bitmap in an interesting way."
-msgstr ""
+msgstr "Bitmap-a modu interesgarri batez birarazten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:14
-#, fuzzy
 msgid "Speed of rotation"
-msgstr "Animazioaren abiadura"
+msgstr "Biraketaren abiadura"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:15
-#, fuzzy
 msgid "Speed of the 90 degree rotation."
-msgstr "Animazioaren abiadura"
+msgstr "90 graduko biraketaren abiadura."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:1
-#, fuzzy
 msgid "3D"
-msgstr "3"
+msgstr "3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:2
 msgid "A blob of bubbles spinning/moving around the screen."
-msgstr "Burbuila taldea giraka eta saltoka pantailaren zehar."
+msgstr "Burbuilez egindako biribil bat pantailan mugitzen eta biraka."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:3
-#, fuzzy
 msgid "Bouboule"
-msgstr "Burbuilak"
+msgstr "Bouboule"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:4
 msgid "Bouboule changes shape and size in a blob like form."
-msgstr ""
-"Bouboule pantailan zehar higitzen eta itxuraldatzen diharduten ttantta "
-"taldea."
+msgstr "Bouboule-k burbuila itxurako irudiaren forma eta tamaina aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:4
 msgid "Change the number of bubbles to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko burbuila-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:2
@@ -1382,7 +1326,7 @@ msgstr "Erabili beharreko burbuila kopurua aldatu."
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:1
 msgid "Change the number of colors to use."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Erabili beharreko kolore-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:4
@@ -1436,7 +1380,7 @@ msgstr "Koloreak:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:16
 msgid "Jeremie Petit <jpetit@essi.fr>"
-msgstr ""
+msgstr "Jeremie Petit <jpetit@essi.fr>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:18
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:10
@@ -1456,25 +1400,24 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:16
 msgid "Number of Colors."
-msgstr "Kolore kopurua."
+msgstr "Kolore-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:16
 msgid "Number of bubbles to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko burbuila-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:22
 msgid "Use red/blue 3d seperation."
-msgstr "3d-tako gorri/urdin banaketa erabili."
+msgstr "3Dko gorri/urdin banaketa erabili."
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:1
-#, fuzzy
 msgid "Braid"
-msgstr "Paranoidea"
+msgstr "Braid"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:7
 msgid "John Neil <neil@math.idbsu.edu>"
-msgstr ""
+msgstr "John Neil <neil@math.idbsu.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:21
@@ -1483,45 +1426,44 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:7
 msgid "Number of Colors"
-msgstr "Kolore kopurua"
+msgstr "Kolore-kopurua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:11
 msgid "Random color-cycling braids in a circle."
-msgstr ""
+msgstr "Zirkulu batean kolorezko txirikordak kolorez ausaz aldatzen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:12
 msgid "The braid program draws random color-cycling braids around a circle."
 msgstr ""
+"Braid programak kolorez aldatzen diren txirikorda birakariak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:1
 msgid "Blue Screen of Death"
-msgstr ""
+msgstr "Death-en pantaila urdina"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:2
 msgid "Bsod"
-msgstr ""
+msgstr "Bsod"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:3
 msgid "Bsod simulates crash screens from other operating systems."
-msgstr ""
+msgstr "Bsod-ek beste sistema eragileetako kraskatze-pantailak imitatzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:4
 msgid "Change the delay."
-msgstr "Animazio abiadura aldatu."
+msgstr "Denbora-tartea aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubble3d.desktop.in.h:1
-#, fuzzy
 msgid "Bubble3d"
-msgstr "Burbuilak"
+msgstr "Bubble3d"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubble3d.desktop.in.h:2
 msgid "Lots of bubbles floating around, in 3d"
-msgstr ""
+msgstr "3Dko burbuila-mordoa inguruan bueltaka"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:2
-#, fuzzy
 msgid "Broken"
-msgstr "Aztertu"
+msgstr "Hautsita"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:3
 msgid "Bubbles"
@@ -1529,195 +1471,172 @@ msgstr "Burbuilak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:4
 msgid "Bubbles exist in three dimensions."
-msgstr ""
+msgstr "Burbuilak hiru dimentsiotan."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:5
 msgid "Bubbles sprays tiny bubbles which grow until they go pop."
-msgstr ""
+msgstr "Burbuilek jaurtitako burbuilatxoak handitu egiten dira lehertu arte."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:10
 msgid "Don't hide bubbles when they pop."
-msgstr ""
+msgstr "Ez ezkutatu burbuilak lehertzen direnean."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:11
 msgid "Draw circles instead of pixmap bubbles."
-msgstr ""
+msgstr "Pixmap burbuilen ordez zirkuluak irudikatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:13
 msgid "James Macnicol <J.Macnicol@student.anu.edu.au>"
-msgstr ""
+msgstr "James Macnicol <J.Macnicol@student.anu.edu.au>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:14
 msgid "Lots of random bubbles grow until they pop."
-msgstr ""
+msgstr "Ausaz dabilen burbuila-mordoa, handitu eta handitu, lehertu arte."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:16
-#, fuzzy
 msgid "Simple"
-msgstr "Fitxategia"
+msgstr "Soila"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:1
 msgid "Bumps"
-msgstr ""
+msgstr "Bumps"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Shadebobs.desktop.in.h:3
-#, fuzzy
 msgid "Shane Smit"
-msgstr "Banatze izena"
+msgstr "Shane Smit"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:3
 msgid "Spotlights a bump map of your desktop."
-msgstr ""
+msgstr "Mahaigainean bump mapa bat irudikatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cage.desktop.in.h:1
-#, fuzzy
 msgid "Cage"
-msgstr "Irudia"
+msgstr "Kaiola"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cage.desktop.in.h:2
 msgid "The famous, M.C. Escher, impossible cage"
-msgstr ""
+msgstr "M.C. Escher ospetsuaren kaiola ezinezkoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:1
-#, fuzzy
 msgid "Compass"
-msgstr "Trinkoa"
+msgstr "Konpasa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:2
 msgid "Display a spinning compass "
-msgstr ""
+msgstr "Konpas birakaria bistaratzen du "
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:2
-#, fuzzy
 msgid "Change the density."
-msgstr "Animazio abiadura aldatu."
+msgstr "Dentsitatea aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of seeds."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Foku-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:4
-#, fuzzy
 msgid "Coral"
-msgstr "Arrunta"
+msgstr "Korala"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:6
-#, fuzzy
 msgid "Denser"
-msgstr "Erantzuna"
+msgstr "Sarriago"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:7
 msgid "Density"
-msgstr ""
+msgstr "Dentsitatea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:9
 msgid "Frederick Roeber"
-msgstr ""
+msgstr "Frederick Roeber"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:10
-#, fuzzy
 msgid "Number of seeds"
-msgstr "Kolore kopurua"
+msgstr "Foku-kopurua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:11
-#, fuzzy
 msgid "Seeds"
-msgstr "Abiadura"
+msgstr "Fokuak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:12
 msgid "Simulates coral growth"
-msgstr ""
+msgstr "Korala nola handitzen den irudikatzen du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:13
 msgid "Simulates coral growth."
-msgstr ""
+msgstr "Korala nola handitzen den irudikatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:16
-#, fuzzy
 msgid "Thinner"
-msgstr "hasberria"
+msgstr "Txikia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:1
-#, fuzzy
 msgid "Critical"
-msgstr "Bertikala"
+msgstr "Kritikoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:2
-#, fuzzy
 msgid "Display coloured polylines"
-msgstr "Erakutsi hint normalak"
+msgstr "Koloretako marra-mordoa bistaratzen du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:1
-#, fuzzy
 msgid "Cell"
-msgstr "Maskorra"
+msgstr "Gelaxka"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:2
-#, fuzzy
 msgid "Center image."
-msgstr "Erdigunea"
+msgstr "Irudia erdian."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:3
-#, fuzzy
 msgid "Centre"
-msgstr "Erdigunea"
+msgstr "Erdia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:6
-#, fuzzy
 msgid "Change the number of polygons to use."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Erabili beharreko poligono-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:12
 msgid "Crystal"
-msgstr ""
+msgstr "Kristala"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:16
-#, fuzzy
 msgid "Have at maximum size"
-msgstr "Eginbeharrekoen zerrenda beti maximoan"
+msgstr "Gehienezko tamaina eman"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:17
 msgid "Jouk Jansen"
-msgstr ""
+msgstr "Jouk Jansen"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:18
-#, fuzzy
 msgid "Maxsize"
-msgstr "Berregokitu"
+msgstr "Gehienezko tamaina"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:20
 msgid "Moving polygons, similar to a kaleidescope."
-msgstr ""
+msgstr "Poligonoak mugitzen, kaleidoskopioan bezala."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:22
-#, fuzzy
 msgid "Number of polygons to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko poligono-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of iterations."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Iterazio-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:7
-#, fuzzy
 msgid "Cynosure"
-msgstr "Itxi"
+msgstr "Cynosure"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:8
 msgid "Cynosure franticly displays colored rectangles."
-msgstr ""
+msgstr "Cynosure-k kolorezko errektangelu eroak bistaratzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:12
 msgid "Franticly displays colored rectangles."
-msgstr ""
+msgstr "Kolorezko errektangelu eroak bistaratzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:13
-#, fuzzy
 msgid "Iterations"
-msgstr "Argibidea"
+msgstr "Iterazioak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:14
@@ -1726,7 +1645,7 @@ msgstr "Argibidea"
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:10
 msgid "Less"
-msgstr ""
+msgstr "Gutxi"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:19
@@ -1735,271 +1654,261 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:11
-#, fuzzy
 msgid "More"
-msgstr "Mugitu"
+msgstr "Asko"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:18
-#, fuzzy
 msgid "Number of iterations."
-msgstr "Kolore kopurua."
+msgstr "Iterazio-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:21
 msgid "Stephen Linhart, Ozymandias Desiderata, Jamie Zawinski"
-msgstr ""
+msgstr "Stephen Linhart, Ozymandias Desiderata, Jamie Zawinski"
 
 #: capplets/screensaver-properties/screensaver-desktops/Decayscreen.desktop.in.h:3
-#, fuzzy
 msgid "Decayscreen"
-msgstr "Pantaila zarratu"
+msgstr "Decayscreen"
 
 #: capplets/screensaver-properties/screensaver-desktops/Decayscreen.desktop.in.h:4
 msgid "Decayscreen makes a screen look like its melting down."
-msgstr ""
+msgstr "Decayscreen-ek pantaila urtu edo desegingo balitz bezala egiten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Decayscreen.desktop.in.h:8
 msgid "Makes a screen melt down"
-msgstr ""
+msgstr "Pantaila urtuko balitz bezala egiten du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Decayscreen.desktop.in.h:12
 msgid "Vivek Khera <khera@cs.duke.edu>"
-msgstr ""
+msgstr "Vivek Khera <khera@cs.duke.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:5
 msgid "Changes the time between redrawing the screen."
-msgstr ""
+msgstr "Pantaila atzera marraztu arteko denbora aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:2
 msgid "Cycle through colors."
-msgstr ""
+msgstr "Kolore-zikloa aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:3
-#, fuzzy
 msgid "Deco"
-msgstr "Direktorioa"
+msgstr "Deco"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:4
 msgid "Deco draws tacky 70s basement wall panelling."
-msgstr ""
+msgstr "70eko hamarkadako horma-paperak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:5
 msgid "Determines whether to draw the panels in color, or in black and white."
-msgstr ""
+msgstr "Panelak koloretan edo zuri-beltzean marraztuko diren erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:6
 msgid "Draw tacky 70s basement wall panelling."
-msgstr ""
+msgstr "70eko hamarkadako horma-paperak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:7
 msgid ""
 "Jamie Zawinski <jwz@jwz.org>\n"
 "Michael D. Bayne <mdb@go2net.com>"
 msgstr ""
+"Jamie Zawinski <jwz@jwz.org>\n"
+"Michael D. Bayne <mdb@go2net.com>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:8
 msgid "This will cause the panes to flash."
-msgstr ""
+msgstr "Panelak flash moduan agertuko ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:22
 msgid "Time between redraws:"
-msgstr ""
+msgstr "Berriro marraztu arteko denbora:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:10
 msgid "Use color when drawing."
-msgstr ""
+msgstr "Marraztean kolorea erabili."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:11
-#, fuzzy
 msgid "color"
-msgstr "Margoa"
+msgstr "kolorea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:12
 msgid "color-cycle"
-msgstr ""
+msgstr "kolore-zikloa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:23
-#, fuzzy
 msgid "delay"
-msgstr "Gaur"
+msgstr "denbora-tartea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:14
 msgid "seconds"
-msgstr "segunduak"
+msgstr "segundo"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deluxe.desktop.in.h:1
-#, fuzzy
 msgid "Deluxe"
-msgstr "Ezabatu"
+msgstr "Deluxe"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deluxe.desktop.in.h:2
 msgid "Display nice stuff "
-msgstr ""
+msgstr "Gauza politak bistaratzen ditu "
 
 #: capplets/screensaver-properties/screensaver-desktops/Demon.desktop.in.h:1
 msgid ""
 "A cellular automata that starts with a random field, and organizes it into "
 "stripes and spirals."
 msgstr ""
+"Zelula-automata bat da, ausazko eremu batean hasiko da, eta marratan eta "
+"espiraletan antolatuko du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Demon.desktop.in.h:2
-#, fuzzy
 msgid "Demon"
-msgstr "Eginda"
+msgstr "Demon"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:3
-#, fuzzy
 msgid "Change the number to use."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Erabili beharreko kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:10
-#, fuzzy
 msgid "Discrete"
-msgstr "Direktorioak"
+msgstr "Discrete"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:11
 msgid "Discrete map systems"
-msgstr ""
+msgstr "Mapa-sistemak bereizten ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:20
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:16
-#, fuzzy
 msgid "Number to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:19
 msgid "Tim Auckland"
-msgstr ""
+msgstr "Tim Auckland"
 
 #: capplets/screensaver-properties/screensaver-desktops/Distort.desktop.in.h:1
-#, fuzzy
 msgid "Distort"
-msgstr "Historia"
+msgstr "Distort"
 
 #: capplets/screensaver-properties/screensaver-desktops/Distort.desktop.in.h:2
-#, fuzzy
 msgid "Distort the screen"
-msgstr "Tantuak ikusi"
+msgstr "Pantaila desitxuratzen du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Distort.desktop.in.h:3
 msgid ""
 "This screensaver does distortions of some areas of the screen, as if some "
 "object was moving under the image"
 msgstr ""
+"Pantailaren alderdi batzuk desitxuratuko ditu, irudiaren azpian zerbait "
+"mugituko balitz bezala"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:5
 msgid "Change whether fractals should grow."
-msgstr ""
+msgstr "Fraktalak handitu behar diren edo ez erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:6
 msgid "Change whether to use lissajous figures to get points."
-msgstr ""
+msgstr "Puntuak lortzeko lissajous irudiak erabili edo ez erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:13
 msgid "Drift"
-msgstr ""
+msgstr "Drift"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:14
 msgid "Drift draws drifting recursive fractal cosmic flames."
-msgstr ""
+msgstr "Drift-ek sugar fraktal eta kosmikoak irudikatzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:15
 msgid "Drifting recursive fractal cosmic flames."
-msgstr ""
+msgstr "Sugar fraktal eta kosmikoak irudikatzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:17
 msgid "Fractals should grow."
-msgstr ""
+msgstr "Fraktalak handitu behar dira."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:18
-#, fuzzy
 msgid "Grow"
-msgstr "Aztertu"
+msgstr "Handitu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:19
 msgid "Lissajous"
-msgstr ""
+msgstr "Lissajous"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:22
-#, fuzzy
 msgid "Number of pixels to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko pixel-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:23
 msgid "Scot Draves <spot@cs.cmu.edu>"
-msgstr ""
+msgstr "Scot Draves <spot@cs.cmu.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:26
 msgid "Use lissajous figures to get points."
-msgstr ""
+msgstr "Erabili lissajous irudiak puntuak lortzeko."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:5
 msgid "Draws a point moving around a circle which moves around a circle."
 msgstr ""
+"Zirkulu baten inguruan biraka dabilen zirkuluari bueltaka dabilen puntua "
+"marrazten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:6
 msgid "Epicycle"
-msgstr ""
+msgstr "Epizikloa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:7
 msgid ""
 "Epicycle draws the path traced out by a point on the edge of a circle that "
 "is rotating around the rim of another circle, and so on."
 msgstr ""
+"Zirkulu baten inguruan biraka dabilen puntu batek egindako bidea marrazten "
+"du, zirkulu hori beste zirkulu baten ertzaren inguruan bueltaka dabilela."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:9
-#, fuzzy
 msgid "Holdtime"
-msgstr "Denbora guztira"
+msgstr "Itxaronaldia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:10
 msgid "James Youngman <jay@gnu.org>"
-msgstr ""
+msgstr "James Youngman <jay@gnu.org>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:17
-#, fuzzy
 msgid "Seconds"
-msgstr "segunduak"
+msgstr "segundo"
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:15
 msgid "Time finished product is shown."
-msgstr ""
+msgstr "Denbora horren buruan produktua azalduko da."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:16
 msgid "When the figure is complete, epicycle pauses this number of seconds."
-msgstr ""
+msgstr "Irudia osatutakoan, epizikloa horrenbeste segundotan geldituko da."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:1
 msgid "A waving ribbon"
-msgstr ""
+msgstr "Uhin itxurako zerrenda"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:2
 msgid "Bas van Gaalen and Charles Vidal"
-msgstr ""
+msgstr "Bas van Gaalen eta Charles Vidal"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:3
-#, fuzzy
 msgid "Change the delay in movement."
-msgstr "Animazio abiadura aldatu."
+msgstr "Mugimenduaren maiztasuna aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:5
-#, fuzzy
 msgid "Change the number of cycles."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Ziklo-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:7
-#, fuzzy
 msgid "Changes the count."
-msgstr "Animazio abiadura aldatu."
+msgstr "Kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:8
@@ -2010,61 +1919,54 @@ msgstr "Animazio abiadura aldatu."
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:10
-#, fuzzy
 msgid "Cycles"
-msgstr "bai"
+msgstr "Ziklo"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:15
 msgid "Draws what looks like a waving ribbon following a sinusoidal path."
-msgstr ""
+msgstr "Bide sinusoidala egiten ari den uhin-zerrenda bat marrazten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:16
 msgid "Fadeplot"
-msgstr ""
+msgstr "Fadeplot"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:20
-#, fuzzy
 msgid "Number"
-msgstr "Zerrenda zenbakiekin"
+msgstr "Kopurua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:22
-#, fuzzy
 msgid "Number of cycles"
-msgstr "Kolore kopurua"
+msgstr "Ziklo-kopurua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:24
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:14
-#, fuzzy
 msgid "Speed of Motion"
 msgstr "Animazioaren abiadura"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:1
-#, fuzzy
 msgid "Change the delay between changing modes."
-msgstr "Animazio abiadura aldatu."
+msgstr "Modu desberdinen arteko maiztasuna aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:3
-#, fuzzy
 msgid "Change the size of pixels in the flag."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Banderako pixelen tamaina aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:5
 msgid "Charles Vidal <vidalc@univ-mlv.fr>"
-msgstr ""
+msgstr "Charles Vidal <vidalc@univ-mlv.fr>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:9
-#, fuzzy
 msgid "Delay between switches."
-msgstr "Artikuluen arteko atzerapena (10= 1s)"
+msgstr "Aldaketen arteko maiztasuna."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:11
 msgid "Draws a waving flag."
-msgstr ""
+msgstr "Uhin-mugimendudun bandera marrazten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:13
@@ -2074,97 +1976,88 @@ msgstr "Bandera"
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:14
 msgid "Flag draws a waving flab, containing text or an image."
-msgstr ""
+msgstr "Testu edo irudidun bandera uhinen antzera mugiarazten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:18
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:18
-#, fuzzy
 msgid "Size of pixels"
-msgstr "Tamaina (pixels)"
+msgstr "Pixelen tamaina"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flow.desktop.in.h:1
 msgid "Draws a flow of colored points"
-msgstr ""
+msgstr "Koloredun puntuen fluxua marrazten du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flow.desktop.in.h:2
-#, fuzzy
 msgid "Flow"
-msgstr "Astiro"
+msgstr "Fluxua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of trees to use."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Erabili beharreko zuhaitz-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:10
 msgid "Delay between redraws."
-msgstr ""
+msgstr "Berriro marraztu arteko denbora."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:12
 msgid "Draws a fractal forest."
-msgstr ""
+msgstr "Baso fraktala marrazten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:14
-#, fuzzy
 msgid "Forest"
-msgstr "Aukerakoak"
+msgstr "Basoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:15
 msgid "Fractal draws a fractal forest."
-msgstr ""
+msgstr "Baso fraktala marrazten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:18
-#, fuzzy
 msgid "Number of trees to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko zuhaitz-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:19
 msgid "Pascal Pensa <pensa@aurora.unice.fr>"
-msgstr ""
+msgstr "Pascal Pensa <pensa@aurora.unice.fr>"
 
 #: capplets/screensaver-properties/screensaver-desktops/GLPlanet.desktop.in.h:1
 msgid "A 3d globe"
-msgstr ""
+msgstr "3Dko globoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/GLPlanet.desktop.in.h:2
-#, fuzzy
 msgid "GLPlanet"
-msgstr "Panela"
+msgstr "GLPlanet"
 
 #: capplets/screensaver-properties/screensaver-desktops/Galaxy.desktop.in.h:1
-#, fuzzy
 msgid "Galaxy"
-msgstr "Ataria (gateway)"
+msgstr "Galaxia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Gears.desktop.in.h:1
-#, fuzzy
 msgid "Gears"
-msgstr "Garbitu"
+msgstr "Engranajeak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Gears.desktop.in.h:2
 msgid "The 3d mesa demo, of gears"
-msgstr ""
+msgstr "Engranajeen 3Dko Mesa demoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:1
-#, fuzzy
 msgid "Additive"
-msgstr "Aktibatu"
+msgstr "Gehitu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:2
 msgid "Causes the colors to mix when overlapped."
-msgstr ""
+msgstr "Gainean jarritakoan koloreak nahasarazi."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:11
 msgid "Goop"
-msgstr ""
+msgstr "Goop"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:12
 msgid "Goop draws a simulation of bubbles in layers."
-msgstr ""
+msgstr "Goop-ek burbuilak geruzatan simulatzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:13
 msgid "Have transparent bubbles."
-msgstr ""
+msgstr "Burbuilak gardenak izan daitezela."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:9
@@ -2175,712 +2068,663 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:13
 msgid "Jamie Zawinski <jwz@jwz.org>"
-msgstr ""
+msgstr "Jamie Zawinski <jwz@jwz.org>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:19
 msgid "Transparent"
-msgstr "Garden"
+msgstr "Gardena"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:20
 msgid "Use additive color model."
-msgstr ""
+msgstr "Kolore erantsien eredua erabili."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:21
 msgid "squishy transparent oil and bubbles"
-msgstr ""
+msgstr "olio eta burbuila gardenak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:2
-#, fuzzy
 msgid "Change the number of planets to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko planeta-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:4
 msgid "Change whether objects should leave a trail."
-msgstr ""
+msgstr "Objektuek aztarna laga behar duten edo ez erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:5
-#, fuzzy
 msgid "Change whether orbit should decay."
-msgstr "Animazio abiadura aldatu."
+msgstr "Orbitak behera egin behar duen erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:10
-#, fuzzy
 msgid "Decay"
-msgstr "astuna"
+msgstr "Beherantz"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:12
 msgid "Draws a simple orbital simulation."
-msgstr ""
+msgstr "Orbita soilaren simulazioa egiten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:13
-#, fuzzy
 msgid "Grav"
-msgstr "Germaniarra"
+msgstr "Grab"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:14
 msgid "Grav draws a simple orbital simulation."
-msgstr ""
+msgstr "Grab-ek orbita bakunaren simulazioa egiten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:15
 msgid "Greg Bowering <greg@smug.student.adelaide.edu.au>"
-msgstr ""
+msgstr "Greg Bowering <greg@smug.student.adelaide.edu.au>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:18
-#, fuzzy
 msgid "Number of planets to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko planeta-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:19
 msgid "Objects should leave trails behind them."
-msgstr ""
+msgstr "Objektuek aztarnak lagako dituzte."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:20
 msgid "Orbit should decay."
-msgstr ""
+msgstr "Orbitak beherantz egingo du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:21
-#, fuzzy
 msgid "Trail"
-msgstr "Taula"
+msgstr "Aztarna"
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:5
 msgid "Draws random color rectangles."
-msgstr ""
+msgstr "Ausazko koloredun errektangeluak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:7
-#, fuzzy
 msgid "Greynetic"
-msgstr "Generikoa"
+msgstr "Greynetic"
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:8
 msgid "Greynetic draws random rectangles."
-msgstr ""
+msgstr "Greynetic-ek ausazko errektangeluak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:1
-#, fuzzy
 msgid "Animate"
-msgstr "Animazioa"
+msgstr "Animatu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:2
 msgid "Animate circles."
-msgstr ""
+msgstr "Zirkulu animatuak."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:4
-#, fuzzy
 msgid "Change the number of circles to use."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Erabili beharreko zirkulu-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:6
 msgid "Change to alternating striped curves."
-msgstr ""
+msgstr "Marradun kurbekin txandakatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:7
-#, fuzzy
 msgid "Change to animated circles."
-msgstr "Animazio abiadura aldatu."
+msgstr "Zirkulu animatuekin txandakatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:8
 msgid "Change to cycle through colormap."
-msgstr ""
+msgstr "Txandaka kolorez aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:2
-#, fuzzy
 msgid "Cycle"
-msgstr "Garbitu"
+msgstr "Zikloa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:15
 msgid "Cycle through colormap."
-msgstr ""
+msgstr "Kolorez ziklikoki aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:18
 msgid "Draw circular patterns."
-msgstr ""
+msgstr "Eredu zirkularrak marraztu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:20
-#, fuzzy
 msgid "Halo"
-msgstr "Halt"
+msgstr "Halo"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:21
 msgid "Halo draws patterns based on circles."
-msgstr ""
+msgstr "Halo-k zirkuluetan oinarritutako ereduak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:23
-#, fuzzy
 msgid "Mode"
-msgstr "Modua: "
+msgstr "Modua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:26
-#, fuzzy
 msgid "Number of circles to use."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Erabili beharreko zirkulu-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:29
 msgid "Use a gradient of colors between circles."
-msgstr ""
+msgstr "Zirkuluen artean kolore-gradientea erabili."
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:5
 msgid "Draws helical string-art patterns"
-msgstr ""
+msgstr "Marradun eredu artistiko helikoidalak marrazten ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:7
-#, fuzzy
 msgid "Helix"
-msgstr "Laguntza"
+msgstr "Helix"
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:8
 msgid "Helix draws patterns composed of line segments."
-msgstr ""
+msgstr "Helix-ek marra-segmentuz egindako ereduak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:9
 msgid "Jamie  Zawinski  <jwz@jwz.org> "
-msgstr ""
+msgstr "Jamie  Zawinski  <jwz@jwz.org> "
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:12
 msgid "Time between redraws."
-msgstr ""
+msgstr "Berriro marraztu arteko denbora."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of pixels before a color change."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Kolorea aldatu aurretik pixel-kopurua aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:10
 msgid "Draws real plane fractals"
-msgstr ""
+msgstr "Benetako plano fraktalak marrazten ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:12
-#, fuzzy
 msgid "Hopalong"
-msgstr "gelditzeko elkarrizketa"
+msgstr "Hopalong"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:13
 msgid "Hopalong generates real plan fractals."
-msgstr ""
+msgstr "Hopalong-ek benetako plano fraktalak sortzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:18
-#, fuzzy
 msgid "Number of pixels before a color change."
-msgstr "Orrialdeen kopurua, irtendako orrialdeen arabera"
+msgstr "Kolorea aldatu aurretiko pixel-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:19
 msgid "Patrick J. Naughton <naughton@eng.sun.com>"
-msgstr ""
+msgstr "Patrick J.Naughton <naughton@eng.sun.com>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:1
 msgid "2D projection of a hypercube"
-msgstr ""
+msgstr "Hiperkuboaren 2Dko proiekzioa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:3
-#, fuzzy
 msgid "Change the distance from center of cube"
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Kuboaren erditiko distantzia aldatzen du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:8
-#, fuzzy
 msgid "Distance"
-msgstr "Ezgaitu"
+msgstr "Distantzia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:9
-#, fuzzy
 msgid "Distance from center of cube"
-msgstr "Irteneteko konexioa eten"
+msgstr "Kuboaren erditiko distantzia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:12
 msgid "Hypercube"
-msgstr ""
+msgstr "Hiperkuboa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:13
 msgid "Hypercube displays a wireframe projection of a hypercube."
-msgstr ""
+msgstr "Hiperkuboak hiperkuboaren proiekzio bilbatua bistaratzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:6
 msgid "Draws spinning, colliding, iterated-function-system images."
-msgstr ""
+msgstr "Iterated-function-system irudiak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:7
 msgid "Ifs"
-msgstr ""
+msgstr "Ifs"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:8
 msgid "Ifs draws spinning, colliding, iterated-function-system images."
-msgstr ""
+msgstr "Ifs-ek IFS irudiak (iterated-function-system) marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:9
 msgid "Massimino Pascal <Pascal.Massimon@ens.fr>"
-msgstr ""
+msgstr "Massimino Pascal <Pascal.Massimon@ens.fr>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Imsmap.desktop.in.h:1
-#, fuzzy
 msgid "Imsmap"
-msgstr "Xmodmap"
+msgstr "Imsmap"
 
 #: capplets/screensaver-properties/screensaver-desktops/Interference.desktop.in.h:1
-#, fuzzy
 msgid "Interference"
-msgstr "Internet"
+msgstr "Interferentzia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:5
 msgid "Jigsaw"
-msgstr ""
+msgstr "Puzzlea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:6
 msgid ""
 "Jigsaw takes an image of the screen, carves it up into jigsaw puzzle pieces, "
 "shuffles it, and solves it."
 msgstr ""
+"Puzzleak pantailako irudia hartu, puzzle zatiak egin, nahastu eta osatu "
+"egiten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:7
 msgid "Permutes the screen image like a jigsaw puzzle."
-msgstr ""
+msgstr "Pantailako irudia puzzle moduan azaltzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:11
 msgid "Draws spinning, animating, julia-set fractals."
-msgstr ""
+msgstr "Julia fraktal animatuak eta birakariak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:13
 msgid "Julia"
-msgstr ""
+msgstr "Julia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:14
 msgid "Julia draws spinning, animating, julia-set fractals."
-msgstr ""
+msgstr "Julia-k julia fraktal animatuak eta birakariak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:18
 msgid "Sean McCullough <bankshot@mailhost.nmt.edu>"
-msgstr ""
+msgstr "Sean McCullough <bankshot@mailhost.nmt.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:1
-#, fuzzy
 msgid "Change number of segments."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Segmentu-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:2
-#, fuzzy
 msgid "Change number of trails."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Aztarna-kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:7
 msgid "Draws rotating line segments."
-msgstr ""
+msgstr "Marra-zati birakariak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:9
 msgid "Kaleidescope"
-msgstr ""
+msgstr "Kaleidoskopioa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:10
 msgid "Kaleidescope draws line segments in a symmetric pattern."
-msgstr ""
+msgstr "Kaleidoskopioak marra-zatiak eredu simetrikotan marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:14
-#, fuzzy
 msgid "Number of segments."
-msgstr "Kolore kopurua."
+msgstr "Segmentu-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:15
-#, fuzzy
 msgid "Number of trails."
-msgstr "Kolore kopurua."
+msgstr "Aztarna-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:16
 msgid "Ron Tapia <tapia@nmia.com>"
-msgstr ""
+msgstr "Ron Tapia <tapia@nmia.com>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:16
-#, fuzzy
 msgid "Segments"
-msgstr "Mugimendua"
+msgstr "Segmentuak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:20
-#, fuzzy
 msgid "Trails"
-msgstr "Zarama"
+msgstr "Aztarnak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kumppa.desktop.in.h:1
 msgid "Kumppa"
-msgstr ""
+msgstr "Kumppa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lament.desktop.in.h:1
 msgid "A 3d cube floats around"
-msgstr ""
+msgstr "3Dko kuboa inguruan bueltaka"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lament.desktop.in.h:2
-#, fuzzy
 msgid "Lament"
-msgstr "Aipamena"
+msgstr "Lament"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:4
 msgid ""
 "Draws laser-like lines moving around a central focal point in varying "
 "numbers and colors."
 msgstr ""
+"Fokua erdian dutela jirabiraka ari diren laser-itxurako marrak marrazten "
+"ditu kolore eta kopuru desberdinetan."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:5
 msgid "Draws vaguely laser-like moving lines."
-msgstr ""
+msgstr "Laser-itxura duten marra mugikorrak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:9
-#, fuzzy
 msgid "Duration"
-msgstr "Saturazioa:"
+msgstr "Iraupena"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:7
 msgid "Duration of laser burst."
-msgstr ""
+msgstr "Laser-eztandaren iraupena."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:8
 msgid ""
 "Duration of the laser burst.  After the burst has finished, It will move to "
 "a new location on the screen."
 msgstr ""
+"Laser-eztandaren iraupena.  Eztanda bukatutakoan, pantailaren beste leku "
+"batera mugituko da."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:9
-#, fuzzy
 msgid "Laser"
-msgstr "Arin"
+msgstr "Laser"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:10
-#, fuzzy
 msgid "Longer"
-msgstr "Eginda"
+msgstr "Handia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:11
-#, fuzzy
 msgid "Mono"
-msgstr "Monitorea"
+msgstr "Mono"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:12
-#, fuzzy
 msgid "Number of segments per laser burst."
-msgstr "Orrialdeen kopurua, irtendako orrialdeen arabera"
+msgstr "Laser-eztanda bakoitzeko segmentu-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:13
-#, fuzzy
 msgid "Pascal Pensa"
-msgstr "Paketeak"
+msgstr "Pascal Pensa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:14
-#, fuzzy
 msgid "Segments:"
-msgstr "Gaiak:"
+msgstr "Segmentuak:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:18
-#, fuzzy
 msgid "Shorter"
-msgstr "Tantoak"
+msgstr "Txikia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:16
 msgid "Size of burst."
-msgstr ""
+msgstr "Eztandaren tamaina."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:6
 msgid "Draws fractal lightning bolts."
-msgstr ""
+msgstr "Tximista fraktalak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:7
 msgid "Keith Romberg <kromberg@saxe.com>"
-msgstr ""
+msgstr "Keith Romberg <kromberg@saxe.com>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:8
 msgid "Lightning"
-msgstr ""
+msgstr "Lightning"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:9
 msgid "Lightning draws fractal lightning bolts."
-msgstr ""
+msgstr "Lightning-ek tximista fraktalak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:1
 msgid "Caleb Cullen"
-msgstr ""
+msgstr "Caleb Cullen"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:5
-#, fuzzy
 msgid "Change the size of object."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Objektuaren tamaina aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:13
 msgid "Draws animated full-loop lisajous figures"
-msgstr ""
+msgstr "Begizta osoko lissajous irudi animatuak marrazten ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:16
 msgid "Lisa"
-msgstr ""
+msgstr "Lisa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:17
 msgid "Lisa draws animated full-loop lisajous figures."
-msgstr ""
+msgstr "Lisa-k begizta osoko lissajous irudiak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:22
 msgid "Size of object."
-msgstr ""
+msgstr "Objektuaren tamaina."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lissie.desktop.in.h:1
 msgid "Lissie"
-msgstr ""
+msgstr "Lissie"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:1
-#, fuzzy
 msgid "Change from closed to open figures."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Irudi itxiak eta irekiak txandakatzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:2
-#, fuzzy
 msgid "Change number of interpolation steps."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Interpolazio-urratsen kopurua aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:9
-#, fuzzy
 msgid "Figtype"
-msgstr "Iragazkia"
+msgstr "Irudmota"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:11
-#, fuzzy
 msgid "Lmorph"
-msgstr "Kargatu graph"
+msgstr "Lmorf"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:12
 msgid "Lmorph morphs between simple linedrawings using bilinear interpolation."
 msgstr ""
+"Lmorf-ek marrazki soilen artean itxura ematen du interpolazio bilinearrak "
+"erabiliz."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:15
 msgid "Morphing lines."
-msgstr ""
+msgstr "Marrei forma eman."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:16
-#, fuzzy
 msgid "Number of interpolation steps."
-msgstr "Kolore kopurua."
+msgstr "Interpolazio-urratsen kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:17
-#, fuzzy
 msgid "Number of points."
-msgstr "Kolore kopurua."
+msgstr "Puntu-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:18
-#, fuzzy
 msgid "Open figures."
-msgstr "Fitxategia ireki"
+msgstr "Irudi irekiak."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:19
 msgid "Points"
-msgstr "Puntutan"
+msgstr "Puntuak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:20
-#, fuzzy
 msgid "Points:"
-msgstr "Puntutan"
+msgstr "Puntuak:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:23
-#, fuzzy
 msgid "Steps"
-msgstr "Egoera"
+msgstr "Urratsak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:24
 msgid ""
 "Sverre  H.  Huseby <sverrehu@online.no> & Glenn T. Lines <gtl@si.sintef.no>"
 msgstr ""
+"Sverre  H.  Huseby <sverrehu@online.no> & Glenn T. Lines <gtl@si.sintef.no>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Loop.desktop.in.h:1
-#, fuzzy
 msgid "Loop"
-msgstr "Begiratu"
+msgstr "Begiztak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Loop.desktop.in.h:2
 msgid ""
 "This one produces loop-shaped colonies that spawn, age, and eventually die."
-msgstr ""
+msgstr "Begizta itxurako koloniak zabaltzen eta zahartzen, hil arte."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:1
-#, fuzzy
 msgid "Bridge"
-msgstr "Ezkuta"
+msgstr "Zubia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:2
 msgid "Color for filling completely closed off areas."
-msgstr ""
+msgstr "Erabat itxitako esparruak betetzeko kolorea."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:3
 msgid "Color of a skipped path"
-msgstr ""
+msgstr "Saltatutako bideen kolorea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:4
 msgid "Color of failed path"
-msgstr ""
+msgstr "Huts egindako bideen kolorea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:5
-#, fuzzy
 msgid "Color of path"
-msgstr "Kolorezko paleta:"
+msgstr "Bidearen kolorea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:6
 msgid "Color of surrounded area"
-msgstr ""
+msgstr "Inguratutako esparruaren kolorea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:7
 msgid "Controls whether or not a 'bridge' will appear over the logo."
-msgstr ""
+msgstr "Logotipoaren gainean 'zubia' azalduko den edo ez kontrolatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:8
-#, fuzzy
 msgid "Copyright (C) 1988 by Sun Microsystems, Inc."
-msgstr "Copyright (c) 1998 Red Hat Software, Inc."
+msgstr "Copyright (C) 1988 Sun Microsystems, Inc."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:9
-#, fuzzy
 msgid "Dead Color"
-msgstr "Margoa"
+msgstr "Kolore matea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:10
 msgid "Delay between drawing the maze and starting the solution."
-msgstr ""
+msgstr "Labirintoa marraztu eta emaitza ebatzi arteko denbora-tartea."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:11
 msgid "Delay between each step in the maze."
-msgstr ""
+msgstr "Labirintoko urratsen arteko denbora-tartea."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:12
 msgid "Delay between finishing the maze and starting a new one."
-msgstr ""
+msgstr "Labirintoa bukatu eta beste bat hasi arteko denbora-tartea."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr ""
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
-msgstr ""
+#, fuzzy
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
+msgstr "kolore honekin margotuko du korridorearen amaiera."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
 msgid "Less Delay"
-msgstr ""
+msgstr "Tarte txikiagoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:15
-#, fuzzy
 msgid "Live Color"
-msgstr "Margoa"
+msgstr "Kolore bizia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:16
 msgid "Maze"
-msgstr ""
+msgstr "Labirintoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:17
 msgid "More Delay"
-msgstr ""
+msgstr "Tarte handiagoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:18
 msgid "Post-Solving Delay"
-msgstr ""
+msgstr "Ebatzi ondoko denbora-tartea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:19
 msgid "Pre-Solving Delay"
-msgstr ""
+msgstr "Ebatzi aurreko denbora-tartea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:20
 msgid "Put a bridge over the logo?"
-msgstr ""
+msgstr "Logotipoaren gainean zubia ipini?"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:21
 msgid "Repeatedly create and solve a maze"
-msgstr ""
+msgstr "Labirintoa behin eta berriro sortu eta ebatzi"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:22
-#, fuzzy
 msgid "Skip Color"
-msgstr "Margoa"
+msgstr "Jaramonik ez koloreari"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:23
-#, fuzzy
 msgid "Speed Delay"
-msgstr "Abiadura"
+msgstr "Tartea handitu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:24
-#, fuzzy
 msgid "Surround Color"
-msgstr "Gaineko Kolorea"
+msgstr "Inguruko kolorea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:26
 #, no-c-format
 msgid "The color of a failed path (stippled with a 50% pattern)"
-msgstr ""
+msgstr "Huts egindako bidearen kolorea (% 50eko bilbeaz puntukatua)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:27
 msgid "The color of the path."
-msgstr ""
+msgstr "Bidearen kolorea."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:28
 msgid ""
 "The delay (in microseconds) after solving a maze and before generating a new "
 "one."
 msgstr ""
+"Labirintoa ebatzi ondoko eta berria sortu aurreko denbora-tartea "
+"(mikrosegundotan)."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:29
 msgid "The delay (in microseconds) between each step of the solution path."
-msgstr ""
+msgstr "Ebazpen-bideko urratsen arteko denbora-tartea (mikrosegundotan)."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:30
 msgid ""
 "The delay (in microseconds) between generating a maze and starting to solve "
 "it."
 msgstr ""
+"Labirintoa sortu eta ebazten hasi arteko denbora-tartea (mikrosegundotan)."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:31
 msgid ""
 "The maze program creates a random maze and then solves it with graphical "
 "feedback."
 msgstr ""
+"Labirinto programak labirinto bat sortzen du ausaz eta gero ebatzi egiten du "
+"atzera elikadura grafikoaren bidez."
 
 #: capplets/screensaver-properties/screensaver-desktops/Moebius.desktop.in.h:1
 msgid "M.C. Escher inspired ants.. in 3d"
-msgstr ""
+msgstr "M.C.Escher-engan inspiratutako inurriak..3Dn"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moebius.desktop.in.h:2
-#, fuzzy
 msgid "Moebius"
-msgstr "Menuak"
+msgstr "Moebius"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:8
 msgid "Draw circular interference patterns"
-msgstr ""
+msgstr "Interferentzia-eredu zirkularrak marrazten ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:10
 msgid "Jamie  Zawinski <jwz@jwz.org>"
-msgstr ""
+msgstr "Jamie Zawinski <jwz@jwz.org>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:12
 msgid "Maximum radius increment"
-msgstr ""
+msgstr "Erradioaren handikuntza handiena"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:13
-#, fuzzy
 msgid "Moire"
-msgstr "Monitorea"
+msgstr "Moire"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:14
 msgid "Moire draws circular interference patterns."
-msgstr ""
+msgstr "Moire-ek interferentzi eredu zirkularrak marrazten ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:17
-#, fuzzy
 msgid "Offset"
-msgstr "Itzalia"
+msgstr "Desplazatu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire2.desktop.in.h:1
-#, fuzzy
 msgid "Moire2"
-msgstr "Monitorea"
+msgstr "Moire2"
 
 #: capplets/screensaver-properties/screensaver-desktops/Morph3d.desktop.in.h:1
 msgid "A 3d flower morphs into a sphear"
-msgstr ""
+msgstr "3Dko lorea esfera bihurtzen du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Morph3d.desktop.in.h:2
 msgid "Morph3d"
-msgstr ""
+msgstr "Morph3d"
 
 #: capplets/screensaver-properties/screensaver-desktops/Mountain.desktop.in.h:1
 msgid "Mountain"
@@ -2888,309 +2732,293 @@ msgstr "Mendiak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:3
 msgid "Change to draw square at weird starting points."
-msgstr ""
+msgstr "Puntu sakabanatutan hasita laukiak marrazteko aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:4
 msgid "Change to use XOR drawing function."
-msgstr ""
+msgstr "XOR marrazketa-funtzioa erabiltzera aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:7
 msgid "Draw square at weird starting points."
-msgstr ""
+msgstr "Laukiak marrazten ditu puntu sakabanatutan hasita."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:10
-#, fuzzy
 msgid "Munch"
-msgstr "Abiarazlea"
+msgstr "Munch"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:11
 msgid "Munch munches squares until killed."
-msgstr ""
+msgstr "Munch-ek laukiak marrazten ditu desagertu arte."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:12
 msgid "Munching squares."
-msgstr ""
+msgstr "Laukiak mozten."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:13
 msgid "Shift"
-msgstr ""
+msgstr "Maius"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:16
 msgid "Tim  Showalter  <tjs@andrew.cmu.edu>"
-msgstr ""
+msgstr "Tim  Showalter  <tjs@andrew.cmu.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:17
 msgid "Use XOR drawing function."
-msgstr ""
+msgstr "XOR marrazketa-funtzioa erabili."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:18
 msgid "XOR"
-msgstr ""
+msgstr "XOR"
 
 #: capplets/screensaver-properties/screensaver-desktops/Noseguy.desktop.in.h:1
 msgid "Noseguy"
-msgstr ""
+msgstr "Noseguy"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:1
-#, fuzzy
 msgid "Change maximum number of lines."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Gutxieneko marra-kopurua aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:2
 msgid "Change the time each picture is shown."
-msgstr ""
+msgstr "Irudi bakoitzaren agerpen-denbora aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:3
-#, fuzzy
 msgid "Change time to fade away."
-msgstr "Animazio abiadura aldatu."
+msgstr "Ezabatzeko denbora aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:5
 msgid "Dale Moore <Dale.Moore@cs.cmu.edu>"
-msgstr ""
+msgstr "Dale Moore <Dale.Moore@cs.cmu.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:8
 msgid "Fadedelay"
-msgstr ""
+msgstr "Ezabatzeko denbora-tartea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:11
 msgid "Maximum number of lines."
-msgstr ""
+msgstr "Gehienezko marra-kopurua."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:12
 msgid "Maxlines"
-msgstr ""
+msgstr "Maxlines"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:15
-#, fuzzy
 msgid "Pedal"
-msgstr "Euskarria"
+msgstr "Pedal"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:16
 msgid "Pedal Displays pretty geometric pictures."
-msgstr ""
+msgstr "Pedal-ek irudi geometriko ederrak bistaratzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:17
 msgid "Pretty geometric picture program."
-msgstr ""
+msgstr "Irudi geometriko ederren programa."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:19
 msgid "Time to fade away."
-msgstr ""
+msgstr "Ezabatzeko denbora."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:20
 msgid "Time to show each picture."
-msgstr ""
+msgstr "Irudi bakoitza erakusteko denbora."
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:1
 msgid "Display an arcade game"
-msgstr ""
+msgstr "Bistaratu makina-joko bat"
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:2
-#, fuzzy
 msgid "Penetrate"
-msgstr "Orokorra"
+msgstr "Penetrate"
 
 #: capplets/screensaver-properties/screensaver-desktops/Penrose.desktop.in.h:1
-#, fuzzy
 msgid "Penrose"
-msgstr "Aztertu"
+msgstr "Penrose"
 
 #: capplets/screensaver-properties/screensaver-desktops/Phosphor.desktop.in.h:1
 msgid ""
 "Draws a simulation of an old terminal, with large pixels and long-sustain "
 "phosphor."
 msgstr ""
+"Terminal zahar batean bezala pixel handiko eta euskarri handiko fosforozko "
+"simulazioa egiten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Phosphor.desktop.in.h:3
-#, fuzzy
 msgid "Phosphor"
-msgstr "Txiroa"
+msgstr "Fosforoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:1
 msgid "3d pipes flow around the screen"
-msgstr ""
+msgstr "3Dko hodiak pantailan hegan"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:2
-#, fuzzy
 msgid "Pipes"
-msgstr "Pixeletan"
+msgstr "Hodiak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:1
 msgid "Changes frequency of missile launch."
-msgstr ""
+msgstr "Misil jaurtiketaren maiztasuna aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:5
-#, fuzzy
 msgid "Frequency"
-msgstr "Berriztatu maiztasuna"
+msgstr "Maiztasuna"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:6
 msgid "Frequency of missile launch"
-msgstr ""
+msgstr "Misil-jaurtiketaren maiztasuna"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:7
 msgid "How many particles should appear when a missile explodes."
-msgstr ""
+msgstr "Misilak eztanda egiten duenean zenbat zati agertuko diren."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:8
 msgid "How many particles should be allowed on the screen at once."
-msgstr ""
+msgstr "Pantailan aldi berean zenbat zati ager daitezkeen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:3
 msgid "Jamie Zawinski"
-msgstr ""
+msgstr "Jamie Zawinski"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:12
-#, fuzzy
 msgid "Number of particles"
-msgstr "Kolore kopurua"
+msgstr "Zati-kopurua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:13
 msgid "Particles on screen"
-msgstr ""
+msgstr "Zenbat zati pantailan"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:14
 msgid "Pyro"
-msgstr ""
+msgstr "Piro"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:15
-#, fuzzy
 msgid "Scatter"
-msgstr "Egoera"
+msgstr "Dispertsioa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:17
 msgid "The pyro program simulates fireworks."
-msgstr ""
+msgstr "Piro programak su artifizialak simulatzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:18
 msgid "simulates fireworks"
-msgstr ""
+msgstr "su artifizialak simulatzen ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:1
 msgid "Bounce colored lines around a window."
-msgstr ""
+msgstr "Koloredun errebote-marrak leihoaren barruan."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:2
 msgid "Changes the speed at which the Qix moves."
-msgstr ""
+msgstr "Qix-en abiadura aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:5
 msgid ""
 "Determines whether the lines move erraticly, or bounce off the walls "
 "linearly."
 msgstr ""
+"Marrak kontrolik gabe mugitzen diren edo hormaren kontra errebote egiten "
+"duten erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:6
 msgid "Determines whether to fill in the gaps between the lines."
-msgstr ""
+msgstr "Lerro arteko zuloak bete behar diren edo ez erabakitzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:7
-#, fuzzy
 msgid "Draw solid Qix."
-msgstr "Marrazketa labanka"
+msgstr "Qix solidoa marraztu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:11
-#, fuzzy
 msgid "Length of the Trail:"
-msgstr "Munduko beste guztia"
+msgstr "Aztarnaren luzera:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:12
-#, fuzzy
 msgid "Number of Qix:"
-msgstr "Kolore kopurua"
+msgstr "Qix kopurua:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:13
 msgid "Qix"
-msgstr ""
+msgstr "Qix"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:14
 msgid ""
 "Qix bounces a series of line segments around its window. This is truly the "
 "swiss army chainsaw of qix programs."
 msgstr ""
+"Qix-ek marra-segmentu multzo batzuk errebotarazten ditu leihoaren barruan. "
+"Suitzako armadaren qix programen katea da izatez. "
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:15
-#, fuzzy
 msgid "Random"
-msgstr "Berregin"
+msgstr "Ausazkoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:17
 msgid "Set random motion for the Qix."
-msgstr ""
+msgstr "Qix-en ausazko animazioa ezartzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:18
 msgid "Sets the distance between each line segment."
-msgstr ""
+msgstr "Lerro-segmentuen arteko distantzia ezartzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:19
 msgid "Sets the number of Qix you have running at once."
-msgstr ""
+msgstr "Aldi berean erabiliko duzun Qix kopurua ezartzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:20
-#, fuzzy
 msgid "Sets the number of line segments to be drawn."
-msgstr "Erabili beharreko burbuila kopurua aldatu."
+msgstr "Marraztu beharreko lerro-segmentu kopurua ezartzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:25
 msgid "Speed:"
 msgstr "Abiadura:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:26
-#, fuzzy
 msgid "Spread"
-msgstr "Abiadura"
+msgstr "Zabalera"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:27
-#, fuzzy
 msgid "Width of segment:"
-msgstr "Lehioaren zabalera"
+msgstr "Segmentuaren zabalera:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rd-bomb.desktop.in.h:1
 msgid "Rd-bomb"
-msgstr ""
+msgstr "Rd-bomb"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:2
-#, fuzzy
 msgid "Display oily drops."
-msgstr "Erakutsi hint normalak"
+msgstr "Olio-tantak bistaratzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:3
 msgid "Draws rippling interference patterns like splashing water."
 msgstr ""
+"Interferentzia-eredu uhin-itxurakoak marrazten ditu, ur-zipriztinen antzera."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:4
-#, fuzzy
 msgid "Drip onto desktop."
-msgstr "Idazmahaira"
+msgstr "Mahaigainean tantaka."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:5
 msgid "Oily"
-msgstr ""
+msgstr "Oliotsua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:6
-#, fuzzy
 msgid "Ripples"
-msgstr "Applet-ak"
+msgstr "Uhinak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:7
-#, fuzzy
 msgid "Stir"
-msgstr "Itsaskor"
+msgstr "Eragin"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:8
 msgid "Stir it up."
-msgstr ""
+msgstr "Eragin."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:9
-#, fuzzy
 msgid "Stir."
-msgstr "Itsaskor"
+msgstr "Eragin"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:10
 msgid "Tom Hammersley"
-msgstr ""
+msgstr "Tom Hammersley"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rocks.desktop.in.h:1
 msgid "Rocks"
@@ -3198,227 +3026,209 @@ msgstr "Harriak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rorschach.desktop.in.h:1
 msgid "Rorschach"
-msgstr ""
+msgstr "Rorschach"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rotor.desktop.in.h:1
-#, fuzzy
 msgid "Rotor"
-msgstr "Monitorea"
+msgstr "Rotor"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:1
 msgid "A 3d Rubiks cube floats and twists around"
-msgstr ""
+msgstr "3Dko Rubik kuboa jiraka eta bueltaka"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:2
 msgid "Rubiks Cube"
-msgstr ""
+msgstr "Rubik-en kuboa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Shadebobs.desktop.in.h:1
 msgid ""
 "Draws smoothly-shaded oscillating oval patterns which resemble vapor trails."
 msgstr ""
+"Arrautza-itxurako eredu itzaldun eta kulunkariak marrazten ditu, lurrunaren "
+"antzekoak."
 
 #: capplets/screensaver-properties/screensaver-desktops/Shadebobs.desktop.in.h:2
-#, fuzzy
 msgid "Shadebobs"
-msgstr "Itzaldu"
+msgstr "Shadebobs"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:7
 msgid "Desmond  Daignault"
-msgstr ""
+msgstr "Desmond  Daignault"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:12
 msgid "Sierpinski"
-msgstr ""
+msgstr "Sierpinski"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:15
 msgid "The sierpinski program draws Sierpinski triangle fractals."
-msgstr ""
+msgstr "Sierpinski programak Sierpinski triangelu fraktalak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Slidescreen.desktop.in.h:1
-#, fuzzy
 msgid "Slidescreen"
-msgstr "Pantaila"
+msgstr "Slidescreen"
 
 #: capplets/screensaver-properties/screensaver-desktops/Slip.desktop.in.h:1
-#, fuzzy
 msgid "Slip"
-msgstr "Ahaztu"
+msgstr "Slip"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:1
 msgid "Display a Sonar scope."
-msgstr ""
+msgstr "Sonarraren eremua bistaratzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:2
-#, fuzzy
 msgid "Sonar"
-msgstr "Standard"
+msgstr "Sonarra"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sphere.desktop.in.h:1
-#, fuzzy
 msgid "Sphere"
-msgstr "Abiadura"
+msgstr "Esferak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:11
 msgid "Darrick Brown, Peter Schmitzberger, and Jamie Zawinski"
-msgstr ""
+msgstr "Darrick Brown, Peter Schmitzberger eta Jamie Zawinski"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:20
-#, fuzzy
 msgid "Spiral"
-msgstr "Berezia"
+msgstr "Espirala"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:21
 msgid "The spiral program draws moving circular spiral patterns."
-msgstr ""
+msgstr "Espiralak espiral itxurako eredu zirkular mugikorrak marrazten ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Spotlight.desktop.in.h:1
 msgid "Display the desktop in a spotlight"
-msgstr ""
+msgstr "Mahaigaina foku batean bistaratzen du"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spotlight.desktop.in.h:2
-#, fuzzy
 msgid "Spotlight"
-msgstr "argia"
+msgstr "Spotlight"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sproingies.desktop.in.h:1
-#, fuzzy
 msgid "Sproingies"
-msgstr "Scrolling"
+msgstr "Sproingies"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sproingies.desktop.in.h:2
 msgid "Uhm.. *poing*"
-msgstr ""
+msgstr "Eh..*poing*"
 
 #: capplets/screensaver-properties/screensaver-desktops/Squiral.desktop.in.h:1
 msgid "Display squared spirales"
-msgstr ""
+msgstr "Espiral angeludunak bistaratzen ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Squiral.desktop.in.h:2
 msgid "Squiral"
-msgstr ""
+msgstr "Squiral"
 
 #: capplets/screensaver-properties/screensaver-desktops/Stairs.desktop.in.h:1
-#, fuzzy
 msgid "Stairs"
-msgstr "Ezaugarriak"
+msgstr "Eskailerak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Stairs.desktop.in.h:2
 msgid "The famous, M.C. Escher, impossible stairs"
-msgstr ""
+msgstr "M.C.Escher ospetsuaren eskailera ezinezkoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:1
 msgid " Random)"
-msgstr ""
+msgstr "Ausazkoa)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:2
-#, fuzzy
 msgid "Blob"
-msgstr "Behean"
+msgstr "Burbuila"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:3
-#, fuzzy
 msgid "Change the animation step delay."
-msgstr "Animazio abiadura aldatu."
+msgstr "Animazio-urratsen arteko denbora-tartea aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:4
-#, fuzzy
 msgid "Change the number of colors to use in star."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Itsas izarrak izango duen kolore-kopurua aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:5
-#, fuzzy
 msgid "Change the quickness of rotation at each step."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Urrats bakoitzean biraketaren abiadura aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:6
-#, fuzzy
 msgid "Change the thickness of color bands."
-msgstr "Erabili beharreko kolore kopurua aldatu."
+msgstr "Koloredun zerrenden zabalera aldatzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:10
 msgid "Duration of current shape."
-msgstr ""
+msgstr "Itxura beraren iraupena."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:12
 msgid "How long to run before choosing a new shape."
-msgstr ""
+msgstr "Beste itxura bat aukeratu arte zenbat denbora igaro behar den."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:14
 msgid "Make a star like formation using arcs."
-msgstr ""
+msgstr "Izar-itxurako zerbait marraztu arkuak erabiliz."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:16
-#, fuzzy
 msgid "Rotation"
-msgstr "Kokapena"
+msgstr "Biraketa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:18
 msgid "Slim"
-msgstr ""
+msgstr "Mehea"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:20
-#, fuzzy
 msgid "Speed of animation."
-msgstr "Animazioaren abiadura"
+msgstr "Animazioaren abiadura."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:21
-#, fuzzy
 msgid "Starfish"
-msgstr "Hegoko Euskalduna edo Espaniarra"
+msgstr "Itsas izarra"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:22
 msgid ""
 "Starfish bounces a series of arcs around its window in a star like "
 "formation. It uses multiple colors and multiple patterns. "
 msgstr ""
+"Itsas izarrak arkuak errebotarazten ditu leihoaren barruan izar itxura "
+"emanez. Kolore eta eredu ugari erabiltzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:23
 msgid "Thickness"
-msgstr ""
+msgstr "Lodiera"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:24
-#, fuzzy
 msgid "Use raw shapes "
-msgstr "Erabili toki librea"
+msgstr "Forma gordinak erabili "
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:25
-#, fuzzy
 msgid "Wide"
-msgstr "Ezkuta"
+msgstr "Zabala"
 
 #: capplets/screensaver-properties/screensaver-desktops/Strange.desktop.in.h:1
-#, fuzzy
 msgid "Strange"
-msgstr "abiarazten"
+msgstr "Bitxia"
 
 #: capplets/screensaver-properties/screensaver-desktops/Superquadrics.desktop.in.h:1
 msgid "Superquadrics"
-msgstr ""
+msgstr "Superquadrics"
 
 #: capplets/screensaver-properties/screensaver-desktops/Swirl.desktop.in.h:1
-#, fuzzy
 msgid "Swirl"
-msgstr "neska"
+msgstr "Swirl"
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:6
 msgid ""
 "Generates random mountain ranges using iterative subdivision of triangles. "
 msgstr ""
+"Triangelu-zatiketa errepikakorrak erabiliz, ausazko mendi-kateak sortzen "
+"ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:9
 msgid "Random mountain ranges"
-msgstr ""
+msgstr "Ausazko mendi-kateak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:10
-#, fuzzy
 msgid "Tobias Gloth"
-msgstr "Hil honetan"
+msgstr "Tobias Gloth"
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:11
-#, fuzzy
 msgid "Triangle"
-msgstr "Taula"
+msgstr "Triangeluak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:8
 msgid ""
@@ -3426,738 +3236,689 @@ msgid ""
 "claim to fame being a pseudo-fractal looking vine like pattern that creates "
 "nifty whirls and loops."
 msgstr ""
+"Mahastiak eredu geometrikoak sortzen ditu, mahasti-itxurako eredu "
+"sasifraktal ospetsua da eta begiztak eta zurrunbiloak sortzen ditu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:9
 msgid "Tracy Camp"
-msgstr ""
+msgstr "Tracy Camp"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:10
-#, fuzzy
 msgid "Vines"
-msgstr "minutuak"
+msgstr "Mahastiak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:11
 msgid "draws pseudo-fractal geometric patterns"
-msgstr ""
+msgstr "eredu geometriko sasifraktalak marrazten ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Worm.desktop.in.h:1
-#, fuzzy
 msgid "Worm"
-msgstr "Hitza:"
+msgstr "Harrak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:1
 msgid "Display flames at the bottom of the screen"
-msgstr ""
+msgstr "Pantailaren behealdean sugarrak bistaratzen ditu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:2
-#, fuzzy
 msgid "Xflame"
-msgstr "Izena"
+msgstr "Xflame"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xjack.desktop.in.h:1
-#, fuzzy
 msgid "Xjack"
-msgstr "Atzera"
+msgstr "Xjack"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xlyap.desktop.in.h:1
 msgid "Xlyap"
-msgstr ""
+msgstr "Xlyap"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xmatrix.desktop.in.h:1
 msgid "Screens from the movie The Matrix"
-msgstr ""
+msgstr "The Matrix filmetik hartutako pantailak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xmatrix.desktop.in.h:2
 msgid "Xmatrix"
-msgstr ""
+msgstr "Xmatrix"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:5
 msgid ""
 "The  xroger  program displays a replacement for the X logo with a more "
 "accurate Look and Feel."
 msgstr ""
+"Xroger  programak X logotipoa Itxura eta Izaera egokiago batekin ordezten du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:6
 msgid "The  xroger  program displays a replacement for the X logo."
-msgstr ""
+msgstr "Xroger  programak X logotipoaren ordezpena bistaratzen du."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
-#, fuzzy
 msgid "Xroger"
-msgstr "Ikusketari"
+msgstr "Xroger"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:1
-#, fuzzy
 msgid "Bars"
-msgstr "Markak"
+msgstr "Barrak"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:3
 msgid "Cycle modes."
-msgstr ""
+msgstr "Moduak zikloan aldatu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:4
 msgid "Cycle through all the available modes."
-msgstr ""
+msgstr "Modu erabilgarri guztietatik pasatzen da."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:5
-#, fuzzy
 msgid "Display color bars."
-msgstr "Erakutsi hint normalak"
+msgstr "Kolore-barrak bistaratu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:6
-#, fuzzy
 msgid "Display static."
-msgstr "Erakuslehioa"
+msgstr "Bistaratze estatikoa."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:7
 msgid "Greg Knauss"
-msgstr ""
+msgstr "Greg Knauss"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:8
 msgid "Roll"
-msgstr ""
+msgstr "Erroilua"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:9
 msgid ""
 "Simulates various television problems such as static, loss of vertical hold, "
 "and test patterns."
 msgstr ""
+"Telebista-arazoak simulatzen ditu; adibidez, euskarri bertikalik eza, "
+"estatikoa eta probako ereduak."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:10
-#, fuzzy
 msgid "Static"
-msgstr "Egoera"
+msgstr "Estatikoa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:11
-#, fuzzy
 msgid "Static."
-msgstr "abiarazten"
+msgstr "Estatikoa."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:12
-#, fuzzy
 msgid "Vertical roll."
-msgstr "Bertikala"
+msgstr "Erroilu bertikala."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:13
 msgid "Xteevee"
-msgstr ""
+msgstr "Xteevee"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:46
-#, fuzzy
 msgid "About:"
-msgstr "Zerari buruz"
+msgstr "Honi buruz:"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:51
 msgid "Author:"
 msgstr "Egilea:"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:61
-#, fuzzy
 msgid "Author: UNKNOWN"
-msgstr "Egileak: "
+msgstr "Egilea: EZEZAGUNA"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:78
 msgid "Settings"
-msgstr "Konfigurazioa"
+msgstr "Ezarpenak"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
-msgstr ""
+msgstr "AUSAZKO PANTAILA-BABESLEA"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
-msgstr "Pantaila"
+msgstr "Pantaila-babeslea"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+msgid "Pressing this button will preview current screensaver."
+msgstr "Botoi honetan klik eginda uneko pantaila-babeslea ikusiko duzu."
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
 msgstr ""
+"Botoi honetan klik eginda uneko pantaila-babeslea ezartzen lagunduko dizun "
+"elkarrizketa-koadroa azalduko da."
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 msgid "Screen Saver Settings"
-msgstr "Gnome pager-aren egokiera"
+msgstr "Pantaila-babeslearen ezarpenak"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
-msgstr "Haste sektorea: "
+msgstr "Hasi "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 msgid " Minutes."
-msgstr "minutuak"
+msgstr "minutu igaro ondoren."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 msgid "Priority:"
-msgstr "Portua:"
+msgstr "Lehentasuna:"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 msgid "Low "
-msgstr "Gutxi"
+msgstr "Txikia "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
-msgstr "Arrunta"
+msgstr "Normala"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
-msgstr "Gehiago erakutsi"
+msgstr "Itzali monitorea "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
-msgstr ""
+msgstr "minutu igarotakoan babeslea hasi denetik."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 msgid "Screen Saver Demo"
-msgstr ""
+msgstr "Pantaila-babeslearen demoa"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:1
 msgid "Configure the settings of the screensaver"
-msgstr ""
+msgstr "Pantaila-babeslearen ezarpenak konfiguratu"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:2
-#, fuzzy
 msgid "Screensaver"
-msgstr "Pantaila"
+msgstr "Pantaila-babeslea"
 
 #: capplets/sound-properties/sound-properties.c:97
 msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
 msgstr ""
+"hasieratze-errorea gertatu da 'soinu-propietateen capplet-a' abiaraztean."
 
-#: capplets/sound-properties/sound-properties.c:188
-#, fuzzy
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
-msgstr "Mugimendua"
+msgstr "Gertaera"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
-msgstr ""
-
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr "Gaitu"
+msgstr "Erreproduzitu fitxategia"
 
 #: capplets/sound-properties/sound-properties.c:250
-#, fuzzy
-msgid "Enable sound server startup"
-msgstr "Baimendu soinu zerbitzaria"
+msgid "Sound server"
+msgstr "Soinu-zerbitzaria"
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:257
+msgid "Enable sound server startup"
+msgstr "Gaitu Soinu-zerbitzariaren abiaraztea"
+
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
-msgstr ""
+msgstr "Gertaeren soinuak"
+
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr "Audio nahaslea"
 
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr "Gnome Mixer-en nahaste-mailak leheneratu"
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr "Orokorra"
 
-#: capplets/sound-properties/sound-properties.c:286
-#, fuzzy
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
-msgstr "Aukeratu fitxategia"
+msgstr "Hautatu soinu-fitxategia"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
-msgstr ""
+msgstr "Erreproduzitu"
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
-msgstr ""
+msgstr "Soinu-gertaerak"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
-msgstr ""
+msgstr "GNOMEren Kontrol Zentroaren kopia hau ez da soinu-euskarriaz konpilatu"
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
-msgstr ""
+msgstr "Gertaera honek ez du soinu-fitxategirik."
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
 "for a set of default sounds."
 msgstr ""
+"Gertaera honek ez du soinu-fitxategirik.\n"
+"Gnome-ren audio paketea instala dezakezu\n"
+"soinu lehenetsien sorta bat lortzeko."
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:1
 msgid "Configure GNOME's use of sound"
-msgstr ""
+msgstr "Konfiguratu GNOMEren soinu-erabilpena"
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:2
-#, fuzzy
 msgid "Sound"
-msgstr "muntatua"
+msgstr "Soinua"
 
 #: capplets/theme-switcher/demo.c:50
-#, fuzzy
 msgid "One"
-msgstr "berria"
+msgstr "Baga"
 
 #: capplets/theme-switcher/demo.c:50
-#, fuzzy
 msgid "Two"
-msgstr "Goialdea"
+msgstr "Biga"
 
 #. just 8 short names that will serve as samples for titles in demo
 #: capplets/theme-switcher/demo.c:52
-#, fuzzy
 msgid "Eenie"
-msgstr "ederra"
+msgstr "Higa"
 
 #: capplets/theme-switcher/demo.c:52
-#, fuzzy
 msgid "Meenie"
-msgstr "Menu"
+msgstr "Laga"
 
 #: capplets/theme-switcher/demo.c:53
-#, fuzzy
 msgid "Mynie"
-msgstr "ederra"
+msgstr "Boga"
 
 #: capplets/theme-switcher/demo.c:53
-#, fuzzy
 msgid "Moe"
-msgstr "Mugitu"
+msgstr "Sega"
 
 #: capplets/theme-switcher/demo.c:54
 msgid "Catcha"
-msgstr ""
+msgstr "Zahi"
 
 #: capplets/theme-switcher/demo.c:54
-#, fuzzy
 msgid "Tiger"
-msgstr "Pager"
+msgstr "Zohi"
 
 #: capplets/theme-switcher/demo.c:55
 msgid "By Its"
-msgstr ""
+msgstr "Bele"
 
 #: capplets/theme-switcher/demo.c:55
-#, fuzzy
 msgid "Toe"
-msgstr "Goialdea"
+msgstr "Ikimilikiliklik"
 
 #: capplets/theme-switcher/demo.c:114
 msgid "Selected themes from above will be tested by previewing here."
-msgstr ""
+msgstr "Goian hautatutako gaiak probatzeko aurrebista agertzen da hemen."
 
 #. column one
 #: capplets/theme-switcher/demo.c:119
-#, fuzzy
 msgid "Sample Button"
-msgstr "Botoiak"
+msgstr "Mostraren botoia"
 
 #: capplets/theme-switcher/demo.c:123
-#, fuzzy
 msgid "Sample Check Button"
-msgstr "Baimendu botoi eskutuak"
+msgstr "Mostraren kontrol-botoia"
 
 #: capplets/theme-switcher/demo.c:128
 msgid "Sample Text Entry Field"
-msgstr ""
+msgstr "Mostran testua idazteko eremua"
 
 #: capplets/theme-switcher/demo.c:139
-#, fuzzy
 msgid "Submenu"
-msgstr "Submenu berria"
+msgstr "Azpimenua"
 
 #: capplets/theme-switcher/demo.c:146
 msgid "Item 1"
-msgstr ""
+msgstr "1. elementua"
 
 #: capplets/theme-switcher/demo.c:149
-#, fuzzy
 msgid "Another item"
-msgstr "Erakutsi beste hint bat"
+msgstr "Beste elementu bat"
 
 #: capplets/theme-switcher/demo.c:154
-#, fuzzy
 msgid "Radio Button 1"
-msgstr "Mdk Botoiak"
+msgstr "1 irrati-botoia"
 
 #: capplets/theme-switcher/demo.c:160
-#, fuzzy
 msgid "Radio Button 2"
-msgstr "Mdk Botoiak"
+msgstr "2 irrati-botoia "
 
-#: capplets/theme-switcher/gui.c:89
-#, fuzzy, c-format
+#: capplets/theme-switcher/gui.c:120
+#, c-format
 msgid ""
 "Error installing theme:\n"
 "'%s'\n"
 "%s"
 msgstr ""
-"Errorea dokumentua kargatzerakoan:\n"
-"\n"
+"Errorea ondoko gaia instalatzean:\n"
+"'%s'\n"
 "%s"
 
-#: capplets/theme-switcher/gui.c:120
-#, fuzzy
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
-msgstr "Hauta instalatu nahi duzun tamaina"
+msgstr "Hautatu instalatu beharreko gaia"
 
-#: capplets/theme-switcher/gui.c:197
-#, fuzzy
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
-msgstr "Erabilgarri dauden paketeak"
+msgstr "Gai erabilgarriak"
 
-#: capplets/theme-switcher/gui.c:221
-#, fuzzy
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
-msgstr "Aurreikuspegia"
+msgstr ""
+"Aurrebista\n"
+"automatikoa"
 
-#: capplets/theme-switcher/gui.c:233
-#, fuzzy
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
-msgstr "Instalatu sitema"
+msgstr ""
+"Instalatu gai\n"
+"berria..."
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
-#, fuzzy
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
-msgstr "Erabiltzailearen izena"
+msgstr "Erabiltzailearen letra-tipoa"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
-#, fuzzy
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
-msgstr "-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*"
+msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
-msgstr ""
+msgstr "Erabili letra-tipo pertsonalizatua."
 
 #: capplets/theme-switcher/install.c:26
 msgid "Home directory doesn't exist!\n"
-msgstr ""
+msgstr "Ez dago etxeko direktoriorik!\n"
 
 #: capplets/theme-switcher/install.c:36
 msgid "Theme does not exist"
-msgstr ""
+msgstr "Ez dago gairik"
 
 #: capplets/theme-switcher/install.c:68
-#, fuzzy, c-format
+#, c-format
 msgid "Command '%s' failed"
-msgstr "mkraid-ek huts egin du"
+msgstr "'%s' komandoak huts egin du"
 
 #: capplets/theme-switcher/install.c:73
-#, fuzzy
 msgid "Unknown file format"
-msgstr "Sistemaren errore ezezaguna"
+msgstr "Fitxategi-formatu ezezaguna"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:1
 msgid "Select which desktop theme to use"
-msgstr ""
+msgstr "Aukeratu erabili beharreko mahaigaineko gaia"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:2
-#, fuzzy
 msgid "Theme Selector"
-msgstr "Fitxategi aukeratzailea"
+msgstr "Gai-hautatzailea"
 
 #: capplets/ui-properties/application.desktop.in.h:1
-#, fuzzy
 msgid "Applications"
-msgstr "Akzioa"
+msgstr "Aplikazioak"
 
 #: capplets/ui-properties/application.desktop.in.h:2
 msgid "Sets the default feel of GNOME applications"
-msgstr ""
+msgstr "GNOME aplikazioen izaera lehenetsia ezartzen du"
 
 #: capplets/ui-properties/dialogs.desktop.in.h:1
-#, fuzzy
 msgid "Dialogs"
-msgstr "log"
+msgstr "Elkarrizketa-koadroak"
 
 #: capplets/ui-properties/mdi.desktop.in.h:1
-#, fuzzy
 msgid "MDI"
-msgstr "MD5"
+msgstr "MDI"
 
 #: capplets/ui-properties/ui-properties.c:54
 msgid "Can detach and move toolbars"
-msgstr ""
+msgstr "Tresna-barrak mugitu eta desuztartu ditzake"
 
 #: capplets/ui-properties/ui-properties.c:59
 msgid "Toolbars have relieved border"
-msgstr ""
+msgstr "Tresna-barrek erliebedun ertza dute"
 
 #: capplets/ui-properties/ui-properties.c:64
 msgid "Toolbar buttons have relieved border"
-msgstr ""
+msgstr "Tresna-barrako botoiek erliebedun ertza dute"
 
 #: capplets/ui-properties/ui-properties.c:69
 msgid "Toolbars have line separators"
-msgstr ""
+msgstr "Tresna-barrek marra bereizgarriak dituzte"
 
 #: capplets/ui-properties/ui-properties.c:74
 msgid "Toolbars have text labels"
-msgstr ""
+msgstr "Tresna-barrek testu-etiketak dituzte"
 
 #: capplets/ui-properties/ui-properties.c:103
 msgid "Can detach and move menus"
-msgstr ""
+msgstr "Menuak mugitu eta desuztartu ditzake"
 
 #: capplets/ui-properties/ui-properties.c:108
 msgid "Menus have relieved border"
-msgstr ""
+msgstr "Menuek erliebedun ertza dute"
 
 #: capplets/ui-properties/ui-properties.c:112
 msgid "Submenus can be torn off"
-msgstr ""
+msgstr "Azpimenuak mugi daitezke"
 
 #: capplets/ui-properties/ui-properties.c:116
-#, fuzzy
 msgid "Menu items have icons"
-msgstr "Menuaren item-a izena behar du"
+msgstr "Menuko elementuek ikonoak dituzte"
 
 #: capplets/ui-properties/ui-properties.c:140
 msgid "Statusbar is interactive when possible"
-msgstr ""
+msgstr "Egoera-barra interaktiboa da aukera dagoenean"
 
 #: capplets/ui-properties/ui-properties.c:145
 msgid "Statusbar progress meter is on the right"
-msgstr ""
+msgstr "Egoera-barraren jardunaren neurgarlua eskuinean dago"
 
 #: capplets/ui-properties/ui-properties.c:162
-#, fuzzy
 msgid "Menu Options"
-msgstr "Menuaren ikonoa"
+msgstr "Menu-aukerak"
 
 #: capplets/ui-properties/ui-properties.c:163
-#, fuzzy
 msgid "Statusbar Options"
-msgstr "Saturazioa:"
+msgstr "Egoera-barraren aukerak"
 
 #: capplets/ui-properties/ui-properties.c:164
-#, fuzzy
 msgid "Toolbar Options"
-msgstr "Abiarazlearen aukera nagusiak"
+msgstr "Tresna-barraren aukerak"
 
 #: capplets/ui-properties/ui-properties.c:170
-#, fuzzy
 msgid "Dialog buttons"
-msgstr "2 botoi"
+msgstr "Elkarrizketa-koadroetako botoiak"
 
 #: capplets/ui-properties/ui-properties.c:171
-#, fuzzy
 msgid "Default value"
-msgstr "Jatorrizkoa"
+msgstr "Balio lehenetsia"
 
 #: capplets/ui-properties/ui-properties.c:172
-#, fuzzy
 msgid "Spread buttons out"
-msgstr "ezkuta botoiak"
+msgstr "Botoiak zabaldu"
 
 #: capplets/ui-properties/ui-properties.c:173
 msgid "Put buttons on edges"
-msgstr ""
+msgstr "Botoiak ertzetan ipini"
 
 #: capplets/ui-properties/ui-properties.c:174
 msgid "Left-justify buttons"
-msgstr ""
+msgstr "Botoiak ezkerrean justifikatu"
 
 #: capplets/ui-properties/ui-properties.c:175
 msgid "Right-justify buttons"
-msgstr ""
+msgstr "Botoiak eskuinean justifikatu"
 
 #: capplets/ui-properties/ui-properties.c:180
-#, fuzzy
 msgid "Dialog buttons have icons"
-msgstr "Botoien ikonoak erakutsi"
+msgstr "Elkarrizketa-koadroetako botoiek ikonoak dituzte"
 
 #: capplets/ui-properties/ui-properties.c:185
 msgid "Use statusbar instead of dialog when possible"
-msgstr ""
+msgstr "Erabili egoera-barra elkarrizketa-koadroen ordez, aukera dagoenean"
 
 #: capplets/ui-properties/ui-properties.c:207
-#, fuzzy
 msgid "Dialog position"
-msgstr "Markatze aukerak"
+msgstr "Elkarrizketa-koadroaren kokapena"
 
 #: capplets/ui-properties/ui-properties.c:208
-#, fuzzy
 msgid "Let window manager decide"
-msgstr "Hauta abiarazterakoan nahi duzun lehio kudeatzailea:"
+msgstr "Laga leiho-kudeatzaileari erabakitzen"
 
 #: capplets/ui-properties/ui-properties.c:209
-#, fuzzy
 msgid "Center of the screen"
-msgstr "Ezabatu aukeratutakoa"
+msgstr "Pantailaren erdian ipini"
 
 #: capplets/ui-properties/ui-properties.c:210
-#, fuzzy
 msgid "At the mouse pointer"
-msgstr "Muntai puntuak hautatu"
+msgstr "Saguaren erakuslean"
 
 #: capplets/ui-properties/ui-properties.c:215
-#, fuzzy
 msgid "Dialog hints"
-msgstr "Baimendu hint loginak"
+msgstr "Elkarrizketa-aholkuak"
 
 #: capplets/ui-properties/ui-properties.c:216
 msgid "Dialogs are like other windows"
-msgstr ""
+msgstr "Elkarrizketa-koadroak beste leihoen modukoak dira"
 
 #: capplets/ui-properties/ui-properties.c:217
-#, fuzzy
 msgid "Dialogs are treated specially by window manager"
-msgstr "Lehio kudeatzaileak erabilitako programaren izenaren bezalakoa"
+msgstr "Leiho-kudeatzaileak trataera berezia emango die elkarrizketei"
 
 #: capplets/ui-properties/ui-properties.c:222
 msgid "Place dialogs over application window when possible"
 msgstr ""
+"Elkarrizketa-koadroak aplikazio-leihoaren gainean jarri, aukera dagoenean"
 
 #: capplets/ui-properties/ui-properties.c:243
-#, fuzzy
 msgid "Dialog Layout"
-msgstr "Itxura bertikala"
+msgstr "Elkarrizketa-koadroaren diseinua"
 
 #: capplets/ui-properties/ui-properties.c:244
-#, fuzzy
 msgid "Dialog Behavior"
-msgstr "Portaera"
+msgstr "Elkarrizketa-koadroaren jokabidea"
 
 #: capplets/ui-properties/ui-properties.c:250
-#, fuzzy
 msgid "Default MDI Mode"
-msgstr "MDI modua"
+msgstr "MDI modu lehenetsia"
 
 #: capplets/ui-properties/ui-properties.c:251
 msgid "Notebook"
-msgstr "Kaiera"
+msgstr "Ohar-koadernoa"
 
 #: capplets/ui-properties/ui-properties.c:252
 msgid "Toplevel"
-msgstr "Topea"
+msgstr "Goi-maila"
 
 #: capplets/ui-properties/ui-properties.c:253
 msgid "Modal"
-msgstr "Moduzkoa"
+msgstr "Modala"
 
 #: capplets/ui-properties/ui-properties.c:258
 msgid "MDI notebook tab position"
-msgstr ""
+msgstr "MDI ohar-koadernoaren fitxaren kokapena"
 
 #: capplets/ui-properties/ui-properties.c:259
 msgid "Left"
-msgstr "Ezker"
+msgstr "Ezkerrean"
 
 #: capplets/ui-properties/ui-properties.c:260
 msgid "Right"
-msgstr "Eskubi"
+msgstr "Eskuinean"
 
 #: capplets/ui-properties/ui-properties.c:261
 msgid "Top"
-msgstr "Goialdea"
+msgstr "Goian"
 
 #: capplets/ui-properties/ui-properties.c:262
 msgid "Bottom"
-msgstr "Behealdea"
+msgstr "Behean"
 
 #: capplets/ui-properties/ui-properties.c:277
 msgid "GNOME MDI Options"
-msgstr ""
+msgstr "GNOME MDI Aukerak"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:1
 msgid "Look and Feel"
-msgstr ""
+msgstr "Itxura eta Izaera"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:2
-#, fuzzy
 msgid "Look and Feel Properties"
-msgstr "Panelaren propietateak"
+msgstr "Itxura eta Izaeraren propietateak"
 
 #: capplets/url-properties/url-properties.c:51
 msgid "Error initializing the `url-properties' capplet."
-msgstr ""
+msgstr "Errorea `url propietateen' capplet-a hasieratzean."
 
 #: capplets/url-properties/url-properties.c:76
 msgid "Protocol"
-msgstr ""
+msgstr "Protokolo"
 
 #: capplets/url-properties/url-properties.c:76
-#, fuzzy
 msgid "Command"
-msgstr "Komandoa:"
+msgstr "Komando"
 
 #: capplets/url-properties/url-properties.c:93
-#, fuzzy
 msgid "handler:"
-msgstr "Itzaldu"
+msgstr "maneiatzailea:"
 
 #. set some commonly used handlers
 #: capplets/url-properties/url-properties.c:103
-#, fuzzy
 msgid "Netscape"
-msgstr "NetWare"
+msgstr "Netscape"
 
 #: capplets/url-properties/url-properties.c:108
-#, fuzzy
 msgid "Netscape (new window)"
-msgstr "Ireki lehio berria"
+msgstr "Netscape (leiho berria)"
 
 #: capplets/url-properties/url-properties.c:121
-#, fuzzy
 msgid "Help browser"
-msgstr "Gnome laguntzaren erakuslea"
+msgstr "Laguntza-arakatzailea"
 
 #: capplets/url-properties/url-properties.c:127
-#, fuzzy
 msgid "Help browser (new window)"
-msgstr "Zabaldu Erakuslearen lehio berria"
+msgstr "Laguntza-arakatzailea (leiho berria)"
 
 #: capplets/url-properties/url-properties.c:140
-#, fuzzy
 msgid "Set"
-msgstr "Sektore"
+msgstr "Ezarri"
 
 #: capplets/url-properties/url-properties.c:148
 msgid "Remove"
-msgstr "Ezabatu"
+msgstr "Kendu"
 
 #: capplets/url-properties/url-properties.desktop.in.h:1
 msgid "Configure which programs are used to display URLs"
-msgstr ""
+msgstr "Konfiguratu URLak bistaratzeko erabili beharreko programa"
 
 #: capplets/url-properties/url-properties.desktop.in.h:2
 msgid "URL Handlers"
-msgstr ""
+msgstr "URL Maneiatzaileak"
 
 #: capplets/wm-properties/wm-desktops/Enlightenment.desktop.in.h:1
 msgid "Enlightenment"
-msgstr ""
+msgstr "Enlightenment"
 
 #: capplets/wm-properties/wm-desktops/IceWM.desktop.in.h:1
 msgid "Ice WM"
-msgstr ""
+msgstr "WM izotza"
 
 #: capplets/wm-properties/wm-desktops/Scwm.desktop.in.h:1
 msgid "Scwm"
-msgstr ""
+msgstr "Scwm"
 
 #: capplets/wm-properties/wm-desktops/WindowMaker.desktop.in.h:1
-#, fuzzy
 msgid "Window Maker"
-msgstr "Lehioa"
+msgstr "Window Maker"
 
 #: capplets/wm-properties/wm-desktops/twm.desktop.in.h:1
 msgid "twm"
-msgstr ""
+msgstr "twm"
 
 #: capplets/wm-properties/wm-properties-capplet.c:142
 #, c-format
@@ -4165,27 +3926,30 @@ msgid ""
 "Starting %s\n"
 "(%d seconds left before operation times out)"
 msgstr ""
+"%s abiarazten\n"
+"(%d segundo denbora agortzeko)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:303
 #, c-format
 msgid "%s (Current)"
-msgstr ""
+msgstr "%s (Unekoa)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:306
-#, fuzzy, c-format
+#, c-format
 msgid "Run Configuration Tool for %s"
-msgstr "Konfigurazioa"
+msgstr "Exekutatu konfigurazio-tresna hau: %s"
 
 #: capplets/wm-properties/wm-properties-capplet.c:317
-#, fuzzy
 msgid " (Not found)"
-msgstr "ez aurkitua"
+msgstr "(Ez du aurkitu)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:356
 msgid ""
 "wm-properties-capplet: Unable to initialize window manager.\n"
 "\tAnother window manager is already running and could not be killed\n"
 msgstr ""
+"wm propietateen capplet-a: Ezin da leiho-kudeatzailea abiarazi.\n"
+"\tBeste leiho-kudeatzaile bat ari da lanean eta ezin da eten\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:360
 #, c-format
@@ -4193,10 +3957,12 @@ msgid ""
 "wm-properties-capplet: Unable to initialize window manager.\n"
 "\t'%s' didn't start\n"
 msgstr ""
+"wm propietateen capplet-a: Ezinezkoa leiho-kudeatzailea abiaraztea.\n"
+"\t'%s' ez da abiarazi\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:413
 msgid "Previous window manager did not die\n"
-msgstr ""
+msgstr "Aurreko leiho-kudeatzailea ez da eten\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:446
 #, c-format
@@ -4204,6 +3970,8 @@ msgid ""
 "Could not start '%s'.\n"
 "Falling back to previous window manager '%s'\n"
 msgstr ""
+"Ezin izan du '%s' abiarazi.\n"
+"'%s' leiho-kudeatzailera itzultzen\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:477
 msgid ""
@@ -4212,6 +3980,10 @@ msgid ""
 "do this by selecting \"Run Program\" in the\n"
 "foot menu\n"
 msgstr ""
+"Ezin izan du Laguntzako leiho-kudeatzailea abiarazi.\n"
+"Leiho-kudeatzailea eskuz exekutatu. Horretarako\n"
+" \"Exekutatu programa\" aukera dezakezu\n"
+"oinaren menuan\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
 #: capplets/wm-properties/wm-properties-capplet.c:856
@@ -4230,16 +4002,21 @@ msgid ""
 "in the main menu, or by turning on \"Save Current Setup\" when\n"
 "you log out.\n"
 msgstr ""
+"Uneko leiho-kudeatzailea aldatu egin da. Aldaketa\n"
+"hori gorde nahi baduzu, uneko saioa gorde beharko\n"
+"duzu. Berehala egin dezakezu, behealdean duzun \"Gorde saioa\n"
+"orain\" hautatuta, edo geroago gorde dezakezu saioa.  Horretarako,\n"
+"aukeratu \"Gorde uneko saioa\" menu nagusiko \"Ezarpenak\"en\n"
+"barruan, edo bestela, hautatu \"Gorde uneko konfigurazioa\" \n"
+"saiotik irteten zarenean.\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:527
-#, fuzzy
 msgid "Save Session Later"
-msgstr "Hasi sesioa"
+msgstr "Gorde saioa gero"
 
 #: capplets/wm-properties/wm-properties-capplet.c:527
-#, fuzzy
 msgid "Save Session Now"
-msgstr "Hasi sesioa"
+msgstr "Gorde saioa orain"
 
 #: capplets/wm-properties/wm-properties-capplet.c:530
 msgid ""
@@ -4249,11 +4026,15 @@ msgid ""
 "under \"Settings\" in the main menu, or by turning on\n"
 "\"Save Current Setup\" when you log out.\n"
 msgstr ""
+"Uneko leiho-kudeatzailea aldatu egin da. Aldaketa\n"
+"hori gorde nahi baduzu, uneko saioa gorde beharko\n"
+"duzu. Horretarako, hautatu \"Gorde uneko saioa\" menu nagusiko\n"
+"\"Ezarpenak\"en, edo bestela, hautatu \"Gorde uneko \n"
+"konfigurazioa\" saiotik irteten zarenean.\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:745
-#, fuzzy
 msgid "Add New Window Manager"
-msgstr "_Lehio berria"
+msgstr "Gehitu leiho-kudeatzaile berria"
 
 #: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
@@ -4264,38 +4045,33 @@ msgid "Command:"
 msgstr "Komandoa:"
 
 #: capplets/wm-properties/wm-properties-capplet.c:785
-#, fuzzy
 msgid "Configuration Command:"
-msgstr "Konfigurazioa"
+msgstr "Konfigurazio-komandoa:"
 
 #: capplets/wm-properties/wm-properties-capplet.c:804
-#, fuzzy
 msgid "Window manager is session managed"
-msgstr "Lehio-kudeatzailearen sasibideak"
+msgstr "Leiho-kudeatzailea saioak kudeatzen du"
 
 #: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
-msgstr ""
+msgstr "Izena ezin da hutsik egon"
 
 #: capplets/wm-properties/wm-properties-capplet.c:861
-#, fuzzy
 msgid "Command cannot be empty"
-msgstr "Komando lerroaren garaiera:"
+msgstr "Komandoa ezin da hutsik egon"
 
 #: capplets/wm-properties/wm-properties-capplet.c:910
 #: capplets/wm-properties/wm-properties-capplet.c:952
-#, fuzzy
 msgid "Edit Window Manager"
-msgstr "Lehio menua ez"
+msgstr "Editatu leiho-kudeatzailea"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
-msgstr ""
+msgstr "Ezin duzu uneko leiho-kudeatzailea ezabatu"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1081
-#, fuzzy
 msgid "Edit..."
-msgstr "Argitaratu"
+msgstr "Editatu..."
 
 #: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
@@ -4306,25 +4082,24 @@ msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
+"hasieratze-errorea gertatu da 'wm propietateen capplet-a' abiaraztean'.\n"
+"abortatzen...\n"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:1
-#, fuzzy
 msgid "Choose a window manager"
-msgstr "Hauta abiarazterakoan nahi duzun lehio kudeatzailea:"
+msgstr "Aukeratu leiho-kudeatzailea"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:2
-#, fuzzy
 msgid "Window Manager"
-msgstr "Lehio-kudeatzailearen sasibideak"
+msgstr "Leiho-kudeatzailea"
 
 #: control-center/callbacks.c:102 control-center/gnomecc.desktop.in.h:1
 msgid "GNOME Control Center"
-msgstr ""
+msgstr "GNOMEren Kontrol Zentroa"
 
 #: control-center/callbacks.c:105
-#, fuzzy
 msgid "Desktop Properties manager."
-msgstr "Idazmahaiko sarreraren propietateak"
+msgstr "Mahaigaineko propietateen kudeatzailea."
 
 #: control-center/capplet-manager.c:179
 msgid "Try"
@@ -4332,142 +4107,135 @@ msgstr "Saiatu"
 
 #: control-center/capplet-manager.c:185
 msgid "Revert"
-msgstr "Atzera"
+msgstr "Itzuli"
 
 #. set the help item
 #: control-center/capplet-manager.c:208
-#, fuzzy, c-format
+#, c-format
 msgid "Help with '%s' settings"
-msgstr "_Lagundu"
-
-#: control-center/capplet-widget-libs.c:46
-msgid "id of the capplet -- assigned by the control-center"
-msgstr ""
-
-#: control-center/capplet-widget-libs.c:46
-msgid "ID"
-msgstr "ID"
-
-#: control-center/capplet-widget-libs.c:47
-msgid "Multi-capplet id."
-msgstr ""
-
-#: control-center/capplet-widget-libs.c:47
-#, fuzzy
-msgid "CAPID"
-msgstr "CHAP"
-
-#: control-center/capplet-widget-libs.c:48
-msgid "X ID of the socket it's plugged into"
-msgstr ""
-
-#: control-center/capplet-widget-libs.c:48
-#, fuzzy
-msgid "XID"
-msgstr "ID"
-
-#: control-center/capplet-widget-libs.c:49
-msgid "IOR of the control-center"
-msgstr ""
-
-#: control-center/capplet-widget-libs.c:49
-msgid "IOR"
-msgstr ""
-
-#: control-center/capplet-widget-libs.c:50
-msgid "Initialize session settings"
-msgstr "Berhasi sesioaren ezarpenak"
+msgstr "'%s' ezarpenen laguntza"
 
 #: control-center/capplet-widget-libs.c:51
+msgid "id of the capplet -- assigned by the control-center"
+msgstr "capplet-aren IDa - kontrol-zentroak esleitua"
+
+#: control-center/capplet-widget-libs.c:51
+msgid "ID"
+msgstr "IDa"
+
+#: control-center/capplet-widget-libs.c:52
+msgid "Multi-capplet id."
+msgstr "Multi-capplet-aren IDa"
+
+#: control-center/capplet-widget-libs.c:52
+msgid "CAPID"
+msgstr "CAPID"
+
+#: control-center/capplet-widget-libs.c:53
+msgid "X ID of the socket it's plugged into"
+msgstr "entxufatuta dagoen socket-aren X IDa"
+
+#: control-center/capplet-widget-libs.c:53
+msgid "XID"
+msgstr "XID"
+
+#: control-center/capplet-widget-libs.c:54
+msgid "IOR of the control-center"
+msgstr "Kontrol Zentroaren IOR"
+
+#: control-center/capplet-widget-libs.c:54
+msgid "IOR"
+msgstr "IOR"
+
+#: control-center/capplet-widget-libs.c:55
+msgid "Initialize session settings"
+msgstr "Saioaren ezarpenak hasieratu"
+
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr ""
+"Jaramonik ez ekintza lehenetsiari.  Hasieratze-saio pertsonalizatuetarako da "
+"bakarrik."
 
-#: control-center/capplet-widget.c:272
-#, fuzzy
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
-msgstr "Parkatu, ez dago disko unitate erabilgarririk"
+msgstr "Sentitzen dut, baina ezarpen horiek ez dute laguntzarik."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
-msgstr ""
+msgstr "exekutatu beharreko capplet komandoa."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
-msgstr ""
+msgstr "CAPPLET"
 
 #: control-center/gnomecc.desktop.in.h:2
-#, fuzzy
 msgid "The GNOME configuration tool"
-msgstr "Frogatu konfigurazioa"
+msgstr "GNOMEren konfigurazio-tresna"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help on control-center"
-msgstr ""
+msgstr "Kontrol Zentroari buruzko laguntza"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
-msgstr ""
+msgstr "GNOMEren Kontrol Zentroaren laguntza."
 
-#: control-center/main.c:38
-#, fuzzy
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
-msgstr ""
-"Aldaketak mantendu?\n"
-"Oraingo konfigurazioa:\n"
-"\n"
-"%s"
+msgstr "Uneko konfigurazio-orrialdearen laguntza."
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
-msgstr "Zerari buruz"
+msgstr "Honi buruz"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
-msgstr ""
+msgstr "GNOMEren Kontrol Zentroari buruz."
 
 #. we create the widgets
-#: control-center/main.c:69
-#, fuzzy
+#: control-center/main.c:73
 msgid "Warning:"
-msgstr "Kontuz: "
+msgstr "Kontuz:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
-msgstr ""
+msgstr "Aldaketa guztiak baztertu"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
 msgstr ""
+"Ondoko moduluek aldaketak izan dituzte, baina gauzatu gabe daude.  Aldaketok "
+"editatu nahi badituzu, egin klik bi aldiz dagokion sarreran."
 
 #: control-center/splash.c:48
 msgid "Operating System:"
-msgstr ""
+msgstr "Sistema eragilea:"
 
 #: control-center/splash.c:49
-#, fuzzy
 msgid "Distribution Version:"
-msgstr "Distribuzioa: "
+msgstr "Banaketaren bertsioa:"
 
 #: control-center/splash.c:50
-#, fuzzy
 msgid "Processor Type:"
-msgstr "Presioa"
+msgstr "Prozesadore-mota:"
 
 #: control-center/splash.c:51
-#, fuzzy
 msgid "User Name:"
-msgstr "Erabiltzailearen izena"
+msgstr "Erabiltzaile-izena:"
 
 #: control-center/splash.c:52
-#, fuzzy
 msgid "Host Name:"
-msgstr "Ostalariaren izena:"
+msgstr "Ostalari-izena:"
 
 #. This is about the only case where we'll put Unknown instead
 #. of simply not showing the info.
 #: control-center/splash.c:178
 msgid "Unknown"
 msgstr "Ezezaguna"
+
+#~ msgid "If the solver can "
+#~ msgstr "Ebazleak ahal badu "

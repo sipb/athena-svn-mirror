@@ -1,22 +1,17 @@
 [Desktop Entry]
 Name=Window Maker
+Name[ca]=Creador de finestres
+Name[cs]=Správce oken
 Name[da]=WindowMaker
-Name[de]=Window Maker
-Name[es]=Window Maker
-Name[fi]=Window Maker
-Name[fr]=Window Maker
+Name[el]=Äéüñèùóç Äéá÷. Ğáñáèıñùí
+Name[et]=Aknahaldur
 Name[gl]=WindowMaker
-Name[hu]=Window Maker
-Name[ja]=Window Maker
+Name[it]=Modifica proprietà window manager
 Name[ko]=À©µµ¿ì ¸ŞÀÌÄ¿
-Name[no]=Window Maker
-Name[pl]=Window Maker
-Name[ru]=Window Maker
-Name[sk]=Window Maker
+Name[lt]=Langø tvarkyklë
+Name[pt_BR]=Gerenciador de Janelas
 Name[sl]=Window maker
-Name[sv]=Window Maker
-Name[uk]=Window Maker
-Name[wa]=Window Maker
+Name[zh_CN]=ÊÓ´°¹ÜÀí³ÌÊ½
 Exec=wmaker
 TryExec=wmaker
 

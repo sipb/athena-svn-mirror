@@ -102,7 +102,7 @@ print_standard_stuff(FILE *fout, gchar *theme, gchar *font)
   fprintf(fout, MARK_STRING);
   fprintf(fout, "include \"%s\"\n\n", theme);
   if (font)
-    fprintf(fout, "style \"user-font\"\n{\n  font=\"%s\"\n}\nwidget_class \"*\" style \"user-font\"\n\n", font);
+    fprintf(fout, "style \"user-font\"\n{\n  fontset=\"%s\"\n}\nwidget_class \"*\" style \"user-font\"\n\n", font);
   fprintf(fout, homedir);
   g_free (homedir);
   fprintf(fout, MARK_STRING);
@@ -114,7 +114,12 @@ edit_file_to_use (gchar *file, gchar *theme, gchar *font)
   FILE *fout = NULL;
   char *errstring = NULL;
   int out_fd;
+#ifndef HAVE_GETLINE
+  char line[1024];
+  char *lineptr = line;
+#else
   char *lineptr = NULL;
+#endif
   size_t linecount = 0;
 
   gchar *template = g_strconcat (file, "-XXXXXX", NULL);
@@ -159,7 +164,7 @@ edit_file_to_use (gchar *file, gchar *theme, gchar *font)
 
       while (!feof (fin))
 	{
-	  getline (&lineptr, &linecount, fin);
+	  count = getline (&lineptr, &linecount, fin);
 	  if (ferror(fin))
 	    {
 	      errstring = g_strdup_printf ("Error reading from RC file %s: %s",
@@ -167,7 +172,7 @@ edit_file_to_use (gchar *file, gchar *theme, gchar *font)
 	      goto error;
 	    }
 	  
-	  if (!strcmp(MARK_STRING, lineptr))
+	  if (count >= 0 && !strcmp(MARK_STRING, lineptr))
 	    marker_count += 1;
 	}
       rewind(fin);

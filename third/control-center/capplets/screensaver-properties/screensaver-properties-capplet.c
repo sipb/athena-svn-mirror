@@ -26,6 +26,7 @@ extern gboolean ignore_changes;
 GtkWidget *capplet;
 GtkWidget *setup_button;
 GtkWidget *setup_label;
+GtkWidget *preview_button;
 GtkWidget *monitor;
 GList *sdlist = NULL;
 gint ss_priority;
@@ -53,6 +54,15 @@ get_saver_frame ()
         
         ignore_changes = TRUE;
 
+        temphbox = gtk_hbox_new (FALSE, 0); /* for ssaver settings, preview */
+
+        preview_button = gtk_button_new_with_label (_("Preview"));
+        gnome_widget_add_help (preview_button, _("Pressing this button will preview"\
+                                               " current screensaver."));
+        gtk_signal_connect (GTK_OBJECT (preview_button), "clicked", (GtkSignalFunc) preview_callback, NULL);
+
+        gtk_box_pack_end (GTK_BOX (temphbox), preview_button, FALSE, FALSE, 2);
+
         setup_label = gtk_label_new (_("Settings..."));
         setup_button = gtk_button_new ();
 
@@ -62,8 +72,8 @@ get_saver_frame ()
                                                "box that will help you setup the current screensaver."));
         gtk_container_add (GTK_CONTAINER (setup_button), setup_label);
         gtk_signal_connect (GTK_OBJECT (setup_button), "clicked", (GtkSignalFunc) setup_callback, NULL);
-        temphbox = gtk_hbox_new (FALSE, 0);
-        gtk_box_pack_end (GTK_BOX (temphbox), setup_button, FALSE, FALSE, 0);
+        gtk_box_pack_end (GTK_BOX (temphbox), setup_button, FALSE, FALSE, 2);
+
         gtk_box_pack_start (GTK_BOX (vbox), temphbox, FALSE, FALSE, 0);
 
         ignore_changes = FALSE;

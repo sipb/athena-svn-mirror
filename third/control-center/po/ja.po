@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: control-center 1.3.90\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
-"PO-Revision-Date: 2001-03-23 02:40+0900\n"
-"Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
+"Project-Id-Version: control-center 1.4.0\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
+"PO-Revision-Date: 2001-10-22 14:06+0900\n"
+"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
@@ -26,8 +26,8 @@ msgstr "画像ファイル"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 "'background-properties-capplet'の起動に初期化エラーが発生しました。\n"
@@ -41,139 +41,141 @@ msgstr "バックグラウンド"
 msgid "Configuration of the desktop's background"
 msgstr "デスクトップの背景の設定"
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
 msgstr "無設定"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
 msgid "Color"
 msgstr "色"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 msgid "Solid"
 msgstr "単色"
 
-#: capplets/background-properties/property-background.c:336
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
 msgstr "水平方向にグラデーション"
 
-#: capplets/background-properties/property-background.c:342
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
 msgstr "垂直方向にグラデーション"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
 msgstr "プライマリカラー"
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
 msgid "Secondary Color"
 msgstr "セカンダリカラー"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
 msgstr "壁紙選択"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "hboxが見つからないので、普通のファイル選択を使います"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
 msgstr "試写"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
 msgstr "壁紙"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
 msgstr " 参照... "
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "なし"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr "エンボス"
 
-#: capplets/background-properties/property-background.c:699
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
 msgstr "画面サイズ"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
 msgstr "画面サイズ(アスペクト比保持)"
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
 msgstr "中央に配置"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
 msgstr "タイル状に配置"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 msgid "Use GNOME to set background"
 msgstr "背景の設定にはGNOMEを使う"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
 msgstr "保存した状態からパラメータを再現して終了"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
 msgstr "画像"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
 msgstr "指定した値へ壁紙を設定する"
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
 msgstr "色"
 
-#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies the background color"
 msgstr "背景色を指定する"
 
-#: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
 msgstr "グラデーションの第2背景色を指定する"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "ORIENT"
 msgstr "方向"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "グラデーション方向: 垂直もしくは水平方向"
 
-#: capplets/background-properties/property-background.c:1145
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a solid fill for the background"
 msgstr "背景を単色で塗りつぶす"
 
-#: capplets/background-properties/property-background.c:1146
+#: capplets/background-properties/property-background.c:1147
 msgid "Use a gradient fill for the background"
 msgstr "背景をグラデーションで塗りつぶす"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
 msgstr "モード"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "壁紙を表示: タイル状、中央寄せ、画面サイズ、アスペクト"
 
@@ -191,7 +193,7 @@ msgid "Document Handlers"
 msgstr "文書型ハンドラ"
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
 msgid "Control Center"
 msgstr "Control Center"
@@ -269,8 +271,8 @@ msgid ""
 "The MIME type entered contained upper case characters. Upper case characters "
 "were changed to lower case for you."
 msgstr ""
-"入力された MIME 型に大文字が含まれています。 "
-"大文字は小文字に変更しておきます。"
+"入力された MIME 型に大文字が含まれています。 大文字は小文字に変更しておきま"
+"す。"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:723
 msgid "Add New MIME Type"
@@ -551,15 +553,15 @@ msgstr ""
 "GNOMEユーザーズガイドがインストールされているかどうか確認して下さい。"
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
 msgstr "閉じる"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 "'keyboard-properties-capplet'の起動に初期化エラーが発生しました。\n"
@@ -643,33 +645,33 @@ msgstr "マウス"
 msgid "Mouse Properties"
 msgstr "マウスの設定"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
 msgstr "パスワードを要求する"
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 msgid "Use power management."
 msgstr "パワーマネジメントを使用。"
 
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
 msgid "No Screensaver"
 msgstr "スクリーンセーバーなし"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 msgid "Random Screensaver"
 msgstr "ランダムスクリーンセーバー"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
 msgstr "設定..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
 msgstr "ランダム設定"
 
-#: capplets/screensaver-properties/callbacks.c:501
+#: capplets/screensaver-properties/callbacks.c:510
 #, c-format
 msgid "%s Settings..."
 msgstr "%s 設定..."
@@ -738,10 +740,9 @@ msgid ""
 "move and wobble around to give you the impression your graphic workstation "
 "with its many XStone is doing something."
 msgstr ""
-"Time 3D は時計です。時間の表示に浮遊するボールを使います。ボールが移動し、 "
-"振動することにより、XStone "
-"値の大きなあなたのグラフィックワークステーションがなにかやってるような "
-"感じになります。"
+"Time 3D は時計です。時間の表示に浮遊するボールを使います。ボールが移動し、 振"
+"動することにより、XStone 値の大きなあなたのグラフィックワークステーションがな"
+"にかやってるような 感じになります。"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:18
 msgid "Twist"
@@ -769,9 +770,8 @@ msgid ""
 "heads (``ants'') walk along the screen, they change pixel values in their "
 "path. Then, as they pass over changed pixels, their behavior is influenced."
 msgstr ""
-"2 次元のチューリングマシンであるセル・オートマトンです。 頭 (「蟻」) "
-"が画面の上を歩き、足跡の色を変えます。 "
-"色の変わった部分を越えると、動作が変わります。"
+"2 次元のチューリングマシンであるセル・オートマトンです。 頭 (「蟻」) が画面の"
+"上を歩き、足跡の色を変えます。 色の変わった部分を越えると、動作が変わります。"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:2
 msgid "Ant"
@@ -2567,11 +2567,8 @@ msgid "Delay between finishing the maze and starting a new one."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr ""
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
@@ -3311,56 +3308,60 @@ msgstr "作者: 不明"
 msgid "Settings"
 msgstr "設定"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
 msgstr "ランダムスクリーンセーバー"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
 msgstr "スクリーンセーバー"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+msgid "Pressing this button will preview current screensaver."
+msgstr "このボタンを押すと、現在のスクリーンセーバーのプレビューできます。"
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
 msgstr ""
-"このボタンを押すと、現在のスクリーンセーバーの設定をするための "
-"ダイアログが開きます。"
+"このボタンを押すと、現在のスクリーンセーバーの設定をするための ダイアログが開"
+"きます。"
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 msgid "Screen Saver Settings"
 msgstr "スクリーンセーバーの設定"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
 msgstr "実行は"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 msgid " Minutes."
 msgstr "分経ってから。"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 msgid "Priority:"
 msgstr "優先度:"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 msgid "Low "
 msgstr "低 "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
 msgstr " 並"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
 msgstr "モニターを"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
 msgstr "分スクリーンセーバー起動後に落す"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 msgid "Screen Saver Demo"
 msgstr "スクリーンセーバーデモ"
 
@@ -3377,52 +3378,60 @@ msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
 msgstr "'sound-properties-capplet'の起動に初期化エラーが発生しました。"
 
-#: capplets/sound-properties/sound-properties.c:188
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
 msgstr "イベント"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
 msgstr "鳴らすファイル"
 
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr "有効"
-
 #: capplets/sound-properties/sound-properties.c:250
+msgid "Sound server"
+msgstr "サウンドサーバ"
+
+#: capplets/sound-properties/sound-properties.c:257
 msgid "Enable sound server startup"
 msgstr "起動時に音サーバーを使う"
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
 msgstr "イベントに対して効果音を鳴らす"
 
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr "オーディオミキサ"
+
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr "Gnome Mixer のレベルを元に戻す"
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr "一般"
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
 msgstr "音源ファイルの選択"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
 msgstr "鳴らす"
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
 msgstr "サウンドイベント"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr "このGNOMEコントロールセンターには音のサポートが組み込まれていません"
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
 msgstr "このイベント用の音ファイルは存在しません。"
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3518,7 +3527,7 @@ msgstr "ラジオボタン1"
 msgid "Radio Button 2"
 msgstr "Radio Button 2"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, c-format
 msgid ""
 "Error installing theme:\n"
@@ -3529,15 +3538,15 @@ msgstr ""
 "'%s'\n"
 "%s"
 
-#: capplets/theme-switcher/gui.c:120
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
 msgstr "インストールするテーマを選択"
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
 msgstr "使用可能なテーマ"
 
-#: capplets/theme-switcher/gui.c:221
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
@@ -3545,7 +3554,7 @@ msgstr ""
 "自動\n"
 "試写"
 
-#: capplets/theme-switcher/gui.c:233
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
@@ -3555,19 +3564,19 @@ msgstr ""
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
 msgstr "ユーザーフォント"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 msgstr ""
-"-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*,-*-fixed-medium-r-normal-"
-"-*-120-*-*-*-*-*-*"
+"-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*,-*-fixed-medium-r-"
+"normal--*-120-*-*-*-*-*-*"
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
 msgstr "特別なフォントを使う。"
 
@@ -4053,55 +4062,55 @@ msgstr "戻す"
 msgid "Help with '%s' settings"
 msgstr "「%s」のヘルプ"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
 msgstr "cappletのIDです -- コントロールセンターに予約されています。"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr "ID"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "Multi-capplet id."
 msgstr "マルチ capplet の ID"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "CAPID"
 msgstr "CAPID"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr "接続中のソケットのXIDです。"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
 msgstr "XID"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR of the control-center"
 msgstr "コントロールセンターのIORです"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR"
 msgstr "IOR"
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
 msgstr "セッション設定の初期化"
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr "標準アイコンが無効です。 カスタム初期セッションの場合を用います"
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
 msgstr "これらの設定に関するヘルプが見つかりません。"
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
 msgstr "実行する capplet 命令"
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
 msgstr "CAPPLET"
 
@@ -4109,43 +4118,43 @@ msgstr "CAPPLET"
 msgid "The GNOME configuration tool"
 msgstr "GNOME 設定ツール"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help on control-center"
 msgstr "コントロールセンターのヘルプ"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
 msgstr "GNOMEコントロールセンターのヘルプ"
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
 msgstr "現在の設定ページのヘルプ"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
 msgstr "情報"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
 msgstr "GNOMEコントロールセンターについて"
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
 msgstr "警告:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
 msgstr "全変更を破棄する"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
 msgstr ""
-"以下のモジュールには保存されていない変更があります。 "
-"変更したい場合は、該当する項目をダブルクリックして下さい。"
+"以下のモジュールには保存されていない変更があります。 変更したい場合は、該当す"
+"る項目をダブルクリックして下さい。"
 
 #: control-center/splash.c:48
 msgid "Operating System:"
@@ -4173,8 +4182,8 @@ msgstr "Host Name:"
 msgid "Unknown"
 msgstr "不明"
 
-#~ msgid "��-瘠蒟褌"
-#~ msgstr "速い"
+#~ msgid "Enable"
+#~ msgstr "有効"
 
 #~ msgid "Mime Type: "
 #~ msgstr "Mime型: "
@@ -4271,7 +4280,8 @@ msgstr "不明"
 #~ "have the Control Center documentation installed on your system."
 #~ msgstr ""
 #~ "これらの設定に関するヘルプが見つからない/インストールされていません。\n"
-#~ "GNOMEコントロールセンターのドキュメントをインストールしたか確認して下さい。"
+#~ "GNOMEコントロールセンターのドキュメントをインストールしたか確認して下さ"
+#~ "い。"
 
 #~ msgid ""
 #~ "Add a new Mime Type\n"
@@ -4418,11 +4428,11 @@ msgstr "不明"
 #~ msgstr "スタートアップコマンド"
 
 #~ msgid ""
-#~ "Programs with smaller values are started before programs with higher values. "
-#~ "The default value should be OK"
+#~ "Programs with smaller values are started before programs with higher "
+#~ "values. The default value should be OK"
 #~ msgstr ""
-#~ "小さな数字のプログラムは、大きな数字のものより先に起動されます。 "
-#~ "デフォルト値でよいはずです。"
+#~ "小さな数字のプログラムは、大きな数字のものより先に起動されます。 デフォル"
+#~ "ト値でよいはずです。"
 
 #~ msgid "The startup command cannot be empty"
 #~ msgstr "スタートアップコマンドを指定して下さい"
@@ -4444,7 +4454,8 @@ msgstr "不明"
 #~ msgstr "キーボード・ベル"
 
 #~ msgid ""
-#~ "an initialization error occurred while starting 'bell-properties-capplet'.\n"
+#~ "an initialization error occurred while starting 'bell-properties-"
+#~ "capplet'.\n"
 #~ "aborting...\n"
 #~ msgstr ""
 #~ "'bell-properties-capplet'の起動に初期化エラーが発生しました。\n"
@@ -4463,5 +4474,6 @@ msgstr "不明"
 #~ msgstr "カテゴリー"
 
 #~ msgid ""
-#~ "an initialization error occurred while starting 'session-properties-capplet'."
+#~ "an initialization error occurred while starting 'session-properties-"
+#~ "capplet'."
 #~ msgstr "'sound-properties-capplet'の起動中に初期化エラーが発生しました。"

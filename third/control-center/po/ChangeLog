@@ -1,3 +1,223 @@
+2002-02-10  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+2002-02-10  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+2002-02-10  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-02-09  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Updated Basque file
+
+2002-02-05  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_CN.GB2312.po -> zh_CN.po
+
+2002-02-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Updated Basque file
+
+2002-01-31  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2002-01-29  Pauli Virtanen  <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2002-01-24  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Convert back to ISO8859-2.
+
+2002-01-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.po: Update for make distcheck.
+	
+2001-12-08  Sami Pesonen  <spesonen@dlc.fi>
+
+	* fi.po: Updated Finnish translation by 
+	Pauli Virtanen <pauli.virtanen@saunalahti.fi>.
+
+2001-12-07  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Updated German translation.
+
+2001-12-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation. Removed all
+	  fuzzies and corrected date.
+
+2001-12-06  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2001-12-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+
+2001-11-24  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Brought Norwegian nynorsk up to 100%
+
+2001-11-22  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+
+2001-11-22  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-17  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* pt.po: Updated by Duarte Loreto <happyguy_pt@hotmail.com>
+
+2001-11-17  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-14  Yanko Kaneti <yaneti@declera.com>
+
+	* bg.po: Updated Bulgarian translation by 
+	Borislav Aleksandrov <B.Aleksandrov@Cnsys.bg>
+
+2001-11-14  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* es.po: Updated Spanish translation by Lucas Di Pentima
+	<lucas@lunix.com.ar>
+	
+2001-11-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-11-08  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-10-28 Roy-Magne Mo <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+
+2001-10-23  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation from works of
+	Frederic Riss <frederic.riss@laposte.net>.
+
+2001-10-22  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2001-10-12  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* pt.po: Updated by Duarte Loreto <happyguy_pt@hotmail.com>
+
+2001-10-08  Jarkko Ranta  <jjranta@cc.joensuu.fi>
+
+	* fi.po: Updated Finnish translation by Pauli Virtanen.
+
+2001-10-03  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-09-19  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* es.po: Updated by Lucas Di Pentima <lucas@lunix.com.ar>
+
+2001-09-15  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* bg.po: Fixed the charset (copied from galeon's bg.po)
+	* az.po: Header fix.
+	
+2001-09-13  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* da.po: Updated Danish file
+
+2001-09-06  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* ga.po: Updated Irish file
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.Big5.po: Rename to ......
+	* zh_TW.po: This.
+
+2001-08-21  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation. Ok, this
+	  translation was lying around, lets commit it...
+
+2001-08-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-08-09  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.Big5.po: Reworked traditional Chinese translation, based on
+	  old translation by S.J.Luo <crystal@mickey.ee.nctu.edu.tw>
+
+2001-07-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+	* nn.po: Added Norwegian (nynorsk) translation.
+	
+2001-07-28  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+	* ca.po: Updated Catalan file
+
+2001-07-17  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-07-06  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
+2001-05-31  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* ro.po: updated
+
+2001-05-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2001-05-21  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* ja.po: fixed invalid multibyte
+
+2001-05-15  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Fixed a few things.
+
+2001-04-27  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation. Fix typo.
+	
+2001-04-25  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated italian translation
+
+2001-04-13  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* ca.po: Updated Catalan file
+
+2001-04-06  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Header comment typo fixed .-)
+
+2001-04-02  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation
+		by Nilg|n.
+
+2001-03-31  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
 2001-03-28  Simos Xenitellis  <simos@hellug.gr>
 
 	* el.po: Updated Greek translation.

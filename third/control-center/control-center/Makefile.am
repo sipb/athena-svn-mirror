@@ -66,8 +66,8 @@ libcapplet_la_SOURCES = \
 libcapplet_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
 libcapplet_la_LIBADD = $(ORB_LIBS) -lm $(DL_LIB) $(GNORBA_LIBS)
 
-
-include_HEADERS = capplet-widget.h
+libcappletincludedir=$(includedir)/libcapplet1
+libcappletinclude_HEADERS = capplet-widget.h
 
 lib_LTLIBRARIES = libcapplet.la
 
@@ -92,7 +92,7 @@ tree.h tree.c: control-center.h
 cappletConf.sh: cappletConf.sh.in Makefile
 	sed -e 's?\@GNOME_LIBDIR\@?$(GNOME_LIBDIR)?g' \
 	    -e 's?\@GNOMEUI_LIBS\@?$(GNOMEUI_LIBS)?g' \
-	    -e 's?\@GNOME_INCLUDEDIR\@?$(GNOME_INCLUDEDIR)?g' \
+	    -e 's?\@CAPPLET_INCLUDEDIR\@?-I$(libcappletincludedir) $(GNOME_INCLUDEDIR)?g' \
 	    -e 's?\@ORB_LIBS\@?$(ORB_LIBS)?g' \
 	    -e 's?\@VERSION\@?$(VERSION)?g' \
 	    < $(srcdir)/cappletConf.sh.in > cappletConf.tmp \

@@ -26,6 +26,7 @@ void dpms_callback (GtkWidget *check, void *data);
 void password_callback (GtkWidget *password, void *data);
 void password_callback (GtkWidget *password, void *data);
 void nice_callback (GtkObject *adj, void *data);
+void preview_callback (GtkWidget *widget, gpointer data);
 void setup_callback (GtkWidget *widget, gpointer data);
 void destroy_callback (GtkWidget *widget, void *data);
 void ok_callback (void);

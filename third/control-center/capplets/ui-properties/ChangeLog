@@ -1,3 +1,7 @@
+2001-08-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* ui-properties.c: Fix warning.
+	
 2000-06-08  Fatih Demir  <kabalak@gmx.net> 
 
 	* application.desktop & dialogs.desktop & mdi.desktop:

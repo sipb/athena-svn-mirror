@@ -10,6 +10,7 @@ INCLUDES = -I. 						\
 	-I$(srcdir)/../../control-center		\
 	$(GNOME_INCLUDEDIR)				\
 	$(GTK_CFLAGS)					\
+	$(PIXBUF_CFLAGS)				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-I$(includedir)					\
 	$(VFS_CFLAGS) $(WERROR)				\
@@ -33,7 +34,7 @@ file_types_capplet_LDADD =			\
 	$(ORBIT_LIBS)				\
 	$(INTLLIBS)				\
 	$(VFS_LIBS)				\
-	-lgdk_pixbuf				\
+	$(PIXBUF_LIBS)				\
 	$/libuuid/libuuid.a			\
 	$(NULL)
 

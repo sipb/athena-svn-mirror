@@ -1,4 +1,5 @@
 <!DOCTYPE article PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
+<!ENTITY version "1.4.0.1">
 ]>
 
  <article id="index">
@@ -32,6 +33,14 @@
         Project, the names have been printed in caps or initial caps.
       </para>
     </legalnotice>
+
+  <releaseinfo>
+       This manual describes version &version; of GNOME
+       Control Center. It was
+       last updated on May 16, 2001.
+    </releaseinfo>
+
+
   </artheader>
 
     <sect1 id="gnomecc-intro">
@@ -50,12 +59,8 @@
     </para>
     <para> <application>Control Center</application> is a part of
       Gnome desktop environment; it is included in
-      <filename>control-center</filename> package. This manual
-      describes version 1.2.3 of <application>Control
-      Center</application>. 
+      <filename>control-center</filename> package.
     </para>
-
-
 
       <para>
 	You may start the <application>Control Center</application>
@@ -184,7 +189,7 @@
 	  screen saver list.
 	</para>
 	<para>
-	  <guilabel>Global Screen Saver settings</guilabel> &mdash In this
+	  <guilabel>Global Screen Saver settings</guilabel> &mdash; In this
 	  section of the capplet you can change the time, password,
 	  and power management properties. You can decide how long you
 	  would like the screen saver to wait before starting by
@@ -208,7 +213,20 @@
 	      </graphic>
 	    </screenshot>
 	  </figure>
-	</para>
+      </para>
+      <note>
+	<title>NOTE FOR ADVANCED USERS</title>
+	<para>
+	  Gnome (or, rather, <application>xscreensaver</application>
+	  program used by Gnome) overrides the power management (DPMS)
+	  settings you may have set by other means (such as explicit
+	  <command>xset</command> command). For example, if you have
+	  unselected <guilabel>Use power management</guilabel> option,
+	  then power management will be disabled, even if you had
+	  previously issued the command <command>xset +dpms</command>.
+	  </para>
+      </note>
+
       </sect2>
       <sect2 id="gcctheme">
 	<title>Theme Selector</title>
@@ -391,132 +409,13 @@
 	  </screenshot>
 	</figure>
       </sect2>
-      <sect2 id="gccmime">
-	<title>Gnome Mime Types</title>
-	<para>
-	  <indexterm id="idx-a77">
-	    <primary>Gnome Control Center</primary>
-	    <secondary>Gnome Mime Types</secondary>
-	  </indexterm>
-	  The Gnome Mime Types Capplet allows you to determine how you wish
-	  to handle certain file types, or Mime types. Mime stands for
-	  Multipurpose Internet Mail Extensions and was originally
-	  developed to allow email to carry various forms of data. In Gnome
-	  you can define certain Mime types to be handled in any manner you
-	  wish. For example, if you use .sgml files frequently and you wish
-	  to always use Emacs to edit them you can configure the .sgml Mime
-	  type to always be handled by Emacs. This means that any program
-	  that wishes to launch the mime type for you will bring up
-	  Emacs. This includes double clicking on the file icon in the
-	  Gnome File Manager.
-	</para>
-	<figure>
-	  <title>The Gnome Mime Types</title>
-	  <screenshot>
-	    <screeninfo>The Gnome Mime Types</screeninfo>
-	    <graphic format="png" fileref="figures/gccmime" srccredit="dcm">
-	    </graphic>
-	  </screenshot>
-	</figure>
-	<para>
-	  To add a new mime type press the <guibutton>Add</guibutton>
-	  button. This will display the <guilabel>Add New Mime
-	    Type</guilabel> dialog in which you may define the new Mime type.
-	</para>
-	<para> 
-	  To edit an existing Mime type you may select the Mime type with
-	  your mouse cursor and press the Edit button. This will bring up
-	  the <guilabel>Set Actions for...</guilabel> dialog. You may
-	  define the icon used for the Mime type, the
-	  <guilabel>Open</guilabel> action, the <guilabel>View</guilabel>
-	  action and the <guilabel>Edit</guilabel> action.
-	</para> 
-      </sect2>
 
-
-
-    <sect2 id="gccURL">
-      <title>URL Handlers</title>
-      <para>
-	The URL Handlers Capplet allows you to determine which browser
-	is responsible for various types of URLs. URLs or  Uniform
-	Resource Locators are <quote>addresses</quote>
-	used to find certain documents or files. When you type in a
-	web address in a browser you are using a URL. The default
-	types of URLs are:
-      </para>
-      <variablelist id="url-types">
-	<varlistentry>
-	  <term><guilabel>Default</guilabel> </term>
-
-	<listitem>
-	  <para>
-	    <guilabel>Default</guilabel> &mdash this is any URL that is not
-	    otherwise specified. For example, a web page.
-	  </para>
-	</listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><guilabel>ghelp</guilabel> </term>
-	<listitem>
-	  <para>
-	    This type of URLs is used for all Gnome documentation. By
-	    default this is handled by Nautilus (Gnome file manager
-	    and help browser) but you
-	    may wish to view the files in another browser.
-	  </para>
-	</listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><guilabel>info</guilabel> </term>
-	<listitem>
-	  <para>
-	     This type of URLs is used for documentation in
-	    <quote>info</quote> format file documentation
-	    system. Nautilus can show these documents but you may wish
-	    to handle them with another application.
-	    </para>
-	</listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><guilabel>man</guilabel> </term>
-	<listitem>
-	  <para>
-	    This type of URLs is used for so-called <quote>man
-	    pages</quote>, a standard documentation format for command
-	    line tools. Nautilus can view these documents but you may
-	    wish to handle them with another application.
-	  </para>
-	</listitem>
-	</varlistentry>
-      </variablelist>
-      <para>
-	To change the default browser for any of these URL types
-	simply change the browser in the <guilabel>handler</guilabel>
-	text box at the top of the Capplet and press the
-	<guibutton>Set</guibutton> button. If you wish to remove the
-	URL handler press the <guibutton>Remove</guibutton> button.
-      </para>
-      <figure>
-	<title>The URL Handlers Capplet</title>
-	<screenshot>
-	    <screeninfo>The URL Handler</screeninfo>
-	  <graphic format="png" fileref="figures/gccurl" srccredit="dcm">
-	  </graphic>
-	</screenshot>
-      </figure>
-    </sect2>
-  </sect1>
-  
 
    <!-- #########  File Types ############## -->
-  <sect1 id="filetypes">
+  <sect2 id="filetypes">
     <title>File types and programs</title>
     <para>
-      This capplet allows you to configure how files of various types
+      This section  allows you to configure how files of various types
       should be handled. File type (formally called MIME type)
       describes what kind of data and in what format the file
       contains. For each of the file types, you can set the icon to be
@@ -527,7 +426,7 @@
       File Manager's built-in graphics viewer. 
     </para>
 
-    <sect2 id="filetypeviewing">
+    <sect3 id="filetypeviewing">
       <title>Viewing available file types</title>	
       <para>
 	The File types capplet shows you all file types currently known
@@ -585,18 +484,18 @@
       <note>
 	<title>NOTE FOR ADVANCED USERS</title>
 	<para>
-	  In fact, Gnome File Manager can also use more elaborate
-	  methods of determining file type than just matching the
-	  extensions. Advanced users who want to know more
-	  about this should take a look at the file
-	  <filename>PREFIX/mime-info/gnome-vfs.mime</filename>, where
-	 <filename> PREFIX=/usr/share</filename> or
-	  <filename>/usr/local/share</filename> depending on your
-	  system's configuration.  
+	  In fact, Gnome File Manager first tries to determine file
+	  type by looking at its content; only if it can't figure out
+	  the file type from the content, it will use extension. Thus,
+	  if you have a file which contains a JPEG image, Gnome File
+	  Manager will correclty identify this file's type as
+	  <systemitem>image/jpeg</systemitem>, even if the file name
+	  has no extension at all or has extension
+	  <filename>pdf</filename>. 
 	</para>
       </note>
-    </sect2>
-    <sect2 id="filetypeedit">
+    </sect3>
+    <sect3 id="filetypeedit">
       <title>Editing a file type</title>
       <para>
 	By far the most common type of editing a file type is changing
@@ -663,7 +562,7 @@
 	    the list of all applications associated with this file
 	    type. You can remove any of the applications from the
 	    list, edit an existing application (this allows you to
-	    cahnge the name under which this application appears in
+	    change the name under which this application appears in
 	    the menu and the command used to launch this application),
 	    or add a new application. Instead of removing of
 	    application from the list, you can also temporarily
@@ -673,8 +572,8 @@
 	  </para>
 	</listitem>
       </itemizedlist>
-    </sect2>
-    <sect2 id="filetypeadd">
+    </sect3>
+    <sect3 id="filetypeadd">
       <title>Adding and deleting file types</title>
       <para>
 	To delete a file type, select it in the file type list and
@@ -697,9 +596,9 @@
 	action for this file type as described in <xref
 	linkend="filetypeedit">. 
       </para>
-    </sect2>
+    </sect3>
 
-    <sect2 id="filetyperestore">
+    <sect3 id="filetyperestore">
       <title>
 	Restoring system defaults</title>
       <para>
@@ -711,8 +610,133 @@
 	defaults</guibutton> button. Note that this will erase all
 	your changes; you can not "undo" this action. 
       </para>
+    </sect3>
+  </sect2>
+
+
+
+
+<!-- This section is obsolete!
+      <sect2 id="gccmime">
+	<title>Gnome Mime Types</title>
+	<para>
+	  <indexterm id="idx-a77">
+	    <primary>Gnome Control Center</primary>
+	    <secondary>Gnome Mime Types</secondary>
+	  </indexterm>
+	  The Gnome Mime Types Capplet allows you to determine how you wish
+	  to handle certain file types, or Mime types. Mime stands for
+	  Multipurpose Internet Mail Extensions and was originally
+	  developed to allow email to carry various forms of data. In Gnome
+	  you can define certain Mime types to be handled in any manner you
+	  wish. For example, if you use .sgml files frequently and you wish
+	  to always use Emacs to edit them you can configure the .sgml Mime
+	  type to always be handled by Emacs. This means that any program
+	  that wishes to launch the mime type for you will bring up
+	  Emacs. This includes double clicking on the file icon in the
+	  Gnome File Manager.
+	</para>
+	<figure>
+	  <title>The Gnome Mime Types</title>
+	  <screenshot>
+	    <screeninfo>The Gnome Mime Types</screeninfo>
+	    <graphic format="png" fileref="figures/gccmime" srccredit="dcm">
+	    </graphic>
+	  </screenshot>
+	</figure>
+	<para>
+	  To add a new mime type press the <guibutton>Add</guibutton>
+	  button. This will display the <guilabel>Add New Mime
+	    Type</guilabel> dialog in which you may define the new Mime type.
+	</para>
+	<para> 
+	  To edit an existing Mime type you may select the Mime type with
+	  your mouse cursor and press the Edit button. This will bring up
+	  the <guilabel>Set Actions for...</guilabel> dialog. You may
+	  define the icon used for the Mime type, the
+	  <guilabel>Open</guilabel> action, the <guilabel>View</guilabel>
+	  action and the <guilabel>Edit</guilabel> action.
+	</para> 
+      </sect2>
+-->
+
+
+    <sect2 id="gccURL">
+      <title>URL Handlers</title>
+      <para>
+	The URL Handlers Capplet allows you to determine which browser
+	is responsible for various types of URLs. URLs or  Uniform
+	Resource Locators are <quote>addresses</quote>
+	used to find certain documents or files. When you type in a
+	web address in a browser you are using a URL. The default
+	types of URLs are:
+      </para>
+      <variablelist id="url-types">
+	<varlistentry>
+	  <term><guilabel>Default</guilabel> </term>
+
+	<listitem>
+	  <para>
+	    <guilabel>Default</guilabel> &mdash; this is any URL that is not
+	    otherwise specified. For example, a web page.
+	  </para>
+	</listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><guilabel>ghelp</guilabel> </term>
+	<listitem>
+	  <para>
+	    This type of URLs is used for all Gnome documentation. By
+	    default this is handled by Nautilus (Gnome file manager
+	    and help browser) but you
+	    may wish to view the files in another browser.
+	  </para>
+	</listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><guilabel>info</guilabel> </term>
+	<listitem>
+	  <para>
+	     This type of URLs is used for documentation in
+	    <quote>info</quote> format file documentation
+	    system. Nautilus can show these documents but you may wish
+	    to handle them with another application.
+	    </para>
+	</listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><guilabel>man</guilabel> </term>
+	<listitem>
+	  <para>
+	    This type of URLs is used for so-called <quote>man
+	    pages</quote>, a standard documentation format for command
+	    line tools. Nautilus can view these documents but you may
+	    wish to handle them with another application.
+	  </para>
+	</listitem>
+	</varlistentry>
+      </variablelist>
+      <para>
+	To change the default browser for any of these URL types
+	simply change the browser in the <guilabel>handler</guilabel>
+	text box at the top of the Capplet and press the
+	<guibutton>Set</guibutton> button. If you wish to remove the
+	URL handler press the <guibutton>Remove</guibutton> button.
+      </para>
+      <figure>
+	<title>The URL Handlers Capplet</title>
+	<screenshot>
+	    <screeninfo>The URL Handler</screeninfo>
+	  <graphic format="png" fileref="figures/gccurl" srccredit="dcm">
+	  </graphic>
+	</screenshot>
+      </figure>
     </sect2>
   </sect1>
+  
 
 
 
@@ -809,7 +833,7 @@
       </varlistentry>
       <varlistentry>
 	<term><guilabel>Do not distinguish between windows
-	(compatibility mode)</guilabel 
+	(compatibility mode)</guilabel>
 	  </term>
 	<listitem><para>
 	      This option controls the behavior of the indicators when
@@ -838,6 +862,306 @@
       </variablelist>
     </sect2>
   </sect1>
+
+  <!-- #########  User Interface  ############## -->
+    <sect1 id="gccui">
+      <title>Look and Feel</title>
+      <para>
+	<indexterm id="idx-a85">
+	  <primary>Gnome Control Center</primary> <secondary>Look and
+	  Feel Options</secondary> </indexterm> The Look and Feel
+	  capplet allows you to change the appearance of applications
+	  that are Gnome compliant. You may recognize these
+	  applications as ones that are pre-installed with Gnome or
+	  ones that say they are built with GTK (the GIMP Toolkit).
+      </para>
+      <sect2 id="gccappdefaults">
+	<title>Applications</title>
+	<para>
+	  <indexterm id="idx-a86">
+	    <primary>Gnome Control Center</primary>
+	    <secondary>Application Defaults</secondary>
+	  </indexterm>
+	  The Applications capplet allows you to change certain
+	  user interface aspects of your Gnome compliant applications.
+	</para>
+	<important>
+	  <title>IMPORTANT</title>
+	  <para>
+	    Although this capplet gives you great control over the look
+	    and feel of your applications you should consider these tools
+	    for advanced use only.
+	  </para>
+	</important>
+	<itemizedlist mark="bullet">
+	  <listitem>
+	    <para>
+	      <guilabel>Can detach and move menubars</guilabel> &mdash; By
+	      default menubars in Gnome applications may be dragged
+	      from their usual location and placed anywhere within the
+	      application or desktop. If you do not wish to use this
+	      feature you may turn it off.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Menus have relieved borders</guilabel> &mdash; By
+	      default menubars have relieved borders. If you do not
+	      like this look you may turn this feature off.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Submenus can be torn off</guilabel> &mdash; This
+	      allows the submenus to have the perforated line which
+	      allows you to "tear" them off an have them as a small
+	      movable window.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Menu items have icons</guilabel> &mdash; Some menu
+	      items in applications will have icons. If you wish not
+	      to see these icons in applications that use them you may
+	      turn off this feature.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Statusbar is interactive when
+	      possible</guilabel> &mdash; Some applications can have the
+	      status bar at the bottom become separated into its own
+	      window. If you would like to have those applications
+	      separate the status bar into another window you may turn
+	      on this option.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Statusbar progress meter on right</guilabel> &mdash;
+	      Some applications have progress meters in their
+	      statusbars. By default these progress meters are on the
+	      right side of the statusbar. If you wish them to be on
+	      the left you may turn off this feature.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Can detach and move toolbars</guilabel> &mdash; By
+	      default toolbars in Gnome applications may be dragged
+	      from their usual location and placed anywhere within the
+	      application or desktop. If you do not wish to use this
+	      feature, you may turn it off.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Toolbars have relieved border</guilabel> &mdash; By
+	      default toolbars have relieved borders. If you do not
+	      like this look you may turn this feature off.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Toolbar buttons have relieved
+	      border</guilabel> &mdash; By default toolbar buttons do not
+	      have relieved borders in their natural state. They do,
+	      however, change when the mouse is over them. If you wish
+	      them to be relieved at all times you may turn on this
+	      feature.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Toolbars have line separators</guilabel> &mdash; By
+	      default toolbar buttons have small line separators
+	      between them. If you do not wish to have the line
+	      separators you may turn this feature off.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      <guilabel>Toolbars have text labels</guilabel> &mdash; By
+	      default toolbar buttons have images and text to identify
+	      them. If you are familiar with the buttons and do not
+	      need the text you may turn on this feature.
+	    </para>
+	  </listitem>
+	</itemizedlist>
+	<figure>
+	  <title>Applications Defaults Capplet</title>
+	  <screenshot>
+	    <screeninfo>Dialog Capplet</screeninfo>
+	    <graphic format="png" fileref="figures/gccappdef" srccredit="dcm">
+	    </graphic>
+	  </screenshot>
+	</figure>
+      </sect2>
+      <sect2 id="gccdialogs"
+	<title>Dialogs</title>
+	<para>
+	  <indexterm id="idx-a87">
+	    <primary>Gnome Control Center</primary>
+	    <secondary>Dialogs</secondary>
+	  </indexterm>
+	  The Dialogs Capplet will allow you to change the default settings for
+	  dialog boxes in Gnome compliant applications.  A dialog box is a
+	  window that is launched by an application to help perform a task
+	  needed by that application. An example of a dialog box is a Print
+	  dialog which appears when you press a print button. The dialog allows
+	  you to set print options and start the print process.  The Dialogs
+	  capplet will allow you to change the following options.
+	</para>
+
+	<important>
+	  <title>IMPORTANT</title>
+	  <para>
+	    Although this capplet gives you great control over the look
+	    and feel of your applications you should consider these tools
+	    for advanced use only.
+	  </para>
+	</important>
+	<para>
+	  <guilabel>Dialog buttons</guilabel> &mdash; Choose to use the
+	  default buttons, buttons more spread out, put buttons on the
+	  edges, put the buttons on the left with left-justify, and
+	  put buttons on the right with right-justify.
+	</para>
+	<para>
+	  <guilabel>Dialog buttons have icons</guilabel> &mdash; Some
+	  dialog buttons (for example <guibutton>OK</guibutton>) can
+	  have icons on them. By default the applications which
+	  provide this have the icons turned on. If you wish not to
+	  see them you may turn off this feature.
+	</para>
+	<para>
+	  <guilabel>Use statusbar instead of dialog when
+	  possible</guilabel> &mdash; You may tell applications to use the
+	  statusbar instead of a dialog if the application will allow
+	  it. This will only work with dialogs that provide
+	  information not one that require some interaction on your
+	  part.
+	</para>
+	<para>
+	  <guilabel>Dialog position</guilabel> &mdash; This will let you
+	  choose how the dialogs appear when launched. You can let the
+	  window manager decide for you (or how you have defined it in
+	  the window manager configuration), center the dialogs on the
+	  screen, or drop them where the mouse pointer is when they
+	  are launched.
+	</para>
+	<para>
+	  <guilabel>Dialog hints</guilabel> &mdash; This will let you change
+	  the behavior of the dialog hints which are the tooltips that
+	  appear when you move your mouse button over a button or part
+	  of the dialog.  You may choose to have hints handled like
+	  other windows, or let the window manager decide how to
+	  display them.
+	</para>
+	<para>
+	  <guilabel>Place dialogs over application window when
+	  possible</guilabel> &mdash; You may choose to place dialog over
+	  the applications when possible which will help you keep your
+	  windows organized on your screen If you are familiar with
+	  other operating systems you may wish to keep this selected
+	  as this is how most operating systems handle dialogs.
+	</para>
+        <figure>
+	  <title>Dialog Capplet</title>
+	  <screenshot>
+	    <screeninfo>Dialog Capplet</screeninfo>
+	    <graphic format="png" fileref="figures/gccdialog" srccredit="dcm">
+	    </graphic>
+	  </screenshot>
+        </figure>
+      </sect2>
+      <sect2 id="gccmdi">
+	<title>MDI</title>
+	<para>
+	  <indexterm id="idx-a88">
+	    <primary>Gnome Control Center</primary>
+	    <secondary>MDI</secondary>
+	  </indexterm>
+	  The MDI capplet allows you to change the Multiple Document
+	  Interface (MDI) mode for Gnome
+	  applications, i.e. the mode of showing more than one
+	  document. 
+	</para>
+	<para>
+          Possible MDI styles are:
+      </para>
+      <variablelist id="mdi-modes">
+	<varlistentry>
+	  <term><guilabel>Toplevel</guilabel> </term>
+
+	<listitem><para>
+	      Each document is shown in a separate application window; when
+	      you open a new document, a new window is created. 
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+
+
+	<varlistentry>
+	<term><guilabel>Notebook</guilabel> </term>
+	  <listitem><para>
+	      In this mode, you have only one application window which
+              contains all documents much like your (paper) notebook
+              contains many leaves: each leaf has a tab, and clicking
+              on the tab brings this leaf on top. This is the default mode.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+
+	<term><guilabel>Modal</guilabel> </term>
+	  <listitem><para>
+	      In this mode, you have only one application window, and
+	      it only shows one document at a time. To switch to
+	      another document, you must use a menu command or
+	      keyboard shortcut. If you have ever used
+	      <application>Emacs</application>, <guilabel>Modal</guilabel>
+	      is very similar to the way <application>Emacs</application>
+	      handles buffers. 
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      <para>
+	If you have selected <guilabel>Notebook</guilabel> as your MDI
+	style, you can also set <guilabel>MDI notebook tab
+	position</guilabel>. Possible choices are at the top, left,
+	right, or bottom of your application. 
+      </para>
+
+      <note><title>NOTE</title>
+	<para>
+	  Please keep in mind that these changes only affect Gnome
+	  (or, to be more precise, GTK) applications. In addition,
+	  many Gnome applications set their own  MDI mode rather than
+	  use the mode specified in this capplet. For example,
+	  <application>Gnumeric</application> always uses
+	  <guilabel>Toplevel</guilabel> mode, while
+	  <application>gedit</application> allows you to select
+	  <guilabel>Default</guilabel> mode (in which case the mode
+	  set in this capplet will be used), or override it by
+	  explicitly setting one of three modes listed above. 
+	</para>
+      </note>
+
+
+	<figure>
+	  <title>MDI Capplet</title>
+	  <screenshot>
+	    <screeninfo>MDI Capplet</screeninfo>
+	    <graphic format="png" fileref="figures/gccmdi" srccredit="dcm">
+	    </graphic>
+	  </screenshot>
+        </figure>
+      </sect2>
+    </sect1>
+
 
      <!-- #########  Multimedia ############## -->
     <sect1 id="multimedia-intro">
@@ -1276,281 +1600,6 @@
    </sect1>
 
   
-  <!-- #########  User Interface  ############## -->
-    <sect1 id="gccui">
-      <title>User Interface</title>
-      <para>
-	<indexterm id="idx-a85">
-	  <primary>Gnome Control Center</primary>
-	  <secondary>User Interface Options</secondary>
-	</indexterm> 
-	The User Interface Options allows you to change the appearance
-	of applications that are Gnome compliant. You may recognize these
-	applications as ones that are pre-installed with Gnome or ones that say
-	they are built with GTK (the GIMP Toolkit).
-      </para>
-      <sect2 id="gccappdefaults">
-	<title>Application</title>
-	<para>
-	  <indexterm id="idx-a86">
-	    <primary>Gnome Control Center</primary>
-	    <secondary>Application Defaults</secondary>
-	  </indexterm>
-	  The Application Defaults capplet allows you to change certain
-	  user interface aspects of your Gnome compliant applications.
-	</para>
-	<important>
-	  <title>IMPORTANT</title>
-	  <para>
-	    Although this capplet gives you great control over the look
-	    and feel of your applications you should consider these tools
-	    for advanced use only.
-	  </para>
-	</important>
-	<itemizedlist mark="bullet">
-	  <listitem>
-	    <para>
-	      <guilabel>Can detach and move menubars</guilabel>  &mdash; By
-	      default menubars in Gnome applications may be dragged
-	      from their usual location and placed anywhere within the
-	      application or desktop. If you do not wish to use this
-	      feature you may turn it off.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Menus have relieved borders</guilabel>  &mdash; By
-	      default menubars have relieved borders. If you do not
-	      like this look you may turn this feature off.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Submenus can be torn off</guilabel>  &mdash; This
-	      allows the submenus to have the perforated line which
-	      allows you to "tear" them off an have them as a small
-	      movable window.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Menu items have icons</guilabel>  &mdash; Some menu
-	      items in applications will have icons. If you wish not
-	      to see these icons in applications that use them you may
-	      turn off this feature.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Statusbar is interactive when
-	      possible</guilabel>  &mdash; Some applications can have the
-	      status bar at the bottom become separated into its own
-	      window. If you would like to have those applications
-	      separate the status bar into another window you may turn
-	      on this option.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Statusbar progress meter on right</guilabel>  &mdash;
-	      Some applications have progress meters in their
-	      statusbars. By default these progress meters are on the
-	      right side of the statusbar. If you wish them to be on
-	      the left you may turn off this feature.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Can detach and move toolbars</guilabel>  &mdash; By
-	      default toolbars in Gnome applications may be dragged
-	      from their usual location and placed anywhere within the
-	      application or desktop. If you do not wish to use this
-	      feature, you may turn it off.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Toolbars have relieved border</guilabel> &mdash; By
-	      default toolbars have relieved borders. If you do not
-	      like this look you may turn this feature off.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Toolbar buttons have relieved
-	      border</guilabel>  &mdash; By default toolbar buttons do not
-	      have relieved borders in their natural state. They do,
-	      however, change when the mouse is over them. If you wish
-	      them to be relieved at all times you may turn on this
-	      feature.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Toolbars have line separators</guilabel>  &mdash; By
-	      default toolbar buttons have small line separators
-	      between them. If you do not wish to have the line
-	      separators you may turn this feature off.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      <guilabel>Toolbars have text labels</guilabel>  &mdash; By
-	      default toolbar buttons have images and text to identify
-	      them. If you are familiar with the buttons and do not
-	      need the text you may turn on this feature.
-	    </para>
-	  </listitem>
-	</itemizedlist>
-	<figure>
-	  <title>Applications Defaults Capplet</title>
-	  <screenshot>
-	    <screeninfo>Dialog Capplet</screeninfo>
-	    <graphic format="png" fileref="figures/gccappdef" srccredit="dcm">
-	    </graphic>
-	  </screenshot>
-	</figure>
-      </sect2>
-      <sect2 id="gccdialogs"
-	<title>Dialogs</title>
-	<para>
-	  <indexterm id="idx-a87">
-	    <primary>Gnome Control Center</primary>
-	    <secondary>Dialogs</secondary>
-	  </indexterm>
-	  The Dialogs Capplet will allow you to change the default settings for
-	  dialog boxes in Gnome compliant applications.  A dialog box is a
-	  window that is launched by an application to help perform a task
-	  needed by that application. An example of a dialog box is a Print
-	  dialog which appears when you press a print button. The dialog allows
-	  you to set print options and start the print process.  The Dialogs
-	  capplet will allow you to change the following options.
-	</para>
-
-	<important>
-	  <title>IMPORTANT</title>
-	  <para>
-	    Although this capplet gives you great control over the look
-	    and feel of your applications you should consider these tools
-	    for advanced use only.
-	  </para>
-	</important>
-	<para>
-	  <guilabel>Dialog buttons</guilabel>  &mdash; Choose to use the
-	  default buttons, buttons more spread out, put buttons on the
-	  edges, put the buttons on the left with left-justify, and
-	  put buttons on the right with right-justify.
-	</para>
-	<para>
-	  <guilabel>Dialog buttons have icons</guilabel>  &mdash; Some
-	  dialog buttons (for example <guibutton>OK</guibutton>) can
-	  have icons on them. By default the applications which
-	  provide this have the icons turned on. If you wish not to
-	  see them you may turn off this feature.
-	</para>
-	<para>
-	  <guilabel>Use statusbar instead of dialog when
-	  possible</guilabel>  &mdash; You may tell applications to use the
-	  statusbar instead of a dialog if the application will allow
-	  it. This will only work with dialogs that provide
-	  information not one that require some interaction on your
-	  part.
-	</para>
-	<para>
-	  <guilabel>Dialog position</guilabel> &mdash; This will let you
-	  choose how the dialogs appear when launched. You can let the
-	  window manager decide for you (or how you have defined it in
-	  the window manager configuration), center the dialogs on the
-	  screen, or drop them where the mouse pointer is when they
-	  are launched.
-	</para>
-	<para>
-	  <guilabel>Dialog hints</guilabel> &mdash; This will let you change
-	  the behavior of the dialog hints which are the tooltips that
-	  appear when you move your mouse button over a button or part
-	  of the dialog.  You may choose to have hints handled like
-	  other windows, or let the window manager decide how to
-	  display them.
-	</para>
-	<para>
-	  <guilabel>Place dialogs over application window when
-	  possible</guilabel>  &mdash; You may choose to place dialog over
-	  the applications when possible which will help you keep your
-	  windows organized on your screen If you are familiar with
-	  other operating systems you may wish to keep this selected
-	  as this is how most operating systems handle dialogs.
-	</para>
-        <figure>
-	  <title>Dialog Capplet</title>
-	  <screenshot>
-	    <screeninfo>Dialog Capplet</screeninfo>
-	    <graphic format="png" fileref="figures/gccdialog" srccredit="dcm">
-	    </graphic>
-	  </screenshot>
-        </figure>
-      </sect2>
-      <sect2 id="gccmdi">
-	<title>MDI</title>
-	<para>
-	  <indexterm id="idx-a88">
-	    <primary>Gnome Control Center</primary>
-	    <secondary>MDI</secondary>
-	  </indexterm>
-	  The MDI capplet allows you to change the MDI mode for Gnome
-	  applications.  MDI stands for Multiple Document Interface
-	  and refers to the way more than one document is displayed in
-	  Gnome applications.
-	</para>
-	<important>
-	  <title>IMPORTANT</title>
-	  <para>
-	    Although this capplet gives you great control over the
-	    look and feel of your applications you should consider
-	    these tools for advanced use only.
-	  </para>
-	</important>
-	<para>
-	  The default style in Gnome-compliant applications for MDI is
-	  usually tabs or <quote>notebook</quote>: it looks like an
-	  address book, your documents are <quote>leaves</quote> of
-	  this notebook, and you switch between them by using the
-	  tabs.  If you do not like
-	  the tab look you may change it here.
-	</para>
-	<para>
-	  <guilabel>Default MDI Mode</guilabel> &mdash; In addition to
-	  <guilabel>Notebook</guilabel>, you will find
-	  <guilabel>Toplevel</guilabel> and
-	  <guilabel>Modal</guilabel>. <guilabel>Notebook</guilabel> is the
-	  default tab look described above;
-	  <guilabel>Toplevel</guilabel> displays only the active
-	  document on the top view until it is closed and
-	  <guilabel>Modal</guilabel> has only one toplevel which can
-	  contain any of the documents at any one time, however only
-	  one can be displayed. If you have ever used
-	  <application>Emacs</application>, <guilabel>Modal</guilabel>
-	  is very similar to the way <application>Emacs</application>
-	  handles buffers.
-	</para>
-	<para>
-	  <guilabel>MDI notebook tab position</guilabel> &mdash; If
-	  you choose to use the <guilabel>Notebook</guilabel> style
-	  you may then decide where you want the tabs to appear in
-	  your applications. You may have them at the top, left,
-	  right, or bottom of your application. Keep in mind that
-	  these choices will affect only applications that are Gnome
-	  compliant.
-	</para>
-	<figure>
-	  <title>MDI Capplet</title>
-	  <screenshot>
-	    <screeninfo>MDI Capplet</screeninfo>
-	    <graphic format="png" fileref="figures/gccmdi" srccredit="dcm">
-	    </graphic>
-	  </screenshot>
-        </figure>
-      </sect2>
-    </sect1>
 
 <!-- ============= Authors ================================ -->
 

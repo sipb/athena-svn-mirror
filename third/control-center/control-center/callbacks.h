@@ -6,7 +6,9 @@
 #ifndef __CALLBACKS_H__
 #define __CALLBACKS_H__
 
+#include <glib.h>
 #include <gnome.h>
+#include "tree.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,6 +23,7 @@ int exit_callback(GtkWidget *widget, gpointer data);
 void help_callback(GtkWidget *widget, gpointer data);
 void item_help_callback(GtkWidget *widget, gpointer data);
 void about_callback(GtkWidget *widget, gpointer data);
+void create_templist(node_data *data, GList **list);
 
 #ifdef __cplusplus
 }

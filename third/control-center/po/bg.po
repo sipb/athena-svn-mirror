@@ -1,260 +1,262 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Bulgarian translation of the gnome control-center po file.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Borislav Alexandrov <B.Aleksandrov@Cnsys.bg>, 2001.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.0\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
-"PO-Revision-Date: 2001-03-11 13:07+0100\n"
-"Last-Translator: Unknown\n"
-"Language-Team: Bulgarian\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
+"PO-Revision-Date: 2001-11-06 15:09GMT\n"
+"Last-Translator: Borislav Aleksandrov <B.Aleksandrov@Cnsys.bg>\n"
+"Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=windows-1251\n"
+"Content-Type: text/plain; charset=CP1251\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: capplets/background-properties/app-background.c:15
 msgid "Set background image."
-msgstr ""
+msgstr "Задава фонова картинка."
 
 #: capplets/background-properties/app-background.c:15
 msgid "IMAGE-FILE"
-msgstr ""
+msgstr "ФАЙЛ-КАРТИНКА"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
+"появи се грешка при изпълнение на 'background-properties-capplet'.\n"
+"прекъсвам...\n"
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
 msgid "Background"
-msgstr ""
+msgstr "Фон"
 
 #: capplets/background-properties/background-properties.desktop.in.h:2
 msgid "Configuration of the desktop's background"
-msgstr ""
+msgstr "Конфигуриране на фон за работното място"
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
-msgstr ""
+msgstr "Забранен"
 
-#: capplets/background-properties/property-background.c:321
-#, fuzzy
+#: capplets/background-properties/property-background.c:322
 msgid "Color"
-msgstr "Цветове:"
+msgstr "Цвят"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 msgid "Solid"
-msgstr ""
+msgstr "Плътен"
 
-#: capplets/background-properties/property-background.c:336
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
-msgstr ""
+msgstr "Хоризонтален градиент"
 
-#: capplets/background-properties/property-background.c:342
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
-msgstr ""
+msgstr "Вертикален градиент"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
-msgstr ""
+msgstr "Основен цвят"
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
 msgid "Secondary Color"
-msgstr ""
+msgstr "Допълнителен цвят"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
-msgstr ""
+msgstr "Избор на тапет"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
-msgstr ""
+msgstr "Не мога да намеря hbox, използвам нормален избор за файл"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
-msgstr ""
+msgstr "Предварителен преглед"
 
-#: capplets/background-properties/property-background.c:635
-#, fuzzy
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
-msgstr "По-малко"
+msgstr "Тапет"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
-msgstr ""
+msgstr " Преглед..."
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
-msgstr ""
+msgstr "без"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:699
-#, fuzzy
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
-msgstr "По-малко"
+msgstr "Мащабиран"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
-msgstr ""
+msgstr "Мащабиран (запазва пропорциите)"
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
-msgstr ""
+msgstr "Центриран"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
-msgstr ""
+msgstr "Плочки"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 msgid "Use GNOME to set background"
-msgstr ""
+msgstr "Използва GNOME за задаване на фон"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
-msgstr ""
+msgstr "Задава параметри от запазеното състояние и излиза"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
-msgstr ""
+msgstr "КАРТИНКА"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
-msgstr ""
+msgstr "Установява тапет за зададената стойност"
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:1142
-msgid "Specifies the background color"
-msgstr ""
+msgstr "ЦВЯТ"
 
 #: capplets/background-properties/property-background.c:1143
+msgid "Specifies the background color"
+msgstr "Задава цвят на фона"
+
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:1144
-msgid "ORIENT"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:1144
-msgid "Gradient orientation: vertical or horizontal"
-msgstr ""
+msgstr "Задава краен цвят за фон при градиент"
 
 #: capplets/background-properties/property-background.c:1145
-msgid "Use a solid fill for the background"
-msgstr ""
+msgid "ORIENT"
+msgstr "ОРИЕНТАЦИЯ"
+
+#: capplets/background-properties/property-background.c:1145
+msgid "Gradient orientation: vertical or horizontal"
+msgstr "Ориентация на градиент: вертикална или хоризонтална"
 
 #: capplets/background-properties/property-background.c:1146
+msgid "Use a solid fill for the background"
+msgstr "Използва плътен запълнен за фон"
+
+#: capplets/background-properties/property-background.c:1147
 msgid "Use a gradient fill for the background"
-msgstr ""
+msgstr "Използва градиентен запълнен за фон"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
-msgstr ""
+msgstr "РЕЖИМ"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
-msgstr ""
+msgstr "Показва тапет: плочест, центриран, машабиран или пропорция"
 
 #: capplets/desktop-links/Desktop.directory.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:1
 msgid "Desktop"
-msgstr ""
+msgstr "Работно място"
 
 #: capplets/desktop-links/Documents.directory.in.h:1
 msgid "Configure how document types are handled"
-msgstr ""
+msgstr "Определя поддръжката на тип документ"
 
 #: capplets/desktop-links/Documents.directory.in.h:2
 msgid "Document Handlers"
-msgstr ""
+msgstr "Поддътжащи програми на документ"
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
 msgid "Control Center"
-msgstr ""
+msgstr "Контролен център"
 
 #: capplets/desktop-links/Gnome.directory.in.h:2
 msgid "Control Center Menu"
-msgstr ""
+msgstr "Меню на контролен център"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:1
 msgid "Configure the settings of your Multimedia devices"
-msgstr ""
+msgstr "Конфигуриране на настройките на мултимедиините устройства"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:2
 msgid "Multimedia"
-msgstr ""
+msgstr "Мултимедия"
 
 #: capplets/desktop-links/Peripherals.directory.in.h:1
 msgid "Configure your external devices"
-msgstr ""
+msgstr "Конфигуриране на външни устройства"
 
 #: capplets/desktop-links/Peripherals.directory.in.h:2
 msgid "Peripherals"
-msgstr ""
+msgstr "Периферия"
 
 #: capplets/desktop-links/Session.directory.in.h:1
 msgid "Session"
-msgstr ""
+msgstr "Сесия"
 
 #: capplets/desktop-links/Session.directory.in.h:2
 msgid "Session Management Settings"
-msgstr ""
+msgstr "Настройки за мениджър на сесии"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:1
 msgid "Configure the global settings of your GNOME applications"
-msgstr ""
+msgstr "Конфигуриране на глобални настройки за вашите приложения на GNOME"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:2
 msgid "User Interface"
-msgstr ""
+msgstr "Потребителски интерфейс"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:387
 msgid "Edit Applications List"
-msgstr ""
+msgstr "Редактиране на списъка с приложения"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:409
 #, c-format
 msgid "Select applications to appear in menu for MIME type \"%s\""
-msgstr ""
+msgstr "Избор на приложения които ще се появат в менюто за MIME тип \"%s\""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:433
 msgid "Add Application..."
-msgstr ""
+msgstr "Добавя приложение..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:440
 msgid "Edit Application..."
-msgstr ""
+msgstr "Редактира приложение..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:446
 msgid "Delete Application"
-msgstr ""
+msgstr "Изтрива приложение..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:480
 msgid "Edit Components List"
-msgstr ""
+msgstr "Редактира списъка с компоненти"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:500
@@ -267,39 +269,40 @@ msgid ""
 "The MIME type entered contained upper case characters. Upper case characters "
 "were changed to lower case for you."
 msgstr ""
+"Типа на MIME съдържа главни букви. Главните букви са заменени с малки за вас."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:723
 msgid "Add New MIME Type"
-msgstr ""
+msgstr "Добавя нов MIME тип"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:769
 msgid "Add MIME Type"
-msgstr ""
+msgstr "Добавя MIME тип"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:773
 msgid "New MIME type (e.g. image/x-thumper):"
-msgstr ""
+msgstr "Нов MIME тип (например image/x-thumper):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:780
 msgid "Description (e.g. Thumper image):"
-msgstr ""
+msgstr "Описание:"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:947
 msgid "File Extensions "
-msgstr ""
+msgstr "Разширение на файл"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
 #: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
-msgstr ""
+msgstr "Добавя..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:972
 msgid "    Remove    "
-msgstr ""
+msgstr "    Изтрива    "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1041
 msgid "Add New Extension"
-msgstr ""
+msgstr "Добавя ново разширение"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1045
 msgid ""
@@ -307,18 +310,21 @@ msgid ""
 "You can enter several extensions seperated by a space,\n"
 "for example: html htm"
 msgstr ""
+"Въведете раязширението за тизи тип mime (без точка).\n"
+"Вие може да въведете няколко разширения разделени от шпация,\n"
+"например: html htm"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1052
 msgid "Extension:"
-msgstr ""
+msgstr "Разширение:"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1194
 msgid "You must enter a name."
-msgstr ""
+msgstr "Вие трябва да въведете име."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1197
 msgid "You must enter a command."
-msgstr ""
+msgstr "Вие трябва да въведете команда."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1207
 #, c-format
@@ -327,6 +333,9 @@ msgid ""
 "Check your spelling and make sure you have\n"
 "the right permissions to execute this file."
 msgstr ""
+"\"%s\" не съществува или не е изпълнима.\n"
+"Проверете си правописа и се убедете, че имате\n"
+"права за изпълнение на този файл."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1213
 #, c-format
@@ -334,93 +343,94 @@ msgid ""
 "The command \"%s\" cannot be found.\n"
 "You must use a command that can work from any command line."
 msgstr ""
+"Командата \"%s\" не може да бъде намерена.\n"
+"Вие трябва да използвате команда която може да работи на всеки команден ред."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1225
 msgid "Bad Application Name"
-msgstr ""
+msgstr "Грешно име на приложение"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1226
 msgid "Bad Application Command"
-msgstr ""
+msgstr "Грешна команда на приложение"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1258
 msgid "Add Application"
-msgstr ""
+msgstr "Добавя Приложение"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1259
 msgid "Edit Application"
-msgstr ""
+msgstr "Редактира Приложение"
 
 #. Application Name label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1271
 msgid "Application Name:"
-msgstr ""
+msgstr "Име на Приложение:"
 
 #. Application Command label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1282
 msgid "Application Command:"
-msgstr ""
+msgstr "Команда на приложение:"
 
 #. Open Behavior frame
 #: capplets/file-types/file-types-capplet-dialogs.c:1293
 msgid "Open Behavior"
-msgstr ""
+msgstr "Поведение при отваряне"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1299
 msgid "Can open multiple files"
-msgstr ""
+msgstr "Не мога да отварям много файлове"
 
 #. FIXME bugzilla.eazel.com 6066: This needs to be three options now: "yes", "no", and "use uris for non-file locations"
 #: capplets/file-types/file-types-capplet-dialogs.c:1307
 msgid "Can open from URI"
-msgstr ""
+msgstr "Не мога да отварям от URI"
 
 #: capplets/file-types/file-types-capplet.c:745
 #: capplets/file-types/file-types-capplet.c:1890
 msgid "MIME Type"
-msgstr ""
+msgstr "MIME тип"
 
 #: capplets/file-types/file-types-capplet.c:752
-#, fuzzy
 msgid "Change Icon"
-msgstr "Променя броя."
+msgstr "Променя икона."
 
 #: capplets/file-types/file-types-capplet.c:759
 msgid "Change File Extensions"
-msgstr ""
+msgstr "Променя разширението на файл"
 
 #: capplets/file-types/file-types-capplet.c:767
 msgid "Default Action:"
-msgstr ""
+msgstr "Подразбиращо се действие:"
 
 #: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
-msgstr ""
+msgstr "Използвана програма за преглед"
 
 #: capplets/file-types/file-types-capplet.c:785
 msgid "Open With Application"
-msgstr ""
+msgstr "Отваря с Приложение"
 
 #: capplets/file-types/file-types-capplet.c:796
 msgid "Edit List"
-msgstr ""
+msgstr "Редактиране на списък"
 
 #: capplets/file-types/file-types-capplet.c:821
 msgid "Add New MIME Type..."
-msgstr ""
+msgstr "Добавя нов MIME тип..."
 
 #: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
-msgstr ""
+msgstr "Изтрива този MIME тип"
 
 #: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
-msgstr ""
+msgstr "Възстановява подразбиращите се системни"
 
 #: capplets/file-types/file-types-capplet.c:1082
 #: capplets/file-types/file-types-capplet.c:1226
 msgid "None"
-msgstr ""
+msgstr "Без"
 
 #: capplets/file-types/file-types-capplet.c:1331
 msgid ""
@@ -428,156 +438,160 @@ msgid ""
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
+"Възстановяването към подразбиращитете се системни ще загуби всички\n"
+"промени които сте направили за типа на файла и програми.\n"
+"Да възстановя?"
 
 #: capplets/file-types/file-types-capplet.c:1441
 #: capplets/file-types/file-types-capplet.c:1627
 #: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
-msgstr ""
+msgstr "Преглед като %s"
 
 #: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
-msgstr ""
+msgstr "Разширение"
 
 #: capplets/file-types/file-types-capplet.c:1892
 msgid "Default Action"
-msgstr ""
+msgstr "Подразбиращо се действие"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
 msgid "File Types and Programs"
-msgstr ""
+msgstr "Тип файлове и Програми"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:2
 msgid "Specify which programs are used to open or view each file type"
-msgstr ""
+msgstr "Задава кои програми се използват за отваряне или преглед за всеки тип"
 
 #: capplets/file-types/file-types-icon-entry.c:381
 msgid "Select an icon"
-msgstr ""
+msgstr "Избор на икона"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
-msgstr ""
+msgstr "Редактор на гноме"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 msgid "Run In Terminal"
-msgstr ""
+msgstr "Изпълнява в терминал"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:1
 msgid "Choose the editor that is invoked by gnome-edit"
-msgstr ""
+msgstr "Избор на редактор който се извиква от gnome-edit"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:2
 msgid "Default Editor"
-msgstr ""
+msgstr "Подразбиращ се редактор"
 
 #: capplets/keyboard-properties/keyboard-properties.c:250
 msgid "Keyboard bell"
-msgstr ""
+msgstr "Клавиатурен звук"
 
 #: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
-msgstr ""
+msgstr "Сила на звука"
 
 #: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
-msgstr ""
+msgstr "Честота (Hz)"
 
 #: capplets/keyboard-properties/keyboard-properties.c:264
 msgid "Duration (ms)"
-msgstr ""
+msgstr "Продължителност (ms)"
 
 #: capplets/keyboard-properties/keyboard-properties.c:276
-#, fuzzy
 msgid "Test"
-msgstr "Завъртане"
+msgstr "Проверка"
 
 #: capplets/keyboard-properties/keyboard-properties.c:294
 msgid "Keyboard repeat rate"
-msgstr ""
+msgstr "Повторение на клавиш"
 
 #: capplets/keyboard-properties/keyboard-properties.c:304
 msgid "Enable auto-repeat"
-msgstr ""
+msgstr "Разрешено авто-повторение"
 
 #: capplets/keyboard-properties/keyboard-properties.c:313
 msgid "Repeat rate"
-msgstr ""
+msgstr "Степен на повторение"
 
 #: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
-msgstr ""
+msgstr "Задръжка на повторение"
 
 #: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
-msgstr ""
+msgstr "Кликване на калвиатура"
 
 #: capplets/keyboard-properties/keyboard-properties.c:327
 msgid "Click on keypress"
-msgstr ""
+msgstr "Клкване при натиснат клавиш"
 
 #: capplets/keyboard-properties/keyboard-properties.c:336
 msgid "Click volume"
-msgstr ""
+msgstr "Сила на звука"
 
 #: capplets/keyboard-properties/keyboard-properties.c:347
 msgid "Test settings"
-msgstr ""
+msgstr "Настройки на тест"
 
 #: capplets/keyboard-properties/keyboard-properties.c:410
 msgid ""
 "No help is available/installed for these settings. Please make sure you\n"
 "have the GNOME User's Guide installed on your system."
 msgstr ""
+"Няма налична Помощ за тези настройки. Моля убедете се, че\n"
+"имате инсталирано Потребителско ръководство за GNOME на системата."
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
-#, fuzzy
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
-msgstr "Цветове:"
+msgstr "Затваря"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
+"появи се грешка по време на инициализация на 'keyboard-properties-capplet'.\n"
+"прекъсвам...\n"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:1
 msgid "Keyboard"
-msgstr ""
+msgstr "Клавиатура"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:2
 msgid "Keyboard Properties"
-msgstr ""
+msgstr "Настройка на клавиатура"
 
 #: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
-msgstr ""
+msgstr "Бутони на мишка"
 
 #: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
-msgstr ""
+msgstr "Лява ръка"
 
 #: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
-msgstr ""
+msgstr "Дясна ръка"
 
 #. Mouse motion
 #: capplets/mouse-properties/mouse-properties.c:291
 msgid "Mouse motion"
-msgstr ""
+msgstr "Бутон на мишка"
 
 #: capplets/mouse-properties/mouse-properties.c:301
-#, fuzzy
 msgid "Acceleration"
-msgstr "Атракция"
+msgstr "Ускорение"
 
 #: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
@@ -596,79 +610,80 @@ msgstr "Бавно"
 #: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 msgid "Threshold"
-msgstr ""
+msgstr "Стъпка"
 
 #: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
 msgid "Large"
-msgstr "Голямо"
+msgstr "Голяма"
 
 #: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
 msgid "Small"
-msgstr "Малко"
+msgstr "Малка"
 
 #: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
+"появи се грешка при инициализация на 'mouse-properties-capplet'.\n"
+"прекъсвам...\n"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:1
-#, fuzzy
 msgid "Mouse"
-msgstr "Повече"
+msgstr "Мишка"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:2
 msgid "Mouse Properties"
-msgstr ""
+msgstr "Настройка на мишка"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
-msgstr ""
+msgstr "Изисква парола"
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 msgid "Use power management."
-msgstr ""
+msgstr "Използва мениджъра на захранване."
 
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
 msgid "No Screensaver"
-msgstr ""
+msgstr "Без предпазител на екран"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 msgid "Random Screensaver"
-msgstr ""
+msgstr "Случайни предпазители"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
-msgstr ""
+msgstr "Настройки..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
-msgstr ""
+msgstr "Случайни настройки"
 
-#: capplets/screensaver-properties/callbacks.c:501
+#: capplets/screensaver-properties/callbacks.c:510
 #, c-format
 msgid "%s Settings..."
-msgstr ""
+msgstr "%s Настойки..."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:1
 msgid "3D Clock"
-msgstr "Триизмерно време"
+msgstr "Тримерен часовник"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:2
 msgid "Bernd Paysan"
-msgstr "Bernd Paysan, Превод: Дилян Палаузов"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:3
 msgid "Changes the magnification of original picture."
-msgstr "Променя увебичението на оригиналната картинка."
+msgstr "Променя увеличението на оригиналната картинка."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:5
 msgid "High"
@@ -696,16 +711,15 @@ msgstr "Настройва времето за местене."
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:21
-#, fuzzy
 msgid "Size"
-msgstr "Големина:"
+msgstr "Размер"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:19
 msgid "Size:"
-msgstr "Големина:"
+msgstr "Размер:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:24
@@ -728,7 +742,6 @@ msgstr ""
 "работната ви станция с нейните много XКамъни прави нещо."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:18
-#, fuzzy
 msgid "Twist"
 msgstr "Завъртане"
 
@@ -738,12 +751,11 @@ msgstr "Скорост на завъртане:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:20
 msgid "Twist:"
-msgstr "Завъртане"
+msgstr "Завъртане:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:21
-#, fuzzy
 msgid "Wobble"
-msgstr "Колебание:"
+msgstr "Колебание"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:22
 msgid "Wobble:"
@@ -762,7 +774,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:2
 msgid "Ant"
-msgstr "Мраки"
+msgstr "Мравки"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:3
 msgid "Ants:"
@@ -794,9 +806,8 @@ msgstr "Променя големината на мравките."
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:8
-#, fuzzy
 msgid "Count"
-msgstr "Брой:"
+msgstr "Брой"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:7
 msgid "David Bagely"
@@ -836,7 +847,6 @@ msgstr ""
 "Косатки, делфини и акули плуват насам-натам в триизмерното пространство."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:1
-#, fuzzy
 msgid "A show of objects interacting through attractive and repulsive forces."
 msgstr ""
 "Представление на обекти, които си взаимодействат, чрез забавни и отблъсващи "
@@ -903,9 +913,8 @@ msgstr "Променя началното разстояние между точките"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:5
-#, fuzzy
 msgid "Closer"
-msgstr "По-бавно"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:12
@@ -951,7 +960,7 @@ msgstr "Брой:"
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:8
 msgid "Delay"
-msgstr ""
+msgstr "Задръжка"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:13
 msgid "Distance of attraction."
@@ -998,9 +1007,8 @@ msgid "Faster"
 msgstr "По-бързо"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:16
-#, fuzzy
 msgid "Glow"
-msgstr "Бавно"
+msgstr "Жар"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:17
 msgid "Have initial forces on each point be tangential to original circle."
@@ -1037,7 +1045,7 @@ msgstr "Космос"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:24
 msgid "Radius"
-msgstr ""
+msgstr "Радиус"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:26
 msgid "Size of point."
@@ -1174,7 +1182,7 @@ msgstr "Променя екрана на черно/бял."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:7
 msgid "Delay2"
-msgstr ""
+msgstr "Задръжка2"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:14
@@ -1254,7 +1262,7 @@ msgstr "Показва защитния екран в черно/бял режим."
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:4
 msgid "Monochrome"
-msgstr ""
+msgstr "Монохромен"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:12
 msgid "Rotates a bitmap in an interesting way."
@@ -1265,14 +1273,13 @@ msgid "Speed of rotation"
 msgstr "Скорост на завъртане"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:15
-#, fuzzy
 msgid "Speed of the 90 degree rotation."
-msgstr "Скорост на завъртане"
+msgstr "Скорост на завъртане на 90 градуса"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:1
 msgid "3D"
-msgstr ""
+msgstr "3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:2
 msgid "A blob of bubbles spinning/moving around the screen."
@@ -1339,9 +1346,8 @@ msgstr "Променя броя на използваните цветове."
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:3
-#, fuzzy
 msgid "Colors"
-msgstr "Цветове:"
+msgstr "Цветове"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:5
@@ -1401,7 +1407,7 @@ msgstr "Брой на използваните точки."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:22
 msgid "Use red/blue 3d seperation."
-msgstr "Използвай чермено/синьо 3d разделение."
+msgstr "Използвай червено/синьо 3d разделение."
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:1
 msgid "Braid"
@@ -1410,8 +1416,8 @@ msgstr "Панделка"
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:7
 msgid "John Neil <neil@math.idbsu.edu>"
 msgstr ""
-"John Neil <neil@math.idbsu.edu>, Превод: Длиян Палаузов "
-"<didopalauzov@uk2.net>"
+"John Neil <neil@math.idbsu.edu>, Превод: Длиян Палаузов <didopalauzov@uk2."
+"net>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:21
@@ -1443,7 +1449,6 @@ msgid "Bsod simulates crash screens from other operating systems."
 msgstr "BSoD симулира син екран от други операционни системи."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bsod.desktop.in.h:4
-#, fuzzy
 msgid "Change the delay."
 msgstr "Променя времето между два цикъла."
 
@@ -1457,7 +1462,7 @@ msgstr "Сума балончета плуващи насам-натам в пространството."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:2
 msgid "Broken"
-msgstr ""
+msgstr "Счупен"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:3
 msgid "Bubbles"
@@ -1516,7 +1521,7 @@ msgstr "Известната клетка на M.C.Escher"
 
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:1
 msgid "Compass"
-msgstr ""
+msgstr "Компас"
 
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:2
 msgid "Display a spinning compass "
@@ -1528,22 +1533,20 @@ msgid "Change the density."
 msgstr "Променя броя."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of seeds."
 msgstr "Променя използвания брой."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:4
 msgid "Coral"
-msgstr ""
+msgstr "Корал"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:6
 msgid "Denser"
 msgstr "Гъсто"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:7
-#, fuzzy
 msgid "Density"
-msgstr "Гъсто"
+msgstr "Гъстота"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:9
 msgid "Frederick Roeber"
@@ -1554,9 +1557,8 @@ msgid "Number of seeds"
 msgstr "Брой семена"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:11
-#, fuzzy
 msgid "Seeds"
-msgstr "Скорост"
+msgstr "Скорости"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:12
 msgid "Simulates coral growth"
@@ -1576,32 +1578,31 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:2
 msgid "Display coloured polylines"
-msgstr ""
+msgstr "Показва оцветени линии"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:1
 msgid "Cell"
-msgstr ""
+msgstr "Клетка"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:2
 msgid "Center image."
-msgstr ""
+msgstr "Центрирана картинка."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:3
 msgid "Centre"
-msgstr ""
+msgstr "Център"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:6
-#, fuzzy
 msgid "Change the number of polygons to use."
 msgstr "Сменя броя на точките, които се паказват."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:12
 msgid "Crystal"
-msgstr ""
+msgstr "Кристал"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:16
 msgid "Have at maximum size"
-msgstr ""
+msgstr "Има максимален размер"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:17
 msgid "Jouk Jansen"
@@ -1609,16 +1610,15 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:18
 msgid "Maxsize"
-msgstr ""
+msgstr "Максимален размер"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:20
 msgid "Moving polygons, similar to a kaleidescope."
-msgstr ""
+msgstr "Движещ се полигон, подобно на калейдоскоп."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:22
-#, fuzzy
 msgid "Number of polygons to use."
-msgstr "Брой точки за показване"
+msgstr "Брой точки за показване."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:3
 msgid "Change the number of iterations."
@@ -1637,9 +1637,8 @@ msgid "Franticly displays colored rectangles."
 msgstr "Шеметно показва оцветени правоъгълничета."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:13
-#, fuzzy
 msgid "Iterations"
-msgstr "Атракция"
+msgstr "Итерации"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:14
@@ -1648,7 +1647,7 @@ msgstr "Атракция"
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:10
 msgid "Less"
-msgstr ""
+msgstr "По-малко"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:19
@@ -1700,16 +1699,15 @@ msgstr "Декорация"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:4
 msgid "Deco draws tacky 70s basement wall panelling."
-msgstr "Декорация демоснстрира ограниченото боядисване на 70те."
+msgstr "Декорация демонстрира ограниченото боядисване на 70те."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:5
 msgid "Determines whether to draw the panels in color, or in black and white."
 msgstr "Определя дали да чертае блоковете цветно или черно/бяло."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:6
-#, fuzzy
 msgid "Draw tacky 70s basement wall panelling."
-msgstr "Декорация демоснстрира ограниченото боядисване на 70те."
+msgstr "Декорация демонстрира ограниченото боядисване на 70те."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:7
 msgid ""
@@ -1717,8 +1715,8 @@ msgid ""
 "Michael D. Bayne <mdb@go2net.com>"
 msgstr ""
 "Jamie Zawinski <jwz@jwz.org>\n"
-"Michael D. Bayne <mdb@go2net.com>, Превод: Дилян Палаузов "
-"<didopalauzov@dir.bg>"
+"Michael D. Bayne <mdb@go2net.com>, Превод: Дилян Палаузов <didopalauzov@dir."
+"bg>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:8
 msgid "This will cause the panes to flash."
@@ -1731,21 +1729,20 @@ msgstr "Период между преначертаване."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:10
 msgid "Use color when drawing."
-msgstr ""
+msgstr "Използва цвят при чертаенето."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:11
-#, fuzzy
 msgid "color"
-msgstr "Цветове:"
+msgstr "Цвят"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:12
 msgid "color-cycle"
-msgstr ""
+msgstr "Цветен цикъл"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:23
 msgid "delay"
-msgstr ""
+msgstr "задръжка"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:14
 msgid "seconds"
@@ -1766,9 +1763,8 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Demon.desktop.in.h:2
-#, fuzzy
 msgid "Demon"
-msgstr "Декорация"
+msgstr "Демон"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:3
@@ -1778,9 +1774,8 @@ msgid "Change the number to use."
 msgstr "Променя използвания брой."
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:10
-#, fuzzy
 msgid "Discrete"
-msgstr "Изкривяване"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:11
 msgid "Discrete map systems"
@@ -1819,18 +1814,17 @@ msgstr "Указва дали да се увеличават използваните елементи."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:6
 msgid "Change whether to use lissajous figures to get points."
-msgstr "Виж предното"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:13
 msgid "Drift"
-msgstr "Космос"
+msgstr "Течение"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:14
 msgid "Drift draws drifting recursive fractal cosmic flames."
 msgstr "Чертае многократно хвърчащ междупланетен прах."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:15
-#, fuzzy
 msgid "Drifting recursive fractal cosmic flames."
 msgstr "Чертае многократно хвърчащ междупланетен прах."
 
@@ -1840,11 +1834,11 @@ msgstr "Нарастващи елементи."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:18
 msgid "Grow"
-msgstr ""
+msgstr "Нараства"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:19
 msgid "Lissajous"
-msgstr ""
+msgstr "Лисажу"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:22
 msgid "Number of pixels to use."
@@ -1889,7 +1883,6 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:17
-#, fuzzy
 msgid "Seconds"
 msgstr "секунди"
 
@@ -1908,12 +1901,12 @@ msgstr "Летяща панделка"
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:2
 msgid "Bas van Gaalen and Charles Vidal"
 msgstr ""
-"Bas van Gaalen and Charles Vidal, Превод: Дилян Палаузов "
-"<didopalauzov@dir.bg>"
+"Bas van Gaalen and Charles Vidal, Превод: Дилян Палаузов <didopalauzov@dir."
+"bg>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:3
 msgid "Change the delay in movement."
-msgstr "Променя забавянето н адвиженията."
+msgstr "Променя забавянето на движенията."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:5
 msgid "Change the number of cycles."
@@ -1933,11 +1926,11 @@ msgstr "Променя броя."
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:10
 msgid "Cycles"
-msgstr ""
+msgstr "Цикли"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:15
 msgid "Draws what looks like a waving ribbon following a sinusoidal path."
-msgstr "ЧЕртае нещо, което прилича на панделка, летяща по синусоида."
+msgstr "Чертае нещо, което прилича на панделка, летяща по синусоида."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:16
 msgid "Fadeplot"
@@ -1953,7 +1946,6 @@ msgstr "Брой на циклите."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:24
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:14
-#, fuzzy
 msgid "Speed of Motion"
 msgstr "Скорост на движение"
 
@@ -1999,20 +1991,17 @@ msgstr "Размер на точките:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flow.desktop.in.h:1
 msgid "Draws a flow of colored points"
-msgstr ""
+msgstr "Изчертава поток от оцветени точки"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flow.desktop.in.h:2
-#, fuzzy
 msgid "Flow"
-msgstr "Бавно"
+msgstr "Поток"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of trees to use."
-msgstr "Сменя броя на точките, които се паказват."
+msgstr "Сменя броя на дърветата за използване."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:10
-#, fuzzy
 msgid "Delay between redraws."
 msgstr "Период между преначертаване."
 
@@ -2021,9 +2010,8 @@ msgid "Draws a fractal forest."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:14
-#, fuzzy
 msgid "Forest"
-msgstr "Бързо"
+msgstr "Гора"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:15
 msgid "Fractal draws a fractal forest."
@@ -2076,7 +2064,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:13
 msgid "Have transparent bubbles."
-msgstr ""
+msgstr "Прозрачни мехурчета"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:9
@@ -2124,7 +2112,7 @@ msgstr "Декорация"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:12
 msgid "Draws a simple orbital simulation."
-msgstr ""
+msgstr "Изчетрава проста орбитална симулация"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:13
 msgid "Grav"
@@ -2152,37 +2140,32 @@ msgid "Orbit should decay."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:21
-#, fuzzy
 msgid "Trail"
-msgstr "Панделка"
+msgstr "Следа"
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:5
-#, fuzzy
 msgid "Draws random color rectangles."
-msgstr "Шеметно показва оцветени правоъгълничета."
+msgstr "Чертае случайни оцветени правоъгълничета."
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:7
 msgid "Greynetic"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:8
-#, fuzzy
 msgid "Greynetic draws random rectangles."
-msgstr "Шеметно показва оцветени правоъгълничета."
+msgstr "Генерира изчертаване на оцветени правоъгълничета."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:1
-#, fuzzy
 msgid "Animate"
-msgstr "Мраки"
+msgstr "Анимира"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:2
 msgid "Animate circles."
-msgstr ""
+msgstr "Анимира кръгчета"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:4
-#, fuzzy
 msgid "Change the number of circles to use."
-msgstr "Променя броя на използваните цветове."
+msgstr "Променя броя на използваните кръгчета."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:6
 msgid "Change to alternating striped curves."
@@ -2201,12 +2184,11 @@ msgstr "Период между цветовете."
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:2
 msgid "Cycle"
-msgstr ""
+msgstr "Цикъл"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:15
-#, fuzzy
 msgid "Cycle through colormap."
-msgstr "Период между цветовете."
+msgstr "Цикъл между цветовете."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:18
 msgid "Draw circular patterns."
@@ -2221,9 +2203,8 @@ msgid "Halo draws patterns based on circles."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:23
-#, fuzzy
 msgid "Mode"
-msgstr "Повече"
+msgstr "Режим"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:26
 #, fuzzy
@@ -2232,7 +2213,7 @@ msgstr "Брой на използваните точки."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:29
 msgid "Use a gradient of colors between circles."
-msgstr ""
+msgstr "Използва градиент от цветове между кръгчета."
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:5
 msgid "Draws helical string-art patterns"
@@ -2257,9 +2238,8 @@ msgid "Time between redraws."
 msgstr "Период между преначертаване."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of pixels before a color change."
-msgstr "Променя броя на итерациите."
+msgstr " "
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:10
 msgid "Draws real plane fractals"
@@ -2274,9 +2254,8 @@ msgid "Hopalong generates real plan fractals."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:18
-#, fuzzy
 msgid "Number of pixels before a color change."
-msgstr "Брой на използваните точки."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:19
 msgid "Patrick J. Naughton <naughton@eng.sun.com>"
@@ -2287,21 +2266,20 @@ msgid "2D projection of a hypercube"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:3
-#, fuzzy
 msgid "Change the distance from center of cube"
-msgstr "Прменя броя на циклите."
+msgstr "Прменя разстоянието от центъра на куба."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:8
 msgid "Distance"
-msgstr ""
+msgstr "Разстояние"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:9
 msgid "Distance from center of cube"
-msgstr ""
+msgstr "Разстояние от центъра на куба"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:12
 msgid "Hypercube"
-msgstr ""
+msgstr "Хиперкуб"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:13
 msgid "Hypercube displays a wireframe projection of a hypercube."
@@ -2329,7 +2307,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Interference.desktop.in.h:1
 msgid "Interference"
-msgstr ""
+msgstr "Интерференция"
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:5
 msgid "Jigsaw"
@@ -2377,16 +2355,15 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:9
 msgid "Kaleidescope"
-msgstr ""
+msgstr "Калейдоскоп"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:10
 msgid "Kaleidescope draws line segments in a symmetric pattern."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:14
-#, fuzzy
 msgid "Number of segments."
-msgstr "Брой на мравките"
+msgstr "Брой на сегментите"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:15
 #, fuzzy
@@ -2400,7 +2377,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:16
 msgid "Segments"
-msgstr ""
+msgstr "Сегменти"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:20
 msgid "Trails"
@@ -2430,9 +2407,8 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:9
-#, fuzzy
 msgid "Duration"
-msgstr "Атракция"
+msgstr "Продължителност"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:7
 msgid "Duration of laser burst."
@@ -2445,19 +2421,17 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:9
-#, fuzzy
 msgid "Laser"
-msgstr "По-бързо"
+msgstr "Лазер"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:10
-#, fuzzy
 msgid "Longer"
-msgstr "По-голямо"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:11
 msgid "Mono"
-msgstr ""
+msgstr "Моно"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:12
 #, fuzzy
@@ -2470,13 +2444,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:14
 msgid "Segments:"
-msgstr ""
+msgstr "Сегменти:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:18
-#, fuzzy
 msgid "Shorter"
-msgstr "По-бавно"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:16
 #, fuzzy
@@ -2504,13 +2477,12 @@ msgid "Caleb Cullen"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:5
-#, fuzzy
 msgid "Change the size of object."
-msgstr "Променя големината на мравките."
+msgstr "Променя големината на обектите."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:13
 msgid "Draws animated full-loop lisajous figures"
-msgstr ""
+msgstr "Изчертава анимирани фигури на Лисажу"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:16
 msgid "Lisa"
@@ -2521,18 +2493,16 @@ msgid "Lisa draws animated full-loop lisajous figures."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:22
-#, fuzzy
 msgid "Size of object."
-msgstr "Големина на точка."
+msgstr "Големина на обект."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lissie.desktop.in.h:1
 msgid "Lissie"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:1
-#, fuzzy
 msgid "Change from closed to open figures."
-msgstr "Променя броя на използваните цветове."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:2
 #, fuzzy
@@ -2561,26 +2531,24 @@ msgid "Number of interpolation steps."
 msgstr "Брой итерации."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:17
-#, fuzzy
 msgid "Number of points."
-msgstr "Брой на мравките"
+msgstr "Брой на точки"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:18
 msgid "Open figures."
-msgstr ""
+msgstr "Отворени фигури"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:19
 msgid "Points"
-msgstr ""
+msgstr "Точки"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:20
-#, fuzzy
 msgid "Points:"
-msgstr "Мравки:"
+msgstr "Точки:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:23
 msgid "Steps"
-msgstr ""
+msgstr "Стъпки:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:24
 msgid ""
@@ -2597,9 +2565,8 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:1
-#, fuzzy
 msgid "Bridge"
-msgstr "Панделка"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:2
 msgid "Color for filling completely closed off areas."
@@ -2619,7 +2586,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:6
 msgid "Color of surrounded area"
-msgstr ""
+msgstr "Цвят на обкръжаващотото пространство"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:7
 msgid "Controls whether or not a 'bridge' will appear over the logo."
@@ -2638,20 +2605,16 @@ msgid "Delay between drawing the maze and starting the solution."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:11
-#, fuzzy
 msgid "Delay between each step in the maze."
-msgstr "Забави между преходи."
+msgstr "Задръжка между всяка стъпка в мазето."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:12
 msgid "Delay between finishing the maze and starting a new one."
-msgstr ""
+msgstr "Време между завършването в мазе и започването на нова игра"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr ""
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
@@ -2664,11 +2627,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:16
 msgid "Maze"
-msgstr ""
+msgstr "Мазе"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:17
 msgid "More Delay"
-msgstr ""
+msgstr "Повече задръжка"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:18
 msgid "Post-Solving Delay"
@@ -2696,9 +2659,8 @@ msgid "Speed Delay"
 msgstr "Скорост"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:24
-#, fuzzy
 msgid "Surround Color"
-msgstr "Брой цветове"
+msgstr "Заобикалящ цвят"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:26
 #, no-c-format
@@ -2750,12 +2712,11 @@ msgstr "Jamie Zawinski <jwz@netscape.com> Превод: Длиян Палаузов"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:12
 msgid "Maximum radius increment"
-msgstr ""
+msgstr "Максимално увеличение на радиус"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:13
-#, fuzzy
 msgid "Moire"
-msgstr "Повече"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:14
 msgid "Moire draws circular interference patterns."
@@ -2763,12 +2724,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:17
 msgid "Offset"
-msgstr ""
+msgstr "Отместване"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire2.desktop.in.h:1
-#, fuzzy
 msgid "Moire2"
-msgstr "Повече"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Morph3d.desktop.in.h:1
 msgid "A 3d flower morphs into a sphear"
@@ -2807,9 +2767,8 @@ msgid "Munching squares."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:13
-#, fuzzy
 msgid "Shift"
-msgstr "Космос"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:16
 msgid "Tim  Showalter  <tjs@andrew.cmu.edu>"
@@ -2851,9 +2810,8 @@ msgid "Fadedelay"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:11
-#, fuzzy
 msgid "Maximum number of lines."
-msgstr "Брой на мравките"
+msgstr "Максимален брой на линии"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:12
 msgid "Maxlines"
@@ -2877,7 +2835,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:20
 msgid "Time to show each picture."
-msgstr ""
+msgstr "Време за показване на всяка картинка"
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:1
 msgid "Display an arcade game"
@@ -2888,9 +2846,8 @@ msgid "Penetrate"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Penrose.desktop.in.h:1
-#, fuzzy
 msgid "Penrose"
-msgstr "Гъсто"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Phosphor.desktop.in.h:1
 msgid ""
@@ -2903,13 +2860,12 @@ msgid "Phosphor"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:1
-#, fuzzy
 msgid "3d pipes flow around the screen"
-msgstr "Изкривява екрана"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:2
 msgid "Pipes"
-msgstr ""
+msgstr "Тръби"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:1
 msgid "Changes frequency of missile launch."
@@ -2937,9 +2893,8 @@ msgid "Jamie Zawinski"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:12
-#, fuzzy
 msgid "Number of particles"
-msgstr "Брой на циклите."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:13
 msgid "Particles on screen"
@@ -2950,9 +2905,8 @@ msgid "Pyro"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:15
-#, fuzzy
 msgid "Scatter"
-msgstr "По-бързо"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:17
 msgid "The pyro program simulates fireworks."
@@ -2967,9 +2921,8 @@ msgid "Bounce colored lines around a window."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:2
-#, fuzzy
 msgid "Changes the speed at which the Qix moves."
-msgstr "Променя големината на мравките."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:5
 msgid ""
@@ -2978,10 +2931,8 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:6
-#, fuzzy
 msgid "Determines whether to fill in the gaps between the lines."
 msgstr ""
-"Установява дали мравките ще оставят или не следа по пътя, по който са минали."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:7
 msgid "Draw solid Qix."
@@ -2992,9 +2943,8 @@ msgid "Length of the Trail:"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:12
-#, fuzzy
 msgid "Number of Qix:"
-msgstr "Брой на мравките"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:13
 msgid "Qix"
@@ -3030,14 +2980,12 @@ msgid "Sets the number of line segments to be drawn."
 msgstr "Сменя броя на точките, които се паказват."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:25
-#, fuzzy
 msgid "Speed:"
-msgstr "Скорост"
+msgstr "Скорост:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:26
-#, fuzzy
 msgid "Spread"
-msgstr "Скорост"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:27
 msgid "Width of segment:"
@@ -3093,7 +3041,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Rotor.desktop.in.h:1
 msgid "Rotor"
-msgstr ""
+msgstr "Ротор"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:1
 msgid "A 3d Rubiks cube floats and twists around"
@@ -3101,7 +3049,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:2
 msgid "Rubiks Cube"
-msgstr ""
+msgstr "Куб на Рубик"
 
 #: capplets/screensaver-properties/screensaver-desktops/Shadebobs.desktop.in.h:1
 msgid ""
@@ -3139,12 +3087,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:2
 msgid "Sonar"
-msgstr ""
+msgstr "Сонар"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sphere.desktop.in.h:1
-#, fuzzy
 msgid "Sphere"
-msgstr "Скорост"
+msgstr "Сфера"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:11
 msgid "Darrick Brown, Peter Schmitzberger, and Jamie Zawinski"
@@ -3152,7 +3099,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:20
 msgid "Spiral"
-msgstr ""
+msgstr "Спирала"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:21
 msgid "The spiral program draws moving circular spiral patterns."
@@ -3184,25 +3131,23 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Stairs.desktop.in.h:1
 msgid "Stairs"
-msgstr ""
+msgstr "Стъпала"
 
 #: capplets/screensaver-properties/screensaver-desktops/Stairs.desktop.in.h:2
-#, fuzzy
 msgid "The famous, M.C. Escher, impossible stairs"
-msgstr "Известната клетка на M.C.Escher"
+msgstr "Известната клетка на M.C.Escher "
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:1
 msgid " Random)"
-msgstr ""
+msgstr " Случаен)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:2
 msgid "Blob"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:3
-#, fuzzy
 msgid "Change the animation step delay."
-msgstr "Променя използвания брой."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:4
 #, fuzzy
@@ -3210,14 +3155,12 @@ msgid "Change the number of colors to use in star."
 msgstr "Променя броя на използваните цветове."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:5
-#, fuzzy
 msgid "Change the quickness of rotation at each step."
-msgstr "Сменя броя на точките, които се паказват."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:6
-#, fuzzy
 msgid "Change the thickness of color bands."
-msgstr "Променя броя на използваните цветове."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:10
 msgid "Duration of current shape."
@@ -3232,9 +3175,8 @@ msgid "Make a star like formation using arcs."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:16
-#, fuzzy
 msgid "Rotation"
-msgstr "Атракция"
+msgstr "Ротация"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:18
 msgid "Slim"
@@ -3256,9 +3198,8 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:23
-#, fuzzy
 msgid "Thickness"
-msgstr "Рядко"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:24
 msgid "Use raw shapes "
@@ -3318,11 +3259,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Worm.desktop.in.h:1
 msgid "Worm"
-msgstr ""
+msgstr "Червей"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:1
 msgid "Display flames at the bottom of the screen"
-msgstr ""
+msgstr "Показва пламъци в долната част на екрана"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:2
 msgid "Xflame"
@@ -3355,26 +3296,24 @@ msgid "The  xroger  program displays a replacement for the X logo."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
-#, fuzzy
 msgid "Xroger"
-msgstr "По-голямо"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:1
 msgid "Bars"
-msgstr ""
+msgstr "Ленти"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:3
 msgid "Cycle modes."
-msgstr ""
+msgstr "Режими на цикъл."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:4
-#, fuzzy
 msgid "Cycle through all the available modes."
-msgstr "Период между цветовете."
+msgstr "Цикъл през всички налични режими."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:5
 msgid "Display color bars."
-msgstr ""
+msgstr "Показва цветни ленти"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:6
 msgid "Display static."
@@ -3411,156 +3350,172 @@ msgid "Xteevee"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-dialog.c:46
-#, fuzzy
 msgid "About:"
-msgstr "Брой:"
+msgstr "За:"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:51
 msgid "Author:"
-msgstr ""
+msgstr "Автор:"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:61
 msgid "Author: UNKNOWN"
-msgstr ""
+msgstr "Автор: НЕИЗВЕСТЕН"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:78
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
-msgstr ""
+msgstr "СЛУЧАЕН ПРЕДПАЗИТЕЛ"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
-msgstr ""
+msgstr "Предпазител на екрана"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+msgid "Pressing this button will preview current screensaver."
+msgstr ""
+"Натискането на този бутон ще покаже предварителен преглед на текущия "
+"предазител на екрана"
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
 msgstr ""
+"Натискайки този бутон ще се появи диалогово меню което ще ви помогне да "
+"настроите текущия предпазител на екрана."
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 msgid "Screen Saver Settings"
-msgstr ""
+msgstr "Настройки на Предпазителя на екрана"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
-msgstr ""
+msgstr "Стартира след"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 msgid " Minutes."
-msgstr ""
+msgstr " Минути"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 msgid "Priority:"
-msgstr ""
+msgstr "Приоритет:"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 msgid "Low "
 msgstr "Ниско"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
-msgstr ""
+msgstr " Нормално"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
-msgstr ""
+msgstr "Монитор за спиране на системата"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
-msgstr ""
+msgstr " минути след като предпазителя на екрана е стартиран"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 msgid "Screen Saver Demo"
-msgstr ""
+msgstr "Демонстрация на предпазител на екрана"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:1
-#, fuzzy
 msgid "Configure the settings of the screensaver"
-msgstr "Променя големината на мравките."
+msgstr "Конфигуриране настройките на предпазителя на екрана"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:2
 msgid "Screensaver"
-msgstr ""
+msgstr "Предпазител на екран"
 
 #: capplets/sound-properties/sound-properties.c:97
 msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
-msgstr ""
+msgstr "появи се грешка при инициализиране на 'sound-properties-capplet'."
 
-#: capplets/sound-properties/sound-properties.c:188
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
-msgstr ""
+msgstr "Събитие"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
-msgstr ""
-
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr ""
+msgstr "Файл за просвирване"
 
 #: capplets/sound-properties/sound-properties.c:250
-msgid "Enable sound server startup"
-msgstr ""
+msgid "Sound server"
+msgstr "Звуков сървър"
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:257
+msgid "Enable sound server startup"
+msgstr "Разрешава звуков сървър при стартиране"
+
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
+msgstr "Звуци за събития"
+
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
 msgstr ""
 
 #: capplets/sound-properties/sound-properties.c:279
-#, fuzzy
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr ""
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
-msgstr "Гъсто"
+msgstr "Основни"
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
-msgstr ""
+msgstr "Избор на звуков файл"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
-msgstr ""
+msgstr "Свири"
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
-msgstr ""
+msgstr "Звукови събития"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr ""
+"Това копие от Контролен център на GNOME не е компилирано за поддръжка на звук"
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
-msgstr ""
+msgstr "Звуковият файл за това събитие не съществува."
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
 "for a set of default sounds."
 msgstr ""
+"Звуковият файл за това събитие не съществува.\n"
+"Вие може да инсталирате пакета gnome-audio\n"
+"за набор от подразбиращи се звуци"
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:1
 msgid "Configure GNOME's use of sound"
-msgstr ""
+msgstr "Конфигуриране използването на звук от GNOME"
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:2
 msgid "Sound"
-msgstr ""
+msgstr "Звук"
 
 #: capplets/theme-switcher/demo.c:50
 msgid "One"
-msgstr ""
+msgstr "Едно"
 
 #: capplets/theme-switcher/demo.c:50
 msgid "Two"
-msgstr ""
+msgstr "Две"
 
 #. just 8 short names that will serve as samples for titles in demo
 #: capplets/theme-switcher/demo.c:52
@@ -3576,18 +3531,16 @@ msgid "Mynie"
 msgstr ""
 
 #: capplets/theme-switcher/demo.c:53
-#, fuzzy
 msgid "Moe"
-msgstr "Повече"
+msgstr ""
 
 #: capplets/theme-switcher/demo.c:54
 msgid "Catcha"
 msgstr ""
 
 #: capplets/theme-switcher/demo.c:54
-#, fuzzy
 msgid "Tiger"
-msgstr "Рядко"
+msgstr ""
 
 #: capplets/theme-switcher/demo.c:55
 msgid "By Its"
@@ -3599,167 +3552,172 @@ msgstr ""
 
 #: capplets/theme-switcher/demo.c:114
 msgid "Selected themes from above will be tested by previewing here."
-msgstr ""
+msgstr "Избраната тема от наличните ще бъде тествана тук."
 
 #. column one
 #: capplets/theme-switcher/demo.c:119
 msgid "Sample Button"
-msgstr ""
+msgstr "Прост бутон"
 
 #: capplets/theme-switcher/demo.c:123
 msgid "Sample Check Button"
-msgstr ""
+msgstr "Прост бутон за проверка"
 
 #: capplets/theme-switcher/demo.c:128
 msgid "Sample Text Entry Field"
-msgstr ""
+msgstr "Просто поле за въвеждане на текст"
 
 #: capplets/theme-switcher/demo.c:139
 msgid "Submenu"
-msgstr ""
+msgstr "Подменю"
 
 #: capplets/theme-switcher/demo.c:146
 msgid "Item 1"
-msgstr ""
+msgstr "Обект 1"
 
 #: capplets/theme-switcher/demo.c:149
 msgid "Another item"
-msgstr ""
+msgstr "Друг обект"
 
 #: capplets/theme-switcher/demo.c:154
 msgid "Radio Button 1"
-msgstr ""
+msgstr "Радио бутон 1"
 
 #: capplets/theme-switcher/demo.c:160
 msgid "Radio Button 2"
-msgstr ""
+msgstr "Радио бутон 2"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, c-format
 msgid ""
 "Error installing theme:\n"
 "'%s'\n"
 "%s"
 msgstr ""
+"Грешка при инсталиране на тема:\n"
+"'%s'\n"
+"%s"
 
-#: capplets/theme-switcher/gui.c:120
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
-msgstr ""
+msgstr "Избор на теми за инсталиране"
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
-msgstr ""
+msgstr "Налични теми"
 
-#: capplets/theme-switcher/gui.c:221
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
 msgstr ""
+"Авто\n"
+"Предв. преглед"
 
-#: capplets/theme-switcher/gui.c:233
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
 msgstr ""
+"Инсталира нова\n"
+"тема..."
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
-msgstr ""
+msgstr "Потребителски шрифт"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
-msgstr ""
+msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
-msgstr ""
+msgstr "Използва потребителски шрифт."
 
 #: capplets/theme-switcher/install.c:26
 msgid "Home directory doesn't exist!\n"
-msgstr ""
+msgstr "Домашната директория не съществува!\n"
 
 #: capplets/theme-switcher/install.c:36
 msgid "Theme does not exist"
-msgstr ""
+msgstr "Темата не съществува"
 
 #: capplets/theme-switcher/install.c:68
 #, c-format
 msgid "Command '%s' failed"
-msgstr ""
+msgstr "Командата '%s' е неуспешна"
 
 #: capplets/theme-switcher/install.c:73
 msgid "Unknown file format"
-msgstr ""
+msgstr "Неизвестен формат на файл"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:1
 msgid "Select which desktop theme to use"
-msgstr ""
+msgstr "Избира коя тема да използва на Раб. място"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:2
 msgid "Theme Selector"
-msgstr ""
+msgstr "Избор на тема"
 
 #: capplets/ui-properties/application.desktop.in.h:1
-#, fuzzy
 msgid "Applications"
-msgstr "Атлантика"
+msgstr "Приложения"
 
 #: capplets/ui-properties/application.desktop.in.h:2
 msgid "Sets the default feel of GNOME applications"
-msgstr ""
+msgstr "Задава подразбиращите се полета за приложенията на GNOME"
 
 #: capplets/ui-properties/dialogs.desktop.in.h:1
 msgid "Dialogs"
-msgstr ""
+msgstr "Диалози"
 
 #: capplets/ui-properties/mdi.desktop.in.h:1
 msgid "MDI"
-msgstr ""
+msgstr "MDI"
 
 #: capplets/ui-properties/ui-properties.c:54
 msgid "Can detach and move toolbars"
-msgstr ""
+msgstr "Може да отделя и премества лентата с инструменти"
 
 #: capplets/ui-properties/ui-properties.c:59
 msgid "Toolbars have relieved border"
-msgstr ""
+msgstr "Лентата с инструменти има рамка"
 
 #: capplets/ui-properties/ui-properties.c:64
 msgid "Toolbar buttons have relieved border"
-msgstr ""
+msgstr "Бутоните на лентата с инструменти имат рамка"
 
 #: capplets/ui-properties/ui-properties.c:69
 msgid "Toolbars have line separators"
-msgstr ""
+msgstr "Лентата с инструменти има разделител на редове"
 
 #: capplets/ui-properties/ui-properties.c:74
 msgid "Toolbars have text labels"
-msgstr ""
+msgstr "Лентата с инструменти има текстови етикети"
 
 #: capplets/ui-properties/ui-properties.c:103
-#, fuzzy
 msgid "Can detach and move menus"
-msgstr "Променя забавянето н адвиженията."
+msgstr "Променя забавянето на движенията."
 
 #: capplets/ui-properties/ui-properties.c:108
 msgid "Menus have relieved border"
-msgstr ""
+msgstr "Менютата имат рамка"
 
 #: capplets/ui-properties/ui-properties.c:112
 msgid "Submenus can be torn off"
-msgstr ""
+msgstr "Подменю може да бъде изключено"
 
 #: capplets/ui-properties/ui-properties.c:116
 msgid "Menu items have icons"
-msgstr ""
+msgstr "Обектите на Меню имат икони"
 
 #: capplets/ui-properties/ui-properties.c:140
 msgid "Statusbar is interactive when possible"
-msgstr ""
+msgstr "Лентата за състояние е интерактивна когато е възможно"
 
 #: capplets/ui-properties/ui-properties.c:145
 msgid "Statusbar progress meter is on the right"
@@ -3767,23 +3725,23 @@ msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:162
 msgid "Menu Options"
-msgstr ""
+msgstr "Опции на Меню"
 
 #: capplets/ui-properties/ui-properties.c:163
 msgid "Statusbar Options"
-msgstr ""
+msgstr "Опции на лентата за статус"
 
 #: capplets/ui-properties/ui-properties.c:164
 msgid "Toolbar Options"
-msgstr ""
+msgstr "Опции на лентата с инструменти"
 
 #: capplets/ui-properties/ui-properties.c:170
 msgid "Dialog buttons"
-msgstr ""
+msgstr "Бутони на Диалог"
 
 #: capplets/ui-properties/ui-properties.c:171
 msgid "Default value"
-msgstr ""
+msgstr "Подразбираща се стойност"
 
 #: capplets/ui-properties/ui-properties.c:172
 msgid "Spread buttons out"
@@ -3791,68 +3749,67 @@ msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:173
 msgid "Put buttons on edges"
-msgstr ""
+msgstr "Поставя бутоните в края"
 
 #: capplets/ui-properties/ui-properties.c:174
 msgid "Left-justify buttons"
-msgstr ""
+msgstr "Ляво подравнени икони"
 
 #: capplets/ui-properties/ui-properties.c:175
 msgid "Right-justify buttons"
-msgstr ""
+msgstr "Дясно подравнени бутони"
 
 #: capplets/ui-properties/ui-properties.c:180
 msgid "Dialog buttons have icons"
-msgstr ""
+msgstr "Бутоните на Диалога имат икони"
 
 #: capplets/ui-properties/ui-properties.c:185
 msgid "Use statusbar instead of dialog when possible"
-msgstr ""
+msgstr "Използва лентата за статус вместо диалог когат е възможно"
 
 #: capplets/ui-properties/ui-properties.c:207
 msgid "Dialog position"
-msgstr ""
+msgstr "Разположение на Диалога"
 
 #: capplets/ui-properties/ui-properties.c:208
 msgid "Let window manager decide"
-msgstr ""
+msgstr "Нека мениджъра на прозорци да реши"
 
 #: capplets/ui-properties/ui-properties.c:209
-#, fuzzy
 msgid "Center of the screen"
-msgstr "Изкривява екрана"
+msgstr "Центъра на екрана"
 
 #: capplets/ui-properties/ui-properties.c:210
 msgid "At the mouse pointer"
-msgstr ""
+msgstr "На показалеца на мишката"
 
 #: capplets/ui-properties/ui-properties.c:215
 msgid "Dialog hints"
-msgstr ""
+msgstr "Загатвания на диалог"
 
 #: capplets/ui-properties/ui-properties.c:216
 msgid "Dialogs are like other windows"
-msgstr ""
+msgstr "Диалозите са като другите прозорци"
 
 #: capplets/ui-properties/ui-properties.c:217
 msgid "Dialogs are treated specially by window manager"
-msgstr ""
+msgstr "Диалозите се третират специално от мениджъра на прозорци"
 
 #: capplets/ui-properties/ui-properties.c:222
 msgid "Place dialogs over application window when possible"
-msgstr ""
+msgstr "Поставя диалога над прозореца на приложението когато е възможно"
 
 #: capplets/ui-properties/ui-properties.c:243
 msgid "Dialog Layout"
-msgstr ""
+msgstr "Диалог за Подредба"
 
 #: capplets/ui-properties/ui-properties.c:244
 msgid "Dialog Behavior"
-msgstr ""
+msgstr "Диалог за Поведение"
 
 #: capplets/ui-properties/ui-properties.c:250
 msgid "Default MDI Mode"
-msgstr ""
+msgstr "Подразбиращ се MDI режим"
 
 #: capplets/ui-properties/ui-properties.c:251
 msgid "Notebook"
@@ -3860,11 +3817,11 @@ msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:252
 msgid "Toplevel"
-msgstr ""
+msgstr "Горно ниво"
 
 #: capplets/ui-properties/ui-properties.c:253
 msgid "Modal"
-msgstr ""
+msgstr "Модален"
 
 #: capplets/ui-properties/ui-properties.c:258
 msgid "MDI notebook tab position"
@@ -3872,101 +3829,100 @@ msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:259
 msgid "Left"
-msgstr ""
+msgstr "Ляво"
 
 #: capplets/ui-properties/ui-properties.c:260
-#, fuzzy
 msgid "Right"
-msgstr "Висок"
+msgstr "Дясно"
 
 #: capplets/ui-properties/ui-properties.c:261
 msgid "Top"
-msgstr ""
+msgstr "Горе"
 
 #: capplets/ui-properties/ui-properties.c:262
 msgid "Bottom"
-msgstr ""
+msgstr "Долу"
 
 #: capplets/ui-properties/ui-properties.c:277
 msgid "GNOME MDI Options"
-msgstr ""
+msgstr "Опции на GNOME MDI"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:1
 msgid "Look and Feel"
-msgstr ""
+msgstr "Изглед и Поведение"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:2
 msgid "Look and Feel Properties"
-msgstr ""
+msgstr "Настройка на Изглед и Поведение"
 
 #: capplets/url-properties/url-properties.c:51
 msgid "Error initializing the `url-properties' capplet."
-msgstr ""
+msgstr "Грешка при инициализиране на `url-properties' capplet."
 
 #: capplets/url-properties/url-properties.c:76
 msgid "Protocol"
-msgstr ""
+msgstr "Протокол"
 
 #: capplets/url-properties/url-properties.c:76
 msgid "Command"
-msgstr ""
+msgstr "Команда"
 
 #: capplets/url-properties/url-properties.c:93
 msgid "handler:"
-msgstr ""
+msgstr "Поддържаща програма:"
 
 #. set some commonly used handlers
 #: capplets/url-properties/url-properties.c:103
 msgid "Netscape"
-msgstr ""
+msgstr "Netscape"
 
 #: capplets/url-properties/url-properties.c:108
 msgid "Netscape (new window)"
-msgstr ""
+msgstr "Netscape (нов прозорец)"
 
 #: capplets/url-properties/url-properties.c:121
 msgid "Help browser"
-msgstr ""
+msgstr "Помощен браузер"
 
 #: capplets/url-properties/url-properties.c:127
 msgid "Help browser (new window)"
-msgstr ""
+msgstr "Помощен браузер (нов прозорец)"
 
 #: capplets/url-properties/url-properties.c:140
 msgid "Set"
-msgstr ""
+msgstr "Задава"
 
 #: capplets/url-properties/url-properties.c:148
 msgid "Remove"
-msgstr ""
+msgstr "Премахва"
 
 #: capplets/url-properties/url-properties.desktop.in.h:1
 msgid "Configure which programs are used to display URLs"
-msgstr ""
+msgstr "Конфигурира кои програми се използват за показване на URL-и"
 
 #: capplets/url-properties/url-properties.desktop.in.h:2
 msgid "URL Handlers"
-msgstr ""
+msgstr "Програми работещи с URL"
 
 #: capplets/wm-properties/wm-desktops/Enlightenment.desktop.in.h:1
 msgid "Enlightenment"
-msgstr ""
+msgstr "Enlightenment"
 
 #: capplets/wm-properties/wm-desktops/IceWM.desktop.in.h:1
 msgid "Ice WM"
-msgstr ""
+msgstr "Ice WM"
 
 #: capplets/wm-properties/wm-desktops/Scwm.desktop.in.h:1
 msgid "Scwm"
-msgstr ""
+msgstr "Scwm"
 
 #: capplets/wm-properties/wm-desktops/WindowMaker.desktop.in.h:1
 msgid "Window Maker"
-msgstr ""
+msgstr "Window Maker"
 
 #: capplets/wm-properties/wm-desktops/twm.desktop.in.h:1
 msgid "twm"
-msgstr ""
+msgstr "twm"
 
 #: capplets/wm-properties/wm-properties-capplet.c:142
 #, c-format
@@ -3974,26 +3930,31 @@ msgid ""
 "Starting %s\n"
 "(%d seconds left before operation times out)"
 msgstr ""
+"Стартира %s\n"
+"(%d секунди остават преди операцията да завърши\n"
+"поради изтичане на време за изчакване)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:303
 #, c-format
 msgid "%s (Current)"
-msgstr ""
+msgstr "%s (Текущ)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:306
 #, c-format
 msgid "Run Configuration Tool for %s"
-msgstr ""
+msgstr "Изпълнява конфигурационен инструмент за %s"
 
 #: capplets/wm-properties/wm-properties-capplet.c:317
 msgid " (Not found)"
-msgstr ""
+msgstr " (Не е намерен)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:356
 msgid ""
 "wm-properties-capplet: Unable to initialize window manager.\n"
 "\tAnother window manager is already running and could not be killed\n"
 msgstr ""
+"wm-properties-capplet: Не мога да инициализрам мениджър на прозорци.\n"
+"\tДруг мениджър на прозорци вече е стартиран и не може да бъде убит\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:360
 #, c-format
@@ -4001,10 +3962,12 @@ msgid ""
 "wm-properties-capplet: Unable to initialize window manager.\n"
 "\t'%s' didn't start\n"
 msgstr ""
+"wm-properties-capplet: Не мога да инициализрам мениджър на прозорци.\n"
+"\t'%s' не е стартиран\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:413
 msgid "Previous window manager did not die\n"
-msgstr ""
+msgstr "Предишния мениджър на прозорци не е загинал\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:446
 #, c-format
@@ -4026,7 +3989,7 @@ msgstr ""
 #: capplets/wm-properties/wm-properties-capplet.c:863
 #: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
-msgstr ""
+msgstr "Да"
 
 #: capplets/wm-properties/wm-properties-capplet.c:520
 msgid ""
@@ -4038,14 +4001,19 @@ msgid ""
 "in the main menu, or by turning on \"Save Current Setup\" when\n"
 "you log out.\n"
 msgstr ""
+"Вашият текущ мениджър на прозорци е бил променен. За да запазите промените\n"
+"трябва да запазите вашата текуща сесия. Това може да бъде направено като се\n"
+"избере \"Запази сесията сега\"\n"
+"при \"Настройки\" в главното меню или при излизане от сесия изберете\n"
+"\"Запази текущата настройка\".\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:527
 msgid "Save Session Later"
-msgstr ""
+msgstr "Запази сесията по-късно"
 
 #: capplets/wm-properties/wm-properties-capplet.c:527
 msgid "Save Session Now"
-msgstr ""
+msgstr "Запази сесията сега"
 
 #: capplets/wm-properties/wm-properties-capplet.c:530
 msgid ""
@@ -4055,202 +4023,212 @@ msgid ""
 "under \"Settings\" in the main menu, or by turning on\n"
 "\"Save Current Setup\" when you log out.\n"
 msgstr ""
+"Вашият текущ мениджър на прозорци е бил променен. За да запазите промените\n"
+"трябва да запазите вашата текуща сесия. Това може да бъде направено като се\n"
+"избере \"Запази текущата сесия\"\n"
+"при \"Настройки\" в главното меню или при излизане от сесия изберете\n"
+"\"Запази текущата сесия\".\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:745
 msgid "Add New Window Manager"
-msgstr ""
+msgstr "Добавя нов мениджър на прозорци"
 
 #: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
-msgstr ""
+msgstr "Име:"
 
 #: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
-msgstr ""
+msgstr "Команда:"
 
 #: capplets/wm-properties/wm-properties-capplet.c:785
 msgid "Configuration Command:"
-msgstr ""
+msgstr "Конфигурационна команда:"
 
 #: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
-msgstr ""
+msgstr "Мениджъра на прозорци е мениджър и на сесии."
 
 #: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
-msgstr ""
+msgstr "Името не може да бъде празно"
 
 #: capplets/wm-properties/wm-properties-capplet.c:861
 msgid "Command cannot be empty"
-msgstr ""
+msgstr "Командата не може да бъде празна"
 
 #: capplets/wm-properties/wm-properties-capplet.c:910
 #: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
-msgstr ""
+msgstr "Редактиране на Мениджъра на прозорци"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
-msgstr ""
+msgstr "Вие не може да изтриете текущия Мениджър на прозорци"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
-msgstr ""
+msgstr "Редактира..."
 
 #: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
-msgstr ""
+msgstr "Изтрива"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
+"появи се грешка по време на стартиране на 'wm-properties-capplet'.\n"
+"прекъсвам...\n"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:1
 msgid "Choose a window manager"
-msgstr ""
+msgstr "Избор на мениджър на прозорци"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:2
 msgid "Window Manager"
-msgstr ""
+msgstr "Мениджър на прозорци"
 
 #: control-center/callbacks.c:102 control-center/gnomecc.desktop.in.h:1
 msgid "GNOME Control Center"
-msgstr ""
+msgstr "Контролен Център на GNOME"
 
 #: control-center/callbacks.c:105
 msgid "Desktop Properties manager."
-msgstr ""
+msgstr "Мениджър за настройка на Раб. място"
 
 #: control-center/capplet-manager.c:179
 msgid "Try"
-msgstr ""
+msgstr "Опитай"
 
 #: control-center/capplet-manager.c:185
 msgid "Revert"
-msgstr ""
+msgstr "Обърнат"
 
 #. set the help item
 #: control-center/capplet-manager.c:208
 #, c-format
 msgid "Help with '%s' settings"
-msgstr ""
+msgstr "Помощ с '%s' настройки"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
-msgstr ""
+msgstr "id на capplet -- назначава се от контролният център"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "Multi-capplet id."
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "CAPID"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR of the control-center"
-msgstr ""
+msgstr "IOR на контролен център"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
-msgstr ""
+msgstr "Настройки за инициализациа на сесия"
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr ""
+"Игнорира подразбиращото се действие. Използва се за случайте на init-session"
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
-msgstr ""
+msgstr "Съжалявам, но няма помощ за тези настройки."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
-msgstr ""
+msgstr "capplet-команда за изпълнение"
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
 msgstr ""
 
 #: control-center/gnomecc.desktop.in.h:2
 msgid "The GNOME configuration tool"
-msgstr ""
+msgstr "Инструмент за конфигуриране на GNOME"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help on control-center"
-msgstr ""
+msgstr "Помощ на Контролен център"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
-msgstr ""
+msgstr "Помощ с Контролен център на GNOME"
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
-msgstr ""
+msgstr "Помощ с текущата конфигурационна страница."
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
-msgstr ""
+msgstr "За"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
-msgstr ""
+msgstr "За Контролен център на GNOME"
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
-msgstr ""
+msgstr "Предупреждение:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
-msgstr ""
+msgstr "Отхвърля всички промени"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
 msgstr ""
+"Следните модули са били променени, но не са подтвърдени. Ако искате да ги "
+"редактирате, моля кликнете двукратно на съответния запис."
 
 #: control-center/splash.c:48
 msgid "Operating System:"
-msgstr ""
+msgstr "Операционна ситема:"
 
 #: control-center/splash.c:49
 msgid "Distribution Version:"
-msgstr ""
+msgstr "Версия на дистрибуция:"
 
 #: control-center/splash.c:50
 msgid "Processor Type:"
-msgstr ""
+msgstr "Тип на процесор:"
 
 #: control-center/splash.c:51
 msgid "User Name:"
-msgstr ""
+msgstr "Име на потребител:"
 
 #: control-center/splash.c:52
 msgid "Host Name:"
-msgstr ""
+msgstr "Име на хост:"
 
 #. This is about the only case where we'll put Unknown instead
 #. of simply not showing the info.
 #: control-center/splash.c:178
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестен"

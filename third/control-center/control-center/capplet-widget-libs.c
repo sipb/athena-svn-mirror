@@ -1,4 +1,9 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "capplet-widget-libs.h"
 #include "control-center.h"
 #include <libgnorba/gnorba.h>
@@ -250,7 +255,7 @@ void *capplet_widget_corba_init(const char *app_id,
 
         /* setup CORBA fully */
         POA_GNOME_capplet__init(&poa_capplet_servant, &ev);
-        poa = CORBA_ORB_resolve_initial_references(orb, "RootPOA", &ev);
+        poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references(orb, "RootPOA", &ev);
         PortableServer_POAManager_activate(PortableServer_POA__get_the_POAManager(poa, &ev), &ev);
 
         PortableServer_POA_activate_object_with_id(poa, 

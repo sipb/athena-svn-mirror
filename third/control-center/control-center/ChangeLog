@@ -1,3 +1,39 @@
+2002-01-25  Mikael Hallendal  <micke@codefactory.se>
+
+	* capplet-manager.c (capplet_close_callback): added check for if
+	  style is !NULL before calling &style->fg. Fixes #69594.
+
+2001-12-21  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplet-widget.h: Fix prototype
+
+2001-08-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* callbacks.[ch]: Fix warnings.
+	* capplet-widget.c: Fix more warnings.
+	* main.c (create_exit_dialog): Added prototype.
+	* capplet-widget-libs.[ch]: Yet more warning fixes.
+	* corba-glue.c: Fix some warnings and a bug where CORBA_Object_duplicate
+	was being passed &ev instead of ev.
+	
+2001-06-21  Havoc Pennington  <hp@redhat.com>
+
+	* Makefile.am (cappletConf.sh): put GNOME_INCLUDEDIR in the libs for
+	capplet also
+
+2001-06-20  Havoc Pennington  <hp@redhat.com>
+
+	* cappletConf.sh.in (CAPPLET_INCLUDEDIR): point at the subdir
+
+	* Makefile.am (libcappletinclude_HEADERS): install headers to a
+	subdir of includedir
+
+2001-05-01  Bradford Hovinen  <hovinen@ximian.com>
+
+	From Christian Marillat <marillat.christian@wanadoo.fr>
+	* control-center/splash.c (get_linux_info): Make stirng buffer big 
+	enough not to truncate Debian name.
+
 2001-02-08  Elliot Lee  <sopwith@redhat.com>
 	* control-center/splash.c: Use uname_struct.release rather than
 	uname_struct.version, since the latter more accurately indicates the
