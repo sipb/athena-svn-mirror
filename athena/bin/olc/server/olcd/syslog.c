@@ -7,13 +7,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.10 1990-12-09 17:14:10 lwvanels Exp $
+ *	$Id: syslog.c,v 1.11 1990-12-12 16:47:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.10 1990-12-09 17:14:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.11 1990-12-12 16:47:10 lwvanels Exp $";
 #endif
 #endif
 
@@ -122,11 +122,19 @@ log_to_syslogd (level, text)
 {
     static int initialized = 0;
     if (!initialized) {
+#if defined(ultrix)
 #ifdef LOG_CONS
-	openlog ("olc", LOG_CONS | LOG_PID, SYSLOG_LEVEL);
+	openlog ("olc", LOG_CONS | LOG_PID);
 #else
-	openlog ("olc", LOG_PID, SYSLOG_LEVEL);
-#endif
+	openlog ("olc", LOG_PID);
+#endif /* LOG_CONS */
+#else
+#ifdef LOG_CONS
+	openlog ("olc", LOG_CONS | LOG_PID);
+#else
+	openlog ("olc", LOG_PID);
+#endif /* LOG_CONS */
+#endif /* ultrix */
 	initialized = 1;
       }
     syslog (level, text);
