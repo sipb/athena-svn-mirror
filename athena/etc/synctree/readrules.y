@@ -271,7 +271,7 @@ int readrules(rfile,src,dst)
   int status;
   extern int verbosef, nflag;
 
-#ifdef YYDEBUG
+#if YYDEBUG
   extern int yydebug;
   yydebug = (verbosef>3)? 1: 0;
 #endif
