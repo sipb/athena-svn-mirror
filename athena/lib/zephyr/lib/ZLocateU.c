@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.4 1987-06-26 03:35:30 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.5 1987-06-29 00:53:46 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -45,7 +45,7 @@ Code_t ZLocateUser(user,nlocs)
 		return (retval);
 
 	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,&auth,
-				Z_UIDpred,(char *)&notice.z_uid)) !=
+				ZCompareUID,(char *)&notice.z_uid)) !=
 	    ZERR_NONE)
 		return (retval);
 
