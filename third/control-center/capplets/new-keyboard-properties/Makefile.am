@@ -38,4 +38,5 @@ keyboard_properties_capplet_LDADD = \
 	$(LIBGLADE_LIBS)				\
 	$(XF86MISC_LIBS)				\
 	-lgdk_pixbuf					\
+	$(INTLLIBS)					\
 	../../libcapplet/libcapplet.la

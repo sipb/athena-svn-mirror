@@ -150,7 +150,7 @@ bin_PROGRAMS = mouse-properties-capplet
 mouse_properties_capplet_SOURCES =  	prefs-widget.c prefs-widget.h 	preferences.c preferences.h 	main.c
 
 
-mouse_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					-lgdk_pixbuf						../../libcapplet/libcapplet.la
+mouse_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					-lgdk_pixbuf						$(INTLLIBS)						../../libcapplet/libcapplet.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

@@ -39,4 +39,5 @@ background_properties_capplet_LDADD = \
 	$(LIBGLADE_LIBS)				\
 	-lgdk_pixbuf					\
 	-lgdk_pixbuf_xlib				\
+	$(INTLLIBS)					\
 	../../libcapplet/libcapplet.la

@@ -19,6 +19,7 @@ INCLUDES = \
 	$(GNOME_INCLUDEDIR)				\
 	$(XML_CFLAGS)					\
 	$(LIBGLADE_CFLAGS)				\
+	$(ESD_CFLAGS)					\
 	-I$(top_srcdir)/				\
 	-I$(top_srcdir)/intl				\
 	-I$(top_srcdir)/libcapplet
@@ -36,5 +37,7 @@ sound_properties_capplet_LDADD = \
 	$(ORBIT_LIBS)					\
 	$(GNOME_XML_LIB)				\
 	$(LIBGLADE_LIBS)				\
+	$(ESD_LIBS)					\
 	-lgdk_pixbuf					\
+	$(INTLLIBS)					\
 	../../libcapplet/libcapplet.la

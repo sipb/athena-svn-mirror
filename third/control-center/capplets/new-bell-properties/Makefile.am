@@ -37,4 +37,5 @@ bell_properties_capplet_LDADD = \
 	$(GNOME_XML_LIB)				\
 	$(LIBGLADE_LIBS)				\
 	-lgdk_pixbuf					\
+	$(INTLLIBS)					\
 	../../libcapplet/libcapplet.la

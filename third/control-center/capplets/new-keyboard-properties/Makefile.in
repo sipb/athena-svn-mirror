@@ -150,7 +150,7 @@ bin_PROGRAMS = keyboard-properties-capplet
 keyboard_properties_capplet_SOURCES =  	prefs-widget.c prefs-widget.h 	preferences.c preferences.h 	main.c
 
 
-keyboard_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					$(XF86MISC_LIBS)					-lgdk_pixbuf						../../libcapplet/libcapplet.la
+keyboard_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					$(XF86MISC_LIBS)					-lgdk_pixbuf						$(INTLLIBS)						../../libcapplet/libcapplet.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

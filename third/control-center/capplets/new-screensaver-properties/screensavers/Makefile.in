@@ -145,7 +145,7 @@ noinst_PROGRAMS = extract-labels
 
 extract_labels_SOURCES = extract-labels.c
 
-extract_labels_LDADD =  	$(GNOME_LIBDIR) 	$(GNOME_LIBS) 	$(GNOME_XML_LIB)
+extract_labels_LDADD =  	$(GNOME_LIBDIR) 	$(GNOME_LIBS) 	$(GNOME_XML_LIB) 	$(INTLLIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h

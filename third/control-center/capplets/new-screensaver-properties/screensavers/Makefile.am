@@ -30,7 +30,8 @@ extract_labels_SOURCES = extract-labels.c
 extract_labels_LDADD = \
 	$(GNOME_LIBDIR) \
 	$(GNOME_LIBS) \
-	$(GNOME_XML_LIB)
+	$(GNOME_XML_LIB) \
+	$(INTLLIBS)
 
 ant.xml.h: $(srcdir)/ant.xml extract-labels
 	./extract-labels $(srcdir)/ant.xml

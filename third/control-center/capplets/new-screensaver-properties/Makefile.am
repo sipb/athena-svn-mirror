@@ -46,6 +46,7 @@ screensaver_properties_capplet_LDADD = \
 	$(GNOME_XML_LIB) \
 	-lXt \
 	-lgdk_pixbuf \
+	$(INTLLIBS) \
 	../../libcapplet/libcapplet.la
 
 install-data-local:

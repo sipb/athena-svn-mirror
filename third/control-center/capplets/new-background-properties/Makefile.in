@@ -150,7 +150,7 @@ bin_PROGRAMS = background-properties-capplet
 background_properties_capplet_SOURCES =  	prefs-widget.c prefs-widget.h 				preferences.c preferences.h 				applier.c applier.h 					main.c
 
 
-background_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					-lgdk_pixbuf						-lgdk_pixbuf_xlib					../../libcapplet/libcapplet.la
+background_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					-lgdk_pixbuf						-lgdk_pixbuf_xlib					$(INTLLIBS)						../../libcapplet/libcapplet.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

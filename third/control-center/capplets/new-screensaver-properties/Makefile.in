@@ -150,7 +150,7 @@ bin_PROGRAMS = screensaver-properties-capplet
 screensaver_properties_capplet_SOURCES =  	prefs-widget.c prefs-widget.h 	preferences.c preferences.h 	screensaver-prefs-dialog.c screensaver-prefs-dialog.h 	selection-dialog.c selection-dialog.h 	pref-file.c pref-file.h 	preview.c preview.h 	expr.c expr.h 	daemon.c daemon.h 	rc-parse.c rc-parse.h 	resources.c resources.h 	XScreenSaver_ad.h 	main.c
 
 
-screensaver_properties_capplet_LDADD =  	$(GNOME_LIBDIR) 	$(GNOMEUI_LIBS) 	$(ORBIT_LIBS) 	$(GNOME_XML_LIB) 	-lXt 	-lgdk_pixbuf 	../../libcapplet/libcapplet.la
+screensaver_properties_capplet_LDADD =  	$(GNOME_LIBDIR) 	$(GNOMEUI_LIBS) 	$(ORBIT_LIBS) 	$(GNOME_XML_LIB) 	-lXt 	-lgdk_pixbuf 	$(INTLLIBS) 	../../libcapplet/libcapplet.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

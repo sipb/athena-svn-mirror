@@ -150,7 +150,7 @@ bin_PROGRAMS = ui-properties-capplet
 ui_properties_capplet_SOURCES =  	prefs-widget.c prefs-widget.h 	prefs-widget-app.c prefs-widget-app.h 	prefs-widget-dialogs.c prefs-widget-dialogs.h 	prefs-widget-mdi.c prefs-widget-mdi.h 	preferences.c preferences.h 	main.c
 
 
-ui_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					-lgdk_pixbuf						../../libcapplet/libcapplet.la
+ui_properties_capplet_LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(ORBIT_LIBS)						$(GNOME_XML_LIB)					$(LIBGLADE_LIBS)					-lgdk_pixbuf						$(INTLLIBS)							../../libcapplet/libcapplet.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
