@@ -1,0 +1,9 @@
+Japanese Roman&Kana (JISX0201):
+	8x16rk.bdf	from X.V11R5/mit/bdf/misc,
+			PIXEL_SIZE is corrected (24 -> 16)
+	12x24rk.bdf	from X.V11R5/mit/bdf/misc
+
+Japanese Kanji (JISX0208.1983):
+	k14.bdf		from X.V11R5/mit/bdf/misc,
+	jiskan16.bdf	from X.V11R5/mit/bdf/misc,
+	jiskan24.bdf	from X.V11R5/mit/bdf/misc,
