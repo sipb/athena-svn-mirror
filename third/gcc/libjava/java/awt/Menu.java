@@ -39,11 +39,8 @@ exception statement from your version. */
 package java.awt;
 
 import java.awt.peer.MenuPeer;
-import java.awt.peer.MenuItemPeer;
-import java.awt.peer.MenuComponentPeer;
 import java.io.Serializable;
 import java.util.Vector;
-import java.util.Enumeration;
 
 /**
   * This class represents a pull down or tear off menu in Java's AWT.
@@ -175,20 +172,17 @@ getItemCount()
 {
   return(items.size());
 }
- 
-/*************************************************************************/
 
 /**
-  * Returns the number of items in this menu.
-  *
-  * @return The number of items in this menu.
-  *
-  * @deprecated This method is deprecated in favor of <code>getItemCount()</code>.
-  */
-public int
-count()
+ * Returns the number of items in this menu.
+ *
+ * @return The number of items in this menu.
+ *
+ * @deprecated As of JDK 1.1, replaced by getItemCount().
+ */
+public int countItems ()
 {
-  return(items.size());
+  return getItemCount ();
 }
  
 /*************************************************************************/

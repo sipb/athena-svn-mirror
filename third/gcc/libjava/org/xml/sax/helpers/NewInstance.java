@@ -4,7 +4,7 @@
 // and by David Brownell, dbrownell@users.sourceforge.net
 // NO WARRANTY!  This class is in the Public Domain.
 
-// $Id: NewInstance.java,v 1.1.1.1 2004-02-10 14:35:11 zacheiss Exp $
+// $Id: NewInstance.java,v 1.1.1.2 2004-12-23 15:54:59 ghudson Exp $
 
 package org.xml.sax.helpers;
 

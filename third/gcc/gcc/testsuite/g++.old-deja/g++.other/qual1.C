@@ -1,6 +1,6 @@
-// Build don't link:
+// { dg-do assemble  }
+// { dg-options "-O" }
 // Origin: Benjamin Pflugmann <philemon@spin.de>
-// Special g++ Options: -O
 
 // DR 295 allows qualification via typedef
 
@@ -11,8 +11,8 @@ class
 public:
   func_type *Function;
   // The following is DR 295 dependent
-  const func_type* function(void) { return Function; } // ERROR - constifying
-  volatile func_type* functionv(void); // ERROR - qualifier
+  const func_type* function(void) { return Function; }
+  volatile func_type* functionv(void);
 } action;
 
 void work(const char *source)

@@ -1,5 +1,5 @@
 /* AbstractAction.java --
-   Copyright (C) 2002 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2004 Free Software Foundation, Inc.
 
 This file is part of GNU Classpath.
 
@@ -35,21 +35,26 @@ this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
 
+
 package javax.swing;
 
-// Imports
-import java.awt.event.*;
-import java.beans.*;
-import java.io.*;
-import javax.swing.event.*;
-import java.util.*;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import javax.swing.event.SwingPropertyChangeSupport;
 
 /**
  * AbstractAction
  * @author	Andrew Selkirk
  * @version	1.0
  */
-public abstract class AbstractAction implements Action, Cloneable, Serializable {
+public abstract class AbstractAction
+  implements Action, Cloneable, Serializable
+{
+  static final long serialVersionUID = -6803159439231523484L;
 
 	//-------------------------------------------------------------
 	// Variables --------------------------------------------------
@@ -204,12 +209,4 @@ public abstract class AbstractAction implements Action, Cloneable, Serializable 
 	public synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
 		changeSupport.removePropertyChangeListener(listener);
 	} // removePropertyChangeListener()
-
-	/**
-	 * actionPerformed
-	 * @param event TODO
-	 */
-	public abstract void actionPerformed(ActionEvent event);
-
-
-} // AbstractAction
+}

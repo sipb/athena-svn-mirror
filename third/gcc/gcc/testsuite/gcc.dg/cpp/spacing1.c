@@ -56,15 +56,10 @@ f (g) str
 ) f
 (bam) baz
 
-/*
-   { dg-final { if ![file exists spacing1.i] { return }                   } }
-   { dg-final { if \{ [grep spacing1.i " 44 ;"] != "" \}              \{  } }
-   { dg-final { if \{ [grep spacing1.i "B Q B Q A Q A:"] != "" \}     \{  } }
-   { dg-final { if \{ [grep spacing1.i "f.*bar"] == "" \} \{              } }
-   { dg-final { if \{ [grep spacing1.i "^bar"] != "" \}   \{              } }
-   { dg-final { if \{ [grep spacing1.i "^A$"] != "" \}   \{               } }
-   { dg-final { if \{ [grep spacing1.i "^bad$"] != "" \}   \{             } }
-   { dg-final { if \{ [grep spacing1.i "g \"1 2\" bam baz"] != "" \} \{   } }
-   { dg-final { return \} \} \} \} \} \} \}                               } }
-   { dg-final { fail "spacing1.c: spacing and new-line preservation"      } }
-*/
+/* { dg-final { scan-file spacing1.i " 44 ;" } }
+   { dg-final { scan-file spacing1.i "B Q B Q A Q A:" } }
+   { dg-final { scan-file-not spacing1.i "f\[^\n\]*bar" } }
+   { dg-final { scan-file spacing1.i "(^|\n)bar" } }
+   { dg-final { scan-file spacing1.i "(^|\n)A($|\n)" } }
+   { dg-final { scan-file spacing1.i "(^|\n)bad($|\n)" } }
+   { dg-final { scan-file spacing1.i "g \"1 2\" bam baz" } } */

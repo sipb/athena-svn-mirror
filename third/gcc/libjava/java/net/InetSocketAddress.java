@@ -52,9 +52,20 @@ public class InetSocketAddress extends SocketAddress
    */
   private static final long serialVersionUID = 5076001401234631237L;
   
-  String hostname;
-  InetAddress addr;
-  int port;
+  /**
+   * Name of host.
+   */
+  private String hostname;
+
+  /**
+   * Address of host.
+   */
+  private InetAddress addr;
+
+  /**
+   * Port of host.
+   */
+  private int port;
     
   /**
    * Constructs an InetSocketAddress instance.
@@ -68,7 +79,10 @@ public class InetSocketAddress extends SocketAddress
     throws IllegalArgumentException
   {
     if (port < 0 || port > 65535)
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException ("Bad port number: " + port);
+
+    if (addr == null)
+      addr = InetAddress.ANY_IF;
   
     this.addr = addr;
     this.port = port;
@@ -85,24 +99,8 @@ public class InetSocketAddress extends SocketAddress
   public InetSocketAddress(int port)
     throws IllegalArgumentException
   {
-    if (port < 0 || port > 65535)
-      throw new IllegalArgumentException();
-
-    this.port = port;
-    
-    try
-      {
-	byte[] any = { 0, 0, 0, 0 };
-	this.addr = InetAddress.getByAddress (any);
-	this.hostname = "0.0.0.0";
-      }
-    catch (UnknownHostException e)
-      {
-        this.addr = null;
-	this.hostname = "";
-      }
+    this ((InetAddress) null, port);
   }
-
 
   /**
    * Constructs an InetSocketAddress instance.
@@ -115,8 +113,11 @@ public class InetSocketAddress extends SocketAddress
   public InetSocketAddress(String hostname, int port)
     throws IllegalArgumentException
   {
+    if (hostname == null)
+      throw new IllegalArgumentException ("Null host name value");
+    
     if (port < 0 || port > 65535)
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException ("Bad port number: " + port);
 
     this.port = port;
     this.hostname = hostname;
@@ -134,6 +135,10 @@ public class InetSocketAddress extends SocketAddress
   /** 
    * Test if obj is a <code>InetSocketAddress</code> and
    * has the same address and port
+   *
+   * @param obj The obj to compare this address with.
+   *
+   * @return True if obj is equal.   
    */
   public final boolean equals (Object obj)
   {
@@ -142,8 +147,14 @@ public class InetSocketAddress extends SocketAddress
 
     if (obj instanceof InetSocketAddress)
       {
-        InetSocketAddress a = (InetSocketAddress) obj;
-        return addr.equals(a.addr) && a.port == port;
+        InetSocketAddress sa = (InetSocketAddress) obj;
+	
+        if (addr == null && sa.addr != null)
+          return false;
+        else if (addr == null && sa.addr == null)
+          return hostname.equals (sa.hostname) && sa.port == port;
+        else
+          return addr.equals (sa.addr) && sa.port == port;
       }
     
     return false;
@@ -152,6 +163,8 @@ public class InetSocketAddress extends SocketAddress
   /**
    * Returns the <code>InetAddress</code> or
    * <code>null</code> if its unresolved
+   *
+   * @return The IP address of this address.
    */
   public final InetAddress getAddress()
   {
@@ -160,6 +173,8 @@ public class InetSocketAddress extends SocketAddress
 
   /**
    * Returns <code>hostname</code>
+   *
+   * @return The hostname of this address.
    */
   public final String getHostName()
   {
@@ -168,6 +183,8 @@ public class InetSocketAddress extends SocketAddress
 
   /**
    * Returns the <code>port</code>
+   *
+   * @return The port of this address.
    */
   public final int getPort()
   {
@@ -176,6 +193,8 @@ public class InetSocketAddress extends SocketAddress
     
   /**
    * Returns the hashcode of the <code>InetSocketAddress</code>
+   *
+   * @return The hashcode for this address.
    */
   public final int hashCode()
   {
@@ -184,6 +203,8 @@ public class InetSocketAddress extends SocketAddress
 
   /**
    * Checks wether the address has been resolved or not
+   *
+   * @return True if address is unresolved.
    */
   public final boolean isUnresolved()
   {
@@ -192,9 +213,11 @@ public class InetSocketAddress extends SocketAddress
     
   /**
    * Returns the <code>InetSocketAddress</code> as string
+   *
+   * @return A string represenation of this address.
    */
   public String toString()
   {
-    return addr + ":" + port;
+    return (addr == null ? hostname : addr.getHostName()) + ":" + port;
   }
 }

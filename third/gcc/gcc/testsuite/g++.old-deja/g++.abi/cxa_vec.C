@@ -1,3 +1,4 @@
+// { dg-do run  }
 // Test __cxa_vec routines
 // Copyright (C) 2000 Free Software Foundation, Inc.
 // Contributed by Nathan Sidwell 7 Apr 2000 <nathan@nathan@codesourcery.com>
@@ -187,7 +188,7 @@ void test3 ()
     {
       // we expect to get here (via terminate)
       if (ctor_count || dtor_count || blocks != 1)
-	longjmp (jump, 3);
+        longjmp (jump, 3);
       longjmp (jump, -1);
     }
   return;

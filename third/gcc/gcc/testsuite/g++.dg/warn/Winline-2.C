@@ -1,11 +1,5 @@
-// { dg-options "-Winline -O" }
+// PR c++/10929
+// { dg-options "-Winline -O3" }
 
-#include <vector>
-
-using namespace std;
-
-int main(void)
-{
-  vector<int> v(10);
-}
-
+int foo ();
+int bar () { return foo (); }

@@ -1,5 +1,5 @@
 /* JButton.java --
-   Copyright (C) 2002 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2004 Free Software Foundation, Inc.
 
 This file is part of GNU Classpath.
 
@@ -37,10 +37,9 @@ exception statement from your version. */
 
 package javax.swing;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.plaf.*;
-import javax.accessibility.*;
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleContext;
+import javax.swing.plaf.ButtonUI;
 
 /**
  * An instance of JButton can be added to a panel, frame etc
@@ -49,6 +48,8 @@ import javax.accessibility.*;
  */
 public class JButton extends AbstractButton implements Accessible 
 {
+  private static final long serialVersionUID = -1907255238954382202L;
+
     boolean def, is_def;
 
     

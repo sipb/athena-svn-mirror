@@ -34,7 +34,9 @@
    <li><a href="#util">Utilities: abicheck and libv3test</a></li>
    <li><a href="#new">How to write a new test case</a></li>
    <li><a href="#check">Options for running the tests</a></li>
+   <li><a href="#debug">Running debug-mode tests</a></li>
    <li><a href="#future">Future</a></li>
+   <li><a href="#internals">DejaGNU internals</a></li>
 </ul>
 
 <hr />
@@ -79,13 +81,13 @@ thread		  Tests for threads.
    
    <p>
       Some directories don't have test files, but instead contain
-      auxiliary information:
+      auxiliary information (<a href="#internals">more information</a>):
    </p>
 
    <pre>
 config		  Files for the dejagnu test harness.
 lib		  Files for the dejagnu test harness.
-libstdc++-v3.dg	  Files for the dejagnu test harness.
+libstdc++*     	  Files for the dejagnu test harness.
 data		  Sample text files for testing input and output.
    </pre>
 
@@ -125,7 +127,7 @@ data		  Sample text files for testing input and output.
       All new tests should be written with the policy of one test
       case, one file in mind. At some point the entire testsuite will
       be converted: the current status is that the 21_string,
-      22_locale, 27_io, and demangle directories have all been
+      22_locale, 23_containers, 27_io, and demangle directories have all been
       transitioned.
    </p>
 
@@ -218,7 +220,7 @@ cat 27_io/objects/char/3_xin.in | a.out
         Used to check correctness of symbol versioning, visibility of
         exported symbols, and compatibility on symbols in the shared
         library, for hosts that support this feature. More information
-	can be found in the ABI documentation <a href="abi.txt"> here</a>
+        can be found in the ABI documentation <a href="abi.txt"> here</a>
        </p>
      </li>
      <li>
@@ -260,7 +262,7 @@ cat 27_io/objects/char/3_xin.in | a.out
          <li>time_counter</li>
          <li>resource_counter</li>
          <li>report_performance</li>
-      </ul>	
+      </ul>
        <p></p> 
      </li>
      <li>
@@ -390,6 +392,12 @@ Example 3: Testing for expected warnings on line 36
 Example 4: Testing for compilation errors on line 41
 // { dg-do compile }
 // { dg-error "no match for" "" { target *-*-* } 41 }
+
+Example 5: Testing with special command line settings, or without the
+use of pre-compiled headers, in particular the stdc++.h.gch file. Any
+options here will override the DEFAULT_CXXFLAGS set up in the
+normal.exp file.
+// { dg-options "-O0" { target *-*-* } }
 </pre>
 
    <p>
@@ -451,7 +459,7 @@ Example 4: Testing for compilation errors on line 41
      <em>testsuite_wchar_t </em>
      <p> This file indicates that the host system can run the wchar_t
      tests, and corresponds to the macro definition <code>
-     _GLIBCPP_USE_WCHAR_T</code> in the file c++config.h.
+     _GLIBCXX_USE_WCHAR_T</code> in the file c++config.h.
      </p>
      </li>
     </ul>
@@ -469,11 +477,11 @@ or
 make check-target-libstdc++-v3 RUNTESTFLAGS="-v -v"
 </pre>
 
+
 There are two ways to run on a simulator: set up DEJAGNU to point to a
 specially crafted site.exp, or pass down --target_board flags.
 
 Example flags to pass down for various embedded builds are as follows:
-
 <pre>
 --target=powerpc-eabism (libgloss/sim)
 make check-target-libstdc++-v3 RUNTESTFLAGS="--target_board=powerpc-sim"
@@ -484,7 +492,19 @@ make check-target-libstdc++-v3 RUNTESTFLAGS="--target_board=calmrisc32-sid"
 --target=xscale-elf (newlib/sim)
 make check-target-libstdc++-v3 RUNTESTFLAGS="--target_board=arm-sim"
 </pre>
-   
+
+<p> Also, here is an example of how to run the libstdc++ testsuite for a
+multilibed build directory with different ABI settings:
+</p>
+<pre>
+make check-target-libstdc++-v3 RUNTESTFLAGS='--target_board \"unix{-mabi=32,,-mabi=64}\"'
+</pre>
+ 
+  <p> To run a subset of the library tests, simply edit the generated
+  file, <em>testsuite_files </em>, to include only the files that are
+  desired instead of all available test cases.
+  </p>
+
    <p> In addition, there are some testing options that are mostly of
    interest to library maintainers and system integrators. As such,
    these tests may not work on all cpu and host combinations, and must
@@ -538,6 +558,19 @@ make check-target-libstdc++-v3 RUNTESTFLAGS="--target_board=arm-sim"
       for which files to examine.
    </p>
 
+<hr/>
+<h2><a name="debug">Running debug-mode tests</a></h2>
+<p>To run the libstdc++ test suite under the <a
+  href="debug.html#safe">debug mode</a>,
+  edit <code>libstdc++/scripts/testsuite_flags</code> to add the
+  compile-time flag <code>-D_GLIBCXX_DEBUG</code> to the result
+  printed by the <code>--build-cxx</code> option. Additionally, add
+  the <code>-D_GLIBCXX_DEBUG_PEDANTIC</code> flag to turn on pedantic
+  checking. The libstdc++ test suite should produce precisely the same
+  results under debug mode that it does under release mode: any
+  deviation indicates an error in either the library or the test
+  suite.</p>
+
 <hr />
 <h2><a name="future">Future</a></h2>
 
@@ -584,6 +617,45 @@ Currently plans for supported keywords include:
    </p>
 </dd>
 </dl>
+
+<hr />
+<h2><a name="internals">DejaGNU internals</a></h2>
+
+<p>This is information for those looking at making changes to the testsuite
+structure, and/or needing to trace dejagnu's actions with --verbose.  This
+will not be useful to people who are "merely" adding new tests to the existing
+structure.
+</p>
+
+<p>The first key point when working with dejagnu is the idea of a "tool".
+Files, directories, and functions are all implicitly used when they are
+named after the tool in use.  Here, the tool will always be "libstdc++".
+</p>
+
+<p>The <code>lib</code> subdir contains support routines.  The
+<code>lib/libstdc++.exp</code> file ("support library") is loaded
+automagically, and must explicitly load the others.  For example, files can
+be copied from the core compiler's support directory into <code>lib</code>.
+</p>
+
+<p>Some routines in <code>lib/libstdc++.exp</code> are callbacks, some are
+our own.  Callbacks must be prefixed with the name of the tool.  To easily
+distinguish the others, by convention our own routines are named "v3-*".
+</p>
+
+<p>The next key point when working with dejagnu is "test files".  Any
+directory whose name starts with the tool name will be searched for test files.
+(We have only one.)  In those directories, any <code>.exp</code> file is
+considered a test file, and will be run in turn.  Our main test file is called
+<code>normal.exp</code>; it runs all the tests in testsuite_files using the
+callbacks loaded from the support library.
+</p>
+
+<p>The <code>config</code> directory is searched for any particular "target
+board" information unique to this library.  This is currently unused and sets
+only default variables.
+</p>
+
 
 <!-- ####################################################### -->
 

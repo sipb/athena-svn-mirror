@@ -9,14 +9,9 @@
 
 
 
-#if defined( ALPHA___EXTERN_PREFIX_CHECK )
+#if defined( ALPHA___EXTERN_PREFIX_SYS_STAT_CHECK )
 #   if defined(__DECC) || defined(__PRAGMA_EXTERN_PREFIX)
-#endif  /* ALPHA___EXTERN_PREFIX_CHECK */
-
-
-#if defined( M88K_BAD_S_IF_CHECK )
-#define S_ISREG(m) (((m) & S_IFMT) == S_IFREG) /* is regular? */
-#endif  /* M88K_BAD_S_IF_CHECK */
+#endif  /* ALPHA___EXTERN_PREFIX_SYS_STAT_CHECK */
 
 
 #if defined( RS6000_FCHMOD_CHECK )

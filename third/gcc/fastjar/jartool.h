@@ -1,11 +1,6 @@
-/* $Id: jartool.h,v 1.1.1.1 2002-01-31 16:01:11 ghudson Exp $
+/* $Id: jartool.h,v 1.1.1.2 2004-12-23 16:51:59 ghudson Exp $
 
    $Log: not supported by cvs2svn $
-   Revision 1.1  2000/12/09 03:08:23  apbianco
-   2000-12-08  Alexandre Petit-Bianco  <apbianco@cygnus.com>
-
-           * fastjar: Imported.
-
    Revision 1.4  2000/08/24 15:23:35  cory
    Set version number since I think we can let this one out.
 
@@ -95,7 +90,7 @@ typedef u_int16_t ub2;
 typedef unsigned int ub4;
 #elif SIZEOF_LONG == 4
 typedef unsigned long ub4;
-#elif SIZEOF_LONG_LONG == 4
+#elif defined(HAVE_LONG_LONG) && SIZEOF_LONG_LONG == 4
 typedef unsigned long long ub4;
 #else
 typedef u_int32_t ub4;

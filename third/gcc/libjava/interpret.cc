@@ -1,6 +1,6 @@
 // interpret.cc - Code for the interpreter
 
-/* Copyright (C) 1999, 2000, 2001, 2002 Free Software Foundation
+/* Copyright (C) 1999, 2000, 2001, 2002, 2003 Free Software Foundation
 
    This file is part of libgcj.
 
@@ -54,6 +54,21 @@ static void throw_null_pointer_exception ()
   __attribute__ ((__noreturn__));
 #endif
 
+#ifdef DIRECT_THREADED
+// Lock to ensure that methods are not compiled concurrently.
+// We could use a finer-grained lock here, however it is not safe to use
+// the Class monitor as user code in another thread could hold it.
+static _Jv_Mutex_t compile_mutex;
+
+void
+_Jv_InitInterpreter()
+{
+  _Jv_MutexInit (&compile_mutex);
+}
+#else
+void _Jv_InitInterpreter() {}
+#endif
+
 extern "C" double __ieee754_fmod (double,double);
 
 // This represents a single slot in the "compiled" form of the
@@ -91,7 +106,7 @@ static inline void dupx (_Jv_word *sp, int n, int x)
       sp[top-(n+x)-i] = sp[top-i];
     }
   
-};
+}
 
 // Used to convert from floating types to integral types.
 template<typename TO, typename FROM>
@@ -240,19 +255,21 @@ static jint get4(unsigned char* loc) {
     }									      \
   while (0)
 
-void _Jv_InterpMethod::run_normal (ffi_cif *,
-				   void* ret,
-				   ffi_raw * args,
-				   void* __this)
+void
+_Jv_InterpMethod::run_normal (ffi_cif *,
+			      void* ret,
+			      ffi_raw * args,
+			      void* __this)
 {
   _Jv_InterpMethod *_this = (_Jv_InterpMethod *) __this;
   _this->run (ret, args);
 }
 
-void _Jv_InterpMethod::run_synch_object (ffi_cif *,
-					 void* ret,
-					 ffi_raw * args,
-					 void* __this)
+void
+_Jv_InterpMethod::run_synch_object (ffi_cif *,
+				    void* ret,
+				    ffi_raw * args,
+				    void* __this)
 {
   _Jv_InterpMethod *_this = (_Jv_InterpMethod *) __this;
 
@@ -262,14 +279,27 @@ void _Jv_InterpMethod::run_synch_object (ffi_cif *,
   _this->run (ret, args);
 }
 
-void _Jv_InterpMethod::run_synch_class (ffi_cif *,
-					void* ret,
-					ffi_raw * args,
-					void* __this)
+void
+_Jv_InterpMethod::run_class (ffi_cif *,
+			     void* ret,
+			     ffi_raw * args,
+			     void* __this)
+{
+  _Jv_InterpMethod *_this = (_Jv_InterpMethod *) __this;
+  _Jv_InitClass (_this->defining_class);
+  _this->run (ret, args);
+}
+
+void
+_Jv_InterpMethod::run_synch_class (ffi_cif *,
+				   void* ret,
+				   ffi_raw * args,
+				   void* __this)
 {
   _Jv_InterpMethod *_this = (_Jv_InterpMethod *) __this;
 
   jclass sync = _this->defining_class;
+  _Jv_InitClass (sync);
   JvSynchronize mutex (sync);
 
   _this->run (ret, args);
@@ -1017,9 +1047,14 @@ _Jv_InterpMethod::run (void *retp, ffi_raw *args)
 #define PCVAL(unionval) unionval.p
 #define AMPAMP(label) &&label
 
-  // Compile if we must.
+  // Compile if we must. NOTE: Double-check locking.
   if (prepared == NULL)
-    compile (insn_target);
+    {
+      _Jv_MutexLock (&compile_mutex);
+      if (prepared == NULL)
+	compile (insn_target);
+      _Jv_MutexUnlock (&compile_mutex);
+    }
   pc = (insn_slot *) prepared;
 
 #else
@@ -1883,7 +1918,7 @@ _Jv_InterpMethod::run (void *retp, ffi_raw *args)
     insn_iushr:
       {
 	jint shift = (POPI() & 0x1f);
-	UINT32 value = (UINT32) POPI();
+	_Jv_uint value = (_Jv_uint) POPI();
 	PUSHI ((jint) (value >> shift));
       }
       NEXT_INSN;
@@ -1891,8 +1926,8 @@ _Jv_InterpMethod::run (void *retp, ffi_raw *args)
     insn_lushr:
       {
 	jint shift = (POPI() & 0x3f);
-	UINT64 value = (UINT64) POPL();
-	PUSHL ((value >> shift));
+	_Jv_ulong value = (_Jv_ulong) POPL();
+	PUSHL ((jlong) (value >> shift));
       }
       NEXT_INSN;
 
@@ -2833,7 +2868,6 @@ _Jv_InterpMethod::run (void *retp, ffi_raw *args)
 
 	sp -= rmeth->stack_item_count;
 
-	_Jv_InitClass (rmeth->klass);
 	fun = (void (*)()) rmeth->method->ncode;
 
 #ifdef DIRECT_THREADED
@@ -2903,6 +2937,9 @@ _Jv_InterpMethod::run (void *retp, ffi_raw *args)
       {
 	int index = GET2U ();
 	jclass klass = (_Jv_ResolvePoolEntry (defining_class, index)).clazz;
+	// We initialize here because otherwise `size_in_bytes' may
+	// not be set correctly, leading us to pass `0' as the size.
+	// FIXME: fix in the allocator?  There is a PR for this.
 	_Jv_InitClass (klass);
 	jobject res = _Jv_AllocObject (klass, klass->size_in_bytes);
 	PUSHA (res);
@@ -2938,7 +2975,6 @@ _Jv_InterpMethod::run (void *retp, ffi_raw *args)
 	int index = GET2U ();
 	jclass klass = (_Jv_ResolvePoolEntry (defining_class, index)).clazz;
 	int size  = POPI();
-	_Jv_InitClass (klass);
 	jobject result = _Jv_NewObjectArray (size, klass, 0);
 	PUSHA (result);
 
@@ -3072,7 +3108,6 @@ _Jv_InterpMethod::run (void *retp, ffi_raw *args)
 
 	jclass type    
 	  = (_Jv_ResolvePoolEntry (defining_class, kind_index)).clazz;
-	_Jv_InitClass (type);
 	jint *sizes    = (jint*) __builtin_alloca (sizeof (jint)*dim);
 
 	for (int i = dim - 1; i >= 0; i--)

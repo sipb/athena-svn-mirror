@@ -60,7 +60,7 @@ while true; do
 
   --help) cat <<\EOF
 Runs the testsuite for an installed version of gcc/g++/g77/objc
-Copyright (C) 1998, 2000, 2002, 2003  Free Software Foundation
+Copyright (C) 1998  Free Software Foundation
 by Alexandre Oliva <oliva@dcc.unicamp.br>
 
 Supported arguments:

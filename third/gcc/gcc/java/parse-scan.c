@@ -1,4 +1,4 @@
-/* A Bison parser, made from /home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y
+/* A Bison parser, made from /home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y
    by GNU bison 1.35.  */
 
 #define YYBISON 1  /* Identify Bison output.  */
@@ -113,33 +113,33 @@
 # define	BOOL_LIT_TK	364
 # define	NULL_TK	365
 
-#line 37 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 37 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 
 #define JC1_LITE
 
 #include "config.h"
 #include "system.h"
-
+#include "coretypes.h"
+#include "tm.h"
+#include "input.h"
 #include "obstack.h"
 #include "toplev.h"
 
-#define obstack_chunk_alloc xmalloc
-#define obstack_chunk_free free
-
-extern char *input_filename;
 extern FILE *finput, *out;
+ 
+/* Current position in real source file.  */
+
+location_t input_location;
 
 /* Obstack for the lexer.  */
 struct obstack temporary_obstack;
 
 /* The current parser context.  */
-static struct parser_ctxt *ctxp;
+struct parser_ctxt *ctxp;
 
-/* Error and warning counts, current line number, because they're used
-   elsewhere  */
+/* Error and warning counts, because they're used elsewhere  */
 int java_error_count;
 int java_warning_count;
-int lineno;
 
 /* Tweak default rules when necessary.  */
 static int absorber;
@@ -187,27 +187,26 @@ struct method_declarator {
 };
 #define NEW_METHOD_DECLARATOR(D,N,A)					     \
 {									     \
-  (D) = 								     \
-    (struct method_declarator *)xmalloc (sizeof (struct method_declarator)); \
+  (D) = xmalloc (sizeof (struct method_declarator));			     \
   (D)->method_name = (N);						     \
   (D)->args = (A);							     \
 }
 
 /* Two actions for this grammar */
-static int make_class_name_recursive PARAMS ((struct obstack *stack,
-					      struct class_context *ctx));
-static char *get_class_name PARAMS ((void));
-static void report_class_declaration PARAMS ((const char *));
-static void report_main_declaration PARAMS ((struct method_declarator *));
-static void push_class_context PARAMS ((const char *));
-static void pop_class_context PARAMS ((void));
+static int make_class_name_recursive (struct obstack *stack,
+				      struct class_context *ctx);
+static char *get_class_name (void);
+static void report_class_declaration (const char *);
+static void report_main_declaration (struct method_declarator *);
+static void push_class_context (const char *);
+static void pop_class_context (void);
 
-void report PARAMS ((void)); 
+void report (void); 
 
 #include "lex.h"
 #include "parse.h"
 
-#line 131 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 130 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 #ifndef YYSTYPE
 typedef union {
   char *node;
@@ -217,7 +216,7 @@ typedef union {
 # define YYSTYPE yystype
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
-#line 137 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 136 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 
 extern int flag_assert;
 
@@ -443,42 +442,42 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,   210,   215,   217,   218,   219,   220,   221,   225,   227,
-     230,   236,   241,   248,   250,   253,   257,   261,   265,   271,
-     279,   281,   284,   288,   295,   300,   301,   302,   303,   304,
-     305,   306,   307,   310,   312,   315,   317,   320,   325,   327,
-     330,   334,   338,   340,   341,   347,   356,   367,   367,   374,
-     374,   379,   380,   383,   384,   387,   390,   394,   397,   401,
-     403,   406,   408,   409,   410,   413,   415,   416,   417,   418,
-     422,   425,   429,   432,   435,   437,   440,   443,   447,   449,
-     453,   453,   460,   463,   464,   466,   473,   480,   486,   489,
-     491,   497,   513,   529,   530,   533,   536,   540,   542,   546,
-     550,   560,   562,   565,   567,   573,   576,   580,   582,   583,
-     584,   588,   590,   593,   595,   599,   601,   606,   606,   610,
-     610,   613,   613,   616,   616,   621,   623,   626,   629,   633,
-     635,   638,   640,   641,   642,   645,   649,   654,   656,   657,
-     658,   661,   663,   667,   669,   672,   674,   677,   679,   680,
-     683,   687,   690,   694,   696,   697,   698,   699,   700,   703,
-     705,   706,   707,   708,   711,   713,   714,   715,   716,   717,
-     718,   719,   720,   721,   722,   723,   726,   730,   735,   739,
-     745,   749,   751,   752,   753,   754,   755,   756,   759,   763,
-     768,   773,   777,   779,   780,   781,   784,   786,   789,   794,
-     796,   799,   801,   804,   808,   812,   816,   820,   825,   827,
-     830,   832,   835,   839,   842,   843,   844,   847,   848,   851,
-     853,   856,   858,   863,   865,   868,   870,   873,   877,   879,
-     880,   882,   885,   887,   890,   895,   897,   898,   901,   903,
-     906,   910,   915,   917,   920,   922,   923,   924,   925,   926,
-     927,   928,   932,   936,   939,   941,   943,   947,   949,   950,
-     951,   952,   953,   954,   957,   957,   961,   961,   966,   969,
-     972,   974,   975,   978,   980,   981,   982,   985,   986,   989,
-     991,   994,   998,  1001,  1005,  1007,  1013,  1016,  1018,  1019,
-    1020,  1021,  1024,  1027,  1030,  1032,  1034,  1035,  1038,  1042,
-    1046,  1048,  1049,  1050,  1051,  1054,  1058,  1062,  1064,  1065,
-    1066,  1069,  1071,  1072,  1073,  1076,  1078,  1079,  1080,  1083,
-    1085,  1086,  1089,  1091,  1092,  1093,  1096,  1098,  1099,  1100,
-    1101,  1102,  1105,  1107,  1108,  1111,  1113,  1116,  1118,  1121,
-    1123,  1126,  1128,  1132,  1134,  1138,  1140,  1144,  1146,  1149,
-    1153,  1156,  1157,  1160,  1162,  1165,  1169
+       0,   209,   214,   216,   217,   218,   219,   220,   224,   226,
+     229,   235,   240,   247,   249,   252,   256,   260,   264,   270,
+     278,   280,   283,   287,   294,   299,   300,   301,   302,   303,
+     304,   305,   306,   309,   311,   314,   316,   319,   324,   326,
+     329,   333,   337,   339,   340,   346,   355,   366,   366,   373,
+     373,   378,   379,   382,   383,   386,   389,   393,   396,   400,
+     402,   405,   407,   408,   409,   412,   414,   415,   416,   417,
+     421,   424,   428,   431,   434,   436,   439,   442,   446,   448,
+     452,   452,   459,   462,   463,   465,   472,   479,   485,   488,
+     490,   496,   512,   528,   529,   532,   535,   539,   541,   545,
+     549,   559,   561,   564,   566,   572,   575,   579,   581,   582,
+     583,   587,   589,   592,   594,   598,   600,   605,   605,   609,
+     609,   612,   612,   615,   615,   620,   622,   625,   628,   632,
+     634,   637,   639,   640,   641,   644,   648,   653,   655,   656,
+     657,   660,   662,   666,   668,   671,   673,   676,   678,   679,
+     682,   686,   689,   693,   695,   696,   697,   698,   699,   702,
+     704,   705,   706,   707,   710,   712,   713,   714,   715,   716,
+     717,   718,   719,   720,   721,   722,   725,   729,   734,   738,
+     744,   748,   750,   751,   752,   753,   754,   755,   758,   762,
+     767,   772,   776,   778,   779,   780,   783,   785,   788,   793,
+     795,   798,   800,   803,   807,   811,   815,   819,   824,   826,
+     829,   831,   834,   838,   841,   842,   843,   846,   847,   850,
+     852,   855,   857,   862,   864,   867,   869,   872,   876,   878,
+     879,   881,   884,   886,   889,   894,   896,   897,   900,   902,
+     905,   909,   914,   916,   919,   921,   922,   923,   924,   925,
+     926,   927,   931,   935,   938,   940,   942,   946,   948,   949,
+     950,   951,   952,   953,   956,   956,   960,   960,   965,   968,
+     971,   973,   974,   977,   979,   980,   981,   984,   985,   988,
+     990,   993,   997,  1000,  1004,  1006,  1012,  1015,  1017,  1018,
+    1019,  1020,  1023,  1026,  1029,  1031,  1033,  1034,  1037,  1041,
+    1045,  1047,  1048,  1049,  1050,  1053,  1057,  1061,  1063,  1064,
+    1065,  1068,  1070,  1071,  1072,  1075,  1077,  1078,  1079,  1082,
+    1084,  1085,  1088,  1090,  1091,  1092,  1095,  1097,  1098,  1099,
+    1100,  1101,  1104,  1106,  1107,  1110,  1112,  1115,  1117,  1120,
+    1122,  1125,  1127,  1131,  1133,  1137,  1139,  1143,  1145,  1148,
+    1152,  1155,  1156,  1159,  1161,  1164,  1168
 };
 #endif
 
@@ -2200,52 +2199,52 @@ yyreduce:
   switch (yyn) {
 
 case 10:
-#line 232 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 231 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {
 		  /* use preset global here. FIXME */
 		  yyval.node = xstrdup ("int");
 		;
     break;}
 case 11:
-#line 237 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 236 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {
 		  /* use preset global here. FIXME */
 		  yyval.node = xstrdup ("double");
 		;
     break;}
 case 12:
-#line 242 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 241 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {
 		  /* use preset global here. FIXME */
 		  yyval.node = xstrdup ("boolean");
 		;
     break;}
 case 18:
-#line 267 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 266 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {
 	          while (bracket_count-- > 0) 
 		    yyval.node = concat ("[", yyvsp[-1].node, NULL);
 		;
     break;}
 case 19:
-#line 272 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 271 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {
 	          while (bracket_count-- > 0) 
 		    yyval.node = concat ("[", yyvsp[-1].node, NULL);
 		;
     break;}
 case 23:
-#line 290 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 289 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
 		  yyval.node = concat (yyvsp[-2].node, ".", yyvsp[0].node, NULL);
 		;
     break;}
 case 37:
-#line 322 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 321 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { package_name = yyvsp[-1].node; ;
     break;}
 case 45:
-#line 349 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 348 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
 		  if (yyvsp[0].value == PUBLIC_TK)
 		    modifier_value++;
@@ -2255,7 +2254,7 @@ case 45:
 		;
     break;}
 case 46:
-#line 357 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 356 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
 		  if (yyvsp[0].value == PUBLIC_TK)
 		    modifier_value++;
@@ -2265,73 +2264,73 @@ case 46:
 		;
     break;}
 case 47:
-#line 369 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 368 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
 		  report_class_declaration(yyvsp[-2].node);
 		  modifier_value = 0;
                 ;
     break;}
 case 49:
-#line 375 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 374 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { report_class_declaration(yyvsp[-2].node); ;
     break;}
 case 55:
-#line 389 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 388 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 56:
-#line 391 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 390 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 57:
-#line 396 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 395 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { pop_class_context (); ;
     break;}
 case 58:
-#line 398 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 397 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { pop_class_context (); ;
     break;}
 case 70:
-#line 424 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 423 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 71:
-#line 426 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 425 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { modifier_value = 0; ;
     break;}
 case 76:
-#line 442 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 441 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { bracket_count = 0; USE_ABSORBER; ;
     break;}
 case 77:
-#line 444 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 443 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++bracket_count; ;
     break;}
 case 80:
-#line 455 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 454 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++method_depth; ;
     break;}
 case 81:
-#line 457 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 456 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { --method_depth; ;
     break;}
 case 82:
-#line 462 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 461 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 84:
-#line 465 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 464 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { modifier_value = 0; ;
     break;}
 case 85:
-#line 467 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 466 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
                   report_main_declaration (yyvsp[-1].declarator);
 		  modifier_value = 0;
 		;
     break;}
 case 86:
-#line 475 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 474 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
 		  struct method_declarator *d;
 		  NEW_METHOD_DECLARATOR (d, yyvsp[-2].node, NULL);
@@ -2339,7 +2338,7 @@ case 86:
 		;
     break;}
 case 87:
-#line 481 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 480 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
 		  struct method_declarator *d;
 		  NEW_METHOD_DECLARATOR (d, yyvsp[-3].node, yyvsp[-1].node);
@@ -2347,13 +2346,13 @@ case 87:
 		;
     break;}
 case 90:
-#line 492 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 491 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {
 		  yyval.node = concat (yyvsp[-2].node, ",", yyvsp[0].node, NULL);
 		;
     break;}
 case 91:
-#line 499 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 498 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { 
 		  USE_ABSORBER;
 		  if (bracket_count)
@@ -2370,7 +2369,7 @@ case 91:
 		;
     break;}
 case 92:
-#line 514 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 513 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {
 		  if (bracket_count)
 		    {
@@ -2386,219 +2385,219 @@ case 92:
 		;
     break;}
 case 95:
-#line 535 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 534 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 96:
-#line 537 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 536 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 100:
-#line 552 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 551 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 102:
-#line 563 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 562 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { modifier_value = 0; ;
     break;}
 case 104:
-#line 568 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 567 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { modifier_value = 0; ;
     break;}
 case 105:
-#line 575 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 574 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 106:
-#line 577 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 576 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 113:
-#line 594 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 593 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 114:
-#line 596 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 595 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 117:
-#line 608 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 607 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { report_class_declaration (yyvsp[0].node); modifier_value = 0; ;
     break;}
 case 119:
-#line 611 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 610 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { report_class_declaration (yyvsp[0].node); modifier_value = 0; ;
     break;}
 case 121:
-#line 614 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 613 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { report_class_declaration (yyvsp[-1].node); modifier_value = 0; ;
     break;}
 case 123:
-#line 617 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 616 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { report_class_declaration (yyvsp[-1].node); modifier_value = 0; ;
     break;}
 case 127:
-#line 628 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 627 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { pop_class_context (); ;
     break;}
 case 128:
-#line 630 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 629 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { pop_class_context (); ;
     break;}
 case 151:
-#line 689 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 688 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 152:
-#line 691 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 690 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { modifier_value = 0; ;
     break;}
 case 177:
-#line 732 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 731 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 188:
-#line 760 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 759 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 189:
-#line 765 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 764 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 190:
-#line 770 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 769 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 198:
-#line 790 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 789 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 203:
-#line 805 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 804 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 207:
-#line 822 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 821 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 213:
-#line 840 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 839 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 224:
-#line 865 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 864 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 227:
-#line 874 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 873 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 230:
-#line 881 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 880 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {yyerror ("Missing term"); RECOVER;;
     break;}
 case 231:
-#line 883 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 882 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 {yyerror ("';' expected"); RECOVER;;
     break;}
 case 234:
-#line 892 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 891 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 240:
-#line 907 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 906 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 241:
-#line 911 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 910 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 252:
-#line 933 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 932 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 253:
-#line 938 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 937 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 254:
-#line 940 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 939 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 255:
-#line 942 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 941 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 256:
-#line 944 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 943 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 264:
-#line 959 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 958 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { report_class_declaration (anonymous_context); ;
     break;}
 case 266:
-#line 962 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 961 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { report_class_declaration (anonymous_context); ;
     break;}
 case 268:
-#line 968 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 967 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 282:
-#line 1000 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 999 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { bracket_count = 1; ;
     break;}
 case 283:
-#line 1002 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1001 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { bracket_count++; ;
     break;}
 case 286:
-#line 1015 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1014 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ++complexity; ;
     break;}
 case 287:
-#line 1017 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1016 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ++complexity; ;
     break;}
 case 288:
-#line 1018 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1017 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 289:
-#line 1019 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1018 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 290:
-#line 1020 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1019 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 291:
-#line 1021 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1020 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 292:
-#line 1026 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1025 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 295:
-#line 1033 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1032 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 case 342:
-#line 1129 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1128 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 344:
-#line 1135 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1134 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 346:
-#line 1141 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1140 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { ++complexity; ;
     break;}
 case 350:
-#line 1155 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1154 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 { USE_ABSORBER; ;
     break;}
 }
@@ -2834,35 +2833,33 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1173 "/home/mitchell/gcc-3.3.2/gcc-3.3.2/gcc/java/parse-scan.y"
+#line 1172 "/home/mitchell/scratch/gcc-3.4.3/gcc-3.4.3/gcc/java/parse-scan.y"
 
 
 /* Create a new parser context */
 
 void
-java_push_parser_context ()
+java_push_parser_context (void)
 {
-  struct parser_ctxt *new = 
-    (struct parser_ctxt *) xcalloc (1, sizeof (struct parser_ctxt));
+  struct parser_ctxt *new = xcalloc (1, sizeof (struct parser_ctxt));
 
   new->next = ctxp;
   ctxp = new;
 }  
 
 static void
-push_class_context (name)
-    const char *name;
+push_class_context (const char *name)
 {
   struct class_context *ctx;
 
-  ctx = (struct class_context *) xmalloc (sizeof (struct class_context));
+  ctx = xmalloc (sizeof (struct class_context));
   ctx->name = (char *) name;
   ctx->next = current_class_context;
   current_class_context = ctx;
 }
 
 static void
-pop_class_context ()
+pop_class_context (void)
 {
   struct class_context *ctx;
 
@@ -2882,9 +2879,7 @@ pop_class_context ()
 /* Recursively construct the class name.  This is just a helper
    function for get_class_name().  */
 static int
-make_class_name_recursive (stack, ctx)
-     struct obstack *stack;
-     struct class_context *ctx;
+make_class_name_recursive (struct obstack *stack, struct class_context *ctx)
 {
   if (! ctx)
     return 0;
@@ -2908,7 +2903,7 @@ make_class_name_recursive (stack, ctx)
 
 /* Return a newly allocated string holding the name of the class.  */
 static char *
-get_class_name ()
+get_class_name (void)
 {
   char *result;
   int last_was_digit;
@@ -2952,8 +2947,7 @@ get_class_name ()
 /* Actions defined here */
 
 static void
-report_class_declaration (name)
-     const char * name;
+report_class_declaration (const char * name)
 {
   extern int flag_dump_class, flag_list_filename;
 
@@ -2979,8 +2973,7 @@ report_class_declaration (name)
 }
 
 static void
-report_main_declaration (declarator)
-     struct method_declarator *declarator;
+report_main_declaration (struct method_declarator *declarator)
 {
   extern int flag_find_main;
 
@@ -3007,7 +3000,7 @@ report_main_declaration (declarator)
 }
 
 void
-report ()
+report (void)
 {
   extern int flag_complexity;
   if (flag_complexity)
@@ -3016,7 +3009,7 @@ report ()
 
 /* Reset global status used by the report functions.  */
 
-void reset_report ()
+void reset_report (void)
 {
   previous_output = 0;
   package_name = NULL;
@@ -3025,9 +3018,8 @@ void reset_report ()
 }
 
 void
-yyerror (msg)
-     const char *msg ATTRIBUTE_UNUSED;
+yyerror (const char *msg ATTRIBUTE_UNUSED)
 {
-  fprintf (stderr, "%s: %d: %s\n", input_filename, lineno, msg);
+  fprintf (stderr, "%s: %d: %s\n", input_filename, input_line, msg);
   exit (1);
 }

@@ -1,17 +1,8 @@
 // { dg-options "" }
 
+int foo;
+
+template <class T> struct Base {};
+
 template <class T>
-void test1() {
-  int x = 0;
-  const typeof(x) & t1 = x+0;
-}
-
-void test2() {
-  int x = 0;
-  const typeof(x) & t1 = x+0;
-}
-
-int main() {
-  test1<int>();
-  test2 ();
-}
+struct Derived : public Base<typeof(foo)> {};

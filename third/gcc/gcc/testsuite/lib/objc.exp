@@ -56,7 +56,7 @@ proc default_objc_version { } {
 	set tmp [remote_exec host "$compiler -v"]
 	set status [lindex $tmp 0];
 	set output [lindex $tmp 1];
-	regexp "version.*$" $output version
+	regexp "version\[^\n\r\]*" $output version
 	if { $status == 0 && [info exists version] } then {
 	    clone_output "$compiler_name $version\n"
 	} else {
@@ -128,7 +128,7 @@ proc objc_init { args } {
 	    if { "$mldir" == "." } {
 		continue
 	    }
-	    if { [llength [glob -nocomplain ${rootme}/${mldir}/libgcc_s*.so.*]] == 1 } {
+	    if { [llength [glob -nocomplain ${rootme}/${mldir}/libgcc_s*.so.*]] >= 1 } {
 		append objc_libgcc_s_path ":${rootme}/${mldir}"
 	    }
 	}
@@ -162,17 +162,21 @@ proc objc_target_compile { source dest type options } {
     if [target_info exists objc,no_label_values] {
 	lappend options "additional_flags=-DNO_LABEL_VALUES"
     }
+    # TOOL_OPTIONS must come first, so that it doesn't override testcase
+    # specific options.
     if [info exists TOOL_OPTIONS] {
-	lappend options "additional_flags=$TOOL_OPTIONS"
+	set options [concat "additional_flags=$TOOL_OPTIONS" $options];
     }
 
-    # Point to the ObjC headers in libobjc.
-    set objc_include_dir "${srcdir}/../../libobjc"
-    lappend options "additional_flags=-I${objc_include_dir}"
+    # If we have built libobjc along with the compiler (which usually
+    # _is not_ the case on Mac OS X systems), point the test harness
+    # at it (and associated headers).
 
     set objcpath "[get_multilibs]"
     set libobjc_dir [lookfor_file ${objcpath} libobjc/.libs/libobjc.a]
     if { $libobjc_dir != "" } {
+	set objc_include_dir "${srcdir}/../../libobjc"
+	lappend options "additional_flags=-I${objc_include_dir}"
 	set libobjc_dir [file dirname ${libobjc_dir}]
 	set objc_link_flags "-L${libobjc_dir}"
 	lappend options "additional_flags=${objc_link_flags}"
@@ -190,6 +194,7 @@ proc objc_target_compile { source dest type options } {
     setenv  SHLIB_PATH          $ld_library_path
     setenv  LD_LIBRARYN32_PATH  $ld_library_path
     setenv  LD_LIBRARY64_PATH   $ld_library_path
+    setenv  DYLD_LIBRARY_PATH   $ld_library_path 
 
     return [target_compile $source $dest $type $options]
 }
