@@ -9,7 +9,7 @@ cat >test$$.c <<PROGRAM_IS_DONE
 main()
 {
      struct stat statbuf;
-     char buf[1024];
+     char buf[4096];
      int testfile;
      char filename[20];
 
@@ -37,7 +37,7 @@ main()
 	  exit(1);
      }
 
-     if (statbuf.st_blocks == 2) {
+     if (statbuf.st_blocks == sizeof(buf) / 512) {
 	  printf("You SHOULD define USE_BLOCKS.\n");
      }
      else {
