@@ -1,8 +1,9 @@
-# $Id: Makefile,v 1.5 1999-11-06 21:14:16 rbasch Exp $
+# $Id: Makefile,v 1.6 2000-10-12 22:28:41 rbasch Exp $
 
 SHELL=/bin/sh
 USRBIN=/usr/bin
 USRSBIN=/usr/sbin
+DEVLIB=/usr/lib/devicelib
 
 all:
 
@@ -19,6 +20,8 @@ install:
 	ln -s \
 	  ../../../../../var/netscape/communicator/plugins/libcosmoplayer.so \
 	  ${DESTDIR}/usr/local/lib/netscape/plugins/libcosmoplayer.so
+	mkdir -p ${DESTDIR}${DEVLIB}
+	install -c -m 755 dev_zip250.so ${DESTDIR}${DEVLIB}
 
 clean:
 
