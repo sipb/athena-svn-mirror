@@ -1,0 +1,18 @@
+There used to be an abookcpy.c utility program which could be used to
+copy a local address book file to a remote address book folder. That program
+has been replaced with pine run with particular flags. The old abookcpy
+was used like this:
+
+  abookcpy [-t trimsize] <local_abook_file> <remote_abook_folder>
+
+This is replaced with
+
+  pine -copy_abook <local_abook_file> <remote_abook_folder>
+
+You may use the flag
+
+    -remote-abook-history=<trimsize+1>
+
+to get the same trimming as before. The default is
+
+    -remote-abook-history=3

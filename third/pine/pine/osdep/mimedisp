@@ -1,0 +1,28 @@
+/*----------------------------------------------------------------------
+       Can we display this type/subtype?
+
+   Args: type       -- the MIME type to check
+         subtype    -- the MIME subtype
+         params     -- parameters
+	 use_viewer -- tell caller he should run external viewer cmd to view
+
+ Result: Returns:
+
+	 MCD_NONE	if we can't display this type at all
+	 MCD_INTERNAL	if we can display it internally
+	 MCD_EXTERNAL	if it can be displayed via an external viewer
+
+ ----*/
+mime_can_display(type, subtype, params)
+    int       type;
+    char      *subtype;
+    PARAMETER *params;
+{
+    return((mailcap_can_display(type, subtype, params)
+	      ? MCD_EXTERNAL : MCD_NONE)
+	   | ((type == TYPETEXT || type == TYPEMESSAGE
+	       || MIME_VCARD(type,subtype))
+	        ? MCD_INTERNAL : MCD_NONE));
+}
+
+
