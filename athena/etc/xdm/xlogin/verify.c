@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.33 1992-08-15 16:06:59 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.34 1992-08-15 21:32:37 probe Exp $
  */
 
 #include <stdio.h>
@@ -425,17 +425,26 @@ char *display;
     }
 #endif /* XDM */
 
+#if defined(_AIX) && defined(_IBMR2)
+    /* KLUDGE (working around AIX libs.a bugs):
+     * Flush any stray references to userdb/pwdb.
+     * Flush cached group list (it is inconsistent in memory). */
+    i = chksessions();
+    while (i--) enduserdb();
+    i = chkpsessions();
+    while (i--) endpwdb();
+    endgroups();
+    
+    if (setpcred(pwd->pw_name, 0))
+	return(lose("Unable to set user's credentials.\n"));
+#else
     i = setgid(pwd->pw_gid);
     if (i)
-      return(lose("Unable to set your primary GID.\n"));
+	return(lose("Unable to set your primary GID.\n"));
 
     if (initgroups(user, pwd->pw_gid) < 0)
-      prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
+	prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
-#if defined(_AIX) && defined(_IBMR2)
-    /* Don't revoke privileges yet; that is done by setpcred() */
-    setuidx(ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
-#else
     i = setuid(pwd->pw_uid);
     if (i)
       return(lose("Unable to set your user ID.\n"));
@@ -445,13 +454,13 @@ char *display;
       fprintf(stderr, "Unable to connect to your home directory.\n");
 
     sprintf(errbuf, "%d", option);
+
 #if defined(_AIX) && defined(_IBMR2)
     newargv[0] = session;
     newargv[1] = errbuf;
     newargv[2] = script;
     newargv[3] = NULL;
-    if (setpcred(pwd->pw_name, 0))
-	return(lose("Unable to properly setup process credentials.\n"));
+
     setpenv(pwd->pw_name,PENV_KLEEN|PENV_INIT|PENV_ARGV,
 	    environment,(char *)newargv);
 #else
