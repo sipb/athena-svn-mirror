@@ -1,4 +1,4 @@
-# $Id: root.profile,v 1.1 1998-12-25 19:33:18 ghudson Exp $
+# $Id: root.profile,v 1.2 1999-04-09 19:14:14 ghudson Exp $
 
 # Set the interrupt character to Ctrl-c and do clean backspacing.
 if [ -t 0 ]
@@ -23,3 +23,8 @@ fi
 #
 PATH=/srvd/patch:/usr/athena/bin:/etc/athena:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/athena/etc:/usr/etc:/usr/bin/X11
 export PATH
+
+# Default man pager is ul -b | more -s -f.  Remove the ul -b part
+# to work around a bug where pager input is read in line mode.
+MANPAGER="more -s -f"
+export MANPAGER
