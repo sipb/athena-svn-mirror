@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.54 1997-12-31 22:43:58 danw Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.55 1998-01-23 21:28:29 danw Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -36,7 +36,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.54 1997-12-31 22:43:58 danw Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.55 1998-01-23 21:28:29 danw Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -548,7 +548,7 @@ char **argv;
 console_login(msg)
 char *msg;
 {
-    int i, graceful = FALSE, xfirst = TRUE, cfirst = TRUE, pgrp;
+    int i, graceful = FALSE, cfirst = TRUE, pgrp;
     char *nl = "\r\n";
     struct termios ttybuf;
 
@@ -568,17 +568,8 @@ char *msg;
 	      kill(consolepid, SIGKILL);
 	    cfirst = FALSE;	
 	}
-	if (x_running != NONEXISTENT) {
-	    if (xfirst)
-	      kill(xpid, SIGTERM);
-	    else
-	      kill(xpid, SIGKILL);
-/* In the case of Solaris server - ,it should never be killed SIGKILL */
-#ifndef SOLARIS
-	    xfirst = FALSE;
-#endif
-
-	}
+	if (x_running != NONEXISTENT)
+	  kill(xpid, SIGTERM);
 
 	/* wait 1 sec for children to exit */
 #ifndef SOLARIS
