@@ -2403,7 +2403,7 @@ FILE *FopenConfigFile (void)
 #endif /* PANELIST */
 
 #ifndef LIBDIR
-#define LIBDIR "/usr/lib/X11"
+#define LIBDIR "/usr/athena/lib/X11"
 #endif
     if (LANG != NULL)
     {
