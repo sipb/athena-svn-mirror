@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v $
- *	$Id: status.c,v 1.13 1990-11-17 15:09:34 lwvanels Exp $
+ *	$Id: status.c,v 1.14 1990-12-13 16:45:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.13 1990-11-17 15:09:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.14 1990-12-13 16:45:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -111,43 +111,6 @@ OWho(Request,data)
   (void) close(fd);
   return(status);
 }
-
-
-
-OGetStatusString(status,string)
-     int status;
-     char *string;
-{
-  int index = 0;
-  
-  while  ((status != Status_Table[index].status)
-          && (Status_Table[index].status != UNKNOWN_STATUS)) 
-    index++;
-    
-  strcpy(string,Status_Table[index].label);
-}
-
-
-OGetStatusCode(string,status)
-     char *string;
-     int *status;
-{
-  int index;
-
-  *status = -2;
-
-  for (index = 0; Status_Table[index].status != UNKNOWN_STATUS; index++)
-    {
-      if (string_equiv(string, Status_Table[index].label,
-		       strlen(string)))
-	if (*status == -2)
-	  *status = Status_Table[index].status;
-    }
-
-  if ((*status == UNKNOWN_STATUS) || (*status == -2))
-    *status = -1;
-}
-
 
 OGetUsername(Request,username)
      REQUEST *Request;
