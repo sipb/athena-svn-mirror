@@ -377,6 +377,14 @@ main (int argc, char **argv)
     if (!mappingmode_opt)
 	{
 
+#ifdef RLD_LIST
+	    if (getenv(RLD_LIST) != NULL)
+                preload_string = g_strconcat (RLD_LIST, "=", PRELOAD_LIBRARY,
+                                              ":", getenv(RLD_LIST), NULL);
+            else
+                preload_string = g_strconcat (RLD_LIST, "=", PRELOAD_LIBRARY,
+                                              ":DEFAULT", NULL);
+#else
 #ifdef MULTI_PRELOAD
 	    if (getenv("LD_PRELOAD") != NULL)
 		preload_string = g_strconcat ("LD_PRELOAD=", getenv("LD_PRELOAD"), ":", PRELOAD_LIBRARY, NULL);
@@ -397,6 +405,7 @@ main (int argc, char **argv)
 			     programname);
 		    mappingmode_opt = TRUE;
 		}
+#endif       
 #endif       
 
 	    /* Check if preload library is available */

@@ -31,7 +31,15 @@
 
 
 #define PID_PROPERTY_NAME "XALF_LAUNCH_PID"
-#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so.0"
+#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so"
+
+#ifdef RLD_LIST
+#define PRELOAD_VARIABLE RLD_LIST
+#define UNSET_VALUE "DEFAULT"
+#else
+#define PRELOAD_VARIABLE "LD_PRELOAD"
+#define UNSET_VALUE ""
+#endif
 
 static void *pfXMapWindow = NULL;
 static void *pfXMapRaised = NULL;
@@ -67,7 +75,13 @@ _init () {
     if (dlh != NULL) {
         pfXMapWindow = dlsym (dlh,"XMapWindow");
         pfXMapRaised = dlsym (dlh,"XMapRaised");
+#ifndef sgi
+	/* On IRIX, the following invalidates the function pointer
+	 * values saved above.  The dlclose() should probably be done
+	 * in a _fini() function.  But that causes SIGSEGV on IRIX.
+	 */
         dlclose (dlh);
+#endif
     }
 
     DPRINTF ((stderr, "pfXMapWindow is at %p\n", pfXMapWindow));
@@ -119,10 +133,10 @@ XMapRaised (Display* display, Window w)
 
 
 #ifdef HAVE_UNSETENV
- #define PRELOAD_UNSETTER unsetenv ("LD_PRELOAD")
+ #define PRELOAD_UNSETTER unsetenv (PRELOAD_VARIABLE)
  #define PID_UNSETTER unsetenv (PID_PROPERTY_NAME)
 #else
- #define PRELOAD_UNSETTER putenv (strdup("LD_PRELOAD="))
+ #define PRELOAD_UNSETTER putenv (strdup(PRELOAD_VARIABLE "=" UNSET_VALUE))
 /* If we can't remove this variable name, lets leave it */
  #define PID_UNSETTER 
 #endif
@@ -131,23 +145,22 @@ XMapRaised (Display* display, Window w)
 void
 restore_env()
 {
-#ifdef MULTI_PRELOAD
+#if defined(MULTI_PRELOAD) || defined(RLD_LIST)
     char *envstring = NULL;
     char *newenv = NULL;
     char *orgenv = NULL;
     char *p = NULL;
     char *rest = NULL;
 
-    orgenv = getenv ("LD_PRELOAD");
+    orgenv = getenv (PRELOAD_VARIABLE);
 
     if (!orgenv)
 	return;
     
-    /* Copy the string. LD_PRELOAD= is 11 chars. */
-    envstring = malloc (strlen(orgenv) + 11);
-    strcpy (envstring, "LD_PRELOAD=");
-    strcat (envstring, orgenv);
-    newenv = envstring + 11;
+    /* Copy the string. */
+    envstring = malloc (strlen(PRELOAD_VARIABLE) + strlen(orgenv) + 2);
+    sprintf (envstring, "%s=%s", PRELOAD_VARIABLE, orgenv);
+    newenv = envstring + strlen(PRELOAD_VARIABLE) + 1;
 
     /* Find the substring PRELOAD_LIBRARY */
     p = strstr (newenv, PRELOAD_LIBRARY);
@@ -175,7 +188,7 @@ restore_env()
 
     if (! (*newenv) )
 	{
-	    DPRINTF ((stderr, "unsetting LD_PRELOAD\n")); 
+	    DPRINTF ((stderr, "unsetting %s\n", PRELOAD_VARIABLE)); 
 	    PRELOAD_UNSETTER;
 	}
     else

@@ -52,6 +52,26 @@ if test "$enable_capplet" = "yes"; then
 fi   
 AM_CONDITIONAL(COMPILE_CAPPLET, test x$enable_capplet = xyes)
 
+case "$host" in
+  *-sgi-irix6*)
+    need_ldinit=yes
+    dnl If we are building N32 binaries, use the _RLDN32_LIST variable.
+    /usr/sbin/getabi add "$CFLAGS" > /dev/null 2>&1
+    case $? in
+      3)
+	AC_DEFINE(RLD_LIST, "_RLDN32_LIST")
+	;;
+      *)
+	AC_DEFINE(RLD_LIST, "_RLD_LIST")
+	;;
+    esac
+    ;;
+  *)
+    need_ldinit=no
+    ;;
+esac
+AM_CONDITIONAL(NEED_LD_INIT_OPTION, test x$need_ldinit = xyes)
+
 AC_DEFINE(DEFAULT_TIMEOUT, 240)
 
 AC_OUTPUT(

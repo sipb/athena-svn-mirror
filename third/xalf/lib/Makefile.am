@@ -14,6 +14,8 @@ CFLAGS = -DLIBDIR=\""$(libdir)"\"
 
 ## LDFLAGS = -ldl @GTK_LIBS@
 
+if NEED_LD_INIT_OPTION
+LDFLAGS = -ldl -init _init
+else
 LDFLAGS = -ldl
-
-
+endif
