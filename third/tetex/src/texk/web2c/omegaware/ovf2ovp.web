@@ -2,7 +2,7 @@
 % This file is part of the Omega project, which
 % is based in the web2c distribution of TeX.
 %
-% Copyright (c) 1994--1998 John Plaice and Yannis Haralambous
+% Copyright (c) 1994--2000 John Plaice and Yannis Haralambous
 % applies only to the changes to the original vftovp.web.
 %
 % This program by D. E. Knuth is not copyrighted and can be used freely.
@@ -27,7 +27,7 @@
   \vfill
   \centerline{\titlefont The {\ttitlefont OVF2OVP} processor}
   \vskip 15pt
-  \centerline{(Version 1.5, March 1997)}
+  \centerline{(Version 1.11, February 2000)}
   \vfill}
 \def\botofcontents{\vfill
   \centerline{\hsize 5in\baselineskip9pt
@@ -62,7 +62,7 @@ called \.{AMFtoXPL}.
 The |banner| string defined here should be changed whenever \.{VFtoVP}
 gets modified.
 
-@d banner=='This is OVF2OVP, Version 1.5' {printed when the program starts}
+@d banner=='This is OVF2OVP, Version 1.11' {printed when the program starts}
 
 @ This program is written entirely in standard \PASCAL, except that
 it occasionally has lower case letters in strings that are output.
@@ -101,10 +101,10 @@ procedure initialize; {this procedure gets things started properly}
 reduce \.{VFtoVP}'s capacity.
 
 @<Constants...@>=
-@!tfm_size=100000; {maximum length of |tfm| data, in bytes}
+@!tfm_size=2000000; {maximum length of |tfm| data, in bytes}
 @!vf_size=600000; {maximum length of |vf| data, in bytes}
 @!max_fonts=300; {maximum number of local fonts in the |vf| file}
-@!lig_size=80000; {maximum length of |lig_kern| program, in words}
+@!lig_size=800000; {maximum length of |lig_kern| program, in words}
 @!hash_size=130003; {preferably a prime number, a bit larger than the number
   of character pairs in lig/kern steps}
 @!hash_mult=16007; {another prime}
@@ -634,25 +634,23 @@ if eof(tfm_file) then abort('The input file is only one byte long!');
 @.The input...one byte long@>
 read(tfm_file,tfm[1]); lf:=tfm[0]*@'400+tfm[1];
 if lf=0 then begin
-  for i:=2 to 7 do
-  begin
+  for i:=2 to 7 do begin
     if eof(tfm_file)
     then abort('The input file is too short to designate its length!');
     read(tfm_file, tfm[i]);
-  end;
+    end;
   ofm_on := true; ofm_level := tfm[2]*@"100+tfm[3];
   if tfm[4]>127 then abort('The fifth byte of the input file exceeds 127!');
   lf := tfm[4]*@"1000000 + tfm[5]*@"10000 + tfm[6]*@"100 + tfm[7];
-end
-else
-begin
+  end
+else begin
   ofm_on := false;
-end;
+  end;
 case ofm_level of
--1: begin start_ptr:=2; check_sum:=24; end;
- 0: begin start_ptr:=8; check_sum:=56; end;
- 1: begin start_ptr:=8; check_sum:=116; end;
-end;
+  -1: begin start_ptr:=2; check_sum:=24; end;
+  0: begin start_ptr:=8; check_sum:=56; end;
+  1: begin start_ptr:=8; check_sum:=116; end;
+  end;
 design_size:=check_sum+4;
 scheme:=design_size+4;
 family:=scheme+40;
@@ -662,14 +660,14 @@ if lf=0 then
 @.The file claims...@>
 if 4*lf-1>tfm_size then abort('The file is bigger than I can handle!');
 @.The file is bigger...@>
-for tfm_ptr:=start_ptr to 4*lf-1 do
-  begin if eof(tfm_file) then
+for tfm_ptr:=start_ptr to 4*lf-1 do begin
+  if eof(tfm_file) then
     abort('The file has fewer bytes than it claims!');
 @.The file has fewer bytes...@>
   read(tfm_file,tfm[tfm_ptr]);
   end;
-if not eof(tfm_file) then
-  begin print_ln('There''s some extra junk at the end of the OFM file,');
+if not eof(tfm_file) then begin
+  print_ln('There''s some extra junk at the end of the OFM file,');
 @.There's some extra junk...@>
   print_ln('but I''ll proceed as if it weren''t there.');
   end
@@ -693,91 +691,87 @@ to see if they check out.
 
 @<Set subfile sizes |lh|, |bc|, \dots, |np|@>=
 begin
-  if not ofm_on then
-  begin
-    tfm_ptr:=2;
-    eval_two_bytes(lh);
-    eval_two_bytes(bc);
-    eval_two_bytes(ec);
-    eval_two_bytes(nw);
-    eval_two_bytes(nh);
-    eval_two_bytes(nd);
-    eval_two_bytes(ni);
-    eval_two_bytes(nl);
-    eval_two_bytes(nk);
-    eval_two_bytes(ne);
-    eval_two_bytes(np);
-    ncw:=(ec-bc+1);
-    header_length:=6;
-    top_char:=255;
-    top_width:=255;
-    top_height:=15;
-    top_depth:=15;
-    top_italic:=63;
+if not ofm_on then begin
+  tfm_ptr:=2;
+  eval_two_bytes(lh);
+  eval_two_bytes(bc);
+  eval_two_bytes(ec);
+  eval_two_bytes(nw);
+  eval_two_bytes(nh);
+  eval_two_bytes(nd);
+  eval_two_bytes(ni);
+  eval_two_bytes(nl);
+  eval_two_bytes(nk);
+  eval_two_bytes(ne);
+  eval_two_bytes(np);
+  ncw:=(ec-bc+1);
+  header_length:=6;
+  top_char:=255;
+  top_width:=255;
+  top_height:=15;
+  top_depth:=15;
+  top_italic:=63;
   end
-  else
-  begin
-    tfm_ptr:=8;
-    eval_four_bytes(lh);
-    eval_four_bytes(bc);
-    eval_four_bytes(ec);
-    eval_four_bytes(nw);
-    eval_four_bytes(nh);
-    eval_four_bytes(nd);     
-    eval_four_bytes(ni);
-    eval_four_bytes(nl);
-    eval_four_bytes(nk);
-    eval_four_bytes(ne);
-    eval_four_bytes(np);
-    eval_four_bytes(font_dir);
-    top_char:=65535;
-    top_width:=65535;
-    top_height:=255;
-    top_depth:=255;
-    top_italic:=255;
-    if ofm_level=0 then
-    begin
-      header_length:=14;
-      ncw:=2*(ec-bc+1);
+else begin
+  tfm_ptr:=8;
+  eval_four_bytes(lh);
+  eval_four_bytes(bc);
+  eval_four_bytes(ec);
+  eval_four_bytes(nw);
+  eval_four_bytes(nh);
+  eval_four_bytes(nd);     
+  eval_four_bytes(ni);
+  eval_four_bytes(nl);
+  eval_four_bytes(nk);
+  eval_four_bytes(ne);
+  eval_four_bytes(np);
+  eval_four_bytes(font_dir);
+  top_char:=65535;
+  top_width:=65535;
+  top_height:=255;
+  top_depth:=255;
+  top_italic:=255;
+  if ofm_level=0 then begin
+    header_length:=14;
+    ncw:=2*(ec-bc+1);
     end
-    else
-    begin
-      header_length:=29;
-      eval_four_bytes(nco);
-      eval_four_bytes(ncw);
-      eval_four_bytes(npc);
-      eval_four_bytes(nki); {Kinds of font ivalues}
-      eval_four_bytes(nwi); {Words of font ivalues}
-      eval_four_bytes(nkf); {Kinds of font fvalues}
-      eval_four_bytes(nwf); {Words of font fvalues}
-      eval_four_bytes(nkm); {Kinds of font mvalues}
-      eval_four_bytes(nwm); {Words of font mvalues}
-      eval_four_bytes(nkr); {Kinds of font rules}
-      eval_four_bytes(nwr); {Words of font rules}
-      eval_four_bytes(nkg); {Kinds of font glues}
-      eval_four_bytes(nwg); {Words of font glues}
-      eval_four_bytes(nkp); {Kinds of font penalties}
-      eval_four_bytes(nwp); {Words of font penalties}
+  else begin
+    header_length:=29;
+    eval_four_bytes(nco);
+    eval_four_bytes(ncw);
+    eval_four_bytes(npc);
+    eval_four_bytes(nki); {Kinds of font ivalues}
+    eval_four_bytes(nwi); {Words of font ivalues}
+    eval_four_bytes(nkf); {Kinds of font fvalues}
+    eval_four_bytes(nwf); {Words of font fvalues}
+    eval_four_bytes(nkm); {Kinds of font mvalues}
+    eval_four_bytes(nwm); {Words of font mvalues}
+    eval_four_bytes(nkr); {Kinds of font rules}
+    eval_four_bytes(nwr); {Words of font rules}
+    eval_four_bytes(nkg); {Kinds of font glues}
+    eval_four_bytes(nwg); {Words of font glues}
+    eval_four_bytes(nkp); {Kinds of font penalties}
+    eval_four_bytes(nwp); {Words of font penalties}
     end;
   end;
-  if lf<>(header_length+lh+ncw+nw+nh+nd+ni+2*nl+nk+2*ne+np+
-          nki+nwi+nkf+nwf+nkr+nwr+nkg+nwg+nkp+nwp) then
-     abort('Subfile sizes don''t add up to the stated total!');
+if lf<>(header_length+lh+ncw+nw+nh+nd+ni+2*nl+nk+2*ne+np+
+        nki+nwi+nkf+nwf+nkr+nwr+nkg+nwg+nkp+nwp) then
+  abort('Subfile sizes don''t add up to the stated total!');
 @.Subfile sizes don't add up...@>
-  if lh<2 then abort('The header length is only ',lh:1,'!');
+if lh<2 then abort('The header length is only ',lh:1,'!');
 @.The header length...@>
-  if (2*nl)>(4*lig_size) then
-     abort('The lig/kern program is longer than I can handle!');
+if (2*nl)>(4*lig_size) then
+  abort('The lig/kern program is longer than I can handle!');
 @.The lig/kern program...@>
-  if (bc>ec+1)or(ec>top_char) then abort('The character code range ',
+if (bc>ec+1)or(ec>top_char) then abort('The character code range ',
 @.The character code range...@>
-     bc:1,'..',ec:1,'is illegal!');
-  if ec>max_char then
-     abort('Character ',ec:1,'is too large.  Ask a wizard to enlarge me.');
-  if (nw=0)or(nh=0)or(nd=0)or(ni=0) then
-     abort('Incomplete subfiles for character dimensions!');
+  bc:1,'..',ec:1,'is illegal!');
+if ec>max_char then
+  abort('Character ',ec:1,'is too large.  Ask a wizard to enlarge me.');
+if (nw=0)or(nh=0)or(nd=0)or(ni=0) then
+  abort('Incomplete subfiles for character dimensions!');
 @.Incomplete subfiles...@>
-  if ne>(top_char+1) then abort('There are ',ne:1,' extensible recipes!');
+if ne>(top_char+1) then abort('There are ',ne:1,' extensible recipes!');
 @.There are ... recipes@>
 end
 
@@ -817,37 +811,30 @@ glues_base:=rules_base+nwr;
 penalties_base:=glues_base+nwg;
 char_base:=penalties_base+nwp;
 bytes_per_entry:=(12 + 2*npc) div 4 * 4;
-if not ofm_on then
-begin
-   for i:=bc to ec do
-   begin
-      char_start[i]:=4*char_base+4*(i-bc);
-   end;
-end
-else if ofm_level=0 then
-begin
-   for i:=bc to ec do
-   begin
-      char_start[i]:=4*char_base+8*(i-bc);
-   end;
-end   
-else
-begin
-   char_ptr:=4*char_base;
-   i:=bc;
-   while i<=ec do
-   begin
-      copies:=1+256*tfm[char_ptr+8]+tfm[char_ptr+9];
-      for j:=1 to copies do
-      begin
-         char_start[i]:=char_ptr;
-         i:=i+1;
+if not ofm_on then begin
+  for i:=bc to ec do begin
+    char_start[i]:=4*char_base+4*(i-bc);
+    end;
+  end
+else if ofm_level=0 then begin
+  for i:=bc to ec do begin
+    char_start[i]:=4*char_base+8*(i-bc);
+    end;
+  end   
+else begin
+  char_ptr:=4*char_base;
+  i:=bc;
+  while i<=ec do begin
+    copies:=1+256*tfm[char_ptr+8]+tfm[char_ptr+9];
+    for j:=1 to copies do begin
+      char_start[i]:=char_ptr;
+      i:=i+1;
       end;
-      char_ptr:=char_ptr + bytes_per_entry;
-   end;
-   if char_ptr<>(4*(char_base+ncw)) then
-     abort('Length of char info table does not correspond to specification');
-end;
+    char_ptr:=char_ptr + bytes_per_entry;
+    end;
+  if char_ptr<>(4*(char_base+ncw)) then
+    abort('Length of char info table does not correspond to specification');
+  end;
 width_base:=char_base+ncw;
 height_base:=width_base+nw;
 depth_base:=height_base+nh;
@@ -1064,8 +1051,8 @@ the packets.
 @ Again we cautiously verify that we've been given decent data.
 
 @d read_vf(#)==read(vf_file,#)
-@d vf_abort(#)==
-  begin print_ln(#);
+@d vf_abort(#)==begin
+  print_ln(#);
   print_ln('Sorry, but I can''t go on; are you sure this is a OVF?');
   goto final_end;
   end
@@ -1233,8 +1220,8 @@ if (b0*256+b1)<>0 then begin {TFM file}
   read_tfm_word; font_bc:=b0*256+b1; font_ec:=b2*256+b3;
   if font_ec<font_bc then font_bc:=font_ec+1;
   read_tfm_word;
-  for k:=1 to 3+font_lh do
-    begin read_tfm_word;
+  for k:=1 to 3+font_lh do begin
+    read_tfm_word;
     if k=4 then @<Check the check sum@>;
     if k=5 then @<Check the design size@>;
     end;
@@ -1246,18 +1233,18 @@ else begin
   read_tfm_word; font_ec:=((b0*256+b1)*256+b2)*256+b3;
   if font_ec<font_bc then font_bc:=font_ec+1;
   read_tfm_word; 
-  for k:=1 to 8 do
-    begin read_tfm_word;
+  for k:=1 to 8 do begin
+    read_tfm_word;
     end;
   if font_ofm_level=1 then begin
     read_tfm_word; read_tfm_word; read_tfm_word;
     font_extra_words:=(((b0*256+b1)*256+b2)*256+b3) div 2;
-    for k:=1 to 5 do
-      begin read_tfm_word;
+    for k:=1 to 5 do begin
+      read_tfm_word;
       end;
     end;
-  for k:=1 to lh do
-    begin read_tfm_word;
+  for k:=1 to lh do begin
+    read_tfm_word;
     if k=1 then @<Check the check sum@>;
     if k=2 then @<Check the design size@>;
     end;
@@ -1265,16 +1252,16 @@ else begin
 
 @ @<Read |char_info| entries@>=
 case font_ofm_level of
- -1:begin
-    for k:=font_bc to font_ec do
-      begin read_tfm_word;
-      if b0>0 then {character |k| exists in the font}
-        begin vf[vf_ptr]:=k; incr(vf_ptr);
+ -1: begin
+    for k:=font_bc to font_ec do begin
+      read_tfm_word;
+      if b0>0 then begin {character |k| exists in the font}
+        vf[vf_ptr]:=k; incr(vf_ptr);
         if vf_ptr=vf_size then vf_abort('I''m out of OVF memory!');
         end;
       end;
     end;
-  0:begin
+  0: begin
     for k:=font_bc to font_ec do
       begin read_tfm_word;
       if (b0*256+b1)>0 then {character |k| exists in the font}
@@ -1284,18 +1271,18 @@ case font_ofm_level of
       read_tfm_word;
       end;
     end;
-  1:begin
+  1: begin
     k:=font_bc;
     while k<font_ec do begin
       read_tfm_word;
-      if (b0*256+b1)>0 then {character |k| exists in the font}
-        begin vf[vf_ptr]:=k; incr(vf_ptr);
+      if (b0*256+b1)>0 then begin {character |k| exists in the font}
+        vf[vf_ptr]:=k; incr(vf_ptr);
         if vf_ptr=vf_size then vf_abort('I''m out of OVF memory!');
         end;
       read_tfm_word; read_tfm_word;
       font_kprime:=k+(b0*256+b1);
-      for font_j:=k+1 to font_kprime do
-        begin vf[vf_ptr]:=font_j; incr(vf_ptr);
+      for font_j:=k+1 to font_kprime do begin
+        vf[vf_ptr]:=font_j; incr(vf_ptr);
         if vf_ptr=vf_size then vf_abort('I''m out of OVF memory!');
         end;
       k:=font_kprime;
@@ -1310,8 +1297,8 @@ if b0+b1+b2+b3>0 then
   if(b0<>vf[font_start[font_ptr]])or@|
    (b1<>vf[font_start[font_ptr]+1])or@|
    (b2<>vf[font_start[font_ptr]+2])or@|
-   (b3<>vf[font_start[font_ptr]+3]) then
-    begin print_ln('Check sum in OVF file being replaced by font metric check sum');
+   (b3<>vf[font_start[font_ptr]+3]) then begin
+    print_ln('Check sum in OVF file being replaced by font metric check sum');
 @.Check sum...replaced...@>
     vf[font_start[font_ptr]]:=b0;
     vf[font_start[font_ptr]+1]:=b1;
@@ -1356,14 +1343,14 @@ to upper case, since |cur_name| is a \PASCAL\ string.
 
 @<Move font name into the |cur_name| string@>=
 for k:=1 to name_length do cur_name[k]:=' ';
-if a=0 then
-  begin for k:=1 to default_directory_name_length do
+if a=0 then begin
+  for k:=1 to default_directory_name_length do
     cur_name[k]:=default_directory[k];
   r:=default_directory_name_length;
   end
 else r:=0;
-for k:=font_start[font_ptr]+14 to vf_ptr-1 do
-  begin incr(r);
+for k:=font_start[font_ptr]+14 to vf_ptr-1 do begin
+  incr(r);
   if r+4>name_length then vf_abort('Font name too long for me!');
 @.Font name too long for me@>
   if (vf[k]>="a")and(vf[k]<="z") then
@@ -1383,8 +1370,8 @@ var @!b:byte; {input byte}
 @!a:integer; {accumulator}
 begin vf_count:=vf_count+k; get_vf(b); a:=b;
 if k=4 then if b>=128 then a:=a-256; {4-byte numbers are signed}
-while k>1 do
-  begin get_vf(b);
+while k>1 do begin
+  get_vf(b);
   a:=256*a+b; decr(k);
   end;
 vf_read:=a;
@@ -1452,8 +1439,8 @@ ASCII_10:='@@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_';@/
 ASCII_14:='`abcdefghijklmnopqrstuvwxyz{|}~?';@/
 HEX:='0123456789ABCDEF';@/
 for k:=0 to 255 do xchr[k]:='?';
-for k:=0 to @'37 do
-  begin xchr[k+@'40]:=ASCII_04[k+1];
+for k:=0 to @'37 do begin
+  xchr[k+@'40]:=ASCII_04[k+1];
   xchr[k+@'100]:=ASCII_10[k+1];
   xchr[k+@'140]:=ASCII_14[k+1];
   end;
@@ -1541,8 +1528,8 @@ begins in |tfm[k]|:
 @p procedure out_BCPL(@!k:index); {outputs a string, preceded by a blank space}
 var l:0..39; {the number of bytes remaining}
 begin out(' '); l:=tfm[k];
-while l>0 do
-  begin incr(k); decr(l); out(xchr[tfm[k]]);
+while l>0 do begin
+  incr(k); decr(l); out(xchr[tfm[k]]);
   end;
 end;
 
@@ -1601,16 +1588,16 @@ end;
 
 @ @<Reduce \(1)|l|...@>=
 begin decr(l);
-if tfm[k+l]<>0 then
-  begin while b>2 do
-    begin dig[j]:=a mod 16; a:=a div 16; b:=b-4; incr(j);
+if tfm[k+l]<>0 then begin
+  while b>2 do begin
+    dig[j]:=a mod 16; a:=a div 16; b:=b-4; incr(j);
     end;
   case b of
-  0: a:=tfm[k+l];
-  1:a:=a+2*tfm[k+l];
-  2:a:=a+4*tfm[k+l];
-  3:a:=a+8*tfm[k+l];
-  end;
+    0: a:=tfm[k+l];
+    1:a:=a+2*tfm[k+l];
+    2:a:=a+4*tfm[k+l];
+    3:a:=a+8*tfm[k+l];
+    end;
   end;
 b:=b+8;
 end
@@ -1639,7 +1626,8 @@ curious code mentioned earlier, provided that it is less than 18.
 var s:0..1; {the slope}
 @!b:0..8; {the weight and expansion}
 begin if tfm[k]>=18 then out_hex(k,1)
-else  begin out(' F ');  {specify face-code format}
+else begin
+  out(' F ');  {specify face-code format}
   s:=tfm[k] mod 2; b:=tfm[k] div 2;
   out(MBL_string[1+(b mod 3)]);
   out(RI_string[1+s]);
@@ -1688,8 +1676,8 @@ end;
 
 @ @<Reduce \(2)negative to positive@>=
 begin out('-'); a:=@'10000-a;
-if f>0 then
-  begin f:=@'4000000-f; decr(a);
+if f>0 then begin
+  f:=@'4000000-f; decr(a);
   end;
 end
 
@@ -1761,9 +1749,9 @@ that \.{VFtoVP} will put into the \.{VPL} file appear in the header part.
 @<Do the header@>=
 begin
 case ofm_level of
-0: begin out('(OFMLEVEL H 0)'); out_ln; end;
-1: begin out('(OFMLEVEL H 1)'); out_ln; end;
-end;
+  0: begin out('(OFMLEVEL H 0)'); out_ln; end;
+  1: begin out('(OFMLEVEL H 1)'); out_ln; end;
+  end;
 if ofm_on then begin
   left;
   if font_dir<=7 then out('FONTDIR')
@@ -1781,10 +1769,10 @@ if ofm_on then begin
   right
   end;
 font_type:=vanilla;
-if lh>=12 then
-  begin @<Set the true |font_type|@>;
-  if lh>=17 then
-    begin @<Output the family name@>;
+if lh>=12 then begin
+  @<Set the true |font_type|@>;
+  if lh>=17 then begin
+    @<Output the family name@>;
     if lh>=18 then @<Output the rest of the header@>;
     end;
   @<Output the character coding scheme@>;
@@ -1823,20 +1811,20 @@ we might as well write a subroutine to make the check.
 @p procedure check_BCPL(@!k,@!l:index); {checks a string of length |<l|}
 var j:index; {runs through the string}
 @!c:integer; {character being checked}
-begin if tfm[k]>=l then
-  begin bad('String is too long; I''ve shortened it drastically.');
+begin if tfm[k]>=l then begin
+  bad('String is too long; I''ve shortened it drastically.');
 @.String is too long...@>
   tfm[k]:=1;
   end;
-for j:=k+1 to k+tfm[k] do
-  begin c:=tfm[j];
+for j:=k+1 to k+tfm[k] do begin
+  c:=tfm[j];
   if (c="(")or(c=")") then
     begin bad('Parenthesis in string has been changed to slash.');
 @.Parenthesis...changed to slash@>
     tfm[j]:="/";
     end
-  else if (c<" ")or(c>"~") then
-    begin bad('Nonstandard ASCII code has been blotted out.');
+  else if (c<" ")or(c>"~") then begin
+    bad('Nonstandard ASCII code has been blotted out.');
 @.Nonstandard ASCII code...@>
     tfm[j]:="?";
     end
@@ -1852,8 +1840,8 @@ if (tfm[scheme]>=11)and@|(tfm[scheme+1]="T")and@|
   (tfm[scheme+2]="E")and@|(tfm[scheme+3]="X")and@|
   (tfm[scheme+4]=" ")and@|(tfm[scheme+5]="M")and@|
   (tfm[scheme+6]="A")and@|(tfm[scheme+7]="T")and@|
-  (tfm[scheme+8]="H")and@|(tfm[scheme+9]=" ") then
-  begin if (tfm[scheme+10]="S")and(tfm[scheme+11]="Y") then font_type:=mathsy
+  (tfm[scheme+8]="H")and@|(tfm[scheme+9]=" ") then begin
+  if (tfm[scheme+10]="S")and(tfm[scheme+11]="Y") then font_type:=mathsy
   else if (tfm[scheme+10]="E")and(tfm[scheme+11]="X") then font_type:=mathex;
   end;
 end
@@ -1871,8 +1859,8 @@ right
 
 @ @<Output the rest of the header@>=
 begin left; out('FACE'); out_face(random_word+3); right;
-for i:=18 to lh-1 do
-  begin left; out('HEADER D ',i:1);
+for i:=18 to lh-1 do begin
+  left; out('HEADER D ',i:1);
   out_hex(check_sum+4*i,@,4); right;
   end;
 end
@@ -1884,15 +1872,15 @@ The \.{VPtoVF} program will store a correct value and give a warning
 message if a file falsely claims to be safe.
 
 @<Output the |seven_bit_safe_flag|@>=
-if (lh>17) and (tfm[random_word]>127) then
-  begin left; out('SEVENBITSAFEFLAG FALSE'); right;
+if (lh>17) and (tfm[random_word]>127) then begin
+  left; out('SEVENBITSAFEFLAG FALSE'); right;
   end
 
 @ The next thing to take care of is the list of parameters.
 
 @<Do the parameters@>=
-if np>0 then
-  begin left; out('FONTDIMEN'); out_ln;
+if np>0 then begin
+  left; out('FONTDIMEN'); out_ln;
   for i:=1 to np do @<Check and output the $i$th parameter@>;
   right;
   end;
@@ -1950,103 +1938,94 @@ else out('PARAMETER D ',i:1)
 @!value:integer;
 
 @ @<Do the ivalue parameters@>=
-if nki>0 then
-  begin
+if nki>0 then begin
   start_counter:=ivalues_start*4;
   base_counter:=ivalues_base*4;
   for i:=0 to nki-1 do @<Check and output the $i$th ivalue table@>;
   end;
 
 @ @<Check and output the $i$th ivalue table@>=
-  begin
-    left; out('FONTIVALUE'); out_hex_number(i); out_ln; 
-    number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
-    for j:=0 to number_entries-1 do
-    begin
-      left; out('IVALUE'); out_hex_number(j); out_ln; 
-      value:=256*tfm[base_counter+2]+tfm[base_counter+3];
-      left; out('IVALUEVAL'); out_hex_number(value); right;
-      right;
-      base_counter:=base_counter+4;
-    end;
-    right;
-    start_counter:=start_counter+4;;
+begin
+left; out('FONTIVALUE'); out_hex_number(i); out_ln; 
+number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
+for j:=0 to number_entries-1 do begin
+  left; out('IVALUE'); out_hex_number(j); out_ln; 
+  value:=256*tfm[base_counter+2]+tfm[base_counter+3];
+  left; out('IVALUEVAL'); out_hex_number(value); right;
+  right;
+  base_counter:=base_counter+4;
   end;
+right;
+start_counter:=start_counter+4;;
+end;
 
 @ @<Do the fvalue parameters@>=
-if nkf>0 then
-  begin
+if nkf>0 then begin
   start_counter:=fvalues_start*4;
   base_counter:=fvalues_base*4;
   for i:=0 to nkf-1 do @<Check and output the $i$th fvalue table@>;
   end;
 
 @ @<Check and output the $i$th fvalue table@>=
-  begin
-    left; out('FONTFVALUE'); out_hex_number(i); out_ln; 
-    number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
-    for j:=0 to number_entries-1 do
-    begin
-      left; out('FVALUE'); out_hex_number(j); out_ln; 
-      left; out('FVALUEVAL'); out_fix(base_counter); right;
-      right;
-      base_counter:=base_counter+4;
-    end;
-    right;
-    start_counter:=start_counter+4;
+begin
+left; out('FONTFVALUE'); out_hex_number(i); out_ln; 
+number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
+for j:=0 to number_entries-1 do begin
+  left; out('FVALUE'); out_hex_number(j); out_ln; 
+  left; out('FVALUEVAL'); out_fix(base_counter); right;
+  right;
+  base_counter:=base_counter+4;
   end;
+right;
+start_counter:=start_counter+4;
+end;
 
 @ @<Do the mvalue parameters@>=
-if nkm>0 then
-  begin
+if nkm>0 then begin
   start_counter:=mvalues_start*4;
   base_counter:=mvalues_base*4;
   for i:=0 to nkm-1 do @<Check and output the $i$th mvalue table@>;
   end;
 
 @ @<Check and output the $i$th mvalue table@>=
-  begin
-    left; out('FONTMVALUE'); out_hex_number(i); out_ln; 
-    number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
-    for j:=0 to number_entries-1 do
-    begin
-      left; out('MVALUE'); out_hex_number(j); out_ln; 
-      left; out('MVALUEVAL'); out_fix(base_counter); right;
-      right;
-      base_counter:=base_counter+4;
-    end;
-    right;
-    start_counter:=start_counter+4;
+begin
+left; out('FONTMVALUE'); out_hex_number(i); out_ln; 
+number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
+for j:=0 to number_entries-1 do begin
+  left; out('MVALUE'); out_hex_number(j); out_ln; 
+  left; out('MVALUEVAL'); out_fix(base_counter); right;
+  right;
+  base_counter:=base_counter+4;
   end;
+right;
+start_counter:=start_counter+4;
+end;
 
 @ @<Do the rule parameters@>=
-if nkr>0 then
-  begin
+if nkr>0 then begin
   start_counter:=rules_start*4;
   base_counter:=rules_base*4;
   for i:=0 to nkr-1 do @<Check and output the $i$th rule table@>;
   end;
 
 @ @<Check and output the $i$th rule table@>=
-  begin
-    left; out('FONTRULE'); out_hex_number(i); out_ln; 
-    number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
-    for j:=0 to number_entries-1 do
-    begin
-      left; out('RULE'); out_hex_number(j); out_ln; 
-       left; out('RULEWD'); out_fix(base_counter); right;
-       left; out('RULEHT'); out_fix(base_counter+4); right;
-       left; out('RULEDP'); out_fix(base_counter+8); right;
-      right;
-      base_counter:=base_counter+12;
-    end;
-    right;
-    start_counter:=start_counter+4;
+begin
+left; out('FONTRULE'); out_hex_number(i); out_ln; 
+number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
+for j:=0 to number_entries-1 do begin
+  left; out('RULE'); out_hex_number(j); out_ln; 
+  left; out('RULEWD'); out_fix(base_counter); right;
+  left; out('RULEHT'); out_fix(base_counter+4); right;
+  left; out('RULEDP'); out_fix(base_counter+8); right;
+  right;
+  base_counter:=base_counter+12;
   end;
+right;
+start_counter:=start_counter+4;
+end;
 
 @ @<Do the glue parameters@>=
-if nkg>0 then
-  begin
+if nkg>0 then begin
   start_counter:=glues_start*4;
   base_counter:=glues_base*4;
   for i:=0 to nkg-1 do @<Check and output the $i$th glue table@>;
@@ -2057,87 +2036,84 @@ if nkg>0 then
 @!glue_shrink_order,@!glue_argument:integer;
 
 @ @<Check and output the $i$th glue table@>=
-  begin
-    left; out('FONTGLUE'); out_hex_number(i); out_ln; 
-    number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
-    for j:=0 to number_entries-1 do
-    begin
-     left; out('GLUE'); out_hex_number(j); out_ln; 
-      glue_subtype:=tfm[base_counter] div 16;
-      glue_argument_kind:=tfm[base_counter] mod 16;
-      glue_stretch_order:=tfm[base_counter+1] div 16;
-      glue_shrink_order:=tfm[base_counter+1] mod 16;
-      glue_argument:=tfm[base_counter+2]*256+tfm[base_counter+3];
-      left;
-        out('GLUETYPE'); 
-        case glue_subtype of
-        0: out(' H 0');
-        1: out(' H 1');
-        2: out(' H 2');
-        3: out(' H 3');
-        end;
-      right;
-      case glue_argument_kind of
-      1: begin
-           left; out('GLUERULE'); out_hex_number(glue_argument); right;
-         end; 
-      2: begin
-           left; out('GLUECHAR'); out_hex_number(glue_argument); right;
-         end; 
-      end;
-      left;
-        out('GLUESTRETCHORDER'); 
-        case glue_stretch_order of
-        0: out(' H 0');
-        1: out(' H 1');
-        2: out(' H 2');
-        3: out(' H 3');
-        4: out(' H 4');
-        end;
-      right;
-      left;
-        out('GLUESHRINKORDER'); 
-        case glue_shrink_order of
-        0: out(' H 0');
-        1: out(' H 1');
-        2: out(' H 2');
-        3: out(' H 3');
-        4: out(' H 4');
-        end;
-      right;
-      left; out('GLUEWD'); out_fix(base_counter+4); right;
-      left; out('GLUESTRETCH'); out_fix(base_counter+8); right;
-      left; out('GLUESHRINK'); out_fix(base_counter+12); right;
-     right;
-     base_counter:=base_counter+16;
+begin
+left; out('FONTGLUE'); out_hex_number(i); out_ln; 
+number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3];
+for j:=0 to number_entries-1 do begin
+  left; out('GLUE'); out_hex_number(j); out_ln; 
+  glue_subtype:=tfm[base_counter] div 16;
+  glue_argument_kind:=tfm[base_counter] mod 16;
+  glue_stretch_order:=tfm[base_counter+1] div 16;
+  glue_shrink_order:=tfm[base_counter+1] mod 16;
+  glue_argument:=tfm[base_counter+2]*256+tfm[base_counter+3];
+  left;
+  out('GLUETYPE'); 
+  case glue_subtype of
+    0: out(' H 0');
+    1: out(' H 1');
+    2: out(' H 2');
+    3: out(' H 3');
     end;
-    right;
-    start_counter:=start_counter+4;
+  right;
+  case glue_argument_kind of
+    1: begin
+      left; out('GLUERULE'); out_hex_number(glue_argument); right;
+      end; 
+    2: begin
+      left; out('GLUECHAR'); out_hex_number(glue_argument); right;
+      end; 
+    end;
+  left;
+  out('GLUESTRETCHORDER'); 
+  case glue_stretch_order of
+    0: out(' H 0');
+    1: out(' H 1');
+    2: out(' H 2');
+    3: out(' H 3');
+    4: out(' H 4');
+    end;
+  right;
+  left;
+  out('GLUESHRINKORDER'); 
+  case glue_shrink_order of
+    0: out(' H 0');
+    1: out(' H 1');
+    2: out(' H 2');
+    3: out(' H 3');
+    4: out(' H 4');
+    end;
+  right;
+  left; out('GLUEWD'); out_fix(base_counter+4); right;
+  left; out('GLUESTRETCH'); out_fix(base_counter+8); right;
+  left; out('GLUESHRINK'); out_fix(base_counter+12); right;
+  right;
+  base_counter:=base_counter+16;
   end;
+right;
+start_counter:=start_counter+4;
+end;
 
 @ @<Do the penalty parameters@>=
-if nkp>0 then
-  begin
+if nkp>0 then begin
   start_counter:=penalties_start*4;
   base_counter:=penalties_base*4;
   for i:=0 to nkp-1 do @<Check and output the $i$th penalty table@>;
   end;
  
 @ @<Check and output the $i$th penalty table@>=
-  begin 
-    left; out('FONTPENALTY'); out_hex_number(i); out_ln; 
-    number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3]; 
-    for j:=0 to number_entries-1 do
-    begin 
-      left; out('PENALTY'); out_hex_number(j); out_ln;
-      value:=256*tfm[base_counter+2]+tfm[base_counter+3]; 
-      left; out('PENALTYVAL'); out_hex_number(value); right; 
-      right; 
-      base_counter:=base_counter+4; 
-    end; 
-    right;
-    start_counter:=start_counter+4; 
-  end;
+begin 
+left; out('FONTPENALTY'); out_hex_number(i); out_ln; 
+number_entries:=256*tfm[start_counter+2]+tfm[start_counter+3]; 
+for j:=0 to number_entries-1 do begin 
+  left; out('PENALTY'); out_hex_number(j); out_ln;
+  value:=256*tfm[base_counter+2]+tfm[base_counter+3]; 
+  left; out('PENALTYVAL'); out_hex_number(value); right; 
+  right; 
+  base_counter:=base_counter+4; 
+  end; 
+right;
+start_counter:=start_counter+4; 
+end;
 
 @ We need to check the range of all the remaining |fix_word| values,
 and to make sure that |width[0]=0|, etc.
@@ -2194,13 +2170,13 @@ label_ptr:=0; label_table[0].rr:=0; {a sentinel appears at the bottom}
 @!ai,@!acti:0..lig_size; {indices into |activity|}
 
 @ @<Do the ligatures and kerns@>=
-if nl>0 then
-  begin for ai:=0 to (nl-1) do activity[ai]:=unreachable;
+if nl>0 then begin
+  for ai:=0 to (nl-1) do activity[ai]:=unreachable;
   @<Check for a boundary char@>;
   end;
 @<Build the label table@>;
-if nl>0 then
-  begin left; out('LIGTABLE'); out_ln;@/
+if nl>0 then begin
+  left; out('LIGTABLE'); out_ln;@/
   @<Compute the |activity| array@>;
   @<Output and correct the ligature/kern program@>;
   right;
@@ -2212,20 +2188,19 @@ that would not otherwise be detected.
 
 @<Build...@>=
 for c:=bc to ec do
-if (tag(c)=lig_tag) or (ctag(c)) then
-  begin r:=rremainder(c);
-  if (l_skip_byte(lig_step(r)) div 256)=0 then
-  begin
-  if r<nl then
-    begin if l_skip_byte(lig_step(r))>stop_flag then
-      begin r:=256*l_op_byte(lig_step(r))+l_remainder(lig_step(r));
-      if r<nl then if activity[rremainder(c)]=unreachable then
-        activity[rremainder(c)]:=pass_through;
+if (tag(c)=lig_tag) or (ctag(c)) then begin
+  r:=rremainder(c);
+  if (l_skip_byte(lig_step(r)) div 256)=0 then begin
+    if r<nl then begin
+      if l_skip_byte(lig_step(r))>stop_flag then begin
+        r:=256*l_op_byte(lig_step(r))+l_remainder(lig_step(r));
+        if r<nl then if activity[rremainder(c)]=unreachable then
+          activity[rremainder(c)]:=pass_through;
+        end;
       end;
     end;
-  end;
-  if r>=nl then
-    begin perfect:=false; print_ln(' ');
+  if r>=nl then begin
+    perfect:=false; print_ln(' ');
     print('Ligature/kern starting index for character '); print_hex(c);
     print_ln(' is too large;'); print_ln('so I removed it.'); set_no_tag(c);
     set_no_ctag(c);
@@ -2237,8 +2212,8 @@ label_table[label_ptr+1].rr:=lig_size; {put ``infinite'' sentinel at the end}
 
 @ @<Insert |(c,r)|...@>=
 begin sort_ptr:=label_ptr; {there's a hole at position |sort_ptr+1|}
-while label_table[sort_ptr].rr>r do
-  begin label_table[sort_ptr+1]:=label_table[sort_ptr];
+while label_table[sort_ptr].rr>r do begin
+  label_table[sort_ptr+1]:=label_table[sort_ptr];
   decr(sort_ptr); {move the hole}
   end;
 label_table[sort_ptr+1].ischar:=not ctag(c);
@@ -2251,21 +2226,22 @@ incr(label_ptr); activity[r]:=accessible;
 end
 
 @ @<Check for a bound...@>=
-if l_skip_byte(lig_step(0))=255 then
-  begin left; out('BOUNDARYCHAR');
+if l_skip_byte(lig_step(0))=255 then begin
+  left; out('BOUNDARYCHAR');
   boundary_char:=l_next_char(lig_step(0)); out_char(boundary_char); right;
   activity[0]:=pass_through;
   end;
-if l_skip_byte(lig_step(nl-1))=255 then
-  begin r:=256*l_op_byte(lig_step(nl-1))+l_remainder(lig_step(nl-1));
-  if r>=nl then
-    begin perfect:=false; print_ln(' ');
+if l_skip_byte(lig_step(nl-1))=255 then begin
+  r:=256*l_op_byte(lig_step(nl-1))+l_remainder(lig_step(nl-1));
+  if r>=nl then begin
+    perfect:=false; print_ln(' ');
     print('Ligature/kern starting index for boundarychar is too large;');
     print_ln('so I removed it.');
 @.Ligature/kern starting index...@>
     end
-  else begin label_ptr:=1; label_table[1].cc:=xmax_char;
-             label_table[1].rr:=r;
+  else begin
+    label_ptr:=1; label_table[1].cc:=xmax_char;
+    label_table[1].rr:=r;
     bchar_label:=r; activity[r]:=accessible;
     end;
   activity[nl-1]:=pass_through;
@@ -2275,12 +2251,12 @@ if l_skip_byte(lig_step(nl-1))=255 then
 for ai:=0 to (nl-1) do
 if (l_skip_byte(lig_step(ai)) div 256)=1 then
   activity[ai]:=accessible
-else if activity[ai]=accessible then
-  begin r:=l_skip_byte(lig_step(ai));
-  if r<stop_flag then
-    begin r:=r+ai+1;
-    if r>=nl then
-      begin bad('Ligature/kern step ',ai:1,' skips too far;');
+else if activity[ai]=accessible then begin
+  r:=l_skip_byte(lig_step(ai));
+  if r<stop_flag then begin
+    r:=r+ai+1;
+    if r>=nl then begin
+      bad('Ligature/kern step ',ai:1,' skips too far;');
 @.Lig...skips too far@>
       print_ln('I made it stop.'); set_l_skip_byte(lig_step(ai),stop_flag);
       end
@@ -2293,8 +2269,8 @@ the \.{PL} file.
 
 @<Output and correct the ligature...@>=
 sort_ptr:=1; {point to the next label that will be needed}
-for acti:=0 to nl-1 do if activity[acti]<>pass_through then
-  begin i:=acti; @<Take care of commenting out unreachable steps@>;
+for acti:=0 to nl-1 do if activity[acti]<>pass_through then begin
+  i:=acti; @<Take care of commenting out unreachable steps@>;
   @<Output any labels for step $i$@>;
   @<Output step $i$ of the ligature/kern program@>;
   end;
@@ -2310,34 +2286,30 @@ for clabel_runner:=0 to 256 do
   output_clabels[clabel_runner]:=false;
 
 @ @<Output any labels...@>=
-while i=label_table[sort_ptr].rr do
-begin
-  if not label_table[sort_ptr].ischar then
-  begin
-    if not output_clabels[label_table[sort_ptr].cc] then
-    begin
+while i=label_table[sort_ptr].rr do begin
+  if not label_table[sort_ptr].ischar then begin
+    if not output_clabels[label_table[sort_ptr].cc] then begin
       output_clabels[label_table[sort_ptr].cc]:=true;
       left;
       out('CLABEL');
       out_char(label_table[sort_ptr].cc);
       right;
+      end
     end
-  end
-  else
-  begin
+  else begin
     left;
     out('LABEL');
     if label_table[sort_ptr].cc=xmax_char then out(' BOUNDARYCHAR')
     else out_char(label_table[sort_ptr].cc);
     right;
-  end;
+    end;
   incr(sort_ptr);
-end
+  end
 
 @ @<Take care of commenting out...@>=
-if activity[i]=unreachable then
-  begin if level=1 then
-    begin left; out('COMMENT THIS PART OF THE PROGRAM IS NEVER USED!'); out_ln;
+if activity[i]=unreachable then begin
+  if level=1 then begin
+    left; out('COMMENT THIS PART OF THE PROGRAM IS NEVER USED!'); out_ln;
     end
   end
 else if level=2 then right
@@ -2346,41 +2318,41 @@ else if level=2 then right
 begin k:=lig_step(i);
 if (l_skip_byte(k) div 256)=1 then begin
   case l_op_byte(k) of
-    17:begin
-       left; out('CPEN');
-       out_hex_number(l_next_char(k));
-       out_hex_number(l_remainder(k));
-       right;
-       end;
-    18:begin
-       left; out('CGLUE');
-       out_hex_number(l_next_char(k));
-       out_hex_number(l_remainder(k));
-       right;
-       end;
-    19:begin
-       left; out('CPENGLUE');
-       out_hex_number(l_next_char(k));
-       out_hex_number(l_remainder(k) div 256);
-       out_hex_number(l_remainder(k) mod 256);
-       right;
-       end;
-    20:begin
-       left; out('CKRN');
-       out_hex_number(l_next_char(k));
-       r:=l_remainder(k);
-       if r>=nk then
-         begin bad('Kern index too large.');
+    17: begin
+      left; out('CPEN');
+      out_hex_number(l_next_char(k));
+      out_hex_number(l_remainder(k));
+      right;
+      end;
+    18: begin
+      left; out('CGLUE');
+      out_hex_number(l_next_char(k));
+      out_hex_number(l_remainder(k));
+      right;
+      end;
+    19: begin
+      left; out('CPENGLUE');
+      out_hex_number(l_next_char(k));
+      out_hex_number(l_remainder(k) div 256);
+      out_hex_number(l_remainder(k) mod 256);
+      right;
+      end;
+    20: begin
+      left; out('CKRN');
+      out_hex_number(l_next_char(k));
+      r:=l_remainder(k);
+      if r>=nk then begin
+        bad('Kern index too large.');
 @.Kern index too large@>
-         out(' R 0.0');
-         end
-       else out_fix(kern(r));
-       right;
-       end;
-  end;
-end
-else if l_skip_byte(k)>stop_flag then
-  begin if (256*l_op_byte(k)+l_remainder(k))>=nl then
+        out(' R 0.0');
+        end
+      else out_fix(kern(r));
+      right;
+      end;
+    end;
+  end
+else if l_skip_byte(k)>stop_flag then begin
+  if (256*l_op_byte(k)+l_remainder(k))>=nl then
     bad('Ligature unconditional stop command address is too big.');
 @.Ligature unconditional stop...@>
   end
@@ -2395,9 +2367,10 @@ inaccessible commands.
 
 @<Output either...@>=
 begin if (l_skip_byte(k) mod 256)>=stop_flag then out('(STOP)')
-else begin count:=0;
+else begin
+  count:=0;
   for ai:=(i+1) to (i+(l_skip_byte(k) mod 256)) do
-     if activity[ai]=accessible then incr(count);
+    if activity[ai]=accessible then incr(count);
   out('(SKIP D ',count:1,')'); {possibly $count=0$, so who cares}
   end;
 out_ln;
@@ -2410,8 +2383,8 @@ begin if nonexistent(l_next_char(k)) then
 @.Kern step for nonexistent...@>
 left; out('KRN'); out_char(l_next_char(k));
 r:=256*(l_op_byte(k)-kern_flag)+l_remainder(k);
-if r>=nk then
-  begin bad('Kern index too large.');
+if r>=nk then begin
+  bad('Kern index too large.');
 @.Kern index too large@>
   out(' R 0.0');
   end
@@ -2428,15 +2401,15 @@ if nonexistent(l_remainder(k)) then
 correct_bad_char('Ligature step produces the')(l_remainder)(set_l_remainder);
 @.Ligature step produces...@>
 left; r:=l_op_byte(k);
-if (r=4)or((r>7)and(r<>11)) then
-  begin print_ln('Ligature step with nonstandard code changed to LIG');
+if (r=4)or((r>7)and(r<>11)) then begin
+  print_ln('Ligature step with nonstandard code changed to LIG');
   r:=0; set_l_op_byte(k,0);
   end;
 if r mod 4>1 then out('/');
 out('LIG');
 if odd(r) then out('/');
-while r>3 do
-  begin out('>'); r:=r-4;
+while r>3 do begin
+  out('>'); r:=r-4;
   end;
 out_char(l_next_char(k)); out_char(l_remainder(k)); right;
 end
@@ -2453,7 +2426,8 @@ while (c<=ec) do begin
     if chars_on_line=8 then begin
       print_ln(' '); chars_on_line:=1;
       end
-    else  begin if chars_on_line>0 then print(' ');
+    else begin
+      if chars_on_line>0 then print(' ');
       incr(chars_on_line);
       end;
     for cprime:=c to (c+no_repeats(c)) do begin
@@ -2464,12 +2438,12 @@ while (c<=ec) do begin
       if depth_index(c)>0 then @<Output the character's depth@>;
       if italic_index(c)>0 then @<Output the italic correction@>;
       case tag(c) of
-      no_tag: do_nothing;
-      lig_tag: @<Output the applicable part of the ligature/kern
-        program as a comment@>;
-      list_tag: @<Output the character link unless there is a problem@>;
-      ext_tag: @<Output an extensible character recipe@>;
-      end; {there are no other cases}
+        no_tag: do_nothing;
+        lig_tag: @<Output the applicable part of the ligature/kern
+                   program as a comment@>;
+        list_tag: @<Output the character link unless there is a problem@>;
+        ext_tag: @<Output an extensible character recipe@>;
+        end; {there are no other cases}
       for i:=0 to npc-1 do begin
         if char_param(c,i)<>0 then begin
           left;
@@ -2497,7 +2471,7 @@ while (c<=ec) do begin
       end;
     end;
   c:=c+1+no_repeats(c);
-end
+  end
 
 @ @<Output the character's width@>=
 if width_index(c)>=nw then range_error('Width')
@@ -2542,30 +2516,33 @@ the largest character code in the cycle.
 
 @<Output the character link unless there is a problem@>=
 begin r:=rremainder(c);
-if nonexistent(r) then
-  begin bad_char('Character list link to')(r); set_no_tag(c);
+if nonexistent(r) then begin
+  bad_char('Character list link to')(r); set_no_tag(c);
 @.Character list link...@>
   end
-else  begin while (r<c)and(tag(r)=list_tag) do r:=rremainder(r);
-  if r=c then
-    begin bad('Cycle in a character list!');
+else begin
+  while (r<c)and(tag(r)=list_tag) do r:=rremainder(r);
+  if r=c then begin
+    bad('Cycle in a character list!');
 @.Cycle in a character list@>
     print('Character '); print_hex(c);
     print_ln(' now ends the list.');
     set_no_tag(c);
     end
-  else  begin left; out('NEXTLARGER'); out_char(rremainder(c));
+  else begin
+    left; out('NEXTLARGER'); out_char(rremainder(c));
     right;
     end;
   end;
 end
 
 @ @<Output an extensible character recipe@>=
-if rremainder(c)>=ne then
-  begin range_error('Extensible'); set_no_tag(c);
+if rremainder(c)>=ne then begin
+  range_error('Extensible'); set_no_tag(c);
 @.Extensible index for char@>
   end
-else  begin left; out('VARCHAR'); out_ln;
+else begin
+  left; out('VARCHAR'); out_ln;
   @<Output the extensible pieces that exist@>;
   right;
   end
@@ -2574,27 +2551,23 @@ else  begin left; out('VARCHAR'); out_ln;
 @!exten_char:integer;
 
 @ @<Output the extensible pieces that...@>=
-for d:=0 to 3 do
-  begin
-     if not ofm_on then
-     begin
-        k:=exten(c)+d;
-        exten_char:=tfm[k];
-     end
-     else
-     begin
-        k:=exten(c)+2*d;
-        exten_char:=256*tfm[k]+tfm[k+1];
-     end;
-     if (d=3)or(exten_char>0) then
-     begin
-        left;
-        case d of
-        0:out('TOP');@+1:out('MID');@+2:out('BOT');@+3:out('REP')@+end;
-        if nonexistent(exten_char) then out_char(c)
-        else out_char(exten_char);
-        right;
-     end
+for d:=0 to 3 do begin
+  if not ofm_on then begin
+    k:=exten(c)+d;
+    exten_char:=tfm[k];
+    end
+  else begin
+    k:=exten(c)+2*d;
+    exten_char:=256*tfm[k]+tfm[k+1];
+    end;
+  if (d=3)or(exten_char>0) then begin
+    left;
+    case d of
+      0:out('TOP');@+1:out('MID');@+2:out('BOT');@+3:out('REP')@+end;
+      if nonexistent(exten_char) then out_char(c)
+      else out_char(exten_char);
+      right;
+    end
   end
 
 @ Some of the extensible recipes may not actually be used, but \TeX\ will
@@ -2603,40 +2576,32 @@ Therefore \.{VFtoVP} must check them too.
 
 @<Check the extensible recipes@>=
 if ne>0 then
-for c:=0 to ne-1 do
-for d:=0 to 3 do
-begin
-  if not ofm_on then
-  begin
-     k:=4*(exten_base+c)+d;
-     exten_char:=tfm[k];
-  end
-  else
-  begin
-     k:=4*(exten_base+c)+2*d;
-     exten_char:=256*tfm[k]+tfm[k+1];
-  end;
-  if (exten_char>0)or(d=3) then
-  begin
-    if nonexistent(exten_char) then
-    begin
-      bad_char('Extensible recipe involves the')(exten_char);
-@.Extensible recipe involves...@>
-      if d<3 then
-      begin
-        if not ofm_on then
-        begin
-          tfm[k]:=0;
+  for c:=0 to ne-1 do
+    for d:=0 to 3 do begin
+      if not ofm_on then begin
+        k:=4*(exten_base+c)+d;
+        exten_char:=tfm[k];
         end
-        else
-        begin
-          tfm[k]:=0;
-          tfm[k+1]:=0;
+      else begin
+        k:=4*(exten_base+c)+2*d;
+        exten_char:=256*tfm[k]+tfm[k+1];
         end;
-      end;
-    end;
-  end;
-end
+      if (exten_char>0)or(d=3) then begin
+        if nonexistent(exten_char) then begin
+          bad_char('Extensible recipe involves the')(exten_char);
+@.Extensible recipe involves...@>
+          if d<3 then begin
+            if not ofm_on then begin
+              tfm[k]:=0;
+              end
+            else begin
+              tfm[k]:=0;
+              tfm[k+1]:=0;
+              end;
+            end;
+          end;
+        end;
+      end
 
 @* Checking for ligature loops.
 We have programmed almost everything but the most interesting calculation of
@@ -2700,28 +2665,28 @@ $(x,y)$ in a hash table from which the values $z$ and $class$ can be read.
 @ @<Check for ligature cycles@>=
 hash_ptr:=0; y_lig_cycle:=xmax_char;
 for hh:=0 to hash_size do hash[hh]:=0; {clear the hash table}
-for c:=bc to ec do if tag(c)=lig_tag then
-  begin i:=rremainder(c);
+for c:=bc to ec do if tag(c)=lig_tag then begin
+  i:=rremainder(c);
   if (l_skip_byte(lig_step(i)) mod 256)>stop_flag then
     i:=256*l_op_byte(lig_step(i))+l_remainder(lig_step(i));
   @<Enter data for character $c$ starting at location |i| in the hash table@>;
   end;
-if bchar_label<nl then
-  begin c:=xmax_char; i:=bchar_label;
+if bchar_label<nl then begin
+  c:=xmax_char; i:=bchar_label;
   @<Enter data for character $c$ starting at location |i| in the hash table@>;
   end;
-if hash_ptr=hash_size then
-  begin print_ln('Sorry, I haven''t room for so many ligature/kern pairs!');
+if hash_ptr=hash_size then begin
+  print_ln('Sorry, I haven''t room for so many ligature/kern pairs!');
 @.Sorry, I haven't room...@>
   goto final_end;
   end;
-for hh:=1 to hash_ptr do
-  begin r:=hash_list[hh];
+for hh:=1 to hash_ptr do begin
+  r:=hash_list[hh];
   if class[r]>simple then {make sure $f$ is defined}
      r:=f(r,(hash[r]-1)div xmax_char,(hash[r]-1)mod xmax_char);
   end;
-if y_lig_cycle<xmax_char then
-  begin  print('Infinite ligature loop starting with ');
+if y_lig_cycle<xmax_char then begin
+  print('Infinite ligature loop starting with ');
 @.Infinite ligature loop...@>
   if x_lig_cycle=xmax_char
   then print('boundary')@+else print_hex(x_lig_cycle);
@@ -2748,9 +2713,9 @@ var @!cc:simple..both_z; {class of data being entered}
 begin if hash_ptr=hash_size then goto 30;
 @<Compute the command parameters |y|, |cc|, and |zz|@>;
 key:=xmax_char*c+y+1; h:=(hash_mult*(key mod hash_size)) mod hash_size;
-while hash[h]>0 do
-  begin if hash[h]<=key then
-    begin if hash[h]=key then goto 30; {unused ligature command}
+while hash[h]>0 do begin
+  if hash[h]<=key then begin
+    if hash[h]=key then goto 30; {unused ligature command}
     t:=hash[h]; hash[h]:=key; key:=t; {do ordered-hash-table insertion}
     t:=class[h]; class[h]:=cc; cc:=t; {namely, do a swap}
     t:=lig_z[h]; lig_z[h]:=zz; zz:=t;
@@ -2824,8 +2789,8 @@ var @!j,@!bal:integer;
 begin if l>0 then if vf[k]=" " then goto not_found;
   {a leading blank is considered unbalanced}
 bal:=0;
-for j:=k to k+l-1 do
-  begin if (vf[j]<" ")or(vf[j]>=127) then goto not_found;
+for j:=k to k+l-1 do begin
+  if (vf[j]<" ")or(vf[j]>=127) then goto not_found;
   if vf[j]="(" then incr(bal)
   else if vf[j]=")" then
     if bal=0 then goto not_found else decr(bal);
@@ -2841,8 +2806,8 @@ exit:end;
 @.Bad OVF file@>
 
 @<Do the virtual font title@>=
-if string_balance(0,font_start[0]) then
-  begin left; out('VTITLE ');
+if string_balance(0,font_start[0]) then begin
+  left; out('VTITLE ');
   for k:=0 to font_start[0]-1 do out(xchr[vf[k]]);
   right;
   end
@@ -2858,21 +2823,22 @@ begin if abs(x)>=@'100000000 then
   bad_vf('Oversize dimension has been reset to zero.');
 @.Oversize dimension...@>
 if x>=0 then tfm[design_size]:=0
-else begin tfm[design_size]:=255; x:=x+@'100000000;
+else begin
+  tfm[design_size]:=255; x:=x+@'100000000;
   end;
-for k:=3 downto 1 do
-  begin tfm[design_size+k]:=x mod 256; x:=x div 256;
+for k:=3 downto 1 do begin
+  tfm[design_size+k]:=x mod 256; x:=x div 256;
   end;
 out_fix(design_size);
 end;
 
 @ @<Do the local fonts@>=
-for f:=0 to font_ptr-1 do
-  begin left; out('MAPFONT D ',f:1); out_ln;
+for f:=0 to font_ptr-1 do begin
+  left; out('MAPFONT D ',f:1); out_ln;
   @<Output the font area and name@>;
   for k:=0 to 11 do tfm[k]:=vf[font_start[f]+k];
-  if tfm[0]+tfm[1]+tfm[2]+tfm[3]>0 then
-    begin left; out('FONTCHECKSUM'); out_hex(0,4); right;
+  if tfm[0]+tfm[1]+tfm[2]+tfm[3]>0 then begin
+    left; out('FONTCHECKSUM'); out_hex(0,4); right;
     end;
   left; out('FONTAT'); out_fix(4); right;
   left; out('FONTDSIZE'); out_fix(8); right; right;
@@ -2884,14 +2850,16 @@ if a>0 then
   if not string_balance(font_start[f]+14,a) then
     bad_vf('Improper font area will be ignored')
 @.Improper font area@>
-  else begin left; out('FONTAREA ');
+  else begin
+    left; out('FONTAREA ');
     for k:=font_start[f]+14 to font_start[f]+a+13 do out(xchr[vf[k]]);
     right;
     end;
 if (l=0)or not string_balance(font_start[f]+14+a,l) then
   bad_vf('Improper font name will be ignored')
 @.Improper font name@>
-else begin left; out('FONTNAME ');
+else begin
+  left; out('FONTNAME ');
   for k:=font_start[f]+14+a to font_start[f]+a+l+13 do out(xchr[vf[k]]);
   right;
   end
@@ -2914,18 +2882,19 @@ used by \.{DVI}-reading software.
 if packet_start[c]=vf_size then
   bad_vf('Missing packet for character ',c:1)
 @.Missing packet@>
-else begin left; out('MAP'); out_ln;
+else begin
+  left; out('MAP'); out_ln;
   top:=0; wstack[0]:=0; xstack[0]:=0; ystack[0]:=0; zstack[0]:=0;
   vf_ptr:=packet_start[c]; vf_limit:=packet_end[c]+1; f:=0;
-  while vf_ptr<vf_limit do
-    begin o:=vf[vf_ptr]; incr(vf_ptr);
+  while vf_ptr<vf_limit do begin
+    o:=vf[vf_ptr]; incr(vf_ptr);
     case o of
     @<Cases of \.{DVI} instructions that can appear in character packets@>@;
     improper_DVI_for_VF: bad_vf('Illegal DVI code ',o:1,' will be ignored');
     end; {there are no other cases}
     end;
-  if top>0 then
-    begin bad_vf('More pushes than pops!');
+  if top>0 then begin
+    bad_vf('More pushes than pops!');
 @.More pushes than pops@>
     repeat out('(POP)'); decr(top);@+until top=0;
     end;
@@ -2936,15 +2905,15 @@ else begin left; out('MAP'); out_ln;
 
 @p function get_bytes(@!k:integer;@!signed:boolean):integer;
 var @!a:integer; {accumulator}
-begin if vf_ptr+k>vf_limit then
-  begin bad_vf('Packet ended prematurely'); k:=vf_limit-vf_ptr;
+begin if vf_ptr+k>vf_limit then begin
+  bad_vf('Packet ended prematurely'); k:=vf_limit-vf_ptr;
   end;
 a:=vf[vf_ptr];
 if (k=4) or signed then
   if a>=128 then a:=a-256;
 incr(vf_ptr);
-while k>1 do
-  begin a:=a*256+vf[vf_ptr]; incr(vf_ptr); decr(k);
+while k>1 do begin
+  a:=a*256+vf[vf_ptr]; incr(vf_ptr); decr(k);
   end;
 get_bytes:=a;
 end;
@@ -3147,8 +3116,8 @@ if not do_characters then goto final_end;
 print_ln('.');@/
 if level<>0 then print_ln('This program isn''t working!');
 @.This program isn't working@>
-if not perfect then
-  begin out('(COMMENT THE OFM AND/OR OVF FILE WAS BAD, ');
+if not perfect then begin
+  out('(COMMENT THE OFM AND/OR OVF FILE WAS BAD, ');
   out('SO THE DATA HAS BEEN CHANGED!)');
   end;
 @.THE OFM AND/OR OVF FILE WAS BAD...@>

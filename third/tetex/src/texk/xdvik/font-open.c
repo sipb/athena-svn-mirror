@@ -17,69 +17,116 @@ all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL PAUL VOJTA OR ANYONE ELSE BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
-THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+IN NO EVENT SHALL PAUL VOJTA OR ANY OTHER AUTHOR OF THIS SOFTWARE BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    
 
  */
 
 #include "xdvi-config.h"
 
-#include <kpathsea/c-fopen.h>
-#include <kpathsea/tex-glyph.h>
+#include "kpathsea/c-fopen.h"
+#include "kpathsea/tex-glyph.h"
 
 
 /* We try for a VF first because that's what dvips does.  Also, it's
    easier to avoid running mktexpk if we have a VF this way.  */
 
 FILE *
-font_open (font, font_ret, dpi, dpi_ret, dummy, filename_ret)
-    _Xconst char *font;
-    char **font_ret;
-    double dpi;
-    int *dpi_ret;
-    int dummy;
-    char **filename_ret;
+font_open(char *font, char **font_ret, double dpi, int *dpi_ret,
+
+	  int dummy, char **filename_ret
+#ifdef T1LIB
+	  , int *t1id
+#endif
+	  )
 {
-  FILE *ret;
-  
+    char *name;
+    kpse_glyph_file_type file_ret;
+    UNUSED(dummy);
+
+    /* defaults in case of success; filename_ret will be
+       non-NULL iff the fallback font is used.
+    */
+    *font_ret = NULL;
+    /* filename_ret is NULL iff a T1 version of a font has been used */
+    *filename_ret = NULL;
+    *dpi_ret = dpi;
+    
 #ifdef Omega
-  char *name = kpse_find_ovf (font);
-  if (!name) name = kpse_find_vf(font);
+    name = kpse_find_ovf(font);
+    if (!name)
 #else
-  char *name = kpse_find_vf (font);
+    name = kpse_find_vf(font);
 #endif
 
-  if (name)
-    {
-      /* VF fonts don't have a resolution, but loadfont will complain if
-         we don't return what it asked for.  */
-      *dpi_ret = dpi;
-      *font_ret = NULL;
+#ifdef T1LIB
+    if (resource.t1lib) {
+	*t1id = -1;
     }
-  else
-    {
-      kpse_glyph_file_type file_ret;
-      name = kpse_find_glyph (font, (unsigned) (dpi + .5),
-                              kpse_any_glyph_format, &file_ret);
-      if (name)
-        {
-          /* If we got it normally, from an alias, or from mktexpk,
-             don't fill in FONT_RET.  That tells load_font to complain.  */
-          *font_ret
-             = file_ret.source == kpse_glyph_source_fallback ? file_ret.name
-               : NULL; /* tell load_font we found something good */
-          
-          *dpi_ret = file_ret.dpi;
-        }
-      /* If no VF and no PK, FONT_RET is irrelevant? */
-    }
-  
-  /* If we found a name, return the stream.  */
-  ret = name ? xfopen_local (name, FOPEN_R_MODE) : NULL;
-  *filename_ret = name;
+#endif /* T1LIB */
 
-  return ret;
+    if (name) { /* found a vf font */
+	/* pretend it has the expected dpi value, else caller will complain */
+	*dpi_ret = dpi;
+	*filename_ret = name;
+	return xfopen_local(name, FOPEN_R_MODE);
+    }
+
+#ifdef T1LIB
+    if (resource.t1lib) {
+	/* First try: T1 font of correct size */
+	*t1id = find_T1_font(font);
+	if (*t1id >= 0) {
+	    TRACE_T1((stderr, "found T1 font %s", font));
+	    return NULL;
+	}
+	TRACE_T1((stderr,
+		  "T1 version of font %s not found, trying pixel version next, then fallback",
+		  font));
+    }
+#endif /* T1LIB */
+    /* Second try: PK/GF/... font within allowable size range */
+    name = kpse_find_glyph(font, (unsigned)(dpi + .5),
+			   kpse_any_glyph_format, &file_ret);
+
+    if (name) { /* success */
+	*dpi_ret = file_ret.dpi;
+	*filename_ret = name;
+	return xfopen_local(name, FOPEN_R_MODE);
+    }
+    else if (alt_font != NULL) {
+	/* The strange thing about kpse_find_glyph() is that it
+	   won't create a PK version of alt_font if it doesn't
+	   already exist. So we invoke it explicitly a second time
+	   for that one.
+	*/
+#ifdef T1LIB
+	if (resource.t1lib) {
+	    /* Third try: T1 version of fallback font */
+	    *t1id = find_T1_font(alt_font);
+	    if (*t1id >= 0) {
+		TRACE_T1((stderr, "found fallback font %s\n", font));
+		*font_ret = xstrdup(alt_font);
+		return NULL;
+	    }
+	    TRACE_T1((stderr,
+		      "Type1 version of fallback font %s not found, trying pixel version",
+		      alt_font));
+	}
+#endif /* T1LIB */
+	/* Forth try: PK version of fallback font */
+	name = kpse_find_glyph(alt_font, (unsigned)(dpi + .5),
+			       kpse_any_glyph_format, &file_ret);
+	if (name) { /* success */
+	    *dpi_ret = file_ret.dpi;
+	    *filename_ret = name;
+	    *font_ret = xstrdup(alt_font);
+	    return xfopen_local(name, FOPEN_R_MODE);
+	}
+    }
+    /* all other cases are failure */
+    return NULL;
 }

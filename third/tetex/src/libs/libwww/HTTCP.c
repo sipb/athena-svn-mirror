@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTCP.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTTCP.c,v 1.1.1.2 2003-02-25 22:27:23 amb Exp $
 **
 **	This code is in common between client and server sides.
 **
@@ -36,18 +36,26 @@
 #endif /* VMS */
 
 /* Macros and other defines */
-/* x seconds penalty on a multi-homed host if IP-address is down */
-#define TCP_PENALTY		1200
+/* x ms penalty on a multi-homed host if IP-address is unreachable */
+#define TCP_DELAY		30000
 
-/* x seconds penalty on a multi-homed host if IP-address is timed out */
-#define TCP_DELAY		600
+/* x ms penalty on a multi-homed host if IP-address is down for unknown reason */
+#define TCP_PENALTY		60000
 
-/* imperical study in socket call error codes
+/* empirical study in socket call error codes
+   yovavm@contact.com : added handling for WSAEINVAL error code (Windows)
+   "When calling connect() in the second time, after the first call to 
+   connect() returned WSAEWOULDBLOCK, an error of WSAEINVAL is returned. 
+   It happens often on WinNT & Win95, and rarely on Win2K & Win98, where in 
+   most cases the second call to connect() returns WSAEISCON (10056).
+   jose@w3.org : didn't add that test for Unix, as the connect() doc (Linux
+   and Solaris) says it's not needed.
  */
 #ifdef _WINSOCKAPI_					/* windows */
 #define NETCALL_ERROR(ret)	(ret == SOCKET_ERROR)
 #define NETCALL_DEADSOCKET(err)	(err == WSAEBADF)
 #define NETCALL_WOULDBLOCK(err)	(err == WSAEWOULDBLOCK)
+#define NETCALL_INVAL(err)      (err == WSAEINVAL)
 #else /* _WINSOCKAPI_ 					   unix    */
 #define NETCALL_ERROR(ret)	(ret < 0)
 #define NETCALL_DEADSOCKET(err)	(err == EBADF)
@@ -67,31 +75,38 @@
 #endif /* !EALREADY */
 #endif /* !(EAGAIN && EALREADY) */
 #endif /* !_WINSOCKAPI_ 				   done */
+
+#if defined(__svr4__) || defined (_WINSOCKAPI_)
+#define HT_HOSTUNREACHABLE(e)	((e)==ECONNREFUSED || (e)==ETIMEDOUT || \
+				 (e)==ENETUNREACH || (e)==EHOSTUNREACH || \
+				 (e)==EHOSTDOWN)
+#else
+#define HT_HOSTUNREACHABLE(e)	((e)==ECONNREFUSED || (e)==ETIMEDOUT || \
+				 (e)==ENETUNREACH || (e)==EHOSTUNREACH || \
+				 (e)==EHOSTDOWN || (e)==EINVAL)
+#endif
+
 /* ------------------------------------------------------------------------- */
 /*	       	      CONNECTION ESTABLISHMENT MANAGEMENT 		     */
 /* ------------------------------------------------------------------------- */
 
 /* _makeSocket - create a socket, if !preemptive, set FIONBIO
- * returns 1: blocking
- *	   0: non-blocking
- *	  -1: creation error
- */
-PRIVATE int _makeSocket(HTHost * host, HTRequest * request, int preemptive, HTTransport * transport)
+** returns sockfd or INVSOC if error
+*/
+PRIVATE int _makeSocket (HTHost * host, HTRequest * request, int preemptive)
 {
     int status = 1;
-    SOCKET sockfd;
+    SOCKET sockfd = INVSOC;
 #ifdef DECNET
     if ((sockfd=socket(AF_DECnet, SOCK_STREAM, 0))==INVSOC)
 #else
     if ((sockfd=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP))==INVSOC)
 #endif
-	{
-	HTRequest_addSystemError(request, ERR_FATAL, socerrno, 
-				 NO, "socket");
-	host->tcpstate = TCP_ERROR;
-	return -1;
-	}
-    if (PROT_TRACE) HTTrace("Socket...... Created %d\n", sockfd);
+    {
+	HTRequest_addSystemError(request, ERR_FATAL, socerrno, NO, "socket");
+	return INVSOC;
+    }
+    HTTRACE(PROT_TRACE, "Socket...... Created %d\n" _ sockfd);
 
     /* Increase the number of sockets by one */
     HTNet_increaseSocket();
@@ -106,11 +121,10 @@ PRIVATE int _makeSocket(HTHost * host, HTRequest * request, int preemptive, HTTr
 	status = setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,
 			    (char *) &disable, sizeof(int));
 	if (status == -1) {
-	    if (PROT_TRACE)
-		HTTrace("Socket...... Could not disable Nagle's algorithm - error %d\n",
+	    HTTRACE(PROT_TRACE, "Socket...... Could not disable Nagle's algorithm - error %d\n" _ 
 			sockfd);
 	} else {
-	    if (PROT_TRACE) HTTrace("Socket...... Turned off Nagle's algorithm\n");
+	    HTTRACE(PROT_TRACE, "Socket...... Turned off Nagle's algorithm\n");
 	}
     }
 #endif
@@ -152,20 +166,26 @@ PRIVATE int _makeSocket(HTHost * host, HTRequest * request, int preemptive, HTTr
 	}
 #endif /* !VMS */
 #endif /* !_WINSOCKAPI_ */
-	if (PROT_TRACE)
-	    HTTrace("Socket...... %slocking socket\n", status == -1 ? "B" : "Non-b");
+	HTTRACE(PROT_TRACE, "Socket...... %slocking socket\n" _ status == -1 ? "B" : "Non-b");
     } else
-	if (PROT_TRACE) HTTrace("Socket...... Blocking socket\n");
+	HTTRACE(PROT_TRACE, "Socket...... Blocking socket\n");
 
-    /*
-    **  Associate the channel with the host and create an input and and output stream
-    **  for this host/channel
-    */
-    HTHost_setChannel(host, HTChannel_new(sockfd, NULL, YES));
-    HTHost_getInput(host, transport, NULL, 0);
-    HTHost_getOutput(host, transport, NULL, 0);
+    return sockfd;
+}
 
-    return status == -1 ? 1 : 0;
+/*
+**  Associate the channel with the host and create an input and and output stream
+**  for this host/channel
+*/
+PRIVATE BOOL createChannelAndTransportStreams (HTHost * host, SOCKET sockfd, HTTransport * trans)
+{
+    if (host && sockfd!=INVSOC && trans) {
+	HTHost_setChannel(host, HTChannel_new(sockfd, NULL, YES));
+	HTHost_getInput(host, trans, NULL, 0);
+	HTHost_getOutput(host, trans, NULL, 0);
+	return YES;
+    }
+    return NO;
 }
 
 /*								HTDoConnect()
@@ -177,17 +197,17 @@ PRIVATE int _makeSocket(HTHost * host, HTRequest * request, int preemptive, HTTr
 **			HT_OK		if connected
 **			HT_WOULD_BLOCK  if operation would have blocked
 */
-PUBLIC int HTDoConnect (HTNet * net, char * url, u_short default_port)
+PUBLIC int HTDoConnect (HTNet * net)
 {
-    HTHost * me = HTNet_host(net);
+    HTHost * host = HTNet_host(net);
     HTRequest * request = HTNet_request(net);
+    char * hostname = HTHost_name(host);
     int preemptive = net->preemptive;
     int status = HT_OK;
-    char * hostname = HTHost_name(me);
 
     /* Jump into the state machine */
     while (1) {
-	switch (me->tcpstate) {
+	switch (host->tcpstate) {
 	  case TCP_BEGIN:
 	  {
 	      /*
@@ -195,15 +215,15 @@ PUBLIC int HTDoConnect (HTNet * net, char * url, u_short default_port)
 	      ** host is idle then we can start the request right away,
 	      ** otherwise we must wait until it is free. 
 	      */
-	      if ((status = HTHost_addNet(net->host, net)) == HT_PENDING)
-		  if (PROT_TRACE) HTTrace("HTDoConnect. Pending...\n");
+	      if ((status = HTHost_addNet(host, net)) == HT_PENDING)
+		  HTTRACE(PROT_TRACE, "HTDoConnect. Pending...\n");
 
 	      /*
 	      ** If we are pending then return here, otherwise go to next state
 	      ** which is setting up a channel
 	      */
-	      me->tcpstate = TCP_CHANNEL;
-	      if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_CHANNEL.\n", me);
+	      host->tcpstate = TCP_CHANNEL;
+	      HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_CHANNEL.\n" _ host);
 	      if (status == HT_PENDING) return HT_PENDING;
 	  }
 	  break;
@@ -215,61 +235,90 @@ PUBLIC int HTDoConnect (HTNet * net, char * url, u_short default_port)
 	    **  test it - otherwise we must around DNS to get the name
 	    **  Resolved
 	    */
-	    if (HTHost_channel(me) == NULL) {
-		me->tcpstate = TCP_DNS;
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_DNS.\n", me);
+	    if (HTHost_channel(host) == NULL) {
+		host->tcpstate = TCP_DNS;
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_DNS.\n" _ host);
 	    } else {
 
 		/*
 		**  There is now one more using the channel
 		*/
-		HTChannel_upSemaphore(me->channel);
+		HTChannel_upSemaphore(host->channel);
 
 		/*
 		**  We are now all set and can jump to connected mode
 		*/
-		me->tcpstate = TCP_CONNECTED;
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_CONNECTED.\n", me);
+		host->tcpstate = TCP_CONNECTED;
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_CONNECTED.\n" _ host);
 	    }
-	    hostname = HTHost_name(me);
+	    hostname = HTHost_name(host);
 	    break;
 
 	case TCP_DNS:
-	    if ((status = HTParseInet(me, hostname, request)) < 0) {
-		if (PROT_TRACE) HTTrace("HTDoConnect. Can't locate `%s\'\n", hostname);
+	    if ((status = HTParseInet(host, hostname, request)) < 0) {
+		HTTRACE(PROT_TRACE, "HTDoConnect. Can't locate `%s\'\n" _ hostname);
 		HTRequest_addError(request, ERR_FATAL, NO,
 				   HTERR_NO_REMOTE_HOST,
 				   (void *) hostname, strlen(hostname),
 				   "HTDoConnect");
-		me->tcpstate = TCP_DNS_ERROR;
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_ERROR.\n", me);
+		host->tcpstate = TCP_DNS_ERROR;
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_ERROR.\n" _ host);
 		break;
 	    }
-	    if (!HTHost_retry(me) && status > 1)		/* If multiple homes */
-		HTHost_setRetry(me, status);
-	    me->tcpstate = TCP_NEED_SOCKET;
-	    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_NEED_SOCKET.\n", me);
+	    if (!HTHost_retry(host) && status > 1)		/* If multiple homes */
+		HTHost_setRetry(host, status);
+	    host->tcpstate = TCP_NEED_SOCKET;
+	    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_NEED_SOCKET.\n" _ host);
 	    break;
 
-	  case TCP_NEED_SOCKET:
-	    if (_makeSocket(me, request, preemptive, net->transport) == -1)
+	case TCP_NEED_SOCKET:
+	{
+	    SOCKET sockfd;
+
+	    /* Create a new socket */
+	    if ((sockfd = _makeSocket(host, request, preemptive)) == INVSOC) {
+		host->tcpstate = TCP_ERROR;
 		break;
+	    }
+
+	    /* Create channnel and streams */
+	    createChannelAndTransportStreams (host, sockfd, net->transport);
 
 	    /* If multi-homed host then start timer on connection */
-	    if (HTHost_retry(me)) me->connecttime = HTGetTimeInMillis();
+	    if (HTHost_retry(host)) host->connecttime = HTGetTimeInMillis();
 
-	    /* Progress */
+	    /* Progress notification */
 	    {
 		HTAlertCallback *cbf = HTAlert_find(HT_PROG_CONNECT);
 		if (cbf) (*cbf)(request, HT_PROG_CONNECT, HT_MSG_NULL,
 				NULL, hostname, NULL);
 	    }
-	    me->tcpstate = TCP_NEED_CONNECT;
-	    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_NEED_CONNECT.\n", me);
+	    host->tcpstate = TCP_NEED_CONNECT;
+	    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_NEED_CONNECT.\n" _ host);
 	    break;
-	  case TCP_NEED_CONNECT:
-	    status = connect(HTChannel_socket(me->channel), (struct sockaddr *) &me->sock_addr,
-			     sizeof(me->sock_addr));
+	}
+
+	case TCP_NEED_CONNECT:
+#ifdef _WINSOCKAPI_
+	    /* 2000/08/02 Jens Meggers (jens@meggers.com):
+            ** In HTDoConnect(), the connect command is done before the
+            ** WSAAsyncSelect() that is called when 
+            ** HTHost_register(host, net, HTEvent_CONNECT); is executed. 
+            ** Although that is in line with the WinSock2 and Microsoft 
+            ** documentation, it does _not_ work all the time. I have done 
+            ** extensive tests on Win2000 and Win 4.0 SP5. In very rare cases,
+            ** the connect is finished between the connect() command itself and 
+            ** the WSAAsyncSelect(). In this unlikely case, WinSock does not 
+            ** (always) send the FD_CONNECT message. As a result, when using 
+            ** the Async mode, the event loop hangs because there is no 
+            ** timeout procedure registered for FD_CONNECT.
+	    ** JK: what happens if status returns an error? Do we have to
+	    ** unregister the HTEvent_CONNECT event then?                       
+            */
+	    HTHost_register(host, net, HTEvent_CONNECT);
+#endif /* _WINSOCKAPI_ */
+	    status = connect(HTChannel_socket(host->channel), (struct sockaddr *) &host->sock_addr,
+			     sizeof(host->sock_addr));
 	    /*
 	     * According to the Sun man page for connect:
 	     *     EINPROGRESS         The socket is non-blocking and the  con-
@@ -292,108 +341,117 @@ PUBLIC int HTDoConnect (HTNet * net, char * url, u_short default_port)
 	    {
 		if (NETCALL_WOULDBLOCK(socerrno))
 		{
-		    if (PROT_TRACE) HTTrace("HTDoConnect. WOULD BLOCK `%s'\n", hostname);
-		    HTHost_register(me, net, HTEvent_CONNECT);
+		    HTTRACE(PROT_TRACE, "HTDoConnect. WOULD BLOCK `%s'\n" _ hostname);
+#ifndef _WINSOCKAPI_
+
+		    HTHost_register(host, net, HTEvent_CONNECT);
+#endif /* _WINSOCKAPI_ */
 		    return HT_WOULD_BLOCK;
 		}
+#ifdef _WINSOCKAPI_
+		/*
+		 * yovavm@contact.com
+		 *
+		 * According to Microsoft docs, the error code WSAEALREADY is 
+		 * described as:
+		 * "A nonblocking connect call is in progress on the specified
+		 *  socket. Note In order to preserve backward compatibility, 
+		 *  this error is reported as WSAEINVAL to Windows Sockets 1.1
+		 *  applications that link to either Winsock.dll or
+		 *  Wsock32.dll."
+		 */
+		if (NETCALL_INVAL(socerrno)) {
+		    host->tcpstate = TCP_CONNECTED;
+		    HTTRACE(PROT_TRACE, "Connection to HTHost %p is already in progress.\n" _ host);
+		    break;
+		}
+#endif /* _WINSOCKAPI_ */
+
 		if (socerrno == EISCONN) {
-		    me->tcpstate = TCP_CONNECTED;
-		    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_CONNECTED.\n", me);
+		    host->tcpstate = TCP_CONNECTED;
+		    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_CONNECTED.\n" _ host);
 		    break;
 		}
 		if (NETCALL_DEADSOCKET(socerrno))     /* We lost the socket */
 		{
-		    me->tcpstate = TCP_NEED_SOCKET;
-		    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_NEED_SOCKET.\n", me);
+		    host->tcpstate = TCP_NEED_SOCKET;
+		    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_NEED_SOCKET.\n" _ host);
 		    break;
 		}
-		if (HTHost_retry(me)) {
-		    me->connecttime -= HTGetTimeInMillis();
+		if (HTHost_retry(host)) {
+		    host->connecttime = HTGetTimeInMillis() - host->connecttime;
 		    /* Added EINVAL `invalid argument' as this is what I 
 		       get back from a non-blocking connect where I should 
 		       get `connection refused' on BSD. SVR4 gives SIG_PIPE */
-#if defined(__svr4__) || defined (_WINSOCKAPI_)
-		    if (socerrno==ECONNREFUSED || socerrno==ETIMEDOUT ||
-			socerrno==ENETUNREACH || socerrno==EHOSTUNREACH ||
-			socerrno==EHOSTDOWN)
-#else
-		    if (socerrno==ECONNREFUSED || socerrno==ETIMEDOUT ||
-			socerrno==ENETUNREACH || socerrno==EHOSTUNREACH ||
-			socerrno==EHOSTDOWN || socerrno==EINVAL)
-#endif
-		        me->connecttime += TCP_DELAY;
+		    if (HT_HOSTUNREACHABLE(socerrno))
+		        host->connecttime += TCP_DELAY;
 		    else
-		        me->connecttime += TCP_PENALTY;
-		    HTDNS_updateWeigths(me->dns, HTHost_home(me), me->connecttime);
+		        host->connecttime += TCP_PENALTY;
+		    HTDNS_updateWeigths(host->dns, HTHost_home(host), host->connecttime);
 		}
-		me->tcpstate = TCP_ERROR;		
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_ERROR.\n", me);
+		host->tcpstate = TCP_ERROR;		
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_ERROR.\n" _ host);
 	    } else {
-		me->tcpstate = TCP_CONNECTED;
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_CONNECTED.\n", me);
+		host->tcpstate = TCP_CONNECTED;
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_CONNECTED.\n" _ host);
 	    }
 	    break;
 
 	  case TCP_CONNECTED:
-	    HTHost_unregister(me, net, HTEvent_CONNECT);
-	    if (HTHost_retry(me)) {
-		me->connecttime -= HTGetTimeInMillis();
-		HTDNS_updateWeigths(me->dns, HTHost_home(me), me->connecttime);
+	    HTHost_unregister(host, net, HTEvent_CONNECT);
+	    if (HTHost_retry(host)) {
+		host->connecttime = HTGetTimeInMillis() - host->connecttime;
+		HTDNS_updateWeigths(host->dns, HTHost_home(host), host->connecttime);
 	    }
-	    HTHost_setRetry(me, 0);
-	    me->tcpstate = TCP_IN_USE;
-	    if (PROT_TRACE) HTTrace("HTHost %p connected.\n", me);
+	    HTHost_setRetry(host, 0);
+	    host->tcpstate = TCP_IN_USE;
+	    HTTRACE(PROT_TRACE, "HTHost %p connected.\n" _ host);
 	    return HT_OK;
 	    break;
 
-	  /* once a host is connected, subsequent connections are immediately OK */
+	  /* Once a host is connected, subsequent connections are immediately OK */
 	  case TCP_IN_USE:
-	      if ((status = HTHost_addNet(net->host, net)) == HT_PENDING) {
-		  if (PROT_TRACE) HTTrace("HTDoConnect. Pending...\n");
+	      if ((status = HTHost_addNet(host, net)) == HT_PENDING) {
+		  HTTRACE(PROT_TRACE, "HTDoConnect. Pending...\n");
 		  return HT_PENDING;
 	      }
 
-	      HTChannel_upSemaphore(me->channel);
+	      HTChannel_upSemaphore(host->channel);
 	      return HT_OK;
 
 	  case TCP_DNS_ERROR:
-	    HTHost_setRetry(me, 0);
-	    me->tcpstate = TCP_BEGIN;
-	    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_BEGIN.\n", me);
-	    return HT_ERROR;
+	    HTHost_setRetry(host, 0);
+	    host->tcpstate = TCP_BEGIN;
+	    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_BEGIN.\n" _ host);
+	    return HT_NO_HOST;
 	    break;
 
 	  case TCP_NEED_BIND:
 	  case TCP_NEED_LISTEN:
 	  case TCP_ERROR:
-	    if (HTChannel_socket(me->channel) != INVSOC) {
-	      /*	        HTEvent_unregister(HTChannel_socket(me->channel), (SockOps) FD_ALL); */
-		NETCLOSE(HTChannel_socket(me->channel));
-		/*		HTChannel_setSocket(me->channel, INVSOC); */
-#if 1 /* @@@ */
-		if (HTHost_isPersistent(me)) {	 /* Inherited socket */
-		    HTHost_setPersistent(me, NO, HT_TP_SINGLE);
-		    me->tcpstate = TCP_NEED_SOCKET;
-		    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_NEED_SOCKET.\n", me);
+	    if (HTChannel_socket(host->channel) != INVSOC) {
+		NETCLOSE(HTChannel_socket(host->channel));
+		if (HTHost_isPersistent(host)) {	 /* Inherited socket */
+		    HTHost_setPersistent(host, NO, HT_TP_SINGLE);
+		    host->tcpstate = TCP_NEED_SOCKET;
+		    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_NEED_SOCKET.\n" _ host);
 		    break;
 		}
-#endif
 	    }
 
 	    /* Do we have more homes to try? */
-	    HTHost_decreaseRetry(me);
-	    if (HTHost_retry(me) > 0) {
-	        HTRequest_addSystemError(request, ERR_NON_FATAL, socerrno, NO,
-			      "connect");
-		me->tcpstate = TCP_DNS;
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_DNS.\n", me);
+	    HTHost_decreaseRetry(host);
+	    if (HT_HOSTUNREACHABLE(socerrno) && HTHost_retry(host) > 0) {
+	        HTRequest_addSystemError(request, ERR_NON_FATAL, socerrno, NO,"connect");
+		host->tcpstate = TCP_DNS;
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_DNS.\n" _ host);
 		break;
 	    }
-	    HTRequest_addSystemError(request, ERR_FATAL,socerrno,NO,"connect");
+	    HTRequest_addSystemError(request, ERR_FATAL, socerrno, NO, "connect");
 	    HTDNS_delete(hostname);
-	    HTHost_setRetry(me, 0);
-	    me->tcpstate = TCP_BEGIN;
-	    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_BEGIN.\n", me);
+	    HTHost_setRetry(host, 0);
+	    host->tcpstate = TCP_BEGIN;
+	    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_BEGIN.\n" _ host);
 	    return HT_ERROR;
 	    break;
 	}
@@ -409,48 +467,36 @@ PUBLIC int HTDoConnect (HTNet * net, char * url, u_short default_port)
 **		HT_OK		if connected
 **		HT_WOULD_BLOCK  if operation would have blocked
 */
-PUBLIC int HTDoAccept (HTNet * net, HTNet ** accepted)
+PUBLIC int HTDoAccept (HTNet * listening, HTNet * accepting)
 {
-    HTHost * me = HTNet_host(net);
+    HTHost * host = HTNet_host(listening);
+    HTRequest * request = HTNet_request(accepting);
+    int size = sizeof(host->sock_addr);
     int status;
-    int size = sizeof(net->host->sock_addr);
-    HTRequest * request = HTNet_request(net);
-    if (!request || HTNet_socket(net)==INVSOC) {
-	if (PROT_TRACE) HTTrace("HTDoAccept.. Invalid socket\n");
+    if (!request || HTNet_socket(listening)==INVSOC) {
+	HTTRACE(PROT_TRACE, "HTDoAccept.. Invalid socket\n");
 	return HT_ERROR;
     }
 
-    /* Progress report */
-    {
-	HTAlertCallback *cbf = HTAlert_find(HT_PROG_ACCEPT);
-	if (cbf) (*cbf)(request, HT_PROG_ACCEPT, HT_MSG_NULL,NULL, NULL, NULL);
-    }
-    status = accept(HTNet_socket(net), (struct sockaddr *) &net->host->sock_addr, &size);
+    status = accept(HTNet_socket(listening), (struct sockaddr *) &host->sock_addr, &size);
     if (NETCALL_ERROR(status))
     {
 	if (NETCALL_WOULDBLOCK(socerrno))
 	{
-	    if (PROT_TRACE)
-		HTTrace("HTDoAccept.. WOULD BLOCK %d\n", HTNet_socket(net));
-	    HTHost_register(me, net, HTEvent_ACCEPT);
+	    HTTRACE(PROT_TRACE, "HTDoAccept.. WOULD BLOCK %d\n" _ HTNet_socket(listening));
+	    HTHost_register(host, listening, HTEvent_ACCEPT);
 	    return HT_WOULD_BLOCK;
 	}
 	HTRequest_addSystemError(request, ERR_WARN, socerrno, YES, "accept");
-	if (PROT_TRACE) HTTrace("HTDoAccept.. Accept failed\n");
+	HTTRACE(PROT_TRACE, "HTDoAccept.. Accept failed\n");
 	return HT_ERROR;
     }
 
-    if (PROT_TRACE) HTTrace("Accepted.... socket %d\n", status);
+    HTTRACE(PROT_TRACE, "Accepted.... socket %d\n" _ status);
 
-    /*
-    ** If accepted is the same as the net obejct then reuse it, else create
-    ** a new object and leave the original alone
-    */
-    if (*accepted == net)
-	HTDoClose(net);
-    else
-	*accepted = HTNet_dup(net);
-    HTNet_setSocket(*accepted, status);	
+    /* Remember the new socket we got and close the old one */
+    NETCLOSE(HTNet_socket(accepting));
+    HTNet_setSocket(accepting, status);	
 
     return HT_OK;
 }
@@ -458,23 +504,21 @@ PUBLIC int HTDoAccept (HTNet * net, HTNet ** accepted)
 
 /*	HTDoListen
 **	----------
-**	Listens on the specified port. 0 means that we chose it here
-**	If master==INVSOC then we listen on all local interfaces (using a 
-**	wildcard). If !INVSOC then use this as the local interface
+**	Listens on the specified port. 
 **	returns		HT_ERROR	Error has occured or interrupted
 **			HT_OK		if connected
 */
-PUBLIC int HTDoListen (HTNet * net, u_short port, SOCKET master, int backlog)
+PUBLIC int HTDoListen (HTNet * listening, HTNet * accepting, int backlog)
 {
-    HTHost * me = HTNet_host(net);
-    HTRequest * request = HTNet_request(net);
-    int preemptive = net->preemptive;
+    HTHost * host = HTNet_host(listening);
+    HTRequest * request = HTNet_request(listening);
+    int preemptive = listening->preemptive;
     int status = HT_OK;
-    char * hostname = HTHost_name(me);
+    char * hostname = HTHost_name(host);
 
     /* Jump into the state machine */
     while (1) {
-	switch (me->tcpstate) {
+	switch (host->tcpstate) {
 	case TCP_BEGIN:
 	{
 	    /*
@@ -482,15 +526,15 @@ PUBLIC int HTDoListen (HTNet * net, u_short port, SOCKET master, int backlog)
 	    ** host is idle then we can start the request right away,
 	    ** otherwise we must wait until it is free. 
 	    */
-	    if ((status = HTHost_addNet(net->host, net)) == HT_PENDING)
-		if (PROT_TRACE) HTTrace("HTDoListen.. Pending...\n");
+	    if ((status = HTHost_addNet(host, accepting)) == HT_PENDING)
+		HTTRACE(PROT_TRACE, "HTDoListen.. Pending...\n");
 
 	    /*
 	    ** If we are pending then return here, otherwise go to next state
 	    ** which is setting up a channel
 	    */
-	    me->tcpstate = TCP_CHANNEL;
-	    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_CHANNEL.\n", me);
+	    host->tcpstate = TCP_CHANNEL;
+	    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_CHANNEL.\n" _ host);
 	    if (status == HT_PENDING) return HT_PENDING;
 	}
 	break;
@@ -499,98 +543,106 @@ PUBLIC int HTDoListen (HTNet * net, u_short port, SOCKET master, int backlog)
 	    /*
 	    **  The next state depends on whether we have a connection or not.
 	    */
-	    if (HTHost_channel(me) == NULL) {
-		me->tcpstate = TCP_NEED_SOCKET;
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_SOCKET.\n", me);
+	    if (HTHost_channel(host) == NULL) {
+		host->tcpstate = TCP_NEED_SOCKET;
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_SOCKET.\n" _ host);
 	    } else {
 
 		/*
 		**  There is now one more using the channel
 		*/
-		HTChannel_upSemaphore(me->channel);
+		HTChannel_upSemaphore(host->channel);
 
 		/*
 		**  We are now all set and can jump to connected mode
 		*/
-		me->tcpstate = TCP_CONNECTED;
-		if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_CONNECTED.\n", me);
+		host->tcpstate = TCP_CONNECTED;
+		HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_CONNECTED.\n" _ host);
 	    }
-	    hostname = HTHost_name(me);
+	    hostname = HTHost_name(host);
 	    break;
 
 	case TCP_NEED_SOCKET:
-	    if (_makeSocket(me, request, preemptive, net->transport) == -1)
-		break;
+	{
+	    SOCKET sockfd;
 
-	    /* Progress */
+	    /* Create a new socket */
+	    if ((sockfd = _makeSocket(host, request, preemptive)) == INVSOC) {
+		host->tcpstate = TCP_ERROR;
+		break;
+	    }
+
+	    /* Create channnel and streams */
+	    createChannelAndTransportStreams (host, sockfd, accepting->transport);
+
+	    /* Progress nofitication */
 	    {
 		HTAlertCallback *cbf = HTAlert_find(HT_PROG_ACCEPT);
 		if (cbf) (*cbf)(request, HT_PROG_ACCEPT, HT_MSG_NULL,
 				NULL, hostname, NULL);
 	    }
-	    me->tcpstate = TCP_NEED_BIND;
-	    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_NEED_BIND\n", me);
+	    host->tcpstate = TCP_NEED_BIND;
+	    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_NEED_BIND\n" _ host);
 	    break;
+	}
 
 	case TCP_NEED_BIND:
-	    if (PROT_TRACE) HTTrace("Socket...... Binding socket %d\n", HTNet_socket(net));
-	    status = bind(HTNet_socket(net), (struct sockaddr *) &me->sock_addr,
-			  sizeof(me->sock_addr));
+	    HTTRACE(PROT_TRACE, "Socket...... Binding socket %d\n" _ HTNet_socket(listening));
+	    status = bind(HTNet_socket(listening), (struct sockaddr *) &host->sock_addr,
+			  sizeof(host->sock_addr));
 	    if (NETCALL_ERROR(status)) {
-		if (PROT_TRACE) HTTrace("Socket...... Bind failed %d\n", socerrno);
-		me->tcpstate = TCP_ERROR;		
+		HTTRACE(PROT_TRACE, "Socket...... Bind failed %d\n" _ socerrno);
+		host->tcpstate = TCP_ERROR;		
 	    } else {
-		if (PROT_TRACE) HTTrace("Socket...... Starting listening on socket %d\n", HTNet_socket(net));
-		me->tcpstate = TCP_NEED_LISTEN;
+		HTTRACE(PROT_TRACE, "Socket...... Starting listening on socket %d\n" _ HTNet_socket(listening));
+		host->tcpstate = TCP_NEED_LISTEN;
 	    }
 	    break;
 
 	case TCP_NEED_LISTEN:
-	    status = listen(HTNet_socket(net), backlog);
+	    status = listen(HTNet_socket(listening), backlog);
 	    if (NETCALL_ERROR(status))
-		me->tcpstate = TCP_ERROR;		
+		host->tcpstate = TCP_ERROR;		
 	    else
-		me->tcpstate = TCP_CONNECTED;
+		host->tcpstate = TCP_CONNECTED;
 	    break;
 
 	case TCP_CONNECTED:
-	    HTHost_unregister(me, net, HTEvent_ACCEPT);
-	    HTHost_setRetry(me, 0);
-	    me->tcpstate = TCP_IN_USE;
-	    if (PROT_TRACE) HTTrace("HTHost %p listening.\n", me);
+	    HTHost_unregister(host, listening, HTEvent_ACCEPT);
+	    HTHost_setRetry(host, 0);
+	    host->tcpstate = TCP_IN_USE;
+	    HTTRACE(PROT_TRACE, "HTHost %p listening.\n" _ host);
 	    return HT_OK;
 	    break;
 
 	    /* once a host is connected, subsequent connections are immediately OK */
 	case TCP_IN_USE:
-	    if ((status = HTHost_addNet(net->host, net)) == HT_PENDING) {
-		if (PROT_TRACE) HTTrace("HTDoListen.. Pending...\n");
+	    if ((status = HTHost_addNet(host, accepting)) == HT_PENDING) {
+		HTTRACE(PROT_TRACE, "HTDoListen.. Pending...\n");
 		return HT_PENDING;
 	    }
 
-	    HTChannel_upSemaphore(me->channel);
+	    HTChannel_upSemaphore(host->channel);
 	    return HT_OK;
 
 	case TCP_NEED_CONNECT:
 	case TCP_DNS:
 	case TCP_DNS_ERROR:
 	case TCP_ERROR:
-	    if (HTChannel_socket(me->channel) != INVSOC) {
-		NETCLOSE(HTChannel_socket(me->channel));
-#if 1 /* @@@ */
-		if (HTHost_isPersistent(me)) {	 /* Inherited socket */
-		    HTHost_setPersistent(me, NO, HT_TP_SINGLE);
-		    me->tcpstate = TCP_NEED_SOCKET;
-		    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_NEED_SOCKET.\n", me);
+	    if (HTChannel_socket(host->channel) != INVSOC) {
+		NETCLOSE(HTChannel_socket(host->channel));
+		if (HTHost_isPersistent(host)) {	 /* Inherited socket */
+		    HTHost_setPersistent(host, NO, HT_TP_SINGLE);
+		    host->tcpstate = TCP_NEED_SOCKET;
+		    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_NEED_SOCKET.\n" _ host);
 		    break;
 		}
-#endif
 	    }
 
 	    HTRequest_addSystemError(request, ERR_FATAL, socerrno, NO, "accept");
-	    HTHost_setRetry(me, 0);
-	    me->tcpstate = TCP_BEGIN;
-	    if (PROT_TRACE) HTTrace("HTHost %p going to state TCP_BEGIN.\n", me);
+	    HTHost_setRetry(host, 0);
+	    host->tcpstate = TCP_BEGIN;
+	    HTTRACE(PROT_TRACE, "HTHost %p going to state TCP_BEGIN.\n" _ host);
 	    return HT_ERROR;
 	    break;
 	}
@@ -611,7 +663,7 @@ PUBLIC int HTDoClose (HTNet * net)
 {
     int status = -1;
     if (net && HTNet_socket(net) != INVSOC) {
-	if (PROT_TRACE) HTTrace("HTDoClose... Close %d\n", HTNet_socket(net));
+	HTTRACE(PROT_TRACE, "HTDoClose... Close %d\n" _ HTNet_socket(net));
 	status = NETCLOSE(HTNet_socket(net));
 	/*	HTEvent_unregister(HTNet_socket(net), (SockOps) FD_ALL); */
 	HTNet_decreaseSocket();
@@ -625,7 +677,7 @@ PUBLIC int HTDoClose (HTNet * net)
 	HTHost_launchPending(net->host);
 
     } else
-	if (PROT_TRACE) HTTrace("HTDoClose... No pending requests\n");
+	HTTRACE(PROT_TRACE, "HTDoClose... No pending requests\n");
     return status < 0 ? HT_ERROR : HT_OK;
 }
 

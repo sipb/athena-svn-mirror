@@ -33,6 +33,7 @@ eof P1C(FILE *, file)
 
 
 /* Return true on end-of-line in FILE or at the end of FILE, else false.  */
+/* Accept both CR and LF as end-of-line. */
 
 boolean
 eoln P1C(FILE*, file)
@@ -47,5 +48,18 @@ eoln P1C(FILE*, file)
   if (c != EOF)
     (void) ungetc (c, file);
     
-  return c == '\n' || c == EOF;
+  return c == '\n' || c == '\r' || c == EOF;
+}
+
+/* Consume input up and including the first eol encountered. */
+/* Handle CRLF as a single end-of-line. */
+
+void
+readln P1C(FILE*, f)
+{
+    int c;
+    while ((c = getc (f)) != '\n' && c != '\r' && c != EOF)
+        ;
+    if (c == '\r' && (c = getc (f)) != '\n' && c != EOF)
+        ungetc (c, f);
 }

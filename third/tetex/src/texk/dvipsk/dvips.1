@@ -78,7 +78,7 @@ Set the debug flags.  This is intended only for emergencies or for
 unusual fact-finding expeditions; it will work only if
 .B dvips
 has been compiled with the DEBUG option.  If nonzero, prints additional
-information on standard output.  The number is taken as a set of
+information on standard error.  The number is taken as a set of
 independent bits.  The meaning of each bit follows.  1=specials;
 2=paths; 4=fonts; 8=pages; 16=headers; 32=font compression; 64=files;
 128=memory; 256=Kpathsea stat(2) calls; 512=Kpathsea hash table lookups;
@@ -149,6 +149,12 @@ character of the PostScript file.  This is useful when
 is driving the printer directly instead of working through a spooler,
 as is common on extremely small systems.  NOTE! DO NOT USE THIS OPTION!
 .TP
+.B -G
+Causes
+.B dvips
+to shift non-printing characters to higher-numbered positions.
+This may be useful sometimes.
+.TP
 .B -h name
 Prepend file
 .I name
@@ -173,6 +179,13 @@ option which sets the maximum section length in pages.  For instance,
 some phototypesetters cannot print more than ten or so consecutive pages
 before running out of steam; these options can be used to automatically
 split a book into ten-page sections, each to its own file.
+.TP
+.B -j
+Download only needed characters from Type 1 fonts. This is the
+default in the current release.  Some debugging flags trace this operation.
+You can also control partial downloading on a per-font basis, via the
+.B psfonts.map
+file.
 .TP
 .B -k
 Print crop marks.  This option increases the paper size (which should be
@@ -210,6 +223,15 @@ are actually numbered.
 .TP
 .B -m
 Specify manual feed for printer.
+.TP
+.B -mode mode
+Use
+.I mode
+as the Metafont device name for path searching and font
+generation.  This overrides any value from configuration files.  With
+the default paths, explicitly specifying the mode also makes the program
+assume the fonts are in a subdirectory named
+.IR mode .
 .TP
 .B -M
 Turns off the automatic font generation facility.  If any fonts are
@@ -321,11 +343,11 @@ Stack pages in reverse order.  Normally, page 1 will be printed first.
 .TP
 .B -R
 Run in secure mode. This means that ``backtick'' commands from a
-.I \\\special{}
+.I \especial{}
 or
 .I \epsffile{}
 macro in the (La)TeX source like
-.I \\\special{psfile="`zcat foo.ps.Z"}
+.I \especial{psfile="`zcat foo.ps.Z"}
 or
 .I \epsffile[72 72 540 720]{"`zcat screendump.ps.gz"}
 are not executed.
@@ -378,6 +400,21 @@ its arguments in the same style as
 .I -O.
 It overrides any paper size special in the dvi file.
 .TP
+.B -u psmapfile
+Set
+.I psmapfile
+to be the file that dvips uses for looking up PostScript font aliases.  If
+.I psmapfile
+begins with a
+.B +
+character, then the rest of the name is used as the name of the map file,
+and the map file is appended to the list of map files (instead of replacing
+the list).  In either case, if
+.I psmapfile
+has no extension, then
+.B .map
+is added at the end.
+.TP
 .B -U
 Disable a PostScript virtual memory saving optimization that stores the
 character metric information in the same string that is used to store
@@ -386,6 +423,11 @@ the bitmap information.  This is only necessary when driving the Xerox
 that results in `garbage' on the bottom of each character.  Not
 recommended unless you must drive this printer.
 .TP
+.B -v
+Print the
+.B dvips
+version number and exit.
+.TP
 .B -V
 Download non-resident PostScript fonts as bitmaps.  This requires use of
 `gsftopk' or `pstopk' or some other such program(s) in order to generate
@@ -393,18 +435,39 @@ the required bitmap fonts; these programs are supplied with
 .BR dvips .
 .TP
 .B -x num
-Set the magnification ratio to
+Set the
+.I x
+magnification ratio to
+.IR num /1000.
+Overrides the magnification specified in the .dvi file.  Must be
+between 10 and 100000.  Instead of an integer,
 .I num
-/1000. Overrides the magnification specified in the .dvi file.  Must be
-between 10 and 100000.
+may be a real number for increased precision.
 .TP
 .B -X num
 Set the horizontal resolution in dots per inch to
 .I num.
 .TP
+.B -y num
+Set the
+.I y
+magnification ratio to
+.IR num /1000.
+See
+.B -x
+above.
+.TP
 .B -Y num
 Set the vertical resolution in dots per inch to
 .I num.
+.TP
+.B -z
+Pass
+.B html
+hyperdvi specials through to the output for eventual
+distillation into PDF.  This is not enabled by default to avoid
+including the header files unnecessarily, and use of temporary files in
+creating the output.
 .TP
 .B -Z
 Causes bitmapped fonts to be compressed before they are downloaded,

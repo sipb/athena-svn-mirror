@@ -144,11 +144,6 @@ extern void topenin P1H(void);
    to the *coerce.h files. */
 /* extern void calledit (); */
 
-/* Used to allocate the hyphenation arrays at runtime in initex.  Always
-   add one to SIZE because Pascal arrays start at 1 and continue through
-   the maximum.  */
-#define xmallocarray(array,size) array = xmalloc ((size+1) * sizeof (array[0]))
-
 /* Set an array size from texmf.cnf.  */
 extern void setupboundvariable P3H(integer *, const_string, integer);
 

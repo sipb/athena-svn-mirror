@@ -16,7 +16,7 @@ dnl to build part of the distribution may not have any given program.
 dnl Even main.c isn't guaranteed, but then nothing is, really ...
 AC_INIT(web2c/main.c)
 
-WEB2CVERSION=7.3.1
+WEB2CVERSION=7.4.5
 AC_SUBST(WEB2CVERSION)
 AC_DEFINE_UNQUOTED(WEB2CVERSION," (Web2C $WEB2CVERSION)")
 
@@ -31,12 +31,16 @@ AC_PROG_MAKE_SET
 AC_PROG_YACC
 AC_PROG_LEX
 AC_PROG_RANLIB
-AC_CHECK_FUNCS(strerror)
+AC_CHECK_HEADERS(sys/time.h sys/timeb.h)
+AC_CHECK_FUNCS(strerror gettimeofday ftime mkstemp mktemp)
 
 AC_TYPE_SIGNAL
 
 AC_DECL_YYTEXT
 pb_AC_ASM_UNDERSCORE
+
+dnl pdfTeX likes inline functions in C code.
+AC_C_INLINE
 
 dnl These are standard among *NIX systems, but not when cross-compiling
 AC_DEFUN([CF_SUBST],
@@ -61,22 +65,6 @@ fi
 dnl These tests prevent reliable cross-compilation.  Sigh.
 dnl Some special hacks are used to make cross-compilation
 dnl succeed in one special case.
-AC_DEFUN(AC_UNSET_CC, [
-ZZ=
-if test "$cross_compiling" = yes &&
-   test "x$CC" = "xdos-gcc"; then
-ZZ=dos-gcc
-unset CC
-cross_compiling=no
-fi
-])
-
-AC_DEFUN(AC_RESET_CC, [
-if test "x$ZZ" = "xdos-gcc"; then
-CC=dos-gcc
-cross_compiling=yes
-fi
-])
 
 AC_UNSET_CC
 AC_C_CHAR_UNSIGNED
@@ -98,6 +86,7 @@ sinclude(../../libs/zlib/withenable.ac)
 sinclude(../../libs/libpng/withenable.ac)
 sinclude(../../libs/zlib/zlib.ac)
 sinclude(../../libs/libpng/libpng.ac)
+sinclude(../../libs/xpdf/libxpdf.ac)
 
 # For METAFONT, three choices.
 # Build separate mfw with windowing capabilities.
@@ -108,17 +97,21 @@ if test "x$with_mfw" = xyes; then
   # --with-mfw=yes, build separate mfw with window support.
   MFW=
   MFN=
+  MFDUMP=mf-nowin
 elif test "x$with_mfw" = xmf; then
   # --with-mfw=mf, build mf with selected window support.
   MFW=
-  MFN='#N#'
+  MFN='#! '
+  MFDUMP=mf
 else
   # --with-mfw=no, do not include window support.
-  MFW='#W#'
+  MFW='#! '
   MFN=
+  MFDUMP=mf
 fi
 AC_SUBST(MFN)
 AC_SUBST(MFW)
+AC_SUBST(MFDUMP)
 
 # For Omega.
 if test -d $srcdir/omegadir; then
@@ -131,15 +124,15 @@ else
 fi
 if test "x$with_omega" = xyes; then
   OMEGA=
+  omegafontsmakefile=omegafonts/Makefile
   otpsmakefile=otps/Makefile
 else
-  OMEGA='#O#'
+  OMEGA='#! '
 fi
 AC_SUBST(OMEGA)
 
 
 # For pdfTeX.
-subconfigures=pdftexdir/xpdf-0.80
 if test -d $srcdir/pdftexdir; then
   # Create build dir, if necessary.
   test -d pdftexdir || mkdir pdftexdir
@@ -181,18 +174,68 @@ if test "x$with_pdftex" = xyes || test "x$with_pdfetex" = xyes; then
 }
 fi
 
+# Check if we can link the C++ runlime lib statically. Only check, if we are
+# going to build pdftex or pdfetex. And, only try the magic hack, if C++ is
+# GNU C++ (i.e. if $ac_cv_prog_gxx=yes). The reason for using a static C++
+# runtime is that binaries are more portable. That's only important if you are
+# planning to distribute binaries, so all the neat stuff is disabled by default:
+CXXLDEXTRA=
+if test "x$with_cxx_runtime_hack" = xyes &&
+   { test "x$with_pdftex" = xyes || test "x$with_pdfetex" = xyes; }; then
+  AC_MSG_CHECKING(for statically linking C++ runtime library)
+
+  old_flags=$flags
+  old_ac_ext=$ac_ext
+  old_ac_link=$ac_link
+
+  flags='-nodefaultlibs -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lgcc -lc'
+  ac_ext=C
+  ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS $flags 1>&5'
+  cat > conftest.$ac_ext << EOF
+#include <iostream.h>
+int main()
+{
+  cout <<"worksok\n";
+}
+EOF
+  if test "$ac_cv_prog_gxx" = yes; then
+    if { (eval echo configure: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+      case `(./conftest; exit) 2>/dev/null` in
+        worksok)
+          CXXLDEXTRA=$flags
+          AC_MSG_RESULT(ok using $flags)
+          ;;
+        *)
+          AC_MSG_RESULT(not supported)
+          ;;
+      esac
+    else
+      echo "configure: failed program was:" >&5
+      cat conftest.$ac_ext >&5
+      AC_MSG_RESULT(not supported)
+    fi
+  else
+    AC_MSG_RESULT(not supported)
+  fi
+
+  flags=$old_flags
+  ac_ext=$old_ac_ext
+  ac_link=$old_ac_link
+
+fi
+AC_SUBST(CXXLDEXTRA)
+
 if test "x$with_pdftex" = xyes; then
   PTEX=
 else
-  PTEX='#P#'
-  subconfigures=
+  PTEX='#! '
 fi
 AC_SUBST(PTEX)
 
 if test "x$with_pdfetex" = xyes; then
   PETEX=
 else
-  PETEX='#P#'
+  PETEX='#! '
 fi
 AC_SUBST(PETEX)
 
@@ -212,16 +255,16 @@ if test "x$with_etex" = xtex; then
   TEXBIN=etex
   CTEX=
   ETEX=
-  TEX='#T#'
+  TEX='#! '
 elif test "x$with_etex" = xyes; then
   TEXBIN=tex
-  CTEX='#C#'
+  CTEX='#! '
   ETEX=
   TEX=
 else
   TEXBIN=tex
-  CTEX='#C#'
-  ETEX='#E#'
+  CTEX='#! '
+  ETEX='#! '
   TEX=
 fi
 AC_SUBST(TEXBIN)
@@ -277,12 +320,12 @@ fi
 dnl Create tests subdirectory.
 test -d tests || mkdir tests
 
-dnl Configure in subdir.
-AC_CONFIG_SUBDIRS($subconfigures)
+# Is libm present.  FIXME: do we need it at all?
+AC_CHECK_LIB(m, main)
 
 dnl Generate `Makefile's, `config.status', and our header file.
 AC_OUTPUT(Makefile doc/Makefile lib/Makefile man/Makefile mpware/Makefile 
           web2c/Makefile window/Makefile $libpdfmakefile $libpdfemakefile
-          $otpsmakefile fmtutil.cnf:fmtutil.in)
+          $omegafontsmakefile $otpsmakefile fmtutil.cnf:fmtutil.in)
 dnl Update stamp-auto, since we just remade `c-auto.h'.
 date >stamp-auto

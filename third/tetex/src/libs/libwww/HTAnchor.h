@@ -25,6 +25,21 @@ useful to maintain the anchors throughout the lifetime of the application.
 It would actually be most useful if we had persistent anchors so that an
 application could build up a higher knowledge about the Web topology.
 
+.When to Escape and Unescape Addresses.
+
+
+The URI escape policy in libwww is that all URIs created as
+anchors must already have been escaped. The reason for this is that if
+URIs are not escaped then the URI parser is not guaranteed to work as
+expected. Imagine, for example, that you have a ":" in a
+host name, then you could get something like this:
+http://my:host:8000/ instead of http://my%3Ahost:8000/.
+
+
+Libwww provides support for escaping and unescaping
+URIs using this set of APIs.
+
+
 This module is implemented by HTAnchor.c, and it
 is a part of the  W3C Sample Code
 Library.
@@ -678,6 +693,6 @@ extern HTAssocList * HTAnchor_header (HTParentAnchor * me);
 
   
 
-  @(#) $Id: HTAnchor.h,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+  @(#) $Id: HTAnchor.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

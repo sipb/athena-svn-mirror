@@ -74,13 +74,13 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h>
-#define NOBASICS	/* don't need the definitions in basics.h */
+
 #include "basics.h"	/* fatal() */
 
 int invert = 0;
 float DPI = 300.0;
 
-main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
    float  sz, arg; int c;
    char *myname = "mag";
    short done;
@@ -127,6 +127,7 @@ main(int argc, char *argv[]) {
             printf("%f%c", sz, argc > 1 ? ' ' : '\n');
       }
    }
+   return 0;
 }
 
 int fontsize(x) double x;

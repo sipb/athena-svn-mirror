@@ -49,7 +49,7 @@ xgetcwd P1H(void)
      is not detected by configure, let me know.
                                        -- Olaf Weber <infovore@xs4all.nl */
 #if defined (HAVE_GETCWD) && !defined (GETCWD_FORKS)
-  string path = xmalloc (PATH_MAX + 1);
+  string path = (string)xmalloc (PATH_MAX + 1);
   
   if (getcwd (path, PATH_MAX + 1) == 0)
     {
@@ -59,7 +59,7 @@ xgetcwd P1H(void)
   
   return path;
 #elif defined (HAVE_GETWD)
-  string path = xmalloc (PATH_MAX + 1);
+  string path = (string)xmalloc (PATH_MAX + 1);
   
   if (getwd (path) == 0)
     {
@@ -70,7 +70,7 @@ xgetcwd P1H(void)
   return path;
 #else /* not HAVE_GETCWD && not HAVE_GETWD */
   struct stat root_stat, cwd_stat;
-  string cwd_path = xmalloc (2); /* In case we assign "/" below.  */
+  string cwd_path = (string)xmalloc (2); /* In case we assign "/" below.  */
   
   *cwd_path = 0;
   

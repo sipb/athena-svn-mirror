@@ -82,6 +82,8 @@ Request Manager
 )
 */
 
+#define MIME_HASH_SIZE  HT_L_HASH_SIZE
+
 extern void HTHeader_setMIMEParseSet (HTMIMEParseSet * list);
 extern HTMIMEParseSet * HTHeader_MIMEParseSet (void);
 extern BOOL HTHeader_addParser (const char * token, BOOL case_sensitive,
@@ -118,6 +120,6 @@ extern void HTHeader_deleteAll (void);
 
   
 
-  @(#) $Id: HTHeader.h,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+  @(#) $Id: HTHeader.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

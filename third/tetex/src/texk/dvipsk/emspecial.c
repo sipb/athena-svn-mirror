@@ -831,7 +831,7 @@ void MSP_2_ps P3C(FILE *, f, int,  wide, int, high)
 			}
 		}
 		newline();
-		mhexout(line,(long)tobyte(wide));
+		mhexout((unsigned char *) line,(long)tobyte(wide));
 	}
 	free(linelen);
 	free(line);
@@ -873,7 +873,7 @@ void MSP_1_ps P3C(FILE *, f, int, wide, int, high)
 	for (i = 0; i < high; i++) {
 		fread(line, 1, tobyte(wide), f);
 		newline();
-		mhexout(line,(long)tobyte(wide));
+		mhexout((unsigned char *) line,(long)tobyte(wide));
 	}
 	free(line);
 }
@@ -1340,7 +1340,7 @@ void bmpgraph P4C(FILE *, f, char *, filename, float, emwidth, float, emheight)
 		    }
 		}
 		newline();
-		mhexout(pshexa,(long)tobyte(bmih.width));
+		mhexout((unsigned char *) pshexa,(long)tobyte(bmih.width));
 	}
 	imagetail() ;
 	free(pshexa);

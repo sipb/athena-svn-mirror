@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASE=`basename $1 .idx`
+BASE=`basename "$1" .idx`
 IDX=$BASE.idx
 IND=$BASE.ind
 ILG=$BASE.ilg

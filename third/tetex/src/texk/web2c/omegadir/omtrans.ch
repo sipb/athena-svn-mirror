@@ -1,8 +1,23 @@
+% omtrans.ch: Characters sets for input and output
 %
-% This file is part of the Omega project, which
-% is based on the web2c distribution of TeX.
+% This file is part of Omega,
+% which is based on the web2c distribution of TeX,
 % 
-% Copyright (c) 1995--1999 John Plaice and Yannis Haralambous
+% Copyright (c) 1994--2001 John Plaice and Yannis Haralambous
+%
+% Omega is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+% 
+% Omega is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Omega; if not, write to the Free Software Foundation, Inc.,
+% 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 % 
 %---------------------------------------
 @x [3] m.25 l.767 - Omega Translation
@@ -17,6 +32,9 @@ for us to specify simple operations on word files before they are defined.
 @d ebcdic_mode=2
 @d twobyte_mode=3
 @d twobyteLE_mode=4
+@d UTF8_mode=5
+@d UTF16_mode=6
+@d UTF16LE_mode=7
 
 @d trans_input=0
 @d trans_output=1
@@ -37,12 +55,6 @@ for us to specify simple operations on word files before they are defined.
 @d mode_no_default_output=7
 @z
 %---------------------------------------
-@x [3] m.25 l.772 - Omega Translation
-@!alpha_file=packed file of text_char; {files that contain textual data}
-@y
-@!alpha_file=packed file of text_char; {files that contain textual data}
-@z
-%---------------------------------------
 @x [3] m.30 l.890 - Omega Translation
 @!max_buf_stack:0..buf_size; {largest index used in |buffer|}
 @y
@@ -51,12 +63,12 @@ for us to specify simple operations on word files before they are defined.
 @!term_in_translation:halfword;
 @z
 %---------------------------------------
-%@x [3] m.37 l.1065 - Omega Translation
-%  if not input_ln(term_in,true) then {this shouldn't happen}
-%@y
-%  if not new_input_ln(term_in,term_in_mode,term_in_translation,true)
-%then {this shouldn't happen}
-%@z
+@x [3] m.37 l.1065 - Omega Translation
+  if not input_ln(term_in,true) then {this shouldn't happen}
+@y
+  if not new_input_ln(term_in,term_in_mode,term_in_translation,true)
+then {this shouldn't happen}
+@z
 %---------------------------------------
 @x [5] m.54 l. - Omega Translation
 @!log_file : alpha_file; {transcript of \TeX\ session}
@@ -71,7 +83,7 @@ for us to specify simple operations on word files before they are defined.
 procedure print_char(@!s:ASCII_code); {prints a single character}
 label exit;
 begin if @<Character |s| is the current new-line character@> then
- if (selector<pseudo) or (selector>max_selector) then
+ if selector<pseudo then
   begin print_ln; return;
   end;
 case selector of
@@ -94,10 +106,7 @@ no_print: do_nothing;
 pseudo: if tally<trick_count then trick_buf[tally mod error_line]:=s;
 new_string: begin if pool_ptr<pool_size then append_char(s);
   end; {we drop characters if the string space is full}
-othercases if selector>max_selector then
-    write(output_files[selector-max_selector],xchr[s])
-  else
-    write(write_file[selector],xchr[s])
+othercases write(write_file[selector],xchr[s])
 endcases;@/
 incr(tally);
 exit:end;
@@ -111,6 +120,22 @@ exit:end;
                    twobyteLE_mode: begin write(#,xchr[s mod @"100]);
                      write(#,xchr[s div @"100]);
                      end;
+                   UTF8_mode: begin
+                     if s<@"80 then write(#, xchr[s])
+                     else if s<@"800 then begin
+                       write(#, xchr[@"C0 + s div @"40]);
+                       write(#, xchr[@"80 + s mod @"40]);
+                       end
+                     else begin
+                       write(#, xchr[@"E0 + s div @"1000]);
+                       write(#, xchr[@"80 + (s mod @"1000) div @"40]);
+                       write(#, xchr[@"80 + (s mod @"1000) mod @"40]);
+                       end
+                     end;
+                   UTF16_mode: begin
+                     end;
+                   UTF16LE_mode: begin
+                     end;
                    end
 
 @d omega_file_write(#)==case write_file_mode[#] of
@@ -122,13 +147,19 @@ exit:end;
                    twobyteLE_mode: begin write(write_file[#],xchr[s mod @"100]);
                      write(write_file[#],xchr[s div @"100]);
                      end;
+                   UTF8_mode: begin
+                     end;
+                   UTF16_mode: begin
+                     end;
+                   UTF16LE_mode: begin
+                     end;
                    end
 
 @<Basic printing...@>=
 procedure print_char(@!s:ASCII_code); {prints a single character}
 label exit;
 begin if @<Character |s| is the current new-line character@> then
- if (selector<pseudo) or (selector>max_selector) then
+ if selector<pseudo then
   begin print_ln; return;
   end;
 case selector of
@@ -151,10 +182,7 @@ no_print: do_nothing;
 pseudo: if tally<trick_count then trick_buf[tally mod error_line]:=s;
 new_string: begin if pool_ptr<pool_size then append_char(s);
   end; {we drop characters if the string space is full}
-othercases if selector>max_selector then
-    write(output_files[selector-max_selector],xchr[s])
-  else
-    omega_file_write(selector)
+othercases omega_file_write(selector)
 endcases;@/
 incr(tally);
 exit:end;
@@ -382,16 +410,8 @@ be printed using |print_char|. Therefore we use |slow_print| for them:
 
 @<Basic print...@>=
 procedure slow_print(@!s:integer); {prints string |s|}
-var j:pool_pointer; {current character code position}
 begin if (s>=str_ptr) or (s<=biggest_char) then print(s)
 else omega_print(s);
-{
-  begin j:=str_start(s);
-  while j<str_start(s+1) do
-    begin print(so(str_pool[j])); incr(j);
-    end;
-  end;
-}
 end;
 @z
 %---------------------------------------
@@ -417,7 +437,8 @@ then fatal_error("End of file on the terminal!");
 @y
 @d char_trans=ocp_trace_level+1
 @d char_mode=char_trans+1
-@d max_command=char_mode {the largest command code seen at |big_switch|}
+@d max_command=char_mode
+   {the largest command code seen at |big_switch|}
 @z
 %---------------------------------------
 @x [17] m.230 l.4722 - Omega Translation
@@ -425,18 +446,24 @@ then fatal_error("End of file on the terminal!");
    {table of |number_regs| token list registers}
 @y
 @d ocp_input_mode_base=ocp_active_base+max_active_ocp_lists
-@d ocp_input_onebyte_translation_base    =ocp_input_mode_base+ 1
-@d ocp_input_ebcdic_translation_base     =ocp_input_mode_base+ 2
-@d ocp_input_twobyte_translation_base    =ocp_input_mode_base+ 3
-@d ocp_input_twobyteLE_translation_base  =ocp_input_mode_base+ 4
+@d ocp_input_onebyte_translation_base    =ocp_input_mode_base+  1
+@d ocp_input_ebcdic_translation_base     =ocp_input_mode_base+  2
+@d ocp_input_twobyte_translation_base    =ocp_input_mode_base+  3
+@d ocp_input_twobyteLE_translation_base  =ocp_input_mode_base+  4
+@d ocp_input_UTF8_translation_base       =ocp_input_mode_base+  5
+@d ocp_input_UTF16_translation_base      =ocp_input_mode_base+  6
+@d ocp_input_UTF16LE_translation_base    =ocp_input_mode_base+  7
 
-@d ocp_output_mode_base                  =ocp_input_mode_base+ 5
-@d ocp_output_onebyte_translation_base   =ocp_input_mode_base+ 6
-@d ocp_output_ebcdic_translation_base    =ocp_input_mode_base+ 7
-@d ocp_output_twobyte_translation_base   =ocp_input_mode_base+ 8
-@d ocp_output_twobyteLE_translation_base =ocp_input_mode_base+ 9
+@d ocp_output_mode_base                  =ocp_input_mode_base+  8
+@d ocp_output_onebyte_translation_base   =ocp_input_mode_base+  9
+@d ocp_output_ebcdic_translation_base    =ocp_input_mode_base+ 10
+@d ocp_output_twobyte_translation_base   =ocp_input_mode_base+ 11
+@d ocp_output_twobyteLE_translation_base =ocp_input_mode_base+ 12
+@d ocp_output_UTF8_translation_base      =ocp_input_mode_base+ 13
+@d ocp_output_UTF16_translation_base     =ocp_input_mode_base+ 14
+@d ocp_output_UTF16LE_translation_base   =ocp_input_mode_base+ 15
 
-@d toks_base                             =ocp_input_mode_base+10
+@d toks_base                             =ocp_input_mode_base+16
 @z
 %---------------------------------------
 @x [22] m.304 l.6535 - Omega Translation
@@ -566,12 +593,18 @@ geq_define(ocp_input_onebyte_translation_base, data, 0);
 geq_define(ocp_input_ebcdic_translation_base, data, 0);
 geq_define(ocp_input_twobyte_translation_base, data, 0);
 geq_define(ocp_input_twobyteLE_translation_base, data, 0);
+geq_define(ocp_input_UTF8_translation_base, data, 0);
+geq_define(ocp_input_UTF16_translation_base, data, 0);
+geq_define(ocp_input_UTF16LE_translation_base, data, 0);
 geq_define(ocp_input_mode_base, data, 0);
 
 geq_define(ocp_output_onebyte_translation_base, data, 0);
 geq_define(ocp_output_ebcdic_translation_base, data, 0);
 geq_define(ocp_output_twobyte_translation_base, data, 0);
 geq_define(ocp_output_twobyteLE_translation_base, data, 0);
+geq_define(ocp_output_UTF8_translation_base, data, 0);
+geq_define(ocp_output_UTF16_translation_base, data, 0);
+geq_define(ocp_output_UTF16LE_translation_base, data, 0);
 geq_define(ocp_output_mode_base, data, 0);
 
 @ @<Cases of |print_cmd_chr|...@>=
@@ -609,8 +642,11 @@ procedure scan_mode;
 begin
 if scan_keyword("onebyte") then cur_val:=onebyte_mode
 else if scan_keyword("ebcdic") then cur_val:=ebcdic_mode
-else if scan_keyword("twobyte") then cur_val:=twobyte_mode
 else if scan_keyword("twobyteLE") then cur_val:=twobyteLE_mode
+else if scan_keyword("twobyte") then cur_val:=twobyte_mode
+else if scan_keyword("UTF8") then cur_val:=UTF8_mode
+else if scan_keyword("UTF16LE") then cur_val:=UTF16LE_mode
+else if scan_keyword("UTF16") then cur_val:=UTF16_mode
 else begin print_err("Invalid input mode"); cur_val:=0; end;
 end;
 
@@ -676,7 +712,6 @@ procedure do_char_mode;
 var kind:halfword;
     fileref:halfword;
     moderef:halfword;
-    ocpref:halfword;
 begin
 fileref:=0;
 moderef:=0;

@@ -1,5 +1,4 @@
-This is Info file web2c.info, produced by Makeinfo version 1.68 from
-the input file web2c.texi.
+This is web2c.info, produced by makeinfo version 4.3 from web2c.texi.
 
 INFO-DIR-SECTION TeX
 START-INFO-DIR-ENTRY
@@ -41,7 +40,7 @@ END-INFO-DIR-ENTRY
   This file documents the installation and use of the programs in Web2c,
 an implementation of Donald Knuth's TeX system.
 
-  Copyright (C) 1996, 97 K. Berry & O. Weber.
+  Copyright (C) 1996-2002 K. Berry & O. Weber.
 
   Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -58,12 +57,141 @@ versions, except that this permission notice may be stated in a
 translation
 
 
+File: web2c.info,  Node: Basic BibTeX style files,  Prev: bibtex invocation,  Up: BibTeX
+
+Basic BibTeX style files
+========================
+
+  Here are descriptions of the four standard and four semi-standard
+basic BibTeX styles.  `CTAN:/biblio/bibtex' contains these and many
+more (for CTAN info, *note unixtex.ftp: (kpathsea)unixtex.ftp.).
+
+`plain'
+     Sorts entries alphabetically, with numeric labels.  Generally
+     formatted according to van Leunen's `A Handbook for Scholars'.
+     The other style files listed here are based on `plain'.
+
+`abbrv'
+     First names, month names, and journal names are abbreviated.
+
+`acm'
+     Names are printed in small caps.
+
+`alpha'
+     Alphanumeric labels, e.g., `Knu66'.
+
+`apalike'
+     No labels at all; instead, the year appears in parentheses after
+     the author.  Should be used in conjunction with `apalike.tex'
+     (plain TeX) or `apalike.sty' (LaTeX), which also changes the
+     citations in the text to be `(AUTHOR, YEAR)'.
+
+`ieeetr'
+     Numeric labels, entries in citation order, IEEE abbreviations,
+     article titles in quotes.
+
+`siam'
+     Numeric labels, alphabetic order, `Math. Reviews' abbreviations,
+     names in small caps.
+
+`unsrt'
+     Lists entries in citation order, i.e., unsorted.
+
+`btxbst.doc'
+     The template file and documentation for the standard styles.
+
+
+File: web2c.info,  Node: WEB,  Next: DVI utilities,  Prev: BibTeX,  Up: Top
+
+WEB: Literate programming
+*************************
+
+  "WEB" languages allow you to write a single source file that can
+produce both a compilable program and a well-formatted document
+describing the program in as much detail as you wish to prepare.
+Writing in this kind of dual-purpose language is called "literate
+programming".  (The Usenet newsgroup `comp.programming.literate' and
+the mailing list <litprog@shsu.edu> are devoted to this subject; they
+are gatewayed to each other.)
+
+  WEB-like languages have been implemented with many pairs of base
+languages: Cweb provides C and Troff (*note References::); CWEB provides
+C and TeX (`CTAN:/web/c_cpp/cweb'); Spiderweb provides C, C++, Awk,
+Ada, many others, and TeX (`CTAN:/web/spiderweb'); and, of course, the
+original WEB provides Pascal and TeX, the implementation languages for
+the original TeX, Metafont, MetaPost, and related programs to come from
+the TeX project at Stanford.
+
+  The original WEB language is documented in the file `webman.tex',
+which is included in the <ftp://ftp.tug.org/tex/lib.tar.gz> archive
+(and available in many other places, of course).
+
+* Menu:
+
+* tangle invocation::
+* weave invocation::
+* pooltype invocation::
+
+
+File: web2c.info,  Node: tangle invocation,  Next: weave invocation,  Up: WEB
+
+Tangle: Translate WEB to Pascal
+===============================
+
+  Tangle creates a compilable Pascal program from a WEB source file
+(*note WEB::).  Synopsis:
+
+     tangle [OPTION]... WEBFILE[.web] [CHANGEFILE[.ch]]
+
+The Pascal output is written to the basename of WEBFILE extended with
+`.p'; for example, `tangle /wherever/foo.web' creates `./foo.p'.
+Tangle applies CHANGEFILE to WEBFILE before writing the output; by
+default, there is no change file.
+
+  If the program makes use of the WEB string facility, Tangle writes the
+string pool to the basename of WEBFILE extended with `.pool'.
+
+  The Pascal output is packed into lines of 72 characters or less, with
+the only concession to readability being the termination of lines at
+semicolons when this can be done conveniently.
+
+  The program accepts the following options, as well as the standard
+`--help' and `--version' (*note Common options::):
+
+`-length=NUMBER'
+     The number of characters that are considered significant in an
+     identifier.  Whether underline characters are counted depends on
+     the `-underline' option.  The default value is 32, the original
+     tangle used 7, but this proved too restrictive for use by Web2c.
+
+`-lowercase'
+`-mixedcase'
+`-uppercase'
+     These options specify the case of identifiers in the output of
+     tangle.  If `-uppercase' (`-lowercase') is specified, tangle will
+     convert all identfiers to uppercase (lowercase).  The default is
+     `-mixedcase', which specifies that the case will not be changed.
+
+`-underline'
+     When this option is given, tangle does not strip underline
+     characters from identifiers.
+
+`-loose'
+`-strict'
+     These options specify how strict tangle must be when checking
+     identifiers for equality.  The default is `-loose', which means
+     that tangle will follow the rules set by the case-smashing and
+     underline options above.  If `-strict' is set, then identifiers
+     will always be stripped of underlines and converted to uppercase
+     before checking whether they collide.
+
+
 File: web2c.info,  Node: weave invocation,  Next: pooltype invocation,  Prev: tangle invocation,  Up: WEB
 
 Weave: Translate WEB to TeX
 ===========================
 
-  Weave creates a TeX document from a WEB source file (*note WEB::.),
+  Weave creates a TeX document from a WEB source file (*note WEB::),
 assuming various macros defined in `webmac.tex'.   It takes care of
 typographic details such as page layout, indentation, and italicizing
 identifiers.  It also automatically gathers and outputs extensive
@@ -77,7 +205,7 @@ CHANGEFILE to WEBFILE before writing the output; by default, there is
 no change file.
 
   The program accepts the following option, as well as the standard
-`-verbose', `-help' and `-version' (*note Common options::.):
+`-verbose', `-help' and `-version' (*note Common options::):
 `-x'
      Omit the cross-reference information: the index, the list of WEB
      module names, and the table of contents (an empty `CONTENTS.tex'
@@ -96,8 +224,8 @@ Pooltype: Display WEB pool files
 ================================
 
   Pooltype shows the so-called "string number" of each string in a WEB
-pool file (*note WEB::.), as output by Tangle (*note tangle
-invocation::.), including the first 256 strings corresponding to the
+pool file (*note WEB::), as output by Tangle (*note tangle
+invocation::), including the first 256 strings corresponding to the
 possible input characters.  Pooltype primarily serves as an example of
 WEB conventions to implementors of the TeX system.  Synopsis:
 
@@ -106,7 +234,7 @@ WEB conventions to implementors of the TeX system.  Synopsis:
 No path searching is done for POOLFILE.  Output is to standard output.
 
   The only options are `--help' and `--version' (*note Common
-options::.).
+options::).
 
   As an example of the output, here is the (edited) output for
 `tex.pool':
@@ -167,7 +295,7 @@ DVIcopy first.  Synopsis:
 standard output if OUTDVI is not specified.
 
   The program accepts the following options, as well as the standard
-`-help' and `-version' (*note Common options::.):
+`-help' and `-version' (*note Common options::):
 `-magnification=INTEGER'
      Override existing magnification in INDVI with INTEGER; 1000
      specifies no magnification.  This is equivalent to setting TeX's
@@ -204,7 +332,7 @@ the relevant paths, set the environment variable `KPATHSEA_DEBUG' to
   Output goes to standard output.
 
   The program accepts the following options, as well as the standard
-`-help' and `-version' (*note Common options::.):
+`-help' and `-version' (*note Common options::):
 `-dpi=REAL'
      Do pixel movement calculations at REAL pixels per inch; default
      300.0.
@@ -405,7 +533,7 @@ obsolete.
   Font files with the `.pl' (property list) suffix are the plain text
 (human-readable) analog of the binary `.tfm' files.  The TFtoPL and
 PLtoTF programs convert between the two formats (*note tftopl
-invocation::. and *Note pltotf invocation::).
+invocation:: and *Note pltotf invocation::).
 
   Font files with the `.mf' suffix are in Metafont source format.
 These are the files used by Metafont to generate rastered fonts for
@@ -413,8 +541,8 @@ specific typefaces at specific magnifications for the specific
 resolution and type of mapping used by your device.
 
   The suffix `.vf' identifies "virtual font" files, for which `.vpl' is
-the human-readable analog.  *Note vftovp invocation:: and *Note vptovf
-invocation::.  For further discussion of virtual fonts, see
+the human-readable analog.  See *Note vftovp invocation::, and *Note
+vptovf invocation::.  For further discussion of virtual fonts, see
 `CTAN:/doc/virtual-fonts.knuth', `CTAN:/help/virtualfonts.txt', and
 *Note Virtual fonts: (dvips)Virtual fonts.
 
@@ -428,7 +556,7 @@ GFtoPK: Generic to packed font conversion
 =========================================
 
   GFtoPK converts a generic font (GF) file output by, for example,
-Metafont (*note mf invocation::.) to a packed font (PK) file.  PK files
+Metafont (*note mf invocation::) to a packed font (PK) file.  PK files
 are considerably smaller than the corresponding gf files, so they are
 generally the bitmap font format of choice.  Some DVI-processing
 programs, notably Dvips, only support PK files and not GF files.
@@ -449,7 +577,7 @@ not an extension; no `.' precedes it: for instance, `cmr10.600gf'.
 `./cmr10.600pk'.
 
   The only options are `--verbose', `--help', and `--version' (*note
-Common options::.).
+Common options::).
 
 
 File: web2c.info,  Node: pktogf invocation,  Next: pktype invocation,  Prev: gftopk invocation,  Up: Font utilities
@@ -459,7 +587,7 @@ PKtoGF: Packed to generic font conversion
 
   PKtoGF converts a packed font (PK) file to a generic font (GF) file.
 Since PK format is much more compact than GF format, the most likely
-reason to do this is to run GFtype (*note gftype invocation::.) on the
+reason to do this is to run GFtype (*note gftype invocation::) on the
 result, so you can see the bitmap images.  Also, a few old utility
 programs do not support PK format.  Synopsis:
 
@@ -478,7 +606,7 @@ not an extension; no `.' precedes it: for instance, `cmr10.600pk'.
 `./cmr10.600gf'.
 
   The only options are `--verbose', `--help', and `--version' (*note
-Common options::.).
+Common options::).
 
 
 File: web2c.info,  Node: pktype invocation,  Next: gftype invocation,  Prev: pktogf invocation,  Up: Font utilities
@@ -503,11 +631,11 @@ not an extension; no `.' precedes it: for instance, `cmr10.600pk'.
 
   The translation is written to standard output.
 
-  The only options are `-help' and `-version' (*note Common options::.).
+  The only options are `-help' and `-version' (*note Common options::).
 
   As an example of the output, here is the (abridged) translation of the
 letter `K' in `cmr10', as rendered at 600dpi with the mode `ljfour'
-from `modes.mf' (available from `ftp://ftp.tug.org/tex/modes.mf').
+from <modes.mf> (available from `ftp://ftp.tug.org/tex/modes.mf').
 
      955:  Flag byte = 184  Character = 75  Packet length = 174
        Dynamic packing variable = 11
@@ -583,7 +711,7 @@ not an extension; no `.' precedes it: for instance, `cmr10.600gf'.
   The translation is written to standard output.
 
   The program accepts the following options, as well as the standard
-`-help' and `-version' (*note Common options::.):
+`-help' and `-version' (*note Common options::):
 `-images'
      Show the characters' bitmaps using asterisks and spaces.
 
@@ -592,7 +720,7 @@ not an extension; no `.' precedes it: for instance, `cmr10.600gf'.
 
   As an example of the output, here is the (abrdiged) translation of the
 letter `K' in `cmr10', as rendered at 600dpi with the mode `ljfour'
-from `modes.mf' (available from `ftp://ftp.tug.org/tex/modes.mf'), with
+from `modes.mf' (available from <ftp://ftp.tug.org/tex/modes.mf>), with
 both `-mnemonics' and `-images' enabled.
 
   GFtype outputs the information about a character in two places: a main
@@ -704,7 +832,7 @@ property list file can be converted back to TFM format by the companion
 program TFtoPL (see the next section).
 
   The program accepts the following option, as well as the standard
-`-verbose', `-help' and `-version' (*note Common options::.):
+`-verbose', `-help' and `-version' (*note Common options::):
 `-charcode-format=TYPE'
      Output character codes in the PL file according to TYPE: either
      `octal' or `ascii'.  Default is `ascii' for letters and digits,
@@ -798,6 +926,7 @@ translation of `cmr10.tfm':
      the depth is zero, so that property is omitted.  TFtoPL also
      inserts any kerns and ligatures for this character as a comment.
 
+
 
 File: web2c.info,  Node: pltotf invocation,  Next: vftovp invocation,  Prev: tftopl invocation,  Up: Font utilities
 
@@ -819,7 +948,7 @@ TFM file is written to the basename of `PLFILE.tfm', e.g., `pltotf
 binary, writing to standard output by default is undesirable.)
 
   The only options are `-verbose', `-help', and `-version' (*note
-Common options::.).
+Common options::).
 
   For an example of property list format, see the previous section.
 
@@ -852,7 +981,7 @@ file can be converted back to VF and TFM format by the companion
 program VFtoVP (see the next section).
 
   The program accepts the following option, as well as the standard
-`-verbose', `-help' and `-version' (*note Common options::.):
+`-verbose', `-help' and `-version' (*note Common options::):
 `-charcode-format=TYPE'
      Output character codes in the PL file according to TYPE: either
      `octal' or `ascii'.  Default is `ascii' for letters and digits,
@@ -892,7 +1021,7 @@ For example, `vptovf /wherever/ptmr.vpl' creates `./ptmr.vf' and
 `./ptmr.tfm'.
 
   The only options are `-verbose', `-help', and `-version' (*note
-Common options::.).
+Common options::).
 
 
 File: web2c.info,  Node: Font utilities available elsewhere,  Prev: vptovf invocation,  Up: Font utilities
@@ -910,25 +1039,25 @@ items:
      (dvips)Invoking afm2tfm., and `CTAN:/fonts/utilities/afmtopl'.
 
    * BDF (the X bitmap format) conversion:
-     `ftp://ftp.tug.org/tex/bdf.tar.gz'.
+     <ftp://ftp.tug.org/tex/bdf.tar.gz>.
 
    * Editing of bitmap fonts: Xbfe from the GNU font utilities mentioned
      below; the X BDF-editing programs available from
-     `ftp://ftp.x.org/R5contrib/xfed.tar.Z' and
-     `ftp://ftp.x.org/R5contrib/xfedor.tar.Z'; and finally, if your
+     <ftp://ftp.x.org/R5contrib/xfed.tar.Z> and
+     <ftp://ftp.x.org/R5contrib/xfedor.tar.Z>; and finally, if your
      fonts have only 128 characters, you can use the old `gftopxl',
-     `pxtoch', and `chtopx' programs from `ftp://ftp.tug.org/tex/web'.
+     `pxtoch', and `chtopx' programs from <ftp://ftp.tug.org/tex/web>.
 
    * PK bitmaps from PostScript fonts: gsftopk from the `xdvik'
      distribution or from `CTAN:/fonts/utilities/gsftopk';
      alternatively, `ps2pk', from `CTAN:/fonts/utilities/ps2pk'.
 
    * PostScript Type 1 font format conversion (i.e., between PFA and PFB
-     formats): `ftp://ftp.tug.org/tex/t1utils.tar.gz'.
+     formats): <ftp://ftp.tug.org/tex/t1utils.tar.gz>.
 
    * Scanned image conversion: the (aging) GNU font utilities convert
      type specimen images to Metafont, PostScript, etc.:
-     `ftp://prep.ai.mit.edu/pub/gnu/fontutils-0.6.tar.gz'.
+     <ftp://prep.ai.mit.edu/pub/gnu/fontutils-0.6.tar.gz>.
 
    * Virtual font creation: `CTAN:/fonts/utilities/fontinst'.
 
@@ -954,7 +1083,7 @@ under X-like terms; the precise notice is included below.
   Finally, almost all of the Kpathsea library is covered by the GNU
 Library General Public License, but part of one file is covered by the
 regular GNU General Public License (*note Introduction:
-(kpathsea)Introduction.).  Therefore, the *binaries* resulting from a
+(kpathsea)Introduction.).  Therefore, the _binaries_ resulting from a
 standard Web2c compilation are also covered by the GPL; so if you
 (re)distribute the binaries, you must also (offer to) distribute the
 complete source that went into those binaries.  See the files `COPYING'
@@ -995,19 +1124,19 @@ References
      TeX project, see the books `TeX: The Program' or `Metafont: The
      Program' cited below.
 
-  4. TUGboat: `ftp://ftp.math.utah.edu/pub/tex/bib/tugboat.bib'.
+  4. TUGboat: <ftp://ftp.math.utah.edu/pub/tex/bib/tugboat.bib>.
 
   5. TeX and computer typesetting in general:
-     `ftp://ftp.math.utah.edu/pub/tex/bib/texbook1.bib'.
+     <ftp://ftp.math.utah.edu/pub/tex/bib/texbook1.bib>.
 
   6. [Bil87] Neenie Billawala.  Write-white printing engines and tuning
-     fonts with Metafont.  `TUGboat', 8(1):29, April 1987.
+     fonts with Metafont.  `TUGboat', 8(1):29-32, April 1987.
 
   7. [GMS94] Michel Goossens, Frank Mittelbach, and Alexander Samarin.
      `The LaTeX Companion'.  Addison-Wesley, Reading, MA, USA, 1994.
 
-  8. [Hob89] John D. Hobby.  A Metafont-like System with PostScript
-     Output.  `TUGboat', 10(4):505-512, December 1989.
+  8. [Hob89] John D. Hobby.  A Metafont-like system with PS output.
+     `TUGboat', 10(4):505-512, December 1989.
 
   9. [Hob92] John D. Hobby.  A User's Manual for MetaPost.  Technical
      Report CSTR-162, AT&T Bell Laboratories, 1992.
@@ -1016,15 +1145,15 @@ References
      Report CSTR-164, AT&T Bell Laboratories, 1993.
 
  11. [HS91] Samuel P. Harbison and Guy L. Steele Jr.  `C--A Reference
-     Manual'.  Prentice-Hall, Englewood Cliffs, NJ 07632, USA, third
-     edition, 1991.  An authoritative reference to C programming
-     language, and a good companion to   Kernighan and Ritchie.
+     Manual'.  Prentice-Hall, Upper Saddle River, NJ 07458, USA, third
+     edition, 1991.  An authoritative reference to the C programming
+     language, and a good   companion to Kernighan and Ritchie.
 
  12. [KL93] Donald E. Knuth and Silvio Levy.  `The CWEB System of
      Structured Documentation, Version 3.0'.  Addison-Wesley, Reading,
      MA, USA, 1993.
 
- 13. [Knu84] Donald E. Knuth.  A Torture Test for TeX.  Report No.
+ 13. [Knu84] Donald E. Knuth.  A torture test for TeX.  Report No.
      STAN-CS-84-1027, Stanford University, Department of Computer
      Science, 1984.
 
@@ -1064,7 +1193,7 @@ References
 
  23. [Lam94] Leslie Lamport.  `LaTeX: A Document Preparation System:
      User's Guide and Reference   Manual'.  Addison-Wesley, Reading,
-     MA, USA, second edition, 1994.
+     MA, USA, second edition, 1994.  Reprinted with corrections in 1996.
 
  24. [Lia83] Franklin Mark Liang.  Word hy-phen-a-tion by com-pu-ter.
      Technical Report STAN-CS-83-977, Stanford University, August 1983.

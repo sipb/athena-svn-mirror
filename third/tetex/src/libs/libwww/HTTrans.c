@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTrans.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTTrans.c,v 1.1.1.2 2003-02-25 22:25:49 amb Exp $
 **
 ** HISTORY:
 **	Marts 96 HFN	Written
@@ -42,9 +42,9 @@ PUBLIC BOOL HTTransport_add (const char *		name,
 	tp->input_new = get_input;
 	tp->output_new = get_output;
 	if (!transports) transports = HTList_new();
-	if (CORE_TRACE) HTTrace("Transport... Adding `%s'\n", name);
+	HTTRACE(CORE_TRACE, "Transport... Adding `%s'\n" _ name);
 	return HTList_addObject(transports, (void *) tp);
-    } else if (CORE_TRACE) HTTrace("Transport... Can't add this...\n");
+    } else HTTRACE(CORE_TRACE, "Transport... Can't add this...\n");
     return NO;
 }
 
@@ -58,8 +58,10 @@ PUBLIC BOOL HTTransport_delete (const char * name)
 	HTTransport *pres;
 	while ((pres = (HTTransport *) HTList_nextObject(cur))) {
 	    if (!strcmp(pres->name, name)) {
+		BOOL status = HTList_removeObject(transports, (void *) pres);
 		HT_FREE(pres->name);
-		return HTList_removeObject(transports, (void *) pres);
+		HT_FREE(pres);
+		return status;
 	    }
 	}
     }

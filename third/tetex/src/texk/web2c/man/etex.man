@@ -1,4 +1,4 @@
-.TH ETEX 1 "29 March 1999" "Web2C @VERSION@"
+.TH ETEX 1 "10 November 2001" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -86,6 +86,12 @@ e-\*(TX was called or a
 .I %&
 line.
 .TP
+.B --file-line-error-style
+.rb
+Print error messages in the form
+.I file:line:error
+which is similar to the way many compilers format them.
+.TP
 .B --help
 .rb
 Print help message and exit.
@@ -120,6 +126,12 @@ As
 .BR --ipc ,
 and starts the server at the other end as well.  Whether this option
 is available is the choice of the installer.
+.TP
+.BI --jobname \ name
+.rb
+Use
+.I name
+for the job name, instead of deriving it from the name of the input file.
 .TP
 .BI --kpathsea-debug \ bitmask
 .rb
@@ -159,11 +171,25 @@ Use
 .I string
 for the DVI file comment instead of the date.
 .TP
+.B --parse-first-line
+.rb
+If the first line of the main input file begins with
+.I %&
+parse it to look for a dump name or a
+.B --translate-file
+option.
+.TP
 .BI --progname \ name
 .rb
 Pretend to be program
 .IR name .
 This affects both the format used and the search paths.
+.TP
+.B --recorder
+.rb
+Enable the filename recorder.  This leaves a trace of the files opened
+for input and output in a file with extension
+.IR .fls .
 .TP
 .B --shell-escape
 .rb
@@ -263,6 +289,14 @@ Predigested e-\*(TX format (.\|efmt) files.
 .br
 .\"=====================================================================
 .SH BUGS
+This version of e-\*(TX implements a number of optional extensions.
+In fact, many of these extensions conflict to a greater or lesser
+extent with the definition of e-\*(TX.  When such extensions are
+enabled, the banner printed when e-\*(TX starts is changed to print
+.B e-TeXk
+instead of
+.BR e-TeX .
+.PP
 This version of e-\*(TX fails to trap arithmetic overflow when
 dimensions are added or subtracted.  Cases where this occurs are rare,
 but when it does the generated
@@ -271,5 +305,4 @@ file will be invalid.
 .\"=====================================================================
 .SH "SEE ALSO"
 .BR tex (1),
-.BR mf (1),
-.BR undump (1).
+.BR mf (1).

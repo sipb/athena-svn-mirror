@@ -1,29 +1,37 @@
-make[1]: Entering directory `/home/olaf/web2c/src/texk/web2c'
+make[1]: Entering directory `/home/olaf/web2c/src/texk/texk/web2c'
+cd ../kpathsea && make -w CC='gcc' CFLAGS='-g ' 
+make[2]: Entering directory `/home/olaf/web2c/src/texk/texk/kpathsea'
+make[2]: Nothing to be done for `default'.
+make[2]: Leaving directory `/home/olaf/web2c/src/texk/texk/kpathsea'
 *** TRIP test for e-TeX in compatibility mode ***.
 ./pltotf ./triptrap/trip.pl trip.tfm
 ./tftopl ./trip.tfm trip.pl
 diff ./triptrap/trip.pl trip.pl
 rm -f trip.tex; ln -s ./triptrap/trip.tex . # get same filename in log
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./etex --progname=einitex <./triptrap/trip1.in >ctripin.fot'
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./etex --progname=einitex <./triptrap/trip1.in >ctripin.fot'
 mv trip.log ctripin.log
 diff ./triptrap/tripin.log ctripin.log
 1c1
 < This is TeX, Version 3.14159 (INITEX)  8 MAR 1995 14:24
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (INITEX)  26 MAR 1999 20:49
+> This is e-TeX, Version 3.14159-2.1 (Web2C 7.4.5) (INITEX)  29 JAN 2003 22:55
+3c3
+< (trip.tex
+---
+> (./trip.tex
 449,451c449,451
 < Beginning to dump on file trip.fmt
 <  (preloaded format=trip 95.3.8)
 < 1320 strings of total length 23539
 ---
 > Beginning to dump on file trip.efmt
->  (format=trip 1999.3.26)
-> 1449 strings of total length 24764
+>  (format=trip 2003.1.29)
+> 1457 strings of total length 24927
 461c461
 < Hyphenation trie of length 273 has 9 ops out of 500
 ---
-> Hyphenation trie of length 273 has 9 ops out of 1501
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./etex <./triptrap/trip2.in >ctrip.fot'
+> Hyphenation trie of length 273 has 9 ops out of 35111
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./etex <./triptrap/trip2.in >ctrip.fot'
 mv trip.log ctrip.log
 diff ./triptrap/trip.fot ctrip.fot
 1,3c1,2
@@ -31,13 +39,17 @@ diff ./triptrap/trip.fot ctrip.fot
 < ** &trip  trip 
 < (trip.tex ##
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3)
-> **(trip.tex ##
+> This is e-TeX, Version 3.14159-2.1 (Web2C 7.4.5)
+> **(./trip.tex ##
 diff  ./triptrap/trip.log ctrip.log
 1c1
 < This is TeX, Version 3.14159 (preloaded format=trip 95.3.8)  8 MAR 1995 14:24
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (format=trip 1999.3.26)  26 MAR 1999 20:49
+> This is e-TeX, Version 3.14159-2.1 (Web2C 7.4.5) (format=trip 2003.1.29)  29 JAN 2003 22:55
+3c3
+< (trip.tex ##
+---
+> (./trip.tex ##
 58a59,62
 > \openout0 = `8terminal.tex'.
 > 
@@ -47,6 +59,10 @@ diff  ./triptrap/trip.log ctrip.log
 < \vbox(16383.99998+0.0)x1000.0, glue set 16342.0fil
 ---
 > \vbox(16383.99998+0.0)x1000.0, glue set 16341.99998fil
+1954c1958
+< (tripos.tex
+---
+> (./tripos.tex
 2018c2022
 < \vbox(16383.99998+1.0)x100.0, glue set 16239.0fil
 ---
@@ -75,12 +91,16 @@ diff  ./triptrap/trip.log ctrip.log
 < \vbox(16383.99998+0.0)x205.12613, glue set 16344.0fil
 ---
 > \vbox(16383.99998+0.0)x205.12613, glue set 16343.99998fil
+6379c6383
+< (tripos.tex
+---
+> (./tripos.tex
 7296,7297c7300,7301
 <  47 strings out of 1680
 <  267 string characters out of 8461
 ---
->  37 strings out of 1851
->  203 string characters out of 9236
+>  42 strings out of 1843
+>  255 string characters out of 9073
 7299c7303
 <  370 multiletter control sequences out of 2100
 ---
@@ -89,16 +109,16 @@ diff  ./triptrap/trip.log ctrip.log
 <  2 hyphenation exceptions out of 307
 ---
 >  1 hyphenation exception out of 659
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./dvitype -output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*' trip.dvi >ctrip.typ'
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./dvitype -output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*' trip.dvi >ctrip.typ'
 diff  ./triptrap/trip.typ ctrip.typ
 1c1
 < This is DVItype, Version 3.5
 ---
-> This is DVItype, Version 3.6 (Web2C 7.3)
+> This is DVItype, Version 3.6 (Web2C 7.4.5)
 9c9
 < ' TeX output 1995.03.08:1424'
 ---
-> ' TeX output 1999.03.26:2049'
+> ' TeX output 2003.01.29:2255'
 419c419
 < 1121: down4 639342208 
 ---
@@ -112,14 +132,12 @@ diff  ./triptrap/trip.typ ctrip.typ
 1215d1214
 <  
 *** TRIP test for e-TeX in extended mode ***.
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./etex --progname=einitex <./etexdir/etrip/etrip1.in >xtripin.fot'
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./etex --progname=einitex <./etexdir/etrip/etrip1.in >xtripin.fot'
 mv trip.log xtripin.log
 diff ctripin.log xtripin.log
-1,2c1,3
-< This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (INITEX)  26 MAR 1999 20:49
+2c2,3
 < **\input trip
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (INITEX)  26 MAR 1999 20:50
 > entering extended mode
 > ***\input trip
 36,41d36
@@ -135,14 +153,14 @@ diff ctripin.log xtripin.log
 ---
 > 509 memory locations dumped; current usage is 134&278
 > 407 multiletter control sequences
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./etex <./etexdir/etrip/trip2.in >xtrip.fot'
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./etex <./etexdir/etrip/trip2.in >xtrip.fot'
 mv trip.log xtrip.log
 diff ctrip.fot xtrip.fot
 2c2,3
-< **(trip.tex ##
+< **(./trip.tex ##
 ---
 > **entering extended mode
-> ## (trip.tex
+> ## (./trip.tex
 16c17
 < Memory usage before: 159&313; after: 102&278; still untouched: 1613
 ---
@@ -156,15 +174,13 @@ diff ctrip.fot xtrip.fot
 > ### semi simple group (level 1) entered at line 429 (begingroup)
 > ### bottom level
 diff  ctrip.log xtrip.log
-1,3c1,4
-< This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (format=trip 1999.3.26)  26 MAR 1999 20:49
+2,3c2,4
 < ** &trip  trip
-< (trip.tex ##
+< (./trip.tex ##
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (format=trip 1999.3.26)  26 MAR 1999 20:50
 > entering extended mode
 > **&trip \toksdef\tokens=0 \input trip
->  (trip.tex
+>  (./trip.tex
 77c78
 < Memory usage before: 159&313; after: 102&278; still untouched: 1613
 ---
@@ -245,66 +261,81 @@ diff  ctrip.log xtrip.log
 <  5i,7n,9p,113b,38s stack positions out of 200i,40n,60p,500b,600s
 ---
 >  5i,7n,9p,136b,40s stack positions out of 200i,40n,60p,500b,600s
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./dvitype -output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*' trip.dvi >xtrip.typ'
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./dvitype -output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*' trip.dvi >xtrip.typ'
 diff  ctrip.typ xtrip.typ
-9c9
-< ' TeX output 1999.03.26:2049'
----
-> ' TeX output 1999.03.26:2050'
 *** e-TeX specific part of e-TRIP test ***.
 ./pltotf ./etexdir/etrip/etrip.pl etrip.tfm
 ./tftopl ./etrip.tfm etrip.pl
 diff ./etexdir/etrip/etrip.pl etrip.pl
 rm -f etrip.tex; ln -s ./etexdir/etrip/etrip.tex . # get same filename in log
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./etex --progname=einitex <./etexdir/etrip/etrip2.in >etripin.fot'
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./etex --progname=einitex <./etexdir/etrip/etrip2.in >etripin.fot'
 mv etrip.log etripin.log
 diff ./etexdir/etrip/etripin.log etripin.log
 1c1
 < This is e-TeX, Version 3.14159-2.1 (INITEX)  31 JAN 1999 15:29
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (INITEX)  26 MAR 1999 20:51
-13c13
+> This is e-TeX, Version 3.14159-2.1 (Web2C 7.4.5) (INITEX)  29 JAN 2003 22:55
+4c4,5
+< (etrip.tex This is the e-Trip test [1999/01/32] for e-TeX v3.14159-2.1.
+---
+> (./etrip.tex
+> This is the e-Trip test [1999/01/32] for e-TeX v3.14159-2.1.
+13c14
 < \hbox(8.0+2.0)x16383.99998, glue set 1166.92856 []
 ---
 > \hbox(8.0+2.0)x16383.99998, glue set 1166.92857 []
-24,26c24,26
+24,26c25,27
 < Beginning to dump on file etrip.fmt
 <  (preloaded format=etrip 1999.1.31)
 < 1435 strings of total length 24590
 ---
 > Beginning to dump on file etrip.efmt
->  (format=etrip 1999.3.26)
-> 1450 strings of total length 24794
-35c35
+>  (format=etrip 2003.1.29)
+> 1458 strings of total length 24958
+35c36
 < Hyphenation trie of length 434 has 12 ops out of 500
 ---
-> Hyphenation trie of length 434 has 12 ops out of 1501
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./etex <./etexdir/etrip/etrip3.in >etrip.fot'
+> Hyphenation trie of length 434 has 12 ops out of 35111
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./etex <./etexdir/etrip/etrip3.in >etrip.fot'
 diff ./etexdir/etrip/etrip.fot etrip.fot
-1,3c1,2
+1,4c1,3
 < This is e-TeX, Version 3.14159-2.1 (INITEX)
 < **&etrip etrip
 < entering extended mode
+< (etrip.tex e-IniTeX: e-Trip format loaded.
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3)
+> This is e-TeX, Version 3.14159-2.1 (Web2C 7.4.5)
 > **entering extended mode
-45a45,46
-> 
+> (./etrip.tex e-IniTeX: e-Trip format loaded.
+46a46,47
 > \openout1 = `etrip.out'.
+> 
 diff  ./etexdir/etrip/etrip.log etrip.log
 1c1
 < This is e-TeX, Version 3.14159-2.1 (preloaded format=etrip 1999.1.31)  31 JAN 1999 15:29
 ---
-> This is e-TeX, Version 3.14159-2.1 (Web2C 7.3) (format=etrip 1999.3.26)  26 MAR 1999 20:51
+> This is e-TeX, Version 3.14159-2.1 (Web2C 7.4.5) (format=etrip 2003.1.29)  29 JAN 2003 22:55
+4c4
+< (etrip.tex e-IniTeX: e-Trip format loaded.
+---
+> (./etrip.tex e-IniTeX: e-Trip format loaded.
 670a671,672
 > \openout1 = `etrip.out'.
 > 
+672c674
+< (etrip.out) ( 
+---
+> (./etrip.out) ( 
+764c766
+<                 % end of outer \scantokens) (etrip.out
+---
+>                 % end of outer \scantokens) (./etrip.out
 4265,4266c4267,4268
 <  22 strings out of 1665
 <  132 string characters out of 8410
 ---
->  13 strings out of 1850
->  89 string characters out of 9206
+>  18 strings out of 1842
+>  140 string characters out of 9042
 4268c4270
 <  408 multiletter control sequences out of 2100
 ---
@@ -314,14 +345,14 @@ diff  ./etexdir/etrip/etrip.log etrip.log
 ---
 >  9 hyphenation exceptions out of 659
 diff ./etexdir/etrip/etrip.out etrip.out
-/bin/sh -c 'TEXMFCNF=./etexdir/etrip ./dvitype -output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*' etrip.dvi >etrip.typ'
+/bin/sh -c 'LC_ALL=C TEXMFCNF=./etexdir/etrip ./dvitype -output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*' etrip.dvi >etrip.typ'
 diff  ./etexdir/etrip/etrip.typ etrip.typ
 1c1
 < This is DVItype, Version 3.5
 ---
-> This is DVItype, Version 3.6 (Web2C 7.3)
+> This is DVItype, Version 3.6 (Web2C 7.4.5)
 9c9
 < ' TeX output 1999.01.31:1529'
 ---
-> ' TeX output 1999.03.26:2051'
-make[1]: Leaving directory `/home/olaf/web2c/src/texk/web2c'
+> ' TeX output 2003.01.29:2255'
+make[1]: Leaving directory `/home/olaf/web2c/src/texk/texk/web2c'

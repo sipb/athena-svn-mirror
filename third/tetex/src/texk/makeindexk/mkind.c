@@ -36,6 +36,8 @@ int     init_page = FALSE;
 int     even_odd = -1;
 int     verbose = TRUE;
 int     german_sort = FALSE;
+int     thai_sort = FALSE;
+int     locale_sort = FALSE;
 int     fn_no = -1;		       /* total number of files */
 int     idx_dot = TRUE;		       /* flag which shows dot in ilg being
 					* active */
@@ -195,6 +197,18 @@ char   *argv[];
 		case 'g':
 		    german_sort = TRUE;
 		    break;
+
+#ifdef HAVE_SETLOCALE
+		    /* enable locale-based sort */
+		case 'L':
+		    locale_sort = TRUE;
+		    break;
+
+		    /* enable Thai sort */
+		case 'T':
+		    thai_sort = locale_sort = TRUE;
+		    break;
+#endif
 
 		    /* bad option */
 		default:

@@ -54,6 +54,11 @@ extern int write (int, const void *, size_t);
 #include <kpathsea/variable.h>
 #include "mftalk.h"
 
+/* We use SIGCHLD, but fall back on SIGCLD if that's all we have. */
+#if !defined (SIGCHLD) && defined (SIGCLD)
+#define SIGCHLD SIGCLD
+#endif
+
 #define fatal(func, cond) do { if (cond) FATAL_PERROR ("perror"); } while (0)
 
 static RETSIGTYPE child_died P1H(int sig);
@@ -102,7 +107,7 @@ mf_mftalk_initscreen P1H(void)
   fatal (setmode, setmode (cs_pipe[1], O_BINARY) == -1);
 #endif
 
-  old = signal (SIGCLD, child_died);
+  old = signal (SIGCHLD, child_died);
   fatal (old, old == SIG_ERR);
 
   sprintf (height, "-h%d", screendepth);
@@ -145,7 +150,7 @@ mf_mftalk_initscreen P1H(void)
       fatal (close, close (sc_pipe[1]) == -1);
       fatal (close, close (cs_pipe[0]) == -1);
       fatal (close, close (cs_pipe[1]) == -1);
-      fatal (signal, signal (SIGCLD, old) == SIG_ERR);
+      fatal (signal, signal (SIGCHLD, old) == SIG_ERR);
       break;
     default:
       res = read (cs_pipe[0], &ack, sizeof (int));

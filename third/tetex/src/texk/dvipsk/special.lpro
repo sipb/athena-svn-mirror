@@ -175,7 +175,7 @@ end % of SDict
 %
 %
 % psfigTeX PostScript Prolog
-% $Header: /afs/dev.mit.edu/source/repository/third/tetex/src/texk/dvipsk/special.lpro,v 1.1.1.1 2000-03-10 17:51:54 ghudson Exp $
+% $Header: /afs/dev.mit.edu/source/repository/third/tetex/src/texk/dvipsk/special.lpro,v 1.1.1.2 2003-02-25 22:18:06 amb Exp $
 %
 /psfts { S 65781.76 div N } N
 
@@ -209,6 +209,8 @@ end % of SDict
 	} N
 	/erasepage {
 	} N
+        /setpagedevice {
+        pop } N
 	/copypage {
 	} N
         /p 3 def % necessary to get around a bug in Adobe Illustrator
@@ -268,6 +270,7 @@ end % of SDict
     if
     /showpage {} N
     /erasepage {} N
+    /setpagedevice { pop } N
     /copypage {} N
     newpath
   } N

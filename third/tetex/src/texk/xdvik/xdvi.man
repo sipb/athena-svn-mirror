@@ -1,5 +1,8 @@
-.\" Copyright (c) 1990-1999  Paul Vojta
+.\" Copyright (c) 1990-1998  Paul Vojta
 .\"
+.\" This is Pauls license included here only for reference, it does not apply
+.\" to the k version
+.\" ----
 .\" Permission is hereby granted, free of charge, to any person obtaining a copy
 .\" of this software and associated documentation files (the "Software"), to
 .\" deal in the Software without restriction, including without limitation the
@@ -16,6 +19,28 @@
 .\" PAUL VOJTA BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 .\" IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 .\" CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+.\" ----
+.\" This is the xdvik license:
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
 .\"
 .if t .ds Te T\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X
 .if n .ds Te TeX
@@ -23,7 +48,7 @@
 .de SB
 \&\fB\s-1\&\\$1 \\$2\s0\fR
 ..
-.TH XDVI 1 "15 February 1999" "X Version 11"
+.TH XDVI 1 "8 January 2002" "X Version 11"
 .SH NAME
 xdvi \- DVI Previewer for the X Window System
 .SH SYNOPSIS
@@ -48,8 +73,13 @@ xdvi \- DVI Previewer for the X Window System
 #ifnokpathsea
 [\fB\-mfmode\fP \fImode-def\fP]
 #endif
+[\fB\-editor\fP \fIcommand\fP]
+[\fB\-sourceposition\fP \fIline\fP[\fB:\fP\fIcol\fP][\ ]\fIfilename\fP]
 [\fB\-l\fP]
 [\fB\-rv\fP]
+#ifstatusline
+[\fB\-\fBstatusline\fP]
+#endif
 #ifbuttons
 [\fB\-expert\fP]
 [\fB\-shrinkbutton\fP\fIn\fP \fIshrink\fP]
@@ -60,15 +90,12 @@ xdvi \- DVI Previewer for the X Window System
 #ifkpathsea
 [\fB\-hushspecials\fP]
 #endif
+[\fB\-hushstdout\fP]
 [\fB\-safer\fP]
 [\fB\-fg\fP \fIcolor\fP] [\fB\-bg\fP \fIcolor\fP] [\fB\-hl\fP \fIcolor\fP]
 [\fB\-bd\fP \fIcolor\fP] [\fB\-cr\fP \fIcolor\fP]
 [\fB\-bw\fP \fIwidth\fP]
-#ifgrid
-[\fB\-grid1\fP \fIcolor\fP] 
-[\fB\-grid2\fP \fIcolor\fP] 
-[\fB\-grid3\fP \fIcolor\fP]
-#endif
+[\fB\-rulecolor\fP \fIcolor\fP] 
 [\fB\-bw\fP \fIwidth\fP]
 [\fB\-display\fP \fIhost:display\fP] [\fB\-geometry\fP \fIgeometry\fP]
 [\fB\-icongeometry\fP \fIgeometry\fP] [\fB\-iconic\fP]
@@ -76,6 +103,7 @@ xdvi \- DVI Previewer for the X Window System
 [\fB\-font\fP \fIfont\fP]
 #endif
 [\fB\-keep\fP] [\fB\-copy\fP] [\fB\-thorough\fP]
+[\fB\-wheelunit\fP \fIpixels\fP]
 #ifps
 [\fB\-nopostscript\fP]
 [\fB\-noscan\fP]
@@ -93,6 +121,9 @@ xdvi \- DVI Previewer for the X Window System
 [\fB\-gsalpha\fP]
 [\fB\-interpreter\fP \fIpath\fP]
 [\fB\-gspalette\fP \fIpalette\fP]
+#endif
+#ift1
+[\fB\-not1lib\fP]
 #endif
 #ifhyper
 [\fB\-underlink\fP]
@@ -116,7 +147,15 @@ files, such as are produced by
 .PP
 This program has the capability of showing the file shrunken by various
 (integer) factors, and also has a ``magnifying glass'' which allows one
-to see a small part of the unshrunk image momentarily.
+to see a small part of the unshrunk image momentarily. It has also support
+for
+#ifhyper
+hyperlinks in DVI files (see section HYPERLINKS below),
+#endif
+#ift1
+direct rendering of Postscript<tm> Type1 fonts (see section T1LIB below), and
+#endif
+source specials in the .dvi file (see section SOURCE SPECIALS below).
 .PP
 Before displaying any page or part thereof, it checks to see if the
 .I dvi
@@ -192,7 +231,7 @@ ends in
 .BR .Z ,
 .BR .gz ,
 or
-.BR .bz2
+.BR .bz2 .
 Shell escapes are always turned off if the
 .B \-safer
 option is used.
@@ -265,49 +304,145 @@ See also
 .TP
 .BI \-cr " color"
 .RB ( .cursorColor )
-Determines the color of the cursor.  The default is the color of the page
+Determines the color of the mouse cursor.  The default is the color of the page
 border.
 .TP
 .BI \-debug " bitmask"
 .RB ( .debugLevel )
-#ifnokpathsea
-If nonzero, prints additional debugging information on standard output.
-The bitmask should be given as a decimal number.  The values of the bits
-are defined in the source file
-.BR xdvi.h .
-#endif
-#ifkpathsea
 If nonzero, prints additional information on standard output.  The
-number is taken as a set of independent bits.  The meaning of each bit
-follows. 1=bitmaps; 2=dvi translation; 4=pk reading; 8=batch
-operation; 16=events; 32=file opening; 64=PostScript communication;
-128=Kpathsea stat(2) calls; 256=Kpathsea hash table lookups; 512=Kpathsea
-path definitions; 1024=Kpathsea path expansion; 2048=Kpathsea searches.
-To trace everything having to do with file searching and opening, use 4000.
-Some of these debugging options are actually provided by Kpathsea.
-See the Debugging section in the Kpathsea manual.
-#endif
+bitmask is specified as a decimal number. Multiple values can
+be specified by adding the respective numbers; e.g. to debug all
+all file searching and opening commands, use 4000
+(= 2048 + 1024 + 512 + 256 + 128 + 32). Use -1 to turn on debugging
+of everything (this will produce huge output).
+The individual bits/numbers have the following meanings:
+.nf
+.sp 1n
+.ta 1i 2i
+	1	Bitmaps
+	2	DVI translation
+	4	PK fonts
+	8	Batch mode: Exit after reading the DVI file
+	16	Events
+	32	File opening
+	64	Interaction with the PostScript interpreter
+	128	Kpathsea stat(2) calls
+	256	Kpathsea hash table lookups
+	512	Kpathsea path definitions
+	1024	Kpathsea path expansion
+	2048	Kpathsea searches
+	4096	Hyperref specials
+	8192	Hyperref anchor info
+	16384	Source specials
+	32768	Client mode for forward search
+	65536	T1 lib
+	131072	More verbose T1 lib messages
+.sp 1n
+.fi
+Some of the Kpathsea debugging options are actually provided by Kpathsea;
+see the Debugging section in the Kpathsea manual for more information on
+these.
 .TP
 .BI \-density " density"
 .RB ( .densityPercent )
 Determines the density used when shrinking bitmaps for fonts.
 A higher value produces a lighter font.  The default value is 40.
 #ifgrey
-If greyscaling is in use this argument does not apply; use
+If greyscaling is in use, this argument does not apply; use
 .B \-gamma
 instead.
 #endif
 See also the
-.RB ` S '.
+.RB ` S '
 keystroke.
 Same as
-.BR \-S
+.BR \-S .
 .TP
 .BI \-display " host" : display
 Specifies the host and screen to be used for displaying the
 .I dvi
 file.  By default this is obtained from the environment variable
 .SB DISPLAY.
+.TP
+.BI \-editor " editor"
+.RB ( .editor )
+Specifies the editor that will be invoked when the
+.I source-special()
+action is triggered (by default via CTRL-Mouse 1).
+The argument to this option is a format string in which occurrences of
+.RB `` %f ''
+are replaced by the file name, occurrences of
+.RB `` %l ''
+are replaced by the line number within the file, and optional
+occurrences of
+.RB `` %c ''
+are replaced by the column number within the line.
+If no
+.RB `` %f ''
+or
+.RB `` %l ''
+occurs in the string, a warning is given
+.\" NOTE: non-k xdvi doesn't give a warning in this case, but silently appends
+.\" the format strings. This is better for compatibility with the (X)EDITOR
+.\" environment variables, but previous xdvik versions had different format
+.\" strings (%s for filename, %d for linenumber) so we'd better warn people
+.\" still using these. People should probably just switch to using the xdvi
+.\" editor resource instead of (X)EDITOR.
+and the missing designators
+are appended.
+.sp
+If neither the option nor the X resource
+.I .editor
+is specified, the following environment variables are checked
+to determine the editor command:
+.BR XEDITOR ,
+.BR VISUAL ,
+and
+.B EDITOR 
+(in this sequence). If the string is found as the value
+of the
+.SB VISUAL
+or
+.SB EDITOR
+environment variables, then
+.RI `` "xterm -e "''
+is prepended to the string; if the editor is specified by other means, then
+it must be in the form of a shell command to pop up an X window with an
+editor in it. If none of these variables is set, the command
+.RI `` "xterm -e vi %s +%d"''
+is used and a warning message is given.
+.sp
+A new instance of the editor is started each time this command is used;
+therefore it is preferrable to use an editor that can be invoked in
+`client' mode to load new files into the same instance. Example
+settings are:
+.sp
+.I emacsclient --no-wait +%l %f
+(older Emacsen),
+.sp
+.I gnuclient -q +%l %f
+(XEmacs and newer Emacsen)
+.sp
+.I nc +%l %f
+(nedit)
+.sp
+Note that those strings need to be enclosed
+into quotes when using them on the command-line
+to protect them from the shell; when using them
+as argument for the
+.I .editor
+resource in an X resource file, no quotes should be used.
+.sp
+.B NOTE ON SECURITY:
+The argument of this option isn't executed as a shell command,
+but via
+.I exec()
+to prevent evil tricks with the contents of source specials.
+Execution of the
+.I \-editor
+command is disabled when the
+.I \-safer
+option is used.
 #ifbuttons
 .TP
 .B \-expert
@@ -341,26 +476,20 @@ palette.  Default value is 1.0.  For 0 <
 .I gamma
 > 1, the fonts will be darker (more like the foreground).  Negative
 values behave the same way, but use a slightly different algorithm.
-For color and greyscale displays; for monochrome, see
+For color and grayscale displays; for monochrome, see
 .BR \-density .
 See also the
 .RB ` S '
-keystroke
+keystroke.
 #endif
+.TP
+.BI \-rulecolor " color"
+.RB ( .ruleColor )
+Determines the color of the rules used for the the magnifier
 #ifgrid
-.TP
-.BI \-grid1 " color"
-.RB ( .grid1Color )
-Determines the color of level 1 grid (default as foreground)
-.TP
-.BI \-grid2 " color"
-.RB ( .grid2Color )
-Determines the color of level 2 grid (default as foreground)
-.TP
-.BI \-grid3 " color"
-.RB ( .grid3Color )
-Determines the color of level 3 grid (default as foreground)
+and the `grid'
 #endif
+(default: foreground color).
 .TP
 .BI \-geometry " geometry"
 .RB ( *geometry )
@@ -388,13 +517,61 @@ driver instead of the
 .B x11
 driver.  The
 .B x11alpha
-driver enables anti-aliasing in PostScript figures, for a nicer appearance.
+driver enables anti-aliasing in PostScript specials, for a nicer appearance.
 It is available on newer versions of
 .BR Ghostscript .
 This option can also be toggled with the
 .RB ` V '
 keystroke.
 #endif
+.TP
+\fB\-sourceposition\fP \fIline\fP[\fB:\fP\fIcol\fP][\ ]\fIfilename\fP
+This option makes xdvi start in `client mode' to perform a
+`forward search'. The main dvi file
+.I dvi_file
+is specified on the command line as usual. `Forward search' means that
+xdvi will try to open the page in
+.I dvi_file
+corresponding to the
+.I line
+(optionally also the
+.IR column )
+and
+.I filename
+of the .tex source, and highlight the place found by drawing a rectangle
+in
+.I highlight
+colour (see the
+.I \-hl
+option) around the corresponding text.
+(This only works when the
+.I dvi_file
+has been prepared with source special information;
+see the section SOURCE SPECIALS for more information on this.)
+.sp
+`Client mode' means that if there is already
+another instance of xdvi running on this X display and displaying the
+same
+.IR dvi_file ,
+a new instance started with the
+.I -sourceposition
+option will only notify that running instance to perform the forward
+search, and exit after that. This way, other programs such such as
+text editors may invoke xdvi in `client mode' to jump to a specific
+place in the .dvi file corresponding to the current mouse cursor position
+in the .tex file.
+.sp
+The argument for
+.I filename
+should be a string with the same extension as the file name used
+for the source specials in the
+.I dvi
+file. The space before
+.I filename
+is only needed if the filename starts
+with a digit.  When the space is used, the argument
+needs to be encosed in quotes to prevent the shell from
+misinterpreting the space as argument separator.
 .TP
 .BI \-hl " color"
 .RB ( .highlight )
@@ -430,6 +607,13 @@ to suppress warnings about
 .B \especial
 strings that it cannot process.
 #endif
+.TP
+.B \-hushstdout
+.RB ( .hushStdout )
+Causes
+.B xdvi
+to suppress all status informations it would normally print to
+stdout if the statusline is disabled.
 .TP
 .BI \-icongeometry " geometry"
 .RB ( .iconGeometry )
@@ -786,8 +970,6 @@ By default, the unit will be
 There are also synonyms which may be used:
 .B us
 (8.5x11in),
-.B usr
-(11x8.5in),
 .B legal
 (8.5x14in),
 .B foolscap
@@ -795,10 +977,13 @@ There are also synonyms which may be used:
 as well as the ISO sizes
 .BR a1 - a7 ,
 .BR b1 - b7 ,
-.BR c1 - c7 ,
-.BR a1r - a7r
-.RB ( a1 - a7
-rotated), etc.  The default size is @DEFAULT_PAGE_SIZE@.
+.BR c1 - c7 .
+For each of these there also exists a landscape or `rotated'
+variant:
+.B usr
+(11x8.5in),
+.BR a1r - a7r ,
+etc.  The default size is @DEFAULT_PAGE_SIZE@.
 .TP
 .B \-rv
 .RB ( .reverseVideo )
@@ -826,8 +1011,9 @@ This option turns on all available security options; it is designed for use when
 is called by a browser that obtains a
 .I dvi
 or \*(Te\& file from another site.
+This option turns off evalutation of source specials (see SOURCE SPECIALS for details).
 #ifps
-In the present case, this option selects
+Furthermore, it selects
 #endif
 #ifghost
 .B +nogssafer
@@ -837,7 +1023,7 @@ and
 .BR +allowshell .
 #endif
 #ifnops
-In the present case, this option is accepted but has no effect, since
+Otherwise, it has no effect, since
 .B xdvi
 has been compiled without support for PostScript specials.
 #endif
@@ -849,19 +1035,36 @@ Specifies that the
 .IR n th
 button changing shrink factors shall change to shrink factor
 .IR factor .
-This is not very usefull in the normal run of things.  xdvik scales the
-scaling factors according to resolution (currently 300dpi and 600dpi).
-Here
+This is useful, e.g., when using 600 dpi fonts, since in that case shrinking
+by a factor of 4 is still not enough.  Here
 .I n
-may be a number from 1 to 4.  Typical
-.I factors
-are powers of 2.
+may be a number from 1 to 3 (in the default button layout, the ``Full Size''
+button is unaffected by these options).  If the buttons are customized,
+higher values of
+.I n
+(up to 9) may be used.
 #endif
 .TP
 .BI \-sidemargin " dimen"
 .RB ( .sideMargin )
 Specifies the side margin (see
 .BR \-margins ).
+#ifstatusline
+.TP
+.B \-statusline\fP
+.RB ( .statusline )
+Display the statusline at the bottom of the window.
+The statusline can be suppressed by
+.BR \+statusline .
+This can also be toggled with the
+.RB ` 1x '
+keystroke. If displaying the statusline is disabled, the messages
+that would normally be printed to the statusline will be printed to
+.IR stdout .
+To suppress printing all messages, use the
+.B \-hushstdout
+option.
+#endif
 .TP
 .B \-thorough
 .RB ( .thorough )
@@ -889,6 +1092,15 @@ option chooses the slower but more correct choice.  See also
 .RB ( .topMargin )
 Specifies the top and bottom margins (see
 .BR \-margins ).
+#ift1
+.TP
+.BI \-not1lib
+.RB ( .not1lib )
+This will disable the use of T1Lib to display PostScript<tm> fonts.
+Use this option as a workaround when you encounter problems with the
+display of T1Lib (but please don't forget to send a bug report in
+this case, to the URL mentioned in the section AUTHORS below).
+#endif
 .TP
 #ifhyper
 .BI \-underlink
@@ -908,6 +1120,12 @@ to issue warnings about
 .B \especial
 strings that it cannot process.
 .TP
+.BI \-wheelunit " pixels"
+.RB ( .wheelUnit )
+Sets the number of pixels that a motion of a wheel mouse will move the
+image up or down.  If set to zero, the wheel mouse functionality is disabled.
+The default value is 80.
+.TP
 .BI \-xoffset " dimen"
 .RB ( .xOffset )
 Specifies the size of the horizontal offset of the output on the page.  See
@@ -922,91 +1140,153 @@ Specifies the size of the vertical offset of the output on the page.  See
 recognizes the following keystrokes when typed in its window.
 Each may optionally be preceded by a (positive or negative) number, whose
 interpretation will depend on the particular keystroke.
-Also, the ``Help'', ``Home'', ``Prior'', ``Next'', and arrow cursor keys
+The number can be discarded by pressing the ``Escape'' key.
+Also, the ``Help'', ``Home'', ``Prior'' and ``Next'' keys
 are synonyms for
 .RB ` ? ',
 .RB ` ^ ',
 .RB ` b ',
-.RB ` f ',
-.RB ` l ',
-.RB ` r ',
-.RB ` u ',
 and
-.RB ` d '
+.RB ` f '
 keys, respectively.
+#iftool
+.PP
+The key assignments given here are those that
+.B xdvi
+assigns by default.  They can be changed--see CUSTOMIZATION, below.
+The names appearing in brackets at the beginning of each of the following
+keystroke definitions is the name assigned to the action associated with
+that key, for use when customizing.  Users who do not customize their
+keystrokes may ignore these labels.
+#
 .TP
 .B q
+#tool.RB [ quit() ]
 Quits the program.  Control-C and control-D will do this, too.
 .TP
-.B Q
-Quits the program with exit status 2.
-.TP
+.\"  .B Q
+.\"  Quits the program with exit status 2.
+.\"  .TP
 .B n
+#tool.RB [ forward-page() ]
 Moves to the next page (or to the
 .IR n th
 next page if a number is given).  Synonyms are
 .RB ` f ',
-Space, Return, and Line Feed.
+Return, and Line Feed.
+.TP
+.B Space
+#tool.RB [ down-or-next() ]
+Moves down two-thirds of a window-full, or to the next page if already at
+the bottom of the page.
 .TP
 .B p
+#tool.RB [ back-page() ]
 Moves to the previous page (or back
 .I n
 pages).  Synonyms are
-.RB ` b ',
-control-H, and Delete.
+.RB ` b '
+and control-H.
+.TP
+Delete
+#tool.RB [ up-or-previous() ]
+Moves up two-thirds of a window-full, or to the bottom of the previous page
+if already at the top of the page.  The BackSpace key will also do this.
 .TP
 .B g
+#tool.RB [ goto-page() ]
 Moves to the page with the given number.  Initially, the first page is assumed
 to be page number 1, but this can be changed with the
 .RB ` P '
 keystroke, below.  If no page number is given, then it goes to the last page.
 .TP
 .B P
+#tool.RB [ declare-page-number() ]
 ``This is page number
 .IR n .''
 This can be used to make the
 .RB ` g '
 keystroke refer to actual page numbers instead of absolute page numbers.
 .TP
-Control-L
+.B Control-L
+#tool.RB [ forward-page(0) ]
 Redisplays the current page.
 .TP
 .B ^
+#tool.RB [ home() ]
 Move to the ``home'' position of the page.  This is normally the upper
 left-hand corner of the page, depending on the margins as described in the
 .B \-margins
 option, above.
 .TP
+.B Up arrow
+#tool.RB [ up(0.015) ]
+Scrolls page up.
+.TP
+.B Down arrow
+#tool.RB [ down(0.015) ]
+Scrolls page down.
+.TP
 .B u
-Moves up two thirds of a window-full.
+#tool.RB [ up() ]
+Moves page up two thirds of a window-full. With a float argument to ``up'',
+moves up the corresponding fraction of a window-full.
 .TP
 .B d
-Moves down two thirds of a window-full.
+#tool.RB [ down() ]
+Moves page down two thirds of a window-full. With a float argument to ``down,
+moves down the corresponding fraction of a window-full.
+.\"  Therefore, a more
+.\" ``smooth'' scrolling using the ``Up'' and ``Down'' keys can be
+.\" achieved by the the following setting:
+.\" .sp
+.\" xdvi.mainTranslations: #override\e
+.\" .br
+.\" <Key>Up:up(0.01)\en\e
+.\" .br
+.\" <Key>Down:down(0.01)\en
+.TP
+.B Left arrow
+#tool.RB [ left(0.015) ]
+Scrolls page left.
+.TP
+.B Right arrow
+#tool.RB [ right(0.015) ]
+Scrolls page right.
 .TP
 .B l
-Moves left two thirds of a window-full.
+#tool.RB [ left() ]
+Moves page left two thirds of a window-full.
 .TP
 .B r
-Moves right two thirds of a window-full.
+#tool.RB [ right() ]
+Moves page right two thirds of a window-full.
 .TP
 .B c
-Moves the page so that the point currently beneath the cursor is moved to
-the middle of the window.  It also (gasp!) warps the cursor to the same place.
+#tool.RB [ center() ]
+Moves the page so that the point currently beneath the mouse cursor is moved to
+the middle of the window, and warps the mouse cursor to the same place.
 .TP
 .B M
-Sets the margins so that the point currently under the cursor is the upper
-left-hand corner of the text in the page.  Note that this command itself does
-not move the image at all.  For details on how the margins are used, see
-the
+#tool.RB [ set-margins() ]
+Sets the margins so that the point currently under the mouse cursor defines
+the upper left-hand corner of the text in the page.  Note that the command
+does
+.I not
+move the image, but only determines the margins
+for the page switching commands. For details on how the margins
+are used, see the
 .B \-margins
 option.
 .TP
 .B s
+#tool.RB [ set-shrink-factor() ]
 Changes the shrink factor to the given number.  If no number is given, the
 smallest factor that makes the entire page fit in the window will be used.
 (Margins are ignored in this computation.)
 .TP
 .B S
+#tool.RB [ set-density() ]
 Sets the density factor to be used when shrinking bitmaps.  This should
 be a number between 0 and 100; higher numbers produce lighter characters.
 #ifgrey
@@ -1015,11 +1295,8 @@ The new value of gamma is the given number divided by 100; negative values
 are allowed.
 #endif
 .TP
-.B t
-Toggles to the next unit in a sorted list of \*(Te\& dimension
-units for the popup magnifier ruler.
-.TP
 .B R
+#tool.RB [ reread-dvi-file() ]
 Forces the
 .I dvi
 file to be reread.  This allows you to preview many versions of the same
@@ -1028,6 +1305,7 @@ file while running
 only once.
 .TP
 .B k
+#tool.RB [ set-keep-flag() ]
 Normally when
 .B xdvi
 switches pages, it moves to the home position as well.  The
@@ -1040,20 +1318,40 @@ and
 clear and set this flag, respectively.  See also the
 .B \-keep
 option.
+.TP
+.B ESC
+.RB [ discard-number() ]
+The escape key discards the numerical prefix for all actions
+(useful when you mistyped a number).
 #ifbuttons
 .TP
 .B x
-Toggles expert mode (in which the buttons do not appear).  Also
-.RB ` 0x '
-and
+#tool.RB [ set-expert-mode() ]
+Toggles expert mode (in which the buttons do not appear). Typing
 .RB ` 1x '
-clear and reset this mode, respectively.  See also the
+toggles the display  of the statusline at the bottom of
+the window. See also the options
 .B \-expert
-option.
+and
+.BR \-statusline .
 #endif
+.TP
+.B Control-v
+#tool.RB [ show-source-specials() ]
+Show bounding boxes for every source special on the current page, and print
+the strings contained in these specials to stderr. With prefix 1,
+show every bounding box on the page. This is for debugging purposes mainly.
+.TP
+.B Control-x
+#tool.RB [ source-what-special() ]
+Display information about the source special next to the mouse cursor in the
+statusline. This is the same special that would be found by
+.I source-special() ,
+but without invoking the editor. For debugging purposes.
 #ifgrey
 .TP
 .B G
+#tool.RB [ set-greyscaling() ]
 This key toggles the use of greyscale anti-aliasing for displaying shrunken
 bitmaps.  In addition, the key sequences
 .RB ` 0G '
@@ -1062,29 +1360,37 @@ and
 clear and set this flag, respectively.  See also the
 .B \-nogrey
 option.
-.PP
+.sp
 If given a numeric argument that is not 0 or 1, greyscale anti-aliasing is
 turned on, and the gamma resource is set to the value divided by
 100. E.g.,
 .RB ` 150G '
 turns on greyscale and sets gamma to 1.5.
 #endif
+#ifhyper
+.TP
+.B B
+.RB [ htex-back() ]
+This key jumps back to the previous hyperlink anchor. See the
+section
+.B HYPERLINKS
+for more information on navigating the links.
+#endif
 #ifgrid
 .TP
 .B D
+#tool.RB [ toggle-grid-mode() ]
 This key toggles the use of grid over the document.
 If no number is given, the grid mode toggles. 
 By prepending number, 3 grid levels can be set.
-The grid in each level is drawn in the colour specified.
 See also the
-.B \-grid1, \-grid2, 
-and
-.B \-grid3
-options.
+.B \-rulecolor
+option.
 #endif
 #ifps
 .TP
 .B v
+#tool.RB [ set-ps() ]
 This key toggles the rendering of PostScript<tm> specials.  If rendering
 is turned off, then bounding boxes are displayed when available.
 In addition the key sequences
@@ -1095,27 +1401,79 @@ clear and set this flag, respectively.  See also the
 .B \-nopostscript
 option.
 #endif
-#ifghost
-.TP
-.B V
-This key toggles tha anti-aliasing of PostScript<tm> specials when
-.B Ghostscript
-is used as renderer.  In addition the key sequences
-.RB ` 0V '
-and
-.RB ` 1V '
-clear and set this flag, See also the
-+.B \-gsalpha
-option.
-#endif
 #ifselfile
 .TP
-.B F
+.B Control-F
+#tool.RB [ select-dvi-file() ]
 Read a new 
 .I dvi
 file. A file-selection widget is popped up for you to choose the dvi
 file from.
 #endif
+#ifghost
+.TP
+.B V
+#tool.RB [ set-gs-alpha() ]
+This key toggles the anti-aliasing of PostScript<tm> specials when
+.B Ghostscript
+is used as renderer.  In addition the key sequences
+.RB ` 0V '
+and
+.RB ` 1V '
+clear and set this flag, respectively.  See also the
+.B \-gsalpha
+option.
+#endif
+.TP
+.B ?
+#tool.RB [ help() ]
+Pops up a help window with a short explanation of the most important key
+bindings and concepts. The help texts and menu entries are fully configurable
+via the following X resources (the defaults strings are given in parentheses,
+or as 
+.I <Text>
+if they contain a longer text):
+.sp
+.B helpTopicsButtonLabel
+.I (Topic)
+.sp
+.B helpQuitButtonLabel
+.I (Close)
+.sp
+.B helpIntro
+.I <text>
+.sp
+.B helpGeneralMenulabel
+.I (General)
+.sp
+.B helpGeneral
+.I <text>
+#ifhyper
+.sp
+.B helpHypertexMenulabel
+.I (HyperTeX commands)
+.sp
+.B helpHypertex
+.I <text>
+#endif
+.sp
+.B helpOthercommandsMenulabel
+.I (Other Commands)
+.sp
+.B helpOthercommands
+.I <text>
+.sp
+.B helpPagemotionMenulabel
+.I (Page Motion)
+.sp
+.B helpPagemotion
+.I <text>
+.sp
+.B helpSourcespecialsMenulabel
+.I (Source Specials)
+.sp
+.B helpSourcespecials
+.IR <text> .
 .SH MOUSE ACTIONS
 If the shrink factor is set to any number other than one, then clicking
 #ifkpathsea
@@ -1129,40 +1487,25 @@ image in the vicinity of the mouse click.  This subwindow disappears when
 the mouse button is released.  Different mouse buttons produce different sized
 windows, as indicated by the
 .B \-mgs
-option.  Moving the cursor while holding the button down will move the
-magnifying glass.
-#ifhyper
+option.  Moving the mouse cursor while holding the button down will move the
+magnifying glass. To access this feature via customization, use the
+.B magnifier
+action.  Its argument is either a string of the form
+.IR width x height ,
+as in the
+.BI \-mgs n
+command-line option, or one of the strings
+.B *1
+through
+.BR *5 ,
+referring to the value specified by the corresponding
+.BI \-mgs n
+option.
 .PP
-If the cursor is on a hypertext link (underlined by default), then
-that link overrides the magnifying glass for Buttons 1 and 2.
-If Button 1 is clicked over a link, then
-.B xdvi
-jumps to the target in the current window.  If Button 2 is clicked over a link,
-then
-.B xdvi
-opens a new window on the target.
-.PP
-More precisely, for internal links, Button 1 jumps in the same window to
-the link, while Button 2 starts up a new
-.B xdvi
-on the link.  For external links to
-.I dvi
-files, Button 1 changes the current
-.B xdvi
-to be reading that file, while Button 2 starts a new
-.B xdvi
-on that file.  For other file types,
-.B mime.types
-and
-.B mailcap
-are parsed to determine the viewer; finally, if no suitable
-.B mailcap
-entry was found, if the
-.SB WWWBROWSER
-environment variable is set, or
-.B \-browser
-was specified on the command line, it is started up on the file.
-#endif
+Holding down the
+.I CTRL
+key and clicking on mouse button 1 starts a ``reverse search''
+(action \fB source-special()\fR; see the section on SOURCE SPECIALS for details).
 .PP
 The scrollbars (if present) behave in the standard way:  pushing Button 2
 in a scrollbar moves the top or left edge of the scrollbar to that point
@@ -1170,6 +1513,302 @@ and optionally drags it;
 pushing Button 1 moves the image up or right by an amount equal to the distance
 from the button press to the upper left-hand corner of the window; pushing
 Button 3 moves the image down or left by the same amount.
+.PP
+The image can also be dragged around, by holding down the shift key
+and a mouse button.  Shift-button 1 allows dragging in all directions,
+Shift-button 2 allows vertical dragging only, and Shift-button 3
+horizontal dragging only. To access these actions via customization, use the
+.B drag
+action.  This action should have one parameter, the character
+.RB `` | '',
+.RB `` - '',
+or
+.RB `` + '',
+indicating vertical dragging, horizontal dragging, or dragging in both
+directions.
+.PP
+Wheel mice are supported:  motion of the wheel on such a mouse moves the
+image up or down by the number of pixels indicated by the
+.B \-wheelunit
+option.  To access this option via customization, use the
+.B wheel
+action.  This action takes one parameter, giving the distance to scroll
+the image.  If the parameter contains a decimal point, the distance is given
+in wheel units; otherwise, pixels.
+#ifhyper
+.SH HYPERLINKS
+Usually, if a binding specifies more then one action, all actions
+are executed in a sequence. The hyperlink bindings
+.B do-href()
+and
+.B do-href-newwindow()
+are special in that they are used as an
+.I alternative
+to other actions that might follow them
+.I if
+the mouse is currently located on a hyperlink.
+In this case, none of the other actions will be executed.
+Otherwise,
+.I only
+the other actions are executed.
+The action
+.B do-href()
+jumps to the link target in the current xdvi
+window (possibly changing the page), and
+.B do-href-newwindow()
+opens a new instance of xdvi
+with the link target. In both cases, the location of the target is
+indicated by a small arrow drawn in
+.B highlight
+color
+in the left corner of the window.
+.PP
+As an example, consider the following settings, which are the default
+settings for buttons 1 and 2:
+.RS 5
+.nf
+.ft 3
+.sp 1n
+xdvi.mainTranslations: #override \\
+<Btn1Down>: do-href()magnifier(*1)\\n\\
+<Btn2Down>: do-href-newwindow()magnifier(*2)\\n\\
+<Btn3Down>: magnifier(*3)\\n
+.sp 1n
+.ft
+.fi
+.RE
+.PP
+The fact that the mouse is located over a hyperlink is indicated by
+(a) changing the pointer to a hand shape, and (b) displaying the link
+target in the statusline at the bottom of the window.
+.PP
+If a link points to a file which is not a DVI file (e.g. HTML, or
+PostScript), the files
+.B mime.types
+and
+.B mailcap
+are parsed to determine a suitable viewer; if no suitable
+.B mailcap
+entry was found, if the
+.SB WWWBROWSER
+environment variable is set, or
+.B \-browser
+was specified on the command line, the browser is launched to load the file.
+#endif
+#iftool
+.SH UNBOUND ACTIONS
+The following actions have not been assigned any keystroke, but are available
+if customization is used.
+.TP
+.B shrink-to-dpi()
+This action takes one (required) argument.  It sets the shrink factor to
+an integer so as to approximate the use of fonts with the corresponding
+number of dots per inch.  If
+.B xdvi
+is using fonts scaled for
+.I p
+dots per inch, and the argument to
+.B shrink-to-dpi
+is
+.IR n ,
+then the corresponding shrink factor is the ratio
+.IR p / n ,
+rounded to the nearest integer.
+.SH CUSTOMIZATION
+Key and mouse button assignments can be changed by setting the
+.B mainTranslations
+resource to a string of translations as defined in the documentation for the
+X toolkit.  The actions should take the form of action names as given in the
+KEYSTROKES and MOUSE ACTIONS sections.
+.PP
+Key actions will usually be without arguments, or they may give an argument
+to replace an optional number typed immediately prior to the action.  The keys
+.BR 0 \- 9
+and hyphen cannot be reassigned, since they are used for inputting numbers.
+.PP
+Some key actions may take special arguments, as follows. The argument of
+.B goto-page
+may be the letter
+.RB ` e ',
+indicating the action of going to the end of the document.
+The argument of
+.B set-shrink-factor
+may be the letter
+.RB ` a ',
+indicating that the shrink factor should be set to the smallest value such that
+the page will fit in the window.
+Finally, actions that would perform a toggle, such as
+.BR set-keep-flag ,
+may be the letter
+.RB ` t ',
+indicating that the action should toggle regardless of what number may have
+been typed recently.
+.PP
+Mouse actions should refer only to
+.B ButtonPress
+events (e.g.,
+.BR "<Btn1Down>:magnifier(*1)" ).
+The corresponding motion and release events will then be handled internally.
+A key action may be bound to a mouse event, but not vice versa.
+.PP
+Usually the string of translations should begin with
+.RB `` #override '',
+indicating that the default key and mouse button assignments should not
+be discarded.
+.PP
+When keys or mouse buttons involving modifiers (such as Ctrl or Shift)
+are customized together with their non-modified equivalents, the modified
+keys should come first, for example:
+.RS 5
+.nf
+.ft 3
+.sp 1n
+xdvi.mainTranslations: #override \\
+Ctrl<Btn1Down>: magnifier(*3)\\n\\
+Shift<Btn1Down>: magnifier(*2)\\n\\
+<Btn1Down>: magnifier(*1)\\n
+.sp 1n
+.ft
+.fi
+.RE
+.PP
+Because
+.B xdvi
+needs to capture pointer motion events, and because the X Toolkit
+translations mechanism cannot accommodate both motion events and double-click
+events at the same time, it is not possible to specify double-click
+actions in
+.B xdvi
+customizations.  For information on this and other aspects of translations,
+see the X Toolkit Intrinsics documentation.
+.PP
+There is no command-line option to set the
+.B mainTranslations
+resource, since changing this resource on the command line would be cumbersome.
+To set the resource for testing purposes, use the
+.B -xrm
+command-line option provided by the X toolkit.  For example,
+\fBxdvi \-xrm 'XDvi.mainTranslations: #override "z":quit()' ...\fR
+or
+.B "xdvi \-xrm 'XDvi.mainTranslations: #override <Key>z:quit()' ..."
+will cause the key
+.RB ` z '
+to quit
+.BR xdvi .
+.PP
+Support of wheel mice is controlled by the
+.B wheelTranslations
+resource.  Generally the only action routine called by this resource should be
+.BR wheel .
+The default value is
+``\fB<Btn4Down>:wheel(-1.)\\n<Btn5Down>:wheel(1.)\fR''.
+Because this resource is implemented differently from the others, it should
+not begin with
+.RB ``#override '';
+when specifying a value for this resource, all wheel actions should be
+included.
+#
+#ifbuttons
+.PP
+The button labels and actions may also be customized, in a similar manner.
+In this case the resource
+.B buttonTranslations
+should consist of a string describing the button labels and the associated
+actions.  The string consists of substrings, separated by the newline
+character
+(`\fB\\n\fP'),
+each describing one button.  Each substring consists of a string (to be
+used as the button's label), a colon, and a sequence of actions to be
+performed when the button is pushed.  Unlike the situation with key actions,
+an action associated to a button should provide an argument (if applicable).
+.PP
+The default setting is as follows:
+.RS 5
+.nf
+.ft 3
+.sp 1n
+xdvi.buttonTranslations: \\
+Quit:quit() \\n\\
+Open:select-dvi-file()\\n\\
+Reread:reread-dvi-file()\\n\\
+Help:help()\\n\\n\\
+First:goto-page(1)\\n\\
+Page-10:back-page(10)\\n\\
+Page-5:back-page(5)\\n\\
+Prev:back-page(1)\\n\\n\\
+Next:forward-page(1)\\n\\
+Page+5:forward-page(5)\\n\\
+Page+10:forward-page(10)\\n\\
+Last:goto-page()\\n\\n\\
+Full size:set-shrink-factor(1)\\n\\
+$%%:shrink-to-dpi(150)\\n\\
+$%%:shrink-to-dpi(100)\\n\\
+$%%:shrink-to-dpi(50)\\n\\n\\
+View PS:set-ps(toggle)\\n\\
+Back:htex-back()\\n
+.sp 1n
+.ft
+.fi
+.RE
+.PP
+The label string may contain a colon if it is escaped by a backslash
+(`\fB\\\fP').  It also may contain some special sequences tied to the
+.BI \-shrinkbutton n
+command-line options.  If the characters
+.RB ` $# '
+occur, then they are replaced by the argument of the corresponding
+.B \-shrinkbutton
+command-line option (if present).  If no corresponding
+.B \-shrinkbutton
+option was given, then the value is taken from the list of actions, which
+is expected to contain at least one
+.B set-shrink-factor
+or
+.B shrink-to-dpi
+action.  Likewise, the character sequence
+.RB ` $% '
+will be replaced by the percentage corresponding to the shrink factor,
+determined as above.  In order for the
+.B \-shrinkbutton
+option to affect a given button, the label string must contain one of the
+character sequences
+.RB ` $# ',
+.RB ` $% ',
+or
+.RB ' $_ '.
+This last string flags a button to be affected by a
+.B \-shrinkbutton
+option, without making any numbers appear in the label text (the
+.RB ` $_ '
+will not appear in the label text).
+.PP
+Some resources are provided to allow customization of the geometry of
+the command buttons.  Again, they are not changeable via command-line
+options, other than via the
+.B \-xrm
+option.  All of these resources take integer values.
+.TP
+.B buttonSideSpacing
+The number of pixels to be placed on either side of the buttons.
+The default value is 6.
+.TP
+.B buttonTopSpacing
+The number of pixels between the top button and the top of the window.
+The default value is 50.
+.TP
+.B buttonBetweenSpacing
+The number of pixels between most buttons.
+The default value is 20.
+.TP
+.B buttonBetweenExtra
+The number of pixels of additional space to be inserted if the
+.B buttonTranslations
+resource string contains an extra newline character.
+The default value is 50.
+.TP
+.B buttonBorderWidth
+The border width of the button windows.  The default value is 1.
+#
 .SH SIGNALS
 When
 .B xdvi
@@ -1250,7 +1889,7 @@ documentation.
 #ifps
 .SH HANDLING OF POSTSCRIPT FIGURES
 .B xdvi
-can display PostScript files included in the
+can display Encapsulated PostScript (EPS) files included in the
 .I dvi
 file.  Such files are first searched for in the directory where the
 .I dvi
@@ -1269,25 +1908,122 @@ command-line option.  It is better to use compressed files directly (see below).
 .PP
 If a file name is given (as opposed to a shell command),
 if that file name ends in
-.RB `` .Z '',
+.RB `` .Z ''
+or
 .RB `` .gz '',
-or
-.RB `` .bz2 ''
 and if the first two bytes of the file indicate that it was compressed with
-.BR compress (1),
+.BR compress (1)
+or
 .BR gzip (1),
-or
-.BR bzip2 (1)
 respectively, then the file is first uncompressed with
-.BR "uncompress \-c" ,
-.BR "gunzip \-c" ,
+.B uncompress \-c
 or
-.BR "bunzip2 \-c" ,
+.BR "gunzip \-c" ,
 respectively.  This is preferred over using a backtick to call the command
 directly, since you do not have to specify
 .B \-allowshell
 and since it allows for path searching.
 #endif
+#ift1
+.SH T1LIB
+T1Lib is a library written by Rainer Menzner (see ftp://sunsite.unc.edu/pub/Linux/libs/graphics/);
+using it,
+.B xdvi
+can now render Postscript<tm> Type1 fonts directly, without the
+route via TeX pixel
+.RB ( pk )
+fonts. The advantage of this is that only one size of each font needs
+to be kept on disk.
+Unless the
+.B -not1lib
+option is used,
+.B xdvi
+will try to render every font using T1Lib. Only as a fallback, it will
+invoke an external program (like
+.BR mktexpk ,
+which in turn might invoke utilities like
+.B ps2pk
+or
+.BR gsftopk )
+to generate a pixel font from the Type1 source. The direct rendering
+of the
+.B Computer Modern
+fonts should work out-of-the box, whereas other Type1 fonts such as
+the 35 `standard' Postscript<tm> fonts resident in printers might need
+to be made accessible for use with T1Lib/xdvi, unless your system
+administrator has already done so. The
+.B xdvik
+distribution comes with a utility called
+.B t1mapper
+to make these fonts visible for T1Lib/xdvi.
+See the manual page for t1mapper(1) for details
+on how to use this utility.
+#endif
+.SH SOURCE SPECIALS
+Some \*(Te\& implementations or macro packages provide the facility to
+automatically include so-called `source specials' into a .dvi file.
+These contain the line number, eventually a column number, and the
+filename of the .tex source. This makes it possible to jump from a .dvi
+file to the corresponding place in the .tex source and back (also
+called `reverse search' and `forward search').
+.P
+To be usable with
+.BR xdvi ,
+source specials in the
+.I dvi
+file must have one of the following formats:
+.RS 5
+.nf
+.sp 1n
+    \fBsrc:\fP\fIline\fP[ ]\fIfilename\fP
+    \fBsrc:\fP\fIline\fP\fB:\fP\fIcol\fP[ ]\fIfilename\fP
+    \fBsrc:\fP\fIline\fP
+    \fBsrc:\fP\fIline\fP\fB:\fP\fIcol\fP
+    \fBsrc::\fP\fIcol\fP
+.sp 1n
+.fi
+.RE
+If
+.I filename
+or
+.I line
+are omitted, the most recent values are used.  The first source special on
+each page must be in one of the first two forms, since defaults are not
+inherited across pages.
+.sp
+You will need a \*(Te\& implementation or a macro package
+(such as
+.I srcltx.sty
+or
+.I srctex.sty
+, available from CTAN)
+to insert such source specials into the dvi file.
+.sp
+For reverse search, you can use the combination
+.I CTRL-Mouse 1
+to make xdvi open an editor (the value of the
+.I \-editor
+command line option) with the file and the line number of the .tex
+source. (See the description of the
+.I \-editor
+option for more information
+and examples.)
+.P
+For forward search,
+.B xdvi
+has a
+.I \-sourceposition
+option that makes
+.B xdvi
+jump  jump to the page in
+the .dvi file corresponding to the line number and the file name
+and highlight the line found. See the description of the
+.I \-sourceposition
+for more details.
+.sp
+The evaluation of source specials is disabled when the
+.BR \-safer
+option is used.
 .SH ENVIRONMENT
 .B xdvik
 uses the same environment variables and algorithms for finding
@@ -1371,7 +2107,37 @@ manual.
 .SB TMPDIR
 The directory to use for storing temporary files created when uncompressing
 PostScript files.
-#ifps
+#endif
+.TP
+.SB XEDITOR
+Determines the editor command used for source special `reverse
+search', if neither the
+.I \-editor
+command-line option
+nor the
+.I .editor
+resource are  specified.   See  the description of the
+.I \-editor
+command line option for details on the format.
+.TP
+.SB VISUAL
+Determines an editor to be opened in an xterm
+window if neither of
+.IR -editor ,
+.IR .editor ,
+or
+.I XEDITOR
+is specified.
+.TP
+.SB EDITOR
+Determines an editor to be opened in an xterm
+window if neither of
+.IR -editor ,
+.IR .editor ,
+.I XEDITOR
+or
+.I VISUAL
+is specified.
 .SH LIMITATIONS
 .B xdvi
 accepts many but not all types of PostScript specials accepted by
@@ -1379,7 +2145,7 @@ accepts many but not all types of PostScript specials accepted by
 For example, it accepts most specials generated by
 .B epsf
 and
-.BR psfig ,
+.BR psfig .
 It does not, however, support
 .B bop\-hook
 or
@@ -1392,39 +2158,47 @@ manual).  These restrictions are due to the design of
 in all likelihood they will always remain.
 .PP
 La\*(Te\&2e color and rotation specials are not currently supported.
+.PP
+.B MetaPost
+files containing included text are not supported.
 #endif
 .SH FILES
-Please see the kpathsea documentation.
-.SH COPYRIGHTS
-.B xdvi
-itself is Copyrighted by Paul Vojta and distributed under the X-Consortium
-license.
-.B xdvi
-uses the 
-.B libwww
-library of the World Wide Web Consortium, which includes computer software
-creaded and made available by CERN.  It also uses the
+.B xdvi.cfg
+needs to be supplied in the directory named by the
+.B XDVIINPUTS kpathsea
+variable.  Please see the file
+.B README.t1fonts
+in the source distribution if 
+.B xdvi.cfg
+is missing.
+.B xdvik
+also relies on the whole 
 .B kpathsea
-library which is distributed under the GNU LIBRARY General Public License.
-.PP
-THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL PAUL VOJTA OR ANY OTHERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
-THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+infrastructure.  Please see the kpathsea documentation for further
+information.
 .SH SEE ALSO
 .BR X (1),
 .BR dvips (1),
-.BR Kpathsea documentation
+.BR mktexpk (1),
+.BR ps2pk (1),
+.BR gsftopk (1),
+.BR t1mapper (1),
+.B Kpathsea
+documentation,
+Xdvik home page
+.B http://xdvi.sourceforge.net
 .SH AUTHORS
 Eric Cooper, CMU, did a version for direct output to a QVSS. Modified
 for X by Bob Scheifler, MIT Laboratory for Computer Science. Modified
-for X11 by Mark Eichin, MIT SIPB. +Additional enhancements by many
+for X11 by Mark Eichin, MIT SIPB. Additional enhancements by many
 others.  The current maintainer of the original
 .B xdvi
-is Paul Vojta, U.C. Berkeley; the maintainer of the
+is Paul Vojta, U.C. Berkeley. The
 .B xdvik
-variant is Nicolai Langfeldt, Dept. of Math, UiO, Norway, with the help
-of many others.
+variant is currently hosted on SourceForge:
+.PP
+.B http://sourceforge.net/projects/xdvi/
+.PP
+Please use the link
+.I bugs
+on that project page to report any bugs you might find in this program.

@@ -41,7 +41,7 @@ make_suffix P2C(const_string, s,  const_string, suffix)
     {
       unsigned past_dot_index = dot_pos + 1 - s;
       
-      new_s = xmalloc (past_dot_index + strlen (suffix) + 1);
+      new_s = (string)xmalloc (past_dot_index + strlen (suffix) + 1);
       strncpy (new_s, s, dot_pos + 1 - s);
       strcpy (new_s + past_dot_index, suffix);
     }

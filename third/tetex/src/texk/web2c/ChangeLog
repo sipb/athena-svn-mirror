@@ -1,3 +1,731 @@
+2003-01-29  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Version 7.4.5.
+
+	* configure.in (AC_CHECK_FUNCS): Add mkstemp, mktemp.
+	Version 7.4.5.
+
+2003-01-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* withenable.ac: Indicate that --with-mfw=yes is currently the
+	default.
+
+	* fmtutil.in: Add comment on how to change the engine for LaTeX to
+	e-TeX.  From Thomas.
+
+2003-01-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch [5.58/59]: Check the is_printable array when writing to
+	files, but check isprint(3) when printing to the terminal or the
+	log file.
+
+	* Makefile.in: Add pdftosrc to compiled programs.
+
+	* cwebdir/comm-w2c.ch: Use DEV_NULL instead of hard-coding
+	/dev/null.  Reported by Fabrice Popineau.
+
+2003-01-16  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Version 7.4.4.
+
+	* doc/web2c.texi: Version 7.4.4.
+
+2003-01-15  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in (testenv): Use LC_ALL=C, not LANG=C, as only the
+	former will actually force the locale to C.
+
+2003-01-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch: Increase ssup_max_strings, sup_main_memory,
+	sup_pool_size, so the large consumers can eat their fill.
+
+	* Makefile.in (install-links): Omega formats end in .oft now.
+	Spotted by Peter Breitenlohner <peb@mppmu.mpg.de>.
+
+2003-01-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Version 7.4.3.
+
+	* configure.in: Version 7.4.3.
+
+2003-01-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* cwebdir/cweav-w2c.ch: Remove 'k' from banner.
+
+	* cwebdir/ctang-w2c.ch: Remove 'k' from banner, we're already
+	declaring we're part of web2c, and this is more consistent with
+	the other programs.
+
+	* cwebdir/comm-w2c.ch: Add --help and --version option, after code
+	supplied by Julian Gilbey.
+
+	* help.h [CWEB]: Add CWEAVEHELP and CTANGLEHELP.
+
+	* Makefile.in [testenv]: Add LANG=C to trip environment for
+	consistent results.
+
+2002-12-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* cwebdir/comm-w2c.ch: Remove code that adds ".web", kpathsea will
+	handle this.  Ensure that when kpse_find_file returns a filename,
+	it is used for #line directives and such.
+
+2002-12-23  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Version 7.4.2.
+
+	* doc/web2c.texi: Version 7.4.2.
+
+	* doc/Makefile.in (install-data): Test for web2c.info explicitly
+	in current directory, because some versions of make prepend the
+	source dir path otherwise.  From Thomas Esser
+	<te@dbs.uni-hannover.de>.
+
+	* Makefile.in (clean): Add 'mf' to the targets always removed.
+	(mf): Explicit target needed if --with-mfw=yes was given.
+	Thanks to Dragan Milicic <dragan@math.utah.edu>.
+
+2002-12-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Version 7.4.1.
+
+	* doc/web2c.texi: Version 7.4.1.
+
+2002-12-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* cwebdir/cweav-w2c.ch (reduce, squash): While creating the
+	prototypes I got the order of the arguments wrong.
+
+2002-12-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Version 7.4.0.
+
+	* configure.in: Version 7.4.0.
+
+	* Makefile.in: Changes for mf/mf-nowin handling.  From Thomas.
+
+	* Makefile.in: Remove references to the share/* files.
+
+	* share/*: Remove files from this subdirectory.  They are the kind
+	of files that should be distributed in the texmf tree.
+
+	* cwebdir/cweav-w2c.ch: Add prototype information.
+
+	* cwebdir/ctang-w2c.ch: Add prototype information.
+
+	* cwebdir/comm-w2c.ch: Add prototype information.
+
+2002-11-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mp.ch [46.1307]: A previous change dropped the call of
+	fix_date_and_time in non-ini mode, so we always got the date of
+	the creation of the mem file.  Repoerted by Hartmut Henkel
+	<hartmut_henkel@gmx.de>.
+
+	* bibtex.ch [106]: Correct logic of comparison.
+
+	* bibtex.ch [106]: Make sure name_length is at least as long as
+	the length of the extension before checking for the extension.
+
+	* bibtex.ch [106]: Check for aux extension '.aux' not 'aux'.  When
+	'.aux' is already present, take that into account when generating
+	the derived filenames.  Reported by Emmanuel Jeandel
+	<ejeandel@ens-lyon.fr>.
+
+2002-11-16  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mf.ch [3.36]: write_ln instead of write for '! End of file on
+	the terminal... why?' message.  From Hartmut Henkel
+	<hartmut_henkel@gmx.de>.
+
+	* mp.ch [3.36]: write_ln instead of write for '! End of file on
+	the terminal... why?' message.  From Hartmut Henkel
+	<hartmut_henkel@gmx.de>.
+
+2002-11-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* cwebdir/comm-w2c.ch: Add copyright + license (public domain).
+
+	* cwebdir/ctang-w2c.ch: Add copyright + license (public domain).
+
+	* cwebdir/cweav-w2c.ch: Add copyright + license (public domain).
+
+	* doc/web2c.texi: To 7.3.11.
+
+	* cwebdir/cweav-w2c.ch: Increase max_file_name_length from 60 to
+	1024.
+
+	* cwebdir/ctang-w2c.ch: Increase max_file_name_length from 60 to
+	1024.
+
+	* cwebdir/comm-w2c.ch: Increase max_file_name_length from 60 to
+	1024.
+
+	* configure.in: To 7.3.11.
+
+	* bibtex.ch [32,33]: Characters in the range [128..255] would be
+	dropped by some of BibTeX's internal functions, like purify$.
+	Allow them to pass through.
+
+	* Makefile.in: Remove libs/xpdf/aconf.h when creating a
+	distribution for pdftex.
+
+2002-11-12  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in (install-links): Misspelled pdffmts; found by Joern
+	Clausen <joern@techfak.uni-bielefeld.de>.
+
+	* doc/web2c.texi: Correct expansion of GPL.
+
+	* Makefile.in: Use $(man1dir) for manual pages.
+
+2002-11-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Version 7.3.10.
+
+	* cwebdir/ctang-w2c.ch: Cleanup comments.
+
+	* cwebdir/comm-w2c.ch: Cleanup comments.
+
+	* cwebdir/cweav-w2c.ch: Cleanup comments.
+
+	* Makefile.in: Renaming of tie.ch to tie-w2c.ch.  Install the
+	ctangle and cweave manual pages.  Like the tie manual page, these
+	really should be updated for web2c.
+
+	* tie.ch -> tie-w2c.ch: Renaming to get a more consistent naming
+	convention.
+
+	* tiedir/tie.c: Reverting to the original from tie-2.4, as the way
+	in which tie.c is generated has changed: now we run ctangle during
+	the build.
+
+	* cwebdir/{ctang,comm,cweav}-w2c.ch: Changefiles to have CWEB use
+	kpathsea.  First implementation by Wlodek Bzyl, with modifications
+	by Olaf Weber.
+
+	* cwebdir: Adding the sources of CWEB here.
+
+	* Makefile.in: Changes to support the addition of CWEB.  Also use
+	the opportunity to remove shared_env, which is a dead variable.
+
+	* Makefile.in (install-data): Install fmtutil.cnf.
+
+	* fmtutil.in: New file.  Used by teTeX, but not (at present!) by a
+	"bare" web2c installation, if such a thing exists anymore.
+
+	* share/typeface.map: Update to 2002-10-12.
+
+	* share/special.map: Add 'vn' for Vietnamese CM.
+
+	* doc/web2c.texi: Document the -parse-first-line option.
+
+	* texmfmp-help.h: Document the -parse-first-line option.
+
+	* tex.ch: Commented out: add code to 29.523 to set the
+	kpse_program_name to the name of the format found.  This can be
+	both a good and a bad idea: its sets the format name properly in
+	case we do something like 'tex &latex file.tex' (when we want the
+	latex search paths) but is almost certainly wrong if we have
+	'latex &mylatex file.tex' (when we also want the latex search
+	paths).
+
+	* mp.ch: Commented out: add code to 35.755 that would set the
+	kpse_program_name to the name of the format found.
+
+	* mf.ch: Commented out: add change to 38.788 that would set the
+	kpse program name to the name of the format found.
+
+	* cpascal.h: Add kpseresetprogramname to the defined symbols.
+
+2002-10-22  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp-help.h: Document -oft option (which was renamed to match
+	the extension name).
+
+	* doc/web2c.texi: Version 7.3.9.
+
+	* configure.in: Version 7.3.9.
+
+	* Makefile.in: Changes to get the Omega dump file extension from
+	fmt to oft.
+
+2002-10-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in: Use the -jobname option when dumping formats,
+	bases, mems.
+
+	* share/supplier.map: Update to 2002-3-3.
+
+	* share/typeface.map: Update to 2002-4-4.
+
+	* doc/web2c.texi: Document -jobname option.  Correct description
+	of -fmt, -efmt, -base, -mem options, as they no longer set the
+	name to of the dumpfile written in ini mode.
+
+	* texmfmp-help.h: Document -jobname option in help texts.
+
+	* mf.ch [38.793]: Add support for --jobname option.
+
+	* mp.ch [35.770]: Add support for --jobname option.
+
+	* tex.ch [29.537]: Add support for the --jobname option.
+
+	* tangle.ch [50,53,58,63,116,...]: Make unambig_length a variable,
+	with default def_unambig_length.  Implement the optional
+	case-smashing and underline-retention.
+
+	* doc/web2c.texi: Document the new options of tangle.
+
+	* help.h [TANGLEHELP]: Document the new options.
+
+2002-10-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Version to 7.3.8.
+
+	* NEWS: Updates for 7.3.8.
+
+	* doc/web2c.texi: Typo.
+
+	* tex.ch: Settle on text for the not-TeX banner -- just add a 'k'
+	to the name, so we get TeXk, e-TeXk, pdfTeXk, and so on.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch [3.32]: Add parse_first_line_p variable.
+	[5.31]: Print not-TeX banner if parse_first_line_p is true.
+	[29.536]: Write	not-TeX banner to log file when parse_first_line_p
+	is true; also when file_line_error_style_p is true (was omitted
+	earlier).
+
+	* mp.ch [1.13]: Add parse_first_line_p variable.
+
+	* mf.ch [1.13]: Add parse_first_line_p variable.
+
+	* doc/web2c.texi: Add warning about non-conformity of source
+	specials.
+
+	* tex.ch [5.16]: TeX would claim that source specials are enabled
+	when file:line:error styles were enabled.
+
+	* configure.in: TeXlive merge: changes to the cxx_runtime_hack
+	code.
+
+	* config.h [WIN32]: TeXlive merge.
+
+	* Makefile.in: Inhibit parallel makes, as these cause trouble with
+	the way the rules are (currently) written.  Remove references to
+	libtiff.  TeXlive merge.
+
+2002-07-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Update notes on the --src option.
+
+	* tex.ch [47.1091]: Back out the change that moved the generation
+	of src_specials.  It in turn led to markedly different results in
+	"normal" input that is considerably more common than the
+	constructions that prompted the change.  The upshot is that at
+	present I know of _no_ non-intrusive way to implement source
+	specials, and enabling them may break your documents in unexpected
+	ways.  Found by the ever vigilant Akira Kakuto
+	<kakuto@fsci.fuk.kindai.ac.jp>, for which my thanks.
+
+2002-06-09  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* bibtex.ch [324]: Add comments clarifying the change and its
+	limitation.
+
+	* bibtex.ch [324]: When breaking output lines, try to avoid
+	splitting a \% combination.  Reported by Agthorr
+	<agthorr@barsoom.org>.
+
+2002-06-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch: Insert a newline after the "file:line:error enabled"
+	console message.
+
+	* tex.ch: Implement banner change for source specials.  Also
+	implement the printing of additional lines if source specials,
+	\write18, or file:line:error style messages are enabled.  Change
+	the source specials to use a "frozen" \special token so that
+	redefinition of \special doesn't affect the working of this
+	option.  Delay the generation of everypar source specials until
+	after the \everypar processing has been done, because they could
+	be easily "captured" otherwise (reported by Petr Olsak
+	<olsak@math.feld.cvut.cz>).
+
+	* doc/web2c.texi: Note that enabling source specials can have
+	unexped effects.
+
+2002-04-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Replace the use of a '#.#' pattern to comment out
+	options with the use of '#! '.  Requested by Gerben Wierda.
+
+	* configure.in: Add implementation of --with-cxx-runtime-hack: it
+	allows the GNU C++ libraries to be statically linked, which makes
+	binaries marginally more transportable between hosts.
+
+	* Makefile.in (pdftex,pdfetex): Add @CXXLDEXTRA@ to support the
+	--with-cxx-runtime-hack option.
+
+	* withenable.ac: Add --with-cxx-runtime-hack option. (Thomas
+	Esser).
+
+2002-03-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dvitomp.ch [5]: Increase virtual_space to accomodate Korean
+	users.  Suggested by Kong Hoon Lee <konghoon@dreamwiz.com>.
+
+2001-12-17  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch: Increase trie_op_size (and match with neg_trie_op_size)
+	to accomodate larger hyphenation tables.  Value suggested by
+	Thomas Esser <te@informatik.uni-hannover.de>.
+
+2001-11-27  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Version 7.3.7.
+
+	* configure.in: Version 7.3.7.
+
+	* configure.in: Add AC_C_INLINE, to deal with the fact that pdfTeX
+	likes to use inline functions.
+
+2001-11-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch: ipc_on must be c_int_type, not integer, because it is
+	used in the option code.
+
+	* Makefile.in (pdftex-dist): Add xpdf sources to this tarball.
+	(libs-dist): New target for additional libraries used by pdftex.
+	(bibtex-check): Use the just-created texmf.cnf, not an already
+	installed one.
+
+2001-11-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* share/variant.map: Update.
+
+	* share/typeface.map: Update.
+
+	* share/supplier.map: Update.
+
+	* share/adobe.map: Update.
+
+2001-11-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch: Changes to keep C++ compilers from choking.
+
+	* mp.ch: Changes to keep C++ compilers from choking.
+
+	* bibtex.ch: Changes to keep C++ compilers from choking.
+
+2001-11-18  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Version 7.3.6.
+
+	* tiedir/tie.c: Regenerated for tie.w and tie.ch.
+
+	* doc/web2c.texi: Update version.  Document --recorder option.
+
+	* vftovp.ch: Changes to keep C++ compilers from choking.
+
+	* texmfmp-help.h: Document --recorder option.
+
+	* tex.ch: Changes to keep C++ compilers from choking.  Add support
+	for the filename recorder.
+
+	* mp.ch: Changes to keep C++ compilers from choking.  Add support
+	for the filename recorder.
+
+	* mf.ch: Changes to keep C++ compilers from choking.  Add support
+	for the filename recorder.
+
+	* gftodvi.ch: Changes to keep C++ compilers from choking.
+
+	* dvitype.ch: Changes to keep C++ compilers from choking.
+
+	* dvitomp.ch: Changes to keep C++ compilers from choking.
+
+	* dvicopy.ch: Changes to keep C++ compilers from choking.
+
+	* cpascal.h: Additions for the filename recorder.
+
+	* bibtex.ch: Changes to keep C++ compilers from choking.
+
+	* NEWS:
+
+	* Makefile.in (tie): Link tie with lib.
+
+2001-11-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Check for headers sys/time.h, sys/timeb.h, and
+	functions gettimeofday, ftime.
+
+	* tangle.ch: Increase limits for constants and expressions to
+	allow tangle to build otangle.
+
+	* Makefile.in: Drop otangleboot target; otangle will be built by
+	tangle, not by itself.
+
+2001-11-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Update date, add documentation for
+	-file-line-error-style and -src-specials.
+
+	* texmfmp-help.h: Update help for -file-line-error-style and
+	-src-specials.
+
+	* configure.in: Version 7.3.5.
+
+	* tex.ch: Change the calls of xmalloc_array to account for the new
+	interface.
+
+	* mp.ch: Change the calls of xmalloc_array to account for the new
+	interface.
+
+	* mf.ch: Change the calls of xmalloc_array to account for the new
+	interface.
+
+	* cpascal.h (stringcast): Added to help the Omega people push
+	their sources through a C++ compiler.
+
+	* cpascal.h (xmallocarray): Moved from texmfmp.h, as Omega wants
+	to use it in more places.  Note that the interface changed!
+
+	* texmfmp.h (xmallocarray): Moved to cpascal.h for the Omega
+	merge.
+
+	* Makefile.in (prereq-check): Explicitly require a 'progname'
+	argument to set the program name, instead of allowing such an
+	option to be part of the 'files' argument.
+
+2001-11-01  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in (tangleboot.p): Test whether ./tangle exists -- this
+	rule can be triggered if tangleboot.p's timestamp is too old.
+
+2001-10-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: To 7.3.4.
+	
+	* doc/web2c.texi: xref correction.
+
+	* tex.ch: Increase trie size.  Add support for source specials.
+
+	* tangle.ch [8]: Increase max_names, max_tests to 10000.
+
+	* configure.in: Check for libm added.  If it is there, we do
+	unconditionally link it, which is probably wrong.
+
+	* Makefile.in [makeargs]: Add LDFLAGS.
+
+2001-10-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* cpascal.h: Add defines for kpsesetprogramname and kpsempformat.
+
+	* help.h [MFT]: Add -metapost description.
+
+	* mft.ch: Support for METAPOST files.  Based on changes supplied
+	by Wlodek Bzyl <matwb@univ.gda.pl>.
+
+	* texmfmp-help.h: Add IPC help text to etex, pdftex, pdfetex.
+
+	* mp.ch: Make path_size a configuration option.
+
+2001-10-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* weave.ch: Modify usage/usage_help invocation.  Use kpathsea to
+	find web and change files.
+
+	* vftovp.ch: Modify usage/usage_help invocation.
+
+	* vptovf.ch: Modify usage/usage_help invocation.
+
+	* tftopl.ch: Modify usage/usage_help invocation.
+
+	* texmfmp-help.h: Remove double end-of-comment.
+
+	* tex.ch: Modifications for file:line:error style messages.
+
+	* tangle.ch: Modify usage/usage_help invocation.  Find web and
+	change files using kpathsea.
+
+	* pooltype.ch: Modify usage/usage_help invocation.
+
+	* pltotf.ch: Modify usage/usage_help invocation.
+
+	* pktype.ch: Modify usage/usage_help invocation.
+
+	* pktogf.ch: Modify usage/usage_help invocation.
+
+	* patgen.ch: Modify usage/usage_help invocation.
+
+	* mp.ch: Modifications for file:line:error style messages.
+
+	* mft.ch: Modify usage/usage_help invocation.
+
+	* mf.ch: Modifications for file:line:error style messages.
+
+	* gftype.ch: Modify usage/usage_help invocation.
+
+	* gftopk.ch: Modify usage/usage_help invocation.
+
+	* gftodvi.ch: Modify usage/usage_help invocation.
+
+	* dvitype.ch: Modify usage/usage_help invocation.
+
+	* dvitomp.ch: Modify usage/usage_help invocation.
+
+	* dvicopy.ch [5]: Increase max_fonts.
+	[7]: Rename integer types to names that do not collide with the new
+	C99 names.
+	[system-dependent]: Modiy usage/usage_help invocation.
+
+	* cpascal.h (readln): Remove macro, add function prototype.
+	(kpsewebformat): Added.
+
+	* config.h (usage,usage_help): Change/add prototypes.
+
+	* bibtex.ch: Changes to usage/usage_help invocation.
+
+	* Makefile.in: install-programs [OMEGA]: add install-links for
+	omegadir sub-make.
+
+2001-10-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mf.ch [48.1200]: mf.web was changed to use 4-diget years, so
+	that change could be removed here.
+
+	* tex.ch [50.1328]: Master tex.web was changed to print 4-digit
+	years, so that change is removed here.
+
+2001-09-27  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tangle.ch: Add "parametric2" macros, which are macros where the
+	argument is delimited by [] instead of ().
+
+2001-04-23  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* cpascal.h (readln): Accept both CR and LF as end-of-line
+	characters.
+
+2000-08-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in: Replace the ugly ""$(var) construct with something
+	more robust.  Thanks Thomas.
+
+	* config.h: Make sure we get the right c-auto.h.  From Han The
+	Tanh.
+
+	* Makefile.in: Changes to support omega 1.15.  Earlier versions
+	are implicitly no longer supported because of these.
+
+	* configure.in: Changes to support omega 1.15.
+
+2000-08-05  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Bump version, year.
+
+	* configure.in: Update for 7.3.3.
+
+	* NEWS: Update for 7.3.3.
+
+	* mf.ch: Read buf_size from texmf.cnf, just like TeX and MP do.
+
+2000-04-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/ref.tex: Update reference codes for the bib files I'm using.
+
+	* mp.ch [35.782]: Use the kpse_mp_format for "readfrom" files,
+	instead of no path at all.
+
+	* vftovp.ch [25]: Both nl and lig_size are in words, so the
+	multiplication is not needed.  Found by "C.M. Connelly"
+	<c@eskimo.com> and Melissa O'Neill <oneill@cs.sfu.ca>.
+
+	* tftopl.ch [20]: Both nl and lig_size are in words, so the
+	multiplication is not needed.  Found by "C.M. Connelly"
+	<c@eskimo.com> and Melissa O'Neill <oneill@cs.sfu.ca>.
+
+2000-04-21  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tangle.ch: Increase zz.
+
+	* doc/web2c.texi: Document the win32-specific -oem option.  From
+	Fabrice.
+
+	* cpascal.h [OEM]: Additions for oem.c, from Fabrice.
+
+2000-04-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* patgen.ch: Correct off-by-one in filename generation of
+	pattmp.x.
+
+2000-04-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dvitype.ch: Fix parsing of --output-level option to match
+	documentation.  Spotted by DEK.
+
+2000-04-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dvicopy.ch: Increase max_widths, max_packets, max_bytes.
+
+	* configure.in: If fmtutil.in is found, create fmtutil.cnf.
+
+	* cpascal.h (readln): Explicit int to get rid of warning.
+
+	* Makefile.in: Changes for pdfTeX, from Han The Thanh
+	<thanh@informatics.muni.cz>.
+
+	* configure.in: Some of the "special hacks" that allow for
+	cross-compilation have been moved to acspecific.m4.  From Han The
+	Thanh <thanh@informatics.muni.cz>.
+
+2000-04-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* doc/web2c.texi: Correction: -translation-file -> translate-file.
+	Spotted by Etienne Riga <etienne.riga@skynet.be>.
+
+2000-03-22  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mp.ch: Parametrize the size of the line buffer.  From Fabrice
+	Popineau <Fabrice.Popineau@supelec.fr>
+
+2000-03-21  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch: Allow spaces in the path leading up to the texmf tree.
+	(But not in the tree itself.)  From Stefan Haller <stk@snafu.de>.
+
+	* mp.ch: Allow spaces in the path leading up to the texmf tree.
+	(But not in the tree itself.)  After Stefan Haller <stk@snafu.de>.
+
+	* mf.ch: Allow spaces in the path leading up to the texmf tree.
+	(But not in the tree itself.)  From Stefan Haller <stk@snafu.de>.
+
+2000-03-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mp.ch: i18n fix modeled on that for TeX.
+
+	* mf.ch: i18n fixes modeled on those for TeX.
+
+2000-03-01  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.ch: Several changes for i18n, from Wlodzimierz Bzyl
+	<matwb@monika.univ.gda.pl>.
+
+1999-09-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* patgen.ch: Correct filename generation to generate the extension
+ 	of pattmp.x.  Reported by Werner Lemberg <wl@gnu.org>.
+
+1999-06-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dvitomp.ch: A checksum failure should result in a warning, but
+ 	not in a non-zero return code.  This was done correctly in one
+ 	location, wrong in another.  Reported by Berthold Höllmann.
+
 1999-05-30  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* configure.in: Update version to 7.3.1.
@@ -193,11 +921,14 @@
 	* texmfmp.h: setupcharset is now used by all but Omega.
 
 	* tex.ch: Enable TCX files for TeX, clean up no-longer-current
- 	comments.
+ 	comments.  Based on code provided by Wlodzimierz Bzyl
+ 	<matwb@monika.univ.gda.pl>.
 
-	* mp.ch: Enable TCX files for MP.
+	* mp.ch: Enable TCX files for MP.  Based on code provided by
+ 	Wlodzimierz Bzyl <matwb@monika.univ.gda.pl>.
 
-	* mf.ch: Enable TCX files for MF.
+	* mf.ch: Enable TCX files for MF.  Based on code provided by
+ 	Wlodzimierz Bzyl <matwb@monika.univ.gda.pl>.
 
 	* cpascal.h: Remove NONASCII define.  It was unconditional
  	already, and this cleans up some code.

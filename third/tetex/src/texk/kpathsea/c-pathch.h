@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 /* On win32, UNC names are authorized */
 #ifdef WIN32
 #define IS_UNC_NAME(name) (strlen(name)>=3 && IS_DIR_SEP(*name)  \
-                            && IS_DIR_SEP(*(name+1)) && isalpha(*(name+2)))
+                            && IS_DIR_SEP(*(name+1)) && isalnum(*(name+2)))
 #endif
 #else
 #ifdef AMIGA
@@ -70,7 +70,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef NAME_BEGINS_WITH_DEVICE
 #define NAME_BEGINS_WITH_DEVICE(name) 0 
 #endif
-
+#ifndef IS_UNC_NAME /* Unc names are in practice found on Win32 only. */
+#define IS_UNC_NAME(name) 0
+#endif
 
 /* What separates elements in environment variable path lists?  */
 #ifndef ENV_SEP

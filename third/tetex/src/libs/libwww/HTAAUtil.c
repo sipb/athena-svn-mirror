@@ -4,7 +4,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTAAUtil.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTAAUtil.c,v 1.1.1.2 2003-02-25 22:25:19 amb Exp $
 **
 **	The authentication information is stored in a list of authentication
 **	data bases, each uniquely identified by a hostname and a port number.
@@ -21,10 +21,13 @@
 **	AL	Ari Luotonen	luotonen@dxcern.cern.ch
 **	MD 	Mark Donszelmann    duns@vxdeop.cern.ch
 **	HFN	Henrik Frystyk
-**
+**      JK      Jose Kahan 	jose@w3.org
+**      
 ** HISTORY:
 **	 8 Nov 93  MD	(VMS only) Added case insensitive comparison
 **			in HTAA_templateCaseMatch
+**      26 Jan 98  JK   Augmented the HTAA module interface with a function
+**                      for processing the auth-info headers (update)
 */
 
 /* Library include files */
@@ -41,6 +44,7 @@ struct _HTAAModule {
     char *		scheme;
     HTNetBefore *	before;
     HTNetAfter *	after;
+    HTNetAfter *	update;
     HTUTree_gc *	gc;
 };
 
@@ -74,13 +78,14 @@ PRIVATE HTAAModule * find_module (const char * scheme)
 	while ((pres = (HTAAModule *) HTList_nextObject(cur)))
 	    if (!strcasecomp(pres->scheme, scheme)) return pres;
     } else
-	if (AUTH_TRACE) HTTrace("Auth Engine. Bad argument\n");
+	HTTRACE(AUTH_TRACE, "Auth Engine. Bad argument\n");
     return NULL;
 }
 
 PUBLIC HTAAModule * HTAA_newModule (const char *	scheme,
 				    HTNetBefore *	before,
 				    HTNetAfter *	after,
+				    HTNetAfter *	update,
 				    HTUTree_gc *	gc)
 {
     if (scheme) {
@@ -93,17 +98,18 @@ PUBLIC HTAAModule * HTAA_newModule (const char *	scheme,
 	    StrAllocCopy(pres->scheme, scheme);
 	    pres->before = before;
 	    pres->after = after;
+	    pres->update = update;
 	    pres->gc = gc;
 
 	    /* Add the new AA Module to the list */
 	    HTList_addObject(HTSchemes, (void *) pres);
-	    if (AUTH_TRACE) HTTrace("Auth Engine. Created module %p\n", pres);
+	    HTTRACE(AUTH_TRACE, "Auth Engine. Created module %p\n" _ pres);
 	} else {
-	    if (AUTH_TRACE) HTTrace("Auth Engine. Found module %p\n", pres);
+	    HTTRACE(AUTH_TRACE, "Auth Engine. Found module %p\n" _ pres);
 	}
 	return pres;
     } else {
-	if (AUTH_TRACE) HTTrace("Auth Engine. Bad argument\n");
+	HTTRACE(AUTH_TRACE, "Auth Engine. Bad argument\n");
 	return NULL;
     }
 }
@@ -112,11 +118,10 @@ PUBLIC HTAAModule * HTAA_findModule (const char * scheme)
 {
     if (scheme) {
 	HTAAModule * pres = find_module(scheme);
-	if (AUTH_TRACE)
-	    HTTrace("Auth Engine. did %sfind %s\n", pres ? "" : "NOT ",scheme);
+	HTTRACE(AUTH_TRACE, "Auth Engine. did %sfind %s\n" _ pres ? "" : "NOT " _ scheme);
 	return pres;
     } else {
-	if (AUTH_TRACE) HTTrace("Auth Engine. Bad augument\n");
+	HTTRACE(AUTH_TRACE, "Auth Engine. Bad augument\n");
     }
     return NULL;
 }
@@ -127,7 +132,7 @@ PUBLIC BOOL HTAA_deleteModule (const char * scheme)
 	HTAAModule * pres = find_module(scheme);
 	if (pres) {
 	    HTList_removeObject(HTSchemes, pres);
-	    if (AUTH_TRACE) HTTrace("Auth Engine. deleted %p\n", pres);
+	    HTTRACE(AUTH_TRACE, "Auth Engine. deleted %p\n" _ pres);
 	    delete_module(pres);
 	    return YES;
 	}
@@ -167,7 +172,7 @@ PRIVATE HTAAElement * HTAA_newElement (const char * scheme, void * context)
 	    HT_OUTOFMEM("HTAAElement_new");
 	StrAllocCopy(me->scheme, scheme);
 	me->context = context;
-	if (AUTH_TRACE) HTTrace("Auth Engine. Created element %p\n", me);
+	HTTRACE(AUTH_TRACE, "Auth Engine. Created element %p\n" _ me);
 	return me;
     }
     return NULL;
@@ -211,7 +216,7 @@ PRIVATE int HTAA_deleteElement (void * context)
 	if (module && module->gc && me->context)
 	    (*module->gc)(me->context);
 
-	if (AUTH_TRACE) HTTrace("Auth Engine. Deleted element %p\n", me);
+	HTTRACE(AUTH_TRACE, "Auth Engine. Deleted element %p\n" _ me);
 	HT_FREE(me->scheme);
 	HT_FREE(me);
 	return YES;
@@ -237,10 +242,10 @@ PRIVATE HTAAElement * HTAA_findElement (BOOL proxy_access,
 {
     HTUTree * tree;
     if (!url) {
-	if (AUTH_TRACE) HTTrace("Auth Engine. Bad argument\n");
+	HTTRACE(AUTH_TRACE, "Auth Engine. Bad argument\n");
 	return NULL;
     }
-    if (AUTH_TRACE) HTTrace("Auth Engine. Looking up `%s'\n", url);
+    HTTRACE(AUTH_TRACE, "Auth Engine. Looking up `%s'\n" _ url);
 
     /* Find an existing URL Tree for this URL (if any) */
     {
@@ -254,7 +259,7 @@ PRIVATE HTAAElement * HTAA_findElement (BOOL proxy_access,
 	tree = HTUTree_find(proxy_access ? AA_PROXY_TREE : AA_TREE, host,port);
 	HT_FREE(host);
 	if (!tree) {
-	    if (AUTH_TRACE) HTTrace("Auth Engine. No information\n");
+	    HTTRACE(AUTH_TRACE, "Auth Engine. No information\n");
 	    return NULL;
 	}
     }
@@ -281,14 +286,14 @@ PUBLIC void * HTAA_updateNode (BOOL proxy_access, char const * scheme,
     HTUTree * tree = NULL;
     HTAAModule * module = NULL;
     if (!scheme || !url) {
-	if (AUTH_TRACE) HTTrace("Auth Engine. Bad argument\n");
+	HTTRACE(AUTH_TRACE, "Auth Engine. Bad argument\n");
 	return NULL;
     }
-    if (AUTH_TRACE) HTTrace("Auth Engine. Adding info for `%s'\n", url);
+    HTTRACE(AUTH_TRACE, "Auth Engine. Adding info for `%s'\n" _ url);
 
     /* Find the AA module with this name */
     if ((module = HTAA_findModule(scheme)) == NULL) {
-	if (AUTH_TRACE) HTTrace("Auth Engine. Module `%s\' not registered\n",
+	HTTRACE(AUTH_TRACE, "Auth Engine. Module `%s\' not registered\n" _ 
 			       scheme ? scheme : "<null>");
 	return NULL;
     }
@@ -306,7 +311,7 @@ PUBLIC void * HTAA_updateNode (BOOL proxy_access, char const * scheme,
 			   host, port, HTAA_deleteElement);
 	HT_FREE(host);
 	if (!tree) {
-	    if (AUTH_TRACE) HTTrace("Auth Engine. Can't create tree\n");
+	    HTTRACE(AUTH_TRACE, "Auth Engine. Can't create tree\n");
 	    return NULL;
 	}
     }
@@ -316,7 +321,8 @@ PUBLIC void * HTAA_updateNode (BOOL proxy_access, char const * scheme,
 	char * path = HTParse(url, "", PARSE_PATH | PARSE_PUNCTUATION);
 	HTAAElement * element = NULL;
 	BOOL status;
-	if ((element = (HTAAElement *) HTUTree_findNode(tree, realm, path)))
+	if ((element = (HTAAElement *) HTUTree_findNode(tree, realm, path))
+		&& element->scheme && !strcasecomp (element->scheme, scheme))
 	    status = HTAA_updateElement(element, scheme, context);
 	else {
   	  /* create the new element */
@@ -339,14 +345,14 @@ PUBLIC BOOL HTAA_deleteNode (BOOL proxy_access, char const * scheme,
     HTUTree * tree = NULL;
     HTAAModule * module = NULL;
     if (!scheme || !url) {
-	if (AUTH_TRACE) HTTrace("Auth Engine. Bad argument\n");
+	HTTRACE(AUTH_TRACE, "Auth Engine. Bad argument\n");
 	return NO;
     }
-    if (AUTH_TRACE) HTTrace("Auth Engine. Deleting info for `%s'\n", url);
+    HTTRACE(AUTH_TRACE, "Auth Engine. Deleting info for `%s'\n" _ url);
 
     /* Find the AA module with this name */
     if ((module = HTAA_findModule(scheme)) == NULL) {
-	if (AUTH_TRACE) HTTrace("Auth Engine. Module `%s\' not registered\n",
+	HTTRACE(AUTH_TRACE, "Auth Engine. Module `%s\' not registered\n" _ 
 			       scheme ? scheme : "<null>");
 	return NO;
     }
@@ -364,7 +370,7 @@ PUBLIC BOOL HTAA_deleteNode (BOOL proxy_access, char const * scheme,
 			   host, port, HTAA_deleteElement);
 	HT_FREE(host);
 	if (!tree) {
-	    if (AUTH_TRACE) HTTrace("Auth Engine. Can't create tree\n");
+	    HTTRACE(AUTH_TRACE, "Auth Engine. Can't create tree\n");
 	    return NO;
 	}
     }
@@ -400,7 +406,7 @@ PUBLIC int HTAA_beforeFilter (HTRequest * request, void * param, int mode)
     if (element) {
 	HTAAModule * module = HTAA_findModule(element->scheme);
 	if (module) {
-	    if (AUTH_TRACE) HTTrace("Auth Engine. Found BEFORE filter %p\n",
+	    HTTRACE(AUTH_TRACE, "Auth Engine. Found BEFORE filter %p\n" _ 
 				    module->before);
 	    return (*module->before)(request, element->context, mode);
 	}
@@ -418,7 +424,7 @@ PUBLIC int HTAA_afterFilter (HTRequest * request, HTResponse * response,
 {
     const char * scheme = HTResponse_scheme(response);
     HTAAModule * module = NULL;
-    if (AUTH_TRACE) HTTrace("Auth Engine. After filter status %d\n", status);
+    HTTRACE(AUTH_TRACE, "Auth Engine. After filter status %d\n" _ status);
     /*
     **	If we don't have a scheme then the server has made an error. We
     **  try to make up for it by creating our own "noop" realm and use basic.
@@ -428,14 +434,46 @@ PUBLIC int HTAA_afterFilter (HTRequest * request, HTResponse * response,
 	scheme = "basic";
     }
     if ((module = HTAA_findModule(scheme)) != NULL) {
-	if (AUTH_TRACE)
-	    HTTrace("Auth Engine. Found AFTER filter %p\n", module->after);
+	HTTRACE(AUTH_TRACE, "Auth Engine. Found AFTER filter %p\n" _ module->after);
 	HTRequest_deleteCredentialsAll(request);
 	HTRequest_addAARetry (request);
 	return (*module->after)(request, response, NULL, status);
     }
     return HT_ERROR;
 }
+
+/*	HTAA_UpdateFilter
+**	-----------------
+**	Call the Update filter that knows how to handle this scheme.
+**	Return YES or whatever callback returns
+*/
+PUBLIC int HTAA_updateFilter (HTRequest * request, HTResponse * response,
+				 void * param, int status)
+{
+    const char * scheme = HTResponse_scheme(response);
+    HTAAModule * module = NULL;
+    HTTRACE(AUTH_TRACE, "Auth Engine. Update filter status %d\n" _ status);
+    /*
+    **	If we don't have a scheme then the server has made an error. We
+    **  try to make up for it by creating our own "noop" realm and use basic.
+    */
+    if (!scheme) {
+	HTResponse_addChallenge(response, "basic", "realm LIBWWW-UNKNOWN");
+	scheme = "basic";
+    }
+    if ((module = HTAA_findModule(scheme)) != NULL) {
+	/* we don't call this module systematically, as it could hamper
+	   the execution of Basic authentication requests for nothing */
+      if (module->update) {
+	HTTRACE(AUTH_TRACE, "Auth Engine. Found Update filter %p\n" _ module->update);
+	HTRequest_deleteCredentialsAll(request);
+	return (*module->update)(request, response, NULL, status);
+      }
+      return HT_OK;
+    }
+    return HT_ERROR;
+}
+
 
 /*	HTAA_proxybeforeFilter
 **	----------------------
@@ -460,9 +498,8 @@ PUBLIC int HTAA_proxyBeforeFilter (HTRequest * request, void * param, int mode)
 	if (element) {
 	    HTAAModule * module = HTAA_findModule(element->scheme);
 	    if (module) {
-		if (AUTH_TRACE)
-		    HTTrace("Auth Engine. Found Proxy BEFORE filter %p with context %p\n",
-			    module->before, element->context);
+		HTTRACE(AUTH_TRACE, "Auth Engine. Found Proxy BEFORE filter %p with context %p\n" _ 
+			    module->before _ element->context);
 		return (*module->before)(request, element->context, HT_NO_PROXY_ACCESS);
 	    }
 	}

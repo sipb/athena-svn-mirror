@@ -348,7 +348,7 @@ double dvi_to_hps_conv P2C(int, i, int, dir)
 int vert_loc P1C(int, i)
 {
   int return_value ;
-  return_value = (i + (PAGESIZE / 4) + FUDGE) ; 
+  return_value = (int) (i + (PAGESIZE / 4) + FUDGE) ; 
   if ( return_value > PAGESIZE) {
     return((int)PAGESIZE) ;
     } else if (return_value <  (PAGESIZE / 4.0)) {
@@ -418,7 +418,7 @@ void do_target_dict P1H(void)
 		    np->defn->rect.llx, np->defn->rect.lly,
 		    np->defn->rect.urx, np->defn->rect.ury,
 		    vert_loc((int) np->defn->rect.lly)) ;  
-  (void)fprintf(bitfile,"end targetdump-hook def\n") ;
+  (void)fprintf(bitfile,"end targetdump-hook def end\n") ;
 }
 
 int href_name_match P2C(char *, h, char *, n)

@@ -83,8 +83,8 @@
 %
 %
 \def\newColor #1 {\expandafter\def\csname #1\endcsname##1{\special
-   {color push #1}##1\special{color pop}}
-   \expandafter\def\csname text#1\endcsname{\subdef{#1}
+   {color push #1}##1\special{color pop}}%
+   \expandafter\def\csname text#1\endcsname{\subdef{#1}%
     \special{color #1}}}%
 %
 % Here are the color names and their PANTONE match (approximately)

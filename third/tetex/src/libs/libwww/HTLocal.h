@@ -54,7 +54,7 @@ typedef int HTLocalMode;
 #define HT_FT_APPEND	HT_FB_APPEND
 
 #else 
-typedef const char HTLocalMode[10];
+typedef const char *HTLocalMode;
 
 #define HT_FB_RDONLY	"rb"
 #define HT_FT_RDONLY	"r"
@@ -104,6 +104,6 @@ extern int HTFileClose (HTNet * net);
 
   
 
-  @(#) $Id: HTLocal.h,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+  @(#) $Id: HTLocal.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

@@ -77,15 +77,15 @@ static XtResource mf_resources[]
 /* Maybe someday we'll read options, until then, this is just here for
    the resources.  */
 static XrmOptionDescRec mf_optiondesclist[]
-= { { "-width",   "width", XrmoptionSepArg, (XtPointer) NULL },
-    { "-height", "height", XrmoptionSepArg, (XtPointer) NULL },
-    { "-fg", "foreground", XrmoptionSepArg, (XtPointer) NULL },
-    { "-bg", "background", XrmoptionSepArg, (XtPointer) NULL },
+= { { "-width",   "width", XrmoptionSepArg, (XPointer) NULL },
+    { "-height", "height", XrmoptionSepArg, (XPointer) NULL },
+    { "-fg", "foreground", XrmoptionSepArg, (XPointer) NULL },
+    { "-bg", "background", XrmoptionSepArg, (XPointer) NULL },
 };
 
 static void mf_events ();
 static void mf_mapstatus ();
-static void mf_newpixmap ();
+static void mf_newpixmap P2H(unsigned int, unsigned int);
 static void mf_redraw ();
 static void mf_repaint ();
 
@@ -230,7 +230,7 @@ mf_x11_paintrow P4C(screenrow, row,
 
 #ifdef MF_XT_DEBUG
 static void
-mf_checkextent (x1, x2, y)
+mf_checkextent P3C(int, x1, int, x2, int, y)
 {
   if (x1 < mf_min_x)
     mf_min_x = x1;
@@ -265,8 +265,7 @@ mf_events ()
 }
 
 static void
-mf_newpixmap (width, height)
-     unsigned int width, height;
+mf_newpixmap P2C(unsigned int, width, unsigned int, height)
 {
   XGCValues gcv;
   Pixmap newpixmap;
@@ -316,10 +315,7 @@ mf_newpixmap (width, height)
 }
 
 static void
-mf_repaint (w, data, ev)
-     Widget w;
-     XtPointer data;
-     XEvent *ev;
+mf_repaint P3C(Widget, w, XtPointer, data, XEvent*, ev)
 {
   if (!mf_mapped || !ev || ev->type != Expose)
     return;
@@ -339,10 +335,7 @@ mf_repaint (w, data, ev)
 
 
 static void
-mf_mapstatus (w, data, ev)
-     Widget w;
-     XtPointer data;
-     XEvent *ev;
+mf_mapstatus P3C(Widget, w, XtPointer, data, XEvent*, ev)
 {
   switch (ev->type)
     {

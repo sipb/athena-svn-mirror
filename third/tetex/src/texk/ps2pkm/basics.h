@@ -81,22 +81,10 @@ void fatal(char *fmt, ...);
 void msg(char *fmt, ...);
 
 /* For debugging purposes it is handy to have a fopen() function that
- * shows which files are opened. The verbose my_fopen() can be installed
- * by a user program by assigning it to the pfopen function pointer
- *    pfopen = my_fopen
+ * shows which files are opened.
  */
 
 #include <stdio.h>
-extern FILE * (*pfopen)(const char *, const char *);
-FILE * my_fopen(const char *, const char *);
 
-/* For debugging purposes it is handy to have a stat() function that
- * shows which files it looks at. The verbose my_stat() can be installed
- * by a user program by assigning it to the pstat function pointer
- *    pstat = my_stat
- */
 #include <sys/types.h>  /* struct stat */
 #include <sys/stat.h>   /* stat() */
-
-extern int (*pstat)(const char *, struct stat *);
-int my_stat(const char *path, struct stat *buf);

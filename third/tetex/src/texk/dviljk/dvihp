@@ -1,17 +1,23 @@
 #!/bin/sh
-# $Id: dvihp,v 1.1.1.1 2000-03-10 17:51:51 ghudson Exp $
+# $Id: dvihp,v 1.1.1.2 2003-02-25 22:06:12 amb Exp $
 # Run dvicopy, then dvilj[k].  kb@mail.tug.org, 1994.  Public domain.
 # Try to accept arguments a la dvips, from Thomas Esser.
 
 : ${DVILJ=dvilj4}       # the dvilj variant to run
 : ${SPOOL=lpr}          # used to print an LJ file
-: ${TMPDIR=/tmp}        # for the dvicopy output
+: ${TMP=/tmp}        # for the dvicopy output
 
-TMPDIR=${TMPDIR}/dvihp$$
-mkdir $TMPDIR || { echo "cannot create directory \`$TMPDIR'."; exit 1; }
-trap 'cd /; rm -rf $TMPDIR; trap '' 0; exit 0' 0 1 2 3 6 7 13 15
+TMPDIR="${TMP}"/dvihp$$
+(umask 077; mkdir "$TMPDIR") \
+  || { echo "cannot create directory \`$TMPDIR'."; exit 1; }
 
-rcs_revision='$Revision: 1.1.1.1 $'
+trap '
+  cd "${TMP}"
+  test -d "$TMPDIR" && { rm -f "$TMPDIR"/*; rmdir "$TMPDIR"; }
+  exit 0
+' 0 1 2 3 6 7 13 15
+
+rcs_revision='$Revision: 1.1.1.2 $'
 version=`set - $rcs_revision; echo $2`
 
 usage="Usage: `basename $0` [OPTIONS] [DVIFILE[.dvi]].
@@ -94,19 +100,17 @@ while test $# -gt 0; do
 done
 
 # Make sure the filenames are unique on MS-DOS
-vfless_dvi=$TMPDIR/dvi$$.vf
-dvicopy_log=$TMPDIR/dvi$$.copy
-dvilj_log=$TMPDIR/dvi$$.lj
+vfless_dvi="$TMPDIR"/dvi$$.vf
 
 # Expand VF references.
 # If $infile is null, this will read standard input.
 # dvilj can't read from a pipe, so always write to a file.
 $verbose && echo "Running dvicopy $infile >$vfless_dvi" >&2
-if dvicopy $infile >$vfless_dvi; then :; else
+if dvicopy $infile >"$vfless_dvi"; then :; else
   echo "$0: dvicopy $infile failed." >&2
   exit 1
 fi
-$verbose && ls -l $vfless_dvi >&2
+$verbose && ls -l "$vfless_dvi" >&2
 
 if test -z "$output"; then
   output=- # output to stdout
@@ -118,11 +122,9 @@ else
 fi
 
 # Translate DVI to LJ.
-cmd="$DVILJ $opt $output_opt$output $vfless_dvi $maybe_spool_cmd"
+cmd="$DVILJ $opt $output_opt$output \"$vfless_dvi\" $maybe_spool_cmd"
 $verbose && echo "Running $cmd" >&2
 if eval $cmd; then :; else
   echo "$0: $DVILJ failed." >&2
   exit 2
 fi
-
-rm -f $TMPDIR/dvi$$.*

@@ -120,7 +120,7 @@ POST requests.
 
 We also have a blocking (preemptive) version of the same client interface.
 The difference is that this version uses traditional blocking sockets and
-hence only one reques can be performed at the same time.
+hence only one request can be performed at the same time.
 */
 
 extern void HTProfile_newPreemptiveClient (
@@ -164,7 +164,7 @@ extern void HTProfile_newPreemptiveRobot (
 This is a generic profile cleanup that should be used on all the profiles
 above. This will clean up the memory allocated by the profile and by the
 Library core itself. After calling this you can not call any Library function
-again. This call also superseeds the termination function for teh Library
+again. This call also supersedes the termination function for the Library
 core, HTLibTerminate() so that you don't have to call that after
 calling this function.
 */
@@ -179,6 +179,6 @@ extern void HTProfile_delete (void);
 
   
 
-  @(#) $Id: HTProfil.h,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+  @(#) $Id: HTProfil.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

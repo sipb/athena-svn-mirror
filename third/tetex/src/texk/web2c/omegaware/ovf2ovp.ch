@@ -117,14 +117,14 @@ end;
 
 % [31] Ditto for vf_abort.
 @x
-@d vf_abort(#)==
-  begin print_ln(#);
+@d vf_abort(#)==begin
+  print_ln(#);
   print_ln('Sorry, but I can''t go on; are you sure this is a OVF?');
   goto final_end;
   end
 @y
-@d vf_abort(#)==
-  begin write_ln(stderr, #);
+@d vf_abort(#)==begin
+  write_ln(stderr, #);
   write_ln(stderr, 'Sorry, but I can''t go on; are you sure this is a OVF?');
   uexit(1);
   end
@@ -182,11 +182,10 @@ else  begin font_bc:=0; font_ec:=65536; {will cause error if not modified soon}
 @z
 
 @x [40] Be quiet if not -verbose.
-    begin print_ln('Check sum in OVF file being replaced by font metric check sum');
+    print_ln('Check sum in OVF file being replaced by font metric check sum');
 @y
-    begin
-      if verbose then
-        print_ln('Check sum in OVF file being replaced by font metric check sum');
+    if verbose then
+      print_ln('Check sum in OVF file being replaced by font metric check sum');
 @z
 
 @x [42] Remove initialization of now-defunct array.
@@ -198,14 +197,14 @@ default_directory:=default_directory_name;
 
 @x [44] Don't append `.tfm' here, and keep lowercase.
 for k:=1 to name_length do cur_name[k]:=' ';
-if a=0 then
-  begin for k:=1 to default_directory_name_length do
+if a=0 then begin
+  for k:=1 to default_directory_name_length do
     cur_name[k]:=default_directory[k];
   r:=default_directory_name_length;
   end
 else r:=0;
-for k:=font_start[font_ptr]+14 to vf_ptr-1 do
-  begin incr(r);
+for k:=font_start[font_ptr]+14 to vf_ptr-1 do begin
+  incr(r);
   if r+4>name_length then vf_abort('Font name too long for me!');
 @.Font name too long for me@>
   if (vf[k]>="a")and(vf[k]<="z") then
@@ -324,11 +323,10 @@ f:=((tfm[k+1] mod 16)*intcast(@'400)+tfm[k+2])*@'400+tfm[k+3];
 
 % [112] No nonlocal goto's.
 @x
-  begin print_ln('Sorry, I haven''t room for so many ligature/kern pairs!');
+  print_ln('Sorry, I haven''t room for so many ligature/kern pairs!');
 @.Sorry, I haven't room...@>
   goto final_end;
 @y
-  begin
   write_ln(stderr, 'Sorry, I haven''t room for so many ligature/kern pairs!');
 @.Sorry, I haven't room...@>
   uexit(1);
@@ -382,11 +380,11 @@ lig_f:=lig_z[h];
 @z
 
 @x [124] Some cc's can't handle 136 case labels.
-    begin o:=vf[vf_ptr]; incr(vf_ptr);
+    o:=vf[vf_ptr]; incr(vf_ptr);
     case o of
     @<Cases of \.{DVI} instructions that can appear in character packets@>@;
 @y
-    begin o:=vf[vf_ptr]; incr(vf_ptr);
+    o:=vf[vf_ptr]; incr(vf_ptr);
     if ((o<=set_char_0+127))or
        ((o>=set1)and(o<=set1+3))or((o>=put1)and(o<=put1+3)) then
 begin if o>=set1 then
@@ -488,10 +486,10 @@ begin
     if getopt_return_val = -1 then begin
       {End of arguments; we exit the loop below.} ;
     end else if getopt_return_val = "?" then begin
-      usage (1, 'ovf2ovp');
+      usage ('ovf2ovp');
 
     end else if argument_is ('help') then begin
-      usage (0, OVF2OVP_HELP);
+      usage_help (OVF2OVP_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit
@@ -513,7 +511,7 @@ begin
   if (optind + 1 <> argc) and (optind + 2 <> argc) 
      and (optind + 3 <> argc) then begin
     write_ln (stderr, 'ovf2ovp: Need one to three file arguments.');
-    usage (1, 'ovf2ovp');
+    usage ('ovf2ovp');
   end;
 
   vf_name := cmdline (optind);

@@ -44,7 +44,7 @@ fn_copy0 P2C(const_string, s,  unsigned, len)
   fn_type ret;
   
   FN_ALLOCATED (ret) = CHUNK_SIZE > len ? CHUNK_SIZE : len + 1;
-  FN_STRING (ret) = xmalloc (FN_ALLOCATED (ret));
+  FN_STRING (ret) = (string)xmalloc (FN_ALLOCATED (ret));
   
   strncpy (FN_STRING (ret), s, len);
   FN_STRING (ret)[len] = 0;
@@ -92,7 +92,7 @@ fn_1grow P2C(fn_type *, f,  char, c)
 
 
 void
-fn_grow P3C(fn_type *, f,  address, source,  unsigned, len)
+fn_grow P3C(fn_type *, f,  const_string, source,  unsigned, len)
 {
   grow (f, len);
   strncpy (FN_STRING (*f) + FN_LENGTH (*f), source, len);

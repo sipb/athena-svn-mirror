@@ -67,6 +67,17 @@ the list (the end is the first entered object) by using the following function:
 extern BOOL HTList_appendObject (HTList * me, void * newObject);
 
 /*
+The following two functions, contributed by Vic 
+Bancroft (bancroft@america.net) that do the same operation as above, but return
+a pointer to the new HTList element that was added or appended.  This allows
+one to keep a  reference to the end of the list outside of the list itself, 
+which can be used to speed up certain list operations.
+*/
+
+extern HTList * HTList_addList (HTList * me, void * newObject);
+extern HTList * HTList_appendList (HTList * me, void * newObject);
+
+/*
 .
   Remove List Elements
 .
@@ -172,6 +183,6 @@ extern BOOL HTList_insertionSort(HTList * list, HTComparer * comp);
 
   
 
-  @(#) $Id: HTList.h,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+  @(#) $Id: HTList.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1999.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HText.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HText.c,v 1.1.1.2 2003-02-25 22:25:09 amb Exp $
 **
 **	This generates of a hypertext object and calls the application
 **	via callbacks.
@@ -52,7 +52,6 @@ PUBLIC HTextImp * HTextImp_new (HTRequest *	 request,
     HTextImp * me = NULL;
     if ((me = (HTextImp *) HT_CALLOC(1, sizeof (HTextImp))) == NULL)
 	HT_OUTOFMEM("HTextImp_new");
-    if (me->text_new) me->app = (*me->text_new)(request, anchor, output_stream);
     me->text_new = text_new;    
     me->text_delete = text_delete; 
     me->text_build = text_build;  
@@ -63,15 +62,22 @@ PUBLIC HTextImp * HTextImp_new (HTRequest *	 request,
     me->text_unparsedBeginElement = text_unparsedBeginElement;
     me->text_unparsedEndElement = text_unparsedEndElement;
     me->text_unparsedEntity = text_unparsedEntity;
+    if (me->text_new) me->app = (*me->text_new)(request, anchor, output_stream);
     return me;
 }
 
 PUBLIC BOOL HTextImp_delete (HTextImp * me)
 {
     if (me) {
-	HText * app = me->app;
+
+	/*
+	** Note that we do not call the delete method on the app
+	** HText object as this normally stays around after the
+	** request has been deleted and certainly it should be
+	** deleted by the app and not libwww
+	*/
 	HT_FREE(me);
-	return (me->app && me->text_delete) ? (*me->text_delete)(app) : NO;
+	return YES;
     }
     return NO;
 }
@@ -159,6 +165,12 @@ PUBLIC BOOL HText_unregisterCDCallback (void)
 {
     text_new = NULL;
     text_delete = NULL;
+    return YES;
+}
+
+PUBLIC BOOL HText_registerBuildCallback (HText_build * bcb)
+{
+    text_build = bcb;
     return YES;
 }
 

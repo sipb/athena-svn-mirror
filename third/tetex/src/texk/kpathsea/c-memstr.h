@@ -1,6 +1,6 @@
 /* c-memstr.h: memcpy, strchr, etc.
 
-Copyright (C) 1992, 93, 94, 95, 97 Free Software Foundation, Inc.
+Copyright (C) 1992, 93, 94, 95, 97, 2000 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -35,28 +35,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* Just to be complete, we make both the system V/ANSI and the BSD
    versions of the string functions available.  */
-/* FIXME: we'll move to providing the ANSI stuff, if necessary defined
-   in terms of the BSD functions. */
-#if !defined(HAVE_INDEX) && !defined(index)
-#define index strchr
-#endif
-
-#if !defined(HAVE_RINDEX) && !defined(rindex)
-#define rindex strrchr
-#endif
-
-#if !defined(HAVE_BCMP) && !defined(bcmp)
-#define bcmp(s1, s2, len) memcmp ((s1), (s2), (len))
-#endif
-
-#if !defined(HAVE_BCOPY) && !defined(bcopy)
-#define bcopy(from, to, len) memcpy ((to), (from), (len))
-#endif
-
-#if !defined(HAVE_BZERO) && !defined(bzero)
-#define bzero(s, len) memset ((s), 0, (len))
-#endif
-
 #if !defined(HAVE_STRCHR) && !defined(strchr)
 #define strchr index
 #endif
@@ -71,6 +49,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #if !defined(HAVE_MEMCPY) && !defined(memcpy)
 #define memcpy(to, from, len) bcopy ((from), (to), (len))
+#endif
+
+/* Note that these functions should not be used. */
+#if !defined(HAVE_BCMP) && !defined(bcmp)
+#define bcmp(s1, s2, len) memcmp ((s1), (s2), (len))
+#endif
+
+#if !defined(HAVE_BCOPY) && !defined(bcopy)
+#define bcopy(from, to, len) memcpy ((to), (from), (len))
+#endif
+
+#if !defined(HAVE_BZERO) && !defined(bzero)
+#define bzero(s, len) memset ((s), 0, (len))
 #endif
 
 #if !defined(HAVE_STRING_H)

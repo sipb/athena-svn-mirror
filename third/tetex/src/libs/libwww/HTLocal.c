@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTLocal.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTLocal.c,v 1.1.1.2 2003-02-25 22:25:26 amb Exp $
 **
 **      History:
 **         HFN: Written
@@ -63,9 +63,8 @@ PUBLIC int HTFileOpen (HTNet * net, char * local, HTLocalMode mode)
 	    status = fcntl(sockfd, F_SETFL, status);
 	}
 #endif /* HAVE_FCNTL */
-	if (PROT_TRACE)
-	    HTTrace("HTFileOpen.. `%s\' opened using %sblocking socket\n",
-		    local, status == -1 ? "" : "NON-");
+	HTTRACE(PROT_TRACE, "HTFileOpen.. `%s\' opened %d as %sblocking socket\n" _ 
+		local _ sockfd _ status == -1 ? "" : "NON-");
     }
     /* #endif - HAVE_FCNTL <- wrong location, moved up JTD:5/30/96 */
 #else /* !NO_UNIX_IO */
@@ -80,7 +79,7 @@ PUBLIC int HTFileOpen (HTNet * net, char * local, HTLocalMode mode)
         return HT_ERROR;
     }
 #endif /* VMS */
-    if (PROT_TRACE) HTTrace("HTDoOpen.... `%s\' opened using FILE %p\n",local, fp);
+    HTTRACE(PROT_TRACE, "HTDoOpen.... `%s\' opened using FILE %p\n" _ local _ fp);
 #endif /* !NO_UNIX_IO */
 
     /*
@@ -116,14 +115,14 @@ PUBLIC int HTFileClose (HTNet * net)
 #ifdef NO_UNIX_IO
 	FILE * fp = HTChannel_file(ch);
 	if (fp) {
-	    if (PROT_TRACE) HTTrace("Closing..... ANSI file %p\n", fp);
+	    HTTRACE(PROT_TRACE, "Closing..... ANSI file %p\n" _ fp);
 	    status = fclose(fp);
 	    HTChannel_setFile(ch, NULL);
 	}
 #else
 	SOCKET sockfd = HTChannel_socket(ch);
 	if (sockfd != INVSOC) {
-	    if (PROT_TRACE) HTTrace("Closing..... fd %d\n", sockfd);
+	    HTTRACE(PROT_TRACE, "Closing..... fd %d\n" _ sockfd);
 	    status = NETCLOSE(sockfd);
 	    HTChannel_setSocket(ch, INVSOC);
 	}

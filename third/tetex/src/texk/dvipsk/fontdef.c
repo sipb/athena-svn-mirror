@@ -40,6 +40,7 @@ newfontdesc P5C(integer, cksum, integer, scsize, integer, dssize,
    fp = (fontdesctype *)mymalloc((integer)sizeof(fontdesctype)) ;
 #ifdef Omega
 fp->chardesc = (chardesctype *)mymalloc(256*(integer)sizeof(chardesctype)) ;
+   fp->codewidth = 1 ;
 #endif
    fp->psname = 0 ;
    fp->loaded = 0 ;
@@ -127,7 +128,7 @@ fontdef P1C(int, siz)
    register fontmaptype *cfnt ;
    char *name, *area ;
    integer cksum, scsize, dssize ;
-   extern void skipover() ;
+   extern void skipover(int) ;
 
    fn = dvibyte() ;
    while (siz-- > 1)

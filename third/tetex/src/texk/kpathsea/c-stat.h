@@ -1,6 +1,6 @@
 /* c-stat.h: declarations for using stat(2).
 
-Copyright (C) 1993, 96 Free Software Foundation, Inc.
+Copyright (C) 1993, 96, 2000 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <sys/stat.h>
 
 #ifdef WIN32
-#include <kpathsea/win32lib.h>
+#include <oldnames.h>
 #endif /* WIN32 */
 
 /* POSIX predicates for testing file attributes.  */

@@ -1,5 +1,4 @@
-This is Info file dvips.info, produced by Makeinfo version 1.68 from
-the input file dvips.texi.
+This is dvips.info, produced by makeinfo version 4.4 from dvips.texi.
 
 INFO-DIR-SECTION TeX
 START-INFO-DIR-ENTRY
@@ -37,7 +36,7 @@ fl, ff, ffi, and ffl.)
    * Each Postscript font has an "Adobe font metrics" (`.afm') file.
      These files are plain text, so you can inspect them easily.  You
      can get AFM files for Adobe's fonts from
-     `ftp://ftp.adobe.com/pub/adobe/Fonts/AFMs'.
+     <ftp://ftp.adobe.com/pub/adobe/Fonts/AFMs>.
 
    * TeX uses "TeX font metrics" (`.tfm') files. When you say `\font =
      FONT' in your TeX document, TeX reads a file named `FONT.tfm'.
@@ -61,6 +60,7 @@ fl, ff, ffi, and ffl.)
      (`.pfm') files. These are binary files. They are irrelevant in the
      TeX world, and not freely available, so we will not discuss them
      further.
+
 
   The Afm2tfm program distributed with Dvips converts an AFM file to a
 TFM file and performs other useful transformations as well.  *Note
@@ -162,9 +162,9 @@ correspondence between "logical" characters and character codes.  For
 example, the ASCII encoding specifies that the character numbered 65
 (decimal) is an uppercase `A'.  The encoding does not specify what the
 character at that position looks like; there are lots of ways to draw an
-`A', and a glyph file (*note Glyph files::.) tells how.  Nor does it
+`A', and a glyph file (*note Glyph files::) tells how.  Nor does it
 specify how much space that character occupies; that information is in a
-metric file (*note Metric files::.).
+metric file (*note Metric files::).
 
   TeX implicitly assumes a particular encoding for the fonts you use
 with it.  For example, the plain TeX macro `\'', which typesets an
@@ -212,7 +212,7 @@ instructions in this typesetting program.
 you use in your document.  Fonts built into your printer (probably the
 standard 35: `Times-Roman', `ZapfDingbats', ...) are defined within the
 interpreter itself.  Other fonts must be downloaded as pfa or pfb files
-(*note Glyph files::.) from your host (the computer on which you're
+(*note Glyph files::) from your host (the computer on which you're
 running Dvips).
 
   You may be wondering exactly how a PostScript interpreter figures out
@@ -240,7 +240,7 @@ Here is how PostScript typesets the `S':
      currently being typeset in.
 
   3. One of the mandatory entries in a font dictionary is `Encoding',
-     which defines the encoding vector (*note Encodings::.) for that
+     which defines the encoding vector (*note Encodings::) for that
      font.  This vector of 256 names maps each possible input character
      to a name.
 
@@ -359,7 +359,7 @@ unless you buy them separately).  *Note Reencoding with Afm2tfm::.
 
   As a final step you need to record information about both the virtual
 font and the original font (if you ever might want to use it) in the
-`psfonts.map' file (*note psfonts.map::.).  For our example, you'd
+`psfonts.map' file (*note psfonts.map::).  For our example, you'd
 insert the following into `psfonts.map':
      rptmr      Times-Roman                 <ptmr8a.pfa
 
@@ -404,7 +404,7 @@ Changing font encodings
 -----------------------
 
   Afm2tfm allows you to specify a different encoding for a PostScript
-font (for a general introduction to encodings, *note Encodings::.). The
+font (for a general introduction to encodings, *note Encodings::). The
 `-t' options changes the TeX encoding, `-p' changes the PostScript
 encoding, and `-T' changes both simultaneously, as detailed in the
 sections below.
@@ -455,7 +455,7 @@ info is always omitted from the raw TFM.
 
   If you use this option, you must also arrange to download PS-ENC as
 part of any document that uses this font.  You do this by adding a line
-like the following one to `psfonts.map' (*note psfonts.map::.):
+like the following one to `psfonts.map' (*note psfonts.map::):
      zpopr Optima "MyEncoding ReEncodeFont" <myenc.enc
 
   Using `-p' is the only way to access characters in a PostScript font
@@ -465,7 +465,7 @@ extra characters `trademark' and `registered' (among others); these can
 only be accessed through such a PostScript reencoding.
 
   In fact, the `8r' base encoding used for the current PostScript font
-distribution (available at `ftp://ftp.tug.org/tex/psfonts.tar.gz') does
+distribution (available at <ftp://ftp.tug.org/tex/psfonts.tar.gz>) does
 do this reencoding, for precisely this reason.
 
 
@@ -547,6 +547,7 @@ default encoding
 
 `-T dc.enc'
           (CODINGSCHEME DCEncoding + DCEncoding)
+
 
 The `CODINGSCHEME' line appears in the VPL file but is ignored by Dvips.
 
@@ -725,7 +726,7 @@ that TeX understands.  The characters have the same code in the TFM
 file as in the AFM file.  For text fonts, this means printable ASCII
 characters will work ok, but little else, because standard PostScript
 fonts have a different encoding scheme than the one that plain TeX
-expects (*note Encodings::.).  Although both schemes agree for the
+expects (*note Encodings::).  Although both schemes agree for the
 printable ASCII characters, other characters such as ligatures and
 accents vary.  Thus, in practice, it's almost always desirable to create
 a virtual font as well with the `-v' or `-V' option.  *Note Making a
@@ -795,7 +796,7 @@ files and constructs.  Each line has the format:
      rpstrn StoneInformal <StoneInformal.pfb
 
 causes Dvips to download `StoneInformal.pfb' if your document (just as
-if it were a header file, *note Header files::.) uses the font
+if it were a header file, *note Header files::) uses the font
 `StoneInformal'.
 
   If the `j' config file or command-line option is enabled,
@@ -847,7 +848,7 @@ or Dvips will not download the font properly.
 format into printable ASCII so there is no need to perform this
 conversion yourself.  In addition, Dvips scans the font to determine its
 memory usage, just as it does for other header files (*note Header
-files::.).
+files::).
 
   Here is a brief summary of how `psfonts.map' is read:
 
@@ -935,7 +936,7 @@ changes (the whole document).  All the color names use a mixed case
 scheme to avoid conflicts with other macros.  There are 68 predefined
 colors, with names taken primarily from the Crayola crayon box of 64
 colors, and one pair of macros for the user to set his own color pattern
-(*note User-definable colors::.).  You can browse the file
+(*note User-definable colors::).  You can browse the file
 `colordvi.tex' for a list of the predefined colors.  The comments in
 this file also show a rough correspondence between the crayon names and
 Pantones.

@@ -29,10 +29,14 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997                   *
  ****************************************************************************/
-/* $Id: nc_alloc.h,v 1.1.1.1 2000-03-10 17:52:42 ghudson Exp $ */
+/* $Id: nc_alloc.h,v 1.1.1.2 2003-02-25 22:06:28 amb Exp $ */
 
 #ifndef NC_ALLOC_included
 #define NC_ALLOC_included 1
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #if HAVE_LIBDMALLOC
 #include <dmalloc.h>    /* Gray Watson's library */
@@ -52,21 +56,36 @@
 #define NO_LEAKS 0
 #endif
 
-#ifndef HAVE_NC_FREEALL
-#define HAVE_NC_FREEALL 0
-#endif
-
-#if HAVE_LIBDBMALLOC || HAVE_LIBDMALLOC || NO_LEAKS || HAVE_NC_FREEALL
+#if HAVE_LIBDBMALLOC || HAVE_LIBDMALLOC || NO_LEAKS
+#define HAVE_NC_FREEALL 1
 struct termtype;
 extern void _nc_free_and_exit(int) GCC_NORETURN;
 extern void _nc_free_tparm(void);
 extern void _nc_leaks_dump_entry(void);
-extern void _nc_free_termtype(struct termtype *, int);
 #define ExitProgram(code) _nc_free_and_exit(code)
 #endif
 
+#ifndef HAVE_NC_FREEALL
+#define HAVE_NC_FREEALL 0
+#endif
+
 #ifndef ExitProgram
-#define ExitProgram(code) return code
+#define ExitProgram(code) exit(code)
+#endif
+
+/* doalloc.c */
+extern NCURSES_EXPORT(void *) _nc_doalloc(void *, size_t);
+#if !HAVE_STRDUP
+#define strdup _nc_strdup
+extern NCURSES_EXPORT(char *) _nc_strdup(const char *);
+#endif
+
+#define typeMalloc(type,elts) (type *)malloc((elts)*sizeof(type))
+#define typeCalloc(type,elts) (type *)calloc((elts),sizeof(type))
+#define typeRealloc(type,elts,ptr) (type *)_nc_doalloc(ptr, (elts)*sizeof(type))
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* NC_ALLOC_included */

@@ -97,10 +97,10 @@ Fast macros to traverse a macro ending in a NULL element.
 
 */
 
-#define HTArray_firstObject(me, data) \
-	((me) && ((data)=(me)->data) ? *(data)++ : NULL)
-#define HTArray_nextObject(me, data) \
-	((me) && (data) ? *(data)++ : NULL)
+#define HTArray_firstObject(me, dp) \
+	((me) && ((dp)=(me)->data) ? *(dp)++ : NULL)
+#define HTArray_nextObject(me, dp) \
+	((me) && (dp) ? *(dp)++ : NULL)
 
 /*
 
@@ -113,7 +113,7 @@ function of the type:
 
 */
 
-typedef int HTComparer (const void * a, const void * b);
+typedef int CDECL HTComparer (const void * a, const void * b);
 
 /*
 
@@ -154,7 +154,7 @@ Returns the current size of the chunk
 
 
 
-@(#) $Id: HTArray.h,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+@(#) $Id: HTArray.h,v 1.1.1.2 2003-02-25 22:12:35 amb Exp $
 
 
 */

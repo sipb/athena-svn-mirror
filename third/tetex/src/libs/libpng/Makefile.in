@@ -1,7 +1,11 @@
-# Makefile for libpng - te@informatik.uni-hannover.de
+# Makefile for libpng - te@dbs.uni-hannover.de
 
-# Copyright (C) 1995 Guy Eric Schalnat, Group 42, Inc.
-# For conditions of distribution and use, see copyright notice in png.h
+# This file (together with libpng.ac withenable.ac) is
+# copyright Thomas Esser, 2002 and hereby put into the
+# public domain.
+
+# For conditions of distribution and use of the other files in this
+# directory, see copyright notice in png.h.
 
 ac_include ../texk/make/common.mk
 ac_include ../texk/make/programs.mk
@@ -18,30 +22,34 @@ OBJS = png.o pngset.o pngget.o pngrutil.o pngtrans.o pngwutil.o \
 all: libpng.a
 
 libpng.a: $(OBJS)
-	$(AR) $(ARFLAGS) $@  $(OBJS)
+	rm -f $@
+	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
 mostlyclean clean:
 	rm -f *.o libpng.a pngtest pngout.png
 
-distclean extraclean maintainer-clean: clean
+distclean realclean extraclean maintainer-clean: clean
 	rm -f config.status config.log Makefile
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 
-png.o: png.h pngconf.h
-pngerror.o: png.h pngconf.h
-pngrio.o: png.h pngconf.h
-pngwio.o: png.h pngconf.h
-pngmem.o: png.h pngconf.h
-pngset.o: png.h pngconf.h
-pngget.o: png.h pngconf.h
-pngread.o: png.h pngconf.h
-pngrtran.o: png.h pngconf.h
-pngrutil.o: png.h pngconf.h
-pngtest.o: png.h pngconf.h
-pngtrans.o: png.h pngconf.h
-pngwrite.o: png.h pngconf.h
-pngwtran.o: png.h pngconf.h
-pngwutil.o: png.h pngconf.h
-pngpread.o: png.h pngconf.h
+example.o: example.c
+png.o: png.c png.h pngconf.h
+pngerror.o: pngerror.c png.h pngconf.h
+pnggccrd.o: pnggccrd.c png.h pngconf.h
+pngget.o: pngget.c png.h pngconf.h
+pngmem.o: pngmem.c png.h pngconf.h
+pngpread.o: pngpread.c png.h pngconf.h
+pngread.o: pngread.c png.h pngconf.h
+pngrio.o: pngrio.c png.h pngconf.h
+pngrtran.o: pngrtran.c png.h pngconf.h
+pngrutil.o: pngrutil.c png.h pngconf.h
+pngset.o: pngset.c png.h pngconf.h
+pngtest.o: pngtest.c png.h pngconf.h
+pngtrans.o: pngtrans.c png.h pngconf.h
+pngvcrd.o: pngvcrd.c png.h pngconf.h
+pngwio.o: pngwio.c png.h pngconf.h
+pngwrite.o: pngwrite.c png.h pngconf.h
+pngwtran.o: pngwtran.c png.h pngconf.h
+pngwutil.o: pngwutil.c png.h pngconf.h

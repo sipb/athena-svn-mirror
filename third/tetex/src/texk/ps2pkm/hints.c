@@ -111,7 +111,7 @@ void CloseHints(hintP)
  
       oldHint[i].inuse = FALSE;
  
-      IfTrace3((HintDebug > 1),"  Hint %d was open, hint=(%p,%p)\n",
+      IfTrace3((HintDebug > 1),"  Hint %d was open, hint=(%dl,%dl)\n",
                 i, hintP->x, hintP->y);
       }
     }
@@ -126,9 +126,9 @@ static void ComputeHint(hP, currX, currY, hintP)
   fractpel currX, currY;
   struct fractpoint *hintP;
 {
-  fractpel currRef, currWidth;
+  fractpel currRef = 0, currWidth = 0;
   int idealWidth;
-  fractpel hintValue;
+  fractpel hintValue = 0;
   char orientation;
  
 /*
@@ -167,11 +167,11 @@ multiple of 90 degrees.
     }
   else                             /* error */
     {
-    abort("ComputeHint: invalid orientation");
+    t1_abort("ComputeHint: invalid orientation");
     }
  
   IfTrace4((HintDebug > 1),
-    "  currX=%p, currY=%p, currRef=%p, currWidth=%p\n",
+    "  currX=%dl, currY=%dl, currRef=%dl, currWidth=%dl\n",
     currX, currY,
     currRef, currWidth);
  
@@ -201,10 +201,10 @@ multiple of 90 degrees.
     }
   else                           /* error */
     {
-    abort("ComputeHint: invalid hinttype");
+    t1_abort("ComputeHint: invalid hinttype");
     }
  
-  IfTrace1((HintDebug > 1),"  hintValue=%p", hintValue);
+  IfTrace1((HintDebug > 1),"  hintValue=%dl", hintValue);
  
   if (orientation == 'v')      /* vertical */
     {
@@ -218,7 +218,7 @@ multiple of 90 degrees.
     }
   else                             /* error */
     {
-    abort("ComputeHint: invalid orientation");
+    t1_abort("ComputeHint: invalid orientation");
     }
 }
  
@@ -233,7 +233,7 @@ void ProcessHint(hP, currX, currY, hintP)
 {
   struct fractpoint thisHint;
  
-  IfTrace4((HintDebug > 1),"  ref=(%p,%p), width=(%p,%p)",
+  IfTrace4((HintDebug > 1),"  ref=(%dl,%dl), width=(%dl,%dl)",
       hP->ref.x, hP->ref.y,
       hP->width.x, hP->width.y);
   IfTrace4((HintDebug > 1),", %c %c %c %c",
@@ -267,7 +267,7 @@ void ProcessHint(hP, currX, currY, hintP)
       }
     else                             /* error */
       {
-      abort("ProcessHint: invalid label");
+      t1_abort("ProcessHint: invalid label");
       }
     }
   else if (hP->adjusttype == 'r')  /* Reverse */
@@ -283,26 +283,26 @@ void ProcessHint(hP, currX, currY, hintP)
         }
       else                           /* error */
         {
-        abort("ProcessHint: label is not in use");
+        t1_abort("ProcessHint: label is not in use");
         }
       }
     else                           /* error */
       {
-      abort("ProcessHint: invalid label");
+      t1_abort("ProcessHint: invalid label");
       }
  
     }
   else                           /* error */
     {
-    abort("ProcessHint: invalid adjusttype");
+    t1_abort("ProcessHint: invalid adjusttype");
     }
-  IfTrace3((HintDebug > 1),"  label=%d, thisHint=(%p,%p)\n",
+  IfTrace3((HintDebug > 1),"  label=%d, thisHint=(%dl,%dl)\n",
     hP->label, thisHint.x, thisHint.y);
  
   hintP->x += thisHint.x;
   hintP->y += thisHint.y;
  
-  IfTrace2((HintDebug > 1),"  hint=(%p,%p)\n",
+  IfTrace2((HintDebug > 1),"  hint=(%dl,%dl)\n",
     hintP->x, hintP->y);
 }
  
@@ -386,8 +386,10 @@ static pel SearchXofY(edge, y)
        else
                return(XofY(edge, y));
  
-       abort("bad subpath chain");
+       t1_abort("bad subpath chain");
+
        /*NOTREACHED*/
+       return MINPEL;
 }
 /*
 :h3.ISBREAK() Macro - Tests if an Edge List is at a "Break"
@@ -467,8 +469,9 @@ Now we have everything to return the answer:
        else if (ISBOTTOM(e1->flag) && y == e1->ymax)
                return(!ISDOWN(e2->flag));
        else
-               abort("ImpliedHorizontalLine:  why ask?");
+               t1_abort("ImpliedHorizontalLine:  why ask?");
        /*NOTREACHED*/
+       return 0;
 }
  
 /*
@@ -491,7 +494,7 @@ static void FixSubPaths(R)
        register struct edgelist *edge;  /* current edge in region            */
        register struct edgelist *next;  /* next in subpath after 'edge'      */
        register struct edgelist *break1;  /* first break after 'next'        */
-       register struct edgelist *break2;  /* last break before 'edge'        */
+       register struct edgelist *break2 = NULL;  /* last break before 'edge'        */
        register struct edgelist *prev;    /* previous edge for fixing links  */
        int left = TRUE;
  
@@ -506,7 +509,7 @@ static void FixSubPaths(R)
                if (!ISBREAK(edge, next))
                        continue;
                if (edge->ymax < next->ymin)
-                       abort("disjoint subpath?");
+                       t1_abort("disjoint subpath?");
 /*
 'edge' now contains an edgelist at the bottom of an edge, and 'next'
 contains the next subsequent edgelist in the subpath, which must be at
@@ -567,7 +570,7 @@ as 'next':
  
                break1->subpath = break2->subpath;
                if (ISBREAK(break1, break1->subpath))
-                       abort("unable to fix subpath break?");
+                       t1_abort("unable to fix subpath break?");
  
                break2->subpath = next;
  
@@ -642,9 +645,9 @@ static void DumpSubPaths(anchor)
                IfTrace0(TRUE, "BEGIN Subpath\n");
                for (e2 = edge; !ISPERMANENT(e2->flag);) {
                        if (ISDOWN(e2->flag)) {
-                               IfTrace1(TRUE, ". Downgoing edge's top at %x\n", e2);
+                               IfTrace1(TRUE, ". Downgoing edge's top at %p\n", e2);
                                for (e = e2;; e = e->subpath) {
-                                       IfTrace4(TRUE, ". . [%5d] %5d    @ %x[%x]\n",
+                                       IfTrace4(TRUE, ". . [%5d] %5d    @ %p[%x]\n",
                                                 e->ymin, *e->xvalues, e, e->flag);
                                        for (y=e->ymin+1; y < e->ymax; y++)
                                                IfTrace2(TRUE, ". . [%5d] %5d     \"\n", y, e->xvalues[y-e->ymin]);
@@ -654,10 +657,10 @@ static void DumpSubPaths(anchor)
                                }
                        }
                        else {
-                               IfTrace1(TRUE, ". Upgoing edge's top at %x\n", e2);
+                               IfTrace1(TRUE, ". Upgoing edge's top at %p\n", e2);
                                for (e = e2; !ISBREAK(e, e->subpath); e = e->subpath) { ; }
                                for (;; e=before(e)) {
-                                       IfTrace4(TRUE, ". . [%5d] %5d    @ %x[%x]\n",
+                                       IfTrace4(TRUE, ". . [%5d] %5d    @ %p[%x]\n",
                                                 e->ymax-1, e->xvalues[e->ymax-1-e->ymin], e, e->flag);
                                        for (y=e->ymax-2; y >= e->ymin; y--)
                                                IfTrace2(TRUE, ". . [%5d] %5d      \"\n", y, e->xvalues[y-e->ymin]);

@@ -283,7 +283,7 @@ kpse_find_glyph P4C(const_string, passed_fontname,  unsigned, dpi,
     /* If mktex... succeeded, set return struct.  Doesn't make sense for
        `kpse_make_tex' to set it, since it can only succeed or fail,
        unlike the other routines.  */
-    if (ret) {
+    if (ret && glyph_file) {
       KPSE_GLYPH_FILE_DPI (*glyph_file) = dpi;
       KPSE_GLYPH_FILE_NAME (*glyph_file) = fontname;
     }
@@ -311,7 +311,8 @@ kpse_find_glyph P4C(const_string, passed_fontname,  unsigned, dpi,
   
   /* If RET is null, then the caller is not supposed to look at GLYPH_FILE,
      so it doesn't matter if we assign something incorrect.  */
-  KPSE_GLYPH_FILE_SOURCE (*glyph_file) = source;
+  if (glyph_file)
+    KPSE_GLYPH_FILE_SOURCE (*glyph_file) = source;
 
   /* FIXME: fontname may have been allocated, but (worse) it may also
      have been assigned to struct that's passed out of this function.

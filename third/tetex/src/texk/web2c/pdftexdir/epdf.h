@@ -1,3 +1,25 @@
+/*
+Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+
+This file is part of pdfTeX.
+
+pdfTeX is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+pdfTeX is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pdfTeX; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+$Id: epdf.h,v 1.1.1.2 2003-02-25 22:12:55 amb Exp $
+*/
+
 extern "C" {
 
 #include <kpathsea/c-auto.h>
@@ -6,8 +28,7 @@ extern "C" {
 
 #include <kpathsea/c-proto.h>     /* define P?H macros */
 
-typedef const char *const_string; /* including kpathsea/types.h */
-                                  /* doesn't work on some systems */
+typedef const char *const_string; /* including kpathsea/types.h doesn't work on some systems */
 
 #define KPATHSEA_CONFIG_H         /* avoid including other kpathsea header files */
                                   /* from web2c/config.h */
@@ -16,39 +37,67 @@ typedef const char *const_string; /* including kpathsea/types.h */
 #undef CONFIG_H                   /* header file */
 #endif
 
+#include <web2c/c-auto.h>         /* define SIZEOF_LONG */
 #include <web2c/config.h>         /* define type integer */
 
-extern int epdf_width;
-extern int epdf_height;
-extern int epdf_orig_x;
-extern int epdf_orig_y;
+#include <web2c/pdftexdir/ptexmac.h>
+
+#define pdfbufsize      pdfbufmax
+
+extern float epdf_width;
+extern float epdf_height;
+extern float epdf_orig_x;
+extern float epdf_orig_y;
+extern integer epdf_selected_page;
+extern integer epdf_num_pages;
+extern integer epdf_page_box;
+extern integer epdf_always_use_pdf_pagebox;
 extern void *epdf_doc;
 extern void *epdf_xref;
-extern integer pdfimageb;
-extern integer pdfimagec;
-extern integer pdfimagei;
-extern integer pdftext;
-extern integer pdfincludeformresources;
 
-extern integer read_pdf_info(char*);
-extern void write_epdf(integer, integer);
-extern void epdf_delete();
-extern void epdf_free();
-extern void epdf_check_mem();
-extern void writeEPDF(char *fmt,...);
-extern void pdfout(int);
-extern integer zpdfcreateobj(integer, integer);
-extern integer zpdfnewobj(integer, integer);
-extern integer zpdfnewdict(integer, integer);
-extern integer zpdfbeginobj(integer);
-extern integer zpdfbegindict(integer);
-extern void pdfprintimageattr();
-extern void add_extra_xobjects();
-extern void add_other_resources();
-extern void add_extra_fonts();
-extern void add_resources_name(char *);
-extern void pdfbeginstream();
-extern void pdfendstream();
-extern integer objptr;
 extern integer pdfstreamlength;
+extern integer pdfptr;
+typedef unsigned char eightbits  ;
+extern eightbits pdfbuf[];
+extern integer pdfbufmax;
+
+extern char notdef[];
+
+extern int is_subsetable(int);
+extern int is_type1(int);
+extern int lookup_fontmap(char *);
+extern integer get_fontfile(int);
+extern integer get_fontname(int);
+extern integer pdfnewobjnum(void);
+extern integer read_pdf_info(char*, char*, integer, integer, integer);
+extern void embed_whole_font(int);
+extern void epdf_check_mem(void);
+extern void epdf_delete(void);
+extern void epdf_free(void);
+extern void mark_glyphs(int, char *);
+extern void pdf_printf(char *fmt,...);
+extern void pdf_puts(char *);
+extern void pdfbeginstream(void);
+extern void pdfendobj(void);
+extern void pdfendstream(void);
+extern void pdfflush(void);
+extern void pdftex_fail(char *fmt,...);
+extern void pdftex_warn(char *fmt,...);
+extern void tex_printf(char *, ...);
+extern void write_enc(char **, integer);
+extern void write_epdf(void);
+extern void zpdfbegindict(integer);
+extern void zpdfbeginobj(integer);
+extern void zpdfcreateobj(integer, integer);
+extern void zpdfnewdict(integer, integer);
+
+/* utils.c */
+extern void convertStringToPDFString(char *in, char *out);
+
+/* config.c */
+extern integer cfgpar(integer);
+
+// FIXME: This definition is a duplicate from ../pdftexd.h and must be the
+// same as in pdftex.ch
+#define cfgalwaysusepdfpageboxcode ( 71 ) 
 }

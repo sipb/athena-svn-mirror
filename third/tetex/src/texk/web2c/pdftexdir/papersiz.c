@@ -1,8 +1,30 @@
+/*
+Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+
+This file is part of pdfTeX.
+
+pdfTeX is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+pdfTeX is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pdfTeX; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+$Id: papersiz.c,v 1.1.1.2 2003-02-25 22:09:32 amb Exp $
+*/
+
 /*   
  *   This file is a part of dvipsk distribution.
  *   It is (C) Copyright 1986-94 by Tomas Rokicki.
  *
- *   Modified for use with pdftex by Han The Thanh <thanh@fi.muni.cz>.
+ *   Modified for use with pdftex by Han The Thanh <thanh@pdftex.org>.
  */
 
 /*
@@ -19,8 +41,7 @@
  *      0 <= whole
  */
 
-#include "libpdftex.h"
-extern boolean true_dimen;
+#include "ptexlib.h"
 
 static long scale(long whole, long num, long den, long sf)
 {
@@ -96,14 +117,12 @@ integer myatodim(char **s)
          p++ ;
       }
    }
-   while (*p == ' ')
-      p++ ;
+   skip(p, ' ');
    true_dimen = false;
    if (strncmp(p, "true", strlen("true")) == 0) {
      true_dimen = true;
      p += strlen("true");
-     while (*p == ' ')
-        p++ ;
+     skip(p, ' ');
    }
    for (i=0, q=scalenames; ; i++, q += 2)
       if (*q == 0) {

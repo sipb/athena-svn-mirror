@@ -39,6 +39,11 @@
 #define SF_DO_SCROLL		1
 #define SF_DO_NOT_SCROLL	0
 
+/* for unused parameters */
+#ifndef UNUSED
+#define UNUSED(x) ((void)(x))
+#endif
+
 typedef struct {
 	int	statDone;
 	char	*real;

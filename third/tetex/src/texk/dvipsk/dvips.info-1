@@ -1,5 +1,4 @@
-This is Info file dvips.info, produced by Makeinfo version 1.68 from
-the input file dvips.texi.
+This is dvips.info, produced by makeinfo version 4.4 from dvips.texi.
 
 INFO-DIR-SECTION TeX
 START-INFO-DIR-ENTRY
@@ -116,12 +115,12 @@ program.  Therefore, for the basic steps involved, *note Installation:
   For solutions to common installation problems and information on how
 to report a bug, see the file `kpathsea/BUGS' (*note Bugs:
 (kpathsea)Bugs.).  For solutions to Dvips-specific problems, *note
-Debug options::..  Also see the Dvips home page at
-`http://www.radicaleye.com/dvips'.
+Debug options::.  Also see the Dvips home page at
+<http://www.radicaleye.com/dvips>.
 
   Dvips does require some additional installation, detailed in the
 sections below.  Also, to configure color devices, *note Color device
-configuration::..
+configuration::.
 
 * Menu:
 
@@ -161,7 +160,7 @@ pleasure:
      
      % Metafont mode.  (This is completely different from the -M command-line
      % option, which controls whether MakeTeXPK is invoked.)  Get
-     % `ftp://ftp.tug.org/tex/modes.mf' for a list of mode names.  This mode
+     % <ftp://ftp.tug.org/tex/modes.mf> for a list of mode names.  This mode
      % and the D number above must agree, or MakeTeXPK will get confused.
      M ljfour
      
@@ -210,7 +209,7 @@ Font concepts::.
 
   To support the basic PostScript font set, the recommended (and
 simplest) approach is to retrieve
-`ftp://ftp.tug.org/tex/psfonts.tar.gz' and unpack it in your
+<ftp://ftp.tug.org/tex/psfonts.tar.gz> and unpack it in your
 `$(fontdir)' directory (`/usr/local/share/texmf/fonts' by default).
 This archive contains metrics, outlines, and bitmaps (for previewing)
 for the 35 de facto standard fonts donated by URW and the additional
@@ -226,9 +225,9 @@ a copy is in the top-level file `INSTALL'.)
 
   If you have additional PostScript fonts, you can make them available
 to Dvips by (1) giving them with appropriate filenames; and (2) running
-Afm2tfm (*note Making a font available::.) to make TFM and VF metrics
-for TeX and Dvips to use.  Also add them to `psfonts.map' if necessary
-(*note psfonts.map::.); it contains everything contained in
+Afm2tfm (*note Making a font available::) to make TFM and VF metrics for
+TeX and Dvips to use.  Also add them to `psfonts.map' if necessary
+(*note psfonts.map::); it contains everything contained in
 `psfonts.tar.gz' and most fonts that come with Unix systems.
 
   Following are locations for vendor-supplied fonts.  Please mail
@@ -288,12 +287,12 @@ Ghostscript installation
 written by Peter Deutsch.  It can read the PostScript produced by Dvips
 and render it on your monitor, or for another device (e.g., an Epson
 printer) that does not support PostScript, or in PDF format.  The latest
-version is available via `http://www.cs.wisc.edu/~ghost/index.html' and
-`ftp://ftp.cs.wisc.edu/pub/ghost/aladdin/'.
+version is available via <http://www.cs.wisc.edu/~ghost/index.html> and
+<ftp://ftp.cs.wisc.edu/pub/ghost/aladdin/>.
 
   A somewhat older version of Ghostscript is available under the GNU
 General Public License, free to everyone.  You can get that from
-`ftp://prep.ai.mit.edu/pub/gnu/'.
+<ftp://prep.ai.mit.edu/pub/gnu/>.
 
   The program Ghostview, written by Tim Theisen, provides typical
 previewing capabilities (next page/previous page, magnification, etc.).
@@ -409,7 +408,7 @@ unable to print with any but builtin fonts.
   If Dvips gives any strange error messages, or compilation on your
 machine generated a lot of warnings, perhaps the Dvips program itself is
 broken.  Try using the debug options to determine where the error
-occurred (*note Debug options::.).
+occurred (*note Debug options::).
 
   It is possible your spooler is broken and is misinterpreting the
 structured comments.  Try the `-N' flag to turn off structured comments
@@ -455,7 +454,7 @@ sure you adjust the correct file.
 don't nest properly in other PostScript documents, among other things.
 Try the PostScript file on a QMS PS-810 or other Adobe PostScript
 printer if you have one, or Ghostscript (*note Ghostscript
-installation::.); it might be a problem with the printer itself.
+installation::); it might be a problem with the printer itself.
 
 
 File: dvips.info,  Node: Long documents fail,  Next: Including graphics fails,  Prev: Printer errors,  Up: Diagnosing problems
@@ -473,7 +472,7 @@ Including graphics fails
 ------------------------
 
   The most common problem with including graphics is an incorrect
-bounding box (*note Bounding box::.). Complain to whoever wrote the
+bounding box (*note Bounding box::). Complain to whoever wrote the
 software that generated the file if the bounding box is indeed
 incorrect.
 
@@ -550,7 +549,7 @@ section will give a good idea of the capabilities of the driver.
 
 * Menu:
 
-* Option summary::              Quick listing, from Dvips -help.
+* Option summary::              Quick listing, from Dvips --help.
 * Option details::              More information about each option.
 
 
@@ -563,38 +562,36 @@ Option summary
 Dvips with no arguments or with the standard `--help' option.
 
      Usage: dvips [OPTION]... FILENAME[.dvi]
-       Translate the given DVI file to PostScript.
-     
      a*  Conserve memory, not time      A   Print only odd (TeX) pages
-     b # Page copies, e.g., for posters B   Print only even (TeX) pages
+     b # Page copies, for posters e.g.  B   Print only even (TeX) pages
      c # Uncollated copies              C # Collated copies
      d # Debugging                      D # Resolution
-     e # Maxdrift value                 E*  Create minimal EPSF
+     e # Maxdrift value                 E*  Try to create EPSF
      f*  Run as filter                  F*  Send control-D at end
-     h f Add header file f              H f Same as h
+                                        G*  Shift low chars to higher pos.
+     h f Add header file
      i*  Separate file per section
-     j*  Partially download Type 1's
+     j*  Download fonts partially
      k*  Print crop marks               K*  Pull comments from inclusions
      l # Last page
      m*  Manual feed                    M*  Don't make fonts
+     mode s Metafont device name
      n # Maximum number of pages        N*  No structured comments
      o f Output file                    O c Set/change paper offset
      p # First page                     P s Load config.$s
+     pp l Print only pages listed
      q*  Run quietly
-     r*  Reverse order of pages         R   Run securely
+     r*  Reverse order of pages         R*  Run securely
      s*  Enclose output in save/restore S # Max section size in pages
      t s Paper format                   T c Specify desired page size
-                                        U*  Disable string param trick
-                                        V*  Send downloadable PS fonts as PK
+     u s PS mapfile                     U*  Disable string param trick
+     v   Print version number and quit  V*  Send downloadable PS fonts as PK
      x # Override dvi magnification     X # Horizontal resolution
      y # Multiply by dvi magnification  Y # Vertical resolution
-     z*  Hyperdvi to HyperPostScript    Z*  Compress bitmap fonts
-     -   Query interactively for options
-     pp #-# First-last page
-     mode s Set mode to s
-     
-         # = number   f = file   s = string   * = suffix, 0 to turn off
-         c = comma-separated dimension pair (e.g., 3.1in,-41.5cm)
+     z*  Hyper PS                       Z*  Compress bitmap fonts
+         # = number   f = file   s = string  * = suffix, `0' to turn off
+         c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
+         l = comma-separated list of page ranges (e.g., 1-4,7-9)
      
      Email bug reports to tex-k@mail.tug.org.
 
@@ -665,7 +662,7 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
      should probably also be used.  If you are using fonts made with
      Metafont, such as Computer Modern, `mktexpk' needs to know about
      the value for NUM that you use or Metafont will fail.  See the file
-     `ftp://ftp.tug.org/tex/modes.mf' for a list of resolutions and mode
+     <ftp://ftp.tug.org/tex/modes.mf> for a list of resolutions and mode
      names for most devices.
 
 `-e NUM'
@@ -714,6 +711,10 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
      personal systems.  On systems shared by more than one person, this
      is not recommended.
 
+`-G*'
+     Shift non-printing characters (ASCII 0-32, 127) to higher-numbered
+     positions.  This may be useful sometimes.
+
 `-h NAME'
      Prepend NAME as an additional header file, or, if NAME is `-',
      suppress all header files.  Any definitions in the header file get
@@ -735,8 +736,8 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
 `-j*'
      Download only needed characters from Type 1 fonts. This is the
      default in the current release.  Some debugging flags trace this
-     operation (*note Debug options::.).  You can also control partial
-     downloading on a per-font basis (*note psfonts.map::.).
+     operation (*note Debug options::).  You can also control partial
+     downloading on a per-font basis (*note psfonts.map::).
 
 `-k*'
      Print crop marks.  This option increases the paper size (which
@@ -816,7 +817,7 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
 
 `-O X-OFFSET,Y-OFFSET'
      Move the origin by X-OFFSET,Y-OFFSET, a comma-separated pair of
-     dimensions such as `.1in,-.3cm' (*note papersize special::.).  The
+     dimensions such as `.1in,-.3cm' (*note papersize special::).  The
      origin of the page is shifted from the default position (of one
      inch down, one inch to the right from the upper left corner of the
      paper) by this amount.  This is usually best specified in the
@@ -830,7 +831,7 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
 
      If your printer offsets every other page consistently, instead of
      every page, your best recourse is to use `bop-hook' (*note
-     PostScript hooks::.).
+     PostScript hooks::).
 
 `-p [=]NUM'
      The first page printed will be the first one numbered NUM. Default
@@ -869,9 +870,9 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
 
 `-R'
      Run securely.  This disables shell command execution in `\special'
-     (via ``', *note Dynamic creation of graphics::.) and config files
-     (via the `E' option, *note Configuration file commands::.), pipes
-     as output files, and opening of any absolute filenames.
+     (via ``', *note Dynamic creation of graphics::) and config files
+     (via the `E' option, *note Configuration file commands::), pipes as
+     output files, and opening of any absolute filenames.
 
 `-s*'
      Enclose the output in a global save/restore pair.  This causes the
@@ -888,16 +889,24 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
 `-t PAPERTYPE'
      Set the paper type to PAPERTYPE, usually defined in one of the
      configuration files, along with the appropriate PostScript code to
-     select it (*note Config file paper sizes::.).  You can also
-     specify a PAPERTYPE of `landscape', which rotates a document by 90
+     select it (*note Config file paper sizes::).  You can also specify
+     a PAPERTYPE of `landscape', which rotates a document by 90
      degrees.  To rotate a document whose paper type is not the
      default, you can use the `-t' option twice, once for the paper
      type, and once for `landscape'.
 
 `-T HSIZE,VSIZE'
      Set the paper size to (HSIZE,VSIZE), a comma-separated pair of
-     dimensions such as `.1in,-.3cm' (*note papersize special::.).  It
+     dimensions such as `.1in,-.3cm' (*note papersize special::).  It
      overrides any paper size special in the DVI file.
+
+`-u PSMAPFILE'
+     Set PSMAPFILE to be the file that dvips uses for looking up
+     PostScript font aliases.  If PSMAPFILE begins with a `+'
+     character, then the rest of the name is used as the name of the
+     map file, and the map file is appended to the list of map files
+     (instead of replacing the list).  In either case, if the name has
+     no extension, then `.map' is added at the end.
 
 `-U*'
      Disable a PostScript virtual memory-saving optimization that
@@ -906,6 +915,9 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
      driving the Xerox 4045 PostScript interpreter, which has a bug
      that puts garbage on the bottom of each character.  Not
      recommended unless you must drive this printer.
+
+`-v'
+     Print the dvips version number and exit.
 
 `-V*'
      Download non-resident PostScript fonts as bitmaps.  This requires
@@ -945,7 +957,8 @@ reversal, use `-r0'.  Such options are marked with a trailing `*'.
      resolutions or when very large fonts are used.  May slow down
      printing, especially on early 68000-based PostScript printers.
      Generally recommend today, and can be enabled in the configuration
-     file (*note Configuration file commands::.).
+     file (*note Configuration file commands::).
+
 
 
 File: dvips.info,  Node: Environment variables,  Next: Config files,  Prev: Command-line options,  Up: Invoking Dvips
@@ -971,7 +984,7 @@ Dvips are mentioned here.
 
 `DVIPSHEADERS'
      Default path to search for PostScript header files.  Overrides the
-     `H' config file option (*note Configuration file commands::.).
+     `H' config file option (*note Configuration file commands::).
 
 `DVIPSMAKEPK'
      Overrides `mktexpk' as the name of the program to invoke to create
@@ -981,12 +994,12 @@ Dvips are mentioned here.
 
 `DVIPSRC'
      Specifies the name of the startup file (*note Configuration file
-     searching::.) which is read after `config.ps' but before any
+     searching::) which is read after `config.ps' but before any
      printer-specific configuration files.
 
 `DVIPSSIZES'
      Last-resort sizes for scaling of unfound fonts.  Overrides the `R'
-     definition in config files (*note Configuration file commands::.).
+     definition in config files (*note Configuration file commands::).
 
 `PRINTER'
      Determine the default printer configuration file.  (Dvips itself
@@ -1002,9 +1015,10 @@ Dvips are mentioned here.
 
 `TEXPICTS'
      Path to search for included graphics files.  Overrides the `S'
-     config file option (*note Configuration file commands::.).  If not
+     config file option (*note Configuration file commands::).  If not
      set, `TEXINPUTS' is looked for.  *Note Supported file formats:
      (kpathsea)Supported file formats.
+
 
 
 File: dvips.info,  Node: Config files,  Prev: Environment variables,  Up: Invoking Dvips
@@ -1018,7 +1032,7 @@ configuration files (called `*.cfg' on MS-DOS), which override the
 reads (*note Config files: (kpathsea)Config files.).
 
   For information about installing these files, including a prototype
-file you can copy, *note config.ps installation::..
+file you can copy, *note config.ps installation::.
 
 * Menu:
 
@@ -1090,6 +1104,7 @@ overridden by configuration files:
 `-o'
      This overrides any output setting (`o' line) in configuration
      files.
+
 
   The purpose of these special cases is to (1) minimize the chance of
 having a mismatched mode and resolution (which `mktexpk' cannot

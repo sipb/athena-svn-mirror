@@ -368,10 +368,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'gftopk'); {|getopt| has already given an error message.}
+      usage ('gftopk'); {|getopt| has already given an error message.}
 
     end else if argument_is ('help') then begin
-      usage (0, GFTOPK_HELP);
+      usage_help (GFTOPK_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'Tomas Rokicki');
@@ -383,7 +383,7 @@ begin
    We must have one or two remaining arguments.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'gftopk: Need one or two file arguments.');
-    usage (1, 'gftopk');
+    usage ('gftopk');
   end;
   
   gf_name := cmdline (optind);

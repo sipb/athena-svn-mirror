@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTMerge.c,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+**	@(#) $Id: HTMerge.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	The Merge class just is a n entry stream. Easy. The reason for having
 **	this stream is that we must be able to handle free and abort in an
@@ -56,8 +56,7 @@ PRIVATE int HTMerge_flush (HTStream * me)
 PRIVATE int HTMerge_free (HTStream * me)
 {
     if (me) {
-	if (STREAM_TRACE)
-	    HTTrace("Merge Free.. Called with %d feeds\n", me->feeds);
+	HTTRACE(STREAM_TRACE, "Merge Free.. Called with %d feeds\n" _ me->feeds);
 	if (--me->feeds <= 0) {
 	    (*me->target->isa->_free)(me->target);
 	    HT_FREE(me);
@@ -70,8 +69,7 @@ PRIVATE int HTMerge_free (HTStream * me)
 PRIVATE int HTMerge_abort (HTStream * me, HTList * e)
 {
     if (me) {
-	if (STREAM_TRACE)
-	    HTTrace("Merge Abort. Called with %d feeds\n", me->feeds);
+	HTTRACE(STREAM_TRACE, "Merge Abort. Called with %d feeds\n" _ me->feeds);
 	if (--me->feeds <= 0) {
 	    (*me->target->isa->abort)(me->target, e);
 	    HT_FREE(me);
@@ -99,6 +97,6 @@ PUBLIC HTStream * HTMerge (HTStream * target, int feeds)
     me->isa = &HTMergeClass;
     me->target = target ? target : HTBlackHole();
     me->feeds = feeds >= 1 ? feeds : 1;			       /* Min 1 feed */
-    if (STREAM_TRACE) HTTrace("Merge....... Created stream %p\n", me);
+    HTTRACE(STREAM_TRACE, "Merge....... Created stream %p\n" _ me);
     return me;
 }

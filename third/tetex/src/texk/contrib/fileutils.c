@@ -39,130 +39,6 @@ execute_command(string cmd)
   return retcode;
 }
 
-/*
-  FIXME: this should go into kpathsea/win32lib.c and replace 
-  the standard system()
-*/
-int win32_system(string cmd)
-{
-  STARTUPINFO si;
-  PROCESS_INFORMATION pi;
-  DWORD ret = 0;
-  char *env_path;
-  char *new_cmd, *app_name = NULL;
-  char *p, *q;
-  char pname[PATH_MAX], *fp;
-  char *suffixes[] = { ".bat", ".cmd", ".com", ".exe", NULL };
-  char **s;
-  boolean go_on;
-
-  ZeroMemory( &si, sizeof(STARTUPINFO) );
-  si.cb = sizeof(STARTUPINFO);
-  si.dwFlags = STARTF_USESHOWWINDOW /* | STARTF_USESTDHANDLES */ ;
-  si.wShowWindow = SW_SHOW;
-
-  for (p = cmd; *p && isspace(*p); p++);
-  if (*p == '"') {
-    q = ++p;
-    while(*p && *p != '"') p++;
-    if (*p != '\0') {
-      fprintf(stderr, "system: malformed command (\" not terminated)\n");
-      return -1;
-    }
-  }
-  else
-    for (q = p; *p && !isspace(*p); p++);
-  /* q points to the beginning of appname, p to the last + 1 char */
-  if ((app_name = malloc(p - q + 1)) == NULL) {
-    fprintf(stderr, "system: malloc(app_name) failed.\n");
-    return -1;
-  }
-  strncpy(app_name, q, p - q );
-  app_name[p - q] = '\0';
-  pname[0] = '\0';
-#ifdef TRACE
-  fprintf(stderr, "popen: app_name = %s\n", app_name);
-#endif
-
-  env_path = getenv("PATH");
-  env_path = concat(".;", env_path);
-
-  /* Looking for appname on the path */
-  for (s = suffixes, go_on = true; go_on; *s++) {
-    if (SearchPath(env_path,	/* Address of search path */
-		   app_name,	/* Address of filename */
-		   *s,		/* Address of extension */
-		   PATH_MAX,	/* Size of destination buffer */
-		   pname,	/* Address of destination buffer */
-		   &fp)		/* File part of app_name */
-      != 0) {
-#ifdef TRACE
-      fprintf(stderr, "%s found with suffix %s\nin %s\n", app_name, *s, pname);
-#endif
-      new_cmd = xstrdup(cmd);
-      free(app_name);
-      app_name = xstrdup(pname);
-      break;
-    }
-    go_on = (*s != NULL);
-  }
-  if (go_on == false) {
-    /* the app_name was not found */
-#ifdef TRACE
-    fprintf(stderr, "%s not found, concatenating comspec\n", app_name);
-#endif
-    new_cmd = concatn(getenv("COMSPEC"), " /c ", cmd, NULL);
-    free(app_name);
-    app_name = NULL;
-  }
-  else {
-  }
-  if (env_path) free(env_path);
-#ifdef TRACE
-  fprintf(stderr, "popen: app_name = %s\n", app_name);
-  fprintf(stderr, "popen: cmd_line = %s\n", new_cmd);
-#endif
-
-#if 0 
-  fprintf(stderr, "Executing: %s\n", cmd);
-#endif
-  if (CreateProcess(app_name,
-		    new_cmd,
-		    NULL,
-		    NULL,
-		    TRUE,
-		    0,
-		    NULL,
-		    NULL,
-		    &si,
-		    &pi) == 0) {
-    fprintf(stderr, "win32_system(%s) call failed.\n", cmd);
-    return -1;
-  }
-
-   /* Only the process handle is needed */
-  if (CloseHandle(pi.hThread) == FALSE) {
-    fprintf(stderr, "popen: error closing thread handle\n");
-    return NULL;
-  }
-
-  if (new_cmd) free(new_cmd);
-  if (app_name) free(app_name);
-
-  if (WaitForSingleObject(pi.hProcess, INFINITE) == WAIT_OBJECT_0) {
-    if (GetExitCodeProcess(pi.hProcess, &ret) == 0) {
-      fprintf(stderr, "Failed to retrieve exit code: %s\n", cmd);
-      ret = -1;
-    }
-  }
-  else {
-    fprintf(stderr, "Failed to wait for process termination: %s\n", cmd);
-    ret = -1;
-  }
-  CloseHandle(pi.hProcess);
-  return ret;
-}
-
 /* Copy a file, appending if required.  */
 
 int catfile (const char *from, const char *to, int append)
@@ -621,10 +497,9 @@ char *normalize(string path)
   }
 #endif
   for ( p = q = path+offset; *p != '\0'; p++, q++) {
-    *q = *p;
-    if (IS_DIR_SEP(*p)) {
+    *q = (IS_DIR_SEP(*p) ? DIR_SEP : *p);
+    if (IS_DIR_SEP(*p))
       while (*(p+1) && IS_DIR_SEP(*(p+1))) p++;
-    }
   }
   *q = '\0';
 

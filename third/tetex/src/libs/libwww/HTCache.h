@@ -35,15 +35,28 @@ a part of the W3C Sample Code Library.
   Initialize and Terminate the Persistent Cache
 .
 
-If `cache_root' is NULL then use HT_CACHE_ROOT
-which by default is set to "/tmp/w3c-lib". The
-cache_root location does not have to exist, it will be created
-automatically if not. An empty string will make '/' as cache root. The size
-is the total size in MBytes - the default size is 20M. The cache can not
-be less than 5M. We can only enable the cache if we are in
-secure mode where we can not access the local
-file system.&nbsp;This is for example the case if using an application as
-a telnet shell.
+The cache_root is the URI of the location of the persistent
+cache. An example is "file:/tmp/w3c-lib". If
+cache_root is NULL then determine a cache root
+using the following algorithm:
+
+  o 
+	     Look for any environment variables (if supported) in the following order:
+	     WWW_CACHE, TMP, and TEMP. If none
+    are set then then fall back on "/tmp".
+  o 
+	     Append the folder name "w3c-cache" to the root identified above
+
+
+The cache_root location does not have to exist, it will be created
+automatically if not. An empty string will make '/' the cache root.
+
+The size is the total size in MBytes - the default size is 20M. The cache
+can not be less than 5M.
+
+We can only enable the cache if we are in secure
+mode where we can not access the local file system. This is for example
+the case if using an application as a telnet shell.
 */
 
 extern BOOL HTCacheInit (const char * cache_root, int size);
@@ -61,7 +74,7 @@ extern BOOL HTCacheTerminate (void);
   Cache Mode Parameters
 .
 
-The persistent cache has a set of overall parameters &nbsp;that you can adust
+The persistent cache has a set of overall parameters that you can adjust
 (
   Enable and Disable the Cache
 )
@@ -75,15 +88,25 @@ extern void HTCacheMode_setEnabled (BOOL mode);
 extern BOOL HTCacheMode_enabled (void);
 
 /*
+
+The cache can be setup to whether cache password protected documents thru the
+protected flag. By default this flag is turned off.
+*/
+
+extern void HTCacheMode_setProtected (BOOL mode);
+extern BOOL HTCacheMode_protected (void);
+
+/*
 (
   What is the current Cache Root?
 )
 
 Return the value of the cache root. The cache root can only be set through
-the HTCacheInit() function
+the HTCacheInit() function. The string returned MUST be freed
+by the caller
 */
 
-extern const char * HTCacheMode_getRoot	(void);
+extern char * HTCacheMode_getRoot (void);
 
 /*
 (
@@ -105,15 +128,27 @@ extern int  HTCacheMode_maxSize    (void);
   Max Size of a Single Cache Entry
 )
 
-It is also possible to control the max size of a single cache entry so
-that the cache doesn't get filled with a very few, very large cached
-entries. The default max size for a single cached entry is 3M. The
-value indicated must be in Mbytes, for example, a vaue of 3 would mean
-3 MBytes.
+It is also possible to control the max size of a single cache entry so that
+the cache doesn't get filled with a very few, very large cached entries.
+The default max size for a single cached entry is 3M. The value indicated
+must be in Mbytes, for example, a vaue of 3 would mean 3 MBytes.
 */
 
 extern BOOL HTCacheMode_setMaxCacheEntrySize (int size);
 extern int HTCacheMode_maxCacheEntrySize (void);
+
+/*
+(
+ Default expiration time of cache entries
+)
+
+If a response does not arrive with an expiration time and does not
+explicitly forbid its being cached, use the default expiration time. The
+time is given in seconds (e.g., 3,600 is one hour).
+*/
+
+extern void HTCacheMode_setDefaultExpiration (const int exp_time);
+extern int HTCacheMode_DefaultExpiration (void);
 
 /*
 (
@@ -143,13 +178,22 @@ extern HTExpiresMode HTCacheMode_expires (void);
 )
 
 The cache can be set to handle disconnected operation where it does not use
-the network to validate entries and do not attempt to load new versions.
+the network to validate entries and do not attempt to load new documents.
 All requests that can not be fulfilled by the cache will be returned with
 a "504 Gateway Timeout" response. There are two modes of how
-the cache can operate in disconnected mode: it can use diconnected mode on
-its own persistent cache or it can forward the disconnected request to a
-proxy cache, for example. The latter mode only really makes sense when you
-are using a proxy, of course.
+the cache can operate in disconnected mode:
+
+  
+    No network activity at all
+  
+    Here is uses its own persistent cache
+  
+    Forward all disconnected requests to a proxy cache
+  
+    Here it uses the HTTP/1.1 cache-control to indicate that the proxy should
+    operate in disconnected mode. This mode only really makes sense when you
+    are using a proxy, of course.
+
 */
 
 typedef enum _HTDisconnectedMode {
@@ -243,6 +287,14 @@ extern BOOL HTCache_updateMeta (HTCache * cache, HTRequest * request,
                                 HTResponse * response);
 
 /*
+
+Clear a cache entry
+*/
+
+extern BOOL HTCache_resetMeta (HTCache * cache, HTRequest * request,
+                                HTResponse * response);
+
+/*
 (
   Check Cached Entry
 )
@@ -315,7 +367,7 @@ for example it might have expired. Use the cache validation methods for checking
 this.
 */
 
-extern HTCache * HTCache_find (HTParentAnchor * anchor);
+extern HTCache * HTCache_find (HTParentAnchor * anchor, char * default_name);
 
 /*
 (
@@ -383,6 +435,6 @@ extern BOOL HTCache_releaseLock (HTCache * cache);
 
   
 
-  @(#) $Id: HTCache.h,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+  @(#) $Id: HTCache.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

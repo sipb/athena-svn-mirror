@@ -76,6 +76,7 @@ struct _HTHost {
     HTList *		pending;	      /* List of pending Net objects */
     HTNet *             doit;               /* Transfer from pending to pipe */ 
     HTNet *             lock;             /* This is a kludge! */
+    HTNet *		listening;	 /* Master for accepting connections */
     BOOL		persistent;
     HTTransportMode	mode;	      			   /* Supported mode */
     HTTimer *           timer;         /* Timer for handling idle connection */
@@ -104,6 +105,8 @@ struct _HTHost {
     ms_t                delay;                          /* Write delay in ms */
     void *		context;		/* Protocol Specific context */
     int			forceWriteFlush;
+    int                 inFlush;         /* Tells if we're currently processing
+                                            a file flush */
 };
 
 #define HTHost_bytesRead(me)		((me) ? (me)->bytes_read : -1)
@@ -122,6 +125,6 @@ struct _HTHost {
 
   
 
-  @(#) $Id: HTHstMan.h,v 1.1.1.1 2000-03-10 17:52:58 ghudson Exp $
+  @(#) $Id: HTHstMan.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

@@ -16,24 +16,23 @@
 
 /*
 
-The Alert class defines a set of methods to be used by libwww to be used
-for passing prompts and message to a user. In order to maintain the Library
-core application independent and natural language independent, libwww does
-not know how to communicate with a user. Note here that a user
-is a somewhat abstract notion for &nbsp;something that can receive a message
-or prompt from the Library. This can for example be a person, but is may
-also be handled automatically by a robot or a client receiving a response
-from a HTTP server.
+The Alert class defines a set of methods to be used by libwww for passing
+prompts and message to the application. In order to maintain libwww application
+independent and natural language independent, it does not know how to communicate
+with a user. Note here that a user is a somewhat abstract notion
+for &nbsp;something that can receive a message or prompt from libwww. A
+user can for example be a person, but is may also be handled
+automatically by a robot or a client receiving a response from a HTTP server.
 
 Libwww has a set of opcodes that classifies the nature of the message,
 for example that it is a question that must be confirmed in order to continue
 a request or simply a progress notification. The application can register
-a method for any number of the defined opcodes - in case the Library has
-a message for an opcode that does not have a method associated, the message
-is ignored. You can also globally disable any message send from the Library.
+a callback for any number of the defined opcodes - in case libwww has a message
+for an opcode that does not have a method associated, the message is ignored.
+You can also globally disable any message send from libwww.
 
 Note: The library core does not define any message or dialog
-methods - they are all considered part of the application. The library comes
+methods - they are all considered part of the application. However, it comes
 with a default set of methods which can be initiated
 using the function HTAlertInit() in HTInit
 module
@@ -57,7 +56,12 @@ The callback functions are defined as a generic callback where the caller
 can pass a set of input parameters and the callee can return a set of outptu
 parameters. Also note that all the *_PROG_* opcodes are a subset
 of HT_A_PROGRESS. This means that you easily can register a
-callback for all progress reports.
+callback for all progress reports. 
+
+The callback handler for progress notifications SHOULD NOT be used
+to interrupt the ongoing message as it is not guaranteed to be in a state
+to do so. Instead you should use the event handlers
+or the timers for this.
 */
 
 typedef enum _HTAlertOpcode {
@@ -93,12 +97,13 @@ typedef BOOL HTAlertCallback   (HTRequest * request, HTAlertOpcode op,
 If you don't expect any return values then reply can be NULL.
 The return value of the callback function can be used to indicate confirmation
 on a prompt (Yes or No).
-(
-  String Messages
-)
+.
+  User Prompts and Questions
+.
 
 This is an enumerated list of messages that can be converted into a string
-table etc.
+table etc. See the HTDialog module for
+default initialization of these strings.
 */
 
 typedef enum _HTAlertMsg {
@@ -122,32 +127,9 @@ typedef enum _HTAlertMsg {
     HT_MSG_REDIRECTION,
     HT_MSG_PROXY,
     HT_MSG_CACHE_LOCK,
+    HT_MSG_ACCEPT_COOKIE,
     HT_MSG_ELEMENTS		            /* This MUST be the last element */
 } HTAlertMsg;
-
-#define HT_MSG_ENGLISH_INITIALIZER \
-    "Please enter username:", \
-    "Please enter username for proxy authentication:", \
-    "Please enter username for this FTP server:", \
-    "Password:", \
-    "Please give name of file to save in:", \
-    "Plase enter account:", \
-    "You might not be allowed to use this method here, continue?", \
-    "Location has moved, continue?", \
-    "A new set of rules is requested to be added to your setup - continue?", \
-    "This file already exists - replace existing file?", \
-    "Authentication failed - retry?", \
-    "Proxy authentication failed - retry?", \
-    "This method has already been performed - repeat operation?", \
-    "This document is very big - continue operation?", \
-    "The source document for this operation has moved - continue operation \
-with new location?", \
-    "The destination document for this operation has moved - continue \
-operation with new location?", \
-    "A redirection may change the behavior of this method - proceed anyway?", \
-    "An automatic request for changing proxy has been encountered - continue?", \
-    "The persistent cache is already in use by another user. If this is not \
-the case then you can manually delete this lock and restart."
 
 /*
 .
@@ -335,6 +317,6 @@ extern HTAlertCallback * HTAlert_find (HTAlertOpcode opcode);
 
   
 
-  @(#) $Id: HTAlert.h,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+  @(#) $Id: HTAlert.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

@@ -29,7 +29,7 @@ const_string
 xbasename P1C(const_string, name)
 {
   const_string base = NULL;
-  unsigned len = strlen (name);
+  unsigned len;
   
   for (len = strlen (name); len > 0; len--) {
     if (IS_DIR_SEP (name[len - 1]) || IS_DEVICE_SEP (name[len - 1])) {

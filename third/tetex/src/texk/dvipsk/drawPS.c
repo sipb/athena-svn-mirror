@@ -5,7 +5,7 @@
  *
  * (minor mods by don on 5 Jan 90 to accommodate highres PostScript)
  *
- * $Revision: 1.1.1.1 $
+ * $Revision: 1.1.1.2 $
  *
  * $Log: not supported by cvs2svn $
  * Revision 1.1  90/03/10  20:32:48  grunwald
@@ -36,7 +36,7 @@
  */
 #ifndef lint
 char RCSid[] =
-  "@(#)$Header: /afs/dev.mit.edu/source/repository/third/tetex/src/texk/dvipsk/drawPS.c,v 1.1.1.1 2000-03-10 17:51:52 ghudson Exp $ (UCLA)";
+  "@(#)$Header: /afs/dev.mit.edu/source/repository/third/tetex/src/texk/dvipsk/drawPS.c,v 1.1.1.2 2003-02-25 22:18:06 amb Exp $ (UCLA)";
 #endif
 
 /*
@@ -150,7 +150,7 @@ static integer penSize = 2;             /* pen size in PS units */
 
 /* forward declarations */
 /* static void doShading(); */
-static integer zPixRound();             /* (int)(x/y)PixRound((int)x,(int)y) */
+static integer zPixRound P2H(integer, integer);             /* (int)(x/y)PixRound((int)x,(int)y) */
 static double  shadetp = 0.5;
              /* shading level, initialized as requested by tpic 2.0 -- MJ */
 

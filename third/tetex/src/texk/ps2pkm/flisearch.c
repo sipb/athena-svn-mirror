@@ -7,8 +7,8 @@
 
 #include <stdio.h>
 #include <string.h>		/* strcmp() */
-#include "basics.h"		/* pstat, my_stat(), fatal(), msg() */
-#include "filenames.h"		/* my_fopen()  */
+#include "basics.h"		/* fatal(), msg() */
+#include "filenames.h"		/* */
 #include "psearch.h"		/* search_flipath() */
 
 char *fontname; int dpi, margin = 0;
@@ -22,7 +22,6 @@ int main(int argc, char *argv[]) {
    path = argv[1]; fontname = argv[2]; dpi = atoi(argv[3]);
 
    /* find <file> in <path> */
-   pstat = my_stat; pfopen = my_fopen;
    fn = search_flipath(path, matching);
    if (fn == NULL) msg("%s at %d dpi not found\n", fontname, dpi);
    else msg("%s: %s at %d dpi found\n", fn, fontname, dpi);

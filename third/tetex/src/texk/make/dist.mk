@@ -1,7 +1,10 @@
 # dist.mk -- making distribution tar files.
 @MAINT@top_distdir = $(distname)-$(version)
+@MAINT@top_files = RELNOTES Makefile.in configure.in configure selfautofix
+@MAINT@libs_distdir = $(top_distdir)/libs
+@MAINT@libs_files = EXTRA.LIB configure.in configure
 @MAINT@texk_distdir = $(top_distdir)/texk
-@MAINT@top_files = ChangeLog Makefile.in README configure.in configure \
+@MAINT@texk_files = ChangeLog Makefile.in README configure.in configure \
 @MAINT@  install.sh acklibtool.m4 config.guess config.sub klibtool \
 @MAINT@  mkinstalldirs add-info-toc rename unbackslsh.awk withenable.ac
 @MAINT@distdir = $(texk_distdir)/$(distname)
@@ -13,8 +16,16 @@
 @MAINT@dist: all depend pre-dist-$(distname)
 @MAINT@	rm -rf $(top_distdir)*
 @MAINT@	mkdir -p $(distdir)
-@MAINT@	cd .. && make Makefile ./configure
-@MAINT@	cd .. && ln $(top_files) $(distname)/$(texk_distdir)
+@MAINT@	top_files="$(top_files)"; \
+@MAINT@	  for f in $$top_files; do \
+@MAINT@	    ln $(top_srcdir)/../../$$f $(top_distdir); done
+@MAINT@	cp -pr $(top_srcdir)/../../config $(top_distdir)
+@MAINT@	mkdir -p $(libs_distdir)
+@MAINT@	libs_files="$(libs_files)"; \
+@MAINT@	  for f in $$libs_files; do \
+@MAINT@	    ln $(top_srcdir)/../../libs/$$f $(libs_distdir); done
+@MAINT@	cd .. && $(MAKE) Makefile ./configure
+@MAINT@	cd .. && ln $(texk_files) $(distname)/$(texk_distdir)
 @MAINT@	cp -p $(top_srcdir)/../dir $(texk_distdir)
 @MAINT@	-ln $(ln_files) $(distdir)
 @MAINT@	ln $(program_files) $(distdir)
@@ -31,7 +42,7 @@
 @MAINT@	find $(top_distdir) -name \.*texi -exec egrep -ni '	| ::|xx[^}]' \;
 @MAINT@# Now handle the contrib dir.
 @MAINT@	mkdir -p $(texk_distdir)/contrib && \
-@MAINT@	  cp -p ../contrib/{ChangeLog,INSTALL,Makefile,README,*.c,*.h} \
+@MAINT@	  cp -p ../contrib/{ChangeLog,INSTALL,README,*.c,*.h} \
 @MAINT@	        $(texk_distdir)/contrib
 @MAINT@	$(MAKE) post-dist-$(distname)
 @MAINT@	cd $(distdir); test ! -r *.info || touch *.info*

@@ -185,8 +185,8 @@ endif('notdef')
 @p procedure out_scaled(x:fix_word); {outputs a scaled |fix_word|}
 var @!n:byte; {the first byte after the sign}
 @!m:0..65535; {the two least significant bytes}
-begin if abs(x/design_units)>=16.0 then
-  begin print_ln('The relative dimension ',x/@'4000000:1:3,
+begin if abs(x/design_units)>=16.0 then begin
+  print_ln('The relative dimension ',x/@'4000000:1:3,
     ' is too large.');
 @.The relative dimension...@>
   print('  (Must be less than 16*designsize');
@@ -196,8 +196,8 @@ begin if abs(x/design_units)>=16.0 then
 @p procedure out_scaled(x:fix_word); {outputs a scaled |fix_word|}
 var @!n:byte; {the first byte after the sign}
 @!m:0..65535; {the two least significant bytes}
-begin if fabs(x/design_units)>=16.0 then
-  begin print('The relative dimension ');
+begin if fabs(x/design_units)>=16.0 then begin
+  print('The relative dimension ');
     print_real(x/@'4000000,1,3);
     print_ln(' is too large.');
 @.The relative dimension...@>
@@ -212,9 +212,9 @@ begin if fabs(x/design_units)>=16.0 then
 % might be -1, and if -1 is coerced to being unsigned, it will be bigger
 % than anything else.
 @x
-  while label_table[sort_ptr].rr>char_remainder[c] do
+  while label_table[sort_ptr].rr>char_remainder[c] do begin
 @y
-  while label_table[sort_ptr].rr>intcast(char_remainder[c]) do
+  while label_table[sort_ptr].rr>intcast(char_remainder[c]) do begin
 @z
 
 @x [147] Be quiet unless verbose. 
@@ -255,10 +255,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'opl2ofm');
+      usage ('opl2ofm');
 
     end else if argument_is ('help') then begin
-      usage (0, OPL2OFM_HELP);
+      usage_help (OPL2OFM_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit
@@ -271,7 +271,7 @@ begin
    We must have one or two remaining arguments.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'opl2ofm: Need one or two file arguments.');
-    usage (1, 'opl2ofm');
+    usage ('opl2ofm');
   end;
   
   pl_name := extend_filename (cmdline (optind), 'opl');

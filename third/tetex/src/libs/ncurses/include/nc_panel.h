@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: nc_panel.h,v 1.1.1.1 2000-03-10 17:52:42 ghudson Exp $
+ * $Id: nc_panel.h,v 1.1.1.2 2003-02-25 22:28:02 amb Exp $
  *
  *	nc_panel.h
  *
@@ -57,7 +57,7 @@ struct panelhook {
 };
 
 /* Retrieve the panelhook of the current screen */
-extern struct panelhook* _nc_panelhook(void);
+extern NCURSES_EXPORT(struct panelhook*) _nc_panelhook (void);
 
 #ifdef __cplusplus
 }

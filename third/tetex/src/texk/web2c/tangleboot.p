@@ -1,9 +1,9 @@
 {2:}{4:}{$C-,A+,D-}{[$C+,D+]}{:4}
 program TANGLE(webfile,changefile,Pascalfile,pool);label 9999;const{8:}
-bufsize=3000;maxbytes=45000;maxtoks=60000;maxnames=6000;maxtexts=5000;
+bufsize=3000;maxbytes=45000;maxtoks=60000;maxnames=10000;maxtexts=10000;
 hashsize=353;longestname=400;linelength=72;outbufsize=144;stacksize=100;
-maxidlength=50;unambiglength=32;{:8}type{11:}ASCIIcode=0..255;{:11}{12:}
-textfile=packed file of ASCIIcode;{:12}{37:}eightbits=0..255;
+maxidlength=50;defunambiglength=32;{:8}type{11:}ASCIIcode=0..255;{:11}
+{12:}textfile=packed file of ASCIIcode;{:12}{37:}eightbits=0..255;
 sixteenbits=0..65535;{:37}{39:}namepointer=0..maxnames;{:39}{43:}
 textpointer=0..maxtexts;{:43}{78:}
 outputstate=record endfield:sixteenbits;bytefield:sixteenbits;
@@ -13,24 +13,23 @@ xchr:array[ASCIIcode]of ASCIIcode;{:13}{23:}webfile:textfile;
 changefile:textfile;{:23}{25:}Pascalfile:textfile;pool:textfile;{:25}
 {27:}buffer:array[0..bufsize]of ASCIIcode;{:27}{29:}phaseone:boolean;
 {:29}{38:}bytemem:packed array[0..2,0..maxbytes]of ASCIIcode;
-tokmem:packed array[0..3,0..maxtoks]of eightbits;
+tokmem:packed array[0..4,0..maxtoks]of eightbits;
 bytestart:array[0..maxnames]of sixteenbits;
 tokstart:array[0..maxtexts]of sixteenbits;
 link:array[0..maxnames]of sixteenbits;
-ilk:array[0..maxnames]of sixteenbits;
-equiv:array[0..maxnames]of sixteenbits;
+ilk:array[0..maxnames]of sixteenbits;equiv:array[0..maxnames]of integer;
 textlink:array[0..maxtexts]of sixteenbits;{:38}{40:}nameptr:namepointer;
 stringptr:namepointer;byteptr:array[0..2]of 0..maxbytes;
 poolchecksum:integer;{:40}{44:}textptr:textpointer;
-tokptr:array[0..3]of 0..maxtoks;z:0..3;
-{maxtokptr:array[0..3]of 0..maxtoks;}{:44}{50:}idfirst:0..bufsize;
+tokptr:array[0..4]of 0..maxtoks;z:0..4;
+{maxtokptr:array[0..4]of 0..maxtoks;}{:44}{50:}idfirst:0..bufsize;
 idloc:0..bufsize;doublechars:0..bufsize;
 hash,chophash:array[0..hashsize]of sixteenbits;
-choppedid:array[0..unambiglength]of ASCIIcode;{:50}{65:}
+choppedid:array[0..maxidlength]of ASCIIcode;{:50}{65:}
 modtext:array[0..longestname]of ASCIIcode;{:65}{70:}
 lastunnamed:textpointer;{:70}{79:}curstate:outputstate;
 stack:array[1..stacksize]of outputstate;stackptr:0..stacksize;{:79}{80:}
-zo:0..3;{:80}{82:}bracelevel:eightbits;{:82}{86:}curval:integer;{:86}
+zo:0..4;{:80}{82:}bracelevel:eightbits;{:82}{86:}curval:integer;{:86}
 {94:}outbuf:array[0..outbufsize]of ASCIIcode;outptr:0..outbufsize;
 breakptr:0..outbufsize;semiptr:0..outbufsize;{:94}{95:}
 outstate:eightbits;outval,outapp:integer;outsign:ASCIIcode;
@@ -42,10 +41,12 @@ changelimit:0..bufsize;{:126}{143:}curmodule:namepointer;
 scanninghex:boolean;{:143}{156:}nextcontrol:eightbits;{:156}{164:}
 currepltext:textpointer;{:164}{171:}modulecount:0..12287;{:171}{179:}
 {troubleshooting:boolean;ddt:integer;dd:integer;debugcycle:integer;
-debugskipped:integer;}{:179}{185:}{wo:0..2;}{:185}{192:}
-webname,chgname,pascalname,poolname:cstring;{:192}{30:}
-{procedure debughelp;forward;}{:30}{31:}procedure error;
-var j:0..outbufsize;k,l:0..bufsize;begin if phaseone then{32:}
+debugskipped:integer;}{:179}{185:}{wo:0..2;}{:185}{199:}
+webname,chgname,pascalname,poolname:cstring;
+forceuppercase,forcelowercase,allowunderlines,strictmode:boolean;
+unambiglength:0..maxidlength;{:199}{30:}{procedure debughelp;forward;}
+{:30}{31:}procedure error;var j:0..outbufsize;k,l:0..bufsize;
+begin if phaseone then{32:}
 begin if changing then write(stdout,'. (change file ')else write(stdout,
 '. (');writeln(stdout,'l.',line:1,')');
 if loc>=limit then l:=limit else l:=loc;
@@ -58,33 +59,70 @@ begin writeln(stdout,'. (l.',line:1,')');
 for j:=1 to outptr do write(stdout,xchr[outbuf[j-1]]);
 write(stdout,'... ');end{:33};fflush(stdout);history:=2;
 {debugskipped:=debugcycle;debughelp;}end;{:31}{188:}
-procedure parsearguments;const noptions=3;
+procedure parsearguments;const noptions=10;
 var longoptions:array[0..noptions]of getoptstruct;
 getoptreturnval:integer;optionindex:cinttype;currentoption:0..noptions;
-begin{189:}currentoption:=0;longoptions[currentoption].name:='help';
+len:integer;begin{189:}currentoption:=0;
+longoptions[currentoption].name:='help';
 longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
 longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:189}
 {190:}longoptions[currentoption].name:='version';
 longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
 longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:190}
-{191:}longoptions[currentoption].name:=0;
+{191:}longoptions[currentoption].name:='mixedcase';
 longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
-longoptions[currentoption].val:=0;{:191};
+longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:191}
+{192:}longoptions[currentoption].name:='uppercase';
+longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
+longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:192}
+{193:}longoptions[currentoption].name:='lowercase';
+longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
+longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:193}
+{194:}longoptions[currentoption].name:='underlines';
+longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
+longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:194}
+{195:}longoptions[currentoption].name:='strict';
+longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
+longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:195}
+{196:}longoptions[currentoption].name:='loose';
+longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
+longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:196}
+{197:}longoptions[currentoption].name:='length';
+longoptions[currentoption].hasarg:=1;longoptions[currentoption].flag:=0;
+longoptions[currentoption].val:=0;currentoption:=currentoption+1;{:197}
+{198:}longoptions[currentoption].name:=0;
+longoptions[currentoption].hasarg:=0;longoptions[currentoption].flag:=0;
+longoptions[currentoption].val:=0;{:198};
+unambiglength:=defunambiglength;
 repeat getoptreturnval:=getoptlongonly(argc,argv,'',longoptions,
 addressof(optionindex));if getoptreturnval=-1 then begin;
-end else if getoptreturnval=63 then begin usage(1,'tangle');
+end else if getoptreturnval=63 then begin usage('tangle');
 end else if(strcmp(longoptions[optionindex].name,'help')=0)then begin
-usage(0,TANGLEHELP);
+usagehelp(TANGLEHELP);
 end else if(strcmp(longoptions[optionindex].name,'version')=0)then begin
-printversionandexit('This is TANGLE, Version 4.4',nil,'D.E. Knuth');end;
-until getoptreturnval=-1;
+printversionandexit('This is TANGLE, Version 4.4',nil,'D.E. Knuth');
+end else if(strcmp(longoptions[optionindex].name,'mixedcase')=0)then
+begin forceuppercase:=false;forcelowercase:=false;
+end else if(strcmp(longoptions[optionindex].name,'uppercase')=0)then
+begin forceuppercase:=true;forcelowercase:=false;
+end else if(strcmp(longoptions[optionindex].name,'lowercase')=0)then
+begin forceuppercase:=false;forcelowercase:=true;
+end else if(strcmp(longoptions[optionindex].name,'underlines')=0)then
+begin allowunderlines:=true;
+end else if(strcmp(longoptions[optionindex].name,'strict')=0)then begin
+strictmode:=true;
+end else if(strcmp(longoptions[optionindex].name,'loose')=0)then begin
+strictmode:=false;
+end else if(strcmp(longoptions[optionindex].name,'length')=0)then begin
+len:=atoi(optarg);if(len<=0)or(len>maxidlength)then len:=maxidlength;
+unambiglength:=len;end;until getoptreturnval=-1;
 if(optind+1<>argc)and(optind+2<>argc)then begin writeln(stderr,
-'tangle: Need one or two file arguments.');usage(1,'tangle');end;
+'tangle: Need one or two file arguments.');usage('tangle');end;
 webname:=extendfilename(cmdline(optind),'web');
 if optind+2=argc then begin chgname:=extendfilename(cmdline(optind+1),
 'ch');end;pascalname:=basenamechangesuffix(webname,'.web','.p');end;
 {:188}procedure initialize;var{16:}i:0..255;{:16}{41:}wi:0..2;{:41}{45:}
-zi:0..3;{:45}{51:}h:0..hashsize;{:51}begin kpsesetprogname(argv[0]);
+zi:0..4;{:45}{51:}h:0..hashsize;{:51}begin kpsesetprogname(argv[0]);
 parsearguments;{10:}history:=0;{:10}{14:}xchr[32]:=' ';xchr[33]:='!';
 xchr[34]:='"';xchr[35]:='#';xchr[36]:='$';xchr[37]:='%';xchr[38]:='&';
 xchr[39]:='''';xchr[40]:='(';xchr[41]:=')';xchr[42]:='*';xchr[43]:='+';
@@ -112,16 +150,17 @@ for i:=0 to 255 do xord[chr(i)]:=32;for i:=1 to 255 do xord[xchr[i]]:=i;
 xord[' ']:=32;{:18}{21:}{:21}{26:}rewrite(Pascalfile,pascalname);{:26}
 {42:}for wi:=0 to 2 do begin bytestart[wi]:=0;byteptr[wi]:=0;end;
 bytestart[3]:=0;nameptr:=1;stringptr:=256;poolchecksum:=271828;{:42}
-{46:}for zi:=0 to 3 do begin tokstart[zi]:=0;tokptr[zi]:=0;end;
-tokstart[4]:=0;textptr:=1;z:=1 mod 4;{:46}{48:}ilk[0]:=0;equiv[0]:=0;
+{46:}for zi:=0 to 4 do begin tokstart[zi]:=0;tokptr[zi]:=0;end;
+tokstart[5]:=0;textptr:=1;z:=1 mod 5;{:46}{48:}ilk[0]:=0;equiv[0]:=0;
 {:48}{52:}for h:=0 to hashsize-1 do begin hash[h]:=0;chophash[h]:=0;end;
 {:52}{71:}lastunnamed:=0;textlink[0]:=0;{:71}{144:}scanninghex:=false;
 {:144}{152:}modtext[0]:=32;{:152}{180:}{troubleshooting:=true;
 debugcycle:=1;debugskipped:=0;troubleshooting:=false;debugcycle:=99999;}
-{:180}end;{:2}{24:}procedure openinput;begin reset(webfile,webname);
-if chgname then reset(changefile,chgname);end;{:24}{28:}
-function inputln(var f:textfile):boolean;var finallimit:0..bufsize;
-begin limit:=0;finallimit:=0;
+{:180}end;{:2}{24:}procedure openinput;
+begin webfile:=kpseopenfile(webname,kpsewebformat);
+if chgname then changefile:=kpseopenfile(chgname,kpsewebformat);end;
+{:24}{28:}function inputln(var f:textfile):boolean;
+var finallimit:0..bufsize;begin limit:=0;finallimit:=0;
 if eof(f)then inputln:=false else begin while not eoln(f)do begin buffer
 [limit]:=xord[getc(f)];limit:=limit+1;
 if buffer[limit-1]<>32 then finallimit:=limit;
@@ -135,7 +174,7 @@ begin if p>=nameptr then write(stdout,'IMPOSSIBLE')else begin w:=p mod 3
 for k:=bytestart[p]to bytestart[p+3]-1 do write(stdout,xchr[bytemem[w,k]
 ]);end;end;{:49}{53:}function idlookup(t:eightbits):namepointer;
 label 31,32;var c:eightbits;i:0..bufsize;h:0..hashsize;k:0..maxbytes;
-w:0..2;l:0..bufsize;p,q:namepointer;s:0..unambiglength;
+w:0..2;l:0..bufsize;p,q:namepointer;s:0..maxidlength;
 begin l:=idloc-idfirst;{54:}h:=buffer[idfirst];i:=idfirst+1;
 while i<idloc do begin h:=(h+h+buffer[i])mod hashsize;i:=i+1;end{:54};
 {55:}p:=hash[h];
@@ -146,9 +185,13 @@ if i=idloc then goto 31;end{:56};p:=link[p];end;p:=nameptr;
 link[p]:=hash[h];hash[h]:=p;31:{:55};if(p=nameptr)or(t<>0)then{57:}
 begin if((p<>nameptr)and(t<>0)and(ilk[p]=0))or((p=nameptr)and(t=0)and(
 buffer[idfirst]<>34))then{58:}begin i:=idfirst;s:=0;h:=0;
-while(i<idloc)and(s<unambiglength)do begin if buffer[i]<>95 then begin
-choppedid[s]:=buffer[i];h:=(h+h+choppedid[s])mod hashsize;s:=s+1;end;
-i:=i+1;end;choppedid[s]:=0;end{:58};if p<>nameptr then{59:}
+while(i<idloc)and(s<unambiglength)do begin if(buffer[i]<>95)or(
+allowunderlines and not strictmode)then begin if(strictmode or
+forceuppercase)and(buffer[i]>=97)then choppedid[s]:=buffer[i]-32 else if
+(not strictmode and forcelowercase)and(buffer[i]>=65)and(buffer[i]<=90)
+then choppedid[s]:=buffer[i]+32 else choppedid[s]:=buffer[i];
+h:=(h+h+choppedid[s])mod hashsize;s:=s+1;end;i:=i+1;end;choppedid[s]:=0;
+end{:58};if p<>nameptr then{59:}
 begin if ilk[p]=0 then begin if t=1 then begin writeln(stdout);
 write(stdout,'! This identifier has already appeared');error;end;{60:}
 q:=chophash[h];
@@ -159,8 +202,11 @@ ilk[p]:=t;end{:59}else{61:}
 begin if(t=0)and(buffer[idfirst]<>34)then{62:}begin q:=chophash[h];
 while q<>0 do begin{63:}begin k:=bytestart[q];s:=0;w:=q mod 3;
 while(k<bytestart[q+3])and(s<unambiglength)do begin c:=bytemem[w,k];
-if c<>95 then begin if choppedid[s]<>c then goto 32;s:=s+1;end;k:=k+1;
-end;if(k=bytestart[q+3])and(choppedid[s]<>0)then goto 32;
+if c<>95 or(allowunderlines and not strictmode)then begin if(strictmode
+or forceuppercase)and(c>=97)then c:=c-32 else if(not strictmode and
+forcelowercase)and(c>=65)and(c<=90)then c:=c+32;
+if choppedid[s]<>c then goto 32;s:=s+1;end;k:=k+1;end;
+if(k=bytestart[q+3])and(choppedid[s]<>0)then goto 32;
 begin writeln(stdout);write(stdout,'! Identifier conflict with ');end;
 for k:=bytestart[q]to bytestart[q+3]-1 do write(stdout,xchr[bytemem[w,k]
 ]);error;q:=0;32:end{:63};q:=equiv[q];end;equiv[p]:=chophash[h];
@@ -174,10 +220,11 @@ uexit(1);end;i:=idfirst;while i<idloc do begin bytemem[w,k]:=buffer[i];
 k:=k+1;i:=i+1;end;byteptr[w]:=k;bytestart[nameptr+3]:=k;
 nameptr:=nameptr+1;if buffer[idfirst]<>34 then ilk[p]:=t else{64:}
 begin ilk[p]:=1;
-if l-doublechars=2 then equiv[p]:=buffer[idfirst+1]+32768 else begin if
-stringptr=256 then begin poolname:=basenamechangesuffix(webname,'.web',
-'.pool');rewrite(pool,poolname);end;equiv[p]:=stringptr+32768;
-l:=l-doublechars-1;if l>99 then begin writeln(stdout);
+if l-doublechars=2 then equiv[p]:=buffer[idfirst+1]+1073741824 else
+begin if stringptr=256 then begin poolname:=basenamechangesuffix(webname
+,'.web','.pool');rewrite(pool,poolname);end;
+equiv[p]:=stringptr+1073741824;l:=l-doublechars-1;
+if l>99 then begin writeln(stdout);
 write(stdout,'! Preprocessed string is too long');error;end;
 stringptr:=stringptr+1;write(pool,xchr[48+l div 10],xchr[48+l mod 10]);
 poolchecksum:=poolchecksum+poolchecksum+l;
@@ -229,9 +276,9 @@ write(stderr,'! Sorry, ','token',' capacity exceeded');error;history:=3;
 uexit(1);end;tokmem[z,tokptr[z]]:=x div 256;
 tokmem[z,tokptr[z]+1]:=x mod 256;tokptr[z]:=tokptr[z]+2;end;{:73}{74:}
 {procedure printrepl(p:textpointer);var k:0..maxtoks;a:sixteenbits;
-zp:0..3;
+zp:0..4;
 begin if p>=textptr then write(stdout,'BAD')else begin k:=tokstart[p];
-zp:=p mod 4;while k<tokstart[p+4]do begin a:=tokmem[zp,k];
+zp:=p mod 5;while k<tokstart[p+5]do begin a:=tokmem[zp,k];
 if a>=128 then[75:]begin k:=k+1;
 if a<168 then begin a:=(a-128)*256+tokmem[zp,k];printid(a);
 if bytemem[a mod 3,bytestart[a]]=34 then write(stdout,'"')else write(
@@ -249,21 +296,22 @@ begin if stackptr=stacksize then begin writeln(stdout);
 write(stderr,'! Sorry, ','stack',' capacity exceeded');error;history:=3;
 uexit(1);end else begin stack[stackptr]:=curstate;stackptr:=stackptr+1;
 curstate.namefield:=p;curstate.replfield:=equiv[p];
-zo:=curstate.replfield mod 4;
+zo:=curstate.replfield mod 5;
 curstate.bytefield:=tokstart[curstate.replfield];
-curstate.endfield:=tokstart[curstate.replfield+4];curstate.modfield:=0;
+curstate.endfield:=tokstart[curstate.replfield+5];curstate.modfield:=0;
 end;end;{:84}{85:}procedure poplevel;label 10;
-begin if textlink[curstate.replfield]=0 then begin if ilk[curstate.
-namefield]=3 then{91:}begin nameptr:=nameptr-1;textptr:=textptr-1;
-z:=textptr mod 4;{if tokptr[z]>maxtokptr[z]then maxtokptr[z]:=tokptr[z];
-}tokptr[z]:=tokstart[textptr];
+begin if textlink[curstate.replfield]=0 then begin if(ilk[curstate.
+namefield]=3)or(ilk[curstate.namefield]=4)then{91:}
+begin nameptr:=nameptr-1;textptr:=textptr-1;z:=textptr mod 5;
+{if tokptr[z]>maxtokptr[z]then maxtokptr[z]:=tokptr[z];}
+tokptr[z]:=tokstart[textptr];
 {byteptr[nameptr mod 3]:=byteptr[nameptr mod 3]-1;}end{:91};
 end else if textlink[curstate.replfield]<maxtexts then begin curstate.
-replfield:=textlink[curstate.replfield];zo:=curstate.replfield mod 4;
+replfield:=textlink[curstate.replfield];zo:=curstate.replfield mod 5;
 curstate.bytefield:=tokstart[curstate.replfield];
-curstate.endfield:=tokstart[curstate.replfield+4];goto 10;end;
+curstate.endfield:=tokstart[curstate.replfield+5];goto 10;end;
 stackptr:=stackptr-1;if stackptr>0 then begin curstate:=stack[stackptr];
-zo:=curstate.replfield mod 4;end;10:end;{:85}{87:}
+zo:=curstate.replfield mod 5;end;10:end;{:85}{87:}
 function getoutput:sixteenbits;label 20,30,31;var a:sixteenbits;
 b:eightbits;bal:sixteenbits;k:0..maxbytes;w:0..2;
 begin 20:if stackptr=0 then begin a:=0;goto 31;end;
@@ -275,13 +323,13 @@ begin pushlevel(nameptr-1);goto 20;end{:92}else goto 31;
 a:=(a-128)*256+tokmem[zo,curstate.bytefield];
 curstate.bytefield:=curstate.bytefield+1;if a<10240 then{89:}
 begin case ilk[a]of 0:begin curval:=a;a:=130;end;
-1:begin curval:=equiv[a]-32768;a:=128;end;2:begin pushlevel(a);goto 20;
-end;3:begin{90:}
+1:begin curval:=equiv[a]-1073741824;a:=128;end;2:begin pushlevel(a);
+goto 20;end;3,4:begin{90:}
 while(curstate.bytefield=curstate.endfield)and(stackptr>0)do poplevel;
-if(stackptr=0)or(tokmem[zo,curstate.bytefield]<>40)then begin begin
-writeln(stdout);write(stdout,'! No parameter given for ');end;
-printid(a);error;goto 20;end;{93:}bal:=1;
-curstate.bytefield:=curstate.bytefield+1;
+if(stackptr=0)or((ilk[a]=3)and(tokmem[zo,curstate.bytefield]<>40))or((
+ilk[a]=4)and(tokmem[zo,curstate.bytefield]<>91))then begin begin writeln
+(stdout);write(stdout,'! No parameter given for ');end;printid(a);error;
+goto 20;end;{93:}bal:=1;curstate.bytefield:=curstate.bytefield+1;
 while true do begin b:=tokmem[zo,curstate.bytefield];
 curstate.bytefield:=curstate.bytefield+1;
 if b=0 then storetwobytes(nameptr+32767)else begin if b>=128 then begin
@@ -290,7 +338,9 @@ write(stderr,'! Sorry, ','token',' capacity exceeded');error;history:=3;
 uexit(1);end;tokmem[z,tokptr[z]]:=b;tokptr[z]:=tokptr[z]+1;end;
 b:=tokmem[zo,curstate.bytefield];
 curstate.bytefield:=curstate.bytefield+1;
-end else case b of 40:bal:=bal+1;41:begin bal:=bal-1;
+end else case b of 40:if ilk[a]=3 then bal:=bal+1;
+41:if ilk[a]=3 then begin bal:=bal-1;if bal=0 then goto 30;end;
+91:if ilk[a]=4 then bal:=bal+1;93:if ilk[a]=4 then begin bal:=bal-1;
 if bal=0 then goto 30;end;
 39:repeat begin if tokptr[z]=maxtoks then begin writeln(stdout);
 write(stderr,'! Sorry, ','token',' capacity exceeded');error;history:=3;
@@ -307,10 +357,10 @@ history:=3;uexit(1);end;bytemem[w,k]:=35;k:=k+1;byteptr[w]:=k;}
 if nameptr>maxnames-3 then begin writeln(stdout);
 write(stderr,'! Sorry, ','name',' capacity exceeded');error;history:=3;
 uexit(1);end;bytestart[nameptr+3]:=k;nameptr:=nameptr+1;
-if textptr>maxtexts-4 then begin writeln(stdout);
+if textptr>maxtexts-5 then begin writeln(stdout);
 write(stderr,'! Sorry, ','text',' capacity exceeded');error;history:=3;
-uexit(1);end;textlink[textptr]:=0;tokstart[textptr+4]:=tokptr[z];
-textptr:=textptr+1;z:=textptr mod 4{:90};pushlevel(a);goto 20;end;
+uexit(1);end;textlink[textptr]:=0;tokstart[textptr+5]:=tokptr[z];
+textptr:=textptr+1;z:=textptr mod 5{:90};pushlevel(a);goto 20;end;
 others:begin writeln(stdout);
 write(stderr,'! This can''t happen (','output',')');error;history:=3;
 uexit(1);end end;goto 31;end{:89};if a<20480 then{88:}begin a:=a-10240;
@@ -399,23 +449,30 @@ k:0..linelength;j:0..maxbytes;w:0..2;n:integer;
 begin while stackptr>0 do begin curchar:=getoutput;
 21:case curchar of 0:;{116:}
 65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,
-89,90,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,
-114,115,116,117,118,119,120,121,122:begin outcontrib[1]:=curchar;
-sendout(2,1);end;130:begin k:=0;j:=bytestart[curval];w:=curval mod 3;
+89,90:begin if forcelowercase then outcontrib[1]:=curchar+32 else
+outcontrib[1]:=curchar;sendout(2,1);end;
+97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115
+,116,117,118,119,120,121,122:begin if forceuppercase then outcontrib[1]
+:=curchar-32 else outcontrib[1]:=curchar;sendout(2,1);end;
+130:begin k:=0;j:=bytestart[curval];w:=curval mod 3;
 while(k<maxidlength)and(j<bytestart[curval+3])do begin k:=k+1;
-outcontrib[k]:=bytemem[w,j];j:=j+1;if outcontrib[k]=95 then k:=k-1;end;
-sendout(2,k);end;{:116}{119:}48,49,50,51,52,53,54,55,56,57:begin n:=0;
-repeat curchar:=curchar-48;if n>=214748364 then begin writeln(stdout);
+outcontrib[k]:=bytemem[w,j];j:=j+1;
+if forceuppercase and(outcontrib[k]>=97)then outcontrib[k]:=outcontrib[k
+]-32 else if forcelowercase and(outcontrib[k]<=90)then outcontrib[k]:=
+outcontrib[k]+32 else if not allowunderlines and(outcontrib[k]=95)then k
+:=k-1;end;sendout(2,k);end;{:116}{119:}
+48,49,50,51,52,53,54,55,56,57:begin n:=0;repeat curchar:=curchar-48;
+if n>=214748364 then begin writeln(stdout);
 write(stdout,'! Constant too big');error;end else n:=10*n+curchar;
 curchar:=getoutput;until(curchar>57)or(curchar<48);sendval(n);k:=0;
 if curchar=101 then curchar:=69;if curchar=69 then goto 2 else goto 21;
 end;125:sendval(poolchecksum);12:begin n:=0;curchar:=48;
-repeat curchar:=curchar-48;if n>=268435456 then begin writeln(stdout);
+repeat curchar:=curchar-48;if n>=1073741824 then begin writeln(stdout);
 write(stdout,'! Constant too big');error;end else n:=8*n+curchar;
 curchar:=getoutput;until(curchar>55)or(curchar<48);sendval(n);goto 21;
 end;13:begin n:=0;curchar:=48;
 repeat if curchar>=65 then curchar:=curchar-55 else curchar:=curchar-48;
-if n>=134217728 then begin writeln(stdout);
+if n>=1073741824 then begin writeln(stdout);
 write(stdout,'! Constant too big');error;end else n:=16*n+curchar;
 curchar:=getoutput;
 until(curchar>70)or(curchar<48)or((curchar>57)and(curchar<65));
@@ -644,7 +701,7 @@ nextcontrol<65)){:162};
 begin accumulator:=accumulator+nextsign*intcast(val);nextsign:=+1;end;
 goto 21;end;130:begin q:=idlookup(0);
 if ilk[q]<>1 then begin nextcontrol:=42;goto 21;end;
-begin accumulator:=accumulator+nextsign*intcast(equiv[q]-32768);
+begin accumulator:=accumulator+nextsign*intcast(equiv[q]-1073741824);
 nextsign:=+1;end;end;43:;45:nextsign:=-nextsign;
 132,133,135,134,136:goto 30;59:begin writeln(stdout);
 write(stdout,'! Omit semicolon in numeric definition');error;end;
@@ -653,14 +710,18 @@ write(stdout,'! Improper numeric definition will be flushed');error;end;
 repeat nextcontrol:=skipahead until(nextcontrol>=132);
 if nextcontrol=135 then begin loc:=loc-2;nextcontrol:=getnext;end;
 accumulator:=0;goto 30;end{:159}end;end;30:{:158};
-if abs(accumulator)>=32768 then begin begin writeln(stdout);
+if abs(accumulator)>=1073741824 then begin begin writeln(stdout);
 write(stdout,'! Value too big: ',accumulator:1);error;end;
-accumulator:=0;end;equiv[p]:=accumulator+32768;end;{:157}{165:}
+accumulator:=0;end;equiv[p]:=accumulator+1073741824;end;{:157}{165:}
 procedure scanrepl(t:eightbits);label 22,30,31,21;var a:sixteenbits;
 b:ASCIIcode;bal:eightbits;begin bal:=0;
-while true do begin 22:a:=getnext;case a of 40:bal:=bal+1;
-41:if bal=0 then begin writeln(stdout);write(stdout,'! Extra )');error;
-end else bal:=bal-1;39:{168:}begin b:=39;
+while true do begin 22:a:=getnext;case a of 40:if t=3 then bal:=bal+1;
+41:if t=3 then if bal=0 then begin writeln(stdout);
+write(stdout,'! Extra )');error;end else bal:=bal-1;
+91:if t=4 then bal:=bal+1;
+93:if t=4 then if bal=0 then begin writeln(stdout);
+write(stdout,'! Extra ]');error;end else bal:=bal-1;39:{168:}
+begin b:=39;
 while true do begin begin if tokptr[z]=maxtoks then begin writeln(stdout
 );write(stderr,'! Sorry, ','token',' capacity exceeded');error;
 history:=3;uexit(1);end;tokmem[z,tokptr[z]]:=b;tokptr[z]:=tokptr[z]+1;
@@ -674,7 +735,8 @@ if b=39 then begin if buffer[loc]<>39 then goto 31 else begin loc:=loc+1
 ;begin if tokptr[z]=maxtoks then begin writeln(stdout);
 write(stderr,'! Sorry, ','token',' capacity exceeded');error;history:=3;
 uexit(1);end;tokmem[z,tokptr[z]]:=39;tokptr[z]:=tokptr[z]+1;end;end;end;
-end;31:end{:168};35:if t=3 then a:=0;{167:}130:begin a:=idlookup(0);
+end;31:end{:168};35:if(t=3)or(t=4)then a:=0;{167:}
+130:begin a:=idlookup(0);
 begin if tokptr[z]=maxtoks then begin writeln(stdout);
 write(stderr,'! Sorry, ','token',' capacity exceeded');error;history:=3;
 uexit(1);end;tokmem[z,tokptr[z]]:=(a div 256)+128;
@@ -708,17 +770,23 @@ begin if tokptr[z]=maxtoks then begin writeln(stdout);
 write(stderr,'! Sorry, ','token',' capacity exceeded');error;history:=3;
 uexit(1);end;tokmem[z,tokptr[z]]:=a;tokptr[z]:=tokptr[z]+1;end;end;
 30:nextcontrol:=a;{166:}
-if bal>0 then begin if bal=1 then begin writeln(stdout);
+if bal>0 then if t=3 then begin if bal=1 then begin writeln(stdout);
 write(stdout,'! Missing )');error;end else begin writeln(stdout);
 write(stdout,'! Missing ',bal:1,' )''s');error;end;
 while bal>0 do begin begin if tokptr[z]=maxtoks then begin writeln(
 stdout);write(stderr,'! Sorry, ','token',' capacity exceeded');error;
 history:=3;uexit(1);end;tokmem[z,tokptr[z]]:=41;tokptr[z]:=tokptr[z]+1;
+end;bal:=bal-1;end;end else begin if bal=1 then begin writeln(stdout);
+write(stdout,'! Missing ]');error;end else begin writeln(stdout);
+write(stdout,'! Missing ',bal:1,' ]''s');error;end;
+while bal>0 do begin begin if tokptr[z]=maxtoks then begin writeln(
+stdout);write(stderr,'! Sorry, ','token',' capacity exceeded');error;
+history:=3;uexit(1);end;tokmem[z,tokptr[z]]:=93;tokptr[z]:=tokptr[z]+1;
 end;bal:=bal-1;end;end{:166};
-if textptr>maxtexts-4 then begin writeln(stdout);
+if textptr>maxtexts-5 then begin writeln(stdout);
 write(stderr,'! Sorry, ','text',' capacity exceeded');error;history:=3;
-uexit(1);end;currepltext:=textptr;tokstart[textptr+4]:=tokptr[z];
-textptr:=textptr+1;if z=3 then z:=0 else z:=z+1;end;{:165}{170:}
+uexit(1);end;currepltext:=textptr;tokstart[textptr+5]:=tokptr[z];
+textptr:=textptr+1;if z=4 then z:=0 else z:=z+1;end;{:165}{170:}
 procedure definemacro(t:eightbits);var p:namepointer;
 begin p:=idlookup(t);scanrepl(t);equiv[p]:=currepltext;
 textlink[currepltext]:=0;end;{:170}{172:}procedure scanmodule;
@@ -737,8 +805,14 @@ if nextcontrol=35 then begin nextcontrol:=getnext;
 if nextcontrol=41 then begin nextcontrol:=getnext;
 if nextcontrol=61 then begin begin writeln(stdout);
 write(stdout,'! Use == for macros');error;end;nextcontrol:=30;end;
-if nextcontrol=30 then begin definemacro(3);goto 22;end;end;end;end;
-{:174};begin writeln(stdout);
+if nextcontrol=30 then begin definemacro(3);goto 22;end;end;end;
+end else if nextcontrol=91 then begin nextcontrol:=getnext;
+if nextcontrol=35 then begin nextcontrol:=getnext;
+if nextcontrol=93 then begin nextcontrol:=getnext;
+if nextcontrol=61 then begin begin writeln(stdout);
+write(stdout,'! Use == for macros');error;end;nextcontrol:=30;end;
+if nextcontrol=30 then begin definemacro(4);goto 22;end;end;end;
+end{:174};begin writeln(stdout);
 write(stdout,'! Definition flushed since it starts badly');error;end;
 end;30:{:173};{175:}case nextcontrol of 134:p:=0;135:begin p:=curmodule;
 {176:}repeat nextcontrol:=getnext;until nextcontrol<>43;
@@ -775,15 +849,15 @@ if changelimit<>0 then begin for ii:=0 to changelimit do buffer[ii]:=
 changebuffer[ii];limit:=changelimit;changing:=true;line:=otherline;
 loc:=changelimit;begin writeln(stdout);
 write(stdout,'! Change file entry did not match');error;end;end{:138};
-phaseone:=false;{:183};{for ii:=0 to 3 do maxtokptr[ii]:=tokptr[ii];}
+phaseone:=false;{:183};{for ii:=0 to 4 do maxtokptr[ii]:=tokptr[ii];}
 {112:}if textlink[0]=0 then begin begin writeln(stdout);
 write(stdout,'! No output was specified.');end;
 if history=0 then history:=1;end else begin begin writeln(stdout);
 write(stdout,'Writing the output file');end;fflush(stdout);{83:}
 stackptr:=1;bracelevel:=0;curstate.namefield:=0;
-curstate.replfield:=textlink[0];zo:=curstate.replfield mod 4;
+curstate.replfield:=textlink[0];zo:=curstate.replfield mod 5;
 curstate.bytefield:=tokstart[curstate.replfield];
-curstate.endfield:=tokstart[curstate.replfield+4];curstate.modfield:=0;
+curstate.endfield:=tokstart[curstate.replfield+5];curstate.modfield:=0;
 {:83};{96:}outstate:=0;outptr:=0;breakptr:=0;semiptr:=0;outbuf[0]:=0;
 line:=1;{:96};sendtheoutput;{98:}breakptr:=outptr;semiptr:=0;
 flushbuffer;if bracelevel<>0 then begin writeln(stdout);
@@ -800,9 +874,9 @@ write(stdout,'Memory usage statistics:');end;begin writeln(stdout);
 write(stdout,nameptr:1,' names, ',textptr:1,' replacement texts;');end;
 begin writeln(stdout);write(stdout,byteptr[0]:1);end;
 for wo:=1 to 2 do write(stdout,'+',byteptr[wo]:1);
-if phaseone then for ii:=0 to 3 do maxtokptr[ii]:=tokptr[ii];
+if phaseone then for ii:=0 to 4 do maxtokptr[ii]:=tokptr[ii];
 write(stdout,' bytes, ',maxtokptr[0]:1);
-for ii:=1 to 3 do write(stdout,'+',maxtokptr[ii]:1);
+for ii:=1 to 4 do write(stdout,'+',maxtokptr[ii]:1);
 write(stdout,' tokens.');[:186];}{187:}
 case history of 0:begin writeln(stdout);
 write(stdout,'(No errors were found.)');end;1:begin writeln(stdout);

@@ -24,11 +24,25 @@
 /* And we use the opportunity to declare a few functions that could not be
    declared in texmfmp.h, because they need typedefs not yet known at that
    point.  */
-extern void calledit P4H(ASCIIcode *, poolpointer, integer, integer);
+extern strnumber getjobname P1H(void);
+
+#ifdef MP
+/* MP defined poolASCIIcode instead of packedASCIIcode, sigh. */
+typedef poolASCIIcode packedASCIIcode;
+#endif
+extern void calledit P4H(packedASCIIcode *, poolpointer, integer, integer);
 
 #ifdef MF
 extern void blankrectangle P4H(screencol, screencol, screenrow, screenrow);
 extern void paintrow P4H(screenrow, pixelcolor, transspec, screencol);
+#endif
+
+#ifdef TeX
+/* Prototypes for source-specials functions... */
+extern strnumber makefullnamestring();
+extern boolean isnewsource P2H(strnumber, int);
+extern poolpointer makesrcspecial P2H(strnumber, int);
+extern void remembersourceinfo P2H(strnumber, int);
 #endif
 
 #ifdef pdfTeX

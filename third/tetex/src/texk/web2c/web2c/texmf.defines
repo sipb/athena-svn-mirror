@@ -21,16 +21,19 @@
 @define function callmakempx ();
 @define function floorscaled ();
 @define function floorunscaled ();
+@define function getjobname;
 @define function getrandomseed;
 @define function initscreen;
 @define function inputln ();
+@define function isnewsource ();
+@define function makefullnamestring;
+@define function makesrcspecial ();
 @define function ocpopenin ();
 @define function ofmopenin ();
 @define function openinnameok ();
 @define function openoutnameok ();
 @define function roundfraction ();
 @define function roundunscaled ();
-@define function vfbopenin ();
 @define function wopenin ();
 @define function wopenout ();
 
@@ -50,6 +53,7 @@
 @define procedure paintrow ();
 @define procedure put2bytes ();
 @define procedure put4bytes ();
+@define procedure remembersourceinfo ();
 @define procedure setupboundvariable ();
 @define procedure setupcharset;
 @define procedure system ();
@@ -66,7 +70,6 @@
 @define procedure wclose ();
 @define procedure writedvi ();
 @define procedure writegf ();
-@define procedure xmallocarray ();
 
 @define type fourquarters;
 @define type twohalves;

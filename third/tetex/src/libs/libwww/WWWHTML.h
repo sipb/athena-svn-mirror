@@ -48,15 +48,15 @@ is that the Internet world is more complicated than Posix and ANSI.
 .
 */
 
-#include "HText.h"
 #include "HTMLPDTD.h"
 #include "SGML.h"
 #include "HTMLGen.h"
 #include "HTTeXGen.h"
-
-#ifdef HT_EXPAT
-#include "HTXML.h"
-#endif
+#include "HTPlain.h"
+#include "HTML.h"
+#include "HText.h"
+#include "HTHInit.h"
+#include "HTStyle.h"
 
 /*
 
@@ -73,6 +73,6 @@ End of HTML module
 
   
 
-  @(#) $Id: WWWHTML.h,v 1.1.1.1 2000-03-10 17:53:04 ghudson Exp $
+  @(#) $Id: WWWHTML.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

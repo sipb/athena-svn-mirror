@@ -1,0 +1,184 @@
+!!!============================================================
+!!! example application defaults file for xdvi
+!!!============================================================
+!!! use e.g. like this:
+!!! xrdb -merge app-defaults-xdvik
+!!!============================================================
+xdvi*font:       -*-helvetica-medium-r-normal-*-12-*-*-*-*-*-iso8859-1
+xdvi.*.statusline.font: -*-helvetica-medium-r-*-*-10-*-*-*-*-*-*
+xdvi.highlight:  red
+!xdvi.editor: emacsclient --no-wait +%l %f
+xdvi.editor: gnuclient -q +%l %f
+
+!!!--------------------------------------------------
+!!! Example for button customizations
+!!!--------------------------------------------------
+!xdvi.buttonTranslations: \
+!Quit:quit()\n\
+!Open:select-dvi-file()\n\
+!Reread:reread-dvi-file()\n\
+!Help:help()\n\n\
+!First:goto-page(1)\n\
+!Page-10:back-page(10)\n\
+!Page-5:back-page(5)\n\
+!Prev:back-page(1)\n\n\
+!Next:forward-page(1)\n\
+!Page+5:forward-page(5)\n\
+!Page+10:forward-page(10)\n\
+!Last:goto-page()\n\n\
+!Full size:set-shrink-factor(1)\n\
+!$%%:shrink-to-dpi(150)\n\
+!$%%:shrink-to-dpi(100)\n\
+!$%%:shrink-to-dpi(50)\n\n\
+!View PS:set-ps(toggle)\n\
+!Back:htex-back()\n\
+!Src on:src-mode-toggle()\n
+
+!!!============================================================
+!!! help texts
+!!!============================================================
+
+!!!============================================================
+!!! xdvi.helpIntro
+!!!============================================================
+xdvi.helpIntro: \
+\n\
+Please choose a topic from the menu above,\n\
+or `Close' to exit help.\n\
+More detailed help is available with `man xdvi'.\n
+
+
+!!!============================================================
+!!! xdvi.helpGeneral
+!!!============================================================
+xdvi.helpGeneral: \
+\n\
+This is xdvik version 22-40l.\n\
+\n\
+The xdvik project homepage is located at\n\
+http://sourceforge.net/projects/xdvi,\n\
+where you can find updates, report bugs and submit feature requests.\n\
+\n\
+Getting help and exiting xdvi\n\
+\n\
+h or ? or `Help' button\n\
+     Displays this help text.\n\
+\n\
+q or Control-C or Control-D or Cancel or Stop or Control-Z (VAX VMS)\n\
+     Quits the program.\n
+
+
+!!!============================================================
+!!! xdvi.helpOthercommands
+!!!============================================================
+xdvi.helpOthercommands: \
+\n\
+Other Commands\n\
+\n\
+\n\
+Control-F\n\
+     Find another DVI file.\n\
+\n\
+Control-L or Clear\n\
+     Redisplays the current page.\n\
+\n\
+Control-P\n\
+     Prints bitmap unit, bit order, and byte order.\n\
+\n\
+^ or Home\n\
+     Move to the ``home'' position of the page.  This is\n\
+     normally the upper left-hand corner of the page,\n\
+     depending on the margins as described in the -margins\n\
+     option, above.\n\
+\n\
+c    Moves the page so that the point currently beneath the\n\
+     cursor is moved to the middle of the window.  It also\n\
+     (gasp!) warps the cursor to the same place.\n\
+\n\
+G    This key toggles the use of greyscale anti-aliasing for\n\
+     displaying shrunken bitmaps.  In addition, the key\n\
+     sequences `0G' and `1G' clear and set this flag,\n\
+     respectively.  See also the -nogrey option.\n\
+\n\
+k    Normally when xdvi switches pages, it moves to the home\n\
+     position as well.  The `k' keystroke toggles a `keep-\n\
+     position' flag which, when set, will keep the same\n\
+     position when moving between pages.  Also `0k' and `1k'\n\
+     clear and set this flag, respectively.  See also the\n\
+     -keep option.\n\
+\n\
+M    Sets the margins so that the point currently under the\n\
+     cursor is the upper left-hand corner of the text in the\n\
+     page.  Note that this command itself does not move the\n\
+     image at all.  For details on how the margins are used,\n\
+     see the -margins option.\n\
+\n\
+P    ``This is page number n.''  This can be used to make\n\
+     the `g' keystroke refer to actual page numbers instead\n\
+     of absolute page numbers.\n\
+\n\
+R    Forces the dvi file to be reread.  This allows you to\n\
+     preview many versions of the same file while running\n\
+     xdvi only once.\n\
+\n\
+s    Changes the shrink factor to the given number.  If no\n\
+     number is given, the smallest factor that makes the\n\
+     entire page fit in the window will be used.  (Margins\n\
+     are ignored in this computation.)\n\
+\n\
+S    Sets the density factor to be used when shrinking\n\
+     bitmaps.  This should be a number between 0 and 100;\n\
+     higher numbers produce lighter characters.\n\
+\n\
+t    Toggles to the next unit in a sorted list of TeX dimension\n\
+     units for the popup magnifier ruler.\n\
+\n\
+V    Toggles Ghostscript anti-aliasing.  Also `0V' and `1V' clear\n\
+     and enables this mode, respectively.  See also the the\n\
+     -gsalpha option.\n\
+\n\
+x    Toggles expert mode (in which the buttons do not appear).\n\
+     `1x' toggles display of the statusline at the bottom of\n\
+     the window.\n
+
+!!!============================================================
+!!! xdvi.helpPagemotion
+!!!============================================================
+xdvi.helpPagemotion: \
+\n\
+Moving around in the document\n\
+\n\
+\n\
+\n\
+n or f or Space or Return or LineFeed or PgDn\n\
+     Moves to the next page (or to the nth next page if a\n\
+     number is given).\n\
+\n\
+p or b or Control-H or BackSpace or DELete or PgUp\n\
+     Moves to the previous page (or back n pages).\n\
+\n\
+u or Up-arrow\n\
+     Moves up two thirds of a window-full.\n\
+\n\
+d or Down-arrow\n\
+     Moves down two thirds of a window-full.\n\
+\n\
+l or Left-arrow\n\
+     Moves left two thirds of a window-full.\n\
+\n\
+r or Right-arrow\n\
+     Moves right two thirds of a window-full.\n\
+\n\
+g or j or End\n\
+     Moves to the page with the given number.  Initially,\n\
+     the first page is assumed to be page number 1, but this\n\
+     can be changed with the `P' keystroke, below.  If no\n\
+     page number is given, then it goes to the last page.\n\
+\n\
+<    Move to first page in document.\n\
+>    Move to last page in document.\n
+!!!============================================================
+!!! end of helptexts
+!!!============================================================
+
+

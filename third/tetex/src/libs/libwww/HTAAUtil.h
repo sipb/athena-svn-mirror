@@ -112,6 +112,7 @@ typedef struct _HTAAModule HTAAModule;
 extern HTAAModule * HTAA_newModule (const char *		scheme,
 				    HTNetBefore *		before,
 				    HTNetAfter *		after,
+				    HTNetAfter *                update,
 				    HTUTree_gc *		gc);
 
 /*
@@ -210,6 +211,16 @@ HTNetAfter HTAA_afterFilter;
 
 /*
 (
+  Update Filter
+)
+
+Call the UPDATE filter that knows how to handle this scheme.
+*/
+
+HTNetAfter HTAA_updateFilter;
+
+/*
+(
   Proxy Authentication Filter
 )
 
@@ -235,6 +246,6 @@ HTNetBefore HTAA_proxyBeforeFilter;
 
   
 
-  @(#) $Id: HTAAUtil.h,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+  @(#) $Id: HTAAUtil.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

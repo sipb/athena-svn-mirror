@@ -116,7 +116,7 @@ to the response header is generated.
 
 /*
 (
-  HTTP Extensions and PEP
+  HTTP Extensions
 )
 
 The PEP Manager is a registry for PEP Protocols
@@ -150,9 +150,25 @@ of the following:
 
 Contains code for parsing challenges and creating credentials for basic and
 digest authentication schemes. See also the HTAAUtil
-module for how to handle other authentication schemes. 
+module for how to handle other authentication schemes.
 */
 #include "HTAABrow.h"
+
+/*
+(
+  HTTP Cookies
+)
+
+The cookie module provides a simple
+HTTP Cookie
+handling mechanism. It really also is an excersize in showing how libwww
+can be extended with something like cookies in a modular manner. An important
+thing to note about this implementation is that it does not provide
+storage for cookies - this is left to the application as normally cookies
+have to be kept under lock.
+*/
+
+#include "HTCookie.h"
 
 /*
 
@@ -169,6 +185,6 @@ End of HTTP module
 
   
 
-  @(#) $Id: WWWHTTP.h,v 1.1.1.1 2000-03-10 17:53:04 ghudson Exp $
+  @(#) $Id: WWWHTTP.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -15,17 +15,47 @@ AC_ARG_WITH(ps,
 AC_ARG_ENABLE(grey,
 [  --disable-grey          disable greyscale anti-aliasing for shrunken bitmaps]
 ,
-[if test "$enableval" = yes; then
+[if test "$enableval" = no; then
+  echo DISABLED grey
+else
   AC_DEFINE(GREY)
 fi],
 AC_DEFINE(GREY))
 
 AC_ARG_ENABLE(buttons,
 [  --disable-buttons       disable buttons on the side of the window],
-[if test "$enableval" = yes; then
+[if test "$enableval" = no; then
+  echo DISABLED buttons
+else
   AC_DEFINE(BUTTONS)
 fi],
 AC_DEFINE(BUTTONS))
+
+AC_ARG_ENABLE(statusline,
+[  --disable-statusline    disable statusline at bottom of window],
+[if test "$enableval" = no; then
+  echo DISABLED statusline
+else
+  AC_DEFINE(STATUSLINE)
+fi],
+AC_DEFINE(STATUSLINE))
+
+AC_ARG_ENABLE(t1lib,
+[  --disable-t1lib         don't use t1lib (incompatible with K&R C), disables t1 fonts],
+[if test "$enableval" = no; then
+  T1LIB=
+  LDT1LIB=
+  echo DISABLED t1lib
+else
+  T1LIB=1
+  LDT1LIB=../../libs/t1lib/lib/.libs/libt1.a
+  AC_DEFINE(LDT1LIB)
+  AC_DEFINE(T1LIB)
+fi],
+T1LIB=1
+LDT1LIB=../../libs/t1lib/lib/.libs/libt1.a
+AC_DEFINE(LDT1LIB)
+AC_DEFINE(T1LIB))
 
 AC_ARG_ENABLE(gf,
 [  --enable-gf             enable gf format pixel files (in addition to pk)],
@@ -36,8 +66,27 @@ AC_ARG_ENABLE(gf,
 fi])
 
 AC_ARG_ENABLE(a4,
-[  --enable-a4             set default paper size to A4 and default unit to cm],
-[if test "$enableval" != no; then
+[  --disable-a4            set default paper size to letter and default unit to inch],
+[if test "$enableval" = no; then
+[  echo DISABLED a4/cm, using letter/in instead]
+else
   AC_DEFINE(A4)
-fi])
+fi],
+AC_DEFINE(A4))
 
+dnl uncommented this, since compile without libwww is broken
+dnl AC_ARG_ENABLE(libwww,
+dnl [  --disable-libwww        don't use libwww (incompatible with K&R C), disables hypertex],
+dnl [if test "$enableval" = yes; then
+dnl   HTEX=
+dnl   echo libwww disabled
+dnl   AC_DEFINE(HTEX)
+dnl fi],
+dnl HTEX=1
+dnl echo libwww enabled
+dnl AC_DEFINE(HTEX))
+
+HTEX=1
+AC_DEFINE(HTEX)
+
+AC_SUBST(LDT1LIB)

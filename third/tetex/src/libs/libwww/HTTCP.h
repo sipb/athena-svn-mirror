@@ -44,7 +44,7 @@ HTDoConnect() measures the time it takes to connect and updates
 the calculated weights in the DNS object.
 */
 
-extern int HTDoConnect (HTNet * net, char * url, u_short default_port);
+extern int HTDoConnect (HTNet * net);
 
 /*
 .
@@ -63,23 +63,22 @@ is - the same object all along - then we reuse the same Net obejct; closes
 the original socket and replaces it wik the accepted one. This is a quick
 way of accepting a single connection.
 */
-extern int HTDoAccept (HTNet * net, HTNet ** accepted);
+
+extern int HTDoAccept (HTNet * listen, HTNet * accept);
 
 /*
 .
   Listen on a Socket
 .
 
-Listens on the specified port. Passing port 0 means that we
-don't care and a temporary one will be assigned. If
-master==INVSOC then we listen on all local interfaces (using
-a wildcard). If INVSOC is not NULL then
-use this as the local interface. backlog is the number of
-connections that can be queued on the socket - you can use
-HT_BACKLOG for a platform dependent value (typically 5 on BSD
-and 32 on SVR4). Returns HT_ERROR or HT_OK.
+Listens on the specified port described in the Net
+object. backlog is the number of connections that can be
+queued on the socket - you can use HT_BACKLOG for a
+platform dependent value (typically 5 on BSD and 32 on SVR4). Returns
+HT_ERROR or HT_OK.
 */
-extern int HTDoListen (HTNet * net, u_short port, SOCKET master, int backlog);
+
+extern int HTDoListen (HTNet * net, HTNet * accept, int backlog);
 
 /*
 .
@@ -100,6 +99,6 @@ extern int HTDoClose (HTNet * net);
 
   
 
-  @(#) $Id: HTTCP.h,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+  @(#) $Id: HTTCP.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -74,7 +74,7 @@ a macro for "strcpy" that diverts it to "my_strcpy".
 #include  "strokes.h"
 #include  "cluts.h"
 static char *TypeFmt();
-static ObjectPostMortem();
+static int ObjectPostMortem(struct xobject *obj);
 
 /*
 :h3.The "pointer" Macro - Define a Generic Pointer
@@ -300,14 +300,14 @@ struct xobject *t1_Allocate(size, template, extra)  /* non-ANSI; type checking w
        size = (size + sizeof(LONG) - 1) & -sizeof(LONG);
        extra = (extra + sizeof(LONG) - 1) & -sizeof(LONG);
        if (size + extra <= 0)
-               abort("Non-positive allocate?");
+               t1_abort("Non-positive allocate?");
        r = (struct xobject *) Xalloc(size + extra);
  
        while (r == NULL) {
                if (!GimeSpace()) {
                        IfTrace1(TRUE, "malloc attempted %d bytes.\n",
                                            size + extra);
-                       abort("We have REALLY run out of memory");
+                       t1_abort("We have REALLY run out of memory");
                }
                r = (struct xobject *) Xalloc(size + extra);
        }
@@ -336,7 +336,7 @@ struct xobject *t1_Allocate(size, template, extra)  /* non-ANSI; type checking w
        if (MemoryDebug > 1) {
                register int *L;
                L = (int *) r;
-               IfTrace4(TRUE, "Allocating at %x: %x %x %x\n",
+               IfTrace4(TRUE, "Allocating at %p: %x %x %x\n",
                                            L, L[-1], L[0], L[1]);
        }
        return(r);
@@ -358,13 +358,13 @@ void Free(obj)              /* non-ANSI to avoid overly strict type checking */
        register struct xobject *obj;  /* structure to free                   */
 {
        if (obj->type == INVALIDTYPE)
-               abort("Free of already freed object?");
+               t1_abort("Free of already freed object?");
        obj->type = INVALIDTYPE;
  
        if (MemoryDebug > 1) {
                register int *L;
                L = (int *) obj;
-               IfTrace4(TRUE,"Freeing at %x: %x %x %x\n", L, L[-1], L[0], L[1]);
+               IfTrace4(TRUE,"Freeing at %p: %x %x %x\n", L, L[-1], L[0], L[1]);
        }
  
        Xfree(obj);
@@ -397,7 +397,7 @@ done is to change one of the old temporary handles to a permanent one.
 struct xobject *t1_Permanent(obj) /* non-ANSI to avoid overly strict type checking */
        register struct xobject *obj;  /* object to be made permanent         */
 {
-       IfTrace1((MustTraceCalls),"Permanent(%z)\n", obj);
+       IfTrace1((MustTraceCalls),"Permanent(%p)\n", obj);
  
        if ( (obj != NULL) && ( !(ISPERMANENT(obj->flag)) ) )
        {
@@ -441,7 +441,7 @@ PNM 3-2-6-91
 struct xobject *xiTemporary(obj) /* non-ANSI to avoid overly strict type checking */
        register struct xobject *obj;  /* object to be made permanent         */
 {
-       IfTrace1((MustTraceCalls),"Temporary(%z)\n", obj);
+       IfTrace1((MustTraceCalls),"Temporary(%p)\n", obj);
  
        if (obj != NULL) {
                /* if it's already temporary, there's nothing to do. */
@@ -488,7 +488,7 @@ struct xobject *t1_Dup(obj)   /* non-ANSI avoids overly strict type checking  */
 {
        register char oldflag;   /* copy of original object's flag byte */
  
-       IfTrace1((MustTraceCalls),"Dup(%z)\n", obj);
+       IfTrace1((MustTraceCalls),"Dup(%p)\n", obj);
  
        if (obj == NULL)
                return(NULL);
@@ -568,12 +568,12 @@ handle it.
 struct xobject *Destroy(obj) /* non-ANSI avoids overly strict type checking  */
        register struct xobject *obj;  /* object to be destroyed              */
 {
-       IfTrace1((MustTraceCalls),"Destroy(%z)\n", obj);
+       IfTrace1((MustTraceCalls),"Destroy(%p)\n", obj);
  
        if (obj == NULL)
                return(NULL);
        if (ISIMMORTAL(obj->flag)) {
-               IfTrace1(TRUE,"Destroy of immortal object %z ignored\n", obj);
+               IfTrace1(TRUE,"Destroy of immortal object %p ignored\n", obj);
                return(NULL);
        }
        if (ISPATHTYPE(obj->type))
@@ -777,7 +777,7 @@ void Pragmatics(username, value)
        char name[NAMESIZE];  /* buffer to store my copy of 'username'        */
  
        if (strlen(username) >= NAMESIZE)
-               abort("Pragmatics name too large");
+               t1_abort("Pragmatics name too large");
        strcpy(name, username);
        for (p = name; *p != '\0'; p++)
                *p = toupper(*p);
@@ -941,7 +941,7 @@ void Consume(n, obj1, obj2, obj3) /* non-ANSI avoids overly strict type checking
                return;
  
            default:
-               abort("Consume:  too many objects");
+               t1_abort("Consume:  too many objects");
        }
 }
 #endif /* WIN32 */
@@ -960,14 +960,14 @@ struct xobject *TypeErr(name, obj, expect, ret) /* non-ANSI avoids overly strict
        if (MustCrash)
                LineIOTrace = TRUE;
  
-       sprintf(typemsg, "Wrong object type in %s; expected %s.\n",
+       sprintf(typemsg, "Wrong object type in %s; expected %s seen %s\n",
                   name, TypeFmt(expect), TypeFmt(obj->type));
        IfTrace0(TRUE,typemsg);
  
        ObjectPostMortem(obj);
  
        if (MustCrash)
-               abort("Terminating because of CrashOnUserError...");
+               t1_abort("Terminating because of CrashOnUserError...");
        else
                ErrorMessage = typemsg;
  
@@ -1029,18 +1029,19 @@ static char *TypeFmt(type)
 This is a subroutine of TypeErr() and ArgErr().
 */
  
-/*ARGSUSED*/
-static ObjectPostMortem(obj) /* non-ANSI avoids overly strict type checking  */
-       register struct xobject *obj;
+static int ObjectPostMortem(register struct xobject *obj)
 {
        extern struct XYspace *USER;
  
        Pragmatics("Debug", 10);
-       IfTrace2(TRUE,"Bad object is of %s type %z\n", TypeFmt(obj->type), obj);
+       IfTrace2(TRUE,"Bad object is of %s type %p\n", TypeFmt(obj->type), obj);
  
        IfTrace0((obj == (struct xobject *) USER),
                   "Suspect that InitImager() was omitted.\n");
        Pragmatics("Debug", 0);
+
+       /* NOTREACHED? */
+       return 0;
 }
  
 /*
@@ -1062,14 +1063,14 @@ struct xobject *ArgErr(str, obj, ret) /* non-ANSI avoids overly strict type chec
        if (obj != NULL)
                ObjectPostMortem(obj);
        if (MustCrash)
-               abort("Terminating because of CrashOnUserError...");
+               t1_abort("Terminating because of CrashOnUserError...");
        else
                ErrorMessage = str;
        return(ret);
 }
  
 /*
-:h3.abort() - Crash Due to Error
+:h3.t1_abort() - Crash Due to Error
  
 We divide by zero, and if that doesn't work, call exit(), the results of
 which is system dependent (and thus is part of the Hourglass required
@@ -1078,7 +1079,7 @@ environment).
 static int test = 0;
  
 /*ARGSUSED*/
-void abort(str)
+void t1_abort(str)
        char *str;
 {
        LineIOTrace = TRUE;
@@ -1120,7 +1121,7 @@ void InitImager()
 /* All other calls to malloc are defined to Xalloc.  */
  
        if (sizeof(SHORT) != 2 || sizeof(LONG) != 4)
-          abort("Fundamental TYPE1IMAGER assumptions invalid in this port");
+          t1_abort("Fundamental TYPE1IMAGER assumptions invalid in this port");
        InitSpaces();
        InitFonts();
        InitFiles();

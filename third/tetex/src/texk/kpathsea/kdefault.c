@@ -38,12 +38,12 @@ kpse_expand_default P2C(const_string, path,  const_string, fallback)
   assert (fallback);
   
   if (path == NULL)
-    expansion = (string) fallback;
+    expansion = xstrdup (fallback);
 
   /* Solitary or leading :?  */
   else if (IS_ENV_SEP (*path))
     {
-      expansion = path[1] == 0 ? (string) fallback : concat (fallback, path);
+      expansion = path[1] == 0 ? xstrdup (fallback) : concat (fallback, path);
     }
 
   /* Sorry about the assignment in the middle of the expression, but
@@ -59,23 +59,24 @@ kpse_expand_default P2C(const_string, path,  const_string, fallback)
     {
       const_string loc;
 
-      /* What we'll return if we find none.  */
-      expansion = (string) path;
+      for (loc = path; *loc; loc++)
+        if (IS_ENV_SEP (loc[0]) && IS_ENV_SEP (loc[1]))
+          break;
+      if (*loc)
+        { /* We have a doubled colon.  */
+          expansion = (string)xmalloc (path_length + strlen(fallback) + 1);
 
-      for (loc = path; *loc && expansion == path; loc++)
-        {
-          if (IS_ENV_SEP (loc[0]) && IS_ENV_SEP (loc[1]))
-            { /* We have a doubled colon.  */
-              expansion = xmalloc (path_length + strlen (fallback) + 1);
-              
-              /* Copy stuff up to and including the first colon.  */
-              strncpy (expansion, path, loc - path + 1);
-              expansion[loc - path + 1] = 0;
-              
-              /* Copy in FALLBACK, and then the rest of PATH.  */
-              strcat (expansion, fallback);
-              strcat (expansion, loc + 1);
-            }
+          /* Copy stuff up to and including the first colon.  */
+          strncpy (expansion, path, loc - path + 1);
+          expansion[loc - path + 1] = 0;
+
+          /* Copy in FALLBACK, and then the rest of PATH.  */
+          strcat (expansion, fallback);
+          strcat (expansion, loc + 1);
+        }
+      else
+        { /* No doubled colon. */
+          expansion = xstrdup(path);
         }
     }
   

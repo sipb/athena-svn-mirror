@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1996.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTMIMPrs.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTMIMPrs.c,v 1.1.1.2 2003-02-25 22:27:20 amb Exp $
 **
 **      See HTHshLst.html for a description of HashLists.
 **
@@ -18,12 +18,10 @@
 #include "HTString.h"
 #include "HTMIMPrs.h"
 
-#define DEFAULT_HASH_SIZE 	11
-
 struct _HTMIMEParseEl{
     HTMIMEParseEl * 	next;
-    const char * 	token;
-    BOOL 		caseSensitive;
+    char *		token;
+    BOOL		caseSensitive;
     HTParserCallback * 	pFunk;
 };
 
@@ -49,6 +47,7 @@ PRIVATE HTMIMEParseEl * HTMIMEParseEl_new(HTMIMEParseEl ** pBefore,
 PRIVATE int HTMIMEParseEl_delete(HTMIMEParseEl * me, HTMIMEParseEl ** pBefore)
 {
     *pBefore = me->next;
+    HT_FREE(me->token);
     HT_FREE(me);
     return HT_OK;
 }
@@ -61,7 +60,7 @@ PRIVATE int HTMIMEParseSet_hash(HTMIMEParseSet * me, const char * token)
     for (p=token, ret=0; *p; p++) {
         char ch;
         ch = *(unsigned char *) p;
-	ch = tolower(ch);
+	ch = TOLOWER(ch);
         ret = (ret * 3 +(ch)) % me->size;
     }
     return ret;
@@ -81,18 +80,18 @@ PUBLIC int HTMIMEParseSet_deleteAll (HTMIMEParseSet * me)
 {
     int i;
     HTMIMEParseEl * pEl, * next;
-    
-    for (i=0; i<me->size; i++)
-	for (pEl = me->parsers[i]; pEl; pEl = next) {
-	    next = pEl->next;
-	    HT_FREE(pEl);
-	}
 
-    for (pEl = me->parsers[i]; pEl; pEl = next) {
-        next = pEl->next;
-	HT_FREE(pEl);
+    if (me && me->parsers) {
+	for (i=0; i<me->size; i++) {
+	    for (pEl = me->parsers[i]; pEl; pEl = next) {
+		next = pEl->next;
+		HT_FREE(pEl->token);
+		HT_FREE(pEl);
+	    }
+	}
+	HT_FREE(me->parsers);
+	HT_FREE(me);
     }
-    HT_FREE(me);
     return HT_OK;
 }
 
@@ -107,7 +106,7 @@ PUBLIC HTMIMEParseEl * HTMIMEParseSet_add (HTMIMEParseSet * me,
     */
     if (!me->parsers) {
         if (!me->size)
-	    me->size = DEFAULT_HASH_SIZE;
+	    me->size = HT_S_HASH_SIZE;
 	if ((me->parsers = (HTMIMEParseEl **) HT_CALLOC(me->size, sizeof(HTMIMEParseEl *))) == NULL)
 	    HT_OUTOFMEM("HTMIME parsers");
     }

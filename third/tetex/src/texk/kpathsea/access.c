@@ -1,5 +1,5 @@
 /* access -- test for access permissions of a file.
-   Copyright (C) 1997 Olaf Weber.
+   Copyright (C) 1997, 2000 Olaf Weber.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -18,10 +18,7 @@
 #include <stdio.h>
 #include <kpathsea/config.h>
 #include <kpathsea/c-unistd.h>
-
-#ifdef WIN32
-#include <string.h>
-#endif
+#include <kpathsea/c-memstr.h>
 
 /*
  *      access mode x
@@ -30,9 +27,8 @@
  *      only, which doesn't take read-only file systems into account.
  */
 
-int main (argc, argv)
-    int argc;
-    char *argv[];
+int
+main P2C(int, argc, char **, argv)
 {
     int mode;
     int status;

@@ -1,4 +1,26 @@
 /*
+Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+
+This file is part of pdfTeX.
+
+pdfTeX is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+pdfTeX is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pdfTeX; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+$Id: pkin.c,v 1.1.1.2 2003-02-25 22:09:30 amb Exp $
+*/
+
+/*
  * NAME
  *	pkin.c - implementation of readchar()
  * DESCRIPTION
@@ -21,8 +43,7 @@
  *  Modified for use with pdftex by Han The Thanh <thanh@fi.muni.cz>.
  */
 
-#include "libpdftex.h"
-#include "pkin.h"
+#include "ptexlib.h"
 
 /*
  *   Now we have some routines to get stuff from the pk file.  pkbyte returns
@@ -37,8 +58,7 @@ static FILE *pkfile ;
 extern FILE *t3_file;
 #define pkfile t3_file
 
-static shalfword
-pkbyte()
+static shalfword pkbyte(void)
 {
    register shalfword i ;
 
@@ -47,8 +67,7 @@ pkbyte()
    return(i) ;
 }
 
-static integer
-pkduo()
+static integer pkduo(void)
 {
     register integer i ;
 
@@ -59,8 +78,7 @@ pkduo()
     return(i) ;
 }
 
-static integer
-pktrio()
+static integer pktrio(void)
 {
    register integer i ;
 
@@ -72,8 +90,7 @@ pktrio()
    return(i) ;
 }
 
-static integer
-pkquad()
+static integer pkquad(void)
 {
    register integer i ;
 
@@ -100,8 +117,7 @@ static halfword bitweight ;
 static halfword dynf ;
 static halfword repeatcount ;
 
-static shalfword
-getnyb ()
+static shalfword getnyb(void)
 {   halfword temp;
     if ( bitweight == 0 ) 
     { bitweight = 16 ; 
@@ -114,8 +130,7 @@ getnyb ()
     return(temp);
 } 
 
-static Boolean
-getbit ()
+static boolean getbit(void)
 {
     bitweight >>= 1 ; 
     if ( bitweight == 0 ) 
@@ -125,11 +140,11 @@ getbit ()
     return(inputbyte & bitweight) ;
 }
 
-static halfword (*realfunc)() ;
+static halfword (*realfunc)(void) ;
 long pk_remainder ;
-static halfword handlehuge() ;
+static halfword handlehuge(halfword i, halfword  k);
 
-static halfword pkpackednum () {
+static halfword pkpackednum(void) {
 register halfword i, j ; 
     i = getnyb () ; 
     if ( i == 0 ) 
@@ -141,7 +156,7 @@ register halfword i, j ;
  *   Damn, we got a huge count!  We *fake* it by giving an artificially
  *   large repeat count.
  */
-         return( handlehuge ( i, j ) ) ;
+         return(handlehuge(i, j)) ;
       } else {
          while ( i > 0 ) 
            { j = j * 16 + getnyb () ; 
@@ -163,7 +178,7 @@ register halfword i, j ;
       } 
     } 
 
-static halfword rest ()
+static halfword rest(void)
 {
    halfword i ;
 
@@ -182,12 +197,11 @@ static halfword rest ()
       }
    } else {
       pdftex_fail("shouldn't happen") ;
+      return 0; /*NOTREACHED*/
    }
-   /*NOTREACHED*/
 }
 
-static halfword handlehuge ( i, k )
-halfword i, k ;
+static halfword handlehuge(halfword i, halfword  k)
 {
    register long j = k ;
 
@@ -207,15 +221,13 @@ halfword i, k ;
 static halfword gpower[17] = { 0, 1, 3, 7, 15, 31, 63, 127,
      255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535 } ; 
 
-static void
-unpack(cd)
-chardesc *cd;
+static void unpack(chardesc *cd)
 { 
   register integer i, j ; 
   register halfword word, wordweight ;
   halfword *raster;
   shalfword rowsleft ; 
-  Boolean turnon ; 
+  boolean turnon ; 
   shalfword hbit ; 
   halfword count ; 
   shalfword  wordwidth ;
@@ -224,7 +236,11 @@ chardesc *cd;
       i = 2 * cd->cheight * (long)wordwidth ;
       if (i <= 0)
          i = 2 ;
-      cd->raster = XTALLOC(i, halfword);
+      if (i > cd->rastersize) {
+        xfree(cd->raster);
+        cd->rastersize = i;
+        cd->raster = xtalloc(cd->rastersize, halfword);
+      }
       raster = cd->raster;
       realfunc = pkpackednum ;
       dynf = flagbyte / 16 ; 
@@ -296,7 +312,7 @@ chardesc *cd;
                 } 
               turnon = ! turnon ; 
 	  }
-          if ( ( rowsleft != 0 ) || ( (unsigned)hbit != cd->cwidth ) ) 
+          if ( ( rowsleft != 0 ) || ( (integer)hbit != cd->cwidth ) ) 
              pdftex_fail("error while unpacking; more bits than required"); 
         } 
 }
@@ -306,13 +322,6 @@ chardesc *cd;
  *   Reads the character definition of character `c' into `cd' if available,
  *   return FALSE (0) otherwise.
  */
-/*
-int
-readchar(name, c, cd)
-char name[];
-shalfword c;
-chardesc *cd;
-*/
 
 /*
  *   readchar(): the main routine
@@ -385,7 +394,7 @@ case 7:
             cd->yoff = pkquad();
          }
          if (length <= 0)
-            pdftex_fail("packet length (%li) too small", (long int)length) ;
+            pdftex_fail("packet length (%i) too small", (int)length) ;
          unpack(cd);
          return 1;
       } else {

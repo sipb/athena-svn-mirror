@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.1.1.1 2000-03-10 17:52:41 ghudson Exp $
+# $Id: mk-1st.awk,v 1.1.1.2 2003-02-25 22:05:23 amb Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998,2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
+# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,2000
 #
 # Generate list of objects for a given model library
 # Variables:
@@ -39,7 +39,9 @@
 #	depend (optional dependencies for all objects, e.g, ncurses_cfg.h)
 #	subset ("none", "base", "base+ext_funcs" or "termlib")
 #	target (cross-compile target, if any)
-#	DoLinks ("yes" or "no", flag to add symbolic links)
+#	ShlibVer ("rel", "abi" or "auto", to augment DoLinks variable)
+#	ShlibVerInfix ("yes" or "no", determines location of version #)
+#	DoLinks ("yes", "reverse" or "no", flag to add symbolic links)
 #	rmSoLocs ("yes" or "no", flag to add extra clean target)
 #	overwrite ("yes" or "no", flag to add link to libcurses.a
 #
@@ -54,30 +56,46 @@ function symlink(src,dst) {
 			printf "$(LN_S) %s %s; ", src, dst
 		}
 	}
-function sharedlinks(directory, add) {
-		if ( end_name != lib_name ) {
-			abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
-			if (add) {
-				printf "\tcd %s && (", directory
-				symlink(end_name, abi_name);
-				symlink(abi_name, lib_name);
-				printf ")\n"
-			} else {
-				printf "\t-@rm -f %s/%s\n", directory, abi_name
-				printf "\t-@rm -f %s/%s\n", directory, lib_name
-			}
-		}
-	}
-function removelinks() {
-		if ( end_name != lib_name ) {
-			printf "\trm -f ../lib/%s ../lib/%s\n", abi_name, end_name
-		}
-	}
-function installed_name() {
-		if ( DO_LINKS == "yes" ) {
-			return sprintf("%s.$(REL_VERSION)", lib_name);
+function rmlink(directory, dst) {
+		printf "\t-rm -f %s/%s\n", directory, dst
+}
+function removelinks(directory) {
+		rmlink(directory, end_name);
+		if ( DoLinks == "reverse" ) {
+				if ( ShlibVer == "rel" ) {
+					rmlink(directory, abi_name);
+					rmlink(directory, rel_name);
+				} else if ( ShlibVer == "abi" ) {
+					rmlink(directory, abi_name);
+				}
 		} else {
-			return lib_name;
+				if ( ShlibVer == "rel" ) {
+					rmlink(directory, abi_name);
+					rmlink(directory, lib_name);
+				} else if ( ShlibVer == "abi" ) {
+					rmlink(directory, lib_name);
+				}
+		}
+	}
+function sharedlinks(directory) {
+		if ( ShlibVer != "auto" && ShlibVer != "cygdll" ) {
+			printf "\tcd %s && (", directory
+			if ( DoLinks == "reverse" ) {
+				if ( ShlibVer == "rel" ) {
+					symlink(lib_name, abi_name);
+					symlink(abi_name, rel_name);
+				} else if ( ShlibVer == "abi" ) {
+					symlink(lib_name, abi_name);
+				}
+			} else {
+				if ( ShlibVer == "rel" ) {
+					symlink(rel_name, abi_name);
+					symlink(abi_name, lib_name);
+				} else if ( ShlibVer == "abi" ) {
+					symlink(abi_name, lib_name);
+				}
+			}
+			printf ")\n"
 		}
 	}
 BEGIN	{
@@ -105,8 +123,16 @@ BEGIN	{
 			}
 		}
 	}
-	!/^[@#]/ {
+	/^[@#]/ {
+		next
+	}
+	$1 ~ /trace/ {
+		if (traces != "all" && traces != MODEL && $1 != "lib_trace")
+			next
+	}
+	{
 		if (using \
+		 && ( $1 != "link_test" ) \
 		 && ( $2 == "lib" \
 		   || $2 == "progs" \
 		   || $2 == "c++" \
@@ -135,48 +161,105 @@ END	{
 			lib_name = sprintf("%s%s%s", prefix, name, suffix)
 			if ( MODEL == "SHARED" )
 			{
-				if ( DoLinks == "yes" ) {
-					end_name = sprintf("%s.$(REL_VERSION)", lib_name);
+				if (ShlibVerInfix == "cygdll") {
+					abi_name = sprintf("%s%s$(ABI_VERSION)%s", prefix, name, suffix);
+					rel_name = sprintf("%s%s$(REL_VERSION)%s", prefix, name, suffix);
+					imp_name = sprintf("%s%s%s.a", prefix, name, suffix);
+				} else if (ShlibVerInfix == "yes") {
+					abi_name = sprintf("%s%s.$(ABI_VERSION)%s", prefix, name, suffix);
+					rel_name = sprintf("%s%s.$(REL_VERSION)%s", prefix, name, suffix);
 				} else {
+					abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
+					rel_name = sprintf("%s.$(REL_VERSION)", lib_name);
+				}
+				if ( DoLinks == "reverse") {
 					end_name = lib_name;
+				} else {
+					if ( ShlibVer == "rel" ) {
+						end_name = rel_name;
+					} else if ( ShlibVer == "abi" || ShlibVer == "cygdll" ) {
+						end_name = abi_name;
+					} else {
+						end_name = lib_name;
+					}
 				}
-				printf "../lib/%s : $(%s_OBJS)\n", lib_name, OBJS
-				print  "\t-@rm -f $@"
-				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", OBJS
-				sharedlinks("../lib", 1)
-				print  ""
-				if ( end_name != lib_name ) {
-					printf "../lib/%s : ../lib/%s\n", end_name, lib_name
+
+				if ( ShlibVer == "cygdll" ) {
+					dst_dirs = "$(DESTDIR)$(bindir) $(DESTDIR)$(libdir)";
+					printf "$(SHARED_LIB) $(IMPORT_LIB) : $(%s_OBJS)\n", OBJS;
+					print "\t-@rm -f $(SHARED_LIB) $(IMPORT_LIB)";
+				} else {
+					dst_dirs = "$(DESTDIR)$(libdir)";
+					printf "../lib/%s : $(%s_OBJS)\n", end_name, OBJS
+					print "\t-@rm -f $@";
 				}
+				if ( subset == "termlib") {
+					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(TINFO_LIST)\n", OBJS
+				} else {
+					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(SHLIB_LIST) $(LDFLAGS)\n", OBJS
+				}
+				sharedlinks("../lib")
+
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
-				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, end_name
-				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
-				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
-				printf "\t$(INSTALL_LIB) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
-				sharedlinks("$(INSTALL_PREFIX)$(libdir)", 1)
+				printf "install.%s :: %s $(LIBRARIES)\n", name, dst_dirs
+
+				if ( ShlibVer == "cygdll" ) {
+
+					src_name = sprintf("../lib/%s", end_name);
+					dst_name = sprintf("$(DESTDIR)$(bindir)/%s", end_name);
+					printf "\t@echo installing %s as %s\n", src_name, dst_name
+					printf "\t-@rm -f %s\n", dst_name
+					printf "\t$(INSTALL_LIB) %s %s\n", src_name, dst_name
+
+					src_name = sprintf("../lib/%s", imp_name);
+					dst_name = sprintf("$(DESTDIR)$(libdir)/%s", imp_name);
+					printf "\t@echo installing %s as %s\n", src_name, dst_name
+					printf "\t-@rm -f %s\n", dst_name
+					printf "\t$(INSTALL_LIB) %s %s\n", src_name, dst_name
+
+				} else {
+
+					src_name = sprintf("../lib/%s", end_name);
+					dst_name = sprintf("$(DESTDIR)$(libdir)/%s", end_name);
+					printf "\t@echo installing %s as %s\n", src_name, dst_name
+					printf "\t-@rm -f %s\n", dst_name
+					printf "\t$(INSTALL_LIB) %s %s\n", src_name, dst_name
+
+					sharedlinks("$(DESTDIR)$(libdir)")
+
+				}
+
 				if ( overwrite == "yes" && name == "ncurses" )
 				{
 					ovr_name = sprintf("libcurses%s", suffix)
-					printf "\t@echo linking %s to %s\n", ovr_name, lib_name
-					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", ovr_name
-					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) %s %s)\n", lib_name, ovr_name
+					printf "\t@echo linking %s to %s\n", end_name, ovr_name
+					printf "\tcd $(DESTDIR)$(libdir) && (rm -f %s; $(LN_S) %s %s; )\n", ovr_name, end_name, ovr_name
 				}
 				if ( ldconfig != "" ) {
-					printf "\t- test -z \"$(INSTALL_PREFIX)\" && %s\n", ldconfig
+					printf "\t- test -z \"$(DESTDIR)\" && %s\n", ldconfig
 				}
 				print  ""
 				print  "uninstall \\"
 				print  "uninstall.libs \\"
 				printf "uninstall.%s ::\n", name
-				printf "\t@echo uninstalling $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
-				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s\n", end_name
-				sharedlinks("$(INSTALL_PREFIX)$(libdir)", 0)
-				if ( overwrite == "yes" && name == "ncurses" )
-				{
-					ovr_name = sprintf("libcurses%s", suffix)
-					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", ovr_name
+				if ( ShlibVer == "cygdll" ) {
+
+					printf "\t@echo uninstalling $(DESTDIR)$(bindir)/%s\n", end_name
+					printf "\t-@rm -f $(DESTDIR)$(bindir)/%s\n", end_name
+
+					printf "\t@echo uninstalling $(DESTDIR)$(libdir)/%s\n", imp_name
+					printf "\t-@rm -f $(DESTDIR)$(libdir)/%s\n", imp_name
+
+				} else {
+					printf "\t@echo uninstalling $(DESTDIR)$(libdir)/%s\n", end_name
+					removelinks("$(DESTDIR)$(libdir)")
+					if ( overwrite == "yes" && name == "ncurses" )
+					{
+						ovr_name = sprintf("libcurses%s", suffix)
+						printf "\t-@rm -f $(DESTDIR)$(libdir)/%s\n", ovr_name
+					}
 				}
 				if ( rmSoLocs == "yes" ) {
 					print  ""
@@ -184,6 +267,29 @@ END	{
 					print  "clean ::"
 					printf "\t-@rm -f so_locations\n"
 				}
+			}
+			else if ( MODEL == "LIBTOOL" )
+			{
+				if ( $2 == "c++" ) {
+					compile="CXX"
+				} else {
+					compile="CC"
+				}
+				end_name = lib_name;
+				printf "../lib/%s : $(%s_OBJS)\n", lib_name, OBJS
+				printf "\tcd ../lib && $(LIBTOOL) $(%s) -o %s $(%s_OBJS:.o=.lo) -rpath $(DESTDIR)$(libdir) -version-info $(NCURSES_MAJOR):$(NCURSES_MINOR)\n", compile, lib_name, OBJS
+				print  ""
+				print  "install \\"
+				print  "install.libs \\"
+				printf "install.%s :: $(DESTDIR)$(libdir) ../lib/%s\n", name, lib_name
+				printf "\t@echo installing ../lib/%s as $(DESTDIR)$(libdir)/%s\n", lib_name, lib_name
+				printf "\tcd ../lib; $(LIBTOOL) $(INSTALL_DATA) %s $(DESTDIR)$(libdir)\n", lib_name
+				print  ""
+				print  "uninstall \\"
+				print  "uninstall.libs \\"
+				printf "uninstall.%s ::\n", name
+				printf "\t@echo uninstalling $(DESTDIR)$(libdir)/%s\n", lib_name
+				printf "\t-@$(LIBTOOL) rm -f $(DESTDIR)$(libdir)/%s\n", lib_name
 			}
 			else
 			{
@@ -198,56 +304,61 @@ END	{
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
-				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, lib_name
-				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, lib_name
-				printf "\t$(INSTALL_DATA) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, lib_name
+				printf "install.%s :: $(DESTDIR)$(libdir) ../lib/%s\n", name, lib_name
+				printf "\t@echo installing ../lib/%s as $(DESTDIR)$(libdir)/%s\n", lib_name, lib_name
+				printf "\t$(INSTALL_DATA) ../lib/%s $(DESTDIR)$(libdir)/%s\n", lib_name, lib_name
 				if ( overwrite == "yes" && lib_name == "libncurses.a" )
 				{
-					printf "\t@echo linking libcurses.a to libncurses.a \n"
-					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
-					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) libncurses.a libcurses.a)\n"
+					printf "\t@echo linking libcurses.a to libncurses.a\n"
+					printf "\t-@rm -f $(DESTDIR)$(libdir)/libcurses.a\n"
+					printf "\t(cd $(DESTDIR)$(libdir) && $(LN_S) libncurses.a libcurses.a)\n"
 				}
-				printf "\t$(RANLIB) $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
+				printf "\t$(RANLIB) $(DESTDIR)$(libdir)/%s\n", lib_name
 				if ( target == "vxworks" )
 				{
-					printf "\t@echo installing ../lib/lib%s.o as $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name, name
-					printf "\t$(INSTALL_DATA) ../lib/lib%s.o $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name, name
+					printf "\t@echo installing ../lib/lib%s.o as $(DESTDIR)$(libdir)/lib%s.o\n", name, name
+					printf "\t$(INSTALL_DATA) ../lib/lib%s.o $(DESTDIR)$(libdir)/lib%s.o\n", name, name
 				}
 				print  ""
 				print  "uninstall \\"
 				print  "uninstall.libs \\"
 				printf "uninstall.%s ::\n", name
-				printf "\t@echo uninstalling $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name
-				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
+				printf "\t@echo uninstalling $(DESTDIR)$(libdir)/%s\n", lib_name
+				printf "\t-@rm -f $(DESTDIR)$(libdir)/%s\n", lib_name
 				if ( overwrite == "yes" && lib_name == "libncurses.a" )
 				{
-					printf "\t@echo linking libcurses.a to libncurses.a \n"
-					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
+					printf "\t@echo linking libcurses.a to libncurses.a\n"
+					printf "\t-@rm -f $(DESTDIR)$(libdir)/libcurses.a\n"
 				}
 				if ( target == "vxworks" )
 				{
-					printf "\t@echo uninstalling $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name
-					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name
+					printf "\t@echo uninstalling $(DESTDIR)$(libdir)/lib%s.o\n", name
+					printf "\t-@rm -f $(DESTDIR)$(libdir)/lib%s.o\n", name
 				}
 			}
 			print ""
 			print "clean ::"
-			printf "\trm -f ../lib/%s\n", lib_name
+			removelinks("../lib");
 			print ""
 			print "mostlyclean::"
-			printf "\trm -f $(%s_OBJS)\n", OBJS
-			print ""
-			print "clean ::"
-			printf "\trm -f $(%s_OBJS)\n", OBJS
-			removelinks();
+			printf "\t-rm -f $(%s_OBJS)\n", OBJS
+			if ( MODEL == "LIBTOOL" ) {
+				printf "\t-rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+			}
 		}
 		else if ( found == 2 )
 		{
 			print ""
 			print "mostlyclean::"
-			printf "\trm -f $(%s_OBJS)\n", OBJS
+			printf "\t-rm -f $(%s_OBJS)\n", OBJS
+			if ( MODEL == "LIBTOOL" ) {
+				printf "\t-rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+			}
 			print ""
 			print "clean ::"
-			printf "\trm -f $(%s_OBJS)\n", OBJS
+			printf "\t-rm -f $(%s_OBJS)\n", OBJS
+			if ( MODEL == "LIBTOOL" ) {
+				printf "\t-rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+			}
 		}
 	}

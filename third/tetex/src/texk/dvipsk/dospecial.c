@@ -303,6 +303,7 @@ void predospecial P2C(integer, numbytes, Boolean, scanning)
    register char *p = nextstring ;
    register int i = 0 ;
    int j ;
+   static int omega_specials = 0;
 
    if (nextstring + numbytes > maxstring) {
       p = nextstring = mymalloc(1000 + 2 * numbytes) ;
@@ -338,6 +339,15 @@ void predospecial P2C(integer, numbytes, Boolean, scanning)
  */
 
    switch (*p) {
+case 'o':
+   if (strncmp(p, "om:", 3)==0) {       /* Omega specials ignored */
+        if (omega_specials==0) {
+                fprintf(stderr, "Omega specials are currently ignored\n");
+                omega_specials++;
+        }
+        return;
+   }
+   break ;
 case 'l':
    if (strncmp(p, "landscape", 9)==0) {
       if (hpapersize || vpapersize)
@@ -349,6 +359,7 @@ case 'l':
    }
    break ;
 case 'p':
+   if (strncmp(p, "pos:", 4)==0) return ; /* positional specials */
    if (strncmp(p, "papersize", 9)==0) {
       p += 9 ;
       while (*p == '=' || *p == ' ')
@@ -367,6 +378,10 @@ case 'p':
 case 'x':
    if (strncmp(p, "xtex:", 5)==0) return ;
    break ;
+case 's':
+   if (strncmp(p, "src:", 4)==0) return ; /* source specials */
+   break ;
+
 case 'h':
    if (strncmp(p, "header", 6)==0) {
       char *q ;
@@ -383,11 +398,15 @@ case 'h':
    }
    break ;
 /* IBM: color - added section here for color header and color history */
+/* using strncmp in this fashion isn't perfect; if later someone wants
+   to introduce a verb like colorspace, well, just checking
+   strcmp(p, "color", 5) will not do.  But we leave it alone for the moment.
+   --tgr */
 case 'b':
    if (strncmp(p, "background", 10) == 0) {
       usescolor = 1 ;
-      p +=11 ;
-      while ( *p <= ' ' ) p++ ;
+      p += 10 ;
+      while ( *p && *p <= ' ' ) p++ ;
       background(p) ;
       return ;
    }
@@ -395,11 +414,11 @@ case 'b':
 case 'c':
    if (strncmp(p, "color", 5) == 0) {
       usescolor = 1 ;
-      p += 6 ;
-      while ( *p <= ' ' ) p++ ;
+      p += 5 ;
+      while ( *p && *p <= ' ' ) p++ ;
       if (strncmp(p, "push", 4) == 0 ) {
-         p += 5 ;
-         while ( *p <= ' ' ) p++ ;
+         p += 4 ;
+         while ( *p && *p <= ' ' ) p++ ;
          pushcolor(p, 0) ;
       } else if (strncmp(p, "pop", 3) == 0 ) {
          popcolor(0) ;
@@ -422,6 +441,12 @@ case '!':
    }
    break ;
 default:
+#if 0
+   {
+      /* Unknown special, must return */
+      return;
+   }
+#endif
    break ;
    }
    usesspecial = 1 ;  /* now the special prolog will be sent */
@@ -486,6 +511,11 @@ if (HPS_FLAG && NEED_NEW_BOX) {
 #endif
 
    switch (*p) {
+case 'o':
+   if (strncmp(p, "om:", 3)==0) {       /* Omega specials ignored */
+        return;
+   }
+   break ;
 case 'e':
    if (strncmp(p, "em:", 3)==0) {	/* emTeX specials in emspecial.c */
 	emspecial(p);
@@ -493,6 +523,7 @@ case 'e':
    }
    break ;
 case 'p':
+   if (strncmp(p, "pos:", 4)==0) return ; /* positional specials */
    if (strncmp(p, "ps:", 3)==0) {
         psflush() ; /* now anything can happen. */
         if (p[3]==':') {
@@ -607,11 +638,11 @@ case 'b':
    break ;
 case 'c':
    if (strncmp(p, "color", 5) == 0) {
-      p += 6 ;
-      while ( *p <= ' ' ) p++ ;
+      p += 5 ;
+      while ( *p && *p <= ' ' ) p++ ;
       if (strncmp(p, "push", 4) == 0 ) {
          p += 4 ;
-         while ( *p <= ' ' ) p++ ;
+         while ( *p && *p <= ' ' ) p++ ;
          pushcolor(p,1);
       } else if (strncmp(p, "pop", 3) == 0 ) {
          popcolor(1) ;
@@ -639,6 +670,7 @@ case 'd':
 #endif
    break ;
 case 's':
+   if (strncmp(p, "src:", 4) == 0) return; /* source specials */
 #ifdef TPIC
    if (strcmp(p, "sp") == 0) {flushSpline(p+2); return;} /* tpic 2.0 */
    if (strncmp(p, "sp ", 3) == 0) {flushSpline(p+3); return;} /* tpic 2.0 */
@@ -665,6 +697,14 @@ case '"':
    return ;
    break ;
 default:
+#if 0
+   {
+      /* Unknown special, must return */
+      sprintf(errbuf,"Unrecognized special (first 10 chars: %.10s)", p);
+      specerror(errbuf);
+      return;
+   }
+#endif
    break ;
    }
 /* At last we get to the key/value conventions */
@@ -802,7 +842,7 @@ float *bbdospecial P1C(int, nbytes)
    if (p==nextstring) return NULL ; /* all blank is no-op */
    *p = 0 ;
    p = nextstring ;
-   while (*p <= ' ')
+   while (*p && *p <= ' ')
       p++ ;
    if (strncmp(p, "psfile", 6)==0 || strncmp(p, "PSfile", 6)==0) {
       float originx = 0, originy = 0, hscale = 1, vscale = 1,
@@ -853,7 +893,7 @@ float *bbdospecial P1C(int, nbytes)
       rbbox[0] = originx ;
       rbbox[1] = originy ;
       rbbox[2] = originx+hsize*hscale ;
-      rbbox[3] = originx+vsize*vscale ;
+      rbbox[3] = originy+vsize*vscale ;
       return rbbox ;
    }
    return 0 ;

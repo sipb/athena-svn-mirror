@@ -26,8 +26,11 @@ newer \- compare file modification times
 .SH DESCRIPTION
 Exit successfully if
 .I file1
-exists and is at least as old as
+exists and is not older than
 .IR file2 .
+Also exit successfully if
+.I file2
+doesn't exist.
 .\"=====================================================================
 .SH OPTIONS
 .B newer

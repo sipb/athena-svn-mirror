@@ -51,6 +51,7 @@ TeXDict begin
 % The top of stack is now `n [ AT 0 S at*aspect 0 0]';
 % we use this matrix to scale the font later.  We store it in Metrics,
 % which we'll give a different definition to anyway later.
+     FontType 0 ne {
        /Metrics exch def
 % Now we start the dictionary of length n that will eventually be Metrics:
         dict begin
@@ -71,6 +72,9 @@ TeXDict begin
 % Now we put the widths dictionary into the font, after grabbing
 % the current definition of Metrics back.
         Metrics /Metrics currentdict end def
+     } {
+        { 1 index type /nametype eq {exit } if exch pop } loop
+     } ifelse
 % and duplicate /foo so that it can be used both in definefont
 % and as the name of the macro, which is created first as a 
 % non-executable array so that we can put the new font dictionary 

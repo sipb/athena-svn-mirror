@@ -1,3 +1,71 @@
+2003-01-29  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dist.mk: Add RELNOTES to distribution.
+
+2003-01-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.mk: Get INSTALL_SCRIPT from configure.  Requested by
+	hubertf@netbsd.org.
+
+2002-11-16  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tkpathsea.mk: Add rule for paths.h, which ctangleboot needs on
+	occasion.  Reported by Martin Schroeder <martin@oneiros.de>, fix
+	by Thomas Esser <te@dbs.uni-hannover.de>.
+
+2002-11-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dist.mk (dist): contrib/Makefile was removed from the source
+	tree.
+
+2002-11-12  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.mk: Add LDFLAGS, from Joern Clausen
+	<joern@techfak.uni-bielefeld.de>.
+
+	* paths.mk: Define both $(mandir) and $(man1dir).  After Axel
+	Thimm <Axel.Thimm@physik.fu-berlin.de>.
+
+	* man.mk (install-man, uninstall-man): Use $(man1dir), not
+	$(mandir).
+
+	* makevars.mk: Pass both $mandir and $man1dir to submakes.
+
+2002-11-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* clean.mk (distclean): stamp-otangle is no longer used.  clean
+	stamp-ctangle.
+
+2002-10-22  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* rdepend.mk: Remove dependencies on libray headers: they're
+	spurious for our purposes.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.mk [MAINTFLAGS]: Remove -pipe.
+
+2001-11-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dist.mk: Fill top_level directory.
+
+2001-11-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* rdepend.mk (depend depend.mk): Drop all absolute paths from the
+	dependency lists.  These just cannot be guaranteed to be
+	meaningful between machines.
+
+2001-10-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* programs.mk [LOADLIBES]: Remove unconditional link of libm.
+
+1999-06-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.mk: Move the $(prog_cflags) after the -I directives that
+ 	are known to refer to the local source tree; that tree is always
+ 	the first place to look.  Spotted by Harald Anlauf
+ 	<anlauf@hep.tu-darmstadt.de>.
+
 1999-03-15  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* config.mk: Changes to the handling of autoconf, autoreconf, and

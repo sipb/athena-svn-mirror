@@ -36,10 +36,6 @@ kpse_absolute_p P2C(const_string, filename,  boolean, relative_ok)
                      /* Novell allows non-alphanumeric drive letters. */
                      || (*filename && IS_DEVICE_SEP (filename[1]))
 #endif /* DOSISH */
-#ifdef WIN32
-                     /* UNC names */
-                     || (*filename == '\\' && filename[1] == '\\')
-#endif
 #ifdef AMIGA
 		     /* Colon anywhere means a device.  */
 		     || strchr (filename, ':')
@@ -61,3 +57,15 @@ kpse_absolute_p P2C(const_string, filename,  boolean, relative_ok)
   return absolute || explicit_relative;
 #endif /* not VMS */
 }
+
+#ifdef TEST
+int main()
+{
+  char **name;
+  char *t[] = { "./foo", "\\\\server\\foo\\bar", "ftp://localhost/foo" };
+
+  for (name = t; name - t < sizeof(t)/sizeof(char*); name++) {
+    printf("Path `%s' %s absolute.\n", *name, (kpse_absolute_p(*name, true) ? "is" : "is not"));
+  }
+}
+#endif /* TEST */

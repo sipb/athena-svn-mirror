@@ -19,13 +19,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* #!/bin/sh */
-/* # '$Id: makempx.c,v 1.1.1.1 2000-03-10 17:51:32 ghudson Exp $' */
+/* # '$Id: makempx.c,v 1.1.1.2 2003-02-25 22:09:50 amb Exp $' */
 /* # Make an MPX file from the labels in a MetaPost source file, */
 /* # using mpto and either dvitomp (TeX) or dmp (troff). */
 /* # From John Hobby's original (though there's not much of it left by now). */
 /* # Public domain. */
 
-/* rcs_revision='$Revision: 1.1.1.1 $' */
+/* rcs_revision='$Revision: 1.1.1.2 $' */
 /* version=`set - $rcs_revision; echo $2` */
 
 /* : ${DMP=dmp} */
@@ -192,6 +192,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
   Global Variables
   */
 /* #include <assert.h> */
+#include "mktex.h"
 #include "stackenv.h"
 #include "fileutils.h"
 
@@ -252,7 +253,6 @@ char *TROFF_OUTERR="mpxerr.t";; /* file for troublesome troff output, if any */
 char *MPFILE = NULL;
 char *MPXFILE = NULL;
 
-char *progname;
 char *version = "Revision: 1.7";
 extern MKTEXDLL string mktex_version_string;
 
@@ -264,12 +264,15 @@ void __attribute__((noreturn)) usage(int exit_code)
 void usage(int exit_code)
 #endif
 {
-  fprintf(stderr, "Usage: %s [-tex|-troff] MPFILE MPXFILE.\n\
+  fprintf(stderr, "Usage: %s [-tex|-tex=<program>|-troff] MPFILE MPXFILE.\n\
   If MPXFILE is older than MPFILE, translate the labels from the MetaPost\n\
   input file MPFILE to low-level commands in MPXFILE, by running\n\
     %s, %s, and %s\n\
   by default; or, if -troff is specified,\n\
     %s, %s, and %s.\n\
+\n\
+  If the TeX mode is choosen, the TeX <program> used to typeset the labels\n\
+  can be specified and is `tex' by default.\n\
 \n\
   The current directory is used for writing temporary files.  Errors are\n\
   left in mpxerr.{tex,log,dvi}.\n\
@@ -309,22 +312,30 @@ void output_file(FILE *f, const_string name)
   }
 }
 
-void output_and_cleanup(int code)
+void __cdecl output_and_cleanup(int code)
 {
 #ifdef _WIN32
   WIN32_FIND_DATA ffd;
   HANDLE hnd;
   boolean go_on;
-  string temp = concat(mptemplate, ".*");
-  /* rm -f mpxXXXXX.* */
-  hnd = FindFirstFile(temp, &ffd);
-  go_on = (hnd != INVALID_HANDLE_VALUE); 
-  while (go_on) {
-    DeleteFile(ffd.cFileName);
-    go_on = (FindNextFile(hnd, &ffd) == TRUE);
+
+  if (mptemplate && *mptemplate) {
+    string temp = concat(mptemplate, ".*");
+    /* rm -f mpxXXXXX.* */
+    hnd = FindFirstFile(temp, &ffd);
+    go_on = (hnd != INVALID_HANDLE_VALUE); 
+    while (go_on) {
+      if (! (ffd.cFileName[0] == '.'
+	     && (ffd.cFileName[1] == '\0'
+		 || (ffd.cFileName[1] == '.'
+		     && ffd.cFileName[2] == '\0')))) {
+	DeleteFile(ffd.cFileName);
+      }
+      go_on = (FindNextFile(hnd, &ffd) == TRUE);
+    }
+    FindClose(hnd);
+    free(temp);
   }
-  FindClose(hnd);
-  free(temp);
 #else
   DIR *dp;
   struct dirent *de;
@@ -390,6 +401,9 @@ int main(int argc, char *argv[])
   char errbuf[PATH_MAX*2];
   int mpto_status;
 
+  output_and_cleanup_function = output_and_cleanup;
+  mptemplate[0] = '\0';
+
   if (!progname)
     progname = argv[0];
   kpse_set_progname (progname);
@@ -452,6 +466,10 @@ int main(int argc, char *argv[])
     else if (!strcmp(argv[i], "-tex") || !strcmp(argv[i], "--tex")) {
       mode = TEXMODE;
     }
+    else if (!strncmp(argv[i], "-tex=", 5) || !strncmp(argv[i], "--tex=", 6)) {
+      TEX = strchr(argv[i], '=') + 1;
+      mode = TEXMODE;
+    }
     /* FIXME: this disallows arguments with a leading dash, but
        that's how the original shell script works.  */
     else if (*argv[i] == '-') {
@@ -469,6 +487,7 @@ int main(int argc, char *argv[])
       mt_exit(1);
     }
   }
+
   if (!MPXFILE || !*MPXFILE || !MPFILE || !*MPFILE) {
     fprintf(stderr, "%s:  Need exactly two file arguments.\nTry `%s --help' for more information.",
 	    progname, program_invocation_short_name);

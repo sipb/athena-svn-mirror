@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTHeader.c,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+**	@(#) $Id: HTHeader.c,v 1.1.1.2 2003-02-25 22:25:10 amb Exp $
 **
 ** HISTORY:
 **	2 Nov 95 HFN	Written on a rainy night
@@ -19,7 +19,6 @@
 #include "HTHeader.h"					 /* Implemented here */
 #include "HTMIMPrs.h"
 
-#define MIME_HASH_SIZE 101
 HTMIMEParseSet * ParseSet = NULL;
 PRIVATE HTList * HTGenerators = NULL;
 

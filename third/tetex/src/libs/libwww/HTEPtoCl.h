@@ -1,15 +1,14 @@
 /*
 
-					W3C Sample Code Library libwww callback stream
+  
+  
+  
+  					W3C Sample Code Library libwww Callback Stream Callbacks
 
 
-
-
-
-
-
-!EPtoClient: interface between the XParse module and the Client!
-
+!
+  External Parser Callbacks
+!
 */
 
 /*
@@ -19,14 +18,15 @@
 
 /*
 
-This module contains the interface between the XParse module and
-the client. The dummy function is only here so that clients that use
-the XParse module can overwrite it. See also HTXParse
+An interface between the XParse module and the
+Application. This module contains the interface between the XParse module
+and the client. The dummy function is only here so that clients that use
+the XParse module can overwrite it. See also
+HTXParse
 
-This module is implemented by HTEPtoCl.c,
-and it is a part of the 
-W3C Sample Code Library.
-
+This module is implemented by HTEPtoCl.c, and it
+is a part of the  W3C Sample Code
+Library.
 */
 
 #ifndef HTEPTOCLIENT_H
@@ -41,9 +41,8 @@ extern CallClient HTCallClient;
 
 /*
 
+  
 
-
-@(#) $Id: HTEPtoCl.h,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
-
+  @(#) $Id: HTEPtoCl.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

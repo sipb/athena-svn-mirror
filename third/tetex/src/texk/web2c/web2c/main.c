@@ -49,7 +49,7 @@ string program_name;
 long last_i_num;
 int ii, l_s;
 long lower_bound, upper_bound;
-FILE *std;
+FILE *out;
 FILE *coerce;
 int pf_count = 1;
 
@@ -81,23 +81,23 @@ find_next_temp P1H(void)
 void
 normal P1H(void)
 {
-  std = stdout;
+  out = stdout;
 }
 
 void
 new_line P1H(void)
 {
-  if (!std)
+  if (!out)
     return;
   if (line_pos > 0)
     {
-      putc ('\n', std);
+      putc ('\n', out);
       line_pos = 0;
     }
 }
 
 
-/* Output the string S to the file `std'.  */
+/* Output the string S to the file `out'.  */
 
 void
 my_output P1C(string, s)
@@ -105,7 +105,7 @@ my_output P1C(string, s)
   int len = strlen (s);
   int less_indent = 0;
 
-  if (!std)
+  if (!out)
     return;
 
   if (line_pos + len > max_line_length)
@@ -115,17 +115,17 @@ my_output P1C(string, s)
     less_indent = 2;
 
   while (line_pos < indent * 2 - less_indent) {
-    fputs ("  ", std);
+    fputs ("  ", out);
     line_pos += 2;
   }
 
   /* Output the token.  */
-  fputs (s, std);
+  fputs (s, out);
 
   /* Omitting the space for parentheses makes fixwrites lose.  Sigh.
      What a kludge.  */
   if (!(len == 1 && (*s == ';' || *s == '[' || *s == ']')))
-    putc (' ', std);
+    putc (' ', out);
   line_pos += len + 1;
 
   last_brace = (s[0] == '}');

@@ -60,4 +60,4 @@ to the printer.
 is fixed on A4 paper size. If you want to use it with other paper, you have
 to change the settings within the source.
 .SH AUTHOR
-Thomas Esser (te@informatik.uni\-hannover.de)
+Thomas Esser (te@dbs.uni\-hannover.de)

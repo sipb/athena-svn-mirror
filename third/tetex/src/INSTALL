@@ -1,6 +1,6 @@
 =============================================================================
 
-	teTeX-1.0 installation instructions (compiling the sources)
+	teTeX-2.0 installation instructions (compiling the sources)
 
 =============================================================================
 
@@ -15,6 +15,8 @@
   7) final configuration steps
   A) appendix: notes on some platforms
   B) appendix: note on moving the binaries around
+  C) appendix: note on updating a single applications
+  D) appendix: recreating format files
 
 ============================================================================
   1) prerequisites: disk space, ANSI C and C++ compiler (with header files
@@ -23,18 +25,21 @@
 ============================================================================
 
 The disk space you need (approx.):
-   7 MB for the tar file containing the sources
-  30 MB for the tar file containing the complete fonts/macros subtree (texmf)
-  30 MB for the unpacked source tree
-  75 MB for the unpacked texmf tree
-  80-110 MB for object files, binaries, ... during compilation
+  10 MB for the tar file containing the sources
+  48 MB for the tar file containing the complete fonts/macros subtree (texmf)
+  48 MB for the unpacked source tree
+ 150 MB for the unpacked texmf tree
+ 140-200 MB for object files, binaries, ... during compilation
   15-30 MB for binaries, format files, bitmap fonts, ...
 
 You'll also need an ANSI C compiler, a C++ compiler for pdftex, a make
 utility, a lexical scanner and a parser generator. I have used the
-GNU utilities (gcc, GNU make, flex, bison) for my tests. gawk 2.15 was
-reported to fail whereas gawk 3.x worked fine. To compile xdvi / oxdvi,
-you need the include files and libraries for the X Windows System (X11).
+GNU utilities (gcc, GNU make, flex, bison) for my tests. gawk 2.15
+was reported to fail whereas gawk 3.x worked fine. To compile xdvi /
+oxdvi, you need the include files and libraries for the X Windows System
+(X11) including the Xaw library. On AIX 4.3.2, make sure to install
+the packages:
+  X11.samples.lib.Core + X11.samples.common
 
 Note for Solaris 7 with Sun compilers. The following patches are needed:
   106327-04 SunOS 5.7: Shared library patch for C++
@@ -53,11 +58,11 @@ exactly what you're doing.
 ============================================================================
 
 What you need:
-    sources/teTeX-src-1.0.tar.gz    # the sources
-    sources/teTeX-texmf-1.0.tar.gz  # the lib-tree with the fonts, macros, ...
+    tetex-src.tar.gz    # the sources
+    tetex-texmf.tar.gz  # the lib-tree with the fonts, macros, ...
 
 The file
-    sources/teTeX-texmfsrc-1.0.tar.gz
+    tetex-texmfsrc.tar.gz
 contains sources for packages that are contained in the texmf tarball.
 The texmf tarball contains the files which are needed at runtime. This
 archive contains additional files which are not needed, e.g. docstrip
@@ -81,7 +86,8 @@ The standard directory layout is:
 You can omit the "share/" part for the texmf directory if you want.
 $TETEXDIR/share/texmf and $TETEXDIR/texmf are auto-detected by configure.
 If you choose something different, you have to specify that directory
-with the --datadir option of configure.
+with the --datadir option of configure (still, "/texmf" is appended to 
+that given directory).
 
 If you want to leave out the $PLATFORM directory level (i.e. put the
 binaries directly into $TETEXDIR/bin), specify the --disable-multiplatform
@@ -92,11 +98,11 @@ there. Example (the "#" character represents the prompt of your shell,
 don't type it in):
 
   # mkdir -p /usr/local/teTeX/share/texmf
-  # gzip -dc teTeX-texmf-1.0.tar.gz \
+  # gzip -dc tetex-texmf.tar.gz \
       | (umask 0; cd /usr/local/teTeX/share/texmf; tar xvf -)
 
 Now, optionally, unpack the texmfsrc tarball:
-  # gzip -dc teTeX-texmfsrc-1.0.tar.gz \
+  # gzip -dc tetex-texmfsrc.tar.gz \
       | (umask 0; cd /usr/local/teTeX/share/texmf; tar xvf -)
 
 ============================================================================
@@ -105,7 +111,7 @@ Now, optionally, unpack the texmfsrc tarball:
 
 Unpack the sources, e.g.:
   # cd /usr/local/src
-  # gzip -dc teTeX-src-1.0.tar.gz | tar xvf -
+  # gzip -dc tetex-src.tar.gz | tar xvf -
 
 ============================================================================
   5) configuring
@@ -113,7 +119,7 @@ Unpack the sources, e.g.:
 
 teTeX uses one large directory tree which you have unpacked in step 3.
 You can add additional texmf trees to the configuration by editing the
-file teTeX-1.0/texk/kpathsea/texmf.in, e.g. set up a tree where you
+file tetex-src-2.0/texk/kpathsea/texmf.in, e.g. set up a tree where you
 store your local additions (TEXMFLOCAL) or all variable data such as
 configuration files, format files etc. (VARTEXMF).
 
@@ -128,10 +134,10 @@ system's characteristics. The list there lacks the variables for C++
 which are:
    `CXX':      The C++ compiler to use.
    `CXXFLAGS': Options to give the C++ compiler.
-Make sure, the shell variable "noclobber" is not set, then type something
+Make sure the shell variable "noclobber" is not set, then type something
 like:
 
-  # cd teTeX-1.0
+  # cd tetex-src-2.0   # replace 2.0 with the current release number
   # sh -c './configure --prefix=/usr/local/teTeX >configure.log 2>&1' &
 
 Environment variables can be passed the following way:
@@ -151,48 +157,40 @@ world" and relax :-) I also suggest to log all the output, e.g. by running
 
 Before you think that everything is ok, please check the log file for
 errors (GNU make always uses the string "Error:" whenever a command returns
-an error code) and check if all binaries are build:
-  # cd /usr/local/teTeX/bin/i586-pc-linux-gnulibc1
-  # ls | wc -l  # should be 125
+an error code) and check if all binaries are built:
+  # cd /usr/local/teTeX/bin/i686-pc-linux-gnu
+  # ls | wc -l  # should be 145
 
 (The number is only valid if you configure was run with default values
 without turning off any of the sub-packages like pdftex.)
 
 The complete list of binaries generated with "ls | sed s@^@\ \ @ | fmt" is:
-  MakeTeXPK access afm2tfm allcm allec allneeded bibtex dialog dmp
-  dvi2fax dvicopy dvihp dvilj dvilj2p dvilj4 dvilj4l dvilj6 dvips dvired
-  dvitomp dvitype e2pall einitex elatex epstopdf etex evirtex fmtutil
-  fontexport fontimport fontinst gftodvi gftopk gftype gsftopk inimf
-  inimpost iniomega initex install-info kpsepath kpsestat kpsetool
-  kpsewhich kpsexpand lambda latex mag makeindex makeinfo makempx mf
-  mft mfw mkfontdesc mkindex mkocp mkofm mktexlsr mktexmf mktexpk
-  mktextfm mpost mpto newer odvicopy odvips odvitype ofm2opl omega
-  opl2ofm otangle otp2ocp outocp ovf2ovp ovp2ovf oxdvi oxdvi.bin patgen
-  pdfeinitex pdfelatex pdfetex pdfevirtex pdfinitex pdflatex pdftex
-  pdfvirtex pfb2pfa pk2bm pktogf pktype pltotf pooltype ps2frag ps2pk
-  pslatex readlink rubibtex rumakeindex tangle tex texconfig texdoc
-  texexec texhash texi2dvi texi2html texi2pdf texindex texlinks texshow
-  texutil tftopl thumbpdf tie ttf2afm vftovp virmf virmpost viromega
-  virtex vptovf weave xdvi xdvi.bin
+  MakeTeXPK access afm2tfm allcm allec allneeded bibtex ctangle cweave
+  dmp dvi2fax dvicopy dvihp dvilj dvilj2p dvilj4 dvilj4l dvilj6 dvipdfm
+  dvipdft dvips dvired dvitomp dvitype e2pall ebb einitex elatex
+  epstopdf etex evirtex fdf2tan fmtutil fontexport fontimport fontinst
+  gftodvi gftopk gftype gsftopk info infokey inimf inimpost iniomega
+  initex install-info kpsepath kpsestat kpsetool kpsewhich kpsexpand
+  lambda latex mag makeindex makeinfo makempx makempy mf mf-nowin mft
+  mfw mkfontdesc mkindex mkocp mkofm mktexfmt mktexlsr mktexmf mktexpk
+  mktextfm mpost mpto mptopdf newer odvicopy odvips odvitype ofm2opl
+  omega omfonts opl2ofm otangle otp2ocp outocp ovf2ovp ovp2ovf oxdvi
+  oxdvi.bin patgen pdfeinitex pdfelatex pdfetex pdfevirtex pdfinitex
+  pdflatex pdftex pdftosrc pdfvirtex pfb2pfa pk2bm pktogf pktype pltotf
+  pooltype ps2frag ps2pk pslatex readlink rubibtex rumakeindex t1mapper
+  tangle tcdialog tex texconfig texdoc texdoctk texexec texfind texfont
+  texhash texi2dvi texi2html texi2pdf texindex texlinks texshow texutil
+  tftopl thumbpdf tie ttf2afm updmap vftovp virmf virmpost viromega
+  virtex vptovf weave xdvi xdvi.bin xdvizilla
 
 "make world" is equivalent to
-  make all install strip
+  make all install
 
-If you need special previleges for 'make install' and 'make ini', you can
-run two make in two separate runs:
+If you need special privileges for 'make install', you can
+run make in two separate steps:
   make all
   su
-  make install strip
-
-Please note that calling make with an absolute path breaks the configure
-scripts.
-
-The following example _does_not_work_:
-	/usr/local/bin/make world
-	...
-	checking whether /usr/local/bin/make sets $MAKE... ./configure:
-	${ac_cv_prog_make_/usr/bin/make_set+set}: bad substitution
-	...
+  make install
 
 ============================================================================
   7) final configuration steps
@@ -242,12 +240,13 @@ checked, only some.
 Configure teTeX using texconfig
 ===============================
 Texconfig allows you to set the defaults for hyphenation, paper size,
-print command, metafont mode, etc. You should run theis command
+print command, metafont mode, etc. You should run this command
 interactively and see what options it offers.
 
 For example, if you are not using A4 format paper, you should make
 "lettersize" the default using:
     texconfig dvips paper letter
+    texconfig dvipdfm paper letter
     texconfig xdvi us
 
 Generate fonts with a batch job
@@ -285,14 +284,24 @@ directory, where all the generated fonts should go):
  A) appendix: notes on some platforms
 =============================================================================
 
-teTeX-1.0 was successfully build on the following platforms:
+teTeX-2.0 was successfully compiled on the following platforms:
+
+ - alpha-dec-osf4.0e: Digital PWSau 433, Alpha EV5.6 (21164A) 433MHz
+   Digital UNIX V4.0E, gcc 2.95.3, make (OS), flex (OS), yacc (OS), awk (OS)
+ - rs6000-ibm-aix3.2.5: IBM RS/6000-390, POWER2 67MHz
+   AIX 3.2.5 (325102), gcc 2.95.3, make (OS), lex (OS), yacc (OS), awk (OS)
+ - mips-dec-ultrix4.5: DECstation 5000/120, MIPS R3000 20MHz
+   ULTRIX V4.5, gcc 2.95.3, gmake 3.80, lex (OS), yacc (OS), awk (OS)
+ - i686-pc-linux-gnu: Intel compatible PC, AMD Athlon 1700+
+   SuSE Linux 7.2, gcc 2.95.3, GNU Make 3.80, GNU flex 2.5.4, GNU Bison
+   1.28, GNU Awk 3.0.6
 
 =============================================================================
  B) appendix: note on moving the binaries around
 =============================================================================
 
-If you move the binaries to a different location after "make install", you have
-to consider the following two things:
+If you move the binaries to a different location after "make install",
+you have to consider the following things:
 
 - make sure that the texmf.cnf file is still found. If
       kpsewhich texmf.cnf
@@ -300,7 +309,7 @@ to consider the following two things:
   texmf tree is rooted in /usr/share/texmf, you should set the TEXMFCNF
   variable to
       .:/usr/share/texmf/web2c
-  to make sure that all programs will wind the texmf.cnf file. After
+  to make sure that all programs will find the texmf.cnf file. After
   setting the TEXMFCNF variable, try the kpsewhich command again and
   verify that the texmf.cnf file will be found.
 
@@ -308,7 +317,85 @@ to consider the following two things:
   Execute the command
       kpsewhich -expand-var='$TEXMFMAIN'
   If this does not give you the root of your texmf directory, you have to
-  correct the TEXMFMAIN variable. Juch change the line which defines
+  correct the TEXMFMAIN variable. Just change the line which defines
   TEXMFMAIN in the texmf.cnf file and set it to the correct directory.
   In the above example you would set:
       TEXMFMAIN = /usr/share/texmf
+
+- a single binary somewhere separated from the rest of the TeX system
+  might get the wrong paths, because of two possible reasons:
+    * not finding the main texmf.cnf file
+    * different expansion of the SELFAUTO* variables
+
+  So, if you encounter the first problem, set TEXMFCNF as described above.
+  If you encounter the second problem, replace the SELFAUTO* variables in
+  texmf.cnf by their expanded paths.
+
+  Debugging this is not easy, but can be done by setting KPATHSEA_DEBUG=12
+  and running the application. The output shows if the texmf.cnf is
+  opened and how the search paths are set.
+
+=============================================================================
+ C) appendix: note on updating a single application
+=============================================================================
+
+When updating a currently working application, a way to avoid the problem
+described in B) is to place the new binary into the same directory that
+the older version resides in.
+
+=============================================================================
+  D) appendix: recreating format files
+=============================================================================
+If you need to recreate format files (e.g. because you have updated pdftex),
+just
+  fmtutil --all
+
+=============================================================================
+ E) appendix: note on moving the whole teTeX tree around
+=============================================================================
+
+If you want to move the whole teTeX tree around you may do it without
+problems. If the relative position of the texmf.cnf file to the binaries
+stays the same it will be found after moving the tree around. You just
+have to adjust the PATH variable to the new location of the binaries.
+
+If you, however, have set the variable TEXMFCNF or have not used the 
+SELFAUTO* variables in texmf.cnf, you have to adjust them accordingly.
+
+=============================================================================
+ F) appendix: update teTeX to a new version
+=============================================================================
+
+If you want to update teTeX to a new version and have to garantee that
+TeX can be used without a break you may install the new version in
+another directory and move it to the final location afterwards.
+Say, the old teTeX version is in /usr/local/teTeX.
+The temporary location of the new version will be /usr/local/teTeX-new.
+
+- Unpack the new texmf tree to /usr/local/teTeX-new/share/texmf.
+
+- Configure the new version to be installed in /usr/local/teTeX-new:
+    # sh -c './configure --prefix=/usr/local/teTeX-new >configure.log 2>&1' &
+
+- Compile and install teTeX there according to section 6 of this document.
+
+- If the old installation has a TEXMFLOCAL tree, copy it into the new
+  teTeX tree, e.g.:
+    # cd /usr/local
+    # cp -r teTeX/share/texmf-local teTeX-new/share/
+  Have a look at the packages in the new TEXMFLOCAL tree: They may be 
+  older than the ones in the new TEXMF tree. Then, you should delete them
+  from the new TEXMFLOCAL tree.
+
+- Set the PATH variable temporarily in one shell to find the new binaries
+  before the old ones.
+
+- Configure the new version as described in section 7.
+
+- Test the new version with some test files.
+
+- If all tests succeed replace the old version by the new one:
+    # cd /usr/local
+    # mv teTeX teTeX-old && mv teTeX-new teTeX
+  
+- Remove the temporary path from the PATH variable. 

@@ -1,51 +1,73 @@
-/*
- * This file is part of the Omega project, which
- * is based in the web2c distribution of TeX.
- *
- * Copyright (c) 1994--1998 John Plaice and Yannis Haralambous
- */
+/* otp.h: Instructions found in OCP files.
 
-#define OTP_RIGHT_OUTPUT	 1
-#define OTP_RIGHT_NUM		 2
-#define OTP_RIGHT_CHAR		 3
-#define OTP_RIGHT_LCHAR		 4
-#define OTP_RIGHT_SOME		 5
+This file is part of Omega,
+which is based on the web2c distribution of TeX,
 
-#define OTP_PBACK_OUTPUT	 6
-#define OTP_PBACK_NUM		 7
-#define OTP_PBACK_CHAR		 8
-#define OTP_PBACK_LCHAR		 9
-#define OTP_PBACK_SOME		10
+Copyright (c) 1994--2001 John Plaice and Yannis Haralambous
+Copyright (c) 2002 Behdad Esfahbod
+Copyright (c) 2002 Roozbeh Pournader
 
-#define OTP_ADD			11
-#define OTP_SUB			12
-#define OTP_MULT		13
-#define OTP_DIV			14
-#define OTP_MOD			15
-#define OTP_LOOKUP		16
-#define OTP_PUSH_NUM		17
-#define OTP_PUSH_CHAR		18
-#define OTP_PUSH_LCHAR		19
+Omega is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-#define OTP_STATE_CHANGE	20
-#define OTP_STATE_PUSH		21
-#define OTP_STATE_POP		22
+Omega is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-#define OTP_LEFT_START		23
-#define OTP_LEFT_RETURN		24
-#define OTP_LEFT_BACKUP		25
+You should have received a copy of the GNU General Public License
+along with Omega; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-#define OTP_GOTO		26
-#define OTP_GOTO_NE		27
-#define OTP_GOTO_EQ		28
-#define OTP_GOTO_LT		29
-#define OTP_GOTO_LE		30
-#define OTP_GOTO_GT		31
-#define OTP_GOTO_GE		32
-#define OTP_GOTO_NO_ADVANCE	33
-#define OTP_GOTO_BEG		34
-#define OTP_GOTO_END		35
+*/
 
-#define OTP_STOP		36
+enum {
+    OTP_START_TOKENS = 256,
+    OTP_RIGHT_OUTPUT,
+    OTP_RIGHT_NUM,
+    OTP_RIGHT_CHAR,
+    OTP_RIGHT_LCHAR,
+    OTP_RIGHT_SOME,
+
+    OTP_PBACK_OUTPUT,
+    OTP_PBACK_NUM,
+    OTP_PBACK_CHAR,
+    OTP_PBACK_LCHAR,
+    OTP_PBACK_SOME,
+
+    OTP_ADD,
+    OTP_SUB,
+    OTP_MULT,
+    OTP_DIV,
+    OTP_MOD,
+    OTP_LOOKUP,
+    OTP_PUSH_NUM,
+    OTP_PUSH_CHAR,
+    OTP_PUSH_LCHAR,
+
+    OTP_STATE_CHANGE,
+    OTP_STATE_PUSH,
+    OTP_STATE_POP,
+
+    OTP_LEFT_START,
+    OTP_LEFT_RETURN,
+    OTP_LEFT_BACKUP,
+
+    OTP_GOTO,
+    OTP_GOTO_NE,
+    OTP_GOTO_EQ,
+    OTP_GOTO_LT,
+    OTP_GOTO_LE,
+    OTP_GOTO_GT,
+    OTP_GOTO_GE,
+    OTP_GOTO_NO_ADVANCE,
+    OTP_GOTO_BEG,
+    OTP_GOTO_END,
+
+    OTP_STOP,
+};
 
 #define OTP_PBACK_OFFSET (OTP_PBACK_OUTPUT - OTP_RIGHT_OUTPUT)
+

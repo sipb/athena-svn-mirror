@@ -29,14 +29,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 string
 kpse_var_value P1C(const_string, var)
 {
-  string try, ret;
+  string vtry, ret;
 
   assert(kpse_program_name);
 
-  /* First look for VAR_progname. */
-  try = concat3(var, "_", kpse_program_name);
-  ret = getenv (try);
-  free (try);
+  /* First look for VAR.progname. */
+  vtry = concat3(var, ".", kpse_program_name);
+  ret = getenv (vtry);
+  free (vtry);
+
+  if (!ret || !*ret) {
+    /* Now look for VAR_progname. */
+    vtry = concat3(var, "_", kpse_program_name);
+    ret = getenv (vtry);
+    free (vtry);
+  }
 
   if (!ret || !*ret)
     ret = getenv (var);
@@ -110,17 +117,17 @@ expand P3C(fn_type *, expansion,  const_string, start,  const_string, end)
 {
   string value;
   unsigned len = end - start + 1;
-  string var = xmalloc (len + 1);
+  string var = (string)xmalloc (len + 1);
   strncpy (var, start, len);
   var[len] = 0;
   
   if (expanding_p (var)) {
     WARNING1 ("kpathsea: variable `%s' references itself (eventually)", var);
   } else {
-    string try = concat3 (var, "_", kpse_program_name);
+    string vtry = concat3 (var, "_", kpse_program_name);
     /* Check for an environment variable.  */
-    value = getenv (try);
-    free (try);
+    value = getenv (vtry);
+    free (vtry);
     
     if (!value || !*value)
       value = getenv (var);

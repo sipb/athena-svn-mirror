@@ -4,6 +4,14 @@
 #include "web2c.h"
 #include "y_tab.h"
 
+/* Hack to make it possible to compile the generated code with C++
+   Required if you use flex. */
+#ifdef __cplusplus
+#define webinput yyinput
+#else
+#define webinput input
+#endif
+
 /* For some reason flex wants to do a system call, so we must lose our
    definition of the Pascal read.  */
 #undef read
@@ -40,60 +48,60 @@ HHB1		("hh"{WW}"."{WW}"b1")
 
 %%
 {W}				;
-"{"		{ while (input() != '}'); }
+"{"		{ while (webinput() != '}'); }
 
 "#"		{
 		    register int c;
-		    putc('#', std);
-		    while ((c = input()) && c != ';')
-			putc(c, std);
-		    putc('\n', std);
+		    putc('#', out);
+		    while ((c = webinput()) && c != ';')
+			putc(c, out);
+		    putc('\n', out);
 		}
 
 "ifdef("	{register int c;
 		 register char *cp=conditional;
 		 new_line();
-		 (void) input();
-		 while ((c = input()) != '\'')
+		 (void) webinput();
+		 while ((c = webinput()) != '\'')
 		    *cp++ = c;
 		 *cp = '\0';
-		 (void) input();
-		 if (doing_statements) fputs("\t;\n", std);
-		 fprintf(std, "#ifdef %s\n", conditional);
+		 (void) webinput();
+		 if (doing_statements) fputs("\t;\n", out);
+		 fprintf(out, "#ifdef %s\n", conditional);
 		}
 
 "endif("	{register int c;
 		 new_line();
-		 fputs("#endif /* ", std);
-		 (void) input();
-		 while ((c = input()) != '\'')
-			(void) putc(c, std);
-		 (void) input();
+		 fputs("#endif /* ", out);
+		 (void) webinput();
+		 while ((c = webinput()) != '\'')
+			(void) putc(c, out);
+		 (void) webinput();
 		 conditional[0] = '\0';
-		 fputs(" */\n", std);
+		 fputs(" */\n", out);
 		}
 
 "ifndef("	{register int c;
 		 register char *cp=conditional;
 		 new_line();
-		 (void) input();
-		 while ((c = input()) != '\'')
+		 (void) webinput();
+		 while ((c = webinput()) != '\'')
 		    *cp++ = c;
 		 *cp = '\0';
-		 (void) input();
-		 if (doing_statements) fputs("\t;\n", std);
-		 fprintf(std, "#ifndef %s\n", conditional);
+		 (void) webinput();
+		 if (doing_statements) fputs("\t;\n", out);
+		 fprintf(out, "#ifndef %s\n", conditional);
 		}
 
 "endifn("	{register int c;
 		 new_line();
-		 fputs("#endif /* not ", std);
-		 (void) input();
-		 while ((c = input()) != '\'')
-		   putc(c, std);
-		 (void) input();
+		 fputs("#endif /* not ", out);
+		 (void) webinput();
+		 while ((c = webinput()) != '\'')
+		   putc(c, out);
+		 (void) webinput();
 		 conditional[0] = '\0';
-		 fputs(" */\n", std);
+		 fputs(" */\n", out);
 		}
 
 
@@ -172,7 +180,7 @@ HHB1		("hh"{WW}"."{WW}"b1")
 		   return last_tok='-';
 		else {
 		  int c;
-		  while ((c = input()) == ' ' || c == '\t')
+		  while ((c = webinput()) == ' ' || c == '\t')
                     ;
   		  unput(c);
 		  if (c < '0' || c > '9') {

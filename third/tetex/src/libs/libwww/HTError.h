@@ -47,15 +47,8 @@ typedef enum _HTSeverity {
 
 /*
 .
-  Error Codes and Messages
-.
-
-Note: All non-HTTP error codes have (index number >
-HTERR_HTTP_CODES), and they will not be shown in the error-message
-generated.
-(
   The Error Message Object
-)
+.
 
 An error consists of a messsage code, a short, natural language specific
 message, and a URI which can point to more information. This module also
@@ -76,8 +69,14 @@ typedef struct _HTErrorMessage {
   Error Message Index
 )
 
+Note: All non-HTTP error codes have (index number >
+HTERR_HTTP_CODES), and they will not be shown in the error-message
+generated.
+
 Error codes are registered in an array where the following enumerations serve
-as an index. They must not be replaced!
+as an index. They must not be replaced! See the
+HTDialog module for default initialization
+of these messages.
 */
 
 typedef enum _HTErrorElement {
@@ -127,6 +126,14 @@ typedef enum _HTErrorElement {
 	HTERR_BAD_VERSION,					/* 505 */
 	HTERR_NO_PARTIAL_UPDATE,				/* 506 */
 
+#ifdef HT_DAV 
+	/* WebDAV error codes */
+	HTERR_UNPROCESSABLE,					/* 422 */
+	HTERR_LOCKED,           				/* 423 */
+	HTERR_FAILED_DEPENDENCY,				/* 424 */
+	HTERR_INSUFFICIENT_STORAGE,				/* 507 */
+#endif
+
 	/* Cache warnings */
 	HTERR_STALE,						/* 10 */
 	HTERR_REVALIDATION_FAILED,				/* 11 */
@@ -174,99 +181,9 @@ typedef enum _HTErrorElement {
 )
 
 Default set of error messages arranged in an array into which the
-index codes serve as index. These error objects can
-of course be initialized as you like.
-*/
-
-/*    CODE  ERROR MESSAGE				ERROR URL */
-#define HTERR_ENGLISH_INITIALIZER \
-    { 100, "Continue", 					"information" }, \
-    { 101, "Switching Protocols",			"information" }, \
-    { 200, "OK", 					"success" }, \
-    { 201, "Created", 					"success" }, \
-    { 202, "Accepted", 					"success" }, \
-    { 203, "Non-authoritative Information",		"success" }, \
-    { 204, "Document Updated",				"success" }, \
-    { 205, "Reset Content",				"success" }, \
-    { 206, "Partial Content",				"success" }, \
-    { 207, "Partial Update OK",				"success" }, \
-    { 300, "Multiple Choices",				"redirection" }, \
-    { 301, "Moved Permanently",				"redirection" }, \
-    { 302, "Found",  			                "redirection" }, \
-    { 303, "See Other",					"redirection" }, \
-    { 304, "Not Modified",       			"redirection" }, \
-    { 305, "Use Proxy",					"redirection" }, \
-    { 306, "Proxy Redirect",				"redirection" }, \
-    { 307, "Temporary Redirect",			"redirection" }, \
-    { 400, "Bad Request", 				"client_error" }, \
-    { 401, "Unauthorized",				"client_error" }, \
-    { 402, "Payment Required", 				"client_error" }, \
-    { 403, "Forbidden", 				"client_error" }, \
-    { 404, "Not Found",		       			"client_error" }, \
-    { 405, "Method Not Allowed",	 		"client_error" }, \
-    { 406, "Not Acceptable",		 		"client_error" }, \
-    { 407, "Proxy Authentication Required", 		"client_error" }, \
-    { 408, "Request Timeout",		 		"client_error" }, \
-    { 409, "Conflict",			 		"client_error" }, \
-    { 410, "Gone",			 		"client_error" }, \
-    { 411, "Length Required",		 		"client_error" }, \
-    { 412, "Precondition Failed",	 		"client_error" }, \
-    { 413, "Request Entity Too Large",	 		"client_error" }, \
-    { 414, "Request-URI Too Large",	 		"client_error" }, \
-    { 415, "Unsupported Media Type",	 		"client_error" }, \
-    { 416, "Range Not Satisfiable",	 		"client_error" }, \
-    { 417, "Expectation Failed",	 		"client_error" }, \
-    { 418, "Reauthentication Required",	 		"client_error" }, \
-    { 419, "Proxy Reauthentication Reuired", 		"client_error" }, \
-    { 500, "Internal Server Error",			"server_error" }, \
-    { 501, "Not Implemented", 				"server_error" }, \
-    { 502, "Bad Gateway", 				"server_error" }, \
-    { 503, "Service Unavailable",			"server_error" }, \
-    { 504, "Gateway Timeout", 				"server_error" }, \
-    { 505, "HTTP Version not supported",		"server_error" }, \
-    { 506, "Partial update Not Implemented",		"server_error" }, \
- \
-    /* Cache Warnings */ \
-    { 10,  "Response is Stale",				"cache" }, \
-    { 11,  "Revalidation Failed",			"cache" }, \
-    { 12,  "Disconnected Opeartion",			"cache" }, \
-    { 13,  "Heuristic Expiration",			"cache" }, \
-    { 14,  "Transformation Applied",			"cache" }, \
-    { 99,  "Cache warning", 				"cache" }, \
- \
-    /* Non-HTTP Error codes and warnings */ \
-    { 0,   "Can't locate remote host", 			"internal" }, \
-    { 0,   "No host name found", 			"internal" }, \
-    { 0,   "No file name found or file not accessible", "internal" }, \
-    { 0,   "FTP server replies", 			"internal" }, \
-    { 0,   "FTP server doesn't reply", 			"internal" }, \
-    { 0,   "FTP login failure", 			"internal" }, \
-    { 0,   "Server timed out", 				"internal" }, \
-    { 0,   "Gopher-server replies", 			"internal" }, \
-    { 0,   "Data transfer interrupted", 		"internal" }, \
-    { 0,   "Connection establishment interrupted", 	"internal" }, \
-    { 0,   "CSO-server replies", 			"internal" }, \
-    { 0,   "This is probably a HTTP server 0.9 or less","internal" }, \
-    { 0,   "Bad, Incomplete, or Unknown Response",	"internal" }, \
-    { 0,   "Unknown access authentication scheme",	"internal" }, \
-    { 0,   "News-server replies",			"internal" }, \
-    { 0,   "Trying `ftp://' instead of `file://'",	"internal" }, \
-    { 0,   "Too many redirections",			"internal" }, \
-    { 0,   "Method not suited for automatic redirection","internal" }, \
-    { 0,   "Premature End Of File",			"internal" }, \
-    { 0,   "Response from WAIS Server too Large - Extra lines \
-ignored","internal"}, \
-    { 0,   "WAIS-server doesn't return any data", 	"internal" }, \
-    { 0,   "Can't connect to WAIS-server",		"internal" }, \
-    { 0,   "operation failed",				"internal" }, \
-    { 0,   "Wrong or unknown access scheme",		"internal" }, \
-    { 0,   "Access scheme not allowed in this context",	"internal" }, \
-    { 0,   "When you are connected, you can log in",	"internal" }, \
-    { 0,   "This version has expired and will be automatically reloaded", "internal" }, \
-    { 0,   "Loading new rules must be explicitly acknowledged", "internal" }, \
-    { 0,   "Automatic proxy redirection must be explicitly acknowledged", "internal" }
-
-/*
+index codes serve as index. See the
+HTDialog module for default initialization
+of these strings.
 .
   What Errors should be Ignored or Passed Through?
 .
@@ -436,12 +353,12 @@ extern const char * HTError_location	(HTError * info);
 /*
 */
 
-#endif
+#endif /* HTERROR_H */
 
 /*
 
   
 
-  @(#) $Id: HTError.h,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+  @(#) $Id: HTError.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

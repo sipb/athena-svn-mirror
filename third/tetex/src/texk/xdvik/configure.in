@@ -1,4 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
+dnl e.g.:
+dnl autoconf --macrodir=../etc/autoconf configure.in > configure        
 AC_INIT(xdvi.c)
 
 AC_CONFIG_HEADER(c-auto.h:c-auto.in)
@@ -6,11 +8,18 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
+AC_HEADER_TIME
 
 sinclude(../kpathsea/withenable.ac)
 
 AC_FUNC_VFORK
 AC_FUNC_VPRINTF
+# begin additions SU, 2000/03/07
+# AC_FUNC_VSNPRINTF
+AC_FUNC_MEMICMP
+# AC_FUNC_REALPATH
+AC_FUNC_ALLOCA
+# end additions SU
 AC_FUNC_MEMCMP
 AC_HEADER_SYS_WAIT
 AC_TYPE_SIGNAL
@@ -21,30 +30,36 @@ AC_PATH_XTRA
 AC_TYPE_SIZE_T
 
 # XDVI checks by Paul Vojta
+XDVI_CC_CONCAT
 XDVI_C_BITMAP_TYPE
 XDVI_SYS_STREAMS
 XDVI_SYS_SUNOS_4
 XDVI_FUNC_POLL
+
+# SU: added flags to turn on gcc warnings, taken from gnome/compiler-flags.m4 and put into aclocal.m4
+COMPILER_WARNINGS
 
 # These were probably missing from the test-set?
 # On the other hand, they are not used already, why start now? -janl
 # AC_TYPE_OFF_T
 # AC_HEADER_TIME
 
+AC_CHECK_FUNCS(mkstemp memcpy strerror waitpid sigaction strchr setenv ulltostr fchdir getcwd lstat snprintf vsnprintf realpath)
+
 # <sys/bsdtypes.h> is for ISC 4.0, to define fd_set in psgs.c.
-AC_CHECK_FUNCS(atexit memcpy strerror waitpid sigaction strchr tempnam setenv)
-AC_CHECK_HEADERS(netdb.h sys/bsdtypes.h X11/Xosdefs.h)
+AC_CHECK_HEADERS(netdb.h sys/bsdtypes.h sys/time.h X11/Xosdefs.h sys/fcntl.h)
 
 # For the bitmap size. -- I think this is in XDVI_C_BITMAP_TYPE now -janl
 # AC_CHECK_SIZEOF(long)
 
-sinclude(../kpathsea/xt.ac)
+sinclude(xt.ac)
 sinclude(withenable.ac)
 sinclude(../../libs/libwww/withenable.ac)
 sinclude(../../libs/libwww/libwww.ac)
-
-# For --with-x-toolkit.  Only distinguish `no' from everything else.
-# They don't get to disable X entirely, this is *x*dvi.
+sinclude(../../libs/zlib/withenable.ac)
+sinclude(../../libs/zlib/zlib.ac)
+sinclude(../../libs/t1lib/withenable.ac)
+sinclude(../../libs/t1lib/t1lib.ac)
 
 # -lXext may not be present, and that may be ok.  Link with it only if it is.
 if test -z "$x_ext_lib"; then # allow envvar override
@@ -58,15 +73,18 @@ if test -z "$x_ext_lib"; then # allow envvar override
 fi
 AC_SUBST(x_ext_lib)
 
-if test "x$with_x_toolkit" = xno; then
-  AC_DEFINE(NOTOOL)
-  x_tool_libs=
+if test "x$with_x_toolkit" = xxaw3d; then
+   x_tool_libs="-lXaw3d -lXmu -lXt"
+elif test "x$with_x_toolkit" = xneXtaw; then
+   x_tool_libs="-lneXtaw -lXmu -lXt"
 else
-  # Effectively promote --with-x-toolkit=xt to athena since the code
-  # does not distinguish.
   x_tool_libs="-lXaw -lXmu -lXt"
 fi
 AC_SUBST(x_tool_libs)
+
+case $HTEX in
+	'') LDLIBWWW=;;
+esac
 
 # For --with-ps.
 test -z "$PS_DEF" && PS_DEF=-DPS_GS
@@ -95,6 +113,9 @@ elif echo "$PS_DEF" | grep PS_NEWS >/dev/null; then
     AC_MSG_RESULT(adding NeWS libraries)
     X_LIBS="$X_LIBS -lxview -lcps -lolgx -lxvps"
 fi
+
+# needed for web2c later than 7.3.4:
+AC_CHECK_LIB(m, main)
 
 AC_OUTPUT(Makefile)
 

@@ -215,20 +215,20 @@ alloca (size)
   /* Allocate combined header + user data storage.  */
 
   {
-    register pointer new = malloc (sizeof (header) + size);
+    register pointer newm = malloc (sizeof (header) + size);
     /* Address of header.  */
 
-    if (new == 0)
+    if (newm == 0)
       abort();
 
-    ((header *) new)->h.next = last_alloca_header;
-    ((header *) new)->h.deep = depth;
+    ((header *) newm)->h.next = last_alloca_header;
+    ((header *) newm)->h.deep = depth;
 
-    last_alloca_header = (header *) new;
+    last_alloca_header = (header *) newm;
 
     /* User storage begins just after header.  */
 
-    return (pointer) ((char *) new + sizeof (header));
+    return (pointer) ((char *) newm + sizeof (header));
   }
 }
 

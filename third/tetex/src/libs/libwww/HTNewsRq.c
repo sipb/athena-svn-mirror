@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTNewsRq.c,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+**	@(#) $Id: HTNewsRq.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	This module implements the output stream for MIME used for sending
 **	requests with or without a entity body to HTTP, NEWS, etc.
@@ -84,7 +84,7 @@ PRIVATE BOOL NewsPost_start (HTStream * me, HTRequest * request)
 	/* DO FOR ALL SUB ANCHOR DESTINATION S AS WELL */
 	
     }
-    if (PROT_TRACE) HTTrace("News Tx..... %s", HTChunk_data(header));
+    HTTRACE(PROT_TRACE, "News Tx..... %s" _ HTChunk_data(header));
     return YES;
 }
 
@@ -161,7 +161,7 @@ PRIVATE int NewsPost_abort (HTStream * me, HTList * e)
     if (me->target) (*me->target->isa->abort)(me->target, e);
     HTChunk_delete(me->buffer);
     HT_FREE(me);
-    if (PROT_TRACE) HTTrace("NewsPost.... ABORTING...\n");
+    HTTRACE(PROT_TRACE, "NewsPost.... ABORTING...\n");
     return HT_ERROR;
 }
 

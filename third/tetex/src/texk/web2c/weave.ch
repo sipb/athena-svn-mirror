@@ -177,8 +177,8 @@ This is called after the filename variables have been set appropriately.
 @^system dependencies@>
 
 @p procedure open_input; {prepare to read |web_file| and |change_file|}
-begin reset(web_file,web_name);
-  if chg_name then reset(change_file,chg_name);
+begin web_file := kpse_open_file(web_name, kpse_web_format);
+  if chg_name then change_file := kpse_open_file(chg_name, kpse_web_format);
 end;
 @z
 
@@ -347,10 +347,10 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'weave');
+      usage ('weave');
 
     end else if argument_is ('help') then begin
-      usage (0, WEAVE_HELP);
+      usage_help (WEAVE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.E. Knuth');
@@ -361,7 +361,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'weave: Need one or two file arguments.');
-    usage (1, 'weave');
+    usage ('weave');
   end;
   
   {Supply |".web"| and |".ch"| extensions if necessary.}

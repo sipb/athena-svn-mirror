@@ -1,7 +1,7 @@
 /* config.h: master configuration file, included first by all compilable
    source files (not headers).
 
-Copyright (C) 1993, 95, 96, 97 Free Software Foundation, Inc.
+Copyright (C) 1993, 95, 96, 97, 2000 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -22,16 +22,34 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* System defines are for non-Unix systems only.  (Testing for all Unix
    variations should be done in configure.)  Presently the defines used
-   are: AMIGA DOS OS2 VMCMS VMS WIN32.  I do not use any of these systems
-   myself; if you do, I'd be grateful for any changes. --kb@mail.tug.org */
+   are: AMIGA DOS OS2 WIN32.  I do not use any of these systems myself;
+   if you do, I'd be grateful for any changes. --olaf@infovore.xs4all.nl */
+
+#if defined(DJGPP)    || defined(__DJGPP__)     || \
+    defined(CYGWIN)   || defined(__CYGWIN__)    || \
+    defined(CYGWIN32) || defined(__CYGWIN32__)  || \
+    defined(MINGW32)  || defined(__MINGW32__)
+#define __i386_pc_gnu__
+#endif
 
 /* If we have either DOS or OS2, we are DOSISH.  */
-#if defined (DOS) || defined (OS2) || defined (WIN32) || defined(__MSDOS__)
+#if defined(__i386_pc_gnu__) || \
+    defined(OS2) || \
+    defined(MSDOS) || defined(__MSDOS__) || defined(DOS) || \
+    defined(WIN32) || defined(__WIN32__) || defined(_WIN32)
 #define DOSISH
 #endif
 
+/* case-insensitive filename comparisons? */
 #if defined (DOSISH)
-#define MONOCASE_FILENAMES	/* case-insensitive filename comparisons */
+#define MONOCASE_FILENAMES
+#endif
+
+/* NULL device. */
+#if defined (DOSISH)
+#define DEV_NULL "NUL"
+#else
+#define DEV_NULL "/dev/null"
 #endif
 
 #ifdef WIN32
@@ -47,18 +65,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <io.h>		/* for `setmode' */
 #endif
 
-#ifdef WIN32
-#include <kpathsea/win32lib.h>
-#endif
- 
 /* Some drivers have partially integrated kpathsea changes.  */
 #ifndef KPATHSEA
-#define KPATHSEA 33
+#define KPATHSEA 34
 #endif
 
 #include <kpathsea/c-std.h>    /* <stdio.h>, <math.h>, etc.  */
 
 #include <kpathsea/c-proto.h>  /* Macros to discard or keep prototypes.  */
+
+/*
+  This must be included after "c-proto.h"
+  but before "lib.h". FP.
+*/
+#ifdef WIN32
+#include <win32lib.h>
+#endif
 
 #include <kpathsea/debug.h>    /* Runtime tracing.  */
 #include <kpathsea/lib.h>      /* STREQ, etc. */

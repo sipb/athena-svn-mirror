@@ -69,6 +69,13 @@ a modified \TeX{} version.
 
 @z
 
+@x [1.2] l.188
+@d banner=='This is TeX, Version 3.14159' {printed when \TeX\ starts}
+@y
+@d banner=='This is TeX, Version 3.14159' {printed when \TeX\ starts}
+@d banner_k=='This is TeXk, Version 3.14159' {printed when \TeX\ starts}
+@z
+
 @x [1.4] l.233 - program header
 Actually the heading shown here is not quite normal: The |program| line
 does not mention any |output| file, because \ph\ would ask the \TeX\ user
@@ -190,10 +197,10 @@ versions of the program.
 @y
 @d file_name_size == maxint
 @d ssup_error_line = 255
-@d ssup_max_strings ==65535
-{Larger values may be used, but then the arrays consume much more memory.}
+@d ssup_max_strings == 262143
+{Larger values than 65536 cause the arrays consume much more memory.}
 @d ssup_trie_opcode == 65535
-@d ssup_trie_size == 65535
+@d ssup_trie_size == 262143
 
 @d ssup_hyph_size == 65535 {Changing this requires changing (un)dumping!}
 @d iinf_hyphen_size == 610 {Must be not less than |hyph_prime|!}
@@ -212,9 +219,9 @@ versions of the program.
   {Use |mem_bot=0| for compilers which cannot decrement pointers.}
 @!hash_offset=514; {smallest index in hash array, i.e., |hash_base| }
   {Use |hash_offset=0| for compilers which cannot decrement pointers.}
-@!trie_op_size=1501; {space for ``opcodes'' in the hyphenation patterns;
+@!trie_op_size=35111; {space for ``opcodes'' in the hyphenation patterns;
   best if relatively prime to 313, 361, and 1009.}
-@!neg_trie_op_size=-1501; {for lower |trie_op_hash| array bound;
+@!neg_trie_op_size=-35111; {for lower |trie_op_hash| array bound;
   must be equal to |-trie_op_size|.}
 @!min_trie_op=0; {first possible trie op code for any language}
 @!max_trie_op=ssup_trie_opcode; {largest possible trie opcode for any language}
@@ -222,7 +229,7 @@ versions of the program.
   {string of length |file_name_size|; tells where the string pool appears}
 @#
 @!inf_main_memory = 2999;
-@!sup_main_memory = 8000000;
+@!sup_main_memory = 32000000;
 
 @!inf_trie_size = 8000;
 @!sup_trie_size = ssup_trie_size;
@@ -260,7 +267,7 @@ versions of the program.
 @!inf_font_max = 50; {could be smaller, but why?}
 
 @!inf_pool_size = 32000;
-@!sup_pool_size = 10000000;
+@!sup_pool_size = 40000000;
 @!inf_pool_free = 1000;
 @!sup_pool_free = sup_pool_size;
 @!inf_string_vacancies = 8000;
@@ -533,6 +540,18 @@ tini@/
 @!save_size:integer; {space for saving values outside of current group; must be
   at most |max_halfword|}
 @!dvi_buf_size:integer; {size of the output buffer; must be a multiple of 8}
+@!parse_first_line_p:boolean; {parse the first line for options}
+@!file_line_error_style_p:boolean; {format error messages as file:line:error}
+{Variables for source specials}
+@!src_specials_p : boolean;{Whether src_specials are enabled at all}
+@!insert_src_special_auto : boolean;
+@!insert_src_special_every_par : boolean;
+@!insert_src_special_every_parend : boolean;
+@!insert_src_special_every_cr : boolean;
+@!insert_src_special_every_math : boolean;
+@!insert_src_special_every_hbox : boolean;
+@!insert_src_special_every_vbox : boolean;
+@!insert_src_special_every_display : boolean;
 @z
 
 @x [3.33] l.964 - We don't need to open terminal files.
@@ -681,8 +700,8 @@ name_of_file:=pool_name; {we needn't set |name_length|}
 if a_open_in(pool_file) then
 @y
 name_length := strlen (pool_name);
-name_of_file := xmalloc (1 + name_length + 1);
-strcpy (name_of_file+1, pool_name); {copy the string}
+name_of_file := xmalloc_array (ASCII_code, name_length + 1);
+strcpy (stringcast(name_of_file+1), pool_name); {copy the string}
 if a_open_in (pool_file, kpse_texpool_format) then
 @z
 
@@ -760,6 +779,8 @@ Control sequence names, file names and string constructed with
 \.{\\string} might contain |ASCII_code| values that can't
 be printed using |print_visible_char|.  These characters will be printed
 in three- or four-symbol form like `\.{\^\^A}' or `\.{\^\^e4}'.
+Output that goes to the terminal and/or log file is treated differently
+when it comes to determining whether a character is printable.
 
 @d print_lc_hex(#)==l:=#;
   if l<10 then print_visible_char(l+"0")@+else print_visible_char(l-10+"a")
@@ -776,8 +797,10 @@ if @<Character |s| is the current new-line character@> then
  if selector<pseudo then
   begin print_ln; return;
   end;
-k:=s; if @<Character |k| cannot be printed@> then
-  begin print_visible_char("^"); print_visible_char("^");
+k:=s;
+if ((selector<=no_print)and(@<Character |k| cannot be printed@>))
+   or((selector>no_print)and(not isprint(k)))
+then begin print_visible_char("^"); print_visible_char("^");
   if s<64 then print_visible_char(s+64)
   else if s<128 then print_visible_char(s-64)
   else begin print_lc_hex(s div 16);  print_lc_hex(s mod 16);
@@ -845,6 +868,15 @@ end;
 @y
 @z
 
+@x l.1536 --  If the ``src-specials'' feature is active, change the banner.
+wterm(banner);
+@y
+if src_specials_p or file_line_error_style_p or parse_first_line_p then
+  wterm(banner_k)
+else
+  wterm(banner);
+@z
+
 @x [5.61] l.1556 - Print rest of banner, eliminate misleading `(no format preloaded)'.
 if format_ident=0 then wterm_ln(' (no format preloaded)')
 else  begin slow_print(format_ident); print_ln;
@@ -853,8 +885,20 @@ else  begin slow_print(format_ident); print_ln;
 wterm(version_string);
 if format_ident>0 then slow_print(format_ident);
 print_ln;
+if shell_enabled_p then begin
+  wterm_ln(' \write18 enabled.')
+end;
+if src_specials_p then begin
+  wterm_ln(' Source specials enabled.')
+end;
+if file_line_error_style_p then begin
+  wterm_ln(' file:line:error style messages enabled.')
+end;
+if parse_first_line_p then begin
+  wterm_ln(' %&-line parsing enabled.')
+end;
 if translate_filename then begin
-  wterm('(');
+  wterm(' (');
   fputs(translate_filename, stdout);
   wterm_ln(')');
 end;
@@ -866,6 +910,20 @@ end;
 @d error_stop_mode=3 {stops at every opportunity to interact}
 @d unspecified_mode=4 {extra value for command-line switch}
 @z
+
+@x [6.73] l.1734 - file:line:error style error messages.
+  print_nl("! "); print(#);
+@y
+  if (file_line_error_style_p and not terminal_input) then
+  begin 
+    print_nl ("");
+    print (full_source_filename_stack[in_open]);
+    print (":"); print_int (line); print (": ");
+    print (#); 
+  end  
+  else begin print_nl("! "); print(#) end;
+@z
+
 
 @x [6.73] l.1738 - Add interaction_option.
 @!interaction:batch_mode..error_stop_mode; {current level of interaction}
@@ -908,6 +966,13 @@ begin
 close_files_and_terminate;
 do_final_end;
 end;
+@z
+
+@x [6.82] l.1866 - file:line:error style messages force scroll_mode.
+print_char("."); show_context;
+@y
+if file_line_error_style_p then interaction:=scroll_mode
+else begin print_char("."); show_context end;
 @z
 
 @x [6.84] l.1888 - Implement the switch-to-editor option.
@@ -1150,12 +1215,31 @@ last_glue:=max_halfword; last_penalty:=0; last_kern:=0;
 page_depth:=0; page_max_depth:=0;
 @z
 
+@x [16.219] l.4409 - i18n fix
+    print_int(nest[p].pg_field); print(" line");
+    if nest[p].pg_field<>1 then print_char("s");
+@y
+    print_int(nest[p].pg_field); 
+    if nest[p].pg_field<>1 then print(" lines")
+    else print(" line");
+@z
+
 @x [17.220] l.4448 - MLTeX: char_sub_code_base
 paragraph shape.
 @y
 paragraph shape.
 Additionally region~4 contains the table with ML\TeX's character
 substitution definitions.
+@z
+
+@x [17.222] l.4523 - frozen_special, for source specials.
+@d frozen_null_font=frozen_control_sequence+10
+  {permanent `\.{\\nullfont}'}
+@y
+@d frozen_special=frozen_control_sequence+10
+  {permanent `\.{\\special}'}
+@d frozen_null_font=frozen_control_sequence+11
+  {permanent `\.{\\nullfont}'}
 @z
 
 @x [17.222] l.4526 - max_font_max
@@ -1370,7 +1454,7 @@ if (hash_offset<0)or(hash_offset>hash_base) then bad:=42;
 @!input_stack : ^in_state_record;
 @z
 
-@x [22.304] l.6536 - texarray
+@x [22.304] l.6536 - texarray; additions for file:line:error style.
 @!input_file : array[1..max_in_open] of alpha_file;
 @!line : integer; {current line number in the current source file}
 @!line_stack : array[1..max_in_open] of integer;
@@ -1378,6 +1462,36 @@ if (hash_offset<0)or(hash_offset>hash_base) then bad:=42;
 @!input_file : ^alpha_file;
 @!line : integer; {current line number in the current source file}
 @!line_stack : ^integer;
+@!source_filename_stack : ^str_number;
+@!full_source_filename_stack : ^str_number;
+@z
+
+@x [22.306] l.6855 - i18n fix
+  begin print_nl("Runaway ");
+@.Runaway...@>
+  case scanner_status of
+  defining: begin print("definition"); p:=def_ref;
+    end;
+  matching: begin print("argument"); p:=temp_head;
+    end;
+  aligning: begin print("preamble"); p:=hold_head;
+    end;
+  absorbing: begin print("text"); p:=def_ref;
+    end;
+  end; {there are no other cases}
+@y
+  begin
+@.Runaway...@>
+  case scanner_status of
+  defining: begin print_nl("Runaway definition"); p:=def_ref;
+    end;
+  matching: begin print_nl("Runaway argument"); p:=temp_head;
+    end;
+  aligning: begin print_nl("Runaway preamble"); p:=hold_head;
+    end;
+  absorbing: begin print_nl("Runaway text"); p:=def_ref;
+    end;
+  end; {there are no other cases}
 @z
 
 @x [22.308] l.6701 - texarray
@@ -1386,6 +1500,33 @@ if (hash_offset<0)or(hash_offset>hash_base) then bad:=42;
 @y
 @!param_stack: ^pointer;
   {token list pointers for parameters}
+@z
+
+@x [24.338] l.7164 - i18n fix
+print(" while scanning ");
+@y
+@z
+
+@x [24.339] l.7185 - i18n fix
+defining:begin print("definition"); info(p):=right_brace_token+"}";
+  end;
+matching:begin print("use"); info(p):=par_token; long_state:=outer_call;
+  end;
+aligning:begin print("preamble"); info(p):=right_brace_token+"}"; q:=p;
+  p:=get_avail; link(p):=q; info(p):=cs_token_flag+frozen_cr;
+  align_state:=-1000000;
+  end;
+absorbing:begin print("text"); info(p):=right_brace_token+"}";
+@y
+defining:begin print(" while scanning definition"); info(p):=right_brace_token+"}";
+  end;
+matching:begin print(" while scanning use"); info(p):=par_token; long_state:=outer_call;
+  end;
+aligning:begin print(" while scanning preamble"); info(p):=right_brace_token+"}"; q:=p;
+  p:=get_avail; link(p):=q; info(p):=cs_token_flag+frozen_cr;
+  align_state:=-1000000;
+  end;
+absorbing:begin print(" while scanning text"); info(p):=right_brace_token+"}";
 @z
 
 @x [29.513] l.9951 - Area and extension rules for filenames.
@@ -1420,6 +1561,12 @@ otherwise the file area is null.  If the remaining file name contains
 @.TeXfonts@>
 @y
 In C, the default paths are specified separately.
+@z
+
+@x [29.516] l.9992 - filenames: more_name
+begin if c=" " then more_name:=false
+@y
+begin if stop_at_space and (c=" ") then more_name:=false
 @z
 
 @x [29.516] l.9994 - filenames: more_name
@@ -1501,7 +1648,7 @@ else  begin cur_name:=str_ptr;
 for j:=str_start[a] to str_start[a+1]-1 do append_to_name(so(str_pool[j]));
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file:= xmalloc(1 + length(a) + length(n) + length(e) + 1);
+name_of_file:= xmalloc_array (ASCII_code, length(a)+length(n)+length(e)+1);
 for j:=str_start[a] to str_start[a+1]-1 do append_to_name(so(str_pool[j]));
 @z
 
@@ -1542,9 +1689,17 @@ program.
 for j:=1 to n do append_to_name(xord[TEX_format_default[j]]);
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file := xmalloc (1 + n + (b - a + 1) + format_ext_length + 1);
+name_of_file := xmalloc_array (ASCII_code, n+(b-a+1)+format_ext_length+1);
 for j:=1 to n do append_to_name(xord[TEX_format_default[j]]);
 @z
+
+% @x [29.523] l.10097 - Set program name to match format.
+% for j:=a to b do append_to_name(buffer[j]);
+% @y
+% for j:=a to b do append_to_name(buffer[j]);
+% name_of_file[k+1]:=0;
+% kpse_reset_program_name(name_of_file+1);
+% @z
 
 @x [29.523] l.10100 - Change to pack_buffered_name as with pack_file_name.
 for k:=name_length+1 to file_name_size do name_of_file[k]:=' ';
@@ -1567,7 +1722,7 @@ name_of_file[name_length+1]:=0;
   wterm_ln('Sorry, I can''t find that format;',' will try PLAIN.');
 @y
   wterm ('Sorry, I can''t find the format `');
-  fputs (name_of_file + 1, stdout);
+  fputs (stringcast(name_of_file + 1), stdout);
   wterm ('''; will try `');
   fputs (TEX_format_default + 1, stdout);
   wterm_ln ('''.');
@@ -1602,6 +1757,14 @@ if (e=".tex") or (e="") then show_context;
 @!months:^char;
 @z
 
+@x [29.534] l.10289 - Filename change for the recorder.
+@.texput@>
+@y
+@.texput@>
+pack_job_name(".fls");
+recorder_change_filename(stringcast(name_of_file+1));
+@z
+
 @x [29.534] l.10293 - MLTeX: add MLTeX banner after loading fmt file
 @<Print the banner line, including the date and time@>;
 @y
@@ -1609,6 +1772,17 @@ if (e=".tex") or (e="") then show_context;
 if mltex_enabled_p then
   begin wlog_cr; wlog('MLTeX v2.2 enabled');
   end;
+@z
+
+@x
+begin wlog(banner);
+@y
+begin
+if src_specials_p or file_line_error_style_p or parse_first_line_p
+then
+  wlog(banner_k)
+else
+  wlog(banner);
 @z
 
 @x [29.536] l.10324 - Print rest of banner.
@@ -1624,12 +1798,30 @@ months:='JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC';
 months := ' JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC';
 @z
 
-@x [29/536] l.10331 - Print TCX name if one's given.
+% Print whether we're using src-specials.
+% Print TCX name if one's given.
+@x [29/536] l.10331
 end
 @y
+if shell_enabled_p then begin
+  wlog_cr;
+  wlog('\write18 enabled.')
+end;
+if src_specials_p then begin
+  wlog_cr;
+  wlog(' Source specials enabled.')
+end;
+if file_line_error_style_p then begin
+  wlog_cr;
+  wlog(' file:line:error style messages enabled.')
+end;
+if parse_first_line_p then begin
+  wlog_cr;
+  wlog(' %&-line parsing enabled.');
+end;
 if translate_filename then begin
   wlog_cr;
-  wlog('(');
+  wlog(' (');
   fputs(translate_filename, log_file);
   wlog(')');
 end;
@@ -1658,15 +1850,17 @@ loop@+begin
   begin_file_reading; {set up |cur_file| and new level of input}
   tex_input_type := 1; {Tell |open_input| we are \.{\\input}.}
   {Kpathsea tries all the various ways to get the file.}
-  if open_in_name_ok(name_of_file+1)
+  if open_in_name_ok(stringcast(name_of_file+1))
      and a_open_in(cur_file, kpse_tex_format) then
     {At this point |name_of_file| contains the actual name found.
      We extract the |cur_area|, |cur_name|, and |cur_ext| from it.}
     begin k:=1;
     name_in_progress:=true;
     begin_name;
+    stop_at_space:=false;
     while (k<=name_length)and(more_name(name_of_file[k])) do
       incr(k);
+    stop_at_space:=true;
     end_name;
     name_in_progress:=false;
     goto done;
@@ -1683,6 +1877,8 @@ loop@+begin
 done: name:=a_make_name_string(cur_file);
 @y
 done: name:=a_make_name_string(cur_file);
+source_filename_stack[in_open]:=name;
+full_source_filename_stack[in_open]:=make_full_name_string;
 if name=str_ptr-1 then {we can try to conserve string pool space now}
   begin temp_str:=search_string(name);
   if temp_str>0 then
@@ -1691,22 +1887,25 @@ if name=str_ptr-1 then {we can try to conserve string pool space now}
   end;
 @z
 
-@x [29.537] l.10352 - start_input: use different heuristic for initex.
+@x [29.537] l.10352 - start_input: was job_name given on the command line?
   begin job_name:=cur_name; open_log_file;
 @y
-  begin job_name:=cur_name;
-    Init
-      if dump_option then begin
-        str_room(format_default_length);
-        for k:=1 to format_default_length - format_ext_length do
-          append_char(xord[TEX_format_default[k]]);
-        job_name:=make_string;
-      end;
-    Tini
-    open_log_file;
+  begin job_name:=get_job_name; open_log_file;
 @z
 
-@x [29.537] l.10359 - start_input: don't return filename to string pool.
+@x [29.537] l.10356 - 
+if term_offset+length(name)>max_print_line-2 then print_ln
+else if (term_offset>0)or(file_offset>0) then print_char(" ");
+print_char("("); incr(open_parens); slow_print(name); update_terminal;
+@y
+if term_offset+length(full_source_filename_stack[in_open])>max_print_line-2
+then print_ln
+else if (term_offset>0)or(file_offset>0) then print_char(" ");
+print_char("("); incr(open_parens);
+slow_print(full_source_filename_stack[in_open]); update_terminal;
+@z
+
+@x [29.537] l.10360 - start_input: don't return filename to string pool.
 if name=str_ptr-1 then {we can conserve string pool space now}
   begin flush_string; name:=cur_name;
   end;
@@ -2142,6 +2341,15 @@ ifndef ('IPC')
 endifn ('IPC')
 @z
 
+@x [32.642] l.12750 - i18n fix
+  print(" ("); print_int(total_pages); print(" page");
+  if total_pages<>1 then print_char("s");
+@y
+  print(" ("); print_int(total_pages); 
+  if total_pages<>1 then print(" pages")
+  else print(" page");
+@z
+
 % The MLTeX changes never dealt with the problems of character
 % substitutions in math mode.  With the new additions in v2.2,
 % non-existing characters between |font_bc[f]| and |font_ec[f]|
@@ -2175,6 +2383,22 @@ else  begin if (qo(cur_c)>=font_bc[cur_f])and(qo(cur_c)<=font_ec[cur_f]) then
 @y
     begin c:=rem_byte(cur_i); i:=orig_char_info(cur_f)(c);
 @z
+
+% disabled in original tex-src-special.ch
+ @x [37.774] l.15291 - source specials
+if every_cr<>null then begin_token_list(every_cr,every_cr_text);
+ @y
+if (insert_src_special_every_cr and head<>tail) then insert_src_special;
+if every_cr<>null then begin_token_list(every_cr,every_cr_text);
+ @z
+
+% disabled in original tex-source-special.ch
+ @x [37.799] l.15682 - source specials
+if every_cr<>null then begin_token_list(every_cr,every_cr_text);
+ @y
+if (insert_src_special_every_cr) then insert_src_special;
+if every_cr<>null then begin_token_list(every_cr,every_cr_text);
+ @z
 
 @x [38.859] l.16855 - Fix a casting/expression evaluation problem.
 if abs(fit_class-fitness(r))>1 then d:=d+adj_demerits;
@@ -2696,6 +2920,17 @@ l:=k; v:=min_trie_op;
 %  main_loop_move_lig,
 %@z
 
+@x [46.1034] l.20074 - source specials
+@<Append character |cur_chr|...@>=
+adjust_space_factor;@/
+@y
+@<Append character |cur_chr|...@>=
+if ((head=tail) and (mode>0)) then begin
+  if (insert_src_special_auto) then append_src_special;
+end;
+adjust_space_factor;@/
+@z
+
 @x [46.1036] l.20138 - MLTeX: substitution in |main_control|
 main_loop_move+2:if(cur_chr<font_bc[main_f])or(cur_chr>font_ec[main_f]) then
 @y
@@ -2708,6 +2943,65 @@ if(qo(effective_char(false,main_f,qi(cur_chr)))>font_ec[main_f])or
 main_i:=char_info(main_f)(cur_l);
 @y
 main_i:=effective_char_info(main_f,cur_l);
+@z
+
+% disabled in original tex-src-special.ch
+ @x [47.1083] l.20966 - source specials
+  if every_vbox<>null then begin_token_list(every_vbox,every_vbox_text);
+ @y
+  if (insert_src_special_every_vbox) then insert_src_special;
+  if every_vbox<>null then begin_token_list(every_vbox,every_vbox_text);
+ @z
+
+% disabled in original tex-src-special.ch
+ @x [47.1083] l.20969 - source specials
+  if every_hbox<>null then begin_token_list(every_hbox,every_hbox_text);
+ @y
+  if (insert_src_special_every_hbox) then insert_src_special;
+  if every_hbox<>null then begin_token_list(every_hbox,every_hbox_text);
+ @z
+
+@x [47.1091] l.21064 - source specials
+if indented then
+  begin tail:=new_null_box; link(head):=tail; width(tail):=par_indent;@+
+  end;
+@y
+if indented then
+  begin tail:=new_null_box; link(head):=tail; width(tail):=par_indent;
+  if (insert_src_special_every_par) then insert_src_special;@+
+  end;
+@z
+
+% disabled in original tex-src-special.ch, conflicts with etex.
+ @x [47.1096] l.21121 - source specials
+  else line_break(widow_penalty);
+ @y
+  else begin
+    if (insert_src_special_every_parend) then insert_src_special;
+    line_break(widow_penalty);
+  end;
+ @z
+
+@x [48.1139] l.21650 - source specials
+if every_math<>null then begin_token_list(every_math,every_math_text);
+@y
+if (insert_src_special_every_math) then insert_src_special;
+if every_math<>null then begin_token_list(every_math,every_math_text);
+@z
+
+% disabled in original tex-src-special.ch
+ @x [48.1145] l.21705 - source specials
+if every_display<>null then begin_token_list(every_display,every_display_text);
+ @y
+if (insert_src_special_every_display) then append_src_special;
+if every_display<>null then begin_token_list(every_display,every_display_text);
+ @z
+
+@x [48.1167] l.22042 - source specials
+  if every_vbox<>null then begin_token_list(every_vbox,every_vbox_text);
+@y
+  if (insert_src_special_every_vbox) then insert_src_special;
+  if every_vbox<>null then begin_token_list(every_vbox,every_vbox_text);
 @z
 
 @x [49.1215] l.22719 - hash_extra
@@ -2826,13 +3120,15 @@ else kpse_make_tex_discard_errors := 0;
 @y
   pack_cur_name;
   tex_input_type:=0; {Tell |open_input| we are \.{\\openin}.}
-  if open_in_name_ok(name_of_file+1)
+  if open_in_name_ok(stringcast(name_of_file+1))
      and a_open_in(read_file[n], kpse_tex_format) then
     begin k:=1;
     name_in_progress:=true;
     begin_name;
+    stop_at_space:=false;
     while (k<=name_length)and(more_name(name_of_file[k])) do
       incr(k);
+    stop_at_space:=true;
     end_name;
     name_in_progress:=false;
     read_open[n]:=just_open;
@@ -2937,11 +3233,11 @@ undump_int(hash_high);
   eqtb_top:=eqtb_size+hash_extra;
   if hash_extra=0 then hash_top:=undefined_control_sequence else
         hash_top:=eqtb_top;
-  xmalloc_array(yhash,1+hash_top-hash_offset);
+  yhash:=xmalloc_array(two_halves,1+hash_top-hash_offset);
   hash:=yhash - hash_offset;
   next(hash_base):=0; text(hash_base):=0;
   for x:=hash_base+1 to hash_top do hash[x]:=hash[hash_base];
-  xmalloc_array (zeqtb,eqtb_top+1);
+  zeqtb:=xmalloc_array (memory_word,eqtb_top+1);
   eqtb:=zeqtb;
 
   eq_type(undefined_control_sequence):=undefined_cs;
@@ -2969,7 +3265,7 @@ head:=contrib_head; tail:=contrib_head;
 mem_min := mem_bot - extra_mem_bot;
 mem_max := mem_top + extra_mem_top;
 
-xmalloc_array (yzmem, mem_max - mem_min);
+yzmem:=xmalloc_array (memory_word, mem_max - mem_min);
 zmem := yzmem - mem_min;   {this pointer arithmetic fails with some compilers}
 mem := zmem;
 @z
@@ -3011,9 +3307,9 @@ if pool_size<pool_ptr+pool_free then
 undump_size(0)(sup_max_strings-strings_free)('sup strings')(str_ptr);@/
 if max_strings<str_ptr+strings_free then
   max_strings:=str_ptr+strings_free;
-xmalloc_array(str_start, max_strings);
+str_start:=xmalloc_array(pool_pointer, max_strings);
 undump_checked_things(0, pool_ptr, str_start[0], str_ptr+1);@/
-xmalloc_array(str_pool, pool_size);
+str_pool:=xmalloc_array(packed_ASCII_code, pool_size);
 undump_things(str_pool[0], pool_ptr);
 @z
 
@@ -3053,7 +3349,7 @@ for k:=hi_mem_min to mem_end do undump_wd(mem[k]);
 undump_things (mem[hi_mem_min], mem_end+1-hi_mem_min);
 @z
 
-@x [50.1314] l.23899 - hash_extra
+@x [50.1314] l.23899 - hash_extra, source specials
 undump(hash_base)(frozen_control_sequence)(par_loc);
 par_token:=cs_token_flag+par_loc;@/
 undump(hash_base)(frozen_control_sequence)(write_loc);@/
@@ -3142,6 +3438,15 @@ dump_int(font_ptr);
 @<Dump the array info for internal font number |k|@>;
 @z
 
+@x [50.1320] l.23991 - i18n fix
+print_int(font_ptr-font_base); print(" preloaded font");
+if font_ptr<>font_base+1 then print_char("s")
+@y
+print_int(font_ptr-font_base);
+if font_ptr<>font_base+1 then print(" preloaded fonts")
+else print(" preloaded font")
+@z
+
 @x [50.1321] l.23994 - texarray
 undump_size(7)(font_mem_size)('font mem size')(fmem_ptr);
 for k:=0 to fmem_ptr-1 do undump_wd(font_info[k]);
@@ -3151,7 +3456,7 @@ for k:=null_font to font_ptr do
 @y
 undump_size(7)(sup_font_mem_size)('font mem size')(fmem_ptr);
 if fmem_ptr>font_mem_size then font_mem_size:=fmem_ptr;
-xmalloc_array(font_info, font_mem_size);
+font_info:=xmalloc_array(fmemory_word, font_mem_size);
 undump_things(font_info[0], fmem_ptr);@/
 undump_size(font_base)(font_base+max_font_max)('font max')(font_ptr);
 {This undumps all of the font info, despite the name.}
@@ -3261,29 +3566,29 @@ end
 
 @<Undump the array info for internal font number |k|@>=
 begin {Allocate the font arrays}
-xmalloc_array(font_check, font_max);
-xmalloc_array(font_size, font_max);
-xmalloc_array(font_dsize, font_max);
-xmalloc_array(font_params, font_max);
-xmalloc_array(font_name, font_max);
-xmalloc_array(font_area, font_max);
-xmalloc_array(font_bc, font_max);
-xmalloc_array(font_ec, font_max);
-xmalloc_array(font_glue, font_max);
-xmalloc_array(hyphen_char, font_max);
-xmalloc_array(skew_char, font_max);
-xmalloc_array(bchar_label, font_max);
-xmalloc_array(font_bchar, font_max);
-xmalloc_array(font_false_bchar, font_max);
-xmalloc_array(char_base, font_max);
-xmalloc_array(width_base, font_max);
-xmalloc_array(height_base, font_max);
-xmalloc_array(depth_base, font_max);
-xmalloc_array(italic_base, font_max);
-xmalloc_array(lig_kern_base, font_max);
-xmalloc_array(kern_base, font_max);
-xmalloc_array(exten_base, font_max);
-xmalloc_array(param_base, font_max);
+font_check:=xmalloc_array(four_quarters, font_max);
+font_size:=xmalloc_array(scaled, font_max);
+font_dsize:=xmalloc_array(scaled, font_max);
+font_params:=xmalloc_array(font_index, font_max);
+font_name:=xmalloc_array(str_number, font_max);
+font_area:=xmalloc_array(str_number, font_max);
+font_bc:=xmalloc_array(eight_bits, font_max);
+font_ec:=xmalloc_array(eight_bits, font_max);
+font_glue:=xmalloc_array(halfword, font_max);
+hyphen_char:=xmalloc_array(integer, font_max);
+skew_char:=xmalloc_array(integer, font_max);
+bchar_label:=xmalloc_array(font_index, font_max);
+font_bchar:=xmalloc_array(nine_bits, font_max);
+font_false_bchar:=xmalloc_array(nine_bits, font_max);
+char_base:=xmalloc_array(integer, font_max);
+width_base:=xmalloc_array(integer, font_max);
+height_base:=xmalloc_array(integer, font_max);
+depth_base:=xmalloc_array(integer, font_max);
+italic_base:=xmalloc_array(integer, font_max);
+lig_kern_base:=xmalloc_array(integer, font_max);
+kern_base:=xmalloc_array(integer, font_max);
+exten_base:=xmalloc_array(integer, font_max);
+param_base:=xmalloc_array(integer, font_max);
 
 undump_things(font_check[null_font], font_ptr+1-null_font);
 undump_things(font_size[null_font], font_ptr+1-null_font);
@@ -3336,6 +3641,15 @@ for k:=0 to hyph_size do if hyph_word[k]<>0 then
   end;
 @z
 
+@x [50.1324] l.24063 - i18n fix
+print_ln; print_int(hyph_count); print(" hyphenation exception");
+if hyph_count<>1 then print_char("s");
+@y
+print_ln; print_int(hyph_count);
+if hyph_count<>1 then print(" hyphenation exceptions")
+else print(" hyphenation exception");
+@z
+
 @x [50.1324] l.24066 - Make dumping/undumping more efficient - trie
 for k:=0 to trie_max do dump_hh(trie[k]);
 dump_int(trie_op_ptr);
@@ -3354,16 +3668,13 @@ dump_things(hyf_num[1], trie_op_ptr);
 dump_things(hyf_next[1], trie_op_ptr);
 @z
 
-@x [50.1325] l.24086 - Make dumping/undumping more efficient - trie
-@<Undump the hyphenation tables@>=
+@x [50.1324] l.24076 - i18n fix
+print(" has "); print_int(trie_op_ptr); print(" op");
+if trie_op_ptr<>1 then print_char("s");
 @y
-{This is only used for the hyphenation tries below, and the size is
- always |j+1|.}
-@d xmalloc_and_undump(#) ==
-  if not # then xmalloc_array(#, j+1);
-  undump_things(#[0], j+1);
-
-@<Undump the hyphenation tables@>=
+print(" has "); print_int(trie_op_ptr);
+if trie_op_ptr<>1 then print(" ops")
+else print(" op");
 @z
 
 %%%%%%%% dynamic hyph_size
@@ -3408,9 +3719,12 @@ for k:=1 to j do
 @y
 {These first three haven't been allocated yet unless we're \.{INITEX};
  we do that precisely so we don't allocate more space than necessary.}
-xmalloc_and_undump(trie_trl);
-xmalloc_and_undump(trie_tro);
-xmalloc_and_undump(trie_trc);
+if not trie_trl then trie_trl:=xmalloc_array(trie_pointer,j+1);
+undump_things(trie_trl[0], j+1);
+if not trie_tro then trie_tro:=xmalloc_array(trie_pointer,j+1);
+undump_things(trie_tro[0], j+1);
+if not trie_trc then trie_trc:=xmalloc_array(quarterword, j+1);
+undump_things(trie_trc[0], j+1);
 undump_size(0)(trie_op_size)('trie op size')(j); @+init trie_op_ptr:=j;@+tini
 {I'm not sure we have such a strict limitation (64) on these values, so
  let's leave them unchecked.}
@@ -3435,13 +3749,10 @@ if (x<>69069)or feof(fmt_file) then goto bad_fmt
 @z
 
 % Eliminate probably wrong word `preloaded' from format_idents.
-% Use four-digit years.
 @x [50.1328] l.24124 
 print(" (preloaded format="); print(job_name); print_char(" ");
-print_int(year mod 100); print_char(".");
 @y
 print(" (format="); print(job_name); print_char(" ");
-print_int(year); print_char(".");
 @z
 
 @x [51.1332] l.24203 - make the main program a procedure, for eqtb hack.
@@ -3523,33 +3834,35 @@ begin @!{|start_here|}
   if error_line > ssup_error_line then error_line := ssup_error_line;
 
   {array memory allocation}
-  xmalloc_array (buffer, buf_size);
-  xmalloc_array (nest, nest_size);
-  xmalloc_array (save_stack, save_size);
-  xmalloc_array (input_stack, stack_size);
-  xmalloc_array (input_file, max_in_open);
-  xmalloc_array (line_stack, max_in_open);
-  xmalloc_array (param_stack, param_size);
-  xmalloc_array (dvi_buf, dvi_buf_size);
-  xmalloc_array (hyph_word , hyph_size);
-  xmalloc_array (hyph_list , hyph_size);
-  xmalloc_array (hyph_link , hyph_size);
+  buffer:=xmalloc_array (ASCII_code, buf_size);
+  nest:=xmalloc_array (list_state_record, nest_size);
+  save_stack:=xmalloc_array (memory_word, save_size);
+  input_stack:=xmalloc_array (in_state_record, stack_size);
+  input_file:=xmalloc_array (alpha_file, max_in_open);
+  line_stack:=xmalloc_array (integer, max_in_open);
+  source_filename_stack:=xmalloc_array (str_number, max_in_open);
+  full_source_filename_stack:=xmalloc_array (str_number, max_in_open);
+  param_stack:=xmalloc_array (halfword, param_size);
+  dvi_buf:=xmalloc_array (eight_bits, dvi_buf_size);
+  hyph_word :=xmalloc_array (str_number, hyph_size);
+  hyph_list :=xmalloc_array (halfword, hyph_size);
+  hyph_link :=xmalloc_array (hyph_pointer, hyph_size);
 @+Init
-  xmalloc_array (yzmem, mem_top - mem_bot);
+  yzmem:=xmalloc_array (memory_word, mem_top - mem_bot);
   zmem := yzmem - mem_bot;   {Some compilers require |mem_bot=0|}
   eqtb_top := eqtb_size+hash_extra;
   if hash_extra=0 then hash_top:=undefined_control_sequence else
         hash_top:=eqtb_top;
-  xmalloc_array (yhash,1+hash_top-hash_offset);
+  yhash:=xmalloc_array (two_halves,1+hash_top-hash_offset);
   hash:=yhash - hash_offset;   {Some compilers require |hash_offset=0|}
   next(hash_base):=0; text(hash_base):=0;
   for hash_used:=hash_base+1 to hash_top do hash[hash_used]:=hash[hash_base];
-  xmalloc_array (zeqtb, eqtb_top);
+  zeqtb:=xmalloc_array (memory_word, eqtb_top);
   eqtb:=zeqtb;
 
-  xmalloc_array (str_start, max_strings);
-  xmalloc_array (str_pool, pool_size);
-  xmalloc_array (font_info, font_mem_size);
+  str_start:=xmalloc_array (pool_pointer, max_strings);
+  str_pool:=xmalloc_array (packed_ASCII_code, pool_size);
+  font_info:=xmalloc_array (fmemory_word, font_mem_size);
 @+Tini
 @z
 
@@ -3633,43 +3946,43 @@ fix_date_and_time;@/
 
 @!init
 if trie_not_ready then begin {initex without format loaded}
-  xmalloc_array (trie_trl, trie_size);
-  xmalloc_array (trie_tro, trie_size);
-  xmalloc_array (trie_trc, trie_size);
+  trie_trl:=xmalloc_array (trie_pointer, trie_size);
+  trie_tro:=xmalloc_array (trie_pointer, trie_size);
+  trie_trc:=xmalloc_array (quarterword, trie_size);
 
-  xmalloc_array (trie_c, trie_size);
-  xmalloc_array (trie_o, trie_size);
-  xmalloc_array (trie_l, trie_size);
-  xmalloc_array (trie_r, trie_size);
-  xmalloc_array (trie_hash, trie_size);
-  xmalloc_array (trie_taken, trie_size);
+  trie_c:=xmalloc_array (packed_ASCII_code, trie_size);
+  trie_o:=xmalloc_array (trie_opcode, trie_size);
+  trie_l:=xmalloc_array (trie_pointer, trie_size);
+  trie_r:=xmalloc_array (trie_pointer, trie_size);
+  trie_hash:=xmalloc_array (trie_pointer, trie_size);
+  trie_taken:=xmalloc_array (boolean, trie_size);
 
   trie_root:=0; trie_c[0]:=si(0); trie_ptr:=0;
 
   {Allocate and initialize font arrays}
-  xmalloc_array(font_check, font_max);
-  xmalloc_array(font_size, font_max);
-  xmalloc_array(font_dsize, font_max);
-  xmalloc_array(font_params, font_max);
-  xmalloc_array(font_name, font_max);
-  xmalloc_array(font_area, font_max);
-  xmalloc_array(font_bc, font_max);
-  xmalloc_array(font_ec, font_max);
-  xmalloc_array(font_glue, font_max);
-  xmalloc_array(hyphen_char, font_max);
-  xmalloc_array(skew_char, font_max);
-  xmalloc_array(bchar_label, font_max);
-  xmalloc_array(font_bchar, font_max);
-  xmalloc_array(font_false_bchar, font_max);
-  xmalloc_array(char_base, font_max);
-  xmalloc_array(width_base, font_max);
-  xmalloc_array(height_base, font_max);
-  xmalloc_array(depth_base, font_max);
-  xmalloc_array(italic_base, font_max);
-  xmalloc_array(lig_kern_base, font_max);
-  xmalloc_array(kern_base, font_max);
-  xmalloc_array(exten_base, font_max);
-  xmalloc_array(param_base, font_max);
+  font_check:=xmalloc_array(four_quarters, font_max);
+  font_size:=xmalloc_array(scaled, font_max);
+  font_dsize:=xmalloc_array(scaled, font_max);
+  font_params:=xmalloc_array(font_index, font_max);
+  font_name:=xmalloc_array(str_number, font_max);
+  font_area:=xmalloc_array(str_number, font_max);
+  font_bc:=xmalloc_array(eight_bits, font_max);
+  font_ec:=xmalloc_array(eight_bits, font_max);
+  font_glue:=xmalloc_array(halfword, font_max);
+  hyphen_char:=xmalloc_array(integer, font_max);
+  skew_char:=xmalloc_array(integer, font_max);
+  bchar_label:=xmalloc_array(font_index, font_max);
+  font_bchar:=xmalloc_array(nine_bits, font_max);
+  font_false_bchar:=xmalloc_array(nine_bits, font_max);
+  char_base:=xmalloc_array(integer, font_max);
+  width_base:=xmalloc_array(integer, font_max);
+  height_base:=xmalloc_array(integer, font_max);
+  depth_base:=xmalloc_array(integer, font_max);
+  italic_base:=xmalloc_array(integer, font_max);
+  lig_kern_base:=xmalloc_array(integer, font_max);
+  kern_base:=xmalloc_array(integer, font_max);
+  exten_base:=xmalloc_array(integer, font_max);
+  param_base:=xmalloc_array(integer, font_max);
 
   font_ptr:=null_font; fmem_ptr:=7;
   font_name[null_font]:="nullfont"; font_area[null_font]:="";
@@ -3688,7 +4001,7 @@ if trie_not_ready then begin {initex without format loaded}
   end;
   tini@/
 
-  xmalloc_array (font_used, font_max);
+  font_used:=xmalloc_array (boolean, font_max);
   for font_k:=font_base to font_max do font_used[font_k]:=false;
 @z
 
@@ -3713,6 +4026,13 @@ if trie_not_ready then begin {initex without format loaded}
   print_int(font_info[n].qqqq.b2); print_char(":");@/
   print_int(font_info[n].qqqq.b3);
   end;
+@z
+
+@x [53.1344] l.24544 - source specials
+primitive("special",extension,special_node);@/
+@y
+primitive("special",extension,special_node);@/
+text(frozen_special):="special"; eqtb[frozen_special]:=eqtb[cur_val];@/
 @z
 
 % [53.1350] (new_write_whatsit) Allow 18 as a \write stream. We never
@@ -3769,7 +4089,7 @@ if j=18 then
     if clobbered then print("clobbered")
     else begin {We have the string; run system(3). We don't have anything
             reasonable to do with the return status, unfortunately discard it.}
-      system(address_of(str_pool[str_start[str_ptr]]));
+      system(stringcast(address_of(str_pool[str_start[str_ptr]])));
       print("executed");
       end;
     pool_ptr:=str_start[str_ptr];  {erase the string}
@@ -3795,7 +4115,7 @@ var j:small_number; {write stream number}
         prompt_file_name("output file name",".tex");
       write_open[j]:=true;
 @y
-      while not open_out_name_ok(name_of_file+1)
+      while not open_out_name_ok(stringcast(name_of_file+1))
             or not a_open_out(write_file[j]) do
         prompt_file_name("output file name",".tex");
       write_open[j]:=true;
@@ -3825,14 +4145,16 @@ system-dependent section allows easy integration of Web2c and e-\TeX, etc.)
 @<Glob...@>=
 @!edit_name_start: pool_pointer; {where the filename to switch to starts}
 @!edit_name_length,@!edit_line: integer; {what line to start editing at}
-@!ipc_on: integer; {level of IPC action, 0 for none [default]}
+@!ipc_on: c_int_type; {level of IPC action, 0 for none [default]}
 @!is_printable: array[ASCII_code] of boolean; {use \.{\^\^} notation?}
+@!stop_at_space: boolean; {whether |more_name| returns false for space}
 
 @ The |edit_name_start| will be set to point into |str_pool| somewhere after
 its beginning if \TeX\ is supposed to switch to an editor on exit.
 
 @<Set init...@>=
 edit_name_start:=0;
+stop_at_space:=true;
 
 @ These are used when we regenerate the representation of the first 256
 strings.
@@ -4173,4 +4495,56 @@ probably be changed in one of the next ML\TeX{} versions.
 
 
 @* \[54] System-dependent changes.
+@z
+
+@x [54.1379] l.24916 - extra routines
+@* \[55] Index.
+@y
+
+@ @<Declare action procedures for use by |main_control|@>=
+
+procedure insert_src_special;
+var toklist, p, q : pointer;
+begin
+  if (source_filename_stack[in_open] > 0 and is_new_source (source_filename_stack[in_open]
+, line)) then begin
+    toklist := get_avail;
+    p := toklist;
+    info(p) := cs_token_flag+frozen_special;
+    link(p) := get_avail; p := link(p);
+    info(p) := left_brace_token+"{";
+    q := str_toks (make_src_special (source_filename_stack[in_open], line));
+    link(p) := link(temp_head);
+    p := q;
+    link(p) := get_avail; p := link(p);
+    info(p) := right_brace_token+"}";
+    ins_list (toklist);
+    remember_source_info (source_filename_stack[in_open], line);
+  end;
+end;
+
+procedure append_src_special;
+var p, q : pointer;
+begin
+  if (source_filename_stack[in_open] > 0 and is_new_source (source_filename_stack[in_open]
+, line)) then begin
+    new_whatsit (special_node, write_node_size);
+    write_stream(tail) := null;
+    def_ref := get_avail;
+    token_ref_count(def_ref) := null;
+    q := str_toks (make_src_special (source_filename_stack[in_open], line));
+    link(def_ref) := link(temp_head);
+    write_tokens(tail) := def_ref;
+    remember_source_info (source_filename_stack[in_open], line);
+  end;
+end;
+
+@ This function used to be in pdftex, but is useful in tex too.
+
+@p function get_nullstr: str_number;
+begin
+    get_nullstr := "";
+end;
+
+@* \[55] Index.
 @z

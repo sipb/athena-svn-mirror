@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTWWWStr.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTWWWStr.c,v 1.1.1.2 2003-02-25 22:26:36 amb Exp $
 **
 **      Now 13 95	Spwaned from HTString.c
 */
@@ -166,6 +166,92 @@ PUBLIC char * HTNextPair (char ** pstr)
     return start;
 }
 
+/*	Find next Name-value param
+**	--------------------------
+**	This is the same as HTNextPair but doesn't look for ','
+**	Returns	a pointer to the first word or NULL on error
+*/
+PUBLIC char * HTNextParam (char ** pstr)
+{
+    char * p = *pstr;
+    char * start = NULL;
+    if (!pstr || !*pstr) return NULL;
+    while (1) {
+	/* Strip white space and other delimiters */
+	while (*p && *p==';') p++;
+	if (!*p) {
+	    *pstr = p;
+	    return NULL;				   	 /* No field */
+	}
+
+	if (*p == '"') {				     /* quoted field */
+	    start = ++p;
+	    for(;*p && *p!='"'; p++)
+		if (*p == '\\' && *(p+1)) p++;	       /* Skip escaped chars */
+	    break;			    /* kr95-10-9: needs to stop here */
+	} else if (*p == '<') {				     /* quoted field */
+	    start = ++p;
+	    for(;*p && *p!='>'; p++)
+		if (*p == '\\' && *(p+1)) p++;	       /* Skip escaped chars */
+	    break;			    /* kr95-10-9: needs to stop here */
+	} else if (*p == '(') {					  /* Comment */
+	    for(;*p && *p!=')'; p++)
+		if (*p == '\\' && *(p+1)) p++;	       /* Skip escaped chars */
+	    p++;
+	} else {					      /* Spool field */
+	    start = p;
+	    while (*p && *p!=';')
+		p++;
+	    break;						   /* Got it */
+	}
+    }
+    if (*p) *p++ = '\0';
+    *pstr = p;
+    return start;
+}
+
+/*	Find next element in a comma separated string
+**	---------------------------------------------
+**	This is the same as HTNextPair but it does not look for anything
+**	else than ',' as separator
+**	Returns	a pointer to the first word or NULL on error
+*/
+PUBLIC char * HTNextElement (char ** pstr)
+{
+    char * p = *pstr;
+    char * start = NULL;
+    if (!pstr || !*pstr) return NULL;
+
+    /* Strip white space and other delimiters */
+    while (*p && ((isspace((int) *p)) || *p==',')) p++;
+    if (!*p) {
+	*pstr = p;
+	return NULL;					   	 /* No field */
+    }
+    start = p;
+    while (1) {
+	if (*p == '"') {				     /* quoted field */
+	    for(;*p && *p!='"'; p++)
+		if (*p == '\\' && *(p+1)) p++;	       /* Skip escaped chars */
+	    p++;
+	} else if (*p == '<') {				     /* quoted field */
+	    for(;*p && *p!='>'; p++)
+		if (*p == '\\' && *(p+1)) p++;	       /* Skip escaped chars */
+	    p++;
+	} else if (*p == '(') {					  /* Comment */
+	    for(;*p && *p!=')'; p++)
+		if (*p == '\\' && *(p+1)) p++;	       /* Skip escaped chars */
+	    p++;
+	} else {					      /* Spool field */
+	    while (*p && *p!=',') p++;
+	    break;						   /* Got it */
+	}
+    }
+    if (*p) *p++ = '\0';
+    *pstr = p;
+    return start;
+}
+
 /*	Find next "/" delimied segment
 **	------------------------------
 **	This is the same as HTNextField but it includes "/" as a delimiter.
@@ -273,8 +359,7 @@ PUBLIC const char * HTMessageIdStr (HTUserProfile * up)
 #endif /* HAVE_GETPID */
     if (!address) address = tmpnam(NULL);
     if ((!address || !*address) && sectime < 0) {
-	if (CORE_TRACE)
-	    HTTrace("MessageID...  Can't make a unique MessageID\n");
+	HTTRACE(CORE_TRACE, "MessageID...  Can't make a unique MessageID\n");
 	return "";
     }
 #ifdef HAVE_GETPID
@@ -334,12 +419,9 @@ PUBLIC time_t HTParseTime (const char * str, HTUserProfile * up, BOOL expand)
 	s++;				/* or: Thu, 10 Jan 1993 01:29:59 GMT */
 	while (*s && *s==' ') s++;
 	if (strchr(s,'-')) {				     /* First format */
-	    if (CORE_TRACE)
-		HTTrace("Format...... Weekday, 00-Mon-00 00:00:00 GMT\n");
+	    HTTRACE(CORE_TRACE, "Format...... Weekday, 00-Mon-00 00:00:00 GMT\n");
 	    if ((int)strlen(s) < 18) {
-		if (CORE_TRACE)
-		    HTTrace(
-			    "ERROR....... Not a valid time format \"%s\"\n",s);
+		HTTRACE(CORE_TRACE, "ERROR....... Not a valid time format \"%s\"\n" _ s);
 		return 0;
 	    }
 	    tm.tm_mday = strtol(s, &s, 10);
@@ -350,11 +432,9 @@ PUBLIC time_t HTParseTime (const char * str, HTUserProfile * up, BOOL expand)
 	    tm.tm_sec = strtol(++s, &s, 10);
 
 	} else {					    /* Second format */
-	    if (CORE_TRACE)
-		HTTrace("Format...... Wkd, 00 Mon 0000 00:00:00 GMT\n");
+	    HTTRACE(CORE_TRACE, "Format...... Wkd, 00 Mon 0000 00:00:00 GMT\n");
 	    if ((int)strlen(s) < 20) {
-		if (CORE_TRACE)
-		    HTTrace("ERROR....... Not a valid time format \"%s\"\n",s);
+		HTTRACE(CORE_TRACE, "ERROR....... Not a valid time format \"%s\"\n" _ s);
 		return 0;
 	    }
 	    tm.tm_mday = strtol(s, &s, 10);
@@ -367,12 +447,11 @@ PUBLIC time_t HTParseTime (const char * str, HTUserProfile * up, BOOL expand)
     } else if (isdigit((int) *str)) {
 
 	if (strchr(str, 'T')) {		        /* ISO (limited format) date string */
-	    if (CORE_TRACE) HTTrace("Format...... YYYY.MM.DDThh:mmStzWkd\n");
+	    HTTRACE(CORE_TRACE, "Format...... YYYY.MM.DDThh:mmStzWkd\n");
 	    s = (char *) str;
 	    while (*s && *s==' ') s++;
 	    if ((int)strlen(s) < 21) {
-		if (CORE_TRACE)
-		    HTTrace("ERROR....... Not a valid time format `%s\'\n", s);
+		HTTRACE(CORE_TRACE, "ERROR....... Not a valid time format `%s\'\n" _ s);
 		return 0;
 	    }
 	    tm.tm_year = strtol(s, &s, 10) - 1900;
@@ -384,29 +463,37 @@ PUBLIC time_t HTParseTime (const char * str, HTUserProfile * up, BOOL expand)
 
 	} else {					    /* delta seconds */
 	    t = expand ? time(NULL) + atol(str) : atol(str);
+
+#ifdef HTDEBUG
 	    if (CORE_TRACE) {
 		if (expand) {
-#ifdef HT_REENTRANT
+#if defined (HAVE_CTIME_R_2)
 		    char buffer[CTIME_MAX];
-		    HTTrace("Time string. Delta-time %s parsed to %ld seconds, or in local time: %s", str, (long) t, (char *) ctime_r(&t, buffer, CTIME_MAX));
+		    HTTRACE(CORE_TRACE, "Time string. Delta-time %s parsed to %ld seconds, or in local time: %s" _
+			    str _ (long) t _ (char *) ctime_r(&t, buffer));
+#elif defined(HAVE_CTIME_R_3)
+		    char buffer[CTIME_MAX];
+		    HTTRACE(CORE_TRACE, "Time string. Delta-time %s parsed to %ld seconds, or in local time: %s" _
+			    str _ (long) t _ (char *) ctime_r(&t, buffer, CTIME_MAX));
 #else
-		    HTTrace("Time string. Delta-time %s parsed to %ld seconds, or in local time: %s", str, (long) t, ctime(&t));
-#endif
+		    HTTRACE(CORE_TRACE, "Time string. Delta-time %s parsed to %ld seconds, or in local time: %s" _
+			    str _ (long) t _ ctime(&t));
+#endif /* HT_REENTRANT */
 		} else {
-		    HTTrace("Time string. Delta-time %s parsed to %ld seconds\n", str, (long) t);
+		    HTTRACE(CORE_TRACE, "Time string. Delta-time %s parsed to %ld seconds\n" _ str _ (long) t);
 		}
 	    }
+#endif /* HT_DEBUG */
 	    return t;
 	}
 
     } else {	      /* Try the other format:  Wed Jun  9 01:29:59 1993 GMT */
-	if (CORE_TRACE) HTTrace("Format...... Wkd Mon 00 00:00:00 0000 GMT\n");
+	HTTRACE(CORE_TRACE, "Format...... Wkd Mon 00 00:00:00 0000 GMT\n");
 	s = (char *) str;
 	while (*s && *s==' ') s++;
-	if (CORE_TRACE) HTTrace("Trying...... The Wrong time format: %s\n", s);
+	HTTRACE(CORE_TRACE, "Trying...... The Wrong time format: %s\n" _ s);
 	if ((int)strlen(s) < 24) {
-	    if (CORE_TRACE)
-		HTTrace("ERROR....... Not a valid time format \"%s\"\n",s);
+	    HTTRACE(CORE_TRACE, "ERROR....... Not a valid time format \"%s\"\n" _ s);
 	    return 0;
 	}
 	tm.tm_mon = make_month(s, &s);
@@ -422,16 +509,20 @@ PUBLIC time_t HTParseTime (const char * str, HTUserProfile * up, BOOL expand)
 	tm.tm_mday < 1  ||  tm.tm_mday > 31  ||
 	tm.tm_mon  < 0  ||  tm.tm_mon  > 11  ||
 	tm.tm_year <70  ||  tm.tm_year >120) {
-	if (CORE_TRACE) HTTrace(
-	"ERROR....... Parsed illegal time: %02d.%02d.%02d %02d:%02d:%02d\n",
-	       tm.tm_mday, tm.tm_mon+1, tm.tm_year,
-	       tm.tm_hour, tm.tm_min, tm.tm_sec);
+	HTTRACE(CORE_TRACE, "ERROR....... Parsed illegal time: %02d.%02d.%02d %02d:%02d:%02d\n" _ 
+	       tm.tm_mday _ tm.tm_mon+1 _ tm.tm_year _ 
+	       tm.tm_hour _ tm.tm_min _ tm.tm_sec);
 	return 0;
     }
 
+#if 0
 #if defined(HAVE_TIMEZONE) && defined(HAVE_ALTZONE)
     tm.tm_isdst = daylight;		       /* Already taken into account */
+    HTTRACE(CORE_TRACE, "Time string. Daylight is %s\n" _
+	    daylight>0 ? "on" : daylight==0 ? "off" : "unknown");
+#endif
 #else
+    /* Let mktime decide whether we have DST or not */
     tm.tm_isdst = -1;
 #endif
 
@@ -446,10 +537,8 @@ PUBLIC time_t HTParseTime (const char * str, HTUserProfile * up, BOOL expand)
 #endif /* HAVE_TIMEGM */
 #endif /* HAVE_MKTIME */
 
-    if (CORE_TRACE)
-	HTTrace(
-		"Time string. %s parsed to %ld seconds, or in local time: %s",
-		str, (long) t, ctime(&t));
+    HTTRACE(CORE_TRACE, "Time string. %s parsed to %ld calendar time or `%s' in local time\n" _ 
+		str _ (long) t _ ctime(&t));
     return t;
 }
 
@@ -644,8 +733,7 @@ PUBLIC char * HTWWWToLocal (const char * url, const char * base,
 	if ((*access && strcmp(access, "file") && strcmp(access, "cache")) ||
 	     (*host && strcasecomp(host, "localhost") &&
 	      myhost && strcmp(host, myhost))) {
-	    if (PROT_TRACE)
-		HTTrace("LocalName... Not on local file system\n");
+	    HTTRACE(CORE_TRACE, "LocalName... Not on local file system\n");
 	    HT_FREE(access);
 	    HT_FREE(host);
 	    HT_FREE(path);
@@ -687,8 +775,7 @@ PUBLIC char * HTWWWToLocal (const char * url, const char * base,
 #endif
 	    
 	    HTUnEscape(path);		  /* Take out the escaped characters */
-	    if (PROT_TRACE)
-		HTTrace("Node........ `%s' means path `%s'\n",url,path);
+	    HTTRACE(CORE_TRACE, "Node........ `%s' means path `%s'\n" _ url _ path);
 	    HT_FREE(access);
 	    HT_FREE(host);
 	    return path;
@@ -704,15 +791,16 @@ PUBLIC char * HTWWWToLocal (const char * url, const char * base,
 **		OK:	local file (that must be freed by caller)
 **		Error:	NULL
 */
-PUBLIC char * HTLocalToWWW (const char * local)
+PUBLIC char * HTLocalToWWW (const char * local, const char * access)
 {
     char * escaped = NULL;
+    const char * scheme = (access && *access) ? access : "file:"; 
     if (local && *local) {
 #ifdef VMS 
         char * unescaped = NULL;
         if ((unescaped = (char *) HT_MALLOC(strlen(local) + 10)) == NULL)
             HT_OUTOFMEM("HTLocalToWWW");
-        strcpy(unescaped, "file:");	     /* We get an absolute file name */
+        strcpy(unescaped, scheme);	     /* We get an absolute file name */
 
 	/* convert directory name to Unix-style syntax */
 	{
@@ -740,7 +828,7 @@ PUBLIC char * HTLocalToWWW (const char * local)
         char * unescaped = NULL;
         if ((unescaped = (char *) HT_MALLOC(strlen(local) + 10)) == NULL)
             HT_OUTOFMEM("HTLocalToWWW");
-        strcpy(unescaped, "file:");	     /* We get an absolute file name */
+        strcpy(unescaped, scheme);	     /* We get an absolute file name */
         if (strchr(local, ':')) strcat(unescaped, "/");
         {
             const char *p = local;
@@ -759,7 +847,7 @@ PUBLIC char * HTLocalToWWW (const char * local)
 
 #else  /* Unix */
         char * escaped_path = HTEscape(local, URL_PATH);
-	escaped = StrAllocMCopy(&escaped, "file:", escaped_path, NULL);
+	escaped = StrAllocMCopy(&escaped, scheme, escaped_path, NULL);
         HT_FREE(escaped_path);
 
 #endif /* not WIN32 */

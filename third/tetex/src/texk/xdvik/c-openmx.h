@@ -20,7 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifndef C_OPENMX_H
 #define C_OPENMX_H
 
-#include <kpathsea/c-limits.h>
+#include "kpathsea/c-limits.h"
 
 #ifndef OPEN_MAX
 #ifdef _SC_OPEN_MAX

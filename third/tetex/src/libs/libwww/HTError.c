@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTError.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTError.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	This is the implementaion of an error message reporting system that 
 **	reports errors occured either in a stream module (structured streams
@@ -68,13 +68,11 @@ PUBLIC BOOL HTError_add (HTList * 	list,
 	newError->length = length;
     }
     newError->where = where;
-    if (CORE_TRACE) {
-	HTTrace("Error....... Add %3d\tSeverity: %d\tParameter: `%s\'\tWhere: `%s\'\n",
-		 element,
-		newError->severity,
-		newError->par ? (char *) newError->par : "Unspecified",
-		newError->where ? newError->where : "Unspecified");
-    }
+    HTTRACE(CORE_TRACE, "Error....... Add %3d\tSeverity: %d\tParameter: `%s\'\tWhere: `%s\'\n" _
+	    element _
+	    newError->severity _
+	    newError->par ? (char *) newError->par : "Unspecified" _
+	    newError->where ? newError->where : "Unspecified");
     return HTList_addObject(list, (void *) newError);
 }
 
@@ -133,7 +131,7 @@ PUBLIC BOOL HTError_deleteLast (HTList * list)
     if (list) {
 	HTError * old = (HTError *) HTList_removeLastObject(list);
 	if (old) {
-	    if (CORE_TRACE) HTTrace("Error....... Delete %p\n", old);
+	    HTTRACE(CORE_TRACE, "Error....... Delete %p\n" _ old);
 	    HT_FREE(old->par);
 	    HT_FREE(old);
 	    return YES;
@@ -152,7 +150,7 @@ PUBLIC BOOL HTError_ignoreLast (HTList * list)
     if (list) {
 	HTError * last = (HTError *) HTList_lastObject(list);
 	if (last) {
-	    if (CORE_TRACE) HTTrace("Error....... Ignore %p\n", last);
+	    HTTRACE(CORE_TRACE, "Error....... Ignore %p\n" _ last);
 	    last->ignore = YES;
 	    return YES;
 	}
@@ -214,7 +212,7 @@ PUBLIC BOOL HTError_hasSeverity (HTList * list, HTSeverity severity)
 	HTError * pres;
 	while ((pres = (HTError *) HTList_nextObject(cur))) {
 	    if (pres->severity < severity) {
-		if (CORE_TRACE) HTTrace("Severity.... Found a severe error\n");
+		HTTRACE(CORE_TRACE, "Severity.... Found a severe error\n");
 		return YES;
 	    }
 	}

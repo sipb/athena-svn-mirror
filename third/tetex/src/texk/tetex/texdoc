@@ -1,5 +1,6 @@
 #!/bin/sh
-# Thomas Esser, David Aspinall, Simon Wilkinson, 1998, 1999. Public domain.
+# Thomas Esser, David Aspinall, Simon Wilkinson, 1998, 1999, 2002.
+# Public domain.
 #
 # Simple script to attempt to find documentation for tex files.
 # Uses kpsewhich to find a .dvi, .pdf or .ps file along the
@@ -11,7 +12,7 @@
 # Simon Wilkinson <sxw@dcs.ed.ac.uk>
 #
 # Changes for web2c-7.2 resp. teTeX-0.9 and portability fixes by
-# Thomas Esser <te@informatik.uni-hannover.de>, Jun 14 1998
+# Thomas Esser <te@dbs.uni-hannover.de>, Jun 14 1998
 
 test -f /bin/sh5 && test -z "$RUNNING_SH5" \
   && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
@@ -28,8 +29,9 @@ unset RUNNING_BSH
 : ${TEXDOCVIEW_dvi='xdvi %s &'}
 : ${TEXDOCVIEW_pdf='acroread %s &'}
 : ${TEXDOCVIEW_ps='ghostview %s &'}
-: ${TEXDOCVIEW_html='netscape %s &'}
+: ${TEXDOCVIEW_html='netscape -remote openURL'"'(%s)'"' 2>/dev/null || netscape %s &'}
 : ${TEXDOCVIEW_txt="${PAGER-more} %s"}
+: ${TEXDOCVIEW_="${PAGER-more} %s"} # no extension, default to pager
 
 mode=viewer
 help='Usage: texdoc [OPTION]... [NAME]...
@@ -37,11 +39,14 @@ help='Usage: texdoc [OPTION]... [NAME]...
 
   --help        show this help
   -v		verbose mode: show viewer command
-  -l            just list all matching files. Do not start a viewer.'
+  -l            just list all matching files. Do not start a viewer.
+  -s            search the disk. remaining arguments will be passed
+                as egrep patterns to filter the find output.'
 
 verbosemode=false
 while 
   case $1 in
+     -s)     mode=search; shift; break;;
      -l)     mode=list;;
      -v)     verbosemode=true;;
      *-help)
@@ -52,8 +57,28 @@ while
   esac
 do shift; done
 
+case $# in
+  0)
+    echo "$help" >&2
+    exit 1
+    ;;
+esac
+
 for name
 do
+  case $mode in
+    search)
+      find `kpsewhich --expand-path='$TEXMF/doc' | tr : ' '` -type f -print |
+        egrep $name
+      continue
+      ;;
+  esac
+
+  case $name in
+    texdoc)
+      man texdoc; continue;;
+  esac
+
   found=false
   for ext in "" .dvi .pdf .ps .txt .html; do
 
@@ -64,7 +89,7 @@ do
     if test $mode = list; then
       echo $filename
     else
-      ext=`echo $filename | sed 's%.*\.%%'`
+      ext=`echo $filename | sed -n 's%.*\.\([^/]*\)$%\1%p'`
       viewer=\$"TEXDOCVIEW_$ext"
       viewer=`eval echo $viewer | sed -e "s|%s|$filename|g"`
       if test -z "$viewer"

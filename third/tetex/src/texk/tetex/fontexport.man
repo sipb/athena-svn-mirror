@@ -17,4 +17,4 @@ So you can export your teTeX fonts for someone else to use them with his or her 
 fontimport(1).
 
 .SH AUTHOR
-Thomas Esser (te@informatik.uni\-hannover.de)
+Thomas Esser (te@dbs.uni\-hannover.de)

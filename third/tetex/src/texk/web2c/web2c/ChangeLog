@@ -1,3 +1,92 @@
+2002-11-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* splitup.c: Include kpathsea/getopt.h for the option parsing.
+
+2002-11-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.defines: Add kpseresetprogramname.
+
+2002-10-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.defines: Add define for getjobname.
+
+	* coerce.h: Correct declaration of makefullnamestring, add
+	declaration for getjobname.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* web2c.y (PROGRAM_HEAD): Rule was missing terminating ';'.
+
+	* Makefile.in: Disable parallel makes.  TeXlive merge.
+
+2002-04-01  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* convert: Add options to splitup to retain the current behaviour.
+
+	* splitup.c: Make the number of lines at which we split and
+	whether a *ini.c file is generated controlled by options.
+
+2002-03-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* splitup.c: Generate a temporary filename from the name of the
+	program we're splitting, as we do for all other output files.
+	This allows parallel makes.  Reported by Martin Schröder
+	<ms@artcom-gmbh.de>.
+
+2001-11-18  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* web2c.y: Changes to keep C++ compilers from choking.
+
+	* web2c.l: Changes to keep C++ compilers from choking.
+
+	* web2c.h: Changes to keep C++ compilers from choking.
+
+	* main.c: Changes to keep C++ compilers from choking.
+
+	* common.defines: Add support for filename recorder.
+
+2001-11-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.defines (stringcast): Added since it was added to
+	cpascal.h.
+
+	* common.defines (xmallocarray): Added.
+
+	* texmf.defines (xmallocarray): Removed.
+
+2001-10-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.defines: Add defines for source-specials supporting
+	functions.
+
+	* coerce.h [TeX]: Prototypes for some source-specials supporting
+	functions in texmfmp.c.  These functions should probably be moved
+	into tex.ch, though.
+
+2001-10-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* fixwrites.c [OEM]: Append "Oem" to emitted putc, Fputs, fprintf.
+
+	* common.defines: Add kpsesetprogramname.
+
+2001-10-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.defines (kpsewebformat, usagehelp): Defines added.
+
+2001-09-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.defines: Remove vfbopenin, define in pdftex.defines.
+
+2000-08-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* fixwrites.c (main): Prevent cp from pointing outside buf.
+	Found by Greg McGary  <greg@mcgary.org>.
+	
+2000-05-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* coerce.h [MP]: MP uses poolASCIIcode where everything else uses
+	packedASCIIcode.  Sigh.  After "C.M. Connelly" <c@eskimo.com>.
+
 1999-02-14  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* texmf.defines: Add translatefilename to the variables.

@@ -19,9 +19,9 @@
 #include <stdarg.h>	/* va_start(), va_arg(), va_end() */
 #include "string.h"	/* strcat(), strchr(), strcmp(), strcpy(), strlen(),
 			   strncmp(), strncpy(), strstr() */
-#include "basics.h"	/* fatal(), pfopen, pstat */
+#include "basics.h"	/* fatal() */
 #include "strexpr.h"	/* strexpr() */
-#include "filenames.h"	/* equal(), pstat, pfopen, extension() */
+#include "filenames.h"	/* equal(), extension() */
 #include "texfiles.h"	/* four(), one(), two() */
 
 #ifdef UNIX
@@ -138,7 +138,7 @@ static char *rsearch(char *path, char *file)
    /* Check if we have found <file> */
    if (tail == NULL || *tail == '\0') {
       sprintf(fn, "%s%c%s", head, DIRSEP, file);
-      if (pstat(fn, &status) == 0) {
+      if (stat(fn, &status) == 0) {
 	 res = malloc(strlen(fn)+1);
 	 if (res == NULL) fatal("Out of memory\n");
 	 strcpy(res, fn);
@@ -159,7 +159,7 @@ static char *rsearch(char *path, char *file)
 
       /* Check if we have a directory */
       sprintf(fn, "%s%c%s", head, DIRSEP, de->d_name);
-      (void) pstat(fn, &status);
+      (void) stat(fn, &status);
       if (!S_ISDIR(status.st_mode)) {
          /* if we are looking for a file with an extension and we find
           * files with the same or a different extension we may consider
@@ -227,7 +227,7 @@ char *search_file(char *path, char *file, int terminate) {
    struct stat status;
 
    if (path == NULL || *path == '\0' || absname(file)) {
-      if (pstat(file, &status) == 0) return file;
+      if (stat(file, &status) == 0) return file;
       if (terminate) fatal("File <%s> not found\n", file);
       return NULL;
    }
@@ -265,32 +265,20 @@ static void replace(char *cs, char *pattern, void *value) {
       switch (*(pattern+1)) {
       case 'b':
       case 'd':
-#ifdef CHARSPRINTF
-         len = strlen(sprintf(q, "%d", *((int *)value)));
-#else
-         len = sprintf(q, "%d", *((int *)value));
-#endif
+         sprintf(q, "%d", *((int *)value));
+         len = strlen(q);
          break;
       case 'F':
-#ifdef CHARSPRINTF
-         len = strlen(sprintf(q, "%-8s", (char *) value));
-#else
-         len = sprintf(q, "%-8s", (char *) value);
-#endif
+         sprintf(q, "%-8s", (char *) value);
+         len = strlen (q);
          break;
       case 'f':
-#ifdef CHARSPRINTF
-         len = strlen(sprintf(q, "%s", (char *) value));
-#else
-         len = sprintf(q, "%s", (char *) value);
-#endif
+         sprintf(q, "%s", (char *) value);
+         len = strlen (q);
          break;
       default:
-#ifdef CHARSPRINTF
-         len = strlen(sprintf(q, "%s", (char *) value));
-#else
-         len = sprintf(q, "%s", (char *) value);
-#endif
+         sprintf(q, "%s", (char *) value);
+         len = strlen (q);
          break;
       }
       strcpy(q+len, temp);
@@ -447,7 +435,7 @@ char *search_pkfile(char *path, char *texfont, int dpi) {
                /* try filename after replacing placeholders */
                substitute(pe, "%b%m%f%d%p",
 		  _bdpi, _mode, texfont, dpi+del, "pk");
-	       if (pstat(pe, &status) == 0) {
+	       if (stat(pe, &status) == 0) {
                   pkname = malloc(strlen(pe)+1);
                   if (pkname == NULL) fatal("Out of memory\n");
                   strcpy(pkname, pe);
@@ -459,7 +447,7 @@ char *search_pkfile(char *path, char *texfont, int dpi) {
          }
          else {
 	    sprintf(ppe, "%c%s.%dpk", DIRSEP, texfont, dpi+del);
-            if (pstat(pe, &status) == 0) {
+            if (stat(pe, &status) == 0) {
                pkname = malloc(strlen(pe)+1);
                if (pkname == NULL) fatal("Out of memory\n");
                strcpy(pkname, pe);
@@ -490,7 +478,7 @@ char *search_flifile(char *fliname, int (*font)(char *, int)) {
 
    FILE *FLI;
 
-   FLI = pfopen(fliname, RB);
+   FLI = fopen(fliname, RB);
    if (FLI == NULL) return NULL;
 
    for (i=0; i<4; i++) {

@@ -230,8 +230,7 @@ PRIVATE BOOL GopherMenuLine (HTStream *me, char *line)
 {
     HTStructured *target = me->target;
     HTGopherType gtype = (HTGopherType) *line++;
-    if (PROT_TRACE)
-	HTTrace("HTGopher.... Menu line: `%s\'\n", line);
+    HTTRACE(PROT_TRACE, "HTGopher.... Menu line: `%s\'\n" _ line);
     if (gtype == GT_INFO) {
 	char *stop = strchr(line, '\t');
 	if (stop) *stop = '\0';
@@ -325,8 +324,7 @@ PRIVATE BOOL GopherMenuLine (HTStream *me, char *line)
 	    HT_FREE(escaped);
 	    PUTC('\n');
 	} else {					   /* If parse error */
-	    if (PROT_TRACE)
-		HTTrace("HTGopher.... Bad menu item, `%s\'\n", line);
+	    HTTRACE(PROT_TRACE, "HTGopher.... Bad menu item, `%s\'\n" _ line);
 	}
     }
     return YES;
@@ -342,13 +340,13 @@ PRIVATE BOOL GopherCSOLine (HTStream *me, char *line)
     HTStructured *target = me->target;
     if (*line == '1') {					 /* Information line */
 	char *start = strchr(line, ':');
-	start = start ? ++start : line;
+	if (start) start++; else start=line;
 	PUTS(start);
     } else if (*line == '2') {				/* Transfer complete */
 	return NO;
     } else if (*line == '5') {					    /* Error */
 	char *start = strchr(line, ':');
-	start = start ? ++start : line;
+	if (start) start++; else start=line;
 	PUTS(start);
     } else if (*line == '-') {					     /* data */
 	/*  data lines look like '-200:code:field:value'
@@ -401,7 +399,7 @@ PRIVATE BOOL GopherCSOLine (HTStream *me, char *line)
 	}
     } else {						     /* Unknown line */
 	char *start = strchr(line, ':');
-	start = start ? ++start : line;
+	if (start) start++; else start=line;
 	PUTS(start);
     }
     return YES;
@@ -442,8 +440,7 @@ PRIVATE int GopherMenu_put_block (HTStream * me, const char * b, int l)
 	} else {
 	    *(me->buffer+me->buflen++) = *b;
 	    if (me->buflen >= MAX_GOPHER_LINE) {
-		if (PROT_TRACE)
-		    HTTrace("Gopher...... Line too long - ignored\n");
+		HTTRACE(PROT_TRACE, "Gopher...... Line too long - ignored\n");
 		me->buflen = 0;
 		me->junk = YES;
 	    }
@@ -482,8 +479,7 @@ PRIVATE int GopherMenu_abort (HTStream * me, HTList * e)
 {
     (*me->target->isa->abort)(me->target, e);
     HT_FREE(me);
-    if (PROT_TRACE)
-	HTTrace("Gopher...... ABORTING...\n");
+    HTTRACE(PROT_TRACE, "Gopher...... ABORTING...\n");
     return HT_ERROR;
 }
 
@@ -646,7 +642,7 @@ PUBLIC int HTLoadGopher (SOCKET soc, HTRequest * request)
     ** This is actually state GOPHER_BEGIN, but it can't be in the state
     ** machine as we need the structure first.
     */
-    if (PROT_TRACE) HTTrace("Gopher...... Looking for `%s\'\n",url);
+    HTTRACE(PROT_TRACE, "Gopher...... Looking for `%s\'\n" _ url);
     if ((gopher = (gopher_info *) HT_CALLOC(1, sizeof(gopher_info))) == NULL)
 	HT_OUTOFMEM("HTLoadGopher");
     gopher->type = GT_MENU;
@@ -741,7 +737,7 @@ PRIVATE int GopherEvent (SOCKET soc, void * pVoid, HTEventType type)
 	    break;
 
 	  case GOPHER_NEED_CONNECTION:
-	    status = HTHost_connect(host, net, url, GOPHER_PORT);
+	    status = HTHost_connect(host, net, url);
 	    host = HTNet_host(net);
 	    if (status == HT_OK) {
 		/*
@@ -795,7 +791,7 @@ PRIVATE int GopherEvent (SOCKET soc, void * pVoid, HTEventType type)
 	    break;
 
 	  case GOPHER_NEED_REQUEST:
-	    if (PROT_TRACE) HTTrace("Gopher Tx... `%s\'", gopher->cmd);
+	    HTTRACE(PROT_TRACE, "Gopher Tx... `%s\'" _ gopher->cmd);
 	    {	
 		HTStream * input = HTRequest_inputStream(request);
 		status = (*input->isa->put_block)

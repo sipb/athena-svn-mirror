@@ -7,6 +7,7 @@ bindir=$1
 web2c=$2
 
 test -f "$web2c"/texmf.cnf || exit 0
+grep 'original texmf.cnf --' "$web2c"/texmf.cnf >/dev/null 2>&1 || exit 0
 
 bindirp=`echo $bindir | sed 's%/[^/][^/]*$%%'`
 bindirpp=`echo $bindirp | sed 's%/[^/][^/]*$%%'`

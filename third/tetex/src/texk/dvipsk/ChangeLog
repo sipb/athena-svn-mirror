@@ -1,3 +1,15 @@
+WARNING:  THIS CHANGELOG IS WAY OUT OF DATE.
+
+2001-06-02  Sebastian Rahtz  <sebastian.rahtz@computing-services.oxford.ac.uk>
+
+	* resident.c: added option to config file ('z') to have the same
+	effect as -R (secure mode)
+
+Mon Jan 10 21:39:20 CET 2000
+	* from pdftex distribution: improved partial font downloading
+	ported back
+	* .notdef related fixes for afm2tfm
+
 Sun Apr 11 09:03:29 CEST 1999
 	* output.c: (from Tom Rokicki)
 	Faster inclusion of DOS EPSF files. Use byte counter to avoid

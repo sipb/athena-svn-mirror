@@ -12,7 +12,15 @@ ac_help=
 ac_default_prefix=/usr/local
 # Any additions from configure.in:
 ac_help="$ac_help
+  --without-bibtex8          do not build the bibtex8 package"
+ac_help="$ac_help
+  --without-cjkutils         do not build the cjkutils package"
+ac_help="$ac_help
+  --without-detex            do not build the detex package"
+ac_help="$ac_help
   --without-dtl              do not build the dtl package"
+ac_help="$ac_help
+  --without-dvi2tty          do not build the dvi2tty package"
 ac_help="$ac_help
   --without-dvidvi           do not build the dvidvi package"
 ac_help="$ac_help
@@ -44,6 +52,8 @@ ac_help="$ac_help
 ac_help="$ac_help
   --without-texlive          do not build the texlive package"
 ac_help="$ac_help
+  --without-ttf2pk           do not build the ttf2pk package"
+ac_help="$ac_help
   --without-tth              do not build the tth package"
 ac_help="$ac_help
   --without-xdvik            do not build the xdvik package"
@@ -61,6 +71,8 @@ ac_help="$ac_help
 ac_help="$ac_help
   --without-mkofm-default      do not run mkofm if OFM file missing"
 ac_help="$ac_help
+  --with-mktexfmt-default      run mktexfmt if format file missing"
+ac_help="$ac_help
   --with-mktextex-default      run mktextex if TeX source missing"
 ac_help="$ac_help
   --enable-multiplatform     put executables in bin/PLATFORM"
@@ -70,6 +82,8 @@ ac_help="$ac_help
   --without-pdftex           don't compile and install pdfTeX"
 ac_help="$ac_help
   --without-pdfetex          don't compile and install pdfeTeX"
+ac_help="$ac_help
+  --with-cxx-runtime-hack    link C++ runtime statically"
 ac_help="$ac_help
   --with-etex=ETEX           ETEX=no  don't compile and install e-TeX
                              ETEX=tex install e-TeX as tex"
@@ -82,7 +96,7 @@ ac_help="$ac_help
 ac_help="$ac_help
   --disable-dump-share    make fmt/base/mem files architecture-dependent"
 ac_help="$ac_help
-  --with-mfw=MFW             MFW=yes  window-capable METAFONT is mfw
+  --with-mfw=MFW             MFW=yes  window-capable METAFONT is mfw (default)
                              MFW=mf   window-capable METAFONT is mf
                              MFW=no   no window-capable METAFONT"
 ac_help="$ac_help
@@ -113,9 +127,13 @@ ac_help="$ac_help
 ac_help="$ac_help
   --disable-buttons       disable buttons on the side of the window"
 ac_help="$ac_help
+  --disable-statusline    disable statusline at bottom of window"
+ac_help="$ac_help
+  --disable-t1lib         don't use t1lib (incompatible with K&R C), disables t1 fonts"
+ac_help="$ac_help
   --enable-gf             enable gf format pixel files (in addition to pk)"
 ac_help="$ac_help
-  --enable-a4             set default paper size to A4 and default unit to cm"
+  --disable-a4            set default paper size to letter and default unit to inch"
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -630,7 +648,7 @@ fi
 
 
 echo $ac_n "checking whether ${MAKE-make} sets \${MAKE}""... $ac_c" 1>&6
-echo "configure:634: checking whether ${MAKE-make} sets \${MAKE}" >&5
+echo "configure:652: checking whether ${MAKE-make} sets \${MAKE}" >&5
 set dummy ${MAKE-make}; ac_make=`echo "$2" | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_prog_make_${ac_make}_set'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -660,7 +678,7 @@ fi
 # Extract the first word of "gcc", so it can be a program name with args.
 set dummy gcc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:664: checking for $ac_word" >&5
+echo "configure:682: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -691,7 +709,7 @@ if test -z "$CC"; then
   # Extract the first word of "cc", so it can be a program name with args.
 set dummy cc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:695: checking for $ac_word" >&5
+echo "configure:713: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -743,7 +761,7 @@ fi
       # Extract the first word of "cl", so it can be a program name with args.
 set dummy cl; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:747: checking for $ac_word" >&5
+echo "configure:765: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -776,7 +794,7 @@ fi
 fi
 
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
-echo "configure:780: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
+echo "configure:798: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -787,12 +805,12 @@ cross_compiling=$ac_cv_prog_cc_cross
 
 cat > conftest.$ac_ext << EOF
 
-#line 791 "configure"
+#line 809 "configure"
 #include "confdefs.h"
 
 main(){return(0);}
 EOF
-if { (eval echo configure:796: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:814: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   ac_cv_prog_cc_works=yes
   # If we can't run a trivial program, we are probably using a cross compiler.
   if (./conftest; exit) 2>/dev/null; then
@@ -818,12 +836,12 @@ if test $ac_cv_prog_cc_works = no; then
   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
 fi
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
-echo "configure:822: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+echo "configure:840: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
 echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
 cross_compiling=$ac_cv_prog_cc_cross
 
 echo $ac_n "checking whether we are using GNU C""... $ac_c" 1>&6
-echo "configure:827: checking whether we are using GNU C" >&5
+echo "configure:845: checking whether we are using GNU C" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_gcc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -832,7 +850,7 @@ else
   yes;
 #endif
 EOF
-if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:836: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
+if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:854: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
   ac_cv_prog_gcc=yes
 else
   ac_cv_prog_gcc=no
@@ -851,7 +869,7 @@ ac_test_CFLAGS="${CFLAGS+set}"
 ac_save_CFLAGS="$CFLAGS"
 CFLAGS=
 echo $ac_n "checking whether ${CC-cc} accepts -g""... $ac_c" 1>&6
-echo "configure:855: checking whether ${CC-cc} accepts -g" >&5
+echo "configure:873: checking whether ${CC-cc} accepts -g" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_cc_g'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -883,7 +901,7 @@ else
 fi
 
 echo $ac_n "checking for POSIXized ISC""... $ac_c" 1>&6
-echo "configure:887: checking for POSIXized ISC" >&5
+echo "configure:905: checking for POSIXized ISC" >&5
 if test -d /etc/conf/kconfig.d &&
   grep _POSIX_VERSION /usr/include/sys/unistd.h >/dev/null 2>&1
 then
@@ -904,7 +922,7 @@ else
 fi
 
 echo $ac_n "checking whether ln -s works""... $ac_c" 1>&6
-echo "configure:908: checking whether ln -s works" >&5
+echo "configure:926: checking whether ln -s works" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_LN_S'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -932,7 +950,7 @@ echo $ac_n "checking for prefix by $ac_c" 1>&6
 # Extract the first word of "tex", so it can be a program name with args.
 set dummy tex; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:936: checking for $ac_word" >&5
+echo "configure:954: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_TEX'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1008,7 +1026,7 @@ ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
 # SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
 # ./install, which can be erroneously created by make from ./install.sh.
 echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
-echo "configure:1012: checking for a BSD compatible install" >&5
+echo "configure:1030: checking for a BSD compatible install" >&5
 if test -z "$INSTALL"; then
 if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1065,9 +1083,33 @@ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
 
 
+# Check whether --with-bibtex8 or --without-bibtex8 was given.
+if test "${with_bibtex8+set}" = set; then
+  withval="$with_bibtex8"
+  :
+fi
+
+# Check whether --with-cjkutils or --without-cjkutils was given.
+if test "${with_cjkutils+set}" = set; then
+  withval="$with_cjkutils"
+  :
+fi
+
+# Check whether --with-detex or --without-detex was given.
+if test "${with_detex+set}" = set; then
+  withval="$with_detex"
+  :
+fi
+
 # Check whether --with-dtl or --without-dtl was given.
 if test "${with_dtl+set}" = set; then
   withval="$with_dtl"
+  :
+fi
+
+# Check whether --with-dvi2tty or --without-dvi2tty was given.
+if test "${with_dvi2tty+set}" = set; then
+  withval="$with_dvi2tty"
   :
 fi
 
@@ -1161,6 +1203,12 @@ if test "${with_texlive+set}" = set; then
   :
 fi
 
+# Check whether --with-ttf2pk or --without-ttf2pk was given.
+if test "${with_ttf2pk+set}" = set; then
+  withval="$with_ttf2pk"
+  :
+fi
+
 # Check whether --with-tth or --without-tth was given.
 if test "${with_tth+set}" = set; then
   withval="$with_tth"
@@ -1176,7 +1224,7 @@ fi
 
 
 echo $ac_n "checking whether to enable maintainer-specific portions of Makefiles""... $ac_c" 1>&6
-echo "configure:1180: checking whether to enable maintainer-specific portions of Makefiles" >&5
+echo "configure:1228: checking whether to enable maintainer-specific portions of Makefiles" >&5
     # Check whether --enable-maintainer-mode or --disable-maintainer-mode was given.
 if test "${enable_maintainer_mode+set}" = set; then
   enableval="$enable_maintainer_mode"
@@ -1195,7 +1243,7 @@ fi
 
 
 echo $ac_n "checking for loader (symbol LD)""... $ac_c" 1>&6
-echo "configure:1199: checking for loader (symbol LD)" >&5
+echo "configure:1247: checking for loader (symbol LD)" >&5
 if eval "test \"`echo '$''{'cf_cv_subst_LD'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1209,7 +1257,7 @@ echo "$ac_t""$LD" 1>&6
 
 
 echo $ac_n "checking for archiver (symbol AR)""... $ac_c" 1>&6
-echo "configure:1213: checking for archiver (symbol AR)" >&5
+echo "configure:1261: checking for archiver (symbol AR)" >&5
 if eval "test \"`echo '$''{'cf_cv_subst_AR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1223,7 +1271,7 @@ echo "$ac_t""$AR" 1>&6
 
 
 echo $ac_n "checking for archiver options (symbol ARFLAGS)""... $ac_c" 1>&6
-echo "configure:1227: checking for archiver options (symbol ARFLAGS)" >&5
+echo "configure:1275: checking for archiver options (symbol ARFLAGS)" >&5
 if eval "test \"`echo '$''{'cf_cv_subst_ARFLAGS'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1277,6 +1325,12 @@ else
   with_mkofm_default=yes
 fi
 
+# Check whether --with-mktexfmt-default or --without-mktexfmt-default was given.
+if test "${with_mktexfmt_default+set}" = set; then
+  withval="$with_mktexfmt_default"
+  :
+fi
+
 # Check whether --with-mktextex-default or --without-mktextex-default was given.
 if test "${with_mktextex_default+set}" = set; then
   withval="$with_mktextex_default"
@@ -1293,7 +1347,7 @@ else { echo "configure: error: can not run $ac_config_sub" 1>&2; exit 1; }
 fi
 
 echo $ac_n "checking host system type""... $ac_c" 1>&6
-echo "configure:1297: checking host system type" >&5
+echo "configure:1351: checking host system type" >&5
 
 host_alias=$host
 case "$host_alias" in
@@ -1325,7 +1379,7 @@ fi
 
 
 echo $ac_n "checking where the main texmf tree is located""... $ac_c" 1>&6
-echo "configure:1329: checking where the main texmf tree is located" >&5
+echo "configure:1383: checking where the main texmf tree is located" >&5
 texmfmain=
 if test "x$datadir" != 'x${prefix}/share'; then
   # First case, datadir is defined...
@@ -1394,6 +1448,13 @@ if test "${with_pdfetex+set}" = set; then
 fi
 
 
+# Check whether --with-cxx-runtime-hack or --without-cxx-runtime-hack was given.
+if test "${with_cxx_runtime_hack+set}" = set; then
+  withval="$with_cxx_runtime_hack"
+  :
+fi
+
+
 # Check whether --with-etex or --without-etex was given.
 if test "${with_etex+set}" = set; then
   withval="$with_etex"
@@ -1422,12 +1483,12 @@ EOF
   # -lsocket is needed on Solaris, at least.  Maybe -lnsl on SCO, too?
   # See ac_path_xtra.
   echo $ac_n "checking for connect""... $ac_c" 1>&6
-echo "configure:1426: checking for connect" >&5
+echo "configure:1487: checking for connect" >&5
 if eval "test \"`echo '$''{'ac_cv_func_connect'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1431 "configure"
+#line 1492 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char connect(); below.  */
@@ -1450,7 +1511,7 @@ connect();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1454: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1515: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_connect=yes"
 else
@@ -1471,7 +1532,7 @@ fi
 
   if test x$ac_cv_func_connect = xno; then
     echo $ac_n "checking for connect in -lsocket""... $ac_c" 1>&6
-echo "configure:1475: checking for connect in -lsocket" >&5
+echo "configure:1536: checking for connect in -lsocket" >&5
 ac_lib_var=`echo socket'_'connect | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1479,7 +1540,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lsocket  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 1483 "configure"
+#line 1544 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -1490,7 +1551,7 @@ int main() {
 connect()
 ; return 0; }
 EOF
-if { (eval echo configure:1494: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1555: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1679,7 +1740,9 @@ fi
 # Check whether --enable-grey or --disable-grey was given.
 if test "${enable_grey+set}" = set; then
   enableval="$enable_grey"
-  if test "$enableval" = yes; then
+  if test "$enableval" = no; then
+  echo DISABLED grey
+else
   cat >> confdefs.h <<\EOF
 #define GREY 1
 EOF
@@ -1696,7 +1759,9 @@ fi
 # Check whether --enable-buttons or --disable-buttons was given.
 if test "${enable_buttons+set}" = set; then
   enableval="$enable_buttons"
-  if test "$enableval" = yes; then
+  if test "$enableval" = no; then
+  echo DISABLED buttons
+else
   cat >> confdefs.h <<\EOF
 #define BUTTONS 1
 EOF
@@ -1705,6 +1770,58 @@ fi
 else
   cat >> confdefs.h <<\EOF
 #define BUTTONS 1
+EOF
+
+fi
+
+
+# Check whether --enable-statusline or --disable-statusline was given.
+if test "${enable_statusline+set}" = set; then
+  enableval="$enable_statusline"
+  if test "$enableval" = no; then
+  echo DISABLED statusline
+else
+  cat >> confdefs.h <<\EOF
+#define STATUSLINE 1
+EOF
+
+fi
+else
+  cat >> confdefs.h <<\EOF
+#define STATUSLINE 1
+EOF
+
+fi
+
+
+# Check whether --enable-t1lib or --disable-t1lib was given.
+if test "${enable_t1lib+set}" = set; then
+  enableval="$enable_t1lib"
+  if test "$enableval" = no; then
+  T1LIB=
+  LDT1LIB=
+  echo DISABLED t1lib
+else
+  T1LIB=1
+  LDT1LIB=../../libs/t1lib/lib/.libs/libt1.a
+  cat >> confdefs.h <<\EOF
+#define LDT1LIB 1
+EOF
+
+  cat >> confdefs.h <<\EOF
+#define T1LIB 1
+EOF
+
+fi
+else
+  T1LIB=1
+LDT1LIB=../../libs/t1lib/lib/.libs/libt1.a
+cat >> confdefs.h <<\EOF
+#define LDT1LIB 1
+EOF
+
+cat >> confdefs.h <<\EOF
+#define T1LIB 1
 EOF
 
 fi
@@ -1727,13 +1844,28 @@ fi
 # Check whether --enable-a4 or --disable-a4 was given.
 if test "${enable_a4+set}" = set; then
   enableval="$enable_a4"
-  if test "$enableval" != no; then
+  if test "$enableval" = no; then
+  echo DISABLED a4/cm, using letter/in instead
+else
   cat >> confdefs.h <<\EOF
 #define A4 1
 EOF
 
 fi
+else
+  cat >> confdefs.h <<\EOF
+#define A4 1
+EOF
+
 fi
+
+
+
+HTEX=1
+cat >> confdefs.h <<\EOF
+#define HTEX 1
+EOF
+
 
 
 
@@ -1748,7 +1880,11 @@ if test "x$with_x" = xno; then
   with_oxdvik=no
 fi
 
-PKGS='dtl dvidvi dviljk dvipdfm dvipsk gsftopk lacheck makeindexk musixflx odvipsk oxdvik ps2pkm seetexk tetex tex4htk texlive tth xdvik'
+PKGS='
+  bibtex8 cjkutils detex devnag dtl dvi2tty dvidvi dviljk dvipdfm dvipsk gsftopk 
+  lacheck makeindexk musixflx odvipsk oxdvik ps2pkm seetexk tetex tex4htk
+  texlive ttf2pk tth xdvik
+'
 
 ESUBDIRS=
 for pkg in $PKGS; do
@@ -1924,6 +2060,7 @@ s%@host_vendor@%$host_vendor%g
 s%@host_os@%$host_os%g
 s%@texmfmain@%$texmfmain%g
 s%@socketlibs@%$socketlibs%g
+s%@LDT1LIB@%$LDT1LIB%g
 s%@ESUBDIRS@%$ESUBDIRS%g
 s%@subdirs@%$subdirs%g
 

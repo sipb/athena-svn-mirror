@@ -4,10 +4,10 @@
 # (If you change or delete the word `original' on the previous line,
 # installation won't write this script over yours.)
 # 
-# te@informatik.uni-hannover.de, kb@mail.tug.org, and infovore@xs4all.nl.
+# te@dbs.uni-hannover.de, kb@mail.tug.org, and infovore@xs4all.nl.
 # Public domain.
 
-version='$Id: mktextfm,v 1.1.1.1 2000-03-10 17:51:27 ghudson Exp $'
+version='$Id: mktextfm,v 1.1.1.2 2003-02-25 22:12:03 amb Exp $'
 progname=`echo $0 | sed 's%.*/%%'`
 usage="Usage: $progname [--destdir DESTDIR] FONT.
 
@@ -82,7 +82,14 @@ fi
 if (hbf2gf -q -t $NAME) >/dev/null 2>&1; then
   cmd="hbf2gf -g $NAME $DPI"
 else
-  cmd="mf \mode:=$MODE; mag:=$MAG; nonstopmode; input $NAME"
+  # determine the progname of metafont to use; prefer mf-nowin.
+  if (mf-nowin --version) >/dev/null 2>&1; then
+    MF="mf-nowin -progname=mf"
+  else
+    MF=mf
+  fi
+
+  cmd="$MF \mode:=$MODE; mag:=$MAG; nonstopmode; input $NAME"
 fi
 
 echo "$progname: Running $cmd"

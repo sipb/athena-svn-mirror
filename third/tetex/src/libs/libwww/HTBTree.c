@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTBTree.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTBTree.c,v 1.1.1.2 2003-02-25 22:24:28 amb Exp $
 **
 ** Authors:
 **	Arthur Secret
@@ -567,7 +567,7 @@ main ()
     HTBTree * tree;
     HTBTElement * next_element;
     
-    tree = HTBTree_new((HTComparer)strcasecmp);
+    tree = HTBTree_new((HTComparer)strcasecomp);
     HTBTree_add(tree,"hypertext");
     HTBTree_add(tree,"Addressing");
     HTBTree_add(tree,"X11");

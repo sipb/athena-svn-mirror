@@ -1,4 +1,4 @@
-.TH MPOST 1 "29 March 1999" "Web2C @VERSION@"
+.TH MPOST 1 "10 November 2001" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MP MetaPost
 .if t .ds MP MetaPost
@@ -80,7 +80,7 @@ or a
 .IR &memname .
 .PP
 The normal usage is to say
-.I mp figs
+.I mpost figs
 to process the file
 .IR figs.mp .
 The basename of
@@ -114,7 +114,7 @@ to produce a box of the appropriate size containing the figure.
 .TP
 .BI btex " TeX commands " etex
 This causes
-.I mp
+.I mpost
 to generate a \*(MP picture expression that corresponds to the
 \*(TX commands.  If the \*(TX commands generate
 more than one line of text, it must be in a
@@ -123,7 +123,7 @@ or a minipage environment.
 .TP
 .BI verbatimtex " TeX commands " etex
 This is ignored by
-.I mp
+.I mpost
 except that the \*(TX commands are passed on to \*(TX.  When using \*(LX
 instead of \*(TX the input file must start with a
 .I verbatimtex
@@ -138,7 +138,7 @@ commands.
 Since most \*(TX fonts have to be downloaded as bitmaps, the
 .I btex
 feature works best when the output of
-.I mp
+.I mpost
 is to be included in a \*(TX document so that
 .BR dvips (1)
 can download the fonts.  For self-contained PostScript output that can be
@@ -156,7 +156,7 @@ which can be found in the directories with support files for \*(MP.
 document via the
 .I "-m pictures"
 macro package.  In this case
-.I mp
+.I mpost
 should be invoked with the
 .B -T
 flag so that the commands between
@@ -176,14 +176,11 @@ instead of \*(TX.  (This automatically sets
 .SH OPTIONS
 This version of \*(MP understands the following command line options.
 .TP
-.BI --mem \ mem
+.B --file-line-error-style
 .rb
-Use
-.I mem
-as the name of the mem to be used, instead of the name by which
-\*(MP was called or a
-.I %&
-line.
+Print error messages in the form
+.I file:line:error
+which is similar to the way many compilers format them.
 .TP
 .B --help
 .rb
@@ -208,17 +205,46 @@ and
 The meaning of these modes is the same as that of the corresponding
 commands.
 .TP
+.BI --jobname \ name
+.rb
+Use
+.I name
+for the job name, instead of deriving it from the name of the input file.
+.TP
 .BI --kpathsea-debug \ bitmask
 .rb
 Sets path searching debugging flags according to the bitmask.  See the
 .I Kpathsea
 manual for details.
 .TP
+.BI --mem \ mem
+.rb
+Use
+.I mem
+as the name of the mem to be used, instead of the name by which
+\*(MP was called or a
+.I %&
+line.
+.TP
+.B --parse-first-line
+.rb
+If the first line of the main input file begins with
+.I %&
+parse it to look for a dump name or a
+.B --translate-file
+option.
+.TP
 .BI --progname \ name
 .rb
 Pretend to be program
 .IR name .
 This affects both the format used and the search paths.
+.TP
+.B --recorder
+.rb
+Enable the filename recorder.  This leaves a trace of the files opened
+for input and output in a file with extension
+.IR .fls .
 .TP
 .B -T
 .rb
@@ -251,7 +277,7 @@ TEXMFOUTPUT is set, \*(MP attempts to put its output
 files in it, if they cannot be put in the current directory.
 .PP
 Here is a list of the environment variables affect the behavior of
-.IR mp :
+.IR mpost :
 .TP
 .TP
 MPINPUTS
@@ -316,7 +342,7 @@ unless another
 file is specified at the start of the first line with an
 .I &
 just before it.  There is also an
-.F mfplain.mem
+.I mfplain.mem
 that simulates plain \*(MF so that
 .I mpost
 can read
@@ -408,7 +434,7 @@ CSTR 164, AT&T Bell Labs,
 \*(MF by Donald E. Knuth.  It was originally implemented on Unix,
 incorporating system-dependent routines from
 .BR web2c ,
-while not relying on it exccept for the actual \*(WB-to-C translator.
+while not relying on it except for the actual \*(WB-to-C translator.
 .PP
 Ulrik Vieth adapted \*(MP to take advantage of the advanced path 
 searching features in more recent versions of
@@ -422,4 +448,4 @@ John Hobby says he prefers the spelling ``MetaPost'', yet Don Knuth
 has updated the \*(MF 
 .I logo.mf
 font to be able to typeset a proper \*(MP logo similar to the \*(MF 
-logo.  Feel free to use whatever you think is more approporiate!
+logo.  Feel free to use whatever you think is more appropriate!

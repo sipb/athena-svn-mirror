@@ -1,5 +1,49 @@
+/* omega.c: C routines to support the Omega Pascal Web distribution
+
+This file is part of Omega,
+which is based on the web2c distribution of TeX,
+
+Copyright (c) 1994--2001 John Plaice and Yannis Haralambous
+
+Omega is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Omega is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Omega; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+*/
+
 #define EXTERN extern
 #include "omegad.h"
+
+void
+btestin(void)
+{
+    string fname =
+    kpse_find_file (nameoffile + 1, kpse_program_binary_format, true);
+
+    if (fname) {
+      libcfree(nameoffile);
+      nameoffile = (char *)xmalloc(2+strlen(fname));
+      namelength = strlen(fname);
+      strcpy(nameoffile+1, fname);
+    }
+    else {
+      libcfree(nameoffile);
+      nameoffile = (char *)xmalloc(2);
+      namelength = 0;
+      nameoffile[0] = 0;
+      nameoffile[1] = 0;
+    }
+}
 
 int
 getfilemode P2C(FILE *, f, int, def)
@@ -86,6 +130,129 @@ ungetc_two P2C(int, c, FILE *, f)
     ungetc((c&0377), f);
     ungetc((c>>8), f);
 }
+
+#define advance_cin if ((c_in = fgetc(f)) == EOF) return EOF
+
+int
+getc_UTF8 P1C(FILE *, f)
+{
+    register int c_in,c_out;
+
+    advance_cin;
+    if (c_in<0x80) {
+        c_out = c_in & 0x7f;
+    } else if (c_in<0xe0) {
+        c_out = (c_in & 0x1f) << 6;
+        advance_cin;
+        c_out |= c_in & 0x3f;
+    } else if (c_in<=0xf0) {
+        c_out = (c_in & 0xf) << 12;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 6;
+        advance_cin;
+        c_out |= c_in & 0x3f;
+    } else if (c_in<0xf8) {
+        c_out = (c_in & 0x7) << 18;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 12;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 6;
+        advance_cin;
+        c_out |= c_in & 0x3f;
+    } else if (c_in<0xfc) {
+        c_out = (c_in & 0x3) << 24;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 18;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 12;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 6;
+        advance_cin;
+        c_out |= c_in & 0x3f;
+    } else { /* c>=0xfc */
+        c_out = (c_in & 0x1)   << 30;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 24;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 18;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 12;
+        advance_cin;
+        c_out |= (c_in & 0x3f) << 6;
+        advance_cin;
+        c_out |= c_in & 0x3f;
+    }
+    return c_out;
+}
+
+void
+ungetc_UTF8 P2C(int, c, FILE *, f)
+{
+    /* Still to be done */
+}
+
+#define advance_two_cin advance_cin; \
+    c_in_hi = c_in; \
+    advance_cin; \
+    c_in = (c_in_hi & 0xff) << 8
+
+int
+getc_UTF16 P1C(FILE *, f)
+{
+    register int c_in,c_in_hi,c_out;
+
+    advance_two_cin;
+    if ((c_in>=0xd800) && (c_in<=0xdbff)) {
+        c_out = (c_in - 0xd800) * 0x400;
+        advance_two_cin;
+        if ((c_in>=0xdc00) && (c_in<=0xdfff)) {
+           c_out += (c_in - 0xdc00) + 0x10000;
+        } else {
+           return 0xfffd;
+        }
+    } else {
+        c_out = c_in;
+    }
+    return c_out;
+}
+
+void
+ungetc_UTF16 P2C(int, c, FILE *, f)
+{
+    /* Still to be done */
+}
+
+#define advance_twoLE_cin advance_cin; \
+    c_in_lo = c_in; \
+    advance_cin; \
+    c_in = (c_in << 8) | (c_in_lo & 0xff)
+
+int
+getc_UTF16LE P1C(FILE *, f)
+{
+    register int c_in,c_in_lo,c_out;
+
+    advance_twoLE_cin;
+    if ((c_in>=0xd800) && (c_in<=0xdbff)) {
+        c_out = (c_in - 0xd800) * 0x400;
+        advance_twoLE_cin;
+        if ((c_in>=0xdc00) && (c_in<=0xdfff)) {
+           c_out += (c_in - 0xdc00) + 0x10000;
+        } else {
+           return 0xfffd;
+        }
+    } else {
+        c_out = c_in;
+    }
+    return c_out;
+}
+
+void
+ungetc_UTF16LE P2C(int, c, FILE *, f)
+{
+    /* Still to be done */
+}
+
  
 extern boolean zpnewinputln ();
 
@@ -101,7 +268,7 @@ newinputln P4C(FILE *,f, halfword,themode, halfword,translation, boolean,bypass)
 boolean
 new_input_line P2C(FILE *, f, halfword, themode)
 {
-  register int i;
+  register int i=EOF;
  
   last = first;
   otpinputend = 0;
@@ -124,12 +291,33 @@ new_input_line P2C(FILE *, f, halfword, themode)
      if (i=='\r') {
          i=getc_two(f); if (i != '\n') ungetc_two(i,f);
      }
-  } else /* themode==4 */ {
+  } else if (themode==4) {
      while ((otpinputend < ocpbufsize) && ((i = getc_two_LE (f)) != EOF) &&
             ((i != '\r') && (i != '\n')))
         otpinputbuf[++otpinputend] = i;
      if (i=='\r') {
          i=getc_two_LE(f); if (i != '\n') ungetc_two_LE(i,f);
+     }
+  } else if (themode==5) {
+     while ((otpinputend < ocpbufsize) && ((i = getc_UTF8 (f)) != EOF) &&
+            ((i != '\r') && (i != '\n')))
+        otpinputbuf[++otpinputend] = i;
+     if (i=='\r') {
+         i=getc_UTF8(f); if (i != '\n') ungetc_UTF8(i,f);
+     }
+  } else if (themode==6) {
+     while ((otpinputend < ocpbufsize) && ((i = getc_UTF16 (f)) != EOF) &&
+            ((i != '\r') && (i != '\n')))
+        otpinputbuf[++otpinputend] = i;
+     if (i=='\r') {
+         i=getc_UTF16(f); if (i != '\n') ungetc_UTF16(i,f);
+     }
+  } else /* themode==7 */ {
+     while ((otpinputend < ocpbufsize) && ((i = getc_UTF16LE (f)) != EOF) &&
+            ((i != '\r') && (i != '\n')))
+        otpinputbuf[++otpinputend] = i;
+     if (i=='\r') {
+         i=getc_UTF16LE(f); if (i != '\n') ungetc_UTF16LE(i,f);
      }
   }
  
@@ -289,7 +477,7 @@ odateandtime P4C(int,timecode, int,daycode, int,monthcode, int,yearcode)
 }
 
 memoryword **fonttables;
-static font_entries = 0;
+static int font_entries = 0;
 
 void
 allocatefonttable P2C(int, font_number, int, font_size)
@@ -299,7 +487,7 @@ allocatefonttable P2C(int, font_number, int, font_size)
       fonttables = (memoryword **) xmalloc(256*sizeof(memoryword**));
       font_entries=256;
     } else if ((font_number==256)&&(font_entries==256)) {
-      fonttables = xrealloc(fonttables, 65536);
+      fonttables = (memoryword **) xrealloc(fonttables, 65536);
       font_entries=65536;
     }
     fonttables[font_number] =
@@ -320,15 +508,14 @@ dumpfonttable P2C(int, font_number, int, words)
 }
 
 void
-undumpfonttable(font_number)
-int font_number;
+undumpfonttable P1C(int, font_number)
 {
     memoryword sizeword;
     if (font_entries==0) {
       fonttables = (memoryword **) xmalloc(256*sizeof(memoryword**));
       font_entries=256;
     } else if ((font_number==256)&&(font_entries==256)) {
-      fonttables = xrealloc(fonttables, 65536);
+      fonttables = (memoryword **) xrealloc(fonttables, 65536);
       font_entries=65536;
     }
 
@@ -340,7 +527,7 @@ int font_number;
 }
 
 memoryword **fontsorttables;
-static fontsort_entries = 0;
+static int fontsort_entries = 0;
 
 void
 allocatefontsorttable P2C(int, fontsort_number, int, fontsort_size)
@@ -350,7 +537,7 @@ allocatefontsorttable P2C(int, fontsort_number, int, fontsort_size)
       fontsorttables = (memoryword **) xmalloc(256*sizeof(memoryword**));
       fontsort_entries=256;
     } else if ((fontsort_number==256)&&(fontsort_entries==256)) {
-      fontsorttables = xrealloc(fontsorttables, 65536);
+      fontsorttables = (memoryword **) xrealloc(fontsorttables, 65536);
       fontsort_entries=65536;
     }
     fontsorttables[fontsort_number] =
@@ -372,15 +559,14 @@ dumpfontsorttable P2C(int, fontsort_number, int, words)
 }
 
 void
-undumpfontsorttable(fontsort_number)
-int fontsort_number;
+undumpfontsorttable P1C(int, fontsort_number)
 {
     memoryword sizeword;
     if (fontsort_entries==0) {
       fontsorttables = (memoryword **) xmalloc(256*sizeof(memoryword**));
       fontsort_entries=256;
     } else if ((fontsort_number==256)&&(fontsort_entries==256)) {
-      fontsorttables = xrealloc(fontsorttables, 65536);
+      fontsorttables = (memoryword **) xrealloc(fontsorttables, 65536);
       fontsort_entries=65536;
     }
 
@@ -392,7 +578,7 @@ int fontsort_number;
 }
 
 int **ocptables;
-static ocp_entries = 0;
+static int ocp_entries = 0;
 
 void
 allocateocptable P2C(int, ocp_number, int, ocp_size)
@@ -402,7 +588,7 @@ allocateocptable P2C(int, ocp_number, int, ocp_size)
       ocptables = (int **) xmalloc(256*sizeof(int**));
       ocp_entries=256;
     } else if ((ocp_number==256)&&(ocp_entries==256)) {
-      ocptables = xrealloc(ocptables, 65536);
+      ocptables = (int **) xrealloc(ocptables, 65536);
       ocp_entries=65536;
     }
     ocptables[ocp_number] =
@@ -427,7 +613,7 @@ undumpocptable P1C(int, ocp_number)
       ocptables = (int **) xmalloc(256*sizeof(int**));
       ocp_entries=256;
     } else if ((ocp_number==256)&&(ocp_entries==256)) {
-      ocptables = xrealloc(ocptables, 65536);
+      ocptables = (int **) xrealloc(ocptables, 65536);
       ocp_entries=65536;
     }
     undumpthings(sizeword,1);

@@ -58,8 +58,19 @@ extern char *mfmode ;
 extern int actualdpi ;
 int to_close ;
 
-#if defined(KPATHSEA) && !defined(UNCOMPRESS)
-#define UNCOMPRESS "gzip -d "
+#ifdef KPATHSEA
+#ifndef UNCOMPRESS
+#define UNCOMPRESS      "uncompress"
+#endif
+
+#ifndef GUNZIP
+#define GUNZIP          "gzip -d"
+#endif
+
+#ifndef BUNZIP2
+#define BUNZIP2         "bzip2 -d"
+#endif
+
 #endif
 
 #ifdef KPATHSEA
@@ -87,15 +98,9 @@ search P3C(kpse_file_format_type, format, char *, file, char *, mode)
     if ((format == figpath || format == headerpath)
         && ((len > 2 && FILESTRCASEEQ (found_name + len - 2, ".Z"))
             || (len > 3 && FILESTRCASEEQ (found_name + len - 3, ".gz")))) {
-#ifdef WIN32
-      /* FIXME : win32lib.c popen() does not parse redirections ! */
-      /* FIXME : use zlib instead of gzip ! */
-      char *cmd = concat3 (UNCOMPRESS, " -c ", found_name);
-      ret = popen (cmd, mode);
-#else
-      char *cmd = concat3 (UNCOMPRESS, "<", found_name);
-      ret = popen (cmd, mode);
-#endif
+/* FIXME : use zlib instead of gzip ! */
+      char *cmd = concat3 (GUNZIP, " -c ", found_name);
+      ret = popen (cmd, "r");
       to_close = USE_PCLOSE ;
     } else {
 #endif /* not AMIGA */

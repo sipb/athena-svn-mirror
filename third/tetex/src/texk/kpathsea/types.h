@@ -20,18 +20,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define KPATHSEA_TYPES_H
 
 /* Booleans.  */
-#ifdef __cplusplus
-/* `true' and `false' are reserved words in C++.  Sigh.  Although sizeof
-   (bool) may not equal sizeof (boolean), so this isn't completely
-   correct, we never rely on the size of the type.  */
-#define boolean bool
-#else
 /* NeXT wants to define their own boolean type.  */
 #ifndef HAVE_BOOLEAN
 #define HAVE_BOOLEAN
-typedef enum { false = 0, true = 1 } boolean;
+typedef int boolean;
+/* `true' and `false' are reserved words in C++.  */
+#ifndef __cplusplus
+#define true 1
+#define false 0
+#endif /* __cplusplus */
 #endif /* not HAVE_BOOLEAN */
-#endif /* not C++ */
 
 /* The X library (among other things) defines `FALSE' and `TRUE', and so
    we only want to define them if necessary, for use by application code.  */

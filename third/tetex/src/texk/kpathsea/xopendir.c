@@ -46,3 +46,4 @@ xclosedir P1C(DIR *, d)
     FATAL ("closedir failed");
 #endif
 }
+

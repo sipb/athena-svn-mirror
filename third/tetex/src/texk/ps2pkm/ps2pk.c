@@ -273,7 +273,6 @@ int argc; char *argv[];
       	    break;
       	 case 'd':
       	    debug = 1;
-	    pstat = my_stat;
 	    break;
       	 case 'e':
       	    if (*++argv[0] == '\0') {
@@ -337,7 +336,6 @@ int argc; char *argv[];
       	    break;
       	 case 'v':
       	    verbose = 1;
-	    pfopen = my_fopen; /* show all file opens */
 	    break;
       	 default:
       	    fatal("%s: %c illegal option\n", myname, c);

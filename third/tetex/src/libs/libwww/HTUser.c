@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTUser.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTUser.c,v 1.1.1.2 2003-02-25 22:26:00 amb Exp $
 **
 **	Contains information about local host, email, etc.
 **
@@ -18,7 +18,11 @@
 
 /* The default directory for "save locally" and "save and execute" files: */
 #ifndef HT_TMP_ROOT
-#define HT_TMP_ROOT		"/tmp/"	      /* URL format - not local file */
+#ifdef WWW_MSWINDOWS
+#define HT_TMP_ROOT		"C:\\Temp\\"
+#else
+#define HT_TMP_ROOT		"/tmp/"
+#endif /* WWW_MSWINDOWS */
 #endif
 
 struct _HTUserProfile {
@@ -44,7 +48,7 @@ PUBLIC HTUserProfile * HTUserProfile_new (const char * name, void * context)
 	if ((me = (HTUserProfile *) HT_CALLOC(1, sizeof(HTUserProfile)))==NULL)
 	    HT_OUTOFMEM("HTUserProfile_new");
 
-	if (CORE_TRACE) HTTrace("User Profile Adding `%s\'\n", name);
+	HTTRACE(CORE_TRACE, "User Profile Adding `%s\'\n" _ name);
 	StrAllocCopy(me->user, name);
 
 	/* Set the context */
@@ -61,7 +65,7 @@ PUBLIC HTUserProfile * HTUserProfile_new (const char * name, void * context)
 PUBLIC BOOL HTUserProfile_localize (HTUserProfile * up)
 {
     if (up) {
-	if (CORE_TRACE) HTTrace("User Profile Localizing %p\n", up);
+	HTTRACE(CORE_TRACE, "User Profile Localizing %p\n" _ up);
 
 	/* Find the FQDN */
 	up->fqdn = HTGetHostName();
@@ -77,8 +81,8 @@ PUBLIC BOOL HTUserProfile_localize (HTUserProfile * up)
 
 	/* Find the default location for temporary files */
 	StrAllocCopy(up->tmp, HT_TMP_ROOT);
-	if (*(up->tmp+strlen(up->tmp)-1) != '/')
-	    StrAllocCat(up->tmp, "/");
+	if (*(up->tmp+strlen(up->tmp)-1) != DIR_SEPARATOR_CHAR)
+	    StrAllocCat(up->tmp, DIR_SEPARATOR_STR);
 
 	return YES;
     }
@@ -153,8 +157,8 @@ PUBLIC BOOL HTUserProfile_setTmp (HTUserProfile * up, const char * tmp)
 {
     if (up && tmp) {
 	StrAllocCopy(up->tmp, tmp);
-	if (*(up->tmp+strlen(up->tmp)-1) != '/')
-	    StrAllocCat(up->tmp, "/");
+	if (*(up->tmp+strlen(up->tmp)-1) != DIR_SEPARATOR_CHAR)
+	    StrAllocCat(up->tmp, DIR_SEPARATOR_STR);
 	return YES;
     }
     return NO;

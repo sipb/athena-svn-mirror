@@ -1,5 +1,5 @@
 /* Declarations for getopt.
-   Copyright (C) 1989,90,91,92,93,94,96,97 Free Software Foundation, Inc.
+   Copyright (C) 1989,90,91,92,93,94,96,97, 2000 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.  Its master source is NOT part of
    the C library, however.  The master source lives in /gd/gnu/lib.
@@ -23,8 +23,11 @@
 #define _GETOPT_H 1
 
 #if defined(WIN32)
-#ifdef _DLL
-#ifdef MAKE_KPSE_DLL
+#ifndef __STDC__
+#define __STDC__ 1
+#endif
+#if defined (KPSE_DLL) || defined (GNUW32_DLL)
+#if defined (MAKE_KPSE_DLL) || defined (MAKE_GNUW32_DLL)
 #define KPSEDLL __declspec( dllexport)
 #else
 #define KPSEDLL __declspec( dllimport)

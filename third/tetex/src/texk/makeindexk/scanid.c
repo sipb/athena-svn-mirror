@@ -49,17 +49,17 @@ NODE_PTR tail;
 static	void	flush_to_eol ARGS((void));
 static	int	make_key ARGS((void));
 static	void	make_string ARGS((char **ppstr,int n));
-static	int	scan_alpha_lower ARGS((char *no,short *npg,short *count));
-static	int	scan_alpha_upper ARGS((char *no,short *npg,short *count));
-static	int	scan_arabic ARGS((char *no,short *npg,short *count));
+static	int	scan_alpha_lower ARGS((char *no,int *npg,short *count));
+static	int	scan_alpha_upper ARGS((char *no,int *npg,short *count));
+static	int	scan_arabic ARGS((char *no,int *npg,short *count));
 static	int	scan_arg1 ARGS((void));
 static	int	scan_arg2 ARGS((void));
 static	int	scan_field ARGS((int *n,char field[],int len_field,
 				 int ck_level, int ck_encap,int ck_actual));
 static	int	scan_key ARGS((struct KFIELD *data));
-static	int	scan_no ARGS((char *no,short *npg,short *count,short *type));
-static	int	scan_roman_lower ARGS((char *no,short *npg,short *count));
-static	int	scan_roman_upper ARGS((char *no,short *npg,short *count));
+static	int	scan_no ARGS((char *no,int *npg,short *count,short *type));
+static	int	scan_roman_lower ARGS((char *no,int *npg,short *count));
+static	int	scan_roman_upper ARGS((char *no,int *npg,short *count));
 static	void	search_quote ARGS((char **sort_key,char **actual_key));
 
 void
@@ -446,11 +446,11 @@ char   *str;
 
 static int
 #if STDC
-scan_no(char no[], short npg[], short *count, short *type)
+scan_no(char no[], int npg[], short *count, short *type)
 #else
 scan_no(no, npg, count, type)
 char    no[];
-short   npg[];
+int   npg[];
 short  *count;
 short  *type;
 #endif
@@ -490,11 +490,11 @@ short  *type;
 
 static int
 #if STDC
-scan_arabic(char no[], short npg[], short *count)
+scan_arabic(char no[], int npg[], short *count)
 #else
 scan_arabic(no, npg, count)
 char    no[];
-short   npg[];
+int   npg[];
 short  *count;
 #endif
 {
@@ -528,11 +528,11 @@ IDX_ERROR2("Illegal Arabic digit: position %d in %s.\n", i + 1, no);
 
 static int
 #if STDC
-scan_roman_lower(char no[], short npg[], short *count)
+scan_roman_lower(char no[], int npg[], short *count)
 #else
 scan_roman_lower(no, npg, count)
 char    no[];
-short   npg[];
+int   npg[];
 short  *count;
 #endif
 {
@@ -578,11 +578,11 @@ IDX_ERROR2("Illegal Roman number: position %d in %s.\n", i + 1, no);
 
 static int
 #if STDC
-scan_roman_upper(char no[], short npg[], short *count)
+scan_roman_upper(char no[], int npg[], short *count)
 #else
 scan_roman_upper(no, npg, count)
 char    no[];
-short   npg[];
+int   npg[];
 short  *count;
 #endif
 {
@@ -628,11 +628,11 @@ IDX_ERROR2("Illegal Roman number: position %d in %s.\n", i + 1, no);
 
 static int
 #if STDC
-scan_alpha_lower(char no[], short npg[], short *count)
+scan_alpha_lower(char no[], int npg[], short *count)
 #else
 scan_alpha_lower(no, npg, count)
 char    no[];
-short   npg[];
+int   npg[];
 short  *count;
 #endif
 {
@@ -650,11 +650,11 @@ short  *count;
 
 static int
 #if STDC
-scan_alpha_upper(char no[], short npg[], short *count)
+scan_alpha_upper(char no[], int npg[], short *count)
 #else
 scan_alpha_upper(no, npg, count)
 char    no[];
-short   npg[];
+int   npg[];
 short  *count;
 #endif
 {

@@ -1,4 +1,72 @@
 This file records noteworthy changes.
+3.4.5 (28 January 2003)
+* Remove "." from the TEXCONFIG path.
+
+3.4.4 (16 January 2003)
+* Add VARTEXMF HOMETEXMF to the default paths of texmf.in.
+
+3.4.3 (11 January 2003)
+* Minor fixes.
+* Use both .w and .web suffixes for cweb.
+
+3.4.2 (23 December 2002)
+* Minor fixes to makefiles.
+* A Win32 implementation of the fork/exec path in mktex.  This leaves
+  MSDOS to be done.
+
+3.4.1 (20 December 2002)
+* A couple of fixes for the fork/exec code.
+
+3.4.0 (14 December 2002)
+* 3.4.x number as ABI is certainly broken now.
+* Change the way the mktex* command lines are set up on unix systems.
+  Now we call fork/exec directly instead of using popen.
+  This code is not yet implemented for Windows/DOS.
+* We're now (un?)fairly restrictive on what names are allowed for fonts.
+  That part of the code probably need improvement.
+* When reading names from the ls-R file, they are no longer case-smashed.
+  So on platforms where this matters, the case-smashing should occur before
+  names are inserted into the ls-R file -- only lowercase should be used in
+  that file.
+
+3.3.11 (13 November 2002)
+* Minor fixes.
+
+3.3.10 (11 November 2002)
+* Minor fixes.
+
+3.3.9 (22 October 2002)
+* New extension: .oft for Omega formats.
+
+3.3.8 (11 October 2002)
+* Add support for mktexfmt (which is normally a link to fmtutil).
+* Check both VAR.progname and VAR_progname in the environment.
+
+3.3.7 (27 November 2001)
+* Minor fixes/changes to assist Omega development.
+
+3.3.6 (18 November 2001)
+* Minor fixes/changes to assist Omega development.
+
+3.3.5 (10 November 2001)
+* Minor bug fixes.
+
+3.3.4 (30 October 2001)
+* Minor bug fixes.
+
+3.3.3 (5 August 2000)
+* On NeXT, 'rm -rf' will not fail, but uses the cwd as its argument.
+  mktexlsr counted on it to fail, with sometimes disastrous results.
+
+3.3.2 (25 April 1999)
+* Minor bug fixes.
+
+3.3.1 (29 May 1999)
+* Minor bug fixes.
+
+3.3 (26 March 1999)
+* Minor bugfixes.
+
 3.2 (15 March 1998)
 * Brace expansion will accept the path separator as well as the comma,
   e.g., {foo:bar}.

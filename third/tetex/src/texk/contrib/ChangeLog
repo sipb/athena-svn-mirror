@@ -1,3 +1,50 @@
+2003-01-08  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mktex.h: Update from Fabrice.
+
+	* mktex.c: Update from Fabrice.
+
+2002-12-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* fmtutil.c: Sync with TeXlive tree.
+
+	* glob/configure.bat: sync with TeXlive tree.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* variables.c: TeXlive merge.
+
+	* stackenv.h: TeXlive merge.
+
+	* stackenv.c: TeXlive merge.
+
+	* mktexlib.h: TeXlive merge.
+
+	* mktex.h: TeXlive merge.
+
+	* mktex.c: TeXlive merge.
+
+	* makempx.c: TeXlive merge.
+
+	* main.c: TeXlive merge.
+
+	* fmtutil.h: TeXlive merge.
+
+	* fmtutil.c: TeXlive merge.
+
+	* fileutils.c: TeXlive merge.
+
+	* dvihp.c: TeXlive merge.
+
+2000-04-21  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* makempx.c, stackenv.c, fmtutil.c: Update from Fabrice.
+
+2000-04-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* All files: Update from Fabrice Popineau
+	<popineau@esemetz.ese-metz.fr>.
+
 1999-03-17  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* fmtutil.c: TEXMF_CNF -> VARTEXMF.  From Thomas.

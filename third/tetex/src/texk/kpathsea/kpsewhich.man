@@ -35,7 +35,7 @@ used to examine variables and find files.  When the
 .B --format
 option is not given, the search path used when looking for a file is
 inferred from the name given, by looking for a known extension.  If
-no known extesion is found, the search path for \*(TX source files is
+no known extension is found, the search path for \*(TX source files is
 used.
 .\"=====================================================================
 .SH OPTIONS
@@ -128,7 +128,7 @@ Set program name to
 .\" separates components in
 .\" .B --path
 .\" output; default is
-.\| .I :
+.\" .I :
 .\" on UNIX systems.
 .TP
 .BI --show-path \ name

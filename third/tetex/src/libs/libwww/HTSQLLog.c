@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTSQLLog.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTSQLLog.c,v 1.1.1.2 2003-02-25 22:25:21 amb Exp $
 **
 **	This module contains a simple SQL based logging mechanism for requests
 **	and anything else you want to log
@@ -198,8 +198,7 @@ PUBLIC HTSQLLog * HTSQLLog_open (const char * 	host,
 {
     HTSQLLog * me = NULL;
     if (!host || !user || !pw || !db) {
-	if (SQL_TRACE)
-	    HTTrace("SQLLog...... Missing SQLLog host, user, password, or db\n");
+	HTTRACE(SQL_TRACE, "SQLLog...... Missing SQLLog host, user, password, or db\n");
 	return NULL;
     }
     if ((me = (HTSQLLog *) HT_CALLOC(1, sizeof(HTSQLLog))) == NULL)

@@ -1,6 +1,7 @@
 /* pathsearch.h: mostly-generic path searching.
 
 Copyright (C) 1993, 94, 96, 97 Karl Berry.
+Copyright (C) 2000 Olaf Weber.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -35,6 +36,11 @@ extern KPSEDLL string kpse_path_element P1H(const_string path);
    IS_DIR_SEP).  Uses same area as `kpse_path_element'.  */
 extern string kpse_filename_component P1H(const_string path);
 
+/*
+  This function may rewrite its argument to avoid bugs when calling
+  stat() or equivalent under Win32.  Also, it returns the index after
+  which the program should start to look for expandable constructs. */
+extern unsigned kpse_normalize_path P1H(string elt);
 
 /* Given a path element ELT, return a pointer to a NULL-terminated list
    of the corresponding (existing) directory or directories, with
@@ -44,7 +50,7 @@ extern string kpse_filename_component P1H(const_string path);
    It's up to the caller to expand ELT.  This is because this routine is
    most likely only useful to be called from `kpse_path_search', which
    has already assumed expansion has been done.  */
-extern KPSEDLL str_llist_type *kpse_element_dirs P1H(const_string elt);
+extern KPSEDLL str_llist_type *kpse_element_dirs P1H(string elt);
 
 
 /* Call `kpse_expand' on NAME.  If the result is an absolute or

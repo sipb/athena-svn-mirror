@@ -196,6 +196,19 @@ typedef HTOutputStream * HTOutput_new	(HTHost *	host,
 					 int		mode);
 
 /*
+(
+  Transport Output Stream Converter
+)
+*/
+
+typedef HTOutputStream * HTOutputConverter_new(
+	HTHost *		host,
+	HTChannel *		ch,
+	void *			param,
+	int			mode,
+	HTOutputStream *	target);
+
+/*
 */
 
 #endif /* HTIOSTREAM_H */
@@ -204,6 +217,6 @@ typedef HTOutputStream * HTOutput_new	(HTHost *	host,
 
   
 
-  @(#) $Id: HTIOStream.h,v 1.1.1.1 2000-03-10 17:52:58 ghudson Exp $
+  @(#) $Id: HTIOStream.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

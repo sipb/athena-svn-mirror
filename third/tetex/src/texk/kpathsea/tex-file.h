@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define KPATHSEA_TEX_FILE_H
 
 #include <kpathsea/c-proto.h>
+#include <kpathsea/c-vararg.h>
 #include <kpathsea/types.h>
 
 
@@ -49,7 +50,7 @@ typedef enum
 {
   kpse_gf_format,
   kpse_pk_format,
-  kpse_any_glyph_format,	/* ``any'' meaning anything above */
+  kpse_any_glyph_format,	/* ``any'' meaning gf or pk */
   kpse_tfm_format, 
   kpse_afm_format, 
   kpse_base_format, 
@@ -89,6 +90,8 @@ typedef enum
   kpse_program_text_format,
   kpse_program_binary_format,
   kpse_miscfonts_format,
+  kpse_web_format,
+  kpse_cweb_format,
   kpse_last_format /* one past last index */
 } kpse_file_format_type;
 
@@ -128,7 +131,8 @@ typedef struct
   const_string *alt_suffix;	/* More suffixes to check for.  */
   boolean suffix_search_only;	/* Only search with a suffix?  */
   const_string program;		/* ``mktexpk'', etc.  */
-  const_string program_args;	/* Args to `program'.  */
+  int          argc;		/* Count of standard arguments. */
+  const_string *argv;		/* Standard arguments to `program'.  */
   boolean program_enabled_p;	/* Invoke `program'?  */
   kpse_src_type program_enable_level; /* Who said to invoke `program'.  */
   boolean binmode;              /* The files must be opened in binary mode. */
@@ -146,6 +150,11 @@ extern KPSEDLL void kpse_set_program_enabled P3H(kpse_file_format_type fmt,
 /* Call kpse_set_program_enabled with VALUE and the format corresponding
    to FMTNAME.  */
 extern KPSEDLL void kpse_maketex_option P2H(const_string fmtname,  boolean value);
+
+/* Change the list of searched suffixes (alternate suffixes if alternate is
+   true).  */
+extern KPSEDLL void kpse_set_suffixes PVAR2H(kpse_file_format_type format,
+					     boolean alternate);
 
 /* Initialize the info for the given format.  This is called
    automatically by `kpse_find_file', but the glyph searching (for

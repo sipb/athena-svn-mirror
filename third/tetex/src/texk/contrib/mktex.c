@@ -3,7 +3,7 @@
 Copyright (C) 1997 Fabrice POPINEAU.
 Adapted to MS-DOS/DJGPP by Eli Zaretskii <eliz@is.elta.co.il>.
 
-Time-stamp: <99/06/01 22:32:05 popineau>
+Time-stamp: <02/12/23 00:33:07 popineau>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -48,7 +48,6 @@ string progname = NULL;
 char tmpdir[PATH_MAX]; /* Working temporary directory */
 string output = "astdout";
 FILE *fout = NULL;
-FILE *fnul = NULL;
 static boolean downcase_names;
 
 char empty_str[] = "(empty)";
@@ -72,7 +71,9 @@ program_description makedesc [] = {
   {"mktexdir", 2, 255, mktexmkdir },	/* 0,MANY */
   {"mktexrmd", 2, 255, mktexrmdir },	/* ?? */
   {"mktexnam", 2, 5, mktexnames },	/* 1,4 */
+#if 0
   {"mktexfmt", 2, 5, mktexfmt },	/* 1,4 */
+#endif
   {0, 0, 0}
 };
 
@@ -182,12 +183,14 @@ static string usage_msg[][MAX_LINES] = {
     "  Output the PK, TFM and MF names for a font NAME.\n",
     0
   },
+#if 0
   /* Mktexfmt */
   {
     "Usage : %s [-all] [FORMAT].\n",
     "  Rebuild all or specified format.\n",
     0
   }
+#endif
 };
 
 /*
@@ -251,6 +254,7 @@ int mktex_opt(int argc, char *argv[],
       }
     }
   }
+
   /* shifting options from argv[] list */
   for (i = 1; optind < argc; i++, optind++)
     argv[i] = argv[optind];
@@ -401,45 +405,13 @@ void read_mktexcnf()
 
 /* If non-negative, records the handle to redirect STDOUT
    in `output_and_cleanup'.  */
-static int redirect_stdout = -1;
+int redirect_stdout;
 
 /* Record the handle where STDOUT is to be redirected
    for printing the names of the generated files before we exit.  */
 void record_output_handle(int fd)
 {
   redirect_stdout = fd;	/* FIXME: cannot be nested! */
-}
-
-void output_and_cleanup(int code)
-{
-  FILE *f;
-  string line;
-
-  if (code == 0) {
-    /* output result if any */
-    if ((f = fopen(getval("STDOUT"), "r")) != NULL) {
-      if (redirect_stdout >= 0) {
-	int fds[3];
-
-	fds[0] = 0;
-	fds[1] = redirect_stdout;
-	fds[2] = 2;
-	push_fd(fds);
-      }
-      while((line = read_line(f)) != NULL) {
-	fputs(line, stdout);
-	free (line);
-      }
-      fclose(f);
-      if (redirect_stdout >= 0) {
-	pop_fd();
-	redirect_stdout = -1;
-      }
-    }
-  }
-
-  if (test_file('d', tmpdir))
-    rec_rmdir(tmpdir);
 }
 
 void usage()
@@ -457,10 +429,6 @@ void mktexinit(int argc, char **argv)
 {
   string mode, bdpi;
   string texmfmain;
-#if 0
-  /* This is unused.  */
-  program_description * program = 0;
-#endif
 
   program_number = -1;
 
@@ -495,81 +463,6 @@ void mktexinit(int argc, char **argv)
 
 }
 
-#if 0
-int main(int argc, char* argv[])
-{
-  string mode, bdpi;
-  struct program_description * program = 0;
-  int i;
-  string texmfmain;
-#if defined(WIN32)
-  /* if _DEBUG is not defined, these macros will result in nothing. */
-   SETUP_CRTDBG;
-   /* Set the debug-heap flag so that freed blocks are kept on the
-    linked list, to catch any inadvertent use of freed memory */
-   SET_CRT_DEBUG_FIELD( _CRTDBG_DELAY_FREE_MEM_DF );
-#endif
-
-#if 0
-  extern MKTEXDLL string (* var_lookup)(const_string);
-  var_lookup = getval;
-#endif
-
-  if (!progname)
-    progname = argv[0];
-  kpse_set_program_name (progname, NULL);
-
-  /* initialize the symbol table */
-  init_vars();
-  /* `kpse_init_prog' will put MODE and DPI into environment as values of
-     the two variables below.  We need to leave these variables as they are. */
-  mode = getval("MAKETEX_MODE");
-  bdpi = getval("MAKETEX_BASE_DPI");
-
-  /* NULL for no fallback font. */
-  kpse_init_prog (uppercasify (progname), 
-		  bdpi && atoi(bdpi) ? atoi(bdpi) : 600, mode, NULL);
-
-  for(i = 0; makedesc[i].name; ++i)
-    if (FILESTRCASEEQ(kpse_program_name, makedesc[i].name)) {
-      program_number = i;
-      progname = makedesc[i].name;
-      program = makedesc+i;
-      break;
-    }
-  if (!makedesc[i].name) {
-    fprintf(stderr, "This program was incorrectly copied to the name %s\n", 
-	    argv[0]);
-    return 1;
-  }
-
-  /* Common code for all scripts.
-
-    : ${MT_TEXMFMAIN=`kpsewhich -expand-path='$TEXMFMAIN'`}  */
-  texmfmain = setval_default("MT_TEXMFMAIN", kpse_path_expand("$TEXMFMAIN"));
-
-  /* FIXME: we don't support edited mktex.opt files, and don't look for
-     that file along the TEXMF trees.  But at least we should fake the
-     safeguard in case $TEXMFMAIN is not defined at all.  */
-  if (test_file('z', texmfmain) || !test_file('d', texmfmain)) {
-    fprintf(stderr, "%s: $TEXMFMAIN is undefined or points to a non-existent directory;\n%s: check your installation.\n", progname, progname);
-    exit(1);	/* not mt_exit, since temporary files were not created yet */
-  }
-
-  /* mktex_opt may modify argc and shift argv */
-  argc = mktex_opt(argc, argv, program);
-
-  setval_default("DPI", getval("BDPI"));
-  setval_default("MAG", "1.0");
-
-  errstatus = 0;
-  program->prog(argc, argv);
-
-  mt_exit(errstatus);
-
-}
-#endif
-
 /* Output the string in lower case or without modification according
    to downcase_names. */
 void output_name(string name, FILE *f)
@@ -601,6 +494,7 @@ string string_to_lower(string s)
 static struct tem_file {
   const char *tem_dir;
   const char *tem_base;
+  const char *lsr_base;
 } tem_file_info;
 
 /* Return 1 if DIR is the directory and BASE is the basename of the
@@ -622,6 +516,8 @@ void print_path(string path, struct stat* st)
 #ifdef _WIN32
     WIN32_FIND_DATA ffd;
     HANDLE hnd;
+    string fulldir;
+    int offset = 0;
     int ind = strlen(path);
 #else
     DIR *dp;
@@ -643,6 +539,11 @@ void print_path(string path, struct stat* st)
        since it is faster than the script already, why bother?  */
 
 #ifdef _WIN32
+    if (path[0] == '.' && IS_DIR_SEP(path[1])) {
+      offset = 2;
+    }
+    fulldir = concat_pathes(tem_file_info.lsr_base, path + offset);
+    
     strcat(path, "/*");	  /* ok since the caller says path[PATH_MAX] */
     hnd = FindFirstFile(path, &ffd);
     while (hnd && FindNextFile(hnd, &ffd)) { 
@@ -650,13 +551,22 @@ void print_path(string path, struct stat* st)
 	  && ((ffd.cFileName[1] == '\0')
 	      || (ffd.cFileName[1] == '.' && ffd.cFileName[2] == '\0')))
 	continue;
-      if (!is_db_file_tmp(path, ind, ffd.cFileName)) {
+      if (!is_db_file_tmp(path, ind, ffd.cFileName)
+	  /* We don't want to report directories ! */
+	  && !(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
 	output_name(ffd.cFileName, stdout);
 	putchar('\n');/* We do want a \n */
+	{
+	  string fullname;
+	  fullname = concat_pathes(fulldir, ffd.cFileName);
+	  kpse_db_insert(fullname);
+	  free(fullname);
+	}
       }
     }
     path[ind] = '\0';
     FindClose(hnd);
+    free(fulldir);
 #else  /* not _WIN32 */
     if ((dp = opendir(path))) {
       while ((ep = readdir(dp)))
@@ -829,6 +739,7 @@ int mktexlsr(int argc, char **argv)
   /* We have to take multiple root trees into account. */
 
   string db_dir, db_file, lsrdir;
+  char db_dir_tmp[PATH_MAX];
   char db_file_tmp[PATH_MAX];
   FILE* lsrfile;
   int newfd[3];
@@ -864,6 +775,7 @@ int mktexlsr(int argc, char **argv)
       /* Skip empty path components. */
       if (*lsrdir == 0)
         continue;
+      /* FIXME : /local/tex is absolute under win32, but should it really be ? */
       if (!kpse_absolute_p(lsrdir, FALSE))
 	lsrdir = concat_pathes(getval("KPSE_DOT"), lsrdir);
 
@@ -893,13 +805,24 @@ int mktexlsr(int argc, char **argv)
 		progname, db_dir);
 	continue;
       }
-      sprintf(db_file_tmp, "%s/lsXXXXXX", db_dir);
+
+      sprintf(db_dir_tmp, "%s/lsXXXXXX", db_dir);
+      if (mktemp(db_dir_tmp) == NULL) {
+	perror(db_dir_tmp);
+	mt_exit(1);
+      }
+      if (mkdir(db_dir_tmp, 0777 & ~umask(0)) == -1) {
+	fprintf(stderr, "%s: could not create directory '%s'. Skipping...\n");
+	continue;
+      }
+
+      sprintf(db_file_tmp, "%s/lsXXXXXX", db_dir_tmp); 
       if (mktemp(db_file_tmp) == NULL) {
 	perror(db_file_tmp);
 	mt_exit(1);
       }
       
-      if ((lsrfile = fopen(db_file_tmp, "w")) == NULL) {
+      if ((lsrfile = fopen(db_file_tmp, "wb")) == NULL) {
 	fprintf(stderr, "%s: %s: no write permission. Skipping...\n",
 		progname, db_file_tmp);
 	continue;
@@ -926,6 +849,7 @@ int mktexlsr(int argc, char **argv)
          it into the database.  */
       tem_file_info.tem_dir = ".";
       tem_file_info.tem_base = xbasename(db_file_tmp);
+      tem_file_info.lsr_base = db_dir;
 
       pushd(db_dir);
       do_mktexlsr(".");
@@ -960,10 +884,16 @@ int mktexlsr(int argc, char **argv)
       if (mvfile(db_file_tmp, db_file) == FALSE) {
 	mt_exit(1);
       }
+
+      do_rmdir(db_dir_tmp);
+
       free(db_file);
     }
   }
   free(newargv);
+
+  hash_reinit();
+
   if (isatty(fileno(stdout)))
     fprintf(stderr, "%s: Done.\n", progname);
   return 0;
@@ -976,7 +906,11 @@ void findmap()
   string line;
   string token;
   string filename;
-  string name = getval("NAME");
+  string name = getval("NAME"), noraw_name;
+
+  /* Raw font */
+  if (name && *name == 'r')
+    name = name+1;
 
   filename = getval("MT_SPECIALMAP");
   if (!test_file('r', filename))
@@ -1010,7 +944,9 @@ void findmap()
 
   if (test_file('z', getval("SUPPLIER"))) {
     string s_abbrev = xstrdup(" ");
-    s_abbrev[0] = name[0];
+    /* $NAME might be raw */
+    noraw_name = (name[0] == 'r' ? name + 1 : name);
+    s_abbrev[0] =  noraw_name[0];
     setval("s_abbrev", s_abbrev);
     filename = getval("MT_SUPPLIERMAP");
     if (test_file('z', filename)) {
@@ -1026,7 +962,7 @@ void findmap()
 
     while((line = read_line(f)) != NULL) {
       token = strtok(line, SEPARATORS);
-      if (FILECHARCASEEQ(*token, *name) && token[1] == '\0') {
+      if (FILECHARCASEEQ(*token, *s_abbrev) && token[1] == '\0') {
 	setval("SUPPLIER", xstrdup(strtok(NULL, SEPARATORS)));
 	free(line);
 	break;
@@ -1039,7 +975,7 @@ void findmap()
       string t_abbrev = xmalloc (3);
 
       t_abbrev[0] = '\0';
-      strncat (t_abbrev, name + 1, 2);
+      strncat (t_abbrev, noraw_name + 1, 2);
       setval("t_abbrev", t_abbrev);
       filename = getval("MT_TYPEFACEMAP");
       if (test_file('z', filename)) {
@@ -1056,7 +992,7 @@ void findmap()
       while((line = read_line(f)) != NULL) {
 	token = strtok(line, SEPARATORS);
 	if ((strlen(token) == 2)
-	    && (name[1] == token[0]) && (name[2] == token[1])) {
+	    && (t_abbrev[1] == token[0]) && (t_abbrev[2] == token[1])) {
 	  setval("TYPEFACE", xstrdup(strtok(NULL, SEPARATORS)));
 	  free(line);
 	  break;
@@ -1213,40 +1149,46 @@ void mktexnam_opt()
     setval_default("MT_SUPPLIERMAP",
 	   kpse_find_file("supplier.map", kpse_fontmap_format, false));
 
-    findmap();
-    
-    if (test_file('z', getval("SUPPLIER"))) {
-      fprintf(stderr, "%s: Could not map source abbreviation %s for %s.\n",
-	     progname,
-	     getval("s_abbrev") ? getval("s_abbrev") : empty_str,
-	     getval("NAME"));
-      if (test_file('n', getval("MT_SPECIALMAP")))
-	fprintf(stderr, "%s: Need to update %s?\n", 
-		progname, getval("MT_SPECIALMAP"));
-      else
-	fprintf(stderr, "%s: $MT_SPECIALMAP not found!\n", progname);
-      setval("MT_SUPPLIER", getval("MT_DEFAULT_SUPPLIER"));
-      setval("MT_TYPEFACE", getval("MT_DEFAULT_TYPEFACE"));
-    }
-    else {
-      setval("MT_SUPPLIER", getval("SUPPLIER"));
-      if (test_file('z', getval("TYPEFACE"))) {
-        fprintf(stderr, "%s: Could not map typeface abbreviation %s for %s.\n",
+    if (test_file('z', getval("MT_SUPPLIER"))
+	|| test_file('z', getval("MT_TYPEFACE"))
+	|| STREQ(getval("MT_SUPPLIER"), "unknown")
+	|| STREQ(getval("MT_SUPPLIER"), "unknown")) {
+
+      findmap();
+      
+      if (test_file('z', getval("SUPPLIER"))) {
+	fprintf(stderr, "%s: Could not map source abbreviation %s for %s.\n",
 		progname,
-		getval("t_abbrev") ? getval("t_abbrev") : empty_str,
+		getval("s_abbrev") ? getval("s_abbrev") : empty_str,
 		getval("NAME"));
 	if (test_file('n', getval("MT_SPECIALMAP")))
-	  fprintf(stderr, "%s: Need to update %s?\n",
+	  fprintf(stderr, "%s: Need to update %s?\n", 
 		  progname, getval("MT_SPECIALMAP"));
 	else
 	  fprintf(stderr, "%s: $MT_SPECIALMAP not found!\n", progname);
-        setval("MT_TYPEFACE", getval("MT_DEFAULT_TYPEFACE"));
+	/* setval("MT_SUPPLIER", getval("MT_DEFAULT_SUPPLIER")); */
+	/* setval("MT_TYPEFACE", getval("MT_DEFAULT_TYPEFACE")); */
       }
-      else
-        setval("MT_TYPEFACE", getval("TYPEFACE"));
+      else {
+	setval("MT_SUPPLIER", getval("SUPPLIER"));
+	if (test_file('z', getval("TYPEFACE"))) {
+	  fprintf(stderr, "%s: Could not map typeface abbreviation %s for %s.\n",
+		  progname,
+		  getval("t_abbrev") ? getval("t_abbrev") : empty_str,
+		  getval("NAME"));
+	  if (test_file('n', getval("MT_SPECIALMAP")))
+	    fprintf(stderr, "%s: Need to update %s?\n",
+		    progname, getval("MT_SPECIALMAP"));
+	  else
+	    fprintf(stderr, "%s: $MT_SPECIALMAP not found!\n", progname);
+	  /* setval("MT_TYPEFACE", getval("MT_DEFAULT_TYPEFACE")); */
+	}
+	else
+	  setval("MT_TYPEFACE", getval("TYPEFACE"));
+      }
     }
   }
-  
+
   if (feature_p("stripsupplier"))
     setval("MT_SUPPLIER", "");
 
@@ -1308,7 +1250,7 @@ void do_mktexnames(string name)
 			 && strlen(rootname) >= 4
 			 && strchr("bBcCfFhHiIlLmMoOsStTxX", rootname[3]))
 		     || ((rootname[0] == 'l' || rootname[0] == 'L')
-			 && strchr("aAbBcChHlL", rootname[1])
+			 && strchr("aAbBcCdDhHlL", rootname[1])
 			 && strchr("bBcCdDfFiIoOrRsStTuUvVxX", rootname[2])))) {
 	  char lhname[64];
 	  strcpy(lhname, "xxcodes.mf");
@@ -1340,7 +1282,6 @@ void do_mktexnames(string name)
 	 MT_DESTROOT="$i"
 	 */
       setval_default("MT_DESTROOT", i);
-      
       /*
 	# When we're done, relfmt contains one of these:
 	# "/source/$MT_NAMEPART/"
@@ -1419,7 +1360,7 @@ void do_mktexnames(string name)
       /* Determine supplier and typeface from namepart. If there is
 	 only one part in the name part, we take it to be the typeface. 
 	 */
-      vars = grep("^/([^/]*)/(.*)$", namepart, 2);
+      vars = grep("^/([^/]*)/([^/]*)[/]?$", namepart, 2);
       if (vars) {
 	if (vars[2] == NULL || *vars[2] == '\0') {
 	  setval("MT_TYPEFACE", xstrdup(vars[1]));
@@ -1451,7 +1392,7 @@ void do_mktexnames(string name)
     */
   /*  setval_default("MT_DESTROOT", getval("MT_DEFAULT_DESTROOT")); */
   setval_default("MT_SUPPLIER", getval("MT_DEFAULT_SUPPLIER"));
-  setval_default("MT_TYPEFACE", getval("$MT_DEFAULT_TYPEFACE"));
+  setval_default("MT_TYPEFACE", getval("MT_DEFAULT_TYPEFACE"));
   setval_default("MT_NAMEPART", getval("MT_DEFAULT_NAMEPART"));
   setval_default("MT_PKDESTREL", getval("MT_DEFAULT_PKDESTREL"));
   setval_default("MT_TFMDESTREL", getval("MT_DEFAULT_TFMDESTREL"));
@@ -1462,7 +1403,7 @@ void do_mktexnames(string name)
      place fonts. */
   if (STREQ(getval("MT_SUPPLIER"), "unknown")
       || STREQ(getval("MT_TYPEFACE"), "unknown")) {
-    setval_default("MT_DESTROOT", getval("MT_VARTEXFONTS"));
+    setval_default("MT_FEATURES", concat(getval("MT_FEATURES"), ":fontmaps"));
   }
 
   /* Handle the options */
@@ -1492,6 +1433,13 @@ void do_mktexnames(string name)
       setval("MT_DESTROOT", "");
   }
 
+  if (test_file('z', expand_var("$MT_DESTROOT"))) {
+    string default_dest_root = expand_var("$MT_DEFAULT_DESTROOT");
+    setval("MT_DESTROOT", default_dest_root);
+    setval("MT_PKDESTDIR", default_dest_root);
+    setval("MT_TFMDESTDIR", default_dest_root);
+    setval("MT_MFDESTDIR", default_dest_root);
+  }
 
   s_dest = expand_var("$DEST");
   if (test_file('n', s_dest))
@@ -1504,14 +1452,6 @@ void do_mktexnames(string name)
     else
       setval("MT_NAMEPART", s_dest);
   
-  if (test_file('z', expand_var("$MT_DESTROOT"))) {
-    string default_dest_root = expand_var("$MT_DEFAULT_DESTROOT");
-    setval("MT_DESTROOT", default_dest_root);
-    setval("MT_PKDESTDIR", default_dest_root);
-    setval("MT_TFMDESTDIR", default_dest_root);
-    setval("MT_MFDESTDIR", default_dest_root);
-  }
-
   setval ("MT_MODE", expand_var("$MODE"));
   setval ("MT_NAMEPART", expand_var("$MT_NAMEPART"));
   setval ("MT_DESTROOT", expand_var("$MT_DESTROOT"));
@@ -1618,25 +1558,35 @@ void do_mktexupdate(string dir, char *name)
     mt_exit(1);
   }
   
+  /* update the current db too ! */
+  dirname = concat_pathes(dir, name);
+  if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
+    fprintf(stderr, "Inserting `%s' into current db\n", dirname);
+  }
+  kpse_db_insert(dirname);
+  free(dirname);
+
   /* This should give us the ls-R default path */
   if (!kpse_format_info[kpse_db_format].type) /* needed if arg was numeric */
     kpse_init_format (kpse_db_format);
-  lsrdir = xstrdup(kpse_format_info[kpse_db_format].path);
+
+  lsrdir = normalize(xstrdup(kpse_format_info[kpse_db_format].path));
 
   setval("TEXMFLS_R", "");
   /* For each argument in the list */
   for (elt = kpse_path_element(lsrdir);
        elt;
-       elt = kpse_path_element(NULL))
-    if (FILESTRNCASEEQ(dir, elt, strlen(elt))) {
+       elt = kpse_path_element(NULL)) {
+    if (*elt 
+	&& FILESTRNCASEEQ(dir, elt, strlen(elt))) {
       free(lsrdir);
       setval("TEXMFLS_R", lsrdir = xstrdup(elt));
       break;
     }
+  }
   if (!test_file('n', getval("TEXMFLS_R")))
     /* just return, it is call by other functions than mktexupd() */
     return;
-
   db_file = concat_pathes(lsrdir, "ls-R");
 
   if (!test_file('f', db_file)) {
@@ -1651,7 +1601,7 @@ void do_mktexupdate(string dir, char *name)
     fprintf(stderr, "%s: %s unwritable.\n", progname, db_file);
     mt_exit(1);
   }
-  if ((f = fopen(db_file, "r+")) == NULL) {
+  if ((f = fopen(db_file, "r+b")) == NULL) {
     fprintf(stderr, "%s: can't open %s.\n", progname, db_file);
     mt_exit(1);
   }
@@ -1683,10 +1633,6 @@ void do_mktexupdate(string dir, char *name)
 	fputs(name, f); fputc('\n', f); */
   fclose(f);
   free(relative_dir);
-  /* update the current db too ! */
-  dirname = concat_pathes(dir, name);
-  kpse_db_insert(dirname);
-  free(dirname);
 }
 
 int mktexupdate(int argc, char **argv)
@@ -1762,7 +1708,7 @@ void do_mktexmf(string font)
 		   && strlen(rootname) >= 4
 		   && strchr("bBcCfFhHiIlLmMoOsStTxX", rootname[3]))
 	       || ((rootname[0] == 'l' || rootname[0] == 'L')
-		   && strchr("aAbBcChHlL", rootname[1])
+		   && strchr("aAbBcCdDhHlL", rootname[1])
 		   && strchr("bBcCdDfFiIoOrRsStTuUvVxX", rootname[2])))) {
     char lhprefix[64];
     strcpy(lhprefix, "xxcodes.mf");
@@ -1837,10 +1783,9 @@ void do_mktexmf(string font)
   } else realsize = pointsize;
 
   mfname = concat(name, ".mf");
-
   if (test_file('r', mfname)) {
-    fprintf(stderr, "%s: %s already exists.\n", progname,
-	    gen = normalize(concat_pathes(destdir, mfname)));
+    gen = normalize(concat_pathes(destdir, mfname));
+    fprintf(stderr, "%s: %s already exists.\n", progname, gen);
     fprintf(fout, "%s\n", gen);
     free(gen);
     do_mktexupdate(destdir, mfname);
@@ -1887,7 +1832,7 @@ void do_mktexmf(string font)
 		   && strlen(name) >= 4
 		   && strchr("bBcCfFhHiIlLmMoOsStTxX", name[3]))
 	       || ((name[0] == 'l' || name[0] == 'L')
-		   && strchr("aAbBcChHlL", name[1])
+		   && strchr("aAbBcCdDhHlL", name[1])
 		   && strchr("bBcCdDfFiIoOrRsStTuUvVxX", name[2])))) {
     fprintf(f, "input fikparm;\n");
   }
@@ -1914,8 +1859,8 @@ void do_mktexmf(string font)
   }
   setval("destdir", destdir);
   setval("mfname", mfname);
-  fprintf(fout, "%s\n", 
-	  fullname = normalize(concat_pathes(destdir, mfname)));
+  fullname = normalize(concat_pathes(destdir, mfname));
+  fprintf(fout, "%s\n", fullname);
   fprintf(stderr, "%s: %s: successfully generated.\n", progname, fullname);
   free(fullname);
   do_mktexupdate(destdir, mfname);
@@ -1928,8 +1873,24 @@ int mktexmf(int argc, char **argv)
   return 0;
 }
 
+void do_mktextex(const_string texname)
+{
+  string fullname, destdir;
+
+  /*
+    We may try to get this file directly from a remote repository.
+  */
+#if 0
+  fprintf(fout, "%s\n", 
+	  fullname = normalize(concat_pathes(destdir, texname)));
+  fprintf(stderr, "%s: %s: successfully generated.\n", progname, fullname);
+#endif
+}
+
 int mktextex(int argc, char **argv)
 {
+  start_redirection(false);
+  do_mktextex(argv[1]);
   return 0;
 }
 
@@ -1968,14 +1929,14 @@ void do_mktextfm(string font, string destdir)
   char pktempname[PATH_MAX];
   char cmd[256];
   int retcode;
-
+  
   setval("NAME", name = my_basename(font, ".tfm"));
   setval("MAG", "1");
   setval("DEST", destdir);
   setval("DPI", getval("BDPI"));
-
+  
   do_mktexnames(name);
-
+  
   setval("PKDEST", getval("MT_PKNAME"));
   setval("TFMDEST", getval("MT_TFMNAME"));
   setval("PKDESTDIR", getval("MT_PKDESTDIR"));
@@ -1984,16 +1945,17 @@ void do_mktextfm(string font, string destdir)
   setval("TFMNAME", concat(name, ".tfm"));
   /* FIXME: can e.g. cmr10.600gf clash with e.g. cmr10.600whatever on DOS?  */
   setval("GFNAME", concatn(name, ".", getval("DPI"), "gf", NULL));
-
-  if (test_file('r', fullname = expand_var("$TFMDESTDIR/$TFMNAME"))) {
-    fprintf(stderr, "%s: %s already exists.\n",
-	    progname, fullname);
+  
+  fullname = expand_var("$TFMDESTDIR/$TFMNAME");
+  if (test_file('r', fullname)) {
+    fprintf(stderr, "%s: %s already exists.\n", progname, fullname);
     fprintf(fout, "%s\n", fullname);
     free(fullname);
     do_mktexupdate(getval("TFMDESTDIR"), getval("TFMNAME"));
     return;
   }
-
+  free(fullname);
+      
   do_makedir(getval("TFMDESTDIR"));
   if (!test_file('d', getval("TFMDESTDIR"))) {
     fprintf(stderr, "%s: mktexdir %s failed.\n",
@@ -2010,7 +1972,7 @@ void do_mktextfm(string font, string destdir)
 
   /* Now run metafont.
      Note that stdin has been redirected to "/dev/null" by `main'. */
-  retcode = win32_system(cmd);
+  retcode = system(cmd);
 
   if (retcode != 0) {
     if (retcode == -1) {
@@ -2058,9 +2020,9 @@ void do_mktextfm(string font, string destdir)
 
   /* OK, success with the TFM.  */
   do_mktexupdate(getval("TFMDESTDIR"), getval("TFMNAME"));
-  fprintf(fout, "%s\n", 
-	  fullname = normalize(concat_pathes(getval("TFMDESTDIR"),
-					     getval("TFMNAME"))));
+  fullname = normalize(concat_pathes(getval("TFMDESTDIR"), getval("TFMNAME")));
+  fprintf(fout, "%s\n", fullname);
+
   fprintf(stderr, "%s: %s: successfully generated.\n", progname,
 	  fullname);
 
@@ -2076,7 +2038,7 @@ void do_mktextfm(string font, string destdir)
     if (KPSE_DEBUG_P(MKTEX_DEBUG)) {
       fprintf(stderr, "Running: %s\n", cmd);
     }
-    retcode = win32_system(cmd);
+    retcode = system(cmd);
     if (retcode != 0) {
       if (retcode == -1)
 	perror("gftopk");
@@ -2121,7 +2083,7 @@ int mktextfm(int argc, char **argv)
      esac
   */
   if (feature_p("nomfdrivers")) {
-    setval_default("MT_FEATURES", xgetcwd());
+    setval_default("MT_MFDESTDIR", xgetcwd());
   }
 
   start_redirection(false);
@@ -2180,6 +2142,126 @@ boolean find_exe(char *progname)
 #endif
 }
 
+/*
+  We will read the `modes.mf' and gather the various modes.
+*/
+#define MAX_MODES 64
+
+struct mf_mode
+{
+  string mnemonic;
+  string description;
+  int hor_res;
+  int vert_res;
+};
+
+static struct mf_mode *modes;
+static int nb_modes;
+
+#define SKIP_NON_DIGIT(p) while(!isdigit(*p)) p++
+#define SKIP_ALPHA(p) while(isalpha(*p)) p++;
+#define SKIP_SPACE(p) while(isspace(*p)) p++;
+#define SKIP_LINE(p) while(*p && *p != '\n') p++;
+
+static boolean __cdecl
+cmp_mf_mode(const struct mf_mode *m1, const struct mf_mode *m2) {
+  return (strcmp(m1->description, m2->description) < 0);
+}
+
+static boolean
+read_modes()
+{
+  string modes_file_name = kpse_find_file("modes.mf", kpse_mf_format, true);
+  FILE *f;
+  string line;
+  boolean in_mode_def = false;
+  int size_modes = MAX_MODES;
+  
+  /* modes will keep this value if modes.mf can't be found or read. */
+  modes = (struct mf_mode *)-1;
+  if (modes_file_name  == NULL)
+    return false;
+  if((f = fopen(modes_file_name, "r")) == NULL) {
+    free(modes_file_name);
+    return false;
+  }
+
+  modes = xmalloc(size_modes * sizeof(struct mf_mode));
+    
+  while((line = read_line(f)) != NULL) {
+    if (in_mode_def) {
+      char * cp;
+      if (strncmp(line, "enddef;", 7) == 0) {
+	nb_modes++;
+	if (nb_modes == MAX_MODES) {
+	  size_modes *= 2;
+	  modes = xrealloc(modes, size_modes * sizeof(struct mf_mode));
+	}
+	in_mode_def = false;
+      }
+      else if (modes[nb_modes].hor_res == 0 
+	       && (cp = strstr(line, "pixels_per_inch"))) {
+	SKIP_NON_DIGIT (cp);
+	modes[nb_modes].hor_res = atoi(cp);
+	modes[nb_modes].vert_res = atoi(cp);
+      }
+      else if (cp = strstr(line, "aspect_ratio")) {
+	SKIP_NON_DIGIT (cp);
+	modes[nb_modes].vert_res = atoi(cp);
+      }
+    }
+    else if (strncmp(line, "mode_def", 8) == 0) {
+      char *mode_name, *printer_name;
+      char *cp = line + 8;
+      while (! isalpha(*cp) && *cp != '\n')
+	cp++;
+      if (! isalpha (*cp))
+	goto line_done;
+      mode_name = cp;
+      SKIP_ALPHA (cp);
+      if (*cp == 0)
+	goto line_done;
+      *cp++ = 0;
+      if (strcmp(mode_name, "help") == 0)
+	goto line_done;
+      cp = strstr(cp, "%\\[");
+      if (cp == 0)
+	goto line_done;
+      cp += 3;
+      SKIP_SPACE (cp);
+      if (cp == 0)
+	goto line_done;
+      printer_name = cp;
+      SKIP_LINE (cp);
+      *cp = 0;
+      in_mode_def = true;
+      
+      modes[nb_modes].mnemonic = xstrdup(mode_name);
+      modes[nb_modes].description = xstrdup(printer_name);
+      modes[nb_modes].hor_res = 0;
+    }
+  line_done:
+    free(line);
+  }
+  qsort(modes, nb_modes, sizeof(struct mf_mode), cmp_mf_mode);
+  return true;
+}
+
+string
+get_mf_mode(int dpi)
+{
+  int i;
+
+  if ((modes == NULL && !read_modes())
+      || (modes == (struct mf_mode *)-1))
+    return NULL;
+
+  for (i = 0; i < nb_modes; i++) {
+    if (modes[i].hor_res == dpi)
+      return modes[i].mnemonic;
+  }
+  return NULL;
+}
 
 int mktexpk(int argc, char **argv)
 {
@@ -2187,7 +2269,7 @@ int mktexpk(int argc, char **argv)
   string psmapfilename, fullname;
   string line = NULL, pktempname;
   string cmd = "", gfcmd;
-  string aname;
+  string aname, mfname;
   string *vars;
   int mf_bdpi, ibdpi, retcode;
   boolean has_ttf2pk = false, has_hbf2gf = false;
@@ -2229,120 +2311,14 @@ int mktexpk(int argc, char **argv)
     fprintf(stderr, "MktexPK:\n\tName: %s\n\tDpi: %s\n\tBdpi: %s\n\tMag: %s\n\tMode: %s\n\tDest: %s\n", getval("NAME"), getval("DPI"), getval("BDPI"), 
 	    getval("MAG"), getval("MODE"), getval("DEST"));
   }
-
-  if (FILESTRCASEEQ(getval("ps_to_pk"), "gsftopk")) {
-    if (KPSE_DEBUG_P(MKTEX_DEBUG)) {
-      printf("Test: system -> %d win32_system -> %d\n",
-	     system(expand_var("$ps_to_pk -t $NAME")),
-	     win32_system(expand_var("$ps_to_pk -t $NAME")));
-    }
-    if (win32_system(expand_var("$ps_to_pk -t $NAME"))==0) {
-      cmd = expand_var("$ps_to_pk $NAME $DPI");
-    }
-  }
-  else if (FILESTRCASEEQ(getval("ps_to_pk"), "ps2pk")) {
-    string pstmp;
-    /* look for name in psfont.map.
-       Can't use `kpse_open_file' because it exits if the file doesn't
-       exits, and we have a special exit procedure which cleans up.  */
-    pstmp = kpse_find_file("ps2pk.map", kpse_dvips_config_format, false);
-    if (test_file('z', pstmp))
-      pstmp = kpse_find_file("psfonts.map", kpse_dvips_config_format, false);
-    psmapfilename = setval_default("PSMAPFILE", pstmp);
-    if (test_file('n', pstmp)) free(pstmp);
-
-    if (test_file('n', psmapfilename)) {
-      string pattern = concat3("^", getval("NAME"), "([ \t]|$)");
-
-      psmapfile = fopen(psmapfilename, "r");
-      if (psmapfile == NULL) oops("Cannot open file %s.", psmapfilename);
-      while ((line = read_line(psmapfile)) != NULL) {
-	if ((vars = grep(pattern, line, 1)) != NULL)
-	  break;
-	free(line);
-	line = NULL;
-      }
-      free(pattern);
-      fclose(psmapfile);
-    }
-    else
-      fprintf(stderr, "%s: no `psfonts.map' file.\n", progname);
-
-    if (line != NULL) {
-      /* ps_to_pk is set in mktex.opt */
-      string encoding, psname, slant, extend;
-      encoding = psname = slant = extend = "";
-      /* FIXME: mktexpk script has a loop here which effectively
-	 looks for the LAST matching string.  Is it important?  */
-      if ((vars = grep("([^ \t<[\"]*.enc)", line, 1)))
-	encoding = concat ("-e", vars[1]);
-      if ((vars = grep("([^ \t<[\"]*.pf[ab])", line, 1)))
-	psname = vars[1];
-      if ((vars = grep("\" ([^ \t]+)SlantFont\"", line, 1)))
-	slant = concat ("-S ", vars[1]);
-      if ((vars = grep("\" ([^ \t]+)ExtendFont\"", line, 1)))
-	extend = concat ("-E", vars[1]);
-      /* This is looking for .pfa *and* .pfb with the 7.2 kpathsea. */
-      if (test_file('z', psname)) {
-	psname = kpse_find_file(getval("NAME"), kpse_type1_format, false);
-      }
-      if (test_file('z', psname)) {
-	aname = xstrdup(getval("NAME"));
-	if (strlen(aname) >= 2
-	    && aname[strlen(aname)-2] == '8' 
-	    && aname[strlen(aname)-1] == 'r')
-	  /* Guessing the name of the type1 font file as fallback: */
-	  aname[strlen(aname)-1] = 'a';
-	psname = kpse_find_file(aname, kpse_type1_format, false);
-	free(aname);
-      }
-      if (test_file('z', psname)) {
-	fprintf(stderr, 
-		"%s: cannot find %s.pfa or %s.pfb. Trying gsftopk.\n",
-		progname, getval("NAME"), getval("NAME"));
-	cmd = expand_var("gsftopk $NAME $DPI");
-	/* make sure that gsftopk uses the psline from our mapfile: */
-	{
-	  FILE *f;
-	  if ((f = fopen("./psfonts.map", "w")) != NULL) {
-	    fprintf(f, "%s\n", line);
-	    fclose(f);
-	    setval("TEXFONTMAP", expand_var(".;$TEXFONTMAP"));
-	  }
-	  else {
-	    /* Can't write in the current directory ? Strange ...
-	       Anyway, let's go on and home we will find the right
-	       psfonts.map ... */
-	  }
-	}
-      }
-      else
-	cmd = concatn( expand_var("ps2pk -v -X$DPI -R$BDPI"), 
-		       slant, " ", extend, " ", encoding,
-		       " ", psname, " ", expand_var("$NAME.${DPI}pk"), NULL);
-    }
-  }
   
-  if (test_file('z', cmd)) {
-    if (has_ttf2pk) {
-      if (KPSE_DEBUG_P(MKTEX_DEBUG)) {
-	printf("Test: system -> %d win32_system -> %d\n",
-	       system(expand_var("ttf2pk -t -q $NAME")),
-	       win32_system(expand_var("ttf2pk -t -q $NAME")));
-      }
-    }
-    if (has_ttf2pk && win32_system(expand_var("ttf2pk -t -q $NAME")) == 0) {
-      cmd = expand_var("ttf2pk -q $NAME $DPI");
-    }
-    else if (has_hbf2gf && win32_system(expand_var("hbf2gf -q -t $NAME")) == 0) {
-      cmd = expand_var("hbf2gf -g $NAME $DPI");
-    }
-  }
+  mfname = concat(getval("NAME"), ".mf");
+  cmd = expand_var("mktexmf $NAME");
 
-  if (test_file('n', cmd)) {
-    setval("MODE", "modeless");
-  }
-  else {
+  if ((kpse_find_file(mfname, kpse_mf_format, false) != NULL) 
+      || (system(cmd) == 0)) {
+    
+    cmd = NULL; /* reset cmd */
     if (test_file('n', getval("MODE"))) {
       if ((mf_bdpi = get_mode_from_mf(getval("MODE"))) 
 	  != atoi(getval("BDPI"))) {
@@ -2350,6 +2326,7 @@ int mktexpk(int argc, char **argv)
 	setval("MODE", "");
       }
     }
+
     if (test_file('z', getval("MODE")) 
 	|| strcmp(getval("MODE"), "default") == 0) {
       ibdpi = atoi(getval("BDPI"));
@@ -2378,17 +2355,151 @@ int mktexpk(int argc, char **argv)
       case 1270:
 	setval("MODE", "linoone");
 	break;
-      default:
-	fprintf (stderr, "%s: Can't guess mode for %s dpi devices.\n",
-		 progname, getval("BDPI"));
-	fprintf (stderr, "%s: Use a config file, or update me.\n",
-		 progname);
+      default: {
+	string mode = get_mf_mode(ibdpi);
+	if (mode) {
+	  setval("MODE", mode);
+	}
+	else {
+	  fprintf (stderr, "%s: Can't guess mode for %s dpi devices.\n",
+		   progname, getval("BDPI"));
+	  fprintf (stderr, "%s: Use a config file, or update me.\n",
+		   progname);
+	  mt_exit(1);
+	}
+      }
+      }
+    }
+    /* Run Metafont. Always use plain Metafont, since reading cmbase.mf */
+    /* does not noticeably slow things down. */
+    cmd=expand_var("mf \"\\mode:=$MODE; mag:=$MAG; nonstopmode; input $NAME\"");
+  }
+  else {
+    cmd = NULL; /* reset cmd */
+    setval("MODE", "modeless");
+    if (FILESTRCASEEQ(getval("ps_to_pk"), "gsftopk")) {
+#if 0
+      if (KPSE_DEBUG_P(MKTEX_DEBUG)) {
+	printf("Test: system -> %d win32_system -> %d\n",
+	       system(expand_var("$ps_to_pk -t $NAME")),
+	       win32_system(expand_var("$ps_to_pk -t $NAME")));
+      }
+#endif
+      if (system(expand_var("$ps_to_pk -t $NAME"))==0) {
+	cmd = expand_var("$ps_to_pk $NAME $DPI");
+      }
+    }
+    else if (FILESTRCASEEQ(getval("ps_to_pk"), "ps2pk")) {
+      string pstmp;
+      /* look for name in psfont.map.
+	 Can't use `kpse_open_file' because it exits if the file doesn't
+	 exits, and we have a special exit procedure which cleans up.  */
+      pstmp = kpse_find_file("ps2pk.map", kpse_dvips_config_format, false);
+      if (test_file('z', pstmp))
+	pstmp = kpse_find_file("psfonts.map", kpse_dvips_config_format, false);
+      psmapfilename = setval_default("PSMAPFILE", pstmp);
+      if (test_file('n', pstmp)) free(pstmp);
+      
+      if (test_file('n', psmapfilename)) {
+	string pattern = concat3("^", getval("NAME"), "([ \t]|$)");
+	
+	psmapfile = fopen(psmapfilename, "r");
+	if (psmapfile == NULL) oops("Cannot open file %s.", psmapfilename);
+	while ((line = read_line(psmapfile)) != NULL) {
+	  if ((vars = grep(pattern, line, 1)) != NULL)
+	    break;
+	  free(line);
+	  line = NULL;
+	}
+	free(pattern);
+	fclose(psmapfile);
+      }
+      else
+	fprintf(stderr, "%s: no `psfonts.map' file.\n", progname);
+      
+      if (line != NULL) {
+	/* ps_to_pk is set in mktex.opt */
+	string encoding, psname, slant, extend;
+	encoding = psname = slant = extend = "";
+	/* FIXME: mktexpk script has a loop here which effectively
+	   looks for the LAST matching string.  Is it important?  */
+	if ((vars = grep("([^ \t<[\"]*.enc)", line, 1)))
+	  encoding = concat ("-e", vars[1]);
+	if ((vars = grep("([^ \t<[\"]*.pf[ab])", line, 1)))
+	  psname = vars[1];
+	if ((vars = grep("\" ([^ \t]+)SlantFont\"", line, 1)))
+	  slant = concat ("-S ", vars[1]);
+	if ((vars = grep("\" ([^ \t]+)ExtendFont\"", line, 1)))
+	  extend = concat ("-E", vars[1]);
+	/* This is looking for .pfa *and* .pfb with the 7.2 kpathsea. */
+	if (test_file('z', psname)) {
+	  psname = kpse_find_file(getval("NAME"), kpse_type1_format, false);
+	}
+	if (test_file('z', psname)) {
+	  aname = xstrdup(getval("NAME"));
+	  if (strlen(aname) >= 2
+	      && aname[strlen(aname)-2] == '8' 
+	      && aname[strlen(aname)-1] == 'r')
+	    /* Guessing the name of the type1 font file as fallback: */
+	    aname[strlen(aname)-1] = 'a';
+	  psname = kpse_find_file(aname, kpse_type1_format, false);
+	  free(aname);
+	}
+	if (test_file('n', psname)) {
+	  /* In fact, ps2pk can't cope with the full pathname, so : */
+	  psname = xbasename(psname);
+	  cmd = concatn( expand_var("ps2pk -v -X$DPI -R$BDPI"), 
+			 slant, " ", extend, " ", encoding,
+			 " ", psname, " ", expand_var("$NAME.${DPI}pk"), NULL);
+	}
+	else {
+	  cmd = expand_var("gsftopk -t $NAME");
+	  if (system(cmd) == 0) {
+	    cmd = NULL; /* reset cmd */
+	    fprintf(stderr, 
+		    "%s: cannot find %s.pfa or %s.pfb. Trying gsftopk.\n",
+		    progname, getval("NAME"), getval("NAME"));
+	    cmd = expand_var("gsftopk $NAME $DPI");
+#if 0
+	    /* make sure that gsftopk uses the psline from our mapfile: */
+	    {
+	      FILE *f;
+	      if ((f = fopen("./psfonts.map", "w")) != NULL) {
+		fprintf(f, "%s\n", line);
+		fclose(f);
+		setval("TEXFONTMAP", expand_var(".;$TEXFONTMAP"));
+	      }
+	      else {
+		/* Can't write in the current directory ? Strange ...
+		   Anyway, let's go on and home we will find the right
+		   psfonts.map ... */
+	      }
+	    }
+#endif
+	  }
+	  else {
+	    cmd = NULL; /* reset cmd */
+	  }
+	}
+      }
+    }
+    
+    /* unsupported by $ps_to_pk, try other conversions: */
+    if (test_file('z', cmd)) {
+      if (has_ttf2pk && system(expand_var("ttf2pk -t -q $NAME")) == 0) {
+	cmd = expand_var("ttf2pk -q $NAME $DPI");
+      }
+      else if (has_hbf2gf && system(expand_var("hbf2gf -q -t $NAME")) == 0) {
+	cmd = expand_var("hbf2gf -g $NAME $DPI");
+      }
+      else {
+	fprintf(stderr, "%s: don't know how to create bitmap font for %s.",
+		progname, getval("NAME"));
 	mt_exit(1);
       }
     }
-    cmd = expand_var("mf \"\\mode:=$MODE; mag:=$MAG; nonstopmode; input $NAME\"");
   }
-    
+  
   /* Put files into proper place */
   do_mktexnames(getval("NAME"));
 
@@ -2417,7 +2528,7 @@ int mktexpk(int argc, char **argv)
 
   /* Now run metafont.
      Note that stdin has been redirected to "/dev/null" by `main'. */
-  retcode = win32_system(cmd);
+  retcode = system(cmd);
   if (retcode != 0) {
       fprintf(stderr, "command %s return %d\n", cmd, retcode);
     if (retcode == -1) {
@@ -2441,7 +2552,7 @@ int mktexpk(int argc, char **argv)
   
   if (test_file('r', getval("GFNAME"))) {
     gfcmd = expand_var("gftopk ./$GFNAME $PKNAME");
-    retcode = win32_system(gfcmd);
+    retcode = system(gfcmd);
     if (retcode == -1) {
       perror("gftopk");
       mt_exit(1);
@@ -2478,27 +2589,13 @@ int mktexpk(int argc, char **argv)
 
   /* OK, success with the PK.  */
   do_mktexupdate(getval("PKDESTDIR"), getval("PKNAME"));
-  fprintf(fout, "%s\n", 
-	  fullname = normalize(concat_pathes(getval("PKDESTDIR"),
-					     getval("PKNAME"))));
+  fullname = normalize(concat_pathes(getval("PKDESTDIR"),
+				     getval("PKNAME")));
+  fprintf(fout, "%s\n", fullname);
   fprintf(stderr, "%s: %s: successfully generated.\n", progname,
 	  fullname);
   free(fullname);
 
   popd();
   return 0;
-}
-
-int mktexfmt(int argc, char **argv)
-{
-  return 0;
-}
-
-/* This one should help to clean up a font tree in a TDS way. It
-  should also regenerate (remove ?) any pk font older 
-  than the same tfm font. 
-  */
-void mktextdsify(int argc, char **argv)
-{
-
 }

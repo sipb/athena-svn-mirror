@@ -24,6 +24,7 @@
 #include "config.h"
 #include <kpathsea/c-ctype.h>
 #include <kpathsea/progname.h>
+#include <math.h>
 #else /* ! KPATHSEA */
 #include <stdio.h>
 #include <stdlib.h>
@@ -207,8 +208,9 @@ struct pcc {
 FILE *afmin, *vplout, *tfmout ;
 char inname[200], outname[200] ; /* names of input and output files */
 char tmpstr[200] ; /* a buffer for one string */
-char buffer[255]; /* input buffer (modified while parsing) */
-char obuffer[255] ; /* unmodified copy of input buffer */
+#define INBUFSIZE 255
+char buffer[INBUFSIZE+10]; /* input buffer (modified while parsing) */
+char obuffer[INBUFSIZE+10] ; /* unmodified copy of input buffer */
 char *param ; /* current position in input buffer */
 char *fontname = "Unknown" ;
 char *codingscheme = "Unspecified" ;
@@ -260,8 +262,24 @@ getline P1H(void) {
    register int c ;
 
    param = buffer ;
-   for (p=buffer; (c=getc(afmin)) != EOF && c != '\n';)/* changed 10 to '\n' */
+   for (p=buffer; (c=getc(afmin)) != EOF;) {
+      if (p - buffer >= INBUFSIZE)
+         error("! input line too long; perhaps input file is malformed?") ;
       *p++ = c ;
+      if (c == '\r') {
+         c = getc(afmin) ;
+         if (c != EOF) {
+            if (c == '\n') {
+               *p++ = c ;
+            } else {
+               ungetc(c, afmin) ;
+            }
+         }
+         break ;
+      } else if (c == '\n') {
+         break ;
+      }
+   }
    *p = 0 ;
    (void)strcpy(obuffer, buffer) ;
    if (p == buffer && c == EOF)
@@ -303,7 +321,7 @@ mymalloc P1C(unsigned long, len)
    if (len > 65500L)
       error("! can't allocate more than 64K!") ;
 #endif
-   p = malloc((unsigned)len) ;
+   p = (char *) malloc((unsigned)len) ;
    if (p==NULL)
       error("! out of memory") ;
    for (i=0; i<len; i++)
@@ -553,7 +571,7 @@ handleconstruct P1H(void) { /* an input line beginning with CC */
    }
 }
 
-struct encoding *readencoding() ;
+struct encoding *readencoding P1H(char *) ;
 
 void
 makeaccentligs P1H(void) {
@@ -663,7 +681,7 @@ handlereencoding P1H(void) {
          }
       for (i=0; i<256; i++) {
          p = inencoding->vec[i] ;
-         if (p && *p && 0 != (ai = findadobe(p))) {
+         if (p && *p && strcmp(p, ".notdef") != 0 && 0 != (ai = findadobe(p))) {
             ai->adobenum = i ;
             adobeptrs[i] = ai ;
          }
@@ -684,8 +702,7 @@ handlereencoding P1H(void) {
  *   characters, we would prefer to use the original ordering.  It just
  *   makes more sense.
  */
-struct adobeinfo *revlist(p)
-struct adobeinfo *p ;
+struct adobeinfo *revlist P1C(struct adobeinfo *, p)
 {
    struct adobeinfo *q = 0, *t ;
 
@@ -710,7 +727,8 @@ assignchars P1H(void) {
  *   First, we assign all those that match perfectly.
  */
    for (i=0, p=outencoding->vec; i<256; i++, p++)
-      if ((ai=findadobe(*p)) && (ai->adobenum >= 0 || ai->pccs != NULL)) {
+      if (*p && strcmp(*p, ".notdef") != 0 &&
+          (ai=findadobe(*p)) && (ai->adobenum >= 0 || ai->pccs != NULL)) {
          if (ai->texnum >= 0)
             nexttex[i] = ai->texnum ; /* linked list */
          ai->texnum = i ;
@@ -1211,8 +1229,7 @@ vright P1H(void)
 int forceoctal = 0 ;
 
 char vcharbuf[6] ;
-char *vchar(c)
-int c ;
+char *vchar P1C(int, c)
 {
    if (forceoctal == 0 && ISALNUM (c))
       (void) sprintf(vcharbuf,"C %c",
@@ -1466,9 +1483,9 @@ writevpl P1H(void)
 void version P1C(FILE *, f)
 {
   extern KPSEDLL char *kpathsea_version_string;
-  fputs ("afm2tfm(k) (dvips(k) 5.86a) 8.1\n", f);
+  fputs ("afm2tfm(k) (dvips(k) 5.92b) 8.1\n", f);
   fprintf (f, "%s\n", kpathsea_version_string);
-  fputs ("Copyright (C) 1998 Radical Eye Software.\n\
+  fputs ("Copyright (C) 2002 Radical Eye Software.\n\
 There is NO warranty.  You may redistribute this software\n\
 under the terms of the GNU General Public License\n\
 and the Dvips copyright.\n\
@@ -1517,10 +1534,14 @@ void usage P1C(FILE *, f)
 }
 #endif
 
+#define CHECKARG3 if (argc < 4) { usage(stderr); exit(1); }
+
 void
 openfiles P2C(int, argc, char **, argv)
 {
+#ifndef KPATHSEA
    register int lastext ;
+#endif
    register int i ;
    char *p ;
    int arginc ;
@@ -1564,6 +1585,7 @@ openfiles P2C(int, argc, char **, argv)
       switch (i) {
 case 'V': makevpl++ ;
 case 'v': makevpl++ ;
+         CHECKARG3
          (void)strcpy(outname, argv[3]) ;
 #ifdef KPATHSEA
 	 if (find_suffix(outname) == NULL)
@@ -1588,26 +1610,33 @@ case 'v': makevpl++ ;
 #endif
             error("! can't open vpl output file") ;
          break ;
-case 'e': if (sscanf(argv[3], "%f", &efactor)==0 || efactor<0.01)
+case 'e': CHECKARG3
+          if (sscanf(argv[3], "%f", &efactor)==0 || efactor<0.01)
             error("! Bad extension factor") ;
          efactorparam = argv[3] ;
          break ;
 case 'c':
+         CHECKARG3
          if (sscanf(argv[3], "%f", &capheight)==0 || capheight<0.01)
             error("! Bad small caps height") ;
          break ;
-case 's': if (sscanf(argv[3], "%f", &slant)==0)
+case 's':
+         CHECKARG3
+         if (sscanf(argv[3], "%f", &slant)==0)
             error("! Bad slant parameter") ;
          slantparam = argv[3] ;
          break ;
 case 'P':
 case 'p':
+         CHECKARG3
          inenname = argv[3] ;
          break ;
 case 'T':
+         CHECKARG3
          inenname = outenname = argv[3] ;
          break ;
 case 't':
+         CHECKARG3
          outenname = argv[3] ;
          break ;
 case 'O':
@@ -1634,6 +1663,7 @@ default: (void)fprintf(stderr, "Unknown option %s %s will be ignored.\n",
    if ((afmin=fopen(inname, "r"))==NULL)
       error("! can't open afm input file") ;
 #endif /* KPATHSEA */
+   SET_BINARY(fileno(afmin)) ;
 
    if (argc>3 || (argc==3 && *argv[2]=='-')) {
      error("! need at most two non-option arguments") ;
@@ -1919,6 +1949,7 @@ struct encoding *readencoding P1C(char *, enc)
 #else
       afmin = fopen(enc, "r") ;
 #endif
+      SET_BINARY(fileno(afmin)) ;
       param = 0 ;
       if (afmin == 0)
 #ifdef KPATHSEA
@@ -1965,11 +1996,13 @@ struct encoding *readencoding P1C(char *, enc)
 /*
  *   This routine prints out the line that needs to be added to psfonts.map.
  */
+#ifndef VMCMS
 void conspsfonts() {
    (void)printf("%s %s", outname,
-#ifndef VMCMS
    fontname) ;
 #else /* VM/CMS: fontname is ascii, so we use ebfontname */
+void conspsfonts() {
+   (void)printf("%s %s", outname,
    ebfontname) ;
 #endif
    if (slantparam || efactorparam || inenname) {

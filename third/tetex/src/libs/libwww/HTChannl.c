@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTChannl.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTChannl.c,v 1.1.1.2 2003-02-25 22:27:06 amb Exp $
 **
 **
 ** HISTORY:
@@ -23,8 +23,7 @@
 
 #include "HTChannl.h"					 /* Implemented here */
 
-#define HASH_SIZE	67
-#define HASH(s)		((s) % HASH_SIZE)
+#define HASH(s)		((s) % (HT_M_HASH_SIZE))
 
 struct _HTInputStream {
     const HTInputStreamClass *	isa;
@@ -131,19 +130,16 @@ PRIVATE void free_channel (HTChannel * ch)
 
 	/* Close the socket */
 	if (ch->sockfd != INVSOC) {
-	    HTEvent_unregister(ch->sockfd, HTEvent_ALL);
 	    NETCLOSE(ch->sockfd);
    	    HTNet_decreaseSocket();
-	    if (PROT_TRACE)
-		HTTrace("Channel..... Deleted %p, socket %d\n", ch,ch->sockfd);
+	    HTTRACE(PROT_TRACE, "Channel..... Deleted %p, socket %d\n" _ ch _ ch->sockfd);
 	    ch->sockfd = INVSOC;
 	}
 
 	/* Close the file */
 	if (ch->fp) {
 	    fclose(ch->fp);
-	    if (PROT_TRACE)
-		HTTrace("Channel..... Deleted %p, file %p\n", ch, ch->fp);
+	    HTTRACE(PROT_TRACE, "Channel..... Deleted %p, file %p\n" _ ch _ ch->fp);
 	    ch->fp = NULL;
 	}
 	HT_FREE(ch);
@@ -163,9 +159,9 @@ PUBLIC HTChannel * HTChannel_new (SOCKET sockfd, FILE * fp, BOOL active)
     HTList * list = NULL;
     HTChannel * ch = NULL;
     int hash = sockfd < 0 ? 0 : HASH(sockfd);
-    if (PROT_TRACE) HTTrace("Channel..... Hash value is %d\n", hash);
+    HTTRACE(PROT_TRACE, "Channel..... Hash value is %d\n" _ hash);
     if (!channels) {
-	if (!(channels = (HTList **) HT_CALLOC(HASH_SIZE,sizeof(HTList*))))
+	if (!(channels = (HTList **) HT_CALLOC(HT_M_HASH_SIZE,sizeof(HTList*))))
 	    HT_OUTOFMEM("HTChannel_new");
     }
     if (!channels[hash]) channels[hash] = HTList_new();
@@ -194,7 +190,7 @@ PUBLIC HTChannel * HTChannel_new (SOCKET sockfd, FILE * fp, BOOL active)
 	    }
 #endif /* HT_MUX */
 
-    if (PROT_TRACE) HTTrace("Channel..... Added %p to list %p\n", ch,list);
+    HTTRACE(PROT_TRACE, "Channel..... Added %p to list %p\n" _ ch _ list);
     return ch;
 }
 
@@ -225,28 +221,16 @@ PUBLIC HTChannel * HTChannel_find (SOCKET sockfd)
 PUBLIC BOOL HTChannel_delete (HTChannel * channel, int status)
 {
     if (channel) {
-	if (PROT_TRACE) HTTrace("Channel..... Delete %p with semaphore %d\n",
-				channel, channel->semaphore);
+	HTTRACE(PROT_TRACE, "Channel..... Delete %p with semaphore %d, status %d\n" _ 
+		channel _ channel->semaphore _ status);
 	/*
 	**  We call the free methods on both the input stream and the output
 	**  stream so that we can free up the stream pipes. However, note that
 	**  this doesn't mean that we close the input stream and output stream
 	**  them selves - only the generic streams
 	*/
-	if (status != HT_IGNORE) {
-	    if (channel->input) {
-                if (status==HT_INTERRUPTED || status==HT_TIMEOUT)
-		    (*channel->input->isa->abort)(channel->input, NULL);
-		else
-		    (*channel->input->isa->_free)(channel->input);
-	    }
-	    if (channel->output) {
-		if (status==HT_INTERRUPTED || status==HT_TIMEOUT)
-		    (*channel->output->isa->abort)(channel->output, NULL);
-		else
-		    (*channel->output->isa->_free)(channel->output);
-	    }
-	}
+	HTChannel_deleteInput(channel, status);
+	HTChannel_deleteOutput(channel, status);
 
 	/*
 	**  Check whether this channel is used by other objects or we can
@@ -276,7 +260,7 @@ PUBLIC BOOL HTChannel_deleteAll (void)
     if (channels) {
 	HTList * cur;
 	int cnt;
-	for (cnt=0; cnt<HASH_SIZE; cnt++) {
+	for (cnt=0; cnt<HT_M_HASH_SIZE; cnt++) {
 	    if ((cur = channels[cnt])) { 
 		HTChannel * pres;
 		while ((pres = (HTChannel *) HTList_nextObject(cur)) != NULL)
@@ -289,6 +273,32 @@ PUBLIC BOOL HTChannel_deleteAll (void)
     return YES;
 }
 
+/*      HTChannel_safeDeleteAll
+**      -------------------
+**      Destroys all channels. This is called by HTLibTerminate(0
+*/
+ 
+PUBLIC BOOL HTChannel_safeDeleteAll (void)
+{
+    if (channels) {
+        HTList * cur;
+        int cnt;
+        for (cnt=0; cnt<HT_M_HASH_SIZE; cnt++) {
+          if ((cur = channels[cnt])) {
+            HTChannel * pres;
+            while ((pres = (HTChannel *) HTList_nextObject(cur)) != NULL) {
+              HTChannel_delete (pres, HT_TIMEOUT);
+              cur = channels[cnt];
+            }
+	    HTList_delete (channels[cnt]);
+	    channels[cnt] = NULL;
+          }
+        }
+        return YES;
+    }
+    return NO;
+}
+
 /*
 **	Return the socket associated with this channel
 */
@@ -297,11 +307,24 @@ PUBLIC SOCKET HTChannel_socket (HTChannel * channel)
     return channel ? channel->sockfd : INVSOC;
 }
 
-PUBLIC BOOL HTChannel_setSocket (HTChannel * channel, SOCKET socket)
+PUBLIC BOOL HTChannel_setSocket (HTChannel * channel, SOCKET sockfd)
 {
     if (channel) {
-      channel->sockfd = socket;
-      return YES;
+	
+	/*
+	** As we use the socket number as the hash entry then we have to
+	** update the hash table as well.
+	*/
+	int old_hash = HASH(channel->sockfd);
+	int new_hash = sockfd < 0 ? 0 : HASH(sockfd);
+	HTList * list = channels[old_hash];
+	if (list) HTList_removeObject(list, channel);
+	if (!channels[new_hash]) channels[new_hash] = HTList_new();
+	list = channels[new_hash];
+	HTList_addObject(list, channel);
+
+	channel->sockfd = sockfd;
+	return YES;
     }
     return NO;
 }
@@ -348,9 +371,8 @@ PUBLIC void HTChannel_upSemaphore (HTChannel * channel)
 {
     if (channel) {
 	channel->semaphore++;
-	if (PROT_TRACE)
-	    HTTrace("Channel..... Semaphore increased to %d for channel %p\n",
-		    channel->semaphore, channel);
+	HTTRACE(PROT_TRACE, "Channel..... Semaphore increased to %d for channel %p\n" _ 
+		    channel->semaphore _ channel);
 #ifdef HT_MUX
 		HTMuxChannel * muxch = HTMuxChannel_find(me);
 		HTProtocol * protocol = HTNet_protocol(net);
@@ -368,9 +390,8 @@ PUBLIC void HTChannel_downSemaphore (HTChannel * channel)
     if (channel) {
 	channel->semaphore--;
 	if (channel->semaphore <= 0) channel->semaphore = 0;
-	if (PROT_TRACE)
-	    HTTrace("Channel..... Semaphore decreased to %d for channel %p\n",
-		    channel->semaphore, channel);
+	HTTRACE(PROT_TRACE, "Channel..... Semaphore decreased to %d for channel %p\n" _ 
+		    channel->semaphore _ channel);
     }
 }
 
@@ -382,9 +403,8 @@ PUBLIC void HTChannel_setSemaphore (HTChannel * channel, int semaphore)
     if (channel) {
 	channel->semaphore = semaphore;
 	if (channel->semaphore <= 0) channel->semaphore = 0;
-	if (PROT_TRACE)
-	    HTTrace("Channel..... Semaphore set to %d for channel %p\n",
-		    channel->semaphore, channel);
+	HTTRACE(PROT_TRACE, "Channel..... Semaphore set to %d for channel %p\n" _ 
+		    channel->semaphore _ channel);
     }
 }
 
@@ -406,6 +426,21 @@ PUBLIC HTInputStream * HTChannel_input (HTChannel * ch)
     return ch ? ch->input : NULL;
 }
 
+PUBLIC BOOL HTChannel_deleteInput (HTChannel * channel, int status)
+{	
+    if (channel && channel->input && status != HT_IGNORE) {
+	HTTRACE(PROT_TRACE,
+		"Channel..... Delete input stream %p from channel %p\n" _ 
+		channel->input _ channel);
+	if (status==HT_INTERRUPTED || status==HT_TIMEOUT)
+	    (*channel->input->isa->abort)(channel->input, NULL);
+	else
+	    (*channel->input->isa->_free)(channel->input);
+	return YES;
+    }
+    return NO;
+}
+
 /*
 **	Create the output stream and bind it to the channel
 **	Please read the description in the HTIOStream module on the parameters
@@ -422,6 +457,21 @@ PUBLIC BOOL HTChannel_setOutput (HTChannel * ch, HTOutputStream * output)
 PUBLIC HTOutputStream * HTChannel_output (HTChannel * ch)
 {
     return ch ? ch->output : NULL;
+}
+
+PUBLIC BOOL HTChannel_deleteOutput (HTChannel * channel, int status)
+{	
+    if (channel && channel->output && status != HT_IGNORE) {
+	HTTRACE(PROT_TRACE,
+		"Channel..... Delete input stream %p from channel %p\n" _ 
+		channel->input _ channel);
+	if (status==HT_INTERRUPTED || status==HT_TIMEOUT)
+	    (*channel->output->isa->abort)(channel->output, NULL);
+	else
+	    (*channel->output->isa->_free)(channel->output);
+	return YES;
+    }
+    return NO;
 }
 
 PUBLIC HTInputStream * HTChannel_getChannelIStream (HTChannel * ch)

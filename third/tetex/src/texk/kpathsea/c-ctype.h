@@ -1,6 +1,6 @@
 /* c-ctype.h: ASCII-safe versions of the <ctype.h> macros.
 
-Copyright (C) 1992 Free Software Foundation, Inc.
+Copyright (C) 1992, 2000 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -22,8 +22,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <ctype.h>
 
 /* Be sure we have `isascii'.  */
+#ifdef WIN32
+#include <oldnames.h>
+#else
 #ifndef isascii
 #define isascii(c) 1
+#endif
 #endif
 
 #define ISALNUM(c) (isascii (c) && isalnum(c))

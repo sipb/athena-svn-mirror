@@ -54,7 +54,7 @@ extern KPSEDLL void fn_free P1H(fn_type *f);
 extern KPSEDLL void fn_1grow P2H(fn_type *f, char c);
 
 /* Append LENGTH bytes from SOURCE to F.  */
-extern KPSEDLL void fn_grow P3H(fn_type *f, address source, unsigned length);
+extern KPSEDLL void fn_grow P3H(fn_type *f, const_string source, unsigned length);
 
 /* Concatenate the component S to the fn F.  Assumes string currently in
    F is null terminated.  */

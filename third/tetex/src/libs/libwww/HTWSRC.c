@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTWSRC.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTWSRC.c,v 1.1.1.2 2003-02-25 22:25:21 amb Exp $
 **
 **	This module parses a stream with WAIS source file
 **	format information on it and creates a structured stream.
@@ -155,8 +155,7 @@ PRIVATE int WSRCParser_put_character (HTStream* me, char c)
 		}
 	    }
 	    if (!par_name[me->param_number]) {	/* Unknown field */
-	        if (WWWTRACE) HTTrace(
-		    "HTWSRC: Unknown field `%s' in source file\n",
+	        HTTRACE(PROT_TRACE, "HTWSRC: Unknown field `%s' in source file\n" _ 
 		    me->param);
 		me->param_number = PAR_UNKNOWN;
 		me->state = before_value;	/* Could be better ignore */

@@ -217,6 +217,7 @@ virtualfont P1C(register fontdesctype *, curfnt)
       curfnt->chardesc[i].packptr = NULL ;
       curfnt->chardesc[i].pixelwidth = 0 ;
       curfnt->chardesc[i].flags = 0 ;
+      curfnt->chardesc[i].flags2 = 0 ;
    }
    if (vfbyte()!=247)
       badvf("expected pre") ;
@@ -275,6 +276,7 @@ virtualfont P1C(register fontdesctype *, curfnt)
       else
          cd->pixelwidth = -((integer)(conv*-cd->TFMwidth+0.5)) ;
       cd->flags = EXISTS ;
+      cd->flags2 = EXISTS ;
       if (bytesleft < length) {
 #ifdef DEBUG
           if (dd(D_MEM))

@@ -54,7 +54,7 @@ Omega is experimental software.
 .SH OPTIONS
 This version of Omega understands the following command line options.
 .TP
-.BI --fmt \ format
+.BI --oft \ format
 .rb
 Use
 .I format
@@ -132,11 +132,24 @@ Use
 .I string
 for the DVI file comment instead of the date.
 .TP
+.B --parse-first-line
+.rb
+If the first line of the main input file begins with
+.I %&
+parse it to look for a dump name.
+.TP
 .BI --progname \ name
 .rb
 Pretend to be program
 .IR name .
 This affects both the format used and the search paths.
+.TP
+.B --recorder
+.rb
+Enable the filename recorder.  This leaves a trace of the files opened
+for input and output in a file with extension
+.IR .ofl .
+(This option is always on.)
 .TP
 .B --shell-escape
 .rb
@@ -206,11 +219,19 @@ utility to find their locations.
 .I omega.pool
 Encoded text of Omega's messages.
 .TP
-.I *.fmt
-Predigested Omega format (.\|fmt) files.
+.I *.oft
+Predigested Omega format (.\|oft) files.
 .br
 .\"=====================================================================
 .SH BUGS
+This version of Omega implements a number of optional extensions.
+In fact, many of these extensions conflict to a greater or lesser
+extent with the definition of Omega.  When such extensions are
+enabled, the banner printed when Omega starts is changed to print
+.B Omegak
+instead of
+.BR Omega .
+.PP
 This version of Omega fails to trap arithmetic overflow when
 dimensions are added or subtracted.  Cases where this occurs are rare,
 but when it does the generated
@@ -226,20 +247,16 @@ files.  In order to print or preview them, you should use
 .B odvips
 to generate a PostScript file.
 .PP
-Omega is experimental software.  If you use it, subscribe to the omega
-mailing list
-.B omega@ens.fr
-by sending a message containing
-.B subscribe omega
-.I Your Name
-to
-.BR  listserv@ens.fr .
+Omega is experimental software, and if you are an active user it is
+strongly recommended that you subscribe to the Omega mailing list.
+Visit the Omega website
+.B http://omega.cse.unsw.edu.au
+for information on how to subscribe.
 .\"=====================================================================
 .SH "SEE ALSO"
 .BR tex (1),
 .BR mf (1),
 .RB odvips (1),
-.BR undump (1).
 .\"=====================================================================
 .SH AUTHORS
 The primary authors of Omega are John Plaice and Yannis Haralambous.

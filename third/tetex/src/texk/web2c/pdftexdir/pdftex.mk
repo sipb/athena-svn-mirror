@@ -9,88 +9,97 @@
 Makefile: $(srcdir)/pdftexdir/pdftex.mk
 
 # The C sources.
-pdftex_c = pdftexini.c pdftex0.c pdftex1.c pdftex2.c
-pdftex_o = pdftexini.o pdftex0.o pdftex1.o pdftex2.o pdftexextra.o
+pdftex_c = pdftexini.c pdftex0.c pdftex1.c pdftex2.c pdftex3.c
+pdftex_o = pdftexini.o pdftex0.o pdftex1.o pdftex2.o pdftex3.o pdftexextra.o
+
+pdftex_bin = pdftex pdfetex ttf2afm pdftosrc
+pdftex_exe = pdftex.exe pdfetex.exe ttf2afm.exe pdftosrc.exe
+pdftex_pool = pdftex.pool pdfetex.pool
+linux_build_dir = $(HOME)/pdftex/build/linux/texk/web2c
 
 # Generation of the web and ch files.
 pdftex.web: tie tex.web pdftexdir/pdftex.ch
 	./tie -m pdftex.web $(srcdir)/tex.web $(srcdir)/pdftexdir/pdftex.ch
-pdftex.ch: tie pdftex.web tex.ch pdftexdir/tex.pch
-	./tie -c pdftex.ch pdftex.web $(srcdir)/tex.ch $(srcdir)/pdftexdir/tex.pch
+pdftex.ch: tie pdftex.web pdftexdir/tex.ch0 tex.ch pdftexdir/tex.ch1 \
+           pdftexdir/tex.pch pdftexdir/tex.ch2
+	./tie -c pdftex.ch pdftex.web \
+	$(srcdir)/pdftexdir/tex.ch0 \
+	$(srcdir)/tex.ch \
+	$(srcdir)/pdftexdir/tex.ch1 \
+	$(srcdir)/pdftexdir/tex.pch \
+	$(srcdir)/pdftexdir/tex.ch2
 
-linux_build_dir = $(HOME)/pdftex/build/linux/texk/web2c
-
-pdftex_bin = pdftex pdfetex ttf2afm
-pdftex_exe = pdftex.exe pdfetex.exe ttf2afm.exe
-pdftex_pool = pdftex.pool pdfetex.pool
-
-pdftex-djgpp: $(web2c_programs)
-	@if test ! -x $(linux_build_dir)/tangle; then echo Error: linux_build_dir not ready; exit -1; fi
-	rm -f web2c/fixwrites web2c/splitup web2c/web2c
-	ln -s $(linux_build_dir)/web2c/fixwrites web2c
-	ln -s $(linux_build_dir)/web2c/splitup web2c
-	ln -s $(linux_build_dir)/web2c/web2c web2c
-	touch web2c/fixwrites web2c/splitup web2c/web2c
-	make tie
-	rm -f tie
-	ln -s $(linux_build_dir)/tie .
-	touch tie
-	make tangleboot
-	rm -f tangleboot
-	ln -s $(linux_build_dir)/tangleboot .
-	touch tangleboot
-	make tangle
-	rm -f tangle
-	ln -s $(linux_build_dir)/tangle .
-	touch tangle
-	make pdftex pdfetex
-
-pdftex.zip: $(pdftex_bin)
-	rm -f $@ $(pdftex_bin)
-	XLDFLAGS=-static make $(pdftex_bin)
-	strip $(pdftex_bin)
-	zip $@ $(pdftex_bin) $(pdftex_pool)
-
-pdftex-djgpp.zip: $(pdftex_bin)
-	rm -f $@ $(pdftex_bin)
-	XLDFLAGS=-static make $(pdftex_bin)
-	dos-strip $(pdftex_bin)
-	dos-stubify $(pdftex_bin)
-	zip $@ $(pdftex_exe) $(pdftex_pool)
-
-pdftex_sources = \
-    Makefile.in \
-    configure \
-    configure.in \
-    multiplatform.ac \
-    reautoconf \
-    tetex.ac \
-    withenable.ac \
-    config/ \
-    libs/configure \
-    libs/configure.in \
-    libs/libpng/ \
-    libs/zlib/ \
-    texk/web2c/configure \
-    texk/web2c/configure.in \
-    texk/web2c/stamp-auto.in \
-    texk/web2c/fmtutil.in \
-    texk/web2c/pdftexdir/ \
-    texk/web2c/pdfetexdir/
-
-pdftexsrc.tgz:
-	cd $(kpathsea_srcdir_parent)/..; tar cvfz $(HOME)/pdftex/arch/$@ $(pdftex_sources)
-
-pdftexlib.zip:
-	cd $(HOME)/pdftex; rm -f $(HOME)/pdftex/arch/$@; zip -r $(HOME)/pdftex/arch/$@ texmf
-
+# ttf2afm
 ttf2afm: ttf2afm.o
-	$(kpathsea_link) ttf2afm.o
+	$(kpathsea_link) ttf2afm.o $(kpathsea)
 ttf2afm.o: ttf2afm.c macnames.c
 	$(compile) $<
 ttf2afm.c:
 	$(LN) $(srcdir)/pdftexdir/ttf2afm.c .
 macnames.c:
 	$(LN) $(srcdir)/pdftexdir/macnames.c .
+
+# pdftosrc
+pdftosrc: pdftexdir/pdftosrc.o
+	$(kpathsea_cxx_link) pdftexdir/pdftosrc.o $(LDLIBXPDF) -lm
+pdftexdir/pdftosrc.o:$(srcdir)/pdftexdir/pdftosrc.cc
+	cd pdftexdir && $(MAKE) pdftosrc.o
+
+# pdftex binaries archive
+pdftexbin:
+	rm -f pdtex*.zip $(pdftex_bin)
+	XLDFLAGS=-static $(MAKE) $(pdftex_bin)
+	if test "x$(CC)" = "xdos-gcc"; then \
+	    $(MAKE) pdftexbin-djgpp; \
+	elif test "x$(CC)" = "xi386-mingw32-gcc"; then \
+	    $(MAKE) pdftexbin-mingw32; \
+	elif test "x$(CC)" = "xgnuwin32gcc"; then \
+	    $(MAKE) pdftexbin-gnuwin32; \
+	else \
+	    $(MAKE) pdftexbin-native; \
+	fi
+
+pdftex-cross:
+	$(MAKE) web2c-cross
+	$(MAKE) pdftexbin
+
+web2c-cross: $(web2c_programs)
+	@if test ! -x $(linux_build_dir)/tangle; then echo Error: linux_build_dir not ready; exit -1; fi
+	rm -f web2c/fixwrites web2c/splitup web2c/web2c
+	cp -f $(linux_build_dir)/web2c/fixwrites web2c
+	cp -f $(linux_build_dir)/web2c/splitup web2c
+	cp -f $(linux_build_dir)/web2c/web2c web2c
+	touch web2c/fixwrites web2c/splitup web2c/web2c
+	$(MAKE) tie
+	rm -f tie
+	cp -f $(linux_build_dir)/tie .
+	touch tie
+	$(MAKE) tangleboot
+	rm -f tangleboot
+	cp -f $(linux_build_dir)/tangleboot .
+	touch tangleboot
+	$(MAKE) tangle
+	rm -f tangle
+	cp -f $(linux_build_dir)/tangle .
+	touch tangle
+
+pdftexbin-native:
+	strip $(pdftex_bin)
+	zip pdftex-native-`datestr`.zip $(pdftex_bin) $(pdftex_pool)
+
+pdftexbin-djgpp:
+	dos-strip $(pdftex_bin)
+	dos-stubify $(pdftex_bin)
+	zip pdftex-djgpp-`datestr`.zip $(pdftex_exe) $(pdftex_pool)
+
+pdftexbin-mingw32:
+	i386-mingw32-strip $(pdftex_bin)
+	for f in $(pdftex_bin); do mv $$f $$f.exe; done
+	zip pdftex-mingw32-`datestr`.zip $(pdftex_exe) $(pdftex_pool)
+
+pdftexbin-gnuwin32:
+	gnuwin32strip $(pdftex_bin)
+	for f in $(pdftex_bin); do mv $$f $$f.exe; done
+	zip pdftex-gnuwin32-`datestr`.zip $(pdftex_exe) $(pdftex_pool)
 
 # end of pdftex.mk

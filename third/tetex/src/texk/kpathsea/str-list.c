@@ -74,7 +74,8 @@ str_list_concat_elements P2C(str_list_type *, target,  str_list_type, more)
     } else if (STR_LIST_LENGTH(*target) == 0) {
         unsigned int i;
         STR_LIST_LENGTH(*target) = STR_LIST_LENGTH(more);
-        STR_LIST(*target) = xmalloc(STR_LIST_LENGTH(more)*sizeof(char*));
+        STR_LIST(*target) =
+                (string*)xmalloc(STR_LIST_LENGTH(more)*sizeof(char*));
         for (i=0;i!=STR_LIST_LENGTH(more);++i) {
             STR_LIST_ELT(*target,i)=xstrdup(STR_LIST_ELT(more,i));
         }
@@ -83,8 +84,8 @@ str_list_concat_elements P2C(str_list_type *, target,  str_list_type, more)
         unsigned new_len;
         char ** new_list;
         unsigned int i,j;
-        new_list = xmalloc(STR_LIST_LENGTH (*target)
-                           * STR_LIST_LENGTH (more) * sizeof(char*));
+        new_list = (string*)xmalloc(STR_LIST_LENGTH (*target)
+                                    * STR_LIST_LENGTH (more) * sizeof(char*));
 
         new_len = 0;
         for (j = 0; j != STR_LIST_LENGTH(more); ++j) {

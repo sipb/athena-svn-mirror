@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTResponse.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTResponse.c,v 1.1.1.2 2003-02-25 22:27:56 amb Exp $
 **
 ** Authors
 **	HFN	Henrik Frystyk, frystyk@w3.org
@@ -37,14 +37,14 @@ PUBLIC HTResponse * HTResponse_new (void)
     /* By default a response is not cachable */
     me->cachable = NO;
 
-    if (CORE_TRACE) HTTrace("Response.... Created %p\n", me);
+    HTTRACE(CORE_TRACE, "Response.... Created %p\n" _ me);
     return me;
 }
 
 PUBLIC BOOL HTResponse_delete (HTResponse * me)
 {
     if (me) {
-	if (CORE_TRACE) HTTrace("Response.... Delete %p\n", me);
+	HTTRACE(CORE_TRACE, "Response.... Delete %p\n" _ me);
 
 	/* Access Authentication */
 	HT_FREE(me->realm);
@@ -90,6 +90,9 @@ PUBLIC BOOL HTResponse_delete (HTResponse * me)
 	    /* List of all headers */
 	    if (me->headers) HTAssocList_delete(me->headers);
 	}
+
+	/* HTTP reason string */
+	if (me->reason)  HT_FREE (me->reason);
 
  	HT_FREE(me);
 	return YES;
@@ -664,5 +667,23 @@ PUBLIC HTAssocList * HTResponse_handOverHeader (HTResponse * me)
     return headers;
 }
 
+/*
+**  HTTP reason string
+*/
+PUBLIC char * HTResponse_reason (HTResponse * me)
+{
+    if (me) {
+      return me->reason;
+    }
+    return NULL;
+}
 
+PUBLIC BOOL HTResponse_setReason (HTResponse * me, char * reason)
+{
+  if (me && reason && *reason) {
+      StrAllocCopy(me->reason, reason);
+      return YES;
+    }
+  return NO;
+}
 

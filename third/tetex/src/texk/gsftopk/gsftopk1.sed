@@ -151,13 +151,40 @@ argument is optional (since the font will not be generated).
 .B \-v\fR,\fP \-\-version
 Print the version number and exit.
 .SH ENVIRONMENT VARIABLES
-.IP \fBTEXFONTS\fP \w'\fBDVIPSHEADERS\fP'u+2m
-Colon-separated list of paths to search for the
-.RI . tfm
-file associated with the font.  An extra colon in the list will include the
+.IP \fBDVIPSRC\fP \w'\fBGSFTOPKHEADERS\fP'u+2m
+Name of file to read instead of
+.BR $HOME/.dvipsrc .
+This should be the full name of the file (in other words, no path searching
+algorithms are applied).
+.IP \fBGSFTOPKFONTS\fP
+See
+.SB TEXFONTS.
+.IP \fBGSFTOPKHEADERS\fP
+See
+.SB TEXPSHEADERS.
+.IP \fBPSHEADERS\fP
+See
+.SB TEXPSHEADERS.
+.IP \fBTEXCONFIG\fP
+Colon-separated list of paths to search for map files.
+An extra colon in the list will include the
 compiled-in default paths at that point.  A double slash will enable recursive
 subdirectory searching at that point in the path.
-.IP \fBDVIPSHEADERS\fP
+.IP \fBTEXFONTS\fP
+Colon-separated list of paths to search for the
+.RI . tfm
+file associated with the font.  Double slashes and extra colons behave as with
+.SB TEXCONFIG.
+This information may also be supplied by using the environment variables
+.SB TFMFONTS
+or
+.SB GSFTOPKFONTS.
+These environment variables are checked in the order
+.SB GSFTOPKFONTS,
+.SB TFMFONTS,
+.SB TEXFONTS;
+the first one (if any) having a value is used.
+.IP \fBTEXPSHEADERS\fP
 Colon-separated list of paths to search for the Ghostscript driver file
 .B render.ps
 and for any PostScript header or font files
@@ -168,16 +195,19 @@ and for any PostScript header or font files
 or
 .RI . ttf
 files).  Double slashes and extra colons behave as with
+.SB TEXCONFIG.
+This information may also be supplied by using the environment variables
+.SB PSHEADERS
+or
+.SB GSFTOPKHEADERS.
+These environment variables are checked in the order
+.SB GSFTOPKHEADERS,
+.SB TEXPSHEADERS,
+.SB PSHEADERS;
+the first one (if any) having a value is used.
+.IP \fBTFMFONTS\fP
+See
 .SB TEXFONTS.
-.IP \fBTEXCONFIG\fP
-Colon-separated list of paths to search for map files.
-Double slashes and extra colons behave as with
-.SB TEXFONTS.
-.IP \fBDVIPSRC\fP
-Name of file to read instead of
-.BR $HOME/.dvipsrc .
-This should be the full name of the file (in other words, no path searching
-algorithms are applied).
 .SH CONFIGURATION
 In order to determine the set of map files to be used and the path for
 finding PostScript files,

@@ -19,7 +19,6 @@ extern MKTEXDLL int  catfile(const char *, const char *, int);
 extern MKTEXDLL boolean test_file(int, string);
 extern MKTEXDLL boolean is_writable(string);
 extern MKTEXDLL int execute_command(string);
-extern MKTEXDLL int win32_system(string);
 extern MKTEXDLL char *normalize(char *path);
 extern MKTEXDLL char *my_basename(char *name,char *suffix);
 extern MKTEXDLL char *concat_pathes(const char *p1,const char *p2);

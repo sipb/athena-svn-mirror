@@ -20,4 +20,4 @@ steps are involved to apply the new settings.
 .IR EDITOR
 environment-variable.
 .SH AUTHOR
-Thomas Esser (te@informatik.uni\-hannover.de)
+Thomas Esser (te@dbs.uni\-hannover.de)

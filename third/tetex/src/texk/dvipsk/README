@@ -4,6 +4,7 @@ Tom Rokicki's dvips, a DVI-to-PostScript translator.
 See `NEWS' for major changes by release, `ChangeLog` for all changes.
 See `INSTALL' for installation instructions.
 See `../kpathsea/BUGS' for details on reporting bugs.
+AT LEAST NEWS, ChangeLog, AND INSTALL ARE WOEFULLY OUT OF DATE.
 
 Aside from configuration, this differs from the original primarily in
 that it uses the same code for path searching as TeX and my other

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1996.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTrace.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTTrace.c,v 1.1.1.2 2003-02-25 22:25:21 amb Exp $
 **
 **      26 Nov 96 (EGP)	moved HTTrace stuff here from HTString.c and
 **			added HTTrace_data
@@ -25,8 +25,11 @@ PUBLIC FILE *WWWTrace = NULL;
 PUBLIC unsigned int WWW_TraceFlag = 0;		/* Global trace flag for ALL W3 code */
 #endif
 
-#if TRACECALLBACK
 PRIVATE HTTraceCallback * PHTTraceCallback = NULL;
+PRIVATE HTPrintCallback * PHTPrintCallback = NULL;
+PRIVATE HTTraceDataCallback * PHTTraceDataCallback = NULL;
+
+/* ------------------------------------------------------------------------- */
 
 PUBLIC void HTTrace_setCallback (HTTraceCallback * pCall)
 {
@@ -37,24 +40,19 @@ PUBLIC HTTraceCallback * HTTrace_getCallback (void)
 {
     return PHTTraceCallback;
 }
-#endif
 
 PUBLIC int HTTrace (const char * fmt, ...)
 {
     va_list pArgs;
     va_start(pArgs, fmt);
-#if TRACECALLBACK
     if (PHTTraceCallback)
 	return (*PHTTraceCallback)(fmt, pArgs);
-#endif
 #ifdef WWW_WIN_WINDOW
     return (0);
 #else
     return (vfprintf(stderr, fmt, pArgs));
 #endif
 }
-
-PRIVATE HTTraceDataCallback * PHTTraceDataCallback = NULL;
 
 PUBLIC void HTTraceData_setCallback (HTTraceDataCallback * pCall)
 {
@@ -75,6 +73,29 @@ PUBLIC int HTTraceData (char * data, size_t len, char * fmt, ...)
     return (0);
 }
 
+PUBLIC void HTPrint_setCallback (HTPrintCallback * pCall)
+{
+    PHTPrintCallback = pCall;
+}
+
+PUBLIC HTPrintCallback * HTPrint_getCallback (void)
+{
+    return PHTPrintCallback;
+}
+
+PUBLIC int HTPrint (const char * fmt, ...)
+{
+    va_list pArgs;
+    va_start(pArgs, fmt);
+    if (PHTPrintCallback)
+	return (*PHTPrintCallback)(fmt, pArgs);
+#ifdef WWW_WIN_WINDOW
+    return (0);
+#else
+    return (vfprintf(stdout, fmt, pArgs));
+#endif
+}
+ 
 PUBLIC void HTDebugBreak (char * file, unsigned long line, const char * fmt, ...)
 {
     va_list pArgs;

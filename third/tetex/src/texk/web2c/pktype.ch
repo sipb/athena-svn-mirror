@@ -317,10 +317,10 @@ begin
       do_nothing;
     
     end else if getopt_return_val = '?' then begin
-      usage (1, 'pktype');
+      usage ('pktype');
     
     end else if argument_is ('help') then begin
-      usage (0, PKTYPE_HELP);
+      usage_help (PKTYPE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'Tomas Rokicki');
@@ -331,7 +331,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) then begin
     write_ln (stderr, 'pktype: Need exactly one file argument.');
-    usage (1, 'pktype');
+    usage ('pktype');
   end;
 end;
 

@@ -16,7 +16,7 @@
 # the binary, etc.)  See the configure mode.  I can send you the
 # hello,world Makefile I used for testing if you want it.
 # 
-rcs_version='$Id: klibtool,v 1.1.1.1 2000-03-10 17:50:49 ghudson Exp $'
+rcs_version='$Id: klibtool,v 1.1.1.2 2003-02-25 22:11:56 amb Exp $'
 version=0.1
 maint=tex-k@mail.tug.org
 help="Usage: $0 [OPTION]... MODE [ARG]...
@@ -319,6 +319,10 @@ case $mode in
           args_SHARED_archive='-shared -fPIC'
           shared_ext='sl'
         fi
+        ;;
+
+      *-*-darwin*)
+        STATIC_postinstall='$STATIC_ranlib $libdir/$lib_basename'
         ;;
 
       *)

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTGuess.c,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+**	@(#) $Id: HTGuess.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	This version of the stream object just writes its input
 **	to its output, but prepends Content-Type: field and an
@@ -18,6 +18,7 @@
 #include "wwwsys.h"
 #include "WWWUtil.h"
 #include "WWWLib.h"
+#include "WWWFile.h"
 #include "HTGuess.h"
 
 #define SAMPLE_SIZE	200	/* Number of chars to look at */
@@ -79,11 +80,10 @@ PRIVATE int HTGuess_flush (HTStream * me)
 	**  that we are investigating. 
 	*/
 	if (me->cnt) {
-	    if (STREAM_TRACE)
-		HTTrace("GUESSING.... Result of content analysis: Text=%d%% Newlines=%d%% Ctrl=%d%% High=%d%%\n",
-			(int)(100*me->text_cnt/me->cnt + 0.5),
-			(int)(100*me->lf_cnt  /me->cnt + 0.5),
-			(int)(100*me->ctrl_cnt/me->cnt + 0.5),
+	    HTTRACE(STREAM_TRACE, "GUESSING.... Result of content analysis: Text=%d%% Newlines=%d%% Ctrl=%d%% High=%d%%\n" _ 
+			(int)(100*me->text_cnt/me->cnt + 0.5) _ 
+			(int)(100*me->lf_cnt  /me->cnt + 0.5) _ 
+			(int)(100*me->ctrl_cnt/me->cnt + 0.5) _ 
 			(int)(100*me->high_cnt/me->cnt + 0.5));
 	}
 	
@@ -153,7 +153,7 @@ PRIVATE int HTGuess_flush (HTStream * me)
 	if (HTResponse_format(response) == WWW_UNKNOWN) {
 	    HTParentAnchor * anchor = HTRequest_anchor(me->request);
 	    char * addr = HTAnchor_physical(anchor);
-	    if (STREAM_TRACE) HTTrace("GUESSING.... Hmm - trying local bindings\n");
+	    HTTRACE(STREAM_TRACE, "GUESSING.... Hmm - trying local bindings\n");
 	    HTBind_getResponseBindings (response, addr);
 	}
 
@@ -161,14 +161,11 @@ PRIVATE int HTGuess_flush (HTStream * me)
 	**  If nothing worked then give up and say binary...
 	*/
 	if (HTResponse_format(response) == WWW_UNKNOWN) {
-	    if (STREAM_TRACE) HTTrace("GUESSING.... That's it - I'm giving up!\n");
+	    HTTRACE(STREAM_TRACE, "GUESSING.... That's it - I'm giving up!\n");
 	    HTResponse_setFormat(response, WWW_BINARY);
 	}
 		
-	if (STREAM_TRACE) {
-	    HTFormat format = HTResponse_format(response);
-	    HTTrace("Guessed..... Content-Type `%s\'\n", HTAtom_name(format));
-	}
+	HTTRACE(STREAM_TRACE, "Guessed..... Content-Type `%s\'\n" _ HTAtom_name(HTResponse_format(response)));
 
 	/*
 	**  Set up the new stream stack with the type we figured out 
@@ -176,7 +173,7 @@ PRIVATE int HTGuess_flush (HTStream * me)
 	if ((me->target = HTStreamStack(HTResponse_format(response),
 					me->output_format, me->output_stream,
 					me->request, NO)) == NULL) {
-	    if (STREAM_TRACE) HTTrace("HTGuess..... Can't convert media type\n");
+	    HTTRACE(STREAM_TRACE, "HTGuess..... Can't convert media type\n");
 	    me->target = HTErrorStream();
 	}
 	me->transparent = YES;

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTelnet.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTTelnet.c,v 1.1.1.2 2003-02-25 22:25:21 amb Exp $
 **
 ** Authors
 **	TBL	Tim Berners-Lee timbl@w3.org
@@ -81,7 +81,7 @@ PRIVATE int remote_session (HTRequest * request, char * url)
 
     /* We must be in interactive mode */
     if (!HTAlert_interactive()) {
-	if (PROT_TRACE) HTTrace("Telnet...... Not interactive\n");
+	HTTRACE(PROT_TRACE, "Telnet...... Not interactive\n");
 	HT_FREE(access);
 	HT_FREE(host);
 	HTChunk_delete(cmd);
@@ -206,15 +206,13 @@ PRIVATE int remote_session (HTRequest * request, char * url)
 #endif /* MULTINET */
 
     } else {
-	if (PROT_TRACE)
-	    HTTrace("Telnet...... Unknown access method: `%s\'\n",
+	HTTRACE(PROT_TRACE, "Telnet...... Unknown access method: `%s\'\n" _ 
 		    access);
 	status = HT_ERROR;
     }
 
     /* Now we are ready to execute the command */
-    if (PROT_TRACE)
-	HTTrace("Telnet...... Command is `%s\'\n", cmd->data);
+    HTTRACE(PROT_TRACE, "Telnet...... Command is `%s\'\n" _ HTChunk_data(cmd));
     if (user) {
 	HTChunk *msg = HTChunk_new(128);
 	if (strcasecomp(access, "rlogin")) {
@@ -259,7 +257,7 @@ PUBLIC int HTLoadTelnet (SOCKET soc, HTRequest * request)
     HTParentAnchor * anchor = HTRequest_anchor(request);
     char * url = HTAnchor_physical(anchor);
 
-    if (PROT_TRACE) HTTrace("Telnet...... Looking for `%s\'\n",url);
+    HTTRACE(PROT_TRACE, "Telnet...... Looking for `%s\'\n" _ url);
     HTNet_setEventCallback(net, TelnetEvent);
     HTNet_setEventParam(net, net);  /* callbacks get http* */
 

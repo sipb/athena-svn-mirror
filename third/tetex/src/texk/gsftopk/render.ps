@@ -1,5 +1,5 @@
 % render.ps - write font bitmaps and metric information to standard output.
-% Version 1.17.
+% Version 1.18.
 
 % ========================================================================
 %
@@ -234,35 +234,38 @@ if
 dlstring () ne
   {
     dlstring cvx exec
-
-    FontOnStack
-      {
-	true
-      }
-      {
-	Fontmap fontname cvn known
-	FontDirectory fontname cvn known or
-      }
-    ifelse
-  }
-  {
-    Fontmap fontname cvn known
-    FontDirectory fontname cvn known or
-  }
-ifelse
-
-not
-  {
-    (font ) fontname concatstrings ( is not defined.\n) concatstrings
-    fatal
   }
 if
 
-% Get the font.
-
 FontOnStack not
   {
-    fontname cvlit findfont
+    Fontmap fontname cvn known	% Or:  fontname cvn /Font resourcestatus?
+      {
+	fontname cvlit findfont
+      }
+      {
+	FontDirectory fontname cvn known
+	  {
+	    fontname cvlit findfont
+	  }
+	  {
+	    revision 341 lt
+	      {
+		/defaultfontname fontname cvlit def
+	      }
+	    if
+
+	    { fontname cvlit findfont } stopped
+	      {
+		(font ) fontname concatstrings
+		( is not defined.\n) concatstrings
+		fatal
+	      }
+	    if
+	  }
+	ifelse
+      }
+    ifelse
   }
 if
 

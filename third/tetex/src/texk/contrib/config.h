@@ -5,7 +5,7 @@
 #define CONFIG_H
 
 #ifdef WIN32
-#  include <kpathsea/win32lib.h>
+#  include <win32lib.h>
 #endif
 
 #endif /* CONFIG_H */

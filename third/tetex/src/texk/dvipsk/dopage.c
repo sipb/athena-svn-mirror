@@ -112,8 +112,8 @@ dopage P1H(void)
    H_BREAK = (30 * DPI / 400 ) ; /* 30 seems to have worked well at 400 dpi */
 #endif 
    w = x = y = z = 0 ;
-   h = DPI / conv * hoff / 4736286.72 ;
-   v = DPI / conv * voff / 4736286.72 ;
+   h = (integer) (DPI / conv * hoff / 4736286.72) ;
+   v = (integer) (DPI / conv * voff / 4736286.72) ;
    hh = PixRound(h) ;
    vv = PixRound(v) ;
    curfnt = NULL ;

@@ -56,7 +56,7 @@ token P1C(const_string, str)
     str++;
   
   len = str - start;
-  ret = xmalloc (len + 1);
+  ret = (string)xmalloc (len + 1);
   strncpy (ret, start, len);
   ret[len] = 0;
   
@@ -130,7 +130,7 @@ map_file_parse P1C(const_string, map_filename)
       } else {
         /* We've got everything.  Insert the new entry.  They were
            already dynamically allocated, so don't bother with xstrdup.  */
-        hash_insert (&map, alias, filename);
+        hash_insert_normalized (&map, alias, filename);
       }
     }
 

@@ -1,6 +1,7 @@
 /* pathsearch.c: look up a filename in a path.
 
 Copyright (C) 1993, 94, 95, 97 Karl Berry.
+Copyright (C) 1997, 98, 99, 2000 Olaf Weber.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -110,7 +111,7 @@ dir_list_search P3C(str_llist_type *, dirs,  const_string, name,
   str_list_type ret;
   unsigned name_len = strlen (name);
   unsigned allocated = INIT_ALLOC;
-  string potential = xmalloc (allocated);
+  string potential = (string)xmalloc (allocated);
 
   ret = str_list_init ();
   
@@ -143,7 +144,7 @@ dir_list_search P3C(str_llist_type *, dirs,  const_string, name,
 
           /* Start new filename.  */
           allocated = INIT_ALLOC;
-          potential = xmalloc (allocated);
+          potential = (string)xmalloc (allocated);
         }
     }
   
@@ -201,20 +202,8 @@ path_search P4C(const_string, path,  string, name,
       elt += 2;
     }
 
-#if 0 /* We strip devices in the caller. */
-    /* Do not touch the device if present */
-    if (NAME_BEGINS_WITH_DEVICE (elt)) {
-      while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3))) {
-	*(elt + 2) = *(elt + 1);
-	*(elt + 1) = *elt;
-	elt++;
-      }
-    } else {
-      /* We never want to search the whole disk.  */
-      while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
-        elt++;
-    }
-#endif
+    /* See elt-dirs.c for side effects of this function */
+    kpse_normalize_path(elt);
     
     /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
        (search), also tests first_search, and does the resetting.  */
@@ -235,7 +224,7 @@ path_search P4C(const_string, path,  string, name,
         *found = dir_list_search (dirs, name, all);
       }
     }
-
+    
     /* Did we find anything anywhere?  */
     if (found && STR_LIST (*found))
       if (all)

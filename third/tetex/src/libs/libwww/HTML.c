@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTML.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTML.c,v 1.1.1.2 2003-02-25 22:27:27 amb Exp $
 **
 **	This generates of a hypertext object.  It converts from the
 **	structured stream interface foo HTML events into the style-
@@ -57,8 +57,8 @@ struct _HTStructured {
 ** 	Entity values -- for ISO Latin 1 local representation
 **	This MUST match exactly the table referred to in the DTD!
 */
-#define ENTITY_SIZE	67
-static char * ISO_Latin1[ENTITY_SIZE] = {
+static char * ISO_Latin1[HTML_ENTITIES] = {
+/* 00 */
   	"\306",	/* capital AE diphthong (ligature) */ 
   	"\301",	/* capital A, acute accent */ 
   	"\302",	/* capital A, circumflex accent */ 
@@ -69,6 +69,7 @@ static char * ISO_Latin1[ENTITY_SIZE] = {
   	"\307",	/* capital C, cedilla */ 
   	"\320",	/* capital Eth, Icelandic */ 
   	"\311",	/* capital E, acute accent */ 
+/* 10 */
   	"\312",	/* capital E, circumflex accent */ 
   	"\310",	/* capital E, grave accent */ 
   	"\313",	/* capital E, dieresis or umlaut mark */ 
@@ -79,6 +80,7 @@ static char * ISO_Latin1[ENTITY_SIZE] = {
   	"\321",	/* capital N, tilde */ 
   	"\323",	/* capital O, acute accent */ 
   	"\324",	/* capital O, circumflex accent */ 
+/* 20 */
   	"\322",	/* capital O, grave accent */ 
   	"\330",	/* capital O, slash */ 
   	"\325",	/* capital O, tilde */ 
@@ -89,43 +91,84 @@ static char * ISO_Latin1[ENTITY_SIZE] = {
   	"\331",	/* capital U, grave accent */ 
   	"\334",	/* capital U, dieresis or umlaut mark */ 
   	"\335",	/* capital Y, acute accent */ 
+/* 30 */
   	"\341",	/* small a, acute accent */ 
   	"\342",	/* small a, circumflex accent */ 
+  	"\264",	/* acute accent */
   	"\346",	/* small ae diphthong (ligature) */ 
   	"\340",	/* small a, grave accent */ 
   	"\046",	/* ampersand */ 
   	"\345",	/* small a, ring */ 
   	"\343",	/* small a, tilde */ 
   	"\344",	/* small a, dieresis or umlaut mark */ 
+        "\246",	/* broken vertical bar */
+/* 40 */
   	"\347",	/* small c, cedilla */ 
+	"\270",	/* cedilla */
+	"\242", /* cent sign */
+        "\251",	/* copyright */
+        "\244",	/* general currency sign */
+  	"\260",	/* degree sign */
+  	"\367",	/* division sign */
   	"\351",	/* small e, acute accent */ 
   	"\352",	/* small e, circumflex accent */ 
   	"\350",	/* small e, grave accent */ 
+/* 50 */
   	"\360",	/* small eth, Icelandic */ 
   	"\353",	/* small e, dieresis or umlaut mark */ 
+  	"\275",	/* fraction one-half */
+  	"\274",	/* fraction one-fourth */
+  	"\276",	/* fraction three-fourth */
   	"\076",	/* greater than */ 
   	"\355",	/* small i, acute accent */ 
   	"\356",	/* small i, circumflex accent */ 
+	"\241", /* inverted exclamation */
   	"\354",	/* small i, grave accent */ 
+/* 60 */
+  	"\277",	/* inverted question mark */
   	"\357",	/* small i, dieresis or umlaut mark */ 
+  	"\253",	/* left angle quote */
   	"\074",	/* less than */ 
+  	"\257",	/* macron accent */
+  	"\265",	/* micro sign (greek mu) */
+  	"\267",	/* middle dot */
 	"\040", /* non-breaking space */
+  	"\254",	/* not sign */
   	"\361",	/* small n, tilde */ 
+/* 70 */
   	"\363",	/* small o, acute accent */ 
   	"\364",	/* small o, circumflex accent */ 
   	"\362",	/* small o, grave accent */ 
+  	"\252",	/* feminine ordinal */
+  	"\272",	/* masculine ordinal */
   	"\370",	/* small o, slash */ 
   	"\365",	/* small o, tilde */ 
   	"\366",	/* small o, dieresis or umlaut mark */ 
+  	"\266",	/* paragraph sign */
+  	"\261",	/* plus or minus */
+/* 80 */
+	"\243", /* pound sign */
         "\042", /* double quote sign - June 94 */
+	"\273",	/* right angle quote */
+  	"\256",	/* registered trademark */
+	"\247", /* section sign */
+  	"\255",	/* soft hyphen */
+  	"\271",	/* superscript 1 */
+  	"\262",	/* superscript 2 */
+  	"\263",	/* superscript 3 */
   	"\337",	/* small sharp s, German (sz ligature) */ 
+/* 90 */
   	"\376",	/* small thorn, Icelandic */ 
+  	"\327",	/* multiply sign */
   	"\372",	/* small u, acute accent */ 
   	"\373",	/* small u, circumflex accent */ 
   	"\371",	/* small u, grave accent */ 
+        "\250",	/* dieresis or umlaut mark */
   	"\374",	/* small u, dieresis or umlaut mark */ 
   	"\375",	/* small y, acute accent */ 
-  	"\377",	/* small y, dieresis or umlaut mark */ 
+	"\245", /* yen sign */
+  	"\377"	/* small y, dieresis or umlaut mark */ 
+/* 100 */
 };
 
 PRIVATE char ** CurrentEntityValues = ISO_Latin1;
@@ -136,7 +179,7 @@ PUBLIC BOOL HTMLUseCharacterSet (HTMLCharacterSet i)
 	CurrentEntityValues = ISO_Latin1;
 	return YES;
     } else {
-	if (SGML_TRACE) HTTrace("HTML Parser. Doesn't support this character set\n");
+	HTTRACE(SGML_TRACE, "HTML Parser. Doesn't support this character set\n");
 	return NO;
     }
 }
@@ -151,9 +194,6 @@ PRIVATE int HTML_write (HTStructured * me, const char * b, int l)
     /* Look at what we got */
     switch (me->sp[0]) {
 
-    case HTML_COMMENT:
-	break;					/* Do Nothing */
-		
     case HTML_TITLE:
 	HTChunk_putb(me->title, b, l);
 	/* Fall through */
@@ -203,8 +243,7 @@ PRIVATE void HTML_start_element (HTStructured *	me,
 	    }
 	    HTextImp_foundLink(me->text, element_number, HTML_A_HREF,
 			       address, present, value);
-	    if (SGML_TRACE)
-		HTTrace("HTML Parser. Anchor `%s\'\n", value[HTML_A_HREF]);
+	    HTTRACE(SGML_TRACE, "HTML Parser. Anchor `%s\'\n" _ value[HTML_A_HREF]);
 	}
 	break;
 
@@ -214,16 +253,14 @@ PRIVATE void HTML_start_element (HTStructured *	me,
 						value[HTML_AREA_HREF], NULL);
 	    HTextImp_foundLink(me->text, element_number, HTML_AREA_HREF,
 			       address, present, value);
-	    if (SGML_TRACE)
-		HTTrace("HTML Parser. Image map area `%s\'\n", value[HTML_AREA_HREF]);
+	    HTTRACE(SGML_TRACE, "HTML Parser. Image map area `%s\'\n" _ value[HTML_AREA_HREF]);
 	}
 	break;
 
     case HTML_BASE:
 	if (present[HTML_BASE_HREF] && value[HTML_BASE_HREF]) {
 	    HTAnchor_setBase(me->node_anchor, (char *) value[HTML_BASE_HREF]);
-	    if (SGML_TRACE)
-		HTTrace("HTML Parser. New base `%s\'\n", value[HTML_BASE_HREF]);
+	    HTTRACE(SGML_TRACE, "HTML Parser. New base `%s\'\n" _ value[HTML_BASE_HREF]);
 	}
 	break;
 
@@ -233,8 +270,16 @@ PRIVATE void HTML_start_element (HTStructured *	me,
 						value[HTML_BODY_BACKGROUND], NULL);
 	    HTextImp_foundLink(me->text, element_number, HTML_BODY_BACKGROUND,
 			       address, present, value);
-	    if (SGML_TRACE)
-		HTTrace("HTML Parser. Background `%s\'\n", value[HTML_BODY_BACKGROUND]);
+	    HTTRACE(SGML_TRACE, "HTML Parser. Background `%s\'\n" _ value[HTML_BODY_BACKGROUND]);
+	}
+	break;
+
+    case HTML_FORM:
+	if (present[HTML_FORM_ACTION] && value[HTML_FORM_ACTION]) {
+	    address = HTAnchor_findChildAndLink(me->node_anchor, NULL,
+						value[HTML_FORM_ACTION], NULL);
+	    HTextImp_foundLink(me->text, element_number, HTML_FORM_ACTION,
+			       address, present, value);
 	}
 	break;
 
@@ -244,11 +289,19 @@ PRIVATE void HTML_start_element (HTStructured *	me,
 						value[HTML_FRAME_SRC], NULL);
 	    HTextImp_foundLink(me->text, element_number, HTML_FRAME_SRC,
 			       address, present, value);
-	    if (SGML_TRACE)
-		HTTrace("HTML Parser. Frame `%s\'\n", value[HTML_FRAME_SRC]);
+	    HTTRACE(SGML_TRACE, "HTML Parser. Frame `%s\'\n" _ value[HTML_FRAME_SRC]);
 	}
 	break;
 	
+    case HTML_INPUT:
+	if (present[HTML_INPUT_SRC] && value[HTML_INPUT_SRC]) {
+	    address = HTAnchor_findChildAndLink(me->node_anchor, NULL,
+						value[HTML_INPUT_SRC], NULL);
+	    HTextImp_foundLink(me->text, element_number, HTML_INPUT_SRC,
+			       address, present, value);
+	}
+	break;
+
     case HTML_IMG:
 	if (present[HTML_IMG_SRC] && value[HTML_IMG_SRC]) {
 	    address = HTAnchor_findChildAndLink(me->node_anchor, NULL,
@@ -367,15 +420,14 @@ PRIVATE void HTML_start_element (HTStructured *	me,
 	break;
 
     case HTML_TITLE:
-        HTChunk_clear(me->title);
+        HTChunk_truncate(me->title,0);
 	break;
     }
 
     /* Update our parse stack */
     if (SGML_findTagContents(me->dtd, element_number) != SGML_EMPTY) {
         if (me->sp == me->stack) {
-	    if (SGML_TRACE)
-		HTTrace("HTML Parser. Maximum nesting of %d exceded!\n", MAX_NESTING); 
+	    HTTRACE(SGML_TRACE, "HTML Parser. Maximum nesting of %d exceded!\n" _ MAX_NESTING); 
 	    me->overflow++;
 	    return;
 	}
@@ -401,7 +453,7 @@ PRIVATE void HTML_end_element (HTStructured * me, int element_number)
     }
     me->sp++;
     if (me->sp > me->stack + MAX_NESTING - 1) {
-	if (SGML_TRACE) HTTrace("HTML Parser. Bottom of parse stack reached\n");
+	HTTRACE(SGML_TRACE, "HTML Parser. Bottom of parse stack reached\n");
 	me->sp = me->stack + MAX_NESTING - 1;
     }
 
@@ -427,7 +479,7 @@ PRIVATE void HTML_put_entity (HTStructured * me, int entity_number)
 	HTextImp_build(me->text, HTEXT_BEGIN);
 	me->started = YES;
     }
-    if (entity_number>=0 && entity_number<ENTITY_SIZE)
+    if (entity_number>=0 && entity_number<HTML_ENTITIES)
 	HTML_put_string(me, *(CurrentEntityValues+entity_number));
 }
 
@@ -476,6 +528,7 @@ PUBLIC int HTML_free (HTStructured * me)
     if (!me->started) HTextImp_build(me->text, HTEXT_BEGIN);
     if (me->comment_end) HTML_put_string(me, me->comment_end);
     HTextImp_build(me->text, HTEXT_END);
+    HTextImp_delete(me->text);
     HTChunk_delete(me->title);
     if (me->target) FREE_TARGET(me);
     HT_FREE(me);
@@ -486,6 +539,7 @@ PRIVATE int HTML_abort (HTStructured * me, HTList * e)
 {
     if (!me->started) HTextImp_build(me->text, HTEXT_BEGIN);
     HTextImp_build(me->text, HTEXT_ABORT);
+    HTextImp_delete(me->text);
     HTChunk_delete(me->title);
     if (me->target) ABORT_TARGET(me);
     HT_FREE(me);

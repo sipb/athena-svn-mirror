@@ -18,14 +18,12 @@
    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "mktex.h"
 #include "stackenv.h"
 
-/* Used by stackenv.c */
-string progname;
-
 static const char rcs_id[] =
-  "$Id: dvihp.c,v 1.1.1.1 2000-03-10 17:51:31 ghudson Exp $";
-static char rcs_revision[] = "$Revision: 1.1.1.1 $";
+  "$Id: dvihp.c,v 1.1.1.2 2003-02-25 22:09:49 amb Exp $";
+static char rcs_revision[] = "$Revision: 1.1.1.2 $";
 
 static void usage (void)
 {
@@ -111,7 +109,7 @@ void rmfiles (const_string prefix)
 #endif /* not _WIN32 */
 }
 
-void output_and_cleanup(int code)
+void __cdecl output_and_cleanup(int code)
 {
   /* FIXME : what cleanup should be done ? */
 }
@@ -131,6 +129,8 @@ main (int argc, char *argv[])
   int verbose = 0;
   string cmdline, maybe_spool_cmd = "";
   const_string space = " ";
+
+  output_and_cleanup_function = output_and_cleanup;
 
   progname = argv[0];
   kpse_set_progname (progname);

@@ -53,7 +53,7 @@ The included files are:
 #include  "trig.h"
 
 #ifdef KPATHSEA
-static UnClose P1H(struct segment *);
+static int UnClose P1H(struct segment *);
 extern void DumpText P1H(struct segment *);
 #else
 static Unclose();
@@ -798,7 +798,7 @@ So, we add "dest" instead of subtracting it:
                        break;
  
                    default:
-                       abort("Reverse: bad path segment");
+                       t1_abort("Reverse: bad path segment");
                }
 /*
 We need to reverse the order of segments too, so we break this segment
@@ -932,7 +932,7 @@ static UnClose(p0)
        for (p=p0; p->link->link != NULL; p=p->link) { ; }
  
        if (!LASTCLOSED(p->link->flag))
-               abort("UnClose:  no LASTCLOSED");
+               t1_abort("UnClose:  no LASTCLOSED");
  
        Free(SplitPath(p0, p));
        p0->flag &= ~ISCLOSED(ON);
@@ -1033,7 +1033,7 @@ struct segment *PathTransform(p0, S)
  
                    default:
                        IfTrace1(TRUE,"path = %z\n", p);
-                       abort("PathTransform:  invalid segment");
+                       t1_abort("PathTransform:  invalid segment");
                }
                oldx += savex;
                oldy += savey;
@@ -1185,7 +1185,7 @@ void QueryPath(path, typeP, Bp, Cp, Dp, fP)
                break;
  
            default:
-               abort("QueryPath: unknown segment");
+               t1_abort("QueryPath: unknown segment");
        }
        if (coerced)
                KillPath(path);
@@ -1325,7 +1325,7 @@ void QueryBounds(p0, S, xminP, yminP, xmaxP, ymaxP)
                    case HINTTYPE:
                        break;
                    default:
-                       abort("QueryBounds: unknown type");
+                       t1_abort("QueryBounds: unknown type");
                }
  
                if (x < min.x) min.x = x;

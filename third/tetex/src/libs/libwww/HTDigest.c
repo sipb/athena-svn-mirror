@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT W3C/INRIA 1998.
 **	Please first read the full copyright statement in the file COPYRIGHT.
-**	@(#) $Id: HTDigest.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTDigest.c,v 1.1.1.2 2003-02-25 22:25:01 amb Exp $
 **
 **	Contains a generic interface to the message digest algorithms, 
 **      inspired from the RSA-Euro toolkit. For the moment, it only
@@ -40,27 +40,35 @@ PUBLIC BOOL HTDigest_init (HTDigestContext *context, int digesttype)
 
 PUBLIC BOOL HTDigest_update (HTDigestContext *context, char *input, unsigned int inputLen)
 {
-    switch (context->algorithm) {
-      case HTDaMD5:
-	  MD5Update (&context->context.md5, (unsigned char *) input,
-		     inputLen);
-	  break;
-      default:
-          return NO;
-	  break;
-    }	
+    if (context) {
+	switch (context->algorithm) {
+	case HTDaMD5:
+	    MD5Update (&context->context.md5, (unsigned char *) input,
+		       inputLen);
+	    break;
+	default:
+	    return NO;
+	    break;
+	}
+	return YES;
+    }
+    return NO;
 }
 
 PUBLIC BOOL HTDigest_final (unsigned char *digest, HTDigestContext *context)
 {
-    switch (context->algorithm) {
-      case HTDaMD5:
-	  MD5Final (digest, &context->context.md5);
-	  break;
-      default:
-          return NO;
-	  break;
+    if (context) {
+	switch (context->algorithm) {
+	case HTDaMD5:
+	    MD5Final (digest, &context->context.md5);
+	    break;
+	default:
+	    return NO;
+	    break;
+	}
+	return YES;
     }
+    return NO;
 }
 
 

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTLib.c,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+**	@(#) $Id: HTLib.c,v 1.1.1.2 2003-02-25 22:26:11 amb Exp $
 **
 ** Authors
 **	HFN	Henrik Frystyk Nielsen, frystyk@w3.org
@@ -15,7 +15,6 @@
 
 /* Library include files */
 #include "WWWUtil.h"
-#include "HTBind.h"
 #include "HTAnchor.h"
 #include "HTProt.h"
 #include "HTDNS.h"
@@ -146,8 +145,7 @@ PUBLIC BOOL HTLib_isInitialized (void)
 */
 PUBLIC BOOL HTLibInit (const char * AppName, const char * AppVersion)
 {
-    if (WWWTRACE)
-	HTTrace("WWWLibInit.. INITIALIZING LIBRARY OF COMMON CODE\n");
+    HTTRACE(CORE_TRACE, "WWWLibInit.. INITIALIZING LIBRARY OF COMMON CODE\n");
 
     /* Set the application name and version */
     HTLib_setAppName(AppName);
@@ -161,9 +159,6 @@ PUBLIC BOOL HTLibInit (const char * AppName, const char * AppVersion)
     /* Create a default user profile and initialize it */
     UserProfile = HTUserProfile_new(HT_DEFAULT_USER, NULL);
     HTUserProfile_localize(UserProfile);
-
-    /* Initialize bindings */
-    HTBind_init();
 
 #ifdef WWWLIB_SIG
     /* On Solaris (and others?) we get a BROKEN PIPE signal when connecting
@@ -185,9 +180,10 @@ PUBLIC BOOL HTLibInit (const char * AppName, const char * AppVersion)
 */
 PUBLIC BOOL HTLibTerminate (void)
 {
-    if (WWWTRACE) HTTrace("WWWLibTerm.. Cleaning up LIBRARY OF COMMON CODE\n");
+    HTTRACE(CORE_TRACE, "WWWLibTerm.. Cleaning up LIBRARY OF COMMON CODE\n");
 
     HTNet_killAll();
+    HTHost_deleteAll();		/* Delete remaining hosts */
     HTChannel_deleteAll();			/* Delete remaining channels */
 
     HT_FREE(HTAppName);	        /* Freed thanks to Wade Ogden <wade@ebt.com> */
@@ -198,7 +194,6 @@ PUBLIC BOOL HTLibTerminate (void)
     HTAnchor_deleteAll(NULL);		/* Delete anchors and drop hyperdocs */
 
     HTProtocol_deleteAll();  /* Remove bindings between access and protocols */
-    HTBind_deleteAll();	    /* Remove bindings between suffixes, media types */
 
     HTUserProfile_delete(UserProfile);	    /* Free our default User profile */
 

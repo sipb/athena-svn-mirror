@@ -1,0 +1,5 @@
+#v+
+#!/bin/sh
+echo "$@" >> gs.log
+/usr/bin/gs "$@"
+#v-

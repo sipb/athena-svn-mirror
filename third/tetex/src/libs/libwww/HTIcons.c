@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTIcons.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTIcons.c,v 1.1.1.2 2003-02-25 22:26:35 amb Exp $
 **
 **	This module contains the functions for initializing, adding
 **	and selecting the icon for local directory listings, FTP and Gopher.
@@ -138,9 +138,8 @@ PUBLIC BOOL HTIcon_add (const char * url, const char * prefix,
 	if (!icons) icons = HTList_new();
 	HTList_addObject(icons, (void *) node);
 	alt_resize(alt);
-	if (PROT_TRACE)
-	    HTTrace("AddIcon..... %s => SRC=\"%s\" ALT=\"%s\"\n",
-		    type_templ,url, alt ? alt : "");
+	HTTRACE(PROT_TRACE, "AddIcon..... %s => SRC=\"%s\" ALT=\"%s\"\n" _ 
+		    type_templ _ url _ alt ? alt : "");
 	return YES;
     }
     return NO;
@@ -158,8 +157,7 @@ PUBLIC BOOL HTIcon_addUnknown (const char * url, const char * prefix,
     if (url) icon_unknown->icon_url = prefixed(url, prefix);
     if (alt) StrAllocCopy(icon_unknown->icon_alt, alt);
     alt_resize(alt);
-    if (PROT_TRACE)
-	HTTrace("Icon add.... UNKNOWN => SRC=\"%s\" ALT=\"%s\"\n",url,
+    HTTRACE(PROT_TRACE, "Icon add.... UNKNOWN => SRC=\"%s\" ALT=\"%s\"\n" _ url _ 
 		alt ? alt : "");
     return YES;
 }
@@ -175,8 +173,7 @@ PUBLIC BOOL HTIcon_addBlank (const char * url, const char * prefix, char * alt)
     if (url) icon_blank->icon_url = prefixed(url, prefix);
     if (alt) StrAllocCopy(icon_blank->icon_alt, alt);
     alt_resize(alt);
-    if (PROT_TRACE)
-	HTTrace("Icon add.... BLANK => SRC=\"%s\" ALT=\"%s\"\n",url,
+    HTTRACE(PROT_TRACE, "Icon add.... BLANK => SRC=\"%s\" ALT=\"%s\"\n" _ url _ 
 		alt ? alt : "");
     return YES;
 }
@@ -192,8 +189,7 @@ PUBLIC BOOL HTIcon_addParent (const char * url, const char * prefix, char * alt)
     if (url) icon_parent->icon_url = prefixed(url, prefix);
     if (alt) StrAllocCopy(icon_parent->icon_alt, alt);
     alt_resize(alt);
-    if (PROT_TRACE)
-	HTTrace("Icon add.... PARENT => SRC=\"%s\" ALT=\"%s\"\n",url,
+    HTTRACE(PROT_TRACE, "Icon add.... PARENT => SRC=\"%s\" ALT=\"%s\"\n" _ url _ 
 		alt ? alt : "");
     return YES;
 }
@@ -209,8 +205,7 @@ PUBLIC BOOL HTIcon_addDir (const char * url, const char * prefix, char * alt)
     if (url) icon_dir->icon_url = prefixed(url, prefix);
     if (alt) StrAllocCopy(icon_dir->icon_alt, alt);
     alt_resize(alt);
-    if (PROT_TRACE)
-	HTTrace("Icon add.... DIRECTORY => SRC=\"%s\" ALT=\"%s\"\n",url,
+    HTTRACE(PROT_TRACE, "Icon add.... DIRECTORY => SRC=\"%s\" ALT=\"%s\"\n" _ url _ 
 		alt ? alt : "");
     return YES;
 }
@@ -245,4 +240,40 @@ PUBLIC HTIconNode * HTIcon_find (HTFileMode	mode,
 	return icon_parent ? icon_parent : icon_unknown;
     }
     return icon_unknown;
+}
+
+PRIVATE void HTIconNode_delete (HTIconNode* pNode)
+{
+    if (pNode) {
+      HT_FREE(pNode->icon_url);
+      HT_FREE(pNode->icon_alt);
+      HT_FREE(pNode->type_templ);
+      HT_FREE(pNode);
+    }
+}
+/*
+**  cleans up all memory used by icons. Should be called by
+**  HTLibTerminate() (but it isn't)
+**
+*/
+PUBLIC void HTIcon_deleteAll (void)
+{
+    if(icons != NULL) {
+	HTList * iconList = icons;
+	HTIconNode * node;
+	while((node = (HTIconNode*)HTList_removeLastObject(iconList))) {
+	  HTIconNode_delete(node);
+	}
+	/* delete the list as well */
+	HTList_delete(icons);
+	icons = NULL;
+    }
+    HTIconNode_delete(icon_unknown);
+    icon_unknown = NULL;
+    HTIconNode_delete(icon_blank);
+    icon_blank = NULL;
+    HTIconNode_delete(icon_parent);
+    icon_parent = NULL;
+    HTIconNode_delete(icon_dir);
+    icon_dir = NULL;
 }

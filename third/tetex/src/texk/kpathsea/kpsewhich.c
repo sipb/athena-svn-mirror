@@ -1,7 +1,7 @@
 /* kpsewhich -- standalone path lookup and variable expansion for Kpathsea.
    Ideas from Thomas Esser and Pierre MacKay.
 
-Copyright (C) 1995, 96, 97 Karl Berry.
+Copyright (C) 1995 - 2002 Karl Berry & Olaf Weber.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -79,7 +79,10 @@ find_dpi P1C(string, s)
 /* Use the file type from -format if that was specified, else guess
    dynamically from NAME.  Return kpse_last_format if undeterminable.
    This function is also used to parse the -format string, a case which
-   we distinguish by setting is_filename to false.  */
+   we distinguish by setting is_filename to false.
+
+   Note that a few filenames have been hard-coded for format types that
+   differ from what would be inferred from their extensions. */
 
 static kpse_file_format_type
 find_format P2C(string, name, boolean, is_filename)
@@ -88,33 +91,34 @@ find_format P2C(string, name, boolean, is_filename)
   
   if (is_filename && user_format != kpse_last_format) {
     ret = user_format;
-  } else if (FILESTRCASEEQ (name, "psfonts.map")) {
+  } else if (FILESTRCASEEQ (name, "psfonts.map") ||
+             FILESTRCASEEQ (name, "pdftex.map")) {
     ret = kpse_dvips_config_format;
   } else {
-    kpse_file_format_type f;
+    int f;  /* kpse_file_format_type */
     boolean found = false;
     unsigned name_len = strlen (name);
 
 /* Have to rely on `try_len' being declared here, since we can't assume
    GNU C and statement expressions.  */
-#define TRY_SUFFIX(try) (\
-  try_len = (try) ? strlen (try) : 0, \
-  (try) && try_len <= name_len \
-     && FILESTRCASEEQ (try, name + name_len - try_len))
+#define TRY_SUFFIX(ftry) (\
+  try_len = (ftry) ? strlen (ftry) : 0, \
+  (ftry) && try_len <= name_len \
+     && FILESTRCASEEQ (ftry, name + name_len - try_len))
 
     for (f = 0; !found && f < kpse_last_format; f++) {
       unsigned try_len;
       const_string *ext;
-      const_string try;
+      const_string ftry;
       
       if (!kpse_format_info[f].type)
-        kpse_init_format (f);
+        kpse_init_format ((kpse_file_format_type)f);
 
       if (!is_filename) {
           /* Allow the long name, but only in the -format option.  We don't
              want a filename confused with a format name.  */
-          try = kpse_format_info[f].type;
-          found = TRY_SUFFIX (try);
+          ftry = kpse_format_info[f].type;
+          found = TRY_SUFFIX (ftry);
       }
       for (ext = kpse_format_info[f].suffix; !found && ext && *ext; ext++){
         found = TRY_SUFFIX (*ext);
@@ -124,7 +128,7 @@ find_format P2C(string, name, boolean, is_filename)
       }
     }
     /* If there was a match, f will be one past the correct value.  */
-    ret = found ? f - 1 : kpse_last_format;
+    ret = found ? (kpse_file_format_type)(f - 1) : kpse_last_format;
   }
   
   return ret;
@@ -260,7 +264,7 @@ read_command_line P2C(int, argc,  string *, argv)
       user_format_string = optarg;
 
     } else if (ARGUMENT_IS ("help")) {
-      kpse_file_format_type f;
+      int f; /* kpse_file_format_type */
       extern KPSEDLL char *kpse_bug_address; /* from version.c */
       
       printf ("Usage: %s [OPTION]... [FILENAME]...\n", argv[0]);
@@ -274,7 +278,7 @@ read_command_line P2C(int, argc,  string *, argv)
       puts ("\nRecognized format names and their suffixes:");
       for (f = 0; f < kpse_last_format; f++) {
         const_string *ext;
-        kpse_init_format (f);
+        kpse_init_format ((kpse_file_format_type)f);
         printf ("%s:", kpse_format_info[f].type);
         for (ext = kpse_format_info[f].suffix; ext && *ext; ext++) {
           putchar (' ');
@@ -311,7 +315,7 @@ read_command_line P2C(int, argc,  string *, argv)
     } else if (ARGUMENT_IS ("version")) {
       extern KPSEDLL char *kpathsea_version_string; /* from version.c */
       puts (kpathsea_version_string);
-      puts ("Copyright (C) 1997 K. Berry.\n\
+      puts ("Copyright (C) 1997 - 2002 K. Berry & O. Weber.\n\
 There is NO warranty.  You may redistribute this software\n\
 under the terms of the GNU General Public License.\n\
 For more information about these matters, see the files named COPYING.");
@@ -336,7 +340,8 @@ For more information about these matters, see the files named COPYING.");
   }
 }
 
-int main P2C(int, argc,  string *, argv)
+int
+main P2C(int, argc,  string *, argv)
 {
   unsigned unfound = 0;
 

@@ -32,6 +32,8 @@ AC_ARG_WITH(mkocp-default,
 AC_ARG_WITH(mkofm-default,
 [  --without-mkofm-default      do not run mkofm if OFM file missing],
    , with_mkofm_default=yes)
+AC_ARG_WITH(mktexfmt-default,
+[  --with-mktexfmt-default      run mktexfmt if format file missing])
 AC_ARG_WITH(mktextex-default,
 [  --with-mktextex-default      run mktextex if TeX source missing],
   with_mktextex_default=yes, with_mktextex_default=no)

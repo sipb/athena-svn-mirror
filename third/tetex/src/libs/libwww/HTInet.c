@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTInet.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTInet.c,v 1.1.1.2 2003-02-25 22:26:36 amb Exp $
 **
 **	This code is in common between client and server sides.
 **
@@ -78,22 +78,24 @@ PUBLIC char * HTErrnoString (int errornumber)
 PUBLIC int HTInetStatus (int errnum, char * where)
 {
 #ifdef VMS
-    if (PROT_TRACE) HTTrace("System Error Unix = %ld dec\n", errno);
-    if (PROT_TRACE) HTTrace("System Error VMS  = %lx hex\n", vaxc$errno);
+    HTTRACE(CORE_TRACE, "System Error Unix = %ld dec\n" _ errno);
+    HTTRACE(CORE_TRACE, "System Error VMS  = %lx hex\n" _ vaxc$errno);
     return (-vaxc$errno);
 #else
 #ifdef _WINSOCKAPI_
-    if (PROT_TRACE) HTTrace("System Error Unix = %ld dec\n", errno);
-    if (PROT_TRACE) HTTrace("System Error WinSock error=%lx hex\n",
+    HTTRACE(CORE_TRACE, "System Error Unix = %ld dec\n" _ errno);
+    HTTRACE(CORE_TRACE, "System Error WinSock error=%lx hex\n" _ 
 			    WSAGetLastError());
     return (-errnum);
 #else
-    if (PROT_TRACE) {
+#ifdef HTDEBUG
+    if (CORE_TRACE) {
 	char * errmsg = HTErrnoString(errnum);
-	HTTrace("System Error %d after call to %s() failed\n............ %s\n",
-		errno, where, errmsg);
+	HTTRACE(CORE_TRACE, "System Error %d after call to %s() failed\n............ %s\n" _
+		errno _ where _ errmsg);
 	HT_FREE(errmsg);
     }
+#endif /* HTDEBUG */
     return (-errnum);
 #endif /* _WINSOCKAPI_ */
 #endif /* VMS */
@@ -143,6 +145,7 @@ PUBLIC unsigned int HTCardinal (int *		pstatus,
 **  call if the application has its own handlers.
 */
 #include <signal.h>
+
 PUBLIC void HTSetSignal (void)
 {
     /* On some systems (SYSV) it is necessary to catch the SIGPIPE signal
@@ -150,15 +153,15 @@ PUBLIC void HTSetSignal (void)
     ** get `connection refused' back
     */
     if (signal(SIGPIPE, SIG_IGN) == SIG_ERR) {
-	if (PROT_TRACE) HTTrace("HTSignal.... Can't catch SIGPIPE\n");
+	HTTRACE(CORE_TRACE, "HTSignal.... Can't catch SIGPIPE\n");
     } else {
-	if (PROT_TRACE) HTTrace("HTSignal.... Ignoring SIGPIPE\n");
+	HTTRACE(CORE_TRACE, "HTSignal.... Ignoring SIGPIPE\n");
     }
 }
-#else
-#ifdef WWW_WIN_DLL
-PUBLIC void HTSetSignal (void) {}
-#endif /* WWW_WIN_DLL */
+#else /* WWWLIB_SIG */
+
+PUBLIC void HTSetSignal (void) { }
+
 #endif /* WWWLIB_SIG */
 
 /* ------------------------------------------------------------------------- */
@@ -215,9 +218,8 @@ PUBLIC int HTParseInet (HTHost * host, char * hostname, HTRequest * request)
     sin->sdn_nam.n_len = min(DN_MAXNAML, strlen(hostname));  /* <=6 in phase 4 */
     strncpy (sin->sdn_nam.n_name, hostname, sin->sdn_nam.n_len + 1);
 
-    if (PROT_TRACE)
-	HTTrace("DECnet: Parsed address as object number %d on host %.6s...\n",
-		sin->sdn_objnum, hostname);
+    HTTRACE(CORE_TRACE, "DECnet: Parsed address as object number %d on host %.6s...\n" _ 
+		sin->sdn_objnum _ hostname);
 #else /* Internet */
     {
 	char *strptr = hostname;
@@ -241,11 +243,11 @@ PUBLIC int HTParseInet (HTHost * host, char * hostname, HTRequest * request)
 	    if (port) *port = '\0';
 	    status = HTGetHostByName(host, hostname, request);
 	}
-	if (PROT_TRACE) {
-	    if (status > 0)
-		HTTrace("ParseInet... as port %d on %s with %d homes\n",
-			(int) ntohs(sin->sin_port), HTInetString(sin), status);
-	}
+#ifdef HTDEBUG
+	if (status > 0)
+	    HTTRACE(CORE_TRACE, "ParseInet... as port %d on %s with %d homes\n" _
+		    (int) ntohs(sin->sin_port) _ HTInetString(sin) _ status);
+#endif /* HTDEBUG */
     }
 #endif /* Internet vs. Decnet */
     return status;
@@ -301,7 +303,7 @@ PUBLIC char * HTGetHostName (void)
 #if defined(HAVE_SYSINFO) && defined(SI_HOSTNAME)
     if (!fqdn && sysinfo(SI_HOSTNAME, name, MAXHOSTNAMELEN) > 0) {
 	char * dot = strchr(name, '.');
-	if (PROT_TRACE) HTTrace("HostName.... sysinfo says `%s\'\n", name);
+	HTTRACE(CORE_TRACE, "HostName.... sysinfo says `%s\'\n" _ name);
 	StrAllocCopy(hostname, name);
 	fqdn = dot ? 2 : 1;
     }
@@ -310,7 +312,7 @@ PUBLIC char * HTGetHostName (void)
 #ifdef HAVE_GETHOSTNAME
     if (!fqdn && gethostname(name, MAXHOSTNAMELEN) == 0) {
 	char * dot = strchr(name, '.');
-	if (PROT_TRACE) HTTrace("HostName.... gethostname says `%s\'\n", name);
+	HTTRACE(CORE_TRACE, "HostName.... gethostname says `%s\'\n" _ name);
 	StrAllocCopy(hostname, name);
 	fqdn = dot ? 2 : 1;
     }
@@ -351,8 +353,7 @@ PUBLIC char * HTGetHostName (void)
     /* If everything else has failed then try getdomainname */
     if (fqdn==1) {
 	if (getdomainname(name, MAXHOSTNAMELEN)) {
-	    if (PROT_TRACE)
-		HTTrace("HostName.... Can't get domain name\n");
+	    HTTRACE(CORE_TRACE, "HostName.... Can't get domain name\n");
 	    StrAllocCopy(hostname, "");
 	    return NULL;
 	}
@@ -376,7 +377,7 @@ PUBLIC char * HTGetHostName (void)
 	}
 	if (*(hostname+strlen(hostname)-1) == '.')    /* Remove trailing dot */
 	    *(hostname+strlen(hostname)-1) = '\0';
-	if (PROT_TRACE) HTTrace("HostName.... FQDN is `%s\'\n", hostname);
+	HTTRACE(CORE_TRACE, "HostName.... FQDN is `%s\'\n" _ hostname);
     }
     return hostname;
 }
@@ -401,7 +402,8 @@ PUBLIC char * HTGetHostName (void)
 PUBLIC char * HTGetMailAddress (void)
 {
 #ifdef HT_REENTRANT
-  char name[LOGNAME_MAX+1];    /* For getlogin_r or getUserName */
+  char name[HT_LOGNAME_MAX];    /* For getlogin_r or getUserName */
+  int result;
 #endif
 #ifdef WWW_MSWINDOWS/* what was the plan for this under windows? - EGP */
   char name[256];    /* For getlogin_r or getUserName */
@@ -414,21 +416,27 @@ PUBLIC char * HTGetMailAddress (void)
 
 #ifdef WWW_MSWINDOWS
     if (!login && GetUserName(name, &bufSize) != TRUE)
-        if (PROT_TRACE) HTTrace("MailAddress. GetUsername returns NO\n");
+        HTTRACE(CORE_TRACE, "MailAddress. GetUsername returns NO\n");
 #endif /* WWW_MSWINDOWS */
 
 #ifdef HAVE_CUSERID
     if (!login && (login = (char *) cuserid(NULL)) == NULL)
-        if (PROT_TRACE) HTTrace("MailAddress. cuserid returns NULL\n");
+        HTTRACE(CORE_TRACE, "MailAddress. cuserid returns NULL\n");
 #endif /* HAVE_CUSERID */
 
 #ifdef HAVE_GETLOGIN
-#ifdef HT_REENTRANT
-    if (!login && (login = (char *) getlogin_r(name, LOGNAME_MAX)) == NULL)
+#ifdef GETLOGIN_R_RETURNS_POINTER
+    if (!login && (login = (char *) getlogin_r(name, HT_LOGNAME_MAX)) == NULL)
+#elif defined(GETLOGIN_R_RETURNS_INT)
+    if (!login && (result = getlogin_r(name, HT_LOGNAME_MAX)) == 0)
+    {
+	login = &name[0];
+    }
+    else
 #else
     if (!login && (login = (char *) getlogin()) == NULL)
 #endif /* HT_REENTRANT */
-	if (PROT_TRACE) HTTrace("MailAddress. getlogin returns NULL\n");
+	HTTRACE(CORE_TRACE, "MailAddress. getlogin returns NULL\n");
 #endif /* HAVE_GETLOGIN */
 
 #ifdef HAVE_PWD_H
@@ -437,10 +445,10 @@ PUBLIC char * HTGetMailAddress (void)
 #endif /* HAVE_PWD_H */
 
     if (!login && (login = getenv("LOGNAME")) == NULL)
-	if (PROT_TRACE) HTTrace("MailAddress. LOGNAME not found\n");
+	HTTRACE(CORE_TRACE, "MailAddress. LOGNAME not found\n");
 
     if (!login && (login = getenv("USER")) == NULL)
-	if (PROT_TRACE) HTTrace("MailAddress. USER not found\n");
+	HTTRACE(CORE_TRACE, "MailAddress. USER not found\n");
 
     if (!login) login = HT_DEFAULT_LOGIN;
 
@@ -560,8 +568,7 @@ PUBLIC time_t HTGetTimeZoneOffset (void)
 #endif
 	}
 	HTTimeZone = -HTTimeZone;
-	if (CORE_TRACE)
-	    HTTrace("TimeZone.... GMT + (%02d) hours (including DST)\n",
+	HTTRACE(CORE_TRACE, "TimeZone.... GMT + (%02d) hours (including DST)\n" _ 
 		    (int) HTTimeZone/3600);
     }
 #else
@@ -575,12 +582,11 @@ PUBLIC time_t HTGetTimeZoneOffset (void)
 	struct tm * local = localtime(&cur_t);
 #endif /* HT_REENTRANT */
 	HTTimeZone = local->tm_gmtoff;
-	if (CORE_TRACE)
-	    HTTrace("TimeZone.... GMT + (%02d) hours (including DST)\n",
+	HTTRACE(CORE_TRACE, "TimeZone.... GMT + (%02d) hours (including DST)\n" _ 
 		    (int)local->tm_gmtoff / 3600);
     }
 #else
-    if (CORE_TRACE) HTTrace("TimeZone.... Not defined\n");
+    HTTRACE(CORE_TRACE, "TimeZone.... Not defined\n");
 #endif /* HAVE_TM_GMTOFF */
 #endif /* HAVE_TIMEZONE */
     return HTTimeZone;
@@ -593,19 +599,35 @@ PUBLIC time_t HTGetTimeZoneOffset (void)
 */
 PUBLIC char * HTGetTmpFileName (const char * abs_dir)
 {
+    char * result = NULL;
 #ifdef HAVE_TEMPNAM
+    static char * envtmpdir = NULL;
+    size_t len = 0;
+    if (abs_dir && *abs_dir) {
+      char * tmpdir = getenv("TMPDIR");
+      if (tmpdir)
+          len = strlen(tmpdir);
+      if (len) {
+          if (!(envtmpdir = (char *) HT_REALLOC(envtmpdir, len + 8)))
+              HT_OUTOFMEM("HTGetTmpFileName");
+          strcpy(envtmpdir, "TMPDIR=");
+          strcpy(envtmpdir + 7, tmpdir);
+          putenv("TMPDIR=");
+      }
+    }
 #ifdef __CYGWIN__
-    return tempnam(abs_dir, "");
+    result = tempnam(abs_dir, "");
 #else
-    return tempnam(abs_dir, NULL);
+    result = tempnam(abs_dir, NULL);
 #endif /* __CYGWIN__ */
+    if (len)
+      putenv(envtmpdir);
 #else
     /*
     **  This is only approx. as we don't know if this file exists or not.
     **  Hopefully, tempnam() exists on enough platforms so that this is not
     **  a problem.
     */
-    char * result = NULL;
     char * offset = NULL;
     if (!(result = (char *) HT_MALLOC((abs_dir ? strlen(abs_dir) : 0) +
 				      HT_MAX_TMPNAM + 2)))
@@ -614,11 +636,11 @@ PUBLIC char * HTGetTmpFileName (const char * abs_dir)
 #ifdef WWW_MSWINDOWS
     if (abs_dir) {
 #else
-    if (abs_dir && *abs_dir=='/') {
+    if (abs_dir && *abs_dir==DIR_SEPARATOR_CHAR) {
 #endif /* WWW_MSWINDOWS */
 	strcpy(result, abs_dir);
 	offset = result+strlen(result);
-	if (*(offset-1) != '/') *offset++ = '/';
+	if (*(offset-1) != DIR_SEPARATOR_CHAR) *offset++ = DIR_SEPARATOR_CHAR;
 
 #ifdef HT_REENTRANT
 	tmpnam_r(offset);
@@ -627,11 +649,7 @@ PUBLIC char * HTGetTmpFileName (const char * abs_dir)
 #endif
 
 	{
-#ifdef WWW_MSWINDOWS
-	    char * orig = strrchr(offset, '\\');
-#else
-	    char * orig = strrchr(offset, '/');
-#endif /* WWW_MSWINDOWS */
+	    char * orig = strrchr(offset, DIR_SEPARATOR_CHAR);
 	    char * dest = offset;
 	    if (orig++) while ((*dest++ = *orig++));
 	}
@@ -644,8 +662,8 @@ PUBLIC char * HTGetTmpFileName (const char * abs_dir)
 #endif
 	offset = result;
     }
-    return result;
 #endif /* HAVE_TEMPNAM */
+    return result;
 }
 
 /*

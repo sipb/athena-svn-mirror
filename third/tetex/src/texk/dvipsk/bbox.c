@@ -43,17 +43,23 @@ integer nscalewidth P2C(register integer, a, register integer, b)
 
 void bbtfmload P1C(int, n)
 {
+#ifdef Omega
+   register integer i, j ;
+#else
    register shalfword i ;
+#endif
    register integer li ;
    integer scaledsize ;
    shalfword nw, nh, nd, ns, hd ;
-   shalfword bc, ec ;
 #ifdef Omega
+   integer bc, ec ;
+   integer nco, ncw, npc, no_repeats ;
    integer scaled[65536] ;
-   unsigned chardat[65536] ;
+   integer chardat[65536] ;
    integer font_level;
    integer pretend_no_chars;
 #else
+   shalfword bc, ec ;
    integer scaled[300] ;
    integer chardat[256] ;
 #endif
@@ -92,9 +98,12 @@ void bbtfmload P1C(int, n)
       ns += tfm32() ;
       ns += tfm32() ;
       li = tfm32() ;
+      li = tfm32() ;
       if (font_level==1) {
-         fprintf(stderr, "Level 1 Fonts unsupported");
-         abort();
+        nco = tfm32() ;
+        ncw = tfm32() ;
+        npc = tfm32() ;
+        for (i=0; i<12; i++) li=tfm32();
       }
    }
 #else
@@ -111,27 +120,49 @@ void bbtfmload P1C(int, n)
    check_checksum (li, curfnt->checksum, curfnt->name);
 
    li = tfm32() ;
-   for (i=2; i<hd; i++)
-      li = tfm32() ;
 #ifdef Omega
    pretend_no_chars=ec+1;
    if (pretend_no_chars<256) pretend_no_chars=256;
    bbcurfnt->bbchardesc = (bbchardesctype *)
                           xmalloc(pretend_no_chars*sizeof(bbchardesctype));
+   for (i=2; i<((font_level==1)?nco-29:hd); i++)
+      li = tfm32() ;
+   no_repeats = 0 ;
    for (i=0; i<pretend_no_chars; i++)
 #else
+   for (i=2; i<hd; i++)
+      li = tfm32() ;
    for (i=0; i<256; i++)
 #endif
       chardat[i] = -1 ;
    for (i=bc; i<=ec; i++) {
 #ifdef Omega
-      chardat[i] = tfm32() ;
-      li = tfm32() ;
+      if (no_repeats>0) {
+         chardat[i] = chardat[i-1] ;
+         no_repeats-- ;
+      } else if (font_level>=0) {
+         chardat[i] = tfm32() ;
+         li = tfm32() ;
+         if (font_level==1) {
+            no_repeats = tfm16() ;
+            for (j=0; j<(npc|1); j++) tfm16() ;
+            ncw -= 3 + npc/2 ;
+         }
+      } else {
+         chardat[i] = tfm16() ;
+         li = tfm16() ;
+      }
 #else
       chardat[i] = tfm16() ;
       li = tfm16() ;
 #endif
    }
+#ifdef Omega
+   if (font_level==1&&ncw!=0) {
+      sprintf(errbuf, "Table size mismatch in %s", curfnt->name) ;
+      error(errbuf) ;
+   }
+#endif
    scaledsize = curfnt->scaledsize ;
    for (i=0; i<nw + nh + nd; i++)
       scaled[i] = scalewidth(tfm32(), scaledsize) ;
@@ -188,13 +219,13 @@ void bbspecial P3C(integer, h, integer, v, int, nbytes)
       /* convert from magnified PostScript units back to scaled points */
       real conv = 72.0 * (real)num / (real)den * (real)mag / 254000000.0 ;
       if (llx > h + r[0] / conv)
-         llx = h + r[0] / conv ;
+         llx = (integer) (h + r[0] / conv) ;
       if (lly > v - r[3] / conv)
-         lly = v - r[3] / conv ;
+         lly = (integer) (v - r[3] / conv) ;
       if (urx < h + r[2] / conv)
-         urx = h + r[2] / conv ;
+         urx = (integer) (h + r[2] / conv) ;
       if (ury < v - r[1] / conv)
-         ury = v - r[1] / conv ;
+         ury = (integer) (v - r[1] / conv) ;
    }
 }
 void bbdopage()
@@ -378,8 +409,8 @@ void findbb P1C(integer, bop)
    fseek(dvifile, bop, 0) ;
    bbdopage() ;
    fseek(dvifile, curpos, 0) ;
-   lly = vsize - 2 * off - lly ;
-   ury = vsize - 2 * off - ury ;
+   lly = (int) (vsize - 2 * off - lly) ;
+   ury = (int) (vsize - 2 * off - ury) ;
    llx = (int)floor((llx + off - margin) * conv - hadj + 0.5) ;
    lly = (int)floor((lly + off + margin) * conv - vadj + 0.5) ;
    urx = (int)floor((urx + off + margin) * conv - hadj + 0.5) ;

@@ -1,4 +1,4 @@
-.TH PDFTEX 1 "29 March 1999" "Web2C @VERSION@"
+.TH PDFTEX 1 "10 November 2001" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -66,6 +66,12 @@ pdf\*(TX is beta software.
 .SH OPTIONS
 This version of pdf\*(TX understands the following command line options.
 .TP
+.B --file-line-error-style
+.rb
+Print error messages in the form
+.I file:line:error
+which is similar to the way many compilers format them.
+.TP
 .BI --fmt \ format
 .rb
 Use
@@ -110,6 +116,12 @@ As
 and starts the server at the other end as well.  Whether this option
 is available is the choice of the installer.
 .TP
+.BI --jobname \ name
+.rb
+Use
+.I name
+for the job name, instead of deriving it from the name of the input file.
+.TP
 .BI --kpathsea-debug \ bitmask
 .rb
 Sets path searching debugging flags according to the bitmask.  See the
@@ -144,11 +156,25 @@ Use
 .I string
 for the DVI file comment instead of the date.
 .TP
+.B --parse-first-line
+.rb
+If the first line of the main input file begins with
+.I %&
+parse it to look for a dump name or a
+.B --translate-file
+option.
+.TP
 .BI --progname \ name
 .rb
 Pretend to be program
 .IR name .
 This affects both the format used and the search paths.
+.TP
+.B --recorder
+.rb
+Enable the filename recorder.  This leaves a trace of the files opened
+for input and output in a file with extension
+.IR .fls .
 .TP
 .B --shell-escape
 .rb
@@ -187,7 +213,7 @@ Normally, pdf\*(TX puts its output files in the current directory.  If
 any output file cannot be opened there, it tries to open it in the
 directory specified in the environment variable TEXMFOUTPUT.
 There is no default value for that variable.  For example, if you say
-.I tex paper
+.I pdftex paper
 and the current directory is not writable, if TEXMFOUTPUT has
 the value
 .IR /tmp ,
@@ -248,6 +274,14 @@ Predigested pdf\*(TX format (.\|fmt) files.
 .br
 .\"=====================================================================
 .SH BUGS
+This version of pdf\*(TX implements a number of optional extensions.
+In fact, many of these extensions conflict to a greater or lesser
+extent with the definition of pdf\*(TX.  When such extensions are
+enabled, the banner printed when pdf\*(TX starts is changed to print
+.B pdfTeXk
+instead of
+.BR pdfTeX .
+.PP
 This version of pdf\*(TX fails to trap arithmetic overflow when
 dimensions are added or subtracted.  Cases where this occurs are rare,
 but when it does the generated
@@ -266,8 +300,7 @@ to
 .\"=====================================================================
 .SH "SEE ALSO"
 .BR tex (1),
-.BR mf (1),
-.BR undump (1).
+.BR mf (1).
 .\"=====================================================================
 .SH AUTHORS
 The primary authors of pdf\*(TX are Han The Thanh, Petr Sojka, and

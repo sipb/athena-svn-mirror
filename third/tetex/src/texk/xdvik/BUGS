@@ -8,10 +8,6 @@ Please send bug-reports to janl@math.uio.no and include as much (relevant)
 information as possible (such as platform, compiler, experiments carried
 out to try to fix the problem and so forth).
 
-xdvik-21.23 compiles and runs fine for me on HP-UX 10.20, Linux/Redhat
-5.1 and Solaris 5.5.  That is not to say that all issues in the k port
-of xdvi has been adressed, or even found.
-
 Known features:
 * Controll of font/file generation by X-resource and commandline is
   over-ridden by controll by environment variable/texmf.cnf setting.
@@ -20,7 +16,8 @@ Known features:
   controlled make sure there is no setting in the environment/texmf.cnf
 * Under kpathsea the user cannot select MOTIF interface.  I'm not quite
   sure if it works correctly either, the k patch touch code at and around
-  places where xdvi had #if MOTIF.
+  places where xdvi had #if MOTIF.  Patches accepted.
+* Under kpathsea the user cannot select Xaw3d.  Patches accepted.
 * Some k features such as HTEX/HAVE_LIBWWW is not practical to turn off.
   Changes in the autoconf setup must be acompanied by changes in
   mksedscript.  The HTEX features also appear to be rather fragile w.r.t.

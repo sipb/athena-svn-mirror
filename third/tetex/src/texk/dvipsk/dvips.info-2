@@ -1,5 +1,4 @@
-This is Info file dvips.info, produced by Makeinfo version 1.68 from
-the input file dvips.texi.
+This is dvips.info, produced by makeinfo version 4.4 from dvips.texi.
 
 INFO-DIR-SECTION TeX
 START-INFO-DIR-ENTRY
@@ -29,16 +28,16 @@ There is no provision for continuation lines.
      Define paper sizes.  *Note Config file paper sizes::.
 
 `a*'
-     Memory conservation.  Same as `-a', *note Option details::..
+     Memory conservation.  Same as `-a', *note Option details::.
 
 `b #COPIES'
-     Multiple copies.  Same as `-b', *note Option details::..
+     Multiple copies.  Same as `-b', *note Option details::.
 
 `D DPI'
-     Output resolution.  Same as `-D', *note Option details::..
+     Output resolution.  Same as `-D', *note Option details::.
 
 `e NUM'
-     Max drift.  Same as `-e', *note Option details::..
+     Max drift.  Same as `-e', *note Option details::.
 
 `E COMMAND'
      Executes the command listed with `system'(3); can be used to get
@@ -49,10 +48,10 @@ There is no provision for continuation lines.
 
 `f*'
 `F'
-     Run as a filter.  Same as `-f', *note Option details::..
+     Run as a filter.  Same as `-f', *note Option details::.
 
 `h HEADER'
-     Prepend HEADER to output.  Same as `h-', *note Option details::..
+     Prepend HEADER to output.  Same as `h-', *note Option details::.
 
 `H PATH'
      Use PATH to search for PostScript header files.  The environment
@@ -60,15 +59,15 @@ There is no provision for continuation lines.
 
 `i N'
      Make multiple output files.  Same as `-i -S N', *note Option
-     details::..
+     details::.
 
 `j*'
      Partially download Type 1 fonts.  Same as `-j', *note Option
-     details::..
+     details::.
 
 `K*'
      Remove comments from included PostScript files.  Same as `-K',
-     *note Option details::..
+     *note Option details::.
 
 `m NUM'
      Declare NUM as the memory available for fonts and strings in the
@@ -90,23 +89,23 @@ There is no provision for continuation lines.
      these cases, a value of one million works fine.
 
 `M MODE'
-     Metafont mode.  Same as `-mode', *note Option details::..
+     Metafont mode.  Same as `-mode', *note Option details::.
 
 `N*'
      Disable structured comments.  Beware: This also turns off
      displaying page numbers or changing to specific pagenumbers in
-     PostScript viewers.  Same as `-N', *note Option details::..
+     PostScript viewers.  Same as `-N', *note Option details::.
 
 `o NAME'
-     Send output to NAME.  Same as `-', *note Option details::..  In
-     the file `config.foo', a setting like this is probably appropriate:
+     Send output to NAME.  Same as `-', *note Option details::.  In the
+     file `config.foo', a setting like this is probably appropriate:
           o |lpr -Pfoo
      The MS-DOS version will emulate spooling to `lpr' by printing to
      the local printer device `PRN' if it doesn't find an executable
      program by that name in the current directory or along the `PATH'.
 
 `O XOFF,YOFF'
-     Origin offset.  Same as `-O', *note Option details::..
+     Origin offset.  Same as `-O', *note Option details::.
 
 `p [+]NAME'
      Examine NAME for PostScript font aliases.  Default is
@@ -125,10 +124,10 @@ There is no provision for continuation lines.
 
 `q*'
 `Q'
-     Run quietly.  Same as `-q', *note Option details::..
+     Run quietly.  Same as `-q', *note Option details::.
 
 `r*'
-     Page reversal.  Same as `-r', *note Option details::..
+     Page reversal.  Same as `-r', *note Option details::.
 
 `R NUM1 NUM2 ...'
      Define the list of default resolutions for PK fonts.  If a font
@@ -153,7 +152,7 @@ There is no provision for continuation lines.
      the file `make/paths.make'.
 
 `s*'
-     Output global save/restore.  Same as `-s', *note Option details::..
+     Output global save/restore.  Same as `-s', *note Option details::.
 
 `S PATH'
      Use PATH to search for special illustrations (Encapsulated
@@ -167,7 +166,7 @@ There is no provision for continuation lines.
 
 `U*'
      Work around bug in Xerox 4045 printer.  Same as `-U', *note Option
-     details::..
+     details::.
 
 `V PATH'
      Use PATH to search for virtual font files.  This may be
@@ -182,13 +181,18 @@ There is no provision for continuation lines.
      about special characteristics of a particular printer.
 
 `X NUM'
-     Horizontal resolution.  Same as `-X', *note Option details::..
+     Horizontal resolution.  Same as `-X', *note Option details::.
 
 `Y NUM'
-     Vertical resolution.  Same as `-Y', *note Option details::..
+     Vertical resolution.  Same as `-Y', *note Option details::.
 
 `Z*'
-     Compress bitmap fonts.  Same as `-Z', *note Option details::..
+     Compress bitmap fonts.  Same as `-Z', *note Option details::.
+
+`z*'
+     Disables execuation of system commands.  Same as `-R', *note
+     Option details::.
+
 
 
 File: dvips.info,  Node: Paper size and landscape,  Next: Interaction with PostScript,  Prev: Invoking Dvips,  Up: Top
@@ -352,7 +356,7 @@ Paper trays
 
   Some printers, such as the Hewlett-Packard HP4si, have multiple paper
 trays.  You can set up Dvips to take advantage of this using the
-`bop-hook' PostScript variable (*note PostScript hooks::.).
+`bop-hook' PostScript variable (*note PostScript hooks::).
 
   For example, suppose you have an alternate tray stocked with
 letterhead paper; the usual tray has the usual paper.  You have a
@@ -369,13 +373,14 @@ select the paper trays.  On the 4SI, ALTERNATETRAY is `statusdict begin
 end'.
 
   Then, include the file with either
-   * the `-h' command-line option (*note Option details::.); or
+   * the `-h' command-line option (*note Option details::); or
 
-   * the `h' config file option (*note Configuration file commands::.);
+   * the `h' config file option (*note Configuration file commands::);
      or
 
    * `\special{header=FILE}' in your TeX document (*note Including
      headers from TeX: Including headers from TeX.).
+
 
 
 File: dvips.info,  Node: Interaction with PostScript,  Next: PostScript fonts,  Prev: Paper size and landscape,  Up: Top
@@ -606,6 +611,7 @@ width of the `\vbox'.  Schematically:
      If the natural width is greater than the current `\hsize', scale to
      `\hsize', otherwise use the natural width.
 
+
   For compatibility with other PostScript drivers, it is possible to
 turn off the default scaling of included figures by the DVI
 magnification with the following TeX command:
@@ -619,7 +625,7 @@ scaled and out of position if a DVI to DVI program is used to scale or
 otherwise modify the document.
 
   DVI magnification is not applied to any output from code you write in
-`bop-hook' or its ilk (*note PostScript hooks::.),
+`bop-hook' or its ilk (*note PostScript hooks::),
 
 
 File: dvips.info,  Node: EPSF clipping,  Prev: EPSF scaling,  Up: EPSF macros
@@ -773,6 +779,7 @@ HEX-BITSTRING
      treated as a bitmap.  For example, if your figure used the single
      letter `K', you would use `4b:8' for HEX-START and HEX-BITSTRING.
      If it used `KLMNP', you would use `4b:f4'.
+
 
   MetaPost's output figures contain lines like this for bitmap fonts
 used in a MetaPost label (*note MetaPost: (web2c)MetaPost.).
@@ -1053,7 +1060,7 @@ Without `-z', `html:' specials are ignored.
 to make a PDF file.  (It can still be handled by ordinary PostScript
 interpreters as well.)  Various versions of both PC and Unix distillers
 are supported; Ghostscript includes limited distiller support (*note
-Ghostscript installation::.).
+Ghostscript installation::).
 
   Macros you can use in your TeX document to insert the specials in the
 first place are available from `CTAN:/support/hypertex'.  For CTAN
@@ -1063,12 +1070,12 @@ info, *note unixtex.ftp: (kpathsea)unixtex.ftp..
 written by Mark Doyle and Tanmoy Bhattacharya as the `dvihps' program.
 You can retrieve their software and additional documentation via the
 CTAN reference above.  You may also be interested in the Java previewer
-IDVI, available at `http://www.win.tue.nl/~dickie/idvi', and/or in
-`http://www.emrg.com/texpdf.html', which describes the process of
+IDVI, available at <http://www.win.tue.nl/~dickie/idvi>, and/or in
+<http://www.emrg.com/texpdf.html>, which describes the process of
 making PDF files from TeX files in more detail.
 
   Mail archives for the original project are at
-`http://math.albany.edu:8800/hm/ht/'.
+<http://math.albany.edu:8800/hm/ht/>.
 
 * Menu:
 
@@ -1090,7 +1097,7 @@ unixtex.ftp: (kpathsea)unixtex.ftp.) in:
      fonts/postscript/bakoma
      fonts/postscript/paradissa
    You may need to modify these fonts; see
-`http://xxx.lanl.gov/faq/bakoma.html'.
+<http://xxx.lanl.gov/faq/bakoma.html>.
 
 Also, the Adobe distillers prior to 2.1 drop trailing space characters
 (character code 32) from strings.  Unfortunately, the PostScript fonts
@@ -1135,7 +1142,7 @@ extended with a `#TYPE.STRING' construct, where TYPE is `page',
      \special{html:<a href="http://www.maths.tcd.ie/~tim/ch1.dvi#equation.1.1">}
    is a link to equation (1.1) in an example document by Tim Murphy.
 
-See `http://www.w3.org/hypertext/WWW/Addressing/Addressing.html' for a
+See <http://www.w3.org/hypertext/WWW/Addressing/Addressing.html> for a
 precise description of base URL's.  (That itself is a URL, in case you
 were wondering.)
 
@@ -1183,7 +1190,7 @@ virtual font; the program Afm2tfm, supplied with Dvips, helps with that.
 (`AvantGarde-Book' through `ZapfDingbats'), plus other freely or
 commonly available PostScript fonts is available along with Dvips.  To
 use these fonts, you need do nothing beyond what is mentioned in the
-installation procedure (*note Installation::.).  This chapter is
+installation procedure (*note Installation::).  This chapter is
 therefore relevant only if you are installing new PostScript fonts not
 supplied with Dvips. (Or if you're curious.)
 

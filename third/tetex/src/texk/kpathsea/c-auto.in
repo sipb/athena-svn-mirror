@@ -1,4 +1,4 @@
-/* c-auto.in.  Generated automatically from configure.in by autoheader.  */
+/* c-auto.in.  Generated automatically from configure.in by autoheader 2.13.  */
 /* acconfig.h -- used by autoheader when generating c-auto.in.
 
    If you're thinking of editing acconfig.h to fix a configuration
@@ -55,6 +55,7 @@
 #define MAKE_TEX_PK_BY_DEFAULT 0
 #define MAKE_TEX_TEX_BY_DEFAULT 0
 #define MAKE_TEX_TFM_BY_DEFAULT 0
+#define MAKE_TEX_FMT_BY_DEFAULT 0
 #define MAKE_OMEGA_OFM_BY_DEFAULT 0
 #define MAKE_OMEGA_OCP_BY_DEFAULT 0
 
@@ -141,4 +142,7 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Define if you have the m library (-lm).  */
+#undef HAVE_LIBM
 #endif /* !KPATHSEA_C_AUTO_H */

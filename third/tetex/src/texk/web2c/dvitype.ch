@@ -453,7 +453,7 @@ filenames, but it doesn't seem worth reprogramming all that.
 
 @<Move font name into the |cur_name| string@>=
 r := name_end - name_start;
-cur_name := xmalloc (r + 1);
+cur_name := xmalloc_array (char, r);
 {|strncpy| might be faster, but it's probably a good idea to keep the
  |xchr| translation.}
 for k := name_start to name_end do begin
@@ -529,18 +529,18 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'dvitype');
+      usage ('dvitype');
 
     end else if argument_is ('help') then begin
-      usage (0, DVITYPE_HELP);
+      usage_help (DVITYPE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.E. Knuth');
     
     end else if argument_is ('output-level') then begin
-      out_mode := atou (optarg);
-      if (out_mode = 0) or (out_mode > 4) then begin
-        write_ln (stderr, 'Value for --output-level must be >= 1 and <= 4.');
+      out_mode := optarg[0] - '0';
+      if (out_mode < 0) or (out_mode > 4) or (optarg[1] <> 0) then begin
+        write_ln (stderr, 'Value for --output-level must be >= 0 and <= 4.');
         uexit (1);
       end;
     
@@ -562,7 +562,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) then begin
     write_ln (stderr, 'dvitype: Need exactly one file argument.');
-    usage (1, 'dvitype');
+    usage ('dvitype');
   end;
 end;
 

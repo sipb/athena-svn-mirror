@@ -30,7 +30,7 @@ Library.
 #define HTHOST_H
 
 typedef struct _HTHost HTHost;
-#define HOST_HASH_SIZE		67
+#define HOST_HASH_SIZE		HT_M_HASH_SIZE
 
 #include "HTChannl.h"
 #include "HTReq.h"
@@ -82,6 +82,16 @@ this host. If not then we return NULL.
 */
 
 extern HTHost * HTHost_find (char * host);
+
+/*
+(
+  Delete the Host table
+)
+
+Cleanup and delete the host table.
+*/
+
+extern void HTHost_deleteAll (void);
 
 /*
 (
@@ -236,11 +246,11 @@ there is a channel up and running and whether that channel can be reused,
 it must do an explicit connect the the host.
 */
 
-extern int HTHost_connect (HTHost * host, HTNet * net, char * url,
-                           HTProtocolId port);
+extern int HTHost_connect (HTHost * host, HTNet * net, char * url);
 
-extern int HTHost_accept  (HTHost * host, HTNet * net, HTNet ** accepted,
-	                   char * url, HTProtocolId port);
+extern int HTHost_accept  (HTHost * host, HTNet * net, char * url);
+
+extern int HTHost_listen  (HTHost * host, HTNet * net, char * url);
 
 /*
 (
@@ -487,6 +497,18 @@ extern int HTHost_maxPipelinedRequests (void);
 
 /*
 (
+  How many Pending and Outstanding Net objects are there on a Host?
+)
+
+You can query how many Het objects (essentially requests) are outstanding
+or pending on a host object using these methods:
+*/
+
+extern int HTHost_numberOfOutstandingNetObjects (HTHost * host);
+extern int HTHost_numberOfPendingNetObjects (HTHost * host);
+
+/*
+(
   Pipeline Recovery
 )
 
@@ -615,6 +637,6 @@ extern void HTHost_setActivateRequestCallback
 
   
 
-  @(#) $Id: HTHost.h,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+  @(#) $Id: HTHost.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

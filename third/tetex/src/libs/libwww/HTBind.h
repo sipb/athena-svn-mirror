@@ -16,15 +16,34 @@
 
 /*
 
-This module sets up the binding between a file suffix and a media type, language,
-encoding etc. In a client application the suffixes are used in protocols
-that does not directly support media types etc., like FTP, and in server
-applications they are used to make the bindings between the server and the
-local file store that the server can serve to the rest of the world (well
-almost). The HTFormat module holds this information
-against the accept headers received in a request and uses if for format
-negotiation. All the binding management can all be replace by a database
-interface.
+The preferences that we described in section
+Request Preferences did not mention
+what libwww should do if it doesn't know the data format of a document. In
+many protocols this information is provided by the remote server. Typical
+examples are MIME like protocols where the metainformation such as the
+Content-Type and the Content-Language is provided together
+with the document. However, applications often have access to the local file
+system using file URLs which in general do not keep any or at least
+very little information of the file type. It is therefore required to have
+some kind of binding between the file system and the preferences registered
+in the Library which provides this mateinformation about the object.
+
+Often files in a file system is classified by some sort of a suffix, for
+example, GIF files are often ending in .gif, text files
+in .txt etc. This binding is not static and it is therefore required
+to have a dynamic binding just like the preferences themselves. An example
+of the latter is HTML files which on most Unix systems end in .html
+whereas they on many MS-DOS based systems end in .htm.
+
+This module provides a generic binding mechanism between a file and its
+representation internally in libwww. It is not limited to simple file suffix
+classification but can also be used in more advanced environments using data
+bases etc. However, at this point we are interested in how we can register
+bindings between file suffixes and for example content types, content languages
+etc. The Bind manager is born with a certain knowledge about the set of
+delimiters but more can be added to provide the functionality desired.
+
+All the binding management could of course be replaced by a database interface.
 
 This module is implemented by HTBind.c, and it is
 a part of the  W3C Sample Code
@@ -203,6 +222,6 @@ End of declaration module
 
   
 
-  @(#) $Id: HTBind.h,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+  @(#) $Id: HTBind.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

@@ -1,12 +1,12 @@
 /*
 
-					W3C Sample Code Library libwww CALLBACK STREAM
+  
+  					W3C Sample Code Library libwww Callback Stream
 
 
-
-
-!XParse: Module to get unparsed stream from libwww!
-
+!
+  XParse: Module to get Unparsed Stream from libwww
+!
 */
 
 /*
@@ -16,23 +16,22 @@
 
 /*
 
-This version of the stream object is a hook for clients that want an
-unparsed stream from libwww. The HTXParse_put_* and HTXParse_write
-routines copy the content of the incoming buffer into a buffer that is
-realloced whenever necessary. This buffer is handed over to the client
-in HTXParse_free. See also HTFWriter
-for writing to C files.
-
-(Bugs:)
-
+This version of the stream object is a hook for clients that want an unparsed
+stream from libwww. The HTXParse_put_* and HTXParse_write routines copy the
+content of the incoming buffer into a buffer that is realloced whenever
+necessary. This buffer is handed over to the client in HTXParse_free. See
+also HTFWriter for writing to C files.
+(
+  Bugs:
+)
 	 
-	 o strings written must be less than buffer size.
+	   o 
+	     strings written must be less than buffer size.
 	 
 	 
-	 This module is implemented by HTXParse.c, and
-it is a part of the  W3C
-Sample Code Library.
-
+This module is implemented by HTXParse.c, and it
+is a part of the  W3C Sample Code
+Library.
 */
 
 #ifndef HTXPARSE_H
@@ -61,6 +60,6 @@ extern HTConverter HTXParse;
 #endif
 
 /*
-End of declaration
 
+End of declaration
 */

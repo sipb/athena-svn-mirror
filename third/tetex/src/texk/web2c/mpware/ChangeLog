@@ -1,3 +1,43 @@
+2002-11-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* newer.c [WIN32]: Don't include sys/types.h and sys/stat.h.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in (install-exec): Simplify.  TeXlive merge.
+
+2001-12-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in (install-exec): Now that we link mpto with kpathsea,
+	use klibtool to install it.  From by Adrian Bunk <bunk@fs.tum.de>.
+
+2001-11-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dmp.c: Changes to keep C++ compilers from choking.
+
+2001-11-18  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* newer.c: Changes to keep C++ compilers from choking.
+
+	* mpto.c: Changes to keep C++ compilers from choking.  Make calls
+	to usage() conform to the new interface.
+
+	* dmp.c: Changes to keep C++ compilers from choking.
+
+2001-10-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in (mpto): Now links with libkpathsea.
+
+	* mpto.c: Make buffer size obey buf_size texmf.cnf specification.
+	Add -tex=program option.  Add protoypes.
+
+	* makempx.in: Add -tex=<program> option.
+
+2001-09-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* newer.c: Correct help text.  From Oliver Moeller
+	<omoeller@csd.uu.se>.
+
 1999-03-15  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* newer.c [WIN32]: Patchlet from Fabrice.

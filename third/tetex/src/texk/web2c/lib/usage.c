@@ -1,24 +1,37 @@
 /* usage.c: Output a help message (from help.h).
 
+   Modified in 2001 by O. Weber.
    Written in 1995 by K. Berry.  Public domain.  */
 
 #include "config.h"
 
-/* We're passed in zero for STATUS if this is from --help, else nonzero
-   if it was from some kind of error.  In the latter case, we say `See
-   HELP_STR --help for more information.', i.e., STR is supposed to be
-   the program name.  */
+/* Call usage if the program exits with an "usage error".  STR is supposed
+   to be the program name. */
 
 void
-usage P2C(int, status,  const_string, str)
+usage P1C(const_string, str)
 {
-  if (status == 0) {
+  fprintf (stderr, "Try `%s --help' for more information.\n", str);
+  uexit (1);
+}
+
+/* Call usage if the program exits by printing the help message.
+   MESSAGE is an NULL-terminated array or strings which make up the
+   help message.  Each string is printed on a separate line.
+   We use arrays instead of a single string to work around compiler
+   limitations (sigh).
+*/
+void
+usagehelp P1C(const_string*, message)
+{
     extern KPSEDLL char *kpse_bug_address;
-    fputs (str, stdout);
-    putchar ('\n');
-    fputs (kpse_bug_address, stdout);
-  } else {
-    fprintf (stderr, "Try `%s --help' for more information.\n", str);
-  }
-  uexit (status);
+
+    while (*message) {
+        fputs(*message, stdout);
+        putchar('\n');
+        ++message;
+    }
+    putchar('\n');
+    fputs(kpse_bug_address, stdout);
+    uexit(0);
 }

@@ -35,6 +35,7 @@ manfiles=		\
 	bibtex.1	\
 	dmp.1		\
 	dvicopy.1	\
+	dvitomp.1	\
 	dvitype.1	\
 	eplain.1	\
 	etex.1		\
@@ -50,6 +51,7 @@ manfiles=		\
 	newer.1		\
 	omega.1		\
 	patgen.1	\
+	pdfetex.1	\
 	pdftex.1	\
 	pktogf.1	\
 	pktype.1	\

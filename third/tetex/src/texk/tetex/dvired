@@ -6,13 +6,13 @@
 #		Two logical pages will be put on onto each physical sheet of
 #		paper.
 # System:	Linux. UNIX(tm) systems may work as well :-)
-# Requires:	pstops, dvips
+# Requires:	pstops (http://www.dcs.ed.ac.uk/home/ajcd/psutils/), dvips
 # Created:      19.11.1992
-# Last Change:  13.03.1995
+# Last Change:  13.08.1999
 # Language:     sh
 # Author:       Thomas Esser
-# Address:      te@informatik.uni-hannover.de
-# Copyright:    (c) 1994 by Thomas Esser
+# Address:      te@dbs.uni-hannover.de
+# Copyright:    (c) 1994, 1999 by Thomas Esser
 # Copying:      GNU GENERAL PUBLIC LICENSE
 #==============================================================================
 

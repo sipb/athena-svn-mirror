@@ -2,7 +2,7 @@
 % This file is part of the Omega project, which
 % is based in the web2c distribution of TeX.
 %
-% Copyright (c) 1994--1998 John Plaice and Yannis Haralambous
+% Copyright (c) 1994--2000 John Plaice and Yannis Haralambous
 % applies only to the changes to the original pltotf.web
 %
 % This program by D. E. Knuth is not copyrighted and can be used freely.
@@ -47,7 +47,7 @@
   \vfill
   \centerline{\titlefont The {\ttitlefont OPL2OFM} processor}
   \vskip 15pt
-  \centerline{(Version 1.5, March 1997)}
+  \centerline{(Version 1.11, February 2000)}
   \vfill}
 \def\botofcontents{\vfill
   \centerline{\hsize 5in\baselineskip9pt
@@ -76,13 +76,13 @@ in 1989.
 Extensions to handle extended font metric files (``\.{OFM}'') were
 added by John Plaice in December 1995 and January 1996, resulting in the
 new program \.{OPLtoOFM}.  In the following documentation, all unchanged
-referencesto the \.{PLtoTF} program and to \.{TFM} and \.{PL} files also
+references to the \.{PLtoTF} program and to \.{TFM} and \.{PL} files also
 apply to the \.{OPLtoOFM} program and to \.{OFM} and \.{OPL} files.
 
 The |banner| string defined here should be changed whenever \.{OPLtoOFM}
 gets modified.
 
-@d banner=='This is OPL2OFM, Version 1.5'
+@d banner=='This is OPL2OFM, Version 1.11'
 
 @ This program is written entirely in standard \PASCAL, except that
 it has to do some slightly system-dependent character code conversion
@@ -117,15 +117,15 @@ reduce \.{PLtoTF}'s capacity.
 @!max_header_bytes=100; {four times the maximum number of words allowed in
   the \.{TFM} file header block, must be 1024 or less}
 @!max_param_words=100; {the maximum number of \.{fontdimen} parameters allowed}
-@!max_lig_steps=80000;
+@!max_lig_steps=800000;
   {maximum length of ligature program, must be at most $32767-257=32510$}
-@!xmax_label=80001;
+@!xmax_label=800001;
 @!max_kerns=50000; {the maximum number of distinct kern values}
 @!hash_size=130003; {preferably a prime number, a bit larger than the number
   of character pairs in lig/kern steps}
 @!hash_mult=16007; {another prime}
-@!tfm_size=100000; {maximum length of |tfm| data, in bytes}
-@!lig_size=80000; {maximum length of |lig_kern| program, in words}
+@!tfm_size=2000000; {maximum length of |tfm| data, in bytes}
+@!lig_size=800000; {maximum length of |lig_kern| program, in words}
 @!max_char=65535; {the largest character number in a font} 
 @!xmax_char=65536; {|max_char|+1} 
 @!xxmax_char=65537;{|max_char|+2} 
@@ -633,15 +633,16 @@ error messages would not come out properly aligned.)
 
 @p procedure fill_buffer;
 begin left_ln:=right_ln; limit:=0; loc:=0;
-if left_ln then
-  begin if line>0 then read_ln(pl_file);
+if left_ln then begin
+  if line>0 then read_ln(pl_file);
   incr(line);
   end;
-if eof(pl_file) then
-  begin limit:=1; buffer[1]:=')'; right_ln:=false; input_has_ended:=true;
+if eof(pl_file) then begin
+  limit:=1; buffer[1]:=')'; right_ln:=false; input_has_ended:=true;
   end
-else  begin while (limit<buf_size-1)and(not eoln(pl_file)) do
-    begin incr(limit); read(pl_file,buffer[limit]);
+else begin
+  while (limit<buf_size-1)and(not eoln(pl_file)) do begin
+    incr(limit); read(pl_file,buffer[limit]);
     end;
   buffer[limit+1]:=' '; right_ln:=eoln(pl_file);
   if left_ln then @<Set |loc| to the number of leading blanks in
@@ -658,14 +659,14 @@ indentation conventions the user is following, if any.
 
 @<Set |loc|...@>=
 begin while (loc<limit)and(buffer[loc+1]=' ') do incr(loc);
-if loc<limit then
-  begin if level=0 then
+if loc<limit then begin
+  if level=0 then
     if loc=0 then incr(good_indent)
     else bad_indent('Warning: Indented line occurred at level zero')
 @.Warning: Indented line...@>
   else if indent=0 then
-    if loc mod level=0 then
-      begin indent:=loc div level; good_indent:=1;
+    if loc mod level=0 then begin
+      indent:=loc div level; good_indent:=1;
       end
     else good_indent:=0
   else if indent*level=loc then incr(good_indent)
@@ -693,7 +694,8 @@ Lower case letters are converted to upper case.
 @p procedure get_keyword_char;
 begin while (loc=limit)and(not right_ln) do fill_buffer;
 if loc=limit then cur_char:=" " {end-of-line counts as a delimiter}
-else  begin cur_char:=xord[buffer[loc+1]];
+else begin
+  cur_char:=xord[buffer[loc+1]];
   if cur_char>="a" then cur_char:=cur_char-@'40;
   if ((cur_char>="0")and(cur_char<="9")) then incr(loc)
   else if ((cur_char>="A")and(cur_char<="Z")) then incr(loc)
@@ -719,8 +721,9 @@ begin while loc=limit do fill_buffer;
 incr(loc); cur_char:=xord[buffer[loc]];
 if cur_char>="a" then
   if cur_char<="z" then cur_char:=cur_char-@'40 {uppercasify}
-  else  begin if cur_char=invalid_code then
-      begin err_print('Illegal character in the file');
+  else begin
+    if cur_char=invalid_code then begin
+      err_print('Illegal character in the file');
 @.Illegal character...@>
       cur_char:="?";
       end;
@@ -736,8 +739,8 @@ the level in force when the procedure was called.
 @p procedure skip_to_end_of_item;
 var l:integer; {initial value of |level|}
 begin l:=level;
-while level>=l do
-  begin while loc=limit do fill_buffer;
+while level>=l do begin
+  while loc=limit do fill_buffer;
   incr(loc);
   if buffer[loc]=')' then decr(level)
   else if buffer[loc]='(' then incr(level);
@@ -827,21 +830,22 @@ var k:0..longest_name; {index into |cur_name|}
 begin @<Compute the hash code, |cur_hash|, for |cur_name|@>;
 not_found:=true;
 cur_hash_reset:=false;
-while not_found do
-  begin if (cur_hash=0) and (cur_hash_reset) then
+while not_found do begin
+  if (cur_hash=0) and (cur_hash_reset) then
     not_found:=false
   else begin
-    if cur_hash=0 then
-      begin cur_hash:=hash_prime-1;
+    if cur_hash=0 then begin
+      cur_hash:=hash_prime-1;
       cur_hash_reset:=true
       end
     else decr(cur_hash);
     if nhash[cur_hash]=0 then not_found:=false
-    else  begin j:=start[nhash[cur_hash]];
-      if start[nhash[cur_hash]+1]=j+name_length then
-        begin not_found:=false;
+    else begin
+      j:=start[nhash[cur_hash]];
+      if start[nhash[cur_hash]+1]=j+name_length then begin
+        not_found:=false;
         for k:=1 to name_length do
-        if dictionary[j+k-1]<>cur_name[k] then not_found:=true;
+          if dictionary[j+k-1]<>cur_name[k] then not_found:=true;
         end
       end
     end
@@ -879,74 +883,113 @@ symbolic meanings by the following definitions.
 @d height=2
 @d depth=3
 @d italic=4
+@d sec_width=5
+@d sec_height=6
+@d sec_depth=7
+@d sec_italic=8
+@d accent=9
+@d prim_top_axis=10
+@d prim_top_axis_bis=11
+@d prim_bot_axis=12
+@d prim_bot_axis_bis=13
+@d prim_mid_hor=14
+@d prim_mid_vert=15
+@d prim_base_slant=16
+@d sec_top_axis=17
+@d sec_top_axis_bis=18
+@d sec_bot_axis=19
+@d sec_bot_axis_bis=20
+@d sec_mid_hor=21
+@d sec_mid_vert=22
+@d sec_base_slant=23
 @d char_wd_code=char_info_code+width
 @d char_ht_code=char_info_code+height
 @d char_dp_code=char_info_code+depth
 @d char_ic_code=char_info_code+italic
-@d next_larger_code=75
-@d var_char_code=77
-@d label_code=100
-@d stop_code=101
-@d skip_code=102
-@d krn_code=103
-@d lig_code=104
-@d ofm_level_code=110
-@d char_repeat_code=120
-@d char_ivalue_code=121
-@d char_fvalue_code=122
-@d char_mvalue_code=123
-@d char_rule_code=124
-@d char_glue_code=125
-@d char_penalty_code=126
-@d font_rule_code=130
-@d rule_code=131
-@d rule_width_code=132
-@d rule_height_code=133
-@d rule_depth_code=134
-@d font_glue_code=140
-@d glue_code=141
-@d glue_type_code=142
-@d glue_stretch_order_code=143
-@d glue_shrink_order_code=144
-@d glue_width_code=145
-@d glue_stretch_code=146
-@d glue_shrink_code=147
-@d glue_char_code=148
-@d glue_rule_code=149
-@d order_unit_code=151
-@d order_fi_code=152
-@d order_fil_code=153
-@d order_fill_code=154
-@d order_filll_code=155
-@d type_normal_code=156
-@d type_aleaders_code=157
-@d type_cleaders_code=158
-@d type_xleaders_code=159
-@d font_penalty_code=160
-@d penalty_code=161
-@d penalty_val_code=162
-@d font_mvalue_code=170
-@d mvalue_code=171
-@d mvalue_val_code=172
-@d font_fvalue_code=180
-@d fvalue_code=181
-@d fvalue_val_code=182
-@d font_ivalue_code=190
-@d ivalue_code=191
-@d ivalue_val_code=192
-@d clabel_code=201
-@d cpen_code=202
-@d cglue_code=203
-@d cpenglue_code=204
-@d ckrn_code=205
-@d TL_dir_code=210
-@d LT_dir_code=211
-@d TR_dir_code=212
-@d LB_dir_code=213
-@d BL_dir_code=214
-@d RT_dir_code=215
-@d BR_dir_code=216
-@d RB_dir_code=217
+@d sec_width_code=char_info_code+sec_width
+@d sec_height_code=char_info_code+sec_height
+@d sec_depth_code=char_info_code+sec_depth
+@d sec_italic_code=char_info_code+sec_italic
+@d accent_code=char_info_code+accent
+@d prim_top_axis_code=char_info_code+prim_top_axis
+@d prim_top_axis_bis_code=char_info_code+prim_top_axis_bis
+@d prim_bot_axis_code=char_info_code+prim_bot_axis
+@d prim_bot_axis_bis_code=char_info_code+prim_bot_axis_bis
+@d prim_mid_hor_code=char_info_code+prim_mid_hor
+@d prim_mid_vert_code=char_info_code+prim_mid_vert
+@d prim_base_slant_code=char_info_code+prim_base_slant
+@d sec_top_axis_code=char_info_code+sec_top_axis
+@d sec_top_axis_bis_code=char_info_code+sec_top_axis_bis
+@d sec_bot_axis_code=char_info_code+sec_bot_axis
+@d sec_bot_axis_bis_code=char_info_code+sec_bot_axis_bis
+@d sec_mid_hor_code=char_info_code+sec_mid_hor
+@d sec_mid_vert_code=char_info_code+sec_mid_vert
+@d sec_base_slant_code=char_info_code+sec_base_slant
+@d next_larger_code=100
+@d var_char_code=102
+@d label_code=130
+@d stop_code=131
+@d skip_code=132
+@d krn_code=133
+@d lig_code=134
+@d ofm_level_code=140
+@d char_repeat_code=150
+@d char_ivalue_code=151
+@d char_fvalue_code=152
+@d char_mvalue_code=153
+@d char_rule_code=154
+@d char_glue_code=155
+@d char_penalty_code=156
+@d font_rule_code=160 
+@d rule_code=161   
+@d rule_width_code=162
+@d rule_height_code=163
+@d rule_depth_code=164
+@d font_glue_code=170
+@d glue_code=171   
+@d glue_type_code=172
+@d glue_stretch_order_code=173
+@d glue_shrink_order_code=174
+@d glue_width_code=175
+@d glue_stretch_code=176
+@d glue_shrink_code=177
+@d glue_char_code=178
+@d glue_rule_code=179
+@d order_unit_code=181
+@d order_fi_code=182
+@d order_fil_code=183
+@d order_fill_code=184
+@d order_filll_code=185
+@d type_normal_code=186
+@d type_aleaders_code=187
+@d type_cleaders_code=188
+@d type_xleaders_code=189
+@d font_penalty_code=190
+@d penalty_code=191   
+@d penalty_val_code=192
+@d font_mvalue_code=200
+@d mvalue_code=201   
+@d mvalue_val_code=202
+@d font_fvalue_code=210
+@d fvalue_code=211   
+@d fvalue_val_code=212
+@d font_ivalue_code=220
+@d ivalue_code=221   
+@d ivalue_val_code=222
+@d clabel_code=231  
+@d cpen_code=232
+@d cglue_code=233
+@d cpenglue_code=234
+@d ckrn_code=235
+@d TL_dir_code=240
+@d LT_dir_code=241
+@d TR_dir_code=242
+@d LB_dir_code=243
+@d BL_dir_code=244
+@d RT_dir_code=245
+@d BR_dir_code=246
+@d RB_dir_code=247
+
 
 @<Glo...@>=
 @!equiv:array[0..max_name_index] of byte;
@@ -1041,6 +1084,25 @@ load6("C")("H")("A")("R")("W")("D")(char_wd_code);@/
 load6("C")("H")("A")("R")("H")("T")(char_ht_code);@/
 load6("C")("H")("A")("R")("D")("P")(char_dp_code);@/
 load6("C")("H")("A")("R")("I")("C")(char_ic_code);@/
+load5("S")("E")("C")("W")("D")(sec_width_code);@/
+load5("S")("E")("C")("H")("T")(sec_height_code);@/
+load5("S")("E")("C")("D")("P")(sec_depth_code);@/
+load5("S")("E")("C")("I")("C")(sec_italic_code);@/
+load6("A")("C")("C")("E")("N")("T")(accent_code);@/
+load11("P")("R")("I")("M")("T")("O")("P")("A")("X")("I")("S")(prim_top_axis_code);@/
+load14("P")("R")("I")("M")("T")("O")("P")("A")("X")("I")("S")("B")("I")("S")(prim_top_axis_bis_code);@/
+load11("P")("R")("I")("M")("B")("O")("T")("A")("X")("I")("S")(prim_bot_axis_code);@/
+load14("P")("R")("I")("M")("B")("O")("T")("A")("X")("I")("S")("B")("I")("S")(prim_bot_axis_bis_code);@/
+load10("P")("R")("I")("M")("M")("I")("D")("H")("O")("R")(prim_mid_hor_code);@/
+load10("P")("R")("I")("M")("M")("I")("D")("V")("E")("R")(prim_mid_vert_code);@/
+load13("P")("R")("I")("M")("B")("A")("S")("E")("S")("L")("A")("N")("T")(prim_base_slant_code);@/
+load10("S")("E")("C")("T")("O")("P")("A")("X")("I")("S")(sec_top_axis_code);@/
+load13("S")("E")("C")("T")("O")("P")("A")("X")("I")("S")("B")("I")("S")(sec_top_axis_bis_code);@/
+load10("S")("E")("C")("B")("O")("T")("A")("X")("I")("S")(sec_bot_axis_code);@/
+load13("S")("E")("C")("B")("O")("T")("A")("X")("I")("S")("B")("I")("S")(sec_bot_axis_bis_code);@/
+load9("S")("E")("C")("M")("I")("D")("H")("O")("R")(sec_mid_hor_code);@/
+load9("S")("E")("C")("M")("I")("D")("V")("E")("R")(sec_mid_vert_code);@/
+load12("S")("E")("C")("B")("A")("S")("E")("S")("L")("A")("N")("T")(sec_base_slant_code);@/
 load10("N")("E")("X")("T")("L")("A")("R")("G")("E")("R")(next_larger_code);@/
 load7("V")("A")("R")("C")("H")("A")("R")(var_char_code);@/
 load3("T")("O")("P")(var_char_code+1);@/
@@ -1167,8 +1229,8 @@ cur_char:=" ";
 while cur_char=" " do get_next;
 if (cur_char>")")or(cur_char<"(") then decr(loc); {back up one character}
 name_length:=0; get_keyword_char; {prepare to scan the name}
-while cur_char<>" " do
-  begin if name_length=longest_name then cur_name[1]:="X" {force error}
+while cur_char<>" " do begin
+  if name_length=longest_name then cur_name[1]:="X" {force error}
   else incr(name_length);
   cur_name[name_length]:=cur_char;
   get_keyword_char;
@@ -1218,10 +1280,10 @@ else skip_error('"C" value must be standard ASCII and not a paren')
 @:C value}\.{"C" value must be...@>
 
 @ @<Scan a small dec...@>=
-begin while (cur_char>="0")and(cur_char<="9") do
-  begin acc:=acc*10+cur_char-"0";
-  if acc>65535 then
-    begin skip_error('This value shouldn''t exceed 65535');
+begin while (cur_char>="0")and(cur_char<="9") do begin
+  acc:=acc*10+cur_char-"0";
+  if acc>65535 then begin
+    skip_error('This value shouldn''t exceed 65535');
 @.This value shouldn't...@>
     acc:=0; cur_char:=" ";
     end
@@ -1233,8 +1295,8 @@ end
 @ @<Scan a small oct...@>=
 begin while (cur_char>="0")and(cur_char<="7") do
   begin acc:=acc*8+cur_char-"0";
-  if acc>65535 then
-    begin skip_error('This value shouldn''t exceed ''177777');
+  if acc>65535 then begin
+    skip_error('This value shouldn''t exceed ''177777');
 @.This value shouldn't...@>
     acc:=0; cur_char:=" ";
     end
@@ -1245,11 +1307,11 @@ end
 
 @ @<Scan a small hex...@>=
 begin while ((cur_char>="0")and(cur_char<="9"))or
-   ((cur_char>="A")and(cur_char<="F")) do
-  begin if cur_char>="A" then cur_char:=cur_char+"0"+10-"A";
+   ((cur_char>="A")and(cur_char<="F")) do begin
+  if cur_char>="A" then cur_char:=cur_char+"0"+10-"A";
   acc:=acc*16+cur_char-"0";
-  if acc>65535 then
-    begin skip_error('This value shouldn''t exceed "FFFF');
+  if acc>65535 then begin
+    skip_error('This value shouldn''t exceed "FFFF');
 @.This value shouldn't...@>
     acc:=0; cur_char:=" ";
     end
@@ -1269,8 +1331,8 @@ get_next;
 if cur_char="C" then acc:=acc+6
 else if cur_char="E" then acc:=acc+12
 else if cur_char<>"R" then acc:=18;
-if acc>=18 then
-  begin skip_error('Illegal face code, I changed it to MRR');
+if acc>=18 then begin
+  skip_error('Illegal face code, I changed it to MRR');
 @.Illegal face code...@>
   acc:=0;
   end;
@@ -1309,8 +1371,8 @@ else if cur_char="O" then r:=8
 else if cur_char="D" then r:=10
 else skip_error('Decimal ("D"), octal ("O") or hex ("H") value is needed here');
 @.Decimal ("D"), octal ("O") or hex ("H")...@>
-if r>0 then
-  begin repeat get_next;
+if r>0 then begin
+  repeat get_next;
   until cur_char<>" "; {skip the blanks after the type code}
   while ((cur_char>="0")and(cur_char<="9"))or@|
       ((cur_char>="A")and(cur_char<="F")) do
@@ -1327,12 +1389,14 @@ end;
 begin if cur_char>="A" then cur_char:=cur_char+"0"+10-"A";
 if cur_char>="0"+r then skip_error('Illegal digit')
 @.Illegal digit@>
-else  begin c:=c3*r+cur_char-"0"; c3:=c mod 256;@/
+else begin
+  c:=c3*r+cur_char-"0"; c3:=c mod 256;@/
   c:=c2*r+c div 256; c2:=c mod 256;@/
   c:=c1*r+c div 256; c1:=c mod 256;@/
   c:=c0*r+c div 256;
   if c<256 then c0:=c
-  else begin cur_bytes:=zero_bytes;
+  else begin
+    cur_bytes:=zero_bytes;
     if r=8 then
       skip_error('Sorry, the maximum octal value is O 37777777777')
 @.Sorry, the maximum...@>
@@ -1370,7 +1434,8 @@ negative:=false; acc:=0; {start with the accumulators zero}
 if (cur_char<>"R")and(cur_char<>"D") then
   skip_error('An "R" or "D" value is needed here')
 @.An "R" or "D" ... needed here@>
-else  begin @<Scan the blanks and/or signs after the type code@>;
+else begin
+  @<Scan the blanks and/or signs after the type code@>;
   while (cur_char>="0") and (cur_char<="9") do
     @<Multiply by 10, add |cur_char-"0"|, and |get_next|@>;
   int_part:=acc; acc:=0;
@@ -1385,16 +1450,16 @@ end;
 
 @ @<Scan the blanks...@>=
 repeat get_next;
-if cur_char="-" then
-  begin cur_char:=" "; negative:=true;
+if cur_char="-" then begin
+  cur_char:=" "; negative:=true;
   end
 else if cur_char="+" then cur_char:=" ";
 until cur_char<>" "
 
 @ @<Multiply by 10...@>=
 begin acc:=acc*10+cur_char-"0";
-if acc>=2048 then
-  begin skip_error('Real constants must be less than 2048');
+if acc>=2048 then begin
+  skip_error('Real constants must be less than 2048');
 @.Real constants must be...@>
   acc:=0; cur_char:=" ";
   end
@@ -1411,15 +1476,15 @@ $f=\lfloor(f^\prime+1)/2\rfloor$. It is possible to have $f=1.0$.
 
 @ @<Scan the frac...@>=
 begin j:=0; get_next;
-while (cur_char>="0")and(cur_char<="9") do
-  begin if j<7 then
-    begin incr(j); fraction_digits[j]:=@'10000000*(cur_char-"0");
+while (cur_char>="0")and(cur_char<="9") do begin
+  if j<7 then begin
+    incr(j); fraction_digits[j]:=@'10000000*(cur_char-"0");
     end;
   get_next;
   end;
 acc:=0;
-while j>0 do
-  begin acc:=fraction_digits[j]+(acc div 10); decr(j);
+while j>0 do begin
+  acc:=fraction_digits[j]+(acc div 10); decr(j);
   end;
 acc:=(acc+10) div 20;
 end
@@ -1543,8 +1608,8 @@ the other information that \.{TFM} files pack into a |char_info_word|.
 
 @ @<Set init...@>=
 bchar_label:=xmax_label;
-for c:=0 to max_char do
-  begin char_wd[c]:=0; char_ht[c]:=0; char_dp[c]:=0; char_ic[c]:=0;@/
+for c:=0 to max_char do begin
+  char_wd[c]:=0; char_ht[c]:=0; char_dp[c]:=0; char_ic[c]:=0;@/
   char_tag[c]:=no_tag; char_remainder[c]:=0;
   end;
 memory[0]:=@'17777777777; {an ``infinite'' element at the end of the lists}
@@ -1575,7 +1640,8 @@ different sizes to the same character.
 @p function sort_in(@!h:pointer;@!d:fix_word):pointer; {inserts into list}
 var p:pointer; {the current node of interest}
 begin if (d=0)and(h<>width) then sort_in:=0
-else begin p:=h;
+else begin
+  p:=h;
   while d>=memory[link[p]] do p:=link[p];
   if (d=memory[p])and(p<>h) then sort_in:=p
   else if mem_ptr=mem_size then
@@ -1584,7 +1650,8 @@ else begin p:=h;
     print_ln('Congratulations! It''s hard to make this error.');
     sort_in:=p;
     end
-  else  begin incr(mem_ptr); memory[mem_ptr]:=d;
+  else begin
+    incr(mem_ptr); memory[mem_ptr]:=d;
     link[mem_ptr]:=link[p]; link[p]:=mem_ptr; incr(memory[h]);
     sort_in:=mem_ptr;
     end;
@@ -1614,8 +1681,8 @@ var p:pointer; {the current node of interest}
 @!l:fix_word; {the least element covered by the current interval}
 @!m:integer; {the current size of the cover being generated}
 begin m:=0; p:=link[h]; next_d:=memory[0];
-while p<>0 do
-  begin incr(m); l:=memory[p];
+while p<>0 do begin
+  incr(m); l:=memory[p];
   while memory[link[p]]<=l+d do p:=link[p];
   p:=link[p];
   if memory[p]-l<next_d then next_d:=memory[p]-l;
@@ -1630,14 +1697,14 @@ intervals.
 @p function shorten(@!h:pointer;m:integer):fix_word; {finds best way to round}
 var d:fix_word; {the current trial interval length}
 @!k:integer; {the size of a minimum cover}
-begin if memory[h]>m then
-  begin excess:=memory[h]-m;
+begin if memory[h]>m then begin
+  excess:=memory[h]-m;
   k:=min_cover(h,0); d:=next_d; {now the answer is at least |d|}
   repeat d:=d+d; k:=min_cover(h,d);
   until k<=m; {first we ascend rapidly until finding the range}
   d:=d div 2; k:=min_cover(h,d); {now we run through the feasible steps}
-  while k>m do
-    begin d:=next_d; k:=min_cover(h,d);
+  while k>m do begin
+    d:=next_d; k:=min_cover(h,d);
     end;
   shorten:=d;
   end
@@ -1663,10 +1730,10 @@ var p:pointer; {the current node of interest}
 @!m:byte; {index number of nodes in the current interval}
 @!l:fix_word; {least value in the current interval}
 begin q:=h; p:=link[q]; m:=0;
-while p<>0 do
-  begin incr(m); l:=memory[p]; index[p]:=m;
-  while memory[link[p]]<=l+d do
-    begin p:=link[p]; index[p]:=m; decr(excess);
+while p<>0 do begin
+  incr(m); l:=memory[p]; index[p]:=m;
+  while memory[link[p]]<=l+d do begin
+    p:=link[p]; index[p]:=m; decr(excess);
     if excess=0 then d:=0;
     end;
   link[q]:=p; memory[p]:=l+(memory[p]-l) div 2; q:=p; p:=link[p];
@@ -1687,8 +1754,8 @@ values as we go.
 cur_char:=" ";
 repeat while cur_char=" " do get_next;
 if cur_char="(" then @<Read a font property value@>
-else if (cur_char=")")and not input_has_ended then
-  begin err_print('Extra right parenthesis');
+else if (cur_char=")")and not input_has_ended then begin
+  err_print('Extra right parenthesis');
   incr(loc); cur_char:=" ";
   end
 @.Extra right parenthesis@>
@@ -1725,33 +1792,36 @@ end
 
 @ @<Read the font property value spec...@>=
 case cur_code of
-check_sum_code: begin check_sum_specified:=true;
-  read_four_bytes(check_sum_loc);
-  end;
-design_size_code: @<Read the design size@>;
-design_units_code: @<Read the design units@>;
-coding_scheme_code: read_BCPL(coding_scheme_loc,40);
-family_code: read_BCPL(family_loc,20);
-face_code: begin c:=get_byte; if c>255 then
-  begin err_print('FACE clipped to 255'); c:=255 end;
-  header_bytes[face_loc]:=c end;
-seven_bit_safe_flag_code: @<Read the seven-bit-safe flag@>;
-header_code: @<Read an indexed header word@>;
-font_dimen_code: @<Read font parameter list@>;
-lig_table_code: read_lig_kern;
-boundary_char_code: bchar:=get_byte;
-character_code: read_char_info;
-ofm_level_code:    @<Read OFM level code@>;
-font_dir_code:     @<Read font direction code@>;
-n_font_dir_code:   @<Read natural font direction code@>;
-char_repeat_code:  read_repeated_character_info;
-font_rule_code:    read_font_rule_list;
-font_glue_code:    read_font_glue_list;
-font_penalty_code: read_font_penalty_list;
-font_mvalue_code:  read_font_mvalue_list;
-font_fvalue_code:  read_font_fvalue_list;
-font_ivalue_code:  read_font_ivalue_list;
-end
+  check_sum_code: begin
+    check_sum_specified:=true;
+    read_four_bytes(check_sum_loc);
+    end;
+  design_size_code: @<Read the design size@>;
+  design_units_code: @<Read the design units@>;
+  coding_scheme_code: read_BCPL(coding_scheme_loc,40);
+  family_code: read_BCPL(family_loc,20);
+  face_code: begin
+    c:=get_byte; if c>255 then
+    begin err_print('FACE clipped to 255'); c:=255 end;
+    header_bytes[face_loc]:=c
+    end;
+  seven_bit_safe_flag_code: @<Read the seven-bit-safe flag@>;
+  header_code: @<Read an indexed header word@>;
+  font_dimen_code: @<Read font parameter list@>;
+  lig_table_code: read_lig_kern;
+  boundary_char_code: bchar:=get_byte;
+  character_code: read_char_info;
+  ofm_level_code:    @<Read OFM level code@>;
+  font_dir_code:     @<Read font direction code@>;
+  n_font_dir_code:   @<Read natural font direction code@>;
+  char_repeat_code:  read_repeated_character_info;
+  font_rule_code:    read_font_rule_list;
+  font_glue_code:    read_font_glue_list;
+  font_penalty_code: read_font_penalty_list;
+  font_mvalue_code:  read_font_mvalue_list;
+  font_fvalue_code:  read_font_fvalue_list;
+  font_ivalue_code:  read_font_ivalue_list;
+  end
 
 @ The |case| statement just given makes use of two subroutines that we
 haven't defined yet. The first of these puts a 32-bit octal quantity
@@ -1774,19 +1844,19 @@ length of the rest of the string).
 var k:header_index;
 begin k:=l;
 while cur_char=" " do get_next;
-while (cur_char<>"(")and(cur_char<>")") do
-  begin if k<l+n then incr(k);
+while (cur_char<>"(")and(cur_char<>")") do begin
+  if k<l+n then incr(k);
   if k<l+n then header_bytes[k]:=cur_char;
   get_next;
   end;
-if k=l+n then
-  begin err_print('String is too long; its first ',n-1:1,
+if k=l+n then begin
+  err_print('String is too long; its first ',n-1:1,
 @.String is too long...@>
     ' characters will be kept'); decr(k);
   end;
 header_bytes[l]:=k-l;
-while k<l+n-1 do {tidy up the remaining bytes by setting them to nulls}
-  begin incr(k); header_bytes[k]:=0;
+while k<l+n-1 do begin {tidy up the remaining bytes by setting them to nulls}
+  incr(k); header_bytes[k]:=0;
   end;
 end;
 
@@ -1822,8 +1892,9 @@ if c<18 then skip_error('HEADER indices should be 18 or more')
 else if 4*c+4>max_header_bytes then
   skip_error('This HEADER index is too big for my present table size')
 @.This HEADER index is too big...@>
-else  begin while header_ptr<4*c+4 do
-    begin header_bytes[header_ptr]:=0; incr(header_ptr);
+else begin
+  while header_ptr<4*c+4 do begin
+    header_bytes[header_ptr]:=0; incr(header_ptr);
     end;
   read_four_bytes(4*c);
   end;
@@ -1839,8 +1910,8 @@ there is probably a more elegant way to do this.
   end
 
 @<Read font parameter list@>=
-begin while level=1 do
-  begin while cur_char=" " do get_next;
+begin while level=1 do begin
+  while cur_char=" " do get_next;
   if cur_char="(" then @<Read a parameter value@>
   else if cur_char=")" then skip_to_end_of_item
   else junk_error;
@@ -1854,15 +1925,17 @@ if cur_code=comment_code then skip_to_end_of_item
 else if (cur_code<parameter_code)or(cur_code>=char_wd_code) then
   flush_error('This property name doesn''t belong in a FONTDIMEN list')
 @.This property name doesn't belong...@>
-else  begin if cur_code=parameter_code then c:=get_integer
+else begin
+  if cur_code=parameter_code then c:=get_integer
   else c:=cur_code-parameter_code;
   if c=0 then flush_error('PARAMETER index must not be zero')
 @.PARAMETER index must not...@>
   else if c>max_param_words then
     flush_error('This PARAMETER index is too big for my present table size')
 @.This PARAMETER index is too big...@>
-  else  begin while np<c do
-      begin incr(np); param[np]:=0;
+  else begin
+    while np<c do begin
+      incr(np); param[np]:=0;
       end;
     param[c]:=get_fix;
     finish_the_property;
@@ -1872,8 +1945,8 @@ end
 
 @ @<Read ligature/kern list@>=
 begin lk_step_ended:=false;
-while level=1 do
-  begin while cur_char=" " do get_next;
+while level=1 do begin
+  while cur_char=" " do get_next;
   if cur_char="(" then read_lig_kern_command
   else if cur_char=")" then skip_to_end_of_item
   else junk_error;
@@ -1884,25 +1957,25 @@ end
 @ @<Read a ligature/kern command@>=
 begin get_name;
 if cur_code=comment_code then skip_to_end_of_item
-else if (cur_code>=label_code) and (cur_code<=(lig_code+11)) then
-begin case cur_code of
-  label_code:@<Read a label step@>;
-  stop_code:@<Read a stop step@>;
-  skip_code:@<Read a skip step@>;
-  krn_code:@<Read a kerning step@>;
-  lig_code,lig_code+1,lig_code+2,lig_code+3,lig_code+5,lig_code+6,lig_code+7,
-    lig_code+11:@<Read a ligature step@>;
-  end; {there are no other cases |>=label_code|}
+else if (cur_code>=label_code) and (cur_code<=(lig_code+11)) then begin
+  case cur_code of
+    label_code:@<Read a label step@>;
+    stop_code:@<Read a stop step@>;
+    skip_code:@<Read a skip step@>;
+    krn_code:@<Read a kerning step@>;
+    lig_code,lig_code+1,lig_code+2,lig_code+3,lig_code+5,
+      lig_code+6,lig_code+7,lig_code+11:@<Read a ligature step@>;
+    end; {there are no other cases |>=label_code|}
   finish_the_property;
 end
-else if (cur_code>=clabel_code) and (cur_code<=cpenglue_code) then
-begin case cur_code of
-  clabel_code:@<Read an extended label step@>;
-  cpen_code:@<Read an extended penalty step@>;
-  cglue_code:@<Read an extended glue step@>;
-  cpenglue_code:@<Read an extended penalty/glue step@>;
-  ckrn_code:@<Read an extended kern step@>;
-  end; {there are no other cases |>=label_code|}
+else if (cur_code>=clabel_code) and (cur_code<=cpenglue_code) then begin
+  case cur_code of
+    clabel_code:@<Read an extended label step@>;
+    cpen_code:@<Read an extended penalty step@>;
+    cglue_code:@<Read an extended glue step@>;
+    cpenglue_code:@<Read an extended penalty/glue step@>;
+    ckrn_code:@<Read an extended kern step@>;
+    end; {there are no other cases |>=label_code|}
   finish_the_property;
 end
 else flush_error('This property name doesn''t belong in a LIGTABLE list');
@@ -1914,20 +1987,21 @@ procedure so that an error message is given in case of multiple tags.
 
 @p procedure check_tag(c:integer); {print error if |c| already tagged}
 begin case char_tag[c] of
-no_tag: do_nothing;
-lig_tag: err_print('This character already appeared in a LIGTABLE LABEL');
+  no_tag: do_nothing;
+  lig_tag: err_print('This character already appeared in a LIGTABLE LABEL');
 @.This character already...@>
-list_tag: err_print('This character already has a NEXTLARGER spec');
-ext_tag: err_print('This character already has a VARCHAR spec');
-end;
+  list_tag: err_print('This character already has a NEXTLARGER spec');
+  ext_tag: err_print('This character already has a VARCHAR spec');
+  end;
 end;
 
 @ @<Read a label step@>=
 begin while cur_char=" " do get_next;
-if cur_char="B" then
-  begin bchar_label:=nl; skip_to_paren; {\.{LABEL BOUNDARYCHAR}}
+if cur_char="B" then begin
+  bchar_label:=nl; skip_to_paren; {\.{LABEL BOUNDARYCHAR}}
   end
-else begin backup; c:=get_byte;
+else begin
+  backup; c:=get_byte;
   check_tag(c); char_tag[c]:=lig_tag; char_remainder[c]:=nl;
   end;
 if min_nl<=nl then min_nl:=nl+1;
@@ -1955,13 +2029,15 @@ else begin
 if not lk_step_ended then
   err_print('SKIP must follow LIG or KRN')
 @.SKIP must follow LIG or KRN@>
-else begin c:=get_byte;
+else begin
+  c:=get_byte;
   if c>=128 then err_print('Maximum SKIP amount is 127')
 @.Maximum SKIP amount...@>
   else if nl+c>=max_lig_steps then
     err_print('Sorry, LIGTABLE too long for me to handle')
 @.Sorry, LIGTABLE too long...@>
-  else begin lig_kern[nl-1].b0:=c;
+  else begin
+    lig_kern[nl-1].b0:=c;
     if min_nl<=nl+c then min_nl:=nl+c+1;
     end;
   lk_step_ended:=false;
@@ -1983,9 +2059,10 @@ end
 begin lig_kern[nl].b0:=0; lig_kern[nl].b1:=get_byte;
 kern[nk]:=get_fix; krn_ptr:=0;
 while kern[krn_ptr]<>kern[nk] do incr(krn_ptr);
-if krn_ptr=nk then
-  begin if nk<max_kerns then incr(nk)
-  else  begin err_print('Sorry, too many different kerns for me to handle');
+if krn_ptr=nk then begin
+  if nk<max_kerns then incr(nk)
+  else begin
+    err_print('Sorry, too many different kerns for me to handle');
 @.Sorry, too many different kerns...@>
     decr(krn_ptr);
     end;
@@ -1997,7 +2074,7 @@ if ofm_level=-1 then begin
 else begin
   lig_kern[nl].b2:=kern_flag+(krn_ptr div 65536);
   lig_kern[nl].b3:=krn_ptr mod 65536;
-end;
+  end;
 if nl>=max_lig_steps-1 then
   err_print('Sorry, LIGTABLE too long for me to handle')
 @.Sorry, LIGTABLE too long...@>
@@ -2012,19 +2089,18 @@ end
 @!penalty_category,@!max_penalty_category:integer;
 
 @ @<Set init...@>=
-for ivalue_category:=0 to 256 do
-begin
+for ivalue_category:=0 to 256 do begin
   category_remainders[ivalue_category]:=-1;
-end;
+  end;
 max_ivalue_category:=-1;
 max_glue_category:=-1;
 max_penalty_category:=-1;
 
 @ @<Read an extended label step@>=
 begin
-  c:=get_byte;
-  category_remainders[c]:=nl;
-  if max_ivalue_category<c then max_ivalue_category:=c;
+c:=get_byte;
+category_remainders[c]:=nl;
+if max_ivalue_category<c then max_ivalue_category:=c;
 if min_nl<=nl then min_nl:=nl+1;
 lk_step_ended:=false;
 end
@@ -2079,9 +2155,10 @@ begin lig_kern[nl].b0:=256; lig_kern[nl].b1:=get_byte;
 lig_kern[nl].b2:=20;
 kern[nk]:=get_fix; krn_ptr:=0; 
 while kern[krn_ptr]<>kern[nk] do incr(krn_ptr);  
-if krn_ptr=nk then 
-  begin if nk<max_kerns then incr(nk) 
-  else  begin err_print('Sorry, too many different kerns for me to handle');
+if krn_ptr=nk then begin
+  if nk<max_kerns then incr(nk) 
+  else begin
+    err_print('Sorry, too many different kerns for me to handle');
 @.Sorry, too many different kerns...@> 
     decr(krn_ptr); 
     end; 
@@ -2125,18 +2202,18 @@ if max_ivalue_category>0 then begin
   else begin
     for c:=0 to max_char do begin
       if (char_wd[c]<>0) then begin
-	for j:=0 to max_ivalue_category do
-	  if char_table[c,0]=j then begin
-	    if category_remainders[j]<>-1 then begin
-	      if char_tag[c]<>0 then
-	        err_print('Character already has a tag')
-	      else begin
-	        char_extended_tag[c]:=true;
-		char_remainder[c]:=category_remainders[j];
-	        end;
-	      end;
-	    end;
-	end;
+        for j:=0 to max_ivalue_category do
+          if char_table[c,0]=j then begin
+            if category_remainders[j]<>-1 then begin
+              if char_tag[c]<>0 then
+                err_print('Character already has a tag')
+              else begin
+                char_extended_tag[c]:=true;
+        	char_remainder[c]:=category_remainders[j];
+                end;
+              end;
+            end;
+        end;
       end;
     end;
   end;
@@ -2159,8 +2236,8 @@ if not tables_read then begin
   end;
 c:=get_byte; {read the character code that is being specified}
 @<Print |c| in hex notation@>;
-while level=1 do
-  begin while cur_char=" " do get_next;
+while level=1 do begin
+  while cur_char=" " do get_next;
   if cur_char="(" then read_character_property
   else if cur_char=")" then skip_to_end_of_item
   else junk_error;
@@ -2226,6 +2303,7 @@ end
 @<Globals...@>=
 @!char_table:array [0..max_char,0..char_param_tables] of integer;
 @!ch_table,@!ch_entry:integer;
+@!temp_value:integer;
 
 @ @<Set init...@>=
 for c:=0 to max_char do
@@ -2241,52 +2319,72 @@ else if (cur_code<char_wd_code)or
 then
   flush_error('This property name doesn''t belong in a CHARACTER list')
 @.This property name doesn't belong...@>
-else  begin case cur_code of
-  char_wd_code:char_wd[c]:=sort_in(width,get_fix);
-  char_ht_code:char_ht[c]:=sort_in(height,get_fix);
-  char_dp_code:char_dp[c]:=sort_in(depth,get_fix);
-  char_ic_code:char_ic[c]:=sort_in(italic,get_fix);
-  next_larger_code:begin check_tag(c); char_tag[c]:=list_tag;
-    char_remainder[c]:=get_byte;
-    end;
-  var_char_code:@<Read an extensible recipe for |c|@>;
-  char_ivalue_code: begin
-    ch_table:=get_integer;
-    ch_entry:=get_integer;
-    char_table[c,ch_table]:=ch_entry;
-    if ch_table>nkci then nkci:=ch_table;
-    end;
-  char_fvalue_code: begin
-    ch_table:=get_integer+nki;
-    ch_entry:=get_integer;
-    char_table[c,ch_table]:=ch_entry;
-    if ch_table>nkcf then nkcf:=ch_table;
-    end;
-  char_mvalue_code: begin
-    ch_table:=get_integer+nki+nkf;
-    ch_entry:=get_integer;
-    char_table[c,ch_table]:=ch_entry;
-    if ch_table>nkcm then nkcm:=ch_table;
-    end;
-  char_rule_code: begin
-    ch_table:=get_integer+nki+nkf+nkm;
-    ch_entry:=get_integer;
-    char_table[c,ch_table]:=ch_entry;
-    if ch_table>nkcr then nkcr:=ch_table;
-    end;
-  char_glue_code: begin
-    ch_table:=get_integer+nki+nkf+nkm+nkr;
-    ch_entry:=get_integer;
-    char_table[c,ch_table]:=ch_entry;
-    if ch_table>nkcg then nkcg:=ch_table;
-    end;
-  char_penalty_code: begin
-    ch_table:=get_integer+nki+nkf+nkm+nkr+nkg;
-    ch_entry:=get_integer;
-    char_table[c,ch_table]:=ch_entry;
-    if ch_table>nkcp then nkcp:=ch_table;
-    end;
-  end;@/
+else begin
+  case cur_code of
+    char_wd_code:char_wd[c]:=sort_in(width,get_fix);
+    char_ht_code:char_ht[c]:=sort_in(height,get_fix);
+    char_dp_code:char_dp[c]:=sort_in(depth,get_fix);
+    char_ic_code:char_ic[c]:=sort_in(italic,get_fix);
+    sec_width_code:temp_value:=get_fix;
+    sec_height_code:temp_value:=get_fix;
+    sec_depth_code:temp_value:=get_fix;
+    sec_italic_code:temp_value:=get_fix;
+    accent_code:temp_value:=get_fix;
+    prim_top_axis_code:temp_value:=get_fix;
+    prim_top_axis_bis_code:temp_value:=get_fix;
+    prim_bot_axis_code:temp_value:=get_fix;
+    prim_bot_axis_bis_code:temp_value:=get_fix;
+    prim_mid_hor_code:temp_value:=get_fix;
+    prim_mid_vert_code:temp_value:=get_fix;
+    prim_base_slant_code:temp_value:=get_fix;
+    sec_top_axis_code:temp_value:=get_fix;
+    sec_top_axis_bis_code:temp_value:=get_fix;
+    sec_bot_axis_code:temp_value:=get_fix;
+    sec_bot_axis_bis_code:temp_value:=get_fix;
+    sec_mid_hor_code:temp_value:=get_fix;
+    sec_mid_vert_code:temp_value:=get_fix;
+    sec_base_slant_code:temp_value:=get_fix;
+    next_larger_code:begin check_tag(c); char_tag[c]:=list_tag;
+      char_remainder[c]:=get_byte;
+      end;
+    var_char_code:@<Read an extensible recipe for |c|@>;
+    char_ivalue_code: begin
+      ch_table:=get_integer;
+      ch_entry:=get_integer;
+      char_table[c,ch_table]:=ch_entry;
+      if ch_table>nkci then nkci:=ch_table;
+      end;
+    char_fvalue_code: begin
+      ch_table:=get_integer+nki;
+      ch_entry:=get_integer;
+      char_table[c,ch_table]:=ch_entry;
+      if ch_table>nkcf then nkcf:=ch_table;
+      end;
+    char_mvalue_code: begin
+      ch_table:=get_integer+nki+nkf;
+      ch_entry:=get_integer;
+      char_table[c,ch_table]:=ch_entry;
+      if ch_table>nkcm then nkcm:=ch_table;
+      end;
+    char_rule_code: begin
+      ch_table:=get_integer+nki+nkf+nkm;
+      ch_entry:=get_integer;
+      char_table[c,ch_table]:=ch_entry;
+      if ch_table>nkcr then nkcr:=ch_table;
+      end;
+    char_glue_code: begin
+      ch_table:=get_integer+nki+nkf+nkm+nkr;
+      ch_entry:=get_integer;
+      char_table[c,ch_table]:=ch_entry;
+      if ch_table>nkcg then nkcg:=ch_table;
+      end;
+    char_penalty_code: begin
+      ch_table:=get_integer+nki+nkf+nkm+nkr+nkg;
+      ch_entry:=get_integer;
+      char_table[c,ch_table]:=ch_entry;
+      if ch_table>nkcp then nkcp:=ch_table;
+      end;
+    end;@/
   finish_the_property;
   end;
 end
@@ -2295,10 +2393,11 @@ end
 begin if ne=xmax_char then
   err_print('Sorry, too many VARCHAR specs')
 @.Sorry, too many VARCHAR specs@>
-else  begin check_tag(c); char_tag[c]:=ext_tag; char_remainder[c]:=ne;@/
+else begin
+  check_tag(c); char_tag[c]:=ext_tag; char_remainder[c]:=ne;@/
   exten[ne]:=zero_bytes;
-  while level=2 do
-    begin while cur_char=" " do get_next;
+  while level=2 do begin
+    while cur_char=" " do get_next;
     if cur_char="(" then @<Read an extensible piece@>
     else if cur_char=")" then skip_to_end_of_item
     else junk_error;
@@ -2314,12 +2413,13 @@ if cur_code=comment_code then skip_to_end_of_item
 else if (cur_code<var_char_code+1)or(cur_code>var_char_code+4) then
   flush_error('This property name doesn''t belong in a VARCHAR list')
 @.This property name doesn't belong...@>
-else  begin case cur_code-(var_char_code+1) of
-  0:exten[ne].b0:=get_byte;
-  1:exten[ne].b1:=get_byte;
-  2:exten[ne].b2:=get_byte;
-  3:exten[ne].b3:=get_byte;
-  end;@/
+else begin
+  case cur_code-(var_char_code+1) of
+    0:exten[ne].b0:=get_byte;
+    1:exten[ne].b1:=get_byte;
+    2:exten[ne].b2:=get_byte;
+    3:exten[ne].b3:=get_byte;
+    end;@/
   finish_the_property;
   end;
 end
@@ -2369,8 +2469,7 @@ This procedure can print in octal, decimal or hex notation.
 var j:0..32; {index into |dig|}
 begin
 j:=0;
-if (c<0) then
-   begin
+if (c<0) then begin
    print_ln('Internal error: print_number (negative value)');
    c:=0
    end;
@@ -2378,25 +2477,24 @@ if form=8 then
    print('''') {an apostrophe indicates the octal notation}
 else if form=16 then
    print('"')  { a double apostrophe indicates the hexadecimal notation}
-else if form<>10 then
-   begin
+else if form<>10 then begin
    print_ln('Internal error: print_number');
    form:=10
    end;
-while (c>0) or (j=0) do
-begin
-   dig[j]:=c mod form; c:=c div form;
-   j:=j+1;
-end;
+while (c>0) or (j=0) do begin
+  dig[j]:=c mod form; c:=c div form;
+  j:=j+1;
+  end;
 print_digs(j);
 end;
 
 
 @ @<Print |c| in hex...@>=
-begin if chars_on_line=8 then
-  begin print_ln(' '); chars_on_line:=1;
+begin if chars_on_line=8 then begin
+  print_ln(' '); chars_on_line:=1;
   end
-else  begin if chars_on_line>0 then print(' ');
+else begin
+  if chars_on_line>0 then print(' ');
   incr(chars_on_line);
   end;
 print_hex(c); {progress report}
@@ -2421,8 +2519,8 @@ for c:=0 to max_char do if char_wd[c]<>0 then
     @<For all characters |g| generated by |c|,
     make sure that |char_wd[g]| is nonzero, and
     set |seven_unsafe| if |c<128<=g|@>;
-if bchar_label<xmax_label then
-  begin c:=xmax_char; @<Check ligature program of |c|@>;
+if bchar_label<xmax_label then begin
+  c:=xmax_char; @<Check ligature program of |c|@>;
   end;
 if seven_bit_safe_flag and seven_unsafe then
   print_ln('The font is not really seven-bit-safe!');
@@ -2450,13 +2548,13 @@ macros that are only slightly tricky.
 
 @<For all characters |g| generated by |c|...@>=
 case char_tag[c] of
-no_tag: do_nothing;
-lig_tag: @<Check ligature program of |c|@>;
-list_tag: check_existence_and_safety(char_remainder[c])
-  ('The character NEXTLARGER than');
+  no_tag: do_nothing;
+  lig_tag: @<Check ligature program of |c|@>;
+  list_tag: check_existence_and_safety(char_remainder[c])
+    ('The character NEXTLARGER than');
 @.The character NEXTLARGER...@>
-ext_tag:@<Check the pieces of |exten[c]|@>;
-end
+  ext_tag:@<Check the pieces of |exten[c]|@>;
+  end
 
 @ @<Check the pieces...@>=
 begin if exten[char_remainder[c]].b0>0 then
@@ -2477,11 +2575,11 @@ check_existence_and_safety(exten[char_remainder[c]].b3)
 end
 
 @ @<Make sure that |c| is not the largest element of a charlist cycle@>=
-if char_tag[c]=list_tag then
-  begin g:=char_remainder[c];
+if char_tag[c]=list_tag then begin
+  g:=char_remainder[c];
   while (g<c)and(char_tag[g]=list_tag) do g:=char_remainder[g];
-  if g=c then
-    begin char_tag[c]:=no_tag;
+  if g=c then begin
+    char_tag[c]:=no_tag;
     print('A cycle of NEXTLARGER characters has been broken at ');
 @.A cycle of NEXTLARGER...@>
     print_hex(c); print_ln('.');
@@ -2507,9 +2605,12 @@ case ofm_level of
     top_width:=65535; top_depth:=255; top_height:=255; top_italic:=255;
     end;
   end;
-delta:=shorten(width,top_width); set_indices(width,delta); round_message('width');@/
-delta:=shorten(height,top_height); set_indices(height,delta); round_message('height');@/
-delta:=shorten(depth,top_depth); set_indices(depth,delta); round_message('depth');@/
+delta:=shorten(width,top_width); set_indices(width,delta);
+  round_message('width');@/
+delta:=shorten(height,top_height); set_indices(height,delta);
+  round_message('height');@/
+delta:=shorten(depth,top_depth); set_indices(depth,delta);
+  round_message('depth');@/
 delta:=shorten(italic,top_italic); set_indices(italic,delta);
   round_message('italic correction');
 
@@ -2518,11 +2619,11 @@ delta:=shorten(italic,top_italic); set_indices(italic,delta);
   lig_kern[nl].b2:=0; lig_kern[nl].b3:=0
 
 @<Make sure the ligature/kerning program ends...@>=
-begin if bchar_label<xmax_label then {make room for it}
-  begin clear_lig_kern_entry; incr(nl);
+begin if bchar_label<xmax_label then {make room for it} begin
+  clear_lig_kern_entry; incr(nl);
   end; {|bchar_label| will be stored later}
-while min_nl>nl do
-  begin clear_lig_kern_entry; incr(nl);
+while min_nl>nl do begin
+  clear_lig_kern_entry; incr(nl);
   end;
 if (lig_kern[nl-1].b0 mod 256)=0 then
    lig_kern[nl-1].b0:=lig_kern[nl-1].b0 div 256 * 256 + stop_flag;
@@ -2562,9 +2663,9 @@ for k:=0 to hash_size do hash[k]:=0;
 begin lig_ptr:=char_remainder[c];
 if (lig_kern[lig_ptr].b0 div 256)=0 then
 begin
-repeat if hash_input(lig_ptr,c) then
-  begin if lig_kern[lig_ptr].b2<kern_flag then
-    begin if lig_exam<>bchar then
+repeat if hash_input(lig_ptr,c) then begin
+  if lig_kern[lig_ptr].b2<kern_flag then begin
+    if lig_exam<>bchar then
       check_existence(lig_exam)('LIG character examined by');
 @.LIG character examined...@>
     check_existence(lig_gen)('LIG character generated by');
@@ -2598,10 +2699,10 @@ begin if hash_ptr=hash_size then
   begin hash_input:=false; goto 30;@+end;
 @<Compute the command parameters |y|, |cc|, and |zz|@>;
 key:=xmax_char*c+y+1; h:=(hash_mult*(key mod hash_size)) mod hash_size;
-while hash[h]>0 do
-  begin if hash[h]<=key then
-    begin if hash[h]=key then
-      begin hash_input:=false; goto 30; {unused ligature command}
+while hash[h]>0 do begin
+  if hash[h]<=key then begin
+    if hash[h]=key then begin
+      hash_input:=false; goto 30; {unused ligature command}
       end;
     t:=hash[h]; hash[h]:=key; key:=t; {do ordered-hash-table insertion}
     t:=class[h]; class[h]:=cc; cc:=t; {namely, do a swap}
@@ -2618,13 +2719,14 @@ hash_input:=true;
 y:=lig_kern[p].b1; t:=lig_kern[p].b2; cc:=simple;
 zz:=lig_kern[p].b3;
 if t>=kern_flag then zz:=y
-else begin case t of
-  0,6:do_nothing; {\.{LIG},\.{/LIG>}}
-  5,11:zz:=y; {\.{LIG/>}, \.{/LIG/>>}}
-  1,7:cc:=left_z; {\.{LIG/}, \.{/LIG/>}}
-  2:cc:=right_z; {\.{/LIG}}
-  3:cc:=both_z; {\.{/LIG/}}
-  end; {there are no other cases}
+else begin
+  case t of
+    0,6:do_nothing; {\.{LIG},\.{/LIG>}}
+    5,11:zz:=y; {\.{LIG/>}, \.{/LIG/>>}}
+    1,7:cc:=left_z; {\.{LIG/}, \.{/LIG/>}}
+    2:cc:=right_z; {\.{/LIG}}
+    3:cc:=both_z; {\.{/LIG/}}
+    end; {there are no other cases}
   end
 
 @ (More good stuff from \.{TFtoPL}.)
@@ -2644,32 +2746,33 @@ end;
 saying |function f(h,x,y:indx):indx| here.
 
 @p function f;
-begin case class[h] of
-simple: do_nothing;
-left_z: begin class[h]:=pending; lig_z[h]:=eval(lig_z[h],y); class[h]:=simple;
-  end;
-right_z: begin class[h]:=pending; lig_z[h]:=eval(x,lig_z[h]); class[h]:=simple;
-  end;
-both_z: begin class[h]:=pending; lig_z[h]:=eval(eval(x,lig_z[h]),y);
-  class[h]:=simple;
-  end;
-pending: begin x_lig_cycle:=x; y_lig_cycle:=y;
-  lig_z[h]:=xxmax_char; class[h]:=simple;
-  end; {the value |xxmax_char| will break all cycles,
-        since it's not in |hash|}
-end; {there are no other cases}
+begin
+case class[h] of
+  simple: do_nothing;
+  left_z: begin class[h]:=pending; lig_z[h]:=eval(lig_z[h],y); class[h]:=simple;
+    end;
+  right_z: begin class[h]:=pending; lig_z[h]:=eval(x,lig_z[h]); class[h]:=simple;
+    end;
+  both_z: begin class[h]:=pending; lig_z[h]:=eval(eval(x,lig_z[h]),y);
+    class[h]:=simple;
+    end;
+  pending: begin x_lig_cycle:=x; y_lig_cycle:=y;
+    lig_z[h]:=xxmax_char; class[h]:=simple;
+    end; {the value |xxmax_char| will break all cycles,
+          since it's not in |hash|}
+  end; {there are no other cases}
 f:=lig_z[h];
 end;
 
 @ @<Check for infinite...@>=
-if hash_ptr<hash_size then for hh:=1 to hash_ptr do
-  begin tt:=hash_list[hh];
+if hash_ptr<hash_size then for hh:=1 to hash_ptr do begin
+  tt:=hash_list[hh];
   if class[tt]>simple then {make sure $f$ is well defined}
   tt:=f(tt,(hash[tt]-1)div xmax_char,(hash[tt]-1)mod xmax_char);
   end;
-if(hash_ptr=hash_size)or(y_lig_cycle<xmax_char) then
-  begin if hash_ptr<hash_size then
-    begin print('Infinite ligature loop starting with ');
+if(hash_ptr=hash_size)or(y_lig_cycle<xmax_char) then begin
+  if hash_ptr<hash_size then begin
+    print('Infinite ligature loop starting with ');
 @.Infinite ligature loop...@>
     if x_lig_cycle=xmax_char
     then print('boundary')@+else print_hex(x_lig_cycle);
@@ -2678,8 +2781,8 @@ if(hash_ptr=hash_size)or(y_lig_cycle<xmax_char) then
   else print_ln('Sorry, I haven''t room for so many ligature/kern pairs!');
 @.Sorry, I haven't room...@>
   print_ln('All ligatures will be cleared.');
-  for c:=0 to max_char do if char_tag[c]=lig_tag then
-    begin char_tag[c]:=no_tag; char_remainder[c]:=0;
+  for c:=0 to max_char do if char_tag[c]=lig_tag then begin
+    char_tag[c]:=no_tag; char_remainder[c]:=0;
     end;
   nl:=0; bchar:=xmax_char; bchar_label:=xmax_label;
   end
@@ -2718,8 +2821,8 @@ if nl>0 then for lig_ptr:=0 to nl-1 do
     end;
 @.Unused LIG step...@>
 @.Unused KRN step...@>
-if ne>0 then for g:=0 to ne-1 do
-  begin double_check_ext(b0)('VARCHAR TOP');
+if ne>0 then for g:=0 to ne-1 do begin
+  double_check_ext(b0)('VARCHAR TOP');
   double_check_ext(b1)('VARCHAR MID');
   double_check_ext(b2)('VARCHAR BOT');
   double_check_rep(b3)('VARCHAR REP');
@@ -2770,7 +2873,7 @@ will be~1.
 
 @<Compute the subfile sizes@>=
 case ofm_level of
- -1:begin
+  -1: begin
     lh:=header_ptr div 4;@/
     not_found:=true; bc:=0;
     while not_found do
@@ -2787,7 +2890,7 @@ case ofm_level of
     lf:=6+lh+(ec-bc+1)+memory[width]+memory[height]+memory[depth]+
     memory[italic]+nl+lk_offset+nk+ne+np;
     end;
-  0:begin
+  0: begin
     lh:=header_ptr div 4;@/
     not_found:=true; bc:=0;
     while not_found do
@@ -2804,7 +2907,7 @@ case ofm_level of
     lf:=14+lh+2*(ec-bc+1)+memory[width]+memory[height]+memory[depth]+
     memory[italic]+2*nl+lk_offset+nk+2*ne+np;
     end;
-  1:begin
+  1: begin
     lh:=header_ptr div 4;@/
     not_found:=true; bc:=0;
     while not_found do
@@ -2834,13 +2937,13 @@ case ofm_level of
 
 @<Output the subfile sizes@>=
 case ofm_level of
- -1:begin
+  -1: begin
     out_size(lf); out_size(lh); out_size(bc); out_size(ec);
     out_size(memory[width]); out_size(memory[height]);
     out_size(memory[depth]); out_size(memory[italic]);
     out_size(nl+lk_offset); out_size(nk); out_size(ne); out_size(np);
     end;
-  0:begin
+  0: begin
     out_integer(0);
     out_integer(lf); out_integer(lh); out_integer(bc); out_integer(ec);
     out_integer(memory[width]); out_integer(memory[height]);
@@ -2848,7 +2951,7 @@ case ofm_level of
     out_integer(nl+lk_offset); out_integer(nk);
     out_integer(ne); out_integer(np); out_integer(font_dir);
     end;
-  1:begin
+  1: begin
     out_integer(1);
     out_integer(lf); out_integer(lh);
     out_integer(bc); out_integer(ec);
@@ -2887,8 +2990,8 @@ for j:=0 to header_ptr-1 do out(header_bytes[j]);
 
 @ @<Compute the check sum@>=
 begin c0:=bc; c1:=ec; c2:=bc; c3:=ec;
-for c:=bc to ec do if char_wd[c]>0 then
-  begin temp_width:=memory[char_wd[c]];
+for c:=bc to ec do if char_wd[c]>0 then begin
+  temp_width:=memory[char_wd[c]];
   if design_units<>unity then
     temp_width:=round((temp_width/design_units)*1048576.0);
   temp_width:=temp_width + (c+4)*@'20000000; {this should be positive}
@@ -2933,17 +3036,17 @@ if ofm_level=1 then begin
         if index[char_ht[c]]<>index[char_ht[cprime]] then diff:=true;
         if index[char_dp[c]]<>index[char_dp[cprime]] then diff:=true;
         if index[char_ic[c]]<>index[char_ic[cprime]] then diff:=true;
-	if char_remainder[c]<>char_remainder[cprime] then diff:=true;
+        if char_remainder[c]<>char_remainder[cprime] then diff:=true;
         for tab:=0 to npc-1 do begin
           if char_table[c,tab]<>char_table[cprime,tab] then diff:=true;
           end;
-	if not diff then begin
-	  char_original[cprime]:=c;
-	  cprime:=cprime+1;
-	  end;
+        if not diff then begin
+          char_original[cprime]:=c;
+          cprime:=cprime+1;
+          end;
         end;
       if cprime>(c+1) then begin
-	char_repeats[c]:=cprime-c-1;
+        char_repeats[c]:=cprime-c-1;
         end;
       ncw:=ncw+needed_space;
       end;
@@ -2956,19 +3059,19 @@ if ofm_level=1 then begin
 index[0]:=0;
 for c:=bc to ec do
 case ofm_level of
- -1:begin
+  -1: begin
     out(index[char_wd[c]]);
     out(index[char_ht[c]]*16+index[char_dp[c]]);
     out(index[char_ic[c]]*4+char_tag[c]);
     out(char_remainder[c]);
     end;
-  0:begin
+  0: begin
     out(index[char_wd[c]] div 256); out(index[char_wd[c]] mod 256);
     out(index[char_ht[c]]); out(index[char_dp[c]]);
     out(index[char_ic[c]] div 64);out((index[char_ic[c]] mod 64)*4+char_tag[c]);
     out(char_remainder[c] div 256); out(char_remainder[c] mod 256);
     end;
-  1:begin
+  1: begin
     if c=char_original[c] then begin
       out(index[char_wd[c]] div 256); out(index[char_wd[c]] mod 256);
       out(index[char_ht[c]]); out(index[char_dp[c]]);
@@ -2998,8 +3101,8 @@ only if |design_units<>1.0|.
 @p procedure out_scaled(x:fix_word); {outputs a scaled |fix_word|}
 var @!n:byte; {the first byte after the sign}
 @!m:0..65535; {the two least significant bytes}
-begin if abs(x/design_units)>=16.0 then
-  begin print_ln('The relative dimension ',x/@'4000000:1:3,
+begin if abs(x/design_units)>=16.0 then begin
+  print_ln('The relative dimension ',x/@'4000000:1:3,
     ' is too large.');
 @.The relative dimension...@>
   print('  (Must be less than 16*designsize');
@@ -3008,8 +3111,8 @@ begin if abs(x/design_units)>=16.0 then
   print_ln(')'); x:=0;
   end;
 if design_units<>unity then x:=round((x/design_units)*1048576.0);
-if x<0 then
-  begin out(255); x:=x+@'100000000;
+if x<0 then begin
+  out(255); x:=x+@'100000000;
   if x<=0 then x:=1;
   end
 else begin out(0);
@@ -3023,11 +3126,11 @@ end;
 The scaled widths, heights, depths, and italic corrections are next.
 
 @<Output the dimensions themselves@>=
-for q:=width to italic do
-  begin out(0); out(0); out(0); out(0); {output the zero word}
+for q:=width to italic do begin
+  out(0); out(0); out(0); out(0); {output the zero word}
   p:=link[q]; {head of list}
-  while p>0 do
-    begin out_scaled(memory[p]);
+  while p>0 do begin
+    out_scaled(memory[p]);
     p:=link[p];
     end;
   end;
@@ -3053,10 +3156,11 @@ For this we need a sorted table of all relevant remainders.
 
 @ @<Compute the ligature/kern program offset@>=
 @<Insert all labels into |label_table|@>;
-if bchar<xmax_char then
-  begin extra_loc_needed:=true; lk_offset:=1;
+if bchar<xmax_char then begin
+  extra_loc_needed:=true; lk_offset:=1;
   end
-else begin extra_loc_needed:=false; lk_offset:=0;
+else begin
+  extra_loc_needed:=false; lk_offset:=0;
   end;
 @<Find the minimum |lk_offset| and adjust all remainders@>;
 if bchar_label<xmax_label then begin
@@ -3072,10 +3176,10 @@ if bchar_label<xmax_label then begin
 
 @ @<Insert all labels...@>=
 label_ptr:=0; label_table[0].rr:=-1; {sentinel}
-for c:=bc to ec do if char_tag[c]=lig_tag then
-  begin sort_ptr:=label_ptr; {there's a hole at position |sort_ptr+1|}
-  while label_table[sort_ptr].rr>char_remainder[c] do
-    begin label_table[sort_ptr+1]:=label_table[sort_ptr];
+for c:=bc to ec do if char_tag[c]=lig_tag then begin
+  sort_ptr:=label_ptr; {there's a hole at position |sort_ptr+1|}
+  while label_table[sort_ptr].rr>char_remainder[c] do begin
+    label_table[sort_ptr+1]:=label_table[sort_ptr];
     decr(sort_ptr); {move the hole}
     end;
   label_table[sort_ptr+1].cc:=c;
@@ -3086,11 +3190,11 @@ for c:=bc to ec do if char_tag[c]=lig_tag then
 @ @<Find the minimum |lk_offset| and adjust all remainders@>=
 begin sort_ptr:=label_ptr; {the largest unallocated label}
 if ofm_level=-1 then begin
-  if label_table[sort_ptr].rr+lk_offset > 255 then
-    begin lk_offset:=0; extra_loc_needed:=false; {location 0 can do double duty}
+  if label_table[sort_ptr].rr+lk_offset > 255 then begin
+    lk_offset:=0; extra_loc_needed:=false; {location 0 can do double duty}
     repeat char_remainder[label_table[sort_ptr].cc]:=lk_offset;
-    while label_table[sort_ptr-1].rr=label_table[sort_ptr].rr do
-      begin decr(sort_ptr); char_remainder[label_table[sort_ptr].cc]:=lk_offset;
+    while label_table[sort_ptr-1].rr=label_table[sort_ptr].rr do begin
+      decr(sort_ptr); char_remainder[label_table[sort_ptr].cc]:=lk_offset;
       end;
     incr(lk_offset); decr(sort_ptr);
     until lk_offset+label_table[sort_ptr].rr<256;
@@ -3098,19 +3202,19 @@ if ofm_level=-1 then begin
     end;
   end
 else begin
-  if label_table[sort_ptr].rr+lk_offset > 65535 then
-    begin lk_offset:=0; extra_loc_needed:=false; {location 0 can do double duty}
+  if label_table[sort_ptr].rr+lk_offset > 65535 then begin
+    lk_offset:=0; extra_loc_needed:=false; {location 0 can do double duty}
     repeat char_remainder[label_table[sort_ptr].cc]:=lk_offset;
-    while label_table[sort_ptr-1].rr=label_table[sort_ptr].rr do
-      begin decr(sort_ptr); char_remainder[label_table[sort_ptr].cc]:=lk_offset;
+    while label_table[sort_ptr-1].rr=label_table[sort_ptr].rr do begin
+      decr(sort_ptr); char_remainder[label_table[sort_ptr].cc]:=lk_offset;
       end;
     incr(lk_offset); decr(sort_ptr);
     until lk_offset+label_table[sort_ptr].rr<65536;
       {N.B.: |lk_offset=65536| satisfies this when |sort_ptr=0|}
     end;
   end;
-if lk_offset>0 then while sort_ptr>0 do
-  begin char_remainder[label_table[sort_ptr].cc]:=
+if lk_offset>0 then while sort_ptr>0 do begin
+  char_remainder[label_table[sort_ptr].cc]:=
     char_remainder[label_table[sort_ptr].cc]+lk_offset;
   decr(sort_ptr);
   end;
@@ -3118,21 +3222,22 @@ end
 
 @ @<Output the ligature/kern program@>=
 if ofm_level=-1 then begin
-  if extra_loc_needed then {|lk_offset=1|}
-    begin out(255); out(bchar); out(0); out(0);
+  if extra_loc_needed then begin {|lk_offset=1|}
+    out(255); out(bchar); out(0); out(0);
     end
-  else for sort_ptr:=1 to lk_offset do {output the redirection specs}
-    begin t:=label_table[label_ptr].rr;
-    if bchar<256 then
-      begin out(255); out(bchar);
+  else for sort_ptr:=1 to lk_offset do begin {output the redirection specs}
+    t:=label_table[label_ptr].rr;
+    if bchar<256 then begin
+      out(255); out(bchar);
       end
-    else begin out(254); out(0);
+    else begin
+      out(254); out(0);
       end;
     out_size(t+lk_offset);
     repeat decr(label_ptr); until label_table[label_ptr].rr<t;
     end;
-  if nl>0 then for lig_ptr:=0 to nl-1 do
-    begin out(lig_kern[lig_ptr].b0);
+  if nl>0 then for lig_ptr:=0 to nl-1 do begin
+    out(lig_kern[lig_ptr].b0);
     out(lig_kern[lig_ptr].b1);
     out(lig_kern[lig_ptr].b2);
     out(lig_kern[lig_ptr].b3);
@@ -3140,22 +3245,24 @@ if ofm_level=-1 then begin
   if nk>0 then for krn_ptr:=0 to nk-1 do out_scaled(kern[krn_ptr])
   end
 else begin
-  if extra_loc_needed then {|lk_offset=1|}
-    begin out_size(255); out_size(bchar); out_size(0); out_size(0);
+  if extra_loc_needed then {|lk_offset=1|} begin
+    out_size(255); out_size(bchar); out_size(0); out_size(0);
     end
-  else for sort_ptr:=1 to lk_offset do {output the redirection specs}
-    begin t:=label_table[label_ptr].rr;
-    if bchar<xmax_char then
-      begin out_size(255); out_size(bchar);
+  else
+    for sort_ptr:=1 to lk_offset do {output the redirection specs} begin
+    t:=label_table[label_ptr].rr;
+    if bchar<xmax_char then begin
+      out_size(255); out_size(bchar);
       end
-    else begin out_size(254); out_size(0);
+    else begin
+      out_size(254); out_size(0);
       end;
     out_size((t+lk_offset) div 256);
     out_size((t+lk_offset) mod 256);
     repeat decr(label_ptr); until label_table[label_ptr].rr<t;
     end;
-  if nl>0 then for lig_ptr:=0 to nl-1 do
-    begin out_size(lig_kern[lig_ptr].b0);
+  if nl>0 then for lig_ptr:=0 to nl-1 do begin
+    out_size(lig_kern[lig_ptr].b0);
     out_size(lig_kern[lig_ptr].b1);
     out_size(lig_kern[lig_ptr].b2);
     out_size(lig_kern[lig_ptr].b3);
@@ -3165,16 +3272,16 @@ else begin
 
 @ @<Output the extensible character recipes@>=
 if ofm_level=-1 then begin
-  if ne>0 then for c:=0 to ne-1 do
-    begin out(exten[c].b0);
+  if ne>0 then for c:=0 to ne-1 do begin
+    out(exten[c].b0);
     out(exten[c].b1);
     out(exten[c].b2);
     out(exten[c].b3);
     end;
   end
 else begin
-  if ne>0 then for c:=0 to ne-1 do
-    begin out_size(exten[c].b0);
+  if ne>0 then for c:=0 to ne-1 do begin
+    out_size(exten[c].b0);
     out_size(exten[c].b1);
     out_size(exten[c].b2);
     out_size(exten[c].b3);
@@ -3184,15 +3291,15 @@ else begin
 @ For our grand finale, we wind everything up by outputting the parameters.
 
 @<Output the parameters@>=
-for par_ptr:=1 to np do
-  begin if par_ptr=1 then
+for par_ptr:=1 to np do begin
+  if par_ptr=1 then
     @<Output the slant (|param[1]|) without scaling@>
   else out_scaled(param[par_ptr]);
   end
 
 @ @<Output the slant...@>=
-begin if param[1]<0 then
-  begin param[1]:=param[1]+@'10000000000;
+begin if param[1]<0 then begin
+  param[1]:=param[1]+@'10000000000;
   out((param[1] div @'100000000)+256-64);
   end
 else out(param[1] div @'100000000);
@@ -3316,11 +3423,10 @@ ofm_level:=-1; {Suppose that it is a TFM file}
 
 @ @<Read OFM level code@>=
 begin
-  ofm_level:=get_integer;
-  if (ofm_level<0) or (ofm_level>1) then
-  begin
-    flush_error('OFMLEVEL must be 0 or 1 -- 1 assumed');
-    ofm_level:=1;
+ofm_level:=get_integer;
+if (ofm_level<0) or (ofm_level>1) then begin
+  flush_error('OFMLEVEL must be 0 or 1 -- 1 assumed');
+  ofm_level:=1;
   end;
 end
 
@@ -3331,21 +3437,21 @@ repeat get_next;
 until cur_char<>" ";
 case cur_char of
   "T": begin get_next;
-       if cur_char="L" then font_dir:=0
-       else if cur_char="R" then font_dir:=2;
-       end;
+    if cur_char="L" then font_dir:=0
+    else if cur_char="R" then font_dir:=2;
+    end;
   "B": begin get_next;
-       if cur_char="L" then font_dir:=4
-       else if cur_char="R" then font_dir:=6;
-       end;
+    if cur_char="L" then font_dir:=4
+    else if cur_char="R" then font_dir:=6;
+    end;
   "R": begin get_next;
-       if cur_char="T" then font_dir:=5
-       else if cur_char="B" then font_dir:=7;
-       end;
+    if cur_char="T" then font_dir:=5
+    else if cur_char="B" then font_dir:=7;
+    end;
   "L": begin get_next;
-       if cur_char="T" then font_dir:=1
-       else if cur_char="B" then font_dir:=3;
-       end;
+    if cur_char="T" then font_dir:=1
+    else if cur_char="B" then font_dir:=3;
+    end;
   end;
 while cur_char<>")" do get_next;
 if font_dir = -1 then begin
@@ -3361,21 +3467,21 @@ repeat get_next;
 until cur_char<>" ";
 case cur_char of
   "T": begin get_next;
-       if cur_char="L" then font_dir:=8
-       else if cur_char="R" then font_dir:=10;
-       end;
+    if cur_char="L" then font_dir:=8
+    else if cur_char="R" then font_dir:=10;
+    end;
   "B": begin get_next;
-       if cur_char="L" then font_dir:=12
-       else if cur_char="R" then font_dir:=14;
-       end;
+    if cur_char="L" then font_dir:=12
+    else if cur_char="R" then font_dir:=14;
+    end;
   "R": begin get_next;
-       if cur_char="T" then font_dir:=13
-       else if cur_char="B" then font_dir:=15;
-       end;
+    if cur_char="T" then font_dir:=13
+    else if cur_char="B" then font_dir:=15;
+    end;
   "L": begin get_next;
-       if cur_char="T" then font_dir:=9
-       else if cur_char="B" then font_dir:=11;
-       end;
+    if cur_char="T" then font_dir:=9
+    else if cur_char="B" then font_dir:=11;
+    end;
   end;
 while cur_char<>")" do get_next;
 if font_dir = -1 then begin
@@ -3415,124 +3521,112 @@ end;
 @!r_number:integer;
 
 @ @<Set init...@>=
-for r_array := 0 to rule_arrays do
-begin
+for r_array := 0 to rule_arrays do begin
   npr[r_array]:=0;
   @<Null out the rule@>;
-end;
+  end;
 nkr:=-1;
 nkcr:=-1;
 
 @ @<Read font rule list@>=
 begin
-  if tables_read then
-    flush_error('All parameter tables must appear before character info');
-  r_array:=get_integer;
-  if r_array>rule_arrays then
-    flush_error('This FONTRULE table index is too big for my present size')
-  else if r_array<0 then
-    flush_error('This FONTRULE index is negative')
-  else
-  begin
-    if r_array>nkr then
-	nkr:=r_array;
-    while level=1 do
-    begin
-      while cur_char=" " do
-        get_next;
-      if cur_char="(" then @<Read a rule@>
-      else if cur_char=")" then skip_to_end_of_item
-      else junk_error;
+if tables_read then
+  flush_error('All parameter tables must appear before character info');
+r_array:=get_integer;
+if r_array>rule_arrays then
+  flush_error('This FONTRULE table index is too big for my present size')
+else if r_array<0 then
+  flush_error('This FONTRULE index is negative')
+else begin
+  if r_array>nkr then nkr:=r_array;
+  while level=1 do begin
+    while cur_char=" " do get_next;
+    if cur_char="(" then @<Read a rule@>
+    else if cur_char=")" then skip_to_end_of_item
+    else junk_error;
     end;
-    finish_inner_property_list;
+  finish_inner_property_list;
   end;
 end
  
 @ @<Read a rule@>= 
 begin
-  get_name; 
-  if cur_code=comment_code then skip_to_end_of_item 
-  else if cur_code<>rule_code then 
-    flush_error('This property name doesn''t belong in a RULE list') 
-  else
-  begin
-    r_number:=get_integer;
-    if r_number>rule_entries then 
-      flush_error('This RULE index is too big for my present table size') 
-    else if r_number<0 then
-      flush_error('This RULE index is negative')
-    else
-    begin
-      while npr[r_array]<r_number do 
-      begin
-        incr(npr[r_array]); @<Null out the rule@>;
+get_name; 
+if cur_code=comment_code then skip_to_end_of_item 
+else if cur_code<>rule_code then 
+  flush_error('This property name doesn''t belong in a RULE list') 
+else begin
+  r_number:=get_integer;
+  if r_number>rule_entries then 
+    flush_error('This RULE index is too big for my present table size') 
+  else if r_number<0 then
+    flush_error('This RULE index is negative')
+  else begin
+    while npr[r_array]<r_number do begin
+      incr(npr[r_array]); @<Null out the rule@>;
       end; 
-      @<Read all of a rule's values@>;
-      finish_the_property; 
+    @<Read all of a rule's values@>;
+    finish_the_property; 
     end;
   end; 
 end 
 
 @ @<Null out the rule@>=
 begin
-  rules[r_array,npr[r_array]].rn_width:=0;
-  rules[r_array,npr[r_array]].rn_depth:=0;
-  rules[r_array,npr[r_array]].rn_height:=0;
+rules[r_array,npr[r_array]].rn_width:=0;
+rules[r_array,npr[r_array]].rn_depth:=0;
+rules[r_array,npr[r_array]].rn_height:=0;
 end
 
 @ @<Read all of a rule's values@>=
 begin
-  while level=2 do
-  begin
-    while cur_char=" " do get_next;
-    if cur_char="(" then @<Read a single rule value@>
-    else if cur_char=")" then skip_to_end_of_item
-    else junk_error;
+while level=2 do begin
+  while cur_char=" " do get_next;
+  if cur_char="(" then @<Read a single rule value@>
+  else if cur_char=")" then skip_to_end_of_item
+  else junk_error;
   end;
-  finish_inner_property_list;
+finish_inner_property_list;
 end
 
 @ @<Read a single rule value@>=
 begin
-  get_name;
-  case cur_code of
-    rule_width_code:
-      rules[r_array,r_number].rn_width:=get_fix; 
-    rule_height_code:
-      rules[r_array,r_number].rn_height:=get_fix; 
-    rule_depth_code:
-      rules[r_array,r_number].rn_depth:=get_fix; 
+get_name;
+case cur_code of
+  rule_width_code:
+    rules[r_array,r_number].rn_width:=get_fix; 
+  rule_height_code:
+    rules[r_array,r_number].rn_height:=get_fix; 
+  rule_depth_code:
+    rules[r_array,r_number].rn_depth:=get_fix; 
   end;
-  finish_the_property;
+finish_the_property;
 end
 
 @ @<Header information for rules@>=
 begin
-  nwr:=0;
-  for r_array := 0 to nkr do
-  begin
-    incr(npr[r_array]);
-    nwr := nwr + 3*npr[r_array];
+nwr:=0;
+for r_array := 0 to nkr do begin
+  incr(npr[r_array]);
+  nwr := nwr + 3*npr[r_array];
   end;
-  incr(nkr);
+incr(nkr);
 end
 
 @ @<Output the rules@>=
 begin
-  for r_array:= 0 to nkr-1 do
-    for r_number:=0 to npr[r_array]-1 do
-    begin
-      out_scaled(rules[r_array,r_number].rn_width);
-      out_scaled(rules[r_array,r_number].rn_height);
-      out_scaled(rules[r_array,r_number].rn_depth);
+for r_array:= 0 to nkr-1 do
+  for r_number:=0 to npr[r_array]-1 do begin
+    out_scaled(rules[r_array,r_number].rn_width);
+    out_scaled(rules[r_array,r_number].rn_height);
+    out_scaled(rules[r_array,r_number].rn_depth);
     end;
 end
 
 @ @<Output the rule headers@>=
 begin
-  for r_array:= 0 to nkr-1 do
-  begin
-    out_integer(npr[r_array]);
+for r_array:= 0 to nkr-1 do begin
+  out_integer(npr[r_array]);
   end;
 end
 
@@ -3592,166 +3686,147 @@ nkcg:=-1;
 
 @ @<Read font glue list@>=
 begin
-  if tables_read then
-    flush_error('All parameter tables must appear before character info');
-  g_array:=get_integer;
-  if g_array>glue_arrays then
-    flush_error('This FONTGLUE table index is too big for my present size')
-  else if g_array<0 then
-    flush_error('This FONTGLUE index is negative')
-  else
-  begin
-    if g_array>nkg then
-        nkg:=g_array;
-    while level=1 do
-    begin
-      while cur_char=" " do
-        get_next;
-      if cur_char="(" then @<Read a glue@>
-      else if cur_char=")" then skip_to_end_of_item
-      else junk_error;
+if tables_read then
+  flush_error('All parameter tables must appear before character info');
+g_array:=get_integer;
+if g_array>glue_arrays then
+  flush_error('This FONTGLUE table index is too big for my present size')
+else if g_array<0 then
+  flush_error('This FONTGLUE index is negative')
+else begin
+  if g_array>nkg then nkg:=g_array;
+  while level=1 do begin
+    while cur_char=" " do get_next;
+    if cur_char="(" then @<Read a glue@>
+    else if cur_char=")" then skip_to_end_of_item
+    else junk_error;
     end;
-    finish_inner_property_list;
+  finish_inner_property_list;
   end;
 end
  
 @ @<Read a glue@>= 
 begin
-  get_name; 
-  if cur_code=comment_code then skip_to_end_of_item 
-  else if cur_code<>glue_code then 
-    flush_error('This property name doesn''t belong in a GLUE list') 
-  else
-  begin
-    g_number:=get_integer;
-    if g_number>glue_entries then 
-      flush_error('This GLUE index is too big for my present table size') 
-    else if g_number<0 then
-      flush_error('This GLUE index is negative')
-    else
-    begin
-      while npg[g_array]<g_number do 
-      begin
-	incr(npg[g_array]); @<Null out the glue@>;
+get_name; 
+if cur_code=comment_code then skip_to_end_of_item 
+else if cur_code<>glue_code then 
+  flush_error('This property name doesn''t belong in a GLUE list') 
+else begin
+  g_number:=get_integer;
+  if g_number>glue_entries then 
+    flush_error('This GLUE index is too big for my present table size') 
+  else if g_number<0 then
+    flush_error('This GLUE index is negative')
+  else begin
+    while npg[g_array]<g_number do begin
+      incr(npg[g_array]); @<Null out the glue@>;
       end; 
-      @<Read all of a glue's values@>;
-      finish_the_property; 
+    @<Read all of a glue's values@>;
+    finish_the_property; 
     end; 
   end; 
 end 
 
 @ @<Null out the glue@>=
 begin
-  glues[g_array,npg[g_array]].gn_width:=0;
-  glues[g_array,npg[g_array]].gn_stretch:=0;
-  glues[g_array,npg[g_array]].gn_shrink:=0;
-  glues[g_array,npg[g_array]].gn_type:=0;
-  glues[g_array,npg[g_array]].gn_arg_type:=0;
-  glues[g_array,npg[g_array]].gn_stretch_order:=0;
-  glues[g_array,npg[g_array]].gn_shrink_order:=0;
-  glues[g_array,npg[g_array]].gn_argument:=0;
+glues[g_array,npg[g_array]].gn_width:=0;
+glues[g_array,npg[g_array]].gn_stretch:=0;
+glues[g_array,npg[g_array]].gn_shrink:=0;
+glues[g_array,npg[g_array]].gn_type:=0;
+glues[g_array,npg[g_array]].gn_arg_type:=0;
+glues[g_array,npg[g_array]].gn_stretch_order:=0;
+glues[g_array,npg[g_array]].gn_shrink_order:=0;
+glues[g_array,npg[g_array]].gn_argument:=0;
 end
 
 @ @<Read all of a glue's values@>=
 begin
-  while level=2 do
-  begin
-    while cur_char=" " do get_next;
-    if cur_char="(" then @<Read a single glue value@>
-    else if cur_char=")" then skip_to_end_of_item
-    else junk_error;
+while level=2 do begin
+  while cur_char=" " do get_next;
+  if cur_char="(" then @<Read a single glue value@>
+  else if cur_char=")" then skip_to_end_of_item
+  else junk_error;
   end;
-  finish_inner_property_list;
+finish_inner_property_list;
 end
 
 @ @<Read a single glue value@>=
 begin
-  get_name;
-  case cur_code of
-    glue_width_code:
-      glues[g_array,g_number].gn_width:=get_fix; 
-    glue_stretch_code:
-      glues[g_array,g_number].gn_stretch:=get_fix; 
-    glue_shrink_code:
-      glues[g_array,g_number].gn_shrink:=get_fix; 
-    glue_type_code:
-      begin
-	g_byte:=get_integer;
-	if (g_byte<0) or (g_byte>3) then
-	begin
-	  g_byte:=0;
-	end;
-        glues[g_array,g_number].gn_type:=g_byte;
+get_name;
+case cur_code of
+  glue_width_code:
+    glues[g_array,g_number].gn_width:=get_fix; 
+  glue_stretch_code:
+    glues[g_array,g_number].gn_stretch:=get_fix; 
+  glue_shrink_code:
+    glues[g_array,g_number].gn_shrink:=get_fix; 
+  glue_type_code: begin
+    g_byte:=get_integer;
+    if (g_byte<0) or (g_byte>3) then begin
+      g_byte:=0;
       end;
-    glue_stretch_order_code:
-      begin
-	g_byte:=get_integer;
-	if (g_byte<0) or (g_byte>4) then
-	begin
-	  g_byte:=0;
-	end;
-        glues[g_array,g_number].gn_stretch_order:=g_byte;
+    glues[g_array,g_number].gn_type:=g_byte;
+    end;
+  glue_stretch_order_code: begin
+    g_byte:=get_integer;
+    if (g_byte<0) or (g_byte>4) then begin
+      g_byte:=0;
       end;
-    glue_shrink_order_code:
-      begin
-	g_byte:=get_integer;
-	if (g_byte<0) or (g_byte>4) then
-	begin
-	  g_byte:=0;
-	end;
-        glues[g_array,g_number].gn_shrink_order:=g_byte;
+    glues[g_array,g_number].gn_stretch_order:=g_byte;
+    end;
+  glue_shrink_order_code: begin
+    g_byte:=get_integer;
+    if (g_byte<0) or (g_byte>4) then begin
+      g_byte:=0;
       end;
-    glue_char_code:
-      begin
-	glues[g_array,g_number].gn_argument:=get_integer;
-	glues[g_array,g_number].gn_arg_type:=g_char;
-      end;
-    glue_rule_code:
-      begin
-	glues[g_array,g_number].gn_argument:=get_integer;
-	glues[g_array,g_number].gn_arg_type:=g_rule;
-      end;
+    glues[g_array,g_number].gn_shrink_order:=g_byte;
+    end;
+  glue_char_code: begin
+    glues[g_array,g_number].gn_argument:=get_integer;
+    glues[g_array,g_number].gn_arg_type:=g_char;
+    end;
+  glue_rule_code: begin
+    glues[g_array,g_number].gn_argument:=get_integer;
+    glues[g_array,g_number].gn_arg_type:=g_rule;
+    end;
   end;
-  finish_the_property;
+finish_the_property;
 end
 
 @ @<Header information for glues@>=
 begin
-  nwg:=0;
-  for g_array := 0 to nkg do
-  begin
-    incr(npg[g_array]);
-    nwg := nwg + 4*npg[g_array];
+nwg:=0;
+for g_array := 0 to nkg do begin
+  incr(npg[g_array]);
+  nwg := nwg + 4*npg[g_array];
   end;
-  incr(nkg);
+incr(nkg);
 end
 
 @ @<Output the glues@>=
 begin
-  for g_array:= 0 to nkg-1 do
-    for g_number:=0 to npg[g_array]-1 do
-    begin
-      g_byte:=glues[g_array,g_number].gn_type*16+
-              glues[g_array,g_number].gn_arg_type;
-      out(g_byte);
-      g_byte:=glues[g_array,g_number].gn_stretch_order*16+
-              glues[g_array,g_number].gn_shrink_order;
-      out(g_byte);
-      g_byte:=glues[g_array,g_number].gn_argument div 256;
-      out(g_byte);
-      g_byte:=glues[g_array,g_number].gn_argument mod 256;
-      out(g_byte);
-      out_scaled(glues[g_array,g_number].gn_width);
-      out_scaled(glues[g_array,g_number].gn_stretch);
-      out_scaled(glues[g_array,g_number].gn_shrink);
-    end;
+for g_array:= 0 to nkg-1 do
+  for g_number:=0 to npg[g_array]-1 do begin
+    g_byte:=glues[g_array,g_number].gn_type*16+
+            glues[g_array,g_number].gn_arg_type;
+    out(g_byte);
+    g_byte:=glues[g_array,g_number].gn_stretch_order*16+
+            glues[g_array,g_number].gn_shrink_order;
+    out(g_byte);
+    g_byte:=glues[g_array,g_number].gn_argument div 256;
+    out(g_byte);
+    g_byte:=glues[g_array,g_number].gn_argument mod 256;
+    out(g_byte);
+    out_scaled(glues[g_array,g_number].gn_width);
+    out_scaled(glues[g_array,g_number].gn_stretch);
+    out_scaled(glues[g_array,g_number].gn_shrink);
+  end;
 end
 
 @ @<Output the glue headers@>=
 begin
-  for g_array:= 0 to nkg-1 do
-  begin
-    out_integer(npg[g_array]);
+for g_array:= 0 to nkg-1 do begin
+  out_integer(npg[g_array]);
   end;
 end
 
@@ -3777,116 +3852,104 @@ end;
 @!p_number:integer;
 
 @ @<Set init...@>=
-for p_array := 0 to penalty_arrays do
-begin
+for p_array := 0 to penalty_arrays do begin
   npp[p_array]:=0;
   @<Null out the penalty@>;
-end;
+  end;
 nkp:=-1;
 nkcp:=-1;
 
 @ @<Read font penalty list@>=
 begin
-  if tables_read then
-    flush_error('All parameter tables must appear before character info');
-  p_array:=get_integer;
-  if p_array>penalty_arrays then
-    flush_error('This FONTPENALTY table index is too big for my present size')
-  else if p_array<0 then
-    flush_error('This FONTPENALTY index is negative')
-  else
-  begin
-    if p_array>nkp then
-        nkp:=p_array;
-    while level=1 do
-    begin
-      while cur_char=" " do
-        get_next;
-      if cur_char="(" then @<Read a penalty@>
-      else if cur_char=")" then skip_to_end_of_item
-      else junk_error;
+if tables_read then
+  flush_error('All parameter tables must appear before character info');
+p_array:=get_integer;
+if p_array>penalty_arrays then
+  flush_error('This FONTPENALTY table index is too big for my present size')
+else if p_array<0 then
+  flush_error('This FONTPENALTY index is negative')
+else begin
+  if p_array>nkp then nkp:=p_array;
+  while level=1 do begin
+    while cur_char=" " do get_next;
+    if cur_char="(" then @<Read a penalty@>
+    else if cur_char=")" then skip_to_end_of_item
+    else junk_error;
     end;
-    finish_inner_property_list;
+  finish_inner_property_list;
   end;
 end
  
 @ @<Read a penalty@>= 
 begin
-  get_name; 
-  if cur_code=comment_code then skip_to_end_of_item 
-  else if cur_code<>penalty_code then 
-    flush_error('This property name doesn''t belong in a PENALTY list') 
-  else
-  begin
-    p_number:=get_integer;
-    if p_number>penalty_entries then 
-      flush_error('This PENALTY index is too big for my present table size') 
-    else if p_number<0 then
-      flush_error('This PENALTY index is negative')
-    else
-    begin
-      while npp[p_array]<p_number do 
-      begin
-	incr(npp[p_array]); @<Null out the penalty@>;
+get_name; 
+if cur_code=comment_code then skip_to_end_of_item 
+else if cur_code<>penalty_code then 
+  flush_error('This property name doesn''t belong in a PENALTY list') 
+else begin
+  p_number:=get_integer;
+  if p_number>penalty_entries then 
+    flush_error('This PENALTY index is too big for my present table size') 
+  else if p_number<0 then
+    flush_error('This PENALTY index is negative')
+  else begin
+    while npp[p_array]<p_number do begin
+      incr(npp[p_array]); @<Null out the penalty@>;
       end; 
-      @<Read all of a penalty's values@>;
-      finish_the_property; 
+    @<Read all of a penalty's values@>;
+    finish_the_property; 
     end; 
   end; 
 end 
 
 @ @<Null out the penalty@>=
 begin
-  penalties[p_array,npp[p_array]].pn_val:=0;
+penalties[p_array,npp[p_array]].pn_val:=0;
 end
 
 @ @<Read all of a penalty's values@>=
 begin
-  while level=2 do
-  begin
-    while cur_char=" " do get_next;
-    if cur_char="(" then @<Read a single penalty value@>
-    else if cur_char=")" then skip_to_end_of_item
-    else junk_error;
+while level=2 do begin
+  while cur_char=" " do get_next;
+  if cur_char="(" then @<Read a single penalty value@>
+  else if cur_char=")" then skip_to_end_of_item
+  else junk_error;
   end;
-  finish_inner_property_list;
+finish_inner_property_list;
 end
 
 @ @<Read a single penalty value@>=
 begin
-  get_name;
-  case cur_code of
-    penalty_val_code:
-      penalties[p_array,p_number].pn_val:=get_integer; 
+get_name;
+case cur_code of
+  penalty_val_code:
+    penalties[p_array,p_number].pn_val:=get_integer; 
   end;
-  finish_the_property;
+finish_the_property;
 end
 
 @ @<Header information for penalties@>=
 begin
-  nwp:=0;
-  for p_array := 0 to nkp do
-  begin
-    incr(npp[p_array]);
-    nwp := nwp + npp[p_array];
+nwp:=0;
+for p_array := 0 to nkp do begin
+  incr(npp[p_array]);
+  nwp := nwp + npp[p_array];
   end;
-  incr(nkp);
+incr(nkp);
 end
 
 @ @<Output the penalties@>=
 begin
-  for p_array:= 0 to nkp-1 do
-    for p_number:=0 to npp[p_array]-1 do
-    begin
-      out_integer(penalties[p_array,p_number].pn_val);
+for p_array:= 0 to nkp-1 do
+  for p_number:=0 to npp[p_array]-1 do begin
+    out_integer(penalties[p_array,p_number].pn_val);
     end;
 end
 
 @ @<Output the penalty headers@>=
 begin
-  for p_array:= 0 to nkp-1 do
-  begin
-    out_integer(npp[p_array]);
+for p_array:= 0 to nkp-1 do begin
+  out_integer(npp[p_array]);
   end;
 end
 
@@ -3912,116 +3975,104 @@ end;
 @!m_number:integer;
 
 @ @<Set init...@>=
-for m_array := 0 to mvalue_arrays do
-begin
+for m_array := 0 to mvalue_arrays do begin
   npm[m_array]:=0;
   @<Null out the mvalue@>;
-end;
+  end;
 nkm:=-1;
 nkcm:=-1;
 
 @ @<Read font mvalue list@>=
 begin
-  if tables_read then
-    flush_error('All parameter tables must appear before character info');
-  m_array:=get_integer;
-  if m_array>mvalue_arrays then
-    flush_error('This FONTMVALUE table index is too big for my present size')
-  else if m_array<0 then
-    flush_error('This FONTMVALUE index is negative')
-  else
-  begin
-    if m_array>nkm then
-        nkm:=m_array;
-    while level=1 do
-    begin
-      while cur_char=" " do
-        get_next;
-      if cur_char="(" then @<Read an mvalue@>
-      else if cur_char=")" then skip_to_end_of_item
-      else junk_error;
+if tables_read then
+  flush_error('All parameter tables must appear before character info');
+m_array:=get_integer;
+if m_array>mvalue_arrays then
+  flush_error('This FONTMVALUE table index is too big for my present size')
+else if m_array<0 then
+  flush_error('This FONTMVALUE index is negative')
+else begin
+  if m_array>nkm then nkm:=m_array;
+  while level=1 do begin
+    while cur_char=" " do get_next;
+    if cur_char="(" then @<Read an mvalue@>
+    else if cur_char=")" then skip_to_end_of_item
+    else junk_error;
     end;
-    finish_inner_property_list;
+  finish_inner_property_list;
   end;
 end
  
 @ @<Read an mvalue@>= 
 begin
-  get_name; 
-  if cur_code=comment_code then skip_to_end_of_item 
-  else if cur_code<>mvalue_code then 
-    flush_error('This property name doesn''t belong in an MVALUE list') 
-  else
-  begin
-    m_number:=get_integer;
-    if m_number>mvalue_entries then 
-      flush_error('This MVALUE index is too big for my present table size') 
-    else if m_number<0 then
-      flush_error('This MVALUE index is negative')
-    else
-    begin
-      while npm[m_array]<m_number do 
-      begin
-	incr(npm[m_array]); @<Null out the mvalue@>;
+get_name; 
+if cur_code=comment_code then skip_to_end_of_item 
+else if cur_code<>mvalue_code then 
+  flush_error('This property name doesn''t belong in an MVALUE list') 
+else begin
+  m_number:=get_integer;
+  if m_number>mvalue_entries then 
+    flush_error('This MVALUE index is too big for my present table size') 
+  else if m_number<0 then
+    flush_error('This MVALUE index is negative')
+  else begin
+    while npm[m_array]<m_number do begin
+      incr(npm[m_array]); @<Null out the mvalue@>;
       end; 
-      @<Read all of an mvalue's values@>;
-      finish_the_property; 
+    @<Read all of an mvalue's values@>;
+    finish_the_property; 
     end; 
   end; 
 end 
 
 @ @<Null out the mvalue@>=
 begin
-  mvalues[m_array,npm[m_array]].fn_val:=0;
+mvalues[m_array,npm[m_array]].fn_val:=0;
 end
 
 @ @<Read all of an mvalue's values@>=
 begin
-  while level=2 do
-  begin
-    while cur_char=" " do get_next;
-    if cur_char="(" then @<Read a single mvalue value@>
-    else if cur_char=")" then skip_to_end_of_item
-    else junk_error;
+while level=2 do begin
+  while cur_char=" " do get_next;
+  if cur_char="(" then @<Read a single mvalue value@>
+  else if cur_char=")" then skip_to_end_of_item
+  else junk_error;
   end;
-  finish_inner_property_list;
+finish_inner_property_list;
 end
 
 @ @<Read a single mvalue value@>=
 begin
-  get_name;
-  case cur_code of
-    mvalue_val_code:
-      mvalues[m_array,m_number].fn_val:=get_fix; 
+get_name;
+case cur_code of
+  mvalue_val_code:
+    mvalues[m_array,m_number].fn_val:=get_fix; 
   end;
-  finish_the_property;
+finish_the_property;
 end
 
 @ @<Header information for mvalues@>=
 begin
-  nwm:=0;
-  for m_array := 0 to nkm do
-  begin
-    incr(npm[m_array]);
-    nwm := nwm + npm[m_array];
+nwm:=0;
+for m_array := 0 to nkm do begin
+  incr(npm[m_array]);
+  nwm := nwm + npm[m_array];
   end;
-  incr(nkm);
+incr(nkm);
 end
 
 @ @<Output the mvalues@>=
 begin
-  for m_array:= 0 to nkm-1 do
-    for m_number:=0 to npm[m_array]-1 do
-    begin
-      out_scaled(mvalues[m_array,m_number].fn_val);
+for m_array:= 0 to nkm-1 do
+  for m_number:=0 to npm[m_array]-1 do begin
+    out_scaled(mvalues[m_array,m_number].fn_val);
     end;
 end
 
 @ @<Output the mvalue headers@>=
 begin
-  for m_array:= 0 to nkm-1 do
-  begin
-    out_integer(npm[m_array]);
+for m_array:= 0 to nkm-1 do begin
+  out_integer(npm[m_array]);
   end;
 end
 
@@ -4047,116 +4098,104 @@ end;
 @!f_number:integer;
 
 @ @<Set init...@>=
-for f_array := 0 to fvalue_arrays do
-begin
+for f_array := 0 to fvalue_arrays do begin
   npf[f_array]:=0;
   @<Null out the fvalue@>;
-end;
+  end;
 nkf:=-1;
 nkcf:=-1;
 
 @ @<Read font fvalue list@>=
 begin
-  if tables_read then
-    flush_error('All parameter tables must appear before character info');
-  f_array:=get_integer;
-  if f_array>fvalue_arrays then
-    flush_error('This FONTFVALUE table index is too big for my present size')
-  else if f_array<0 then
-    flush_error('This FONTFVALUE index is negative')
-  else
-  begin
-    if f_array>nkf then
-        nkf:=f_array;
-    while level=1 do
-    begin
-      while cur_char=" " do
-        get_next;
-      if cur_char="(" then @<Read an fvalue@>
-      else if cur_char=")" then skip_to_end_of_item
-      else junk_error;
+if tables_read then
+  flush_error('All parameter tables must appear before character info');
+f_array:=get_integer;
+if f_array>fvalue_arrays then
+  flush_error('This FONTFVALUE table index is too big for my present size')
+else if f_array<0 then
+  flush_error('This FONTFVALUE index is negative')
+else begin
+  if f_array>nkf then nkf:=f_array;
+  while level=1 do begin
+    while cur_char=" " do get_next;
+    if cur_char="(" then @<Read an fvalue@>
+    else if cur_char=")" then skip_to_end_of_item
+    else junk_error;
     end;
-    finish_inner_property_list;
+  finish_inner_property_list;
   end;
 end
  
 @ @<Read an fvalue@>= 
 begin
-  get_name; 
-  if cur_code=comment_code then skip_to_end_of_item 
-  else if cur_code<>fvalue_code then 
-    flush_error('This property name doesn''t belong in an FVALUE list') 
-  else
-  begin
-    f_number:=get_integer;
-    if f_number>fvalue_entries then 
-      flush_error('This FVALUE index is too big for my present table size') 
-    else if f_number<0 then
-      flush_error('This FVALUE index is negative')
-    else
-    begin
-      while npf[f_array]<f_number do 
-      begin
-	incr(npf[f_array]); @<Null out the fvalue@>;
+get_name; 
+if cur_code=comment_code then skip_to_end_of_item 
+else if cur_code<>fvalue_code then 
+  flush_error('This property name doesn''t belong in an FVALUE list') 
+else begin
+  f_number:=get_integer;
+  if f_number>fvalue_entries then 
+    flush_error('This FVALUE index is too big for my present table size') 
+  else if f_number<0 then
+    flush_error('This FVALUE index is negative')
+  else begin
+    while npf[f_array]<f_number do begin
+      incr(npf[f_array]); @<Null out the fvalue@>;
       end; 
-      @<Read all of an fvalue's values@>;
-      finish_the_property; 
+    @<Read all of an fvalue's values@>;
+    finish_the_property; 
     end; 
   end; 
 end 
 
 @ @<Null out the fvalue@>=
 begin
-  fvalues[f_array,npf[f_array]].fn_val:=0;
+fvalues[f_array,npf[f_array]].fn_val:=0;
 end
 
 @ @<Read all of an fvalue's values@>=
 begin
-  while level=2 do
-  begin
-    while cur_char=" " do get_next;
-    if cur_char="(" then @<Read a single fvalue value@>
-    else if cur_char=")" then skip_to_end_of_item
-    else junk_error;
+while level=2 do begin
+  while cur_char=" " do get_next;
+  if cur_char="(" then @<Read a single fvalue value@>
+  else if cur_char=")" then skip_to_end_of_item
+  else junk_error;
   end;
-  finish_inner_property_list;
+finish_inner_property_list;
 end
 
 @ @<Read a single fvalue value@>=
 begin
-  get_name;
-  case cur_code of
-    fvalue_val_code:
-      fvalues[f_array,f_number].fn_val:=get_fix; 
+get_name;
+case cur_code of
+  fvalue_val_code:
+    fvalues[f_array,f_number].fn_val:=get_fix; 
   end;
-  finish_the_property;
+finish_the_property;
 end
 
 @ @<Header information for fvalues@>=
 begin
-  nwf:=0;
-  for f_array := 0 to nkf do
-  begin
-    incr(npf[f_array]);
-    nwf := nwf + npf[f_array];
+nwf:=0;
+for f_array := 0 to nkf do begin
+  incr(npf[f_array]);
+  nwf := nwf + npf[f_array];
   end;
-  incr(nkf);
+incr(nkf);
 end
 
 @ @<Output the fvalues@>=
 begin
-  for f_array:= 0 to nkf-1 do
-    for f_number:=0 to npf[f_array]-1 do
-    begin
-      out_scaled(fvalues[f_array,f_number].fn_val);
+for f_array:= 0 to nkf-1 do
+  for f_number:=0 to npf[f_array]-1 do begin
+    out_scaled(fvalues[f_array,f_number].fn_val);
     end;
 end
 
 @ @<Output the fvalue headers@>=
 begin
-  for f_array:= 0 to nkf-1 do
-  begin
-    out_integer(npf[f_array]);
+for f_array:= 0 to nkf-1 do begin
+  out_integer(npf[f_array]);
   end;
 end
 
@@ -4183,142 +4222,130 @@ end;
 @!i_number:integer;
 
 @ @<Set init...@>=
-for i_array := 0 to ivalue_arrays do
-begin
+for i_array := 0 to ivalue_arrays do begin
   npi[i_array]:=0;
   @<Null out the ivalue@>;
-end;
+  end;
 nki:=-1;
 nkci:=-1;
 
 @ @<Read font ivalue list@>=
 begin
-  if tables_read then
-    flush_error('All parameter tables must appear before character info');
-  i_array:=get_integer;
-  if i_array>ivalue_arrays then
-    flush_error('This FONTIVALUE table index is too big for my present size')
-  else if i_array<0 then
-    flush_error('This FONTIVALUE index is negative')
-  else
-  begin
-    if i_array>nki then
-        nki:=i_array;
-    while level=1 do
-    begin
-      while cur_char=" " do
-        get_next;
-      if cur_char="(" then @<Read an ivalue@>
-      else if cur_char=")" then skip_to_end_of_item
-      else junk_error;
+if tables_read then
+  flush_error('All parameter tables must appear before character info');
+i_array:=get_integer;
+if i_array>ivalue_arrays then
+  flush_error('This FONTIVALUE table index is too big for my present size')
+else if i_array<0 then
+  flush_error('This FONTIVALUE index is negative')
+else begin
+  if i_array>nki then nki:=i_array;
+  while level=1 do begin
+    while cur_char=" " do get_next;
+    if cur_char="(" then @<Read an ivalue@>
+    else if cur_char=")" then skip_to_end_of_item
+    else junk_error;
     end;
-    finish_inner_property_list;
+  finish_inner_property_list;
   end;
 end
  
 @ @<Read an ivalue@>= 
 begin
-  get_name; 
-  if cur_code=comment_code then skip_to_end_of_item 
-  else if cur_code<>ivalue_code then 
-    flush_error('This property name doesn''t belong in an IVALUE list') 
-  else
-  begin
-    i_number:=get_integer;
-    if i_number>ivalue_entries then 
-      flush_error('This IVALUE index is too big for my present table size') 
-    else if i_number<0 then
-      flush_error('This IVALUE index is negative')
-    else
-    begin
-      while npi[i_array]<i_number do 
-      begin
-	incr(npi[i_array]); @<Null out the ivalue@>;
+get_name; 
+if cur_code=comment_code then skip_to_end_of_item 
+else if cur_code<>ivalue_code then 
+  flush_error('This property name doesn''t belong in an IVALUE list') 
+else begin
+  i_number:=get_integer;
+  if i_number>ivalue_entries then 
+    flush_error('This IVALUE index is too big for my present table size') 
+  else if i_number<0 then
+    flush_error('This IVALUE index is negative')
+  else begin
+    while npi[i_array]<i_number do begin
+      incr(npi[i_array]); @<Null out the ivalue@>;
       end; 
-      @<Read all of an ivalue's values@>;
-      finish_the_property; 
+    @<Read all of an ivalue's values@>;
+    finish_the_property; 
     end; 
   end; 
 end 
 
 @ @<Null out the ivalue@>=
 begin
-  ivalues[i_array,npi[i_array]].in_val:=0;
+ivalues[i_array,npi[i_array]].in_val:=0;
 end
 
 @ @<Read all of an ivalue's values@>=
 begin
-  while level=2 do
-  begin
-    while cur_char=" " do get_next;
-    if cur_char="(" then @<Read a single ivalue value@>
-    else if cur_char=")" then skip_to_end_of_item
-    else junk_error;
+while level=2 do begin
+  while cur_char=" " do get_next;
+  if cur_char="(" then @<Read a single ivalue value@>
+  else if cur_char=")" then skip_to_end_of_item
+  else junk_error;
   end;
-  finish_inner_property_list;
+finish_inner_property_list;
 end
 
 @ @<Read a single ivalue value@>=
 begin
-  get_name;
-  case cur_code of
-    ivalue_val_code:
-      ivalues[i_array,i_number].in_val:=get_integer; 
+get_name;
+case cur_code of
+  ivalue_val_code:
+    ivalues[i_array,i_number].in_val:=get_integer; 
   end;
-  finish_the_property;
+finish_the_property;
 end
 
 @ @<Header information for ivalues@>=
 begin
-  nwi:=0;
-  for i_array := 0 to nki do
-  begin
-    incr(npi[i_array]);
-    nwi := nwi + npi[i_array];
+nwi:=0;
+for i_array := 0 to nki do begin
+  incr(npi[i_array]);
+  nwi := nwi + npi[i_array];
   end;
-  incr(nki);
+incr(nki);
 end
 
 @ @<Output the ivalues@>=
 begin
-  for i_array:= 0 to nki-1 do
-    for i_number:=0 to npi[i_array]-1 do
-    begin
-      out_integer(ivalues[i_array,i_number].in_val);
+for i_array:= 0 to nki-1 do
+  for i_number:=0 to npi[i_array]-1 do begin
+    out_integer(ivalues[i_array,i_number].in_val);
     end;
 end
 
 @ @<Output the ivalue headers@>=
 begin
-  for i_array:= 0 to nki-1 do
-  begin
-    out_integer(npi[i_array]);
+for i_array:= 0 to nki-1 do begin
+  out_integer(npi[i_array]);
   end;
 end
 
 @ @<Compute the new header information for OFM files@>=
 begin
-  @<Header information for ivalues@>;
-  @<Header information for fvalues@>;
-  @<Header information for mvalues@>;
-  @<Header information for rules@>;
-  @<Header information for glues@>;
-  @<Header information for penalties@>;
+@<Header information for ivalues@>;
+@<Header information for fvalues@>;
+@<Header information for mvalues@>;
+@<Header information for rules@>;
+@<Header information for glues@>;
+@<Header information for penalties@>;
 end
 
 @ @<Output the new information for OFM files@>=
 begin
-  @<Output the ivalue headers@>;
-  @<Output the fvalue headers@>;
-  @<Output the mvalue headers@>;
-  @<Output the rule headers@>;
-  @<Output the glue headers@>;
-  @<Output the penalty headers@>;
-  @<Output the ivalues@>;
-  @<Output the fvalues@>;
-  @<Output the rules@>;
-  @<Output the glues@>;
-  @<Output the penalties@>;
+@<Output the ivalue headers@>;
+@<Output the fvalue headers@>;
+@<Output the mvalue headers@>;
+@<Output the rule headers@>;
+@<Output the glue headers@>;
+@<Output the penalty headers@>;
+@<Output the ivalues@>;
+@<Output the fvalues@>;
+@<Output the rules@>;
+@<Output the glues@>;
+@<Output the penalties@>;
 end
 
 @* System-dependent changes.

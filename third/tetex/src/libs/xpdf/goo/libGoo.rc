@@ -1,0 +1,20 @@
+/* libpdftoepdf.rc							-*- C -*-
+   */
+
+#define VER_FILEVERSION 0,9,2,0
+#define VER_FILEVERSION_STR "libGoo 0.92"
+
+#define VER_FILEDESCRIPTION_STR "XPDF utility library"
+#define VER_INTERNALNAME_STR "LIBGOO"
+#define VER_ORIGINALFILENAME_STR "libGoo.dll"
+
+#define VER_LEGALCOPYRIGHT_STR "(C) 1996-2000 Derek B. Noonburg\0"
+#define VER_COMMENT_STR \
+"The xpdf, pdftops, and pdftotext software and documentation are\r\n\
+copyright 1996-2000 Derek B. Noonburg.\r\n\
+The PDF data structures, operators, and specification are\r\n\
+copyright 1995 Adobe Systems Inc."
+
+#define VER_FILETYPE VFT_DLL
+
+#include <w2cwin32.version>

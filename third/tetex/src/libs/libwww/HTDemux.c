@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTDemux.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTDemux.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	This stream parses MUX headers.
 **
@@ -65,7 +65,7 @@ PRIVATE int HTDemux_write (HTStream * me, const char * buf, int len)
 	    }
 	    length = HTMIN(len, me->next);
 	    sid = MUX_GET_SID(header[0]);
-	    if (MUX_TRACE) HTTrace("Demux stream Header: %x, sid %d, length %d\n", header[0], length, sid);
+	    HTTRACE(MUX_TRACE, "Demux stream Header: %x, sid %d, length %d\n" _ header[0] _ length _ sid);
 
 	    /*
 	    **  If this is a control message then handle it here

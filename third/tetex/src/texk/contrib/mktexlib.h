@@ -2,7 +2,7 @@
 #define _MKTEXLIB_H_
 
 #if defined(WIN32)
-#  ifdef _DLL
+#  ifdef MKTEX_DLL
 #    ifdef MAKE_MKTEX_DLL
 #      define MKTEXDLL __declspec( dllexport)
 #    else
@@ -13,6 +13,7 @@
 #  endif
 #else /* ! WIN32 */
 #  define MKTEXDLL
+#  define __cdecl
 #endif
 
 #include <assert.h>

@@ -1,4 +1,4 @@
-# $Id: mk-2nd.awk,v 1.1.1.1 2000-03-10 17:52:42 ghudson Exp $
+# $Id: mk-2nd.awk,v 1.1.1.2 2003-02-25 22:27:44 amb Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -67,7 +67,14 @@ BEGIN	{
 			}
 		}
 	}
-	!/^[@#]/ {
+	/^[@#]/ {
+		next
+	}
+	$1 ~ /trace/ {
+		if (traces != "all" && traces != MODEL && $1 != "lib_trace")
+			next
+	}
+	{
 		if ($0 != "" \
 		 && using != 0) {
 			found = 1
@@ -89,10 +96,13 @@ BEGIN	{
 					atsign="@"
 					printf "\t@echo 'compiling %s (%s)'\n", $1, model
 				}
-				if ( $3 == "." || srcdir == "." )
-					printf "\t%scd ../%s; $(%s) $(CFLAGS_%s) -c ../%s/%s%s", atsign, model, compile, MODEL, name, $1, suffix
-				else
-					printf "\t%scd ../%s; $(%s) $(CFLAGS_%s) -c %s/%s%s", atsign, model, compile, MODEL, $3, $1, suffix
+				if ( $3 == "." || srcdir == "." ) {
+					dir = $3 "/"
+					sub("^\\$\\(srcdir\\)/","",dir);
+					sub("^\\./","",dir);
+					printf "\t%scd ../%s; $(LIBTOOL) $(%s) $(CFLAGS_%s) -c ../%s/%s%s%s", atsign, model, compile, MODEL, name, dir, $1, suffix
+				} else
+					printf "\t%scd ../%s; $(LIBTOOL) $(%s) $(CFLAGS_%s) -c %s/%s%s", atsign, model, compile, MODEL, $3, $1, suffix
 			} else {
 				printf "%s", $1
 				for (n = 2; n <= NF; n++) printf " %s", $n

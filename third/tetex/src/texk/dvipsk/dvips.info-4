@@ -1,5 +1,4 @@
-This is Info file dvips.info, produced by Makeinfo version 1.68 from
-the input file dvips.texi.
+This is dvips.info, produced by makeinfo version 4.4 from dvips.texi.
 
 INFO-DIR-SECTION TeX
 START-INFO-DIR-ENTRY
@@ -34,7 +33,7 @@ two ways to adjust this.  One is to use the PAntone chart for your
 device to rewrite `color.lpro' prior to compilation and installation.
 A better alternative, which supports multiple devices, is to add a
 header file option in the configuration file (*note Configuration file
-commands::.)  for each device that defines, in `userdict', the color
+commands::) for each device that defines, in `userdict', the color
 parameters for those colors that need redefining.
 
   For example, if you need to change the parameters defining
@@ -169,6 +168,9 @@ Index
 * +PSMAPFILE:                            Configuration file commands.
 * -:                                     Option details.
 * - as output filename:                  Option details.
+* --help <1>:                            Option details.
+* --help:                                Option summary.
+* --version:                             Option details.
 * -A:                                    Option details.
 * -a:                                    Option details.
 * -B:                                    Option details.
@@ -176,16 +178,15 @@ Index
 * -C NUM:                                Option details.
 * -c NUM:                                Option details.
 * -c RATIO:                              Afm2tfm options.
-* -d NUM:                                Option details.
 * -D NUM:                                Option details.
+* -d NUM:                                Option details.
 * -E:                                    Option details.
 * -e NUM:                                Option details.
 * -e RATIO:                              Afm2tfm options.
 * -F:                                    Option details.
 * -f:                                    Option details.
+* -G:                                    Option details.
 * -h NAME:                               Option details.
-* -help <1>:                             Option details.
-* -help:                                 Option summary.
 * -i:                                    Option details.
 * -j for partial font downloading:       Option details.
 * -K:                                    Option details.
@@ -217,16 +218,17 @@ Index
 * -T HSIZE,VSIZE:                        Option details.
 * -t PAPERTYPE:                          Option details.
 * -T PS-TEX-ENC:                         Afm2tfm options.
-* -t TEX-ENC <1>:                        Changing TeX encodings.
-* -t TEX-ENC:                            Afm2tfm options.
+* -t TEX-ENC <1>:                        Afm2tfm options.
+* -t TEX-ENC:                            Changing TeX encodings.
 * -u:                                    Afm2tfm options.
 * -U:                                    Option details.
+* -u PSMAPFILE:                          Option details.
 * -V:                                    Option details.
+* -v:                                    Option details.
 * -V VPL-FILE:                           Afm2tfm options.
 * -v VPL-FILE:                           Afm2tfm options.
-* -version:                              Option details.
-* -x NUM:                                Option details.
 * -X NUM:                                Option details.
+* -x NUM:                                Option details.
 * -Y NUM:                                Option details.
 * -z:                                    Hypertext.
 * -Z for compressing bitmap fonts:       Option details.
@@ -304,8 +306,8 @@ Index
 * bitmap fonts:                          Glyph files.
 * Bitstream fonts, installing:           PostScript font installation.
 * bop undefined error:                   Printer errors.
-* bop-hook <1>:                          EPSF scaling.
-* bop-hook:                              PostScript hooks.
+* bop-hook <1>:                          PostScript hooks.
+* bop-hook:                              EPSF scaling.
 * bop-hook, and offset pages:            Option details.
 * boundary character:                    Encoding file format.
 * bounding box, comment for:             Bounding box.
@@ -367,8 +369,8 @@ Index
 * D config command (dpi):                Configuration file commands.
 * dated output:                          PostScript hooks.
 * datestamp, in output:                  Configuration file commands.
-* debugging <1>:                         Diagnosing problems.
-* debugging:                             Option details.
+* debugging <1>:                         Option details.
+* debugging:                             Diagnosing problems.
 * debugging options:                     Debug options.
 * default resolutions:                   Configuration file commands.
 * default_texsizes Make variable:        Configuration file commands.
@@ -424,15 +426,15 @@ Index
 * error messages from printer:           Printer errors.
 * even pages only:                       Option details.
 * examples of literal PostScript:        Literal examples.
-* expanded fonts <1>:                    Special font effects.
+* expanded fonts <1>:                    psfonts.map.
 * expanded fonts <2>:                    Afm2tfm options.
-* expanded fonts:                        psfonts.map.
+* expanded fonts:                        Special font effects.
 * expansion, of virtual fonts:           Virtual fonts.
 * extended URL:                          Hypertext specials.
 * ExtendFont:                            Special font effects.
 * extra characters, accessing:           Changing PostScript encodings.
-* f config command (filter):             Configuration file commands.
 * F config command (filter):             Configuration file commands.
+* f config command (filter):             Configuration file commands.
 * failure, and printer errors:           Printer errors.
 * failure, of long documents:            Long documents fail.
 * failure, to include graphics:          Including graphics fails.
@@ -532,6 +534,7 @@ Index
 * literal PostScript, examples:          Literal examples.
 * literal PostScript, using:             Literal PS.
 * long documents not printing:           Long documents fail.
+* low characters, shifting:              Option details.
 * lpr spooler, MS-DOS emulation:         Option details.
 * Lucida, installing:                    PostScript font installation.
 * m config command (available memory):   Configuration file commands.
@@ -574,6 +577,7 @@ Index
 * name:                                  Hypertext specials.
 * narrow fonts:                          psfonts.map.
 * no output at all:                      No output.
+* non-printing characters, shifting:     Option details.
 * non-resident fonts:                    psfonts.map.
 * O config command (offset):             Configuration file commands.
 * o config command (output file):        Configuration file commands.
@@ -587,8 +591,8 @@ Index
 * options, reading from standard input:  Option details.
 * options, summary:                      Option summary.
 * options, to Afm2tfm:                   Afm2tfm options.
-* outline fonts <1>:                     Glyph files.
-* outline fonts:                         Special font effects.
+* outline fonts <1>:                     Special font effects.
+* outline fonts:                         Glyph files.
 * output file, sectioning of:            Headers and memory usage.
 * output file, setting:                  Configuration file commands.
 * output files, multiple:                Option details.
@@ -611,8 +615,8 @@ Index
 * paper type:                            Option details.
 * papersize special:                     papersize special.
 * partial font downloading:              psfonts.map.
-* PDF files, making <1>:                 Ghostscript installation.
-* PDF files, making:                     Hypertext.
+* PDF files, making <1>:                 Hypertext.
+* PDF files, making:                     Ghostscript installation.
 * PDF files, option for:                 Option details.
 * pdfmark:                               Hypertext.
 * pfa files:                             Glyph files.
@@ -634,7 +638,8 @@ Index
 * PostScript code, literal:              Literal PS.
 * PostScript encoding:                   Encodings.
 * PostScript encoding, changing:         Changing PostScript encodings.
-* PostScript font alias file:            Configuration file commands.
+* PostScript font alias file <1>:        Configuration file commands.
+* PostScript font alias file:            Option details.
 * PostScript fonts:                      PostScript fonts.
 * PostScript fonts, installing:          PostScript font installation.
 * PostScript fonts, on your system:      PostScript font installation.
@@ -660,14 +665,14 @@ Index
 * prototype printer configuration file:  config.ps installation.
 * ps special:                            ps special.
 * psfile special:                        psfile special.
-* psfonts.map <1>:                       Special font effects.
-* psfonts.map <2>:                       psfonts.map.
+* psfonts.map <1>:                       psfonts.map.
+* psfonts.map <2>:                       Special font effects.
 * psfonts.map:                           PostScript font installation.
 * psheaderdir:                           Header files.
 * psi character missing:                 Hypertext caveats.
 * pstopk:                                Option details.
-* q config command (quiet):              Configuration file commands.
 * Q config command (quiet):              Configuration file commands.
+* q config command (quiet):              Configuration file commands.
 * quiet operation:                       Option details.
 * r config command (page reversal):      Configuration file commands.
 * R fallback resolution config command:  Configuration file commands.
@@ -676,7 +681,8 @@ Index
 * reencoding PostScript fonts:           psfonts.map.
 * registered character, accessing:       Changing PostScript encodings.
 * remapping:                             Reencoding with Afm2tfm.
-* resident fonts, different in different printers: Configuration file commands.
+* resident fonts, different in different printers <1>: Configuration file commands.
+* resident fonts, different in different printers: Option details.
 * resolution:                            Option details.
 * resolution, setting:                   Option details.
 * reverse pagination:                    Option details.
@@ -736,8 +742,8 @@ Index
 * texmext.enc:                           Encodings.
 * TEXMFOUTPUT:                           Option details.
 * texmital.enc:                          Encodings.
-* texmsym.enc <1>:                       Encodings.
-* texmsym.enc:                           Changing TeX encodings.
+* texmsym.enc <1>:                       Changing TeX encodings.
+* texmsym.enc:                           Encodings.
 * TEXPICTS:                              Environment variables.
 * TEXPICTS, overrides S:                 Configuration file commands.
 * TEXPKS, overrides P:                   Configuration file commands.
@@ -786,6 +792,7 @@ Index
 * Y config command (vertical resolution): Configuration file commands.
 * Y&Y fonts, installing:                 PostScript font installation.
 * Z config command (compression):        Configuration file commands.
+* z config command (secure mode):        Configuration file commands.
 * | starting output filename:            Option details.
 
 

@@ -1,4 +1,4 @@
-AC_INIT(texk/klibtool)
+AC_INIT(texk/web2c/tex.web)
 
 AC_CONFIG_AUX_DIR(config)
 AC_SET_MAKE
@@ -21,6 +21,10 @@ case "$target" in
           AC_MSG_WARN(HP-UX's cc)
         fi
         ;;
+    *-darwin*)
+        : ${INSTALL='/usr/bin/install -c -p'}; export INSTALL
+        : ${NCURSES_CPP_FIX=true}; export NCURSES_CPP_FIX
+        ;;
     *)
         AC_MSG_RESULT(no)
         ;;
@@ -35,10 +39,11 @@ AC_PROG_MAKE_SET
 AC_PROG_LN_S
 AC_FUNC_ALLOCA
 AC_PROG_RANLIB
+AC_PATH_X
 
 sinclude(tetex.ac)
 sinclude(withenable.ac)
-sinclude(dialog/withenable.ac)
+sinclude(utils/dialog/withenable.ac)
 sinclude(texk/withenable.ac)
 sinclude(texk/kpathsea/withenable.ac)
 sinclude(texk/kpathsea/xt.ac)
@@ -47,18 +52,33 @@ sinclude(texk/xdvik/withenable.ac)
 sinclude(libs/libwww/withenable.ac)
 sinclude(libs/ncurses/withenable.ac)
 sinclude(libs/libpng/withenable.ac)
+sinclude(libs/t1lib/withenable.ac)
 sinclude(libs/zlib/withenable.ac)
+sinclude(libs/freetype/withenable.ac)
 
 LIBWWWDIR=libs/libwww
 NCURSESDIR=libs/ncurses
+LIBT1DIR=libs/t1lib
+LIBTYPE1DIR=libs/type1
 LIBPNGDIR=libs/libpng
 ZLIBDIR=libs/zlib
+LIBXPDFDIR=libs/xpdf
+FREETYPEDIR=libs/freetype
+
+test "$no_x" = yes && { with_xdvik=no; with_oxdvik=no; }
+export with_xdvik with_oxdvik
 
 # we need libwww for xdvik and oxdvik
 test ! -d $srcdir/$LIBWWWDIR  && : ${needs_libwww=no}
 test "$with_xdvik"   != no    && : ${needs_libwww=yes}
 test "$with_oxdvik"  != no    && : ${needs_libwww=yes}
 : ${needs_libwww=no}
+
+# we need libt1 for xdvik and oxdvik
+test ! -d $srcdir/$LIBT1DIR   && : ${needs_libt1=no}
+test "$with_xdvik"   != no    && : ${needs_libt1=yes}
+test "$with_oxdvik"  != no    && : ${needs_libt1=yes}
+: ${needs_libt1=no}
 
 # we need ncurses for dialog
 test ! -d $srcdir/$NCURSESDIR && : ${needs_ncurses=no}
@@ -78,15 +98,32 @@ test "$with_pdfetex" != no    && : ${needs_zlib=yes}
 test "$with_texinfo" != no    && : ${needs_zlib=yes}
 : ${needs_zlib=no}
 
-export needs_ncurses needs_pnglib needs_zlib needs_libwww
+# we need libxpdf for pdftex and pdfetex
+test ! -d $srcdir/$LIBXPDFDIR && : ${needs_libxpdf=no}
+test "$with_pdftex"  != no    && : ${needs_libxpdf=yes}
+test "$with_pdfetex"  != no    && : ${needs_libxpdf=yes}
+: ${needs_libxpdf=no}
+
+# we need freetype for ttf2pk
+test ! -d $srcdir/$FREETYPEDIR  && : ${needs_freetype=no}
+test ! -d $srcdir/texk/ttf2pk   && : ${needs_freetype=no}
+test "$with_ttf2pk" = no        && : ${needs_freetype=no}
+: ${needs_freetype=yes}
+
+export needs_ncurses needs_pnglib needs_zlib
+export needs_libwww needs_libxpdf
+export needs_libt1 needs_freetype
 
 dnl We cannot use variables (e.g. $LIBPNGDIR) for sinclude, so...
 sinclude(libs/libpng/libpng.ac)
 sinclude(libs/zlib/zlib.ac)
 sinclude(libs/libwww/libwww.ac)
 sinclude(libs/ncurses/ncurses.ac)
+sinclude(libs/xpdf/libxpdf.ac)
+sinclude(libs/t1lib/t1lib.ac)
+sinclude(libs/freetype/freetype.ac)
 
-LIBSDEP="$LIBWWWDEP $CURSESDEP $ZLIBDEP $LIBPNGDEP"
+LIBSDEP="$LIBWWWDEP $CURSESDEP $ZLIBDEP $LIBPNGDEP $LIBXPDFDEP $LIBT1DEP $FREETYPEDEP"
 
 LIBSDIRS=
 test "$needs_libwww" = yes && test "$using_system_wwwlib"  != yes \
@@ -97,13 +134,20 @@ test "$needs_pnglib" = yes && test "$using_system_pnglib" != yes \
   && LIBSDIRS="$LIBPNGDIR $LIBSDIRS"
 test "$needs_zlib" = yes && test "$using_system_zlib" != yes \
   && LIBSDIRS="$ZLIBDIR $LIBSDIRS"
+test "$needs_libxpdf" = yes \
+  && LIBSDIRS="$LIBXPDFDIR $LIBSDIRS"
+test "$needs_libt1" = yes \
+  && LIBSDIRS="$LIBT1DIR $LIBTYPE1DIR $LIBSDIRS"
+test "$needs_freetype" = yes \
+  && LIBSDIRS="$FREETYPEDIR $LIBSDIRS"
 
-PKGS='texinfo dialog t1utils'
+PKGS='texinfo dialog t1utils mminstance psutils'
 ESUBDIRS=
 for pkg in $PKGS; do
-  if test -d $srcdir/$pkg; then
+  if test -d $srcdir/utils/$pkg; then
     if eval "test \"`echo '$with_'${pkg}`\" != no"; then
-      ESUBDIRS="$ESUBDIRS $pkg"
+      ESUBDIRS="$ESUBDIRS utils/$pkg"
+      test -d utils || mkdir utils
     fi
   fi
 done

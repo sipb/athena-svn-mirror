@@ -226,6 +226,14 @@ We store the&nbsp;original headers as they may become useful in many ways
     HTAssocList *      headers;
 
 /*
+
+The reason string furnished by the server, as some servers may send
+useful custom information in it
+*/
+
+    char *             reason;             /* JK: HTTP reason string */
+
+/*
 */
 
 }; /* End of definition of HTResponse */
@@ -241,6 +249,6 @@ End of Declaration
 
   
 
-  @(#) $Id: HTResMan.h,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+  @(#) $Id: HTResMan.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -146,6 +146,16 @@ extern char * HTIcon_alternative (HTIconNode * node, BOOL brackets);
 
 /*
 .
+  Delete all icons
+.
+
+Cleans up all memory used by icons. Should be called by
+HTLibTerminate() (but it isn't).
+*/
+extern void HTIcon_deleteAll (void);
+
+/*
+.
   A Standard Set of Icons
 .
 
@@ -189,6 +199,6 @@ interface
 
   
 
-  @(#) $Id: HTIcons.h,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+  @(#) $Id: HTIcons.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

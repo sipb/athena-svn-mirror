@@ -35,14 +35,14 @@ NOTES:
  *	extra bytes on input
  */
 
-#ifdef PS_NEWS /* whole file */
+#ifdef PS_NEWS	/* whole file */
 
 #include "xdvi-config.h"
 #include <signal.h>
 #include <sys/file.h>	/* this defines FASYNC */
 #include <X11/X.h>
 #include <X11/Xlib.h>
-#undef SYSV /* To avoid defined SYSV_{WAIT,UCONTEXT} in xview/notify.h.  */
+#undef SYSV	/* To avoid defined SYSV_{WAIT,UCONTEXT} in xview/notify.h.  */
 #include <NeWS/psio.h>
 #include <xvps/pscanvas.h>
 
@@ -55,20 +55,20 @@ NOTES:
 #include <errno.h>
 
 #ifdef	X_NOT_STDC_ENV
-extern	int	errno;
+extern int errno;
 #endif
 
 #ifdef	EWOULDBLOCK
 #ifdef	EAGAIN
 #define	AGAIN_CONDITION	(errno == EWOULDBLOCK || errno == EAGAIN)
-#else	/* EAGAIN */
+#else /* EAGAIN */
 #define	AGAIN_CONDITION	(errno == EWOULDBLOCK)
-#endif	/* EAGAIN */
-#else	/* EWOULDBLOCK */
+#endif /* EAGAIN */
+#else /* EWOULDBLOCK */
 #ifdef	EAGAIN
 #define	AGAIN_CONDITION	(errno == EAGAIN)
-#endif	/* EAGAIN */
-#endif	/* EWOULDBLOCK */
+#endif /* EAGAIN */
+#endif /* EWOULDBLOCK */
 
 #if HAVE_POLL
 # include <poll.h>
@@ -86,7 +86,7 @@ extern	int	errno;
 #define	FLAKY_SIGPOLL	1
 #endif
 
-char	*strtok ARGS((char *, _Xconst char *));
+char *strtok ARGS((char *, _Xconst char *));
 
 #define	Fprintf	(void) fprintf
 
@@ -99,7 +99,7 @@ char	*strtok ARGS((char *, _Xconst char *));
 		/*
 		 * Some setup code.
 		 */
-static	_Xconst	char	str0[]	= "\
+static _Xconst char str0[] = "\
 /OW2? version cvi 2 eq def \
 OW2? \
 { /setlinewidth { pop } def} \
@@ -119,7 +119,7 @@ if\n";
 		 * The `H' at the end tells it that the first group is a
 		 * header; i.e., no save/restore.
 		 */
-static	_Xconst	char	preamble[]	= "\
+static _Xconst char preamble[] = "\
 /xdvi$line 81 string def \
 /xdvi$run {$error null ne {$error /newerror false put} if \
  {currentfile cvx stopped \
@@ -136,10 +136,10 @@ static	_Xconst	char	preamble[]	= "\
   58 tagprint flush \
 }loop\nH";
 
-extern	_Xconst	char	psheader[];
-extern	int	psheaderlen;
+extern _Xconst char psheader[];
+extern int psheaderlen;
 
-static	_Xconst	char	preamble2[]	= " stop\n%%xdvimark\n";
+static _Xconst char preamble2[] = " stop\n%%xdvimark\n";
 #define	stopstring	preamble2
 
 #define	postscript	resource._postscript
@@ -147,46 +147,47 @@ static	_Xconst	char	preamble2[]	= " stop\n%%xdvimark\n";
 
 /* global procedures (besides initNeWS) */
 
-static	void	toggleNeWS ARGS((void));
-static	void	destroyNeWS ARGS((void));
-static	void	interruptNeWS ARGS((void));
-static	void	endpageNeWS ARGS((void));
-static	void	drawbeginNeWS ARGS((int, int, _Xconst char *));
-static	void	drawrawNeWS ARGS((_Xconst char *));
-static	void	drawfileNeWS ARGS((_Xconst char *, FILE *));
-static	void	drawendNeWS ARGS((_Xconst char *));
-static	void	beginheaderNeWS ARGS((void));
-static	void	endheaderNeWS ARGS((void));
-static	void	newdocNeWS ARGS((void));
+static void toggleNeWS ARGS((void));
+static void destroyNeWS ARGS((void));
+static void interruptNeWS ARGS((void));
+static void endpageNeWS ARGS((void));
+static void drawbeginNeWS ARGS((int, int, _Xconst char *));
+static void drawrawNeWS ARGS((_Xconst char *));
+static void drawfileNeWS ARGS((_Xconst char *, FILE *));
+static void drawendNeWS ARGS((_Xconst char *));
+static void beginheaderNeWS ARGS((void));
+static void endheaderNeWS ARGS((void));
+static void newdocNeWS ARGS((void));
 
-static	struct psprocs	news_procs = {
-	/* toggle */		toggleNeWS,
-	/* destroy */		destroyNeWS,
-	/* interrupt */		interruptNeWS,
-	/* endpage */		endpageNeWS,
-	/* drawbegin */		drawbeginNeWS,
-	/* drawraw */		drawrawNeWS,
-	/* drawfile */		drawfileNeWS,
-	/* drawend */		drawendNeWS,
-	/* beginheader */	beginheaderNeWS,
-	/* endheader */		endheaderNeWS,
-	/* newdoc */		newdocNeWS};
+static struct psprocs news_procs = {
+    /* toggle */ toggleNeWS,
+    /* destroy */ destroyNeWS,
+    /* interrupt */ interruptNeWS,
+    /* endpage */ endpageNeWS,
+    /* drawbegin */ drawbeginNeWS,
+    /* drawraw */ drawrawNeWS,
+    /* drawfile */ drawfileNeWS,
+    /* drawend */ drawendNeWS,
+    /* beginheader */ beginheaderNeWS,
+    /* endheader */ endheaderNeWS,
+    /* newdoc */ newdocNeWS
+};
 
 /* signal handler to hairy PostScript code */
 static RETSIGTYPE psio_sigpipe_handler();
 
 /* define local static variables */
-static	int	NeWS_mag;		/* magnification currently in use */
-static	int	NeWS_shrink;		/* shrink factor currently in use */
-static	unsigned int	NeWS_page_w;	/* how big our current page is */
-static	unsigned int	NeWS_page_h;
-static	Boolean	NeWS_active;		/* if we've started a page yet */
-static	int	NeWS_pending;		/* number of ack's we're expecting */
-static	int	NeWS_sending;		/* level of nesting in send() */
-static	Boolean	NeWS_in_header;		/* if we're sending a header */
-static	Boolean	NeWS_in_doc;		/* if we've sent header information */
-static	Boolean	NeWS_pending_int;	/* if interrupt rec'd while in send() */
-static	Boolean	NeWS_destroyed	= False;
+static int NeWS_mag;	/* magnification currently in use */
+static int NeWS_shrink;	/* shrink factor currently in use */
+static unsigned int NeWS_page_w;	/* how big our current page is */
+static unsigned int NeWS_page_h;
+static Boolean NeWS_active;	/* if we've started a page yet */
+static int NeWS_pending;	/* number of ack's we're expecting */
+static int NeWS_sending;	/* level of nesting in send() */
+static Boolean NeWS_in_header;	/* if we're sending a header */
+static Boolean NeWS_in_doc;	/* if we've sent header information */
+static Boolean NeWS_pending_int;	/* if interrupt rec'd while in send() */
+static Boolean NeWS_destroyed = False;
 
 
 /*
@@ -196,14 +197,15 @@ static	Boolean	NeWS_destroyed	= False;
  */
 
 #if HAVE_POLL
-static	struct pollfd	fds[3] = {{0, POLLOUT, 0},
-				  {0, POLLIN, 0},
-				  {0, POLLIN, 0}};
+static struct pollfd fds[3] = { {0, POLLOUT, 0},
+{0, POLLIN, 0},
+{0, POLLIN, 0}
+};
 #define	XDVI_ISSET(a, b, c)	(fds[c].revents)
 #else
-static	int		numfds;
-static	fd_set		readfds;
-static	fd_set		writefds;
+static int numfds;
+static fd_set readfds;
+static fd_set writefds;
 #define	XDVI_ISSET(a, b, c)	FD_ISSET(a, b)
 #endif
 
@@ -222,20 +224,16 @@ static	fd_set		writefds;
 
 +----------------------------------------------------------------------------*/
 
-static	Boolean	sigpipe_error = False;
+static Boolean sigpipe_error = False;
 
-static	struct sigaction psio_sigpipe_handler_struct;
+static struct sigaction psio_sigpipe_handler_struct;
 	/* initialized to {psio_sigpipe_handler, (sigset_t) 0, 0} in initNeWS */
 
 /* ARGSUSED */
-static	RETSIGTYPE
-psio_sigpipe_handler(sig, code, scp, addr)
-	int		sig;
-	int		code;
-	struct sigcontext *scp;
-	char		*addr;
+static RETSIGTYPE
+psio_sigpipe_handler(int sig, int code, struct sigcontext *scp, char *addr)
 {
-	sigpipe_error = True;
+    sigpipe_error = True;
 }
 
 
@@ -244,23 +242,24 @@ psio_sigpipe_handler(sig, code, scp, addr)
  *	If other bytes appear on the file - tough.
  */
 
-static	void
-read_from_NeWS()
+static void
+read_from_NeWS(void)
 {
-	for (;;) {
-	    int retval;
+    for (;;) {
+	int retval;
 
-	    retval = ps_checkfor(PostScriptInput, PSIO_FIND_TAG, 58);
-	    if (retval == 0) break;
-	    if (retval < 0) {
-		Fprintf(stderr, "[xdvik] ps_checkfor: %d\n", retval);
-		return;
-	    }
-	    (void) ps_checkfor(PostScriptInput, PSIO_WAIT_TAG, 58);
-	    --NeWS_pending;
-	    if (debug & DBG_PS)
-		Printf("Got NeWS ack; %d pending.\n", NeWS_pending);
+	retval = ps_checkfor(PostScriptInput, PSIO_FIND_TAG, 58);
+	if (retval == 0)
+	    break;
+	if (retval < 0) {
+	    Fprintf(stderr, "[xdvik] ps_checkfor: %d\n", retval);
+	    return;
 	}
+	(void)ps_checkfor(PostScriptInput, PSIO_WAIT_TAG, 58);
+	--NeWS_pending;
+	if (debug & DBG_PS)
+	    Printf("Got NeWS ack; %d pending.\n", NeWS_pending);
+    }
 }
 
 
@@ -268,19 +267,19 @@ read_from_NeWS()
  *	Clean up after send()
  */
 
-static	void
-post_send()
+static void
+post_send(void)
 {
-	if (sigpipe_error) {
-	    Fputs("NeWS died unexpectedly.\n", stderr);
-	    destroyNeWS();
-	    draw_bbox();
-	}
+    if (sigpipe_error) {
+	Fputs("NeWS died unexpectedly.\n", stderr);
+	destroyNeWS();
+	draw_bbox();
+    }
 
-	if (NeWS_pending_int) {
-	    NeWS_pending_int = False;
-	    interruptNeWS();
-	}
+    if (NeWS_pending_int) {
+	NeWS_pending_int = False;
+	interruptNeWS();
+    }
 }
 
 
@@ -288,106 +287,112 @@ post_send()
  *	This actually sends the bytes to NeWS.
  */
 
-static	void
-send(cp, len)
-	_Xconst	char	*cp;
-	int		len;
+static void
+send(_Xconst char *cp, int len)
 {
-	struct sigaction orig;
+    struct sigaction orig;
 #if HAVE_POLL
-	int	retval;
+    int retval;
 #endif
 
-	if (PostScript == (PSFILE *) NULL) return;
+    if (PostScript == (PSFILE *) NULL)
+	return;
 
-	if (!NeWS_sending) {
-	    (void) sigaction(SIGPIPE, &psio_sigpipe_handler_struct, &orig);
-	    sigpipe_error = False;
-	}
-	++NeWS_sending;
+    if (!NeWS_sending) {
+	(void)sigaction(SIGPIPE, &psio_sigpipe_handler_struct, &orig);
+	sigpipe_error = False;
+    }
+    ++NeWS_sending;
 
 #ifndef FLAKY_SIGPOLL
-	(void) fcntl(ConnectionNumber(DISP), F_SETFL,
-	    fcntl(ConnectionNumber(DISP), F_GETFL, 0) & ~FASYNC);
+    (void)fcntl(ConnectionNumber(DISP), F_SETFL,
+		fcntl(ConnectionNumber(DISP), F_GETFL, 0) & ~FASYNC);
 #endif
 
 #if ! HAVE_POLL
-	FD_ZERO(&readfds);
-	FD_ZERO(&writefds);
+    FD_ZERO(&readfds);
+    FD_ZERO(&writefds);
 #endif
 
-	for (;;) {
+    for (;;) {
 
-	    if (terminate_flag) {
-		ps_destroy();
-		exit(0);
-	    }
+	if (terminate_flag) {
+	    ps_destroy();
+	    exit(0);
+	}
 
 #if HAVE_POLL
-	    for (;;) {
-		retval = poll(fds, XtNumber(fds), -1);
-		if (retval >= 0 || errno != EAGAIN) break;
-	    }
-	    if (retval < 0) {
-		if (errno == EINTR)
-		    continue;
-		else {
-		    perror("poll (xdvi NeWS_send)");
-		    break;
-		}
-	    }
-#else
-	    FD_SET(ConnectionNumber(DISP), &readfds);
-	    FD_SET(PostScript->file, &writefds);
-	    FD_SET(PostScriptInput->file, &readfds);
-
-	    if (select(numfds, &readfds, &writefds, (fd_set *) NULL,
-		    (struct timeval *) NULL) < 0 && errno != EINTR) {
-		perror("select (xdvi NeWS_send)");
+	for (;;) {
+	    retval = poll(fds, XtNumber(fds), -1);
+	    if (retval >= 0 || errno != EAGAIN)
+		break;
+	}
+	if (retval < 0) {
+	    if (errno == EINTR)
+		continue;
+	    else {
+		perror("poll (xdvi NeWS_send)");
 		break;
 	    }
+	}
+#else
+	FD_SET(ConnectionNumber(DISP), &readfds);
+	FD_SET(PostScript->file, &writefds);
+	FD_SET(PostScriptInput->file, &readfds);
+
+	if (select(numfds, &readfds, &writefds, (fd_set *) NULL,
+		   (struct timeval *)NULL) < 0 && errno != EINTR) {
+	    perror("select (xdvi NeWS_send)");
+	    break;
+	}
 #endif
 
-	    if (XDVI_ISSET(PostScriptInput->file, &readfds, 1))
-		read_from_NeWS();
-	    if (XDVI_ISSET(PostScript->file, &writefds, 0)) {
-		int	old_flags;
-		int	bytes;
+	if (XDVI_ISSET(PostScriptInput->file, &readfds, 1))
+	    read_from_NeWS();
+	if (XDVI_ISSET(PostScript->file, &writefds, 0)) {
+	    int old_flags;
+	    int bytes;
 
-		old_flags = fcntl(PostScript->file, F_GETFL, 0);
-		if (old_flags < 0) break;
-		/* set to be non-blocking */
-		if (fcntl(PostScript->file, F_SETFL, old_flags | O_NONBLOCK)
-			< 0)
-		    break;
-		bytes = write(PostScript->file, cp, len);
-		if (bytes == -1) {
-		    if (!AGAIN_CONDITION) perror("xdvi NeWS_send");
-		}
-		else {
-		    cp += bytes;
-		    len -= bytes;
-		}
-		if (fcntl(PostScript->file, F_SETFL, old_flags) < 0) break;
-		if (len == 0 || sigpipe_error) break;
+	    old_flags = fcntl(PostScript->file, F_GETFL, 0);
+	    if (old_flags < 0)
+		break;
+	    /* set to be non-blocking */
+	    if (fcntl(PostScript->file, F_SETFL, old_flags | O_NONBLOCK)
+		< 0)
+		break;
+	    bytes = write(PostScript->file, cp, len);
+	    if (bytes == -1) {
+		if (!AGAIN_CONDITION)
+		    perror("xdvi NeWS_send");
 	    }
-	    if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
-		ps_read_events(False, False);
-		if (PostScript == (PSFILE *) NULL) break;	/* if timeout occurred */
+	    else {
+		cp += bytes;
+		len -= bytes;
 	    }
+	    if (fcntl(PostScript->file, F_SETFL, old_flags) < 0)
+		break;
+	    if (len == 0 || sigpipe_error)
+		break;
 	}
+	if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
+	    ps_read_events(False, False);
+	    if (PostScript == (PSFILE *) NULL)
+		break;	/* if timeout occurred */
+	}
+    }
 
 #ifndef FLAKY_SIGPOLL
-	(void) fcntl(ConnectionNumber(DISP), F_SETFL,
-	    fcntl(ConnectionNumber(DISP), F_GETFL, 0) | FASYNC);
+    (void)fcntl(ConnectionNumber(DISP), F_SETFL,
+		fcntl(ConnectionNumber(DISP), F_GETFL, 0) | FASYNC);
 #endif
 
-	if (--NeWS_sending == 0) {
-	    /* put back generic handler for SIGPIPE */
-	    (void) sigaction(SIGPIPE, &orig, (struct sigaction *) NULL);
+    if (--NeWS_sending == 0) {
+	/* put back generic handler for SIGPIPE */
+	(void)sigaction(SIGPIPE, &orig, (struct sigaction *)NULL);
 
-	    if (!NeWS_in_header) post_send();
-	}
+	if (!NeWS_in_header)
+	    post_send();
+    }
 }
 
 /*
@@ -395,60 +400,62 @@ send(cp, len)
  *	to wait (||| I think).
  */
 
-static	void
-waitack()
+static void
+waitack(void)
 {
 #if HAVE_POLL
-	int	retval;
+    int retval;
 #endif
 #ifndef FLAKY_SIGPOLL
-	int	oldflags;
+    int oldflags;
 #endif
 
-	if (PostScript == (PSFILE *) NULL) return;
+    if (PostScript == (PSFILE *) NULL)
+	return;
 
 #ifndef FLAKY_SIGPOLL
-	oldflags = fcntl(ConnectionNumber(DISP), F_GETFL, 0);
-	(void) fcntl(ConnectionNumber(DISP), F_SETFL, oldflags & ~FASYNC);
+    oldflags = fcntl(ConnectionNumber(DISP), F_GETFL, 0);
+    (void)fcntl(ConnectionNumber(DISP), F_SETFL, oldflags & ~FASYNC);
 #endif
 #if ! HAVE_POLL
-	FD_ZERO(&readfds);
+    FD_ZERO(&readfds);
 #endif
-	while (NeWS_pending > 0) {
+    while (NeWS_pending > 0) {
 #if HAVE_POLL
-	    for (;;) {
-		retval = poll(fds + 1, XtNumber(fds) - 1, -1);
-		if (retval >= 0 || errno != EAGAIN) break;
-	    }
-	    if (retval < 0) {
-		if (errno == EINTR)
-		    continue;
-		else {
-		    perror("poll (xdvi NeWS_waitack)");
-		    break;
-		}
-	    }
-#else
-	    FD_SET(ConnectionNumber(DISP), &readfds);
-	    FD_SET(PostScriptInput->file, &readfds);
-	    if (select(numfds, &readfds, (fd_set *) NULL, (fd_set *) NULL,
-		    (struct timeval *) NULL) < 0 && errno != EINTR) {
-		perror("select (xdvi NeWS_waitack)");
+	for (;;) {
+	    retval = poll(fds + 1, XtNumber(fds) - 1, -1);
+	    if (retval >= 0 || errno != EAGAIN)
+		break;
+	}
+	if (retval < 0) {
+	    if (errno == EINTR)
+		continue;
+	    else {
+		perror("poll (xdvi NeWS_waitack)");
 		break;
 	    }
+	}
+#else
+	FD_SET(ConnectionNumber(DISP), &readfds);
+	FD_SET(PostScriptInput->file, &readfds);
+	if (select(numfds, &readfds, (fd_set *) NULL, (fd_set *) NULL,
+		   (struct timeval *)NULL) < 0 && errno != EINTR) {
+	    perror("select (xdvi NeWS_waitack)");
+	    break;
+	}
 #endif
 
 
-	    if (XDVI_ISSET(PostScriptInput->file, &readfds, 1))
-		read_from_NeWS();
-	    if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
-		ps_read_events(False, False);
-		if (PostScript == (PSFILE *) NULL)	/* if timeout occurred*/
-		    break;
-	    }
+	if (XDVI_ISSET(PostScriptInput->file, &readfds, 1))
+	    read_from_NeWS();
+	if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
+	    ps_read_events(False, False);
+	    if (PostScript == (PSFILE *) NULL)	/* if timeout occurred */
+		break;
 	}
+    }
 #ifndef FLAKY_SIGPOLL
-	(void) fcntl(ConnectionNumber(DISP), F_SETFL, oldflags);
+    (void)fcntl(ConnectionNumber(DISP), F_SETFL, oldflags);
 #endif
 }
 
@@ -465,68 +472,70 @@ waitack()
 
 +----------------------------------------------------------------------------*/
 
-Boolean
-initNeWS()
+Boolean initNeWS()
 {
-	static	NeWStoken newstoken;
+    static NeWStoken newstoken;
 
-	/* now try to open the connection to the NeWS server */
-	if (ps_open_PostScript() == (PSFILE *) NULL)
-	    return False;
+    /* now try to open the connection to the NeWS server */
+    if (ps_open_PostScript() == (PSFILE *) NULL)
+	return False;
 
 #if HAVE_POLL
-	fds[0].fd = PostScript->file;
-	fds[1].fd = PostScriptInput->file;
-	fds[2].fd = ConnectionNumber(DISP);
+    fds[0].fd = PostScript->file;
+    fds[1].fd = PostScriptInput->file;
+    fds[2].fd = ConnectionNumber(DISP);
 #else
-	numfds = ConnectionNumber(DISP);
-	if (numfds < PostScript->file) numfds = PostScript->file;
-	if (numfds < PostScriptInput->file) numfds = PostScriptInput->file;
-	++numfds;
+    numfds = ConnectionNumber(DISP);
+    if (numfds < PostScript->file)
+	numfds = PostScript->file;
+    if (numfds < PostScriptInput->file)
+	numfds = PostScriptInput->file;
+    ++numfds;
 #endif
 
-	psio_sigpipe_handler_struct.sa_handler = psio_sigpipe_handler;
-	sigemptyset(&psio_sigpipe_handler_struct.sa_mask);
+    psio_sigpipe_handler_struct.sa_handler = psio_sigpipe_handler;
+    sigemptyset(&psio_sigpipe_handler_struct.sa_mask);
 
-	NeWS_active = NeWS_pending_int = False;
-	NeWS_sending = 0;
-	NeWS_in_header = True;
-	NeWS_pending = 1;
+    NeWS_active = NeWS_pending_int = False;
+    NeWS_sending = 0;
+    NeWS_in_header = True;
+    NeWS_pending = 1;
 
+    ps_flush_PostScript();
+    send(str0, sizeof(str0) - 1);
+    /* get xid of window, then make this window the NeWS canvas */
+    (void)ps_token_from_xid(mane.win, &newstoken);
+    if (newstoken != -1) {
+	ps_setcanvas(newstoken);
 	ps_flush_PostScript();
-	send(str0, sizeof(str0) - 1);
-	/* get xid of window, then make this window the NeWS canvas */
-	(void) ps_token_from_xid(mane.win, &newstoken);
-	if (newstoken != -1) {
-	    ps_setcanvas(newstoken);
-	    ps_flush_PostScript();
-	    send(preamble, sizeof(preamble) - 1);
-	    send(psheader, psheaderlen);
-	    send(preamble2, sizeof(preamble2) - 1);
-	    NeWS_in_header = False;
-	    post_send();
-	    waitack();
-	}
+	send(preamble, sizeof(preamble) - 1);
+	send(psheader, psheaderlen);
+	send(preamble2, sizeof(preamble2) - 1);
+	NeWS_in_header = False;
+	post_send();
+	waitack();
+    }
 
-	if (NeWS_destroyed) return False;
+    if (NeWS_destroyed)
+	return False;
 
-	/* success */
+    /* success */
 
-	NeWS_mag = NeWS_shrink = -1;
-	NeWS_page_w = page_w;
-	NeWS_page_h = page_h;
+    NeWS_mag = NeWS_shrink = -1;
+    NeWS_page_w = page_w;
+    NeWS_page_h = page_h;
 
-	psp = news_procs;
-	if (!postscript) toggleNeWS();	/* if we got a 'v' already */
+    psp = news_procs;
+    if (!postscript)
+	toggleNeWS();	/* if we got a 'v' already */
 
-	return True;
+    return True;
 }
 
 
 /*---------------------------------------------------------------------------*
-  toggleNeWS()
+  toggleNeWS(void)
 
-  Arguments: none
   Returns: (void)
   Side-Effects: psp.drawbegin is changed
 
@@ -535,14 +544,15 @@ initNeWS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-toggleNeWS()
+static void
+toggleNeWS(void)
 {
-	if (postscript) psp.drawbegin = drawbeginNeWS;
-	else {
-	    interruptNeWS();
-	    psp.drawbegin = drawbegin_none;
-	}
+    if (postscript)
+	psp.drawbegin = drawbeginNeWS;
+    else {
+	interruptNeWS();
+	psp.drawbegin = drawbegin_none;
+    }
 }
 
 
@@ -559,12 +569,12 @@ toggleNeWS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-destroyNeWS()
+static void
+destroyNeWS(void)
 {
-	psp = no_ps_procs;
-	NeWS_destroyed = True;
-	scanned_page = scanned_page_bak = scanned_page_reset;
+    psp = no_ps_procs;
+    NeWS_destroyed = True;
+    scanned_page = scanned_page_bak = scanned_page_reset;
 }
 
 
@@ -583,20 +593,22 @@ destroyNeWS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-interruptNeWS()
+static void
+interruptNeWS(void)
 {
-	if (debug & DBG_PS) Puts("Running interruptNeWS()");
-	if (NeWS_sending) NeWS_pending_int = True;
-	else {
-	    if (NeWS_active) {
-		send(stopstring, sizeof(stopstring) - 1);
-		NeWS_active = False;
-	    }
-	    psp.interrupt = NullProc;	/* prevent deep recursion in waitack */
-	    waitack();
-	    psp.interrupt = interruptNeWS;
+    if (debug & DBG_PS)
+	Puts("Running interruptNeWS()");
+    if (NeWS_sending)
+	NeWS_pending_int = True;
+    else {
+	if (NeWS_active) {
+	    send(stopstring, sizeof(stopstring) - 1);
+	    NeWS_active = False;
 	}
+	psp.interrupt = NullProc;	/* prevent deep recursion in waitack */
+	waitack();
+	psp.interrupt = interruptNeWS;
+    }
 }
 
 
@@ -612,16 +624,16 @@ interruptNeWS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-endpageNeWS()
+static void
+endpageNeWS(void)
 {
-	if (debug & DBG_PS)
-	    Puts("endpage sent to NeWS Server");
-	if (NeWS_active) {
-	    send(stopstring, sizeof(stopstring) - 1);
-	    NeWS_active = False;
-	    waitack();
-	}
+    if (debug & DBG_PS)
+	Puts("endpage sent to NeWS Server");
+    if (NeWS_active) {
+	send(stopstring, sizeof(stopstring) - 1);
+	NeWS_active = False;
+	waitack();
+    }
 }
 
 
@@ -641,54 +653,50 @@ endpageNeWS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawbeginNeWS(xul, yul, cp)
-	int		xul, yul;
-	_Xconst	char	*cp;
+static void
+drawbeginNeWS(int xul, int yul, _Xconst char *cp)
 {
-	char	buf[100];
-	static	_Xconst	char	str[]	= " TeXDict begin\n";
-	static	_Xconst	char	str2[]	= "Hinitgraphics stop\n%%xdvimark\n";
+    char buf[100];
+    static _Xconst char str[] = " TeXDict begin\n";
+    static _Xconst char str2[] = "Hinitgraphics stop\n%%xdvimark\n";
 
-	if (debug & DBG_PS) {
-	    Printf("xul= %d yul= %d\n", xul, yul);
-	    Printf("String = < %s >\n", cp);
-	}
+    if (debug & DBG_PS) {
+	Printf("xul= %d yul= %d\n", xul, yul);
+	Printf("String = < %s >\n", cp);
+    }
 
-	/* catch up on the X side */
-	XSync(DISP, False);
+    /* catch up on the X side */
+    XSync(DISP, False);
 
-	if (!NeWS_active) {
-	    /* send initialization to NeWS server */
-	    if (NeWS_page_w < page_w || NeWS_page_h < page_h) {
-		NeWS_page_w = page_w;
-		NeWS_page_h = page_h;
-		send(str2, sizeof(str2) - 1);
-		++NeWS_pending;
-	    }
-	    if (magnification != NeWS_mag) {
-		Sprintf(buf, "H TeXDict begin /DVImag %d 1000 div def \
-end stop\n%%%%xdvimark\n",
-		    NeWS_mag = magnification);
-		send(buf, strlen(buf));
-		++NeWS_pending;
-	    }
-	    if (mane.shrinkfactor != NeWS_shrink) {
-		Sprintf(buf, "H TeXDict begin %d %d div dup \
-/Resolution X /VResolution X \
-end stop\n%%%%xdvimark\n",
-		    pixels_per_inch, NeWS_shrink = mane.shrinkfactor);
-		send(buf, strlen(buf));
-		++NeWS_pending;
-	    }
-	    send(str, sizeof(str) - 1);
-	    NeWS_active = True;
+    if (!NeWS_active) {
+	/* send initialization to NeWS server */
+	if (NeWS_page_w < page_w || NeWS_page_h < page_h) {
+	    NeWS_page_w = page_w;
+	    NeWS_page_h = page_h;
+	    send(str2, sizeof(str2) - 1);
 	    ++NeWS_pending;
 	}
+	if (magnification != NeWS_mag) {
+	    Sprintf(buf, "H TeXDict begin /DVImag %d 1000 div def \
+end stop\n%%%%xdvimark\n", NeWS_mag = magnification);
+	    send(buf, strlen(buf));
+	    ++NeWS_pending;
+	}
+	if (mane.shrinkfactor != NeWS_shrink) {
+	    Sprintf(buf, "H TeXDict begin %d %d div dup \
+/Resolution X /VResolution X \
+end stop\n%%%%xdvimark\n", pixels_per_inch, NeWS_shrink = mane.shrinkfactor);
+	    send(buf, strlen(buf));
+	    ++NeWS_pending;
+	}
+	send(str, sizeof(str) - 1);
+	NeWS_active = True;
+	++NeWS_pending;
+    }
 
-	Sprintf(buf, "%d %d moveto\n", xul, yul);
-	send(buf, strlen(buf));
-	send(cp, strlen(cp));
+    Sprintf(buf, "%d %d moveto\n", xul, yul);
+    send(buf, strlen(buf));
+    send(cp, strlen(cp));
 }
 
 
@@ -705,86 +713,98 @@ end stop\n%%%%xdvimark\n",
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawrawNeWS(origcp)
-	_Xconst	char	*origcp;
+static void
+drawrawNeWS(_Xconst char *origcp)
 {
-	_Xconst	char	*pt, *ptm1, *ocp1;
-	static	char	*cp;
-	char		*cp1;
-	static	unsigned int cplen = 0;
-	unsigned int	len;
-	double		angle;
-	Boolean		found	= False;
+    _Xconst char *pt, *ptm1, *ocp1;
+    static char *cp;
+    char *cp1;
+    static unsigned int cplen = 0;
+    unsigned int len;
+    double angle;
+    Boolean found = False;
 
-	if (!NeWS_active)
-	    return;
+    if (!NeWS_active)
+	return;
 
-	if (debug & DBG_PS)
-	    Printf("Raw PS sent to context: <%s>\n", origcp);
+    if (debug & DBG_PS)
+	Printf("Raw PS sent to context: <%s>\n", origcp);
 
-	/* take a look at the string:  NeWS bums on certain rotations */
-	len = strlen(origcp) + 4;
-	if (cplen < len) {
-	    if (cplen != 0) free(cp);
-	    cplen = len;
-	    cp = xmalloc(cplen);
-	}
-	ocp1 = origcp;
-	pt = origcp;
-	while (*pt == ' ' || *pt == '\t') ++pt;
-	cp1 = cp;
-	for (;;) {
-	    ptm1 = pt;
-	    while (*pt != '\0' && *pt != ' ' && *pt != '\t') ++pt;
-	    if (*pt == '\0') break;
-	    while (*pt == ' ' || *pt == '\t') ++pt;
-	    if (strncmp(pt, "rotate", 6) == 0
-		    && (pt[6] == '\0' || pt[6] == ' ' || pt[6] == '\t')) {
-		/* found rotate; check angle */
-		if (sscanf(ptm1, "%lf", &angle) >= 1) {
-		    found = True;
-		    while (angle > 360.0)
-			angle -= 360;
-		    while (angle < -360.0)
-			angle += 360;
-		    if (angle == 90.0) {
-			angle = 89.999;
-			(void) memcpy(cp1, ocp1, ptm1 - ocp1);
-			cp1 += ptm1 - ocp1;
-			Strcpy(cp1, "89.999 rotate ");
-			cp1 += strlen(cp1);
-			while (*pt != '\0' && *pt != ' ' && *pt != '\t') ++pt;
-			while (*pt == ' ' || *pt == '\t') ++pt;
-			ocp1 = pt;
-		    } else if (angle == -90.0) {
-			angle = -89.999;
-			(void) memcpy(cp1, ocp1, ptm1 - ocp1);
-			cp1 += ptm1 - ocp1;
-			Strcpy(cp1, "-89.999 rotate ");
-			cp1 += strlen(cp1);
-			while (*pt != '\0' && *pt != ' ' && *pt != '\t') ++pt;
-			while (*pt == ' ' || *pt == '\t') ++pt;
-			ocp1 = pt;
-		    } else if (angle == 0.0) {
-			(void) memcpy(cp1, ocp1, ptm1 - ocp1);
-			cp1 += ptm1 - ocp1;
-			while (*pt != '\0' && *pt != ' ' && *pt != '\t') ++pt;
-			while (*pt == ' ' || *pt == '\t') ++pt;
-			ocp1 = pt;
-		    }
+    /* take a look at the string:  NeWS bums on certain rotations */
+    len = strlen(origcp) + 4;
+    if (cplen < len) {
+	if (cplen != 0)
+	    free(cp);
+	cplen = len;
+	cp = xmalloc(cplen);
+    }
+    ocp1 = origcp;
+    pt = origcp;
+    while (*pt == ' ' || *pt == '\t')
+	++pt;
+    cp1 = cp;
+    for (;;) {
+	ptm1 = pt;
+	while (*pt != '\0' && *pt != ' ' && *pt != '\t')
+	    ++pt;
+	if (*pt == '\0')
+	    break;
+	while (*pt == ' ' || *pt == '\t')
+	    ++pt;
+	if (strncmp(pt, "rotate", 6) == 0
+	    && (pt[6] == '\0' || pt[6] == ' ' || pt[6] == '\t')) {
+	    /* found rotate; check angle */
+	    if (sscanf(ptm1, "%lf", &angle) >= 1) {
+		found = True;
+		while (angle > 360.0)
+		    angle -= 360;
+		while (angle < -360.0)
+		    angle += 360;
+		if (angle == 90.0) {
+		    angle = 89.999;
+		    (void)memcpy(cp1, ocp1, ptm1 - ocp1);
+		    cp1 += ptm1 - ocp1;
+		    Strcpy(cp1, "89.999 rotate ");
+		    cp1 += strlen(cp1);
+		    while (*pt != '\0' && *pt != ' ' && *pt != '\t')
+			++pt;
+		    while (*pt == ' ' || *pt == '\t')
+			++pt;
+		    ocp1 = pt;
+		}
+		else if (angle == -90.0) {
+		    angle = -89.999;
+		    (void)memcpy(cp1, ocp1, ptm1 - ocp1);
+		    cp1 += ptm1 - ocp1;
+		    Strcpy(cp1, "-89.999 rotate ");
+		    cp1 += strlen(cp1);
+		    while (*pt != '\0' && *pt != ' ' && *pt != '\t')
+			++pt;
+		    while (*pt == ' ' || *pt == '\t')
+			++pt;
+		    ocp1 = pt;
+		}
+		else if (angle == 0.0) {
+		    (void)memcpy(cp1, ocp1, ptm1 - ocp1);
+		    cp1 += ptm1 - ocp1;
+		    while (*pt != '\0' && *pt != ' ' && *pt != '\t')
+			++pt;
+		    while (*pt == ' ' || *pt == '\t')
+			++pt;
+		    ocp1 = pt;
 		}
 	    }
 	}
-	Strcpy(cp1, ocp1);
-	if ((debug & DBG_PS) && found) {
-	    Printf("String is now <%s>\n", cp);
-	    Printf("Found rotate string.  Angle is %g degrees.\n", angle);
-	}
+    }
+    Strcpy(cp1, ocp1);
+    if ((debug & DBG_PS) && found) {
+	Printf("String is now <%s>\n", cp);
+	Printf("Found rotate string.  Angle is %g degrees.\n", angle);
+    }
 
-	len = strlen(cp);
-	cp[len] = '\n';
-	send(cp, len + 1);
+    len = strlen(cp);
+    cp[len] = '\n';
+    send(cp, len + 1);
 }
 
 
@@ -802,51 +822,51 @@ drawrawNeWS(origcp)
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawfileNeWS(cp, psfile)
-	_Xconst	char	*cp;
-	FILE		*psfile;
+static void
+drawfileNeWS(_Xconst char *cp, FILE *psfile)
 {
-	char		buffer[1025];
-	int		blen;
-	struct sigaction orig;
+    char buffer[1025];
+    int blen;
+    struct sigaction orig;
 
-	if (!NeWS_active) {
-	    Fclose(psfile);
-	    ++n_files_left;
-	    return;
-	}
-
-	if (debug & DBG_PS)
-	    Printf("printing file %s\n", cp);
-	/* some hairy PS code generates SIGPIPE signals; handle them */
-	(void) sigaction(SIGPIPE, &psio_sigpipe_handler_struct, &orig);
-	sigpipe_error = False;
-	NeWS_sending = 1;
-	if (!sigpipe_error)
-	    for (;;) {
-		blen = fread(buffer, sizeof(char), 1024, psfile);
-		if (blen == 0) break;
-		send(buffer, blen);
-		if (sigpipe_error) break;
-	    }
+    if (!NeWS_active) {
 	Fclose(psfile);
 	++n_files_left;
+	return;
+    }
 
-	--NeWS_sending;
-	/* put back generic handler for SIGPIPE */
-	(void) sigaction(SIGPIPE, &orig, (struct sigaction *) NULL);
-
-	if (sigpipe_error) {
-	    Fputs("NeWS died unexpectedly.\n", stderr);
-	    destroyNeWS();
-	    draw_bbox();
+    if (debug & DBG_PS)
+	Printf("printing file %s\n", cp);
+    /* some hairy PS code generates SIGPIPE signals; handle them */
+    (void)sigaction(SIGPIPE, &psio_sigpipe_handler_struct, &orig);
+    sigpipe_error = False;
+    NeWS_sending = 1;
+    if (!sigpipe_error)
+	for (;;) {
+	    blen = fread(buffer, sizeof(char), 1024, psfile);
+	    if (blen == 0)
+		break;
+	    send(buffer, blen);
+	    if (sigpipe_error)
+		break;
 	}
+    Fclose(psfile);
+    ++n_files_left;
 
-	if (NeWS_pending_int) {
-	    NeWS_pending_int = False;
-	    interruptNeWS();
-	}
+    --NeWS_sending;
+    /* put back generic handler for SIGPIPE */
+    (void)sigaction(SIGPIPE, &orig, (struct sigaction *)NULL);
+
+    if (sigpipe_error) {
+	Fputs("NeWS died unexpectedly.\n", stderr);
+	destroyNeWS();
+	draw_bbox();
+    }
+
+    if (NeWS_pending_int) {
+	NeWS_pending_int = False;
+	interruptNeWS();
+    }
 }
 
 
@@ -861,17 +881,16 @@ drawfileNeWS(cp, psfile)
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawendNeWS(cp)
-	_Xconst	char	*cp;
+static void
+drawendNeWS(_Xconst char *cp)
 {
-	if (!NeWS_active)
-	    return;
+    if (!NeWS_active)
+	return;
 
-	if (debug & DBG_PS)
-	    Puts("drawend sent to NeWS Server");
-	send(cp, strlen(cp));
-	send("\n", 1);
+    if (debug & DBG_PS)
+	Puts("drawend sent to NeWS Server");
+    send(cp, strlen(cp));
+    send("\n", 1);
 }
 
 
@@ -886,28 +905,29 @@ drawendNeWS(cp)
 
 +----------------------------------------------------------------------------*/
 
-static	void
-beginheaderNeWS()
+static void
+beginheaderNeWS(void)
 {
-	static	_Xconst	char	str[]	= "Hsave /xdvi$doc exch def\n";
+    static _Xconst char str[] = "Hsave /xdvi$doc exch def\n";
 
-	if (debug & DBG_PS) Puts("Running beginheaderNeWS()");
+    if (debug & DBG_PS)
+	Puts("Running beginheaderNeWS()");
 
-	if (NeWS_active) {
-	    if (!NeWS_in_header)
-		oops("Internal error in beginheaderNeWS().\n");
-	    return;
-	}
+    if (NeWS_active) {
+	if (!NeWS_in_header)
+	    oops("Internal error in beginheaderNeWS().\n");
+	return;
+    }
 
-	NeWS_in_header = True;
-	if (NeWS_in_doc)
-	    send("H", 1);
-	else {
-	    send(str, sizeof(str) - 1);
-	    NeWS_in_doc = True;
-	}
-	NeWS_active = True;
-	++NeWS_pending;
+    NeWS_in_header = True;
+    if (NeWS_in_doc)
+	send("H", 1);
+    else {
+	send(str, sizeof(str) - 1);
+	NeWS_in_doc = True;
+    }
+    NeWS_active = True;
+    ++NeWS_pending;
 }
 
 
@@ -922,20 +942,21 @@ beginheaderNeWS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-endheaderNeWS()
+static void
+endheaderNeWS(void)
 {
-	static	_Xconst	char	str[]	= "stop\n%%xdvimark\n";
+    static _Xconst char str[] = "stop\n%%xdvimark\n";
 
-	if (debug & DBG_PS) Puts("Running endheaderNeWS()");
+    if (debug & DBG_PS)
+	Puts("Running endheaderNeWS()");
 
-	if (NeWS_active) {
-	    send(str, sizeof(str) - 1);
-	    NeWS_active = False;
-	    NeWS_in_header = False;
-	    post_send();
-	    waitack();
-	}
+    if (NeWS_active) {
+	send(str, sizeof(str) - 1);
+	NeWS_active = False;
+	NeWS_in_header = False;
+	post_send();
+	waitack();
+    }
 }
 
 
@@ -950,20 +971,22 @@ endheaderNeWS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-newdocNeWS()
+static void
+newdocNeWS(void)
 {
-	static	_Xconst	char	str[]	= 
-				"H xdvi$doc restore stop\n%%xdvimark\n";
+    static _Xconst char str[] = "H xdvi$doc restore stop\n%%xdvimark\n";
 
-	if (debug & DBG_PS) Puts("Running newdocNeWS()");
+    if (debug & DBG_PS)
+	Puts("Running newdocNeWS()");
 
-	if (NeWS_in_doc) {
-	    send(str, sizeof(str) - 1);
-	    ++NeWS_pending;
-	    NeWS_mag = NeWS_shrink = -1;
-	    NeWS_in_doc = False;
-	}
+    if (NeWS_in_doc) {
+	send(str, sizeof(str) - 1);
+	++NeWS_pending;
+	NeWS_mag = NeWS_shrink = -1;
+	NeWS_in_doc = False;
+    }
 }
 
+#else /* avoid empty compilation unit warning */
+int ___ps_news;
 #endif /* PS_NEWS */

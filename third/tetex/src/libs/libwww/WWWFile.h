@@ -61,7 +61,7 @@ Transport Interface.
   Content Negotiation
 )
 
-When accessing the lccal file system, you can enable content negotiation
+When accessing the local file system, you can enable content negotiation
 as described in the HTTP
 specification. &nbsp;The content negotiation algorithm is based on file
 suffixes as defined by the Bind manager. When looking
@@ -73,7 +73,35 @@ algorithm is based on the values of the preferences for language, media type,
 encoding, etc. - exactly like a server would do with the accept
 headers.
 */
+
 #include "HTMulti.h"
+
+/*
+(
+  File Suffix Binding
+)
+
+This module sets up the binding between a file suffix and a media type, language,
+encoding etc. In a client application the suffixes are used in protocols
+that does not directly support media types etc., like FTP, and in server
+applications they are used to make the bindings between the server and the
+local file store that the server can serve to the rest of the world (well
+almost)
+*/
+
+#include "HTBind.h"
+
+/*
+.
+  Default File Suffix Bindings
+.
+
+Register the default set of bindings between file suffixes and media types.
+This is used for example to guess the media type of a FTP URL of a local
+file URL.
+*/
+
+#include "HTBInit.h"
 
 /*
 
@@ -90,6 +118,6 @@ End of FILE module
 
   
 
-  @(#) $Id: WWWFile.h,v 1.1.1.1 2000-03-10 17:53:04 ghudson Exp $
+  @(#) $Id: WWWFile.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -3,9 +3,12 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTInit.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTInit.c,v 1.1.1.2 2003-02-25 22:28:13 amb Exp $
 **
-**	Define a basic set of suffixes and presentations
+**	General initialization functions.
+**
+**      @@@A lot of these should be moved to the various modules instead
+**      of being here
 */
 
 /* Library include files */
@@ -40,6 +43,13 @@ PUBLIC void HTConverterInit (HTList * c)
     HTConversion_add(c,"*/*",			"www/debug",	HTBlackHoleConverter,	1.0, 0.0, 0.0);
 
     /*
+    **  Set our own local file save stream for the MIME parser so that 
+    **  we know how to dump to local disk in case we get content type
+    **  application/octect stream, or an encoding that we don't know.
+    */
+    HTMIME_setSaveStream (HTSaveLocally);
+
+    /*
     ** These are converters that converts to something other than www/present,
     ** that is not directly outputting someting to the user on the screen
     */
@@ -47,7 +57,11 @@ PUBLIC void HTConverterInit (HTList * c)
     HTConversion_add(c,"message/x-rfc822-foot",	"*/*",		HTMIMEFooter,	1.0, 0.0, 0.0);
     HTConversion_add(c,"message/x-rfc822-head",	"*/*",		HTMIMEHeader,	1.0, 0.0, 0.0);
     HTConversion_add(c,"message/x-rfc822-cont",	"*/*",		HTMIMEContinue,	1.0, 0.0, 0.0);
+    HTConversion_add(c,"message/x-rfc822-upgrade","*/*",	HTMIMEUpgrade,	1.0, 0.0, 0.0);
     HTConversion_add(c,"message/x-rfc822-partial","*/*",	HTMIMEPartial,	1.0, 0.0, 0.0);
+#ifndef NO_CACHE
+    HTConversion_add(c,"www/x-rfc822-headers","*/*",        HTCacheCopyHeaders,  1.0, 0.0, 0.0);
+#endif
     HTConversion_add(c,"multipart/*",		"*/*",		HTBoundary,	1.0, 0.0, 0.0);
     HTConversion_add(c,"text/plain",		"text/html",	HTPlainToHTML,	1.0, 0.0, 0.0);
 
@@ -108,6 +122,12 @@ PUBLIC void HTConverterInit (HTList * c)
 */
 PUBLIC void HTPresenterInit (HTList * c)
 {
+    /*
+    **  First we set the special "presenter" stream that writes to a
+    **  temporary file before executing the external presenter
+    */
+    HTPresentation_setConverter(HTSaveAndExecute);
+
 #ifdef NeXT
     HTPresentation_add(c,"application/postscript", "open %s",	NULL, 1.0, 2.0, 0.0);
     /* The following needs the GIF previewer -- you might not have it. */
@@ -172,11 +192,6 @@ PUBLIC void HTContentEncoderInit (HTList * c)
 */
 PUBLIC void HTBeforeInit (void)
 {
-#if 0
-    /* Often handled better by the application */
-    HTNet_addBefore(HTMemoryCacheFilter,	NULL, 		NULL, HT_FILTER_MIDDLE);
-#endif
-    HTNet_addBefore(HTCacheFilter,		"http://*",	NULL, HT_FILTER_MIDDLE);
     HTNet_addBefore(HTCredentialsFilter,	"http://*",	NULL, HT_FILTER_LATE);
     HTNet_addBefore(HTPEP_beforeFilter, 	"http://*",	NULL, HT_FILTER_LATE);
     HTNet_addBefore(HTRuleFilter,		NULL,		NULL, HT_FILTER_LATE);
@@ -199,8 +214,8 @@ PUBLIC void HTAfterInit (void)
     HTNet_addAfter(HTRedirectFilter, 	"http://*",	NULL, HT_FOUND, 	HT_FILTER_MIDDLE);
     HTNet_addAfter(HTRedirectFilter,	"http://*",	NULL, HT_SEE_OTHER,	HT_FILTER_MIDDLE);
     HTNet_addAfter(HTRedirectFilter, 	"http://*",	NULL, HT_TEMP_REDIRECT, HT_FILTER_MIDDLE);
+    HTNet_addAfter(HTAuthInfoFilter, 	"http://*",	NULL, HT_ALL, 		HT_FILTER_MIDDLE);
     HTNet_addAfter(HTUseProxyFilter, 	"http://*",	NULL, HT_USE_PROXY, 	HT_FILTER_MIDDLE);
-    HTNet_addAfter(HTCacheUpdateFilter, "http://*",	NULL, HT_NOT_MODIFIED, 	HT_FILTER_MIDDLE);
     HTNet_addAfter(HTInfoFilter, 	NULL,		NULL, HT_ALL,		HT_FILTER_LATE);
 }
 
@@ -210,9 +225,12 @@ PUBLIC void HTAfterInit (void)
 */
 PUBLIC void HTAAInit (void)
 {
-    HTAA_newModule ("basic", HTBasic_generate, HTBasic_parse, HTBasic_delete);
+    HTAA_newModule ("basic", HTBasic_generate, HTBasic_parse, NULL,
+		     HTBasic_delete);
+#ifdef HT_MD5
     HTAA_newModule ("digest", HTDigest_generate, HTDigest_parse, 
-		     HTDigest_delete);
+		     HTDigest_updateInfo,  HTDigest_delete);
+#endif /* HT_MD5 */
 }
 
 /*	REGISTER BEFORE AND AFTER FILTERS

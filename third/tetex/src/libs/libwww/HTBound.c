@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTBound.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTBound.c,v 1.1.1.2 2003-02-25 22:25:19 amb Exp $
 **
 **	This stream parses a MIME multipart stream and builds a set of new
 **	streams via the stream stack each time we encounter a boundary start.
@@ -21,7 +21,7 @@
 #include "wwwsys.h"
 #include "WWWUtil.h"
 #include "WWWCore.h"
-#include "WWWStream.h"
+#include "HTMerge.h"
 #include "HTReqMan.h"
 #include "HTBound.h"					 /* Implemented here */
 
@@ -45,9 +45,6 @@ struct _HTStream {
 
 /* ------------------------------------------------------------------------- */
 
-/*
-**	Searches for FTP line until buffer fills up or a CRLF or LF is found
-*/
 PRIVATE int HTBoundary_put_block (HTStream * me, const char * b, int l)
 {
     const char *start = b;
@@ -59,8 +56,7 @@ PRIVATE int HTBoundary_put_block (HTStream * me, const char * b, int l)
 	    if (me->dash == 2) {
 		while (l>0 && *me->bpos && *me->bpos==*b) l--, me->bpos++, b++;
 		if (!*me->bpos) {
-		    if (STREAM_TRACE && !*me->bpos)
-			HTTrace("Boundary.... `%s\' found\n", me->boundary);
+		    HTTRACE(STREAM_TRACE, "Boundary.... `%s\' found\n" _ me->boundary);
 		    me->bpos = me->boundary;
 		    me->body = YES;
 		    me->state = EOL_DOT;
@@ -82,7 +78,7 @@ PRIVATE int HTBoundary_put_block (HTStream * me, const char * b, int l)
 		    int status = PUTBLOCK(start, end-start);
 		    if (status != HT_OK) return status;
 		}
-		if (STREAM_TRACE) HTTrace("Boundary.... Ending\n");
+		HTTRACE(STREAM_TRACE, "Boundary.... Ending\n");
 		start = b;
 		me->dash = 0;
 		me->state = EOL_BEGIN;
@@ -147,7 +143,7 @@ PRIVATE int HTBoundary_free (HTStream * me)
 	if ((status = (*me->target->isa->_free)(me->target)) == HT_WOULD_BLOCK)
 	    return HT_WOULD_BLOCK;
     }
-    if (PROT_TRACE) HTTrace("Boundary.... FREEING....\n");
+    HTTRACE(PROT_TRACE, "Boundary.... FREEING....\n");
     HT_FREE(me->boundary);
     HT_FREE(me);
     return status;
@@ -157,7 +153,7 @@ PRIVATE int HTBoundary_abort (HTStream * me, HTList * e)
 {
     int status = HT_ERROR;
     if (me->target) status = (*me->target->isa->abort)(me->target, e);
-    if (PROT_TRACE) HTTrace("Boundary.... ABORTING...\n");
+    HTTRACE(PROT_TRACE, "Boundary.... ABORTING...\n");
     HT_FREE(me->boundary);
     HT_FREE(me);
     return status;
@@ -198,11 +194,10 @@ PUBLIC HTStream * HTBoundary   (HTRequest *	request,
 	me->state = EOL_FLF;
 	StrAllocCopy(me->boundary, boundary);		       /* Local copy */
 	me->bpos = me->boundary;
-	if (STREAM_TRACE)
-	    HTTrace("Boundary.... Stream created with boundary '%s\'\n", me->boundary);
+	HTTRACE(STREAM_TRACE, "Boundary.... Stream created with boundary '%s\'\n" _ me->boundary);
 	return me;
     } else {
-	if (STREAM_TRACE) HTTrace("Boundary.... UNKNOWN boundary!\n");
+	HTTRACE(STREAM_TRACE, "Boundary.... UNKNOWN boundary!\n");
 	return HTErrorStream();
     }
 }

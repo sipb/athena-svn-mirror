@@ -32,7 +32,10 @@ static mod_env stack_env[256];
 static int index_env = 0;
 
 void mt_exit(int);
-extern void output_and_cleanup(int);
+
+static FILE *fnul = NULL;
+
+pfnOutputAndCleanup output_and_cleanup_function;
 
 #ifndef _WIN32
 #include <unistd.h>
@@ -225,18 +228,25 @@ void pop_fd()
   flushall();
   for(i = 0; i < 3; i++)
     if (i != stack_env[index_env].data.oldfd[i]) {
-      close(i);
+      if (fnul && i != fileno(fnul)) close(i);
       if (dup2(stack_env[index_env].data.oldfd[i], i) == -1) {
 	perror("pop_fd : dup2");
 	mt_exit(1);
       }
-      close(stack_env[index_env].data.oldfd[i]);
+      if (fnul && stack_env[index_env].data.oldfd[i] != fileno(fnul))
+	close(stack_env[index_env].data.oldfd[i]);
     }
 }
 
 /* popenv */
 void popenv()
 {
+  if (index_env <= 0) {
+    if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG))
+      fprintf(stderr, "Trying to popenv() from empty stack!\n");
+    return;
+  }
+
   switch(stack_env[index_env-1].op) {
   case CHDIR:
     popd();
@@ -259,6 +269,11 @@ BOOL sigint_handler(DWORD dwCtrlType)
      spawn() with parsing of the command line and set a global pid
      Next cwait(pid) in the HandlerRoutine. 
      */
+
+  /* This is not that good, but else we would need to wait for 
+     the child processes to finish ! */
+  Sleep(250);
+
   mt_exit(3);
   return FALSE;			/* return value obligatory */
 }
@@ -276,8 +291,10 @@ void mt_exit(int code)
 
   /* unstack all env from main) */
   for( ; index_env > 0; popenv());
+
   /* output the result and rm any unneeded file */
-  output_and_cleanup(code);
+  if (output_and_cleanup_function != 0)
+    (*output_and_cleanup_function)(code);
 
   exit(code);
 }
@@ -309,7 +326,7 @@ dump_stack()
 void start_redirection(boolean discard_stdout)
 {
   int newfd[3];
-  FILE *fnul;
+  if (fnul == NULL)
 #ifdef _WIN32
   fnul = fopen("nul", "r");	/* fopen /dev/null */
 #else
@@ -317,8 +334,8 @@ void start_redirection(boolean discard_stdout)
 #endif
   
   newfd[0] = fileno(fnul);
-  newfd[1] = (discard_stdout ? fileno(fnul) : 2);
-  newfd[2] = 2;
+  newfd[1] = (discard_stdout ? fileno(fnul) : fileno(stderr));
+  newfd[2] = fileno(stderr);
   
   push_fd(newfd);
 }

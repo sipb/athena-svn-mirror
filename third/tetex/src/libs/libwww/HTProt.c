@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTProt.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTProt.c,v 1.1.1.2 2003-02-25 22:25:49 amb Exp $
 **
 **
 ** HISTORY:
@@ -64,7 +64,7 @@ PUBLIC BOOL HTProtocol_add (const char *       	name,
 	newProt->client = client;
 	newProt->server = server;
 	if (!protocols) protocols = HTList_new();
-	if (CORE_TRACE) HTTrace("Protocol.... Adding `%s'\n", name);
+	HTTRACE(CORE_TRACE, "Protocol.... Adding `%s'\n" _ name);
 	return HTList_addObject(protocols, (void *) newProt);
     }
     return NO;
@@ -80,9 +80,11 @@ PUBLIC BOOL HTProtocol_delete (const char * name)
 	HTProtocol *pres;
 	while ((pres = (HTProtocol *) HTList_nextObject(cur))) {
 	    if (!strcmp(pres->name, name)) {
+		BOOL status = HTList_removeObject(protocols, (void *) pres);
 		HT_FREE(pres->name);
 		HT_FREE(pres->transport);
-		return HTList_removeObject(protocols, (void *) pres);
+		HT_FREE(pres);
+		return status;
 	    }
 	}
     }

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTProxy.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTProxy.c,v 1.1.1.2 2003-02-25 22:26:41 amb Exp $
 **
 **	Replaces the old env variables for gateways and proxies. However for
 **	backward compatibility there is a function that reads the env variables
@@ -50,6 +50,7 @@ typedef struct _HTHostlist {
 PRIVATE HTList * proxies = NULL;		    /* List of proxy servers */
 PRIVATE HTList * gateways = NULL;			 /* List of gateways */
 PRIVATE HTList * noproxy = NULL;   /* Don't proxy on these hosts and domains */
+PRIVATE int      noproxy_is_onlyproxy = 0; /* Interpret the noproxy list as an onlyproxy one */
 
 #if 0
 PRIVATE HTList * onlyproxy = NULL;  /* Proxy only on these hosts and domains */
@@ -77,8 +78,7 @@ PRIVATE regex_t * get_regex_t (const char * regex_str, int cflags)
 	    HT_OUTOFMEM("get_regex_t");
 	if ((status = regcomp(regex, regex_str, cflags))) {
 	    char * err_msg = get_regex_error(status, regex);
-	    if (PROT_TRACE)
-		HTTrace("HTProxy..... Regular expression error: %s\n", err_msg);
+	    HTTRACE(PROT_TRACE, "HTProxy..... Regular expression error: %s\n" _ err_msg);
 	    HT_FREE(err_msg);
 	    HT_FREE(regex);
 	}
@@ -131,9 +131,8 @@ PRIVATE BOOL add_object (HTList * list, const char * access, const char * url,
 		break;				       /* We already have it */
 	}
 	if (pres) {
-	    if (PROT_TRACE)
-		HTTrace("HTProxy..... replacing for `%s\' access %s\n",
-			me->url, me->access);
+	    HTTRACE(PROT_TRACE, "HTProxy..... replacing for `%s\' access %s\n" _ 
+			me->url _ me->access);
 	    HT_FREE(pres->access);
 	    HT_FREE(pres->url);
 #ifdef HT_POSIX_REGEX
@@ -142,9 +141,8 @@ PRIVATE BOOL add_object (HTList * list, const char * access, const char * url,
 	    HTList_removeObject(list, (void *) pres);
 	    HT_FREE(pres);
 	}
-	if (PROT_TRACE)
-	    HTTrace("HTProxy..... adding for `%s\' access %s\n",
-		    me->url, me->access);
+	HTTRACE(PROT_TRACE, "HTProxy..... adding for `%s\' access %s\n" _ 
+		    me->url _ me->access);
 	HTList_addObject(list, (void *) me);
     }
     return YES;
@@ -200,8 +198,7 @@ PRIVATE BOOL add_hostname (HTList * list, const char * host,
 	while ((*ptr = TOLOWER(*ptr))) ptr++;
     }
     me->port = port;					      /* Port number */
-    if (PROT_TRACE)
-	HTTrace("HTHostList.. adding `%s\' to list\n", me->host);
+    HTTRACE(PROT_TRACE, "HTHostList.. adding `%s\' to list\n" _ me->host);
     HTList_addObject(list, (void *) me);
     return YES;
 }
@@ -298,7 +295,8 @@ PUBLIC BOOL HTProxy_deleteAll (void)
 	** handling proxy authentication
 	*/
 	HTNet_deleteBefore(HTAA_proxyBeforeFilter);
-        HTNet_deleteAfter(HTAuthFilter);
+        HTNet_deleteAfterStatus(HT_NO_PROXY_ACCESS);
+        HTNet_deleteAfterStatus(HT_PROXY_REAUTH);
 
 	proxies = NULL;
 	return YES;
@@ -383,6 +381,24 @@ PUBLIC BOOL HTNoProxy_deleteAll (void)
     return NO;
 }
 
+/*      HTNProxy_noProxyIsOnlyProxy
+**     `----------------------------
+**      Returns the state of the noproxy_is_onlyproxy flag
+*/
+PUBLIC int HTProxy_NoProxyIsOnlyProxy (void)
+{
+  return noproxy_is_onlyproxy;
+}
+
+/*      HTNProxy_setNoProxyisOnlyProxy
+**      --------------------------
+**      Sets the state of the noproxy_is_onlyproxy flag
+*/
+PUBLIC void HTProxy_setNoProxyIsOnlyProxy (int value)
+{
+  noproxy_is_onlyproxy = value;
+}
+
 /*	HTProxy_find
 **	------------
 **	This function evaluates the lists of registered proxies and if
@@ -397,6 +413,8 @@ PUBLIC char * HTProxy_find (const char * url)
 {
     char * access;
     char * proxy = NULL;
+    int no_proxy_found = 0;
+
     if (!url || !proxies)
 	return NULL;
     access = HTParse(url, "", PARSE_ACCESS);
@@ -418,30 +436,34 @@ PUBLIC char * HTProxy_find (const char * url)
 		if (pres->regex) {
 		    BOOL match = regexec(pres->regex, url, 0, NULL, 0) ? NO : YES;
 		    if (match) {
-			if (PROT_TRACE)
-			    HTTrace("GetProxy.... No proxy directive found: `%s\'\n", pres->host);
-			HT_FREE(access);
-			return NULL;
+			HTTRACE(PROT_TRACE, "GetProxy.... No proxy directive found: `%s\'\n" _ pres->host);
+			no_proxy_found = 1;
+			break;
 		    }
 		} else
 #endif
 		if (!pres->access ||
 		    (pres->access && !strcmp(pres->access, access))) {
-		    if (pres->port == port) {
+		    if ((pres->port == 0) || (pres->port == port)) {
 			char *np = pres->host+strlen(pres->host);
 			char *hp = host+strlen(host);
 			while (np>=pres->host && hp>=host && (*np--==*hp--));
 			if (np==pres->host-1 && (hp==host-1 || *hp=='.')) {
-			    if (PROT_TRACE)
-				HTTrace("GetProxy.... No proxy directive found: `%s\'\n", pres->host);
-			    HT_FREE(access);
-			    return NULL;
+			    HTTRACE(PROT_TRACE, "GetProxy.... No proxy directive found: `%s\'\n" _ pres->host);
+			    no_proxy_found = 1;
+			    break;
 			}
 		    }
 		}
 	    }
 	}
 	HT_FREE(host);
+    }
+
+    if ((no_proxy_found && !noproxy_is_onlyproxy)
+        || (!no_proxy_found && noproxy_is_onlyproxy)) {
+      HT_FREE(access);
+      return NULL;
     }
 
     /* Now check if we have a proxy registered for this access method */
@@ -454,16 +476,14 @@ PUBLIC char * HTProxy_find (const char * url)
 		BOOL match = regexec(pres->regex, url, 0, NULL, 0) ? NO : YES;
 		if (match) {
 		    StrAllocCopy(proxy, pres->url);
-		    if (PROT_TRACE)
-			HTTrace("GetProxy.... Found: `%s\'\n", pres->url);
+		    HTTRACE(PROT_TRACE, "GetProxy.... Found: `%s\'\n" _ pres->url);
 		    break;
 		}
 	    } else
 #endif
 	    if (!strcmp(pres->access, access)) {
 		StrAllocCopy(proxy, pres->url);
-		if (PROT_TRACE)
-		    HTTrace("GetProxy.... Found: `%s\'\n", pres->url);
+		HTTRACE(PROT_TRACE, "GetProxy.... Found: `%s\'\n" _ pres->url);
 		break;
 	    }
 	}
@@ -496,8 +516,7 @@ PUBLIC char * HTGateway_find (const char * url)
 	while ((pres = (HTProxy *) HTList_nextObject(cur)) != NULL) {
 	    if (!strcmp(pres->access, access)) {
 		StrAllocCopy(gateway, pres->url);
-		if (PROT_TRACE)
-		    HTTrace("GetGateway.. Found: `%s\'\n", pres->url);
+		HTTRACE(PROT_TRACE, "GetGateway.. Found: `%s\'\n" _ pres->url);
 		break;
 	    }
 	}
@@ -524,7 +543,7 @@ PUBLIC void HTProxy_getEnvVar (void)
 	NULL
     };
     const char **access = accesslist;
-    if (PROT_TRACE)HTTrace("Proxy....... Looking for environment variables\n");
+    HTTRACE(PROT_TRACE, "Proxy....... Looking for environment variables\n");
     while (*access) {
 	BOOL found = NO;
 	char *gateway=NULL;

@@ -48,8 +48,16 @@ extern KPSEDLL hash_table_type hash_create P1H(unsigned size);
 
 /* Insert the (KEY,VALUE) association into TABLE.  KEY may have more
    than one VALUE.  Neither KEY nor VALUE is copied.  */
-extern KPSEDLL void hash_insert P3H(hash_table_type *table,  const_string key,
+extern KPSEDLL void hash_insert P3H(hash_table_type *table,
+                                    const_string key,
                                     const_string value);
+
+/* Insert the (KEY, VALUE) association into TABLE.  KEY may have more
+   than one VALUE.  Neither KEY nor VALUE is copied.  Assume that KEY
+   is already normalized (all lowercase) on platforms where this matters. */
+extern KPSEDLL void hash_insert_normalized P3H(hash_table_type *table,
+                                               const_string key,
+                                               const_string value);
 
 /* Remove the (KEY,VALUE) association from TABLE.  */
 extern KPSEDLL void hash_remove P3H(hash_table_type *table,  const_string key,

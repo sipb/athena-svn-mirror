@@ -10,6 +10,9 @@ test -f /bin/bsh && test -z "$RUNNING_BSH" \
   && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
 unset RUNNING_BSH
 
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
+
 umask 022
 
 progname="`basename $0`"

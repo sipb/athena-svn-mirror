@@ -1,0 +1,81 @@
+#! /bin/sh
+
+# This is a kludge to fix helper apps in mozilla.  See mozilla bugs #57420
+# and also #78919.
+
+# It's also useful for tar files with Netscape 4.x
+
+NO_RM=
+
+if [ $# -gt 1 -a "x$1" = "x-no-rm" ]; then
+  NO_RM=y
+  shift
+fi
+
+if [ $# -ne 1 ]; then
+  xmessage -nearmouse 'Usage: xdvizilla [-no-rm] <file>'
+  exit 1
+fi
+
+DIR=`dirname "$0"`
+
+if [ "$DIR" = . ]; then
+  DIR=
+elif [ -f "$DIR"/xdvi -a -x "$DIR"/xdvi ]; then
+  DIR="$DIR"/
+else
+  DIR=
+fi
+
+FILE=$1
+FILETYPE=`file "$FILE"`
+
+case "$FILETYPE" in
+
+  *"gzip compressed data"*)
+    FILE=/tmp/xdvizilla$$
+    gunzip -c "$1" > $FILE
+    [ -n "$NO_RM" ] || rm -f -- "$1"
+    NO_RM=
+    FILETYPE=`file "$FILE"`
+    ;;
+
+  *"compressed data"* | *"compress'd data"*)
+    FILE=/tmp/xdvizilla$$
+    uncompress -c "$1" > $FILE
+    [ -n "$NO_RM" ] || rm -f -- "$1"
+    NO_RM=
+    FILETYPE=`file "$FILE"`
+    ;;
+
+  "$1: empty")
+    xmessage -nearmouse "$1 is an empty file
+(this is a bug in Mozilla)"
+    [ -n "$NO_RM" ] || rm -f -- "$1"
+    exit 1
+    ;;
+
+esac
+
+case "$FILETYPE" in
+
+  *" tar archive")
+    TARDIR=/tmp/xdvitar$$
+    mkdir $TARDIR
+    cat "$FILE" | (cd $TARDIR; tar xf -)
+    DVINAME=`tar tf "$FILE" | grep '\.dvi$' | head -1`
+    [ -n "$NO_RM" ] || rm -f -- "$FILE"
+    if [ -z "$DVINAME" ]; then
+      xmessage -nearmouse "Tar file does not contain a dvi file"
+    else
+      (cd $TARDIR; "$DIR"xdvi -safer "$DVINAME")
+    fi
+    rm -rf $TARDIR
+  ;;
+
+  *)
+    "$DIR"xdvi -safer "$FILE"
+    [ -n "$NO_RM" ] || rm -f -- "$FILE"
+  ;;
+
+esac

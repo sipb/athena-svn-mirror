@@ -1,3 +1,18 @@
+2003-01-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mftalk.c: Use SIGCHLD, not SIGCLD (but fall back if necessary).
+	Reported by hubertf@netbsd.org.
+
+2001-11-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* x11-Xt.c (mf_checkextent): Add prototype.
+	(mf_optiondesclist): The pointers in the argument list are XPointers,
+	not XtPointers.
+
+2001-11-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* x11-Xt.c (mf_newpixmap): Add prototype to declaration.
+
 1999-02-06  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* trap.c (mf_trap_initscreen, mf_trap_updatescreen): Use P1H macro

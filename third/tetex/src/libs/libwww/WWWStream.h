@@ -51,7 +51,23 @@ This stream also buffers the result to find out the content length. If a
 maximum buffer limit is reached Content-Length is calculated for logs but
 it is not sent to the client -- rather the buffer is flushed right away.
 */
+
 #include "HTConLen.h"			/* Content Length Counter */
+
+/*
+(
+  File Writer Streams
+)
+
+This module contains a set of basic file writer streams that are used to
+dump data objects to disk at various places within the Library core. Most
+notably, we use these streams in the Format Manager
+in order to handle external presenters, for example post script viewers etc.
+These streams can of course also be used in other contexts by the application.
+*/
+
+#include "HTFWrite.h"
+#include "HTFSave.h"
 
 /*
 (
@@ -121,6 +137,18 @@ HTXParse_free.
 */
 
 #include "HTXParse.h"			/* External parse stream */
+#include "HTEPtoCl.h"			/* Client callbacks */
+
+/*
+(
+  Network Telnet To Internal Character Text
+)
+
+This is a filter stream suitable for taking text from a socket and passing
+it into a stream which expects text in the local C representation.
+*/
+
+#include "HTNetTxt.h"
 
 /*
 */
@@ -135,6 +163,6 @@ HTXParse_free.
 
   
 
-  @(#) $Id: WWWStream.h,v 1.1.1.1 2000-03-10 17:53:04 ghudson Exp $
+  @(#) $Id: WWWStream.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */
