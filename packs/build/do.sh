@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.8 1996-11-21 20:28:01 ghudson Exp $
+# $Id: do.sh,v 1.9 1996-12-26 19:01:13 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -35,22 +35,22 @@ SunOS*5.4*sun4*)	ATHENA_SYS=sun4m_54	;;
 IRIX*5.3*)		ATHENA_SYS=sgi_53	;;
 esac
 
-# Determine platform type and appropriate path.
+# Determine platform type, appropriate path, and compiler for use with plain
+# Makefiles and some third-party packages.
 case "`uname -a`" in
 SunOS*sun4*)
 	HOSTTYPE=sun4
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
 	PATH=/usr/ccs/bin:/usr/athena/bin:/usr/bin:/usr/ucb
 	PATH=${PATH}:/usr/openwin/bin
+	compiler="/usr/gcc/bin/gcc -DSOLARIS"
 	;;
 IRIX*)
 	HOSTTYPE=sgi
 	PATH=/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
+	compiler=cc
 	;;
 esac
-
-# Extract the compiler for this platform from config.site.
-compiler=`. $CONFIG_SITE; echo $CC`
 
 if [ -r Makefile.athena ]; then
 	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR
