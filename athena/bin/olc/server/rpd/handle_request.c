@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.5 1990-12-02 13:33:04 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.6 1990-12-02 23:07:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -39,30 +39,27 @@ handle_request(fd, from)
     instance_buffer[0] = '*';
 
   if ((len = sread(fd,&version,sizeof(version))) != sizeof(version)) {
-    fprintf(stderr,"Not enough bytes for version (%d received)\n",len);
-    perror("read version");
+    syslog(LOG_WARNING,"Not enough bytes for version (%d received)",len);
     punt_connection(fd,from);
     return;
   }
 
   version = ntohl(version);
   if (version != VERSION) {
-    fprintf(stderr,"Version skew from %s\n curr = %d, recvd = %d\n",
+    syslog(LOG_WARNING,"Version skew from %s\n curr = %d, recvd = %d\n",
 	    inet_ntoa(from.sin_addr),VERSION,version);
     punt_connection(fd,from);
     return;
   }
 
   if ((len = sread(fd,username,9)) != 9) {
-    fprintf(stderr,"Wanted nine bytes of username, only got %d\n",len);
-    perror("read username");
+    syslog(LOG_WARNING,"Wanted nine bytes of username, only got %d\n",len);
     punt_connection(fd,from);
     return;
   }
 
   if ((len = sread(fd,&instance,sizeof(instance))) != sizeof(instance)) {
-    fprintf(stderr,"Not enough bytes for instance (%d)\n",len);
-    perror("read instance");
+    syslog(LOG_WARNING,"Not enough bytes for instance (%d)\n",len);
     punt_connection(fd,from);
     return;
   }
@@ -73,8 +70,7 @@ handle_request(fd, from)
 
   if ((len = sread(fd,&their_auth.length, sizeof(their_auth.length))) !=
       sizeof(their_auth.length)) {
-    fprintf(stderr,"Not enought bytes for ticket (%d)\n",len);
-    perror("read ticket length");
+    syslog(LOG_WARNING,"Not enought bytes for ticket (%d)\n",len);
     punt_connection(fd,from);
     return;
   }
@@ -84,8 +80,7 @@ handle_request(fd, from)
   ltr =MIN(sizeof(unsigned char)*their_auth.length,
 	   sizeof(their_auth.dat));
   if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {
-    fprintf(stderr,"Error reading kerberos ticket (%d)\n",len);
-    perror("read: kdata");
+    syslog(LOG_WARNING,"Error reading kerberos ticket (%d)\n",len);
     punt_connection(fd,from);
     return;
   }
@@ -93,7 +88,8 @@ handle_request(fd, from)
 		    (unsigned long) from.sin_addr.s_addr,&their_info,"");
   if (auth != RD_AP_OK) {
     /* Twit! */
-    fprintf(stderr,"Kerberos error: %s\n",krb_err_txt[auth]);
+    syslog(LOG_WARNING,"Kerberos error: %s\n from %s",krb_err_txt[auth],
+	   inet_ntoa(from.sin_addr));
     output_len = htonl(-auth);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
@@ -104,13 +100,18 @@ handle_request(fd, from)
 	  their_info.prealm);
   if (!acl_check(MONITOR_ACL,principal_buffer)) {
     /* Twit! */
-    fprintf(stderr,"Request from %s@%s who is not on the acl\n",
+    syslog(LOG_WARNING,"Request from %s@%s who is not on the acl\n",
 	    principal_buffer, inet_ntoa(from.sin_addr));
-    output_len = htonl(-255);
+    output_len = htonl(-13);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
     return;
   }
+
+  syslog(LOG_DEBUG,"%s replays %s [%d]",principal_buffer, username,
+	 instance);
+
+
 #endif /* KERBEROS */
 
   buf = get_log(username,instance,&result);
@@ -118,9 +119,9 @@ handle_request(fd, from)
     /* Didn't get response; determine if it's an error or simply that the */
     /* question just doesn't exist based on result */
     if (result == 0)
-      output_len = htonl(-1L);
+      output_len = htonl(-11L);
     else
-      output_len = htonl(-2L);
+      output_len = htonl(-12L);
     write(fd,&output_len,sizeof(long));
   }
   else {
@@ -138,6 +139,6 @@ punt_connection(fd, from)
 {
   shutdown(fd,2);   /* Not going to send or receive from this guy again.. */
   close(fd);
-  fprintf(stderr,"Punted connection from %s\n",inet_ntoa(from.sin_addr));
+  syslog(LOG_INFO,"Punted connection from %s\n",inet_ntoa(from.sin_addr));
   return;
 }
