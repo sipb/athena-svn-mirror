@@ -36,6 +36,7 @@ SRCS = \
 	stime.c \
 	rd_preauth.c \
 	mk_preauth.c \
+	unix_time.c \
 	$(CACHESRCS) $(SETENVSRCS) $(STRCASESRCS) $(SHMSRCS) \
 	$(LIB_KRB_HOSTSRCS) $(SERVER_KRB_SRCS) $(NETIO_SRCS) $(REALMDBSRCS)
 
@@ -71,6 +72,7 @@ OBJS	= \
 	stime.$(OBJEXT) \
 	rd_preauth.$(OBJEXT) \
 	mk_preauth.$(OBJEXT) \
+	unix_time.$(OBJEXT) \
 	$(CACHEOBJS) $(SETENVOBJS) $(STRCASEOBJS) $(SHMOBJS) \
 	$(LIB_KRB_HOSTOBJS) $(SERVER_KRB_OBJS) $(NETIO_OBJS) $(REALMDBOBJS)
 
