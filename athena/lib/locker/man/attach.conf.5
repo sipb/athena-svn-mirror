@@ -1,4 +1,4 @@
-.\" $Id: attach.conf.5,v 1.1 1999-02-26 19:05:06 danw Exp $
+.\" $Id: attach.conf.5,v 1.2 1999-05-26 19:16:56 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -202,9 +202,11 @@ explicitly defined. (The plus or minus must come before the caret if
 both are present.)
 .SH EXAMPLES
 .IP
+.nf
 nomountpoint		^/mit/[^/]*/.
 mountpoint		^/mit/
 nomountpoint		^/mit
+.fi
 .PP
 This will allow lockers to be attached in /mit, but not on /mit
 itself, or subdirectories of /mit. The first line prohibits
@@ -214,8 +216,10 @@ of /mit. The second line allows anything underneath /mit that the
 first line didn't prohibit. The final line prohibits attaching a
 locker to /mit itself.
 .IP
+.nf
 options	{nfs}:.*	nodev
 noallow {-}:r$ {^afs} games
+.fi
 .PP
 The first line specifies that all NFS lockers must be mounted with the
 'nodev' mount option. The second line states that untrusted users will
