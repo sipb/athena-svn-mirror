@@ -106,16 +106,19 @@ parse_contents()
 	    }
 	  else
 	    {
-	    sprintf(line1, "No index for entry: %s",
-		    Entry_Table[Current_Index-1].title);
-	    messages(line1,"Please select a different entry.");
-	    extract_parent_dir(preserve_dir,reset_dir);
-	    strcpy(Current_Dir,old_dir);
-	    return(ERROR);
-	  }
+	      sprintf(line1, "No index for entry: %s",
+		      Entry_Table[Current_Index-1].title);
+	      messages(line1,"Please select a different entry.");
+	      extract_parent_dir(preserve_dir,reset_dir);
+	      strcpy(Current_Dir,old_dir);
+	      return(ERROR);
+	    }
 	}
       else
-	message(1, "cref: parse_contents: strangeness here.");
+	{
+	  sprintf(line1, "%s: parse_contents: strangeness here.", Prog_Name);
+	  message(1, line1);
+	}
     }
   i = 0;
   while ( fgets(inbuf, LINE_LENGTH, infile) != NULL)
@@ -250,7 +253,7 @@ make_abbrev_table()
 
 read_abbrevs(fp)
      FILE *fp;
-     int index;
+/*     int index; */
 {
   char inbuf[LINE_LENGTH];		/* Input line. */
   char *in_ptr;				/* Input character pointer. */
