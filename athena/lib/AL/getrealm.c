@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v $
- * $Author: steiner $
+ * $Author: shanzer $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 1.2 1988-05-25 16:52:52 steiner Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 1.3 1988-10-07 05:12:20 shanzer Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -71,8 +71,10 @@ char *host;
 	while (1) {
 		if ((retval = fscanf(trans_file, "%s %s",
 				     trans_host, trans_realm)) != 2) {
-			if (retval == EOF)
+			if (retval == EOF) {
+				fclose(trans_file);
 				return(ret_realm);
+			}
 			continue;	/* ignore broken lines */
 		}
 		trans_host[MAXHOSTNAMELEN] = '\0';
@@ -80,6 +82,7 @@ char *host;
 		if (!strcasecmp(trans_host, host)) {
 			/* exact match of hostname, so return the realm */
 			(void) strcpy(ret_realm, trans_realm);
+			fclose(trans_file);
 			return(ret_realm);
 		}
 		if ((trans_host[0] = '.') && domain) { 
