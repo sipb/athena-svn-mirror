@@ -24,7 +24,7 @@
 #include <olcd.h>
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.7 1990-01-12 21:04:15 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.8 1990-02-04 20:30:24 vanharen Exp $";
 
 char *DATABASE_FILE      = "/usr/lib/olc/database";
 char *SPECIALTY_DIR      = "/usr/lib/olc/specialties";
@@ -33,6 +33,8 @@ char *LOG_DIR            = "/usr/spool/olc";
 char *BACKUP_FILE        = "/usr/spool/olc/backup.dat";
 char *BACKUP_TEMP        = "/usr/spool/olc/backup.temp";
 char *ERROR_LOG          = "/usr/adm/olc/errors";
+char *REQ_STATS_LOG      = "/usr/adm/olc/requests.stats";
+char *QUES_STATS_LOG     = "/usr/adm/olc/question.stats";
 char *STATUS_LOG         = "/usr/adm/olc/status";
 char *ADMIN_LOG          = "/usr/adm/olc/admin";
 char *STDERR_LOG         = "/usr/adm/olc/errors";
