@@ -15,8 +15,8 @@ Third-party stuff not under third
 	* packs/config/Dash.fallback
 
 		A fallback copy of
-		/afs/athena.mit.edu/system/dash/Dash.menus for when
-		the master copy is inaccessible.  This should be
+		/afs/athena.mit.edu/system/config/dash/Dash.menus for
+		when the master copy is inaccessible.  This should be
 		updated at release time.
 
 	* athena/etc/xdm/xlogin/bitmaps/menu16
