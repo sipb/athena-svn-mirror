@@ -21,15 +21,17 @@
 /* This file is part of the CREF finder.  It contains the display routines.
  *
  *
- *	$Source:
- *	$Author:
- *      $Header:
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
+ *	$Author: lwvanels $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.3 1991-02-25 10:03:51 lwvanels Exp $
  */
 
 
 #ifndef lint
 static char *rcsid_display_c = "$Header: ";
 #endif	lint
+
+#include <mit-copyright.h>
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */

@@ -20,14 +20,16 @@
 /* This file is part of the CREF finder.  It contains miscellaneous useful
  * utilities.
  *
- *	$Source:
- *	$Author:
- *      $Header:
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
+ *	$Author: lwvanels $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.3 1991-02-25 10:02:47 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.2 1990-03-09 11:58:14 vanharen Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.3 1991-02-25 10:02:47 lwvanels Exp $";
 #endif	lint
+
+#include <mit-copyright.h>
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
