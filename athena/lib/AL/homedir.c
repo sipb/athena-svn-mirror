@@ -20,6 +20,9 @@
 #include <sys/mount.h>
 #include <sys/fs_types.h>
 #endif
+#ifdef SOLARIS
+#include <sys/mkdev.h>
+#endif
 
 /* Function Name: ALisRemoteDir
  * Arguments: dir - name of the directory.
@@ -158,7 +161,14 @@ ALgetHomedir(ALsession session)
 	fprintf(stderr, "Filesystem mappings may be incorrect.\n");
       }
     /* don't do zephyr here since user doesn't have zwgc started anyway */
-    execl("/bin/athena/attach", "attach", "-quiet", "-nozephyr", ALpw_name(session), NULL);
+    if (ALisTrue(session, ALhaveAuthentication))
+      execl("/bin/athena/attach",
+	    "attach", "-quiet", "-nozephyr", ALpw_name(session), NULL);
+    else
+      execl("/bin/athena/attach",
+	    "attach", "-quiet", "-nomap", "-nozephyr",
+	    ALpw_name(session), NULL);
+
     _exit(-1);
   default:
     break;
@@ -177,6 +187,12 @@ ALgetHomedir(ALsession session)
       /* make name of temporary directory */
       sprintf(buf, "/tmp/%s", ALpw_name(session));
       strcpy(ALpw_dir(session), buf);
+
+      /* make sure /etc/passwd has the right homedir */
+      ALmodifyLinesOfFile(session, "/etc/passwd", "/etc/ptmp",
+			  ALmodifyRemoveUser,
+			  ALmodifyAppendPasswd);
+      /* printf("Tried to add %s to /etc/passwd\n", ALpw_dir(session)); */
 
       i = lstat(buf, &stb);
       if (i == 0)
@@ -210,7 +226,9 @@ ALgetHomedir(ALsession session)
       /* set effective uid back to root */
       seteuid(0);
 
+      /* remember we created a temporary homedir */
       ALflagSet(session, ALdidCreateHomedir);
+
       ALreturnError(session, warning, "");
   } else
     ALflagSet(session, ALdidAttachHomedir);
