@@ -60,7 +60,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
+BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
+BONOBO_REQUIRED = @BONOBO_REQUIRED@
+BONOBO_UI_REQUIRED = @BONOBO_UI_REQUIRED@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,6 +82,7 @@ EEL_REQUIRED = @EEL_REQUIRED@
 EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
 EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
@@ -85,14 +90,17 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIMPHWRAPBOX_CFLAGS = @GIMPHWRAPBOX_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_DESKTOP_REQUIRED = @GNOME_DESKTOP_REQUIRED@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
+GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +110,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -124,10 +134,14 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
+PANGO_REQUIRED = @PANGO_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 RSVG_REQUIRED = @RSVG_REQUIRED@
 STRIP = @STRIP@
@@ -477,39 +491,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-nautilus-clipboard.lo nautilus-clipboard.o : nautilus-clipboard.c \
-	../config.h nautilus-clipboard.h nautilus-bonobo-ui.h
-nautilus-distributed-undo-common.lo nautilus-distributed-undo-common.o : \
-	nautilus-distributed-undo-common.c nautilus-distributed-undo.h
-nautilus-distributed-undo-skels.lo nautilus-distributed-undo-skels.o : \
-	nautilus-distributed-undo-skels.c nautilus-distributed-undo.h
-nautilus-distributed-undo-stubs.lo nautilus-distributed-undo-stubs.o : \
-	nautilus-distributed-undo-stubs.c nautilus-distributed-undo.h
-nautilus-idle-queue.lo nautilus-idle-queue.o : nautilus-idle-queue.c \
-	../config.h nautilus-idle-queue.h
-nautilus-scroll-positionable.lo nautilus-scroll-positionable.o : \
-	nautilus-scroll-positionable.c nautilus-scroll-positionable.h \
-	nautilus-view-component.h ../config.h
-nautilus-undo-transaction.lo nautilus-undo-transaction.o : \
-	nautilus-undo-transaction.c ../config.h \
-	nautilus-undo-transaction.h nautilus-undo.h \
-	nautilus-distributed-undo.h nautilus-undo-private.h
-nautilus-undo.lo nautilus-undo.o : nautilus-undo.c ../config.h \
-	nautilus-undo.h nautilus-undo-private.h \
-	nautilus-distributed-undo.h nautilus-undo-transaction.h \
-	nautilus-undo.h
-nautilus-view-component-common.lo nautilus-view-component-common.o : \
-	nautilus-view-component-common.c nautilus-view-component.h
-nautilus-view-component-skels.lo nautilus-view-component-skels.o : \
-	nautilus-view-component-skels.c nautilus-view-component.h
-nautilus-view-component-stubs.lo nautilus-view-component-stubs.o : \
-	nautilus-view-component-stubs.c nautilus-view-component.h
-nautilus-view-standard-main.lo nautilus-view-standard-main.o : \
-	nautilus-view-standard-main.c ../config.h \
-	nautilus-view-standard-main.h
-nautilus-view.lo nautilus-view.o : nautilus-view.c ../config.h \
-	nautilus-view.h nautilus-view-component.h nautilus-idle-queue.h \
-	nautilus-undo.h
 
 info-am:
 info: info-am

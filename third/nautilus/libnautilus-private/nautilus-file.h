@@ -71,6 +71,7 @@ typedef enum {
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "noread"
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "nowrite"
 #define NAUTILUS_FILE_EMBLEM_NAME_TRASH "trash"
+#define NAUTILUS_FILE_EMBLEM_NAME_NOTE "note"
 
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);
@@ -135,6 +136,8 @@ char *                  nautilus_file_get_mime_type                     (Nautilu
 gboolean                nautilus_file_is_mime_type                      (NautilusFile                   *file,
 									 const char                     *mime_type);
 gboolean                nautilus_file_is_symbolic_link                  (NautilusFile                   *file);
+char *                  nautilus_file_get_volume_free_space             (NautilusFile                   *file);
+char *                  nautilus_file_get_volume_name                   (NautilusFile                   *file);
 char *                  nautilus_file_get_symbolic_link_target_path     (NautilusFile                   *file);
 char *                  nautilus_file_get_symbolic_link_target_uri      (NautilusFile                   *file);
 gboolean                nautilus_file_is_broken_symbolic_link           (NautilusFile                   *file);
@@ -298,6 +301,10 @@ char *                  nautilus_file_get_drop_target_uri               (Nautilu
 /* Get custom icon (if specified by metadata or link contents) */
 char *                  nautilus_file_get_custom_icon                   (NautilusFile                   *file);
 
+
+/* Thumbnailing handling */
+gboolean                nautilus_file_is_thumbnailing                   (NautilusFile                   *file);
+
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.
  */
@@ -313,7 +320,7 @@ void                    nautilus_file_dump                              (Nautilu
 typedef struct NautilusFileDetails NautilusFileDetails;
 
 struct NautilusFile {
-	GtkObject parent_slot;
+	GObject parent_slot;
 	NautilusFileDetails *details;
 };
 
@@ -328,7 +335,7 @@ typedef enum {
 } NautilusDateType;
 
 typedef struct {
-	GtkObjectClass parent_slot;
+	GObjectClass parent_slot;
 	
 	/* Called when the file notices any change. */
 	void                  (* changed)                (NautilusFile *file);

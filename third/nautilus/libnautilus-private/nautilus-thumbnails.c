@@ -3,6 +3,7 @@
    nautilus-thumbnails.h: Thumbnail code for icon factory.
  
    Copyright (C) 2000, 2001 Eazel, Inc.
+   Copyright (C) 2002, 2003 Red Hat, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -57,6 +58,15 @@
 
 static gpointer thumbnail_thread_start (gpointer data);
 
+/* structure used for making thumbnails, associating a uri with where the thumbnail is to be stored */
+
+typedef struct {
+	char *image_uri;
+	char *mime_type;
+	time_t original_file_mtime;
+} NautilusThumbnailInfo;
+
+
 /*
  * Thumbnail thread state.
  */
@@ -77,6 +87,9 @@ static volatile gboolean thumbnail_thread_is_running = FALSE;
 /* The list of NautilusThumbnailInfo structs containing information about the
    thumbnails we are making. Lock thumbnails_mutex when accessing this. */
 static volatile GList *thumbnails_to_make = NULL;
+/* The currently thumbnailed icon. it also exists in the thumbnails_to_make list
+ * to avoid adding it again. Lock thumbnails_mutex when accessing this. */
+static NautilusThumbnailInfo *currently_thumbnailing = NULL;
 
 static GnomeThumbnailFactory *thumbnail_factory = NULL;
 
@@ -99,15 +112,6 @@ get_file_mtime (const char *file_uri, time_t* mtime)
 	return TRUE;
 }
 
-
-/* structure used for making thumbnails, associating a uri with where the thumbnail is to be stored */
-
-typedef struct {
-	char *image_uri;
-	char *mime_type;
-	time_t original_file_mtime;
-} NautilusThumbnailInfo;
-
 /* GCompareFunc-style function for comparing NautilusThumbnailInfos.
  * Returns 0 if they refer to the same uri.
  */
@@ -121,6 +125,14 @@ compare_thumbnail_info (gconstpointer a, gconstpointer b)
 	info_b = (NautilusThumbnailInfo *)b;
 
 	return strcmp (info_a->image_uri, info_b->image_uri) != 0;
+}
+
+static void
+free_thumbnail_info (NautilusThumbnailInfo *info)
+{
+	g_free (info->image_uri);
+	g_free (info->mime_type);
+	g_free (info);
 }
 
 /* This function is added as a very low priority idle function to start the
@@ -263,6 +275,113 @@ nautilus_thumbnail_load_framed_image (const char *path)
 }
 
 
+void
+nautilus_thumbnail_remove_from_queue (const char *file_uri)
+{
+	NautilusThumbnailInfo info;
+	GList *node;
+	
+#ifdef DEBUG_THUMBNAILS
+	g_message ("(Remove from queue) Locking mutex\n");
+#endif
+	pthread_mutex_lock (&thumbnails_mutex);
+
+	/*********************************
+	 * MUTEX LOCKED
+	 *********************************/
+
+	info.image_uri = (char *)file_uri;
+	info.mime_type = NULL;
+	
+	node = g_list_find_custom ((GList*) thumbnails_to_make, &info,
+				   compare_thumbnail_info);
+
+	if (node && node->data != currently_thumbnailing) {
+		free_thumbnail_info (node->data);
+		thumbnails_to_make = g_list_delete_link ((GList *)thumbnails_to_make, node);
+	}
+	
+	/*********************************
+	 * MUTEX UNLOCKED
+	 *********************************/
+	
+#ifdef DEBUG_THUMBNAILS
+	g_message ("(Remove from queue) Unlocking mutex\n");
+#endif
+	pthread_mutex_unlock (&thumbnails_mutex);
+}
+
+void
+nautilus_thumbnail_remove_all_from_queue (void)
+{
+	GList *l, *next;
+	
+#ifdef DEBUG_THUMBNAILS
+	g_message ("(Remove all from queue) Locking mutex\n");
+#endif
+	pthread_mutex_lock (&thumbnails_mutex);
+
+	/*********************************
+	 * MUTEX LOCKED
+	 *********************************/
+
+	l = (GList *)thumbnails_to_make;
+	while (l != NULL) {
+		next = l->next;
+		if (l->data != currently_thumbnailing) {
+			free_thumbnail_info (l->data);
+			thumbnails_to_make = g_list_delete_link ((GList *)thumbnails_to_make, l);
+		}
+
+		l = next;
+	}
+	
+	/*********************************
+	 * MUTEX UNLOCKED
+	 *********************************/
+	
+#ifdef DEBUG_THUMBNAILS
+	g_message ("(Remove all from queue) Unlocking mutex\n");
+#endif
+	pthread_mutex_unlock (&thumbnails_mutex);
+}
+
+void
+nautilus_thumbnail_prioritize (const char *file_uri)
+{
+	NautilusThumbnailInfo info;
+	GList *node;
+
+#ifdef DEBUG_THUMBNAILS
+	g_message ("(Prioritize) Locking mutex\n");
+#endif
+	pthread_mutex_lock (&thumbnails_mutex);
+
+	/*********************************
+	 * MUTEX LOCKED
+	 *********************************/
+
+	info.image_uri = (char *)file_uri;
+	info.mime_type = NULL;
+	
+	node = g_list_find_custom ((GList*) thumbnails_to_make, &info,
+				   compare_thumbnail_info);
+
+	if (node && node->data != currently_thumbnailing) {
+		thumbnails_to_make = g_list_remove_link ((GList *)thumbnails_to_make, node);
+		thumbnails_to_make = g_list_concat (node, (GList *)thumbnails_to_make);
+	}
+	
+	/*********************************
+	 * MUTEX UNLOCKED
+	 *********************************/
+	
+#ifdef DEBUG_THUMBNAILS
+	g_message ("(Prioritize) Unlocking mutex\n");
+#endif
+	pthread_mutex_unlock (&thumbnails_mutex);
+}
+
 
 /***************************************************************************
  * Thumbnail Thread Functions.
@@ -286,6 +405,7 @@ thumbnail_thread_notify_file_changed (gpointer image_uri)
 #endif
 
 	if (file != NULL) {
+		nautilus_file_set_is_thumbnailing (file, FALSE);
 		nautilus_file_changed (file);
 		nautilus_file_unref (file);
 	}
@@ -301,6 +421,10 @@ nautilus_create_thumbnail (NautilusFile *file)
 {
 	time_t file_mtime = 0;
 	NautilusThumbnailInfo *info;
+	NautilusThumbnailInfo *existing_info;
+	GList *existing;
+
+	nautilus_file_set_is_thumbnailing (file, TRUE);
 
 	info = g_new0 (NautilusThumbnailInfo, 1);
 	info->image_uri = nautilus_file_get_uri (file);
@@ -329,15 +453,16 @@ nautilus_create_thumbnail (NautilusFile *file)
 	 *********************************/
 
 	/* Check if it is already in the list of thumbnails to make. */
-	if (g_list_find_custom ((GList*) thumbnails_to_make, info,
-				compare_thumbnail_info) == NULL) {
+	existing = g_list_find_custom ((GList*) thumbnails_to_make, info,
+				       compare_thumbnail_info);
+	if (existing == NULL) {
 		/* Add the thumbnail to the list. */
 #ifdef DEBUG_THUMBNAILS
 		g_message ("(Main Thread) Adding thumbnail: %s\n",
 			   info->image_uri);
 #endif
 		thumbnails_to_make = g_list_append ((GList*) thumbnails_to_make, info);
-
+		
 		/* If the thumbnail thread isn't running, and we haven't
 		   scheduled an idle function to start it up, do that now.
 		   We don't want to start it until all the other work is done,
@@ -347,11 +472,17 @@ nautilus_create_thumbnail (NautilusFile *file)
 			thumbnail_thread_starter_id = g_idle_add_full (G_PRIORITY_LOW, thumbnail_thread_starter_cb, NULL, NULL);
 		}
 	} else {
-		g_free (info->image_uri);
-		g_free (info->mime_type);
-		g_free (info);
+#ifdef DEBUG_THUMBNAILS
+		g_message ("(Main Thread) Updating non-current mtime: %s\n",
+			   info->image_uri);
+#endif
+		/* The file in the queue might need a new original mtime */
+		existing_info = existing->data;
+		existing_info->original_file_mtime = info->original_file_mtime;
+		free_thumbnail_info (info);
 	}
-	
+	    
+
 	/*********************************
 	 * MUTEX UNLOCKED
 	 *********************************/
@@ -368,6 +499,7 @@ thumbnail_thread_start (gpointer data)
 {
 	NautilusThumbnailInfo *info = NULL;
 	GdkPixbuf *pixbuf;
+	time_t current_orig_mtime = 0;
 
 	/* We loop until there are no more thumbails to make, at which point
 	   we exit the thread. */
@@ -384,13 +516,17 @@ thumbnail_thread_start (gpointer data)
 		/* Pop the last thumbnail we just made off the head of the
 		   list and free it. I did this here so we only have to lock
 		   the mutex once per thumbnail, rather than once before
-		   creating it and once after. */
-		if (thumbnails_to_make && info == thumbnails_to_make->data) {
-			thumbnails_to_make = g_list_remove ((GList*) thumbnails_to_make, info);
-			g_free (info->image_uri);
-			g_free (info->mime_type);
-			g_free (info);
+		   creating it and once after.
+		   Don't pop the thumbnail off the queue if the original file
+		   mtime of the request changed. Then we need to redo the thumbnail.
+		*/
+		if (currently_thumbnailing &&
+		    currently_thumbnailing->original_file_mtime == current_orig_mtime) {
+			g_assert (info == currently_thumbnailing);
+			free_thumbnail_info (currently_thumbnailing);
+			thumbnails_to_make = g_list_remove ((GList*) thumbnails_to_make, currently_thumbnailing);
 		}
+		currently_thumbnailing = NULL;
 
 		/* If there are no more thumbnails to make, reset the
 		   thumbnail_thread_is_running flag, unlock the mutex, and
@@ -408,7 +544,8 @@ thumbnail_thread_start (gpointer data)
 		   is created so the main thread doesn't add it again while we
 		   are creating it. */
 		info = thumbnails_to_make->data;
-
+		currently_thumbnailing = info;
+		current_orig_mtime = info->original_file_mtime;
 		/*********************************
 		 * MUTEX UNLOCKED
 		 *********************************/
@@ -433,12 +570,12 @@ thumbnail_thread_start (gpointer data)
 			gnome_thumbnail_factory_save_thumbnail (thumbnail_factory,
 								pixbuf,
 								info->image_uri,
-								info->original_file_mtime);
+								current_orig_mtime);
 			g_object_unref (pixbuf);
 		} else {
 			gnome_thumbnail_factory_create_failed_thumbnail (thumbnail_factory, 
 									 info->image_uri,
-									 info->original_file_mtime);
+									 current_orig_mtime);
 		}
 		/* We need to call nautilus_file_changed(), but I don't think that is
 		   thread safe. So add an idle handler and do it from the main loop. */

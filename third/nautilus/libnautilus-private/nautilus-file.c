@@ -36,9 +36,11 @@
 #include "nautilus-link.h"
 #include "nautilus-link-desktop-file.h"
 #include "nautilus-metadata.h"
+#include "nautilus-thumbnails.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
+#include "nautilus-volume-monitor.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
@@ -113,7 +115,7 @@ static char *   nautilus_file_get_display_name_collation_key (NautilusFile     *
 
 
 GNOME_CLASS_BOILERPLATE (NautilusFile, nautilus_file,
-			 GtkObject, GTK_TYPE_OBJECT)
+			 GObject, G_TYPE_OBJECT)
 
 static void
 nautilus_file_instance_init (NautilusFile *file)
@@ -137,8 +139,6 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	} else {
 		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	}
-	g_object_ref (file);
-	gtk_object_sink (GTK_OBJECT (file));
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
 	printf("%10p ref'd\n", file);
@@ -252,9 +252,6 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	printf("%10p ref'd\n", file);
 	eazel_dump_stack_trace ("\t", 10);
 #endif
-
-	g_object_ref (file);
-	gtk_object_sink (GTK_OBJECT (file));
 
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;
@@ -391,11 +388,18 @@ finalize (GObject *object)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
+	char *uri;
 
 	file = NAUTILUS_FILE (object);
 
 	g_assert (file->details->operations_in_progress == NULL);
 
+	if (file->details->is_thumbnailing) {
+		uri = nautilus_file_get_uri (file);
+		nautilus_thumbnail_remove_from_queue (uri);
+		g_free (uri);
+	}
+	
 	if (file->details->monitor != NULL) {
 		nautilus_monitor_cancel (file->details->monitor);
 	}
@@ -1665,6 +1669,19 @@ compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 	return compare;
 }
 
+static gboolean
+file_has_note (NautilusFile *file)
+{
+	char *note;
+	gboolean res;
+
+	note = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL);
+	res = note != NULL && note[0] != 0;
+	g_free (note);
+
+	return res;
+}
+
 static int
 get_automatic_emblems_as_integer (NautilusFile *file)
 {
@@ -1677,6 +1694,8 @@ get_automatic_emblems_as_integer (NautilusFile *file)
 	integer |= !nautilus_file_can_read (file);
 	integer <<= 1;
 	integer |= !nautilus_file_can_write (file);
+	integer <<= 1;
+	integer |= file_has_note (file);
 	integer <<= 1;
 #if TRASH_IS_FAST_ENOUGH
 	integer |= nautilus_file_is_in_trash (file);
@@ -1697,6 +1716,10 @@ prepend_automatic_emblem_names (NautilusFile *file,
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
 	}
 #endif
+	if (file_has_note (file)) {
+		names = g_list_prepend
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_NOTE));
+	}
 	if (!nautilus_file_can_write (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
@@ -4104,7 +4127,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
  * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where",
- * "link_target".
+ * "link_target", "volume", "free_space".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -4178,7 +4201,12 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	if (strcmp (attribute_name, "link_target") == 0) {
 		return nautilus_file_get_symbolic_link_target_path (file);
 	}
-
+	if (strcmp (attribute_name, "volume") == 0) {
+		return nautilus_file_get_volume_name (file);
+	}
+	if (strcmp (attribute_name, "free_space") == 0) {
+		return nautilus_file_get_volume_free_space (file);
+	}
 	return NULL;
 }
 
@@ -4543,6 +4571,73 @@ nautilus_file_is_broken_symbolic_link (NautilusFile *file)
 
 	/* Non-broken symbolic links return the target's type for get_file_type. */
 	return nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK;
+}
+
+/**
+ * nautilus_file_get_volume_free_space
+ * Get a nicely formatted char with free space on the file's volume
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: newly-allocated copy of file size in a formatted string
+ */
+char *
+nautilus_file_get_volume_free_space (NautilusFile *file)
+{
+	char * file_uri;
+	GnomeVFSFileSize free_space;
+	GnomeVFSResult result;
+	GnomeVFSURI * vfs_uri;
+
+	file_uri = nautilus_file_get_uri (file);
+
+	if (file_uri == NULL) {
+		return NULL;
+	}
+
+	vfs_uri = gnome_vfs_uri_new (file_uri);
+	result = gnome_vfs_get_volume_free_space (vfs_uri, &free_space);
+	g_free (file_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+
+	if (result == GNOME_VFS_OK) {
+		return gnome_vfs_format_file_size_for_display (free_space);
+	} else {
+		return NULL;
+	}
+}
+
+/**
+ * nautilus_file_get_volume_name
+ * Get the path of the volume the file resides on
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: newly-allocated copy of the volume name of the target file, 
+ * if the volume name isn't set, it returns the mount path of the volume
+ */ 
+char *
+nautilus_file_get_volume_name (NautilusFile *file)
+{
+	char *local_path;
+	char *file_uri;
+	char *volume_name;
+	NautilusVolume *volume;
+	file_uri = nautilus_file_get_uri (file);
+	
+	local_path = gnome_vfs_get_local_path_from_uri (file_uri);
+	volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), local_path);
+	
+	g_free (file_uri);
+	g_free (local_path);
+
+	if (volume != NULL) {
+		volume_name = nautilus_volume_get_name (volume);
+		if (volume_name == NULL) {
+			return g_strdup (nautilus_volume_get_mount_path (volume));
+		}
+		return volume_name;
+	} else {
+		return NULL;
+	}
 }
 
 /**
@@ -5055,6 +5150,23 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 	}
 
 	/* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */
+}
+
+gboolean
+nautilus_file_is_thumbnailing (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	
+	return file->details->is_thumbnailing;
+}
+
+void
+nautilus_file_set_is_thumbnailing (NautilusFile *file,
+				   gboolean is_thumbnailing)
+{
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	
+	file->details->is_thumbnailing = is_thumbnailing;
 }
 
 

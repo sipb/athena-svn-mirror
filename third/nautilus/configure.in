@@ -6,7 +6,7 @@ ART_REQUIRED=2.3.10
 BONOBO_ACTIVATION_REQUIRED=2.1.0
 BONOBO_REQUIRED=2.1.0
 BONOBO_UI_REQUIRED=2.0.0
-EEL_REQUIRED=2.2.2
+EEL_REQUIRED=2.2.3
 ESOUND_REQUIRED=0.2.27
 GLIB_REQUIRED=2
 GNOME_DESKTOP_REQUIRED=2.1.0
@@ -20,15 +20,27 @@ MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=2.0.1
 XML_REQUIRED=2.4.7
 
+AC_SUBST(ART_REQUIRED)
+AC_SUBST(BONOBO_ACTIVATION_REQUIRED)
+AC_SUBST(BONOBO_REQUIRED)
+AC_SUBST(BONOBO_UI_REQUIRED)
 AC_SUBST(EEL_REQUIRED)
+AC_SUBST(ESOUND_REQUIRED)
+AC_SUBST(GLIB_REQUIRED)
+AC_SUBST(GNOME_DESKTOP_REQUIRED)
+AC_SUBST(GNOME_REQUIRED)
+AC_SUBST(GNOME_UI_REQUIRED)
 AC_SUBST(GNOME_VFS_REQUIRED)
+AC_SUBST(ORBIT_REQUIRED)
+AC_SUBST(PANGO_REQUIRED)
+AC_SUBST(GTK_REQUIRED)
 AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(RSVG_REQUIRED)
 AC_SUBST(XML_REQUIRED)
 
 dnl ===========================================================================
 
-AM_INIT_AUTOMAKE(nautilus, 2.2.2)
+AM_INIT_AUTOMAKE(nautilus, 2.2.4)
 AM_CONFIG_HEADER(config.h)
 
 AM_SANITY_CHECK
@@ -64,7 +76,7 @@ PKG_CHECK_MODULES(ALL, \
 	libxml-2.0 >= $XML_REQUIRED)
 dnl ==========================================================================
 
-ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fa fi fr ga gl he hi hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta th tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fa fi fr ga gl he hi hu it ja ko lt lv mk ml mn ms nl nn no pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa yi zh_CN zh_TW"
 
 GETTEXT_PACKAGE=nautilus
 AC_SUBST(GETTEXT_PACKAGE)

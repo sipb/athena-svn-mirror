@@ -1,41 +1,40 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Name:             nautilus
 Summary:          Nautilus is a network user environment
-Version:          2.2.2
+Version:          2.2.4
 Release:          1
 License:          GPL
 Group:            User Interface/Desktop
 Source:           ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
-Source2:          fixed-ltmain.sh
 URL:              http://nautilus.eazel.com/
 BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 BuildRequires:    pkgconfig >= 0.8
-Requires:         esound >= @ESOUND_REQUIRED@
-Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:         eel2 >= 2.2.2
-Requires:         glib2 >= @GLIB_REQUIRED@
+Requires:         esound >= 0.2.27
+Requires:         bonobo-activation >= 2.1.0
+Requires:         eel2 >= 2.2.3
+Requires:         glib2 >= 2
 Requires:         gnome-vfs2 >= 2.1.5
-Requires:         gtk2 >= @GTK_REQUIRED@
-Requires:         libart_lgpl >= @ART_REQUIRED@
-Requires:         libbonobo >= @BONOBO_REQUIRED@
-Requires:         libbonoboui >= @BONOBO_UI_REQUIRED@
-Requires:         libgnome >= @GNOME_REQUIRED@
-Requires:         gnome-desktop >= @GNOME_DESKTOP_REQUIRED@
-Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
+Requires:         gtk2 >= 2.1.1
+Requires:         libart_lgpl >= 2.3.10
+Requires:         libbonobo >= 2.1.0
+Requires:         libbonoboui >= 2.0.0
+Requires:         libgnome >= 2.1.1
+Requires:         gnome-desktop >= 2.1.0
+Requires:         libgnomeui >= 2.1.1
 Requires:         librsvg2 >= 2.0.1
 Requires:         libxml2 >= 2.4.7
-BuildRequires:    esound-devel >= @ESOUND_REQUIRED@
-BuildRequires:    bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
-BuildRequires:    eel2-devel >= 2.2.2
-BuildRequires:    glib2-devel >= @GLIB_REQUIRED@
+BuildRequires:    esound-devel >= 0.2.27
+BuildRequires:    bonobo-activation-devel >= 2.1.0
+BuildRequires:    eel2-devel >= 2.2.3
+BuildRequires:    glib2-devel >= 2
 BuildRequires:    gnome-vfs2-devel >= 2.1.5
-BuildRequires:    gtk2-devel >= @GTK_REQUIRED@
-BuildRequires:    libart_lgpl-devel >= @ART_REQUIRED@
-BuildRequires:    libbonobo-devel >= @BONOBO_REQUIRED@
-BuildRequires:    libbonoboui-devel >= @BONOBO_UI_REQUIRED@
-BuildRequires:    libgnome-devel >= @GNOME_REQUIRED@
-BuildRequires:    gnome-desktop-devel >= @GNOME_DESKTOP_REQUIRED@
-BuildRequires:    libgnomeui-devel >= @GNOME_UI_REQUIRED@
+BuildRequires:    gtk2-devel >= 2.1.1
+BuildRequires:    libart_lgpl-devel >= 2.3.10
+BuildRequires:    libbonobo-devel >= 2.1.0
+BuildRequires:    libbonoboui-devel >= 2.0.0
+BuildRequires:    libgnome-devel >= 2.1.1
+BuildRequires:    gnome-desktop-devel >= 2.1.0
+BuildRequires:    libgnomeui-devel >= 2.1.1
 BuildRequires:    librsvg2-devel >= 2.0.1
 BuildRequires:    libxml2-devel >= 2.4.7
 
@@ -52,30 +51,30 @@ Summary:          Libraries and include files for developing Nautilus components
 Group:            Development/Libraries
 Requires:         %name = %{version}
 Requires:         pkgconfig >= 0.8
-Requires:         esound >= @ESOUND_REQUIRED@
-Requires:         esound-devel >= @ESOUND_REQUIRED@
-Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:         bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:         eel2 >= 2.2.2
-Requires:         eel2-devel >= 2.2.2
-Requires:         glib2 >= @GLIB_REQUIRED@
-Requires:         glib2-devel >= @GLIB_REQUIRED@
+Requires:         esound >= 0.2.27
+Requires:         esound-devel >= 0.2.27
+Requires:         bonobo-activation >= 2.1.0
+Requires:         bonobo-activation-devel >= 2.1.0
+Requires:         eel2 >= 2.2.3
+Requires:         eel2-devel >= 2.2.3
+Requires:         glib2 >= 2
+Requires:         glib2-devel >= 2
 Requires:         gnome-vfs2 >= 2.1.5
 Requires:         gnome-vfs2-devel >= 2.1.5
-Requires:         gtk2 >= @GTK_REQUIRED@
-Requires:         gtk2-devel >= @GTK_REQUIRED@
-Requires:         libart_lgpl >= @ART_REQUIRED@
-Requires:         libart_lgpl-devel >= @ART_REQUIRED@
-Requires:         libbonobo >= @BONOBO_REQUIRED@
-Requires:         libbonobo-devel >= @BONOBO_REQUIRED@
-Requires:         libbonoboui >= @BONOBO_UI_REQUIRED@
-Requires:         libbonoboui-devel >= @BONOBO_UI_REQUIRED@
-Requires:         libgnome >= @GNOME_REQUIRED@
-Requires:         libgnome-devel >= @GNOME_REQUIRED@
-Requires:         gnome-desktop >= @GNOME_DESKTOP_REQUIRED@
-Requires:         gnome-desktop-devel >= @GNOME_DESKTOP_REQUIRED@
-Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
-Requires:         libgnomeui-devel >= @GNOME_UI_REQUIRED@
+Requires:         gtk2 >= 2.1.1
+Requires:         gtk2-devel >= 2.1.1
+Requires:         libart_lgpl >= 2.3.10
+Requires:         libart_lgpl-devel >= 2.3.10
+Requires:         libbonobo >= 2.1.0
+Requires:         libbonobo-devel >= 2.1.0
+Requires:         libbonoboui >= 2.0.0
+Requires:         libbonoboui-devel >= 2.0.0
+Requires:         libgnome >= 2.1.1
+Requires:         libgnome-devel >= 2.1.1
+Requires:         gnome-desktop >= 2.1.0
+Requires:         gnome-desktop-devel >= 2.1.0
+Requires:         libgnomeui >= 2.1.1
+Requires:         libgnomeui-devel >= 2.1.1
 Requires:         librsvg2 >= 2.0.1
 Requires:         librsvg2-devel >= 2.0.1
 Requires:         libxml2 >= 2.4.7
@@ -93,7 +92,6 @@ sed s/relink=yes/relink=no/ ltmain.sh.orig > ltmain.sh
 
 %build
 %configure
-rm ltmain.sh && cp %{SOURCE2} ltmain.sh
 make %{?_smp_mflags}
 
 %install
@@ -115,21 +113,25 @@ make %{?_smp_mflags}
 %defattr(-, root, root)
 %doc AUTHORS COPYING COPYING-DOCS COPYING.LIB ChangeLog INSTALL
 %doc MAINTAINERS NEWS README THANKS TODO
-%doc %{_datadir}/gnome/help/*
+#%doc %{_datadir}/gnome/help/*
+%{_sysconfdir}/gconf/*
 %{_sysconfdir}/X11/serverconfig/.directory
 %{_sysconfdir}/X11/starthere/*
 %{_sysconfdir}/X11/starthere/.directory
 %{_sysconfdir}/X11/sysconfig/.directory
 %{_bindir}/*
 %{_libdir}/*.so*
-%{_libdir}/libnautilus-tree-view.so
+%{_libdir}/bonobo/libnautilus-*-view.so
 %{_libdir}/bonobo/servers/*
+%{_libexecdir}/*
 %{_datadir}/applications/*
 %{_datadir}/gnome-2.0/ui/*
 %{_datadir}/idl/*
 %{_datadir}/nautilus
-%doc %{_datadir}/omf/nautilus/*
+%{_datadir}/locale/*/*
 %{_datadir}/pixmaps/*
+%{_datadir}/gnome/network/*
+#%doc %{_datadir}/omf/nautilus/*
 
 
 %files devel
@@ -141,6 +143,15 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Tue Mar 12 2003 Neil Weisenfeld <weisen@ai.mit.edu>
+- Added various file targets: gnome/network, the libexecdir stuff,
+  locale, gconf (do we need to register this somehow?)
+- Fixed nautilus-tree-view to come from lib/bonobo instead of lib/
+- Actually, now pick up nautilus-*-view.so from lib/bonobo
+- Commented out omf and gnome/help documentation.  (should this be
+  coming from somewhere else?)
+- killed dependence on ltmain-fixed.sh as we're "fixing" it in the %prep
+
 * Tue Mar 05 2002 Chris Chabot <chabotc@reviewboard.com>
 - Fixed file list
 - ltmain.sh fix

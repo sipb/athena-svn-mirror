@@ -330,19 +330,19 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 					    NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT);
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
-					    NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
-	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
 					    NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+	eel_preferences_glade_connect_bool_slave (xml_dialog,
+						  NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
+						  NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
 					    NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET,
 					    NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
-	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET,
-					    NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
+	eel_preferences_glade_connect_bool_slave (xml_dialog,
+						  NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET,
+						  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
 
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
@@ -360,10 +360,9 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 							       NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 							       sort_order_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
-							       NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-							       sort_order_values);
+	eel_preferences_glade_connect_string_enum_option_menu_slave (xml_dialog,
+								     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
+								     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
@@ -416,6 +415,21 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	gtk_widget_show (dialog);
 }
 
+static gboolean
+delete_event_callback (GtkWidget       *widget,
+		       GdkEventAny     *event,
+		       gpointer         data)
+{
+	void (*response_callback) (GtkDialog *dialog,
+				   gint response_id);
+
+	response_callback = data;
+
+	response_callback (GTK_DIALOG (widget), GTK_RESPONSE_CLOSE);
+	
+	return TRUE;
+}
+
 void
 nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWindow *window)
 {
@@ -425,6 +439,8 @@ nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWi
 	
 	g_signal_connect (G_OBJECT (glade_xml_get_widget (xml_dialog, "file_management_dialog")),
 			  "response", close_callback, NULL);
+	g_signal_connect (G_OBJECT (glade_xml_get_widget (xml_dialog, "file_management_dialog")),
+			  "delete_event", G_CALLBACK (delete_event_callback), close_callback);
 
 	nautilus_file_management_properties_dialog_setup (xml_dialog, window);
 }

@@ -60,7 +60,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
+BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
+BONOBO_REQUIRED = @BONOBO_REQUIRED@
+BONOBO_UI_REQUIRED = @BONOBO_UI_REQUIRED@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,6 +82,7 @@ EEL_REQUIRED = @EEL_REQUIRED@
 EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
 EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
@@ -85,14 +90,17 @@ GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIMPHWRAPBOX_CFLAGS = @GIMPHWRAPBOX_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_DESKTOP_REQUIRED = @GNOME_DESKTOP_REQUIRED@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
+GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +110,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -124,10 +134,14 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
+PANGO_REQUIRED = @PANGO_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 RSVG_REQUIRED = @RSVG_REQUIRED@
 STRIP = @STRIP@
@@ -139,9 +153,14 @@ NULL =
 
 DESKTOP_IN_FILES = \
 	nautilus.desktop.in				\
+	nautilus-file-management-properties.desktop.in
+
+DESKTOP_APPLICATIONS_FILES = \
+	nautilus.desktop
+
+DESKTOP_SETTINGS_FILES = \
 	nautilus-file-management-properties.desktop
 
-DESKTOP_FILES = $(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 SUBDIRS = \
 	libnautilus 		\
@@ -177,17 +196,21 @@ EXTRA_DIST = \
 	Makefile.shared				\
 	add-include-prefix			\
 	$(DESKTOP_IN_FILES)			\
-	$(DESKTOP_FILES)			\
+	$(DESKTOP_APPLICATIONS_FILES)			\
+	$(DESKTOP_SETTINGS_FILES)			\
 	$(NULL)
 
 
 Applicationsdir = $(datadir)/applications
-Applications_DATA = $(DESKTOP_FILES)
+Applications_DATA = $(DESKTOP_APPLICATIONS_FILES)
+
+Settingsdir = $(datadir)/control-center-2.0/capplets
+Settings_DATA = $(DESKTOP_SETTINGS_FILES)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  nautilus.spec
-DATA =  $(Applications_DATA)
+DATA =  $(Applications_DATA) $(Settings_DATA)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
 INSTALL Makefile.am Makefile.in NEWS THANKS TODO acconfig.h aclocal.m4 \
@@ -263,6 +286,25 @@ uninstall-ApplicationsDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(Applications_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(Applicationsdir)/$$p; \
+	done
+
+install-SettingsDATA: $(Settings_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(Settingsdir)
+	@list='$(Settings_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Settingsdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Settingsdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(Settingsdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(Settingsdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-SettingsDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(Settings_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(Settingsdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -427,13 +469,13 @@ all-recursive-am: config.h
 install-exec-am:
 install-exec: install-exec-recursive
 
-install-data-am: install-ApplicationsDATA
+install-data-am: install-ApplicationsDATA install-SettingsDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-ApplicationsDATA
+uninstall-am: uninstall-ApplicationsDATA uninstall-SettingsDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(DATA) config.h
 all-redirect: all-recursive-am
@@ -441,7 +483,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(Applicationsdir)
+	$(mkinstalldirs)  $(DESTDIR)$(Applicationsdir) $(DESTDIR)$(Settingsdir)
 
 
 mostlyclean-generic:
@@ -477,7 +519,8 @@ maintainer-clean: maintainer-clean-recursive
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
 uninstall-ApplicationsDATA install-ApplicationsDATA \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
+uninstall-SettingsDATA install-SettingsDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
