@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: zephyr.c,v 1.11 2000-05-08 15:49:44 ghudson Exp $
+ *      $Id: zephyr.c,v 1.12 2000-10-13 23:07:31 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.11 2000-05-08 15:49:44 ghudson Exp $";
+static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.12 2000-10-13 23:07:31 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -165,7 +165,7 @@ void zephyr_init(notice_handler)
 	    exposure = EXPOSE_NONE;
 	}
     } else
-      exposure = EXPOSE_NONE;
+      exposure = EXPOSE_OPSTAFF;
     error_code = ZSetLocation(exposure); /* <<<>>> */
     if (error_code != ZERR_LOGINFAIL)
       TRAP( error_code, "while setting location" );
