@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.10 1989-08-08 14:34:20 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.11 1989-08-10 03:11:22 tjcoppet Exp $";
 #endif 
 
 
@@ -337,18 +337,10 @@ olc_init()
     case USER_NOT_FOUND:
       if(subsystem)
 	{
-	  printf("\nWelcome to OLC, ");
+	  printf("Welcome to OLC, ");
 	  printf("Project Athena's On-Line Consulting system.\n");
 	  printf("Copyright (c) 1989 by ");
 	  printf("the Massachusetts Institute of Technology.\n\n");
-	  if(OLC)
-	    {
-	      printf("Some common OLC commands are: \n\n");
-	      printf("\tsend  - send a message\n");
-	      printf("\tshow  - show new messages\n");
-              printf("\tdone  - mark your question resolved\n");
-	      printf("\thelp  - listing of commands\n");
-	    }
 	  first = 1;
 	}
 #ifdef TEST
@@ -360,7 +352,10 @@ olc_init()
     case CONNECTED:
     case SUCCESS:
       read_int_from_fd(fd, &n);
-      printf("\nWelcome back to OLC. \n\n");
+      printf("Welcome back to OLC. ");
+      printf("Project Athena's On-Line Consulting system.\n");
+      printf("Copyright (c) 1989 by ");
+      printf("the Massachusetts Institute of Technology.\n\n");
       t_set_default_instance(&Request);
       t_personal_status(&Request,FALSE);
       break; 
@@ -374,11 +369,8 @@ olc_init()
 
   (void) close(fd);
 
-  get_key_input("\nPress any key to continue...");
-  newline();
-
   make_temp_name(file);
-  t_get_motd(&Request,OLC,file,TRUE);
+  t_get_motd(&Request,OLC,file,FALSE);
   unlink(file);
 
   if(OLC && first)
@@ -388,6 +380,15 @@ olc_init()
 	exit(1);
       if(t_ask(&Request,topic) != SUCCESS)
 	exit(1);
+      if(OLC)
+	{
+	  printf("\nSome other useful OLC commands are: \n\n");
+	  printf("\tsend  - send a message\n");
+	  printf("\tshow  - show new messages\n");
+	  printf("\tdone  - mark your question resolved\n");
+	  printf("\t?     - see entire listing of commands\n");
+	}
+      
     }
 
   return(errcode);
