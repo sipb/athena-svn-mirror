@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.2 1990-04-19 11:56:31 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.3 1990-04-19 12:59:38 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -21,7 +21,7 @@ static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
  */
 
 attach(name)
-    char *name;
+    const char *name;
 {
     struct _attachtab at, *atp;
     char **hes;
