@@ -10,13 +10,19 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.19 1991-06-20 11:35:05 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.20 1991-06-20 14:38:19 jfc Exp $ */
 
 #ifndef __ZINTERNAL_H__
 #define __ZINTERNAL_H__
 
 #include <zephyr/zephyr.h>
+#if defined(_POSIX_SOURCE) || defined(SYSV)
+#include <string.h>
+#define	index	strchr
+#define	rindex	strrchr
+#else
 #include <strings.h>			/* for strcpy, etc. */
+#endif
 #include <sys/types.h>			/* for time_t, uid_t, etc */
 #ifdef lint
 #include <sys/uio.h>			/* to make lint shut up about
