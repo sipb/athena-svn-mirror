@@ -1,16 +1,15 @@
 /* 
- * $Id: aklog_main.c,v 1.4 1990-07-11 17:30:37 qjb Exp $
+ * $Id: aklog_main.c,v 1.5 1990-07-23 09:08:35 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.4 1990-07-11 17:30:37 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.5 1990-07-23 09:08:35 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
-#include <strings.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
