@@ -17,18 +17,19 @@
 #include <varargs.h>
 #endif
 /* ANSI C -- use prototypes etc */
+typedef void (*errf) (const char *, long, const char *, va_list);
 void com_err (const char *, long, const char *, ...);
 char const *error_message (long);
 void (*com_err_hook) (const char *, long, const char *, va_list);
-void (*set_com_err_hook (void (*) (const char *, long, const char *, va_list)))
-    (const char *, long, const char *, va_list);
+errf set_com_err_hook (errf);
 void (*reset_com_err_hook ()) (const char *, long, const char *, va_list);
 #else
 /* no prototypes */
+typedef void (*errf) ();
 void com_err ();
 char *error_message ();
 void (*com_err_hook) ();
-void (*set_com_err_hook ()) ();
+errf set_com_err_hook();
 void (*reset_com_err_hook ()) ();
 #endif
 
