@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 2001-03-16 17:04:40 ghudson Exp $
+# $Id: Makefile,v 1.2 2001-04-11 22:51:51 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
@@ -16,7 +16,7 @@ check:
 install:
 	mkdir -p ${DESTDIR}${ATHRBINDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
-	mkdir -p ${DESTDIR}${MODULES}
+	mkdir -p ${DESTDIR}${MODULES}/sparcv9
 	mkdir -p ${DESTDIR}${ETC}
 	mkdir -p ${DESTDIR}${INITD}
 	mkdir -p ${DESTDIR}${RC0}
@@ -31,6 +31,7 @@ install:
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 afsd ${DESTDIR}${ETC}
 	install -c -m 444 libafs.nonfs.o ${DESTDIR}${MODULES}/afs
+	install -c -m 444 libafs64.nonfs.o ${DESTDIR}${MODULES}/sparcv9/afs
 	install -c -m 555 afs.rc ${DESTDIR}${INITD}/afs
 	rm -f ${DESTDIR}${RC0}/K66afs
 	ln -s ../init.d/afs ${DESTDIR}${RC0}/K66afs
