@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.2 1989-07-06 22:03:21 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.3 1989-08-04 11:21:20 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -63,11 +63,16 @@ OSend(Request,type,file)
 {
   int fd;
   int response;
-  
+  int status;
+
   Request->request_type = type;
 
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &response);
   
   if(is_option(Request->options,VERIFY))
@@ -85,25 +90,23 @@ OSend(Request,type,file)
     
 
 ERRCODE
-OMailHeader(file,recipient,topic,destination)
+OMailHeader(Request,file,recipient,topic,destination)
+     REQUEST *Request;
      char *file, *recipient, *topic, *destination;
 {
   struct stat statbuf;
   FILE *fp;
   
-  if(stat(file, &statbuf) < 0)
-    {
       fp = fopen(file, "w");
       if(fp == NULL)
 	return(ERROR);
-      fprintf(fp, "To: %s%s\n", recipient,destination);
+      fprintf(fp, "To: %s@%s\n", recipient,destination);
       fprintf(fp, "cc: \n");
       fprintf(fp, "Subject: Your OLC question about %s\n", topic);
       fprintf(fp, "--------\n\n");
       
       if(fclose(fp) < 0)
 	return(ERROR);
-    }
      
   return(SUCCESS);
 }

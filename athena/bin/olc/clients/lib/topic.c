@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.2 1989-07-06 22:03:38 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.3 1989-08-04 11:21:36 tjcoppet Exp $";
 #endif
 
 
@@ -42,11 +42,16 @@ OGetTopic(Request,topic)
 {
   int fd;
   RESPONSE response;
+  int status;
   char *buf;
   
   Request->request_type = OLC_TOPIC;
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &response);  
  
   if(response == SUCCESS)
@@ -76,13 +81,18 @@ OChangeTopic(Request, topic)
 {
   int fd;
   RESPONSE response;
-  
-  Request->request_type = OLC_CHTOPIC;
+  int status;
+
+  Request->request_type = OLC_CHANGE_TOPIC;
   if(*topic == '\0')
     return(ERROR);
 
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &response);
 
   if(response == SUCCESS)
@@ -110,11 +120,16 @@ OListTopics(Request,file)
 {
   int fd;
   RESPONSE response;
+  int status;
 
   Request->request_type = OLC_LIST_TOPICS;
 
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &response);
 
   if(response == SUCCESS)
@@ -140,11 +155,16 @@ OVerifyTopic(Request,topic)
 {
   int fd;
   RESPONSE response;
+  int status;
 
   Request->request_type = OLC_VERIFY_TOPIC;
-
+  
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &response);
 
   if(response == SUCCESS)
@@ -174,11 +194,15 @@ OHelpTopic(Request,topic, buf)      /*ARGSUSED*/
 {
   int fd;
   RESPONSE response;
+  int status;
 
   Request->request_type = OLC_HELP_TOPIC;
-
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &response);
 
   if(response == SUCCESS)

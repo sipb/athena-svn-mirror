@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.2 1989-07-16 17:03:54 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.3 1989-08-04 11:13:47 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -52,8 +52,9 @@ struct sgttyb mode;
  */
 
 ERRCODE
-display_file(filename)
+display_file(filename,flag)
      char *filename;
+     int flag;
 {
   FILE *file;                  /* File structure pointer. */
   char line[LINE_LENGTH];      /* Input line buffer. */
@@ -65,7 +66,7 @@ display_file(filename)
       return(ERROR);
     }
   
-  if (call_program("more", filename) == ERROR) 
+  if (call_program("/usr/ucb/more", filename) == ERROR) 
     {
       while(fgets(line, LINE_LENGTH, file) != (char *)NULL)
 	printf("%s", line);
@@ -76,6 +77,67 @@ display_file(filename)
   return(SUCCESS);
 }
 
+cat_file(file)
+     char *file;
+{
+  int fd;
+  char buf[BUF_SIZE];
+  int len;
+
+  fd = open(file,O_RDONLY,0);
+  if(fd < 0)
+    return(ERROR);
+  
+  while((len = read(fd,buf,BUF_SIZE)) == BUF_SIZE)
+    write(1,buf,len);
+  
+  if(len)
+    write(1,buf,len);
+
+  close(fd);
+}
+
+enter_message(file,editor)
+     char *file;
+     char *editor;
+{
+  int status;
+
+  if(editor == (char *) NULL)
+    {
+      if(isatty(1))
+        {
+          printf("Please enter your message. ");
+          printf("End with a ^D or '.' on a line by itself.\n");
+        }
+      status = input_text_into_file(file);
+    }
+  else
+    status = edit_message(file,editor);
+
+  if (file_length(file) == 0)
+      printf("Warning: no message was entered.\n");
+
+  status = what_now(file, FALSE,NULL);
+  if(status == ERROR)
+    {
+      fprintf(stderr,"An error occurred while reading your");
+      fprintf(stderr," message; unable to continue.\n");
+      unlink(file);
+      return(ERROR);
+    }
+  else
+    if(status)
+      return(status);
+
+  if (file_length(file) == 0)
+    {
+      printf("No message was entered.\n");
+      return(NO_ACTION);
+    }
+
+  return(SUCCESS);
+}
 
 
 /*
@@ -248,6 +310,11 @@ handle_response(response, req)
       fprintf(stderr,"User, %s, not found.\n",req->target.username);
       return(ERROR); 
 
+    case NAME_NOT_UNIQUE:
+      fprintf(stderr,
+	      "The string %s is not unique.\n",req->target.username);
+      return(ERROR);
+
 #ifdef KERBEROS     /* these error codes are < 100 */
     case MK_AP_TGTEXP: 
     case RD_AP_EXP:
@@ -275,7 +342,7 @@ handle_response(response, req)
       exit(ERROR);
     case RD_AP_TIME:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("Kerberos authentication failed: workstation clock is");
+      printf("Kerberos authentication failed: workstation clock is ");
       printf("incorrect.\nPlease contact Athena operations and move to ");
       printf("another worstation.\n");
       if(OLC)
@@ -401,12 +468,15 @@ edit_message(file, editor)
      char *file;
      char *editor;
 {
+  if(string_eq(editor,NO_EDITOR))
+    editor = (char *) NULL;
+
   if (editor == (char *) NULL) 
     {
       if (editor_name == (char *) NULL) 
 	{
 	  if ((editor_name = getenv("EDITOR")) == (char *)NULL)
-	    editor_name = DFLT_EDITOR;
+	    editor_name = DEFAULT_EDITOR;
 	}
       editor = editor_name;
     }
@@ -438,7 +508,6 @@ mail_message(user, consultant, msgfile)
   int filedes;		        /* File desriptor for msgfile. */
   int nbytes;		        /* Number of bytes in message. */
   char *msgbuf;		        /* Ptr. to mail message buffer. */
-  struct stat statbuf;	        /* File status buffer. */
 
 #ifdef HESIOD
   char **hp;
@@ -460,13 +529,13 @@ mail_message(user, consultant, msgfile)
 #endif HESIOD
 #endif ATHENA
 
-  if (stat(msgfile, &statbuf) < 0) 
+  if ((nbytes = file_length(msgfile)) == ERROR)
     {
       perror("mail");
       printf("Unable to get message file.\n");
       return(ERROR);
     }
-  nbytes = statbuf.st_size;
+
   msgbuf = malloc((unsigned) nbytes);
   if ((filedes = open(msgfile, O_RDONLY, 0)) <= 0) 
     {

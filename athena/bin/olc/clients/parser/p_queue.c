@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.3 1989-07-16 17:05:50 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.4 1989-08-04 11:09:16 tjcoppet Exp $";
 #endif
 
 
@@ -43,17 +43,18 @@ do_olc_list(arguments)
 {
   REQUEST Request;
   int  status;
-  char stati[NAME_LENGTH];
+  int  stati = 0;
   char queues[NAME_LENGTH];
   char users[NAME_LENGTH];
   char topics[NAME_LENGTH];
   char instances[NAME_LENGTH];
-  int i;
+  int comments = 0;
+  int i,mask;
   
-  stati[0] = '\0';
   queues[0] = '\0';
   users[0] = '\0';
   instances[0] = '\0';
+  topics[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -77,80 +78,88 @@ do_olc_list(arguments)
 	      else
 		{
 		  strcat(queues," ");
-		  strncat(queues,*arguments);
+		  strncat(queues,*arguments,NAME_LENGTH-1);
+		  break;
 		}
 	      if(*(arguments+1)[0] == '-')
 		break;
 	    }
 	}
-
-      if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
-	{
-	  ++arguments;
-	  if(*arguments == (char *) NULL)
-	    {
-	      fprintf(stderr,
-		      "You must specify a status after the -status option.\n");
-	      return(ERROR);
-	    }
-	 
-	  for(i=0; *arguments != (char *) NULL; arguments++)
-	    {
-	      if(strlen(*arguments) >= (NAME_LENGTH -i))
-		fprintf(stderr,"Too many stati specified. Continuing...\n");
-	      else
+      else
+	if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
+	  {
+	    ++arguments;
+	    if(*arguments == (char *) NULL)
+	      OGetStatusCode(*arguments, &stati);
+	    else
+	      for(i=0; *arguments != (char *) NULL; arguments++)
 		{
-		  strcat(stati," ");
-		  strncat(stati,*arguments);
+		  OGetStatusCode(*arguments, &mask);
+		  if(mask == 0)
+		    {
+		      printf("Invalid status label specified. Choose one of...\n");
+		      t_pp_stati();
+		      return(ERROR);
+		    }
+		  else
+		    stati |= mask;
+		  if(*(arguments+1)[0] == '-')
+		    break;
 		}
-	      if(*(arguments+1)[0] == '-')
-		break;
-	    }
-	}
-
-      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
-	{
-	  ++arguments;
-	  if(*arguments == (char *) NULL)
+	  }
+	else
+	  if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
 	    {
-	      fprintf(stderr,
-		      "You must specify a topic after the -topic option.\n");
-	      return(ERROR);
-	    }
-	 
-	  for(i=0; *arguments != (char *) NULL; arguments++)
-	    {
-	      if(strlen(*arguments) >= (NAME_LENGTH -i))
-		fprintf(stderr,"Too many topics specified. Continuing...\n");
-	      else
+	      ++arguments;
+	      if(*arguments == (char *) NULL)
 		{
-		  strcat(topics," ");
-		  strncat(topics,*arguments);
+		  fprintf(stderr,
+			"You must specify a topic after the -topic option.\n");
+		  return(ERROR);
 		}
-	      if(*(arguments+1)[0] == '-')
-		break;
+	      
+	      for(i=0; *arguments != (char *) NULL; arguments++)
+		{
+		  if(strlen(*arguments) >= (NAME_LENGTH -i))
+		    fprintf(stderr,
+			    "Too many topics specified. Continuing...\n");
+		  else
+		    {
+		      strncpy(topics,*arguments,NAME_LENGTH-1);
+		      break;
+		    }
+		  if(*(arguments+1)[0] == '-')
+		    break;
+		}
 	    }
-	}
-
+      
       /* 
        * some strange way is going to have to be devised to specify
        * multiple targets
        */
+	  else
+	    if(string_equiv(*arguments,"-comments",max(strlen(*arguments),2))||
+	       string_equiv(*arguments,"-long",max(strlen(*arguments),2)))
+	      comments = TRUE;
+	    else
+	      {
+		arguments = handle_argument(arguments, &Request, &status);
+		if(status)
+		  return(ERROR);
+	      }
 
-      arguments = handle_argument(arguments, &Request, &status);
-      if(status)
-	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
 	  fprintf(stderr,"Usage is: \tlist [-display] [-queue <queues>] ");
-	  fprintf(stderr,"[-topic <topics>]\n\t\t[-status <statuses>]\n");
-	  fprintf(stderr,"\t\t[<username> <instance id> ...]\n");
+	  fprintf(stderr,"[-topic <topic>]\n\t\t[-status <statuses>] ");
+	  fprintf(stderr,"[-comments] ");
+	  fprintf(stderr,"[<username pattern>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
 	break;
     }
 
-  status = t_list_queue(&Request,queues,topics,stati);
+  status = t_list_queue(&Request,queues,topics,stati,comments);
   return(status);
 }

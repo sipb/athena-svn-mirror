@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.3 1989-07-16 17:05:35 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.4 1989-08-04 11:08:51 tjcoppet Exp $";
 #endif
 
 
@@ -69,41 +69,42 @@ do_olc_replay(arguments)
 	  arguments++;
 	  if (*arguments == (char *)NULL) 
 	    {
-	      fprintf(stderr, "No filename specified.\n");
-	      return(ERROR);
+	      file[0] = '\0';
+	      get_prompted_input("Enter a file name: ",file);
+	      if(file[0] == '\0')
+		return(ERROR);
 	    }
 	  else 
-	    {
-	      (void) strcpy(file, *arguments);
-	      savefile = TRUE;
-	    }
-	  continue;
+	    (void) strcpy(file, *arguments);
+	
+	  savefile = TRUE;
 	}
       else 
 	{
 	  arguments = handle_argument(arguments, &Request, &status);
 	  if(status)
 	    return(ERROR);
-	  if(arguments == (char **) NULL)   /* error */
-	    {
-	      if(OLC)
-		fprintf(stderr, 
-			"Usage is: \treplay [-file <file name>]\n");
-	      else
-		{
-		  fprintf(stderr, 
-			  "Usage is: \treplay [<username> <instance id>] ");
-		  fprintf(stderr,"[-file <file name>]\n");
-		}
-	      return(ERROR);
-	    }
-	  if(*arguments == (char *) NULL)   /* end of list */
-	    break;
 	}
+      if(arguments == (char **) NULL)   /* error */
+	{
+	  if(OLC)
+	    fprintf(stderr, 
+		    "Usage is: \treplay [-file <file name>]\n");
+	  else
+	    {
+	      fprintf(stderr, 
+		      "Usage is: \treplay [<username> <instance id>] ");
+	      fprintf(stderr,"[-file <file name>]\n");
+	    }
+	  return(ERROR);
+	}
+      if(*arguments == (char *) NULL)   /* end of list */
+	break;
     }
 
+
   status = t_replay(&Request,file, !savefile);
-  if(savefile == FALSE || status != SUCCESS)
+  if((savefile == FALSE) || (status != SUCCESS))
     (void) unlink(file);
   return(status);
 }
@@ -133,27 +134,27 @@ do_olc_show(arguments)
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-  Request.request_type = OLC_SHOW;
+
   savefile = FALSE;
   make_temp_name(file);
-  	
+
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
       if ((string_equiv(*arguments, "-file",max(strlen(*arguments),2))) ||
 	  string_eq(*arguments,">"))
 	{
 	  arguments++;
-	  if (*arguments == (char *)NULL) 
+	  if (*arguments == (char *)NULL)
 	    {
-	      printf("No filename specified.\n");
-	      return(ERROR);
+	      file[0] = '\0';
+  	      get_prompted_input("Enter a filename: ",file);
+	      if(file[0] == '\0')
+		return(ERROR);
 	    }
 	  else 
-	    {
-	      (void) strcpy(file, *arguments);
-	      savefile = TRUE;
-	    }
-	  continue;
+	    (void) strcpy(file, *arguments);
+	
+	  savefile = TRUE;
 	}
       else
 	if (string_equiv(*arguments, "-connected", max(strlen(*arguments),2)))
@@ -161,40 +162,44 @@ do_olc_show(arguments)
 	    connected = TRUE;
 	    continue;
 	  }
-      if (string_equiv(*arguments, "-noflush", max(strlen(*arguments),2)))
+      else
+	if (string_equiv(*arguments, "-noflush", max(strlen(*arguments),2)))
 	  {
 	    noflush = TRUE;
 	    continue;
 	  }
-      else 
-       {
-	 arguments = handle_argument(arguments, &Request, &status);
-	 if(status)
-	   return(ERROR);
-	 if(arguments == (char **) NULL)   /* error */
-	   {
-	     if(OLC)
-	       {
-		 fprintf(stderr, 
-			 "Usage is: \tshow [-file <filename>] [-connected]");
-		 fprintf(stderr," [-noflush]\n");
-	       }
-	     else
-	       {
-		 fprintf(stderr, 
-			 "Usage is: \tshow [<username> <instance id>] ");
-		 fprintf(stderr,"[-file <filename>]\n");
-		 fprintf(stderr,"\t\t[-connected] [-noflush]\n");
-	       }
-	     return(ERROR);
-	   }
-	 if(*arguments == (char *) NULL)   /* end of list */
-	   break;
-       }
+	else 
+	  {
+	    arguments = handle_argument(arguments, &Request, &status);
+	    if(status)
+	      return(ERROR);
+	  }
+      if(arguments == (char **) NULL)   /* error */
+	{
+	  if(OLC)
+	    {
+	      fprintf(stderr, 
+		      "Usage is: \tshow [-file <filename>] [-connected]");
+	      fprintf(stderr," [-noflush]\n");
+	    }
+	  else
+	    {
+	      fprintf(stderr, 
+		      "Usage is: \tshow [<username> <instance id>] ");
+	      fprintf(stderr,"[-file <filename>]\n");
+	      fprintf(stderr,"\t\t[-connected] [-noflush]\n");
+	    }
+	  return(ERROR);
+	}
+      if(*arguments == (char *) NULL)   /* end of list */
+	break;
     }
 
+
   status = t_show_message(&Request,file, !savefile, connected, noflush);
-  if(savefile == FALSE || status != SUCCESS)
+
+  if((savefile == FALSE) || (status != SUCCESS))
     (void) unlink(file);
+
   return(status);
 }

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.2 1989-07-16 17:04:18 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.3 1989-08-04 11:12:09 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -34,7 +34,7 @@ t_instance(Request,instance)
   char buf[BUFSIZE];
   int status;
 
-  if(!instance)
+  if(instance == -2)
     {
       get_prompted_input("enter new instance (<return> to exit): ",buf);
       if(buf[0] == '\0')
@@ -42,15 +42,16 @@ t_instance(Request,instance)
       instance = atoi(buf);
     }
   else
-    if(instance < 0)
+    if(instance == -1)
       {
 	printf("You are %s (%d). %s.\n",Request->requester.username,Request->requester.instance,happy_message());
 	return(SUCCESS);
       }
 
+  Request->requester.instance = 0;
   while(1)
     {
-      status = OVerifyInstance(&Request,instance);
+      status = OVerifyInstance(Request,instance);
       if(status == SUCCESS)
 	{
 	  User.instance = instance;
@@ -59,7 +60,7 @@ t_instance(Request,instance)
 	}
       else
 	{  
-	  printf("%s (%d) does not exist. Choose one of... \n",User.username, instance);
+	  printf("%s (%d) does not exist. Your status is... \n\n",User.username, instance);
 	  t_personal_status(Request);
 	  get_prompted_input("enter new instance (<return> to exit): ",buf);
 	  instance = atoi(buf);

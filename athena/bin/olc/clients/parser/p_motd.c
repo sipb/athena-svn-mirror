@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.3 1989-07-16 17:05:43 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.4 1989-08-04 11:09:06 tjcoppet Exp $";
 #endif
 
 
@@ -50,17 +50,23 @@ do_olc_motd(arguments)
           ++arguments;
 	  if(*arguments == NULL)
             {
-              fprintf(stderr,"You must specify a file name after the");
-              fprintf(stderr," -file argument.\n");
-              return(ERROR);
+	      file[0] = '\0';
+              get_prompted_input("Enter file name: ",file);
+	      if(file[0] == '\0')
+		return(ERROR);
             }
-	  (void) strcpy(file,*arguments);
+	  else
+	    (void) strcpy(file,*arguments);
+
 	  save_file = TRUE;
-	  continue;
 	}
-      arguments = handle_argument(arguments, &Request, &status);
-      if(status)
-	return(ERROR);
+      else
+	{
+	  arguments = handle_argument(arguments, &Request, &status);
+	  if(status)
+	    return(ERROR);
+	}
+
       if(arguments == (char **) NULL)   /* error */
 	{
 	  fprintf(stderr,"Usage is: \tmotd  [-file <filename>]\n");

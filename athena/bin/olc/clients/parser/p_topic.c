@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.3 1989-07-16 17:06:24 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.4 1989-08-04 11:09:42 tjcoppet Exp $";
 #endif
 
 
@@ -126,7 +126,7 @@ do_olc_topic(arguments)
     case 1:   
       make_temp_name(file);
       status = t_list_topics(&Request,file,!save_file);
-      if(status != SUCCESS  || save_file == FALSE)
+      if((status != SUCCESS) || (save_file == FALSE))
 	unlink(file);
       break;
 

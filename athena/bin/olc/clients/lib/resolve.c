@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/resolve.c,v 1.2 1989-07-06 22:03:12 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/resolve.c,v 1.3 1989-08-04 11:21:14 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -55,7 +55,11 @@ OResolve(Request,title,flag)
   Request->request_type = flag;
   
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &status);
 
   if(is_option(Request->options,VERIFY))

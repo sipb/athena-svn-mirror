@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.3 1989-07-16 17:05:17 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.4 1989-08-04 11:06:03 tjcoppet Exp $";
 #endif
 
 
@@ -98,32 +98,45 @@ do_olc_forward(arguments)
 {
   REQUEST Request;
   int status;
+  int state = 0;
+  char buf[BUFSIZE];
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 	
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
-      if (string_equiv(*arguments, "-o", max(strlen(*arguments),2)))
+      if (string_equiv(*arguments, "-off", max(strlen(*arguments),2)))
 	set_option(Request.options,FORWARD_OFF);
-      else if(string_equiv("-un",arguments,max(strlen(*arguments),2)))
-	set_option(Request.options, FORWARD_UNANSWERED);
       else 
-	{
-	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status)
-	    return(ERROR);
-	  if(arguments == (char **) NULL)   /* error */
+	if(string_equiv(*arguments,"-unanswered",max(strlen(*arguments),2)))
+	  set_option(Request.options, FORWARD_UNANSWERED);
+	else
+	  if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
 	    {
-	      fprintf(stderr,"Usage is: \tforward  [<username> <instance id>] [-off] [-unanswered]\n");
-	      return(ERROR);
+	      ++arguments;
+	      status = t_input_status(&Request,*arguments);
+	      if(status)
+		return(status);
 	    }
-	  if(*arguments == (char *) NULL)   /* end of list */
-	    break;    
-	}
+	else 
+	  {
+	    arguments = handle_argument(arguments, &Request, &status);
+	    if(status)
+	      return(ERROR);
+	    if(arguments == (char **) NULL)   /* error */
+	      {
+		fprintf(stderr,"Usage is: \tforward  [<username> <instance id>] [-off] [-unanswered]\n");
+		return(ERROR);
+	      }
+	    if(*arguments == (char *) NULL)   /* end of list */
+	      break;    
+	  }
     }
 
   status = t_forward(&Request);
   return(status);
 }
+
+
 

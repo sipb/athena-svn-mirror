@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.3 1989-07-16 17:06:06 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.4 1989-08-04 11:09:27 tjcoppet Exp $";
 #endif
 
 
@@ -47,28 +47,28 @@ do_olc_send(arguments)
       if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
 	{
 	  ++arguments;
+	  editorP = editor;
 	  if(*arguments != (char *) NULL)
-	    {
-	      editorP = editor;
-	      (void) strcpy(editorP, *arguments);
-	    }
-	  continue;
+	    (void) strcpy(editorP, *arguments);
+	  else
+	    (void) strcpy(editorP, NO_EDITOR);
 	}
-
-      if(string_equiv(*arguments, "-file",max(strlen(*arguments),2)))
+      else
+	if(string_equiv(*arguments, "-file",max(strlen(*arguments),2)))
+	  {
+	    ++arguments;
+	    if(*arguments != (char *) NULL)
+	      {
+		fileP = file;
+		(void) strcpy(fileP, *arguments);
+	      }
+	  }
+      else
 	{
-	  ++arguments;
-	  if(*arguments != (char *) NULL)
-	    {
-	      fileP = file;
-	      (void) strcpy(fileP, *arguments);
-	    }
-	  continue;
+	  arguments = handle_argument(arguments, &Request, &status);
+	  if(status)
+	    return(ERROR);
 	}
-
-      arguments = handle_argument(arguments, &Request, &status);
-      if(status)
-	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
 	  if(OLC)
@@ -126,27 +126,29 @@ do_olc_comment(arguments)
       if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
 	{
 	  ++arguments;
+	  editorP = editor;
 	  if(*arguments != (char *) NULL)
-	    {
-	      editorP = editor;
-	      (void) strcpy(editorP, *arguments);
-	    }
-	  continue;
+	    (void) strcpy(editorP, *arguments);
+	  else
+	    (void) strcpy(editorP, NO_EDITOR);
 	}
-      if(string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
+      else
+	if(string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
+	  {
+	    ++arguments;
+	    if(*arguments != (char *) NULL)
+	      {
+		fileP = file;
+		(void) strcpy(fileP, *arguments);
+	      }
+	  }
+      else
 	{
-	  ++arguments;
-	  if(*arguments != (char *) NULL)
-	    {
-	      fileP = file;
-	      (void) strcpy(fileP, *arguments);
-	    }
-	  continue;
+	  arguments = handle_argument(arguments, &Request, &status);
+	  if(status)
+	    return(ERROR);
 	}
 
-      arguments = handle_argument(arguments, &Request, &status);
-      if(status)
-	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
 	  fprintf(stderr,
@@ -194,28 +196,27 @@ do_olc_mail(arguments)
       if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
 	{
 	  ++arguments;
+	  editorP = editor;
 	  if(*arguments != (char *) NULL)
-	    {
-	      editorP = editor;
-	      (void) strcpy(editorP, *arguments);
-	    }
-	  continue;
+	    (void) strcpy(editorP, *arguments);
+	  (void) strcpy(editorP,NO_EDITOR);
 	}
-      
-      if (string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
+      else
+	if (string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
+	  {
+	    ++arguments;
+	    if(*arguments != (char *) NULL)
+	      {
+		fileP = file;
+		(void) strcpy(fileP, *arguments);
+	      }
+	  }
+      else
 	{
-	  ++arguments;
-	  if(*arguments != (char *) NULL)
-	    {
-	      fileP = file;
-	      (void) strcpy(fileP, *arguments);
-	    }
-	  continue;
+	  arguments = handle_argument(arguments, &Request, &status);
+	  if(status)
+	    return(ERROR);
 	}
-      
-      arguments = handle_argument(arguments, &Request, &status);
-      if(status)
-	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
 	  fprintf(stderr,

@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.2 1989-07-06 22:02:33 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.3 1989-08-04 11:20:35 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>        
@@ -71,9 +71,16 @@ send_request(fd, request)
      REQUEST *request;
 {
   IO_REQUEST net_rq;
+  int status;
 
 #ifdef KERBEROS
   int klength;
+#endif KERBEROS
+
+#ifdef KERBEROS
+  status =  krb_mk_req(&(request->kticket), K_SERVICE, INSTANCE, REALM, 0);  
+  if(status)
+    return(status);
 #endif KERBEROS
 
 #ifdef TEST

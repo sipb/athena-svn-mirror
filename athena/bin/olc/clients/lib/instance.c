@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.2 1989-07-06 22:02:20 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.3 1989-08-04 11:20:04 tjcoppet Exp $";
 #endif
 
 
@@ -37,7 +37,11 @@ OVerifyInstance(Request,instance)
 
   Request->request_type = OLC_VERIFY_INSTANCE;
   fd = open_connection_to_daemon();
-  send_request(fd,Request);
+  
+  status = send_request(fd,Request);
+  if(status)
+    return(status);
+
   read_response(fd,&status);
   
   if(status == SUCCESS)

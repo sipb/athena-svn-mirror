@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.2 1989-07-06 22:02:44 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.3 1989-08-04 11:20:45 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -55,7 +55,11 @@ OGetMessage(Request,file,code)
   Request->request_type = code;
 
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd,&status);
   
   if(status == SUCCESS)

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.2 1989-07-16 17:03:46 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.3 1989-08-04 11:13:24 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -41,12 +41,16 @@ t_personal_status(Request)
       free(list);
       break;
 
+    case EMPTY_LIST:
+      printf("You are not doing anything in OLC\n");
+      break;
+
     case ERROR:
       fprintf(stderr, "Error listing conversations.\n");
       break;
 
     default:
-      status = handle_response(status, &Request);
+      status = handle_response(status, Request);
       break;
     }
 
@@ -71,7 +75,7 @@ t_display_personal_status(Request,list)
 
   if(list->ustatus ==  END_OF_LIST) 
     {
-      printf("You don't exist, go away.\n");
+      printf("Unable to get your listing.\n");
       return(SUCCESS);
     }
   else
@@ -82,7 +86,7 @@ t_display_personal_status(Request,list)
   printf("count: %d\n", count);
 #endif TEST
 
-  if(count == 1)
+  if((count == 1) && (list->user.instance == 0))
     {
       if(list->nseen >= 0)
 	{
@@ -101,7 +105,7 @@ t_display_personal_status(Request,list)
 		   list->connected.realname,
 		   list->connected.username,list->connected.machine);
 	  else
-	    printf("Answer some questions.\n");
+	    printf("You are signed on to OLC!\n");
 	}
     }
   else
@@ -117,23 +121,23 @@ t_display_personal_status(Request,list)
 	    printf("   ");
 	  if((l->nseen >=0) && (l->connected.uid >= 0))
 	    {
-	      get_status_string(l->ukstatus,cbuf,1);
-	      printf("[%d]          %-10.10s %-9.9s (%d)       %s\n",
+	      OGetStatusString(l->ukstatus,cbuf);
+	      printf("[%d]          %-10.10s %-9.9s (%d)      %s\n",
 		     l->user.instance, cbuf, l->connected.username,
 		     l->connected.instance,l->topic);
 	    }
 	  else
 	    if((l->nseen >= 0) && (l->connected.uid <0))
 	      {
-		get_status_string(l->ukstatus,cbuf,1);
-		printf("[%d]          %-10.10s %s   %s\n",    
+		OGetStatusString(l->ukstatus,cbuf);
+		printf("[%d]          %-10.10s %s      %s\n",    
 		       l->user.instance, cbuf, "not connected",l->topic);
 	      }
 	    else
 	      if((l->nseen < 0) && (l->connected.uid < 0))
 		{
-		  get_status_string(l->ukstatus,buf,0);
-		  printf("[%d]         %-10.10s %s\n",    
+		  OGetStatusString(l->ukstatus,buf);
+		  printf("[%d]          %-10.10s %s\n",    
 			 l->user.instance, buf, "not connected");
 		}
 	      else
@@ -155,14 +159,15 @@ t_who(Request)
   LIST list;
 
   status = OWho(Request, &list);
-  
+ 
   switch (status)
     { 
     case SUCCESS: 
       if(string_eq(Request->requester.username,list.user.username))
 	{
-	  if(list.connected.uid > 0)
-	    printf("You are currently connected to %s (%s@%s)\n",
+	  if(list.connected.uid >= 0)
+	    printf("You are currently connected to %s %s (%s@%s)\n",
+                   list.connected.title,
 		   list.connected.realname, list.connected.username,
 		   list.connected.machine);
 	  else
@@ -201,10 +206,165 @@ t_who(Request)
       status = SUCCESS; 
       break; 
     default:
-      status = handle_response(status, &Request);
+      status = handle_response(status,Request);
       break;
     } 	
   return(status);   
 }
 
+
+
+
+t_input_status(Request,string)
+     REQUEST *Request;
+     char *string;
+{
+  char buf[BUFSIZE];
+  int status = 0;
+  int state = 0;
+
+  if(string != (char *) NULL)
+    strcpy(buf,string);
+  else 
+    buf[0] = '\0';
+
+  while(!status)
+    {
+      if(buf != '\0')
+	{
+	  if(string_equiv(buf,
+		       "pit",max(strlen(buf),2)))
+	    state = STATUS_PICKUP;
+	  else
+	    if(string_equiv(buf,
+			 "referred",max(strlen(buf),2)))
+	      state = STATUS_REFERRED;
+	    else
+	      if(string_equiv(buf,
+			   "active",max(strlen(buf),2)))
+		state = STATUS_ACTIVE;
+	      else
+		if(string_equiv(buf,
+			     "pickup",max(strlen(buf),2)))
+		  state = STATUS_PICKUP;
+		else
+		  if(string_equiv(buf,
+			       "pending",max(strlen(buf),2)))
+		    state = STATUS_ACTIVE;
+	}
+      if(state)
+	{
+	  set_option(Request->options,state);
+	  return(SUCCESS);
+	}
+
+      printf("Forward status may be one of...\n");
+      printf("\t\tactive\n");
+      printf("\t\tunseen\n");
+      printf("\t\tpending\n");
+      printf("\t\treferred\n");
+      printf("\t\tpickup\n");
+      
+      get_prompted_input("enter new status (<return> to exit): \n",buf);
+      if(buf == '\0')
+	return(ERROR);
+    }
+}
+
+
+
+
+get_user_status_string(status,string)
+     int status;
+     char *string;
+{
+  switch(status)
+    {
+    case ACTIVE:
+      strcpy(string, "active");
+      break;
+    case LOGGED_OUT:
+      strcpy(string, "logout");
+      break;
+    case MACHINE_DOWN:
+      strcpy(string, "host down");
+      break;
+    default:
+      strcpy(string, "unknown");
+      break;
+    }
+}
+
+get_status_string(status,string)
+     int status;
+     char *string;
+{
+  
+    switch(status)
+      {
+      case SERVICED:          
+	strcpy(string, "active");
+	break;
+      case PENDING:
+	strcpy(string, "pending");
+	break;
+      case NOT_SEEN:
+	strcpy(string, "unseen");
+	break;
+      case DONE:
+	strcpy(string, "done");
+	break;
+      case CANCEL:
+	strcpy(string, "cancel");
+	break;
+      case REFERRED:
+	strcpy(string, "refer");
+	break;
+      case PICKUP:
+	strcpy(string, "pickup");
+	break;
+      case OFF:
+        strcpy(string, "off");
+        break;
+      case ON:
+        strcpy(string, "on");
+        break;
+      case FIRST:
+        strcpy(string, "sp1");
+	  break;
+      case SECOND:
+        strcpy(string, "sp2");
+        break;
+     case DUTY:
+        strcpy(string, "dut");
+        break;
+     case URGENT:
+        strcpy(string, "urg");
+        break;
+     default:
+        strcpy(string, "unknown");
+        break;
+    }
+  strcat(string, '\0');
+}
+
+
+t_pp_stati()
+{
+  int index = 0;
+  int i = 0;
+
+  while (Status_Table[index].status != UNKNOWN_STATUS)
+    {
+      printf("\t\t%-10s",Status_Table[index].label);
+      index++;
+      ++i;
+      if(i > 2)
+	{
+	  i = 0;
+	  printf("\n");
+	}
+    }
+  printf("\n");
+}
 

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.2 1989-07-16 17:03:36 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.3 1989-08-04 11:13:08 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -37,7 +37,6 @@ t_reply(Request,file,editor)
      char *file, *editor;
 {
   int status;
-  struct stat statbuf;	
 
   set_option(Request->options, VERIFY);
   status = OReply(Request,file);
@@ -69,34 +68,10 @@ t_reply(Request,file,editor)
 
   unset_option(Request->options, VERIFY);
 
-  if(editor == (char *) NULL)
-    {
-      printf("Please enter your message. ");
-      printf("End with a ^D or '.' on a line by itself.\n");
-      status = input_text_into_file(file);
-    }
-  else
-    status = edit_message(file,editor);
- 
-  status = what_now(file, FALSE,NULL); 
-  if(status == ERROR)
-    {
-      fprintf(stderr,"An error occurred while reading your");
-      fprintf(stderr," message; unable to continue.\n");
-      unlink(file);
-      return(ERROR);
-    }
-  else  
-    if(status)
-      return(status);
-      
-  (void) stat(file, &statbuf);
-  if (statbuf.st_size == 0) 
-    {
-      printf("No message to send.\n");
-      return(NO_ACTION);
-    }
-
+  status = enter_message(file,editor);
+  if(status)
+    return(status);
+  
   status = OReply(Request,file);
   
   switch(status)
@@ -146,7 +121,6 @@ t_comment(Request,file,editor)
      char *file, *editor;
 {
   int status;
-  struct stat statbuf;	
 
   set_option(Request->options, VERIFY);
   status = OComment(Request,file);
@@ -177,34 +151,10 @@ t_comment(Request,file,editor)
     return(status);
 
   unset_option(Request->options, VERIFY);
-
-  if(editor == (char *) NULL)
-    {
-      printf("Please enter your comment. ");
-      printf("End with a ^D or '.' on a line by itself.\n");
-      status = input_text_into_file(file);
-    }
-  else
-    status = edit_message(file,editor);
-
-  status = what_now(file, FALSE,NULL);
-  if(status == ERROR)
-    {
-      fprintf(stderr,"An error occurred while reading your");
-      fprintf(stderr," message; unable to continue.\n");
-      unlink(file);
-      return(ERROR);
-    }
-  else
-    if(status)
-      return(status);
-
-  (void) stat(file, &statbuf);
-  if (statbuf.st_size == 0) 
-    {
-      printf("No message to send.\n");
-      return(NO_ACTION);
-    }
+  
+  status = enter_message(file,editor);
+  if(status)
+    return(status);
 
   status = OComment(Request,file);
   
@@ -229,9 +179,8 @@ t_comment(Request,file,editor)
     default:
       status =  handle_response(status, Request);
       break;
+    }  
 
-    }
-  
   return(status);
 }
 
@@ -249,7 +198,8 @@ t_mail(Request,file,editor)
 {
   int status;
   char topic[TOPIC_SIZE];
-  struct stat statbuf;	
+  LIST *list;
+  struct stat statbuf;
 
   set_option(Request->options, VERIFY);
   status = OMail(Request,file);
@@ -258,8 +208,23 @@ t_mail(Request,file,editor)
   switch(status)
     {
     case SUCCESS:
-      t_get_topic(Request,topic);
-      (void) OMailHeader(Request,file,"hello",topic,DEFAULT_MAILHUB);
+      status = OGetTopic(Request,topic);
+      if(status != SUCCESS)
+	{
+	  fprintf(stderr,"warning: Unable to get topic for conversation.\n");
+	  *topic = '\0';
+	}
+      status = OListPerson(Request,&list);
+      if(status != SUCCESS)
+	{
+	  fprintf(stderr, 
+		  "Unable to get status of conversation... exitting\n");
+	  return(ERROR);
+	}
+
+      (void) OMailHeader(Request,file,list->connected.username,
+			 topic,DEFAULT_MAILHUB);
+
       status = edit_message(file,editor);
       if(status == ERROR)
 	{
@@ -270,6 +235,19 @@ t_mail(Request,file,editor)
 	if(status)
 	  return(status);
       
+      status = what_now(file,FALSE,NULL);
+      if(status == ERROR)
+        {
+          fprintf(stderr,"An error occurred while reading your");
+          fprintf(stderr," message; unable to continue.\n");
+          unlink(file);
+          return(ERROR);
+        }
+      else
+       if(status)
+         return(status);
+
+
       (void) stat(file, &statbuf);
       if (statbuf.st_size == 0) 
 	{

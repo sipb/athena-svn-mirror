@@ -20,13 +20,14 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.2 1989-07-06 22:03:48 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.3 1989-08-04 11:21:44 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <zephyr/zephyr.h>
 #include <signal.h>
 #include <ctype.h>
+#include <sys/stat.h>
 
 /*
  * Function:	call_program() executes the named program by forking the
@@ -182,6 +183,18 @@ sendmail()
 }
 
 
+file_length(file)
+     char *file;
+{
+  struct stat statbuf;
+  
+  if(stat(file, &statbuf) < 0)
+    return(ERROR);
+
+  return(statbuf.st_size);
+}
+
+  
 
 #ifdef ZEPHYR
 char *

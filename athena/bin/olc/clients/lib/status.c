@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.3 1989-07-16 17:04:48 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.4 1989-08-04 11:21:28 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -36,7 +36,11 @@ OGetConnectedPerson(Request,data)
 
   Request->request_type = OLC_CONNECTED; 
   fd = open_connection_to_daemon();
-  send_request(fd,Request);
+
+  status = send_request(fd,Request);
+  if(status)
+    return(status);
+
   read_response(fd, &status);
   if(status == SUCCESS)
     read_person(fd,data);
@@ -52,7 +56,7 @@ OListPerson(Request,data)
   int status;
   
   Request->options = LIST_PERSONAL;
-  status = OListQueue(Request,data);
+  status = OListQueue(Request,data,"","",0);
   return(status);
 }
 
@@ -67,7 +71,11 @@ OWho(Request,data)
   
   Request->request_type = OLC_WHO;
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &status);
 
   if(status == SUCCESS)
@@ -75,4 +83,36 @@ OWho(Request,data)
 
   (void) close(fd);
   return(status);
+}
+
+
+
+OGetStatusString(status,string)
+     int status;
+     char *string;
+{
+  int index = 0;
+  
+  while  ((status != Status_Table[index].status)
+          && (Status_Table[index].status != UNKNOWN_STATUS)) 
+    index++;
+    
+  strcpy(string,Status_Table[index].label);
+}
+
+
+OGetStatusCode(string,status)
+     char *string;
+     int *status;
+{
+  int index = 0;
+  
+  while  (!(string_eq(Status_Table[index].label,string))
+          && (Status_Table[index].status != UNKNOWN_STATUS))
+    index++;
+
+  if(Status_Table[index].status ==  UNKNOWN_STATUS)
+    *status = 0;
+  else
+    *status = Status_Table[index].status;
 }

@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.1 1989-07-06 22:05:31 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.2 1989-08-04 11:11:43 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -92,7 +92,7 @@ t_sign_on(Request)
       break;
 
     default:
-      status = handle_response(status, &Request);
+      status = handle_response(status, Request);
       break;
     }
     

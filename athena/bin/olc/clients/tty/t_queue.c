@@ -20,18 +20,19 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.2 1989-07-16 17:03:13 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.3 1989-08-04 11:12:50 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
 ERRCODE
-t_list_queue(Request,queues,topics,stati)
+t_list_queue(Request,queues,topics,stati,comments)
      REQUEST *Request;
      char *queues;
      char *topics;
-     char *stati;
+     int stati;
+     int comments;
 {
   int status;
   LIST *list;
@@ -40,7 +41,7 @@ t_list_queue(Request,queues,topics,stati)
   switch (status)
     {
     case SUCCESS:
-      t_display_list(list);
+      t_display_list(list,comments);
       free(list);
       break;
 
@@ -49,12 +50,15 @@ t_list_queue(Request,queues,topics,stati)
       break;
 
     case EMPTY_LIST:
-      printf("The queue is empty.\n");
+      if(Request->options)
+	printf("No questions match given status.\n");
+      else
+	printf("The queue is empty.\n");
       status = SUCCESS;
       break;
 
     default:
-      status = handle_response(status, &Request);
+      status = handle_response(status, Request);
       break;
     }
 
@@ -63,8 +67,9 @@ t_list_queue(Request,queues,topics,stati)
 
 
 ERRCODE
-t_display_list(list)
-          LIST *list;
+t_display_list(list,comments)
+     LIST *list;
+     int comments;
 {
   LIST *l;
   char uinstbuf[10];
@@ -84,16 +89,23 @@ t_display_list(list)
   printf("User          Status           Consultant                Status     Topic\n\n");
   for(l=list; l->ustatus != END_OF_LIST; ++l)
     {
+#ifdef TEST
+        if(l->connected.uid >=0)
+	  printf("connect: %s status: %d\n",l->connected.username, l->ckstatus);
+	if(l->nseen >= 0)
+	  printf("question: %s \n",l->topic);
+#endif TEST
+
       buf[0] = '\0';
       cbuf[0]= '\0';
       if((l->nseen >=0) && (l->connected.uid >= 0))
 	{	  
-	  get_user_status_string(l->ustatus,buf);
-	  get_status_string(l->ukstatus,cbuf,1);
+	  OGetStatusString(l->ustatus,buf);
+	  OGetStatusString(l->ukstatus,cbuf);
 	  sprintf(ustatusbuf,"(%s/%s)",buf,cbuf);
 
-	  get_status_string(l->ckstatus,buf,0);
-	  sprintf(chstatusbuf,"(%s)",buf);
+	  OGetStatusString(l->ckstatus,buf);
+	  sprintf(chstatusbuf,"(%-3s)",buf);
 	  sprintf(uinstbuf,"[%d]",l->user.instance);
 	  sprintf(cinstbuf,"[%d]",l->connected.instance);
 	  sprintf(nseenbuf,"(%d)",l->nseen);
@@ -101,116 +113,43 @@ t_display_list(list)
 	  printf("%-8.8s %-4.4s %-16.16s %-20.20s %-4.4s %-5.5s %-4.4s %-11.11s\n",
 		 l->user.username, uinstbuf, ustatusbuf,
 		 cbuf, cinstbuf,chstatusbuf,nseenbuf,l->topic);
+	  if(comments && (l->note[0] != '\0'))
+	    printf("\t[%-64.64s]\n",l->note);
 	}
       else
 	if((l->nseen >= 0) && (l->connected.uid <0))
 	  {
-	    get_user_status_string(l->ustatus,buf);
-	    get_status_string(l->ukstatus,cbuf,1);
+	    OGetStatusString(l->ustatus,buf);
+	    OGetStatusString(l->ukstatus,cbuf);
 	    sprintf(ustatusbuf,"(%s/%s)",buf,cbuf);
 	    sprintf(uinstbuf,"[%d]",l->user.instance);
 	    sprintf(nseenbuf,"(%d)",l->nseen);
 	    printf("%-8.8s %-4.4s %-16.16s                                 %-4.4s %-11.11s\n",
 		   l->user.username, uinstbuf, ustatusbuf, nseenbuf, l->topic);
+	    if(comments && (l->note[0] != '\0'))
+	      printf("\t[%-64.64s]\n",l->note);
 	  }
 	else
 	  if((l->nseen < 0) && (l->connected.uid < 0))
-	    {
-	      get_status_string(l->ukstatus,buf,0);
-	      sprintf(chstatusbuf,"(%s)",buf);
-	      sprintf(cbuf,"%s@%s",l->connected.username,l->connected.machine);
-	      sprintf(cinstbuf,"[%d]",l->connected.instance);
-	      printf("                               %-20.20s %-4.4s %-5.5s\n",
-		     cbuf, cinstbuf, chstatusbuf);
-	    }
+	    continue;
 	  else
 	    {
 	      printf("**unkown list entry***\n");
 	    }
     }
+
+  for(l=list; l->ustatus != END_OF_LIST; ++l)
+    if((l->nseen < 0) && (l->connected.uid < 0))
+      {
+	OGetStatusString(l->ukstatus,buf);
+	sprintf(chstatusbuf,"(%-3s)",buf);
+	sprintf(cbuf,"%s@%s",l->user.username,l->user.machine);
+	sprintf(cinstbuf,"[%d]",l->connected.instance);
+	printf("                               %-20.20s %-4.4s %-5.5s\n",
+	       cbuf, cinstbuf, chstatusbuf);
+      }
   return(SUCCESS);
 }
 
 
-
-get_user_status_string(status,string)
-     int status;
-     char *string;
-{
-  switch(status)
-    {
-    case ACTIVE:
-      strcpy(string, "active");
-      break;
-    case LOGGED_OUT:
-      strcpy(string, "logout");
-      break;
-    case MACHINE_DOWN:
-      strcpy(string, "host down");
-      break;
-    default:
-      strcpy(status, "unknown");
-      break;
-    }
-}
-
-get_status_string(status,string,dir)
-     int status;
-     char *string;
-     int dir;
-{
-  
-  if(dir)
-  {
-    switch(status)
-      {
-      case SERVICED:          
-	strcpy(string, "active");
-	break;
-      case PENDING:
-	strcpy(string, "pending");
-	break;
-      case NOT_SEEN:
-	strcpy(string, "unseen");
-	break;
-      case DONE:
-	strcpy(string, "done");
-	break;
-      case CANCEL:
-	strcpy(string, "cancel");
-	break;
-      default:
-	strcpy(string, "unknown");
-	break;
-      }
-  }
-  else
-    {
-      switch(status & SIGNED_ON)
-	{
-	case OFF:
-	  strcpy(string, "off");
-	  break;
-	case ON:
-	  strcpy(string, "on");
-	  break;
-	case FIRST:
-	  strcpy(string, "sp1");
-	  break;
-	case SECOND:
-	  strcpy(string, "sp2");
-	  break;
-	case DUTY:
-	  strcpy(string, "dut");
-	  break;
-	case URGENT:
-	  strcpy(string, "urg");
-	  break;
-	default:
-	  strcpy(string, "unknown");
-	  break;
-	}
-    }
-  strcat(string, '\0');
-}
 

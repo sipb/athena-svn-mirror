@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v 1.3 1989-07-16 17:05:27 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v 1.4 1989-08-04 11:08:04 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -42,10 +42,11 @@ do_olc_instance(arguments)
       if(string_equiv(*arguments,"-instance",
 		      max(strlen(*arguments),2)))
 	{
-	  if(*(++arguments) != (char *) NULL)
+          ++arguments;
+	  if(*arguments != (char *) NULL)
 	    instance = atoi(*arguments);
 	  else
-	    instance = 0;
+	    instance = -2;
 	}
       else
 	{

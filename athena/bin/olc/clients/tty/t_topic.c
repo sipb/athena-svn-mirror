@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.1 1989-07-06 22:06:16 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.2 1989-08-04 11:13:36 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -93,7 +93,7 @@ t_input_topic(Request,topic,flags)
 
       if(string_eq(topic,"help"))
 	{
-	  printf("Help is unavailable at this time.\n");
+	  printf("Choose a topic, type '?' for a list of available topics.\n");
 	  continue;
 	}
 

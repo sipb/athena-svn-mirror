@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.3 1989-07-17 08:07:10 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.4 1989-08-04 11:11:28 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -82,6 +82,12 @@ t_grab(Request,flag,hold)
       status = NO_ACTION;
       break;
 
+    case NO_QUESTION:
+      printf("%s (%d) does not have a question.\n",Request->target.username,
+	     Request->target.instance);
+      status = ERROR;
+      break;
+
     case FAILURE:
     case ERROR:
       fprintf(stderr, "Error grabbing user.\n");
@@ -89,7 +95,7 @@ t_grab(Request,flag,hold)
       break;
 
     default:
-      status = handle_response(status,&Request);
+      status = handle_response(status,Request);
       break;
     }
 
@@ -108,18 +114,20 @@ t_grab(Request,flag,hold)
 ERRCODE
 t_forward(Request)
      REQUEST *Request;
+
 {
   int status;
   int instance;
-  
-  instance = Request->requester.instance;
 
+  instance = Request->requester.instance;
   status = OForward(Request);
   
   switch (status) 
     {
     case SUCCESS:
       printf("Question forwarded.\n");
+      Request->requester.instance = 0;
+      User.instance = 0;
       status = SUCCESS;
       break;
 
@@ -135,6 +143,11 @@ t_forward(Request)
       status = SUCCESS;
       break;
 
+    case NOT_CONNECTED:
+      fprintf(stderr,"You have no question to forward.\n");
+      status = ERROR;
+      break;
+
     case HAS_QUESTION:
       fprintf(stderr,"You cannot forward your own question.\n");
       status = ERROR;
@@ -146,7 +159,7 @@ t_forward(Request)
       break;
 
     default:
-      status = handle_response(status, &Request);
+      status = handle_response(status, Request);
       break;
     }
 

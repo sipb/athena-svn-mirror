@@ -32,6 +32,9 @@ t_done(Request,title,off)
 {
   int status;
   char buf[LINE_LENGTH];
+  int instance; 
+
+  instance = Request->requester.instance;
 
   if(off)
     set_option(Request->options, OFF_OPT);
@@ -46,6 +49,7 @@ t_done(Request,title,off)
 	{
 	case SEND_INFO:
 	   get_prompted_input("Enter a title for this conversation: ", buf);
+           title = &buf[0];
            break;
 
 	case OK:
@@ -53,8 +57,9 @@ t_done(Request,title,off)
            printf("your question.  If this is not the case, you can exit using the 'quit' command,\n");
            printf("and OLC will save your question until a consultant can answer it.  If you\n");
            printf("wish to withdraw your question, use the 'cancel' command.\n");
+           buf[0] = '\0';
 	   get_prompted_input("Really done? [y/n] ", buf);
-	   if(string_equiv(title,"n",1))
+	   if(buf[0] != 'y')             
 	     {
                printf("OK, your question will remain in the queue.\n");
 	       return(NO_ACTION);
@@ -85,11 +90,15 @@ t_done(Request,title,off)
     {
     case SIGNED_OFF:
       printf("Question resolved.  You have signed off of OLC.\n");
+      User.instance = 0;
+      Request->requester.instance = 0;
       status = SUCCESS;
       break;
 
     case CONNECTED:
       printf("Question resolved. You have been connected to another user.\n");
+      User.instance = 0;
+      Request->requester.instance = 0;
       status = SUCCESS;
       break;
 
@@ -98,11 +107,17 @@ t_done(Request,title,off)
       printf("Thank you for using OLC!\n");
      if(OLC)
         exit(0);
+     Request->requester.instance = 0;
+     User.instance = 0;
+     break;
 
     case SUCCESS:
       printf("Your question is resolved. Thank you for using OLC.\n");
       if(OLC)
 	exit(0);
+      Request->requester.instance = 0;
+      User.instance = 0; 
+      break;
 
     case PERMISSION_DENIED:
       fprintf(stderr, "You are not allowed to resolve %s's question.\n",
@@ -120,6 +135,10 @@ t_done(Request,title,off)
       break;
     }
 
+    if(instance != Request->requester.instance)
+    printf("You are %s (%d), again.\n",Request->requester.username,
+           Request->requester.instance);
+
   return(status);
 }
 
@@ -130,6 +149,9 @@ t_cancel(Request,title)
 {
   int status;
   char buf[BUFSIZ];
+  int instance;
+
+  instance = Request->requester.instance;
   
   if(OLC)
     {
@@ -139,8 +161,9 @@ t_cancel(Request,title)
       printf("satisfactorily answered your question, use the 'done' command to exit OLC.\n");
     }
 
+  buf[0] = '\0';
   get_prompted_input("Are you sure you wish to cancel this question? ", buf);
-  if(!string_equiv(buf,"y",1))
+  if(buf[0] != 'y')            
     {
       printf("OK, your question will remain in the queue.\n");
       return(NO_ACTION);
@@ -157,6 +180,8 @@ t_cancel(Request,title)
     {
     case SUCCESS:
       printf("Question cancelled.\n");
+      User.instance = 0;
+      Request->requester.instance = 0;
       status = SUCCESS;
       break;
 
@@ -164,9 +189,14 @@ t_cancel(Request,title)
       printf("Your question has been cancelled.\n");
       if(OLC)
          exit(0);
+      User.instance = 0;
+      Request->requester.instance = 0;
+      break;
 
     case SIGNED_OFF:
       printf("Question cancelled.  You have signed off of OLC.\n");
+      User.instance = 0;
+      Request->requester.instance = 0;
       status = SUCCESS;
       break;
 
@@ -185,6 +215,10 @@ t_cancel(Request,title)
       status = handle_response(status, Request);
       break;
     }
+
+  if(instance != Request->requester.instance)
+    printf("You are %s (%d), again.\n",Request->requester.username,
+           Request->requester.instance);
 
   return(status);
 }

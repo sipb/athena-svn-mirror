@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.4 1989-07-16 17:04:41 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.5 1989-08-04 11:21:00 tjcoppet Exp $";
 #endif
 
 
@@ -32,16 +32,38 @@ OListQueue(Request,list,queues,topics,stati)
      LIST **list;
      char *queues;
      char *topics;
-     char *stati;
+     int stati;
 {
   int fd;
   int status;
   int n;
 
+  if(strlen(queues) > NAME_LENGTH)
+    return(ERROR);
+
+  if(strlen(topics) > NAME_LENGTH)
+    return(ERROR);
+
   Request->request_type = OLC_LIST;
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  
+  status = send_request(fd, Request);
+  if(status)
+    return(status);
+
   read_response(fd, &status);
+
+  if(!is_option(Request->options,LIST_PERSONAL))
+    {
+      if(status == SUCCESS)
+	{
+	  write_text_to_fd(fd,queues);
+	  write_text_to_fd(fd,topics);
+	  write_int_to_fd(fd,stati);
+	}
+      
+      read_response(fd, &status);
+    }
 
   if(status == SUCCESS)
     {
