@@ -121,7 +121,7 @@ NAME="ATKOBJECT"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1801"
+NAME="AEN1845"
 ></A
 ><H2
 >Name</H2
@@ -129,7 +129,7 @@ NAME="AEN1801"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1804"
+NAME="AEN1848"
 ></A
 ><H2
 >Synopsis</H2
@@ -432,7 +432,7 @@ HREF="atkobject.html#ATK-ROLE-FOR-NAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1903"
+NAME="AEN1947"
 ></A
 ><H2
 >Object Hierarchy</H2
@@ -454,7 +454,7 @@ CLASS="SYNOPSIS"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1907"
+NAME="AEN1951"
 ></A
 ><H2
 >Properties</H2
@@ -468,13 +468,21 @@ CELLPADDING="6"
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;  &quot;<A
-HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-NAME"
->accessible-name</A
->&quot;      gchararray           : Read / Write
+HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-COMPONENT-LAYER"
+>accessible-component-layer</A
+>&quot; gint                 : Read
+  &quot;<A
+HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-COMPONENT-MDI-ZORDER"
+>accessible-component-mdi-zorder</A
+>&quot; gint                 : Read
   &quot;<A
 HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-DESCRIPTION"
 >accessible-description</A
 >&quot; gchararray           : Read / Write
+  &quot;<A
+HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-NAME"
+>accessible-name</A
+>&quot;      gchararray           : Read / Write
   &quot;<A
 HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-PARENT"
 >accessible-parent</A
@@ -483,21 +491,9 @@ HREF="atkobject.html"
 >AtkObject</A
 >            : Read / Write
   &quot;<A
-HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-VALUE"
->accessible-value</A
->&quot;     gdouble              : Read / Write
-  &quot;<A
 HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-ROLE"
 >accessible-role</A
 >&quot;      gint                 : Read / Write
-  &quot;<A
-HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-COMPONENT-LAYER"
->accessible-component-layer</A
->&quot; gint                 : Read
-  &quot;<A
-HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-COMPONENT-MDI-ZORDER"
->accessible-component-mdi-zorder</A
->&quot; gint                 : Read
   &quot;<A
 HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-TABLE-CAPTION"
 >accessible-table-caption</A
@@ -530,7 +526,11 @@ HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-TABLE-SUMMARY"
 >&quot; <A
 HREF="atkobject.html"
 >AtkObject</A
->            : Read / Write</PRE
+>            : Read / Write
+  &quot;<A
+HREF="atkobject.html#ATKOBJECT--ACCESSIBLE-VALUE"
+>accessible-value</A
+>&quot;     gdouble              : Read / Write</PRE
 ></TD
 ></TR
 ></TABLE
@@ -538,7 +538,7 @@ HREF="atkobject.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1936"
+NAME="AEN1980"
 ></A
 ><H2
 >Signal Prototypes</H2
@@ -619,7 +619,7 @@ HREF="atkobject.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1964"
+NAME="AEN2008"
 ></A
 ><H2
 >Description</H2
@@ -637,10 +637,10 @@ HREF="atkobject.html"
 >
 may also be queried as to whether they implement other ATK interfaces
 (e.g. <A
-HREF="atk-atkaction.html#ATKACTION"
+HREF="atkaction.html"
 >AtkAction</A
 >, <A
-HREF="atk-atkcomponent.html#ATKCOMPONENT"
+HREF="atkcomponent.html"
 >AtkComponent</A
 >, etc.), as appropriate to the role
 which a given UI component plays in a user interface.</P
@@ -665,14 +665,14 @@ HREF="atkobject.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1976"
+NAME="AEN2020"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1978"
+NAME="AEN2022"
 ></A
 ><H3
 ><A
@@ -698,7 +698,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1983"
+NAME="AEN2027"
 ></A
 ><H3
 ><A
@@ -1485,7 +1485,7 @@ CLASS="LITERAL"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2366"
+NAME="AEN2410"
 ></A
 ><H3
 ><A
@@ -1544,7 +1544,7 @@ HREF="atkobject.html#ATKROLE"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2387"
+NAME="AEN2431"
 ></A
 ><H3
 ><A
@@ -1656,7 +1656,7 @@ CLASS="LITERAL"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2434"
+NAME="AEN2478"
 ></A
 ><H3
 ><A
@@ -1682,7 +1682,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2439"
+NAME="AEN2483"
 ></A
 ><H3
 ><A
@@ -1720,7 +1720,7 @@ corresponding to focused.&#13;</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2444"
+NAME="AEN2488"
 ></A
 ><H3
 ><A
@@ -1767,7 +1767,7 @@ CLASS="EMPHASIS"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2462"
+NAME="AEN2506"
 ></A
 ><H3
 ><A
@@ -1826,7 +1826,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2481"
+NAME="AEN2525"
 ></A
 ><H3
 ><A
@@ -1888,7 +1888,7 @@ HREF="atkobject.html"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2505"
+NAME="AEN2549"
 ></A
 ><H3
 ><A
@@ -1942,7 +1942,7 @@ CLASS="EMPHASIS"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2525"
+NAME="AEN2569"
 ></A
 ><H3
 ><A
@@ -1998,7 +1998,7 @@ of the accessible.&#13;</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2545"
+NAME="AEN2589"
 ></A
 ><H3
 ><A
@@ -2058,7 +2058,7 @@ HREF="atkobject.html"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2566"
+NAME="AEN2610"
 ></A
 ><H3
 ><A
@@ -2114,7 +2114,7 @@ of the accessible.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2586"
+NAME="AEN2630"
 ></A
 ><H3
 ><A
@@ -2189,7 +2189,7 @@ of the accessible.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2613"
+NAME="AEN2657"
 ></A
 ><H3
 ><A
@@ -2252,7 +2252,7 @@ HREF="atkrelationset.html"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2635"
+NAME="AEN2679"
 ></A
 ><H3
 ><A
@@ -2313,7 +2313,7 @@ HREF="atkobject.html#ATKLAYER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2656"
+NAME="AEN2700"
 ></A
 ><H3
 ><A
@@ -2371,7 +2371,7 @@ container.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2676"
+NAME="AEN2720"
 ></A
 ><H3
 ><A
@@ -2431,7 +2431,7 @@ HREF="atkobject.html#ATKROLE"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2697"
+NAME="AEN2741"
 ></A
 ><H3
 ><A
@@ -2493,7 +2493,7 @@ set of the accessible</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2718"
+NAME="AEN2762"
 ></A
 ><H3
 ><A
@@ -2548,7 +2548,7 @@ CLASS="EMPHASIS"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2738"
+NAME="AEN2782"
 ></A
 ><H3
 ><A
@@ -2605,7 +2605,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2758"
+NAME="AEN2802"
 ></A
 ><H3
 ><A
@@ -2662,7 +2662,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2778"
+NAME="AEN2822"
 ></A
 ><H3
 ><A
@@ -2725,7 +2725,7 @@ HREF="atkobject.html"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2799"
+NAME="AEN2843"
 ></A
 ><H3
 ><A
@@ -2788,7 +2788,7 @@ HREF="atkobject.html#ATKROLE"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2820"
+NAME="AEN2864"
 ></A
 ><H3
 ><A
@@ -2862,7 +2862,7 @@ HREF="atkobject.html#ATK-OBJECT-REMOVE-PROPERTY-CHANGE-HANDLER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2848"
+NAME="AEN2892"
 ></A
 ><H3
 ><A
@@ -2920,7 +2920,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2868"
+NAME="AEN2912"
 ></A
 ><H3
 ><A
@@ -2995,7 +2995,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2895"
+NAME="AEN2939"
 ></A
 ><H3
 ><A
@@ -3061,7 +3061,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2919"
+NAME="AEN2963"
 ></A
 ><H3
 ><A
@@ -3151,7 +3151,7 @@ CLASS="EMPHASIS"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2953"
+NAME="AEN2997"
 ></A
 ><H3
 ><A
@@ -3241,7 +3241,7 @@ CLASS="EMPHASIS"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2987"
+NAME="AEN3031"
 ></A
 ><H3
 ><A
@@ -3303,7 +3303,7 @@ CLASS="EMPHASIS"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3009"
+NAME="AEN3053"
 ></A
 ><H3
 ><A
@@ -3366,7 +3366,7 @@ CLASS="EMPHASIS"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3031"
+NAME="AEN3075"
 ></A
 ><H3
 ><A
@@ -3426,21 +3426,33 @@ name,
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3053"
+NAME="AEN3097"
 ></A
 ><H2
 >Properties</H2
 ><DT
 ><A
-NAME="ATKOBJECT--ACCESSIBLE-NAME"
+NAME="ATKOBJECT--ACCESSIBLE-COMPONENT-LAYER"
 ></A
 >&quot;<TT
 CLASS="LITERAL"
->accessible-name</TT
->&quot; (gchararray : Read / Write)</DT
+>accessible-component-layer</TT
+>&quot; (gint : Read)</DT
 ><DD
 ><P
->Object instance's name formatted for assistive technology access.</P
+></P
+></DD
+><DT
+><A
+NAME="ATKOBJECT--ACCESSIBLE-COMPONENT-MDI-ZORDER"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>accessible-component-mdi-zorder</TT
+>&quot; (gint : Read)</DT
+><DD
+><P
+></P
 ></DD
 ><DT
 ><A
@@ -3452,7 +3464,19 @@ CLASS="LITERAL"
 >&quot; (gchararray : Read / Write)</DT
 ><DD
 ><P
->Description of an object, formatted for assistive technology access.</P
+></P
+></DD
+><DT
+><A
+NAME="ATKOBJECT--ACCESSIBLE-NAME"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>accessible-name</TT
+>&quot; (gchararray : Read / Write)</DT
+><DD
+><P
+></P
 ></DD
 ><DT
 ><A
@@ -3467,19 +3491,7 @@ HREF="atkobject.html"
 > : Read / Write)</DT
 ><DD
 ><P
->Is used to notify that the parent has changed .</P
-></DD
-><DT
-><A
-NAME="ATKOBJECT--ACCESSIBLE-VALUE"
-></A
->&quot;<TT
-CLASS="LITERAL"
->accessible-value</TT
->&quot; (gdouble : Read / Write)</DT
-><DD
-><P
->Is used to notify that the value has changed .</P
+></P
 ></DD
 ><DT
 ><A
@@ -3491,31 +3503,7 @@ CLASS="LITERAL"
 >&quot; (gint : Read / Write)</DT
 ><DD
 ><P
->The accessible role of this object .</P
-></DD
-><DT
-><A
-NAME="ATKOBJECT--ACCESSIBLE-COMPONENT-LAYER"
-></A
->&quot;<TT
-CLASS="LITERAL"
->accessible-component-layer</TT
->&quot; (gint : Read)</DT
-><DD
-><P
->The accessible layer of this object .</P
-></DD
-><DT
-><A
-NAME="ATKOBJECT--ACCESSIBLE-COMPONENT-MDI-ZORDER"
-></A
->&quot;<TT
-CLASS="LITERAL"
->accessible-component-mdi-zorder</TT
->&quot; (gint : Read)</DT
-><DD
-><P
->The accessible MDI value of this object .</P
+></P
 ></DD
 ><DT
 ><A
@@ -3527,7 +3515,7 @@ CLASS="LITERAL"
 >&quot; (gchararray : Read / Write)</DT
 ><DD
 ><P
->Is used to notify that the table caption has changed .</P
+></P
 ></DD
 ><DT
 ><A
@@ -3539,7 +3527,7 @@ CLASS="LITERAL"
 >&quot; (gchararray : Read / Write)</DT
 ><DD
 ><P
->Is used to notify that the table columnscription has changed .</P
+></P
 ></DD
 ><DT
 ><A
@@ -3554,7 +3542,7 @@ HREF="atkobject.html"
 > : Read / Write)</DT
 ><DD
 ><P
->Is used to notify that the table column header has changed .</P
+></P
 ></DD
 ><DT
 ><A
@@ -3566,7 +3554,7 @@ CLASS="LITERAL"
 >&quot; (gchararray : Read / Write)</DT
 ><DD
 ><P
->Is used to notify that the table row description has changed .</P
+></P
 ></DD
 ><DT
 ><A
@@ -3581,7 +3569,7 @@ HREF="atkobject.html"
 > : Read / Write)</DT
 ><DD
 ><P
->Is used to notify that the table row header has changed .</P
+></P
 ></DD
 ><DT
 ><A
@@ -3596,20 +3584,32 @@ HREF="atkobject.html"
 > : Read / Write)</DT
 ><DD
 ><P
->Is used to notify that the table summary has changed .</P
+></P
+></DD
+><DT
+><A
+NAME="ATKOBJECT--ACCESSIBLE-VALUE"
+></A
+>&quot;<TT
+CLASS="LITERAL"
+>accessible-value</TT
+>&quot; (gdouble : Read / Write)</DT
+><DD
+><P
+></P
 ></DD
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3147"
+NAME="AEN3191"
 ></A
 ><H2
 >Signals</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3149"
+NAME="AEN3193"
 ></A
 ><H3
 ><A
@@ -3673,7 +3673,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3173"
+NAME="AEN3217"
 ></A
 ><H3
 ><A
@@ -3750,7 +3750,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3203"
+NAME="AEN3247"
 ></A
 ><H3
 ><A
@@ -3814,7 +3814,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3227"
+NAME="AEN3271"
 ></A
 ><H3
 ><A
@@ -3879,7 +3879,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3251"
+NAME="AEN3295"
 ></A
 ><H3
 ><A
@@ -3955,7 +3955,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3281"
+NAME="AEN3325"
 ></A
 ><H3
 ><A
@@ -4008,7 +4008,7 @@ CLASS="PARAMETER"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3299"
+NAME="AEN3343"
 ></A
 ><H2
 >See Also</H2

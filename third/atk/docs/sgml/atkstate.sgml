@@ -28,6 +28,8 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="atk-state-type
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -82,160 +84,160 @@ The possible types of states of an object</para>
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>ATK_STATE_INVALID</literal></term>
-<listitem><para> Indicates an invalid state
-</para></listitem>
+<listitem><simpara> Indicates an invalid state
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_ACTIVE</literal></term>
-<listitem><para> Indicates a window is currently the active window
-</para></listitem>
+<listitem><simpara> Indicates a window is currently the active window
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_ARMED</literal></term>
-<listitem><para> Indicates that the object is armed
-</para></listitem>
+<listitem><simpara> Indicates that the object is armed
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_BUSY</literal></term>
-<listitem><para> Indicates the current object is busy
-</para></listitem>
+<listitem><simpara> Indicates the current object is busy
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_CHECKED</literal></term>
-<listitem><para> Indicates this object is currently checked
-</para></listitem>
+<listitem><simpara> Indicates this object is currently checked
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_DEFUNCT</literal></term>
-<listitem><para> Indicates the user interface object corresponding to this object no longer exists
-</para></listitem>
+<listitem><simpara> Indicates the user interface object corresponding to this object no longer exists
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_EDITABLE</literal></term>
-<listitem><para> Indicates the user can change the contents of this object
-</para></listitem>
+<listitem><simpara> Indicates the user can change the contents of this object
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_ENABLED</literal></term>
-<listitem><para> Indicates that this object is enabled
-</para></listitem>
+<listitem><simpara> Indicates that this object is enabled
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_EXPANDABLE</literal></term>
-<listitem><para> Indicates this object allows progressive disclosure of its children
-</para></listitem>
+<listitem><simpara> Indicates this object allows progressive disclosure of its children
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_EXPANDED</literal></term>
-<listitem><para> Indicates this object its expanded
-</para></listitem>
+<listitem><simpara> Indicates this object its expanded
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_FOCUSABLE</literal></term>
-<listitem><para> Indicates this object can accept keyboard focus, which means all events resulting from typing on the keyboard will normally be passed to it when it has focus
-</para></listitem>
+<listitem><simpara> Indicates this object can accept keyboard focus, which means all events resulting from typing on the keyboard will normally be passed to it when it has focus
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_FOCUSED</literal></term>
-<listitem><para> Indicates this object currently has the keyboard focus
-</para></listitem>
+<listitem><simpara> Indicates this object currently has the keyboard focus
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_HORIZONTAL</literal></term>
-<listitem><para> Indicates the orientation of this object is horizontal
-</para></listitem>
+<listitem><simpara> Indicates the orientation of this object is horizontal
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_ICONIFIED</literal></term>
-<listitem><para> Indicates this object is minimized and is represented only by an icon
-</para></listitem>
+<listitem><simpara> Indicates this object is minimized and is represented only by an icon
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_MODAL</literal></term>
-<listitem><para> Indicates something must be done with this object before the user can interact with an object in a different window
-</para></listitem>
+<listitem><simpara> Indicates something must be done with this object before the user can interact with an object in a different window
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_MULTI_LINE</literal></term>
-<listitem><para> Indicates this (text) object can contain multiple lines of text
-</para></listitem>
+<listitem><simpara> Indicates this (text) object can contain multiple lines of text
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_MULTISELECTABLE</literal></term>
-<listitem><para> Indicates this object allows more than one of its children to be selected at the same time
-</para></listitem>
+<listitem><simpara> Indicates this object allows more than one of its children to be selected at the same time
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_OPAQUE</literal></term>
-<listitem><para> Indicates this object paints every pixel within its rectangular region
-</para></listitem>
+<listitem><simpara> Indicates this object paints every pixel within its rectangular region
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_PRESSED</literal></term>
-<listitem><para> Indicates this object is currently pressed
-</para></listitem>
+<listitem><simpara> Indicates this object is currently pressed
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_RESIZABLE</literal></term>
-<listitem><para> Indicates the size of this object is not fixed
-</para></listitem>
+<listitem><simpara> Indicates the size of this object is not fixed
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_SELECTABLE</literal></term>
-<listitem><para> Indicates this object is the child of an object that allows its children to be selected and that this child is one of those children that can be selected
-</para></listitem>
+<listitem><simpara> Indicates this object is the child of an object that allows its children to be selected and that this child is one of those children that can be selected
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_SELECTED</literal></term>
-<listitem><para> Indicates this object is the child of an object that allows its children to be selected and that this child is one of those children that has been selected
-</para></listitem>
+<listitem><simpara> Indicates this object is the child of an object that allows its children to be selected and that this child is one of those children that has been selected
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_SENSITIVE</literal></term>
-<listitem><para> Indicates this object is sensitive
-</para></listitem>
+<listitem><simpara> Indicates this object is sensitive
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_SHOWING</literal></term>
-<listitem><para> Indicates this object, the object's parent, the object's parent's parent, and so on, are all visible
-</para></listitem>
+<listitem><simpara> Indicates this object, the object's parent, the object's parent's parent, and so on, are all visible
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_SINGLE_LINE</literal></term>
-<listitem><para> Indicates this (text) object can contain only a single line of text
-</para></listitem>
+<listitem><simpara> Indicates this (text) object can contain only a single line of text
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_STALE</literal></term>
-<listitem><para> Indicates that the index associated with this object has changed since the user accessed the object.
-</para></listitem>
+<listitem><simpara> Indicates that the index associated with this object has changed since the user accessed the object.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_TRANSIENT</literal></term>
-<listitem><para> Indicates this object is transient
-</para></listitem>
+<listitem><simpara> Indicates this object is transient
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_VERTICAL</literal></term>
-<listitem><para> Indicates the orientation of this object is vertical
-</para></listitem>
+<listitem><simpara> Indicates the orientation of this object is vertical
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_VISIBLE</literal></term>
-<listitem><para> Indicates this object is visible
-</para></listitem>
+<listitem><simpara> Indicates this object is visible
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_MANAGES_DESCENDANTS</literal></term>
-<listitem><para> Indicates that "active-descendant-changed" event
+<listitem><simpara> Indicates that "active-descendant-changed" event
 is sent when children become 'active' (i.e. are selected or navigated to onscreen).
 Used to prevent need to enumerate all children in very large containers, like tables.
-</para></listitem>
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_STATE_LAST_DEFINED</literal></term>
-<listitem><para> Not a valid role, used for finding end of enumeration
-</para></listitem>
+<listitem><simpara> Not a valid role, used for finding end of enumeration
+</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -255,10 +257,10 @@ Register a new object state.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><para> a character string describing the new state.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an <link linkend="AtkState">AtkState</link> value for the new state.
-</para></listitem></varlistentry>
+<listitem><simpara> a character string describing the new state.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AtkState">AtkState</link> value for the new state.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-type-get-name">atk_state_type_get_name ()</title>
@@ -270,10 +272,10 @@ Gets the description string describing the <link linkend="AtkStateType">AtkState
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkStateType">AtkStateType</link> whose name is required
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the string describing the AtkStateType
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkStateType">AtkStateType</link> whose name is required
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the string describing the AtkStateType
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-type-for-name">atk_state_type_for_name ()</title>
@@ -284,10 +286,10 @@ Gets the <link linkend="AtkStateType">AtkStateType</link> corresponding to the d
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><para> a character string state name
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an <link linkend="AtkStateType">AtkStateType</link> corresponding to <parameter>name</parameter> 
-</para></listitem></varlistentry>
+<listitem><simpara> a character string state name
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AtkStateType">AtkStateType</link> corresponding to <parameter>name</parameter> 
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

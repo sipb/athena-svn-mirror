@@ -1,0 +1,455 @@
+<HTML
+><HEAD
+><TITLE
+>AtkDocument</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="ATK Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="ATK Library"
+HREF="atk.html"><LINK
+REL="PREVIOUS"
+TITLE="AtkComponent"
+HREF="atkcomponent.html"><LINK
+REL="NEXT"
+TITLE="AtkEditableText"
+HREF="atkeditabletext.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>ATK Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkcomponent.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkeditabletext.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="ATKDOCUMENT"
+>AtkDocument</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN813"
+></A
+><H2
+>Name</H2
+>AtkDocument&nbsp;--&nbsp;The ATK interface which allows access to a DOM associated with on object.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN816"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="atkdocument.html#ATKDOCUMENT-STRUCT"
+>AtkDocument</A
+>;
+G_CONST_RETURN gchar* <A
+HREF="atkdocument.html#ATK-DOCUMENT-GET-DOCUMENT-TYPE"
+>atk_document_get_document_type</A
+>
+                                            (<A
+HREF="atkdocument.html"
+>AtkDocument</A
+> *document);
+gpointer    <A
+HREF="atkdocument.html#ATK-DOCUMENT-GET-DOCUMENT"
+>atk_document_get_document</A
+>       (<A
+HREF="atkdocument.html"
+>AtkDocument</A
+> *document);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN826"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  GInterface
+   +----AtkDocument</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN830"
+></A
+><H2
+>Description</H2
+><P
+>The AtkDocument interface should be supported by any object that has an
+associated document object model (DOM). This interface provides the
+standard mechanism allowing an assistive technology access to the DOM.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN833"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN835"
+></A
+><H3
+><A
+NAME="ATKDOCUMENT-STRUCT"
+></A
+>struct AtkDocument</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkDocument;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The AtkDocument structure does not contain any fields.
+&#13;</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN840"
+></A
+><H3
+><A
+NAME="ATK-DOCUMENT-GET-DOCUMENT-TYPE"
+></A
+>atk_document_get_document_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>G_CONST_RETURN gchar* atk_document_get_document_type
+                                            (<A
+HREF="atkdocument.html"
+>AtkDocument</A
+> *document);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets a string indicating the document type.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>document</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkDocumentIface</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a string indicating the document type</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN860"
+></A
+><H3
+><A
+NAME="ATK-DOCUMENT-GET-DOCUMENT"
+></A
+>atk_document_get_document ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gpointer    atk_document_get_document       (<A
+HREF="atkdocument.html"
+>AtkDocument</A
+> *document);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets a <TT
+CLASS="LITERAL"
+>gpointer</TT
+> that points to an instance of the DOM.  It is
+up to the caller to check atk_document_get_type to determine
+how to cast this pointer.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>document</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkDocumentIface</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a <TT
+CLASS="LITERAL"
+>gpointer</TT
+> that points to an instance of the DOM.</P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkcomponent.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atkeditabletext.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkComponent</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkEditableText</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -54,6 +54,8 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="atk-get-toolki
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -88,14 +90,14 @@ as <link linkend="atk-component-get-position">atk_component_get_position</link>(
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>ATK_XY_SCREEN</literal></term>
-<listitem><para> specifies xy coordinates relative to the screen
-</para></listitem>
+<listitem><simpara> specifies xy coordinates relative to the screen
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_XY_WINDOW</literal></term>
-<listitem><para> specifies xy coordinates relative to the widget's 
+<listitem><simpara> specifies xy coordinates relative to the widget's 
 top-level window
-</para></listitem>
+</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -108,11 +110,11 @@ when an object receives focus.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>focus_tracker</parameter>&nbsp;:</term>
-<listitem><para> Function to be added to the list of functions to be called
+<listitem><simpara> Function to be added to the list of functions to be called
 when an object receives focus.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> added focus tracker id, or 0 on failure.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> added focus tracker id, or 0 on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-remove-focus-tracker">atk_remove_focus_tracker ()</title>
@@ -124,8 +126,8 @@ to be called when any object receives focus.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tracker_id</parameter>&nbsp;:</term>
-<listitem><para> the id of the focus tracker to remove
-</para></listitem></varlistentry>
+<listitem><simpara> the id of the focus tracker to remove
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-focus-tracker-init">atk_focus_tracker_init ()</title>
@@ -139,8 +141,8 @@ focus tracking.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>add_function</parameter>&nbsp;:</term>
-<listitem><para> Function to be called for focus tracker initialization
-</para></listitem></varlistentry>
+<listitem><simpara> Function to be called for focus tracker initialization
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-focus-tracker-notify">atk_focus_tracker_notify ()</title>
@@ -152,8 +154,8 @@ executed for the object.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>object</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="AtkEventListener">AtkEventListener ()</title>
@@ -164,10 +166,10 @@ such as receiving focus, occurs. The parameter of the AtkEventListener is the
 AtkObject on which the event occurred.
 </para><variablelist role="params">
 <varlistentry><term><parameter>Param1</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="AtkEventListenerInit">AtkEventListenerInit ()</title>
@@ -189,13 +191,13 @@ when an event of type event_type occurs.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
-<listitem><para> the listener to notify
-</para></listitem></varlistentry>
+<listitem><simpara> the listener to notify
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>event_type</parameter>&nbsp;:</term>
-<listitem><para> the type of event for which notification is requested
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> added event listener id, or 0 on failure.
-</para></listitem></varlistentry>
+<listitem><simpara> the type of event for which notification is requested
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> added event listener id, or 0 on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-remove-global-event-listener">atk_remove_global_event_listener ()</title>
@@ -207,8 +209,8 @@ Removes the specified event listener</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>listener_id</parameter>&nbsp;:</term>
-<listitem><para> the id of the event listener to remove
-</para></listitem></varlistentry>
+<listitem><simpara> the id of the event listener to remove
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="AtkKeyEventStruct">struct AtkKeyEventStruct</title>
@@ -241,18 +243,18 @@ Specifies the type of a keyboard evemt.</para>
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>ATK_KEY_EVENT_PRESS</literal></term>
-<listitem><para> specifies a key press event
-</para></listitem>
+<listitem><simpara> specifies a key press event
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_KEY_EVENT_RELEASE</literal></term>
-<listitem><para> specifies a key release event
-</para></listitem>
+<listitem><simpara> specifies a key release event
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_KEY_EVENT_LAST_DEFINED</literal></term>
-<listitem><para> Not a valid value; specifies end of enumeration
-</para></listitem>
+<listitem><simpara> Not a valid value; specifies end of enumeration
+</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -263,15 +265,15 @@ Specifies the type of a keyboard evemt.</para>
 An AtkKeySnoopFunc is a function which is called when a keyboard event occurs.
 </para><variablelist role="params">
 <varlistentry><term><parameter>event</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>func_data</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-add-key-event-listener">atk_add_key_event_listener ()</title>
@@ -285,14 +287,14 @@ Adds the specified function to the list of functions to be called
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
-<listitem><para> the listener to notify
-</para></listitem></varlistentry>
+<listitem><simpara> the listener to notify
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gpointer">gpointer</link> that points to a block of data that should be sent to the registered listeners,
+<listitem><simpara> a <link linkend="gpointer">gpointer</link> that points to a block of data that should be sent to the registered listeners,
        along with the event notification, when it occurs.  
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> added event listener id, or 0 on failure.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> added event listener id, or 0 on failure.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-remove-key-event-listener">atk_remove_key_event_listener ()</title>
@@ -303,8 +305,8 @@ Removes the specified event listener</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>listener_id</parameter>&nbsp;:</term>
-<listitem><para> the id of the event listener to remove
-</para></listitem></varlistentry>
+<listitem><simpara> the id of the event listener to remove
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-get-root">atk_get_root ()</title>
@@ -314,8 +316,8 @@ Gets the root accessible container for the current application.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the root accessible container for the current application
-</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the root accessible container for the current application
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-get-toolkit-name">atk_get_toolkit_name ()</title>
@@ -325,8 +327,8 @@ Gets name string for the GUI toolkit implementing ATK for this application.</par
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> name string for the GUI toolkit implementing ATK for this application
-</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> name string for the GUI toolkit implementing ATK for this application
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-get-toolkit-version">atk_get_toolkit_version ()</title>
@@ -337,8 +339,8 @@ Gets version string for the GUI toolkit implementing ATK for this application.</
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> version string for the GUI toolkit implementing ATK for this application
-</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> version string for the GUI toolkit implementing ATK for this application
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

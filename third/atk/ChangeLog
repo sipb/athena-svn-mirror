@@ -1,3 +1,64 @@
+003-01-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.2.2=====
+
+	* configure.in: Version 1.2.2, interface age 2, binary age 202
+
+	* NEWS: Updated.
+
+2003-01-19  He Qiangqiang  <carton@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2003-01-12  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added 'sq'(albanian) to ALL_LINGUAS.
+
+2003-01-11  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* configure.in (ALL_LINGUAS): Added "fi" (Finnish)
+
+2003-01-06  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in (ALL_LINGUAS): Added "it" (Italian) 
+
+2003-01-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Add -with-html-dir option. (bug #102497)
+
+	* docs/Makefile.am: Remove INSTALLDIR and HTML_DIR
+
+	* docs/tmpl/atkobject.sgml: Update so property names are in
+	alphabetic order.
+
+2003-01-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* ===== Released 1.2.1=====
+	
+	* configure.in: Version 1.2.1, interface age 1, binary age 201
+
+	* NEWS: Updated.
+
+2003-01-02  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in (ALL_LINGUAS): Added pl (Polish).
+
+2002-12-23  Nam SungHyun  <namsh@kldp.org>
+
+	* configure.in: Added Korean (ko) to ALL_LINGUAS
+
+2002-12-22  Artis Trops  <hornet@navigator.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS.
+
+2002-12-22  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* configure.in (ALL_LINGUAS): added French (fr).
+
+2002-12-21  Jordi Mallach  <jordi@sindominio.net>
+
+	* configure.in (ALL_LINGUAS): added Catalan (ca).
+
 2002-12-20  Padraig O'Briain  <padraig.obriain@sun.com>
 
         * ===== Released 1.2.0 ======

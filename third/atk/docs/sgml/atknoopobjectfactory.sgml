@@ -35,6 +35,8 @@ struct      <link linkend="AtkNoOpObjectFactory-struct">AtkNoOpObjectFactory</li
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -63,8 +65,8 @@ Creates an instance of an <link linkend="AtkObjectFactory">AtkObjectFactory</lin
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an instance of an <link linkend="AtkObjectFactory">AtkObjectFactory</link>
-</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an instance of an <link linkend="AtkObjectFactory">AtkObjectFactory</link>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ATK 1.x\n"
-"POT-Creation-Date: 2002-11-22 08:13+0000\n"
-"PO-Revision-Date: 2002-12-18 07:35+0300\n"
+"POT-Creation-Date: 2003-01-20 09:26+0000\n"
+"PO-Revision-Date: 2002-12-24 10:38+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -281,7 +281,7 @@ msgstr "таблица в виде дерева"
 
 #: atk/atkobject.c:1381
 msgid "unknown"
-msgstr "нейзвестна"
+msgstr "неизвестна"
 
 #: atk/atkobject.c:1384
 msgid "viewport"

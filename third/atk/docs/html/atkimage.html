@@ -1,0 +1,680 @@
+<HTML
+><HEAD
+><TITLE
+>AtkImage</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="ATK Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="ATK Library"
+HREF="atk.html"><LINK
+REL="PREVIOUS"
+TITLE="AtkHypertext"
+HREF="atkhypertext.html"><LINK
+REL="NEXT"
+TITLE="AtkNoOpObject"
+HREF="atknoopobject.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>ATK Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkhypertext.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atknoopobject.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="ATKIMAGE"
+>AtkImage</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1579"
+></A
+><H2
+>Name</H2
+>AtkImage&nbsp;--&nbsp;The ATK Interface implemented by components which expose image or pixmap
+content on-screen.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1582"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="atkimage.html#ATKIMAGE-STRUCT"
+>AtkImage</A
+>;
+void        <A
+HREF="atkimage.html#ATK-IMAGE-GET-IMAGE-POSITION"
+>atk_image_get_image_position</A
+>    (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image,
+                                             gint *x,
+                                             gint *y,
+                                             <A
+HREF="atkutil.html#ATKCOORDTYPE"
+>AtkCoordType</A
+> coord_type);
+G_CONST_RETURN gchar* <A
+HREF="atkimage.html#ATK-IMAGE-GET-IMAGE-DESCRIPTION"
+>atk_image_get_image_description</A
+>
+                                            (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image);
+gboolean    <A
+HREF="atkimage.html#ATK-IMAGE-SET-IMAGE-DESCRIPTION"
+>atk_image_set_image_description</A
+> (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image,
+                                             const gchar *description);
+void        <A
+HREF="atkimage.html#ATK-IMAGE-GET-IMAGE-SIZE"
+>atk_image_get_image_size</A
+>        (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image,
+                                             gint *width,
+                                             gint *height);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1602"
+></A
+><H2
+>Object Hierarchy</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  GInterface
+   +----AtkImage</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1606"
+></A
+><H2
+>Description</H2
+><P
+><A
+HREF="atkimage.html"
+>AtkImage</A
+> should be implemented by <A
+HREF="atkobject.html"
+>AtkObject</A
+> subtypes on behalf of
+components which display image/pixmap information onscreen, and which
+provide information (other than just widget borders, etc.) via that
+image content.  For instance, icons, buttons with icons, toolbar
+elements, and image viewing panes typically should implement <A
+HREF="atkimage.html"
+>AtkImage</A
+>.</P
+><P
+><A
+HREF="atkimage.html"
+>AtkImage</A
+> primarily provides two types of information: coordinate
+information (useful for screen review mode of screenreaders, and for use
+by onscreen magnifiers), and descriptive information.  The descriptive
+information is provided for alternative, text-only presentation of the
+most significant information present in the image.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1614"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1616"
+></A
+><H3
+><A
+NAME="ATKIMAGE-STRUCT"
+></A
+>struct AtkImage</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkImage;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The AtkImage structure does not contain any fields.&#13;</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1621"
+></A
+><H3
+><A
+NAME="ATK-IMAGE-GET-IMAGE-POSITION"
+></A
+>atk_image_get_image_position ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        atk_image_get_image_position    (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image,
+                                             gint *x,
+                                             gint *y,
+                                             <A
+HREF="atkutil.html#ATKCOORDTYPE"
+>AtkCoordType</A
+> coord_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the position of the image in the form of a point specifying the
+images top-left corner.  The values of <TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+> are returned as -1
+if the values cannot be obtained.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>image</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkImageIface</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> address of gint to put x coordinate position</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> address of gint to put y coordinate position</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>coord_type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> specifies whether the coordinates are relative to the screen
+or to the components top level window</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1657"
+></A
+><H3
+><A
+NAME="ATK-IMAGE-GET-IMAGE-DESCRIPTION"
+></A
+>atk_image_get_image_description ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>G_CONST_RETURN gchar* atk_image_get_image_description
+                                            (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get a textual description of this image.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>image</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkImageIface</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a string representing the image description</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1677"
+></A
+><H3
+><A
+NAME="ATK-IMAGE-SET-IMAGE-DESCRIPTION"
+></A
+>atk_image_set_image_description ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    atk_image_set_image_description (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image,
+                                             const gchar *description);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the textual description for this image.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>image</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkImageIface</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>description</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a string description to set for <TT
+CLASS="PARAMETER"
+><I
+>image</I
+></TT
+></P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> boolean TRUE, or FALSE if operation could
+not be completed.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1704"
+></A
+><H3
+><A
+NAME="ATK-IMAGE-GET-IMAGE-SIZE"
+></A
+>atk_image_get_image_size ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        atk_image_get_image_size        (<A
+HREF="atkimage.html"
+>AtkImage</A
+> *image,
+                                             gint *width,
+                                             gint *height);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the width and height in pixels for the specified image.
+The values of <TT
+CLASS="PARAMETER"
+><I
+>width</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>height</I
+></TT
+> are returned as -1 if the
+values cannot be obtained.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>image</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkImageIface</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>width</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> filled with the image width</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>height</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> filled with the image height</P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkhypertext.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atknoopobject.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkHypertext</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkNoOpObject</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

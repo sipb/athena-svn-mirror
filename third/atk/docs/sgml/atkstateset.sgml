@@ -43,6 +43,8 @@ void        <link linkend="atk-state-set-clear-states">atk_state_set_clear_state
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -61,8 +63,8 @@ Creates a new empty state set.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a new <link linkend="AtkStateSet">AtkStateSet</link> 
-</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="AtkStateSet">AtkStateSet</link> 
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-is-empty">atk_state_set_is_empty ()</title>
@@ -73,10 +75,10 @@ Checks whether the state set is empty, i.e. has no states set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateType">AtkStateType</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> <literal>TRUE</literal> if <parameter>set</parameter> has no states set, otherwise <literal>FALSE</literal>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateType">AtkStateType</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if <parameter>set</parameter> has no states set, otherwise <literal>FALSE</literal>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-add-state">atk_state_set_add_state ()</title>
@@ -89,13 +91,13 @@ it is not already present.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateType">AtkStateType</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> <literal>TRUE</literal> if  the state for <parameter>type</parameter> is not already in <parameter>set</parameter>.
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateType">AtkStateType</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if  the state for <parameter>type</parameter> is not already in <parameter>set</parameter>.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-add-states">atk_state_set_add_states ()</title>
@@ -108,14 +110,14 @@ Add the states for the specified types to the current state set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>types</parameter>&nbsp;:</term>
-<listitem><para> an array of <link linkend="AtkStateType">AtkStateType</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an array of <link linkend="AtkStateType">AtkStateType</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_types</parameter>&nbsp;:</term>
-<listitem><para> The number of elements in the array
-</para></listitem></varlistentry>
+<listitem><simpara> The number of elements in the array
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-clear-states">atk_state_set_clear_states ()</title>
@@ -126,8 +128,8 @@ Removes all states from the state set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-contains-state">atk_state_set_contains_state ()</title>
@@ -139,13 +141,13 @@ Checks whether the state for the specified type is in the specified set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateType">AtkStateType</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> <literal>TRUE</literal> if <parameter>type</parameter> is the state type is in <parameter>set</parameter>.
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateType">AtkStateType</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if <parameter>type</parameter> is the state type is in <parameter>set</parameter>.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-contains-states">atk_state_set_contains_states ()</title>
@@ -159,16 +161,16 @@ specified set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>types</parameter>&nbsp;:</term>
-<listitem><para> an array of <link linkend="AtkStateType">AtkStateType</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an array of <link linkend="AtkStateType">AtkStateType</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_types</parameter>&nbsp;:</term>
-<listitem><para> The number of elements in the array
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> <literal>TRUE</literal> if all the states for <parameter>type</parameter> are in <parameter>set</parameter>.
-</para></listitem></varlistentry>
+<listitem><simpara> The number of elements in the array
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if all the states for <parameter>type</parameter> are in <parameter>set</parameter>.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-remove-state">atk_state_set_remove_state ()</title>
@@ -180,13 +182,13 @@ Removes the state for the specified type from the state set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkType">AtkType</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> <literal>TRUE</literal> if <parameter>type</parameter> was the state type is in <parameter>set</parameter>.
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkType">AtkType</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if <parameter>type</parameter> was the state type is in <parameter>set</parameter>.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-and-sets">atk_state_set_and_sets ()</title>
@@ -199,13 +201,13 @@ intersection is empty.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>compare_set</parameter>&nbsp;:</term>
-<listitem><para> another <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a new <link linkend="AtkStateSet">AtkStateSet</link> which is the intersection of the two sets.
-</para></listitem></varlistentry>
+<listitem><simpara> another <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="AtkStateSet">AtkStateSet</link> which is the intersection of the two sets.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-or-sets">atk_state_set_or_sets ()</title>
@@ -217,14 +219,14 @@ Constructs the union of the two sets.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>compare_set</parameter>&nbsp;:</term>
-<listitem><para> another <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a new <link linkend="AtkStateSet">AtkStateSet</link> which is the union of the two sets,
+<listitem><simpara> another <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="AtkStateSet">AtkStateSet</link> which is the union of the two sets,
 returning <literal>NULL</literal> is empty.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-state-set-xor-sets">atk_state_set_xor_sets ()</title>
@@ -238,14 +240,14 @@ one of the two sets.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>set</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>compare_set</parameter>&nbsp;:</term>
-<listitem><para> another <link linkend="AtkStateSet">AtkStateSet</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a new <link linkend="AtkStateSet">AtkStateSet</link> which contains the states which are 
+<listitem><simpara> another <link linkend="AtkStateSet">AtkStateSet</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="AtkStateSet">AtkStateSet</link> which contains the states which are 
 in exactly one of the two sets.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

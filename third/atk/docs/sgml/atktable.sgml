@@ -1,4 +1,4 @@
-<refentry id="atk-AtkTable">
+<refentry id="AtkTable">
 <refmeta>
 <refentrytitle>AtkTable</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -15,7 +15,7 @@ row/column information.</refpurpose>
 
 
 
-struct      <link linkend="AtkTable">AtkTable</link>;
+struct      <link linkend="AtkTable-struct">AtkTable</link>;
 <link linkend="AtkObject">AtkObject</link>*  <link linkend="atk-table-ref-at">atk_table_ref_at</link>                (<link linkend="AtkTable">AtkTable</link> *table,
                                              <link linkend="gint">gint</link> row,
                                              <link linkend="gint">gint</link> column);
@@ -87,6 +87,17 @@ void        <link linkend="atk-table-set-summary">atk_table_set_summary</link>  
 </synopsis>
 </refsynopsisdiv>
 
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GInterface">GInterface</link>
+   +----AtkTable
+</synopsis>
+
+</refsect1>
+
+
 
 
 <refsect1>
@@ -154,7 +165,7 @@ implement other interfaces (<link linkend="AtkText">AtkText</link>, <link linken
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="AtkTable">struct AtkTable</title>
+<title><anchor id="AtkTable-struct">struct AtkTable</title>
 <programlisting>struct AtkTable;</programlisting>
 <para>
 The AtkTable structure does not contain any fields.
@@ -171,16 +182,16 @@ Get a reference to the table cell at <parameter>row</parameter>, <parameter>colu
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a AtkObject* representing the referred to accessible
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a AtkObject* representing the referred to accessible
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-index-at">atk_table_get_index_at ()</title>
@@ -195,16 +206,16 @@ of table or table does not implement this interface.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a <link linkend="gint">gint</link> representing the index at specified position 
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="gint">gint</link> representing the index at specified position 
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-column-at-index">atk_table_get_column_at_index ()</title>
@@ -217,13 +228,13 @@ if the table does not implement this interface</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableInterface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableInterface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>index_</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing an index in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the column at the specified index.
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing an index in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the column at the specified index.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-row-at-index">atk_table_get_row_at_index ()</title>
@@ -236,13 +247,13 @@ if the table does not implement this interface</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableInterface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableInterface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>index_</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing an index in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the row at the specified index.
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing an index in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the row at the specified index.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-n-columns">atk_table_get_n_columns ()</title>
@@ -253,11 +264,11 @@ Gets the number of columns in the table.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the number of columns, or 0
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the number of columns, or 0
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-n-rows">atk_table_get_n_rows ()</title>
@@ -268,11 +279,11 @@ Gets the number of rows in the table.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the number of rows, or 0
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the number of rows, or 0
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-column-extent-at">atk_table_get_column_extent_at ()</title>
@@ -286,17 +297,17 @@ at the specified <parameter>row</parameter> and <parameter>column</parameter> in
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the column extent at specified position, or 0
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the column extent at specified position, or 0
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-row-extent-at">atk_table_get_row_extent_at ()</title>
@@ -310,17 +321,17 @@ at a specified <parameter>row</parameter> and <parameter>column</parameter> in t
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the row extent at specified position, or 0
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the row extent at specified position, or 0
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-caption">atk_table_get_caption ()</title>
@@ -331,11 +342,11 @@ Gets the caption for the <parameter>table</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableInterface
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a AtkObject* representing the table caption, or <literal>NULL</literal>
+<listitem><simpara> a GObject instance that implements AtkTableInterface
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a AtkObject* representing the table caption, or <literal>NULL</literal>
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-column-description">atk_table_get_column_description ()</title>
@@ -348,14 +359,14 @@ Gets the description text of the specified <parameter>column</parameter> in the 
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gchar* representing the column description, or <literal>NULL</literal>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gchar* representing the column description, or <literal>NULL</literal>
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-row-description">atk_table_get_row_description ()</title>
@@ -368,14 +379,14 @@ Gets the description text of the specified row in the table</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gchar* representing the row description, or <literal>NULL</literal>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gchar* representing the row description, or <literal>NULL</literal>
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-column-header">atk_table_get_column_header ()</title>
@@ -387,14 +398,14 @@ Gets the column header of a specified column in an accessible table.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in the table
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a AtkObject* representing the specified column header, or
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in the table
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a AtkObject* representing the specified column header, or
 <literal>NULL</literal> if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-row-header">atk_table_get_row_header ()</title>
@@ -406,14 +417,14 @@ Gets the row header of a specified row in an accessible table.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in the table
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a AtkObject* representing the specified row header, or
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in the table
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a AtkObject* representing the specified row header, or
 <literal>NULL</literal> if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-summary">atk_table_get_summary ()</title>
@@ -424,11 +435,11 @@ Gets the summary description of the table.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a AtkObject* representing a summary description of the table,
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a AtkObject* representing a summary description of the table,
 or zero if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-set-caption">atk_table_set_caption ()</title>
@@ -440,11 +451,11 @@ Sets the caption for the table.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>caption</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="AtkObject">AtkObject</link> representing the caption to set for <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="AtkObject">AtkObject</link> representing the caption to set for <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-set-row-description">atk_table_set_row_description ()</title>
@@ -457,15 +468,15 @@ Sets the description text for the specified <parameter>row</parameter> of <param
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>description</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gchar">gchar</link> representing the description text
+<listitem><simpara> a <link linkend="gchar">gchar</link> representing the description text
 to set for the specified <parameter>row</parameter> of <parameter>table</parameter>
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-set-column-description">atk_table_set_column_description ()</title>
@@ -479,15 +490,15 @@ Sets the description text for the specified <parameter>column</parameter> of the
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>description</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gchar">gchar</link> representing the description text
+<listitem><simpara> a <link linkend="gchar">gchar</link> representing the description text
 to set for the specified <parameter>column</parameter> of the <parameter>table</parameter>
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-set-row-header">atk_table_set_row_header ()</title>
@@ -500,14 +511,14 @@ Sets the specified row header to <parameter>header</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>header</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkTable">AtkTable</link> 
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkTable">AtkTable</link> 
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-set-column-header">atk_table_set_column_header ()</title>
@@ -520,14 +531,14 @@ Sets the specified column header to <parameter>header</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>header</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkTable">AtkTable</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkTable">AtkTable</link>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-set-summary">atk_table_set_summary ()</title>
@@ -539,12 +550,12 @@ Sets the summary description of the table.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link> representing the summary description
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link> representing the summary description
 to set for <parameter>table</parameter>
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-selected-columns">atk_table_get_selected_columns ()</title>
@@ -557,14 +568,14 @@ the selected column numbers. This array should be freed by the caller.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>selected</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link>** that is to contain the selected columns numbers
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the number of selected columns,
+<listitem><simpara> a <link linkend="gint">gint</link>** that is to contain the selected columns numbers
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the number of selected columns,
 or <literal>0</literal> if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-get-selected-rows">atk_table_get_selected_rows ()</title>
@@ -577,14 +588,14 @@ the selected row numbers. This array should be freed by the caller.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>selected</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link>** that is to contain the selected row numbers
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint representing the number of selected rows,
+<listitem><simpara> a <link linkend="gint">gint</link>** that is to contain the selected row numbers
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint representing the number of selected rows,
 or zero if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-is-column-selected">atk_table_is_column_selected ()</title>
@@ -597,14 +608,14 @@ is selected</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if the column is selected, or 0
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if the column is selected, or 0
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-is-row-selected">atk_table_is_row_selected ()</title>
@@ -617,14 +628,14 @@ is selected</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if the row is selected, or 0
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if the row is selected, or 0
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-is-selected">atk_table_is_selected ()</title>
@@ -638,17 +649,17 @@ at the specified <parameter>row</parameter> and <parameter>column</parameter> is
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if the cell is selected, or 0
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if the cell is selected, or 0
 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-add-column-selection">atk_table_add_column_selection ()</title>
@@ -660,14 +671,14 @@ Adds the specified <parameter>column</parameter> to the selection.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if the column was successfully added to 
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if the column was successfully added to 
 the selection, or 0 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-add-row-selection">atk_table_add_row_selection ()</title>
@@ -679,14 +690,14 @@ Adds the specified <parameter>row</parameter> to the selection.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if row was successfully added to selection,
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if row was successfully added to selection,
 or 0 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-remove-column-selection">atk_table_remove_column_selection ()</title>
@@ -699,14 +710,14 @@ Adds the specified <parameter>column</parameter> to the selection.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if the column was successfully removed from
+<listitem><simpara> a <link linkend="gint">gint</link> representing a column in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if the column was successfully removed from
 the selection, or 0 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-table-remove-row-selection">atk_table_remove_row_selection ()</title>
@@ -718,14 +729,14 @@ Removes the specified <parameter>row</parameter> from the selection.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><para> a GObject instance that implements AtkTableIface
-</para></listitem></varlistentry>
+<listitem><simpara> a GObject instance that implements AtkTableIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if the row was successfully removed from
+<listitem><simpara> a <link linkend="gint">gint</link> representing a row in <parameter>table</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if the row was successfully removed from
 the selection, or 0 if value does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
@@ -741,17 +752,17 @@ the selection, or 0 if value does not implement this interface.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atktable</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>The index of the first column deleted.
-</para></listitem></varlistentry>
+<listitem><simpara>The index of the first column deleted.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
-<listitem><para>The number of columns deleted.
+<listitem><simpara>The number of columns deleted.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkTable-column-inserted">The &quot;column-inserted&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkTable">AtkTable</link> *atktable,
                                             <link linkend="gint">gint</link> arg1,
@@ -761,17 +772,17 @@ the selection, or 0 if value does not implement this interface.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atktable</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>The index of the column inserted.
-</para></listitem></varlistentry>
+<listitem><simpara>The index of the column inserted.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
-<listitem><para>The number of colums inserteda.
+<listitem><simpara>The number of colums inserteda.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkTable-column-reordered">The &quot;column-reordered&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkTable">AtkTable</link> *atktable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -779,11 +790,11 @@ the selection, or 0 if value does not implement this interface.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atktable</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
+<listitem><simpara>the object which received the signal.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkTable-model-changed">The &quot;model-changed&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkTable">AtkTable</link> *atktable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -791,11 +802,11 @@ the selection, or 0 if value does not implement this interface.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atktable</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
+<listitem><simpara>the object which received the signal.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkTable-row-deleted">The &quot;row-deleted&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkTable">AtkTable</link> *atktable,
                                             <link linkend="gint">gint</link> arg1,
@@ -805,17 +816,17 @@ the selection, or 0 if value does not implement this interface.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atktable</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>The index of the first row deleted.
-</para></listitem></varlistentry>
+<listitem><simpara>The index of the first row deleted.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
-<listitem><para>The number of rows deleted.
+<listitem><simpara>The number of rows deleted.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkTable-row-inserted">The &quot;row-inserted&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkTable">AtkTable</link> *atktable,
                                             <link linkend="gint">gint</link> arg1,
@@ -825,17 +836,17 @@ the selection, or 0 if value does not implement this interface.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atktable</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>The index of the first row deleted.
-</para></listitem></varlistentry>
+<listitem><simpara>The index of the first row deleted.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
-<listitem><para>The number of rows deleted.
+<listitem><simpara>The number of rows deleted.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkTable-row-reordered">The &quot;row-reordered&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkTable">AtkTable</link> *atktable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -843,11 +854,11 @@ the selection, or 0 if value does not implement this interface.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atktable</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
+<listitem><simpara>the object which received the signal.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 </refsect1>
 
