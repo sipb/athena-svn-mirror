@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.1 1991-09-03 11:07:31 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.2 1991-12-17 11:14:04 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -31,17 +31,10 @@ static char rcsid[] =
 #include "fd.h"
 #include "hash.h"
 
-#ifndef APPDEFDIR
-#define APPDEFDIR "/usr/lib/X11/app-defaults"
-#endif
-
-#ifndef BITMAPDIR
-#define BITMAPDIR "/usr/lib/X11/bitmaps"
-#endif
-
 int DEBUG = 0;
 
 static XjCallbackProc checkSignals = NULL;
+struct hash *fonts = NULL;
 
 int global_argc;
 char **global_argv;
@@ -60,6 +53,17 @@ static int gotRegisterContextType = 0;
 static XContext registerContext;
 static int gotSelectContextType = 0;
 static XContext selectContext;
+
+#ifndef APPDEFDIR
+#define APPDEFDIR "/usr/lib/X11/app-defaults"
+#endif
+static char appdefdir[] = APPDEFDIR;
+
+#ifndef BITMAPDIR
+#define BITMAPDIR "/usr/lib/X11/bitmaps"
+#endif
+static char bitmapdir[] = BITMAPDIR;
+
 
 /*
 static XrmOptionDescRec opTable[] = {
@@ -275,7 +279,7 @@ static void flushAlarmQueue()
        * but that's ok because the time must be in the future
        * (interval is unsigned), and the queue is consistent.
        */
-      alarmList->wakeup(alarmList->data);
+      alarmList->wakeup(alarmList->data, alarmList->id);
 
       tmp = alarmList;
       alarmList = alarmList->next;
@@ -444,6 +448,13 @@ void XjResize(jet, size)
       jet->core.classRec->core_class.resize(jet, size);
 }
 
+void XjExpose(jet)
+     Jet jet;
+{
+  if (jet->core.classRec->core_class.expose != NULL)
+    jet->core.classRec->core_class.expose(jet);
+}
+
 XjCallback *XjConvertStringToCallback(address)
      char **address;
 {
@@ -487,10 +498,16 @@ XjCallback *XjConvertStringToCallback(address)
   while (isspace(*ptr))
     ptr++;
 
-  if (*ptr == '"')
+  if (isdigit(*ptr))
     {
+      intParam = atoi(ptr);
+      type = argInt;
+    }
+  else if (*ptr != ')')
+    {
+      char delim = *ptr;
       ptr++;
-      end = index(ptr, '"');
+      end = index(ptr, delim);
       if (end == NULL)
 	{
 	  sprintf(errtext, "missing close quote in callback string: %s",
@@ -506,11 +523,6 @@ XjCallback *XjConvertStringToCallback(address)
 	  ptr = end + 1;
 	  type = argString;
 	}
-    }
-  else
-    {
-      intParam = atoi(ptr);
-      type = argInt;
     }
 
   end = index(ptr, ')');
@@ -557,11 +569,11 @@ XjCallback *XjConvertStringToCallback(address)
   return ret;
 }
 
-XFontStruct *XjLoadQueryFontCache(display, name)
+
+static XFontStruct *XjLoadQueryFontCache(display, name)
      Display *display;
      char *name;
 {
-  static struct hash *fonts = NULL;
   XrmQuark qname;
   XFontStruct *fs;
 
@@ -572,10 +584,10 @@ XFontStruct *XjLoadQueryFontCache(display, name)
   fs = (XFontStruct *)hash_lookup(fonts, qname);
 
   if (fs == NULL)
-    {
-      fs = XLoadQueryFont(display, name);
-      (void)hash_store(fonts, qname, fs);
-    }
+    fs = XLoadQueryFont(display, name);
+
+  if (fs != NULL)
+    (void)hash_store(fonts, qname, (caddr_t) fs);
 
   return fs;
 }
@@ -631,6 +643,9 @@ void XjFillInValue(display, window, where, resource, type, address)
        */
       if (!strcmp(resource->resource_type, XjRFontStruct))
 	{
+	  char *sub1 = "-*-*-medium-r-*-*-*-120-*-*-*-*-iso8859-1";
+	  char *trying = "trying to substitute `%s'.";
+
 	  if (strcmp(XjDefaultFont, address) != 0)
 	    {
 	      fontstr = XjLoadQueryFontCache(display, address);
@@ -648,9 +663,31 @@ void XjFillInValue(display, window, where, resource, type, address)
 		}
 	    }
 
-	  fontstr = XjLoadQueryFontCache(display,
-				     "-*-*-*-R-*-*-*-120-*-*-*-*-ISO8859-1");
+	  sprintf(errtext, trying, sub1);
+	  XjWarning(errtext);
+	  fontstr = XjLoadQueryFontCache(display, sub1);
 	      
+	  if (fontstr == NULL)
+	    {
+	      char *sub2 = "fixed";
+
+	      sprintf(errtext, trying, sub2);
+	      XjWarning(errtext);
+	      fontstr = XjLoadQueryFontCache(display, sub2);
+	    }
+
+	  if (fontstr == NULL)
+	    {
+	      XrmQuark key;
+	      fontstr = (XFontStruct *) hash_give_any_value(fonts, &key);
+	      if (fontstr != NULL)
+		{
+		  sprintf(errtext, "substituting font: `%s'",
+			  XrmQuarkToString(key));
+		  XjWarning(errtext);
+		}
+	    }
+
 	  if (fontstr == NULL)
 	    XjFatalError("couldn't get a font");
 	      
@@ -725,7 +762,8 @@ void XjFillInValue(display, window, where, resource, type, address)
        */
       if (!strcmp(resource->resource_type, XjRJustify))
 	{
-	  if (strcasecmp(address, XjLeftJustify) == 0)
+	  if (strcasecmp(address, XjLeftJustify) == 0  ||
+	      strcasecmp(address, XjTopJustify) == 0)
 	    {
 	      *((int *)((char *)where + resource->resource_offset)) = Left;
 	      return;
@@ -737,7 +775,8 @@ void XjFillInValue(display, window, where, resource, type, address)
 	      return;
 	    }
 
-	  if (strcasecmp(address, XjRightJustify) == 0)
+	  if (strcasecmp(address, XjRightJustify) == 0  ||
+	      strcasecmp(address, XjBottomJustify) == 0)
 	    {
 	      *((int *)((char *)where + resource->resource_offset)) = Right;
 	      return;
@@ -835,8 +874,8 @@ void XjFillInValue(display, window, where, resource, type, address)
 		{
 		  char *new_address;
 		  new_address = (char *) XjMalloc(strlen((char *) address)
-						  + strlen(BITMAPDIR) + 2);
-		  sprintf(new_address, "%s/%s", BITMAPDIR, address);
+						  + strlen(bitmapdir) + 2);
+		  sprintf(new_address, "%s/%s", bitmapdir, address);
 		  switch(XReadBitmapFile(display, window,
 					 (char *)new_address,
 					 &p.width, &p.height,
@@ -1052,7 +1091,7 @@ int appTableCount;
 		      programClass,
 		      startupResources,
 		      XjNumber(startupResources),
-		      &startup);
+		      (caddr_t) &startup);
 
   if (startup.name != NULL)
     programName = startup.name;
@@ -1100,9 +1139,9 @@ int appTableCount;
     {
       char *appdefs;
 
-      appdefs = (char *) XjMalloc(strlen(APPDEFDIR) +
+      appdefs = (char *) XjMalloc(strlen(appdefdir) +
 				  strlen(programClass) + 2);
-      sprintf(appdefs, "%s/%s", APPDEFDIR, programClass);
+      sprintf(appdefs, "%s/%s", appdefdir, programClass);
       ad_rdb = XrmGetFileDatabase(appdefs);
       XjFree(appdefs);
 
@@ -1236,6 +1275,7 @@ static int waitForSomething(jet)
   static int inited = 0;
   int loop, nfds = 0;
   register int i;
+  int n;
   int bytes = 0;
   char errtext[100];
 
@@ -1313,10 +1353,18 @@ static int waitForSomething(jet)
       if (checkSignals != NULL)
 	checkSignals(); /* this could cause a late wakeup... */
 
-      switch(select(nfds,
-		    &read, &empty, &empty, (alarmList == NULL) ? 0 : &diff))
+      if (DEBUG)
+	{
+	  printf("%d.%3.3d ", diff.tv_sec, diff.tv_usec);
+	  fflush(stdout);
+	}
+      n = select(nfds, &read, &empty, &empty,
+		 (alarmList == NULL) ? 0 : &diff);
+      switch(n)
 	{
 	case -1: /* some kind of error */
+	  if (DEBUG)
+	    printf("\nSELECT ERROR= -1\n");
 	  if (errno == EINTR)
 	    break; /* interrupt callback will be called before select */
 	  sprintf(errtext, "%s %d\n\t%s %d\t%s %d\t%s %d\n",
@@ -1329,19 +1377,34 @@ static int waitForSomething(jet)
 	  break;
 
 	case 0: /* timed out */
+	  if (DEBUG)
+	    {
+	      printf("| ");
+	      fflush(stdout);
+	    }
 	  flushAlarmQueue();
 	  XFlush(jet->core.display);
 	  bytes = 0;
 	  break;
 
 	default: /* something must now be pending */
+	  if (DEBUG)
+	    printf("\nn=%d ", n);
 	  for (i = 0; i < MAXSELFD; i++)
 	      if (read_inputs[i] != NULL &&
 		  FD_ISSET(i, &read))
 	      {
+		if (DEBUG)
+		  printf("i=%d", i);
 		  (*read_inputs[i])(i, read_args[i]);
 		  FD_CLR(i, &read);
 	      }
+	  if (DEBUG)
+	    {
+	      if (FD_ISSET(ConnectionNumber(jet->core.display), &read))
+		printf("X active");
+	      printf("\n");
+	    }
 	  bytes = 1;
 	  break;
 	}
@@ -1368,7 +1431,9 @@ void XjEventLoop(jet)
 	return; /* a signal arrived */
 
       XNextEvent(jet->core.display, &event);
-
+      if (DEBUG)
+	printf("event.xany.type = %d, event.xany.window = %d\n",
+	       event.xany.type, event.xany.window);
       if (XCNOENT != XFindContext(jet->core.display, event.xany.window,
 				  registerContext, (caddr_t *)&eventJet))
 	{
@@ -1657,7 +1722,7 @@ va_dcl
 			instPtr,
 			jet->core.classRec->core_class.resources,
 			jet->core.classRec->core_class.num_resources,
-			(caddr_t)jet);
+			(caddr_t) jet);
 
   va_start(args);
 
@@ -1705,9 +1770,9 @@ void XjDestroyJet(jet)
     (XjParent(jet))->core.child = jet->core.sibling;
   else
     {
-      for (thisJet = (XjParent(jet))->core.child;
-	   thisJet->core.sibling != jet;
-	   thisJet = thisJet->core.sibling);
+      thisJet = (XjParent(jet))->core.child;
+      while (thisJet->core.sibling != jet)
+	thisJet = thisJet->core.sibling;
       thisJet->core.sibling = jet->core.sibling;
     }
 
