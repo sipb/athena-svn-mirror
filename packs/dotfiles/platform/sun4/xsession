@@ -1,83 +1,61 @@
 #!/bin/csh -f
-
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
-
-# This script forks.  The parent of the fork will execute the
-# session_gate process, while the child continues on to execute
-# the user's login.  This provides the feature that the user's
-# login is less likely to hang halfway during the login sequence
-# and clicking on "Logout" failing to log him out.  More
-# discussion about the rationale behind certain placements will
-# be discussed at the appropriate points in this script.
-
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.8 1989-11-08 16:12:24 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.9 1989-11-08 16:24:24 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
 set initdir=/usr/athena/lib/init
 
-# A lot of checking does not have to be repeated if this is the child
-# process.  For instance, the environment variable NOCALLS will already
-# be set appropriately.
-
-if (! $?USER_STARTUP) then
-
 # Determine whether to use user customizations:  use no customization files
 # ONLY if the single argument "nocalls" was provided to xsession (e.g., if
 # the user selected the SYSTEM option from the initial xlogin menu).
 
-    switch ($#argv)
-        case 0:
-            breaksw
-        case 1:
-            if (($1 == nocalls) || ($1 == -nocalls)) then
-                echo -n "xsession: Running standard xsession "
-                echo "with NO user configuration files..."
-                setenv NOCALLS
-            else
-                set bad_args
-            endif
-            breaksw
-        default:
+switch ($#argv)
+    case 0:
+        breaksw
+    case 1:
+        if (($1 == nocalls) || ($1 == -nocalls)) then
+            echo -n "xsession: Running standard xsession "
+            echo "with NO user configuration files..."
+            setenv NOCALLS
+        else
             set bad_args
-    endsw
+        endif
+        breaksw
+    default:
+        set bad_args
+endsw
 
-    if ($?bad_args) then
+if ($?bad_args) then
         echo "xsession: Arguments ($argv) not recognized."
         echo "Running standard xsession with user configuration files..."
         unsetenv NOCALLS
         unset bad_args
-    endif
-
-# Identify this as a window session.
-
-    setenv XSESSION
+endif
 
 
 # Do not echo status messages if noninteractive shell.  For interactive shells,
 # echo messages unless user has ~/.hushlogin file AND the session was not 
 # started using the xlogin "SYSTEM" option.
 
-    if (($?NOCALLS) || (! -r ~/.hushlogin)) set verbose_login
+	if ((! -r ~/.hushlogin) || ($?NOCALLS)) set verbose_login
 
 
-endif
+# *******************   ENVIRONMENT SETUP   *******************
+
+
+# Identify this as a window session.
+
+setenv XSESSION
 
 
 # The ~/.cshrc file sets environment variables, attaches lockers, and sets
-# the command search path.  The only reason that we need to reload the
-# ~/.cshrc file in the child is to obtain all the shell variables and
-# aliases that might be used later during the user's login sequence.
-#
-# Luckily if this part of the login sequence hangs, the user is not left
-# with any windows or window-manager.  Thus, it becomes much more difficult
-# for the next person who approaches the workstation to sabotage the
-# user's account.
+# the command search path.
 
-if ((! $?USER_STARTUP) && $?verbose_login) echo "Setting up environment..."
+if ($?verbose_login) echo "Setting up environment..."
 
 if ($?NOCALLS) then
 	if (-r ${initdir}/cshrc) source ${initdir}/cshrc
@@ -90,105 +68,27 @@ else
 endif
 
 
-# *******************   GATING PROCESS (parent)   *******************
 
-# In this section, the xsession forks and re-runs itself.  The parent
-# acts as the gating session, while the child runs the majority of the
-# user's startup.
+# *******************   DEVICE SETUP   *******************
 
-# If this is the child process, skip over the parent processing
-# and continue with the user's environment setup.
-
-if ($?USER_STARTUP) goto user_start
 
 # Load user X resources.
-# We want to load the user's X resources only once and we also need to
-# load them prior to executing "xlogout", which is run in the parent.
-# Therefore, the call to "xrdb" should be place before the forking of
-# the child that loads the rest of the user environment, and after the
-# test to see that this is the parent process.
 
 if ((! $?NOCALLS) && (-r ~/.Xresources)) /usr/bin/X11/xrdb -merge ~/.Xresources
 
 
-# Run a child process that will continue the user's startup
-# Unfortunately, because many of the variables that are used to decide
-# what steps should be run are shell variables within the user's
-# ~/.environment, we must make sure that these are passed to the
-# child.  So, we convert all the variables we can to environment
-# variables, and we will convert them back to shell variables in
-# the child.
+# Start window manager.  To change your default window manager, set the 
+# WINDOW_MANAGER environment variable in your ~/.environment file.
 
-if ($?skip_initial_xterm)	setenv skip_initial_xterm
-if ($?skip_x_startup)		setenv skip_x_startup
-if ($?verbose_login)		setenv verbose_login
-
-setenv USER_STARTUP
-(csh -fc ${initdir}/xsession &)
-
-
-# Start the xlogout window.  To skip this, put the command
-# "set skip_xlogout" in your .environment file.
-
-if (! $?skip_xlogout) then
-	(/usr/athena/xlogout &)
-endif
-
-
-# Gate the session.
-
-# This command, NOT run in the background, "gates" your session.  When
-# this process terminates, the session ends and you are logged out.
-# To terminate this process, type the "logout" command in an xterm window
-# or invoke the "end_session" program.
-
-/usr/athena/session_gate				# Wait for logout
-
-
-# Run any user-specified shutdown activities
-
-if ((! $?NOCALLS) && (-r ~/.logout)) source ~/.logout
-exit 0
-
-
-
-# ********************   USER  STARTUP   ********************
-
-user_startup:
-
-# Clear the clutter in the environment that had to be created
-# to have this script fork.
-
-if ($?skip_initial_xterm) then
-    unsetenv skip_initial_xterm
-    set skip_initial_xterm
-endif
-
-if ($?skip_x_startup) then
-    unsetenv skip_x_startup
-    set skip_x_startup
-endif
-
-if ($?verbose_login) then
-    unsetenv verbose_login
-    set verbose_login
-endif
-
-unsetenv USER_STARTUP
+if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER uwm
+if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
+($WINDOW_MANAGER &)
 
 
 
 # *******************   ACTIVITY STARTUP   *******************
 
 # Run standard system/user startup activities
-
-
-# Start window manager.  To change your default window manager, set the 
-# WINDOW_MANAGER environment variable in your ~/.environment file.
-
-if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER mwm
-if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
-($WINDOW_MANAGER &)
 
 
 # Start default initial xterm window.  To skip this, put the command
@@ -217,13 +117,39 @@ endif
 
 
 # Run the window-session customizing commands in your ~/.startup.X file.
+# We want to background this process in case something in the startup
+# hangs.  Thus, the user will not be left with active windows and no
+# method of easily logging out.
 
 if ((! $?NOCALLS) && (-r ~/.startup.X)) then
 	if ($?verbose_login) then
 	  echo "Running custom startup activities listed in ~/.startup.X..."
 	endif
-	source ~/.startup.X
+	(source ~/.startup.X &)
+endif
+
+
+# Start the xlogout window.  To skip this, put the command
+# "set skip_xlogout" in your .environment file.
+
+if (! $?skip_xlogout) then
+	(/usr/athena/xlogout &)
 endif
 
 
 if ($?verbose_login) echo "Session initialization completed."
+
+
+# Gate the session.
+
+# This command, NOT run in the background, "gates" your session.  When
+# this process terminates, the session ends and you are logged out.
+# To terminate this process, type the "logout" command in an xterm window
+# or invoke the "end_session" program.
+
+/usr/athena/session_gate				# Wait for logout
+
+
+# Run any user-specified shutdown activities
+
+if ((! $?NOCALLS) && (-r ~/.logout)) source ~/.logout
