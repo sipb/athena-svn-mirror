@@ -2,21 +2,54 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v $
 #	$Author: jtkohl $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.1 1985-04-25 20:34:52 jtkohl Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.2 1985-04-30 16:54:56 jtkohl Exp $
 #
+DESTDIR=/mit/j/t/jtkohl
+INCDIR=/usr/include
+CFLAGS=-O -I${INCDIR}
 
+all:	btoa atob
 
 install:	atob btoa tarmail untarmail
-		mv atob btoa /usr/local/bin
-		cp tarmail untarmail /usr/local/bin
-		cp btoa.1 /usr/man/man1/btoa.1
-		cp btoa.1 /usr/man/man1/tarmail.1
+	install -c -s btoa ${DESTDIR}/usr/athena
+	install -c -s atob ${DESTDIR}/usr/athena
+	cp tarmail untarmail ${DESTDIR}/usr/athena
+	cp btoa.1 ${DESTDIR}/usr/man/man1/btoa.1
+	cp btoa.1 ${DESTDIR}/usr/man/man1/tarmail.1
 
-btoa:		btoa.c
-		cc -O -s btoa.c -o btoa
+btoa:
+	cc ${CFLAGS} btoa.c -o btoa
 
-atob:		atob.c
-		cc -O -s atob.c -o atob
+atob:
+	cc ${CFLAGS} atob.c -o atob
 
 clean:		
-		rm -f atob btoa *.o
+	rm -f atob btoa *.o
+
+depend:
+	cat </dev/null >x.c
+	for i in btoa atob; do \
+		(echo $$i: $$i.c >>makedep; \
+		/bin/grep '^#[ 	]*include' x.c $$i.c | sed \
+			-e 's,<\(.*\)>,"${INCDIR}/\1",' \
+			-e 's/:[^"]*"\([^"]*\)".*/: \1/' \
+			-e 's/\.c//' >>makedep); done
+	echo '/^# DO NOT DELETE THIS LINE/+2,$$d' >eddep
+	echo '$$r makedep' >>eddep
+	echo 'w' >>eddep
+	cp Makefile Makefile.bak
+	ed - Makefile < eddep
+	rm eddep makedep x.c
+	echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile
+	echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile
+	echo '# see make depend above' >> Makefile
+
+# DO NOT DELETE THIS LINE -- make depend uses it
+
+btoa: btoa.c
+btoa: /usr/include/stdio.h
+atob: atob.c
+atob: /usr/include/stdio.h
+# DEPENDENCIES MUST END AT END OF FILE
+# IF YOU PUT STUFF HERE IT WILL GO AWAY
+# see make depend above
