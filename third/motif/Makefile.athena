@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1999-01-30 03:32:34 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1999-11-03 19:40:11 tb Exp $
 
 SHELL=/bin/sh
 
@@ -11,9 +11,9 @@ clean:
 	${MAKE} clean
 
 all:
-	${MAKE} includes depend all
+	${MAKE} includes depend all TOP=`pwd`
 
 check:
 
 install:
-	${MAKE} install DESTDIR="$$SRVD"
+	${MAKE} install DESTDIR="$$SRVD" TOP=`pwd`
