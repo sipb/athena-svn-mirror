@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -170,19 +170,19 @@ noinst_PROGRAMS = test-color test-e-font test-font-loading
 test_color_SOURCES =  	test-color.c
 
 
-test_color_LDADD =  	$(EXTRA_GNOME_LIBS) 	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/util/libutil.la
+test_color_LDADD =  	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/util/libutil.la 	$(EXTRA_GNOME_LIBS)
 
 
 test_e_font_SOURCES =  	test-e-font.c test-e-font.h
 
 
-test_e_font_LDADD =  	$(EXTRA_GNOME_LIBS) 	$(ICONV_LIBS)		$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la
+test_e_font_LDADD =  	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la 	$(ICONV_LIBS) 	$(EXTRA_GNOME_LIBS)
 
 
 test_font_loading_SOURCES =  	test-font-loading.c
 
 
-test_font_loading_LDADD =  	$(EXTRA_GNOME_LIBS) 	$(ICONV_LIBS)		$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la
+test_font_loading_LDADD =  	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la 	$(ICONV_LIBS) 	$(EXTRA_GNOME_LIBS)
 
 
 EXTRA_DIST =  	$(glade_DATA)
@@ -238,7 +238,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libwidgets_la_SOURCES) $(test_color_SOURCES) $(test_e_font_SOURCES) $(test_font_loading_SOURCES)
 OBJECTS = $(libwidgets_la_OBJECTS) $(test_color_OBJECTS) $(test_e_font_OBJECTS) $(test_font_loading_OBJECTS)
@@ -404,155 +404,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-color-group.lo color-group.o : color-group.c ../../gal/util/e-util.h \
-	color-group.h
-color-palette.lo color-palette.o : color-palette.c ../../config.h \
-	../../gal/util/e-i18n.h ../../gal/util/e-util.h color-group.h \
-	color-palette.h color-group.h e-colors.h
-e-canvas-background.lo e-canvas-background.o : e-canvas-background.c \
-	../../config.h e-canvas-background.h e-hsv-utils.h e-canvas.h \
-	e-canvas-utils.h ../../gal/util/e-util.h
-e-canvas-utils.lo e-canvas-utils.o : e-canvas-utils.c e-canvas-utils.h
-e-canvas-vbox.lo e-canvas-vbox.o : e-canvas-vbox.c ../../config.h \
-	e-canvas-vbox.h e-canvas-utils.h e-canvas.h \
-	../../gal/util/e-util.h
-e-canvas.lo e-canvas.o : e-canvas.c e-canvas.h ../../gal/util/e-util.h
-e-categories-master-list-array.lo e-categories-master-list-array.o : \
-	e-categories-master-list-array.c ../../config.h \
-	e-categories-master-list-array.h e-categories-master-list.h \
-	../../gal/util/e-i18n.h ../../gal/util/e-xml-utils.h \
-	e-unicode.h ../../gal/unicode/gunicode.h
-e-categories-master-list-combo.lo e-categories-master-list-combo.o : \
-	e-categories-master-list-combo.c ../../config.h \
-	e-categories-master-list-combo.h e-categories-master-list.h \
-	../../gal/util/e-i18n.h ../../gal/util/e-util.h e-unicode.h \
-	../../gal/unicode/gunicode.h
-e-categories-master-list-dialog-model.lo e-categories-master-list-dialog-model.o : \
-	e-categories-master-list-dialog-model.c ../../config.h \
-	e-categories-master-list-dialog-model.h \
-	../../gal/e-table/e-table-model.h e-categories-master-list.h
-e-categories-master-list-dialog.lo e-categories-master-list-dialog.o : \
-	e-categories-master-list-dialog.c ../../config.h \
-	e-categories-master-list-dialog.h e-categories-master-list.h \
-	../../gal/util/e-i18n.h ../../gal/util/e-util.h \
-	../../gal/e-table/e-table-scrolled.h e-scroll-frame.h \
-	../../gal/e-table/e-table-model.h ../../gal/e-table/e-table.h \
-	../../gal/e-table/e-table-header.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-col.h ../../gal/e-table/e-cell.h \
-	../../gal/e-table/e-table-tooltip.h \
-	../../gal/e-table/e-table-group.h \
-	../../gal/e-table/e-table-defines.h e-printable.h \
-	../../gal/e-table/e-table-item.h e-selection-model.h \
-	../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-selection-model.h \
-	e-selection-model-array.h ../../gal/util/e-bit-array.h \
-	../../gal/e-table/e-table-extras.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-sorter.h \
-	../../gal/e-table/e-table-subset-variable.h \
-	../../gal/e-table/e-table-subset.h \
-	e-categories-master-list-dialog-model.h
-e-categories-master-list.lo e-categories-master-list.o : \
-	e-categories-master-list.c ../../config.h \
-	../../gal/util/e-util.h e-categories-master-list.h
-e-categories.lo e-categories.o : e-categories.c ../../config.h \
-	e-categories.h ../../gal/e-table/e-table-model.h \
-	../../gal/util/e-i18n.h ../../gal/e-table/e-table-scrolled.h \
-	e-scroll-frame.h ../../gal/e-table/e-table.h \
-	../../gal/e-table/e-table-header.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-col.h ../../gal/e-table/e-cell.h \
-	../../gal/e-table/e-table-tooltip.h \
-	../../gal/e-table/e-table-group.h \
-	../../gal/e-table/e-table-defines.h ../../gal/util/e-util.h \
-	e-printable.h ../../gal/e-table/e-table-item.h \
-	e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-selection-model.h \
-	e-selection-model-array.h ../../gal/util/e-bit-array.h \
-	../../gal/e-table/e-table-extras.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-sorter.h \
-	../../gal/e-table/e-table-subset-variable.h \
-	../../gal/e-table/e-table-subset.h \
-	../../gal/e-table/e-table-simple.h e-unicode.h \
-	../../gal/unicode/gunicode.h e-popup-menu.h \
-	e-categories-master-list.h e-categories-master-list-array.h \
-	e-categories-master-list.h e-categories-master-list-dialog.h
-e-colors.lo e-colors.o : e-colors.c ../../config.h e-colors.h
-e-cursors.lo e-cursors.o : e-cursors.c ../../config.h e-cursors.h \
-	e-colors.h pixmaps/cursor_cross.xpm pixmaps/cursor_zoom_in.xpm \
-	pixmaps/cursor_zoom_out.xpm pixmaps/cursor_hand_open.xpm \
-	pixmaps/cursor_hand_closed.xpm
-e-font.lo e-font.o : e-font.c ../../config.h ../../gal/util/e-cache.h \
-	e-font.h e-unicode.h ../../gal/unicode/gunicode.h \
-	../../gal/util/e-iconv.h
-e-gui-utils.lo e-gui-utils.o : e-gui-utils.c ../../config.h \
-	e-gui-utils.h
-e-hscrollbar.lo e-hscrollbar.o : e-hscrollbar.c ../../config.h \
-	../../gal/util/e-util.h e-hscrollbar.h
-e-hsv-utils.lo e-hsv-utils.o : e-hsv-utils.c ../../config.h \
-	e-hsv-utils.h
-e-popup-menu.lo e-popup-menu.o : e-popup-menu.c ../../config.h \
-	e-popup-menu.h e-gui-utils.h
-e-printable.lo e-printable.o : e-printable.c ../../config.h \
-	../../gal/util/e-util.h e-printable.h
-e-reflow-model.lo e-reflow-model.o : e-reflow-model.c ../../config.h \
-	e-reflow-model.h ../../gal/util/e-util.h
-e-reflow.lo e-reflow.o : e-reflow.c ../../config.h e-reflow.h \
-	e-reflow-model.h e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/util/e-sorter-array.h e-canvas-utils.h e-canvas.h \
-	../../gal/e-text/e-text.h e-font.h \
-	../../gal/util/e-text-event-processor.h \
-	../../gal/util/e-text-event-processor-types.h \
-	../../gal/e-text/e-text-model.h e-canvas.h \
-	../../gal/util/e-util.h e-unicode.h \
-	../../gal/unicode/gunicode.h e-selection-model-simple.h \
-	e-selection-model-array.h ../../gal/util/e-bit-array.h
-e-scroll-frame.lo e-scroll-frame.o : e-scroll-frame.c ../../config.h \
-	e-vscrollbar.h e-hscrollbar.h e-scroll-frame.h
-e-selection-model-array.lo e-selection-model-array.o : \
-	e-selection-model-array.c ../../config.h \
-	e-selection-model-array.h e-selection-model.h \
-	../../gal/util/e-sorter.h ../../gal/util/e-bit-array.h \
-	../../gal/util/e-util.h
-e-selection-model-simple.lo e-selection-model-simple.o : \
-	e-selection-model-simple.c ../../config.h \
-	../../gal/util/e-util.h e-selection-model-array.h \
-	e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/util/e-bit-array.h e-selection-model-simple.h \
-	e-selection-model-array.h
-e-selection-model.lo e-selection-model.o : e-selection-model.c \
-	../../config.h e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/util/e-util.h
-e-unicode.lo e-unicode.o : e-unicode.c ../../config.h e-unicode.h \
-	../../gal/unicode/gunicode.h ../../gal/util/e-i18n.h e-font.h \
-	../../gal/util/e-iconv.h
-e-vscrollbar.lo e-vscrollbar.o : e-vscrollbar.c ../../config.h \
-	../../gal/util/e-util.h e-vscrollbar.h
-gtk-combo-box.lo gtk-combo-box.o : gtk-combo-box.c ../../config.h \
-	gtk-combo-box.h ../../gal/util/e-util.h
-gtk-combo-stack.lo gtk-combo-stack.o : gtk-combo-stack.c \
-	gtk-combo-stack.h gtk-combo-box.h ../../gal/util/e-util.h
-gtk-combo-text.lo gtk-combo-text.o : gtk-combo-text.c ../../config.h \
-	gtk-combo-text.h gtk-combo-box.h
-test-color.o: test-color.c widget-color-combo.h gtk-combo-box.h \
-	color-palette.h color-group.h color-palette.h e-colors.h \
-	pixmaps/cursor_hand_open.xpm
-test-e-font.o: test-e-font.c e-font.h test-e-font.h
-test-font-loading.o: test-font-loading.c e-font.h \
-	../../gal/util/e-iconv.h
-widget-color-combo.lo widget-color-combo.o : widget-color-combo.c \
-	../../config.h e-colors.h widget-color-combo.h gtk-combo-box.h \
-	color-palette.h color-group.h ../../gal/util/e-util.h
-widget-pixmap-combo.lo widget-pixmap-combo.o : widget-pixmap-combo.c \
-	../../config.h gtk-combo-box.h widget-pixmap-combo.h \
-	gtk-combo-box.h ../../gal/util/e-util.h
-
 info-am:
 info: info-am
 dvi-am:

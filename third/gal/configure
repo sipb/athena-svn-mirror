@@ -4888,9 +4888,9 @@ case $withval in
 esac
 
 save_CFLAGS="$CFLAGS"
-save_LDFLAGS="$LDFLAGS"
+save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $ICONV_CFLAGS"
-LDFLAGS="$LDFLAGS $ICONV_LIBS -liconv"
+LIBS="$LIBS $ICONV_LIBS -liconv"
 echo $ac_n "checking for iconv in -liconv""... $ac_c" 1>&6
 echo "configure:4896: checking for iconv in -liconv" >&5
 if eval "test \"`echo '$''{'ac_cv_libiconv'+set}'`\" = set"; then
@@ -4927,7 +4927,7 @@ if test $ac_cv_libiconv = yes; then
 	have_iconv=yes
 else
 	CFLAGS="$save_CFLAGS"
-	LDFLAGS="$save_LDFLAGS"
+	LIBS="$save_LIBS"
 	echo $ac_n "checking for iconv""... $ac_c" 1>&6
 echo "configure:4933: checking for iconv" >&5
 if eval "test \"`echo '$''{'ac_cv_func_iconv'+set}'`\" = set"; then
@@ -5099,7 +5099,7 @@ fi
 echo "$ac_t""$ac_cv_libiconv_utf8" 1>&6
 fi
 CFLAGS="$save_CFLAGS"
-LDFLAGS="$save_LDFLAGS"
+LIBS="$save_LIBS"
 
 if test "$have_iconv" = no; then
 	{ echo "configure: error: You need to install a working iconv implementation, such as http://clisp.cons.org/~haible/packages-libiconv.html" 1>&2; exit 1; }

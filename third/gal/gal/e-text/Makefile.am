@@ -80,8 +80,8 @@ e_completion_test_SOURCES = \
 e_completion_test_LDADD = \
 	libetext.la 		\
 	$(top_builddir)/gal/e-table/libetable.la \
-	$(EXTRA_GNOME_LIBS)	\
-	$(ICONV_LIBS)		\
 	$(top_builddir)/gal/widgets/libwidgets.la \
 	$(top_builddir)/gal/unicode/libunicode.la \
-	$(top_builddir)/gal/util/libutil.la
+	$(top_builddir)/gal/util/libutil.la \
+	$(ICONV_LIBS)		\
+	$(EXTRA_GNOME_LIBS)
