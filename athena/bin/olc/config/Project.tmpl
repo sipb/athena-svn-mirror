@@ -10,10 +10,10 @@ all :: Makefile
 
 CONFIGDIR	=	CONFDIR
 
-COMMONLIB	=	$(TOP)/common/libcommon.a
-PARSER		=	$(TOP)/clients/parser/libparser.a
-TTY		=	$(TOP)/clients/tty/libtty.a
-CLIENTLIB	=	$(TOP)/clients/lib/libclient.a
+COMMONLIB	=	$(TOP)/common/libcommon$(LIBSUFFIX).a
+PARSER		=	$(TOP)/clients/parser/libparser$(LIBSUFFIX).a
+TTY		=	$(TOP)/clients/tty/libtty$(LIBSUFFIX).a
+CLIENTLIB	=	$(TOP)/clients/lib/libclient$(LIBSUFFIX).a
 
 #define DebuggableDebugFlags -g
 
