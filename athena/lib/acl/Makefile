@@ -24,7 +24,7 @@ llib-lacl.ln: acl_files.c
 	lint -bh -Cacl acl_files.c
 
 depend: 
-	makedepend ${CFLAGS} acl_files.c
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} acl_files.c
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

@@ -4,7 +4,7 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Makefile,v 1.4 1989-10-11 11:24:22 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Makefile,v 1.5 1990-02-09 08:37:33 epeisach Exp $
 #	$Locker:  $
 #
 
@@ -135,7 +135,7 @@ test2.o : test2.c
 test2.c : test2.et
 # 'make depend' code
 depend: ${CFILES} et_lex.lex.c
-	makedepend ${CFLAGS} ${CFILES}
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${CFILES}
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

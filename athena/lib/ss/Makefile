@@ -4,7 +4,7 @@
 # Copyright 1987, 1988 by the MIT Student Information Processing Board
 # For copyright info, see copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.5 1989-10-11 11:50:45 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.6 1990-02-09 08:43:23 epeisach Exp $
 #	$Locker:  $
 
 MACHINE=`/bin/athena/machtype`
@@ -165,7 +165,7 @@ clean:
 
 # 'make depend' code
 depend: $(CFILES) ss_err.h
-	makedepend $(CFLAGS) $(CFILES) 
+	touch Make.depend; makedepend -fMake.depend $(CFLAGS) $(CFILES) 
 
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
