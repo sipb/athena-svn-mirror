@@ -9,7 +9,7 @@ AC_CANONICAL_SYSTEM
 AC_CONFIG_HEADER(config.h)
 
 PACKAGE=LPRng
-VERSION=3.2.1
+VERSION=3.2.7
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(PACKAGE)
@@ -57,17 +57,16 @@ dnl
 dnl comment out the AC_MSG_CHECKING and the AC_MSG_RESULT below if you don't
 dnl want the user informed during the configure process where stuff is going
 dnl
-AC_MSG_CHECKING(where to install the LPRng administrative commands)
+AC_MSG_CHECKING(where to install the ifhp.conf file)
 AC_ARG_WITH(admindir,
-[  --with-admindir=DIR     where to install the administrative commands, like
-                          checkpc, lpc, etc.                default: \$(bindir)]
+[  --with-admindir=DIR     where to install ifhp.conf, default: /etc]
 ,
-	LPRNGADMINDIR=$withval,
-	LPRNGADMINDIR='${bindir}'
+	ADMINDIR=$withval,
+	ADMINDIR='/etc'
 )
 
-AC_MSG_RESULT($LPRNGADMINDIR)
-AC_SUBST(LPRNGADMINDIR)
+AC_MSG_RESULT($ADMINDIR)
+AC_SUBST(ADMINDIR)
 
 
 dnl ----------------------------------------------------------------------------
@@ -965,6 +964,9 @@ fi
 dnl ----------------------------------------------------------------------------
 dnl make stuff:
 
+AC_DEFINE_UNQUOTED(OSNAME,$osword)
+AC_DEFINE_UNQUOTED(OSVERSION,$version)
+
 
 AC_PROG_INSTALL
 AC_CHECK_PROG(INSTALL_MAN,auxman,auxman,[$INSTALL -m 644])
@@ -986,8 +988,4 @@ AC_OUTPUT(
 Makefile src/Makefile man/Makefile fonts/Makefile
 Makefile.bsd src/Makefile.bsd man/Makefile.bsd fonts/Makefile.bsd
 HOWTO/Makefile HOWTO/Makefile.bsd
- ,[
- echo "#define OSNAME $osword" >>config.h
- echo "#define OSVERSION $version" >>config.h
- ]
 )

@@ -2,7 +2,7 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1997 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.4 1999-03-03 21:51:42 mwhitson Exp $
+#* $Id: Makefile.in,v 1.5 1999-05-04 19:12:33 mwhitson Exp $
 #
 
 prefix=@prefix@
@@ -24,7 +24,7 @@ INSTDIR=${prefix}/lib/filters/
 INSTALL= ifhp.8 textps.8
 all: $(INSTALL)
 
-install: $(INSTALL)
+install: all $(INSTALL)
 	${SRC}/mkinstalldirs $(DESTDIR)$(MAN)/man8
 	for i in $(INSTALL) ; do \
 		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(MAN)/man8; \
@@ -33,18 +33,18 @@ install: $(INSTALL)
 clean:
 	rm -f ifhp.8 textps.8
 
-ifhp.8: ifhp.n Makefile
+ifhp.8: $(SRC)/ifhp.n Makefile
 	VERSION=`cat $(SRC)/../VERSION | sed 's/.* //'`; \
 		sed -e 's,_FONTDIR_,$(FONTDIR),g' \
 	    -e 's,_INSTDIR_,$(INSTDIR),g' \
 	    -e "s,_VERSION_,$${VERSION},g" \
-	    ifhp.n >$@
-textps.8: textps.n Makefile
+	    $(SRC)/ifhp.n >$@
+textps.8: $(SRC)/textps.n Makefile
 	VERSION=`cat $(SRC)/../VERSION | sed 's/.* //'`; \
 		sed -e 's,_FONTDIR_,$(FONTDIR),g' \
 	    -e 's,_INSTDIR_,$(INSTDIR),g' \
 	    -e "s,_VERSION_,$${VERSION},g" \
-	    textps.n >$@
+	    $(SRC)/textps.n >$@
 
 distclean: clean
 	rm -f Makefile Makefile.bsd

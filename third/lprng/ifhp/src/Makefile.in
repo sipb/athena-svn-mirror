@@ -2,19 +2,20 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.3 1999-03-14 21:56:01 danw Exp $
+#* $Id: Makefile.in,v 1.4 1999-05-04 19:12:35 mwhitson Exp $
 #
 
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libexecdir=@libexecdir@
+ADMINDIR=@ADMINDIR@
+SHELL=@SHELL@
 
 # where the filters are installed:
 INSTDIR=${libexecdir}/filters
 
 # shell to use
-SHELL=@SHELL@
 
 #
 # the compiler optimisation/debugging flags you wish to use.
@@ -27,7 +28,7 @@ LDFLAGS    =  $(CCOPTFLAGS)
 DEFS=@DEFS@
 
 # use FLAGS for additional flags
-CFLAGS = $(CCOPTFLAGS) $(DEFS) $(FLAGS)
+CFLAGS = $(CCOPTFLAGS) $(DEFS) $(FLAGS) -DADMINDIR=\"$(ADMINDIR)\"
 
 # libraries you will need (found by config), add more to end
 LIBS=@LIBS@
@@ -59,8 +60,8 @@ INCS=$(patsubst %,-I%,$(INCLUDE))
 FLAGS=  $(QUIET) $(INCS)
 
 # commands
-INSTALL=ifhp textps psbanner.ps
-COMMANDS= ifhp textps accounting.sh monitor
+INSTALL=$(SRC)/psbanner.ps $(SRC)/pclbanner
+COMMANDS= ifhp textps accounting.sh
 
 .SUFFIXES: .sh .sh_init
 
@@ -85,7 +86,7 @@ ifhp:	$(OBJS)
 	${CC} ${LDFLAGS} $^ ${LIBS} -o $@
 
 monitor.o $(OBJS): debug.h errormsg.h ifhp.h portable.h \
-	patchlevel.h config.h configfile.h linelist.h
+	patchlevel.h config.h linelist.h
 
 monitor: monitor.o plp_snprintf.o
 	${CC} ${LDFLAGS} $^ ${LIBS} -o $@
@@ -98,8 +99,11 @@ textps: textps.o
 #
 install: all
 	${SRC}/mkinstalldirs $(DESTDIR)$(INSTDIR)
-	for i in $(INSTALL) ; do \
+	for i in $(COMMANDS) ; do \
 		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR); \
+	done ;
+	for i in $(INSTALL) ; do \
+		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR)/`basename $$i`; \
 	done ;
 	cd $(DESTDIR)$(INSTDIR); rm -f ofhp banner; \
 		ln -s ifhp ofhp; ln -s ifhp banner
@@ -132,7 +136,7 @@ ci:
 		if [ -f $$i ]; then checkin $$i; fi; \
 	done;
 
-distclean:
+distclean: clean
 	-rm -f Makefile Makefile.bsd
 
 TAGS:
