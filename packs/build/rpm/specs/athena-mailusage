@@ -1,0 +1,10 @@
+Name: athena-mailusage
+Summary: Display size of mail folders on a post office server
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mailusage program prints out the total size of, and number of
+messages in, the user's mail folders on a post office server.
