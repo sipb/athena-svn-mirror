@@ -39,7 +39,6 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <errno.h>
-#include <malloc.h>
 #include <termios.h>
 #include <pwd.h>
 #include <stdlib.h>
@@ -407,12 +406,13 @@ init_term_with_defaults(struct termios* term)
 #ifdef ECHOE
 	  | ECHOE
 #endif
-#ifdef ECHOK
-	  | ECHOK
-#endif
 #ifdef ECHOKE
 	  | ECHOKE
 #endif
+#ifdef ECHOK
+	  | ECHOK
+#endif
+        | ECHOK
 #ifdef ECHOCTL
 	  | ECHOCTL
 #endif

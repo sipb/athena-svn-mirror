@@ -1,8 +1,8 @@
 ## Procesed by automake to procduce Makefile.in
 
-libgtkxmhtmlincludedir = $(includedir)/gtk-xmhtml
+libgtkxmhtmlincludedir = $(includedir)/gnome-1.0/gtk-xmhtml
 
-INCLUDES = -I.. -I$(srcdir)/.. @GTK_CFLAGS@ \
+INCLUDES = -I.. -I$(srcdir)/.. -I$(includedir) @GTK_CFLAGS@ \
            -DWITH_GTK -DDEBUG -DGNOME_LIB
 
 lib_LTLIBRARIES = libgtkxmhtml.la

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -146,10 +146,18 @@ need_gnome_support = @need_gnome_support@
 
 noinst_PROGRAMS = fileconvert metadata parse-path skel split trigs
 
-INCLUDES =  	-I$(top_builddir) -I$(top_srcdir)		$(SUPPORTINCS)					$(GDK_IMLIB_CFLAGS)				@GTK_CFLAGS@
+INCLUDES = \
+	-I$(top_builddir) -I$(top_srcdir)	\
+	$(SUPPORTINCS)				\
+	$(GDK_IMLIB_CFLAGS)			\
+	-I$(includedir)				\
+	@GTK_CFLAGS@
 
 
-LDADD = $(top_builddir)/libgnomeui/libgnomeui.la		$(top_builddir)/libgnome/libgnome.la			$(top_builddir)/libart_lgpl/libart_lgpl.la		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) $(INTLLIBS)
+LDADD = $(top_builddir)/libgnomeui/libgnomeui.la	\
+	$(top_builddir)/libgnome/libgnome.la		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) $(INTLLIBS)
 
 
 EXTRA_DIST = fileconvert.in lynxdump.sh types.cvt trigs.in
@@ -343,13 +351,490 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+fileconvert.o: fileconvert.c ../../gnome.h ../../support/gnomesupport.h \
+	../../libgnome/libgnome.h ../../libgnome/gnome-defs.h \
+	../../libgnome/gnome-config.h ../../libgnome/gnome-dentry.h \
+	../../libgnome/gnome-exec.h ../../libgnome/gnome-help.h \
+	../../libgnome/gnome-i18n.h ../../libgnome/gnome-metadata.h \
+	../../libgnome/gnome-mime.h ../../libgnome/gnome-mime-info.h \
+	../../libgnome/gnome-paper.h ../../libgnome/gnome-popt.h \
+	../../support/popt-gnome.h ../../libgnome/gnome-remote.h \
+	../../libgnome/gnome-score.h ../../libgnome/gnome-sound.h \
+	../../libgnome/gnome-triggers.h ../../libgnome/gnome-util.h \
+	../../libgnome/gnome-url.h ../../libgnomeui/libgnomeui.h \
+	../../libgnomeui/gnome-compat.h ../../libgnomeui/gnome-uidefs.h \
+	../../libgnomeui/gnome-about.h ../../libgnomeui/gnome-dialog.h \
+	../../libgnomeui/gnome-animator.h \
+	../../libgnomeui/gnome-pixmap.h ../../libgnomeui/gnome-app.h \
+	../../libgnomeui/gnome-dock.h \
+	../../libgnomeui/gnome-dock-band.h \
+	../../libgnomeui/gnome-dock-item.h \
+	../../libgnomeui/gnome-dock-layout.h \
+	../../libgnomeui/gnome-appbar.h ../../libgnomeui/gnome-types.h \
+	../../libgnomeui/gnome-app-helper.h \
+	../../libgnomeui/gnome-app-util.h \
+	../../libgnomeui/gnome-canvas.h ../../libart_lgpl/art_misc.h \
+	../../libart_lgpl/art_config.h ../../libart_lgpl/art_rect.h \
+	../../libart_lgpl/art_svp.h ../../libart_lgpl/art_point.h \
+	../../libart_lgpl/art_uta.h ../../libart_lgpl/art_affine.h \
+	../../libgnomeui/gnome-canvas-image.h \
+	../../libart_lgpl/art_pixbuf.h \
+	../../libgnomeui/gnome-canvas-line.h \
+	../../libgnomeui/gnome-canvas-load.h \
+	../../libgnomeui/gnome-canvas-rect-ellipse.h \
+	../../libgnomeui/gnome-canvas-polygon.h \
+	../../libgnomeui/gnome-canvas-text.h \
+	../../libgnomeui/gnome-canvas-util.h \
+	../../libart_lgpl/art_vpath.h ../../libart_lgpl/art_pathcode.h \
+	../../libart_lgpl/art_svp_vpath_stroke.h \
+	../../libgnomeui/gnome-canvas-widget.h \
+	../../libgnomeui/gnome-color-picker.h \
+	../../libgnomeui/gnome-dentry-edit.h \
+	../../libgnomeui/gnome-dialog-util.h \
+	../../libgnomeui/gnome-dns.h ../../libgnomeui/gnome-entry.h \
+	../../libgnomeui/gnome-file-entry.h \
+	../../libgnomeui/gnome-font-picker.h \
+	../../libgnomeui/gnome-font-selector.h \
+	../../libgnomeui/gnome-geometry.h ../../libgnomeui/gnome-guru.h \
+	../../libgnomeui/gnome-icon-list.h \
+	../../libgnomeui/gnome-icon-item.h \
+	../../libgnomeui/gnome-icon-text.h \
+	../../libgnomeui/gnome-icon-sel.h \
+	../../libgnomeui/gnome-icon-entry.h \
+	../../libgnomeui/gnome-init.h ../../libgnomeui/gnome-less.h \
+	../../libgnomeui/gnome-messagebox.h \
+	../../libgnomeui/gnome-number-entry.h \
+	../../libgnomeui/gnome-paper-selector.h \
+	../../libgnomeui/gnome-popup-menu.h \
+	../../libgnomeui/gnome-popup-help.h \
+	../../libgnomeui/gnome-pixmap-entry.h \
+	../../libgnomeui/gnome-preferences.h \
+	../../libgnomeui/gnome-mdi.h ../../libgnomeui/gnome-mdi-child.h \
+	../../libgnomeui/gnome-propertybox.h \
+	../../libgnomeui/gnome-properties.h \
+	../../libgnomeui/gnome-property-entries.h \
+	../../libgnomeui/gnome-scores.h ../../libgnomeui/gnome-spell.h \
+	../../support/getopt.h ../../libgnomeui/gnome-startup.h \
+	../../libgnomeui/gnome-stock.h ../../libgnomeui/gnome-client.h \
+	../../libgnomeui/gtkcauldron.h ../../libgnomeui/gtk-clock.h \
+	../../libgnomeui/gtkdial.h ../../libgnomeui/gtk-ted.h \
+	../../libgnomeui/gtkpixmapmenuitem.h \
+	../../libgnomeui/gnome-dateedit.h \
+	../../libgnomeui/gnome-calculator.h \
+	../../libgnomeui/gnome-mdi-generic-child.h \
+	../../libgnomeui/gnome-mdi-session.h \
+	../../libgnomeui/gnometypebuiltins.h \
+	../../libgnomeui/gnome-winhints.h ../../libgnomeui/gnome-href.h \
+	../../libgnomeui/gnome-procbar.h ../../libgnomeui/gnome-druid.h \
+	../../libgnomeui/gnome-druid-page.h \
+	../../libgnomeui/gnome-druid-page-start.h \
+	../../libgnomeui/gnome-druid-page-standard.h \
+	../../libgnomeui/gnome-druid-page-finish.h \
+	../../libgnome/gnome-fileconvert.h
+metadata.o: metadata.c ../../gnome.h ../../support/gnomesupport.h \
+	../../libgnome/libgnome.h ../../libgnome/gnome-defs.h \
+	../../libgnome/gnome-config.h ../../libgnome/gnome-dentry.h \
+	../../libgnome/gnome-exec.h ../../libgnome/gnome-help.h \
+	../../libgnome/gnome-i18n.h ../../libgnome/gnome-metadata.h \
+	../../libgnome/gnome-mime.h ../../libgnome/gnome-mime-info.h \
+	../../libgnome/gnome-paper.h ../../libgnome/gnome-popt.h \
+	../../support/popt-gnome.h ../../libgnome/gnome-remote.h \
+	../../libgnome/gnome-score.h ../../libgnome/gnome-sound.h \
+	../../libgnome/gnome-triggers.h ../../libgnome/gnome-util.h \
+	../../libgnome/gnome-url.h ../../libgnomeui/libgnomeui.h \
+	../../libgnomeui/gnome-compat.h ../../libgnomeui/gnome-uidefs.h \
+	../../libgnomeui/gnome-about.h ../../libgnomeui/gnome-dialog.h \
+	../../libgnomeui/gnome-animator.h \
+	../../libgnomeui/gnome-pixmap.h ../../libgnomeui/gnome-app.h \
+	../../libgnomeui/gnome-dock.h \
+	../../libgnomeui/gnome-dock-band.h \
+	../../libgnomeui/gnome-dock-item.h \
+	../../libgnomeui/gnome-dock-layout.h \
+	../../libgnomeui/gnome-appbar.h ../../libgnomeui/gnome-types.h \
+	../../libgnomeui/gnome-app-helper.h \
+	../../libgnomeui/gnome-app-util.h \
+	../../libgnomeui/gnome-canvas.h ../../libart_lgpl/art_misc.h \
+	../../libart_lgpl/art_config.h ../../libart_lgpl/art_rect.h \
+	../../libart_lgpl/art_svp.h ../../libart_lgpl/art_point.h \
+	../../libart_lgpl/art_uta.h ../../libart_lgpl/art_affine.h \
+	../../libgnomeui/gnome-canvas-image.h \
+	../../libart_lgpl/art_pixbuf.h \
+	../../libgnomeui/gnome-canvas-line.h \
+	../../libgnomeui/gnome-canvas-load.h \
+	../../libgnomeui/gnome-canvas-rect-ellipse.h \
+	../../libgnomeui/gnome-canvas-polygon.h \
+	../../libgnomeui/gnome-canvas-text.h \
+	../../libgnomeui/gnome-canvas-util.h \
+	../../libart_lgpl/art_vpath.h ../../libart_lgpl/art_pathcode.h \
+	../../libart_lgpl/art_svp_vpath_stroke.h \
+	../../libgnomeui/gnome-canvas-widget.h \
+	../../libgnomeui/gnome-color-picker.h \
+	../../libgnomeui/gnome-dentry-edit.h \
+	../../libgnomeui/gnome-dialog-util.h \
+	../../libgnomeui/gnome-dns.h ../../libgnomeui/gnome-entry.h \
+	../../libgnomeui/gnome-file-entry.h \
+	../../libgnomeui/gnome-font-picker.h \
+	../../libgnomeui/gnome-font-selector.h \
+	../../libgnomeui/gnome-geometry.h ../../libgnomeui/gnome-guru.h \
+	../../libgnomeui/gnome-icon-list.h \
+	../../libgnomeui/gnome-icon-item.h \
+	../../libgnomeui/gnome-icon-text.h \
+	../../libgnomeui/gnome-icon-sel.h \
+	../../libgnomeui/gnome-icon-entry.h \
+	../../libgnomeui/gnome-init.h ../../libgnomeui/gnome-less.h \
+	../../libgnomeui/gnome-messagebox.h \
+	../../libgnomeui/gnome-number-entry.h \
+	../../libgnomeui/gnome-paper-selector.h \
+	../../libgnomeui/gnome-popup-menu.h \
+	../../libgnomeui/gnome-popup-help.h \
+	../../libgnomeui/gnome-pixmap-entry.h \
+	../../libgnomeui/gnome-preferences.h \
+	../../libgnomeui/gnome-mdi.h ../../libgnomeui/gnome-mdi-child.h \
+	../../libgnomeui/gnome-propertybox.h \
+	../../libgnomeui/gnome-properties.h \
+	../../libgnomeui/gnome-property-entries.h \
+	../../libgnomeui/gnome-scores.h ../../libgnomeui/gnome-spell.h \
+	../../support/getopt.h ../../libgnomeui/gnome-startup.h \
+	../../libgnomeui/gnome-stock.h ../../libgnomeui/gnome-client.h \
+	../../libgnomeui/gtkcauldron.h ../../libgnomeui/gtk-clock.h \
+	../../libgnomeui/gtkdial.h ../../libgnomeui/gtk-ted.h \
+	../../libgnomeui/gtkpixmapmenuitem.h \
+	../../libgnomeui/gnome-dateedit.h \
+	../../libgnomeui/gnome-calculator.h \
+	../../libgnomeui/gnome-mdi-generic-child.h \
+	../../libgnomeui/gnome-mdi-session.h \
+	../../libgnomeui/gnometypebuiltins.h \
+	../../libgnomeui/gnome-winhints.h ../../libgnomeui/gnome-href.h \
+	../../libgnomeui/gnome-procbar.h ../../libgnomeui/gnome-druid.h \
+	../../libgnomeui/gnome-druid-page.h \
+	../../libgnomeui/gnome-druid-page-start.h \
+	../../libgnomeui/gnome-druid-page-standard.h \
+	../../libgnomeui/gnome-druid-page-finish.h
+parse-path.o: parse-path.c ../../gnome.h ../../support/gnomesupport.h \
+	../../libgnome/libgnome.h ../../libgnome/gnome-defs.h \
+	../../libgnome/gnome-config.h ../../libgnome/gnome-dentry.h \
+	../../libgnome/gnome-exec.h ../../libgnome/gnome-help.h \
+	../../libgnome/gnome-i18n.h ../../libgnome/gnome-metadata.h \
+	../../libgnome/gnome-mime.h ../../libgnome/gnome-mime-info.h \
+	../../libgnome/gnome-paper.h ../../libgnome/gnome-popt.h \
+	../../support/popt-gnome.h ../../libgnome/gnome-remote.h \
+	../../libgnome/gnome-score.h ../../libgnome/gnome-sound.h \
+	../../libgnome/gnome-triggers.h ../../libgnome/gnome-util.h \
+	../../libgnome/gnome-url.h ../../libgnomeui/libgnomeui.h \
+	../../libgnomeui/gnome-compat.h ../../libgnomeui/gnome-uidefs.h \
+	../../libgnomeui/gnome-about.h ../../libgnomeui/gnome-dialog.h \
+	../../libgnomeui/gnome-animator.h \
+	../../libgnomeui/gnome-pixmap.h ../../libgnomeui/gnome-app.h \
+	../../libgnomeui/gnome-dock.h \
+	../../libgnomeui/gnome-dock-band.h \
+	../../libgnomeui/gnome-dock-item.h \
+	../../libgnomeui/gnome-dock-layout.h \
+	../../libgnomeui/gnome-appbar.h ../../libgnomeui/gnome-types.h \
+	../../libgnomeui/gnome-app-helper.h \
+	../../libgnomeui/gnome-app-util.h \
+	../../libgnomeui/gnome-canvas.h ../../libart_lgpl/art_misc.h \
+	../../libart_lgpl/art_config.h ../../libart_lgpl/art_rect.h \
+	../../libart_lgpl/art_svp.h ../../libart_lgpl/art_point.h \
+	../../libart_lgpl/art_uta.h ../../libart_lgpl/art_affine.h \
+	../../libgnomeui/gnome-canvas-image.h \
+	../../libart_lgpl/art_pixbuf.h \
+	../../libgnomeui/gnome-canvas-line.h \
+	../../libgnomeui/gnome-canvas-load.h \
+	../../libgnomeui/gnome-canvas-rect-ellipse.h \
+	../../libgnomeui/gnome-canvas-polygon.h \
+	../../libgnomeui/gnome-canvas-text.h \
+	../../libgnomeui/gnome-canvas-util.h \
+	../../libart_lgpl/art_vpath.h ../../libart_lgpl/art_pathcode.h \
+	../../libart_lgpl/art_svp_vpath_stroke.h \
+	../../libgnomeui/gnome-canvas-widget.h \
+	../../libgnomeui/gnome-color-picker.h \
+	../../libgnomeui/gnome-dentry-edit.h \
+	../../libgnomeui/gnome-dialog-util.h \
+	../../libgnomeui/gnome-dns.h ../../libgnomeui/gnome-entry.h \
+	../../libgnomeui/gnome-file-entry.h \
+	../../libgnomeui/gnome-font-picker.h \
+	../../libgnomeui/gnome-font-selector.h \
+	../../libgnomeui/gnome-geometry.h ../../libgnomeui/gnome-guru.h \
+	../../libgnomeui/gnome-icon-list.h \
+	../../libgnomeui/gnome-icon-item.h \
+	../../libgnomeui/gnome-icon-text.h \
+	../../libgnomeui/gnome-icon-sel.h \
+	../../libgnomeui/gnome-icon-entry.h \
+	../../libgnomeui/gnome-init.h ../../libgnomeui/gnome-less.h \
+	../../libgnomeui/gnome-messagebox.h \
+	../../libgnomeui/gnome-number-entry.h \
+	../../libgnomeui/gnome-paper-selector.h \
+	../../libgnomeui/gnome-popup-menu.h \
+	../../libgnomeui/gnome-popup-help.h \
+	../../libgnomeui/gnome-pixmap-entry.h \
+	../../libgnomeui/gnome-preferences.h \
+	../../libgnomeui/gnome-mdi.h ../../libgnomeui/gnome-mdi-child.h \
+	../../libgnomeui/gnome-propertybox.h \
+	../../libgnomeui/gnome-properties.h \
+	../../libgnomeui/gnome-property-entries.h \
+	../../libgnomeui/gnome-scores.h ../../libgnomeui/gnome-spell.h \
+	../../support/getopt.h ../../libgnomeui/gnome-startup.h \
+	../../libgnomeui/gnome-stock.h ../../libgnomeui/gnome-client.h \
+	../../libgnomeui/gtkcauldron.h ../../libgnomeui/gtk-clock.h \
+	../../libgnomeui/gtkdial.h ../../libgnomeui/gtk-ted.h \
+	../../libgnomeui/gtkpixmapmenuitem.h \
+	../../libgnomeui/gnome-dateedit.h \
+	../../libgnomeui/gnome-calculator.h \
+	../../libgnomeui/gnome-mdi-generic-child.h \
+	../../libgnomeui/gnome-mdi-session.h \
+	../../libgnomeui/gnometypebuiltins.h \
+	../../libgnomeui/gnome-winhints.h ../../libgnomeui/gnome-href.h \
+	../../libgnomeui/gnome-procbar.h ../../libgnomeui/gnome-druid.h \
+	../../libgnomeui/gnome-druid-page.h \
+	../../libgnomeui/gnome-druid-page-start.h \
+	../../libgnomeui/gnome-druid-page-standard.h \
+	../../libgnomeui/gnome-druid-page-finish.h ../../config.h \
+	../../libgnome/parse-path.cP
+skel.o: skel.c ../../gnome.h ../../support/gnomesupport.h \
+	../../libgnome/libgnome.h ../../libgnome/gnome-defs.h \
+	../../libgnome/gnome-config.h ../../libgnome/gnome-dentry.h \
+	../../libgnome/gnome-exec.h ../../libgnome/gnome-help.h \
+	../../libgnome/gnome-i18n.h ../../libgnome/gnome-metadata.h \
+	../../libgnome/gnome-mime.h ../../libgnome/gnome-mime-info.h \
+	../../libgnome/gnome-paper.h ../../libgnome/gnome-popt.h \
+	../../support/popt-gnome.h ../../libgnome/gnome-remote.h \
+	../../libgnome/gnome-score.h ../../libgnome/gnome-sound.h \
+	../../libgnome/gnome-triggers.h ../../libgnome/gnome-util.h \
+	../../libgnome/gnome-url.h ../../libgnomeui/libgnomeui.h \
+	../../libgnomeui/gnome-compat.h ../../libgnomeui/gnome-uidefs.h \
+	../../libgnomeui/gnome-about.h ../../libgnomeui/gnome-dialog.h \
+	../../libgnomeui/gnome-animator.h \
+	../../libgnomeui/gnome-pixmap.h ../../libgnomeui/gnome-app.h \
+	../../libgnomeui/gnome-dock.h \
+	../../libgnomeui/gnome-dock-band.h \
+	../../libgnomeui/gnome-dock-item.h \
+	../../libgnomeui/gnome-dock-layout.h \
+	../../libgnomeui/gnome-appbar.h ../../libgnomeui/gnome-types.h \
+	../../libgnomeui/gnome-app-helper.h \
+	../../libgnomeui/gnome-app-util.h \
+	../../libgnomeui/gnome-canvas.h ../../libart_lgpl/art_misc.h \
+	../../libart_lgpl/art_config.h ../../libart_lgpl/art_rect.h \
+	../../libart_lgpl/art_svp.h ../../libart_lgpl/art_point.h \
+	../../libart_lgpl/art_uta.h ../../libart_lgpl/art_affine.h \
+	../../libgnomeui/gnome-canvas-image.h \
+	../../libart_lgpl/art_pixbuf.h \
+	../../libgnomeui/gnome-canvas-line.h \
+	../../libgnomeui/gnome-canvas-load.h \
+	../../libgnomeui/gnome-canvas-rect-ellipse.h \
+	../../libgnomeui/gnome-canvas-polygon.h \
+	../../libgnomeui/gnome-canvas-text.h \
+	../../libgnomeui/gnome-canvas-util.h \
+	../../libart_lgpl/art_vpath.h ../../libart_lgpl/art_pathcode.h \
+	../../libart_lgpl/art_svp_vpath_stroke.h \
+	../../libgnomeui/gnome-canvas-widget.h \
+	../../libgnomeui/gnome-color-picker.h \
+	../../libgnomeui/gnome-dentry-edit.h \
+	../../libgnomeui/gnome-dialog-util.h \
+	../../libgnomeui/gnome-dns.h ../../libgnomeui/gnome-entry.h \
+	../../libgnomeui/gnome-file-entry.h \
+	../../libgnomeui/gnome-font-picker.h \
+	../../libgnomeui/gnome-font-selector.h \
+	../../libgnomeui/gnome-geometry.h ../../libgnomeui/gnome-guru.h \
+	../../libgnomeui/gnome-icon-list.h \
+	../../libgnomeui/gnome-icon-item.h \
+	../../libgnomeui/gnome-icon-text.h \
+	../../libgnomeui/gnome-icon-sel.h \
+	../../libgnomeui/gnome-icon-entry.h \
+	../../libgnomeui/gnome-init.h ../../libgnomeui/gnome-less.h \
+	../../libgnomeui/gnome-messagebox.h \
+	../../libgnomeui/gnome-number-entry.h \
+	../../libgnomeui/gnome-paper-selector.h \
+	../../libgnomeui/gnome-popup-menu.h \
+	../../libgnomeui/gnome-popup-help.h \
+	../../libgnomeui/gnome-pixmap-entry.h \
+	../../libgnomeui/gnome-preferences.h \
+	../../libgnomeui/gnome-mdi.h ../../libgnomeui/gnome-mdi-child.h \
+	../../libgnomeui/gnome-propertybox.h \
+	../../libgnomeui/gnome-properties.h \
+	../../libgnomeui/gnome-property-entries.h \
+	../../libgnomeui/gnome-scores.h ../../libgnomeui/gnome-spell.h \
+	../../support/getopt.h ../../libgnomeui/gnome-startup.h \
+	../../libgnomeui/gnome-stock.h ../../libgnomeui/gnome-client.h \
+	../../libgnomeui/gtkcauldron.h ../../libgnomeui/gtk-clock.h \
+	../../libgnomeui/gtkdial.h ../../libgnomeui/gtk-ted.h \
+	../../libgnomeui/gtkpixmapmenuitem.h \
+	../../libgnomeui/gnome-dateedit.h \
+	../../libgnomeui/gnome-calculator.h \
+	../../libgnomeui/gnome-mdi-generic-child.h \
+	../../libgnomeui/gnome-mdi-session.h \
+	../../libgnomeui/gnometypebuiltins.h \
+	../../libgnomeui/gnome-winhints.h ../../libgnomeui/gnome-href.h \
+	../../libgnomeui/gnome-procbar.h ../../libgnomeui/gnome-druid.h \
+	../../libgnomeui/gnome-druid-page.h \
+	../../libgnomeui/gnome-druid-page-start.h \
+	../../libgnomeui/gnome-druid-page-standard.h \
+	../../libgnomeui/gnome-druid-page-finish.h
+split.o: split.c ../../gnome.h ../../support/gnomesupport.h \
+	../../libgnome/libgnome.h ../../libgnome/gnome-defs.h \
+	../../libgnome/gnome-config.h ../../libgnome/gnome-dentry.h \
+	../../libgnome/gnome-exec.h ../../libgnome/gnome-help.h \
+	../../libgnome/gnome-i18n.h ../../libgnome/gnome-metadata.h \
+	../../libgnome/gnome-mime.h ../../libgnome/gnome-mime-info.h \
+	../../libgnome/gnome-paper.h ../../libgnome/gnome-popt.h \
+	../../support/popt-gnome.h ../../libgnome/gnome-remote.h \
+	../../libgnome/gnome-score.h ../../libgnome/gnome-sound.h \
+	../../libgnome/gnome-triggers.h ../../libgnome/gnome-util.h \
+	../../libgnome/gnome-url.h ../../libgnomeui/libgnomeui.h \
+	../../libgnomeui/gnome-compat.h ../../libgnomeui/gnome-uidefs.h \
+	../../libgnomeui/gnome-about.h ../../libgnomeui/gnome-dialog.h \
+	../../libgnomeui/gnome-animator.h \
+	../../libgnomeui/gnome-pixmap.h ../../libgnomeui/gnome-app.h \
+	../../libgnomeui/gnome-dock.h \
+	../../libgnomeui/gnome-dock-band.h \
+	../../libgnomeui/gnome-dock-item.h \
+	../../libgnomeui/gnome-dock-layout.h \
+	../../libgnomeui/gnome-appbar.h ../../libgnomeui/gnome-types.h \
+	../../libgnomeui/gnome-app-helper.h \
+	../../libgnomeui/gnome-app-util.h \
+	../../libgnomeui/gnome-canvas.h ../../libart_lgpl/art_misc.h \
+	../../libart_lgpl/art_config.h ../../libart_lgpl/art_rect.h \
+	../../libart_lgpl/art_svp.h ../../libart_lgpl/art_point.h \
+	../../libart_lgpl/art_uta.h ../../libart_lgpl/art_affine.h \
+	../../libgnomeui/gnome-canvas-image.h \
+	../../libart_lgpl/art_pixbuf.h \
+	../../libgnomeui/gnome-canvas-line.h \
+	../../libgnomeui/gnome-canvas-load.h \
+	../../libgnomeui/gnome-canvas-rect-ellipse.h \
+	../../libgnomeui/gnome-canvas-polygon.h \
+	../../libgnomeui/gnome-canvas-text.h \
+	../../libgnomeui/gnome-canvas-util.h \
+	../../libart_lgpl/art_vpath.h ../../libart_lgpl/art_pathcode.h \
+	../../libart_lgpl/art_svp_vpath_stroke.h \
+	../../libgnomeui/gnome-canvas-widget.h \
+	../../libgnomeui/gnome-color-picker.h \
+	../../libgnomeui/gnome-dentry-edit.h \
+	../../libgnomeui/gnome-dialog-util.h \
+	../../libgnomeui/gnome-dns.h ../../libgnomeui/gnome-entry.h \
+	../../libgnomeui/gnome-file-entry.h \
+	../../libgnomeui/gnome-font-picker.h \
+	../../libgnomeui/gnome-font-selector.h \
+	../../libgnomeui/gnome-geometry.h ../../libgnomeui/gnome-guru.h \
+	../../libgnomeui/gnome-icon-list.h \
+	../../libgnomeui/gnome-icon-item.h \
+	../../libgnomeui/gnome-icon-text.h \
+	../../libgnomeui/gnome-icon-sel.h \
+	../../libgnomeui/gnome-icon-entry.h \
+	../../libgnomeui/gnome-init.h ../../libgnomeui/gnome-less.h \
+	../../libgnomeui/gnome-messagebox.h \
+	../../libgnomeui/gnome-number-entry.h \
+	../../libgnomeui/gnome-paper-selector.h \
+	../../libgnomeui/gnome-popup-menu.h \
+	../../libgnomeui/gnome-popup-help.h \
+	../../libgnomeui/gnome-pixmap-entry.h \
+	../../libgnomeui/gnome-preferences.h \
+	../../libgnomeui/gnome-mdi.h ../../libgnomeui/gnome-mdi-child.h \
+	../../libgnomeui/gnome-propertybox.h \
+	../../libgnomeui/gnome-properties.h \
+	../../libgnomeui/gnome-property-entries.h \
+	../../libgnomeui/gnome-scores.h ../../libgnomeui/gnome-spell.h \
+	../../support/getopt.h ../../libgnomeui/gnome-startup.h \
+	../../libgnomeui/gnome-stock.h ../../libgnomeui/gnome-client.h \
+	../../libgnomeui/gtkcauldron.h ../../libgnomeui/gtk-clock.h \
+	../../libgnomeui/gtkdial.h ../../libgnomeui/gtk-ted.h \
+	../../libgnomeui/gtkpixmapmenuitem.h \
+	../../libgnomeui/gnome-dateedit.h \
+	../../libgnomeui/gnome-calculator.h \
+	../../libgnomeui/gnome-mdi-generic-child.h \
+	../../libgnomeui/gnome-mdi-session.h \
+	../../libgnomeui/gnometypebuiltins.h \
+	../../libgnomeui/gnome-winhints.h ../../libgnomeui/gnome-href.h \
+	../../libgnomeui/gnome-procbar.h ../../libgnomeui/gnome-druid.h \
+	../../libgnomeui/gnome-druid-page.h \
+	../../libgnomeui/gnome-druid-page-start.h \
+	../../libgnomeui/gnome-druid-page-standard.h \
+	../../libgnomeui/gnome-druid-page-finish.h
+trigs.o: trigs.c ../../gnome.h ../../support/gnomesupport.h \
+	../../libgnome/libgnome.h ../../libgnome/gnome-defs.h \
+	../../libgnome/gnome-config.h ../../libgnome/gnome-dentry.h \
+	../../libgnome/gnome-exec.h ../../libgnome/gnome-help.h \
+	../../libgnome/gnome-i18n.h ../../libgnome/gnome-metadata.h \
+	../../libgnome/gnome-mime.h ../../libgnome/gnome-mime-info.h \
+	../../libgnome/gnome-paper.h ../../libgnome/gnome-popt.h \
+	../../support/popt-gnome.h ../../libgnome/gnome-remote.h \
+	../../libgnome/gnome-score.h ../../libgnome/gnome-sound.h \
+	../../libgnome/gnome-triggers.h ../../libgnome/gnome-util.h \
+	../../libgnome/gnome-url.h ../../libgnomeui/libgnomeui.h \
+	../../libgnomeui/gnome-compat.h ../../libgnomeui/gnome-uidefs.h \
+	../../libgnomeui/gnome-about.h ../../libgnomeui/gnome-dialog.h \
+	../../libgnomeui/gnome-animator.h \
+	../../libgnomeui/gnome-pixmap.h ../../libgnomeui/gnome-app.h \
+	../../libgnomeui/gnome-dock.h \
+	../../libgnomeui/gnome-dock-band.h \
+	../../libgnomeui/gnome-dock-item.h \
+	../../libgnomeui/gnome-dock-layout.h \
+	../../libgnomeui/gnome-appbar.h ../../libgnomeui/gnome-types.h \
+	../../libgnomeui/gnome-app-helper.h \
+	../../libgnomeui/gnome-app-util.h \
+	../../libgnomeui/gnome-canvas.h ../../libart_lgpl/art_misc.h \
+	../../libart_lgpl/art_config.h ../../libart_lgpl/art_rect.h \
+	../../libart_lgpl/art_svp.h ../../libart_lgpl/art_point.h \
+	../../libart_lgpl/art_uta.h ../../libart_lgpl/art_affine.h \
+	../../libgnomeui/gnome-canvas-image.h \
+	../../libart_lgpl/art_pixbuf.h \
+	../../libgnomeui/gnome-canvas-line.h \
+	../../libgnomeui/gnome-canvas-load.h \
+	../../libgnomeui/gnome-canvas-rect-ellipse.h \
+	../../libgnomeui/gnome-canvas-polygon.h \
+	../../libgnomeui/gnome-canvas-text.h \
+	../../libgnomeui/gnome-canvas-util.h \
+	../../libart_lgpl/art_vpath.h ../../libart_lgpl/art_pathcode.h \
+	../../libart_lgpl/art_svp_vpath_stroke.h \
+	../../libgnomeui/gnome-canvas-widget.h \
+	../../libgnomeui/gnome-color-picker.h \
+	../../libgnomeui/gnome-dentry-edit.h \
+	../../libgnomeui/gnome-dialog-util.h \
+	../../libgnomeui/gnome-dns.h ../../libgnomeui/gnome-entry.h \
+	../../libgnomeui/gnome-file-entry.h \
+	../../libgnomeui/gnome-font-picker.h \
+	../../libgnomeui/gnome-font-selector.h \
+	../../libgnomeui/gnome-geometry.h ../../libgnomeui/gnome-guru.h \
+	../../libgnomeui/gnome-icon-list.h \
+	../../libgnomeui/gnome-icon-item.h \
+	../../libgnomeui/gnome-icon-text.h \
+	../../libgnomeui/gnome-icon-sel.h \
+	../../libgnomeui/gnome-icon-entry.h \
+	../../libgnomeui/gnome-init.h ../../libgnomeui/gnome-less.h \
+	../../libgnomeui/gnome-messagebox.h \
+	../../libgnomeui/gnome-number-entry.h \
+	../../libgnomeui/gnome-paper-selector.h \
+	../../libgnomeui/gnome-popup-menu.h \
+	../../libgnomeui/gnome-popup-help.h \
+	../../libgnomeui/gnome-pixmap-entry.h \
+	../../libgnomeui/gnome-preferences.h \
+	../../libgnomeui/gnome-mdi.h ../../libgnomeui/gnome-mdi-child.h \
+	../../libgnomeui/gnome-propertybox.h \
+	../../libgnomeui/gnome-properties.h \
+	../../libgnomeui/gnome-property-entries.h \
+	../../libgnomeui/gnome-scores.h ../../libgnomeui/gnome-spell.h \
+	../../support/getopt.h ../../libgnomeui/gnome-startup.h \
+	../../libgnomeui/gnome-stock.h ../../libgnomeui/gnome-client.h \
+	../../libgnomeui/gtkcauldron.h ../../libgnomeui/gtk-clock.h \
+	../../libgnomeui/gtkdial.h ../../libgnomeui/gtk-ted.h \
+	../../libgnomeui/gtkpixmapmenuitem.h \
+	../../libgnomeui/gnome-dateedit.h \
+	../../libgnomeui/gnome-calculator.h \
+	../../libgnomeui/gnome-mdi-generic-child.h \
+	../../libgnomeui/gnome-mdi-session.h \
+	../../libgnomeui/gnometypebuiltins.h \
+	../../libgnomeui/gnome-winhints.h ../../libgnomeui/gnome-href.h \
+	../../libgnomeui/gnome-procbar.h ../../libgnomeui/gnome-druid.h \
+	../../libgnomeui/gnome-druid-page.h \
+	../../libgnomeui/gnome-druid-page-start.h \
+	../../libgnomeui/gnome-druid-page-standard.h \
+	../../libgnomeui/gnome-druid-page-finish.h
+
 info-am:
 info: info-am
 dvi-am:

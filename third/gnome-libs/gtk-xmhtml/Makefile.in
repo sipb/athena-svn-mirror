@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -144,17 +144,60 @@ gnomelocaledir = @gnomelocaledir@
 l = @l@
 need_gnome_support = @need_gnome_support@
 
-libgtkxmhtmlincludedir = $(includedir)/gtk-xmhtml
+libgtkxmhtmlincludedir = $(includedir)/gnome-1.0/gtk-xmhtml
 
-INCLUDES = -I.. -I$(srcdir)/.. @GTK_CFLAGS@            -DWITH_GTK -DDEBUG -DGNOME_LIB
+INCLUDES = -I.. -I$(srcdir)/.. -I$(includedir) @GTK_CFLAGS@ \
+           -DWITH_GTK -DDEBUG -DGNOME_LIB
 
 
 lib_LTLIBRARIES = libgtkxmhtml.la
 
-libgtkxmhtml_la_SOURCES =  	XmHTML.c			gtk-error.c			gtk-forms.c			frames.c			parse.c				StringUtil.c			fonts.c				paint.c				map.c				callbacks.c			format.c			plc.c				readXPM.c			readJPEG.c			readJPEGplc.c			readBitmap.c			readGIF.c			LZWStream.c			LZWStream.h			readGIFplc.c			readFLG.c			readPNG.c			colors.c			images.c			quantize.c			layout.c			events.c			debug.c				XmHTML-motif.h			XmHTMLfuncs.h			debug.h				escapes.h			motif.h				plc.h
+libgtkxmhtml_la_SOURCES = \
+	XmHTML.c		\
+	gtk-error.c		\
+	gtk-forms.c		\
+	frames.c		\
+	parse.c			\
+	StringUtil.c		\
+	fonts.c			\
+	paint.c			\
+	map.c			\
+	callbacks.c		\
+	format.c		\
+	plc.c			\
+	readXPM.c		\
+	readJPEG.c		\
+	readJPEGplc.c		\
+	readBitmap.c		\
+	readGIF.c		\
+	LZWStream.c		\
+	LZWStream.h		\
+	readGIFplc.c		\
+	readFLG.c		\
+	readPNG.c		\
+	colors.c		\
+	images.c		\
+	quantize.c		\
+	layout.c		\
+	events.c		\
+	debug.c			\
+	XmHTML-motif.h		\
+	XmHTMLfuncs.h		\
+	debug.h			\
+	escapes.h		\
+	motif.h			\
+	plc.h
 
 
-libgtkxmhtmlinclude_HEADERS =  	miniparse.h			HTML.h				XmHTML.h			XmHTMLI.h			XmHTMLP.h			gtk-xmhtml-p.h			gtk-xmhtml.h			toolkit.h
+libgtkxmhtmlinclude_HEADERS = \
+	miniparse.h		\
+	HTML.h			\
+	XmHTML.h		\
+	XmHTMLI.h		\
+	XmHTMLP.h		\
+	gtk-xmhtml-p.h		\
+	gtk-xmhtml.h		\
+	toolkit.h
 
 
 libgtkxmhtml_la_LDFLAGS = -version-info 1:1:0 -rpath $(libdir)
@@ -347,7 +390,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -355,6 +398,93 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+LZWStream.lo LZWStream.o : LZWStream.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h LZWStream.h
+StringUtil.lo StringUtil.o : StringUtil.c ../config.h toolkit.h \
+	XmHTMLP.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
+	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h escapes.h
+XmHTML.lo XmHTML.o : XmHTML.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h bitmaps/fingers.xbm bitmaps/fingers_m.xbm \
+	gtk-xmhtml.c
+callbacks.lo callbacks.o : callbacks.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h toolkit.h
+colors.lo colors.o : colors.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+debug.lo debug.o : debug.c ../config.h XmHTMLfuncs.h debug.h
+events.lo events.o : events.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+fonts.lo fonts.o : fonts.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+format.lo format.o : format.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+frames.lo frames.o : frames.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h toolkit.h
+gtk-error.lo gtk-error.o : gtk-error.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+gtk-forms.lo gtk-forms.o : gtk-forms.c XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+images.lo images.o : images.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h plc.h toolkit.h LZWStream.h \
+	bitmaps/boomerang.xpm bitmaps/noboomerang.xpm
+layout.lo layout.o : layout.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+map.lo map.o : map.c ../config.h XmHTMLP.h toolkit.h XmHTML.h HTML.h \
+	XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h XmHTMLfuncs.h \
+	debug.h
+paint.lo paint.o : paint.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+parse.lo parse.o : parse.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
+	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+plc.lo plc.o : plc.c ../config.h toolkit.h XmHTMLP.h XmHTML.h HTML.h \
+	XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h XmHTMLfuncs.h \
+	debug.h plc.h toolkit.h LZWStream.h
+quantize.lo quantize.o : quantize.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+readBitmap.lo readBitmap.o : readBitmap.c ../config.h XmHTMLP.h \
+	toolkit.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
+	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h plc.h toolkit.h \
+	LZWStream.h
+readFLG.lo readFLG.o : readFLG.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+readGIF.lo readGIF.o : readGIF.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h LZWStream.h
+readGIFplc.lo readGIFplc.o : readGIFplc.c ../config.h XmHTMLP.h \
+	toolkit.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
+	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h LZWStream.h plc.h \
+	toolkit.h
+readJPEG.lo readJPEG.o : readJPEG.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+readJPEGplc.lo readJPEGplc.o : readJPEGplc.c ../config.h XmHTMLP.h \
+	toolkit.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
+	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h plc.h toolkit.h \
+	LZWStream.h
+readPNG.lo readPNG.o : readPNG.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h
+readXPM.lo readXPM.o : readXPM.c ../config.h XmHTMLP.h toolkit.h \
+	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
+	XmHTMLfuncs.h debug.h plc.h toolkit.h LZWStream.h
+test.o: test.c gtk-xmhtml.h toolkit.h XmHTML.h HTML.h XmHTMLP.h \
+	XmHTMLI.h gtk-xmhtml-p.h
+
 info-am:
 info: info-am
 dvi-am:

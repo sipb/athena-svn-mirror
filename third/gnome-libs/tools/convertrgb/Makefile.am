@@ -1,5 +1,5 @@
 INCLUDES =                      \
-        @GLIB_CFLAGS@
+        -I$(includedir) @GLIB_CFLAGS@
 
 noinst_PROGRAMS = convertrgb
 

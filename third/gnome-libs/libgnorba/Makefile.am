@@ -4,14 +4,20 @@ lib_LTLIBRARIES = libgnorba.la libgnorbagtk.la
 
 LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
-libgnorbaincludedir = $(includedir)/libgnorba
+libgnorbaincludedir = $(includedir)/gnome-1.0/libgnorba
 
-EXTRA_DIST = yes.xpm no.xpm
+man_MANS = gnome-name-service.1	\
+	goad-browser.1		\
+	loadshlib.1		\
+	new-object.1
+	
+EXTRA_DIST = yes.xpm no.xpm $(man_MANS)
 
 INCLUDES = 						\
 	-I.. 						\
 	-I$(srcdir)/..					\
 	$(SUPPORTINCS) 					\
+	-I$(includedir) 				\
         $(GNOME_INCLUDES)  				\
 	$(ORBIT_CFLAGS) 				\
 	$(GLIB_INCLUDES) 				\

@@ -7,7 +7,7 @@ AM_CONFIG_HEADER(config.h)
 
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(gnome-libs, 1.2.13)
+AM_INIT_AUTOMAKE(gnome-libs, 1.4.1.4)
 
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -105,7 +105,7 @@ if test x$enable_debug = xyes ; then
   AC_DEFINE(GNOME_ENABLE_DEBUG)
 fi
 
-ALL_LINGUAS="az ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk vi wa zh_CN.GB2312 zh_TW.Big5"
+ALL_LINGUAS="az ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk vi wa zh_CN.GB2312 zh_TW"
 AM_GNOME_GETTEXT
 # AM_GNOME_GETTEXT above substs $DATADIRNAME
 # this is the directory where the *.{mo,gmo} files are installed
@@ -114,21 +114,23 @@ AC_SUBST(gnomelocaledir)
 
 AC_CHECK_LIB(m, floor)
 
-AC_CHECK_HEADERS(dlfcn.h dl.h locale.h libintl.h)
+AC_CHECK_HEADERS(dlfcn.h locale.h libintl.h)
 
-DL_LIB=
-AC_CHECK_FUNCS(dlopen,,[
-AC_CHECK_LIB(dl, dlopen, DL_LIB="-ldl",[
-AC_CHECK_LIB(dld, shl_load, DL_LIB="-ldld",[
-AC_CHECK_FUNCS(dlopen, DL_LIB="",
-AC_MSG_ERROR(Dynamic linking is not available on this platform.  Some apps,
-like panel, will not run properly.))
-])])])
-oLIBS="$LIBS"
-LIBS="$LIBS $DL_LIB"
-AC_CHECK_FUNCS(dlerror,,)
-LIBS="$oLIBS"
-AC_SUBST(DL_LIB)
+AC_CACHE_CHECK([for gmodule support], ac_cv_gmodule,[
+  save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$LDFLAGS `glib-config --libs gmodule`"
+  AC_TRY_RUN([
+#include <gmodule.h>
+
+int main()
+{
+  return g_module_supported() == 0;
+}],ac_cv_gmodule=yes,ac_cv_gmodule=no,ac_cv_gmodule=yes)
+  LDFLAGS="$save_LDFLAGS"])
+if test $ac_cv_gmodule = no; then
+  AC_MSG_ERROR([Dynamic linking is not available on this platform. Some apps,
+like panel, will not run properly.])
+fi
 
 AC_CHECK_FUNCS(strerror gethostbyname setfsgid setenv putenv strdup)
 
@@ -209,8 +211,7 @@ AC_CHECK_LIB(util, openpty,
 AC_CHECK_FUNCS(grantpt utmpxname utmpname getutmpx getutent getttyent)
 AC_CHECK_FUNCS(updwtmpx updwtmp fcntl flock strrchr seteuid setreuid)
 
-AC_CHECK_HEADER(stropts.h, AC_DEFINE(HAVE_STROPTS_H))
-AC_CHECK_HEADER(dlfcn.h, AC_DEFINE(HAVE_DLFCN_H))
+AC_CHECK_HEADERS(stropts.h)
 
 dnl And workaround for a Autoconf 2.4 bug:
 if test x$ac_cv_func_grantpt = xyes; then
@@ -375,22 +376,22 @@ AM_PATH_AUDIOFILE(0.1.5,AC_DEFINE(HAVE_LIBAUDIOFILE))
 dnl
 dnl These are for building the appropriate lib*
 dnl
-LIBGNOME_LIBS="$ESD_LIBS $AUDIOFILE_LIBS $DB_LIB \`glib-config --libs\` $DL_LIB"
-LIBGNOMEUI_LIBS="$LIBGNOME_LIBS $GDK_IMLIB_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\`"
-LIBGTKXMHTML_LIBS="$XPM_LIBS $JPEG_LIBS $PNG_LIBS $Z_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\`"
+LIBGNOME_LIBS="$ESD_LIBS $AUDIOFILE_LIBS $DB_LIB $GLIB_LIBS $DL_LIB"
+LIBGNOMEUI_LIBS="$LIBGNOME_LIBS $GDK_IMLIB_LIBS $GTK_LIBS"
+LIBGTKXMHTML_LIBS="$XPM_LIBS $JPEG_LIBS $PNG_LIBS $Z_LIBS $GTK_LIBS"
 LIBSUPPORT='$(top_builddir)/support/libgnomesupport.la'
 SUPPORTINCS='-DNEED_GNOMESUPPORT_H -I$(top_builddir)/support -I$(top_srcdir)/support'
 
 dnl These are for using lib*
 ART_LIBS="-lart_lgpl"
 GNOME_LIBS="-lgnome -lgnomesupport $LIBGNOME_LIBS"
-GNOMEUI_LIBS="-lgnomeui $ART_LIBS \`imlib-config --libs-gdk\` -lSM -lICE \`gtk-config $gtk_config_args --libs\` $GNOME_LIBS"
+GNOMEUI_LIBS="-lgnomeui $ART_LIBS $GDK_IMLIB_LIBS $GTK_LIBS $GNOME_LIBS"
 GTKXMHTML_LIBS="-lgtkxmhtml $LIBGTKXMHTML_LIBS"
-ZVT_LIBS="-lzvt $UTIL_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\`"
+ZVT_LIBS="-lzvt $UTIL_LIBS $GTK_LIBS"
 
 dnl These definitions are expanded in make and gnome-config
 GNOME_LIBDIR='-L${libdir}'
-GNOME_INCLUDEDIR='-I${includedir} -DNEED_GNOMESUPPORT_H -I${pkglibdir}/include'
+GNOME_INCLUDEDIR='-I${includedir}/gnome-1.0 -DNEED_GNOMESUPPORT_H -I${pkglibdir}/include'
 GNOME_IDLDIR='-I${datadir}/idl'
 
 dnl
@@ -476,7 +477,6 @@ test-suite/Makefile
 test-suite/tests/Makefile
 gnome-data/Makefile
 test-gnome/Makefile
-gnome-faq/Makefile
 devel-docs/Makefile
 devel-docs/gnome/Makefile
 devel-docs/gnome-dev-info/Makefile

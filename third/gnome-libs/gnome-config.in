@@ -1,6 +1,6 @@
 #!/bin/sh
 
-prefix=${ATHTOOLROOT}@prefix@
+prefix=@prefix@
 exec_prefix=@exec_prefix@
 
 bindir=@bindir@
@@ -19,7 +19,7 @@ pkgdatadir=${datadir}/@PACKAGE@
 pkglibdir=${libdir}/@PACKAGE@
 pkgincludedir=${includedir}/@PACKAGE@
 MODULE_VERSION=@PACKAGE@-@VERSION@
-module_dirs="$libdir"
+module_dirs="${libdir}:/usr/lib"
 
 # stolen from autoconf
 if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
@@ -169,23 +169,23 @@ while test $# -gt 0; do
 	the_flags="$the_flags `glib-config --cflags`"
 	;;
     gtk)
-	the_libs="$the_libs -lSM -lICE `gtk-config --libs`"
+	the_libs="$the_libs `gtk-config --libs`"
 	the_flags="$the_flags `gtk-config --cflags`"
 	;;
     gnome)
        	the_libs="$the_libs @GNOME_LIBDIR@ @GNOME_LIBS@"
-  	the_flags="$the_flags @GNOME_INCLUDEDIR@ `gtk-config --cflags`"
+  	the_flags="$the_flags @GNOME_INCLUDEDIR@ @GTK_CFLAGS@"
 	;;
     gnomeui)
 	the_libs="$the_libs @GNOME_LIBDIR@ @GNOMEUI_LIBS@"
-	the_flags="$the_flags @GNOME_INCLUDEDIR@ `gtk-config --cflags`"
+	the_flags="$the_flags @GNOME_INCLUDEDIR@ @GTK_CFLAGS@"
 	;;
     gtkxmhtml)
 	the_libs="$the_libs @GNOME_LIBDIR@ @GTKXMHTML_LIBS@"
 	;;
     gnorba)
-        the_libs="$the_libs @GNOME_LIBDIR@ -lgnorba `orbit-config --use-service=name --libs client server`"
-	the_flags="$the_flags @GNOME_INCLUDEDIR@ `orbit-config --cflags client server`"
+        the_libs="$the_libs @GNOME_LIBDIR@ -lgnorba @ORBIT_LIBS@"
+	the_flags="$the_flags @GNOME_INCLUDEDIR@ @ORBIT_CFLAGS@"
         ;;
     idl)
 	the_flags="-I${datadir}/idl"

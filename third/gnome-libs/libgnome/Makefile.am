@@ -7,11 +7,11 @@ lib_LTLIBRARIES = libgnome.la
 
 LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
-libgnomeincludedir = $(includedir)/libgnome
+libgnomeincludedir = $(includedir)/gnome-1.0/libgnome
 
 INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl \
-	$(GLIB_CFLAGS) $(GDK_IMLIB_CFLAGS)  \
+	-I$(includedir) $(GLIB_CFLAGS) $(GDK_IMLIB_CFLAGS)  \
 	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS) \
 	-DGNOMELIBDIR=\""$(libdir)"\" \
 	-DGNOMEDATADIR=\""$(datadir)"\" \
@@ -74,14 +74,20 @@ noinst_HEADERS =				\
 	gnome-triggersP.h			\
 	libgnomeP.h
 
+man_MANS = \
+	dns-helper.1		\
+	gconfigger.1		\
+	gnome-dump-metadata.1	\
+	gnome-gen-mimedb.1	\
+	gnome-moz-remote.1
 
-EXTRA_DIST = parse-path.cP 
+EXTRA_DIST = parse-path.cP $(man_MANS)
 
 #just to be sure, add an explicit dependency
 gnome-config.o: parse-path.cP
 
 libgnome_la_LDFLAGS = -version-info 36:3:4 #-rpath $(libdir)
-libgnome_la_LIBADD = $(GLIB_LIBS) -lm $(DL_LIB)
+libgnome_la_LIBADD = $(GLIB_LIBS) -lm
 
 bin_PROGRAMS = dns-helper gnome-dump-metadata gnome-moz-remote \
 	gconfigger gnome-gen-mimedb
