@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.29 2004-05-25 16:41:10 rbasch Exp $
+### $Id: install1.sh,v 1.30 2004-06-18 13:18:05 rbasch Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin:/usr/athena/bin
@@ -103,41 +103,44 @@ NEW_TESTING_RELEASE=
 while true; do
     eval `getcluster -b 0.0 2>/dev/null | \
 	egrep 'NEW_PRODUCTION_RELEASE=|NEW_TESTING_RELEASE=`
-    if [ -n "$NEW_PRODUCTION_RELEASE" ]; then
+    if [ -n "$NEW_PRODUCTION_RELEASE" -o -n "$NEW_TESTING_RELEASE" ]; then
 	have_cluster=true
+	break
     else
 	eval `getcluster -h public-sun4 -b 0.0 | grep NEW_PRODUCTION_RELEASE=`
 	have_cluster=false
-    fi
-    if [ -n "$NEW_PRODUCTION_RELEASE" ]; then
-	break
+	if [ -n "$NEW_PRODUCTION_RELEASE" ]; then
+	    break
+	fi
     fi
     echo "Cannot determine the default Athena release; will retry..."
     sleep 60
 done
 
-major=`echo $NEW_PRODUCTION_RELEASE | awk -F. '{ print int($1); }'`
+default_release=${NEW_PRODUCTION_RELEASE:-$NEW_TESTING_RELEASE}
+
+major=`echo $default_release | awk -F. '{ print int($1); }'`
 if [ "$major" -lt 9 ]; then
-    echo "The production release for this machine is $NEW_PRODUCTION_RELEASE."
+    echo "The production release for this machine is $default_release."
     echo "That release is no longer supported."
     exit 1
 fi
 
 case $CUSTOM in
 N)
-    REV=$NEW_PRODUCTION_RELEASE
+    REV=$default_release
     ;;
 
 Y)
     prompt="Which Athena release do you want to install"
-    prompt="$prompt [$NEW_PRODUCTION_RELEASE]?"
+    prompt="$prompt [$default_release]?"
     REV=
     while [ -z "$REV" ]; do
 	echo "$prompt \c"
 	read rev
 	case $rev in
 	"")
-	    REV=$NEW_PRODUCTION_RELEASE
+	    REV=$default_release
 	    ;;
 	9.[0-3]|$NEW_PRODUCTION_RELEASE|$NEW_TESTING_RELEASE)
 	    REV=$rev
