@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.2 1991-07-17 10:58:17 epeisach Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.3 1991-07-17 11:04:16 epeisach Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -358,7 +358,7 @@ fatal(display)
 
 void reset_timer()
 {
-  static int timerid=-1;
+  static int timerid= -1;
 
   if (parms.inactive != 0)
     {
