@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.9 2001-07-25 15:11:55 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.10 2001-11-28 22:49:16 amb Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -584,8 +584,8 @@ static void update_lilo(struct package *pkg)
 {
   const char *name = "/etc/lilo.conf", *savename = "/etc/lilo.conf.rpmsave";
   FILE *in, *out;
-  char *buf = NULL, *oldkname, *newkname, *newiname, *initrdcmd;
-  const char *p;
+  char *buf = NULL, *oldktag, *oldkname, *newktag, *newkname, *initrdcmd, *newitag;
+  const char *p, *q;
   int bufsize = 0, status, replaced;
   struct stat statbuf;
 
@@ -595,15 +595,10 @@ static void update_lilo(struct package *pkg)
     return;
 
   /* Figure out kernel names. */
-  easprintf(&oldkname, "/boot/vmlinuz-%s-%s", pkg->instrev.version,
-	    pkg->instrev.release);
-  easprintf(&newkname, "/boot/vmlinuz-%s-%s", pkg->newlistrev.version,
-	    pkg->newlistrev.release);
-  easprintf(&newiname, "/boot/initrd-%s-%s.img", pkg->newlistrev.version,
-	    pkg->newlistrev.release);
-  easprintf(&initrdcmd, "/sbin/mkinitrd -f /boot/initrd-%s-%s.img %s-%s",
-	    pkg->newlistrev.version, pkg->newlistrev.release,
-	    pkg->newlistrev.version, pkg->newlistrev.release);
+  easprintf(&oldktag, "%s-%s", pkg->instrev.version, pkg->instrev.release);
+  easprintf(&oldkname, "/boot/vmlinuz-%s", oldktag);
+  easprintf(&newktag, "%s-%s", pkg->newlistrev.version, pkg->newlistrev.release);
+  easprintf(&newkname, "/boot/vmlinuz-%s", newktag);
 
   if (stat(name, &statbuf) == -1)
     die("Can't stat lilo.conf for rewrite.");
@@ -645,12 +640,20 @@ static void update_lilo(struct package *pkg)
 	}
       else if (replaced && strncmp(p, "initrd", 6) == 0 && !isalpha(p[6]))
         {
-	  p = skip_to_value(p, "initrd");
+	  p = strstr(buf, oldktag);
 	  if (p != NULL)
+	    q = strstr(p, ".img");
+	  if (p != NULL && q != NULL)
 	    {
-	      fprintf(out, "%.*s%s\n", p - buf, buf, newiname);
+	      easprintf(&newitag, "%s%.*s", newktag, q - (p + strlen(oldktag)),
+			p + strlen(oldktag));
+	      easprintf(&initrdcmd, "/sbin/mkinitrd -f /boot/initrd-%s.img %s",
+			newitag, newitag);
+	      fprintf(out, "%.*s%s%s\n", p - buf, buf, newitag, q);
 	      if (system(initrdcmd) != 0)
 		fprintf(stderr, "Error running %s", initrdcmd);
+	      free(newitag);
+	      free(initrdcmd);
 	      continue;
 	    }
 	}
@@ -663,10 +666,10 @@ static void update_lilo(struct package *pkg)
       die("Error rewriting lilo.conf: %s", strerror(errno));
     }
 
+  free(oldktag);
   free(oldkname);
+  free(newktag);
   free(newkname);
-  free(newiname);
-  free(initrdcmd);
   system("/sbin/lilo");
 }
 
@@ -902,22 +905,6 @@ static const char *find_back(const char *start, const char *end, char c)
 	return p;
     }
   return NULL;
-}
-
-/* Assuming p points to a string beginning with varname, return a
- * pointer to the value part.
- */
-static const char *skip_to_value(const char *p, const char *varname)
-{
-  p += strlen(varname);
-  while (isspace(*p))
-    p++;
-  if (*p != '=')
-    return NULL;
-  p++;
-  while (isspace(*p))
-    p++;
-  return p;
 }
 
 static void *emalloc(size_t size)
