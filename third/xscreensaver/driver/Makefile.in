@@ -262,7 +262,7 @@ install-man: $(MEN)
 	  $(INSTALL_DIRS) $(install_prefix)$(man1dir) ;			\
 	 fi ;								\
 	for man in $$men; do						\
-	  instname=`echo $$man | sed 's/\.man$$/\.$(mansuffix)/'` ;	\
+	  instname=`echo $$man | sed -e 's/xscreensaver/xss/' -e 's/\.man$$/\.$(mansuffix)/'` ;	\
 	  echo $(INSTALL_DATA) $(srcdir)/$$man				\
 	   $(install_prefix)$(man1dir)/$$instname ;			\
 	  $(INSTALL_DATA) $(srcdir)/$$man				\
