@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.58 $
+# $Revision: 1.59 $
 
 umask 2
 
@@ -67,11 +67,11 @@ set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third
 
 switch ( $machine )
   case decmips
-    set machthird="third/unsupported/ditroff third/unsupported/transcript-v2.1 third/supported/saber-3.0.1 athena/ucb/tn3270 third/unsupported/gcore"
+    set machthird="third/unsupported/ditroff third/unsupported/transcript-v4.1 third/supported/saber-3.0.1 athena/ucb/tn3270 third/unsupported/gcore"
     breaksw
 
   case sun4
-    set machthird="third/unsupported/transcript-v2.1 third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
+    set machthird="third/unsupported/transcript-v4.1 third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
     breaksw
 
   case rsaix
@@ -79,7 +79,7 @@ switch ( $machine )
     breaksw
 
   case sgi
-    set machthird="third/unsupported/transcript-v2.1 athena/ucb/look athena/lib/AL"
+    set machthird="third/unsupported/transcript-v4.1 athena/ucb/look athena/lib/AL"
 endsw
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/neos"
