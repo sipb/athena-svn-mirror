@@ -6,7 +6,12 @@ RS*)
 	ln -s /usr/athena/lib/X11/XKeysymDB /usr/lib/X11/XKeysymDB
 
 	echo "Fixing rdist"
-	chmod 755 /usr/ucb/rdist
+	ed - /etc/security/sysck.cfg << EOF
+/rdist:/
+/mode/s/TCB,SUID,//
+w
+q
+EOF
 	;;
 DS*)
 	echo "NEWTTYS=true"		>> ${CONFVARS}
