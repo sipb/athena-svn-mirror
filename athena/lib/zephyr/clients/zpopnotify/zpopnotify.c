@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,9 +15,10 @@
 
 #include <zephyr/zephyr.h>
 #include <netdb.h>
+#include <string.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.1 1987-08-06 22:53:45 rfrench Exp $";
+static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.2 1988-06-23 13:45:23 jtkohl Exp $";
 #endif lint
 
 #define MAIL_CLASS "MAIL"
@@ -32,7 +33,7 @@ main(argc,argv)
 	ZNotice_t notice;
 	struct hostent *hent;
 	int retval;
-	char *whoami,*ptr,bfr[BUFSIZ],myhost[BUFSIZ],mysender[BUFSIZ];
+	char *whoami,*ptr,myhost[BUFSIZ],mysender[BUFSIZ];
 	char *lines[2];
 	
 	whoami = argv[0];
@@ -63,12 +64,12 @@ main(argc,argv)
 		exit(1);
 	}
 
-	strcpy(myhost,hent->h_name);
+	(void) strcpy(myhost,hent->h_name);
 	lines[0] = myhost;
 	lines[1] = "You have new mail.";
 	
-	strcpy(mysender,"pop@");
-	strcat(mysender,ZGetRealm());
+	(void) strcpy(mysender,"pop@");
+	(void) strcat(mysender,ZGetRealm());
 
 	notice.z_kind = UNSAFE;
 	notice.z_class = MAIL_CLASS;

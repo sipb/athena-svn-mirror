@@ -5,7 +5,7 @@
  *	Created by:	C. Anthony Della Fera
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -19,10 +19,11 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <string.h>
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.3 1987-10-25 01:57:47 rfrench Exp $";
+static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.4 1988-06-23 13:49:48 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -39,11 +40,12 @@ static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/reposi
 
 static char warning[] = "Please detach any filesystems you may have\nattached from this host!";
 
+/*ARGSUSED*/
 main(argc,argv)
     int argc;
     char *argv[];
 {
-    ZNotice_t notice, retnotice;
+    ZNotice_t notice;
     struct hostent *hp;
     int retval;
     char hostname[MAXHOSTNAMELEN];
@@ -64,7 +66,8 @@ main(argc,argv)
 	exit(1);
     }
 
-    if ((hp = gethostbyname(hostname)) != NULL) strcpy(hostname, hp->h_name);
+    if ((hp = gethostbyname(hostname)) != NULL)
+	    (void) strcpy(hostname, hp->h_name);
 
     ptr = message;
 
@@ -74,11 +77,11 @@ main(argc,argv)
 	if ((strlen(msgbuff) + (ptr - message)) > Z_MAXPKTLEN){
 	    break;
 	}
-	strcpy(ptr, msgbuff);
+	(void) strcpy(ptr, msgbuff);
 	ptr += strlen(ptr);
     }
 
-    bzero(&notice, sizeof(ZNotice_t));
+    bzero((char *)&notice, sizeof(ZNotice_t));
 
     notice.z_kind = N_KIND;
     notice.z_port = 0;
