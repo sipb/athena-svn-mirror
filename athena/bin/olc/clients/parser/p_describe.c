@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v $
- *	$Id: p_describe.c,v 1.8 1992-01-10 20:00:23 lwvanels Exp $
+ *	$Id: p_describe.c,v 1.9 1992-01-30 17:32:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v 1.8 1992-01-10 20:00:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v 1.9 1992-01-30 17:32:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -104,6 +104,9 @@ do_olc_describe(arguments)
     }
 
   status = t_describe(&Request,file,noteP,cherries,oranges);
+
+  if (status == OK)
+    status = SUCCESS;
 
   if(!save_file)
     (void) unlink(file);
