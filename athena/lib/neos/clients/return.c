@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange return client
  *
- * $Author: probe $
+ * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.2 1992-01-22 13:28:51 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.3 1992-04-27 12:50:53 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_return_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.2 1992-01-22 13:28:51 probe Exp $";
+static char rcsid_return_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.3 1992-04-27 12:50:53 epeisach Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -47,6 +47,7 @@ compar(p1, p2)
  * do_return -- returns papers from files
  */
 
+/*ARGSUSED*/
 long
 do_return(fxp, criterion, flags, arg)
      FX *fxp;
