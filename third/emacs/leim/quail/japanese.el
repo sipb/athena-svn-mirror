@@ -80,9 +80,15 @@
 (defun quail-japanese-kanji-kkc ()
   (interactive)
   (let ((from (overlay-start quail-conv-overlay))
-	(to (overlay-end quail-conv-overlay))
-	newfrom)
+	(to (overlay-end quail-conv-overlay)))
     (quail-delete-overlays)
+    (setq quail-current-str nil)
+    (when (= (char-before to) ?n)
+      ;; The last char is `n'.  We had better convert it to `ん'
+      ;; before kana-kanji conversion.
+      (goto-char to)
+      (delete-char -1)
+      (insert ?ん))
     (let ((result (kkc-region from to)))
       (move-overlay quail-conv-overlay from (point))
       (setq quail-conversion-str (buffer-substring from (point)))
@@ -311,24 +317,13 @@ qh:	use `japanese' package, \"qz\" puts you back to `japanese-zenkaku'
 )
 
 (defun quail-japanese-hankaku-update-translation (control-flag)
-  (cond ((eq control-flag t)
-	 (insert (japanese-hankaku quail-current-str))
-	 (quail-terminate-translation))
-	((null control-flag)
-	 (insert (if quail-current-str
-		     (japanese-hankaku quail-current-str)
-		   quail-current-key)))
-	(t				; i.e. (numberp control-flag)
-	 (cond ((= (aref quail-current-key 0) ?n)
-		(insert ?ﾝ))
-	       ((= (aref quail-current-key 0) (aref quail-current-key 1))
-		(insert ?ｯ))
-	       (t
-		(insert (aref quail-current-key 0))))
-	 (setq unread-command-events
-	       (list (aref quail-current-key control-flag)))
-	 (quail-terminate-translation))))
-
+  (setq control-flag
+	(quail-japanese-update-translation control-flag))
+  (if (or (and (stringp quail-current-str)
+	       (> (length quail-current-str) 0))
+	  (integerp quail-current-str))
+      (setq quail-current-str (japanese-hankaku quail-current-str)))
+  control-flag)
 
 (quail-define-package
  "japanese-hankaku-kana"
@@ -358,23 +353,13 @@ qq:	toggle between `japanese-hankaku-kana' and `japanese-ascii'
 
 ;; Update Quail translation region while converting Hiragana to Katakana.
 (defun quail-japanese-katakana-update-translation (control-flag)
-  (cond ((eq control-flag t)
-	 (insert (japanese-katakana quail-current-str))
-	 (quail-terminate-translation))
-	((null control-flag)
-	 (insert (if quail-current-str
-		     (japanese-katakana quail-current-str)
-		   quail-current-key)))
-	(t				; i.e. (numberp control-flag)
-	 (cond ((= (aref quail-current-key 0) ?n)
-		(insert ?ン))
-	       ((= (aref quail-current-key 0) (aref quail-current-key 1))
-		(insert ?ッ))
-	       (t
-		(insert (aref quail-current-key 0))))
-	 (setq unread-command-events
-	       (list (aref quail-current-key control-flag)))
-	 (quail-terminate-translation))))
+  (setq control-flag
+	(quail-japanese-update-translation control-flag))
+  (if (or (and (stringp quail-current-str)
+	       (> (length quail-current-str) 0))
+	  (integerp quail-current-str))
+      (setq quail-current-str (japanese-katakana quail-current-str)))
+  control-flag)
 
 (quail-define-package 
  "japanese-katakana" "Japanese" "ア"
