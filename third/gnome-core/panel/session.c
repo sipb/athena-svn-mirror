@@ -1337,7 +1337,6 @@ init_user_panels(void)
 			g_string_sprintf (buf, "orient=%d", ORIENT_UP);
 			orient = gnome_config_get_int (buf->str);
 
-#warning FIXME: there are some issues with auto hiding drawers
 			panel = drawer_widget_new (orient,
 						   BASEP_EXPLICIT_HIDE, 
 						   state, sz,
