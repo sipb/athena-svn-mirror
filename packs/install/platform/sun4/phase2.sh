@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.15 1996-05-09 02:27:05 cfields Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.16 1996-05-10 19:04:36 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -150,7 +150,7 @@ ln -s /var/usr/vice usr/vice
 #ln -s /var/adm usr/adm
 #ln -s /var/spool usr/spool
 #ln -s /var/preserve usr/preserve
-cp -p /srvd/.c* /srvd/.l* /srvd/.p* /srvd/.r* /srvd/.t* /srvd/.x* /root/
+cp -p /srvd/.c* /srvd/.l* /srvd/.p* /srvd/.r* /srvd/.x* /root/
 chmod 1777 /root/tmp 
 
 
@@ -164,9 +164,12 @@ cp -p /srvd/etc/services etc/inet/
 cp -p /srvd/etc/athena/inetd.conf etc/athena/
 cp -p /srvd/etc/minor_perm etc/minor_perm
 cp -p /srvd/etc/system etc/system
-#cp -p /srvd/etc/name_to_major etc/
+cp -p /srvd/etc/shells etc/shells
+cp -p /srvd/etc/syslog.conf etc/syslog.conf
+cp -p /srvd/etc/athena/attach.conf etc/athena/attach.conf
+cp -p /srvd/etc/athena/newsyslog.conf etc/athena/newsyslog.conf
+cp -p /srvd/etc/mail/sendmail.cf etc/mail/sendmail.cf
 cp -p /os/etc/name_to_major etc/name_to_major
-#cp -p /srvd/etc/driver_aliases etc/
 cp -p /os/etc/driver_aliases etc/driver_aliases
 cp -p /os/etc/device.tab etc/device.tab
 cp -p /os/etc/dgroup.tab etc/dgroup.tab
