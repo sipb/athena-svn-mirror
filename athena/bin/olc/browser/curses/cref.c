@@ -63,7 +63,12 @@ main(argc, argv)
   else
     CREF = 0;
 
-  init_display();
+  if (init_display() != SUCCESS)
+    {
+      frprintf(stderr, "%s: Can't initialize display, not enough memory.\n",
+	       Prog_Name);
+      exit(ERROR);
+    }
   init_globals();
   init_signals();
   parse_args(argc, argv);
