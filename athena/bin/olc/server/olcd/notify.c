@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.8 1990-01-05 06:22:56 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.9 1990-01-16 05:46:38 raeburn Exp $";
 #endif
 
 
@@ -60,14 +60,20 @@ extern "C" {
 
 extern char DaemonHost[];	/* Name of daemon's machine. */
 
+#if __STDC__
 int notice_timeout(int a);
+#else
+int notice_timeout();
+#endif
 static jmp_buf env;
 
+#if __STDC__
 #ifdef ZEPHYR
 static ERRCODE zwrite_message (const char *, const char *);
 static ERRCODE zsend_message (const char *, const char *, const char *,
 			      const char *, const char *, int);
 static ERRCODE zsend (ZNotice_t *);
+#endif
 #endif
 
 /*
@@ -90,7 +96,13 @@ static ERRCODE zsend (ZNotice_t *);
 static int write_port = 0;
 
 ERRCODE
-write_message(char *touser, char *tomachine, char *fromuser, char *frommachine, char *message)
+#if __STDC__
+write_message(const char *touser, const char *tomachine, const char *fromuser,
+	      const char *frommachine, const char *message)
+#else
+write_message(touser, tomachine, fromuser, frommachine, message)
+     char *touser, *tomachine, *fromuser, *frommachine, *message;
+#endif
 {
 	FILE *tf = NULL;	/* Temporary file. */
 	int fds;		/* Socket descriptor. */
@@ -185,7 +197,12 @@ write_message(char *touser, char *tomachine, char *fromuser, char *frommachine, 
 
  
 int
+#if __STDC__
 notice_timeout(int a)
+#else
+notice_timeout(a)
+     int a;
+#endif
 {
     longjmp(env, 1);
 }
@@ -205,7 +222,14 @@ notice_timeout(int a)
 
 
 ERRCODE
+#if __STDC__
 write_message_to_user(KNUCKLE *k, char *message, int flags)
+#else
+write_message_to_user(k, message, flags)
+     KNUCKLE *k;
+     char *message;
+     int flags;
+#endif
 {
   int result;		/* Result of writing the message. */
   char msgbuf[BUFSIZE];	/* Message buffer. */
@@ -270,13 +294,25 @@ write_message_to_user(KNUCKLE *k, char *message, int flags)
 #define MESSAGE_CLASS "MESSAGE"
 #define PERSONAL_INSTANCE "PERSONAL"
 #define OLC_INSTANCE "OLC"
+
 #ifdef TEST
 #define OLC_CLASS    "OLCTEST"
-#else TEST
+#else
+#ifdef OLZ
+#define OLC_CLASS    "OLZ"
+#else
 #define OLC_CLASS    "OLC"
-#endif TEST
+#endif
+#endif
 
-ERRCODE olc_broadcast_message(char *instance, char *message, char *code)
+ERRCODE
+#if __STDC__
+olc_broadcast_message(const char *instance, const char *message,
+		      const char *code)
+#else
+olc_broadcast_message(instance, message, code)
+     char *instance, *message, *code;
+#endif
 {
 #ifdef ZEPHYR  
   if(zsend_message(OLC_CLASS,instance,code,"",message,0) == ERROR)
@@ -300,8 +336,13 @@ ERRCODE olc_broadcast_message(char *instance, char *message, char *code)
  */
 
 
-static ERRCODE 
-zwrite_message(char *username, char *message)
+static ERRCODE
+#if __STDC__
+zwrite_message(const char *username, const char *message)
+#else
+zwrite_message(username, message)
+     char *username, *message;
+#endif
 {
    char error[ERRSIZE];
 
@@ -327,8 +368,15 @@ zwrite_message(char *username, char *message)
 }
 
 
-static ERRCODE 
-zsend_message(char *c_class, char *instance, char *opcode, char *username, char *message, int flags)
+static ERRCODE
+#if __STDC__
+zsend_message(const char *c_class, const char *instance, const char *opcode,
+	      const char *username, const char *message, int flags)
+#else
+zsend_message(c_class, instance, opcode, username, message, flags)
+     char *c_class, *instance, *opcode, *username, *message;
+     int flags;
+#endif
 {
   ZNotice_t notice;		/* Zephyr notice */
   int ret;			/* return value, length */
@@ -338,7 +386,6 @@ zsend_message(char *c_class, char *instance, char *opcode, char *username, char 
 
 #ifdef lint
   flags = flags;
-  opcode = opcode;
 #endif lint;
 
   if ((ret = ZInitialize()) != ZERR_NONE)
@@ -360,13 +407,17 @@ zsend_message(char *c_class, char *instance, char *opcode, char *username, char 
     notice.z_kind = UNSAFE;
 
   notice.z_port = 0;
-  notice.z_class = c_class;
-  notice.z_class_inst = instance;
+  /*
+   * The Zephyr header files don't deal with `const', but I don't
+   * think these routines modify these fields.
+   */
+  notice.z_class = (char *) c_class;
+  notice.z_class_inst = (char *) instance;
   notice.z_sender = 0;
   notice.z_message_len = 0;
-  notice.z_recipient = username;
+  notice.z_recipient = (char *) username;
   notice.z_default_format = "Message $message";
-  notice.z_opcode = opcode;
+  notice.z_opcode = (char *) opcode;
 
   (void) strcpy(buf,signature);
   (void) strcat(buf,message);
@@ -386,8 +437,13 @@ zsend_message(char *c_class, char *instance, char *opcode, char *username, char 
  * Returns:	SUCCESS on success, else ERROR
  */
 
-static ERRCODE 
+static ERRCODE
+#if __STDC__
 zsend(ZNotice_t *notice)
+#else
+zsend(notice)
+     ZNotice_t *notice;
+#endif
 {
   int ret;
   ZNotice_t retnotice;
@@ -460,7 +516,13 @@ extern char *sys_errlist[];
 extern int errno;
 static char time_buf[20];
 
-void perror(char *msg)
+void
+#if __STDC__
+perror(const char *msg)
+#else
+perror(msg)
+     char *msg;
+#endif
 {
 	register int error_number;
 	struct iovec iov[6];
@@ -479,7 +541,7 @@ void perror(char *msg)
 
 	if (msg) {
 		if (*msg) {
-			v->iov_base = msg;
+			v->iov_base = (char *) msg;
 			v->iov_len = strlen(msg);
 			v++;
 			v->iov_base = ": ";
