@@ -1,0 +1,11 @@
+DEFINES = -DHESIOD -DKPOP
+LIBS = -lhesiod -lkrb -ldes
+
+OBJS=	from.o popmail.o
+SRCS=	from.c popmail.c
+
+SimpleProgram(from, ${OBJS}, ${LIBS},/usr/athena/from)
+
+install_man(from.1, ${ATHMANDIR}from.1)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
