@@ -1213,6 +1213,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 #endif
 #ifdef KRB4_GET_TICKETS
 	CREDENTIALS save_v4creds;
+	char *v4_ccname = 0;
 #endif
 	char *ccname = 0;   /* name of forwarded cache */
 	char *tz = 0;
@@ -1902,7 +1903,11 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	}
 #endif
 
-	ccname = getenv("KRB5CCNAME");  /* save cache */
+	/* The cache name environment variables get set in k_init(). */
+	ccname = getenv(KRB5_ENV_CCNAME);  /* save cache */
+#ifdef KRB4_GET_TICKETS
+	v4_ccname = getenv(KRB_ENVIRON);
+#endif
 	tz = getenv("TZ");	/* and time zone */
 
 	/* destroy environment unless user has requested preservation */
@@ -1933,7 +1938,11 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 #endif
 
 	if (ccname)
-		setenv("KRB5CCNAME", ccname, 1);
+		setenv(KRB5_ENV_CCNAME, ccname, 1);
+#ifdef KRB4_GET_TICKETS
+	if (v4_ccname)
+		setenv(KRB_ENVIRON, v4_ccname, 1);
+#endif
 
 	setenv("HOME", pwd->pw_dir, 1);
 	setenv("PATH", LPATH, 1);
@@ -1946,15 +1955,6 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	}
 	if (term[0])
 		(void)setenv("TERM", term, 0);
-#ifdef KRB4_GET_TICKETS
-	if (got_v4_tickets)
-	    (void) setenv(KRB_ENVIRON, tkfile, 1);
-#endif /* KRB4_GET_TICKETS */
-#ifdef KRB5_GET_TICKETS
-	/* ccfile[0] is only set if we got tickets above */
-	if (login_krb5_get_tickets && ccfile[0])
-	    (void) setenv(KRB5_ENV_CCNAME, ccfile, 1);
-#endif /* KRB5_GET_TICKETS */
 
 	if (tty[sizeof("tty")-1] == 'd')
 		syslog(LOG_INFO, "DIALUP %s, %s", tty, pwd->pw_name);
