@@ -1,13 +1,13 @@
 /* 
- * $Id: rkinit.c,v 1.4 1990-10-05 20:42:16 qjb Exp $
+ * $Id: rkinit.c,v 1.5 1991-06-09 21:39:20 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v $
- * $Author: qjb $
+ * $Author: probe $
  *
  * This is an rkinit client
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.4 1990-10-05 20:42:16 qjb Exp $";
+static char *rcsid = "$Id: rkinit.c,v 1.5 1991-06-09 21:39:20 probe Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -131,6 +131,8 @@ main(argc, argv)
 		lifetime = atoi(argv[i])/5;
 		if (lifetime == 0)
 		    lifetime = 1;
+		else if (lifetime > 255)
+		    lifetime = 255;
 	    }
 	}
 	else if (strcmp(argv[i], "-notimeout") == NULL)
