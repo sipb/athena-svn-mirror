@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.1 1988-11-14 11:46:50 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.2 1988-11-22 09:35:07 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
@@ -33,6 +33,6 @@ SHELLSCRIPTS= zlogout zhide zwgc
 install_shell_scripts(SHELLSCRIPTS, $(CLIENTDIR))
 
 install::
-	rm -f ${DESTDIR}/usr/athena/zlogin
-	ln -s zlogout ${DESTDIR}/usr/athena/zlogin
+	rm -f ${DESTDIR}${CLIENTDIR}/zlogin
+	ln -s zlogout ${DESTDIR}${CLIENTDIR}/zlogin
 #endif
