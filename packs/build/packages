@@ -1,4 +1,4 @@
-# $Id: packages,v 1.264 2004-03-13 01:20:57 ghudson Exp $
+# $Id: packages,v 1.265 2004-03-14 22:38:05 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -109,6 +109,7 @@ athena/etc/desync
 athena/etc/dm			requires al
 athena/etc/fxserver		requires fxcl,krb5,hesiod
 athena/etc/gettime
+athena/etc/ktconvert
 athena/etc/larvnetd		requires larv,ares,hesiod
 athena/etc/listsuidcells	requires openafs
 athena/etc/messaged		requires gms
@@ -214,7 +215,6 @@ third/jpeg			except linux
 third/kermit
 third/krb5			requires et,ss package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
-third/ksrvutil			requires krb5
 third/lam
 third/libart_lgpl		except linux
 third/libbonobo			requires gettext,ORBit2,glib2,bonobo-activation
