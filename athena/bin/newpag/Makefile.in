@@ -1,0 +1,38 @@
+# $Id: Makefile.in,v 1.1 1997-01-11 19:23:25 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
+
+all: newpag
+
+newpag: newpag.o
+	${CC} ${LDFLAGS} -o newpag newpag.o -lsys -lrx -llwp -lsys ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} -m 555 newpag ${DESTDIR}${bindir}/newpag
+
+clean:
+	rm -f newpag.o newpag
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
