@@ -1,4 +1,4 @@
-# Makefile for ps2pkm --te@informatik.uni-hannover.de. Public domain.
+# Makefile for ps2pkm --te@dbs.uni-hannover.de. Public domain.
 version = 1.5m
 
 ac_include ../make/paths.mk
@@ -41,14 +41,14 @@ uninstall-exec:
 	for p in $(programs); do rm -f $(bindir)/$$p; done
 
 install-data: mag.1 pfb2pfa.1 pk2bm.1 ps2pk.1
-	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(mandir)
-	$(INSTALL_DATA) $(srcdir)/mag.1 ${DESTDIR}$(mandir)/mag.$(manext)
-	$(INSTALL_DATA) $(srcdir)/pfb2pfa.1 ${DESTDIR}$(mandir)/pfb2pfa.$(manext)
-	$(INSTALL_DATA) $(srcdir)/pk2bm.1 ${DESTDIR}$(mandir)/pk2bm.$(manext)
-	$(INSTALL_DATA) $(srcdir)/ps2pk.1 ${DESTDIR}$(mandir)/ps2pk.$(manext)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(man1dir)
+	$(INSTALL_DATA) $(srcdir)/mag.1 ${DESTDIR}$(man1dir)/mag.$(manext)
+	$(INSTALL_DATA) $(srcdir)/pfb2pfa.1 ${DESTDIR}$(man1dir)/pfb2pfa.$(manext)
+	$(INSTALL_DATA) $(srcdir)/pk2bm.1 ${DESTDIR}$(man1dir)/pk2bm.$(manext)
+	$(INSTALL_DATA) $(srcdir)/ps2pk.1 ${DESTDIR}$(man1dir)/ps2pk.$(manext)
 uninstall-data:
-	rm -f $(mandir)/ps2pk.$(manext) $(mandir)/pk2bm.$(manext) \
-          $(mandir)/pfb2pfa.$(manext) $(mandir)/mag.$(manext)
+	rm -f $(man1dir)/ps2pk.$(manext) $(man1dir)/pk2bm.$(manext) \
+          $(man1dir)/pfb2pfa.$(manext) $(man1dir)/mag.$(manext)
 
 pre-dist-$(distname):
 post-dist-$(distname):
