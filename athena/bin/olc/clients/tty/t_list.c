@@ -19,19 +19,22 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *	$Id: t_list.c,v 1.17 1991-01-23 12:09:58 lwvanels Exp $
+ *	$Id: t_list.c,v 1.18 1991-02-24 11:39:42 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.17 1991-01-23 12:09:58 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.18 1991-02-24 11:39:42 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
+#ifdef m68k
+#include <time.h>
+#endif
 
 static const char *const default_sort_order[] = {
     "foo",
