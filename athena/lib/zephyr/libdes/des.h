@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/libdes/des.h,v $
  * $Author: ghudson $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/libdes/des.h,v 1.1 1994-10-31 05:54:16 ghudson Exp $ 
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/libdes/des.h,v 1.2 1994-11-11 18:50:59 ghudson Exp $ 
  *
  * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -16,6 +16,13 @@
 #define DES_DEFS
 
 #include <mit-copyright.h>
+
+#ifndef KRB_INT32
+#define KRB_INT32 long
+#endif
+#ifndef KRB_UINT32
+#define KRB_UINT32 unsigned KRB_INT32
+#endif
 
 typedef unsigned char des_cblock[8];	/* crypto-block size */
 /* Key schedule */
