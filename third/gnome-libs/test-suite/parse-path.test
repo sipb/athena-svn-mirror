@@ -1,2 +1,0 @@
-the_test=parse-path
-. $srcdir/runtest.sh

@@ -1,6 +1,0 @@
-#!/bin/sh
-
-echo $$ > tests/sigd${1}.pid
-shift
-
-exec ./sigd "$@"
