@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.4 1989-01-23 09:22:10 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.5 1989-01-23 09:26:51 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -428,7 +428,7 @@ int no_delete_mask;
 	       return(NO_DELETE_MASK);
      }
      if (no_delete_mask) {
-	  if ((! force) || noop)
+	  if (! force)
 	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
 	  return(ERROR_MASK);
      }
