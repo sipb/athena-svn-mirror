@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.21 1992-06-13 18:35:34 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_ask.c,v 1.22 1997-04-30 18:06:20 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.21 1992-06-13 18:35:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.22 1997-04-30 18:06:20 ghudson Exp $";
 #endif
 #endif
 
@@ -61,8 +61,8 @@ t_ask(Request,topic,q_file)
     case INVALID_TOPIC:
       fprintf(stderr, 
 	      "Try %s again, but please use '?' to see a list of topics.\n",
-	      OLC_SERVICE_NAME);
-      if(OLC)
+	      client_service_name());
+      if(client_is_user_client())
 	exit(1);
       else
 	return(ERROR);
@@ -71,7 +71,7 @@ t_ask(Request,topic,q_file)
     case ERROR:
       fprintf(stderr, 
 	 "An error has 1occurred while contacting server.  Please try again.\n");
-      if(OLC)
+      if(client_is_user_client())
 	exit(1);
       else
 	return(ERROR);
@@ -86,14 +86,14 @@ t_ask(Request,topic,q_file)
     case PERMISSION_DENIED:
       if (strcmp(Request->requester.username,Request->target.username) == 0) {
 	fprintf(stderr,"You are not allowed to ask %s questions.\n",
-		OLC_SERVICE_NAME);
+		client_service_name());
       } else {
 	fprintf(stderr,"You are not allowed to ask %s questions on behalf of `%s'.\n",
-		OLC_SERVICE_NAME,Request->target.username);
+		client_service_name(),Request->target.username);
 	fprintf(stderr,"If you meant to ask a question for yourself, just type `ask' by itself.\n");
       }
       status = ERROR;
-      if(OLC)
+      if(client_is_user_client())
 	exit(1);
       break;
 
@@ -117,9 +117,10 @@ t_ask(Request,topic,q_file)
       break;
 
     default:
-      if((status = handle_response(status, Request))!=SUCCESS)
+      status = handle_response(status, Request);
+      if(status != SUCCESS)
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    exit(1);
 	  else
 	    return(ERROR);
@@ -154,7 +155,7 @@ t_ask(Request,topic,q_file)
 	{
 	  printf("Your question has been cancelled.\n");
 	  (void) unlink(file);
-	  if(OLC)
+	  if(client_is_user_client())
 	    exit(1);
 	  return(SUCCESS);
 	}
@@ -164,7 +165,7 @@ t_ask(Request,topic,q_file)
       {
 	printf("You have not entered a question.\n");
 	(void) unlink(file);
-	if(OLC)
+	if(client_is_user_client())
 	  exit(1);
 	return(SUCCESS);
       }
@@ -180,11 +181,11 @@ t_ask(Request,topic,q_file)
     {
     case NOT_CONNECTED:
       printf("Your question will be forwarded to the first available ");
-      printf("%s.\n",DEFAULT_CONSULTANT_TITLE);
+      printf("%s.\n",client_default_consultant_title());
       status = SUCCESS;
       break;
     case CONNECTED:
-      printf("A %s is reviewing your question.\n",DEFAULT_CONSULTANT_TITLE);
+      printf("A %s is reviewing your question.\n",client_default_consultant_title());
       status = SUCCESS;
       break;
     default:
