@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.4 1989-08-04 11:21:28 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.5 1989-08-15 03:14:05 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -39,7 +39,10 @@ OGetConnectedPerson(Request,data)
 
   status = send_request(fd,Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &status);
   if(status == SUCCESS)
@@ -74,8 +77,10 @@ OWho(Request,data)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
-
+    {
+      close(fd);
+      return(status);
+    }
   read_response(fd, &status);
 
   if(status == SUCCESS)

@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v 1.3 1989-08-04 11:20:52 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v 1.4 1989-08-15 03:13:38 tjcoppet Exp $";
 #endif
 
 
@@ -51,7 +51,10 @@ OGetMOTD(Request,type,file)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &response);  
  
@@ -83,7 +86,13 @@ OChangeMOTD(Request, type, file)
   Request->options = type;
 
   fd = open_connection_to_daemon();
-  send_request(fd, Request);
+  response = send_request(fd, Request);
+  if(response)
+    {
+      close(fd);
+      return(response);
+    }
+
   read_response(fd, &response);
 
   if(response == SUCCESS)

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.1 1989-08-04 11:19:40 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.2 1989-08-15 03:13:03 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -32,6 +32,7 @@ STATUS Status_Table[] =
   {ON,            "on"},
   {FIRST,         "sp1"},
   {DUTY,          "duty"},
+  {SECOND,        "sp2"},
   {URGENT,        "urgent"},
   {BUSY,          "busy"},
   {CACHED,        "cached"},

@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/describe.c,v 1.1 1989-08-04 11:19:45 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/describe.c,v 1.2 1989-08-15 03:13:09 tjcoppet Exp $";
 #endif
 
 
@@ -47,7 +47,10 @@ ODescribe(Request,list,file,note)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &response);  
  

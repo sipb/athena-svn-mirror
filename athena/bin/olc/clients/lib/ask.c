@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.3 1989-08-04 11:16:46 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.4 1989-08-15 03:12:45 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -40,7 +40,10 @@ OAsk(Request,topic,file)
 
   status = send_request(fd, Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &status);
 

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.4 1989-08-08 10:40:09 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.5 1989-08-15 03:13:21 tjcoppet Exp $";
 #endif
 
 
@@ -40,7 +40,10 @@ OVerifyInstance(Request,instance)
   
   status = send_request(fd,Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd,&status);
   
@@ -68,7 +71,10 @@ OGetDefaultInstance(Request,instance)
   
   status = send_request(fd,Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd,&status);
   

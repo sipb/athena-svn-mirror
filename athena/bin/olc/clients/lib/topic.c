@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.3 1989-08-04 11:21:36 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.4 1989-08-15 03:14:12 tjcoppet Exp $";
 #endif
 
 
@@ -50,8 +50,10 @@ OGetTopic(Request,topic)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
-
+    {
+      close(fd);
+      return(status);
+    }
   read_response(fd, &response);  
  
   if(response == SUCCESS)
@@ -91,7 +93,10 @@ OChangeTopic(Request, topic)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &response);
 
@@ -128,8 +133,10 @@ OListTopics(Request,file)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
-
+    {
+      close(fd);
+      return(status);
+    }
   read_response(fd, &response);
 
   if(response == SUCCESS)
@@ -163,7 +170,10 @@ OVerifyTopic(Request,topic)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &response);
 
@@ -201,7 +211,10 @@ OHelpTopic(Request,topic, buf)      /*ARGSUSED*/
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &response);
 

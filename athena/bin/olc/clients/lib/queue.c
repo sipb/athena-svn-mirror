@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.6 1989-08-08 14:35:23 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.7 1989-08-15 03:13:45 tjcoppet Exp $";
 #endif
 
 
@@ -53,7 +53,10 @@ OListQueue(Request,list,queues,topics,users,stati)
   
   status = send_request(fd, Request);
   if(status)
-    return(status);
+    {
+      close(fd);
+      return(status);
+    }
 
   read_response(fd, &status);
 
