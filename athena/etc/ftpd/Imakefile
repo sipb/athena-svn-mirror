@@ -1,8 +1,17 @@
-DEFINES		=	-DATHENA
-#ifdef _AIX
-LIBS		=	-lkrb -ldes -lhesiod -lodm -lcfg -ls
+DEFINES		=	-DATHENA -DSETPAG
+
+#ifdef UseInstalled
+AFSDIR = /mit/afsdev/bld/dest
 #else
-LIBS		=	-lkrb -ldes -lhesiod
+AFSDIR = /usr/local
+#endif
+
+AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
+
+#ifdef _AIX
+LIBS		=	$(AFSLIBS) -lkrb -ldes -lhesiod -lodm -lcfg -ls
+#else
+LIBS		=	$(AFSLIBS) -lkrb -ldes -lhesiod
 #endif
 
 CFILES		=	ftpd.c athena_ftpd.c ftpcmd.y glob.c logwtmp.c\
