@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.8 1991-03-28 23:48:58 lwvanels Exp $
+ *	$Id: motd.c,v 1.9 1991-04-08 21:08:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.8 1991-03-28 23:48:58 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.9 1991-04-08 21:08:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -313,8 +313,7 @@ log_motd(username)
 
   if ((fp = fopen(ctrlfile, "w")) == NULL)
     {
-      perror("log_motd: control file");
-      log_error("Can't create control file.");
+      log_error("Can't create control file: %m");
       return;
     }
 
@@ -324,8 +323,7 @@ log_motd(username)
       
   if ((pid = vfork()) == -1) 
     {
-      perror("log_motd: vfork");
-      log_error("Can't fork to dispose of log.");
+      log_error("Can't fork to dispose of log: %m");
       return;
     }
   else if (pid == 0) 
@@ -334,8 +332,7 @@ log_motd(username)
       log_status(msgbuf);
 
       execl("/usr/local/lumberjack", "lumberjack", 0);
-      perror("log_motd: /usr/local/lumberjack");
-      log_error("log_motd: cannot exec /usr/local/lumberjack.\n");
+      log_error("log_motd: cannot exec /usr/local/lumberjack: %m");
       _exit(0);
     }
   return;
