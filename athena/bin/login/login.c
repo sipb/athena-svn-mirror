@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.37 1991-07-08 09:07:11 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.38 1991-07-08 09:15:46 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.37 1991-07-08 09:07:11 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.38 1991-07-08 09:15:46 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -122,7 +122,7 @@ char	lastlog[] =	"/usr/adm/lastlog";
 char	inhibit[] =	"/etc/nocreate";
 char	noattach[] =	"/etc/noattach";
 char	go_register[] =	"/usr/etc/go_register";
-char	get_motd[] =	"/bin/athena/get_message";
+char	get_motd[] =	"get_message";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
 #ifdef POSIX
@@ -961,7 +961,7 @@ showmotd()
 				putchar(c);
 			fclose(mf);
 		}
-		if (execl(get_motd, get_motd, "-login", 0) < 0) {
+		if (execlp(get_motd, get_motd, "-login", 0) < 0) {
 			/* hide error code if any... */
 			exit(0);
 		}
