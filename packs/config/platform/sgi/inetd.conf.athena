@@ -3,7 +3,7 @@
 # MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.9 1998-08-11 18:14:15 danw Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.10 1998-09-24 14:09:48 ghudson Exp $
 #
 
 # Services moved from SGI's inetd.conf to be switched.
@@ -27,3 +27,4 @@ eklogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k -e
 rkinit	stream	tcp	nowait	switched	root	/usr/athena/etc/rkinitd rkinitd
 gshell	stream	tcp	nowait	unswitched	root	/afs/net/system/gsh/bin/gshd gshd
 write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
+busyd	stream	tcp	nowait	unswitched	guest	/etc/athena/busyd	busyd
