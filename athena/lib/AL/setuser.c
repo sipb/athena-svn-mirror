@@ -23,6 +23,7 @@ ALsetUser(ALsession session, char *uname, ALflag_t initial_flags)
   initialize_ale_error_table();
   initialize_alw_error_table();
 
+  memset(session, 0, sizeof(*session));
   session->flags = initial_flags;
   /* set flags according to noattach, nocreate, noremote, nologin */
   if (ALfileExists(ALfileNOLOGIN)) ALflagSet(session, ALhaveNOLOGIN);
