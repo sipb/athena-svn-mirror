@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.13 1997-04-03 06:24:07 ghudson Exp $
+# $Id: do-update.sh,v 1.14 1997-04-04 18:02:27 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -18,11 +18,11 @@
 export CONFCHG CONFVARS AUXDEVS OLDBINS DEADFILES CONFDIR LIBDIR SERVERDIR PATH
 export HOSTTYPE CPUTYPE
 
-CONFCHG=/tmp/conf.list
-CONFVARS=/tmp/update.conf
-AUXDEVS=/tmp/driver.list
-OLDBINS=/tmp/bins.list
-DEADFILES=/tmp/dead.list
+CONFCHG=/var/athena/update.confchg
+CONFVARS=/var/athena/update.confvars
+AUXDEVS=/var/athena/update.auxdevs
+OLDBINS=/var/athena/update.oldbins
+DEADFILES=/var/athena/update.deadfiles
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
 SERVERDIR=/var/server
@@ -237,13 +237,6 @@ if [ "$NEWUNIX" = true ] ; then
 		/install/install/update
 		;;
 	esac
-fi
-
-if [ -s "$AUXDEVS" ]; then
-	drvrs=`cat "$AUXDEVS"`
-	for i in $drvrs; do
-		/srvd/install/aux.devs/$i
-	done
 fi
 
 if [ "$NEWBOOT" = true ]; then
