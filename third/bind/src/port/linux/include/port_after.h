@@ -27,6 +27,9 @@ int daemon(int nochdir, int noclose);
 #define PORT_WOULDBLK	EAGAIN
 #define WAIT_T		int
 
+/* What utter grot. --tb */
+#define fds_bits __fds_bits
+
 #ifndef MIN
 # define MIN(x, y)	((x > y) ?y :x)
 #endif
