@@ -58,3 +58,10 @@ Changes from release 8.0 to release 8.1:
 	  may be somewhat larger, and the binaries may consume more
 	  CPU cycles, although it's unlikely that anyone will notice
 	  the speed difference.
+
+	* Updates to Athena releases now include a phase which runs
+	  after a reboot, so machines will reboot twice during an
+	  update.  For manual updates, the first reboot will be
+	  done automatically, and the administrator will be given a
+	  shell prompt before the second reboot.  For automatic
+	  updates, both reboots will be done automatically.
