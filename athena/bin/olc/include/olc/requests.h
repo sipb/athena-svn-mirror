@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
  *      $Author: vanharen $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.6 1990-02-06 02:51:22 vanharen Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.7 1990-02-15 18:55:12 vanharen Exp $
  */
 
 /* request structure */
@@ -183,5 +183,6 @@ typedef struct tIO_REQUEST
 #define	VERSION_2	2	/* 07 Jun 1988 */
 #define VERSION_3       3       /* 07 Jun 1989 */
 #define VERSION_4       4       /* 01 Oct 1989 */
+#define VERSION_5       5       /* 15 Feb 1990 */
 
-#define	CURRENT_VERSION	VERSION_4
+#define CURRENT_VERSION VERSION_5
