@@ -50,6 +50,7 @@ RCSID("$OpenBSD: sshconnect1.c,v 1.52 2002/08/08 13:50:23 aaron Exp $");
 #include "cipher.h"
 #include "canohost.h"
 #include "auth.h"
+#include "compat.h"
 
 /* Session id for the current session. */
 u_char session_id[16];
@@ -1273,6 +1274,15 @@ ssh_userauth1(const char *local_user, const char *server_user, char *host,
 		packet_disconnect("Protocol error: got %d in response to SSH_CMSG_USER", type);
 
 #ifdef KRB5
+	/* Try Kerberos v5 TGT passing, for ssh.com */
+	if ((supported_authentications & (1 << SSH_PASS_KERBEROS_TGT)) &&
+	    options.kerberos_tgt_passing && (datafellows & SSH_BUG_K5USER)) {
+	  	debug("Trying Kerberos v5 TGT forwarding (compatibility).");
+		if (options.cipher == SSH_CIPHER_NONE)
+		 	log("WARNING: Encryption is disabled! Ticket will be transmitted in the clear!");
+		send_krb5_tgt(context, auth_context);
+	}
+
 	if ((supported_authentications & (1 << SSH_AUTH_KERBEROS)) &&
 	    options.kerberos_authentication) {
 		debug("Trying Kerberos v5 authentication.");
