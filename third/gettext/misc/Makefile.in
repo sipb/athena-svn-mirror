@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -59,67 +59,115 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-ACLOCAL_VERSION = @ACLOCAL_VERSION@
+AMTAR = @AMTAR@
 AS = @AS@
+AWK = @AWK@
+BUILDJAVA = @BUILDJAVA@
+BUILDJAVAEXE = @BUILDJAVAEXE@
 BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
-CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CLASSPATH = @CLASSPATH@
+CLASSPATH_SEPARATOR = @CLASSPATH_SEPARATOR@
+CROSS_COMPILING = @CROSS_COMPILING@
+CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
+DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DVIPS = @DVIPS@
 ECHO = @ECHO@
 EMACS = @EMACS@
 EXEEXT = @EXEEXT@
+GCC = @GCC@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GENCAT = @GENCAT@
 GLIBC21 = @GLIBC21@
-GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_GCJ = @HAVE_GCJ@
+HAVE_GCJ_C = @HAVE_GCJ_C@
+HAVE_GCJ_IN_PATH = @HAVE_GCJ_IN_PATH@
+HAVE_GIJ = @HAVE_GIJ@
+HAVE_GIJ_IN_PATH = @HAVE_GIJ_IN_PATH@
+HAVE_JAVA = @HAVE_JAVA@
+HAVE_JAVAC = @HAVE_JAVAC@
+HAVE_JAVAC_IN_PATH = @HAVE_JAVAC_IN_PATH@
+HAVE_JAVA_IN_PATH = @HAVE_JAVA_IN_PATH@
+HAVE_JIKES = @HAVE_JIKES@
+HAVE_JIKES_IN_PATH = @HAVE_JIKES_IN_PATH@
+HAVE_JRE = @HAVE_JRE@
+HAVE_JRE_IN_PATH = @HAVE_JRE_IN_PATH@
+HAVE_JVIEW = @HAVE_JVIEW@
+HAVE_JVIEW_IN_PATH = @HAVE_JVIEW_IN_PATH@
+HAVE_LIB = @HAVE_LIB@
+HAVE__BOOL = @HAVE__BOOL@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
 INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+JAR = @JAR@
+JAVA = @JAVA@
+JAVAC = @JAVAC@
+LD = @LD@
+LEX = @LEX@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LIB = @LIB@
+LIBEXPAT = @LIBEXPAT@
 LIBICONV = @LIBICONV@
+LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTALLOCA = @LTALLOCA@
+LTLIB = @LTLIB@
+LTLIBEXPAT = @LTLIBEXPAT@
+LTLIBICONV = @LTLIBICONV@
+LTLIBINTL = @LTLIBINTL@
+LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
-POFILES = @POFILES@
+PERL = @PERL@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+STDBOOL_H = @STDBOOL_H@
 STRIP = @STRIP@
-TEXI2HTML = @TEXI2HTML@
+TESTJAVA = @TESTJAVA@
 TEXI2PDF = @TEXI2PDF@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 YACC = @YACC@
 aclocaldir = @aclocaldir@
+am__include = @am__include@
+am__quote = @am__quote@
+install_sh = @install_sh@
 lispdir = @lispdir@
+with_gnu_ld = @with_gnu_ld@
 
 AUTOMAKE_OPTIONS = 1.2 gnits
 
-EXTRA_DIST = gettext.perl gettext-sh tcl_gettext.c README-Tcl po-mode.el
-DISTCLEANFILES = gettextize
-
+EXTRA_DIST = gettext.perl gettext-sh tcl_gettext.c README-Tcl add-to-archive cvsuser.c archive.tar.gz $(hack_DATA)
+DISTCLEANFILES = gettextize autopoint
 hackdir = $(datadir)/emacs/site-lisp
-hack_DATA = po-mode.el
+hack_DATA = po-mode.el po-compat.el
 
-bin_SCRIPTS = gettextize
+bin_SCRIPTS = gettextize autopoint
+
+gettextsrcdir = $(datadir)/gettext
+gettextsrc_DATA = archive.tar.gz
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES =  gettextize
+CONFIG_CLEAN_FILES =  gettextize autopoint
 SCRIPTS =  $(bin_SCRIPTS)
 
-DATA =  $(hack_DATA)
+DATA =  $(gettextsrc_DATA) $(hack_DATA)
 
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in elisp-comp \
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in autopoint.in elisp-comp \
 gettextize.in
 
 
@@ -137,6 +185,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 gettextize: $(top_builddir)/config.status gettextize.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+autopoint: $(top_builddir)/config.status autopoint.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 install-binSCRIPTS: $(bin_SCRIPTS)
@@ -156,6 +206,48 @@ uninstall-binSCRIPTS:
 	@$(NORMAL_UNINSTALL)
 	list='$(bin_SCRIPTS)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+mostlyclean-HAVEJAVA:
+
+clean-HAVEJAVA:
+	-rm *.class classHAVE.stamp
+
+distclean-HAVEJAVA:
+
+maintainer-clean-HAVEJAVA:
+
+install-HAVEJAVA: classHAVE.stamp
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(HAVEdir)
+	for p in *.class; do \
+	  echo " $(INSTALL_DATA) $$p $(DESTDIR)$(HAVEdir)/$$p"; \
+	  $(INSTALL_DATA) $$p $(DESTDIR)$(HAVEdir)/$$p; \
+	done
+
+uninstall-HAVEJAVA:
+	@$(NORMAL_UNINSTALL)
+	for p in *.class; do \
+	  rm -f $(DESTDIR)$(HAVEdir)/$$p; \
+	done
+
+install-gettextsrcDATA: $(gettextsrc_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gettextsrcdir)
+	@list='$(gettextsrc_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gettextsrcdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gettextsrcdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gettextsrcdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gettextsrcdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gettextsrcDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(gettextsrc_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gettextsrcdir)/$$p; \
 	done
 
 install-hackDATA: $(hack_DATA)
@@ -206,20 +298,23 @@ installcheck: installcheck-am
 install-exec-am: install-binSCRIPTS
 install-exec: install-exec-am
 
-install-data-am: install-hackDATA
+install-data-am: install-HAVEJAVA install-gettextsrcDATA \
+		install-hackDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binSCRIPTS uninstall-hackDATA
+uninstall-am: uninstall-binSCRIPTS uninstall-HAVEJAVA \
+		uninstall-gettextsrcDATA uninstall-hackDATA
 uninstall: uninstall-am
 all-am: Makefile $(SCRIPTS) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(hackdir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(HAVEdir) \
+		$(DESTDIR)$(gettextsrcdir) $(DESTDIR)$(hackdir)
 
 
 mostlyclean-generic:
@@ -232,33 +327,39 @@ distclean-generic:
 	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-generic
+mostlyclean-am:  mostlyclean-HAVEJAVA mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-generic mostlyclean-am
+clean-am:  clean-HAVEJAVA clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-generic clean-am
+distclean-am:  distclean-HAVEJAVA distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-generic distclean-am
+maintainer-clean-am:  maintainer-clean-HAVEJAVA maintainer-clean-generic \
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-binSCRIPTS install-binSCRIPTS uninstall-hackDATA \
-install-hackDATA tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: uninstall-binSCRIPTS install-binSCRIPTS mostlyclean-HAVEJAVA \
+distclean-HAVEJAVA clean-HAVEJAVA maintainer-clean-HAVEJAVA \
+uninstall-HAVEJAVA install-HAVEJAVA uninstall-gettextsrcDATA \
+install-gettextsrcDATA uninstall-hackDATA install-hackDATA tags distdir \
+info-am info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+archive.tar.gz:
+	(cd autopoint-files && tar cf - --owner=root --group=root `find archive -type f | grep -v /CVS/`) | gzip -c -9 > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
