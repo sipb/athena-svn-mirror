@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.9 1991-01-15 18:04:20 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.10 1991-01-21 01:37:11 lwvanels Exp $";
 #endif
 #endif
 
@@ -189,7 +189,7 @@ handle_request(fd, from)
     break;
   case REPLAY_KILL_REQ:
     buf = get_nm(tusername,tinstance,&result,1);
-    if (result != 0)
+    if ((buf == NULL) && (result != 0))
       break;
     buf = get_log(username,instance,&result);
     break;
