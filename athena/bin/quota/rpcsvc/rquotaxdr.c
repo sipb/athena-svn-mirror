@@ -9,9 +9,10 @@ static	char sccsid[] = "@(#)rquotaxdr.c 1.1 86/02/05 Copyr 1985 Sun Micro";
 
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef _IBMR2
+#ifdef _AIX
 #include <sys/select.h>
-#else
+#endif
+#if !defined(_AIX) && !defined(SOLARIS)
 #include <ufs/quota.h>
 #endif
 #include <rpc/rpc.h>

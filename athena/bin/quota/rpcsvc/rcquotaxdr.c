@@ -4,7 +4,7 @@
 #if defined(_AIX)
 #include <sys/select.h>
 #endif
-#if !defined(ultrix) && !defined(_AIX)
+#if !defined(ultrix) && !defined(_AIX) && !defined(SOLARIS)
 #include <ufs/quota.h>
 #endif
 #include <rpc/rpc.h>
