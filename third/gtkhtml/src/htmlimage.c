@@ -670,7 +670,8 @@ html_image_init (HTMLImage *image,
 		 gboolean percent_width, gboolean percent_height,
 		 gint8 border,
 		 HTMLColor *color,
-		 HTMLVAlignType valign)
+		 HTMLVAlignType valign,
+		 gboolean reload)
 {
 	HTMLObject *object;
 
@@ -711,7 +712,7 @@ html_image_init (HTMLImage *image,
 		valign = HTML_VALIGN_BOTTOM;
 	image->valign = valign;
 
-	image->image_ptr = html_image_factory_register (imf, image, filename, FALSE);
+	image->image_ptr = html_image_factory_register (imf, image, filename, reload);
 }
 
 HTMLObject *
@@ -723,7 +724,8 @@ html_image_new (HTMLImageFactory *imf,
 		gboolean percent_width, gboolean percent_height,
 		gint8 border,	
 		HTMLColor *color,
-		HTMLVAlignType valign)
+		HTMLVAlignType valign,
+		gboolean reload)
 {
 	HTMLImage *image;
 
@@ -738,7 +740,8 @@ html_image_new (HTMLImageFactory *imf,
 			 percent_width, percent_height,
 			 border,
 			 color,
-			 valign);
+			 valign,
+			 reload);
 
 	return HTML_OBJECT (image);
 }

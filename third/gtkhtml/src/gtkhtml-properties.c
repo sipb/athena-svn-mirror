@@ -22,24 +22,31 @@
 
 #include <config.h>
 #include <string.h>
+#include <gdk/gdkx.h>
 #include "gtkhtml.h"
 #include "gtkhtml-properties.h"
+#include "htmlfontmanager.h"
 
 #define DEFAULT_FONT_SIZE   12
 #define DEFAULT_FONT_SIZE_S "12"
 
 #define STRINGIZE(x) #x
 
+static void get_default_fonts (gchar **var_name, gchar **fix_name);
+
 GtkHTMLClassProperties *
 gtk_html_class_properties_new (void)
 {
 	GtkHTMLClassProperties *p = g_new0 (GtkHTMLClassProperties, 1);
+	gchar *var_name, *fix_name;
+
+	get_default_fonts (&var_name, &fix_name);
 
 	/* default values */
 	p->magic_links             = TRUE;
 	p->keybindings_theme       = g_strdup ("ms");
-	p->font_var                = g_strdup ("-*-helvetica-*-*-*-*-12-*-*-*-*-*-*-*");
-	p->font_fix                = g_strdup ("-*-courier-*-*-*-*-12-*-*-*-*-*-*-*");
+	p->font_var                = var_name;
+	p->font_fix                = fix_name;
 	p->font_var_size           = DEFAULT_FONT_SIZE;
 	p->font_fix_size           = DEFAULT_FONT_SIZE;
 	p->font_var_points         = FALSE;
@@ -174,20 +181,81 @@ gtk_html_class_properties_update (GtkHTMLClassProperties *p, GConfClient *client
         g_free (p->v); \
         GET(string,v,s)
 
+static gchar *
+get_font_name (const GdkFont * font)
+{
+	Atom font_atom, atom;
+	Bool status;
+
+	font_atom = gdk_atom_intern ("FONT", FALSE);
+
+	if (font->type == GDK_FONT_FONTSET) {
+		XFontStruct **font_structs;
+		gint num_fonts;
+		gchar **font_names;
+
+		num_fonts = XFontsOfFontSet (GDK_FONT_XFONT (font), &font_structs, &font_names);
+		status = XGetFontProperty (font_structs[0], font_atom, &atom);
+	} else {
+		status = XGetFontProperty (GDK_FONT_XFONT (font), font_atom, &atom);
+	}
+
+	if (status) {
+		return gdk_atom_name (atom);
+	}
+
+	return NULL;
+}
+
+static void
+get_default_fonts (gchar **var_name, gchar **fix_name)
+{
+	GtkStyle *style;
+	char *font_name = NULL;
+
+	style = gtk_widget_get_default_style ();
+	if (style->font) {
+		font_name = get_font_name (style->font);
+	}
+
+	if (font_name) {
+		gchar *enc1, *enc2;
+
+		enc1 = html_font_manager_get_attr (font_name, 13);
+		enc2 = html_font_manager_get_attr (font_name, 14);
+
+		*var_name = g_strdup_printf ("-*-helvetica-*-*-*-*-12-*-*-*-*-*-%s-%s", enc1, enc2);
+		*fix_name = g_strdup_printf ("-*-courier-*-*-*-*-12-*-*-*-*-*-%s-%s", enc1, enc2);
+
+		/* printf ("default encoding %s-%s\n%s\n%s\n", enc1, enc2, *var_name, *fix_name); */
+	} else {
+		*var_name = g_strdup ("-*-helvetica-*-*-*-*-12-*-*-*-*-*-*-*");
+		*fix_name = g_strdup ("-*-courier-*-*-*-*-12-*-*-*-*-*-*-*");
+	}
+}
 
 void
 gtk_html_class_properties_load (GtkHTMLClassProperties *p)
 {
-	char *s;
+	gchar *s, *var_name, *fix_name, *var_default, *fix_default;
+
+	get_default_fonts (&var_name, &fix_name);
+	var_default = g_strdup_printf ("font_variable=%s", var_name);
+	fix_default = g_strdup_printf ("font_fixed=%s", fix_name);
+	g_free (var_name);
+	g_free (fix_name);
 
 	gnome_config_push_prefix (GTK_HTML_GNOME_CONFIG_PREFIX);
 	GET  (bool, magic_links, "magic_links=true");
 	GET  (bool, animations, "animations=true");
 	GETS (keybindings_theme, "keybindings_theme=ms");
-	GETS (font_var, "font_variable=-*-helvetica-*-*-*-*-12-*-*-*-*-*-*-*");
-	GETS (font_fix, "font_fixed=-*-courier-*-*-*-*-12-*-*-*-*-*-*-*");
+	GETS (font_var, var_default);
+	GETS (font_fix, fix_default);
 	GETS (font_var_print, "font_variable_print=-*-helvetica-*-*-*-*-12-*-*-*-*-*-*-*");
 	GETS (font_fix_print, "font_fixed_print=-*-courier-*-*-*-*-12-*-*-*-*-*-*-*");
+
+	g_free (var_default);
+	g_free (fix_default);
 
 	s = g_strdup_printf ("font_variable_size=%d", DEFAULT_FONT_SIZE);
 	GET  (int, font_var_size, s);
@@ -215,6 +283,8 @@ gtk_html_class_properties_load (GtkHTMLClassProperties *p)
 	GET  (int, spell_error_color.green, "spell_error_color_green=0");
 	GET  (int, spell_error_color.blue,  "spell_error_color_blue=0");
 	GETS (language, "language=en");
+
+	/* printf ("fonts:\n%s\n%s\n", p->font_var, p->font_fix); */
 
 	gnome_config_pop_prefix ();
 }

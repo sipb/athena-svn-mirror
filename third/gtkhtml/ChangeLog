@@ -1,3 +1,30 @@
+2001-11-14  Larry Ewing  <lewing@ximian.com>
+
+	* Make 0.16.1 release.
+
+	* configure.in (GTKHTML_REVISION): increment for release.
+
+	* configure.in: bump version 0.16.1
+
+2001-11-14  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: clean up the configure checks for required libs.
+
+2001-11-12  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: bump version 0.16.0.1
+
+2001-11-09  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in (GCONF_LIBS): test for gconf version, we need 1.0.7
+	at least
+
+	* README: require gconf 1.0.7
+
+2001-11-09  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): Added zh_CN for Simplified Chinese.
+
 2001-11-05  Larry Ewing  <lewing@ximian.com>
 
 	* Make 0.16.0 release.

@@ -189,7 +189,7 @@ html_imageinput_init (HTMLImageInput *img,
 						 url, NULL, NULL,
 						 -1, -1, FALSE, FALSE, 0,
 						 NULL,
-						 HTML_VALIGN_BOTTOM));
+						 HTML_VALIGN_BOTTOM, FALSE));
 
 	object->ascent = 32;
 	object->width = 0;

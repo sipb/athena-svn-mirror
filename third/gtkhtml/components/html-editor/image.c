@@ -460,7 +460,7 @@ insert_or_apply (GtkHTMLControlData *cd, gpointer get_data, gboolean insert)
 					  html_colorset_get_color (data->cd->html->engine->settings->color_set,
 								   HTMLLinkColor),
 					  halign, valign,
-					  hspace, vspace);
+					  hspace, vspace, TRUE);
 	else {
 		HTMLImage *image = HTML_IMAGE (data->image);
 

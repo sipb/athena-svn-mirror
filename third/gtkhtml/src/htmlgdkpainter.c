@@ -219,8 +219,11 @@ alloc_e_font_try (gchar *face, gdouble size, gboolean points, GtkHTMLFontStyle s
 
 		g_free (name);
 	} else {
-		GdkFont *fixed = gdk_fontset_load ("fixed");
+		GdkFont *fixed;
 
+		fixed = gdk_fontset_load ("fixed");
+		if (!fixed)
+			fixed = gdk_font_load ("fixed");
 		if (!fixed)
 			g_error (_("Can't load fixed font."));
 		font = e_font_from_gdk_font (fixed);

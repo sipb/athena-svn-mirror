@@ -38,6 +38,7 @@ void  html_engine_insert_image  (HTMLEngine     *e,
 				 HTMLHAlignType  halign,
 				 HTMLVAlignType  valign,
 				 gint8           hspace,
-				 gint8           vspace);
+				 gint8           vspace,
+				 gboolean        reload);
 
 #endif

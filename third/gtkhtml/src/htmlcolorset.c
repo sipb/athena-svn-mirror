@@ -147,5 +147,5 @@ html_colorset_set_style (HTMLColorSet *s, GtkStyle *style)
 	SET_GCOLOR (Bg,            style->base [GTK_STATE_NORMAL]);
 	SET_GCOLOR (Text,          style->text [GTK_STATE_NORMAL]);
 	SET_GCOLOR (Highlight,     style->bg   [GTK_STATE_SELECTED]);
-	SET_GCOLOR (HighlightText, style->text [GTK_STATE_SELECTED]);	
+	SET_GCOLOR (HighlightText, style->fg   [GTK_STATE_SELECTED]);	
 }	

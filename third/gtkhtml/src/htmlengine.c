@@ -310,12 +310,12 @@ parse_scroll (const char *token)
 static HTMLHAlignType
 parse_halign (const char *token, HTMLHAlignType default_val)
 {
-	if (strcasecmp (token, "center") == 0)
-		return HTML_HALIGN_CENTER;
-	else if (strcasecmp (token, "right") == 0)
+	if (strcasecmp (token, "right") == 0)
 		return HTML_HALIGN_RIGHT;
 	else if (strcasecmp (token, "left") == 0)
 		return HTML_HALIGN_LEFT;
+	else if (strcasecmp (token, "center") == 0 || strcasecmp (token, "middle") == 0)
+		return HTML_HALIGN_CENTER;
 	else
 		return default_val;
 }
@@ -2359,7 +2359,7 @@ parse_i (HTMLEngine *e, HTMLObject *_clue, const gchar *str)
 			image = html_image_new (e->image_factory, tmpurl,
 						e->url, e->target,
 						width, height,
-						percent_width, percent_height, border, color, valign);
+						percent_width, percent_height, border, color, valign, FALSE);
 
 			if (id) {
 				html_engine_add_object_with_id (e, id, (HTMLObject *) image);

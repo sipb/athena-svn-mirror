@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.9.99.1\n"
-"POT-Creation-Date: 2001-11-05 17:52-0600\n"
-"PO-Revision-Date: 2001-07-13 00:44+0200\n"
+"POT-Creation-Date: 2001-11-14 16:55-0600\n"
+"PO-Revision-Date: 2001-11-09 12:30+0100\n"
 "Last-Translator: Héctor García Álvarez <hector@scouts-es.org>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,128 +30,132 @@ msgid "*********************"
 msgstr "*********************"
 
 #: capplet/gtkhtml-capplet.glade.h:2
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:3
 msgid "Add Keyboard Shortcuts"
 msgstr "Añadir atajos de teclado"
 
-#: capplet/gtkhtml-capplet.glade.h:3
+#: capplet/gtkhtml-capplet.glade.h:4
 msgid "Automatically detect links"
 msgstr "Detención automática de enlaces"
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:5
 msgid "Behavior"
 msgstr "Comportamiento"
 
 #. color selection
-#: capplet/gtkhtml-capplet.glade.h:5 components/html-editor/text.c:218
+#: capplet/gtkhtml-capplet.glade.h:6 components/html-editor/text.c:218
 msgid "Color"
 msgstr "Color"
 
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:7
 msgid "Command"
 msgstr "Comando"
 
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:8
 msgid "Composer Properties"
 msgstr "Propiedades del editor"
 
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Composer Properties planned"
 msgstr "Propiedades planeadas del compositor"
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:10
 msgid "Enable spell checking"
 msgstr "Activar corrección ortográfica"
 
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Fixed width"
 msgstr "Anchura fija"
 
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:12
 msgid "Fonts"
 msgstr "Fuentes"
 
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:13
 msgid "For printing"
 msgstr "Para imprimir"
 
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:14
 msgid "Grab keys"
 msgstr "Grabar teclas"
 
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Information"
 msgstr "Información"
 
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "Keyboard Shortcuts"
 msgstr "Atajos de teclado"
 
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:17
 msgid "Language"
 msgstr "Lenguaje"
 
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:18
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
 msgid "Miscellaneous"
 msgstr "Miscelánea"
 
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:19
 msgid "New shortcut:"
 msgstr "Nuevo atajo:"
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:20
 msgid "On screen"
 msgstr "En pantalla"
 
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "Pick a color"
 msgstr "Elige un color"
 
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "Select HTML fixed width font"
 msgstr "Selecciona letra de anchura fija para HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font for printing"
 msgstr "Selecciona letra de anchura fija en HTML para imprimir"
 
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML variable width font"
 msgstr "Selecciona letra de anchura variable en HTML"
 
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font for printing"
 msgstr "Selecciona letra de anchura variable en HTML para imprimir"
 
-#: capplet/gtkhtml-capplet.glade.h:25
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select command "
 msgstr "Seleccione comando "
 
-#: capplet/gtkhtml-capplet.glade.h:26
+#: capplet/gtkhtml-capplet.glade.h:27
 msgid "Shortcut"
 msgstr "Atajo"
 
-#: capplet/gtkhtml-capplet.glade.h:27
+#: capplet/gtkhtml-capplet.glade.h:28
 msgid "Shortcuts _type:"
 msgstr "_Tipo de atajo:"
 
-#: capplet/gtkhtml-capplet.glade.h:28
+#: capplet/gtkhtml-capplet.glade.h:29
 msgid "Show animated images"
 msgstr "Mostrar imágenes animadas"
 
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:30
 msgid "Spell Checking"
 msgstr "Corrección ortográfica"
 
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "Anchura variable"
 
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:32
 msgid "_Add"
 msgstr "_Añadir"
 
-#: capplet/gtkhtml-capplet.glade.h:32
+#: capplet/gtkhtml-capplet.glade.h:33
 msgid "_Delete"
 msgstr "_Borrar"
 
@@ -370,51 +374,51 @@ msgstr "Enlace"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:44
 msgid "Make the current Paragraph style Normal"
-msgstr "Convierte el parrafo actual a estilo Normal"
+msgstr "Convierte el párrafo actual a estilo Normal"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
 msgid "Make the current paragraph a bulleted list"
-msgstr "Convierte el parrafo actual en una lista de puntos"
+msgstr "Convierte el párrafo actual en una lista de puntos"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:46
 msgid "Make the current paragraph a list with roman numerals"
-msgstr "Convierte el parrafo actual en una lista con números romanos"
+msgstr "Convierte el párrafo actual en una lista con números romanos"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:47
 msgid "Make the current paragraph a numbered list"
-msgstr "Convierte el parrafo actual en una lista numerada"
+msgstr "Convierte el párrafo actual en una lista numerada"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:48
 msgid "Make the current paragraph an H1 header"
-msgstr "Convierte el parrafo actual a una cabecera H1"
+msgstr "Convierte el párrafo actual a una cabecera H1"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
 msgid "Make the current paragraph an H2 header"
-msgstr "Convierte el parrafo actual a una cabecera H2"
+msgstr "Convierte el párrafo actual a una cabecera H2"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:50
 msgid "Make the current paragraph an H3 header"
-msgstr "Convierte el parrafo actual a una cabecera H3"
+msgstr "Convierte el párrafo actual a una cabecera H3"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:51
 msgid "Make the current paragraph an H4 header"
-msgstr "Convierte el parrafo actual a una cabecera H4"
+msgstr "Convierte el párrafo actual a una cabecera H4"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:52
 msgid "Make the current paragraph an H5 header"
-msgstr "Convierte el parrafo actual a una cabecera H5"
+msgstr "Convierte el párrafo actual a una cabecera H5"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:53
 msgid "Make the current paragraph an H6 header"
-msgstr "Convierte el parrafo actual a una cabecera H6"
+msgstr "Convierte el párrafo actual a una cabecera H6"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:54
 msgid "Make the current paragraph an address"
-msgstr "Convierte el parrafo actual en una dirección"
+msgstr "Convierte el párrafo actual en una dirección"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:55
 msgid "Make the current paragraph an alphabetical list"
-msgstr "Convierte el parrafo actual en una lista alfabética"
+msgstr "Convierte el párrafo actual en una lista alfabética"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
 msgid "Modify the file's properties"
@@ -522,7 +526,7 @@ msgstr "Tachado"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:79
 msgid "Su_perscript"
-msgstr "Su_períncide"
+msgstr "Su_períndice"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:80
 msgid "Subs_cript"
@@ -1030,7 +1034,7 @@ msgstr "Elemento punto"
 
 #: components/html-editor/paragraph.c:134
 msgid "Number item"
-msgstr "Elemento numerico"
+msgstr "Elemento numérico"
 
 #: components/html-editor/paragraph.c:135
 msgid "Roman item"
@@ -1047,7 +1051,7 @@ msgstr "Alineación"
 #: components/html-editor/popup.c:361
 #, c-format
 msgid "Check '%s' spelling..."
-msgstr "Comprobar la ortografia de '%s'..."
+msgstr "Comprobar la ortografía de '%s'..."
 
 #: components/html-editor/popup.c:364
 #, c-format
@@ -1179,7 +1183,7 @@ msgstr "Buscar una expresión regular"
 
 #: components/html-editor/spell.c:411
 msgid "No misspelled word found"
-msgstr "No se encontro ninguna palabra erronea"
+msgstr "No se encontró ninguna palabra errónea"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1291,9 +1295,9 @@ msgstr "Indenta más los párrafos"
 msgid "Sample"
 msgstr "Ejemplo"
 
-#: src/htmlgdkpainter.c:225
+#: src/htmlgdkpainter.c:228
 msgid "Can't load fixed font."
-msgstr "No peudo cargar la fuente fija."
+msgstr "No puedo cargar la fuente fija."
 
 #: src/testgtkhtml.c:112
 msgid "Print pre_view"
@@ -1307,7 +1311,7 @@ msgstr "Previsualización de la impresión"
 #~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
 #~ "here</td></tr></table></td></tr></table>"
 #~ msgstr ""
-#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Escribe aquí tu "
+#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Escriba aquí su "
 #~ "texto</td></tr></table></td></tr></table>"
 
 #~ msgid ""
