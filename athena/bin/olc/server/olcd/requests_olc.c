@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.1 1989-11-17 13:59:09 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.2 1989-12-14 23:19:17 raeburn Exp $";
 #endif
 
 
@@ -1547,12 +1547,14 @@ olc_show(fd, request, auth)
 	  free(target->new_messages);
 	  target->new_messages = (char *) NULL;
 	}
+#ifdef LOG
       if((owns_question(requester)) && (is_me(target,requester)))
 	{
 	  sprintf(mesg,"%s %s read reply.",requester->title, 
 		  requester->user->username);
 	  log_daemon(requester, mesg);
 	}
+#endif
     }
   else
     {
