@@ -110,12 +110,17 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
 	CallbackData callback_data;
 	char *registration_id;
 
-	/* Initialize libraries. */
-        gnome_init_with_popt_table (executable_name, version, 
-				    argc, argv,
-				    oaf_popt_options, 0, NULL); 
-	gdk_rgb_init ();
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
+
+	/* Initialize libraries. */
+        gnome_init (executable_name, version, 
+		    argc, argv); 
+	gdk_rgb_init ();
+	g_thread_init (NULL);
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 

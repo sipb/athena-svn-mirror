@@ -106,7 +106,7 @@ nautilus_adapter_control_embed_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void 
@@ -186,6 +186,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	    !CORBA_Object_is_nil (corba_zoomable, &ev)) {
 		strategy->details->zoomable = nautilus_zoomable_proxy_get
 			(corba_zoomable);
+		bonobo_object_release_unref (corba_zoomable, &ev);
 	}
 
 	CORBA_exception_free (&ev);

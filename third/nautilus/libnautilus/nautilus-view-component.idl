@@ -4,7 +4,7 @@
  *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -95,6 +95,26 @@ module Nautilus {
 		oneway void open_location_force_new_window (in URI location,
 							    in URIList selection);
 
+		/* Called by a view component when the location
+		 * changes, but the view component is handling it
+		 * directly. This differs from
+		 * "open_location_in_this_window" in that it
+		 * understands that the same component is reused, and
+		 * also it treats the load as "already underway" and
+		 * does not send a "load_location",
+		 * "selection_changed", or "title_changed" to the view
+		 * that initiates this. The redirect version should be
+		 * used when the location change does not deserve its
+		 * own element in history.
+		 */
+		oneway void report_location_change (in URI location,
+						    in URIList selection,
+						    in string title);
+		oneway void report_redirect (in URI from_location,
+					     in URI to_location,
+					     in URIList selection,
+					     in string title);
+
 		/* Called by a view component to announce a change in the
 		 * selection. This selection change will be reported back
 		 * to the original view along with the others.
@@ -119,13 +139,22 @@ module Nautilus {
 		 * indicates that.
 		 */
 		oneway void report_load_underway ();
-
 		oneway void report_load_progress (in float fraction_done);
 		oneway void report_load_complete ();
 		oneway void report_load_failed ();
 
 		/* Called by a view component to change the title. */
 		oneway void set_title (in string new_title);
+
+		/* Called when a view component wants to make the
+		 * window it's in "go back". At some point we may add a more
+		 * complete set of operations. This one is very useful for
+		 * components that do something and then return.
+		 * If there's nowhere to go back to, it goes home, which
+		 * is not quite the same as the "back" button in the UI,
+		 * which does nothing if there's nowhere to go.
+		 */
+		oneway void go_back ();
 	};
 
 };

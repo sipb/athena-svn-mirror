@@ -133,11 +133,14 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
 	signal (SIGSEGV, &sig_segv_handler);
 
 	if (!trilobite_init ("trilobite-eazel-install-service", "0.1", "~/.nautilus/trilobite-install.log",
 			     NULL, argc, argv)) {
-		g_error ("Could not initialize trilobite. :(");
+		g_error ("Could not initialise trilobite. :(");
 		exit (1);
 	}
 	trilobite_set_debug_mode (TRUE);

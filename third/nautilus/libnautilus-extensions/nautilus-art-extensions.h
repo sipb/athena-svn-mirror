@@ -37,38 +37,74 @@ typedef struct {
 	int y;
 } NautilusArtIPoint;
 
+typedef struct {
+	int width;
+	int height;
+} NautilusDimensions;
+
 extern ArtIRect NAUTILUS_ART_IRECT_EMPTY;
 extern NautilusArtIPoint NAUTILUS_ART_IPOINT_ZERO;
+extern NautilusDimensions NAUTILUS_DIMENSIONS_EMPTY;
 
 /* More functions for ArtIRect and ArtDRect. */
-gboolean nautilus_art_irect_equal          (const ArtIRect    *rect_a,
-					    const ArtIRect    *rect_b);
-gboolean nautilus_art_drect_equal          (const ArtDRect    *rect_a,
-					    const ArtDRect    *rect_b);
-gboolean nautilus_art_irect_hits_irect     (const ArtIRect    *rect_a,
-					    const ArtIRect    *rect_b);
-gboolean nautilus_art_irect_contains_irect (const ArtIRect    *outer_rect,
-					    const ArtIRect    *inner_rect);
-gboolean nautilus_art_irect_contains_point (const ArtIRect    *outer_rect,
-					    int                x,
-					    int                y);
-void     nautilus_art_irect_assign         (ArtIRect          *rect,
-					    int                x,
-					    int                y,
-					    int                width,
-					    int                height);
-void     nautilus_art_ipoint_assign        (NautilusArtIPoint *point,
-					    int                x,
-					    int                y);
-int      nautilus_art_irect_get_width      (const ArtIRect    *rect);
-int      nautilus_art_irect_get_height     (const ArtIRect    *rect);
-ArtIRect nautilus_art_irect_align          (const ArtIRect    *container,
-					    int                aligned_width,
-					    int                aligned_height,
-					    float              x_alignment,
-					    float              y_alignment,
-					    int                x_padding,
-					    int                y_padding);
+gboolean nautilus_art_irect_equal             (const ArtIRect           *rect_a,
+					       const ArtIRect           *rect_b);
+gboolean nautilus_art_drect_equal             (const ArtDRect           *rect_a,
+					       const ArtDRect           *rect_b);
+gboolean nautilus_art_irect_hits_irect        (const ArtIRect           *rect_a,
+					       const ArtIRect           *rect_b);
+gboolean nautilus_art_irect_contains_irect    (const ArtIRect           *outer_rect,
+					       const ArtIRect           *inner_rect);
+gboolean nautilus_art_irect_contains_point    (const ArtIRect           *outer_rect,
+					       int                       x,
+					       int                       y);
+gboolean nautilus_art_irect_is_valid          (const ArtIRect           *rect);
+void     nautilus_art_irect_assign            (ArtIRect                 *rect,
+					       int                       x,
+					       int                       y,
+					       int                       width,
+					       int                       height);
+int      nautilus_art_irect_get_width         (const ArtIRect           *rect);
+int      nautilus_art_irect_get_height        (const ArtIRect           *rect);
+ArtIRect nautilus_art_irect_align             (const ArtIRect           *container,
+					       int                       aligned_width,
+					       int                       aligned_height,
+					       float                     x_alignment,
+					       float                     y_alignment);
+/* NautilusDimensions functions. */
+gboolean nautilus_dimensions_empty            (const NautilusDimensions *dimensions);
+ArtIRect nautilus_art_irect_assign_dimensions (int                       x,
+					       int                       y,
+					       const NautilusDimensions *dimensions);
+
+ArtIRect nautilus_art_irect_offset_by	      (ArtIRect			 rect,
+					       int			 x,
+					       
+					       int			 y);
+ArtIRect nautilus_art_irect_offset_to	      (ArtIRect			 rect,
+					       int			 x,
+					       int			 y);
+ArtIRect nautilus_art_irect_scale_by	      (ArtIRect			 rect,
+					       double			 scale);
+ArtIRect nautilus_art_irect_inset	      (ArtIRect			 rect,
+					       int			 horizontal_inset,
+					       int			 vertical_inset);
+ArtDRect nautilus_art_drect_offset_by	      (ArtDRect			 rect,
+					       double			 x,
+					       double			 y);
+ArtDRect nautilus_art_drect_offset_to	      (ArtDRect			 rect,
+					       double			 x,
+					       double			 y);
+ArtDRect nautilus_art_drect_scale_by	      (ArtDRect			 rect,
+					       double			 scale);
+ArtDRect nautilus_art_drect_inset	      (ArtDRect			 rect,
+					       double			 horizontal_inset,
+					       double			 vertical_inset);
+ArtIRect nautilus_art_irect_offset_by_point   (ArtIRect			 rect,
+					       NautilusArtIPoint	 point);
+ArtIRect nautilus_art_irect_offset_to_point   (ArtIRect			 rect,
+					       NautilusArtIPoint	 point);
+					      
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_ART_EXTENSIONS_H */

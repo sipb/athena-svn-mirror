@@ -30,11 +30,15 @@
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-font-extensions.h"
 
+#include <gdk/gdk.h>
+#include <gdk/gdkprivate.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkrc.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-geometry.h>
+#include <libgnomeui/gnome-winhints.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string.h"
 
@@ -59,6 +63,12 @@
  */
 #define NAUTILUS_STANDARD_BUTTON_PADDING 1
 
+/* How far down the window tree will we search when looking for top-level
+ * windows? Some window managers doubly-reparent the client, so account
+ * for that, and add some slop.
+ */
+#define MAXIMUM_WM_REPARENTING_DEPTH 4
+
 static gboolean
 finish_button_activation (gpointer data)
 {
@@ -75,8 +85,8 @@ finish_button_activation (gpointer data)
 		gtk_button_released (button);
 	}
 
-	/* this was ref'd in nautilus_gtk_button_auto_click */
-	gtk_object_unref (GTK_OBJECT(button));
+	/* This was ref'd in nautilus_gtk_button_auto_click */
+	gtk_object_unref (GTK_OBJECT (button));
 
 	return FALSE;	
 }
@@ -111,7 +121,7 @@ nautilus_gtk_button_auto_click (GtkButton *button)
 	 */
 
 	/* This is unref'ed in finish_button_activation */
-	gtk_object_ref (GTK_OBJECT(button));
+	gtk_object_ref (GTK_OBJECT (button));
 
 	g_timeout_add (BUTTON_AUTO_HIGHLIGHT_MILLISECONDS, 
 		       finish_button_activation, button);
@@ -289,10 +299,11 @@ guint nautilus_gtk_signal_connect_free_data_custom (GtkObject *object,
  * @data: the user data associated with the function. g_free() will be called on
  * this user data when the signal is disconnected.
  **/
-guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
-				  	     const gchar *name,
-				  	     GtkSignalFunc func,
-				  	     gpointer data)
+guint
+nautilus_gtk_signal_connect_free_data (GtkObject *object,
+				       const gchar *name,
+				       GtkSignalFunc func,
+				       gpointer data)
 {
 	return nautilus_gtk_signal_connect_free_data_custom
 		(object, name, func, data, g_free);
@@ -308,9 +319,21 @@ void
 nautilus_gtk_window_present (GtkWindow *window)
 {
 	GdkWindow *gdk_window;
+	int current_workspace, window_workspace;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
+	/* Ensure that the window is on the current desktop */
+	if (GTK_WIDGET_REALIZED (GTK_WIDGET (window))) {
+		window_workspace = gnome_win_hints_get_workspace (GTK_WIDGET (window));
+		current_workspace = gnome_win_hints_get_current_workspace ();
+		if (window_workspace != current_workspace) {
+			gtk_widget_hide (GTK_WIDGET (window));
+			gnome_win_hints_set_workspace (GTK_WIDGET (window),
+						       current_workspace);
+		}
+	}
+		
 	/* If we have no gdk window, then it's OK to just show, since
 	 * the window is new and presumably will show up in front.
 	 */
@@ -999,16 +1022,17 @@ nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER (GtkObject *object,
 }
 
 void
-nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER (GtkObject *object,
-						    GtkSignalFunc func,
-						    gpointer func_data,
-						    GtkArg *args)
+nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER (GtkObject *object,
+							    GtkSignalFunc func,
+							    gpointer func_data,
+							    GtkArg *args)
 {
-	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer)) func)
+	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer, gpointer)) func)
 		(object,
 		 GTK_VALUE_POINTER (args[0]),
 		 GTK_VALUE_POINTER (args[1]),
 		 GTK_VALUE_POINTER (args[2]),
+		 GTK_VALUE_POINTER (args[3]),
 		 func_data);
 }
 
@@ -1161,6 +1185,25 @@ nautilus_gtk_widget_set_font (GtkWidget *widget, GdkFont *font)
 }
 
 /**
+ * nautilus_gtk_widget_set_shown
+ *
+ * Show or hide a widget.
+ * @widget: The widget.
+ * @shown: Boolean value indicating whether the widget should be shown or hidden.
+ **/
+void
+nautilus_gtk_widget_set_shown (GtkWidget *widget, gboolean shown)
+{
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	if (shown) {
+		gtk_widget_show (widget);
+	} else {
+		gtk_widget_hide (widget);
+	}
+}
+
+/**
  * nautilus_gtk_widget_set_font_by_name
  *
  * Sets the font for a widget, managing the font and style objects.
@@ -1189,7 +1232,7 @@ typedef struct DisconnectInfo {
 	guint disconnect_handler2;
 } DisconnectInfo;
 
-static guint
+static void
 alive_disconnecter (GtkObject *object, DisconnectInfo *info)
 {
 	g_assert (info != NULL);
@@ -1205,8 +1248,6 @@ alive_disconnecter (GtkObject *object, DisconnectInfo *info)
 	gtk_signal_disconnect (info->object2, info->disconnect_handler2);
 	
 	g_free (info);
-	
-	return 0;
 }
 
 /**
@@ -1238,27 +1279,173 @@ nautilus_gtk_signal_connect_full_while_alive (GtkObject *object,
 	info->object1 = object;
 	info->object2 = alive_object;
 	
-	info->signal_handler =
-		gtk_signal_connect_full (object,
-					 name,
-					 func,
-					 marshal,
-					 data,
-					 destroy_func,
-					 object_signal,
-					 after);
-
-	info->disconnect_handler1 =
-		gtk_signal_connect (object,
-				    "destroy",
-				    GTK_SIGNAL_FUNC (alive_disconnecter),
-				    info);
-	info->disconnect_handler2 =
-		gtk_signal_connect (alive_object,
-				    "destroy",
-				    GTK_SIGNAL_FUNC (alive_disconnecter),
-				    info);
+	info->signal_handler = gtk_signal_connect_full (object,
+							name,
+							func,
+							marshal,
+							data,
+							destroy_func,
+							object_signal,
+							after);
+	info->disconnect_handler1 = gtk_signal_connect (object,
+							"destroy",
+							alive_disconnecter,
+							info);
+	info->disconnect_handler2 = gtk_signal_connect (alive_object,
+							"destroy",
+							alive_disconnecter,
+							info);
 }
+
+typedef struct
+{
+	GtkObject *object;
+	guint object_destroy_handler;
+	
+	GtkWidget *realized_widget;
+	guint realized_widget_destroy_handler;
+	guint realized_widget_unrealized_handler;
+
+	guint signal_handler;
+} RealizeDisconnectInfo;
+
+static void
+while_realized_disconnecter (GtkObject *object,
+			     RealizeDisconnectInfo *info)
+{
+	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (GTK_IS_OBJECT (info->object));
+	g_return_if_fail (info->object_destroy_handler != 0);
+	g_return_if_fail (info->object_destroy_handler != 0);
+	g_return_if_fail (info->realized_widget_destroy_handler != 0);
+	g_return_if_fail (info->realized_widget_unrealized_handler != 0);
+
+ 	gtk_signal_disconnect (info->object, info->object_destroy_handler);
+ 	gtk_signal_disconnect (info->object, info->signal_handler);
+ 	gtk_signal_disconnect (GTK_OBJECT (info->realized_widget), info->realized_widget_destroy_handler);
+ 	gtk_signal_disconnect (GTK_OBJECT (info->realized_widget), info->realized_widget_unrealized_handler);
+	g_free (info);
+}
+
+/**
+ * nautilus_gtk_signal_connect_while_realized:
+ *
+ * @object: Object to connect to.
+ * @name: Name of signal to connect to.
+ * @callback: Caller's callback.
+ * @callback_data: Caller's callback_data.
+ * @realized_widget: Widget to monitor for realized state.  Signal is connected
+ *                   while this wigget is realized.
+ *
+ * Connect to a signal of an object while another widget is realized.  This is 
+ * useful for non windowed widgets that need to monitor events in their ancestored
+ * windowed widget.  The signal is automatically disconnected when &widget is
+ * unrealized.  Also, the signal is automatically disconnected when either &object
+ * or &widget are destroyed.
+ **/
+void
+nautilus_gtk_signal_connect_while_realized (GtkObject *object,
+					    const char *name,
+					    GtkSignalFunc callback,
+					    gpointer callback_data,
+					    GtkWidget *realized_widget)
+{
+	RealizeDisconnectInfo *info;
+
+	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (name[0] != '\0');
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (realized_widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (realized_widget));
+
+	info = g_new0 (RealizeDisconnectInfo, 1);
+	
+	info->object = object;
+	info->object_destroy_handler = 
+		gtk_signal_connect (info->object,
+				    "destroy",
+				    while_realized_disconnecter,
+				    info);
+	
+	info->realized_widget = realized_widget;
+	info->realized_widget_destroy_handler = 
+		gtk_signal_connect (GTK_OBJECT (info->realized_widget),
+				    "destroy",
+				    while_realized_disconnecter,
+				    info);
+	info->realized_widget_unrealized_handler = 
+		gtk_signal_connect_after (GTK_OBJECT (info->realized_widget),
+					  "unrealize",
+					  while_realized_disconnecter,
+					  info);
+
+	info->signal_handler = gtk_signal_connect (info->object, name, callback, callback_data);
+}
+
+static void
+null_the_reference (GtkObject *object, gpointer callback_data)
+{
+	g_assert (* (GtkObject **) callback_data == object);
+
+	* (gpointer *) callback_data = NULL;
+}
+
+/**
+ * nautilus_nullify_when_destroyed.
+ *
+ * Nulls out a saved reference to an object when the object gets destroyed.
+ * @data: Address of the saved reference.
+ **/
+
+void 
+nautilus_nullify_when_destroyed (gpointer data)
+{
+	GtkObject **object_reference;
+
+	object_reference = (GtkObject **)data;	
+	if (*object_reference == NULL) {
+		/* the reference is  NULL, nothing to do. */
+		return;
+	}
+
+	g_assert (GTK_IS_OBJECT (*object_reference));
+
+	gtk_signal_connect (*object_reference, "destroy",
+		null_the_reference, object_reference);
+}
+
+/**
+ * nautilus_nullify_cancel.
+ *
+ * Disconnects the signal used to make nautilus_nullify_when_destroyed.
+ * Used when the saved reference is no longer needed, the structure it is in is
+ * being destroyed, etc. Nulls out the refernce when done.
+ * @data: Address of the saved reference.
+ **/
+
+void 
+nautilus_nullify_cancel (gpointer data)
+{
+	GtkObject **object_reference;
+
+	object_reference = (GtkObject **)data;	
+	if (*object_reference == NULL) {
+		/* the object was already destroyed and the reference nulled out,
+		 * nothing to do.
+		 */
+		return;
+	}
+
+	g_assert (GTK_IS_OBJECT (*object_reference));
+
+	gtk_signal_disconnect_by_func (*object_reference,
+		null_the_reference, object_reference);
+	
+	*object_reference = NULL;
+}
+
 
 /**
  * nautilus_gtk_container_get_first_child.
@@ -1388,6 +1575,7 @@ nautilus_gtk_label_make_bold (GtkLabel *label)
 
 	g_return_if_fail (GTK_IS_LABEL (label));
 
+	gtk_widget_ensure_style (GTK_WIDGET (label));
 	style = gtk_widget_get_style (GTK_WIDGET (label));
 
 	bold_font = nautilus_gdk_font_get_bold (style->font);
@@ -1413,6 +1601,7 @@ nautilus_gtk_label_make_larger (GtkLabel *label,
 
 	g_return_if_fail (GTK_IS_LABEL (label));
 
+	gtk_widget_ensure_style (GTK_WIDGET (label));
 	style = gtk_widget_get_style (GTK_WIDGET (label));
 
 	larger_font = nautilus_gdk_font_get_larger (style->font, num_steps);
@@ -1438,6 +1627,7 @@ nautilus_gtk_label_make_smaller (GtkLabel *label,
 
 	g_return_if_fail (GTK_IS_LABEL (label));
 
+	gtk_widget_ensure_style (GTK_WIDGET (label));
 	style = gtk_widget_get_style (GTK_WIDGET (label));
 
 	smaller_font = nautilus_gdk_font_get_smaller (style->font, num_steps);
@@ -1725,4 +1915,140 @@ nautilus_gtk_class_name_make_like_existing_type (const char *class_name,
 	}
 		
 	gtk_widget_destroy (temporary);
+}
+
+/* helper function for nautilus_get_window_list_ordered_front_to_back () */
+static GtkWidget *
+window_at_or_below (int depth, Window xid, gboolean *keep_going)
+{
+	static Atom wm_state = 0;
+
+	GtkWidget *widget;
+
+	Atom actual_type;
+	int actual_format;
+	gulong nitems, bytes_after;
+	gulong *prop;
+
+	GdkWindow *window;
+	gpointer data;
+
+	Window root, parent, *children;
+	int nchildren, i;
+
+	if (wm_state == 0) {
+		wm_state = XInternAtom (GDK_DISPLAY (), "WM_STATE", False);
+	}
+
+	/* Check if the window is a top-level client window.
+	 * Windows will have a WM_STATE property iff they're top-level.
+	 */
+	if (XGetWindowProperty (GDK_DISPLAY (), xid, wm_state, 0, 1,
+				False, AnyPropertyType, &actual_type,
+				&actual_format, &nitems, &bytes_after,
+				(guchar **) &prop) == Success
+	    && prop != NULL && actual_format == 32 && prop[0] == NormalState)
+	{
+		/* Found a top-level window */
+
+		if (prop != NULL) {
+			XFree (prop);
+		}
+
+		/* Does GDK know anything about this window? */
+		window = gdk_window_lookup (xid);
+		if (window != NULL) {
+			gdk_window_get_user_data (window, &data);
+			if (data != NULL)
+			{
+				/* Found one of the widgets we're after */
+				*keep_going = FALSE;
+				return GTK_WIDGET (data);
+			}
+		}
+
+		/* No point in searching past here. It's a top-level
+		 * window, but not from this application.
+		 */
+		*keep_going = FALSE;
+		return NULL;
+	}
+
+	/* Not found a top-level window yet, so keep recursing. */
+	if (depth < MAXIMUM_WM_REPARENTING_DEPTH) {
+		if (XQueryTree (GDK_DISPLAY (), xid, &root,
+				&parent, &children, &nchildren) != 0)
+		{
+			widget = NULL;
+
+			for (i = 0; *keep_going && i < nchildren; i++) {
+				widget = window_at_or_below (depth + 1,
+							     children[i],
+							     keep_going);
+			}
+
+			if (children != NULL) {
+				XFree (children);
+			}
+
+			if (! *keep_going) {
+				return widget;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+/* nautilus_get_window_list_ordered_front_to_back:
+ *
+ * Return a list of GtkWindows's, representing the stacking order (top to
+ * bottom) of all windows (known to the local GDK).
+ *
+ * (Involves a large number of X server round trips, so call sparingly)
+ */
+GList *
+nautilus_get_window_list_ordered_front_to_back (void)
+{
+	Window root, parent, *children;
+	int nchildren, i;
+	GList *windows;
+	GtkWidget *widget;
+	gboolean keep_going;
+
+	/* There's a possibility that a window will be closed in
+	 * the period between us querying the child-of-root windows
+	 * and getting round to search _their_ children. So arrange
+	 * for errors to be caught and ignored.
+	 */
+
+	gdk_error_trap_push ();
+
+	windows = NULL;
+
+	if (XQueryTree (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
+			&root, &parent, &children, &nchildren) != 0)
+	{
+		for (i = 0; i < nchildren; i++) {
+			keep_going = TRUE;
+			widget = window_at_or_below (0, children[i],
+						     &keep_going);
+			if (widget != NULL) {
+				/* XQueryTree returns window in bottom ->
+				 * top order, so consing up the list in
+				 * the normal manner will reverse this
+				 * giving the desired top -> bottom order
+				 */
+				windows = g_list_prepend (windows, widget);
+			}
+		}
+		if (children != NULL) {
+			XFree (children);
+		}
+	}
+
+	gdk_flush ();
+	gdk_error_trap_pop ();
+
+	return windows;
 }

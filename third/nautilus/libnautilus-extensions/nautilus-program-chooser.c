@@ -31,6 +31,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-stock-dialogs.h"
+#include "nautilus-string.h"
 #include "nautilus-view-identifier.h"
 #include <gtk/gtkclist.h>
 #include <gtk/gtkframe.h>
@@ -88,6 +89,16 @@ typedef struct {
  * column the same amount of space", we'll hardwire a width.
  */
 #define NAME_COLUMN_INITIAL_WIDTH	 200
+
+/* Program name of the mime type capplet */
+#define FILE_TYPES_CAPPLET_NAME 	"file-types-capplet"
+
+/* This number controls a maximum character count for a file name that is
+ * displayed as part of a dialog (beyond this it will be truncated). 
+ * It's fairly arbitrary -- big enough to allow most "normal" names to display 
+ * in full, but small enough to prevent the dialog from getting insanely wide.
+ */
+#define MAX_DISPLAYED_FILE_NAME_LENGTH 40
 
 /* Forward declarations as needed */
 static gboolean program_file_pair_is_default_for_file_type 	 (ProgramFilePair *pair);
@@ -182,11 +193,10 @@ program_file_pair_get_program_name_for_display (ProgramFilePair *pair)
 		  || pair->view_identifier != NULL);
 
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		return g_strdup_printf
-			(_("View as %s"), pair->view_identifier->name);
+		return g_strdup (_(pair->view_identifier->view_as_label));
 	}
 
-	return g_strdup (pair->application->name);	
+	return g_strdup (_(pair->application->name));
 }
 
 static char *
@@ -242,6 +252,22 @@ program_file_pair_get_short_status_text (ProgramFilePair *pair)
 }
 
 static char *
+get_file_name_for_display (NautilusFile *file)
+{
+	char *full_name;
+	char *truncated_name;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	full_name = nautilus_file_get_name (file);
+	truncated_name = nautilus_str_middle_truncate
+		(full_name, MAX_DISPLAYED_FILE_NAME_LENGTH);
+	g_free (full_name);
+
+	return truncated_name;
+}
+
+static char *
 program_file_pair_get_long_status_text (ProgramFilePair *pair)
 {
 	char *file_type;
@@ -251,7 +277,7 @@ program_file_pair_get_long_status_text (ProgramFilePair *pair)
 
 	file_type = nautilus_file_get_string_attribute_with_default (pair->file, "type");
 	supertype = get_supertype_from_file (pair->file);
-	file_name = nautilus_file_get_name (pair->file);
+	file_name = get_file_name_for_display (pair->file);
 
 	switch (pair->status) {
 	default:
@@ -358,6 +384,9 @@ repopulate_program_list (GnomeDialog *program_chooser,
 	}
 
 	gtk_clist_sort (clist);
+
+	/* Start with first item selected, rather than some arbitrary item */
+	gtk_clist_select_row (clist, 0, 0);
 }
 
 static NautilusFile *
@@ -889,25 +918,40 @@ set_default_for_item (ProgramFilePair *pair)
 }
 
 static void
-launch_mime_capplet (GtkWidget *button, gpointer ignored)
+launch_mime_capplet (GtkWidget *button, gpointer callback_data)
 {
+	char *command;
+		
 	g_assert (GTK_IS_WIDGET (button));
-
-	nautilus_launch_application_from_command ("nautilus-mime-type-capplet", NULL, FALSE);
+	
+	command = g_strdup_printf ("%s %s", FILE_TYPES_CAPPLET_NAME, (char *)callback_data);
+		
+	nautilus_launch_application_from_command (command, NULL, FALSE);
+	
+	g_free (command);
 }
 
 static void
 launch_mime_capplet_and_close_dialog (GtkWidget *button, gpointer callback_data)
 {
+	ProgramFilePair *file_pair;
+	char *mime_type;
+	
 	g_assert (GTK_IS_WIDGET (button));
 	g_assert (GNOME_IS_DIALOG (callback_data));
 
-	launch_mime_capplet (button, callback_data);
+	file_pair = get_selected_program_file_pair (GNOME_DIALOG (callback_data));
+		
+	mime_type = nautilus_file_get_mime_type (file_pair->file);
+
+	launch_mime_capplet (button, mime_type);
 
 	/* Don't leave a nested modal dialogs in the wake of switching
 	 * user's attention to the capplet.
 	 */	
 	gnome_dialog_close (GNOME_DIALOG (callback_data));
+	
+	g_free (mime_type);
 }
 
 static void
@@ -934,7 +978,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	clist = nautilus_program_chooser_get_clist (program_chooser);
 
 	file_type = nautilus_file_get_string_attribute_with_default (file, "type");
-	file_name = nautilus_file_get_name (file);
+	file_name = get_file_name_for_display (file);
 
 	pair = get_selected_program_file_pair (program_chooser);
 	if (pair == NULL) {
@@ -1209,7 +1253,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	file_name = nautilus_file_get_name (file);
+	file_name = get_file_name_for_display (file);
 
 	switch (action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
@@ -1435,30 +1479,31 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	char *dialog_title;
 	GnomeDialog *dialog;
 
-	file_name = nautilus_file_get_name (file);
+	file_name = get_file_name_for_display (file);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		unavailable_message = g_strdup_printf ("No viewers are available for %s.", file_name);		
-		dialog_title = g_strdup ("No Viewers Available");
+		unavailable_message = g_strdup_printf (_("No viewers are available for \"%s\"."), file_name);
+		dialog_title = g_strdup (_("No Viewers Available"));
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		unavailable_message = g_strdup_printf ("No applications are available for %s.", file_name);		
-		dialog_title = g_strdup ("No Applications Available");
+		unavailable_message = g_strdup_printf (_("No applications are available for \"%s\"."), file_name);
+		dialog_title = g_strdup (_("No Applications Available"));
 	}
 
 	/* Note: This might be misleading in the components case, since the
 	 * user can't add components to the complete list even from the capplet.
 	 * (They can add applications though.)
 	 */
-	prompt = g_strdup_printf ("%s\n\n"
-				  "You can configure which programs are offered "
-				  "for which file types with the \"File Types and "
-				  "Programs\" part of the GNOME Control Center. Do "
-				  "you want to go there now?", unavailable_message);
-	dialog = nautilus_yes_no_dialog 
+	prompt = g_strdup_printf (_("%s\n\n"
+				    "You can configure which programs are offered "
+				    "for which file types with the \"File Types and "
+				    "Programs\" part of the GNOME Control Center. Do "
+				    "you want to go there now?"),
+				  unavailable_message);
+	dialog = nautilus_show_yes_no_dialog 
 		(prompt, dialog_title, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
 
-	gnome_dialog_button_connect (dialog, GNOME_OK, launch_mime_capplet, NULL);
+	gnome_dialog_button_connect (dialog, GNOME_OK, launch_mime_capplet, nautilus_file_get_mime_type (file));
 
 	g_free (unavailable_message);
 	g_free (file_name);

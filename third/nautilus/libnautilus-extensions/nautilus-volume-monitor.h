@@ -64,6 +64,7 @@ typedef enum {
 	NAUTILUS_VOLUME_MINIX,
 	NAUTILUS_VOLUME_MSDOS,
 	NAUTILUS_VOLUME_NFS,
+	NAUTILUS_VOLUME_REISER,
 	NAUTILUS_VOLUME_SMB,
 	NAUTILUS_VOLUME_UDF,
 	NAUTILUS_VOLUME_UFS,
@@ -98,8 +99,7 @@ void               	nautilus_volume_monitor_mount_unmount_removable    	(Nautilu
 									   	 gboolean			 should_mount);
 gboolean		nautilus_volume_monitor_volume_is_mounted 		(NautilusVolumeMonitor 		*monitor,
 					   					const NautilusVolume 		*mount_point);
-gboolean		nautilus_volume_monitor_volume_is_removable		(NautilusVolumeMonitor 		*monitor,
-										 const NautilusVolume 		*volume);
+gboolean		nautilus_volume_monitor_volume_is_removable		(const NautilusVolume 		*volume);
 gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
 
 gboolean		nautilus_volume_monitor_should_integrate_trash		(const NautilusVolume 		*volume);
@@ -107,8 +107,13 @@ const char		*nautilus_volume_monitor_get_volume_mount_uri 		(const NautilusVolum
 void                   	nautilus_volume_monitor_each_mounted_volume        	(NautilusVolumeMonitor 		*monitor,
 									  	 NautilusEachVolumeFunction   	function,
 									   	 gpointer               	context);
-GList			*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
+const GList		*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
 void			nautilus_volume_monitor_free_volume             	(NautilusVolume             	*volume);
 char 			*nautilus_volume_monitor_get_target_uri 		(const NautilusVolume 		*volume);
-
+void			nautilus_volume_monitor_set_volume_name 		(NautilusVolumeMonitor 		*monitor,
+										 const NautilusVolume 		*volume,
+										 const char 			*volume_name);
+char 			*nautilus_volume_monitor_get_mount_name_for_display 	(NautilusVolumeMonitor 		*monitor,
+										 NautilusVolume 		*volume);
+										 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */

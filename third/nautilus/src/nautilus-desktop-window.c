@@ -48,6 +48,7 @@ static void nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass
 static void nautilus_desktop_window_initialize       (NautilusDesktopWindow      *window);
 static void destroy                                  (GtkObject                  *object);
 static void realize                                  (GtkWidget                  *widget);
+static void real_add_current_location_to_history_list (NautilusWindow		 *window);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
 
@@ -56,6 +57,8 @@ nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
 	GTK_WIDGET_CLASS (klass)->realize = realize;
+	NAUTILUS_WINDOW_CLASS (klass)->add_current_location_to_history_list 
+		= real_add_current_location_to_history_list;
 }
 
 static void
@@ -100,6 +103,13 @@ nautilus_desktop_window_realized (NautilusDesktopWindow *window)
 			     XA_WINDOW, 32, PropModeReplace, (guchar *) &window_xid, 1);
 }
 
+static gint
+nautilus_desktop_window_delete_event (NautilusDesktopWindow *window)
+{
+	/* Returning true tells GTK+ not to delete the window. */
+	return TRUE;
+}
+
 NautilusDesktopWindow *
 nautilus_desktop_window_new (NautilusApplication *application)
 {
@@ -117,6 +127,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
 
 	gtk_signal_connect (GTK_OBJECT (window), "realize", GTK_SIGNAL_FUNC (nautilus_desktop_window_realized), NULL);
+	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (nautilus_desktop_window_delete_event), NULL);
 
 	desktop_directory_path = nautilus_get_desktop_directory ();
 	
@@ -125,7 +136,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	 */
 	desktop_directory_uri = gnome_vfs_get_uri_from_local_path (desktop_directory_path);
 	g_free (desktop_directory_path);
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), desktop_directory_uri);
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), desktop_directory_uri);
 	g_free (desktop_directory_uri);
 	
 	gtk_widget_show (GTK_WIDGET (window));
@@ -145,7 +156,7 @@ destroy (GtkObject *object)
 	nautilus_gtk_object_list_free (window->details->unref_list);
 	g_free (window->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -160,7 +171,7 @@ realize (GtkWidget *widget)
 			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
 			      
 	/* Do the work of realizing. */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	/* FIXME bugzilla.eazel.com 1253: 
 	 * Looking at the gnome_win_hints implementation,
@@ -189,7 +200,8 @@ realize (GtkWidget *widget)
 	 */
 	gnome_win_hints_set_hints (widget,
 				   WIN_HINTS_SKIP_WINLIST
-				   | WIN_HINTS_SKIP_TASKBAR);
+				   | WIN_HINTS_SKIP_TASKBAR
+				   | WIN_HINTS_SKIP_FOCUS);
 
 	/* FIXME bugzilla.eazel.com 1255: 
 	 * Should we do a gdk_window_move_resize here, in addition to
@@ -205,4 +217,12 @@ realize (GtkWidget *widget)
 	 */
         gdk_window_set_decorations (widget->window, 0);
         gdk_window_set_functions (widget->window, 0);
+}
+
+static void
+real_add_current_location_to_history_list (NautilusWindow *window)
+{
+	/* Do nothing. The desktop window's location should not
+	 * show up in the history list.
+	 */
 }

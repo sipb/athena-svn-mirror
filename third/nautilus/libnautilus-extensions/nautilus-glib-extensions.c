@@ -500,6 +500,144 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
 	}
 }
 
+static GList *
+nautilus_g_list_sort_merge (GList       *list_1, 
+			    GList       *list_2,
+			    NautilusCompareFunction compare_func,
+			    gpointer user_data)
+{
+  GList list_buffer, *list, *previous_node;
+
+  list = &list_buffer; 
+  previous_node = NULL;
+
+  while (list_1 != NULL && 
+	 list_2 != NULL) {
+	  if (compare_func (list_1->data, list_2->data, user_data) < 0) {
+		  list->next = list_1;
+		  list = list->next;
+		  list->prev = previous_node; 
+		  previous_node = list;
+		  list_1 = list_1->next;
+	  } 
+	  else {
+		  list->next = list_2;
+		  list = list->next;
+		  list->prev = previous_node; 
+		  previous_node = list;
+		  list_2 = list_2->next;
+	  }
+  }
+
+  list->next = list_1 ? list_1 : list_2;
+  list->next->prev = list;
+
+  return list_buffer.next;
+}
+
+
+static gboolean
+nautilus_g_list_is_already_sorted (GList *list,
+				   NautilusCompareFunction compare_func,
+				   gpointer user_data)
+{
+	if (list == NULL) {
+		return TRUE;
+	}
+
+	while (list->next != NULL) {
+		if (compare_func (list->data, list->next->data, user_data) > 0) {
+			return FALSE;
+		}
+		list = list->next;
+		
+	}
+
+	return TRUE;
+}
+
+GList *
+nautilus_g_list_sort_custom (GList *list,
+			     NautilusCompareFunction compare_func,
+			     gpointer user_data)
+{
+	GList *list_1, *list_2;
+  
+	if (nautilus_g_list_is_already_sorted (list, compare_func, user_data)) {
+		return list;
+	}
+
+	list_1 = list; 
+	list_2 = list->next;
+
+	/* Split the two lists half way down the middle */
+	while (TRUE) {
+		list_2 = list_2->next;
+		if (list_2 == NULL) {
+			break;
+		}
+		list_2 = list_2->next;
+		if (list_2 == NULL) {
+			break;
+		}
+		list_1 = list_1->next;
+	}
+	
+	list_2 = list_1->next; 
+	list_1->next = NULL; 
+
+	return nautilus_g_list_sort_merge (nautilus_g_list_sort_custom (list, compare_func, user_data),
+					   nautilus_g_list_sort_custom (list_2, compare_func, user_data),
+					   compare_func,
+					   user_data);
+
+}
+
+static int
+compare_pointers (gconstpointer pointer_1, gconstpointer pointer_2)
+{
+	if ((const char *) pointer_1 < (const char *) pointer_2) {
+		return -1;
+	}
+	if ((const char *) pointer_1 > (const char *) pointer_2) {
+		return +1;
+	}
+	return 0;
+}
+
+
+
+gboolean
+nautilus_g_lists_sort_and_check_for_intersection (GList **list_1,
+						  GList **list_2) 
+
+{
+	GList *node_1, *node_2;
+	int compare_result;
+	
+	*list_1 = g_list_sort (*list_1, compare_pointers);
+	*list_2 = g_list_sort (*list_2, compare_pointers);
+
+	node_1 = *list_1;
+	node_2 = *list_2;
+
+	while (node_1 != NULL && node_2 != NULL) {
+		compare_result = compare_pointers (node_1->data, node_2->data);
+		if (compare_result == 0) {
+			return TRUE;
+		}
+		if (compare_result <= 0) {
+			node_1 = node_1->next;
+		}
+		if (compare_result >= 0) {
+			node_2 = node_2->next;
+		}
+	}
+
+	return FALSE;
+}
+
+
 /**
  * nautilus_g_list_partition
  * 
@@ -513,7 +651,7 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
  * @list: List to partition.
  * @predicate: Function to call on each element.
  * @user_data: Data to pass to function.  
- * @removed: The GList * variable pinted to by this argument will be
+ * @failed: The GList * variable pointed to by this argument will be
  * set to the list of elements for which the predicate returned
  * false. */
 
@@ -792,7 +930,12 @@ nautilus_g_hash_table_new_free_at_exit (GHashFunc hash_func,
 	GHashTable *hash_table;
 	HashTableToFree *hash_table_to_free;
 
-	if (hash_tables_to_free_at_exit == NULL) {
+	/* FIXME: We can take out the NAUTILUS_DEBUG check once we
+	 * have fixed more of the leaks. For now, it's a bit too noisy
+	 * for the general public.
+	 */
+	if (hash_tables_to_free_at_exit == NULL
+	    && g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		g_atexit (free_hash_tables_at_exit);
 	}
 
@@ -997,9 +1140,12 @@ nautilus_shell_quote (const char *string)
 	return quoted_str;
 }
 
-int nautilus_g_round (double d)
+int
+nautilus_round (double d)
 {
-	double val = floor (d + .5);
+	double val;
+
+	val = floor (d + .5);
 
 	/* The tests are needed because the result of floating-point to integral
 	 * conversion is undefined if the floating point value is not representable
@@ -1010,6 +1156,95 @@ int nautilus_g_round (double d)
 	g_return_val_if_fail (val >= INT_MIN, INT_MIN);
 
 	return val;
+}
+
+GList *
+nautilus_g_list_from_g_slist (GSList *slist)
+{
+	GList *list;
+	GSList *node;
+
+	list = NULL;
+	for (node = slist; node != NULL; node = node->next) {
+		list = g_list_prepend (list, node->data);
+	}
+	return g_list_reverse (list);
+}
+
+GSList *
+nautilus_g_slist_from_g_list (GList *list)
+{
+	GSList *slist;
+	GList *node;
+
+	slist = NULL;
+	for (node = list; node != NULL; node = node->next) {
+		slist = g_slist_prepend (slist, node->data);
+	}
+	return g_slist_reverse (slist);
+}
+
+/**
+ * nautilus_dumb_down_for_multi_byte_locale_hack
+ * 
+ * Return value: A boolean value indicating whether the current locale
+ *               is multi byte so that we can dumb down some operations.
+ *               to work on those locales.  This is a temporary workaround
+ *               with will be properly fixed in a future version of 
+ *               nautilus.
+ *
+ */
+gboolean
+nautilus_dumb_down_for_multi_byte_locale_hack (void)
+{
+	static gboolean is_multi_byte_locale = FALSE;
+	static gboolean is_multi_byte_locale_known = FALSE;
+	guint i;
+	const char *variable = NULL;
+
+	/*
+	 * List of environment variables that effect the locale.
+	 * This list was provided by John Harper (out of Sawfish)
+	 * where he uses it for similar purposes.
+	 */
+	static const char *locale_variables[] ={
+		"LANGUAGE",
+		"LC_ALL",
+		"LC_MESSAGES",
+		"LANG",
+		"GDM_LANG"
+	};
+
+	/*
+	 * List of locales (prefixes) known to be multi byte.
+	 */
+	static const char *multi_byte_locales[] ={
+		"ja",
+		"ko",
+		"zh"
+	};
+
+	/* Find out if the locale is multi byte only once */
+	if (is_multi_byte_locale_known) {
+		return is_multi_byte_locale;
+	}
+	is_multi_byte_locale_known = TRUE;
+
+	/* Find the first language variable that is set */
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (locale_variables) && variable == NULL; i++) {
+		variable = g_getenv (locale_variables[i]);
+	}
+
+	/* If a language variable was found, check it agains the known multi byte locales */
+	if (variable != NULL) {
+		for (i = 0; i < NAUTILUS_N_ELEMENTS (multi_byte_locales); i++) {
+			if (nautilus_istr_has_prefix (variable, multi_byte_locales[i])) {
+				is_multi_byte_locale = TRUE;
+			}
+		}
+	}
+
+	return is_multi_byte_locale;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

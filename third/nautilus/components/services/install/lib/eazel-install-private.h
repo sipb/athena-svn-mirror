@@ -63,6 +63,7 @@ struct _EazelInstallPrivate {
 	gboolean use_local_package_list;
   	
 	EazelPackageSystem *package_system;
+
 	/* hacky way to implement the old style signals with the new package system object */
 	unsigned long infoblock[6];
 
@@ -74,18 +75,18 @@ struct _EazelInstallPrivate {
 	   but not erased. */
 	GHashTable *name_to_package_hash;
 
-	/* This holds the toplevel packages requested for 
-	   install/upgrade/uninstall.
-	   Entries are added in eazel-install-rpm-glue.c, as
-	   stuff is done.
-	   It's cleaned up in the end of eazel_install_start_transaction */
+	/* During an operation, this logs the toplevel packages
+	   that were installed */
 	GList *transaction;
+
+	/* During an operation, this logs all packages that failed */
+	GList *failed_packages;
 	
 	/* The logfile used for the object */
 	FILE *logfile;
 	char *logfilename;
 	gboolean log_to_stderr;
-	
+
         /* TRUE if the rpm subcommand is running */
 	volatile gboolean subcommand_running;
 

@@ -39,47 +39,55 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdlib.h>
 
-#define START_STATE_CONFIG	"start-state"
-
-struct NautilusShellDetails {
-	NautilusApplication *application;
-};
-
-static void nautilus_shell_initialize       (NautilusShell          *shell);
-static void nautilus_shell_initialize_class (NautilusShellClass     *klass);
-static void destroy                         (GtkObject              *shell);
-static void corba_open_windows              (PortableServer_Servant  servant,
-					     const Nautilus_URIList *list,
-					     const CORBA_char       *geometry,
-					     CORBA_Environment      *ev);
-static void corba_open_default_window       (PortableServer_Servant  servant,
-					     const CORBA_char       *geometry,
-					     CORBA_Environment      *ev);
-static void corba_start_desktop             (PortableServer_Servant  servant,
-					     CORBA_Environment      *ev);
-static void corba_stop_desktop              (PortableServer_Servant  servant,
-					     CORBA_Environment      *ev);
-static void corba_quit	                    (PortableServer_Servant  servant,
-					     CORBA_Environment      *ev);
-static void corba_restart                    (PortableServer_Servant  servant,
-					     CORBA_Environment      *ev);
-static gboolean restore_window_states	    (NautilusShell *shell);
+/* turn this on to enable the caveat dialog */
+#if 0
+#define SHOW_CAVEAT
+#endif
 
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
 #define APPLICATION_WINDOW_MIN_WIDTH	300
 #define APPLICATION_WINDOW_MIN_HEIGHT	100
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell, nautilus_shell, BONOBO_OBJECT_TYPE)
+#define START_STATE_CONFIG "start-state"
+
+struct NautilusShellDetails {
+	NautilusApplication *application;
+};
+
+static void     nautilus_shell_initialize       (NautilusShell          *shell);
+static void     nautilus_shell_initialize_class (NautilusShellClass     *klass);
+static void     destroy                         (GtkObject              *shell);
+static void     corba_open_windows              (PortableServer_Servant  servant,
+						 const Nautilus_URIList *list,
+						 const CORBA_char       *geometry,
+						 CORBA_Environment      *ev);
+static void     corba_open_default_window       (PortableServer_Servant  servant,
+						 const CORBA_char       *geometry,
+						 CORBA_Environment      *ev);
+static void     corba_start_desktop             (PortableServer_Servant  servant,
+						 CORBA_Environment      *ev);
+static void     corba_stop_desktop              (PortableServer_Servant  servant,
+						 CORBA_Environment      *ev);
+static void     corba_quit                      (PortableServer_Servant  servant,
+						 CORBA_Environment      *ev);
+static void     corba_restart                   (PortableServer_Servant  servant,
+						 CORBA_Environment      *ev);
+static gboolean restore_window_states           (NautilusShell          *shell);
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell,
+				   nautilus_shell,
+				   BONOBO_OBJECT_TYPE)
 
 static void
 nautilus_shell_initialize_class (NautilusShellClass *klass)
@@ -91,12 +99,14 @@ static POA_Nautilus_Shell__epv *
 nautilus_shell_get_epv (void)
 {
 	static POA_Nautilus_Shell__epv epv;
+
 	epv.open_windows = corba_open_windows;
 	epv.open_default_window = corba_open_default_window;
 	epv.start_desktop = corba_start_desktop;
 	epv.stop_desktop = corba_stop_desktop;
 	epv.quit = corba_quit;
 	epv.restart = corba_restart;
+
 	return &epv;
 }
 
@@ -104,8 +114,10 @@ static POA_Nautilus_Shell__vepv *
 nautilus_shell_get_vepv (void)
 {
 	static POA_Nautilus_Shell__vepv vepv;
+
 	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 	vepv.Nautilus_Shell_epv = nautilus_shell_get_epv ();
+
 	return &vepv;
 }
 
@@ -147,7 +159,7 @@ destroy (GtkObject *object)
 	shell = NAUTILUS_SHELL (object);
 	g_free (shell->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusShell *
@@ -159,6 +171,8 @@ nautilus_shell_new (NautilusApplication *application)
 	shell->details->application = application;
 	return shell;
 }
+
+#ifdef SHOW_CAVEAT
 
 static void
 display_caveat (GtkWindow *parent_window)
@@ -229,9 +243,12 @@ display_caveat (GtkWindow *parent_window)
 	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
+#endif /* SHOW_CAVEAT */
+
 static void
 display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
 {
+#ifdef SHOW_CAVEAT
 	static gboolean showed_caveat;
 
 	/* Show the "not ready for prime time" dialog after the first
@@ -246,6 +263,7 @@ display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
 				    display_caveat, window);
 	}
 	showed_caveat = TRUE;
+#endif /* SHOW_CAVEAT */
 }
 
 static void
@@ -265,7 +283,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 	if (uri == NULL) {
 		nautilus_window_go_home (window);
 	} else {
-		nautilus_window_goto_uri (window, uri);
+		nautilus_window_go_to (window, uri);
 	}
 	display_caveat_first_time (shell, window);
 }
@@ -318,14 +336,14 @@ corba_start_desktop (PortableServer_Servant servant,
 
 static void
 corba_stop_desktop (PortableServer_Servant servant,
-		      CORBA_Environment *ev)
+		    CORBA_Environment *ev)
 {	
 	nautilus_application_close_desktop ();
 }
 
 static void
 corba_quit (PortableServer_Servant servant,
-		      CORBA_Environment *ev)
+	    CORBA_Environment *ev)
 {
 	nautilus_main_event_loop_quit ();
 }
@@ -341,50 +359,57 @@ corba_quit (PortableServer_Servant servant,
 static void
 save_window_states (void)
 {
-	GSList *windows, *iter;
-	GSList *out = NULL;
+	GList *windows, *iter;
+	GList *out;
+	NautilusWindow *window;
+	GdkWindow *gdk_window;
+	char *window_info;
+	int x, y, width, height;
+	char *location;
 
-	windows = nautilus_application_windows ();
-	for (iter = windows; iter; iter = g_slist_next (iter)) {
-		NautilusWindow *window = (NautilusWindow *) (iter->data);
-		GdkWindow *gdk_window = GTK_WIDGET (window)->window;
-		char *window_info;
-		int x, y, width, height;
+	out = NULL;
+	windows = nautilus_application_get_window_list ();
+	for (iter = windows; iter; iter = g_list_next (iter)) {
+		window = (NautilusWindow *) (iter->data);
 
-		/* need root origin (origin of all the window dressing) */
-		gdk_window_get_root_origin (gdk_window, &x, &y);
 		width = GTK_WIDGET (window)->allocation.width;
 		height = GTK_WIDGET (window)->allocation.height;
+
+		/* need root origin (origin of all the window dressing) */
+		gdk_window = GTK_WIDGET (window)->window;
+		gdk_window_get_root_origin (gdk_window, &x, &y);
+
+		location = nautilus_window_get_location (window);
 
 		/* FIXME bugzilla.eazel.com 4375
 		   This hardcoded subst should be parameterized
 		   at some point. This ensures that when eazel-install:nautilus
 		   restarts nautilus, it doesn't go to eazel-install:nautilus but
 		   to eazel: instead */
-		if (g_strncasecmp (window->location, "eazel-install:", 14) == 0) {
-			window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
-						       width, height, 
-						       x, y, 
-						       "eazel:"); 
-		} else {
-			window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
-						       width, height, 
-						       x, y, 
-						       window->location); 
+		if (nautilus_istr_has_prefix (location, "eazel-install:")) {
+			g_free (location);
+			location = g_strdup ("eazel:");
 		}
-		out = g_slist_prepend (out, window_info);
+
+		window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
+					       width, height, 
+					       x, y, 
+					       location);
+
+		g_free (location);
+
+		out = g_list_prepend (out, window_info);
 	}
 
 	nautilus_preferences_set_string_list (START_STATE_CONFIG, out);
-	g_slist_foreach (out, (GFunc)g_free, NULL);
-	g_slist_free (out);
+	nautilus_g_list_free_deep (out);
 }
 
 /* returns TRUE if there was state info which has been used to create new windows */
 static gboolean
 restore_window_states (NautilusShell *shell)
 {
-	GSList *start_state, *iter;
+	GList *start_state, *iter;
 	NautilusWindow *window;
 	char *window_info, *p, *uri;
 	int x, y, width, height;
@@ -394,7 +419,7 @@ restore_window_states (NautilusShell *shell)
 		return FALSE;
 	}
 
-	for (iter = start_state; iter; iter = g_slist_next (iter)) {
+	for (iter = start_state; iter; iter = iter->next) {
 		p = window_info = (char *) (iter->data);
 
 		width = strtol (p, &p, 10);
@@ -421,16 +446,14 @@ restore_window_states (NautilusShell *shell)
 		if (uri == NULL) {
 			nautilus_window_go_home (window);
 		} else {
-			nautilus_window_goto_uri (window, uri);
+			nautilus_window_go_to (window, uri);
 		}
 
 		gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
 		gtk_widget_set_usize (GTK_WIDGET (window), width, height);
 		display_caveat_first_time (shell, window);
-
-		g_free (window_info);
 	}
-	g_slist_free (start_state);
+	nautilus_g_list_free_deep (start_state);
 	nautilus_preferences_set_string_list (START_STATE_CONFIG, NULL);
 	return TRUE;
 }
@@ -443,5 +466,4 @@ corba_restart (PortableServer_Servant servant,
 
 	nautilus_main_event_loop_quit ();
 	nautilus_setenv ("_NAUTILUS_RESTART", "yes", 1);
-
 }

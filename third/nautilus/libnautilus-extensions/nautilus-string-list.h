@@ -68,6 +68,10 @@ void                nautilus_string_list_clear                     (NautilusStri
 /* Access the nth string in the collection.  Returns an strduped string. */
 char *              nautilus_string_list_nth                       (const NautilusStringList       *string_list,
 								    guint                           n);
+/* Access the nth string as an integer.  Return TRUE if the conversion was successful.  */
+gboolean            nautilus_string_list_nth_as_integer            (const NautilusStringList       *string_list,
+								    guint                           n,
+								    int *integer_result);
 /* Modify the nth string in the collection. */
 void                nautilus_string_list_modify_nth                (NautilusStringList             *string_list,
 								    guint                           n,
@@ -86,7 +90,7 @@ char *              nautilus_string_list_find_by_function          (const Nautil
 guint               nautilus_string_list_get_length                (const NautilusStringList       *string_list);
 
 /* Get the index for the given string.  Return NAUTILUS_STRING_LIST_NOT_FOUND if not found. */
-gint                nautilus_string_list_get_index_for_string      (const NautilusStringList       *string_list,
+int                 nautilus_string_list_get_index_for_string      (const NautilusStringList       *string_list,
 								    const char                     *string);
 /* Does the string list a equal string list b ? */
 gboolean            nautilus_string_list_equals                    (const NautilusStringList       *a,
@@ -115,7 +119,7 @@ void                nautilus_string_list_for_each                  (const Nautil
 char *              nautilus_string_list_get_longest_string        (const NautilusStringList       *string_list);
 
 /* Return the length of the longest string in the collection. */
-guint               nautilus_string_list_get_longest_string_length (const NautilusStringList       *string_list);
+int                 nautilus_string_list_get_longest_string_length (const NautilusStringList       *string_list);
 
 #endif /* NAUTILUS_STRING_LIST_H */
 

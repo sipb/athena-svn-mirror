@@ -1,6 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include "gdb3html.h"
 #include "toc-elements.h"
@@ -382,8 +384,10 @@ start_element(Context *context,
 	if (!g_strcasecmp (name, "xref")) {
 		context->stack = remove_head (context->stack);
 	} else if (!g_strcasecmp (name, "void")) {
-		context->stack = remove_head (context->stack);
-	}
+			context->stack = remove_head (context->stack);
+	       } else if (!g_strcasecmp (name, "anchor")) {
+                        context->stack = remove_head (context->stack);
+                      }
 }
 
 static void
@@ -705,7 +709,7 @@ print_footer (const char *prev, const char *home, const char *next)
 		g_print ("&nbsp;");
 	} else {
 		g_print ("<A HREF=\"%s\">&#60;&#60;&#60; ", prev);
-		g_print (_("Previous"));
+		g_print ("%s", _("Previous"));
 		g_print ("</A>");
 	}
 
@@ -714,7 +718,7 @@ print_footer (const char *prev, const char *home, const char *next)
 		g_print ("&nbsp;");
 	} else {
 		g_print ("<A HREF=\"%s\">", home);
-		g_print (_("Home"));
+		g_print ("%s", _("Home"));
 		g_print ("</A>");
 	}
 
@@ -723,7 +727,7 @@ print_footer (const char *prev, const char *home, const char *next)
 		g_print ("&nbsp;");
 	} else {
 		g_print ("<A HREF=\"%s\">", next);
-		g_print (_("Next"));
+		g_print ("%s", _("Next"));
 		g_print (" &#62;&#62;&#62;</A>");
 	}
 
@@ -857,6 +861,11 @@ main (int argc, char *argv[])
 	gchar *section = NULL;
 	gchar *ptr;
 	gchar *ptr2;
+
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
 
 	if (argc != 2) {
 		g_print ("Usage:  gnome-db2html2 FILE[?SECTIONID]\n\n");

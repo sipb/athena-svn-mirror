@@ -18,6 +18,10 @@ icon_DATA =\
 	about_background.png \
 	audio.png \
 	backgrounds.png \
+	bubble-LL.png \
+	bubble-LR.png \
+	bubble-UL.png \
+	bubble-UR.png \
 	chit_frame.png \
 	colors.png \
 	computer.png \
@@ -27,7 +31,6 @@ icon_DATA =\
 	druid_header.png \
 	druid_header_stretch.png \
 	druid_sidebar.png \
-	eazel-logo.gif \
 	emblem-OK.svg \
 	emblem-broken-link.png \
 	emblem-certified.svg \
@@ -43,10 +46,11 @@ icon_DATA =\
 	emblem-nowrite.svg \
 	emblem-ohno.svg \
 	emblem-personal.svg \
-	emblem-secret.svg \
-	emblem-shared.svg \
 	emblem-special.svg \
 	emblem-symbolic-link.png \
+        emblem-symbolic-link-12.png \
+        emblem-symbolic-link-24.png \
+        emblem-symbolic-link-36.png \
 	emblem-trash.png \
 	emblem-urgent.svg \
 	emblems.png \
@@ -126,7 +130,9 @@ icon_DATA =\
 	gnome-video-mpeg.png \
 	gnome-video-quicktime.png \
 	gnome-video-x-msvideo.png \
-	hand.svg \
+	hand.png \
+	hand-72.png \
+	hand-96.png \
 	home.png \
 	i-blockdev.png \
 	i-bookmark-20.png \
@@ -212,7 +218,6 @@ icon_DATA =\
 	loading-aa.png \
 	manual.png \
 	multi-ok.png \
-	nautilus-logo.png \
 	nautilus-mini-logo.png \
 	netscape.png \
 	not.png \
@@ -228,6 +233,7 @@ icon_DATA =\
 	theme_preview.png \
 	thumbnail_frame.aa.png \
 	thumbnail_frame.png \
+	tiny-alert.png \
 	trash-empty.png \
 	trash-full.png \
 	uparrow.png \

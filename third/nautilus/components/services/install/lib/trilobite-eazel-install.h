@@ -20,6 +20,7 @@ extern "C"
    typedef enum
    {
       GNOME_Trilobite_Eazel_UNKNOWN_STATUS,
+      GNOME_Trilobite_Eazel_CANCELLED,
       GNOME_Trilobite_Eazel_SOURCE_NOT_SUPPORTED,
       GNOME_Trilobite_Eazel_DEPENDENCY_FAIL,
       GNOME_Trilobite_Eazel_FILE_CONFLICT,
@@ -29,7 +30,8 @@ extern "C"
       GNOME_Trilobite_Eazel_PARTLY_RESOLVED,
       GNOME_Trilobite_Eazel_RESOLVED,
       GNOME_Trilobite_Eazel_ALREADY_INSTALLED,
-      GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY
+      GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY,
+      GNOME_Trilobite_Eazel_PACKSYS_FAILURE
    }
    GNOME_Trilobite_Eazel_PackageStatusEnum;
 #if !defined(TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageStatusEnum_0)
@@ -59,6 +61,84 @@ extern "C"
    extern const struct CORBA_TypeCode_struct
       TC_GNOME_Trilobite_Eazel_PackageStatusEnum_struct;
 #define TC_GNOME_Trilobite_Eazel_PackageStatusEnum ((CORBA_TypeCode)&TC_GNOME_Trilobite_Eazel_PackageStatusEnum_struct)
+#endif
+#endif
+#if !defined(_GNOME_Trilobite_Eazel_PackageModificationStatus_defined)
+#define _GNOME_Trilobite_Eazel_PackageModificationStatus_defined 1
+   typedef enum
+   {
+      GNOME_Trilobite_Eazel_UNTOUCHED,
+      GNOME_Trilobite_Eazel_INSTALLED,
+      GNOME_Trilobite_Eazel_UNINSTALLED,
+      GNOME_Trilobite_Eazel_UPGRADED,
+      GNOME_Trilobite_Eazel_DOWNGRADED
+   }
+   GNOME_Trilobite_Eazel_PackageModificationStatus;
+#if !defined(TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_0)
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_0 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_1 'r'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_2 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_3 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_4 'o'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_5 'b'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_6 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_7 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_8 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_9 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_10 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_11 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_12 'z'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_13 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_14 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_15 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_16 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_17 'n'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_18 's'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_19 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_20 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_21 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Trilobite_Eazel_PackageModificationStatus_struct;
+#define TC_GNOME_Trilobite_Eazel_PackageModificationStatus ((CORBA_TypeCode)&TC_GNOME_Trilobite_Eazel_PackageModificationStatus_struct)
+#endif
+#endif
+#if !defined(_GNOME_Trilobite_Eazel_Operation_defined)
+#define _GNOME_Trilobite_Eazel_Operation_defined 1
+   typedef enum
+   {
+      GNOME_Trilobite_Eazel_OPERATION_INSTALL,
+      GNOME_Trilobite_Eazel_OPERATION_UNINSTALL,
+      GNOME_Trilobite_Eazel_OPERATION_REVERT
+   }
+   GNOME_Trilobite_Eazel_Operation;
+#if !defined(TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_0)
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_0 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_1 'r'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_2 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_3 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_4 'o'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_5 'b'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_6 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_7 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_8 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_9 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_10 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_11 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_12 'z'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_13 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_14 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_15 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_16 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_17 'n'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_18 's'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_19 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_20 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_21 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Trilobite_Eazel_Operation_struct;
+#define TC_GNOME_Trilobite_Eazel_Operation ((CORBA_TypeCode)&TC_GNOME_Trilobite_Eazel_Operation_struct)
 #endif
 #endif
 #if !defined(_GNOME_Trilobite_Eazel_ProtocolEnum_defined)
@@ -244,6 +324,604 @@ extern "C"
 							      gpointer dat,
 							      CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
+#if !defined(_GNOME_Trilobite_Eazel_PackageDependencyStruct_defined)
+#define _GNOME_Trilobite_Eazel_PackageDependencyStruct_defined 1
+   typedef struct
+   {
+      CORBA_char *sense;
+      CORBA_char *version;
+      CORBA_char *package_md5;
+   }
+   GNOME_Trilobite_Eazel_PackageDependencyStruct;
+
+#if !defined(TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_0)
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_0 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_1 'r'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_2 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_3 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_4 'o'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_5 'b'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_6 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_7 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_8 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_9 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_10 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_11 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_12 'z'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_13 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_14 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_15 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_16 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_17 'n'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_18 's'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_19 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_20 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_21 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct;
+#define TC_GNOME_Trilobite_Eazel_PackageDependencyStruct ((CORBA_TypeCode)&TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct)
+#endif
+   extern GNOME_Trilobite_Eazel_PackageDependencyStruct
+      *GNOME_Trilobite_Eazel_PackageDependencyStruct__alloc(void);
+   extern gpointer
+      GNOME_Trilobite_Eazel_PackageDependencyStruct__free(gpointer mem,
+							  gpointer dat,
+							  CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#if !defined(_GNOME_Trilobite_Eazel_PackageBreaksEnum_defined)
+#define _GNOME_Trilobite_Eazel_PackageBreaksEnum_defined 1
+   typedef enum
+   {
+      GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT,
+      GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING
+   }
+   GNOME_Trilobite_Eazel_PackageBreaksEnum;
+#if !defined(TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_0)
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_0 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_1 'r'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_2 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_3 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_4 'o'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_5 'b'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_6 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_7 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_8 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_9 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_10 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_11 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_12 'z'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_13 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_14 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_15 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_16 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_17 'n'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_18 's'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_19 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_20 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_21 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_struct;
+#define TC_GNOME_Trilobite_Eazel_PackageBreaksEnum ((CORBA_TypeCode)&TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_struct)
+#endif
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_string) && !defined(_CORBA_sequence_CORBA_string_defined)
+#define ORBIT_DECL_CORBA_sequence_CORBA_string 1
+#define _CORBA_sequence_CORBA_string_defined 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_0 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_1 'r'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_2 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_3 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_4 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_5 'b'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_6 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_7 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_8 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_10 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_11 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_12 'z'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_13 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_14 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_15 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_16 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_17 'n'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_18 's'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_19 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_20 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_21 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_22 'l'
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_char **_buffer;
+      CORBA_boolean _release;
+   }
+   CORBA_sequence_CORBA_string;
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_1 'r'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_2 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_3 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_4 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_5 'b'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_6 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_7 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_10 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_11 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_12 'z'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_13 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_14 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_15 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_16 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_17 'n'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_18 's'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_19 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_20 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_21 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CORBA_string_struct;
+#define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
+#endif
+   extern CORBA_sequence_CORBA_string
+      *CORBA_sequence_CORBA_string__alloc(void);
+   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem,
+						     gpointer dat,
+						     CORBA_boolean free_strings);	/* ORBit internal use */
+   CORBA_char **CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len);
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_string) && !defined(_CORBA_sequence_CORBA_string_defined)
+#define ORBIT_DECL_CORBA_sequence_CORBA_string 1
+#define _CORBA_sequence_CORBA_string_defined 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_0 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_1 'r'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_2 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_3 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_4 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_5 'b'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_6 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_7 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_8 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_10 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_11 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_12 'z'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_13 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_14 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_15 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_16 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_17 'n'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_18 's'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_19 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_20 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_21 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_22 'l'
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_char **_buffer;
+      CORBA_boolean _release;
+   }
+   CORBA_sequence_CORBA_string;
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_1 'r'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_2 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_3 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_4 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_5 'b'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_6 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_7 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_10 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_11 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_12 'z'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_13 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_14 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_15 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_16 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_17 'n'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_18 's'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_19 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_20 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_21 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CORBA_string_struct;
+#define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
+#endif
+   extern CORBA_sequence_CORBA_string
+      *CORBA_sequence_CORBA_string__alloc(void);
+   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem,
+						     gpointer dat,
+						     CORBA_boolean free_strings);	/* ORBit internal use */
+   CORBA_char **CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len);
+#endif
+#if !defined(_GNOME_Trilobite_Eazel_PackageBreaksUnion_defined)
+#define _GNOME_Trilobite_Eazel_PackageBreaksUnion_defined 1
+   typedef struct
+   {
+      GNOME_Trilobite_Eazel_PackageBreaksEnum _d;
+      union
+      {
+	 CORBA_sequence_CORBA_string files;
+	 CORBA_sequence_CORBA_string features;
+      }
+      _u;
+   }
+   GNOME_Trilobite_Eazel_PackageBreaksUnion;
+#if !defined(TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_0)
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_0 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_1 'r'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_2 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_3 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_4 'o'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_5 'b'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_6 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_7 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_8 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_9 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_10 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_11 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_12 'z'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_13 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_14 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_15 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_16 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_17 'n'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_18 's'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_19 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_20 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_21 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_struct;
+#define TC_GNOME_Trilobite_Eazel_PackageBreaksUnion ((CORBA_TypeCode)&TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_struct)
+#endif
+   extern GNOME_Trilobite_Eazel_PackageBreaksUnion
+      *GNOME_Trilobite_Eazel_PackageBreaksUnion__alloc(void);
+   extern gpointer GNOME_Trilobite_Eazel_PackageBreaksUnion__free(gpointer
+								  mem,
+								  gpointer
+								  dat,
+								  CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#if !defined(_GNOME_Trilobite_Eazel_PackageBreaksStruct_defined)
+#define _GNOME_Trilobite_Eazel_PackageBreaksStruct_defined 1
+   typedef struct
+   {
+      CORBA_char *package_md5;
+      GNOME_Trilobite_Eazel_PackageBreaksUnion u;
+   }
+   GNOME_Trilobite_Eazel_PackageBreaksStruct;
+
+#if !defined(TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_0)
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_0 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_1 'r'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_2 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_3 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_4 'o'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_5 'b'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_6 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_7 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_8 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_9 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_10 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_11 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_12 'z'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_13 'e'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_14 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_15 '_'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_16 'i'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_17 'n'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_18 's'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_19 't'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_20 'a'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_21 'l'
+#define TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct;
+#define TC_GNOME_Trilobite_Eazel_PackageBreaksStruct ((CORBA_TypeCode)&TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct)
+#endif
+   extern GNOME_Trilobite_Eazel_PackageBreaksStruct
+      *GNOME_Trilobite_Eazel_PackageBreaksStruct__alloc(void);
+   extern gpointer GNOME_Trilobite_Eazel_PackageBreaksStruct__free(gpointer
+								   mem,
+								   gpointer
+								   dat,
+								   CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct) && !defined(_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_defined)
+#define ORBIT_DECL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct 1
+#define _CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_defined 1
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_0 't'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_1 'r'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_2 'i'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_3 'l'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_4 'o'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_5 'b'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_6 'i'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_7 't'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_8 'e'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_9 '_'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_10 'e'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_11 'a'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_12 'z'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_13 'e'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_14 'l'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_15 '_'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_16 'i'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_17 'n'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_18 's'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_19 't'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_20 'a'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_21 'l'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_22 'l'
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      GNOME_Trilobite_Eazel_PackageDependencyStruct *_buffer;
+      CORBA_boolean _release;
+   }
+   CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct;
+#if !defined(TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_0)
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_0 't'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_1 'r'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_2 'i'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_3 'l'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_4 'o'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_5 'b'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_6 'i'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_7 't'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_8 'e'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_9 '_'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_10 'e'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_11 'a'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_12 'z'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_13 'e'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_14 'l'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_15 '_'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_16 'i'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_17 'n'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_18 's'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_19 't'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_20 'a'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_21 'l'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct;
+#define TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct ((CORBA_TypeCode)&TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct)
+#endif
+   extern CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct
+      *CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct__alloc
+      (void);
+   extern gpointer
+      CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct__free
+      (gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+   GNOME_Trilobite_Eazel_PackageDependencyStruct
+      *CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_allocbuf
+      (CORBA_unsigned_long len);
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct) && !defined(_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_defined)
+#define ORBIT_DECL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct 1
+#define _CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_defined 1
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_0 't'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_1 'r'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_2 'i'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_3 'l'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_4 'o'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_5 'b'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_6 'i'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_7 't'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_8 'e'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_9 '_'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_10 'e'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_11 'a'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_12 'z'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_13 'e'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_14 'l'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_15 '_'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_16 'i'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_17 'n'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_18 's'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_19 't'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_20 'a'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_21 'l'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_22 'l'
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      GNOME_Trilobite_Eazel_PackageBreaksStruct *_buffer;
+      CORBA_boolean _release;
+   }
+   CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct;
+#if !defined(TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_0)
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_0 't'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_1 'r'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_2 'i'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_3 'l'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_4 'o'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_5 'b'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_6 'i'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_7 't'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_8 'e'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_9 '_'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_10 'e'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_11 'a'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_12 'z'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_13 'e'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_14 'l'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_15 '_'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_16 'i'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_17 'n'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_18 's'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_19 't'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_20 'a'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_21 'l'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct;
+#define TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct ((CORBA_TypeCode)&TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct)
+#endif
+   extern CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct
+      *CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct__alloc(void);
+   extern gpointer
+      CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct__free(gpointer
+								     mem,
+								     gpointer
+								     dat,
+								     CORBA_boolean free_strings);	/* ORBit internal use */
+   GNOME_Trilobite_Eazel_PackageBreaksStruct
+      *CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_allocbuf
+      (CORBA_unsigned_long len);
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_string) && !defined(_CORBA_sequence_CORBA_string_defined)
+#define ORBIT_DECL_CORBA_sequence_CORBA_string 1
+#define _CORBA_sequence_CORBA_string_defined 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_0 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_1 'r'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_2 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_3 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_4 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_5 'b'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_6 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_7 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_8 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_10 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_11 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_12 'z'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_13 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_14 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_15 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_16 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_17 'n'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_18 's'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_19 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_20 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_21 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_22 'l'
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_char **_buffer;
+      CORBA_boolean _release;
+   }
+   CORBA_sequence_CORBA_string;
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_1 'r'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_2 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_3 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_4 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_5 'b'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_6 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_7 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_10 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_11 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_12 'z'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_13 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_14 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_15 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_16 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_17 'n'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_18 's'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_19 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_20 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_21 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CORBA_string_struct;
+#define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
+#endif
+   extern CORBA_sequence_CORBA_string
+      *CORBA_sequence_CORBA_string__alloc(void);
+   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem,
+						     gpointer dat,
+						     CORBA_boolean free_strings);	/* ORBit internal use */
+   CORBA_char **CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len);
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_string) && !defined(_CORBA_sequence_CORBA_string_defined)
+#define ORBIT_DECL_CORBA_sequence_CORBA_string 1
+#define _CORBA_sequence_CORBA_string_defined 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_0 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_1 'r'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_2 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_3 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_4 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_5 'b'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_6 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_7 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_8 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_9 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_10 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_11 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_12 'z'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_13 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_14 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_15 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_16 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_17 'n'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_18 's'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_19 't'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_20 'a'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_21 'l'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_string_22 'l'
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_char **_buffer;
+      CORBA_boolean _release;
+   }
+   CORBA_sequence_CORBA_string;
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_1 'r'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_2 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_3 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_4 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_5 'b'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_6 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_7 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_8 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_9 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_10 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_11 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_12 'z'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_13 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_14 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_15 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_16 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_17 'n'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_18 's'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_19 't'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_20 'a'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_21 'l'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_string_22 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CORBA_string_struct;
+#define TC_CORBA_sequence_CORBA_string ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct)
+#endif
+   extern CORBA_sequence_CORBA_string
+      *CORBA_sequence_CORBA_string__alloc(void);
+   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem,
+						     gpointer dat,
+						     CORBA_boolean free_strings);	/* ORBit internal use */
+   CORBA_char **CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len);
+#endif
 #if !defined(ORBIT_DECL_CORBA_sequence_CORBA_string) && !defined(_CORBA_sequence_CORBA_string_defined)
 #define ORBIT_DECL_CORBA_sequence_CORBA_string 1
 #define _CORBA_sequence_CORBA_string_defined 1
@@ -321,17 +999,25 @@ extern "C"
       CORBA_char *version;
       CORBA_char *filename;
       CORBA_char *eazel_id;
+      CORBA_char *suite_id;
       CORBA_char *archtype;
       GNOME_Trilobite_Eazel_DistributionStruct distribution;
       CORBA_char *release;
       CORBA_char *summary;
       CORBA_char *description;
       CORBA_long bytesize;
+      CORBA_long filesize;
       CORBA_boolean toplevel;
+      CORBA_boolean anchor;
       CORBA_char *install_root;
       CORBA_char *md5;
       GNOME_Trilobite_Eazel_PackageStatusEnum status;
+      GNOME_Trilobite_Eazel_PackageModificationStatus modify_status;
+      CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct depends;
+      CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct breaks;
+      CORBA_sequence_CORBA_string modifies;
       CORBA_sequence_CORBA_string provides;
+      CORBA_sequence_CORBA_string features;
    }
    GNOME_Trilobite_Eazel_PackageDataStruct;
 
@@ -727,11 +1413,30 @@ extern "C"
 				   const
 				   GNOME_Trilobite_Eazel_PackageDataStruct *
 				   package, CORBA_Environment * ev);
+      void (*file_uniqueness_check) (PortableServer_Servant _servant,
+				     const
+				     GNOME_Trilobite_Eazel_PackageDataStruct *
+				     package, CORBA_Environment * ev);
+      void (*feature_consistency_check) (PortableServer_Servant _servant,
+					 const
+					 GNOME_Trilobite_Eazel_PackageDataStruct
+					 * package, CORBA_Environment * ev);
        CORBA_boolean(*preflight_check) (PortableServer_Servant _servant,
-					const CORBA_char * xml_packages,
+					const GNOME_Trilobite_Eazel_Operation
+					op,
+					const
+					GNOME_Trilobite_Eazel_PackageDataStructList
+					* package_tree,
 					const CORBA_long total_size,
 					const CORBA_long num_packages,
 					CORBA_Environment * ev);
+       CORBA_boolean(*save_transaction) (PortableServer_Servant _servant,
+					 const GNOME_Trilobite_Eazel_Operation
+					 op,
+					 const
+					 GNOME_Trilobite_Eazel_PackageDataStructList
+					 * package_tree,
+					 CORBA_Environment * ev);
       void (*install_progress) (PortableServer_Servant _servant,
 				const GNOME_Trilobite_Eazel_PackageDataStruct
 				* package, const CORBA_long package_num,
@@ -744,24 +1449,28 @@ extern "C"
       void (*uninstall_progress) (PortableServer_Servant _servant,
 				  const
 				  GNOME_Trilobite_Eazel_PackageDataStruct *
-				  package, const CORBA_long amount,
-				  const CORBA_long total,
+				  package, const CORBA_long package_num,
+				  const CORBA_long num_packages,
+				  const CORBA_long package_size_completed,
+				  const CORBA_long package_size_total,
+				  const CORBA_long total_size_completed,
+				  const CORBA_long total_size,
 				  CORBA_Environment * ev);
       void (*download_failed) (PortableServer_Servant _servant,
 			       const GNOME_Trilobite_Eazel_PackageDataStruct *
 			       package, CORBA_Environment * ev);
       void (*install_failed) (PortableServer_Servant _servant,
-			      const CORBA_char * xml_package,
-			      CORBA_Environment * ev);
+			      const
+			      GNOME_Trilobite_Eazel_PackageDataStructList *
+			      package_tree, CORBA_Environment * ev);
       void (*uninstall_failed) (PortableServer_Servant _servant,
-				const CORBA_char * xml_package,
-				CORBA_Environment * ev);
+				const
+				GNOME_Trilobite_Eazel_PackageDataStructList *
+				package_tree, CORBA_Environment * ev);
       void (*md5_check_failed) (PortableServer_Servant _servant,
 				const GNOME_Trilobite_Eazel_PackageDataStruct
 				* package, const CORBA_char * actual_md5,
 				CORBA_Environment * ev);
-       CORBA_boolean(*delete_files) (PortableServer_Servant _servant,
-				     CORBA_Environment * ev);
       void (*done) (PortableServer_Servant _servant,
 		    const CORBA_boolean result, CORBA_Environment * ev);
    }
@@ -814,10 +1523,11 @@ extern "C"
 				   CORBA_Environment * ev);
       void (*_set_force) (PortableServer_Servant _servant,
 			  const CORBA_boolean value, CORBA_Environment * ev);
-       CORBA_boolean(*_get_update) (PortableServer_Servant _servant,
-				    CORBA_Environment * ev);
-      void (*_set_update) (PortableServer_Servant _servant,
-			   const CORBA_boolean value, CORBA_Environment * ev);
+       CORBA_boolean(*_get_upgrade) (PortableServer_Servant _servant,
+				     CORBA_Environment * ev);
+      void (*_set_upgrade) (PortableServer_Servant _servant,
+			    const CORBA_boolean value,
+			    CORBA_Environment * ev);
        CORBA_boolean(*_get_downgrade) (PortableServer_Servant _servant,
 				       CORBA_Environment * ev);
       void (*_set_downgrade) (PortableServer_Servant _servant,
@@ -963,11 +1673,29 @@ extern "C"
       (GNOME_Trilobite_Eazel_InstallCallback _obj,
        const GNOME_Trilobite_Eazel_PackageDataStruct * package,
        CORBA_Environment * ev);
+   void
+      GNOME_Trilobite_Eazel_InstallCallback_file_uniqueness_check
+      (GNOME_Trilobite_Eazel_InstallCallback _obj,
+       const GNOME_Trilobite_Eazel_PackageDataStruct * package,
+       CORBA_Environment * ev);
+   void
+      GNOME_Trilobite_Eazel_InstallCallback_feature_consistency_check
+      (GNOME_Trilobite_Eazel_InstallCallback _obj,
+       const GNOME_Trilobite_Eazel_PackageDataStruct * package,
+       CORBA_Environment * ev);
    CORBA_boolean
       GNOME_Trilobite_Eazel_InstallCallback_preflight_check
       (GNOME_Trilobite_Eazel_InstallCallback _obj,
-       const CORBA_char * xml_packages, const CORBA_long total_size,
-       const CORBA_long num_packages, CORBA_Environment * ev);
+       const GNOME_Trilobite_Eazel_Operation op,
+       const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+       const CORBA_long total_size, const CORBA_long num_packages,
+       CORBA_Environment * ev);
+   CORBA_boolean
+      GNOME_Trilobite_Eazel_InstallCallback_save_transaction
+      (GNOME_Trilobite_Eazel_InstallCallback _obj,
+       const GNOME_Trilobite_Eazel_Operation op,
+       const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+       CORBA_Environment * ev);
    void
       GNOME_Trilobite_Eazel_InstallCallback_install_progress
       (GNOME_Trilobite_Eazel_InstallCallback _obj,
@@ -981,7 +1709,10 @@ extern "C"
       GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
       (GNOME_Trilobite_Eazel_InstallCallback _obj,
        const GNOME_Trilobite_Eazel_PackageDataStruct * package,
-       const CORBA_long amount, const CORBA_long total,
+       const CORBA_long package_num, const CORBA_long num_packages,
+       const CORBA_long package_size_completed,
+       const CORBA_long package_size_total,
+       const CORBA_long total_size_completed, const CORBA_long total_size,
        CORBA_Environment * ev);
    void
       GNOME_Trilobite_Eazel_InstallCallback_download_failed
@@ -991,19 +1722,18 @@ extern "C"
    void
       GNOME_Trilobite_Eazel_InstallCallback_install_failed
       (GNOME_Trilobite_Eazel_InstallCallback _obj,
-       const CORBA_char * xml_package, CORBA_Environment * ev);
+       const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+       CORBA_Environment * ev);
    void
       GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed
       (GNOME_Trilobite_Eazel_InstallCallback _obj,
-       const CORBA_char * xml_package, CORBA_Environment * ev);
+       const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+       CORBA_Environment * ev);
    void
       GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
       (GNOME_Trilobite_Eazel_InstallCallback _obj,
        const GNOME_Trilobite_Eazel_PackageDataStruct * package,
        const CORBA_char * actual_md5, CORBA_Environment * ev);
-   CORBA_boolean
-      GNOME_Trilobite_Eazel_InstallCallback_delete_files
-      (GNOME_Trilobite_Eazel_InstallCallback _obj, CORBA_Environment * ev);
    void
       GNOME_Trilobite_Eazel_InstallCallback_done
       (GNOME_Trilobite_Eazel_InstallCallback _obj, const CORBA_boolean result,
@@ -1050,13 +1780,14 @@ extern "C"
 						 const CORBA_boolean value,
 						 CORBA_Environment * ev);
    CORBA_boolean
-      GNOME_Trilobite_Eazel_Install__get_update(GNOME_Trilobite_Eazel_Install
-						_obj, CORBA_Environment * ev);
+      GNOME_Trilobite_Eazel_Install__get_upgrade(GNOME_Trilobite_Eazel_Install
+						 _obj,
+						 CORBA_Environment * ev);
    void
-      GNOME_Trilobite_Eazel_Install__set_update(GNOME_Trilobite_Eazel_Install
-						_obj,
-						const CORBA_boolean value,
-						CORBA_Environment * ev);
+      GNOME_Trilobite_Eazel_Install__set_upgrade(GNOME_Trilobite_Eazel_Install
+						 _obj,
+						 const CORBA_boolean value,
+						 CORBA_Environment * ev);
    CORBA_boolean
       GNOME_Trilobite_Eazel_Install__get_downgrade
       (GNOME_Trilobite_Eazel_Install _obj, CORBA_Environment * ev);
@@ -1234,14 +1965,51 @@ extern "C"
 					  GNOME_Trilobite_Eazel_PackageDataStruct
 					  * package, CORBA_Environment * ev));
    void
+      _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_file_uniqueness_check
+      (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_file_uniqueness_check) (PortableServer_Servant _servant,
+					    const
+					    GNOME_Trilobite_Eazel_PackageDataStruct
+					    * package,
+					    CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_feature_consistency_check
+      (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_feature_consistency_check) (PortableServer_Servant
+						_servant,
+						const
+						GNOME_Trilobite_Eazel_PackageDataStruct
+						* package,
+						CORBA_Environment * ev));
+   void
       _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_preflight_check
       (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        CORBA_boolean(*_impl_preflight_check) (PortableServer_Servant _servant,
-					      const CORBA_char * xml_packages,
+					      const
+					      GNOME_Trilobite_Eazel_Operation
+					      op,
+					      const
+					      GNOME_Trilobite_Eazel_PackageDataStructList
+					      * package_tree,
 					      const CORBA_long total_size,
 					      const CORBA_long num_packages,
 					      CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_save_transaction
+      (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       CORBA_boolean(*_impl_save_transaction) (PortableServer_Servant
+					       _servant,
+					       const
+					       GNOME_Trilobite_Eazel_Operation
+					       op,
+					       const
+					       GNOME_Trilobite_Eazel_PackageDataStructList
+					       * package_tree,
+					       CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_install_progress
       (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
@@ -1265,8 +2033,15 @@ extern "C"
        void (*_impl_uninstall_progress) (PortableServer_Servant _servant,
 					 const
 					 GNOME_Trilobite_Eazel_PackageDataStruct
-					 * package, const CORBA_long amount,
-					 const CORBA_long total,
+					 * package,
+					 const CORBA_long package_num,
+					 const CORBA_long num_packages,
+					 const CORBA_long
+					 package_size_completed,
+					 const CORBA_long package_size_total,
+					 const CORBA_long
+					 total_size_completed,
+					 const CORBA_long total_size,
 					 CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_download_failed
@@ -1281,14 +2056,17 @@ extern "C"
       (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        void (*_impl_install_failed) (PortableServer_Servant _servant,
-				     const CORBA_char * xml_package,
-				     CORBA_Environment * ev));
+				     const
+				     GNOME_Trilobite_Eazel_PackageDataStructList
+				     * package_tree, CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed
       (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        void (*_impl_uninstall_failed) (PortableServer_Servant _servant,
-				       const CORBA_char * xml_package,
+				       const
+				       GNOME_Trilobite_Eazel_PackageDataStructList
+				       * package_tree,
 				       CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
@@ -1300,12 +2078,6 @@ extern "C"
 				       * package,
 				       const CORBA_char * actual_md5,
 				       CORBA_Environment * ev));
-   void
-      _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_delete_files
-      (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       CORBA_boolean(*_impl_delete_files) (PortableServer_Servant _servant,
-					   CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Trilobite_Eazel_InstallCallback_done
       (POA_GNOME_Trilobite_Eazel_InstallCallback * _ORBIT_servant,
@@ -1379,18 +2151,18 @@ extern "C"
 				 const CORBA_boolean value,
 				 CORBA_Environment * ev));
    void
-      _ORBIT_skel_GNOME_Trilobite_Eazel_Install__get_update
+      _ORBIT_skel_GNOME_Trilobite_Eazel_Install__get_upgrade
       (POA_GNOME_Trilobite_Eazel_Install * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       CORBA_boolean(*_impl__get_update) (PortableServer_Servant _servant,
-					  CORBA_Environment * ev));
+       CORBA_boolean(*_impl__get_upgrade) (PortableServer_Servant _servant,
+					   CORBA_Environment * ev));
    void
-      _ORBIT_skel_GNOME_Trilobite_Eazel_Install__set_update
+      _ORBIT_skel_GNOME_Trilobite_Eazel_Install__set_upgrade
       (POA_GNOME_Trilobite_Eazel_Install * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl__set_update) (PortableServer_Servant _servant,
-				  const CORBA_boolean value,
-				  CORBA_Environment * ev));
+       void (*_impl__set_upgrade) (PortableServer_Servant _servant,
+				   const CORBA_boolean value,
+				   CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Trilobite_Eazel_Install__get_downgrade
       (POA_GNOME_Trilobite_Eazel_Install * _ORBIT_servant,

@@ -4,7 +4,7 @@
                                   belong in bonobo. Perhaps some of these will be
                                   actually rolled into bonobo someday.
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -21,17 +21,27 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: John Sullivan <sullivan@eazel.com>
+   Authors: John Sullivan <sullivan@eazel.com>
+            Darin Adler <darin@eazel.com>
 */
 
 #include <config.h>
 #include "nautilus-bonobo-extensions.h"
+
 #include "nautilus-string.h"
-
 #include <bonobo/bonobo-ui-util.h>
+#include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-
 #include <liboaf/oaf-async.h>
+
+struct NautilusBonoboActivationHandle {
+	NautilusBonoboActivationHandle **early_completion_hook;
+	NautilusBonoboActivationCallback callback;
+	gpointer callback_data;
+	Bonobo_Unknown activated_object;
+	gboolean cancel;
+	guint idle_id;
+};
 
 void
 nautilus_bonobo_set_accelerator (BonoboUIComponent *ui,
@@ -214,17 +224,17 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 	 */
 	if (is_toggle) {
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" id=\"%s\" type=\"toggle\"/>\n", 
-						item_name, encoded_label, command_name);
+					    item_name, encoded_label, command_name);
 	} else if (pixbuf != NULL) {
 		/* Encode pixbuf type and data into XML string */			
 		pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
 		
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
-						item_name, encoded_label, command_name, pixbuf_data);	
+					    item_name, encoded_label, command_name, pixbuf_data);	
 		g_free (pixbuf_data);
 	} else {
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\"/>\n", 
-						item_name, encoded_label, command_name);
+					    item_name, encoded_label, command_name);
 	}
 	g_free (encoded_label);
 	g_free (item_name);
@@ -241,7 +251,7 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 	g_free (xml_command);
 
 	g_free (command_name);
-}			 
+}
 
 /* Add a menu item specified by number into a given path. Used for
  * dynamically creating a related series of menu items. Each index
@@ -323,32 +333,33 @@ remove_commands (BonoboUIComponent *ui, const char *container_path)
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
 	g_return_if_fail (container_path != NULL);
 
+	path_node = bonobo_ui_component_get_tree (ui, container_path, TRUE, NULL);
+	if (path_node == NULL) {
+		return;
+	}
+
 	bonobo_ui_component_freeze (ui, NULL);
 
-	path_node = bonobo_ui_component_get_tree (ui, container_path, TRUE, NULL);
-
-	if (path_node != NULL) {
-		for (child_node = bonobo_ui_node_children (path_node);
-		     child_node != NULL;
-		     child_node = bonobo_ui_node_next (child_node)) {
-			verb_name = bonobo_ui_node_get_attr (child_node, "verb");
-			if (verb_name != NULL) {
-				bonobo_ui_component_remove_verb (ui, verb_name);
-				bonobo_ui_node_free_string (verb_name);
-			} else {
+	for (child_node = bonobo_ui_node_children (path_node);
+	     child_node != NULL;
+	     child_node = bonobo_ui_node_next (child_node)) {
+		verb_name = bonobo_ui_node_get_attr (child_node, "verb");
+		if (verb_name != NULL) {
+			bonobo_ui_component_remove_verb (ui, verb_name);
+			bonobo_ui_node_free_string (verb_name);
+		} else {
 				/* Only look for an id if there's no verb */
-				id_name = bonobo_ui_node_get_attr (child_node, "id");
-				if (id_name != NULL) {
-					bonobo_ui_component_remove_listener (ui, id_name);
-					bonobo_ui_node_free_string (id_name);
-				}
+			id_name = bonobo_ui_node_get_attr (child_node, "id");
+			if (id_name != NULL) {
+				bonobo_ui_component_remove_listener (ui, id_name);
+				bonobo_ui_node_free_string (id_name);
 			}
-
 		}
 	}
 
-	bonobo_ui_node_free (path_node);
 	bonobo_ui_component_thaw (ui, NULL);
+
+	bonobo_ui_node_free (path_node);
 }
 
 /**
@@ -382,7 +393,7 @@ nautilus_bonobo_remove_menu_items_and_commands (BonoboUIComponent *ui,
 /* Call to set the user-visible label of a menu item to a string
  * containing an underscore accelerator. The underscore is stripped
  * off before setting the label of the command, because pop-up menu
- * and tool bar button labels shouldn't have the underscore.
+ * and toolbar button labels shouldn't have the underscore.
  */
 void	 
 nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
@@ -405,8 +416,8 @@ nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
 
 void
 nautilus_bonobo_set_icon (BonoboUIComponent *ui,
-			  const char        *path,
-			  const char        *icon_relative_path)
+			  const char *path,
+			  const char *icon_relative_path)
 {
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
 	g_return_if_fail (path != NULL);
@@ -423,44 +434,59 @@ nautilus_bonobo_set_icon (BonoboUIComponent *ui,
 				      "filename", NULL);
 }
 
-struct _NautilusBonoboActivate {
-	NautilusBonoboActivateCallback activation_callback;
-	gpointer callback_data;
-	gboolean stop_activation;
-};
-
 static void
-oaf_activation_callback (CORBA_Object object_reference, 
-			 const char *error_reason, 
-			 gpointer user_data)
+activation_handle_done (NautilusBonoboActivationHandle *handle)
 {
-	NautilusBonoboActivate *activate_struct;
-	CORBA_Environment ev;
-	
-	activate_struct = (NautilusBonoboActivate *) user_data;
-	CORBA_exception_init (&ev);
-	
-	if (CORBA_Object_is_nil (object_reference, &ev)) {
-		/* error */
-		activate_struct->activation_callback (CORBA_OBJECT_NIL, 
-						      activate_struct->callback_data);
-
-	} else if (!activate_struct->stop_activation) {
-		
-		/* report activation to caller */
-		activate_struct->activation_callback (object_reference, 
-						      activate_struct->callback_data);
-		
-	} else if (activate_struct->stop_activation) {
-		activate_struct->stop_activation = FALSE;
-		
-		Bonobo_Unknown_unref (object_reference, &ev);
-		/* it is no use to check for exception here since we 
-		   have no way of reporting it... */
+	if (handle->early_completion_hook != NULL) {
+		g_assert (*handle->early_completion_hook == handle);
+		*handle->early_completion_hook = NULL;
 	}
-	CORBA_exception_free (&ev);
 }
 
+static gboolean
+activation_idle_callback (gpointer callback_data)
+{
+	NautilusBonoboActivationHandle *handle;
+	
+	handle = (NautilusBonoboActivationHandle *) callback_data;
+
+	(* handle->callback) (handle,
+			      handle->activated_object,
+			      handle->callback_data);
+
+	activation_handle_done (handle);
+	g_free (handle);
+
+	return FALSE;
+}
+
+static void
+activation_cancel (NautilusBonoboActivationHandle *handle)
+{
+	bonobo_object_release_unref (handle->activated_object, NULL);
+
+	activation_handle_done (handle);
+	g_free (handle);
+}
+
+static void
+oaf_activation_callback (Bonobo_Unknown activated_object, 
+			 const char *error_reason, 
+			 gpointer callback_data)
+{
+	NautilusBonoboActivationHandle *handle;
+	
+	handle = (NautilusBonoboActivationHandle *) callback_data;
+
+	handle->activated_object = activated_object;
+
+	if (handle->cancel) {
+		activation_cancel (handle);
+	} else {
+		handle->idle_id = gtk_idle_add (activation_idle_callback,
+						handle);
+	}
+}
 
 /**
  * nautilus_bonobo_activate_from_id:
@@ -469,67 +495,58 @@ oaf_activation_callback (CORBA_Object object_reference,
  * @user_data: data to pass to callback when activation finished.
  *
  * This function will return NULL if something bad happened during 
- * activation. Alternatively, it will return a structure you are 
- * supposed to free yourself when you have received a call in your
- * callback.
+ * activation.
  */
-NautilusBonoboActivate *
-nautilus_bonobo_activate_from_id (const char *iid, 
-				  NautilusBonoboActivateCallback callback, 
-				  gpointer user_data)
+NautilusBonoboActivationHandle *
+nautilus_bonobo_activate_from_id (const char *iid,
+				  NautilusBonoboActivationCallback callback,
+				  gpointer callback_data)
 {
-	NautilusBonoboActivate *activate_structure;
-	CORBA_Environment ev;
+	NautilusBonoboActivationHandle *handle;
 
-	if (iid == NULL || callback == NULL) {
-		return NULL;
+	g_return_val_if_fail (iid != NULL, NULL);
+	g_return_val_if_fail (callback != NULL, NULL);
+
+	handle = g_new0 (NautilusBonoboActivationHandle, 1);
+
+	handle->early_completion_hook = &handle;
+	handle->callback = callback;
+	handle->callback_data = callback_data;
+
+	oaf_activate_from_id_async ((char *) iid, 0,
+				    oaf_activation_callback, 
+				    handle, NULL);
+
+	if (handle != NULL) {
+		handle->early_completion_hook = NULL;
 	}
 
-	activate_structure = g_new0 (NautilusBonoboActivate, 1);
-
-	activate_structure->stop_activation = FALSE;
-	activate_structure->activation_callback = callback;
-	activate_structure->callback_data = user_data;
-
-	CORBA_exception_init (&ev);
-	oaf_activate_from_id_async ((const OAF_ActivationID) iid, 0, oaf_activation_callback, 
-				    activate_structure , &ev);
-
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		return NULL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	return activate_structure;
+	return handle;
 }
 
 /**
- * nautilus_bonobo_activate_from_id:
+ * nautilus_bonobo_activate_stop:
  * @iid: iid of component to activate.
  * @callback: callback to call when activation finished.
  * @user_data: data to pass to callback when activation finished.
  *
  * Stops activation of a component. Your callback will not be called
  * after this call.
- * you should free your %NautilusBonoboActivate structure through
- * nautilus_bonobo_activate_free after this call.
  */
-
 void 
-nautilus_bonobo_activate_stop (NautilusBonoboActivate *activate_structure)
+nautilus_bonobo_activate_cancel (NautilusBonoboActivationHandle *handle)
 {
-	activate_structure->stop_activation = TRUE;
-}
+	if (handle == NULL) {
+		return;
+	}
 
-/**
- * nautilus_bonobo_activate_free: 
- * @activate_structure: structure to free.
- * 
- * Frees the corresponding structure.
- */
-void
-nautilus_bonobo_activate_free (NautilusBonoboActivate *activate_structure)
-{
-	g_free (activate_structure);
+	activation_handle_done (handle);
+
+	if (handle->idle_id == 0) {
+		/* no way to cancel the OAF part, so we just set a flag */
+		handle->cancel = TRUE;
+	} else {
+		gtk_idle_remove (handle->idle_id);
+		activation_cancel (handle);
+	}
 }

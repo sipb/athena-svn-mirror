@@ -37,8 +37,13 @@
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
 enum {
+	FILE_CONFLICT_CHECK,
+	FILE_UNIQUENESS_CHECK,
+	FEATURE_CONSISTENCY_CHECK,
+
 	DOWNLOAD_PROGRESS,
 	PREFLIGHT_CHECK,
+	SAVE_TRANSACTION,
 	INSTALL_PROGRESS,
 	UNINSTALL_PROGRESS,
 
@@ -69,6 +74,39 @@ typedef struct {
 } impl_POA_GNOME_Trilobite_Eazel_InstallCallback;
 
 static void
+impl_file_conflict_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+			  const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+			  CORBA_Environment * ev)
+{
+	PackageData *pack;
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[FILE_CONFLICT_CHECK], pack);
+	gtk_object_unref (GTK_OBJECT (pack));
+}
+
+static void
+impl_file_uniqueness_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+			    const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+			    CORBA_Environment * ev)
+{
+	PackageData *pack;
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[FILE_UNIQUENESS_CHECK], pack);
+	gtk_object_unref (GTK_OBJECT (pack));
+}
+
+static void
+impl_feature_consistency_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+				const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+				CORBA_Environment * ev)
+{
+	PackageData *pack;
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[FEATURE_CONSISTENCY_CHECK], pack);
+	gtk_object_unref (GTK_OBJECT (pack));
+}
+
+static void
 impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 			const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
 			const CORBA_long amount,
@@ -77,40 +115,85 @@ impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 {
 	PackageData *pack;
 
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_PROGRESS], pack, amount, total);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static CORBA_boolean
 impl_preflight_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		      const CORBA_char *xmlcorbapacks,
+		      const GNOME_Trilobite_Eazel_Operation corba_op,
+		      const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
 		      const CORBA_long total_bytes,
 		      const CORBA_long total_packages,
 		      CORBA_Environment * ev)
 {
-	GList *categories;
+	GList *packages;
 	gboolean result;
-	
-	categories = parse_memory_xml_package_list ((char*)xmlcorbapacks, strlen (xmlcorbapacks));
-	if (categories==NULL) {
-		g_warning ("install_failed called with error in xml.");
-		g_warning ("XML is = \n%s", xmlcorbapacks);
-	} else {
-		CategoryData *cat;
-		cat = (CategoryData*)categories->data;
-		if (cat->packages==NULL) {
-			g_warning ("install_failed called with error in xml.");
-			g_warning ("XML is = \n%s", xmlcorbapacks);
-		} else {
-			gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], 
-					 cat->packages,
-					 total_bytes, 
-					 total_packages,
-					 &result);
-		}
+	EazelInstallCallbackOperation op = EazelInstallCallbackOperation_INSTALL;
+
+	switch (corba_op) {
+	case GNOME_Trilobite_Eazel_OPERATION_INSTALL:
+		op = EazelInstallCallbackOperation_INSTALL;
+		break;
+	case GNOME_Trilobite_Eazel_OPERATION_UNINSTALL:
+		op = EazelInstallCallbackOperation_UNINSTALL;
+		break;
+	case GNOME_Trilobite_Eazel_OPERATION_REVERT:
+		op = EazelInstallCallbackOperation_REVERT;
+		break;
 	}
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+
+	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
+	if (packages == NULL) {
+		g_warning ("preflight called with error in package tree!");
+	} else {
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], 
+				 op, 
+				 packages,
+				 total_bytes, 
+				 total_packages,
+				 &result);
+	}
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+	g_list_free (packages);
+
+	return result ? CORBA_TRUE : CORBA_FALSE;
+}
+
+static CORBA_boolean
+impl_save_transaction (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+		      const GNOME_Trilobite_Eazel_Operation corba_op,
+		      const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
+		      CORBA_Environment * ev)
+{
+	GList *packages;
+	gboolean result;
+	EazelInstallCallbackOperation op = EazelInstallCallbackOperation_INSTALL;
+
+	switch (corba_op) {
+	case GNOME_Trilobite_Eazel_OPERATION_INSTALL:
+		op = EazelInstallCallbackOperation_INSTALL;
+		break;
+	case GNOME_Trilobite_Eazel_OPERATION_UNINSTALL:
+		op = EazelInstallCallbackOperation_UNINSTALL;
+		break;
+	case GNOME_Trilobite_Eazel_OPERATION_REVERT:
+		op = EazelInstallCallbackOperation_REVERT;
+		break;
+	}
+
+	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
+	if (packages == NULL) {
+		g_warning ("save transaction called with error in package tree!");
+	} else {
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[SAVE_TRANSACTION], 
+				 op, 
+				 packages,
+				 &result);
+	}
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+	g_list_free (packages);
 
 	return result ? CORBA_TRUE : CORBA_FALSE;
 }
@@ -122,9 +205,9 @@ impl_download_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 {
 	PackageData *pack;
 
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_FAILED], pack);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
@@ -134,11 +217,11 @@ impl_dep_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		CORBA_Environment * ev)
 {
 	PackageData *pack, *needs;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
-	needs = packagedata_from_corba_packagedatastruct (*corbaneeds);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	needs = packagedata_from_corba_packagedatastruct (corbaneeds);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DEPENDENCY_CHECK], pack, needs);
-	packagedata_destroy (pack, TRUE);
-	packagedata_destroy (needs, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
+	gtk_object_unref (GTK_OBJECT (needs));
 }
 
 static void 
@@ -150,26 +233,31 @@ impl_install_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		       CORBA_Environment * ev) 
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_PROGRESS], 
 			 pack,
 			 package_num, num_packages,
 			 package_size_completed, package_size_total,
 			 total_size_completed, total_size);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
 impl_uninstall_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 			 const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
-			 const CORBA_long amount,
-			 const CORBA_long total,
-			 CORBA_Environment * ev)
+			 const CORBA_long package_num, const CORBA_long num_packages, 
+			 const CORBA_long package_size_completed, const CORBA_long package_size_total,
+			 const CORBA_long total_size_completed, const CORBA_long total_size,
+			 CORBA_Environment * ev) 
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], pack, amount, total);
-	packagedata_destroy (pack, TRUE);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], 
+			 pack,
+			 package_num, num_packages,
+			 package_size_completed, package_size_total,
+			 total_size_completed, total_size);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
@@ -179,71 +267,45 @@ impl_md5_check_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		       CORBA_Environment * ev)
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[MD5_CHECK_FAILED], pack, actual_md5);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
 impl_install_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		     const CORBA_char *xmlcorbapack,
+		     const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
 		     CORBA_Environment * ev)
 {
-	GList *categories;
+	GList *packages;
 
-	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	if (categories==NULL) {
-		g_warning ("install_failed called with error in xml.");
-		g_warning ("XML is = \n%s", xmlcorbapack);
+	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
+	if (packages == NULL) {
+		g_warning ("install_failed called with error in package tree!");
 	} else {
-		CategoryData *cat;
-		cat = (CategoryData*)categories->data;
-		if (cat->packages==NULL) {
-			g_warning ("install_failed called with error in xml.");
-			g_warning ("XML is = \n%s", xmlcorbapack);
-		} else {
-			PackageData *pack;
-			pack = (PackageData*)cat->packages->data;
-			gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
-		}
+		/* always called with only one package at the root of the tree */
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], PACKAGEDATA (packages->data));
 	}
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+	g_list_free (packages);
 }
 
 static void 
 impl_uninstall_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		       const CORBA_char *xmlcorbapack,
+		       const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
 		       CORBA_Environment * ev)
 {
-	GList *categories;
+	GList *packages;
 
-	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	if (categories==NULL) {
-		g_warning ("uninstall_failed called with error in xml.");
-		g_warning ("XML is = \n%s", xmlcorbapack);
+	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
+	if (packages == NULL) {
+		g_warning ("uninstall_failed called with error in package tree!");
 	} else {
-		CategoryData *cat;
-		cat = (CategoryData*)categories->data;
-		if (cat->packages==NULL) {
-			g_warning ("uninstall_failed called with error in xml.");
-			g_warning ("XML is = \n%s", xmlcorbapack);
-		} else {
-			PackageData *pack;
-			pack = (PackageData*)cat->packages->data;
-			gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], pack);
-		}
+		/* always called with only one package at the root of the tree */
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], PACKAGEDATA (packages->data));
 	}
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
-}
-
-static CORBA_boolean
-impl_delete_files (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		   CORBA_Environment *ev)
-{
-	gboolean result;
-
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DELETE_FILES], &result);
-	return result ? CORBA_TRUE : CORBA_FALSE;
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+	g_list_free (packages);
 }
 
 static void 
@@ -260,17 +322,22 @@ eazel_install_callback_get_epv ()
 	POA_GNOME_Trilobite_Eazel_InstallCallback__epv *epv;
 
 	epv = g_new0 (POA_GNOME_Trilobite_Eazel_InstallCallback__epv, 1);
-	epv->download_progress   = (gpointer)&impl_download_progress;
-	epv->preflight_check     = (gpointer)&impl_preflight_check;
-	epv->dependency_check    = (gpointer)&impl_dep_check;
-	epv->install_progress    = (gpointer)&impl_install_progress;
-	epv->uninstall_progress  = (gpointer)&impl_uninstall_progress;
-	epv->md5_check_failed    = (gpointer)&impl_md5_check_failed;
-	epv->install_failed      = (gpointer)&impl_install_failed;
-	epv->download_failed     = (gpointer)&impl_download_failed;
-	epv->uninstall_failed    = (gpointer)&impl_uninstall_failed;
-	epv->delete_files	 = (gpointer)&impl_delete_files;
-	epv->done                = (gpointer)&impl_done;
+
+	epv->file_conflict_check   = (gpointer)&impl_file_conflict_check;
+	epv->file_uniqueness_check = (gpointer)&impl_file_uniqueness_check;
+	epv->feature_consistency_check   = (gpointer)&impl_feature_consistency_check;
+
+	epv->download_progress     = (gpointer)&impl_download_progress;
+	epv->preflight_check       = (gpointer)&impl_preflight_check;
+	epv->save_transaction      = (gpointer)&impl_save_transaction;
+	epv->dependency_check      = (gpointer)&impl_dep_check;
+	epv->install_progress      = (gpointer)&impl_install_progress;
+	epv->uninstall_progress    = (gpointer)&impl_uninstall_progress;
+	epv->md5_check_failed      = (gpointer)&impl_md5_check_failed;
+	epv->install_failed        = (gpointer)&impl_install_failed;
+	epv->download_failed       = (gpointer)&impl_download_failed;
+	epv->uninstall_failed      = (gpointer)&impl_uninstall_failed;
+	epv->done                  = (gpointer)&impl_done;
 
 	return epv;
 };
@@ -362,6 +429,28 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 	((POA_GNOME_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->GNOME_Trilobite_Eazel_InstallCallback_epv = 
 		eazel_install_callback_get_epv ();
 
+	signals[FILE_CONFLICT_CHECK] = 
+		gtk_signal_new ("file_conflict_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, file_conflict_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[FILE_UNIQUENESS_CHECK] = 
+		gtk_signal_new ("file_uniqueness_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, file_uniqueness_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[FEATURE_CONSISTENCY_CHECK] = 
+		gtk_signal_new ("feature_consistency_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, feature_consistency_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
 	signals[DOWNLOAD_PROGRESS] = 
 		gtk_signal_new ("download_progress",
 				GTK_RUN_LAST,
@@ -374,22 +463,33 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, preflight_check),
-				gtk_marshal_BOOL__POINTER_INT_INT,
-				GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT,
+				GTK_TYPE_BOOL, 4, GTK_TYPE_ENUM, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+	signals[SAVE_TRANSACTION] = 
+		gtk_signal_new ("save_transaction",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, save_transaction),
+				eazel_install_gtk_marshal_BOOL__ENUM_POINTER,
+				GTK_TYPE_BOOL, 2, GTK_TYPE_ENUM, GTK_TYPE_POINTER);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, install_progress),
 				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
-				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_TYPE_NONE, 7, 
+				GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[UNINSTALL_PROGRESS] = 
 		gtk_signal_new ("uninstall_progress",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, uninstall_progress),
-				gtk_marshal_NONE__POINTER_INT_INT,
-				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
+				GTK_TYPE_NONE, 7, 
+				GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[DOWNLOAD_FAILED] = 
 		gtk_signal_new ("download_failed",
 				GTK_RUN_LAST,
@@ -444,7 +544,6 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 
 static void
 eazel_install_callback_initialize (EazelInstallCallback *service) {
-	/* g_message ("in eazel_install_callback_initialize"); */
 	CORBA_Environment ev;
 
 	g_assert (service != NULL);
@@ -479,8 +578,6 @@ GtkType
 eazel_install_callback_get_type (void)
 {
 	static GtkType service_type = 0;
-
-	/* g_message ("into eazel_install_callback_get_type");  */
 
 	/* First time it's called ? */
 	if (!service_type)
@@ -572,7 +669,7 @@ eazel_install_callback_simple_query (EazelInstallCallback *service,
 							       query,
 							       root ? root : "",
 							       ev);
-	result = packagedata_list_from_corba_packagedatastructlist (*corbares);
+	result = packagedata_list_from_corba_packagedatastructlist (corbares);
 	CORBA_free (corbares); 
 	
 	return result;

@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 1999, 2000 Eazel, Inc.
+ *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -28,38 +28,47 @@
 /* nautilus-view-frame.c: Widget and CORBA machinery for hosting a NautilusView */
 
 #include <config.h>
-#include "nautilus-view-frame-private.h"
+#include "nautilus-view-frame.h"
 
 #include "nautilus-application.h"
 #include "nautilus-component-adapter-factory.h"
 #include "nautilus-signaller.h"
+#include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
+#include <bonobo/bonobo-zoomable-frame.h>
+#include <bonobo/bonobo-zoomable.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-idle-queue.h>
 #include <libnautilus/nautilus-view.h>
 
-#include <bonobo/bonobo-zoomable-frame.h>
-#include <bonobo/bonobo-zoomable.h>
-
+/* FIXME bugzilla.eazel.com 2456: Is a hard-coded 12 seconds wait to
+ * detect that a view is gone acceptable? Can a component that is
+ * working still take 12 seconds to respond?
+ */
 /* Milliseconds */
-#define ATTACH_CLIENT_TIMEOUT	12000
+#define VIEW_RESPONSE_TIMEOUT 12000
 
 enum {
 	CHANGE_SELECTION,
 	CHANGE_STATUS,
-	CLIENT_LOADED,
 	FAILED,
 	GET_HISTORY_LIST,
+	GO_BACK,
 	LOAD_COMPLETE,
 	LOAD_PROGRESS_CHANGED,
 	LOAD_UNDERWAY,
 	OPEN_LOCATION_FORCE_NEW_WINDOW,
 	OPEN_LOCATION_IN_THIS_WINDOW,
 	OPEN_LOCATION_PREFER_EXISTING_WINDOW,
+	REPORT_LOCATION_CHANGE,
+	REPORT_REDIRECT,
 	TITLE_CHANGED,
+	VIEW_LOADED,
 	ZOOM_LEVEL_CHANGED,
 	ZOOM_PARAMETERS_CHANGED,
 	LAST_SIGNAL
@@ -67,7 +76,6 @@ enum {
 
 typedef enum {
 	VIEW_FRAME_EMPTY,
-	VIEW_FRAME_ACTIVATING,
 	VIEW_FRAME_NO_LOCATION,
 	VIEW_FRAME_WAITING,
 	VIEW_FRAME_UNDERWAY,
@@ -79,20 +87,34 @@ struct NautilusViewFrameDetails {
 	NautilusViewFrameState state;
 	char *title;
 	char *label;
+        char *view_iid;
+
+        /* The view frame Bonobo objects. */
+        BonoboObject *view_frame;
+	BonoboControlFrame *control_frame;
+        BonoboZoomableFrame *zoomable_frame;
+        
+        /* The view CORBA object. */
+        Nautilus_View view;
 
 	/* A container to connect our clients to. */
 	BonoboUIContainer *ui_container;
+        NautilusUndoManager *undo_manager;
 
 	guint check_if_view_is_gone_timeout_id;
 
-	char *activation_iid;
-	NautilusBonoboActivate *activate_structure;
+	NautilusBonoboActivationHandle *activation_handle;
+
+	NautilusIdleQueue *idle_queue;
+
+	guint view_frame_failed_id;
 };
 
 static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
 static void nautilus_view_frame_destroy          (GtkObject              *view);
 static void nautilus_view_frame_finalize         (GtkObject              *view);
 static void nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass);
+static void nautilus_view_frame_map              (GtkWidget              *view);
 static void send_history                         (NautilusViewFrame      *view);
 
 static guint signals[LAST_SIGNAL];
@@ -101,14 +123,42 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame,
 				   nautilus_view_frame,
 				   NAUTILUS_TYPE_GENEROUS_BIN)
 
+void
+nautilus_view_frame_queue_incoming_call (PortableServer_Servant servant,
+					 NautilusViewFrameFunction call,
+					 gpointer callback_data,
+					 GDestroyNotify destroy_callback_data)
+{
+	NautilusViewFrame *view;
+
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		if (destroy_callback_data != NULL) {
+			(* destroy_callback_data) (callback_data);
+		}
+		return;
+	}
+
+	nautilus_idle_queue_add (view->details->idle_queue,
+				 (GFunc) call,
+				 view,
+				 callback_data,
+				 destroy_callback_data);
+}
+
 static void
 nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 {
 	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 	
 	object_class = GTK_OBJECT_CLASS (klass);
+	widget_class = GTK_WIDGET_CLASS (klass);
+
 	object_class->destroy = nautilus_view_frame_destroy;
 	object_class->finalize = nautilus_view_frame_finalize;
+
+	widget_class->map = nautilus_view_frame_map;
 	
 	signals[CHANGE_SELECTION] = gtk_signal_new
 		("change_selection",
@@ -126,14 +176,6 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				    change_status),
 		 gtk_marshal_NONE__STRING,
 		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-	signals[CLIENT_LOADED] = gtk_signal_new
-		("client_loaded",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-				    client_loaded),
-		 gtk_marshal_NONE__NONE,
-		 GTK_TYPE_NONE, 0);
 	signals[FAILED] = gtk_signal_new
 		("failed",
 		 GTK_RUN_LAST,
@@ -150,6 +192,14 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				    get_history_list),
 		 nautilus_gtk_marshal_POINTER__NONE,
 		 GTK_TYPE_POINTER, 0);
+	signals[GO_BACK] = gtk_signal_new
+		("go_back",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    go_back),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 	signals[LOAD_COMPLETE] = gtk_signal_new
 		("load_complete",
 		 GTK_RUN_LAST,
@@ -198,12 +248,36 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				    open_location_in_this_window),
 		 gtk_marshal_NONE__STRING,
 		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[REPORT_LOCATION_CHANGE] = gtk_signal_new
+		("report_location_change",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    report_location_change),
+		 nautilus_gtk_marshal_NONE__STRING_POINTER_STRING,
+		 GTK_TYPE_NONE, 3, GTK_TYPE_STRING, GTK_TYPE_POINTER, GTK_TYPE_STRING);
+	signals[REPORT_REDIRECT] = gtk_signal_new
+		("report_redirect",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    report_redirect),
+		 nautilus_gtk_marshal_NONE__STRING_STRING_POINTER_STRING,
+		 GTK_TYPE_NONE, 4, GTK_TYPE_STRING, GTK_TYPE_STRING, GTK_TYPE_POINTER, GTK_TYPE_STRING);
 	signals[TITLE_CHANGED] = gtk_signal_new
 		("title_changed",
 		 GTK_RUN_LAST,
 		 object_class->type,
 		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
 				    title_changed),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
+	signals[VIEW_LOADED] = gtk_signal_new
+		("view_loaded",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    view_loaded),
 		 gtk_marshal_NONE__NONE,
 		 GTK_TYPE_NONE, 0);
 	signals[ZOOM_LEVEL_CHANGED] = gtk_signal_new
@@ -233,6 +307,8 @@ nautilus_view_frame_initialize (NautilusViewFrame *view)
 
 	view->details = g_new0 (NautilusViewFrameDetails, 1);
 
+	view->details->idle_queue = nautilus_idle_queue_new ();
+
 	gtk_signal_connect_object_while_alive (nautilus_signaller_get_current (),
 					       "history_list_changed",
 					       send_history,
@@ -244,40 +320,35 @@ nautilus_view_frame_initialize (NautilusViewFrame *view)
 }
 
 static void
-nautilus_view_frame_destroy_client (NautilusViewFrame *view)
+stop_activation (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
+	nautilus_bonobo_activate_cancel (view->details->activation_handle);
+	view->details->activation_handle = NULL;
+}
 
-	if (view->iid == NULL) {
+static void
+destroy_view (NautilusViewFrame *view)
+{
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
 	}
 	
-	CORBA_exception_init (&ev);
+	g_free (view->details->view_iid);
+	view->details->view_iid = NULL;
 	
-	g_free (view->iid);
-	view->iid = NULL;
-	
-	bonobo_object_unref (BONOBO_OBJECT (view->client_object));
-	view->client_object = NULL;
+	bonobo_object_release_unref (view->details->view, NULL);
+	view->details->view = CORBA_OBJECT_NIL;
 
-	gtk_container_remove (GTK_CONTAINER (view), view->client_widget);
-	view->client_widget = NULL;
+	bonobo_object_unref (view->details->view_frame);
+	view->details->view_frame = NULL;
+	view->details->control_frame = NULL;
+	view->details->zoomable_frame = NULL;
 
-	bonobo_object_unref (view->view_frame);
-	view->view_frame = NULL;
-
-	/* We can NULL this since we just unref'ed it as part of the
-	 * aggregate view frame.
-	 */
-	view->zoomable_frame = NULL;
-
-	CORBA_exception_free (&ev);
-	
 	if (view->details->ui_container->win != NULL) {
 		bonobo_window_deregister_dead_components (view->details->ui_container->win);
 	}
-	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->ui_container));
+	view->details->ui_container = NULL;
 
 	if (view->details->check_if_view_is_gone_timeout_id != 0) {
 		g_source_remove (view->details->check_if_view_is_gone_timeout_id);
@@ -292,10 +363,23 @@ nautilus_view_frame_destroy (GtkObject *object)
 
 	view = NAUTILUS_VIEW_FRAME (object);
 	
-	nautilus_view_frame_destroy_client (view);
-	view->details->state = VIEW_FRAME_EMPTY;
+	stop_activation (view);
+	destroy_view (view);
+
+	nautilus_idle_queue_destroy (view->details->idle_queue);
+
+	if (view->details->view_frame_failed_id != 0) {
+		gtk_idle_remove (view->details->view_frame_failed_id);
+		view->details->view_frame_failed_id = 0;
+	}
+
+	/* It's good to be in "failed" state while shutting down
+	 * (makes operations all be quiet no-ops). But we don't want
+	 * to send out a "failed" signal.
+	 */
+	view->details->state = VIEW_FRAME_FAILED;
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -305,58 +389,22 @@ nautilus_view_frame_finalize (GtkObject *object)
 
 	view = NAUTILUS_VIEW_FRAME (object);
 
+	/* The "destroy" put us in a failed state. */
+	g_assert (view->details->state == VIEW_FRAME_FAILED);
+
 	g_free (view->details->title);
 	g_free (view->details->label);
-	g_free (view->details->activation_iid);
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
-/* stimulus: successful load_client call */
 static void
-view_frame_activating (NautilusViewFrame *view)
+emit_zoom_parameters_changed (NautilusViewFrame *view)
 {
-	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
-
-	switch (view->details->state) {
-	case VIEW_FRAME_EMPTY:
-		view->details->state = VIEW_FRAME_ACTIVATING;
-		return;
-	case VIEW_FRAME_ACTIVATING:
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-	case VIEW_FRAME_WAITING:
-	case VIEW_FRAME_FAILED:
-		g_assert_not_reached ();
-		return;
+	if (view->details->zoomable_frame != NULL) {
+		gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_PARAMETERS_CHANGED]);
 	}
-
-	g_assert_not_reached ();
-}
-
-/* stimulus: unsuccessful activated_component call */
-static void
-view_frame_not_activated (NautilusViewFrame *view)
-{
-	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
-	
-	switch (view->details->state) {
-	case VIEW_FRAME_ACTIVATING:
-		view->details->state = VIEW_FRAME_FAILED;
-		return;
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-	case VIEW_FRAME_WAITING:
-	case VIEW_FRAME_FAILED:
-		g_assert_not_reached ();
-		return;
-	}
-
-	g_assert_not_reached ();
 }
 
 /* stimulus: successful activated_component call */
@@ -366,33 +414,11 @@ view_frame_activated (NautilusViewFrame *view)
 	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
 	
 	switch (view->details->state) {
-	case VIEW_FRAME_ACTIVATING:
+	case VIEW_FRAME_EMPTY:
 		view->details->state = VIEW_FRAME_NO_LOCATION;
+		gtk_signal_emit (GTK_OBJECT (view), signals[VIEW_LOADED]);
+		emit_zoom_parameters_changed (view);
 		send_history (view);
-		return;
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-	case VIEW_FRAME_WAITING:
-	case VIEW_FRAME_FAILED:
-		g_assert_not_reached ();
-		return;
-	}
-
-	g_assert_not_reached ();
-}
-
-/* stimulus: stop activation */
-static void
-view_frame_stop_activation (NautilusViewFrame *view)
-{
-	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
-	
-	switch (view->details->state) {
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_ACTIVATING:
-		view->details->state = VIEW_FRAME_EMPTY;
 		return;
 	case VIEW_FRAME_NO_LOCATION:
 	case VIEW_FRAME_UNDERWAY:
@@ -415,9 +441,6 @@ view_frame_wait (NautilusViewFrame *view)
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
 		g_warning ("tried to load location in an empty view frame");
-		break;
-	case VIEW_FRAME_ACTIVATING:
-		view->details->state = VIEW_FRAME_FAILED;
 		break;
 	case VIEW_FRAME_NO_LOCATION:
 	case VIEW_FRAME_UNDERWAY:
@@ -442,8 +465,6 @@ view_frame_underway (NautilusViewFrame *view)
 	
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_FAILED:
-	case VIEW_FRAME_ACTIVATING:
 		g_assert_not_reached ();
 		return;
 	case VIEW_FRAME_NO_LOCATION:
@@ -455,6 +476,7 @@ view_frame_underway (NautilusViewFrame *view)
 		gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_UNDERWAY]);
 		return;
 	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_FAILED:
 		return;
 	}
 
@@ -476,7 +498,6 @@ view_frame_wait_is_over (NautilusViewFrame *view)
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
 	case VIEW_FRAME_FAILED:
-	case VIEW_FRAME_ACTIVATING:
 		g_assert_not_reached ();
 		return;
 	case VIEW_FRAME_NO_LOCATION:
@@ -501,8 +522,6 @@ view_frame_loaded (NautilusViewFrame *view)
 	
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_FAILED:
-	case VIEW_FRAME_ACTIVATING:
 		g_assert_not_reached ();
 		return;
 	case VIEW_FRAME_NO_LOCATION:
@@ -516,6 +535,7 @@ view_frame_loaded (NautilusViewFrame *view)
 		gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_COMPLETE]);
 		return;
 	case VIEW_FRAME_LOADED:
+	case VIEW_FRAME_FAILED:
 		return;
 	}
 
@@ -529,41 +549,21 @@ view_frame_failed (NautilusViewFrame *view)
 	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
 	
 	switch (view->details->state) {
-	case VIEW_FRAME_ACTIVATING:
 	case VIEW_FRAME_EMPTY:
 	case VIEW_FRAME_LOADED:
 	case VIEW_FRAME_NO_LOCATION:
 	case VIEW_FRAME_UNDERWAY:
 	case VIEW_FRAME_WAITING:
 		view->details->state = VIEW_FRAME_FAILED;
+		stop_activation (view);
+		destroy_view (view);
 		gtk_signal_emit (GTK_OBJECT (view), signals[FAILED]);
 		return;
 	case VIEW_FRAME_FAILED:
-		g_assert_not_reached ();
 		return;
 	}
 
 	g_assert_not_reached ();
-}
-
-static void
-nautilus_view_frame_handle_client_destroy (GtkWidget *widget,
-					   NautilusViewFrame *view)
-{
-	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
-	bonobo_window_deregister_dead_components (view->details->ui_container->win);
-	view_frame_failed (view);
-}
-
-static void
-nautilus_view_frame_handle_client_gone (GtkObject *object,
-					CORBA_Object cobject,
-					CORBA_Environment *ev,
-					NautilusViewFrame *view)
-{
-	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
-	bonobo_window_deregister_dead_components (view->details->ui_container->win);
-	view_frame_failed (view);
 }
 
 NautilusViewFrame *
@@ -576,277 +576,258 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	
 	bonobo_object_ref (BONOBO_OBJECT (ui_container));
 	view_frame->details->ui_container = ui_container;
-	view_frame->undo_manager = undo_manager;
+	view_frame->details->undo_manager = undo_manager;
 	
 	return view_frame;
 }
 
-static Nautilus_ViewFrame
-get_CORBA_object (NautilusViewFrame *view)
-{
-	return bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object));
-}
-
 static gboolean
-check_if_view_is_gone (gpointer data)
+check_if_view_is_gone (gpointer callback_data)
 {
 	NautilusViewFrame *view;
 	CORBA_Environment ev;
-	gboolean ok;
+	gboolean view_is_gone;
 
-	view = NAUTILUS_VIEW_FRAME (data);
+	view = NAUTILUS_VIEW_FRAME (callback_data);
 
 	CORBA_exception_init (&ev);
-	ok = TRUE;
-	if (CORBA_Object_non_existent (get_CORBA_object (view), &ev)) {
-		view->details->check_if_view_is_gone_timeout_id = 0;
-		bonobo_window_deregister_dead_components (view->details->ui_container->win);
-		view_frame_failed (view);
-		ok = FALSE;
+	view_is_gone = CORBA_Object_non_existent (view->details->view, &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		view_is_gone = TRUE;
 	}
 	CORBA_exception_free (&ev);
 	
-	return ok;
+	if (!view_is_gone) {
+		return TRUE;
+	}
+
+	view->details->check_if_view_is_gone_timeout_id = 0;
+	view_frame_failed (view);
+	return FALSE;
 }
 
 static void
-zoom_level_changed_callback (BonoboZoomableFrame *zframe, float zoom_level, NautilusViewFrame *view)
+emit_zoom_parameters_changed_callback (gpointer data,
+				       gpointer callback_data)
 {
-	g_return_if_fail (zframe != NULL);
-	g_return_if_fail (BONOBO_IS_ZOOMABLE_FRAME (zframe));
-	g_return_if_fail (view != NULL);
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_LEVEL_CHANGED], zoom_level);
+	emit_zoom_parameters_changed (NAUTILUS_VIEW_FRAME (data));
 }
 
 static void
-zoom_parameters_changed_callback (BonoboZoomableFrame *zframe, NautilusViewFrame *view)
+zoom_parameters_changed_callback (BonoboZoomableFrame *zframe,
+				  NautilusViewFrame *view)
 {
-	g_return_if_fail (zframe != NULL);
-	g_return_if_fail (BONOBO_IS_ZOOMABLE_FRAME (zframe));
-	g_return_if_fail (view != NULL);
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_PARAMETERS_CHANGED]);
+	nautilus_idle_queue_add	(view->details->idle_queue,
+				 emit_zoom_parameters_changed_callback,
+				 view,
+				 NULL,
+				 NULL);
 }
 
-static gboolean
-attach_client (NautilusViewFrame *view, BonoboObjectClient *client)
+static void
+emit_zoom_level_changed_callback (gpointer data,
+				  gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (data),
+			 signals[ZOOM_LEVEL_CHANGED],
+			 * (float *) callback_data);
+}
+
+static void
+zoom_level_changed_callback (BonoboZoomableFrame *zframe,
+			     float zoom_level,
+			     NautilusViewFrame *view)
+{
+	float *copy;
+
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	copy = g_new (float, 1);
+	*copy = zoom_level;
+	nautilus_idle_queue_add	(view->details->idle_queue,
+				 emit_zoom_level_changed_callback,
+				 view,
+				 copy,
+				 g_free);
+}
+
+static void
+create_corba_objects (NautilusViewFrame *view)
 {
 	CORBA_Environment ev;
-	Nautilus_View adapted;
 	Bonobo_Control control;
-	BonoboControlFrame *control_frame;
-	NautilusComponentAdapterFactory *adapter_factory;
 	Bonobo_Zoomable zoomable;
-  	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 
 	CORBA_exception_init (&ev);
 
+	/* Create a view frame. */
+	view->details->view_frame = impl_Nautilus_ViewFrame__create (view, &ev);
+	g_assert (ev._major == CORBA_NO_EXCEPTION);
+
+	/* Create a control frame. */
+	control = Bonobo_Unknown_queryInterface
+		(view->details->view, "IDL:Bonobo/Control:1.0", &ev);
+	g_assert (ev._major == CORBA_NO_EXCEPTION);
+	view->details->control_frame = bonobo_control_frame_new
+		(bonobo_object_corba_objref (BONOBO_OBJECT (view->details->ui_container)));
+	bonobo_control_frame_bind_to_control (view->details->control_frame, control);
+	bonobo_object_release_unref (control, NULL);
+
+	/* Create a zoomable frame. */
+	zoomable = Bonobo_Unknown_queryInterface
+		(view->details->view, "IDL:Bonobo/Zoomable:1.0", &ev);
+	if (ev._major == CORBA_NO_EXCEPTION
+	    && !CORBA_Object_is_nil (zoomable, &ev)
+	    && ev._major == CORBA_NO_EXCEPTION) {
+		view->details->zoomable_frame = bonobo_zoomable_frame_new ();
+		bonobo_zoomable_frame_bind_to_zoomable (view->details->zoomable_frame, zoomable);
+		bonobo_object_release_unref (zoomable, NULL);
+	}
+
+	CORBA_exception_free (&ev);
+
+	/* Aggregate all the interfaces into one object. */
+	bonobo_object_add_interface (BONOBO_OBJECT (view->details->view_frame), 
+	                             BONOBO_OBJECT (view->details->control_frame));
+ 	if (view->details->zoomable_frame != NULL) {
+ 		bonobo_object_add_interface (BONOBO_OBJECT (view->details->view_frame), 
+ 					     BONOBO_OBJECT (view->details->zoomable_frame));
+ 	}
+	nautilus_undo_manager_add_interface (view->details->undo_manager,
+					     BONOBO_OBJECT (view->details->view_frame));
+}
+
+
+static gboolean
+view_frame_failed_callback (gpointer data)
+{
+	NautilusViewFrame *view = data;
+
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view->details->view_frame_failed_id = 0;
+
+	view_frame_failed (view);
+
+	return FALSE;
+}
+
+static void
+queue_view_frame_failed (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	if (view->details->view_frame_failed_id == 0)
+		view->details->view_frame_failed_id =
+			gtk_idle_add (view_frame_failed_callback, view);
+}
+
+static void
+attach_view (NautilusViewFrame *view,
+	     BonoboObjectClient *client)
+{
+	GtkWidget *widget;
+  	
 	/* Either create an adapter or query for the Nautilus:View
 	 * interface. Either way, we don't need to keep the original
 	 * reference around once that happens.
 	 */
-
-	adapter_factory = nautilus_component_adapter_factory_get ();
-
-	if (adapter_factory == NULL) {
-		return FALSE;
-	}
-
-	adapted = nautilus_component_adapter_factory_create_adapter 
-		(adapter_factory,
-		 client);
-	bonobo_object_unref (BONOBO_OBJECT (client));
+	view->details->view = nautilus_component_adapter_factory_create_adapter 
+		(nautilus_component_adapter_factory_get (), client);
 
 	/* Handle case where we don't know how to host this component. */
-  	if (adapted == CORBA_OBJECT_NIL) {
-      		return FALSE;
+  	if (view->details->view == CORBA_OBJECT_NIL) {
+		view_frame_failed (view);
+      		return;
     	}
 
-	nautilus_view_frame_destroy_client (view);
+	create_corba_objects (view);
 
-	CORBA_exception_init (&ev);
+	gtk_signal_connect_object_while_alive
+		(GTK_OBJECT (view->details->view_frame),
+		 "destroy",
+		 view_frame_failed, GTK_OBJECT (view));
+	gtk_signal_connect_object_while_alive
+		(GTK_OBJECT (view->details->view_frame),
+		 "system_exception",
+		 queue_view_frame_failed, GTK_OBJECT (view));
 
-	/* Store the object away. */
-	view->client_object = bonobo_object_client_from_corba (adapted);
-	g_assert (!CORBA_Object_non_existent (adapted, &ev));
-	g_assert (ev._major == CORBA_NO_EXCEPTION);
+	gtk_signal_connect_object_while_alive
+		(GTK_OBJECT (view->details->control_frame),
+		 "system_exception",
+		 queue_view_frame_failed, GTK_OBJECT (view));
 
-	/* Get at our client's interfaces. */
-	control = bonobo_object_query_interface
-		(BONOBO_OBJECT (view->client_object),
-		 "IDL:Bonobo/Control:1.0");
-	g_assert (control != CORBA_OBJECT_NIL);
+	if (view->details->zoomable_frame != NULL) {
+		gtk_signal_connect_object_while_alive
+			(GTK_OBJECT (view->details->zoomable_frame),
+			 "system_exception",
+			 queue_view_frame_failed, GTK_OBJECT (view));
 
-	/* Add a zoomable frame interface. */
-	zoomable = Bonobo_Unknown_queryInterface
-		(control, "IDL:Bonobo/Zoomable:1.0", &ev);
-	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (zoomable, &ev)) {
-		view->zoomable_frame = bonobo_zoomable_frame_new ();
-
-		gtk_signal_connect (GTK_OBJECT (view->zoomable_frame), "zoom_level_changed",
-				    GTK_SIGNAL_FUNC (zoom_level_changed_callback), view);
-		gtk_signal_connect (GTK_OBJECT (view->zoomable_frame), "zoom_parameters_changed",
-				    GTK_SIGNAL_FUNC (zoom_parameters_changed_callback), view);
-
-		bonobo_zoomable_frame_bind_to_zoomable (view->zoomable_frame, zoomable);
-		bonobo_object_release_unref (zoomable, &ev);
+		gtk_signal_connect_while_alive
+			(GTK_OBJECT (view->details->zoomable_frame),
+			 "zoom_parameters_changed",
+			 zoom_parameters_changed_callback, view,
+			 GTK_OBJECT (view));
+		gtk_signal_connect_while_alive
+			(GTK_OBJECT (view->details->zoomable_frame),
+			 "zoom_level_changed",
+			 GTK_SIGNAL_FUNC (zoom_level_changed_callback), view,
+			 GTK_OBJECT (view));
 	}
 
-	/* Start with a view frame interface. */
-	view->view_frame = impl_Nautilus_ViewFrame__create (view, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME bugzilla.eazel.com 5041: Cleanup needed here. */
-		return FALSE;
-	}
-
-	/* Add a control frame interface. */
-	control_frame = bonobo_control_frame_new (bonobo_object_corba_objref (BONOBO_OBJECT (view->details->ui_container)));
-	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
-	                             BONOBO_OBJECT (control_frame));
-	bonobo_control_frame_bind_to_control (control_frame, control);
-	view->client_widget = bonobo_control_frame_get_widget (control_frame);
-
- 	if (view->zoomable_frame != NULL) {
- 		bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
- 					     BONOBO_OBJECT (view->zoomable_frame));
-  
- 		gtk_signal_emit_by_name (GTK_OBJECT (view->zoomable_frame),
-					 "zoom_parameters_changed");
- 	}
-
-	/* Add an undo context interface. */
-	nautilus_undo_manager_add_interface
-        	(view->undo_manager, BONOBO_OBJECT (view->view_frame));
-
-	bonobo_object_release_unref (control, NULL);
+	widget = bonobo_control_frame_get_widget (view->details->control_frame);
+	gtk_widget_show (widget);
+	gtk_container_add (GTK_CONTAINER (view), widget);
 	
-	CORBA_exception_free (&ev);
+	view_frame_activated (view);
 
-	view->iid = g_strdup (view->details->activation_iid);
-
-	gtk_signal_connect_while_alive
-		(GTK_OBJECT (view->client_object), "destroy",
-		 nautilus_view_frame_handle_client_destroy, view,
-		 GTK_OBJECT (view));
-	gtk_signal_connect_while_alive
-		(GTK_OBJECT (view->client_object), "object_gone",
-		 nautilus_view_frame_handle_client_gone, view,
-		 GTK_OBJECT (view));
-	gtk_signal_connect_while_alive
-		(GTK_OBJECT (view->client_object), "system_exception",
-		 nautilus_view_frame_handle_client_gone, view,
-		 GTK_OBJECT (view));
-	gtk_container_add (GTK_CONTAINER (view), view->client_widget);
-	gtk_widget_show (view->client_widget);
-
-	/* FIXME bugzilla.eazel.com 2456: 
-	 * Is a hard-coded timeout acceptable? 
-	 */
 	g_assert (view->details->check_if_view_is_gone_timeout_id == 0);
 	view->details->check_if_view_is_gone_timeout_id
-		= g_timeout_add (ATTACH_CLIENT_TIMEOUT, check_if_view_is_gone, view);
-
-	return TRUE;
+		= g_timeout_add (VIEW_RESPONSE_TIMEOUT, check_if_view_is_gone, view);
 }
 
 static void
-activation_callback (CORBA_Object object_reference, gpointer data)
+activation_callback (NautilusBonoboActivationHandle *handle,
+		     Bonobo_Unknown activated_object,
+		     gpointer callback_data)
 {
 	NautilusViewFrame *view;
-	BonoboObjectClient *bonobo_object;
+	BonoboObjectClient *component;
 
-	view = (NautilusViewFrame *) data;
+	view = NAUTILUS_VIEW_FRAME (callback_data);
+	g_assert (view->details->activation_handle == handle);
 
-	bonobo_object = bonobo_object_client_from_corba (object_reference);
-	attach_client (view, bonobo_object);
+	view->details->activation_handle = NULL;
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[CLIENT_LOADED],
-			 bonobo_object);
+	if (activated_object == CORBA_OBJECT_NIL) {
+		view_frame_failed (view);
+	} else {
+		component = bonobo_object_client_from_corba (activated_object);
+		attach_view (view, component);
+		bonobo_object_unref (BONOBO_OBJECT (component));
+	}
 }
 
 void
-nautilus_view_frame_load_client_async (NautilusViewFrame *view, 
-				       const char *iid)
-{
-	NautilusBonoboActivate *activate_structure;
-
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
-	view_frame_activating (view);
-	view->details->activation_iid = g_strdup (iid);
-	activate_structure = nautilus_bonobo_activate_from_id
-		(iid, activation_callback, view);
-
-	view->details->activate_structure = activate_structure;
-}
-
-/* I left this function around because I was lazy to make the sidebar activation
- * use the async model in the main state machine... there are 2 reasons for not 
- * doing so:
- *
- * - sidebar components should NOT take long to load.
- * - hacking the state machine might take me as long as it took me to get
- *   the core stuff working so... I am not eager to get into this game.
- *
- * As a consequence, the following function does quite a few calls to 
- * the state changing functions to simulate async activation. 
- */
-gboolean /* returns TRUE if successful */
-nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
-{
-	BonoboObjectClient *component;
-  	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
-
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return FALSE;
-	}
-
-	g_return_val_if_fail (view->details->state == VIEW_FRAME_EMPTY, FALSE);
-
-	if (iid == NULL) {
-		return FALSE;
-        }
-
-	view_frame_activating (view);
-
-	component = bonobo_object_activate (iid, 0);
-	if (component == NULL) {
-		view_frame_not_activated (view);
-		return FALSE;
-        }
-
-	view->details->activation_iid = g_strdup (iid);
-
-	if (!attach_client (view, component)) {
-		view_frame_not_activated (view);
-		return FALSE;
-	}
-
-	view_frame_activated (view);
-
-	return TRUE;
-}
-
-void 
-nautilus_view_frame_stop_activation (NautilusViewFrame *view)
+nautilus_view_frame_load_view (NautilusViewFrame *view, 
+			       const char *view_iid)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+	g_return_if_fail (view_iid != NULL);
 
 	if (view->details->state == VIEW_FRAME_FAILED) {
 		return;
 	}
 
-	nautilus_bonobo_activate_stop (view->details->activate_structure);
-	view_frame_stop_activation (view);
-	nautilus_bonobo_activate_free (view->details->activate_structure);
-	view->details->activate_structure = NULL;
+	g_return_if_fail (view->details->state == VIEW_FRAME_EMPTY);
+	g_assert (view->details->view_iid == NULL);
+	g_assert (view->details->activation_handle == NULL);
+
+	view->details->view_iid = g_strdup (view_iid);
+	view->details->activation_handle = nautilus_bonobo_activate_from_id
+		(view_iid, activation_callback, view);
 }
 
 void
@@ -869,7 +850,7 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 	
 	/* ORBit does a bad job with Nautilus_URI, so it's not const char *. */
 	CORBA_exception_init (&ev);
-	Nautilus_View_load_location (get_CORBA_object (view),
+	Nautilus_View_load_location (view->details->view,
 				     (Nautilus_URI) location, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		view_frame_failed (view);
@@ -878,7 +859,7 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 }
 
 void
-nautilus_view_frame_stop_loading (NautilusViewFrame *view)
+nautilus_view_frame_stop (NautilusViewFrame *view)
 {
 	CORBA_Environment ev;
 	
@@ -888,12 +869,16 @@ nautilus_view_frame_stop_loading (NautilusViewFrame *view)
 		return;
 	}
 	
-	CORBA_exception_init (&ev);
-	Nautilus_View_stop_loading (get_CORBA_object (view), &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		view_frame_failed (view);
+	stop_activation (view);
+
+	if (view->details->view != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+		Nautilus_View_stop_loading (view->details->view, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			view_frame_failed (view);
+		}
+		CORBA_exception_free (&ev);
 	}
-	CORBA_exception_free (&ev);
 }
 
 void
@@ -905,14 +890,14 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
 	}
 
 	uri_list = nautilus_uri_list_from_g_list (selection);
 	
 	CORBA_exception_init (&ev);
-	Nautilus_View_selection_changed (get_CORBA_object (view), uri_list, &ev);
+	Nautilus_View_selection_changed (view->details->view, uri_list, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		view_frame_failed (view);
 	}
@@ -929,12 +914,12 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view,
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
 	}
 
 	CORBA_exception_init (&ev);
-	Nautilus_View_title_changed (get_CORBA_object (view), title, &ev);
+	Nautilus_View_title_changed (view->details->view, title, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		view_frame_failed (view);
 	}
@@ -942,15 +927,11 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view,
 }
 
 gboolean
-nautilus_view_frame_is_zoomable (NautilusViewFrame *view)
+nautilus_view_frame_get_is_zoomable (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return FALSE;
-	}
-
-	return view->zoomable_frame != NULL;
+	return view->details->zoomable_frame != NULL;
 }
 
 double
@@ -958,15 +939,11 @@ nautilus_view_frame_get_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return 0.0;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return 0.0;
-	}
-
-	return (double) bonobo_zoomable_frame_get_zoom_level (view->zoomable_frame);
+	return (double) bonobo_zoomable_frame_get_zoom_level (view->details->zoomable_frame);
 }
 
 void
@@ -975,15 +952,11 @@ nautilus_view_frame_set_zoom_level (NautilusViewFrame *view,
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return;
-	}
-
-	bonobo_zoomable_frame_set_zoom_level (view->zoomable_frame, (float) zoom_level);
+	bonobo_zoomable_frame_set_zoom_level (view->details->zoomable_frame, (float) zoom_level);
 }
 
 double
@@ -991,15 +964,11 @@ nautilus_view_frame_get_min_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return 0.0;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return 0.0;
-	}
-
-	return (double) bonobo_zoomable_frame_get_min_zoom_level (view->zoomable_frame);
+	return (double) bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
 }
 
 double
@@ -1007,15 +976,11 @@ nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return 0.0;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return 0.0;
-	}
-
-	return (double) bonobo_zoomable_frame_get_max_zoom_level (view->zoomable_frame);
+	return (double) bonobo_zoomable_frame_get_max_zoom_level (view->details->zoomable_frame);
 }
 
 gboolean
@@ -1023,15 +988,11 @@ nautilus_view_frame_get_has_min_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return FALSE;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return FALSE;
-	}
-
-	return bonobo_zoomable_frame_has_min_zoom_level (view->zoomable_frame);
+	return bonobo_zoomable_frame_has_min_zoom_level (view->details->zoomable_frame);
 }
 
 gboolean
@@ -1039,15 +1000,11 @@ nautilus_view_frame_get_has_max_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return FALSE;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return FALSE;
-	}
-
-	return bonobo_zoomable_frame_has_max_zoom_level (view->zoomable_frame);
+	return bonobo_zoomable_frame_has_max_zoom_level (view->details->zoomable_frame);
 }
 
 gboolean
@@ -1055,15 +1012,11 @@ nautilus_view_frame_get_is_continuous (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return FALSE;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return FALSE;
-	}
-
-	return bonobo_zoomable_frame_is_continuous (view->zoomable_frame);
+	return bonobo_zoomable_frame_is_continuous (view->details->zoomable_frame);
 }
 
 GList *
@@ -1071,15 +1024,11 @@ nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return FALSE;
-	}
-
-	if (view->zoomable_frame == NULL) {
+	if (view->details->zoomable_frame == NULL) {
 		return NULL;
 	}
 
-	return bonobo_zoomable_frame_get_preferred_zoom_levels (view->zoomable_frame);
+	return bonobo_zoomable_frame_get_preferred_zoom_levels (view->details->zoomable_frame);
 }
 
 void
@@ -1087,15 +1036,11 @@ nautilus_view_frame_zoom_in (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
  
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return;
-	}
-
-	bonobo_zoomable_frame_zoom_in (view->zoomable_frame);
+	bonobo_zoomable_frame_zoom_in (view->details->zoomable_frame);
 }
 
 void
@@ -1103,15 +1048,11 @@ nautilus_view_frame_zoom_out (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return;
-	}
-
-	bonobo_zoomable_frame_zoom_out (view->zoomable_frame);
+	bonobo_zoomable_frame_zoom_out (view->details->zoomable_frame);
 }
 
 void
@@ -1119,22 +1060,19 @@ nautilus_view_frame_zoom_to_fit (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
+	if (view->details->zoomable_frame == NULL) {
 		return;
 	}
 
-	if (view->zoomable_frame == NULL) {
-		return;
-	}
-
-	bonobo_zoomable_frame_zoom_to_fit (view->zoomable_frame);
+	bonobo_zoomable_frame_zoom_to_fit (view->details->zoomable_frame);
 }
 
 const char *
-nautilus_view_frame_get_iid (NautilusViewFrame *view)
+nautilus_view_frame_get_view_iid (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
-	return view->iid;
+
+	return view->details->view_iid;
 }
 
 void
@@ -1185,6 +1123,49 @@ nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
 }
 
 void
+nautilus_view_frame_report_location_change (NautilusViewFrame *view,
+					    const char *location,
+					    GList *selection,
+					    const char *title)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	if (view->details->state == VIEW_FRAME_FAILED) {
+		return;
+	}
+
+	g_free (view->details->title);
+	view->details->title = g_strdup (title);
+
+	view_frame_wait_is_over (view);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[REPORT_LOCATION_CHANGE],
+			 location, selection, title);
+}
+
+void
+nautilus_view_frame_report_redirect (NautilusViewFrame *view,
+				     const char *from_location,
+				     const char *to_location,
+				     GList *selection,
+				     const char *title)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	if (view->details->state == VIEW_FRAME_FAILED) {
+		return;
+	}
+
+	g_free (view->details->title);
+	view->details->title = g_strdup (title);
+
+	view_frame_wait_is_over (view);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[REPORT_REDIRECT],
+			 from_location, to_location, selection, title);
+}
+
+void
 nautilus_view_frame_report_selection_change (NautilusViewFrame *view,
                                              GList *selection)
 {
@@ -1219,10 +1200,6 @@ nautilus_view_frame_report_load_underway (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
 	view_frame_underway (view);
 }
 
@@ -1246,10 +1223,6 @@ nautilus_view_frame_report_load_complete (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
 	view_frame_loaded (view);
 }
 
@@ -1258,11 +1231,15 @@ nautilus_view_frame_report_load_failed (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
 	view_frame_failed (view);
+}
+
+void
+nautilus_view_frame_go_back (NautilusViewFrame *view)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[GO_BACK]);
 }
 
 void
@@ -1313,30 +1290,28 @@ nautilus_view_frame_set_label (NautilusViewFrame *view,
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
 	g_free (view->details->label);
 	view->details->label = g_strdup (label);
 }
 
-/* Calls activate on the underlying control frame. */
-void
-nautilus_view_frame_activate (NautilusViewFrame *view)
+/* Activate the underlying control frame whenever the view is mapped.
+ * This causes the view to merge its menu items, for example. For
+ * sidebar panels, it might be a little late to merge them at map
+ * time, especially since we don't unmerge them at unmap time (not
+ * until destroy time).
+ */
+static void
+nautilus_view_frame_map (GtkWidget *view_as_widget)
 {
-	BonoboControlFrame *control_frame;
-	
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+	NautilusViewFrame *view;
 
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
+	view = NAUTILUS_VIEW_FRAME (view_as_widget);
+
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (view_as_widget));
+
+	if (view->details->control_frame != NULL) {
+		bonobo_control_frame_control_activate (view->details->control_frame);
 	}
-
-	control_frame = BONOBO_CONTROL_FRAME (bonobo_object_query_local_interface 
-					      (view->view_frame, "IDL:Bonobo/ControlFrame:1.0"));
-	bonobo_control_frame_control_activate (control_frame);
-	bonobo_object_unref (BONOBO_OBJECT (control_frame));
 }
 
 static Nautilus_History *
@@ -1359,16 +1334,8 @@ send_history (NautilusViewFrame *view)
 
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	switch (view->details->state) {
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_ACTIVATING:
-	case VIEW_FRAME_FAILED:
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_WAITING:
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-		break;
 	}
 
 	history = get_history_list (view);
@@ -1377,7 +1344,7 @@ send_history (NautilusViewFrame *view)
 	}
 	
 	CORBA_exception_init (&ev);
-	Nautilus_View_history_changed (get_CORBA_object (view), history, &ev);
+	Nautilus_View_history_changed (view->details->view, history, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		view_frame_failed (view);
 	}
@@ -1387,19 +1354,18 @@ send_history (NautilusViewFrame *view)
 }
 
 gboolean
-nautilus_view_frame_get_is_underway (NautilusViewFrame *view)
+nautilus_view_frame_get_is_view_loaded (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_ACTIVATING:
-	case VIEW_FRAME_NO_LOCATION:
 	case VIEW_FRAME_FAILED:
-	case VIEW_FRAME_WAITING:
-	case VIEW_FRAME_LOADED:
 		return FALSE;
+	case VIEW_FRAME_NO_LOCATION:
+	case VIEW_FRAME_WAITING:
 	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
 		return TRUE;
 	}
 

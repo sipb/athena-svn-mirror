@@ -1,5 +1,8 @@
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <gnome.h>
 #include "sect-elements.h"
 #include "toc-elements.h"
@@ -155,6 +158,7 @@ ElementInfo toc_elements[] = {
 	{ LITERALLAYOUT, "literallayout", NULL, NULL, NULL},
 	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
 	{ QANDASET, "qandaset", NULL, NULL, NULL, },
+	{ BRIDGEHEAD, "bridgehead", NULL, NULL, NULL, },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -302,12 +306,15 @@ toc_sect_end_element (Context *context,
 	}
 }
 
+static gboolean artheader_printed = FALSE;
+
 static void
 toc_artheader_end_element (Context *context, const gchar *name)
 {
 	GSList *ptr;
 	AuthorInfo *author;
 	HeaderInfo *header = ((TocContext *) context->data)->header;
+	if (artheader_printed == TRUE) return;
 
 	if (header->title)
 		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", header->title);
@@ -347,6 +354,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	}
 	g_print ("<HR>\n<H2>%s</H2>\n\n", _("Table of Contents"));
 	g_print ("<P>\n");
+	artheader_printed = TRUE;
 }
 
 static void
@@ -705,7 +713,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	case APPENDIX:
 	case GLOSSDIV:
 	case GLOSSTERM:
-		g_print (temp);
+		g_print ("%s", temp);
 		g_free (temp);
 		break;
 	case ARTHEADER:
@@ -804,6 +812,7 @@ toc_glossterm_start_element (Context *context,
 		atrs_ptr += 2;
 	}
 	g_print ("\">");
+	in_printed_title = TRUE;
 }
 
 static void
@@ -811,6 +820,7 @@ toc_glossterm_end_element (Context *context,
 			   const gchar *name)
 {
 	g_print ("</A>\n");
+	in_printed_title = FALSE;
 }
 
 static void
@@ -834,7 +844,7 @@ toc_tag_characters (Context *context, const gchar *chars, int len)
 	case TITLE:
 	case GLOSSTERM:
 		temp = g_strndup (chars, len);
-		sect_print (context, temp);
+		sect_print (context, "%s", temp);
 		g_free (temp);
 		break;
 	default:

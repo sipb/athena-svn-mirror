@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-file-utilities..c - implementation of file manipulation routines.
+/* nautilus-file-utilities.c - implementation of file manipulation routines.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -39,6 +39,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <pthread.h>
 #include <pwd.h>
 #include <stdlib.h>
@@ -77,6 +78,11 @@ static void read_file_read_chunk (NautilusReadFileHandle *handle);
  *
  * Filter, modify, unescape and change URIs to make them appropriate
  * to display to users.
+ * 
+ * Rules:
+ * 	file: URI's without fragments should appear as local paths
+ * 	file: URI's with fragments should appear as file: URI's
+ * 	All other URI's appear as expected
  *
  * @uri: a URI
  *
@@ -85,16 +91,21 @@ static void read_file_read_chunk (NautilusReadFileHandle *handle);
 char *
 nautilus_format_uri_for_display (const char *uri) 
 {
-	char *path;
+	char *canonical_uri, *path;
 
 	g_return_val_if_fail (uri != NULL, g_strdup (""));
 
-	path = gnome_vfs_get_local_path_from_uri (uri);
+	canonical_uri = nautilus_make_uri_canonical (uri);
+
+	/* If there's no fragment and it's a local path. */
+	path = gnome_vfs_get_local_path_from_uri (canonical_uri);
 	if (path != NULL) {
+		g_free (canonical_uri);
 		return path;
 	}
-	
-	return gnome_vfs_unescape_string_for_display (uri);
+
+	g_free (path);
+	return canonical_uri;
 }
 
 static gboolean
@@ -153,9 +164,14 @@ nautilus_make_uri_from_input (const char *location)
 		break;
 	case '~':
 		path = gnome_vfs_expand_initial_tilde (stripped);
-		uri = gnome_vfs_get_uri_from_local_path (path);
-		g_free (path);
-		break;
+                /* deliberately falling into default case on fail */
+		if (*path == '/') {
+			uri = gnome_vfs_get_uri_from_local_path (path);
+			g_free (path);
+			break;
+		}
+                g_free (path);
+                /* don't insert break here, read above comment */
 	default:
 		if (has_valid_scheme (stripped)) {
 			uri = g_strdup (stripped);
@@ -165,6 +181,73 @@ nautilus_make_uri_from_input (const char *location)
 	}
 
 	g_free (stripped);
+
+	return uri;
+}
+
+/* Note that NULL's and full paths are also handled by this function.
+ * A NULL location will return the current working directory
+ */
+static char *
+file_uri_from_local_relative_path (const char *location)
+{
+	char *current_dir;
+	char *base_uri, *base_uri_slash;
+	char *location_escaped;
+	char *uri;
+
+	current_dir = g_get_current_dir ();
+	base_uri = gnome_vfs_get_uri_from_local_path (current_dir);
+	/* g_get_current_dir returns w/o trailing / */
+	base_uri_slash = g_strconcat (base_uri, "/", NULL);
+
+	location_escaped = gnome_vfs_escape_path_string (location);
+
+	uri = nautilus_uri_make_full_from_relative (base_uri_slash, location_escaped);
+
+	g_free (location_escaped);
+	g_free (base_uri_slash);
+	g_free (base_uri);
+	g_free (current_dir);
+
+	return uri;
+}
+
+/**
+ * nautilus_make_uri_from_shell_arg:
+ *
+ * Similar to nautilus_make_uri_from_input, except that:
+ * 
+ * 1) guesses relative paths instead of http domains
+ * 2) doesn't bother stripping leading/trailing white space
+ * 3) doesn't bother with ~ expansion--that's done by the shell
+ *
+ * @location: a possibly mangled "uri"
+ *
+ * returns a newly allocated uri
+ *
+ **/
+char *
+nautilus_make_uri_from_shell_arg (const char *location)
+{
+	char *uri;
+
+	g_return_val_if_fail (location != NULL, g_strdup (""));
+
+	switch (location[0]) {
+	case '\0':
+		uri = g_strdup ("");
+		break;
+	case '/':
+		uri = gnome_vfs_get_uri_from_local_path (location);
+		break;
+	default:
+		if (has_valid_scheme (location)) {
+			uri = g_strdup (location);
+		} else {
+			uri = file_uri_from_local_relative_path (location);
+		}
+	}
 
 	return uri;
 }
@@ -188,6 +271,269 @@ nautilus_uri_get_basename (const char *uri)
 	return name;
 }
 
+char *
+nautilus_uri_get_scheme (const char *uri)
+{
+	char *colon;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	colon = strchr (uri, ':');
+	
+	if (colon == NULL) {
+		return NULL;
+	}
+	
+	return g_strndup (uri, colon - uri);
+}
+
+
+static gboolean
+is_uri_partial (const char *uri)
+{
+	const char *current;
+
+	/* RFC 2396 section 3.1 */
+	for (current = uri ; 
+		*current
+		&& 	((*current >= 'a' && *current <= 'z')
+			 || (*current >= 'A' && *current <= 'Z')
+			 || (*current >= '0' && *current <= '9')
+			 || ('-' == *current)
+			 || ('+' == *current)
+			 || ('.' == *current)) ;
+	     current++);
+
+	return  !(':' == *current);
+}
+
+/*
+ * Remove "./" segments
+ * Compact "../" segments inside the URI
+ * Remove "." at the end of the URL 
+ * Leave any ".."'s at the beginning of the URI
+ */
+
+/*
+ * FIXME this is not the simplest or most time-efficent way
+ * to do this.  Probably a far more clear way of doing this processing
+ * is to split the path into segments, rather than doing the processing
+ * in place.
+ */
+static void
+remove_internal_relative_components (char *uri_current)
+{
+	char *segment_prev, *segment_cur;
+	size_t len_prev, len_cur;
+
+	len_prev = len_cur = 0;
+	segment_prev = NULL;
+
+	g_return_if_fail (uri_current != NULL);
+
+	segment_cur = uri_current;
+
+	while (*segment_cur) {
+		len_cur = strcspn (segment_cur, "/");
+
+		if (len_cur == 1 && segment_cur[0] == '.') {
+			/* Remove "." 's */
+			if (segment_cur[1] == '\0') {
+				segment_cur[0] = '\0';
+				break;
+			} else {
+				memmove (segment_cur, segment_cur + 2, strlen (segment_cur + 2) + 1);
+				continue;
+			}
+		} else if (len_cur == 2 && segment_cur[0] == '.' && segment_cur[1] == '.' ) {
+			/* Remove ".."'s (and the component to the left of it) that aren't at the
+			 * beginning or to the right of other ..'s
+			 */
+			if (segment_prev) {
+				if (! (len_prev == 2
+				       && segment_prev[0] == '.'
+				       && segment_prev[1] == '.')) {
+				       	if (segment_cur[2] == '\0') {
+						segment_prev[0] = '\0';
+						break;
+				       	} else {
+						memmove (segment_prev, segment_cur + 3, strlen (segment_cur + 3) + 1);
+
+						segment_cur = segment_prev;
+						len_cur = len_prev;
+
+						/* now we find the previous segment_prev */
+						if (segment_prev == uri_current) {
+							segment_prev = NULL;
+						} else if (segment_prev - uri_current >= 2) {
+							segment_prev -= 2;
+							for ( ; segment_prev > uri_current && segment_prev[0] != '/' 
+							      ; segment_prev-- );
+							if (segment_prev[0] == '/') {
+								segment_prev++;
+							}
+						}
+						continue;
+					}
+				}
+			}
+		}
+
+		/*Forward to next segment */
+
+		if (segment_cur [len_cur] == '\0') {
+			break;
+		}
+		 
+		segment_prev = segment_cur;
+		len_prev = len_cur;
+		segment_cur += len_cur + 1;	
+	}	
+}
+
+
+/**
+ * nautilus_uri_make_full_from_relative:
+ * 
+ * Returns a full URI given a full base URI, and a secondary URI which may
+ * be relative.
+ *
+ * Return value: the URI (NULL for some bad errors).
+ *
+ * FIXME: This code has been copied from nautilus-mozilla-content-view
+ * because nautilus-mozilla-content-view cannot link with libnautilus-extensions
+ * due to lame license issues.  Really, this belongs in gnome-vfs, but was added
+ * after the Gnome 1.4 gnome-vfs API freeze
+ **/
+
+char *
+nautilus_uri_make_full_from_relative (const char *base_uri, const char *relative_uri)
+{
+	char *result = NULL;
+
+	/* See section 5.2 in RFC 2396 */
+
+	if (base_uri == NULL && relative_uri == NULL) {
+		result = NULL;
+	} else if (base_uri == NULL) {
+		result = g_strdup (relative_uri);
+	} else if (relative_uri == NULL) {
+		result = g_strdup (base_uri);
+	} else if (!is_uri_partial (relative_uri)) {
+		result = g_strdup (relative_uri);
+	} else {
+		char *mutable_base_uri;
+		char *mutable_uri;
+
+		char *uri_current;
+		size_t base_uri_length;
+		char *separator;
+
+		mutable_base_uri = g_strdup (base_uri);
+		uri_current = mutable_uri = g_strdup (relative_uri);
+
+		/* Chew off Fragment and Query from the base_url */
+
+		separator = strrchr (mutable_base_uri, '#'); 
+
+		if (separator) {
+			*separator = '\0';
+		}
+
+		separator = strrchr (mutable_base_uri, '?');
+
+		if (separator) {
+			*separator = '\0';
+		}
+
+		if ('/' == uri_current[0] && '/' == uri_current [1]) {
+			/* Relative URI's beginning with the authority
+			 * component inherit only the scheme from their parents
+			 */
+
+			separator = strchr (mutable_base_uri, ':');
+
+			if (separator) {
+				separator[1] = '\0';
+			}			  
+		} else if ('/' == uri_current[0]) {
+			/* Relative URI's beginning with '/' absolute-path based
+			 * at the root of the base uri
+			 */
+
+			separator = strchr (mutable_base_uri, ':');
+
+			/* g_assert (separator), really */
+			if (separator) {
+				/* If we start with //, skip past the authority section */
+				if ('/' == separator[1] && '/' == separator[2]) {
+					separator = strchr (separator + 3, '/');
+					if (separator) {
+						separator[0] = '\0';
+					}
+				} else {
+				/* If there's no //, just assume the scheme is the root */
+					separator[1] = '\0';
+				}
+			}
+		} else if ('#' != uri_current[0]) {
+			/* Handle the ".." convention for relative uri's */
+
+			/* If there's a trailing '/' on base_url, treat base_url
+			 * as a directory path.
+			 * Otherwise, treat it as a file path, and chop off the filename
+			 */
+
+			base_uri_length = strlen (mutable_base_uri);
+			if ('/' == mutable_base_uri[base_uri_length-1]) {
+				/* Trim off '/' for the operation below */
+				mutable_base_uri[base_uri_length-1] = 0;
+			} else {
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				}
+			}
+
+			remove_internal_relative_components (uri_current);
+
+			/* handle the "../"'s at the beginning of the relative URI */
+			while (0 == strncmp ("../", uri_current, 3)) {
+				uri_current += 3;
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				} else {
+					/* <shrug> */
+					break;
+				}
+			}
+
+			/* handle a ".." at the end */
+			if (uri_current[0] == '.' && uri_current[1] == '.' 
+			    && uri_current[2] == '\0') {
+
+			    	uri_current += 2;
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				}
+			}
+
+			/* Re-append the '/' */
+			mutable_base_uri [strlen(mutable_base_uri)+1] = '\0';
+			mutable_base_uri [strlen(mutable_base_uri)] = '/';
+		}
+
+		result = g_strconcat (mutable_base_uri, uri_current, NULL);
+		g_free (mutable_base_uri); 
+		g_free (mutable_uri); 
+	}
+	
+	return result;
+}
+
+
 gboolean
 nautilus_uri_is_trash (const char *uri)
 {
@@ -195,16 +541,85 @@ nautilus_uri_is_trash (const char *uri)
 		|| nautilus_istr_has_prefix (uri, "gnome-trash:");
 }
 
+gboolean
+nautilus_uri_is_trash_folder (const char *uri)
+{
+	GnomeVFSURI *vfs_uri, *trash_vfs_uri;
+	gboolean result;
+	
+	/* Use a check for the actual trash first so that the trash
+	 * itself will be "in trash". There are fancier ways to do
+	 * this, but lets start with this.
+	 */
+ 	if (nautilus_uri_is_trash (uri)) {
+		return TRUE;
+	}
+
+        vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return FALSE;
+	}
+
+	result = gnome_vfs_find_directory
+		(vfs_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		 &trash_vfs_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
+
+       if (result) {
+		result = gnome_vfs_uri_equal (trash_vfs_uri, vfs_uri);			
+		gnome_vfs_uri_unref (trash_vfs_uri);
+        }
+        
+        gnome_vfs_uri_unref (vfs_uri);
+
+	return result;
+}
+
+
+gboolean 
+nautilus_uri_is_in_trash (const char *uri)
+{
+	GnomeVFSURI *vfs_uri, *trash_vfs_uri;
+	gboolean result;
+
+	/* Use a check for the actual trash first so that the trash
+	 * itself will be "in trash". There are fancier ways to do
+	 * this, but lets start with this.
+	 */
+ 	if (nautilus_uri_is_trash (uri)) {
+		return TRUE;
+	}
+
+        vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return FALSE;
+	}
+
+	result = gnome_vfs_find_directory
+		(vfs_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		 &trash_vfs_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
+
+       if (result) {
+		result = gnome_vfs_uri_equal (trash_vfs_uri, vfs_uri)
+			|| gnome_vfs_uri_is_parent (trash_vfs_uri, vfs_uri, TRUE);
+		gnome_vfs_uri_unref (trash_vfs_uri);
+        }
+
+        gnome_vfs_uri_unref (vfs_uri);
+
+	return result;
+}
+
+
 static gboolean
 nautilus_uri_is_local_scheme (const char *uri)
 {
 	gboolean is_local_scheme;
 	char *temp_scheme;
 	int i;
-	char *local_schemes[] = {"file", "help", "ghelp", "gnome-help",
-				 "trash", "man", "info", 
-				 "hardware", "search", "pipe",
-				 "gnome-trash", NULL};
+	char *local_schemes[] = {"file:", "help:", "ghelp:", "gnome-help:",
+				 "trash:", "man:", "info:", 
+				 "hardware:", "search:", "pipe:",
+				 "gnome-trash:", NULL};
 
 	is_local_scheme = FALSE;
 	for (temp_scheme = *local_schemes, i = 0; temp_scheme != NULL; i++, temp_scheme = local_schemes[i]) {
@@ -377,15 +792,36 @@ nautilus_make_uri_canonical (const char *uri)
 	return canonical_uri;
 }
 
-gboolean
-nautilus_uris_match (const char *uri_1, const char *uri_2)
+char *
+nautilus_make_uri_canonical_strip_fragment (const char *uri)
 {
-	char *canonical_1;
-	char *canonical_2;
+	const char *fragment;
+	char *without_fragment, *canonical;
+
+	fragment = strchr (uri, '#');
+	if (fragment == NULL) {
+		return nautilus_make_uri_canonical (uri);
+	}
+
+	without_fragment = g_strndup (uri, fragment - uri);
+	canonical = nautilus_make_uri_canonical (without_fragment);
+	g_free (without_fragment);
+	return canonical;
+}
+
+static gboolean
+uris_match (const char *uri_1, const char *uri_2, gboolean ignore_fragments)
+{
+	char *canonical_1, *canonical_2;
 	gboolean result;
 
-	canonical_1 = nautilus_make_uri_canonical (uri_1);
-	canonical_2 = nautilus_make_uri_canonical (uri_2);
+	if (ignore_fragments) {
+		canonical_1 = nautilus_make_uri_canonical_strip_fragment (uri_1);
+		canonical_2 = nautilus_make_uri_canonical_strip_fragment (uri_2);
+	} else {
+		canonical_1 = nautilus_make_uri_canonical (uri_1);
+		canonical_2 = nautilus_make_uri_canonical (uri_2);
+	}
 
 	result = nautilus_str_is_equal (canonical_1, canonical_2);
 
@@ -395,6 +831,33 @@ nautilus_uris_match (const char *uri_1, const char *uri_2)
 	return result;
 }
 
+gboolean
+nautilus_uris_match (const char *uri_1, const char *uri_2)
+{
+	return uris_match (uri_1, uri_2, FALSE);
+}
+
+gboolean
+nautilus_uris_match_ignore_fragments (const char *uri_1, const char *uri_2)
+{
+	return uris_match (uri_1, uri_2, TRUE);
+}
+
+gboolean
+nautilus_file_name_matches_hidden_pattern (const char *name_or_relative_uri)
+{
+	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
+
+	return name_or_relative_uri[0] == '.';
+}
+
+gboolean
+nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
+{
+	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
+
+	return nautilus_str_has_suffix (name_or_relative_uri, "~");
+}
 
 /**
  * nautilus_make_path:
@@ -519,23 +982,15 @@ nautilus_get_user_main_directory (void)
 {
 	char *user_main_directory = NULL;
 	GnomeVFSResult result;
-	NautilusFile *file;
-	char *file_uri, *image_uri, *temp_str;
-	char *source_directory_uri_text, *destination_directory_uri_text;
-	GnomeVFSURI *source_directory_uri, *destination_directory_uri;
-	GnomeVFSURI *source_uri, *destination_uri;
+	char *destination_directory_uri_text;
+	GnomeVFSURI *destination_directory_uri;
+	GnomeVFSURI *destination_uri;
 	
 	user_main_directory = g_strdup_printf ("%s/%s",
 					       g_get_home_dir(),
 					       NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
 	if (!g_file_exists (user_main_directory)) {			
-		source_directory_uri_text = gnome_vfs_get_uri_from_local_path (NAUTILUS_DATADIR);
-		source_directory_uri = gnome_vfs_uri_new (source_directory_uri_text);
-		g_free (source_directory_uri_text);
-		source_uri = gnome_vfs_uri_append_file_name (source_directory_uri, "top");
-		gnome_vfs_uri_unref (source_directory_uri);
-
 		destination_directory_uri_text = gnome_vfs_get_uri_from_local_path (g_get_home_dir());
 		destination_directory_uri = gnome_vfs_uri_new (destination_directory_uri_text);
 		g_free (destination_directory_uri_text);
@@ -543,11 +998,11 @@ nautilus_get_user_main_directory (void)
 								  NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 		gnome_vfs_uri_unref (destination_directory_uri);
 		
-		result = gnome_vfs_xfer_uri (source_uri, destination_uri,
-					 GNOME_VFS_XFER_RECURSIVE, GNOME_VFS_XFER_ERROR_MODE_ABORT,
-					 GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-					 NULL, NULL);
-		
+		result = gnome_vfs_make_directory_for_uri (destination_uri,
+						 GNOME_VFS_PERM_USER_ALL
+						 | GNOME_VFS_PERM_GROUP_ALL
+						 | GNOME_VFS_PERM_OTHER_READ);
+
 		/* FIXME bugzilla.eazel.com 1286: 
 		 * How should we handle error codes returned from gnome_vfs_xfer_uri? 
 		 * Note that nautilus_application_startup will refuse to launch if this 
@@ -555,52 +1010,15 @@ nautilus_get_user_main_directory (void)
 		 * could be deleted after Nautilus was launched, and perhaps
 		 * there is some bad side-effect of not handling that case.
 		 */
-
-		gnome_vfs_uri_unref (source_uri);
 		gnome_vfs_uri_unref (destination_uri);
 
 		/* If this fails to create the directory, nautilus_application_startup will
 		 * notice and refuse to launch.
 		 */
-					
-		/* assign a custom image for the directory icon */
-		file_uri = gnome_vfs_get_uri_from_local_path (user_main_directory);
-		temp_str = nautilus_pixmap_file ("nautilus-logo.png");
-		image_uri = gnome_vfs_get_uri_from_local_path (temp_str);
-		g_free (temp_str);
-		
-		file = nautilus_file_get (file_uri);
-		g_free (file_uri);
-		if (file != NULL) {
-			nautilus_file_set_metadata (file,
-						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-						    NULL,
-						    image_uri);
-			nautilus_file_unref (file);
-		}
-		
-		/* now do the same for the about file */
-		temp_str = g_strdup_printf ("%s/About.html", user_main_directory);
-		file_uri = gnome_vfs_get_uri_from_local_path (temp_str);
-		g_free (temp_str);
-		
-		file = nautilus_file_get (file_uri);
-		if (file != NULL) {
-			nautilus_file_set_metadata (file,
-						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-						    NULL,
-						    image_uri);
-			nautilus_file_unref (file);
-		}
-		g_free (file_uri);
-		
-		g_free (image_uri);
-		
-		/* install the default link set */
+							
+		/* install the default link sets */
 		nautilus_link_set_install (user_main_directory, "apps");
-		/*
-		  nautilus_link_set_install (user_main_directory, "search_engines");
-		*/
+		nautilus_link_set_install (user_main_directory, "home");
 	}
 
 	return user_main_directory;
@@ -616,11 +1034,7 @@ nautilus_get_user_main_directory (void)
 char *
 nautilus_get_pixmap_directory (void)
 {
-	char *pixmap_directory;
-
-	pixmap_directory = g_strdup_printf ("%s/%s", DATADIR, "pixmaps/nautilus");
-
-	return pixmap_directory;
+	return g_strdup (DATADIR "/pixmaps/nautilus");
 }
 
 /* convenience routine to use gnome-vfs to test if a string is a remote uri */
@@ -646,13 +1060,21 @@ nautilus_pixmap_file (const char *partial_path)
 {
 	char *path;
 
+	/* Look for a non-GPL Eazel logo version. */
+	path = nautilus_make_path (DATADIR "/pixmaps/nautilus/eazel-logos", partial_path);
+	if (g_file_exists (path)) {
+		return path;
+	}
+	g_free (path);
+
+	/* Look for a GPL version. */
 	path = nautilus_make_path (DATADIR "/pixmaps/nautilus", partial_path);
 	if (g_file_exists (path)) {
 		return path;
-	} else {
-		g_free (path);
-		return NULL;
 	}
+	g_free (path);
+
+	return NULL;
 }
 
 GnomeVFSResult
@@ -1247,6 +1669,16 @@ nautilus_get_build_time_stamp (void)
 #endif
 }
 
+char *
+nautilus_get_build_message (void)
+{
+#ifdef NAUTILUS_BUILD_MESSAGE
+	return g_strdup (NAUTILUS_BUILD_MESSAGE);
+#else
+	return NULL;
+#endif
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
@@ -1287,6 +1719,13 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http:::::::::"), "http:::::::::");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("www.eazel.com"), "http://www.eazel.com");
         NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some file");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp"), "file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme (""), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp::"), "file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("man:ls"), "man");
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("file:///var/tmp"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("http://www.yahoo.com"), FALSE);
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:///////"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo/"), "file://foo");
@@ -1392,6 +1831,12 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///?"), "http:///?");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///x"), "http:///x");
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com"), "http://www.eazel.com");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com/xXx"), "http://www.eazel.com/xXx");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com/xXx"), "ftp://Darin@www.eazel.com/xXx");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80/xXx"), "http://www.eazel.com:80/xXx");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com:80/xXx"), "ftp://Darin@www.eazel.com:80/xXx");
+
 	/* FIXME bugzilla.eazel.com 4101: Why append a slash in this case, but not in the http://www.eazel.com case? */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com:80"), "http://www.eazel.com:80/");
 
@@ -1411,6 +1856,90 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative ("http://a/b/c/d;p?q", NULL), "http://a/b/c/d;p?q");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, "http://a/b/c/d;p?q"), "http://a/b/c/d;p?q");
+
+	/* These test cases are from RFC 2396. */
+#define TEST_PARTIAL(partial, result) \
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative \
+		("http://a/b/c/d;p?q", partial), result)
+
+	TEST_PARTIAL ("g", "http://a/b/c/g");
+	TEST_PARTIAL ("./g", "http://a/b/c/g");
+	TEST_PARTIAL ("g/", "http://a/b/c/g/");
+	TEST_PARTIAL ("/g", "http://a/g");
+
+	TEST_PARTIAL ("//g", "http://g");
+	
+	TEST_PARTIAL ("?y", "http://a/b/c/?y");
+	TEST_PARTIAL ("g?y", "http://a/b/c/g?y");
+	TEST_PARTIAL ("#s", "http://a/b/c/d;p#s");
+	TEST_PARTIAL ("g#s", "http://a/b/c/g#s");
+	TEST_PARTIAL ("g?y#s", "http://a/b/c/g?y#s");
+	TEST_PARTIAL (";x", "http://a/b/c/;x");
+	TEST_PARTIAL ("g;x", "http://a/b/c/g;x");
+	TEST_PARTIAL ("g;x?y#s", "http://a/b/c/g;x?y#s");
+
+	TEST_PARTIAL (".", "http://a/b/c/");
+	TEST_PARTIAL ("./", "http://a/b/c/");
+
+	TEST_PARTIAL ("..", "http://a/b/");
+	TEST_PARTIAL ("../g", "http://a/b/g");
+	TEST_PARTIAL ("../..", "http://a/");
+	TEST_PARTIAL ("../../", "http://a/");
+	TEST_PARTIAL ("../../g", "http://a/g");
+
+	/* Others */
+	TEST_PARTIAL ("g/..", "http://a/b/c/");
+	TEST_PARTIAL ("g/../", "http://a/b/c/");
+	TEST_PARTIAL ("g/../g", "http://a/b/c/g");
+
+#undef TEST_PARTIAL
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (""), "/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (":"), ":");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user"), "/h/user");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%68/user/foo%2ehtml"), "/h/user/foo.html");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user/foo.html#fragment"), "file:///h/user/foo.html#fragment");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com"), "http://www.eazel.com");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com/jobs#Engineering"), "http://www.eazel.com/jobs#Engineering");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file"), "/file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///#"), "file:///#");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///"), "/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23"), "/ #");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23#"), "file:///%20%23#");
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match (":", ":"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments (":", ":"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user", "file:///h/user"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user/"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user%23frag"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "file:///h/user"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "http:///h/user"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "http://www.eazel.com"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file.html.gz#gunzip:///#fragment", "file:///h/user/file.html.gz"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/#frag", "file:///h/user/"), TRUE);
+
+	/* Since it's illegal to have a # in a scheme name, it doesn't really matter what these cases do */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi#le:"), TRUE);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

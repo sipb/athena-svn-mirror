@@ -3,7 +3,7 @@
    nautilus-icon-factory.c: Class for obtaining icons for files and other objects.
  
    Copyright (C) 1999, 2000 Red Hat Inc.
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -41,6 +41,7 @@
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-scalable-font.h"
+#include "nautilus-smooth-text-layout.h"
 #include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
@@ -127,17 +128,9 @@ static const char *icon_file_name_suffixes[] =
 /* Maximum size for either dimension at the standard zoom level. */
 #define MAXIMUM_ICON_SIZE                96
 
-/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences
- * to determine what font it uses instead of this set of constants.
- */
-static const char untranslated_embedded_text_font_family[] = N_("helvetica");
-static const char untranslated_embedded_text_font_weight[] = N_("medium");
-#define EMBEDDED_TEXT_FONT_FAMILY       _(untranslated_embedded_text_font_family)
-#define EMBEDDED_TEXT_FONT_WEIGHT       _(untranslated_embedded_text_font_weight)
-#define EMBEDDED_TEXT_FONT_SLANT        NULL
-#define EMBEDDED_TEXT_FONT_SET_WIDTH    NULL
+/* Embedded text font size and text line settings */
 #define EMBEDDED_TEXT_FONT_SIZE         9
-#define EMBEDDED_TEXT_LINE_OFFSET       1
+#define EMBEDDED_TEXT_LINE_SPACING      1
 #define EMBEDDED_TEXT_EMPTY_LINE_HEIGHT 4
 
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20
@@ -162,13 +155,11 @@ typedef struct {
 
 	/* name of current theme */
 	char *theme_name;
+	gboolean theme_is_in_user_directory;
 	
 	/* name of default theme, so it can be delegated */
 	char *default_theme_name;
-	
-	/* the local_theme boolean is set if the theme was user-added (lives in ~/.nautilus) */
-	gboolean local_theme;
-	gboolean local_default_theme;
+	gboolean default_theme_is_in_user_directory;
 	
 	/* A hash table so we pass out the same scalable icon pointer
 	 * every time someone asks for the same icon. Scalable icons
@@ -589,7 +580,7 @@ nautilus_icon_factory_destroy (GtkObject *object)
         g_free (factory->theme_name);
         g_free (factory->default_theme_name);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean
@@ -689,26 +680,28 @@ nautilus_icon_factory_remove_by_uri (const char *image_uri)
 				     (gpointer) image_uri);
 }
 
-/* utility to check if a theme is local or not */
-static void
-check_local_theme (const char *theme_name, gboolean *result_ptr)
+/* utility to check if a theme is in user directory or not */
+static gboolean
+is_theme_in_user_directory (const char *theme_name)
 {
 	char *user_directory, *themes_directory, *this_theme_directory;
+	gboolean result;
 	
 	if (theme_name == NULL) {
-		*result_ptr = FALSE;
-		return;
+		return FALSE;
 	}
 	
 	user_directory = nautilus_get_user_directory ();
 	themes_directory = nautilus_make_path (user_directory, "themes");
 	this_theme_directory = nautilus_make_path (themes_directory, theme_name);
 	
-	*result_ptr = g_file_exists (this_theme_directory);
+	result = g_file_exists (this_theme_directory);
 	
 	g_free (user_directory);
 	g_free (themes_directory);
 	g_free (this_theme_directory);
+
+	return result;
 }
 
 /* Change the theme. */
@@ -727,12 +720,13 @@ set_theme (const char *theme_name)
 
         g_free (factory->theme_name);
         factory->theme_name = g_strdup (theme_name);
-	check_local_theme (theme_name, &factory->local_theme);
+	factory->theme_is_in_user_directory = is_theme_in_user_directory (theme_name);
 
 	/* now set up the default theme */
         g_free (factory->default_theme_name);	
-	factory->default_theme_name = nautilus_theme_get_theme_data ("icon-images", "DEFAULT_THEME");
-	check_local_theme (factory->default_theme_name, &factory->local_default_theme);
+	factory->default_theme_name = nautilus_theme_get_theme_data ("icon-images", "default_theme");
+	factory->default_theme_is_in_user_directory = is_theme_in_user_directory
+		(factory->default_theme_name);
 			
 	/* we changed the theme, so emit the icons_changed signal */
 	gtk_signal_emit (GTK_OBJECT (factory),
@@ -840,7 +834,9 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
 }
 
 static char *
-make_full_icon_path (const char *path, const char *suffix, gboolean local_theme)
+make_full_icon_path (const char *path,
+		     const char *suffix,
+		     gboolean theme_is_in_user_directory)
 {
 	char *partial_path, *full_path;
 	char *user_directory, *themes_directory;
@@ -849,9 +845,9 @@ make_full_icon_path (const char *path, const char *suffix, gboolean local_theme)
 		return g_strconcat (path, suffix, NULL);
 	}
 
-	/* Build a path for this icon, depending on the local_theme boolean. */
+	/* Build a path for this icon, depending on the theme_is_in_user_directory boolean. */
 	partial_path = g_strconcat (path, suffix, NULL);
-	if (local_theme) {
+	if (theme_is_in_user_directory) {
 		user_directory = nautilus_get_user_directory ();
 		themes_directory = nautilus_make_path (user_directory, "themes");
 		full_path = nautilus_make_path (themes_directory, partial_path);
@@ -900,6 +896,7 @@ parse_attach_points (NautilusEmblemAttachPoints *attach_points, const char *atta
  */
 static char *
 get_themed_icon_file_path (const char *theme_name,
+			   gboolean theme_is_in_user_directory,
 			   const char *icon_name,
 			   guint icon_size,
 			   gboolean aa_mode,
@@ -914,7 +911,6 @@ get_themed_icon_file_path (const char *theme_name,
 	ArtIRect parsed_rect;
 	NautilusIconFactory *factory;
 	char *user_directory;
-	gboolean local_theme;
 	
 	g_assert (icon_name != NULL);
 
@@ -926,7 +922,6 @@ get_themed_icon_file_path (const char *theme_name,
 
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
 	factory = get_icon_factory ();
-	local_theme = factory->local_theme && theme_name != NULL;
 	
 	/* Try each suffix. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
@@ -943,7 +938,8 @@ get_themed_icon_file_path (const char *theme_name,
 		if (aa_mode) {
 			aa_path = g_strconcat (partial_path, "-aa", NULL);
 			path = make_full_icon_path (aa_path,
-						    icon_file_name_suffixes[i], local_theme);
+						    icon_file_name_suffixes[i],
+						    theme_is_in_user_directory);
 			g_free (aa_path);
 		
 			/* Return the path if the file exists. */
@@ -956,7 +952,8 @@ get_themed_icon_file_path (const char *theme_name,
 		}
 						
 		path = make_full_icon_path (partial_path,
-					    icon_file_name_suffixes[i], local_theme);
+					    icon_file_name_suffixes[i],
+					    theme_is_in_user_directory);
 		g_free (partial_path);
 
 		/* Return the path if the file exists. */
@@ -971,17 +968,26 @@ get_themed_icon_file_path (const char *theme_name,
 	if (path != NULL && details != NULL) {
 		memset (&details->text_rect, 0, sizeof (details->text_rect));
 
-		xml_path = make_full_icon_path (themed_icon_name, ".xml", local_theme);
+		xml_path = make_full_icon_path (themed_icon_name,
+						".xml",
+						theme_is_in_user_directory);
 
 		doc = xmlParseFile (xml_path);
 		g_free (xml_path);
 		
 		size_as_string = g_strdup_printf ("%u", icon_size);
 		node = nautilus_xml_get_root_child_by_name_and_property
-			(doc, "ICON", "SIZE", size_as_string);
+			(doc, "icon", "size", size_as_string);
 		g_free (size_as_string);
 		
-		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");		
+		property = NULL;
+		if (aa_mode) {
+			property = xmlGetProp (node, "embedded_text_rectangle_aa");		
+		}
+		if (property == NULL) {
+			property = xmlGetProp (node, "embedded_text_rectangle");				
+		}
+		
 		if (property != NULL) {
 			
 			if (sscanf (property,
@@ -995,7 +1001,14 @@ get_themed_icon_file_path (const char *theme_name,
 			xmlFree (property);
 		}
 
-		property = xmlGetProp (node, "ATTACH_POINTS");
+		property = NULL;
+		if (aa_mode) {
+			property = xmlGetProp (node, "attach_points_aa");
+		}
+		if (property == NULL) {
+			property = xmlGetProp (node, "attach_points");
+		}
+		
 		parse_attach_points (&details->attach_points, property);	
 		xmlFree (property);
 		
@@ -1006,7 +1019,9 @@ get_themed_icon_file_path (const char *theme_name,
 	 * check out the user's home directory, since it might be an emblem
 	 * that they've added there.
 	 */
-	if (path == NULL && icon_size == NAUTILUS_ICON_SIZE_STANDARD && nautilus_str_has_prefix (icon_name, EMBLEM_NAME_PREFIX)) {
+	if (path == NULL
+	    && icon_size == NAUTILUS_ICON_SIZE_STANDARD
+	    && nautilus_str_has_prefix (icon_name, EMBLEM_NAME_PREFIX)) {
 		for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 			user_directory = nautilus_get_user_directory ();
 			path = g_strdup_printf ("%s/emblems/%s%s", 
@@ -1043,8 +1058,9 @@ get_icon_file_path (const char *name,
 		    gboolean aa_mode,
 		    IconDetails *details)
 {
-	NautilusIconFactory *icon_factory;
+	NautilusIconFactory *factory;
 	const char *theme_to_use;
+	gboolean theme_is_in_user_directory;
 	char *path;
 	char *name_with_modifier;
 
@@ -1052,32 +1068,36 @@ get_icon_file_path (const char *name,
 		return NULL;
 	}
 
-	icon_factory = get_icon_factory ();
+	factory = get_icon_factory ();
 	theme_to_use = NULL;
- 	
+ 	theme_is_in_user_directory = FALSE;
  	
 	/* Check and see if there is a theme icon to use.
 	 * If there's a default theme specified, try it, too.
 	 * This decision must be based on whether there's a non-size-
 	 * specific theme icon.
 	 */
-	if (icon_factory->theme_name != NULL) {
-		path = get_themed_icon_file_path (icon_factory->theme_name,
+	if (factory->theme_name != NULL) {
+		path = get_themed_icon_file_path (factory->theme_name,
+						  factory->theme_is_in_user_directory,
 						  name,
 						  NAUTILUS_ICON_SIZE_STANDARD,
 						  aa_mode,
 						  details);		
 		if (path != NULL) {
-			theme_to_use = icon_factory->theme_name;
+			theme_to_use = factory->theme_name;
+			theme_is_in_user_directory = factory->theme_is_in_user_directory;
 			g_free (path);
-		} else if (icon_factory->default_theme_name != NULL) {
-			path = get_themed_icon_file_path (icon_factory->default_theme_name,
+		} else if (factory->default_theme_name != NULL) {
+			path = get_themed_icon_file_path (factory->default_theme_name,
+							  factory->default_theme_is_in_user_directory,
 							  name,
 							  NAUTILUS_ICON_SIZE_STANDARD,
 							  aa_mode,
 							  details);
 			if (path != NULL) {
-				theme_to_use = icon_factory->default_theme_name;
+				theme_to_use = factory->default_theme_name;
+				theme_is_in_user_directory = factory->default_theme_is_in_user_directory;
 				g_free (path);
 			}
 		}
@@ -1089,6 +1109,7 @@ get_icon_file_path (const char *name,
 	if (modifier && modifier[0] != '\0') {
 		name_with_modifier = g_strconcat (name, "-", modifier, NULL);
 		path = get_themed_icon_file_path (theme_to_use,
+						  theme_is_in_user_directory,
 						  name_with_modifier,
 						  size_in_pixels, 
 						  aa_mode,
@@ -1100,6 +1121,7 @@ get_icon_file_path (const char *name,
 	}
 	
 	return get_themed_icon_file_path (theme_to_use,
+					  theme_is_in_user_directory,
 					  name,
 					  size_in_pixels,
 					  aa_mode,
@@ -1115,7 +1137,7 @@ icon_theme_changed_callback (gpointer user_data)
 	 * long run, we sould just get rid of the user preference.
 	 */
 	theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
-	icon_theme = nautilus_theme_get_theme_data ("icons", "ICON_THEME");
+	icon_theme = nautilus_theme_get_theme_data ("icons", "icon_theme");
 	
 	set_theme (icon_theme == NULL ? theme_preference : icon_theme);
 	
@@ -1301,7 +1323,8 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 {
 	NautilusSpeedTradeoffValue preference_value;
 	
-	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
+	preference_value = nautilus_preferences_get_integer
+		(NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
 
 	/* see if there's a proxy thumbnail to indicate that thumbnailing
 	 * failed, in which case we shouldn't use the thumbnail.
@@ -1325,6 +1348,19 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 
 	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 	return nautilus_file_is_local (file);
+}
+
+/* return TRUE if the passed-in mime-type is one that we can thumbnail.  It's
+ * used to exclude ones that we know will generate errors if we tried them.
+ */
+static gboolean
+is_supported_mime_type (const char *mime_type)
+{
+	/* exclude xfig images, since we can't handle them */
+	if (nautilus_strcmp (mime_type, "image/x-xfig") == 0) {
+		return FALSE;
+	}	
+	return TRUE;
 }
 
 /* key routine to get the scalable icon for a file */
@@ -1355,11 +1391,13 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		mime_type = nautilus_file_get_mime_type (file);
 		file_size = nautilus_file_get_size (file);
 		
-		if (nautilus_istr_has_prefix (mime_type, "image/") &&
-				should_display_image_file_as_itself (file, anti_aliased)) {
+		if (nautilus_istr_has_prefix (mime_type, "image/")
+		    && is_supported_mime_type (mime_type)
+		    && should_display_image_file_as_itself (file, anti_aliased)) {
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
 				uri = nautilus_file_get_uri (file);				
-			} else if (strstr (file_uri, "/.thumbnails/") == NULL && file_size < INHIBIT_THUMBNAIL_SIZE_THRESHOLD) {
+			} else if (strstr (file_uri, "/.thumbnails/") == NULL
+				   && file_size < INHIBIT_THUMBNAIL_SIZE_THRESHOLD) {
 				uri = nautilus_get_thumbnail_uri (file, anti_aliased);
 				if (uri == NULL) {
 					uri = get_icon_file_path
@@ -1628,7 +1666,7 @@ static gboolean
 path_represents_svg_image (const char *path) 
 {
 	char *uri;
-	GnomeVFSFileInfo file_info;
+	GnomeVFSFileInfo *file_info;
 	gboolean is_svg;
 
 	/* Sync. file I/O is OK here because this is used only for installed
@@ -1637,11 +1675,11 @@ path_represents_svg_image (const char *path)
 	 */
 
 	uri = gnome_vfs_get_uri_from_local_path (path);
-	gnome_vfs_file_info_init (&file_info);
-	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
+	file_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (uri, file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
 	g_free (uri);
-	is_svg = nautilus_strcmp (file_info.mime_type, "image/svg") == 0;
-	gnome_vfs_file_info_clear (&file_info);
+	is_svg = nautilus_strcmp (file_info->mime_type, "image/svg") == 0;
+	gnome_vfs_file_info_unref (file_info);
 
 	return is_svg;
 }
@@ -1651,7 +1689,7 @@ static GnomeVFSResult
 get_cache_time (const char *file_uri, time_t *cache_time)
 {
 	GnomeVFSURI *vfs_uri;
-	GnomeVFSFileInfo file_info;
+	GnomeVFSFileInfo *file_info;
 	GnomeVFSResult result;
 	gboolean is_local;
 
@@ -1671,12 +1709,12 @@ get_cache_time (const char *file_uri, time_t *cache_time)
 	}
 	
 	/* Gather the info and then compare modification times. */
-	gnome_vfs_file_info_init (&file_info);
-	result = gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	if (result == GNOME_VFS_OK) {
-		*cache_time = file_info.mtime;
+		*cache_time = file_info->mtime;
 	}
-	gnome_vfs_file_info_clear (&file_info);
+	gnome_vfs_file_info_unref (file_info);
 
 	return result;
 }
@@ -2237,10 +2275,8 @@ nautilus_get_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
 		return NAUTILUS_ICON_SIZE_LARGER;
 	case NAUTILUS_ZOOM_LEVEL_LARGEST:
 		return NAUTILUS_ICON_SIZE_LARGEST;
-	default:
-		g_assert_not_reached ();
-		return NAUTILUS_ICON_SIZE_STANDARD;
 	}
+	g_return_val_if_fail (FALSE, NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 /* Convenience cover for nautilus_icon_factory_get_icon_for_file
@@ -2338,6 +2374,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	    const char *text)
 {
 	NautilusScalableFont *smooth_font;
+	NautilusSmoothTextLayout *smooth_text_layout;
 	GdkPixbuf *pixbuf_with_text;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
@@ -2349,9 +2386,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	if (!embedded_text_rect_usable (embedded_text_rect) || nautilus_strlen (text) == 0) {
 		return NULL;
 	}
-		
-	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-	
+
 	/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 	 * the font it uses
 	 */
@@ -2361,26 +2396,31 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	 * a questionable improvement since at that tiny font size, anti aliased fonts
 	 * probably give a better preview of the content than non anti-aliased fonts.
 	 */
-	smooth_font = nautilus_scalable_font_new (EMBEDDED_TEXT_FONT_FAMILY,
-						  EMBEDDED_TEXT_FONT_WEIGHT,
-						  EMBEDDED_TEXT_FONT_SLANT,
-						  EMBEDDED_TEXT_FONT_SET_WIDTH);
+	smooth_font = nautilus_scalable_font_get_default_font ();
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (smooth_font), NULL);
 	
-	nautilus_scalable_font_draw_text_lines
-		(smooth_font,
-		 pixbuf_with_text,
-		 embedded_text_rect->x0,
-		 embedded_text_rect->y0,
-		 embedded_text_rect,
-		 EMBEDDED_TEXT_FONT_SIZE,
-		 EMBEDDED_TEXT_FONT_SIZE,
-		 text,
-		 GTK_JUSTIFY_LEFT,
-		 EMBEDDED_TEXT_LINE_OFFSET,
-		 EMBEDDED_TEXT_EMPTY_LINE_HEIGHT,
-		 NAUTILUS_RGB_COLOR_BLACK,
-		 NAUTILUS_OPACITY_FULLY_OPAQUE);
+	smooth_text_layout = nautilus_smooth_text_layout_new (text,
+							      nautilus_strlen (text),
+							      smooth_font,
+							      EMBEDDED_TEXT_FONT_SIZE,
+							      FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), NULL);
+	nautilus_smooth_text_layout_set_line_spacing (smooth_text_layout, EMBEDDED_TEXT_LINE_SPACING);
+	nautilus_smooth_text_layout_set_empty_line_height (smooth_text_layout, EMBEDDED_TEXT_EMPTY_LINE_HEIGHT);
 	
+	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
+	
+	nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+						    pixbuf_with_text,
+						    0,
+						    0,
+						    embedded_text_rect,
+						    GTK_JUSTIFY_LEFT,
+						    FALSE,
+						    NAUTILUS_RGB_COLOR_BLACK,
+						    NAUTILUS_OPACITY_FULLY_OPAQUE);
+	
+	gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 	gtk_object_unref (GTK_OBJECT (smooth_font));
 
 	return pixbuf_with_text;

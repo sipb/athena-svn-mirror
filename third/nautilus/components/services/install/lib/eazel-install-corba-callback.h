@@ -43,6 +43,12 @@ extern "C" {
 typedef struct _EazelInstallCallback EazelInstallCallback;
 typedef struct _EazelInstallCallbackClass EazelInstallCallbackClass;
 
+typedef enum EazelInstallCallbackOperation {
+	EazelInstallCallbackOperation_INSTALL,
+	EazelInstallCallbackOperation_UNINSTALL,
+	EazelInstallCallbackOperation_REVERT
+} EazelInstallCallbackOperation;
+
 struct _EazelInstallCallbackClass 
 {
 	BonoboObjectClass parent_class;
@@ -52,9 +58,16 @@ struct _EazelInstallCallbackClass
 
 	/* Called after download and before (un)install_progress */
 	gboolean (*preflight_check) (EazelInstallCallback *service, 
+				     EazelInstallCallbackOperation op,
 				     const GList *packages,
 				     int total_size, 
 				     int num_packages);
+
+	/* Called after (un)install progress and done, only if
+	   result is good */
+	gboolean (*save_transaction) (EazelInstallCallback *service, 
+				      EazelInstallCallbackOperation op,
+				      const GList *packages);
 
 	/* Called during install of a package */
 	void (*install_progress)  (EazelInstallCallback *service, 
@@ -63,7 +76,16 @@ struct _EazelInstallCallbackClass
 				   int package_size_completed, int package_size_total,
 				   int total_size_completed, int total_size);
 	/* Called during uninstall of a package */
-	void (*uninstall_progress)  (EazelInstallCallback *service, const PackageData *pack, int amount, int total);
+	void (*uninstall_progress)  (EazelInstallCallback *service, 
+				     const PackageData *pack, 
+				     int package_num, int num_packages, 
+				     int package_size_completed, int package_size_total,
+				     int total_size_completed, int total_size);
+
+	/* Called when a package is undergoing the different checks */
+	void (*file_conflict_check)(EazelInstallCallback *service, const PackageData *package);
+	void (*file_uniqueness_check)(EazelInstallCallback *service, const PackageData *package);
+	void (*feature_consistency_check)(EazelInstallCallback *service, const PackageData *package);
 
 	/* Called when a dependency check is being resolved */
 	void (*dependency_check) (EazelInstallCallback *service, const PackageData *package, const PackageData *needed );

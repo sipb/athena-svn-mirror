@@ -38,7 +38,7 @@ create_gtk_label ()
 }
 
 static GtkWidget *
-create_nautilus_label ()
+create_nautilus_label (gboolean adjust_wrap_on_resize)
 {
 	GtkWidget *label;
 
@@ -46,20 +46,21 @@ create_nautilus_label ()
 	nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
 	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), 1);
-	nautilus_label_set_background_mode (NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+ 	nautilus_label_set_background_mode (NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
 	nautilus_label_set_solid_background_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
 	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_BLUE);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
-	
+	nautilus_label_set_adjust_wrap_on_resize (NAUTILUS_LABEL (label), adjust_wrap_on_resize);
+
 	return label;
 }
 
 static GtkWidget *
 create_gtk_label_window (void)
 {
-	GtkWidget	*gtk_window;
-	GtkWidget	*gtk_vbox;
-	GtkWidget	*gtk_label;
+	GtkWidget *gtk_window;
+	GtkWidget *gtk_vbox;
+	GtkWidget *gtk_label;
 
 	gtk_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	nautilus_gtk_widget_set_background_color (gtk_window, "white");
@@ -76,11 +77,11 @@ create_gtk_label_window (void)
 }
 
 static GtkWidget *
-create_nautilus_label_window (void)
+create_nautilus_label_window (gboolean adjust_wrap_on_resize)
 {
-	GtkWidget	*nautilus_window;
-	GtkWidget	*nautilus_vbox;
-	GtkWidget	*nautilus_label;
+	GtkWidget *nautilus_window;
+	GtkWidget *nautilus_vbox;
+	GtkWidget *nautilus_label;
 
 	nautilus_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	nautilus_gtk_widget_set_background_color (nautilus_window, "white");
@@ -90,7 +91,7 @@ create_nautilus_label_window (void)
 	gtk_container_set_border_width (GTK_CONTAINER (nautilus_window), 10);
 	nautilus_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (nautilus_window), nautilus_vbox);
- 	nautilus_label = create_nautilus_label ();
+ 	nautilus_label = create_nautilus_label (adjust_wrap_on_resize);
 	gtk_box_pack_start (GTK_BOX (nautilus_vbox), nautilus_label, TRUE, TRUE, 0);
 
 	return nautilus_window;
@@ -99,17 +100,20 @@ create_nautilus_label_window (void)
 int 
 main (int argc, char* argv[])
 {
-	GtkWidget *nautilus_window;
-	GtkWidget *gtk_window;
+	GtkWidget *nautilus_window = NULL;
+	GtkWidget *nautilus_window_wrapped = NULL;
+	GtkWidget *gtk_window = NULL;
 
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
 
-	nautilus_window = create_nautilus_label_window ();
-	gtk_window =  create_gtk_label_window ();
+	if (0) nautilus_window = create_nautilus_label_window (FALSE);
+	if (1) nautilus_window_wrapped = create_nautilus_label_window (TRUE);
+	if (0) gtk_window =  create_gtk_label_window ();
 
-	gtk_widget_show_all (nautilus_window);
-	gtk_widget_show_all (gtk_window);
+	if (nautilus_window) gtk_widget_show_all (nautilus_window);
+	if (nautilus_window_wrapped) gtk_widget_show_all (nautilus_window_wrapped);
+	if (gtk_window) gtk_widget_show_all (gtk_window);
 
 	gtk_main ();
 

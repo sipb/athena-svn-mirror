@@ -22,6 +22,7 @@
  */
 
 #include <config.h>
+#include <time.h>
 #include <gnome.h>
 #include <eazel-package-system.h>
 
@@ -31,6 +32,98 @@
 #define PROVIDED_BY_ONLY_ONE "libc.so.6"
 #define OWNED_BY_ONLY_ONE "/bin/sh"
 #define NEEDED_BY_MANY "glibc"
+
+static void
+test_database_mtime (EazelPackageSystem *packsys)
+{
+	time_t mtime = eazel_package_system_database_mtime (packsys);
+	char *tmp;
+
+	if (mtime == 0) {
+		g_message ("Couldn't get package system database mtime.\n");
+	} else {
+		tmp = ctime (&mtime);
+		g_message ("Package system database mtime: %s\n", tmp);
+	}
+}
+
+static void
+test_is_installed (EazelPackageSystem *packsys)
+{
+	GList *result;
+
+	result = eazel_package_system_query (packsys,
+					     NULL,
+					     MATCHES_ONLY_ONE,
+					     EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+					     0);
+	if (g_list_length (result)==1) {
+		PackageData *p;
+		p = PACKAGEDATA (result->data);
+		if (eazel_package_system_is_installed (packsys,
+						       NULL,
+						       p->name,
+						       p->version,
+						       p->minor,
+						       EAZEL_SOFTCAT_SENSE_EQ)) {
+			g_message ("is_installed 1 ok");
+		} else {
+			g_message ("is_installed 1 FAILED");
+		}
+		if (eazel_package_system_is_installed (packsys,
+						       NULL,
+						       p->name,
+						       p->version,
+						       p->minor,
+						       EAZEL_SOFTCAT_SENSE_GE)) {
+			g_message ("is_installed 2 ok");
+		} else {
+			g_message ("is_installed 2 FAILED");
+		}
+		if (eazel_package_system_is_installed (packsys,
+						       NULL,
+						       p->name,
+						       p->version,
+						       p->minor,
+						       EAZEL_SOFTCAT_SENSE_LT)) {
+			g_message ("is_installed 3 FAILED");
+		} else {
+			g_message ("is_installed 3 ok");
+		}
+		if (eazel_package_system_is_installed (packsys,
+						       NULL,
+						       p->name,
+						       p->version,
+						       p->minor,
+						       EAZEL_SOFTCAT_SENSE_GT)) {
+			g_message ("is_installed 4 FAILED");
+		} else {
+			g_message ("is_installed 4 ok");
+		}
+		if (eazel_package_system_is_installed (packsys,
+						       NULL,
+						       p->name,
+						       "0",
+						       NULL,
+						       EAZEL_SOFTCAT_SENSE_GE)) {
+			g_message ("is_installed 5 ok");
+		} else {
+			g_message ("is_installed 5 FAILED");
+		}
+		if (eazel_package_system_is_installed (packsys,
+						       NULL,
+						       p->name,
+						       "1000",
+						       NULL,
+						       EAZEL_SOFTCAT_SENSE_GE)) {
+			g_message ("is_installed 6 FAILED");
+		} else {
+			g_message ("is_installed 6 ok");
+		}
+	}
+	g_list_foreach (result, (GFunc)gtk_object_unref, NULL);
+	g_list_free (result);
+}
 
 static void
 test_version_compare (EazelPackageSystem *packsys)
@@ -68,7 +161,7 @@ test_package_load (EazelPackageSystem *packsys,
 	} else {
 		g_message ("load_package test 1 FAIL");
 	}
-
+	g_message (packagedata_dump (p, TRUE));
 	gtk_object_unref (GTK_OBJECT (p));
 
 	flag = PACKAGE_FILL_NO_PROVIDES;
@@ -516,8 +609,10 @@ int main(int argc, char *argv[]) {
 
 	eazel_package_system_set_debug (packsys, arg_debug);
 
-	test_version_compare (packsys);
 	test_package_load (packsys, filename);
+	test_database_mtime (packsys);
+	test_is_installed (packsys);
+	test_version_compare (packsys);
 	test_query (packsys);
 	test_query_owns_mem (packsys);
 

@@ -33,7 +33,7 @@
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
 #define NAUTILUS_ICON_CONTAINER_CLASS(k) \
-	GTK_CHECK_CLASS_CAST (k, nautilus_icon_container_get_type (), NautilusIconListView)
+	GTK_CHECK_CLASS_CAST (k, nautilus_icon_container_get_type (), NautilusIconContainerClass)
 #define NAUTILUS_IS_ICON_CONTAINER(obj) \
 	GTK_CHECK_TYPE (obj, nautilus_icon_container_get_type ())
 
@@ -88,7 +88,7 @@ typedef struct {
 						   int copy_action,
 						   int x,
 						   int y);
-	void	     (* create_nautilus_links)	  (NautilusIconContainer *container,
+	void	     (* create_nautilus_links)    (NautilusIconContainer *container,
 						   GList *item_uris,
 						   int x,
 						   int y);
@@ -121,6 +121,9 @@ typedef struct {
 	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
 						   NautilusIconData *data);
 	int          (* compare_icons)            (NautilusIconContainer *container,
+						   NautilusIconData *icon_a,
+						   NautilusIconData *icon_b);
+	int          (* compare_icons_by_name)    (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
 

@@ -42,6 +42,7 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
+#define DEFAULT_USER_LEVEL	NAUTILUS_USER_LEVEL_INTERMEDIATE
 
 /*
  * PreferencesEntry:
@@ -82,7 +83,7 @@ static const char *user_level_names_for_storage[] =
 {
 	"novice",
 	"intermediate",
-	"hacker"
+	"advanced"
 };
 
 static char *       preferences_get_path                            (void);
@@ -282,6 +283,7 @@ preferences_key_make_for_visibility (const char *name)
 
 	visibility_path = preferences_get_visibility_path ();
 	default_key = g_strdup_printf ("%s%s", visibility_path, key);
+	g_free (key);
 	g_free (visibility_path);
 	
 	return default_key;
@@ -438,7 +440,7 @@ nautilus_preferences_get_boolean (const char *name)
 	char *key;
 	
 	g_return_val_if_fail (name != NULL, FALSE);
-	
+
 	key = preferences_key_make_for_getter (name);
 	result = nautilus_gconf_get_boolean (key);
 	g_free (key);
@@ -451,14 +453,19 @@ nautilus_preferences_set_integer (const char *name,
 				  int int_value)
 {
 	char *key;
+	int old_value;
 
 	g_return_if_fail (name != NULL);
 	
 	key = preferences_key_make (name);
-	nautilus_gconf_set_integer (key, int_value);
-	g_free (key);
+	old_value = nautilus_preferences_get_integer (name);
 
-	nautilus_gconf_suggest_sync ();
+	if (int_value != old_value) {
+		nautilus_gconf_set_integer (key, int_value);
+
+		nautilus_gconf_suggest_sync ();
+	}
+	g_free (key);
 }
 
 int
@@ -482,14 +489,19 @@ nautilus_preferences_set (const char *name,
 			  const char *string_value)
 {
 	char *key;
+	char *old_value;
 
 	g_return_if_fail (name != NULL);
-	
-	key = preferences_key_make (name);
-	nautilus_gconf_set_string (key, string_value);
-	g_free (key);
 
-	nautilus_gconf_suggest_sync ();
+	key = preferences_key_make (name);
+	old_value = nautilus_preferences_get (name);
+
+	if (strcmp (string_value, old_value) != 0) {
+		nautilus_gconf_set_string (key, string_value);
+		
+		nautilus_gconf_suggest_sync ();
+	}
+	g_free (key);
 }
 
 char *
@@ -513,7 +525,7 @@ nautilus_preferences_get (const char *name)
 
 void
 nautilus_preferences_set_string_list (const char *name,
-				      GSList *string_list_value)
+				      GList *string_list_value)
 {
 	char *key;
 
@@ -526,10 +538,10 @@ nautilus_preferences_set_string_list (const char *name,
 	nautilus_gconf_suggest_sync ();
 }
 
-GSList *
+GList *
 nautilus_preferences_get_string_list (const char *name)
 {
- 	GSList *result;
+ 	GList *result;
 	char *key;
 	
 	g_return_val_if_fail (name != NULL, NULL);
@@ -546,7 +558,7 @@ nautilus_preferences_get_user_level (void)
 {
 	char *key;
 	char *user_level;
-	int result = 0;
+	int result;
 
 	/* This is a little silly, but it is technically possible
 	 * to have different user_level defaults in each user level.
@@ -564,14 +576,17 @@ nautilus_preferences_get_user_level (void)
 	user_level = nautilus_gconf_get_string (key);
 	g_free (key);
 
-	if (nautilus_str_is_equal (user_level, "hacker")) {
-		result = 2;
+	if (nautilus_str_is_equal (user_level, "advanced")) {
+		result = NAUTILUS_USER_LEVEL_ADVANCED;
 	} else if (nautilus_str_is_equal (user_level, "intermediate")) {
-		result = 1;
+		result = NAUTILUS_USER_LEVEL_INTERMEDIATE;
+	} else if (nautilus_str_is_equal (user_level, "novice")) {
+		result = NAUTILUS_USER_LEVEL_NOVICE;
 	} else {
-		result = 0;
+		result = DEFAULT_USER_LEVEL;
 	}
 	
+	g_free (user_level);
 	return result;
 }
 
@@ -682,7 +697,7 @@ nautilus_preferences_default_get_string (const char *name,
 void
 nautilus_preferences_default_set_string_list (const char *name,
 					      int user_level,
-					      GSList *string_list_value)
+					      GList *string_list_value)
 {
 	char *default_key;
 	
@@ -693,11 +708,11 @@ nautilus_preferences_default_set_string_list (const char *name,
 	g_free (default_key);
 }
 
-GSList *
+GList *
 nautilus_preferences_default_get_string_list (const char *name,
 					      int user_level)
 {
- 	GSList *result;
+ 	GList *result;
 	char *default_key;
 	
 	g_return_val_if_fail (name != NULL, NULL);
@@ -1147,71 +1162,6 @@ nautilus_preferences_add_callback_while_alive (const char *name,
 			    data);
 }
 
-static GList *remove_list = NULL;
-
-static void
-preferences_while_process_running_remover (void)
-{
-	GList *iterator;
-
-	for (iterator = remove_list; iterator != NULL; iterator = iterator->next) {
-		WhileAliveData *data;
-		
-		data = iterator->data;
-		g_assert (data != NULL);
-
-		nautilus_preferences_remove_callback (data->name,
-						      data->callback,
-						      data->callback_data);
-
-		g_free (data->name);
-		g_free (data);
-	}
-
-	g_list_free (remove_list);
-	remove_list = NULL;
-}
-
-/*
- * nautilus_preferences_add_callback_while_process_is_running:
- *
- * @name: Preference name.
- * @callback: Callback function.
- * @callback_data: Data for callback function.
- *
- * Add a preference callback for the duration of the currently
- * running process.  The callback will be automatically removed
- * at exit time.  This is useful for preference values that need
- * to be stored be stored statically
- */
-void
-nautilus_preferences_add_callback_while_process_is_running (const char *name,
-							    NautilusPreferencesCallback callback,
-							    gpointer callback_data)
-{
-	static gboolean while_process_running_remover_installed = FALSE;
-	WhileAliveData *data;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (callback != NULL);
-
-	/* Setup the at exit disconnector once */
-	if (while_process_running_remover_installed == FALSE) {
-		g_atexit (preferences_while_process_running_remover);
-		while_process_running_remover_installed = TRUE;
-	}
-
-	data = g_new (WhileAliveData, 1);
-	data->name = g_strdup (name);
-	data->callback = callback;
-	data->callback_data = callback_data;
-	
-	nautilus_preferences_add_callback (name, callback, callback_data);
-
-	remove_list = g_list_append (remove_list, data);
-}
-
-
 void
 nautilus_preferences_remove_callback (const char *name,
 				      NautilusPreferencesCallback callback,
@@ -1341,7 +1291,7 @@ nautilus_preferences_get_user_level_name_for_display (int user_level)
 {
 	user_level = preferences_user_level_check_range (user_level);
 	
-	return g_strdup (user_level_names_for_display[user_level]);
+	return g_strdup (gettext (user_level_names_for_display[user_level]));
 }
 
 char *

@@ -2,7 +2,7 @@
 
 /* nautilus-mime-actions.h - uri-specific versions of mime action functions
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -30,6 +30,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
+#include "nautilus-string.h"
 #include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
@@ -47,6 +48,8 @@ static gboolean    string_not_in_list                            (const char    
 static char       *mime_type_get_supertype                       (const char               *mime_type);
 static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile             *file);
 static gboolean    server_has_content_requirements               (OAF_ServerInfo           *server);
+static gboolean   application_supports_uri_scheme                (gpointer                 data,
+								  gpointer                 uri_scheme);
 static GList      *nautilus_do_component_query                   (const char               *mime_type,
 								  const char               *uri_scheme,
 								  GList                    *content_mime_types,
@@ -107,6 +110,7 @@ nautilus_mime_actions_get_minimum_file_attributes (void)
 	GList *attributes;
 
 	attributes = NULL;
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
@@ -288,9 +292,8 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 	/* Prefer something from the short list */
 
 	short_list = nautilus_mime_get_short_list_components_for_file (file);
-
 	if (short_list != NULL) {
-		sort_conditions[1] = g_strdup ("has (['");
+		sort_conditions[1] = g_strdup ("prefer_by_list_order (iid, ['");
 
 		for (p = short_list; p != NULL; p = p->next) {
 			prev = sort_conditions[1];
@@ -300,7 +303,7 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 								  "','", NULL);
 			} else {
 				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
-								  "'], iid)", NULL);
+								  "'])", NULL);
 			}
 			g_free (prev);
 		}
@@ -332,8 +335,6 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 
 	return sort_conditions;
 }	
-
-
 
 static OAF_ServerInfo *
 nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
@@ -414,7 +415,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	if (info_list != NULL) {
 		server = OAF_ServerInfo_duplicate (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
-		
+
 		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
 			used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored . */
 		}
@@ -470,6 +471,7 @@ GList *
 nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 {
 	char *mime_type;
+	char *uri_scheme;
 	GList *result;
 	GList *removed;
 	GList *metadata_application_add_ids;
@@ -482,6 +484,17 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 		return NULL;
 	}
 
+	mime_type = nautilus_file_get_mime_type (file);
+	result = gnome_vfs_mime_get_short_list_applications (mime_type);
+	g_free (mime_type);
+
+	/* First remove applications that cannot support this location */
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+	g_assert (uri_scheme != NULL);
+	result = nautilus_g_list_partition (result, application_supports_uri_scheme,
+					    uri_scheme, &removed);
+	gnome_vfs_mime_application_list_free (removed);
+
 	CORBA_exception_init (&ev);
 
 	metadata_application_add_ids = nautilus_file_get_metadata_list 
@@ -493,13 +506,10 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
-	mime_type = nautilus_file_get_mime_type (file);
-	result = gnome_vfs_mime_get_short_list_applications (mime_type);
-	g_free (mime_type);
 
 	result = nautilus_g_list_partition (result, (NautilusPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
 					    metadata_application_remove_ids, &removed);
-
+	
 	gnome_vfs_mime_application_list_free (removed);
 
 	for (p = metadata_application_add_ids; p != NULL; p = p->next) {
@@ -591,12 +601,15 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 			iids = g_list_prepend (iids, p->data);
 		}
 	}
-		
+
+	/* By copying the iids using g_list_prepend, we've reversed the short
+	   list order.  We need to use the order to determine the first available
+	   component, so reverse it now to maintain original ordering */
+	iids = g_list_reverse (iids);		
 	result = NULL;
 
 	if (iids != NULL) {
 		extra_requirements = g_strdup ("has (['");
-		
 		for (p = iids; p != NULL; p = p->next) {
 			prev = extra_requirements;
 
@@ -605,10 +618,8 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 			} else {
 				extra_requirements = g_strconcat (prev, p->data, "'], iid)", NULL);
 			}
-
 			g_free (prev);
 		}
-
 
 		result = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
 						      explicit_iids, NULL, extra_requirements, &ev);
@@ -622,24 +633,6 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 	g_free (mime_type);
 	
 	return result;
-}
-
-/* FIXME bugzilla.eazel.com 5086: we should disable this for 1.0 I think */
-
-char *
-nautilus_mime_get_short_list_methods_for_file (NautilusFile      *file)
-{
-	char *mime_type;
-	const char *method;
-
-	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
-		return NULL;
-	}
-
-	mime_type = nautilus_file_get_mime_type (file);
-	method = gnome_vfs_mime_get_value (mime_type, "vfs_method");
-	g_free (mime_type);
-	return g_strdup (method);
 }
 
 GList *
@@ -680,15 +673,47 @@ nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 	return result;
 }
 
+static int
+application_supports_uri_scheme_strcmp_style (gconstpointer application_data,
+					      gconstpointer uri_scheme)
+{
+	return application_supports_uri_scheme
+		((gpointer) application_data,
+		 (gpointer) uri_scheme) ? 0 : 1;
+}
+
 gboolean
 nautilus_mime_has_any_applications_for_file (NautilusFile      *file)
 {
-	GList *list;
+	GList *all_applications_for_mime_type, *application_that_can_access_uri;
+	char *uri_scheme;
 	gboolean result;
 
-	list = nautilus_mime_get_all_applications_for_file (file);
-	result = list != NULL;
-	gnome_vfs_mime_application_list_free (list);
+	all_applications_for_mime_type = nautilus_mime_get_all_applications_for_file (file);
+
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+	application_that_can_access_uri = g_list_find_custom
+		(all_applications_for_mime_type,
+		 uri_scheme,
+		 application_supports_uri_scheme_strcmp_style);
+	g_free (uri_scheme);
+
+	result = application_that_can_access_uri != NULL;
+	gnome_vfs_mime_application_list_free (all_applications_for_mime_type);
+
+	return result;
+}
+
+gboolean
+nautilus_mime_has_any_applications_for_file_type (NautilusFile      *file)
+{
+	GList *applications;
+	gboolean result;
+
+	applications = nautilus_mime_get_all_applications_for_file (file);
+	
+	result = applications != NULL;
+	gnome_vfs_mime_application_list_free (applications);
 
 	return result;
 }
@@ -1552,9 +1577,14 @@ nautilus_do_component_query (const char        *mime_type,
 
                         if (ignore_content_mime_types || 
 			    server_matches_content_requirements (server, content_types, explicit_iids)) {
-                                retval = g_list_append
-                                        (retval, 
-                                         OAF_ServerInfo_duplicate (server));
+                                /* Hack to suppress the Bonobo_Sample_Text component, since the Nautilus text
+                                 * view is a superset and it's confusing for the user to be presented with both
+                                 */
+                                if (server->iid != NULL && strcmp (server->iid, "OAFIID:Bonobo_Sample_Text") != 0) {
+                                	retval = g_list_append
+                                        	(retval, 
+                                         	OAF_ServerInfo_duplicate (server));
+                        	}
                         }
                 }
 
@@ -1629,4 +1659,23 @@ strv_concat (char **a,
 	result[j] = NULL;
 
 	return result;
+}
+
+static gboolean
+application_supports_uri_scheme (gpointer data,
+				 gpointer uri_scheme)
+{
+	GnomeVFSMimeApplication *application;
+
+	g_assert (data != NULL);
+	application = (GnomeVFSMimeApplication *) data;
+
+	/* The default supported uri scheme is "file" */
+	if (application->supported_uri_schemes == NULL
+	    && strcasecmp ((const char *) uri_scheme, "file") == 0) {
+		return TRUE;
+	}
+	return g_list_find_custom (application->supported_uri_schemes,
+				   uri_scheme,
+				   nautilus_strcasecmp_compare_func) != NULL;
 }

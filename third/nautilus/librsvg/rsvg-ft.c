@@ -199,43 +199,52 @@ rsvg_ft_glyph_bytes (RsvgFTGlyph *glyph)
 /**
  * rsvg_gt_glyph_evict: Evict lru glyph from glyph cache.
  * @ctx: The RsvgFT context.
+ * @amount_to_evict: The amount above the high water mark for the cache
+ * that we are.
  *
- * Chooses the least recently used glyph that without a refcount, and
- * evicts it.
- *
- * Return value: true if a glyph was successfully evicted.
+ * Evicts any glyphs with a reference count of 1 until it is either
+ * below the high water mark or out of glyphs.
  **/
-static gboolean
-rsvg_ft_glyph_evict (RsvgFTCtx *ctx)
+static void
+rsvg_ft_glyph_evict (RsvgFTCtx *ctx, int amount_to_evict)
 {
-	RsvgFTGlyphCacheEntry *victim;
+	RsvgFTGlyphCacheEntry *victim, *prev;
 	RsvgFTGlyph *glyph;
+	int glyph_bytes, evicted_so_far;
 
-	for (victim = ctx->glyph_last; victim != NULL; victim = victim->prev)
-		if (victim->glyph->refcnt == 1)
+	evicted_so_far = 0;
+	for (victim = ctx->glyph_last; victim != NULL; victim = prev) {
+		prev = victim->prev;
+		glyph = victim->glyph;
+
+		if (glyph->refcnt != 1) {
+			continue;
+		}
+
+		if (victim->prev != NULL) {
+			victim->prev->next = victim->next;
+		} else {
+			ctx->glyph_first = victim->next;
+		}
+		if (victim->next != NULL) {
+			victim->next->prev = victim->prev;
+		} else {
+			ctx->glyph_last = victim->prev;
+		}
+		
+		glyph_bytes = rsvg_ft_glyph_bytes (glyph);
+		ctx->glyph_bytes -= glyph_bytes;
+		rsvg_ft_glyph_unref (glyph);
+		
+		g_hash_table_remove (ctx->glyph_hash_table, victim->desc);
+		g_free (victim->desc);
+		g_free (victim);
+		
+		evicted_so_far += glyph_bytes;
+		if (evicted_so_far >= amount_to_evict) {
 			break;
-
-	if (victim == NULL)
-		return FALSE;
-
-	if (victim->prev != NULL)
-		victim->prev->next = victim->next;
-	else
-		ctx->glyph_first = victim->next;
-	if (victim->next != NULL)
-		victim->next->prev = victim->prev;
-	else
-		ctx->glyph_last = victim->prev;
-
-	glyph = victim->glyph;
-	ctx->glyph_bytes -= rsvg_ft_glyph_bytes (glyph);
-	rsvg_ft_glyph_unref (glyph);
-
-	g_hash_table_remove (ctx->glyph_hash_table, victim->desc);
-	g_free (victim->desc);
-	g_free (victim);
-
-	return TRUE;
+		}
+	}
 }
 
 /**
@@ -248,7 +257,7 @@ rsvg_ft_glyph_evict (RsvgFTCtx *ctx)
  *
  * Inserts @glyph into the glyph cache under the glyph descriptor @desc.
  * This routine also takes care of evicting glyphs when the cache
- * becomes full.
+ * reaches its high water limit.
  **/
 static void
 rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
@@ -259,14 +268,10 @@ rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
 
 	ctx->glyph_bytes += rsvg_ft_glyph_bytes (glyph);
 
-	/* check for full cache and evict if so */
-	while (ctx->glyph_bytes > ctx->glyph_bytes_max) {
-		if (!rsvg_ft_glyph_evict (ctx)) {
-			g_warning ("rsvg_ft_glyph_insert: unable to free any glyph cache entry, suggesting resource leak.");
-			break;
-		}
+	if (ctx->glyph_bytes + rsvg_ft_glyph_bytes (glyph) >= ctx->glyph_bytes_max) {
+		rsvg_ft_glyph_evict (ctx, ctx->glyph_bytes + rsvg_ft_glyph_bytes (glyph) - ctx->glyph_bytes_max);
 	}
-
+	
 	new_desc = g_new (RsvgFTGlyphDesc, 1);
 	memcpy (new_desc, desc, sizeof (RsvgFTGlyphDesc));
 	entry = g_new (RsvgFTGlyphCacheEntry, 1);
@@ -487,9 +492,11 @@ rsvg_ft_font_evict (RsvgFTCtx *ctx)
 	ctx->last = victim->prev;
 
 	font = victim->font;
-	FT_Done_Face (font->face);
-	g_free (font);
-	victim->font = NULL;
+	if (font != NULL) {
+		FT_Done_Face (font->face);
+		g_free (font);
+		victim->font = NULL;
+	}
 
 	ctx->n_loaded_fonts--;
 }
@@ -654,7 +661,11 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
 
 	FT_Set_Transform (face, &matrix, &delta);
 
-	error = FT_Load_Glyph (face, glyph_ix, FT_LOAD_NO_HINTING);
+	/* Tell freetype to never load bitmaps when loading glyphs.  We only
+	 * use the outlines of scalable fonts.  This means our code will work
+	 * even for glyphs that have embedded bitmaps.
+	 */
+	error = FT_Load_Glyph (face, glyph_ix, FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
 	if (error)
 		return NULL;
 
@@ -701,7 +712,8 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
  * rsvg_ft_get_glyph_cached: Get a rendered glyph, trying the cache.
  * @ctx: The RsvgFT context.
  * @fh: Font handle for the font.
- * @glyph_ix: Glyph index.
+ * @cache_ix: Glyph index to use in the cache.
+ * @glyph_ix: Glyph index to use in the font.
  * @sx: Width of em in pixels.
  * @sy: Height of em in pixels.
  * @affine: Affine transformation.
@@ -714,7 +726,8 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
  **/
 static RsvgFTGlyph *
 rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
-			  FT_UInt glyph_ix, double sx, double sy,
+			  FT_UInt cache_ix, FT_UInt glyph_ix,
+			  double sx, double sy,
 			  const double affine[6], int xy[2])
 {
 	RsvgFTGlyphDesc desc;
@@ -729,7 +742,7 @@ rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	desc.fh = fh;
 	desc.char_width = floor (sx * 64 + 0.5);
 	desc.char_height = floor (sy * 64 + 0.5);
-	desc.glyph_index = glyph_ix;
+	desc.glyph_index = cache_ix;
 	x_sp = floor (SUBPIXEL_FRACTION * (affine[4] - floor (affine[4])));
 	desc.x_subpixel = x_sp;
 	desc.y_subpixel = 0;
@@ -800,10 +813,14 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	int rowstride;
 	guchar *buf;
 	double glyph_affine[6];
-	FT_UInt glyph_index;
+	FT_UInt glyph_index, cache_index;
 	FT_UInt last_glyph = 0; /* for kerning */
 	guint n_glyphs;
 	double init_x, init_y;
+	int pixel_width, pixel_height, pixel_baseline;
+	int pixel_underline_position, pixel_underline_thickness;
+	int wclength;
+	wchar_t *wcstr;
 
 	g_return_val_if_fail (ctx != NULL, NULL);
 	g_return_val_if_fail (str != NULL, NULL);
@@ -816,7 +833,29 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	if (font == NULL)
 		return NULL;
 
+	/* Set the font to the correct size then generate the
+	 * vertical pixel positioning metrics we need. Use 72dpi
+	 * so that pixels == points
+	 */
+	FT_Set_Char_Size (font->face,
+			  FT_FROMFLOAT(sx),
+			  FT_FROMFLOAT(sy),
+			  72, 72);
+	pixel_height = FT_TRUNC (FT_CEIL (font->face->size->metrics.ascender
+					  - font->face->size->metrics.descender));
+	pixel_baseline = FT_TRUNC (FT_CEIL (font->face->size->metrics.ascender));
+
+	pixel_underline_position = ((font->face->ascender
+				     - font->face->underline_position
+				     - font->face->underline_thickness / 2) * sy
+				     / font->face->units_per_EM);
+
+	pixel_underline_thickness = (font->face->underline_thickness * sy
+				     / font->face->units_per_EM);
+	pixel_underline_thickness = MAX (1, pixel_underline_thickness);
+
 	bbox.x0 = bbox.x1 = 0;
+	bbox.y0 = bbox.y1 = 0;
 
 	glyphs = g_new (RsvgFTGlyph *, length);
 	glyph_xy = g_new (int, length * 2);
@@ -827,11 +866,28 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	init_x = affine[4];
 	init_y = affine[5];
 	n_glyphs = 0;
+
+	/* Alloc max length of wide char */
+	wcstr = g_new0 (wchar_t, length);
+	wclength = mbstowcs (wcstr, str, length);
+
+	/* mbstowcs fallback.  0 means not found any wide chars.
+	 * -1 means an invalid sequence was found.  In either of 
+	 * these two cases we fill in the wide char array with 
+	 * the single byte chars.
+	 */
+	if (wclength > 0) {
+		length = wclength;
+	} else {
+		for (i = 0; i < length; i++) {
+			wcstr[i] = (unsigned char) str[i];
+		}
+	}
+	
 	for (i = 0; i < length; i++) {
 		RsvgFTGlyph *glyph;
-
-		glyph_index = FT_Get_Char_Index (font->face,
-						 ((unsigned char *)str)[i]);
+		
+		glyph_index = FT_Get_Char_Index (font->face, wcstr[i]);
 
 		/* FIXME bugzilla.eazel.com 2775: Need a better way to deal
 		 * with unknown characters.
@@ -862,32 +918,59 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 			glyph_affine[5] += glyph_affine[1] * kx +
 				glyph_affine[3] * ky;
 		}
-		if (glyph_index != 0)
+		if (glyph_index != 0) {
 			last_glyph = glyph_index;
 
-		glyph = rsvg_ft_get_glyph_cached (ctx, fh, glyph_index,
-						  sx, sy, glyph_affine,
-						  glyph_xy + n_glyphs * 2);
-		if (glyph != NULL) {
-			glyphs[n_glyphs] = glyph;
+			glyph = rsvg_ft_get_glyph_cached (ctx, fh, glyph_index,
+							  glyph_index,
+							  sx, sy, glyph_affine,
+							  glyph_xy + n_glyphs * 2);
 
-			glyph_bbox.x0 = glyph_xy[i * 2];
-			glyph_bbox.y0 = glyph_xy[i * 2 + 1];
-			glyph_bbox.x1 = glyph_bbox.x0 + glyph->width;
-			glyph_bbox.y1 = glyph_bbox.y0 + glyph->height;
+			/* Evil hack to handle fonts that don't define glyphs
+			 * for ` ' characters. Ask for `-', zero the pixels, then
+			 * enter it in the cache under the glyph index of ` '
+			 *
+			 * (The reason that this is needed is that at least some
+			 * microsoft TrueType fonts give ` ' an index, but don't
+			 * give it an actual glyph definition. Presumably they
+			 * just use some kind of metric when spacing)
+			 */
+			if (glyph == NULL && wcstr[i] == ' ') {
+				cache_index = glyph_index;
+				glyph_index = FT_Get_Char_Index (font->face, '-');
+				if (glyph_index != 0) {
+					glyph = rsvg_ft_get_glyph_cached (ctx, fh, cache_index,
+									  glyph_index, sx, sy,
+									  glyph_affine,
+									  glyph_xy + n_glyphs * 2);
+					if (glyph != NULL) {
+						memset (glyph->buf, 0, glyph->height * glyph->rowstride);
+					}
+				}
+			}
 
-			art_irect_union (&bbox, &bbox, &glyph_bbox);
+			if (glyph != NULL) {
+				glyphs[n_glyphs] = glyph;
+
+				glyph_bbox.x0 = glyph_xy[n_glyphs * 2];
+				glyph_bbox.y0 = glyph_xy[n_glyphs * 2 + 1];
+				glyph_bbox.x1 = glyph_bbox.x0 + glyph->width;
+				glyph_bbox.y1 = glyph_bbox.y0 + glyph->height;
+
+				art_irect_union (&bbox, &bbox, &glyph_bbox);
+
 #ifdef VERBOSE
-			g_print ("char '%c' bbox: (%d, %d) - (%d, %d)\n",
-				 str[i],
-				 glyph_bbox.x0, glyph_bbox.y0,
-				 glyph_bbox.x1, glyph_bbox.y1);
+				g_print ("char '%c' bbox: (%d, %d) - (%d, %d)\n",
+					 str[i],
+					 glyph_bbox.x0, glyph_bbox.y0,
+					 glyph_bbox.x1, glyph_bbox.y1);
 #endif
 
-			glyph_affine[4] += glyph->xpen;
-			glyph_affine[5] += glyph->ypen;
+				glyph_affine[4] += glyph->xpen;
+				glyph_affine[5] += glyph->ypen;
 
-			n_glyphs++;
+				n_glyphs++;
+			}
 		} else {
 			g_print ("no glyph loaded for character '%c'\n",
 				 str[i]);
@@ -897,8 +980,16 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	xy[0] = bbox.x0;
 	xy[1] = bbox.y0;
 
-	dimensions[0] = (bbox.x1 - bbox.x0);
-	dimensions[1] = (bbox.y1 - bbox.y0);
+	/* Some callers of this function expect to get something with
+	 * non-zero width and height. So force the returned glyph to
+	 * be at least one pixel wide
+	 */
+	pixel_width = MAX (1, bbox.x1 - bbox.x0);
+
+	dimensions[0] = pixel_width;
+	dimensions[1] = pixel_height;
+
+	g_free (wcstr);
 	
 	/* Skip the glyph compositing loop for the case when all we
 	 * are doing is measuring strings.
@@ -912,22 +1003,25 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 		return NULL;
 	}
 
-	rowstride = (bbox.x1 - bbox.x0 + 3) & -4;
-	buf = g_malloc0 (rowstride * (bbox.y1 - bbox.y0));
+	rowstride = (pixel_width + 3) & -4;
+	buf = g_malloc0 (rowstride * pixel_height);
 
 	result = g_new (RsvgFTGlyph, 1);
 	result->refcnt = 1;
-	result->width = bbox.x1 - bbox.x0;
-	result->height = bbox.y1 - bbox.y0;
+	result->width = pixel_width;
+	result->height = pixel_height;
 	result->xpen = glyph_affine[4] - init_x;
 	result->ypen = glyph_affine[5] - init_y;
 	result->rowstride = rowstride;
 	result->buf = buf;
+	result->underline_position = pixel_underline_position;
+	result->underline_thickness = pixel_underline_thickness;
 
 	for (i = 0; i < n_glyphs; i++) {
 		rsvg_ft_glyph_composite (result, glyphs[i],
 					 glyph_xy[i * 2] - bbox.x0,
-					 glyph_xy[i * 2 + 1] - bbox.y0);
+					 glyph_xy[i * 2 + 1]
+					 + pixel_baseline - glyph_affine[5]);
 		rsvg_ft_glyph_unref (glyphs[i]);
 	}
 

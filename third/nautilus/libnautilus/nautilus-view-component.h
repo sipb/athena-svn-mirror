@@ -418,6 +418,17 @@ extern "C"
 					      const Nautilus_URIList *
 					      selection,
 					      CORBA_Environment * ev);
+      void (*report_location_change) (PortableServer_Servant _servant,
+				      const Nautilus_URI location,
+				      const Nautilus_URIList * selection,
+				      const CORBA_char * title,
+				      CORBA_Environment * ev);
+      void (*report_redirect) (PortableServer_Servant _servant,
+			       const Nautilus_URI from_location,
+			       const Nautilus_URI to_location,
+			       const Nautilus_URIList * selection,
+			       const CORBA_char * title,
+			       CORBA_Environment * ev);
       void (*report_selection_change) (PortableServer_Servant _servant,
 				       const Nautilus_URIList * selection,
 				       CORBA_Environment * ev);
@@ -436,6 +447,8 @@ extern "C"
       void (*set_title) (PortableServer_Servant _servant,
 			 const CORBA_char * new_title,
 			 CORBA_Environment * ev);
+      void (*go_back) (PortableServer_Servant _servant,
+		       CORBA_Environment * ev);
    }
    POA_Nautilus_ViewFrame__epv;
    typedef struct
@@ -496,6 +509,18 @@ extern "C"
 							  selection,
 							  CORBA_Environment *
 							  ev);
+   void Nautilus_ViewFrame_report_location_change(Nautilus_ViewFrame _obj,
+						  const Nautilus_URI location,
+						  const Nautilus_URIList *
+						  selection,
+						  const CORBA_char * title,
+						  CORBA_Environment * ev);
+   void Nautilus_ViewFrame_report_redirect(Nautilus_ViewFrame _obj,
+					   const Nautilus_URI from_location,
+					   const Nautilus_URI to_location,
+					   const Nautilus_URIList * selection,
+					   const CORBA_char * title,
+					   CORBA_Environment * ev);
    void Nautilus_ViewFrame_report_selection_change(Nautilus_ViewFrame _obj,
 						   const Nautilus_URIList *
 						   selection,
@@ -516,6 +541,8 @@ extern "C"
    void Nautilus_ViewFrame_set_title(Nautilus_ViewFrame _obj,
 				     const CORBA_char * new_title,
 				     CORBA_Environment * ev);
+   void Nautilus_ViewFrame_go_back(Nautilus_ViewFrame _obj,
+				   CORBA_Environment * ev);
 
    void _ORBIT_skel_Nautilus_View_load_location(POA_Nautilus_View *
 						_ORBIT_servant,
@@ -598,6 +625,35 @@ extern "C"
 						     selection,
 						     CORBA_Environment * ev));
    void
+      _ORBIT_skel_Nautilus_ViewFrame_report_location_change
+      (POA_Nautilus_ViewFrame * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_report_location_change) (PortableServer_Servant _servant,
+					     const Nautilus_URI location,
+					     const Nautilus_URIList *
+					     selection,
+					     const CORBA_char * title,
+					     CORBA_Environment * ev));
+   void _ORBIT_skel_Nautilus_ViewFrame_report_redirect(POA_Nautilus_ViewFrame
+						       * _ORBIT_servant,
+						       GIOPRecvBuffer *
+						       _ORBIT_recv_buffer,
+						       CORBA_Environment * ev,
+						       void
+						       (*_impl_report_redirect)
+						       (PortableServer_Servant
+							_servant,
+							const Nautilus_URI
+							from_location,
+							const Nautilus_URI
+							to_location,
+							const Nautilus_URIList
+							* selection,
+							const CORBA_char *
+							title,
+							CORBA_Environment *
+							ev));
+   void
       _ORBIT_skel_Nautilus_ViewFrame_report_selection_change
       (POA_Nautilus_ViewFrame * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
@@ -661,6 +717,15 @@ extern "C"
 						  const CORBA_char *
 						  new_title,
 						  CORBA_Environment * ev));
+   void _ORBIT_skel_Nautilus_ViewFrame_go_back(POA_Nautilus_ViewFrame *
+					       _ORBIT_servant,
+					       GIOPRecvBuffer *
+					       _ORBIT_recv_buffer,
+					       CORBA_Environment * ev,
+					       void (*_impl_go_back)
+					       (PortableServer_Servant
+						_servant,
+						CORBA_Environment * ev));
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

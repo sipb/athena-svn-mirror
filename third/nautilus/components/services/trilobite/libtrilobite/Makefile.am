@@ -6,7 +6,7 @@ INCLUDES = \
 	-DPREFIX=\"$(prefix)\" 	\
 	-DG_LOG_DOMAIN=\"libtrilobite\"	\
 	-DSTANDALONE		\
-	-DTRILOBITE_VERSION=\"0.2.0\" \
+	-DTRILOBITE_VERSION=\"0.3.0\" \
 	-I$(srcdir)		\
 	-I.			\
 	-I$(top_srcdir)		\
@@ -53,6 +53,7 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-core-distribution.h		\
 	trilobite-core-network.h		\
 	trilobite-core-utils.h			\
+	trilobite-file-utilities.h		\
 	trilobite-root-helper.h			\
 	trilobite-root-client-public.h		\
 	trilobite-redirect.h			\
@@ -65,6 +66,7 @@ libtrilobite_la_SOURCES =			\
 	trilobite-core-distribution.c		\
 	trilobite-core-network.c		\
 	trilobite-core-utils.c			\
+	trilobite-file-utilities.c		\
 	trilobite-root-helper.c			\
 	trilobite-root-client.c			\
 	trilobite-redirect.c			\
@@ -101,10 +103,7 @@ CLEANFILES= $(TRILOBITE_CORBA_GENERATED) idl_stamp
 
 trilobite-service.c: trilobite-service.h
 
-EXTRA_DIST = \
-	trilobite-service-passwordquery-private.h	\
-	trilobite-root-client-private.h		\
-	trilobite-service-private.h		\
-	trilobite-service-private.h		\
+EXTRA_DIST = 				\
+	trilobite-core-network-slim.c	\
 	$(NULL)
 

@@ -37,8 +37,8 @@ goto_services_summary (BonoboUIComponent *component,
 		       gpointer callback_data, 
 		       const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "eazel:");
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
+			       "eazel:");
 }
 
 static void
@@ -50,7 +50,7 @@ goto_online_storage (BonoboUIComponent *component,
 	char			*user_name;
 
 	if ( ammonite_init (bonobo_poa())) {
-		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
+		user_name = ammonite_get_default_user_username ();
 	} else {
 		user_name = NULL;
 	}
@@ -65,7 +65,7 @@ goto_online_storage (BonoboUIComponent *component,
 		g_free (user_name);
 		user_name = NULL;
 	}
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data), url);
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), url);
 	g_free (url);
 	url = NULL;
 }
@@ -80,7 +80,7 @@ goto_software_catalog (BonoboUIComponent *component,
 	char 			*user_name;
 
 	if (ammonite_init (bonobo_poa())) {
-		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
+		user_name = ammonite_get_default_user_username ();
 
 		logged_in = (NULL != user_name);
 		g_free (user_name);
@@ -95,19 +95,9 @@ goto_software_catalog (BonoboUIComponent *component,
 		url = g_strdup ("eazel-services:///catalog");
 	}
 
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data), url);
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), url);
 	g_free (url);
 	url = NULL;
-
-}
-
-static void
-goto_services_support (BonoboUIComponent *component, 
-		       gpointer callback_data, 
-		       const char *verb)
-{
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "http://services.eazel.com/support");
 
 }
 
@@ -131,7 +121,6 @@ nautilus_window_install_service_ui (NautilusWindow *window)
 		BONOBO_UI_VERB ("Eazel Services", goto_services_summary),
 		BONOBO_UI_VERB ("Online Storage", goto_online_storage),
 		BONOBO_UI_VERB ("Software Catalog", goto_software_catalog),
-		BONOBO_UI_VERB ("Services Support", goto_services_support),
 		BONOBO_UI_VERB_END
 	};
 

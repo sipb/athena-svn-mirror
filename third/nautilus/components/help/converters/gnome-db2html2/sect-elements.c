@@ -1,4 +1,8 @@
+
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include "sect-elements.h"
 #include "gnome.h"
 
@@ -131,6 +135,7 @@ ElementInfo sect_elements[] = {
 	{ LITERALLAYOUT, "literallayout", (startElementSAXFunc) sect_literallayout_start_element, (endElementSAXFunc) sect_literallayout_end_element, (charactersSAXFunc) sect_write_characters },
 	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
 	{ QANDASET, "qandaset", NULL, NULL, NULL, },
+	{ BRIDGEHEAD, "bridgehead", (startElementSAXFunc) sect_bridgehead_start_element, (endElementSAXFunc) sect_bridgehead_end_element, (charactersSAXFunc) sect_write_characters },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -211,7 +216,7 @@ sect_print (Context *context, gchar *format, ...)
 		} else if ((*string == '&') && (*(string +1) == '\000')) {
 			printf ("&amp;");
 		} else {
-			printf (string);
+			printf ("%s", string);
 		}
 		g_free (string);
 	}
@@ -240,7 +245,7 @@ sect_write_characters (Context *context,
 		
 
 	temp = g_strndup (chars, len);
-	sect_print (context, temp);
+	sect_print (context, "%s", temp);
 	g_free (temp);
 }
 
@@ -410,7 +415,7 @@ sect_sect_start_element (Context *context,
 			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
 			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("id");
 			((StackElement *)context->stack->data)->atrs[1] = g_strdup (*atrs_ptr);
-			if (!strcmp (*atrs_ptr, context->target_section))
+			if (!g_strcasecmp (*atrs_ptr, context->target_section))
 				sect_context->state = LOOKING_FOR_SECT_TITLE;
 			break;
 		}
@@ -523,7 +528,7 @@ sect_sect_end_element (Context *context,
 	while (atrs_ptr && *atrs_ptr) {
 		if (!g_strcasecmp (*atrs_ptr, "id")) {
 			atrs_ptr++;
-			if (!strcmp (*atrs_ptr, context->target_section)) {
+			if (!g_strcasecmp (*atrs_ptr, context->target_section)) {
 				((SectContext *)context->data)->state = LOOKING_FOR_POST_SECT;
 			}
 			break;
@@ -907,7 +912,7 @@ sect_title_characters (Context *context,
 	case SECTION:
 	case FORMALPARA:
 	case GLOSSENTRY:
-		sect_print (context, temp);
+		sect_print (context, "%s", temp);
 		g_free (temp);
 		break;
 	case ARTHEADER:
@@ -920,7 +925,7 @@ sect_title_characters (Context *context,
 		((SectContext *) context->data)->figure->title = temp;
 		break;
 	case TABLE:
-		sect_print (context, temp);
+		sect_print (context, "%s", temp);
 		g_free (temp);
 		break;
 	default:
@@ -2053,7 +2058,7 @@ sect_legalnotice_start_element (Context *context,
 
 	sect_context = (SectContext *)context->data;
 
-	if ((strcmp (context->target_section, "legalnotice") != 0) || IS_IN_SECT (context)) {
+	if ((g_strcasecmp (context->target_section, "legalnotice") != 0) || IS_IN_SECT (context)) {
 		/* If we are not searching for the legalnotice or we are
 		 * currently in a sect then abort */
 		return;
@@ -2075,7 +2080,7 @@ sect_legalnotice_end_element (Context *context,
 	
 	sect_context = (SectContext *)context->data;
 
-	if (strcmp (context->target_section, "legalnotice") != 0) {
+	if (g_strcasecmp (context->target_section, "legalnotice") != 0) {
 		return;
 	}
 
@@ -2092,7 +2097,7 @@ sect_legalnotice_characters (Context *context,
 			     const char *chars,
 			     int len)
 {
-	if (strcmp (context->target_section, "legalnotice") != 0) {
+	if (g_strcasecmp (context->target_section, "legalnotice") != 0) {
 		return;
 	}
 
@@ -2214,7 +2219,7 @@ sect_address_characters (Context *context,
 	}
 	
 	temp = g_strndup (chars, len);
-	sect_print (context, temp);
+	sect_print (context, "%s", temp);
 	g_free (temp);
 }
 void
@@ -2277,3 +2282,23 @@ sect_literallayout_end_element (Context *context,
 	sect_print (context, "</PRE>");
 }
 
+void
+sect_bridgehead_start_element (Context *context,
+			     	  const gchar *name,
+			     	  const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<H2>");
+}
+
+void
+sect_bridgehead_end_element (Context *context,
+			   	const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</H2>");
+}

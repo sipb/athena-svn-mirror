@@ -49,7 +49,6 @@ typedef struct {
 	EazelInstall *object;
 } impl_POA_GNOME_Trilobite_Eazel_Install;
 
-
 static void 
 impl_Eazel_Install_install(impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 			   const CORBA_char *package_list,
@@ -85,7 +84,7 @@ impl_Eazel_Install_install_packages(impl_POA_GNOME_Trilobite_Eazel_Install *serv
 	SET_CB (cb);
 
 	categories = NULL;
-	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
+	categories = categorydata_list_from_corba_categorystructlist (corbacategories);
 	eazel_install_install_packages (servant->object, 
 					categories, 
 					!root || strcmp (root, "")==0 ? NULL : root);
@@ -109,7 +108,7 @@ impl_Eazel_Install_uninstall_packages(impl_POA_GNOME_Trilobite_Eazel_Install *se
 	SET_CB (cb);
 
 	categories = NULL;
-	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
+	categories = categorydata_list_from_corba_categorystructlist (corbacategories);
 	eazel_install_uninstall_packages (servant->object, 
 					  categories,
 					  !root || strcmp (root, "")==0 ? NULL : root);
@@ -260,18 +259,18 @@ impl_Eazel_Install__get_auth (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 }
 
 static void
-impl_Eazel_Install__set_update (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+impl_Eazel_Install__set_upgrade (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 				const CORBA_boolean value,
 				CORBA_Environment *ev)
 {
-	eazel_install_set_update (servant->object, value);
+	eazel_install_set_upgrade (servant->object, value);
 }
 
 static CORBA_boolean
-impl_Eazel_Install__get_update (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
+impl_Eazel_Install__get_upgrade (impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 				CORBA_Environment *ev)
 {
-	return eazel_install_get_update (servant->object);
+	return eazel_install_get_upgrade (servant->object);
 }
 
 static void
@@ -490,10 +489,9 @@ impl_Eazel_Install_simple_query (impl_POA_GNOME_Trilobite_Eazel_Install *servant
 							 query, 
 							 EI_SIMPLE_QUERY_MATCHES, 
 							 servant->object->private->cur_root);
-	result = GNOME_Trilobite_Eazel_PackageDataStructList__alloc ();
-	(*result) = corba_packagedatastructlist_from_packagedata_list (tmp_result);
+	result = corba_packagedatastructlist_from_packagedata_list (tmp_result);
 
-	g_list_foreach (tmp_result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	g_list_foreach (tmp_result, (GFunc)gtk_object_unref, NULL);
 	
 	return result;
 }
@@ -533,8 +531,8 @@ eazel_install_get_epv ()
 	epv->_set_auth = (gpointer)&impl_Eazel_Install__set_auth;
 	epv->_get_auth = (gpointer)&impl_Eazel_Install__get_auth;
 
-	epv->_set_update = (gpointer)&impl_Eazel_Install__set_update;
-	epv->_get_update = (gpointer)&impl_Eazel_Install__get_update;
+	epv->_set_upgrade = (gpointer)&impl_Eazel_Install__set_upgrade;
+	epv->_get_upgrade = (gpointer)&impl_Eazel_Install__get_upgrade;
 
 	epv->_set_downgrade = (gpointer)&impl_Eazel_Install__set_downgrade;
 	epv->_get_downgrade = (gpointer)&impl_Eazel_Install__get_downgrade;

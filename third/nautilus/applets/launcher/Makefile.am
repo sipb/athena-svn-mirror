@@ -27,5 +27,5 @@ gnorbadir  = $(sysconfdir)/CORBA/servers
 gnorba_DATA = nautilus-launcher-applet.gnorba
 
 EXTRA_DIST =\
-	nautilus-launcher-applet.gnorba \
+	$(gnorba_DATA) \
 	$(NULL)

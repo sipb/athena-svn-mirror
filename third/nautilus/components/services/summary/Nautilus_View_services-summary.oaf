@@ -1,0 +1,119 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_summary_view_factory:1b0b1018-e0ca-4f14-8d23-7a134486ab30" type="exe" location="nautilus-summary-view">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Nautilus Service Summary View Factory"/>
+	<oaf_attribute name="name-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; &#218;&#215;&#197;&#196;&#197;&#206;&#206;&#209; &#208;&#210;&#207; &#208;&#207;&#211;&#204;&#213;&#199;&#201; &#238;&#193;&#213;&#212;&#166;&#204;&#213;&#211;&#193;"/>
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#188;&#248;&#231;&#242; &#208;&#229;&#241;&#223;&#235;&#231;&#248;&#231;&#242; &#213;&#240;&#231;&#241;&#229;&#243;&#223;&#225;&#242; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-es" type="string" value="Visualizador Original de Resumen de Servicio Nautilus"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus-fabrik f&#246;r tj&#228;nstesammanfattningsvyn"/>
+	<oaf_attribute name="name-de" type="string" value="Factory f&#252;r Dienstezusammenfassungs-Ansichten"/>
+	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#181;&#161;&#188;&#165;&#211;&#165;&#185;&#165;&#181;&#165;&#222;&#165;&#234;&#161;&#188;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-no" type="string" value="Factory for sammendragsvisning for Nautilus tjenester"/>
+	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre Poh&#181;ad S&#250;hrn slu&#190;by pre Nautilus"/>
+	<oaf_attribute name="name-sl" type="string" value="Tovarna pogledov Nautilusovih storitev povzetkov"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen tiivistelm&#228;n&#228;kym&#228;tehdas"/>
+	<oaf_attribute name="description" type="string" value="Service Summary View Component's Factory"/>
+	<oaf_attribute name="description-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#203;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212;&#201; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; &#215;&#205;&#166;&#211;&#212;&#213; &#218;&#215;&#197;&#196;&#197;&#206;&#197;&#206;&#206;&#209;"/>
+	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#188;&#248;&#231;&#242; &#208;&#229;&#241;&#223;&#235;&#231;&#248;&#231;&#242; &#213;&#240;&#231;&#241;&#229;&#243;&#223;&#225;&#242;"/>
+	<oaf_attribute name="description-es" type="string" value="Original del Componente Ver como Resumen de Servicio"/>
+	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r tj&#228;nstesammanfattningsvykomponent"/>
+	<oaf_attribute name="description-de" type="string" value="Factory f&#252;r Dienstezusammenfassungs-Ansichtskomponenten"/>
+	<oaf_attribute name="description-ja" type="string" value="&#165;&#181;&#161;&#188;&#165;&#211;&#165;&#185;&#165;&#181;&#165;&#222;&#165;&#234;&#161;&#188;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-no" type="string" value="Factory for visningskomponent for tjenestesammendrag"/>
+	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre komponent Poh&#181;ad pre s&#250;hrn slu&#190;by"/>
+	<oaf_attribute name="description-sl" type="string" value="Tovarna komponente pregleda povzetkov storitev"/>
+	<oaf_attribute name="description-fi" type="string" value="Palvelutiivistelm&#228;katselimien tehdas"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_summary_view:92811b0e-beb2-49db-858c-19a0dc8517e5" type="factory" location="OAFIID:nautilus_summary_view_factory:1b0b1018-e0ca-4f14-8d23-7a134486ab30">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+		<item value="IDL:Bonobo/Control:1.0"/>
+		<item value="IDL:Nautilus/View:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Nautilus Summary View"/>
+	<oaf_attribute name="name-uk" type="string" value="&#240;&#197;&#210;&#197;&#199;&#204;&#209;&#196; &#218;&#215;&#197;&#196;&#197;&#206;&#206;&#209; &#238;&#193;&#213;&#212;&#166;&#204;&#213;&#211;&#193;"/>
+	<oaf_attribute name="name-el" type="string" value="&#188;&#248;&#231; &#208;&#229;&#241;&#223;&#235;&#231;&#248;&#231;&#242; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus &#214;zet G&#246;r&#252;nt&#252;s&#252;"/>
+	<oaf_attribute name="name-es" type="string" value="Vista Resumen Nautilus"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus sammanfattningsvy"/>
+	<oaf_attribute name="name-de" type="string" value="Nautilus-Zusammenfassungs-Ansicht"/>
+	<oaf_attribute name="name-ko" type="string" value="&#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#191;&#228;&#190;&#224; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#181;&#165;&#222;&#165;&#234;&#161;&#188;&#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="name-hu" type="string" value="Nautilus &#246;sszefoglal&#243;-n&#233;zet"/>
+	<oaf_attribute name="name-no" type="string" value="Nautilus sammendragsvisning"/>
+	<oaf_attribute name="name-sk" type="string" value="Poh&#181;ad S&#250;hrn pre Nautilus"/>
+	<oaf_attribute name="name-sl" type="string" value="Nautilusov pregled povzetkov"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen tiivistelm&#228;n&#228;kym&#228;"/>
+	<oaf_attribute name="description" type="string" value="Service Summary view component"/>
+	<oaf_attribute name="description-uk" type="string" value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; &#218;&#215;&#197;&#196;&#197;&#206;&#206;&#209; &#208;&#210;&#207; &#208;&#207;&#211;&#204;&#213;&#199;&#201;"/>
+	<oaf_attribute name="description-el" type="string" value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#188;&#248;&#231;&#242; &#208;&#229;&#241;&#223;&#235;&#231;&#248;&#231;&#242; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="description-fr" type="string" value="Composant de visualisation de r&#233;sum&#233; des services"/>
+	<oaf_attribute name="description-es" type="string" value="Componente Ver como Resumen de Servicio"/>
+	<oaf_attribute name="description-sv" type="string" value="Tj&#228;nstesammanfattningsvykomponent"/>
+	<oaf_attribute name="description-de" type="string" value="Dienstezusammenfassungs-Ansichtskomponente"/>
+	<oaf_attribute name="description-ko" type="string" value="&#188;&#173;&#186;&#241;&#189;&#186; &#191;&#228;&#190;&#224; &#186;&#184;&#177;&#226; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
+	<oaf_attribute name="description-ja" type="string" value="&#165;&#181;&#161;&#188;&#165;&#211;&#165;&#185;&#165;&#181;&#165;&#222;&#165;&#234;&#161;&#188;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
+	<oaf_attribute name="description-no" type="string" value="Komponenet for visning av tjenestesammendrag"/>
+	<oaf_attribute name="description-hu" type="string" value="P&#233;lda &#246;sszefoglal&#243;n&#233;zet-komponens"/>
+	<oaf_attribute name="description-sk" type="string" value="Komponent Poh&#181;ad pre s&#250;hrn slu&#190;by"/>
+	<oaf_attribute name="description-sl" type="string" value="Pogled komponente povzetkov storitev"/>
+	<oaf_attribute name="description-fi" type="string" value="Palvelutiivistelm&#228;n&#228;kym&#228;komponentti"/>
+	<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+		<item value="eazel"/>
+	</oaf_attribute>
+	<oaf_attribute name="nautilus:view_as_name" type="string" value="Summary"/>
+	<oaf_attribute name="nautilus:view_as_name-uk" type="string" value="&#250;&#215;&#197;&#196;&#197;&#206;&#206;&#209;"/>
+	<oaf_attribute name="nautilus:view_as_name-el" type="string" value="&#208;&#229;&#241;&#223;&#235;&#231;&#248;&#231;"/>
+	<oaf_attribute name="nautilus:view_as_name-gl" type="string" value="Resume"/>
+	<oaf_attribute name="nautilus:view_as_name-tr" type="string" value="&#214;zet"/>
+	<oaf_attribute name="nautilus:view_as_name-ru" type="string" value="&#233;&#212;&#207;&#199;"/>
+	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Resumen"/>
+	<oaf_attribute name="nautilus:view_as_name-fr" type="string" value="R&#233;sum&#233;"/>
+	<oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Sammanfattning"/>
+	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Zusammenfassung"/>
+	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#191;&#228;&#190;&#224;"/>
+	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#165;&#181;&#165;&#222;&#165;&#234;&#161;&#188;"/>
+	<oaf_attribute name="nautilus:view_as_name-hu" type="string" value="&#214;sszefoglal&#243;"/>
+	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="Sammendrag"/>
+	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="S&#250;hrn"/>
+	<oaf_attribute name="nautilus:view_as_name-fi" type="string" value="Tiivistelm&#228;"/>
+	<oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Povzetek"/>
+	<oaf_attribute name="nautilus:view_as_label" type="string" value="View as Summary"/>
+	<oaf_attribute name="nautilus:view_as_label-uk" type="string" value="&#240;&#207;&#203;&#193;&#218;&#193;&#212;&#201; &#209;&#203; &#218;&#215;&#197;&#196;&#197;&#206;&#206;&#209;"/>
+	<oaf_attribute name="nautilus:view_as_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#249;&#242; &#208;&#229;&#241;&#223;&#235;&#231;&#248;&#231;"/>
+	<oaf_attribute name="nautilus:view_as_label-gl" type="string" value="Ver como resume"/>
+	<oaf_attribute name="nautilus:view_as_label-tr" type="string" value="&#214;zet Olarak G&#246;r&#252;nt&#252;le"/>
+	<oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant que R&#233;sum&#233;"/>
+	<oaf_attribute name="nautilus:view_as_label-es" type="string" value="Ver como Resumen"/>
+	<oaf_attribute name="nautilus:view_as_label-sv" type="string" value="Visa som sammanfattning"/>
+	<oaf_attribute name="nautilus:view_as_label-de" type="string" value="Als Zusammenfassung betrachten"/>
+	<oaf_attribute name="nautilus:view_as_label-ko" type="string" value="&#191;&#228;&#190;&#224;&#192;&#184;&#183;&#206; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="nautilus:view_as_label-ja" type="string" value="&#165;&#181;&#165;&#222;&#165;&#234;&#161;&#188;&#164;&#199;&#201;&#189;&#188;&#168;"/>
+	<oaf_attribute name="nautilus:view_as_label-no" type="string" value="Vis som sammendrag"/>
+	<oaf_attribute name="nautilus:view_as_label-hu" type="string" value="&#214;sszefoglal&#243;k&#233;nt"/>
+	<oaf_attribute name="nautilus:view_as_label-sk" type="string" value="Zobrazi&#187; ako s&#250;hrn"/>
+	<oaf_attribute name="nautilus:view_as_label-fi" type="string" value="N&#228;yt&#228; tiivistelm&#228;n&#228;"/>
+	<oaf_attribute name="nautilus:view_as_label-sl" type="string" value="Glej kot povzetek"/>
+	<oaf_attribute name="nautilus:viewer_label" type="string" value="Summary Viewer"/>
+	<oaf_attribute name="nautilus:viewer_label-uk" type="string" value="&#240;&#197;&#210;&#197;&#199;&#204;&#209;&#196; &#218;&#215;&#197;&#196;&#197;&#206;&#206;&#209;"/>
+	<oaf_attribute name="nautilus:viewer_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#208;&#229;&#241;&#223;&#235;&#231;&#248;&#231;&#242;"/>
+	<oaf_attribute name="nautilus:viewer_label-gl" type="string" value="Visualizador de resumes"/>
+	<oaf_attribute name="nautilus:viewer_label-tr" type="string" value="&#214;zet G&#246;r&#252;nt&#252;s&#252;"/>
+	<oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur de r&#233;sum&#233;"/>
+	<oaf_attribute name="nautilus:viewer_label-es" type="string" value="Visualizador Resumen:"/>
+	<oaf_attribute name="nautilus:viewer_label-sv" type="string" value="Sammanfattningsvisare"/>
+	<oaf_attribute name="nautilus:viewer_label-de" type="string" value="Zusammenfassungsbetrachter"/>
+	<oaf_attribute name="nautilus:viewer_label-ko" type="string" value="&#191;&#228;&#190;&#224; &#186;&#184;&#177;&#226; &#199;&#193;&#183;&#206;&#177;&#215;&#183;&#165;"/>
+	<oaf_attribute name="nautilus:viewer_label-ja" type="string" value="&#165;&#181;&#165;&#222;&#165;&#234;&#161;&#188;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#162;"/>
+	<oaf_attribute name="nautilus:viewer_label-no" type="string" value="Sammendragsvisning"/>
+	<oaf_attribute name="nautilus:viewer_label-hu" type="string" value="&#214;sszefoglal&#243; megjelen&#237;t&#245;"/>
+	<oaf_attribute name="nautilus:viewer_label-sk" type="string" value="S&#250;hrnn&#253; poh&#181;ad"/>
+	<oaf_attribute name="nautilus:viewer_label-fi" type="string" value="Tiivistelm&#228;katselin"/>
+	<oaf_attribute name="nautilus:viewer_label-sl" type="string" value="Poregledovalnik povzetkov"/>
+</oaf_server>
+
+</oaf_info>

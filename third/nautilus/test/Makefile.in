@@ -70,6 +70,7 @@ BONOBO_CFLAGS = @BONOBO_CFLAGS@
 BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
 BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -77,25 +78,35 @@ CPP = @CPP@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+EAZEL_LOGOS_LICENSE = @EAZEL_LOGOS_LICENSE@
+EAZEL_LOGOS_PNG = @EAZEL_LOGOS_PNG@
+EAZEL_LOGOS_THROB = @EAZEL_LOGOS_THROB@
+EAZEL_LOGOS_XML = @EAZEL_LOGOS_XML@
 EAZEL_SERVICES = @EAZEL_SERVICES@
+ENABLE_INSTALLER = @ENABLE_INSTALLER@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
 FREETYPE2_LIBS = @FREETYPE2_LIBS@
+FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
+GCONF_REQUIRED = @GCONF_REQUIRED@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
+GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
@@ -105,27 +116,34 @@ GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_CFLAGS = @GNOME_CFLAGS@
 GNOME_CONFIG = @GNOME_CONFIG@
 GNOME_LIBS = @GNOME_LIBS@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
 GTK_LIBS = @GTK_LIBS@
+GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_APPLETS = @HAVE_APPLETS@
 IDL_CFLAGS = @IDL_CFLAGS@
+IMLIB_REQUIRED = @IMLIB_REQUIRED@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+LIBGHTTP_REQUIRED = @LIBGHTTP_REQUIRED@
 LIBPNG = @LIBPNG@
 LIBTOOL = @LIBTOOL@
+LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MEDUSA_CFLAGS = @MEDUSA_CFLAGS@
 MEDUSA_LIBS = @MEDUSA_LIBS@
+MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MOZILLA_COMPONENT_CFLAGS = @MOZILLA_COMPONENT_CFLAGS@
 MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
@@ -133,22 +151,30 @@ MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
 MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
 MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
 MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
+MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
+OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
 PACKAGESYSTEM = @PACKAGESYSTEM@
+PACKAGE_SYSTEM_OBJECT = @PACKAGE_SYSTEM_OBJECT@
+PACKAGE_SYSTEM_SOURCE = @PACKAGE_SYSTEM_SOURCE@
 PAM_LIBS = @PAM_LIBS@
 POFILES = @POFILES@
+POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 RPM_LIBS = @RPM_LIBS@
 RPM_VERSION = @RPM_VERSION@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -158,6 +184,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
@@ -167,33 +194,39 @@ l = @l@
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir) 			-I$(top_builddir) 			-I$(top_builddir)/libnautilus 		$(BONOBO_CFLAGS) 			$(OAF_CFLAGS) 				$(GCONF_CFLAGS) 			$(GNOMEUI_CFLAGS) 			$(VFS_CFLAGS) 				$(XML_CFLAGS) 				-DVERSION="\"$(VERSION)\"" 		-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 			$(NULL)
+INCLUDES =  	-I$(top_srcdir) 			-I$(top_builddir) 			-I$(top_builddir)/libnautilus 		-I$(top_srcdir)/cut-n-paste-code 	$(BONOBO_CFLAGS) 			$(OAF_CFLAGS) 				$(GCONF_CFLAGS) 			$(GNOMEUI_CFLAGS) 			$(VFS_CFLAGS) 				$(XML_CFLAGS) 				-DVERSION="\"$(VERSION)\"" 		-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 			$(NULL)
 
 #	-DBACKGROUNDS_DIR=\""$(top_srcdir)/data/backgrounds"\"	\
 
 LDADD =  	$(top_builddir)/libnautilus/libnautilus.la 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la 	$(BONOBO_LIBS) 	$(OAF_LIBS) 	$(GCONF_LIBS) 	$(GNOMEUI_LIBS) 	$(VFS_LIBS) 	$(XML_LIBS) 	$(NULL)
 
 
-noinst_PROGRAMS =  	test-nautilus-async-activation		test-nautilus-background		test-nautilus-font 			test-nautilus-font-picker 		test-nautilus-font-simple		test-nautilus-image			test-nautilus-image-background		test-nautilus-image-scrolled		test-nautilus-image-simple		test-nautilus-image-tile		test-nautilus-label 			test-nautilus-label-background		test-nautilus-label-flavorful		test-nautilus-label-offset		test-nautilus-label-scrolled		test-nautilus-label-simple		test-nautilus-label-wrapped		test-nautilus-mime-actions 		test-nautilus-mime-actions-set 		test-nautilus-password-dialog 		test-nautilus-pixbuf-tile		test-nautilus-smooth-graphics 		test-nautilus-widgets 			test-nautilus-preferences-display 	test-nautilus-preferences-change 	$(NULL)
+noinst_PROGRAMS =  	test-nautilus-async-activation 	test-nautilus-background 	test-nautilus-clickable-image 	test-nautilus-font 	test-nautilus-font-picker 	test-nautilus-font-simple 	test-nautilus-font-manager 	test-nautilus-glyph 	test-nautilus-glyph-simple 	test-nautilus-image 	test-nautilus-image-background 	test-nautilus-image-scrolled 	test-nautilus-image-simple 	test-nautilus-image-table 	test-nautilus-image-tile 	test-nautilus-label 	test-nautilus-label-background 	test-nautilus-label-flavorful 	test-nautilus-label-offset 	test-nautilus-label-scrolled 	test-nautilus-label-simple 	test-nautilus-label-wrapped 	test-nautilus-labeled-image 	test-nautilus-mime-actions 	test-nautilus-mime-actions-set 	test-nautilus-password-dialog 	test-nautilus-pixbuf-tile 	test-nautilus-preferences-change 	test-nautilus-preferences-display 	test-nautilus-smooth-graphics 	test-nautilus-smooth-text-layout 	test-nautilus-widgets 	test-nautilus-wrap-table 	test-nautilus-viewport-constraint 	$(NULL)
 
 
 test_nautilus_async_activation_SOURCES = test-nautilus-async-activation.c
 test_nautilus_background_SOURCES = test-nautilus-background.c
+test_nautilus_clickable_image_SOURCES = test-nautilus-clickable-image.c test.c
 test_nautilus_font_SOURCES = test-nautilus-font.c test.c
-test_nautilus_font_picker_SOURCES = test-nautilus-font-picker.c
+test_nautilus_font_picker_SOURCES = test-nautilus-font-picker.c test.c
 test_nautilus_font_simple_SOURCES = test-nautilus-font-simple.c test.c
+test_nautilus_font_manager_SOURCES = test-nautilus-font-manager.c test.c
+test_nautilus_glyph_SOURCES = test-nautilus-glyph.c test.c
+test_nautilus_glyph_simple_SOURCES = test-nautilus-glyph-simple.c test.c
 test_nautilus_image_SOURCES = test-nautilus-image.c
 test_nautilus_image_background_SOURCES = test-nautilus-image-background.c test.c
 test_nautilus_image_scrolled_SOURCES = test-nautilus-image-scrolled.c test.c
 test_nautilus_image_simple_SOURCES = test-nautilus-image-simple.c
+test_nautilus_image_table_SOURCES = test-nautilus-image-table.c test.c
 test_nautilus_image_tile_SOURCES = test-nautilus-image-tile.c test.c
 test_nautilus_label_SOURCES = test-nautilus-label.c
 test_nautilus_label_background_SOURCES = test-nautilus-label-background.c test.c
 test_nautilus_label_flavorful_SOURCES = test-nautilus-label-flavorful.c
 test_nautilus_label_offset_SOURCES = test-nautilus-label-offset.c test.c
 test_nautilus_label_scrolled_SOURCES = test-nautilus-label-scrolled.c test.c
-test_nautilus_label_simple_SOURCES = test-nautilus-label-simple.c
+test_nautilus_label_simple_SOURCES = test-nautilus-label-simple.c test.c
 test_nautilus_label_wrapped_SOURCES = test-nautilus-label-wrapped.c
+test_nautilus_labeled_image_SOURCES = test-nautilus-labeled-image.c test.c
 test_nautilus_mime_actions_SOURCES = test-nautilus-mime-actions.c
 test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c
 test_nautilus_password_dialog_SOURCES = test-nautilus-password-dialog.c
@@ -201,7 +234,9 @@ test_nautilus_pixbuf_tile_SOURCES = test-nautilus-pixbuf-tile.c test.c
 test_nautilus_preferences_change_SOURCES = test-nautilus-preferences-change.c test.c
 test_nautilus_preferences_display_SOURCES = test-nautilus-preferences-display.c test.c
 test_nautilus_smooth_graphics_SOURCES = test-nautilus-smooth-graphics.c
+test_nautilus_smooth_text_layout_SOURCES = test-nautilus-smooth-text-layout.c test.c
 test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
+test_nautilus_wrap_table_SOURCES = test-nautilus-wrap-table.c test.c
 
 EXTRA_DIST =  	test.h 	$(NULL)
 
@@ -228,13 +263,20 @@ test_nautilus_background_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_background_LDFLAGS = 
+test_nautilus_clickable_image_OBJECTS =  test-nautilus-clickable-image.o \
+test.o
+test_nautilus_clickable_image_LDADD = $(LDADD)
+test_nautilus_clickable_image_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_clickable_image_LDFLAGS = 
 test_nautilus_font_OBJECTS =  test-nautilus-font.o test.o
 test_nautilus_font_LDADD = $(LDADD)
 test_nautilus_font_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_font_LDFLAGS = 
-test_nautilus_font_picker_OBJECTS =  test-nautilus-font-picker.o
+test_nautilus_font_picker_OBJECTS =  test-nautilus-font-picker.o test.o
 test_nautilus_font_picker_LDADD = $(LDADD)
 test_nautilus_font_picker_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
@@ -246,6 +288,26 @@ test_nautilus_font_simple_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_font_simple_LDFLAGS = 
+test_nautilus_font_manager_OBJECTS =  test-nautilus-font-manager.o \
+test.o
+test_nautilus_font_manager_LDADD = $(LDADD)
+test_nautilus_font_manager_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_font_manager_LDFLAGS = 
+test_nautilus_glyph_OBJECTS =  test-nautilus-glyph.o test.o
+test_nautilus_glyph_LDADD = $(LDADD)
+test_nautilus_glyph_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_glyph_LDFLAGS = 
+test_nautilus_glyph_simple_OBJECTS =  test-nautilus-glyph-simple.o \
+test.o
+test_nautilus_glyph_simple_LDADD = $(LDADD)
+test_nautilus_glyph_simple_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_glyph_simple_LDFLAGS = 
 test_nautilus_image_OBJECTS =  test-nautilus-image.o
 test_nautilus_image_LDADD = $(LDADD)
 test_nautilus_image_DEPENDENCIES =  \
@@ -272,6 +334,12 @@ test_nautilus_image_simple_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_image_simple_LDFLAGS = 
+test_nautilus_image_table_OBJECTS =  test-nautilus-image-table.o test.o
+test_nautilus_image_table_LDADD = $(LDADD)
+test_nautilus_image_table_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_image_table_LDFLAGS = 
 test_nautilus_image_tile_OBJECTS =  test-nautilus-image-tile.o test.o
 test_nautilus_image_tile_LDADD = $(LDADD)
 test_nautilus_image_tile_DEPENDENCIES =  \
@@ -311,7 +379,8 @@ test_nautilus_label_scrolled_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_label_scrolled_LDFLAGS = 
-test_nautilus_label_simple_OBJECTS =  test-nautilus-label-simple.o
+test_nautilus_label_simple_OBJECTS =  test-nautilus-label-simple.o \
+test.o
 test_nautilus_label_simple_LDADD = $(LDADD)
 test_nautilus_label_simple_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
@@ -323,6 +392,13 @@ test_nautilus_label_wrapped_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_label_wrapped_LDFLAGS = 
+test_nautilus_labeled_image_OBJECTS =  test-nautilus-labeled-image.o \
+test.o
+test_nautilus_labeled_image_LDADD = $(LDADD)
+test_nautilus_labeled_image_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_labeled_image_LDFLAGS = 
 test_nautilus_mime_actions_OBJECTS =  test-nautilus-mime-actions.o
 test_nautilus_mime_actions_LDADD = $(LDADD)
 test_nautilus_mime_actions_DEPENDENCIES =  \
@@ -348,25 +424,6 @@ test_nautilus_pixbuf_tile_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_pixbuf_tile_LDFLAGS = 
-test_nautilus_smooth_graphics_OBJECTS =  test-nautilus-smooth-graphics.o
-test_nautilus_smooth_graphics_LDADD = $(LDADD)
-test_nautilus_smooth_graphics_DEPENDENCIES =  \
-$(top_builddir)/libnautilus/libnautilus.la \
-$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
-test_nautilus_smooth_graphics_LDFLAGS = 
-test_nautilus_widgets_OBJECTS =  test-nautilus-widgets.o
-test_nautilus_widgets_LDADD = $(LDADD)
-test_nautilus_widgets_DEPENDENCIES =  \
-$(top_builddir)/libnautilus/libnautilus.la \
-$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
-test_nautilus_widgets_LDFLAGS = 
-test_nautilus_preferences_display_OBJECTS =  \
-test-nautilus-preferences-display.o test.o
-test_nautilus_preferences_display_LDADD = $(LDADD)
-test_nautilus_preferences_display_DEPENDENCIES =  \
-$(top_builddir)/libnautilus/libnautilus.la \
-$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
-test_nautilus_preferences_display_LDFLAGS = 
 test_nautilus_preferences_change_OBJECTS =  \
 test-nautilus-preferences-change.o test.o
 test_nautilus_preferences_change_LDADD = $(LDADD)
@@ -374,6 +431,46 @@ test_nautilus_preferences_change_DEPENDENCIES =  \
 $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
 test_nautilus_preferences_change_LDFLAGS = 
+test_nautilus_preferences_display_OBJECTS =  \
+test-nautilus-preferences-display.o test.o
+test_nautilus_preferences_display_LDADD = $(LDADD)
+test_nautilus_preferences_display_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_preferences_display_LDFLAGS = 
+test_nautilus_smooth_graphics_OBJECTS =  test-nautilus-smooth-graphics.o
+test_nautilus_smooth_graphics_LDADD = $(LDADD)
+test_nautilus_smooth_graphics_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_smooth_graphics_LDFLAGS = 
+test_nautilus_smooth_text_layout_OBJECTS =  \
+test-nautilus-smooth-text-layout.o test.o
+test_nautilus_smooth_text_layout_LDADD = $(LDADD)
+test_nautilus_smooth_text_layout_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_smooth_text_layout_LDFLAGS = 
+test_nautilus_widgets_OBJECTS =  test-nautilus-widgets.o
+test_nautilus_widgets_LDADD = $(LDADD)
+test_nautilus_widgets_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_widgets_LDFLAGS = 
+test_nautilus_wrap_table_OBJECTS =  test-nautilus-wrap-table.o test.o
+test_nautilus_wrap_table_LDADD = $(LDADD)
+test_nautilus_wrap_table_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_wrap_table_LDFLAGS = 
+test_nautilus_viewport_constraint_SOURCES = test-nautilus-viewport-constraint.c
+test_nautilus_viewport_constraint_OBJECTS =  \
+test-nautilus-viewport-constraint.o
+test_nautilus_viewport_constraint_LDADD = $(LDADD)
+test_nautilus_viewport_constraint_DEPENDENCIES =  \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+test_nautilus_viewport_constraint_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -386,8 +483,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(test_nautilus_async_activation_SOURCES) $(test_nautilus_background_SOURCES) $(test_nautilus_font_SOURCES) $(test_nautilus_font_picker_SOURCES) $(test_nautilus_font_simple_SOURCES) $(test_nautilus_image_SOURCES) $(test_nautilus_image_background_SOURCES) $(test_nautilus_image_scrolled_SOURCES) $(test_nautilus_image_simple_SOURCES) $(test_nautilus_image_tile_SOURCES) $(test_nautilus_label_SOURCES) $(test_nautilus_label_background_SOURCES) $(test_nautilus_label_flavorful_SOURCES) $(test_nautilus_label_offset_SOURCES) $(test_nautilus_label_scrolled_SOURCES) $(test_nautilus_label_simple_SOURCES) $(test_nautilus_label_wrapped_SOURCES) $(test_nautilus_mime_actions_SOURCES) $(test_nautilus_mime_actions_set_SOURCES) $(test_nautilus_password_dialog_SOURCES) $(test_nautilus_pixbuf_tile_SOURCES) $(test_nautilus_smooth_graphics_SOURCES) $(test_nautilus_widgets_SOURCES) $(test_nautilus_preferences_display_SOURCES) $(test_nautilus_preferences_change_SOURCES)
-OBJECTS = $(test_nautilus_async_activation_OBJECTS) $(test_nautilus_background_OBJECTS) $(test_nautilus_font_OBJECTS) $(test_nautilus_font_picker_OBJECTS) $(test_nautilus_font_simple_OBJECTS) $(test_nautilus_image_OBJECTS) $(test_nautilus_image_background_OBJECTS) $(test_nautilus_image_scrolled_OBJECTS) $(test_nautilus_image_simple_OBJECTS) $(test_nautilus_image_tile_OBJECTS) $(test_nautilus_label_OBJECTS) $(test_nautilus_label_background_OBJECTS) $(test_nautilus_label_flavorful_OBJECTS) $(test_nautilus_label_offset_OBJECTS) $(test_nautilus_label_scrolled_OBJECTS) $(test_nautilus_label_simple_OBJECTS) $(test_nautilus_label_wrapped_OBJECTS) $(test_nautilus_mime_actions_OBJECTS) $(test_nautilus_mime_actions_set_OBJECTS) $(test_nautilus_password_dialog_OBJECTS) $(test_nautilus_pixbuf_tile_OBJECTS) $(test_nautilus_smooth_graphics_OBJECTS) $(test_nautilus_widgets_OBJECTS) $(test_nautilus_preferences_display_OBJECTS) $(test_nautilus_preferences_change_OBJECTS)
+SOURCES = $(test_nautilus_async_activation_SOURCES) $(test_nautilus_background_SOURCES) $(test_nautilus_clickable_image_SOURCES) $(test_nautilus_font_SOURCES) $(test_nautilus_font_picker_SOURCES) $(test_nautilus_font_simple_SOURCES) $(test_nautilus_font_manager_SOURCES) $(test_nautilus_glyph_SOURCES) $(test_nautilus_glyph_simple_SOURCES) $(test_nautilus_image_SOURCES) $(test_nautilus_image_background_SOURCES) $(test_nautilus_image_scrolled_SOURCES) $(test_nautilus_image_simple_SOURCES) $(test_nautilus_image_table_SOURCES) $(test_nautilus_image_tile_SOURCES) $(test_nautilus_label_SOURCES) $(test_nautilus_label_background_SOURCES) $(test_nautilus_label_flavorful_SOURCES) $(test_nautilus_label_offset_SOURCES) $(test_nautilus_label_scrolled_SOURCES) $(test_nautilus_label_simple_SOURCES) $(test_nautilus_label_wrapped_SOURCES) $(test_nautilus_labeled_image_SOURCES) $(test_nautilus_mime_actions_SOURCES) $(test_nautilus_mime_actions_set_SOURCES) $(test_nautilus_password_dialog_SOURCES) $(test_nautilus_pixbuf_tile_SOURCES) $(test_nautilus_preferences_change_SOURCES) $(test_nautilus_preferences_display_SOURCES) $(test_nautilus_smooth_graphics_SOURCES) $(test_nautilus_smooth_text_layout_SOURCES) $(test_nautilus_widgets_SOURCES) $(test_nautilus_wrap_table_SOURCES) test-nautilus-viewport-constraint.c
+OBJECTS = $(test_nautilus_async_activation_OBJECTS) $(test_nautilus_background_OBJECTS) $(test_nautilus_clickable_image_OBJECTS) $(test_nautilus_font_OBJECTS) $(test_nautilus_font_picker_OBJECTS) $(test_nautilus_font_simple_OBJECTS) $(test_nautilus_font_manager_OBJECTS) $(test_nautilus_glyph_OBJECTS) $(test_nautilus_glyph_simple_OBJECTS) $(test_nautilus_image_OBJECTS) $(test_nautilus_image_background_OBJECTS) $(test_nautilus_image_scrolled_OBJECTS) $(test_nautilus_image_simple_OBJECTS) $(test_nautilus_image_table_OBJECTS) $(test_nautilus_image_tile_OBJECTS) $(test_nautilus_label_OBJECTS) $(test_nautilus_label_background_OBJECTS) $(test_nautilus_label_flavorful_OBJECTS) $(test_nautilus_label_offset_OBJECTS) $(test_nautilus_label_scrolled_OBJECTS) $(test_nautilus_label_simple_OBJECTS) $(test_nautilus_label_wrapped_OBJECTS) $(test_nautilus_labeled_image_OBJECTS) $(test_nautilus_mime_actions_OBJECTS) $(test_nautilus_mime_actions_set_OBJECTS) $(test_nautilus_password_dialog_OBJECTS) $(test_nautilus_pixbuf_tile_OBJECTS) $(test_nautilus_preferences_change_OBJECTS) $(test_nautilus_preferences_display_OBJECTS) $(test_nautilus_smooth_graphics_OBJECTS) $(test_nautilus_smooth_text_layout_OBJECTS) $(test_nautilus_widgets_OBJECTS) $(test_nautilus_wrap_table_OBJECTS) test-nautilus-viewport-constraint.o
 
 all: all-redirect
 .SUFFIXES:
@@ -455,6 +552,10 @@ test-nautilus-background: $(test_nautilus_background_OBJECTS) $(test_nautilus_ba
 	@rm -f test-nautilus-background
 	$(LINK) $(test_nautilus_background_LDFLAGS) $(test_nautilus_background_OBJECTS) $(test_nautilus_background_LDADD) $(LIBS)
 
+test-nautilus-clickable-image: $(test_nautilus_clickable_image_OBJECTS) $(test_nautilus_clickable_image_DEPENDENCIES)
+	@rm -f test-nautilus-clickable-image
+	$(LINK) $(test_nautilus_clickable_image_LDFLAGS) $(test_nautilus_clickable_image_OBJECTS) $(test_nautilus_clickable_image_LDADD) $(LIBS)
+
 test-nautilus-font: $(test_nautilus_font_OBJECTS) $(test_nautilus_font_DEPENDENCIES)
 	@rm -f test-nautilus-font
 	$(LINK) $(test_nautilus_font_LDFLAGS) $(test_nautilus_font_OBJECTS) $(test_nautilus_font_LDADD) $(LIBS)
@@ -466,6 +567,18 @@ test-nautilus-font-picker: $(test_nautilus_font_picker_OBJECTS) $(test_nautilus_
 test-nautilus-font-simple: $(test_nautilus_font_simple_OBJECTS) $(test_nautilus_font_simple_DEPENDENCIES)
 	@rm -f test-nautilus-font-simple
 	$(LINK) $(test_nautilus_font_simple_LDFLAGS) $(test_nautilus_font_simple_OBJECTS) $(test_nautilus_font_simple_LDADD) $(LIBS)
+
+test-nautilus-font-manager: $(test_nautilus_font_manager_OBJECTS) $(test_nautilus_font_manager_DEPENDENCIES)
+	@rm -f test-nautilus-font-manager
+	$(LINK) $(test_nautilus_font_manager_LDFLAGS) $(test_nautilus_font_manager_OBJECTS) $(test_nautilus_font_manager_LDADD) $(LIBS)
+
+test-nautilus-glyph: $(test_nautilus_glyph_OBJECTS) $(test_nautilus_glyph_DEPENDENCIES)
+	@rm -f test-nautilus-glyph
+	$(LINK) $(test_nautilus_glyph_LDFLAGS) $(test_nautilus_glyph_OBJECTS) $(test_nautilus_glyph_LDADD) $(LIBS)
+
+test-nautilus-glyph-simple: $(test_nautilus_glyph_simple_OBJECTS) $(test_nautilus_glyph_simple_DEPENDENCIES)
+	@rm -f test-nautilus-glyph-simple
+	$(LINK) $(test_nautilus_glyph_simple_LDFLAGS) $(test_nautilus_glyph_simple_OBJECTS) $(test_nautilus_glyph_simple_LDADD) $(LIBS)
 
 test-nautilus-image: $(test_nautilus_image_OBJECTS) $(test_nautilus_image_DEPENDENCIES)
 	@rm -f test-nautilus-image
@@ -482,6 +595,10 @@ test-nautilus-image-scrolled: $(test_nautilus_image_scrolled_OBJECTS) $(test_nau
 test-nautilus-image-simple: $(test_nautilus_image_simple_OBJECTS) $(test_nautilus_image_simple_DEPENDENCIES)
 	@rm -f test-nautilus-image-simple
 	$(LINK) $(test_nautilus_image_simple_LDFLAGS) $(test_nautilus_image_simple_OBJECTS) $(test_nautilus_image_simple_LDADD) $(LIBS)
+
+test-nautilus-image-table: $(test_nautilus_image_table_OBJECTS) $(test_nautilus_image_table_DEPENDENCIES)
+	@rm -f test-nautilus-image-table
+	$(LINK) $(test_nautilus_image_table_LDFLAGS) $(test_nautilus_image_table_OBJECTS) $(test_nautilus_image_table_LDADD) $(LIBS)
 
 test-nautilus-image-tile: $(test_nautilus_image_tile_OBJECTS) $(test_nautilus_image_tile_DEPENDENCIES)
 	@rm -f test-nautilus-image-tile
@@ -515,6 +632,10 @@ test-nautilus-label-wrapped: $(test_nautilus_label_wrapped_OBJECTS) $(test_nauti
 	@rm -f test-nautilus-label-wrapped
 	$(LINK) $(test_nautilus_label_wrapped_LDFLAGS) $(test_nautilus_label_wrapped_OBJECTS) $(test_nautilus_label_wrapped_LDADD) $(LIBS)
 
+test-nautilus-labeled-image: $(test_nautilus_labeled_image_OBJECTS) $(test_nautilus_labeled_image_DEPENDENCIES)
+	@rm -f test-nautilus-labeled-image
+	$(LINK) $(test_nautilus_labeled_image_LDFLAGS) $(test_nautilus_labeled_image_OBJECTS) $(test_nautilus_labeled_image_LDADD) $(LIBS)
+
 test-nautilus-mime-actions: $(test_nautilus_mime_actions_OBJECTS) $(test_nautilus_mime_actions_DEPENDENCIES)
 	@rm -f test-nautilus-mime-actions
 	$(LINK) $(test_nautilus_mime_actions_LDFLAGS) $(test_nautilus_mime_actions_OBJECTS) $(test_nautilus_mime_actions_LDADD) $(LIBS)
@@ -531,21 +652,33 @@ test-nautilus-pixbuf-tile: $(test_nautilus_pixbuf_tile_OBJECTS) $(test_nautilus_
 	@rm -f test-nautilus-pixbuf-tile
 	$(LINK) $(test_nautilus_pixbuf_tile_LDFLAGS) $(test_nautilus_pixbuf_tile_OBJECTS) $(test_nautilus_pixbuf_tile_LDADD) $(LIBS)
 
-test-nautilus-smooth-graphics: $(test_nautilus_smooth_graphics_OBJECTS) $(test_nautilus_smooth_graphics_DEPENDENCIES)
-	@rm -f test-nautilus-smooth-graphics
-	$(LINK) $(test_nautilus_smooth_graphics_LDFLAGS) $(test_nautilus_smooth_graphics_OBJECTS) $(test_nautilus_smooth_graphics_LDADD) $(LIBS)
-
-test-nautilus-widgets: $(test_nautilus_widgets_OBJECTS) $(test_nautilus_widgets_DEPENDENCIES)
-	@rm -f test-nautilus-widgets
-	$(LINK) $(test_nautilus_widgets_LDFLAGS) $(test_nautilus_widgets_OBJECTS) $(test_nautilus_widgets_LDADD) $(LIBS)
+test-nautilus-preferences-change: $(test_nautilus_preferences_change_OBJECTS) $(test_nautilus_preferences_change_DEPENDENCIES)
+	@rm -f test-nautilus-preferences-change
+	$(LINK) $(test_nautilus_preferences_change_LDFLAGS) $(test_nautilus_preferences_change_OBJECTS) $(test_nautilus_preferences_change_LDADD) $(LIBS)
 
 test-nautilus-preferences-display: $(test_nautilus_preferences_display_OBJECTS) $(test_nautilus_preferences_display_DEPENDENCIES)
 	@rm -f test-nautilus-preferences-display
 	$(LINK) $(test_nautilus_preferences_display_LDFLAGS) $(test_nautilus_preferences_display_OBJECTS) $(test_nautilus_preferences_display_LDADD) $(LIBS)
 
-test-nautilus-preferences-change: $(test_nautilus_preferences_change_OBJECTS) $(test_nautilus_preferences_change_DEPENDENCIES)
-	@rm -f test-nautilus-preferences-change
-	$(LINK) $(test_nautilus_preferences_change_LDFLAGS) $(test_nautilus_preferences_change_OBJECTS) $(test_nautilus_preferences_change_LDADD) $(LIBS)
+test-nautilus-smooth-graphics: $(test_nautilus_smooth_graphics_OBJECTS) $(test_nautilus_smooth_graphics_DEPENDENCIES)
+	@rm -f test-nautilus-smooth-graphics
+	$(LINK) $(test_nautilus_smooth_graphics_LDFLAGS) $(test_nautilus_smooth_graphics_OBJECTS) $(test_nautilus_smooth_graphics_LDADD) $(LIBS)
+
+test-nautilus-smooth-text-layout: $(test_nautilus_smooth_text_layout_OBJECTS) $(test_nautilus_smooth_text_layout_DEPENDENCIES)
+	@rm -f test-nautilus-smooth-text-layout
+	$(LINK) $(test_nautilus_smooth_text_layout_LDFLAGS) $(test_nautilus_smooth_text_layout_OBJECTS) $(test_nautilus_smooth_text_layout_LDADD) $(LIBS)
+
+test-nautilus-widgets: $(test_nautilus_widgets_OBJECTS) $(test_nautilus_widgets_DEPENDENCIES)
+	@rm -f test-nautilus-widgets
+	$(LINK) $(test_nautilus_widgets_LDFLAGS) $(test_nautilus_widgets_OBJECTS) $(test_nautilus_widgets_LDADD) $(LIBS)
+
+test-nautilus-wrap-table: $(test_nautilus_wrap_table_OBJECTS) $(test_nautilus_wrap_table_DEPENDENCIES)
+	@rm -f test-nautilus-wrap-table
+	$(LINK) $(test_nautilus_wrap_table_LDFLAGS) $(test_nautilus_wrap_table_OBJECTS) $(test_nautilus_wrap_table_LDADD) $(LIBS)
+
+test-nautilus-viewport-constraint: $(test_nautilus_viewport_constraint_OBJECTS) $(test_nautilus_viewport_constraint_DEPENDENCIES)
+	@rm -f test-nautilus-viewport-constraint
+	$(LINK) $(test_nautilus_viewport_constraint_LDFLAGS) $(test_nautilus_viewport_constraint_OBJECTS) $(test_nautilus_viewport_constraint_LDADD) $(LIBS)
 
 tags: TAGS
 

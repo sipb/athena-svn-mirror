@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 1999, 2000 Eazel, Inc.
+ *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -20,7 +20,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *           Darin Adler <darin@eazel.com>
  *
  */
 /* nautilus-window.h: Interface of the main window object */
@@ -37,10 +38,10 @@
 #include "nautilus-sidebar.h"
 #include "nautilus-application.h"
 
-#define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type())
-#define NAUTILUS_WINDOW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
+#define NAUTILUS_TYPE_WINDOW              (nautilus_window_get_type())
+#define NAUTILUS_WINDOW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
 #define NAUTILUS_WINDOW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
-#define NAUTILUS_IS_WINDOW(obj)	        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
+#define NAUTILUS_IS_WINDOW(obj)	          (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
 #define NAUTILUS_IS_WINDOW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_WINDOW))
 
 #ifndef NAUTILUS_WINDOW_DEFINED
@@ -50,16 +51,16 @@ typedef struct NautilusWindow NautilusWindow;
 
 typedef struct {
         BonoboWindowClass parent_spot;
+
+	/* Function pointers for overriding, without corresponding signals */
+
+	/* add_current_location_to_history_list is a function pointer that
+	 * subclasses may override if they wish to add something other than
+	 * NautilusWindow's idea of the "current location" to the history
+	 * list, or nothing at all.
+	 */
+        void (* add_current_location_to_history_list) (NautilusWindow *window);
 } NautilusWindowClass;
-
-typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;
-
-typedef enum {
-        NAUTILUS_LOCATION_CHANGE_STANDARD,
-        NAUTILUS_LOCATION_CHANGE_BACK,
-        NAUTILUS_LOCATION_CHANGE_FORWARD,
-        NAUTILUS_LOCATION_CHANGE_RELOAD
-} NautilusLocationChangeType;
 
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
@@ -82,8 +83,6 @@ struct NautilusWindow {
         /** State information **/
         
         /* Information about current location/selection */
-        char *location;
-        GList *selection;
         
         /* Back/Forward chain, and history list. 
          * The data in these lists are NautilusBookmark pointers. 
@@ -103,32 +102,16 @@ struct NautilusWindow {
         Bonobo_Unknown throbber;
         
         /* Pending changes */
-        NautilusNavigationInfo *pending_ni;
         NautilusViewFrame *new_content_view;
-        GList *pending_selection;
-        GList *error_views;
-        NautilusNavigationInfo *cancel_tag;
-        gboolean location_change_end_reached;
-        
-        guint16 making_changes;
-        
-        NautilusLocationChangeType location_change_type;
-        guint location_change_distance;
-        
-        gboolean views_shown;
-        gboolean view_bombed_out;
-        gboolean view_activation_complete;
-        gboolean sent_update_view;
-        gboolean cv_progress_initial;
-        gboolean cv_progress_done;
-        gboolean cv_progress_error;
-        gboolean reset_to_idle;
 };
 
 GtkType          nautilus_window_get_type             (void);
+void		 nautilus_window_ui_freeze	      (NautilusWindow	 *window);
+void		 nautilus_window_ui_thaw	      (NautilusWindow	 *window);
 void             nautilus_window_close                (NautilusWindow    *window);
-void             nautilus_window_goto_uri             (NautilusWindow    *window,
-                                                       const char        *uri);
+char *           nautilus_window_get_location         (NautilusWindow    *window);
+void             nautilus_window_go_to                (NautilusWindow    *window,
+                                                       const char        *location);
 gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window);
 void             nautilus_window_set_search_mode      (NautilusWindow    *window,
                                                        gboolean           search_mode);
@@ -155,9 +138,9 @@ gint 		 nautilus_window_get_base_page_index  (NautilusWindow 	 *window);
 void 		 nautilus_window_hide_location_bar    (NautilusWindow 	 *window);
 void 		 nautilus_window_show_location_bar    (NautilusWindow 	 *window);
 gboolean	 nautilus_window_location_bar_showing (NautilusWindow    *window);
-void 		 nautilus_window_hide_tool_bar        (NautilusWindow 	 *window);
-void 		 nautilus_window_show_tool_bar        (NautilusWindow 	 *window);
-gboolean	 nautilus_window_tool_bar_showing     (NautilusWindow    *window);
+void 		 nautilus_window_hide_toolbar         (NautilusWindow 	 *window);
+void 		 nautilus_window_show_toolbar         (NautilusWindow 	 *window);
+gboolean	 nautilus_window_toolbar_showing      (NautilusWindow    *window);
 void 		 nautilus_window_hide_sidebar         (NautilusWindow 	 *window);
 void 		 nautilus_window_show_sidebar         (NautilusWindow 	 *window);
 gboolean	 nautilus_window_sidebar_showing      (NautilusWindow    *window);

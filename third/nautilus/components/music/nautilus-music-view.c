@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -31,15 +31,6 @@
 #include "mpg123.h"
 #include "pixmaps.h"
 
-#include <ctype.h>
-#include <esd.h>
-#include <fcntl.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome.h>
-#include <gtk/gtkadjustment.h>
-#include <gtk/gtksignal.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory-notify.h>
@@ -59,10 +50,23 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/libnautilus.h>
-#include <limits.h>
+
+#include <gnome.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtkadjustment.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkeventbox.h>
+#include <esd.h>
+
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <limits.h>
 
+#define SCALED_IMAGE_WIDTH	108
+#define SCALED_IMAGE_HEIGHT 	108
 
 typedef enum {
 	PLAYER_STOPPED,
@@ -71,9 +75,9 @@ typedef enum {
 	PLAYER_NEXT
 } PlayerState;
 
-struct _NautilusMusicViewDetails {
+struct NautilusMusicViewDetails {
         NautilusFile *file;
-	NautilusView *nautilus_view;
+	GtkWidget *event_box;
         
 	int sort_mode;
 	int selected_index;
@@ -96,7 +100,7 @@ struct _NautilusMusicViewDetails {
 	GtkWidget *play_control_box;
 
 	GtkWidget *song_label;
-	GtkWidget *total_track_time;
+	//GtkWidget *total_track_time;
 	
 	GtkWidget *playtime;
 	GtkWidget *playtime_bar;
@@ -113,7 +117,6 @@ struct _NautilusMusicViewDetails {
 
 
 /* structure for holding song info */
-
 typedef struct {
 	int track_number;
 	int bitrate;
@@ -147,7 +150,6 @@ enum {
 };
 
 /* button commands */
-
 enum {
 	PREVIOUS_BUTTON,
 	PLAY_BUTTON,
@@ -169,7 +171,8 @@ static void nautilus_music_view_drag_data_received            (GtkWidget        
                                                                int                     y,
                                                                GtkSelectionData       *selection_data,
                                                                guint                   info,
-                                                               guint                   time);
+                                                               guint                   time,
+                                                               gpointer                user_data);
 static void nautilus_music_view_initialize_class              (NautilusMusicViewClass *klass);
 static void nautilus_music_view_initialize                    (NautilusMusicView      *view);
 static void nautilus_music_view_destroy                       (GtkObject              *object);
@@ -205,21 +208,23 @@ static void set_player_state 				      (NautilusMusicView      *music_view,
 							       PlayerState 	      state);
 static void sort_list 					      (NautilusMusicView      *music_view);
 
+static void nautilus_music_view_load_uri (NautilusMusicView *view,
+                                          const char        *uri);
+
+
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView,
                                    nautilus_music_view,
-                                   GTK_TYPE_EVENT_BOX)
+                                   NAUTILUS_TYPE_VIEW)
 
 static void
 nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 {
 	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
 	
 	object_class = GTK_OBJECT_CLASS (klass);
-	widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->destroy = nautilus_music_view_destroy;
-	widget_class->drag_data_received  = nautilus_music_view_drag_data_received;
 }
 
 /* initialize ourselves by connecting to the location change signal and allocating our subviews */
@@ -235,14 +240,23 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
-	music_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (music_view));
+        music_view->details->event_box = gtk_event_box_new ();
+
+        gtk_signal_connect (GTK_OBJECT (music_view->details->event_box),
+                             "drag_data_received",
+                             nautilus_music_view_drag_data_received,
+                             music_view);
+
+	nautilus_view_construct (NAUTILUS_VIEW (music_view), 
+				 music_view->details->event_box);
+	
     	
-	gtk_signal_connect (GTK_OBJECT (music_view->details->nautilus_view), 
+	gtk_signal_connect (GTK_OBJECT (music_view), 
 			    "load_location",
 			    music_view_load_location_callback, 
 			    music_view);
 			    
-	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (music_view))), 
+	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (music_view->details->event_box))), 
 			    "appearance_changed",
 			    music_view_background_appearance_changed_callback, 
 			    music_view);
@@ -253,7 +267,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	/* allocate a vbox to contain all of the views */	
 	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 8));
 	gtk_container_set_border_width (GTK_CONTAINER (music_view->details->album_container), 4);
-	gtk_container_add (GTK_CONTAINER (music_view), GTK_WIDGET (music_view->details->album_container));
+	gtk_container_add (GTK_CONTAINER (music_view->details->event_box), GTK_WIDGET (music_view->details->album_container));
 		
 	/* allocate a widget for the album title */	
 	music_view->details->album_title = nautilus_label_new ("");
@@ -333,18 +347,13 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
    	button = gtk_button_new ();
 	gtk_box_pack_end (GTK_BOX (music_view->details->image_box), button, FALSE, FALSE, 2);
 
-	/* FIXME
-	 * Using gtk_widget_set_usize should be avoided.
-	 */
-	gtk_widget_set_usize (button, -1, 20);
-	
 	label = gtk_label_new (_("Set Cover Image"));
 	gtk_container_add (GTK_CONTAINER(button), label);
 	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->image_box, FALSE, FALSE, 4);  
  	gtk_signal_connect (GTK_OBJECT (button), "clicked", image_button_callback, music_view);
  	
 	/* prepare ourselves to receive dropped objects */
-	gtk_drag_dest_set (GTK_WIDGET (music_view),
+	gtk_drag_dest_set (GTK_WIDGET (music_view->details->event_box),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   music_dnd_target_table, NAUTILUS_N_ELEMENTS (music_dnd_target_table), GDK_ACTION_COPY);
 
@@ -375,7 +384,7 @@ nautilus_music_view_destroy (GtkObject *object)
         detach_file (music_view);
 	g_free (music_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* utility to return the text describing a song */
@@ -430,9 +439,6 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 	g_free (label_text);
         
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 5, &temp_str);
-        if (temp_str != NULL && strlen (temp_str) > 0) {
-		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->total_track_time), temp_str);
-	}
 }
 
 
@@ -687,7 +693,7 @@ set_album_cover (GtkWidget *widget, gpointer *data)
 		char *message = g_strdup_printf
 			(_("Sorry, but '%s' is not a usable image file."),
 			 path_name);
-		nautilus_error_dialog (message, _("Not an Image"), NULL);
+		nautilus_show_error_dialog (message, _("Not an Image"), NULL);
 		g_free (message);
 		
 		g_free (path_uri);
@@ -757,13 +763,6 @@ image_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 	}
 }
 
-/* Component embedding support */
-NautilusView *
-nautilus_music_view_get_nautilus_view (NautilusMusicView *music_view)
-{
-	return music_view->details->nautilus_view;
-}
-
 /* here are some utility routines for reading ID3 tags from mp3 files */
 
 /* initialize a songinfo structure */
@@ -800,30 +799,21 @@ is_mp3_file (GnomeVFSFileInfo *file_info)
 static gboolean
 read_id_tag (const char *song_uri, SongInfo *song_info)
 {
-	const char *path;
-	char *escaped_path;
-	GnomeVFSURI *uri;
+	char *path;
 	id3_t *id3;
 	struct id3v1tag_t id3v1tag;
 	struct id3tag_t tag;
 	FILE *file;
 	
-	uri = gnome_vfs_uri_new (song_uri);
-	if (uri == NULL) {
-		return FALSE;
-	}
-	
-	if (!gnome_vfs_uri_is_local (uri)) {
-		gnome_vfs_uri_unref (uri);
-		return FALSE;
-	}
-	
-	path = gnome_vfs_uri_get_path (uri);
-	escaped_path = gnome_vfs_unescape_string_for_display (path);
-	file = fopen (escaped_path, "rb");
+	path = gnome_vfs_get_local_path_from_uri (song_uri);
+        if (path == NULL) {
+                return FALSE;
+        }
+
+	file = fopen (path, "rb");
+        g_free (path);
+
 	if (file == NULL) {
-		gnome_vfs_uri_unref (uri);
-		g_free (escaped_path);
 		return FALSE;	
 	}
 	
@@ -840,9 +830,7 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 		mpg123_id3v1_to_id3v2 (&id3v1tag, &tag);
 	} else {
 		/* Failed to read any sort of tag */
-		gnome_vfs_uri_unref (uri);
 		fclose (file);
-		g_free (escaped_path);
 		return FALSE;		
 	}
 	
@@ -855,9 +843,7 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	song_info->track_number = atoi (tag.track);
 
 	/* Clean up */
-	g_free (escaped_path);
 	fclose (file);
-	gnome_vfs_uri_unref (uri);	
 	return TRUE;
 }
 
@@ -1185,12 +1171,12 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	int length;
 
 	if (esdout_playing ()) {
-		nautilus_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
-					 "Either another program is using or blocking the sound card, "
-					 "or your sound card is not configured properly. Try quitting any "
-					 "applications that may be blocking use of the sound card."),
-				         _("Unable to Play File"),
-					GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->parent))));
+		nautilus_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
+					      "Either another program is using or blocking the sound card, "
+					      "or your sound card is not configured properly. Try quitting any "
+					      "applications that may be blocking use of the sound card."),
+				            _("Unable to Play File"),
+					    GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->details->event_box->parent))));
 		
 		return;	
 	}
@@ -1209,7 +1195,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 
 	/* for now, we can only play local files, so apologize to the user and give up */	
 	if (song_filename == NULL) {
-                nautilus_error_dialog
+                nautilus_show_error_dialog
                         ( _("Sorry, but the music view can't play non-local files yet."),
                           _("Can't Play Remote Files"),
                           NULL);
@@ -1405,7 +1391,7 @@ xpm_label_box (NautilusMusicView *music_view, char * xpm_data[])
 
         box = gtk_hbox_new (FALSE, 0);
         gtk_container_border_width (GTK_CONTAINER (box), 2);
-        style = gtk_widget_get_style (GTK_WIDGET (music_view));
+        style = gtk_widget_get_style (GTK_WIDGET (music_view->details->event_box));
 
         pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpm_data);
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, GDK_PIXBUF_ALPHA_FULL);
@@ -1434,7 +1420,7 @@ xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
         box = gtk_hbox_new (FALSE, 0);
         gtk_container_border_width (GTK_CONTAINER (box), 2);
 
-        style = gtk_widget_get_style (GTK_WIDGET (music_view));
+        style = gtk_widget_get_style (GTK_WIDGET (music_view->details->event_box));
 
         /* create the main pixwidget */
         pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpm_data);
@@ -1462,52 +1448,28 @@ xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
 static void
 add_play_controls (NautilusMusicView *music_view)
 {
-	GtkWidget *table;
 	GtkWidget *box; 
-	GtkWidget *vbox, *hbox2;
+	GtkWidget *vbox, *hbox;
 	GtkWidget *button;
 	GtkTooltips *tooltips;
 	
 	tooltips = gtk_tooltips_new ();
 
-	table = gtk_table_new (3, 7, 0);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 1);
-	
-	music_view->details->song_label = nautilus_label_new ("");
-	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->song_label), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
-	
-	gtk_widget_show (music_view->details->song_label);
-        
+	/* Create main vbox */
 	vbox = gtk_vbox_new (0, 0);
 	gtk_box_pack_start (GTK_BOX (music_view->details->control_box), vbox, FALSE, FALSE, 6);
-	
-	gtk_box_pack_start (GTK_BOX (vbox), music_view->details->song_label, FALSE, FALSE, 2);	
-	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 4);
 	gtk_widget_show (vbox);
-	
 	music_view->details->play_control_box = vbox;
-	
-	/* playtime label */
-	hbox2 = gtk_hbox_new (0, 0);
-	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 6, 0, 1, 0, 0, 0, 0);
-	gtk_widget_show (hbox2);
-	music_view->details->playtime = nautilus_label_new ("--:--");
-	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
 
- 	/* FIXME
-	 * Fixing the widget size is bad, but it is done because the label resizes, as it
-	 * changes to reflect the current time, and can cause the widgets to its right
-	 * to move. This does keep the other widgets from moving, but if you watch closely, the
-	 * left edge of the playtime moves.
+	
+	/* Pack the items into the box in reverse order so that the controls are always
+	 * at the bottom regardless of the size of the album image.
 	 */
-        gtk_widget_set_usize (music_view->details->playtime, 40, -1);
-        gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
-        
-	gtk_widget_show (music_view->details->playtime);
-	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime, FALSE, FALSE, 0);
+	 
+	 /* hbox to hold slider and song progress time */
+	hbox = gtk_hbox_new (0, 0);
+	gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 7);
+	gtk_widget_show (hbox);
 
 	/* progress bar */
 	music_view->details->playtime_adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
@@ -1525,19 +1487,23 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_scale_set_draw_value (GTK_SCALE (music_view->details->playtime_bar), 0);
 	gtk_widget_show (music_view->details->playtime_bar);
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime_bar, FALSE, FALSE, 4);	
-	/* total label */
-	music_view->details->total_track_time = nautilus_label_new ("--:--");
-        nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->total_track_time), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->total_track_time), GTK_JUSTIFY_LEFT);
-	
-	gtk_widget_show (music_view->details->total_track_time);
-	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->total_track_time, FALSE, FALSE, 0);
-
-	gtk_table_set_row_spacing (GTK_TABLE (table), 0, 5);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime_bar, FALSE, FALSE, 4);
+	gtk_widget_set_usize (music_view->details->playtime_bar, 150, -1);
 	gtk_widget_show (music_view->details->playtime_bar);
 
-	/* buttons */
+	/* playtime label */
+	music_view->details->playtime = nautilus_label_new ("--:--");
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+	gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
+	gtk_widget_show (music_view->details->playtime);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime, FALSE, FALSE, 0);
+	gtk_widget_set_usize (music_view->details->playtime, 40, -1);
+	 
+	/* Buttons */
+        hbox = gtk_hbox_new (0, 0);
+	gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
 
 	/* previous track button */	
 	box = xpm_label_box (music_view, prev_xpm);
@@ -1547,9 +1513,8 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_container_add (GTK_CONTAINER (button), box);
 	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
 	gtk_widget_set_sensitive (button, TRUE);
-	
-	gtk_table_attach (GTK_TABLE (table), button, 0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* play button */
@@ -1562,9 +1527,8 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER (button), box);
 	gtk_widget_set_sensitive (button, TRUE);
-
 	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (play_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 1, 2, 1, 2, 0, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* pause button */
@@ -1580,7 +1544,7 @@ add_play_controls (NautilusMusicView *music_view)
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
                             GTK_SIGNAL_FUNC(pause_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 2, 3, 1, 2, 0, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* stop button */
@@ -1594,7 +1558,7 @@ add_play_controls (NautilusMusicView *music_view)
 
 	gtk_signal_connect(GTK_OBJECT (button), "clicked",
                            GTK_SIGNAL_FUNC (stop_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 3, 4, 1, 2, 0, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* next button */
@@ -1608,19 +1572,15 @@ add_play_controls (NautilusMusicView *music_view)
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
                             GTK_SIGNAL_FUNC (next_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 4, 5, 1, 2, 0, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
-	/* display the "cant play message if necessary */
-#if 0	
-	if (!music_view->details->sound_enabled) {
-		label = nautilus_label_new (_("Sound hardware missing or busy!"));
-		nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
-		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE(table), label, 0, 5, 3, 4, 0, 0, 0, 0);
-	}
-#endif	
-	gtk_widget_show (table);
+	/* Song title label */
+	music_view->details->song_label = nautilus_label_new ("");
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->song_label), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_end (GTK_BOX (vbox), music_view->details->song_label, FALSE, FALSE, 2);	
+	gtk_widget_show (music_view->details->song_label);	
 }
 
 /* set the album image, or hide it if none */
@@ -1638,7 +1598,7 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
   		pixbuf = gdk_pixbuf_new_from_file (image_path);
 		
 		if (pixbuf != NULL) {
-			scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, 108, 108);
+			scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, SCALED_IMAGE_WIDTH, SCALED_IMAGE_HEIGHT);
 			gdk_pixbuf_unref (pixbuf);
 
        			gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
@@ -1684,7 +1644,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
+	GList *list, *element;
 	
         char *uri;
 	char *clist_entry[10];
@@ -1708,7 +1668,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	image_count = 0;
 	
 	/* connect the music view background to directory metadata */	
-	nautilus_connect_background_to_file_metadata_by_uri (GTK_WIDGET (music_view), uri);
+	nautilus_connect_background_to_file_metadata_by_uri (GTK_WIDGET (music_view->details->event_box), uri);
 	
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	result = gnome_vfs_directory_list_load (&list, uri,
@@ -1717,19 +1677,19 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	if (result != GNOME_VFS_OK) {
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
-		nautilus_error_dialog (message, _("Can't Read Folder"), 
-				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view))));
+		nautilus_show_error_dialog (message, _("Can't Read Folder"), 
+				            GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view->details->event_box))));
 		g_free (path);
 		g_free (message);
                 g_free (uri);
 		return;
 	}
 	
-	current_file_info = gnome_vfs_directory_list_first (list);
-	while (current_file_info != NULL) {
+	for (element = list; element != NULL; element = element->next) {
+		current_file_info = element->data;
+
 		/* skip invisible files, for now */
 		if (current_file_info->name[0] == '.') {
-                        current_file_info = gnome_vfs_directory_list_next(list);
                         continue;
                 }
 		
@@ -1757,9 +1717,8 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		        g_free (path_uri);
 		}
 		
-		current_file_info = gnome_vfs_directory_list_next(list);
 	}
-	gnome_vfs_directory_list_destroy(list);
+	gnome_vfs_file_info_list_free (list);	
 	
 	/* populate the clist */	
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));
@@ -1830,7 +1789,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		
 		artist_name = determine_attribute (song_list, TRUE);
 		if (artist_name != NULL) {
-			temp_str = g_strdup_printf (_("%s by %s"), album_name, artist_name);
+			temp_str = g_strdup_printf (_("%s - %s"), album_name, artist_name);
 			g_free (artist_name);
 		} else {
 			temp_str = g_strdup (album_name);
@@ -1843,7 +1802,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 
 	/* allocate the play controls if necessary */	
 	if (music_view->details->play_control_box == NULL) {
-		add_play_controls(music_view);
+		add_play_controls (music_view);
 	}
 	
 	music_view_set_selected_song_title (music_view, 0);
@@ -1877,7 +1836,7 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 	nautilus_music_view_update (music_view);
 	
 	/* show all the widgets now, since they weren't shown during initialization */
-	gtk_widget_show_all (GTK_WIDGET (music_view));
+	gtk_widget_show_all (GTK_WIDGET (music_view->details->event_box));
 
 	update_play_controls_status (music_view, get_player_state (music_view));
 
@@ -1902,10 +1861,6 @@ music_view_background_appearance_changed_callback (NautilusBackground *backgroun
 		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->playtime),
                                                text_color);
 	}
-	if (music_view->details->total_track_time != NULL) {
-		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->total_track_time),
-                                               text_color);
-	}
 }
 
 static void
@@ -1913,20 +1868,22 @@ music_view_load_location_callback (NautilusView *view,
                                    const char *location,
                                    NautilusMusicView *music_view)
 {
-        nautilus_view_report_load_underway (music_view->details->nautilus_view);
+        nautilus_view_report_load_underway (NAUTILUS_VIEW (music_view));
 	nautilus_music_view_load_uri (music_view, location);
-        nautilus_view_report_load_complete (music_view->details->nautilus_view);
+        nautilus_view_report_load_complete (NAUTILUS_VIEW (music_view));
 }
 
 /* handle receiving dropped objects */
 static void  
 nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-					 int x, int y,
-					 GtkSelectionData *selection_data, guint info, guint time)
+                                        int x, int y,
+                                        GtkSelectionData *selection_data, 
+                                        guint info, guint time,
+                                        gpointer user_data)
 {
 	char **uris;
 
-	g_return_if_fail (NAUTILUS_IS_MUSIC_VIEW (widget));
+	g_return_if_fail (NAUTILUS_IS_MUSIC_VIEW (user_data));
 
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
 

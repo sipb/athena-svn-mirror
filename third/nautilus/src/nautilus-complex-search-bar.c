@@ -291,7 +291,7 @@ static void
 nautilus_complex_search_bar_destroy (GtkObject *object)
 {
 	g_free (NAUTILUS_COMPLEX_SEARCH_BAR (object)->details);
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static GtkWidget *
@@ -356,11 +356,8 @@ nautilus_complex_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 	escaped_fragment = gnome_vfs_escape_string (trimmed_fragment);
 	g_free (trimmed_fragment);
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD)) {
-		search_uri = g_strconcat ("search:index-with-backup", escaped_fragment, NULL);
-	} else {
-		search_uri = g_strconcat ("search:index-if-available", escaped_fragment, NULL);
-	}
+	search_uri = g_strconcat ("search:index-if-available", escaped_fragment, NULL);
+
 	g_free (escaped_fragment);
 
 	return search_uri;

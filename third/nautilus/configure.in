@@ -1,12 +1,111 @@
-
 AC_INIT(src)
+
+dnl ==========================================================================
+dnl
+dnl If you add a version number here, you *must* add an AC_SUBST line for
+dnl it too, or it will never make it into the spec file!
+dnl
+dnl ==========================================================================
+
+GNOME_REQUIRED=1.2.8
+GNOME_LIBS_REQUIRED=1.2.11
+GTK_REQUIRED=1.2.9
+GLIB_REQUIRED=1.2.9
+BONOBO_REQUIRED=0.37
+OAF_REQUIRED=0.6.5
+GCONF_REQUIRED=0.12
+GDK_PIXBUF_REQUIRED=0.10.0
+CONTROL_CENTER_REQUIRED=1.3
+IMLIB_REQUIRED=1.9.8
+LIBXML_REQUIRED=1.8.10
+ORBIT_REQUIRED=0.5.7
+GNOME_VFS_REQUIRED=1.0
+POPT_REQUIRED=1.5
+FREETYPE_REQUIRED=2.0
+MEDUSA_REQUIRED=0.5
+ESOUND_REQUIRED=0.2.22
+LIBGHTTP_REQUIRED=1.0.9
+SCROLLKEEPER_REQUIRED=0.1.4
+AMMONITE_REQUIRED=1.0.0
+
+AC_SUBST(IMLIB_REQUIRED)
+AC_SUBST(LIBXML_REQUIRED)
+AC_SUBST(ORBIT_REQUIRED)
+AC_SUBST(GNOME_VFS_REQUIRED)
+AC_SUBST(POPT_REQUIRED)
+AC_SUBST(FREETYPE_REQUIRED)
+AC_SUBST(MEDUSA_REQUIRED)
+AC_SUBST(ESOUND_REQUIRED)
+AC_SUBST(LIBGHTTP_REQUIRED)
+AC_SUBST(SCROLLKEEPER_REQUIRED)
+
+dnl ===========================================================================
+
+dnl EAZEL_VERSION_CANON(version)
+dnl                     1
+
+AC_DEFUN(EAZEL_VERSION_CANON, [`
+
+	dnl Assumes that there are no more than 999 revisions at a level,
+	dnl no more than three levels of revision.
+	dnl
+	dnl Any more than that, and test starts messing up the numeric
+	dnl comparisons because its integers overflow, and there's no
+	dnl way to do string comparisons in the shell.  Grr.
+	dnl
+	dnl Must come up with some way to fix this.
+
+	echo "$1" |
+	tr . '\012' |
+	sed -e 's/^/000/' -e 's/^.*\(...\)/\1/' |
+	tr -d '\012' |
+	sed 's/$/000000000/
+	     s/^\(.........\).*/\1/'
+`])
+
+dnl EAZEL_VERSION_INSIST(package, get-version-cmd, operator, want-version-var)
+dnl                      1        2                3         4
+
+AC_DEFUN(EAZEL_VERSION_INSIST, [
+	ez_want_version=[$]$4
+
+	case "$3" in
+		">")	ez_operator=-gt ;;
+		">=")	ez_operator=-ge ;;
+		"<")	ez_operator=-lt ;;
+		"<=")	ez_operator=-le ;;
+		"=")	ez_operator=-eq ;;
+		"!=")	ez_operator=-ne ;;
+		*)	AC_ERROR(Unknown operator $3 in configure script) ;;
+	esac
+
+	AC_MSG_CHECKING(for $1 $3 [$ez_want_version])
+
+	if ez_installed_version="`$2`"
+	then
+		AC_MSG_RESULT([$ez_installed_version])
+	else
+		AC_ERROR($2 failed)
+	fi
+
+	if test "EAZEL_VERSION_CANON([$ez_installed_version])" "$ez_operator" \
+		"EAZEL_VERSION_CANON([$ez_want_version])"
+	then
+		:
+		AC_SUBST($4)
+	else
+		AC_ERROR($1 version [$ez_want_version] is required.)
+	fi
+])
+
+dnl ===========================================================================
 
 if test -n "$GNOME2_PATH"; then
 	PATH="$GNOME2_PATH/bin:$PATH"
 	export PATH
 fi
 
-AM_INIT_AUTOMAKE(nautilus, 0.8)
+AM_INIT_AUTOMAKE(nautilus, 1.0)
 AM_CONFIG_HEADER(config.h)
 
 AM_MAINTAINER_MODE
@@ -49,13 +148,55 @@ dnl ====================================
 dnl = End profiling support
 dnl ====================================
 
+dnl ====================================
+dnl = Check for different mount systems
+dnl ====================================
 
-dnl Check for "RedHat-style" font setup
-AM_CONDITIONAL(TYPE1_FONT_DIR_EXISTS, test -d /usr/share/fonts/default/Type1)
+echo "
+Determining mount system properties:
+"
+AC_CHECK_FUNCS( setmntent endmntent )
+AC_CHECK_HEADERS( mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h )
+AC_CHECK_FILES( /dev, AC_DEFINE(HAVE_DEV))
+AC_CHECK_FILES( /vol/dev, AC_DEFINE(HAVE_VOL_DEV))
+AC_CHECK_FILES( /vol, AC_DEFINE(HAVE_VOL))
+AC_CHECK_FILES( /etc/mnttab, AC_DEFINE(HAVE_ETC_MNTTAB))
+AC_CHECK_FILES( /proc/mounts, AC_DEFINE(HAVE_PROC_MOUNTS))
+AC_CHECK_FILES( /proc/1, AC_DEFINE(HAVE_PROC_PROCESS_FILES))
+echo "
+"
 
-dnl Check for different mount systems
-AC_CHECK_FUNCS(setmntent endmntent setenv unsetenv putenv)
-AC_CHECK_HEADERS(sys/mnttab.h sys/vfstab.h)
+dnl ====================================
+dnl = Method for changing environment
+dnl ====================================
+
+AC_CHECK_FUNCS( setenv unsetenv putenv )
+
+
+dnl ====================================
+dnl = Use x86 optimized music routines?
+dnl ====================================
+
+_system_is_x86="no"
+
+AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
+
+AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
+
+
+dnl ====================================
+dnl = Optionally build the installer
+dnl ====================================
+
+ENABLE_INSTALLER=
+AC_ARG_ENABLE(installer,
+[  --enable-installer		Create Nautilus installer],
+ENABLE_INSTALLER=1
+AC_DEFINE(ENABLE_INSTALLER))
+
+AC_SUBST(ENABLE_INSTALLER)
+AM_CONDITIONAL(ENABLE_INSTALLER, test "x$ENABLE_INSTALLER" = "x1")
+
 
 
 
@@ -64,7 +205,7 @@ dnl = Begin tests for eazel-services
 dnl ====================================
 AC_ARG_ENABLE(
 	[eazel-services],
-	[  --enable-eazel-services	Enable support for Eazel services (default is no)],
+	[  --enable-eazel-services	Enable support for Eazel Services (default is no)],
 	[ EAZEL_SERVICES_ENABLED=$enableval ], 
 	[ EAZEL_SERVICES_ENABLED=no ])
 
@@ -324,15 +465,18 @@ dnl EVIL1:
 
 	if test $? -eq 0
 	then
-		MOZILLA_MILESTONE=19
+		MOZILLA_MILESTONE=VERSION_0_8
+		MOZILLA_PROFILES_CFLAGS="-DMOZILLA_HAVE_PROFILES_SUPPORT"
+
+		AC_SUBST(MOZILLA_PROFILES_CFLAGS)
 	else
 		grep -w GetName $_mozilla_include_place/nsIRequest.h > /dev/null 2>&1
 
 		if test $? -eq 0
 		then
-			MOZILLA_MILESTONE=18
+			MOZILLA_MILESTONE=VERSION_0_7
 		else
-			MOZILLA_MILESTONE=17
+			MOZILLA_MILESTONE=MILESTONE_17
 		fi
 	fi
 
@@ -355,12 +499,12 @@ dnl EVIL2:
 
 	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
 
-	if test "$MOZILLA_MILESTONE" != "18" -a "$MOZILLA_MILESTONE" != "19"
+	if test "$MOZILLA_MILESTONE" != "VERSION_0_8"
 	then
 
 	AC_MSG_ERROR([
-*** Mozilla M18 or greater is required to build the Nautilus Mozilla component.
-*** A package for M18 is available here:
+*** Mozilla 0.8 or greater is required to build the Nautilus Mozilla component.
+*** A package for 0.8 is available here:
 *** http://developer.eazel.com/eazel-hacking/updates/mozilla/.])
 
 	fi
@@ -373,42 +517,50 @@ dnl = End mozilla hacks
 dnl ====================================
 
 dnl ====================================
+dnl = Bzip2
+dnl ====================================
+BZ_LIBS=
+AC_CHECK_LIB(bz2, bzread, [AC_DEFINE(HAVE_LIBBZ2)
+			  BZ_LIBS="-lbz2"])
+dnl <= Check for bzip2 > 1.0.0
+    AC_CHECK_LIB(bz2, BZ2_bzread, [AC_DEFINE(HAVE_LIBBZ2)
+		      	  BZ_LIBS="-lbz2"
+    dnl <= define the wrapper-functions to get the Bzip2 stuff working .. =>	
+	   AC_DEFINE(bzread,BZ2_bzread)
+	   AC_DEFINE(bzopen,BZ2_bzopen)
+	   AC_DEFINE(bzdopen,BZ2_bzdopen)
+	   AC_DEFINE(bzwrite,BZ2_bzwrite)
+	   AC_DEFINE(bzerror,BZ2_bzerror)
+	   AC_DEFINE(bzclose,BZ2_bzclose)
+	   AC_DEFINE(bzflush,BZ2_bzflush)
+	   AC_DEFINE(bzCompress,BZ2_bzCompress)
+	   AC_DEFINE(bzCompressInit,BZ2_bzCompressInit)
+	   AC_DEFINE(bzDecompress,BZ2_bzDecompress)
+	   AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit)	
+	   ])
+    dnl =>
+AC_SUBST(BZ_LIBS)
+dnl ====================================
 dnl = rpmview component support
 dnl ====================================
 
 if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
-	rpm_libs=
+	rpm_libs=$BZ_LIBS
+	rpm_xlibs=
 	have_rpm=no
-	AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
-	dnl <= Check for bzip2 > 1.0.0
-		AC_CHECK_LIB(bz2, BZ2_bzread, [rpm_libs=-lbz2
-		dnl <= define the wrapper-functions to get the Bzip2 stuff working .. =>	
-			AC_DEFINE(bzread,BZ2_bzread)
-			AC_DEFINE(bzopen,BZ2_bzopen)
-			AC_DEFINE(bzdopen,BZ2_bzdopen)
-			AC_DEFINE(bzwrite,BZ2_bzwrite)
-			AC_DEFINE(bzerror,BZ2_bzerror)
-			AC_DEFINE(bzclose,BZ2_bzclose)
-			AC_DEFINE(bzflush,BZ2_bzflush)
-			AC_DEFINE(bzCompress,BZ2_bzCompress)
-			AC_DEFINE(bzCompressInit,BZ2_bzCompressInit)
-			AC_DEFINE(bzDecompress,BZ2_bzDecompress)
-			AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit)	
-		])
-	dnl =>
 	AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 	AC_CHECK_FUNC(dbopen, [],
- 	AC_CHECK_LIB(db-3.1, __db185_open, [rpm_libs="$rpm_libs -ldb-3.1"],
- 	  AC_CHECK_LIB(db-3, __db185_open, [rpm_libs="$rpm_libs -ldb-3"],
-	    AC_CHECK_LIB(db2, dbopen, [rpm_libs="$rpm_libs -ldb2"],
-	      AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
-	        AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
-	           AC_MSG_ERROR([sorry rpm requires a db-1.85 API]))))))
+	  AC_CHECK_LIB(db-3.1, __db185_open, [rpm_libs="$rpm_libs -ldb-3.1"],
+	    AC_CHECK_LIB(db-3, __db185_open, [rpm_libs="$rpm_libs -ldb-3"],
+	      AC_CHECK_LIB(db2, dbopen, [rpm_libs="$rpm_libs -ldb2"],
+	        AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
+		  AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
+		    AC_MSG_ERROR([sorry rpm requires a db-1.85 API]))))))
 	               )
-	AC_CHECK_LIB(rpmio, Fdopen, [rpm_libs="$rpm_libs -lrpmio"],[],$rpm_libs)
+	AC_CHECK_LIB(rpmio, Fdopen, [rpm_xlibs="-lrpmio"],[rpm_xlibs=""],$rpm_libs)
 	AC_CHECK_LIB(rpm, rpmRunTransactions,[have_rpm=yes],
-	  [have_rpm=no], $rpm_libs)
+	  [have_rpm=no], [$rpm_libs $rpm_xlibs])
 	if test "x$have_rpm" = "xyes" ; then
 	  dnl FIXME
 	  dnl Ideally I should check for rpm and where it is
@@ -419,7 +571,7 @@ then
 	  AM_CONDITIONAL(COMPILE_RPM_30, false)
 	  AM_CONDITIONAL(COMPILE_RPM_40, false)
 	  case $RPM_VERSION in
-		3.0.4|3.0.5|3.0.6)
+		3.0.5|3.0.6)
 			AC_DEFINE(HAVE_RPM_30)
 			_found_valid_rpm="yes"
 			AM_CONDITIONAL(COMPILE_RPM_30, true)
@@ -427,6 +579,10 @@ then
 			dnl wouldn't need this shite.
 			PACKAGESYSTEM="libeazelpackagesystem-rpm3.la"
 			AC_SUBST(PACKAGESYSTEM)
+			PACKAGE_SYSTEM_OBJECT="eazel-package-system-rpm3.o"
+			AC_SUBST(PACKAGE_SYSTEM_OBJECT)
+			PACKAGE_SYSTEM_SOURCE="eazel-package-system-rpm3.c"
+			AC_SUBST(PACKAGE_SYSTEM_SOURCE)
 		;;
 		4.*)
 			AC_DEFINE(HAVE_RPM_40)
@@ -434,19 +590,23 @@ then
 			AM_CONDITIONAL(COMPILE_RPM_40, true)
 			PACKAGESYSTEM="libeazelpackagesystem-rpm4.la"
 			AC_SUBST(PACKAGESYSTEM)
+			PACKAGE_SYSTEM_OBJECT="eazel-package-system-rpm4.o eazel-package-system-rpm3.o"
+			AC_SUBST(PACKAGE_SYSTEM_OBJECT)
+			PACKAGE_SYSTEM_SOURCE="eazel-package-system-rpm4.c eazel-package-system-rpm3.c"
+			AC_SUBST(PACKAGE_SYSTEM_SOURCE)
 		;;
 	  esac
 
 	  if test "x$_found_valid_rpm" = "xyes"; then
 		AC_MSG_RESULT([found $RPM_VERSION, yes])
 		AC_DEFINE(HAVE_RPM)  	
-	  	RPM_LIBS="-lrpm -lz $rpm_libs"
+	  	RPM_LIBS="-lrpm -lz $rpm_xlibs $rpm_libs"
 		AC_SUBST(RPM_VERSION)
 		build_rpmview=yes
 		rpmversion="$RPM_VERSION"
 	  else
 		AC_MSG_RESULT([no])
-		AC_MSG_WARN([RPM 3.0.4 or higher required, $RPM_VERSION found])
+		AC_MSG_WARN([RPM 3.0.5 or higher required, $RPM_VERSION found])
 		build_rpmview=no
 	  fi
 	fi
@@ -461,17 +621,30 @@ dnl = End rpmview checks
 dnl ====================================
 
 dnl Checks for libraries.
-AM_PATH_GLIB(1.2.8,,
+AM_PATH_GLIB($GLIB_REQUIRED,,
 AC_MSG_ERROR([
-*** GLIB 1.2.8 or better is required. The latest version of GLIB
+*** GLIB $GLIB_REQUIRED or better is required. The latest version of GLIB
 *** is always available from ftp://ftp.gtk.org/.]))
 
-AM_PATH_GTK(1.2.8,,
+AC_SUBST(GLIB_REQUIRED)
+
+AM_PATH_GTK($GTK_REQUIRED,,
 AC_MSG_ERROR([
-*** Gtk+ 1.2.8 or better is required. The latest version of GTK
+*** Gtk+ $GTK_REQUIRED or better is required. The latest version of GTK
 *** is always available from ftp://ftp.gtk.org/.]))
 
-AM_PATH_GNOME(1.2.8,,AC_MSG_ERROR([*** GNOME 1.2.8 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
+AC_SUBST(GTK_REQUIRED)
+
+AM_PATH_GNOME($GNOME_REQUIRED,,AC_MSG_ERROR([*** GNOME $GNOME_REQUIRED or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
+
+AC_SUBST(GNOME_REQUIRED)
+
+AC_PATH_PROG(GNOME_CONFIG,gnome-config,no)
+if test x$GNOME_CONFIG = xno; then
+  AC_MSG_ERROR(Couldn't find gnome-config. Please install the GNOME package)
+fi
+
+EAZEL_VERSION_INSIST(gnome-libs, $GNOME_CONFIG --version | awk '{print $2}', >=, GNOME_LIBS_REQUIRED)
 
 dnl check for gnome_canvas_set_dither existence
 _libs="$LIBS"
@@ -479,24 +652,11 @@ LIBS=$GNOMEUI_LIBS
 AC_CHECK_FUNCS(gnome_canvas_set_dither)
 LIBS="$_libs"
 
+dnl control center
+EAZEL_VERSION_INSIST(control-center, gnomecc --version | awk '{print $3}', >=, CONTROL_CENTER_REQUIRED)
+
 dnl Bonobo
-AC_MSG_CHECKING(for Bonobo >= 0.33)
-if gnome-config --libs bonobox > /dev/null 2>&1; then
-	vers=`gnome-config --modversion bonobo | sed -e "s/bonobo-//" | \
-		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
-	if test "$vers" -ge 33; then
-		bonobo_ok=true
-	else
-		bonobo_ok=false
-	fi
-else
-	bonobo_ok=false
-fi
-if $bonobo_ok; then
-	AC_MSG_RESULT($vers found)
-else
-	AC_MSG_ERROR(Bonobo 0.33 or newer is required to compile Nautilus)
-fi
+EAZEL_VERSION_INSIST(bonobo, $GNOME_CONFIG --modversion bonobo | awk -F- '{print $2}', >=, BONOBO_REQUIRED)
 
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)
@@ -509,15 +669,28 @@ AC_SUBST(BONOBO_PRINT_LIBS)
 AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
 
+dnl   Bug 7315: Rediscover CFLAGS for GTK, because gnome-config won't know
+dnl   all the necessary flags if GTK has been upgraded more recently than
+dnl   it has.
+
+AC_PATH_PROG(GTK_CONFIG,gtk-config,false)
+AC_MSG_CHECKING(for gtk-config cflags)
+GTK_CFLAGS=`$GTK_CONFIG --cflags`
+AC_MSG_RESULT($GTK_CFLAGS)
+GNOMEUI_CFLAGS="$GNOMEUI_CFLAGS $GTK_CFLAGS"
+AC_SUBST(GNOMEUI_CFLAGS)
+
 IDL_CFLAGS="${IDL_CFLAGS} -I\$(top_srcdir) -I\$(top_builddir)"
 
 echo "IDL_CFLAGS: $IDL_CFLAGS"
 
 AC_SUBST(IDL_CFLAGS)
 
-AM_PATH_OAF(0.6.2)
+AM_PATH_OAF($OAF_REQUIRED)
+AC_SUBST(OAF_REQUIRED)
 
-AM_PATH_GCONF(0.12,,,gconf-gtk)
+AM_PATH_GCONF($GCONF_REQUIRED,,,gconf-gtk)
+AC_SUBST(GCONF_REQUIRED)
 
 AC_PATH_PROG(XML_CONFIG,xml-config,no)
 if test x$XML_CONFIG = xno; then
@@ -539,6 +712,19 @@ XML_LIBS=`$XML_CONFIG --libs`
 XML_CFLAGS=`$XML_CONFIG --cflags`
 AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
+
+dnl ====================================
+dnl = Begin tests for scrollkeeper
+dnl ====================================
+
+AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
+if test x$SCROLLKEEPER_CONFIG = xno; then
+  AC_MSG_ERROR(Couldn't find scrollkeeper-config, please install the scrollkeeper packaga)
+fi
+
+dnl =======================
+dnl = End tests for scrollkeeper
+dnl =======================
 
 dnl ====================================
 dnl = begin gnome-http checks
@@ -593,12 +779,37 @@ dnl = begin applet checks
 dnl ====================================
 
 dnl ====================================
+dnl = begin eazel-logos check
+dnl ====================================
+
+if test -d eazel-logos
+then
+	HAVE_EAZEL_LOGOS=yes
+	EAZEL_LOGOS_PNG='%{prefix}/share/pixmaps/nautilus/eazel-logos/*.png'
+	EAZEL_LOGOS_XML='%{prefix}/share/pixmaps/nautilus/eazel-logos/*.xml'
+	EAZEL_LOGOS_LICENSE='%{prefix}/share/pixmaps/nautilus/eazel-logos/LICENSE'
+	EAZEL_LOGOS_THROB='%{prefix}/share/pixmaps/nautilus/eazel-logos/throbber/*.png'
+fi
+
+AM_CONDITIONAL(HAVE_EAZEL_LOGOS, test "x$HAVE_EAZEL_LOGOS" = "xyes")
+AC_SUBST(EAZEL_LOGOS_PNG)
+AC_SUBST(EAZEL_LOGOS_XML)
+AC_SUBST(EAZEL_LOGOS_LICENSE)
+AC_SUBST(EAZEL_LOGOS_THROB)
+
+dnl ====================================
+dnl = end eazel-logos check
+dnl ====================================
+
+dnl ====================================
 dnl = begin gdk-pixbuf checks
 dnl ====================================
-AM_PATH_GDK_PIXBUF(0.9.0,,
-AC_MSG_ERROR([*** gdk_pixbuf 0.9.0 or better is required.]))
+AM_PATH_GDK_PIXBUF($GDK_PIXBUF_REQUIRED,,
+AC_MSG_ERROR([*** gdk_pixbuf $GDK_PIXBUF_REQUIRED or better is required.]))
+
+AC_SUBST(GDK_PIXBUF_REQUIRED)
 dnl ====================================
-dnl = begin gdk-pixbuf checks
+dnl = end gdk-pixbuf checks
 dnl ====================================
 
 
@@ -637,22 +848,12 @@ dnl = Begin tests for ammonite (--enable-eazel-services only)
 dnl ====================================
 if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
-	AMMONITE_CFLAGS=""
-	AMMONITE_LIBS=""
-	AC_MSG_CHECKING(for Ammonite)
-	if test -n `gnome-config --libs ammonite | cut -d ' ' -f1`;
-	then
-		AMMONITE_CFLAGS=`gnome-config --cflags ammonite`
-		AMMONITE_LIBS=`gnome-config --libs ammonite`
-		AC_MSG_RESULT(yes)
-	else
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR(Ammonite is required for Eazel Services. Please obtain it from Eazel's FTP site)
-	fi
+	EAZEL_VERSION_INSIST(ammonite, $GNOME_CONFIG --modversion ammonite | awk -F- '{print $2}', >=, AMMONITE_REQUIRED)
 
+	AMMONITE_CFLAGS=`$GNOME_CONFIG --cflags ammonite`
+	AMMONITE_LIBS=`$GNOME_CONFIG --libs ammonite`
 	AC_SUBST(AMMONITE_CFLAGS)
 	AC_SUBST(AMMONITE_LIBS)
-
 fi
 dnl =======================
 dnl = End tests for ammonite
@@ -690,7 +891,7 @@ dnl = End tests for libpng
 dnl =======================
 
 dnl Checks for i18n
-ALL_LINGUAS="ca da de en_GB es fi fr ga gl hu it ja ko nl no pl pt_BR ru sk sv ta tr uk zh_TW.Big5"
+ALL_LINGUAS="az ca da de el en_GB es fi fr ga gl hu it ja ko nl nn no pl pt_BR ru sk sl sv ta tr uk zh_TW.Big5"
 AM_GNOME_GETTEXT
 # AM_GNOME_GETTEXT above substs $DATADIRNAME
 # this is the directory where the *.{mo,gmo} files are installed
@@ -699,6 +900,7 @@ AC_SUBST(gnomelocaledir)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+AC_C_BIGENDIAN
 
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
 
@@ -706,6 +908,7 @@ AC_ARG_ENABLE(more-warnings,
 [  --enable-more-warnings  Maximum compiler warnings],
 set_more_warnings="$enableval",[
 if test -f $srcdir/CVSVERSION; then
+	is_cvs_version=true
 	set_more_warnings=yes
 else
 	set_more_warnings=no
@@ -742,6 +945,21 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl
+dnl Define the build message (used in the Nautilus about box)
+dnl CVSVERSION overrides
+dnl
+
+NAUTILUS_BUILD_MESSAGE=""
+AC_ARG_WITH(build-message, [  --with-build-message=MESSAGE		Build (about box) message], NAUTILUS_BUILD_MESSAGE=$withval)
+
+if test -n "$is_cvs_version"
+then
+	NAUTILUS_BUILD_MESSAGE="Development Build"
+fi
+
+AC_DEFINE_UNQUOTED(NAUTILUS_BUILD_MESSAGE, "$NAUTILUS_BUILD_MESSAGE")
+
 
 dnl
 dnl Define the build timestamp if given in the environment.
@@ -753,10 +971,12 @@ fi
 
 AC_OUTPUT([
 nautilus.spec
+nautilus-installer.spec
 Makefile
 helper-utilities/Makefile
 helper-utilities/authenticate/Makefile
 helper-utilities/error-dialog/Makefile
+helper-utilities/xml-migrate/Makefile
 helper-scripts/Makefile
 icons/Makefile
 icons/ardmore/Makefile
@@ -774,7 +994,6 @@ icons/sidebar_tab_pieces/Makefile
 icons/throbber/Makefile
 icons/villanova/Makefile
 data/Makefile
-data/top/Makefile
 data/patterns/Makefile
 data/emblems/Makefile
 data/linksets/Makefile
@@ -789,6 +1008,11 @@ librsvg/Makefile
 libnautilus/Makefile
 libnautilus-adapter/Makefile
 libnautilus-extensions/Makefile
+nautilus-installer/Makefile
+nautilus-installer/package-list.xml
+nautilus-installer/libtrilobite/Makefile
+nautilus-installer/install-lib/Makefile
+nautilus-installer/src/Makefile
 src/Makefile
 src/file-manager/Makefile
 components/Makefile
@@ -828,18 +1052,13 @@ components/services/install/lib/makefile.staticlib
 components/services/install/idl/Makefile
 components/services/install/server/Makefile
 components/services/install/command-line/Makefile
-components/services/install/nautilus-view/Makefile
 components/services/inventory/Makefile
+components/services/install-view/Makefile
 components/services/inventory-view/Makefile
 components/services/login/Makefile
 components/services/login/nautilus-view/Makefile
 components/services/summary/Makefile
-components/services/summary/lib/Makefile
-components/services/summary/nautilus-view/Makefile
-components/services/summary/nautilus-view/icons/Makefile
-components/services/summary/nautilus-view/icons/gray_tab_pieces/Makefile
-components/services/vault/Makefile
-components/services/vault/command-line/Makefile
+components/services/summary/icons/Makefile
 components/text/Makefile
 components/text/services/Makefile
 components/throbber/Makefile
@@ -851,10 +1070,24 @@ po/Makefile.in
 intl/Makefile
 test/Makefile
 user-guide/Makefile
-user-guide/C/Makefile
 user-guide/gnufdl/Makefile
+user-guide/gnugpl/Makefile
+help/Makefile
+help/nautilus-user-manual/Makefile
+help/nautilus-user-manual/C/Makefile
+help/nautilus-user-manual/es/Makefile
+help/nautilus-user-manual/ko/Makefile
+help/nautilus-quick-reference/Makefile
+help/nautilus-quick-reference/C/Makefile
+help/nautilus-quick-reference/no/Makefile
+help/nautilus-quick-reference/es/Makefile
+help/nautilus-quick-reference/sv/Makefile
+help/nautilus-release-notes/Makefile
+help/nautilus-release-notes/C/Makefile
 applets/Makefile
 applets/launcher/Makefile
+applets/preferences-applet/Makefile
+omf-install/Makefile
 ])
 
 dnl <= Configuration summary =>
@@ -879,6 +1112,7 @@ Mozilla component	: YES
    mozilla libraries              : $_mozilla_lib_place
    mozilla includes               : $_mozilla_include_place
    MOZILLA_MILESTONE              : $MOZILLA_MILESTONE
+   MOZILLA_PROFILES_CFLAGS        : $MOZILLA_PROFILES_CFLAGS
    MOZILLA_COMPONENT_RPATH_FLAGS  : $MOZILLA_COMPONENT_RPATH_FLAGS
    MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
 ;;
@@ -887,15 +1121,15 @@ echo "
 Mozilla component	: NO"
 ;;
 esac
-dnl <= Do we want Eazel services =>
+dnl <= Do we want Eazel Services =>
 case "X$EAZEL_SERVICES_ENABLED" in
 Xyes)
 echo "
-Eazel services		: YES"
+Eazel Services		: YES"
 ;;
 *)
 echo "
-Eazel services          : NO"
+Eazel Services          : NO"
 ;;
 esac
 
@@ -927,6 +1161,8 @@ echo
 dnl <= Snapshot things =>
 echo "
 EAZEL_BUILD_TIMESTAMP   : $EAZEL_BUILD_TIMESTAMP"
+echo "
+NAUTILUS_BUILD_MESSAGE  : $NAUTILUS_BUILD_MESSAGE"
 echo
 
 echo "

@@ -71,23 +71,31 @@ GList *     nautilus_g_list_copy                      (GList                    
 void        nautilus_g_list_safe_for_each             (GList                      *list,
 						       GFunc                       function,
 						       gpointer                    user_data);
+GList *     nautilus_g_list_sort_custom               (GList                      *list,
+						       NautilusCompareFunction     compare,
+						       gpointer                    user_data);
+gboolean    nautilus_g_lists_sort_and_check_for_intersection (GList **list_a,
+					 	              GList **list_b);
 GList *     nautilus_g_list_partition                 (GList                      *list,
 						       NautilusPredicateFunction   predicate,
 						       gpointer                    user_data,
 						       GList                     **removed);
+
+/* List functions for lists of g_free'able objects. */
+void        nautilus_g_list_free_deep                 (GList                      *list);
 void        nautilus_g_list_free_deep_custom          (GList                      *list,
 						       GFunc                       element_free_func,
 						       gpointer                    user_data);
 
-/* List functions for lists of g_free'able objects. */
-void        nautilus_g_list_free_deep                 (GList                      *list);
-void        nautilus_g_slist_free_deep_custom         (GSList                     *list,
-						       GFunc                       element_free_func,
-						       gpointer                    user_data);
+/* GSList functions. */
+GList *     nautilus_g_list_from_g_slist              (GSList                     *list);
+GSList *    nautilus_g_slist_from_g_list              (GList                      *list);
 
 /* List functions for slists of g_free'able objects. */
 void        nautilus_g_slist_free_deep                (GSList                     *list);
-
+void        nautilus_g_slist_free_deep_custom         (GSList                     *list,
+						       GFunc                       element_free_func,
+						       gpointer                    user_data);
 
 /* List functions for lists of C strings. */
 gboolean    nautilus_g_str_list_equal                 (GList                      *str_list_a,
@@ -143,6 +151,9 @@ gint64      nautilus_get_system_time                  (void);
 char *      nautilus_shell_quote                      (const char                 *string);
 
 /* math */
-int nautilus_g_round (double d);
+int         nautilus_round                            (double                      d);
+
+/* Locale */
+gboolean    nautilus_dumb_down_for_multi_byte_locale_hack (void);
 
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */

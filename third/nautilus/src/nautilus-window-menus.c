@@ -3,7 +3,7 @@
 /*
  * Nautilus
  *
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -75,7 +75,7 @@
 #define MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
 
 #define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
-#define MENU_PATH_SHOW_HIDE_TOOL_BAR			"/menu/View/Show Hide Placeholder/Show Hide Tool Bar"
+#define MENU_PATH_SHOW_HIDE_TOOLBAR			"/menu/View/Show Hide Placeholder/Show Hide Toolbar"
 #define MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
 #define MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
 
@@ -90,6 +90,12 @@
 #define SWITCH_TO_INTERMEDIATE_VERB			"Switch to Intermediate Level"
 #define SWITCH_TO_ADVANCED_VERB				"Switch to Advanced Level"
 
+
+#define USER_MANUAL_URI		"help:nautilus-user-manual"
+#define QUICK_REFERENCE_URI	"help:nautilus-quick-reference"
+#define RELEASE_NOTES_URI	"help:nautilus-release-notes"
+#define CUSTOMER_SUPPORT_URI	"http://support.eazel.com"
+#define CUSTOMER_FEEDBACK_URI	"http://www.eazel.com/feedback.html"
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -245,7 +251,7 @@ services_button_callback (BonoboUIComponent *component,
 			       gpointer user_data, 
 			       const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "eazel:");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), "eazel:");
 }
 #endif
 
@@ -311,11 +317,11 @@ forget_history_if_confirmed (NautilusWindow *window)
 				     "which locations you have visited?"));
 	}
 					   
-	dialog = nautilus_yes_no_dialog (prompt,
-					 _("Forget History?"),
-					 _("Forget"),
-					 GNOME_STOCK_BUTTON_CANCEL,
-					 GTK_WINDOW (window));
+	dialog = nautilus_show_yes_no_dialog (prompt,
+					      _("Forget History?"),
+					      _("Forget"),
+					      GNOME_STOCK_BUTTON_CANCEL,
+					      GTK_WINDOW (window));
 	g_free (prompt);					 
 
 	gtk_signal_connect
@@ -360,17 +366,17 @@ view_menu_show_hide_sidebar_callback (BonoboUIComponent *component,
 }
 
 static void
-view_menu_show_hide_tool_bar_callback (BonoboUIComponent *component, 
+view_menu_show_hide_toolbar_callback (BonoboUIComponent *component, 
 			               gpointer user_data, 
 			               const char *verb) 
 {
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
-	if (nautilus_window_tool_bar_showing (window)) {
-		nautilus_window_hide_tool_bar (window);
+	if (nautilus_window_toolbar_showing (window)) {
+		nautilus_window_hide_toolbar (window);
 	} else {
-		nautilus_window_show_tool_bar (window);
+		nautilus_window_show_toolbar (window);
 	}
 }
 
@@ -409,31 +415,35 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_STATUS_BAR,
 				   nautilus_window_status_bar_showing (window)
-				   ? _("Hide Status Bar")
-				   : _("Show Status Bar"));
+				   ? _("Hide St_atus Bar")
+				   : _("Show St_atus Bar"));
 		
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_SIDEBAR,
 				   nautilus_window_sidebar_showing (window)
-				   ? _("Hide Sidebar")
-				   : _("Show Sidebar"));
+				   ? _("Hide _Sidebar")
+				   : _("Show _Sidebar"));
 
 	nautilus_bonobo_set_label (window->details->shell_ui,
-				   MENU_PATH_SHOW_HIDE_TOOL_BAR,
-				   nautilus_window_tool_bar_showing (window)
-				   ? _("Hide Tool Bar")
-				   : _("Show Tool Bar"));
+				   MENU_PATH_SHOW_HIDE_TOOLBAR,
+				   nautilus_window_toolbar_showing (window)
+				   ? _("Hide _Toolbar")
+				   : _("Show _Toolbar"));
 		
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_LOCATION_BAR,
 				   nautilus_window_location_bar_showing (window)
-				   ? _("Hide Location Bar")
-				   : _("Show Location Bar"));
+				   ? _("Hide Location _Bar")
+				   : _("Show Location _Bar"));
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -510,40 +520,46 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 	char *time_stamp;
 	const char *authors[] = {
 		"Ali Abdin",
-		"Darin Adler",
-		"Josh Barrow",
-		"Pavel Císler",
-		"J Shane Culpepper",
-		"Mike Engber",
-		"Ramiro Estrugo",
-		"Mike Fleming",
-		"Eli Goldberg",
 		"Andy Hertzfeld",
-		"Susan Kare",
-		"Mathieu Lacage",
-		"George Lebl",
+		"Arlo Rose",
+		"Darin Adler",
+		"Eli Goldberg",
 		"Elliot Lee",
-		"Raph Levien",
-		"Ian McKellar",
-		"Seth Nickell",
 		"Eskil Heyn Olsen",
 		"Ettore Perazzoli",
-		"Robey Pointer",
 		"Gene Z. Ragan",
-		"Arlo Rose",
-		"Rebecca Schulman",
-		"Robin * Slomkowski",
-		"Maciej Stachowiak",
+		"George Lebl",
+		"Ian McKellar",
+		"J Shane Culpepper",
+		"John Harper",
 		"John Sullivan",
-		"Bud Tribble",
+		"Josh Barrow",
+		"Maciej Stachowiak",
+		"Mathieu Lacage",
+		"Mike Engber",
+		"Mike Fleming",
+		"Pavel Cisler",
+		"Ramiro Estrugo",
+		"Raph Levien",
+		"Rebecca Schulman",
+		"Robey Pointer",
+		"Robin * Slomkowski",
+		"Seth Nickell",
+		"Susan Kare",
 		NULL
 	};
 
 
 	if (about == NULL) {
+		/* timestamp overrides build message, because timestamp
+		 * should only be set on tinderbox for hourly builds
+		 */
 		time_stamp = nautilus_get_build_time_stamp ();
 		if (time_stamp == NULL) {
-			time_stamp = g_strdup ("");
+			time_stamp = nautilus_get_build_message ();
+			if (time_stamp == NULL) {
+				time_stamp = g_strdup ("");
+			}
 		}
 		
 		/* The copyright character in here is correct for
@@ -564,6 +580,12 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					      "for GNOME that makes it\n"
 					      "easy to manage your files\n"
 					      "and the rest of your system."),
+					    /* translators should localize the following
+					     * string which will be displayed at the
+					     * bottom of the about box to give credit
+					     * to the translator(s)
+					     */
+					     _("Translator Credits"),
 					    time_stamp);
 		
 		g_free (time_stamp);
@@ -579,18 +601,32 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "help:nautilus");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), USER_MANUAL_URI);
 }
 
 static void
-help_menu_nautilus_license_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb)
+help_menu_nautilus_quick_reference_callback (BonoboUIComponent *component, 
+			              	     gpointer user_data, 
+			              	     const char *verb)
 {
-	char *uri;
-	uri = g_strdup_printf ("file://%s/%s", DATADIR, "gnome/help/nautilus/C/license.html");	
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), uri);
-	g_free (uri);
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), QUICK_REFERENCE_URI);
+}
+
+static void
+help_menu_nautilus_release_notes_callback (BonoboUIComponent *component, 
+			              	     gpointer user_data, 
+			              	     const char *verb)
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), RELEASE_NOTES_URI);
+}
+
+static void
+help_menu_support (BonoboUIComponent *component, 
+		       gpointer callback_data, 
+		       const char *verb)
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
+			       CUSTOMER_SUPPORT_URI);
 }
 
 static void
@@ -598,7 +634,8 @@ help_menu_nautilus_feedback_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "http://www.eazel.com/feedback.html");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       CUSTOMER_FEEDBACK_URI);
 }
 
 /* utility routine to return an image corresponding to the passed-in user level */
@@ -613,7 +650,7 @@ get_user_level_icon_name (int user_level, gboolean is_selected)
 	case NAUTILUS_USER_LEVEL_NOVICE:
 		image_name = "novice";
 		break;
-	case NAUTILUS_USER_LEVEL_HACKER:
+	case NAUTILUS_USER_LEVEL_ADVANCED:
 		image_name = "expert";
 		break;
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
@@ -651,6 +688,8 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 
 	nautilus_preferences_set_user_level (new_user_level);
 	
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	/* change the item icons to reflect the new user level */
@@ -676,6 +715,8 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 	g_free (new_user_level_icon_name);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
+	nautilus_window_ui_thaw (window);
 } 
  
 static void
@@ -717,11 +758,11 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "
 					    "want to remove any bookmarks with this "
 					    "location from your list?"), uri_for_display);
-		dialog = nautilus_yes_no_dialog (prompt,
-						 _("Bookmark for Nonexistent Location"),
-						 _("Remove"),
-						 GNOME_STOCK_BUTTON_CANCEL,
-						 GTK_WINDOW (holder->window));
+		dialog = nautilus_show_yes_no_dialog (prompt,
+						      _("Bookmark for Nonexistent Location"),
+						      _("Remove"),
+						      GNOME_STOCK_BUTTON_CANCEL,
+						      GTK_WINDOW (holder->window));
 
 		nautilus_gtk_signal_connect_free_data
 			(GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
@@ -733,7 +774,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		gnome_dialog_set_default (dialog, GNOME_CANCEL);
 	} else {
 		prompt = g_strdup_printf (_("The location \"%s\" no longer exists."), uri_for_display);
-		dialog = nautilus_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
+		dialog = nautilus_show_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
 	}
 
 	g_free (uri);
@@ -753,7 +794,7 @@ activate_bookmark_in_menu_item (BonoboUIComponent *component, gpointer user_data
 		show_bogus_bookmark_window (holder);
 	} else {
 	        uri = nautilus_bookmark_get_uri (holder->bookmark);
-	        nautilus_window_goto_uri (holder->window, uri);
+	        nautilus_window_go_to (holder->window, uri);
 	        g_free (uri);
         }
 }
@@ -772,6 +813,8 @@ append_bookmark_to_menu (NautilusWindow *window,
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+
+	nautilus_window_ui_freeze (window);
 
 	bookmark_holder = bookmark_holder_new (bookmark, window, is_bookmarks_menu);
 
@@ -810,6 +853,8 @@ append_bookmark_to_menu (NautilusWindow *window,
 					   activate_bookmark_in_menu_item, bookmark_holder, 
 					   bookmark_holder_free_cover);
 	g_free (verb_name);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static char *
@@ -819,7 +864,8 @@ get_static_bookmarks_file_path (void)
 	char *update_uri, *built_in_uri;
 	char *user_directory_path;
 	gboolean update_exists, built_in_exists;
-	GnomeVFSFileInfo update_info, built_in_info;
+	GnomeVFSFileInfo *update_info, *built_in_info;
+	char *result;
 	
 	/* see if there is a static bookmarks file in the updates directory and get its mod-date */
 	user_directory_path = nautilus_get_user_directory ();
@@ -850,30 +896,39 @@ get_static_bookmarks_file_path (void)
 	}
 	
 	/* both files exist, so use the one with the most recent mod-date */
-	update_uri = gnome_vfs_get_local_path_from_uri (update_xml_file_path);
-	gnome_vfs_file_info_init (&update_info);
-	gnome_vfs_get_file_info (update_uri, &update_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	update_uri = gnome_vfs_get_uri_from_local_path (update_xml_file_path);
+	update_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (update_uri, update_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	g_free (update_uri);
 	
-	built_in_uri = gnome_vfs_get_local_path_from_uri (built_in_xml_file_path);
-	gnome_vfs_file_info_init (&built_in_info);
-	gnome_vfs_get_file_info (built_in_uri, &built_in_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	built_in_uri = gnome_vfs_get_uri_from_local_path (built_in_xml_file_path);
+	built_in_info = gnome_vfs_file_info_new ();
+	gnome_vfs_get_file_info (built_in_uri, built_in_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	g_free (built_in_uri);
 
 	/* see which is most recent */
-	if (update_info.mtime > built_in_info.mtime) {
+	if (update_info->mtime <= built_in_info->mtime) {
+		result = built_in_xml_file_path;
+		g_free (update_xml_file_path);
+	} else {
+		result = update_xml_file_path;
 		g_free (built_in_xml_file_path);
-		return update_xml_file_path;
-	} 
-		
-	g_free (update_xml_file_path);
-	return built_in_xml_file_path;
+	}
+
+	gnome_vfs_file_info_unref (update_info);
+	gnome_vfs_file_info_unref (built_in_info);
+	
+	return result;
 }
 
 static void
 append_separator (NautilusWindow *window, const char *path)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_add_menu_separator (window->details->shell_ui, path);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -889,6 +944,8 @@ create_menu_item_from_node (NautilusWindow *window,
 	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 		
+	nautilus_window_ui_freeze (window);
+
 	if (strcmp (node->name, "bookmark") == 0) {
 		bookmark = nautilus_bookmark_new_from_node (node);
 		append_bookmark_to_menu (window, bookmark, menu_path, index, TRUE);		
@@ -914,6 +971,8 @@ create_menu_item_from_node (NautilusWindow *window,
 	} else {
 		g_message ("found unknown node '%s', ignoring", node->name);
 	}
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -1117,12 +1176,16 @@ add_user_level_menu_item (NautilusWindow *window,
 	icon_name = get_user_level_icon_name (user_level, current_user_level == user_level);
 
 
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  menu_path,
 				  icon_name);
 	
 
 	g_free (icon_name);
+
+	nautilus_window_ui_thaw (window);
 }
 
 /**
@@ -1132,7 +1195,7 @@ add_user_level_menu_item (NautilusWindow *window,
  * @window: A recently-created NautilusWindow.
  */
 void 
-nautilus_window_initialize_menus (NautilusWindow *window)
+nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 {
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
@@ -1140,8 +1203,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
 		BONOBO_UI_VERB ("Toggle Find Mode", file_menu_toggle_find_mode_callback),
 		/* FIXME: bugzilla.eazel.com 3590:
-		 * Note that we use a different verb for the tool bar button since
-		 * the tool bar button has state but the menu item doesn't. This would
+		 * Note that we use a different verb for the toolbar button since
+		 * the toolbar button has state but the menu item doesn't. This would
 		 * otherwise confuse Bonobo.
 		 */
 		BONOBO_UI_VERB ("Toggle Find Mode With State", file_menu_toggle_find_mode_callback),
@@ -1156,7 +1219,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Forget History", go_menu_forget_history_callback),
 		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
 		BONOBO_UI_VERB ("Show Hide Sidebar", view_menu_show_hide_sidebar_callback),
-		BONOBO_UI_VERB ("Show Hide Tool Bar", view_menu_show_hide_tool_bar_callback),
+		BONOBO_UI_VERB ("Show Hide Toolbar", view_menu_show_hide_toolbar_callback),
 		BONOBO_UI_VERB ("Show Hide Location Bar", view_menu_show_hide_location_bar_callback),
 		BONOBO_UI_VERB ("Show Hide Status Bar", view_menu_show_hide_status_bar_callback),
 		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
@@ -1174,7 +1237,9 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
-		BONOBO_UI_VERB ("Nautilus License", help_menu_nautilus_license_callback),
+		BONOBO_UI_VERB ("Nautilus Quick Reference", help_menu_nautilus_quick_reference_callback),
+		BONOBO_UI_VERB ("Nautilus Release Notes", help_menu_nautilus_release_notes_callback),
+		BONOBO_UI_VERB ("Support", help_menu_support),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
 
 		BONOBO_UI_VERB ("Switch to Beginner Level", user_level_menu_item_callback),
@@ -1191,6 +1256,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB_END
 	};
 
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
@@ -1203,7 +1270,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
 				  NAUTILUS_USER_LEVEL_INTERMEDIATE);
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
-				  NAUTILUS_USER_LEVEL_HACKER);
+				  NAUTILUS_USER_LEVEL_ADVANCED);
 	update_user_level_menu_items (window);				  
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
@@ -1213,12 +1280,22 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 						       window,
 						       GTK_OBJECT (window));
 
-        nautilus_window_initialize_bookmarks_menu (window);
-        nautilus_window_initialize_go_menu (window);
-
 #ifndef ENABLE_PROFILER
 	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
 #endif
+
+	nautilus_window_ui_thaw (window);
+}
+
+void 
+nautilus_window_initialize_menus_part_2 (NautilusWindow *window)
+{
+	nautilus_window_ui_freeze (window);
+
+        nautilus_window_initialize_bookmarks_menu (window);
+        nautilus_window_initialize_go_menu (window);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -1242,20 +1319,28 @@ nautilus_window_remove_go_menu_callback (NautilusWindow *window)
 void
 nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_remove_menu_items_and_commands
 		(window->details->shell_ui, 
 		 MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
 	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
 		 MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
 nautilus_window_remove_go_menu_items (NautilusWindow *window)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
 		 MENU_PATH_HISTORY_PLACEHOLDER);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -1264,6 +1349,8 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 	char *label_string;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_ui_freeze (window);
 
 	label_string = g_strdup 
 		(nautilus_window_get_search_mode (window) 
@@ -1274,6 +1361,8 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 				   MENU_PATH_TOGGLE_FIND_MODE,
 				   label_string);
 	g_free (label_string);
+
+	nautilus_window_ui_thaw (window);
 }
 
 
@@ -1390,6 +1479,8 @@ update_user_level_menu_items (NautilusWindow *window)
         g_assert (window != NULL);
         g_assert (NAUTILUS_IS_WINDOW (window));
 
+	nautilus_window_ui_freeze (window);
+
  	/* Update the user radio group to reflect reality */
 	user_level = nautilus_preferences_get_user_level ();
 	user_level_icon_name = get_user_level_icon_name (user_level, FALSE);
@@ -1398,6 +1489,8 @@ update_user_level_menu_items (NautilusWindow *window)
 				  NAUTILUS_MENU_PATH_USER_LEVEL,
 				  user_level_icon_name);
 	g_free (user_level_icon_name);
+
+	nautilus_window_ui_thaw (window);
 }
 
 
@@ -1411,7 +1504,7 @@ convert_verb_to_user_level (const char *verb)
 	} else if (strcmp (verb, SWITCH_TO_INTERMEDIATE_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_INTERMEDIATE;
 	} else if (strcmp (verb, SWITCH_TO_ADVANCED_VERB) == 0) {
-		return NAUTILUS_USER_LEVEL_HACKER;
+		return NAUTILUS_USER_LEVEL_ADVANCED;
 	}
 
 	g_assert_not_reached ();
@@ -1426,7 +1519,7 @@ convert_user_level_to_path (guint user_level)
 		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
-	case NAUTILUS_USER_LEVEL_HACKER:
+	case NAUTILUS_USER_LEVEL_ADVANCED:
 		return NAUTILUS_MENU_PATH_EXPERT_ITEM; 
 	}
 

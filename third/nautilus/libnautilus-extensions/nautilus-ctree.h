@@ -140,6 +140,9 @@ struct _NautilusCTreeClass
 			     NautilusCTreeNode *new_sibling);
   void (*change_focus_row_expansion) (NautilusCTree *ctree,
 				      NautilusCTreeExpansionType action);
+  void (*tree_activate_row) (NautilusCTree     *ctree,
+			     NautilusCTreeNode *row,
+			     gint		column);
 };
 
 struct _NautilusCTreeRow
@@ -435,6 +438,8 @@ void nautilus_ctree_set_drag_compare_func 	(NautilusCTree     	      	*ctree,
  ***********************************************************/
 
 void nautilus_ctree_sort_node                         (NautilusCTree     *ctree, 
+						       NautilusCTreeNode *node);
+void nautilus_ctree_sort_single_node		      (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node);
 void nautilus_ctree_sort_recursive                    (NautilusCTree     *ctree, 
 						       NautilusCTreeNode *node);

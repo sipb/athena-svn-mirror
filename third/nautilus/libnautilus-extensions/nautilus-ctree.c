@@ -242,6 +242,9 @@ static void real_tree_move              (NautilusCTree      *ctree,
 static void real_row_move               (GtkCList      *clist,
 					 gint           source_row,
 					 gint           dest_row);
+static void real_tree_activate_row	(NautilusCTree	    *ctree,
+					 NautilusCTreeNode  *node,
+					 gint		     column);
 static void nautilus_ctree_link              (NautilusCTree      *ctree,
 					 NautilusCTreeNode  *node,
 					 NautilusCTreeNode  *parent,
@@ -321,6 +324,7 @@ enum
 	TREE_COLLAPSE,
 	TREE_MOVE,
 	CHANGE_FOCUS_ROW_EXPANSION,
+	TREE_ACTIVATE_ROW,
 	LAST_SIGNAL
 };
 
@@ -437,6 +441,14 @@ nautilus_ctree_class_init (NautilusCTreeClass *klass)
 				       change_focus_row_expansion),
 		    gtk_marshal_NONE__ENUM,
 		    GTK_TYPE_NONE, 1, GTK_TYPE_CTREE_EXPANSION_TYPE);
+  ctree_signals[TREE_ACTIVATE_ROW] =
+    gtk_signal_new ("tree_activate_row",
+		    GTK_RUN_FIRST,
+		    object_class->type,
+		    GTK_SIGNAL_OFFSET (NautilusCTreeClass, tree_activate_row),
+		    gtk_marshal_NONE__POINTER_INT,
+		    GTK_TYPE_NONE, 2, GTK_TYPE_CTREE_NODE, GTK_TYPE_INT);
+
   gtk_object_class_add_signals (object_class, ctree_signals, LAST_SIGNAL);
 
   widget_class->realize = nautilus_ctree_realize;
@@ -472,6 +484,7 @@ nautilus_ctree_class_init (NautilusCTreeClass *klass)
   klass->tree_collapse = real_tree_collapse;
   klass->tree_move = real_tree_move;
   klass->change_focus_row_expansion = change_focus_row_expansion;
+  klass->tree_activate_row = real_tree_activate_row;
 
   binding_set = gtk_binding_set_by_class (klass);
   gtk_binding_entry_add_signal (binding_set,
@@ -872,10 +885,9 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 
       		work = NAUTILUS_CTREE_NODE (g_list_nth (clist->row_list, row));
 	  
-      		if (button_actions & GTK_BUTTON_EXPANDS && 
-      		    (!NAUTILUS_CTREE_ROW (work)->is_leaf  &&
-		     (event->type == GDK_2BUTTON_PRESS ||
-		      ctree_is_hot_spot (ctree, work, row, x, y))))
+		if (button_actions & GTK_BUTTON_EXPANDS && 
+		    (!NAUTILUS_CTREE_ROW (work)->is_leaf  &&
+		     ctree_is_hot_spot (ctree, work, row, x, y)))
 		{
 	  		if (NAUTILUS_CTREE_ROW (work)->expanded) {
 	    			nautilus_ctree_collapse (ctree, work);
@@ -883,6 +895,10 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 	    			nautilus_ctree_expand (ctree, work);
 	    		}
 	  		return FALSE;
+		} else if (event->type == GDK_2BUTTON_PRESS) {
+			/* double-click on a row = "activate" */
+			gtk_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_ACTIVATE_ROW],
+					 work, column);
 		}
     	}
     	
@@ -1978,13 +1994,10 @@ draw_row (GtkCList     *clist,
 
 		  offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 		case GTK_CELL_TEXT:
-		  if (style != GTK_WIDGET (clist)->style)
-		    row_center_offset = (((clist->row_height -
-					   style->font->ascent -
-					   style->font->descent - 1) / 2) +
-					 1.5 + style->font->ascent);
-		  else
-		    row_center_offset = clist->row_center_offset;
+		  row_center_offset = ((clist->row_height -
+					(style->font->ascent
+					 + style->font->descent)) / 2
+					 + style->font->ascent);
 
 		  gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
 		  gdk_draw_string
@@ -2099,13 +2112,11 @@ draw_row (GtkCList     *clist,
 		offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 	    }
 
-	  if (style != GTK_WIDGET (clist)->style)
-	    row_center_offset = (((clist->row_height - style->font->ascent -
-				   style->font->descent - 1) / 2) +
-				 1.5 + style->font->ascent);
-	  else
-	    row_center_offset = clist->row_center_offset;
-	  
+	  row_center_offset = ((clist->row_height -
+				(style->font->ascent
+				 + style->font->descent)) / 2
+			       + style->font->ascent);
+
 	  gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
 	  gdk_draw_string (clist->clist_window, style->font, fg_gc, offset,
 			   row_rectangle.y + row_center_offset +
@@ -2784,6 +2795,8 @@ real_tree_expand (NautilusCTree     *ctree,
     /* resize tree_column if needed */
     column_auto_resize (clist, &NAUTILUS_CTREE_ROW (node)->row, ctree->tree_column,
 			requisition.width);
+
+  tree_draw_node (ctree, node);
 }
 
 static void 
@@ -2899,6 +2912,7 @@ real_tree_collapse (NautilusCTree     *ctree,
     column_auto_resize (clist, &NAUTILUS_CTREE_ROW (node)->row, ctree->tree_column,
 			requisition.width);
     
+  tree_draw_node (ctree, node);
 }
 
 static void
@@ -3407,6 +3421,17 @@ row_delete (NautilusCTree    *ctree,
 }
 
 static void
+real_tree_activate_row (NautilusCTree *ctree,
+			NautilusCTreeNode *node,
+			gint column)
+{
+	g_return_if_fail (ctree != NULL);
+	g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
+
+	/* don't care */
+}
+
+static void
 real_select_row (GtkCList *clist,
 		 gint      row,
 		 gint      column,
@@ -3825,6 +3850,7 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
       while (sibling && clist->compare
 	     (clist, NAUTILUS_CTREE_ROW (node), NAUTILUS_CTREE_ROW (sibling)) > 0)
 	sibling = NAUTILUS_CTREE_ROW (sibling)->sibling;
+
     }
 
   nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
@@ -4891,6 +4917,12 @@ nautilus_ctree_set_node_info (NautilusCTree     *ctree,
 
   NAUTILUS_CTREE_ROW (node)->expanded = (is_leaf) ? FALSE : expanded;
   
+  if (GTK_CLIST_AUTO_SORT (GTK_CLIST (ctree))
+      && NAUTILUS_CTREE_ROW (node)->parent != NULL)
+    {
+      nautilus_ctree_sort_single_node (ctree, NAUTILUS_CTREE_ROW (node)->parent);
+    }
+
   tree_draw_node (ctree, node);
 }
 
@@ -5673,6 +5705,37 @@ nautilus_ctree_sort_node (NautilusCTree     *ctree,
     {
       clist->focus_row = g_list_position (clist->row_list,(GList *)focus_node);
       clist->undo_anchor = clist->focus_row;
+    }
+
+  gtk_clist_thaw (clist);
+}
+
+void
+nautilus_ctree_sort_single_node (NautilusCTree *ctree,
+				 NautilusCTreeNode *node)
+{
+  NautilusCTreeNode *sibling, *parent;
+  GtkCList *clist;
+
+  clist = GTK_CLIST (ctree);
+
+  gtk_clist_freeze (clist);
+
+  if (GTK_CLIST_AUTO_SORT (clist))
+    {
+      parent = NAUTILUS_CTREE_ROW (node)->parent;
+
+      if (parent)
+	sibling = NAUTILUS_CTREE_ROW (parent)->children;
+      else
+	sibling = NAUTILUS_CTREE_NODE (clist->row_list);
+
+      while (sibling
+	     && (sibling == node || clist->compare (clist, NAUTILUS_CTREE_ROW (node), NAUTILUS_CTREE_ROW (sibling)) > 0))
+	sibling = NAUTILUS_CTREE_ROW (sibling)->sibling;
+
+      nautilus_ctree_unlink (ctree, node, TRUE);
+      nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
     }
 
   gtk_clist_thaw (clist);

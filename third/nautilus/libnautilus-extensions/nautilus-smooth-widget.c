@@ -88,29 +88,42 @@ static void              smooth_widget_paint_tile_and_content_transparent (GtkWi
  */
 static GList *smooth_widget_list = NULL;
 
-
-/* We dont want to have any knowledge of NautilusImage and NautilusLabel
- * in this file.  All the smooth widget operations herein should work on 
- * either one without special casing.  However, since NautilusImage and 
- * NautilusLabel are subclassed from different super types, we cant make
- * cast checks for a common superclass.  Thus the hack below of.  
- *
- * We dont include the headers for NautilusImage and NautilusLabel instead
- * because we dont want special cased turds for each one to appear
- * in this file.
- *
- * Another assumption we make is that smooth widgets are subclasses from 
- * GtkMisc.
+/* We maintain a global list of types that can be smooth widgets.
+ * We do this mostly for type safety - to make sure smooth operations only
+ * happen on smooth widgets.
  */
-extern GtkType nautilus_image_get_type (void);
-extern GtkType nautilus_label_get_type (void);
+static GList *smooth_widget_type_list = NULL;
+
+static void
+smooth_widget_type_list_free (void)
+{
+	g_list_free (smooth_widget_type_list);
+	smooth_widget_type_list = NULL;
+}
+
+static void
+smooth_widget_list_free (void)
+{
+	g_list_free (smooth_widget_list);
+	smooth_widget_list = NULL;
+}
 
 static gboolean
 widget_is_smooth (const GtkWidget *widget)
 {
-	return ((GTK_CHECK_TYPE ((widget), nautilus_image_get_type ())
-		 || GTK_CHECK_TYPE ((widget), nautilus_label_get_type ()))
-		&& GTK_IS_MISC (widget));
+	GList *node;
+
+	for (node = smooth_widget_type_list; node ; node = node->next) {
+		GtkType type;
+
+		type = GPOINTER_TO_INT (node->data);
+
+		if (GTK_CHECK_TYPE ((widget), type)) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 static void
@@ -166,6 +179,10 @@ nautilus_smooth_widget_register (GtkWidget *widget)
 
 	smooth_widget_set_is_smooth (widget, preferences_get_is_smooth ());
 
+	if (smooth_widget_list == NULL) {
+		g_atexit (smooth_widget_list_free);
+	}
+
 	smooth_widget_list = g_list_prepend (smooth_widget_list, widget);
 
 	/* Keep track of the widget's destruction so we can purge it */
@@ -204,6 +221,13 @@ smooth_widget_get_tile_origin_point (const GtkWidget *widget,
 
 	origin_point = NAUTILUS_ART_IPOINT_ZERO;
 
+	/* Using '0' for the ancestor origin works because our buddy GTK+ 
+	 * already makes our allocation.{x,y} the collected offsets of all
+	 * our ancestors.
+	 *
+	 * It might be more correct to make this the allocation.{x,y} of the
+	 * ancestor windowed widget - maybe.
+	 */
 	switch (tile_mode_vertical) {
 	case NAUTILUS_SMOOTH_TILE_SELF:
 		origin_point.y = widget->allocation.y;
@@ -361,7 +385,7 @@ smooth_widget_paint_tile_transparent (GtkWidget *widget,
 				      const NautilusArtIPoint *tile_origin,
 				      const ArtIRect *dirty_area)
 {
-	ArtIRect buffer_frame;
+	NautilusDimensions buffer_dimensions;
  	ArtIRect tile_dirty_area;
 	ArtIRect tile_area;
 	GdkPixbuf *buffer;
@@ -392,9 +416,9 @@ smooth_widget_paint_tile_transparent (GtkWidget *widget,
 
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (buffer));
 	
-	buffer_frame = nautilus_gdk_pixbuf_get_frame (buffer);
+	buffer_dimensions = nautilus_gdk_pixbuf_get_dimensions (buffer);
 	
-	nautilus_art_irect_assign (&tile_area, 0, 0, buffer_frame.x1, buffer_frame.y1);
+	nautilus_art_irect_assign (&tile_area, 0, 0, buffer_dimensions.width, buffer_dimensions.height);
 
 	/* Composite the tile into the buffer */	
 	nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (tile_pixbuf,
@@ -924,48 +948,56 @@ nautilus_smooth_widget_get_tile_bounds (const GtkWidget *widget,
 	}
 
 	/* Clip the tile bounds to the widget bounds */
-	bounds = nautilus_irect_gtk_widget_get_bounds (widget);
+	bounds = nautilus_gtk_widget_get_bounds (widget);
 	art_irect_intersect (&clipped_tile_bounds, &tile_bounds, &bounds);
 
 	return tile_bounds;
 }
 
-ArtIRect
-nautilus_smooth_widget_get_preferred_frame (const GtkWidget *widget,
-					    const ArtIRect *content_frame,
-					    const ArtIRect *tile_frame,
-					    int tile_width,
-					    int tile_height)
+NautilusDimensions
+nautilus_smooth_widget_get_preferred_dimensions (const GtkWidget *widget,
+						 const NautilusDimensions *content_dimensions,
+						 const NautilusDimensions *tile_dimensions,
+						 int tile_width,
+						 int tile_height)
 {
-	ArtIRect preferred_frame;
+	NautilusDimensions preferred_dimensions;
 
-	g_return_val_if_fail (widget_is_smooth (widget), NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (content_frame != NULL, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (tile_frame != NULL, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (tile_width >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (tile_height >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (widget_is_smooth (widget), NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (content_dimensions != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (tile_dimensions != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (tile_width >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (tile_height >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_DIMENSIONS_EMPTY);
 	
 	if (tile_width == NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP) {
-		tile_width = tile_frame->x1;
+		tile_width = tile_dimensions->width;
 	} else {
 		tile_width = 0;
 	}
 
 	if (tile_height == NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP) {
-		tile_height = tile_frame->y1;
+		tile_height = tile_dimensions->height;
 	} else {
 		tile_height = 0;
 	}
 	
-	nautilus_art_irect_assign (&preferred_frame,
-				   0,
-				   0,
-				   MAX (content_frame->x1, tile_width) + (2 * GTK_MISC (widget)->xpad * 2),
-				   MAX (content_frame->y1, tile_height) + (2 * GTK_MISC (widget)->ypad * 2));
+	preferred_dimensions.width = MAX (content_dimensions->width, tile_width) + (2 * GTK_MISC (widget)->xpad);
+	preferred_dimensions.height = MAX (content_dimensions->height, tile_height) + (2 * GTK_MISC (widget)->ypad);
 
-	/* Make sure the frame is not zero.  Gtk goes berserk with zero size widget */
-	preferred_frame.x1 = MAX (preferred_frame.x1, 2);
-	preferred_frame.y1 = MAX (preferred_frame.y1, 2);
+	/* Make sure the dimensions is not zero.  Gtk goes berserk with zero size widget */
+	preferred_dimensions.width = MAX (preferred_dimensions.width, 2);
+	preferred_dimensions.height = MAX (preferred_dimensions.height, 2);
 
-	return preferred_frame;
+	return preferred_dimensions;
 }
+
+void
+nautilus_smooth_widget_register_type (GtkType type)
+{
+	if (smooth_widget_type_list == NULL) {
+		g_atexit (smooth_widget_type_list_free);
+	}
+
+	smooth_widget_type_list = g_list_append (smooth_widget_type_list, GINT_TO_POINTER (type));
+}
+

@@ -37,6 +37,9 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
  */
@@ -151,6 +154,16 @@ notes_load_location (NautilusView *view,
         }
 }
 
+static gboolean
+on_text_field_focus_out_event (GtkWidget *widget,
+			       GdkEventFocus *event,
+			       gpointer user_data)
+{
+	Notes *notes = user_data;
+
+	notes_save_metainfo (notes);
+	return FALSE;
+}
 
                               
 static void
@@ -172,6 +185,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         GtkWidget *vbox;
         Notes *notes;
         NautilusBackground *background;
+        GdkFont *font;
          
         g_return_val_if_fail (strcmp (goad_id, "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
         notes = g_new0 (Notes, 1);
@@ -182,11 +196,20 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         
         /* create the text container */               
         notes->note_text_field = gtk_text_new (NULL, NULL);
+        
+        font = nautilus_font_factory_get_font_by_family (_("helvetica"), 14);
+        nautilus_gtk_widget_set_font (notes->note_text_field, font);
+        gdk_font_unref (font);
+
         gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
         background = nautilus_get_widget_background (notes->note_text_field);
         nautilus_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
-        
+
+	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_out_event",
+      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
+                            notes);
+     
         gtk_widget_show_all (vbox);
         
 	/* Create CORBA object. */
@@ -237,13 +260,16 @@ main(int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+	
         /* initialize CORBA and Bonobo */
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
+	orb = oaf_init (argc, argv);
 
-        gnome_init_with_popt_table("nautilus-notes", VERSION,
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 	
+        gnome_init ("nautilus-notes", VERSION,
+                    argc, argv); 	
 	gdk_rgb_init ();
-        orb = oaf_init (argc, argv);
 
         bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
         

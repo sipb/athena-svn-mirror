@@ -132,7 +132,7 @@ nautilus_string_picker_destroy (GtkObject* object)
 	g_free (string_picker->detail);
 
 	/* Chain */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Option menu item callbacks */
@@ -361,4 +361,28 @@ nautilus_string_picker_get_index_for_string (const NautilusStringPicker *string_
 	g_return_val_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker), NAUTILUS_STRING_LIST_NOT_FOUND);
 
 	return nautilus_string_list_get_index_for_string (string_picker->detail->string_list, string);
+}
+
+/**
+ * nautilus_string_picker_clear:
+
+ * @string_picker: A NautilusStringPicker
+ *
+ * Remove all entries from the string picker.
+ */
+void
+nautilus_string_picker_clear (NautilusStringPicker *string_picker)
+{
+	NautilusStringList *empty_list;
+
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+
+	/* Already empty */
+	if (nautilus_string_list_get_length (string_picker->detail->string_list) == 0) {
+		return;
+	}
+
+	empty_list = nautilus_string_list_new (TRUE);
+	nautilus_string_picker_set_string_list (string_picker, empty_list);
+	nautilus_string_list_free (empty_list);
 }

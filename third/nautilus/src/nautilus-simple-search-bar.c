@@ -110,7 +110,7 @@ nautilus_simple_search_bar_destroy (GtkObject *object)
 
 	g_free (bar->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *
@@ -228,7 +228,7 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 	length = strlen ("[file:///]");
 	/* Count total length */
 	for (i = 0; words[i] != NULL; i++) {
-		length += strlen (words[i]) + strlen (NAUTILUS_SEARCH_URI_TEXT_NAME) + strlen (" contains & ");
+		length += strlen (NAUTILUS_SEARCH_URI_TEXT_NAME) + strlen (" contains ") + strlen (words[i]) + strlen (" & ");
 	}
 	fragment = g_new0 (char, length + 1);
 	/* FIXME bugzilla.eazel.com 2513: this should eventually be: sprintf (fragment, "[file%%3A%%2F%%2F%%2F]"); */
