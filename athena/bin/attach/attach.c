@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v $
- *	$Author: jfc $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.7 1990-07-16 07:30:54 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.8 1990-08-01 18:11:37 epeisach Exp $";
 #endif lint
 
 #include "attach.h"
@@ -122,7 +122,7 @@ retry:
 		    return(afs_auth(atp->hesiodname, atp->hostdir));
 	    }
 #endif
-	    if (!print_path)
+	    if (verbose && !print_path)
 		putchar('\n');
 	    /* No error code set on already attached */
 	    free_attachtab();
