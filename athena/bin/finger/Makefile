@@ -3,9 +3,12 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.7 1989-02-22 16:51:28 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.8 1989-10-18 13:21:16 epeisach Exp $
 #	$Author: epeisach $
 #	$Log: not supported by cvs2svn $
+# Revision 1.7  89/02/22  16:51:28  epeisach
+# Install options to strip and set permissions added.
+# 
 # Revision 1.6  87/12/04  11:36:25  shanzer
 # Added -ldes to the list of libriaries..
 # 
@@ -60,3 +63,23 @@ clean:
 
 install:	finger
 	install -c -s -m 755 finger ${DESTDIR}/usr/athena/finger
+
+depend:
+	makedepend ${CFLAGS} ${SRCS}
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+finger.o: finger.c /usr/include/sys/file.h /usr/include/sys/types.h
+finger.o: /usr/include/sys/stat.h /usr/include/utmp.h
+finger.o: /usr/include/sys/signal.h /usr/include/pwd.h /usr/include/stdio.h
+finger.o: /usr/include/lastlog.h /usr/include/ctype.h /usr/include/sys/time.h
+finger.o: /usr/include/sys/time.h /usr/include/sys/socket.h
+finger.o: /usr/include/netinet/in.h /usr/include/netdb.h
+finger.o: /usr/include/hesiod.h /usr/include/zephyr/zephyr.h
+finger.o: /usr/include/zephyr/mit-copyright.h
+finger.o: /usr/include/zephyr/zephyr_err.h /usr/include/zephyr/zephyr_conf.h
+finger.o: /usr/include/errno.h /usr/include/krb.h
+finger.o: /usr/include/mit-copyright.h /usr/include/des.h
+finger.o: /usr/include/des_conf.h
+hespwnam.o: hespwnam.c /usr/include/stdio.h /usr/include/pwd.h
+hespwnam.o: /usr/include/mit-copyright.h
