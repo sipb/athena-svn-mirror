@@ -78,33 +78,26 @@ macrofiles:	/usr/lib/rpm/macros:/usr/lib/rpm/%{_target}/macros:/etc/rpm/macros:/
 EOF
 
 
-## STEP 1: Generate canonical source and patch files
+## STEP 1: Generate canonical source
 
-echo "==== prepare sources and patches"
+echo "==== prepare sources"
 
-rm -rf $destdir/SOURCES/$source_name $destdir/SOURCES/$source_name-orig
+# Copy in the sources.
+rm -rf $destdir/SOURCES/$source_name
 mkdir $destdir/SOURCES/$source_name
-mkdir $destdir/SOURCES/$source_name-orig
 cd $destdir/SOURCES
-
-# Copy them in, twice.
 (cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfp -)
-(cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name-orig; tar xfp -)
 
-# Force all source files to the same timestamp, to prevent third-party
-# build systems from thinking some are out of date with respect to others.
-find $source_name-orig -print0 | xargs -0 touch -t `date +%Y%m%d%H%M.%S`
-
-# Copy the "patches" in.
-if [ -a $sourcedir/packs/build/rpm/patches/$source_name ]; then
-  (cd $sourcedir/packs/build/rpm/patches/$source_name; tar cf - .) | \
-    (cd $source_name; tar xfp -)
-fi
+# Run the prep script, if any.
 if [ -a $sourcedir/packs/build/rpm/prep/$package_name ]; then
     $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name \
       || exit 1
 fi
+
+# Copy in the version script and point do.sh at it.  This is a gross
+# hack; do.sh should take care of this.
 sed -e 's%$source/packs/build/version%version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
+chmod a+x $source_name/do.sh
 cp $sourcedir/packs/build/version $source_name
 
 # Do the `do.sh dist' step
@@ -117,12 +110,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Generate the patch file
-diff -uNr $source_name-orig $source_name > $source_name.patch
-
 # Generate the sources file, and remove what we don't need any more.
-rm -rf $source_name
-mv $source_name-orig $source_name
 (cd $destdir/SOURCES; tar cfz $source_name.tar.gz $source_name )
 rm -rf $source_name
 
@@ -161,10 +149,6 @@ if grep -q Source: $sourcedir/packs/build/rpm/specs/$package_name; then true; el
   echo Source: $source_name.tar.gz >> $destdir/SPECS/$source_name
 fi
 
-if grep -q Patch: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-  echo Patch: $source_name.patch >> $destdir/SPECS/$source_name
-fi
-
 if grep -q Distribution: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
   echo Distribution: Athena $version >> $destdir/SPECS/$source_name
 fi
@@ -181,17 +165,6 @@ if grep -q %prep $sourcedir/packs/build/rpm/specs/$package_name; then true; else
 cat >> $destdir/SPECS/$source_name << EOF
 %prep
 %setup
-%patch -p1
-chmod ugo+x do.sh
-if [ -a mkinstalldirs ]; then
-  chmod ugo+x mkinstalldirs
-fi
-if [ -a config.status ]; then
-  chmod ugo+x config.status
-fi
-if [ -a configure ]; then
-  chmod ugo+x configure
-fi
 
 EOF
 fi
