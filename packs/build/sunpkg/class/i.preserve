@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# If the file already exists, do nothing.  Otherwise, copy it in.
+while read src dest ; do
+  if [ ! -f $dest ]; then
+    cp -p $src $dest || exit 1
+  fi
+done
+
+exit 0
