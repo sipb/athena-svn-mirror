@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.38 1991-04-09 14:03:52 lwvanels Exp $
+ *	$Id: log.c,v 1.39 1991-04-10 22:07:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.38 1991-04-09 14:03:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.39 1991-04-10 22:07:44 lwvanels Exp $";
 #endif
 #endif
 
@@ -537,7 +537,11 @@ dispose_of_log(knuckle)
 	  question->topic, question->owner->user->username);
   fclose(fp);
       
+#ifdef NO_VFORK
+  if ((pid = fork()) == -1) 
+#else
   if ((pid = vfork()) == -1) 
+#endif
     {
       log_error("Can't fork to dispose of log: %m");
       return(ERROR);

@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.13 1991-04-10 10:35:33 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.14 1991-04-10 22:06:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.13 1991-04-10 10:35:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.14 1991-04-10 22:06:27 lwvanels Exp $";
 #endif
 #endif
 
@@ -190,7 +190,7 @@ main (argc, argv)
 /* If we've made it this far, we've got everything we need to ship to
  * discuss.
  */ 
-#if defined(_AIX) || defined(SYSV)
+#ifdef NO_VFORK
 	  retval = fork();
 #else
 	  retval = vfork();

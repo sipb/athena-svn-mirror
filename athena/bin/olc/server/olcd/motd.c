@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.9 1991-04-08 21:08:35 lwvanels Exp $
+ *	$Id: motd.c,v 1.10 1991-04-10 22:09:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.9 1991-04-08 21:08:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.10 1991-04-10 22:09:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -321,7 +321,11 @@ log_motd(username)
 	  username);
   fclose(fp);
       
+#ifdef NO_VFORK
+  if ((pid = fork()) == -1) 
+#else
   if ((pid = vfork()) == -1) 
+#endif
     {
       log_error("Can't fork to dispose of log: %m");
       return;
