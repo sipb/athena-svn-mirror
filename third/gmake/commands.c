@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 #include "dep.h"
@@ -87,7 +88,7 @@ set_file_variables (file)
       for (d = enter_file (".SUFFIXES")->deps; d != 0; d = d->next)
 	{
 	  unsigned int slen = strlen (dep_name (d));
-	  if (len > slen && !strncmp (dep_name (d), name + (len - slen), slen))
+	  if (len > slen && strneq (dep_name (d), name + (len - slen), slen))
 	    {
 	      file->stem = savestring (name, len - slen);
 	      break;
@@ -343,6 +344,7 @@ execute_file_commands (file)
       /* We are all out of commands.
 	 If we have gotten this far, all the previous commands
 	 have run successfully, so we have winning update status.  */
+      set_command_state (file, cs_running);
       file->update_status = 0;
       notice_finished_file (file);
       return;
@@ -379,12 +381,12 @@ fatal_error_signal (sig)
       return;
     }
   remove_intermediates (1);
-  exit (1);
+  exit (EXIT_FAILURE);
 #else /* not __MSDOS__ */
 #ifdef _AMIGA
   remove_intermediates (1);
   if (sig == SIGINT)
-     fputs ("*** Break.\n", stderr);
+     fputs (_("*** Break.\n"), stderr);
 
   exit (10);
 #else /* not Amiga */
@@ -473,13 +475,13 @@ delete_target (file, on_behalf_of)
 #ifndef NO_ARCHIVES
   if (ar_name (file->name))
     {
-      if (ar_member_date (file->name) != file->last_mtime)
+      if (ar_member_date (file->name) != FILE_TIMESTAMP_S (file->last_mtime))
 	{
 	  if (on_behalf_of)
-	    error ("*** [%s] Archive member `%s' may be bogus; not deleted",
+	    error (NILF, _("*** [%s] Archive member `%s' may be bogus; not deleted"),
 		   on_behalf_of, file->name);
 	  else
-	    error ("*** Archive member `%s' may be bogus; not deleted",
+	    error (NILF, _("*** Archive member `%s' may be bogus; not deleted"),
 		   file->name);
 	}
       return;
@@ -488,12 +490,12 @@ delete_target (file, on_behalf_of)
 
   if (stat (file->name, &st) == 0
       && S_ISREG (st.st_mode)
-      && (time_t) st.st_mtime != file->last_mtime)
+      && FILE_TIMESTAMP_STAT_MODTIME (st) != file->last_mtime)
     {
       if (on_behalf_of)
-	error ("*** [%s] Deleting file `%s'", on_behalf_of, file->name);
+	error (NILF, _("*** [%s] Deleting file `%s'"), on_behalf_of, file->name);
       else
-	error ("*** Deleting file `%s'", file->name);
+	error (NILF, _("*** Deleting file `%s'"), file->name);
       if (unlink (file->name) < 0
 	  && errno != ENOENT)	/* It disappeared; so what.  */
 	perror_with_name ("unlink: ", file->name);
@@ -531,12 +533,13 @@ print_commands (cmds)
 {
   register char *s;
 
-  fputs ("#  commands to execute", stdout);
+  fputs (_("#  commands to execute"), stdout);
 
-  if (cmds->filename == 0)
-    puts (" (built-in):");
+  if (cmds->fileinfo.filenm == 0)
+    puts (_(" (built-in):"));
   else
-    printf (" (from `%s', line %u):\n", cmds->filename, cmds->lineno);
+    printf (_(" (from `%s', line %lu):\n"),
+            cmds->fileinfo.filenm, cmds->fileinfo.lineno);
 
   s = cmds->commands;
   while (*s != '\0')

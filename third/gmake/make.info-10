@@ -1,20 +1,20 @@
 This is Info file make.info, produced by Makeinfo version 1.67 from the
 input file make.texinfo.
 
-INFO-DIR-SECTION The GNU make utility
+INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
-* Make: (make.info).               The GNU make utility.
+* Make: (make).            Remake files automatically.
 END-INFO-DIR-ENTRY
 
    This file documents the GNU Make utility, which determines
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.52, last updated 20 May 1998, of `The GNU Make
-Manual', for `make', Version 3.77.
+   This is Edition 0.54, last updated 09 September 1999, of `The GNU
+Make Manual', for `make', Version 3.78.1.
 
-   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97, '98
-Free Software Foundation, Inc.
+   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
+'98, '99         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -66,25 +66,27 @@ Index of Functions, Variables, & Directives
 * *D (automatic variable):               Automatic.
 * *F (automatic variable):               Automatic.
 * + (automatic variable):                Automatic.
-* .DEFAULT <1>:                          Last Resort.
-* .DEFAULT:                              Special Targets.
+* .DEFAULT <1>:                          Special Targets.
+* .DEFAULT:                              Last Resort.
 * .DEFAULT, and empty commands:          Empty Commands.
+* .DELETE_ON_ERROR <1>:                  Special Targets.
 * .DELETE_ON_ERROR:                      Errors.
 * .EXPORT_ALL_VARIABLES <1>:             Variables/Recursion.
 * .EXPORT_ALL_VARIABLES:                 Special Targets.
-* .IGNORE <1>:                           Errors.
-* .IGNORE:                               Special Targets.
+* .IGNORE <1>:                           Special Targets.
+* .IGNORE:                               Errors.
 * .INTERMEDIATE:                         Special Targets.
+* .LIBPATTERNS:                          Libraries/Search.
 * .PHONY <1>:                            Phony Targets.
 * .PHONY:                                Special Targets.
 * .POSIX:                                Options/Recursion.
-* .PRECIOUS <1>:                         Interrupts.
-* .PRECIOUS:                             Special Targets.
+* .PRECIOUS <1>:                         Special Targets.
+* .PRECIOUS:                             Interrupts.
 * .SECONDARY:                            Special Targets.
-* .SILENT <1>:                           Echoing.
-* .SILENT:                               Special Targets.
-* .SUFFIXES <1>:                         Special Targets.
-* .SUFFIXES:                             Suffix Rules.
+* .SILENT <1>:                           Special Targets.
+* .SILENT:                               Echoing.
+* .SUFFIXES <1>:                         Suffix Rules.
+* .SUFFIXES:                             Special Targets.
 * /usr/gnu/include:                      Include.
 * /usr/include:                          Include.
 * /usr/local/include:                    Include.
@@ -107,6 +109,7 @@ Index of Functions, Variables, & Directives
 * AS:                                    Implicit Variables.
 * ASFLAGS:                               Implicit Variables.
 * basename:                              File Name Functions.
+* call:                                  Call Function.
 * CC:                                    Implicit Variables.
 * CFLAGS:                                Implicit Variables.
 * CO:                                    Implicit Variables.
@@ -123,6 +126,7 @@ Index of Functions, Variables, & Directives
 * else:                                  Conditional Syntax.
 * endef:                                 Defining.
 * endif:                                 Conditional Syntax.
+* error:                                 Make Control Functions.
 * export:                                Variables/Recursion.
 * FC:                                    Implicit Variables.
 * FFLAGS:                                Implicit Variables.
@@ -135,6 +139,7 @@ Index of Functions, Variables, & Directives
 * GFLAGS:                                Implicit Variables.
 * GNUmakefile:                           Makefile Names.
 * GPATH:                                 Search Algorithm.
+* if:                                    If Function.
 * ifdef:                                 Conditional Syntax.
 * ifeq:                                  Conditional Syntax.
 * ifndef:                                Conditional Syntax.
@@ -184,9 +189,10 @@ Index of Functions, Variables, & Directives
 * VPATH:                                 General Search.
 * vpath:                                 Directory Search.
 * VPATH:                                 Directory Search.
+* warning:                               Make Control Functions.
 * WEAVE:                                 Implicit Variables.
-* wildcard <1>:                          File Name Functions.
-* wildcard:                              Wildcard Function.
+* wildcard <1>:                          Wildcard Function.
+* wildcard:                              File Name Functions.
 * word:                                  File Name Functions.
 * wordlist:                              File Name Functions.
 * words:                                 File Name Functions.

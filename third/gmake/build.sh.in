@@ -17,7 +17,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with GNU Make; see the file COPYING.  If not, write to
-# the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+# the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
 
 # See Makefile.in for comments describing these variables.
 
@@ -31,6 +32,7 @@ ALLOCA='@ALLOCA@'
 LOADLIBES='@LIBS@'
 extras='@LIBOBJS@'
 REMOTE='@REMOTE@'
+GLOBLIB='@GLOBLIB@'
 
 # Common prefix for machine-independent installed files.
 prefix='@prefix@'
@@ -45,13 +47,17 @@ includedir=${prefix}/include
 set -e
 
 # These are all the objects we need to link together.
-objs="main.o commands.o job.o dir.o file.o misc.o read.o remake.o rule.o implicit.o default.o variable.o expand.o function.o vpath.o version.o ar.o arscan.o signame.o getopt.o getopt1.o glob/fnmatch.o glob/glob.o remote-${REMOTE}.o ${extras} ${ALLOCA}"
+objs="main.o commands.o job.o dir.o file.o misc.o read.o remake.o rule.o implicit.o default.o variable.o expand.o function.o vpath.o version.o ar.o arscan.o signame.o getopt.o getopt1.o remote-${REMOTE}.o ${extras} ${ALLOCA}"
+
+if [ x"$GLOBLIB" != x ]; then
+  objs="$objs glob/fnmatch.o glob/glob.o"
+fi
 
 # Compile the source files into those objects.
 for file in `echo ${objs} | sed 's/\.o/.c/g'`; do
   echo compiling ${file}...
   $CC $defines $CPPFLAGS $CFLAGS \
-      -c -I. -I${srcdir} -I${srcdir}/glob ${srcdir}/$file
+      -c -I. -I${srcdir} ${srcdir}/$file
 done
 
 # The object files were actually all put in the current directory.

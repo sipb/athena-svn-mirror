@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 #include "filedef.h"
@@ -48,7 +49,7 @@ static struct vpath *general_vpath;
 
 static struct vpath *gpaths;
 
-static int selective_vpath_search PARAMS ((struct vpath *path, char **file, time_t *mtime_ptr));
+static int selective_vpath_search PARAMS ((struct vpath *path, char **file, FILE_TIMESTAMP *mtime_ptr));
 
 /* Reverse the chain of selective VPATH lists so they
    will be searched in the order given in the makefiles
@@ -168,7 +169,7 @@ construct_vpath_list (pattern, dirpath)
 
   if (pattern != 0)
     {
-      pattern = savestring (pattern, strlen (pattern));
+      pattern = xstrdup (pattern);
       percent = find_percent (pattern);
     }
 
@@ -323,7 +324,7 @@ gpath_search (file, len)
 
   if (gpaths && (len <= gpaths->maxlen))
     for (gp = gpaths->searchpath; *gp != NULL; ++gp)
-      if (!strncmp(*gp, file, len) && (*gp)[len] == '\0')
+      if (strneq (*gp, file, len) && (*gp)[len] == '\0')
         return 1;
 
   return 0;
@@ -338,7 +339,7 @@ gpath_search (file, len)
 int
 vpath_search (file, mtime_ptr)
      char **file;
-     time_t *mtime_ptr;
+     FILE_TIMESTAMP *mtime_ptr;
 {
   register struct vpath *v;
 
@@ -376,7 +377,7 @@ static int
 selective_vpath_search (path, file, mtime_ptr)
      struct vpath *path;
      char **file;
-     time_t *mtime_ptr;
+     FILE_TIMESTAMP *mtime_ptr;
 {
   int not_target;
   char *name, *n;
@@ -524,7 +525,9 @@ selective_vpath_search (path, file, mtime_ptr)
 		/* Store the modtime into *MTIME_PTR for the caller.
 		   If we have had no need to stat the file here,
 		   we record a zero modtime to indicate this.  */
-		*mtime_ptr = exists_in_cache ? st.st_mtime : (time_t) 0;
+		*mtime_ptr = (exists_in_cache
+			      ? FILE_TIMESTAMP_STAT_MODTIME (st)
+			      : (FILE_TIMESTAMP) 0);
 
 	      free (name);
 	      return 1;
@@ -546,7 +549,7 @@ print_vpath_data_base ()
   register unsigned int nvpaths;
   register struct vpath *v;
 
-  puts ("\n# VPATH Search Paths\n");
+  puts (_("\n# VPATH Search Paths\n"));
 
   nvpaths = 0;
   for (v = vpaths; v != 0; v = v->next)
@@ -563,18 +566,18 @@ print_vpath_data_base ()
     }
 
   if (vpaths == 0)
-    puts ("# No `vpath' search paths.");
+    puts (_("# No `vpath' search paths."));
   else
-    printf ("\n# %u `vpath' search paths.\n", nvpaths);
+    printf (_("\n# %u `vpath' search paths.\n"), nvpaths);
 
   if (general_vpath == 0)
-    puts ("\n# No general (`VPATH' variable) search path.");
+    puts (_("\n# No general (`VPATH' variable) search path."));
   else
     {
       register char **path = general_vpath->searchpath;
       register unsigned int i;
 
-      fputs ("\n# General (`VPATH' variable) search path:\n# ", stdout);
+      fputs (_("\n# General (`VPATH' variable) search path:\n# "), stdout);
 
       for (i = 0; path[i] != 0; ++i)
 	printf ("%s%c", path[i],

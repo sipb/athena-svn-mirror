@@ -16,16 +16,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with GNU Make; see the file COPYING.  If not, write to
-# the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+# the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
 
 #
 #	Makefile for GNU Make
 #
 
 # Ultrix 2.2 make doesn't expand the value of VPATH.
-VPATH = /make-3.74/
+VPATH = /make-3.78.1/
 # This must repeat the value, because configure will remove `VPATH = .'.
-srcdir = /make-3.74/
+srcdir = /make-3.78.1/
 
 CC = sc
 RM = delete
@@ -234,17 +235,17 @@ implicit.o: implicit.c make.h config.h signame.h rule.h dep.h filedef.h
 job.o: job.c make.h config.h signame.h job.h filedef.h commands.h \
 	variable.h
 main.o: main.c make.h config.h signame.h dep.h filedef.h variable.h \
-	job.h commands.h getopt.h
+	job.h commands.h rule.h getopt.h
 misc.o: misc.c make.h config.h signame.h dep.h
-read.o: read.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h rule.h glob/glob.h
+read.o: read.c make.h config.h signame.h glob/glob.h dep.h filedef.h \
+	job.h commands.h variable.h rule.h
 remake.o: remake.c make.h config.h signame.h filedef.h job.h commands.h \
-	dep.h
+	dep.h variable.h
 remote-stub.o: remote-stub.c make.h config.h signame.h filedef.h job.h \
 	commands.h
 rule.o: rule.c make.h config.h signame.h dep.h filedef.h job.h \
 	commands.h variable.h rule.h
-signame.o: signame.c config.h signame.h
+signame.o: signame.c make.h config.h signame.h
 variable.o: variable.c make.h config.h signame.h dep.h filedef.h job.h \
 	commands.h variable.h
 version.o: version.c config.h

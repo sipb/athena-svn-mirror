@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 #include "dep.h"
@@ -76,7 +77,7 @@ define_variable_in_set (name, length, value, origin, recursive, set)
 
   for (v = set->table[hashval]; v != 0; v = v->next)
     if (*v->name == *name
-	&& !strncmp (v->name + 1, name + 1, length - 1)
+	&& strneq (v->name + 1, name + 1, length - 1)
 	&& v->name[length] == '\0')
       break;
 
@@ -97,7 +98,7 @@ define_variable_in_set (name, length, value, origin, recursive, set)
 	{
 	  if (v->value != 0)
 	    free (v->value);
-	  v->value = savestring (value, strlen (value));
+	  v->value = xstrdup (value);
 	  v->origin = origin;
 	  v->recursive = recursive;
 	}
@@ -108,7 +109,7 @@ define_variable_in_set (name, length, value, origin, recursive, set)
 
   v = (struct variable *) xmalloc (sizeof (struct variable));
   v->name = savestring (name, length);
-  v->value = savestring (value, strlen (value));
+  v->value = xstrdup (value);
   v->origin = origin;
   v->recursive = recursive;
   v->expanding = 0;
@@ -175,7 +176,7 @@ lookup_variable (name, length)
 
       for (v = set->table[hashval]; v != 0; v = v->next)
 	if (*v->name == *name
-	    && !strncmp (v->name + 1, name + 1, length - 1)
+	    && strneq (v->name + 1, name + 1, length - 1)
 	    && v->name[length] == 0)
 	  return v;
     }
@@ -204,7 +205,7 @@ lookup_variable_in_set (name, length, set)
 
   for (v = set->table[hash]; v != 0; v = v->next)
     if (*v->name == *name
-        && !strncmp (v->name + 1, name + 1, length - 1)
+        && strneq (v->name + 1, name + 1, length - 1)
         && v->name[length] == 0)
       return v;
 
@@ -265,6 +266,8 @@ pop_variable_scope ()
 	  next = v->next;
 
 	  free (v->name);
+	  if (v->value)
+	    free (v->value);
 	  free ((char *) v);
 	}
     }
@@ -443,7 +446,7 @@ define_automatic_variables ()
     {
       free (v->value);
       v->origin = o_file;
-      v->value = savestring (default_shell, strlen (default_shell));
+      v->value = xstrdup (default_shell);
     }
 #endif
 
@@ -676,9 +679,8 @@ target_environment (file)
    returned.  */
 
 struct variable *
-try_variable_definition (filename, lineno, line, origin)
-     char *filename;
-     unsigned int lineno;
+try_variable_definition (flocp, line, origin)
+     const struct floc *flocp;
      char *line;
      enum variable_origin origin;
 {
@@ -688,7 +690,7 @@ try_variable_definition (filename, lineno, line, origin)
   register char *end;
   enum { f_bogus,
          f_simple, f_recursive, f_append, f_conditional } flavor = f_bogus;
-  char *name, *expanded_name, *value;
+  char *name, *expanded_name, *value, *alloc_value=NULL;
   struct variable *v;
 
   while (1)
@@ -766,7 +768,7 @@ try_variable_definition (filename, lineno, line, origin)
   expanded_name = allocated_variable_expand (name);
 
   if (expanded_name[0] == '\0')
-    makefile_fatal (filename, lineno, "empty variable name");
+    fatal (flocp, _("empty variable name"));
 
   /* Calculate the variable's new value in VALUE.  */
 
@@ -776,8 +778,11 @@ try_variable_definition (filename, lineno, line, origin)
       /* Should not be possible.  */
       abort ();
     case f_simple:
-      /* A simple variable definition "var := value".  Expand the value.  */
-      value = variable_expand (p);
+      /* A simple variable definition "var := value".  Expand the value.
+         We have to allocate memory since otherwise it'll clobber the
+	 variable buffer, and we may still need that if we're looking at a
+         target-specific variable.  */
+      value = alloc_value = allocated_variable_expand (p);
       break;
     case f_conditional:
       /* A conditional variable definition "var ?= value".
@@ -788,6 +793,7 @@ try_variable_definition (filename, lineno, line, origin)
           free(expanded_name);
           return v;
         }
+      flavor = f_recursive;
       /* FALLTHROUGH */
     case f_recursive:
       /* A recursive variable definition "var = value".
@@ -818,8 +824,10 @@ try_variable_definition (filename, lineno, line, origin)
 	  else
 	    /* The previous definition of the variable was simple.
 	       The new value comes from the old value, which was expanded
-	       when it was set; and from the expanded new value.  */
-	    p = variable_expand (p);
+	       when it was set; and from the expanded new value.  Allocate
+               memory for the expansion as we may still need the rest of the
+               buffer if we're looking at a target-specific variable.  */
+	    p = alloc_value = allocated_variable_expand (p);
 
 	  oldlen = strlen (v->value);
 	  newlen = strlen (p);
@@ -844,7 +852,7 @@ try_variable_definition (filename, lineno, line, origin)
      you have bash.exe installed as d:/unix/bash.exe, and d:/unix is on
      your $PATH, then SHELL=/usr/local/bin/bash will have the effect of
      defining SHELL to be "d:/unix/bash.exe".  */
-  if (origin == o_file
+  if ((origin == o_file || origin == o_override)
       && strcmp (expanded_name, "SHELL") == 0)
     {
       char shellpath[PATH_MAX];
@@ -912,7 +920,7 @@ try_variable_definition (filename, lineno, line, origin)
   else
 #endif /* __MSDOS__ */
 #ifdef WINDOWS32
-  if (origin == o_file
+  if ((origin == o_file || origin == o_override)
       && strcmp (expanded_name, "SHELL") == 0) {
     extern char* default_shell;
 
@@ -932,6 +940,8 @@ try_variable_definition (filename, lineno, line, origin)
   v = define_variable (expanded_name, strlen (expanded_name),
 		       value, origin, flavor == f_recursive);
 
+  if (alloc_value)
+    free (alloc_value);
   free (expanded_name);
 
   return v;
@@ -944,7 +954,7 @@ print_variable (v, prefix)
      register struct variable *v;
      char *prefix;
 {
-  char *origin;
+  const char *origin;
 
   switch (v->origin)
     {
@@ -972,7 +982,6 @@ print_variable (v, prefix)
     case o_invalid:
     default:
       abort ();
-      break;
     }
   printf ("# %s\n", origin);
 
@@ -1035,21 +1044,21 @@ print_variable_set (set, prefix)
     }
 
   if (nvariables == 0)
-    puts ("# No variables.");
+    puts (_("# No variables."));
   else
     {
-      printf ("# %u variables in %u hash buckets.\n",
+      printf (_("# %u variables in %u hash buckets.\n"),
 	      nvariables, set->buckets);
 #ifndef	NO_FLOAT
-      printf ("# average of %.1f variables per bucket, \
-max %u in one bucket.\n",
+      printf (_("# average of %.1f variables per bucket, \
+max %u in one bucket.\n"),
 	      (double) nvariables / (double) set->buckets,
 	      per_bucket);
 #else
       {
 	int f = (nvariables * 1000 + 5) / set->buckets;
-	printf ("# average of %d.%d variables per bucket, \
-max %u in one bucket.\n",
+	printf (_("# average of %d.%d variables per bucket, \
+max %u in one bucket.\n"),
 	      f/10, f%10,
 	      per_bucket);
       }
@@ -1063,7 +1072,7 @@ max %u in one bucket.\n",
 void
 print_variable_data_base ()
 {
-  puts ("\n# Variables\n");
+  puts (_("\n# Variables\n"));
 
   print_variable_set (&global_variable_set, "");
 }

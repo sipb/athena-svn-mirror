@@ -1,11 +1,72 @@
 GNU make NEWS                                               -*-indented-text-*-
   History of user-visible changes.
-  19 May 1998
+  17 Sep 1999
 
-Copyright (C) 1992,1993,1994,1995,1996,1997,1998 Free Software Foundation, Inc.
+Copyright (C) 1992,93,94,95,96,97,98,1999 Free Software Foundation, Inc.
 See the end for copying conditions.
 
+All changes mentioned here are more fully described in the GNU make
+manual, which is contained in this distribution as the file make.texinfo.
+
 Please send GNU make bug reports to bug-make@gnu.org.
+See the README file and the GNU make manual for details on sending bug
+reports.
+
+Version 3.78
+
+* Two new functions, $(error ...) and $(warning ...) are available.  The
+  former will cause make to fail and exit immediately upon expansion of
+  the function, with the text provided as the error message.  The latter
+  causes the text provided to be printed as a warning message, but make
+  proceeds normally.
+
+* A new function $(call ...) is available.  This allows users to create
+  their own parameterized macros and invoke them later.  Original
+  implementation of this function was provided by Han-Wen Nienhuys
+  <hanwen@cs.uu.nl>.
+
+* A new function $(if ...) is available.  It provides if-then-else
+  capabilities in a builtin function.  Original implementation of this
+  function was provided by Han-Wen Nienhuys <hanwen@cs.uu.nl>.
+
+* Make defines a new variable, .LIBPATTERNS.  This variable controls how
+  library dependency expansion (dependencies like ``-lfoo'') is performed.
+
+* Make accepts CRLF sequences as well as traditional LF, for
+  compatibility with makefiles created on other operating systems.
+
+* Make accepts a new option: -R, or --no-builtin-variables.  This option
+  disables the definition of the rule-specific builtin variables (CC,
+  LD, AR, etc.).  Specifying this option forces -r (--no-builtin-rules)
+  as well.
+
+* A "job server" feature, suggested by Howard Chu <hyc@highlandsun.com>.
+
+  On systems that support POSIX pipe(2) semantics, GNU make can now pass
+  -jN options to submakes rather than forcing them all to use -j1.  The
+  top make and all its sub-make processes use a pipe to communicate with
+  each other to ensure that no more than N jobs are started across all
+  makes.  To get the old behavior of -j back, you can configure make
+  with the --disable-job-server option.
+
+* The confusing term "dependency" has been replaced by the more accurate
+  and standard term "prerequisite", both in the manual and in all GNU make
+  output.
+
+* GNU make supports the "big archive" library format introduced in AIX 4.3.
+
+* GNU make supports large files on AIX, HP-UX, and IRIX.  These changes
+  were provided by Paul Eggert <eggert@twinsun.com>.  (Large file
+  support for Solaris and Linux was introduced in 3.77, but the
+  configuration had issues: these have also been resolved).
+
+* The Windows 95/98/NT (W32) version of GNU make now has native support
+  for the Cygnus Cygwin release B20.1 shell (bash).
+
+* The GNU make regression test suite, long available separately "under
+  the table", has been integrated into the release.  You can invoke it
+  by running "make check" in the distribution.  Note that it requires
+  Perl (either Perl 4 or Perl 5) to run.
 
 Version 3.77
 
@@ -659,18 +720,11 @@ Version 3.05
 ----------------------------------------------------------------------
 Copyright information:
 
-Copyright (C) 1992, 1993, 1994, 1995, 1996 Free Software Foundation, Inc.
-
    Permission is granted to anyone to make or distribute verbatim copies
    of this document as received, in any medium, provided that the
-   copyright notice and this permission notice are preserved,
-   thus giving the recipient permission to redistribute in turn.
+   copyright notice and this permission notice are preserved, thus
+   giving the recipient permission to redistribute in turn.
 
-   Permission is granted to distribute modified versions
-   of this document, or of portions of it,
-   under the above conditions, provided also that they
-   carry prominent notices stating who last changed them.
-
-Local variables:
-version-control: never
-end:
+   Permission is granted to distribute modified versions of this
+   document, or of portions of it, under the above conditions, provided
+   also that they carry prominent notices stating who last changed them.

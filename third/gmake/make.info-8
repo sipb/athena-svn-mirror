@@ -1,20 +1,20 @@
 This is Info file make.info, produced by Makeinfo version 1.67 from the
 input file make.texinfo.
 
-INFO-DIR-SECTION The GNU make utility
+INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
-* Make: (make.info).               The GNU make utility.
+* Make: (make).            Remake files automatically.
 END-INFO-DIR-ENTRY
 
    This file documents the GNU Make utility, which determines
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.52, last updated 20 May 1998, of `The GNU Make
-Manual', for `make', Version 3.77.
+   This is Edition 0.54, last updated 09 September 1999, of `The GNU
+Make Manual', for `make', Version 3.78.1.
 
-   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97, '98
-Free Software Foundation, Inc.
+   Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
+'98, '99         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -29,6 +29,410 @@ permission notice identical to this one.
 manual into another language, under the above conditions for modified
 versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
+
+
+File: make.info,  Node: Install Command Categories,  Prev: Standard Targets,  Up: Makefile Conventions
+
+Install Command Categories
+==========================
+
+   When writing the `install' target, you must classify all the
+commands into three categories: normal ones, "pre-installation"
+commands and "post-installation" commands.
+
+   Normal commands move files into their proper places, and set their
+modes.  They may not alter any files except the ones that come entirely
+from the package they belong to.
+
+   Pre-installation and post-installation commands may alter other
+files; in particular, they can edit global configuration files or data
+bases.
+
+   Pre-installation commands are typically executed before the normal
+commands, and post-installation commands are typically run after the
+normal commands.
+
+   The most common use for a post-installation command is to run
+`install-info'.  This cannot be done with a normal command, since it
+alters a file (the Info directory) which does not come entirely and
+solely from the package being installed.  It is a post-installation
+command because it needs to be done after the normal command which
+installs the package's Info files.
+
+   Most programs don't need any pre-installation commands, but we have
+the feature just in case it is needed.
+
+   To classify the commands in the `install' rule into these three
+categories, insert "category lines" among them.  A category line
+specifies the category for the commands that follow.
+
+   A category line consists of a tab and a reference to a special Make
+variable, plus an optional comment at the end.  There are three
+variables you can use, one for each category; the variable name
+specifies the category.  Category lines are no-ops in ordinary execution
+because these three Make variables are normally undefined (and you
+*should not* define them in the makefile).
+
+   Here are the three possible category lines, each with a comment that
+explains what it means:
+
+             $(PRE_INSTALL)     # Pre-install commands follow.
+             $(POST_INSTALL)    # Post-install commands follow.
+             $(NORMAL_INSTALL)  # Normal commands follow.
+
+   If you don't use a category line at the beginning of the `install'
+rule, all the commands are classified as normal until the first category
+line.  If you don't use any category lines, all the commands are
+classified as normal.
+
+   These are the category lines for `uninstall':
+
+             $(PRE_UNINSTALL)     # Pre-uninstall commands follow.
+             $(POST_UNINSTALL)    # Post-uninstall commands follow.
+             $(NORMAL_UNINSTALL)  # Normal commands follow.
+
+   Typically, a pre-uninstall command would be used for deleting entries
+from the Info directory.
+
+   If the `install' or `uninstall' target has any dependencies which
+act as subroutines of installation, then you should start *each*
+dependency's commands with a category line, and start the main target's
+commands with a category line also.  This way, you can ensure that each
+command is placed in the right category regardless of which of the
+dependencies actually run.
+
+   Pre-installation and post-installation commands should not run any
+programs except for these:
+
+     [ basename bash cat chgrp chmod chown cmp cp dd diff echo
+     egrep expand expr false fgrep find getopt grep gunzip gzip
+     hostname install install-info kill ldconfig ln ls md5sum
+     mkdir mkfifo mknod mv printenv pwd rm rmdir sed sort tee
+     test touch true uname xargs yes
+
+   The reason for distinguishing the commands in this way is for the
+sake of making binary packages.  Typically a binary package contains
+all the executables and other files that need to be installed, and has
+its own method of installing them--so it does not need to run the normal
+installation commands.  But installing the binary package does need to
+execute the pre-installation and post-installation commands.
+
+   Programs to build binary packages work by extracting the
+pre-installation and post-installation commands.  Here is one way of
+extracting the pre-installation commands:
+
+     make -n install -o all \
+           PRE_INSTALL=pre-install \
+           POST_INSTALL=post-install \
+           NORMAL_INSTALL=normal-install \
+       | gawk -f pre-install.awk
+
+where the file `pre-install.awk' could contain this:
+
+     $0 ~ /^\t[ \t]*(normal_install|post_install)[ \t]*$/ {on = 0}
+     on {print $0}
+     $0 ~ /^\t[ \t]*pre_install[ \t]*$/ {on = 1}
+
+   The resulting file of pre-installation commands is executed as a
+shell script as part of installing the binary package.
+
+
+File: make.info,  Node: Quick Reference,  Next: Make Errors,  Prev: Makefile Conventions,  Up: Top
+
+Quick Reference
+***************
+
+   This appendix summarizes the directives, text manipulation functions,
+and special variables which GNU `make' understands.  *Note Special
+Targets::, *Note Catalogue of Implicit Rules: Catalogue of Rules, and
+*Note Summary of Options: Options Summary, for other summaries.
+
+   Here is a summary of the directives GNU `make' recognizes:
+
+`define VARIABLE'
+`endef'
+     Define a multi-line, recursively-expanded variable.
+     *Note Sequences::.
+
+`ifdef VARIABLE'
+`ifndef VARIABLE'
+`ifeq (A,B)'
+`ifeq "A" "B"'
+`ifeq 'A' 'B''
+`ifneq (A,B)'
+`ifneq "A" "B"'
+`ifneq 'A' 'B''
+`else'
+`endif'
+     Conditionally evaluate part of the makefile.
+     *Note Conditionals::.
+
+`include FILE'
+`-include FILE'
+`sinclude FILE'
+     Include another makefile.
+     *Note Including Other Makefiles: Include.
+
+`override VARIABLE = VALUE'
+`override VARIABLE := VALUE'
+`override VARIABLE += VALUE'
+`override VARIABLE ?= VALUE'
+`override define VARIABLE'
+`endef'
+     Define a variable, overriding any previous definition, even one
+     from the command line.
+     *Note The `override' Directive: Override Directive.
+
+`export'
+     Tell `make' to export all variables to child processes by default.
+     *Note Communicating Variables to a Sub-`make': Variables/Recursion.
+
+`export VARIABLE'
+`export VARIABLE = VALUE'
+`export VARIABLE := VALUE'
+`export VARIABLE += VALUE'
+`export VARIABLE ?= VALUE'
+`unexport VARIABLE'
+     Tell `make' whether or not to export a particular variable to child
+     processes.
+     *Note Communicating Variables to a Sub-`make': Variables/Recursion.
+
+`vpath PATTERN PATH'
+     Specify a search path for files matching a `%' pattern.
+     *Note The `vpath' Directive: Selective Search.
+
+`vpath PATTERN'
+     Remove all search paths previously specified for PATTERN.
+
+`vpath'
+     Remove all search paths previously specified in any `vpath'
+     directive.
+
+   Here is a summary of the text manipulation functions (*note
+Functions::.):
+
+`$(subst FROM,TO,TEXT)'
+     Replace FROM with TO in TEXT.
+     *Note Functions for String Substitution and Analysis: Text
+     Functions.
+
+`$(patsubst PATTERN,REPLACEMENT,TEXT)'
+     Replace words matching PATTERN with REPLACEMENT in TEXT.
+     *Note Functions for String Substitution and Analysis: Text
+     Functions.
+
+`$(strip STRING)'
+     Remove excess whitespace characters from STRING.
+     *Note Functions for String Substitution and Analysis: Text
+     Functions.
+
+`$(findstring FIND,TEXT)'
+     Locate FIND in TEXT.
+     *Note Functions for String Substitution and Analysis: Text
+     Functions.
+
+`$(filter PATTERN...,TEXT)'
+     Select words in TEXT that match one of the PATTERN words.
+     *Note Functions for String Substitution and Analysis: Text
+     Functions.
+
+`$(filter-out PATTERN...,TEXT)'
+     Select words in TEXT that *do not* match any of the PATTERN words.
+     *Note Functions for String Substitution and Analysis: Text
+     Functions.
+
+`$(sort LIST)'
+     Sort the words in LIST lexicographically, removing duplicates.
+     *Note Functions for String Substitution and Analysis: Text
+     Functions.
+
+`$(dir NAMES...)'
+     Extract the directory part of each file name.
+     *Note Functions for File Names: File Name Functions.
+
+`$(notdir NAMES...)'
+     Extract the non-directory part of each file name.
+     *Note Functions for File Names: File Name Functions.
+
+`$(suffix NAMES...)'
+     Extract the suffix (the last `.' and following characters) of each
+     file name.
+     *Note Functions for File Names: File Name Functions.
+
+`$(basename NAMES...)'
+     Extract the base name (name without suffix) of each file name.
+     *Note Functions for File Names: File Name Functions.
+
+`$(addsuffix SUFFIX,NAMES...)'
+     Append SUFFIX to each word in NAMES.
+     *Note Functions for File Names: File Name Functions.
+
+`$(addprefix PREFIX,NAMES...)'
+     Prepend PREFIX to each word in NAMES.
+     *Note Functions for File Names: File Name Functions.
+
+`$(join LIST1,LIST2)'
+     Join two parallel lists of words.
+     *Note Functions for File Names: File Name Functions.
+
+`$(word N,TEXT)'
+     Extract the Nth word (one-origin) of TEXT.
+     *Note Functions for File Names: File Name Functions.
+
+`$(words TEXT)'
+     Count the number of words in TEXT.
+     *Note Functions for File Names: File Name Functions.
+
+`$(wordlist S,E,TEXT)'
+     Returns the list of words in TEXT from S to E.
+     *Note Functions for File Names: File Name Functions.
+
+`$(firstword NAMES...)'
+     Extract the first word of NAMES.
+     *Note Functions for File Names: File Name Functions.
+
+`$(wildcard PATTERN...)'
+     Find file names matching a shell file name pattern (*not* a `%'
+     pattern).
+     *Note The Function `wildcard': Wildcard Function.
+
+`$(error TEXT...)'
+     When this function is evaluated, `make' generates a fatal error
+     with the message TEXT.
+     *Note Functions That Control Make: Make Control Functions.
+
+`$(warning TEXT...)'
+     When this function is evaluated, `make' generates a warning with
+     the message TEXT.
+     *Note Functions That Control Make: Make Control Functions.
+
+`$(shell COMMAND)'
+     Execute a shell command and return its output.
+     *Note The `shell' Function: Shell Function.
+
+`$(origin VARIABLE)'
+     Return a string describing how the `make' variable VARIABLE was
+     defined.
+     *Note The `origin' Function: Origin Function.
+
+`$(foreach VAR,WORDS,TEXT)'
+     Evaluate TEXT with VAR bound to each word in WORDS, and
+     concatenate the results.
+     *Note The `foreach' Function: Foreach Function.
+
+`$(call VAR,PARAM,...)'
+     Evaluate the variable VAR replacing any references to `$(1)',
+     `$(2)' with the first, second, etc. PARAM values.
+     *Note The `call' Function: Call Function.
+
+   Here is a summary of the automatic variables.  *Note Automatic
+Variables: Automatic, for full information.
+
+`$@'
+     The file name of the target.
+
+`$%'
+     The target member name, when the target is an archive member.
+
+`$<'
+     The name of the first prerequisite.
+
+`$?'
+     The names of all the prerequisites that are newer than the target,
+     with spaces between them.  For prerequisites which are archive
+     members, only the member named is used (*note Archives::.).
+
+`$^'
+`$+'
+     The names of all the prerequisites, with spaces between them.  For
+     prerequisites which are archive members, only the member named is
+     used (*note Archives::.).  The value of `$^' omits duplicate
+     prerequisites, while `$+' retains them and preserves their order.
+
+`$*'
+     The stem with which an implicit rule matches (*note How Patterns
+     Match: Pattern Match.).
+
+`$(@D)'
+`$(@F)'
+     The directory part and the file-within-directory part of `$@'.
+
+`$(*D)'
+`$(*F)'
+     The directory part and the file-within-directory part of `$*'.
+
+`$(%D)'
+`$(%F)'
+     The directory part and the file-within-directory part of `$%'.
+
+`$(<D)'
+`$(<F)'
+     The directory part and the file-within-directory part of `$<'.
+
+`$(^D)'
+`$(^F)'
+     The directory part and the file-within-directory part of `$^'.
+
+`$(+D)'
+`$(+F)'
+     The directory part and the file-within-directory part of `$+'.
+
+`$(?D)'
+`$(?F)'
+     The directory part and the file-within-directory part of `$?'.
+
+   These variables are used specially by GNU `make':
+
+`MAKEFILES'
+     Makefiles to be read on every invocation of `make'.
+     *Note The Variable `MAKEFILES': MAKEFILES Variable.
+
+`VPATH'
+     Directory search path for files not found in the current directory.
+     *Note `VPATH' Search Path for All Prerequisites: General Search.
+
+`SHELL'
+     The name of the system default command interpreter, usually
+     `/bin/sh'.  You can set `SHELL' in the makefile to change the
+     shell used to run commands.  *Note Command Execution: Execution.
+
+`MAKESHELL'
+     On MS-DOS only, the name of the command interpreter that is to be
+     used by `make'. This value takes precedence over the value of
+     `SHELL'.  *Note MAKESHELL variable: Execution.
+
+`MAKE'
+     The name with which `make' was invoked.  Using this variable in
+     commands has special meaning.  *Note How the `MAKE' Variable
+     Works: MAKE Variable.
+
+`MAKELEVEL'
+     The number of levels of recursion (sub-`make's).
+     *Note Variables/Recursion::.
+
+`MAKEFLAGS'
+     The flags given to `make'.  You can set this in the environment or
+     a makefile to set flags.
+     *Note Communicating Options to a Sub-`make': Options/Recursion.
+
+`MAKECMDGOALS'
+     The targets given to `make' on the command line.  Setting this
+     variable has no effect on the operation of `make'.
+     *Note Arguments to Specify the Goals: Goals.
+
+`CURDIR'
+     Set to the pathname of the current working directory (after all
+     `-C' options are processed, if any).  Setting this variable has no
+     effect on the operation of `make'.
+     *Note Recursive Use of `make': Recursion.
+
+`SUFFIXES'
+     The default list of suffixes before `make' reads any makefiles.
+
+`.LIBPATTERNS'
+     Defines the naming of the libraries `make' searches for, and their
+     order.
+     *Note Directory Search for Link Libraries: Libraries/Search.
 
 
 File: make.info,  Node: Make Errors,  Next: Complex Makefile,  Prev: Quick Reference,  Up: Top
@@ -55,23 +459,27 @@ the file and linenumber containing the problem.
      program that `make' invoked as part of a command script returned a
      non-0 error code (`Error NN'), which `make' interprets as failure,
      or it exited in some other abnormal fashion (with a signal of some
-     type).
+     type).  *Note Errors in Commands: Errors.
 
      If no `***' is attached to the message, then the subprocess failed
      but the rule in the makefile was prefixed with the `-' special
      character, so `make' ignored the error.
 
 `missing separator.  Stop.'
-     This is `make''s generic "Huh?" error message.  It means that
-     `make' was completely unsuccessful at parsing this line of your
-     makefile.  It basically means "syntax error".
+`missing separator (did you mean TAB instead of 8 spaces?).  Stop.'
+     This means that `make' could not understand much of anything about
+     the command line it just read.  GNU `make' looks for various kinds
+     of separators (`:', `=', TAB characters, etc.) to help it decide
+     what kind of commandline it's seeing.  This means it couldn't find
+     a valid one.
 
      One of the most common reasons for this message is that you (or
      perhaps your oh-so-helpful editor, as is the case with many
      MS-Windows editors) have attempted to indent your command scripts
-     with spaces instead of a TAB character.  Remember that every line
+     with spaces instead of a TAB character.  In this case, `make' will
+     use the second form of the error above.  Remember that every line
      in the command script must begin with a TAB character.  Eight
-     spaces do not count.
+     spaces do not count.  *Note Rule Syntax::.
 
 `commands commence before first target.  Stop.'
 `missing rule before commands.  Stop.'
@@ -82,7 +490,8 @@ the file and linenumber containing the problem.
 
      The second form is generated if the line has a semicolon as the
      first non-whitespace character; `make' interprets this to mean you
-     left out the "target: dependency" section of a rule.
+     left out the "target: prerequisite" section of a rule.  *Note Rule
+     Syntax::.
 
 `No rule to make target `XXX'.'
 `No rule to make target `XXX', needed by `YYY'.'
@@ -95,7 +504,7 @@ the file and linenumber containing the problem.
      your makefile describing how that target can be built.  Other
      possible sources of this problem are typos in the makefile (if
      that filename is wrong) or a corrupted source tree (if that file
-     is not supposed to be built, but rather only a dependency).
+     is not supposed to be built, but rather only a prerequisite).
 
 `No targets specified and no makefile found.  Stop.'
 `No targets.  Stop.'
@@ -104,6 +513,7 @@ the file and linenumber containing the problem.
      read in.  The latter means that some makefile was found, but it
      didn't contain any default target and none was given on the
      command line.  GNU `make' has nothing to do in these situations.
+     *Note Arguments to Specify the Makefile: Makefile Arguments.
 
 `Makefile `XXX' was not found.'
 `Included makefile `XXX' was not found.'
@@ -116,17 +526,19 @@ the file and linenumber containing the problem.
      (except for double-colon rules).  If you give commands for a target
      which already has been defined to have commands, this warning is
      issued and the second set of commands will overwrite the first set.
+     *Note Multiple Rules for One Target: Multiple Rules.
 
 `Circular XXX <- YYY dependency dropped.'
      This means that `make' detected a loop in the dependency graph:
-     after tracing the dependency YYY of target XXX, and its
-     dependencies, etc., one of them depended on XXX again.
+     after tracing the prerequisite YYY of target XXX, and its
+     prerequisites, etc., one of them depended on XXX again.
 
 `Recursive variable `XXX' references itself (eventually).  Stop.'
      This means you've defined a normal (recursive) `make' variable XXX
-     that, when its expanded, will refer to itself (XXX).  This is not
+     that, when it's expanded, will refer to itself (XXX).  This is not
      allowed; either use simply-expanded variables (`:=') or use the
-     append operator (`+=').
+     append operator (`+=').  *Note How to Use Variables: Using
+     Variables.
 
 `Unterminated variable reference.  Stop.'
      This means you forgot to provide the proper closing parenthesis or
@@ -135,7 +547,8 @@ the file and linenumber containing the problem.
 `insufficient arguments to function `XXX'.  Stop.'
      This means you haven't provided the requisite number of arguments
      for this function.  See the documentation of the function for a
-     description of its arguments.
+     description of its arguments.  *Note Functions for Transforming
+     Text: Functions.
 
 `missing target pattern.  Stop.'
 `multiple target patterns.  Stop.'
@@ -144,7 +557,31 @@ the file and linenumber containing the problem.
      means there's no pattern in the target section of the rule, the
      second means there are multiple patterns in the target section,
      and the third means the target doesn't contain a pattern character
-     (`%').
+     (`%').  *Note Syntax of Static Pattern Rules: Static Usage.
+
+`warning: -jN forced in submake: disabling jobserver mode.'
+     This warning and the next are generated if `make' detects error
+     conditions related to parallel processing on systems where
+     sub-`make's can communicate (*note Communicating Options to a
+     Sub-`make': Options/Recursion.).  This warning is generated if a
+     recursive invocation of a `make' process is forced to have `-jN'
+     in its argument list (where N is greater than one).  This could
+     happen, for example, if you set the `MAKE' environment variable to
+     `make -j2'.  In this case, the sub-`make' doesn't communicate with
+     other `make' processes and will simply pretend it has two jobs of
+     its own.
+
+`warning: jobserver unavailable: using -j1.  Add `+' to parent make rule.'
+     In order for `make' processes to communicate, the parent will pass
+     information to the child.  Since this could result in problems if
+     the child process isn't actually a `make', the parent will only do
+     this if it thinks the child is a `make'.  The parent uses the
+     normal algorithms to determine this (*note How the `MAKE' Variable
+     Works: MAKE Variable.).  If the makefile is constructed such that
+     the parent doesn't know the child is a `make' process, then the
+     child will receive only part of the information necessary.  In
+     this case, the child will generate this warning message and
+     proceed with its build in a sequential manner.
 
 
 File: make.info,  Node: Complex Makefile,  Next: Concept Index,  Prev: Make Errors,  Up: Top
@@ -361,8 +798,8 @@ distribution kits.
              -rm -rf `cat .fname`
              mkdir `cat .fname`
              ln $(SRCS) $(AUX) `cat .fname`
-             -rm -rf `cat .fname` .fname
              tar chZf `cat .fname`.tar.Z `cat .fname`
+             -rm -rf `cat .fname` .fname
      
      tar.zoo: $(SRCS) $(AUX)
              -rm -rf tmp.dir

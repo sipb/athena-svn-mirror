@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 #include "make.h"
 
@@ -46,7 +47,7 @@ ar_name (name)
     return 0;
 
   if (p[1] == '(' && end[-1] == ')')
-    fatal ("attempt to use unsupported feature: `%s'", name);
+    fatal (NILF, _("attempt to use unsupported feature: `%s'"), name);
 
   return 1;
 }
@@ -137,7 +138,7 @@ int
 ar_touch (name)
      char *name;
 {
-  error ("touch archive member is not available on VMS");
+  error (NILF, _("touch archive member is not available on VMS"));
   return -1;
 }
 #else
@@ -169,22 +170,24 @@ ar_touch (name)
   switch (ar_member_touch (arname, memname))
     {
     case -1:
-      error ("touch: Archive `%s' does not exist", arname);
+      error (NILF, _("touch: Archive `%s' does not exist"), arname);
       break;
     case -2:
-      error ("touch: `%s' is not a valid archive", arname);
+      error (NILF, _("touch: `%s' is not a valid archive"), arname);
       break;
     case -3:
       perror_with_name ("touch: ", arname);
       break;
     case 1:
-      error ("touch: Member `%s' does not exist in `%s'", memname, arname);
+      error (NILF,
+             _("touch: Member `%s' does not exist in `%s'"), memname, arname);
       break;
     case 0:
       val = 0;
       break;
     default:
-      error ("touch: Bad return code from ar_member_touch on `%s'", name);
+      error (NILF,
+             _("touch: Bad return code from ar_member_touch on `%s'"), name);
     }
 
   if (!arname_used)
@@ -231,15 +234,6 @@ ar_glob_match (desc, mem, truncated,
     }
 
   return 0L;
-}
-
-/* Alphabetic sorting function for `qsort'.  */
-
-static int
-ar_glob_alphacompare (a, b)
-     char **a, **b;
-{
-  return strcmp (*a, *b);
 }
 
 /* Return nonzero if PATTERN contains any metacharacters.
@@ -316,7 +310,7 @@ ar_glob (arname, member_pattern, size)
     names[i++] = n->name;
 
   /* Sort them alphabetically.  */
-  qsort ((char *) names, i, sizeof (*names), ar_glob_alphacompare);
+  qsort ((char *) names, i, sizeof (*names), alpha_compare);
 
   /* Put them back into the chain in the sorted order.  */
   i = 0;

@@ -13,7 +13,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.  */
 
 #include "make.h"
 
@@ -69,7 +70,7 @@ VMS_get_member_info (module, rfa)
 			   &bufdesc.dsc$w_length, 0);
   if (! status)
     {
-      error ("lbr$set_module failed to extract module info, status = %d",
+      error (NILF, _("lbr$set_module failed to extract module info, status = %d"),
 	     status);
 
       lbr$close (&VMS_lib_idx);
@@ -151,7 +152,7 @@ ar_scan (archive, function, arg)
 
   if (! status)
     {
-      error ("lbr$ini_control failed with status = %d",status);
+      error (NILF, _("lbr$ini_control failed with status = %d"),status);
       return -2;
     }
 
@@ -162,7 +163,7 @@ ar_scan (archive, function, arg)
 
   if (! status)
     {
-      error ("unable to open library `%s' to lookup member `%s'",
+      error (NILF, _("unable to open library `%s' to lookup member `%s'"),
 	     archive, (char *)arg);
       return -1;
     }
@@ -177,6 +178,7 @@ ar_scan (archive, function, arg)
 
   VMS_function = function;
 
+  VMS_member_date = (time_t) -1;
   lbr$get_index (&VMS_lib_idx, &index, VMS_get_member_info, 0);
 
   /* Undo the damage.  */
@@ -212,11 +214,46 @@ ar_scan (archive, function, arg)
 #endif
 #endif
 
-#include <ar.h>
+/* On AIX, define these symbols to be sure to get both archive formats.
+   AIX 4.3 introduced the "big" archive format to support 64-bit object
+   files, so on AIX 4.3 systems we need to support both the "normal" and
+   "big" archive formats.  An archive's format is indicated in the
+   "fl_magic" field of the "FL_HDR" structure.  For a normal archive,
+   this field will be the string defined by the AIAMAG symbol.  For a
+   "big" archive, it will be the string defined by the AIAMAGBIG symbol
+   (at least on AIX it works this way).
+
+   Note: we'll define these symbols regardless of which AIX version
+   we're compiling on, but this is okay since we'll use the new symbols
+   only if they're present.  */
+#ifdef _AIX
+# define __AR_SMALL__
+# define __AR_BIG__
+#endif
+
+#ifndef WINDOWS32
+# include <ar.h>
+#else
+/* These should allow us to read Windows (VC++) libraries (according to Frank
+ * Libbrecht <frankl@abzx.belgium.hp.com>)
+ */
+# include <windows.h>
+# include <windef.h>
+# include <io.h>
+# define ARMAG      IMAGE_ARCHIVE_START
+# define SARMAG     IMAGE_ARCHIVE_START_SIZE
+# define ar_hdr     _IMAGE_ARCHIVE_MEMBER_HEADER
+# define ar_name    Name
+# define ar_mode    Mode
+# define ar_size    Size
+# define ar_date    Date
+# define ar_uid     UserID
+# define ar_gid     GroupID
+#endif
 
 /* Cray's <ar.h> apparently defines this.  */
 #ifndef	AR_HDR_SIZE
-#define	AR_HDR_SIZE	(sizeof (struct ar_hdr))
+# define   AR_HDR_SIZE	(sizeof (struct ar_hdr))
 #endif
 
 /* Takes three arguments ARCHIVE, FUNCTION and ARG.
@@ -254,6 +291,10 @@ ar_scan (archive, function, arg)
 {
 #ifdef AIAMAG
   FL_HDR fl_header;
+#ifdef AIAMAGBIG
+  int big_archive = 0;
+  FL_HDR_BIG fl_header_big;
+#endif
 #else
   int long_name = 0;
 #endif
@@ -275,11 +316,42 @@ ar_scan (archive, function, arg)
 #ifdef AIAMAG
   {
     register int nread = read (desc, (char *) &fl_header, FL_HSZ);
-    if (nread != FL_HSZ || bcmp (fl_header.fl_magic, AIAMAG, SAIAMAG))
+
+    if (nread != FL_HSZ)
       {
 	(void) close (desc);
 	return -2;
       }
+#ifdef AIAMAGBIG
+    /* If this is a "big" archive, then set the flag and
+       re-read the header into the "big" structure. */
+    if (!bcmp (fl_header.fl_magic, AIAMAGBIG, SAIAMAG))
+      {
+	big_archive = 1;
+
+	/* seek back to beginning of archive */
+	if (lseek (desc, 0, 0) < 0)
+	  {
+	    (void) close (desc);
+	    return -2;
+	  }
+
+	/* re-read the header into the "big" structure */
+	nread = read (desc, (char *) &fl_header_big, FL_HSZ_BIG);
+	if (nread != FL_HSZ_BIG)
+	  {
+	    (void) close (desc);
+	    return -2;
+	  }
+      }
+    else
+#endif
+       /* Check to make sure this is a "normal" archive. */
+      if (bcmp (fl_header.fl_magic, AIAMAG, SAIAMAG))
+	{
+          (void) close (desc);
+          return -2;
+	}
   }
 #else
   {
@@ -307,8 +379,18 @@ ar_scan (archive, function, arg)
     long int member_offset;
     long int last_member_offset;
 
-    sscanf (fl_header.fl_fstmoff, "%12ld", &member_offset);
-    sscanf (fl_header.fl_lstmoff, "%12ld", &last_member_offset);
+#ifdef AIAMAGBIG
+    if ( big_archive )
+      {
+	sscanf (fl_header_big.fl_fstmoff, "%20ld", &member_offset);
+	sscanf (fl_header_big.fl_lstmoff, "%20ld", &last_member_offset);
+      }
+    else
+#endif
+      {
+	sscanf (fl_header.fl_fstmoff, "%12ld", &member_offset);
+	sscanf (fl_header.fl_lstmoff, "%12ld", &last_member_offset);
+      }
 
     if (member_offset == 0)
       {
@@ -329,6 +411,9 @@ ar_scan (archive, function, arg)
       {
 	register int nread;
 	struct ar_hdr member_header;
+#ifdef AIAMAGBIG
+	struct ar_hdr_big member_header_big;
+#endif
 #ifdef AIAMAG
 	char name[256];
 	int name_len;
@@ -351,34 +436,73 @@ ar_scan (archive, function, arg)
 	  }
 
 #ifdef AIAMAG
-#define	AR_MEMHDR	(AR_HDR_SIZE - sizeof (member_header._ar_name))
-	nread = read (desc, (char *) &member_header, AR_MEMHDR);
+#define       AR_MEMHDR_SZ(x) (sizeof(x) - sizeof (x._ar_name))
 
-	if (nread != AR_MEMHDR)
+#ifdef AIAMAGBIG
+	if (big_archive)
 	  {
-	    (void) close (desc);
-	    return -2;
+	    nread = read (desc, (char *) &member_header_big,
+			  AR_MEMHDR_SZ(member_header_big) );
+
+	    if (nread != AR_MEMHDR_SZ(member_header_big))
+	      {
+		(void) close (desc);
+		return -2;
+	      }
+
+	    sscanf (member_header_big.ar_namlen, "%4d", &name_len);
+	    nread = read (desc, name, name_len);
+
+	    if (nread != name_len)
+	      {
+		(void) close (desc);
+		return -2;
+	      }
+
+	    name[name_len] = 0;
+
+	    sscanf (member_header_big.ar_date, "%12ld", &dateval);
+	    sscanf (member_header_big.ar_uid, "%12d", &uidval);
+	    sscanf (member_header_big.ar_gid, "%12d", &gidval);
+	    sscanf (member_header_big.ar_mode, "%12o", &eltmode);
+	    sscanf (member_header_big.ar_size, "%20ld", &eltsize);
+
+	    data_offset = (member_offset + AR_MEMHDR_SZ(member_header_big)
+			   + name_len + 2);
 	  }
-
-	sscanf (member_header.ar_namlen, "%4d", &name_len);
-	nread = read (desc, name, name_len);
-
-	if (nread != name_len)
+	else
+#endif
 	  {
-	    (void) close (desc);
-	    return -2;
+	    nread = read (desc, (char *) &member_header,
+			  AR_MEMHDR_SZ(member_header) );
+
+	    if (nread != AR_MEMHDR_SZ(member_header))
+	      {
+		(void) close (desc);
+		return -2;
+	      }
+
+	    sscanf (member_header.ar_namlen, "%4d", &name_len);
+	    nread = read (desc, name, name_len);
+
+	    if (nread != name_len)
+	      {
+		(void) close (desc);
+		return -2;
+	      }
+
+	    name[name_len] = 0;
+
+	    sscanf (member_header.ar_date, "%12ld", &dateval);
+	    sscanf (member_header.ar_uid, "%12d", &uidval);
+	    sscanf (member_header.ar_gid, "%12d", &gidval);
+	    sscanf (member_header.ar_mode, "%12o", &eltmode);
+	    sscanf (member_header.ar_size, "%12ld", &eltsize);
+
+	    data_offset = (member_offset + AR_MEMHDR_SZ(member_header)
+			   + name_len + 2);
 	  }
-
-	name[name_len] = 0;
-
-	sscanf (member_header.ar_date, "%12ld", &dateval);
-	sscanf (member_header.ar_uid, "%12d", &uidval);
-	sscanf (member_header.ar_gid, "%12d", &gidval);
-	sscanf (member_header.ar_mode, "%12o", &eltmode);
-	sscanf (member_header.ar_size, "%12ld", &eltsize);
-
-	if ((data_offset = member_offset + AR_MEMHDR + name_len + 2) % 2)
-	    ++data_offset;
+	data_offset += data_offset % 2;
 
 	fnval =
 	  (*function) (desc, name, 0,
@@ -393,8 +517,20 @@ ar_scan (archive, function, arg)
 	  break;
 
 	if (nread != AR_HDR_SIZE
-#ifdef ARFMAG
-	    || bcmp (member_header.ar_fmag, ARFMAG, 2)
+#if defined(ARFMAG) || defined(ARFZMAG)
+	    || (
+# ifdef ARFMAG
+                bcmp (member_header.ar_fmag, ARFMAG, 2)
+# else
+                1
+# endif
+                &&
+# ifdef ARFZMAG
+                bcmp (member_header.ar_fmag, ARFZMAG, 2)
+# else
+                1
+# endif
+               )
 #endif
 	    )
 	  {
@@ -492,7 +628,12 @@ ar_scan (archive, function, arg)
 	  /* End of the chain.  */
 	  break;
 
-	sscanf (member_header.ar_nxtmem, "%12ld", &member_offset);
+#ifdef AIAMAGBIG
+	if (big_archive)
+          sscanf (member_header_big.ar_nxtmem, "%20ld", &member_offset);
+	else
+#endif
+	  sscanf (member_header.ar_nxtmem, "%12ld", &member_offset);
 
 	if (lseek (desc, member_offset, 0) != member_offset)
 	  {
@@ -561,37 +702,6 @@ ar_name_equal (name, mem, truncated)
   if (p != 0)
     name = p + 1;
 
-  /* We no longer use this kludge, since we
-     now support long archive member names.  */
-
-#if 0 && !defined (AIAMAG) && !defined (APOLLO)
-
-  {
-    /* `reallylongname.o' matches `reallylongnam.o'.
-       If member names have a trailing slash, that's `reallylongna.o'.  */
-
-    struct ar_hdr h;
-    unsigned int max = sizeof (h.ar_name);
-    unsigned int namelen, memlen;
-
-    if (strncmp (name, mem, max - 3))
-      return 0;
-
-    namelen = strlen (name);
-    memlen = strlen (mem);
-
-    if (namelen > memlen && memlen >= max - 1
-	&& name[namelen - 2] == '.' && name[namelen - 1] == 'o'
-	&& mem[memlen - 2] == '.' && mem[memlen - 1] == 'o')
-      return 1;
-
-    if (namelen != memlen)
-      return 0;
-
-    return (namelen < max - 3 || !strcmp (name + max - 3, mem + max - 3));
-  }
-
-#else	/* AIX or APOLLO.  */
 #ifndef VMS
   if (truncated)
     {
@@ -601,17 +711,15 @@ ar_name_equal (name, mem, truncated)
 #else
       struct ar_hdr hdr;
 #if !defined (__hpux) && !defined (cray)
-      return !strncmp (name, mem, sizeof(hdr.ar_name) - 1);
+      return strneq (name, mem, sizeof(hdr.ar_name) - 1);
 #else
-      return !strncmp (name, mem, sizeof(hdr.ar_name) - 2);
+      return strneq (name, mem, sizeof(hdr.ar_name) - 2);
 #endif /* !__hpux && !cray */
 #endif /* !AIAMAG */
     }
 #endif /* !VMS */
 
   return !strcmp (name, mem);
-
-#endif
 }
 
 #ifndef VMS
@@ -667,12 +775,9 @@ ar_member_touch (arname, memname)
   if (AR_HDR_SIZE != write (fd, (char *) &ar_hdr, AR_HDR_SIZE))
     goto lose;
   /* The file's mtime is the time we we want.  */
-#ifdef EINTR
-  while (fstat (fd, &statbuf) < 0 && errno == EINTR);
-#else
-  fstat (fd, &statbuf);
-#endif
-#if defined(ARFMAG) || defined(AIAMAG)
+  while (fstat (fd, &statbuf) < 0 && EINTR_SET)
+    ;
+#if defined(ARFMAG) || defined(ARFZMAG) || defined(AIAMAG) || defined(WINDOWS32)
   /* Advance member's time to that time */
   for (i = 0; i < sizeof ar_hdr.ar_date; i++)
     ar_hdr.ar_date[i] = ' ';
@@ -712,11 +817,11 @@ describe_member (desc, name, truncated,
 {
   extern char *ctime ();
 
-  printf ("Member `%s'%s: %ld bytes at %ld (%ld).\n",
-	  name, truncated ? " (name might be truncated)" : "",
+  printf (_("Member `%s'%s: %ld bytes at %ld (%ld).\n"),
+	  name, truncated ? _(" (name might be truncated)") : "",
 	  size, hdrpos, datapos);
-  printf ("  Date %s", ctime (&date));
-  printf ("  uid = %d, gid = %d, mode = 0%o.\n", uid, gid, mode);
+  printf (_("  Date %s"), ctime (&date));
+  printf (_("  uid = %d, gid = %d, mode = 0%o.\n"), uid, gid, mode);
 
   return 0;
 }

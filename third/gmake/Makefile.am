@@ -1,6 +1,6 @@
-# -*-Makefile-*-, or close enough
+# This is a -*-Makefile-*-, or close enough
 
-AUTOMAKE_OPTIONS = 1.3
+AUTOMAKE_OPTIONS = 1.4
 
 bin_PROGRAMS =	make
 
@@ -10,16 +10,14 @@ make_SOURCES =	main.c commands.c job.c dir.c file.c misc.c read.c remake.c \
 		commands.h dep.h filedef.h job.h make.h rule.h variable.h \
 		signame.c signame.h \
 		getopt.c getopt1.c getopt.h
-make_LDADD =	@LIBOBJS@ @ALLOCA@ glob/libglob.a
+make_LDADD =	@LIBOBJS@ @ALLOCA@ @GLOBLIB@
 
 info_TEXINFOS =	make.texinfo
 man_MANS =	make.1
 
-INCLUDES =	-I$(srcdir)/glob -DLIBDIR=\"$(libdir)\" -DINCLUDEDIR=\"$(includedir)\"
+INCLUDES =	-DLIBDIR=\"$(libdir)\" -DINCLUDEDIR=\"$(includedir)\"
 
-BUILT_SOURCES =	README build.sh.in
-
-EXTRA_DIST = 	$(BUILT_SOURCES) $(man_MANS) README.customs remote-cstms.c\
+EXTRA_DIST = 	README build.sh.in $(man_MANS) README.customs remote-cstms.c\
 		make-stds.texi texinfo.tex SCOPTIONS SMakefile\
 		README.Amiga Makefile.ami config.ami make.lnk amiga.c amiga.h\
 		README.DOS Makefile.DOS configure.bat dosbuild.bat configh.dos\
@@ -31,6 +29,8 @@ SUBDIRS =	glob
 
 MOSTLYCLEANFILES = loadavg.c
 CLEANFILES =	loadavg
+
+MAKE_HOST = @MAKE_HOST@
 
 
 # --------------- Local INSTALL Section
@@ -64,25 +64,33 @@ install-exec-local:
 
 # --------------- Local DIST Section
 
-# Install the w32 subdirectory
+# Install the w32 and tests subdirectories
 #
 dist-hook:
 	(cd $(srcdir); \
-	 w32=`find w32 -follow \( -name CVS -prune \) -o \( -name \*.orig -o -name \*.rej -o -name \*~ -prune \) -o -type f -print`; \
-	 tar chf - $$w32) \
+	 sub=`find w32 tests -follow \( -name CVS -prune -o -name work -prune \) -o \( -name \*.orig -o -name \*.rej -o -name \*~ -prune \) -o -type f -print`; \
+	 tar chf - $$sub) \
 	| (cd $(distdir); tar xfBp -)
 
 
 # --------------- Local CHECK Section
 
-check-local: check-loadavg check-regression
+check-local: check-regression check-loadavg
+	@banner=" Regression PASSED: GNU Make $(VERSION) ($(MAKE_HOST)) built with $(CC) "; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	echo
+
 .PHONY: check-loadavg check-regression
 
 # > check-loadavg
 #
 loadavg: loadavg.c config.h
 	@rm -f loadavg
-	$(LINK) -I. -I$(srcdir) -DHAVE_CONFIG_H -DTEST $(make_LDFLAGS) loadavg.c $(LIBS)
+	$(LINK) $(DEFS) $(CPPFLAGS) -DTEST $(make_LDFLAGS) loadavg.c $(LIBS)
 
 # We copy getloadavg.c into a different file rather than compiling it
 # directly because some compilers clobber getloadavg.o in the process.
@@ -99,36 +107,39 @@ check-loadavg: loadavg
 
 # > check-regression
 #
-# Look for the make test suite, and run it if found.  Look in MAKE_TEST if
-# specified, or else in the srcdir or the distdir, their parents, and _their_
-# parents.
+# Look for the make test suite, and run it if found and we can find perl.
+# If we're building outside the tree, we use symlinks to make a local copy of
+# the test suite.  Unfortunately the test suite itself isn't localizable yet.
 #
 MAKETESTFLAGS =
 
-check-regression: all
-	@here=`pwd`; testdir=""; \
-	  case "$(MAKE_TEST)" in "") \
-	    for d1 in $$here $(srcdir); do \
-	      for d2 in ../.. .. .; do \
-		all=`echo $$d1/$$d2/make-test-[0-9]*/run_make_tests`; \
-		case "$$all" in \
-		  "$$d1/$$d2/make-test-[0-9]*/run_make_tests") : ;; \
-		  *) try=`for x in $$all; do echo $$x; done | sort | tail -1`;\
-		     testdir=`dirname $$try` ;; esac; \
-            done; done ;; \
-	    *) testdir="$(MAKE_TEST)" ;; \
-	  esac; \
-	  case "$$testdir" in \
-	    "") echo "Couldn't find make-test-* regression test suite."; exit 0;; \
-	  esac; \
-	  echo "cd $$testdir && ./run_make_tests -make $$here/make $(MAKETESTFLAGS)"; \
-	  cd $$testdir && ./run_make_tests -make $$here/make $(MAKETESTFLAGS)
+check-regression:
+	@if test -f "$(srcdir)/tests/run_make_tests"; then \
+	  if $(PERL) -v >/dev/null 2>&1; then \
+	    case `cd $(srcdir); pwd` in `pwd`) : ;; \
+	      *) test -d tests || mkdir tests; \
+		 rm -f srctests; \
+		 if ln -s "$(srcdir)/tests" srctests; then \
+		   for f in run_make_tests run_make_tests.pl test_driver.pl scripts; do \
+		     rm -f tests/$$f; ln -s ../srctests/$$f tests; \
+		   done; fi ;; \
+	    esac; \
+	    echo "cd tests && $(PERL) ./run_make_tests.pl -make ../make $(MAKETESTFLAGS)"; \
+	    cd tests && $(PERL) ./run_make_tests.pl -make ../make $(MAKETESTFLAGS); \
+	  else \
+	    echo "Can't find a working Perl ($(PERL)); the test suite requires Perl."; \
+	  fi; \
+	 else \
+	  echo "Can't find the GNU Make test suite ($(srcdir)/tests)."; \
+	 fi
+
+
+# --------------- Local CLEAN section
+
+maintainer-clean-local:
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 
 
 # --------------- Maintainer's Section
 
-if MAINT_MAKEFILE
-# Note this requires GNU make.  Not to worry, since it will only be included
-# in the Makefile if we're in the maintainer's environment.
-include $(srcdir)/maintMakefile
-endif
+@MAINT_MAKEFILE@

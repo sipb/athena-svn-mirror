@@ -14,7 +14,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
 
 /* Codes in a variable definition saying where the definition came from.
    Increasing numeric values signify less-overridable definitions.  */
@@ -102,7 +103,7 @@ extern void initialize_file_variables PARAMS ((struct file *file));
 extern void print_file_variables PARAMS ((struct file *file));
 extern void print_variable_set PARAMS ((struct variable_set *set, char *prefix));
 extern void merge_variable_set_lists PARAMS ((struct variable_set_list **setlist0, struct variable_set_list *setlist1));
-extern struct variable *try_variable_definition PARAMS ((char *filename, unsigned int lineno, char *line, enum variable_origin origin));
+extern struct variable *try_variable_definition PARAMS ((const struct floc *flocp, char *line, enum variable_origin origin));
 
 extern struct variable *lookup_variable PARAMS ((char *name, unsigned int length));
 extern struct variable *define_variable PARAMS ((char *name, unsigned int length, char *value,
