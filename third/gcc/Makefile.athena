@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.22 2003-03-31 20:44:05 ghudson Exp $
+# $Id: Makefile.athena,v 1.23 2003-04-04 17:26:46 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -25,7 +25,7 @@ dist:
 prepare:
 	rm -f obj/config.cache
 	cd obj && . ../compiler && CONFIG_SHELL=/bin/ksh CC=$$cc \
-	  ../src/configure --prefix=/usr/athena --disable-shared
+	  ../src/configure --prefix=/usr/gcc --disable-shared
 
 clean:
 	cd obj && ${MAKE} clean
@@ -37,6 +37,10 @@ check:
 
 install: force
 	mkdir -p "$$SRVD/usr"
-	cd obj && ${MAKE} install "prefix=$$SRVD/usr/athena" SHELL=/bin/ksh
+	cd obj && ${MAKE} install "prefix=$$SRVD/usr/gcc" SHELL=/bin/ksh
+	mkdir -p "$$SRVD/usr/athena/bin"
+	cd "$$SRVD/usr/gcc/bin" && for f in *; do \
+	  rm -f ../../athena/bin/$$f && \
+	  ln -s ../../gcc/bin/$$f ../../athena/bin/$$f; done
 
 force:
