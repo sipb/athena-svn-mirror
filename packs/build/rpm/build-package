@@ -8,7 +8,7 @@
 
 usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release] source rpmname"
 
-sourcedir=/mit/source
+sourcedir=/mit/source-8.4
 destdir=/usr/src/athena
 makepackage=yes
 

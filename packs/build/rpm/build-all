@@ -6,7 +6,7 @@ usage="build-all [-s srcdir] [-d destdir] [-k] [-n] [-l] [package [endpackage]]"
 
 # Default variables
 
-source="/mit/source"
+source="/mit/source-8.4"
 destdir="/usr/src/athena"
 ignore=false
 nobuild=false
