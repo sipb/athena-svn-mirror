@@ -1,8 +1,8 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:02:16 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-09-25 17:49:44 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
-ATMANDIR=/usr/athena/man
+ATHMANDIR=/usr/athena/man
 
 all:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -19,7 +19,7 @@ install:
 	install -c -m 0444 reactivate.8 ${DESTDIR}${ATHMANDIR}/man8
 	install -c -m 0555 reactivate.sh ${DESTDIR}${ATHRETCDIR}/reactivate
 	install -c -m 0555 shutdown_notify.sh \
-		${DESTDIR}${ATHRECTDIR}/shutdown_notify.sh
+		${DESTDIR}${ATHRETCDIR}/shutdown_notify
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 clean:
