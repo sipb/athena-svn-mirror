@@ -4,8 +4,8 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v $
-/**/#	$Author: raeburn $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.7 1990-11-16 11:12:47 raeburn Exp $
+/**/#	$Author: jfc $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.8 1991-06-18 15:14:10 jfc Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
@@ -19,6 +19,10 @@ SYSLOGD= syslogd
 SYSLOGD=
 #endif
 
+#ifndef X11_NO_XAW
+XZWRITE=xzwrite
+#endif
+
 #if defined(HESIOD) && defined(KERBEROS)
 ZMAILNOTIFY= zmailnotify
 #else /* !HESIOD || !KERBEROS */
@@ -29,7 +33,7 @@ ZMAILNOTIFY=
 
 SUBDIRS = zaway zctl zleave zlocate \
 	$(ZMAILNOTIFY) znol zpopnotify zshutdown_notify zstat zwrite \
-	$(SYSLOGD) xzwrite
+	$(SYSLOGD) $(XZWRITE)
 
 #ifdef OLD_ATHENA_COMPAT
 SHELLSCRIPTS= zlogout zhide zwgc
