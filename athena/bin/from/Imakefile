@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.9 1994-03-29 12:28:07 miki Exp $
+ * $Id: Imakefile,v 1.10 1994-06-24 10:33:51 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/Imakefile,v $
  * $Author: miki $
  */
@@ -14,7 +14,7 @@ OBJS= from.o popmail.o emul_re.o
 SRCS= from.c popmail.c emul_re.c
 #else
 #ifdef SOLARIS
-LIBS = -lhesiod -lkrb -ldes -ladm -lmail
+LIBS = -lhesiod -lkrb -ldes -lbsd
 #else
 LIBS = -lhesiod -lkrb -ldes 
 #endif
