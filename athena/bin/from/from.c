@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.2 1991-05-31 10:48:33 akajerry Exp $
+ * $Id: from.c,v 1.3 1991-06-24 14:19:16 akajerry Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: akajerry $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && defined(RCS_HDRS)
-static char *rcsid = "$Id: from.c,v 1.2 1991-05-31 10:48:33 akajerry Exp $";
+static char *rcsid = "$Id: from.c,v 1.3 1991-06-24 14:19:16 akajerry Exp $";
 #endif /* lint || SABER || RCS_HDRS */
 
 #include <stdio.h>
@@ -36,7 +36,7 @@ extern char     *optarg;
 struct	passwd *getpwuid();
 uid_t	getuid();
 
-int	popmail_debug, verbose, unixmail, popmail;
+int	popmail_debug, verbose, unixmail, popmail, report;
 char	*progname, *sender, *user, *host;
 
 char	*headers[MAX_HEADER_LINES];
@@ -82,8 +82,12 @@ PRS(argc,argv)
 	unixmail = popmail = 1;
 	
 	optind = 1;
-	while ((c = getopt(argc,argv,"vdpus:h:")) != EOF)
+	while ((c = getopt(argc,argv,"rvdpus:h:")) != EOF)
 		switch(c) {
+		case 'r':
+		        /* report on no mail */
+		        report = 1;
+			break;
 		case 'v':
 		        /* verbose mode */
 			verbose++;
@@ -196,6 +200,8 @@ getmail_pop(user, host)
 		(void) pop_command("QUIT");
 		return(1);
 	}
+	if (report && (nmsgs == 0))
+	  printf("You don't have any mail waiting.\n");
 	if (verbose)
 		printf("You have %d messages (%d bytes) on %s:\n",
 		       nmsgs, nbytes, host);
@@ -376,7 +382,7 @@ getmail_unix(user)
 {
 	char lbuf[BUFSIZ];
 	char lbuf2[BUFSIZ];
-	int stashed = 0;
+	int havemail, stashed = 0;
 	register char *name;
 	char *getlogin();
 
@@ -401,6 +407,7 @@ getmail_unix(user)
 		if (lbuf[0] == '\n' && stashed) {
 			stashed = 0;
 			printf("%s", lbuf2);
+			havemail = 1;
 		} else if (strncmp(lbuf, "From ", 5) == 0 &&
 		    (sender == NULL || match(&lbuf[4], sender))) {
 			strcpy(lbuf2, lbuf);
@@ -408,6 +415,8 @@ getmail_unix(user)
 		}
 	if (stashed)
 		printf("%s", lbuf2);
+	if (!havemail && report)
+	  printf("You don't have any mail waiting.\n");
 	return(0);
 }
 
