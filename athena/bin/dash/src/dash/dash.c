@@ -11,12 +11,13 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.16 1996-09-19 22:20:39 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.17 1997-12-03 21:47:35 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include <errno.h>
 #include <signal.h>
@@ -46,11 +47,6 @@ static char *rcsid =
 #include "dash.h"
 
 
-#if defined(NEED_ERRNO_DEFS)
-extern int errno;
-extern char *sys_errlist[];
-extern int sys_nerr;
-#endif
 #if defined(SOLARIS) || defined(sgi)
 #define sigmask(n)  ((unsigned int)1 << (((n) - 1) & (32 - 1)))
 #endif
@@ -617,7 +613,11 @@ void expand(what, where)
       else
 	sprintf(sys, "@sys");
 
-      strcpy(bin, MACHTYPE);
+      tmp = getenv("HOSTTYPE");
+      if (tmp != NULL)
+	strncpy(bin, tmp, sizeof(bin)/sizeof(char));
+      else
+	strcpy(bin, HOSTTYPE);
 
       sprintf(sysdir, "arch/%s/bin", sys);
       sprintf(bindir, "%sbin", bin);
@@ -844,33 +844,14 @@ static Child *firstChild = NULL;
 /*
  * Avoid zombies
  */
-#if defined(RS_ARCH)
 void checkChildren(sig)
      int sig;
-#else
-int checkChildren()
-#endif
 {
   Boolean found;
   Child *ch, **last;
-  int child;
+  int child, status;
 
-#if defined(MAC_ARCH) || defined(SOLARIS)
-  int status;
-
-#ifdef SOLARIS
   while ((child = waitpid(-1, &status, WNOHANG)) > 0)
-#else
-  while ((child = wait3(&status, WNOHANG, 0)) > 0)
-#endif
-
-#else
-  union wait status;
-  struct rusage rus;
-
-  while ((child = wait3(&status, WNOHANG, &rus)) > 0)
-#endif
-
     {
       found = False;
       last = &firstChild;
@@ -882,41 +863,30 @@ int checkChildren()
 	    found = True;
 	    *last = ch->next;
 
-#ifdef POSIX
-	    if (WIFEXITED(status))
-#endif /* POSIX */
-	      if (WEXITSTATUS(status))
-		{
-		  char line1[100];
+	    if (WIFEXITED(status) && WEXITSTATUS(status))
+	      {
+		char line1[100];
 
-		  sprintf(line1, "%s exited with status %d",
-			  ch->title, WEXITSTATUS(status));
-		  XjUserWarning(root, NULL, True, line1, "");
-		}
-#ifdef POSIX
-	    if (WIFSIGNALED(status))
-#endif /* POSIX */
-	      if (WTERMSIG(status))
-		{
-		  char line1[100], line2[100];
+		sprintf(line1, "%s exited with status %d",
+			ch->title, WEXITSTATUS(status));
+		XjUserWarning(root, NULL, True, line1, "");
+	      }
+	    if (WIFSIGNALED(status) && WTERMSIG(status))
+	      {
+		char line1[100], line2[100];
 
-		  sprintf(line1, "%s exited with signal %d",
-			  ch->title, WTERMSIG(status));
-		  if (W_CORE(status))
-		    strcpy(line2, "(core dumped!)");
-		  else
-		    line2[0] = '\0';
-		  XjUserWarning(root, NULL, True, line1, line2);
-		}
+		sprintf(line1, "%s exited with signal %d",
+			ch->title, WTERMSIG(status));
+		if (W_CORE(status))
+		  strcpy(line2, "(core dumped!)");
+		else
+		  line2[0] = '\0';
+		XjUserWarning(root, NULL, True, line1, line2);
+	      }
 
 	    XjFree((char *) ch);
 	  }
     }
-#if defined(_IBMR2)
-  return;
-#else
-  return 0;
-#endif
 }
 
 char *NAME; /* oh no! a global variable! */
@@ -936,10 +906,7 @@ input(fd, name)
 
       sscanf(buf2, "%s %d", buf, &n);
       sprintf(line1, "Could not start %s:", name);
-      if (n == 0 || n > sys_nerr)
-	sprintf(line2, "%s: Error %d", buf, n);
-      else
-	sprintf(line2, "%s: %s", buf, sys_errlist[n]);
+      sprintf(line2, "%s: %s", buf, strerror(n));
       XjUserWarning(root, NULL, True, line1, line2);
     }
   XjReadCallback((XjCallbackProc)NULL, fd, &fd);
@@ -984,10 +951,7 @@ int exec(info, what, data)
     {
       char line1[100], line2[100];
 
-      if (errno > sys_nerr)
-	sprintf(line1, "Could not set up pipe:  error %d", errno);
-      else
-	sprintf(line1, "Could not set up pipe:  %s", sys_errlist[errno]);
+      sprintf(line1, "Could not set up pipe:  %s", strerror(errno));
       sprintf(line2, "There will be no warning if `%s' can't be started.",
 	      name);
       XjUserWarning(root, NULL, True, line1, line2);
@@ -1001,10 +965,7 @@ int exec(info, what, data)
       char line1[100], line2[100];
 
       sprintf(line1, "Could not start %s:", name);
-      if (errno > sys_nerr)
-	sprintf(line2, "Fork failed with error %d", errno);
-      else
-	sprintf(line2, "Fork - %s", sys_errlist[errno]);
+      sprintf(line2, "Fork - %s", strerror(errno));
       XjUserWarning(root, NULL, True, line1, line2);
       if (pipes)
 	{
@@ -1172,10 +1133,7 @@ int restart(info, what, data)
     execvp(global_argv[0], global_argv);
 
   sprintf(line1, "Attempt to restart failed with error %d", errno);
-  if (errno > sys_nerr)
-    line2[0] = '\0';
-  else
-    sprintf(line2, "%s: %s", global_argv[0], sys_errlist[errno]);
+  sprintf(line2, "%s: %s", global_argv[0], strerror(errno));
   XjUserWarning(root, NULL, True, line1, line2);
   return 1;
 }
@@ -1903,12 +1861,9 @@ char **argv;
   int count, sign = 1;
   Status e;
   Jet handlejet;
-
-#ifdef POSIX
   struct sigaction act;
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
-#endif
 
   expand("~/.dashrc", userFile); /* Also guarantees expand() is initialized
 				    in this process, not multiple times in
@@ -2099,12 +2054,8 @@ char **argv;
 
 
 
-#ifdef POSIX
    act.sa_handler= (void (*)())checkChildren; 
    (void) sigaction(SIGCHLD, &act, NULL);
-#else
-  signal(SIGCHLD, checkChildren);
-#endif
 
 #ifdef KERBEROS
   if (parms.checkTickets)
