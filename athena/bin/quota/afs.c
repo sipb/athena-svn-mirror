@@ -1,7 +1,7 @@
 /*
  * AFS quota routines
  *
- * $Id: afs.c,v 1.13 1993-07-25 01:25:10 probe Exp $
+ * $Id: afs.c,v 1.14 1998-01-08 06:02:32 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -36,12 +36,9 @@ getafsquota(path, explicit)
     static struct VolumeStatus vs;
     struct ViceIoctl ibuf;
     int code;
+    uid_t euid = geteuid();
 
-#ifdef _IBMR2
-    setuidx(ID_EFFECTIVE, getuidx(ID_REAL));
-#else
-    setreuid(geteuid(), getuid());
-#endif
+    seteuid(getuid());
 
     ibuf.out_size=sizeof(struct VolumeStatus);
     ibuf.in_size=0;
@@ -54,11 +51,7 @@ getafsquota(path, explicit)
 	}
     }
 
-#ifdef _IBMR2
-    setuidx(ID_EFFECTIVE, getuidx(ID_SAVED));
-#else
-    setreuid(geteuid(), getuid());
-#endif
+    seteuid(euid);
 
     return(code ? (void *)0 : (void *)&vs);
 }
