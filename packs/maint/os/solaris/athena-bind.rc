@@ -1,9 +1,11 @@
 #!/sbin/sh
-# $Id: athena-bind.rc,v 1.2 2003-08-13 05:31:37 zacheiss Exp $
+# $Id: athena-bind.rc,v 1.3 2003-08-13 06:45:25 zacheiss Exp $
 # /etc/init.d/athena-bind - Start/stop the BIND daemon
 
 case "$1" in
 start)
+  # Generate /etc/rndc.key so rndc works.
+  /usr/athena/etc/rndc-confgen -a
   if [ -f /etc/athena/named -a -f /etc/named.conf ]; then
     /etc/athena/named; echo "starting internet domain name server."
   fi
