@@ -204,8 +204,8 @@ make_passwd_window (saver_info *si)
 
   /* Figure out the correct idle time. */
   pw->idle_string = malloc(32);
-  sprintf(pw->idle_string, "%d:%02d", pw->idle_time / 3600000,
-           (pw->idle_time / 60000) % 60);
+  sprintf(pw->idle_string, "%d:%02d:%02d", pw->idle_time / 3600000,
+           (pw->idle_time / 60000) % 60, (pw->idle_time / 1000) % 60);
 
   f = get_string_resource ("passwd.headingFont", "Dialog.Font");
   pw->heading_font = XLoadQueryFont (si->dpy, (f ? f : "fixed"));
