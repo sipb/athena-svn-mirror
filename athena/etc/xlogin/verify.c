@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.4 1999-12-07 21:48:10 danw Exp $ */
+/* $Id: verify.c,v 1.5 1999-12-08 22:04:05 danw Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -593,7 +593,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
 #endif
 
   for (i = 0; audio_devices[i]; i++)
-    chown(audio_devices[i], pwd->pw_uid, SYS);
+    chown(audio_devices[i], pwd->pw_uid, WHEEL);
 
 #ifdef HAVE_SETLOGIN
   i = setlogin(pwd->pw_name);

@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.3 1999-12-07 21:48:10 danw Exp $ */
+/* $Id: xlogin.c,v 1.4 1999-12-08 22:04:05 danw Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -372,7 +372,7 @@ int main(argc, argv)
   /* Ditto for audio devices. */
   for (i = 0; audio_devices[i]; i++)
     {
-      chown(audio_devices[i], ROOT, SYS);
+      chown(audio_devices[i], ROOT, WHEEL);
       chmod(audio_devices[i], 0600);
     }
 

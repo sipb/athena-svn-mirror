@@ -21,6 +21,7 @@
 /* Common macros. */
 #define file_exists(f) (access((f), F_OK) == 0)
 #define ROOT 0
+#define WHEEL 0
 
 #ifdef SOLARIS_MAE
 /* Stuff for supporting MAE's need to talk to the network. Sigh. */
