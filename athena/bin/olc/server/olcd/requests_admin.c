@@ -13,18 +13,19 @@
  *
  *      Tom Coppeto
  *      Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.10 1990-07-16 08:30:43 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.11 1990-08-20 04:45:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.10 1990-07-16 08:30:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.11 1990-08-20 04:45:03 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -44,10 +45,9 @@ olc_load_user(fd,request,auth)
      int auth;
 #endif /* STDC */
 {
-  KNUCKLE *requester, *target;
+  KNUCKLE *requester;
   USER *user;
   int status;
-  char file[NAME_SIZE];
 
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
@@ -173,9 +173,8 @@ olc_change_motd(fd,request,auth)
      int auth;
 #endif /* STDC */
 {
-  KNUCKLE *requester, *target;
+  KNUCKLE *requester;
   int status;
-  char file[NAME_SIZE];
 
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
@@ -207,7 +206,6 @@ olc_change_acl(fd,request,auth)
   ACL *a_ptr;
   char *acl;
   char *name;
-  char file[NAME_SIZE];
   int status;
 
 #ifdef LOG

@@ -13,18 +13,19 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.23 1990-07-16 10:30:23 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: requests_olc.c,v 1.24 1990-08-20 04:46:10 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.23 1990-07-16 10:30:23 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.24 1990-08-20 04:46:10 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -316,10 +317,6 @@ olc_verify_instance(fd,request,auth)
   int status;
   int instance;
 
-#ifdef LOG
-  char buf[BUFSIZ];
-#endif LOG
-
   status = find_knuckle(&(request->requester), &requester);
   if(status != SUCCESS)
     return(send_response(fd,status));
@@ -377,14 +374,8 @@ olc_default_instance(fd,request,auth)
      int auth;
 #endif /* STDC */
 {
-  KNUCKLE *requester;
-  KNUCKLE *target;
   int status;
   int instance;
-
-#ifdef LOG
-  char buf[BUFSIZ];
-#endif LOG
 
   status = get_instance(request->target.username, &instance);
   if(status)
@@ -410,7 +401,6 @@ olc_who(fd,request,auth)
 {
   KNUCKLE *requester;
   KNUCKLE *target;
-  KNUCKLE *knuckle;
   LIST list;
   char message[BUF_SIZE];
   int status;
@@ -703,7 +693,6 @@ olc_cancel(fd, request, auth)
   KNUCKLE *requester, *consultant;
   char msgbuf[BUF_SIZE];	      /* Message buffer. */
   int status;
-  char *text;
 
   status = find_knuckle(&(request->requester), &requester);
   if(status)
@@ -1799,7 +1788,6 @@ olc_list(fd, request,auth)
 {
   KNUCKLE *requester;
   KNUCKLE *target;
-  KNUCKLE **k_ptr;
   LIST *list;
   char queues[NAME_SIZE];
   char topics[NAME_SIZE];
@@ -1810,7 +1798,6 @@ olc_list(fd, request,auth)
   int topic_codes[SPEC_SIZE];
   int status;
   int n,i;
-  int errflag = 0;
 
 #ifdef LOG
   char mesg[BUFSIZ];
@@ -2071,7 +2058,6 @@ olc_verify_topic(fd, request,auth)
 {
   KNUCKLE *requester;
   KNUCKLE *target;
-  char msg_buf[BUFSIZ];
   int status;
   char *text;
 
@@ -2203,8 +2189,6 @@ olc_mail(fd, request,auth)
 {
   KNUCKLE *requester;
   KNUCKLE *target;
-  FILE    *mailfile;		        /* Ptr. to mail file. */
-  char    tempfile[NAME_SIZE];        /* Temporary file. */
   char    *msgbuf;		        /* Ptr. to mail message. */
   int status;
 #ifdef LOG
@@ -2366,7 +2350,6 @@ olc_grab(fd, request,auth)
 {
   KNUCKLE    *target;            /* User being grabbed. */
   KNUCKLE    *requester;	 
-  KNUCKLE    *knuckle;
   KNUCKLE    **k_ptr;
   char msgbuf[BUF_SIZE];	         /* Message buffer. */
   int status; 
