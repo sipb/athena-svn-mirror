@@ -1,5 +1,5 @@
 /* 
- * $Id: rk_krb.c,v 1.8 1996-09-20 03:15:04 ghudson Exp $
+ * $Id: rk_krb.c,v 1.9 1998-05-07 16:59:47 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
  * $Author: ghudson $
  *
@@ -9,12 +9,13 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.8 1996-09-20 03:15:04 ghudson Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.9 1998-05-07 16:59:47 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <krb.h>
 #ifdef SYSV
@@ -203,6 +204,7 @@ int rki_get_tickets(version, host, r_krealm, info)
     CREDENTIALS cred;
     MSG_DAT msg_data;
     u_char enc_data[MAX_KTXT_LEN];
+    struct timeval tv;
 
     rkinit_intkt_info rii;
 
@@ -280,6 +282,15 @@ int rki_get_tickets(version, host, r_krealm, info)
 
     if ((status = rki_rpc_send_ckdc(&msg_data)) != RKINIT_SUCCESS)
 	return(status);
+
+    if (version < 4) {
+	/* Version 3 servers and below can't handle getting two packets
+	 * close together.  Delay here.  Use select() to avoid disturbing
+	 * the itimer. */
+	tv.tv_sec = 0;
+	tv.tv_usec = 100000;
+	select(0, NULL, NULL, NULL, &tv);
+    }
 
     if ((status = rki_rpc_sendauth(&auth)) != RKINIT_SUCCESS)
 	return(status);
