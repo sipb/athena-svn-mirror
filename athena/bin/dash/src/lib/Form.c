@@ -10,8 +10,8 @@
  */
 
 #if  (!defined(lint))  &&  (!defined(SABER))
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Form.c,v 1.2 1991-12-17 10:28:32 vanharen Exp $";
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Form.c,v 1.3 1993-07-02 02:04:33 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -39,39 +39,48 @@ static XjResource resources[] = {
 
 #undef offset
 
-static void realize(), resize(), expose();
-/*static Boolean event_handler(); */
+static void resize(), expose();
 
 FormClassRec formClassRec = {
   {
-    /* class name */	"Form",
-    /* jet size */	sizeof(FormRec),
-    /* initialize */	NULL,
-    /* prerealize */    NULL,
-    /* realize */       realize,
-    /* event */		NULL /*event_handler*/,
-    /* expose */	expose,
-    /* querySize */     NULL,
-    /* move */		NULL,
-    /* resize */        resize,
-    /* destroy */       NULL,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"Form",
+    /* jet size */		sizeof(FormRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		NULL,
+    /* prerealize */    	NULL,
+    /* realize */       	NULL,
+    /* event */			NULL,
+    /* expose */		expose,
+    /* querySize */     	NULL,
+    /* move */			NULL,
+    /* resize */        	resize,
+    /* destroy */       	NULL,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
 JetClass formJetClass = (JetClass)&formClassRec;
 
+
 #define UNDEF -1
 #define ATTACH -2
 
-static void parse(ptr, name, top, left, bottom, right,
-		  topstr, leftstr, bottomstr, rightstr)
-     char **ptr, *name, *topstr, *leftstr, *bottomstr, *rightstr;
-     int *top, *left, *bottom, *right;
+#define LEFT 0
+#define TOP 1
+#define RIGHT 2
+#define BOTTOM 3
+#define SIDES 4
+
+
+static void parse(ptr, name, sides, sidestr)
+     char **ptr, *name, sidestr[SIDES][50];
+     int sides[SIDES];
 {
-  char *p;
+  char *p, *q;
   int i = 0;
+  int j;
 
   p = *ptr;
 
@@ -80,92 +89,42 @@ static void parse(ptr, name, top, left, bottom, right,
 
   name[i] = '\0';
 
-  *top = *left = *bottom = *right = UNDEF;
-
   if (*p == '\0')
     {
       *ptr = p;
       return;
     }
   else
-    p++; /* skip : */
+    p++; /* skip the colon ":" */
 
-  while (isspace(*p)) p++;
 
-  if (*p != '\0' && *p != '-')
+  for (j=0; j < SIDES; j++)
     {
-      if (!isdigit(*p))
+      sides[j] = UNDEF;
+
+      while (isspace(*p)) p++;
+
+      if (*p != '\0' && *p != '-')
 	{
-	  while (isalnum(*p))
-	    *leftstr++ = *p++;
-	  *leftstr = '\0';
-	  *left = ATTACH;
+	  if (isdigit(*p))
+	    {
+	      sides[j] = atoi(p);
+	      while (isdigit(*p)) p++;
+	    }
+	  else
+	    {
+	      q = sidestr[j];
+	      while (isalnum(*p))
+		*q++ = *p++;
+	      *q = '\0';
+	      sides[j] = ATTACH;
+	    }
 	}
-      else
-	{
-	  *left = atoi(p);
-	  while (isdigit(*p)) p++;
-	}
-    }
   
-  if (*p == '-') p++;
-  while (isspace(*p)) p++;
-
-  if (*p != '\0' && *p != '-')
-    {
-      if (!isdigit(*p))
-	{
-	  while (isalnum(*p))
-	    *topstr++ = *p++;
-	  *topstr = '\0';
-	  *top = ATTACH;
-	}
-      else
-	{
-	  *top = atoi(p);
-	  while (isdigit(*p)) p++;
-	}
-    }
-  
-  if (*p == '-') p++;
-  while (isspace(*p)) p++;
-
-  if (*p != '\0' && *p != '-')
-    {
-      if (!isdigit(*p))
-	{
-	  while (isalnum(*p))
-	    *rightstr++ = *p++;
-	  *rightstr = '\0';
-	  *right = ATTACH;
-	}
-      else
-	{
-	  *right = atoi(p);
-	  while (isdigit(*p)) p++;
-	}
-    }
-  
-  if (*p == '-') p++;
-  while (isspace(*p)) p++;
-
-  if (*p != '\0' && *p != '-')
-    {
-      if (!isdigit(*p))
-	{
-	  while (isalnum(*p))
-	    *bottomstr++ = *p++;
-	  *bottomstr = '\0';
-	  *bottom = ATTACH;
-	}
-      else
-	{
-	  *bottom = atoi(p);
-	  while (isdigit(*p)) p++;
-	}
+      if (*p == '-') p++;
     }
 
-  if (*p == '-') p++;
+
   while (isspace(*p)) p++;
   if (*p == ';')
     p++;
@@ -174,7 +133,7 @@ static void parse(ptr, name, top, left, bottom, right,
 }
 
 #define spec(x) (x != UNDEF)
-#define attach(x) (x == ATTACH)
+#define attachment(x) (x == ATTACH)
 
 /*
  * This code *really* needs to be done in a better way.
@@ -183,13 +142,14 @@ static void resize(me, mysize)
      FormJet me;
      XjSize *mysize;
 {
-  Jet child, tmp;
+  Jet child, tmp[SIDES];
   char *ptr;
-  char name[50], topstr[50], leftstr[50], bottomstr[50], rightstr[50];
+  char name[50], sidestr[SIDES][50];
   int x, y, width, height;
-  int top, left, bottom, right;
+  int sides[SIDES];
   XjSize size;
   char errtext[100];
+  int j;
 
   me->core.width = mysize->width;
   me->core.height = mysize->height;
@@ -198,8 +158,7 @@ static void resize(me, mysize)
 
   while (*ptr != '\0')
     {
-      parse(&ptr, name, &top, &left, &bottom, &right,
-	    topstr, leftstr, bottomstr, rightstr);
+      parse(&ptr, name, sides, sidestr);
 
       for (child = me->core.child; child != NULL; child = child->core.sibling)
 	if (strcmp(name, child->core.name) == 0)
@@ -210,145 +169,87 @@ static void resize(me, mysize)
 
 	    x = child->core.x;
 	    y = child->core.y;
-	    width = height = 10; /* just in case */
+	    width = size.width;
+	    height = size.height; /* just in case */
 	      
-	    if (spec(left) && !spec(right))
+	    /* 
+	     *  Find all the attachment jets, if there are any.
+	     */
+	    for (j=0; j < SIDES; j++)
 	      {
-		if (attach(left))
+		tmp[j] = NULL;
+		if (attachment(sides[j]))
 		  {
-		    tmp = XjFindJet(leftstr, (Jet) me);
-		    if (tmp == NULL)
-		      {			
-		       sprintf(errtext, "form: couldn't find jet %s", leftstr);
+		    if ((tmp[j] = XjFindJet(sidestr[j], (Jet) me)) == NULL)
+		      {
+			sprintf(errtext, "form: couldn't find jet `%s'",
+				sidestr[j]);
 			XjWarning(errtext);
-		     }
-		    else
-		      x = tmp->core.x + tmp->core.width +
-			2 * (tmp->core.borderWidth + me->form.padding);
+		      }
 		  }
+	      }
+		  
+
+	    /*
+	     *  Figure out the x coord and width.
+	     */
+	    if (spec(sides[LEFT]))
+	      {
+		if (tmp[LEFT])
+		  x = tmp[LEFT]->core.x + tmp[LEFT]->core.width +
+		    2 * (tmp[LEFT]->core.borderWidth + me->form.padding);
 		else
-		  x = (left * me->core.width) / 100;
-		width = size.width;
+		  x = (sides[LEFT] * me->core.width) / 100;
+
+		if (spec(sides[RIGHT]))
+		  {
+		    if (tmp[RIGHT])
+		      width = tmp[RIGHT]->core.x - x - 2*me->form.padding;
+		    else
+		      width = ((sides[RIGHT] * me->core.width) / 100) - x;
+		  }
 	      }
 
-	    if (!spec(left) && spec(right))
+	    else		/* sides[LEFT] was not specified */
+	      if (spec(sides[RIGHT]))
+		{
+		  if (tmp[RIGHT])
+		    x = tmp[RIGHT]->core.x - width - 1;
+		  else
+		    x = ((sides[RIGHT] * me->core.width) / 100) - width;
+		}
+
+
+	    /*
+	     *  Figure out the y coord and height.
+	     */
+	    if (spec(sides[TOP]))
 	      {
-		width = size.width;
-		if (attach(right))
-		  {
-		    tmp = XjFindJet(rightstr, (Jet) me);
-		    if (tmp == NULL)
-		      {
-		      sprintf(errtext, "form: couldn't find jet %s", rightstr);
-			XjWarning(errtext);
-		      }
-		    else
-		      x = tmp->core.x - width - 1;
-		  }
+		if (tmp[TOP])
+		  y = tmp[TOP]->core.y + tmp[TOP]->core.height +
+		    2 * (tmp[TOP]->core.borderWidth + me->form.padding);
 		else
-		  x = ((right * me->core.width) / 100) - width;
+		  y = (sides[TOP] * me->core.height) / 100;
+
+		if (spec(sides[BOTTOM]))
+		  {
+		    if (tmp[BOTTOM])
+		      height = tmp[BOTTOM]->core.y - y - 2*me->form.padding;
+		    else
+		      height = ((sides[BOTTOM] * me->core.height) / 100) - y;
+		  }
 	      }
 
-	    if (spec(left) && spec(right))
-	      {
-		if (attach(left))
-		  {
-		    tmp = XjFindJet(leftstr, (Jet) me);
-		    if (tmp == NULL)
-		      {
-		      sprintf(errtext, "form: couldn't find jet %s", leftstr);
-			XjWarning(errtext);
-		      }
-		    else
-		      x = tmp->core.x + tmp->core.width +
-			2 * (tmp->core.borderWidth + me->form.padding);
-		  }
-		else
-		  x = (left * me->core.width) / 100;
+	    else		/* sides[TOP] was not specified */
+	      if (spec(sides[BOTTOM]))
+		{
+		  if (tmp[BOTTOM])
+		    y = tmp[BOTTOM]->core.y - height - 1;
+		  else
+		    y = ((sides[BOTTOM] * me->core.height) / 100) - height;
+		}
 
-		if (attach(right))
-		  {
-		    tmp = XjFindJet(rightstr, (Jet) me);
-		    if (tmp == NULL)
-		      {
-		      sprintf(errtext, "form: couldn't find jet %s", rightstr);
-			XjWarning(errtext);
-		      }
-		    else
-		      width = tmp->core.x - x;
-		  }
-		else
-		  width = ((right * me->core.width) / 100) - x;
-	      }
 
-	    if (spec(top) && !spec(bottom))
-	      {
-		if (attach(top))
-		  {
-		    tmp = XjFindJet(topstr, (Jet) me);
-		    if (tmp == NULL)
-		      {
-			sprintf(errtext, "form: couldn't find jet %s", topstr);
-			XjWarning(errtext);
-		      }
-		    else
-		      y = tmp->core.y + tmp->core.height +
-			2 * (tmp->core.borderWidth + me->form.padding);
-		  }
-		else
-		  y = (top * me->core.height) / 100;
-		height = size.height;
-	      }
-
-	    if (!spec(top) && spec(bottom))
-	      {
-		height = size.height;
-		if (attach(bottom))
-		  {
-		    tmp = XjFindJet(bottomstr, (Jet) me);
-		    if (tmp == NULL)
-		      {
-		     sprintf(errtext, "form: couldn't find jet %s", bottomstr);
-			XjWarning(errtext);
-		      }
-		    else
-		      y = tmp->core.y - height - 1;
-		  }
-		else
-		  y = ((bottom * me->core.height) / 100) - height;
-	      }
-
-	    if (spec(top) && spec(bottom))
-	      {
-		if (attach(top))
-		  {
-		    tmp = XjFindJet(topstr, (Jet) me);
-		    if (tmp == NULL)
-		      {
-			sprintf(errtext, "form: couldn't find jet %s", topstr);
-			XjWarning(errtext);
-		      }
-		    else
-		      y = tmp->core.y + tmp->core.height +
-			2 * (tmp->core.borderWidth + me->form.padding);
-		  }
-		else
-		  y = (top * me->core.height) / 100;
-
-		if (attach(bottom))
-		  {
-		    tmp = XjFindJet(bottomstr, (Jet) me);
-		    if (tmp == NULL)
-		      {
-		     sprintf(errtext, "form: couldn't find jet %s", bottomstr);
-			XjWarning(errtext);
-		      }
-		    else
-		      height = tmp->core.y - y;
-		  }
-		else
-		  height = ((bottom * me->core.height) / 100) - y;
-	      }
 
 	    XjMove(child, x + me->form.padding, y + me->form.padding);
 	    size.width = width -
@@ -356,30 +257,12 @@ static void resize(me, mysize)
 	    size.height = height -
 	      2 * (child->core.borderWidth + me->form.padding);
 	    XjResize(child, &size);
-/*
-	    fprintf(stdout, "%d %d %d %d\n%d %d %d %d\n",
-		    left, top, right, bottom,
-		    x, y, width, height);
-*/
+
 	    break;
 	  }
     }
 }
 
-static void realize(me)
-     FormJet me;		/* ARGSUSED */
-{
-/*
-  XjSize size;
-
-  size.width = me->core.width;
-  size.height = me->core.height;
-  XjResize(me, &size);
-  XjRegisterWindow(me->core.window, (Jet) me);
-  XjSelectInput(me->core.display, me->core.window,
-		ExposureMask | StructureNotifyMask);
-*/
-}
 
 static void expose(me, event)
      Jet me;
@@ -390,37 +273,13 @@ static void expose(me, event)
   if (event->xexpose.count == 0)
     {
       for (child = me->core.child; child != NULL; child = child->core.sibling)
+	XjExpose(child, event);
+#ifdef notdefined
 	if (child->core.classRec->core_class.expose != NULL)
 	  child->core.classRec->core_class.expose(child, event);
+#endif
     }
 }
-
-/*
-static Boolean event_handler(me, event)
-     FormJet me;
-     XEvent *event;
-{
-  Jet child;
-
-  switch(event->type)
-    {
-    case ConfigureNotify:
-      if (event->xconfigure.width != me->core.width ||
-	  event->xconfigure.height != me->core.height)
-	{
-	  XjSize size;
-
-	  size.width = event->xconfigure.width;
-	  size.height = event->xconfigure.height;
-	  XjResize((Jet) me, &size);
-	}
-      break;
-    default:
-      return False;
-    }
-  return True;
-}
-*/
 
 
 void setForm(me, form)
