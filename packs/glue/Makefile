@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1996-09-25 17:50:49 ghudson Exp $
+# $Id: Makefile,v 1.3 1996-10-04 05:37:58 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -6,6 +6,7 @@ ATHMANDIR=/usr/athena/man
 ATTACHRUN=addusr blanche chfn chpobox chsh kermit mkserv mailmaint moira \
 	mrcheck namespace olc_answers olh sis techinfo userreg \
 	xinfo xtechinfo
+ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 
 all: ${ATTACHRUN} verify-message
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -24,6 +25,7 @@ check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 install:
+	-mkdir -p ${DESTDIR}/usr
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
@@ -51,6 +53,10 @@ install:
 	install -c -m 444 xtechinfo.1 ${DESTDIR}${ATHMANDIR}/man1
 	rm -f ${DESTDIR}${ATHBINDIR}/help
 	ln -s olh ${DESTDIR}${ATHBINDIR}/help
+	rm -f ${DESTDIR}/usr/andrew
+	. ../build/version; \
+		vers=$$major.$$minor; \
+		ln -s ${ANDREW}/athena-$$vers/$$HOSTTYPE ${DESTDIR}/usr/andrew
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 clean:
