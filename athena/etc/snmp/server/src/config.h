@@ -1,9 +1,12 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.6 1990-07-17 14:17:18 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 2.0 1992-04-22 01:44:00 tom Exp $
  *  $Author: tom $
  *  $Locker:  $
  *  $Log: not supported by cvs2svn $
+ * Revision 1.6  90/07/17  14:17:18  tom
+ * changed sysObjectID to be 'athena'
+ * 
  * Revision 1.5  90/07/15  17:55:44  tom
  * set the sysObjectID to be 'athena'. It may be useful to use this for
  * various types of machines.. but I doubt rel-eng will ever want to deal
@@ -71,14 +74,32 @@
 /*
  *  standard definitions of where we want things to be.
  */
-#define SNMPINITFILE	"/etc/snmpd.conf"
-#define PIDFILE		"/etc/snmpd.pid"
+#define SNMPINITFILE	"/etc/athena/snmpd.conf"
+#define PIDFILE		"/etc/athena/snmpd.pid"
 #define VERSION		"3.4"
 
 #ifdef  MIT
-#ifdef  LOGIN
-#define LOGIN_FILE      "/etc/utmp"
-#endif  LOGIN
+#define MIT_VERSION     "3a"
+
+/*
+ * default files
+ */
+
+#define MAIL_Q           "/usr/spool/mqueue"
+#define MAIL_ALIAS_FILE  "/usr/lib/aliases"
+#define RC_FILE          "/etc/athena/rc.conf"
+#define RPC_CRED_FILE    "/usr/etc/credentials"
+#define AFS_CACHE_FILE   "/usr/vice/etc/cacheinfo"
+#define AFS_SUID_FILE    "/usr/vice/etc/SuidCells"
+#define AFS_CELL_FILE    "/usr/vice/etc/ThisCell"
+#define AFS_CELLSRV_FILE "/usr/vice/etc/CellServDB"
+#define LOGIN_FILE       "/etc/utmp"
+#define VERSION_FILE     "/etc/athena/version"
+#define SYSPACK_FILE     "/srvd/.rvdinfo"
+#define SRV_FILE         "/site/server/.services"
+#define DNS_STAT_FILE    "/usr/tmp/named.stats"
+#define USER             "daemon"
+
 #endif  MIT
 
 /*
