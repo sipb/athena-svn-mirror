@@ -7,8 +7,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.10 1995-11-29 00:11:34 cfields Exp $
- *	$Author: cfields $
+ *	$Id: os.h,v 1.11 1996-05-01 19:17:19 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #include <mit-copyright.h>
@@ -16,20 +16,8 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#if defined(SOLARIS) || defined(sgi)
-/* not POSIX because has not been tested for other platforms where
-   we normally define it, although in olc's Imake it's only turned on
-   for SOLARIS and sgi. */
 #include <fcntl.h>
 #include <dirent.h>
-#else /* !SOLARIS */
-#include <sys/dir.h>
-#endif /* SOLARIS */
-#if defined(_IBMR2) && defined(ZEPHYR)
-/* Conflict in definitions between AIX's dir.h and zephyr.h for STAT; keep */
-/* the Zephyr one */
-#undef STAT
-#endif /* IBM */
 #include <sys/resource.h>
 
 #ifndef HAS_ANSI_INCLUDES
