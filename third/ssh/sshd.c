@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.17 1999-03-16 19:03:38 danw Exp $
+ * $Id: sshd.c,v 1.18 1999-03-27 01:59:28 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  1999/03/16 19:03:38  danw
+ * log a debugging error if al_acct_create fails
+ *
  * Revision 1.16  1999/03/08 18:20:11  danw
  * merge changes
  *
@@ -4161,11 +4164,6 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	  if (cray_setup(user_uid, user_name) < 0)
 	    fatal("Failure performing Cray job setup for user %d.",
 		  (int)user_uid);
-#endif
-
-#ifdef HAVE_SGI_PROJ_H
-  if (sgi_project_setup(user_name) < 0)
-    fatal("Failure performing SGI project setup for user %d.",(int)user_uid);
 #endif
 
 #ifdef HAVE_SETLUID
