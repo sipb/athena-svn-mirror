@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.8 1993-05-27 13:15:59 vrt Exp $
+ * $Id: Imakefile,v 1.9 1993-06-07 12:50:20 vrt Exp $
  */
 
 #ifdef ULTRIX40
@@ -22,7 +22,7 @@ machtype_sol.o:
         . $(ATHVERS); \
         $(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" $*.c
 SimpleProgram(machtype, machtype_sol.o,-lkvm,$(ATHRBINDIR))
-install_program(machtype,-m 2755 -g sys,$(ATHRBINDIR))
+install_program(machtype,-m 4755 -o root,$(ATHRBINDIR))
 #endif
 #ifndef DONE
 machtype_std.o:
