@@ -23,12 +23,13 @@
 # kostas: 513 messages, 19Oct2002, completed translation.
 # Comment: Kostas unfuzzy 1
 # kostas: 531 messages, 07Jan2003, updated translation for Gnome 2.1x
+# kostas: 28Jan2003, one more update
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-panel 2.0.10\n"
-"POT-Creation-Date: 2003-01-21 18:37+1300\n"
-"PO-Revision-Date: 2003-01-07 14:19+0200\n"
+"POT-Creation-Date: 2003-02-04 12:29+1300\n"
+"PO-Revision-Date: 2003-01-28 13:01+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -788,9 +789,8 @@ msgid "Remote folder for mail retrieval"
 msgstr "Απομακρυσμένος φάκελος για αλληλογραφία"
 
 #: applets/gen_util/mailcheck.schemas.in.h:16
-#, fuzzy
 msgid "Remote server to connect to for our mail"
-msgstr "Απομακρυσμένος διακομιστής για σύνδεση για την αλληλογραφία σας"
+msgstr "Απομακρυσμένος διακομιστής για σύνδεση για την αλληλογραφία"
 
 #: applets/gen_util/mailcheck.schemas.in.h:17
 msgid "Run this command before we check the mail"

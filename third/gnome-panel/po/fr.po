@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-panel 2.1.5\n"
-"POT-Creation-Date: 2003-01-21 18:37+1300\n"
-"PO-Revision-Date: 2002-12-20 12:20+0100\n"
+"POT-Creation-Date: 2003-02-04 12:29+1300\n"
+"PO-Revision-Date: 2003-01-25 14:19+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -767,7 +767,6 @@ msgid "Remote folder for mail retrieval"
 msgstr "Répertoire distant pour la récupération du courrier"
 
 #: applets/gen_util/mailcheck.schemas.in.h:16
-#, fuzzy
 msgid "Remote server to connect to for our mail"
 msgstr "Serveur distant auquel se connecter pour vos courriers"
 

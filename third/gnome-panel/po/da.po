@@ -20,8 +20,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-core\n"
-"POT-Creation-Date: 2003-01-21 18:37+1300\n"
-"PO-Revision-Date: 2003-01-08 15:12+0100\n"
+"POT-Creation-Date: 2003-02-04 12:29+1300\n"
+"PO-Revision-Date: 2003-02-01 12:24+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -467,7 +467,7 @@ msgstr "Internet"
 #: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:9
 #: applets/gen_util/showdesktop.c:452
 msgid "Show Desktop Button"
-msgstr "Vis skrivebordsknap"
+msgstr "Vis skrivebord-knap"
 
 #: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:10
 msgid "Switch between open windows"
@@ -2148,7 +2148,7 @@ msgid ""
 "\n"
 "Details: %s"
 msgstr ""
-"<b>Kan ikke menupunkt</b>\n"
+"<b>Kan ikke gemme menupunkt på disk</b>\n"
 "\n"
 "Detaljer: %s"
 
@@ -2225,10 +2225,10 @@ msgid ""
 msgstr ""
 "Panelprogrammet %s ser ud til at være død uforudset.\n"
 "\n"
-"Genindlæs panelprogrammet?\n"
+"Genindlæs dette program?\n"
 "\n"
-"(Hvis du vælger ikke at genindlæse det nu, kan du altid senere tilføje det "
-"ved at højreklikke på panelet og vælge \"Tilføj til panel\"-undermenuen)"
+"Hvis du vælger ikke at genindlæse programmet nu, kan du altid senere tilføje "
+"det ved at højreklikke på panelet og vælge undermenuen \"Tilføj til panel\"."
 
 #: gnome-panel/panel-applet-frame.c:746
 msgid "D_on't Delete"
@@ -2246,7 +2246,7 @@ msgstr ""
 "\n"
 "Detaljer: %s\n"
 "\n"
-"Vil du slette panelprogrammet fra din konfiguration?"
+"Vil du fjerne panelprogrammet fra din konfiguration?"
 
 #: gnome-panel/panel-applet-frame.c:878
 msgid "Unable to obtain AppletShell interface from control\n"
@@ -2487,7 +2487,7 @@ msgstr "En ukendt fejl opstod under forsøg på at åbne %s"
 
 #: gnome-panel/panel-recent.c:154
 msgid "Open Recent"
-msgstr "Åbn nylig"
+msgstr "Åbn seneste"
 
 #: gnome-panel/panel-shell.c:43
 msgid ""
@@ -2968,12 +2968,6 @@ msgstr "Top"
 
 #~ msgid "Remove from panel"
 #~ msgstr "Fjern fra panel"
-
-#~ msgid "Automatically re-check menus for newly installed software"
-#~ msgstr "Gentjek automatisk menuer for nyligt installerede programmer"
-
-#~ msgid "GNOME Menu:"
-#~ msgstr "Gnome-menu:"
 
 #~ msgid "Grab key..."
 #~ msgstr "Opsnap tast..."

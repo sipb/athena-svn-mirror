@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-panel\n"
-"POT-Creation-Date: 2003-01-21 18:37+1300\n"
+"POT-Creation-Date: 2003-02-04 12:29+1300\n"
 "PO-Revision-Date: 2002-06-09 21:35+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -266,8 +266,8 @@ msgid ""
 "%s\n"
 "%s"
 msgstr ""
-"2$%s\n"
-"1$%s"
+"%s\n"
+"%s"
 
 #. translators: reverse the order of these arguments
 #. *              if the time should come before the
@@ -354,7 +354,7 @@ msgstr "Ura prikaže trenutni datum in čas"
 
 #: applets/gen_util/clock.schemas.in.h:1
 msgid "24"
-msgstr ""
+msgstr "24"
 
 #: applets/gen_util/clock.schemas.in.h:2
 msgid "Display Internet time, which is same all over the world"
@@ -2785,9 +2785,6 @@ msgstr "Vrh"
 
 #~ msgid "Menu properties"
 #~ msgstr "Lastnosti menuja"
-
-#~ msgid "Menu type"
-#~ msgstr "Tip menuja"
 
 #~ msgid "Global main menu"
 #~ msgstr "Globalni glavni menu"

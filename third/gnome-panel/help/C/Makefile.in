@@ -152,7 +152,7 @@ XSHAPE_LIBS = @XSHAPE_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
-SUBDIRS = clock fish mailcheck window-list workspace-switcher
+SUBDIRS = clock fish mailcheck window-list workspace-switcher notification_area
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
