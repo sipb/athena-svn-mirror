@@ -1,5 +1,5 @@
 # Makedefs.in -- input for the common Makefile definitions
-# $Id: Makedefs.in,v 1.1.1.1 2000-11-12 06:26:33 ghudson Exp $
+# $Id: Makedefs.in,v 1.2 2001-03-31 17:49:42 ghudson Exp $
 #
 # Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 #
@@ -41,7 +41,7 @@ nokogiridir=@nokogiridir@
 localedir=@localedir@
 sawfishexecdir=@sawfishexecdir@
 host_type=@host@
-GNOMEDIR=@GNOMEDIR@
+GNOMEDIR=/usr/athena
 
 CC=@CC@
 MAKEDEP=@MAKEDEP@
@@ -79,7 +79,7 @@ INSTALL_SCRIPT=@INSTALL_SCRIPT@
 
 .PHONY: clean realclean install
 
-repexecdir=@REP_EXECDIR@
+repexecdir=/usr/athena/libexec/rep
 include $(repexecdir)/rules.mk
 
 %.o : %.c
