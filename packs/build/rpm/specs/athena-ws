@@ -118,6 +118,15 @@ if grep -q /usr/athena $cfg; then true; else
   mv $cfg.new $cfg
 fi
 
+%triggerin -- libgnomeprint22
+# Default to US Letter paper, not A4 paper.
+for cfg in /usr/share/libgnomeprint/*/{models,printers}/*; do
+  if grep -q 'PhysicalSize.*A4' $cfg; then
+    sed -e '/PhysicalSize.*A4/s/A4/USLetter/' $cfg > $cfg.new
+    mv $cfg.new $cfg
+  fi
+done
+
 %triggerin -- kernel
 # /sbin/new-kernel-pkg blew away the single-user boot option.  Put it
 # back.
