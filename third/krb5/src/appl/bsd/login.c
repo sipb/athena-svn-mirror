@@ -970,7 +970,8 @@ int verify_krb_v5_tgt (c)
 	else
 	    /* Any error here is bad.  */
 	    retval = -1;
-	com_err("login", krbval, "Unable to verify host ticket");
+	if (retval)
+	    com_err("login", krbval, "Unable to verify host ticket");
 #ifndef SYSLOG42
 	syslog (LOG_NOTICE|LOG_AUTH, "can't verify v5 ticket: %s; %s\n",
 		error_message(krbval),
