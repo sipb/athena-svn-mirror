@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.20 1997-01-05 14:16:39 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.21 1997-04-15 22:41:50 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -86,6 +86,10 @@ SUN0535)
 SUN1.05)
          echo "formatting SUN1.05"
          cat /util/format.input.SUN1.05 | /usr/sbin/format >/dev/null 2>&1
+	 ;;
+SUN2.1G)
+         echo "formatting SUN2.1G"
+         cat /util/format.input.SUN2.1G | /usr/sbin/format >/dev/null 2>&1
 	 ;;
 SEAGATE*5660N)
          echo "formatting SEAGATE-ST5660N"
