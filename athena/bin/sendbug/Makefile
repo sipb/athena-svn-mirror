@@ -1,8 +1,8 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/sendbug/Makefile,v $
-#	$Author: builder $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/sendbug/Makefile,v 1.3 1985-11-13 21:24:48 builder Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/sendbug/Makefile,v 1.4 1989-09-16 12:52:40 epeisach Exp $
 #
 
 
@@ -17,3 +17,4 @@ install:
 
 clean:
 
+depend:
