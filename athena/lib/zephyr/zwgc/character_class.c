@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_character_class_c[] = "$Id: character_class.c,v 1.5 1993-09-24 21:31:27 probe Exp $";
+static char rcsid_character_class_c[] = "$Id: character_class.c,v 1.6 1993-11-19 15:08:05 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -33,7 +33,7 @@ char * string_to_character_class(str)
 {
     int i;
 
-    _BZERO(cache, sizeof(cache));
+    (void) memset(cache, 0, sizeof(cache));
 
     for (i=0; i<strlen(str); i++)
       cache[str[i]] = 1;
