@@ -2,7 +2,7 @@
    #
    # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
    # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-   # RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.4 1991-02-04 09:32:34 epeisach Exp $
+   # RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.5 1991-02-04 09:36:56 epeisach Exp $
 */
 
 PSLIBDIR=/usr/athena/lib/ps
@@ -12,18 +12,19 @@ TROFFFONTDIR=$(PSLIBDIR)/troff.font
 
 #if defined(AIX) && defined(_I386)
 OCFLAGS=-D_BSD
-LIBS=-lbsd
+OLIBS=-lbsd
 #endif
 
 #if defined(_IBMR2)
-LIBS=-lbsd
+OLIBS=-lbsd
 #endif
 
 #if defined(_AUX_SOURCE)
-LIBS=-lposix
+OLIBS=-lposix
 #endif
 
 DEFINES=-DBSD -DSYSLOG -DZEPHYR ${OCFLAGS}
+LIBS= -lzephyr -lcom_err -lkrb -ldes $(OLIBS)
 
 programs: all
 
