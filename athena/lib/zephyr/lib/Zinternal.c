@@ -11,11 +11,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.31 1994-11-01 17:51:59 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.32 1994-11-11 20:30:02 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.31 1994-11-01 17:51:59 ghudson Exp $";
+  "$Id: Zinternal.c,v 1.32 1994-11-11 20:30:02 ghudson Exp $";
 static char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -307,17 +307,12 @@ Code_t Z_ReadWait()
 	    ZNotice_t tmpnotice;
 	    ZPacket_t pkt;
 	    int len;
-	    time_t now;
 
 	    tmpnotice = notice;
 	    tmpnotice.z_kind = CLIENTACK;
 	    tmpnotice.z_message_len = 0;
 	    olddest = __HM_addr;
 	    __HM_addr = from;
-	    time(&now);
-	    printf("%d seconds elapsed between packet and ack.\n",
-		   now - tmpnotice.z_time.tv_sec);
-	    fflush(stdout);
 	    if ((retval = ZFormatSmallRawNotice(&tmpnotice, pkt, &len))
 		!= ZERR_NONE)
 		return(retval);
