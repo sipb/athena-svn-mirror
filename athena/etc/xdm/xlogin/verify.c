@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.39 1993-02-09 18:05:27 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.40 1993-02-25 14:52:22 probe Exp $
  */
 
 #include <stdio.h>
@@ -33,6 +33,14 @@
 #ifdef ultrix
 #include <sys/mount.h>
 #include <sys/fs_types.h>
+#endif
+
+/* Set the hosttype environment variable */
+#ifdef _IBMR2
+#define HOSTTYPE "rsaix"
+#endif
+#ifdef sparc
+#define HOSTTYPE "sun4"
 #endif
 
 #define SETPAG
@@ -366,6 +374,10 @@ char *display;
     environment[i++] = strsave(errbuf);
     sprintf(errbuf, "DISPLAY=%s", display);
     environment[i++] = strsave(errbuf);
+#ifdef HOSTTYPE
+    sprintf(errbuf, "hosttype=%s", HOSTTYPE);
+    environment[i++] = strsave(errbuf);
+#endif
     if (homedir_status == HD_TEMP) {
 	environment[i++] = "TMPHOME=1";
     }
