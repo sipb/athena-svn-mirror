@@ -17,7 +17,7 @@
  * pertaining to lockers.
  */
 
-static const char rcsid[] = "$Id: zephyr.c,v 1.6 1999-10-22 16:57:28 danw Exp $";
+static const char rcsid[] = "$Id: zephyr.c,v 1.6.8.1 2003-11-04 19:32:36 ghudson Exp $";
 
 #include <stdlib.h>
 #include <string.h>
@@ -75,7 +75,7 @@ int locker_do_zsubs(locker_context context, int op)
 	zsubs[j].zsub_classinst = context->zsubs[i + j];
 
       if (op == LOCKER_ZEPHYR_SUBSCRIBE)
-	status = ZSubscribeTo(zsubs, j, wgport);
+	status = ZSubscribeToSansDefaults(zsubs, j, wgport);
       else
 	status = ZUnsubscribeTo(zsubs, j, wgport);
       if (status)
