@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.19 1990-11-13 21:34:12 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.20 1991-02-18 18:08:55 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -647,10 +647,8 @@ Boolean match_undeleted, match_deleted;
  * 		       int options)
  *
  * Requires: name points to a NULL-terminated string, representing a
- *   filename pattern with regular filename characters, path
- *   separators and shell wildcard characters []*?; num_found points
- *   to a valid int memory storage location; found points to a valid
- *   char ** memory storage location.
+ *   filename; points to a valid int memory storage location; found
+ *   points to a valid char ** memory storage location.
  *
  * Effects: Returns a list of all the files in the file hierarchy that
  *   are underneath the specified file, governed by the options set in
@@ -738,7 +736,7 @@ int options;
      int strsize;
      struct stat statbuf;
      int use_stat;
-     
+
 #ifdef DEBUG
      fprintf(stderr, "do_recurs: opening %s\n", name);
 #endif
@@ -754,15 +752,47 @@ int options;
      *num_found = 0;
      strcpy(base, name);
 
-     if (stat(base, &statbuf)) {
+     if (lstat(base, &statbuf)) {
 	  set_error(errno);
 	  error(base);
 	  return error_code;
      }
 	 
-     /* Never follow deleted symlinks */
-     if (is_deleted(lastpart(base)) && is_link(base, &statbuf)) {
-	  return 0;
+     if (is_link(base, &statbuf)) {
+	  /* Never follow deleted symlinks */
+	  if (is_deleted(lastpart(base))) {
+	       return 0;
+	  }
+	  if (stat(base, &statbuf)) {
+	       if (errno == ENOENT) {
+		    extern int readlink();
+		    char pathbuf[MAXPATHLEN];
+		    int cc;
+		    
+		    /* What the link is pointing to does not exist; */
+		    /* this is a warning, not an error.		    */
+		    set_warning(errno);
+		    cc = readlink(base, pathbuf, MAXPATHLEN);
+		    if (cc > 0) {
+			 char error_buf[2*MAXPATHLEN+20];
+
+			 pathbuf[(cc == MAXPATHLEN) ? (cc - 1) : cc] = '\0';
+			 sprintf(error_buf, "%s (pointed to by %s)", pathbuf,
+				 base);
+			 error(error_buf);
+		    }
+		    else {
+			 error(base);
+		    }
+
+		    return 0;
+	       }
+	       else {
+		    set_error(errno);
+		    error(base);
+		    return error_code;
+	       }
+	  }
      }
 
      if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
