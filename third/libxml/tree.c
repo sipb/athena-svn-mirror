@@ -266,7 +266,7 @@ xmlSetNs(xmlNodePtr node, xmlNsPtr ns) {
     if (node == NULL) {
 #ifdef DEBUG_TREE
         fprintf(stderr, "xmlSetNs: node == NULL\n");
-#else
+#endif
 	return;
     }
     node->ns = ns;
@@ -1064,6 +1064,7 @@ xmlRemoveProp(xmlAttrPtr cur) {
 	return(-1);
     }
     if (cur->node == NULL) {
+#ifdef DEBUG_TREE
         fprintf(stderr, "xmlRemoveProp : cur->node == NULL\n");
 #endif
 	return(-1);
@@ -4420,14 +4421,17 @@ xmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur) {
 	xmlBufferWriteQuotedString(buf, cur->version);
     else
 	xmlBufferWriteChar(buf, "\"1.0\"");
-    if (cur->encoding != NULL) {
+    if ((cur->encoding != NULL) &&
+	(!xmlStrEqual(cur->encoding, "UTF-8"))) {
         xmlBufferWriteChar(buf, " encoding=");
 	xmlBufferWriteQuotedString(buf, cur->encoding);
     }
     switch (cur->standalone) {
+/************************************************* 2.3.5 **********
         case 0:
 	    xmlBufferWriteChar(buf, " standalone=\"no\"");
 	    break;
+ ******************************************************************/
         case 1:
 	    xmlBufferWriteChar(buf, " standalone=\"yes\"");
 	    break;
@@ -4480,8 +4484,14 @@ xmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
 	return;
     }
     xmlDocContentDump(buf, cur);
-    *mem = xmlStrndup(buf->content, buf->use);
     *size = buf->use;
+    if (buf->use == buf->size) {
+	*mem = xmlStrndup(buf->content, buf->use);
+    } else {
+	*mem = buf->content;
+	buf->content[buf->use] = 0;
+	buf->content = NULL;
+    }
     xmlBufferFree(buf);
 }
 

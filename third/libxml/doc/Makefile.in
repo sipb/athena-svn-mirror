@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -67,6 +67,8 @@ CFLAGS = @CFLAGS@
 CORBA_CFLAGS = @CORBA_CFLAGS@
 CPP = @CPP@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 HAVE_ISINF = @HAVE_ISINF@
 HAVE_ISNAN = @HAVE_ISNAN@
 LIBTOOL = @LIBTOOL@
@@ -81,10 +83,12 @@ MAKEINFO = @MAKEINFO@
 MV = @MV@
 M_LIBS = @M_LIBS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
 RM = @RM@
+STRIP = @STRIP@
 TAR = @TAR@
 VERSION = @VERSION@
 XML_CFLAGS = @XML_CFLAGS@

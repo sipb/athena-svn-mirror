@@ -1,3 +1,200 @@
+Fri Sep 14 16:00:18 CEST 2001 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: fixing #60387 with the provided patch from
+	  Heiko W.Rupp
+	* configure.in: preparing 1.8.16 release
+
+Mon Sep 10 23:24:04 CEST 2001 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: tried to fix #60295 by backporting the detection
+	  code from libxml2
+
+Sat Sep  1 22:39:36 CEST 2001 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: David Kaelbling found a == instead of = typo
+
+Tue Aug 28 18:19:30 CEST 2001 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: oops forgot to zero terminate that string seems
+	  to break bonobo_ui which expect mem[size] == 0 while that
+	  0 is outside the range actually ...
+
+Mon Aug 27 19:08:32 CEST 2001 Daniel Veillard <daniel@veillard.com>
+
+	* tree.c: improved xmlDocDumpMemory() memory usage for Jody
+
+Wed Aug 22 02:56:31 CEST 2001 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: xmlSAXParseDoc() fixing a memleak on ctxt->sax,
+	  fixed the fix, cleaned up a few other occurences, I hope
+	  it's okay now.
+
+Wed Aug 22 02:28:28 CEST 2001 Daniel Veillard <daniel@veillard.com>
+
+	* parser.c: xmlSAXParseDoc() fixing a memleak on ctxt->sax
+
+Tue Aug 14 01:01:42 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in: released 1.8.15
+
+2001-08-13  Alex Larsson  <alexl@redhat.com>
+
+	* parserold.c:
+	Fix a parser bug. When reading attribute values with &#34; the parser
+	thought this was the ending quote. Also fixes problems with some other
+	escaped values (<, & and escaped whitespace).
+	This fixes a bug in nautilus where sometimes the tree view didn't show
+	up.
+
+Mon Aug 13 12:51:17 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* libxml.spec.in: applied patch from Jens Finke to improve the
+	  default spec file (bug # 58583)
+
+Thu Jun 28 17:11:10 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in: released 1.8.14
+
+Wed Jun 27 23:47:29 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* Makefile.am: patch from brad@openbsd.org to handle DESTDIR
+
+2001-06-21  Zbigniew Chyla  <cyba@gnome.pl>
+
+	Made xmlParseChunk behaving the same way as xmlParseFile
+	(no matter if it's the correct behaviour or not ;-)
+
+	* parser.c
+	(xmlParseChunk): Use the old parser if xmlUseNewParserDefault is not
+	set.
+	Added xmlOldParseChunk declaration.
+
+	* oldparser.c (xmlOldParseChunk): Made non-static.
+
+Mon May 14 12:35:30 CEST 2001 <Daniel.Veillard@imag.fr>
+
+	* configure.in: releasing 1.8.13 fixing the two previous bugs
+
+Sat May  5 18:32:22 CEST 2001 <Daniel.Veillard@imag.fr>
+
+	* entities.c: fixed a possible NULL pointer deref introduced on
+	  the last change (Gediminas Paulauskas) and clean up a couple other
+	  mistakes
+
+Sat May  5 11:38:44 CEST 2001 <Daniel.Veillard@imag.fr>
+
+	* entities.c tree.c parser.c: fix a problem raised after 1.8.12
+	  non-utf document parsed with the old parser are not saved correctly
+	  force the UTF-8 encoding label on the new parser to detect it
+
+Fri May  4 08:53:41 CEST 2001 <Daniel.Veillard@imag.fr>
+
+	* doc/xml.html: updated
+	* doc/html/*: rebuilt the docs
+
+Tue Mar 27 00:50:04 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: fixed line number reporting on error
+
+Mon Mar 26 23:20:36 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c parserold.c: Sullivan and Darin found a parser bug,
+	  applied the patch.
+
+Mon Mar 26 09:51:40 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parserold.c : reapplied bug 52299 fix
+
+Sun Mar 25 16:56:27 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: fixed an I18N breakage on the new parser due
+	  to the usage of an old routine
+	* test/i18n.xml result/i18n.xml: added a small first test
+
+Sun Mar 25 16:07:08 CEST 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: cleanup and make sure scrollkeeper won't have problems
+
+Sun Mar 25 01:40:24 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: initialization code must be run before deciding
+	  which parser to launch.
+
+Sun Mar 25 01:03:10 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* Makefile.am parserold.c: added back the 1.8.11 parser for
+	  compatibility
+	* README: updated
+	* SAX.c: integrate back 1.8.11 callback code and call it when
+	  we are using the old parser
+	* entities.c: fixed a small problem
+	* parser.[ch]: allow to use either parser, add xmlUseNewParser(),
+	  and modify the Initialization code to check LIBXML_USE_NEW_PARSER
+	  or LIBXML_USE_OLD_PARSER
+	* tester.c: make it use the new parser by default, but check
+	  LIBXML_USE_OLD_PARSER and add the --oldparser option
+
+Sat Mar 24 09:41:28 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+        Applied patch from Darin:
+	* tree.[ch], .cvsignore: Darin fixed some CPP crap nobody noticed so far
+
+2001-03-24  Martin Baulig  <baulig@suse.de>
+
+	* Makefile.am: Added install-data-local target to create the
+	libxml symlink.
+
+Fri Mar 23 19:17:45 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: remove some cases where an encoding error
+	  disable loading corrupted documents generated by previous version
+
+Thu Mar 22 15:50:27 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* Makefile.am: fixed bug 51876
+
+Wed Mar 21 18:18:45 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* HTMLparser.c parser.c: found a hard to trigger but real I/O
+	  buffer problem fixed the multiple points where this needed fixing
+
+Wed Mar 21 14:50:55 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: make sure the full structure is NULL initialized
+	  when allocated
+
+Wed Mar 21 13:17:24 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+  It's hard to estimate how much I hated to do this, but it's done ...
+  The best way to solve the I18N problen is unfortunately to fix libxml1
+parser to at least deal correctly with UTF8 and ISO-Latin-1 encodings.
+I have plugged in the 2.3.5 (or what will be it's not released yet) core
+XML parser in the libxml1 framework. No changes API wise. The only changes
+will be backward binary compatible extensions of some of the parser
+structures and the number of parser states.
+
+	* configure.in: version will be 1.8.12
+	* Makefile.am: added .memdump tests
+	* SAX.c entities.[ch] parser.[ch] tree.c valid.c xml-error.h
+	  xmlIO.[ch]: plugged the 2.3.5 libxml2 XML parser in, while
+	  preserving binary compatibility
+	* uri.[ch]: the parser code really requires URI manipulation
+	  add this from 2.3.5 too
+	* results/* : of course this changed the output of a number of tests
+	* test/dtd12 : this test was actually not wellformed, the new
+	  parser pukes at it, fixed ...
+
+Tue Mar 20 12:22:36 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* parser.c: fixing bug 52299 strange condition leading
+	  to a parser crash due to a buffer overflow
+	* result/attrib.xml test/attrib.xml:
+	  added the specific test case
+
+2001-01-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Actually bump the version.
+	
 Thu Jan 11 11:12:16 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
 
 	* configure.in: releasing 1.8.11
