@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprintui.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 23:32-0400\n"
-"PO-Revision-Date: 2004-08-20 15:57+0530\n"
+"POT-Creation-Date: 2004-12-06 11:55-0500\n"
+"PO-Revision-Date: 2004-10-26 17:28+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "<magnet@magnet-i.com>\n"
 "X-Generator: KBabel 1.3.1\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 
@@ -58,11 +59,11 @@ msgstr "જીનોમ ફોન્ટ સંરચના તરીકે ફ�
 #: libgnomeprintui/gnome-font-dialog.c:164
 #: libgnomeprintui/gnome-font-dialog.c:199
 msgid "Font family"
-msgstr "ફોન્ટ કુટંુબ"
+msgstr "ફોન્ટ પરિવાર"
 
 #: libgnomeprintui/gnome-font-dialog.c:200
 msgid "The list of font families available"
-msgstr "પ્રાપ્ત ફોન્ટ કુટંુબની સૂચી"
+msgstr "પ્રાપ્ત ફોન્ટ પરિવારની સૂચી"
 
 # libgnomeprintui/gnome-font-dialog.c:217
 #. Style frame
@@ -78,7 +79,7 @@ msgstr "ફોન્ટ શૈલી"
 # libgnomeprintui/gnome-font-dialog.c:264
 #: libgnomeprintui/gnome-font-dialog.c:251
 msgid "The list of styles available for the selected font family"
-msgstr "પસંદ કરેલ ફોન્ટ કુટંુબ માટે પ્રાપ્ત રીતની સૂચી"
+msgstr "પસંદ કરેલ ફોન્ટ પરિવાર માટે પ્રાપ્ત રીતની સૂચી"
 
 # libgnomeprintui/gnome-font-dialog.c:292
 #: libgnomeprintui/gnome-font-dialog.c:281
@@ -98,7 +99,7 @@ msgstr "ફોન્ટ પૂર્વદર્શન"
 
 #: libgnomeprintui/gnome-font-dialog.c:881
 msgid "Displays some example text in the selected font"
-msgstr "પસંદ કરેલ ફોન્ટ માં કેટલાક ઉદાહરણ લખાણ પ્રદર્શિત કરો"
+msgstr "પસંદ કરેલ ફોન્ટમાં કેટલાક ઉદાહરણ લખાણ પ્રદર્શિત કરો"
 
 # libgnomeprintui/gnome-font-dialog.c:912
 #: libgnomeprintui/gnome-font-dialog.c:896
@@ -106,33 +107,33 @@ msgid "Font Selection"
 msgstr "ફોન્ટ પસંદગી"
 
 # libgnomeprintui/gpaui/transport-selector.c:299
-#: libgnomeprintui/gnome-print-config-dialog.c:241
+#: libgnomeprintui/gnome-print-config-dialog.c:245
 msgid "Default Settings"
 msgstr "મૂળભૂત સુયોજનો"
 
-#: libgnomeprintui/gnome-print-config-dialog.c:267
+#: libgnomeprintui/gnome-print-config-dialog.c:271
 msgid "Image showing pages being printed in duplex."
 msgstr "ચિત્રો પાનાને ડુપ્લેક્ષમાં છાપેલા બતાવે છે."
 
-#: libgnomeprintui/gnome-print-config-dialog.c:271
+#: libgnomeprintui/gnome-print-config-dialog.c:275
 msgid "_Duplex"
 msgstr "ડુપ્લેક્ષ (_D)"
 
-#: libgnomeprintui/gnome-print-config-dialog.c:277
+#: libgnomeprintui/gnome-print-config-dialog.c:281
 msgid "Pages are printed in duplex."
 msgstr "પાનાઓ ડુપ્લેક્ષમાં છપાયેલા છે."
 
-#: libgnomeprintui/gnome-print-config-dialog.c:285
+#: libgnomeprintui/gnome-print-config-dialog.c:289
 msgid ""
 "Image showing the second page of a duplex printed sequence to be printed "
 "upside down."
 msgstr "ચિત્રો ડુપ્લેક્ષમાં છપાયેલ ક્રમનું બીજુ પાનુ નીચેથી ઉપરની બાજુએ બતાવે છે."
 
-#: libgnomeprintui/gnome-print-config-dialog.c:290
+#: libgnomeprintui/gnome-print-config-dialog.c:294
 msgid "_Tumble"
 msgstr "ટમ્બલ (_T)"
 
-#: libgnomeprintui/gnome-print-config-dialog.c:296
+#: libgnomeprintui/gnome-print-config-dialog.c:300
 msgid ""
 "If copies of the document are printed in duplex, the second page is flipped "
 "upside down,"
@@ -140,12 +141,12 @@ msgstr ""
 "જો દસ્તાવેજોની નકલો ડુપ્લેક્ષમાં છપાયેલ હોય તો, બીજુ પાનુ ઉપરથી નીચેની બાજુ પલટાઈ જાય છે,"
 
 # libgnomeprintui/gnome-print-dialog.c:187
-#: libgnomeprintui/gnome-print-config-dialog.c:316
+#: libgnomeprintui/gnome-print-config-dialog.c:320
 msgid "_Printing Time:"
 msgstr "છાપણી સમય (_P):"
 
 # libgnomeprintui/gnome-print-dialog.c:161
-#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-config-dialog.c:346
 #: libgnomeprintui/gnome-print-dialog.c:389
 msgid "Error while loading printer configuration"
 msgstr "પ્રિન્ટર રુપરેખા લાવતી વખતે ભૂલ"
@@ -200,7 +201,7 @@ msgstr "કાર્ય"
 # libgnomeprintui/gnome-print-dialog.c:150
 # libgnomeprintui/gnome-printer-dialog.c:116
 #: libgnomeprintui/gnome-print-dialog.c:372
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:166
 msgid "Printer"
 msgstr "પ્રિન્ટર"
 
@@ -234,222 +235,222 @@ msgstr "છાપવા માટે પાનાની અંતીમ સી�
 
 # libgnomeprintui/gnome-print-dialog.c:301
 # libgnomeprintui/gnome-print-paper-selector.c:1407
-#: libgnomeprintui/gnome-print-job-preview.c:618
+#: libgnomeprintui/gnome-print-job-preview.c:656
 msgid "Page Preview"
 msgstr "પાનાનો પૂર્વદર્શન"
 
-#: libgnomeprintui/gnome-print-job-preview.c:619
+#: libgnomeprintui/gnome-print-job-preview.c:657
 msgid "The preview of a page in the document to be printed"
 msgstr "દસ્તાવેજના છાપવા માટેના પાનાનો પૂર્વદર્શન"
 
 # libgnomeprintui/gnome-print-master-preview.c:638
-#: libgnomeprintui/gnome-print-job-preview.c:636
+#: libgnomeprintui/gnome-print-job-preview.c:674
 msgid "P_age: "
-msgstr "પાનું: (_a)"
+msgstr "પાનું (_a): "
 
 #. We are displaying 'Page: XXX of XXX'.
-#: libgnomeprintui/gnome-print-job-preview.c:652
+#: libgnomeprintui/gnome-print-job-preview.c:690
 msgid "of"
 msgstr "નું"
 
 # libgnomeprintui/gnome-print-master-preview.c:638
-#: libgnomeprintui/gnome-print-job-preview.c:658
+#: libgnomeprintui/gnome-print-job-preview.c:696
 msgid "Page total"
 msgstr "કુલ પાના"
 
-#: libgnomeprintui/gnome-print-job-preview.c:659
+#: libgnomeprintui/gnome-print-job-preview.c:697
 msgid "The total number of pages in the document"
 msgstr "દસ્તાવેજના કુલ પાનાની સંખ્યા"
 
-#: libgnomeprintui/gnome-print-job-preview.c:661
+#: libgnomeprintui/gnome-print-job-preview.c:699
 msgid "Use _theme colors for content"
 msgstr "સમાવિષ્ટો માટે થીમ રંગો વાપરો (_t)"
 
-#: libgnomeprintui/gnome-print-job-preview.c:752
+#: libgnomeprintui/gnome-print-job-preview.c:788
 msgid "Other"
 msgstr "બીજા"
 
 # libgnomeprintui/gnome-print-master-preview.c:687
-#: libgnomeprintui/gnome-print-job-preview.c:781
+#: libgnomeprintui/gnome-print-job-preview.c:817
 msgid "Prints the current file"
 msgstr "વર્તમાન ફાઇલને છાપો"
 
 # libgnomeprintui/gnome-print-master-preview.c:689
-#: libgnomeprintui/gnome-print-job-preview.c:789
+#: libgnomeprintui/gnome-print-job-preview.c:825
 msgid "Closes print preview window"
 msgstr "છાપણી પૂર્વદર્શન વિન્ડો બંધ કરો"
 
 # libgnomeprintui/gnome-print-master-preview.c:691
-#: libgnomeprintui/gnome-print-job-preview.c:802
+#: libgnomeprintui/gnome-print-job-preview.c:838
 msgid "Shows the first page"
 msgstr "પહેલુ પાનું પ્રદર્શિત કરો"
 
 # libgnomeprintui/gnome-print-master-preview.c:693
-#: libgnomeprintui/gnome-print-job-preview.c:810
+#: libgnomeprintui/gnome-print-job-preview.c:846
 msgid "Shows the previous page"
 msgstr "પાછળનું પાનું પ્રદર્શિત કરો"
 
 # libgnomeprintui/gnome-print-master-preview.c:695
-#: libgnomeprintui/gnome-print-job-preview.c:818
+#: libgnomeprintui/gnome-print-job-preview.c:854
 msgid "Shows the next page"
 msgstr "આગળનું પાનું પ્રદર્શિત કરો"
 
 # libgnomeprintui/gnome-print-master-preview.c:697
-#: libgnomeprintui/gnome-print-job-preview.c:826
+#: libgnomeprintui/gnome-print-job-preview.c:862
 msgid "Shows the last page"
 msgstr "છેલ્લુ પાનું પ્રદર્શિત કરો"
 
 # libgnomeprintui/gnome-print-master-preview.c:699
-#: libgnomeprintui/gnome-print-job-preview.c:839
+#: libgnomeprintui/gnome-print-job-preview.c:875
 msgid "Zooms 1:1"
 msgstr "નાનું-મોટું કરો 1:1"
 
 # libgnomeprintui/gnome-print-master-preview.c:701
-#: libgnomeprintui/gnome-print-job-preview.c:847
+#: libgnomeprintui/gnome-print-job-preview.c:883
 msgid "Zooms to fit the whole page"
 msgstr "આખા પાનામાં બંધબેસે તે રીતે નાનું-મોટું કરો"
 
 # libgnomeprintui/gnome-print-master-preview.c:703
-#: libgnomeprintui/gnome-print-job-preview.c:855
+#: libgnomeprintui/gnome-print-job-preview.c:891
 msgid "Zooms the page in"
-msgstr "પાનાને માેટું દેખાડો"
+msgstr "પાનાને મોટું દેખાડો"
 
 # libgnomeprintui/gnome-print-master-preview.c:705
-#: libgnomeprintui/gnome-print-job-preview.c:863
+#: libgnomeprintui/gnome-print-job-preview.c:899
 msgid "Zooms the page out"
 msgstr "પાનાને નાનું દેખાડો"
 
-#: libgnomeprintui/gnome-print-job-preview.c:875
+#: libgnomeprintui/gnome-print-job-preview.c:911
 msgid "View multiple pages"
 msgstr "ઘણા બધા પાનાઓ દેખાડો"
 
-#: libgnomeprintui/gnome-print-job-preview.c:1168
-#: libgnomeprintui/gnome-print-job-preview.c:1169
+#: libgnomeprintui/gnome-print-job-preview.c:1204
+#: libgnomeprintui/gnome-print-job-preview.c:1205
 msgid "Number of pages horizontally"
 msgstr "આડા પાનાઓની સંખ્યા"
 
-#: libgnomeprintui/gnome-print-job-preview.c:1172
-#: libgnomeprintui/gnome-print-job-preview.c:1173
+#: libgnomeprintui/gnome-print-job-preview.c:1208
+#: libgnomeprintui/gnome-print-job-preview.c:1209
 msgid "Number of pages vertically"
 msgstr "ઊભા પાનાઓની સંખ્યા"
 
 # libgnomeprintui/gnome-print-master-preview.c:816
-#: libgnomeprintui/gnome-print-job-preview.c:1213
+#: libgnomeprintui/gnome-print-job-preview.c:1249
 msgid "Gnome Print Preview"
 msgstr "જીનોમ છાપણી પૂર્વદર્શન"
 
-#: libgnomeprintui/gnome-print-job-preview.c:1245
+#: libgnomeprintui/gnome-print-job-preview.c:1280
 msgid "No visible output was created."
 msgstr "કોઈ દ્રશ્યમાન આઉટપુટ બન્યુ નથી."
 
 # libgnomeprintui/gnome-print-paper-selector.c:1317
-#: libgnomeprintui/gnome-print-paper-selector.c:440
+#: libgnomeprintui/gnome-print-paper-selector.c:443
 msgid "Paper and Layout"
 msgstr "કાગળ અને દેખાવ"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1329
 #. Paper size selector
-#: libgnomeprintui/gnome-print-paper-selector.c:457
+#: libgnomeprintui/gnome-print-paper-selector.c:460
 msgid "Paper _size:"
 msgstr "કાગળનું માપ (_s):"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1339
 #. Custom paper Width
-#: libgnomeprintui/gnome-print-paper-selector.c:468
+#: libgnomeprintui/gnome-print-paper-selector.c:471
 msgid "_Width:"
 msgstr "પહોળાઈ (_W):"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1349
 #. Custom paper Height
-#: libgnomeprintui/gnome-print-paper-selector.c:482
+#: libgnomeprintui/gnome-print-paper-selector.c:485
 msgid "_Height:"
 msgstr "ઊંચાઈ (_H):"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:500
+#: libgnomeprintui/gnome-print-paper-selector.c:503
 msgid "Metric selector"
 msgstr "મેટ્રિક પસંદ કરનાર"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:501
+#: libgnomeprintui/gnome-print-paper-selector.c:504
 msgid ""
 "Specifies the metric to use when setting the width and height of the paper"
 msgstr "કાગળની પહોળાઇ અને ઊંચાઈનું સમયોજન કરતી વખતે ઉપયોગ મેટ્રીક દર્શાવો"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1368
 #. Feed orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:504
+#: libgnomeprintui/gnome-print-paper-selector.c:507
 msgid "_Feed orientation:"
 msgstr "જવાની દિશા (_F):"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1377
 #. Page orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:518
+#: libgnomeprintui/gnome-print-paper-selector.c:521
 msgid "Page _orientation:"
 msgstr "પાનું છાપવાની દિશા (_o):"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1386
 #. Layout
-#: libgnomeprintui/gnome-print-paper-selector.c:529
+#: libgnomeprintui/gnome-print-paper-selector.c:532
 msgid "_Layout:"
 msgstr "દેખાવ (_L):"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1329
 #. Paper source
-#: libgnomeprintui/gnome-print-paper-selector.c:540
+#: libgnomeprintui/gnome-print-paper-selector.c:543
 msgid "Paper _tray:"
 msgstr "કાગળ મૂકવાની ટ્રે (_t):"
 
 # libgnomeprintui/gnome-print-dialog.c:301
 # libgnomeprintui/gnome-print-paper-selector.c:1407
-#: libgnomeprintui/gnome-print-paper-selector.c:554
-#: libgnomeprintui/gnome-print-paper-selector.c:568
+#: libgnomeprintui/gnome-print-paper-selector.c:557
+#: libgnomeprintui/gnome-print-paper-selector.c:571
 msgid "Preview"
 msgstr "પૂર્વદર્શન"
 
-#: libgnomeprintui/gnome-print-paper-selector.c:569
+#: libgnomeprintui/gnome-print-paper-selector.c:572
 msgid "Preview of the page size, orientation and layout"
 msgstr "પાનાનું માપ, દિશા અને દેખાવ નું પૂર્વદર્શન"
 
 # libgnomeprintui/gnome-print-paper-selector.c:1988
-#: libgnomeprintui/gnome-print-paper-selector.c:575
+#: libgnomeprintui/gnome-print-paper-selector.c:578
 msgid "Margins"
 msgstr "હાંસિયો"
 
 # libgnomeprintui/gnome-print-paper-selector.c:2000
-#: libgnomeprintui/gnome-print-paper-selector.c:609
+#: libgnomeprintui/gnome-print-paper-selector.c:612
 msgid "Top"
 msgstr "ઉપર"
 
 # libgnomeprintui/gnome-print-paper-selector.c:2013
-#: libgnomeprintui/gnome-print-paper-selector.c:612
+#: libgnomeprintui/gnome-print-paper-selector.c:615
 msgid "Bottom"
 msgstr "નીચે"
 
 # libgnomeprintui/gnome-print-paper-selector.c:2026
-#: libgnomeprintui/gnome-print-paper-selector.c:615
+#: libgnomeprintui/gnome-print-paper-selector.c:618
 msgid "Left"
 msgstr "ડાબે"
 
 # libgnomeprintui/gnome-print-paper-selector.c:2039
-#: libgnomeprintui/gnome-print-paper-selector.c:618
+#: libgnomeprintui/gnome-print-paper-selector.c:621
 msgid "Right"
 msgstr "જમણે"
 
 # libgnomeprintui/gnome-printer-dialog.c:135
-#: libgnomeprintui/gnome-printer-selector.c:168
+#: libgnomeprintui/gnome-printer-selector.c:162
 msgid "Co_nfigure"
 msgstr "રુપાંતર (_n)"
 
-#: libgnomeprintui/gnome-printer-selector.c:177
+#: libgnomeprintui/gnome-printer-selector.c:171
 msgid "Adjust the settings of the selected printer"
 msgstr "પસંદકરેલ પ્રિન્ટરના સમયોજન બદલો"
 
 # libgnomeprintui/gnome-printer-dialog.c:125
-#: libgnomeprintui/gnome-printer-selector.c:185
+#: libgnomeprintui/gnome-printer-selector.c:195
 msgid "_Settings:"
 msgstr "સમયોજન (_S):"
 
 # libgnomeprintui/gnome-printer-dialog.c:126
-#: libgnomeprintui/gnome-printer-selector.c:194
+#: libgnomeprintui/gnome-printer-selector.c:204
 msgid "_Location:"
 msgstr "સ્થાન (_L):"
 
@@ -466,17 +467,17 @@ msgid "Print to _file"
 msgstr "ફાઇલને છાપો (_f)"
 
 # libgnomeprintui/gnome-printer-dialog.c:127
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:178
 msgid "State"
 msgstr "સ્થિતિ"
 
 # libgnomeprintui/gnome-print-dialog.c:138
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:185
 msgid "Jobs"
 msgstr "કાર્યો"
 
 # libgnomeprintui/gnome-printer-dialog.c:126
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:192
 msgid "Location"
 msgstr "સ્થાન"
 
@@ -520,22 +521,22 @@ msgstr "મિ"
 msgid "in"
 msgstr "ઈંચ"
 
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:184
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:532
 #, c-format
 msgid "The specified filename \"%s\" is an existing directory."
 msgstr "સ્પષ્ટ કરેલ ફાઈલનું નામ \"%s\" એ હાલની ડિરેક્ટરી છે."
 
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:203
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:554
 #, c-format
 msgid "Should the file %s be overwritten?"
 msgstr "શું ફાઈલ %s પર ફરીથી લખવું જોઈએ?"
 
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:248
 msgid "Please specify the location and filename of the output file:"
 msgstr "મહેરબાની કરીને આઉટપુટ ફાઈલની જગ્યા અને ફાઈલનામ સ્પષ્ટ કરો:"
 
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:272
 msgid "All Files"
 msgstr "બધી ફાઈલો"

@@ -1,3 +1,32 @@
+2004-12-06  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.2
+
+2004-11-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-10-10  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-09-26  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-25  Laszlo Dvornik  <dvornik@gnome.hu>
+
+	* hu.po: Updated Hungarian translation by Gabor Kelemen.
+
+2004-09-21  Abel Cheung  <maddog@linuxhall.org>
+
+	* zh_TW.po: Updated traditional Chinese translation by GNOME HK Team
+
+2004-09-19  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Francesco Marletta <francesco.marletta@tiscali.it>.
+
 2004-09-13  Jody Goldberg <jody@gnome.org>
 
 	* Release 2.8.0

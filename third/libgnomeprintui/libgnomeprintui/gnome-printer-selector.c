@@ -47,6 +47,7 @@
 #include "gpaui/gpa-transport-selector.h"
 
 #define GPS_PAD 4
+#define ADD_PRINTER_APP	"gnome-cups-add"
 
 static void gnome_printer_selector_class_init (GnomePrinterSelectorClass *klass);
 static void gnome_printer_selector_init (GObject *object);
@@ -57,6 +58,7 @@ static void gnome_printer_selector_finalize (GObject *object);
 static GtkWidget *gpw_create_label_with_mnemonic (GtkTable *table, gint l, gint r, gint t, gint b, const gchar *text, GtkWidget *mnemonic_widget, unsigned y_pad);
 
 static void gpw_configure_clicked (GtkWidget *widget, GPAWidget *gpaw);
+static void gpw_add_clicked (GtkWidget *btn, GPAWidget *gpaw);
 static void start_polling (GnomePrinterSelector *ps);
 static void stop_polling (GnomePrinterSelector *ps);
 
@@ -135,7 +137,7 @@ static gint
 gnome_printer_selector_construct (GPAWidget *gpa_widget)
 {
 	GnomePrinterSelector *gpw;
-	GtkWidget *f, *t, *b, *l, *h, *v;
+	GtkWidget *t, *b, *l, *v;
 	AtkObject *atko;
 
 	gpw = GNOME_PRINTER_SELECTOR (gpa_widget);
@@ -145,25 +147,17 @@ gnome_printer_selector_construct (GPAWidget *gpa_widget)
 	g_signal_connect (gpw, "hide", G_CALLBACK (stop_polling), NULL);
 	g_signal_connect (gpw, "show", G_CALLBACK (start_polling), NULL);
 
-	f = gtk_frame_new ("");
-	gtk_frame_set_shadow_type (GTK_FRAME (f), GTK_SHADOW_NONE);
-
 	v = gtk_vbox_new (FALSE, 0);
 	gpw->printers = gpa_widget_new (GPA_TYPE_PRINTER_SELECTOR, NULL);
 	gtk_box_pack_start_defaults (GTK_BOX (v), gpw->printers);
 	gtk_widget_show (gpw->printers);
 
-	gtk_box_pack_start (GTK_BOX (v), f, 0, 0, 0);
 	gtk_container_add (GTK_CONTAINER (gpw), v);
-	gtk_widget_show (f);
 	gtk_widget_show (v);
 
 	t = gtk_table_new (2, 6, FALSE);
-	h = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (t);
-	gtk_widget_show (h);
-	gtk_box_pack_start (GTK_BOX (h), t, FALSE, TRUE, 0);
-	gtk_container_add (GTK_CONTAINER (f), h);
+	gtk_box_pack_start (GTK_BOX (v), t, FALSE, TRUE, GPS_PAD);
 
 	b = gtk_button_new_with_mnemonic (_("Co_nfigure"));
 	gtk_widget_show (b);
@@ -171,10 +165,26 @@ gnome_printer_selector_construct (GPAWidget *gpa_widget)
 			  (GCallback) gpw_configure_clicked, gpw);
 
 	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 1, 2,
-			  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
+			  GTK_FILL, 0,
 			  GPS_PAD, GPS_PAD);
 	atko = gtk_widget_get_accessible (b);
 	atk_object_set_description (atko, _("Adjust the settings of the selected printer"));
+
+	if (g_find_program_in_path (ADD_PRINTER_APP)) {
+		GtkWidget *align = gtk_alignment_new (1., .5, 0., 0.);
+		b = gtk_button_new_from_stock (GTK_STOCK_ADD);
+		g_signal_connect (G_OBJECT (b), "clicked",
+				  (GCallback) gpw_add_clicked, gpw);
+
+		gtk_container_add (GTK_CONTAINER (align), b);
+		gtk_widget_show_all (align);
+		gtk_table_attach (GTK_TABLE (t), align, 4, 6, 1, 2,
+				  GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
+				  GPS_PAD, GPS_PAD);
+		atko = gtk_widget_get_accessible (b);
+#warning translate after branch
+		atk_object_set_description (atko, "Define a new local printer");
+	}
 
 	gpw->settings = gpa_widget_new (GPA_TYPE_SETTINGS_SELECTOR, NULL);
 	gtk_widget_show (gpw->settings);
@@ -192,7 +202,7 @@ gnome_printer_selector_construct (GPAWidget *gpa_widget)
 			  GPS_PAD, GPS_PAD);
 	l = gpw_create_label_with_mnemonic (GTK_TABLE (t), 0, 1, 2, 3,
 					_("_Location:"),
-					((GPATransportSelector*) gpw->transport)->combo, GPS_PAD*4);
+					((GPATransportSelector*) gpw->transport)->combo, GPS_PAD*3);
 	return TRUE;
 }
 
@@ -272,8 +282,8 @@ gpw_create_label_with_mnemonic (GtkTable *table, gint l, gint r, gint t, gint b,
 {
 	GtkWidget *w = gtk_label_new_with_mnemonic (text);
 	gtk_widget_show (w);
-	gtk_misc_set_alignment (GTK_MISC (w), 1.0, 0.5);
-	gtk_table_attach (table, w, l, r, t, b, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, GPS_PAD, y_pad);
+	gtk_misc_set_alignment (GTK_MISC (w), .0, 0.5);
+	gtk_table_attach (table, w, l, r, t, b, GTK_FILL, GTK_FILL | GTK_EXPAND, GPS_PAD, y_pad);
 	gtk_label_set_mnemonic_widget ((GtkLabel *) w, mnemonic_widget);
 
 	return w;
@@ -300,6 +310,25 @@ gpw_configure_clicked (GtkWidget *widget, GPAWidget *gpaw)
 	gtk_widget_destroy (GTK_WIDGET (gpcd));
 }
 
+static void
+gpw_add_clicked (GtkWidget *btn, GPAWidget *gpaw)
+{
+	static char *argv[] = { ADD_PRINTER_APP, NULL };
+	GError *err = NULL;
+	g_spawn_async (NULL, argv, NULL, G_SPAWN_SEARCH_PATH,
+		       NULL, NULL, NULL, &err);
+	if (err != NULL) {
+		GtkWidget *dialog = gtk_message_dialog_new (
+			(GtkWindow *)gtk_widget_get_toplevel (btn),
+			GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR,
+			GTK_BUTTONS_CLOSE,
+			"Unable to launch " ADD_PRINTER_APP " : %s", err->message);
+
+		g_signal_connect_swapped (GTK_OBJECT (dialog), "response",
+			G_CALLBACK (gtk_widget_destroy), dialog);
+		gtk_widget_show (dialog);
+	}
+}
 
 gboolean           
 gnome_printer_selector_check_consistency (GnomePrinterSelector *psel)

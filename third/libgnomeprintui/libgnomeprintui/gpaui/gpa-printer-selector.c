@@ -48,6 +48,11 @@ static void gpa_printer_selector_sync_printer (GtkListStore *model,
 					       GPAPrinter   *printer);
 static void selection_changed_cb (GtkTreeSelection *selection, 
 				  gpointer          data);
+gboolean interactive_search_func (GtkTreeModel *model,
+				  gint          column,
+				  const gchar  *key,
+				  GtkTreeIter  *iter,
+				  gpointer search_data);
 static void set_printer_icon (GtkCellLayout   *layout, 
 			      GtkCellRenderer *rend,
 			      GtkTreeModel    *model, 
@@ -163,6 +168,11 @@ gpa_printer_selector_init (GPAPrinterSelector *ps)
 						 (GtkTreeCellDataFunc)set_printer_name, 
 						 NULL, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (ps->treeview), col);
+	gtk_tree_view_set_search_column (GTK_TREE_VIEW (ps->treeview), 0);
+	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (ps->treeview),
+					     interactive_search_func,
+					     NULL,
+					     NULL);
 
 	rend = gtk_cell_renderer_text_new ();
 	col = gtk_tree_view_column_new_with_attributes (_("State"), rend, NULL);	
@@ -261,6 +271,26 @@ printer_sort_func (GtkTreeModel *model,
 		g_free (b_name);
 		return ret;
 	}
+}
+
+gboolean
+interactive_search_func (GtkTreeModel *model,
+			 gint column,
+			 const gchar *key,
+			 GtkTreeIter *iter,
+			 gpointer search_data)
+{
+	char *name;
+	GPANode *printer;
+	gboolean ret;
+
+	gtk_tree_model_get (model, iter, 0, &printer, -1);	
+	name = gpa_node_get_value (printer);
+	
+	ret = strncmp (key, name, strlen (key));
+	g_free (name);
+
+	return ret;
 }
 
 void
@@ -504,7 +534,7 @@ gpa_printer_selector_construct (GPAWidget *gpa)
 		default_printer = GPA_REFERENCE_REFERENCE (GPA_CONFIG (ps->config)->printer);
 
 	if (default_printer != NULL &&
-	    node_to_iter (ps->model, default_printer, &iter), FALSE) {
+	    node_to_iter (ps->model, default_printer, &iter)) {
 		gtk_tree_model_sort_convert_child_iter_to_iter (
 			GTK_TREE_MODEL_SORT (ps->sortmodel), &sort_iter, &iter);
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (ps->treeview));

@@ -1,3 +1,105 @@
+2004-12-06  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.2
+
+2004-12-03  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gnome-print-preview.c
+	(gnome_print_preview_get_use_theme) : new.
+
+	* libgnomeprintui/gnome-print-job-preview.c (create_preview_canvas) :
+	  init the use theme toggle.
+
+2004-12-01  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gpaui/gpa-transport-selector.c
+	(gpa_transport_selector_rebuild_combo) : Use the new
+	  gnome_print_transport_exists_by_name to avoid listing non-existant
+	  transports for a system.
+
+	* configure.in : bump libgnomeprint req to get the transport_exists
+	  function
+
+2004-11-29  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gnome-print-job-preview.c (create_preview_canvas) :
+	  disable auto-centering of the canvas.  The new 1:1 patch would leave
+	  things in the center which is unlikely to be what people want.
+
+2004-11-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-11-23  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=157706
+	* libgnomeprintui/gnome-print-job-preview.c (gpmp_zoom) : make an
+	  attempt to use the monitor's dpi to get a 1:1 size match for
+	  previews.  We'll still fail miserably for most monitors because they
+	  lie about their resolution.
+
+2004-11-17  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.c
+	(gpa_printer_selector_init) : suppress some warnings
+
+2004-11-17  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=158572
+	* libgnomeprintui/gpaui/gpa-printer-selector.c
+	(gpa_printer_selector_construct) : cut-n-paste-o
+
+2004-11-16  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=157881
+	* libgnomeprintui/gnome-print-job-preview.c (gpmp_zoom) : We need
+	  2*PAGE_PAD around things, don't recreate the bug andreas just fixed
+
+2004-11-16  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=157793
+	* libgnomeprintui/gnome-print-job-preview.c (gpmp_zoom) : Fit the
+	  zoom here using the right number of cols/rows rather than the max.
+	(preview_zoom_fit_cmd) : gmp_zoom does the work now.
+	(on_1x1_clicked) : no need to zoom again nor is it wise to use
+	  g_object_set which triggers two zooms.
+	(on_1x2_clicked) : ditto.
+	(on_2x1_clicked) : ditto.
+	(on_2x2_clicked) : ditto.
+
+2004-11-11  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=157881
+	* libgnomeprintui/gnome-print-job-preview.c (preview_zoom_fit_cmd):
+	  use 8 rather than 5 extra pixels.
+
+2004-11-09  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gnome-print-config-dialog.c (duplex_toggled) : be
+	  more sensitive to missing icons.
+	(tumble_toggled) : ditto.
+
+2004-10-27  Colin Walters  <walters@redhat.com>
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.c
+	(interactive_search_func): New function.
+	(gpa_printer_selector_init): Use it.
+
+2004-10-19  Jody Goldberg <jody@gnome.org>
+
+	* libgnomeprintui/gnome-print-paper-selector.c
+	(gnome_paper_selector_unit_changed_cb) : changing the unit, changes
+	  the prefered unit which helps persist things.
+
+2004-10-14  Chris Kelso  <ckelso@heliosphere.org>
+
+	* libgnomeprintui/Makefile.am: Place dependency libs first for linking.
+
+2004-09-13  Jody Goldberg <jody@gnome.org>
+
+	* configure.in :  bump to 2.8.1.  No branching for a 2-3 weeks so that
+	  we can fix things if necessary before major change starts.
+
 2004-09-13  Jody Goldberg <jody@gnome.org>
 
 	* Release 2.8.0
@@ -18,7 +120,7 @@
 
 2004-08-28  Akagic Amila  <bono@linux.org.ba>
 
-        * configure.in: Added 'bs' to ALL_LINGUAS.
+	* configure.in: Added 'bs' to ALL_LINGUAS.
 
 2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
 

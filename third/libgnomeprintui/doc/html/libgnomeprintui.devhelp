@@ -13,24 +13,24 @@
     </sub>
   </chapters>
   <functions>
-    <function name="GNOME_TYPE_FONT_SELECTION" link="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-SELECTION-CAPS"/>
-    <function name="GNOME_FONT_SELECTION()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-CAPS"/>
-    <function name="GNOME_FONT_SELECTION_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-CLASS-CAPS"/>
-    <function name="GNOME_IS_FONT_SELECTION()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION-CAPS"/>
-    <function name="GNOME_IS_FONT_SELECTION_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION-CLASS-CAPS"/>
-    <function name="GNOME_FONT_SELECTION_GET_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-GET-CLASS-CAPS"/>
-    <function name="GNOME_TYPE_FONT_DIALOG" link="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-DIALOG-CAPS"/>
-    <function name="GNOME_FONT_DIALOG()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-CAPS"/>
-    <function name="GNOME_FONT_DIALOG_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-CLASS-CAPS"/>
-    <function name="GNOME_IS_FONT_DIALOG()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG-CAPS"/>
-    <function name="GNOME_IS_FONT_DIALOG_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG-CLASS-CAPS"/>
-    <function name="GNOME_FONT_DIALOG_GET_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-GET-CLASS-CAPS"/>
-    <function name="struct GnomeFontSelection" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection-struct"/>
-    <function name="struct GnomeFontSelectionClass" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelectionClass"/>
-    <function name="struct GnomeFontPreview" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview-struct"/>
-    <function name="struct GnomeFontPreviewClass" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreviewClass"/>
-    <function name="struct GnomeFontDialog" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialog-struct"/>
-    <function name="struct GnomeFontDialogClass" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialogClass"/>
+    <function name="GNOME_TYPE_FONT_SELECTION" link="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-SELECTION:CAPS"/>
+    <function name="GNOME_FONT_SELECTION()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION:CAPS"/>
+    <function name="GNOME_FONT_SELECTION_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-CLASS:CAPS"/>
+    <function name="GNOME_IS_FONT_SELECTION()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION:CAPS"/>
+    <function name="GNOME_IS_FONT_SELECTION_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-SELECTION-CLASS:CAPS"/>
+    <function name="GNOME_FONT_SELECTION_GET_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-SELECTION-GET-CLASS:CAPS"/>
+    <function name="GNOME_TYPE_FONT_DIALOG" link="libgnomeprintui-gnome-font-dialog.html#GNOME-TYPE-FONT-DIALOG:CAPS"/>
+    <function name="GNOME_FONT_DIALOG()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG:CAPS"/>
+    <function name="GNOME_FONT_DIALOG_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-CLASS:CAPS"/>
+    <function name="GNOME_IS_FONT_DIALOG()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG:CAPS"/>
+    <function name="GNOME_IS_FONT_DIALOG_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-IS-FONT-DIALOG-CLASS:CAPS"/>
+    <function name="GNOME_FONT_DIALOG_GET_CLASS()" link="libgnomeprintui-gnome-font-dialog.html#GNOME-FONT-DIALOG-GET-CLASS:CAPS"/>
+    <function name="GnomeFontSelection" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection-struct"/>
+    <function name="GnomeFontSelectionClass" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelectionClass"/>
+    <function name="GnomeFontPreview" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreview-struct"/>
+    <function name="GnomeFontPreviewClass" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontPreviewClass"/>
+    <function name="GnomeFontDialog" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialog-struct"/>
+    <function name="GnomeFontDialogClass" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontDialogClass"/>
     <function name="gnome_font_selection_new ()" link="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-new"/>
     <function name="gnome_font_selection_get_face ()" link="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-get-face"/>
     <function name="gnome_font_selection_get_size ()" link="libgnomeprintui-gnome-font-dialog.html#gnome-font-selection-get-size"/>
@@ -46,16 +46,16 @@
     <function name="gnome_font_dialog_get_fontsel ()" link="libgnomeprintui-gnome-font-dialog.html#gnome-font-dialog-get-fontsel"/>
     <function name="gnome_font_dialog_get_preview ()" link="libgnomeprintui-gnome-font-dialog.html#gnome-font-dialog-get-preview"/>
     <function name="The &quot;font-set&quot; signal" link="libgnomeprintui-gnome-font-dialog.html#GnomeFontSelection-font-set"/>
-    <function name="struct GnomePrintCopiesSelector" link="libgnomeprintui-gnome-print-copies.html#GnomePrintCopiesSelector-struct"/>
-    <function name="struct GnomePrintCopiesSelectorClass" link="libgnomeprintui-gnome-print-copies.html#GnomePrintCopiesSelectorClass"/>
+    <function name="GnomePrintCopiesSelector" link="libgnomeprintui-gnome-print-copies.html#GnomePrintCopiesSelector-struct"/>
+    <function name="GnomePrintCopiesSelectorClass" link="libgnomeprintui-gnome-print-copies.html#GnomePrintCopiesSelectorClass"/>
     <function name="gnome_print_copies_selector_new ()" link="libgnomeprintui-gnome-print-copies.html#gnome-print-copies-selector-new"/>
     <function name="gnome_print_copies_selector_set_copies ()" link="libgnomeprintui-gnome-print-copies.html#gnome-print-copies-selector-set-copies"/>
     <function name="gnome_print_copies_selector_get_copies ()" link="libgnomeprintui-gnome-print-copies.html#gnome-print-copies-selector-get-copies"/>
     <function name="gnome_print_copies_selector_get_collate ()" link="libgnomeprintui-gnome-print-copies.html#gnome-print-copies-selector-get-collate"/>
     <function name="The &quot;collate-set&quot; signal" link="libgnomeprintui-gnome-print-copies.html#GnomePrintCopiesSelector-collate-set"/>
     <function name="The &quot;copies-set&quot; signal" link="libgnomeprintui-gnome-print-copies.html#GnomePrintCopiesSelector-copies-set"/>
-    <function name="struct GnomePrintDialog" link="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog-struct"/>
-    <function name="struct GnomePrintDialogClass" link="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialogClass"/>
+    <function name="GnomePrintDialog" link="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog-struct"/>
+    <function name="GnomePrintDialogClass" link="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialogClass"/>
     <function name="enum GnomePrintRangeType" link="libgnomeprintui-gnome-print-dialog.html#GnomePrintRangeType"/>
     <function name="gnome_print_dialog_new ()" link="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-new"/>
     <function name="gnome_print_dialog_construct ()" link="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-construct"/>
@@ -68,41 +68,41 @@
     <function name="gnome_print_dialog_set_copies ()" link="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-set-copies"/>
     <function name="gnome_print_dialog_get_config ()" link="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-get-config"/>
     <function name="The &quot;print-config&quot; property" link="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog--print-config"/>
-    <function name="struct GnomePrinterSelector" link="libgnomeprintui-gnome-printer-selector.html#GnomePrinterSelector-struct"/>
-    <function name="struct GnomePrinterSelectorClass" link="libgnomeprintui-gnome-printer-selector.html#GnomePrinterSelectorClass"/>
+    <function name="GnomePrinterSelector" link="libgnomeprintui-gnome-printer-selector.html#GnomePrinterSelector-struct"/>
+    <function name="GnomePrinterSelectorClass" link="libgnomeprintui-gnome-printer-selector.html#GnomePrinterSelectorClass"/>
     <function name="gnome_printer_selector_new_default ()" link="libgnomeprintui-gnome-printer-selector.html#gnome-printer-selector-new-default"/>
     <function name="gnome_printer_selector_new ()" link="libgnomeprintui-gnome-printer-selector.html#gnome-printer-selector-new"/>
     <function name="gnome_printer_selector_get_config ()" link="libgnomeprintui-gnome-printer-selector.html#gnome-printer-selector-get-config"/>
-    <function name="struct GnomePrintJobPreview" link="libgnomeprintui-gnome-print-job-preview.html#GnomePrintJobPreview-struct"/>
-    <function name="struct GnomePrintJobPreviewClass" link="libgnomeprintui-gnome-print-job-preview.html#GnomePrintJobPreviewClass"/>
-    <function name="GNOME_TYPE_PRINT_JOB_PREVIEW" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-TYPE-PRINT-JOB-PREVIEW-CAPS"/>
-    <function name="GNOME_PRINT_JOB_PREVIEW()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-PRINT-JOB-PREVIEW-CAPS"/>
-    <function name="GNOME_PRINT_JOB_PREVIEW_CLASS()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-PRINT-JOB-PREVIEW-CLASS-CAPS"/>
-    <function name="GNOME_IS_PRINT_JOB_PREVIEW()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-IS-PRINT-JOB-PREVIEW-CAPS"/>
-    <function name="GNOME_IS_PRINT_JOB_PREVIEW_CLASS()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-IS-PRINT-JOB-PREVIEW-CLASS-CAPS"/>
-    <function name="GNOME_PRINT_JOB_PREVIEW_GET_CLASS()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-PRINT-JOB-PREVIEW-GET-CLASS-CAPS"/>
+    <function name="GnomePrintJobPreview" link="libgnomeprintui-gnome-print-job-preview.html#GnomePrintJobPreview-struct"/>
+    <function name="GnomePrintJobPreviewClass" link="libgnomeprintui-gnome-print-job-preview.html#GnomePrintJobPreviewClass"/>
+    <function name="GNOME_TYPE_PRINT_JOB_PREVIEW" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-TYPE-PRINT-JOB-PREVIEW:CAPS"/>
+    <function name="GNOME_PRINT_JOB_PREVIEW()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-PRINT-JOB-PREVIEW:CAPS"/>
+    <function name="GNOME_PRINT_JOB_PREVIEW_CLASS()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-PRINT-JOB-PREVIEW-CLASS:CAPS"/>
+    <function name="GNOME_IS_PRINT_JOB_PREVIEW()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-IS-PRINT-JOB-PREVIEW:CAPS"/>
+    <function name="GNOME_IS_PRINT_JOB_PREVIEW_CLASS()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-IS-PRINT-JOB-PREVIEW-CLASS:CAPS"/>
+    <function name="GNOME_PRINT_JOB_PREVIEW_GET_CLASS()" link="libgnomeprintui-gnome-print-job-preview.html#GNOME-PRINT-JOB-PREVIEW-GET-CLASS:CAPS"/>
     <function name="gnome_print_job_preview_get_type ()" link="libgnomeprintui-gnome-print-job-preview.html#gnome-print-job-preview-get-type"/>
     <function name="gnome_print_job_preview_new ()" link="libgnomeprintui-gnome-print-job-preview.html#gnome-print-job-preview-new"/>
     <function name="The &quot;nx&quot; property" link="libgnomeprintui-gnome-print-job-preview.html#GnomePrintJobPreview--nx"/>
     <function name="The &quot;ny&quot; property" link="libgnomeprintui-gnome-print-job-preview.html#GnomePrintJobPreview--ny"/>
-    <function name="struct GnomePaperPreview" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperPreview"/>
-    <function name="struct GnomePaperPreviewClass" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperPreviewClass"/>
-    <function name="GNOME_TYPE_PAPER_SELECTOR" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-TYPE-PAPER-SELECTOR-CAPS"/>
-    <function name="GNOME_PAPER_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-CAPS"/>
-    <function name="GNOME_PAPER_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-CLASS-CAPS"/>
-    <function name="GNOME_IS_PAPER_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PAPER-SELECTOR-CAPS"/>
-    <function name="GNOME_IS_PAPER_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PAPER-SELECTOR-CLASS-CAPS"/>
-    <function name="GNOME_PAPER_SELECTOR_GET_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-GET-CLASS-CAPS"/>
-    <function name="struct GnomePaperSelector" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperSelector-struct"/>
-    <function name="struct GnomePaperSelectorClass" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperSelectorClass"/>
-    <function name="GNOME_TYPE_PRINT_UNIT_SELECTOR" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-TYPE-PRINT-UNIT-SELECTOR-CAPS"/>
-    <function name="GNOME_PRINT_UNIT_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-CAPS"/>
-    <function name="GNOME_PRINT_UNIT_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-CLASS-CAPS"/>
-    <function name="GNOME_IS_PRINT_UNIT_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PRINT-UNIT-SELECTOR-CAPS"/>
-    <function name="GNOME_IS_PRINT_UNIT_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PRINT-UNIT-SELECTOR-CLASS-CAPS"/>
-    <function name="GNOME_PRINT_UNIT_SELECTOR_GET_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-GET-CLASS-CAPS"/>
-    <function name="struct GnomePrintUnitSelector" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePrintUnitSelector-struct"/>
-    <function name="struct GnomePrintUnitSelectorClass" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePrintUnitSelectorClass"/>
+    <function name="GnomePaperPreview" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperPreview"/>
+    <function name="GnomePaperPreviewClass" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperPreviewClass"/>
+    <function name="GNOME_TYPE_PAPER_SELECTOR" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-TYPE-PAPER-SELECTOR:CAPS"/>
+    <function name="GNOME_PAPER_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR:CAPS"/>
+    <function name="GNOME_PAPER_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-CLASS:CAPS"/>
+    <function name="GNOME_IS_PAPER_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PAPER-SELECTOR:CAPS"/>
+    <function name="GNOME_IS_PAPER_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PAPER-SELECTOR-CLASS:CAPS"/>
+    <function name="GNOME_PAPER_SELECTOR_GET_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-GET-CLASS:CAPS"/>
+    <function name="GnomePaperSelector" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperSelector-struct"/>
+    <function name="GnomePaperSelectorClass" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePaperSelectorClass"/>
+    <function name="GNOME_TYPE_PRINT_UNIT_SELECTOR" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-TYPE-PRINT-UNIT-SELECTOR:CAPS"/>
+    <function name="GNOME_PRINT_UNIT_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR:CAPS"/>
+    <function name="GNOME_PRINT_UNIT_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-CLASS:CAPS"/>
+    <function name="GNOME_IS_PRINT_UNIT_SELECTOR()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PRINT-UNIT-SELECTOR:CAPS"/>
+    <function name="GNOME_IS_PRINT_UNIT_SELECTOR_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PRINT-UNIT-SELECTOR-CLASS:CAPS"/>
+    <function name="GNOME_PRINT_UNIT_SELECTOR_GET_CLASS()" link="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-GET-CLASS:CAPS"/>
+    <function name="GnomePrintUnitSelector" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePrintUnitSelector-struct"/>
+    <function name="GnomePrintUnitSelectorClass" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePrintUnitSelectorClass"/>
     <function name="gnome_paper_preview_new ()" link="libgnomeprintui-gnome-print-paper-selector.html#gnome-paper-preview-new"/>
     <function name="gnome_paper_selector_get_type ()" link="libgnomeprintui-gnome-print-paper-selector.html#gnome-paper-selector-get-type"/>
     <function name="gnome_paper_selector_new ()" link="libgnomeprintui-gnome-print-paper-selector.html#gnome-paper-selector-new"/>
@@ -115,8 +115,8 @@
     <function name="gnome_print_unit_selector_add_adjustment ()" link="libgnomeprintui-gnome-print-paper-selector.html#gnome-print-unit-selector-add-adjustment"/>
     <function name="gnome_print_unit_selector_remove_adjustment ()" link="libgnomeprintui-gnome-print-paper-selector.html#gnome-print-unit-selector-remove-adjustment"/>
     <function name="The &quot;modified&quot; signal" link="libgnomeprintui-gnome-print-paper-selector.html#GnomePrintUnitSelector-modified"/>
-    <function name="struct GnomePrintPreview" link="libgnomeprintui-gnome-print-preview.html#GnomePrintPreview-struct"/>
-    <function name="struct GnomePrintPreviewClass" link="libgnomeprintui-gnome-print-preview.html#GnomePrintPreviewClass"/>
+    <function name="GnomePrintPreview" link="libgnomeprintui-gnome-print-preview.html#GnomePrintPreview-struct"/>
+    <function name="GnomePrintPreviewClass" link="libgnomeprintui-gnome-print-preview.html#GnomePrintPreviewClass"/>
     <function name="gnome_print_preview_new ()" link="libgnomeprintui-gnome-print-preview.html#gnome-print-preview-new"/>
     <function name="gnome_print_preview_new_full ()" link="libgnomeprintui-gnome-print-preview.html#gnome-print-preview-new-full"/>
   </functions>

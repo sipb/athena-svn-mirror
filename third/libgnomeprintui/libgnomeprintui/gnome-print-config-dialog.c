@@ -169,8 +169,10 @@ duplex_toggled (GtkWidget *widget, GnomePrintConfigDialog *gpd)
 	GdkPixbuf *pb = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
 		(duplex ? "stock_print-duplex" : "stock_print-non-duplex"),
 		48, 0, NULL);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (gpd->duplex_image), pb);
-	g_object_unref (G_OBJECT (pb));
+	if (NULL != pb) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (gpd->duplex_image), pb);
+		g_object_unref (G_OBJECT (pb));
+	}
 
 	gtk_widget_set_sensitive (gpd->tumble, duplex);
 	gtk_widget_set_sensitive (gpd->tumble_image, duplex);
@@ -188,8 +190,10 @@ tumble_toggled (GtkWidget *widget, GnomePrintConfigDialog *gpd)
 	GdkPixbuf *pb = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
 		(tumble ? "stock_print-duplex-tumble" : "stock_print-duplex-no-tumble"),
 		48, 0, NULL);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (gpd->tumble_image), pb);
-	g_object_unref (G_OBJECT (pb));
+	if (NULL != pb) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (gpd->tumble_image), pb);
+		g_object_unref (G_OBJECT (pb));
+	}
 
 	if (widget != NULL && gpd->config) 
 		gnome_print_config_set_boolean (gpd->config, 

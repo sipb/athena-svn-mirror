@@ -1,38 +1,56 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-print-preview</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GNOME Print UI Reference Manual"><link rel="up" href="ch02.html" title="API Reference"><link rel="previous" href="libgnomeprintui-gnome-print-paper-selector.html" title="gnome-print-paper-selector"><link rel="chapter" href="libgnomeprintui.html" title="GNOME Print UI Overview"><link rel="chapter" href="ch02.html" title="API Reference"><link rel="refentry" href="libgnomeprintui-gnome-font-dialog.html" title="gnome-font-dialog"><link rel="refentry" href="libgnomeprintui-gnome-print-copies.html" title="gnome-print-copies"><link rel="refentry" href="libgnomeprintui-gnome-print-dialog.html" title="gnome-print-dialog"><link rel="refentry" href="libgnomeprintui-gnome-printer-selector.html" title="gnome-printer-selector"><link rel="refentry" href="libgnomeprintui-gnome-print-job-preview.html" title="gnome-print-job-preview"><link rel="refentry" href="libgnomeprintui-gnome-print-paper-selector.html" title="gnome-print-paper-selector"><link rel="refentry" href="libgnomeprintui-gnome-print-preview.html" title="gnome-print-preview"><link rel="section" href="libgnomeprintui-gnome-print-preview.html#id2523811" title="Object Hierarchy"><link rel="section" href="libgnomeprintui-gnome-print-preview.html#id2523838" title="Description"><link rel="section" href="libgnomeprintui-gnome-print-preview.html#id2523848" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeprintui-gnome-print-paper-selector.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print UI Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="libgnomeprintui-gnome-print-preview"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-print-preview</span></h2><p>gnome-print-preview &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GnomePrintPreview"></a><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-print-preview</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="GNOME Print UI Reference Manual"><link rel="up" href="ch02.html" title="API Reference"><link rel="prev" href="libgnomeprintui-gnome-print-paper-selector.html" title="gnome-print-paper-selector"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="libgnomeprintui.html" title="GNOME Print UI Overview"><link rel="chapter" href="ch02.html" title="API Reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeprintui-gnome-print-paper-selector.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print UI Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="libgnomeprintui-gnome-print-preview"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">gnome-print-preview</span></h2><p>gnome-print-preview &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GnomePrintPreview"></a><pre class="synopsis">
 
 
 
-struct      <a href="libgnomeprintui-gnome-print-preview.html#GnomePrintPreview-struct">GnomePrintPreview</a>;
-struct      <a href="libgnomeprintui-gnome-print-preview.html#GnomePrintPreviewClass">GnomePrintPreviewClass</a>;
-GnomePrintContext* <a href="libgnomeprintui-gnome-print-preview.html#gnome-print-preview-new">gnome_print_preview_new</a>  (GnomePrintConfig *config,
+            <a href="libgnomeprintui-gnome-print-preview.html#GnomePrintPreview-struct">GnomePrintPreview</a>;
+            <a href="libgnomeprintui-gnome-print-preview.html#GnomePrintPreviewClass">GnomePrintPreviewClass</a>;
+<a
+href="../libgnomeprint/libgnomeprint-gnome-print.html#GnomePrintContext"
+>GnomePrintContext</a>* <a href="libgnomeprintui-gnome-print-preview.html#gnome-print-preview-new">gnome_print_preview_new</a>  (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GnomePrintConfig"
+>GnomePrintConfig</a> *config,
                                              GnomeCanvas *canvas);
-GnomePrintContext* <a href="libgnomeprintui-gnome-print-preview.html#gnome-print-preview-new-full">gnome_print_preview_new_full</a>
-                                            (GnomePrintConfig *config,
+<a
+href="../libgnomeprint/libgnomeprint-gnome-print.html#GnomePrintContext"
+>GnomePrintContext</a>* <a href="libgnomeprintui-gnome-print-preview.html#gnome-print-preview-new-full">gnome_print_preview_new_full</a>
+                                            (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GnomePrintConfig"
+>GnomePrintConfig</a> *config,
                                              GnomeCanvas *canvas,
                                              const gdouble *transform,
                                              const ArtDRect *region);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2523811"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2543320"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
-   +----GnomePrintContext
+   +----<a
+href="../libgnomeprint/libgnomeprint-gnome-print.html#GnomePrintContext"
+>GnomePrintContext</a>
          +----GnomePrintPreview
-</pre></div><div class="refsect1" lang="en"><a name="id2523838"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2543348"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2523848"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2523853"></a><h3><a name="GnomePrintPreview-struct"></a>struct GnomePrintPreview</h3><a class="indexterm" name="id2523864"></a><pre class="programlisting">struct GnomePrintPreview;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2543357"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2543363"></a><h3><a name="GnomePrintPreview-struct"></a>GnomePrintPreview</h3><a class="indexterm" name="id2543375"></a><pre class="programlisting">typedef struct _GnomePrintPreview GnomePrintPreview;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2523880"></a><h3><a name="GnomePrintPreviewClass"></a>struct GnomePrintPreviewClass</h3><a class="indexterm" name="id2523891"></a><pre class="programlisting">struct GnomePrintPreviewClass;</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2543391"></a><h3><a name="GnomePrintPreviewClass"></a>GnomePrintPreviewClass</h3><a class="indexterm" name="id2543401"></a><pre class="programlisting">typedef struct _GnomePrintPreviewClass GnomePrintPreviewClass;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2523906"></a><h3><a name="gnome-print-preview-new"></a>gnome_print_preview_new ()</h3><a class="indexterm" name="id2523917"></a><pre class="programlisting">GnomePrintContext* gnome_print_preview_new  (GnomePrintConfig *config,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2543417"></a><h3><a name="gnome-print-preview-new"></a>gnome_print_preview_new ()</h3><a class="indexterm" name="id2543428"></a><pre class="programlisting"><a
+href="../libgnomeprint/libgnomeprint-gnome-print.html#GnomePrintContext"
+>GnomePrintContext</a>* gnome_print_preview_new  (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GnomePrintConfig"
+>GnomePrintConfig</a> *config,
                                              GnomeCanvas *canvas);</pre><p>
 Creates a new PrintPreview object that use the <i class="parameter"><tt>canvas</tt></i> GnomeCanvas 
 as its rendering backend.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>config</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>canvas</tt></i> :</span></td><td> Canvas on which we display the print preview
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A GnomePrintContext suitable for using with the GNOME print API.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2524008"></a><h3><a name="gnome-print-preview-new-full"></a>gnome_print_preview_new_full ()</h3><a class="indexterm" name="id2524019"></a><pre class="programlisting">GnomePrintContext* gnome_print_preview_new_full
-                                            (GnomePrintConfig *config,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A GnomePrintContext suitable for using with the GNOME print API.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2543519"></a><h3><a name="gnome-print-preview-new-full"></a>gnome_print_preview_new_full ()</h3><a class="indexterm" name="id2543531"></a><pre class="programlisting"><a
+href="../libgnomeprint/libgnomeprint-gnome-print.html#GnomePrintContext"
+>GnomePrintContext</a>* gnome_print_preview_new_full
+                                            (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GnomePrintConfig"
+>GnomePrintConfig</a> *config,
                                              GnomeCanvas *canvas,
                                              const gdouble *transform,
                                              const ArtDRect *region);</pre><p>
@@ -41,7 +59,7 @@ as its rendering backend.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>canvas</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>transform</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>region</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
 </td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeprintui-gnome-print-paper-selector.html"><b>&lt;&lt; gnome-print-paper-selector</b></a></td><td align="right"></td></tr></table></body></html>
