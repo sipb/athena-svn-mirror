@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1998-12-26 15:51:45 ghudson Exp $
+# $Id: Makefile,v 1.3 1999-01-28 03:28:10 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -27,8 +27,6 @@ install:
 	install -c -m 555 netscape ${DESTDIR}${NSBINDIR}
 	rm -f ${DESTDIR}${USRBINDIR}/lp
 	ln -s ${ATHBINDIR}/lp ${DESTDIR}${USRBINDIR}/lp
-	rm -f ${DESTDIR}${ATHBINDIR}/perl
-	ln -s /usr/freeware/bin/perl ${DESTDIR}${ATHBINDIR}/perl
 	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
 	ln -s /usr/bin/X11/xlock ${DESTDIR}${ATHBINDIR}/xlock.real
 	rm -f ${DESTDIR}${ATHBINDIR}/vacation.real
