@@ -1,0 +1,15 @@
+# $Id: Makefile.athena,v 1.1 1999-03-30 05:55:41 tb Exp $
+
+SHELL=/bin/sh
+
+prepare:
+
+clean:
+	$(MAKE) clean
+
+all:
+
+check:
+
+install:
+	$(MAKE) all INSTALLDIR="$$SRVD/usr/athena/lib/X11/fonts/intlfonts" COMPRESS=compress
