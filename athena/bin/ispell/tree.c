@@ -80,7 +80,7 @@ char *p;
 	if (p == NULL)
 		p = getenv (PDICTVAR);
 	if ((h = getenv ("HOME")) == NULL)
-		return;
+		return(-1);
 
 	if (p == NULL)
 		(void) sprintf(personaldict,"%s/%s",h,DEFPDICT);
@@ -131,7 +131,7 @@ char *p;
 			}
 		}
 		/* If the name wasn't specified explicitly, we don't object */
-		return;
+		return(0);
 	}
 
 	while (fgets (buf, sizeof buf, dictf) != NULL) {
@@ -411,11 +411,11 @@ char *word;
 treeoutput ()
 {
 	if (newwords == 0)
-		return;
+		return(0);
 
 	if ((dictf = fopen (personaldict, "w")) == NULL) {
 		fprintf (stderr, "Can't create %s\r\n", personaldict);
-		return;
+		return(-1);
 	}
 
 	toutput1 ();
