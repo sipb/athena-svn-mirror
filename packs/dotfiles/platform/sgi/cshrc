@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.7 1997-02-05 01:15:09 ghudson Exp $
+# $Id: cshrc,v 1.8 1997-03-18 20:35:58 cfields Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -125,20 +125,10 @@ if (! $?ENV_SET) then
 
 	# Make sure applications can properly find their appdefs, etc.
 
-	if ($?skip_sgi) then
+	if ($?skip_sgi || $?NOCALLS) then
 	  set x="/usr/athena/lib/X11/app-defaults/%N"
 	else
-	  if ($?DISPLAY) then
-	    set x=`/usr/bin/X11/appdefpath`
-	  else
-	    set x="/usr/lib/X11/%L/app-defaults/sgi-color1280/%N:/usr/lib/X11/app-defaults/sgi-color1280/%N:/usr/lib/X11/app-defaults/color1280/%N"
-	  endif
-
-	  if ($?NOCALLS) then
-	    set x="/usr/athena/lib/X11/app-defaults/%N:$x"
-	  else
-	    set x="$HOME/.desktop-$host/%N:$HOME/%N:/usr/athena/lib/X11/app-defaults/%N:$x"
-	  endif
+	  set x="$HOME/.desktop-$host/%N:$HOME/%N:$HOME/%L/%N%C:$HOME/%l/%N%C:$HOME/%N%C:$HOME/%L/%N:$HOME/%l/%N:/usr/athena/lib/X11/app-defaults/%N"
 	endif
 
 	if (! $?XUSERFILESEARCHPATH) then

@@ -15,7 +15,6 @@
 #         fi
 # done
 
-
 case $# in
 1)
 	case $1 in
@@ -40,7 +39,8 @@ resources=$HOME/.Xresources
 sgiresources=$HOME/.Sgiresources
 sgisession=$HOME/.sgisession
 autoworkspace=$HOME/.workspace/autostart
-userenv='/usr/bin/X11/userenv -nologin'
+userenv=/usr/bin/X11/userenv
+userenv_output=$HOME/$dotdesktop/.userenv
 desktopenv=$HOME/$dotdesktop/desktopenv
 wmsession=$HOME/$dotdesktop/4Dwmsession
 panelsession=$HOME/$dotdesktop/panelsession
@@ -54,11 +54,43 @@ nodesktop=$HOME/$dotdesktop/nodesktop
 desktopdir=$HOME/$dotdesktop
 rundesktop=TRUE
 lang=$HOME/.lang
+haslang=FALSE
 confirmdirectory=/usr/share/misc/sessionwarnings
 
-if [ ! -d $desktopdir ]; then
-   /usr/lib/desktop/makeDotDesktop
+
+# check for the lang, but don't set it until after xsession is launched
+# (for compatibility with older versions)
+
+# Set the users language
+if [ -r $lang -a -f $lang ]
+then
+	_lang=`cat $lang`
+	haslang=TRUE
+        lconfirmdirectory=$confirmdirectory/$_lang
+else
+        lconfirmdirectory=$confirmdirectory
 fi
+
+# firstLogin is so we know whether to start iconbook or not.
+firstLogin=FALSE
+if [ ! -d $desktopdir ]; then
+    firstLogin=TRUE
+    if [ $haslang=TRUE ]
+        then
+	    LANG=$_lang /usr/lib/desktop/makeDotDesktop
+        else
+	    /usr/lib/desktop/makeDotDesktop
+    fi
+fi
+
+#
+# Find user's environment as set up during a login
+#  shell.  We will later add this to the environment.
+#
+#if [ -x $userenv ]
+#then
+#	$userenv -o $userenv_output &
+#fi
 
 # Set up for various configuration checks.  Create a directory for
 # them if it isn't already present.  Note several of the following 
@@ -89,7 +121,12 @@ fi
 # could keep them from loading the desktop.
 #	if [ ! -f $xsessioncheck ]
 #	then
-#		xconfirm -file $confirmdirectory/xsession.msg -c > /dev/null
+#		if [ -r $lconfirmdirectory/xsession.msg ]
+#		then
+#			xconfirm -file $lconfirmdirectory/xsession.msg -c > /dev/null
+#		else
+#			xconfirm -file $confirmdirectory/xsession.msg -c > /dev/null
+#		fi
 #		(echo "1" > $xsessioncheck)
 #	fi
 #
@@ -101,15 +138,18 @@ fi
 #fi
 
 # Set the users language
-if [ -r $lang -a -f $lang ] ; then LANG=`cat $lang`; export LANG; fi
+if [ $haslang=TRUE ] ; then LANG=$_lang; export LANG; fi
 
-if [ -r $resources ]; then
-  if [ "${NOCALLS-ok}" = "ok" ] ; then xrdb -load -quiet $resources ; fi
+if [ -r $resources -a "${NOCALLS-ok}" = "ok" ]; then
+        xrdb -load -quiet $resources
 
         if [ -r $sgiresources ]; then
                 xrdb -merge -quiet $sgiresources
         fi
 fi
+
+#XUSERFILESEARCHPATH="$HOME/$dotdesktop/%N:$HOME/%N:$HOME/%L/%N%C:$HOME/%l/%N%C:$HOME/%N%C:$HOME/%L/%N:$HOME/%l/%N"
+#export XUSERFILESEARCHPATH
 
 # Check to see if the user has a .chestrc that they haven't been
 # warned about
@@ -122,17 +162,22 @@ then
 	# just issue a warning. 
 	if /usr/lib/desktop/newer $HOME/.chestrc /usr/lib/X11/system.chestrc
 	then
-		xconfirm -file $confirmdirectory/chestrc.nomove.msg -c > /dev/null
+		if [ -r $lconfirmdirectory/chestrc.nomove.msg ]
+		then
+			xconfirm -file $lconfirmdirectory/chestrc.nomove.msg -c > /dev/null
+		else
+			xconfirm -file $confirmdirectory/chestrc.nomove.msg -c > /dev/null
+		fi
 	else
-		xconfirm -file $confirmdirectory/chestrc.move.msg -c > /dev/null
+		if [ -r $lconfirmdirectory/chestrc.move.msg ]
+		then
+			xconfirm -file $lconfirmdirectory/chestrc.move.msg -c > /dev/null
+		else
+			xconfirm -file $confirmdirectory/chestrc.move.msg -c > /dev/null
+		fi
 		mv $HOME/.chestrc $HOME/.chestrc.bak
 	fi
 	(echo "1" > $chestrccheck)
-fi
-
-#if there is a desktop environment file, load it
-if [ -r $desktopenv ]; then
-	. $desktopenv
 fi
 
 screens=`/usr/bin/X11/xlistscrns`
@@ -177,8 +222,21 @@ if [ -r $panelsession ]; then
 	/bin/sh $panelsession >/dev/console 2>&1 &
 fi
 
+#
+#  Find user's environment as set up during a login
+#  shell, and add that to current environment.
+#
+#if [ -x $userenv ]; then
+#	eval `$userenv -p $userenv_output`
+#fi
+
+#if there is a desktop environment file, load it
+if [ -r $desktopenv ]; then
+	. $desktopenv
+fi
+
 #4Dwm's -launch flag tells 4Dwm to launch the apps saved in the 4Dwmsession file
-/usr/bin/X11/4Dwm -launch >/dev/console 2>&1 &
+/usr/bin/X11/4Dwm -launch -xrm "*SG_UseBackgrounds: True" >/dev/console 2>&1 &
 /usr/bin/X11/wait4wm
 
 #
@@ -203,9 +261,15 @@ fi
 # always start up toolchest.  Toolchest doesn't set WM_COMMAND, so
 # session management doesn't start it.  This way, even if toolchest
 # is killed, logging out and in will force it to restart
+# ROE  15:29:31 09/13/94  Bug #237028
 for screen in $screens
 do
-	DISPLAY=$screen /usr/bin/X11/toolchest -name ToolChest >/dev/console 2>&1 &
+	if test -r /usr/lib/X11/webtools.chestrc
+	then
+		DISPLAY=$screen /usr/bin/X11/toolchest -name ToolChest /usr/lib/X11/webtools.chestrc >/dev/console 2>&1 &
+	else
+		DISPLAY=$screen /usr/bin/X11/toolchest -name ToolChest >/dev/console 2>&1 &
+	fi
 done
 
 
@@ -234,7 +298,18 @@ then
 fi
 if [ "$rundesktop" = TRUE ]
 then
+    if /etc/chkconfig objectserver ;
+    then
 	/usr/sbin/fm  -lrb >/dev/console 2>&1 &
+    else 
+	/usr/sbin/fm  -rb >/dev/console 2>&1 &
+    fi
+    # Run iconbook automatically the first time the user logs in.
+    # The position should be about x = 550, y = 650, on my screen.
+    if [ "$firstLogin" = TRUE ] 
+    then
+	/usr/sbin/iconbook /usr/lib/desktop/iconbook/syspages/WebTools 
+    fi
 fi
 #if [ "$runwmsession" = FALSE ]
 #then
@@ -256,9 +331,19 @@ if [ -f $sgisession -a ! -f $sgisessioncheck ]; then
 	# it is newer, we just issue a warning.
 	if /usr/lib/desktop/newer $sgisession /usr/bin/X11/4Dwm
 	then
-		xconfirm -file $confirmdirectory/sgisession.nomove.msg -c > /dev/null
+		if [ -r $lconfirmdirectory/sgisession.nomove.msg ]
+		then
+			xconfirm -file $lconfirmdirectory/sgisession.nomove.msg -c > /dev/null
+		else
+			xconfirm -file $confirmdirectory/sgisession.nomove.msg -c > /dev/null
+		fi
 	else
-		xconfirm -file $confirmdirectory/sgisession.move.msg -c > /dev/null
+		if [ -r $lconfirmdirectory/sgisession.move.msg ]
+		then
+			xconfirm -file $lconfirmdirectory/sgisession.move.msg -c > /dev/null
+		else
+			xconfirm -file $confirmdirectory/sgisession.move.msg -c > /dev/null
+		fi
 		mv $sgisession $sgisession.bak
 		sleep 3
 		tellwm save_configuration
@@ -266,4 +351,46 @@ if [ -f $sgisession -a ! -f $sgisessioncheck ]; then
 	(echo "1" > $sgisessioncheck)
 fi
 
+# BEGIN FIRSTTIME program execution 
+#
+# first time programs are executed only the first time the user logs in
+# Also, if the program is updated, the program is run again for the user.
+# We assume this to be the case because the firsttime program may change
+# to alert a user of something new in a subsequent release.
+#
+# To enable or disable execution of firsttime programs use:
+#
+# 	chkconfig firsttimeprograms [on | off]  
+#
+# configchecks is defined earlier in Xsession.dt file.
+#
+# Note: the loop is run in the background so that reaper will be run and will
+# reap the firsttime programs if logout occurs while the programs are still
+# running.
+#
+#(
+#firsttimedir=/var/X11/xdm/firsttime
+#is_on=/sbin/chkconfig
+#
+#if $is_on firsttimeprograms
+#then
+#	if test -d $firsttimedir
+#	then
+#		for program in $firsttimedir/*
+#		do
+#			checkfile=$configchecks/`basename $program`
+#			if test -x $program
+#			then
+#				if /usr/lib/desktop/newer $program $checkfile
+#				then
+#					(echo "1" > $checkfile)
+#					$program
+#				fi
+#			fi
+#		done
+#	fi
+#fi
+#) &
+#
+# END FIRSTTIME program execution
 exec /usr/bin/X11/reaper
