@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.44 2000-04-16 22:42:25 ghudson Exp $
+# $Id: update_ws.sh,v 1.45 2000-05-19 16:51:55 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -231,6 +231,37 @@ if [ "$method" = Auto -a "$packsnewer" = patch ]; then
 	fi
 fi
 
+# Beyond this point, if the update fails, it's probably due to a full
+# release which we can't take for some reason.  A machine with new
+# system packs attached won't function properly in this state, so we
+# should attempt to reattach the old system packs before exiting if
+# this was an automatic update attempt.  This function takes care of
+# reattaching the old system packs and exiting with an error status.
+failupdate() {
+	if [ Auto = "$method" ]; then
+		echo "Attempting to reattach old system packs"
+		detach "$SYSLIB"
+		AUTOUPDATE=false getcluster -l /etc/athena/cluster.local \
+			"$HOST" "$version"` > /var/athena/cluster.oldrel
+		if [ -s /var/athena/cluster.oldrel ]; then
+			. /var/athena/cluster.oldrel
+		fi
+		attach -O "$SYSLIB"
+	fi
+	exit 1
+}
+
+case "$HOSTTYPE" in
+sun4)
+	usrsize=`df -k /usr | awk '{ x = $2' }' END { print x; }' `
+	if [ 102400 -gt "$usrsize" ]; then
+		echo "/usr partition is not big enough for Athena release"
+		echo "8.4 and higher.  You must reinstall to take this update."
+		failupdate
+	fi
+	;;
+esac
+
 # The 8.1 -> 8.2 update consumes about 1.7MB on the /usr partition and
 # about 3.9MB on the root partition.  Since the smallest-sized Solaris
 # partitions only have 5.7MB free on /usr and 8.1MB free on the root
@@ -244,13 +275,13 @@ sun4,8.[01].*|sun4,7.*)
 		echo "/usr partition low on space (less than 3MB); not"
 		echo "performing update.  Please reinstall or clean local"
 		echo "files off /usr partition."
-		exit 1
+		failupdate
 	fi
 	if [ "`df -k / | awk '/\/$/ { print $4; }'`" -lt 5120 ]; then
 		echo "Root partition low on space (less than 5MB); not"
 		echo "performing update.  Please reinstall or clean local"
 		echo "files off root partition."
-		exit 1
+		failupdate
 	fi
 	;;
 esac
@@ -287,14 +318,14 @@ sgi)
 		echo "Root partition low on space (less than ${rootneeded}MB);"
 		echo "not performing update.  Please reinstall or"
 		echo "clean local files off root partition."
-		exit 1
+		failupdate
 	fi
 
 	if [ "`hinv -t memory | awk '{ print $4; }'`" -lt 64 ]; then
 		echo "Insufficient memory (less than 64MB); not"
 		echo "performing update.  Please add more memory"
 		echo "or reinstall."
-		exit 1
+		failupdate
 	fi
 	;;
 esac
@@ -306,7 +337,7 @@ if [ -d /var/server ] ; then
 	if [ $? -ne 0 ]; then
 		echo "mkserv services cannot be found for all services."
 		echo "Update cannot be performed."
-		exit 1
+		failupdate
 	fi
 fi
 
