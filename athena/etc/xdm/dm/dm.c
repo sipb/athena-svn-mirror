@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.4 1990-10-25 17:36:05 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.5 1990-11-01 12:10:40 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.4 1990-10-25 17:36:05 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.5 1990-11-01 12:10:40 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -211,8 +211,6 @@ char **argv;
 	loginpid = fork();
 	switch (loginpid) {
 	case 0:
-	    if(fcntl(2, F_SETFD, 1) == -1)
-	      close(2);
 	    sigsetmask(0);
 	    execv(loginargv[0], loginargv);
 	    message("X login failed exec\n");
@@ -250,7 +248,7 @@ char **argv;
 
 console_login()
 {
-    int pgrp;
+    int pgrp, i;
     struct sgttyb mode;
     char *nl = "\r\n";
 
@@ -258,12 +256,23 @@ console_login()
     message("starting console login\n");
 #endif
 
-    if (x_running != NONEXISTANT)
-      kill(xpid, SIGKILL);
+    for (i = 0; i < 10; i++) {
+	if (x_running != NONEXISTANT)
+	  kill(xpid, SIGKILL);
+	if (console_running != NONEXISTANT)
+	  kill(consolepid, SIGKILL);
+	if (login_running != NONEXISTANT && login_running != STARTUP)
+	  kill(loginpid, SIGKILL);
 
-    /* wait 1 sec for children to exit */
-    alarm(1);
-    sigpause(0);
+	/* wait 1 sec for children to exit */
+	alarm(1);
+	sigpause(0);
+
+	if (x_running == NONEXISTANT &&
+	    console_running == NONEXISTANT &&
+	    (login_running == NONEXISTANT || login_running == STARTUP))
+	  break;
+    }
 
 #ifndef BROKEN_CONSOLE_DRIVER
     setpgrp(0, pgrp=0);		/* We have to reset the tty pgrp */
