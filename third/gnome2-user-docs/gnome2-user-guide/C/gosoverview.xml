@@ -179,10 +179,7 @@ contains each type of panel object. </para>
       <para>You can add any of the following objects to all types of panels:</para>
       <variablelist>
         <varlistentry>
-          <indexterm>
-            <primary>applets</primary>
-            <secondary>overview</secondary>
-          </indexterm>
+         
           <term>Applets</term>
           <listitem>
             <para><firstterm>Applets</firstterm> are small, interactive
@@ -743,7 +740,7 @@ specify the number of workspaces that you require.</para>
       </varlistentry>
       <varlistentry>
         <term>Open special <firstterm>Uniform Resource Identifiers</firstterm>
-        (URIs)</term
+        (URIs)</term>
         <listitem><para>The GNOME Desktop contains special URIs that enable
         you to access particular functions from the file manager. For example,
         to access the preference tools, you can access the

@@ -1,5 +1,5 @@
 %define name            gnome-user-docs
-%define ver             2.8.0
+%define ver             2.8.1
 %define RELEASE         1
 %define rel             %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define localstatedir   /var/lib
