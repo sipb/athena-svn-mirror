@@ -895,6 +895,7 @@ void doit(who)
 	struct hostent *hp;
 	int level;
 	int ptynum;
+	int on = 1;
 	char user_name[256];
 long retval;
 	/*
@@ -985,7 +986,14 @@ pty_init();
 	/*
 	 * Start up the login process on the slave side of the terminal
 	 */
+#ifndef	STREAMSPTY
+	/*
+	 * Turn on packet mode
+	 */
+	(void) ioctl(pty, TIOCPKT, (char *)&on);
+#endif
 #ifndef	convex
+
 	startslave(host, level, user_name);
 
 #if	defined(_SC_CRAY_SECURE_SYS)
@@ -1140,13 +1148,6 @@ telnet(f, p, host)
 
 	if (my_state_is_wont(TELOPT_ECHO))
 		send_will(TELOPT_ECHO, 1);
-
-#ifndef	STREAMSPTY
-	/*
-	 * Turn on packet mode
-	 */
-	(void) ioctl(p, TIOCPKT, (char *)&on);
-#endif
 
 #if	defined(LINEMODE) && defined(KLUDGELINEMODE)
 	/*
