@@ -96,6 +96,7 @@ Distribution sites for software under third
 	krb5		athena-dist.mit.edu:pub/kerberos
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
+	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
 	mh		ftp.ics.uci.edu:pub/mh
 	patch		prep.ai.mit.edu:pub/gnu
 	perl		prep.ai.mit.edu:pub/gnu
