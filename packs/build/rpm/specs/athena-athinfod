@@ -21,6 +21,6 @@ cp athinfo.defs $RPM_BUILD_ROOT/etc/athena/athinfo.defs
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
-      -e "s|^/etc/athena/athinfo.access$|%config \0|" \
+      -e "s|^/etc/athena/athinfo.access$|%config(noreplace) \0|" \
       -e "s|^/etc/athena/athinfo.defs$|%config \0|" |
   sort > rpm.filelist
