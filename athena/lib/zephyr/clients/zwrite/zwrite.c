@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.42 1994-04-30 18:33:03 probe Exp $";
+static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.43 1994-11-13 04:25:45 ghudson Exp $";
 #endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -227,7 +227,7 @@ main(argc, argv)
     if (!nocheck && nrecips)
 	send_off(&notice, 0);
 	
-    if (quiet || !nrecips)
+    if (quiet)
 	notice.z_kind = UNACKED;	/* change for real sending */
 
     if (!msgarg && isatty(0))
