@@ -72,5 +72,7 @@ rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
 if [ "$NEWUNIX" = true -o "$NEWOS" = true ] ; then
 	echo "Building kernel"
-	/srvd/install/buildkernel --root $UPDATE_ROOT/
+	/srvd/install/buildkernel --root $UPDATE_ROOT/ \
+	    --disk `devnm $UPDATE_ROOT/ | \
+			awk -F/ '{ print substr($4,4,1), substr($4,6,1) }'`
 fi
