@@ -1,10 +1,18 @@
-XCOMM platform:  $XConsortium: sun.cf,v 1.77 92/05/29 18:37:21 rws Exp $
+XCOMM platform:  $XConsortium: sun.cf,v 1.79 92/11/20 19:13:42 rws Exp $
 
+#ifdef SVR4
+#define OSName            SunOS 5.0
+XCOMM operating system:  OSName
+#define OSMajorVersion    5
+#define OSMinorVersion    0
+#define OSTeenyVersion    0
+#else
 #define OSName            SunOS 4.1.2
 XCOMM operating system:  OSName
 #define OSMajorVersion    4
 #define OSMinorVersion    1
 #define OSTeenyVersion    2
+#endif
 
 #if OSMajorVersion < 4 || (OSMajorVersion == 4 && OSMinorVersion < 1)
 /* We do not guarantee this will work */
@@ -17,6 +25,23 @@ XCOMM operating system:  OSName
 #define SunPost411FCSLd	  YES
 #endif
 
+#if OSMajorVersion > 4
+#define BootstrapCFlags	  -DSVR4
+#define ArCmdBase	  /usr/ccs/bin/ar
+#define AsCmd		  /usr/ccs/bin/as
+#define CppCmd		  /usr/ccs/lib/cpp
+#define LdCmd		  /usr/ccs/bin/ld
+#define LexCmd		  /usr/ccs/bin/lex
+#define YaccCmd		  /usr/ccs/bin/yacc
+#define SystemV4	  YES
+#define HasSockets	  YES
+#define InstKmemFlags	  -g sys -m 2755
+#include <sv4Lib.rules>
+#else
+#define InstKmemFlags	  -g kmem -m 2755
+#include <sunLib.rules>
+#endif
+
 #define HasSaberC	  YES
 #define HasNdbm		  YES
 #define HasShm		  YES
@@ -26,9 +51,6 @@ XCOMM operating system:  OSName
 #define XsunServer	  YES		/* has color and mono support */
 #define XsunMonoServer	  YES		/* monochrome only */
 #define BuildPexExt	  XsunServer
-#define InstKmemFlags	  -g kmem -m 2755
-
-#include <sunLib.rules>
 
 #if HasGcc
 #if HasGcc2
@@ -56,7 +78,9 @@ XCOMM operating system:  OSName
 
 #endif
 
+#if OSMajorVersion < 5
 #define SharedAllocateLocalDefines -DINCLUDE_ALLOCA_H
+#endif
 #define LibraryCCOptions /* don't want special floating point */
 
 #ifndef UseSunWindowsInServer

@@ -4,7 +4,7 @@
 
 XCOMM -------------------------------------------------------------------------
 XCOMM Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-XCOMM $XConsortium: Imake.tmpl,v 1.158 92/09/03 19:54:25 rws Exp $
+XCOMM $XConsortium: Imake.tmpl,v 1.160 92/11/18 14:11:25 rws Exp $
 XCOMM
 XCOMM Platform-specific parameters may be set in the appropriate <vendor>.cf
 XCOMM configuration files.  Site-specific parameters should be set in the file
@@ -264,6 +264,13 @@ XCOMM
 #define MipsArchitecture
 #endif
 #endif
+
+#ifdef Oki
+#define MacroIncludeFile <Oki.cf>
+#define MacroFile Oki.cf
+#undef Oki
+#define i860SVR4Architecture
+#endif /* Oki */
 
 #ifndef MacroIncludeFile
 XCOMM WARNING:  Imake.tmpl not configured; guessing at definitions!!!
@@ -534,11 +541,28 @@ XCOMM the platform-specific parameters - edit site.def to change
 #ifndef InstKmemFlags
 #define InstKmemFlags InstUidFlags    /* put -g kmem -m 2755 in site.def... */
 #endif
+#ifndef ArCmdBase
+#define ArCmdBase ar
+#endif
 #ifndef ArCmd
 #if HasLargeTmp || SystemV4
-#define ArCmd ar cq	/* do nothing special */
+#define ArCmd ArCmdBase cq
 #else
-#define ArCmd ar clq	/* use local dir for temp files */
+#define ArCmd ArCmdBase clq
+#endif
+#endif
+#ifndef ArAddCmd
+#if HasLargeTmp || SystemV4
+#define ArAddCmd ArCmdBase ru
+#else
+#define ArAddCmd ArCmdBase rul
+#endif
+#endif
+#ifndef ArExtCmd
+#if HasLargeTmp || SystemV4
+#define ArExtCmd ArCmdBase x
+#else
+#define ArExtCmd ArCmdBase xl
 #endif
 #endif
 #ifndef BootstrapCFlags

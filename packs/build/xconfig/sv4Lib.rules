@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sv4Lib.rules,v 1.8 91/07/19 15:38:53 rws Exp $
+XCOMM $XConsortium: sv4Lib.rules,v 1.9 92/11/18 14:12:05 rws Exp $
 
 /*
  * SVR4 shared library rules
@@ -23,7 +23,11 @@ XCOMM $XConsortium: sv4Lib.rules,v 1.8 91/07/19 15:38:53 rws Exp $
 #define SharedLibraryLoadFlags -G -z text
 #endif
 #ifndef PositionIndependentCFlags
+#if HasGcc2
+#define PositionIndependentCFlags -fpic
+#else
 #define PositionIndependentCFlags -K PIC
+#endif
 #endif
 
 /*
@@ -58,7 +62,7 @@ AllTarget(Concat(lib,libname.so.rev))					@@\
 									@@\
 Concat(lib,libname.so.rev):  solist					@@\
 	$(RM) $@~							@@\
-	(cd down; $(LD) -o up/$@~ $(SHLIBLDFLAGS) -h $@ solist)		@@\
+	(cd down; $(LD) -o up/$@~ $(SHLIBLDFLAGS) -h $@ solist $(REQUIREDLIBS))		@@\
 	$(RM) $@ 							@@\
 	$(MV) $@~ $@							@@\
 	$(RM) Concat(lib,libname.so)					@@\

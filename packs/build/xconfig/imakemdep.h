@@ -1,5 +1,5 @@
 /*
- * $XConsortium: imakemdep.h,v 1.44 92/09/03 19:55:01 rws Exp $
+ * $XConsortium: imakemdep.h,v 1.48 92/11/18 14:13:59 rws Exp $
  * 
  * This file contains machine-dependent constants for the imake utility.
  * When porting imake, read each of the steps below and add in any necessary
@@ -29,7 +29,7 @@
 #define imake_ccflags "-DSYSV"
 #endif
 
-#ifdef att
+#if defined(att) || defined(Oki)
 #define imake_ccflags "-Xc -DSVR4"
 #endif
 
@@ -47,8 +47,7 @@
 #endif
 
 #ifdef CRAY
-/* -DX_NOT_STDC_ENV is just so we can bootstrap with cc instead of scc */
-#define imake_ccflags "-DSYSV -DUSG -DX_NOT_STDC_ENV"
+#define imake_ccflags "-DSYSV -DUSG"
 #endif
 
 #if defined(_IBMR2) || defined(aix)
@@ -122,6 +121,9 @@
 #endif
 #if defined(_IBMR2) && !defined(DEFAULT_CPP)
 #define DEFAULT_CPP "/usr/lpp/X11/Xamples/util/cpp/cpp"
+#endif
+#if defined(sun) && defined(SVR4)
+#define DEFAULT_CPP "/usr/ccs/lib/cpp"
 #endif
 
 /*
@@ -249,6 +251,14 @@ char *cpp_argv[ARGUMENTS] = {
 	"-traditional"
 # endif
 #endif
+#ifdef Oki
+	"-DOki",
+#endif
+#ifdef sun
+#ifdef SVR4
+	"-DSVR4",
+#endif
+#endif
 };
 #else /* else MAKEDEPEND */
 /*
@@ -285,8 +295,14 @@ struct symtab	predefs[] = {
 #ifdef sparc
 	{"sparc", "1"},
 #endif
+#ifdef __sparc__
+	{"__sparc__", "1"},
+#endif
 #ifdef hpux
 	{"hpux", "1"},
+#endif
+#ifdef __hp9000s800__
+	{"__hp9000s800__", "1"},
 #endif
 #ifdef vax
 	{"vax", "1"},
@@ -305,6 +321,9 @@ struct symtab	predefs[] = {
 #endif
 #ifdef mips
 	{"mips", "1"},
+#endif
+#ifdef __mips__
+	{"__mips__", "1"},
 #endif
 #ifdef ultrix
 	{"ultrix", "1"},
@@ -359,6 +378,9 @@ struct symtab	predefs[] = {
 #endif
 #ifdef m88k
         {"m88k", "1"},
+#endif
+#ifdef __m88k__
+	{"__m88k__", "1"},
 #endif
 #ifdef bsd43
 	{"bsd43", "1"},
