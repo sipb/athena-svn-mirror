@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.10 1997-10-07 14:40:48 ghudson Exp $
+# $Id: config.site,v 1.11 1998-02-25 17:08:24 danw Exp $
 #
 
 athena=true
@@ -47,6 +47,7 @@ with_krb5=$ATHTOOLROOT/usr/athena
 with_hesiod=$ATHTOOLROOT/usr/athena
 with_com_err=$ATHTOOLROOT/usr/athena
 with_ss=$ATHTOOLROOT/usr/athena
+with_zephyr=$ATHTOOLROOT/usr/athena
 
 prefix=/usr/athena
 datadir='${exec_prefix}/lib'
