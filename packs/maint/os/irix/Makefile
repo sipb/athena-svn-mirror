@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1999-04-23 01:10:09 rbasch Exp $
+# $Id: Makefile,v 1.5 1999-11-10 03:52:02 kcr Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
@@ -30,6 +30,7 @@ install:
 	install -c -m 0755 os-checkfiles ${DESTDIR}${ATHETCDIR}
 	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
+	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
 	rm -f ${DESTDIR}${RC0}/K02xdm
 	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02xdm
 	rm -f ${DESTDIR}${RC0}/K07athena
