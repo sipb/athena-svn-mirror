@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.3 1990-02-14 14:30:17 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.4 1990-04-25 16:42:30 vanharen Exp $";
 #endif
 
 
@@ -42,20 +42,58 @@ do_quit(arguments)
      char *arguments[];
 {
   REQUEST *Request;
-  LIST list;
+  LIST *list, *l;
   int status;
 #ifdef lint
   *arguments = (char *) NULL;
 #endif lint
   
-    
-  if(OLC)
+  if(fill_request(Request) != SUCCESS)
+    return(ERROR);
+
+  status = OListPerson(Request,&list);
+  switch (status)
     {
-      printf("To continue this question, just run this program again. Remember, your\n");
-      printf("question is active until you use the 'done' or 'cancel' command.  It will be\n");
-      printf("stored until someone can answer it. If you logout, someone may send you\n");
-      printf("mail.\n");
+    case SUCCESS:
+      if(OLC)
+	{
+	  printf("To continue this question, just run this program again.  Remember, your\n");
+	  printf("question is active until you use the 'done' or 'cancel' command.  It will be\n");
+	  printf("stored until someone can answer it.  If you logout, someone may send you\n");
+	  printf("mail.\n");
+	}
+ /* There is currently no way to tell, if you are connected, whether you */
+ /* are connected to someone as a consultant or a user.  It would be */
+ /* nice to warn consultants that they may still be connected to users...  */
+      else
+	{
+#if 0
+	  status = FALSE;
+	  for(l=list; ((l->ustatus != END_OF_LIST) && (status == FALSE)); l++)
+	    {
+	      if ((l->nseen >= 0) && (l->connected.uid >= 0))
+		status = TRUE;
+	    }
+	  if (status)
+#endif
+	    printf("Warning: you are still active in OLC.  You may be signed on,\nconnected to someone, or have a question of your own in the queue.\n");
+	}
+
+      free(list);
+      break;
+
+    case EMPTY_LIST:
+      break;
+
+    case ERROR:
+      fprintf(stderr, "Error listing conversations.\n");
+      break;
+
+    default:
+      status = handle_response(status, Request);
+      break;
     }
+
   exit(0);
 }
 
