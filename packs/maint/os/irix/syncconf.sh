@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.7 2000-04-24 15:02:41 rbasch Exp $
+# $Id: syncconf.sh,v 1.8 2000-08-01 22:40:30 rbasch Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -180,10 +180,6 @@ handle()
 		syncvar sendmail "$SENDMAIL"
 		;;
 
-	SNMP)
-		syncvar snmpd "$SNMP"
-		;;
-
 	SAVECORE)
 		if [ "$SAVECORE" != false ]; then
 			case "$SAVECORE" in
@@ -309,7 +305,7 @@ $echo "Synchronizing configuration... \c"
 if [ -z "$all" -a -f "$rcsync" ]; then
 	. "$rcsync"
 else
-	changes="TIMECLIENT TIMEHUB TIMESRV AFSCLIENT NFS SENDMAIL SNMP"
+	changes="TIMECLIENT TIMEHUB TIMESRV AFSCLIENT NFS SENDMAIL"
 	changes="$changes SAVECORE ACCOUNT QUOTAS HOSTADDR MAILRELAY"
 fi
 
@@ -345,7 +341,6 @@ if [ \$AFSCLIENT != $AFSCLIENT ]; then changes="\$changes AFSCLIENT"; fi
 if [ \$NFSSRV != $NFSSRV ]; then changes="\$changes NFS"; fi
 if [ \$NFSCLIENT != $NFSCLIENT ]; then changes="\$changes NFS"; fi
 if [ \$SENDMAIL != $SENDMAIL ]; then changes="\$changes SENDMAIL"; fi
-if [ \$SNMP != $SNMP ]; then changes="\$changes SNMP"; fi
 if [ \$SAVECORE != $SAVECORE ]; then changes="\$changes SAVECORE"; fi
 if [ \$ACCOUNT != $ACCOUNT ]; then changes="\$changes ACCOUNT"; fi
 if [ \$QUOTAS != $QUOTAS ]; then changes="\$changes QUOTAS"; fi
