@@ -18,8 +18,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
- *	$Id: structs.h,v 1.5 1990-05-25 16:13:22 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: structs.h,v 1.6 1990-12-12 15:26:39 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -81,12 +81,6 @@ typedef struct tGOO
   struct tPERSON user;
   struct tPERSON connected;
 } OLDLIST;
-
-typedef struct tSTATUS
-{
-  int status;
-  char label[LABEL_SIZE];
-} STATUS;
 
 typedef struct tDBINFO
 {
