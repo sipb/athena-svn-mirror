@@ -30,10 +30,10 @@ AC_ISC_POSIX
 AC_CANONICAL_SYSTEM
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(scrollkeeper,0.3.9)
+AM_INIT_AUTOMAKE(scrollkeeper,0.3.11)
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="az ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk zh_TW"
+ALL_LINGUAS="az ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk vi zh_TW"
 
 dnl ====================================
 dnl = Begin checks for typedefs, structures, and compiler characteristics.

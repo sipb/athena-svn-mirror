@@ -1475,7 +1475,7 @@ test "$program_transform_name" = "" && program_transform_name="s,x,x,"
 
 PACKAGE=scrollkeeper
 
-VERSION=0.3.9
+VERSION=0.3.11
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -5307,7 +5307,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
-ALL_LINGUAS="az ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk zh_TW"
+ALL_LINGUAS="az ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk vi zh_TW"
 
 echo $ac_n "checking for working const""... $ac_c" 1>&6
 echo "configure:5314: checking for working const" >&5
