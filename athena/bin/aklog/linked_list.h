@@ -1,5 +1,5 @@
 /* 
- * $Id: linked_list.h,v 1.3 1996-05-15 05:24:57 ghudson Exp $
+ * $Id: linked_list.h,v 1.4 1997-11-17 16:23:50 ghudson Exp $
  *
  * This is the header file for a general list linked package.
  * 
@@ -7,12 +7,8 @@
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-#ifndef __LINKED_LIST_H__
-#define __LINKED_LIST_H__
-
-#if !defined(lint) && !defined(SABER)
-static char *rcsid_linked_list_h = "$Id: linked_list.h,v 1.3 1996-05-15 05:24:57 ghudson Exp $";
-#endif /* lint || SABER */
+#ifndef AKLOG__LINKED_LIST_H
+#define AKLOG__LINKED_LIST_H
 
 #define LL_SUCCESS 0
 #define LL_FAILURE -1
@@ -40,20 +36,9 @@ typedef enum {ll_s_add, ll_s_check} ll_s_action;
  */
 #define ll_add_data(n,d) (((n)->data)=(char*)(d))
 
-#ifdef __STDC__
-
 void ll_init(linked_list *list);
 ll_node *ll_add_node(linked_list *list, ll_end which_end);
 int ll_delete_node(linked_list *list, ll_node *node);
 int ll_string(linked_list *, ll_s_action, char *);
 
-#else /* __STDC__ */
-
-void ll_init();
-ll_node *ll_add_node();
-int ll_delete_node();
-int ll_string();
-
-#endif /* __STDC__ */
-
-#endif /* __LINKED_LIST_H__ */
+#endif /* AKLOG__LINKED_LIST_H */

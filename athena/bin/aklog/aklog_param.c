@@ -1,13 +1,11 @@
 /* 
- * $Id: aklog_param.c,v 1.9 1996-05-15 05:25:24 ghudson Exp $
+ * $Id: aklog_param.c,v 1.10 1997-11-17 16:23:49 ghudson Exp $
  * 
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.9 1996-05-15 05:25:24 ghudson Exp $";
-#endif /* lint || SABER */
+static const char rcsid[] = "$Id: aklog_param.c,v 1.10 1997-11-17 16:23:49 ghudson Exp $";
 
 #include "aklog.h"
 #include <sys/stat.h>
@@ -21,13 +19,7 @@ static char *rcsid = "$Id: aklog_param.c,v 1.9 1996-05-15 05:25:24 ghudson Exp $
 #endif
 
 
-#ifdef __STDC__
 static int isdir(char *path, unsigned char *val)
-#else
-static int isdir(path, val)
-  char *path;
-  unsigned char *val;
-#endif /* __STDC__ */
 {
     struct stat statbuf;
 
@@ -43,15 +35,7 @@ static int isdir(path, val)
 }
 
 
-#ifdef __STDC__
 static int get_cred(char *name, char *inst, char *realm, CREDENTIALS *c)
-#else
-static int get_cred(name, inst, realm, c)
-  char *name;
-  char *inst;
-  char *realm;
-  CREDENTIALS *c;
-#endif /* __STDC__ */
 {
     int status; 
 
@@ -66,56 +50,31 @@ static int get_cred(name, inst, realm, c)
 }
 
 
-#ifdef __STDC__
 static int get_user_realm(char *realm)
-#else
-static int get_user_realm(realm)
-  char *realm;
-#endif /* __STDC__ */
 {
     return (krb_get_tf_realm(TKT_FILE, realm));
 }
 
 
-#ifdef __STDC__
 static void pstderr(char *string)
-#else
-static void pstderr(string)
-  char *string;
-#endif /* __STDC__ */
 {
     write(2, string, strlen(string));
 }
 
 
-#ifdef __STDC__
 static void pstdout(char *string)
-#else
-static void pstdout(string)
-  char *string;
-#endif /* __STDC__ */
 {
     write(1, string, strlen(string));
 }
 
 
-#ifdef __STDC__
 static void exitprog(char status)
-#else
-static void exitprog(status)
-  char status;
-#endif /* __STDC__ */
 {
     exit(status);
 }
 
 
-#ifdef __STDC__
 void aklog_init_params(aklog_params *params)
-#else
-void aklog_init_params(params)
-  aklog_params *params;
-#endif /* __STDC__ */
 {
     params->readlink = readlink;
     params->isdir = isdir;
@@ -126,13 +85,3 @@ void aklog_init_params(params)
     params->pstdout = pstdout;
     params->exitprog = exitprog;
 }
-
-
-#if defined(vax)
-static char *getcwd(buf, size)
-    char *buf;
-    size_t size;
-{
-    return(getwd(buf));
-}
-#endif

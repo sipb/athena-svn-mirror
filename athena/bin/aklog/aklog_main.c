@@ -1,13 +1,11 @@
 /* 
- * $Id: aklog_main.c,v 1.28 1997-11-11 19:26:07 ghudson Exp $
+ * $Id: aklog_main.c,v 1.29 1997-11-17 16:23:49 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.28 1997-11-11 19:26:07 ghudson Exp $";
-#endif lint || SABER
+static const char rcsid[] = "$Id: aklog_main.c,v 1.29 1997-11-17 16:23:49 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,12 +79,7 @@ static linked_list hostlist;	/* List of host addresses */
 static linked_list authedcells;	/* List of cells already logged to */
 
 
-#ifdef __STDC__
 static char *copy_cellinfo(cellinfo_t *cellinfo)
-#else
-static char *copy_cellinfo(cellinfo)
-  cellinfo_t *cellinfo;
-#endif /* __STDC__ */
 {
     cellinfo_t *new_cellinfo;
 
@@ -97,12 +90,7 @@ static char *copy_cellinfo(cellinfo)
 }
 
 
-#ifdef __STDC__
 static char *copy_string(char *string)    
-#else
-static char *copy_string(string)
-  char *string;
-#endif /* __STDC__ */
 {
     char *new_string;
 
@@ -113,14 +101,8 @@ static char *copy_string(string)
 }
 
 
-#ifdef __STDC__
-static int get_cellconfig(char *cell, struct afsconf_cell *cellconfig, char *local_cell)
-#else
-static int get_cellconfig(cell, cellconfig, local_cell)
-    char *cell;
-    struct afsconf_cell *cellconfig;
-    char *local_cell;
-#endif /* __STDC__ */
+static int get_cellconfig(char *cell, struct afsconf_cell *cellconfig,
+			  char *local_cell)
 {
     int status = AKLOG_SUCCESS;
     struct afsconf_dir *configdir;
@@ -163,13 +145,7 @@ static int get_cellconfig(cell, cellconfig, local_cell)
  * doing anything.  Otherwise, log to it and mark that it has been logged
  * to.
  */
-#ifdef __STDC__
 static int auth_to_cell(char *cell, char *realm)
-#else
-static int auth_to_cell(cell, realm)
-  char *cell;
-  char *realm;
-#endif /* __STDC__ */
 {
     int status = AKLOG_SUCCESS;
     char username[BUFSIZ];	/* To hold client username structure */
@@ -410,14 +386,7 @@ static int auth_to_cell(cell, realm)
     return(status);
 }
 
-#ifdef __STDC__
 static int get_afs_mountpoint(char *file, char *mountpoint, int size)
-#else
-static int get_afs_mountpoint(file, mountpoint, size)
-  char *file;
-  char *mountpoint;
-  int size;
-#endif /* __STDC__ */
 {
     char our_file[MAXPATHLEN + 1];
     char *parent_dir;
@@ -471,12 +440,7 @@ static int get_afs_mountpoint(file, mountpoint, size)
  * to be descended.  After that, it should be called with the arguemnt
  * NULL.
  */
-#ifdef __STDC__
 static char *next_path(char *origpath)
-#else
-static char *next_path(origpath)
-  char *origpath;
-#endif /* __STDC__ */
 {
     static char path[MAXPATHLEN + 1];
     static char pathtocheck[MAXPATHLEN + 1];
@@ -561,12 +525,7 @@ static char *next_path(origpath)
     return(pathtocheck);
 }
 	
-#ifdef __STDC__
 static void add_hosts(char *file)
-#else
-static void add_hosts(file)
-  char *file;
-#endif /* __STDC__ */
 {
     struct ViceIoctl vio;
     char outbuf[BUFSIZ];
@@ -629,12 +588,7 @@ static void add_hosts(file)
  * This routine descends through a path to a directory, logging to 
  * every cell it encounters along the way.
  */
-#ifdef __STDC__
 static int auth_to_path(char *path)
-#else
-static int auth_to_path(path)
-  char *path;			/* The path to which we try to authenticate */
-#endif /* __STDC__ */
 {
     int status = AKLOG_SUCCESS;
     int auth_to_cell_status = AKLOG_SUCCESS;
@@ -724,11 +678,7 @@ static int auth_to_path(path)
 }
 
 /* Print usage message and exit */
-#ifdef __STDC__
 static void usage(void)
-#else
-static void usage()
-#endif /* __STDC__ */
 {
     sprintf(msgbuf, "\nUsage: %s %s%s%s\n", progname,
 	    "[-d] [[-cell | -c] cell [-k krb_realm]] ",
@@ -760,14 +710,7 @@ static void usage()
     params.exitprog(AKLOG_USAGE);
 }
 
-#ifdef __STDC__
 void aklog(int argc, char *argv[], aklog_params *a_params)
-#else
-void aklog(argc, argv, a_params)
-  int argc;
-  char *argv[];
-  aklog_params *a_params;
-#endif /* __STDC__ */
 {
     int status = AKLOG_SUCCESS;
     int i;
