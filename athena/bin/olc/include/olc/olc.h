@@ -17,17 +17,20 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
  *      $Author: raeburn $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.6 1989-12-28 18:13:52 raeburn Exp $
+ *      $Id: olc.h,v 1.7 1990-01-04 14:37:44 raeburn Exp $
  */
+
+#ifndef __olc_olc_h
+#define __olc_olc_h
+
+#include <stdio.h>
+#include <string.h>
 
 #include <olc/lang.h>
 
 #if is_cplusplus
 extern "C" {
 #endif
-
-#include <stdio.h>
-#include <strings.h>
 
 #ifdef KERBEROS
 #include <krb.h>
@@ -37,9 +40,20 @@ extern "C" {
 #include <hesiod.h>
 #endif
 
+#if is_cplusplus
+};
+#endif
+
+#include <olc/os.h>
 #include <olc/macros.h>
 #include <olc/structs.h>
 #include <olc/requests.h>
+#include <olc/common.h>
+
+#if is_cplusplus
+extern "C" {
+#endif
+
 #include <olc/procs.h>
 #include <olc/status.h>
 
@@ -86,3 +100,4 @@ char **hes_resolve();
 void expand_hostname();
 
 
+#endif /* __olc_olc_h */
