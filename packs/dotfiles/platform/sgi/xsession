@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.2 1995-02-20 03:41:56 cfields Exp $
+# $Id: xsession,v 1.3 1995-05-28 20:48:52 cfields Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -36,7 +36,6 @@ if ($?bad_args) then
         unsetenv NOCALLS
         unset bad_args
 endif
-
 
 # Do not echo status messages if noninteractive shell.  For interactive shells,
 # echo messages unless user has ~/.hushlogin file AND the session was not 
@@ -105,8 +104,8 @@ if (! $?skip_sgi) then
   if ($?NOCALLS) then
     setenv XUSERFILESEARCHPATH "`/usr/bin/X11/appdefpath`"
   else
-    setenv XUSERFILESEARCHPATH "$HOME/.dotdesktop-indy/%N:$HOME/%N:`/usr/bin/X11/appdefpath`"
-  fi
+    setenv XUSERFILESEARCHPATH "$HOME/.dotdesktop-$host/%N:$HOME/%N:`/usr/bin/X11/appdefpath`"
+  endif
 
 else
 
@@ -133,7 +132,6 @@ else
   endif
 endif
 
-
 # *******************   ACTIVITY STARTUP   *******************
 
 # Run standard system/user startup activities
@@ -155,21 +153,21 @@ if (! $?skip_dash) then
 		if ($?verbose_login) echo "Starting the Athena Dashboard..."
 		if ($?verbose_login) echo "Creating logout button..."
 		if ($?NOCALLS) then
-			(dash -default -logout \
+			(dash -default -logout -nosession \
 			    -userdefs /usr/athena/lib/X11/app-defaults/Dash &)
 		else
-			(dash -default -logout &)
+			(dash -default -logout -nosession &)
 		endif
 		sleep $sleep_time
 	else
 		if ($?verbose_login) echo "Starting the Athena Dashboard..."
-		(dash &)
+		(dash -nosession &)
 		sleep $sleep_time
 	endif
 else
 	if (! $?skip_xlogout) then
 		if ($?verbose_login) echo "Creating logout button..."
-		(dash -logout &)
+		(dash -logout -nosession &)
 		sleep $sleep_time
 	endif
 				
@@ -184,7 +182,7 @@ endif
 
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
-	(xterm -geometry 80x48+0+30 &)
+	(xterm -geometry 80x48+0+230 -T xterm -n xterm -e /bin/sh -c 'xprop -id $WINDOWID -remove WM_COMMAND; exec $SHELL' &)
 	sleep $sleep_time
 endif
 
@@ -259,9 +257,3 @@ endif
 
 # The session gate will source .logout when it gets a SIGHUP, if
 # invoked with the -logout flag.
-
-# Tell 4Dwm that the session is ending
-# There was once a -t here, but there doesn't seem to be a point.
-/usr/bin/X11/tellwm end_session >/dev/null 2>&1
-
-exit 0

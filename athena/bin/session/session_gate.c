@@ -2,7 +2,7 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.12 1995-05-25 22:17:31 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.11 1995-02-28 17:11:25 cfields Exp $
  *	$Author: cfields $
  */
 
@@ -109,12 +109,7 @@ char **argv;
 	signal(SIGTERM, cleanup);
     }
 #endif
-
-#ifdef SYSV
-    sigset(SIGCHLD, clean_child);	/* Clean up zobmied children */
-#else
     signal(SIGCHLD, clean_child);	/* Clean up zobmied children */
-#endif
 
     /*  Figure out the filename  */
 
@@ -274,10 +269,9 @@ int SGISession_Wait()
 	case -1:
 	  if (errno == EINTR && logoutsignal)
 	    return SGISession_ATHENALOGOUT;
-	  if (errno != EINTR) /* !SIGCHLD, basically */
-	    fprintf(stderr,
-		    "session_gate: Unexpected error %d from select\n",
-		    errno);
+	  fprintf(stderr,
+		  "session_gate: Unexpected error %d from select\n",
+		  errno);
 	  break;
 	case 0:
 	  return SGISession_TIMEOUT;
@@ -390,6 +384,8 @@ void logout( )
  */
 void clean_child( )
 {
+    signal(SIGCHLD, clean_child);	/* Clean up zobmied children */
+
 #ifdef POSIX
     waitpid((pid_t)-1, 0, WNOHANG);
 #else
