@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.24 1997-09-27 01:52:46 jweiss Exp $
+# $Id: cshrc,v 1.25 1998-03-17 04:11:26 cfields Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -98,7 +98,7 @@ if (! $?ENV_SET) then
 	if ($?extendyes) set \!:1=${\!:1}:\!:2 && \\
 	unset extendyes'
 
-	alias add 'set add_opts = (-e \!:*); source $initdir/add'
+	alias add 'eval "`/bin/athena/attach -Padd -e -P $athena_path -M $athena_manpath \!:*`"'
 
 	# Run user environment customizations identified in your ~/.environment
 	# file.  This is the place to include your own environment variables,
@@ -189,7 +189,8 @@ alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
 	if ($?extendyes) setenv \!:1 ${\!:1}:\!:2 && \\
 	unset extendyes'
 
-alias add 'set add_opts = (\!:*); source $initdir/add'
+set add_flags
+alias add 'eval "`/bin/athena/attach -Padd $add_flags \!:*`"'
 
 #   aliases dealing with subjects
 alias setup_X '( setenv SUBJECT \!:1 ; ( xterm -title \!* & ) )'
