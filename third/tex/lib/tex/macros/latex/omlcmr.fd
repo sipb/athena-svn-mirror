@@ -1,0 +1,89 @@
+%%
+%% This is file `omlcmr.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% cmfonts.fdd  (with options: `fd,OMLcmr')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% For further copyright information, and conditions for modification
+%% and distribution, see the file legal.txt, and any other copyright
+%% notices in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%%   This system is distributed in the hope that it will be useful,
+%%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%%   For error reports concerning UNCHANGED versions of this file no
+%%   more than one year old, see bugs.txt.
+%% 
+%%   Please do not request updates from us directly.  Primary
+%%   distribution is through the CTAN archives.
+%% 
+%% 
+%% IMPORTANT COPYRIGHT NOTICE:
+%% 
+%% You are NOT ALLOWED to distribute this file alone.
+%% 
+%% You are allowed to distribute this file under the condition that it
+%% is distributed together with all the files listed in manifest.txt.
+%% 
+%% If you receive only some of these files from someone, complain!
+%% 
+%% 
+%% Permission is granted to customize the declarations in this file to
+%% serve the needs of your installation, provided that you comply with
+%% the conditions in the file legal.txt.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
+%% 
+%% MODIFICATION ADVICE:
+%% 
+%% If you want to customize this file, it is best to make a copy of
+%% the source file(s) from which it was produced.  Use a different
+%% name for your copy(ies) and modify the copy(ies); this will ensure
+%% that your modifications do not get overwritten when you install a
+%% new release of the standard system.
+%% 
+%% You can then easily distribute your modifications by distributing
+%% the modified and renamed copy of the source file, together with a
+%% suitable .ins file, taking care to observe the conditions in
+%% legal.txt; this will ensure that other users can safely use
+%% your modifications.
+%% 
+%% The names of the source files used are shown above.
+%% 
+%% 
+%% 
+\ProvidesFile{omlcmr.fd}
+        [1998/03/27 v2.5g Standard LaTeX font definitions]
+\DeclareFontFamily{OML}{cmr}{\skewchar\font127 }
+\DeclareFontShape{OML}{cmr}{m}{n}%
+   {<->ssub*cmm/m/it}{}
+\DeclareFontShape{OML}{cmr}{m}{it}%
+   {<->ssub*cmm/m/it}{}
+\DeclareFontShape{OML}{cmr}{m}{sl}%
+   {<->ssub*cmm/m/it}{}
+\DeclareFontShape{OML}{cmr}{m}{sc}%
+   {<->ssub*cmm/m/it}{}
+\DeclareFontShape{OML}{cmr}{bx}{n}%
+   {<->ssub*cmm/b/it}{}
+\DeclareFontShape{OML}{cmr}{bx}{it}%
+   {<->ssub*cmm/b/it}{}
+\DeclareFontShape{OML}{cmr}{bx}{sl}%
+   {<->ssub*cmm/b/it}{}
+\DeclareFontShape{OML}{cmr}{bx}{sc}%
+   {<->ssub*cmm/b/it}{}
+\endinput
+%%
+%% End of file `omlcmr.fd'.

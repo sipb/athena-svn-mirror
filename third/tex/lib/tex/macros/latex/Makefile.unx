@@ -1,0 +1,56 @@
+
+########################################################################
+#   Start of customization section
+########################################################################
+
+# The directory where all runtime files reside
+DESTDIR=
+
+# The directory where the format files reside
+FORMATDIR=
+
+######### Edit the following only if you want to move *.fd or *.ist
+######### to a different place.
+
+# The directory where the .fd files reside:
+FDDIR=$(DESTDIR)
+
+# The directory where class and package files reside:
+INPUTDIR=$(DESTDIR)
+
+# The directory where the makeindex style files reside
+ISTDIR=$(DESTDIR)
+
+########################################################################
+#   End of customization section
+########################################################################
+
+FORMAT=latex
+
+
+default:
+	@if test ! "${DESTDIR}" -o ! "$(FORMATDIR)" ; then \
+	  echo "Destination directories not set." ; \
+	  echo "Please edit the Makefile first!" ; \
+	  exit 1 ; \
+	else \
+	  make format ; \
+	fi
+
+
+format:	$(FORMAT).fmt
+
+$(FORMAT).fmt:	$(FORMAT).ltx
+	initex $(FORMAT).ltx
+
+
+install: $(FORMAT).fmt
+	cp -i $(FORMAT).fmt $(FORMATDIR)
+	cp -i *.fd $(FDDIR)
+	cp -i *.cls *.clo *.sty *.def *.tex $(INPUTDIR)
+	cp -i *.ist $(ISTDIR)
+
+clean:
+	rm $(FORMAT).fmt
+	rm *.dvi *.log *.aux *.glo *.idx *.ind *.gls *.lof *.lot *.toc
+

@@ -1,0 +1,156 @@
+
+                  LaTeX installation instructions for OzTeX
+                  =========================================
+
+                              31 August 1994
+
+NOTE: LaTeX is installed and ready to use in OzTeX 1.7 and later.
+If you have an older version of OzTeX then please upgrade.  Don't expect
+any support if you decide to merge this release of LaTeX with an older
+version of OzTeX!  If you have OzTeX 1.7 or later then you will only need
+to read the following instructions if you decide to update the version of
+LaTeX distributed with OzTeX.
+
+
+SUMMARY
+=======
+
+This file contains instructions on how to install LaTeX for OzTeX.
+Before reading this file, you should read install.txt which explains
+how the LaTeX installation works in more detail.
+
+The following sections describe:
+
+ * How to save any old version of LaTeX.
+
+ * How to unpack the LaTeX distribution.
+
+ * How to create the LaTeX format.
+
+ * How to check that the installation worked.
+
+ * Removing unnecessary files.
+
+
+SAVING ANY OLD VERSION OF LATEX
+===============================
+
+In OzTeX 1.7, `LaTeX' referred to LaTeX 2.09 and `LaTeX2e' referred to
+the beta release of the new LaTeX implementation.  To encourage the idea
+that LaTeX 2.09 is out of date and should gradually disappear, `LaTeX' is
+now used to refer to the new LaTeX implementation.
+
+If you have OzTeX 1.7 and you want to be able to use both LaTeX 2.09 and
+the new LaTeX, then carry out the following steps:
+
+ * In the `TeX-formats' folder, rename `LaTeX.fmt' to `LaTeX209.fmt' and
+   delete `LaTeX2e.fmt' (you will be building a new `LaTeX.fmt' file).
+
+ * In the `TeX-inputs' folder, rename the folder `LaTeX' to `LaTeX209'.
+   Delete the `LaTeX2e' folder and create a new (empty) `LaTeX' folder.
+   (If you'll be installing new versions of the psnfss and graphics packages
+   then delete `PSNFSS2e' and `Graphics2e' as well and create new folders
+   called `PSNFSS' and `Graphics'.  The installation steps for psnfss and
+   graphics can be found in the documentation accompanying these packages.)
+
+ * In the `Configs' folder, rename the `LaTeX' config file to `LaTeX209'
+   and the `LaTeX2e' config file to `LaTeX'.  Edit these two config files
+   and update the format list and TeX input folders to reflect the above new
+   format names and TeX input folders.  Similar changes must be made to the
+   format list and TeX input folders in the `Default' config file; you must
+   also update the config list to show the new config file names.
+
+In versions of OzTeX later than 1.7, the above steps are not needed because
+only the new LaTeX implementation is distributed.  You should simply delete
+all files in the `LaTeX' folder in `TeX-inputs' (after making a backup copy).
+
+
+UNPACKING THE DISTRIBUTION
+==========================
+
+To unpack the LaTeX distribution:
+
+ * Move all files in the distribution to the (empty) `LaTeX' folder in
+   `TeX-inputs'.
+
+ * Start up OzTeX.
+
+ * Select `TeX...' from the `TeX' menu.
+
+ * Use the standard file dialogue to select `unpack.ins', but do NOT open
+   the file.  Instead, select `Cancel'.  This sets OzTeX's current folder.
+
+ * Select `INITEX' from the `TeX' menu.
+
+ * Type `unpack.ins' in response to the `**' prompt and hit Return.
+
+This will start the unpacking process.  This may take some time:
+about 3 hours on an SE, 50 minutes on a IIsi, 30 minutes on a Duo 230,
+16 minutes on a IIfx or 10 minutes on a Quadra 840AV.
+
+If you have a copy of MakeIndex, then move all files ending in `.ist'
+to your MakeIndex folder.
+
+
+CREATING THE LATEX FORMAT
+=========================
+
+To create the LaTeX format:
+
+ * Select `INITEX' from the `TeX' menu.
+
+ * Type `latex.ltx' in response to the `**' prompt and hit Return.
+
+ * After a short while, you will be asked to save the LaTeX format.
+   Save it as `LaTeX.fmt' in the `TeX-formats' folder.
+
+You might discover at a later date that some of the TeX parameters in the
+`Default' config file need to be increased to typeset your documents.
+Depending on which parameters, you might need to build a new format file.
+You might even need to build a "big" format; the OzTeX User Guide explains
+how to do this.
+
+
+CHECKING THAT THE INSTALLATION WORKED
+=====================================
+
+To check that the installation worked:
+
+ * Move the file `ltxcheck.ltx' out of the `LaTeX' folder.
+   (It doesn't matter where you move it, just so long as it is not in the
+   same folder as the file `article.cls'.  If this file is in the same
+   folder then LaTeX will definitely be able to read it and so cannot check
+   if it is possible to read files that are NOT in the current folder.)
+
+ * Tick the `LaTeX' format in the `TeX' menu.
+   If you have LaTeX and LaTeX 2.09 then you should select `LaTeX' from the
+   `Config' menu.  This will select the right format and the correct set of
+   TeX input folders.
+
+ * Select `TeX...' from the `TeX' menu.
+
+ * Open the file `ltxcheck.ltx'.
+   This will run a test of the LaTeX installation, and should produce `OK!'
+   to a number of tests.  If it does not, then see `PROBLEMS' in install.txt.
+
+ * Delete the .log and .aux files created (and move `ltxcheck.ltx' back to
+   the `LaTeX' folder if you like).
+
+You have now installed LaTeX!
+
+
+REMOVING UNNECESSARY FILES
+==========================
+
+After LaTeX has been successfully installed, you might want to delete some
+non-essential files (after making backup copies) to free up space on your
+hard disk.  From the `LaTeX' folder, delete all files ending in:
+
+   .ins .drv .dtx .fdd.
+
+
+--- Copyright 1994 Andrew Trevorrow and the LaTeX3 project. ---
+---                 All rights reserved.                    ---
+
+
+

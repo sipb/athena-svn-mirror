@@ -1,0 +1,172 @@
+        LaTeX2e Copyright, Warranty and Distribution Restrictions
+ 
+                        18 November 1995
+
+
+COPYRIGHT
+=========
+
+This distribution is Copyright 1993 1994 1995 1996
+The LaTeX3 Project and the individual authors:
+
+   Leslie Lamport
+   Johannes Braams
+   David Carlisle
+   Alan Jeffrey
+   Frank Mittelbach
+   Chris Rowley
+   Rainer Schoepf
+
+
+WARRANTY
+========
+
+There is no warranty for LaTeX, to the extent permitted by applicable
+law.  Except when otherwise stated in writing, the LaTeX3 project
+provides the program `as is' without warranty of any kind, either
+expressed or implied, including, but not limited to, the implied
+warranties of merchantability and fitness for a particular purpose.
+The entire risk as to the quality and performance of the program is
+with you.  Should the program prove defective, you assume the cost of
+all necessary servicing, repair or correction.
+
+In no event unless required by applicable law or agreed to in writing
+will the LaTeX3 project, or any of the individual authors named above,
+be liable to you for damages, including any general, special,
+incidental or consequential damages arising out of any use of the
+program or out of inability to use the program (including but not
+limited to loss of data or data being rendered inaccurate or losses
+sustained by you or by third parties as a result of a failure of the
+program to operate with any other programs), even if such holder or
+other party has been advised of the possibility of such damages.
+
+
+DISTRIBUTION
+============
+
+Redistribution of unchanged files is allowed provided that all files
+listed in the file manifest.txt are distributed, including this file.
+
+If you receive only some of these files from someone, complain!
+
+
+However, if these files are distributed by established suppliers as
+part of a complete TeX distribution on low capcity media such as
+`floppy disks', and the structure of the distribution would make it
+difficult to distribute the whole set of files, then *those parties
+only* are allowed to distribute just some of the files, provided that:
+
+ * their distribution includes a fully functional LaTeX system or
+   enables the receiver to set up a fully functional LaTeX system;
+
+ * their distribution contains all the documentation concerning the
+   system in general, such as the *guide.tex files;
+
+ * it is clearly stated how the user can get a complete
+   distribution including all the files listed in manifest.txt, on
+   request, from that supplier (*not* from us).
+
+Note that this permission to distribute is not granted to the end user.
+
+
+The distribution of changed versions of certain files included in the
+LaTeX system, and the reuse of code from those files, are allowed
+under the following restrictions:
+
+ * It is allowed only if the legal notice in the file does not
+   expressly forbid it.
+ 
+   See below, under "Conditions on individual files", for a complete
+   list of those classes of files which are exceptions.
+ 
+ * You rename the file before you make any changes to it, unless the
+   file explicitly says that renaming is not required. Any such changed
+   files should be distributed under conditions that ensure that those
+   files, and any files derived from them, will never be redistributed
+   under the names used by the original files in the LaTeX distribution.
+ 
+
+ * You change the `identification string' to clearly indicate that the
+   file is not part of the standard system.
+
+   This `identification string' is in the optional argument of
+   whichever of the following three commands appears in the file:
+   \ProvidesClass, \ProvidesFile, \ProvidesPackage.
+
+ * You change the `error report address' so that we do not get error
+   reports for files not maintained by us.
+
+ * You acknowledge the source and authorship of the original version
+   in the modified file.
+
+ * You also distribute the unmodified version of the file.
+
+The above restrictions are not intended to prohibit, and hence do
+not apply to, the updating, by any method, of a file so that it
+becomes identical to the latest version of that file in the Standard
+LaTeX system.
+
+========================================================================
+NOTES
+=====
+
+We believe that these requirements give you the freedom you to make
+modifications that conform with whatever technical specifications you
+wish, whilst maintaining the availability, integrity and reliability of
+the Standard LaTeX distribution.  If you do not see how to achieve
+your goal whilst adhering to these requirements then read the document
+cfgguide.tex for suggestions.
+
+We deprecate the distribution of non-standard versions but we permit
+it under the above restrictions.  Read the document modguide.tex to
+learn about our reasons for the legal requirements detailed above.
+
+
+Conditions on individual files
+==============================
+
+The individual files may bear additional conditions which supersede
+the general conditions on distribution and modification contained in
+this file.
+
+Note: The following points relate only to the files in the standard
+      LaTeX `base' and `unpacked' distributions.
+
+ * The conditions on individual files differ only in the
+   extent of *modification* that is allowed.
+
+   The conditions on *distribution* are the same for all the files.
+   Thus a (re)distributor of a complete, unchanged Standard LaTeX need
+   meet only the conditions in this file; it is not necessary to check
+   the header of every file in the distribution to check that a
+   distribution meets these requirements.
+
+ * The files which have modification conditions that differ from the
+   general conditions in this file are all listed here:
+
+   * Files with extension `.ins':  these files may not be modified
+     at all because they contain the legal notices that are placed in
+     the generated files.
+
+   * Files with extension `.fd': the modification restrictions on
+     these font definition files permit modification without changing
+     the name, but only to enable use of all available fonts and to
+     prevent attempts to access unavailable fonts.
+     See the header of any of the .fd files for details.
+     
+   * Files with extension `.cfg': these files should be created or
+     modified to enable easy configuration of the system.  The
+     documentation in cfgguide.tex describes when it makes sense to
+     modify or generate such files.
+
+   Files with extension .cfg and .fd are found only in the `unpacked'
+   distribution.  The documentation in cfgguide.tex contains information
+   and advice concerning when it makes sense to modify or generate
+   such files.
+
+   Files with extension .ins are found in both the `base' and
+   `unpacked' distributions.
+
+
+--- Copyright 1994, 1995, 1996
+    The LaTeX3 Project.  All rights reserved ---

@@ -1,0 +1,359 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% For further copyright information, and conditions for modification
+% and distribution, see the file legal.txt, and any other copyright
+% notices in this file.
+% 
+% This file is part of the LaTeX2e system.
+% ----------------------------------------
+%   This system is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+% 
+%   For error reports concerning UNCHANGED versions of this file no
+%   more than one year old, see bugs.txt.
+% 
+%   Please do not request updates from us directly.  Primary
+%   distribution is through the CTAN archives.
+% 
+% 
+% IMPORTANT COPYRIGHT NOTICE:
+% 
+% You are NOT ALLOWED to distribute this file alone.
+% 
+% You are allowed to distribute this file under the condition that it
+% is distributed together with all the files listed in manifest.txt.
+% 
+% If you receive only some of these files from someone, complain!
+% 
+% 
+% Permission is granted to copy this file to another file with a
+% clearly different name and to customize the declarations in that
+% copy to serve the needs of your installation, provided that you
+% comply with the conditions in the file legal.txt.
+% 
+% However, NO PERMISSION is granted to produce or to distribute a
+% modified version of this file under its original name.
+%  
+% You are NOT ALLOWED to change this file.
+% 
+% 
+% 
+% \fi
+% \iffalse
+%%% From File: ltbibl.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltbibl.dtx}
+             [1997/04/24 v1.1m LaTeX Kernel (Bibliography)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltbibl.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+\maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{161}
+%
+% \section{Bibliography Generation}
+%
+%  A bibliography is created by the |thebibliography| environment, which
+%  generates a title such as ``References'', and a list of entries.
+%  The BIB\TeX{} program will create a file containing such an
+%  environment, which will be read in by the |\bibliography| command.
+%  With BIB\TeX, the following commands will be used.
+%
+% \DescribeMacro{\bibliography}
+%  |\bibliography|\marg{file1,file2, \ldots ,filen} : specifies
+%     the bibdata files.  Writes a |\bibdata| entry on the |.aux| file
+%     and tries to read in |mainfile.bbl|.
+%
+% \DescribeMacro{\bibliographystyle}
+%  |\bibliographystyle|\marg{style} : 
+%     Writes a |\bibstyle| entry on the |.aux| file.
+%
+% \DescribeEnv{thebibliography}
+%  The |thebibliography| environment is a list environment.  To save the
+%  use of an extra counter, it should use  |enumiv|  as the item
+%  counter. 
+%  Instead of using |\item|, items in the bibliography are produced by
+%  the  following commands:\\
+%    |\bibitem|\marg{name}    : Produces a numbered entry cited as
+%    \meta{name}.\\
+%    |\bibitem|\oarg{label}\marg{name} : Produces an entry labeled by
+%    \meta{Label} and cited by \meta{name}.
+%
+%  The former is used for bibliographies with citations like [1], [2],
+%  etc.; 
+%  the latter is used for citations like [Knuth82].
+%
+%  The document class must define the thebibliography environment.  This
+%  environment has a single argument, which is the widest bibliography
+%  label-- e.g., if the [Knuth67] is the widest entry, then this
+%  argument will be Knuth67.  The |\thebibliography| command must begin
+%  a list  environment, which the |\endthebibliography| command ends.
+%
+% \DescribeMacro{\cite}
+%  Entries are cited by the command |\cite|\marg{name}.
+%
+% \DescribeMacro{\nocite}
+% |\nocite|\marg{citations} 
+% puts information on the |.aux| file that causes
+% \BibTeX{} to include the \marg{citations} list in the bibliography,
+% but puts nothing in the text.
+%
+% |\nocite{*}| is special: it tells \BibTeX{} to put the whole of a
+% collection of references into the bibiography.
+% 
+% \StopEventually{}
+%
+%
+% \changes{v1.0a}{1994/03/31}{Initial version of ltidxbib.dtx,
+%                             split from ltherest.dtx}
+% \changes{v1.1a}{1994/05/19}{Initial version of ltbibl.dtx,
+%                             split from ltidxbib.dtx}
+% \changes{v1.1b}{1994/05/21}{Use new warning commands}
+% \changes{v1.1c}{1994/11/10}{Fix \cs{nocite\{*\}}}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\message{bibliography,}
+%    \end{macrocode}
+%
+%
+% \begin{oldcomments}
+%  PARAMETERS
+%
+%   \@cite   : A macro such that \@cite{LABEL1,LABEL2}{NOTE}
+%              produces the output for a \cite[NOTE]{FOO1,FOO2} command,
+%              where entry FOOi is defined by \bibitem[LABELi]{FOOi}.
+%              The switch @tempswa is true if the optional NOTE argument
+%              is present.
+%              The default definition is :
+%                \@cite{LABELS}{NOTE} ==
+%                   BEGIN [LABELS
+%                         IF @tempswa = T THEN , NOTE FI
+%                         ]
+%                   END
+%
+%   \@biblabel : A macro to produce the label in the bibliography
+%                entry.  For \bibitem[LABEL]{NAME}, the label is
+%                generated by \@biblabel{LABEL}.  It has the default
+%                definition \@biblabel{LABEL} -> [LABEL].
+%  CONVENTION
+%
+%  \b@FOO : The name or number of the reference created by \cite{FOO}
+%           E.g., if \cite{FOO} -> [17] , then \b@FOO -> 17.
+%
+% \end{oldcomments}
+%
+% \begin{macro}{\bibitem}
+% \changes{v1.1g}{1995/05/08}{Removed unnecessary braces}
+%    \begin{macrocode}
+\def\bibitem{\@ifnextchar[\@lbibitem\@bibitem}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@lbibitem}
+% \changes{LaTeX2.09}{1992/02/26}{Added \cs{hfill} to restore 
+%        left-alignment of bibliography labels in alpha style}
+%    \begin{macrocode}
+\def\@lbibitem[#1]#2{\item[\@biblabel{#1}\hfill]\if@filesw
+      {\let\protect\noexpand
+       \immediate
+       \write\@auxout{\string\bibcite{#2}{#1}}}\fi\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@bibitem}
+% \changes{LaTeX2.09}{1991/11/13}{Changed counter enumi to enumiv,
+%               as it says in the comment above}
+% \changes{LaTeX2.09}{1992/01/10}{Changed \cs{c@enumiv} to \cs{value}
+%       of \cs{@listctr}}
+%    \begin{macrocode}
+\def\@bibitem#1{\item\if@filesw \immediate\write\@auxout
+       {\string\bibcite{#1}{\the\value{\@listctr}}}\fi\ignorespaces}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\bibcite}
+% \changes{v1.1f}{1995/04/24}
+%   {Make \cs{@onlypreamble} /1388.}
+% \changes{v1.1h}{1995/06/19}
+%   {Call \cs{@newl@bel} so repeated keys produce better warning.}
+% \changes{v1.1i}{1995/07/14}
+%   {Remove \cs{@onlypreamble} so still defined in new \cs{enddocument}}
+%    \begin{macrocode}
+\def\bibcite{\@newl@bel b}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\citation}
+%    \begin{macrocode}
+\let\citation\@gobble
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\cite}
+% \changes{v1.1j}{1995/10/16}{(DPC) Make robust}
+%    \begin{macrocode}
+\DeclareRobustCommand\cite{%
+  \@ifnextchar [{\@tempswatrue\@citex}{\@tempswafalse\@citex[]}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@citex}
+% |\penalty\@m| added to definition of |\@citex| to allow a line
+% break after the `,' in citations like [Jones80,Smith77]
+% (Added 23 Oct 86)
+%
+% space added after the `,' (21 Nov 87)
+%
+% \changes{LaTeX2.09}{1991/10/25}
+%      {added \cs{reset@font}, suggested by Bernd Raichle.}
+% \changes{LaTeX2.09}{1991/11/06}
+%     {added code to remove a leading blank}
+% \changes{LaTeX2.09}{1992/08/14}
+%      {added missing argument braces around \cs{hbox},
+%               found by Ed Sznyter}
+% \changes{LaTeX2.09}{1992/08/17}
+%       {simplified code for removing leading blanks in
+%               citation key (proposed by Frank Jensen and
+%               Kresten Krab Thorup)}
+% \changes{LaTeX2.09}{1993/08/06}
+%  {Moved writing to .aux file in loop over citation keys
+%               so that leading blanks are removed there as well.}
+% \changes{v1.0c}{1994/05/05}{Set switch for warning and end of run.}
+% \changes{v1.1e}{1995/04/24}
+%   {Add \cs{mbox} to undefined case: latex/1239.}
+% \changes{v1.1g}{1995/05/08}{Use \cs{@firstofone}}
+% \changes{v1.1k}{1995/10/20}{Removed refundefined flag}
+% \changes{v1.1l}{1995/12/07}{Restored name of \cs{G@refundefinedtrue}}
+% \changes{v1.1m}{1997/04/24}{\cs{\@empty} to avoid primitive
+%    error on empty cite keys. latex/2432}
+%    \begin{macrocode}
+\def\@citex[#1]#2{%
+  \let\@citea\@empty
+  \@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{,\penalty\@m\ }%
+     \edef\@citeb{\expandafter\@firstofone\@citeb\@empty}%
+     \if@filesw\immediate\write\@auxout{\string\citation{\@citeb}}\fi
+     \@ifundefined{b@\@citeb}{\mbox{\reset@font\bfseries ?}%
+       \G@refundefinedtrue
+       \@latex@warning
+         {Citation `\@citeb' on page \thepage \space undefined}}%
+       {\hbox{\csname b@\@citeb\endcsname}}}}{#1}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\bibdata}
+% \begin{macro}{\bibstyle}
+%    \begin{macrocode}
+\let\bibdata=\@gobble
+\let\bibstyle=\@gobble
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+% \begin{macro}{\bibliography}
+% \changes{LaTeX2e}{1994/01/18}
+%         {Use \cs{@input@} so include files are listed.}
+%    \begin{macrocode}
+\def\bibliography#1{%
+  \if@filesw
+    \immediate\write\@auxout{\string\bibdata{#1}}%
+  \fi
+  \@input@{\jobname.bbl}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bibliographystyle}
+% \changes{v1.1d}{1994/12/09}{(DPC) Allow use in preamble.}
+%    \begin{macrocode}
+\def\bibliographystyle#1{%
+  \ifx\@begindocumenthook\@undefined\else
+    \expandafter\AtBeginDocument
+  \fi
+    {\if@filesw
+       \immediate\write\@auxout{\string\bibstyle{#1}}%
+     \fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\nocite}
+%    (Added 14 Jun 85)
+% \changes{v1.1c}{1994/11/10}{Fix \cs{nocite\{*\}}}
+%   
+%    This puts information on the |.aux| file that causes
+%    \BibTeX{} to include the citation list in the bibliography,
+%    but puts nothing in the text.
+%
+% RmS 93/08/06: Made loop for |\nocite| like that for |\@citex|,
+%               to get rid of leading spaces.
+% \changes{v1.0b}{1994/05/03}{Make \cs{nocite} issue a warning
+%            for an undefined citation key.}
+% \changes{v1.0c}{1994/05/05}{Do not write page number in
+%            \cs{nocite} warning message.}
+% \changes{v1.0c}{1994/05/05}{Set switch for warning and end of run.}
+% \changes{v1.1g}{1995/05/08}{Use \cs{@firstofone}}
+% \changes{v1.1k}{1995/10/20}{Removed refundefined flag}
+%    \begin{macrocode}
+\def\nocite#1{\@bsphack
+  \@for\@citeb:=#1\do{%
+    \edef\@citeb{\expandafter\@firstofone\@citeb}%
+    \if@filesw\immediate\write\@auxout{\string\citation{\@citeb}}\fi
+    \@ifundefined{b@\@citeb}{\G@refundefinedtrue
+        \@latex@warning{Citation `\@citeb' undefined}}{}}%
+  \@esphack}
+%    \end{macrocode}
+%    Since |\nocite{*}| should not produce a warning about undefined
+%    citation keys (seee PR 557), we need to set the control sequence
+%    `|\b@*|' to something other than |\relax|. As a result |\cite{*}|
+%    will not warn either (but that never worked with \BibTeX{} in the
+%    first place).
+%    \begin{macrocode}
+\expandafter\let\csname b@*\endcsname\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \subsection{Default definitions}
+%
+% \begin{macro}{\@cite}
+%    \begin{macrocode}
+\def\@cite#1#2{[{#1\if@tempswa , #2\fi}]}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@biblabel}
+% \changes{LaTeX2.09}{1992/01/14}{removed \cs{hfill}}
+%    \begin{macrocode}
+\def\@biblabel#1{[#1]}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \Finale
+%
