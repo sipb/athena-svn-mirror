@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Makefile,v 1.4 1990-07-16 14:16:10 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Makefile,v 1.5 1990-07-17 12:57:13 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Makefile,v $
 #  $Author: qjb $
 #
@@ -36,7 +36,7 @@ $(SOBJS): $(HEADERS)
 $(RKLIB): $(RKLIBDEP)
 
 $(RKERR_H) $(RKLIBDEP): 
-	chdir ../lib; make 
+	cd ../lib; make 
 
 depend:
 	makedepend $(CFLAGS) $(SSRCS)

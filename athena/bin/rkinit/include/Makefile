@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/Makefile,v 1.2 1989-11-13 16:48:40 qjb Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/Makefile,v 1.3 1990-07-17 12:56:27 qjb Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/Makefile,v $
 # $Author: qjb $
 #
@@ -10,7 +10,7 @@ INSTALLDIR 	= /usr/include
 all: rkinit_err.h
 
 rkinit_err.h: 
-	chdir ../lib; make ../include/rkinit_err.h
+	cd ../lib; make ../include/rkinit_err.h
 
 depend: rkinit_err.h
 
