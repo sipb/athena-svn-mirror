@@ -66,6 +66,7 @@ sunos5*-*gcc*|solaris2*-*gcc*)
 
 #	SHLIB_XLDFLAGS='-R $(libdir)'
 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+	SHLIB_LIBS='-lcurses'
 	;;
 
 sunos5*|solaris2*)
