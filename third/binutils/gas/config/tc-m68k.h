@@ -1,6 +1,6 @@
 /* This file is tc-m68k.h
    Copyright 1987, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
-   1998, 1999, 2000
+   1998, 1999, 2000, 2001, 2002, 2003, 2004
    Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
@@ -71,7 +71,7 @@ struct fix;
 #define COFF_FLAGS F_AR32W
 #define TC_COUNT_RELOC(x) ((x)->fx_addsy||(x)->fx_subsy)
 
-#define TC_COFF_FIX2RTYPE(fixP) tc_coff_fix2rtype(fixP)
+#define TC_COFF_FIX2RTYPE(FIX) tc_coff_fix2rtype(FIX)
 #define TC_COFF_SIZEMACHDEP(frag) tc_coff_sizemachdep(frag)
 extern int tc_coff_sizemachdep PARAMS ((struct frag *));
 #ifdef TE_SUN3
@@ -166,36 +166,21 @@ while (0)
 #define RELAX_RELOC_PC32  BFD_RELOC_32_PCREL
 
 #ifdef OBJ_ELF
-
-/* This expression evaluates to false if the relocation is for a local object
-   for which we still want to do the relocation at runtime.  True if we
-   are willing to perform this relocation while building the .o file.  If
-   the reloc is against an externally visible symbol, then the assembler
-   should never do the relocation.  */
-
-#define TC_RELOC_RTSYM_LOC_FIXUP(FIX)			\
-	((FIX)->fx_addsy == NULL			\
-	 || (! S_IS_EXTERNAL ((FIX)->fx_addsy)		\
-	     && ! S_IS_WEAK ((FIX)->fx_addsy)		\
-	     && S_IS_DEFINED ((FIX)->fx_addsy)		\
-	     && ! S_IS_COMMON ((FIX)->fx_addsy)))
-
 #define tc_fix_adjustable(X) tc_m68k_fix_adjustable(X)
 extern int tc_m68k_fix_adjustable PARAMS ((struct fix *));
 
-#ifdef OBJ_ELF
-/* This arranges for gas/write.c to not apply a relocation if
-   tc_fix_adjustable() says it is not adjustable.  */
-#define TC_FIX_ADJUSTABLE(fixP) tc_fix_adjustable (fixP)
-#endif
+/* Target *-*-elf implies an embedded target.  No shared libs.
+   *-*-uclinux also requires special casing to prevent GAS from
+   generating unsupported R_68K_PC16 relocs.  */
+#define EXTERN_FORCE_RELOC \
+  ((strcmp (TARGET_OS, "elf") != 0) && (strcmp (TARGET_OS, "uclinux") != 0))
+
+/* Values passed to md_apply_fix3 don't include symbol values.  */
+#define MD_APPLY_SYM_VALUE(FIX) 0
 
 #define elf_tc_final_processing m68k_elf_final_processing
 extern void m68k_elf_final_processing PARAMS ((void));
 #endif
-
-#define TC_FORCE_RELOCATION(FIX)			\
-	((FIX)->fx_r_type == BFD_RELOC_VTABLE_INHERIT	\
-	 || (FIX)->fx_r_type == BFD_RELOC_VTABLE_ENTRY)
 
 #else /* ! BFD_ASSEMBLER */
 
@@ -227,9 +212,26 @@ extern int m68k_parse_long_option PARAMS ((char *));
 extern struct relax_type md_relax_table[];
 #define TC_GENERIC_RELAX_TABLE md_relax_table
 
-/* Copied from write.c */
-/* This was formerly called M68K_AIM_KLUDGE.  */
+/* We can't do a byte jump to the next instruction, so in that case
+   force word mode by faking AIM.  */
 #define md_prepare_relax_scan(fragP, address, aim, this_state, this_type) \
-  if (aim==0 && this_state== 4) { /* hard encoded from tc-m68k.c */ \
-    aim=this_type->rlx_forward+1; /* Force relaxation into word mode */ \
-  }
+  do									  \
+    {								 	  \
+      if (aim == 0 && this_type->rlx_forward == 127)			  \
+        aim = 128;							  \
+    }									  \
+  while (0)
+
+#define DWARF2_LINE_MIN_INSN_LENGTH 2
+
+/* We want .cfi_* pseudo-ops for generating unwind info.  */
+#define TARGET_USE_CFIPOP 1
+
+#define DWARF2_DEFAULT_RETURN_COLUMN 24
+#define DWARF2_CIE_DATA_ALIGNMENT (-4)
+
+#define tc_regname_to_dw2regnum tc_m68k_regname_to_dw2regnum
+extern int tc_m68k_regname_to_dw2regnum (const char *regname);
+
+#define tc_cfi_frame_initial_instructions tc_m68k_frame_initial_instructions
+extern void tc_m68k_frame_initial_instructions (void);

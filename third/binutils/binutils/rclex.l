@@ -1,5 +1,5 @@
 %{ /* rclex.l -- lexer for Windows rc files parser  */
-/* Copyright 1997, 1998, 1999 Free Software Foundation, Inc.
+/* Copyright 1997, 1998, 1999, 2001, 2002, 2003 Free Software Foundation, Inc.
    Written by Ian Lance Taylor, Cygnus Support.
 
    This file is part of GNU Binutils.
@@ -26,10 +26,10 @@
 #include "bfd.h"
 #include "bucomm.h"
 #include "libiberty.h"
+#include "safe-ctype.h"
 #include "windres.h"
 #include "rcparse.h"
 
-#include <ctype.h>
 #include <assert.h>
 
 /* Whether we are in rcdata mode, in which we returns the lengths of
@@ -66,9 +66,9 @@ static struct alloc_string *strings;
 
 /* Local functions.  */
 
-static void cpp_line PARAMS ((const char *));
-static char *handle_quotes PARAMS ((const char *, unsigned long *));
-static char *get_string PARAMS ((int));
+static void cpp_line (const char *);
+static char *handle_quotes (const char *, unsigned long *);
+static char *get_string (int);
 
 %}
 
@@ -196,7 +196,7 @@ static char *get_string PARAMS ((int));
 			  MAYBE_RETURN (NUMBER);
 			}
 
-("\""[^\"\n]*"\""[ \t]*)+ {
+("\""[^\"\n]*"\""[ \t\n]*)+ {
 			  char *s;
 			  unsigned long length;
 
@@ -236,7 +236,7 @@ static char *get_string PARAMS ((int));
 %%
 #ifndef yywrap
 /* This is needed for some versions of lex.  */
-int yywrap ()
+int yywrap (void)
 {
   return 1;
 }
@@ -245,25 +245,24 @@ int yywrap ()
 /* Handle a C preprocessor line.  */
 
 static void
-cpp_line (s)
-     const char *s;
+cpp_line (const char *s)
 {
   int line;
   char *send, *fn;
 
   ++s;
-  while (isspace ((unsigned char) *s))
+  while (ISSPACE (*s))
     ++s;
   
   line = strtol (s, &send, 0);
-  if (*send != '\0' && ! isspace ((unsigned char) *send))
+  if (*send != '\0' && ! ISSPACE (*send))
     return;
 
   /* Subtract 1 because we are about to count the newline.  */
   rc_lineno = line - 1;
 
   s = send;
-  while (isspace ((unsigned char) *s))
+  while (ISSPACE (*s))
     ++s;
 
   if (*s != '"')
@@ -284,11 +283,11 @@ cpp_line (s)
   if (!initial_fn)
     {
       initial_fn = xmalloc (strlen (fn) + 1);
-      strcpy(initial_fn, fn);
+      strcpy (initial_fn, fn);
     }
 
   /* Allow the initial file, regardless of name.  Suppress all other
-     files if they end in ".h" (this allows included "*.rc") */
+     files if they end in ".h" (this allows included "*.rc").  */
   if (strcmp (initial_fn, fn) == 0
       || strcmp (fn + strlen (fn) - 2, ".h") != 0)
     suppress_cpp_data = 0;
@@ -301,9 +300,7 @@ cpp_line (s)
    merged separated by whitespace are merged, as in C.  */
 
 static char *
-handle_quotes (input, len)
-     const char *input;
-     unsigned long *len;
+handle_quotes (const char *input, unsigned long *len)
 {
   char *ret, *s;
   const char *t;
@@ -331,7 +328,7 @@ handle_quotes (input, len)
 	      break;
 
 	    case 'a':
-	      *s++ = ESCAPE_A;
+	      *s++ = ESCAPE_B; /* Strange, but true...  */
 	      ++t;
 	      break;
 
@@ -394,9 +391,9 @@ handle_quotes (input, len)
 		  if (*t >= '0' && *t <= '9')
 		    ch = (ch << 4) | (*t - '0');
 		  else if (*t >= 'a' && *t <= 'f')
-		    ch = (ch << 4) | (*t - 'a');
+		    ch = (ch << 4) | (*t - 'a' + 10);
 		  else if (*t >= 'A' && *t <= 'F')
-		    ch = (ch << 4) | (*t - 'A');
+		    ch = (ch << 4) | (*t - 'A' + 10);
 		  else
 		    break;
 		  ++t;
@@ -423,9 +420,13 @@ handle_quotes (input, len)
       else
 	{
 	  ++t;
-	  assert (isspace ((unsigned char) *t));
-	  while (isspace ((unsigned char) *t))
-	    ++t;
+	  assert (ISSPACE (*t));
+	  while (ISSPACE (*t))
+	    {
+	      if ((*t) == '\n')
+		++rc_lineno;
+	      ++t;
+	    }
 	  if (*t == '\0')
 	    break;
 	  assert (*t == '"');
@@ -443,8 +444,7 @@ handle_quotes (input, len)
 /* Allocate a string of a given length.  */
 
 static char *
-get_string (len)
-     int len;
+get_string (int len)
 {
   struct alloc_string *as;
 
@@ -452,7 +452,7 @@ get_string (len)
   as->s = xmalloc (len);
 
   as->next = strings;
-  strings = as->next;
+  strings = as;
 
   return as->s;
 }
@@ -461,7 +461,7 @@ get_string (len)
    when it no longer needs them.  */
 
 void
-rcparse_discard_strings ()
+rcparse_discard_strings (void)
 {
   struct alloc_string *as;
 
@@ -482,7 +482,7 @@ rcparse_discard_strings ()
 /* Enter rcdata mode.  */
 
 void
-rcparse_rcdata ()
+rcparse_rcdata (void)
 {
   rcdata_mode = 1;
 }
@@ -490,7 +490,7 @@ rcparse_rcdata ()
 /* Go back to normal mode from rcdata mode.  */
 
 void
-rcparse_normal ()
+rcparse_normal (void)
 {
   rcdata_mode = 0;
 }

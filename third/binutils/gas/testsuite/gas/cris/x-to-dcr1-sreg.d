@@ -4,12 +4,12 @@
 .*:     file format .*-cris
 
 RELOCATION RECORDS FOR \[\.text\]:
-OFFSET   TYPE              VALUE 
-00000070 (R_CRIS_)?16[ 	]+externalsym
-00000284 (R_CRIS_)?32[ 	]+externalsym
-0000028c (R_CRIS_)?32[ 	]+\.text
-00000170 (R_CRIS_)?32[ 	]+externalsym
-00000274 (R_CRIS_)?32[ 	]+externalsym
+OFFSET[	 ]+TYPE[	 ]+VALUE 
+0+70 (R_CRIS_)?16[ 	]+externalsym
+0+284 (R_CRIS_)?32[ 	]+externalsym
+0+28c (R_CRIS_)?32[ 	]+\.text
+0+170 (R_CRIS_)?32[ 	]+externalsym
+0+274 (R_CRIS_)?32[ 	]+externalsym
 
 
 Contents of section \.text:
@@ -55,4 +55,4 @@ Contents of section \.text:
  0270 3c7e6f2d 00000000 3c7e7209 307a730d  .*
  0280 307a7f0d 00000000 307a7f0d 00000000  .*
  0290 307a0000                             .*
-Contents of section \.data:
+

@@ -1,5 +1,5 @@
 /* output-file.c -  Deal with the output file
-   Copyright 1987, 1990, 1991, 1992, 1993, 1994, 1996, 1998, 1999
+   Copyright 1987, 1990, 1991, 1992, 1993, 1994, 1996, 1998, 1999, 2001, 2003
    Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
@@ -16,7 +16,8 @@
 
    You should have received a copy of the GNU General Public License
    along with GAS; see the file COPYING.  If not, write to
-   the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+   02111-1307, USA.  */
 
 #include <stdio.h>
 
@@ -40,18 +41,17 @@
 bfd *stdoutput;
 
 void
-output_file_create (name)
-     char *name;
+output_file_create (char *name)
 {
   if (name[0] == '-' && name[1] == '\0')
-    {
-      as_fatal (_("Can't open a bfd on stdout %s "), name);
-    }
+    as_fatal (_("can't open a bfd on stdout %s"), name);
+
   else if (!(stdoutput = bfd_openw (name, TARGET_FORMAT)))
     {
-      as_perror (_("FATAL: Can't create %s"), name);
+      as_perror (_("FATAL: can't create %s"), name);
       exit (EXIT_FAILURE);
     }
+
   bfd_set_format (stdoutput, bfd_object);
 #ifdef BFD_ASSEMBLER
   bfd_set_arch_mach (stdoutput, TARGET_ARCH, TARGET_MACH);
@@ -61,34 +61,32 @@ output_file_create (name)
 }
 
 void
-output_file_close (filename)
-     char *filename;
+output_file_close (char *filename)
 {
 #ifdef BFD_ASSEMBLER
   /* Close the bfd.  */
   if (bfd_close (stdoutput) == 0)
     {
       bfd_perror (filename);
-      as_perror (_("FATAL: Can't close %s\n"), filename);
+      as_perror (_("FATAL: can't close %s\n"), filename);
       exit (EXIT_FAILURE);
     }
 #else
-  /* Close the bfd without getting bfd to write out anything by itself */
+  /* Close the bfd without getting bfd to write out anything by itself.  */
   if (bfd_close_all_done (stdoutput) == 0)
     {
-      as_perror (_("FATAL: Can't close %s\n"), filename);
+      as_perror (_("FATAL: can't close %s\n"), filename);
       exit (EXIT_FAILURE);
     }
 #endif
-  stdoutput = NULL;		/* Trust nobody! */
+  stdoutput = NULL;		/* Trust nobody!  */
 }
 
 #ifndef BFD_ASSEMBLER
 void
-output_file_append (where, length, filename)
-     char *where ATTRIBUTE_UNUSED;
-     long length ATTRIBUTE_UNUSED;
-     char *filename ATTRIBUTE_UNUSED;
+output_file_append (char *where ATTRIBUTE_UNUSED,
+		    long length ATTRIBUTE_UNUSED,
+		    char *filename ATTRIBUTE_UNUSED)
 {
   abort ();
 }
@@ -99,8 +97,7 @@ output_file_append (where, length, filename)
 static FILE *stdoutput;
 
 void
-output_file_create (name)
-     char *name;
+output_file_create (char *name)
 {
   if (name[0] == '-' && name[1] == '\0')
     {
@@ -108,49 +105,50 @@ output_file_create (name)
       return;
     }
 
-  stdoutput = fopen (name, "wb");
-
-  /* Some systems don't grok "b" in fopen modes.  */
-  if (stdoutput == NULL)
-    stdoutput = fopen (name, "w");
-
+  stdoutput = fopen (name, FOPEN_WB);
   if (stdoutput == NULL)
     {
-      as_perror (_("FATAL: Can't create %s"), name);
+#ifdef BFD_ASSEMBLER
+      bfd_set_error (bfd_error_system_call);
+#endif
+      as_perror (_("FATAL: can't create %s"), name);
       exit (EXIT_FAILURE);
     }
 }
 
 void
-output_file_close (filename)
-     char *filename;
+output_file_close (char *filename)
 {
   if (EOF == fclose (stdoutput))
     {
-      as_perror (_("FATAL: Can't close %s"), filename);
+#ifdef BFD_ASSEMBLER
+      bfd_set_error (bfd_error_system_call);
+#endif
+      as_perror (_("FATAL: can't close %s"), filename);
       exit (EXIT_FAILURE);
     }
-  stdoutput = NULL;		/* Trust nobody! */
+
+  /* Trust nobody!  */
+  stdoutput = NULL;
 }
 
 void
-output_file_append (where, length, filename)
-     char *where;
-     long length;
-     char *filename;
+output_file_append (char * where, long length, char * filename)
 {
   for (; length; length--, where++)
     {
       (void) putc (*where, stdoutput);
+
       if (ferror (stdoutput))
-	/* if ( EOF == (putc( *where, stdoutput )) ) */
 	{
+#ifdef BFD_ASSEMBLER
+	  bfd_set_error (bfd_error_system_call);
+#endif
 	  as_perror (_("Failed to emit an object byte"), filename);
-	  as_fatal (_("Can't continue"));
+	  as_fatal (_("can't continue"));
 	}
     }
 }
 
 #endif
 
-/* end of output-file.c */

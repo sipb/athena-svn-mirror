@@ -1,5 +1,5 @@
 /* depend.c - Handle dependency tracking.
-   Copyright 1997, 1998, 2000 Free Software Foundation, Inc.
+   Copyright 1997, 1998, 2000, 2001 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -21,21 +21,22 @@
 #include "as.h"
 
 /* The file to write to, or NULL if no dependencies being kept.  */
-static char *dep_file = NULL;
+static char * dep_file = NULL;
 
-struct dependency {
-  char *file;
-  struct dependency *next;
-};
+struct dependency
+  {
+    char * file;
+    struct dependency * next;
+  };
 
 /* All the files we depend on.  */
-static struct dependency *dep_chain = NULL;
+static struct dependency * dep_chain = NULL;
 
 /* Current column in output file.  */
 static int column = 0;
 
-static int quote_string_for_make PARAMS ((FILE *, char *));
-static void wrap_output PARAMS ((FILE *, char *, int));
+static int quote_string_for_make (FILE *, char *);
+static void wrap_output (FILE *, char *, int);
 
 /* Number of columns allowable.  */
 #define MAX_COLUMNS 72
@@ -44,8 +45,7 @@ static void wrap_output PARAMS ((FILE *, char *, int));
    never called, then dependency tracking is simply skipped.  */
 
 void
-start_dependencies (filename)
-     char *filename;
+start_dependencies (char *filename)
 {
   dep_file = filename;
 }
@@ -53,8 +53,7 @@ start_dependencies (filename)
 /* Noticed a new filename, so try to register it.  */
 
 void
-register_dependency (filename)
-     char *filename;
+register_dependency (char *filename)
 {
   struct dependency *dep;
 
@@ -80,15 +79,15 @@ register_dependency (filename)
    This code is taken from gcc with only minor changes.  */
 
 static int
-quote_string_for_make (file, src)
-     FILE *file;
-     char *src;
+quote_string_for_make (FILE *file, char *src)
 {
   char *p = src;
   int i = 0;
+
   for (;;)
     {
       char c = *p++;
+
       switch (c)
 	{
 	case '\0':
@@ -102,6 +101,7 @@ quote_string_for_make (file, src)
 	       the end of a file name; and backslashes in other
 	       contexts should not be doubled.  */
 	    char *q;
+
 	    for (q = p - 1; src < q && q[-1] == '\\'; q--)
 	      {
 		if (file)
@@ -141,10 +141,7 @@ quote_string_for_make (file, src)
    wrapping as necessary.  */
 
 static void
-wrap_output (f, string, spacer)
-     FILE *f;
-     char *string;
-     int spacer;
+wrap_output (FILE *f, char *string, int spacer)
 {
   int len = quote_string_for_make (NULL, string);
 
@@ -182,7 +179,7 @@ wrap_output (f, string, spacer)
 /* Print dependency file.  */
 
 void
-print_dependencies ()
+print_dependencies (void)
 {
   FILE *f;
   struct dependency *dep;
@@ -190,10 +187,10 @@ print_dependencies ()
   if (dep_file == NULL)
     return;
 
-  f = fopen (dep_file, "w");
+  f = fopen (dep_file, FOPEN_WT);
   if (f == NULL)
     {
-      as_warn (_("Can't open `%s' for writing"), dep_file);
+      as_warn (_("can't open `%s' for writing"), dep_file);
       return;
     }
 
@@ -205,5 +202,5 @@ print_dependencies ()
   putc ('\n', f);
 
   if (fclose (f))
-    as_warn (_("Can't close `%s'"), dep_file);
+    as_warn (_("can't close `%s'"), dep_file);
 }

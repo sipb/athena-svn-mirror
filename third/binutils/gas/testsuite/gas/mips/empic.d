@@ -1,18 +1,19 @@
 #objdump: -rst -mmips:4000
 #name: MIPS empic
-#as: -membedded-pic -mips3
+#as: -mabi=o64 -membedded-pic -mips3
+#stderr: empic.l
 
 # Check GNU-specific embedded relocs, for ELF.
 
 .*: +file format elf.*mips.*
 
 SYMBOL TABLE:
-0+0000000 l    d  \.text	0+0000000 
-0+0000000 l    d  \.data	0+0000000 
-0+0000000 l    d  \.bss	0+0000000 
-0+0000000 l    d  \.foo	0+0000000 
-0+0000000 l    d  \.reginfo	0+0000000 
-0+0000000 l    d  \.(mdebug|pdr)	0+0000000 
+0+0000000 l    d  \.text	0+0000000 (|\.text)
+0+0000000 l    d  \.data	0+0000000 (|\.data)
+0+0000000 l    d  \.bss	0+0000000 (|\.bss)
+0+0000000 l    d  \.foo	0+0000000 (|\.foo)
+0+0000000 l    d  \.reginfo	0+0000000 (|\.reginfo)
+0+0000000 l    d  \.(mdebug|pdr)	0+0000000 (|\.mdebug|\.pdr)
 0+0000004 l       \.text	0+0000000 l2
 0+0000000         \*UND\*	0+0000000 g1
 0+0000000         \*UND\*	0+0000000 g2
@@ -23,7 +24,7 @@ SYMBOL TABLE:
 
 
 RELOCATION RECORDS FOR \[\.text\]:
-OFFSET           TYPE              VALUE 
+OFFSET [ ]+ TYPE              VALUE 
 0+0000004 R_MIPS_GNU_REL16_S2  g1
 0+000000c R_MIPS_GNU_REL16_S2  g2
 0+0000014 R_MIPS_GNU_REL16_S2  g2
@@ -55,12 +56,16 @@ OFFSET           TYPE              VALUE
 0+00000b8 R_MIPS_64         \.text
 0+00000cc R_MIPS_GNU_REL16_S2  \.text
 0+00000d0 R_MIPS_GNU_REL16_S2  \.text
-0+00000dc R_MIPS_32         \.text
-0+00000e8 R_MIPS_64         \.text
+0+00000d4 R_MIPS_GNU_REL_HI16  \.text
+0+00000d8 R_MIPS_GNU_REL_LO16  \.text
+0+00000dc R_MIPS_GNU_REL_HI16  \.text
+0+00000e0 R_MIPS_GNU_REL_LO16  \.text
+0+00000e4 R_MIPS_32         \.text
+0+00000f0 R_MIPS_64         \.text
 
 
 RELOCATION RECORDS FOR \[\.foo\]:
-OFFSET           TYPE              VALUE 
+OFFSET [ ]+ TYPE              VALUE 
 0+0000004 R_MIPS_GNU_REL_HI16  g1
 0+0000008 R_MIPS_GNU_REL_LO16  g1
 0+000000c R_MIPS_GNU_REL_HI16  \.foo
@@ -113,7 +118,7 @@ Contents of section \.text:
  0010 00000000 1000ffff 00000000 0411003f  .*
  0020 00000000 04110000 00000000 10000041  .*
  0030 00000000 10000000 00000000 3c030000  .*
- 0040 [26]463000c 3c030000 [26]4630114 2403ffd0  .*
+ 0040 [26]463000c 3c030000 [26]4630114 [26]403ffd0  .*
  0050 00000000 00000100 00000004 00000028  .*
  0060 0000012c ffffffd0 00000000 00000000  .*
  0070 00000000 00000100 00000000 00000004  .*
@@ -122,15 +127,12 @@ Contents of section \.text:
  00a0 3c030000 [26]46300d8 3c030000 [26]46300e8  .*
  00b0 000000cc 00000034 00000000 000000cc  .*
  00c0 00000000 00000034 00000000 10000032  .*
- 00d0 10000033 24030034 2403003c 000000cc  .*
- 00e0 00000034 00000000 00000000 000000cc  .*
- 00f0 00000000 00000034 00000000 00000000  .*
-Contents of section \.data:
+ 00d0 10000033 3c030000 [26]463010c 3c030000  .*
+ 00e0 [26]463011c 000000cc 00000034 00000000  .*
+ 00f0 00000000 000000cc 00000000 00000034  .*
 Contents of section \.reginfo:
  0000 80000008 00000000 00000000 00000000  .*
  0010 00000000 00000000                    .*
-Contents of section \.(mdebug|pdr):
-#...
 Contents of section \.foo:
  0000 00000000 3c030000 [26]4630004 3c030000  .*
  0010 [26]463010c 3c030000 [26]4630018 3c030000  .*

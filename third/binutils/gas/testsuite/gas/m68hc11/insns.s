@@ -53,8 +53,13 @@ test2:
 L1:	
 	anda #%lo(test2)
 	andb #%hi(test2)
+	ldab #%page(test2)	; Check that the relocs are against symbol
+	ldy  #%addr(test2)	; otherwise linker relaxation fails
 	rts
 
 	.sect .data
 
-.comm stack, 1024
+	.sect .bss
+stack:
+	.space	1024
+stack_end:

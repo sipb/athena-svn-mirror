@@ -19,14 +19,13 @@ EMBEDDED=yes
 # explicitly set first, and since the NOP code is only used as a
 # fill value between independantly viable peices of code, it should
 # not matter.
-NOP=0x0e0e
+NOP=0x0e0e0e0e
 
 OTHER_BSS_SYMBOLS="__bss_start__ = . ;"
 OTHER_BSS_END_SYMBOLS="__bss_end__ = . ;"
 
-# Hmmm, there's got to be a better way.  This sets the stack to the
-# top of the simulator memory (2^19 bytes).
-OTHER_RELOCATING_SECTIONS='.stack 0x80000 : { _stack = .; *(.stack) }'
+# This sets the stack to the top of the simulator memory (2^19 bytes).
+STACK_ADDR=0x80000
 
 TEMPLATE_NAME=elf32
 GENERATE_SHLIB_SCRIPT=yes
@@ -48,7 +47,7 @@ PARSE_AND_LIST_OPTIONS='
 
 PARSE_AND_LIST_ARGS_CASES='
     case OPTION_BASE_FILE:
-      link_info.base_file = (PTR) fopen (optarg, FOPEN_WB);
+      link_info.base_file = fopen (optarg, FOPEN_WB);
       if (link_info.base_file == NULL)
 	{
 	  /* xgettext:c-format */

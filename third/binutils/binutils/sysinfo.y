@@ -1,4 +1,4 @@
-/* Copyright 2001 Free Software Foundation, Inc.
+/* Copyright 2001, 2003 Free Software Foundation, Inc.
    Written by Steve Chamberlain of Cygnus Support (steve@cygnus.com).
 
 This file is part of GNU binutils.
@@ -72,6 +72,7 @@ top:  {
       printf("#ifdef SYSROFF_PRINT\n");
       printf("#include <stdio.h>\n");
       printf("#include <stdlib.h>\n");
+      printf("#include <ansidecl.h>\n");
       break;
     }
  } 
@@ -103,6 +104,13 @@ it:
 	  {
 	  case 'd':
 	    printf("\n\n\n#define IT_%s_CODE 0x%x\n", it,code);
+	    printf("struct IT_%s;\n", it);
+	    printf("extern void sysroff_swap_%s_in PARAMS ((struct IT_%s *));\n",
+		   $2, it);
+	    printf("extern void sysroff_swap_%s_out PARAMS ((FILE *, struct IT_%s *));\n",
+		   $2, it);
+	    printf("extern void sysroff_print_%s_out PARAMS ((struct IT_%s *));\n",
+		   $2, it);
 	    printf("struct IT_%s { \n", it);
 	    break;
 	  case 'i':
@@ -398,7 +406,7 @@ enum_list:
 %%
 /* four modes
 
-   -d write structure defintions for sysroff in host format
+   -d write structure definitions for sysroff in host format
    -i write functions to swap into sysroff format in
    -o write functions to swap into sysroff format out
    -c write code to print info in human form */
@@ -407,9 +415,7 @@ int yydebug;
 char writecode;
 
 int 
-main(ac,av)
-int ac;
-char **av;
+main (int ac, char **av)
 {
   yydebug=0;
   if (ac > 1)
@@ -426,8 +432,7 @@ return 0;
 }
 
 int
-yyerror(s)
-     char *s;
+yyerror (char *s)
 {
   fprintf(stderr, "%s\n" , s);
   return 0;

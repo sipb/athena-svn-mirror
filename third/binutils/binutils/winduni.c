@@ -1,5 +1,5 @@
 /* winduni.c -- unicode support for the windres program.
-   Copyright 1997, 1998 Free Software Foundation, Inc.
+   Copyright 1997, 1998, 2000, 2001, 2003 Free Software Foundation, Inc.
    Written by Ian Lance Taylor, Cygnus Support.
 
    This file is part of GNU Binutils.
@@ -30,8 +30,7 @@
 #include "bfd.h"
 #include "bucomm.h"
 #include "winduni.h"
-
-#include <ctype.h>
+#include "safe-ctype.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -41,10 +40,7 @@
    expanding chars to shorts, rather than doing something intelligent.  */
 
 void
-unicode_from_ascii (length, unicode, ascii)
-     int *length;
-     unichar **unicode;
-     const char *ascii;
+unicode_from_ascii (int *length, unichar **unicode, const char *ascii)
 {
   int len;
   const char *s;
@@ -74,10 +70,7 @@ unicode_from_ascii (length, unicode, ascii)
    some Windows function, probably WideCharToMultiByte.  */
 
 void
-unicode_print (e, unicode, length)
-     FILE *e;
-     const unichar *unicode;
-     int length;
+unicode_print (FILE *e, const unichar *unicode, int length)
 {
   while (1)
     {
@@ -99,7 +92,7 @@ unicode_print (e, unicode, length)
 	{
 	  if (ch == '\\')
 	    fputs ("\\", e);
-	  else if (isprint (ch))
+	  else if (ISPRINT (ch))
 	    putc (ch, e);
 	  else
 	    {

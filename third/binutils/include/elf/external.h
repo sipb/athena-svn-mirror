@@ -143,6 +143,10 @@ typedef struct {
   unsigned char	st_size[8];		/* Associated symbol size */
 } Elf64_External_Sym;
 
+typedef struct {
+  unsigned char est_shndx[4];		/* Section index */
+} Elf_External_Sym_Shndx;
+
 /* Note segments */
 
 typedef struct {
@@ -253,5 +257,20 @@ typedef struct
   unsigned char		si_boundto[2];
   unsigned char		si_flags[2];
 } Elf_External_Syminfo;
+
+
+/* This structure appears on the stack and in NT_AUXV core file notes.  */
+typedef struct
+{
+  unsigned char		a_type[4];
+  unsigned char		a_val[4];
+} Elf32_External_Auxv;
+
+typedef struct
+{
+  unsigned char		a_type[8];
+  unsigned char		a_val[8];
+} Elf64_External_Auxv;
+
 
 #endif /* _ELF_EXTERNAL_H */
