@@ -3,6 +3,9 @@
  *      Student Consulting Staff
  *	MIT Project Athena
  *
+ *	Lucien Van Elsen
+ *	Project Athena
+ *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
  *      Permission to use, copy, modify, and distribute this program
@@ -22,12 +25,12 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.4 1991-02-25 10:06:33 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.5 1991-04-10 00:54:14 lwvanels Exp $
  */
 
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: ";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.5 1991-04-10 00:54:14 lwvanels Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -58,13 +61,16 @@ static int handle_resize_event()
 
     /*  Find out the new size.  */
 
-    if (ioctl(fileno(stdout), TIOCGWINSZ, &ws) != -1)
-      {
-          if (ws.ws_row != 0)
-            lines = ws.ws_row;
-          if (ws.ws_col != 0)
-            cols = ws.ws_col;
-      }
+    if (ioctl(fileno(stdout), TIOCGWINSZ, &ws) == -1) {
+      perror("cref: finding out new screen size");
+      return(-1);
+    }
+    else {
+      if (ws.ws_row != 0)
+	lines = ws.ws_row;
+      if (ws.ws_col != 0)
+	cols = ws.ws_col;
+    }
 
     /*  Check that it is large enough  */
 
@@ -91,6 +97,7 @@ static int handle_resize_event()
     refresh();
 
     signal(SIGWINCH, handle_resize_event);
+    return(0);
 }
 
 
