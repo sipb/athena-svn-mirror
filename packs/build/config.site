@@ -1,0 +1,33 @@
+# config.site: Athena-specific autconf configuration
+# $Id: config.site,v 1.1 1996-09-20 05:07:45 ghudson Exp $
+#
+
+athena=true
+
+# Set compiler.
+case "${HOSTTYPE}" in
+	sun4)
+		CC="/usr/gcc/bin/gcc -DSOLARIS"
+		;;
+	*)
+		CC=cc
+		;;
+esac
+
+# Set location of X and Motif includes and libraries.
+case "${HOSTTYPE}" in
+	sun4)
+		x_includes=/usr/openwin/include
+		x_libraries=/usr/openwin/lib
+		with_motif=/usr/dt
+		;;
+	*)
+		x_includes=
+		x_libraries=
+		with_motif=yes
+		;;
+esac
+
+prefix=/usr/athena
+lbindir=/bin/athena
+lsbindir=/etc/athena
