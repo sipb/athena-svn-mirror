@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.13.2.2 1997-10-17 07:02:37 ghudson Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.13.2.3 1998-01-08 20:46:11 ghudson Exp $";
 #endif
 
 /*
@@ -79,6 +79,7 @@ recvjob()
 	struct stat stb;
 	char *bp = pbuf;
 	int status, rcleanup();
+	void *old_term, *old_pipe;
 
 	/*
 	 * Perform lookup for printer name or abbreviation
@@ -152,13 +153,15 @@ recvjob()
 #endif
 
 
-	signal(SIGTERM, rcleanup);
-	signal(SIGPIPE, rcleanup);
+	old_term = signal(SIGTERM, rcleanup);
+	old_pipe = signal(SIGPIPE, rcleanup);
 
 	if(lflag) syslog(LOG_INFO, "Reading job");
 
 	if (readjob())
 	  {
+	    signal(SIGTERM, old_term);
+	    signal(SIGPIPE, old_pipe);
 
 	    if (lflag) syslog(LOG_INFO, "Printing job..");
 
