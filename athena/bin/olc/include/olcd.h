@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.31 1991-03-26 16:58:30 lwvanels Exp $
+ *	$Id: olcd.h,v 1.32 1991-03-28 13:25:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -73,14 +73,18 @@
 #ifdef KERBEROS
 #define TICKET_FILE		"/usr/spool/olc/tkt.olc"
 #define SRVTAB_FILE		"/usr/lib/olc/srvtab"
+#endif /* KERBEROS */
+
+/* Use by the acl checking code, so you need it even if you don't have
+   kerberos
+*/
+
 #ifdef ATHENA
 #define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
 #else
 /* Put your realm here.... */
 #define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
 #endif /* ATHENA */
-#endif /* KERBEROS */
-
 
 /* system defines */
 
