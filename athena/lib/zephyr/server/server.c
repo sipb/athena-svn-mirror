@@ -17,7 +17,7 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_server_c[] = "$Id: server.c,v 1.62 1997-10-25 21:47:32 ghudson Exp $";
+static const char rcsid_server_c[] = "$Id: server.c,v 1.63 1998-07-16 14:55:08 ghudson Exp $";
 #endif
 #endif
 
@@ -688,7 +688,7 @@ kill_clt(notice, server)
 #endif
     if (extract_addr(notice, &who) != ZERR_NONE)
 	return ZERR_NONE;	/* XXX */
-    client = client_which_client(&who.sin_addr, notice);
+    client = client_find(&who.sin_addr, notice->z_port);
     if (!client) {
 	syslog(LOG_NOTICE, "kill_clt: no such client (%s/%d) from %s",
 	       inet_ntoa(who.sin_addr), ntohs(who.sin_port),
