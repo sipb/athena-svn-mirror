@@ -1,5 +1,4 @@
-#ident	"@(#)services	1.13	95/07/28 SMI"	/* SVr4.0 1.8	*/
-
+#ident	"@(#)services	1.16	97/05/12 SMI"	/* SVr4.0 1.8	*/
 #
 # Network services, Internet style
 #
@@ -24,6 +23,8 @@ name		42/udp		nameserver
 whois		43/tcp		nicname		# usually to sri-nic
 domain		53/udp
 domain		53/tcp
+bootps		67/udp		bootp bootser	# BOOTP/DHCP server
+bootpc		68/udp		bootcli		# BOOTP/DHCP client
 hostnames	101/tcp		hostname	# usually to sri-nic
 sunrpc		111/udp		rpcbind
 sunrpc		111/tcp		rpcbind
@@ -82,8 +83,6 @@ fs		7100/tcp			# Font server
 # Standard services not included by Sun
 #
 qotd		17/tcp		quote
-bootp		67/udp		bootps bootser	# bootp server
-bootpc		68/udp		bootcli		# bootp client
 auth		113/tcp		authentication
 snmp		161/udp
 snmp-trap	162/udp		snmptrap

@@ -1,4 +1,4 @@
-#ident "@(#)devlink.tab	1.54	95/07/10 SMI"
+#ident "@(#)devlink.tab	1.64	97/04/23 SMI"
 #
 # Copyright (c) 1991 by Sun Microsystems, Inc.
 #
@@ -78,6 +78,7 @@ type=ddi_pseudo;name=sy	\M0
 type=ddi_pseudo;name=clone	\M0
 type=ddi_network	\M0
 type=ddi_pseudo;name=openeepr	\M0
+type=ddi_pseudo;name=lockstat	\M0
 type=ddi_pseudo;name=kstat	\M0
 type=ddi_pseudo;name=ksyms	\M0
 type=ddi_display	fbs/\M0	fb\N0
@@ -101,17 +102,26 @@ type=ddi_pseudo;name=md;minor=admin	md/admin
 type=ddi_pseudo;name=md;minor2=blk	md/dsk/d\M1
 type=ddi_pseudo;name=md;minor2=raw	md/rdsk/d\M1
 type=ddi_pseudo;name=tnf	\M0
+type=ddi_pseudo;name=pm	pm
 type=ddi_block:diskette;minor=c	diskette
 type=ddi_block:diskette;minor=c,raw	rdiskette
 type=ddi_block:diskette;minor=c	diskette0
 type=ddi_block:diskette;minor=c,raw	rdiskette0
+type=ddi_pseudo;name=tod	tod
+type=ddi_other;name=SUNW,pmc	pmc
+type=ddi_other;name=SUNW,mic	mic\M0
+type=ddi_pseudo;name=SUNW,envctrl	\M0
+type=ddi_display;name=PFU,aga	fbs/\M0	PFUaga\N0
+type=ddi_pseudo;name=PFU,aga	fbs/\M0	PFUagaspt\N0
+type=ddi_audio;minor=audioens#0	sound/\N0
+type=ddi_audio;minor=audioens,ctl	sound/\N0ctl
+type=ddi_display;name=SUNW,leo	fbs/\M0	leo\N0
 type=pcmcia:event;name=pem	pem
+type=ddi_nexus;minor=initpcmcia	pcmcia/\N0
 type=ddi_pseudo;name=ecpp	ecpp\N0
 type=ddi_pseudo;name=se	se_hdlc\N0
 type=ddi_pseudo;name=SUNW,rtvc;minor=ctl	rtvc\M0
 type=ddi_pseudo;name=SUNW,rtvc	\M0
-type=ddi_display;name=PFU,aga	fbs/\M0	PFUaga\N0
-type=ddi_pseudo;name=PFU,aga	fbs/\M0	PFUagaspt\N0
-type=ddi_display;name=SUNW,leo	fbs/\M0	leo\N0
+type=ddi_pseudo;name=ses	es/ses\N0
 type=ddi_pseudo;name=atalk;minor=elap	appletalk/lap/ethertalk0/control
 type=ddi_pseudo;name=atalk;minor=ddp	appletalk/ddp/socket
