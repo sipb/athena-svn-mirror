@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.5 1990-07-11 10:23:36 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.6 1991-01-23 15:12:24 epeisach Exp $
  */
 
 /*
@@ -37,6 +37,7 @@ extern char pbuf[]; /* Dont ask :) -Ilham */
 extern char *bp;
 
 char *malloc();
+extern char 	*error_text();
 
 #define TRUE 1
 #define FALSE 0
@@ -49,3 +50,16 @@ char *malloc();
 #define USERDELETED        5
 #define GROUPDELETED       6
 
+#ifdef __STDC__
+extern void	make_kname(char *, char *, char *, char *);
+extern int	is_suser(char *);
+extern int	is_sacct(char *, char *);
+extern int	parse_username(unsigned char *, char *, char *, char *);
+extern char	*set_service(char *);
+#else
+extern void	make_kname();
+extern int	is_suser();
+extern int	is_sacct();
+extern int	parse_username();
+extern char	*set_service();
+#endif
