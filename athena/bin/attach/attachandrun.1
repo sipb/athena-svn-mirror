@@ -1,4 +1,4 @@
-.\" $Id: attachandrun.1,v 1.3 1999-02-26 23:13:00 danw Exp $
+.\" $Id: attachandrun.1,v 1.4 1999-04-09 21:56:17 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -19,7 +19,7 @@
 attachandrun \- attach a filesystem and run a program from it
 
 .SH SYNOPSIS
-attachandrun locker program argv0 [argv1 ...]
+attachandrun [--check] locker program argv0 [argv1 ...]
 
 .SH DESCRIPTION
 \fIattachandrun\fR combines the operations of attaching a locker,
@@ -32,6 +32,13 @@ indistinguishable from running it out of its locker by hand. A typical
     #!/bin/sh
     exec /bin/athena/attachandrun moira blanche "$0" "$@"
 .fi
+
+If you specify the \fI--check\fR option, \fIattachandrun\fR will check
+for the existence of the binary but not actually run it. (In this
+case, you don't need to specify any argv elements.) It will exit with
+status 0 if the binary exists, or 1 if it does not. Note that a
+successful exit status does not necessarily mean that attempting to
+run the binary will succeed: it indicates only that the file exists.
 
 .SH "SEE ALSO"
 attach(1), add(1)
