@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.18 1999-01-08 19:02:42 danw Exp $
+# $Id: config.site,v 1.19 1999-01-09 03:05:20 ghudson Exp $
 #
 
 athena=true
@@ -22,10 +22,7 @@ esac
 # self-contained build.
 [ -n "$CFLAGS" ]	|| CFLAGS=-g
 [ -n "$LDFLAGS" ]	|| LDFLAGS=-L$ATHTOOLROOT/usr/athena/lib
-[ -n "$CPPFLAGS" ]	|| {
-	CPPFLAGS=-I$ATHTOOLROOT/usr/athena/include
-	CPPFLAGS="$CPPFLAGS -I$ATHTOOLROOT/usr/athena/include/kerberosIV"
-}
+[ -n "$CPPFLAGS" ]	|| CPPFLAGS=-I$ATHTOOLROOT/usr/athena/include
 
 # Set location of X and Motif includes and libraries.
 case "$HOSTTYPE" in
