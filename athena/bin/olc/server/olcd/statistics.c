@@ -13,14 +13,14 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.1 1990-02-04 23:25:36 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.2 1990-02-06 03:52:50 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <olcd.h>
 
 /*
- * Function:	dump_server_stats()  dumps info about the number of
+ * Function:	dump_request_stats()  dumps info about the number of
  *			requests received, broken down by types.  Also
  *			prints the number of seconds the daemon was up.
  * Arguments:	file:	name of a file to dump to.
@@ -34,9 +34,9 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 
 void
 #ifdef __STDC__
-dump_server_stats(const char *file)
+dump_request_stats(const char *file)
 #else
-dump_server_stats(file)
+dump_request_stats(file)
      char *file;
 #endif
 {
@@ -57,6 +57,36 @@ dump_server_stats(file)
       fprintf(fp, "%d\n", request_counts[i]);
     }
 
+  fprintf(fp, "-------------------------\n");
+  fclose(fp);
+}
+
+
+
+/*
+ * Function:	dump_question_stats()  dumps info about questions.  Not
+ *			yet implemented.
+ * Arguments:	file:	name of a file to dump to.
+ * Returns:	Nothing (void).
+ * Notes:
+ */
+
+void
+#ifdef __STDC__
+dump_question_stats(const char *file)
+#else
+dump_question_stats(file)
+     char *file;
+#endif
+{
+  FILE *fp;
+  int i, j, k;
+
+  fp = fopen(file,"a");
+  
+  fprintf(fp, "Daemon has been up for %d seconds.\n",
+	  time(0) - start_time);
+  fprintf(fp, "No other statistics generated yet.\n");
   fprintf(fp, "-------------------------\n");
   fclose(fp);
 }
