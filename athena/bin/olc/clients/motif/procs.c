@@ -14,7 +14,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.9 1991-03-24 23:10:05 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.10 1991-03-24 23:46:11 lwvanels Exp $";
 #endif
 
 #include <signal.h>
@@ -251,22 +251,22 @@ olc_status()
       sprintf(connect, "You are connected to %s %s.", list.connected.title,
 	      list.connected.realname);
       XtSetArg(args[0], XmNlabelString, MotifString(connect));
-      XtSetValues(w_connect_lbl, &args, 1);
+      XtSetValues(w_connect_lbl, args, 1);
     }
     else {
       XtSetArg(args[0], XmNlabelString,
 	       MotifString("You are not connected to a consultant."));
-      XtSetValues(w_connect_lbl, &args, 1);
+      XtSetValues(w_connect_lbl, args, 1);
     }
     strcpy(current_topic, list.topic);
     XtSetArg(args[0], XmNlabelString, MotifString(list.topic));
-    XtSetValues(w_topic_lbl, &args, 1);
+    XtSetValues(w_topic_lbl, args, 1);
     break;
   default:
     XtSetArg(args[0], XmNlabelString, MotifString("Status unknown."));
-    XtSetValues(w_connect_lbl, &args, 1);
+    XtSetValues(w_connect_lbl, args, 1);
     XtSetArg(args[0], XmNlabelString, MotifString("unknown"));
-    XtSetValues(w_topic_lbl, &args, 1);
+    XtSetValues(w_topic_lbl, args, 1);
     status = handle_response(status, &Request);
     break;
   }
@@ -304,6 +304,7 @@ olc_replay()
   if (status < 0) {
     if (status >= -256)
       switch (status) {
+      case ERR_NO_SUCH_Q:
 	XmTextSetString(w_replay_scrl,
 		      "No question, and therefore, no log to display.");
         break;
@@ -455,6 +456,7 @@ save_cbk (w, tag, callback_data)
     if (status < 0) {
       if (status >= -256)
 	switch (status) {
+	case ERR_NO_SUCH_Q:
 	  XmTextSetString(w_replay_scrl,
 			  "No question, and therefore, no log to display.");
 	  break;
@@ -525,7 +527,7 @@ olc_motd (w, tag, callback_data)
   char file[MAXPATHLEN];
 
   XtSetArg(args[0], XmNsensitive, FALSE);
-  XtSetValues(w_motd_btn, &args, 1);
+  XtSetValues(w_motd_btn, args, 1);
 
   WAIT_CURSOR;
   if (fill_request(&Request) != SUCCESS) {
@@ -574,7 +576,7 @@ olc_help (w, tag, callback_data)
   int fd;
 
   XtSetArg(args[0], XmNsensitive, FALSE);
-  XtSetValues(w_help_btn, &args, 1);
+  XtSetValues(w_help_btn, args, 1);
 
   (void) strcpy(help_filename, HELP_PATH);
 
@@ -626,7 +628,7 @@ olc_help (w, tag, callback_data)
   
   help[statbuf.st_size] = '\0';
   XtSetArg(args[0], XmNmessageString, MotifString(help));
-  XtSetValues(w_help_dlg, &args, 1);
+  XtSetValues(w_help_dlg, args, 1);
   XtManageChild(w_help_dlg);
   close(fd);
   free(help);
@@ -663,11 +665,11 @@ dlg_ok (w, tag, callback_data)
     {
     case MOTD_BTN:
       XtSetArg(args[0], XmNsensitive, TRUE);
-      XtSetValues(w_motd_btn, &args, 1);
+      XtSetValues(w_motd_btn, args, 1);
       break;
     case HELP_BTN:
       XtSetArg(args[0], XmNsensitive, TRUE);
-      XtSetValues(w_help_btn, &args, 1);
+      XtSetValues(w_help_btn, args, 1);
       break;
     }
 }
