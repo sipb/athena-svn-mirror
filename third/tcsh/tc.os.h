@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.os.h,v 1.3 1998-12-12 18:38:10 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.os.h,v 1.4 2000-04-12 22:31:35 ghudson Exp $ */
 /*
  * tc.os.h: Shell os dependent defines
  */
@@ -716,7 +716,6 @@ extern void bcopy	__P((const void *, void *, size_t));
    the definition below. */
 #  if !defined(__sgi)
 struct sockaddr;
-extern int getpeername __P((int, struct sockaddr *, int *));
 #  endif /* __sgi */
 # endif /* REMOTEHOST */
 # ifndef BSDTIMES
