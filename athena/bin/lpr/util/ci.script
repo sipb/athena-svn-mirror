@@ -1,5 +1,0 @@
-#!/bin/csh
-
-foreach i (RCS/*)
-rlog $i | awk -f /afs/rel-eng/project/lpr/src/util/awk.state
-end
