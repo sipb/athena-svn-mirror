@@ -1098,6 +1098,9 @@ XftGlyphSpecCore (XftDraw		*draw,
 	
 	if (XftFontCheckGlyph (dpy, public, FcTrue, glyphs[i].glyph, missing, &nmissing))
 	    glyphs_loaded = FcTrue;
+	if (nmissing)
+	    XftFontLoadGlyphs (dpy, public, FcTrue, missing, nmissing);
+
 	XftGlyphExtents (dpy, public, &glyphs[i].glyph, 1, &gi);
 	g_x1 = glyphs[i].x - gi.x;
 	g_y1 = glyphs[i].y - gi.y;
