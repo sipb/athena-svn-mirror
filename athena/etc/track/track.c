@@ -1,8 +1,17 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.6 1988-09-19 20:26:34 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.7 1990-07-12 14:45:15 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  90/06/22  15:17:28  dschmidt
+ * don't unmount on ultrix
+ * 
+ * Revision 1.1  90/06/22  15:16:07  dschmidt
+ * Initial revision
+ * 
+ * Revision 4.6  88/09/19  20:26:34  don
+ * bellcore copyright.
+ * 
  * Revision 4.5  88/06/21  19:38:41  don
  * finished changes for link-first updating, and undid writestat's
  * memory-saving entry-wise sorting.
@@ -128,7 +137,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.6 1988-09-19 20:26:34 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.7 1990-07-12 14:45:15 epeisach Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -505,8 +514,9 @@ readstat( types) char *types; {
 	 * flush the kernel's text-table,
 	 * to ensure that the vnodes we've freed get scavenged,
 	 */
+#ifndef ultrix
 	unmount("/");		/* XXX */
-
+#endif
 	/* then make sure that the file-systems' superblocks are up-to-date.
 	 */
 	sync();
