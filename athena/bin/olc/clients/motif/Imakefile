@@ -1,6 +1,6 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.13 1995-05-14 01:02:18 cfields Exp $
-# $Author: cfields $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.14 1996-09-20 02:14:43 ghudson Exp $
+# $Author: ghudson $
 #
 # For copying and distribution information,
 # please see the file <mit-copyright.h>.
@@ -27,17 +27,14 @@ LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB) $(LOGGERLIB)
 LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB)
 #endif
 
+INCLUDES       =  $(XIncludes) $(MotifIncludes)
 SYS_LIBRARIES  =  $(HesiodLib) $(ComErrLib) $(KerberosLib) \
 		  $(MotifUtilLib) $(MotifLib) \
                   $(MotifToolLib) $(XUtilLib) $(XLib) 
 DEPLIBS= $(LOCAL_LIBRARIES)
 NO_PROTO=-D_NO_PROTO
 
-#ifdef InstallAltLoc
 DEFINES=-DSA_LOC=\"/usr/athena/bin/xbrowser\" $(NO_PROTO)
-#else
-DEFINES=-DSA_LOC=\"/usr/athena/xbrowser\" $(NO_PROTO)
-#endif
 
 Xolc: Xolc.cpp
 	$(RM) Xolc
