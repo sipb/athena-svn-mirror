@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.72 1999-01-22 23:16:13 ghudson Exp $
+/* $Id: dm.c,v 1.73 1999-07-30 17:56:57 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.72 1999-01-22 23:16:13 ghudson Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.73 1999-07-30 17:56:57 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -108,7 +108,7 @@ static char *number(int x);
 static char *getconf(char *file, char *name);
 static char **parseargs(char *line, char *extra, char *extra1, char *extra2);
 static void console_login(char *conf, char *msg);
-static void start_console(char *line, char **argv);
+static void start_console(char *line, char **argv, int redir);
 static void cleanup(char *tty);
 static pid_t fork_and_store(pid_t *var);
 static void x_stop_wait(void);
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
     char **dmargv, **xargv, **consoleargv = NULL, **loginargv;
     char xpidf[256], line[16], buf[256];
     fd_set readfds;
-    int pgrp, file, tries, count, console = TRUE;
+    int pgrp, file, tries, count, redir = TRUE;
 #ifdef TIOCCONS
     int on = 1;
 #endif
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
 		argv[0]);
 	console_login(conf, NULL);
     }
-    if (argc == 5) console = FALSE;
+    if (argc == 5) redir = FALSE;
 
     /* parse argument lists */
     conf = argv[1];
@@ -285,16 +285,14 @@ int main(int argc, char **argv)
       console_login(conf, "\ndm: Can't find X command line\n");
     xargv = parseargs(p, NULL, NULL, NULL);
 
-    if (console) {
-	p = getconf(conf, "console");
-	if (p == NULL)
-	  console_login(conf, "\ndm: Can't find console command line\n");
+    p = getconf(conf, "console");
+    if (p == NULL)
+      console_login(conf, "\ndm: Can't find console command line\n");
 #ifdef SOLARIS
-          consoleargv = parseargs(p, "-inputfd", "0", NULL);
+    consoleargv = parseargs(p, "-inputfd", "0", NULL);
 #else
-          consoleargv = parseargs(p, NULL, NULL, NULL);
+    consoleargv = parseargs(p, NULL, NULL, NULL);
 #endif
-    }
 
     p = getconf(conf, "login");
     if (p == NULL)
@@ -452,7 +450,7 @@ int main(int argc, char **argv)
     /* start up console */
     strcpy(line, "/dev/");
     strcat(line, logintty);
-    if (console) start_console(line, consoleargv);
+    start_console(line, consoleargv, redir);
     /* had to use a different tty, make sure xlogin uses it too */
     if (strcmp(logintty, &line[5]))
       strcpy(logintty, &line[5]);
@@ -476,7 +474,7 @@ int main(int argc, char **argv)
 	    open(line, O_RDWR, 0);
 	    dup2(1, 2);
 #ifdef TIOCCONS
-	    if (console)
+	    if (redir)
 		ioctl(1, TIOCCONS, &on);
 #endif
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
@@ -564,8 +562,8 @@ int main(int argc, char **argv)
 	    } else
 		last_console_failure = now;
 	}
-	if (console && console_running == NONEXISTENT && !console_failed)
-	  start_console(line, consoleargv);
+	if (console_running == NONEXISTENT && !console_failed)
+	  start_console(line, consoleargv, redir);
 	if (login_running == NONEXISTENT || x_running == NONEXISTENT) {
 	  syslog(LOG_DEBUG, "login_running=%d, x_running=%d, quitting",
 		 login_running, x_running);
@@ -647,7 +645,7 @@ static void console_login(char *conf, char *msg)
  * from the display manager.
  */
 
-static void start_console(char *line, char **argv)
+static void start_console(char *line, char **argv, int redir)
 {
     int file, pgrp, i;
     char *number(), c, buf[64], **argvp;
@@ -697,7 +695,8 @@ static void start_console(char *line, char **argv)
 	dup2(console_tty, 0);
 	close(console_tty);
 #ifdef SOLARIS
-        fd = grabconsole();
+	if (redir)
+	  fd = grabconsole();
 #endif
 	/* Since we are the session leader, we must initialize the tty */
 	(void) tcgetattr(0, &tc);
