@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 2002-01-30 15:49:13 miki Exp $
+# $Id: Makefile,v 1.12 2002-09-05 15:29:35 miki Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -10,18 +10,25 @@ check:
 install:
 	mkdir -p ${DESTDIR}${INSTALL}
 	mkdir -p ${DESTDIR}${INSTALL_DEV}
-	install -c -m 0444 format.input.SUN0424 ${DESTDIR}${INSTALL}
-	install -c -m 0444 format.input.SUN0535 ${DESTDIR}${INSTALL}
-	install -c -m 0444 format.input.SUN1.05 ${DESTDIR}${INSTALL}
-	install -c -m 0444 format.input.SUN2.1G ${DESTDIR}${INSTALL}
-	install -c -m 0444 format.input.SUN4.2G ${DESTDIR}${INSTALL}
-	install -c -m 0444 format.input.SUN9.0G ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SEAGATE-ST39173WC-6244 ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.ST315320A ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.ST320011A ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.ST320413A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST320420A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST34321A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST34342A ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.ST340824A ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.ST38420A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST39120A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST39140A ${DESTDIR}${INSTALL}
-	install -c -m 0444 format.input.ST340824A ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN0424 ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN0535 ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN1.05 ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN18G ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN2.1G ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN36G ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN4.2G ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN9.0G ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.label ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.seagate.5660 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.Seagate.medalist ${DESTDIR}${INSTALL}
