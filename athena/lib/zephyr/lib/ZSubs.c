@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.15 1991-06-20 09:01:28 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.16 1991-12-04 13:42:47 lwvanels Exp $ */
 
 #ifndef lint
-static char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.15 1991-06-20 09:01:28 jfc Exp $";
+static char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.16 1991-12-04 13:42:47 lwvanels Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -76,6 +76,10 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
 						 adjusted below */
     int size, start, numok;
 
+    /* nitems = 0 means cancel all subscriptions; still need to allocate a */
+    /* array for one item so we can cancel, however. */
+  
+    list = (char **)malloc((unsigned)((nitems==0)?1:nitems)*3*sizeof(char *));
     if (!nitems)
 	return ZERR_NONE;
 
