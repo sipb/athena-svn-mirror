@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.19 1994-03-25 15:55:24 miki Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.20 1996-04-26 17:09:07 ghudson Exp $";
 
 #include "attach.h"
 
@@ -555,21 +555,6 @@ int hescmp(at, s)
     if (at->explicit)
 	return (strcmp(at->hesiodname, s));
     return (strcasecmp(at->hesiodname, s));
-}
-
-/*
- * Duplicate a string in malloc'ed memory
- */
-char *strdup(s)
-	char	*s;
-{
-	register char	*cp;
-	
-	if (!(cp = malloc(strlen(s)+1))) {
-		fprintf(stderr, "attach: out of memory, exiting...\n");
-		exit(1);
-	}
-	return(strcpy(cp,s));
 }
 
 /*
