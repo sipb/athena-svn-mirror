@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.13 1992-04-28 14:41:31 mar Exp $
+# $Id: reactivate.sh,v 1.14 1992-06-18 17:12:33 lwvanels Exp $
 
 trap "" 1 15
 
@@ -72,13 +72,15 @@ RSAIX)
 esac
 
 # Reconfigure AFS state
-if [ -f /afs/athena.mit.edu/service/aklog ] ; then
+if [ "${AFSCLIENT}" != "false" ]; then
+    if [ -f /afs/athena.mit.edu/service/aklog ] ; then
 	${cp} /afs/athena.mit.edu/service/aklog /bin/athena/aklog.new && \
 	/bin/test -s /bin/athena/aklog.new && \
 	/bin/mv /bin/athena/aklog.new /bin/athena/aklog
 	/bin/rm -f /bin/athena/aklog.new
+    fi
+    /etc/athena/config_afs > /dev/null 2>&1 &
 fi
-/etc/athena/config_afs > /dev/null 2>&1 &
 
 # punt any processes owned by users not in /etc/passwd
 /etc/athena/cleanup -passwd
