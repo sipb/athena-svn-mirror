@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.10 1991-09-25 15:43:46 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.11 1991-11-06 15:49:26 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.10 1991-09-25 15:43:46 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.11 1991-11-06 15:49:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -114,7 +114,6 @@ int
 do_tick(sig)
      int sig;
 {
-  char *buf;
   long now;
 
   signal(SIGALRM,do_tick);
@@ -122,6 +121,11 @@ do_tick(sig)
   now = time(0);
   write(log_fd,"TICK ",5);
   write(log_fd,ctime(&now),25);
+#ifdef VOID_SIGRET
+  return;
+#else
+  return(0);
+#endif
 }
 
 #ifdef VOID_SIGRET
@@ -138,7 +142,12 @@ handle_hup(sig)
     syslog(LOG_ERR,"opening %s: %m");
     exit(1);
   }
-  do_tick();
+  do_tick(0);
+#ifdef VOID_SIGRET
+  return;
+#else
+  return(0);
+#endif
 }
 
 main(argc, argv)
@@ -296,7 +305,7 @@ main(argc, argv)
   signal(SIGHUP,handle_hup);
 
   if (tick != 0) {
-    do_tick();
+    do_tick(0);
   }
 
   alarmmask = sigmask(SIGALRM);
