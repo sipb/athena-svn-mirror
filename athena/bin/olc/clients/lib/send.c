@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v $
- *	$Id: send.c,v 1.10 1990-11-13 14:30:04 lwvanels Exp $
+ *	$Id: send.c,v 1.11 1990-11-19 09:41:59 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.10 1990-11-13 14:30:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.11 1990-11-19 09:41:59 lwvanels Exp $";
 #endif
 #endif
 
@@ -111,7 +111,7 @@ OMailHeader(Request, file, username, realname, topic, destination, message)
   fp = fopen(file, "w");
   if(fp == NULL)
     return(ERROR);
-  fprintf(fp, "To: %s  <%s@%s>\n", realname, username, destination);
+  fprintf(fp, "To: \"%s\"  <%s@%s>\n", realname, username, destination);
   fprintf(fp, "cc: \n");
   fprintf(fp, "Subject: Your OLC question about \"%s\"\n", topic);
   fprintf(fp, "--------\n\n");
