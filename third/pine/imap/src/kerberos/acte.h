@@ -60,7 +60,7 @@ struct acte_client {
     int (*start) P((const char *service, const char *host, const char *user,
 		    int protallowed, int maxbufsize,
 		    struct sockaddr *localaddr, struct sockaddr *remoteaddr,
-		    void **state));
+		    void **state, char *u_out));
 
     /* Do an authentication protocol exchange */
     int (*auth) P((void *state, int inputlen, char *input,

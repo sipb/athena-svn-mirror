@@ -39,7 +39,14 @@
 extern char *malloc();
 
 extern char *lcase P((char *str));
-extern char *krb_get_phost P((char *)), *krb_realmofhost P((char *));
+
+#ifndef HAVE_KRB_GET_PHOST
+extern char *krb_get_phost P((char *));
+#endif
+
+#ifndef HAVE_KRB_REALMOFHOST
+extern char *krb_realmofhost P((char *));
+#endif
 
 static char *srvtab = "";	/* Srvtab filename */
 
@@ -162,7 +169,7 @@ void *state;
  * Start the client side of an authentication exchange.
  */
 static int krb_client_start(service, host, user, protallowed, maxbufsize,
-			    localaddr, remoteaddr, state)
+			    localaddr, remoteaddr, state, u_out)
 const char *service;		/* Name of service */
 const char *host;		/* Name of server host */
 const char *user;		/* (optional) user to log in as */
@@ -171,6 +178,8 @@ int maxbufsize;			/* Maximum ciphertext input buffer size */
 struct sockaddr *localaddr;	/* Network address of local side */
 struct sockaddr *remoteaddr;	/* Network address of remote side */
 void **state;			/* On success, filled in with state ptr */
+char *u_out;                    /* Output buffer for username 
+				 * if non-null must be atleast MAX_K_NAME_SZ+1                                  * large */
 {
     struct hostent *host_name;
     char userbuf[MAX_K_NAME_SZ+1];
@@ -238,6 +247,8 @@ void **state;			/* On success, filled in with state ptr */
     else if (strlen(user) > MAX_K_NAME_SZ) {
 	return ACTE_FAIL;
     }
+
+    if(u_out) memcpy(u_out, user, strlen(userbuf) + 1);
 
     kstate = (struct krb_state *)malloc(sizeof(struct krb_state));
     if (!kstate) return ACTE_FAIL;
@@ -751,7 +762,11 @@ int *outputlen;
 }
 #endif /* !NOPRIVACY */
 
+#ifndef HAVE_AFS_STRING_TO_KEY
+
 static afs_string_to_key P((char *str, des_cblock *key, char *cell));
+
+#endif
 
 /*
  * Kerberos set srvtab filename
@@ -873,10 +888,14 @@ const char **reply;
  */
 
 /* forward declarations */
+#ifndef HAVE_AFS_STRING_TO_KEY
 static afs_transarc_StringToKey P((char *str, char *cell, des_cblock *key));
 static afs_cmu_StringToKey P((char *str, char *cell, des_cblock *key));
+#endif
 
 extern char *crypt();
+
+#ifndef HAVE_AFS_STRING_TO_KEY
 
 /* This defines the Andrew string_to_key function.  It accepts a password
  * string as input and converts its via a one-way encryption algorithm to a DES
@@ -966,4 +985,7 @@ char *cell;                  /* cell for password */
 	afs_cmu_StringToKey (str, cell, key);
     }
 }
+
+#endif /* ifndef HAVE_AFS_STRING_TO_KEY */
+
 

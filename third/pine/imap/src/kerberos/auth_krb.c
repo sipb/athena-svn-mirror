@@ -38,12 +38,12 @@
 #include "acte_krb.c"
 
 long auth_krb_client P((authchallenge_t challenger,authrespond_t responder,
-			NETMBX *mb,void *stream,unsigned long *trial,
+			char *service,NETMBX *mb,void *stream,unsigned long *trial,
 			char *user));
 char *auth_krb_server P((authresponse_t responder,int argc,char *argv[]));
 
 AUTHENTICATOR auth_krb = {
-  T,				/* secure authenticator */
+  AU_SECURE | AU_AUTHUSER,	/* secure authenticator */
   "KERBEROS_V4",		/* authenticator name */
   NIL,				/* always valid */
   auth_krb_client,		/* client method */
@@ -61,9 +61,10 @@ AUTHENTICATOR auth_krb = {
  * Returns: T if success, NIL otherwise
  */
 
-long auth_krb_client (challenger,responder,mb,stream,trial,user)
+long auth_krb_client (challenger,responder,service,mb,stream,trial,user)
      authchallenge_t challenger;
      authrespond_t responder;
+     char *service;
      NETMBX *mb;
      void *stream;
      unsigned long *trial;
@@ -77,15 +78,23 @@ long auth_krb_client (challenger,responder,mb,stream,trial,user)
   int rc;
   mech = &krb_acte_client;
   *trial = 0;			/* don't retry if failure */
-  user[0] = '\0';		/* can't help much on this */
 				/* fetch proper service tickets */
-  if (mech->start ("imap",mb->host,0,ACTE_PROT_NONE,0,0,0,&state))
-    return NIL;
+  if (mech->start (service,mb->host,0,ACTE_PROT_NONE,0,0,0,&state,user)) {
+      /* Grab Initial Challenge (note, if this fails, we don't care) */
+      (*challenger)(stream,&clen);
+      /* Cancel authentication */
+      (*responder) (stream,NIL,0);
+      return NIL;
+  }
 				/* get challenge/response */
   do {				/* until ACTE_DONE or something fails */
     if (!(challenge = (*challenger) (stream,&clen))) return NIL;
     rc = mech->auth (state,clen,challenge,&rlen,&response);
-    if (rc == ACTE_FAIL) return NIL;
+    if (rc == ACTE_FAIL) {
+      /* Cancel authentication */
+      (*responder) (stream,NIL,0);
+      return NIL;
+    }
     fs_give ((void **) &challenge);
     if (!((*responder) (stream,response,rlen))) return NIL;
   } while (rc != ACTE_DONE);
