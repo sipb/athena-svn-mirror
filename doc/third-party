@@ -119,8 +119,8 @@ tokens, unlog, and possibly afs.rc; we don't bother with "cvs import"
 for these files.  You will also need the kernel module itself, which
 varies per platform.
 
-You must do "cvs admin -ko" on binary files so that they won't get
-trashed by RCS ID mangling.
+You must do "cvs admin -kb" (or import/checkin with the -kb option) on
+binary files so that they won't get trashed by RCS ID mangling.
 
 For the sgi_53 and sun4m_54 platforms, we did not do an import of the
 "include" and "lib" directories, so you should just update the files
