@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.8 1989-03-27 12:03:33 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.9 1989-05-04 14:05:48 jik Exp $
 #
 
 DESTDIR =
@@ -15,6 +15,11 @@ CC = cc
 CFLAGS = -O
 SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c \
 	lsdel.c col.c
+INCS = col.h delete.h directories.h expunge.h lsdel.h mit-copyright.h\
+	pattern.h undelete.h util.h
+MANS = man1 man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
+	man1/undelete.1
+ARCHIVE = README Makefile MANIFEST PATCHLEVEL $(SRCS) $(INCS) $(MANS)
 
 all: $(TARGETS)
 
@@ -61,6 +66,47 @@ saber_lsdel:
 	#alias s step
 	#alias n next
 	#load lsdel.c util.c directories.c pattern.c col.c
+
+tar: $(ARCHIVE)
+	@echo "Checking to see if everything's checked in...."
+	@for i in $(ARCHIVE) ;\
+	do \
+	if [ -w $$i ] ; then \
+		echo "$$i isn't checked in.  Check it in before making"; \
+		echo "an archive."; \
+		exit 1; \
+	fi ; \
+	exit 0; \
+	done
+	tar cvf - $(ARCHIVE) | compress > delete.tar.Z
+
+shar: $(ARCHIVE)
+	@echo "Checking to see if everything's checked in...."
+	@for i in $(ARCHIVE) ;\
+	do \
+	if [ -w $$i ] ; then \
+		echo "$$i isn't checked in.  Check it in before making"; \
+		echo "an archive."; \
+		exit 1; \
+	fi ; \
+	exit 0; \
+	done
+	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVE)
+
+patch: $(ARCHIVE)
+	@echo "Checking to see if everything's checked in...."
+	@for i in $(ARCHIVE) ;\
+	do \
+	if [ -w $$i ] ; then \
+		echo "$$i isn't checked in.  Check it in before making"; \
+		echo "an archive."; \
+		exit 1; \
+	fi ; \
+	exit 0; \
+	done
+	makepatch $(ARCHIVE)
+	mv patch delete.patch`cat PATCHLEVEL`
+	shar delete.patch`cat PATCHLEVEL` > delete.patch`cat PATCHLEVEL`.shar
 
 clean:
 	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge
