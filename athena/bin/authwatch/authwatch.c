@@ -17,7 +17,7 @@
  * expire.
  */
 
-static const char rcsid[] = "$Id: authwatch.c,v 1.4 2004-04-14 18:31:21 mwhitson Exp $";
+static const char rcsid[] = "$Id: authwatch.c,v 1.5 2004-08-20 13:04:48 rbasch Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -30,6 +30,10 @@ static const char rcsid[] = "$Id: authwatch.c,v 1.4 2004-04-14 18:31:21 mwhitson
 #define MAX_TIMEOUT 60*5   /* Maximum interval between checks, in seconds */
 
 krb5_context k5_context;
+
+static gboolean expose_cb(GtkWidget *dialog, GdkEventExpose *event,
+			  gpointer unused);
+static gint timeout_cb(gpointer reset);
 
 
 /* Find the expiration time (unix time) of the TGT currently in the
@@ -80,15 +84,28 @@ time_t get_krb5_expiration()
   return expiration;
 }
 
+/* Here on an expose event. */
+static gboolean expose_cb(GtkWidget *dialog, GdkEventExpose *event,
+			  gpointer unused)
+{
+  /* Force a state check. */
+  gtk_timeout_add(0, timeout_cb, GUINT_TO_POINTER(FALSE));
+  return FALSE;			/* Continue with normal event handling. */
+}
 
-/* Run periodically by the gtk main loop. */
-
-gint timeout_cb(gpointer unused)
+/* Run periodically by the gtk main loop.  We always remove the
+ * timeout which invoked us, but, if the argument is TRUE, we
+ * will add another timeout for the smaller of the predicted
+ * time until a state change, and MAX_TIMEOUT.
+ */
+static gint timeout_cb(gpointer reset)
 {
   time_t now, expiration;
   time_t duration = 0;
   int nstate;
   unsigned int timeout;
+  GtkContainer *container;
+  GList *children;
 
   static GtkWidget *dialog = NULL;
   static int state = -1;
@@ -157,21 +174,29 @@ gint timeout_cb(gpointer unused)
 			   G_CALLBACK(gtk_widget_destroy), NULL);
 	  g_signal_connect(G_OBJECT(dialog), "destroy",
 			   G_CALLBACK(gtk_widget_destroyed), &dialog);
+	  container = GTK_CONTAINER(GTK_DIALOG(dialog)->vbox);
+	  children = gtk_container_get_children(container);
+	  g_signal_connect(G_OBJECT(g_list_nth_data(children, 1)),
+			   "expose_event", G_CALLBACK(expose_cb), NULL);
+	  g_list_free(children);
 	  g_object_set(G_OBJECT(dialog), "type", GTK_WINDOW_POPUP, NULL);
 	  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	  gtk_widget_show(dialog);
 	}
     }
 
-  /* Set our next callback for the predicted time until the next state
-   * change, or MAX_TIMEOUT, whichever is smaller. 
-   */
-  if (state == 0)
-    timeout = MAX_TIMEOUT;
-  else
-    timeout = duration - warnings[state - 1].tte;
-  timeout = MIN(timeout, MAX_TIMEOUT);
-  gtk_timeout_add(timeout * 1000, timeout_cb, NULL);
+  if (GPOINTER_TO_UINT(reset))
+    {
+      /* Set our next callback for the predicted time until the next state
+       * change, or MAX_TIMEOUT, whichever is smaller. 
+       */
+      if (state == 0)
+	timeout = MAX_TIMEOUT;
+      else
+	timeout = duration - warnings[state - 1].tte;
+      timeout = MIN(timeout, MAX_TIMEOUT);
+      gtk_timeout_add(timeout * 1000, timeout_cb, GUINT_TO_POINTER(TRUE));
+    }
 
   return FALSE;   /* Remove the callback which called us. */
 }
@@ -191,7 +216,7 @@ main(int argc, char **argv)
       exit(1);
     }
 
-  gtk_timeout_add(0, timeout_cb, NULL);
+  gtk_timeout_add(0, timeout_cb, GUINT_TO_POINTER(TRUE));
   gtk_main();
 
   exit(0);
