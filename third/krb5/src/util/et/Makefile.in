@@ -13,7 +13,7 @@ SED = sed
 ##DOS##XTRA=
 ##DOS##OBJFILE=$(OUTPRE)comerr.lst
 
-STLIBOBJS=error_message.o et_name.o init_et.o com_err.o
+STLIBOBJS=error_message.o et_name.o init_et.o com_err.o add_to_error_table.o
 STOBJLISTS=OBJS.ST
 LIB=com_err
 LIBMAJOR=3
