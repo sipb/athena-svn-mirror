@@ -582,7 +582,7 @@ printConf.sh: printConf.sh.in Makefile
 	  && mv printConf.tmp printConf.sh
 
 install-data-local: gnome-font-install
-	$(PERL) $(srcdir)/run-gnome-font-install ./gnome-font-install $(datadir) $(srcdir)
+	$(PERL) $(srcdir)/run-gnome-font-install ./gnome-font-install $(DESTDIR)$(datadir) $(srcdir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -60,4 +60,4 @@ gnome_font_install_LDADD =	\
 	$(INTLLIBS)
 
 install-data-local: gnome-font-install
-	$(PERL) $(srcdir)/run-gnome-font-install ./gnome-font-install $(datadir) $(srcdir)
+	$(PERL) $(srcdir)/run-gnome-font-install ./gnome-font-install $(DESTDIR)$(datadir) $(srcdir)
