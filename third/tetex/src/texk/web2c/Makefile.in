@@ -644,13 +644,13 @@ install-fmts: $(all_formats)
 install-bases: $(all_bases)
 	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(basedir)
 	all_bases="$(all_bases)"; \
-	  for f in ""$$all_bases; do $(INSTALL_DATA) $$f ${DESTDIR}$(basedir)/$$f; done
+	  for f in $$all_bases; do $(INSTALL_DATA) $$f ${DESTDIR}$(basedir)/$$f; done
 	#cd $(basedir) && (rm -f plain.base; $(LN) mf.base plain.base)
 
 install-mems: $(all_mems)
 	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(memdir)
 	all_mems="$(all_mems)"; \
-	  for f in ""$$all_mems; do $(INSTALL_DATA) $$f ${DESTDIR}$(memdir)/$$f; done
+	  for f in $$all_mems; do $(INSTALL_DATA) $$f ${DESTDIR}$(memdir)/$$f; done
 	#cd $(memdir) && (rm -f plain.mem; $(LN) mpost.mem plain.mem)
 
 # Auxiliary files.

@@ -113,11 +113,11 @@ uninstall-exec:
 
 ### //FIXME: add installation for encoding.map here!! (same place where psfonts.map is?)
 install-data: xdvi.1 t1mapper.1
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(man1dir) $(texmf)/xdvi
-	$(INSTALL_DATA) xdvi.1 $(man1dir)/xdvi.$(manext)
-	$(INSTALL_DATA) $(srcdir)/t1mapper.1 $(man1dir)/t1mapper.$(manext)
-	$(INSTALL_DATA) $(srcdir)/xdvizilla.1 $(man1dir)/xdvizilla.$(manext)
-	$(INSTALL_DATA) $(srcdir)/texmf/xdvi-teTeX.cfg $(texmf)/xdvi/xdvi.cfg
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(man1dir) ${DESTDIR}$(texmf)/xdvi
+	$(INSTALL_DATA) xdvi.1 ${DESTDIR}$(man1dir)/xdvi.$(manext)
+	$(INSTALL_DATA) $(srcdir)/t1mapper.1 ${DESTDIR}$(man1dir)/t1mapper.$(manext)
+	$(INSTALL_DATA) $(srcdir)/xdvizilla.1 ${DESTDIR}$(man1dir)/xdvizilla.$(manext)
+	$(INSTALL_DATA) $(srcdir)/texmf/xdvi-teTeX.cfg ${DESTDIR}$(texmf)/xdvi/xdvi.cfg
 
 uninstall-data:
 	rm -f $(man1dir)/xdvi.$(manext) 

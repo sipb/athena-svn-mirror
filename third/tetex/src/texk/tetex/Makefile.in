@@ -66,17 +66,17 @@ install-data:: $(INFOFILES)
 	  install-info --info-dir=${DESTDIR}$(infodir) ${DESTDIR}$(infodir)/latex.info; \
 	else true; fi
 	for p in $(POOLFILES); do \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(texpooldir)/$$p; \
+	  $(INSTALL_DATA) $(srcdir)/$$p ${DESTDIR}$(texpooldir)/$$p; \
 	done
 	for p in TETEXDOC.pdf TETEXDOC.ps TETEXDOC.dvi teTeX-FAQ; do \
-	  $(INSTALL_DATA) $(srcdir)/doc/$$p $(texmf)/doc/tetex; \
+	  $(INSTALL_DATA) $(srcdir)/doc/$$p ${DESTDIR}$(texmf)/doc/tetex; \
 	done
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(texmf)/texconfig $(texmf)/texconfig/g $(texmf)/texconfig/v $(texmf)/texconfig/x
-	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/g/generic $(texmf)/texconfig/g
-	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/v/vt100 $(texmf)/texconfig/v
-	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/x/xterm $(texmf)/texconfig/x
-	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/README $(texmf)/texconfig
-	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/generic $(texmf)/texconfig
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(texmf)/texconfig ${DESTDIR}$(texmf)/texconfig/g ${DESTDIR}$(texmf)/texconfig/v ${DESTDIR}$(texmf)/texconfig/x
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/g/generic ${DESTDIR}$(texmf)/texconfig/g
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/v/vt100 ${DESTDIR}$(texmf)/texconfig/v
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/x/xterm ${DESTDIR}$(texmf)/texconfig/x
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/README ${DESTDIR}$(texmf)/texconfig
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/generic ${DESTDIR}$(texmf)/texconfig
 
 install-exec:
 	-$(SHELL) $(srcdir)/../mkinstalldirs ${DESTDIR}$(scriptdir)
@@ -87,7 +87,7 @@ install-exec:
 	  for s in $(PDFSCRIPTS); do \
 	    $(INSTALL_SCRIPT) $(srcdir)/$$s ${DESTDIR}$(scriptdir)/$$s; \
 	  done; \
-	  cd $(scriptdir); rm -f mptopdf; ln -s texexec mptopdf; \
+	  cd ${DESTDIR}$(scriptdir); rm -f mptopdf; ln -s texexec mptopdf; \
 	else \
 	  true; \
 	fi
@@ -96,11 +96,11 @@ install-exec:
 	  ln -s kpsetool kpsepath; \
 	  ln -s kpsetool kpsexpand; \
 	  ln -s mktexlsr texhash
-	cd $(scriptdir); rm -f fdf2tan makempy texfind texfont texshow texutil; \
+	cd ${DESTDIR}$(scriptdir); rm -f fdf2tan makempy texfind texfont texshow texutil; \
 	  for f in fdf2tan makempy texfind texfont texshow texutil; do \
   	    ln -s texexec $$f; \
 	  done
-	cd $(scriptdir); rm -f mktexfmt; ln -s fmtutil mktexfmt
+	cd ${DESTDIR}$(scriptdir); rm -f mktexfmt; ln -s fmtutil mktexfmt
 
 ac_include ../make/clean.mk
 
