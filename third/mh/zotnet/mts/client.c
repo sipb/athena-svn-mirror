@@ -1,6 +1,6 @@
 /* client.c - connect to a server */
 #ifndef	lint
-static char ident[] = "@(#)$Id: client.c,v 1.3 1998-02-17 01:32:49 ghudson Exp $";
+static char ident[] = "@(#)$Id: client.c,v 1.4 1998-04-09 23:31:41 ghudson Exp $";
 #endif	/* lint */
 
 #if	defined(SYS5) && defined(AUX)
@@ -359,13 +359,6 @@ int	net;
 /*  */
 
 /* taken from ISODE's compat/internet.c */
-
-#ifndef	DG
-u_long	inet_addr ();
-#else
-struct in_addr inet_addr ();
-#endif
-
 
 static char *empty = NULL;
 #ifdef	h_addr
