@@ -3,7 +3,7 @@
 
 # Initialize/Shutdown the standard and optional network software.
 #
-# $Revision: 1.5 $
+# $Revision: 1.6 $
 #
 # If the IP address for this host is the default 192.0.2.1 Internet test
 # address, the software is configured for loopback (standalone) mode.
@@ -391,11 +391,6 @@ case "$1" in
     # Send traffic for this host through lo0 for better performance
     HOSTRESORDER=local $ROUTE -q add host $if1addr $localhost 0 >/dev/null 2>&1
 
-    # Local Athena addition: suppress network daemons if requested.
-    if $IS_ON suppress-network-daemons; then
-	exit
-    fi
-
     $ECHO "Network daemons:\c"
 
 	if test -x /usr/etc/rtnetd; then
@@ -469,6 +464,10 @@ case "$1" in
 
     $ECHO "."
 
+    # Local Athena addition: suppress network daemons if requested.
+    if $IS_ON suppress-network-daemons; then
+	exit
+    fi
 
     # Define the NIS domain name.
     if test -x $YPSETDOM; then
@@ -630,7 +629,6 @@ case "$1" in
 	    $ECHO "."
 	fi
     fi
-
 
     # Daemons started below may reside on NFS filesystems.
 
