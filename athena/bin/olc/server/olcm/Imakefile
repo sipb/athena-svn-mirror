@@ -1,0 +1,39 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/Imakefile,v $
+ * $Id: Imakefile,v 1.1 1991-04-02 14:00:51 lwvanels Exp $
+ */
+
+/*#define Profiling*/
+
+#ifdef Profiling
+LIBSUFFIX=_p
+EXTRA_LOAD_FLAGS=-pg
+#endif
+
+SRCS=	olcm.c
+OBJS=	olcm.o
+
+#ifdef Profiling
+DEFINES=-DLOG -DSYSLOG -DPROFILE
+.c.o:
+	$(CC) -pg -c $(CFLAGS) $*.c
+#else
+DEFINES=-DLOG -DSYSLOG
+#endif /* Profiling */
+
+SYS_LIBRARIES=  $(KerberosLib)
+
+NormalProgramTarget(olcm,$(OBJS),,,$(SYS_LIBRARIES))
+
+SaberProgramTarget(olcm,$(SRCS),$(OBJS),,$(SYS_LIBRARIES))
+
+#ifdef InstallAltLoc
+InstallProgram(olcm,/mit/olcdev/@sys)
+#else
+InstallProgram(olcm,$(DESTDIR)/usr/etc)
+#endif
+
+DependTarget()
+LintTarget()
+
+AllTarget(olcm)
