@@ -25,7 +25,12 @@ DEBUG=-O
 DEFINES=
 
 INCLUDES= $(AFSINC) $(XINCLUDES)
+
+#if defined(ultrix)
+LIBS = -lhesiod -lkrb -ldes -lzephyr -lcom_err $(XLIBS) $(AFSLIB)
+#else
 LIBS = -lhesiod -lkrb -ldes -lrpcsvc -lzephyr -lcom_err $(XLIBS) $(AFSLIB)
+#endif
 
 CFLAGS=$(CCFLG) $(DEFINES) $(INCLUDES) $(DEBUG)
 LDFLAGS= $(DEBUG) $(LDOPTS)
