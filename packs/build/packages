@@ -1,4 +1,4 @@
-# $Id: packages,v 1.156 2002-02-25 21:18:21 ghudson Exp $
+# $Id: packages,v 1.157 2002-03-01 22:03:31 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -47,7 +47,7 @@ packs/build/setup		early except linux
 
 # Athena software
 athena/bin/access
-athena/bin/aklog		requires krb5,afsbin,et
+athena/bin/aklog		requires krb5,afsbin,openafs,et
 athena/bin/athdir		requires athena/lib/athdir
 athena/bin/athinfo
 athena/bin/athrun
@@ -58,7 +58,7 @@ athena/bin/bugme		requires Xj
 athena/bin/config_console
 athena/bin/cxref
 athena/bin/dash			requires Xj,krb5,athena/lib/athdir
-athena/bin/delete		requires afsbin,et
+athena/bin/delete		requires afsbin,openafs,et
 athena/bin/dent
 athena/bin/discuss		requires krb5,zephyr,ss,et
 athena/bin/dustbuster
@@ -74,18 +74,18 @@ athena/bin/just
 athena/bin/lert			requires krb5,hesiod
 athena/bin/machtype
 athena/bin/neos			requires fxcl,krb5,hesiod
-athena/bin/newpag		requires afsbin
+athena/bin/newpag		requires afsbin,openafs
 athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
 athena/bin/panel-wrapper	requires gnome-libs
 athena/bin/passwd		requires krb5,al
-athena/bin/quota		requires locker,afsbin
+athena/bin/quota		requires locker,afsbin,openafs
 athena/bin/revert-to-dash
 athena/bin/rkinit		requires krb5,athena/lib/rkinit
 athena/bin/saferm
 athena/bin/sendbug
 athena/bin/syncupdate
 athena/bin/session
-athena/bin/voldump		requires afsbin,hesiod
+athena/bin/voldump		requires afsbin,openafs,hesiod
 athena/bin/write
 athena/bin/xcluster		requires Xj,hesiod
 athena/bin/xdsc			requires discuss
@@ -100,7 +100,7 @@ athena/etc/dm			requires al
 athena/etc/fxserver		requires fxcl,krb5,hesiod
 athena/etc/gettime
 athena/etc/larvnetd		requires larv,ares,hesiod
-athena/etc/listsuidcells	requires afsbin
+athena/etc/listsuidcells	requires afsbin,openafs
 athena/etc/messaged		requires gms
 athena/etc/mkcred
 athena/etc/newsyslog		except linux
@@ -113,7 +113,7 @@ athena/etc/xlogin		requires krb5,al,wcl,larv
 
 athena/lib/Mu			package libMu
 athena/lib/Xj			package libXj
-athena/lib/al			requires hesiod,afsbin package libal
+athena/lib/al			requires hesiod,afsbin,openafs package libal
 athena/lib/ares
 athena/lib/athdir		package libathdir
 athena/lib/et			package libet
@@ -121,7 +121,7 @@ athena/lib/gms			requires et
 athena/lib/fxcl			requires krb5,hesiod package libfxcl
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
-athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
+athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,openafs,et
 athena/lib/rkinit		requires krb5,et package librkinit
 athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
