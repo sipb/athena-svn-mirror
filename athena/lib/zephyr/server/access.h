@@ -8,7 +8,7 @@
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.h,v $
  * $Author: raeburn $
- * $Id: access.h,v 1.1 1990-11-13 17:03:45 raeburn Exp $
+ * $Id: access.h,v 1.2 1990-11-14 23:54:58 raeburn Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
@@ -54,6 +54,9 @@ inline int access_check(ZString sender, ZAcl_t *acl, ZAccess_t accesstype) {
 
 /* found in access.c */
 extern void access_init (void), access_reinit (void);
+
+/* found in acl_files.c */
+extern "C" int acl_load (char *);
 
 /* external data relevant */
 extern int zdebug;
